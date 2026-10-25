@@ -828,7 +828,11 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
     NUFPAR_PC *parser;
     i32 len;
     char *tmp_buf;
+    i32 file_index;
 
+    if (bank->strings != NULL) {
+        NuFileError();
+    }
     bank->strings = NULL;
     bank->max_strings = 0;
     bank->string_count = 0;
@@ -837,14 +841,27 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
         NuFileError();
     }
     tmp_buf = (char *)((u32)mem_buf + bytes_read);
-    mem_file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    mem_file = 0;
+    if (bytes_read > 0) {
+        for (file_index = 0; file_index < 20; file_index++) {
+            if (pc_memfiles[file_index].used == 0) {
+                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
+                pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
+                pc_memfiles[file_index].mode = 0;
+                pc_memfiles[file_index].used = 1;
+                mem_file = file_index + 0x400;
+                break;
+            }
+        }
+    }
     if (mem_file != 0) {
         parser = NuFParOpen(mem_file);
         if (parser != NULL) {
             while (NuFParGetLine(parser) != 0) {
                 ++max_strings;
             }
-            NuFreeFPar(parser);
+            parser->file_buffer = NULL;
         }
         NuFileClose(mem_file);
     }
@@ -852,7 +869,20 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
     strings = (NUSTRING *)((buf->addr + 3) & ~3U);
     buf->addr = (buf->addr + 3) & ~3U;
     buf->addr += max_strings * sizeof(NUSTRING);
-    mem_file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    mem_file = 0;
+    if (bytes_read > 0) {
+        for (file_index = 0; file_index < 20; file_index++) {
+            if (pc_memfiles[file_index].used == 0) {
+                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
+                pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
+                pc_memfiles[file_index].mode = 0;
+                pc_memfiles[file_index].used = 1;
+                mem_file = file_index + 0x400;
+                break;
+            }
+        }
+    }
     if (mem_file != 0) {
         parser = NuFParOpen(mem_file);
         if (parser != NULL) {
@@ -870,13 +900,7 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
                 strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
                 buf->addr = (buf->addr + 1) & ~1U;
                 buf->addr += (u32)len * 2;
-                {
-                    const u16 *src = (const u16 *)parser->word_buffer_ptr;
-                    u16 *dst = strings[i].str_utf16;
-                    do {
-                        *dst++ = *src;
-                    } while (*src++ != 0);
-                }
+                NuStrCpyW(strings[i].str_utf16, (NUWCHAR *)parser->word_buffer_ptr);
 
                 if (nustring_format == 1) {
                     NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
@@ -884,13 +908,7 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
                     strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
                     buf->addr = (buf->addr + 1) & ~1U;
                     buf->addr += (u32)len * 2;
-                    {
-                        const u16 *src = (const u16 *)parser->word_buffer_ptr;
-                        u16 *dst = strings[i].str_utf16;
-                        do {
-                            *dst++ = *src;
-                        } while (*src++ != 0);
-                    }
+                    NuStrCpyW(strings[i].str_utf16, (NUWCHAR *)parser->word_buffer_ptr);
                 } else {
                     NuUnicodeToUTF8((u8 *)tmp_buf, (u16 *)parser->word_buffer_ptr);
                     len = NuStrLen(tmp_buf) + 1;
@@ -901,10 +919,10 @@ i32 __cdecl NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) 
                 }
                 ++i;
             }
+            parser->file_buffer = NULL;
             bank->strings = strings;
             bank->string_count = i;
             bank->max_strings = max_strings;
-            NuFreeFPar(parser);
         }
         NuFileClose(mem_file);
     }
