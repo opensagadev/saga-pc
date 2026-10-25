@@ -1433,3 +1433,22 @@ f32 __cdecl Condition_ScriptParamPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
         return process->params[index];
     return 0.0f;
 }
+
+void *__cdecl Condition_CharacterRangeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
+        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
+        if (object != NULL)
+            return object->owner;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_CharacterRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                       void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (packet != NULL && packet->owner != NULL && object != NULL) {
+        NUVEC difference;
+        return NuVecDist(&object->position, &packet->owner->position, &difference);
+    }
+    return 1000000000.0f;
+}
