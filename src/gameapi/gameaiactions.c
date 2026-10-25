@@ -2128,3 +2128,10 @@ i32 __cdecl Action_GoToNewLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
         GoToNewLevel(level->index);
     return 1;
 }
+
+i32 __cdecl Action_Launch(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                          i32 count, i32 first_time, f32 elapsed) {
+    if (first_time != 0 && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        StartLaunch(packet->owner->objptr);
+    return 1;
+}

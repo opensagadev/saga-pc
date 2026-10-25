@@ -1609,6 +1609,7 @@ address,symbol,size,ctype
 0x49b330,_TurnCode,1206,"void __cdecl (GAMEOBJECT *, i32, GAMEPAD_PC *)"
 0x49b7f0,_ApplyExtraRotation,179,
 0x49b8b0,_VehicleThrustPc,170,
+0x0049b960,_StartLaunch,98,"void __cdecl(GAMEOBJECT *)"
 0x49b9d0,_VehicleLaunchPc,596,
 0x49bc30,_StartFlatten,454,"void __cdecl(GAMEOBJECT *,GAMEOBJECT *)"
 0x49be00,_FlattenCode,560,void __cdecl (GAMEOBJECT *)

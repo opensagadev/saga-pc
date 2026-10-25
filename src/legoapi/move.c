@@ -10557,3 +10557,13 @@ void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     object->blowup_target = NULL;
     ((GRAB_THROW_TARGET_VIEW_PC *)object)->force_throw_target = NULL;
 }
+
+void __cdecl StartLaunch(GAMEOBJECT *object) {
+    if (object->character_context == 0x2c)
+        return;
+    Player_ClearContext(object, 1);
+    Player_ResetContexts(&((TERRAIN_PARENT_CONTEXT_VIEW_PC *)object)->reset_context);
+    object->character_context = 0x2c;
+    object->field_7b3 = 0;
+    object->ai_update_position = object->launch_origin = object->position;
+}
