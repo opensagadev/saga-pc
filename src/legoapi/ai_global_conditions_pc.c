@@ -1104,3 +1104,50 @@ f32 __cdecl Condition_CharacterTypeExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC
     }
     return 0.0f;
 }
+
+typedef struct condition_hat_name_reader_pc_s {
+    u8 unknown_00[0x40];
+    char name[16];
+} CONDITION_HAT_NAME_READER_PC;
+STATIC_ASSERT(offsetof(CONDITION_HAT_NAME_READER_PC, name) == 0x40);
+STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, name) == 0x58);
+STATIC_ASSERT(offsetof(GIZPANEL_s, name) == 0x40);
+STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
+
+f32 __cdecl Condition_EitherPlayerPullingLeverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                 char *name, void *argument) {
+    GIZMO_LEVER_PC *target;
+    if (player != NULL && player->character_context == 0x4a && (target = (GIZMO_LEVER_PC *)player->grapple) != NULL &&
+        (name == NULL || NuStrICmp(target->name, name) == 0))
+        return 1.0f;
+    if (player2 != NULL && player2->character_context == 0x4a &&
+        (target = (GIZMO_LEVER_PC *)player2->grapple) != NULL && (name == NULL || NuStrICmp(target->name, name) == 0))
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_EitherPlayerUsingHatMachinePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                    char *name, void *argument) {
+    CONDITION_HAT_NAME_READER_PC *target;
+    if (player != NULL && player->character_context == 0x61 &&
+        (target = (CONDITION_HAT_NAME_READER_PC *)player->grapple) != NULL &&
+        (name == NULL || NuStrICmp(target->name, name) == 0))
+        return 1.0f;
+    if (player2 != NULL && player2->character_context == 0x61 &&
+        (target = (CONDITION_HAT_NAME_READER_PC *)player2->grapple) != NULL &&
+        (name == NULL || NuStrICmp(target->name, name) == 0))
+        return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_EitherPlayerUsingPanelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                               char *name, void *argument) {
+    GIZPANEL_s *target;
+    if (player != NULL && player->character_context == 0x0b && (target = (GIZPANEL_s *)player->grapple) != NULL &&
+        (name == NULL || NuStrICmp(target->name, name) == 0))
+        return 1.0f;
+    if (player2 != NULL && player2->character_context == 0x0b && (target = (GIZPANEL_s *)player2->grapple) != NULL &&
+        (name == NULL || NuStrICmp(target->name, name) == 0))
+        return 1.0f;
+    return 0.0f;
+}
