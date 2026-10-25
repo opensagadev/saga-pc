@@ -13788,3 +13788,38 @@ void __cdecl pathEditorDrawNode(NUVEC *position, f32 radius, f32 lower_height, f
         LocaledbitsDrawCircleXY(&centre, radius, colour, material, segments);
     }
 }
+
+typedef struct AI_EDITOR_AREA_DRAW_OWNER_PC {
+    AI_EDITOR_AREA_SAVE_OWNER_PC lists;
+    AI_EDITOR_AREA_SAVE_RECORD_PC *selected;
+    AI_EDITOR_AREA_SAVE_RECORD_PC *hovered;
+} AI_EDITOR_AREA_DRAW_OWNER_PC;
+STATIC_ASSERT(offsetof(AI_EDITOR_AREA_DRAW_OWNER_PC, selected) == 0x383c8);
+STATIC_ASSERT(offsetof(AI_EDITOR_AREA_DRAW_OWNER_PC, hovered) == 0x383cc);
+#define AREA_DRAW_OWNER_PC ((AI_EDITOR_AREA_DRAW_OWNER_PC *)aieditor)
+
+void __cdecl areaEditorDrawAreas(void) {
+    f32 previous_distance = AiRndrCullDistance;
+    AI_EDITOR_AREA_SAVE_RECORD_PC *area;
+    i32 colour;
+    AiRndrCullDistance = 0.0f;
+    for (area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetHead(&AREA_DRAW_OWNER_PC->lists.areas); area != NULL;
+         area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetNext(&AREA_DRAW_OWNER_PC->lists.areas, &area->link)) {
+        if (area == AREA_DRAW_OWNER_PC->selected) {
+            colour = 0xff0000ff;
+            if (area != AREA_DRAW_OWNER_PC->hovered)
+                colour = 0x800000ff;
+        } else {
+            colour = area == AREA_DRAW_OWNER_PC->hovered ? 0xffffffff : 0;
+        }
+        if ((area->flags & 1) != 0) {
+            f32 radius = area->size.x < area->size.z ? area->size.x : area->size.z;
+            LocaledbitsDrawSolidCircleXY(&area->position, radius, area->position.y, area->size.y + area->position.y,
+                                         colour, 0, 16);
+        } else {
+            DrawAreaBox(&area->position, &area->size, (i16)area->rotation, colour);
+        }
+    }
+    AiRndrCullDistance = previous_distance;
+}
+#undef AREA_DRAW_OWNER_PC
