@@ -42,9 +42,9 @@ void __cdecl NuPPUnpack(void *source, void *destination) {
     NUPPADDR input_end;
     NUPPADDR output;
     NUPPADDR output_end;
-    // The original reserves an aligned scratch area, stores the unpacked size
-    // at word 64, and places a zero restoration sentinel immediately before it.
-    __declspec(align(32)) u16 saved_stack[66];
+    // Retain the existing scratch view and restoration sentinel without imposing
+    // additional stack alignment.
+    u16 saved_stack[66];
     copy.value = 0x0;
     length.value = copy.value;
     upper.value = length.value;
