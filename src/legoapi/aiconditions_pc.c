@@ -575,3 +575,14 @@ f32 __cdecl Condition_PickupBeenTurnedOnPc(AISYS_PC *system, AISCRIPTPROCESS_PC 
         return (f32)GizmoPickup_BeenTurnedOn((GIZMOPICKUP_PC *)argument);
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, creature_set) == 0xb0);
+f32 __cdecl Condition_IsSetAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    i32 set = (i32)argument;
+    if (set == -1)
+        set = process->creature_set;
+    if (set != 0 && aicreature_sets_alive[set - 1] != 0)
+        return 1.0f;
+    return 0.0f;
+}
