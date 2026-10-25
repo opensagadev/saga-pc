@@ -64,6 +64,8 @@ extern "C" {
 i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination, i32 custom,
                                                  i32 custom_index, i32 use_callback, i32 alternate_labels,
                                                  char *delimiters) {
+    i32 open = 0;
+    i32 close = 0;
     if (button >= 256) {
         if (TextInputNameCallbackPc != NULL) {
             TextInputNameCallbackPc(button, destination);
@@ -72,10 +74,11 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
         }
         return 1;
     }
-    TEXT_INPUT_LABELS_PC *labels = alternate_labels != 0 ? TextInputAlternateLabelsPc : TextInputDefaultLabelsPc;
+    TEXT_INPUT_LABELS_PC *labels = TextInputDefaultLabelsPc;
+    if (alternate_labels != 0) {
+        labels = TextInputAlternateLabelsPc;
+    }
     i32 simple = device < 4;
-    i32 open = 0;
-    i32 close = 0;
     if (delimiters != NULL && delimiters[0] != 0 && delimiters[1] != 0) {
         open = (i8)delimiters[0];
         close = (i8)delimiters[1];
@@ -83,61 +86,67 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
             *destination++ = (char)open;
         }
     }
-    TEXT_INPUT_BINDING_PC *binding =
-        custom != 0 ? &custom_bindings[custom_index][button] : &devices[device].bindings[button];
-    i32 type = binding->type;
-    i32 value = binding->value;
+    i32 type;
+    i32 value;
+    if (custom != 0) {
+        type = custom_bindings[custom_index][button].type;
+        value = custom_bindings[custom_index][button].value;
+    } else {
+        type = devices[device].bindings[button].type;
+        value = devices[device].bindings[button].value;
+    }
     if (use_keyboard_override != 0 && custom_active == 0 && ((u32)(device - 10) <= 3 || device < 0) &&
         TextInputKeyboardOverridePc[button] > 0) {
         type = 7;
         value = TextInputKeyboardOverridePc[button];
     }
-    char text[5];
     i32 expected = 2;
-    i32 kind;
     switch (type) {
-        case 1:
+        case 1: {
+            char text[5];
             *destination = 0;
-            if (simple != 0 && TextInputNameCallbackPc != NULL && use_callback != 0) {
-                text[0] = 0;
-                text[1] = text[2] = text[3] = text[4] = 0;
-                TextInputNameCallbackPc(value, text);
-                if (text[0] != 0) {
-                    if (open != 0) {
-                        --destination;
+            if (simple != 0) {
+                if (TextInputNameCallbackPc != NULL && use_callback != 0) {
+                    TextInputNameCallbackPc(value, text);
+                    if (text[0] != 0) {
+                        if (open != 0) {
+                            --destination;
+                        }
+                        NuStrCpy(destination, text);
+                        return 1;
                     }
-                    NuStrCpy(destination, text);
-                    return 1;
+                }
+                if (value <= 10) {
+                    NuStrCpy(destination, labels->indexed_names[TextInputButtonLabelIndexPc[value]]);
+                    break;
                 }
             }
-            if (simple != 0 && value <= 10) {
-                NuStrCpy(destination, labels->indexed_names[TextInputButtonLabelIndexPc[value]]);
-            } else if ((u32)(value - 128) <= 3) {
+            if ((u32)(value - 128) <= 3) {
                 NuStrCpy(destination, labels->indexed_names[value - 128]);
             } else {
                 sprintf(destination, "%s %d", labels->button_prefix, value + 1);
             }
             break;
+        }
         case 3:
             expected = 1;
-        case 2:
+        case 2: {
             if (value < 0) {
                 break;
             }
-            kind = device_kind[button].kind;
-            if (kind == 3 && type == 2) {
+            TEXT_INPUT_DEVICE_KIND_PC *kind = &device_kind[button];
+            if (kind->kind == 3 && type == 2) {
                 expected = 3;
             }
             if (simple != 0 && value < 8) {
-                i32 index = value * 2 + (kind == expected);
-                text[0] = 0;
-                text[1] = text[2] = text[3] = text[4] = 0;
+                char text[5] = "";
+                value = value * 2 + (kind->kind == expected);
                 *destination = 0;
                 if (TextInputNameCallbackPc != NULL) {
-                    if (index == 12 || index == 15) {
-                        TextInputNameCallbackPc(10, text);
-                    } else if (index == 13 || index == 14) {
+                    if (value == 13 || value == 14) {
                         TextInputNameCallbackPc(11, text);
+                    } else if (value == 15 || value == 12) {
+                        TextInputNameCallbackPc(10, text);
                     }
                     if (text[0] != 0) {
                         if (open != 0) {
@@ -147,16 +156,43 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
                         return 1;
                     }
                 }
-                NuStrCpy(destination, labels->indexed_names[TextInputAxisLabelIndexPc[index]]);
+                NuStrCpy(destination, labels->indexed_names[TextInputAxisLabelIndexPc[value]]);
             } else if (value < 6) {
-                sprintf(destination, "%s %s", labels->axis_names[value],
-                        kind == expected ? labels->axis_positive : labels->axis_negative);
-            } else if (NuLanguageGet() != 11) {
-                sprintf(destination, labels->axis_format, value,
-                        kind == expected ? labels->axis_positive : labels->axis_negative);
+                if (kind->kind == expected) {
+                    sprintf(destination, "%s %s", labels->axis_names[value], labels->axis_positive);
+                } else {
+                    sprintf(destination, "%s %s", labels->axis_names[value], labels->axis_negative);
+                }
             } else {
-                sprintf(destination, labels->axis_format,
-                        kind == expected ? labels->axis_positive : labels->axis_negative, value);
+                i32 reversed = NuLanguageGet() == 11;
+                if (kind->kind == expected) {
+                    if (reversed == 0) {
+                        sprintf(destination, labels->axis_format, value, labels->axis_positive);
+                    } else {
+                        sprintf(destination, labels->axis_format, labels->axis_positive, value);
+                    }
+                } else {
+                    if (reversed == 0) {
+                        sprintf(destination, labels->axis_format, value, labels->axis_negative);
+                    } else {
+                        sprintf(destination, labels->axis_format, labels->axis_negative, value);
+                    }
+                }
+            }
+            break;
+        }
+        case 12:
+            if (device_kind[button].kind == 1) {
+                NuStrCpy(destination, labels->direction_positive[0]);
+            } else {
+                NuStrCpy(destination, labels->direction_negative[0]);
+            }
+            break;
+        case 13:
+            if (device_kind[button].kind == 1) {
+                NuStrCpy(destination, labels->direction_positive[1]);
+            } else {
+                NuStrCpy(destination, labels->direction_negative[1]);
             }
             break;
         case 4:
@@ -166,18 +202,22 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
                 sprintf(destination, labels->hat_format, value + 1);
             }
             break;
-        case 5:
-            if ((u32)value <= 2) {
-                NuStrCpy(destination, device_kind[button].kind == 2 || device_kind[button].kind == 3
-                                          ? labels->direction_negative[value]
-                                          : labels->direction_positive[value]);
-            }
-            break;
         case 6:
             if ((u32)value <= 2) {
-                NuStrCpy(destination, device_kind[button].kind == 2 || device_kind[button].kind == 3
-                                          ? labels->direction_positive[value]
-                                          : labels->direction_negative[value]);
+                if (device_kind[button].kind == 2 || device_kind[button].kind == 3) {
+                    NuStrCpy(destination, labels->direction_positive[value]);
+                } else {
+                    NuStrCpy(destination, labels->direction_negative[value]);
+                }
+            }
+            break;
+        case 5:
+            if ((u32)value <= 2) {
+                if (device_kind[button].kind == 2 || device_kind[button].kind == 3) {
+                    NuStrCpy(destination, labels->direction_negative[value]);
+                } else {
+                    NuStrCpy(destination, labels->direction_positive[value]);
+                }
             }
             break;
         case 7:
@@ -186,14 +226,6 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
             if (value >= 1) {
                 NuStrCpy(destination, TextInputKeyNamesPc[value]);
             }
-            break;
-        case 12:
-            NuStrCpy(destination,
-                     device_kind[button].kind == 1 ? labels->direction_positive[0] : labels->direction_negative[0]);
-            break;
-        case 13:
-            NuStrCpy(destination,
-                     device_kind[button].kind == 1 ? labels->direction_positive[1] : labels->direction_negative[1]);
             break;
         default:
             NuStrCpy(destination, labels->unknown);
@@ -208,13 +240,13 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
 }
 
 extern "C" i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *destination) {
+    TEXT_INPUT_MANAGER_PC *manager = (TEXT_INPUT_MANAGER_PC *)nu_input_state;
     if (device < 0) {
         device = 0;
     }
     i32 linked_device = TextInputLinkedDevicePc(device);
     if (button >= 0) {
-        return ((TEXT_INPUT_MANAGER_PC *)nu_input_state)
-            ->ButtonName(linked_device, button, destination, 0, 0, 1, 1, "()");
+        return manager->ButtonName(linked_device, button, destination, 0, 0, 1, 1, "()");
     }
     *destination = 0;
     return 0;
