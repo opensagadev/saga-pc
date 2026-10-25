@@ -1468,3 +1468,47 @@ f32 __cdecl Condition_NodeRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     }
     return FLT_MAX;
 }
+
+typedef struct ai_condition_grapple_view_pc_s {
+    char name[0x10];
+    NUVEC position;
+    u8 has_terrain_platform;
+} AI_CONDITION_GRAPPLE_VIEW_PC;
+STATIC_ASSERT(offsetof(AI_CONDITION_GRAPPLE_VIEW_PC, has_terrain_platform) == 0x1c);
+
+f32 __cdecl Condition_OpponentPathPosRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
+    if (packet != NULL && packet->owner != NULL && packet->opponent != NULL) {
+        AIPACKET_PC *opponent_packet = ((APIOBJECT_PC *)packet->opponent)->ai;
+        if (opponent_packet != NULL) {
+            NUVEC difference;
+            return NuVecDist(&packet->owner->position, &opponent_packet->last_path_position, &difference);
+        }
+    }
+    return 1000000000.0f;
+}
+
+void *__cdecl Condition_OnDynamicGrappleInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
+        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
+        if (object != NULL)
+            return object->owner;
+    }
+    return NULL;
+}
+
+f32 __cdecl Condition_OnDynamicGrapplePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL)
+            return 0.0f;
+        object = packet->owner->objptr;
+    }
+    if (object != NULL && object->character_context == 0x46) {
+        AI_CONDITION_GRAPPLE_VIEW_PC *grapple = (AI_CONDITION_GRAPPLE_VIEW_PC *)object->grapple;
+        if (grapple != NULL && grapple->has_terrain_platform != 0)
+            return 1.0f;
+    }
+    return 0.0f;
+}
