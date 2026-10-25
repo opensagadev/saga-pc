@@ -439,3 +439,83 @@ i32 __cdecl NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARI
     reader->header = NULL;
     return 0;
 }
+
+typedef struct RNDR_MASK_VERTEX_PC {
+    f32 x, y, z;
+    u32 colour;
+    f32 u, v;
+} RNDR_MASK_VERTEX_PC;
+STATIC_ASSERT(offsetof(RNDR_MASK_VERTEX_PC, u) == 0x10);
+STATIC_ASSERT(offsetof(RNDR_MASK_VERTEX_PC, v) == 0x14);
+#pragma section(".rdata$MaskCoordinateModesPc", read)
+__declspec(allocate(".rdata$MaskCoordinateModesPc")) i32 kPRIM_COORD_LOOKUP[3] = {0, 1, 2};
+
+void __cdecl RndrMaskScreen(i32 texture, f32 clear_x, f32 clear_y, f32 clear_width, f32 clear_height, f32 mask_x,
+                            f32 mask_y, f32 mask_width, f32 mask_height, i32 coordinate_mode) {
+    PC_SCENE_MTL_VIEW *material = (PC_SCENE_MTL_VIEW *)RendererAlphaMaskMaterialPc;
+    RNDR_MASK_VERTEX_PC *vertex;
+    f32 clear_right, clear_bottom, mask_right, mask_bottom;
+    i32 previous_coordinates;
+    material->texture_id = (i16)texture;
+    NuMtlUpdatePS((NUMTL *)material);
+    ++material->version;
+    NuRndrBeginScene(1);
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(kPRIM_COORD_LOOKUP[coordinate_mode]);
+    NuPrim2DBegin(13, 7, RendererZClearMaterialPc);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(clear_x, clear_y, 0.0f);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    clear_right = clear_x + clear_width;
+    NuPrim2DAddXYZ(clear_right, clear_y, 0.0f);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    clear_bottom = clear_y + clear_height;
+    NuPrim2DAddXYZ(clear_x, clear_bottom, 0.0f);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(clear_right, clear_bottom, 0.0f);
+    NuPrim2DEnd();
+    previous_coordinates = NuPrimCoordSystemStack[NuPrimCSPos - 1];
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(previous_coordinates);
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(kPRIM_COORD_LOOKUP[coordinate_mode]);
+    NuPrim2DBegin(13, 7, RendererAlphaMaskMaterialPc);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 0.0f;
+    NuPrim2DAddXYZ(mask_x, mask_y, 1.0f);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 0.0f;
+    mask_right = mask_x + mask_width;
+    NuPrim2DAddXYZ(mask_right, mask_y, 1.0f);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 0.0f;
+    vertex->v = 1.0f;
+    mask_bottom = mask_y + mask_height;
+    NuPrim2DAddXYZ(mask_x, mask_bottom, 1.0f);
+    NuPrim2DSetColor((i32)0xff000000);
+    vertex = (RNDR_MASK_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = 1.0f;
+    vertex->v = 1.0f;
+    NuPrim2DAddXYZ(mask_right, mask_bottom, 1.0f);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    NuRndrEndScene();
+}
