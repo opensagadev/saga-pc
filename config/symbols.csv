@@ -3240,9 +3240,13 @@ address,symbol,size,ctype
 0x520470,_InitFn_GetAICreatureOrigin,10,
 0x520600,_NuSpecialFindByPlatformID,163,
 0x520ee0,_areaEditorSaveData,256,
+0x521160,_AiEditorRenameAreaPc,146,
+0x521230,_AiEditorRenameAreaCancelPc,12,
 0x521240,_DrawAreaBox,1366,
 0x521800,_areaEditorDrawAreas,274,
 0x521cb0,_locatorEditorSaveData,794,
+0x522290,_AiEditorRenameLocatorPc,146,
+0x522330,_AiEditorRenameLocatorCancelPc,12,
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
 0x523640,_pathEditorDrawNode,137,
@@ -3254,8 +3258,14 @@ address,symbol,size,ctype
 0x524df0,?pathEditorCalculateDistanceTable@@YAPAPAMPAUAIPATH_PC@@HPATvariptr_u@@1@Z,306,
 0x524f30,?pathEditorPopulateRouteMatrix@@YAXPAUAIPATH_PC@@HPAPAMPAPAE@Z,325,
 0x525080,_pathEditorSaveData,1558,
+0x5256b0,_AiEditorRenamePathPc,146,
+0x525750,_AiEditorRenamePathCancelPc,12,
 0x525760,_pathEditor_cbRenamePathMenu,208,
+0x525830,_AiEditorRenameNodePc,185,
+0x5258f0,_AiEditorRenameNodeCancelPc,12,
 0x525900,_pathEditor_cbRenameNodeMenu,209,
+0x526350,_AiEditorRenameRoutePc,134,
+0x5263e0,_AiEditorRenameRouteCancelPc,12,
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
 0x526560,_routeEditor_cbRouteUsers,327,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
@@ -14981,6 +14991,12 @@ address,symbol,size,ctype
 0x760088,??_C@_05CEDINIPN@?$CF5?42f?$AA@,6,char []
 0x760090,??_C@_04OKGDLNCL@NONE?$AA@,5,char []
 0x760098,__real@38d1b717,,
+0x76009c,??_C@_09EFEKKNCH@Path?5Name?$AA@,,char []
+0x7600a8,??_C@_0M@CBEGMLMN@Rename?5Path?$AA@,,char []
+0x7600b4,??_C@_09KJIDJHAF@Node?5Name?$AA@,,char []
+0x7600c0,??_C@_0M@LHMBEICA@Rename?5Node?$AA@,,char []
+0x7600d8,??_C@_0L@OEJGLLFA@Route?5Name?$AA@,,char []
+0x7600e4,??_C@_0N@KCAGEFDP@Rename?5Route?$AA@,,char []
 0x760140,??_C@_09GIOMJGNE@AREA?5?$CC?$CFs?$CC?$AA@,,char []
 0x76014c,??_C@_09MCFNLF@AUTOMATIC?$AA@,,char []
 0x760158,??_C@_0BG@JDFBDODJ@Activation?5Difficulty?$AA@,,char []
@@ -15020,6 +15036,10 @@ address,symbol,size,ctype
 0x760474,??_C@_06CFLNOMAI@?$CFs?4ai2?$AA@,7,const char[7]
 0x76047c,??_C@_0BG@BKOEIHKB@?$CFsLevels?2?$CFs?2?$CFs?2?$CFs?4ai2?$AA@,22,const char[22]
 0x760494,??_C@_0BG@IFCCHAGJ@?$CFsLevels?2?$CFs?2?$CFs?2ai?4pak?$AA@,22,const char[22]
+0x7604b4,??_C@_09DNOCENCD@Area?5Name?$AA@,,char []
+0x7604c0,??_C@_0M@PCEMPPIA@Rename?5Area?$AA@,,char []
+0x7605d4,??_C@_0N@JOGKKIAG@Locator?5Name?$AA@,,char []
+0x7605e4,??_C@_0P@PMPBEANL@Rename?5Locator?$AA@,,char []
 0x760894,??_C@_04OEDFLLKD@?$CC?$CFs?$CC?$AA@,5,char []
 0x00760b70,_AIPathCurrentPositionName,17,const char[17]
 0x00760b84,_AIPathCurrentDistanceName,12,const char[12]

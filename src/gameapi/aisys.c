@@ -14255,3 +14255,233 @@ void __cdecl creatureEditor_cbRenameCreatureMenu(eduimenu_s *parent, eduiitem_s 
 
 #undef CREATURE_MENU_PC
 #undef CREATURE_MENU_LISTS_PC
+
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, paths) == 0x4874);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator) == 0x3cbe0);
+STATIC_ASSERT(offsetof(EDAIPATH_s, name) == 8);
+STATIC_ASSERT(offsetof(EDAIPATH_s, nodes) == 0x18);
+STATIC_ASSERT(offsetof(EDAIPATH_s, current_node) == 0x20);
+STATIC_ASSERT(offsetof(EDAIPATH_s, current_route) == 0x28);
+STATIC_ASSERT(offsetof(EDAIPATH_s, flags) == 0x2c);
+STATIC_ASSERT(offsetof(EDAIPATH_s, routes) == 0x40);
+STATIC_ASSERT(sizeof(EDAIPATHROUTE_s) == 0x20);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, name) == 8);
+#define RENAME_AREA_PC (((AI_EDITOR_AREA_DRAW_OWNER_PC *)aieditor)->selected)
+#define RENAME_AREA_LIST_PC (&((AI_EDITOR_AREA_DRAW_OWNER_PC *)aieditor)->lists.areas)
+#define RENAME_LOCATOR_PC (aieditor->current_locator)
+#define RENAME_LOCATOR_LIST_PC (&aieditor->locators)
+#define RENAME_PATH_PC (aieditor->current_path)
+#define RENAME_PATH_LIST_PC (&aieditor->paths)
+
+static void __cdecl AiEditorRenameAreaPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    AI_EDITOR_AREA_SAVE_RECORD_PC *other;
+    (void)menu;
+    (void)event;
+    if (RENAME_AREA_PC != NULL) {
+        char *name = ((edui_textpicker_s *)item)->value;
+        if (strlen(name) != 0) {
+            for (other = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetHead(RENAME_AREA_LIST_PC); other != NULL;
+                 other = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetNext(RENAME_AREA_LIST_PC, &other->link)) {
+                if (NuStrICmp(other->name, name) == 0)
+                    return;
+            }
+            strcpy(RENAME_AREA_PC->name, name);
+        }
+    }
+}
+
+static void __cdecl AiEditorRenameLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDLOCATOR_s *other;
+    (void)menu;
+    (void)event;
+    if (RENAME_LOCATOR_PC != NULL) {
+        char *name = ((edui_textpicker_s *)item)->value;
+        if (strlen(name) != 0) {
+            for (other = (EDLOCATOR_s *)NuLinkedListGetHead(RENAME_LOCATOR_LIST_PC); other != NULL;
+                 other = (EDLOCATOR_s *)NuLinkedListGetNext(RENAME_LOCATOR_LIST_PC, &other->link)) {
+                if (NuStrICmp(other->name, name) == 0)
+                    return;
+            }
+            strcpy(RENAME_LOCATOR_PC->name, name);
+        }
+    }
+}
+
+static void __cdecl AiEditorRenamePathPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAIPATH_s *other;
+    (void)menu;
+    (void)event;
+    if (RENAME_PATH_PC != NULL) {
+        char *name = ((edui_textpicker_s *)item)->value;
+        if (strlen(name) != 0) {
+            for (other = (EDAIPATH_s *)NuLinkedListGetHead(RENAME_PATH_LIST_PC); other != NULL;
+                 other = (EDAIPATH_s *)NuLinkedListGetNext(RENAME_PATH_LIST_PC, &other->link)) {
+                if (NuStrICmp(other->name, name) == 0)
+                    return;
+            }
+            strcpy(RENAME_PATH_PC->name, name);
+        }
+    }
+}
+
+static void __cdecl AiEditorRenameNodePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAIPATH_s *path;
+    EDAIPATHNODE_s *node;
+    EDAIPATHNODE_s *current;
+    char *name;
+    (void)menu;
+    (void)event;
+    if (RENAME_PATH_PC == NULL)
+        return;
+    path = RENAME_PATH_PC;
+    current = path->current_node;
+    if (current == NULL)
+        return;
+    name = ((edui_textpicker_s *)item)->value;
+    if (strlen(name) == 0) {
+        memset(current->name, 0, 16);
+        return;
+    }
+    for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+         node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&RENAME_PATH_PC->nodes, &node->link)) {
+        if (NuStrICmp(node->name, name) == 0)
+            return;
+    }
+    strcpy(RENAME_PATH_PC->current_node->name, name);
+}
+
+static void __cdecl AiEditorRenameRoutePc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    i32 index;
+    (void)menu;
+    (void)event;
+    if (RENAME_PATH_PC != NULL && RENAME_PATH_PC->current_route != NULL) {
+        char *name = ((edui_textpicker_s *)item)->value;
+        if (strlen(name) != 0) {
+            for (index = 0; index < 16; ++index) {
+                if (NuStrICmp(RENAME_PATH_PC->routes[index].name, name) == 0)
+                    return;
+            }
+            strcpy(RENAME_PATH_PC->current_route->name, name);
+        }
+    }
+}
+
+static void __cdecl AiEditorRenameAreaCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+void __cdecl areaEditor_cbRenameAreaMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (RENAME_AREA_PC == NULL)
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameAreaCancelPc, "Rename Area");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameAreaPc, "Area Name"));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, RENAME_AREA_PC->name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+static void __cdecl AiEditorRenameLocatorCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+void __cdecl locatorEditor_cbRenameLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (RENAME_LOCATOR_PC == NULL)
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameLocatorCancelPc, "Rename Locator");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu,
+                    eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameLocatorPc, "Locator Name"));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, RENAME_LOCATOR_PC->name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+static void __cdecl AiEditorRenamePathCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+void __cdecl pathEditor_cbRenamePathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (RENAME_PATH_PC == NULL || (RENAME_PATH_PC->flags & 1))
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenamePathCancelPc, "Rename Path");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenamePathPc, "Path Name"));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, RENAME_PATH_PC->name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+static void __cdecl AiEditorRenameNodeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+void __cdecl pathEditor_cbRenameNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (RENAME_PATH_PC == NULL || RENAME_PATH_PC->current_node == NULL)
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameNodeCancelPc, "Rename Node");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameNodePc, "Node Name"));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, RENAME_PATH_PC->current_node->name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+static void __cdecl AiEditorRenameRouteCancelPc(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
+void __cdecl routeEditor_cbRenameRouteMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (RENAME_PATH_PC == NULL || RENAME_PATH_PC->current_route == NULL)
+        return;
+    menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, AiEditorRenameRouteCancelPc, "Rename Route");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu,
+                    eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorRenameRoutePc, "Route Name"));
+    strcpy(((edui_textpicker_s *)edui_last_item)->value, RENAME_PATH_PC->current_route->name);
+    ((edui_textpicker_s *)edui_last_item)->max_length = 15;
+    eduiMenuAttach(parent, menu);
+    menu->x = parent->x + 10;
+    menu->y = parent->y + 40;
+}
+
+#undef RENAME_AREA_PC
+#undef RENAME_AREA_LIST_PC
+#undef RENAME_LOCATOR_PC
+#undef RENAME_LOCATOR_LIST_PC
+#undef RENAME_PATH_PC
+#undef RENAME_PATH_LIST_PC
