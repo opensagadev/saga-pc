@@ -3291,6 +3291,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
     f32 frame_time;
     f32 flicker_decay;
     f32 vertical_displacement;
+    f32 vertical_velocity;
     f32 elapsed;
     i32 lighting_start;
     GAMEOBJECT *dagobah_luke;
@@ -3512,8 +3513,11 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
 
             vertical_displacement = object->position.y - object->start_position.y;
             elapsed = object->ai_elapsed_time;
-            object->ai_vertical_velocity =
-                vertical_displacement == 0.0f || elapsed == 0.0f ? 0.0f : vertical_displacement / elapsed;
+            if (vertical_displacement == 0.0f || elapsed == 0.0f)
+                vertical_velocity = 0.0f;
+            else
+                vertical_velocity = vertical_displacement / elapsed;
+            object->ai_vertical_velocity = vertical_velocity;
             FRAMETIME = frame_time;
         } else {
             PreResetCode(object);
@@ -3575,8 +3579,11 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         object->ai_update_position = object->position;
         vertical_displacement = object->position.y - object->start_position.y;
         elapsed = object->ai_elapsed_time;
-        object->ai_vertical_velocity =
-            vertical_displacement == 0.0f || elapsed == 0.0f ? 0.0f : vertical_displacement / elapsed;
+        if (vertical_displacement == 0.0f || elapsed == 0.0f)
+            vertical_velocity = 0.0f;
+        else
+            vertical_velocity = vertical_displacement / elapsed;
+        object->ai_vertical_velocity = vertical_velocity;
         AnimatePlayer(object);
         object->context_target_position = NULL;
         if (VehicleArea != 0 || (object->character_data->model_flags & 0x2000) != 0) {
