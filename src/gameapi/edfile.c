@@ -1587,3 +1587,64 @@ void __cdecl eduicbItemFilePickDestroy(eduimenu_s *menu, eduiitem_s *item) {
     }
     eduicbItemDestroy(menu, item);
 }
+
+void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
+    char temporary[256];
+    char *current;
+    char *candidate;
+    i32 direction;
+    i32 current_length;
+    i32 candidate_length;
+    if ((u32)mode <= 1) {
+        direction = mode == 0 ? 1 : -1;
+        for (current = start; current != end;) {
+            current_length = NuStrLen(current);
+            candidate = current + NuStrLen(current) + 1;
+            while (candidate != end) {
+                candidate_length = NuStrLen(candidate);
+                if (NuStrICmp(current + 7, candidate + 7) == direction) {
+                    NuStrCpy(temporary, candidate);
+                    PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
+                    PCByteCopy_candidate(current, temporary, candidate_length + 1);
+                    current_length = candidate_length;
+                }
+                candidate += candidate_length + 1;
+            }
+            current += current_length + 1;
+        }
+    } else {
+        u32 current_key;
+        u32 candidate_key;
+        i32 compare;
+        direction = mode == 2 ? 1 : -1;
+        for (current = start; current != end;) {
+            current_key = (u32)(u8)current[6] - 'A';
+            current_key = current_key * 13 + (u8)current[5] - 'A';
+            current_key = current_key * 33 + (u8)current[4] - 'A';
+            current_key = current_key * 25 + (u8)current[3] - 'A';
+            current_key = current_key * 61 + (u8)current[2] - 'A';
+            current_key = current_key * 61 + (u8)current[1] - 'A';
+            current_length = NuStrLen(current);
+            candidate = current + NuStrLen(current) + 1;
+            while (candidate != end) {
+                candidate_key = (u32)(u8)candidate[6] - 'A';
+                candidate_key = candidate_key * 13 + (u8)candidate[5] - 'A';
+                candidate_key = candidate_key * 33 + (u8)candidate[4] - 'A';
+                candidate_key = candidate_key * 25 + (u8)candidate[3] - 'A';
+                candidate_key = candidate_key * 61 + (u8)candidate[2] - 'A';
+                candidate_key = candidate_key * 61 + (u8)candidate[1] - 'A';
+                candidate_length = NuStrLen(candidate);
+                compare = candidate_key < current_key ? 1 : (candidate_key > current_key ? -1 : 0);
+                if (compare == direction) {
+                    NuStrCpy(temporary, candidate);
+                    PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
+                    PCByteCopy_candidate(current, temporary, candidate_length + 1);
+                    current_key = candidate_key;
+                    current_length = candidate_length;
+                }
+                candidate += candidate_length + 1;
+            }
+            current += current_length + 1;
+        }
+    }
+}
