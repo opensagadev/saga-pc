@@ -1318,3 +1318,37 @@ f32 __cdecl Condition_EitherPlayerInLevelNodePc(AISYS_PC *system, AISCRIPTPROCES
     }
     return 0.0f;
 }
+
+f32 __cdecl Condition_OpponentToOriginPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                         void *argument) {
+    if (packet != NULL && packet->opponent != NULL) {
+        if (GetOriginPositionFn != NULL) {
+            NUVEC *origin = GetOriginPositionFn(system, packet);
+            if (origin != NULL)
+                return NuVecDist(&packet->opponent->position, origin, NULL);
+        }
+        if (system != NULL && packet->creature_index != 0xff)
+            return NuVecDist(&packet->opponent->position, &system->creatures[packet->creature_index].position, NULL);
+    }
+    return FLT_MAX;
+}
+
+f32 __cdecl Condition_Player2InTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                             char *name, void *argument) {
+    if (system != NULL) {
+        GAMEOBJECT *object = (GAMEOBJECT *)system->player_2;
+        if (object != NULL) {
+            AIAREA_PC *area = (AIAREA_PC *)argument;
+            if (area == NULL)
+                area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
+            if (area != NULL && area->system != NULL) {
+                i32 index = (i32)(area - area->system->areas);
+                i64 mask = (i32)(1u << index);
+                u64 membership = ((u64)object->ai_area_mask[1] << 32) | object->ai_area_mask[0];
+                if ((membership & mask) != 0)
+                    return 1.0f;
+            }
+        }
+    }
+    return 0.0f;
+}

@@ -398,3 +398,24 @@ f32 __cdecl Condition_BeenSpawnedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
         return 1.0f;
     return 0.0f;
 }
+
+void *__cdecl Condition_GotLocatorInSetInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return AIPathFindLocatorSet(system, name);
+}
+
+f32 __cdecl Condition_GotLocatorInSetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    AILOCATORSET_PC *set = (AILOCATORSET_PC *)argument;
+    if (set != NULL) {
+        AILOCATOR_PC *locator = process->locator;
+        if (locator != NULL) {
+            u8 locator_index = (u8)(locator - system->locators);
+            i32 count = set->locator_count;
+            i32 index;
+            for (index = 0; index < count; ++index)
+                if (set->locator_entries[index] == locator_index)
+                    return 1.0f;
+        }
+    }
+    return 0.0f;
+}
