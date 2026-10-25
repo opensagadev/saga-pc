@@ -974,9 +974,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     data = object->character_data->game_character;
     if (data->weapon_action == 12 && object->character_context == 5 && 2 == object->combo_stage &&
         object->field_7aa == 52 && object->character_model->points_of_interest[4] != NULL) {
-        points[0].x = object->locator_matrices[4].m30;
-        points[0].y = object->locator_matrices[4].m31;
-        points[0].z = object->locator_matrices[4].m32;
+        memcpy(&points[0], &object->locator_matrices[4].m30, sizeof(points[0]));
         NuVecAdd(&points[1], &points[0], &object->collision_position);
         NuVecScale(&points[1], &points[1], 0.5f);
     }
