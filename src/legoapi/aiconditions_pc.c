@@ -613,3 +613,45 @@ f32 __cdecl Condition_BlowupBlownupPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
         return 1.0f;
     return 0.0f;
 }
+
+STATIC_ASSERT(offsetof(GAMEOBJECT, helmet) == 0x1082);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
+f32 __cdecl Condition_EitherPlayerWearingHelmetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                  char *name, void *argument) {
+    if (player->helmet == 5)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_LastLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (LastLData != NULL && (i32)LastLData->index == (i32)argument)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_MissionWonPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    if (MissionSys != NULL && MissionSys->state == 2)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_ChallengeModePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (ChallengeMode != 0)
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_InMiniCutPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                  void *argument) {
+    if (MiniCutCam != 0 || (name != NULL && ObstacleCamSpl != NULL))
+        return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_DropBackInTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                        void *argument) {
+    return drop_back_in_timer;
+}
+f32 __cdecl Condition_NumBaddiesThatCanSeePlayersPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                                    char *name, void *argument) {
+    return (f32)nbaddies_can_see_players;
+}
