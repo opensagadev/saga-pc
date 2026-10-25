@@ -182,14 +182,69 @@ extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
     if (device == NULL)
         return;
     PC_DI_RANGE_PC range = {24, 16, 0, 1, -32768, 32767};
-    for (DWORD offset = 0; offset <= 0x1c; offset += 4) {
-        range.object = offset;
-        device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
-    }
-    for (DWORD offset = 0xb0; offset <= 0x10c; offset += 4) {
-        range.object = offset;
-        device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
-    }
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x4;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x8;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xc;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x10;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x14;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x18;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x1c;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xb0;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xb4;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xb8;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xbc;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xc0;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xc4;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xc8;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xcc;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xd0;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xd4;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xd8;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xdc;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xe0;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xe4;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xe8;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xec;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xf0;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xf4;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xf8;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0xfc;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x100;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x104;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x108;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
+    range.object = 0x10c;
+    device->methods->set_property(device, *(const GUID *)4, (const PC_DI_PROPERTY_PC *)&range);
 }
 
 extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, void *unused) {
