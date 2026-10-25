@@ -3539,3 +3539,20 @@ void TerrainRemoveWallSplinePc(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terra
     } while (current != NULL);
 }
 #undef TERRAIN_SPATIAL_PREVIOUS
+
+#define TERRAIN_BOUNCE_PLATFORM_PC ((TERRAIN_PLATFORM_LIFECYCLE_PC *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms)
+
+void __cdecl PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping) {
+    if (index >= 0) {
+        if (index < ((TERRAIN_SET_PC *)CurrentTerrain)->max_platforms) {
+            if (TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_impulse == 0.0f) {
+                TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_offset = 0.0f;
+                TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_velocity = 0.0f;
+            }
+            TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_impulse = impulse;
+            TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_spring = spring;
+            TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_damping = damping;
+        }
+    }
+}
+#undef TERRAIN_BOUNCE_PLATFORM_PC
