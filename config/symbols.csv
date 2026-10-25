@@ -14384,6 +14384,7 @@ address,symbol,size,ctype
 0x75de9c,??_C@_08LBGINOM@Block1_b?$AA@,9,const char[9]
 0x75dea8,??_C@_05NAPFDJNG@timer?$AA@,6,const char[6]
 0x75deb0,??_C@_09GKMGBNIO@Bigjump_0?$AA@,10,const char[10]
+0x75debc,??_C@_0N@KOLPDAOA@door_control?$AA@,,const char[13]
 0x75decc,??_C@_0P@MDPIFKNK@VaderBComplete?$AA@,15,char []
 0x75dedc,??_C@_06DBIHKJIG@rock11?$AA@,7,const char[7]
 0x75dee4,??_C@_06CIJMJIMH@rock10?$AA@,7,const char[7]

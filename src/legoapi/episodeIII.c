@@ -669,3 +669,13 @@ void __cdecl VaderC_DrawPanel(WORLDINFO *world) {
         }
     }
 }
+
+STATIC_ASSERT(offsetof(DOOR_s, name) == 0);
+STATIC_ASSERT(offsetof(DOOR_s, active) == 0xf7);
+
+void __cdecl VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door) {
+    if (netclient == 0 && vader_a.count == 0)
+        VaderA_StartCollapseStage(world);
+    if (door != NULL && NuStrICmp(door->name, "door_control") == 0)
+        door->active = 1;
+}
