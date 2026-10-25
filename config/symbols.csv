@@ -3268,6 +3268,9 @@ address,symbol,size,ctype
 0x5285f0,_creatureEditorSaveData,1273,
 0x528af0,_creatureEditor_IsSelectable,53,
 0x528d00,_AiEditorRespawnCancelMenuPc,12,
+0x528d10,_AiEditorSetActivationPc,25,
+0x528d30,_AiEditorSetAreaActivationPc,119,
+0x528db0,_AiEditorActivationDifficultyPc,67,
 0x528e00,_creatureEditor_cbActivationMenu,464,
 0x528fd0,_AiEditorRespawnMinCountPc,122,
 0x529050,_AiEditorRespawnMaxCountPc,122,
@@ -14635,6 +14638,7 @@ address,symbol,size,ctype
 0x0075ec90,_bgproc_resume_event_name,9,const char[9]
 0x0075ec9c,_bgproc_work_event_name,11,const char[11]
 0x0075ece4,__real@7f7fffff,4,const f32
+0x75ee4c,??_C@_06OPMGJGJF@SCRIPT?$AA@,,char []
 0x75ee54,__real@be19999a,4,const f32
 0x75ee58,__real@3fc70a3d80000000,8,const f64
 0x75ee60,__real@be75c28f,4,const f32
@@ -14967,6 +14971,10 @@ address,symbol,size,ctype
 0x760088,??_C@_05CEDINIPN@?$CF5?42f?$AA@,6,char []
 0x760090,??_C@_04OKGDLNCL@NONE?$AA@,5,char []
 0x760098,__real@38d1b717,,
+0x760140,??_C@_09GIOMJGNE@AREA?5?$CC?$CFs?$CC?$AA@,,char []
+0x76014c,??_C@_09MCFNLF@AUTOMATIC?$AA@,,char []
+0x760158,??_C@_0BG@JDFBDODJ@Activation?5Difficulty?$AA@,,char []
+0x760170,??_C@_0BF@NOMAOCEN@Activation?5Condition?$AA@,,char []
 0x760188,??_C@_0P@LMEKNENH@Select?5Locator?$AA@,,char []
 0x760198,??_C@_0BB@EAEOLLPK@Max?5Respawn?5Time?$AA@,,char []
 0x7601ac,??_C@_0BB@FFMFGPAI@Min?5Respawn?5Time?$AA@,,char []

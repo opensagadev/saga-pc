@@ -13974,3 +13974,73 @@ void __cdecl creatureEditor_cbRespawnMenu(eduimenu_s *parent, eduiitem_s *item, 
 }
 #undef RESPAWN_COUNTS_PC
 #undef RESPAWN_CREATURE_PC
+
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, activation_area) == 0x6c);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, difficulty) == 0x8c);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, activation) == 0x8f);
+#define ACTIVATION_CREATURE_PC ((AI_EDITOR_CREATURE_SAVE_PC *)aieditor->mode_selection_36930)
+#define ACTIVATION_AREAS_PC (&((AI_EDITOR_AREA_SAVE_OWNER_PC *)aieditor)->areas)
+
+static void __cdecl AiEditorSetActivationPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    ACTIVATION_CREATURE_PC->activation = (u8)item->data;
+}
+
+static void __cdecl AiEditorSetAreaActivationPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    NULISTLNK *link;
+    i32 index = 0;
+    (void)menu;
+    (void)event;
+    if (item != NULL && ACTIVATION_CREATURE_PC != NULL) {
+        for (link = NuLinkedListGetHead(ACTIVATION_AREAS_PC); link != NULL;
+             link = NuLinkedListGetNext(ACTIVATION_AREAS_PC, link), ++index) {
+            if (index == item->data) {
+                ACTIVATION_CREATURE_PC->activation_area = link;
+                ACTIVATION_CREATURE_PC->activation = 1;
+                return;
+            }
+        }
+    }
+}
+
+static void __cdecl AiEditorActivationDifficultyPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (ACTIVATION_CREATURE_PC != NULL)
+        ACTIVATION_CREATURE_PC->difficulty = (u8)(i32)((edui_slider_s *)item)->value;
+}
+
+void __cdecl creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    AI_EDITOR_AREA_SAVE_RECORD_PC *area;
+    i32 index = 0;
+    char label[32];
+    (void)item;
+    (void)event;
+    if (ACTIVATION_CREATURE_PC == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Activation Condition");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, AiEditorActivationDifficultyPc,
+                                                  1, 9, ACTIVATION_CREATURE_PC->difficulty, "Activation Difficulty"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &AiEditorSaveMessageColoursPc, ACTIVATION_CREATURE_PC->activation == 0,
+                                              1, AiEditorSetActivationPc, "AUTOMATIC"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(2, &AiEditorSaveMessageColoursPc, ACTIVATION_CREATURE_PC->activation == 2,
+                                              1, AiEditorSetActivationPc, "SCRIPT"));
+    for (area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetHead(ACTIVATION_AREAS_PC); area != NULL;
+         area = (AI_EDITOR_AREA_SAVE_RECORD_PC *)NuLinkedListGetNext(ACTIVATION_AREAS_PC, &area->link), ++index) {
+        i32 selected = ACTIVATION_CREATURE_PC->activation_area == area;
+        sprintf(label, "AREA \"%s\"", area->name);
+        eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
+                                                  AiEditorSetAreaActivationPc, label));
+        if (selected != 0)
+            menu->selected = edui_last_item;
+        eduiMenuAttach(parent, menu);
+    }
+    eduiMenuAttach(parent, menu);
+}
+
+#undef ACTIVATION_CREATURE_PC
+#undef ACTIVATION_AREAS_PC
