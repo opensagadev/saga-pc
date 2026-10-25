@@ -2221,3 +2221,7 @@ i32 __cdecl Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     }
     return 1;
 }
+
+void __cdecl PodRace_IncreaseLap(void) {
+    Lap = (i32)((u32)Lap + 1u);
+}

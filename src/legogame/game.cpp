@@ -6,6 +6,8 @@ extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
 extern "C" void __cdecl SurfaceMaskOff(u32 *surface_mask);
+extern "C" void __cdecl VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
+extern "C" void __cdecl PodRace_IncreaseLap(void);
 void __cdecl NewGame(void) {
     OPTIONSSAVE saved_options = Game.options_save;
     i32 i;
@@ -987,20 +989,27 @@ typedef struct game_door_callback_pc_s {
 GAME_PUBLISHER_ASSERT(offsetof(GAME_DOOR_CALLBACK_PC, level_id) == 0xf0);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
 
+GAME_PUBLISHER_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK_PC, level_id));
 static void __cdecl GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK_PC *door) {
     VehicleAreaRememberSpeed = GetVehicleAreaRememberSpeed();
     if (world->current_level == VADERA_LDATA)
-        STUBBED_NAMED("428d95: VaderA_GoneThroughDoor(world,door) native4e4220 VOID action unready");
-    if (PODRACEB_LDATA != NULL && door->level_id == PODRACEB_LDATA->index && world->current_level == PODRACEA_LDATA) {
-        if (Lap != 3) {
-            STUBBED_NAMED("428e1b: tail PodRace_IncreaseLap() native4d9f90 VOID action unready");
-        } else if (FreePlay != 0) {
-            CompleteLevel(world);
-        } else {
-            NewLData = LevelFixupSlotPc0087b0b8;
-            LevelCompletionFallbackFlagPC = 1;
-            if (waiting_for_level != -1)
-                waiting_for_new_level = 1;
+        VaderA_GoneThroughDoor(world, reinterpret_cast<DOOR_s *>(door));
+    LEVELDATA_PC *finish_level = PODRACEB_LDATA;
+    if (finish_level != NULL) {
+        u16 door_level = door->level_id;
+        u16 finish_index = (u16)finish_level->index;
+        LEVELDATA_PC *start_level = PODRACEA_LDATA;
+        if (door_level == finish_index && world->current_level == start_level && Lap == 3) {
+            if (FreePlay != 0) {
+                CompleteLevel(world);
+            } else {
+                NewLData = LevelFixupSlotPc0087b0b8;
+                LevelCompletionFallbackFlagPC = 1;
+                if (waiting_for_level != -1)
+                    waiting_for_new_level = 1;
+            }
+        } else if (door_level == finish_index && world->current_level == start_level) {
+            PodRace_IncreaseLap();
         }
     }
 }

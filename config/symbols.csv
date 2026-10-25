@@ -2175,6 +2175,7 @@ address,symbol,size,ctype
 0x4d9710,_PodRaceMineKillPc,72,"private same-TU void __cdecl(PART_PC *, i32)"
 0x4d9760,_PodRaceUpdatePodPc,1897,"private same-TU i32(RACEPOD_RESOURCE_PC *, WORLDINFO *)"
 0x4d9ed0,_ResetPodStuff,181,void __cdecl(void)
+0x4d9f90,_PodRace_IncreaseLap,8,void __cdecl(void)
 0x4d9fa0,_PodRaceUpdate,1038,"void __cdecl(WORLDINFO *, f32)"
 0x4da6c0,_UpdatePodRaceLapDisplay,500,void __cdecl(f32)
 0x4da8c0,_UpdatePacemakerDisplay,399,void __cdecl(WORLDINFO *)
