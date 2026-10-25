@@ -1352,3 +1352,10 @@ f32 __cdecl Condition_Player2InTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_P
     }
     return 0.0f;
 }
+
+f32 __cdecl Condition_OnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                               void *argument) {
+    if (packet != NULL && (packet->path_info.flags & 1) != 0)
+        return 1.0f;
+    return 0.0f;
+}

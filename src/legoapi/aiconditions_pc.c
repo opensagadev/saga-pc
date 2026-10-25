@@ -419,3 +419,22 @@ f32 __cdecl Condition_GotLocatorInSetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     }
     return 0.0f;
 }
+
+void *__cdecl Condition_ForcePushingInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    if (name != NULL && GetNamedGameObjectCallback != NULL)
+        return GetNamedGameObjectCallback(system, name);
+    return NULL;
+}
+
+f32 __cdecl Condition_ForcePushingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                     void *argument) {
+    GAMEOBJECT *object = (GAMEOBJECT *)argument;
+    if (object == NULL) {
+        if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+            return 0.0f;
+        object = packet->owner->objptr;
+    }
+    if (object != NULL && object->character_context == 0x1b)
+        return 1.0f;
+    return 0.0f;
+}
