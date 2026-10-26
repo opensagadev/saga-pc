@@ -2797,9 +2797,11 @@ address,symbol,size,ctype
 0x004ff430,_NuPSFileLSeek,98,"i64 __cdecl (i32, i64, i32)"
 0x4ff4a0,_NuPSFileInitDevices,1,"void __cdecl(i32, i32, i32)"
 0x004ff570,_FileDirectoryHostOpenPc,477,
+0x004ff750,_FileDirectoryHostClosePc,67,i32 __cdecl (i32)
 0x004ff7a0,_FileDirectoryHostReadPc,385,
 0x4ff930,_SaveCreateDirectoryPc,46,i32 __cdecl(char *)
 0x4ff970,_NuFileGetInfo,218,
+0x004ffa50,_FileHostDeletePathPc,12,i32 __cdecl (const char *)
 0x004ffa60,_PCThreadCriticalSectionCreate_candidate,48,i32 __cdecl (void)
 0x4ffa90,_PCThreadCriticalSectionDeleteNoOpPc,1,void __cdecl PCThreadCriticalSectionDeleteNoOpPc(i32 index)
 0x004ffaa0,_PCThreadCriticalSectionEnter_candidate,30,void __cdecl (i32)

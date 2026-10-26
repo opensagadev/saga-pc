@@ -131,3 +131,20 @@ i32 __cdecl FileDirectoryHostOpenPc(char *path) {
     }
     return slot;
 }
+
+i32 __cdecl FileDirectoryHostClosePc(i32 slot) {
+    HANDLE handle;
+    NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x22e);
+    handle = FileDirectoryHostHandlesPc[slot];
+    if (slot == 0)
+        PCThreadCriticalSectionCount_candidate = 0;
+    else
+        FileDirectoryPathSlotsPc[slot - 1] = NULL;
+    FindClose(handle);
+    --FileDirectoryOpenCountPc;
+    return 0;
+}
+
+i32 __cdecl FileHostDeletePathPc(const char *path) {
+    return DeleteFileA(path);
+}
