@@ -21,6 +21,7 @@ i32 nufile_buffering_enabled;
 i32 nufile_blkcnt = 1;
 PC_NUFILE_READBLOCK nufile_blkinfo[1024];
 const char nufile_disc_suffix[3] = ";1";
+const char WorldPathSeparator[2] = "\\";
 NUFILE_DEVICE host_device;
 NUFILE_DEVICE *default_device = &host_device;
 NUFILE_DEVICE devices[16];
@@ -81,6 +82,12 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
         return NULL;
     }
     return malloc((size_t)size);
+}
+
+void __cdecl NuFree(void *memory, const char *file, i32 line) {
+    (void)file;
+    (void)line;
+    free(memory);
 }
 
 #define REQUIRE(condition)                                                                                             \
