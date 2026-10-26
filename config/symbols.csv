@@ -2584,6 +2584,10 @@ address,symbol,size,ctype
 0x4f2860,_NuIToA,121,"char *__cdecl(i32,char*,i32)"
 0x004f28e0,_NuAToF,191,f32 __cdecl (char *)
 0x004f29a0,_NuAToI,70,i32 __cdecl (char *)
+0x4f29f0,_NuStrToL,177,"i32 __cdecl (char *, char **, i32)"
+0x4f2b20,_NuIToAW,125,"NUWCHAR *__cdecl (i32, NUWCHAR *, i32)"
+0x4f2c70,_NuAToIW,77,i32 __cdecl (const NUWCHAR *)
+0x4f2cc0,_NuStrToLW,192,"i32 __cdecl (NUWCHAR *, NUWCHAR **, i32)"
 0x4f2d80,_NuToUpper,21,u8 __cdecl(u8)
 0x004f2dc0,_NuUnicodeToAscii,147,"void __cdecl (char *, u16 *)"
 0x004f2e60,_NuUnicodeToUTF8,124,"void __cdecl (u8 *, u16 *)"

@@ -1541,3 +1541,112 @@ NUWCHAR *__cdecl NuStrRChrW(NUWCHAR *str, NUWCHAR character) {
     }
     return NULL;
 }
+
+i32 __cdecl NuStrToL(char *str, char **end, i32 radix) {
+    i32 value = 0;
+    i32 sign = 0;
+    char c = *str++;
+    while (c == ' ' || c == '\t')
+        c = *str++;
+    if (c == '-') {
+        sign = -1;
+        c = *str++;
+    } else if (c == '+')
+        c = *str++;
+    if (radix == 0) {
+        radix = 10;
+        if (c == '0' && (*str == 'x' || *str == 'X')) {
+            radix = 16;
+            ++str;
+            c = *str;
+        }
+    }
+    while (1) {
+        if (c >= '0' && c <= '9')
+            c -= '0';
+        else if (c >= 'A' && c <= 'Z')
+            c -= 'A' - 10;
+        else if (c >= 'a' && c <= 'z')
+            c -= 'a' - 10;
+        else
+            break;
+        if (c >= radix)
+            break;
+        value = (i32)((u32)value * (u32)radix + (u32)c);
+        c = *str++;
+    }
+    if (end != NULL)
+        *end = str - 1;
+    return sign != 0 ? (i32)((u32)value * (u32)sign) : value;
+}
+
+NUWCHAR *__cdecl NuIToAW(i32 value, NUWCHAR *buffer, i32 radix) {
+    NUWCHAR reversed[33];
+    NUWCHAR *digit = reversed;
+    NUWCHAR *out = buffer;
+    if (value < 0) {
+        value = (i32)(0u - (u32)value);
+        *out++ = '-';
+    }
+    do {
+        *digit++ = value % radix + '0';
+        value /= radix;
+    } while (value != 0);
+    while (digit != reversed)
+        *out++ = *--digit;
+    *out++ = 0;
+    return buffer;
+}
+
+i32 __cdecl NuAToIW(const NUWCHAR *str) {
+    i32 value = 0;
+    i32 sign = 0;
+    NUWCHAR c = *str++;
+    if (c == '-') {
+        sign = -1;
+        c = *str++;
+    }
+    while (c >= '0' && c <= '9') {
+        value = (i32)((u32)value * 10u + (u32)c - (u32)'0');
+        c = *str++;
+    }
+    return sign != 0 ? (i32)((u32)value * (u32)sign) : value;
+}
+
+i32 __cdecl NuStrToLW(NUWCHAR *str, NUWCHAR **end, i32 radix) {
+    i32 value = 0;
+    i32 sign = 0;
+    NUWCHAR c = *str++;
+    while (c == ' ' || c == '\t')
+        c = *str++;
+    if (c == '-') {
+        sign = -1;
+        c = *str++;
+    } else if (c == '+')
+        c = *str++;
+    if (radix == 0) {
+        radix = 10;
+        if (c == '0' && (*str == 'x' || *str == 'X')) {
+            radix = 16;
+            ++str;
+            c = *str;
+        }
+    }
+    while (1) {
+        if (c >= '0' && c <= '9')
+            c -= '0';
+        else if (c >= 'A' && c <= 'Z')
+            c -= 'A' - 10;
+        else if (c >= 'a' && c <= 'z')
+            c -= 'a' - 10;
+        else
+            break;
+        if (c >= radix)
+            break;
+        value = (i32)((u32)value * (u32)radix + (u32)c);
+        c = *str++;
+    }
+    if (end != NULL)
+        *end = str - 1;
+    return sign != 0 ? (i32)((u32)value * (u32)sign) : value;
+}
