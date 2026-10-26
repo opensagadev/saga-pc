@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "d782b3b06712ea50b4840420c7ad8bf5180f83944707e7d846f40c72e236c564",
+    "config/symbols.csv": "49c4d2364e757c117b8c4dd8646a212a48f95751cbff6304ce39cf8eadf7e0a9",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -213,7 +213,7 @@
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript.c": "9d45af73dce42f9209b43b6b738a5be94b261ed8b269480effbf19038be7d925",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
-    "src/gameapi/aisys.c": "33223ee35f6f55fa460df8f70b1e0a7f7a9743e79d83d3deba2b9d58d7f22bb2",
+    "src/gameapi/aisys.c": "f8919edee425b2cf641fa2f2d1943a69cef1d84d4b4bf036ebdec7569d862c52",
     "src/gameapi/apiobject.c": "8194bb0803737bfc4237228dfb33b2314f19ad1be70617e03cae99dc00137d84",
     "src/gameapi/apisave.c": "cc06447f47998f647703e79655c8c61c72854b6f2e502b3c3b6fff0d0ce6b5d2",
     "src/gameapi/edanim_load.c": "e9ec9bd1b555dc9de0563251e0f61dc24e3e0b229050328239325ff8949f4f4d",
@@ -225,7 +225,7 @@
     "src/gameapi/edgrass.c": "6d4979f496835e5198c3d74fd6022c3b24e16c01a08e995b3e099a3517071df0",
     "src/gameapi/edpart.c": "e238b68e2bb08a11d01441a1067ae255d2fd032f64cca93e2fe1ec3b3baba3fc",
     "src/gameapi/edpp.c": "ec37f083397d2dfca4695d83a468b304ead3321fb319b74884a7356b87a08301",
-    "src/gameapi/edpp_load.c": "f9300f4748f637893616f63b018be15ea4d91883750a662c5b074e69f277c054",
+    "src/gameapi/edpp_load.c": "9ae3afe1ea32a9892df6b6b17abb62c418037573b0e0f9339af09757a9c0f554",
     "src/gameapi/edspline_load.c": "fa3a2ef46f77039528e360b061f274dc18f71ad7f5e03409683e7f1590207dcf",
     "src/gameapi/edui_focus_pc.c": "ef518c4a3a5ce78f9101f558a33c5ad0e611ee781c738a9d768e1a4e21f9c473",
     "src/gameapi/gameaiactions.c": "73c13ca93d26b520afc6cd3f008d22ea0fd01f30250483dae899ff3859f0c0c3",
@@ -436,7 +436,7 @@
     "src/nu2api/nuhgobj.c": "60ac9f827a69801c705ad5261b51d79836d2733bf2c03e00d5b7bfa67d04eac3",
     "src/nu2api/nuhtml.c": "17112fe2f362b4a4c98bcb094308bcfdb1f4d7ad604704d29bb3e154188b31ad",
     "src/nu2api/nulgtlaser.c": "1f6d3571b75ed39d46b16f06a28cb9c4ae267e487b81d10bd364748ad71f2aee",
-    "src/nu2api/nulist.c": "462ed3c102dcd9681910ec29ea1aac1f6696f33424d5eb8abbd1dadf88b94f49",
+    "src/nu2api/nulist.c": "0d517f5faee9b70779f2ebe1b42fd811b007a73ad3354212866db783774447b1",
     "src/nu2api/nulst.c": "b2a5119b91719ed49c2497922464fd75ffc6ebe8289ab6e426255c1c522d7868",
     "src/nu2api/numem.c": "0f2ff17aa42b0dd10eb98fa32816bd13fb7831519bcce0e46c7570e5d82b755a",
     "src/nu2api/numemfile.c": "959430758bafc0b1831aba4204f210d993552b695388ab20bd8a54bcdd940454",
@@ -569,7 +569,7 @@
     "build/obj/gameapi/aieditor_path_create_pc.obj": "16cbf3c517a689e7b82793756a1ea5c819d6989d46e04e3cb66afea7b061a811",
     "build/obj/gameapi/aiscript.obj": "81d61d607fa51093a8ae0b62a8f2a2b9b6791db722c30383af4871aae2b0132e",
     "build/obj/gameapi/aiscript_diagnostics.obj": "f26b6bd8c204fc33e9899d0f48a5836b3fe3c944af3fe28c85665d05d72b578e",
-    "build/obj/gameapi/aisys.obj": "f66855cd6a26d9d4562da2b33c5e08465da0a184ba21449ff1f9bced3bc65e38",
+    "build/obj/gameapi/aisys.obj": "2de05f472937b8cdd005de3ad6c8aa10edc090f5f4d84dd70a70f2c37b2f6f34",
     "build/obj/gameapi/apiobject.obj": "33df4e00c3f8b26f656280b9bcf3b87cfa1d40e06fbebd1cdf318dcfa98972bd",
     "build/obj/gameapi/apisave.obj": "9a97508540d8c98ca9d94be86ea2616cba9a83d1bf04a4756111fa4d4729582c",
     "build/obj/gameapi/edanim_load.obj": "a7a0c1c37d15eb5bb54ac78afdd49757a103f5a1190a03bce4c650e98aa60aa5",
@@ -581,7 +581,7 @@
     "build/obj/gameapi/edgrass.obj": "b6b692548748697ea5591705432784cd7d81fddd4254480bd8dedf2b6b6ccc86",
     "build/obj/gameapi/edpart.obj": "134d4d2eb2005fb4b84c694b3c823a2140a9aa987654bedb20dd4b0922ccee55",
     "build/obj/gameapi/edpp.obj": "4228829f66864df5051b4695e0ef34c2f212935f1630b3bfa3d6d5e2b70e645d",
-    "build/obj/gameapi/edpp_load.obj": "00f2fd3af5939174ea8eac99ac10ae34389e8a7f87d5234dcd4dddaf3a62d836",
+    "build/obj/gameapi/edpp_load.obj": "6a01d70c15f7c21fa53aaadd3ece617400b0454678f571c947ea01d9b0fd2874",
     "build/obj/gameapi/edspline_load.obj": "16e7611869df099ba144fcc63f8f7851279dff23eb368431d13412b3f6f52758",
     "build/obj/gameapi/edui_focus_pc.obj": "f7263e63ad702188f86ac2e1b11d4c39a7a9b4e288366dcceccd0f6a16cc205a",
     "build/obj/gameapi/edui_widget_render_pc.obj": "ac6b882add7c1eec6177a4a8297b411ecca0c11bc554709343ee81bae658562c",
@@ -877,7 +877,7 @@
     "build/obj/nu2api/nuhgobj.obj": "90a8db0634b40a27401062c3084b50b5a719afff08d703956df05c6e533ba6eb",
     "build/obj/nu2api/nuhtml.obj": "5fde05d5708e5f408052a0e84a994fa0470864f997f6e40592a9ccf8cac014be",
     "build/obj/nu2api/nulgtlaser.obj": "0ba6ed7816f822b61003749a5010683b97880f61560d7c7fc54926f6a0973ae4",
-    "build/obj/nu2api/nulist.obj": "dd54a3994059ed76374c5d31803915b25fea3f4bedeb31aaef96b06d32fb8e7f",
+    "build/obj/nu2api/nulist.obj": "66d6e2541bb5be9572de63c5689f22eade078ae8aa6bf1b7d878072399a49f5e",
     "build/obj/nu2api/nulst.obj": "dd32b6e9f6c06394f04e04bb8cfffdda865130a1927af64a2164a453262e67c2",
     "build/obj/nu2api/numem.obj": "ee70bd4f31e09a00e3d785c803d42f1203cca1b2ea88e61a63618e2f2b68b898",
     "build/obj/nu2api/numemfile.obj": "bc3ec420afec7aed760e3c9f05fcb05e4bf1bfe9a844cf29d104ba5151cf6266",
@@ -61685,6 +61685,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuLinkedListGetPrev",
+      "symbol": "_NuLinkedListGetPrev",
+      "address": "0x004f1470",
+      "units": [
+        "src/nu2api/nulist.c"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nulist.c",
+          "base_size": 16,
+          "exact_match": true,
+          "target_sha256": "82ae9ce8b2b029a464f2ec22ff196c972b48463e68104df491545323e3295332",
+          "base_sha256": "82ae9ce8b2b029a464f2ec22ff196c972b48463e68104df491545323e3295332",
+          "relocation_count": 0,
+          "comparison_unit": "004f1470-b44554ce6e2a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuStrCat",
       "symbol": "_NuStrCat",
       "address": "0x004f1e80",
@@ -78473,6 +78497,30 @@
       "objdiff_percent": 85.670586
     },
     {
+      "name": "AiEditorCreateLocatorPc",
+      "symbol": "_AiEditorCreateLocatorPc",
+      "address": "0x005219d0",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 95,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 95,
+          "exact_match": true,
+          "target_sha256": "3e9c0e549f5f6f8ed276145b43923a2ff3c5772b13e8558aec6bbe2c20b61f78",
+          "base_sha256": "3e9c0e549f5f6f8ed276145b43923a2ff3c5772b13e8558aec6bbe2c20b61f78",
+          "relocation_count": 6,
+          "comparison_unit": "005219d0-cf46ad226c35",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "AiEditorCreateLocatorSetPc",
       "symbol": "_AiEditorCreateLocatorSetPc",
       "address": "0x00521a30",
@@ -78593,6 +78641,30 @@
       "objdiff_percent": 71.68898
     },
     {
+      "name": "locatorEditor_GetNearest",
+      "symbol": "_locatorEditor_GetNearest",
+      "address": "0x00521fd0",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 295,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 295,
+          "exact_match": true,
+          "target_sha256": "4957c2fa574a50cb50177ce2c1db957eff365d54ca64127fd7cf13c241350200",
+          "base_sha256": "4957c2fa574a50cb50177ce2c1db957eff365d54ca64127fd7cf13c241350200",
+          "relocation_count": 9,
+          "comparison_unit": "00521fd0-96fbae0fe3e8",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "AiEditorRenameLocatorPc",
       "symbol": "_AiEditorRenameLocatorPc",
       "address": "0x00522290",
@@ -78711,6 +78783,54 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "AiEditorNextLocatorInSetPc",
+      "symbol": "_AiEditorNextLocatorInSetPc",
+      "address": "0x00522460",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 59,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 57,
+          "exact_match": false,
+          "target_sha256": "6755b9b34fab974d02d7d3a5a7f263e3c6786090bb76f9ba0d3d37b9e96cdfb5",
+          "base_sha256": "c028ddbef14c380ce84b3c96ebea9389449eb2a5026ab9e2f6fcc7371d12f84a",
+          "relocation_count": 0,
+          "comparison_unit": "00522460-2139fad651ff",
+          "objdiff_percent": 79.25926
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 79.25926
+    },
+    {
+      "name": "AiEditorPrevLocatorInSetPc",
+      "symbol": "_AiEditorPrevLocatorInSetPc",
+      "address": "0x005224a0",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 84,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 81,
+          "exact_match": false,
+          "target_sha256": "e7603804c03af9c8379669395268621507b727e0bb16a78402f5b45abcea501f",
+          "base_sha256": "fa254f3671fedbac5f64970f3702dabf4987219c393a6dcff720b3ae52321f96",
+          "relocation_count": 0,
+          "comparison_unit": "005224a0-499af9d27594",
+          "objdiff_percent": 80.625
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 80.625
     },
     {
       "name": "DrawLocator",
@@ -79828,6 +79948,16 @@
       "address": "0x00528af0",
       "units": [],
       "target_size": 53,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "creatureEditor_GetNearest",
+      "symbol": "_creatureEditor_GetNearest",
+      "address": "0x00528b30",
+      "units": [],
+      "target_size": 451,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
@@ -82670,11 +82800,25 @@
       "name": "locatorEditor_Process",
       "symbol": "_locatorEditor_Process",
       "address": "0x0053ae80",
-      "units": [],
-      "target_size": 2061,
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 2338,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 2286,
+          "exact_match": false,
+          "target_sha256": "6127c5515fb75bd76f3cfc57c4244f9526e07ed16a11a7ebd6953dc8ae80477d",
+          "base_sha256": "ab11c64e4b6a3e1fb2670848b19c836b09ae06336d71fb5ab411c7c2cd3658b8",
+          "relocation_count": 119,
+          "comparison_unit": "0053ae80-2d13573bc1cf",
+          "objdiff_percent": 83.47386
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 83.47386
     },
     {
       "name": "?Write16@NETMESSAGE_PC@@QAEXPBF@Z",
@@ -185057,14 +185201,14 @@
           "base_size": 1431,
           "exact_match": false,
           "target_sha256": "b79c965f8dc918f498ed32010e32443d97d7b9c1e33544afb87ba89bfcb3c71d",
-          "base_sha256": "8c0b9369a3ed7975ae2cfbddddf4bee74a89ab98c3f1c1381a9cbf16250e6496",
+          "base_sha256": "c796a972bddbbb3543c21f8de9eecb8fb2ceaa00c330ef7ba6dd854bec020c57",
           "relocation_count": 112,
           "comparison_unit": "0068df20-9c825b07b51a",
-          "objdiff_percent": 17.631578
+          "objdiff_percent": 18.552631
         }
       ],
       "status": "different",
-      "objdiff_percent": 17.631578
+      "objdiff_percent": 18.552631
     },
     {
       "name": "edppRestartAllEffectsInLevel",
@@ -297035,6 +297179,18 @@
       "status": "exact"
     },
     {
+      "name": "??_C@_05LFHGFJK@?$CFs_?$CFd?$AA@",
+      "symbol": "??_C@_05LFHGFJK@?$CFs_?$CFd?$AA@",
+      "address": "0x007577d4",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "AITransferLiteral7577dc",
       "symbol": "_AITransferLiteral7577dc",
       "address": "0x007577dc",
@@ -299833,6 +299989,18 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "??_C@_07JPMEIJD@Locator?$AA@",
+      "symbol": "??_C@_07JPMEIJD@Locator?$AA@",
+      "address": "0x00757c80",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "AIControlAllNonPartyName",
@@ -357808,6 +357976,18 @@
       "name": "??_C@_0BD@KJOCJGPG@Create?5Locator?5Set?$AA@",
       "symbol": "??_C@_0BD@KJOCJGPG@Create?5Locator?5Set?$AA@",
       "address": "0x00760eac",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BP@NKOGFJBN@Add?5locators?5?$CC?$CFs?$CC?5to?5set?5?$CC?$CFs?$CC?$DP?$AA@",
+      "symbol": "??_C@_0BP@NKOGFJBN@Add?5locators?5?$CC?$CFs?$CC?5to?5set?5?$CC?$CFs?$CC?$DP?$AA@",
+      "address": "0x00760ec0",
       "units": [
         "src/gameapi/aisys.c"
       ],
@@ -453310,6 +453490,18 @@
       "status": "unknown size"
     },
     {
+      "name": "AiEditorPickHeightTolerancePc",
+      "symbol": "_AiEditorPickHeightTolerancePc",
+      "address": "0x00801ce0",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "AIPathDefaultChecks",
       "symbol": "_AIPathDefaultChecks",
       "address": "0x00801d54",
@@ -499401,6 +499593,18 @@
       "status": "exact"
     },
     {
+      "name": "AiEditorLocatorRotationPc",
+      "symbol": "_AiEditorLocatorRotationPc",
+      "address": "0x00921f50",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "AiEditorDisplayOptionsPc",
       "symbol": "_AiEditorDisplayOptionsPc",
       "address": "0x00921f70",
@@ -537053,17 +537257,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2560814,
-    "matched_code_bytes": 750901,
-    "matching_percent": 21.632030688692186,
-    "fuzzy_coverage_percent": 61.46506056606372,
-    "mapped_functions": 9676,
-    "matched_functions": 5813,
-    "objdiff_fuzzy_percent": 85.6789,
-    "objdiff_total_code": 2493199,
+    "mapped_code_bytes": 2562091,
+    "matched_code_bytes": 751307,
+    "matching_percent": 21.643726777070828,
+    "fuzzy_coverage_percent": 61.53667129164324,
+    "mapped_functions": 9682,
+    "matched_functions": 5816,
+    "objdiff_fuzzy_percent": 85.6794,
+    "objdiff_total_code": 2496086,
     "image_bytes": 40067072,
-    "mapped_bytes": 4433386,
-    "mapping_percent": 11.064911356637191,
+    "mapped_bytes": 4434663,
+    "mapping_percent": 11.068098512414384,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -537071,7 +537275,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2562008
+        "mapped_bytes": 2563285
       },
       {
         "name": ".rdata",
@@ -537096,17 +537300,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18695,
-    "mapping_unknown_size_symbols": 7299,
-    "mapping_code_bytes": 2562008,
+    "mapping_known_size_symbols": 18701,
+    "mapping_unknown_size_symbols": 7304,
+    "mapping_code_bytes": 2563285,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 73.80658126793664,
+    "mapping_code_percent": 73.8433692109404,
     "mapping_data_bytes": 1871378,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195535041178029,
-    "mapping_code_data_bytes": 4433386,
+    "mapping_code_data_bytes": 4434663,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.22654393448179,
+    "mapping_code_data_percent": 11.229777647180015,
     "mapping_file_backed_data_bytes": 382712,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.95031928744136,
@@ -537117,17 +537321,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2560814,
-    "exact_reconstruction_bytes": 750901,
-    "mapped_not_exact_bytes": 1809913,
+    "mapped_reconstruction_bytes": 2562091,
+    "exact_reconstruction_bytes": 751307,
+    "mapped_not_exact_bytes": 1810784,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 909238,
+    "unclassified_text_bytes": 907961,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 21.632030688692186,
+    "strict_original_text_exact_percent": 21.643726777070828,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 21.639473990591494,
-    "mapped_scope_denominator_bytes": 2560814,
-    "mapped_scope_exact_percent": 29.322746595418486,
+    "reconstruction_scope_exact_percent": 21.65117410344283,
+    "mapped_scope_denominator_bytes": 2562091,
+    "mapped_scope_exact_percent": 29.32397795394465,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -538433,7 +538637,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "38f99f2c772517d5ac2458a1ab002ff8af573a24761385d5814ca09b05beaf9e",
+      "geometry_object_sha256": "7a45ed91b0b508e048beb2215e2da924ad91522adf14b84f36e5ab650805cc6b",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
