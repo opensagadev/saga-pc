@@ -416,79 +416,77 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
         edpp_num_orphans = 0;
         for (n = 0; n < instances; ++n) {
             i32 index = instance_index;
-            EDPP_FILE_PARTICLE_PC *particle;
             while (edpp_ptls[index].instance_id != -1)
                 ++index;
             instance_index = index;
-            particle = (EDPP_FILE_PARTICLE_PC *)&edpp_ptls[index];
-            particle->page = (i8)(page_index);
-            particle->position.x = EdFileReadFloat();
-            particle->position.y = EdFileReadFloat();
-            particle->position.z = EdFileReadFloat();
+            edpp_ptls[index].page = (i8)(page_index);
+            edpp_ptls[index].position.x = EdFileReadFloat();
+            edpp_ptls[index].position.y = EdFileReadFloat();
+            edpp_ptls[index].position.z = EdFileReadFloat();
             if (version <= 6) {
-                particle->rotation_z = 0;
-                particle->rotation_y = 0;
-                particle->emitter_rotation_z = (i16)(EdFileReadInt());
-                particle->emitter_rotation_y = (i16)(EdFileReadInt());
+                edpp_ptls[index].rotation_z = 0;
+                edpp_ptls[index].rotation_y = 0;
+                edpp_ptls[index].emitter_rotation_z = (i16)(EdFileReadInt());
+                edpp_ptls[index].emitter_rotation_y = (i16)(EdFileReadInt());
             } else {
-                particle->rotation_z = EdFileReadShort();
-                particle->rotation_y = EdFileReadShort();
-                particle->emitter_rotation_z = EdFileReadShort();
-                particle->emitter_rotation_y = EdFileReadShort();
+                edpp_ptls[index].rotation_z = EdFileReadShort();
+                edpp_ptls[index].rotation_y = EdFileReadShort();
+                edpp_ptls[index].emitter_rotation_z = EdFileReadShort();
+                edpp_ptls[index].emitter_rotation_y = EdFileReadShort();
             }
-            particle->emitter_rotation_x = version > 21 ? EdFileReadShort() : 0;
+            edpp_ptls[index].emitter_rotation_x = version > 21 ? EdFileReadShort() : 0;
             if (version > 33)
-                particle->start_offset = EdFileReadFloat();
+                edpp_ptls[index].start_offset = EdFileReadFloat();
             else if (version > 7)
-                particle->start_offset = (f32)(EdFileReadInt()) / 60.0f;
+                edpp_ptls[index].start_offset = (f32)(EdFileReadInt()) / 60.0f;
             else
-                particle->start_offset = 0.0f;
-            EdFileRead(particle->name, 16);
-            particle->instance_id = 99999;
-            particle->effect_index = LookupDebrisEffectPageOnly(particle->name, (char)(page_index));
-            if (particle->effect_index == -1)
+                edpp_ptls[index].start_offset = 0.0f;
+            EdFileRead(edpp_ptls[index].name, 16);
+            edpp_ptls[index].instance_id = 99999;
+            edpp_ptls[index].effect_index = LookupDebrisEffectPageOnly(edpp_ptls[index].name, (char)(page_index));
+            if (edpp_ptls[index].effect_index == -1)
                 ++edpp_num_orphans;
 
             if (version > 8) {
-                particle->switch_type = EdFileReadInt();
-                particle->switch_id = EdFileReadInt();
-                particle->switch_variable = EdFileReadFloat();
+                edpp_ptls[index].switch_type = EdFileReadInt();
+                edpp_ptls[index].switch_id = EdFileReadInt();
+                edpp_ptls[index].switch_variable = EdFileReadFloat();
             } else {
-                particle->switch_type = 0;
-                particle->switch_id = -1;
-                particle->switch_variable = 0.0f;
+                edpp_ptls[index].switch_type = 0;
+                edpp_ptls[index].switch_id = -1;
+                edpp_ptls[index].switch_variable = 0.0f;
             }
             if (version > 11) {
-                particle->reflection_rotation_z = EdFileReadShort();
-                particle->reflection_rotation_y = EdFileReadShort();
-                particle->reflection_offset = EdFileReadFloat();
-                particle->reflection_bounce = version == 12 ? 0.9f : EdFileReadFloat();
+                edpp_ptls[index].reflection_rotation_z = EdFileReadShort();
+                edpp_ptls[index].reflection_rotation_y = EdFileReadShort();
+                edpp_ptls[index].reflection_offset = EdFileReadFloat();
+                edpp_ptls[index].reflection_bounce = version == 12 ? 0.9f : EdFileReadFloat();
             } else {
-                particle->reflection_rotation_z = 0;
-                particle->reflection_rotation_y = 0;
-                particle->reflection_offset = 0.0f;
-                particle->reflection_bounce = 0.9f;
+                edpp_ptls[index].reflection_rotation_z = 0;
+                edpp_ptls[index].reflection_rotation_y = 0;
+                edpp_ptls[index].reflection_offset = 0.0f;
+                edpp_ptls[index].reflection_bounce = 0.9f;
             }
-            particle->render_group = version > 14 ? EdFileReadShort() : 0;
+            edpp_ptls[index].render_group = version > 14 ? EdFileReadShort() : 0;
             if (version > 26) {
-                particle->render_priority = EdFileReadUnsignedShort();
+                edpp_ptls[index].render_priority = EdFileReadUnsignedShort();
             } else {
-                particle->render_priority = 20000;
-                if (particle->effect_index != -1) {
-                    u8 particle_type = debtab[particle->effect_index]->particle_type;
+                edpp_ptls[index].render_priority = 20000;
+                if (edpp_ptls[index].effect_index != -1) {
+                    u8 particle_type = debtab[edpp_ptls[index].effect_index]->particle_type;
                     if (particle_type == 2)
-                        particle->render_priority = 40000;
+                        edpp_ptls[index].render_priority = 40000;
                     else if (particle_type == 3)
-                        particle->render_priority = 30000;
+                        edpp_ptls[index].render_priority = 30000;
                     else if (particle_type == 7)
-                        particle->render_priority = 10000;
+                        edpp_ptls[index].render_priority = 10000;
                 }
             }
-            particle->dynamic_priority = version > 26 ? EdFileReadChar() : 0;
-            particle->detail_levels = version > 35 ? EdFileReadChar() : 7;
-            particle->facing_mode = version > 37 ? EdFileReadChar() : 0;
-            particle->facing_rotation_x = version > 37 ? EdFileReadShort() : 0;
-            particle->facing_rotation_y = version > 37 ? EdFileReadShort() : 0;
+            edpp_ptls[index].dynamic_priority = version > 26 ? EdFileReadChar() : 0;
+            edpp_ptls[index].detail_levels = version > 35 ? EdFileReadChar() : 7;
+            edpp_ptls[index].facing_mode = version > 37 ? EdFileReadChar() : 0;
+            edpp_ptls[index].facing_rotation_x = version > 37 ? EdFileReadShort() : 0;
+            edpp_ptls[index].facing_rotation_y = version > 37 ? EdFileReadShort() : 0;
             ++edpp_instances_used;
         }
     }
