@@ -639,3 +639,33 @@ void __cdecl edbricbSetRopeColour(eduimenu_s *menu, eduiitem_s *item, u32 unused
     if (menu->callback)
         menu->callback(menu, parent);
 }
+
+void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char name[256];
+    char directory[256];
+    char extension[256];
+    char path[256];
+    i32 page;
+    if (edbits_level_save_directory[0] == 0)
+        sprintf(directory, ".");
+    else
+        strcpy(directory, edbits_level_save_directory);
+    if (edbits_level_save_name[0] == 0)
+        sprintf(name, "bridge");
+    else
+        strcpy(name, edbits_level_save_name);
+    if (edbits_level_save_extension[0] == 0)
+        sprintf(extension, "bri");
+    else
+        strcpy(extension, edbits_level_save_extension);
+    sprintf(path, "%s\\%s.%s", directory, name, extension);
+    edbriBridgesReset();
+    if (NuFileExists(path))
+        edbriLoadPage(path, edbits_base_scene);
+    for (page = 0; page < 8; ++page) {
+        if (edbri_page_used[page])
+            edbriStartPage(page);
+    }
+    edbriDetermineNearest(1.0f);
+    eduiCreateMessageMenu(menu, "Loaded OK", 1);
+}
