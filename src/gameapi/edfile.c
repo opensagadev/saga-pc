@@ -719,9 +719,7 @@ static i32 eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_t
 }
 
 void eduiCreateMessageMenu(eduimenu_s *parent, char *message, i32 highlighted) {
-    static const u32 initial_colours[4] = {0x800000c0u, 0x80ff0000, 0x80808080, 0x80404040};
-    u32 colours[4];
-    memcpy(colours, initial_colours, sizeof(colours));
+    u32 colours[4] = {0x800000c0u, 0x80ff0000, 0x80808080, 0x80404040};
     if (highlighted == 1)
         colours[0] = 0x8000c000u;
     edui_messagemenu = eduiMenuCreate(70, 70, 180, 250, parent->font, eduicbCancelMessageMenu, ((char *)("Message")));
