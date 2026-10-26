@@ -197,7 +197,7 @@
     "src/nu2api/save_folder.cpp": "8945c94de31d7a7800a445f4bf8ce013448f7ae3602fb826af651ab892d8dca9",
     "src/nu2api/shader_buffer_allocator.cpp": "2bd1c9abaddf48fb4491145b02ec6dea01b8e7e7a57576ea7228358d1b9d8f6c",
     "src/nu2api/shader_compiler.cpp": "1498cbbcca34f054c3113024b67fc129ef5783bdbfe096f3fa35ebb0b97bb191",
-    "src/nu2api/shader_dictionary.cpp": "799ee295cbcd6b1fef367e87add20cad276b58e5105c13865463fee8cd311643",
+    "src/nu2api/shader_dictionary.cpp": "9b5f6d744ac06195c68879a4e30d5c34f4524bd6ba9337ab89e29e80c0ce54cd",
     "src/nu2api/shader_lexical.cpp": "6f1da67e396de01e6a070e9e96ca5c592c45a57a93f19221328c006f7dcbbb5a",
     "src/nu2api/shader_parser.cpp": "91e89cdfcdb84c8e9fa5e3224960bdc624b89eb158f49c85b6957efd17410bde",
     "src/nu2api/terrain_collision.cpp": "53a637709702a56b08e71eac288955dfaa36b5498e3d2b727d002e5f396060e6",
@@ -212,7 +212,7 @@
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript.c": "4028fc6fd1767a6b8724e71881841b82e12fd003a37300b08118a53497c5f1e5",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
-    "src/gameapi/aisys.c": "4a97be530b834c7f298aaad904b10bd0b0b0375edfa09e740833daef86ca616a",
+    "src/gameapi/aisys.c": "82ef00c9a612c5c19b8ac9e6fa054ead39c12d10cdcf38e2575c3d4238022300",
     "src/gameapi/apiobject.c": "8194bb0803737bfc4237228dfb33b2314f19ad1be70617e03cae99dc00137d84",
     "src/gameapi/apisave.c": "cc06447f47998f647703e79655c8c61c72854b6f2e502b3c3b6fff0d0ce6b5d2",
     "src/gameapi/edanim_load.c": "e9ec9bd1b555dc9de0563251e0f61dc24e3e0b229050328239325ff8949f4f4d",
@@ -568,7 +568,7 @@
     "build/obj/gameapi/aieditor_path_create_pc.obj": "16cbf3c517a689e7b82793756a1ea5c819d6989d46e04e3cb66afea7b061a811",
     "build/obj/gameapi/aiscript.obj": "67b32ebd908b91537b7c1c9ff38059956432dcc113a7c86b3cb247c1a3a78b36",
     "build/obj/gameapi/aiscript_diagnostics.obj": "f26b6bd8c204fc33e9899d0f48a5836b3fe3c944af3fe28c85665d05d72b578e",
-    "build/obj/gameapi/aisys.obj": "863ca6fa850b27db169728200f5a6a570e6c7e21570b459821609f9dcf18409e",
+    "build/obj/gameapi/aisys.obj": "b001cf040b190eca65c6b5fce2646f484ac201699a7bf80e860d4ef788901ec3",
     "build/obj/gameapi/apiobject.obj": "33df4e00c3f8b26f656280b9bcf3b87cfa1d40e06fbebd1cdf318dcfa98972bd",
     "build/obj/gameapi/apisave.obj": "9a97508540d8c98ca9d94be86ea2616cba9a83d1bf04a4756111fa4d4729582c",
     "build/obj/gameapi/edanim_load.obj": "a7a0c1c37d15eb5bb54ac78afdd49757a103f5a1190a03bce4c650e98aa60aa5",
@@ -957,7 +957,7 @@
     "build/obj/nu2api/save_folder.obj": "cb3136be85e730edb60a21f2e13831823d26674e6377e825bf343e55dda0eac3",
     "build/obj/nu2api/shader_buffer_allocator.obj": "0f4b8dc6abce8783b9e8e130a242e2b9828eb515c26034601119ad6823664d24",
     "build/obj/nu2api/shader_compiler.obj": "3a91871e95588060e5d6fb4895737206a7f7405c1702d9dd9c2bedbe7882b299",
-    "build/obj/nu2api/shader_dictionary.obj": "ed5f53436c4436cfbd776de5f31d1df04e807bfc2deaf7563c729263a80a76f2",
+    "build/obj/nu2api/shader_dictionary.obj": "a2c3847a888d7dc88e8d5cffc94b3aa1b9cb4a081d7c20df8110ac7289c69e25",
     "build/obj/nu2api/shader_lexical.obj": "5ae24bb1f96ff43b3140d5197092b29e0388bdbd8253272028fe3190f15d6ccc",
     "build/obj/nu2api/shader_parser.obj": "0d7a81b0f08c6fcf81ea89df60481f0a0008efe4f9c1438821abdc9786892ed1",
     "build/obj/nu2api/terrain_collision.obj": "f05a72764c0f2e330aab84fb95627c98e29a12355b2eb518479c20bdb230aed5",
@@ -19398,17 +19398,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisys.c",
-          "base_size": 452,
+          "base_size": 401,
           "exact_match": false,
           "target_sha256": "8ff6e985e6fab8daf6de3fd5f6e46c4e325c9965f40554519dddd75f61245cbf",
-          "base_sha256": "60f17ee13e3cd372ff84bdad2f69c98dcbb6c2c80c6342ba754bc6c23f82d3d0",
-          "relocation_count": 15,
+          "base_sha256": "1e15418762e83dbcc28d5c8b550224605cc349dc1d600340df1fe1548633969e",
+          "relocation_count": 13,
           "comparison_unit": "004497b0-e4d06b839ee3",
-          "objdiff_percent": 63.40972
+          "objdiff_percent": 68.28472
         }
       ],
       "status": "different",
-      "objdiff_percent": 63.40972
+      "objdiff_percent": 68.28472
     },
     {
       "name": "Action_PressJumpButton",
@@ -225462,21 +225462,21 @@
         "src/nu2api/shader_dictionary.cpp"
       ],
       "target_size": 102,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/shader_dictionary.cpp",
-          "base_size": 119,
-          "exact_match": false,
+          "base_size": 102,
+          "exact_match": true,
           "target_sha256": "da71b139a91bfdb767005a7ce2a2c6d5dcc145e961bf5f5401b6eac8c26ff749",
-          "base_sha256": "61d3aaa2f1cbb999fe225aadb025450f737772e592a57b9de87beb053bb3126f",
+          "base_sha256": "da71b139a91bfdb767005a7ce2a2c6d5dcc145e961bf5f5401b6eac8c26ff749",
           "relocation_count": 0,
           "comparison_unit": "00746850-95b27033a7a6",
-          "objdiff_percent": 49.023254
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 49.023254
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?BindOutputBuffer@ShaderCompilerDictionaryPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@@Z",
@@ -536904,12 +536904,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2559196,
-    "matched_code_bytes": 750744,
-    "matching_percent": 21.627507817077788,
-    "fuzzy_coverage_percent": 61.35531801813854,
+    "matched_code_bytes": 750846,
+    "matching_percent": 21.630446243222174,
+    "fuzzy_coverage_percent": 61.357426843929645,
     "mapped_functions": 9672,
-    "matched_functions": 5811,
-    "objdiff_fuzzy_percent": 85.5996,
+    "matched_functions": 5812,
+    "objdiff_fuzzy_percent": 85.60253,
     "objdiff_total_code": 2491058,
     "image_bytes": 40067072,
     "mapped_bytes": 4431768,
@@ -536968,16 +536968,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2559196,
-    "exact_reconstruction_bytes": 750744,
-    "mapped_not_exact_bytes": 1808452,
+    "exact_reconstruction_bytes": 750846,
+    "mapped_not_exact_bytes": 1808350,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 910856,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 21.627507817077788,
+    "strict_original_text_exact_percent": 21.630446243222174,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 21.634949562715487,
+    "reconstruction_scope_exact_percent": 21.637888999934294,
     "mapped_scope_denominator_bytes": 2559196,
-    "mapped_scope_exact_percent": 29.335150570726118,
+    "mapped_scope_exact_percent": 29.339136197462015,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -538283,7 +538283,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "f963f0ff8eb79b36dd2b0c2bb19c05702d6b372773da8a757ad5c65d10227fa6",
+      "geometry_object_sha256": "60c6ba31072847ee01e4d6325256c739a8eda37efb593805500dd9f93eff75eb",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
