@@ -344,15 +344,16 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     DEBRIS_INFO_PC discarded;
     i8 category = (i8)(flag);
     i32 page_index = -1;
-    if (flag == 0) {
+    if (flag == 6) {
+        category = 1;
+    } else if (flag == 0) {
         category = 0;
         page_index = 0;
     } else if (flag == 5) {
         category = 5;
         page_index = 1;
-    } else {
-        if (flag == 6)
-            category = 1;
+    }
+    if (page_index == -1) {
         for (page = 2; page < 8; ++page) {
             if (edpp_page_used[page] == 0) {
                 page_index = page;
