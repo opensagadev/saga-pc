@@ -11286,7 +11286,7 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
 
 static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
     i32 count = EdFileReadInt();
-    AI_PATH_SYSTEM_LOAD_PC *system;
+    AI_PATH_SYSTEM_LOAD_PC *system = NULL;
     i32 path_index;
     i32 index;
     i32 route_index;
@@ -11294,197 +11294,200 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
     i32 length;
     i32 character_count;
     char special_name[256];
-    if (count == 0)
-        return NULL;
-    PATH_LOAD_ALLOCATE(AI_PATH_SYSTEM_LOAD_PC *, system, cursor, end, sizeof(*system));
-    if (system == NULL)
-        return NULL;
-    system->path_count = (u8)count;
-    system->paths = (AIPATH_PC **)AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH_PC *));
-    for (path_index = 0; path_index < system->path_count; ++path_index) {
-        AIPATH_PC *path;
-        PATH_LOAD_ALLOCATE(AIPATH_PC *, system->paths[path_index], cursor, end, sizeof(AIPATH_PC));
-        path = system->paths[path_index];
-        EdFileRead(path->name, 16);
-        path->node_count = (u8)EdFileReadChar();
-        path->flags = (u8)EdFileReadChar();
-        path->index = (u8)path_index;
-        path->connection_count = (u16)(version == 1 ? (i16)(i8)EdFileReadChar() : EdFileReadShort());
-        if (path->connection_count != 0) {
-            PATH_LOAD_ALLOCATE(AIPATHCNX_PC *, path->connections, cursor, end,
-                               path->connection_count * sizeof(AIPATHCNX_PC));
-            for (index = 0; index < path->connection_count; ++index) {
-                AIPATHCNX_PC *connection = &path->connections[index];
-                connection->node_indices[0] = (u8)EdFileReadChar();
-                connection->node_indices[1] = (u8)EdFileReadChar();
-                if (version > 11) {
-                    connection->traversal_flags[0] = EdFileReadInt();
-                    connection->traversal_flags[1] = EdFileReadInt();
-                } else if (version > 8) {
-                    connection->traversal_flags[0] = (i16)EdFileReadShort();
-                    connection->traversal_flags[1] = (i16)EdFileReadShort();
-                } else {
-                    connection->traversal_flags[0] = (i8)EdFileReadChar();
-                    connection->traversal_flags[1] = (i8)EdFileReadChar();
+    if (count != 0) {
+        PATH_LOAD_ALLOCATE(AI_PATH_SYSTEM_LOAD_PC *, system, cursor, end, sizeof(*system));
+        if (system != NULL) {
+            system->path_count = (u8)count;
+            system->paths = (AIPATH_PC **)AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH_PC *));
+            for (path_index = 0; path_index < system->path_count; ++path_index) {
+                AIPATH_PC *path;
+                PATH_LOAD_ALLOCATE(AIPATH_PC *, system->paths[path_index], cursor, end, sizeof(AIPATH_PC));
+                path = system->paths[path_index];
+                EdFileRead(path->name, 16);
+                path->node_count = (u8)EdFileReadChar();
+                path->flags = (u8)EdFileReadChar();
+                path->index = (u8)path_index;
+                path->connection_count = (u16)(version == 1 ? (i16)(i8)EdFileReadChar() : EdFileReadShort());
+                if (path->connection_count != 0) {
+                    PATH_LOAD_ALLOCATE(AIPATHCNX_PC *, path->connections, cursor, end,
+                                       path->connection_count * sizeof(AIPATHCNX_PC));
+                    for (index = 0; index < path->connection_count; ++index) {
+                        AIPATHCNX_PC *connection = &path->connections[index];
+                        connection->node_indices[0] = (u8)EdFileReadChar();
+                        connection->node_indices[1] = (u8)EdFileReadChar();
+                        if (version > 11) {
+                            connection->traversal_flags[0] = EdFileReadInt();
+                            connection->traversal_flags[1] = EdFileReadInt();
+                        } else if (version > 8) {
+                            connection->traversal_flags[0] = (i16)EdFileReadShort();
+                            connection->traversal_flags[1] = (i16)EdFileReadShort();
+                        } else {
+                            connection->traversal_flags[0] = (i8)EdFileReadChar();
+                            connection->traversal_flags[1] = (i8)EdFileReadChar();
+                        }
+                        connection->original_traversal_flags[0] = connection->traversal_flags[0];
+                        connection->original_traversal_flags[1] = connection->traversal_flags[1];
+                        connection->rotation = EdFileReadShort();
+                        connection->route_mask = (u16)EdFileReadShort();
+                        connection->distance = EdFileReadFloat();
+                        connection->horizontal_distance = EdFileReadFloat();
+                        if (connection->horizontal_distance == 0.0f)
+                            connection->horizontal_distance = 0.00001f;
+                    }
                 }
-                connection->original_traversal_flags[0] = connection->traversal_flags[0];
-                connection->original_traversal_flags[1] = connection->traversal_flags[1];
-                connection->rotation = EdFileReadShort();
-                connection->route_mask = (u16)EdFileReadShort();
-                connection->distance = EdFileReadFloat();
-                connection->horizontal_distance = EdFileReadFloat();
-                if (connection->horizontal_distance == 0.0f)
-                    connection->horizontal_distance = 0.00001f;
-            }
-        }
-        if (version == 1)
-            EdFileReadChar();
-        if (path->node_count != 0) {
-            PATH_LOAD_ALLOCATE(AIPATHNODE_PC *, path->nodes, cursor, end, path->node_count * sizeof(AIPATHNODE_PC));
-            for (index = 0; index < path->node_count; ++index) {
-                AIPATHNODE_PC *node = &path->nodes[index];
-                length = EdFileReadInt();
-                if (length != 0) {
-                    PATH_LOAD_ALLOCATE(char *, node->name, cursor, end, length + 1);
-                    EdFileRead(node->name, length);
-                }
-                node->position.x = EdFileReadFloat();
-                node->position.y = EdFileReadFloat();
-                node->position.z = EdFileReadFloat();
-                node->radius = EdFileReadFloat();
-                node->radius_squared = node->radius * node->radius;
-                if (version > 7) {
-                    node->min_height = EdFileReadFloat();
-                    node->max_height = EdFileReadFloat();
-                } else {
-                    node->min_height = node->position.y - default_path_heighttol;
-                    node->max_height = node->position.y + default_path_heighttol;
-                }
-                node->min_height_offset = node->min_height - node->position.y;
-                node->max_height_offset = node->max_height - node->position.y;
-                node->connection_count = (u8)EdFileReadChar();
-                node->flags = (u8)EdFileReadChar();
-                EdFileReadChar();
-                node->runtime_flags = (u8)EdFileReadChar() & 0xf9;
-                node->path_flags = EdFileReadShort();
-                if (version >= 19)
-                    node->special_route_index = (u8)EdFileReadChar();
-                else {
+                if (version == 1)
                     EdFileReadChar();
-                    node->special_route_index = 0xff;
+                if (path->node_count != 0) {
+                    PATH_LOAD_ALLOCATE(AIPATHNODE_PC *, path->nodes, cursor, end,
+                                       path->node_count * sizeof(AIPATHNODE_PC));
+                    for (index = 0; index < path->node_count; ++index) {
+                        AIPATHNODE_PC *node = &path->nodes[index];
+                        length = EdFileReadInt();
+                        if (length != 0) {
+                            PATH_LOAD_ALLOCATE(char *, node->name, cursor, end, length + 1);
+                            EdFileRead(node->name, length);
+                        }
+                        node->position.x = EdFileReadFloat();
+                        node->position.y = EdFileReadFloat();
+                        node->position.z = EdFileReadFloat();
+                        node->radius = EdFileReadFloat();
+                        node->radius_squared = node->radius * node->radius;
+                        if (version > 7) {
+                            node->min_height = EdFileReadFloat();
+                            node->max_height = EdFileReadFloat();
+                        } else {
+                            node->min_height = node->position.y - default_path_heighttol;
+                            node->max_height = node->position.y + default_path_heighttol;
+                        }
+                        node->min_height_offset = node->min_height - node->position.y;
+                        node->max_height_offset = node->max_height - node->position.y;
+                        node->connection_count = (u8)EdFileReadChar();
+                        node->flags = (u8)EdFileReadChar();
+                        EdFileReadChar();
+                        node->runtime_flags = (u8)EdFileReadChar() & 0xf9;
+                        node->path_flags = EdFileReadShort();
+                        if (version >= 19)
+                            node->special_route_index = (u8)EdFileReadChar();
+                        else {
+                            EdFileReadChar();
+                            node->special_route_index = 0xff;
+                        }
+                        length = (i8)EdFileReadChar();
+                        if (length != 0) {
+                            EdFileRead(special_name, length);
+                            node->has_special = (u8)(NuSpecialFind(scene, &node->special_handle, special_name, 1) != 0);
+                            node->special_position.x = EdFileReadFloat();
+                            node->special_position.y = EdFileReadFloat();
+                            node->special_position.z = EdFileReadFloat();
+                        }
+                        if (path->connections != NULL && node->connection_count != 0) {
+                            PATH_LOAD_ALLOCATE(AIPATHCNX_PC **, node->connections, cursor, end,
+                                               node->connection_count * sizeof(AIPATHCNX_PC *));
+                            for (row = 0; row < node->connection_count; ++row)
+                                node->connections[row] = &path->connections[(i16)EdFileReadShort()];
+                            if ((node->connection_count & 1) != 0)
+                                EdFileReadShort();
+                        }
+                        if (version >= 5) {
+                            node->route_membership_mask = (u16)EdFileReadShort();
+                            node->route_boundary_mask = (u16)EdFileReadShort();
+                        }
+                        node->distance_cache_nodes[0] = 0xff;
+                        node->distance_cache_nodes[1] = 0xff;
+                    }
+                    AIPathCalcExtents(path);
                 }
-                length = (i8)EdFileReadChar();
-                if (length != 0) {
-                    EdFileRead(special_name, length);
-                    node->has_special = (u8)(NuSpecialFind(scene, &node->special_handle, special_name, 1) != 0);
-                    node->special_position.x = EdFileReadFloat();
-                    node->special_position.y = EdFileReadFloat();
-                    node->special_position.z = EdFileReadFloat();
-                }
-                if (path->connections != NULL && node->connection_count != 0) {
-                    PATH_LOAD_ALLOCATE(AIPATHCNX_PC **, node->connections, cursor, end,
-                                       node->connection_count * sizeof(AIPATHCNX_PC *));
-                    for (row = 0; row < node->connection_count; ++row)
-                        node->connections[row] = &path->connections[(i16)EdFileReadShort()];
-                    if ((node->connection_count & 1) != 0)
-                        EdFileReadShort();
+                PATH_LOAD_ALLOCATE(u8 **, path->route_matrix, cursor, end, path->node_count * sizeof(u8 *));
+                for (index = 0; index < path->node_count; ++index) {
+                    PATH_LOAD_ALLOCATE(u8 *, path->route_matrix[index], cursor, end, path->node_count);
+                    EdFileRead(path->route_matrix[index], path->node_count);
                 }
                 if (version >= 5) {
-                    node->route_membership_mask = (u16)EdFileReadShort();
-                    node->route_boundary_mask = (u16)EdFileReadShort();
-                }
-                node->distance_cache_nodes[0] = 0xff;
-                node->distance_cache_nodes[1] = 0xff;
-            }
-            AIPathCalcExtents(path);
-        }
-        PATH_LOAD_ALLOCATE(u8 **, path->route_matrix, cursor, end, path->node_count * sizeof(u8 *));
-        for (index = 0; index < path->node_count; ++index) {
-            PATH_LOAD_ALLOCATE(u8 *, path->route_matrix[index], cursor, end, path->node_count);
-            EdFileRead(path->route_matrix[index], path->node_count);
-        }
-        if (version >= 5) {
-            path->route_count = (u8)EdFileReadChar();
-            if (path->route_count != 0) {
-                PATH_LOAD_ALLOCATE(AIPATHROUTE_PC *, path->routes, cursor, end,
-                                   path->route_count * sizeof(AIPATHROUTE_PC));
-                for (route_index = 0; route_index < path->route_count; ++route_index) {
-                    AIPATHROUTE_PC *route = &path->routes[route_index];
-                    length = (i8)EdFileReadChar();
-                    if (length != 0) {
-                        PATH_LOAD_ALLOCATE(char *, route->name, cursor, end, length);
-                        EdFileRead(route->name, length);
-                        route->route_count = (u8)EdFileReadChar();
-                        route->exit_node_count = (u8)EdFileReadChar();
-                        EdFileReadChar();
-                        EdFileReadChar();
-                        if (path->node_count != 0 && route->route_count != 0) {
-                            PATH_LOAD_ALLOCATE(u8 *, route->node_routes, cursor, end, path->node_count);
-                            EdFileRead(route->node_routes, path->node_count);
-                            PATH_LOAD_ALLOCATE(u8 *, route->node_directions, cursor, end, route->route_count);
-                            EdFileRead(route->node_directions, route->route_count);
-                            PATH_LOAD_ALLOCATE(u8 **, route->route_nodes, cursor, end,
-                                               route->route_count * sizeof(u8 *));
-                            for (row = 0; row < route->route_count; ++row) {
-                                PATH_LOAD_ALLOCATE(u8 *, route->route_nodes[row], cursor, end, route->route_count);
-                                EdFileRead(route->route_nodes[row], route->route_count);
+                    path->route_count = (u8)EdFileReadChar();
+                    if (path->route_count != 0) {
+                        PATH_LOAD_ALLOCATE(AIPATHROUTE_PC *, path->routes, cursor, end,
+                                           path->route_count * sizeof(AIPATHROUTE_PC));
+                        for (route_index = 0; route_index < path->route_count; ++route_index) {
+                            AIPATHROUTE_PC *route = &path->routes[route_index];
+                            length = (i8)EdFileReadChar();
+                            if (length != 0) {
+                                PATH_LOAD_ALLOCATE(char *, route->name, cursor, end, length);
+                                EdFileRead(route->name, length);
+                                route->route_count = (u8)EdFileReadChar();
+                                route->exit_node_count = (u8)EdFileReadChar();
+                                EdFileReadChar();
+                                EdFileReadChar();
+                                if (path->node_count != 0 && route->route_count != 0) {
+                                    PATH_LOAD_ALLOCATE(u8 *, route->node_routes, cursor, end, path->node_count);
+                                    EdFileRead(route->node_routes, path->node_count);
+                                    PATH_LOAD_ALLOCATE(u8 *, route->node_directions, cursor, end, route->route_count);
+                                    EdFileRead(route->node_directions, route->route_count);
+                                    PATH_LOAD_ALLOCATE(u8 **, route->route_nodes, cursor, end,
+                                                       route->route_count * sizeof(u8 *));
+                                    for (row = 0; row < route->route_count; ++row) {
+                                        PATH_LOAD_ALLOCATE(u8 *, route->route_nodes[row], cursor, end,
+                                                           route->route_count);
+                                        EdFileRead(route->route_nodes[row], route->route_count);
+                                    }
+                                    if (route->exit_node_count != 0) {
+                                        PATH_LOAD_ALLOCATE(u8 *, route->exit_nodes, cursor, end,
+                                                           route->exit_node_count);
+                                        EdFileRead(route->exit_nodes, route->exit_node_count);
+                                    }
+                                }
                             }
-                            if (route->exit_node_count != 0) {
-                                PATH_LOAD_ALLOCATE(u8 *, route->exit_nodes, cursor, end, route->exit_node_count);
-                                EdFileRead(route->exit_nodes, route->exit_node_count);
-                            }
-                        }
-                    }
-                    character_count = (i8)EdFileReadChar();
-                    for (row = 0; row < character_count; ++row) {
-                        length = (i8)EdFileReadChar();
-                        EdFileRead(special_name, length);
-                        if (SpecialRouteCharacterTypeIDFn != NULL) {
-                            u8 type = (u8)SpecialRouteCharacterTypeIDFn(special_name);
-                            if (type < 64) {
-                                u64 mask = (u64)1 << type;
-                                route->character_mask[0] |= (u32)mask;
-                                route->character_mask[1] |= (u32)(mask >> 32);
-                                route->character_mask[2] |= (u32)mask;
-                                route->character_mask[3] |= (u32)(mask >> 32);
-                            } else {
-                                route->character_mask[0] = 0xffffffff;
-                                route->character_mask[1] = 0xffffffff;
-                                route->character_mask[3] |= 0x80000000;
+                            character_count = (i8)EdFileReadChar();
+                            for (row = 0; row < character_count; ++row) {
+                                length = (i8)EdFileReadChar();
+                                EdFileRead(special_name, length);
+                                if (SpecialRouteCharacterTypeIDFn != NULL) {
+                                    u8 type = (u8)SpecialRouteCharacterTypeIDFn(special_name);
+                                    if (type < 64) {
+                                        u64 mask = (u64)1 << type;
+                                        route->character_mask[0] |= (u32)mask;
+                                        route->character_mask[1] |= (u32)(mask >> 32);
+                                        route->character_mask[2] |= (u32)mask;
+                                        route->character_mask[3] |= (u32)(mask >> 32);
+                                    } else {
+                                        route->character_mask[0] = 0xffffffff;
+                                        route->character_mask[1] = 0xffffffff;
+                                        route->character_mask[3] |= 0x80000000;
+                                    }
+                                }
                             }
                         }
                     }
                 }
-            }
-        }
-        if (version >= 19) {
-            path->special_route_count = (u8)EdFileReadChar();
-            if (path->special_route_count != 0) {
-                AIPATHNODELINK_PC *link;
-                PATH_LOAD_ALLOCATE(AIPATHNODELINK_PC *, path->special_routes, cursor, end,
-                                   path->special_route_count * sizeof(AIPATHNODELINK_PC));
-                link = path->special_routes;
-                for (index = 0; index < path->special_route_count; ++index, ++link) {
-                    link->node_index = EdFileReadUnsignedChar();
-                    link->special_route_index = EdFileReadShort();
+                if (version >= 19) {
+                    path->special_route_count = (u8)EdFileReadChar();
+                    if (path->special_route_count != 0) {
+                        AIPATHNODELINK_PC *link;
+                        PATH_LOAD_ALLOCATE(AIPATHNODELINK_PC *, path->special_routes, cursor, end,
+                                           path->special_route_count * sizeof(AIPATHNODELINK_PC));
+                        link = path->special_routes;
+                        for (index = 0; index < path->special_route_count; ++index, ++link) {
+                            link->node_index = EdFileReadUnsignedChar();
+                            link->special_route_index = EdFileReadShort();
+                        }
+                    }
                 }
             }
-        }
-    }
-    if (version >= 19) {
-        system->special_route_count = (u16)EdFileReadShort();
-        if (system->special_route_count != 0) {
-            AIPATHSPECIALROUTE_PC *route;
-            system->special_routes = (AIPATHSPECIALROUTE_PC *)AISysBufferAlloc(
-                cursor, end, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
-            route = system->special_routes;
-            for (index = 0; index < system->special_route_count; ++index, ++route) {
-                route->path_count = (u8)EdFileReadChar();
-                if (route->path_count != 0) {
-                    PATH_LOAD_ALLOCATE(AIPATH_PC **, route->paths, cursor, end,
-                                       route->path_count * sizeof(AIPATH_PC *));
-                    for (row = 0; row < route->path_count; ++row)
-                        route->paths[row] = system->paths[(i8)EdFileReadChar()];
+            if (version >= 19) {
+                system->special_route_count = (u16)EdFileReadShort();
+                if (system->special_route_count != 0) {
+                    AIPATHSPECIALROUTE_PC *route;
+                    system->special_routes = (AIPATHSPECIALROUTE_PC *)AISysBufferAlloc(
+                        cursor, end, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
+                    route = system->special_routes;
+                    for (index = 0; index < system->special_route_count; ++index, ++route) {
+                        route->path_count = (u8)EdFileReadChar();
+                        if (route->path_count != 0) {
+                            PATH_LOAD_ALLOCATE(AIPATH_PC **, route->paths, cursor, end,
+                                               route->path_count * sizeof(AIPATH_PC *));
+                            for (row = 0; row < route->path_count; ++row)
+                                route->paths[row] = system->paths[(i8)EdFileReadChar()];
+                        }
+                    }
                 }
             }
         }
