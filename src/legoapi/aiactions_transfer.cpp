@@ -1814,10 +1814,10 @@ extern "C" i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIP
     i32 gizmo_output = 0;
     u32 on_flags = 0;
     u32 off_flags = 0;
-    bool both_ways = false;
-    bool check_visible = false;
-    bool on_obstacle_open = false;
-    bool off_obstacle_open = false;
+    i32 both_ways = 0;
+    i32 check_visible = 0;
+    i32 on_obstacle_open = 0;
+    i32 off_obstacle_open = 0;
 
     for (i32 index = 0; index < param_count; ++index) {
         char *param = params[index];
@@ -1840,11 +1840,11 @@ extern "C" i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIP
             continue;
         }
         if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e24)) != NULL) {
-            check_visible = true;
+            check_visible = 1;
             continue;
         }
         if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757e18)) != NULL) {
-            both_ways = true;
+            both_ways = 1;
             continue;
         }
 
@@ -1852,9 +1852,9 @@ extern "C" i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIP
         if (match != NULL) {
             char *value = match + 8;
             if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d80)) != NULL) {
-                on_obstacle_open = true;
+                on_obstacle_open = 1;
             } else if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d70)) != NULL) {
-                on_obstacle_open = false;
+                on_obstacle_open = 0;
             } else {
                 on_flags |= ParseAIPathCnxFlagPc(value);
             }
@@ -1864,9 +1864,9 @@ extern "C" i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIP
         if (match != NULL) {
             char *value = match + 9;
             if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d80)) != NULL) {
-                off_obstacle_open = true;
+                off_obstacle_open = 1;
             } else if (NuStrIStr(param, const_cast<char *>(AIControllerLiteralPc00757d70)) != NULL) {
-                off_obstacle_open = false;
+                off_obstacle_open = 0;
             } else {
                 off_flags |= ParseAIPathCnxFlagPc(value);
             }
@@ -1930,8 +1930,8 @@ extern "C" i32 __cdecl Action_CnxController(struct AISYS_PC *sys, struct AISCRIP
     controller->on_flags = on_flags;
     controller->off_flags = off_flags;
     controller->flags_word =
-        static_cast<u16>((controller->flags_word & 0xffe1) | (both_ways ? 2 : 0) | (check_visible ? 4 : 0) |
-                         (on_obstacle_open ? 8 : 0) | (off_obstacle_open ? 0x10 : 0));
+        static_cast<u16>((controller->flags_word & 0xffe1) | ((both_ways & 1) << 1) | ((check_visible & 1) << 2) |
+                         ((on_obstacle_open & 1) << 3) | ((off_obstacle_open & 1) << 4));
 
     for (i32 index = 0; index < param_count; ++index) {
         char *match = NuStrIStr(params[index], const_cast<char *>(AIControllerLiteralPc00757e40));
