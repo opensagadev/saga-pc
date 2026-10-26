@@ -155,7 +155,7 @@
     "src/nu2api/hardware_dispatch.cpp": "1c1a600bb442f911f6d2e7b6b7c26d36638880b9c518d9dff46a175904743aa6",
     "src/nu2api/input_descriptors.cpp": "873e98548b23193619bef0872324ce5425174d612bac3932a2c14aba5bc6d6b6",
     "src/nu2api/input_detection.cpp": "958d85117bc5a8f0ff95acabf1f9f2f255b8cba9530954bd79d9d1282ab6aaf7",
-    "src/nu2api/input_runtime.cpp": "b60588de49ff9accb470732f7a2adea15127e3c5177053f08dcf37842ce9de1b",
+    "src/nu2api/input_runtime.cpp": "c1a63eb20f21800eb2c41b9d16df2eddc43d30dfb539eb08be5f168b94377e65",
     "src/nu2api/key_events.cpp": "3c134ce21e2c349174f035ba4fde999f31651ba21baa1b39aafd87ec05ec95ac",
     "src/nu2api/nucore.cpp": "10bfdb550b18104134d179d426325627fc767e2417f35c58b7af8f583ab1e749",
     "src/nu2api/nudebug_pc.cpp": "88310cb6d37bd0d69571c6f9cf140b93fe26496405f80671ea8763863fe96cfb",
@@ -212,7 +212,7 @@
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript.c": "4028fc6fd1767a6b8724e71881841b82e12fd003a37300b08118a53497c5f1e5",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
-    "src/gameapi/aisys.c": "185ac1c4fa6bc06b2e94c129cc82e23e7dde2e0db73c3bd0b22abf642ef9dddf",
+    "src/gameapi/aisys.c": "4a97be530b834c7f298aaad904b10bd0b0b0375edfa09e740833daef86ca616a",
     "src/gameapi/apiobject.c": "8194bb0803737bfc4237228dfb33b2314f19ad1be70617e03cae99dc00137d84",
     "src/gameapi/apisave.c": "cc06447f47998f647703e79655c8c61c72854b6f2e502b3c3b6fff0d0ce6b5d2",
     "src/gameapi/edanim_load.c": "e9ec9bd1b555dc9de0563251e0f61dc24e3e0b229050328239325ff8949f4f4d",
@@ -568,7 +568,7 @@
     "build/obj/gameapi/aieditor_path_create_pc.obj": "16cbf3c517a689e7b82793756a1ea5c819d6989d46e04e3cb66afea7b061a811",
     "build/obj/gameapi/aiscript.obj": "67b32ebd908b91537b7c1c9ff38059956432dcc113a7c86b3cb247c1a3a78b36",
     "build/obj/gameapi/aiscript_diagnostics.obj": "f26b6bd8c204fc33e9899d0f48a5836b3fe3c944af3fe28c85665d05d72b578e",
-    "build/obj/gameapi/aisys.obj": "576b82fdddc5c77281a3abb3bef121018eae48db829651ce548f6d5790f7d720",
+    "build/obj/gameapi/aisys.obj": "863ca6fa850b27db169728200f5a6a570e6c7e21570b459821609f9dcf18409e",
     "build/obj/gameapi/apiobject.obj": "33df4e00c3f8b26f656280b9bcf3b87cfa1d40e06fbebd1cdf318dcfa98972bd",
     "build/obj/gameapi/apisave.obj": "9a97508540d8c98ca9d94be86ea2616cba9a83d1bf04a4756111fa4d4729582c",
     "build/obj/gameapi/edanim_load.obj": "a7a0c1c37d15eb5bb54ac78afdd49757a103f5a1190a03bce4c650e98aa60aa5",
@@ -837,7 +837,7 @@
     "build/obj/nu2api/implode.obj": "322f85b98764045f18ab0861b92a2623be7669ce37fa1e6e9a4a3126d6806c14",
     "build/obj/nu2api/input_descriptors.obj": "6c64e35a5fc314f09db9254bc36b087b32fec9642a15b0d8ff453100201030cd",
     "build/obj/nu2api/input_detection.obj": "a9840aed5bc60fe348c9f8d0627e9dcfe41684c6c21be5e163549c80f96f67c9",
-    "build/obj/nu2api/input_runtime.obj": "12af95d3f7445f2e4dd9a3f28f20f287c213576febed7de230f585bd5143bf99",
+    "build/obj/nu2api/input_runtime.obj": "e9e1b5d632bdc01791446807d43e02609e28050fafb0dda873530ba64f190328",
     "build/obj/nu2api/key_events.obj": "ffd4473dfa920b92ea87e8ec4731854f05a4f07fcef809d7ba50eccd4dfd732c",
     "build/obj/nu2api/keyboard_init.obj": "052db948e20bb9aae70bc9a34242d958489a3622e5e81b4cca1f4b07b8ab9f89",
     "build/obj/nu2api/keyboard_read.obj": "19e721c9cef599d1a4ca62d24c6cc8f06de4e85c344235bae4d37ee3cc7fa12f",
@@ -19398,17 +19398,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisys.c",
-          "base_size": 471,
+          "base_size": 452,
           "exact_match": false,
           "target_sha256": "8ff6e985e6fab8daf6de3fd5f6e46c4e325c9965f40554519dddd75f61245cbf",
-          "base_sha256": "f84c50b9bdac5443b40915df53161179cf3923a4ef6b5bf7b86014a1a2ba3a07",
-          "relocation_count": 16,
+          "base_sha256": "60f17ee13e3cd372ff84bdad2f69c98dcbb6c2c80c6342ba754bc6c23f82d3d0",
+          "relocation_count": 15,
           "comparison_unit": "004497b0-e4d06b839ee3",
-          "objdiff_percent": 62.666668
+          "objdiff_percent": 63.40972
         }
       ],
       "status": "different",
-      "objdiff_percent": 62.666668
+      "objdiff_percent": 63.40972
     },
     {
       "name": "Action_PressJumpButton",
@@ -201420,17 +201420,17 @@
       "objects": [
         {
           "unit": "src/nu2api/input_runtime.cpp",
-          "base_size": 1043,
+          "base_size": 1045,
           "exact_match": false,
           "target_sha256": "e2ddf4fea0f8514f4256b8078b4580dc5925d915da3296d55e20389907d639bf",
-          "base_sha256": "c80112bb63d92d303c1d2299b08fe62ab2af1f4fcf91719a6c35769eec4c284b",
+          "base_sha256": "f83a92cf5ced840e79363d5a64552762870bca31d0f4b051be69e4721cfcb079",
           "relocation_count": 12,
           "comparison_unit": "006d8d60-483680157166",
-          "objdiff_percent": 7.4215245
+          "objdiff_percent": 28.84305
         }
       ],
       "status": "different",
-      "objdiff_percent": 7.4215245
+      "objdiff_percent": 28.84305
     },
     {
       "name": "?Shutdown@NuKeyboardOwner_PC@@QAEXXZ",
@@ -536906,10 +536906,10 @@
     "mapped_code_bytes": 2559196,
     "matched_code_bytes": 750744,
     "matching_percent": 21.627507817077788,
-    "fuzzy_coverage_percent": 61.3507508299855,
+    "fuzzy_coverage_percent": 61.35531801813854,
     "mapped_functions": 9672,
     "matched_functions": 5811,
-    "objdiff_fuzzy_percent": 85.59324,
+    "objdiff_fuzzy_percent": 85.5996,
     "objdiff_total_code": 2491058,
     "image_bytes": 40067072,
     "mapped_bytes": 4431768,
@@ -538283,7 +538283,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "1d95f4c2cac926e20844903b69e95a94bc4be8ada773c41263926b11a7bac71e",
+      "geometry_object_sha256": "f963f0ff8eb79b36dd2b0c2bb19c05702d6b372773da8a757ad5c65d10227fa6",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
