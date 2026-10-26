@@ -682,10 +682,11 @@ void ShaderCompilerParserPc::LoadSourceLines(ShaderCompilerBufferAllocatorPc *in
         line.AppendBytes(first, count);
         offset += count;
         i32 cursor = 0;
-        while (cursor < line.length && (line.data[cursor] == ' ' || line.data[cursor] == '\t'))
-            ++cursor;
-        if (cursor < line.length && line.data[cursor] == '#') {
-            ++cursor;
+        i32 position = 0;
+        while (position < line.length && (line.data[position] == ' ' || line.data[position] == '\t'))
+            ++position;
+        if (position < line.length && line.data[position] == '#') {
+            cursor = position + 1;
             ProcessDirective(&line, &cursor);
         } else if (emit_text != 0)
             text.AppendBytes(reinterpret_cast<const char *>(line.data), line.length);
