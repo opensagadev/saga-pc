@@ -212,7 +212,7 @@
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript.c": "9d45af73dce42f9209b43b6b738a5be94b261ed8b269480effbf19038be7d925",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
-    "src/gameapi/aisys.c": "5eb7e8225c1030e3266d41a5d2082b2d953c77fbaf4b9b06b60a2ba3e35bcfff",
+    "src/gameapi/aisys.c": "33223ee35f6f55fa460df8f70b1e0a7f7a9743e79d83d3deba2b9d58d7f22bb2",
     "src/gameapi/apiobject.c": "8194bb0803737bfc4237228dfb33b2314f19ad1be70617e03cae99dc00137d84",
     "src/gameapi/apisave.c": "cc06447f47998f647703e79655c8c61c72854b6f2e502b3c3b6fff0d0ce6b5d2",
     "src/gameapi/edanim_load.c": "e9ec9bd1b555dc9de0563251e0f61dc24e3e0b229050328239325ff8949f4f4d",
@@ -224,7 +224,7 @@
     "src/gameapi/edgrass.c": "6d4979f496835e5198c3d74fd6022c3b24e16c01a08e995b3e099a3517071df0",
     "src/gameapi/edpart.c": "e238b68e2bb08a11d01441a1067ae255d2fd032f64cca93e2fe1ec3b3baba3fc",
     "src/gameapi/edpp.c": "ec37f083397d2dfca4695d83a468b304ead3321fb319b74884a7356b87a08301",
-    "src/gameapi/edpp_load.c": "2b1e3a0fa13ff58926ae177efe23047afe821da4edc7a05e3f966a706cca6c75",
+    "src/gameapi/edpp_load.c": "f9300f4748f637893616f63b018be15ea4d91883750a662c5b074e69f277c054",
     "src/gameapi/edspline_load.c": "fa3a2ef46f77039528e360b061f274dc18f71ad7f5e03409683e7f1590207dcf",
     "src/gameapi/edui_focus_pc.c": "ef518c4a3a5ce78f9101f558a33c5ad0e611ee781c738a9d768e1a4e21f9c473",
     "src/gameapi/gameaiactions.c": "73c13ca93d26b520afc6cd3f008d22ea0fd01f30250483dae899ff3859f0c0c3",
@@ -568,7 +568,7 @@
     "build/obj/gameapi/aieditor_path_create_pc.obj": "16cbf3c517a689e7b82793756a1ea5c819d6989d46e04e3cb66afea7b061a811",
     "build/obj/gameapi/aiscript.obj": "81d61d607fa51093a8ae0b62a8f2a2b9b6791db722c30383af4871aae2b0132e",
     "build/obj/gameapi/aiscript_diagnostics.obj": "f26b6bd8c204fc33e9899d0f48a5836b3fe3c944af3fe28c85665d05d72b578e",
-    "build/obj/gameapi/aisys.obj": "d0203251a2cd278bdb0f99d6ce652d2488527d06199facce3cd5246c65867609",
+    "build/obj/gameapi/aisys.obj": "f66855cd6a26d9d4562da2b33c5e08465da0a184ba21449ff1f9bced3bc65e38",
     "build/obj/gameapi/apiobject.obj": "33df4e00c3f8b26f656280b9bcf3b87cfa1d40e06fbebd1cdf318dcfa98972bd",
     "build/obj/gameapi/apisave.obj": "9a97508540d8c98ca9d94be86ea2616cba9a83d1bf04a4756111fa4d4729582c",
     "build/obj/gameapi/edanim_load.obj": "a7a0c1c37d15eb5bb54ac78afdd49757a103f5a1190a03bce4c650e98aa60aa5",
@@ -580,7 +580,7 @@
     "build/obj/gameapi/edgrass.obj": "b6b692548748697ea5591705432784cd7d81fddd4254480bd8dedf2b6b6ccc86",
     "build/obj/gameapi/edpart.obj": "134d4d2eb2005fb4b84c694b3c823a2140a9aa987654bedb20dd4b0922ccee55",
     "build/obj/gameapi/edpp.obj": "4228829f66864df5051b4695e0ef34c2f212935f1630b3bfa3d6d5e2b70e645d",
-    "build/obj/gameapi/edpp_load.obj": "bf6a0e9667131743f0740ab7c7757b2838abb69379cd7c3b449cdf8fb9892c2f",
+    "build/obj/gameapi/edpp_load.obj": "00f2fd3af5939174ea8eac99ac10ae34389e8a7f87d5234dcd4dddaf3a62d836",
     "build/obj/gameapi/edspline_load.obj": "16e7611869df099ba144fcc63f8f7851279dff23eb368431d13412b3f6f52758",
     "build/obj/gameapi/edui_focus_pc.obj": "f7263e63ad702188f86ac2e1b11d4c39a7a9b4e288366dcceccd0f6a16cc205a",
     "build/obj/gameapi/edui_widget_render_pc.obj": "ac6b882add7c1eec6177a4a8297b411ecca0c11bc554709343ee81bae658562c",
@@ -76922,17 +76922,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisys.c",
-          "base_size": 2713,
+          "base_size": 2856,
           "exact_match": false,
           "target_sha256": "9a3df07666601759adb27bfdace2627999d47d4b4f57c11c4801411e315d78c7",
-          "base_sha256": "89e2332bac25bd0f11c31b84542105b98b5768c458da49e61da7c6b652091afc",
+          "base_sha256": "1c00b6951adefeb11e879a0db921863e3dc2910db2185511d5032f09b85aebbc",
           "relocation_count": 110,
           "comparison_unit": "00517430-1d4e73301501",
-          "objdiff_percent": 63.570976
+          "objdiff_percent": 82.747635
         }
       ],
       "status": "different",
-      "objdiff_percent": 63.570976
+      "objdiff_percent": 82.747635
     },
     {
       "name": "CreateAIGroup",
@@ -81311,14 +81311,14 @@
           "base_size": 2988,
           "exact_match": false,
           "target_sha256": "dd2b6602a90b60bc4979718295f1f7825e32ef4b8bfa8055454e05a15e8fd6ff",
-          "base_sha256": "65a70908c92a006011afd8fa45b8e4c52621f039ecaf1a3604b53d33a40ede93",
+          "base_sha256": "991a55304592dcc9e958db7992ac8a9ba2bd26ccdd6cf6a60a4174ff5d9894a7",
           "relocation_count": 152,
           "comparison_unit": "0052dc60-4bde83c62918",
-          "objdiff_percent": 82.38673
+          "objdiff_percent": 82.79176
         }
       ],
       "status": "different",
-      "objdiff_percent": 82.38673
+      "objdiff_percent": 82.79176
     },
     {
       "name": "AISysLoadEx",
@@ -184952,17 +184952,17 @@
       "objects": [
         {
           "unit": "src/gameapi/edpp_load.c",
-          "base_size": 1316,
+          "base_size": 1431,
           "exact_match": false,
           "target_sha256": "b79c965f8dc918f498ed32010e32443d97d7b9c1e33544afb87ba89bfcb3c71d",
-          "base_sha256": "5446aca681bda7fd507bc1cde9e5973135079368d180765ce4518ad007f77c71",
-          "relocation_count": 73,
+          "base_sha256": "8c0b9369a3ed7975ae2cfbddddf4bee74a89ab98c3f1c1381a9cbf16250e6496",
+          "relocation_count": 112,
           "comparison_unit": "0068df20-9c825b07b51a",
-          "objdiff_percent": 16.660526
+          "objdiff_percent": 17.631578
         }
       ],
       "status": "different",
-      "objdiff_percent": 16.660526
+      "objdiff_percent": 17.631578
     },
     {
       "name": "edppRestartAllEffectsInLevel",
@@ -536930,10 +536930,10 @@
     "mapped_code_bytes": 2559795,
     "matched_code_bytes": 750846,
     "matching_percent": 21.630446243222174,
-    "fuzzy_coverage_percent": 61.41333464665437,
+    "fuzzy_coverage_percent": 61.43049121075353,
     "mapped_functions": 9673,
     "matched_functions": 5812,
-    "objdiff_fuzzy_percent": 85.65985,
+    "objdiff_fuzzy_percent": 85.683754,
     "objdiff_total_code": 2491657,
     "image_bytes": 40067072,
     "mapped_bytes": 4432367,
@@ -538307,7 +538307,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "07bce91cf18496a659ee6c683aba4b9069313060558618969d37e74667c13f8a",
+      "geometry_object_sha256": "9b5e4b80b3373289a13121025a24abc7fa24576b8c5056eb68db4d6cb600cd6c",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
