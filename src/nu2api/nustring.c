@@ -1650,3 +1650,91 @@ i32 __cdecl NuStrToLW(NUWCHAR *str, NUWCHAR **end, i32 radix) {
         *end = str - 1;
     return sign != 0 ? (i32)((u32)value * (u32)sign) : value;
 }
+
+void __cdecl NuStrGetFilenameNoExt(char *dst, char *src) {
+    char *separator;
+    char *backslash;
+    i32 length;
+    char *extension = NuStrRChr(src, '.');
+    if (extension == NULL)
+        extension = src + (NuStrLen(src) - 1);
+    separator = NuStrRChr(src, '/');
+    backslash = NuStrRChr(src, '\\');
+    if (backslash > separator)
+        separator = backslash;
+    if (separator == NULL)
+        separator = src;
+    // Preserve the original's unconditional advance, even for a bare filename.
+    ++separator;
+    length = extension - separator + 1;
+    NuStrNCpy(dst, separator, length);
+}
+
+void __cdecl NuStrGetPath(char *dst, char *src) {
+    char *separator = NuStrRChr(src, '/');
+    char *backslash = NuStrRChr(src, '\\');
+    if (backslash > separator)
+        separator = backslash;
+    if (separator == NULL) {
+        *dst = 0;
+    } else {
+        i32 length = separator - src + 1;
+        NuStrNCpy(dst, src, length);
+    }
+}
+
+void __cdecl NuStrGetExt(char *dst, char *src) {
+    char *separator;
+    char *backslash;
+    char *extension = NuStrRChr(src, '.');
+    separator = NuStrRChr(src, '/');
+    backslash = NuStrRChr(src, '\\');
+    if (backslash > separator)
+        separator = backslash;
+    if (extension == NULL || separator > extension) {
+        *dst = 0;
+    } else {
+        char *end = src + NuStrLen(src);
+        i32 length = end - extension;
+        if (length == 0)
+            *dst = 0;
+        else
+            NuStrNCpy(dst, extension + 1, length);
+    }
+}
+
+void __cdecl NuStrSubstituteString(char *dst, char *src, char *search, char *replacement) {
+    i32 matched = 0;
+    while (*src != 0) {
+        while (search[matched] != 0) {
+            u8 source_character = (u8)src[matched];
+            u8 search_character = (u8)search[matched];
+            if ((u8)(source_character - 'A') <= 0x19 || (u8)(source_character + 0x40) <= 0x1f)
+                source_character = (u8)(source_character + 0x20);
+            if ((u8)(search_character - 'A') <= 0x19 || (u8)(search_character + 0x40) <= 0x1f)
+                search_character = (u8)(search_character + 0x20);
+            if (source_character != search_character) {
+                matched = 0;
+                break;
+            }
+            ++matched;
+        }
+        if (matched != 0) {
+            src += matched;
+            if (replacement != NULL) {
+                matched = 0;
+                while (replacement[matched] != 0) {
+                    *dst = replacement[matched];
+                    ++dst;
+                    ++matched;
+                }
+            }
+            matched = 0;
+        } else {
+            *dst = *src;
+            ++dst;
+            ++src;
+        }
+    }
+    *dst = 0;
+}

@@ -2600,6 +2600,10 @@ address,symbol,size,ctype
 0x004f30f0,_NuStringTableSetBank,16,void __cdecl (i32)
 0x004f3100,_NuStringTableUnload,35,void __cdecl (void)
 0x004f3130,_NuStringTableGetById,68,u16 *__cdecl (i32)
+0x4f3180,_NuStrGetFilenameNoExt,173,"void __cdecl (char *, char *)"
+0x4f3230,_NuStrGetPath,123,"void __cdecl (char *, char *)"
+0x4f32b0,_NuStrGetExt,200,"void __cdecl (char *, char *)"
+0x4f3380,_NuStrSubstituteString,213,"void __cdecl (char *, char *, char *, char *)"
 0x004f3460,_NuStringCharEquivalentPc,90,
 0x004f34c0,_NuStringIsFluffPc,46,
 0x004f34f0,_NuStringBadSubString,342,"u16 *__cdecl (const u16 *, const u16 *, i32 *, i32)"
