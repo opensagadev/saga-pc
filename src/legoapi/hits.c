@@ -447,29 +447,29 @@ impact:
             goto hurt;
         }
         health = target->current_hp - hit;
-        if (health > 0) {
-            if ((target->character_data->model_flags & 0x40000000) && target->character_context == 23)
-                goto refill;
-            goto surviving_hit;
-        }
     } else
         health = 0;
-    no_impact =
-        players_cannot_exit_speeder && target->id == (u16)id_SPEEDERBIKE && target->rider && target->field_280 != 0xff;
-    if ((target->character_data->model_flags & 0x20000000) && !ObjIsTargetSpeeder(target) && !no_impact) {
-        coins = 0;
-        if (((target->flags_1fc_word & 0x80)) && target->coin_packet &&
-            ((COMBAT_COINPACKET_PC *)target->coin_packet)->coins && BonusWinner == -1)
-            coins = LoseCoins(target, 1);
-        AddPickups(coins, 0, 0, 0, &target->collision_position, NULL, 2.0f, attacker ? (i8)attacker->field_280 : -1,
-                   1.0f, 2000000.0f, attacker, 1, 0);
-        DeactivatePlayer(target, 1000000000.0f, NULL);
-        target->current_hp = target->field_107e;
-        SetFlicker(target, 0.4f);
-        goto hurt;
+    no_impact = 0;
+    if (health <= 0) {
+        no_impact = players_cannot_exit_speeder && target->id == (u16)id_SPEEDERBIKE && target->rider &&
+                    target->field_280 != 0xff;
+        if ((target->character_data->model_flags & 0x20000000) && !ObjIsTargetSpeeder(target) && !no_impact) {
+            coins = 0;
+            if (((target->flags_1fc_word & 0x80)) && target->coin_packet &&
+                ((COMBAT_COINPACKET_PC *)target->coin_packet)->coins && BonusWinner == -1)
+                coins = LoseCoins(target, 1);
+            AddPickups(coins, 0, 0, 0, &target->collision_position, NULL, 2.0f, attacker ? (i8)attacker->field_280 : -1,
+                       1.0f, 2000000.0f, attacker, 1, 0);
+            DeactivatePlayer(target, 1000000000.0f, NULL);
+            target->current_hp = target->field_107e;
+            SetFlicker(target, 0.4f);
+            goto hurt;
+        }
     }
-    if (target->character_data->model_flags & 0x40000000)
+    if ((target->character_data->model_flags & 0x40000000) && (health <= 0 || target->character_context == 23))
         goto refill;
+    if (health > 0)
+        goto surviving_hit;
     if ((target->portal_flags & 0x08000000) && (!FreePlay || WORLD->current_level != CRUISERC_LDATA))
         goto surviving_hit;
     if (probe) {
