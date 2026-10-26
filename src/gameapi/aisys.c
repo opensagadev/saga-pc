@@ -6894,7 +6894,6 @@ i32 __cdecl Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     char *value;
     i32 local_type;
     i32 global_type;
-    i32 object_count;
     GAMEOBJECT *candidate;
     i32 index, object_index, type_index;
     (void)processor;
@@ -6932,23 +6931,18 @@ i32 __cdecl Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     }
 
     if (type_count != 0) {
-        object_count = HIGHGAMEOBJECT;
         candidate = Obj;
 
-        for (object_index = 0; object_index < object_count; ++object_index, ++candidate) {
+        for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
             if ((candidate->flags_1fc_word & (1u | 0x1000u)) != (1u | 0x1000u) || (candidate->flags_1f8 & 0x400) == 0) {
                 continue;
             }
-            if (enabled) {
-                for (type_index = 0; type_index < type_count; ++type_index) {
-                    if ((i16)candidate->id == types[type_index]) {
+            for (type_index = 0; type_index < type_count; ++type_index) {
+                if ((i16)candidate->id == types[type_index]) {
+                    if (enabled) {
                         candidate->flags_ef0 =
                             (candidate->flags_ef0 & ~0x1000u) | 0x400000u | ((still_take_hit & 1) << 12);
-                    }
-                }
-            } else {
-                for (type_index = 0; type_index < type_count; ++type_index) {
-                    if ((i16)candidate->id == types[type_index]) {
+                    } else {
                         candidate->flags_ef0 &= ~0x400000u;
                     }
                 }
@@ -9404,7 +9398,6 @@ i32 __cdecl Action_SnapToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     i32 player;
     AILOCATOR_PC *locator;
     char locator_name[64];
-    NUVEC position;
 
     if (first_time != 0) {
         object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
@@ -9450,19 +9443,18 @@ i32 __cdecl Action_SnapToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
                 locator = AIPathFindLocator(sys, locator_name);
             }
             if (locator != NULL) {
-                position = locator->position;
-                object->position = position;
+                object->position = locator->position;
                 object->field_0x276 = locator->rotation;
                 object->facing_angle = locator->rotation;
                 object->movement_facing_angle = locator->rotation;
                 object->ai_packet.path_info = locator->path_info;
-                object->initial_position = position;
-                object->collision_position = position;
-                plr_lastpos = position;
-                object->start_position = position;
-                object->respawn_position = position;
-                object->last_safe_position = position;
-                object->ai_update_position = position;
+                object->collision_position = object->position;
+                object->initial_position = object->position;
+                plr_lastpos = object->collision_position;
+                object->start_position = object->collision_position;
+                object->respawn_position = object->position;
+                object->last_safe_position = object->position;
+                object->ai_update_position = object->position;
                 object->velocity = v000;
                 InitSurfaceInfo(object);
                 if (check_terrain != 0)
