@@ -1323,3 +1323,175 @@ void __cdecl NuStrToLower(char *text) {
         *text++ = (char)value;
     }
 }
+
+/* SOURCE proposal: ordinary wide-string counterparts in the existing nustring owner.
+ * Work on raw 16-bit units, including Native's broad Latin-1 case conversion.
+ * Counts preserve the PC's subtract-then-test behavior and 32-bit wrap; these
+ * are not bounded libc replacements and do not add missing-pointer guards.
+ */
+i32 __cdecl NuStrNCatW(NUWCHAR *str, const NUWCHAR *ext, i32 n) {
+    i32 copied;
+    while (*str != 0)
+        ++str;
+    copied = 0;
+    if (ext != NULL) {
+        do {
+            if (n == 0)
+                break;
+            *str = *ext;
+            ++str;
+            ++copied;
+            n = (i32)((u32)n - 1u);
+        } while (*ext++ != 0);
+    }
+    return copied;
+}
+
+i32 __cdecl NuStrNCpyW(NUWCHAR *dst, const NUWCHAR *src, i32 n) {
+    i32 copied = 0;
+    if (src == NULL) {
+        *dst = 0;
+        return 0;
+    }
+    do {
+        n = (i32)((u32)n - 1u);
+        ++copied;
+        if (n <= 0) {
+            *dst = 0;
+            break;
+        }
+        *dst = *src;
+        ++dst;
+    } while (*src++ != 0);
+    return copied - 1;
+}
+
+NUWCHAR *__cdecl NuStrStrW(NUWCHAR *str, const NUWCHAR *sub) {
+    while (*str != 0) {
+        NUWCHAR *cursor = str;
+        const NUWCHAR *match = sub;
+        while (*match != 0) {
+            if (*cursor == 0)
+                break;
+            if (*cursor != *match)
+                break;
+            ++cursor;
+            ++match;
+        }
+        if (*match == 0)
+            return str;
+        ++str;
+    }
+    return NULL;
+}
+
+NUWCHAR *__cdecl NuStrIStrW(NUWCHAR *str, const NUWCHAR *sub) {
+    while (*str != 0) {
+        NUWCHAR *cursor = str;
+        const NUWCHAR *match = sub;
+        while (*match != 0) {
+            NUWCHAR ca;
+            NUWCHAR cb;
+            if (*cursor == 0)
+                break;
+            ca = *cursor;
+            ca = NU_UTF16_UPPER(ca);
+            cb = *match;
+            cb = NU_UTF16_UPPER(cb);
+            if (ca != cb)
+                break;
+            ++cursor;
+            ++match;
+        }
+        if (*match == 0)
+            return str;
+        ++str;
+    }
+    return NULL;
+}
+
+i32 __cdecl NuStrCmpW(const NUWCHAR *a, const NUWCHAR *b) {
+    NUWCHAR ca;
+    NUWCHAR cb;
+    if (a == NULL)
+        return -1;
+    if (b == NULL)
+        return 1;
+    do {
+        ca = *a;
+        cb = *b;
+        if (ca > cb)
+            return 1;
+        if (ca < cb)
+            return -1;
+        ++a;
+        ++b;
+    } while (ca != 0 && cb != 0);
+    return 0;
+}
+
+i32 __cdecl NuStrNCmpW(const NUWCHAR *a, const NUWCHAR *b, i32 n) {
+    NUWCHAR ca;
+    NUWCHAR cb;
+    if (a == NULL)
+        return -1;
+    if (b == NULL)
+        return 1;
+    if (n == 0)
+        return 0;
+    if (n == -1)
+        n = NuStrLenW(a);
+    else if (n == -2)
+        n = NuStrLenW(b);
+    do {
+        ca = *a;
+        cb = *b;
+        if (ca > cb)
+            return 1;
+        if (ca < cb)
+            return -1;
+        ++a;
+        ++b;
+        n = (i32)((u32)n - 1u);
+    } while (ca != 0 && cb != 0 && n != 0);
+    return 0;
+}
+
+i32 __cdecl NuStrNICmpW(const NUWCHAR *a, const NUWCHAR *b, i32 n) {
+    NUWCHAR ca;
+    NUWCHAR cb;
+    if (a == NULL)
+        return -1;
+    if (b == NULL)
+        return 1;
+    if (n == 0)
+        return 0;
+    if (n == -1)
+        n = NuStrLenW(a);
+    else if (n == -2)
+        n = NuStrLenW(b);
+    do {
+        ca = *a;
+        ca = NU_UTF16_UPPER(ca);
+        cb = *b;
+        cb = NU_UTF16_UPPER(cb);
+        if (ca > cb)
+            return 1;
+        if (ca < cb)
+            return -1;
+        ++a;
+        ++b;
+        n = (i32)((u32)n - 1u);
+    } while (ca != 0 && cb != 0 && n != 0);
+    return 0;
+}
+
+void __cdecl NuStrUprW(NUWCHAR *dst, const NUWCHAR *src) {
+    while (*src != 0) {
+        NUWCHAR character = *src;
+        *dst = NU_UTF16_UPPER(character);
+        ++dst;
+        ++src;
+    }
+    *dst = *src;
+}

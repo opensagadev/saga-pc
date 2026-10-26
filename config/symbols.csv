@@ -2560,9 +2560,17 @@ address,symbol,size,ctype
 0x4f20a0,_NuStrStr,77,"char *__cdecl (char *, const char *)"
 0x004f20f0,_NuStrCmp,60,"i32 __cdecl (const char *, const char *)"
 0x004f2130,_NuStrNCmp,103,"i32 __cdecl (const char *, const char *, i32)"
+0x4f2220,_NuStrNCatW,81,"i32 __cdecl (NUWCHAR *, const NUWCHAR *, i32)"
 0x004f2280,_NuStrCpyW,48,"i32 __cdecl(u16 *, const u16 *)"
+0x4f22b0,_NuStrNCpyW,79,"i32 __cdecl (NUWCHAR *, const NUWCHAR *, i32)"
 0x4f2370,_NuStrLenW,29,
+0x4f2390,_NuStrStrW,83,"NUWCHAR *__cdecl (NUWCHAR *, const NUWCHAR *)"
+0x4f23f0,_NuStrIStrW,145,"NUWCHAR *__cdecl (NUWCHAR *, const NUWCHAR *)"
+0x4f2490,_NuStrCmpW,65,"i32 __cdecl (const NUWCHAR *, const NUWCHAR *)"
 0x4f24e0,_NuStrICmpW,133,
+0x4f2570,_NuStrNCmpW,108,"i32 __cdecl (const NUWCHAR *, const NUWCHAR *, i32)"
+0x4f25e0,_NuStrNICmpW,176,"i32 __cdecl (const NUWCHAR *, const NUWCHAR *, i32)"
+0x4f2690,_NuStrUprW,78,"void __cdecl (NUWCHAR *, const NUWCHAR *)"
 0x004f26e0,_NuStrLwrW,76,"void __cdecl (u16 *, const u16 *)"
 0x004f2730,_NuVSPrintf,5,"i32 __cdecl(char *, const char *, va_list)"
 0x4f2740,_NuSPrintf,43,"i32 __cdecl (char *, const char *, ...)"
