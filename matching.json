@@ -286,7 +286,7 @@
     "src/legoapi/gameantinode.c": "eef88032a67839a41d0e602696505ec71dbe99e9812bf579ccb7783c8401d5af",
     "src/legoapi/gameaudio.c": "204c6691ccab7f4814fc6447b929dec85bf7dc8e9b72f1edddafe3e3404bfffb",
     "src/legoapi/gamemessages.c": "039754672b96a37e5b636382ccf4445ea4dca4d22ecd59dd34a8d8927cb4087b",
-    "src/legoapi/gameobjects.c": "9fafc8e5f55213cb19e1baa7c926e405e93ff340ed3e81e907e648d1cbff1381",
+    "src/legoapi/gameobjects.c": "20fa2d301d5d5b250bb2c2b168e7913834eca8480410ec1b1dc6c889b4ed22ed",
     "src/legoapi/gamepads.c": "f9a83da5f33af4363e7c46af2c3df1e027b208254499d0ac809ac1c02fd0f199",
     "src/legoapi/gamestatus.c": "087db948768d577b3f466c00b3568ce40b14166b15719f6b3f53961d5d3316f1",
     "src/legoapi/gcutscn.c": "b0136d8d1d5bb03f0aff5e94f344c308bdf687b29c427cfb170e4adb6dc116c2",
@@ -401,7 +401,7 @@
     "src/legoapi/utilities.c": "ec8f1a5c8f972b72330b55bb49e1a58dd87aee33cdf7e225c150b4fd1c282cdc",
     "src/legoapi/whip.c": "ff852dffbd51e256b4652ac14b0e74e4c935135981c39ba628cb6d7ff6252fa2",
     "src/legoapi/zipup.c": "3865db8d90ee1a41c786d8747f6e661dc1a392c389fc3578204b1c43a60c4c92",
-    "src/nu2api/bgproc.c": "166198f6189f58f4e34f2e5ebc8347096c7d11cf3f6485a9344332f64e667e74",
+    "src/nu2api/bgproc.c": "273486bd52109e9dff5b7543883d2415b3d9bf002d1d8d679376dd355e0b4c06",
     "src/nu2api/frame_render_control_pc.c": "50b671daefaadaa8c4cf8bc9828ad0d9ecb6a43cc756ed03b462609d90c04aa3",
     "src/nu2api/glutils.c": "562d5438332dfb4654aaab1e9dd0a7b017b65a9e9fc8c786e5b1f7e5331af251",
     "src/nu2api/implode.c": "dcd62b4b33d1d9a4add4e1c9ddccf1c6dd2365bfdb02a1dc099bd60873407a04",
@@ -664,7 +664,7 @@
     "build/obj/legoapi/gameantinode.obj": "e3968ad781bdf6e6331aaa2302b9f692fb9d68e0c55f483e72de8f9983d7fb21",
     "build/obj/legoapi/gameaudio.obj": "9eebbe48a8ae7ca79caf99f532aee5b418dbcbbb856cf9e3083ce69b696b6e8e",
     "build/obj/legoapi/gamemessages.obj": "931b89733facf4d5522ff9a8f132d3e5b69e138db25dc36c9e07c7562d713877",
-    "build/obj/legoapi/gameobjects.obj": "625e0bbd85f67e04f8b8d3ba2c8356817c21e78c6244f5ddfecf159448f47c64",
+    "build/obj/legoapi/gameobjects.obj": "58742ffb03e79dd982ebf4cc2550918c3e5019337ccca3bfc919a569516a1cb5",
     "build/obj/legoapi/gamepads.obj": "6b2fbaa417e0e792ac619e4b4faf92b17abbff25682d331274e96ff5cb14c901",
     "build/obj/legoapi/gamestatus.obj": "4c7b0f5e6fcaa8584b6fb7540d224c59178411afc5e558847bfe4d444e86afd9",
     "build/obj/legoapi/gamestructure.obj": "b410bece1acb4ad5d1b8d427f911b180c03a90ca8c359d5dc20f0d249bf6229e",
@@ -821,7 +821,7 @@
     "build/obj/legoapi/zipup.obj": "ab28d22016dba2c5a28b5f076947c55095f4a4401afd6ec65f4110e9aa72941f",
     "build/obj/legogame/game.obj": "7455428622dc03a2ee1305f21233539935eec48b351cddd24baa1f5721d5bf6c",
     "build/obj/legogame/startup.obj": "4a6e1bb3a4d8b29290dc37f7bc44a4b4c136f0f07aad0986794a8de654dc0188",
-    "build/obj/nu2api/bgproc.obj": "86cf78fa524c95344aa5083327cf79c5e1ff5417299b31dbadcc28cdda4713bb",
+    "build/obj/nu2api/bgproc.obj": "80ee8d11e439a29b14f29fcbdb9d2f3828e511c02a0b6a46830b464d90e9b1ab",
     "build/obj/nu2api/cpu_features.obj": "24706d0dcd2e69798e29b55f6435b7a4915bba012be5046128102a6d32a2dc17",
     "build/obj/nu2api/crc16.obj": "a2758da80f3448db0e61102d420a77bffee92afa260da99f24c9ba7d10c67713",
     "build/obj/nu2api/d3d_api_lifetime.obj": "686f85dc1176e011112bf1ae7dee65501828ad6f01d2052f6f35152e56bd28ae",
@@ -12711,7 +12711,7 @@
           "base_size": 6164,
           "exact_match": false,
           "target_sha256": "791fb38bb0a6a1ed568dcb1f5ef8913df9bb2fd017e25281a4543d45074e6b61",
-          "base_sha256": "5aea0515cf969c4e74a1d4dec604548ac584e9c029688ce6b374c07ad0fe50b6",
+          "base_sha256": "1c4ab61ff60894dbfcb04bd5c05e8b9ccde2418b01cd8e0b254999feaba3f2d0",
           "relocation_count": 190,
           "comparison_unit": "0043e530-9221ebd912d1",
           "objdiff_percent": 78.2409
@@ -66862,11 +66862,25 @@
       "name": "bgPostRequestV",
       "symbol": "_bgPostRequestV",
       "address": "0x004febb0",
-      "units": [],
+      "units": [
+        "src/nu2api/bgproc.c"
+      ],
       "target_size": 312,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/nu2api/bgproc.c",
+          "base_size": 296,
+          "exact_match": false,
+          "target_sha256": "445f7d355e24e3f9446e6d5a123abf954cb5adf4e6865751bc3a949fd981b926",
+          "base_sha256": "91ab6ea360bf0a9db08629fd49fb8473733ad187a5f12abcf790e00298c2a7fd",
+          "relocation_count": 19,
+          "comparison_unit": "004febb0-ddb11c70eeab",
+          "objdiff_percent": 79.537735
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 79.537735
     },
     {
       "name": "bgPostRequest",
@@ -536930,11 +536944,11 @@
     "mapped_code_bytes": 2559795,
     "matched_code_bytes": 750846,
     "matching_percent": 21.630446243222174,
-    "fuzzy_coverage_percent": 61.43049121075353,
+    "fuzzy_coverage_percent": 61.437640163412034,
     "mapped_functions": 9673,
     "matched_functions": 5812,
-    "objdiff_fuzzy_percent": 85.683754,
-    "objdiff_total_code": 2491657,
+    "objdiff_fuzzy_percent": 85.68299,
+    "objdiff_total_code": 2491969,
     "image_bytes": 40067072,
     "mapped_bytes": 4432367,
     "mapping_percent": 11.062368121134481,
@@ -538307,7 +538321,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "9b5e4b80b3373289a13121025a24abc7fa24576b8c5056eb68db4d6cb600cd6c",
+      "geometry_object_sha256": "bee94ef043f6d32ed70ffc22cefd75f8a227cfaafd7ec1de5614422c5901f23c",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
