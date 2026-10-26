@@ -6963,6 +6963,8 @@ address,symbol,size,ctype
 0x6374a0,_RtlProcessLightPrivate,960,
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
 0x6382a0,_RefreshUI,1800,
+0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
+0x0063abb0,_edrtlBurnoutFileSave,309,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63ad30,_edrtlEnter,234,
 0x63c1b0,_edrtlDetermineNearestBurn,240,"void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *)"
 0x63c2a0,_edrtlCalculateBurnout,1125,"void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32)"
@@ -6978,6 +6980,7 @@ address,symbol,size,ctype
 0x63f930,_InitUI,3646,
 0x641020,_edrtlBurnoutLoadSet,649,"i32 __cdecl edrtlBurnoutLoadSet(char *, BURN_SET_PC *)"
 0x6412b0,_edrtlBurnoutLoad,59,"BURN_SET_PC *__cdecl edrtlBurnoutLoad(char *, VARIPTR *, i32)"
+0x006412f0,_edrtlBurnoutFileLoad,370,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x641470,_edrtlBurnMainMenu,347,
 0x6415d0,_edrtlInit,178,
 0x641690,_edrtlProcBurn,591,
@@ -16440,6 +16443,8 @@ address,symbol,size,ctype
 0x76b9d8,??_C@_0BA@LPGHPLPA@File?5Save?5Error?$AA@,16,char []
 0x76b9e8,??_C@_08DNCCGPLP@Saved?5OK?$AA@,9,char []
 0x76b9f4,??_C@_08IEFAEBKE@?$CFs?2?$CFs?4?$CFs?$AA@,9,char []
+0x0076ba00,??_C@_03KHKOKE@bur?$AA@,,const char[4]
+0x0076ba04,??_C@_07KMIHOMCG@burnout?$AA@,,const char[8]
 0x0076ba0c,??_C@_0O@KKKICMLF@UNDO?5?$CFd?1?$CFd?1?$CFd?$AA@,,const char[]
 0x0076ba1c,??_C@_0L@GOCODMIN@RTL?5Editor?$AA@,,const char[]
 0x0076ba28,??_C@_0L@KOIHKIAN@?$CK?$CKLOCKED?$CK?$CK?$AA@,,const char[]

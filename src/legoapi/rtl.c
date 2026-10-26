@@ -1555,3 +1555,120 @@ void __cdecl edrtlDrawRTLInfo(void) {
     }
     edrtlDrawHelp();
 }
+
+#include <stdio.h>
+
+void EdFileWriteInt(i32 value);
+void EdFileWriteNuVec(NUVEC *value);
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public identity.
+i32 edrtlBurnoutSave(char *filename, BURN_SET_PC *set) {
+    i32 index;
+    i32 count = 0;
+    if (!set)
+        return 0;
+    for (index = 0; index < 32; ++index) {
+        if (set->burnouts[index].active)
+            ++count;
+    }
+    EdFileSetMedia(1);
+    if (!EdFileOpen(filename, 1))
+        return 0;
+    EdFileSetReadWrongEndianess(1);
+    EdFileWriteInt(5);
+    EdFileWriteInt(count);
+    EdFileWriteFloat(set->parameters.field_24);
+    EdFileWriteFloat(set->parameters.field_14);
+    EdFileWriteFloat(set->parameters.field_1c);
+    EdFileWriteFloat(set->field_b8);
+    EdFileWriteFloat(set->field_bc);
+    EdFileWriteFloat(set->field_c0);
+    EdFileWriteFloat(set->field_c4);
+    EdFileWriteFloat(set->field_c8);
+    EdFileWriteFloat(set->field_cc);
+    for (index = 0; index < 32; ++index) {
+        if (set->burnouts[index].active) {
+            EdFileWriteNuVec(&set->burnouts[index].position);
+            EdFileWriteFloat(set->burnouts[index].field_10);
+            EdFileWriteFloat(set->burnouts[index].field_14);
+            EdFileWriteFloat(set->burnouts[index].field_18);
+            EdFileWriteFloat(set->burnouts[index].field_1c);
+            EdFileWriteFloat(set->burnouts[index].field_20);
+        }
+    }
+    EdFileWriteFloat(set->parameters.field_04);
+    EdFileWriteFloat(set->parameters.field_08);
+    EdFileWriteFloat(set->parameters.field_0c);
+    EdFileWriteFloat(set->parameters.field_10);
+    EdFileWriteFloat(set->parameters.field_20);
+    EdFileWriteInt(set->parameters.field_28);
+    EdFileWriteFloat(set->parameters.field_2c);
+    EdFileWriteFloat(set->parameters.field_30);
+    EdFileWriteFloat(set->parameters.field_34);
+    EdFileWriteFloat(set->parameters.field_38);
+    EdFileWriteFloat(set->parameters.field_3c);
+    EdFileWriteFloat(set->parameters.field_40);
+    EdFileWriteFloat(set->parameters.field_44);
+    EdFileWriteFloat(set->parameters.field_48);
+    EdFileClose();
+    EdFileSetReadWrongEndianess(0);
+    return 1;
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem callback identity.
+void edrtlBurnoutFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char name[256];
+    char directory[256];
+    char extension[256];
+    char filename[256];
+    if (!edbits_level_save_directory[0])
+        sprintf(directory, ".");
+    else
+        strcpy(directory, edbits_level_save_directory);
+    if (!edbits_level_save_name[0])
+        sprintf(name, "burnout");
+    else
+        strcpy(name, edbits_level_save_name);
+    if (!edbits_level_save_extension[0])
+        sprintf(extension, "bur");
+    else
+        strcpy(extension, edbits_level_save_extension);
+    sprintf(filename, "%s\\%s.%s", directory, name, extension);
+    if (edrtlBurnoutSave(filename, edrtl_edit_burnset))
+        eduiCreateMessageMenu(menu, "Saved OK", 1);
+    else
+        eduiCreateMessageMenu(menu, "File Save Error", 0);
+}
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem callback identity.
+void edrtlBurnoutFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    char name[256];
+    char directory[256];
+    char extension[256];
+    char filename[256];
+    BURN_SET_PC *set;
+    i32 index;
+    if (!edbits_level_save_directory[0])
+        sprintf(directory, ".");
+    else
+        strcpy(directory, edbits_level_save_directory);
+    if (!edbits_level_save_name[0])
+        sprintf(name, "burnout");
+    else
+        strcpy(name, edbits_level_save_name);
+    if (!edbits_level_save_extension[0])
+        sprintf(extension, "bur");
+    else
+        strcpy(extension, edbits_level_save_extension);
+    sprintf(filename, "%s\\%s.%s", directory, name, extension);
+    set = edrtl_edit_burnset;
+    if (set) {
+        for (index = 0; index < 32; ++index)
+            set->burnouts[index].active = 0;
+        set->active_count = 0;
+        set->selected_index = -1;
+    }
+    if (NuFileExists(filename))
+        edrtlBurnoutLoadSet(filename, edrtl_edit_burnset);
+    eduiCreateMessageMenu(menu, "Loaded OK", 1);
+}
