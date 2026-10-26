@@ -45,9 +45,11 @@ void ShaderCompilerDictionaryPc::AddRegisterBlock(const char *name, i32 count) {
     block->register_count = count;
 }
 i32 ShaderCompilerDictionaryPc::FindRegisterBlock(const char *name) {
-    for (i32 i = 0; i < register_block_count; ++i)
-        if (strcmp(register_blocks[i].name, name) == 0)
-            return register_blocks[i].register_count;
+    ShaderRegisterBlockPc *cursor = register_blocks;
+    ShaderRegisterBlockPc *end = register_blocks + register_block_count;
+    for (; cursor < end; ++cursor)
+        if (strcmp(name, cursor->name) == 0)
+            return cursor->register_count;
     return 0;
 }
 
