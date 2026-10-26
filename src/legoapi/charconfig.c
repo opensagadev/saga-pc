@@ -2260,13 +2260,14 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
         i32 redirected;
         if (permanent == 0 && apicharsys->playermodelids[id] == -1)
             continue;
-        NuStrCpy(directory, "chars\\");
-        NuStrCat(directory, character->dir);
-        NuStrCat(directory, "\\");
+        NuStrCpy(path, "chars\\");
+        NuStrCat(path, character->dir);
+        NuStrCat(path, "\\");
+        NuStrCpy(directory, path);
+        NuStrCat(path, character->name);
+        NuStrCat(path, ".txt");
         NuStrCpy(filename, character->name);
         NuStrCat(filename, ".txt");
-        NuStrCpy(path, directory);
-        NuStrCat(path, filename);
         NuStrCpy(original_path, path);
         if (pak == NULL) {
             VARIPTR *arena = permanent != 0 ? &permbuffer_ptr : NULL;
