@@ -2751,6 +2751,7 @@ address,symbol,size,ctype
 0x004fd9f0,_NuFilePakLoad,33,"void *__cdecl (char *, VARIPTR *, VARIPTR, i32)"
 0x004fda90,_NuStringTableLoadCSV,1260,"i32 __cdecl (char*, VARIPTR*, VARIPTR, char*, char*)"
 0x004fdf80,_NuStringTableLoadTXT,899,"i32 __cdecl (char *, VARIPTR *, VARIPTR)"
+0x004fe310,_NuStringTableLoad,114,"i32 __cdecl (char *, VARIPTR *, VARIPTR)"
 0x004fe390,_NuStringFilterLoad,659,"void __cdecl (char*, VARIPTR*, VARIPTR)"
 0x004fe640,_bgProcDataOversize,1,void __cdecl (i32)
 0x4fe770,_NuErrorFunction,124,
@@ -14703,6 +14704,8 @@ address,symbol,size,ctype
 0x75ec24,__real@42aa0000,4,const f32
 0x0075ec28,__real@4055400000000000,8,const f64
 0x75ec30,??_C@_05EILEDKCG@LABEL?$AA@,6,const char[6]
+0x0075ec38,??_C@_07NAIMCPPE@ENGLISH?$AA@,,const char[8]
+0x0075ec40,??_C@_04EBGNMJBD@?4csv?$AA@,,const char[5]
 0x75ec48,_PCWarningSuffix,2,const char[2]
 0x75ec78,??_C@_0BG@EPJDAGPP@NuDebugMsg?5?9?5?$CFs?$CI?$CFd?$CJ?5?3?$AA@,22,char []
 0x0075ec90,_bgproc_resume_event_name,9,const char[9]

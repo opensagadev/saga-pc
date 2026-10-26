@@ -996,18 +996,48 @@ u16 *__cdecl NuStringTableGetById(i32 id) {
     return StringBank[bank].strings[id].str_utf16;
 }
 
+i32 __cdecl NuStringTableLoad(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
+    char *extension = NuStrRChr(filepath, '.');
+
+    if (extension != NULL && NuStrICmp(extension, ".csv") == 0) {
+        return NuStringTableLoadCSV(filepath, buf, buf_end, "LABEL", "ENGLISH");
+    }
+    return NuStringTableLoadTXT(filepath, buf, buf_end);
+}
+
 void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
-    i32 count = 0;
-    i32 i = 0;
+    i32 count;
+    i32 i;
     i32 length;
     i32 j;
-    void *mem_buf = (void *)(buf_end.addr - 0x100000);
-    i32 bytes_read = NuFileLoadBuffer(path, mem_buf, 0x100000);
+    void *mem_buf;
+    i32 bytes_read;
     NUFILE file;
     NUFPAR_PC *parser;
     u16 word[128];
+    i32 file_index;
 
-    file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    if (buf_end.addr - buf->addr < 0x100000) {
+        NuFileError();
+    }
+    mem_buf = (void *)(buf_end.addr - 0x100000);
+    bytes_read = NuFileLoadBuffer(path, mem_buf, 0x100000);
+    count = 0;
+
+    file = 0;
+    if (bytes_read > 0) {
+        for (file_index = 0; file_index < 20; file_index++) {
+            if (pc_memfiles[file_index].used == 0) {
+                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
+                pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
+                pc_memfiles[file_index].mode = 0;
+                pc_memfiles[file_index].used = 1;
+                file = file_index + 0x400;
+                break;
+            }
+        }
+    }
     if (file != 0) {
         parser = NuFParOpen(file);
         if (parser != NULL) {
@@ -1016,7 +1046,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
                     ++count;
                 }
             } while (NuFParGetLine(parser) != 0);
-            NuFreeFPar(parser);
+            parser->file_buffer = NULL;
         }
         NuFileClose(file);
     }
@@ -1025,18 +1055,29 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     buf->addr = (buf->addr + 3) & ~3U;
     buf->addr += (count + 1) * sizeof(u16 *);
     memset(BadWords, 0, (count + 1) * sizeof(u16 *));
+    i = 0;
 
-    file = NuMemFileOpen(mem_buf, bytes_read, 1);
+    file = 0;
+    if (bytes_read > 0) {
+        for (file_index = 0; file_index < 20; file_index++) {
+            if (pc_memfiles[file_index].used == 0) {
+                pc_memfiles[file_index].buffer = (u8 *)mem_buf;
+                pc_memfiles[file_index].end = (u8 *)mem_buf + bytes_read - 1;
+                pc_memfiles[file_index].position = pc_memfiles[file_index].buffer;
+                pc_memfiles[file_index].mode = 0;
+                pc_memfiles[file_index].used = 1;
+                file = file_index + 0x400;
+                break;
+            }
+        }
+    }
     if (file != 0) {
         parser = NuFParOpen(file);
         if (parser != NULL) {
             do {
                 if (NuFParGetWord(parser) > 0) {
                     NuUTF8ToUnicode(word, (u8 *)parser->word_buffer_ptr);
-                    length = 0;
-                    while (word[length] != 0) {
-                        ++length;
-                    }
+                    length = NuStrLenW(word);
                     if (length <= 3) {
                         for (j = length; j >= 0; --j) {
                             word[j + 1] = word[j];
@@ -1052,7 +1093,7 @@ void __cdecl NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
                     ++i;
                 }
             } while (NuFParGetLine(parser) != 0 && i < count);
-            NuFreeFPar(parser);
+            parser->file_buffer = NULL;
         }
         NuFileClose(file);
     }
