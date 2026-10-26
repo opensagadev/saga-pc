@@ -251,7 +251,7 @@
     "src/legoapi/character_animation.c": "fa49960440306c8808773a25092cdd1c4c3b7d3e1f0d2ae123ad8b5815ee9d11",
     "src/legoapi/character_joints_pc.c": "373e5323a3b5ce27299ab68a7c4c390872efe792dfc7649ed505ad66e92fcf0a",
     "src/legoapi/charcategory_init_pc.c": "fe1742e95171e2e1c5f39b145773146668aaee56f6e7f3d7a236640ea24d4cf7",
-    "src/legoapi/charconfig.c": "fcf1461cdd572d165d8c7804aebe194520625437fdfb9dd524cdd962c2fe6279",
+    "src/legoapi/charconfig.c": "984057212be60486a0b263f24c325ab57a6c6fc3a4fc051d4ef80477a9758d7a",
     "src/legoapi/charpivot.c": "3ca45ee1a4adb33a8a06c6d148001f7de4b4992bffdeabc668edf6a275a9a9bc",
     "src/legoapi/charplatforms_pc.c": "2063cba2170f58d8ebcfc435f8e067599a1b87c4793345cb6c05fa44efe96bb3",
     "src/legoapi/cheats.c": "d8fddc21bf9f51d490134e506742cbdf7c49cda045ae3070697aae70103906f3",
@@ -621,7 +621,7 @@
     "build/obj/legoapi/character_joints_pc.obj": "825ee1cb9d41e26c8e6fb1b55484bf3a9c6902afcdca76cfd45f69c30b298979",
     "build/obj/legoapi/characters.obj": "b4726f5c3724d49d540d55e16a1fd43acc717d22a4dc982abec116ee6260f412",
     "build/obj/legoapi/charcategory_init_pc.obj": "f37baa5e617ec0219980ec2ee708d8edf1f38e148eb327f0f6bc598fb4cfb7ec",
-    "build/obj/legoapi/charconfig.obj": "aff0ad00f394942000561600b157e9d12696e441ba66de3b50ce4dfd2bea54f7",
+    "build/obj/legoapi/charconfig.obj": "fbc66f1bde427e2710bff4b65865f598bfe1d9bc57a2881da01aef5b02727e7c",
     "build/obj/legoapi/charpivot.obj": "045773c2b5b6a752f90dc29a5f43e5039733aeb5a85eb8fc31a9ba9cdfc60f25",
     "build/obj/legoapi/charplatforms_pc.obj": "6a3f9935d4cf2157be98e64b507a67b229e2ae0e958ea447ecc1dc477aa6cacd",
     "build/obj/legoapi/cheats.obj": "9950ee9f932b377c5e13f433640fc23ebbfa4d25365aa12f8d4a7f8d1e7dcfcd",
@@ -115640,17 +115640,17 @@
       "objects": [
         {
           "unit": "src/legoapi/charconfig.c",
-          "base_size": 957,
+          "base_size": 959,
           "exact_match": false,
           "target_sha256": "af88e6348334dfd42fff6287b575bc91842b312af87013806be11de8e4080f38",
-          "base_sha256": "963a3b53572ab5208e08540a91b78ca08fcfcd426db6e7371951ec3f03ff1036",
-          "relocation_count": 51,
+          "base_sha256": "37d26b74329404d1c204dc82c9f7774531e3ad6a133988de01315d18fadec3df",
+          "relocation_count": 53,
           "comparison_unit": "00589ac0-986632be50bf",
-          "objdiff_percent": 51.991043
+          "objdiff_percent": 54.20597
         }
       ],
       "status": "different",
-      "objdiff_percent": 51.991043
+      "objdiff_percent": 54.20597
     },
     {
       "name": "CharShadows_Reset",
@@ -537056,10 +537056,10 @@
     "mapped_code_bytes": 2560814,
     "matched_code_bytes": 750901,
     "matching_percent": 21.632030688692186,
-    "fuzzy_coverage_percent": 61.46433379479686,
+    "fuzzy_coverage_percent": 61.46506056606372,
     "mapped_functions": 9676,
     "matched_functions": 5813,
-    "objdiff_fuzzy_percent": 85.677895,
+    "objdiff_fuzzy_percent": 85.6789,
     "objdiff_total_code": 2493199,
     "image_bytes": 40067072,
     "mapped_bytes": 4433386,
@@ -538433,7 +538433,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "e78f9bfb8c075d320f32fe128d2d1e14b32b8f68b1fd0d7d0b9bbd6c8b28380d",
+      "geometry_object_sha256": "38f99f2c772517d5ac2458a1ab002ff8af573a24761385d5814ca09b05beaf9e",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
