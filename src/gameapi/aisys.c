@@ -9315,9 +9315,9 @@ i32 __cdecl Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     char numbered_name[64];
     AILOCATOR_PC *candidate;
     f32 distance;
-    char resolved_name[64];
     GAMEOBJECT *object;
     (void)param_6;
+    best_distance = 1.0e9f;
     if (param_5 == 0 || param_4 == 0) {
         return 1;
     }
@@ -9348,10 +9348,10 @@ i32 __cdecl Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
 
     locator = NULL;
     if (locator_name != NULL && nearest) {
-        best_distance = 1.0e9f;
-
-        for (index = 0;; ++index) {
+        index = 0;
+        for (;;) {
             sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, index);
+            index++;
             candidate = AIPathFindLocator(sys, numbered_name);
             if (candidate == NULL) {
                 break;
@@ -9366,17 +9366,17 @@ i32 __cdecl Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
 
         object = packet->owner->objptr;
         if (indexed && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
-            sprintf(resolved_name, (char *)AILocatorIndexedFormat, locator_name,
+            sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name,
                     ((APIOBJECT_PC *)packet->owner)->locator_name_index);
         } else if (personal && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
-            sprintf(resolved_name, (char *)AILocatorPersonalFormat, locator_name,
+            sprintf(numbered_name, (char *)AILocatorPersonalFormat, locator_name,
                     ((APIOBJECT_PC *)packet->owner)->character_data->name);
         } else if (random_count != 0) {
-            sprintf(resolved_name, (char *)AILocatorIndexedFormat, locator_name, NuRand(0) % random_count);
+            sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, NuRand(0) % random_count);
         } else {
-            sprintf(resolved_name, locator_name);
+            sprintf(numbered_name, locator_name);
         }
-        locator = AIPathFindLocator(sys, resolved_name);
+        locator = AIPathFindLocator(sys, numbered_name);
     }
     if (target != NULL) {
         target->ai->locator = locator;
