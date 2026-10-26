@@ -1341,13 +1341,23 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
     PC_INPUT_BINDING_PC *bindings = auxiliary ? auxiliary_bindings[bank] : devices[port].bindings;
     i32 simple = (u32)port <= 3;
     i32 active = (i8)commands[action].active;
-    i32 positive = kind == 5 || kind == 6 ? 5 : 2;
-    i32 negative = positive + 1;
+    i32 positive;
+    i32 negative;
+    if (kind == 5 || kind == 6) {
+        positive = 5;
+        negative = 6;
+    } else {
+        positive = 2;
+        negative = 3;
+    }
     if (!(PcInputAxisRemapInitialized & 1)) {
         PcInputAxisRemapInitialized |= 1;
-        PcInputAxisRemap[10] = PcInputAxisRemap[11] = (u8)positive;
-        PcInputAxisRemap[12] = PcInputAxisRemap[13] = (u8)negative;
-        PcInputAxisRemap[14] = PcInputAxisRemap[15] = 0;
+        PcInputAxisRemap[10] = (u8)positive;
+        PcInputAxisRemap[11] = (u8)positive;
+        PcInputAxisRemap[12] = (u8)negative;
+        PcInputAxisRemap[13] = (u8)negative;
+        PcInputAxisRemap[14] = 0;
+        PcInputAxisRemap[15] = 0;
     }
     if (kind != positive && kind != negative) {
         for (i32 i = 0; i < 32; ++i)
@@ -1366,18 +1376,28 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
             i32 other_kind = bindings[i].kind;
             if (i != action && (other_kind == positive || other_kind == negative) &&
                 (i32)(i16)bindings[i].value == value) {
-                i32 index = (kind == positive ? 4 : 0) + (other_kind == positive ? 2 : 0);
+                i32 index = 0;
+                if (kind == positive)
+                    index = 4;
+                if (other_kind == positive)
+                    index += 2;
                 if (commands[i].active == 2)
                     ++index;
                 if (commands[i].active == 3)
                     index += 8;
-                bindings[i].kind = PcInputAxisRemap[index];
-                bindings[i].value = bindings[i].kind ? (u16)value : 0;
+                u8 remapped_kind = PcInputAxisRemap[index];
+                bindings[i].kind = remapped_kind;
+                bindings[i].value = remapped_kind ? (u16)value : 0;
             }
         }
         return;
     }
-    kind = ((kind == positive && active == 2) || (kind == negative && active == 1)) ? positive : negative;
+    if (kind == positive && active == 2)
+        kind = positive;
+    else if (kind == negative && active == 1)
+        kind = positive;
+    else
+        kind = negative;
     for (i32 i = 0; i < 32; ++i)
         if ((bindings[i].kind == positive || bindings[i].kind == negative) && (i32)(i16)bindings[i].value == value &&
             !(excluded & (1u << i))) {
