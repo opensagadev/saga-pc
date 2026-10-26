@@ -5812,8 +5812,7 @@ void __cdecl GameAIProcess(void) {
     if (test_new_interaction != 0)
         GameCreatureInteraction2D(WORLD->ai_sys, interactive_count, interactive_objects, NULL, FRAMETIME);
     else
-        ((void(__cdecl *)(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32))AISysCreatureAntinodeInteraction)(
-            WORLD->ai_sys, interactive_count, interactive_objects, NULL, FRAMETIME);
+        AISysCreatureInteraction2D(WORLD->ai_sys, interactive_count, interactive_objects, NULL, FRAMETIME);
     if (party_under_cover != 0) {
         for (index = 0; index < 8; ++index) {
             if (((GAMEOBJECT **)Player)[index] != NULL)
