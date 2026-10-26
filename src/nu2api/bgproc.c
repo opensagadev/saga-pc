@@ -10,6 +10,69 @@ void __cdecl PcDisableThreadSwap(void) {
 void(__cdecl *NuThreadDisableThreadSwap)(void) = PcDisableThreadSwap;
 void(__cdecl *NuThreadEnableThreadSwap)(void) = PcEnableThreadSwap;
 
+BGPROCINFO *__cdecl bgPostRequestV(bgprocdofn *do_fn, bgprocdofn *ack_fn, i32 first_type, ...) {
+    BGPROCINFO *info;
+    BGVAR *var;
+    u8 *string_end;
+    i32 *argument;
+    i32 type;
+
+    EnterCriticalSection(&bgproc_critical_section);
+    info = (BGPROCINFO *)NuLstAllocTail(bgproc_procinfo_pool);
+    if (info != NULL) {
+        info->work_started = 0;
+        info->unknown_flag_2 = 0;
+        var = (BGVAR *)info->data;
+        string_end = (u8 *)&info->vars;
+        info->vars = var;
+        info->do_fn = do_fn;
+        info->ack_fn = ack_fn;
+        info->var_count = 0;
+        type = first_type;
+        argument = &first_type;
+        while (type != 7) {
+            var->type = type;
+            switch (type) {
+                case 1:
+                case 5:
+                    var->value.i32_value = *++argument;
+                    break;
+                case 2:
+                    ++argument;
+                    var->value.float_value = *(f32 *)argument;
+                    break;
+                case 3: {
+                    char *string = *(char **)++argument;
+                    string_end -= (u32)NuStrLen(string) + 1u;
+                    var->value.string_value = (char *)string_end;
+                    NuStrCpy((char *)string_end, string);
+                    break;
+                }
+                case 4:
+                    var->value.u32_value = *(u32 *)++argument;
+                    break;
+                case 6:
+                    var->value.i32_value = *++argument;
+                    break;
+                default:
+                    bgProcDataOversize(type);
+                    break;
+            }
+            type = *++argument;
+            ++info->var_count;
+            ++var;
+        }
+    }
+    if (info == NULL || (u8 *)var > string_end) {
+        ((void(__cdecl *)(void))bgProcDataOversize)();
+    }
+    LeaveCriticalSection(&bgproc_critical_section);
+    if (info != NULL) {
+        SetEvent(bgproc_work_event);
+    }
+    return info;
+}
+
 BGPROCINFO *__cdecl bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32 data_size) {
     BGPROCINFO *info;
 
