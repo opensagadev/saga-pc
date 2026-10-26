@@ -265,7 +265,7 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
     ShaderConditionNodePc *current = NULL;
     ShaderConditionNodePc *stack[100];
     i32 count = 0;
-    ShaderLexicalSlicePc slice;
+    ShaderLexicalSlicePc slice = {NULL, 0};
     ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
     while (reader->Next(input, cursor, &slice)) {
         char *token = slice.ArenaCopy(arena);
