@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "e0ac4bb513de129642173b9f07ed6ac28108520d3371b5ced8f71fe1dfb11159",
+    "config/symbols.csv": "e558d5a9adacf6457606b7f0f64e06f07c18d21b787d96e1e16c17e08a5b79aa",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -220,7 +220,7 @@
     "src/gameapi/edanim_update.c": "e17e587a49a8eb0b34ffa03be1df596476c7d4ac34b6edf43843775464a2c845",
     "src/gameapi/edbits.c": "de7f9699cb055d39ffcdcc9bba9338a10e548021991e1c89e3cbb0f8c4d887d0",
     "src/gameapi/edbri.c": "7c7345cede7fa671a636e20745dcc7d6dccbcf6c59508c74259c6b61c5724d67",
-    "src/gameapi/edfile.c": "ca14d302b60007b07590db1a688323e977956587d320e8af93a1aaa47965dce8",
+    "src/gameapi/edfile.c": "d93b87ec0c36585acfff4263fbedf074e1fb9106c4c392f05e44dd813605651f",
     "src/gameapi/edgra.c": "8a199a006f1da4a3c240b25f6b5f756f78fb7b5e1af01f96647a5de6b3663c1b",
     "src/gameapi/edgrass.c": "6d4979f496835e5198c3d74fd6022c3b24e16c01a08e995b3e099a3517071df0",
     "src/gameapi/edpart.c": "e238b68e2bb08a11d01441a1067ae255d2fd032f64cca93e2fe1ec3b3baba3fc",
@@ -469,7 +469,7 @@
     "src/nu2api/nuspecial.c": "d8ff92b8970218a9dd1c10d0f416ea3fe7e178e42f9baaf415bb20ec0d4e6b5b",
     "src/nu2api/nuspline.c": "4fca834d595d001f94487843973d0ec517f0009b800958c71cd4a03a82f76933",
     "src/nu2api/nustateanim.c": "075aa9b9759dc0563d76c7a6c1a3bdcddc10ea95b2e48b630a6cd1b91e08ac5f",
-    "src/nu2api/nustring.c": "272a49a8e1d957d7bbc5abe61a801f4a1f6e1e4d6df858c850f1737c7f286941",
+    "src/nu2api/nustring.c": "2aec6db23f97e9d2aaf5582cbef319e7f92e92479ba8ca5c9d404145f29a93f0",
     "src/nu2api/nuterrain.c": "418cbbc686c1ef35bbc010ddfa9530a8135394a996084fa48606875b3a8ed2a5",
     "src/nu2api/nutex.c": "825414218218faac6a8707345c8b2717046735b7406dcaf4e4a48ce01a9afd66",
     "src/nu2api/nutexanim.c": "6d3ba25be34778a710eff4ba9a267c90602084efcae1aef3d79d3c40edcd868b",
@@ -576,7 +576,7 @@
     "build/obj/gameapi/edanim_update.obj": "c015dfb04f9f21cabc549b3c162be598d3e7cae2e3f75cc093339471cde83942",
     "build/obj/gameapi/edbits.obj": "a5b3d47cea8e313eade96b2184735a0bcd524eb19eb3f4614280582e216514b6",
     "build/obj/gameapi/edbri.obj": "f8b50df72035a178ea93391ea087d1919a91c8544ac9c3afbac94ec469273643",
-    "build/obj/gameapi/edfile.obj": "d6b602149afbafcd8cc4cd97f77d2e027f3911abe643836180b4d58652b99236",
+    "build/obj/gameapi/edfile.obj": "08dd9e9b043edb81c7584c405573d2c5fb22be7a6d0825e62f3cccdbe2d97e84",
     "build/obj/gameapi/edgra.obj": "7d930141ce18d7b25f656c7fafc315401a7cec278e3cb4540c48453711641fc4",
     "build/obj/gameapi/edgrass.obj": "b6b692548748697ea5591705432784cd7d81fddd4254480bd8dedf2b6b6ccc86",
     "build/obj/gameapi/edpart.obj": "134d4d2eb2005fb4b84c694b3c823a2140a9aa987654bedb20dd4b0922ccee55",
@@ -924,7 +924,7 @@
     "build/obj/nu2api/nuspline.obj": "18872289444462f23624f7eedf34524c6da149f1143eb94344a13b9e3a983989",
     "build/obj/nu2api/nustateanim.obj": "8bc098cef7de32dddbb91efb78a468152edf856460be8886e69ed1e68ac9797c",
     "build/obj/nu2api/nustream.obj": "d5959ef6d8beb208194ed7f93fd189bdb50e79a04e355d38c78993770fea0bc1",
-    "build/obj/nu2api/nustring.obj": "3848b4ca61f4f4ebc3e3c762ab59acbd50925a858a5435350be6d6170530a73d",
+    "build/obj/nu2api/nustring.obj": "29e0850cc466beccb60a8bfc48ddbd018cbc9c9a15a733504d29a1c463898f18",
     "build/obj/nu2api/nuterrain.obj": "ba8b9a2820e4a9a6114ccc06f2a9c9070d3c23de21087b58135231b2c0cb89eb",
     "build/obj/nu2api/nutex.obj": "e9b86d84607a7805c48c946e81c8a0af5e4123b0cf2250cd690d819ca906bf8a",
     "build/obj/nu2api/nutex_pc.obj": "2d35a3f928022d0cbd2140fd62a02245322af536a52ff8cb066bbf1513b0a443",
@@ -61997,6 +61997,78 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuToUpperW",
+      "symbol": "_NuToUpperW",
+      "address": "0x004f21a0",
+      "units": [
+        "src/nu2api/nustring.c"
+      ],
+      "target_size": 31,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustring.c",
+          "base_size": 35,
+          "exact_match": false,
+          "target_sha256": "4b6e7939da5e3cf20cca9e1d736b59782a99511b9faa33b072221ba2f4dd6346",
+          "base_sha256": "78ac17b053b5042187798d1907bd325c70c4ebf683d0a4752144aff2cbfd87e0",
+          "relocation_count": 0,
+          "comparison_unit": "004f21a0-8c93a32cd124",
+          "objdiff_percent": 53.11111
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 53.11111
+    },
+    {
+      "name": "NuToLowerW",
+      "symbol": "_NuToLowerW",
+      "address": "0x004f21c0",
+      "units": [
+        "src/nu2api/nustring.c"
+      ],
+      "target_size": 29,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustring.c",
+          "base_size": 32,
+          "exact_match": false,
+          "target_sha256": "ee5220782a2b7369ad8b12b0bf537742e1c9a417bd8f0da3a4b0ae1dbbf25a85",
+          "base_sha256": "cc843270d95bde8391b3a9c2bcb7fefcea39271e3af4fff2edf682fd8879b4b8",
+          "relocation_count": 0,
+          "comparison_unit": "004f21c0-a679ede3d2f0",
+          "objdiff_percent": 64.888885
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 64.888885
+    },
+    {
+      "name": "NuStrCatW",
+      "symbol": "_NuStrCatW",
+      "address": "0x004f21e0",
+      "units": [
+        "src/nu2api/nustring.c"
+      ],
+      "target_size": 54,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustring.c",
+          "base_size": 54,
+          "exact_match": true,
+          "target_sha256": "0526e437e690c7713ef826abadef37a75dad51f5aa2bb5d3e25b87adee4fcc50",
+          "base_sha256": "0526e437e690c7713ef826abadef37a75dad51f5aa2bb5d3e25b87adee4fcc50",
+          "relocation_count": 0,
+          "comparison_unit": "004f21e0-20dc5fc72757",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuStrNCatW",
       "symbol": "_NuStrNCatW",
       "address": "0x004f2220",
@@ -62067,6 +62139,54 @@
       ],
       "status": "different",
       "objdiff_percent": 81.121216
+    },
+    {
+      "name": "NuStrChrW",
+      "symbol": "_NuStrChrW",
+      "address": "0x004f2300",
+      "units": [
+        "src/nu2api/nustring.c"
+      ],
+      "target_size": 37,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustring.c",
+          "base_size": 37,
+          "exact_match": true,
+          "target_sha256": "5fa87be7ffbfeacfda462eae1f994994e77505ea36b23af7b3a12c024d50c3cf",
+          "base_sha256": "5fa87be7ffbfeacfda462eae1f994994e77505ea36b23af7b3a12c024d50c3cf",
+          "relocation_count": 0,
+          "comparison_unit": "004f2300-031c7a12016a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuStrRChrW",
+      "symbol": "_NuStrRChrW",
+      "address": "0x004f2330",
+      "units": [
+        "src/nu2api/nustring.c"
+      ],
+      "target_size": 49,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustring.c",
+          "base_size": 49,
+          "exact_match": true,
+          "target_sha256": "49d540164257a7114b07a5be6f71d391d3b4378e00417fc01370c864a711bc29",
+          "base_sha256": "49d540164257a7114b07a5be6f71d391d3b4378e00417fc01370c864a711bc29",
+          "relocation_count": 0,
+          "comparison_unit": "004f2330-086c2ac21234",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuStrLenW",
@@ -159589,6 +159709,54 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "EduiProcessLockedInteractionPc",
+      "symbol": "_EduiProcessLockedInteractionPc",
+      "address": "0x0061f440",
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
+      "target_size": 57,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 57,
+          "exact_match": false,
+          "target_sha256": "c9d0420a1b10647e1ffe2634a74558092f0d2e363b4fa595a8365cae0cfea854",
+          "base_sha256": "e9b89b3641ccabd72a7edaddbbf9c1889dc503731fd9a50e6ef83864e02d878b",
+          "relocation_count": 3,
+          "comparison_unit": "0061f440-e4b49fcdd20f",
+          "objdiff_percent": 86.90476
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 86.90476
+    },
+    {
+      "name": "EduiInteractionContainsCursorPc",
+      "symbol": "_EduiInteractionContainsCursorPc",
+      "address": "0x0061f4b0",
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
+      "target_size": 94,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 94,
+          "exact_match": false,
+          "target_sha256": "d43c48cf7515e735f7bcb76e5765803d75c11fb7a3f60c5199e1cdf0641f95ad",
+          "base_sha256": "ff83b88988be529527a6da15040fb30551e3925f614d0188592c75537a81cbee",
+          "relocation_count": 2,
+          "comparison_unit": "0061f4b0-c5679a6dd719",
+          "objdiff_percent": 71.710526
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 71.710526
+    },
+    {
       "name": "eduiSetFontScale",
       "symbol": "_eduiSetFontScale",
       "address": "0x0061f9b0",
@@ -161348,21 +161516,49 @@
       "name": "EduiInteractHelperPc6272a0",
       "symbol": "_EduiInteractHelperPc6272a0",
       "address": "0x006272a0",
-      "units": [],
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
       "target_size": 126,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 130,
+          "exact_match": false,
+          "target_sha256": "3ab1a58f85ae0dbe1456cf95d90c00fdaa1f287a364629fd73c279dd5383a6c2",
+          "base_sha256": "0a32229a472d206d0302a067674d5056933726f7099af2636a7104e123911ac8",
+          "relocation_count": 6,
+          "comparison_unit": "006272a0-0017586d8f7e",
+          "objdiff_percent": 6.1458335
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 6.1458335
     },
     {
       "name": "eduiProcessInteracts",
       "symbol": "_eduiProcessInteracts",
       "address": "0x00627320",
-      "units": [],
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
       "target_size": 125,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 127,
+          "exact_match": false,
+          "target_sha256": "d038abf1b2ff174de6400c4b980630ffa40655f80dc77a8be4c3dd76ce52a99e",
+          "base_sha256": "74092fb06924a874ceb05147e9f47c72b7ae57c57121223d13e3a780915f4871",
+          "relocation_count": 8,
+          "comparison_unit": "00627320-7ca07a4836ab",
+          "objdiff_percent": 44.862743
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 44.862743
     },
     {
       "name": "eduiItemColourSliderCreate",
@@ -162000,11 +162196,25 @@
       "name": "eduiMenuProcessAux",
       "symbol": "_eduiMenuProcessAux",
       "address": "0x00629e20",
-      "units": [],
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
       "target_size": 163,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 160,
+          "exact_match": false,
+          "target_sha256": "f66ecb9c8214db22d6bb768d3d8ff13405f44c427ef4cd6336482aa01d8acfb6",
+          "base_sha256": "df535b9c8e71bbe89ad5e08cb7719582c71039a4f5991d7db0b7d982669ab280",
+          "relocation_count": 9,
+          "comparison_unit": "00629e20-18a7fbdc9edd",
+          "objdiff_percent": 28.819672
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 28.819672
     },
     {
       "name": "CreateTestMenu",
@@ -466185,6 +466395,18 @@
       "status": "exact"
     },
     {
+      "name": "edui_cursor_y",
+      "symbol": "_edui_cursor_y",
+      "address": "0x0080f554",
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "edui_font_scale_x",
       "symbol": "_edui_font_scale_x",
       "address": "0x0080f558",
@@ -539236,17 +539458,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2566577,
-    "matched_code_bytes": 752621,
-    "matching_percent": 21.681580619754406,
-    "fuzzy_coverage_percent": 61.79914176214775,
-    "mapped_functions": 9711,
-    "matched_functions": 5831,
-    "objdiff_fuzzy_percent": 85.66735,
-    "objdiff_total_code": 2507072,
+    "mapped_code_bytes": 2566928,
+    "matched_code_bytes": 752761,
+    "matching_percent": 21.685613753678073,
+    "fuzzy_coverage_percent": 61.81075211971705,
+    "mapped_functions": 9718,
+    "matched_functions": 5834,
+    "objdiff_fuzzy_percent": 85.65728,
+    "objdiff_total_code": 2507837,
     "image_bytes": 40067072,
-    "mapped_bytes": 4439149,
-    "mapping_percent": 11.079294738582345,
+    "mapped_bytes": 4439500,
+    "mapping_percent": 11.080170769653446,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -539254,7 +539476,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2567771
+        "mapped_bytes": 2568122
       },
       {
         "name": ".rdata",
@@ -539279,17 +539501,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18730,
-    "mapping_unknown_size_symbols": 7400,
-    "mapping_code_bytes": 2567771,
+    "mapping_known_size_symbols": 18737,
+    "mapping_unknown_size_symbols": 7401,
+    "mapping_code_bytes": 2568122,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 73.97260234509453,
+    "mapping_code_percent": 73.98271398800316,
     "mapping_data_bytes": 1871378,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195535041178029,
-    "mapping_code_data_bytes": 4439149,
+    "mapping_code_data_bytes": 4439500,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.2411374241293,
+    "mapping_code_data_percent": 11.242026251973527,
     "mapping_file_backed_data_bytes": 382712,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.95031928744136,
@@ -539300,17 +539522,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2566577,
-    "exact_reconstruction_bytes": 752621,
-    "mapped_not_exact_bytes": 1813956,
+    "mapped_reconstruction_bytes": 2566928,
+    "exact_reconstruction_bytes": 752761,
+    "mapped_not_exact_bytes": 1814167,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 903475,
+    "unclassified_text_bytes": 903124,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 21.681580619754406,
+    "strict_original_text_exact_percent": 21.685613753678073,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 21.68904097114395,
-    "mapped_scope_denominator_bytes": 2566577,
-    "mapped_scope_exact_percent": 29.323920536964213,
+    "reconstruction_scope_exact_percent": 21.69307549281682,
+    "mapped_scope_denominator_bytes": 2566928,
+    "mapped_scope_exact_percent": 29.325364794026168,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -540616,7 +540838,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "14d14ccaf763a7607435e620b27a92ffba87891395c27b5e055ffb4bff144195",
+      "geometry_object_sha256": "cab9c6de68d8d978ca568ccdd28c05542855d651da268f5fc405c192ae29b094",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
