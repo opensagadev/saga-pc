@@ -4,6 +4,8 @@
 #include <float.h>
 #include <math.h>
 
+extern NULISTLNK *__cdecl NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
+
 extern void __cdecl EdFileWriteUnsignedChar(u8);
 extern const char GameAIEveryonePc[];
 
@@ -15674,3 +15676,258 @@ refresh_hover:
 
 #undef LOCATOR_CURSOR_PC
 #undef LOCATOR_HOVER_PC
+
+/* SOURCE-ONLY R66 three-function carry: append to genuine gameapi/aisys.c after fresh rebind.
+ * Reuses locator's AiEditorLocatorRotationPc and AI_EDITOR_LOCATOR_HOVER_VIEW_PC;
+ * does not redefine either. No ABI attributes, helper forcing or compiler measures.
+ * Native private register arguments must emerge naturally when all same-TU bodies
+ * are compiled; these declarations express their ordinary typed object contracts.
+ */
+
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, camera_position) == 0x28);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, cursor_platform) == 0x3c);
+STATIC_ASSERT(offsetof(EDANTINODE_s, position) == 8);
+STATIC_ASSERT(offsetof(EDANTINODE_s, lower_height) == 0x18);
+STATIC_ASSERT(offsetof(EDANTINODE_s, upper_height) == 0x1c);
+STATIC_ASSERT(offsetof(EDANTINODE_s, special_position) == 0x2c);
+STATIC_ASSERT(offsetof(EDANTINODE_s, rotation_offset) == 0x38);
+STATIC_ASSERT(offsetof(EDANTINODE_s, flags) == 0x3c);
+STATIC_ASSERT(offsetof(AI_EDITOR_LOCATOR_HOVER_VIEW_PC, rotation_repeat) == 0x371b4);
+#define ANTINODE_STATE_PC ((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)
+#define ANTINODE_SELECTED_PC (ANTINODE_STATE_PC->selected)
+#define ANTINODE_NEAREST_PC (ANTINODE_STATE_PC->nearest)
+#define ANTINODE_REPEAT_PC (((AI_EDITOR_LOCATOR_HOVER_VIEW_PC *)aieditor)->rotation_repeat)
+/* The flags at 43828 need an asserted named overlay; existing editor view ends
+ * at the pool's nearest pointer. This view describes precisely that same prefix. */
+typedef struct AI_EDITOR_ANTINODE_FLAGS_PC {
+    u8 unknown_00[0x43828];
+    u32 flags;
+} AI_EDITOR_ANTINODE_FLAGS_PC;
+STATIC_ASSERT(offsetof(AI_EDITOR_ANTINODE_FLAGS_PC, flags) == 0x43828);
+#define ANTINODE_FLAGS_PC (((AI_EDITOR_ANTINODE_FLAGS_PC *)aieditor)->flags)
+
+/* Native 527bc0..527d32 is an external ordinary cdecl supplier in this
+ * projection. Its held body and both held private shape bodies are omitted.
+ * No replacement, guard, activation or callback registration is introduced. */
+extern EDANTINODE_s *__cdecl antinodeEditor_GetNearestAntinode(i32 require_inside);
+
+/* Native 5274f0..5275e0: private position argument EDI. */
+static EDANTINODE_s *CreateAntinode(NUVEC *position) {
+    EDANTINODE_s *node = (EDANTINODE_s *)NuLinkedListGetHead(&ANTINODE_STATE_PC->free_nodes);
+    if (node != NULL) {
+        NuLinkedListRemove(&ANTINODE_STATE_PC->free_nodes, &node->link);
+        NuLinkedListAppend(&ANTINODE_STATE_PC->live_nodes, &node->link);
+        node->position = *position;
+        if (ANTINODE_SELECTED_PC != NULL) {
+            node->radius = ANTINODE_SELECTED_PC->radius;
+            node->lower_height = ANTINODE_SELECTED_PC->lower_height;
+            node->upper_height = ANTINODE_SELECTED_PC->upper_height;
+            node->type = ANTINODE_SELECTED_PC->type;
+            node->base_radius = ANTINODE_SELECTED_PC->base_radius;
+            node->base_height = ANTINODE_SELECTED_PC->base_height;
+        } else {
+            node->radius = 0.25f;
+            node->lower_height = -default_path_heighttol;
+            node->upper_height = default_path_heighttol;
+        }
+    }
+    return node;
+}
+
+/* Native 527620..5276d9: private node argument ESI. */
+static void antinodeEditor_AntinodeMoved(EDANTINODE_s *node) {
+    NUVEC forward = {0.0f, 0.0f, 1.0f};
+    NUVEC rotated;
+    NUMTX *matrix;
+    if ((node->game_flags & 0x80) == 0 && NuSpecialExistsFn(&aieditor->cursor_platform)) {
+        node->special = aieditor->cursor_platform;
+        matrix = NuSpecialGetDrawMtx(&aieditor->cursor_platform);
+        NuVecInvMtxTransform(&node->special_position, &node->position, matrix);
+        NuVecMtxRotate(&rotated, &forward, matrix);
+        node->rotation_offset = NuAtan2D(rotated.x, rotated.z);
+        node->rotation_offset = NuAngSub(node->flags, node->rotation_offset);
+    } else {
+        node->special.scene = NULL;
+        node->special.special = NULL;
+        node->special.display_special = NULL;
+    }
+}
+
+/* Native 539050..5398fa. Input values are deliberately reread after callbacks
+ * where the PC reloads them; publication uses the shared selected/nearest slots. */
+eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
+    EDANTINODE_s *first;
+    i32 skip_platforms;
+    i32 forward;
+    f32 step;
+    NUVEC *platform_position;
+    if (pad->digital_buttons_pressed & 0x80)
+        return antinodeEditor_MainMenu();
+    if (pad->digital_buttons & 0x40) {
+        if (ANTINODE_NEAREST_PC != NULL) {
+            if (pad->digital_buttons_pressed & 0x40) {
+                ANTINODE_SELECTED_PC = ANTINODE_NEAREST_PC;
+                edcamSetPos(&ANTINODE_SELECTED_PC->position);
+            } else if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC) {
+                if ((pad->digital_buttons_pressed & 0x100) && NuSpecialExistsFn(&ANTINODE_SELECTED_PC->special)) {
+                    platform_position = NuSpecialGetDrawPos(&aieditor->cursor_platform);
+                    if (platform_position != NULL) {
+                        ANTINODE_SELECTED_PC->position.x = platform_position->x;
+                        ANTINODE_SELECTED_PC->position.z = platform_position->z;
+                        antinodeEditor_AntinodeMoved(ANTINODE_SELECTED_PC);
+                        edcamSetPos(&ANTINODE_SELECTED_PC->position);
+                    }
+                } else {
+                    ANTINODE_SELECTED_PC->position = aieditor->camera_position;
+                    antinodeEditor_AntinodeMoved(ANTINODE_SELECTED_PC);
+                    if (ANTINODE_SELECTED_PC->type != 0) {
+                        if (pad->digital_buttons & 0x8000) {
+                            ANTINODE_SELECTED_PC->base_radius = ANTINODE_SELECTED_PC->base_radius * ((double)0.99f);
+                            if (ANTINODE_SELECTED_PC->base_radius < ((double)0.05f))
+                                ANTINODE_SELECTED_PC->base_radius = 0.05f;
+                        } else if (pad->digital_buttons & 0x2000) {
+                            ANTINODE_SELECTED_PC->base_radius = ANTINODE_SELECTED_PC->base_radius * ((double)1.01f);
+                        } else if (pad->digital_buttons & 0x1000) {
+                            ANTINODE_SELECTED_PC->base_height = ANTINODE_SELECTED_PC->base_height * ((double)1.01f);
+                        } else if (pad->digital_buttons & 0x4000) {
+                            ANTINODE_SELECTED_PC->base_height = ANTINODE_SELECTED_PC->base_height * ((double)0.99f);
+                            if (ANTINODE_SELECTED_PC->base_height < ((double)0.05f))
+                                ANTINODE_SELECTED_PC->base_height = 0.05f;
+                        }
+                    }
+                }
+            }
+        } else if (pad->digital_buttons_pressed & 0x40) {
+            ANTINODE_SELECTED_PC = CreateAntinode(&aieditor->camera_position);
+            antinodeEditor_AntinodeMoved(ANTINODE_SELECTED_PC);
+        }
+    } else if (pad->digital_buttons_pressed & 0x10) {
+        if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC)
+            return antinodeEditor_DeleteAntinodeMenu();
+    } else if (pad->digital_buttons_pressed & 0x100) {
+        ANTINODE_SELECTED_PC = antinodeEditor_GetNearestAntinode(0);
+        if (ANTINODE_SELECTED_PC != NULL)
+            edcamSetPos(&ANTINODE_SELECTED_PC->position);
+    } else if (pad->digital_buttons & 0x100) {
+        /* PC branches on 8/2/4/1 individually; no cycle when all four are clear. */
+        if (pad->digital_buttons_pressed & 8) {
+            forward = 1;
+            skip_platforms = 0;
+        } else if (pad->digital_buttons_pressed & 2) {
+            forward = 0;
+            skip_platforms = 0;
+        } else if (pad->digital_buttons_pressed & 4) {
+            forward = 1;
+            skip_platforms = 1;
+        } else if (pad->digital_buttons_pressed & 1) {
+            forward = 0;
+            skip_platforms = 1;
+        } else {
+            goto nearest;
+        }
+        first = NULL;
+        do {
+            if (ANTINODE_SELECTED_PC != NULL) {
+                if (forward)
+                    ANTINODE_SELECTED_PC = (EDANTINODE_s *)NuLinkedListGetNext(&ANTINODE_STATE_PC->live_nodes,
+                                                                               &ANTINODE_SELECTED_PC->link);
+                else
+                    ANTINODE_SELECTED_PC = (EDANTINODE_s *)NuLinkedListGetPrev(&ANTINODE_STATE_PC->live_nodes,
+                                                                               &ANTINODE_SELECTED_PC->link);
+            }
+            if (ANTINODE_SELECTED_PC == NULL) {
+                if (forward)
+                    ANTINODE_SELECTED_PC = (EDANTINODE_s *)NuLinkedListGetHead(&ANTINODE_STATE_PC->live_nodes);
+                else
+                    ANTINODE_SELECTED_PC = (EDANTINODE_s *)NuLinkedListGetTail(&ANTINODE_STATE_PC->live_nodes);
+            }
+            if (!skip_platforms)
+                break;
+            if (ANTINODE_SELECTED_PC == NULL)
+                goto nearest;
+            if (first != NULL && ANTINODE_SELECTED_PC == first) {
+                ANTINODE_SELECTED_PC = NULL;
+                goto nearest;
+            }
+            if (!NuSpecialExistsFn(&ANTINODE_SELECTED_PC->special))
+                break;
+            /* The initial callback may publish another selected node. Remember
+             * the current shared slot after that call, as Native does. */
+            if (first == NULL)
+                first = ANTINODE_SELECTED_PC;
+        } while (1);
+        if (ANTINODE_SELECTED_PC != NULL)
+            edcamSetPos(&ANTINODE_SELECTED_PC->position);
+    } else if (pad->digital_buttons & 0x8000) {
+        if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC) {
+            if (ANTINODE_SELECTED_PC->type == 0) {
+                ANTINODE_SELECTED_PC->radius = ANTINODE_SELECTED_PC->radius * ((double)0.99f);
+                if (ANTINODE_SELECTED_PC->radius < ((double)0.05f))
+                    ANTINODE_SELECTED_PC->radius = 0.05f;
+            } else {
+                AiEditorLocatorRotationPc = ANTINODE_SELECTED_PC->flags;
+                /* Crossed Native pressed bits are intentional. */
+                if (pad->digital_buttons_pressed & 0x2000)
+                    ANTINODE_REPEAT_PC = 20;
+                else {
+                    ANTINODE_REPEAT_PC += 20;
+                    if (ANTINODE_REPEAT_PC > 600)
+                        ANTINODE_REPEAT_PC = 600;
+                }
+                AiEditorLocatorRotationPc = NuAngSub(AiEditorLocatorRotationPc, ANTINODE_REPEAT_PC);
+                if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC)
+                    ANTINODE_SELECTED_PC->flags = AiEditorLocatorRotationPc;
+                antinodeEditor_AntinodeMoved(ANTINODE_SELECTED_PC);
+            }
+        }
+    } else if (pad->digital_buttons & 0x2000) {
+        if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC) {
+            if (ANTINODE_SELECTED_PC->type == 0) {
+                ANTINODE_SELECTED_PC->radius = ANTINODE_SELECTED_PC->radius * ((double)1.01f);
+            } else {
+                AiEditorLocatorRotationPc = ANTINODE_SELECTED_PC->flags;
+                if (pad->digital_buttons_pressed & 0x8000)
+                    ANTINODE_REPEAT_PC = 20;
+                else {
+                    ANTINODE_REPEAT_PC += 20;
+                    if (ANTINODE_REPEAT_PC > 600)
+                        ANTINODE_REPEAT_PC = 600;
+                }
+                AiEditorLocatorRotationPc = NuAngAdd(AiEditorLocatorRotationPc, ANTINODE_REPEAT_PC);
+                if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC)
+                    ANTINODE_SELECTED_PC->flags = AiEditorLocatorRotationPc;
+                antinodeEditor_AntinodeMoved(ANTINODE_SELECTED_PC);
+            }
+        }
+    } else if ((pad->digital_buttons & 0x1000) && (AiEditorDisplayOptionsPc & 0x100)) {
+        if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC) {
+            ANTINODE_FLAGS_PC |= 4;
+            step = (ANTINODE_SELECTED_PC->upper_height - ANTINODE_SELECTED_PC->lower_height) * ((double)0.05f);
+            if (pad->digital_buttons & 4)
+                ANTINODE_SELECTED_PC->upper_height = step + ANTINODE_SELECTED_PC->upper_height;
+            else if (pad->digital_buttons & 1)
+                ANTINODE_SELECTED_PC->upper_height -= step;
+            if (ANTINODE_SELECTED_PC->upper_height < ANTINODE_SELECTED_PC->lower_height + ((double)0.01f))
+                ANTINODE_SELECTED_PC->upper_height = ANTINODE_SELECTED_PC->lower_height + ((double)0.01f);
+        }
+    } else if ((pad->digital_buttons & 0x4000) && (AiEditorDisplayOptionsPc & 0x100)) {
+        if (ANTINODE_SELECTED_PC != NULL && ANTINODE_SELECTED_PC == ANTINODE_NEAREST_PC) {
+            ANTINODE_FLAGS_PC |= 4;
+            step = (ANTINODE_SELECTED_PC->upper_height - ANTINODE_SELECTED_PC->lower_height) * ((double)0.05f);
+            if (pad->digital_buttons & 4)
+                ANTINODE_SELECTED_PC->lower_height += step;
+            else if (pad->digital_buttons & 1)
+                ANTINODE_SELECTED_PC->lower_height -= step;
+            if (ANTINODE_SELECTED_PC->lower_height > ANTINODE_SELECTED_PC->upper_height - ((double)0.01f))
+                ANTINODE_SELECTED_PC->lower_height = ANTINODE_SELECTED_PC->upper_height - ((double)0.01f);
+        }
+    }
+nearest:
+    ANTINODE_NEAREST_PC = antinodeEditor_GetNearestAntinode(1);
+    return NULL;
+}
+#undef ANTINODE_STATE_PC
+#undef ANTINODE_SELECTED_PC
+#undef ANTINODE_NEAREST_PC
+#undef ANTINODE_REPEAT_PC
+#undef ANTINODE_FLAGS_PC

@@ -3301,6 +3301,7 @@ address,symbol,size,ctype
 0x5273c0,_AiEditorCameraToPlayerPc,72,
 0x527420,_AiEditorMovePlayersPc,60,
 0x527460,_aieditor_AddMessage,135,
+0x5274f0,_CreateAntinode,240,
 0x5275e0,_AiEditorFreeAntinodePc,54,
 0x527620,_antinodeEditor_AntinodeMoved,185,
 0x5276e0,_AiEditorAntinodeGameFlagsPc,83,
@@ -3308,6 +3309,7 @@ address,symbol,size,ctype
 0x5277f0,_AiEditorAntinodeTypeCancelPc,12,
 0x527800,_AiEditorAntinodeTypeSetterPc,123,
 0x527880,_AiEditorAntinodeTypeMenuPc,210,
+0x527bc0,_antinodeEditor_GetNearestAntinode,370,EDANTINODE_s *__cdecl (i32)
 0x527d40,_AiEditorDeleteAntinodeCancelPc,37,
 0x527d70,_AiEditorDeleteAntinodeAnswerPc,98,
 0x527de0,_antinodeEditor_DeleteAntinodeMenu,153,
