@@ -7375,7 +7375,7 @@ i32 __cdecl Action_GameDontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
         }
         value = NuStrIStr(params[index], (char *)AIGameCharacterName);
         if (value != NULL) {
-            object = GetNamedGameObject(sys, value + NuStrLen((char *)AIGameCharacterName));
+            object = GetNamedGameObject(sys, value + 10);
         } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
             dont_push = 0;
         }
