@@ -1595,24 +1595,7 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
     i32 direction;
     i32 current_length;
     i32 candidate_length;
-    if ((u32)mode <= 1) {
-        direction = mode == 0 ? 1 : -1;
-        for (current = start; current != end;) {
-            current_length = NuStrLen(current);
-            candidate = current + NuStrLen(current) + 1;
-            while (candidate != end) {
-                candidate_length = NuStrLen(candidate);
-                if (NuStrICmp(current + 7, candidate + 7) == direction) {
-                    NuStrCpy(temporary, candidate);
-                    PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
-                    PCByteCopy_candidate(current, temporary, candidate_length + 1);
-                    current_length = candidate_length;
-                }
-                candidate += candidate_length + 1;
-            }
-            current += current_length + 1;
-        }
-    } else {
+    if ((u32)mode > 1) {
         u32 current_key;
         u32 candidate_key;
         i32 compare;
@@ -1640,6 +1623,23 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
                     PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
                     PCByteCopy_candidate(current, temporary, candidate_length + 1);
                     current_key = candidate_key;
+                    current_length = candidate_length;
+                }
+                candidate += candidate_length + 1;
+            }
+            current += current_length + 1;
+        }
+    } else {
+        direction = mode == 0 ? 1 : -1;
+        for (current = start; current != end;) {
+            current_length = NuStrLen(current);
+            candidate = current + NuStrLen(current) + 1;
+            while (candidate != end) {
+                candidate_length = NuStrLen(candidate);
+                if (NuStrICmp(current + 7, candidate + 7) == direction) {
+                    NuStrCpy(temporary, candidate);
+                    PCByteCopy_candidate(current + candidate_length + 1, current, candidate - current);
+                    PCByteCopy_candidate(current, temporary, candidate_length + 1);
                     current_length = candidate_length;
                 }
                 candidate += candidate_length + 1;
