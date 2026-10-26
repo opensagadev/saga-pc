@@ -6620,6 +6620,7 @@ address,symbol,size,ctype
 0x617f80,_edmainQueryLocVec,6,NUVEC *__cdecl(void)
 0x00618180,?eduiHSVToRGB@@YAXMMMAAM00@Z,328,"private HSV conversion; three f32 inputs and three RGB output references; no original linkage claim"
 0x618310,?EduiPrintAlignedTextPc@@YAXPAXHHHPADZZ,197,"void(void *, i32, i32, i32, char *, ...)"
+0x00618420,?EduiPrintClippedTextPc@@YAXPAXHHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
 0x00618920,?EduiDrawGradientSpanPc@@YAXHHHHIIMM@Z,148,"ordinary private C++ colour-span renderer; native colours ECX/EAX and six stack words"
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
@@ -6675,6 +6676,7 @@ address,symbol,size,ctype
 0x61f260,_cbInteractMenuScrollDown,33,i32 __cdecl(edui_interact_s *)
 0x61f290,_cbInteractMenuScrollTo,115,
 0x61f310,_cbInteractMenuCancelChild,35,
+0x0061f340,?EduiAddInteractionPc@@YAXMMMMPAUeduimenu_s@@PAUeduiitem_s@@P6AHPAUedui_interact_s@@@ZIH@Z,134,private EDX menu; stack f32 x/y/width/height and item/callback/buttons/field20 (32B)
 0x0061f3d0,_EduiClearInteractionsPc,47,
 0x61f9b0,_eduiSetFontScale,21,
 0x61fa90,_eduicbProcessColourSlider,721,
@@ -21750,6 +21752,8 @@ address,symbol,size,ctype
 0x80f524,_ed_main_menu_y,4,i32
 0x80f528,_ed_main_menu_w,4,i32
 0x80f534,_edmain_default_camera_speed,4,f32
+0x0080f53c,_eduimenu_outline_colour,,u32
+0x0080f540,_eduimenu_selected_outline_colour,,u32
 0x0080f544,_EduiItemOutlineColourPc,,u32
 0x0080f548,_EduiMarkedItemOutlineColourPc,,u32
 0x80f550,_edui_cursor_x,4,f32

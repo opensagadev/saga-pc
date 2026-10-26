@@ -661,3 +661,210 @@ extern "C" void __cdecl cbgpcfgCPPress(eduimenu_s *menu, eduiitem_s *item, u32 v
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
+
+/* SOURCE ONLY: append to the existing edui_widget_render_pc.cpp. The Native
+ * register-argument helpers belong with their real caller in this existing
+ * drawing unit. No ABI attributes, alignment forcing or caller activation.
+ * New colour cells have unknown Native allocation
+ * extents and zero allocation credit. All other state owners are reused. */
+extern "C" {
+    extern f32 edui_font_scale_x;
+    extern f32 edui_font_scale_y;
+    extern i32 EduiSelectionMaterialPc;
+    i32 __cdecl EduiRenderItemPc(eduiitem_s *, eduimenu_s *, i32, i32, i32, i32);
+    u32 eduimenu_outline_colour = 0x80404040;
+    u32 eduimenu_selected_outline_colour = 0x80ffffff;
+}
+STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
+STATIC_ASSERT(offsetof(eduimenu_s, child) == 0x3c);
+STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
+STATIC_ASSERT(offsetof(eduiitem_s, render) == 0x40);
+STATIC_ASSERT(offsetof(edui_sel_s, interact) == 0x48);
+STATIC_ASSERT(sizeof(edui_interact_s) == 0x24);
+STATIC_ASSERT(offsetof(edui_interact_s, menu) == 0x10);
+STATIC_ASSERT(offsetof(edui_interact_s, callback) == 0x18);
+STATIC_ASSERT(offsetof(edui_interact_s, field_20) == 0x20);
+
+extern "C" {
+    i32 __cdecl cbInteractMenuTitle(edui_interact_s *);
+    i32 __cdecl cbInteractMenuScrollUp(edui_interact_s *);
+    i32 __cdecl cbInteractMenuScrollDown(edui_interact_s *);
+    i32 __cdecl cbInteractMenuCancelChild(edui_interact_s *);
+}
+
+static void EduiAddInteractionPc(f32 x, f32 y, f32 width, f32 height, eduimenu_s *menu, eduiitem_s *item,
+                                 i32(__cdecl *callback)(edui_interact_s *), u32 buttons, i32 field_20) {
+    if (numInteracts < 64 && eduiInteractLocked == NULL) {
+        edui_interact_s *entry = &eduiInteracts[numInteracts];
+        entry->x = x;
+        entry->y = (f32)(y * 0.5);
+        entry->width = width;
+        entry->height = (f32)(height * 0.5);
+        entry->menu = menu;
+        entry->item = item;
+        entry->callback = callback;
+        entry->buttons = buttons;
+        entry->field_20 = field_20;
+        ++numInteracts;
+    }
+}
+
+static void EduiPrintClippedTextPc(void *font, i32 x, i32 y, i32 alignment, i32 clip_x, i32 clip_width, char *format,
+                                   ...) {
+    if (edui_donotdraw == 0) {
+        char text[1024];
+        va_list args;
+        NuQFntPushPrintMode(2);
+        va_start(args, format);
+        NuVSPrintf(text, format, args);
+        va_end(args);
+        i32 width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        switch (alignment) {
+            case 16:
+                break;
+            case 32:
+                x -= width;
+                break;
+            case 64:
+                x -= width / 2;
+                break;
+        }
+        i32 left = x < clip_x ? clip_x : x;
+        char *end = text + NuStrLen(text) - 1;
+        while (width > clip_width && end > text) {
+            *end-- = 0;
+            width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        }
+        NuQFntMove((VUFNT *)font, (f32)left, (f32)y, 0.0f);
+        NuQFntPrintU((VUFNT *)font, text);
+        NuQFntPopPrintMode();
+    }
+}
+
+extern "C" void __cdecl eduiMenuRender(eduimenu_s *menu) {
+    i32 x = menu->x;
+    i32 y = menu->y;
+    i32 max_item_height = 0;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuQFntPushCoordinateSystem(1);
+    NuQFntPushPrintMode(2);
+    if (edui_donotdraw == 0)
+        NuQFntSet((VUFNT *)edui_font);
+    NuQFntSetScale((VUFNT *)edui_font, edui_font_scale_x, edui_font_scale_y);
+    i32 title_height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 0.15625);
+    f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(NuQFntBaseline((VUFNT *)edui_font) + font_height);
+    if (menu->title != NULL && menu->title[0] != 0) {
+        if (menu->child == NULL)
+            EduiAddInteractionPc((f32)x, (f32)y, (f32)menu->width, (f32)title_height, menu, NULL, cbInteractMenuTitle,
+                                 0x40, 0);
+        if (edui_donotdraw == 0) {
+            NuRndrRect2di(x << 4, y << 3, menu->width << 4, title_height << 3, 0x80000000, (NUMTL *)uimtls[ui_bgmtl]);
+            if (edui_donotdraw == 0) {
+                NuQFntSet((VUFNT *)edui_font);
+                if (edui_donotdraw == 0)
+                    NuQFntSetColour((VUFNT *)edui_font, 0x807f7f7f);
+            }
+        }
+        EduiPrintClippedTextPc(edui_font, (x + 1) << 4, (y << 3) + baseline, 16, x << 4, menu->width << 4, menu->title);
+        y += title_height;
+    }
+    eduiitem_s *item = menu->field_0c;
+    if (item != NULL) {
+        i32 find_selected = menu->selected != NULL;
+        if (item != menu->first) {
+            i32 scroll_height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 0.125);
+            if (menu->child == NULL)
+                EduiAddInteractionPc((f32)x, (f32)y, (f32)menu->width, (f32)scroll_height, menu, NULL,
+                                     cbInteractMenuScrollUp, 0x40, 0);
+            if (edui_donotdraw == 0) {
+                NuRndrRect2di(x << 4, y << 3, menu->width << 4, scroll_height << 3, 0x80000000,
+                              (NUMTL *)uimtls[ui_bgmtl]);
+                if (edui_donotdraw == 0) {
+                    i32 centre = (x * 2 + menu->width) << 3;
+                    i32 top = (y << 3) + 8;
+                    i32 bottom = ((y + scroll_height) << 3) - 16;
+                    NuRndrLine2di(centre, top, centre - ((scroll_height - 2) << 4), bottom, 0x80ffffff,
+                                  (NUMTL *)uimtls[0]);
+                    if (edui_donotdraw == 0) {
+                        centre = (x * 2 + menu->width) << 3;
+                        NuRndrLine2di(centre, top, centre + ((scroll_height - 2) << 4), bottom, 0x80ffffff,
+                                      (NUMTL *)uimtls[0]);
+                    }
+                }
+            }
+            y += scroll_height;
+        }
+        while (item != NULL) {
+            menu->field_10 = item;
+            if (item == menu->selected)
+                find_selected = 0;
+            i32 item_height =
+                EduiRenderItemPc(item, menu, x, y, menu->width, item == menu->selected && menu->child == NULL);
+            if (item_height > max_item_height)
+                max_item_height = item_height;
+            if (menu->child == NULL)
+                EduiAddInteractionPc((f32)x, (f32)y, (f32)menu->width, (f32)item_height, menu, item,
+                                     ((edui_sel_s *)item)->interact, 0x40, 0);
+            item = item->next;
+            if (menu->flags & 2)
+                x += menu->width;
+            else
+                y += item_height;
+            if (item == NULL)
+                break;
+            if (menu->y + menu->height > y)
+                continue;
+            i32 scroll_height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 0.125);
+            if (menu->child == NULL)
+                EduiAddInteractionPc((f32)x, (f32)y, (f32)menu->width, (f32)scroll_height, menu, NULL,
+                                     cbInteractMenuScrollDown, 0x40, 0);
+            if (edui_donotdraw == 0) {
+                NuRndrRect2di(x << 4, y << 3, menu->width << 4, scroll_height << 3, 0x80000000,
+                              (NUMTL *)uimtls[ui_bgmtl]);
+                if (edui_donotdraw == 0) {
+                    i32 bottom = (y + scroll_height - 2) << 3;
+                    i32 top = (y << 3) + 8;
+                    i32 centre = (x * 2 + menu->width) << 3;
+                    NuRndrLine2di(centre, bottom, centre - ((scroll_height - 2) << 4), top, 0x80ffffff,
+                                  (NUMTL *)uimtls[0]);
+                    if (edui_donotdraw == 0) {
+                        centre = (x * 2 + menu->width) << 3;
+                        NuRndrLine2di(centre, bottom, centre + ((scroll_height - 2) << 4), top, 0x80ffffff,
+                                      (NUMTL *)uimtls[0]);
+                    }
+                }
+            }
+            break;
+        }
+        if (find_selected && menu->field_0c->next != NULL)
+            menu->field_0c = menu->field_0c->next;
+    }
+    if ((menu->flags & 2) == 0)
+        x = menu->x + menu->width;
+    else
+        y += max_item_height;
+    menu->field_24 = x - menu->x;
+    menu->field_28 = y - menu->y;
+    if (active_menu == menu) {
+        if (edui_donotdraw == 0)
+            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->field_24 + 2) << 4,
+                              (menu->field_28 << 3) + 16, eduimenu_selected_outline_colour,
+                              (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+    } else {
+        if (edui_donotdraw == 0)
+            NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->field_24 + 2) << 4,
+                              (menu->field_28 << 3) + 16, eduimenu_outline_colour,
+                              (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+    }
+    if (menu->child != NULL) {
+        EduiAddInteractionPc((f32)menu->x, (f32)menu->y, (f32)menu->field_24, (f32)menu->field_28, menu, NULL,
+                             cbInteractMenuCancelChild, 0x40, 1);
+        eduiMenuRender(menu->child);
+    }
+    NuQFntPopPrintMode();
+    NuQFntPopCoordinateSystem();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
