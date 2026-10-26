@@ -25134,6 +25134,8 @@ address,symbol,size,ctype
 0x2857290,_PostBlurInputBiasPc,4,f32 private BSS scalar only native read60635a
 0x2857294,_RenderFrameShaderTimePc,,f32
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,616448,NETMESSAGE_PC::MessageData[512]
+0x28fec28,_RefpackLinkArrayPc,,
+0x28fec2c,_RefpackHashTablePc,,
 0x2900a74,?initial_colours@?1??eduiCreateMessageMenu@@9@9,,
 0x2900a74,_edui_messagemenu,4,struct eduimenu_s *
 0x2900a7c,_edfile_buffer_pointer,4,i32
