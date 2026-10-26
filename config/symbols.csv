@@ -6683,6 +6683,8 @@ address,symbol,size,ctype
 0x61f310,_cbInteractMenuCancelChild,35,
 0x0061f340,?EduiAddInteractionPc@@YAXMMMMPAUeduimenu_s@@PAUeduiitem_s@@P6AHPAUedui_interact_s@@@ZIH@Z,134,private EDX menu; stack f32 x/y/width/height and item/callback/buttons/field20 (32B)
 0x0061f3d0,_EduiClearInteractionsPc,47,
+0x0061f440,_EduiProcessLockedInteractionPc,57,private Native EAX menu; ordinary typed static closed-caller interface
+0x0061f4b0,_EduiInteractionContainsCursorPc,94,private Native ECX edui_interact_s pointer; ordinary typed static closed-caller interface
 0x61f9b0,_eduiSetFontScale,21,
 0x61fa90,_eduicbProcessColourSlider,721,
 0x61fd70,_eduicbRenderColourSlider,606,
@@ -21762,6 +21764,7 @@ address,symbol,size,ctype
 0x0080f544,_EduiItemOutlineColourPc,,u32
 0x0080f548,_EduiMarkedItemOutlineColourPc,,u32
 0x80f550,_edui_cursor_x,4,f32
+0x0080f554,_edui_cursor_y,,f32
 0x80f558,_edui_font_scale_x,4,f32
 0x80f55c,_edui_font_scale_y,4,f32
 0x80f568,_edui_textrow_default,16,char *[4]

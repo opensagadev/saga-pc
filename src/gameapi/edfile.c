@@ -1994,3 +1994,99 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
     }
     FS_FileListEnd = next;
 }
+
+extern i32 EduiUsingMenuFocusPc;
+extern i32 edmain_cursor_enabled;
+f32 edui_cursor_y = 50.0f;
+
+STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
+STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
+STATIC_ASSERT(offsetof(eduiitem_s, process) == 0x3c);
+STATIC_ASSERT(offsetof(edui_interact_s, callback) == 0x18);
+STATIC_ASSERT(offsetof(edui_interact_s, field_20) == 0x20);
+
+static i32 EduiInteractionContainsCursorPc(edui_interact_s *interact) {
+    f32 edge;
+    if (!(edui_cursor_x >= interact->x))
+        return 0;
+    if (!(edui_cursor_y >= interact->y))
+        return 0;
+    edge = interact->width + interact->x;
+    if (!(edui_cursor_x < edge))
+        return 0;
+    edge = interact->height + interact->y;
+    if (!(edui_cursor_y < edge))
+        return 0;
+    return 1;
+}
+
+static i32 EduiProcessLockedInteractionPc(eduimenu_s *menu) {
+    if (menu && (menu == eduiInteractLocked->menu || menu->parent == eduiInteractLocked->menu)) {
+        eduiInteractLocked = eduiInteractLocked->callback(eduiInteractLocked) ? eduiInteractLocked : NULL;
+    }
+    return eduiInteractLocked != NULL;
+}
+
+static i32 EduiInteractHelperPc6272a0(eduimenu_s *menu, edui_interact_s *interact) {
+    u32 pressed;
+    if (interact->menu != menu)
+        return 0;
+    pressed = edui_cursor_buttons_db;
+    if (!(interact->buttons & pressed) || !EduiInteractionContainsCursorPc(interact))
+        return 0;
+    if (menu && interact->item && interact->item->type != 18)
+        menu->selected = interact->item;
+    if (interact->field_20) {
+        if (!(interact->buttons & pressed))
+            return 1;
+    } else {
+        if (!(interact->buttons & edui_cursor_buttons))
+            return 1;
+        if (menu != active_menu)
+            eduiSetActiveMenu(menu);
+    }
+    if (interact->callback && interact->callback(interact))
+        eduiInteractLocked = interact;
+    return 1;
+}
+
+i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
+    i32 index;
+    edui_interact_s *interact;
+    (void)pad;
+    if (!edmain_cursor_enabled)
+        return 0;
+    if (eduiInteractLocked) {
+        if ((!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->field_20)
+            eduiInteractLocked = NULL;
+    }
+    if (eduiInteractLocked)
+        return EduiProcessLockedInteractionPc(menu);
+    if (numInteracts <= 0)
+        return 0;
+    for (index = 0; index < numInteracts; ++index) {
+        interact = eduiInteracts + numInteracts - 1 - index;
+        if (EduiInteractHelperPc6272a0(menu, interact))
+            return 1;
+    }
+    return 0;
+}
+
+i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
+    if (!EduiUsingMenuFocusPc || menu == active_menu) {
+        i32 result = 0;
+        eduiitem_s *item;
+        if (!menu->selected)
+            menu->selected = menu->first;
+        item = menu->selected;
+        if (item && !item->disabled && item->process)
+            result = item->process(menu, item, delta_time, pad);
+        if ((!EduiUsingMenuFocusPc || menu == active_menu) && menu == processing_menu) {
+            if (!menu->selected)
+                menu->selected = menu->first;
+            if (!EduiUsingMenuFocusPc || menu == active_menu)
+                eduiMenuProcessInput(menu, delta_time, pad, result);
+        }
+    }
+    return eduiProcessInteracts(menu, pad);
+}
