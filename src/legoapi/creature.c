@@ -167,11 +167,11 @@ void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     packet->reset_mode = 2;
     group = packet->group;
     if (group != NULL) {
-        alive = packet->group_member_index < 64 ? (u64)1 << packet->group_member_index : 0;
+        alive = (u64)1 << packet->group_member_index;
         group->member_is_alive |= (i32)alive;
         row = &group->rows[packet->group_row];
         column = packet->group_member_index - details->count_across * packet->group_row;
-        alive = (u8)column < 64 ? (u64)1 << (u8)column : 0;
+        alive = (u64)1 << (u8)column;
         row->is_alive |= (u8)alive;
         if (packet->group_column == 0) {
             row->position = object->position;
@@ -181,7 +181,7 @@ void __cdecl ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
             row->next_connection = NULL;
         }
     }
-    object->previous_position = object->position;
+    object->last_safe_position = object->position;
     object->ai_update_position = object->position;
     if ((object->character_data->model_flags & 0x20000000) != 0 &&
         object->character_model->action_animations[0x41] != NULL) {
