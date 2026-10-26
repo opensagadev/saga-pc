@@ -3068,6 +3068,7 @@ address,symbol,size,ctype
 0x00513820,_xDeriveFromScript,365,void __cdecl (NUFPAR_PC *)
 0x00513990,_AIScriptCopyConditions,401,"void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
 0x00513b30,_AIScriptCopyActions,388,"void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
+0x00513cc0,_AIScriptCopyStatePc,599,
 0x00513f20,_AIScriptBuildDerivedScript,536,"i32 __cdecl (AISCRIPT_PC *, VARIPTR *, VARIPTR *, AISYS_PC *)"
 0x514140,_AIScriptFindRefScripts,601,
 0x5143a0,_AIScriptInitConditions,423,
