@@ -7298,7 +7298,6 @@ i32 __cdecl Action_SnapToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     i32 check_terrain;
     char *value;
     AICREATURE_PC *creature;
-    u16 rotation;
 
     (void)processor;
     (void)param_6;
@@ -7322,16 +7321,15 @@ i32 __cdecl Action_SnapToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     }
 
     creature = &sys->creatures[object->ai_packet.creature_index];
-    rotation = (u16)(creature->y_rotation);
-    object->field_0x276 = rotation;
-    object->facing_angle = rotation;
-    object->movement_facing_angle = rotation;
-    object->ai_packet.path_info.flags_word &= ~1u;
     object->position = creature->position;
-    object->initial_position = object->position;
+    object->field_0x276 = (u16)creature->y_rotation;
+    object->facing_angle = (u16)creature->y_rotation;
+    object->movement_facing_angle = (u16)creature->y_rotation;
+    object->ai_packet.path_info.flags_word &= ~1u;
     object->collision_position = object->position;
-    plr_lastpos = object->position;
-    object->start_position = object->position;
+    object->initial_position = object->position;
+    plr_lastpos = object->collision_position;
+    object->start_position = object->collision_position;
     object->respawn_position = object->position;
     object->last_safe_position = object->position;
     object->ai_update_position = object->position;
