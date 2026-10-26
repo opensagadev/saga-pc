@@ -1125,20 +1125,21 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         }
         NuStrCat(path, ".gsc");
         numtl_force_mipmode = (i32)(u8)world->current_level->mipmap_mode + 1;
-        selected_archive = (i32)(i8)world->current_level->unknown_00a2 + 1;
+        selected_archive = 1;
         for (index = 0; index < 11; ++index) {
             if (world->current_level == WorldArchiveOneLevelsPc[index]) {
-                selected_archive = 1;
                 break;
             }
         }
         if (index == 11) {
+            selected_archive = 3;
             for (index = 0; index < 4; ++index) {
                 if (world->current_level == WorldArchiveThreeLevelsPc[index]) {
-                    selected_archive = 3;
                     break;
                 }
             }
+            if (index == 4)
+                selected_archive = (i32)(i8)world->current_level->unknown_00a2 + 1;
         }
         LOG_INFO("Scene load begin: path=%s archive=%d shadowmethod=%d", path, selected_archive,
                  PcWindowOptions.shadowmethod);
