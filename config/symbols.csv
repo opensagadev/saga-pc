@@ -2498,6 +2498,7 @@ address,symbol,size,ctype
 0x004efec0,_NuFileReldirFix,106,"void __cdecl (NUFILE_DEVICE *, char *)"
 0x004eff30,_NuFileGetLastError,6,i32 __cdecl (void)
 0x004eff40,_NuFileFindDevice,99,"NUFILE_DEVICE *__cdecl (i32, i32)"
+0x004f0180,_FileDeviceFormatDefaultNamePc,33,"i32 __cdecl (char *, char *, i32)"
 0x004f01f0,_NuFileStatus,62,i32 __cdecl (NUFILE)
 0x004f0230,_AquireFileBuffer,156,
 0x004f02d0,_NuMemFileOpen,113,"NUFILE __cdecl (void *, i32, i32)"
@@ -2801,6 +2802,7 @@ address,symbol,size,ctype
 0x004ff3f0,_NuPSFileWrite,53,"i32 __cdecl (i32, const void *, i32)"
 0x004ff430,_NuPSFileLSeek,98,"i64 __cdecl (i32, i64, i32)"
 0x4ff4a0,_NuPSFileInitDevices,1,"void __cdecl(i32, i32, i32)"
+0x004ff4f0,_FileHostMovePathPc,125,"i32 __cdecl (char *, char *)"
 0x004ff570,_FileDirectoryHostOpenPc,477,
 0x004ff750,_FileDirectoryHostClosePc,67,i32 __cdecl (i32)
 0x004ff7a0,_FileDirectoryHostReadPc,385,

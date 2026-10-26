@@ -258,3 +258,8 @@ void __cdecl NuFileSetCurrentDllDirectory(const char *path) {
         default_device->dll_dir[0] = '\0';
     }
 }
+
+i32 __cdecl FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size) {
+    NUFILE_DEVICE *device = default_device;
+    return device->format_name_fn(device, destination, path, maximum_size);
+}

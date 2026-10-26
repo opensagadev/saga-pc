@@ -148,3 +148,14 @@ i32 __cdecl FileDirectoryHostClosePc(i32 slot) {
 i32 __cdecl FileHostDeletePathPc(const char *path) {
     return DeleteFileA(path);
 }
+
+extern i32 __cdecl FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size);
+
+i32 __cdecl FileHostMovePathPc(char *destination, char *source) {
+    char formatted_destination[256];
+    char formatted_source[256];
+    FileDeviceFormatDefaultNamePc(formatted_source, source, 256);
+    FileDeviceFormatDefaultNamePc(formatted_destination, destination, 256);
+    DeleteFileA(formatted_destination);
+    return MoveFileA(formatted_source, formatted_destination);
+}
