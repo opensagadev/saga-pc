@@ -3251,16 +3251,20 @@ address,symbol,size,ctype
 0x521230,_AiEditorRenameAreaCancelPc,12,
 0x521240,_DrawAreaBox,1366,
 0x521800,_areaEditorDrawAreas,274,
+0x005219d0,_AiEditorCreateLocatorPc,95,EDLOCATOR_s * private EDI position / stack i32 direction
 0x521a30,_AiEditorCreateLocatorSetPc,84,
 0x521a90,_AiEditorDestroyLocatorSetPc,57,
 0x521ad0,_AiEditorRemoveLocatorFromSetPc,87,
 0x521b30,_AiEditorAddLocatorToSetPc,225,
 0x521cb0,_locatorEditorSaveData,794,
+0x00521fd0,_locatorEditor_GetNearest,295,EDLOCATOR_s *__cdecl (i32)
 0x522290,_AiEditorRenameLocatorPc,146,
 0x522330,_AiEditorRenameLocatorCancelPc,12,
 0x522340,_AiEditorRenameLocatorSetPc,178,
 0x522400,_AiEditorSetPendingLocatorNamePc,67,
 0x522450,_locatorEditor_cbCancelSelectLocatorSet,12,
+0x00522460,_AiEditorNextLocatorInSetPc,59,EDLOCATOR_s * private EDX set / ESI current
+0x005224a0,_AiEditorPrevLocatorInSetPc,84,EDLOCATOR_s * private ESI set / EDX current
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
 0x523640,_pathEditorDrawNode,137,
@@ -3310,6 +3314,7 @@ address,symbol,size,ctype
 0x528210,_antinodeEditorSaveData,567,
 0x5285f0,_creatureEditorSaveData,1273,
 0x528af0,_creatureEditor_IsSelectable,53,
+0x00528b30,_creatureEditor_GetNearest,451,AI_EDITOR_CREATURE_SAVE_PC *__cdecl (i32)
 0x528d00,_AiEditorRespawnCancelMenuPc,12,
 0x528d10,_AiEditorSetActivationPc,25,
 0x528d30,_AiEditorSetAreaActivationPc,119,
@@ -3438,7 +3443,7 @@ address,symbol,size,ctype
 0x538e50,_antinodeEditor_MainMenu,509,
 0x539050,_antinodeEditor_Process,2218,
 0x53ac10,_locatorEditor_MainMenu,614,
-0x53ae80,_locatorEditor_Process,2061,
+0x53ae80,_locatorEditor_Process,2338,
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -12154,6 +12159,7 @@ address,symbol,size,ctype
 0x007577cc,_AILocatorPersonalFormat,6,const char[6]
 0x007577d4,_AILocatorIndexedFormat,6,const char[6]
 0x7577d4,_HubAILocatorFormatPc,6,const char[6]
+0x007577d4,??_C@_05LFHGFJK@?$CFs_?$CFd?$AA@,,const char[]
 0x7577dc,_AITransferLiteral7577dc,8,const char[8]
 0x7577e4,??_C@_07NHJEPDMH@nearest?$AA@,8,const char[]
 0x007577e4,_AIGameNearestName,8,const char[8]
@@ -12278,6 +12284,7 @@ address,symbol,size,ctype
 0x00757c68,_AIUseCurrentSpeedSnapName,,
 0x00757c74,_AIUseCurrentSpeedMultiplierName,,
 0x00757c80,_AIControlLocatorName,8,const char[8]
+0x00757c80,??_C@_07JPMEIJD@Locator?$AA@,,const char[]
 0x00757c88,_AIControlAllNonPartyName,14,const char[14]
 0x00757c98,_AIControlDefaultTitleName,8,const char[8]
 0x00757ca0,_AIScaleOverrideResetName,,
@@ -15145,6 +15152,7 @@ address,symbol,size,ctype
 0x760e7c,??_C@_0BM@MABHGHEJ@Add?5Locators?5To?5Set?5By?5Name?$AA@,,char []
 0x760e98,??_C@_0BD@JJNGIDJL@Delete?5Locator?5Set?$AA@,,char []
 0x760eac,??_C@_0BD@KJOCJGPG@Create?5Locator?5Set?$AA@,,char []
+0x00760ec0,??_C@_0BP@NKOGFJBN@Add?5locators?5?$CC?$CFs?$CC?5to?5set?5?$CC?$CFs?$CC?$DP?$AA@,,const char[]
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
 0x7610e0,??_C@_0N@NGPHCBFG@ManCam_MAX_X?$AA@,13,const char[]
@@ -20973,6 +20981,7 @@ address,symbol,size,ctype
 0x801cc4,_aiEditor_LocatorWidth,4,f32
 0x801cc8,_aiEditor_DrawYOffset,,f32
 0x801cd0,_AiEditorAntinodeTypeNamesPc,,const char *[3]
+0x00801ce0,_AiEditorPickHeightTolerancePc,,f32
 0x801d54,_AIPathDefaultChecks,4,i32
 0x00801dd0,??_R0?AVNetListenerInterface@@@8,35,
 0x00801df4,??_R0?AVAINet@@@8,20,
@@ -23974,6 +23983,7 @@ address,symbol,size,ctype
 0x921efc,_MenuSaveResultShownPc,4,i32
 0x921f00,_MenuLoadResultShownPc,4,i32
 0x00921f08,_global_aiscripts,8,NULISTHDR
+0x00921f50,_AiEditorLocatorRotationPc,,i32
 0x921f70,_AiEditorDisplayOptionsPc,,u32
 0x921f84,_AiEditorPathScratchCursorPc,,void *
 0x921f88,_AiEditorPathScratchEndPc,,void *
