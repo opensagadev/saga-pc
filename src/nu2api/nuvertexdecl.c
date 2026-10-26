@@ -47,13 +47,14 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
             binormal = (descriptor >> 6) & 1;
         diffuse = (descriptor >> 8) & 1;
         specular = (descriptor & 0x600) != 0;
-        if ((descriptor >> 27) & 1) {
+        if ((descriptor >> 27) & 1)
             texture_mode = 0;
-            half_texture_mode = (descriptor >> 11) & 7;
-        } else {
+        else
             texture_mode = (descriptor >> 11) & 7;
+        if ((descriptor >> 27) & 1)
+            half_texture_mode = (descriptor >> 11) & 7;
+        else
             half_texture_mode = 0;
-        }
         weights = (descriptor & 0x8000) ? 2 : (descriptor >> 14) & 1;
         colour2 = (descriptor & 0x20000) ? 2 : (descriptor >> 16) & 1;
         skinned = (descriptor >> 26) & 1;
@@ -75,7 +76,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 VERTEX_ELEMENT(2, 3, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(PCDeviceHardwareVertexProcessingPC > 1 ? 8 : 4, 3, 0, 4);
+                VERTEX_ELEMENT(8, 3, 0, 4);
+                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                    elements[element_count - 1].type = 4;
                 break;
         }
         switch (tangent) {
@@ -83,7 +86,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 VERTEX_ELEMENT(2, 6, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(PCDeviceHardwareVertexProcessingPC > 1 ? 8 : 4, 6, 0, 4);
+                VERTEX_ELEMENT(8, 6, 0, 4);
+                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                    elements[element_count - 1].type = 4;
                 break;
         }
         switch (binormal) {
@@ -91,7 +96,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 VERTEX_ELEMENT(2, 6, 1, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(PCDeviceHardwareVertexProcessingPC > 1 ? 8 : 4, 6, 1, 4);
+                VERTEX_ELEMENT(8, 6, 1, 4);
+                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                    elements[element_count - 1].type = 4;
                 break;
         }
         if (diffuse) {
@@ -137,7 +144,9 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 VERTEX_ELEMENT(1, 1, 0, 8);
                 break;
             case 2:
-                VERTEX_ELEMENT(PCDeviceHardwareVertexProcessingPC > 1 ? 8 : 4, 1, 0, 4);
+                VERTEX_ELEMENT(8, 1, 0, 4);
+                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                    elements[element_count - 1].type = 4;
                 break;
         }
         switch (colour2) {
@@ -145,11 +154,15 @@ PC_TEXTURE_RESOURCE_PC *__cdecl NuGetVertexDeclaration(u32 descriptor) {
                 VERTEX_ELEMENT(2, 2, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(PCDeviceHardwareVertexProcessingPC > 1 ? 5 : 4, 2, 0, 4);
+                VERTEX_ELEMENT(5, 2, 0, 4);
+                if (PCDeviceHardwareVertexProcessingPC <= 1)
+                    elements[element_count - 1].type = 4;
                 break;
         }
         if (skinned) {
-            VERTEX_ELEMENT(PCDeviceHardwareVertexProcessingPC > 1 ? 8 : 4, 5, 6, 4);
+            VERTEX_ELEMENT(8, 5, 6, 4);
+            if (PCDeviceHardwareVertexProcessingPC <= 1)
+                elements[element_count - 1].type = 4;
             VERTEX_ELEMENT(4, 5, 7, 0);
         }
         if (instanced) {
