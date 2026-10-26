@@ -1036,21 +1036,23 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
     while (!done && NuFParGetLine(parser) != 0) {
         while (!done && NuFParGetWord(parser) != 0) {
             char *cursor;
-            if (NuStrICmp(parser->word_buffer, "}") == 0) {
+            if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
                 done = 1;
-            } else if ((cursor = NuStrIStr(parser->word_buffer, "Script")) != NULL) {
+            } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "Script")) != NULL) {
                 AISCRIPT_COPY_STRING(cursor + NuStrLen("Script") + 1, reference->name);
-            } else if ((cursor = NuStrIStr(parser->word_buffer, "ReturnState")) != NULL) {
+            } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "ReturnState")) != NULL) {
                 AISCRIPT_COPY_STRING(cursor + NuStrLen("ReturnState") + 1, reference->return_state_name);
-            } else if (NuStrICmp(parser->word_buffer, "CONDITIONS") == 0) {
+            } else if (NuStrICmp(parser->word_buffer_ptr, "CONDITIONS") == 0) {
                 aiscript_load_conditions = &reference->conditions;
                 condition_has_no_goto = 1;
                 xConditions(parser);
                 aiscript_load_conditions = NULL;
                 condition_has_no_goto = 0;
-            } else if (NuStrIStr(parser->word_buffer, "Source") != NULL) {
-                if (NuStrIStr(parser->word_buffer, "Global") != NULL) {
+            } else if (NuStrIStr(parser->word_buffer_ptr, "Source") != NULL) {
+                if (NuStrIStr(parser->word_buffer_ptr, "Global") != NULL) {
                     reference->check_global_scripts = 1;
+                } else if (NuStrIStr(parser->word_buffer_ptr, (char *)AIScriptKeywordLevel) != NULL) {
+                    reference->check_level_scripts = 1;
                 }
             }
         }
