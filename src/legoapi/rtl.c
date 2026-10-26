@@ -1331,3 +1331,227 @@ void __cdecl rtlSetSpecularLight(RTL_DATA_PC *data) {
         NuRndrSetSpecularLightPS(direction, NULL);
     }
 }
+
+/* SOURCE DRAFT ONLY: append in existing src/legoapi/rtl.c after its genuine
+ * burn_editor_position_pc definition. Native extents for new working data views
+ * remain unknown; no allocation credit, sections, attributes or caller activation.
+ * Existing system_qfont, modifiers, PS2_REZ_W, and burn_editor_position_pc owners
+ * are reused. State initializers are the exact Native PE/BSS initial values. */
+f32 edrtl_text_scale = 1.0f;
+i32 rtl_debug = 0;
+RTL_SET_PC *curr_set = NULL;
+RTL_LIGHT_PC *curr_rtl = NULL;
+RTL_LIGHT_PC *base_rtl = NULL;
+RTL_LIGHT_PC *rtl_locked = NULL;
+NUMTL *mtls[3] = {0};
+i32 modifier_cnt = 1;
+static char *default_modifier_names[1] = {"default"};
+char **modifier_names = default_modifier_names;
+f32 lockflash = 0.0f;
+f32 lockflash_rate = 0.7f;
+i32 maxundo = 0;
+i32 rtl_undo_cnt = 0;
+i32 rtl_undo_maxcnt = 0;
+i32 ctl_ix = 1;
+i32 helpmode = 0;
+i32 help_line = 190;
+char *userid_names[16] = {"NO ID", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
+                          "ID 8",  "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
+STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_68) == 0x68);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_79) == 0x79);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7a) == 0x7a);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7b) == 0x7b);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7c) == 0x7c);
+STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
+
+static void edrtlDrawHelp(void) {
+    static const char *help_text[2][6] = {
+        {
+            NULL,
+            "SQR=ADD, O=SELECT",
+            "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
+            "SQR=ADD, TRI=DEL, L-UP=LOCK, X=ADJUST, O=SELECT\n",
+            "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-LEFT=EDIT ALTERNATES",
+            "L-LEFT=PREV, L-RIGHT=NEXT",
+        },
+        {
+            NULL,
+            "X=ADD, SELECT=SELECT",
+            "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
+            "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EDIT / ADD ALTERNATE SETTINGS",
+            "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EXIT ALTERNATE SETTINGS MODE",
+            "L1-PREV, R1-NEXT",
+        },
+    };
+    i32 y;
+    const char *source;
+    NuQFntSet(system_qfont);
+    NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
+    NuQFntSetColour(system_qfont, 0x80ffffff);
+    y = help_line * 16;
+    source = help_text[ctl_ix][helpmode];
+    if (source != NULL) {
+        while (*source != 0) {
+            char line[512];
+            char *out = line;
+            while (*source != 0 && *source != '\n') {
+                *out++ = *source++;
+            }
+            if (*source != 0) {
+                ++source;
+            }
+            *out = 0;
+            NuQFntPrintEx(system_qfont, 640, y, 16, line);
+            y += (i32)NuQFntHeight(system_qfont);
+        }
+    }
+}
+
+void __cdecl edrtlDrawRTLInfo(void) {
+    const char *light_types[10] = {
+        "INVALID", "AMBIENT",     "POINT",     "POINT FLICKER", "DIRECTIONAL",
+        "CAMDIR",  "POINT BLEND", "ANTILIGHT", "JON FLICKER",   "ALSO INVALID",
+    };
+    i32 x;
+    i32 height;
+    i32 y;
+    i32 lines;
+    i32 i;
+    i32 j;
+    i32 count;
+    RTL_LIGHT_PC *light;
+    i32 forward;
+    i32 backward;
+    RTL_LIGHT_PC *alternate;
+
+    NuQFntSet(system_qfont);
+    NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
+    NuQFntSetColour(system_qfont, 0x80ffffff);
+    height = (i32)(NuQFntHeight(system_qfont));
+    if (rtl_debug) {
+        x = 5440;
+        y = 512;
+        NuQFntPrintEx(system_qfont, x, y, 16, "ix - ty - nx : pr");
+        y += height;
+        for (i = 0; i < 10; i++) {
+            NuQFntSet(system_qfont);
+            NuQFntPrintEx(system_qfont, x, y, 16, "%02d - %02d - %02d : %02d", i, curr_set->lights[i].type,
+                          curr_set->lights[i].field_79, curr_set->lights[i].field_7a);
+            y += height;
+        }
+    }
+    if (base_rtl) {
+        x = 9600;
+        y = 512;
+        NuQFntSet(system_qfont);
+        for (j = 0; j < modifier_cnt; j++) {
+            NuQFntPrintEx(system_qfont, x, y, 32, "%s = %.2f", modifier_names[j], (f64)(modifiers[j]));
+            y += height;
+        }
+    }
+
+    x = 640;
+    y = 512;
+    if (curr_rtl) {
+        lines = 8;
+        if (curr_rtl->field_68 != 0)
+            lines++;
+        if (curr_rtl->type == 5 && curr_rtl->field_5e != 0)
+            lines++;
+        if (curr_rtl->field_60 != 0)
+            lines++;
+        if (curr_rtl->group_id != 0)
+            lines++;
+        if (rtl_locked != NULL)
+            lines++;
+        lines = (lines + 1) * 2 * height >> 1;
+        NuRndrRect2di(128, y - height, 4160, lines, 0x20404040, mtls[2]);
+        NuQFntSet(system_qfont);
+        if (base_rtl)
+            NuQFntPrintEx(system_qfont, x, y, 16, "RTL Editor %d/%d (Parent %d)", (i32)(curr_rtl - curr_set->lights),
+                          128, (i32)(base_rtl - curr_set->lights));
+        else
+            NuQFntPrintEx(system_qfont, x, y, 16, "RTL Editor %d/%d", (i32)(curr_rtl - curr_set->lights), 128);
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, base_rtl ? "MODE: Alternate Set (DPAD Left to exit)" : "MODE: Normal");
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)(curr_rtl->position.x),
+                      (f64)(curr_rtl->position.y), (f64)(curr_rtl->position.z));
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", light_types[curr_rtl->type <= 9 ? curr_rtl->type : 9]);
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "RADIUS: %.03f", (f64)(curr_rtl->inner_radius));
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "FALL OFF: %.03f", (f64)(curr_rtl->outer_radius));
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "MULTIPLIER: %.0f", (f64)(curr_rtl->intensity));
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "CAST SHADOW: %s", (curr_rtl->flags & 2) ? "YES" : "NO");
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "SPECULAR: %s", (curr_rtl->flags & 4) ? "YES" : "NO");
+        y += height;
+        if (curr_rtl->field_68 != 0) {
+            NuQFntPrintEx(system_qfont, x, y, 16, "USER ID: (%d)%s", curr_rtl->field_68,
+                          userid_names[curr_rtl->field_68]);
+            y += height;
+        }
+        if (curr_rtl->field_7a != -1 || (curr_rtl->field_7a == -1 && curr_rtl->field_79 == -1)) {
+            NuQFntPrintEx(
+                system_qfont, x, y, 16, "MODIFIER: %s",
+                modifier_names[(curr_rtl->field_7b > modifier_cnt - 1 ? modifier_cnt - 1 : curr_rtl->field_7b) < 0
+                                   ? 0
+                                   : (curr_rtl->field_7b > modifier_cnt - 1 ? modifier_cnt - 1 : curr_rtl->field_7b)]);
+            y += height;
+        }
+        if (curr_rtl->type == 5 && curr_rtl->field_5e != 0) {
+            NuQFntPrintEx(system_qfont, x, y, 16, "[HAS ASSOCS]");
+            y += height;
+        }
+        if (curr_rtl->field_60 != 0) {
+            NuQFntPrintEx(system_qfont, x, y, 16, "[HAS EXCLUSIONS]");
+            y += height;
+        }
+        if (curr_rtl->group_id != 0) {
+            NuQFntPrintEx(system_qfont, x, y, 16, "GROUP ID: (%d)", curr_rtl->group_id);
+            y += height;
+        }
+        if (curr_rtl->field_79 != -1 && curr_rtl->field_7a == -1) {
+            count = 0;
+            for (light = curr_rtl; light->field_79 != -1; light = &light->field_7c[light->field_79])
+                count++;
+            NuQFntPrintEx(system_qfont, x, y, 16, "[HAS %d ALTERNATE SETTINGS]", count);
+            y += height;
+        }
+        if (curr_rtl->field_7a != -1) {
+            forward = 0;
+            for (alternate = curr_rtl; alternate->field_7a != -1; alternate = &curr_set->lights[alternate->field_7a])
+                forward++;
+            for (backward = 0; alternate->field_79 != -1; alternate = &curr_set->lights[alternate->field_79])
+                backward++;
+            NuQFntPrintEx(system_qfont, x, y, 16, "[ALTERNATE SETTING %d/%d]", forward, backward);
+            y += height;
+        }
+        if (rtl_locked) {
+            if (lockflash > lockflash_rate * 0.5)
+                NuQFntPrintEx(system_qfont, x, y, 16, "**LOCKED**");
+            y += height;
+        }
+    } else {
+        NuRndrRect2di(128, y - height, 4160, height * 4 / 2, 0x20404040, mtls[2]);
+        NuQFntSet(system_qfont);
+        NuQFntPrintEx(system_qfont, x, y, 16, "RTL Editor");
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, base_rtl ? "MODE: Alternate Set (DPAD Left to exit)" : "MODE: Normal");
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)(burn_editor_position_pc.x),
+                      (f64)(burn_editor_position_pc.y), (f64)(burn_editor_position_pc.z));
+        y += height;
+    }
+    if (maxundo) {
+        y = 512;
+        NuQFntPrintEx(system_qfont, PS2_REZ_W * 16, y, 16, "UNDO %d/%d/%d", rtl_undo_cnt, rtl_undo_maxcnt, maxundo);
+    }
+    edrtlDrawHelp();
+}

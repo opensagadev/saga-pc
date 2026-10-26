@@ -6927,6 +6927,7 @@ address,symbol,size,ctype
 0x63c710,_edrtlCalculateBurnoutEx,58,"void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32)"
 0x63c810,_edrtlDrawCursor,502,
 0x63ced0,_edrtlDrawFogs,96,
+0x0063cff0,_edrtlDrawHelp,243,void __cdecl (void)
 0x63d0f0,_edrtlDrawRTLInfo,1984,
 0x63d8b0,_edrtlDrawFogInfo,638,
 0x63dcd0,_rtlFrameUpdate,66,void __cdecl(f32)
@@ -16354,6 +16355,36 @@ address,symbol,size,ctype
 0x76b1c8,__real@4040aaaac0000000,8,const double
 0x76b1d0,??_C@_0BK@POOFCPDO@?4?2pc?2Bink?2dsplay_bink?4cpp?$AA@,26,const char[]
 0x76b274,_MenuPcString76b274,4,const char[4]
+0x0076b290,??_C@_0BB@CBCHIBBA@L1?9PREV?0?5R1?9NEXT?$AA@,,const char[]
+0x0076b2a8,??_C@_0GH@OGBPIOIB@X?$DNADD?0?5TRI?$DNDEL?0L?9UP?$DNLOCK?0O?$DNADJUS@,,const char[]
+0x0076b310,??_C@_0GI@LJIKOPDL@X?$DNADD?0?5TRI?$DNDEL?0L?9UP?$DNLOCK?0O?$DNADJUS@,,const char[]
+0x0076b378,??_C@_0BF@KIBBDJLG@X?$DNADD?0?5SELECT?$DNSELECT?$AA@,,const char[]
+0x0076b390,??_C@_0BK@LFOJGFCH@L?9LEFT?$DNPREV?0?5L?9RIGHT?$DNNEXT?$AA@,,const char[]
+0x0076b3b0,??_C@_0EI@LEAJLIPP@X?$DNADD?0?5TRI?$DNDEL?0L?9UP?$DNLOCK?0O?$DNADJUS@,,const char[]
+0x0076b3f8,??_C@_0DB@NIAEMFDA@SQR?$DNADD?0?5TRI?$DNDEL?0?5L?9UP?$DNLOCK?0?5X?$DNA@,,const char[]
+0x0076b430,??_C@_0FD@GKLECNCP@L?9UP?1DOWN?$DNADJ?5FALLOFF?0?5L?9LEFT?1RI@,,const char[]
+0x0076b484,??_C@_0BC@MKBIODEM@SQR?$DNADD?0?5O?$DNSELECT?$AA@,,const char[]
+0x0076b4a8,??_C@_05OKKAGJKI@NO?5ID?$AA@,,const char[]
+0x0076b4b0,??_C@_05OMLDBJFO@ID?515?$AA@,,const char[]
+0x0076b4b8,??_C@_05PFKICIBP@ID?514?$AA@,,const char[]
+0x0076b4c0,??_C@_05LKOJLONI@ID?513?$AA@,,const char[]
+0x0076b4c8,??_C@_05KDPCIPJJ@ID?512?$AA@,,const char[]
+0x0076b4d0,??_C@_05IINPNMFK@ID?511?$AA@,,const char[]
+0x0076b4d8,??_C@_05JBMEONBL@ID?510?$AA@,,const char[]
+0x0076b4e0,??_C@_04EOIBDGOK@ID?59?$AA@,,const char[]
+0x0076b4e8,??_C@_04FHJKAHKL@ID?58?$AA@,,const char[]
+0x0076b4f0,??_C@_04NAACBLGE@ID?57?$AA@,,const char[]
+0x0076b4f8,??_C@_04MJBJCKCF@ID?56?$AA@,,const char[]
+0x0076b500,??_C@_04OCDEHJOG@ID?55?$AA@,,const char[]
+0x0076b508,??_C@_04PLCPEIKH@ID?54?$AA@,,const char[]
+0x0076b510,??_C@_04LEGONOGA@ID?53?$AA@,,const char[]
+0x0076b518,??_C@_04KNHFOPCB@ID?52?$AA@,,const char[]
+0x0076b520,??_C@_04IGFILMOC@ID?51?$AA@,,const char[]
+0x0076b53c,??_C@_09PAEGDKJH@ANTILIGHT?$AA@,,const char[]
+0x0076b554,??_C@_06JAKHEMKH@CAMDIR?$AA@,,const char[]
+0x0076b55c,??_C@_0M@OHINNGCO@DIRECTIONAL?$AA@,,const char[]
+0x0076b578,??_C@_05NKNPLGBO@POINT?$AA@,,const char[]
+0x0076b580,??_C@_07EFFMPHJG@AMBIENT?$AA@,,const char[]
 0x76b77c,__real@3ff33333,,
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
@@ -16361,6 +16392,36 @@ address,symbol,size,ctype
 0x76b9d8,??_C@_0BA@LPGHPLPA@File?5Save?5Error?$AA@,16,char []
 0x76b9e8,??_C@_08DNCCGPLP@Saved?5OK?$AA@,9,char []
 0x76b9f4,??_C@_08IEFAEBKE@?$CFs?2?$CFs?4?$CFs?$AA@,9,char []
+0x0076ba0c,??_C@_0O@KKKICMLF@UNDO?5?$CFd?1?$CFd?1?$CFd?$AA@,,const char[]
+0x0076ba1c,??_C@_0L@GOCODMIN@RTL?5Editor?$AA@,,const char[]
+0x0076ba28,??_C@_0L@KOIHKIAN@?$CK?$CKLOCKED?$CK?$CK?$AA@,,const char[]
+0x0076ba34,??_C@_0BK@LNIBPGK@?$FLALTERNATE?5SETTING?5?$CFd?1?$CFd?$FN?$AA@,,const char[]
+0x0076ba50,??_C@_0BM@INLLEDPN@?$FLHAS?5?$CFd?5ALTERNATE?5SETTINGS?$FN?$AA@,,const char[]
+0x0076ba6c,??_C@_0P@POJHBIG@GROUP?5ID?3?5?$CI?$CFd?$CJ?$AA@,,const char[]
+0x0076ba7c,??_C@_0BB@MPEJDMDJ@?$FLHAS?5EXCLUSIONS?$FN?$AA@,,const char[]
+0x0076ba90,??_C@_0N@KAEOEJNN@?$FLHAS?5ASSOCS?$FN?$AA@,,const char[]
+0x0076baa0,??_C@_0N@PBPLNHGA@MODIFIER?3?5?$CFs?$AA@,,const char[]
+0x0076bab0,??_C@_0BA@NCEPDLBO@USER?5ID?3?5?$CI?$CFd?$CJ?$CFs?$AA@,,const char[]
+0x0076bac0,??_C@_0N@DONIBEEN@SPECULAR?3?5?$CFs?$AA@,,const char[]
+0x0076bad0,??_C@_0BA@DHGKIFLE@CAST?5SHADOW?3?5?$CFs?$AA@,,const char[]
+0x0076bae0,??_C@_02NFLNFON@NO?$AA@,,const char[]
+0x0076bae4,??_C@_03IPHJCBHH@YES?$AA@,,const char[]
+0x0076bae8,??_C@_0BB@BEGGDBNF@MULTIPLIER?3?5?$CF?40f?$AA@,,const char[]
+0x0076bafc,??_C@_0BA@CFPMOCJG@FALL?5OFF?3?5?$CF?403f?$AA@,,const char[]
+0x0076bb0c,??_C@_0O@BFDJEGPM@RADIUS?3?5?$CF?403f?$AA@,,const char[]
+0x0076bb1c,??_C@_08HBFGMAIJ@TYPE?3?5?$CFs?$AA@,,const char[]
+0x0076bb28,??_C@_0BH@NDCEBBDP@POS?3?5?$CF?403f?5?$CF?403f?5?$CF?403f?$AA@,,const char[]
+0x0076bb40,??_C@_0N@DDCDEENM@MODE?3?5Normal?$AA@,,const char[]
+0x0076bb50,??_C@_0CI@BOOJEDCB@MODE?3?5Alternate?5Set?5?$CIDPAD?5Left?5t@,,const char[]
+0x0076bb78,??_C@_0BB@PHHDIFPC@RTL?5Editor?5?$CFd?1?$CFd?$AA@,,const char[]
+0x0076bb8c,??_C@_0BN@PKOAJMPL@RTL?5Editor?5?$CFd?1?$CFd?5?$CIParent?5?$CFd?$CJ?$AA@,,const char[]
+0x0076bbac,??_C@_09BGMFIGFJ@?$CFs?5?$DN?5?$CF?42f?$AA@,,const char[]
+0x0076bbb8,??_C@_0BK@MKEFJPDE@?$CF02d?5?9?5?$CF02d?5?9?5?$CF02d?5?3?5?$CF02d?$AA@,,const char[]
+0x0076bbd4,??_C@_0BC@MJGJFDHI@ix?5?9?5ty?5?9?5nx?5?3?5pr?$AA@,,const char[]
+0x0076bbe8,??_C@_0N@ONLPILD@ALSO?5INVALID?$AA@,,const char[]
+0x0076bbf8,??_C@_0M@PANIDMAD@JON?5FLICKER?$AA@,,const char[]
+0x0076bc04,??_C@_0M@KIHCCAB@POINT?5BLEND?$AA@,,const char[]
+0x0076bc10,??_C@_0O@GBNMBALJ@POINT?5FLICKER?$AA@,,const char[]
 0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
 0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
@@ -21689,10 +21750,19 @@ address,symbol,size,ctype
 0x80fdec,_rtl_shadow_blend_rate,,f32
 0x80fdf0,_rtl_shadow_flicker,,NUVEC
 0x80fdfc,_RtlUidCounterPc,,u16
+0x0080fe00,_edrtl_text_scale,,f32
 0x80fe04,_RtlModifierIndexZeroPc,,f32
+0x0080fe08,_default_modifier_names,,char *[1]
 0x80fe0c,_modifiers,,f32 *
+0x0080fe10,_modifier_names,,char **
+0x0080fe14,_modifier_cnt,,i32
 0x80fe1c,_rtlwob,,f32
+0x0080fe60,_userid_names,,char *[16]
 0x80fea0,_rtltimer1adv,4,f32
+0x0080fea4,_ctl_ix,,i32
+0x0080ff08,?help_text@?1??edrtlDrawHelp@@9@9,,const char *[2][6]
+0x0080ff38,_lockflash_rate,,f32
+0x0080ff44,_help_line,,i32
 0x0080fff4,??_R0?AVEdClassInterface@@@8,31,
 0x00810014,??_R0?AVEdControl@@@8,24,
 0x0081002c,??_R0?AVEdEnumControl@@@8,28,
@@ -25242,6 +25312,10 @@ address,symbol,size,ctype
 0x2913248,_FmvFrequencyReadyPc,4,i32
 0x002913270,_theMemoryManager,584,MEMORYMANAGER
 0x29134c4,_burn_editor_position_pc,,
+0x0291360c,_mtls,,NUMTL *[3]
+0x02913838,_base_rtl,,RTL_LIGHT_PC *
+0x02913844,_curr_rtl,,RTL_LIGHT_PC *
+0x029138bc,_curr_set,,RTL_SET_PC *
 0x291398c,_edrtl_edit_burnset,,
 0x2913990,_rtl_dynamic_pool,,NULSTHDR *
 0x2913994,_rtl_dynamic_max,,i32
@@ -25250,6 +25324,13 @@ address,symbol,size,ctype
 0x29139ac,_rtl_frametime,,f32
 0x29139b0,_rtltimer1,,i32
 0x29139b4,_dbg_rtlindex,,RTL_INDEX_PC *
+0x029139dc,_rtl_locked,,RTL_LIGHT_PC *
+0x029139e0,_maxundo,,i32
+0x029139e4,_rtl_undo_cnt,,i32
+0x029139e8,_rtl_undo_maxcnt,,i32
+0x029139f4,_helpmode,,i32
+0x029139f8,_lockflash,,f32
+0x029139fc,_rtl_debug,,i32
 0x02913a4c,_part_page_on,32,i32[8]
 0x2913a6c,_edpart_varstart_menu,4,struct eduimenu_s *
 0x2913a70,_edpart_boxmtl,4,struct PC_SCENE_MTL_VIEW *
