@@ -5,33 +5,40 @@ i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 ba
         return 0;
     PC_INPUT_BINDING_PC *bindings = auxiliary_bindings[auxiliary_index];
     i32 missing = 0;
-    for (i32 bank = 0; bank < bank_count; ++bank) {
-        if (bank == auxiliary_index || (u32)(auxiliary_ports[bank] - 10) > 3)
+    PC_INPUT_BINDING_PC *peer_bindings = auxiliary_bindings[0];
+    i32 *peer_port = auxiliary_ports;
+    for (i32 bank = 0; bank < bank_count; ++bank, peer_bindings += 32, ++peer_port) {
+        if (bank == auxiliary_index || (u32)(*peer_port - 10) > 3)
             continue;
         if (PcInputActionOrder[0] >= 0) {
-            for (i32 a = 0; PcInputActionOrder[a] >= 0; ++a) {
-                i32 first = PcInputActionOrder[a];
-                if (!bindings[first].kind)
+            i8 *first_order = PcInputActionOrder;
+            for (i32 first = *first_order; first >= 0; first = *++first_order) {
+                PC_INPUT_BINDING_PC *first_binding = &bindings[first];
+                if (!first_binding->kind)
                     continue;
-                for (i32 b = 0; PcInputActionOrder[b] >= 0; ++b) {
-                    i32 second = PcInputActionOrder[b];
-                    if (bindings[second].kind && bindings[second].value != 255 &&
-                        bindings[first].value == auxiliary_bindings[bank][second].value &&
-                        bindings[first].kind == auxiliary_bindings[bank][second].kind) {
-                        bindings[first].value = 0;
-                        bindings[first].kind = 0;
+                i8 *second_order = PcInputActionOrder;
+                for (i32 second = *second_order; second >= 0; second = *++second_order) {
+                    PC_INPUT_BINDING_PC *selected_binding = &bindings[second];
+                    PC_INPUT_BINDING_PC *peer_binding = &peer_bindings[second];
+                    if (selected_binding->kind && selected_binding->value != 255 &&
+                        first_binding->value == peer_binding->value && first_binding->kind == peer_binding->kind) {
+                        first_binding->value = 0;
+                        first_binding->kind = 0;
                     }
                 }
             }
         } else {
-            for (i32 first = 0; first < 32; ++first) {
-                if (!bindings[first].kind)
+            PC_INPUT_BINDING_PC *first_binding = bindings;
+            for (i32 first = 0; first < 32; ++first, ++first_binding) {
+                if (!first_binding->kind)
                     continue;
-                for (i32 second = 0; second < 32; ++second) {
-                    if (bindings[second].kind && bindings[first].value == auxiliary_bindings[bank][second].value &&
-                        bindings[first].kind == auxiliary_bindings[bank][second].kind) {
-                        bindings[first].value = 0;
-                        bindings[first].kind = 0;
+                PC_INPUT_BINDING_PC *selected_binding = bindings;
+                PC_INPUT_BINDING_PC *peer_binding = peer_bindings;
+                for (i32 second = 0; second < 32; ++second, ++selected_binding, ++peer_binding) {
+                    if (selected_binding->kind && first_binding->value == peer_binding->value &&
+                        first_binding->kind == peer_binding->kind) {
+                        first_binding->value = 0;
+                        first_binding->kind = 0;
                     }
                 }
             }
