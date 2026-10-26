@@ -1495,3 +1495,49 @@ void __cdecl NuStrUprW(NUWCHAR *dst, const NUWCHAR *src) {
     }
     *dst = *src;
 }
+
+/* SOURCE-only R69 carry. Raw wide units and PC case ranges, not Unicode/locale
+ * conversion. The character functions return NUWCHAR: only AX is the defined
+ * return value; incidental high EAX bits are not a 32-bit integer contract.
+ */
+NUWCHAR __cdecl NuToUpperW(NUWCHAR character) {
+    return NU_UTF16_UPPER(character);
+}
+
+NUWCHAR __cdecl NuToLowerW(NUWCHAR character) {
+    if ((character >= 0x41 && character <= 0x5a) || (character >= 0xc0 && character <= 0xdf))
+        character += 0x20;
+    return character;
+}
+
+void __cdecl NuStrCatW(NUWCHAR *str, const NUWCHAR *ext) {
+    while (*str != 0)
+        ++str;
+    if (ext != NULL) {
+        do {
+            *str = *ext;
+            ++str;
+        } while (*ext++ != 0);
+    }
+}
+
+NUWCHAR *__cdecl NuStrChrW(NUWCHAR *str, NUWCHAR character) {
+    while (*str != 0) {
+        if (*str == character)
+            return str;
+        ++str;
+    }
+    return NULL;
+}
+
+NUWCHAR *__cdecl NuStrRChrW(NUWCHAR *str, NUWCHAR character) {
+    NUWCHAR *cursor = str;
+    while (*cursor != 0)
+        ++cursor;
+    while (cursor >= str) {
+        if (*cursor == character)
+            return cursor;
+        --cursor;
+    }
+    return NULL;
+}

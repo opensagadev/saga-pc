@@ -2560,9 +2560,14 @@ address,symbol,size,ctype
 0x4f20a0,_NuStrStr,77,"char *__cdecl (char *, const char *)"
 0x004f20f0,_NuStrCmp,60,"i32 __cdecl (const char *, const char *)"
 0x004f2130,_NuStrNCmp,103,"i32 __cdecl (const char *, const char *, i32)"
+0x4f21a0,_NuToUpperW,31,NUWCHAR __cdecl (NUWCHAR)
+0x4f21c0,_NuToLowerW,29,NUWCHAR __cdecl (NUWCHAR)
+0x4f21e0,_NuStrCatW,54,"void __cdecl (NUWCHAR *, const NUWCHAR *)"
 0x4f2220,_NuStrNCatW,81,"i32 __cdecl (NUWCHAR *, const NUWCHAR *, i32)"
 0x004f2280,_NuStrCpyW,48,"i32 __cdecl(u16 *, const u16 *)"
 0x4f22b0,_NuStrNCpyW,79,"i32 __cdecl (NUWCHAR *, const NUWCHAR *, i32)"
+0x4f2300,_NuStrChrW,37,"NUWCHAR *__cdecl (NUWCHAR *, NUWCHAR)"
+0x4f2330,_NuStrRChrW,49,"NUWCHAR *__cdecl (NUWCHAR *, NUWCHAR)"
 0x4f2370,_NuStrLenW,29,
 0x4f2390,_NuStrStrW,83,"NUWCHAR *__cdecl (NUWCHAR *, const NUWCHAR *)"
 0x4f23f0,_NuStrIStrW,145,"NUWCHAR *__cdecl (NUWCHAR *, const NUWCHAR *)"
