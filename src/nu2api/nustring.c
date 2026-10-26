@@ -1313,3 +1313,13 @@ char *__cdecl NuIToA(i32 value, char *buffer, i32 radix) {
     *out = '\0';
     return buffer;
 }
+
+void __cdecl NuStrToLower(char *text) {
+    u8 value;
+    while (*text != 0) {
+        value = (u8)*text;
+        if ((u8)(value - 0x41) <= 0x19 || (u8)(value + 0x40) <= 0x1f)
+            value = (u8)(value + 0x20);
+        *text++ = (char)value;
+    }
+}

@@ -265,3 +265,49 @@ i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
     info->second = (i8)time.wSecond;
     return 1;
 }
+
+typedef struct FILE_DIRECTORY_TIME_PC {
+    u8 second, minute, hour, day, month, reserved;
+    u16 year;
+} FILE_DIRECTORY_TIME_PC;
+typedef struct FILE_DIRECTORY_ENTRY_PC {
+    u32 flags, size;
+    FILE_DIRECTORY_TIME_PC created, modified;
+    char name[256];
+} FILE_DIRECTORY_ENTRY_PC;
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
+typedef struct FILE_DIRECTORY_RAW_TIME_PC {
+    u8 second, minute, hour, day, month, year_low, year_high;
+} FILE_DIRECTORY_RAW_TIME_PC;
+typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
+    u32 flags;
+    u8 reserved_04[4];
+    u32 size;
+    u8 reserved_0c;
+    FILE_DIRECTORY_RAW_TIME_PC created;
+    u8 reserved_14;
+    FILE_DIRECTORY_RAW_TIME_PC accessed;
+    u8 reserved_1c;
+    FILE_DIRECTORY_RAW_TIME_PC modified;
+    u32 unused_24;
+    u8 reserved_28[0x18];
+    char name[MAX_PATH];
+} FILE_DIRECTORY_HOST_ENTRY_PC;
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
+
+i32 __cdecl FileDirectoryMcOpenPc(i32 port, i32 slot, char *path) {
+    (void)port;
+    (void)slot;
+    (void)path;
+    return 0;
+}
+void __cdecl FileDirectoryMcClosePc(i32 file) {
+    (void)file;
+}
+i32 __cdecl FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY_PC *entry) {
+    (void)file;
+    (void)entry;
+    return 0;
+}

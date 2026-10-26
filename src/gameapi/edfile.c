@@ -1772,3 +1772,225 @@ void __cdecl FS_SetCursorToLastFileName(void) {
         entry += NuStrLen(entry) + 1;
     }
 }
+
+extern void __cdecl NuStrToLower(char *text);
+char FileSelFilterBlocksPc[8][96] = {0};
+char FileSelFilterOutBlocksPc[8][12] = {0};
+i32 FileSelFilterBlockCountPc = 0;
+i32 FileSelFilterOutBlockCountPc = 0;
+char FileSelVolumeNamesPc[1024] = {0};
+const char FileSelParentNamePc[3] = "..";
+char FS_ParentEntry[8] = "D######";
+char *FS_FileListEnd = FS_FileList;
+extern char FileSelFilterBlocksPc[8][96];
+extern char FileSelFilterOutBlocksPc[8][12];
+extern i32 FileSelFilterBlockCountPc;
+extern i32 FileSelFilterOutBlockCountPc;
+
+char *__cdecl FS_GetFilterString(char *input, char *output) {
+    char *end;
+    char *trimmed;
+    while (*input == '*' || *input == ' ')
+        ++input;
+    end = input;
+    while (*end != 0 && *end != '|' && *end != '*')
+        ++end;
+    trimmed = end;
+    while (trimmed != input && trimmed[-1] == ' ')
+        --trimmed;
+    while (input != trimmed)
+        *output++ = *input++;
+    *output = 0;
+    return end;
+}
+
+void __cdecl FS_BuildFilterBlocks(char *input) {
+    i32 slot = 0;
+    FileSelFilterBlockCountPc = 0;
+    NuStrToLower(input);
+    while (*input != 0) {
+        input = FS_GetFilterString(input, &FileSelFilterBlocksPc[FileSelFilterBlockCountPc][slot * 12]);
+        if (*input == '|') {
+            FileSelFilterBlocksPc[FileSelFilterBlockCountPc][(slot + 1) * 12] = 0;
+            ++FileSelFilterBlockCountPc;
+            slot = 0;
+            ++input;
+        } else
+            ++slot;
+    }
+    if (slot != 0)
+        ++FileSelFilterBlockCountPc;
+}
+
+void __cdecl FS_BuildFilterOutBlocks(char *input) {
+    FileSelFilterOutBlockCountPc = 0;
+    NuStrToLower(input);
+    while (*input != 0) {
+        input = FS_GetFilterString(input, FileSelFilterOutBlocksPc[FileSelFilterOutBlockCountPc]);
+        if (FileSelFilterOutBlocksPc[FileSelFilterOutBlockCountPc][0] != 0)
+            ++FileSelFilterOutBlockCountPc;
+        if (*input == '|')
+            ++input;
+    }
+}
+
+i32 __cdecl FS_FileNameFilter(char *name) {
+    char lower[256];
+    i32 i, slot, dots;
+    char *retry, *match, *scan;
+    NuStrCpy(lower, name);
+    NuStrToLower(lower);
+    for (i = 0; i < FileSelFilterOutBlockCountPc; ++i)
+        if (NuStrStr(lower, FileSelFilterOutBlocksPc[i]) != NULL)
+            return 0;
+    for (i = 0; i < FileSelFilterBlockCountPc; ++i) {
+        retry = lower;
+        do {
+            match = retry;
+            retry = NULL;
+            for (slot = 0; slot < 7; ++slot) {
+                if (FileSelFilterBlocksPc[i][slot * 12] == 0)
+                    break;
+                match = NuStrStr(match, &FileSelFilterBlocksPc[i][slot * 12]);
+                if (match == NULL)
+                    break;
+                if (slot == 0)
+                    retry = match + 1;
+            }
+            if (match != NULL && slot != 7) {
+                dots = 0;
+                for (scan = match; *scan != 0; ++scan) {
+                    if (*scan == '.' && ++dots > 1)
+                        break;
+                }
+                if (dots <= 1)
+                    return 1;
+            }
+        } while (retry != NULL);
+    }
+    return 0;
+}
+
+typedef struct FILE_DIRECTORY_TIME_PC {
+    u8 second, minute, hour, day, month, reserved;
+    u16 year;
+} FILE_DIRECTORY_TIME_PC;
+typedef struct FILE_DIRECTORY_ENTRY_PC {
+    u32 flags, size;
+    FILE_DIRECTORY_TIME_PC created, modified;
+    char name[256];
+} FILE_DIRECTORY_ENTRY_PC;
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
+typedef struct FILE_DIRECTORY_RAW_TIME_PC {
+    u8 second, minute, hour, day, month, year_low, year_high;
+} FILE_DIRECTORY_RAW_TIME_PC;
+typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
+    u32 flags;
+    u8 reserved_04[4];
+    u32 size;
+    u8 reserved_0c;
+    FILE_DIRECTORY_RAW_TIME_PC created;
+    u8 reserved_14;
+    FILE_DIRECTORY_RAW_TIME_PC accessed;
+    u8 reserved_1c;
+    FILE_DIRECTORY_RAW_TIME_PC modified;
+    u32 unused_24;
+    u8 reserved_28[0x18];
+    char name[MAX_PATH];
+} FILE_DIRECTORY_HOST_ENTRY_PC;
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
+extern char FileSelVolumeNamesPc[1024];
+extern i32 __cdecl NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
+extern void __cdecl FS_SortStrings(char *start, char *end, i32 mode);
+
+void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
+    FILE_DIRECTORY_ENTRY_PC entry;
+    char header[7];
+    char *next = FS_FileList;
+    char *drive;
+    char *file_begin;
+    i32 directory, length;
+    FS_BuildFilterBlocks(filter);
+    FS_BuildFilterOutBlocks(filter_out);
+    FS_CurrentCursorPos = FS_FileList;
+    FS_CurrentPos = FS_FileList;
+    FS_CursorLine = 0;
+    FS_CurrentPosFileNum = 0;
+    FS_NumFiles = 0;
+    if (FS_ShowVolumes != 0) {
+        GetLogicalDriveStringsA(1024, FileSelVolumeNamesPc);
+        for (drive = FileSelVolumeNamesPc; *drive != 0; drive += length + 1) {
+            length = NuStrLen(drive);
+            header[0] = 'V';
+            header[1] = header[2] = header[3] = header[4] = header[5] = 'A';
+            header[6] = '#';
+            PCByteCopy_candidate(next, header, 7);
+            next += 7;
+            NuStrCpy(next, drive);
+            next += length;
+            *next++ = 0;
+            ++FS_NumFiles;
+        }
+        FS_SortStrings(FS_FileList, next, 0);
+    } else {
+        directory = NuFileOpenDir(path);
+        PCByteCopy_candidate(FS_FileList, FS_ParentEntry, 7);
+        NuStrCpy(FS_FileList + 7, FileSelParentNamePc);
+        ++FS_NumFiles;
+        next = FS_FileList + 10;
+        if (directory != 0) {
+            while ((length = NuFileReadDir(directory, &entry)) != 0) {
+                if ((entry.name[0] == '.' && (entry.name[1] == 0 || (entry.name[1] == '.' && entry.name[2] == 0))) ||
+                    !(entry.flags & 8))
+                    continue;
+                if (next + length + 8 >= FS_FileList + sizeof(FS_FileList))
+                    break;
+                header[0] = 'D';
+                header[4] = entry.created.day + 'A';
+                header[3] = entry.created.hour + 'A';
+                header[2] = entry.created.minute + 'A';
+                header[1] = entry.created.second + 'A';
+                header[5] = entry.created.month + 'A';
+                header[6] = (u8)(entry.created.year - 123);
+                PCByteCopy_candidate(next, header, 7);
+                next += 7;
+                NuStrCpy(next, entry.name);
+                next += length;
+                *next++ = 0;
+                ++FS_NumFiles;
+            }
+        }
+        FS_SortStrings(FS_FileList + 10, next, FS_SortMode);
+        if (directory != 0)
+            NuFileCloseDir(directory);
+        file_begin = next;
+        directory = NuFileOpenDir(path);
+        if (directory != 0) {
+            while ((length = NuFileReadDir(directory, &entry)) != 0) {
+                if ((entry.flags & 8) || !FS_FileNameFilter(entry.name))
+                    continue;
+                if (next + length + 8 >= FS_FileList + sizeof(FS_FileList))
+                    break;
+                header[0] = 'F';
+                header[4] = entry.modified.day + 'A';
+                header[3] = entry.modified.hour + 'A';
+                header[2] = entry.modified.minute + 'A';
+                header[1] = entry.modified.second + 'A';
+                header[5] = entry.modified.month + 'A';
+                header[6] = (u8)(entry.modified.year - 123);
+                PCByteCopy_candidate(next, header, 7);
+                next += 7;
+                NuStrCpy(next, entry.name);
+                next += length;
+                *next++ = 0;
+                ++FS_NumFiles;
+            }
+        }
+        FS_SortStrings(file_begin, next, FS_SortMode);
+        if (directory != 0)
+            NuFileCloseDir(directory);
+    }
+    FS_FileListEnd = next;
+}

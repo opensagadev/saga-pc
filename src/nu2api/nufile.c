@@ -1594,3 +1594,117 @@ u32 __cdecl NuFileWriteUnsignedInt(NUFILE file, u32 value) {
     }
     return (u32)NuFileWrite(file, &output.value, 4);
 }
+
+typedef struct FILE_DIRECTORY_TIME_PC {
+    u8 second, minute, hour, day, month, reserved;
+    u16 year;
+} FILE_DIRECTORY_TIME_PC;
+typedef struct FILE_DIRECTORY_ENTRY_PC {
+    u32 flags, size;
+    FILE_DIRECTORY_TIME_PC created, modified;
+    char name[256];
+} FILE_DIRECTORY_ENTRY_PC;
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
+typedef struct FILE_DIRECTORY_RAW_TIME_PC {
+    u8 second, minute, hour, day, month, year_low, year_high;
+} FILE_DIRECTORY_RAW_TIME_PC;
+typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
+    u32 flags;
+    u8 reserved_04[4];
+    u32 size;
+    u8 reserved_0c;
+    FILE_DIRECTORY_RAW_TIME_PC created;
+    u8 reserved_14;
+    FILE_DIRECTORY_RAW_TIME_PC accessed;
+    u8 reserved_1c;
+    FILE_DIRECTORY_RAW_TIME_PC modified;
+    u32 unused_24;
+    u8 reserved_28[0x18];
+    char name[MAX_PATH];
+} FILE_DIRECTORY_HOST_ENTRY_PC;
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
+STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
+extern i32 __cdecl FileDirectoryHostOpenPc(char *path);                                    /* Native 4ff570 */
+extern i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry); /* 4ff7a0 */
+extern i32 __cdecl FileDirectoryMcOpenPc(i32 port, i32 slot, char *path);                  /* 6def40 xor eax,eax;ret */
+extern void __cdecl FileDirectoryMcClosePc(i32 file);                                      /* 6def50 ret */
+extern i32 __cdecl FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);        /* 6def60 xor eax,eax;ret */
+extern void __cdecl FileDirectoryErrorPc(i32 error);                                       /* 4fe650 ret */
+extern char *FileDirectoryPathSlotsPc[16];
+extern HANDLE FileDirectoryHostHandlesPc[16];
+extern i32 FileDirectoryOpenCountPc;
+extern const char FileDirectorySourceNamePc[];      /* Native 75eca8 */
+extern NUFILE_DEVICE *FileDirectoryDefaultDevicePc; /* Native 800784, not default_device inferred */
+
+NUFILE __cdecl NuFileOpenDir(char *path) {
+    char formatted[256];
+    NUFILE_DEVICE *device = NuFileGetDeviceFromPath(path);
+    i32 result;
+    if (device == NULL)
+        device = FileDirectoryDefaultDevicePc;
+    device->format_name_fn(device, formatted, path, 256);
+    if (device->id == 2)
+        NuStrCat(formatted, nufile_disc_suffix);
+    if (device->id == 1) {
+        result = FileDirectoryMcOpenPc((i32)(i8)formatted[2] - '0', (i32)(i8)formatted[3] - '0',
+                                       formatted + device->name_len);
+        if (result < 0)
+            return 0;
+        return result + 0x1000;
+    }
+    result = FileDirectoryHostOpenPc(formatted);
+    if (result < 0)
+        return 0;
+    return result + 1;
+}
+
+void __cdecl NuFileCloseDir(NUFILE file) {
+    if (file >= 0x1000) {
+        FileDirectoryMcClosePc(file - 0x1000);
+        return;
+    }
+    {
+        HANDLE handle;
+        NuFree(FileDirectoryPathSlotsPc[file - 1], FileDirectorySourceNamePc, 0x22e);
+        handle = FileDirectoryHostHandlesPc[file - 1];
+        if (file == 1)
+            PCThreadCriticalSectionCount_candidate = 0;
+        else
+            FileDirectoryPathSlotsPc[file - 2] = NULL;
+        FindClose(handle);
+        --FileDirectoryOpenCountPc;
+    }
+}
+
+i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
+    FILE_DIRECTORY_HOST_ENTRY_PC host;
+    i32 result;
+    u32 flags;
+    i32 length = 0;
+    if (file >= 0x1000)
+        return FileDirectoryMcReadPc(file - 0x1000, entry);
+    result = FileDirectoryHostReadPc(file - 1, &host);
+    if (result > 0) {
+        flags = (((host.flags >> 2) & 0x800) | (host.flags & 0x100));
+        flags = ((flags >> 2) | (host.flags & 0x80));
+        entry->flags = (((flags >> 2) | (host.flags & 0x40)) >> 4);
+        entry->size = host.size;
+        entry->created.second = host.created.second;
+        entry->created.hour = host.created.hour;
+        entry->created.minute = host.created.minute;
+        entry->created.day = host.created.day;
+        entry->created.month = host.created.month;
+        entry->modified.second = host.modified.second;
+        entry->created.year = (u16)(((u16)host.created.year_high << 8) + host.created.year_low);
+        entry->modified.hour = host.modified.hour;
+        entry->modified.day = host.modified.day;
+        entry->modified.minute = host.modified.minute;
+        entry->modified.month = host.modified.month;
+        entry->modified.year = (u16)(((u16)host.modified.year_high << 8) + host.modified.year_low);
+        NuStrCpy(entry->name, host.name);
+        length = NuStrLen(entry->name);
+    } else if (result < 0)
+        FileDirectoryErrorPc(result);
+    return length;
+}
