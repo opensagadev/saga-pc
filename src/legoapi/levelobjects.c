@@ -131,12 +131,10 @@ void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
         return;
     for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
         NUGSCN *scene = NULL;
-        LEVEL_OBJECT_RUNTIME_PC *object = &world->level_objects[index];
-        LEVEL_OBJECT_CONFIG_PC *type = &ObjTabList[index];
         i32 area_override = 0;
-        if (NuStrICmp(type->name, "power_up") == 0)
+        if (NuStrICmp(ObjTabList[index].name, "power_up") == 0)
             KNOBS = index;
-        switch ((i8)type->kind) {
+        switch ((i8)ObjTabList[index].kind) {
             case 1:
                 scene = world->current_gscn;
                 break;
@@ -149,7 +147,7 @@ void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
                 for (character = 0; character < CHARCOUNT && !found; ++character) {
                     scene = IconScene_FindById(character);
                     if (scene != NULL)
-                        found = NuSpecialFind(scene, &object->special, type->name, 1);
+                        found = NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1);
                 }
                 if (found)
                     goto resolved;
@@ -172,12 +170,12 @@ void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
         }
         if (scene == NULL)
             continue;
-        if (!NuSpecialFind(scene, &object->special, type->name, 1) && area_override)
-            NuSpecialFind(things_scene, &object->special, type->name, 1);
+        if (!NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) && area_override)
+            NuSpecialFind(things_scene, &world->level_objects[index].special, ObjTabList[index].name, 1);
     resolved:
-        object->active = (u8)NuSpecialExistsFn(&object->special);
-        if (object->active != 0)
-            NuSpecialSetVisibility(&object->special, 0);
+        world->level_objects[index].active = (u8)NuSpecialExistsFn(&world->level_objects[index].special);
+        if (world->level_objects[index].active != 0)
+            NuSpecialSetVisibility(&world->level_objects[index].special, 0);
     }
 }
 
