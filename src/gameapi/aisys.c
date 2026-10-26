@@ -7381,8 +7381,8 @@ i32 __cdecl Action_GameDontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
         }
     }
     if (type_count != 0) {
-        for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index) {
-            candidate = &Obj[object_index];
+        candidate = Obj;
+        for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
             if ((candidate->flags_1fc_word & 0x1001u) != 0x1001u || (candidate->flags_1f8 & 0x400u) == 0)
                 continue;
             for (type_index = 0; type_index < type_count; ++type_index) {
@@ -7391,7 +7391,7 @@ i32 __cdecl Action_GameDontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             }
         }
     } else if (object != NULL) {
-        object->flags_1fc_word = (object->flags_1fc_word & (u32)(~2u)) | (u32)(dont_push ? 2 : 0);
+        object->flags_1fc_word = (object->flags_1fc_word & ~2u) | ((dont_push & 1) << 1);
     }
     return 1;
 }
