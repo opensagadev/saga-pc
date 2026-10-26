@@ -51,3 +51,7 @@ NULISTLNK *__cdecl NuLinkedListGetTail(NULISTHDR *list) {
 NULISTLNK *__cdecl NuLinkedListGetNext(NULISTHDR *list, NULISTLNK *node) {
     return node != NULL ? node->next : list->head;
 }
+
+NULISTLNK *__cdecl NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node) {
+    return node != NULL ? node->prev : list->tail;
+}

@@ -2547,6 +2547,7 @@ address,symbol,size,ctype
 0x004f1440,_NuLinkedListGetHead,7,NULISTLNK *__cdecl (NULISTHDR *)
 0x004f1450,_NuLinkedListGetTail,8,NULISTLNK *__cdecl (NULISTHDR *)
 0x004f1460,_NuLinkedListGetNext,15,"NULISTLNK *__cdecl (NULISTHDR *, NULISTLNK *)"
+0x004f1470,_NuLinkedListGetPrev,16,"NULISTLNK *__cdecl (NULISTHDR *, NULISTLNK *)"
 0x004f1e80,_NuStrCat,51,"void __cdecl (char *, const char *)"
 0x004f1ec0,_NuStrNCat,73,"i32 __cdecl (char *, const char *, i32)"
 0x004f1f10,_NuStrCpy,42,"i32 __cdecl (char *, const char *)"
