@@ -1426,40 +1426,78 @@ extern "C" void __cdecl PcInputAssignBindingPc(i32 action, i32 port, i32 kind, i
 }
 
 // Append to input_runtime.cpp. Extend config unknown_44 with metadata named in B-layout.txt.
+struct PC_INPUT_EXPORT_METADATA_PC {
+    i16 button_count;
+    i16 pov_count;
+    i16 axis_count;
+    u16 deadzone_word;
+    u16 alternate_deadzone_word;
+    i16 key;
+};
+STATIC_ASSERT(sizeof(PC_INPUT_EXPORT_METADATA_PC) == 12);
+STATIC_ASSERT(offsetof(PC_INPUT_CONFIG_PC, button_count) == 0x54);
+STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, button_count) == 0);
+STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, pov_count) == 2);
+STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, axis_count) == 4);
+STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, deadzone_word) == 6);
+STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, alternate_deadzone_word) == 8);
+STATIC_ASSERT(offsetof(PC_INPUT_EXPORT_METADATA_PC, key) == 10);
+
 void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i32 auxiliary, i32 bank, i32 key) {
     PC_INPUT_BINDING_PC *bindings = auxiliary ? auxiliary_bindings[bank] : devices[port].bindings;
-    for (i32 i = 0; i < 4; ++i) {
-        config->axes[i][0] = config->unknown_axes[i][0] = 0;
-        config->axes[i][1] = config->axes[i][2] = 255;
-        config->unknown_axes[i][1] = config->unknown_axes[i][2] = 255;
+    for (i32 i = 0; i < 8; ++i) {
+        config->all_axes[i][0] = 0;
+        config->all_axes[i][1] = 255;
+        config->all_axes[i][2] = 255;
     }
-    for (i32 i = 0; i < 16; ++i)
-        config->buttons[i][0] = config->buttons[i][1] = 0;
+    for (i32 i = 0; i < 16; ++i) {
+        config->buttons[i][0] = 0;
+        config->buttons[i][1] = 0;
+    }
     for (i32 action = 0; action < shutdown_state; ++action) {
+        i32 button = commands[action].button;
+        i32 active = (i8)commands[action].active;
+        i32 axis = commands[action].axis;
         i32 kind = bindings[action].kind;
         if (!kind)
             continue;
-        i32 active = (i8)commands[action].active;
-        i32 axis = commands[action].axis;
-        i32 button = commands[action].button;
         if (axis >= 0) {
             u8 *triplet = config->all_axes[axis];
-            if (kind == 1 || kind == 7) {
-                triplet[0] = kind == 1 ? 11 : 10;
-                triplet[active == 2 || active == 3 ? 2 : 1] = (u8)bindings[action].value;
-            } else if (kind == 2 || kind == 3 || kind == 5 || kind == 6) {
-                triplet[1] = triplet[2] = (u8)bindings[action].value;
-                i32 positive = kind == 5 || kind == 6 ? 5 : 2;
-                i32 negative = positive + 1;
+            if (kind == 12 || kind == 13) {
+                triplet[0] = (u8)kind;
+                u8 value = (u8)bindings[action].value;
+                triplet[1] = value;
+                triplet[2] = value;
+            } else if (kind == 2 || kind == 3) {
+                triplet[1] = (u8)bindings[action].value;
+                triplet[2] = (u8)bindings[action].value;
                 if (active == 3)
                     triplet[0] = (u8)kind;
-                else if ((active == 2 && kind == positive) || (active == 1 && kind == negative))
-                    triplet[0] = (u8)positive;
+                else if ((active == 2 && kind == 2) || (active == 1 && kind == 3))
+                    triplet[0] = 2;
                 else
-                    triplet[0] = (u8)negative;
-            } else if (kind == 12 || kind == 13) {
-                triplet[0] = (u8)kind;
-                triplet[1] = triplet[2] = (u8)bindings[action].value;
+                    triplet[0] = 3;
+            } else if (kind == 5 || kind == 6) {
+                triplet[1] = (u8)bindings[action].value;
+                triplet[2] = (u8)bindings[action].value;
+                if (active == 3)
+                    triplet[0] = (u8)kind;
+                else if ((active == 2 && kind == 5) || (active == 1 && kind == 6))
+                    triplet[0] = 5;
+                else
+                    triplet[0] = 6;
+            } else if (kind == 1) {
+                triplet[0] = 11;
+                if (active == 2 || active == 3)
+                    triplet[2] = (u8)bindings[action].value;
+                else
+                    triplet[1] = (u8)bindings[action].value;
+            } else if (kind == 7) {
+                triplet[0] = 10;
+                if (active == 2 || active == 3)
+                    triplet[2] = (u8)bindings[action].value;
+                else
+                    triplet[1] = (u8)bindings[action].value;
             }
         }
         if (button >= 0 && (kind >= 1 && kind <= 7 || kind == 12 || kind == 13)) {
@@ -1467,11 +1505,12 @@ void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i
             config->buttons[button][1] = (u8)bindings[action].value;
         }
     }
-    for (i32 i = 0; i < 4; ++i) {
-        if (config->axes[i][1] == 255 || config->axes[i][2] == 255)
-            config->axes[i][0] = config->axes[i][1] = config->axes[i][2] = 0;
-        if (config->unknown_axes[i][1] == 255 || config->unknown_axes[i][2] == 255)
-            config->unknown_axes[i][0] = config->unknown_axes[i][1] = config->unknown_axes[i][2] = 0;
+    for (i32 i = 0; i < 8; ++i) {
+        if (config->all_axes[i][1] == 255 || config->all_axes[i][2] == 255) {
+            config->all_axes[i][0] = 0;
+            config->all_axes[i][2] = 0;
+            config->all_axes[i][1] = 0;
+        }
     }
     memset(config->name, 0, 64);
     PCByteCopy_candidate(config->name, devices[port].name, NuStrLen(devices[port].name));
@@ -1480,15 +1519,17 @@ void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i
     config->guid_data3 = devices[port].product.Data3;
     for (i32 i = 0; i < 8; ++i)
         config->guid_data4[i] = devices[port].product.Data4[i];
-    config->button_count = devices[port].button_count;
-    config->pov_count = (i8)devices[port].pov_count;
-    config->axis_count = (i8)devices[port].axis_count;
-    config->deadzone = devices[port].deadzone;
-    config->unknown_5b = 0;
-    config->alternate_deadzone = devices[port].alternate_deadzone;
-    config->unknown_5d = 0;
-    config->key = (i16)key;
+    PC_INPUT_EXPORT_METADATA_PC *metadata = (PC_INPUT_EXPORT_METADATA_PC *)&config->button_count;
+    metadata->button_count = devices[port].button_count;
+    metadata->pov_count = (i8)devices[port].pov_count;
+    metadata->axis_count = (i8)devices[port].axis_count;
+    u16 deadzone = devices[port].deadzone;
+    i16 saved_key = (i16)key;
+    metadata->deadzone_word = deadzone;
+    metadata->alternate_deadzone_word = devices[port].alternate_deadzone;
+    metadata->key = saved_key;
 }
+
 void PC_INPUT_RUNTIME_PC::PromoteConfigPc(PC_INPUT_CONFIG_PC *records, i32 count, PC_INPUT_CONFIG_PC *config) {
     i32 index = 0;
     for (; index < count; ++index)
