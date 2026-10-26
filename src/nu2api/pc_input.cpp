@@ -249,10 +249,11 @@ extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *device) {
 
 extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, void *unused) {
     PC_INPUT_RUNTIME_PC *state = (PC_INPUT_RUNTIME_PC *)nu_input_state;
+    PC_INPUT_DEVICE_PC *devices = state->devices;
     if (IsXInputProductPc(&instance->product)) {
         i32 port = PcXInputDeviceCount;
         PcInputSelectedPort = port;
-        PC_INPUT_DEVICE_PC *record = &state->devices[port];
+        PC_INPUT_DEVICE_PC *record = &devices[port];
         record->product = instance->product;
         i32 length = (i32)strlen(instance->product_name);
         if (length > 63)
@@ -276,20 +277,24 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         ++PcXInputDeviceCount;
         return TRUE;
     }
-    u8 type = (u8)instance->device_type;
-    if (type == 20 || type == 21) {
+    u32 type = (u8)instance->device_type;
+    if (type != 19) {
+        if (type - 20 > 1)
+            return TRUE;
         NuKeyboardDevice_PC *device;
         if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, instance->instance, &device,
                                                               NULL) < 0)
             return TRUE;
         i32 port = 4;
-        while (port < 10 && state->devices[port].kind != 0)
+        PC_INPUT_DEVICE_PC *record = &devices[port];
+        while (record->kind != 0) {
             ++port;
-        if (port >= 10)
-            return TRUE;
+            ++record;
+            if (port >= 10)
+                return TRUE;
+        }
         if (PcInputSelectedPort == -1)
             PcInputSelectedPort = port;
-        PC_INPUT_DEVICE_PC *record = &state->devices[port];
         PC_DI_CAPS_PC caps;
         caps.size = sizeof(caps);
         HRESULT result = device->methods->get_caps(device, &caps);
@@ -317,23 +322,27 @@ extern "C" BOOL __stdcall InputEnumDevicesPc(const PC_DI_INSTANCE_PC *instance, 
         ConfigureJoystickRangesPc(device);
         state->BindPreferredConfig(7, port);
         ++nu_keyboard_owner.device_count;
-    } else if (type == 19) {
-        if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, PcSystemKeyboardId,
-                                                              &nu_keyboard_owner.device, NULL) != 0)
-            return TRUE;
-        PcKeyboardCapabilities.size = sizeof(PcKeyboardCapabilities);
-        nu_keyboard_owner.device->methods->set_cooperative_level(nu_keyboard_owner.device,
-                                                                 (HWND)PCInputInstance_candidate, 22);
-        nu_keyboard_owner.device->methods->set_format(nu_keyboard_owner.device, &PcKeyboardDataFormat);
-        nu_keyboard_owner.device->methods->acquire(nu_keyboard_owner.device);
-        nu_keyboard_owner.device->methods->get_caps(nu_keyboard_owner.device, &PcKeyboardCapabilities);
-        state->InitKeyboardProfiles();
-        for (i32 port = 10; port < 14; ++port) {
-            state->devices[port].device = nu_keyboard_owner.device;
-            state->devices[port].button_count = (i16)PcKeyboardCapabilities.buttons;
-        }
-        nu_keyboard_owner.key_count = 256;
+        return TRUE;
     }
+    if (nu_keyboard_owner.factory->methods->create_device(nu_keyboard_owner.factory, PcSystemKeyboardId,
+                                                          &nu_keyboard_owner.device, NULL) != 0)
+        return TRUE;
+    PcKeyboardCapabilities.size = sizeof(PcKeyboardCapabilities);
+    nu_keyboard_owner.device->methods->set_cooperative_level(nu_keyboard_owner.device, (HWND)PCInputInstance_candidate,
+                                                             22);
+    nu_keyboard_owner.device->methods->set_format(nu_keyboard_owner.device, &PcKeyboardDataFormat);
+    nu_keyboard_owner.device->methods->acquire(nu_keyboard_owner.device);
+    nu_keyboard_owner.device->methods->get_caps(nu_keyboard_owner.device, &PcKeyboardCapabilities);
+    state->InitKeyboardProfiles();
+    devices[10].device = nu_keyboard_owner.device;
+    devices[10].button_count = (i16)PcKeyboardCapabilities.buttons;
+    devices[12].device = nu_keyboard_owner.device;
+    devices[12].button_count = (i16)PcKeyboardCapabilities.buttons;
+    devices[11].device = nu_keyboard_owner.device;
+    devices[11].button_count = (i16)PcKeyboardCapabilities.buttons;
+    devices[13].device = nu_keyboard_owner.device;
+    devices[13].button_count = (i16)PcKeyboardCapabilities.buttons;
+    nu_keyboard_owner.key_count = 256;
     return TRUE;
 }
 
