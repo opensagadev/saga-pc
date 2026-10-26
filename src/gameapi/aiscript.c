@@ -339,7 +339,7 @@ i32 __cdecl AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VAR
 
     for (i = 0; i < 4; i++) {
         if (source_script->params[i].name != NULL && script->params[i].name == NULL) {
-            AISCRIPT_COPY_ARENA_STRING(source_script->params[i].name, script->params[i].name, buffer, end_buffer);
+            script->params[i].name = AIScriptCopyStringPc(source_script->params[i].name, buffer, end_buffer);
             script->params[i].default_value = source_script->params[i].default_value;
         }
     }
