@@ -6585,7 +6585,10 @@ address,symbol,size,ctype
 0x60dd60,?initResources@NuSpeedBlurFilter@@UAEXXZ,81,native exactVT binding; unimplemented extent unclaimed
 0x60ddc0,_NuMtlInitShaderResourcesPc,265,void __cdecl(void)
 0x60ded0,_NuMtlInitExPS,5,void __cdecl(VARIPTR*)
+0x00610540,_RefpackGetMatchLengthPc,46,"u32 __cdecl(u8 *,u8 *,u32)"
+0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,
+0x00610690,_refpack,918,"i32 __cdecl(u8 *,i32,u8 *)"
 0x617e20,_edmainGetCameraPc,6,NUCAMERA* current editor protocol pointer
 0x617e30,_edmainExtCamera,19,
 0x617e70,_edmainGetCursorEnabled,6,
