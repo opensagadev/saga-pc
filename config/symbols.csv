@@ -2488,12 +2488,16 @@ address,symbol,size,ctype
 0x4eeda0,_NuAllocBadPointer,1,void __cdecl(void)
 0x4eedc0,_NuAllocReport,1,"void __cdecl(const void *, ...)"
 0x004eef40,_NuAlloc,471,"void *__cdecl (i32, const char *, i32)"
-0x004ef280,_NuFree,442,"void __cdecl (void *, const char *, i32)"
+0x004ef280,_NuFree,450,"void __cdecl (void *, const char *, i32)"
 0x4ef5c0,_NuAllocDumpRecords,98,void __cdecl(i32)
 0x004ef660,_PCByteCopy_candidate,84,"void __cdecl (void *, const void *, u32)"
 0x4ef6e0,_NuMemSet128,25,"void __cdecl(void *,u32,i32)"
 0x004ef790,_NuFileError,1,void __cdecl (void)
 0x004ef7b0,_NuFileRetry,1,void __cdecl (void)
+0x004ef870,_NuAllocManagerUnlinkPc,27,
+0x004ef8a0,_NuAllocManagerSplitPc,177,
+0x004efa40,_NuAllocManagerAllocatePc,179,
+0x004efb00,_NuAllocManagerFreePc,227,
 0x004efdf0,_NuFileCorrectSlashes,112,"void __cdecl (NUFILE_DEVICE *, char *)"
 0x004efec0,_NuFileReldirFix,106,"void __cdecl (NUFILE_DEVICE *, char *)"
 0x004eff30,_NuFileGetLastError,6,i32 __cdecl (void)
@@ -2683,6 +2687,7 @@ address,symbol,size,ctype
 0x4f5f30,_ImplodeDecodeOffset,149,u32 __cdecl(void)
 0x4f5fd0,_ImplodeHufDecodeStart,39,void __cdecl(void)
 0x4f6000,_ImplodeMakeTable,654,"void __cdecl(i32,u8 *,i32,u16 *)"
+0x004f6740,_NuAllocManagerAllocateAlignedPc,26,
 0x004f6760,_NuDatFileDecodeNext,177,void __cdecl (void)
 0x004f6820,_NuFileAddDevice,216,NUFILE_DEVICE *__cdecl (NUFILE_DEVICE *)
 0x004f6900,_NuFileGetCurrentDirectory,42,i32 __cdecl (char *)

@@ -56,98 +56,228 @@ extern u32 NuAllocTailMetadata[3];
 void __cdecl NuAllocBadPointer(void);
 void __cdecl NuAllocReport(const void *message, ...);
 
+/* PC manager prefix and block header touched by the retail allocator. */
+typedef struct nualloc_manager_block_pc_s {
+    u32 size_flags;
+    struct nualloc_manager_block_pc_s *next;
+    struct nualloc_manager_block_pc_s *previous;
+} NUALLOC_MANAGER_BLOCK_PC;
+
+typedef struct nualloc_manager_trailer_pc_s {
+    NUALLOC_MANAGER_BLOCK_PC *previous_block;
+} NUALLOC_MANAGER_TRAILER_PC;
+
+typedef struct nualloc_manager_prefix_pc_s {
+    void *base;
+    u32 size;
+    u32 block_count;
+    u32 used_bytes;
+} NUALLOC_MANAGER_PREFIX_PC;
+
+STATIC_ASSERT(sizeof(NUALLOC_MANAGER_BLOCK_PC) == 12);
+STATIC_ASSERT(offsetof(NUALLOC_MANAGER_BLOCK_PC, next) == 4);
+STATIC_ASSERT(offsetof(NUALLOC_MANAGER_BLOCK_PC, previous) == 8);
+STATIC_ASSERT(sizeof(NUALLOC_MANAGER_TRAILER_PC) == 4);
+STATIC_ASSERT(offsetof(NUALLOC_MANAGER_TRAILER_PC, previous_block) == 0);
+STATIC_ASSERT(sizeof(NUALLOC_MANAGER_PREFIX_PC) == 16);
+STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, size) == 4);
+STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, block_count) == 8);
+STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, used_bytes) == 12);
+
+static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block) {
+    if (block->previous != NULL)
+        block->previous->next = block->next;
+    if (block->next != NULL)
+        block->next->previous = block->previous;
+}
+
+static void NuAllocManagerSplitPc(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_MANAGER_BLOCK_PC **remainder,
+                                  NUALLOC_MANAGER_BLOCK_PC *block, u32 *size, u32 alignment) {
+    u32 remainder_size = (block->size_flags & 0x7fffffffU) - *size - 16;
+    *remainder = block;
+    *allocated = (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + remainder_size + 16);
+    if (alignment > 0) {
+        u32 payload = (u32)*allocated + 12;
+        u32 aligned_payload = (payload + alignment - 1) & ~(alignment - 1);
+        u32 adjustment = aligned_payload - payload;
+        *allocated = (NUALLOC_MANAGER_BLOCK_PC *)((u32)*allocated + adjustment);
+        *size -= adjustment;
+        remainder_size += adjustment;
+    }
+    (*allocated)->size_flags = 0x80000000U | *size;
+    (*allocated)->next = NULL;
+    (*allocated)->previous = NULL;
+    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*allocated + ((*allocated)->size_flags & 0x7fffffffU) +
+                                    sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+        ->previous_block = *allocated;
+    (*remainder)->size_flags = remainder_size;
+    (*remainder)->next = NULL;
+    (*remainder)->previous = NULL;
+    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)*remainder + ((*remainder)->size_flags & 0x7fffffffU) +
+                                    sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+        ->previous_block = *remainder;
+}
+
+void *__cdecl NuAllocManagerAllocatePc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment, u32 unused) {
+    NUALLOC_MANAGER_BLOCK_PC *sentinel = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK_PC *block;
+    NUALLOC_MANAGER_BLOCK_PC *allocated;
+    NUALLOC_MANAGER_BLOCK_PC *remainder;
+    (void)unused;
+    if (size == 0)
+        return NULL;
+    size += alignment;
+    block = sentinel;
+    while (block != NULL) {
+        if ((block->size_flags & 0x7fffffffU) > size + 16)
+            break;
+        block = block->next;
+    }
+    if (block == NULL)
+        return NULL;
+    if (block->previous != NULL)
+        block->previous->next = block->next;
+    if (block->next != NULL)
+        block->next->previous = block->previous;
+    NuAllocManagerSplitPc(&allocated, &remainder, block, &size, alignment);
+    if (sentinel->next != NULL)
+        sentinel->next->previous = remainder;
+    remainder->next = sentinel->next;
+    remainder->previous = sentinel;
+    sentinel->next = remainder;
+    manager->block_count += 1;
+    manager->used_bytes += (allocated->size_flags & 0x7fffffffU) + 16;
+    return (void *)((u32)allocated + 12);
+}
+
+void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
+    void *base = manager->base;
+    NUALLOC_MANAGER_BLOCK_PC *sentinel = (NUALLOC_MANAGER_BLOCK_PC *)((u32)base + 16);
+    NUALLOC_MANAGER_BLOCK_PC *block;
+    NUALLOC_MANAGER_BLOCK_PC *next;
+    NUALLOC_MANAGER_BLOCK_PC *previous;
+    if (payload == NULL || (u32)payload < (u32)base || (u32)payload > (u32)base + manager->size)
+        return;
+    block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload - 12);
+    block->size_flags &= 0x7fffffffU;
+    manager->block_count -= 1;
+    manager->used_bytes -= (block->size_flags & 0x7fffffffU) + 16;
+    if (sentinel->next != NULL)
+        sentinel->next->previous = block;
+    block->previous = sentinel;
+    block->next = sentinel->next;
+    sentinel->next = block;
+    next = (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + (block->size_flags & 0x7fffffffU) + 16);
+    if (!(next->size_flags & 0x80000000U)) {
+        NuAllocManagerUnlinkPc(next);
+        block->size_flags = (block->size_flags & 0x80000000U) |
+                            ((next->size_flags & 0x7fffffffU) + (block->size_flags & 0x7fffffffU) + 16);
+        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + (block->size_flags & 0x7fffffffU) +
+                                        sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+            ->previous_block = block;
+    }
+    previous = ((NUALLOC_MANAGER_TRAILER_PC *)block)[-1].previous_block;
+    if (!(previous->size_flags & 0x80000000U)) {
+        NuAllocManagerUnlinkPc(block);
+        previous->size_flags = (previous->size_flags & 0x80000000U) |
+                               ((block->size_flags & 0x7fffffffU) + (previous->size_flags & 0x7fffffffU) + 16);
+        ((NUALLOC_MANAGER_TRAILER_PC *)((u32)previous + (previous->size_flags & 0x7fffffffU) +
+                                        sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+            ->previous_block = previous;
+    }
+}
+
+void *__cdecl NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment) {
+    return NuAllocManagerAllocatePc(manager, size, alignment, 0);
+}
+
 void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
-    u32 allocation_size;
-    u32 filename_size;
-    u32 requested_size;
     NUALLOC_RECORD *record;
+    NUALLOC_RECORD *old_head;
     NUALLOC_TAIL *tail;
+    NUALLOC_MANAGER_PREFIX_PC *manager;
     void *user_data;
     void *allocation_end;
-    char *filename_copy;
+    u32 allocation_size;
     u32 i;
+    u32 serial;
+    char *filename_copy;
+    const char *filename_read;
+    char byte;
 
     if (size <= 0) {
-        STUBBED_NAMED(0x004eeda0); /* PC diagnostic hook; retail body is RET. */
+        NuAllocBadPointer();
     }
-
-    requested_size = (u32)size;
     if (NuAllocArena != NULL) {
-        void *aligned_cursor;
+        void *aligned_cursor = (void *)(((u32)*NuAllocArena->cursor + 15) & 0xfffffff0U);
         u32 remaining;
-
-        aligned_cursor = (void *)(((u32)*NuAllocArena->cursor + 0x0f) & 0xfffffff0);
         *NuAllocArena->cursor = aligned_cursor;
-        remaining = (u32)NuAllocArena->end - (u32)aligned_cursor;
-        if (remaining < requested_size) {
-            STUBBED_NAMED(0x004eeda0); /* PC allocation failure report hook. */
+        remaining = (u32)NuAllocArena->end - (u32)*NuAllocArena->cursor;
+        if (remaining < (u32)size) {
+            NuAllocBadPointer();
             return NULL;
         }
-
-        *NuAllocArena->cursor = (char *)aligned_cursor + requested_size;
-        return aligned_cursor;
+        user_data = *NuAllocArena->cursor;
+        *NuAllocArena->cursor = (void *)((u32)*NuAllocArena->cursor + (u32)size);
+        return user_data;
     }
-
     if (NuAllocPool != NULL) {
-        u32 aligned_size;
-
-        aligned_size = (requested_size + 0x0f) & 0xfffffff0;
-        if ((i32)aligned_size >= (i32)NuAllocPool->remaining) {
+        u32 aligned_size = ((u32)size + 15) & 0xfffffff0U;
+        if ((i32)aligned_size >= (i32)NuAllocPool->remaining)
             return NULL;
-        }
-
         user_data = NuAllocPool->cursor;
-        NuAllocPool->cursor = (char *)NuAllocPool->cursor + aligned_size;
+        NuAllocPool->cursor = (void *)((u32)user_data + aligned_size);
         NuAllocPool->remaining -= aligned_size;
         return user_data;
     }
-
-    if (NuAllocManager != NULL) {
-        STUBBED_NAMED(0x004eefc9); /* managed heap branch: 4f6740 dependency */
-        return NULL;
+    manager = (NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager;
+    allocation_size = (u32)strlen(file) + (u32)size + 0x2d;
+    if (manager != NULL) {
+        record = (NUALLOC_RECORD *)NuAllocManagerAllocateAlignedPc(manager, allocation_size, 4);
+    } else {
+        record = (NUALLOC_RECORD *)malloc(allocation_size);
+        if (record != NULL) {
+            allocation_size = (u32)strlen(file) + (u32)size + 0x2d;
+            memset(record, 0, allocation_size);
+        }
     }
-
-    filename_size = (u32)strlen(file) + 1;
-    allocation_size = (u32)size + filename_size + 0x2c;
-    record = (NUALLOC_RECORD *)malloc(allocation_size);
+    user_data = record;
     if (record == NULL) {
-        STUBBED_NAMED(0x004ef036); /* retail error hooks are unresolved RETs */
-        return NULL;
+        NuAllocReport((const void *)(u32)size, file, line);
+        NuAllocBadPointer();
+    } else {
+        allocation_size = (u32)strlen(file) + (u32)size + 0x2d;
+        memset(record, 0, allocation_size);
+        NuAllocTrackedBytes += (u32)size;
+        record->requested_size = (u32)size;
+        for (i = 0; i < 3; ++i)
+            record->header_metadata[i] = NuAllocHeaderMetadata[i];
+        tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
+        for (i = 0; i < 3; ++i)
+            tail->metadata[i] = NuAllocTailMetadata[i];
+        filename_copy = (char *)((u32)record + (u32)size + 44);
+        filename_read = file;
+        do {
+            byte = *filename_read++;
+            *filename_copy++ = byte;
+        } while (byte != 0);
+        serial = NuAllocRecordSerial;
+        record->serial = serial;
+        NuAllocRecordSerial = serial + 1;
+        old_head = NuAllocRecordHead;
+        record->source_line = line;
+        record->next = old_head;
+        if (record->next != NULL)
+            record->next->previous = record;
+        record->previous = NULL;
+        NuAllocRecordHead = record;
+        user_data = (void *)((u32)record + 32);
     }
-
-    memset(record, 0, allocation_size);
-    record->source_line = line;
-    record->serial = NuAllocRecordSerial++;
-    record->requested_size = (u32)size;
-    for (i = 0; i < 3; ++i) {
-        record->header_metadata[i] = NuAllocHeaderMetadata[i];
-    }
-
-    user_data = (char *)record + sizeof(*record);
-    tail = (NUALLOC_TAIL *)((char *)user_data + size);
-    for (i = 0; i < 3; ++i) {
-        tail->metadata[i] = NuAllocTailMetadata[i];
-    }
-
-    filename_copy = (char *)(tail + 1);
-    memcpy(filename_copy, file, filename_size);
-
-    record->next = NuAllocRecordHead;
-    record->previous = NULL;
-    if (record->next != NULL) {
-        record->next->previous = record;
-    }
-    NuAllocRecordHead = record;
-    NuAllocTrackedBytes += (u32)size;
-
-    allocation_end = (char *)user_data + size;
-    if ((u32)allocation_end > (u32)NuAllocPeakEnd0) {
+    allocation_end = (void *)((u32)user_data + (u32)size);
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd0)
         NuAllocPeakEnd0 = allocation_end;
-    }
-    if ((u32)allocation_end > (u32)NuAllocPeakEnd1) {
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd1)
         NuAllocPeakEnd1 = allocation_end;
-    }
-
     return user_data;
 }
 
@@ -156,28 +286,27 @@ void __cdecl NuFree(void *user_data, const char *file, i32 line) {
     NUALLOC_TAIL *tail;
 
     if (NuAllocArena != NULL) {
-        STUBBED_NAMED(0x004ef280); /* PC reports frees while the arena is active. */
-        return;
+        NuAllocBadPointer();
     }
 
     if (user_data == NULL) {
-        STUBBED_NAMED(0x004eedc0); /* PC diagnostic hook is an empty RET. */
+        NuAllocReport(file, line);
         return;
     }
 
     record = (NUALLOC_RECORD *)((char *)user_data - sizeof(*record));
     tail = (NUALLOC_TAIL *)((char *)user_data + record->requested_size);
     if (memcmp(tail, NuAllocTailMetadata, sizeof(*tail)) != 0) {
-        STUBBED_NAMED(0x004eedc0); /* Corrupt tail diagnostic hook. */
+        NuAllocReport(file, line, tail);
     }
     if (memcmp(record->header_metadata, NuAllocHeaderMetadata, sizeof(record->header_metadata)) != 0) {
-        STUBBED_NAMED(0x004eedc0); /* Corrupt header diagnostic hook. */
+        NuAllocReport(file, line, record->header_metadata);
     }
 
     if (record->next != NULL) {
         record->next->previous = record->previous;
     } else if (record->previous == NULL) {
-        STUBBED_NAMED(0x004eedc0); /* PC empty-list diagnostic hook. */
+        NuAllocReport(file, line);
     }
 
     if (record->previous != NULL) {
@@ -191,7 +320,7 @@ void __cdecl NuFree(void *user_data, const char *file, i32 line) {
     record->previous = NULL;
 
     if (NuAllocManager != NULL) {
-        STUBBED_NAMED(0x004efb00); /* Manager release/coalescing closure unresolved. */
+        NuAllocManagerFreePc((NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager, record);
         return;
     }
 
