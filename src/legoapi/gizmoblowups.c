@@ -1957,3 +1957,39 @@ void __cdecl Blowup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         blowup->status_flags |= 0x10000;
     }
 }
+
+void __cdecl GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
+    NUMTX matrix;
+    i32 index;
+    (void)data;
+    (void)delta_time;
+    for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
+        if ((blowup->status_flags & 0x4000) != 0) {
+            i32 drawn = NuSpecialDrawAt(&blowup->type->animated_special, &blowup->transform);
+            blowup->status_flags = (blowup->status_flags & ~0x8000u) | (((u32)drawn << 15) & 0x8000u);
+            if ((blowup->status_flags & 0x8000) != 0)
+                NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position, &blowup->position, 1,
+                                            NULL);
+            if ((blowup->status_flags & 0x808000) == 0x808000 && (blowup->draw_flags & 0x10) != 0 &&
+                GizmoBlowup_TransformDrawFn != NULL)
+                GizmoBlowup_TransformDrawFn(blowup);
+        } else {
+            blowup->status_flags &= ~0x8000u;
+            if ((blowup->status_flags & 1) != 0) {
+                if ((blowup->draw_flags & 0x400) == 0) {
+                    GizmoBlowupGenDecalMatrix(blowup, &matrix, 0);
+                    NuSpecialDrawAt(&blowup->type->decal_special, &matrix);
+                }
+                if (NuSpecialExistsFn(&blowup->type->burst_special) != 0)
+                    NuSpecialDrawAt(&blowup->type->burst_special, &blowup->transform);
+            }
+        }
+        if ((blowup->status_flags & 0x800000) != 0 && (blowup->draw_flags & 0x20000) == 0 &&
+            NuSpecialExistsFn(&blowup->type->shadow_special) != 0) {
+            GizmoBlowupGenShadowMatrix(blowup, &matrix);
+            NuSpecialDrawAt(&blowup->type->shadow_special, &blowup->transform);
+        }
+    }
+}
