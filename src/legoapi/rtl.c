@@ -2200,3 +2200,55 @@ RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET_PC *set, NUVEC *position) {
     }
     return NULL;
 }
+
+void SelectNextRTL(void) {
+    RTL_LIGHT_PC *light;
+    if (base_rtl != NULL) {
+        if (curr_rtl->field_79 != -1) {
+            curr_rtl = &curr_set->lights[curr_rtl->field_79];
+        } else {
+            light = curr_rtl;
+            while (light->field_7a != -1) {
+                curr_rtl = light;
+                light = &curr_set->lights[light->field_7a];
+            }
+        }
+    } else {
+        i32 count = 0;
+        light = curr_rtl;
+        while (count < 128) {
+            ++light;
+            if (light >= &curr_set->lights[128])
+                light = curr_set->lights;
+            if (light->type != 0 && light->field_7a == -1)
+                break;
+            ++count;
+        }
+        curr_rtl = light;
+    }
+}
+
+void SelectPrevRTL(void) {
+    RTL_LIGHT_PC *light;
+    if (base_rtl != NULL) {
+        light = &curr_set->lights[curr_rtl->field_7a];
+        if (light->field_7a != -1) {
+            curr_rtl = light;
+        } else {
+            while (curr_rtl->field_79 != -1)
+                curr_rtl = &curr_set->lights[curr_rtl->field_79];
+        }
+    } else {
+        i32 count = 0;
+        light = curr_rtl;
+        while (count < 128) {
+            --light;
+            if (light < curr_set->lights)
+                light = &curr_set->lights[127];
+            if (light->type != 0 && light->field_7a == -1)
+                break;
+            ++count;
+        }
+        curr_rtl = light;
+    }
+}

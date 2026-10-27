@@ -7041,6 +7041,8 @@ address,symbol,size,ctype
 0x0063abb0,_edrtlBurnoutFileSave,309,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63acf0,_edrtlCancelBurnMainMenu,39,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x63ad30,_edrtlEnter,234,
+0x63b0f0,_SelectNextRTL,239,void __cdecl (void)
+0x63b1e0,_SelectPrevRTL,235,void __cdecl (void)
 0x63c1b0,_edrtlDetermineNearestBurn,240,"void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *)"
 0x63c2a0,_edrtlCalculateBurnout,1125,"void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32)"
 0x63c710,_edrtlCalculateBurnoutEx,58,"void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32)"
