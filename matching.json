@@ -293,7 +293,7 @@
     "src/legoapi/gcutscn.c": "b0136d8d1d5bb03f0aff5e94f344c308bdf687b29c427cfb170e4adb6dc116c2",
     "src/legoapi/gcutscn_locators.c": "68ae8d4200e71c70d599b788c34b140994de7c0e083918005e370851ad191cfe",
     "src/legoapi/gizbuildit_pc.c": "c257afc8cf8a7430431e24c3705447823816f7f4ff94f3363bf3c47340ae4a7e",
-    "src/legoapi/gizflow.c": "41c7ecd4929741dbb53a3b845b6cbe617f91cb48209bec22218e57e5c0dcdb43",
+    "src/legoapi/gizflow.c": "17b401e1a9282990087e0e6bd9ade683936dbb606929c2921c2c4f960bf3bed0",
     "src/legoapi/gizflow_diagnostic.c": "9946570a4833573c3c33e1b8ed2883a87ea5ea5fcd776762f80a4dde3d19a24e",
     "src/legoapi/gizforce.c": "d9a810bf5d39db98257364550d6707284b70019c24e91f1dad6a8d5e548f7ba7",
     "src/legoapi/gizmessage.c": "54a69c9ebe5a79b4d413bd340a5821bf41d129a9b2cf30ac779b9136aa1c4beb",
@@ -675,7 +675,7 @@
     "build/obj/legoapi/gizactions.obj": "9d274cac0d4c2dd47836870f0a6c592bdbf0b10968eac45c41e043282d08cd65",
     "build/obj/legoapi/gizbuildit.obj": "946f05b3831a799be4508ea531c32571c40478381381988a9d0f5d0459d7d98a",
     "build/obj/legoapi/gizbuildit_pc.obj": "e3f05b059ec2ebb06ac45906a3dd41e84d7f88ed16ffb2622542572e6c02cc68",
-    "build/obj/legoapi/gizflow.obj": "efe870278c0cab904fee8eebf0a889047de32ba01838425e6dc3bd6ca1825c30",
+    "build/obj/legoapi/gizflow.obj": "f4ef17950b3e45b82522bcfaed93080df14dd603052fbbb92ad931ba1e440c5e",
     "build/obj/legoapi/gizflow_diagnostic.obj": "ec316efb627969dc13f3a70359dcd0508408b949e12acafa9648b96532f4d50b",
     "build/obj/legoapi/gizforce.obj": "067eab373e21fa330bf6bd8f4b3520e27ecd36188fd5970eb020756083d27406",
     "build/obj/legoapi/gizmessage.obj": "5f69d2c921cad7d110781d80a14e1fb603945292e9bcd34f4b9b34066869414d",
@@ -122520,11 +122520,25 @@
       "name": "DynamicAddGizmoToFlow",
       "symbol": "_DynamicAddGizmoToFlow",
       "address": "0x0059d7a0",
-      "units": [],
+      "units": [
+        "src/legoapi/gizflow.c"
+      ],
       "target_size": 309,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/gizflow.c",
+          "base_size": 312,
+          "exact_match": false,
+          "target_sha256": "ed06cc14837ca864a8ae211ca5c1d4945e723877cf4f0245457d1e1ad1b549a6",
+          "base_sha256": "ae01bafae76f4df886d8b6f8e06611d86c9e172b3ccfa5b50da04eb3cd7fd3c5",
+          "relocation_count": 5,
+          "comparison_unit": "0059d7a0-96283464f9bd",
+          "objdiff_percent": 81.13265
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 81.13265
     },
     {
       "name": "ResetGizmoFlowBox",
@@ -543014,11 +543028,11 @@
     "mapped_code_bytes": 2579979,
     "matched_code_bytes": 761767,
     "matching_percent": 21.945059497367804,
-    "fuzzy_coverage_percent": 62.275413435492425,
+    "fuzzy_coverage_percent": 62.282635622813636,
     "mapped_functions": 9810,
     "matched_functions": 5914,
-    "objdiff_fuzzy_percent": 85.709755,
-    "objdiff_total_code": 2525120,
+    "objdiff_fuzzy_percent": 85.70919,
+    "objdiff_total_code": 2525429,
     "image_bytes": 40067072,
     "mapped_bytes": 4452551,
     "mapping_percent": 11.112743651445257,
@@ -544391,7 +544405,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "cc9514b800405209a74c93697ee33e7f49d43469c74850185645b0a87a80a54c",
+      "geometry_object_sha256": "24bd1e2f457d5d2541e531418d054ba380826cf87b8674a6e00b9f89196d04d7",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
