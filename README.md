@@ -1,14 +1,14 @@
 # saga-pc
 
 <!-- matching-badge -->
-![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-62.283%25-orange)<!-- /matching-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
+![fuzzy code match](https://img.shields.io/badge/fuzzy%20code%20match-62.318%25-orange)<!-- /matching-badge --> [![Build](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml/badge.svg)](https://github.com/opensagadev/saga-pc/actions/workflows/build.yml)
 
 <!-- mapping-badge -->
 
 | Metric / coverage | Meaning |
 | --- | --- |
-| ![exact code match](https://img.shields.io/badge/exact%20code%20match-21.945%25-red) | Byte-identical code. |
-| ![mapped code](https://img.shields.io/badge/mapped%20code-74.359%25-orange) | Known code extents. |
+| ![exact code match](https://img.shields.io/badge/exact%20code%20match-21.947%25-red) | Byte-identical code. |
+| ![mapped code](https://img.shields.io/badge/mapped%20code-74.377%25-orange) | Known code extents. |
 | ![mapped file-backed data](https://img.shields.io/badge/mapped%20file--backed%20data-35.950%25-orange) | Known data stored in the executable. |
 | ![mapped zero-fill/BSS](https://img.shields.io/badge/mapped%20zero--fill%2FBSS-4.259%25-red) | Known zero-initialized storage. |
 
