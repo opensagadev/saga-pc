@@ -6975,6 +6975,25 @@ address,symbol,size,ctype
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
 0x6382a0,_RefreshUI,1800,
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
+0x639cc0,_edrtlSetBurnoutStartAngle,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639ce0,_edrtlSetBurnoutMinIntensity,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639d00,_edrtlSetBurnoutEndAngle,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639d20,_edrtlSetBurnoutMaxIntensity,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639d40,_edrtlSetBurnoutGlobalScale,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639d60,_edrtlSetBurnoutDispersion,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639d80,_edrtlSetBurnoutFragmentGlowFactor,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639da0,_edrtlSetBurnoutThreshold,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639dc0,_edrtlSetBurnoutSourceAvailable,21,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639de0,_edrtlSetBurnoutSourceDirectionX,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639e00,_edrtlSetBurnoutSourceDirectionY,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639e20,_edrtlSetBurnoutSourceDirectionZ,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639e40,_edrtlSetBurnoutSourceInnerRadius,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639e60,_edrtlSetBurnoutSourceInnerIntensity,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639e80,_edrtlSetBurnoutSourceOuterRadius,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639ea0,_edrtlSetBurnoutSourceOuterIntensity,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639ec0,_edrtlSetBurnoutSourceFallOffPower,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639ee0,_edrtlCancelBurnDefaultsMenu,29,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x639f00,_edrtlBurnDefaultsMenu,1284,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63a410,_edrtlSetBurnoutNormalRate,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63a430,_edrtlSetBurnoutOvershootRate,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63a450,_edrtlSetBurnoutOvershootCutin,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
@@ -6983,7 +7002,19 @@ address,symbol,size,ctype
 0x63a4b0,_edrtlSetBurnoutOverdarkCap,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63a4d0,_edrtlCancelBurnTransitionsMenu,29,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x63a4f0,_edrtlBurnTransitionsMenu,557,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a720,_edrtlSetBurnRadius,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a740,_edrtlSetBurnFalloff,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a760,_edrtlCancelBurnRadiusMenu,29,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x63a780,_edrtlBurnRadiusMenu,259,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a890,_edrtlSetBurnsetThreshold,34,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a8c0,_edrtlSetBurnsetIntensity,34,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a8f0,_edrtlSetBurnsetFlare,34,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a920,_edrtlSetBurnsetRadius,34,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a950,_edrtlSetBurnsetFalloff,34,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a980,_edrtlCancelBurnSetMenu,29,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x63a9a0,_edrtlBurnSetMenu,527,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x0063abb0,_edrtlBurnoutFileSave,309,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63acf0,_edrtlCancelBurnMainMenu,39,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x63ad30,_edrtlEnter,234,
 0x63c1b0,_edrtlDetermineNearestBurn,240,"void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *)"
 0x63c2a0,_edrtlCalculateBurnout,1125,"void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32)"
@@ -16465,6 +16496,24 @@ address,symbol,size,ctype
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
 0x76b788,_RtlSearchTimebarNamePc,,const char[9]
+0x76b79c,??_C@_0BF@HOEJBKMM@Source?5FallOff?5Power?$AA@,,const char[]
+0x76b7b4,??_C@_0BH@HPGDHHIB@Source?5Outer?5Intensity?$AA@,,const char[]
+0x76b7cc,??_C@_0BE@OALECHHG@Source?5Outer?5Radius?$AA@,,const char[]
+0x76b7e0,??_C@_0BH@COBMBCD@Source?5Inner?5Intensity?$AA@,,const char[]
+0x76b7f8,??_C@_0BE@HBICCNBG@Source?5Inner?5Radius?$AA@,,const char[]
+0x76b80c,??_C@_0BD@MEEOBBJB@Source?5Direction?5Z?$AA@,,const char[]
+0x76b820,??_C@_0BD@OPGDECFC@Source?5Direction?5Y?$AA@,,const char[]
+0x76b834,??_C@_0BD@PGHIHDBD@Source?5Direction?5X?$AA@,,const char[]
+0x76b848,??_C@_0BB@MABKAOEC@Source?5Available?$AA@,,const char[]
+0x76b85c,??_C@_09HLCHFPPJ@Threshold?$AA@,,const char[]
+0x76b868,??_C@_0BF@BNEAPBKD@Fragment?5Glow?5Factor?$AA@,,const char[]
+0x76b880,??_C@_0BB@CKGMEKKL@Flare?1Dispersion?$AA@,,const char[]
+0x76b894,??_C@_0O@MPIFLOGP@Max?5Intensity?$AA@,,const char[]
+0x76b8a4,??_C@_09HGOLOEHP@End?5Angle?$AA@,,const char[]
+0x76b8b0,??_C@_0O@HGKDCFBO@Min?5Intensity?$AA@,,const char[]
+0x76b8c0,??_C@_0M@JLFDMAAP@Start?5Angle?$AA@,,const char[]
+0x76b8cc,??_C@_0BH@IPHFMHH@Global?5Scale?1Intensity?$AA@,,const char[]
+0x76b8e4,??_C@_0P@DHLMOEOC@Level?5Defaults?$AA@,,const char[]
 0x76b8f4,??_C@_0CB@CEKKKJGJ@edrtl_edit_burnset?9?$DOOverdark?5Cap@,,const char[]
 0x76b918,??_C@_0CD@MJJPCEBP@edrtl_edit_burnset?9?$DOOverbright?5C@,,const char[]
 0x76b93c,??_C@_0BB@NNINEBIN@Overshoot?5Amount?$AA@,,const char[]
@@ -16473,6 +16522,13 @@ address,symbol,size,ctype
 0x76b970,__real@409fae14,,const f32
 0x76b974,??_C@_0M@BMAENMPH@Normal?5Rate?$AA@,,const char[]
 0x76b980,??_C@_0M@KKODGIEN@Transitions?$AA@,,const char[]
+0x76b98c,??_C@_07GHKCGFCG@Falloff?$AA@,,const char[]
+0x76b994,__real@419e6666,,const f32
+0x76b998,??_C@_06GJMFONGK@Radius?$AA@,,const char[]
+0x76b9a0,??_C@_0BA@IIIECKN@Radius?5Defaults?$AA@,,const char[]
+0x76b9b0,??_C@_05HJLJONL@Flare?$AA@,,const char[]
+0x76b9b8,??_C@_09HMEIFDHC@Intensity?$AA@,,const char[]
+0x76b9c4,??_C@_0BD@NPCPNFJB@Burnset?5Properties?$AA@,,const char[]
 0x76b9d8,??_C@_0BA@LPGHPLPA@File?5Save?5Error?$AA@,16,char []
 0x76b9e8,??_C@_08DNCCGPLP@Saved?5OK?$AA@,9,char []
 0x76b9f4,??_C@_08IEFAEBKE@?$CFs?2?$CFs?4?$CFs?$AA@,9,char []
@@ -16512,6 +16568,13 @@ address,symbol,size,ctype
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
 0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
 0x76c374,??_C@_09IEGDEKGI@Loaded?5OK?$AA@,10,char []
+0x76c380,??_C@_0O@DNJIGIFE@Load?5Burnouts?$AA@,,const char[]
+0x76c390,??_C@_0O@EOFGDHMN@Save?5Burnouts?$AA@,,const char[]
+0x76c3a0,??_C@_0P@JFFMPGJP@Transitions?4?4?4?$AA@,,const char[]
+0x76c3b0,??_C@_0BG@NCHGGENA@Burnset?5Properties?4?4?4?$AA@,,const char[]
+0x76c3c8,??_C@_0BD@IJLFFCGF@Radius?5Defaults?4?4?4?$AA@,,const char[]
+0x76c3dc,??_C@_0BC@CLJKHHHN@Level?5Defaults?4?4?4?$AA@,,const char[]
+0x76c3f0,??_C@_0N@DMKIGEFH@Burnout?5Menu?$AA@,,const char[]
 0x76c430,??_C@_0M@GPBFCDOG@PART?5Editor?$AA@,12,char []
 0x76c43c,??_C@_0N@CAJCCICN@EmitRotY?3?5?$CFd?$AA@,13,char []
 0x76c44c,??_C@_0N@KGAGFKID@EmitRotZ?3?5?$CFd?$AA@,13,char []
@@ -25430,6 +25493,11 @@ address,symbol,size,ctype
 0x02913838,_base_rtl,,RTL_LIGHT_PC *
 0x02913844,_curr_rtl,,RTL_LIGHT_PC *
 0x029138bc,_curr_set,,RTL_SET_PC *
+0x2913974,_edrtl_active_menu,,eduimenu_s *
+0x2913978,_edrtl_burn_main_menu,,eduimenu_s *
+0x291397c,_edrtl_burn_defaults_menu,,eduimenu_s *
+0x2913980,_edrtl_burn_radius_menu,,eduimenu_s *
+0x2913984,_edrtl_burn_set_menu,,eduimenu_s *
 0x2913988,_edrtl_burn_transitions_menu,,eduimenu_s *
 0x291398c,_edrtl_edit_burnset,,
 0x2913990,_rtl_dynamic_pool,,NULSTHDR *

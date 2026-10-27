@@ -1754,3 +1754,319 @@ void edrtlBurnTransitionsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 u
         edrtl_burn_transitions_menu->y = parent->y + 40;
     }
 }
+
+eduimenu_s *edrtl_burn_defaults_menu = NULL;
+eduimenu_s *edrtl_burn_radius_menu = NULL;
+eduimenu_s *edrtl_burn_set_menu = NULL;
+
+void edrtlSetBurnoutStartAngle(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_04 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutMinIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_08 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutEndAngle(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_0c = slider->value;
+    }
+}
+
+void edrtlSetBurnoutMaxIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_10 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutGlobalScale(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_14 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutDispersion(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_1c = slider->value;
+    }
+}
+
+void edrtlSetBurnoutFragmentGlowFactor(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_20 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutThreshold(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_24 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceAvailable(eduimenu_s *unused_menu, eduiitem_s *unused_item, u32 unused_value) {
+    if (edrtl_edit_burnset)
+        edrtl_edit_burnset->parameters.field_28 = !edrtl_edit_burnset->parameters.field_28;
+}
+
+void edrtlSetBurnoutSourceDirectionX(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_2c = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceDirectionY(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_30 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceDirectionZ(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_34 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceInnerRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_38 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceInnerIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_3c = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceOuterRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_40 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceOuterIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_44 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutSourceFallOffPower(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->parameters.field_48 = slider->value;
+    }
+}
+
+void edrtlCancelBurnDefaultsMenu(eduimenu_s *unused_menu, eduimenu_s *unused_parent) {
+    if (edrtl_burn_defaults_menu != NULL) {
+        eduiMenuDestroy(edrtl_burn_defaults_menu);
+        edrtl_burn_defaults_menu = NULL;
+    }
+}
+
+void edrtlBurnDefaultsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
+    edrtl_burn_defaults_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnDefaultsMenu, "Level Defaults");
+    if (edrtl_edit_burnset != NULL && edrtl_burn_defaults_menu != NULL) {
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutGlobalScale, 0.0f, 4.0f,
+                                             edrtl_edit_burnset->parameters.field_14, "Global Scale/Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutStartAngle, 0.0f, 180.0f,
+                                             edrtl_edit_burnset->parameters.field_04, "Start Angle"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMinIntensity, 0.0f, 1.0f,
+                                             edrtl_edit_burnset->parameters.field_08, "Min Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutEndAngle, 0.0f, 180.0f,
+                                             edrtl_edit_burnset->parameters.field_0c, "End Angle"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutMaxIntensity, 0.0f, 1.0f,
+                                             edrtl_edit_burnset->parameters.field_10, "Max Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutDispersion, 0.0f, 4.0f,
+                                             edrtl_edit_burnset->parameters.field_1c, "Flare/Dispersion"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutFragmentGlowFactor, 0.0f, 10.0f,
+                                             edrtl_edit_burnset->parameters.field_20, "Fragment Glow Factor"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutThreshold, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->parameters.field_24, "Threshold"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemToggleCreate(0, edblack, edrtl_edit_burnset->parameters.field_28 != 0, 1,
+                                             edrtlSetBurnoutSourceAvailable, "Source Available"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionX, -1.0f, 2.0f,
+                                             edrtl_edit_burnset->parameters.field_2c, "Source Direction X"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionY, -1.0f, 2.0f,
+                                             edrtl_edit_burnset->parameters.field_30, "Source Direction Y"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceDirectionZ, -1.0f, 2.0f,
+                                             edrtl_edit_burnset->parameters.field_34, "Source Direction Z"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerRadius, 0.0f, 180.0f,
+                                             edrtl_edit_burnset->parameters.field_38, "Source Inner Radius"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceInnerIntensity, 0.0f, 1.0f,
+                                             edrtl_edit_burnset->parameters.field_3c, "Source Inner Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterRadius, 0.0f, 180.0f,
+                                             edrtl_edit_burnset->parameters.field_40, "Source Outer Radius"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceOuterIntensity, 0.0f, 1.0f,
+                                             edrtl_edit_burnset->parameters.field_44, "Source Outer Intensity"));
+        eduiMenuAddItem(edrtl_burn_defaults_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutSourceFallOffPower, 0.0f, 10.0f,
+                                             edrtl_edit_burnset->parameters.field_48, "Source FallOff Power"));
+
+        eduiMenuAttach(parent, edrtl_burn_defaults_menu);
+        edrtl_burn_defaults_menu->x = parent->x + 10;
+        edrtl_burn_defaults_menu->y = parent->y + 40;
+    }
+}
+
+void edrtlSetBurnRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_558 = slider->value;
+    }
+}
+void edrtlSetBurnFalloff(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_55c = slider->value;
+    }
+}
+void edrtlCancelBurnRadiusMenu(eduimenu_s *unused_menu, eduimenu_s *unused_parent) {
+    if (edrtl_burn_radius_menu != NULL) {
+        eduiMenuDestroy(edrtl_burn_radius_menu);
+        edrtl_burn_radius_menu = NULL;
+    }
+}
+void edrtlBurnRadiusMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
+    edrtl_burn_radius_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnRadiusMenu, "Radius Defaults");
+    if (edrtl_edit_burnset != NULL && edrtl_burn_radius_menu != NULL) {
+        eduiMenuAddItem(edrtl_burn_radius_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnRadius, 0.2f, 19.8f,
+                                                                     edrtl_edit_burnset->field_558, "Radius"));
+        eduiMenuAddItem(edrtl_burn_radius_menu, eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnFalloff, 0.0f, 10.0f,
+                                                                     edrtl_edit_burnset->field_55c, "Falloff"));
+        eduiMenuAttach(parent, edrtl_burn_radius_menu);
+        edrtl_burn_radius_menu->x = parent->x + 10;
+        edrtl_burn_radius_menu->y = parent->y + 40;
+    }
+}
+void edrtlSetBurnsetThreshold(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_10 = slider->value;
+    }
+}
+void edrtlSetBurnsetIntensity(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_14 = slider->value;
+    }
+}
+void edrtlSetBurnsetFlare(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_18 = slider->value;
+    }
+}
+void edrtlSetBurnsetRadius(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c = slider->value;
+    }
+}
+void edrtlSetBurnsetFalloff(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20 = slider->value;
+    }
+}
+void edrtlCancelBurnSetMenu(eduimenu_s *unused_menu, eduimenu_s *unused_parent) {
+    if (edrtl_burn_set_menu != NULL) {
+        eduiMenuDestroy(edrtl_burn_set_menu);
+        edrtl_burn_set_menu = NULL;
+    }
+}
+void edrtlBurnSetMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
+    edrtl_burn_set_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnSetMenu, "Burnset Properties");
+    if (edrtl_edit_burnset != NULL && edrtl_burn_set_menu != NULL) {
+        eduiMenuAddItem(edrtl_burn_set_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetThreshold, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_10,
+                                             "Threshold"));
+        eduiMenuAddItem(edrtl_burn_set_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetIntensity, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_14,
+                                             "Intensity"));
+        eduiMenuAddItem(edrtl_burn_set_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetFlare, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_18,
+                                             "Flare"));
+        eduiMenuAddItem(edrtl_burn_set_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetRadius, 0.2f, 19.8f,
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c,
+                                             "Radius"));
+        eduiMenuAddItem(edrtl_burn_set_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnsetFalloff, 0.0f, 10.0f,
+                                             edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20,
+                                             "Falloff"));
+
+        eduiMenuAttach(parent, edrtl_burn_set_menu);
+        edrtl_burn_set_menu->x = parent->x + 10;
+        edrtl_burn_set_menu->y = parent->y + 40;
+    }
+}
+
+eduimenu_s *edrtl_active_menu = NULL;
+eduimenu_s *edrtl_burn_main_menu = NULL;
+
+void edrtlCancelBurnMainMenu(eduimenu_s *unused_menu, eduimenu_s *unused_parent) {
+    edrtl_active_menu = NULL;
+    if (edrtl_burn_main_menu != NULL) {
+        eduiMenuDestroy(edrtl_burn_main_menu);
+        edrtl_burn_main_menu = NULL;
+    }
+}
+void edrtlBurnMainMenu(void) {
+    edrtl_burn_main_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edrtlCancelBurnMainMenu, "Burnout Menu");
+    if (edrtl_burn_main_menu != NULL) {
+        eduiMenuAddItem(edrtl_burn_main_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnDefaultsMenu, "Level Defaults..."));
+        eduiMenuAddItem(edrtl_burn_main_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnRadiusMenu, "Radius Defaults..."));
+        if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1)
+            eduiMenuAddItem(edrtl_burn_main_menu,
+                            eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnSetMenu, "Burnset Properties..."));
+        else
+            eduiMenuAddItem(edrtl_burn_main_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Burnset Properties..."));
+        eduiMenuAddItem(edrtl_burn_main_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnTransitionsMenu, "Transitions..."));
+        eduiMenuAddItem(edrtl_burn_main_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnoutFileSave, "Save Burnouts"));
+        eduiMenuAddItem(edrtl_burn_main_menu,
+                        eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnoutFileLoad, "Load Burnouts"));
+    }
+}
