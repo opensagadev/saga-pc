@@ -2552,6 +2552,13 @@ address,symbol,size,ctype
 0x004f1450,_NuLinkedListGetTail,8,NULISTLNK *__cdecl (NULISTHDR *)
 0x004f1460,_NuLinkedListGetNext,15,"NULISTLNK *__cdecl (NULISTHDR *, NULISTLNK *)"
 0x004f1470,_NuLinkedListGetPrev,16,"NULISTLNK *__cdecl (NULISTHDR *, NULISTLNK *)"
+0x4f1480,_NuMemBlkCreate,122,"NUMEMBLK *__cdecl (i32, i32, u32)"
+0x4f1500,_NuMemBlkCreateEx,110,"NUMEMBLK *__cdecl (i32, i32, u32, void *)"
+0x4f1570,_NuMemBlkSize,29,"i32 __cdecl (i32, i32, i32)"
+0x4f1590,_NuMemBlkDestroy,30,void __cdecl (NUMEMBLK *)
+0x4f15b0,_NuMemBlkCheckFreeList,23,void __cdecl (NUMEMBLK *)
+0x4f15d0,_NuMemBlkAlloc,39,void *__cdecl (NUMEMBLK *)
+0x4f1600,_NuMemBlkFree,39,"void __cdecl (NUMEMBLK *, void *)"
 0x4f1e20,_NuStrCpyWC,89,"i32 __cdecl (char *, const char *, const char *)"
 0x004f1e80,_NuStrCat,51,"void __cdecl (char *, const char *)"
 0x004f1ec0,_NuStrNCat,73,"i32 __cdecl (char *, const char *, i32)"
@@ -14759,6 +14766,7 @@ address,symbol,size,ctype
 0x0075e948,??_C@_02LHFGBEJL@PC?$AA@,3,const char[3]
 0x75e94c,_NuFileIopImageNamePc,13,const char[13]
 0x0075e978,_NuFileSourcePathPC,50,const char[50]
+0x75e9ac,??_C@_0DE@EFCLPOBM@d?3?2projects?2game_saga?2nu2api?4sag@,,const char []
 0x0075e9e0,__real@41f0000000000000,8,const f64
 0x0075e9e8,_NuTime_LowScale,8,const f64
 0x0075e9f0,_NuTime_MicroScale,8,const f64
