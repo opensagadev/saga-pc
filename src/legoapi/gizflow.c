@@ -1195,3 +1195,34 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
         flow->pointers_need_reset = 1;
     return flow;
 }
+
+void __cdecl DynamicAddGizmoToFlow(GIZFLOW_PC *system, GIZMO_PC *gizmo) {
+    FLOWBOX_PC *box;
+    i32 i;
+    if (system == NULL || gizmo == NULL || gizmotypes == NULL ||
+        gizmo->type_id >= ((GIZMOTYPES_PC *)gizmotypes)->count ||
+        ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn == NULL)
+        return;
+    box = system->flowboxes;
+    for (i = 0; i < system->flowbox_count; ++i, ++box) {
+        FLOWBOXGIZMODATA_PC *data = (FLOWBOXGIZMODATA_PC *)box->data;
+        i32 j;
+        if (data == NULL)
+            continue;
+        for (j = 0; j < data->gizmo_count; ++j) {
+            char *name;
+            if (data->gizmos[j]->gizmo != NULL)
+                continue;
+            name = ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.get_gizmo_name_fn(gizmo);
+            if (NuStrICmp(data->gizmos[j]->name, name) != 0)
+                continue;
+            data->gizmos[j]->gizmo = gizmo;
+            if ((box->state_flags_low & 1) == 0) {
+                if (flowbox_callbacks[box->type].reset != NULL)
+                    flowbox_callbacks[box->type].reset(system, box);
+                if ((box->state_flags_low & 5) == 4 && box->type == 0)
+                    GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
+            }
+        }
+    }
+}
