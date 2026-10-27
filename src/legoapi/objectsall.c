@@ -8,7 +8,7 @@ void __cdecl Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
     if (model->model_data_b[LEGOACT_BUCK] == NULL)
         return;
     if (rider != NULL)
-        STUBBED_NAMED("Buck_Start: NewRumble PC54a850 rider pad, 0.6f, 0");
+        NewRumble(rider->pad->bound_pad, 0.6f, 0);
     object->field_7aa = LEGOACT_BUCK;
     object->character_context = (i8)LEGOCONTEXT_BUCK;
     object->context_timer = AnimDuration((i16)object->id, LEGOACT_BUCK, 0.0f, 0.0f, 1);
