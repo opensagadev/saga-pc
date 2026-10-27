@@ -44,9 +44,10 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
                 offsets[1].w = 1.0f;
                 for (i = 0; i < bridge->platform_count; ++i) {
                     if (NuSpecialExistsFn(&bridge->special)) {
-                        STUBBED_NAMED("NuBridgeDraw: NuSpecialDrawAt(special, platform matrix); return sets was_drawn");
+                        if (NuSpecialDrawAt(&bridge->special, &bridge->platform_matrices[i]))
+                            bridge->was_drawn = 1;
                     }
-                    if (i % bridge->field_ae7 == 0 && NuSpecialExistsFn(&bridge->second_special)) {
+                    if (i % (i8)bridge->field_ae7 == 0 && NuSpecialExistsFn(&bridge->second_special)) {
                         NuVec4MtxTransformVU0(&point, &offsets[0], &bridge->platform_matrices[i]);
                         if (n < 512) {
                             first[n].x = point.x;
@@ -56,7 +57,7 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
                         matrix.m30 = point.x;
                         matrix.m31 = point.y;
                         matrix.m32 = point.z;
-                        STUBBED_NAMED("NuBridgeDraw: NuSpecialDrawAt(second_special, first rope endpoint matrix)");
+                        NuSpecialDrawAt(&bridge->second_special, &matrix);
                         point.x = 0.0f;
                         point.y = 0.0f;
                         point.z = 1.0f;
@@ -71,7 +72,7 @@ void __cdecl NuBridgeDraw(NUMTL *material) {
                         matrix.m30 = point.x;
                         matrix.m31 = point.y;
                         matrix.m32 = point.z;
-                        STUBBED_NAMED("NuBridgeDraw: NuSpecialDrawAt(second_special, second rope endpoint matrix)");
+                        NuSpecialDrawAt(&bridge->second_special, &matrix);
                     }
                 }
                 if (boundaries[group] != n) {
