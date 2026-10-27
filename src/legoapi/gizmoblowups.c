@@ -708,7 +708,7 @@ GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *name, WORLDINFO *world) {
     if (!world || !world->gizmo_blowup_types || !world->gizmo_blowup_type_count || !name)
         return NULL;
     for (i = 0; i < world->gizmo_blowup_type_count; ++i)
-        if (!NuStrICmp(world->gizmo_blowup_types[i].name, name))
+        if (!NuStrCmp(world->gizmo_blowup_types[i].name, name))
             return &world->gizmo_blowup_types[i];
     return NULL;
 }
