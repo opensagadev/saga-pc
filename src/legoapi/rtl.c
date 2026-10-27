@@ -2165,3 +2165,38 @@ void fogFree(RTL_FOG_MIGRATION_PC *fog) {
     --fog;
     fog->type = 0;
 }
+
+RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET_PC *set, NUVEC *position) {
+    i32 i;
+    RTL_SET_PC *fog_set = set;
+    i32 selected = -1;
+    f32 distance_squared;
+    if (fog_set != NULL) {
+        for (i = 0; i < 32; ++i) {
+            if (((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].type == 0) {
+                continue;
+            }
+            distance_squared = (position->x - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.x) *
+                                   (position->x - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.x) +
+                               (position->y - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.y) *
+                                   (position->y - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.y) +
+                               (position->z - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.z) *
+                                   (position->z - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.z);
+            if (distance_squared <
+                ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius * ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius) {
+                if (selected != -1) {
+                    if (((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius <
+                        ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[selected].radius) {
+                        selected = i;
+                    }
+                } else {
+                    selected = i;
+                }
+            }
+        }
+        if (selected != -1) {
+            return &((RTL_FOG_MIGRATION_PC *)fog_set->fog)[selected];
+        }
+    }
+    return NULL;
+}
