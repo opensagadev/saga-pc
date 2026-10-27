@@ -1196,3 +1196,26 @@ void __cdecl MenuDrawEndChallenge(MENU *menu) {
         DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobalsChallengeCountPc, 10);
     }
 }
+
+void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r,
+                            u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g,
+                            u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b) {
+    MENUNORMALR = normal_r;
+    MENUNORMALG = normal_g;
+    MENUNORMALB = normal_b;
+    MENUENTRYR = entry_r;
+    MENUENTRYG = entry_g;
+    MENUENTRYB = entry_b;
+    MENUHEADERR = header_r;
+    MENUHEADERG = header_g;
+    MENUHEADERB = header_b;
+    MENUWARNR = warn_r;
+    MENUWARNG = warn_g;
+    MENUWARNB = warn_b;
+    MENUFLASH0R = flash0_r;
+    MENUFLASH0G = flash0_g;
+    MENUFLASH0B = flash0_b;
+    MENUFLASH1R = flash1_r;
+    MENUFLASH1G = flash1_g;
+    MENUFLASH1B = flash1_b;
+}

@@ -2953,6 +2953,7 @@ address,symbol,size,ctype
 0x509460,_MenuExitQuitPc,1,void __cdecl(MENU *)
 0x005094b0,_MenuInitialiseEx,360,"void __cdecl (MENUFNINFO *, i32, i32, void (*)(f32, f32, i32, i32), i32, i32)"
 0x00509620,_MenuInitialise,49,"void __cdecl (MENUFNINFO *, i32, i32, void (*)(MENU *, f32), i32, i32)"
+0x00509660,_MenuSetColours,175,"void __cdecl (u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8, u8)"
 0x00509760,_MenuReset,51,void __cdecl (void)
 0x5097a0,_MenuRegisterSoundFX,39,"void __cdecl(i32, i32, i32, i32)"
 0x5097d0,_MenuRememberCursor,90,void __cdecl(MENU *)

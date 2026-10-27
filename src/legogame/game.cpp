@@ -1,4 +1,8 @@
 #include "saga.h"
+
+extern "C" void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b,
+                                       u8 header_r, u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b,
+                                       u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b);
 #include <string.h>
 #include <stdio.h>
 extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
@@ -1975,7 +1979,7 @@ void __cdecl InitGameAfterConfig(void) {
         Tag_DrawIconFn = Tag_DrawIcon_Batman;
         DEFAULT_PLAYERHITPOINTS = 8;
         PlayerHitPointsTwoHeartsPc = 1;
-        STUBBED_NAMED("InitGameAfterConfig: alternate colours 42e8cc -> 509660 (18 native scalar arguments)");
+        MenuSetColours(0, 255, 0, 255, 191, 0, 0, 127, 255, 255, 0, 31, 255, 255, 255, 175, 175, 175);
         AlternateHudColourBytesPc[0] = 0;
         AlternateHudColourBytesPc[1] = 255;
         AlternateHudRgbPc[0] = 0;
