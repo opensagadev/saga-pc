@@ -871,7 +871,7 @@ void __cdecl PartUpdate_Basketball(PART_PC *part) {
     if ((blowup->status_flags & 0x800001) == 0 &&
         NuVecDistSqr(&blowup->position, &part->position, NULL) < 0.1f * 0.1f) {
         GizmoActivate(WORLD->gizmo_sys, LevGizmo[0], 1, 0);
-        STUBBED_NAMED("PartUpdate_Basketball: GizmoBlowupBlowup PC567800(blowup,1,-1,-1,NULL,1)");
+        GizmoBlowupBlowup(blowup, 1, -1, -1, NULL, 1);
     }
 }
 void __cdecl DeflectPart(PART_PC *, GAMEOBJECT *, f32, f32, i32, i32);
