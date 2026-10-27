@@ -2542,8 +2542,11 @@ address,symbol,size,ctype
 0x004f1210,_NuFParInit,41,"void __cdecl (i32, i32)"
 0x004f1240,_NuAllocFPar,134,NUFPAR_PC *__cdecl (void)
 0x004f12e0,_NuFreeFPar,11,void __cdecl (NUFPAR_PC *)
+0x4f12f0,_NuLinkedListCheck,26,i32 __cdecl (NULISTHDR *)
 0x004f1310,_NuLinkedListAppend,40,"void __cdecl (NULISTHDR *, NULISTLNK *)"
 0x4f1340,_NuLinkedListInsert,40,
+0x4f1370,_NuLinkedListInsertBefore,73,"void __cdecl (NULISTHDR *, NULISTLNK *, NULISTLNK *)"
+0x4f13c0,_NuLinkedListInsertAfter,75,"void __cdecl (NULISTHDR *, NULISTLNK *, NULISTLNK *)"
 0x004f1410,_NuLinkedListRemove,47,"void __cdecl (NULISTHDR *, NULISTLNK *)"
 0x004f1440,_NuLinkedListGetHead,7,NULISTLNK *__cdecl (NULISTHDR *)
 0x004f1450,_NuLinkedListGetTail,8,NULISTLNK *__cdecl (NULISTHDR *)

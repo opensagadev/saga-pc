@@ -55,3 +55,47 @@ NULISTLNK *__cdecl NuLinkedListGetNext(NULISTHDR *list, NULISTLNK *node) {
 NULISTLNK *__cdecl NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node) {
     return node != NULL ? node->prev : list->tail;
 }
+
+i32 __cdecl NuLinkedListCheck(NULISTHDR *list) {
+    NULISTLNK *node;
+    i32 count;
+    NULISTLNK *previous = NULL;
+    count = 0;
+    node = list->head;
+    while (node != NULL) {
+        count++;
+        previous = node;
+        node = node->next;
+    }
+    return count;
+}
+
+void __cdecl NuLinkedListInsertBefore(NULISTHDR *list, NULISTLNK *position, NULISTLNK *node) {
+    if (position != NULL) {
+        node->next = position;
+        node->prev = position->prev;
+        if (position->prev != NULL) {
+            position->prev->next = node;
+        } else {
+            list->head = node;
+        }
+        position->prev = node;
+    } else {
+        NuLinkedListInsert(list, node);
+    }
+}
+
+void __cdecl NuLinkedListInsertAfter(NULISTHDR *list, NULISTLNK *position, NULISTLNK *node) {
+    if (position != NULL) {
+        node->prev = position;
+        node->next = position->next;
+        if (position->next != NULL) {
+            position->next->prev = node;
+        } else {
+            list->tail = node;
+        }
+        position->next = node;
+    } else {
+        NuLinkedListAppend(list, node);
+    }
+}
