@@ -537,3 +537,44 @@ i32 __cdecl Hint_isCompleteByIdPc(i32 hint_id) {
     }
     return 0;
 }
+
+/* SOURCE ONLY: append to src/legoapi/hint.c; no header/data/map changes. */
+void __cdecl Hint_Process(f32 elapsed) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    i32 available;
+    HINT_PC *hint;
+    f32 target;
+    f32 step;
+    if (hintsys.hints == NULL)
+        return;
+
+    /* Existing historical symbol names the DWORD native reads at00803984. */
+    available = LEGOHINT_PUNCH != 0 && CUTSTOPGAME == 0 && MiniCutCam != 1 && MiniCutCam != 2 && MiniCutCam != 3 &&
+                SuperStory == 0 && BonusArea == 0 && (world->current_level->flags & 0x200) == 0 &&
+                (world->area == NULL || (world->area->flags & 0x124) == 0) && GetMenuID() == -1 &&
+                FadeSys.fade == 0.0f &&
+                (world->area == NULL || world->area != HUB_ADATA || Hub_PanelBusyFn == NULL || Hub_PanelBusyFn() == 0);
+    if (ChallengeMode != 0)
+        available = 0;
+    else if (Mission_Active(NULL) != NULL)
+        available = 0;
+
+    for (hint = hintsys.hints; hint->id != -1; ++hint) {
+        if (hintsys.active_hint != hint && hint->cooldown > 0.0f)
+            hint->cooldown -= elapsed;
+        if (!available || hintsys.active_hint != NULL || hint->completed != 0 || hint->update_fn == NULL)
+            continue;
+        if (hint->update_fn(hint) == 0 || hint->cooldown > 0.0f || hint->completed == 1)
+            continue;
+        Hint_SetHint(hint, 0, 0);
+    }
+    target = Hint_AlphaTargetFn != NULL ? Hint_AlphaTargetFn() : 1.0f;
+    step = (f32)((f64)FRAMETIME * 3.0);
+    hintsys.alpha = SeekLinearF(hintsys.alpha, target, step);
+    hint = hintsys.active_hint;
+    if (hint != NULL) {
+        hintsys.display_elapsed += elapsed;
+        if (hint->display_duration > 0.0f && hintsys.display_elapsed >= hint->display_duration)
+            hintsys.active_hint = NULL;
+    }
+}
