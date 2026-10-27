@@ -1896,3 +1896,45 @@ u8 __cdecl NuToLower(u8 c) {
     }
     return c;
 }
+
+f32 __cdecl NuAToFW(const NUWCHAR *str) {
+    f32 value = 0.0f;
+    f32 divisor = 1.0f;
+    NUWCHAR c = *str++;
+    if (c == '-') {
+        divisor = -1.0f;
+        c = *str++;
+    }
+    while (c >= '0' && c <= '9') {
+        value *= 10.0f;
+        value += c - '0';
+        c = *str++;
+    }
+    if (c == '.') {
+        c = *str++;
+        while (c >= '0' && c <= '9') {
+            divisor *= 10.0f;
+            value *= 10.0f;
+            value += c - '0';
+            c = *str++;
+        }
+    }
+    return value / divisor;
+}
+
+i32 __cdecl NuStringTok(char *str, ...) {
+    char *token;
+    i32 value;
+    va_list args;
+    va_start(args, str);
+    do {
+        token = va_arg(args, char *);
+        value = va_arg(args, i32);
+        if (token != NULL) {
+            if (NuStrICmp(str, token) == 0)
+                break;
+        }
+    } while (token != NULL);
+    va_end(args);
+    return value;
+}

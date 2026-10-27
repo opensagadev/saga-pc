@@ -2589,6 +2589,7 @@ address,symbol,size,ctype
 0x4f29f0,_NuStrToL,177,"i32 __cdecl (char *, char **, i32)"
 0x4f2ab0,_NuIsAlW,102,i32 __cdecl (NUWCHAR)
 0x4f2b20,_NuIToAW,125,"NUWCHAR *__cdecl (i32, NUWCHAR *, i32)"
+0x4f2ba0,_NuAToFW,204,f32 __cdecl (const NUWCHAR *)
 0x4f2c70,_NuAToIW,77,i32 __cdecl (const NUWCHAR *)
 0x4f2cc0,_NuStrToLW,192,"i32 __cdecl (NUWCHAR *, NUWCHAR **, i32)"
 0x4f2d80,_NuToUpper,21,u8 __cdecl(u8)
@@ -2714,6 +2715,7 @@ address,symbol,size,ctype
 0x004f8c60,_NuStrLwr,65,"void __cdecl (char *, const char *)"
 0x004f8cb0,_NuHexStringToI,81,i32 __cdecl (char *)
 0x4f8d10,_NuSPrintfW,132,
+0x4f8da0,_NuStringTok,52,"i32 __cdecl (char *, ...)"
 0x004f8de0,_NuStrToLower,51,
 0x004f8e20,_NuStringTableGetIdByName,112,i32 __cdecl (char *)
 0x004f8e90,_NuStringTableGetByName,123,u16 *__cdecl (char *)
