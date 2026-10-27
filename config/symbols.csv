@@ -6986,6 +6986,10 @@ address,symbol,size,ctype
 0x637450,_RtlApplyModifiersToSinglePrivate,72,
 0x6374a0,_RtlProcessLightPrivate,960,
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
+0x637e10,_rtlAlloc,51,RTL_LIGHT_PC *__cdecl (void)
+0x637e50,_rtlFree,314,void __cdecl (RTL_LIGHT_PC *)
+0x637f90,_fogAlloc,48,RTL_FOG_MIGRATION_PC *__cdecl (void)
+0x637fc0,_fogFree,81,void __cdecl (RTL_FOG_MIGRATION_PC *)
 0x6382a0,_RefreshUI,1800,
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
 0x639b50,_edrtlAddBurnout,218,i32 __cdecl (NUVEC *)

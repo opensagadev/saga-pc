@@ -2102,3 +2102,66 @@ void edrtlPlaceBurnout(i32 index, NUVEC *position) {
         return;
     edrtl_edit_burnset->burnouts[index].position = *position;
 }
+
+RTL_LIGHT_PC *rtlAlloc(void) {
+    i32 i;
+    if (curr_set != NULL) {
+        for (i = 0; i < 128; ++i) {
+            if (curr_set->lights[i].type == 0)
+                return &curr_set->lights[i];
+        }
+    }
+    return NULL;
+}
+
+void rtlFree(RTL_LIGHT_PC *light) {
+    i32 index;
+    RTL_LIGHT_PC *entry;
+    RTL_LIGHT_PC *next;
+    if (light->field_79 != -1 && light->field_7a == -1) {
+        while (light->field_79 != -1)
+            rtlFree(&curr_set->lights[light->field_79]);
+    }
+    if (light->field_7a != -1) {
+        curr_set->lights[light->field_7a].field_79 = light->field_79;
+        if (light->field_79 != -1)
+            curr_set->lights[light->field_79].field_7a = light->field_7a;
+    }
+    index = light - curr_set->lights;
+    for (entry = curr_set->lights; entry < &curr_set->lights[128]; ++entry) {
+        if (entry->field_79 >= index)
+            --entry->field_79;
+        if (entry->field_7a >= index)
+            --entry->field_7a;
+    }
+    next = light + 1;
+    while (light < &curr_set->lights[128] && light->type != 0) {
+        *light = *next;
+        ++light;
+        ++next;
+    }
+    --light;
+    light->type = 0;
+}
+
+RTL_FOG_MIGRATION_PC *fogAlloc(void) {
+    i32 i;
+    if (curr_set != NULL) {
+        for (i = 0; i < 32; ++i) {
+            if (((RTL_FOG_MIGRATION_PC *)curr_set->fog)[i].type == 0)
+                return &((RTL_FOG_MIGRATION_PC *)curr_set->fog)[i];
+        }
+    }
+    return NULL;
+}
+
+void fogFree(RTL_FOG_MIGRATION_PC *fog) {
+    RTL_FOG_MIGRATION_PC *next = fog + 1;
+    while (fog < &((RTL_FOG_MIGRATION_PC *)curr_set->fog)[32] && fog->type != 0) {
+        *fog = *next;
+        ++fog;
+        ++next;
+    }
+    --fog;
+    fog->type = 0;
+}
