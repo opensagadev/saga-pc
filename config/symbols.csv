@@ -16443,6 +16443,7 @@ address,symbol,size,ctype
 0x0076ae88,__real@407c000000000000,8,const f64
 0x76ae90,__real@43600000,4,f32
 0x76aea0,__real@c030000000000000,8,const f64
+0x0076aea8,??_C@_0BN@OOILPCCN@?5?$CF?42d?1?$CF?42d?1?$CFd?5?$CF?42d?3?$CF?42d?3?$CF?42d?$AA@,,const char[29]
 0x0076af04,_FileSelParentNamePc,,const char[3]
 0x76af08,__real@43700000,4,const f32
 0x0076af0c,??_C@_0BI@EFBFIABH@H?3?$CF1?42f?5S?3?$CF1?42f?5V?3?$CF1?42f?$AA@,,"constchar minimum24B observedNativeCString; allocationextentunknown/0credit"

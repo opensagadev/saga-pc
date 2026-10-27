@@ -2088,3 +2088,73 @@ i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
     }
     return eduiProcessInteracts(menu, pad);
 }
+
+/* SOURCE ONLY: independent file-selector helpers appended to src/gameapi/edfile.c. */
+
+typedef struct FS_PACKED_ENTRY_HEADER_PC {
+    u8 kind;
+    u8 encoded_second;
+    u8 encoded_minute;
+    u8 encoded_hour;
+    u8 encoded_day;
+    u8 encoded_month;
+    u8 encoded_year;
+} FS_PACKED_ENTRY_HEADER_PC;
+STATIC_ASSERT(sizeof(FS_PACKED_ENTRY_HEADER_PC) == 7);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, kind) == 0);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_second) == 1);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_minute) == 2);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_hour) == 3);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_day) == 4);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_month) == 5);
+STATIC_ASSERT(offsetof(FS_PACKED_ENTRY_HEADER_PC, encoded_year) == 6);
+
+void __cdecl FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char *output) {
+    NuSPrintf(output, " %.2d/%.2d/%d %.2d:%.2d:%.2d", entry->encoded_day - 'A', entry->encoded_month - 'A',
+              entry->encoded_year + 1915, entry->encoded_hour - 'A', entry->encoded_minute - 'A',
+              entry->encoded_second - 'A');
+}
+
+void __cdecl FS_MoveCursorDown(i32 steps) {
+    while (steps > 0) {
+        i32 top_length = NuStrLen(FS_CurrentPos);
+        i32 cursor_length = NuStrLen(FS_CurrentCursorPos);
+        char *next = FS_CurrentCursorPos + cursor_length + 1;
+        char *end = FS_FileListEnd;
+        if (next < end) {
+            if (FS_CursorLine == 13) {
+                char *next_top = FS_CurrentPos + top_length + 1;
+                if (next_top < end) {
+                    ++FS_CurrentPosFileNum;
+                    FS_CurrentPos = next_top;
+                }
+            } else {
+                ++FS_CursorLine;
+            }
+            FS_CurrentCursorPos = next;
+        }
+        --steps;
+    }
+}
+
+f32 __cdecl FS_GetDirTextWidth(void) {
+    char date_time[64];
+    f32 max_width = 0.0f;
+    char *entry;
+    for (entry = FS_FileList; entry < FS_FileListEnd;) {
+        FS_PACKED_ENTRY_HEADER_PC *header = (FS_PACKED_ENTRY_HEADER_PC *)entry;
+        char *name = (char *)(header + 1);
+        f32 width;
+        NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
+        width = NuQFntPrintLenU(system_qfont, name);
+        if (header->encoded_year != '#') {
+            NuQFntSetPointSize(system_qfont, 0.8f, 1.0f);
+            FS_MakeDateTimeString(header, date_time);
+            width += NuQFntPrintLenU(system_qfont, date_time);
+        }
+        if (width > max_width)
+            max_width = width;
+        entry = name + NuStrLen(name) + 1;
+    }
+    return max_width;
+}
