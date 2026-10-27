@@ -868,3 +868,176 @@ extern "C" void __cdecl eduiMenuRender(eduimenu_s *menu) {
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
+
+STATIC_ASSERT(offsetof(edui_colour_pick_s, cursor_x) == 0x4c);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, hue) == 0x54);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, saturation) == 0x58);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, value) == 0x5c);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, red) == 0x60);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, green) == 0x64);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, blue) == 0x68);
+
+extern "C" {
+    eduimenu_s *colourmenu = NULL;
+    edui_colour_pick_s *cp_item = NULL;
+    eduiitem_s *cp_info = NULL;
+    eduiitem_s *cp_copy = NULL;
+    eduiitem_s *cp_paste = NULL;
+    i32(__cdecl *cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *) = NULL;
+    f32 *EduiColourTargetRedPc = NULL;
+    f32 *EduiColourTargetGreenPc = NULL;
+    f32 *EduiColourTargetBluePc = NULL;
+    f32 *EduiColourTargetAlphaPc = NULL;
+    u32 *EduiColourTargetPackedPc = NULL;
+    f32 EduiColourClipboardRedPc = 0.5f;
+    f32 EduiColourClipboardGreenPc = 0.5f;
+    f32 EduiColourClipboardBluePc = 0.5f;
+    i32 EduiColourPickerInitializedPc = 0;
+
+    static void EduiColourRgbToHsvPc(f32 red, f32 green, f32 blue, f32 *hue, f32 *saturation, f32 *value) {
+        f32 maximum = red > (green > blue ? green : blue) ? red : (green > blue ? green : blue);
+        f32 minimum = red < (green < blue ? green : blue) ? red : (green < blue ? green : blue);
+        *value = maximum;
+        *saturation = maximum != 0.0f ? (maximum - minimum) / maximum : 0.0f;
+        if (*saturation != 0.0f) {
+            f32 delta = maximum - minimum;
+            if (red == maximum)
+                *hue = (green - blue) / delta;
+            else if (green == maximum)
+                *hue = (f32)(2.0 + (blue - red) / delta);
+            else if (blue == maximum)
+                *hue = (f32)(4.0 + (red - green) / delta);
+            *hue = (f32)(*hue * 60.0);
+            if (*hue < 0.0f)
+                *hue = (f32)(*hue + 360.0);
+        } else {
+            *hue = 0.0f;
+        }
+    }
+}
+
+void __cdecl eduiItemColourPickSetRGB(edui_colour_pick_s *item, f32 red, f32 green, f32 blue) {
+    EduiColourRgbToHsvPc(red, green, blue, &item->hue, &item->saturation, &item->value);
+    item->cursor_x = (f32)(item->hue / 360.0);
+    item->cursor_y = item->value;
+}
+
+i32 __cdecl cbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    edui_colour_pick_s *picker = cp_item;
+    i32 result = cp_process(menu, item, delta_time, pad);
+    char text[256];
+    if (cp_info->data != 0)
+        NuSPrintf(text, "R:%1.2f G:%1.2f B:%1.2f", picker->red, picker->green, picker->blue);
+    else
+        NuSPrintf(text, "H:%1.2f S:%1.2f V:%1.2f", picker->hue, picker->saturation, picker->value);
+    eduiItemSetText(cp_info, text);
+    return result;
+}
+
+void __cdecl cbPaste(eduimenu_s *, eduiitem_s *, u32) {
+    f32 red = EduiColourClipboardRedPc;
+    *EduiColourTargetRedPc = red;
+    f32 green = EduiColourClipboardGreenPc;
+    *EduiColourTargetGreenPc = green;
+    f32 blue = EduiColourClipboardBluePc;
+    *EduiColourTargetBluePc = blue;
+    if (EduiColourTargetPackedPc != NULL) {
+        u32 packed = (u32)(*EduiColourTargetAlphaPc * 255.0);
+        packed = (packed << 8) | ((u32)(blue * 255.0) & 255);
+        packed = (packed << 8) | ((u32)(*EduiColourTargetGreenPc * 255.0) & 255);
+        packed = (packed << 8) | ((u32)(*EduiColourTargetRedPc * 255.0) & 255);
+        *EduiColourTargetPackedPc = packed;
+    }
+    eduiItemColourPickSetRGB(cp_item, red, green, blue);
+}
+
+void __cdecl cbToggleIndicatorMode(eduimenu_s *, eduiitem_s *item, u32) {
+    char text[256];
+    item->data = 1 - item->data;
+    edui_colour_pick_s *picker = cp_item;
+    if (item->data != 0)
+        NuSPrintf(text, "R:%1.2f G:%1.2f B:%1.2f", picker->red, picker->green, picker->blue);
+    else
+        NuSPrintf(text, "H:%1.2f S:%1.2f V:%1.2f", picker->hue, picker->saturation, picker->value);
+    eduiItemSetText(item, text);
+}
+
+void __cdecl cbCancelSubMenu(eduimenu_s *menu, eduimenu_s *) {
+    eduiMenuDetach(menu);
+}
+
+void __cdecl cbColourPickSel(eduimenu_s *menu, eduiitem_s *, u32) {
+    edui_colour_pick_s *picker = cp_item;
+    *EduiColourTargetRedPc = picker->red;
+    *EduiColourTargetGreenPc = picker->green;
+    f32 blue = picker->blue;
+    *EduiColourTargetBluePc = blue;
+    if (EduiColourTargetPackedPc != NULL) {
+        u32 packed = (u32)(*EduiColourTargetAlphaPc * 255.0);
+        packed = (packed << 8) | ((u32)(blue * 255.0) & 255);
+        packed = (packed << 8) | ((u32)(*EduiColourTargetGreenPc * 255.0) & 255);
+        packed = (packed << 8) | ((u32)(*EduiColourTargetRedPc * 255.0) & 255);
+        *EduiColourTargetPackedPc = packed;
+    }
+    eduiMenuDetach(menu);
+}
+
+extern "C" void __cdecl CreateColourPicker(void) {
+    u32 colours[4] = {0x80000000, 0x800000ff, 0x80808080, 0x80f0f0f0};
+    if (EduiColourPickerInitializedPc != 0)
+        return;
+    EduiColourPickerInitializedPc = 1;
+    colourmenu = eduiMenuCreate(200, 70, 180, 250, NULL, cbCancelSubMenu, "Pick Colour");
+    if (colourmenu != NULL) {
+        eduiitem_s *item = eduiItemColourPickCreate(0, colours, cbColourPickSel, "");
+        if (colourmenu->last != NULL)
+            colourmenu->last->next = item;
+        else
+            colourmenu->first = item;
+        item->previous = colourmenu->last;
+        item->next = NULL;
+        colourmenu->last = item;
+        colourmenu->field_0c = colourmenu->first;
+        edui_last_item = item;
+        colourmenu->field_10 = NULL;
+        cp_item = (edui_colour_pick_s *)item;
+        cp_process = item->process;
+        item->process = cbProcessColourPick;
+        item = eduiItemSelCreate(1, colours, 0, 0, cbToggleIndicatorMode, "R:?? G:?? B:??");
+        if (colourmenu->last != NULL)
+            colourmenu->last->next = item;
+        else
+            colourmenu->first = item;
+        item->previous = colourmenu->last;
+        item->next = NULL;
+        colourmenu->last = item;
+        colourmenu->field_0c = colourmenu->first;
+        edui_last_item = item;
+        colourmenu->field_10 = NULL;
+        cp_info = item;
+        item = eduiItemSelCreate(1, colours, 0, 0, cbCopy, "Copy To Clipboard");
+        if (colourmenu->last != NULL)
+            colourmenu->last->next = item;
+        else
+            colourmenu->first = item;
+        item->previous = colourmenu->last;
+        item->next = NULL;
+        colourmenu->last = item;
+        colourmenu->field_0c = colourmenu->first;
+        edui_last_item = item;
+        colourmenu->field_10 = NULL;
+        cp_copy = item;
+        item = eduiItemSelCreate(1, colours, 0, 0, cbPaste, "Paste From Clipboard");
+        if (colourmenu->last != NULL)
+            colourmenu->last->next = item;
+        else
+            colourmenu->first = item;
+        item->previous = colourmenu->last;
+        item->next = NULL;
+        colourmenu->last = item;
+        colourmenu->field_0c = colourmenu->first;
+        edui_last_item = item;
+        colourmenu->field_10 = NULL;
+        cp_paste = item;
+    }
+}

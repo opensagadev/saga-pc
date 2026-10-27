@@ -1251,7 +1251,7 @@ address,symbol,size,ctype
 0x00475890,?HubDrawArcadeStatsPc@@YAXM@Z,556,
 0x475ac0,_Arcade_ResetPanel,9,
 0x475ad0,_Arcade_UpdatePanel,133,
-0x00475b60,_Arcade_DrawPanel,249,void __cdecl(i32)
+0x00475b60,_Arcade_DrawPanel,249,"void __cdecl(i32)"
 0x475c60,_Arcade_AwardPoint,833,"void __cdecl (i32, i32, i32)"
 0x475fb0,_Arcade_PlayerKilled,84,"void __cdecl (i32, i32)"
 0x00476010,_Arcade_AIKilled,258,void __cdecl (i32)
@@ -1609,7 +1609,7 @@ address,symbol,size,ctype
 0x49b330,_TurnCode,1206,"void __cdecl (GAMEOBJECT *, i32, GAMEPAD_PC *)"
 0x49b7f0,_ApplyExtraRotation,179,
 0x49b8b0,_VehicleThrustPc,170,
-0x0049b960,_StartLaunch,98,void __cdecl(GAMEOBJECT *)
+0x0049b960,_StartLaunch,98,"void __cdecl(GAMEOBJECT *)"
 0x49b9d0,_VehicleLaunchPc,596,
 0x49bc30,_StartFlatten,454,"void __cdecl(GAMEOBJECT *,GAMEOBJECT *)"
 0x49be00,_FlattenCode,560,void __cdecl (GAMEOBJECT *)
@@ -6173,7 +6173,7 @@ address,symbol,size,ctype
 0x005e7f40,?Init@OccluderSet@@QAEXIPATvariptr_u@@T2@@Z,585,"void __thiscall OccluderSet::Init(u32,VARIPTR*,VARIPTR)"
 0x5e8190,?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z,668,"void __thiscall (const NUMTX *, const NUMTX *)"
 0x005e8430,_NuOcclusionManagerBeginFrame,59,void __cdecl (void)
-0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,NUVEC *__thiscall(NUVEC *)
+0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,"NUVEC *__thiscall(NUVEC *)"
 0x5e8950,?SetupCustomCameraFrustumPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnucamera_s@@PBMH@Z,649,thiscall camera splits count RET12
 0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
 0x5e8c60,_PostShadowBuildBasisPc,318,cdecl
@@ -6630,17 +6630,18 @@ address,symbol,size,ctype
 0x60ddc0,_NuMtlInitShaderResourcesPc,265,void __cdecl(void)
 0x60ded0,_NuMtlInitExPS,5,void __cdecl(VARIPTR*)
 0x00610540,_RefpackGetMatchLengthPc,46,"u32 __cdecl(u8 *,u8 *,u32)"
-0x00610570,_RefpackHashStringPc,55,u32 __cdecl(u8 *)
+0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,
 0x00610690,_refpack,918,"i32 __cdecl(u8 *,i32,u8 *)"
 0x617e20,_edmainGetCameraPc,6,NUCAMERA* current editor protocol pointer
 0x617e30,_edmainExtCamera,19,
 0x617e70,_edmainGetCursorEnabled,6,
 0x617f80,_edmainQueryLocVec,6,NUVEC *__cdecl(void)
-0x00618180,?eduiHSVToRGB@@YAXMMMAAM00@Z,328,private HSV conversion; three f32 inputs and three RGB output references; no original linkage claim
+0x00618000,_EduiColourRgbToHsvPc,378,
+0x00618180,?eduiHSVToRGB@@YAXMMMAAM00@Z,328,"private HSV conversion; three f32 inputs and three RGB output references; no original linkage claim"
 0x618310,?EduiPrintAlignedTextPc@@YAXPAXHHHPADZZ,197,"void(void *, i32, i32, i32, char *, ...)"
 0x00618420,?EduiPrintClippedTextPc@@YAXPAXHHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
-0x00618920,?EduiDrawGradientSpanPc@@YAXHHHHIIMM@Z,148,ordinary private C++ colour-span renderer; native colours ECX/EAX and six stack words
+0x00618920,?EduiDrawGradientSpanPc@@YAXHHHHIIMM@Z,148,"ordinary private C++ colour-span renderer; native colours ECX/EAX and six stack words"
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
 0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item)"
@@ -6758,6 +6759,10 @@ address,symbol,size,ctype
 0x623280,_FS_GetPadWithRepeat,88,
 0x6232e0,_ProcessFileSel3,880,
 0x6236e0,_FS_SetFileSelPathFromName,219,
+0x00623a20,_cbProcessColourPick,190,
+0x00623ae0,_cbCopy,131,"void __cdecl (eduimenu_s *, eduiitem_s *, u32); unprovided callback / Copy FP-status HOLD / zero coverage"
+0x00623b70,_cbPaste,303,
+0x00623ca0,_cbToggleIndicatorMode,157,
 0x6240d0,_cbmcfgCameraSpeed,59,
 0x624180,_eduicbItemDestroy,77,
 0x6241d0,_eduiMenuDestroyItems,68,
@@ -6805,6 +6810,8 @@ address,symbol,size,ctype
 0x629030,_eduiCheckForPadMenuCancel,76,
 0x629080,_eduiMenuProcessInput,948,
 0x629440,_cbSubMenu,57,
+0x006294d0,_cbCancelSubMenu,12,
+0x006294f0,_cbColourPickSel,286,
 0x6297f0,_CreateColourPicker,427,
 0x629a30,_cbMMEditorConfig,73,
 0x629a80,_cbmcfgCancel,12,
@@ -16364,12 +16371,14 @@ address,symbol,size,ctype
 0x76adc0,__real@3e2aaaab,4,const f32
 0x76ae48,__real@c024000000000000,8,const f64
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
-0x0076ae80,??_C@_04EIOKKJMF@?3?5?$CFs?$AA@,,const char[] minimum5B view; Native allocation extent unknown
+0x0076ae80,??_C@_04EIOKKJMF@?3?5?$CFs?$AA@,,"const char[] minimum5B view; Native allocation extent unknown"
 0x0076ae88,__real@407c000000000000,8,const f64
 0x76ae90,__real@43600000,4,f32
 0x76aea0,__real@c030000000000000,8,const f64
 0x0076af04,_FileSelParentNamePc,,const char[3]
 0x76af08,__real@43700000,4,const f32
+0x0076af0c,??_C@_0BI@EFBFIABH@H?3?$CF1?42f?5S?3?$CF1?42f?5V?3?$CF1?42f?$AA@,,"constchar minimum24B observedNativeCString; allocationextentunknown/0credit"
+0x0076af24,??_C@_0BI@PLKPECFD@R?3?$CF1?42f?5G?3?$CF1?42f?5B?3?$CF1?42f?$AA@,,"constchar minimum24B observedNativeCString; allocationextentunknown/0credit"
 0x76af3c,??_C@_08OJFIKKMI@?$CI?$CF1?403f?$CJ?$AA@,9,char []
 0x76af48,??_C@_04FEBIMPDM@?$CI?$CFd?$CJ?$AA@,5,char []
 0x76af90,??_C@_09GMFECJDN@?$DMno?5name?$DO?$AA@,10,char []
@@ -16383,6 +16392,10 @@ address,symbol,size,ctype
 0x76b01c,??_C@_0L@MDHMGCLC@Colourpick?$AA@,11,char []
 0x76b028,??_C@_0BA@FIGNFJFK@GradPick?5Adjust?$AA@,16,char []
 0x76b040,__real@4097700000000000,8,const f64
+0x0076b048,??_C@_0BF@FPGFFGLP@Paste?5From?5Clipboard?$AA@,,"constchar minimum21B observedNativeCString; allocationextentunknown/0credit"
+0x0076b060,??_C@_0BC@GNPLLHLO@Copy?5To?5Clipboard?$AA@,,"constchar minimum18B observedNativeCString; allocationextentunknown/0credit"
+0x0076b074,??_C@_0P@LPKFHFJI@R?3?$DP?$DP?5G?3?$DP?$DP?5B?3?$DP?$DP?$AA@,,"constchar minimum15B observedNativeCString; allocationextentunknown/0credit"
+0x0076b084,??_C@_0M@HCKNBHMA@Pick?5Colour?$AA@,,"constchar minimum12B observedNativeCString; allocationextentunknown/0credit"
 0x76b090,??_C@_0O@HLDALIGL@Return?5To?5App?$AA@,14,char []
 0x76b0b0,??_C@_0BK@ENMLBOJE@Proportional?5Cursor?5Speed?$AA@,26,char []
 0x76b0cc,??_C@_0N@NCKBDIFB@Camera?5Speed?$AA@,13,char []
@@ -21799,6 +21812,9 @@ address,symbol,size,ctype
 0x80fad4,_FS_Width,4,f32
 0x80faf0,_FS_SortMode,4,i32
 0x0080faf4,_FS_ParentEntry,,char[8]
+0x0080fafc,_EduiColourClipboardRedPc,,"f32; minimum4Bworkingview Nativeextentunknown"
+0x0080fb00,_EduiColourClipboardGreenPc,,"f32; minimum4Bworkingview Nativeextentunknown"
+0x0080fb04,_EduiColourClipboardBluePc,,"f32; minimum4Bworkingview Nativeextentunknown"
 0x80fb88,_MINFORCEAPART,,f32
 0x80fb8c,_MAXFORCEAPART,,f32
 0x80fb90,_AnimBlendModePc,,i32
@@ -25286,24 +25302,35 @@ address,symbol,size,ctype
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,616448,NETMESSAGE_PC::MessageData[512]
 0x28fec28,_RefpackLinkArrayPc,,
 0x28fec2c,_RefpackHashTablePc,,
+0x02900a70,_colourmenu,,"eduimenu_s *; minimum4Bworkingview Nativeextentunknown"
 0x2900a74,_edui_messagemenu,4,struct eduimenu_s *
+0x02900a78,_cp_process,,"typed cdecl colour process callback; minimum4Bworkingview Nativeextentunknown"
 0x2900a7c,_edfile_buffer_pointer,4,i32
+0x02900a80,_EduiColourTargetBluePc,,"f32 *; minimum4Bworkingview Nativeextentunknown"
 0x2900c90,_uimtls,20,struct PC_SCENE_MTL_VIEW *[5]
 0x2900ca4,_edui_last_item,4,struct eduiitem_s *
 0x2900ca8,_FS_FileList,65536,char[65536]
+0x02910cb0,_cp_info,,"eduiitem_s *; minimum4Bworkingview Nativeextentunknown"
 0x2910cb4,_submenu1,4,struct eduimenu_s *
+0x02910cb8,_EduiColourTargetRedPc,,"f32 *; minimum4Bworkingview Nativeextentunknown"
 0x2910cbc,_edfile_lock,8,i32[2]
 0x02910cc4,_numInteracts,,i32
 0x02910cc8,_FileSelVolumeNamesPc,,char[1024]
+0x029110cc,_cp_item,,"edui_colour_pick_s *; minimum4Bworkingview Nativeextentunknown"
+0x029110d4,_cp_paste,,"eduiitem_s *; minimum4Bworkingview Nativeextentunknown"
 0x29110d8,_edfile_buffer,4096,char[4096]
 0x029120d8,_FileSelFilterOutBlocksPc,,char[8][12]
 0x2912138,_textrow,16,char *[4]
+0x02912148,_cp_copy,,"eduiitem_s *; minimum4Bworkingview Nativeextentunknown"
 0x291214c,_testmenu0,4,struct eduimenu_s *
+0x02912150,_EduiColourTargetPackedPc,,"u32 *; minimum4Bworkingview Nativeextentunknown"
 0x2912154,_submenu0,,
 0x02912158,_eduiInteracts,,edui_interact_s [64]
 0x2912b58,_edui_font,4,void *
 0x02912b60,_EduiRenderWidthPc,,i32
 0x02912b68,_FileSelFilterBlocksPc,,char[8][96]
+0x02912e68,_EduiColourTargetAlphaPc,,"f32 *; minimum4Bworkingview Nativeextentunknown"
+0x02912e6c,_EduiColourTargetGreenPc,,"f32 *; minimum4Bworkingview Nativeextentunknown"
 0x2912e70,_ed_remap_mtx,4,struct numtx_s *
 0x2912e80,_ed_list,4,struct ed_module_s *
 0x2912e84,_ed_curr,4,struct ed_module_s *
@@ -25317,7 +25344,7 @@ address,symbol,size,ctype
 0x2912eac,_eduiInteractLocked,4,struct edui_interact_s *
 0x02912eb0,_ui_bgmtl,,i32
 0x02912eb4,_EduiSelectionMaterialPc,,i32
-0x02912eb8,_EduiColourClipboardPc,,EDUI_COLOUR_CLIPBOARD_PC minimum 16-byte view; Native allocation extent unknown
+0x02912eb8,_EduiColourClipboardPc,,"EDUI_COLOUR_CLIPBOARD_PC minimum 16-byte view; Native allocation extent unknown"
 0x2912ecc,_active_menu,4,struct eduimenu_s *
 0x2912ed0,_processing_menu,4,struct eduimenu_s *
 0x2912ed4,_default_active_menu,4,struct eduimenu_s *
@@ -25350,6 +25377,7 @@ address,symbol,size,ctype
 0x29130f0,?gpcfg@?2??eduicbProcessGradPick@@9@9,4,eduimenu_s *
 0x29130f4,?down_rept@?1??eduiMenuProcessInput@@9@9,,
 0x29130f8,?up_rept@?1??eduiMenuProcessInput@@9@9,,
+0x029130fc,_EduiColourPickerInitializedPc,,"i32; minimum4Bworkingview Nativeextentunknown"
 0x02913104,_apicharsys,4,APICHARSYS *
 0x2913108,_append,,i32
 0x291310c,_nopakfile,4,i32
