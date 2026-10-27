@@ -16024,3 +16024,73 @@ void __cdecl AISysDrawAntinode_Rectangle(AISYS_RECTANGLE_NODE_PC *node, u32 colo
     maximum.z = node->base_height;
     AISysDrawBoxPc(&minimum, &maximum, &matrix, colour);
 }
+
+/* Prospective src/gameapi/aisys.c append; existing typed state/shape contracts reused. */
+void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
+
+static void antinodeEditorDrawOnePc(EDANTINODE_s *node, i32 segments, u32 colour, i32 solid) {
+    switch (node->type) {
+        case 0:
+            if (solid)
+                LocaledbitsDrawSolidCircleXY(&node->position, node->radius, node->position.y + node->lower_height,
+                                             node->position.y + node->upper_height, colour, 0, segments);
+            else
+                LocaledbitsDrawCircleXY(&node->position, node->radius, colour, 0, segments);
+            break;
+        case 1:
+            if (solid)
+                LocaledbitsDrawSolidEllipseXY(&node->position, node->base_radius, node->base_height, node->flags,
+                                              node->position.y + node->lower_height,
+                                              node->position.y + node->upper_height, colour, 0, segments);
+            else
+                LocaledbitsDrawSolidEllipseXY(&node->position, node->base_radius, node->base_height, node->flags,
+                                              node->position.y, node->position.y, colour, 0, segments);
+            break;
+        case 2: {
+            NUMTX matrix;
+            NUVEC minimum;
+            NUVEC maximum;
+            NuMtxSetTranslation(&matrix, &node->position);
+            NuMtxPreRotateY(&matrix, node->flags);
+            minimum.x = -node->base_radius;
+            minimum.y = node->lower_height;
+            minimum.z = -node->base_height;
+            maximum.x = node->base_radius;
+            maximum.y = node->upper_height;
+            maximum.z = node->base_height;
+            if (!solid) {
+                minimum.y = 0.0f;
+                maximum.y = 0.0f;
+            }
+            NuRndrBoundingBox(&minimum, &maximum, &matrix, colour);
+            break;
+        }
+    }
+}
+
+void __cdecl antinodeEditorDrawAntinodes(void) {
+    i32 solid = (AiEditorDisplayOptionsPc >> 8) & 1;
+    EDANTINODE_s *node;
+    for (node =
+             (EDANTINODE_s *)NuLinkedListGetHead(&((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)->live_nodes);
+         node != NULL; node = (EDANTINODE_s *)NuLinkedListGetNext(
+                           &((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)->live_nodes, &node->link)) {
+        u32 colour = 0x50505050;
+        i32 segments = 8;
+        if (AiEditorModeBankPc.current == AiEditorAntinodeModeIdPc) {
+            if (node == ((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)->selected) {
+                segments = 32;
+                if (node == ((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)->nearest)
+                    colour = NuSpecialExistsFn(&node->special) ? 0xffff0064 : 0xffff0000;
+                else
+                    colour = NuSpecialExistsFn(&node->special) ? 0x80800064 : 0x80800000;
+            } else if (node == ((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)->nearest) {
+                colour = 0xffffffff;
+                segments = 32;
+            } else {
+                colour = 0x80640000;
+            }
+        }
+        antinodeEditorDrawOnePc(node, segments, colour, solid);
+    }
+}

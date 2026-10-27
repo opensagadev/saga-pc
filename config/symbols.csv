@@ -3362,6 +3362,8 @@ address,symbol,size,ctype
 0x527d40,_AiEditorDeleteAntinodeCancelPc,37,
 0x527d70,_AiEditorDeleteAntinodeAnswerPc,98,
 0x527de0,_antinodeEditor_DeleteAntinodeMenu,153,
+0x00527e80,_antinodeEditorDrawOnePc,394,
+0x00528010,_antinodeEditorDrawAntinodes,226,void __cdecl(void)
 0x528210,_antinodeEditorSaveData,567,
 0x5285f0,_creatureEditorSaveData,1273,
 0x528af0,_creatureEditor_IsSelectable,53,
@@ -5717,6 +5719,7 @@ address,symbol,size,ctype
 0x5c19d0,_NuAnimMtxCopyPrivatePc,95,
 0x5c1aa0,_VisibilityTransformFourPc,111,
 0x5c1f70,_NuRndrPrimSetColourPrivate,108,
+0x005c2000,_NuRndrPrimPosition,51,"void __cdecl(f32,f32,f32)"
 0x5c2220,??1NuPostFilterGen@@UAE@XZ,7,native exactVT binding; unimplemented extent unclaimed
 0x5c2230,?initTextureResources@NuPostFilterGen@@UAEXHH@Z,3,native exactVT binding; unimplemented extent unclaimed
 0x5c2240,?destroyTextureResources@NuPostFilterGen@@UAEXXZ,1,Native VT cleanup complete CFG bound; working partial where applicable
@@ -6086,6 +6089,7 @@ address,symbol,size,ctype
 0x005dc200,_NuRndrLineStrip2di,225,"void __cdecl(i32 *, f32 *, i32, i32, NUMTL *)"
 0x005dc2f0,_NuRndrTriStrip2di,225,"void __cdecl(i32 *, f32 *, i32, i32, NUMTL *)"
 0x5dc3f0,_NuRndrGradRectUV2di,366,"void __cdecl(i32,i32,i32,i32,f32,f32,f32,f32,u32 *,void *)"
+0x005dc9f0,_NuRndrBoundingBox,1164,"void __cdecl(NUVEC *,NUVEC *,NUMTX *,i32)"
 0x5dd230,_NuRndrAxisArrowsMtx,903,"void __cdecl(NUMTX *, f32, NUMTL *)"
 0x5dda30,_NuRndrStrip3d,160,"i32 __cdecl(NURND_VERTEX3D_PC *,NUMTL *,NUMTX *,i32)"
 0x5ddad0,_NuRndrTriStrip3dClip,29,"i32 __cdecl(NURND_VERTEX3D_PC *,i32,NUMTX *,NUMTL *)"

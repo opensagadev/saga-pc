@@ -502,6 +502,53 @@ void __cdecl NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
     LOCATOR_PRIM_POSITION(0, -width, base);
     NuPrim3DEnd();
 }
+/* Prospective insertion in src/nu2api/nurndr.c before existing LOCATOR_PRIM_POSITION undef. */
+/* Genuine inline position operation witnessed in Android nuprim_internal.h:47.
+   Scalar parameters materialize coordinates before persistent stream writes.
+   No standalone Native provider/allocation credit; actual emission must be audited. */
+static void NuRndrPrimPosition(f32 x, f32 y, f32 z) {
+    LOCATOR_PRIM_POSITION(x, y, z);
+}
+
+void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour) {
+    NuPrim3DBegin(15, 5, NULL, matrix);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, minimum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, maximum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, maximum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, minimum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, minimum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, minimum->y, maximum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, maximum->y, maximum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, maximum->y, maximum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, minimum->y, maximum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, minimum->y, maximum->z);
+    NuPrim3DEnd();
+    NuPrim3DBegin(14, 5, NULL, matrix);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, maximum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(minimum->x, maximum->y, maximum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, maximum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, maximum->y, maximum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, minimum->y, minimum->z);
+    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimPosition(maximum->x, minimum->y, maximum->z);
+    NuPrim3DEnd();
+}
+
 #undef LOCATOR_PRIM_POSITION
 
 void __cdecl NuRndrInitWorld(void) {
