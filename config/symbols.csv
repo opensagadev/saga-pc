@@ -7051,6 +7051,7 @@ address,symbol,size,ctype
 0x0063cff0,_edrtlDrawHelp,243,void __cdecl (void)
 0x63d0f0,_edrtlDrawRTLInfo,1984,
 0x63d8b0,_edrtlDrawFogInfo,638,
+0x63db30,_edrtlDrawBurnInfo,404,void __cdecl (void)
 0x63dcd0,_rtlFrameUpdate,66,void __cdecl(f32)
 0x63f6a0,_edrtlUndo,353,
 0x63f810,_edrtlRedo,248,
@@ -16594,6 +16595,12 @@ address,symbol,size,ctype
 0x0076bc10,??_C@_0O@GBNMBALJ@POINT?5FLICKER?$AA@,,const char[]
 0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
+0x76bc68,??_C@_0BC@GHONCPCP@NO?5BURNSET?5LOADED?$AA@,,const char[]
+0x76bc7c,??_C@_0CG@HBGJJIG@Current?5Global?5Scale?1Intensity?3?5@,,const char[]
+0x76bca4,??_C@_0BH@OKCIJOJM@Default?5Falloff?3?5?$CF0?42f?$AA@,,const char[]
+0x76bcbc,??_C@_0BG@MFFBFAJN@Default?5Radius?3?5?$CF0?42f?$AA@,,const char[]
+0x76bcd4,??_C@_0O@DCHJGBMD@Used?3?5?$CFd?5?1?5?$CFd?$AA@,,const char[]
+0x76bce4,??_C@_0P@BDIIODKE@Burnout?5Editor?$AA@,,const char[]
 0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
 0x76c374,??_C@_09IEGDEKGI@Loaded?5OK?$AA@,10,char []
 0x76c380,??_C@_0O@DNJIGIFE@Load?5Burnouts?$AA@,,const char[]

@@ -2252,3 +2252,30 @@ void SelectPrevRTL(void) {
         curr_rtl = light;
     }
 }
+
+void edrtlDrawBurnInfo(void) {
+    i32 x, y, height;
+    NuQFntSet(system_qfont);
+    NuQFntSetScale(system_qfont, 1.2f, 1.2f);
+    NuQFntSetColour(system_qfont, 0x80ffffff);
+    x = 640;
+    y = 512;
+    height = (i32)NuQFntHeight(system_qfont);
+    NuRndrRect2di(128, y - height, 4800, 1440, 0x20000080, mtls[2]);
+    NuQFntSet(system_qfont);
+    NuQFntSetScale(system_qfont, 1.2f, 1.2f);
+    NuQFntPrintEx(system_qfont, x, y, 16, "Burnout Editor");
+    y += height;
+    if (edrtl_edit_burnset != NULL) {
+        NuQFntPrintEx(system_qfont, x, y, 16, "Used: %d / %d", edrtl_edit_burnset->active_count, 32);
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "Default Radius: %0.2f", (f64)edrtl_edit_burnset->field_558);
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "Default Falloff: %0.2f", (f64)edrtl_edit_burnset->field_55c);
+        y += 2 * height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "Current Global Scale/Intensity: %0.2f",
+                      (f64)edrtl_edit_burnset->parameters_copy.field_14);
+    } else {
+        NuQFntPrintEx(system_qfont, x, y, 16, "NO BURNSET LOADED");
+    }
+}
