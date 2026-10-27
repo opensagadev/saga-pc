@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "4eb78c2ecafcc3f72bf4ea45c0ab0db1f27c39cbdf2e01a23ec3b5b117d441a4",
+    "config/symbols.csv": "2fa77079e52933676a69e851a6910084a151f0b3e0eaf22f63853406229723bb",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -209,7 +209,7 @@
     "src/debug/log_copier.c": "ad8551cd533cc9bcd6896249b9328fc8d924231f47cee7d858e6fe93e2992784",
     "src/debug/sound_monitor.c": "732f31994caab67a5893a4046d8c004420d8989499f81f6acf4e75169f8860b5",
     "src/debug/stream_capture.c": "f752b434670ba95eaa3adc4b539486a2a324d021b6ede6ee4b844d3b0cd0c523",
-    "src/editor/edtoolsall.c": "73ac6d9dc6a3ac4694ed4c9a25e67622a745bfd3a7200113f16bdac680205d65",
+    "src/editor/edtoolsall.c": "5c379175bbad8e696a2168e7b9efc0cfdbcd276e5762d96def536ff699430e48",
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript.c": "9d45af73dce42f9209b43b6b738a5be94b261ed8b269480effbf19038be7d925",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
@@ -564,7 +564,7 @@
     "build/obj/vendored/vorbis_smallft.obj": "c2227d7d0944c9018725718a1834024e9c5f592a04ca21cff59096b429623184",
     "build/obj/batman.obj": "6c45120c0bf7db468b82cef73e85b0355c0167f2b3d3fbfc75864a3b4176541c",
     "build/obj/data.obj": "9144d76855699b435bad58822b411713acb4ef4f39c0cbe122af6c442dea1e1e",
-    "build/obj/editor/edtoolsall.obj": "988229d67b58888121f5bdae5e8d33094507f05d8065774f82a49e84f227c15a",
+    "build/obj/editor/edtoolsall.obj": "ce303a2e2245fbd4082e532be6e8995ee040dd55fc3733a9e772f5d77902a2d1",
     "build/obj/gameapi/ai_registry_pc.obj": "1d406d5d6b400864b90000519eff18334736f70e0145538f7b55f1754a0810bb",
     "build/obj/gameapi/aieditor_path_create_pc.obj": "16cbf3c517a689e7b82793756a1ea5c819d6989d46e04e3cb66afea7b061a811",
     "build/obj/gameapi/aiscript.obj": "81d61d607fa51093a8ae0b62a8f2a2b9b6791db722c30383af4871aae2b0132e",
@@ -163174,11 +163174,25 @@
       "name": "CreateTestMenu",
       "symbol": "_CreateTestMenu",
       "address": "0x00629ed0",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 1018,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "base_size": 700,
+          "exact_match": false,
+          "target_sha256": "3655974a67d85f3de438e96efd2f6250b187b1349fa745072f74d2898069557c",
+          "base_sha256": "bf59e31a6ec2719d518878905824de24ca05e5c9ba2118a0e532ccb8c560bd0e",
+          "relocation_count": 66,
+          "comparison_unit": "00629ed0-86525dc7a6c7",
+          "objdiff_percent": 47.93994
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 47.93994
     },
     {
       "name": "eduiMenuProcess",
@@ -232049,6 +232063,7 @@
         "lib/ogg-vorbis/vorbis/psy.c",
         "lib/ogg-vorbis/vorbis_smallft.c",
         "src/batman.cpp",
+        "src/editor/edtoolsall.c",
         "src/gameapi/aiscript.c",
         "src/gameapi/aisys.c",
         "src/gameapi/apiobject.c",
@@ -232291,6 +232306,14 @@
         },
         {
           "unit": "src/batman.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c",
+          "base_sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+        },
+        {
+          "unit": "src/editor/edtoolsall.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -237228,6 +237251,7 @@
         "lib/ogg-vorbis/vorbis/sharedbook.c",
         "lib/ogg-vorbis/vorbis_smallft.c",
         "src/batman.cpp",
+        "src/editor/edtoolsall.c",
         "src/gameapi/aieditor_path_create_pc.cpp",
         "src/gameapi/aiscript.c",
         "src/gameapi/aisys.c",
@@ -237566,6 +237590,14 @@
         },
         {
           "unit": "src/batman.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        },
+        {
+          "unit": "src/editor/edtoolsall.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -384702,111 +384734,244 @@
       "name": "??_C@_03IAFHKNMP@Sel?$AA@",
       "symbol": "??_C@_03IAFHKNMP@Sel?$AA@",
       "address": "0x0076b0ec",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 4,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "13edac797a8c1c6448b8010764c3aae142d3ded08307ac7bd295097c29b63e19",
+          "base_sha256": "13edac797a8c1c6448b8010764c3aae142d3ded08307ac7bd295097c29b63e19"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_0N@ILFMOHKE@GreyGradPick?$AA@",
       "symbol": "??_C@_0N@ILFMOHKE@GreyGradPick?$AA@",
       "address": "0x0076b0f0",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 13,
+          "base_size": 13,
+          "target_sha256": "11f8479feb1549f5faf26beb8deafbbc8898959c5a6c5dbcba638a97c00dfada",
+          "base_sha256": "11f8479feb1549f5faf26beb8deafbbc8898959c5a6c5dbcba638a97c00dfada"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "??_C@_08EBHBKJDI@GradPick?$AA@",
+      "symbol": "??_C@_08EBHBKJDI@GradPick?$AA@",
+      "address": "0x0076b100",
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
+      "target_size": null,
       "exact_match": false,
       "objects": [],
-      "status": "not implemented"
+      "status": "unknown size"
     },
     {
       "name": "??_C@_0N@IAEJGMCJ@Sub?5Menu?50?4?4?$AA@",
       "symbol": "??_C@_0N@IAEJGMCJ@Sub?5Menu?50?4?4?$AA@",
       "address": "0x0076b10c",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 13,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 13,
+          "base_size": 13,
+          "target_sha256": "33f5545dc87d39abf7c73e4e2f3f11a66d5b8f5c2384fb76fcc498459f3eab00",
+          "base_sha256": "33f5545dc87d39abf7c73e4e2f3f11a66d5b8f5c2384fb76fcc498459f3eab00"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_09JDDCPHDA@Main?5Menu?$AA@",
       "symbol": "??_C@_09JDDCPHDA@Main?5Menu?$AA@",
       "address": "0x0076b11c",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 10,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 10,
+          "base_size": 10,
+          "target_sha256": "675e731c00de4e059bf8a46fe1b614bcd0ff264a91254281f47785525410cb52",
+          "base_sha256": "675e731c00de4e059bf8a46fe1b614bcd0ff264a91254281f47785525410cb52"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_0N@DIPFALEM@Sub?5Menu?51?4?4?$AA@",
       "symbol": "??_C@_0N@DIPFALEM@Sub?5Menu?51?4?4?$AA@",
       "address": "0x0076b128",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 13,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 13,
+          "base_size": 13,
+          "target_sha256": "97c506509b83e363e3d79f221deadff9e7ae491ed3ac3d324885c496685c06ee",
+          "base_sha256": "97c506509b83e363e3d79f221deadff9e7ae491ed3ac3d324885c496685c06ee"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_07CFDFCHEG@Sub?5Sel?$AA@",
       "symbol": "??_C@_07CFDFCHEG@Sub?5Sel?$AA@",
       "address": "0x0076b138",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 8,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "daff5c31e6b785b45dabe8dc969b9739fb3f610a8688a40186bd80568dcfa51b",
+          "base_sha256": "daff5c31e6b785b45dabe8dc969b9739fb3f610a8688a40186bd80568dcfa51b"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_08BOCBKJCN@SubMenu0?$AA@",
       "symbol": "??_C@_08BOCBKJCN@SubMenu0?$AA@",
       "address": "0x0076b140",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 9,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 9,
+          "base_size": 9,
+          "target_sha256": "f24f2c3073a0f9b8ea7140e00ca601cacc4b614215736f49fde4c520a7bf22ec",
+          "base_sha256": "f24f2c3073a0f9b8ea7140e00ca601cacc4b614215736f49fde4c520a7bf22ec"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_09NGBEGKEM@Sub?5Sel?52?$AA@",
       "symbol": "??_C@_09NGBEGKEM@Sub?5Sel?52?$AA@",
       "address": "0x0076b14c",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 10,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 10,
+          "base_size": 10,
+          "target_sha256": "164f23153083932e826c641f554dc88d7b72d809096bc3ffe67b6e41472cb5fb",
+          "base_sha256": "164f23153083932e826c641f554dc88d7b72d809096bc3ffe67b6e41472cb5fb"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_09PNDJDJIP@Sub?5Sel?51?$AA@",
       "symbol": "??_C@_09PNDJDJIP@Sub?5Sel?51?$AA@",
       "address": "0x0076b158",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 10,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 10,
+          "base_size": 10,
+          "target_sha256": "28b35396a18c303cbd27d1ae31e3e63144a5f5a9769a223d56990fa5428013fd",
+          "base_sha256": "28b35396a18c303cbd27d1ae31e3e63144a5f5a9769a223d56990fa5428013fd"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_09OECCAIMO@Sub?5Sel?50?$AA@",
       "symbol": "??_C@_09OECCAIMO@Sub?5Sel?50?$AA@",
       "address": "0x0076b164",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 10,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 10,
+          "base_size": 10,
+          "target_sha256": "5e7de53c557b86b6613e388617a1f03386b708cb3f5700e28618adc69ff707e9",
+          "base_sha256": "5e7de53c557b86b6613e388617a1f03386b708cb3f5700e28618adc69ff707e9"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_08HDKJIGM@SubMenu1?$AA@",
       "symbol": "??_C@_08HDKJIGM@SubMenu1?$AA@",
       "address": "0x0076b170",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": 9,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edtoolsall.c",
+          "exact_match": true,
+          "target_size": 9,
+          "base_size": 9,
+          "target_sha256": "e0b5aa9c3c03a51907f58d3318a9a00b51bb10331efa033da2813b955184562c",
+          "base_sha256": "e0b5aa9c3c03a51907f58d3318a9a00b51bb10331efa033da2813b955184562c"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "__real@3ff6db6dc845a8fa",
@@ -523189,7 +523354,9 @@
       "name": "submenu0",
       "symbol": "_submenu0",
       "address": "0x02912154",
-      "units": [],
+      "units": [
+        "src/editor/edtoolsall.c"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -542760,11 +542927,11 @@
     "mapped_code_bytes": 2579804,
     "matched_code_bytes": 761518,
     "matching_percent": 21.937886280603564,
-    "fuzzy_coverage_percent": 62.23815937463935,
+    "fuzzy_coverage_percent": 62.25221855077381,
     "mapped_functions": 9809,
     "matched_functions": 5912,
-    "objdiff_fuzzy_percent": 85.71571,
-    "objdiff_total_code": 2523436,
+    "objdiff_fuzzy_percent": 85.70048,
+    "objdiff_total_code": 2524454,
     "image_bytes": 40067072,
     "mapped_bytes": 4452376,
     "mapping_percent": 11.112306883817215,
@@ -542801,7 +542968,7 @@
       }
     ],
     "mapping_known_size_symbols": 18828,
-    "mapping_unknown_size_symbols": 7476,
+    "mapping_unknown_size_symbols": 7477,
     "mapping_code_bytes": 2580998,
     "mapping_code_total_bytes": 3471246,
     "mapping_code_percent": 74.35364707658287,
@@ -542817,7 +542984,7 @@
     "mapping_zero_fill_data_bytes": 1488666,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.258879166255655,
-    "matched_data_region_bytes": 1857635
+    "matched_data_region_bytes": 1857744
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
@@ -544137,7 +544304,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "6da0c8c350f8d1d01237622080d6cba4538a5b5df94561d1ae7efb0e7bbda9f8",
+      "geometry_object_sha256": "8503da6c2d8cb1a78574606fcd95ce66bfad83ce01e3540462f28aa9e65b3acf",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
