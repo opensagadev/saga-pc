@@ -1738,3 +1738,161 @@ void __cdecl NuStrSubstituteString(char *dst, char *src, char *search, char *rep
     }
     *dst = 0;
 }
+
+/* Native unused string utilities; SOURCE-only proposal. */
+i32 __cdecl NuStrCpyWC(char *dst, const char *src, const char *replacement) {
+    i32 copied = 0;
+    if (src == NULL) {
+        *dst = '\0';
+    } else {
+        do {
+            if (*src != '*') {
+                *dst = *src;
+                ++dst;
+                ++copied;
+            } else {
+                const char *cursor = replacement;
+                if (cursor != NULL) {
+                    while (cursor != NULL && *cursor != '\0') {
+                        *dst = *cursor;
+                        ++dst;
+                        ++cursor;
+                        ++copied;
+                    }
+                }
+            }
+        } while (*src++ != '\0');
+    }
+    return copied;
+}
+
+i32 __cdecl NuIsAl(char c) {
+    switch (c) {
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':
+        case '_':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+i32 __cdecl NuIsAlW(NUWCHAR c) {
+    switch (c) {
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':
+        case '_':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+u8 __cdecl NuToLower(u8 c) {
+    if (c >= 'A' && c <= 'Z') {
+        c += 0x20;
+    } else if (c > 0xbf && c < 0xe0) {
+        c += 0x20;
+    }
+    return c;
+}
