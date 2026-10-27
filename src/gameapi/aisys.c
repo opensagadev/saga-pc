@@ -15931,3 +15931,96 @@ nearest:
 #undef ANTINODE_NEAREST_PC
 #undef ANTINODE_REPEAT_PC
 #undef ANTINODE_FLAGS_PC
+
+/* Prospective src/gameapi/aisys.c additions. Existing map row at0x5191f0
+ * must be renamed to this genuine private helper; Android-named wrapper is0x519680.
+ * No compile or compiler-ABI claim. */
+static void AISysDrawBoxPc(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 colour) {
+    NURND_VERTEX3D_PC corners[8];
+    i32 i;
+    corners[0].position.x = minimum->x;
+    corners[0].position.y = minimum->y;
+    corners[0].position.z = minimum->z;
+    corners[1].position.x = maximum->x;
+    corners[1].position.y = minimum->y;
+    corners[1].position.z = minimum->z;
+    corners[2].position.x = maximum->x;
+    corners[2].position.y = minimum->y;
+    corners[2].position.z = maximum->z;
+    corners[3].position.x = minimum->x;
+    corners[3].position.y = minimum->y;
+    corners[3].position.z = maximum->z;
+    corners[4].position.x = minimum->x;
+    corners[4].position.y = maximum->y;
+    corners[4].position.z = minimum->z;
+    corners[5].position.x = maximum->x;
+    corners[5].position.y = maximum->y;
+    corners[5].position.z = minimum->z;
+    corners[6].position.x = maximum->x;
+    corners[6].position.y = maximum->y;
+    corners[6].position.z = maximum->z;
+    corners[7].position.x = minimum->x;
+    corners[7].position.y = maximum->y;
+    corners[7].position.z = maximum->z;
+    for (i = 0; i < 8; ++i)
+        NuVecMtxTransform(&corners[i].position, &corners[i].position, matrix);
+    for (i = 0; i < 8; ++i)
+        corners[i].colour = colour;
+#define DRAW_BOX_EDGE(a, b)                                                                                            \
+    AiRndrLine3dDbg(corners[a].position.x, corners[a].position.y, corners[a].position.z, corners[b].position.x,        \
+                    corners[b].position.y, corners[b].position.z, colour)
+    DRAW_BOX_EDGE(0, 1);
+    DRAW_BOX_EDGE(1, 2);
+    DRAW_BOX_EDGE(2, 3);
+    DRAW_BOX_EDGE(3, 0);
+    DRAW_BOX_EDGE(4, 5);
+    DRAW_BOX_EDGE(5, 6);
+    DRAW_BOX_EDGE(6, 7);
+    DRAW_BOX_EDGE(7, 4);
+    DRAW_BOX_EDGE(0, 4);
+    DRAW_BOX_EDGE(1, 5);
+    DRAW_BOX_EDGE(2, 6);
+    DRAW_BOX_EDGE(3, 7);
+#undef DRAW_BOX_EDGE
+}
+
+typedef struct AISYS_RECTANGLE_NODE_PC {
+    NUVEC position;
+    f32 radius;
+    f32 min_y;
+    f32 min_y_offset;
+    f32 max_y;
+    f32 max_y_offset;
+    NUSPECIALHANDLE special_handle;
+    NUVEC special_position;
+    i32 rotation;
+    i32 rotation_offset;
+    f32 base_radius;
+    f32 base_height;
+    u8 enabled, game_flags, type, has_special;
+    u8 unknown_4c[4];
+    u8 special_type;
+    u8 unknown_51[7];
+} AISYS_RECTANGLE_NODE_PC;
+STATIC_ASSERT(sizeof(AISYS_RECTANGLE_NODE_PC) == sizeof(AIANTINODE_PC));
+STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, position) == 0);
+STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, min_y_offset) == 0x14);
+STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, max_y_offset) == 0x1c);
+STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, rotation) == 0x38);
+STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, base_radius) == 0x40);
+STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, base_height) == 0x44);
+
+void __cdecl AISysDrawAntinode_Rectangle(AISYS_RECTANGLE_NODE_PC *node, u32 colour) {
+    NUMTX matrix;
+    NUVEC minimum;
+    NUVEC maximum;
+    NuMtxSetTranslation(&matrix, &node->position);
+    NuMtxPreRotateY(&matrix, node->rotation);
+    minimum.x = -node->base_radius;
+    minimum.y = node->min_y_offset;
+    minimum.z = -node->base_height;
+    maximum.x = node->base_radius;
+    maximum.y = node->max_y_offset;
+    maximum.z = node->base_height;
+    AISysDrawBoxPc(&minimum, &maximum, &matrix, colour);
+}

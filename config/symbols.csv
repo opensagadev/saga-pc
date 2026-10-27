@@ -3247,7 +3247,8 @@ address,symbol,size,ctype
 0x5186e0,_AISysCheckAntinode_Circle,561,
 0x518920,_AISysCheckAntinode_Ellipse,1030,
 0x518d30,_AISysCheckAntinode_Rectangle,1203,
-0x5191f0,_AISysDrawAntinode_Rectangle,1163,
+0x005191f0,_AISysDrawBoxPc,1163,
+0x00519680,_AISysDrawAntinode_Rectangle,110,"void __cdecl(AISYS_RECTANGLE_NODE_PC *,u32)"
 0x5196f0,_AISysCreatureAntinodeInteraction,608,"void __cdecl(AISYS_PC *, i32, APIOBJECT_PC **, i32 *)"
 0x519e00,_AISysCreatureInteraction2D,1408,"void __cdecl(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32)"
 0x0051a760,_AISysResetPathSearchConnectionChecks,86,
