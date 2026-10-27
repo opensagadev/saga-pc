@@ -21,7 +21,7 @@ extern "C" void __cdecl PcRendererCleanup(void) {
     STUBBED_NAMED("void action5fe450 at6df0c0");
     STUBBED_NAMED("void action5fa220 at6df0c5");
     STUBBED_NAMED("void action600bb0 at6df0ca");
-    STUBBED_NAMED("void tail action5ffc10 at6df0cf");
+    NuDebrisReleaseVertexBuffersPc();
 }
 
 extern "C" void __cdecl PcRendererShutdown(i32 unused) {
