@@ -16470,6 +16470,7 @@ address,symbol,size,ctype
 0x76b0dc,??_C@_0O@GPLACL@Editor?5Config?$AA@,14,char []
 0x76b0ec,??_C@_03IAFHKNMP@Sel?$AA@,4,char []
 0x76b0f0,??_C@_0N@ILFMOHKE@GreyGradPick?$AA@,13,char []
+0x76b100,??_C@_08EBHBKJDI@GradPick?$AA@,,const char[]
 0x76b10c,??_C@_0N@IAEJGMCJ@Sub?5Menu?50?4?4?$AA@,13,char []
 0x76b11c,??_C@_09JDDCPHDA@Main?5Menu?$AA@,10,char []
 0x76b128,??_C@_0N@DIPFALEM@Sub?5Menu?51?4?4?$AA@,13,char []
