@@ -338,6 +338,9 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
+extern i32 edbits_particle_general_page;
+extern i32 edbits_particle_char_page;
+
 i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     i32 page, n, version, requested, skipped;
     i32 type_index = 1, instance_index = 0;
@@ -497,17 +500,14 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     edppDetermineNearest(1.0f);
 
     if (flag == 0) {
-        DEBPAGE_GENERAL = page_index;
+        edbits_particle_general_page = page_index;
     } else if (flag == 5) {
-        DEBPAGE_CHARACTER = page_index;
+        edbits_particle_char_page = page_index;
     } else if (flag == 1) {
-        DEBPAGE_AREA = page_index;
+        edbits_particle_level_page = page_index;
     }
     return page_index;
 }
-
-extern i32 edbits_particle_general_page;
-extern i32 edbits_particle_char_page;
 
 void __cdecl cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     eduimenu_s *parent = NULL;
