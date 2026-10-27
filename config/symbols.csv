@@ -6980,6 +6980,9 @@ address,symbol,size,ctype
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
 0x6382a0,_RefreshUI,1800,
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
+0x639b50,_edrtlAddBurnout,218,i32 __cdecl (NUVEC *)
+0x639c30,_edrtlRemoveBurnout,67,void __cdecl (i32)
+0x639c80,_edrtlPlaceBurnout,61,"void __cdecl (i32, NUVEC *)"
 0x639cc0,_edrtlSetBurnoutStartAngle,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639ce0,_edrtlSetBurnoutMinIntensity,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639d00,_edrtlSetBurnoutEndAngle,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"

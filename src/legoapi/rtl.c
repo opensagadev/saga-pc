@@ -2070,3 +2070,35 @@ void edrtlBurnMainMenu(void) {
                         eduiItemSelCreate(1, edblack, 0, 0, edrtlBurnoutFileLoad, "Load Burnouts"));
     }
 }
+
+i32 edrtlAddBurnout(NUVEC *position) {
+    i32 index = 0;
+    if (edrtl_edit_burnset && edrtl_edit_burnset->active_count < 32) {
+        while (edrtl_edit_burnset->burnouts[index].active)
+            ++index;
+        edrtl_edit_burnset->burnouts[index].active = 1;
+        edrtl_edit_burnset->burnouts[index].position = *position;
+        edrtl_edit_burnset->burnouts[index].field_1c = edrtl_edit_burnset->field_558;
+        edrtl_edit_burnset->burnouts[index].field_20 = edrtl_edit_burnset->field_55c;
+        edrtl_edit_burnset->burnouts[index].field_10 = edrtl_edit_burnset->parameters.field_24;
+        edrtl_edit_burnset->burnouts[index].field_14 = edrtl_edit_burnset->parameters.field_14;
+        edrtl_edit_burnset->burnouts[index].field_18 = edrtl_edit_burnset->parameters.field_1c;
+        ++edrtl_edit_burnset->active_count;
+        return index;
+    }
+    return -1;
+}
+
+void edrtlRemoveBurnout(i32 index) {
+    if (!edrtl_edit_burnset || !edrtl_edit_burnset->burnouts[index].active)
+        return;
+    edrtl_edit_burnset->burnouts[index].active = 0;
+    --edrtl_edit_burnset->active_count;
+    edrtl_edit_burnset->selected_index = -1;
+}
+
+void edrtlPlaceBurnout(i32 index, NUVEC *position) {
+    if (!edrtl_edit_burnset || !edrtl_edit_burnset->burnouts[index].active)
+        return;
+    edrtl_edit_burnset->burnouts[index].position = *position;
+}
