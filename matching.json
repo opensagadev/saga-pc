@@ -350,7 +350,7 @@
     "src/legoapi/objectsall.c": "1d0ff33901ba13c10ea3f607d9295a0cc611046b44792394da6ef3b696b62efb",
     "src/legoapi/panel.c": "537e9d93ff1b0da7d69429f9b26b9114dd91e91a38a7cf9508a49b93328b0b1b",
     "src/legoapi/particles.c": "af7b5c52626a0c8817e3bac3eec6709113d85a29999cf3c213e180059216510e",
-    "src/legoapi/parts.c": "16a974f9f16339bdc940e30624eed6ebda3403fa73c2ceb3b60482a0bac30005",
+    "src/legoapi/parts.c": "5e187e512037f7c9e8402d8f57edb3ccd0cd7643b75817039df9ebb179ed6c7d",
     "src/legoapi/parts_load.c": "f9a984e556d4ede0eecc5b91818f61abb8fd2d8343b29226aa17cb0fdc5b2b00",
     "src/legoapi/perm.c": "31741f8315f3c4fcf398842fec09dee9c56f4399141505cd52e028fccf1ce3b6",
     "src/legoapi/playeractions.c": "fe25167d6ffdcf22f2aad3d4dc5d4cbe55bb2e7222efc906195fa42637027ba5",
@@ -750,7 +750,7 @@
     "build/obj/legoapi/occlusion.obj": "13e3b6696e189a9a19a8235a1713a6304217573841327b975502184b9bd5c3d8",
     "build/obj/legoapi/panel.obj": "6912241f3a487a54a3990e8117912841405ebee1fc3dfb1112d25263eb948c65",
     "build/obj/legoapi/particles.obj": "8357d366aa32a4a1414c6322b7ca78d8be43b8eef5559055acf7b7d29fc87d56",
-    "build/obj/legoapi/parts.obj": "e530169a0f4cd11fc36618a3a3476352e2a35b961b7c360b8f472565b40ad78b",
+    "build/obj/legoapi/parts.obj": "2df27af43906bcc40948cbc59c78d93edb41f89aaa17fcf9f3fea7d1789e099d",
     "build/obj/legoapi/parts_breakup.obj": "3b90f6cf8737ef2257035ead4a11146e78877228dc8a5f82879921696a8f919e",
     "build/obj/legoapi/parts_load.obj": "e38b494c9488f42f608451f1c1967a56704028d2b9773e7337526e5388ceb2dc",
     "build/obj/legoapi/perm.obj": "90ce54e3f1e22f03f1bf810ede5623c00f50dfd1c94dfa9eddc3ab376fcde716",
@@ -41100,17 +41100,17 @@
       "objects": [
         {
           "unit": "src/legoapi/parts.c",
-          "base_size": 90,
+          "base_size": 108,
           "exact_match": false,
           "target_sha256": "e9ae4f2808af0f9e5f6abcd554fb2a6ea7204e308c5ebf782b7f61f317a0a1bc",
-          "base_sha256": "c1f49b98cc258246d34c136c2e90c5b9cc30fd6e0a2fd924a86ad024f2efc032",
-          "relocation_count": 6,
+          "base_sha256": "0b6a79a6e39bd0b6f22837f487d4f51b5f36a3d74e074cfe5d7e061ac6252fe1",
+          "relocation_count": 7,
           "comparison_unit": "004a5b30-e45a33899972",
-          "objdiff_percent": 64.7
+          "objdiff_percent": 91.0
         }
       ],
       "status": "different",
-      "objdiff_percent": 64.7
+      "objdiff_percent": 91.0
     },
     {
       "name": "PartImpact_Basketball",
@@ -543014,10 +543014,10 @@
     "mapped_code_bytes": 2579979,
     "matched_code_bytes": 761767,
     "matching_percent": 21.945059497367804,
-    "fuzzy_coverage_percent": 62.27455728758473,
+    "fuzzy_coverage_percent": 62.275413435492425,
     "mapped_functions": 9810,
     "matched_functions": 5914,
-    "objdiff_fuzzy_percent": 85.70858,
+    "objdiff_fuzzy_percent": 85.709755,
     "objdiff_total_code": 2525120,
     "image_bytes": 40067072,
     "mapped_bytes": 4452551,
@@ -544391,7 +544391,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "0288ef491ab7096630a0f6655c997fedea7b5df653aa2a3fbbffb7f4e10e8dff",
+      "geometry_object_sha256": "cc9514b800405209a74c93697ee33e7f49d43469c74850185645b0a87a80a54c",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
