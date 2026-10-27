@@ -6975,6 +6975,14 @@ address,symbol,size,ctype
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
 0x6382a0,_RefreshUI,1800,
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
+0x63a410,_edrtlSetBurnoutNormalRate,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a430,_edrtlSetBurnoutOvershootRate,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a450,_edrtlSetBurnoutOvershootCutin,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a470,_edrtlSetBurnoutOvershootAmount,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a490,_edrtlSetBurnoutOverbrightCap,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a4b0,_edrtlSetBurnoutOverdarkCap,23,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x63a4d0,_edrtlCancelBurnTransitionsMenu,29,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x63a4f0,_edrtlBurnTransitionsMenu,557,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x0063abb0,_edrtlBurnoutFileSave,309,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63ad30,_edrtlEnter,234,
 0x63c1b0,_edrtlDetermineNearestBurn,240,"void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *)"
@@ -16457,6 +16465,14 @@ address,symbol,size,ctype
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
 0x76b788,_RtlSearchTimebarNamePc,,const char[9]
+0x76b8f4,??_C@_0CB@CEKKKJGJ@edrtl_edit_burnset?9?$DOOverdark?5Cap@,,const char[]
+0x76b918,??_C@_0CD@MJJPCEBP@edrtl_edit_burnset?9?$DOOverbright?5C@,,const char[]
+0x76b93c,??_C@_0BB@NNINEBIN@Overshoot?5Amount?$AA@,,const char[]
+0x76b950,??_C@_0BA@FICJAGII@Overshoot?5Cutin?$AA@,,const char[]
+0x76b960,??_C@_0P@MFAOOEJE@Overshoot?5Rate?$AA@,,const char[]
+0x76b970,__real@409fae14,,const f32
+0x76b974,??_C@_0M@BMAENMPH@Normal?5Rate?$AA@,,const char[]
+0x76b980,??_C@_0M@KKODGIEN@Transitions?$AA@,,const char[]
 0x76b9d8,??_C@_0BA@LPGHPLPA@File?5Save?5Error?$AA@,16,char []
 0x76b9e8,??_C@_08DNCCGPLP@Saved?5OK?$AA@,9,char []
 0x76b9f4,??_C@_08IEFAEBKE@?$CFs?2?$CFs?4?$CFs?$AA@,9,char []
@@ -25414,6 +25430,7 @@ address,symbol,size,ctype
 0x02913838,_base_rtl,,RTL_LIGHT_PC *
 0x02913844,_curr_rtl,,RTL_LIGHT_PC *
 0x029138bc,_curr_set,,RTL_SET_PC *
+0x2913988,_edrtl_burn_transitions_menu,,eduimenu_s *
 0x291398c,_edrtl_edit_burnset,,
 0x2913990,_rtl_dynamic_pool,,NULSTHDR *
 0x2913994,_rtl_dynamic_max,,i32

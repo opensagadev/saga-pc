@@ -1672,3 +1672,85 @@ void edrtlBurnoutFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         edrtlBurnoutLoadSet(filename, edrtl_edit_burnset);
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
+
+eduimenu_s *edrtl_burn_transitions_menu = NULL;
+STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
+STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
+STATIC_ASSERT(offsetof(eduimenu_s, y) == 0x18);
+
+void edrtlSetBurnoutNormalRate(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_b8 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutOvershootRate(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_bc = slider->value;
+    }
+}
+
+void edrtlSetBurnoutOvershootCutin(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_c0 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutOvershootAmount(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_c4 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutOverbrightCap(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_c8 = slider->value;
+    }
+}
+
+void edrtlSetBurnoutOverdarkCap(eduimenu_s *unused_menu, eduiitem_s *item, u32 unused_value) {
+    if (edrtl_edit_burnset) {
+        edui_slider_s *slider = (edui_slider_s *)item;
+        edrtl_edit_burnset->field_cc = slider->value;
+    }
+}
+
+void edrtlCancelBurnTransitionsMenu(eduimenu_s *unused_menu, eduimenu_s *unused_parent) {
+    if (edrtl_burn_transitions_menu != NULL) {
+        eduiMenuDestroy(edrtl_burn_transitions_menu);
+        edrtl_burn_transitions_menu = NULL;
+    }
+}
+
+void edrtlBurnTransitionsMenu(eduimenu_s *parent, eduiitem_s *unused_item, u32 unused_value) {
+    edrtl_burn_transitions_menu =
+        eduiMenuCreate(70, 70, 250, 300, ed_fnt, edrtlCancelBurnTransitionsMenu, "Transitions");
+    if (edrtl_edit_burnset != NULL && edrtl_burn_transitions_menu != NULL) {
+        eduiMenuAddItem(edrtl_burn_transitions_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutNormalRate, 0.01f, 4.99f,
+                                             edrtl_edit_burnset->field_b8, "Normal Rate"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootRate, 0.01f, 4.99f,
+                                             edrtl_edit_burnset->field_bc, "Overshoot Rate"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootCutin, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->field_c0, "Overshoot Cutin"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOvershootAmount, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->field_c4, "Overshoot Amount"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverbrightCap, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->field_c8, "edrtl_edit_burnset->Overbright Cap"));
+        eduiMenuAddItem(edrtl_burn_transitions_menu,
+                        eduiItemSliderCreate(0, edblack, 0, edrtlSetBurnoutOverdarkCap, 0.0f, 2.0f,
+                                             edrtl_edit_burnset->field_cc, "edrtl_edit_burnset->Overdark Cap"));
+        eduiMenuAttach(parent, edrtl_burn_transitions_menu);
+        edrtl_burn_transitions_menu->x = parent->x + 10;
+        edrtl_burn_transitions_menu->y = parent->y + 40;
+    }
+}
