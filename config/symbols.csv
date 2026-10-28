@@ -5816,6 +5816,7 @@ address,symbol,size,ctype
 0x5c91c0,_NuAnimCurveCalcVal2,364,"f32 __cdecl (NUANIM_LEGACY_CURVE_PC *, NUANIM_TIME2_PC *)"
 0x5c9330,_NuAnimCurveSetApplyToMatrix,482,"void __cdecl (NUANIM_LEGACY_SET_PC *, NUANIM_TIME2_PC *, NUMTX *)"
 0x005c9520,_NuAnimCurve2CalcValEx,1373,
+0x005c9ab0,_NuAnimGetAnimDataSizeANI3,49,u32 __cdecl (ANI3_HEADER_PC *)
 0x5c9af0,_NuAnimRelocatePtrsANI3,97,"void __cdecl (ANI3_HEADER_PC *, i32)"
 0x5c9b60,_NuAnimDataCalcTime,222,"void __cdecl (NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *)"
 0x005c9c40,_NuAnimData2CalcTime,303,

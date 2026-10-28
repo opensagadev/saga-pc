@@ -2030,6 +2030,58 @@ void *__cdecl NuAnimData2FixPtrs(void *data, i32 delta, i32 external_delta, i32 
     return anim;
 }
 
+typedef struct NuAnimData2FileHeader_PC {
+    u32 size;
+    u32 relocation_base;
+    void *animation;
+} NuAnimData2FileHeader_PC;
+
+STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, size) == 0);
+STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, relocation_base) == 4);
+STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, animation) == 8);
+STATIC_ASSERT(sizeof(NuAnimData2FileHeader_PC) == 12);
+
+u32 __cdecl NuAnimGetAnimDataSizeANI3(ANI3_HEADER_PC *animation) {
+    ANI3_HEADER_PC *block = animation;
+    while (block->next_block != 0)
+        block = (ANI3_HEADER_PC *)((u32)block + block->next_block);
+    if (block->node_flags == NULL)
+        return 0;
+    return (u32)block->node_flags + block->node_count - (u32)animation;
+}
+
+extern void __cdecl PCSpecialEmptyHandler_candidate(void);
+
+void *__cdecl NuAnimData2Relocate(void **data, VARIPTR *cursor) {
+    void *source = *data;
+    i32 magic = *(i32 *)source;
+    NuAnimData2FileHeader_PC *header;
+    void *relocated_animation;
+    if (magic >= 0x414e4934 && magic <= 0x414e4935) {
+        u32 size = NuAnimGetAnimDataSizeANI3((ANI3_HEADER_PC *)source);
+        void *destination;
+        cursor->addr = (cursor->addr + 15) & ~15u;
+        destination = cursor->void_ptr;
+        cursor->addr += size;
+        *data = destination;
+        memcpy(destination, source, size);
+        NuAnimRelocatePtrsANI3((ANI3_HEADER_PC *)destination, (i32)((u32)destination - (u32)source));
+        return destination;
+    }
+    cursor->addr = (cursor->addr + 15) & ~15u;
+    if (*(i32 *)*data > 0x10000 || *(i32 *)*data < 0)
+        PCSpecialEmptyHandler_candidate();
+    memcpy(cursor->void_ptr, *data, *(u32 *)*data);
+    *data = cursor->void_ptr;
+    cursor->addr += *(u32 *)*data;
+    header = (NuAnimData2FileHeader_PC *)*data;
+    relocated_animation = NuAnimData2FixPtrs(header->animation, (i32)((u32)header - header->relocation_base), 0, 0);
+    ((NuAnimData2FileHeader_PC *)*data)->animation = relocated_animation;
+    header = (NuAnimData2FileHeader_PC *)*data;
+    header->relocation_base = (u32)header;
+    return ((NuAnimData2FileHeader_PC *)*data)->animation;
+}
+
 void *__cdecl NuAnimData2Fixup(i32 file_size, void **data) {
     u32 *header = (u32 *)*data;
     u32 magic = header[0];

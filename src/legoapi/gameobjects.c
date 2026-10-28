@@ -2,6 +2,7 @@
 void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
 void __cdecl DestroyAIGroup(AIGROUP_PC *);
 void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **);
+void __cdecl MovePlayer_NETWORK(GAMEOBJECT *);
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 void __cdecl Game_KillPart(PART_PC *part, i32 reason) {
@@ -3393,7 +3394,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         if (object->field_d54 > 0.0f)
             object->field_d54 -= FRAMETIME;
         if ((object->flags_1f8 & 0x40000) != 0) {
-            STUBBED_NAMED("UpdateGameObjects: MovePlayer_NETWORK PC4b6bf0");
+            MovePlayer_NETWORK(object);
         } else if ((object->flags_ef4 & 8) != 0) {
             frame_time = FRAMETIME;
             FRAMETIME = object->ai_elapsed_time;
@@ -3465,7 +3466,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
             object->field_d54 -= FRAMETIME;
         object->flags_1fc_word ^= (((object->character_context == 0) << 14) ^ object->flags_1fc_word) & 0x4000;
         if ((object->flags_1f8 & 0x40000) != 0) {
-            STUBBED_NAMED("UpdateGameObjects: MovePlayer_NETWORK PC4b6bf0");
+            MovePlayer_NETWORK(object);
         } else {
             if ((object->flags_1fc_word & 0x80) != 0) {
                 if (object->pad->bound_pad != NULL) {
