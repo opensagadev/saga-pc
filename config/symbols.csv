@@ -3385,6 +3385,7 @@ address,symbol,size,ctype
 0x529050,_AiEditorRespawnMaxCountPc,122,
 0x5290d0,_AiEditorRespawnMinTimePc,116,
 0x529150,_AiEditorRespawnMaxTimePc,116,
+0x005291d0,_creatureEditor_cb_stagger_start,34,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x529240,_AiEditorSetRespawnLocatorPc,122,
 0x5292c0,_AiEditorSelectRespawnLocatorPc,261,
 0x5293d0,_creatureEditor_cbRespawnMenu,502,

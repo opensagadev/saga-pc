@@ -16094,3 +16094,13 @@ void __cdecl antinodeEditorDrawAntinodes(void) {
         antinodeEditorDrawOnePc(node, segments, colour, solid);
     }
 }
+
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, stagger_start) == 0x98);
+STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
+
+void __cdecl creatureEditor_cb_stagger_start(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (aieditor->mode_selection_36930 != NULL)
+        ((AI_EDITOR_CREATURE_SAVE_PC *)aieditor->mode_selection_36930)->stagger_start = ((edui_slider_s *)item)->value;
+}
