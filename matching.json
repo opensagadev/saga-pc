@@ -14,10 +14,10 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "8bca7b8cf4d150f1fbfb751ad6be19f2dace7ee7884c90c139c39e208293f388",
+    "config/library-objects.json": "edd25c4be4b2a32005b42199057ace17df5c8112bed3382fca50c39fb496a93a",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "e20a2a2456a167c737427398bd73354f562b476f362ab9c30a9a620f1020d036",
+    "config/symbols.csv": "a0f04e7ebfc4e2b494b5c595ac60d5cabe2b481fd6b69850eec08a48cdbaec38",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -469,7 +469,7 @@
     "src/nu2api/nuspecial.c": "d8ff92b8970218a9dd1c10d0f416ea3fe7e178e42f9baaf415bb20ec0d4e6b5b",
     "src/nu2api/nuspline.c": "4fca834d595d001f94487843973d0ec517f0009b800958c71cd4a03a82f76933",
     "src/nu2api/nustateanim.c": "075aa9b9759dc0563d76c7a6c1a3bdcddc10ea95b2e48b630a6cd1b91e08ac5f",
-    "src/nu2api/nustring.c": "cf64aa0747f768c05ed4e74a78bfc8bcbcce531378e7bcd35b6fa44ec79dd159",
+    "src/nu2api/nustring.c": "8d0531676b917efcfbc658a64c525291a5641b4e0de7247424d2fa7995bef8c9",
     "src/nu2api/nuterrain.c": "418cbbc686c1ef35bbc010ddfa9530a8135394a996084fa48606875b3a8ed2a5",
     "src/nu2api/nutex.c": "825414218218faac6a8707345c8b2717046735b7406dcaf4e4a48ce01a9afd66",
     "src/nu2api/nutexanim.c": "6d3ba25be34778a710eff4ba9a267c90602084efcae1aef3d79d3c40edcd868b",
@@ -924,7 +924,7 @@
     "build/obj/nu2api/nuspline.obj": "18872289444462f23624f7eedf34524c6da149f1143eb94344a13b9e3a983989",
     "build/obj/nu2api/nustateanim.obj": "8bc098cef7de32dddbb91efb78a468152edf856460be8886e69ed1e68ac9797c",
     "build/obj/nu2api/nustream.obj": "d5959ef6d8beb208194ed7f93fd189bdb50e79a04e355d38c78993770fea0bc1",
-    "build/obj/nu2api/nustring.obj": "d576e9e2dbc78927aee0d4337c4c96b5ae588f454ea595672c96c010386e680a",
+    "build/obj/nu2api/nustring.obj": "29fef7dae761c64f10593ff3e35d6f7f5689d54034bc4f9322a33d95bea08a99",
     "build/obj/nu2api/nuterrain.obj": "ba8b9a2820e4a9a6114ccc06f2a9c9070d3c23de21087b58135231b2c0cb89eb",
     "build/obj/nu2api/nutex.obj": "e9b86d84607a7805c48c946e81c8a0af5e4123b0cf2250cd690d819ca906bf8a",
     "build/obj/nu2api/nutex_pc.obj": "2d35a3f928022d0cbd2140fd62a02245322af536a52ff8cb066bbf1513b0a443",
@@ -65921,6 +65921,30 @@
       ],
       "status": "different",
       "objdiff_percent": 67.46154
+    },
+    {
+      "name": "NuStrICmpWC",
+      "symbol": "_NuStrICmpWC",
+      "address": "0x004f8940",
+      "units": [
+        "src/nu2api/nustring.c"
+      ],
+      "target_size": 292,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nustring.c",
+          "base_size": 294,
+          "exact_match": false,
+          "target_sha256": "b9ef3f8d4f193c0caf842d523d5bfe24aad4e0e662b5b86d45680963d1f55921",
+          "base_sha256": "4364ec6a8e453b08e041d961d1c5bfe353e17785111f499956294590d10e0547",
+          "relocation_count": 2,
+          "comparison_unit": "004f8940-4f5a8df90802",
+          "objdiff_percent": 99.579834
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 99.579834
     },
     {
       "name": "NuStrIStr",
@@ -211666,11 +211690,25 @@
       "name": "atexit",
       "symbol": "_atexit",
       "address": "0x006e7219",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00384:onexit.obj"
+      ],
+      "target_size": 18,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00384:onexit.obj",
+          "base_size": 18,
+          "exact_match": true,
+          "target_sha256": "09942fe4905f48be972c0e6824f517bcc0cde802100baff5d8a61369ddad30b6",
+          "base_sha256": "09942fe4905f48be972c0e6824f517bcc0cde802100baff5d8a61369ddad30b6",
+          "relocation_count": 1,
+          "comparison_unit": "006e7219-f6bb446355e1",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "V6_HeapAlloc",
@@ -212240,21 +212278,49 @@
       "name": "srand",
       "symbol": "_srand",
       "address": "0x006e8e11",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00394:rand.obj"
+      ],
       "target_size": 13,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00394:rand.obj",
+          "base_size": 13,
+          "exact_match": true,
+          "target_sha256": "17f044135786a34abc835de8bb07cfe06d643508f64b428393f9a5e8a89dda4e",
+          "base_sha256": "17f044135786a34abc835de8bb07cfe06d643508f64b428393f9a5e8a89dda4e",
+          "relocation_count": 1,
+          "comparison_unit": "006e8e11-6f3bf3cf04ea",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "rand",
       "symbol": "_rand",
       "address": "0x006e8e1e",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00394:rand.obj"
+      ],
       "target_size": 34,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00394:rand.obj",
+          "base_size": 34,
+          "exact_match": true,
+          "target_sha256": "3e60ecb149c14aef6c5ff4536eba7021f862f8153560ce85ae695510a7a01af1",
+          "base_sha256": "3e60ecb149c14aef6c5ff4536eba7021f862f8153560ce85ae695510a7a01af1",
+          "relocation_count": 1,
+          "comparison_unit": "006e8e1e-4ca91b173154",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__CIsin",
@@ -212498,11 +212564,25 @@
       "name": "__flushall",
       "symbol": "__flushall",
       "address": "0x006e9b28",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00502:fflush.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00502:fflush.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "929fde43e1c72b5c9b191c747640c4d088346a200bf8d953ccc70e5789952375",
+          "base_sha256": "929fde43e1c72b5c9b191c747640c4d088346a200bf8d953ccc70e5789952375",
+          "relocation_count": 1,
+          "comparison_unit": "006e9b28-2db9490d03ee",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "memcpy_s",
@@ -212684,11 +212764,25 @@
       "name": "__invalid_parameter_noinfo",
       "symbol": "__invalid_parameter_noinfo",
       "address": "0x006e9fe6",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00372:invarg.obj"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00372:invarg.obj",
+          "base_size": 16,
+          "exact_match": true,
+          "target_sha256": "cd349dae43dbf63016fe6ea9339dab15c59041e3224e48cf8a53004224b45e77",
+          "base_sha256": "cd349dae43dbf63016fe6ea9339dab15c59041e3224e48cf8a53004224b45e77",
+          "relocation_count": 1,
+          "comparison_unit": "006e9fe6-a0812d02501a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??0bad_alloc@std@@QAE@XZ",
@@ -212858,11 +212952,25 @@
       "name": "___CxxFrameHandler3",
       "symbol": "___CxxFrameHandler3",
       "address": "0x006ea199",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00102:trnsctrl.obj"
+      ],
+      "target_size": 54,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00102:trnsctrl.obj",
+          "base_size": 54,
+          "exact_match": true,
+          "target_sha256": "fbd453cdae9374017344d885819e188405d90c1fb3310a4e79969a717be739d2",
+          "base_sha256": "fbd453cdae9374017344d885819e188405d90c1fb3310a4e79969a717be739d2",
+          "relocation_count": 1,
+          "comparison_unit": "006ea199-f2b6b4dd378a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "___CxxLongjmpUnwind@4",
@@ -213762,21 +213870,49 @@
       "name": "__lockexit",
       "symbol": "__lockexit",
       "address": "0x006ebdf8",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00449:crt0dat.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00449:crt0dat.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "e3a017aa9dd64a7667a429058f6a066228708087439c4bf6d21afaacee43bd4c",
+          "base_sha256": "e3a017aa9dd64a7667a429058f6a066228708087439c4bf6d21afaacee43bd4c",
+          "relocation_count": 1,
+          "comparison_unit": "006ebdf8-e03dc93cb695",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__unlockexit",
       "symbol": "__unlockexit",
       "address": "0x006ebe01",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00449:crt0dat.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00449:crt0dat.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "e2d95d5088ab07f7fc123de36f8f733a85796d43fa46ef6c912baca0398cf348",
+          "base_sha256": "e2d95d5088ab07f7fc123de36f8f733a85796d43fa46ef6c912baca0398cf348",
+          "relocation_count": 1,
+          "comparison_unit": "006ebe01-bf32b87a99c2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "libcmt#00449:__initterm",
@@ -214800,11 +214936,25 @@
       "name": "__fassign",
       "symbol": "__fassign",
       "address": "0x006ee05c",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 23,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 23,
+          "exact_match": true,
+          "target_sha256": "a9d392e1548c83421668d273a580b7e7de05de11267b9c65ae61d461cfeb3fde",
+          "base_sha256": "a9d392e1548c83421668d273a580b7e7de05de11267b9c65ae61d461cfeb3fde",
+          "relocation_count": 1,
+          "comparison_unit": "006ee05c-92f51086583e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "libcmt#00832:__shift",
@@ -214834,21 +214984,49 @@
       "name": "__forcdecpt",
       "symbol": "__forcdecpt",
       "address": "0x006ee090",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "365e9c6d4327f1c3bf457112fe1bf3cdbb45fe17ad93ebe14a5d360285b84c4d",
+          "base_sha256": "365e9c6d4327f1c3bf457112fe1bf3cdbb45fe17ad93ebe14a5d360285b84c4d",
+          "relocation_count": 1,
+          "comparison_unit": "006ee090-1dc1265b3b8a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__cropzeros",
       "symbol": "__cropzeros",
       "address": "0x006ee09e",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "993d65210cead48cda9eafc29b5e6d99c4f2e4ddceae46738b021970770f0246",
+          "base_sha256": "993d65210cead48cda9eafc29b5e6d99c4f2e4ddceae46738b021970770f0246",
+          "relocation_count": 1,
+          "comparison_unit": "006ee09e-f3a3f08a44df",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "libcmt#00832:__cftoe2_l",
@@ -214902,11 +215080,25 @@
       "name": "__cftoe",
       "symbol": "__cftoe",
       "address": "0x006ee2e7",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 30,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 30,
+          "exact_match": true,
+          "target_sha256": "fffdcf66e48c05862b1027019c8b21882797499ab66fbc5efb5d41dea32aa610",
+          "base_sha256": "fffdcf66e48c05862b1027019c8b21882797499ab66fbc5efb5d41dea32aa610",
+          "relocation_count": 1,
+          "comparison_unit": "006ee2e7-fb718ec70022",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__cftoa_l",
@@ -215032,11 +215224,25 @@
       "name": "__cfltcvt",
       "symbol": "__cfltcvt",
       "address": "0x006ee9f9",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 33,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 33,
+          "exact_match": true,
+          "target_sha256": "ea2863e5ce1e00b501ae2fd6cb02740c69368c363605c3454a34a3a91e60df68",
+          "base_sha256": "ea2863e5ce1e00b501ae2fd6cb02740c69368c363605c3454a34a3a91e60df68",
+          "relocation_count": 1,
+          "comparison_unit": "006ee9f9-3eb2984fd5d8",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__initp_misc_cfltcvt_tab",
@@ -223642,11 +223848,25 @@
       "name": "??HDName@@QBE?AV0@W4DNameStatus@@@Z",
       "symbol": "??HDName@@QBE?AV0@W4DNameStatus@@@Z",
       "address": "0x00703ba1",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 46,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 46,
+          "exact_match": true,
+          "target_sha256": "d615bb0e1575013546dcfa44bd48d31b4224a828cf10e12c0d78d98d497dd103",
+          "base_sha256": "d615bb0e1575013546dcfa44bd48d31b4224a828cf10e12c0d78d98d497dd103",
+          "relocation_count": 4,
+          "comparison_unit": "00703ba1-1f40bddfc938",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??YDName@@QAEAAV0@ABV0@@Z",
@@ -223916,51 +224136,121 @@
       "name": "??H@YA?AVDName@@DABV0@@Z",
       "symbol": "??H@YA?AVDName@@DABV0@@Z",
       "address": "0x00704063",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 34,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 34,
+          "exact_match": true,
+          "target_sha256": "e58e50ccc403fb613d269c0387da49ab8c1ae0f8b05509ce150c121667b28c0f",
+          "base_sha256": "e58e50ccc403fb613d269c0387da49ab8c1ae0f8b05509ce150c121667b28c0f",
+          "relocation_count": 2,
+          "comparison_unit": "00704063-405a29d540b4",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??H@YA?AVDName@@W4DNameStatus@@ABV0@@Z",
       "symbol": "??H@YA?AVDName@@W4DNameStatus@@ABV0@@Z",
       "address": "0x00704085",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 34,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 34,
+          "exact_match": true,
+          "target_sha256": "55f5bdbddd453990fe8d74f6ab90d02b4d63a3403475f765f818eb8e6b3fe351",
+          "base_sha256": "55f5bdbddd453990fe8d74f6ab90d02b4d63a3403475f765f818eb8e6b3fe351",
+          "relocation_count": 2,
+          "comparison_unit": "00704085-63bd4f026cb5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??H@YA?AVDName@@PBDABV0@@Z",
       "symbol": "??H@YA?AVDName@@PBDABV0@@Z",
       "address": "0x007040a7",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 34,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 34,
+          "exact_match": true,
+          "target_sha256": "e1ea97e65f5caa0e84e9844c87437edab700d916fc528a1a17fba2425e7c55c2",
+          "base_sha256": "e1ea97e65f5caa0e84e9844c87437edab700d916fc528a1a17fba2425e7c55c2",
+          "relocation_count": 2,
+          "comparison_unit": "007040a7-f12007c97208",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??HDName@@QBE?AV0@D@Z",
       "symbol": "??HDName@@QBE?AV0@D@Z",
       "address": "0x007040c9",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 46,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 46,
+          "exact_match": true,
+          "target_sha256": "51f6da5f42447fd8a64c88208958f737f2bfa93aa0ea132c6bcce787905209fc",
+          "base_sha256": "51f6da5f42447fd8a64c88208958f737f2bfa93aa0ea132c6bcce787905209fc",
+          "relocation_count": 4,
+          "comparison_unit": "007040c9-eb5749952a05",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??HDName@@QBE?AV0@PBD@Z",
       "symbol": "??HDName@@QBE?AV0@PBD@Z",
       "address": "0x007040f7",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 46,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 46,
+          "exact_match": true,
+          "target_sha256": "16c73a6302b9b2d0a1588ea2b5d1d783eb01a62b3045f31158d7b0b133cd746b",
+          "base_sha256": "16c73a6302b9b2d0a1588ea2b5d1d783eb01a62b3045f31158d7b0b133cd746b",
+          "relocation_count": 4,
+          "comparison_unit": "007040f7-1c183cd8e4ee",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?getDimension@UnDecorator@@CA?AVDName@@_N@Z",
@@ -224898,11 +225188,25 @@
       "name": "___crtGetLocaleInfoW",
       "symbol": "___crtGetLocaleInfoW",
       "address": "0x00707d8f",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00410:w_loc.obj"
+      ],
+      "target_size": 59,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00410:w_loc.obj",
+          "base_size": 59,
+          "exact_match": true,
+          "target_sha256": "9906e524d9cdd3b546ce6185b7e79147f39aac4e9887093c7cce2c1060eb04bd",
+          "base_sha256": "9906e524d9cdd3b546ce6185b7e79147f39aac4e9887093c7cce2c1060eb04bd",
+          "relocation_count": 2,
+          "comparison_unit": "00707d8f-f84c1a9909f5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "libcmt#00334:?__crtGetLocaleInfoA_stat@@YAHPAUlocaleinfo_struct@@KKPADHH@Z",
@@ -224932,11 +225236,25 @@
       "name": "___crtGetLocaleInfoA",
       "symbol": "___crtGetLocaleInfoA",
       "address": "0x00707f07",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00334:a_loc.obj"
+      ],
+      "target_size": 59,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00334:a_loc.obj",
+          "base_size": 59,
+          "exact_match": true,
+          "target_sha256": "b015b20e50be8c6f891288a6ac353baadbad63f9b339b546365cf8bd60fbea83",
+          "base_sha256": "b015b20e50be8c6f891288a6ac353baadbad63f9b339b546365cf8bd60fbea83",
+          "relocation_count": 2,
+          "comparison_unit": "00707f07-724f7d35c73c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__NLG_Notify1",
@@ -227282,11 +227600,25 @@
       "name": "__mbsnbicoll",
       "symbol": "__mbsnbicoll",
       "address": "0x00714ded",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00283:mbsnbico.obj"
+      ],
+      "target_size": 23,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00283:mbsnbico.obj",
+          "base_size": 23,
+          "exact_match": true,
+          "target_sha256": "d54e89b6d7822e2d9636027a3763bf60d28ff8139ef99e8c4fcf8077de297987",
+          "base_sha256": "d54e89b6d7822e2d9636027a3763bf60d28ff8139ef99e8c4fcf8077de297987",
+          "relocation_count": 1,
+          "comparison_unit": "00714ded-580e9ee39f37",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "___wtomb_environ",
@@ -543808,17 +544140,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2582356,
-    "matched_code_bytes": 764555,
-    "matching_percent": 22.025376478647726,
-    "fuzzy_coverage_percent": 62.42110838872451,
-    "mapped_functions": 9827,
-    "matched_functions": 5947,
-    "objdiff_fuzzy_percent": 85.74241,
-    "objdiff_total_code": 2530057,
+    "mapped_code_bytes": 2583258,
+    "matched_code_bytes": 765212,
+    "matching_percent": 22.044303399989513,
+    "fuzzy_coverage_percent": 62.44841193089007,
+    "mapped_functions": 9828,
+    "matched_functions": 5969,
+    "objdiff_fuzzy_percent": 85.74772,
+    "objdiff_total_code": 2531006,
     "image_bytes": 40067072,
-    "mapped_bytes": 4454906,
-    "mapping_percent": 11.118621295811185,
+    "mapped_bytes": 4455808,
+    "mapping_percent": 11.12087252095686,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -543826,7 +544158,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2583550
+        "mapped_bytes": 2584452
       },
       {
         "name": ".rdata",
@@ -543851,17 +544183,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18857,
-    "mapping_unknown_size_symbols": 7467,
-    "mapping_code_bytes": 2583550,
+    "mapping_known_size_symbols": 18878,
+    "mapping_unknown_size_symbols": 7447,
+    "mapping_code_bytes": 2584452,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.42716534639146,
+    "mapping_code_percent": 74.45315025209968,
     "mapping_data_bytes": 1871356,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195473962245335,
-    "mapping_code_data_bytes": 4454906,
+    "mapping_code_data_bytes": 4455808,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.281038450743187,
+    "mapping_code_data_percent": 11.283322561043734,
     "mapping_file_backed_data_bytes": 382690,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.94825270206039,
@@ -543872,17 +544204,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2582356,
-    "exact_reconstruction_bytes": 764555,
-    "mapped_not_exact_bytes": 1817801,
+    "mapped_reconstruction_bytes": 2583258,
+    "exact_reconstruction_bytes": 765212,
+    "mapped_not_exact_bytes": 1818046,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 887696,
+    "unclassified_text_bytes": 886794,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 22.025376478647726,
+    "strict_original_text_exact_percent": 22.044303399989513,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.032955125744515,
-    "mapped_scope_denominator_bytes": 2582356,
-    "mapped_scope_exact_percent": 29.606878369984617,
+    "reconstruction_scope_exact_percent": 22.05188855959507,
+    "mapped_scope_denominator_bytes": 2583258,
+    "mapped_scope_exact_percent": 29.621973492388292,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -545188,7 +545520,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "ace87791e8a181d80474d7e384ca77d97fac166f11071660bf918e86430fb457",
+      "geometry_object_sha256": "77e37a524c4b1e720f1451d53c6e1b6d2fc2568aed086b652cf0163ba47b85f9",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

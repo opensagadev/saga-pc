@@ -381,7 +381,13 @@
     "___unDNameEx",
     "?getPrimaryDataType@UnDecorator@@CA?AVDName@@ABV2@@Z",
     "?getDataType@UnDecorator@@CA?AVDName@@PAV2@@Z",
-    "?getExternalDataType@UnDecorator@@CA?AVDName@@ABV2@@Z"
+    "?getExternalDataType@UnDecorator@@CA?AVDName@@ABV2@@Z",
+    "??HDName@@QBE?AV0@W4DNameStatus@@@Z",
+    "??H@YA?AVDName@@DABV0@@Z",
+    "??H@YA?AVDName@@W4DNameStatus@@ABV0@@Z",
+    "??H@YA?AVDName@@PBDABV0@@Z",
+    "??HDName@@QBE?AV0@D@Z",
+    "??HDName@@QBE?AV0@PBD@Z"
    ]
   },
   {
@@ -434,7 +440,8 @@
     "?_CallCatchBlock2@@YAPAXPAUEHRegistrationNode@@PBU_s_FuncInfo@@PAXHK@Z",
     "?_CallMemberFunction0@@YGXPAX0@Z",
     "?_CallMemberFunction1@@YGXPAX00@Z",
-    "?_CallMemberFunction2@@YGXPAX00H@Z"
+    "?_CallMemberFunction2@@YGXPAX00H@Z",
+    "___CxxFrameHandler3"
    ]
   },
   {
@@ -701,7 +708,8 @@
    "index": 283,
    "member": "build\\intel\\mt_obj\\cpp_obj\\mbsnbico.obj",
    "symbols": [
-    "__mbsnbicoll_l"
+    "__mbsnbicoll_l",
+    "__mbsnbicoll"
    ]
   },
   {
@@ -734,7 +742,8 @@
    "index": 334,
    "member": "build\\intel\\mt_obj\\cpp_obj\\a_loc.obj",
    "symbols": [
-    "libcmt#00334:?__crtGetLocaleInfoA_stat@@YAHPAUlocaleinfo_struct@@KKPADHH@Z"
+    "libcmt#00334:?__crtGetLocaleInfoA_stat@@YAHPAUlocaleinfo_struct@@KKPADHH@Z",
+    "___crtGetLocaleInfoA"
    ]
   },
   {
@@ -867,7 +876,8 @@
    "member": "build\\intel\\mt_obj\\cpp_obj\\invarg.obj",
    "symbols": [
     "__invoke_watson",
-    "__invalid_parameter"
+    "__invalid_parameter",
+    "__invalid_parameter_noinfo"
    ]
   },
   {
@@ -884,7 +894,8 @@
    "member": "build\\intel\\mt_obj\\onexit.obj",
    "symbols": [
     "___onexitinit",
-    "__onexit"
+    "__onexit",
+    "_atexit"
    ]
   },
   {
@@ -920,6 +931,15 @@
     "libcmt#00392:_shortsort",
     "_qsort",
     "libcmt#00392:_swap"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 394,
+   "member": "build\\intel\\mt_obj\\rand.obj",
+   "symbols": [
+    "_srand",
+    "_rand"
    ]
   },
   {
@@ -976,7 +996,8 @@
    "index": 410,
    "member": "build\\intel\\mt_obj\\cpp_obj\\w_loc.obj",
    "symbols": [
-    "libcmt#00410:?__crtGetLocaleInfoW_stat@@YAHPAUlocaleinfo_struct@@KKPA_WHH@Z"
+    "libcmt#00410:?__crtGetLocaleInfoW_stat@@YAHPAUlocaleinfo_struct@@KKPA_WHH@Z",
+    "___crtGetLocaleInfoW"
    ]
   },
   {
@@ -1039,7 +1060,9 @@
     "__initterm_e",
     "__cexit",
     "__c_exit",
-    "__init_pointers"
+    "__init_pointers",
+    "__lockexit",
+    "__unlockexit"
    ]
   },
   {
@@ -1167,7 +1190,8 @@
     "__flush",
     "__fflush_nolock",
     "libcmt#00502:_flsall",
-    "_fflush"
+    "_fflush",
+    "__flushall"
    ]
   },
   {
@@ -1455,7 +1479,12 @@
     "libcmt#00832:__cftof2_l",
     "__cftof_l",
     "__cftog_l",
-    "__cfltcvt_l"
+    "__cfltcvt_l",
+    "__fassign",
+    "__forcdecpt",
+    "__cropzeros",
+    "__cftoe",
+    "__cfltcvt"
    ]
   },
   {

@@ -2723,6 +2723,7 @@ address,symbol,size,ctype
 0x004f8880,_NuRDPFExpression,82,f32 __cdecl (NURDPFCTX_PC *)
 0x004f88e0,_NuRDPFVar,48,"f32 __cdecl (char *, NURDPGETVARFN)"
 0x004f8910,_NuRDPF,42,f32 __cdecl (char *)
+0x004f8940,_NuStrICmpWC,292,"i32 __cdecl (char *, char *, char *)"
 0x004f8a70,_NuStrIStr,120,"char *__cdecl (char *, char *)"
 0x004f8b10,_NuStrICmp,100,"i32 __cdecl (const char *, const char *)"
 0x004f8b80,_NuStrNICmp,150,"i32 __cdecl (const char *, const char *, i32)"
@@ -8876,7 +8877,7 @@ address,symbol,size,ctype
 0x6e70f5,libcmt#00384:__onexit_nolock,,
 0x6e71ae,___onexitinit,47,
 0x6e71dd,__onexit,60,
-0x6e7219,_atexit,,i32 __cdecl(void (__cdecl *)(void))
+0x6e7219,_atexit,18,i32 __cdecl(void (__cdecl *)(void))
 0x6e74ac,_V6_HeapAlloc,79,
 0x6e74fb,__heap_alloc,117,
 0x006e7570,_malloc,,void *__cdecl (size_t)
@@ -8927,7 +8928,7 @@ address,symbol,size,ctype
 0x6e99b9,__fflush_nolock,66,
 0x6e99fb,libcmt#00502:_flsall,218,
 0x6e9ad5,_fflush,83,
-0x6e9b28,__flushall,,
+0x6e9b28,__flushall,9,
 0x6e9b31,_memcpy_s,,static CRT method selector; no engine source credit
 0x6e9bac,_memmove_s,,"errno_t __cdecl (void *, size_t, const void *, size_t)"
 0x6e9c07,??0exception@std@@QAE@XZ,,
@@ -8940,7 +8941,7 @@ address,symbol,size,ctype
 0x6e9e84,__initp_misc_invarg,,
 0x6e9e8e,__invoke_watson,252,
 0x6e9fc2,__invalid_parameter,36,
-0x6e9fe6,__invalid_parameter_noinfo,,void __cdecl ()
+0x6e9fe6,__invalid_parameter_noinfo,16,void __cdecl ()
 0x6e9fff,??0bad_alloc@std@@QAE@XZ,25,
 0x6ea018,??2@YAPAXI@Z,,void *__cdecl operator new(size_t size)
 0x6ea082,__CxxThrowException@8,,
@@ -8949,7 +8950,7 @@ address,symbol,size,ctype
 0x6ea103,?_CallMemberFunction1@@YGXPAX00@Z,7,
 0x6ea10a,?_CallMemberFunction2@@YGXPAX00H@Z,7,
 0x6ea111,?_UnwindNestedFrames@@YGXPAUEHRegistrationNode@@PAUEHExceptionRecord@@@Z,82,
-0x6ea199,___CxxFrameHandler3,,
+0x6ea199,___CxxFrameHandler3,54,
 0x6ea205,___CxxLongjmpUnwind@4,26,
 0x6ea21f,libcmt#00102:?CatchGuardHandler@@YA?AW4_EXCEPTION_DISPOSITION@@PAUEHExceptionRecord@@PAUCatchGuardRN@@PAX2@Z,48,
 0x6ea24f,?_CallSETranslator@@YAHPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAX2PBU_s_FuncInfo@@H1@Z,213,
@@ -8996,8 +8997,8 @@ address,symbol,size,ctype
 0x6ebd99,__amsg_exit,36,
 0x6ebdbd,___crtCorExitProcess,38,
 0x6ebde3,___crtExitProcess,21,
-0x6ebdf8,__lockexit,,
-0x6ebe01,__unlockexit,,
+0x6ebdf8,__lockexit,9,
+0x6ebe01,__unlockexit,9,
 0x6ebe0a,libcmt#00449:__initterm,24,
 0x6ebe22,__initterm_e,32,
 0x6ebe42,__get_osplatform,,
@@ -9048,19 +9049,19 @@ address,symbol,size,ctype
 0x6edf86,__cropzeros_l,128,
 0x6ee006,__positive,22,
 0x6ee01c,__fassign_l,64,
-0x6ee05c,__fassign,,
+0x6ee05c,__fassign,23,
 0x6ee073,libcmt#00832:__shift,29,
-0x6ee090,__forcdecpt,,
-0x6ee09e,__cropzeros,,
+0x6ee090,__forcdecpt,14,
+0x6ee09e,__cropzeros,14,
 0x6ee0ac,libcmt#00832:__cftoe2_l,365,
 0x6ee219,__cftoe_l,206,
-0x6ee2e7,__cftoe,,
+0x6ee2e7,__cftoe,30,
 0x6ee305,__cftoa_l,881,
 0x6ee694,libcmt#00832:__cftof2_l,245,
 0x6ee789,__cftof_l,185,
 0x6ee85d,__cftog_l,248,
 0x6ee973,__cfltcvt_l,134,
-0x6ee9f9,__cfltcvt,,
+0x6ee9f9,__cfltcvt,33,
 0x6eea1a,__initp_misc_cfltcvt_tab,31,
 0x6eea39,__setdefaultprecision,41,
 0x6eea62,__ms_p5_test_fdiv,60,
@@ -9447,7 +9448,7 @@ address,symbol,size,ctype
 0x7039d2,??0DName@@QAE@AAPBDD@Z,208,
 0x703aa2,??0DName@@QAE@_K@Z,105,
 0x703b0b,??0DName@@QAE@_J@Z,,
-0x703ba1,??HDName@@QBE?AV0@W4DNameStatus@@@Z,,
+0x703ba1,??HDName@@QBE?AV0@W4DNameStatus@@@Z,46,
 0x703bcf,??YDName@@QAEAAV0@ABV0@@Z,98,
 0x703c31,??YDName@@QAEAAV0@PAV0@@Z,139,
 0x703cbc,??4DName@@QAEAAV0@D@Z,28,
@@ -9459,11 +9460,11 @@ address,symbol,size,ctype
 0x703ec8,??YDName@@QAEAAV0@PBD@Z,108,
 0x703f34,?getArgumentList@UnDecorator@@CA?AVDName@@XZ,224,
 0x704014,?getVdispMapType@UnDecorator@@CA?AVDName@@ABV2@@Z,79,
-0x704063,??H@YA?AVDName@@DABV0@@Z,,
-0x704085,??H@YA?AVDName@@W4DNameStatus@@ABV0@@Z,,
-0x7040a7,??H@YA?AVDName@@PBDABV0@@Z,,
-0x7040c9,??HDName@@QBE?AV0@D@Z,,
-0x7040f7,??HDName@@QBE?AV0@PBD@Z,,
+0x704063,??H@YA?AVDName@@DABV0@@Z,34,
+0x704085,??H@YA?AVDName@@W4DNameStatus@@ABV0@@Z,34,
+0x7040a7,??H@YA?AVDName@@PBDABV0@@Z,34,
+0x7040c9,??HDName@@QBE?AV0@D@Z,46,
+0x7040f7,??HDName@@QBE?AV0@PBD@Z,46,
 0x704125,?getDimension@UnDecorator@@CA?AVDName@@_N@Z,321,
 0x704266,?getEnumType@UnDecorator@@CA?AVDName@@XZ,212,
 0x70431a,libcmt#00093:$LN21,,
@@ -9504,9 +9505,9 @@ address,symbol,size,ctype
 0x707b3f,?getDataType@UnDecorator@@CA?AVDName@@PAV2@@Z,177,
 0x707bf0,?getExternalDataType@UnDecorator@@CA?AVDName@@ABV2@@Z,100,
 0x707c54,libcmt#00410:?__crtGetLocaleInfoW_stat@@YAHPAUlocaleinfo_struct@@KKPA_WHH@Z,315,
-0x707d8f,___crtGetLocaleInfoW,,
+0x707d8f,___crtGetLocaleInfoW,59,
 0x707dca,libcmt#00334:?__crtGetLocaleInfoA_stat@@YAHPAUlocaleinfo_struct@@KKPADHH@Z,317,
-0x707f07,___crtGetLocaleInfoA,,
+0x707f07,___crtGetLocaleInfoA,59,
 0x708d24,__NLG_Notify1,,
 0x708d4f,__putwch_nolock,194,
 0x708e11,__cputws,155,
@@ -9615,7 +9616,7 @@ address,symbol,size,ctype
 0x7143b3,___mtold12,460,
 0x71457f,libcmt#00025:?strtoxq@@YA_KPAUlocaleinfo_struct@@PBDPAPBDHH@Z,660,
 0x714d01,__mbsnbicoll_l,236,
-0x714ded,__mbsnbicoll,,
+0x714ded,__mbsnbicoll,23,
 0x714e04,___wtomb_environ,149,
 0x714ecd,libcmt#00332:?__crtCompareStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDH1HH@Z,905,
 0x715256,___crtCompareStringA,64,

@@ -1938,3 +1938,50 @@ i32 __cdecl NuStringTok(char *str, ...) {
     va_end(args);
     return value;
 }
+
+i32 __cdecl NuStrICmpWC(char *pattern, char *text, char *wildcard) {
+    i32 index;
+    char a, b;
+    i32 suffix_length, text_length, wildcard_length;
+    if (pattern == NULL)
+        return -1;
+    if (text == NULL)
+        return 1;
+    while (*pattern != '\0' && *pattern != '*') {
+        a = NuToUpper((u8)*pattern);
+        b = NuToUpper((u8)*text);
+        if (a > b)
+            return 1;
+        if (a < b)
+            return -1;
+        ++pattern;
+        ++text;
+    }
+    if (*pattern == '*') {
+        ++pattern;
+        suffix_length = NuStrLen(pattern);
+        text_length = NuStrLen(text);
+        wildcard_length = text_length - suffix_length;
+        if (wildcard_length < 0)
+            return 1;
+        if (wildcard != NULL) {
+            for (index = 0; index < wildcard_length; ++index)
+                wildcard[index] = text[index];
+            wildcard[index] = '\0';
+        }
+        text += text_length - suffix_length;
+    } else if (wildcard != NULL) {
+        *wildcard = '\0';
+    }
+    while (*pattern != '\0') {
+        a = NuToUpper((u8)*pattern);
+        b = NuToUpper((u8)*text);
+        if (a > b)
+            return 1;
+        if (a < b)
+            return -1;
+        ++pattern;
+        ++text;
+    }
+    return 0;
+}
