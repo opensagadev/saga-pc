@@ -524,6 +524,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 176,
+   "member": "build\\intel\\mt_obj\\lldiv.obj",
+   "symbols": [
+    "__alldiv"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 177,
    "member": "build\\intel\\mt_obj\\lldvrm.obj",
    "symbols": [

@@ -14,7 +14,7 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "ec01d4873c08fe3a886248547bc10e3c9191740e8da08ab37908af6547abdbae",
+    "config/library-objects.json": "5c37478050aab320259253736e311f2e9d44f1e9ea144a45d42664c8497c5b8a",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/symbols.csv": "d1fe21e3e7fff43fd4d89194644b06f092a784e1a6325ce68b0a6e8af54f1683",
@@ -211856,11 +211856,25 @@
       "name": "__alldiv",
       "symbol": "__alldiv",
       "address": "0x006e8380",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00176:lldiv.obj"
+      ],
       "target_size": 170,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00176:lldiv.obj",
+          "base_size": 170,
+          "exact_match": true,
+          "target_sha256": "8964dcf0d769cb61dd4354feac00491ae8c1b34eb9627a4c5ec2d4350243d395",
+          "base_sha256": "8964dcf0d769cb61dd4354feac00491ae8c1b34eb9627a4c5ec2d4350243d395",
+          "relocation_count": 0,
+          "comparison_unit": "006e8380-437fca7bf143",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__allmul",
@@ -543491,13 +543505,13 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2581751,
-    "matched_code_bytes": 763437,
-    "matching_percent": 21.993169023457284,
-    "fuzzy_coverage_percent": 62.384360665699404,
+    "matched_code_bytes": 763607,
+    "matching_percent": 21.998066400364596,
+    "fuzzy_coverage_percent": 62.38925804260672,
     "mapped_functions": 9826,
-    "matched_functions": 5927,
-    "objdiff_fuzzy_percent": 85.73663,
-    "objdiff_total_code": 2528739,
+    "matched_functions": 5928,
+    "objdiff_fuzzy_percent": 85.7376,
+    "objdiff_total_code": 2528909,
     "image_bytes": 40067072,
     "mapped_bytes": 4454301,
     "mapping_percent": 11.11711132772567,
@@ -543555,16 +543569,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2581751,
-    "exact_reconstruction_bytes": 763437,
-    "mapped_not_exact_bytes": 1818314,
+    "exact_reconstruction_bytes": 763607,
+    "mapped_not_exact_bytes": 1818144,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 888301,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 21.993169023457284,
+    "strict_original_text_exact_percent": 21.998066400364596,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.00073658838542,
+    "reconstruction_scope_exact_percent": 22.005635650416767,
     "mapped_scope_denominator_bytes": 2581751,
-    "mapped_scope_exact_percent": 29.570512415798426,
+    "mapped_scope_exact_percent": 29.57709709418143,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -544870,7 +544884,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "9308cd337cae8d6cb441da8bd951163ee235f6f9b8edec9d635be17f97c3538c",
+      "geometry_object_sha256": "c60168dd3fe54b2d036ea759265ff4d706753675a717712596ad84f2d8eeb8fd",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
