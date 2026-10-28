@@ -409,6 +409,58 @@ void *__cdecl NuAnimCurveSetCreate(i32 curve_count) {
     return curve_set;
 }
 
+void __cdecl NuAnimCurveDestroy(void *curve_data) {
+    NUANIM_LEGACY_CURVE_PC *curve = (NUANIM_LEGACY_CURVE_PC *)curve_data;
+    if (curve->keys != NULL)
+        NuFree(curve->keys, NuAnimSourceFileName, 0x502);
+    NuFree(curve, NuAnimSourceFileName, 0x503);
+}
+
+void __cdecl NuAnimCurveSetDestroy(void *curve_set, i32 destroy_curves) {
+    NuAnimReadCurveSet *set = (NuAnimReadCurveSet *)curve_set;
+    if (set == NULL)
+        return;
+    if (set->curves != NULL) {
+        if (destroy_curves != 0) {
+            i32 index;
+            for (index = 0; index < set->curve_count; ++index) {
+                if (set->curves[index] != NULL)
+                    NuAnimCurveDestroy(set->curves[index]);
+            }
+        }
+        NuFree(set->curves, NuAnimSourceFileName, 0x518);
+    }
+    if (set->constants != NULL)
+        NuFree(set->constants, NuAnimSourceFileName, 0x51c);
+    NuFree(set, NuAnimSourceFileName, 0x51e);
+}
+
+void __cdecl NuAnimDataChunkDestroy(NuAnimReadChunk *chunk) {
+    i32 destroy_curves = chunk->shared_curves == NULL;
+    i32 index;
+    for (index = 0; index < chunk->curve_set_count; ++index) {
+        if (chunk->curve_sets[index] != NULL)
+            NuAnimCurveSetDestroy(chunk->curve_sets[index], destroy_curves);
+    }
+    if (chunk->curve_data != NULL)
+        NuFree(chunk->curve_data, NuAnimSourceFileName, 0x4dc);
+    if (chunk->shared_curves != NULL)
+        NuFree(chunk->shared_curves, NuAnimSourceFileName, 0x4de);
+    if (chunk->curve_sets != NULL)
+        NuFree(chunk->curve_sets, NuAnimSourceFileName, 0x4e1);
+    NuFree(chunk, NuAnimSourceFileName, 0x4e3);
+}
+
+void __cdecl NuAnimDataDestroy(void *animation) {
+    NuAnimReadData *data = (NuAnimReadData *)animation;
+    i32 index;
+    for (index = 0; index < data->chunk_count; ++index)
+        NuAnimDataChunkDestroy(data->chunks[index]);
+    if (data->name != NULL)
+        NuFree(data->name, NuAnimSourceFileName, 0x49e);
+    NuFree(animation, NuAnimSourceFileName, 0x4a0);
+}
+
 void *__cdecl NuAnimDataRead(NUFILE file) {
     char *name = NULL;
     i32 name_size;
@@ -1993,6 +2045,54 @@ void __cdecl ANI_FixUpAddrs(ANI3_HEADER_PC *anim, i32 delta, i32 flags) {
         delta += anim->next_block;
         anim = (ANI3_HEADER_PC *)((char *)anim + anim->next_block);
     }
+}
+
+STATIC_ASSERT(offsetof(NuAnimReadData, name) == 4);
+STATIC_ASSERT(offsetof(NuAnimReadData, chunk_count) == 8);
+STATIC_ASSERT(offsetof(NuAnimReadChunk, curve_set_count) == 0);
+
+void *__cdecl NuAnimDataFixPtrs(void *animation, i32 delta) {
+    NuAnimReadData *data;
+    i32 chunk_index;
+    if (NuAnimDataBitCountInitialized == 0)
+        buildBitCountTable();
+    data = (NuAnimReadData *)NUANIM_REBASE_POINTER(animation, delta);
+    data->name = (char *)NUANIM_REBASE_POINTER(data->name, delta);
+    data->chunks = (NuAnimReadChunk **)NUANIM_REBASE_POINTER(data->chunks, delta);
+    if (data->chunks != NULL) {
+        for (chunk_index = 0; chunk_index < data->chunk_count; ++chunk_index) {
+            NuAnimReadChunk *chunk;
+            data->chunks[chunk_index] = (NuAnimReadChunk *)NUANIM_REBASE_POINTER(data->chunks[chunk_index], delta);
+            chunk = data->chunks[chunk_index];
+            if (chunk != NULL) {
+                chunk->curve_sets = (NuAnimReadCurveSet **)NUANIM_REBASE_POINTER(chunk->curve_sets, delta);
+                if (chunk->curve_sets != NULL) {
+                    i32 set_index;
+                    for (set_index = 0; set_index < chunk->curve_set_count; ++set_index) {
+                        NuAnimReadCurveSet *set;
+                        chunk->curve_sets[set_index] =
+                            (NuAnimReadCurveSet *)NUANIM_REBASE_POINTER(chunk->curve_sets[set_index], delta);
+                        set = chunk->curve_sets[set_index];
+                        if (set != NULL) {
+                            set->constants = (f32 *)NUANIM_REBASE_POINTER(set->constants, delta);
+                            set->curves = (void **)NUANIM_REBASE_POINTER(set->curves, delta);
+                            if (set->curves != NULL) {
+                                i32 curve_index;
+                                for (curve_index = 0; curve_index < set->curve_count; ++curve_index) {
+                                    NUANIM_LEGACY_CURVE_PC *curve;
+                                    set->curves[curve_index] = NUANIM_REBASE_POINTER(set->curves[curve_index], delta);
+                                    curve = (NUANIM_LEGACY_CURVE_PC *)set->curves[curve_index];
+                                    if (curve != NULL)
+                                        curve->keys = (NUANIM_LEGACY_KEY_PC *)NUANIM_REBASE_POINTER(curve->keys, delta);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return data;
 }
 
 void *__cdecl NuAnimData2FixPtrs(void *data, i32 delta, i32 external_delta, i32 flags) {

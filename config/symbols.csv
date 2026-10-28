@@ -5821,6 +5821,8 @@ address,symbol,size,ctype
 0x5c9b60,_NuAnimDataCalcTime,222,"void __cdecl (NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *)"
 0x005c9c40,_NuAnimData2CalcTime,303,
 0x005c9e70,_NuAnimCurveSetCreate,120,void *__cdecl (i32)
+0x005c9ef0,_NuAnimCurveDestroy,52,void __cdecl (void *)
+0x005c9f30,_NuAnimCurveSetDestroy,176,"void __cdecl (void *, i32)"
 0x005c9ff0,_SetProceduralAnimationFn,10,void __cdecl(NUJOINTPROCANIMFN_PC)
 0x005ca000,_NuAnimBuffProceduralAnimation,481,"void __cdecl(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *)"
 0x5ca2a0,_NuAnimBuffCreateScratch,73,
@@ -6203,8 +6205,10 @@ address,symbol,size,ctype
 0x5e8c60,_PostShadowBuildBasisPc,318,cdecl
 0x5e8fe0,?resetAll@NuDeferredFilterGen@@UAEXXZ,50,native exactVT binding; unimplemented extent unclaimed
 0x005e9020,_NuAnimInit,89,"void __cdecl(i32,VARIPTR *,VARIPTR)"
+0x005e9080,_NuAnimDataFixPtrs,362,"void *__cdecl (void *, i32)"
 0x005e91f0,_NuAnimData2FixPtrs,269,"void *__cdecl (void *, i32, i32, i32)"
 0x005e9300,_NuAnimDataRead,688,void* __cdecl (NUFILE)
+0x005e95b0,_NuAnimDataChunkDestroy,153,void __cdecl (NuAnimReadChunk *)
 0x005e9650,_NuSpecialGetAnimEndFrame,118,f32 __cdecl (NUSPECIALHANDLE *special)
 0x005e96d0,_NuAnimBuffEvaluate_3_QuatB,1720,"void __cdecl (NUMTX *, ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *)"
 0x005e9d90,_NuAnimBuffEvaluate_3,1325,"void __cdecl (ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, NUMTX *, ANI3_HEADER_PC *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *)"
@@ -6291,6 +6295,7 @@ address,symbol,size,ctype
 0x5f31c0,_NuAnimData2Relocate,176,
 0x005f3270,_NuAnimData2LoadBuffEx,154,"void *__cdecl (char *, VARIPTR *, VARIPTR *, void **)"
 0x005f3310,_NuAnimData2LoadBuff,29,"void *__cdecl (char *, VARIPTR *, VARIPTR *)"
+0x005f3330,_NuAnimDataDestroy,87,void __cdecl (void *)
 0x005f3390,_NuAnimData2CalcMatrix,32,"void __cdecl (ANI3_HEADER_PC *, i32, f32, NUMTX *)"
 0x5f33b0,_NuSpecialDrawAt,43,"i32 __cdecl(NUSPECIALHANDLE *,NUMTX *)"
 0x5f3440,_NuSpecialDrawWith,119,
