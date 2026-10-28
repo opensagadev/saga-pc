@@ -230,7 +230,8 @@
    "symbols": [
     "??8type_info@@QBE_NABV0@@Z",
     "??9type_info@@QBE_NABV0@@Z",
-    "?before@type_info@@QBEHABV1@@Z"
+    "?before@type_info@@QBEHABV1@@Z",
+    "?raw_name@type_info@@QBEPBDXZ"
    ]
   },
   {
@@ -385,6 +386,16 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 96,
+   "member": "..\\build\\intel\\mt_obj\\validate.obj",
+   "symbols": [
+    "?_ValidateRead@@YAHPBXI@Z",
+    "?_ValidateWrite@@YAHPAXI@Z",
+    "?_ValidateExecute@@YAHP6GHXZ@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 98,
    "member": "..\\build\\intel\\mt_obj\\ehprolg3.obj",
    "symbols": [
@@ -420,7 +431,10 @@
     "__CreateFrameInfo",
     "__IsExceptionObjectToBeDestroyed",
     "__FindAndUnlinkFrame",
-    "?_CallCatchBlock2@@YAPAXPAUEHRegistrationNode@@PBU_s_FuncInfo@@PAXHK@Z"
+    "?_CallCatchBlock2@@YAPAXPAUEHRegistrationNode@@PBU_s_FuncInfo@@PAXHK@Z",
+    "?_CallMemberFunction0@@YGXPAX0@Z",
+    "?_CallMemberFunction1@@YGXPAX00@Z",
+    "?_CallMemberFunction2@@YGXPAX00H@Z"
    ]
   },
   {
@@ -536,6 +550,30 @@
    "member": "build\\intel\\mt_obj\\lldvrm.obj",
    "symbols": [
     "__alldvrm"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 178,
+   "member": "build\\intel\\mt_obj\\llmul.obj",
+   "symbols": [
+    "__allmul"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 180,
+   "member": "build\\intel\\mt_obj\\llshl.obj",
+   "symbols": [
+    "__allshl"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 181,
+   "member": "build\\intel\\mt_obj\\llshr.obj",
+   "symbols": [
+    "__allshr"
    ]
   },
   {
@@ -969,7 +1007,8 @@
    "member": "build\\intel\\mt_obj\\winxfltr.obj",
    "symbols": [
     "libcmt#00417:_xcptlookup",
-    "___CppXcptFilter"
+    "___CppXcptFilter",
+    "__initp_misc_winxfltr"
    ]
   },
   {
@@ -978,6 +1017,14 @@
    "member": "build\\intel\\mt_obj\\wtombenv.obj",
    "symbols": [
     "___wtomb_environ"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 446,
+   "member": "build\\intel\\mt_obj\\chkstk.obj",
+   "symbols": [
+    "__chkstk"
    ]
   },
   {
@@ -1225,6 +1272,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 592,
+   "member": "build\\intel\\mt_obj\\memchr.obj",
+   "symbols": [
+    "_memchr"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 593,
    "member": "build\\intel\\mt_obj\\memcmp.obj",
    "symbols": [
@@ -1275,6 +1330,14 @@
    "member": "build\\intel\\mt_obj\\strlen.obj",
    "symbols": [
     "_strlen"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 608,
+   "member": "build\\intel\\mt_obj\\strncpy.obj",
+   "symbols": [
+    "_strncpy"
    ]
   },
   {
@@ -1633,7 +1696,17 @@
     "__scalb",
     "__logb",
     "__nextafter",
-    "__fpclass"
+    "__fpclass",
+    "__finite",
+    "__isnan"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 931,
+   "member": "..\\build\\intel\\mt_obj\\matherr.obj",
+   "symbols": [
+    "__matherr"
    ]
   },
   {

@@ -897,3 +897,27 @@ i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
     EdFileClose();
     return 1;
 }
+
+STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
+STATIC_ASSERT(offsetof(WORLDINFO, special_sfx_count) == 0x46cc);
+STATIC_ASSERT(offsetof(WORLDINFO, special_sfx) == 0x46d0);
+STATIC_ASSERT(sizeof(SPECIAL_RESOURCE_ENTRY_PC) == 20);
+STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, special) == 4);
+STATIC_ASSERT(offsetof(SPECIAL_RESOURCE_ENTRY_PC, events) == 16);
+
+i32 __cdecl SpecialSfxAdd(i32 special_index) {
+    NUSPECIALHANDLE special;
+    SPECIAL_RESOURCE_ENTRY_PC *entry;
+    if (WORLD->special_sfx_count < 192) {
+        NuGScnGetSpecial(&special, WORLD->current_gscn, special_index);
+        if (NuSpecialExistsFn(&special) != 0) {
+            entry = &WORLD->special_sfx[WORLD->special_sfx_count];
+            entry->flags &= 0xf0;
+            entry->special = special;
+            entry->events = NULL;
+            entry->event_count = 0;
+            return ++WORLD->special_sfx_count;
+        }
+    }
+    return -1;
+}

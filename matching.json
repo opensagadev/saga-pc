@@ -14,10 +14,10 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "5c37478050aab320259253736e311f2e9d44f1e9ea144a45d42664c8497c5b8a",
+    "config/library-objects.json": "8bca7b8cf4d150f1fbfb751ad6be19f2dace7ee7884c90c139c39e208293f388",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "d1fe21e3e7fff43fd4d89194644b06f092a784e1a6325ce68b0a6e8af54f1683",
+    "config/symbols.csv": "e20a2a2456a167c737427398bd73354f562b476f362ab9c30a9a620f1020d036",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -141,7 +141,7 @@
     "src/legoapi/teleport_motion.cpp": "c0a94b9b7630426b61cafdce62cd2b771fb79bd40aa3a64d402c2092d03dacb1",
     "src/legoapi/text_tables.cpp": "e244ccb04c7647374bd04e5c7abcf1d8d0984dadf184138807342371334c2fa7",
     "src/legoapi/tightrope.cpp": "8bc5ccdd02794cbf7bcd31ba3fa92e5bbae26c9cd5fab933b75ec162023aafa6",
-    "src/legoapi/world.cpp": "dfe58457a4803b9c93642585134ab61a0cbfa71939c31462fd8e1acf917fbaab",
+    "src/legoapi/world.cpp": "4ace30de299b5543e3a3750411bf0342b7aa6dadccdb422ed7ce56fe0eda9635",
     "src/legogame/game.cpp": "8f983236f27ac927784946a880f326dc7e7ad79bee8b1b58120cce9a60f26ebd",
     "src/legogame/startup.cpp": "4d83c5c49e2972de98fad7b690010397aa7c4f99bcb13f37ca0dcc247bc4c43a",
     "src/nu2api/cpu_features.cpp": "7b57efe0a5b8f722138d143b3037dd70c02478906b792d24ba7df2f123af4de9",
@@ -373,7 +373,7 @@
     "src/legoapi/snakes.c": "f3354150280fd34ad006a63007b4b2af2c6ba63c18be04727495799453e64759",
     "src/legoapi/socksys.c": "2acf1b346e3c78033caa74ec62732f553971bdaa021d27e0c7f79d9def752630",
     "src/legoapi/specialmoves.c": "4ef2cae9b765025fd4a55ae8c586a47023aace95fa9cdc9e116ef34a306e6985",
-    "src/legoapi/specialsfx.c": "0276b59257d4eee48ac9b85fd3ef8f30af3a786eab234397c121cd3c8aedb9fc",
+    "src/legoapi/specialsfx.c": "f2191be654e47afb6524db90d8c7deb6083f4467c084d65171e7e062810f9d1e",
     "src/legoapi/speederchase.c": "74c782b98e426f6c328ab00033367488b7ae9349f0c070ec1dfd697928cbf5bb",
     "src/legoapi/speederchase_pc.c": "458115bf3e4c5f3434906880998d3e73f66ba6b7b9b92b771df72f6387061469",
     "src/legoapi/startup_dats.c": "5bda6ca6f5af36b6e66d3c6ed8b87d9b2394449b7d25a45851c44698eb36bfd8",
@@ -409,7 +409,7 @@
     "src/nu2api/keyboard_init.c": "e844ec51ecb1a694928b6b530f13daf0459a1dfab29ca08b0c036781e17c6c3d",
     "src/nu2api/keyboard_read.c": "730b48047ede726922c3f112064730d2c611dc54e98bcc57460e697980164739",
     "src/nu2api/nualloc.c": "dd9ce9bde1982e74873de8dad69b76093eb03613c7950447becf99f68be675d8",
-    "src/nu2api/nuanim.c": "79447268133fe2894e9f7f1db0ebe092caab8469ae7c2913e13a5983f0aa0235",
+    "src/nu2api/nuanim.c": "3bc13a200ff7c6c9ba42a55d17fde9b4f7cbd30daf2fa1d9ca07bcf1e3472787",
     "src/nu2api/nuanim_procedural_pc.c": "666a9406f5b6c5d21c981bcfa32d8eee69e1aee129507d98db96502e39608ac3",
     "src/nu2api/nuapi.c": "4ddba39d9709238ec4ef129205daec80ee05080028293ffcebe039941c3ac153",
     "src/nu2api/nubridge.c": "5cab39b7d6868d1adbdbeafafd693241c21abbee5e7e33918ba60b846294a43b",
@@ -445,7 +445,7 @@
     "src/nu2api/numtx.c": "36fd4328fd35e3c865751263690979fa99ad09a0e51f9c4f2249044b8e664430",
     "src/nu2api/nuocclusion.c": "58c4bdbef20522bd3fb49328b9c98d8cd7802b38d8cda7bc95fd07be44126b3d",
     "src/nu2api/nupad.c": "084bfaf7505e1a91685b864ed9f8c651c36602bcb6636368b42e26238fc80779",
-    "src/nu2api/nupad_pc.c": "6f6c5c6284af24bbeccc13e0f1cf220f47a00898cc2220813a6d6eaff166818f",
+    "src/nu2api/nupad_pc.c": "faaf4c76b93ae22c32ccdd9170df96984614080378c7faf8182ccb3651b416a9",
     "src/nu2api/nuparticle_runtime.c": "917d8e403bd4d76829dc12b5092f25499f9de97b11926080e7be368d9d83b9a5",
     "src/nu2api/nuparticle_state.c": "a58e3c095d4df5810148e201ebd1d9985d7dd055073f20a603e0bb7ea2f78629",
     "src/nu2api/nuplane.c": "bdb89355d55ecab6dfdb910adf12aee6e039693e26f7f567d6c941f90a60fd4d",
@@ -787,7 +787,7 @@
     "build/obj/legoapi/snakes.obj": "ecb8b2072d76a0936ed5ede6adb0effc158768579b3b24be12784d275746adf3",
     "build/obj/legoapi/socksys.obj": "df28fff87bafc77631c76849c5122e6c210e0827cbb606425bb1349ab4eda0db",
     "build/obj/legoapi/specialmoves.obj": "038e6885223d716930fc5454fbb9829ae3ca396a092c4010ef9e3d10e3b67b56",
-    "build/obj/legoapi/specialsfx.obj": "13cd30cc8e2001bbb4e26521cef733663554b76cc36862d74e6af7514e6073ea",
+    "build/obj/legoapi/specialsfx.obj": "79655752ef93c2b82a4762062f2956943939177259bd5c1d484875aacdb8c625",
     "build/obj/legoapi/speederchase.obj": "2cda35cb0110184330006cc566563dd226ca82ca0ab219f383bdbf59dcaffd9c",
     "build/obj/legoapi/speederchase_pc.obj": "3685fa05adacf8105cdb131e5076c751e0ed584b3fece049aaf014ab7910a3c1",
     "build/obj/legoapi/startup_dats.obj": "34e6618293e89b5dc4293d27cc70c2fa12bbcbda1ec6541f86f565baa6e0e34d",
@@ -819,7 +819,7 @@
     "build/obj/legoapi/tubes.obj": "3d8a92108cc8315e2f276887fc80d55c72d065165144a56791c4f943f3649ac8",
     "build/obj/legoapi/utilities.obj": "f967dd7b5be5a0ec67a27563cc1e0c95c05fdf7eb86565815ef0ca65c48e9ae4",
     "build/obj/legoapi/whip.obj": "4586d7d69265bff658f9aae345c9afd6aa257381f6fd569cabe455f2bd9fdb14",
-    "build/obj/legoapi/world.obj": "cb05981bdfbc807484b41a5b154b2bfcdfbbd58dcabb9d523f3e89c69bee1efa",
+    "build/obj/legoapi/world.obj": "06d5039f1a10348406857ad024af712d8ac80dcddf8b43bd925f52dbe2880130",
     "build/obj/legoapi/zipup.obj": "ab28d22016dba2c5a28b5f076947c55095f4a4401afd6ec65f4110e9aa72941f",
     "build/obj/legogame/game.obj": "42bc226e666a50dd81e5bf2117047683e499e809f62c28d9587ecf6d8d963594",
     "build/obj/legogame/startup.obj": "4a6e1bb3a4d8b29290dc37f7bc44a4b4c136f0f07aad0986794a8de654dc0188",
@@ -844,7 +844,7 @@
     "build/obj/nu2api/keyboard_init.obj": "052db948e20bb9aae70bc9a34242d958489a3622e5e81b4cca1f4b07b8ab9f89",
     "build/obj/nu2api/keyboard_read.obj": "19e721c9cef599d1a4ca62d24c6cc8f06de4e85c344235bae4d37ee3cc7fa12f",
     "build/obj/nu2api/nualloc.obj": "aaf9baec508ddc151d8b20bf5103b788af0f39beee43964c3233388097bcb9bc",
-    "build/obj/nu2api/nuanim.obj": "8bcfe2ea7c10378f59e56a5849088a168beee75b224fea40876e70059ea8b54b",
+    "build/obj/nu2api/nuanim.obj": "b33fe774c005126911716135fbc0f67c0727f63bce0b0d0a0d14fcae2d4cba82",
     "build/obj/nu2api/nuanim_procedural_pc.obj": "5a67970097dd4437fd29292e73c9d19993fd0c47fdbb236f0e5ee7c9667b8075",
     "build/obj/nu2api/nuapi.obj": "b2815dd9f5434fb28b34e216c775d97fe9b25344e56a7d8b14bb2e18a822ccce",
     "build/obj/nu2api/nubridge.obj": "d3b78eef8787d836983787392036f0ec7a1b5713cbf8b3adcbb096728d9b5810",
@@ -888,7 +888,7 @@
     "build/obj/nu2api/numtx.obj": "a69b43e38375f7d11840ddb9effd28d6816cfaccd8fd0538470384158ba3d1c1",
     "build/obj/nu2api/nuocclusion.obj": "3ddace3a508a5e260ba057fe143a1d1d486bfd40d1be5ca10812982a4afb8dcf",
     "build/obj/nu2api/nupad.obj": "6068427f0514ddf69b2a7faced1fa0854e087bc6648528503df53ed33000d7d1",
-    "build/obj/nu2api/nupad_pc.obj": "c0b8334947181a7afc582adf2062f9ba3d4f312a764ed7c4516c4b23ea5774de",
+    "build/obj/nu2api/nupad_pc.obj": "c1f4c757cdf7cc441e73e130938056966791abf20a834517f9bf6898addd2850",
     "build/obj/nu2api/nupad_text.obj": "34be51d6ceb87246007a0fd602440600997546c4494ec976ef30ee608c795444",
     "build/obj/nu2api/nuparticle_runtime.obj": "d37feddc9320f24f3ba6f3de39ae295a4a86b0c99493002c90fb7faa1f3ad5dc",
     "build/obj/nu2api/nuparticle_state.obj": "a7171ad97ff6833bb8beb2a2e18e326f956a1a6fc76d0f241eea23117c1ecc09",
@@ -35034,11 +35034,25 @@
       "name": "FindSceneStateObj",
       "symbol": "_FindSceneStateObj",
       "address": "0x0048c5a0",
-      "units": [],
+      "units": [
+        "src/legoapi/world.cpp"
+      ],
       "target_size": 136,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/legoapi/world.cpp",
+          "base_size": 159,
+          "exact_match": false,
+          "target_sha256": "381a9c868aed4a2088c2e0948706e1d0bb20f94389c02c6b0b2741ac5c310f2e",
+          "base_sha256": "754a596dd080bd82971b73644069aa50f252608e6df4144c3d924c24739d0701",
+          "relocation_count": 4,
+          "comparison_unit": "0048c5a0-dffe77a208e3",
+          "objdiff_percent": 69.8
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 69.8
     },
     {
       "name": "CalculateWorldSize",
@@ -131620,11 +131634,25 @@
       "name": "SpecialSfxAdd",
       "symbol": "_SpecialSfxAdd",
       "address": "0x005b1a70",
-      "units": [],
+      "units": [
+        "src/legoapi/specialsfx.c"
+      ],
       "target_size": 150,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/specialsfx.c",
+          "base_size": 150,
+          "exact_match": true,
+          "target_sha256": "41708521ed112b41c0a8a14e0da063c24a1347fa068665aa12dd60b79b734c6a",
+          "base_sha256": "41708521ed112b41c0a8a14e0da063c24a1347fa068665aa12dd60b79b734c6a",
+          "relocation_count": 6,
+          "comparison_unit": "005b1a70-1428bd7974e3",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "UpdateSpecialSfx",
@@ -139880,6 +139908,30 @@
       ],
       "status": "different",
       "objdiff_percent": 80.0
+    },
+    {
+      "name": "NuAnimGetAnimLOD",
+      "symbol": "_NuAnimGetAnimLOD",
+      "address": "0x005ca420",
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "target_size": 39,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuanim.c",
+          "base_size": 39,
+          "exact_match": true,
+          "target_sha256": "74c047986986a5f7ccd827d0687691a2d5d23434e6e06d7fc30d73c86abe548c",
+          "base_sha256": "74c047986986a5f7ccd827d0687691a2d5d23434e6e06d7fc30d73c86abe548c",
+          "relocation_count": 0,
+          "comparison_unit": "005ca420-fad783f73686",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimNumNodes",
@@ -208322,11 +208374,25 @@
       "name": "NuPs2ApplyDeadZone",
       "symbol": "_NuPs2ApplyDeadZone",
       "address": "0x006dec10",
-      "units": [],
+      "units": [
+        "src/nu2api/nupad_pc.c"
+      ],
       "target_size": 64,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/nu2api/nupad_pc.c",
+          "base_size": 62,
+          "exact_match": false,
+          "target_sha256": "068e11c66968b17909f7a6a3f71b6609c445cc170420d6ba07e09d8d63c69055",
+          "base_sha256": "62e14152dcfea2e48a158bee418646e7c743ac05323d8d9451f6f6d063cbfa7f",
+          "relocation_count": 0,
+          "comparison_unit": "006dec10-b7c654da1422",
+          "objdiff_percent": 97.93104
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 97.93104
     },
     {
       "name": "MenuPcStringsInit",
@@ -211444,11 +211510,25 @@
       "name": "__allshl",
       "symbol": "__allshl",
       "address": "0x006e69d0",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00180:llshl.obj"
+      ],
       "target_size": 31,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00180:llshl.obj",
+          "base_size": 31,
+          "exact_match": true,
+          "target_sha256": "04614067463d9a7345e7de2955a0c9fb5906c602499fb5df7f220ae231db613b",
+          "base_sha256": "04614067463d9a7345e7de2955a0c9fb5906c602499fb5df7f220ae231db613b",
+          "relocation_count": 0,
+          "comparison_unit": "006e69d0-fc7fcf1618ef",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "sprintf",
@@ -211494,11 +211574,25 @@
       "name": "__chkstk",
       "symbol": "__chkstk",
       "address": "0x006e6d60",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00446:chkstk.obj"
+      ],
       "target_size": 43,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00446:chkstk.obj",
+          "base_size": 43,
+          "exact_match": true,
+          "target_sha256": "f8675b4976f7b8efc0bd917aebab734d11ca90222d20bcd2a166ce9914ed2b6e",
+          "base_sha256": "f8675b4976f7b8efc0bd917aebab734d11ca90222d20bcd2a166ce9914ed2b6e",
+          "relocation_count": 0,
+          "comparison_unit": "006e6d60-8ee1e6d5f3c3",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "memcpy",
@@ -211728,11 +211822,25 @@
       "name": "strncpy",
       "symbol": "_strncpy",
       "address": "0x006e7c00",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00608:strncpy.obj"
+      ],
+      "target_size": 292,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00608:strncpy.obj",
+          "base_size": 292,
+          "exact_match": true,
+          "target_sha256": "22006e25651e484a1c6be63bde03c539bb04291083659ef03adadd480f32d18e",
+          "base_sha256": "22006e25651e484a1c6be63bde03c539bb04291083659ef03adadd480f32d18e",
+          "relocation_count": 0,
+          "comparison_unit": "006e7c00-e965e914e03d",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "strrchr",
@@ -211880,11 +211988,25 @@
       "name": "__allmul",
       "symbol": "__allmul",
       "address": "0x006e8430",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00178:llmul.obj"
+      ],
       "target_size": 52,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00178:llmul.obj",
+          "base_size": 52,
+          "exact_match": true,
+          "target_sha256": "3d0898d998acc8af3ea17032ff56fd1b963c685b072f669c52d4b8267f9d0a78",
+          "base_sha256": "3d0898d998acc8af3ea17032ff56fd1b963c685b072f669c52d4b8267f9d0a78",
+          "relocation_count": 0,
+          "comparison_unit": "006e8430-cc2cd41624ec",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "strstr",
@@ -211986,11 +212108,25 @@
       "name": "?raw_name@type_info@@QBEPBDXZ",
       "symbol": "?raw_name@type_info@@QBEPBDXZ",
       "address": "0x006e859c",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00090:typinfo.obj"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00090:typinfo.obj",
+          "base_size": 4,
+          "exact_match": true,
+          "target_sha256": "840cd7c1c41b518c1fe191951395dcac56c16a63d65f97ad855355ba794b2ca7",
+          "base_sha256": "840cd7c1c41b518c1fe191951395dcac56c16a63d65f97ad855355ba794b2ca7",
+          "relocation_count": 0,
+          "comparison_unit": "006e859c-6ecb0d6fb049",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??3@YAXPAX@Z",
@@ -212626,31 +212762,73 @@
       "name": "?_CallMemberFunction0@@YGXPAX0@Z",
       "symbol": "?_CallMemberFunction0@@YGXPAX0@Z",
       "address": "0x006ea0fc",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00102:trnsctrl.obj"
+      ],
+      "target_size": 7,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00102:trnsctrl.obj",
+          "base_size": 7,
+          "exact_match": true,
+          "target_sha256": "ccbf196d9aacc84670c54b300822f455a21100f68e6b748f305d03175df37b65",
+          "base_sha256": "ccbf196d9aacc84670c54b300822f455a21100f68e6b748f305d03175df37b65",
+          "relocation_count": 0,
+          "comparison_unit": "006ea0fc-9f80c9b00d39",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?_CallMemberFunction1@@YGXPAX00@Z",
       "symbol": "?_CallMemberFunction1@@YGXPAX00@Z",
       "address": "0x006ea103",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00102:trnsctrl.obj"
+      ],
+      "target_size": 7,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00102:trnsctrl.obj",
+          "base_size": 7,
+          "exact_match": true,
+          "target_sha256": "ccbf196d9aacc84670c54b300822f455a21100f68e6b748f305d03175df37b65",
+          "base_sha256": "ccbf196d9aacc84670c54b300822f455a21100f68e6b748f305d03175df37b65",
+          "relocation_count": 0,
+          "comparison_unit": "006ea103-c8deb63e862e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?_CallMemberFunction2@@YGXPAX00H@Z",
       "symbol": "?_CallMemberFunction2@@YGXPAX00H@Z",
       "address": "0x006ea10a",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00102:trnsctrl.obj"
+      ],
+      "target_size": 7,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00102:trnsctrl.obj",
+          "base_size": 7,
+          "exact_match": true,
+          "target_sha256": "ccbf196d9aacc84670c54b300822f455a21100f68e6b748f305d03175df37b65",
+          "base_sha256": "ccbf196d9aacc84670c54b300822f455a21100f68e6b748f305d03175df37b65",
+          "relocation_count": 0,
+          "comparison_unit": "006ea10a-cecd90a820bb",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?_UnwindNestedFrames@@YGXPAUEHRegistrationNode@@PAUEHExceptionRecord@@@Z",
@@ -213050,21 +213228,49 @@
       "name": "__finite",
       "symbol": "__finite",
       "address": "0x006eaa47",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00929:ieeemisc.obj"
+      ],
       "target_size": 21,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00929:ieeemisc.obj",
+          "base_size": 21,
+          "exact_match": true,
+          "target_sha256": "9add724ed7f5f9721025cf171315be5021f305b27ef39fa3bba3d763cfc8bc47",
+          "base_sha256": "9add724ed7f5f9721025cf171315be5021f305b27ef39fa3bba3d763cfc8bc47",
+          "relocation_count": 0,
+          "comparison_unit": "006eaa47-9b31016179b8",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__isnan",
       "symbol": "__isnan",
       "address": "0x006eaa5c",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00929:ieeemisc.obj"
+      ],
       "target_size": 46,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00929:ieeemisc.obj",
+          "base_size": 46,
+          "exact_match": true,
+          "target_sha256": "ad72c73354292e8447906bb0835c4dcc5c6590a8917547973ddb029863c6b36a",
+          "base_sha256": "ad72c73354292e8447906bb0835c4dcc5c6590a8917547973ddb029863c6b36a",
+          "relocation_count": 0,
+          "comparison_unit": "006eaa5c-0f934f739228",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__fpclass",
@@ -213246,21 +213452,49 @@
       "name": "__allshr",
       "symbol": "__allshr",
       "address": "0x006eb460",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00181:llshr.obj"
+      ],
+      "target_size": 33,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00181:llshr.obj",
+          "base_size": 33,
+          "exact_match": true,
+          "target_sha256": "f028a2bb21a2463601e9046f5105991b09f90af85bae56b363c014dafc609ea6",
+          "base_sha256": "f028a2bb21a2463601e9046f5105991b09f90af85bae56b363c014dafc609ea6",
+          "relocation_count": 0,
+          "comparison_unit": "006eb460-8ab9817fd703",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "memchr",
       "symbol": "_memchr",
       "address": "0x006eb490",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00592:memchr.obj"
+      ],
+      "target_size": 173,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00592:memchr.obj",
+          "base_size": 173,
+          "exact_match": true,
+          "target_sha256": "4e96ec5152dff3c4648f00572c6ed10d221e170be7101db0a0a0d6fe9e7b503f",
+          "base_sha256": "4e96ec5152dff3c4648f00572c6ed10d221e170be7101db0a0a0d6fe9e7b503f",
+          "relocation_count": 0,
+          "comparison_unit": "006eb490-9d1144ed054f",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "??0_LocaleUpdate@@QAE@PAUlocaleinfo_struct@@@Z",
@@ -215662,11 +215896,25 @@
       "name": "__initp_misc_winxfltr",
       "symbol": "__initp_misc_winxfltr",
       "address": "0x006f0bf1",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00417:winxfltr.obj"
+      ],
+      "target_size": 1,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00417:winxfltr.obj",
+          "base_size": 1,
+          "exact_match": true,
+          "target_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "base_sha256": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e",
+          "relocation_count": 0,
+          "comparison_unit": "006f0bf1-1877e46cf068",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "libcmt#00417:_xcptlookup",
@@ -220690,11 +220938,25 @@
       "name": "__matherr",
       "symbol": "__matherr",
       "address": "0x00702055",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00931:matherr.obj"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00931:matherr.obj",
+          "base_size": 3,
+          "exact_match": true,
+          "target_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
+          "base_sha256": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e",
+          "relocation_count": 0,
+          "comparison_unit": "00702055-e17e49f8658c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__frnd",
@@ -224786,31 +225048,73 @@
       "name": "?_ValidateRead@@YAHPBXI@Z",
       "symbol": "?_ValidateRead@@YAHPBXI@Z",
       "address": "0x00709eab",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00096:validate.obj"
+      ],
+      "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00096:validate.obj",
+          "base_size": 13,
+          "exact_match": true,
+          "target_sha256": "7478b9b4c150f3e6bb376fd165af12de3b947e140ef76bf01addb6808556a13c",
+          "base_sha256": "7478b9b4c150f3e6bb376fd165af12de3b947e140ef76bf01addb6808556a13c",
+          "relocation_count": 0,
+          "comparison_unit": "00709eab-2d45704eca26",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?_ValidateWrite@@YAHPAXI@Z",
       "symbol": "?_ValidateWrite@@YAHPAXI@Z",
       "address": "0x00709eb8",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00096:validate.obj"
+      ],
+      "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00096:validate.obj",
+          "base_size": 13,
+          "exact_match": true,
+          "target_sha256": "7478b9b4c150f3e6bb376fd165af12de3b947e140ef76bf01addb6808556a13c",
+          "base_sha256": "7478b9b4c150f3e6bb376fd165af12de3b947e140ef76bf01addb6808556a13c",
+          "relocation_count": 0,
+          "comparison_unit": "00709eb8-3a744e237a86",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?_ValidateExecute@@YAHP6GHXZ@Z",
       "symbol": "?_ValidateExecute@@YAHP6GHXZ@Z",
       "address": "0x00709ec5",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00096:validate.obj"
+      ],
+      "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00096:validate.obj",
+          "base_size": 13,
+          "exact_match": true,
+          "target_sha256": "7478b9b4c150f3e6bb376fd165af12de3b947e140ef76bf01addb6808556a13c",
+          "base_sha256": "7478b9b4c150f3e6bb376fd165af12de3b947e140ef76bf01addb6808556a13c",
+          "relocation_count": 0,
+          "comparison_unit": "00709ec5-75fd4427b45b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "___pctype_func",
@@ -543504,17 +543808,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2581751,
-    "matched_code_bytes": 763607,
-    "matching_percent": 21.998066400364596,
-    "fuzzy_coverage_percent": 62.38925804260672,
-    "mapped_functions": 9826,
-    "matched_functions": 5928,
-    "objdiff_fuzzy_percent": 85.7376,
-    "objdiff_total_code": 2528909,
+    "mapped_code_bytes": 2582356,
+    "matched_code_bytes": 764555,
+    "matching_percent": 22.025376478647726,
+    "fuzzy_coverage_percent": 62.42110838872451,
+    "mapped_functions": 9827,
+    "matched_functions": 5947,
+    "objdiff_fuzzy_percent": 85.74241,
+    "objdiff_total_code": 2530057,
     "image_bytes": 40067072,
-    "mapped_bytes": 4454301,
-    "mapping_percent": 11.11711132772567,
+    "mapped_bytes": 4454906,
+    "mapping_percent": 11.118621295811185,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -543522,7 +543826,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2582945
+        "mapped_bytes": 2583550
       },
       {
         "name": ".rdata",
@@ -543547,17 +543851,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18844,
-    "mapping_unknown_size_symbols": 7479,
-    "mapping_code_bytes": 2582945,
+    "mapping_known_size_symbols": 18857,
+    "mapping_unknown_size_symbols": 7467,
+    "mapping_code_bytes": 2583550,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.40973644622133,
+    "mapping_code_percent": 74.42716534639146,
     "mapping_data_bytes": 1871356,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195473962245335,
-    "mapping_code_data_bytes": 4454301,
+    "mapping_code_data_bytes": 4454906,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.2795064255416,
+    "mapping_code_data_percent": 11.281038450743187,
     "mapping_file_backed_data_bytes": 382690,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.94825270206039,
@@ -543568,17 +543872,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2581751,
-    "exact_reconstruction_bytes": 763607,
-    "mapped_not_exact_bytes": 1818144,
+    "mapped_reconstruction_bytes": 2582356,
+    "exact_reconstruction_bytes": 764555,
+    "mapped_not_exact_bytes": 1817801,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 888301,
+    "unclassified_text_bytes": 887696,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 21.998066400364596,
+    "strict_original_text_exact_percent": 22.025376478647726,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.005635650416767,
-    "mapped_scope_denominator_bytes": 2581751,
-    "mapped_scope_exact_percent": 29.57709709418143,
+    "reconstruction_scope_exact_percent": 22.032955125744515,
+    "mapped_scope_denominator_bytes": 2582356,
+    "mapped_scope_exact_percent": 29.606878369984617,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -544884,7 +545188,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "c60168dd3fe54b2d036ea759265ff4d706753675a717712596ad84f2d8eeb8fd",
+      "geometry_object_sha256": "ace87791e8a181d80474d7e384ca77d97fac166f11071660bf918e86430fb457",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

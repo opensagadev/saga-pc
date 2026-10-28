@@ -5833,6 +5833,7 @@ address,symbol,size,ctype
 0x005ca320,_ANI_FixUpAddrs,107,"void __cdecl (ANI3_HEADER_PC *, i32, i32)"
 0x5ca390,_NuAnimBuffEvaluateCallback,30,"void __cdecl (ANI3_EVAL_CALLBACK_PC, void **, i32 *)"
 0x5ca3b0,_NuAnimSetForceEulerToQuat,17,
+0x005ca420,_NuAnimGetAnimLOD,39,"void *__cdecl (void *, i32)"
 0x005ca450,_NuAnimNumNodes,30,
 0x005ca470,_NuAnimEndFrame,58,f32 __cdecl (void *)
 0x005ca4b0,_NuAnimEndFrameOld,65,f32 __cdecl (void *)
@@ -8885,7 +8886,7 @@ address,symbol,size,ctype
 0x6e7a6e,__set_printf_count_output,37,
 0x6e7a93,__get_printf_count_output,22,
 0x006e7b25,_vsprintf,23,"i32 __cdecl (char *, const char *, va_list)"
-0x6e7c00,_strncpy,,"char *__cdecl strncpy(char *, const char *, size_t)"
+0x6e7c00,_strncpy,292,"char *__cdecl strncpy(char *, const char *, size_t)"
 0x6e7d30,_strrchr,45,
 0x6e7f05,_vfprintf,,"i32 __cdecl(FILE *, const char *, va_list)"
 0x6e8098,_putc,,"i32 __cdecl(i32, FILE *)"
@@ -8901,7 +8902,7 @@ address,symbol,size,ctype
 0x6e8546,??8type_info@@QBE_NABV0@@Z,27,
 0x6e8561,??9type_info@@QBE_NABV0@@Z,28,
 0x6e857d,?before@type_info@@QBEHABV1@@Z,31,
-0x6e859c,?raw_name@type_info@@QBEPBDXZ,,
+0x6e859c,?raw_name@type_info@@QBEPBDXZ,4,
 0x6e85b0,??3@YAXPAX@Z,,Genuine pinned CRT operator delete(void*) selector; no newsourcebytecredit
 0x6e85b5,__purecall,42,
 0x6e8680,_fclose,,int __cdecl fclose(FILE *stream)
@@ -8944,9 +8945,9 @@ address,symbol,size,ctype
 0x6ea018,??2@YAPAXI@Z,,void *__cdecl operator new(size_t size)
 0x6ea082,__CxxThrowException@8,,
 0x6ea0cc,?_JumpToContinuation@@YGXPAXPAUEHRegistrationNode@@@Z,48,
-0x6ea0fc,?_CallMemberFunction0@@YGXPAX0@Z,,
-0x6ea103,?_CallMemberFunction1@@YGXPAX00@Z,,
-0x6ea10a,?_CallMemberFunction2@@YGXPAX00H@Z,,
+0x6ea0fc,?_CallMemberFunction0@@YGXPAX0@Z,7,
+0x6ea103,?_CallMemberFunction1@@YGXPAX00@Z,7,
+0x6ea10a,?_CallMemberFunction2@@YGXPAX00H@Z,7,
 0x6ea111,?_UnwindNestedFrames@@YGXPAUEHRegistrationNode@@PAUEHExceptionRecord@@@Z,82,
 0x6ea199,___CxxFrameHandler3,,
 0x6ea205,___CxxLongjmpUnwind@4,26,
@@ -8978,8 +8979,8 @@ address,symbol,size,ctype
 0x6eaf7a,_calloc,,"void *__cdecl (size_t, size_t); supplied pinned static CRT"
 0x6eafc0,_floor,,double __cdecl floor(double value)
 0x6eb0f0,_memmove,,"void *__cdecl (void *, const void *, size_t); supplied pinned static CRT"
-0x6eb460,__allshr,,"i64 compiler helper (i64 EDX:EAX, i8 shift CL); supplied pinned static CRT"
-0x6eb490,_memchr,,"void *__cdecl (const void *, i32, size_t); supplied pinned static CRT"
+0x6eb460,__allshr,33,"i64 compiler helper (i64 EDX:EAX, i8 shift CL); supplied pinned static CRT"
+0x6eb490,_memchr,173,"void *__cdecl (const void *, i32, size_t); supplied pinned static CRT"
 0x6eb53d,??0_LocaleUpdate@@QAE@PAUlocaleinfo_struct@@@Z,130,
 0x6eb5bf,??1_LocaleUpdate@@QAE@XZ,14,
 0x6eb5d0,__toupper,8,
@@ -9104,7 +9105,7 @@ address,symbol,size,ctype
 0x6f0999,__SEH_epilog4,,
 0x6f09f8,__NMSG_WRITE,,
 0x6f0bb8,__FF_MSGBANNER,,
-0x6f0bf1,__initp_misc_winxfltr,,
+0x6f0bf1,__initp_misc_winxfltr,1,
 0x6f0bf2,libcmt#00417:_xcptlookup,50,
 0x6f0c24,__XcptFilter,,
 0x6f0d82,___CppXcptFilter,27,
@@ -9331,7 +9332,7 @@ address,symbol,size,ctype
 0x701f3d,__wctomb_l,79,
 0x701f8c,_wctomb,48,
 0x701fc0,__aulldvrm,149,
-0x702055,__matherr,,
+0x702055,__matherr,3,
 0x702058,__frnd,17,
 0x702226,_strcat_s,113,
 0x702297,_strncpy_s,179,
@@ -9511,9 +9512,9 @@ address,symbol,size,ctype
 0x708e11,__cputws,155,
 0x708eac,__putwch,70,
 0x708ef2,__mbtowc_l,275,
-0x709eab,?_ValidateRead@@YAHPBXI@Z,,
-0x709eb8,?_ValidateWrite@@YAHPAXI@Z,,
-0x709ec5,?_ValidateExecute@@YAHP6GHXZ@Z,,
+0x709eab,?_ValidateRead@@YAHPBXI@Z,13,
+0x709eb8,?_ValidateWrite@@YAHPAXI@Z,13,
+0x709ec5,?_ValidateExecute@@YAHP6GHXZ@Z,13,
 0x70a0d0,___pctype_func,41,
 0x70a0f9,libcmt#00371:__get_lc_time,1049,
 0x70a512,___free_lc_time,400,

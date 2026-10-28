@@ -3301,3 +3301,19 @@ u8 __cdecl NuAnimSetForceEulerToQuat(u8 force) {
     ForceEulerToQuat = force;
     return previous;
 }
+
+void *__cdecl NuAnimGetAnimLOD(void *animation, i32 lod) {
+    ANI3_HEADER_PC *block;
+    if (lod < 0 || animation == NULL)
+        return NULL;
+    block = (ANI3_HEADER_PC *)animation;
+    if (lod == 0)
+        return block;
+    do {
+        i32 next = block->next_block;
+        if (next == 0)
+            return NULL;
+        block = (ANI3_HEADER_PC *)((u32)block + next);
+    } while (--lod != 0);
+    return block;
+}
