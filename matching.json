@@ -14,10 +14,10 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "edd25c4be4b2a32005b42199057ace17df5c8112bed3382fca50c39fb496a93a",
+    "config/library-objects.json": "4fa49dfe9ba14c4895701b19cddaa890f59bce7e7c91b8fcb6a6c6a7ef6ee254",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "a7ff6d64cc04ff02f82a4e94db9096b41f1b518b1027094d7bd297512c69f4ca",
+    "config/symbols.csv": "f34b4a3f11e6472c96a7196b09f1507cf70cd4843ba921019b4c9c94591019bb",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -211552,11 +211552,25 @@
       "name": "@__security_check_cookie@4",
       "symbol": "@__security_check_cookie@4",
       "address": "0x006e693a",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00323:secchk.obj"
+      ],
       "target_size": 15,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00323:secchk.obj",
+          "base_size": 15,
+          "exact_match": true,
+          "target_sha256": "293d0f98f312c02610ec93ed2e573cc11c6195f7f66d3ee5839304d78cabf45a",
+          "base_sha256": "293d0f98f312c02610ec93ed2e573cc11c6195f7f66d3ee5839304d78cabf45a",
+          "relocation_count": 2,
+          "comparison_unit": "006e693a-a0cf37876959",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "memset",
@@ -212734,21 +212748,49 @@
       "name": "?what@exception@std@@UBEPBDXZ",
       "symbol": "?what@exception@std@@UBEPBDXZ",
       "address": "0x006e9d42",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 13,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 13,
+          "exact_match": true,
+          "target_sha256": "48d3cdf6e5b2b758b70ad7379eb5e976353bff04ac6927253c6bde07d78fc37a",
+          "base_sha256": "48d3cdf6e5b2b758b70ad7379eb5e976353bff04ac6927253c6bde07d78fc37a",
+          "relocation_count": 1,
+          "comparison_unit": "006e9d42-98b2534a9eda",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__initp_misc_invarg",
       "symbol": "__initp_misc_invarg",
       "address": "0x006e9e84",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00372:invarg.obj"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00372:invarg.obj",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "5fdaf0d3399110b840ded23be3236414eef8ad3146686952e8f057a6c044f708",
+          "base_sha256": "5fdaf0d3399110b840ded23be3236414eef8ad3146686952e8f057a6c044f708",
+          "relocation_count": 1,
+          "comparison_unit": "006e9e84-fbeb2308c998",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__invoke_watson",
@@ -212860,11 +212902,25 @@
       "name": "__CxxThrowException@8",
       "symbol": "__CxxThrowException@8",
       "address": "0x006ea082",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00087:throw.obj"
+      ],
+      "target_size": 74,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00087:throw.obj",
+          "base_size": 74,
+          "exact_match": true,
+          "target_sha256": "de7235d803a615b1841012511b950ac0b2f0b8f77782a0d4c5870e48243e1464",
+          "base_sha256": "de7235d803a615b1841012511b950ac0b2f0b8f77782a0d4c5870e48243e1464",
+          "relocation_count": 2,
+          "comparison_unit": "006ea082-04c0c07c27e1",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?_JumpToContinuation@@YGXPAXPAUEHRegistrationNode@@@Z",
@@ -213742,11 +213798,25 @@
       "name": "toupper",
       "symbol": "_toupper",
       "address": "0x006eb6f0",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00027:toupper.obj"
+      ],
+      "target_size": 39,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00027:toupper.obj",
+          "base_size": 39,
+          "exact_match": true,
+          "target_sha256": "8831f0853589e195705ec273fa7f065c4d4b679936566a74d15cb74f7aeec1bd",
+          "base_sha256": "8831f0853589e195705ec273fa7f065c4d4b679936566a74d15cb74f7aeec1bd",
+          "relocation_count": 2,
+          "comparison_unit": "006eb6f0-dbd3a524cb00",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "fprintf",
@@ -216798,11 +216868,25 @@
       "name": "__initp_heap_handler",
       "symbol": "__initp_heap_handler",
       "address": "0x006f28c8",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00162:handler.obj"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00162:handler.obj",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "2d003b08ba0427e23391fec6dfd393414919f57a9205e2f92cb63f9a73a69d66",
+          "base_sha256": "2d003b08ba0427e23391fec6dfd393414919f57a9205e2f92cb63f9a73a69d66",
+          "relocation_count": 1,
+          "comparison_unit": "006f28c8-2db3980fe2a8",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z",
@@ -217212,11 +217296,25 @@
       "name": "__initp_misc_purevirt",
       "symbol": "__initp_misc_purevirt",
       "address": "0x006f4ec3",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00368:inithelp.obj"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00368:inithelp.obj",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "8dfb98e3c81e15388ec9856ad9fd6767db2af33d523ee70e49c173f5e604d4ef",
+          "base_sha256": "8dfb98e3c81e15388ec9856ad9fd6767db2af33d523ee70e49c173f5e604d4ef",
+          "relocation_count": 1,
+          "comparison_unit": "006f4ec3-c3b1c1189508",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "__freebuf",
@@ -219922,11 +220020,25 @@
       "name": "__initp_misc_rand_s",
       "symbol": "__initp_misc_rand_s",
       "address": "0x006fcf8b",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00395:rand_s.obj"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00395:rand_s.obj",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "0a69a286ac54510910f23c4551a2a1857f63229e42ae0ad0f54018e9bd39c3ee",
+          "base_sha256": "0a69a286ac54510910f23c4551a2a1857f63229e42ae0ad0f54018e9bd39c3ee",
+          "relocation_count": 1,
+          "comparison_unit": "006fcf8b-e6c16f522ea9",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "rand_s",
@@ -219956,11 +220068,25 @@
       "name": "__initp_misc_initcrit",
       "symbol": "__initp_misc_initcrit",
       "address": "0x006fd099",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00366:initcrit.obj"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00366:initcrit.obj",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "b22b89c80a1cf1cda5a5e289fdce4842fc4b10f1344ea1bc11ddfed8ba9f1289",
+          "base_sha256": "b22b89c80a1cf1cda5a5e289fdce4842fc4b10f1344ea1bc11ddfed8ba9f1289",
+          "relocation_count": 1,
+          "comparison_unit": "006fd099-8b13be5362a3",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "libcmt#00366:___crtInitCritSecNoSpinCount@8",
@@ -428325,6 +428451,30 @@
       "status": "unknown size"
     },
     {
+      "name": "??_C@_0BC@EOODALEL@Unknown?5exception?$AA@",
+      "symbol": "??_C@_0BC@EOODALEL@Unknown?5exception?$AA@",
+      "address": "0x00777d2c",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B",
+      "symbol": "libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B",
+      "address": "0x00777d78",
+      "units": [
+        "lib/libcmt.lib/00087:throw.obj"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "??_C@_0P@MIGLKIOC@CorExitProcess?$AA@",
       "symbol": "??_C@_0P@MIGLKIOC@CorExitProcess?$AA@",
       "address": "0x00777df0",
@@ -475350,17 +475500,21 @@
       "name": "___security_cookie",
       "symbol": "___security_cookie",
       "address": "0x00829570",
-      "units": [],
-      "target_size": 4,
+      "units": [
+        "lib/libcmt.lib/00362:gs_cookie.obj"
+      ],
+      "target_size": null,
       "exact_match": false,
       "objects": [],
-      "status": "not implemented"
+      "status": "unknown size"
     },
     {
       "name": "___security_cookie_complement",
       "symbol": "___security_cookie_complement",
       "address": "0x00829574",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00362:gs_cookie.obj"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -537080,7 +537234,9 @@
       "name": "___pInvalidArgHandler",
       "symbol": "___pInvalidArgHandler",
       "address": "0x0297c1bc",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00372:invarg.obj"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -537300,7 +537456,9 @@
       "name": "?_pnhHeap@@3P6AHI@ZA",
       "symbol": "?_pnhHeap@@3P6AHI@ZA",
       "address": "0x0297caec",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00162:handler.obj"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -537340,7 +537498,9 @@
       "name": "___pPurecall",
       "symbol": "___pPurecall",
       "address": "0x0297cb0c",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00368:inithelp.obj"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -537410,7 +537570,9 @@
       "name": "___locale_changed",
       "symbol": "___locale_changed",
       "address": "0x0297cb30",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00400:setlocal.obj"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -537460,7 +537622,9 @@
       "name": "libcmt#00395:_g_pfnRtlGenRandom",
       "symbol": "libcmt#00395:_g_pfnRtlGenRandom",
       "address": "0x0297cb58",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00395:rand_s.obj"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -537470,7 +537634,9 @@
       "name": "libcmt#00366:___pfnInitCritSecAndSpinCount",
       "symbol": "libcmt#00366:___pfnInitCritSecAndSpinCount",
       "address": "0x0297cb5c",
-      "units": [],
+      "units": [
+        "lib/libcmt.lib/00366:initcrit.obj"
+      ],
       "target_size": null,
       "exact_match": false,
       "objects": [],
@@ -544178,17 +544344,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2583292,
-    "matched_code_bytes": 765246,
-    "matching_percent": 22.045282875370976,
-    "fuzzy_coverage_percent": 62.458398540424504,
+    "mapped_code_bytes": 2583468,
+    "matched_code_bytes": 765437,
+    "matching_percent": 22.050785222366837,
+    "fuzzy_coverage_percent": 62.46390088742037,
     "mapped_functions": 9829,
-    "matched_functions": 5970,
-    "objdiff_fuzzy_percent": 85.74874,
-    "objdiff_total_code": 2531380,
+    "matched_functions": 5979,
+    "objdiff_fuzzy_percent": 85.74981,
+    "objdiff_total_code": 2531571,
     "image_bytes": 40067072,
-    "mapped_bytes": 4455842,
-    "mapping_percent": 11.12095737866745,
+    "mapped_bytes": 4456014,
+    "mapping_percent": 11.12138665885044,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -544196,7 +544362,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2584486
+        "mapped_bytes": 2584662
       },
       {
         "name": ".rdata",
@@ -544214,27 +544380,27 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1778177,
+        "mapped_bytes": 1778173,
         "file_backed_data_bytes": 417792,
-        "mapped_file_backed_data_bytes": 289511,
+        "mapped_file_backed_data_bytes": 289507,
         "zero_fill_data_bytes": 34954408,
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18879,
-    "mapping_unknown_size_symbols": 7447,
-    "mapping_code_bytes": 2584486,
+    "mapping_known_size_symbols": 18886,
+    "mapping_unknown_size_symbols": 7442,
+    "mapping_code_bytes": 2584662,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.45412972748115,
-    "mapping_data_bytes": 1871356,
+    "mapping_code_percent": 74.45919995298519,
+    "mapping_data_bytes": 1871352,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.195473962245335,
-    "mapping_code_data_bytes": 4455842,
+    "mapping_data_percent": 5.195462856984845,
+    "mapping_code_data_bytes": 4456014,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.28340865832779,
-    "mapping_file_backed_data_bytes": 382690,
+    "mapping_code_data_percent": 11.283844209294191,
+    "mapping_file_backed_data_bytes": 382686,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 35.94825270206039,
+    "mapping_file_backed_data_percent": 35.947876959263844,
     "mapping_zero_fill_data_bytes": 1488666,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.258879166255655,
@@ -544242,17 +544408,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2583292,
-    "exact_reconstruction_bytes": 765246,
-    "mapped_not_exact_bytes": 1818046,
+    "mapped_reconstruction_bytes": 2583468,
+    "exact_reconstruction_bytes": 765437,
+    "mapped_not_exact_bytes": 1818031,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 886760,
+    "unclassified_text_bytes": 886584,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 22.045282875370976,
+    "strict_original_text_exact_percent": 22.050785222366837,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.052868372001342,
-    "mapped_scope_denominator_bytes": 2583292,
-    "mapped_scope_exact_percent": 29.62289977284798,
+    "reconstruction_scope_exact_percent": 22.05837261228362,
+    "mapped_scope_denominator_bytes": 2583468,
+    "mapped_scope_exact_percent": 29.628274861542703,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -545558,7 +545724,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "c697e58ff89843f423fe904217c61837dd9d41293fe82d85ec906a25e7c2281e",
+      "geometry_object_sha256": "f31bee4209b205f54fa772dce4b577533360ec6c917ec47727cc80c2b81da121",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

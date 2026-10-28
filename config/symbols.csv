@@ -8938,14 +8938,14 @@ address,symbol,size,ctype
 0x6e9c7e,??0exception@std@@QAE@ABV01@@Z,,static CRT method selector; no engine source credit
 0x6e9cd6,??4exception@std@@QAEAAV01@ABV01@@Z,86,
 0x6e9d2c,??1exception@std@@UAE@XZ,,static CRT method selector; no engine source credit
-0x6e9d42,?what@exception@std@@UBEPBDXZ,,
-0x6e9e84,__initp_misc_invarg,,
+0x6e9d42,?what@exception@std@@UBEPBDXZ,13,
+0x6e9e84,__initp_misc_invarg,10,
 0x6e9e8e,__invoke_watson,252,
 0x6e9fc2,__invalid_parameter,36,
 0x6e9fe6,__invalid_parameter_noinfo,16,void __cdecl ()
 0x6e9fff,??0bad_alloc@std@@QAE@XZ,25,
 0x6ea018,??2@YAPAXI@Z,,void *__cdecl operator new(size_t size)
-0x6ea082,__CxxThrowException@8,,
+0x006ea082,__CxxThrowException@8,74,
 0x6ea0cc,?_JumpToContinuation@@YGXPAXPAUEHRegistrationNode@@@Z,48,
 0x6ea0fc,?_CallMemberFunction0@@YGXPAX0@Z,7,
 0x6ea103,?_CallMemberFunction1@@YGXPAX00@Z,7,
@@ -8987,7 +8987,7 @@ address,symbol,size,ctype
 0x6eb5bf,??1_LocaleUpdate@@QAE@XZ,14,
 0x6eb5d0,__toupper,8,
 0x6eb5d8,__toupper_l,280,
-0x6eb6f0,_toupper,,int __cdecl toupper(int value)
+0x6eb6f0,_toupper,39,int __cdecl toupper(int value)
 0x6eb717,_fprintf,,"int __cdecl fprintf(FILE *stream, const char *format, ...)"
 0x6eb8e4,__get_sys_err_msg,35,
 0x6eb907,_perror,,void __cdecl perror(const char *message)
@@ -9135,7 +9135,7 @@ address,symbol,size,ctype
 0x6f225b,___sbh_heap_check,738,
 0x6f253d,__set_sbh_threshold,168,
 0x6f25e5,___sbh_alloc_block,739,
-0x6f28c8,__initp_heap_handler,,
+0x6f28c8,__initp_heap_handler,10,
 0x6f28d2,?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z,49,
 0x6f2919,__callnewh,34,
 0x6f293b,__stbuf,150,
@@ -9154,7 +9154,7 @@ address,symbol,size,ctype
 0x6f4c58,_abort,243,
 0x6f4d4b,__set_abort_behavior,30,
 0x6f4d69,___getlocaleinfo,346,
-0x6f4ec3,__initp_misc_purevirt,,
+0x6f4ec3,__initp_misc_purevirt,10,
 0x6f5031,__freebuf,44,
 0x6f58ad,__lseek,,
 0x6f5eb3,__write_nolock,,
@@ -9278,9 +9278,9 @@ address,symbol,size,ctype
 0x6fcca0,__CIcos_pentium4,428,
 0x6fce50,__ValidateImageBase,41,
 0x6fce80,__FindPESection,66,
-0x6fcf8b,__initp_misc_rand_s,,
+0x6fcf8b,__initp_misc_rand_s,10,
 0x6fcf95,_rand_s,260,
-0x6fd099,__initp_misc_initcrit,,
+0x6fd099,__initp_misc_initcrit,10,
 0x6fd0a3,libcmt#00366:___crtInitCritSecNoSpinCount@8,16,
 0x6fd0b3,___crtInitCritSecAndSpinCount,197,
 0x6fd180,__CIacos_pentium4,1364,
@@ -19165,6 +19165,8 @@ address,symbol,size,ctype
 0x777bac,_PCGraphicsGpuName00777bac,,const char[9]
 0x777d1c,??_7type_info@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x777d24,??_7exception@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x777d2c,??_C@_0BC@EOODALEL@Unknown?5exception?$AA@,,const char[18]
+0x00777d78,libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B,,const u8[32]
 0x777df0,??_C@_0P@MIGLKIOC@CorExitProcess?$AA@,,
 0x777e00,??_C@_0M@MBOPBNBK@mscoree?4dll?$AA@,,
 0x777e0c,??_C@_05KLBDPFGC@e?$CL000?$AA@,,
@@ -22253,8 +22255,8 @@ address,symbol,size,ctype
 0x8294a8,_PCGraphicsGpuFallback,,PC_GRAPHICS_GPU_RECORD_PC
 0x00829524,??_R0?AVinvalid_argument@std@@@8,35,
 0x00829548,??_R0?AVout_of_range@std@@@8,31,
-0x00829570,___security_cookie,4,u32
-0x829574,___security_cookie_complement,,
+0x00829570,___security_cookie,,u32
+0x829574,___security_cookie_complement,,u32
 0x00829814,??_R0?AVtype_info@@@8,24,
 0x0082987c,??_R0?AVbad_cast@std@@@8,27,
 0x00829898,??_R0?AVbad_typeid@std@@@8,29,
@@ -26202,7 +26204,7 @@ address,symbol,size,ctype
 0x297c1a4,__adjust_fdiv,,
 0x297c1b4,libcmt#00522:___enable_percent_n,,
 0x297c1b8,__cflush,,
-0x297c1bc,___pInvalidArgHandler,,
+0x297c1bc,___pInvalidArgHandler,,u32[1]
 0x297c1f4,__environ,,
 0x297c1fc,__wenviron,,
 0x297c20c,__exitflag,,
@@ -26224,24 +26226,24 @@ address,symbol,size,ctype
 0x297c994,__crtheap,,
 0x297c998,libcmt#00455:_lclcritsects,,
 0x297cae8,___sbh_pHeaderDefer,,
-0x297caec,?_pnhHeap@@3P6AHI@ZA,,
+0x297caec,?_pnhHeap@@3P6AHI@ZA,,u32[1]
 0x297caf0,__newmode,,
 0x297caf4,__stdbuf,,
 0x297cb04,libcmt#00368:?wcbuffer@?4??__getlocaleinfo@@9@9,,
-0x297cb0c,___pPurecall,,
+0x297cb0c,___pPurecall,,u32[1]
 0x297cb10,?__pInconsistency@@3P6AXXZA,,
 0x297cb14,libcmt#00261:_fSystemSet,,
 0x297cb18,___mbulinfo,,
 0x297cb24,___mbcodepage,,
 0x297cb28,___ismbcodepage,,
 0x297cb2c,___mblcid,,
-0x297cb30,___locale_changed,,
+0x297cb30,___locale_changed,,i32
 0x297cb34,___lc_handle,,
 0x297cb4c,___lc_codepage,,
 0x297cb50,___lc_collate_cp,,
 0x297cb54,libcmt#00335:?f_use@?1??__crtLCMapStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDHPADHHH@Z@4HA,,
-0x297cb58,libcmt#00395:_g_pfnRtlGenRandom,,
-0x297cb5c,libcmt#00366:___pfnInitCritSecAndSpinCount,,
+0x297cb58,libcmt#00395:_g_pfnRtlGenRandom,,u32[1]
+0x297cb5c,libcmt#00366:___pfnInitCritSecAndSpinCount,,u32[1]
 0x297cb60,__outputformat,,
 0x297cb78,libcmt#00093:_heap,,
 0x297cb8c,?pArgList@UnDecorator@@0PAVReplicator@@A,,

@@ -1,5 +1,5 @@
 {
- "description": "Statically linked VC8 runtime functions compared from the pinned archives (written by tools/libmatch.py).",
+ "description": "Statically linked VC8 runtime code and named observed data views from pinned archives; unknown native data allocations receive zero credit.",
  "entries": [
   {
    "archive": "libcmt.lib",
@@ -132,7 +132,8 @@
    "member": "build\\intel\\mt_obj\\cpp_obj\\toupper.obj",
    "symbols": [
     "__toupper",
-    "__toupper_l"
+    "__toupper_l",
+    "_toupper"
    ]
   },
   {
@@ -216,11 +217,22 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 87,
+   "member": "..\\build\\intel\\mt_obj\\throw.obj",
+   "symbols": [
+    "__CxxThrowException@8",
+    "libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 89,
    "member": "..\\build\\intel\\mt_obj\\stdexcpt.obj",
    "symbols": [
     "??0exception@std@@QAE@ABQBDH@Z",
-    "??4exception@std@@QAEAAV01@ABV01@@Z"
+    "??4exception@std@@QAEAAV01@ABV01@@Z",
+    "?what@exception@std@@UBEPBDXZ",
+    "??_C@_0BC@EOODALEL@Unknown?5exception?$AA@"
    ]
   },
   {
@@ -532,7 +544,9 @@
    "member": "build\\intel\\mt_obj\\handler.obj",
    "symbols": [
     "?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z",
-    "__callnewh"
+    "__callnewh",
+    "__initp_heap_handler",
+    "?_pnhHeap@@3P6AHI@ZA"
    ]
   },
   {
@@ -722,6 +736,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 323,
+   "member": "build\\intel\\mt_obj\\secchk.obj",
+   "symbols": [
+    "@__security_check_cookie@4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 332,
    "member": "build\\intel\\mt_obj\\cpp_obj\\a_cmp.obj",
    "symbols": [
@@ -799,6 +821,15 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 362,
+   "member": "build\\intel\\mt_obj\\gs_cookie.obj",
+   "symbols": [
+    "___security_cookie",
+    "___security_cookie_complement"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 363,
    "member": "build\\intel\\mt_obj\\gs_report.obj",
    "symbols": [
@@ -819,7 +850,9 @@
    "member": "build\\intel\\mt_obj\\initcrit.obj",
    "symbols": [
     "libcmt#00366:___crtInitCritSecNoSpinCount@8",
-    "___crtInitCritSecAndSpinCount"
+    "___crtInitCritSecAndSpinCount",
+    "__initp_misc_initcrit",
+    "libcmt#00366:___pfnInitCritSecAndSpinCount"
    ]
   },
   {
@@ -839,7 +872,9 @@
    "index": 368,
    "member": "build\\intel\\mt_obj\\inithelp.obj",
    "symbols": [
-    "___getlocaleinfo"
+    "___getlocaleinfo",
+    "__initp_misc_purevirt",
+    "___pPurecall"
    ]
   },
   {
@@ -877,7 +912,9 @@
    "symbols": [
     "__invoke_watson",
     "__invalid_parameter",
-    "__invalid_parameter_noinfo"
+    "__invalid_parameter_noinfo",
+    "__initp_misc_invarg",
+    "___pInvalidArgHandler"
    ]
   },
   {
@@ -947,7 +984,9 @@
    "index": 395,
    "member": "build\\intel\\mt_obj\\rand_s.obj",
    "symbols": [
-    "_rand_s"
+    "_rand_s",
+    "__initp_misc_rand_s",
+    "libcmt#00395:_g_pfnRtlGenRandom"
    ]
   },
   {
@@ -979,7 +1018,8 @@
     "libcmt#00400:__setlocale_get_all",
     "__expandlocale",
     "__create_locale",
-    "_setlocale"
+    "_setlocale",
+    "___locale_changed"
    ]
   },
   {
