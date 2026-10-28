@@ -423,3 +423,18 @@ void ImplodeError(char *msg, ...) {
 
     NuFileError();
 }
+
+i32 __cdecl ExplodeBuffer(char *in_buf, char *out_buf) {
+    i32 original_size;
+    i32 compressed_size;
+    if (gExplodeInitialised == 0)
+        return 0;
+    original_size = ExplodeBufferSize(in_buf);
+    if (original_size != 0) {
+        compressed_size = (i32)(((u32)(u8)in_buf[8] | ((u32)(u8)in_buf[9] << 8) | ((u32)(u8)in_buf[10] << 16) |
+                                 ((u32)(u8)in_buf[11] << 24)) &
+                                PCImplodeWordMask);
+        return ExplodeBufferNoHeader(in_buf + 12, out_buf, compressed_size, original_size);
+    }
+    return 0;
+}

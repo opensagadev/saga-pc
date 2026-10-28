@@ -871,7 +871,9 @@
    "index": 392,
    "member": "build\\intel\\mt_obj\\qsort.obj",
    "symbols": [
-    "libcmt#00392:_shortsort"
+    "libcmt#00392:_shortsort",
+    "_qsort",
+    "libcmt#00392:_swap"
    ]
   },
   {

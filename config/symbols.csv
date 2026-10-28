@@ -8919,6 +8919,7 @@ address,symbol,size,ctype
 0x6e9190,__CIlog10,,
 0x6e92e0,__CIpow,,CRT x87 double exponent/base inputs
 0x006e9530,__CIsqrt,20,f32 __cdecl (f64)
+0x6e95f0,libcmt#00392:_swap,40,
 0x6e9620,libcmt#00392:_shortsort,135,
 0x6e96b0,_qsort,679,"void __cdecl (void *, size_t, size_t, int (__cdecl *)(const void *, const void *))"
 0x6e9957,__flush,98,
