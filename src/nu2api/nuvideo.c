@@ -1,4 +1,6 @@
 #include "saga.h"
+#include <stdarg.h>
+#include <stdio.h>
 
 i32 NuVideoGetMode(void) {
     return nuapi.video_mode;
@@ -126,23 +128,29 @@ void NuErrorSetFilter(char *filter) {
         NuStrNCpy(err_msg_filter, filter, 32);
     }
 }
-static void NuDebugMsgFunction(char *format, ...) {
-    char captxt[16384];
+static void __cdecl NuDebugMsgFunction(char *format, ...) {
+    char captxt[1024];
+    va_list args;
     if (!DisableDebugMsg) {
         if (err_msg_filter[0] == 0 || strstr(nufile, err_msg_filter) != NULL) {
-            char *args;
             sprintf(captxt, "NuDebugMsg - %s(%d) :", nufile, nuline);
-
             va_start(args, format);
-            vsprintf(txt, format, args);
+            vsprintf(PCWarningFormatBuffer, format, args);
             va_end(args);
-            NuStrCat(captxt, txt);
-            NuStrCat(captxt, "\n");
-            if (nudebug_handler != NULL)
-                nudebug_handler(captxt);
-            NuDebugMsgPrint(captxt);
+            NuStrCat(captxt, PCWarningFormatBuffer);
+            NuStrCat(captxt, PCWarningSuffix);
+            if (PCWarningHandler != NULL)
+                PCWarningHandler(captxt);
+            PCNativeDebugPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, captxt);
         }
     }
+}
+
+typedef void(__cdecl *NUDEBUGMSGFUNCTION_PC)(char *, ...);
+NUDEBUGMSGFUNCTION_PC __cdecl NuDebugMsgProlog(char *file, i32 line) {
+    nufile = file;
+    nuline = line;
+    return NuDebugMsgFunction;
 }
 
 GAMECAMERA GameCamera = {0};

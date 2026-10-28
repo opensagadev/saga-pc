@@ -388,6 +388,30 @@ void __cdecl buildBitCountTable(void) {
     NuAnimDataBitCountInitialized = 1;
 }
 
+/* PC native 0x005c9dd0, 84 bytes. */
+NuAnimReadChunk *__cdecl NuAnimDataChunkCreate(i32 curve_set_count) {
+    NuAnimReadChunk *chunk = (NuAnimReadChunk *)NuAlloc(sizeof(NuAnimReadChunk), NuAnimSourceFileName, 0x4a8);
+    u32 array_size = (u32)curve_set_count * sizeof(void *);
+    chunk->shared_curve_count = 0;
+    chunk->curve_sets = NULL;
+    chunk->curve_data = NULL;
+    chunk->shared_curves = NULL;
+    chunk->curve_set_count = curve_set_count;
+    chunk->curve_sets = (NuAnimReadCurveSet **)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4ac);
+    memset(chunk->curve_sets, 0, array_size);
+    return chunk;
+}
+
+/* PC native 0x005c9e30, 59 bytes. */
+void *__cdecl NuAnimDataCreate(i32 chunk_count) {
+    u32 allocation_size = (u32)chunk_count * sizeof(void *) + offsetof(NuAnimReadData, chunk_storage);
+    NuAnimReadData *animation = (NuAnimReadData *)NuAlloc((i32)allocation_size, NuAnimSourceFileName, 0x4bb);
+    memset(animation, 0, allocation_size);
+    animation->chunk_count = chunk_count;
+    animation->chunks = animation->chunk_storage;
+    return animation;
+}
+
 void *__cdecl NuAnimCurveSetCreate(i32 curve_count) {
     NuAnimReadCurveSet *curve_set;
     u32 array_size;
@@ -3256,6 +3280,19 @@ void __cdecl NuAnimBuffCreateScratch(ANI3_BUFFER_PC *buffer) {
     buffer->joints = (ANI3_JOINT_PC *)NuScratchAlloc32((buffer->max_joints + 1) * 3 * 16);
     buffer->joints = (ANI3_JOINT_PC *)(((u32)buffer->joints + 15) & ~15u);
     buffer->joint_flags = (u8 *)NuScratchAlloc32(buffer->max_joints);
+}
+
+STATIC_ASSERT(offsetof(ANI3_BUFFER_PC, max_joints) == 4);
+
+/* PC native 0x005ca2f0, 41 bytes. */
+void __cdecl NuAnimBuffDestroyScratch(ANI3_BUFFER_PC *buffer) {
+    if (buffer == NULL)
+        return;
+    NuScratchRelease();
+    NuScratchRelease();
+    buffer->max_joints = 0;
+    buffer->joints = NULL;
+    buffer->joint_flags = NULL;
 }
 
 u8 __cdecl NuAnimSetForceEulerToQuat(u8 force) {

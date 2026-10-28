@@ -2803,6 +2803,7 @@ address,symbol,size,ctype
 0x4fe770,_NuErrorFunction,124,
 0x4fe810,_NuWarningFunction,133,
 0x4fe8c0,_NuDebugMsgFunction,218,
+0x004fe9b0,_NuDebugMsgProlog,25,"void (__cdecl * (__cdecl *)(char *, i32))(char *, ...)"
 0x4fea20,_NuErrorSetFilter,44,
 0x4fea50,_NuGetErrN,53,char* __cdecl(i32)
 0x004feaa0,_NuSevereWarning,172,"void __cdecl (const char *, ...)"
@@ -5820,12 +5821,15 @@ address,symbol,size,ctype
 0x5c9af0,_NuAnimRelocatePtrsANI3,97,"void __cdecl (ANI3_HEADER_PC *, i32)"
 0x5c9b60,_NuAnimDataCalcTime,222,"void __cdecl (NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *)"
 0x005c9c40,_NuAnimData2CalcTime,303,
+0x005c9dd0,_NuAnimDataChunkCreate,84,NuAnimReadChunk *__cdecl (i32)
+0x005c9e30,_NuAnimDataCreate,59,void *__cdecl (i32)
 0x005c9e70,_NuAnimCurveSetCreate,120,void *__cdecl (i32)
 0x005c9ef0,_NuAnimCurveDestroy,52,void __cdecl (void *)
 0x005c9f30,_NuAnimCurveSetDestroy,176,"void __cdecl (void *, i32)"
 0x005c9ff0,_SetProceduralAnimationFn,10,void __cdecl(NUJOINTPROCANIMFN_PC)
 0x005ca000,_NuAnimBuffProceduralAnimation,481,"void __cdecl(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *)"
 0x5ca2a0,_NuAnimBuffCreateScratch,73,
+0x005ca2f0,_NuAnimBuffDestroyScratch,41,void __cdecl (ANI3_BUFFER_PC *)
 0x005ca320,_ANI_FixUpAddrs,107,"void __cdecl (ANI3_HEADER_PC *, i32, i32)"
 0x5ca390,_NuAnimBuffEvaluateCallback,30,"void __cdecl (ANI3_EVAL_CALLBACK_PC, void **, i32 *)"
 0x5ca3b0,_NuAnimSetForceEulerToQuat,17,
@@ -14859,7 +14863,7 @@ address,symbol,size,ctype
 0x0075ec38,??_C@_07NAIMCPPE@ENGLISH?$AA@,,const char[8]
 0x0075ec40,??_C@_04EBGNMJBD@?4csv?$AA@,,const char[5]
 0x75ec48,_PCWarningSuffix,2,const char[2]
-0x75ec78,??_C@_0BG@EPJDAGPP@NuDebugMsg?5?9?5?$CFs?$CI?$CFd?$CJ?5?3?$AA@,22,char []
+0x75ec78,??_C@_0BG@EPJDAGPP@NuDebugMsg?5?9?5?$CFs?$CI?$CFd?$CJ?5?3?$AA@,,const char[22]
 0x0075ec90,_bgproc_resume_event_name,9,const char[9]
 0x0075ec9c,_bgproc_work_event_name,11,const char[11]
 0x0075eca8,_FileDirectorySourceNamePc,,const char[56]

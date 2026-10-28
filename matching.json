@@ -17,7 +17,7 @@
     "config/library-objects.json": "e5ae24d3eac36fa0d0cb098f7690faaef3110f225db30c8cbf0f7d0d64f6ecfe",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "90ee81a42897d1c82de9985bdeef8cc4d28dba62691c80213ef8d13235c3b200",
+    "config/symbols.csv": "9498e8d6a59c578c71a33f3d77f6d137bfe2c12af9d8cab7b6794301829baae8",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -409,7 +409,7 @@
     "src/nu2api/keyboard_init.c": "e844ec51ecb1a694928b6b530f13daf0459a1dfab29ca08b0c036781e17c6c3d",
     "src/nu2api/keyboard_read.c": "730b48047ede726922c3f112064730d2c611dc54e98bcc57460e697980164739",
     "src/nu2api/nualloc.c": "dd9ce9bde1982e74873de8dad69b76093eb03613c7950447becf99f68be675d8",
-    "src/nu2api/nuanim.c": "6161465be20500915b4e0e298d61f0040a07ad5cac0d62480ec54985afa69b48",
+    "src/nu2api/nuanim.c": "79447268133fe2894e9f7f1db0ebe092caab8469ae7c2913e13a5983f0aa0235",
     "src/nu2api/nuanim_procedural_pc.c": "666a9406f5b6c5d21c981bcfa32d8eee69e1aee129507d98db96502e39608ac3",
     "src/nu2api/nuapi.c": "4ddba39d9709238ec4ef129205daec80ee05080028293ffcebe039941c3ac153",
     "src/nu2api/nubridge.c": "5cab39b7d6868d1adbdbeafafd693241c21abbee5e7e33918ba60b846294a43b",
@@ -479,7 +479,7 @@
     "src/nu2api/nuvec.c": "0470e4952e18138cf19212ba37c79c237d65b5a7d93a14a08be7ab9e81bfd851",
     "src/nu2api/nuvec4.c": "8ee25ec87ce3011d38c7636ecf4c84e51465468cc451fd9b1b7fc03901c71c56",
     "src/nu2api/nuvertexdecl.c": "ac7dab2c7eed2ac9b222d32ab8527db9f92dec26d64cbaf0e976390eb91a1e8e",
-    "src/nu2api/nuvideo.c": "ccc860bb31722db2cfd5f5cf03821ee9f9fdef0a190717d9a4301c89ca7aa819",
+    "src/nu2api/nuvideo.c": "6c4840c7c05c015789652ac601316b3dabf71e3c923698e7ec247074ee3f337b",
     "src/nu2api/nuvisibility.c": "9b1ab3d90800873a890fd3d91b39fdfda72084e3d9eb5c03bb529b5bd5ddca92",
     "src/nu2api/nuvport.c": "121b07926c1013a3d930cbbfbefbb11fd6398eb4e2b43d99e7c1cf23d171d589",
     "src/nu2api/nuwin.c": "d2728a49122e7f089fb31163f206726e1106f3ffecddf933c14a8a3088eb17ad",
@@ -844,7 +844,7 @@
     "build/obj/nu2api/keyboard_init.obj": "052db948e20bb9aae70bc9a34242d958489a3622e5e81b4cca1f4b07b8ab9f89",
     "build/obj/nu2api/keyboard_read.obj": "19e721c9cef599d1a4ca62d24c6cc8f06de4e85c344235bae4d37ee3cc7fa12f",
     "build/obj/nu2api/nualloc.obj": "aaf9baec508ddc151d8b20bf5103b788af0f39beee43964c3233388097bcb9bc",
-    "build/obj/nu2api/nuanim.obj": "1bce5adaa753c1fa7738eca8223b29e2b4efc8159449641730b250a910297e96",
+    "build/obj/nu2api/nuanim.obj": "8bcfe2ea7c10378f59e56a5849088a168beee75b224fea40876e70059ea8b54b",
     "build/obj/nu2api/nuanim_procedural_pc.obj": "5a67970097dd4437fd29292e73c9d19993fd0c47fdbb236f0e5ee7c9667b8075",
     "build/obj/nu2api/nuapi.obj": "b2815dd9f5434fb28b34e216c775d97fe9b25344e56a7d8b14bb2e18a822ccce",
     "build/obj/nu2api/nubridge.obj": "d3b78eef8787d836983787392036f0ec7a1b5713cbf8b3adcbb096728d9b5810",
@@ -935,7 +935,7 @@
     "build/obj/nu2api/nuvec.obj": "53849131cc05cf64fb34db8331a1b2e2cd02b12c10be6d1c20d4c3ed52319e67",
     "build/obj/nu2api/nuvec4.obj": "793f864f77e1e74f49d22a0d316a77fd47662b97ddbc7b4f15b0b1c52a93fa6e",
     "build/obj/nu2api/nuvertexdecl.obj": "e2751bcdddacf9d658ee067bfc6cea8be89e1831984f113d73e651f716196c21",
-    "build/obj/nu2api/nuvideo.obj": "d43c867425b3a5a4b8cdde29b4f44f7339ac70fb7fbaf5daf37fff1307f791ec",
+    "build/obj/nu2api/nuvideo.obj": "91dea887fae7ac6a4963861e72cd5698b3730529c2fcf7dd45f16ab2cde0c806",
     "build/obj/nu2api/nuvisibility.obj": "d1f06b5ca7078d6c680c19148c7a058ed52a91d9833a45328af6a065936a1a11",
     "build/obj/nu2api/nuvport.obj": "8844ac6892253b2c2e916baf6e61642b23b3c18218f1e932a31a971975357d44",
     "build/obj/nu2api/nuwin.obj": "2de3a07afae845e06665f47b3e79edd75a5b1cb1fbebc27a999559c038ce6730",
@@ -67766,11 +67766,49 @@
       "name": "NuDebugMsgFunction",
       "symbol": "_NuDebugMsgFunction",
       "address": "0x004fe8c0",
-      "units": [],
+      "units": [
+        "src/nu2api/nuvideo.c"
+      ],
       "target_size": 218,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuvideo.c",
+          "base_size": 218,
+          "exact_match": true,
+          "target_sha256": "142789a129ce06517785f7968ad3061ba73646e6bdbbb8202548d7f8c4fc11e3",
+          "base_sha256": "142789a129ce06517785f7968ad3061ba73646e6bdbbb8202548d7f8c4fc11e3",
+          "relocation_count": 21,
+          "comparison_unit": "004fe8c0-afd269659d0e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuDebugMsgProlog",
+      "symbol": "_NuDebugMsgProlog",
+      "address": "0x004fe9b0",
+      "units": [
+        "src/nu2api/nuvideo.c"
+      ],
+      "target_size": 25,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuvideo.c",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "9013f069358273e5afe2eb24f90175702a1a551c9764b409d7f72cbe3040de2a",
+          "base_sha256": "9013f069358273e5afe2eb24f90175702a1a551c9764b409d7f72cbe3040de2a",
+          "relocation_count": 3,
+          "comparison_unit": "004fe9b0-896ad1dec708",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuErrorSetFilter",
@@ -139542,6 +139580,54 @@
       "objdiff_percent": 94.77391
     },
     {
+      "name": "NuAnimDataChunkCreate",
+      "symbol": "_NuAnimDataChunkCreate",
+      "address": "0x005c9dd0",
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "target_size": 84,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuanim.c",
+          "base_size": 85,
+          "exact_match": false,
+          "target_sha256": "b1496a2707209794aaadc18a967509618ea71120a47aa506f216390c58a1ee80",
+          "base_sha256": "a2e08e4587314a5dd4a41b00a2fa0b91f7dcf28058a4c360e578af7bdb2b6890",
+          "relocation_count": 5,
+          "comparison_unit": "005c9dd0-01783eba4212",
+          "objdiff_percent": 48.827587
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 48.827587
+    },
+    {
+      "name": "NuAnimDataCreate",
+      "symbol": "_NuAnimDataCreate",
+      "address": "0x005c9e30",
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "target_size": 59,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuanim.c",
+          "base_size": 59,
+          "exact_match": true,
+          "target_sha256": "a569533cded81f4ccf691da7f1fb51a8207901df537508141632319ab08fad40",
+          "base_sha256": "a569533cded81f4ccf691da7f1fb51a8207901df537508141632319ab08fad40",
+          "relocation_count": 3,
+          "comparison_unit": "005c9e30-37b0f4f2f2f3",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuAnimCurveSetCreate",
       "symbol": "_NuAnimCurveSetCreate",
       "address": "0x005c9e70",
@@ -139679,6 +139765,30 @@
           "base_sha256": "43b9eed20480a394bbcdab8f7958cdf90a43cd4741d76a563ceee3ffa8f47b11",
           "relocation_count": 3,
           "comparison_unit": "005ca2a0-d54839a88e58",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuAnimBuffDestroyScratch",
+      "symbol": "_NuAnimBuffDestroyScratch",
+      "address": "0x005ca2f0",
+      "units": [
+        "src/nu2api/nuanim.c"
+      ],
+      "target_size": 41,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nuanim.c",
+          "base_size": 41,
+          "exact_match": true,
+          "target_sha256": "a1eda1f0b842acfb556436f7cad2367cab2644929bb007df41d00dfee72d5264",
+          "base_sha256": "a1eda1f0b842acfb556436f7cad2367cab2644929bb007df41d00dfee72d5264",
+          "relocation_count": 2,
+          "comparison_unit": "005ca2f0-84452930c64e",
           "objdiff_percent": 100.0
         }
       ],
@@ -353505,11 +353615,13 @@
       "name": "??_C@_0BG@EPJDAGPP@NuDebugMsg?5?9?5?$CFs?$CI?$CFd?$CJ?5?3?$AA@",
       "symbol": "??_C@_0BG@EPJDAGPP@NuDebugMsg?5?9?5?$CFs?$CI?$CFd?$CJ?5?3?$AA@",
       "address": "0x0075ec78",
-      "units": [],
-      "target_size": 22,
+      "units": [
+        "src/nu2api/nuvideo.c"
+      ],
+      "target_size": null,
       "exact_match": false,
       "objects": [],
-      "status": "not implemented"
+      "status": "unknown size"
     },
     {
       "name": "bgproc_resume_event_name",
@@ -543326,17 +543438,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2581502,
-    "matched_code_bytes": 762288,
-    "matching_percent": 21.960068517183743,
-    "fuzzy_coverage_percent": 62.35007859024062,
-    "mapped_functions": 9821,
-    "matched_functions": 5920,
-    "objdiff_fuzzy_percent": 85.731384,
-    "objdiff_total_code": 2527506,
+    "mapped_code_bytes": 2581711,
+    "matched_code_bytes": 762631,
+    "matching_percent": 21.969949695296734,
+    "fuzzy_coverage_percent": 62.361141337538854,
+    "mapped_functions": 9825,
+    "matched_functions": 5924,
+    "objdiff_fuzzy_percent": 85.73208,
+    "objdiff_total_code": 2527933,
     "image_bytes": 40067072,
-    "mapped_bytes": 4454074,
-    "mapping_percent": 11.116544777716724,
+    "mapped_bytes": 4454261,
+    "mapping_percent": 11.117011495124974,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -543344,16 +543456,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2582696
+        "mapped_bytes": 2582905
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 93201,
+        "mapped_bytes": 93179,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 93201,
+        "mapped_file_backed_data_bytes": 93179,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -543369,20 +543481,20 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18840,
-    "mapping_unknown_size_symbols": 7478,
-    "mapping_code_bytes": 2582696,
+    "mapping_known_size_symbols": 18843,
+    "mapping_unknown_size_symbols": 7479,
+    "mapping_code_bytes": 2582905,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.40256322945709,
-    "mapping_data_bytes": 1871378,
+    "mapping_code_percent": 74.40858412224314,
+    "mapping_data_bytes": 1871356,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.195535041178029,
-    "mapping_code_data_bytes": 4454074,
+    "mapping_data_percent": 5.195473962245335,
+    "mapping_code_data_bytes": 4454261,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.278931599556872,
-    "mapping_file_backed_data_bytes": 382712,
+    "mapping_code_data_percent": 11.27940513461918,
+    "mapping_file_backed_data_bytes": 382690,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 35.95031928744136,
+    "mapping_file_backed_data_percent": 35.94825270206039,
     "mapping_zero_fill_data_bytes": 1488666,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.258879166255655,
@@ -543390,17 +543502,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2581502,
-    "exact_reconstruction_bytes": 762288,
-    "mapped_not_exact_bytes": 1819214,
+    "mapped_reconstruction_bytes": 2581711,
+    "exact_reconstruction_bytes": 762631,
+    "mapped_not_exact_bytes": 1819080,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 888550,
+    "unclassified_text_bytes": 888341,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 21.960068517183743,
+    "strict_original_text_exact_percent": 21.969949695296734,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 21.967624692655903,
-    "mapped_scope_denominator_bytes": 2581502,
-    "mapped_scope_exact_percent": 29.528855681692285,
+    "reconstruction_scope_exact_percent": 21.977509270754442,
+    "mapped_scope_denominator_bytes": 2581711,
+    "mapped_scope_exact_percent": 29.539750963605144,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -544706,7 +544818,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "7d71a89ce8eb15aa52f5cae7c96840c8ea408de9f1c9e0aa479b3401bb394535",
+      "geometry_object_sha256": "6fe6c2ca2b6e0a4e552c268eca3080dc1855f26426b511b67ccc090493c4ee52",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
