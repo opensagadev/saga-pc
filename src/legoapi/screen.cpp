@@ -1924,3 +1924,176 @@ void __cdecl ChallangeCash_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
     if (stage->field_0x14 == 1)
         AddGameMessage(TTab[TextIdPc8806e8], &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
 }
+
+#pragma data_seg(".data$StatusCountdownLimitPc")
+extern "C" {
+    f32 StatusCountdownLimitPc = 6.0f;
+}
+#pragma data_seg()
+#pragma data_seg(".data$StatusGoldBrickXPc")
+extern "C" {
+    f32 StatusGoldBrickXPc = 0.715f;
+}
+#pragma data_seg()
+#pragma data_seg(".data$StatusGoldBrickYPc")
+extern "C" {
+    f32 StatusGoldBrickYPc = -0.666f;
+}
+#pragma data_seg()
+#pragma data_seg(".data$StatusGoldBrickScalePc")
+extern "C" {
+    f32 StatusGoldBrickScalePc = 0.6f;
+}
+#pragma data_seg()
+
+extern "C" i16 TextIdPc880bc0;
+extern "C" void __cdecl Status_DrawPlayerIconsPc(STATUSPACKET_s *, f32, f32);
+
+extern "C" void __cdecl DrawStatusScreen(WORLDINFO *) {
+    iconalphaoverride = -1.0f;
+    memset(StatusMiniKitDrawCachePc, 0, sizeof(StatusMiniKitDrawCachePc));
+    if (GAMEDEMO != 0) {
+        if (GAMEDEMO != 1 || FadeSys.fade != 0.0f)
+            return;
+        char *labels[2];
+        labels[0] = TTab[TextIdPc8808a8];
+        labels[1] = TTab[TextIdPc880bc0];
+        f32 y = (f32)(-0.75 - (f64)MENUDY * 0.5);
+        for (i32 option = 0; option < 2; ++option) {
+            i32 red;
+            i32 green;
+            i32 blue;
+            if (StatusDemoOptionPc == option) {
+                if (menu_flash != 0) {
+                    red = MENUFLASH0R;
+                    green = MENUFLASH0G;
+                    blue = MENUFLASH0B;
+                } else {
+                    red = MENUFLASH1R;
+                    green = MENUFLASH1G;
+                    blue = MENUFLASH1B;
+                }
+                f64 pulse = menu_pulsate;
+                if (pulse > 0.0) {
+                    f64 inverse = 1.0 - pulse;
+                    red = (i32)((f64)(u32)MENUFLASH0R * pulse + (f64)(u32)MENUFLASH1R * inverse);
+                    green = (i32)((f64)(u32)MENUFLASH0G * pulse + (f64)(u32)MENUFLASH1G * inverse);
+                    blue = (i32)((f64)(u32)MENUFLASH0B * pulse + (f64)(u32)MENUFLASH1B * inverse);
+                }
+            } else {
+                red = MENUENTRYR;
+                green = MENUENTRYG;
+                blue = MENUENTRYB;
+            }
+            Text3D(labels[option], 0.0f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, red, green,
+                   blue);
+            y = MENUDY + y;
+        }
+        return;
+    }
+    if (FadeSys.fade > 0.0f)
+        return;
+    if (StatusPacket.status_flags != 0) {
+        if (StatusPacket.draw_background_callback != NULL)
+            StatusPacket.draw_background_callback(&StatusPacket);
+        STATUS_STAGE_s *current;
+        i32 phase = StatusGoldBrickPhasePc;
+        if (phase != -1 && StatusGoldBrickStagePc != -1) {
+            i32 gold_stage = StatusGoldBrickStagePc;
+            current = StatusPacket.stage;
+            if (current->field_0x14 == phase && (i32)StatusPacket.current_gold_brick == gold_stage) {
+                f32 duration;
+                i32 draw_gold = 1;
+                if (phase == 4) {
+                    duration = 5.5f;
+                    if (duration <= current->field_0x18)
+                        draw_gold = 0;
+                } else {
+                    duration = current->field_0x1c;
+                }
+                if (draw_gold != 0) {
+                    f64 cycle = NuFmod(GlobalTimer.time_elapsed, 4.0f);
+                    u16 rotation = (u16)(cycle * 0.25 * 65536.0);
+                    u16 tilt = (u16)((f64)NuTrigTable[((u32)rotation * 2u >> 1) & 0x7fff] * 1820.0);
+                    current = StatusPacket.stage;
+                    f32 quarter = (f32)((f64)duration * 0.25);
+                    f32 three_quarters = (f32)((f64)duration * 0.75);
+                    f32 alpha;
+                    if (current->field_0x18 < quarter) {
+                        f64 ratio = (f64)current->field_0x18 / (f64)quarter;
+                        alpha = NuTrigTable[((i32)(ratio * 16384.0) >> 1) & 0x7fff];
+                    } else if (current->field_0x18 < three_quarters) {
+                        alpha = 1.0f;
+                    } else {
+                        f64 ratio = 1.0 - ((f64)current->field_0x18 - (f64)three_quarters) /
+                                              ((f64)duration - (f64)three_quarters);
+                        alpha = NuTrigTable[((i32)(ratio * 16384.0) >> 1) & 0x7fff];
+                    }
+                    f32 scale = StatusGoldBrickScalePc * alpha;
+                    DrawPanel3DObjectNoAlpha(StatusGoldBrickXPc, StatusGoldBrickYPc, 1.0f, scale, scale, scale, tilt,
+                                             rotation, 0, &WORLD->level_objects[211].special, 2);
+                    if (Text_Language != 0) {
+                        u8 text_alpha = (u8)((f64)alpha * 128.0);
+                        f32 text_y = (f32)((f64)StatusGoldBrickYPc - (f64)0.15f);
+                        Text3DEx((char *)"+1", StatusGoldBrickXPc, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, 0, 255,
+                                 text_alpha);
+                    }
+                }
+            }
+        }
+        current = StatusPacket.stage;
+        u32 index = 0;
+        STATUS_STAGE_s *stages = StatusStages;
+        while (stages[index].type != -1) {
+            STATUS_STAGE_s *stage = &stages[index];
+            void(__cdecl * draw)(STATUS_STAGE_s *, STATUSPACKET_s *, i32) = stage->draw_callback;
+            if (draw != NULL) {
+                if (stage == current)
+                    current->draw_callback(current, &StatusPacket, 1);
+                else
+                    draw(stage, &StatusPacket, 0);
+                current = StatusPacket.stage;
+            }
+            ++index;
+            stages = StatusStages;
+        }
+        f32 alpha;
+        if (current->type == 11)
+            return;
+        if (current->type == 12) {
+            alpha = 0.0f;
+        } else if (current->type == 10) {
+            alpha = current->field_0x18 < 1.0f ? (f32)(1.0 - (f64)current->field_0x18) : 0.0f;
+        } else {
+            alpha = 1.0f;
+            if (current->type == 19 && current->field_0x14 != 0) {
+                if (current->field_0x18 < 1.0f) {
+                    alpha = (f32)(1.0 - (f64)current->field_0x18);
+                } else {
+                    f32 fade_start = (f32)((f64)current->field_0x1c - 1.0);
+                    if (current->field_0x18 >= fade_start)
+                        alpha = (f32)(((f64)current->field_0x18 - (f64)fade_start) /
+                                      ((f64)current->field_0x1c - (f64)fade_start));
+                    else
+                        alpha = 0.0f;
+                }
+            }
+        }
+        if (StatusDrawPlayerIconsPc != 0) {
+            f32 icon_alpha = iconalphaoverride >= 0.0f ? iconalphaoverride : alpha;
+            Status_DrawPlayerIconsPc(&StatusPacket, StatusIconYPc, icon_alpha);
+        }
+    } else {
+        char time[256];
+        f32 remaining = StatusCountdownLimitPc - GameTimer.time_elapsed;
+        if (remaining < 0.0f)
+            remaining = 0.0f;
+        Text_MakeTime(remaining, 0, 0, 0, time);
+        f64 y_phase = NuFmod(GameTimer.time_elapsed, 0.5f);
+        f32 y = (f32)((f64)NuTrigTable[(u16)((y_phase + y_phase) * 65536.0) >> 1] * (f64)0.01f);
+        Text3D(time,
+               (f32)((f64)NuTrigTable[(u16)(NuFmod(GameTimer.time_elapsed, 0.432f) / (f64)0.432f * 65536.0) >> 1] *
+                     (f64)0.01f),
+               y, 1.0f, 1.0f, 1.0f, 1.0f, 0, 255, 191, 0);
+    }
+}

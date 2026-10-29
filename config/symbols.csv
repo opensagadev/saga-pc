@@ -13194,6 +13194,11 @@ address,symbol,size,ctype
 0x759920,__real@4001eb8520000000,8,f64
 0x759928,__real@400f5c29,4,f32
 0x75992c,__real@3ea66666,4,const f32
+0x759930,__real@3fdba5e360000000,,const f64
+0x759938,__real@3edd2f1b,,const f32
+0x75993c,??_C@_02PCPLIIFO@?$CL1?$AA@,,const char[3]
+0x759940,__real@40b00000,,const f32
+0x759948,__real@bfe8000000000000,,const f64
 0x00759950,__real@3efae147,4,f32
 0x00759954,__real@3fb851ec,4,f32
 0x00759958,_TakeOverState_JustBeenTakenOver,18,const char[18]
@@ -20660,11 +20665,15 @@ address,symbol,size,ctype
 0x7fa374,_LedgeOutputNamePc,4,char *
 0x7fa378,_LedgePiece,,LEDGEPIECE[6]
 0x7fa4a0,_LedgeRegistryNamePc,4,char *
+0x7fa4b4,_StatusCountdownLimitPc,,f32
 0x7fa4b8,_StatusMiniKitJibberLengthPc,4,f32
 0x7fa4bc,_StatusMiniKitSlideTimePc,4,f32
 0x7fa4c0,_StatusCoinsTitleYPc,4,f32
 0x7fa4c8,_StatusRedPc,4,i32
 0x7fa4cc,_StatusGreenPc,4,i32
+0x7fa4d0,_StatusGoldBrickXPc,,f32
+0x7fa4d4,_StatusGoldBrickYPc,,f32
+0x7fa4d8,_StatusGoldBrickScalePc,,f32
 0x7fa4dc,_DrawStatusScaleXPc,,f32
 0x7fa4e0,_DrawStatusScaleYPc,,f32
 0x7fa4e4,_StatusMiniKitDirectionOffsetPc,4,f32
