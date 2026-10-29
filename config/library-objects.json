@@ -1639,7 +1639,11 @@
     "__IsZeroMan",
     "__ShrMan",
     "__ld12cvt",
-    "__ld12told"
+    "__ld12told",
+    "__ld12tod",
+    "libcmt#00834:_DoubleFormat",
+    "__ld12tof",
+    "libcmt#00834:_FloatFormat"
    ]
   },
   {

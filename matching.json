@@ -14,10 +14,10 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "09daca4198df3aaf2bab5815e6ad66db7671d64418653c1ca12496cfdb3c8dab",
+    "config/library-objects.json": "9727c009368075a0e525a27ae8337b66c444838945fc976fb2676f9f1fe372a9",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "3fbad0fd95a978121e8a4d5e2ea9c6eddd98f1d7edde76353db2070ed43bfac5",
+    "config/symbols.csv": "dd0491e288a625cacc08c91343e1b3ee30c487e8aaac10633747583cc5ac3ed6",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -442,7 +442,7 @@
     "src/nu2api/numemfile.c": "959430758bafc0b1831aba4204f210d993552b695388ab20bd8a54bcdd940454",
     "src/nu2api/numouse.c": "cf4903148696f42fa018f0741ea2a0396e4cb0df34a00d6badbf856c35ee0b0d",
     "src/nu2api/numtl.c": "97634b628026022f6e56ae1c0a9b361dec6fd64650510599c00b7c731500b026",
-    "src/nu2api/numtx.c": "36fd4328fd35e3c865751263690979fa99ad09a0e51f9c4f2249044b8e664430",
+    "src/nu2api/numtx.c": "cde5f353090d9142620dda91194e04fd599eb4eea1cbc5bc41ad48f89af94d50",
     "src/nu2api/nuocclusion.c": "58c4bdbef20522bd3fb49328b9c98d8cd7802b38d8cda7bc95fd07be44126b3d",
     "src/nu2api/nupad.c": "084bfaf7505e1a91685b864ed9f8c651c36602bcb6636368b42e26238fc80779",
     "src/nu2api/nupad_pc.c": "faaf4c76b93ae22c32ccdd9170df96984614080378c7faf8182ccb3651b416a9",
@@ -885,7 +885,7 @@
     "build/obj/nu2api/numtl.obj": "276e266c07ac0805d4cb167e21fb26f69e41bf547882177c316969a3047db65f",
     "build/obj/nu2api/numtl_pc.obj": "7bb023a83ab8a3eeda0a4f579734162c1b007115cd913f7f55552a218e778c24",
     "build/obj/nu2api/numtl_resources_pc.obj": "afcc54df2fddad2bb97f0b65bc858a8b1af2f4a47279e7a0765e6f72cfbf30c7",
-    "build/obj/nu2api/numtx.obj": "a69b43e38375f7d11840ddb9effd28d6816cfaccd8fd0538470384158ba3d1c1",
+    "build/obj/nu2api/numtx.obj": "91540394cde03a8aa8aa4102a28bf313974393420232a8ec31c23e3ffb5202d6",
     "build/obj/nu2api/nuocclusion.obj": "3ddace3a508a5e260ba057fe143a1d1d486bfd40d1be5ca10812982a4afb8dcf",
     "build/obj/nu2api/nupad.obj": "6068427f0514ddf69b2a7faced1fa0854e087bc6648528503df53ed33000d7d1",
     "build/obj/nu2api/nupad_pc.obj": "c1f4c757cdf7cc441e73e130938056966791abf20a834517f9bf6898addd2850",
@@ -135290,21 +135290,21 @@
         "src/nu2api/numtx.c"
       ],
       "target_size": 410,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/numtx.c",
-          "base_size": 514,
-          "exact_match": false,
+          "base_size": 410,
+          "exact_match": true,
           "target_sha256": "6366a2a981992fc59c8afbd20a2b73fb045a909b26e0b57ca7dc72dbaf273760",
-          "base_sha256": "aeec798b453f5ae80f1f946de67261f83d59a7b3cb778a967d0421cd38ac7bbe",
+          "base_sha256": "6366a2a981992fc59c8afbd20a2b73fb045a909b26e0b57ca7dc72dbaf273760",
           "relocation_count": 6,
           "comparison_unit": "005b7ea0-98140350cb9e",
-          "objdiff_percent": 55.676258
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 55.676258
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuQuatToMtx",
@@ -228162,6 +228162,54 @@
           "base_sha256": "f22f3d3b9653baa415498d355d12e9c2122c836a85c47512073129238b8f6ee0",
           "relocation_count": 0,
           "comparison_unit": "00710565-7f8eb6543100",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__ld12tod",
+      "symbol": "__ld12tod",
+      "address": "0x00710a8e",
+      "units": [
+        "lib/libcmt.lib/00834:intrncvt.obj"
+      ],
+      "target_size": 1346,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00834:intrncvt.obj",
+          "base_size": 1346,
+          "exact_match": true,
+          "target_sha256": "d79b012ba1174b5d478557fd715ba09009fb8a376ca2424906bba6ef4685e4b7",
+          "base_sha256": "d79b012ba1174b5d478557fd715ba09009fb8a376ca2424906bba6ef4685e4b7",
+          "relocation_count": 12,
+          "comparison_unit": "00710a8e-a5fb30adba78",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__ld12tof",
+      "symbol": "__ld12tof",
+      "address": "0x00710fd0",
+      "units": [
+        "lib/libcmt.lib/00834:intrncvt.obj"
+      ],
+      "target_size": 1346,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00834:intrncvt.obj",
+          "base_size": 1346,
+          "exact_match": true,
+          "target_sha256": "c062e27a019609ec5545da8012aa86b0663f37a666bc9700c4e1293a215adc3e",
+          "base_sha256": "c062e27a019609ec5545da8012aa86b0663f37a666bc9700c4e1293a215adc3e",
+          "relocation_count": 12,
+          "comparison_unit": "00710fd0-13e9ad6b0e80",
           "objdiff_percent": 100.0
         }
       ],
@@ -477283,6 +477331,30 @@
       "status": "unknown size"
     },
     {
+      "name": "libcmt#00834:_DoubleFormat",
+      "symbol": "libcmt#00834:_DoubleFormat",
+      "address": "0x0082aa60",
+      "units": [
+        "lib/libcmt.lib/00834:intrncvt.obj"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "libcmt#00834:_FloatFormat",
+      "symbol": "libcmt#00834:_FloatFormat",
+      "address": "0x0082aa78",
+      "units": [
+        "lib/libcmt.lib/00834:intrncvt.obj"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "__coninpfh",
       "symbol": "__coninpfh",
       "address": "0x0082aa90",
@@ -545638,17 +545710,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2585368,
-    "matched_code_bytes": 766889,
-    "matching_percent": 22.092614582775177,
-    "fuzzy_coverage_percent": 62.523863001053904,
-    "mapped_functions": 9878,
-    "matched_functions": 6028,
-    "objdiff_fuzzy_percent": 85.76535,
-    "objdiff_total_code": 2533539,
+    "mapped_code_bytes": 2588060,
+    "matched_code_bytes": 769991,
+    "matching_percent": 22.181977307283898,
+    "fuzzy_coverage_percent": 62.60664962413394,
+    "mapped_functions": 9880,
+    "matched_functions": 6031,
+    "objdiff_fuzzy_percent": 85.78762,
+    "objdiff_total_code": 2536231,
     "image_bytes": 40067072,
-    "mapped_bytes": 4457914,
-    "mapping_percent": 11.12612870738346,
+    "mapped_bytes": 4460606,
+    "mapping_percent": 11.132847441410243,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -545656,7 +545728,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2586562
+        "mapped_bytes": 2589254
       },
       {
         "name": ".rdata",
@@ -545681,17 +545753,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18939,
-    "mapping_unknown_size_symbols": 7442,
-    "mapping_code_bytes": 2586562,
+    "mapping_known_size_symbols": 18941,
+    "mapping_unknown_size_symbols": 7444,
+    "mapping_code_bytes": 2589254,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.51393534194926,
+    "mapping_code_percent": 74.59148674568152,
     "mapping_data_bytes": 1871352,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195462856984845,
-    "mapping_code_data_bytes": 4457914,
+    "mapping_code_data_bytes": 4460606,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.288655528109093,
+    "mapping_code_data_percent": 11.295472407187887,
     "mapping_file_backed_data_bytes": 382686,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.947876959263844,
@@ -545702,17 +545774,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2585368,
-    "exact_reconstruction_bytes": 766889,
-    "mapped_not_exact_bytes": 1818479,
+    "mapped_reconstruction_bytes": 2588060,
+    "exact_reconstruction_bytes": 769991,
+    "mapped_not_exact_bytes": 1818069,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 884684,
+    "unclassified_text_bytes": 881992,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 22.092614582775177,
+    "strict_original_text_exact_percent": 22.181977307283898,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.100216365633713,
-    "mapped_scope_denominator_bytes": 2585368,
-    "mapped_scope_exact_percent": 29.662663110241947,
+    "reconstruction_scope_exact_percent": 22.189609838699823,
+    "mapped_scope_denominator_bytes": 2588060,
+    "mapped_scope_exact_percent": 29.751667272010696,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -547018,7 +547090,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "bf6d6c38ca0b3ae9b1c3e07c5c0e2f1187e5c95f41f409353a23336f9eb938c7",
+      "geometry_object_sha256": "acaf82ec74fce18eccf3863fe19a5456dd21cbf50239f70f5451471915aa6e09",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

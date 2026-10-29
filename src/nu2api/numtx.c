@@ -613,8 +613,18 @@ void __cdecl NuMtxInvR(NUMTX *m, NUMTX *source) {
     m->m33 = 1.0f;
 }
 
+typedef struct NuMtxIndexedViewPc {
+    f32 elements[4][4];
+} NuMtxIndexedViewPc;
+
+STATIC_ASSERT(sizeof(NuMtxIndexedViewPc) == sizeof(NUMTX));
+STATIC_ASSERT(offsetof(NuMtxIndexedViewPc, elements) == 0);
+STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) == 0x10);
+STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + sizeof(f32) == offsetof(NUMTX, m11));
+STATIC_ASSERT(2 * sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + 2 * sizeof(f32) == offsetof(NUMTX, m22));
+
 void __cdecl NuMtxToQuat(NUMTX *m, NUQUAT *out) {
-    f32 elements[3][3];
+    NuMtxIndexedViewPc *indexed = (NuMtxIndexedViewPc *)m;
     i32 next[3];
     f32 q[4];
     f32 s;
@@ -623,45 +633,36 @@ void __cdecl NuMtxToQuat(NUMTX *m, NUQUAT *out) {
     i32 j;
     i32 k;
 
-    elements[0][0] = m->m00;
-    elements[0][1] = m->m01;
-    elements[0][2] = m->m02;
-    elements[1][0] = m->m10;
-    elements[1][1] = m->m11;
-    elements[1][2] = m->m12;
-    elements[2][0] = m->m20;
-    elements[2][1] = m->m21;
-    elements[2][2] = m->m22;
     next[0] = 1;
     next[1] = 2;
     next[2] = 0;
-    trace = elements[0][0] + elements[1][1] + elements[2][2];
+    trace = m->m00 + m->m11 + m->m22;
 
     if (trace > 0.0f) {
         s = NuFsqrt(trace + 1.0f);
         out->w = s * 0.5f;
         s = 0.5f / s;
-        out->x = (elements[1][2] - elements[2][1]) * s;
-        out->y = (elements[2][0] - elements[0][2]) * s;
-        out->z = (elements[0][1] - elements[1][0]) * s;
+        out->x = (m->m12 - m->m21) * s;
+        out->y = (m->m20 - m->m02) * s;
+        out->z = (m->m01 - m->m10) * s;
     } else {
         i = 0;
-        if (elements[1][1] > elements[0][0]) {
+        if (m->m11 > m->m00) {
             i = 1;
         }
-        if (elements[2][2] > elements[i][i]) {
+        if (m->m22 > indexed->elements[i][i]) {
             i = 2;
         }
         j = next[i];
         k = next[j];
-        s = NuFsqrt((elements[i][i] - (elements[j][j] + elements[k][k])) + 1.0f);
+        s = NuFsqrt((indexed->elements[i][i] - (indexed->elements[j][j] + indexed->elements[k][k])) + 1.0f);
         q[i] = s * 0.5f;
         if (s != 0.0f) {
             s = 0.5f / s;
         }
-        q[3] = (elements[j][k] - elements[k][j]) * s;
-        q[j] = (elements[i][j] + elements[j][i]) * s;
-        q[k] = (elements[i][k] + elements[k][i]) * s;
+        q[3] = (indexed->elements[j][k] - indexed->elements[k][j]) * s;
+        q[j] = (indexed->elements[i][j] + indexed->elements[j][i]) * s;
+        q[k] = (indexed->elements[i][k] + indexed->elements[k][i]) * s;
         out->x = q[0];
         out->y = q[1];
         out->z = q[2];

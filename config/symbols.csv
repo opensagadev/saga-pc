@@ -9627,6 +9627,8 @@ address,symbol,size,ctype
 0x7104b4,__IsZeroMan,25,
 0x7104cd,__ShrMan,152,
 0x710565,__ld12cvt,1321,
+0x710a8e,__ld12tod,1346,
+0x710fd0,__ld12tof,1346,
 0x711512,__ld12told,194,
 0x7115d4,___shl_12,46,
 0x711602,___shr_12,45,
@@ -22357,6 +22359,8 @@ address,symbol,size,ctype
 0x82aa18,___lconv_c,,
 0x82aa48,___lconv,,
 0x82aa4c,___mb_cur_max,,
+0x82aa60,libcmt#00834:_DoubleFormat,,i32 [6]
+0x82aa78,libcmt#00834:_FloatFormat,,i32 [6]
 0x82aa90,__coninpfh,,
 0x82aa94,__confh,,
 0x82ab28,__tzname,,
