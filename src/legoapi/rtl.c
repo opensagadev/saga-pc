@@ -2279,3 +2279,138 @@ void edrtlDrawBurnInfo(void) {
         NuQFntPrintEx(system_qfont, x, y, 16, "NO BURNSET LOADED");
     }
 }
+
+/* Genuine Native-observed editor state. Native allocation extents are unknown. */
+#pragma section(".bss$RtledMenuActivePc", read, write)
+__declspec(allocate(".bss$RtledMenuActivePc")) i32 rtled_menu_active = 0;
+#pragma section(".bss$DeleteMenuActivePc", read, write)
+__declspec(allocate(".bss$DeleteMenuActivePc")) i32 delete_menu_active = 0;
+#pragma section(".bss$RtlZOffPc", read, write)
+__declspec(allocate(".bss$RtlZOffPc")) i32 rtl_zoff = 0;
+#pragma section(".bss$RtlHideTypesPc", read, write)
+__declspec(allocate(".bss$RtlHideTypesPc")) i32 hide_types[8] = {0};
+#pragma section(".bss$RtlClipboardLightPc", read, write)
+__declspec(allocate(".bss$RtlClipboardLightPc")) RTL_LIGHT_PC clipboard_light = {0};
+#pragma section(".bss$RtlCurrentFogPc", read, write)
+__declspec(allocate(".bss$RtlCurrentFogPc")) RTL_FOG_MIGRATION_PC *curr_fog = NULL;
+#pragma section(".bss$RtlClipboardFogPc", read, write)
+__declspec(allocate(".bss$RtlClipboardFogPc")) RTL_FOG_MIGRATION_PC clipboard_fog = {0};
+STATIC_ASSERT(sizeof(clipboard_light) == 35 * sizeof(u32));
+STATIC_ASSERT(sizeof(clipboard_fog) == 19 * sizeof(u32));
+STATIC_ASSERT(sizeof(hide_types) == 8 * sizeof(i32));
+STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
+
+void __cdecl edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
+    rtled_menu_active = 0;
+}
+
+void __cdecl edrtlcbDeleteNo(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+    delete_menu_active = 0;
+    item->highlighted = 0;
+}
+
+void __cdecl edrtlcbToggleCastShadow(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+    u8 highlighted = item->highlighted;
+    curr_rtl->flags = (curr_rtl->flags & ~2u) | (highlighted << 1);
+}
+
+STATIC_ASSERT(offsetof(struct eduiitem_s, flags) == 0x11);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
+
+void __cdecl rtlCbToggleHasSpecularPc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+    u8 highlighted = item->highlighted;
+    RTL_LIGHT_PC *light = curr_rtl;
+    light->flags = (light->flags & ~4u) | ((u32)highlighted << 2);
+}
+
+/* Native 0x00639130..0x0063914b: three unused cdecl UI callback arguments. */
+extern RTL_LIGHT_PC clipboard_light;
+void __cdecl cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *source = curr_rtl;
+    u32 word;
+    i32 index;
+    if (source != NULL) {
+        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
+            memcpy(&word, (u8 *)source + index * sizeof(u32), sizeof(word));
+            memcpy((u8 *)&clipboard_light + index * sizeof(u32), &word, sizeof(word));
+        }
+    }
+}
+
+/* Fragment for the natural rtl.c owner; real data definitions are owned by CPP.
+ * Compile only with genuine callback registration/owner integration, no retention hints.
+ * Existing types: eduimenu_s, eduiitem_s, RTL_FOG_MIGRATION_PC, ctl_ix.
+ */
+extern i32 hide_types[8];
+extern i32 rtl_zoff;
+extern RTL_FOG_MIGRATION_PC *curr_fog;
+extern RTL_FOG_MIGRATION_PC clipboard_fog;
+STATIC_ASSERT(offsetof(eduiitem_s, data) == 0x0c);
+STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
+STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
+
+void __cdecl cbSetControls(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    (void)menu;
+    (void)value;
+    ctl_ix = item->data;
+}
+
+void __cdecl cbNoZBuffer(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    (void)menu;
+    (void)value;
+    rtl_zoff = item->flags & 1u;
+}
+
+void __cdecl cbHideType(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    u32 highlighted;
+    u32 destination;
+    (void)menu;
+    (void)value;
+    highlighted = item->flags & 1u;
+    destination = (u32)&hide_types[0] + (u32)item->data * sizeof(hide_types[0]);
+    memcpy((void *)destination, &highlighted, sizeof(highlighted));
+}
+
+void __cdecl cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    RTL_FOG_MIGRATION_PC *source;
+    u32 word;
+    u32 index;
+    (void)menu;
+    (void)item;
+    (void)value;
+    source = curr_fog;
+    if (source != NULL) {
+        for (index = 0; index < sizeof(clipboard_fog) / sizeof(word); ++index) {
+            memcpy(&word, (u8 *)source + index * sizeof(word), sizeof(word));
+            memcpy((u8 *)&clipboard_fog + index * sizeof(word), &word, sizeof(word));
+        }
+    }
+}
+
+STATIC_ASSERT(offsetof(struct edui_slider_s, value) == 0x54);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, parameters) == 0x44);
+
+void __cdecl rtlCbHighTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL)
+        light->parameters[0] = ((struct edui_slider_s *)item)->value;
+}
+
+void __cdecl rtlCbRHighTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL)
+        light->parameters[1] = ((struct edui_slider_s *)item)->value;
+}
+
+void __cdecl rtlCbLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL)
+        light->parameters[2] = ((struct edui_slider_s *)item)->value;
+}
+
+void __cdecl rtlCbRLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL)
+        light->parameters[3] = ((struct edui_slider_s *)item)->value;
+}

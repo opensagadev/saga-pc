@@ -7022,7 +7022,20 @@ address,symbol,size,ctype
 0x637f90,_fogAlloc,48,RTL_FOG_MIGRATION_PC *__cdecl (void)
 0x637fc0,_fogFree,81,void __cdecl (RTL_FOG_MIGRATION_PC *)
 0x638020,_rtlGetFogSet,498,"RTL_FOG_MIGRATION_PC *__cdecl (RTL_SET_PC *, NUVEC *)"
+0x638220,_edrtlcbCancelMenu,11,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x638280,_edrtlcbDeleteNo,19,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6382a0,_RefreshUI,1800,
+0x638b90,_edrtlcbToggleCastShadow,24,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638bb0,_rtlCbToggleHasSpecularPc,26,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638c30,_rtlCbHighTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638c50,_rtlCbRHighTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638c70,_rtlCbLowTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638c90,_rtlCbRLowTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639130,_cbCopyLight,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6394b0,_cbCopyFog,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639570,_cbHideType,22,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639590,_cbNoZBuffer,18,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639660,_cbSetControls,14,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
 0x639b50,_edrtlAddBurnout,218,i32 __cdecl (NUVEC *)
 0x639c30,_edrtlRemoveBurnout,67,void __cdecl (i32)
@@ -25617,7 +25630,11 @@ address,symbol,size,ctype
 0x2913248,_FmvFrequencyReadyPc,4,i32
 0x002913270,_theMemoryManager,584,MEMORYMANAGER
 0x29134c4,_burn_editor_position_pc,,
+0x291352c,_hide_types,,i32[8]
 0x0291360c,_mtls,,NUMTL *[3]
+0x2913668,_clipboard_fog,,RTL_FOG_MIGRATION_PC
+0x2913740,_clipboard_light,,RTL_LIGHT_PC
+0x2913834,_curr_fog,,RTL_FOG_MIGRATION_PC *
 0x02913838,_base_rtl,,RTL_LIGHT_PC *
 0x02913844,_curr_rtl,,RTL_LIGHT_PC *
 0x029138bc,_curr_set,,RTL_SET_PC *
@@ -25635,6 +25652,9 @@ address,symbol,size,ctype
 0x29139ac,_rtl_frametime,,f32
 0x29139b0,_rtltimer1,,i32
 0x29139b4,_dbg_rtlindex,,RTL_INDEX_PC *
+0x29139c0,_rtled_menu_active,,i32
+0x29139c4,_delete_menu_active,,i32
+0x29139c8,_rtl_zoff,,i32
 0x029139dc,_rtl_locked,,RTL_LIGHT_PC *
 0x029139e0,_maxundo,,i32
 0x029139e4,_rtl_undo_cnt,,i32
