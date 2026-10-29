@@ -1033,6 +1033,15 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 405,
+   "member": "build\\intel\\mt_obj\\syserr.obj",
+   "symbols": [
+    "___sys_nerr",
+    "__sys_nerr"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 406,
    "member": "build\\intel\\mt_obj\\convrtcp.obj",
    "symbols": [
@@ -1415,6 +1424,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 609,
+   "member": "build\\intel\\mt_obj\\_strnicm.obj",
+   "symbols": [
+    "___ascii_strnicmp"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 611,
    "member": "build\\intel\\mt_obj\\strpbrk.obj",
    "symbols": [
@@ -1435,6 +1452,14 @@
    "member": "build\\intel\\mt_obj\\strstr.obj",
    "symbols": [
     "_strstr"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 617,
+   "member": "build\\intel\\mt_obj\\strlen_s.obj",
+   "symbols": [
+    "_strnlen"
    ]
   },
   {
@@ -1467,6 +1492,14 @@
    "member": "build\\intel\\mt_obj\\wcslen.obj",
    "symbols": [
     "_wcslen"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 655,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\stricmp.obj",
+   "symbols": [
+    "___ascii_stricmp"
    ]
   },
   {

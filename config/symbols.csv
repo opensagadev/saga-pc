@@ -2509,6 +2509,7 @@ address,symbol,size,ctype
 0x004f0360,_NuMemFileAddr,19,void *__cdecl (NUFILE)
 0x004f0380,_NuMemFileWrite,77,"i32 __cdecl (NUFILE, const void *, i32)"
 0x004f03d0,_NuFileWrite,66,"i32 __cdecl (NUFILE, const void *, i32)"
+0x004f0420,_NuFileWriteFloat,132,"i32 __cdecl (NUFILE, f32)"
 0x4f04b0,_NuFileWriteInt,126,"i32 __cdecl (NUFILE, i32)"
 0x4f0530,_NuFileWriteUnsignedInt,126,"u32 __cdecl (NUFILE, u32)"
 0x004f05b0,_NuFileWriteShort,115,"i32 __cdecl (NUFILE, i16)"
@@ -9275,7 +9276,7 @@ address,symbol,size,ctype
 0x6fc38e,__iswcsymf_l,38,
 0x6fc3d5,__isctype_l,,
 0x6fc48b,__isctype,47,
-0x6fc4ba,___sys_nerr,,
+0x6fc4ba,___sys_nerr,6,
 0x6fc4c0,___sys_errlist,,
 0x6fc5c4,__get_osfhandle,,
 0x6fc9b0,__CIatan_pentium4,748,
@@ -9601,6 +9602,7 @@ address,symbol,size,ctype
 0x712eef,__chsize,24,
 0x712f07,__setmode_nolock,,
 0x712fc3,__set_fmode,70,
+0x713134,___ascii_stricmp,53,"i32 __cdecl (const char *, const char *)"
 0x71328c,___initconin,31,
 0x7132ab,___initconout,31,
 0x7132ca,___termcon,45,
@@ -9620,9 +9622,11 @@ address,symbol,size,ctype
 0x714243,___crtGetStringTypeW,62,
 0x7143b3,___mtold12,460,
 0x71457f,libcmt#00025:?strtoxq@@YA_KPAUlocaleinfo_struct@@PBDPAPBDHH@Z,660,
+0x714ca0,___ascii_strnicmp,97,"i32 __cdecl (const char *, const char *, u32)"
 0x714d01,__mbsnbicoll_l,236,
 0x714ded,__mbsnbicoll,23,
 0x714e04,___wtomb_environ,149,
+0x00714e99,_strnlen,26,"size_t __cdecl (const char *, size_t)"
 0x714ecd,libcmt#00332:?__crtCompareStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDH1HH@Z,905,
 0x715256,___crtCompareStringA,64,
 0x715296,__strnicoll_l,,
@@ -22296,6 +22300,7 @@ address,symbol,size,ctype
 0x82a5b0,___initiallocinfo,,
 0x82a688,___ptlocinfo,,
 0x82a68c,___lc_clike,,
+0x82a748,__sys_nerr,,i32
 0x82a750,__matherr_flag,,u32[1]
 0x0082a754,??_R0?AVDNameNode@@@8,24,
 0x0082a76c,??_R0?AVcharNode@@@8,23,

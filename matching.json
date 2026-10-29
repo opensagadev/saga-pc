@@ -14,10 +14,10 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "57a7df3bd0a90eac66f1388d0d3bff60f9e60b5c9b36a1525baeae284d7e3114",
+    "config/library-objects.json": "c3b0b1ba7f674d8f72f6392dd246a10759df1acb83de0ce19d214fe7a9722375",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "bfe3b710527f2adb6ea489fcb67dd7e2bd3268d322653d1fc05c56d0713c0072",
+    "config/symbols.csv": "ec816cb96aa6fe697c71ba2d3fd7ff7b2869a05f3ba981abb44a05cf3767f1a7",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -420,7 +420,7 @@
     "src/nu2api/nudlist_pc.c": "83dc83e9f62a61b8a06bc5421d29c4c23d0e0ff86b5208024f0240d07fddfb12",
     "src/nu2api/nuerror.c": "60fd4e34157246a3a21cc289f7bd80e8f4279b50a55c00adb4c5667aeb13f2da",
     "src/nu2api/nufadeobj.c": "d8466cc0c172c7b36c6602c771de9dbd6eb4d8d0520ad888a04987cb2b9494fb",
-    "src/nu2api/nufile.c": "8a828aca21fb14ca3a3b87233bee8f2836ffc8f925dd41cde0a1cda165c66961",
+    "src/nu2api/nufile.c": "bfc7281a86dbded060167ef01898bacad244b724b90d677c63eff2d1827173e0",
     "src/nu2api/nufile_device.c": "1de6f588a6299100a46f0a32ff6a4c010b85146978911a1a0ec659895fe783ae",
     "src/nu2api/nufile_host.c": "e9ebc72a1f78beb79ac28db194b9530c41a0d56f4b989fab7bc83bac82569d79",
     "src/nu2api/nufile_mc.c": "4c2d0a355dcb5bba9c11fd885bb02d05c4721637f0caeefe22bf535582b2ac89",
@@ -860,7 +860,7 @@
     "build/obj/nu2api/nudynamiclight.obj": "f595e91b7d36ce0cd0513ab79cc2f95b44a06b887d545600f39af0caab7d1bb3",
     "build/obj/nu2api/nuerror.obj": "30a740fe991c855427c585ea0a91acc91fc2337733bc6a91f8ec2d39b730cadc",
     "build/obj/nu2api/nufadeobj.obj": "37f5b367f315c79b2fbf7e62e4f60a1bd4adbeff87adde5762c375906878defd",
-    "build/obj/nu2api/nufile.obj": "82adc7f851af3b86d9f6283401f6c2f53e21a3cc48e31283453525a44717fb3f",
+    "build/obj/nu2api/nufile.obj": "ff552c05e0de71ae96f0f568709a78908d68e76dbac73b32ac04b75654a3c8ef",
     "build/obj/nu2api/nufile_device.obj": "ed5723b9ef1f90601f0fffe44b083993f1082dbd9d6322ef3dc0645b8fb1cd4d",
     "build/obj/nu2api/nufile_host.obj": "a658c6d439042a0fcd37c2155e9171dfca19cfd7f8fe7c485df2f6bad4a75bcf",
     "build/obj/nu2api/nufile_mc.obj": "d1177c23e38a668a7fb90f96cae6dfad4bd82e2105a744b574002aa24214e36e",
@@ -60799,6 +60799,30 @@
       ],
       "status": "different",
       "objdiff_percent": 57.0
+    },
+    {
+      "name": "NuFileWriteFloat",
+      "symbol": "_NuFileWriteFloat",
+      "address": "0x004f0420",
+      "units": [
+        "src/nu2api/nufile.c"
+      ],
+      "target_size": 132,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nufile.c",
+          "base_size": 116,
+          "exact_match": false,
+          "target_sha256": "2409a3ef38a93ebe8269230e1c387249d3017b979bd6aea141608440fd0d41f7",
+          "base_sha256": "713615c0cab752296d27aa038d2a467444bc1345da8816058022d9ed6a2c2b36",
+          "relocation_count": 3,
+          "comparison_unit": "004f0420-7d9c793d5202",
+          "objdiff_percent": 60.11111
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 60.11111
     },
     {
       "name": "NuFileWriteInt",
@@ -220046,11 +220070,25 @@
       "name": "___sys_nerr",
       "symbol": "___sys_nerr",
       "address": "0x006fc4ba",
-      "units": [],
-      "target_size": null,
-      "exact_match": false,
-      "objects": [],
-      "status": "unknown size"
+      "units": [
+        "lib/libcmt.lib/00405:syserr.obj"
+      ],
+      "target_size": 6,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00405:syserr.obj",
+          "base_size": 6,
+          "exact_match": true,
+          "target_sha256": "77a8f86143cb3d39fc15028f6e1e6dc3c5a897f9fc014f3b8707b352a214d53c",
+          "base_sha256": "77a8f86143cb3d39fc15028f6e1e6dc3c5a897f9fc014f3b8707b352a214d53c",
+          "relocation_count": 1,
+          "comparison_unit": "006fc4ba-cb8c30f5eb1b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "___sys_errlist",
@@ -227475,6 +227513,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "___ascii_stricmp",
+      "symbol": "___ascii_stricmp",
+      "address": "0x00713134",
+      "units": [
+        "lib/libcmt.lib/00655:stricmp.obj"
+      ],
+      "target_size": 53,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00655:stricmp.obj",
+          "base_size": 53,
+          "exact_match": true,
+          "target_sha256": "7e5823046cef634a0ef6fed149abc1c7db3f092b8af301b9397e15696e25c086",
+          "base_sha256": "7e5823046cef634a0ef6fed149abc1c7db3f092b8af301b9397e15696e25c086",
+          "relocation_count": 0,
+          "comparison_unit": "00713134-6236c01416da",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "___initconin",
       "symbol": "___initconin",
       "address": "0x0071328c",
@@ -227889,6 +227951,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "___ascii_strnicmp",
+      "symbol": "___ascii_strnicmp",
+      "address": "0x00714ca0",
+      "units": [
+        "lib/libcmt.lib/00609:_strnicm.obj"
+      ],
+      "target_size": 97,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00609:_strnicm.obj",
+          "base_size": 97,
+          "exact_match": true,
+          "target_sha256": "01469a0f156d0e6e1410b416b139e0ae9ad9153685dc825252df05f6f6536e7c",
+          "base_sha256": "01469a0f156d0e6e1410b416b139e0ae9ad9153685dc825252df05f6f6536e7c",
+          "relocation_count": 0,
+          "comparison_unit": "00714ca0-e6227a775266",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__mbsnbicoll_l",
       "symbol": "__mbsnbicoll_l",
       "address": "0x00714d01",
@@ -227954,6 +228040,30 @@
           "base_sha256": "7861b8a8a70ecf07466f758bd6ffadef0ef71dee129730cee8314e7812abca2f",
           "relocation_count": 6,
           "comparison_unit": "00714e04-7c839503ff16",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "strnlen",
+      "symbol": "_strnlen",
+      "address": "0x00714e99",
+      "units": [
+        "lib/libcmt.lib/00617:strlen_s.obj"
+      ],
+      "target_size": 26,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00617:strlen_s.obj",
+          "base_size": 26,
+          "exact_match": true,
+          "target_sha256": "900520745e52ee0377f715c3c92a61ab6750e9e35735e7e55178641b41f5299a",
+          "base_sha256": "900520745e52ee0377f715c3c92a61ab6750e9e35735e7e55178641b41f5299a",
+          "relocation_count": 0,
+          "comparison_unit": "00714e99-c2e44b541906",
           "objdiff_percent": 100.0
         }
       ],
@@ -476023,6 +476133,18 @@
       "status": "unknown size"
     },
     {
+      "name": "__sys_nerr",
+      "symbol": "__sys_nerr",
+      "address": "0x0082a748",
+      "units": [
+        "lib/libcmt.lib/00405:syserr.obj"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "__matherr_flag",
       "symbol": "__matherr_flag",
       "address": "0x0082a750",
@@ -544520,17 +544642,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2584250,
-    "matched_code_bytes": 765903,
-    "matching_percent": 22.064209796712767,
-    "fuzzy_coverage_percent": 62.487462090320996,
-    "mapped_functions": 9833,
-    "matched_functions": 5983,
-    "objdiff_fuzzy_percent": 85.753296,
-    "objdiff_total_code": 2532421,
+    "mapped_code_bytes": 2584564,
+    "matched_code_bytes": 766085,
+    "matching_percent": 22.069452870813535,
+    "fuzzy_coverage_percent": 62.49499099104425,
+    "mapped_functions": 9837,
+    "matched_functions": 5987,
+    "objdiff_fuzzy_percent": 85.752975,
+    "objdiff_total_code": 2532735,
     "image_bytes": 40067072,
-    "mapped_bytes": 4456796,
-    "mapping_percent": 11.12333838619403,
+    "mapped_bytes": 4457110,
+    "mapping_percent": 11.124122072109486,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -544538,7 +544660,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2585444
+        "mapped_bytes": 2585758
       },
       {
         "name": ".rdata",
@@ -544563,17 +544685,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18893,
+    "mapping_known_size_symbols": 18898,
     "mapping_unknown_size_symbols": 7441,
-    "mapping_code_bytes": 2585444,
+    "mapping_code_bytes": 2585758,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.48172788675882,
+    "mapping_code_percent": 74.49077362998761,
     "mapping_data_bytes": 1871352,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195462856984845,
-    "mapping_code_data_bytes": 4456796,
+    "mapping_code_data_bytes": 4457110,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.285824446827482,
+    "mapping_code_data_percent": 11.286619580568471,
     "mapping_file_backed_data_bytes": 382686,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.947876959263844,
@@ -544584,17 +544706,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2584250,
-    "exact_reconstruction_bytes": 765903,
-    "mapped_not_exact_bytes": 1818347,
+    "mapped_reconstruction_bytes": 2584564,
+    "exact_reconstruction_bytes": 766085,
+    "mapped_not_exact_bytes": 1818479,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 885802,
+    "unclassified_text_bytes": 885488,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 22.064209796712767,
+    "strict_original_text_exact_percent": 22.069452870813535,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.0718018058519,
-    "mapped_scope_denominator_bytes": 2584250,
-    "mapped_scope_exact_percent": 29.637341588468608,
+    "reconstruction_scope_exact_percent": 22.077046684026637,
+    "mapped_scope_denominator_bytes": 2584564,
+    "mapped_scope_exact_percent": 29.64078273937113,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -545900,7 +546022,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "724282d7ffbe791e56efb35a5f9b3a43c271a32c26bb31139be7425885b639ed",
+      "geometry_object_sha256": "7ca38864c84c349543438ec2b6e73b797ec50c522612850f17fd8902ad87bc8b",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

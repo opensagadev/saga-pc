@@ -1738,3 +1738,28 @@ i32 __cdecl NuFileWriteChar(NUFILE file, i8 value) {
 i32 __cdecl NuFileWriteUnsignedChar(NUFILE file, u8 value) {
     return NuFileWrite(file, &value, 1);
 }
+
+typedef union PC_FILE_WRITE_FLOAT32 {
+    f32 value;
+    u32 representation;
+    u8 bytes[4];
+} PC_FILE_WRITE_FLOAT32;
+STATIC_ASSERT(sizeof(PC_FILE_WRITE_FLOAT32) == 4);
+STATIC_ASSERT(offsetof(PC_FILE_WRITE_FLOAT32, value) == 0);
+STATIC_ASSERT(offsetof(PC_FILE_WRITE_FLOAT32, representation) == 0);
+STATIC_ASSERT(offsetof(PC_FILE_WRITE_FLOAT32, bytes) == 0);
+
+i32 __cdecl NuFileWriteFloat(NUFILE file, f32 value) {
+    i32 swap_endian = NuFile_SwapEndianOnWrite;
+    PC_FILE_WRITE_FLOAT32 input;
+    PC_FILE_WRITE_WORD32 output;
+    input.value = value;
+    if (swap_endian != 0) {
+        output.bytes[0] = input.bytes[3];
+        output.bytes[1] = input.bytes[2];
+        output.bytes[2] = input.bytes[1];
+        output.bytes[3] = input.bytes[0];
+        input.representation = output.value;
+    }
+    return NuFileWrite(file, &input.value, 4);
+}
