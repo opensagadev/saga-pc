@@ -819,3 +819,31 @@ void __cdecl NuCameraClearStateBuffer(void) {
 f32 __cdecl NuCameraDistSqr(NUVEC *point) {
     return NuVecDistSqr(point, (NUVEC *)&global_camera.mtx.m30, NULL);
 }
+
+void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera) {
+    NUVEC near_point;
+    NUVEC far_point;
+    f32 half_fov;
+    f32 tangent;
+    i32 angle;
+
+    if (camera == NULL)
+        camera = &global_camera;
+
+    half_fov = camera->fov * 0.5;
+    angle = (i32)(half_fov * AIPathAngularScale);
+    tangent = NuTrigTable[(angle >> 1) & 0x7fff] / NuTrigTable[((i32)((u32)angle + 0x4000u) >> 1) & 0x7fff];
+    near_point.x = far_point.x = (screen_x * 2.0 - 1.0) * tangent / camera->aspect;
+    near_point.y = far_point.y = (1.0 - screen_y * 2.0) * tangent;
+    near_point.z = far_point.z = 1.0f;
+
+    near_point.x *= camera->near_clip;
+    near_point.y *= camera->near_clip;
+    near_point.z *= camera->near_clip;
+    far_point.x *= camera->far_clip;
+    far_point.y *= camera->far_clip;
+    far_point.z *= camera->far_clip;
+
+    NuVecMtxTransform(ray_start, &near_point, &camera->mtx);
+    NuVecMtxTransform(ray_end, &far_point, &camera->mtx);
+}

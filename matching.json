@@ -413,7 +413,7 @@
     "src/nu2api/nuanim_procedural_pc.c": "666a9406f5b6c5d21c981bcfa32d8eee69e1aee129507d98db96502e39608ac3",
     "src/nu2api/nuapi.c": "4ddba39d9709238ec4ef129205daec80ee05080028293ffcebe039941c3ac153",
     "src/nu2api/nubridge.c": "5cab39b7d6868d1adbdbeafafd693241c21abbee5e7e33918ba60b846294a43b",
-    "src/nu2api/nucamera.c": "5bacc0e6a8bcad5f1805de4e01f2708668468bf31642c68e5ea408591baeb1ef",
+    "src/nu2api/nucamera.c": "842bc184cc6a986882394045382d8c8fba239ecbb177234871ba486e967142fe",
     "src/nu2api/nudatfile.c": "f3c3f5b182fad66194d2648b3ceae1ab6ec2040056fb0085a4c709ada02c2160",
     "src/nu2api/nudatlookup.c": "226cde8ca116f8495ac15cb2d6badec3c3fd367a325fe9cfd3415a53a8c6c177",
     "src/nu2api/nudebug.c": "ac0573a4205553fd1dae7027be32be17e2a54c772b56cb3d258508a4399ba0a7",
@@ -848,7 +848,7 @@
     "build/obj/nu2api/nuanim_procedural_pc.obj": "5a67970097dd4437fd29292e73c9d19993fd0c47fdbb236f0e5ee7c9667b8075",
     "build/obj/nu2api/nuapi.obj": "b2815dd9f5434fb28b34e216c775d97fe9b25344e56a7d8b14bb2e18a822ccce",
     "build/obj/nu2api/nubridge.obj": "d3b78eef8787d836983787392036f0ec7a1b5713cbf8b3adcbb096728d9b5810",
-    "build/obj/nu2api/nucamera.obj": "cb04e319b5d8fcc484f94e78c09c8002856c729532b268e9445df26c024aad6e",
+    "build/obj/nu2api/nucamera.obj": "64523d982c03d82f4dee2a75c9e3694e38d84816b6c1c89651da926377f3a3a2",
     "build/obj/nu2api/nucore.obj": "390d83257f1a87d4d60b48865428bc23def7c8571a072e3e61185442639ebf1d",
     "build/obj/nu2api/nudatfile.obj": "de98502d2e9e4ac1e9e78b97d7882baf491df8d14045ff3ce32e2d6e078b7ea0",
     "build/obj/nu2api/nudatlookup.obj": "f6fded38d6c76dd9d020639b1547a02a5e090602a4a2c91b3b73b3d7145e93c2",
@@ -144879,11 +144879,25 @@
       "name": "NuCameraCalcRay",
       "symbol": "_NuCameraCalcRay",
       "address": "0x005d6e10",
-      "units": [],
+      "units": [
+        "src/nu2api/nucamera.c"
+      ],
       "target_size": 240,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/nu2api/nucamera.c",
+          "base_size": 240,
+          "exact_match": false,
+          "target_sha256": "15e155968eabbc292fc1b642eb7f6a1bb126bed62dd33d535149949d3c259c89",
+          "base_sha256": "72e2b107707f38507b02f8d32e195cd8715d4c55da73e4818372c81750c2fd9f",
+          "relocation_count": 9,
+          "comparison_unit": "005d6e10-0705ee9fccba",
+          "objdiff_percent": 99.8421
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 99.8421
     },
     {
       "name": "VisibilityFloorPc",
@@ -547020,11 +547034,11 @@
     "mapped_code_bytes": 2590150,
     "matched_code_bytes": 770897,
     "matching_percent": 22.208077445389925,
-    "fuzzy_coverage_percent": 62.753266668867546,
+    "fuzzy_coverage_percent": 62.760169695619346,
     "mapped_functions": 9912,
     "matched_functions": 6054,
-    "objdiff_fuzzy_percent": 85.819916,
-    "objdiff_total_code": 2541206,
+    "objdiff_fuzzy_percent": 85.82124,
+    "objdiff_total_code": 2541446,
     "image_bytes": 40067072,
     "mapped_bytes": 4462696,
     "mapping_percent": 11.138063694796566,
@@ -548397,7 +548411,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "8a372356c14230e222be9ec5821d000f925bd873af47fcff6ce39afbd3dfd8a7",
+      "geometry_object_sha256": "908b493db6f73266ba333ff24b2111d87d1a50f7ade34df168d5384f3e9f400f",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
