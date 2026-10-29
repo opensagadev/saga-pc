@@ -14,10 +14,10 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "99bcfa2083d5af3ddb2562b2d2e7d28696ab4aa51be3154138a0b69e6676b291",
+    "config/library-objects.json": "09daca4198df3aaf2bab5815e6ad66db7671d64418653c1ca12496cfdb3c8dab",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "eb76bf480d1c55ab5ea682216273f6dfae67d258c0edb966b3f3dc1c2ad380cd",
+    "config/symbols.csv": "e6fece3f4b7a1c6947a434e718e56a4b7d606353e6cbb0fab2da1d8897b3880b",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -74960,6 +74960,30 @@
           "base_sha256": "6d098fbda8c0aa64edc692b69996775b0065b24540de30c80c2bca3b2110fcfa",
           "relocation_count": 10,
           "comparison_unit": "005127e0-ed42011b43b7",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?strrchr@@YAPADPADH@Z",
+      "symbol": "?strrchr@@YAPADPADH@Z",
+      "address": "0x00512840",
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 5,
+          "exact_match": true,
+          "target_sha256": "64e10a356d68e888d479933b7c4e4539f5b8950fa5485fb1d72e3da747476d32",
+          "base_sha256": "64e10a356d68e888d479933b7c4e4539f5b8950fa5485fb1d72e3da747476d32",
+          "relocation_count": 1,
+          "comparison_unit": "00512840-ab01b38c453f",
           "objdiff_percent": 100.0
         }
       ],
@@ -212975,6 +212999,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "?_invoke_watson@@YAXPBG00II@Z",
+      "symbol": "?_invoke_watson@@YAXPBG00II@Z",
+      "address": "0x006e9fb9",
+      "units": [
+        "lib/libcmt.lib/00372:invarg.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00372:invarg.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "b149d1e92e310e5e0ebae6d6437d30336c91e5b6a783a8984a03a35f0041a023",
+          "base_sha256": "b149d1e92e310e5e0ebae6d6437d30336c91e5b6a783a8984a03a35f0041a023",
+          "relocation_count": 1,
+          "comparison_unit": "006e9fb9-dadf4b802d11",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__invalid_parameter",
       "symbol": "__invalid_parameter",
       "address": "0x006e9fc2",
@@ -213016,6 +213064,30 @@
           "base_sha256": "cd349dae43dbf63016fe6ea9339dab15c59041e3224e48cf8a53004224b45e77",
           "relocation_count": 1,
           "comparison_unit": "006e9fe6-a0812d02501a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?_invalid_parameter@@YAXPBG00II@Z",
+      "symbol": "?_invalid_parameter@@YAXPBG00II@Z",
+      "address": "0x006e9ff6",
+      "units": [
+        "lib/libcmt.lib/00372:invarg.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00372:invarg.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "41b5a6e5375bedae4412250eeff95389c800bd78f491eb14abdccda88cfe5466",
+          "base_sha256": "41b5a6e5375bedae4412250eeff95389c800bd78f491eb14abdccda88cfe5466",
+          "relocation_count": 1,
+          "comparison_unit": "006e9ff6-1780c389c6b5",
           "objdiff_percent": 100.0
         }
       ],
@@ -216421,6 +216493,78 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "@_malloc_crt_fastcall@4",
+      "symbol": "@_malloc_crt_fastcall@4",
+      "address": "0x006f0892",
+      "units": [
+        "lib/libcmt.lib/00147:crtheap.obj"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00147:crtheap.obj",
+          "base_size": 8,
+          "exact_match": true,
+          "target_sha256": "45349b89eb92a84e97442a8ec9dddb5d6972d59386239c795d3a48938f02ba7f",
+          "base_sha256": "45349b89eb92a84e97442a8ec9dddb5d6972d59386239c795d3a48938f02ba7f",
+          "relocation_count": 1,
+          "comparison_unit": "006f0892-c827ae0953f2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "@_calloc_crt_fastcall@8",
+      "symbol": "@_calloc_crt_fastcall@8",
+      "address": "0x006f089a",
+      "units": [
+        "lib/libcmt.lib/00147:crtheap.obj"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00147:crtheap.obj",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "a7f10f5d7e1526ac773f7f607ff9f84b7976549540ed64fd5b6f42d3d8c4e893",
+          "base_sha256": "a7f10f5d7e1526ac773f7f607ff9f84b7976549540ed64fd5b6f42d3d8c4e893",
+          "relocation_count": 1,
+          "comparison_unit": "006f089a-080558e2d5ae",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "@_realloc_crt_fastcall@8",
+      "symbol": "@_realloc_crt_fastcall@8",
+      "address": "0x006f08a4",
+      "units": [
+        "lib/libcmt.lib/00147:crtheap.obj"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00147:crtheap.obj",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "2e6143b8774349bec08f244bdf1cc3ee22d28fe7ae5acd12fce1378c946a3b50",
+          "base_sha256": "2e6143b8774349bec08f244bdf1cc3ee22d28fe7ae5acd12fce1378c946a3b50",
+          "relocation_count": 1,
+          "comparison_unit": "006f08a4-83cb59d3ca9d",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__msize",
       "symbol": "__msize",
       "address": "0x006f08ae",
@@ -217184,6 +217328,30 @@
           "base_sha256": "da700c2371d2477a0a52fd36ffc6fec4384fdbca8f3603327ee9274ab0141efc",
           "relocation_count": 6,
           "comparison_unit": "006f28d2-9b610e528fb2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?_set_new_handler@@YAP6AHI@ZH@Z",
+      "symbol": "?_set_new_handler@@YAP6AHI@ZH@Z",
+      "address": "0x006f2903",
+      "units": [
+        "lib/libcmt.lib/00162:handler.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00162:handler.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "2cd3cf15a4f579be1d156b7cc04ee5c92059d9a6f101cb69a22ae8a3a7bd4486",
+          "base_sha256": "2cd3cf15a4f579be1d156b7cc04ee5c92059d9a6f101cb69a22ae8a3a7bd4486",
+          "relocation_count": 1,
+          "comparison_unit": "006f2903-2814c1288760",
           "objdiff_percent": 100.0
         }
       ],
@@ -219543,6 +219711,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "___free_locale",
+      "symbol": "___free_locale",
+      "address": "0x006fb06a",
+      "units": [
+        "lib/libcmt.lib/00400:setlocal.obj"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00400:setlocal.obj",
+          "base_size": 5,
+          "exact_match": true,
+          "target_sha256": "7de44c3977c781d25e979d02e6b1b91eb31a1679a638085db4f712a7863167fc",
+          "base_sha256": "7de44c3977c781d25e979d02e6b1b91eb31a1679a638085db4f712a7863167fc",
+          "relocation_count": 1,
+          "comparison_unit": "006fb06a-eb7475087bfb",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__get_current_locale",
       "symbol": "__get_current_locale",
       "address": "0x006fb06f",
@@ -219560,6 +219752,30 @@
           "base_sha256": "792e430bfa946ee73928de7c8242c2ac99c16f94707af3d8a2582966ebbc9cfe",
           "relocation_count": 12,
           "comparison_unit": "006fb06f-93108c0ae3fd",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "___get_current_locale",
+      "symbol": "___get_current_locale",
+      "address": "0x006fb0f7",
+      "units": [
+        "lib/libcmt.lib/00400:setlocal.obj"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00400:setlocal.obj",
+          "base_size": 5,
+          "exact_match": true,
+          "target_sha256": "1d9f3012786cefdd2917eb87854f10470c8f7f7cf7513c16a7ff279529297070",
+          "base_sha256": "1d9f3012786cefdd2917eb87854f10470c8f7f7cf7513c16a7ff279529297070",
+          "relocation_count": 1,
+          "comparison_unit": "006fb0f7-386b1bb059ba",
           "objdiff_percent": 100.0
         }
       ],
@@ -219721,6 +219937,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "___create_locale",
+      "symbol": "___create_locale",
+      "address": "0x006fbbcd",
+      "units": [
+        "lib/libcmt.lib/00400:setlocal.obj"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00400:setlocal.obj",
+          "base_size": 5,
+          "exact_match": true,
+          "target_sha256": "cca836f1a7d7c499dd8ed5b4b52f86ab3f0886b598675877f58107d81d7d9997",
+          "base_sha256": "cca836f1a7d7c499dd8ed5b4b52f86ab3f0886b598675877f58107d81d7d9997",
+          "relocation_count": 1,
+          "comparison_unit": "006fbbcd-62d59cfa08cc",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "setlocale",
       "symbol": "_setlocale",
       "address": "0x006fbbd2",
@@ -219858,6 +220098,30 @@
           "base_sha256": "8b6fbb8ea09ed7c9916bcde686d0fa9e5462218747cb0ac3b3f091ba18c3eb10",
           "relocation_count": 1,
           "comparison_unit": "006fc16e-39598936479e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "isleadbyte",
+      "symbol": "_isleadbyte",
+      "address": "0x006fc1a4",
+      "units": [
+        "lib/libcmt.lib/00012:_wctype.obj"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00012:_wctype.obj",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "463f06f6b91a21fa8d6701e57a83c87346b427f2a9be2f5029a1d5d7a96c98fa",
+          "base_sha256": "463f06f6b91a21fa8d6701e57a83c87346b427f2a9be2f5029a1d5d7a96c98fa",
+          "relocation_count": 1,
+          "comparison_unit": "006fc1a4-da8da84da125",
           "objdiff_percent": 100.0
         }
       ],
@@ -222359,6 +222623,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__ismbbkana",
+      "symbol": "__ismbbkana",
+      "address": "0x007025ec",
+      "units": [
+        "lib/libcmt.lib/00235:ismbbyte.obj"
+      ],
+      "target_size": 14,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00235:ismbbyte.obj",
+          "base_size": 14,
+          "exact_match": true,
+          "target_sha256": "f10f89c04f3bf907443a299400783fb3dab49f64e5c23535f365278292f4a694",
+          "base_sha256": "f10f89c04f3bf907443a299400783fb3dab49f64e5c23535f365278292f4a694",
+          "relocation_count": 1,
+          "comparison_unit": "007025ec-4f2cbb901b29",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "libcmt#00024:?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z",
       "symbol": "libcmt#00024:?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z",
       "address": "0x007025fa",
@@ -224309,6 +224597,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "?getStorageConvention@UnDecorator@@CA?AVDName@@XZ",
+      "symbol": "?getStorageConvention@UnDecorator@@CA?AVDName@@XZ",
+      "address": "0x007037e5",
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 15,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 15,
+          "exact_match": true,
+          "target_sha256": "a288f18e8991caf4ae82d9d5150bcff85bfc590e1fe3a1dbb31124cb256bfefb",
+          "base_sha256": "a288f18e8991caf4ae82d9d5150bcff85bfc590e1fe3a1dbb31124cb256bfefb",
+          "relocation_count": 1,
+          "comparison_unit": "007037e5-f991c9e1f5bc",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "??YDName@@QAEAAV0@W4DNameStatus@@@Z",
       "symbol": "??YDName@@QAEAAV0@W4DNameStatus@@@Z",
       "address": "0x007037f4",
@@ -225378,6 +225690,30 @@
           "base_sha256": "2c6789c9b662f5ca649918def9ba42f0a708b86fad0f6b41a6e872add52109f4",
           "relocation_count": 16,
           "comparison_unit": "007057b3-f6ac97ecc4b2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?getECSUName@UnDecorator@@CA?AVDName@@XZ",
+      "symbol": "?getECSUName@UnDecorator@@CA?AVDName@@XZ",
+      "address": "0x00705897",
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 15,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 15,
+          "exact_match": true,
+          "target_sha256": "bc45691a5a1479bc49deff500bdf94437d57fe2c1e1c23dd311c36a1ed62fc78",
+          "base_sha256": "bc45691a5a1479bc49deff500bdf94437d57fe2c1e1c23dd311c36a1ed62fc78",
+          "relocation_count": 1,
+          "comparison_unit": "00705897-9eb4215c336f",
           "objdiff_percent": 100.0
         }
       ],
@@ -226461,6 +226797,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__Getdays",
+      "symbol": "__Getdays",
+      "address": "0x0070b217",
+      "units": [
+        "lib/libcmt.lib/00804:strftime.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00804:strftime.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "f190b719dfaa7d63b2f1ca4227e1fd9d3586b769b2da7625afbc96ffc0a97802",
+          "base_sha256": "f190b719dfaa7d63b2f1ca4227e1fd9d3586b769b2da7625afbc96ffc0a97802",
+          "relocation_count": 1,
+          "comparison_unit": "0070b217-105a19f47b31",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__Getmonths_l",
       "symbol": "__Getmonths_l",
       "address": "0x0070b220",
@@ -226485,6 +226845,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__Getmonths",
+      "symbol": "__Getmonths",
+      "address": "0x0070b31e",
+      "units": [
+        "lib/libcmt.lib/00804:strftime.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00804:strftime.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "f190b719dfaa7d63b2f1ca4227e1fd9d3586b769b2da7625afbc96ffc0a97802",
+          "base_sha256": "f190b719dfaa7d63b2f1ca4227e1fd9d3586b769b2da7625afbc96ffc0a97802",
+          "relocation_count": 1,
+          "comparison_unit": "0070b31e-cdc22cb73d12",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__Gettnames_l",
       "symbol": "__Gettnames_l",
       "address": "0x0070b327",
@@ -226502,6 +226886,30 @@
           "base_sha256": "328b32f372f75707529d23b6feddd10440a387f5f584f05ee20925fd61c53866",
           "relocation_count": 38,
           "comparison_unit": "0070b327-fb8d630edcc5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__Gettnames",
+      "symbol": "__Gettnames",
+      "address": "0x0070b67c",
+      "units": [
+        "lib/libcmt.lib/00804:strftime.obj"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00804:strftime.obj",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "66ae0a8ae102535ae651514ad1c788d2f0a904eb3c51675220966013fe7c0ce1",
+          "base_sha256": "66ae0a8ae102535ae651514ad1c788d2f0a904eb3c51675220966013fe7c0ce1",
+          "relocation_count": 1,
+          "comparison_unit": "0070b67c-1f7ad04ec4ba",
           "objdiff_percent": 100.0
         }
       ],
@@ -227343,6 +227751,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "getwc",
+      "symbol": "_getwc",
+      "address": "0x0070fd48",
+      "units": [
+        "lib/libcmt.lib/00479:fgetwc.obj"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00479:fgetwc.obj",
+          "base_size": 5,
+          "exact_match": true,
+          "target_sha256": "a69064d8169e59b14f44388b45afd10f076d579292614536dd73c2770d19c7e4",
+          "base_sha256": "a69064d8169e59b14f44388b45afd10f076d579292614536dd73c2770d19c7e4",
+          "relocation_count": 1,
+          "comparison_unit": "0070fd48-2a11e46875f5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__ungetwc_nolock",
       "symbol": "__ungetwc_nolock",
       "address": "0x0070fd4d",
@@ -227418,6 +227850,30 @@
           "base_sha256": "fabe18f127afc566b7811f16391c71fb15617dd9915b5c1b765394695223055a",
           "relocation_count": 12,
           "comparison_unit": "0070ff9e-c62414a52dba",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__wcstombs_l",
+      "symbol": "__wcstombs_l",
+      "address": "0x007101e4",
+      "units": [
+        "lib/libcmt.lib/00034:wcstombs.obj"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00034:wcstombs.obj",
+          "base_size": 5,
+          "exact_match": true,
+          "target_sha256": "2b90503ee5982bf2eb27b31372370f9aa66dfc28069dae253e3729006ee26fe4",
+          "base_sha256": "2b90503ee5982bf2eb27b31372370f9aa66dfc28069dae253e3729006ee26fe4",
+          "relocation_count": 1,
+          "comparison_unit": "007101e4-5f9370be2ca9",
           "objdiff_percent": 100.0
         }
       ],
@@ -228670,6 +229126,30 @@
           "base_sha256": "fc6435ef4c1966df8fe01b26dcfedcab9c613007e3a962ac77aa5f32267bbaaa",
           "relocation_count": 4,
           "comparison_unit": "007156fb-f0a199334029",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__mbschr",
+      "symbol": "__mbschr",
+      "address": "0x007157b5",
+      "units": [
+        "lib/libcmt.lib/00264:mbschr.obj"
+      ],
+      "target_size": 19,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00264:mbschr.obj",
+          "base_size": 19,
+          "exact_match": true,
+          "target_sha256": "1382b6299f6b13c6b72aa09cc2744eee709e4378a6a844d8709a81662c383f73",
+          "base_sha256": "1382b6299f6b13c6b72aa09cc2744eee709e4378a6a844d8709a81662c383f73",
+          "relocation_count": 1,
+          "comparison_unit": "007157b5-8fdab509d6fc",
           "objdiff_percent": 100.0
         }
       ],
@@ -232955,6 +233435,30 @@
           "base_sha256": "943a0324724380df7d93e4d48f1bf9a4df5b341c457815573e9a8c8ff24a1a61",
           "relocation_count": 8,
           "comparison_unit": "0074f9ee-c64a31dca140",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "putwc",
+      "symbol": "_putwc",
+      "address": "0x0074fa66",
+      "units": [
+        "lib/libcmt.lib/00486:fputwc.obj"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00486:fputwc.obj",
+          "base_size": 5,
+          "exact_match": true,
+          "target_sha256": "67ff25383183f3d2027d6ef1bfe88dcdb4deadf833ed2f3dae728cf3b4d7c311",
+          "base_sha256": "67ff25383183f3d2027d6ef1bfe88dcdb4deadf833ed2f3dae728cf3b4d7c311",
+          "relocation_count": 1,
+          "comparison_unit": "0074fa66-14a7bee4d3f1",
           "objdiff_percent": 100.0
         }
       ],
@@ -545122,17 +545626,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2585174,
-    "matched_code_bytes": 766695,
-    "matching_percent": 22.08702581148095,
-    "fuzzy_coverage_percent": 62.51256393171166,
-    "mapped_functions": 9857,
-    "matched_functions": 6007,
-    "objdiff_fuzzy_percent": 85.75644,
-    "objdiff_total_code": 2533345,
+    "mapped_code_bytes": 2585368,
+    "matched_code_bytes": 766889,
+    "matching_percent": 22.092614582775177,
+    "fuzzy_coverage_percent": 62.51815270300588,
+    "mapped_functions": 9878,
+    "matched_functions": 6028,
+    "objdiff_fuzzy_percent": 85.757515,
+    "objdiff_total_code": 2533539,
     "image_bytes": 40067072,
-    "mapped_bytes": 4457720,
-    "mapping_percent": 11.125644519270088,
+    "mapped_bytes": 4457914,
+    "mapping_percent": 11.12612870738346,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -545140,7 +545644,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2586368
+        "mapped_bytes": 2586562
       },
       {
         "name": ".rdata",
@@ -545165,17 +545669,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18918,
+    "mapping_known_size_symbols": 18939,
     "mapping_unknown_size_symbols": 7441,
-    "mapping_code_bytes": 2586368,
+    "mapping_code_bytes": 2586562,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.50834657065504,
+    "mapping_code_percent": 74.51393534194926,
     "mapping_data_bytes": 1871352,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195462856984845,
-    "mapping_code_data_bytes": 4457720,
+    "mapping_code_data_bytes": 4457914,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.28816426713536,
+    "mapping_code_data_percent": 11.288655528109093,
     "mapping_file_backed_data_bytes": 382686,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.947876959263844,
@@ -545186,17 +545690,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2585174,
-    "exact_reconstruction_bytes": 766695,
+    "mapped_reconstruction_bytes": 2585368,
+    "exact_reconstruction_bytes": 766889,
     "mapped_not_exact_bytes": 1818479,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 884878,
+    "unclassified_text_bytes": 884684,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 22.08702581148095,
+    "strict_original_text_exact_percent": 22.092614582775177,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.094625671315587,
-    "mapped_scope_denominator_bytes": 2585174,
-    "mapped_scope_exact_percent": 29.657384764042963,
+    "reconstruction_scope_exact_percent": 22.100216365633713,
+    "mapped_scope_denominator_bytes": 2585368,
+    "mapped_scope_exact_percent": 29.662663110241947,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -546502,7 +547006,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "05040ae85989705a9e574527eb439b156e9fb10898887c9c387cbaeadde713e1",
+      "geometry_object_sha256": "667956832c915aaa8471654ab5154d6c01fbb4c76b6a064d95ec2f58246c5963",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

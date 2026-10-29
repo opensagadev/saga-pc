@@ -76,7 +76,8 @@
     "__iswcntrl_l",
     "_iswascii",
     "__iswcsym_l",
-    "__iswcsymf_l"
+    "__iswcsymf_l",
+    "_isleadbyte"
    ]
   },
   {
@@ -152,7 +153,8 @@
     "__wcstombs_l_helper",
     "__wcstombs_s_l",
     "_wcstombs_s",
-    "_wcstombs"
+    "_wcstombs",
+    "__wcstombs_l"
    ]
   },
   {
@@ -419,7 +421,9 @@
     "??H@YA?AVDName@@PBDABV0@@Z",
     "??HDName@@QBE?AV0@D@Z",
     "??HDName@@QBE?AV0@PBD@Z",
-    "??HDName@@QBE?AV0@PAV0@@Z"
+    "??HDName@@QBE?AV0@PAV0@@Z",
+    "?getECSUName@UnDecorator@@CA?AVDName@@XZ",
+    "?getStorageConvention@UnDecorator@@CA?AVDName@@XZ"
    ]
   },
   {
@@ -501,7 +505,10 @@
     "__malloc_crt",
     "__calloc_crt",
     "__realloc_crt",
-    "__recalloc_crt"
+    "__recalloc_crt",
+    "@_calloc_crt_fastcall@8",
+    "@_realloc_crt_fastcall@8",
+    "@_malloc_crt_fastcall@4"
    ]
   },
   {
@@ -566,7 +573,8 @@
     "?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z",
     "__callnewh",
     "__initp_heap_handler",
-    "?_pnhHeap@@3P6AHI@ZA"
+    "?_pnhHeap@@3P6AHI@ZA",
+    "?_set_new_handler@@YAP6AHI@ZH@Z"
    ]
   },
   {
@@ -712,7 +720,8 @@
     "__ismbblead",
     "__ismbbtrail_l",
     "__ismbbtrail",
-    "__ismbbkana_l"
+    "__ismbbkana_l",
+    "__ismbbkana"
    ]
   },
   {
@@ -734,7 +743,8 @@
    "index": 264,
    "member": "build\\intel\\mt_obj\\cpp_obj\\mbschr.obj",
    "symbols": [
-    "__mbschr_l"
+    "__mbschr_l",
+    "__mbschr"
    ]
   },
   {
@@ -943,7 +953,9 @@
     "__invalid_parameter",
     "__invalid_parameter_noinfo",
     "__initp_misc_invarg",
-    "___pInvalidArgHandler"
+    "___pInvalidArgHandler",
+    "?_invalid_parameter@@YAXPBG00II@Z",
+    "?_invoke_watson@@YAXPBG00II@Z"
    ]
   },
   {
@@ -1048,7 +1060,10 @@
     "__expandlocale",
     "__create_locale",
     "_setlocale",
-    "___locale_changed"
+    "___locale_changed",
+    "___create_locale",
+    "___free_locale",
+    "___get_current_locale"
    ]
   },
   {
@@ -1200,7 +1215,8 @@
    "index": 479,
    "member": "build\\intel\\mt_obj\\fgetwc.obj",
    "symbols": [
-    "_fgetwc"
+    "_fgetwc",
+    "_getwc"
    ]
   },
   {
@@ -1216,7 +1232,8 @@
    "index": 486,
    "member": "build\\intel\\mt_obj\\fputwc.obj",
    "symbols": [
-    "_fputwc"
+    "_fputwc",
+    "_putwc"
    ]
   },
   {
@@ -1537,7 +1554,10 @@
     "__Strftime_l",
     "_strftime",
     "__Strftime",
-    "__strftime_l"
+    "__strftime_l",
+    "__Getdays",
+    "__Getmonths",
+    "__Gettnames"
    ]
   },
   {
@@ -1592,7 +1612,8 @@
     "__cfltcvt",
     "__cftoa",
     "__cftog",
-    "__cftof"
+    "__cftof",
+    "?strrchr@@YAPADPADH@Z"
    ]
   },
   {

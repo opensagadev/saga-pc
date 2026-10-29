@@ -3101,6 +3101,7 @@ address,symbol,size,ctype
 0x5126d0,_MenuDrawVideoConfirmPc,163,void __cdecl(MENU *)
 0x512780,_MenuDrawHiresNoticePc,86,void __cdecl(MENU *)
 0x5127e0,_MenuDrawQuitPc,82,void __cdecl(MENU *)
+0x512840,?strrchr@@YAPADPADH@Z,5,
 0x512850,_AIScriptMissingStateDiagnostic,1,void __cdecl ()
 0x512860,_AIScriptMissingStateDiagnosticAlternate,1,void __cdecl ()
 0x00512870,_AIScriptMissingConditionDiagnostic,1,void __cdecl ()
@@ -8947,8 +8948,10 @@ address,symbol,size,ctype
 0x6e9d42,?what@exception@std@@UBEPBDXZ,13,
 0x6e9e84,__initp_misc_invarg,10,
 0x6e9e8e,__invoke_watson,252,
+0x6e9fb9,?_invoke_watson@@YAXPBG00II@Z,9,
 0x6e9fc2,__invalid_parameter,36,
 0x6e9fe6,__invalid_parameter_noinfo,16,void __cdecl ()
+0x6e9ff6,?_invalid_parameter@@YAXPBG00II@Z,9,
 0x6e9fff,??0bad_alloc@std@@QAE@XZ,25,
 0x6ea018,??2@YAPAXI@Z,,void *__cdecl operator new(size_t size)
 0x006ea082,__CxxThrowException@8,74,
@@ -9113,6 +9116,9 @@ address,symbol,size,ctype
 0x6f07af,__calloc_crt,72,
 0x6f07f7,__realloc_crt,75,
 0x6f0842,__recalloc_crt,80,
+0x006f0892,@_malloc_crt_fastcall@4,8,
+0x006f089a,@_calloc_crt_fastcall@8,10,
+0x006f08a4,@_realloc_crt_fastcall@8,10,
 0x6f08ae,__msize,163,
 0x6f0954,__SEH_prolog4,,
 0x6f0999,__SEH_epilog4,,
@@ -9148,6 +9154,7 @@ address,symbol,size,ctype
 0x6f25e5,___sbh_alloc_block,739,
 0x6f28c8,__initp_heap_handler,10,
 0x6f28d2,?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z,49,
+0x6f2903,?_set_new_handler@@YAP6AHI@ZH@Z,9,
 0x6f2919,__callnewh,34,
 0x6f293b,__stbuf,150,
 0x6f29d1,__ftbuf,47,
@@ -9253,7 +9260,9 @@ address,symbol,size,ctype
 0x6faf1b,__configthreadlocale,102,
 0x6faf81,libcmt#00400:_sync_legacy_variables_lk,83,
 0x6fafd4,__free_locale,150,
+0x6fb06a,___free_locale,5,
 0x6fb06f,__get_current_locale,136,
+0x6fb0f7,___get_current_locale,5,
 0x6fb0ff,__strcats,62,
 0x6fb13d,___lc_strtolc,297,
 0x6fb266,___lc_lctostr,107,
@@ -9261,12 +9270,14 @@ address,symbol,size,ctype
 0x6fb442,__expandlocale,468,
 0x6fb90c,libcmt#00400:__setlocale_nolock,,
 0x6fbada,__create_locale,243,
+0x6fbbcd,___create_locale,5,
 0x6fbbd2,_setlocale,368,
 0x6fbd42,__MarkAllocaS,18,
 0x6fbd54,__freea,27,
 0x6fbd89,libcmt#00335:?__crtLCMapStringA_stat@@YAHPAUlocaleinfo_struct@@KKPBDHPADHHH@Z,930,
 0x6fc12b,___crtLCMapStringA,67,
 0x6fc16e,__isleadbyte_l,54,
+0x6fc1a4,_isleadbyte,14,
 0x6fc1b2,__iswalpha_l,22,
 0x6fc1d9,__iswupper_l,19,
 0x6fc1fa,__iswlower_l,19,
@@ -9375,6 +9386,7 @@ address,symbol,size,ctype
 0x702571,__ismbbtrail_l,21,
 0x702586,__ismbbtrail,19,
 0x702599,__ismbbkana_l,83,
+0x7025ec,__ismbbkana,14,
 0x7025fa,libcmt#00024:?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z,555,
 0x70284e,__strtol_l,27,
 0x702893,__strtoul_l,27,
@@ -9458,6 +9470,7 @@ address,symbol,size,ctype
 0x703710,?getString@DNameStatusNode@@UBEPADPADH@Z,51,
 0x703743,??0UnDecorator@@QAE@PADPBDHP6APADJ@ZK@Z,115,
 0x7037b6,?getReturnType@UnDecorator@@CA?AVDName@@PAV2@@Z,47,
+0x7037e5,?getStorageConvention@UnDecorator@@CA?AVDName@@XZ,15,
 0x7037f4,??YDName@@QAEAAV0@W4DNameStatus@@@Z,121,
 0x70386d,??4DName@@QAEAAV0@PAV0@@Z,104,
 0x7038d5,?doPchar@DName@@AAEXPBDH@Z,166,
@@ -9504,6 +9517,7 @@ address,symbol,size,ctype
 0x705476,?getTemplateName@UnDecorator@@CA?AVDName@@_N@Z,339,
 0x7055c9,?getZName@UnDecorator@@CA?AVDName@@_N@Z,490,
 0x7057b3,?getScopedName@UnDecorator@@CA?AVDName@@XZ,228,
+0x705897,?getECSUName@UnDecorator@@CA?AVDName@@XZ,15,
 0x7058a6,?getECSUDataType@UnDecorator@@CA?AVDName@@XZ,256,
 0x7059a6,?getSymbolName@UnDecorator@@CA?AVDName@@XZ,70,
 0x7059ec,?getBasedType@UnDecorator@@CA?AVDName@@XZ,146,
@@ -9550,8 +9564,11 @@ address,symbol,size,ctype
 0x70b0ca,____lc_collate_cp_func,38,
 0x70b0f0,____lc_handle_func,38,
 0x70b119,__Getdays_l,254,
+0x0070b217,__Getdays,9,
 0x70b220,__Getmonths_l,254,
+0x0070b31e,__Getmonths,9,
 0x70b327,__Gettnames_l,853,
+0x0070b67c,__Gettnames,9,
 0x70b685,libcmt#00804:?_store_str@@YAXPADPAPADPAI@Z,32,
 0x70b6a5,libcmt#00804:?_store_number@@YAXHPAPADPAI@Z,54,
 0x70b6db,libcmt#00804:?_store_num@@YAXHHPAPADPAII@Z,121,
@@ -9592,10 +9609,12 @@ address,symbol,size,ctype
 0x70fabc,_ungetc,114,
 0x70fb2e,__fgetwc_nolock,,
 0x70fcd5,_fgetwc,115,
+0x70fd48,_getwc,5,
 0x70fd4d,__ungetwc_nolock,,
 0x70fef8,_ungetwc,119,
 0x70ff6f,libcmt#00034:?wcsncnt@@YAIPB_WI@Z,47,
 0x70ff9e,__wcstombs_l_helper,582,
+0x7101e4,__wcstombs_l,5,
 0x7101e9,_wcstombs,23,
 0x710200,__wcstombs_s_l,177,
 0x7102b1,_wcstombs_s,30,
@@ -9654,6 +9673,7 @@ address,symbol,size,ctype
 0x71545f,___crtsetenv,,
 0x7156ab,__strdup,,char *__cdecl (const char *)
 0x7156fb,__mbschr_l,186,
+0x7157b5,__mbschr,19,
 0x007157c8,_D3DXMatrixMultiply@12,6,"D3DXMATRIX * __stdcall (D3DXMATRIX *, const D3DXMATRIX *, const D3DXMATRIX *)"
 0x007157ce,_D3DXMatrixLookAtLH@16,6,"D3DXMATRIX * __stdcall (D3DXMATRIX *, const D3DXVECTOR3 *, const D3DXVECTOR3 *, const D3DXVECTOR3 *)"
 0x007157d4,_D3DXMatrixOrthoLH@20,6,"D3DXMATRIX * __stdcall (D3DXMATRIX *, FLOAT, FLOAT, FLOAT, FLOAT)"
@@ -10034,6 +10054,7 @@ address,symbol,size,ctype
 0x74ee62,??_V@YAXPAX@Z,,void __cdecl (void *)
 0x74f810,__fputwc_nolock,,
 0x74f9ee,_fputwc,120,
+0x74fa66,_putwc,5,
 0x0074fbdc,_D3DXCompileShader@40,6,"HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, const char *, const char *, DWORD, ID3DXBuffer **, ID3DXBuffer **, ID3DXConstantTable **)"
 0x0074fbe2,_D3DXCreateEffectCompiler@28,6,"HRESULT __stdcall (const char *, UINT, const D3DXMACRO *, ID3DXInclude *, DWORD, ID3DXEffectCompiler **, ID3DXBuffer **)"
 0x0074fbe8,_D3DXCreateBuffer@8,6,"HRESULT __stdcall (DWORD, ID3DXBuffer **)"
