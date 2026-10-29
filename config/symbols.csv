@@ -3330,8 +3330,12 @@ address,symbol,size,ctype
 0x005224a0,_AiEditorPrevLocatorInSetPc,84,EDLOCATOR_s * private ESI set / EDX current
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
+0x522e30,_AiPathDrawSolidEdgePc,1000,
+0x523220,_AiPathDrawWireEdgePc,893,
+0x5235a0,_AiPathDrawCrossPc,157,
 0x523640,_pathEditorDrawNode,137,
 0x5236d0,_pathEditorDrawConnectionInfo,1387,
+0x523c40,_pathEditorDrawPath,1343,
 0x524190,_pathEditorDrawPaths,273,
 0x524320,_pathEditor_UpdateNodesOnPlatforms,142,
 0x5243b0,_TestPointPathCheck,516,
@@ -15292,6 +15296,7 @@ address,symbol,size,ctype
 0x0075ff64,_AIScriptKeywordEnd,2,const char[2]
 0x0075ff68,_AIScriptKeywordReferenceScript,16,const char[16]
 0x0075ff78,_AIScriptKeywordActions,8,const char[8]
+0x75ff7c,_AiEditorPathPaletteObservedPc,,const u32[9]
 0x0075ff80,??_C@_0L@DEGONPBH@CONDITIONS?$AA@,11,const char[11]
 0x0075ff80,_AIScriptKeywordConditions,11,const char[11]
 0x0075ffa0,??_C@_03BOPJPIAM@and?$AA@,4,const char[4]
@@ -21458,7 +21463,10 @@ address,symbol,size,ctype
 0x00801c8c,_AIMovementInstructionPositiveThreshold,4,f32
 0x00801c90,_AIMovementInstructionNegativeThreshold,4,f32
 0x00801c94,_new_retreat,4,i32
+0x801c98,_AiEditorPathsModeIdPc,,i32
 0x801c9c,_AiEditorRouteModeIdPc,,i32
+0x801ca0,_AiEditorCreaturesModeIdPc,,i32
+0x801ca8,_AiEditorLocatorsModeIdPc,,i32
 0x801cac,_AiEditorAntinodeModeIdPc,,i32
 0x801cb4,_AiEditorSaveMessageColoursPc,,struct eduiiattr_s
 0x801cc4,_aiEditor_LocatorWidth,4,f32
@@ -24562,6 +24570,8 @@ address,symbol,size,ctype
 0x00923928,_GetOriginPositionFn,4,AI_ORIGIN_POSITION_PC
 0x923934,_AIPathConnectionTypeCountPc,,i32
 0x923938,_AIPathConnectionTypesPc,,
+0x9242b8,_AiEditorUpperHeightOverridePc,,f32
+0x9242bc,_AiEditorLowerHeightOverridePc,,f32
 0x9242c0,_iterator_count,,i32
 0x9242c4,_distance_tables,,f32 ***
 0x9242d4,_AiEditorMovePlayersCallbackPc,,

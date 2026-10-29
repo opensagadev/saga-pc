@@ -4159,7 +4159,47 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
             packet->movement_target = NULL;
         }
     }
-    if (packet->movement_target == NULL) {
+    if (packet->movement_target != NULL) {
+        packet->flags |= 0x00080000u;
+        if (WithinConnection(system, &packet->terrain_origin, packet->path_info.path, packet->movement_target, checks,
+                             packet->path_info.connection, packet->current_route, object->object_id, NULL,
+                             object->collision_radius, 0) == 0) {
+            packet->movement_destination =
+                packet->path_info.path
+                    ->nodes[packet->movement_target->node_indices[packet->movement_target_direction == 0]]
+                    .position;
+            packet->movement_stopping_distance = 0.0f;
+            if (CalculateIntersection(system, packet, object, packet->path_info.connection, packet->movement_target) !=
+                0) {
+                if ((packet->flags & 0x00000040u) != 0) {
+                    NuVecSub(&difference, &packet->left_diversion, &object->position);
+                    angle = NuAtan2D(difference.x, difference.z);
+                    NuVecSub(&difference, &packet->movement_destination, &object->position);
+                    if (NuAngSub(NuAtan2D(difference.x, difference.z), angle) < 0) {
+                        packet->movement_destination = packet->left_diversion;
+                        return;
+                    }
+                }
+                if ((packet->flags & 0x00000020u) != 0) {
+                    NuVecSub(&difference, &packet->right_diversion, &object->position);
+                    angle_2 = NuAtan2D(difference.x, difference.z);
+                    NuVecSub(&difference, &packet->movement_destination, &object->position);
+                    if (NuAngSub(NuAtan2D(difference.x, difference.z), angle_2) > 0) {
+                        packet->movement_destination = packet->right_diversion;
+                    }
+                }
+            }
+        } else {
+            AISysCharacterSetPathCnx(packet, &object->position, packet->movement_target,
+                                     packet->movement_target_direction);
+            packet->goal_path_node =
+                &packet->path_info.path
+                     ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            packet->movement_destination = packet->goal_path_node->position;
+            packet->movement_stopping_distance = 0.0f;
+            packet->movement_target = NULL;
+        }
+    } else {
         node_2 = &packet->path_info.path
                       ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         distance = NuVecXZDistSqr(&object->position, &node_2->position, &difference);
@@ -4172,44 +4212,6 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
         }
         packet->movement_destination = node_2->position;
         packet->movement_stopping_distance = 0.0f;
-        return;
-    }
-
-    packet->flags |= 0x00080000u;
-    if (WithinConnection(system, &packet->terrain_origin, packet->path_info.path, packet->movement_target, checks,
-                         packet->path_info.connection, packet->current_route, object->object_id, NULL,
-                         object->collision_radius, 0) == 0) {
-        packet->movement_destination =
-            packet->path_info.path->nodes[packet->movement_target->node_indices[packet->movement_target_direction == 0]]
-                .position;
-        packet->movement_stopping_distance = 0.0f;
-        if (CalculateIntersection(system, packet, object, packet->path_info.connection, packet->movement_target) != 0) {
-            if ((packet->flags & 0x00000040u) != 0) {
-                NuVecSub(&difference, &packet->left_diversion, &object->position);
-                angle = NuAtan2D(difference.x, difference.z);
-                NuVecSub(&difference, &packet->movement_destination, &object->position);
-                if (NuAngSub(NuAtan2D(difference.x, difference.z), angle) < 0) {
-                    packet->movement_destination = packet->left_diversion;
-                    return;
-                }
-            }
-            if ((packet->flags & 0x00000020u) != 0) {
-                NuVecSub(&difference, &packet->right_diversion, &object->position);
-                angle_2 = NuAtan2D(difference.x, difference.z);
-                NuVecSub(&difference, &packet->movement_destination, &object->position);
-                if (NuAngSub(NuAtan2D(difference.x, difference.z), angle_2) > 0) {
-                    packet->movement_destination = packet->right_diversion;
-                }
-            }
-        }
-    } else {
-        AISysCharacterSetPathCnx(packet, &object->position, packet->movement_target, packet->movement_target_direction);
-        packet->goal_path_node =
-            &packet->path_info.path
-                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        packet->movement_destination = packet->goal_path_node->position;
-        packet->movement_stopping_distance = 0.0f;
-        packet->movement_target = NULL;
     }
 }
 
@@ -16172,4 +16174,357 @@ void __cdecl aieditor_Leave(void) {
     AISYSRebuildFromEditorData();
     AIScriptInitConditions(aieditor->ai_system);
     ((AI_EDITOR_ANTINODE_FLAGS_PC *)aieditor)->flags &= ~2u;
+}
+
+/* Actual PC draw-family field views; no Native owning allocation is inferred. */
+typedef struct AI_PATH_DRAW_FLAGS_PC {
+    NULISTLNK link;
+    u8 unknown_08[2];
+    u16 flags;
+} AI_PATH_DRAW_FLAGS_PC;
+typedef struct AI_PATH_DRAW_INDEX_PC {
+    u8 unknown_00[0x38];
+    i8 draw_index;
+} AI_PATH_DRAW_INDEX_PC;
+STATIC_ASSERT(offsetof(AI_PATH_DRAW_FLAGS_PC, flags) == 0x0a);
+STATIC_ASSERT(sizeof(AI_PATH_DRAW_FLAGS_PC) == 0x0c);
+STATIC_ASSERT(offsetof(AI_PATH_DRAW_INDEX_PC, draw_index) == 0x38);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, path_walls) == 0x31b8c);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, paths) == 0x4874);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
+STATIC_ASSERT(offsetof(EDAIPATH_s, nodes) == 0x18);
+STATIC_ASSERT(offsetof(EDAIPATH_s, current_node) == 0x20);
+STATIC_ASSERT(offsetof(EDAIPATH_s, other_node) == 0x24);
+STATIC_ASSERT(offsetof(EDAIPATH_s, current_route) == 0x28);
+STATIC_ASSERT(offsetof(EDAIPATH_s, routes) == 0x40);
+STATIC_ASSERT(sizeof(EDAIPATHROUTE_s) == 0x20);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, index) == 0x90);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, route_mask) == 0x96);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, shared_node) == 0xb0);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, connections) == 0x30);
+STATIC_ASSERT(sizeof(EDAIPATHCNX_s) == 0x0c);
+STATIC_ASSERT(offsetof(EDAIPATHCNX_s, flags) == 4);
+STATIC_ASSERT(offsetof(EDAIPATHCNX_s, route_mask) == 8);
+STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
+STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
+extern i32 AiEditorPathsModeIdPc;
+extern i32 AiEditorCreaturesModeIdPc;
+extern i32 AiEditorLocatorsModeIdPc;
+extern f32 AiEditorUpperHeightOverridePc;
+extern f32 AiEditorLowerHeightOverridePc;
+extern const u32 AiEditorPathPaletteObservedPc[9];
+void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix);
+
+static void AiPathDrawCrossPc(NUVEC *position, f32 radius, u32 colour) {
+    NURND_VERTEX3D_PC vertices[2];
+    vertices[0].colour = colour;
+    vertices[1].colour = colour;
+    vertices[0].position = *position;
+    vertices[1].position = *position;
+    vertices[0].position.x += radius;
+    vertices[1].position.x -= radius;
+    AiRndrLine3d(vertices, NULL, NULL);
+    vertices[0].position = *position;
+    vertices[1].position = *position;
+    vertices[0].position.z += radius;
+    vertices[1].position.z -= radius;
+    AiRndrLine3d(vertices, NULL, NULL);
+}
+
+/* Native PC solid-edge helper: 0x00522e30, complete 1000-byte body. */
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, position) == 0x18);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, radius) == 0x24);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, lower_height) == 0x28);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, upper_height) == 0x2c);
+
+static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
+    NURND_VERTEX3D_PC vertices[2];
+    NUVEC direction;
+    f32 distance = NuVecXZDist(&first->position, &second->position, &direction);
+    if (distance > 0.0f) {
+        direction.x /= distance;
+        direction.z /= distance;
+    }
+    if (first->radius != second->radius) {
+        NUVEC side;
+        i16 angle = (i16)(0x4000u - (u32)PCPathArcSine((second->radius - first->radius) / distance));
+        NuVecRotateY(&side, &direction, angle);
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x += first->radius * side.x;
+        vertices[0].position.z += first->radius * side.z;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x += second->radius * side.x;
+        vertices[1].position.z += second->radius * side.z;
+        vertices[0].position.y = first->lower_height + first->position.y;
+        vertices[1].position.y = second->lower_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position.y = first->upper_height + first->position.y;
+        vertices[1].position.y = second->upper_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        NuVecRotateY(&side, &direction, -angle);
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x += first->radius * side.x;
+        vertices[0].position.z += first->radius * side.z;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x += second->radius * side.x;
+        vertices[1].position.z += second->radius * side.z;
+        vertices[0].position.y = first->lower_height + first->position.y;
+        vertices[1].position.y = second->lower_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position.y = first->upper_height + first->position.y;
+        vertices[1].position.y = second->upper_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+    } else {
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x += first->radius * direction.z;
+        vertices[0].position.z -= first->radius * direction.x;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x += second->radius * direction.z;
+        vertices[1].position.z -= second->radius * direction.x;
+        vertices[0].position.y = first->lower_height + first->position.y;
+        vertices[1].position.y = second->lower_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position.y = first->upper_height + first->position.y;
+        vertices[1].position.y = second->upper_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x -= first->radius * direction.z;
+        vertices[0].position.z += first->radius * direction.x;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x -= second->radius * direction.z;
+        vertices[1].position.z += second->radius * direction.x;
+        vertices[0].position.y = first->lower_height + first->position.y;
+        vertices[1].position.y = second->lower_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position.y = first->upper_height + first->position.y;
+        vertices[1].position.y = second->upper_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+    }
+}
+
+static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
+    NUVEC direction, side;
+    NURND_VERTEX3D_PC vertices[2];
+    f32 distance;
+    i16 angle;
+
+    distance = NuVecXZDist(&first->position, &second->position, &direction);
+    if (distance > 0.0f) {
+        direction.x /= distance;
+        direction.z /= distance;
+    }
+    if (first->radius == second->radius) {
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x += first->radius * direction.z;
+        vertices[0].position.y += aiEditor_DrawYOffset;
+        vertices[0].position.z -= first->radius * direction.x;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x += second->radius * direction.z;
+        vertices[1].position.y += aiEditor_DrawYOffset;
+        vertices[1].position.z -= second->radius * direction.x;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x -= first->radius * direction.z;
+        vertices[0].position.y += aiEditor_DrawYOffset;
+        vertices[0].position.z += first->radius * direction.x;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x -= second->radius * direction.z;
+        vertices[1].position.y += aiEditor_DrawYOffset;
+        vertices[1].position.z += second->radius * direction.x;
+        AiRndrLine3d(vertices, NULL, NULL);
+    } else {
+        distance = (second->radius - first->radius) / distance;
+        angle = (i16)(0x4000u - (u32)PCPathArcSine(distance));
+        NuVecRotateY(&side, &direction, angle);
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x += first->radius * side.x;
+        vertices[0].position.y += aiEditor_DrawYOffset;
+        vertices[0].position.z += first->radius * side.z;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x += second->radius * side.x;
+        vertices[1].position.y += aiEditor_DrawYOffset;
+        vertices[1].position.z += second->radius * side.z;
+        AiRndrLine3d(vertices, NULL, NULL);
+        NuVecRotateY(&side, &direction, -(i32)angle);
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x += first->radius * side.x;
+        vertices[0].position.y += aiEditor_DrawYOffset;
+        vertices[0].position.z += first->radius * side.z;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x += second->radius * side.x;
+        vertices[1].position.y += aiEditor_DrawYOffset;
+        vertices[1].position.z += second->radius * side.z;
+        AiRndrLine3d(vertices, NULL, NULL);
+    }
+}
+
+static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
+    u8 drawn_connections[255][32];
+    i16 mode;
+    i32 solid;
+    u32 active_route = 0;
+    u32 colour;
+    EDAIPATHNODE_s *node;
+    memset(drawn_connections, 0, sizeof(drawn_connections));
+    mode = AiEditorModeBankPc.current;
+    solid = (AiEditorDisplayOptionsPc & 0x80) &&
+            (mode == AiEditorPathsModeIdPc || mode == AiEditorCreaturesModeIdPc || mode == AiEditorLocatorsModeIdPc);
+    if (mode == AiEditorRouteModeIdPc) {
+        EDAIPATH_s *selected = aieditor->current_path;
+        u8 shift = selected->current_route != NULL
+                       ? (u8)((i32)((u32)selected->current_route - (u32)selected - offsetof(EDAIPATH_s, routes)) >> 5)
+                       : 0;
+        active_route = shift < 64 ? (u32)((u64)1 << shift) : 0;
+    }
+    colour = path == aieditor->current_path
+                 ? 0xffffffff
+                 : *(u32 *)((u32)AiEditorPathPaletteObservedPc + 16u + (u32)(path_index % 5) * sizeof(u32));
+    if (path != NULL) {
+        for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+             node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link)) {
+            i32 first_index;
+            i32 segments;
+            u32 node_colour;
+            i32 slot;
+            f32 override_height = AiEditorUpperHeightOverridePc;
+            if (override_height != 0.0f)
+                node->upper_height = override_height;
+            override_height = AiEditorLowerHeightOverridePc;
+            if (override_height != 0.0f)
+                node->lower_height = override_height;
+            first_index = node->index;
+            if (path == aieditor->current_path) {
+                if (node == path->current_node) {
+                    node_colour = 0xff0000ff;
+                    segments = 32;
+                } else if (node == path->other_node) {
+                    node_colour = 0xff00ffff;
+                    segments = 32;
+                } else {
+                    node_colour = colour;
+                    segments = 8;
+                }
+            } else {
+                node_colour = colour;
+                segments = 8;
+            }
+            pathEditorDrawNode(&node->position, node->radius, node->lower_height + node->position.y,
+                               node->upper_height + node->position.y, node_colour, 0, segments, solid);
+            if (node->shared_node != NULL && !(node->shared_node->draw_flags & 1)) {
+                AiPathDrawCrossPc(&node->position, node->radius, node_colour);
+                ((AI_PATH_DRAW_FLAGS_PC *)node->shared_node)->flags |= 1;
+            }
+            if (node->route_mask & active_route) {
+                if (path == aieditor->current_path && node == path->current_node) {
+                    pathEditorDrawNode(&node->position, node->radius * (f64)0.9f, node->lower_height + node->position.y,
+                                       node->upper_height + node->position.y, 0xff0000ff, 0, 32, solid);
+                } else if (path == aieditor->current_path && node == path->other_node) {
+                    pathEditorDrawNode(&node->position, node->radius * (f64)0.9f, node->lower_height + node->position.y,
+                                       node->upper_height + node->position.y, 0xff00ffff, 0, 32, solid);
+                } else {
+                    pathEditorDrawNode(&node->position, node->radius * (f64)0.9f, node->lower_height + node->position.y,
+                                       node->upper_height + node->position.y, colour, 0, 8, solid);
+                }
+            }
+            for (slot = 0; slot < 8; ++slot) {
+                EDAIPATHNODE_s *other = node->connections[slot].node;
+                i32 second_index;
+                u32 connection_colour;
+                u32 edge_colour;
+                u32 route_colour;
+                if (other == NULL) {
+                    continue;
+                }
+                second_index = other->index;
+                connection_colour = colour;
+                if (node == path->current_node && other == path->other_node) {
+                    connection_colour = 0xff00ffff;
+                }
+                pathEditorDrawConnectionInfo(&node->position, node->radius, &other->position,
+                                             node->connections[slot].flags, connection_colour);
+                if (*((u8 *)((u32)drawn_connections + (u32)first_index * 32u + (u32)(second_index / 8))) &
+                    (1u << ((u32)(second_index % 8) & 31u))) {
+                    continue;
+                }
+                *((u8 *)((u32)drawn_connections + (u32)first_index * 32u + (u32)(second_index / 8))) |=
+                    1u << ((u32)(second_index % 8) & 31u);
+                *((u8 *)((u32)drawn_connections + (u32)second_index * 32u + (u32)(first_index / 8))) |=
+                    1u << ((u32)(first_index % 8) & 31u);
+                edge_colour = colour;
+                if (path == aieditor->current_path) {
+                    if (((node == path->current_node && node->connections[slot].node == path->other_node) ||
+                         (node == path->other_node && node->connections[slot].node == path->current_node))) {
+                        edge_colour = 0xff00ffff;
+                    } else if (node == path->current_node || node->connections[slot].node == path->current_node) {
+                        edge_colour = 0xff0000ff;
+                    }
+                }
+                if (solid) {
+                    AiPathDrawSolidEdgePc(node, node->connections[slot].node, edge_colour);
+                } else {
+                    AiPathDrawWireEdgePc(node, node->connections[slot].node, edge_colour);
+                }
+                route_colour = 0xffff0000;
+                if ((node == path->current_node && node->connections[slot].node == path->other_node) ||
+                    (node == path->other_node && node->connections[slot].node == path->current_node)) {
+                    route_colour = 0xff00ffff;
+                }
+                if (node->connections[slot].route_mask & active_route) {
+                    NURND_VERTEX3D_PC route_vertices[2];
+                    route_vertices[0].position = node->position;
+                    route_vertices[0].colour = route_colour;
+                    route_vertices[0].position.y += aiEditor_DrawYOffset + (f64)0.02f;
+                    route_vertices[1].position = node->connections[slot].node->position;
+                    route_vertices[1].colour = route_colour;
+                    route_vertices[1].position.y += aiEditor_DrawYOffset + (f64)0.02f;
+                    AiRndrLine3d(route_vertices, NULL, NULL);
+                }
+            }
+        }
+    }
+}
+
+void pathEditorDrawPaths(void) {
+    EDAIPATHWALL_s *wall = (EDAIPATHWALL_s *)NuLinkedListGetHead(&aieditor->path_walls);
+    while (wall != NULL) {
+        ((AI_PATH_DRAW_FLAGS_PC *)wall)->flags &= 0xfffe;
+        wall = (EDAIPATHWALL_s *)NuLinkedListGetNext(&aieditor->path_walls, &wall->link);
+    }
+
+    if ((AiEditorDisplayOptionsPc & 2)) {
+        i32 index = 0;
+        EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
+        while (path != NULL) {
+            ((AI_PATH_DRAW_INDEX_PC *)path)->draw_index = (i8)index++;
+            path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link);
+        }
+        if (aieditor->current_path != NULL) {
+            pathEditorDrawPath(aieditor->current_path, ((AI_PATH_DRAW_INDEX_PC *)aieditor->current_path)->draw_index);
+        }
+        path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
+        while (path != NULL) {
+            if (path != aieditor->current_path) {
+                pathEditorDrawPath(path, ((AI_PATH_DRAW_INDEX_PC *)path)->draw_index);
+            }
+            path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link);
+        }
+    } else {
+        pathEditorDrawPath(aieditor->current_path, 0);
+    }
 }

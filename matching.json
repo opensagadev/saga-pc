@@ -17,7 +17,7 @@
     "config/library-objects.json": "9727c009368075a0e525a27ae8337b66c444838945fc976fb2676f9f1fe372a9",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "fea54aed5b04c7f21fb6db69c05fe9e8675809bbcf5af10e43f007ed6393d8ac",
+    "config/symbols.csv": "ea9f1b8a58383a3d7aca9a54826144bcb7c7498f325d35a11647802954a1253e",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -74,7 +74,7 @@
     "tools/dsound.def": "10147b85f8f09f4a3fefe82c0756818c64d9a6f2d81bb3f120757ea5b08941da",
     "tools/xinput1_3.def": "f2b829c89adb5c7fc9fbd7dfdbc49f8eb5412d4700bf1123935f71a29fa84b50",
     "src/batman.cpp": "224f37b2b107fbea3295ffd8a912cc71c6c0878633583fd21479e913db42a02f",
-    "src/data.cpp": "146e00014fb120e4ffa87f2b26fd0b18662378a8ff572d98981141251279c102",
+    "src/data.cpp": "2af47c6761c34f4b0d6ade4bb9b3e1d8923b6aa329f71f8b2b036db16c397d1e",
     "src/debug/crash_diagnostics.cpp": "d6c4c416477a07ecad9d72a9834f6b5180ca36fcab1f60b0a6eba4719e00924a",
     "src/debug/skin_trace.cpp": "0253ca3bb71bc07f0678151f453c21f5cdc3c8a429796f9e8b1420cb247ee6b1",
     "src/debug/skin_trace_windows.cpp": "9c351973a212bee638eb1b7f9896b6a99c617861c9275e191da311d88504f21a",
@@ -213,7 +213,7 @@
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript.c": "83133e3d959890d181cdc2b1745f103c8d015d327331d75690fd68ba0b4cc196",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
-    "src/gameapi/aisys.c": "1065fd1300eb61fc0659b5e59dcc6eb262ec04fad7cf68225fbdb640b74f6ce8",
+    "src/gameapi/aisys.c": "98ac5f94673cbf0293a1609ce8bba59ab76032f1faa193b46af1974e20e64c76",
     "src/gameapi/apiobject.c": "8194bb0803737bfc4237228dfb33b2314f19ad1be70617e03cae99dc00137d84",
     "src/gameapi/apisave.c": "cc06447f47998f647703e79655c8c61c72854b6f2e502b3c3b6fff0d0ce6b5d2",
     "src/gameapi/edanim_load.c": "e9ec9bd1b555dc9de0563251e0f61dc24e3e0b229050328239325ff8949f4f4d",
@@ -563,13 +563,13 @@
     "build/obj/vendored/vorbis/window.obj": "5526a44754cc012f1eef6e305ed8d257c415053fdac1c75d03a89614cc3083b6",
     "build/obj/vendored/vorbis_smallft.obj": "c2227d7d0944c9018725718a1834024e9c5f592a04ca21cff59096b429623184",
     "build/obj/batman.obj": "6c45120c0bf7db468b82cef73e85b0355c0167f2b3d3fbfc75864a3b4176541c",
-    "build/obj/data.obj": "b9d36cc24e77dac5067aa35970a7fda7e246685b5cc113018c37ba86e1a821be",
+    "build/obj/data.obj": "cd768e59f1786f051192eab312587d3edc6f76d9932b2efd2330ae48f56132d2",
     "build/obj/editor/edtoolsall.obj": "68ae817490d6cccc9b048d823c04ca05865203c6c47f1b3c61d7ab6ce3e1972d",
     "build/obj/gameapi/ai_registry_pc.obj": "1d406d5d6b400864b90000519eff18334736f70e0145538f7b55f1754a0810bb",
     "build/obj/gameapi/aieditor_path_create_pc.obj": "16cbf3c517a689e7b82793756a1ea5c819d6989d46e04e3cb66afea7b061a811",
     "build/obj/gameapi/aiscript.obj": "63c39ce432167ccca4effc1ae17a8be90db4dbcda4104081465859968766a7f1",
     "build/obj/gameapi/aiscript_diagnostics.obj": "f26b6bd8c204fc33e9899d0f48a5836b3fe3c944af3fe28c85665d05d72b578e",
-    "build/obj/gameapi/aisys.obj": "b773b5c8a72f032694b4c80d5ec4a4925f9ac9663c6f1a66d9635ca973b5a0b7",
+    "build/obj/gameapi/aisys.obj": "a33d4628d26011ba998212a0d8ebf8abedc186788bc6212c7e6f2a0c6bc12236",
     "build/obj/gameapi/apiobject.obj": "33df4e00c3f8b26f656280b9bcf3b87cfa1d40e06fbebd1cdf318dcfa98972bd",
     "build/obj/gameapi/apisave.obj": "9a97508540d8c98ca9d94be86ea2616cba9a83d1bf04a4756111fa4d4729582c",
     "build/obj/gameapi/edanim_load.obj": "a7a0c1c37d15eb5bb54ac78afdd49757a103f5a1190a03bce4c650e98aa60aa5",
@@ -79624,17 +79624,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisys.c",
-          "base_size": 1111,
+          "base_size": 1130,
           "exact_match": false,
           "target_sha256": "90b8c1471138aa79fc74daa860baff50138fe722b0f74261cc35f49ea4af9730",
-          "base_sha256": "b37bc12c25f929b671ca0300bc2e5a180ebf4a2cf60d0f8e235c5d6d9feba14c",
+          "base_sha256": "f818b047d5c65a4fe20d29367cac6913eea227b514086dd98193634dd9cb16d0",
           "relocation_count": 17,
           "comparison_unit": "0051f1b0-0cdf99086f50",
-          "objdiff_percent": 0.0
+          "objdiff_percent": 72.22839
         }
       ],
       "status": "different",
-      "objdiff_percent": 0.0
+      "objdiff_percent": 72.22839
     },
     {
       "name": "AIMoveDirectlyToDestination",
@@ -80477,6 +80477,78 @@
       "objdiff_percent": 81.5
     },
     {
+      "name": "AiPathDrawSolidEdgePc",
+      "symbol": "_AiPathDrawSolidEdgePc",
+      "address": "0x00522e30",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 1000,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 1003,
+          "exact_match": false,
+          "target_sha256": "6c4100ecb161ae33e853b6180444b6722467b120056918dd51ff4d96c799db04",
+          "base_sha256": "3bf56f7c490e4bbcd15ffe4d6c5f2b22e14a2cca93a81c0b31e2d953b7a239f8",
+          "relocation_count": 12,
+          "comparison_unit": "00522e30-8a91dfa95707",
+          "objdiff_percent": 17.784811
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 17.784811
+    },
+    {
+      "name": "AiPathDrawWireEdgePc",
+      "symbol": "_AiPathDrawWireEdgePc",
+      "address": "0x00523220",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 893,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 874,
+          "exact_match": false,
+          "target_sha256": "e231208713674c913da2bcebd0d0ee9d14ad520467631eeefa780f7a9e474f53",
+          "base_sha256": "91e2c9d481b278c7846719542c41d09b39c17b28671f77baf280bfc0d3b6ac7c",
+          "relocation_count": 12,
+          "comparison_unit": "00523220-4e36bdbe2983",
+          "objdiff_percent": 94.18638
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 94.18638
+    },
+    {
+      "name": "AiPathDrawCrossPc",
+      "symbol": "_AiPathDrawCrossPc",
+      "address": "0x005235a0",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 157,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 157,
+          "exact_match": true,
+          "target_sha256": "7a9ec738f513da3d74353112d3f5dc1734303721ed817fbb3b05317009b54a7c",
+          "base_sha256": "7a9ec738f513da3d74353112d3f5dc1734303721ed817fbb3b05317009b54a7c",
+          "relocation_count": 2,
+          "comparison_unit": "005235a0-d59e119337e2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "pathEditorDrawNode",
       "symbol": "_pathEditorDrawNode",
       "address": "0x00523640",
@@ -80525,14 +80597,52 @@
       "objdiff_percent": 99.95408
     },
     {
+      "name": "pathEditorDrawPath",
+      "symbol": "_pathEditorDrawPath",
+      "address": "0x00523c40",
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
+      "target_size": 1343,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 1321,
+          "exact_match": false,
+          "target_sha256": "418ad72f1f534dc9e8e0c01892f5691f59bc227b8ac386487b564b7520da0783",
+          "base_sha256": "015bed8ad087e48fffae4ebfc8a7312b4d2d6366b304e9854f989a1bfa0bfa0d",
+          "relocation_count": 32,
+          "comparison_unit": "00523c40-168ca2a58b32",
+          "objdiff_percent": 86.385185
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 86.385185
+    },
+    {
       "name": "pathEditorDrawPaths",
       "symbol": "_pathEditorDrawPaths",
       "address": "0x00524190",
-      "units": [],
+      "units": [
+        "src/gameapi/aisys.c"
+      ],
       "target_size": 273,
       "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "base_size": 273,
+          "exact_match": false,
+          "target_sha256": "b22292eaac787ce8985acfc428923e77d7dd85dbfdcd1405dc99c8de315027b0",
+          "base_sha256": "b8965cd975150d266b144d90507209f196e681030adc145e93f181bae15b4fe4",
+          "relocation_count": 19,
+          "comparison_unit": "00524190-2bf9d9335ec1",
+          "objdiff_percent": 99.79518
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 99.79518
     },
     {
       "name": "pathEditor_UpdateNodesOnPlatforms",
@@ -258533,6 +258643,7 @@
       "symbol": "__real@3fecccccc0000000",
       "address": "0x00751960",
       "units": [
+        "src/gameapi/aisys.c",
         "src/legoapi/cables.c",
         "src/legoapi/gizbuildit_pc.c",
         "src/legoapi/move.c",
@@ -258545,6 +258656,14 @@
       "target_size": 8,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "ec24bb2117638198699b907b78e42d21e4132638e0e82c0c484c953023ed8435",
+          "base_sha256": "ec24bb2117638198699b907b78e42d21e4132638e0e82c0c484c953023ed8435"
+        },
         {
           "unit": "src/legoapi/cables.c",
           "exact_match": true,
@@ -275665,6 +275784,7 @@
       "symbol": "__real@3f947ae140000000",
       "address": "0x007532c8",
       "units": [
+        "src/gameapi/aisys.c",
         "src/legoapi/control_setup.cpp",
         "src/legoapi/grabber.c",
         "src/legoapi/hub.cpp"
@@ -275672,6 +275792,14 @@
       "target_size": 8,
       "exact_match": true,
       "objects": [
+        {
+          "unit": "src/gameapi/aisys.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "a648dcbc9eaa7778ada9e84f11ea9c34039d3515e3aca6dc05c387ecd8c33840",
+          "base_sha256": "a648dcbc9eaa7778ada9e84f11ea9c34039d3515e3aca6dc05c387ecd8c33840"
+        },
         {
           "unit": "src/legoapi/control_setup.cpp",
           "exact_match": true,
@@ -363052,6 +363180,18 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "AiEditorPathPaletteObservedPc",
+      "symbol": "_AiEditorPathPaletteObservedPc",
+      "address": "0x0075ff7c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "??_C@_0L@DEGONPBH@CONDITIONS?$AA@",
@@ -463638,9 +463778,45 @@
       "status": "exact"
     },
     {
+      "name": "AiEditorPathsModeIdPc",
+      "symbol": "_AiEditorPathsModeIdPc",
+      "address": "0x00801c98",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "AiEditorRouteModeIdPc",
       "symbol": "_AiEditorRouteModeIdPc",
       "address": "0x00801c9c",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AiEditorCreaturesModeIdPc",
+      "symbol": "_AiEditorCreaturesModeIdPc",
+      "address": "0x00801ca0",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AiEditorLocatorsModeIdPc",
+      "symbol": "_AiEditorLocatorsModeIdPc",
+      "address": "0x00801ca8",
       "units": [
         "src/data.cpp"
       ],
@@ -511385,6 +511561,30 @@
       "status": "unknown size"
     },
     {
+      "name": "AiEditorUpperHeightOverridePc",
+      "symbol": "_AiEditorUpperHeightOverridePc",
+      "address": "0x009242b8",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "AiEditorLowerHeightOverridePc",
+      "symbol": "_AiEditorLowerHeightOverridePc",
+      "address": "0x009242bc",
+      "units": [
+        "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "iterator_count",
       "symbol": "_iterator_count",
       "address": "0x009242c0",
@@ -549402,17 +549602,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2594470,
-    "matched_code_bytes": 770897,
-    "matching_percent": 22.208077445389925,
-    "fuzzy_coverage_percent": 62.89705421597889,
-    "mapped_functions": 9942,
-    "matched_functions": 6054,
-    "objdiff_fuzzy_percent": 85.810135,
-    "objdiff_total_code": 2547312,
+    "mapped_code_bytes": 2597863,
+    "matched_code_bytes": 771054,
+    "matching_percent": 22.212600317004327,
+    "fuzzy_coverage_percent": 62.99517252234352,
+    "mapped_functions": 9946,
+    "matched_functions": 6055,
+    "objdiff_fuzzy_percent": 85.82033,
+    "objdiff_total_code": 2550978,
     "image_bytes": 40067072,
-    "mapped_bytes": 4467016,
-    "mapping_percent": 11.148845615671641,
+    "mapped_bytes": 4470409,
+    "mapping_percent": 11.157313916025608,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -549420,7 +549620,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2595664
+        "mapped_bytes": 2599057
       },
       {
         "name": ".rdata",
@@ -549445,17 +549645,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 19003,
-    "mapping_unknown_size_symbols": 7643,
-    "mapping_code_bytes": 2595664,
+    "mapping_known_size_symbols": 19007,
+    "mapping_unknown_size_symbols": 7649,
+    "mapping_code_bytes": 2599057,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.77614666318665,
+    "mapping_code_percent": 74.8738925446367,
     "mapping_data_bytes": 1871352,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195462856984845,
-    "mapping_code_data_bytes": 4467016,
+    "mapping_code_data_bytes": 4470409,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.311704277505525,
+    "mapping_code_data_percent": 11.320296279999713,
     "mapping_file_backed_data_bytes": 382686,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.947876959263844,
@@ -549466,17 +549666,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2594470,
-    "exact_reconstruction_bytes": 770897,
-    "mapped_not_exact_bytes": 1823573,
+    "mapped_reconstruction_bytes": 2597863,
+    "exact_reconstruction_bytes": 771054,
+    "mapped_not_exact_bytes": 1826809,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 875582,
+    "unclassified_text_bytes": 872189,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 22.208077445389925,
+    "strict_original_text_exact_percent": 22.212600317004327,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.21571895752571,
-    "mapped_scope_denominator_bytes": 2594470,
-    "mapped_scope_exact_percent": 29.71308205529453,
+    "reconstruction_scope_exact_percent": 22.220243385401716,
+    "mapped_scope_denominator_bytes": 2597863,
+    "mapped_scope_exact_percent": 29.68031801523021,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -550782,7 +550982,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "b94305d344d9fe099c299b94ad7ef6cd7725e80f9a30b42764c2f80895b88c57",
+      "geometry_object_sha256": "d58bf52aff4cd1a120f0c182e9d1639bd57f11f7b94fcc60cb9ff93a3e2028b0",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -550795,8 +550995,8 @@
       },
       "owners": {
         "src/data.cpp": {
-          "source_sha256": "146e00014fb120e4ffa87f2b26fd0b18662378a8ff572d98981141251279c102",
-          "object_sha256": "b9d36cc24e77dac5067aa35970a7fda7e246685b5cc113018c37ba86e1a821be"
+          "source_sha256": "2af47c6761c34f4b0d6ade4bb9b3e1d8923b6aa329f71f8b2b036db16c397d1e",
+          "object_sha256": "cd768e59f1786f051192eab312587d3edc6f76d9932b2efd2330ae48f56132d2"
         },
         "src/nu2api/pc_device.cpp": {
           "source_sha256": "874d33f7cdb00c86bb6414421c624ea46186c5cc161d7964a30d8ecede0e64c6",

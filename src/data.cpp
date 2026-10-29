@@ -35189,3 +35189,23 @@ extern "C" {
                                              {NULL, NULL}};
 #pragma data_seg()
 }
+
+#pragma section(".data$AiEditorPathsModeIdPc", read, write)
+#pragma section(".data$AiEditorCreaturesModeIdPc", read, write)
+#pragma section(".data$AiEditorLocatorsModeIdPc", read, write)
+#pragma section(".bss$AiEditorUpperHeightOverridePc", read, write)
+#pragma section(".bss$AiEditorLowerHeightOverridePc", read, write)
+extern "C" {
+    __declspec(allocate(".data$AiEditorPathsModeIdPc")) i32 AiEditorPathsModeIdPc = -1;
+    __declspec(allocate(".data$AiEditorCreaturesModeIdPc")) i32 AiEditorCreaturesModeIdPc = -1;
+    __declspec(allocate(".data$AiEditorLocatorsModeIdPc")) i32 AiEditorLocatorsModeIdPc = -1;
+    __declspec(allocate(".bss$AiEditorUpperHeightOverridePc")) f32 AiEditorUpperHeightOverridePc = 0;
+    __declspec(allocate(".bss$AiEditorLowerHeightOverridePc")) f32 AiEditorLowerHeightOverridePc = 0;
+}
+
+#pragma section(".rdata$AiEditorPathPaletteObservedPc", read)
+extern "C" {
+    __declspec(allocate(".rdata$AiEditorPathPaletteObservedPc")) extern const u32 AiEditorPathPaletteObservedPc[9] = {
+        0x00534e4fu, 0x444e4f43u, 0x4f495449u, 0x0000534eu, 0xffff0000u,
+        0xff00ff00u, 0xff00ffffu, 0xffff00ffu, 0xffffff00u};
+}
