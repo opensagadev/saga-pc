@@ -14,10 +14,10 @@
     "config/candidate-only.json": "3c02877830061943df8db236ee65c23642c03445fe60b4cc13f81dda4aaa9b39",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
-    "config/library-objects.json": "c3b0b1ba7f674d8f72f6392dd246a10759df1acb83de0ce19d214fe7a9722375",
+    "config/library-objects.json": "99bcfa2083d5af3ddb2562b2d2e7d28696ab4aa51be3154138a0b69e6676b291",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "ec816cb96aa6fe697c71ba2d3fd7ff7b2869a05f3ba981abb44a05cf3767f1a7",
+    "config/symbols.csv": "eb76bf480d1c55ab5ea682216273f6dfae67d258c0edb966b3f3dc1c2ad380cd",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -212461,6 +212461,30 @@
       "status": "not implemented"
     },
     {
+      "name": "remove",
+      "symbol": "_remove",
+      "address": "0x006e8de2",
+      "units": [
+        "lib/libcmt.lib/00066:unlink.obj"
+      ],
+      "target_size": 42,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00066:unlink.obj",
+          "base_size": 42,
+          "exact_match": true,
+          "target_sha256": "8d04abc80d19b9900fbf7ae5cb2b751e3fdcce9eca3039ee8e681d6860f96479",
+          "base_sha256": "8d04abc80d19b9900fbf7ae5cb2b751e3fdcce9eca3039ee8e681d6860f96479",
+          "relocation_count": 3,
+          "comparison_unit": "006e8de2-69c8ca5da81e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "srand",
       "symbol": "_srand",
       "address": "0x006e8e11",
@@ -213714,6 +213738,30 @@
           "base_sha256": "fa7c4ff8482dc481c034bcd928c04fc975c424b3c07688dcf6ff0207e0f36b98",
           "relocation_count": 3,
           "comparison_unit": "006ead85-fca34e937331",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__get_doserrno",
+      "symbol": "__get_doserrno",
+      "address": "0x006eae03",
+      "units": [
+        "lib/libcmt.lib/00053:dosmap.obj"
+      ],
+      "target_size": 42,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00053:dosmap.obj",
+          "base_size": 42,
+          "exact_match": true,
+          "target_sha256": "de2a69499da54b58bba5885a80764ec9183a07fc9a83f16e257ab3ae4128c0af",
+          "base_sha256": "de2a69499da54b58bba5885a80764ec9183a07fc9a83f16e257ab3ae4128c0af",
+          "relocation_count": 2,
+          "comparison_unit": "006eae03-301e4483ae8c",
           "objdiff_percent": 100.0
         }
       ],
@@ -215367,6 +215415,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__cftoa",
+      "symbol": "__cftoa",
+      "address": "0x006ee676",
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 30,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 30,
+          "exact_match": true,
+          "target_sha256": "645d6d65da5dcb2991ecf81d1a76893bde0174b2e9d157815423ce34961ec576",
+          "base_sha256": "645d6d65da5dcb2991ecf81d1a76893bde0174b2e9d157815423ce34961ec576",
+          "relocation_count": 1,
+          "comparison_unit": "006ee676-78c86747f2b2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "libcmt#00832:__cftof2_l",
       "symbol": "libcmt#00832:__cftof2_l",
       "address": "0x006ee694",
@@ -215415,6 +215487,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__cftof",
+      "symbol": "__cftof",
+      "address": "0x006ee842",
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "e73213d0216fa071b2fe024a089610cce200f32ee631cdb8efffab3b3eaa5f83",
+          "base_sha256": "e73213d0216fa071b2fe024a089610cce200f32ee631cdb8efffab3b3eaa5f83",
+          "relocation_count": 1,
+          "comparison_unit": "006ee842-fe37b9223844",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__cftog_l",
       "symbol": "__cftog_l",
       "address": "0x006ee85d",
@@ -215432,6 +215528,30 @@
           "base_sha256": "f929cdd1119bb6f71c02b00be1d81021c87d9dc840a2b793c0968e49e7156fa5",
           "relocation_count": 8,
           "comparison_unit": "006ee85d-31c4b5b80961",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__cftog",
+      "symbol": "__cftog",
+      "address": "0x006ee955",
+      "units": [
+        "lib/libcmt.lib/00832:cvt.obj"
+      ],
+      "target_size": 30,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00832:cvt.obj",
+          "base_size": 30,
+          "exact_match": true,
+          "target_sha256": "8d36051510d1b2100a34af57eef53df8972f56bea6545806ce517769f7560b8e",
+          "base_sha256": "8d36051510d1b2100a34af57eef53df8972f56bea6545806ce517769f7560b8e",
+          "relocation_count": 1,
+          "comparison_unit": "006ee955-ff96dc227697",
           "objdiff_percent": 100.0
         }
       ],
@@ -215778,6 +215898,30 @@
           "base_sha256": "773d0b09fdb42f5d5c5e6df8e659a28b35c8d41f8bf51627864d481c7f216ef2",
           "relocation_count": 7,
           "comparison_unit": "006ef9b2-d9a9eced1959",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "vsprintf_s",
+      "symbol": "_vsprintf_s",
+      "address": "0x006efa38",
+      "units": [
+        "lib/libcmt.lib/00553:vsnprnc.obj"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00553:vsnprnc.obj",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "95186a8fa1ea5b86ebda0bc2759615178371f05ba8f88998ccb72279923bf442",
+          "base_sha256": "95186a8fa1ea5b86ebda0bc2759615178371f05ba8f88998ccb72279923bf442",
+          "relocation_count": 1,
+          "comparison_unit": "006efa38-a5e0116c0b00",
           "objdiff_percent": 100.0
         }
       ],
@@ -218605,6 +218749,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__raise_exc",
+      "symbol": "__raise_exc",
+      "address": "0x006f9cfe",
+      "units": [
+        "lib/libcmt.lib/00927:fpexcept.obj"
+      ],
+      "target_size": 33,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00927:fpexcept.obj",
+          "base_size": 33,
+          "exact_match": true,
+          "target_sha256": "ccc6f70821dbda7623915d405509a1e138d8579251445e9a509b3cc0ad02ebf4",
+          "base_sha256": "ccc6f70821dbda7623915d405509a1e138d8579251445e9a509b3cc0ad02ebf4",
+          "relocation_count": 1,
+          "comparison_unit": "006f9cfe-a2ae7fa857f3",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__raise_excf",
       "symbol": "__raise_excf",
       "address": "0x006f9d1f",
@@ -221023,6 +221191,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__iscsymf_l",
+      "symbol": "__iscsymf_l",
+      "address": "0x00701392",
+      "units": [
+        "lib/libcmt.lib/00009:_ctype.obj"
+      ],
+      "target_size": 31,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00009:_ctype.obj",
+          "base_size": 31,
+          "exact_match": true,
+          "target_sha256": "e15d54c095a3582c917ca10b7fb2e1753ba646003dac21730eade725d17e7be1",
+          "base_sha256": "e15d54c095a3582c917ca10b7fb2e1753ba646003dac21730eade725d17e7be1",
+          "relocation_count": 1,
+          "comparison_unit": "00701392-44afd5582296",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "___iscsymf",
       "symbol": "___iscsymf",
       "address": "0x007013b1",
@@ -221040,6 +221232,30 @@
           "base_sha256": "2642f1bfda0f90b708d2bd58916bb172dcb456925d6a372d9585e89f323b2801",
           "relocation_count": 1,
           "comparison_unit": "007013b1-b4b94013b513",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__iscsym_l",
+      "symbol": "__iscsym_l",
+      "address": "0x007013cb",
+      "units": [
+        "lib/libcmt.lib/00009:_ctype.obj"
+      ],
+      "target_size": 31,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00009:_ctype.obj",
+          "base_size": 31,
+          "exact_match": true,
+          "target_sha256": "17827c72226b9412d2d68b8a48fc37f7b08f1dc367d395e79953470f19edd980",
+          "base_sha256": "17827c72226b9412d2d68b8a48fc37f7b08f1dc367d395e79953470f19edd980",
+          "relocation_count": 1,
+          "comparison_unit": "007013cb-7a6a44314c14",
           "objdiff_percent": 100.0
         }
       ],
@@ -221416,6 +221632,30 @@
           "base_sha256": "e657660a05a00c1e8d925d3f5c6bdfc1432527efe1e13d9eb4385dd62a171d2e",
           "relocation_count": 11,
           "comparison_unit": "00701dc3-2d8589cd58a7",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "wctomb_s",
+      "symbol": "_wctomb_s",
+      "address": "0x00701f22",
+      "units": [
+        "lib/libcmt.lib/00035:wctomb.obj"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00035:wctomb.obj",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "7fb5377fe4aa6e8cba51344d6a57ba5cfdd4838e5b22eda85cb35c06914bf47d",
+          "base_sha256": "7fb5377fe4aa6e8cba51344d6a57ba5cfdd4838e5b22eda85cb35c06914bf47d",
+          "relocation_count": 1,
+          "comparison_unit": "00701f22-2227038ae10d",
           "objdiff_percent": 100.0
         }
       ],
@@ -222136,6 +222376,54 @@
           "base_sha256": "c9515e03654fb43405af76b578993c5e6ceb55261b75e78250829be13728ba3b",
           "relocation_count": 5,
           "comparison_unit": "007025fa-95db8f8fd566",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__strtol_l",
+      "symbol": "__strtol_l",
+      "address": "0x0070284e",
+      "units": [
+        "lib/libcmt.lib/00024:strtol.obj"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00024:strtol.obj",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "997c47362ba07cd751e595263b6d6ff66f954bbf32045895e8b3f336b4ddcc53",
+          "base_sha256": "997c47362ba07cd751e595263b6d6ff66f954bbf32045895e8b3f336b4ddcc53",
+          "relocation_count": 1,
+          "comparison_unit": "0070284e-34e53925ace4",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__strtoul_l",
+      "symbol": "__strtoul_l",
+      "address": "0x00702893",
+      "units": [
+        "lib/libcmt.lib/00024:strtol.obj"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00024:strtol.obj",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "6a2156cfbc48691a195b9efa65b1ccb5f64f9f0b53493ba516978e228c5bef7d",
+          "base_sha256": "6a2156cfbc48691a195b9efa65b1ccb5f64f9f0b53493ba516978e228c5bef7d",
+          "relocation_count": 1,
+          "comparison_unit": "00702893-3a66aeb9c8df",
           "objdiff_percent": 100.0
         }
       ],
@@ -224391,6 +224679,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "??HDName@@QBE?AV0@PAV0@@Z",
+      "symbol": "??HDName@@QBE?AV0@PAV0@@Z",
+      "address": "0x00703e30",
+      "units": [
+        "lib/libcmt.lib/00093:undname.obj"
+      ],
+      "target_size": 46,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00093:undname.obj",
+          "base_size": 46,
+          "exact_match": true,
+          "target_sha256": "2e747d333d6424ee7efc42094c3d9453c740c0652d9b93ef2be672caa9bc4feb",
+          "base_sha256": "2e747d333d6424ee7efc42094c3d9453c740c0652d9b93ef2be672caa9bc4feb",
+          "relocation_count": 4,
+          "comparison_unit": "00703e30-39022f66405e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "??YDName@@QAEAAV0@D@Z",
       "symbol": "??YDName@@QAEAAV0@D@Z",
       "address": "0x00703e5e",
@@ -225717,6 +226029,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "mbtowc",
+      "symbol": "_mbtowc",
+      "address": "0x00709005",
+      "units": [
+        "lib/libcmt.lib/00021:mbtowc.obj"
+      ],
+      "target_size": 23,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00021:mbtowc.obj",
+          "base_size": 23,
+          "exact_match": true,
+          "target_sha256": "7fbb3dba6f270beab6a6b9cfa52314531a940dc24709bb71c38279db5863060e",
+          "base_sha256": "7fbb3dba6f270beab6a6b9cfa52314531a940dc24709bb71c38279db5863060e",
+          "relocation_count": 1,
+          "comparison_unit": "00709005-95b854a72222",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "?_ValidateRead@@YAHPBXI@Z",
       "symbol": "?_ValidateRead@@YAHPBXI@Z",
       "address": "0x00709eab",
@@ -226279,6 +226615,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__strftime_l",
+      "symbol": "__strftime_l",
+      "address": "0x0070c146",
+      "units": [
+        "lib/libcmt.lib/00804:strftime.obj"
+      ],
+      "target_size": 30,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00804:strftime.obj",
+          "base_size": 30,
+          "exact_match": true,
+          "target_sha256": "722f5bc63c78314b47cb024595c02eb42ce7a963068e9308b22f02a788e55cda",
+          "base_sha256": "722f5bc63c78314b47cb024595c02eb42ce7a963068e9308b22f02a788e55cda",
+          "relocation_count": 1,
+          "comparison_unit": "0070c146-4dd411f65e5f",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "strftime",
       "symbol": "_strftime",
       "address": "0x0070c164",
@@ -226296,6 +226656,30 @@
           "base_sha256": "5da42fd9a7e1b48ce64fa313f450a5d4e86bc43784ce034662d042f84451082a",
           "relocation_count": 1,
           "comparison_unit": "0070c164-c66a7efd7660",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__Strftime",
+      "symbol": "__Strftime",
+      "address": "0x0070c181",
+      "units": [
+        "lib/libcmt.lib/00804:strftime.obj"
+      ],
+      "target_size": 30,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00804:strftime.obj",
+          "base_size": 30,
+          "exact_match": true,
+          "target_sha256": "786b548d544e4356762e57b09b790fdb3778d04d7bd94a42a20a6febe0499484",
+          "base_sha256": "786b548d544e4356762e57b09b790fdb3778d04d7bd94a42a20a6febe0499484",
+          "relocation_count": 1,
+          "comparison_unit": "0070c181-ad1247313eaa",
           "objdiff_percent": 100.0
         }
       ],
@@ -227041,6 +227425,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "wcstombs",
+      "symbol": "_wcstombs",
+      "address": "0x007101e9",
+      "units": [
+        "lib/libcmt.lib/00034:wcstombs.obj"
+      ],
+      "target_size": 23,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00034:wcstombs.obj",
+          "base_size": 23,
+          "exact_match": true,
+          "target_sha256": "d23db84553e762af1511da2435ae27a3f69362bab394996b19ec2a54655f3b02",
+          "base_sha256": "d23db84553e762af1511da2435ae27a3f69362bab394996b19ec2a54655f3b02",
+          "relocation_count": 1,
+          "comparison_unit": "007101e9-efbaa46a5330",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__wcstombs_s_l",
       "symbol": "__wcstombs_s_l",
       "address": "0x00710200",
@@ -227058,6 +227466,30 @@
           "base_sha256": "f61a96a81bb36089caccdd65a8d056707f3f4b732b2f3400362af6af8cbd3168",
           "relocation_count": 5,
           "comparison_unit": "00710200-da9e0da72307",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "wcstombs_s",
+      "symbol": "_wcstombs_s",
+      "address": "0x007102b1",
+      "units": [
+        "lib/libcmt.lib/00034:wcstombs.obj"
+      ],
+      "target_size": 30,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00034:wcstombs.obj",
+          "base_size": 30,
+          "exact_match": true,
+          "target_sha256": "09680e1bb32d7ca6464b8837e93199b117fa2f528ccdd84d38ec4f72a11a5a35",
+          "base_sha256": "09680e1bb32d7ca6464b8837e93199b117fa2f528ccdd84d38ec4f72a11a5a35",
+          "relocation_count": 1,
+          "comparison_unit": "007102b1-9f15ac4613c0",
           "objdiff_percent": 100.0
         }
       ],
@@ -227944,6 +228376,54 @@
           "base_sha256": "b71fc29de26dd4e0f9898feec35c66bea2dcdff5d7fe03f0e8236bf5d871cd09",
           "relocation_count": 7,
           "comparison_unit": "0071457f-757f6c7861af",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__strtoi64_l",
+      "symbol": "__strtoi64_l",
+      "address": "0x0071483c",
+      "units": [
+        "lib/libcmt.lib/00025:strtoq.obj"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00025:strtoq.obj",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "044d6524b034423b1f12284ea2706c10bea9a2d57e1d5a0bffcdb6e97c78722a",
+          "base_sha256": "044d6524b034423b1f12284ea2706c10bea9a2d57e1d5a0bffcdb6e97c78722a",
+          "relocation_count": 1,
+          "comparison_unit": "0071483c-03ed8533d839",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "__strtoui64_l",
+      "symbol": "__strtoui64_l",
+      "address": "0x00714881",
+      "units": [
+        "lib/libcmt.lib/00025:strtoq.obj"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00025:strtoq.obj",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "29fd2ff3f7a5ff812321986cca20678feb082cdf4785d9939836c2727948daa7",
+          "base_sha256": "29fd2ff3f7a5ff812321986cca20678feb082cdf4785d9939836c2727948daa7",
+          "relocation_count": 1,
+          "comparison_unit": "00714881-d328a8772277",
           "objdiff_percent": 100.0
         }
       ],
@@ -544642,17 +545122,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2584564,
-    "matched_code_bytes": 766085,
-    "matching_percent": 22.069452870813535,
-    "fuzzy_coverage_percent": 62.49499099104425,
-    "mapped_functions": 9837,
-    "matched_functions": 5987,
-    "objdiff_fuzzy_percent": 85.752975,
-    "objdiff_total_code": 2532735,
+    "mapped_code_bytes": 2585174,
+    "matched_code_bytes": 766695,
+    "matching_percent": 22.08702581148095,
+    "fuzzy_coverage_percent": 62.51256393171166,
+    "mapped_functions": 9857,
+    "matched_functions": 6007,
+    "objdiff_fuzzy_percent": 85.75644,
+    "objdiff_total_code": 2533345,
     "image_bytes": 40067072,
-    "mapped_bytes": 4457110,
-    "mapping_percent": 11.124122072109486,
+    "mapped_bytes": 4457720,
+    "mapping_percent": 11.125644519270088,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -544660,7 +545140,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2585758
+        "mapped_bytes": 2586368
       },
       {
         "name": ".rdata",
@@ -544685,17 +545165,17 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18898,
+    "mapping_known_size_symbols": 18918,
     "mapping_unknown_size_symbols": 7441,
-    "mapping_code_bytes": 2585758,
+    "mapping_code_bytes": 2586368,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.49077362998761,
+    "mapping_code_percent": 74.50834657065504,
     "mapping_data_bytes": 1871352,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195462856984845,
-    "mapping_code_data_bytes": 4457110,
+    "mapping_code_data_bytes": 4457720,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.286619580568471,
+    "mapping_code_data_percent": 11.28816426713536,
     "mapping_file_backed_data_bytes": 382686,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.947876959263844,
@@ -544706,17 +545186,17 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2584564,
-    "exact_reconstruction_bytes": 766085,
+    "mapped_reconstruction_bytes": 2585174,
+    "exact_reconstruction_bytes": 766695,
     "mapped_not_exact_bytes": 1818479,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 885488,
+    "unclassified_text_bytes": 884878,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 22.069452870813535,
+    "strict_original_text_exact_percent": 22.08702581148095,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 22.077046684026637,
-    "mapped_scope_denominator_bytes": 2584564,
-    "mapped_scope_exact_percent": 29.64078273937113,
+    "reconstruction_scope_exact_percent": 22.094625671315587,
+    "mapped_scope_denominator_bytes": 2585174,
+    "mapped_scope_exact_percent": 29.657384764042963,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -546022,7 +546502,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "7ca38864c84c349543438ec2b6e73b797ec50c522612850f17fd8902ad87bc8b",
+      "geometry_object_sha256": "05040ae85989705a9e574527eb439b156e9fb10898887c9c387cbaeadde713e1",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

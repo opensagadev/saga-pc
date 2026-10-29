@@ -52,7 +52,9 @@
     "___isascii",
     "___toascii",
     "___iscsymf",
-    "___iscsym"
+    "___iscsym",
+    "__iscsym_l",
+    "__iscsymf_l"
    ]
   },
   {
@@ -98,7 +100,8 @@
    "index": 21,
    "member": "build\\intel\\mt_obj\\cpp_obj\\mbtowc.obj",
    "symbols": [
-    "__mbtowc_l"
+    "__mbtowc_l",
+    "_mbtowc"
    ]
   },
   {
@@ -106,7 +109,9 @@
    "index": 24,
    "member": "build\\intel\\mt_obj\\cpp_obj\\strtol.obj",
    "symbols": [
-    "libcmt#00024:?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z"
+    "libcmt#00024:?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z",
+    "__strtol_l",
+    "__strtoul_l"
    ]
   },
   {
@@ -114,7 +119,9 @@
    "index": 25,
    "member": "build\\intel\\mt_obj\\cpp_obj\\strtoq.obj",
    "symbols": [
-    "libcmt#00025:?strtoxq@@YA_KPAUlocaleinfo_struct@@PBDPAPBDHH@Z"
+    "libcmt#00025:?strtoxq@@YA_KPAUlocaleinfo_struct@@PBDPAPBDHH@Z",
+    "__strtoi64_l",
+    "__strtoui64_l"
    ]
   },
   {
@@ -143,7 +150,9 @@
    "symbols": [
     "libcmt#00034:?wcsncnt@@YAIPB_WI@Z",
     "__wcstombs_l_helper",
-    "__wcstombs_s_l"
+    "__wcstombs_s_l",
+    "_wcstombs_s",
+    "_wcstombs"
    ]
   },
   {
@@ -153,7 +162,8 @@
    "symbols": [
     "__wctomb_s_l",
     "__wctomb_l",
-    "_wctomb"
+    "_wctomb",
+    "_wctomb_s"
    ]
   },
   {
@@ -170,7 +180,16 @@
    "member": "build\\intel\\mt_obj\\dosmap.obj",
    "symbols": [
     "___doserrno",
-    "__dosmaperr"
+    "__dosmaperr",
+    "__get_doserrno"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 66,
+   "member": "build\\intel\\mt_obj\\unlink.obj",
+   "symbols": [
+    "_remove"
    ]
   },
   {
@@ -399,7 +418,8 @@
     "??H@YA?AVDName@@W4DNameStatus@@ABV0@@Z",
     "??H@YA?AVDName@@PBDABV0@@Z",
     "??HDName@@QBE?AV0@D@Z",
-    "??HDName@@QBE?AV0@PBD@Z"
+    "??HDName@@QBE?AV0@PBD@Z",
+    "??HDName@@QBE?AV0@PAV0@@Z"
    ]
   },
   {
@@ -1315,7 +1335,8 @@
    "member": "build\\intel\\mt_obj\\vsnprnc.obj",
    "symbols": [
     "__vsnprintf_helper",
-    "__vsprintf_s_l"
+    "__vsprintf_s_l",
+    "_vsprintf_s"
    ]
   },
   {
@@ -1514,7 +1535,9 @@
     "libcmt#00804:?_store_number@@YAXHPAPADPAI@Z",
     "libcmt#00804:?_store_num@@YAXHHPAPADPAII@Z",
     "__Strftime_l",
-    "_strftime"
+    "_strftime",
+    "__Strftime",
+    "__strftime_l"
    ]
   },
   {
@@ -1566,7 +1589,10 @@
     "__forcdecpt",
     "__cropzeros",
     "__cftoe",
-    "__cfltcvt"
+    "__cfltcvt",
+    "__cftoa",
+    "__cftog",
+    "__cftof"
    ]
   },
   {
@@ -1796,7 +1822,8 @@
     "__errcode",
     "__umatherr",
     "__except1",
-    "__except2"
+    "__except2",
+    "__raise_exc"
    ]
   },
   {

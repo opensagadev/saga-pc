@@ -8918,6 +8918,7 @@ address,symbol,size,ctype
 0x6e8a55,_fseek,,"int __cdecl fseek(FILE *stream, long offset, int origin)"
 0x6e8b9e,_fopen,,"FILE *__cdecl fopen(const char *filename, const char *mode)"
 0x6e8d60,_fwrite,130,"size_t __cdecl(const void *,size_t,size_t,FILE *)"
+0x6e8de2,_remove,42,i32 __cdecl (const char *)
 0x006e8e11,_srand,13,void __cdecl (unsigned int)
 0x006e8e1e,_rand,34,i32 __cdecl (void)
 0x006e8e80,__CIsin,79,f64 (x87 ST0 -> ST0)
@@ -8981,6 +8982,7 @@ address,symbol,size,ctype
 0x6ead5f,__errno,,int *__cdecl _errno(void)
 0x6ead72,___doserrno,19,
 0x6ead85,__dosmaperr,30,
+0x6eae03,__get_doserrno,42,i32 __cdecl (u32 *)
 0x6eae30,__alloca_probe_16,,
 0x6eae5c,__calloc_impl,286,
 0x6eaf7a,_calloc,,"void *__cdecl (size_t, size_t); supplied pinned static CRT"
@@ -9063,9 +9065,12 @@ address,symbol,size,ctype
 0x6ee219,__cftoe_l,206,
 0x6ee2e7,__cftoe,30,
 0x6ee305,__cftoa_l,881,
+0x006ee676,__cftoa,30,
 0x6ee694,libcmt#00832:__cftof2_l,245,
 0x6ee789,__cftof_l,185,
+0x006ee842,__cftof,27,
 0x6ee85d,__cftog_l,248,
+0x006ee955,__cftog,30,
 0x6ee973,__cfltcvt_l,134,
 0x6ee9f9,__cfltcvt,33,
 0x6eea1a,__initp_misc_cfltcvt_tab,31,
@@ -9081,6 +9086,7 @@ address,symbol,size,ctype
 0x6eeef7,_get_short_arg,14,
 0x6ef899,__vsnprintf_helper,202,
 0x6ef9b2,__vsprintf_s_l,134,
+0x006efa38,_vsprintf_s,27,
 0x6efbc5,___libm_setusermatherr,41,
 0x6efbee,___libm_error_support,688,
 0x6efe6a,libcmt#00901:$LN74,,
@@ -9211,6 +9217,7 @@ address,symbol,size,ctype
 0x6f991a,__sptype,91,
 0x6f9975,__decomp,175,
 0x6f9a24,__raise_exc_ex,730,
+0x6f9cfe,__raise_exc,33,
 0x6f9d1f,__raise_excf,33,
 0x6f9d40,__handle_exc,481,
 0x6f9f21,__set_errno_from_matherr,40,
@@ -9317,7 +9324,9 @@ address,symbol,size,ctype
 0x701354,_iscntrl,41,
 0x70137d,___isascii,13,
 0x70138a,___toascii,8,
+0x701392,__iscsymf_l,31,
 0x7013b1,___iscsymf,26,
+0x7013cb,__iscsym_l,31,
 0x7013ea,___iscsym,28,
 0x70140e,__tolower_l,279,
 0x701525,_tolower,39,
@@ -9336,6 +9345,7 @@ address,symbol,size,ctype
 0x701d21,__getbuf,68,
 0x701d65,__isatty,,
 0x701dc3,__wctomb_s_l,351,
+0x701f22,_wctomb_s,27,
 0x701f3d,__wctomb_l,79,
 0x701f8c,_wctomb,48,
 0x701fc0,__aulldvrm,149,
@@ -9366,6 +9376,8 @@ address,symbol,size,ctype
 0x702586,__ismbbtrail,19,
 0x702599,__ismbbkana_l,83,
 0x7025fa,libcmt#00024:?strtoxl@@YAKPAUlocaleinfo_struct@@PBDPAPBDHH@Z,555,
+0x70284e,__strtol_l,27,
+0x702893,__strtoul_l,27,
 0x7028b4,?Constructor@HeapManager@@QAEXP6APAXI@ZP6AXPAX@Z@Z,27,
 0x7028cf,?Destructor@HeapManager@@QAEXXZ,38,
 0x7028f5,?getNumberOfDimensions@UnDecorator@@CAHXZ,99,
@@ -9462,6 +9474,7 @@ address,symbol,size,ctype
 0x703d02,?getCallingConvention@UnDecorator@@CA?AVDName@@XZ,166,
 0x703da8,?getVCallThunkType@UnDecorator@@CA?AVDName@@XZ,55,
 0x703ddf,??HDName@@QBE?AV0@ABV0@@Z,81,
+0x703e30,??HDName@@QBE?AV0@PAV0@@Z,46,
 0x703e5e,??YDName@@QAEAAV0@D@Z,106,
 0x703ec8,??YDName@@QAEAAV0@PBD@Z,108,
 0x703f34,?getArgumentList@UnDecorator@@CA?AVDName@@XZ,224,
@@ -9519,6 +9532,7 @@ address,symbol,size,ctype
 0x708e11,__cputws,155,
 0x708eac,__putwch,70,
 0x708ef2,__mbtowc_l,275,
+0x709005,_mbtowc,23,
 0x709eab,?_ValidateRead@@YAHPBXI@Z,13,
 0x709eb8,?_ValidateWrite@@YAHPAXI@Z,13,
 0x709ec5,?_ValidateExecute@@YAHP6GHXZ@Z,13,
@@ -9543,7 +9557,9 @@ address,symbol,size,ctype
 0x70b6db,libcmt#00804:?_store_num@@YAXHHPAPADPAII@Z,121,
 0x70b754,libcmt#00804:?_expandtime@@YAHPAUlocaleinfo_struct@@DPBUtm@@PAPADPAIPAU__lc_time_data@@I@Z,,
 0x70bf97,__Strftime_l,431,
+0x0070c146,__strftime_l,30,
 0x70c164,_strftime,29,
+0x0070c181,__Strftime,30,
 0x70c19f,_localeconv,38,
 0x70c1d0,_strcspn,70,
 0x70c216,libcmt#00360:_TranslateName,,
@@ -9580,7 +9596,9 @@ address,symbol,size,ctype
 0x70fef8,_ungetwc,119,
 0x70ff6f,libcmt#00034:?wcsncnt@@YAIPB_WI@Z,47,
 0x70ff9e,__wcstombs_l_helper,582,
+0x7101e9,_wcstombs,23,
 0x710200,__wcstombs_s_l,177,
+0x7102b1,_wcstombs_s,30,
 0x7102cf,___addl,33,
 0x7102f0,__ZeroTail,69,
 0x710335,__IncMan,106,
@@ -9622,6 +9640,8 @@ address,symbol,size,ctype
 0x714243,___crtGetStringTypeW,62,
 0x7143b3,___mtold12,460,
 0x71457f,libcmt#00025:?strtoxq@@YA_KPAUlocaleinfo_struct@@PBDPAPBDHH@Z,660,
+0x71483c,__strtoi64_l,27,
+0x714881,__strtoui64_l,27,
 0x714ca0,___ascii_strnicmp,97,"i32 __cdecl (const char *, const char *, u32)"
 0x714d01,__mbsnbicoll_l,236,
 0x714ded,__mbsnbicoll,23,
