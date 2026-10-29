@@ -2194,16 +2194,54 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     CharConfig_CalculateJumpStats(data->second_jump_speed, data->gravity, &data->second_jump_duration,
                                   &data->second_jump_height);
     if ((charconfig.flags & 0x20) != 0) {
-        CHARACTERANIM_CONFIG_PC *sentinel = &character->animations[charconfig.animation_count];
-        character->animation_count = charconfig.animation_count++;
-        sentinel->name = NULL;
-        sentinel->action_id = -1;
-        arena->void_ptr = character->animations + charconfig.animation_count;
-        for (i = 0; i < charconfig.animation_count - 1; ++i) {
-            char *name = (char *)(arena->void_ptr);
-            NuStrCpy(name, charconfig.animation_names[i]);
-            character->animations[i].name = name;
-            arena->addr += NuStrLen(name) + 1;
+        u32 record_address;
+        u32 animations_address;
+        u32 destination;
+        u32 word;
+        u16 count;
+        i16 action_id = -1;
+        i32 name_length;
+        VARIPTR *cursor;
+
+        count = charconfig.animation_count;
+        record_address = (u32)charconfig.character;
+        memcpy((void *)(record_address + offsetof(CHARACTERDATA_PC, animation_count)), &count, sizeof(count));
+        count = charconfig.animation_count;
+        record_address = (u32)charconfig.character;
+        animations_address = (u32)((CHARACTERDATA_PC *)record_address)->animations;
+        destination = animations_address + (u32)count * sizeof(CHARACTERANIM_CONFIG_PC);
+        word = 0;
+        memcpy((void *)(destination + offsetof(CHARACTERANIM_CONFIG_PC, name)), &word, sizeof(word));
+        count = charconfig.animation_count;
+        record_address = (u32)charconfig.character;
+        animations_address = (u32)((CHARACTERDATA_PC *)record_address)->animations;
+        destination = animations_address + (u32)count * sizeof(CHARACTERANIM_CONFIG_PC);
+        memcpy((void *)(destination + offsetof(CHARACTERANIM_CONFIG_PC, action_id)), &action_id, sizeof(action_id));
+        count = (u16)((u32)charconfig.animation_count + 1u);
+        memcpy(&charconfig.animation_count, &count, sizeof(count));
+        word = (u32)character->animations + (u32)count * sizeof(CHARACTERANIM_CONFIG_PC);
+        cursor = charconfig.arena;
+        memcpy(cursor, &word, sizeof(word));
+        for (i = 0; i < (i32)charconfig.animation_count - 1; ++i) {
+            cursor = charconfig.arena;
+            memcpy(&destination, cursor, sizeof(destination));
+            NuStrCpy((char *)destination,
+                     (char *)((u32)&charconfig.animation_names[0] + (u32)i * sizeof(charconfig.animation_names[0])));
+            record_address = (u32)charconfig.character;
+            animations_address = (u32)((CHARACTERDATA_PC *)record_address)->animations;
+            cursor = charconfig.arena;
+            memcpy(&word, cursor, sizeof(word));
+            destination = animations_address + (u32)i * sizeof(CHARACTERANIM_CONFIG_PC);
+            memcpy((void *)(destination + offsetof(CHARACTERANIM_CONFIG_PC, name)), &word, sizeof(word));
+            record_address = (u32)charconfig.character;
+            animations_address = (u32)((CHARACTERDATA_PC *)record_address)->animations;
+            destination = animations_address + (u32)i * sizeof(CHARACTERANIM_CONFIG_PC);
+            memcpy(&word, (void *)(destination + offsetof(CHARACTERANIM_CONFIG_PC, name)), sizeof(word));
+            name_length = NuStrLen((char *)word);
+            cursor = charconfig.arena;
+            memcpy(&word, cursor, sizeof(word));
+            word += (u32)name_length + 1u;
+            memcpy(cursor, &word, sizeof(word));
         }
         if (charconfig.effect_count > 0) {
             effects[charconfig.effect_count++].character_id = -1;

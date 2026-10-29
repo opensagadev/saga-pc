@@ -157,6 +157,7 @@ void __cdecl LoadPerm1(void) {
     char path[256];
     u8 shadow_random[0x800];
     i32 index;
+    i32 texture_id;
     PERMANENT_MATERIAL_READER_PC *material;
     NUGSCN *terrain_scene;
     VARIPTR native_end_address;
@@ -198,7 +199,7 @@ void __cdecl LoadPerm1(void) {
     InitStreaks(&permbuffer_ptr, permbuffer_end, (char *)StreakTextureNamePc);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     InitRopeMtl("rope", &permbuffer_ptr, &permbuffer_end);
-    InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 40);
+    InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 0x40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
     PermanentShadowMaterialPc = NuMtlCreate3D(1);
     material = (PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc;
@@ -212,7 +213,8 @@ void __cdecl LoadPerm1(void) {
     material->attributes = (material->attributes & ~0x600000u) | 0x100000u;
     material->sort_priority = 0xff;
     material->attributes = (material->attributes & ~0x10000u) | 0x20000u;
-    material->texture_id = (i16)NuTexReadPc("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
+    texture_id = NuTexReadPc("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
+    ((PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc)->texture_id = (i16)texture_id;
     NuMtlUpdate(PermanentShadowMaterialPc);
     for (index = 0; index < 0x800; ++index)
         shadow_random[index] = (u8)(qrand() >> 8);
@@ -229,12 +231,12 @@ void __cdecl LoadPerm1(void) {
     }
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
     things_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\things.gsc");
-    terrain_scene = things_scene;
     if (things_scene != NULL) {
         edbitsRegisterThingsScene(things_scene);
         if (things_scene->display_list != NULL)
             things_scene->display_list->render_flags |= 0x10;
     }
+    terrain_scene = things_scene;
     things_scene_terrain = TerrainInitEx(-1, &permbuffer_ptr, permbuffer_end.void_ptr, 0, "stuff\\things",
                                          terrain_scene, 0, 0x14, 0x14, 0x14);
     terrainpickupinit("stuff\\things", &things_scene_terrain);
