@@ -773,6 +773,8 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
     char filename[1024];
     i32 capacity = end->addr - buffer->addr;
     i32 size;
+    i32 filename_length;
+    char *filename_destination;
     CUT_SCENE_LOAD_PC *scene;
     char *src = path, *dst = filename;
     do {
@@ -805,9 +807,11 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
                     scene->stream_buffer_1 = buffer->void_ptr;
                     buffer->addr += scene->stream_buffer_size + 0x400;
                 }
-                scene->filename = (char *)buffer->void_ptr;
-                buffer->addr += NuStrLen(path) + 4;
-                NuStrCpy(scene->filename, path);
+                filename_length = NuStrLen(path);
+                filename_destination = (char *)buffer->void_ptr;
+                buffer->addr += filename_length + 4;
+                NuStrCpy(filename_destination, path);
+                scene->filename = filename_destination;
                 CutSceneRemapFocusPc(scene, buffer);
             }
         }
@@ -849,9 +853,11 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
                     scene->stream_buffer_1 = buffer->void_ptr;
                     buffer->addr += scene->stream_buffer_size + 0x400;
                 }
-                scene->filename = (char *)buffer->void_ptr;
-                buffer->addr += NuStrLen(path) + 4;
-                NuStrCpy(scene->filename, path);
+                filename_length = NuStrLen(path);
+                filename_destination = (char *)buffer->void_ptr;
+                buffer->addr += filename_length + 4;
+                NuStrCpy(filename_destination, path);
+                scene->filename = filename_destination;
             } else
                 buffer->addr += size;
         }

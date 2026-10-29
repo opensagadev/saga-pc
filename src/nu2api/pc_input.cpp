@@ -125,10 +125,10 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     }
     {
         PC_INPUT_DEVICE_PC *record = &devices[11];
+        record->device = nu_keyboard_owner.device;
         NuStrCpy(record->name, PCKeyboard1Name_candidate);
         record->kind = 3;
         record->product.Data1 = 3;
-        record->device = nu_keyboard_owner.device;
         record->config_dirty = 1;
         record->capabilities_valid = 1;
         record->button_count = 255;
@@ -154,10 +154,10 @@ void PC_INPUT_RUNTIME_PC::InitKeyboardProfiles() {
     }
     {
         PC_INPUT_DEVICE_PC *record = &devices[13];
+        record->device = nu_keyboard_owner.device;
         NuStrCpy(record->name, PCKeyboard2Name_candidate);
         record->kind = 4;
         record->product.Data1 = 4;
-        record->device = nu_keyboard_owner.device;
         record->config_dirty = 1;
         record->capabilities_valid = 1;
         record->button_count = 255;

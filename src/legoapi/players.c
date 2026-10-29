@@ -2221,6 +2221,24 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *,
                                    GAMEOBJECT *, u32);
 void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object);
 
+typedef struct PARAPHERNALIA_EXTRA_PC {
+    u8 prefix[0xc68];
+    NUVEC force_position;
+    u8 gap_c74[0x10c];
+    f32 force_alpha;
+    u8 gap_d84[8];
+    f32 force_radius;
+    u8 gap_d90[0x2ec];
+    u8 draw_reflection;
+} PARAPHERNALIA_EXTRA_PC;
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_position) == 0xc68);
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_alpha) == 0xd80);
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_radius) == 0xd8c);
+STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, draw_reflection) == 0x107c);
+
+void __cdecl DrawForceGlowSpritePc(NUVEC *, f32, i32, f32, GAMEOBJECT *);
+void __cdecl DrawSnakeBody(GAMEOBJECT *);
+
 void DrawGameObjectsDraw(i32 pass) {
     GAMEOBJECT *object;
     i32 index;
@@ -2247,10 +2265,11 @@ void DrawGameObjectsDraw(i32 pass) {
                    object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
                    WORLD->level_objects[object->field_e1e].active != 0 &&
                    (object->character_data->game_character->flags_090 & 0x400) == 0) {
-            STUBBED_NAMED("DrawGameObjectsDraw: DrawForceGlowSprite at 0x004a4ce0");
+            DrawForceGlowSpritePc(&((PARAPHERNALIA_EXTRA_PC *)object)->force_position, object->transform_target_scale,
+                                  object->field_e1e, (f32)(object->transform_alpha / FORCEGLOWTIME), object);
         }
         if (object->snake_body != NULL) {
-            STUBBED_NAMED("DrawGameObjectsDraw: DrawSnakeBody(object) at 0x00597620");
+            DrawSnakeBody(object);
         }
         object->origin_joint_ready = 1;
         if (object->model_draw_result != 0) {
@@ -3772,20 +3791,6 @@ i32 __cdecl DrawGameObjectsProcess(void) {
     return 0;
 }
 
-typedef struct PARAPHERNALIA_EXTRA_PC {
-    u8 prefix[0xc68];
-    NUVEC force_position;
-    u8 gap_c74[0x10c];
-    f32 force_alpha;
-    u8 gap_d84[8];
-    f32 force_radius;
-    u8 gap_d90[0x2ec];
-    u8 draw_reflection;
-} PARAPHERNALIA_EXTRA_PC;
-STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_position) == 0xc68);
-STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_alpha) == 0xd80);
-STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, force_radius) == 0xd8c);
-STATIC_ASSERT(offsetof(PARAPHERNALIA_EXTRA_PC, draw_reflection) == 0x107c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
