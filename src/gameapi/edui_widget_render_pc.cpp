@@ -1041,3 +1041,68 @@ extern "C" void __cdecl CreateColourPicker(void) {
         cp_paste = item;
     }
 }
+
+extern "C" {
+#pragma section(".bss$EduiColourTempRedPc", read, write)
+    __declspec(allocate(".bss$EduiColourTempRedPc")) f32 EduiColourTempRedPc = 0.0f;
+#pragma section(".bss$EduiColourTempGreenPc", read, write)
+    __declspec(allocate(".bss$EduiColourTempGreenPc")) f32 EduiColourTempGreenPc = 0.0f;
+#pragma section(".bss$EduiColourTempBluePc", read, write)
+    __declspec(allocate(".bss$EduiColourTempBluePc")) f32 EduiColourTempBluePc = 0.0f;
+#pragma section(".bss$EduiColourTempAlphaPc", read, write)
+    __declspec(allocate(".bss$EduiColourTempAlphaPc")) f32 EduiColourTempAlphaPc = 0.0f;
+    void __cdecl eduiSetActiveMenu(eduimenu_s *menu);
+}
+
+extern "C" void __cdecl AddColourPick(eduimenu_s *parent, eduiitem_s *item, f32 *red, f32 *green, f32 *blue,
+                                      u32 *rgba) {
+    eduimenu_s *picker_menu = colourmenu;
+    f32 *target_red = red;
+    f32 *target_green = green;
+    f32 *target_blue = blue;
+    edui_colour_pick_s *picker;
+    i32 bottom;
+    f32 red_value, green_value, blue_value;
+    char text[256];
+    if (picker_menu->parent == NULL) {
+        eduimenu_s *last = parent;
+        while (last->child != NULL)
+            last = last->child;
+        picker_menu->parent = last;
+        last->child = picker_menu;
+        eduiSetActiveMenu(picker_menu);
+    }
+    if (item != NULL) {
+        picker_menu->x = item->x + 10;
+        picker_menu->y = item->y + 10;
+    } else {
+        picker_menu->x = parent->x + 10;
+        picker_menu->y = parent->y + 10;
+    }
+    bottom = PS2_REZ_H - picker_menu->height - 20;
+    picker_menu->y = picker_menu->y <= bottom ? picker_menu->y : bottom;
+    EduiColourTargetPackedPc = rgba;
+    EduiColourTargetAlphaPc = &EduiColourTempAlphaPc;
+    if (rgba != NULL) {
+        u8 *channels = (u8 *)rgba;
+        EduiColourTempRedPc = (f32)(channels[0] / 255.0);
+        EduiColourTempGreenPc = (f32)(channels[1] / 255.0);
+        EduiColourTempBluePc = (f32)(channels[2] / 255.0);
+        EduiColourTempAlphaPc = (f32)(channels[3] / 255.0);
+        target_red = &EduiColourTempRedPc;
+        target_green = &EduiColourTempGreenPc;
+        target_blue = &EduiColourTempBluePc;
+    }
+    picker = cp_item;
+    blue_value = *target_blue;
+    green_value = *target_green;
+    EduiColourTargetBluePc = target_blue;
+    red_value = *target_red;
+    EduiColourTargetGreenPc = target_green;
+    EduiColourTargetRedPc = target_red;
+    EduiColourRgbToHsvPc(red_value, green_value, blue_value, &picker->hue, &picker->saturation, &picker->value);
+    picker->cursor_x = (f32)(picker->hue / 360.0);
+    picker->cursor_y = picker->value;
+    NuSPrintf(text, "R:%1.2f G:%1.2f B:%1.2f", *target_red, *target_green, *target_blue);
+    eduiItemSetText(cp_info, text);
+}

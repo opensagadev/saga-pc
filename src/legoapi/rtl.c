@@ -851,19 +851,26 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
 }
 
 typedef struct rtl_fog_migration_pc_s {
-    u8 unknown_00[8];
+    f32 start, end;
     u32 colour;
     i32 low_quality_density;
     u32 low_quality_colour;
     i32 type;
-    u8 unknown_18[4];
+    u8 depth_of_field_fstop;
+    u8 unknown_19[3];
     f32 radius;
     NUVEC position;
     f32 density;
-    u8 unknown_30[0xc];
+    f32 start_psp, end_psp;
+    u8 unknown_38[4];
     f32 density_wii;
     u8 unknown_40[0xc];
 } RTL_FOG_MIGRATION_PC;
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start) == 0);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end) == 4);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, depth_of_field_fstop) == 0x18);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start_psp) == 0x30);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end_psp) == 0x34);
 STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
 STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, colour) == 8);
 STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, low_quality_density) == 0xc);
@@ -3248,4 +3255,210 @@ void __cdecl InitUI(void) {
     eduiMenuAddItem(fog_main_menu, created);
     eduiMenuFitWidth(fog_main_menu, 5);
     NuQFntPopCoordinateSystem();
+}
+
+/* Native editor-owned f32 cells. Observed minimum four bytes each; allocation unknown. */
+#pragma section(".bss$RtlEditorFarClip", read, write)
+__declspec(allocate(".bss$RtlEditorFarClip")) f32 game_farclip = 0.0f;
+#pragma section(".bss$RtlEditorNearClip", read, write)
+__declspec(allocate(".bss$RtlEditorNearClip")) f32 game_nearclip = 0.0f;
+
+void __cdecl RefreshUI(void);
+
+void __cdecl cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edui_slider_s *slider;
+    eduimenu_s *confirmation;
+    i32 i;
+    edrtlSaveUndo();
+    slider = (edui_slider_s *)global_scale_item;
+    for (i = 0; i < 128; ++i)
+        curr_set->lights[i].intensity = slider->value * curr_set->lights[i].intensity;
+    eduiMenuAttach(menu, global_confirm_menu);
+    confirmation = global_confirm_menu;
+    confirmation->x = (i32)((u32)menu->x + 10u);
+    confirmation->y = (i32)((u32)menu->y + 10u);
+    RefreshUI();
+}
+
+void __cdecl cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edui_slider_s *slider;
+    eduimenu_s *confirmation;
+    i32 i;
+    edrtlSaveUndo();
+    slider = (edui_slider_s *)global_scale_item;
+    for (i = 0; i < 128; ++i)
+        curr_set->lights[i].intensity = curr_set->lights[i].intensity / slider->value;
+    eduiMenuAttach(menu, global_confirm_menu);
+    confirmation = global_confirm_menu;
+    confirmation->x = (i32)((u32)menu->x + 10u);
+    confirmation->y = (i32)((u32)menu->y + 10u);
+    RefreshUI();
+}
+
+void __cdecl eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
+
+void __cdecl cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    f32 range = ((edui_slider_s *)item)->value;
+    edui_slider_s *target = (edui_slider_s *)fogstart_item;
+    if (target != NULL) {
+        target->range = range;
+        eduiItemSliderSetValEx(target, target->value, 0, 0);
+    }
+    target = (edui_slider_s *)fogend_item;
+    if (target != NULL) {
+        target->range = range;
+        eduiItemSliderSetValEx(target, target->value, 0, 0);
+    }
+    target = (edui_slider_s *)fogstartpsp_item;
+    if (target != NULL) {
+        target->range = range;
+        eduiItemSliderSetValEx(target, target->value, 0, 0);
+    }
+    target = (edui_slider_s *)fogendpsp_item;
+    if (target != NULL) {
+        target->range = range;
+        eduiItemSliderSetValEx(target, target->value, 0, 0);
+    }
+}
+
+void __cdecl cbFogAdjNear(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edui_slider_s *target = (edui_slider_s *)fogadjfar_item;
+    f32 near_clip;
+    game_nearclip = ((edui_slider_s *)item)->value;
+    if (target != NULL) {
+        near_clip = game_nearclip;
+        target->minimum = near_clip * 2.0f;
+        game_farclip = game_farclip > near_clip + 1.0 ? game_farclip : near_clip + 1.0;
+        eduiItemSliderSetValEx(target, game_farclip, 0, 0);
+    }
+}
+
+void __cdecl cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edui_slider_s *target = (edui_slider_s *)fogadjnear_item;
+    f32 far_clip;
+    game_farclip = ((edui_slider_s *)item)->value;
+    if (target != NULL) {
+        far_clip = game_farclip;
+        target->range = far_clip - target->minimum;
+        if (game_nearclip > far_clip)
+            game_nearclip = far_clip;
+        eduiItemSliderSetValEx(target, game_nearclip, 0, 0);
+    }
+}
+
+void __cdecl cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    if (fog != NULL)
+        fog->depth_of_field_fstop = (u8)(i32)(((edui_slider_s *)item)->value * 10.0);
+}
+
+void __cdecl RefreshUI(void);
+void __cdecl AddColourPick(eduimenu_s *menu, eduiitem_s *item, f32 *red, f32 *green, f32 *blue, u32 *rgba);
+
+void __cdecl cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    if (curr_rtl != NULL)
+        curr_rtl->intensity = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    if (curr_rtl != NULL)
+        curr_rtl->group_id = (u8)(i32)((edui_slider_s *)item)->value;
+}
+
+void __cdecl cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    if (curr_rtl != NULL) {
+        curr_rtl->field_7b = (i8)item->data;
+        RefreshUI();
+    }
+}
+
+void __cdecl cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    modifiers[item->data] = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL)
+        AddColourPick(menu, item, &light->colour.x, &light->colour.y, &light->colour.z, NULL);
+}
+
+void __cdecl cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL)
+        AddColourPick(menu, item, &light->secondary_colour.x, &light->secondary_colour.y, &light->secondary_colour.z,
+                      NULL);
+}
+
+void __cdecl cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    if (curr_rtl != NULL) {
+        curr_rtl->type = (u8)item->data;
+        RefreshUI();
+    }
+}
+
+void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL) {
+        light->field_5e &= (i16) ~(1u << ((u32)item->data & 31u));
+        if (item->highlighted)
+            curr_rtl->field_5e |= (i16)(1u << ((u32)item->data & 31u));
+        light = curr_rtl;
+        light->field_60 &= (i16) ~(u16)light->field_5e;
+        RefreshUI();
+    }
+}
+
+void __cdecl cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_LIGHT_PC *light = curr_rtl;
+    if (light != NULL) {
+        light->field_60 &= (i16) ~(1u << ((u32)item->data & 31u));
+        if (item->highlighted)
+            curr_rtl->field_60 |= (i16)(1u << ((u32)item->data & 31u));
+        light = curr_rtl;
+        light->field_5e &= (i16) ~(u16)light->field_60;
+        RefreshUI();
+    }
+}
+
+void __cdecl cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    if (curr_rtl != NULL) {
+        curr_rtl->field_68 = (u16)item->data;
+        RefreshUI();
+    }
+}
+
+void __cdecl cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    if (fog != NULL)
+        AddColourPick(menu, item, NULL, NULL, NULL, &fog->colour);
+}
+
+void __cdecl cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    if (fog != NULL)
+        AddColourPick(menu, item, NULL, NULL, NULL, &fog->low_quality_colour);
+}
+
+void __cdecl cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    if (fog != NULL)
+        fog->start = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    if (fog != NULL)
+        fog->end = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    if (fog != NULL)
+        fog->start_psp = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *fog = (RTL_FOG_MIGRATION_PC *)curr_fog;
+    if (fog != NULL)
+        fog->end_psp = ((edui_slider_s *)item)->value;
 }
