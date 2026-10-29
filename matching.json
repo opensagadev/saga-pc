@@ -279,7 +279,7 @@
     "src/legoapi/episode_vi.c": "e8f65a513fc551756503017bbe0a929d2ce0e3cb529706e8dbad29d38ca37e33",
     "src/legoapi/explosions.c": "bd8cbf9516329a2e614e85d5aa7a5687b9a67ddc27ab8ee3f6b1585c2c12743e",
     "src/legoapi/faders.c": "102cf7e80c0f5b1bdf00f28a3f4bff7cb767670094944606fe80a437b3de9a39",
-    "src/legoapi/fighting.c": "dd09a3b05f91809645dedc38043c771b605aa004d3c62124b7bdcc8b5b8e7af3",
+    "src/legoapi/fighting.c": "e72f2282c5795833b31d29db77d287c7acc39c668857724f7707bdbff3901bce",
     "src/legoapi/game_deb.c": "098318e90ac5c9708bcc9e7c7834975baf3640f52071efab32678d16910d9ad7",
     "src/legoapi/game_score.c": "5d179c18dc0a8652b226a24aa1f254c1c4c6bba9f65e9ee1f32bdc3f443955d4",
     "src/legoapi/gameai.c": "9258c5ddf1854264f9f0db8d3594bbd28d0fe42b60632a0dc316956403baa510",
@@ -355,7 +355,7 @@
     "src/legoapi/perm.c": "31741f8315f3c4fcf398842fec09dee9c56f4399141505cd52e028fccf1ce3b6",
     "src/legoapi/playeractions.c": "fe25167d6ffdcf22f2aad3d4dc5d4cbe55bb2e7222efc906195fa42637027ba5",
     "src/legoapi/playeritems.c": "212cba9676a39d3ee188e146c3a58dc7829271cd5bcdfe95ffb9e014ba43fd05",
-    "src/legoapi/players.c": "f5e9dddfcdbafd3e4d274205dbaf54d4bd7557433dd9e27f15a946baf214d506",
+    "src/legoapi/players.c": "63843089d76232ed4953aef7cf0b24d9ec888d81326dce5ff15b80b7de6f3431",
     "src/legoapi/plugs.c": "57f5d3fa7423c3b39b4b6a014374baa6152928314cb3ff723c6de286c8a7010e",
     "src/legoapi/pulses.c": "83e3387fb756edf8262da517c066c568af7d7d46e1b5eac83b287b8c86819982",
     "src/legoapi/pursuit.c": "0230ecece707cdc8c11ee1903f69d00d5d91401cde048de9f51d791aea8cbc6f",
@@ -657,7 +657,7 @@
     "build/obj/legoapi/explosions.obj": "7f9fe267d69973a893fe54312b7844153c835b3d9abb77496d8bfaf703b69c98",
     "build/obj/legoapi/fade.obj": "2ce995a3a79cc141170fd89ab022bd8ecefbb8a2977208ab59990cf3c2d8dc28",
     "build/obj/legoapi/faders.obj": "54008f10a4fa32d4a934ec2a3b327a4d4310de750a54e40733e07a34311c115a",
-    "build/obj/legoapi/fighting.obj": "12fcc2a64abc8d069f1921ecb1f3c8ce1581215ab7494adbcb20107245bc41d2",
+    "build/obj/legoapi/fighting.obj": "e45075d6c470352d0fe7a6b246b5808457d3655e2e2a76c08cbb30355c00e403",
     "build/obj/legoapi/finish_loop.obj": "b6066e38fc15d17cc1d1438f0b8971436c579229bf46de46a3c6f309524c9a0d",
     "build/obj/legoapi/game_deb.obj": "dee4b74156b28c81729d4ad2b004d2ccb72e3d6d2d7cb4df935cb8c0d34dbf97",
     "build/obj/legoapi/game_score.obj": "366827f292663802a2c6c0169036cfd4f26450c95a81dcc642b3691e07d96135",
@@ -757,7 +757,7 @@
     "build/obj/legoapi/playeractions.obj": "beeebfd7ad6044a34ede2cc020caf0f463835a323968b08b2e9b5a0b9d98b08d",
     "build/obj/legoapi/playercombat.obj": "1946e35916ce553bf87807d0978155edd47544d07289d821098cb23826cc1d6c",
     "build/obj/legoapi/playeritems.obj": "cf29a43983381e6905709ebbe2fabc0465a237f4e6595bdd56fed1beb7f96a8a",
-    "build/obj/legoapi/players.obj": "3b30005ea37e737499f15bfe5e191f634538775ff80dec46a2477c7697e32c98",
+    "build/obj/legoapi/players.obj": "6e28783ebc33d898cf7c71d130449b8b22ec8753ffd21e9add5fac22cf199acf",
     "build/obj/legoapi/players_dropin.obj": "3761ff651cff96dec9f0db8c7bb651b4e23d60423f273319e4df4d1ad700a921",
     "build/obj/legoapi/plugs.obj": "3ca68d552eee744638fc4ed12074f83ad78d6346527f50c8311c3e814b0d23db",
     "build/obj/legoapi/pulses.obj": "ce972b58e394307fbf02e65aa1cab4e4566bb6ba2eab6c3c16a6f56298db11d6",
@@ -5826,17 +5826,17 @@
       "objects": [
         {
           "unit": "src/legoapi/players.c",
-          "base_size": 854,
+          "base_size": 864,
           "exact_match": false,
           "target_sha256": "f8575a5d9c1b972d5b6e0fc1d4d6da34df5c1ebf44397c78bdcbaf8834f31a73",
-          "base_sha256": "41503d29f82698d68574af09d7958724de7302a149c262ef3453b82cd865790b",
-          "relocation_count": 14,
+          "base_sha256": "ad8df5c6098a014412c38589b997e583002866ae98623b18abb217fc2c6381b0",
+          "relocation_count": 16,
           "comparison_unit": "0041b0a0-9cfd4ab2ed05",
-          "objdiff_percent": 46.652405
+          "objdiff_percent": 56.368984
         }
       ],
       "status": "different",
-      "objdiff_percent": 46.652405
+      "objdiff_percent": 56.368984
     },
     {
       "name": "ResetPlayer",
@@ -39510,17 +39510,17 @@
       "objects": [
         {
           "unit": "src/legoapi/fighting.c",
-          "base_size": 839,
+          "base_size": 835,
           "exact_match": false,
           "target_sha256": "1039cd26c256ce3716b1613c267d0808957909b9107e8b9b283479a9d25ee9c6",
-          "base_sha256": "752ec0d26526174effce859688501019eb67a360127b65692569d13f88094d85",
+          "base_sha256": "bc591f0ee2dbf3619401b2877b1b3c415dd75270533a1e66bb6bc2610920b728",
           "relocation_count": 20,
           "comparison_unit": "0049c080-242c7e09a856",
-          "objdiff_percent": 15.475837
+          "objdiff_percent": 17.141264
         }
       ],
       "status": "different",
-      "objdiff_percent": 15.475837
+      "objdiff_percent": 17.141264
     },
     {
       "name": "DeactivatedMindTrickFilterPc",
@@ -545963,10 +545963,10 @@
     "mapped_code_bytes": 2588290,
     "matched_code_bytes": 770100,
     "matching_percent": 22.185117390124468,
-    "fuzzy_coverage_percent": 62.69540429088802,
+    "fuzzy_coverage_percent": 62.69829423750027,
     "mapped_functions": 9882,
     "matched_functions": 6032,
-    "objdiff_fuzzy_percent": 85.819244,
+    "objdiff_fuzzy_percent": 85.82319,
     "objdiff_total_code": 2538886,
     "image_bytes": 40067072,
     "mapped_bytes": 4460836,
@@ -547340,7 +547340,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "c04a84fcfa6c175902f792f4dd422ca04cf7c72ed2bbf49ca7df373d86b02e2c",
+      "geometry_object_sha256": "9d9a878f69bf70fb0e93b2a1d9e02350d4664ad4c528eaf46535147a25b9e8aa",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

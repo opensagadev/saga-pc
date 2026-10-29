@@ -1654,13 +1654,24 @@ void __cdecl ResetPlayerAI(GAMEOBJECT *object) {
     AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
 }
 
+/* Two-DWORD consumer view of the existing genuine mutable default mask. */
+typedef struct PLAYER_ROUTE_MASK_WORDS_PC {
+    u32 low;
+    u32 high;
+} PLAYER_ROUTE_MASK_WORDS_PC;
+STATIC_ASSERT(sizeof(PLAYER_ROUTE_MASK_WORDS_PC) == 8);
+STATIC_ASSERT(offsetof(PLAYER_ROUTE_MASK_WORDS_PC, low) == 0);
+STATIC_ASSERT(offsetof(PLAYER_ROUTE_MASK_WORDS_PC, high) == 4);
+extern u64 CharacterMaskAllPc;
+
 void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
-    CHARACTERDATA_PC *character = object->character_data;
+    CHARACTERDATA_PC *character;
     i32 can_pull_levers;
     i32 type;
     char *name;
     u64 route_mask;
+    u32 route_mask_word;
     u32 flags;
     if (StartupGameFlag0 != 0)
         PlayerInitCapabilitiesVariant0Pc(object);
@@ -1674,17 +1685,31 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.route_mask_low = 0;
     object->ai_packet.route_mask_high = 0;
     if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0) {
-        object->ai_packet.route_mask_low = 0xffffffff;
-        object->ai_packet.route_mask_high = 0xffffffff;
+        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, low),
+               sizeof(route_mask_word));
+        object->ai_packet.route_mask_low = route_mask_word;
+        memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, high),
+               sizeof(route_mask_word));
+        object->ai_packet.route_mask_high = route_mask_word;
     } else if (SpecialRouteCharacterTypeIDFn != NULL) {
-        name = object->suit != NULL ? ((PLAYER_SUIT_NAME_PC *)object->suit)->name : character->name;
+        name = object->suit != NULL ? ((PLAYER_SUIT_NAME_PC *)object->suit)->name : object->character_data->name;
         type = (u8)SpecialRouteCharacterTypeIDFn(name);
         if (type != 0xff) {
-            route_mask = (type < 64) ? ((u64)1 << type) : (u64)-1;
-            object->ai_packet.route_mask_low = (u32)route_mask;
-            object->ai_packet.route_mask_high = (u32)(route_mask >> 32);
+            if (type < 64) {
+                route_mask = (u64)1 << type;
+                object->ai_packet.route_mask_low = (u32)route_mask;
+                object->ai_packet.route_mask_high = (u32)(route_mask >> 32);
+            } else {
+                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, low),
+                       sizeof(route_mask_word));
+                object->ai_packet.route_mask_low = route_mask_word;
+                memcpy(&route_mask_word, (u8 *)&CharacterMaskAllPc + offsetof(PLAYER_ROUTE_MASK_WORDS_PC, high),
+                       sizeof(route_mask_word));
+                object->ai_packet.route_mask_high = route_mask_word;
+            }
         }
     }
+    character = object->character_data;
     object->run_speed_override = 1000000000.0f;
     object->walk_speed_override = 1000000000.0f;
     object->ai_packet.creature_set = 0;
@@ -1703,7 +1728,7 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.flags &= ~0x10000000u;
     object->ai_packet.flags = (object->ai_packet.flags & ~0xc000000u) | (DEFAULT_MOVE_RANGE > 0.0f ? 0x4000000u : 0);
     object->flags_ef4 &= 0xfe5fffff;
-    flags = (flags & ~0xc0000u) | ((character->model_flags >> 7) & 0x100000);
+    flags = (flags & ~0x1c0000u) | ((character->model_flags >> 7) & 0x100000);
     object->movement_speed_scale_pc = 1.0f;
     object->tag_flags &= ~2u;
     object->field_ec4 = 0.0f;
@@ -1728,6 +1753,7 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->ai_opponent_exclusion_mask[0] = 0;
     object->ai_opponent_exclusion_mask[1] = 0;
     memset(state->ai_reset_workspace, 0, sizeof(state->ai_reset_workspace));
+    character = object->character_data;
     state->field_107d = 0;
     state->field_fd8 = 0;
     object->ai_packet.dont_avoid_character = NULL;

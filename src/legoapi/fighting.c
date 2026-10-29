@@ -99,6 +99,7 @@ void __cdecl TakeHitCode(GAMEOBJECT *object) {
                 object->character_context = -1;
             return;
         }
+        animation = object->field_7aa;
         object->flags_e24 |= 0x8000;
         if (animation == 0xb9) {
             mode = 1;
