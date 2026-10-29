@@ -14,6 +14,7 @@ extern AISTATE_PC *aiscript_load_state;
 extern NULISTHDR *aiscript_load_conditions;
 extern NULISTHDR *aiscript_load_actions;
 extern NULISTHDR *aiscript_load_refs;
+extern NUFPCOMJMP AIScriptStateCommandsPc[5];
 extern i32 condition_has_no_goto;
 extern const char AIScriptListFilename[11];
 extern const char AIScriptListPathFormat[14];
@@ -366,58 +367,56 @@ void __cdecl xEndState(NUFPAR_PC *parser) {
 }
 
 void __cdecl xState(NUFPAR_PC *parser) {
-    NUFPCOMJMP state_commands[5];
+    VARIPTR *buffer;
+    VARIPTR *end_buffer;
     AISTATE_PC *state;
+    u32 state_address;
+    char *name;
 
     if (aiscript_load_script == NULL || NuFParGetWord(parser) == 0) {
         return;
     }
 
-    state = (AISTATE_PC *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AISTATE_PC));
-    if (state == NULL) {
-        STUBBED_NAMED("xState: state-arena allocation diagnostic");
-        return;
+    end_buffer = aiscript_load_end_buffer;
+    buffer = aiscript_load_buffer;
+    state = NULL;
+    if (buffer != NULL && end_buffer != NULL && buffer->addr + sizeof(AISTATE_PC) < end_buffer->addr) {
+        state_address = (buffer->addr + 15u) & ~15u;
+        state = (AISTATE_PC *)state_address;
+        buffer->addr = state_address + sizeof(AISTATE_PC);
+        memset(state, 0, sizeof(AISTATE_PC));
+    } else {
+        AIScriptMissingStateDiagnostic();
     }
     aiscript_load_state = state;
-    AISCRIPT_COPY_ARENA_STRING(parser->word_buffer, state->name, aiscript_load_buffer, aiscript_load_end_buffer);
-    if (NuStrICmp(state->name, AIScriptKeywordBase) == 0) {
-        NULISTHDR *states = &aiscript_load_script->states;
-        state->link.next = states->head;
-        state->link.prev = NULL;
-        if (states->head != NULL) {
-            states->head->prev = &state->link;
-        } else {
-            states->tail = &state->link;
-        }
-        states->head = &state->link;
+    aiscript_load_refs = (NULISTHDR *)((u32)state + offsetof(AISTATE_PC, reference_scripts));
+    if (state == NULL) {
+        return;
+    }
+    memset(state, 0, sizeof(AISTATE_PC));
+    name = AIScriptCopyStringPc(parser->word_buffer_ptr, buffer, end_buffer);
+    aiscript_load_state->name = name;
+    if (NuStrICmp(name, AIScriptKeywordBase) == 0) {
+        NuLinkedListInsert((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT_PC, states)),
+                           (NULISTLNK *)aiscript_load_state);
     } else {
-        NuLinkedListAppend(&aiscript_load_script->states, &state->link);
+        NuLinkedListAppend((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT_PC, states)),
+                           (NULISTLNK *)aiscript_load_state);
     }
 
-    state_commands[0].keyword = (char *)AIScriptKeywordConditions;
-    state_commands[0].callback = xConditions;
-    state_commands[1].keyword = (char *)AIScriptKeywordActions;
-    state_commands[1].callback = xActions;
-    state_commands[2].keyword = (char *)AIScriptKeywordReferenceScript;
-    state_commands[2].callback = xRefScript;
-    state_commands[3].keyword = (char *)AIScriptKeywordEnd;
-    state_commands[3].callback = xEndState;
-    state_commands[4].keyword = NULL;
-    state_commands[4].callback = NULL;
-
-    NuFParPushCom(parser, state_commands);
+    NuFParPushCom(parser, AIScriptStateCommandsPc);
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
-        aiscript_load_refs = &state->reference_scripts;
-        aiscript_load_conditions = &state->conditions;
-        aiscript_load_actions = &state->actions;
+        state_address = (u32)aiscript_load_state;
+        aiscript_load_conditions = (NULISTHDR *)(state_address + offsetof(AISTATE_PC, conditions));
+        aiscript_load_actions = (NULISTHDR *)(state_address + offsetof(AISTATE_PC, actions));
         NuFParInterpretWord(parser);
     }
     NuFParPopCom(parser);
-    aiscript_load_state = NULL;
-    aiscript_load_actions = NULL;
-    aiscript_load_conditions = NULL;
     aiscript_load_refs = NULL;
+    aiscript_load_state = NULL;
+    aiscript_load_conditions = NULL;
+    aiscript_load_actions = NULL;
 }
 
 void __cdecl xParam(NUFPAR_PC *parser) {

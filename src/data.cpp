@@ -35175,3 +35175,17 @@ extern "C" {
 extern "C" {
     __declspec(allocate(".data$AiEditorAntinodeModeWorkingPc")) i32 AiEditorAntinodeModeIdPc = -1;
 }
+
+extern "C" {
+    void __cdecl xConditions(NUFPAR_PC *parser);
+    void __cdecl xActions(NUFPAR_PC *parser);
+    void __cdecl xRefScript(NUFPAR_PC *parser);
+    void __cdecl xEndState(NUFPAR_PC *parser);
+#pragma data_seg(".data$AIScriptStateCommandsPc")
+    NUFPCOMJMP AIScriptStateCommandsPc[5] = {{(char *)AIScriptKeywordConditions, xConditions},
+                                             {(char *)AIScriptKeywordActions, xActions},
+                                             {(char *)AIScriptKeywordReferenceScript, xRefScript},
+                                             {(char *)AIScriptKeywordEnd, xEndState},
+                                             {NULL, NULL}};
+#pragma data_seg()
+}

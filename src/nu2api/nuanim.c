@@ -2119,35 +2119,100 @@ void *__cdecl NuAnimDataFixPtrs(void *animation, i32 delta) {
     return data;
 }
 
+/* The relocation buffer holds 32-bit address/offset words before fixup. */
+typedef struct NuAnimData2RelocCurve_PC {
+    u32 curve_data;
+} NuAnimData2RelocCurve_PC;
+
+typedef struct NuAnimData2RelocKeys_PC {
+    u32 key_mask;
+    u32 key_offsets;
+    u32 key_data;
+} NuAnimData2RelocKeys_PC;
+
+typedef struct NuAnimData2RelocHeader_PC {
+    u32 magic;
+    i16 node_count;
+    i16 curve_count;
+    i16 chunk_count;
+    u16 unknown_0a;
+    u32 curves;
+    u32 curve_types;
+    u32 node_flags;
+} NuAnimData2RelocHeader_PC;
+
+STATIC_ASSERT(offsetof(NuAnimData2RelocCurve_PC, curve_data) == 0);
+STATIC_ASSERT(sizeof(NuAnimData2RelocCurve_PC) == 4);
+STATIC_ASSERT(offsetof(NuAnimData2RelocKeys_PC, key_mask) == 0);
+STATIC_ASSERT(offsetof(NuAnimData2RelocKeys_PC, key_offsets) == 4);
+STATIC_ASSERT(offsetof(NuAnimData2RelocKeys_PC, key_data) == 8);
+STATIC_ASSERT(sizeof(NuAnimData2RelocKeys_PC) == 12);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, magic) == 0);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, node_count) == 4);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, curve_count) == 6);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, chunk_count) == 8);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, unknown_0a) == 10);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, curves) == 12);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, curve_types) == 16);
+STATIC_ASSERT(offsetof(NuAnimData2RelocHeader_PC, node_flags) == 20);
+STATIC_ASSERT(sizeof(NuAnimData2RelocHeader_PC) == 24);
+
 void *__cdecl NuAnimData2FixPtrs(void *data, i32 delta, i32 external_delta, i32 flags) {
-    NuAnimData2Prefix_PC *anim;
+    NuAnimData2RelocHeader_PC *anim;
+    u32 word;
     i32 curve_count;
     i32 curve_index;
 
     if (NuAnimDataBitCountInitialized == 0)
         buildBitCountTable();
-    anim = (NuAnimData2Prefix_PC *)NUANIM_REBASE_POINTER(data, delta);
+    anim = data == NULL ? NULL : (NuAnimData2RelocHeader_PC *)((u32)data + (u32)delta);
     if (anim == NULL)
         return NULL;
 
-    if (anim->first_word.magic == 0x414e4934 || anim->first_word.magic == 0x414e4935) {
+    if (anim->magic == 0x414e4934 || anim->magic == 0x414e4935) {
         if (external_delta != 0)
             ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, delta, flags);
         else
             ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, (i32)anim, flags);
     } else {
-        anim->curves = (NuAnimData2Curve_PC *)NUANIM_REBASE_POINTER(anim->curves, delta);
-        anim->curve_types = (u8 *)NUANIM_REBASE_POINTER(anim->curve_types, delta);
-        anim->node_flags = (u8 *)NUANIM_REBASE_POINTER(anim->node_flags, delta);
-        curve_count = (i32)anim->node_count * (i32)anim->curve_count;
+        word = anim->curves;
+        if (word != 0)
+            word += (u32)delta;
+        anim->curves = word;
+        word = anim->curve_types;
+        if (word != 0)
+            word += (u32)delta;
+        anim->curve_types = word;
+        word = anim->node_flags;
+        if (word != 0)
+            word += (u32)delta;
+        curve_count = (i32)anim->node_count;
+        curve_count *= (i32)anim->curve_count;
+        anim->node_flags = word;
         for (curve_index = 0; curve_index < curve_count; ++curve_index) {
-            if (anim->curve_types[curve_index] != 0) {
-                NuAnimData2CurveDataPrefix_PC *curve = anim->curves[curve_index].curve_data;
-                curve = (NuAnimData2CurveDataPrefix_PC *)NUANIM_REBASE_POINTER(curve, delta);
-                anim->curves[curve_index].curve_data = curve;
-                curve->key_mask = (u32 *)NUANIM_REBASE_POINTER(curve->key_mask, delta);
-                curve->key_offsets = (u16 *)NUANIM_REBASE_POINTER(curve->key_offsets, delta);
-                curve->key_data = NUANIM_REBASE_POINTER(curve->key_data, delta);
+            if (*((u8 *)(anim->curve_types + (u32)curve_index)) != 0) {
+                NuAnimData2RelocCurve_PC *slot =
+                    (NuAnimData2RelocCurve_PC *)(anim->curves + (u32)curve_index * sizeof(NuAnimData2RelocCurve_PC));
+                NuAnimData2RelocKeys_PC *curve;
+                word = slot->curve_data;
+                if (word != 0)
+                    word += (u32)delta;
+                slot->curve_data = word;
+                curve = (NuAnimData2RelocKeys_PC *)word;
+                word = curve->key_mask;
+                if (word != 0)
+                    word += (u32)delta;
+                curve->key_mask = word;
+                curve = (NuAnimData2RelocKeys_PC *)slot->curve_data;
+                word = curve->key_offsets;
+                if (word != 0)
+                    word += (u32)delta;
+                curve->key_offsets = word;
+                curve = (NuAnimData2RelocKeys_PC *)slot->curve_data;
+                word = curve->key_data;
+                if (word != 0)
+                    word += (u32)delta;
+                curve->key_data = word;
             }
         }
     }
