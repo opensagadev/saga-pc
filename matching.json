@@ -17,7 +17,7 @@
     "config/library-objects.json": "9727c009368075a0e525a27ae8337b66c444838945fc976fb2676f9f1fe372a9",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "207aa1e3ccb10bb9915387e893e209309f036529c3e7be51d093eab9ae1de20c",
+    "config/symbols.csv": "fea54aed5b04c7f21fb6db69c05fe9e8675809bbcf5af10e43f007ed6393d8ac",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -361,7 +361,7 @@
     "src/legoapi/pursuit.c": "0230ecece707cdc8c11ee1903f69d00d5d91401cde048de9f51d791aea8cbc6f",
     "src/legoapi/render.c": "edde50fc576ca3d3fb814cdfe24278bf265c015f72c1249b6a963984516d142d",
     "src/legoapi/ripples.c": "9577bf91f9e3d86c7ef4c11cab1cb35346b8d660d04380ee978a90ca6cef668e",
-    "src/legoapi/rtl.c": "81cb6e45a01a71192145a46a53acde9a7c1f1641c3a86e237e138b6e88059e27",
+    "src/legoapi/rtl.c": "545f64869a9ca393392022470183621a3e31b5927c02b2a7ba1d396f6eeb9f6f",
     "src/legoapi/securitydoors_pc.c": "925da0ba7a365b28e47ef468590de2c9dda31ac37ab8a1428ff78fa25077a94b",
     "src/legoapi/sfx_level.c": "fe83b2361a459682c417c7516fc5963961552e67f00a7f2c5c6080bba1e2fd31",
     "src/legoapi/shadow.c": "8f05a7a554eae3e1c0062260f95f08d1f38e6e8c7bae2a1b281ec126a4cdfc19",
@@ -767,7 +767,7 @@
     "build/obj/legoapi/radio.obj": "79b1e3be1bc26478ce9b6301489fdd8774149addfe491baaf86cc263d4f9de3d",
     "build/obj/legoapi/render.obj": "0440126c5d35e9862a80907a3657ea55e96917b9dbcd4e49c37d4c63760239b9",
     "build/obj/legoapi/ripples.obj": "f937e4d8dc1bd3198525f369975558437a2fffea4e04df5e58faf24aed4580d5",
-    "build/obj/legoapi/rtl.obj": "d34d4261098faf33e7269d22b9f0e293a6ffba2dd519744e7189a98110d78781",
+    "build/obj/legoapi/rtl.obj": "59173515fa23a3ed4e285e11cfb865782b7e4ca037ebfb910d66b3c804a8ad89",
     "build/obj/legoapi/screen.obj": "9564b368f54a726e15f152a20e17a934ceb93f6ef1db2bf93e3f75f0e4cc9189",
     "build/obj/legoapi/securitydoors_pc.obj": "6dae1753a11d32b1aa812891491797dad25d88a461d35a2c5668e9236444bb4c",
     "build/obj/legoapi/sfx.obj": "122cd6c3ef6a8e3bd4e50320006c460a9fdf98bfea2c881ff9f712d78b147cdc",
@@ -162757,6 +162757,16 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "cbNearClipAtCursor",
+      "symbol": "_cbNearClipAtCursor",
+      "address": "0x006238e0",
+      "units": [],
+      "target_size": 18,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "cbProcessColourPick",
       "symbol": "_cbProcessColourPick",
       "address": "0x00623a20",
@@ -168037,6 +168047,66 @@
       "status": "not implemented"
     },
     {
+      "name": "cbLoad",
+      "symbol": "_cbLoad",
+      "address": "0x006389c0",
+      "units": [],
+      "target_size": 165,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbSave",
+      "symbol": "_cbSave",
+      "address": "0x00638a70",
+      "units": [],
+      "target_size": 126,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbMultiplier",
+      "symbol": "_cbMultiplier",
+      "address": "0x00638af0",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbGroupID",
+      "symbol": "_cbGroupID",
+      "address": "0x00638b10",
+      "units": [],
+      "target_size": 61,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbModifierType",
+      "symbol": "_cbModifierType",
+      "address": "0x00638b50",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbModifierAdjust",
+      "symbol": "_cbModifierAdjust",
+      "address": "0x00638b70",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "edrtlcbToggleCastShadow",
       "symbol": "_edrtlcbToggleCastShadow",
       "address": "0x00638b90",
@@ -168083,6 +168153,26 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "cbHighColour",
+      "symbol": "_cbHighColour",
+      "address": "0x00638bd0",
+      "units": [],
+      "target_size": 42,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbLowColour",
+      "symbol": "_cbLowColour",
+      "address": "0x00638c00",
+      "units": [],
+      "target_size": 42,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "rtlCbHighTimePc",
@@ -168179,6 +168269,66 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "cbLightType",
+      "symbol": "_cbLightType",
+      "address": "0x00638cb0",
+      "units": [],
+      "target_size": 25,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbAssocID",
+      "symbol": "_cbAssocID",
+      "address": "0x00638cd0",
+      "units": [],
+      "target_size": 80,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbExcludeID",
+      "symbol": "_cbExcludeID",
+      "address": "0x00638d20",
+      "units": [],
+      "target_size": 80,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbUserID",
+      "symbol": "_cbUserID",
+      "address": "0x00638d70",
+      "units": [],
+      "target_size": 27,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbFogColour",
+      "symbol": "_cbFogColour",
+      "address": "0x00638d90",
+      "units": [],
+      "target_size": 38,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbHazeColour",
+      "symbol": "_cbHazeColour",
+      "address": "0x00638dc0",
+      "units": [],
+      "target_size": 38,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "rtlCbFogAlphaPc",
@@ -168301,6 +168451,86 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "cbFogStartPSP",
+      "symbol": "_cbFogStartPSP",
+      "address": "0x00638f00",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbFogEndPSP",
+      "symbol": "_cbFogEndPSP",
+      "address": "0x00638f20",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbFogStart",
+      "symbol": "_cbFogStart",
+      "address": "0x00638f40",
+      "units": [],
+      "target_size": 19,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbFogEnd",
+      "symbol": "_cbFogEnd",
+      "address": "0x00638f60",
+      "units": [],
+      "target_size": 20,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbFogAdjRng",
+      "symbol": "_cbFogAdjRng",
+      "address": "0x00638f80",
+      "units": [],
+      "target_size": 156,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbFogAdjNear",
+      "symbol": "_cbFogAdjNear",
+      "address": "0x00639020",
+      "units": [],
+      "target_size": 93,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbFogAdjFar",
+      "symbol": "_cbFogAdjFar",
+      "address": "0x00639080",
+      "units": [],
+      "target_size": 86,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbDOFFStop",
+      "symbol": "_cbDOFFStop",
+      "address": "0x006390e0",
+      "units": [],
+      "target_size": 67,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "cbCopyLight",
       "symbol": "_cbCopyLight",
       "address": "0x00639130",
@@ -168421,6 +168651,26 @@
       "objdiff_percent": 10.909091
     },
     {
+      "name": "cbPasteFog",
+      "symbol": "_cbPasteFog",
+      "address": "0x006394d0",
+      "units": [],
+      "target_size": 76,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbPasteIntoFog",
+      "symbol": "_cbPasteIntoFog",
+      "address": "0x00639520",
+      "units": [],
+      "target_size": 71,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "cbHideType",
       "symbol": "_cbHideType",
       "address": "0x00639570",
@@ -168493,6 +168743,16 @@
       "objdiff_percent": 26.11111
     },
     {
+      "name": "cbCancelLightProperties",
+      "symbol": "_cbCancelLightProperties",
+      "address": "0x006395d0",
+      "units": [],
+      "target_size": 143,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
       "name": "cbSetControls",
       "symbol": "_cbSetControls",
       "address": "0x00639660",
@@ -168515,6 +168775,26 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "cbScaleAllMultipliersUp",
+      "symbol": "_cbScaleAllMultipliersUp",
+      "address": "0x00639670",
+      "units": [],
+      "target_size": 256,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "cbScaleAllMultipliersDown",
+      "symbol": "_cbScaleAllMultipliersDown",
+      "address": "0x00639770",
+      "units": [],
+      "target_size": 256,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
     },
     {
       "name": "edrtlBurnoutSave",
@@ -169849,14 +170129,48 @@
       "status": "not implemented"
     },
     {
-      "name": "InitUI",
-      "symbol": "_InitUI",
-      "address": "0x0063f930",
+      "name": "cbUndoLight",
+      "symbol": "_cbUndoLight",
+      "address": "0x0063f910",
       "units": [],
-      "target_size": 3646,
+      "target_size": 5,
       "exact_match": false,
       "objects": [],
       "status": "not implemented"
+    },
+    {
+      "name": "cbRedoLight",
+      "symbol": "_cbRedoLight",
+      "address": "0x0063f920",
+      "units": [],
+      "target_size": 5,
+      "exact_match": false,
+      "objects": [],
+      "status": "not implemented"
+    },
+    {
+      "name": "InitUI",
+      "symbol": "_InitUI",
+      "address": "0x0063f930",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": 5866,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/legoapi/rtl.c",
+          "base_size": 5703,
+          "exact_match": false,
+          "target_sha256": "b2aa6550ef63b6966b939f4b0b35ccd42861bc53c8ad712af50904adef07d241",
+          "base_sha256": "faa8b940e8e2b7ae7e615789f60ba935a45dc9acf6a6947bae7650de6ca758e1",
+          "relocation_count": 674,
+          "comparison_unit": "0063f930-b32f6fe2333e",
+          "objdiff_percent": 81.00236
+        }
+      ],
+      "status": "different",
+      "objdiff_percent": 81.00236
     },
     {
       "name": "edrtlBurnoutLoadSet",
@@ -259014,6 +259328,7 @@
         "src/legoapi/move.c",
         "src/legoapi/players.c",
         "src/legoapi/render.c",
+        "src/legoapi/rtl.c",
         "src/legoapi/text.c",
         "src/legogame/game.cpp"
       ],
@@ -259094,6 +259409,14 @@
         },
         {
           "unit": "src/legoapi/render.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "03e3c2420f5066a5fa6e36735ed8cc4f6a251046263e1a6024f009deeee3b952",
+          "base_sha256": "03e3c2420f5066a5fa6e36735ed8cc4f6a251046263e1a6024f009deeee3b952"
+        },
+        {
+          "unit": "src/legoapi/rtl.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -336134,6 +336457,7 @@
         "src/legoapi/parts.c",
         "src/legoapi/playercombat.cpp",
         "src/legoapi/players.c",
+        "src/legoapi/rtl.c",
         "src/nu2api/nucore.cpp"
       ],
       "target_size": 4,
@@ -336189,6 +336513,14 @@
         },
         {
           "unit": "src/legoapi/players.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "0835a5c87ba00a93f8d84fb3bdf20866024a13fc710fc1225e3d67073543bba0",
+          "base_sha256": "0835a5c87ba00a93f8d84fb3bdf20866024a13fc710fc1225e3d67073543bba0"
+        },
+        {
+          "unit": "src/legoapi/rtl.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -336678,6 +337010,7 @@
         "src/legoapi/jumping.c",
         "src/legoapi/move.c",
         "src/legoapi/parts.c",
+        "src/legoapi/rtl.c",
         "src/legoapi/shard.c",
         "src/legoapi/specialsfx.c",
         "src/legogame/startup.cpp"
@@ -336727,6 +337060,14 @@
         },
         {
           "unit": "src/legoapi/parts.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "31b67dba7cfd6e2d7540f9c96d90a45b8f2d44956620723024d4e1beeacd4602",
+          "base_sha256": "31b67dba7cfd6e2d7540f9c96d90a45b8f2d44956620723024d4e1beeacd4602"
+        },
+        {
+          "unit": "src/legoapi/rtl.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -356508,6 +356849,18 @@
       "status": "unknown size"
     },
     {
+      "name": "__real@459c4000",
+      "symbol": "__real@459c4000",
+      "address": "0x0075ebac",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "__real@4062c00000000000",
       "symbol": "__real@4062c00000000000",
       "address": "0x0075ebb0",
@@ -358093,6 +358446,18 @@
       "status": "unknown size"
     },
     {
+      "name": "??_C@_02JINPPBEP@No?$AA@",
+      "symbol": "??_C@_02JINPPBEP@No?$AA@",
+      "address": "0x0075f2c0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "MenuPcString75f2c4",
       "symbol": "_MenuPcString75f2c4",
       "address": "0x0075f2c4",
@@ -358119,6 +358484,18 @@
       "address": "0x0075f2c4",
       "units": [
         "src/data.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_03CCLAEDDF@Yes?$AA@",
+      "symbol": "??_C@_03CCLAEDDF@Yes?$AA@",
+      "address": "0x0075f2c4",
+      "units": [
+        "src/legoapi/rtl.c"
       ],
       "target_size": null,
       "exact_match": false,
@@ -365082,6 +365459,18 @@
       "status": "unknown size"
     },
     {
+      "name": "??_C@_0BE@NPELFGFL@Near?5Clip?5At?5Cursor?$AA@",
+      "symbol": "??_C@_0BE@NPELFGFL@Near?5Clip?5At?5Cursor?$AA@",
+      "address": "0x00760ee0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@",
       "symbol": "??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@",
       "address": "0x007610bc",
@@ -367581,6 +367970,7 @@
       "units": [
         "src/legoapi/debris_engine.c",
         "src/legoapi/lighting.c",
+        "src/legoapi/rtl.c",
         "src/legoapi/text.c",
         "src/nu2api/input_runtime.cpp",
         "src/nu2api/nuparticle_runtime.c"
@@ -367598,6 +367988,14 @@
         },
         {
           "unit": "src/legoapi/lighting.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "ad286c64373644140ff927b256b8415467b5d27645ff997010b15519d022631b",
+          "base_sha256": "ad286c64373644140ff927b256b8415467b5d27645ff997010b15519d022631b"
+        },
+        {
+          "unit": "src/legoapi/rtl.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -383851,6 +384249,7 @@
       "address": "0x007640dc",
       "units": [
         "src/gameapi/edpp.c",
+        "src/legoapi/rtl.c",
         "src/nu2api/nupostdeferred.cpp",
         "src/nu2api/nutrig.c",
         "src/nu2api/pc_device.cpp",
@@ -383861,6 +384260,14 @@
       "objects": [
         {
           "unit": "src/gameapi/edpp.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71",
+          "base_sha256": "07883481b5c147464597d44401db095d88c2a6b049fbbcd7b278de98a5ceeb71"
+        },
+        {
+          "unit": "src/legoapi/rtl.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -388230,11 +388637,22 @@
       "name": "??_C@_04OPMHGHMB@Copy?$AA@",
       "symbol": "??_C@_04OPMHGHMB@Copy?$AA@",
       "address": "0x0076b004",
-      "units": [],
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
       "target_size": 5,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/legoapi/rtl.c",
+          "exact_match": true,
+          "target_size": 5,
+          "base_size": 5,
+          "target_sha256": "fa37e351f6b4c3ccdec11e28c0fdb2eb06c9722b3027d9965e49ddc763e9449d",
+          "base_sha256": "fa37e351f6b4c3ccdec11e28c0fdb2eb06c9722b3027d9965e49ddc763e9449d"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_C@_03ENJJMCOJ@Del?$AA@",
@@ -389155,6 +389573,18 @@
       "name": "??_C@_04IGFILMOC@ID?51?$AA@",
       "symbol": "??_C@_04IGFILMOC@ID?51?$AA@",
       "address": "0x0076b520",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_04JPEDINKD@ID?50?$AA@",
+      "symbol": "??_C@_04JPEDINKD@ID?50?$AA@",
+      "address": "0x0076b528",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -390378,7 +390808,8 @@
       "symbol": "??_C@_08NJNPMALD@Group?5ID?$AA@",
       "address": "0x0076bd9c",
       "units": [
-        "src/gameapi/edpp.c"
+        "src/gameapi/edpp.c",
+        "src/legoapi/rtl.c"
       ],
       "target_size": 9,
       "exact_match": true,
@@ -390390,9 +390821,1001 @@
           "base_size": 9,
           "target_sha256": "a084508fe5b7ae7fc0580b7b5ceb645102ed62271ab6bc7ee0558f016b18e91d",
           "base_sha256": "a084508fe5b7ae7fc0580b7b5ceb645102ed62271ab6bc7ee0558f016b18e91d"
+        },
+        {
+          "unit": "src/legoapi/rtl.c",
+          "exact_match": true,
+          "target_size": 9,
+          "base_size": 9,
+          "target_sha256": "a084508fe5b7ae7fc0580b7b5ceb645102ed62271ab6bc7ee0558f016b18e91d",
+          "base_sha256": "a084508fe5b7ae7fc0580b7b5ceb645102ed62271ab6bc7ee0558f016b18e91d"
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "??_C@_07MKNMKJLE@User?5ID?$AA@",
+      "symbol": "??_C@_07MKNMKJLE@User?5ID?$AA@",
+      "address": "0x0076bda8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_08NFMAFENF@Low?5Time?$AA@",
+      "symbol": "??_C@_08NFMAFENF@Low?5Time?$AA@",
+      "address": "0x0076bdf8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_09NHDLFPCH@High?5Time?$AA@",
+      "symbol": "??_C@_09NHDLFPCH@High?5Time?$AA@",
+      "address": "0x0076be10",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0L@FHHMINHA@Multiplier?$AA@",
+      "symbol": "??_C@_0L@FHHMINHA@Multiplier?$AA@",
+      "address": "0x0076be1c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "__real@42fe0000",
+      "symbol": "__real@42fe0000",
+      "address": "0x0076be28",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_09KLHEJKNK@Modifiers?$AA@",
+      "symbol": "??_C@_09KLHEJKNK@Modifiers?$AA@",
+      "address": "0x0076be68",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "__real@41a80000",
+      "symbol": "__real@41a80000",
+      "address": "0x0076be9c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0N@OMMEHEHJ@Blur?5Density?$AA@",
+      "symbol": "??_C@_0N@OMMEHEHJ@Blur?5Density?$AA@",
+      "address": "0x0076bea0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0N@BOLOHNOG@Haze?5Density?$AA@",
+      "symbol": "??_C@_0N@BOLOHNOG@Haze?5Density?$AA@",
+      "address": "0x0076beb0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BA@NMGPFFHF@Fog?5Settings?4?4?4?$AA@",
+      "symbol": "??_C@_0BA@NMGPFFHF@Fog?5Settings?4?4?4?$AA@",
+      "address": "0x0076bf08",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BD@OMMDIGGB@Fog?5Editor?5Options?$AA@",
+      "symbol": "??_C@_0BD@OMMDIGGB@Fog?5Editor?5Options?$AA@",
+      "address": "0x0076bf18",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0N@FPJDJMIP@DOF?5?9?5F?9Stop?$AA@",
+      "symbol": "??_C@_0N@FPJDJMIP@DOF?5?9?5F?9Stop?$AA@",
+      "address": "0x0076bf2c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BH@LHGFAPKK@Far?5Clip?5?$CIeditor?5only?$CJ?$AA@",
+      "symbol": "??_C@_0BH@LHGFAPKK@Far?5Clip?5?$CIeditor?5only?$CJ?$AA@",
+      "address": "0x0076bf3c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BI@FGOIEADA@Near?5Clip?5?$CIeditor?5only?$CJ?$AA@",
+      "symbol": "??_C@_0BI@FGOIEADA@Near?5Clip?5?$CIeditor?5only?$CJ?$AA@",
+      "address": "0x0076bf54",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BD@OFHCELHC@Fog?5Distance?5Range?$AA@",
+      "symbol": "??_C@_0BD@OFHCELHC@Fog?5Distance?5Range?$AA@",
+      "address": "0x0076bf6c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0P@CHGDEFOI@Haze?5Colour?4?4?4?$AA@",
+      "symbol": "??_C@_0P@CHGDEFOI@Haze?5Colour?4?4?4?$AA@",
+      "address": "0x0076bf80",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0O@DBGKGHMM@Fog?5End?5?$CIPSP?$CJ?$AA@",
+      "symbol": "??_C@_0O@DBGKGHMM@Fog?5End?5?$CIPSP?$CJ?$AA@",
+      "address": "0x0076bf90",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BA@CBEBBDH@Fog?5Start?5?$CIPSP?$CJ?$AA@",
+      "symbol": "??_C@_0BA@CBEBBDH@Fog?5Start?5?$CIPSP?$CJ?$AA@",
+      "address": "0x0076bfa0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0O@HKDJHIIC@Fog?5End?5?$CIPS2?$CJ?$AA@",
+      "symbol": "??_C@_0O@HKDJHIIC@Fog?5End?5?$CIPS2?$CJ?$AA@",
+      "address": "0x0076bfb0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "__real@44fa0000",
+      "symbol": "__real@44fa0000",
+      "address": "0x0076bfc0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BA@EJEHAOHJ@Fog?5Start?5?$CIPS2?$CJ?$AA@",
+      "symbol": "??_C@_0BA@EJEHAOHJ@Fog?5Start?5?$CIPS2?$CJ?$AA@",
+      "address": "0x0076bfc4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "__real@37a7c5ac",
+      "symbol": "__real@37a7c5ac",
+      "address": "0x0076bfd4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BC@OANIAEKK@Fog?5Density?5?$CIWii?$CJ?$AA@",
+      "symbol": "??_C@_0BC@OANIAEKK@Fog?5Density?5?$CIWii?$CJ?$AA@",
+      "address": "0x0076bfd8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BC@BAIHOPJP@Fog?5Density?5?$CInew?$CJ?$AA@",
+      "symbol": "??_C@_0BC@BAIHOPJP@Fog?5Density?5?$CInew?$CJ?$AA@",
+      "address": "0x0076bfec",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BE@ILPAIFCO@Fog?5Density?5?$CIalpha?$CJ?$AA@",
+      "symbol": "??_C@_0BE@ILPAIFCO@Fog?5Density?5?$CIalpha?$CJ?$AA@",
+      "address": "0x0076c000",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0O@MJMDNBHM@Fog?5Colour?4?4?4?$AA@",
+      "symbol": "??_C@_0O@MJMDNBHM@Fog?5Colour?4?4?4?$AA@",
+      "address": "0x0076c014",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0N@NMIGIOAG@Fog?5Settings?$AA@",
+      "symbol": "??_C@_0N@NMIGIOAG@Fog?5Settings?$AA@",
+      "address": "0x0076c024",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0P@PCBIIDMP@Steve?5Controls?$AA@",
+      "symbol": "??_C@_0P@PCBIIDMP@Steve?5Controls?$AA@",
+      "address": "0x0076c034",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0P@KMOOICJ@Ralph?5Controls?$AA@",
+      "symbol": "??_C@_0P@KMOOICJ@Ralph?5Controls?$AA@",
+      "address": "0x0076c044",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BA@IAODKEGG@Load?5Lights?1Fog?$AA@",
+      "symbol": "??_C@_0BA@IAODKEGG@Load?5Lights?1Fog?$AA@",
+      "address": "0x0076c054",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BA@NLLEKKJO@Save?5Lights?1Fog?$AA@",
+      "symbol": "??_C@_0BA@NLLEKKJO@Save?5Lights?1Fog?$AA@",
+      "address": "0x0076c064",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BG@FGJLHLKC@Global?5Adjustments?4?4?4?$AA@",
+      "symbol": "??_C@_0BG@FGJLHLKC@Global?5Adjustments?4?4?4?$AA@",
+      "address": "0x0076c074",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0P@LGDLALHO@Hide?5Lights?4?4?4?$AA@",
+      "symbol": "??_C@_0P@LGDLALHO@Hide?5Lights?4?4?4?$AA@",
+      "address": "0x0076c08c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BE@CFIFODGO@Adjust?5Modifiers?4?4?4?$AA@",
+      "symbol": "??_C@_0BE@CFIFODGO@Adjust?5Modifiers?4?4?4?$AA@",
+      "address": "0x0076c09c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@BMFCFFEB@No?5Z?5Buffer?$AA@",
+      "symbol": "??_C@_0M@BMFCFFEB@No?5Z?5Buffer?$AA@",
+      "address": "0x0076c0b0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_04NKENIHOM@Redo?$AA@",
+      "symbol": "??_C@_04NKENIHOM@Redo?$AA@",
+      "address": "0x0076c0bc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_04LPGMNMPN@Undo?$AA@",
+      "symbol": "??_C@_04LPGMNMPN@Undo?$AA@",
+      "address": "0x0076c0c4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0O@LCKAJDLJ@Copy?5To?5Group?$AA@",
+      "symbol": "??_C@_0O@LCKAJDLJ@Copy?5To?5Group?$AA@",
+      "address": "0x0076c0cc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0L@NCHCPHJL@Paste?5Into?$AA@",
+      "symbol": "??_C@_0L@NCHCPHJL@Paste?5Into?$AA@",
+      "address": "0x0076c0dc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_09BINAJOHE@Paste?5New?$AA@",
+      "symbol": "??_C@_09BINAJOHE@Paste?5New?$AA@",
+      "address": "0x0076c0e8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BE@KKDDEKBE@Light?5Properties?4?4?4?$AA@",
+      "symbol": "??_C@_0BE@KKDDEKBE@Light?5Properties?4?4?4?$AA@",
+      "address": "0x0076c0f4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BF@DHBOOJIB@Light?5Editor?5Options?$AA@",
+      "symbol": "??_C@_0BF@DHBOOJIB@Light?5Editor?5Options?$AA@",
+      "address": "0x0076c108",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0N@IJDAHJFH@Load?5lights?$DP?$AA@",
+      "symbol": "??_C@_0N@IJDAHJFH@Load?5lights?$DP?$AA@",
+      "address": "0x0076c120",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BL@JAGBKGP@Scale?5All?5Multipliers?5Down?$AA@",
+      "symbol": "??_C@_0BL@JAGBKGP@Scale?5All?5Multipliers?5Down?$AA@",
+      "address": "0x0076c130",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BJ@JIADANFC@Scale?5All?5Multipliers?5Up?$AA@",
+      "symbol": "??_C@_0BJ@JIADANFC@Scale?5All?5Multipliers?5Up?$AA@",
+      "address": "0x0076c14c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_04GHNNFJCK@?$CF?40f?$AA@",
+      "symbol": "??_C@_04GHNNFJCK@?$CF?40f?$AA@",
+      "address": "0x0076c168",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0N@LGILNPCC@Scale?5Amount?$AA@",
+      "symbol": "??_C@_0N@LGILNPCC@Scale?5Amount?$AA@",
+      "address": "0x0076c170",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BD@FIIPAHBB@Global?5Adjustments?$AA@",
+      "symbol": "??_C@_0BD@FIIPAHBB@Global?5Adjustments?$AA@",
+      "address": "0x0076c180",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_04LILBNENA@Okay?$AA@",
+      "symbol": "??_C@_04LILBNENA@Okay?$AA@",
+      "address": "0x0076c194",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BG@PEFDHINA@Global?5Change?5Applied?$AA@",
+      "symbol": "??_C@_0BG@PEFDHINA@Global?5Change?5Applied?$AA@",
+      "address": "0x0076c19c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0O@LIANAKN@Delete?5Light?$DP?$AA@",
+      "symbol": "??_C@_0O@LIANAKN@Delete?5Light?$DP?$AA@",
+      "address": "0x0076c1b4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@IAGIINAD@Hide?5Lights?$AA@",
+      "symbol": "??_C@_0M@IAGIINAD@Hide?5Lights?$AA@",
+      "address": "0x0076c1c4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0N@CINAIDAM@Has?5Specular?$AA@",
+      "symbol": "??_C@_0N@CINAIDAM@Has?5Specular?$AA@",
+      "address": "0x0076c1d0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@NOLDPIOE@Cast?5Shadow?$AA@",
+      "symbol": "??_C@_0M@NOLDPIOE@Cast?5Shadow?$AA@",
+      "address": "0x0076c1e0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@GLLOEJAC@Modifier?4?4?4?$AA@",
+      "symbol": "??_C@_0M@GLLOEJAC@Modifier?4?4?4?$AA@",
+      "address": "0x0076c1ec",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_04GGBPDDBN@?$CF?41f?$AA@",
+      "symbol": "??_C@_04GGBPDDBN@?$CF?41f?$AA@",
+      "address": "0x0076c1f8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0L@ELMOHFJC@User?5ID?4?4?4?$AA@",
+      "symbol": "??_C@_0L@ELMOHFJC@User?5ID?4?4?4?$AA@",
+      "address": "0x0076c200",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BB@DPFNLNNJ@Exclude?5ID?$CIs?$CJ?4?4?4?$AA@",
+      "symbol": "??_C@_0BB@DPFNLNNJ@Exclude?5ID?$CIs?$CJ?4?4?4?$AA@",
+      "address": "0x0076c20c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BD@OMKDDFOI@Associate?5ID?$CIs?$CJ?4?4?4?$AA@",
+      "symbol": "??_C@_0BD@OMKDDFOI@Associate?5ID?$CIs?$CJ?4?4?4?$AA@",
+      "address": "0x0076c220",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BJ@FLAGHHKM@Flicker?5Light?5Options?4?4?4?$AA@",
+      "symbol": "??_C@_0BJ@FLAGHHKM@Flicker?5Light?5Options?4?4?4?$AA@",
+      "address": "0x0076c234",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_09LBFMHJLB@Colour?4?4?4?$AA@",
+      "symbol": "??_C@_09LBFMHJLB@Colour?4?4?4?$AA@",
+      "address": "0x0076c250",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_07BBIIAHGF@Type?4?4?4?$AA@",
+      "symbol": "??_C@_07BBIIAHGF@Type?4?4?4?$AA@",
+      "address": "0x0076c25c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BB@CECNNDCG@Light?5Properties?$AA@",
+      "symbol": "??_C@_0BB@CECNNDCG@Light?5Properties?$AA@",
+      "address": "0x0076c264",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_08DEOOAPOB@Duration?$AA@",
+      "symbol": "??_C@_08DEOOAPOB@Duration?$AA@",
+      "address": "0x0076c278",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@BFFKDIHJ@Random?5Step?$AA@",
+      "symbol": "??_C@_0M@BFFKDIHJ@Random?5Step?$AA@",
+      "address": "0x0076c284",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_04MDBAPKAP@Step?$AA@",
+      "symbol": "??_C@_04MDBAPKAP@Step?$AA@",
+      "address": "0x0076c290",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BA@GMJJDJNF@Random?5Low?5Time?$AA@",
+      "symbol": "??_C@_0BA@GMJJDJNF@Random?5Low?5Time?$AA@",
+      "address": "0x0076c298",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BB@NHICAGEK@Random?5High?5Time?$AA@",
+      "symbol": "??_C@_0BB@NHICAGEK@Random?5High?5Time?$AA@",
+      "address": "0x0076c2a8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0O@BHOMOGBL@Low?5Colour?4?4?4?$AA@",
+      "symbol": "??_C@_0O@BHOMOGBL@Low?5Colour?4?4?4?$AA@",
+      "address": "0x0076c2bc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BG@PNIDGJIC@Flicker?5Light?5Options?$AA@",
+      "symbol": "??_C@_0BG@PNIDGJIC@Flicker?5Light?5Options?$AA@",
+      "address": "0x0076c2cc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0BB@FLJCKMGN@Adjust?5Modifiers?$AA@",
+      "symbol": "??_C@_0BB@FLJCKMGN@Adjust?5Modifiers?$AA@",
+      "address": "0x0076c2e4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_06FLDBKLOJ@Camdir?$AA@",
+      "symbol": "??_C@_06FLDBKLOJ@Camdir?$AA@",
+      "address": "0x0076c2f8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_09IPOKAELA@Antilight?$AA@",
+      "symbol": "??_C@_09IPOKAELA@Antilight?$AA@",
+      "address": "0x0076c300",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@FBOAGEAO@Directional?$AA@",
+      "symbol": "??_C@_0M@FBOAGEAO@Directional?$AA@",
+      "address": "0x0076c30c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_07EBHHCJEE@Ambient?$AA@",
+      "symbol": "??_C@_07EBHHCJEE@Ambient?$AA@",
+      "address": "0x0076c318",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@HEPLKMIL@Point?5Blend?$AA@",
+      "symbol": "??_C@_0M@HEPLKMIL@Point?5Blend?$AA@",
+      "address": "0x0076c320",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0O@HHJNCGB@Point?5Flicker?$AA@",
+      "symbol": "??_C@_0O@HHJNCGB@Point?5Flicker?$AA@",
+      "address": "0x0076c32c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0M@DNDCGONG@Jon?5Flicker?$AA@",
+      "symbol": "??_C@_0M@DNDCGONG@Jon?5Flicker?$AA@",
+      "address": "0x0076c33c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_05BGOFFEGG@Point?$AA@",
+      "symbol": "??_C@_05BGOFFEGG@Point?$AA@",
+      "address": "0x0076c348",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0L@NGIADNED@Light?5Type?$AA@",
+      "symbol": "??_C@_0L@NGIADNED@Light?5Type?$AA@",
+      "address": "0x0076c350",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_0L@DNIOPMK@Exclude?5ID?$AA@",
+      "symbol": "??_C@_0L@DNIOPMK@Exclude?5ID?$AA@",
+      "address": "0x0076c35c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_C@_08EDBMIDLC@Assoc?5ID?$AA@",
+      "symbol": "??_C@_08EDBMIDLC@Assoc?5ID?$AA@",
+      "address": "0x0076c368",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
     },
     {
       "name": "??_C@_09IEGDEKGI@Loaded?5OK?$AA@",
@@ -473970,6 +475393,18 @@
       "status": "unknown size"
     },
     {
+      "name": "camdir_id_names",
+      "symbol": "_camdir_id_names",
+      "address": "0x0080fe20",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "userid_names",
       "symbol": "_userid_names",
       "address": "0x0080fe60",
@@ -528710,9 +530145,81 @@
       "status": "exact"
     },
     {
+      "name": "rt_low_item",
+      "symbol": "_rt_low_item",
+      "address": "0x029134b8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "modifierid_item",
+      "symbol": "_modifierid_item",
+      "address": "0x029134bc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "pointflicker_item",
+      "symbol": "_pointflicker_item",
+      "address": "0x029134c0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "burn_editor_position_pc",
       "symbol": "_burn_editor_position_pc",
       "address": "0x029134c4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogcol_item",
+      "symbol": "_fogcol_item",
+      "address": "0x029134d0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "castshadow_item",
+      "symbol": "_castshadow_item",
+      "address": "0x029134d4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "directional_item",
+      "symbol": "_directional_item",
+      "address": "0x029134d8",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -528734,9 +530241,177 @@
       "status": "unknown size"
     },
     {
+      "name": "fog_pasteinto_item",
+      "symbol": "_fog_pasteinto_item",
+      "address": "0x029134e0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "rt_hi_item",
+      "symbol": "_rt_hi_item",
+      "address": "0x029134ec",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "t_hi_item",
+      "symbol": "_t_hi_item",
+      "address": "0x029134f0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hide_point_item",
+      "symbol": "_hide_point_item",
+      "address": "0x029134f4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "jonflicker_menu",
+      "symbol": "_jonflicker_menu",
+      "address": "0x029134f8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "load_confirm_menu",
+      "symbol": "_load_confirm_menu",
+      "address": "0x029134fc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogadjrng_item",
+      "symbol": "_fogadjrng_item",
+      "address": "0x02913500",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "jonflicker_item",
+      "symbol": "_jonflicker_item",
+      "address": "0x02913504",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "rtl_locked_undo",
       "symbol": "_rtl_locked_undo",
       "address": "0x02913508",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogendpsp_item",
+      "symbol": "_fogendpsp_item",
+      "address": "0x0291350c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogstart_item",
+      "symbol": "_fogstart_item",
+      "address": "0x02913510",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "t_low_item",
+      "symbol": "_t_low_item",
+      "address": "0x02913514",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hide_directional_item",
+      "symbol": "_hide_directional_item",
+      "address": "0x02913518",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hide_pointflicker_item",
+      "symbol": "_hide_pointflicker_item",
+      "address": "0x02913520",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hide_camdir_item",
+      "symbol": "_hide_camdir_item",
+      "address": "0x02913524",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -528770,6 +530445,126 @@
       "status": "unknown size"
     },
     {
+      "name": "camdir_item",
+      "symbol": "_camdir_item",
+      "address": "0x02913550",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "global_confirm_menu",
+      "symbol": "_global_confirm_menu",
+      "address": "0x02913554",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "global_scale_item",
+      "symbol": "_global_scale_item",
+      "address": "0x02913558",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fog_main_menu",
+      "symbol": "_fog_main_menu",
+      "address": "0x0291355c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "copytogroup_item",
+      "symbol": "_copytogroup_item",
+      "address": "0x02913560",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogstartpsp_item",
+      "symbol": "_fogstartpsp_item",
+      "address": "0x02913564",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "global_menu",
+      "symbol": "_global_menu",
+      "address": "0x02913568",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hasspecular_item",
+      "symbol": "_hasspecular_item",
+      "address": "0x0291356c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "antilight_item",
+      "symbol": "_antilight_item",
+      "address": "0x02913570",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "associd_menu",
+      "symbol": "_associd_menu",
+      "address": "0x02913574",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "menu_undo",
       "symbol": "_menu_undo",
       "address": "0x02913578",
@@ -528794,9 +530589,81 @@
       "status": "unknown size"
     },
     {
+      "name": "hide_menu",
+      "symbol": "_hide_menu",
+      "address": "0x02913608",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "mtls",
       "symbol": "_mtls",
       "address": "0x0291360c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "userid_items",
+      "symbol": "_userid_items",
+      "address": "0x02913618",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "flicker_menu",
+      "symbol": "_flicker_menu",
+      "address": "0x02913658",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "pointblend_item",
+      "symbol": "_pointblend_item",
+      "address": "0x0291365c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fog_copy_item",
+      "symbol": "_fog_copy_item",
+      "address": "0x02913660",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fog_paste_item",
+      "symbol": "_fog_paste_item",
+      "address": "0x02913664",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -528818,6 +530685,42 @@
       "status": "unknown size"
     },
     {
+      "name": "modifier_items",
+      "symbol": "_modifier_items",
+      "address": "0x029136b8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogdensitywii_item",
+      "symbol": "_fogdensitywii_item",
+      "address": "0x02913738",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "jon_rt_hi_item",
+      "symbol": "_jon_rt_hi_item",
+      "address": "0x0291373c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "clipboard_light",
       "symbol": "_clipboard_light",
       "address": "0x02913740",
@@ -528830,9 +530733,129 @@
       "status": "unknown size"
     },
     {
+      "name": "main_menu",
+      "symbol": "_main_menu",
+      "address": "0x029137cc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "delete_menu",
+      "symbol": "_delete_menu",
+      "address": "0x029137d0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "ambient_item",
+      "symbol": "_ambient_item",
+      "address": "0x029137d4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hide_antilight_item",
+      "symbol": "_hide_antilight_item",
+      "address": "0x029137d8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "userid_menu",
+      "symbol": "_userid_menu",
+      "address": "0x029137dc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "point_item",
+      "symbol": "_point_item",
+      "address": "0x029137e0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "undo_item",
       "symbol": "_undo_item",
       "address": "0x029137e4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hide_ambient_item",
+      "symbol": "_hide_ambient_item",
+      "address": "0x029137e8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "paste_item",
+      "symbol": "_paste_item",
+      "address": "0x029137ec",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "associd_items",
+      "symbol": "_associd_items",
+      "address": "0x029137f0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "type_menu",
+      "symbol": "_type_menu",
+      "address": "0x02913830",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -528866,9 +530889,201 @@
       "status": "unknown size"
     },
     {
+      "name": "excludeid_menu",
+      "symbol": "_excludeid_menu",
+      "address": "0x0291383c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hide_pointblend_item",
+      "symbol": "_hide_pointblend_item",
+      "address": "0x02913840",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "curr_rtl",
       "symbol": "_curr_rtl",
       "address": "0x02913844",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hazedensity_item",
+      "symbol": "_hazedensity_item",
+      "address": "0x02913848",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "pasteinto_item",
+      "symbol": "_pasteinto_item",
+      "address": "0x0291384c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "modifier_menu",
+      "symbol": "_modifier_menu",
+      "address": "0x02913850",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "modifier_adj_menu",
+      "symbol": "_modifier_adj_menu",
+      "address": "0x02913854",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "prop_item",
+      "symbol": "_prop_item",
+      "address": "0x02913858",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "multiplier_item",
+      "symbol": "_multiplier_item",
+      "address": "0x0291385c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fog_item",
+      "symbol": "_fog_item",
+      "address": "0x02913860",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "groupid_item",
+      "symbol": "_groupid_item",
+      "address": "0x02913864",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "jon_t_hi_item",
+      "symbol": "_jon_t_hi_item",
+      "address": "0x02913868",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fog_menu",
+      "symbol": "_fog_menu",
+      "address": "0x0291386c",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "excludeid_items",
+      "symbol": "_excludeid_items",
+      "address": "0x02913870",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "colour_item",
+      "symbol": "_colour_item",
+      "address": "0x029138b0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "associd_item",
+      "symbol": "_associd_item",
+      "address": "0x029138b4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "jon_t_low_item",
+      "symbol": "_jon_t_low_item",
+      "address": "0x029138b8",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -528890,6 +531105,54 @@
       "status": "unknown size"
     },
     {
+      "name": "fogalpha_item",
+      "symbol": "_fogalpha_item",
+      "address": "0x029138c0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogend_item",
+      "symbol": "_fogend_item",
+      "address": "0x029138c4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogdensity_item",
+      "symbol": "_fogdensity_item",
+      "address": "0x029138c8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "hazecol_item",
+      "symbol": "_hazecol_item",
+      "address": "0x029138cc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "rtl_undo",
       "symbol": "_rtl_undo",
       "address": "0x029138d0",
@@ -528902,9 +531165,81 @@
       "status": "unknown size"
     },
     {
+      "name": "prop_menu",
+      "symbol": "_prop_menu",
+      "address": "0x029138d4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "flicker_item",
+      "symbol": "_flicker_item",
+      "address": "0x029138d8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "copy_item",
+      "symbol": "_copy_item",
+      "address": "0x029138dc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "base_rtl_undo",
       "symbol": "_base_rtl_undo",
       "address": "0x029138e0",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "dof_fstop_item",
+      "symbol": "_dof_fstop_item",
+      "address": "0x029138e4",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "blurdensity_item",
+      "symbol": "_blurdensity_item",
+      "address": "0x029138e8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "modifier_adj_items",
+      "symbol": "_modifier_adj_items",
+      "address": "0x029138f0",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -529082,6 +531417,30 @@
       "status": "unknown size"
     },
     {
+      "name": "fogadjnear_item",
+      "symbol": "_fogadjnear_item",
+      "address": "0x029139b8",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "fogadjfar_item",
+      "symbol": "_fogadjfar_item",
+      "address": "0x029139bc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "rtled_menu_active",
       "symbol": "_rtled_menu_active",
       "address": "0x029139c0",
@@ -529205,6 +531564,18 @@
       "name": "rtl_debug",
       "symbol": "_rtl_debug",
       "address": "0x029139fc",
+      "units": [
+        "src/legoapi/rtl.c"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "rtl_ui_initialised",
+      "symbol": "_rtl_ui_initialised",
+      "address": "0x02913a40",
       "units": [
         "src/legoapi/rtl.c"
       ],
@@ -547031,17 +549402,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2590150,
+    "mapped_code_bytes": 2594470,
     "matched_code_bytes": 770897,
     "matching_percent": 22.208077445389925,
-    "fuzzy_coverage_percent": 62.760169695619346,
-    "mapped_functions": 9912,
+    "fuzzy_coverage_percent": 62.89705421597889,
+    "mapped_functions": 9942,
     "matched_functions": 6054,
-    "objdiff_fuzzy_percent": 85.82124,
-    "objdiff_total_code": 2541446,
+    "objdiff_fuzzy_percent": 85.810135,
+    "objdiff_total_code": 2547312,
     "image_bytes": 40067072,
-    "mapped_bytes": 4462696,
-    "mapping_percent": 11.138063694796566,
+    "mapped_bytes": 4467016,
+    "mapping_percent": 11.148845615671641,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -547049,7 +549420,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2591344
+        "mapped_bytes": 2595664
       },
       {
         "name": ".rdata",
@@ -547074,38 +549445,38 @@
         "mapped_zero_fill_data_bytes": 1488666
       }
     ],
-    "mapping_known_size_symbols": 18973,
-    "mapping_unknown_size_symbols": 7477,
-    "mapping_code_bytes": 2591344,
+    "mapping_known_size_symbols": 19003,
+    "mapping_unknown_size_symbols": 7643,
+    "mapping_code_bytes": 2595664,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 74.65169567354201,
+    "mapping_code_percent": 74.77614666318665,
     "mapping_data_bytes": 1871352,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.195462856984845,
-    "mapping_code_data_bytes": 4462696,
+    "mapping_code_data_bytes": 4467016,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 11.300764857884278,
+    "mapping_code_data_percent": 11.311704277505525,
     "mapping_file_backed_data_bytes": 382686,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 35.947876959263844,
     "mapping_zero_fill_data_bytes": 1488666,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.258879166255655,
-    "matched_data_region_bytes": 1857744
+    "matched_data_region_bytes": 1857749
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2590150,
+    "mapped_reconstruction_bytes": 2594470,
     "exact_reconstruction_bytes": 770897,
-    "mapped_not_exact_bytes": 1819253,
+    "mapped_not_exact_bytes": 1823573,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 879902,
+    "unclassified_text_bytes": 875582,
     "strict_original_text_denominator_bytes": 3471246,
     "strict_original_text_exact_percent": 22.208077445389925,
     "reconstruction_scope_denominator_bytes": 3470052,
     "reconstruction_scope_exact_percent": 22.21571895752571,
-    "mapped_scope_denominator_bytes": 2590150,
-    "mapped_scope_exact_percent": 29.76263922938826,
+    "mapped_scope_denominator_bytes": 2594470,
+    "mapped_scope_exact_percent": 29.71308205529453,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -548411,7 +550782,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "908b493db6f73266ba333ff24b2111d87d1a50f7ade34df168d5384f3e9f400f",
+      "geometry_object_sha256": "b94305d344d9fe099c299b94ad7ef6cd7725e80f9a30b42764c2f80895b88c57",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

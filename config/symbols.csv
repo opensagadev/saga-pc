@@ -6803,6 +6803,7 @@ address,symbol,size,ctype
 0x623280,_FS_GetPadWithRepeat,88,
 0x6232e0,_ProcessFileSel3,880,
 0x6236e0,_FS_SetFileSelPathFromName,219,
+0x6238e0,_cbNearClipAtCursor,18,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x00623a20,_cbProcessColourPick,190,
 0x00623ae0,_cbCopy,131,"void __cdecl (eduimenu_s *, eduiitem_s *, u32); unprovided callback / Copy FP-status HOLD / zero coverage"
 0x00623b70,_cbPaste,303,
@@ -7030,26 +7031,53 @@ address,symbol,size,ctype
 0x638240,_cbDeleteYes,57,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638280,_edrtlcbDeleteNo,19,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6382a0,_RefreshUI,1800,
+0x6389c0,_cbLoad,165,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638a70,_cbSave,126,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638af0,_cbMultiplier,20,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638b10,_cbGroupID,61,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638b50,_cbModifierType,25,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638b70,_cbModifierAdjust,20,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x638b90,_edrtlcbToggleCastShadow,24,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638bb0,_rtlCbToggleHasSpecularPc,26,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638bd0,_cbHighColour,42,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638c00,_cbLowColour,42,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x638c30,_rtlCbHighTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638c50,_rtlCbRHighTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638c70,_rtlCbLowTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638c90,_rtlCbRLowTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638cb0,_cbLightType,25,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638cd0,_cbAssocID,80,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638d20,_cbExcludeID,80,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638d70,_cbUserID,27,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638d90,_cbFogColour,38,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638dc0,_cbHazeColour,38,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x638df0,_rtlCbFogAlphaPc,73,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638e40,_rtlCbFogDensityPc,20,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x638e60,_rtlCbFogDensityWiiPc,20,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x638e80,_rtlCbHazeDensityPc,73,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x638ed0,_rtlCbBlurDensityPc,34,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x638f00,_cbFogStartPSP,20,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638f20,_cbFogEndPSP,20,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638f40,_cbFogStart,19,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638f60,_cbFogEnd,20,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x638f80,_cbFogAdjRng,156,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x639020,_cbFogAdjNear,93,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x639080,_cbFogAdjFar,86,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x6390e0,_cbDOFFStop,67,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x639130,_cbCopyLight,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639150,_cbPasteLight,285,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x639270,_cbPasteIntoLight,307,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6393b0,_cbCopyToGroup,252,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6394b0,_cbCopyFog,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6394d0,_cbPasteFog,76,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x639520,_cbPasteIntoFog,71,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x639570,_cbHideType,22,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639590,_cbNoZBuffer,18,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6395b0,_cbLightProperties,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6395d0,_cbCancelLightProperties,143,"void __cdecl(eduimenu_s *, eduimenu_s *)"
 0x639660,_cbSetControls,14,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639670,_cbScaleAllMultipliersUp,256,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x639770,_cbScaleAllMultipliersDown,256,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
 0x639b50,_edrtlAddBurnout,218,i32 __cdecl (NUVEC *)
 0x639c30,_edrtlRemoveBurnout,67,void __cdecl (i32)
@@ -7109,7 +7137,9 @@ address,symbol,size,ctype
 0x63dcd0,_rtlFrameUpdate,66,void __cdecl(f32)
 0x63f6a0,_edrtlUndo,353,
 0x63f810,_edrtlRedo,248,
-0x63f930,_InitUI,3646,
+0x63f910,_cbUndoLight,5,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x63f920,_cbRedoLight,5,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x63f930,_InitUI,5866,
 0x641020,_edrtlBurnoutLoadSet,649,"i32 __cdecl edrtlBurnoutLoadSet(char *, BURN_SET_PC *)"
 0x6412b0,_edrtlBurnoutLoad,59,"BURN_SET_PC *__cdecl edrtlBurnoutLoad(char *, VARIPTR *, i32)"
 0x006412f0,_edrtlBurnoutFileLoad,370,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
@@ -14944,6 +14974,7 @@ address,symbol,size,ctype
 0x75eba0,_NuFileExt_ca3_PC,5,const char[5]
 0x75eba8,??_C@_01LFCBOECM@?4?$AA@,,const char[2]
 0x75eba8,_PcInputText75eba8,,char[2]
+0x75ebac,__real@459c4000,,f32
 0x0075ebb0,__real@4062c00000000000,8,
 0x75ebb8,__real@43fa0000,4,const f32
 0x75ebbc,??_C@_07EKLOMMED@PADPLAY?$AA@,8,char []
@@ -15036,8 +15067,10 @@ address,symbol,size,ctype
 0x75f2bc,_MenuTechnicalDefaultTextPc75f2bc,,const char[3]
 0x75f2c0,_MenuPcString75f2c0,3,const char[3]
 0x75f2c0,_MenuTechnicalDefaultTextPc75f2c0,,const char[3]
+0x75f2c0,??_C@_02JINPPBEP@No?$AA@,,const char [3]
 0x75f2c4,_MenuPcString75f2c4,4,const char[4]
 0x75f2c4,_MenuTechnicalDefaultTextPc75f2c4,,const char[4]
+0x75f2c4,??_C@_03CCLAEDDF@Yes?$AA@,,const char [4]
 0x0075f2d4,_Text_DanishName,6,const char[6]
 0x0075f2dc,_Text_SpanishName,9,const char[9]
 0x0075f2e8,_Text_ItalianName,9,const char[9]
@@ -15391,6 +15424,7 @@ address,symbol,size,ctype
 0x760e98,??_C@_0BD@JJNGIDJL@Delete?5Locator?5Set?$AA@,,char []
 0x760eac,??_C@_0BD@KJOCJGPG@Create?5Locator?5Set?$AA@,,char []
 0x00760ec0,??_C@_0BP@NKOGFJBN@Add?5locators?5?$CC?$CFs?$CC?5to?5set?5?$CC?$CFs?$CC?$DP?$AA@,,const char[]
+0x760ee0,??_C@_0BE@NPELFGFL@Near?5Clip?5At?5Cursor?$AA@,,const char [20]
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
 0x7610e0,??_C@_0N@NGPHCBFG@ManCam_MAX_X?$AA@,13,const char[]
@@ -16628,6 +16662,7 @@ address,symbol,size,ctype
 0x0076b510,??_C@_04LEGONOGA@ID?53?$AA@,,const char[]
 0x0076b518,??_C@_04KNHFOPCB@ID?52?$AA@,,const char[]
 0x0076b520,??_C@_04IGFILMOC@ID?51?$AA@,,const char[]
+0x76b528,??_C@_04JPEDINKD@ID?50?$AA@,,const char [5]
 0x0076b53c,??_C@_09PAEGDKJH@ANTILIGHT?$AA@,,const char[]
 0x0076b554,??_C@_06JAKHEMKH@CAMDIR?$AA@,,const char[]
 0x0076b55c,??_C@_0M@OHINNGCO@DIRECTIONAL?$AA@,,const char[]
@@ -16714,6 +16749,88 @@ address,symbol,size,ctype
 0x76bcd4,??_C@_0O@DCHJGBMD@Used?3?5?$CFd?5?1?5?$CFd?$AA@,,const char[]
 0x76bce4,??_C@_0P@BDIIODKE@Burnout?5Editor?$AA@,,const char[]
 0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
+0x76bda8,??_C@_07MKNMKJLE@User?5ID?$AA@,,const char [8]
+0x76bdf8,??_C@_08NFMAFENF@Low?5Time?$AA@,,const char [9]
+0x76be10,??_C@_09NHDLFPCH@High?5Time?$AA@,,const char [10]
+0x76be1c,??_C@_0L@FHHMINHA@Multiplier?$AA@,,const char [11]
+0x76be28,__real@42fe0000,,f32
+0x76be68,??_C@_09KLHEJKNK@Modifiers?$AA@,,const char [10]
+0x76be9c,__real@41a80000,,f32
+0x76bea0,??_C@_0N@OMMEHEHJ@Blur?5Density?$AA@,,const char [13]
+0x76beb0,??_C@_0N@BOLOHNOG@Haze?5Density?$AA@,,const char [13]
+0x76bf08,??_C@_0BA@NMGPFFHF@Fog?5Settings?4?4?4?$AA@,,const char [16]
+0x76bf18,??_C@_0BD@OMMDIGGB@Fog?5Editor?5Options?$AA@,,const char [19]
+0x76bf2c,??_C@_0N@FPJDJMIP@DOF?5?9?5F?9Stop?$AA@,,const char [13]
+0x76bf3c,??_C@_0BH@LHGFAPKK@Far?5Clip?5?$CIeditor?5only?$CJ?$AA@,,const char [23]
+0x76bf54,??_C@_0BI@FGOIEADA@Near?5Clip?5?$CIeditor?5only?$CJ?$AA@,,const char [24]
+0x76bf6c,??_C@_0BD@OFHCELHC@Fog?5Distance?5Range?$AA@,,const char [19]
+0x76bf80,??_C@_0P@CHGDEFOI@Haze?5Colour?4?4?4?$AA@,,const char [15]
+0x76bf90,??_C@_0O@DBGKGHMM@Fog?5End?5?$CIPSP?$CJ?$AA@,,const char [14]
+0x76bfa0,??_C@_0BA@CBEBBDH@Fog?5Start?5?$CIPSP?$CJ?$AA@,,const char [16]
+0x76bfb0,??_C@_0O@HKDJHIIC@Fog?5End?5?$CIPS2?$CJ?$AA@,,const char [14]
+0x76bfc0,__real@44fa0000,,f32
+0x76bfc4,??_C@_0BA@EJEHAOHJ@Fog?5Start?5?$CIPS2?$CJ?$AA@,,const char [16]
+0x76bfd4,__real@37a7c5ac,,f32
+0x76bfd8,??_C@_0BC@OANIAEKK@Fog?5Density?5?$CIWii?$CJ?$AA@,,const char [18]
+0x76bfec,??_C@_0BC@BAIHOPJP@Fog?5Density?5?$CInew?$CJ?$AA@,,const char [18]
+0x76c000,??_C@_0BE@ILPAIFCO@Fog?5Density?5?$CIalpha?$CJ?$AA@,,const char [20]
+0x76c014,??_C@_0O@MJMDNBHM@Fog?5Colour?4?4?4?$AA@,,const char [14]
+0x76c024,??_C@_0N@NMIGIOAG@Fog?5Settings?$AA@,,const char [13]
+0x76c034,??_C@_0P@PCBIIDMP@Steve?5Controls?$AA@,,const char [15]
+0x76c044,??_C@_0P@KMOOICJ@Ralph?5Controls?$AA@,,const char [15]
+0x76c054,??_C@_0BA@IAODKEGG@Load?5Lights?1Fog?$AA@,,const char [16]
+0x76c064,??_C@_0BA@NLLEKKJO@Save?5Lights?1Fog?$AA@,,const char [16]
+0x76c074,??_C@_0BG@FGJLHLKC@Global?5Adjustments?4?4?4?$AA@,,const char [22]
+0x76c08c,??_C@_0P@LGDLALHO@Hide?5Lights?4?4?4?$AA@,,const char [15]
+0x76c09c,??_C@_0BE@CFIFODGO@Adjust?5Modifiers?4?4?4?$AA@,,const char [20]
+0x76c0b0,??_C@_0M@BMFCFFEB@No?5Z?5Buffer?$AA@,,const char [12]
+0x76c0bc,??_C@_04NKENIHOM@Redo?$AA@,,const char [5]
+0x76c0c4,??_C@_04LPGMNMPN@Undo?$AA@,,const char [5]
+0x76c0cc,??_C@_0O@LCKAJDLJ@Copy?5To?5Group?$AA@,,const char [14]
+0x76c0dc,??_C@_0L@NCHCPHJL@Paste?5Into?$AA@,,const char [11]
+0x76c0e8,??_C@_09BINAJOHE@Paste?5New?$AA@,,const char [10]
+0x76c0f4,??_C@_0BE@KKDDEKBE@Light?5Properties?4?4?4?$AA@,,const char [20]
+0x76c108,??_C@_0BF@DHBOOJIB@Light?5Editor?5Options?$AA@,,const char [21]
+0x76c120,??_C@_0N@IJDAHJFH@Load?5lights?$DP?$AA@,,const char [13]
+0x76c130,??_C@_0BL@JAGBKGP@Scale?5All?5Multipliers?5Down?$AA@,,const char [27]
+0x76c14c,??_C@_0BJ@JIADANFC@Scale?5All?5Multipliers?5Up?$AA@,,const char [25]
+0x76c168,??_C@_04GHNNFJCK@?$CF?40f?$AA@,,const char [5]
+0x76c170,??_C@_0N@LGILNPCC@Scale?5Amount?$AA@,,const char [13]
+0x76c180,??_C@_0BD@FIIPAHBB@Global?5Adjustments?$AA@,,const char [19]
+0x76c194,??_C@_04LILBNENA@Okay?$AA@,,const char [5]
+0x76c19c,??_C@_0BG@PEFDHINA@Global?5Change?5Applied?$AA@,,const char [22]
+0x76c1b4,??_C@_0O@LIANAKN@Delete?5Light?$DP?$AA@,,const char [14]
+0x76c1c4,??_C@_0M@IAGIINAD@Hide?5Lights?$AA@,,const char [12]
+0x76c1d0,??_C@_0N@CINAIDAM@Has?5Specular?$AA@,,const char [13]
+0x76c1e0,??_C@_0M@NOLDPIOE@Cast?5Shadow?$AA@,,const char [12]
+0x76c1ec,??_C@_0M@GLLOEJAC@Modifier?4?4?4?$AA@,,const char [12]
+0x76c1f8,??_C@_04GGBPDDBN@?$CF?41f?$AA@,,const char [5]
+0x76c200,??_C@_0L@ELMOHFJC@User?5ID?4?4?4?$AA@,,const char [11]
+0x76c20c,??_C@_0BB@DPFNLNNJ@Exclude?5ID?$CIs?$CJ?4?4?4?$AA@,,const char [17]
+0x76c220,??_C@_0BD@OMKDDFOI@Associate?5ID?$CIs?$CJ?4?4?4?$AA@,,const char [19]
+0x76c234,??_C@_0BJ@FLAGHHKM@Flicker?5Light?5Options?4?4?4?$AA@,,const char [25]
+0x76c250,??_C@_09LBFMHJLB@Colour?4?4?4?$AA@,,const char [10]
+0x76c25c,??_C@_07BBIIAHGF@Type?4?4?4?$AA@,,const char [8]
+0x76c264,??_C@_0BB@CECNNDCG@Light?5Properties?$AA@,,const char [17]
+0x76c278,??_C@_08DEOOAPOB@Duration?$AA@,,const char [9]
+0x76c284,??_C@_0M@BFFKDIHJ@Random?5Step?$AA@,,const char [12]
+0x76c290,??_C@_04MDBAPKAP@Step?$AA@,,const char [5]
+0x76c298,??_C@_0BA@GMJJDJNF@Random?5Low?5Time?$AA@,,const char [16]
+0x76c2a8,??_C@_0BB@NHICAGEK@Random?5High?5Time?$AA@,,const char [17]
+0x76c2bc,??_C@_0O@BHOMOGBL@Low?5Colour?4?4?4?$AA@,,const char [14]
+0x76c2cc,??_C@_0BG@PNIDGJIC@Flicker?5Light?5Options?$AA@,,const char [22]
+0x76c2e4,??_C@_0BB@FLJCKMGN@Adjust?5Modifiers?$AA@,,const char [17]
+0x76c2f8,??_C@_06FLDBKLOJ@Camdir?$AA@,,const char [7]
+0x76c300,??_C@_09IPOKAELA@Antilight?$AA@,,const char [10]
+0x76c30c,??_C@_0M@FBOAGEAO@Directional?$AA@,,const char [12]
+0x76c318,??_C@_07EBHHCJEE@Ambient?$AA@,,const char [8]
+0x76c320,??_C@_0M@HEPLKMIL@Point?5Blend?$AA@,,const char [12]
+0x76c32c,??_C@_0O@HHJNCGB@Point?5Flicker?$AA@,,const char [14]
+0x76c33c,??_C@_0M@DNDCGONG@Jon?5Flicker?$AA@,,const char [12]
+0x76c348,??_C@_05BGOFFEGG@Point?$AA@,,const char [6]
+0x76c350,??_C@_0L@NGIADNED@Light?5Type?$AA@,,const char [11]
+0x76c35c,??_C@_0L@DNIOPMK@Exclude?5ID?$AA@,,const char [11]
+0x76c368,??_C@_08EDBMIDLC@Assoc?5ID?$AA@,,const char [9]
 0x76c374,??_C@_09IEGDEKGI@Loaded?5OK?$AA@,10,char []
 0x76c380,??_C@_0O@DNJIGIFE@Load?5Burnouts?$AA@,,const char[]
 0x76c390,??_C@_0O@EOFGDHMN@Save?5Burnouts?$AA@,,const char[]
@@ -22069,6 +22186,7 @@ address,symbol,size,ctype
 0x0080fe10,_modifier_names,,char **
 0x0080fe14,_modifier_cnt,,i32
 0x80fe1c,_rtlwob,,f32
+0x80fe20,_camdir_id_names,,char *[16]
 0x0080fe60,_userid_names,,char *[16]
 0x80fea0,_rtltimer1adv,4,f32
 0x0080fea4,_ctl_ix,,i32
@@ -25651,23 +25769,98 @@ address,symbol,size,ctype
 0x2913244,_FmvSleepCarryPc,4,i32
 0x2913248,_FmvFrequencyReadyPc,4,i32
 0x002913270,_theMemoryManager,584,MEMORYMANAGER
+0x29134b8,_rt_low_item,,eduiitem_s *
+0x29134bc,_modifierid_item,,eduiitem_s *
+0x29134c0,_pointflicker_item,,eduiitem_s *
 0x29134c4,_burn_editor_position_pc,,
+0x29134d0,_fogcol_item,,eduiitem_s *
+0x29134d4,_castshadow_item,,eduiitem_s *
+0x29134d8,_directional_item,,eduiitem_s *
 0x29134dc,_curpos_undo,,NUVEC *
+0x29134e0,_fog_pasteinto_item,,eduiitem_s *
+0x29134ec,_rt_hi_item,,eduiitem_s *
+0x29134f0,_t_hi_item,,eduiitem_s *
+0x29134f4,_hide_point_item,,eduiitem_s *
+0x29134f8,_jonflicker_menu,,eduimenu_s *
+0x29134fc,_load_confirm_menu,,eduimenu_s *
+0x2913500,_fogadjrng_item,,eduiitem_s *
+0x2913504,_jonflicker_item,,eduiitem_s *
 0x2913508,_rtl_locked_undo,,RTL_LIGHT_PC **
+0x291350c,_fogendpsp_item,,eduiitem_s *
+0x2913510,_fogstart_item,,eduiitem_s *
+0x2913514,_t_low_item,,eduiitem_s *
+0x2913518,_hide_directional_item,,eduiitem_s *
+0x2913520,_hide_pointflicker_item,,eduiitem_s *
+0x2913524,_hide_camdir_item,,eduiitem_s *
 0x2913528,_redo_item,,eduiitem_s *
 0x291352c,_hide_types,,i32[8]
+0x2913550,_camdir_item,,eduiitem_s *
+0x2913554,_global_confirm_menu,,eduimenu_s *
+0x2913558,_global_scale_item,,eduiitem_s *
+0x291355c,_fog_main_menu,,eduimenu_s *
+0x2913560,_copytogroup_item,,eduiitem_s *
+0x2913564,_fogstartpsp_item,,eduiitem_s *
+0x2913568,_global_menu,,eduimenu_s *
+0x291356c,_hasspecular_item,,eduiitem_s *
+0x2913570,_antilight_item,,eduiitem_s *
+0x2913574,_associd_menu,,eduimenu_s *
 0x2913578,_menu_undo,,RTL_LIGHT_PC
 0x2913604,_curr_rtl_undo,,RTL_LIGHT_PC **
+0x2913608,_hide_menu,,eduimenu_s *
 0x0291360c,_mtls,,NUMTL *[3]
+0x2913618,_userid_items,,eduiitem_s *[16]
+0x2913658,_flicker_menu,,eduimenu_s *
+0x291365c,_pointblend_item,,eduiitem_s *
+0x2913660,_fog_copy_item,,eduiitem_s *
+0x2913664,_fog_paste_item,,eduiitem_s *
 0x2913668,_clipboard_fog,,RTL_FOG_MIGRATION_PC
+0x29136b8,_modifier_items,,eduiitem_s *[32]
+0x2913738,_fogdensitywii_item,,eduiitem_s *
+0x291373c,_jon_rt_hi_item,,eduiitem_s *
 0x2913740,_clipboard_light,,RTL_LIGHT_PC
+0x29137cc,_main_menu,,eduimenu_s *
+0x29137d0,_delete_menu,,eduimenu_s *
+0x29137d4,_ambient_item,,eduiitem_s *
+0x29137d8,_hide_antilight_item,,eduiitem_s *
+0x29137dc,_userid_menu,,eduimenu_s *
+0x29137e0,_point_item,,eduiitem_s *
 0x29137e4,_undo_item,,eduiitem_s *
+0x29137e8,_hide_ambient_item,,eduiitem_s *
+0x29137ec,_paste_item,,eduiitem_s *
+0x29137f0,_associd_items,,eduiitem_s *[16]
+0x2913830,_type_menu,,eduimenu_s *
 0x2913834,_curr_fog,,RTL_FOG_MIGRATION_PC *
 0x02913838,_base_rtl,,RTL_LIGHT_PC *
+0x291383c,_excludeid_menu,,eduimenu_s *
+0x2913840,_hide_pointblend_item,,eduiitem_s *
 0x02913844,_curr_rtl,,RTL_LIGHT_PC *
+0x2913848,_hazedensity_item,,eduiitem_s *
+0x291384c,_pasteinto_item,,eduiitem_s *
+0x2913850,_modifier_menu,,eduimenu_s *
+0x2913854,_modifier_adj_menu,,eduimenu_s *
+0x2913858,_prop_item,,eduiitem_s *
+0x291385c,_multiplier_item,,eduiitem_s *
+0x2913860,_fog_item,,eduiitem_s *
+0x2913864,_groupid_item,,eduiitem_s *
+0x2913868,_jon_t_hi_item,,eduiitem_s *
+0x291386c,_fog_menu,,eduimenu_s *
+0x2913870,_excludeid_items,,eduiitem_s *[16]
+0x29138b0,_colour_item,,eduiitem_s *
+0x29138b4,_associd_item,,eduiitem_s *
+0x29138b8,_jon_t_low_item,,eduiitem_s *
 0x029138bc,_curr_set,,RTL_SET_PC *
+0x29138c0,_fogalpha_item,,eduiitem_s *
+0x29138c4,_fogend_item,,eduiitem_s *
+0x29138c8,_fogdensity_item,,eduiitem_s *
+0x29138cc,_hazecol_item,,eduiitem_s *
 0x29138d0,_rtl_undo,,RTL_LIGHT_PC *
+0x29138d4,_prop_menu,,eduimenu_s *
+0x29138d8,_flicker_item,,eduiitem_s *
+0x29138dc,_copy_item,,eduiitem_s *
 0x29138e0,_base_rtl_undo,,RTL_LIGHT_PC **
+0x29138e4,_dof_fstop_item,,eduiitem_s *
+0x29138e8,_blurdensity_item,,eduiitem_s *
+0x29138f0,_modifier_adj_items,,eduiitem_s *[32]
 0x2913974,_edrtl_active_menu,,eduimenu_s *
 0x2913978,_edrtl_burn_main_menu,,eduimenu_s *
 0x291397c,_edrtl_burn_defaults_menu,,eduimenu_s *
@@ -25682,6 +25875,8 @@ address,symbol,size,ctype
 0x29139ac,_rtl_frametime,,f32
 0x29139b0,_rtltimer1,,i32
 0x29139b4,_dbg_rtlindex,,RTL_INDEX_PC *
+0x29139b8,_fogadjnear_item,,eduiitem_s *
+0x29139bc,_fogadjfar_item,,eduiitem_s *
 0x29139c0,_rtled_menu_active,,i32
 0x29139c4,_delete_menu_active,,i32
 0x29139c8,_rtl_zoff,,i32
@@ -25693,6 +25888,7 @@ address,symbol,size,ctype
 0x029139f4,_helpmode,,i32
 0x029139f8,_lockflash,,f32
 0x029139fc,_rtl_debug,,i32
+0x2913a40,_rtl_ui_initialised,,i32
 0x02913a4c,_part_page_on,32,i32[8]
 0x2913a6c,_edpart_varstart_menu,4,struct eduimenu_s *
 0x2913a70,_edpart_boxmtl,4,struct PC_SCENE_MTL_VIEW *

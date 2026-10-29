@@ -2739,3 +2739,513 @@ void __cdecl rtlCbBlurDensityPc(struct eduimenu_s *menu, struct eduiitem_s *item
     if (fog != NULL)
         fog->low_quality_density = (i32)(((struct edui_slider_s *)item)->value * 128.0);
 }
+
+void __cdecl CreateColourPicker(void);
+void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbGroupID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbCancelSubMenuFromItem(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbScaleAllMultipliersDown(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogAdjRng(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogAdjNear(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent);
+
+#pragma section(".bss$RtlUI_associd_menu", read, write)
+__declspec(allocate(".bss$RtlUI_associd_menu")) eduimenu_s *associd_menu = NULL;
+#pragma section(".bss$RtlUI_associd_items", read, write)
+__declspec(allocate(".bss$RtlUI_associd_items")) eduiitem_s *associd_items[16] = {0};
+#pragma section(".bss$RtlUI_excludeid_menu", read, write)
+__declspec(allocate(".bss$RtlUI_excludeid_menu")) eduimenu_s *excludeid_menu = NULL;
+#pragma section(".bss$RtlUI_excludeid_items", read, write)
+__declspec(allocate(".bss$RtlUI_excludeid_items")) eduiitem_s *excludeid_items[16] = {0};
+#pragma section(".bss$RtlUI_userid_menu", read, write)
+__declspec(allocate(".bss$RtlUI_userid_menu")) eduimenu_s *userid_menu = NULL;
+#pragma section(".bss$RtlUI_userid_items", read, write)
+__declspec(allocate(".bss$RtlUI_userid_items")) eduiitem_s *userid_items[16] = {0};
+#pragma section(".bss$RtlUI_type_menu", read, write)
+__declspec(allocate(".bss$RtlUI_type_menu")) eduimenu_s *type_menu = NULL;
+#pragma section(".bss$RtlUI_point_item", read, write)
+__declspec(allocate(".bss$RtlUI_point_item")) eduiitem_s *point_item = NULL;
+#pragma section(".bss$RtlUI_jonflicker_item", read, write)
+__declspec(allocate(".bss$RtlUI_jonflicker_item")) eduiitem_s *jonflicker_item = NULL;
+#pragma section(".bss$RtlUI_pointflicker_item", read, write)
+__declspec(allocate(".bss$RtlUI_pointflicker_item")) eduiitem_s *pointflicker_item = NULL;
+#pragma section(".bss$RtlUI_pointblend_item", read, write)
+__declspec(allocate(".bss$RtlUI_pointblend_item")) eduiitem_s *pointblend_item = NULL;
+#pragma section(".bss$RtlUI_ambient_item", read, write)
+__declspec(allocate(".bss$RtlUI_ambient_item")) eduiitem_s *ambient_item = NULL;
+#pragma section(".bss$RtlUI_directional_item", read, write)
+__declspec(allocate(".bss$RtlUI_directional_item")) eduiitem_s *directional_item = NULL;
+#pragma section(".bss$RtlUI_antilight_item", read, write)
+__declspec(allocate(".bss$RtlUI_antilight_item")) eduiitem_s *antilight_item = NULL;
+#pragma section(".bss$RtlUI_camdir_item", read, write)
+__declspec(allocate(".bss$RtlUI_camdir_item")) eduiitem_s *camdir_item = NULL;
+#pragma section(".bss$RtlUI_modifier_menu", read, write)
+__declspec(allocate(".bss$RtlUI_modifier_menu")) eduimenu_s *modifier_menu = NULL;
+#pragma section(".bss$RtlUI_modifier_items", read, write)
+__declspec(allocate(".bss$RtlUI_modifier_items")) eduiitem_s *modifier_items[32] = {0};
+#pragma section(".bss$RtlUI_modifier_adj_menu", read, write)
+__declspec(allocate(".bss$RtlUI_modifier_adj_menu")) eduimenu_s *modifier_adj_menu = NULL;
+#pragma section(".bss$RtlUI_flicker_menu", read, write)
+__declspec(allocate(".bss$RtlUI_flicker_menu")) eduimenu_s *flicker_menu = NULL;
+#pragma section(".bss$RtlUI_t_hi_item", read, write)
+__declspec(allocate(".bss$RtlUI_t_hi_item")) eduiitem_s *t_hi_item = NULL;
+#pragma section(".bss$RtlUI_rt_hi_item", read, write)
+__declspec(allocate(".bss$RtlUI_rt_hi_item")) eduiitem_s *rt_hi_item = NULL;
+#pragma section(".bss$RtlUI_t_low_item", read, write)
+__declspec(allocate(".bss$RtlUI_t_low_item")) eduiitem_s *t_low_item = NULL;
+#pragma section(".bss$RtlUI_rt_low_item", read, write)
+__declspec(allocate(".bss$RtlUI_rt_low_item")) eduiitem_s *rt_low_item = NULL;
+#pragma section(".bss$RtlUI_jonflicker_menu", read, write)
+__declspec(allocate(".bss$RtlUI_jonflicker_menu")) eduimenu_s *jonflicker_menu = NULL;
+#pragma section(".bss$RtlUI_jon_t_hi_item", read, write)
+__declspec(allocate(".bss$RtlUI_jon_t_hi_item")) eduiitem_s *jon_t_hi_item = NULL;
+#pragma section(".bss$RtlUI_jon_rt_hi_item", read, write)
+__declspec(allocate(".bss$RtlUI_jon_rt_hi_item")) eduiitem_s *jon_rt_hi_item = NULL;
+#pragma section(".bss$RtlUI_jon_t_low_item", read, write)
+__declspec(allocate(".bss$RtlUI_jon_t_low_item")) eduiitem_s *jon_t_low_item = NULL;
+#pragma section(".bss$RtlUI_prop_menu", read, write)
+__declspec(allocate(".bss$RtlUI_prop_menu")) eduimenu_s *prop_menu = NULL;
+#pragma section(".bss$RtlUI_colour_item", read, write)
+__declspec(allocate(".bss$RtlUI_colour_item")) eduiitem_s *colour_item = NULL;
+#pragma section(".bss$RtlUI_flicker_item", read, write)
+__declspec(allocate(".bss$RtlUI_flicker_item")) eduiitem_s *flicker_item = NULL;
+#pragma section(".bss$RtlUI_associd_item", read, write)
+__declspec(allocate(".bss$RtlUI_associd_item")) eduiitem_s *associd_item = NULL;
+#pragma section(".bss$RtlUI_multiplier_item", read, write)
+__declspec(allocate(".bss$RtlUI_multiplier_item")) eduiitem_s *multiplier_item = NULL;
+#pragma section(".bss$RtlUI_groupid_item", read, write)
+__declspec(allocate(".bss$RtlUI_groupid_item")) eduiitem_s *groupid_item = NULL;
+#pragma section(".bss$RtlUI_modifierid_item", read, write)
+__declspec(allocate(".bss$RtlUI_modifierid_item")) eduiitem_s *modifierid_item = NULL;
+#pragma section(".bss$RtlUI_castshadow_item", read, write)
+__declspec(allocate(".bss$RtlUI_castshadow_item")) eduiitem_s *castshadow_item = NULL;
+#pragma section(".bss$RtlUI_hasspecular_item", read, write)
+__declspec(allocate(".bss$RtlUI_hasspecular_item")) eduiitem_s *hasspecular_item = NULL;
+#pragma section(".bss$RtlUI_hide_menu", read, write)
+__declspec(allocate(".bss$RtlUI_hide_menu")) eduimenu_s *hide_menu = NULL;
+#pragma section(".bss$RtlUI_hide_point_item", read, write)
+__declspec(allocate(".bss$RtlUI_hide_point_item")) eduiitem_s *hide_point_item = NULL;
+#pragma section(".bss$RtlUI_hide_pointflicker_item", read, write)
+__declspec(allocate(".bss$RtlUI_hide_pointflicker_item")) eduiitem_s *hide_pointflicker_item = NULL;
+#pragma section(".bss$RtlUI_hide_pointblend_item", read, write)
+__declspec(allocate(".bss$RtlUI_hide_pointblend_item")) eduiitem_s *hide_pointblend_item = NULL;
+#pragma section(".bss$RtlUI_hide_ambient_item", read, write)
+__declspec(allocate(".bss$RtlUI_hide_ambient_item")) eduiitem_s *hide_ambient_item = NULL;
+#pragma section(".bss$RtlUI_hide_directional_item", read, write)
+__declspec(allocate(".bss$RtlUI_hide_directional_item")) eduiitem_s *hide_directional_item = NULL;
+#pragma section(".bss$RtlUI_hide_antilight_item", read, write)
+__declspec(allocate(".bss$RtlUI_hide_antilight_item")) eduiitem_s *hide_antilight_item = NULL;
+#pragma section(".bss$RtlUI_hide_camdir_item", read, write)
+__declspec(allocate(".bss$RtlUI_hide_camdir_item")) eduiitem_s *hide_camdir_item = NULL;
+#pragma section(".bss$RtlUI_delete_menu", read, write)
+__declspec(allocate(".bss$RtlUI_delete_menu")) eduimenu_s *delete_menu = NULL;
+#pragma section(".bss$RtlUI_global_confirm_menu", read, write)
+__declspec(allocate(".bss$RtlUI_global_confirm_menu")) eduimenu_s *global_confirm_menu = NULL;
+#pragma section(".bss$RtlUI_global_menu", read, write)
+__declspec(allocate(".bss$RtlUI_global_menu")) eduimenu_s *global_menu = NULL;
+#pragma section(".bss$RtlUI_global_scale_item", read, write)
+__declspec(allocate(".bss$RtlUI_global_scale_item")) eduiitem_s *global_scale_item = NULL;
+#pragma section(".bss$RtlUI_load_confirm_menu", read, write)
+__declspec(allocate(".bss$RtlUI_load_confirm_menu")) eduimenu_s *load_confirm_menu = NULL;
+#pragma section(".bss$RtlUI_main_menu", read, write)
+__declspec(allocate(".bss$RtlUI_main_menu")) eduimenu_s *main_menu = NULL;
+#pragma section(".bss$RtlUI_prop_item", read, write)
+__declspec(allocate(".bss$RtlUI_prop_item")) eduiitem_s *prop_item = NULL;
+#pragma section(".bss$RtlUI_copy_item", read, write)
+__declspec(allocate(".bss$RtlUI_copy_item")) eduiitem_s *copy_item = NULL;
+#pragma section(".bss$RtlUI_paste_item", read, write)
+__declspec(allocate(".bss$RtlUI_paste_item")) eduiitem_s *paste_item = NULL;
+#pragma section(".bss$RtlUI_pasteinto_item", read, write)
+__declspec(allocate(".bss$RtlUI_pasteinto_item")) eduiitem_s *pasteinto_item = NULL;
+#pragma section(".bss$RtlUI_copytogroup_item", read, write)
+__declspec(allocate(".bss$RtlUI_copytogroup_item")) eduiitem_s *copytogroup_item = NULL;
+extern eduiitem_s *undo_item;
+extern eduiitem_s *redo_item;
+#pragma section(".bss$RtlUI_fog_menu", read, write)
+__declspec(allocate(".bss$RtlUI_fog_menu")) eduimenu_s *fog_menu = NULL;
+#pragma section(".bss$RtlUI_fogcol_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogcol_item")) eduiitem_s *fogcol_item = NULL;
+#pragma section(".bss$RtlUI_fogalpha_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogalpha_item")) eduiitem_s *fogalpha_item = NULL;
+#pragma section(".bss$RtlUI_fogdensity_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogdensity_item")) eduiitem_s *fogdensity_item = NULL;
+#pragma section(".bss$RtlUI_fogdensitywii_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogdensitywii_item")) eduiitem_s *fogdensitywii_item = NULL;
+#pragma section(".bss$RtlUI_fogstart_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogstart_item")) eduiitem_s *fogstart_item = NULL;
+#pragma section(".bss$RtlUI_fogend_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogend_item")) eduiitem_s *fogend_item = NULL;
+#pragma section(".bss$RtlUI_fogstartpsp_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogstartpsp_item")) eduiitem_s *fogstartpsp_item = NULL;
+#pragma section(".bss$RtlUI_fogendpsp_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogendpsp_item")) eduiitem_s *fogendpsp_item = NULL;
+#pragma section(".bss$RtlUI_hazecol_item", read, write)
+__declspec(allocate(".bss$RtlUI_hazecol_item")) eduiitem_s *hazecol_item = NULL;
+#pragma section(".bss$RtlUI_hazedensity_item", read, write)
+__declspec(allocate(".bss$RtlUI_hazedensity_item")) eduiitem_s *hazedensity_item = NULL;
+#pragma section(".bss$RtlUI_blurdensity_item", read, write)
+__declspec(allocate(".bss$RtlUI_blurdensity_item")) eduiitem_s *blurdensity_item = NULL;
+#pragma section(".bss$RtlUI_fogadjrng_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogadjrng_item")) eduiitem_s *fogadjrng_item = NULL;
+#pragma section(".bss$RtlUI_fogadjnear_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogadjnear_item")) eduiitem_s *fogadjnear_item = NULL;
+#pragma section(".bss$RtlUI_fogadjfar_item", read, write)
+__declspec(allocate(".bss$RtlUI_fogadjfar_item")) eduiitem_s *fogadjfar_item = NULL;
+#pragma section(".bss$RtlUI_dof_fstop_item", read, write)
+__declspec(allocate(".bss$RtlUI_dof_fstop_item")) eduiitem_s *dof_fstop_item = NULL;
+#pragma section(".bss$RtlUI_fog_main_menu", read, write)
+__declspec(allocate(".bss$RtlUI_fog_main_menu")) eduimenu_s *fog_main_menu = NULL;
+#pragma section(".bss$RtlUI_fog_item", read, write)
+__declspec(allocate(".bss$RtlUI_fog_item")) eduiitem_s *fog_item = NULL;
+#pragma section(".bss$RtlUI_fog_copy_item", read, write)
+__declspec(allocate(".bss$RtlUI_fog_copy_item")) eduiitem_s *fog_copy_item = NULL;
+#pragma section(".bss$RtlUI_fog_paste_item", read, write)
+__declspec(allocate(".bss$RtlUI_fog_paste_item")) eduiitem_s *fog_paste_item = NULL;
+#pragma section(".bss$RtlUI_fog_pasteinto_item", read, write)
+__declspec(allocate(".bss$RtlUI_fog_pasteinto_item")) eduiitem_s *fog_pasteinto_item = NULL;
+#pragma section(".bss$RtlUI_modifier_adj_items", read, write)
+__declspec(allocate(".bss$RtlUI_modifier_adj_items")) eduiitem_s *modifier_adj_items[32] = {0};
+#pragma section(".bss$RtlUI_initialised", read, write)
+__declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0;
+/* Source-only Native-observed table initializer; no provider/binding until actual emission. */
+#pragma section(".data$RtlUICamdirNamesPc", read, write)
+__declspec(allocate(".data$RtlUICamdirNamesPc")) static char *camdir_id_names[16] = {
+    "ID 0", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
+    "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
+
+STATIC_ASSERT(sizeof(void *) == 4);
+STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
+STATIC_ASSERT(offsetof(edui_slider_s, granularity) == 0x68);
+
+void __cdecl InitUI(void) {
+    i32 i;
+    eduimenu_s *menu;
+    eduiitem_s *created;
+    edui_slider_s *fog_start_slider, *fog_end_slider;
+    eduimenu_s *checked_menu;
+    u32 colours[4] = {0x80000000, 0x800000ff, 0x80808080, 0x80f0f0f0};
+    if (rtl_ui_initialised)
+        return;
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
+    rtl_ui_initialised = 1;
+    CreateColourPicker();
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Assoc ID");
+    associd_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    for (i = 0; i <= 15; ++i) {
+        created = eduiItemToggleCreate(i, colours, 0, (i + 1), cbAssocID, camdir_id_names[i]);
+        associd_items[i] = eduiMenuAddItem(associd_menu, created);
+    }
+    eduiMenuFitWidth(associd_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Exclude ID");
+    excludeid_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    for (i = 0; i <= 15; ++i) {
+        created = eduiItemToggleCreate(i, colours, 0, (i + 1), cbExcludeID, camdir_id_names[i]);
+        excludeid_items[i] = eduiMenuAddItem(excludeid_menu, created);
+    }
+    eduiMenuFitWidth(excludeid_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "User ID");
+    userid_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    for (i = 0; i <= 15; ++i) {
+        created = eduiItemCheckCreate(i, colours, 0, 1, cbUserID, userid_names[i]);
+        userid_items[i] = eduiMenuAddItem(userid_menu, created);
+    }
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Light Type");
+    type_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemCheckCreate(2, colours, 0, 2, cbLightType, "Point");
+    point_item = eduiMenuAddItem(type_menu, created);
+    created = eduiItemCheckCreate(8, colours, 0, 2, cbLightType, "Jon Flicker");
+    jonflicker_item = eduiMenuAddItem(type_menu, created);
+    created = eduiItemCheckCreate(3, colours, 0, 2, cbLightType, "Point Flicker");
+    pointflicker_item = eduiMenuAddItem(type_menu, created);
+    created = eduiItemCheckCreate(6, colours, 0, 2, cbLightType, "Point Blend");
+    pointblend_item = eduiMenuAddItem(type_menu, created);
+    created = eduiItemCheckCreate(1, colours, 0, 2, cbLightType, "Ambient");
+    ambient_item = eduiMenuAddItem(type_menu, created);
+    created = eduiItemCheckCreate(4, colours, 0, 2, cbLightType, "Directional");
+    directional_item = eduiMenuAddItem(type_menu, created);
+    created = eduiItemCheckCreate(7, colours, 0, 2, cbLightType, "Antilight");
+    antilight_item = eduiMenuAddItem(type_menu, created);
+    created = eduiItemCheckCreate(5, colours, 0, 2, cbLightType, "Camdir");
+    camdir_item = eduiMenuAddItem(type_menu, created);
+    eduiMenuFitWidth(type_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Modifiers");
+    modifier_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    for (i = 0; i < modifier_cnt; ++i) {
+        created = eduiItemCheckCreate(i, colours, 0, 2, cbModifierType, modifier_names[i]);
+        modifier_items[i] = eduiMenuAddItem(modifier_menu, created);
+    }
+    eduiMenuFitWidth(modifier_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Adjust Modifiers");
+    modifier_adj_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    for (i = 0; i < modifier_cnt; ++i) {
+        created = eduiItemSliderCreate(i, colours, 0, (void *)&cbModifierAdjust, 0.0f, 1.0f, 1.0f, modifier_names[i]);
+        modifier_adj_items[i] = eduiMenuAddItem(modifier_adj_menu, created);
+        eduiItemSliderSetGranularity(((edui_slider_s *)modifier_adj_items[i]), 0.10000000149011612f);
+    }
+    eduiMenuFitWidth(modifier_adj_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Flicker Light Options");
+    flicker_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbLowColour, "Low Colour...");
+    eduiMenuAddItem(flicker_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbHighTimePc, 0.0f, 4.0f, 4.0f, "High Time");
+    t_hi_item = eduiMenuAddItem(flicker_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbRHighTimePc, 0.0f, 4.0f, 4.0f, "Random High Time");
+    rt_hi_item = eduiMenuAddItem(flicker_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbLowTimePc, 0.0f, 4.0f, 4.0f, "Low Time");
+    t_low_item = eduiMenuAddItem(flicker_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbRLowTimePc, 0.0f, 4.0f, 4.0f, "Random Low Time");
+    rt_low_item = eduiMenuAddItem(flicker_menu, created);
+    eduiMenuFitWidth(flicker_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Flicker Light Options");
+    jonflicker_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbLowColour, "Low Colour...");
+    eduiMenuAddItem(jonflicker_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbHighTimePc, 0.0f, 10.0f, 4.0f, "Step");
+    jon_t_hi_item = eduiMenuAddItem(jonflicker_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbRHighTimePc, 0.0f, 10.0f, 4.0f, "Random Step");
+    jon_rt_hi_item = eduiMenuAddItem(jonflicker_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbLowTimePc, 0.0f, 4.0f, 4.0f, "Duration");
+    jon_t_low_item = eduiMenuAddItem(jonflicker_menu, created);
+    eduiMenuFitWidth(jonflicker_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)cbCancelLightProperties, "Light Properties");
+    prop_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate((u32)type_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Type...");
+    eduiMenuAddItem(prop_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbHighColour, "Colour...");
+    colour_item = eduiMenuAddItem(prop_menu, created);
+    created =
+        eduiItemSelCreate((u32)flicker_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Flicker Light Options...");
+    flicker_item = eduiMenuAddItem(prop_menu, created);
+    created = eduiItemSelCreate((u32)associd_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Associate ID(s)...");
+    associd_item = eduiMenuAddItem(prop_menu, created);
+    created = eduiItemSelCreate((u32)excludeid_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Exclude ID(s)...");
+    eduiMenuAddItem(prop_menu, created);
+    created = eduiItemSelCreate((u32)userid_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "User ID...");
+    eduiMenuAddItem(prop_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbMultiplier, 0.5f, 127.0f, 1.0f, "Multiplier");
+    multiplier_item = eduiMenuAddItem(prop_menu, created);
+    eduiItemSliderSetGranularity(((edui_slider_s *)multiplier_item), 0.10000000149011612f);
+    eduiItemSliderSetFmt(((edui_slider_s *)multiplier_item), "%.1f");
+    created = eduiItemSliderCreateInt(0, colours, 0, (void *)cbGroupID, 0, 255, 0, "Group ID");
+    groupid_item = eduiMenuAddItem(prop_menu, created);
+    created = eduiItemSelCreate((u32)modifier_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Modifier...");
+    modifierid_item = eduiMenuAddItem(prop_menu, created);
+    created = eduiItemToggleCreate(0, colours, 0, 2, edrtlcbToggleCastShadow, "Cast Shadow");
+    castshadow_item = eduiMenuAddItem(prop_menu, created);
+    created = eduiItemToggleCreate(0, colours, 0, 3, rtlCbToggleHasSpecularPc, "Has Specular");
+    hasspecular_item = eduiMenuAddItem(prop_menu, created);
+    eduiMenuFitWidth(prop_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Hide Lights");
+    hide_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemToggleCreate(2, colours, 0, 1, cbHideType, "Point");
+    hide_point_item = eduiMenuAddItem(hide_menu, created);
+    created = eduiItemToggleCreate(3, colours, 0, 2, cbHideType, "Point Flicker");
+    hide_pointflicker_item = eduiMenuAddItem(hide_menu, created);
+    created = eduiItemToggleCreate(6, colours, 0, 2, cbHideType, "Point Blend");
+    hide_pointblend_item = eduiMenuAddItem(hide_menu, created);
+    created = eduiItemToggleCreate(1, colours, 0, 3, cbHideType, "Ambient");
+    hide_ambient_item = eduiMenuAddItem(hide_menu, created);
+    created = eduiItemToggleCreate(4, colours, 0, 4, cbHideType, "Directional");
+    hide_directional_item = eduiMenuAddItem(hide_menu, created);
+    created = eduiItemToggleCreate(7, colours, 0, 4, cbHideType, "Antilight");
+    hide_antilight_item = eduiMenuAddItem(hide_menu, created);
+    created = eduiItemToggleCreate(5, colours, 0, 4, cbHideType, "Camdir");
+    hide_camdir_item = eduiMenuAddItem(hide_menu, created);
+    eduiMenuFitWidth(hide_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)edrtlcbCancelDeleteMenu, "Delete Light?");
+    delete_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbDeleteYes, "Yes");
+    eduiMenuAddItem(delete_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)edrtlcbDeleteNo, "No");
+    eduiMenuAddItem(delete_menu, created);
+    eduiMenuFitWidth(delete_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)edrtlcbCancelDeleteMenu, "Global Change Applied");
+    global_confirm_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)&cbCancelSubMenuFromItem, "Okay");
+    eduiMenuAddItem(global_confirm_menu, created);
+    eduiMenuFitWidth(global_confirm_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Global Adjustments");
+    global_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSliderCreate(0, colours, 0, 0, 2.0f, 8.0f, 2.0f, "Scale Amount");
+    global_scale_item = eduiMenuAddItem(global_menu, created);
+    eduiItemSliderSetGranularity(((edui_slider_s *)global_scale_item), 1.0f);
+    eduiItemSliderSetFmt(((edui_slider_s *)global_scale_item), "%.0f");
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbScaleAllMultipliersUp, "Scale All Multipliers Up");
+    eduiMenuAddItem(global_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbScaleAllMultipliersDown, "Scale All Multipliers Down");
+    eduiMenuAddItem(global_menu, created);
+    eduiMenuFitWidth(global_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Load lights?");
+    load_confirm_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbLoad, "Yes");
+    eduiMenuAddItem(load_confirm_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)&cbCancelSubMenuFromItem, "No");
+    eduiMenuAddItem(load_confirm_menu, created);
+    eduiMenuFitWidth(delete_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)edrtlcbCancelMenu, "Light Editor Options");
+    main_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate((u32)prop_menu, colours, 0, 1, (void *)cbLightProperties, "Light Properties...");
+    prop_item = eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbCopyLight, "Copy");
+    copy_item = eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbPasteLight, "Paste New");
+    paste_item = eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbPasteIntoLight, "Paste Into");
+    pasteinto_item = eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbCopyToGroup, "Copy To Group");
+    copytogroup_item = eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbUndoLight, "Undo");
+    undo_item = eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbRedoLight, "Redo");
+    created = eduiMenuAddItem(main_menu, created);
+    undo_item->flags |= 2;
+    created->flags |= 2;
+    redo_item = created;
+    created = eduiItemToggleCreate(0, colours, 0, 2, cbNoZBuffer, "No Z Buffer");
+    eduiMenuAddItem(main_menu, created);
+    created = eduiItemToggleCreate(0, colours, 0, 3, &cbNearClipAtCursor, "Near Clip At Cursor");
+    eduiMenuAddItem(main_menu, created);
+    created =
+        eduiItemSelCreate((u32)modifier_adj_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Adjust Modifiers...");
+    eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate((u32)hide_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Hide Lights...");
+    eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate((u32)global_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Global Adjustments...");
+    eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbSave, "Save Lights/Fog");
+    eduiMenuAddItem(main_menu, created);
+    created = eduiItemSelCreate((u32)load_confirm_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Load Lights/Fog");
+    eduiMenuAddItem(main_menu, created);
+    created = eduiItemCheckCreate(1, colours, 1, 4, cbSetControls, "Ralph Controls");
+    eduiMenuAddItem(main_menu, created);
+    created = eduiItemCheckCreate(0, colours, 0, 4, cbSetControls, "Steve Controls");
+    eduiMenuAddItem(main_menu, created);
+    eduiMenuFitWidth(main_menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)&cbCancelSubMenu, "Fog Settings");
+    fog_menu = menu;
+    if (menu == NULL)
+        rtlSwapSetEndianess(menu);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbFogColour, "Fog Colour...");
+    fogcol_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbFogAlphaPc, 0.0f, 128.0f, 1.0f, "Fog Density (alpha)");
+    fogalpha_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbFogDensityPc, 0.0f, 4.0f, 1.0f, "Fog Density (new)");
+    fogdensity_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbFogDensityWiiPc, 0.0f, 4.0f, 1.0f, "Fog Density (Wii)");
+    created = eduiMenuAddItem(fog_menu, created);
+    ((edui_slider_s *)fogdensity_item)->granularity = 1.9999999494757503e-05f;
+    fogdensitywii_item = created;
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogStart, 0.0f, 2000.0f, 4.0f, "Fog Start (PS2)");
+    fogstart_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogEnd, 0.0f, 2000.0f, 4.0f, "Fog End (PS2)");
+    fogend_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogStartPSP, 0.0f, 2000.0f, 4.0f, "Fog Start (PSP)");
+    fogstartpsp_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogEndPSP, 0.0f, 2000.0f, 4.0f, "Fog End (PSP)");
+    created = eduiMenuAddItem(fog_menu, created);
+    fog_start_slider = (edui_slider_s *)fogstart_item;
+    fog_end_slider = (edui_slider_s *)fogend_item;
+    fog_start_slider->granularity = 0.125f;
+    fogendpsp_item = created;
+    fog_end_slider->granularity = 10.0f;
+    ((edui_slider_s *)fogstartpsp_item)->granularity = 0.125f;
+    ((edui_slider_s *)created)->granularity = 10.0f;
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbHazeColour, "Haze Colour...");
+    hazecol_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbHazeDensityPc, 0.0f, 128.0f, 1.0f, "Haze Density");
+    hazedensity_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)rtlCbBlurDensityPc, 0.0f, 1.0f, 1.0f, "Blur Density");
+    blurdensity_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjRng, 0.0f, 2000.0f, 1000.0f, "Fog Distance Range");
+    fogadjrng_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjNear, 0.0010000000474974513f, 2000.0f,
+                                   0.10000000149011612f, "Near Clip (editor only)");
+    fogadjnear_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbFogAdjFar, 0.0010000000474974513f, 5000.0f, 1000.0f,
+                                   "Far Clip (editor only)");
+    fogadjfar_item = eduiMenuAddItem(fog_menu, created);
+    created = eduiItemSliderCreate(0, colours, 0, (void *)cbDOFFStop, 1.0f, 21.0f, 1.0f, "DOF - F-Stop");
+    created = eduiMenuAddItem(fog_menu, created);
+    menu = fog_menu;
+    ((edui_slider_s *)created)->granularity = 0.10000000149011612f;
+    dof_fstop_item = created;
+    eduiMenuFitWidth(menu, 5);
+    menu = eduiMenuCreate(100, 70, 180, 300, 0, (void *)edrtlcbCancelMenu, "Fog Editor Options");
+    checked_menu = main_menu;
+    fog_main_menu = menu;
+    if (checked_menu == NULL)
+        rtlSwapSetEndianess(checked_menu);
+    created = eduiItemSelCreate((u32)fog_menu, colours, 0, 1, (void *)&cbTriggerSubMenu, "Fog Settings...");
+    fog_item = eduiMenuAddItem(fog_main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbCopyFog, "Copy");
+    fog_copy_item = eduiMenuAddItem(fog_main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbPasteFog, "Paste New");
+    fog_paste_item = eduiMenuAddItem(fog_main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbPasteIntoFog, "Paste Into");
+    fog_pasteinto_item = eduiMenuAddItem(fog_main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbSave, "Save Lights/Fog");
+    eduiMenuAddItem(fog_main_menu, created);
+    created = eduiItemSelCreate(0, colours, 0, 1, (void *)cbLoad, "Load Lights/Fog");
+    eduiMenuAddItem(fog_main_menu, created);
+    created = eduiItemCheckCreate(1, colours, 1, 4, cbSetControls, "Ralph Controls");
+    eduiMenuAddItem(fog_main_menu, created);
+    created = eduiItemCheckCreate(0, colours, 0, 4, cbSetControls, "Steve Controls");
+    eduiMenuAddItem(fog_main_menu, created);
+    eduiMenuFitWidth(fog_main_menu, 5);
+    NuQFntPopCoordinateSystem();
+}
