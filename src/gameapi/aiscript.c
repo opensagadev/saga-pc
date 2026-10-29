@@ -1052,9 +1052,29 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
             if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
                 done = 1;
             } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "Script")) != NULL) {
-                AISCRIPT_COPY_STRING(cursor + NuStrLen("Script") + 1, reference->name);
+                const char *copy_source = cursor + sizeof("Script");
+                char *copy_destination = NULL;
+                if (copy_source != NULL) {
+                    i32 copy_length = NuStrLen(copy_source);
+                    if (copy_length != 0) {
+                        copy_destination = (char *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                                    (u32)(copy_length + 1));
+                        NuStrCpy(copy_destination, copy_source);
+                    }
+                }
+                reference->name = copy_destination;
             } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "ReturnState")) != NULL) {
-                AISCRIPT_COPY_STRING(cursor + NuStrLen("ReturnState") + 1, reference->return_state_name);
+                const char *copy_source = cursor + sizeof("ReturnState");
+                char *copy_destination = NULL;
+                if (copy_source != NULL) {
+                    i32 copy_length = NuStrLen(copy_source);
+                    if (copy_length != 0) {
+                        copy_destination = (char *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                                    (u32)(copy_length + 1));
+                        NuStrCpy(copy_destination, copy_source);
+                    }
+                }
+                reference->return_state_name = copy_destination;
             } else if (NuStrICmp(parser->word_buffer_ptr, "CONDITIONS") == 0) {
                 aiscript_load_conditions = &reference->conditions;
                 condition_has_no_goto = 1;

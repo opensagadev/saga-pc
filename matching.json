@@ -211,7 +211,7 @@
     "src/debug/stream_capture.c": "f752b434670ba95eaa3adc4b539486a2a324d021b6ede6ee4b844d3b0cd0c523",
     "src/editor/edtoolsall.c": "5c379175bbad8e696a2168e7b9efc0cfdbcd276e5762d96def536ff699430e48",
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
-    "src/gameapi/aiscript.c": "b42eb8d897d06243298dbd43b88c541ac126daad8233c1996618bde4631b405b",
+    "src/gameapi/aiscript.c": "83133e3d959890d181cdc2b1745f103c8d015d327331d75690fd68ba0b4cc196",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
     "src/gameapi/aisys.c": "03d80ea186a290f25b588b8a70a6c27588e3a07b1555341d13322972eac5d193",
     "src/gameapi/apiobject.c": "8194bb0803737bfc4237228dfb33b2314f19ad1be70617e03cae99dc00137d84",
@@ -449,7 +449,7 @@
     "src/nu2api/nuparticle_runtime.c": "917d8e403bd4d76829dc12b5092f25499f9de97b11926080e7be368d9d83b9a5",
     "src/nu2api/nuparticle_state.c": "a58e3c095d4df5810148e201ebd1d9985d7dd055073f20a603e0bb7ea2f78629",
     "src/nu2api/nuplane.c": "bdb89355d55ecab6dfdb910adf12aee6e039693e26f7f567d6c941f90a60fd4d",
-    "src/nu2api/nuportal.c": "1eeed7724dab25f9aefe74b5fe1ee66696756ff706373bfb511effe20d24027a",
+    "src/nu2api/nuportal.c": "5b13f11ef3d38e6f952fc47c6c810f096cb306dbaf603275907a766110296dbb",
     "src/nu2api/nuprim.c": "1e2468c1dce9a6cc8e7c8228638f4eff6401c8b78cfc35e7129ed5d0104f1d99",
     "src/nu2api/nupsfile.c": "4fcb207887cfe5c70599f8b95f3d52d5c26e2af3198a039317fa35ee22d32427",
     "src/nu2api/nuptrblock.c": "9fca2aa2ac4be26a25a5471baea40d4ce25b3cec9c9d13679a530421b1465af4",
@@ -567,7 +567,7 @@
     "build/obj/editor/edtoolsall.obj": "ce303a2e2245fbd4082e532be6e8995ee040dd55fc3733a9e772f5d77902a2d1",
     "build/obj/gameapi/ai_registry_pc.obj": "1d406d5d6b400864b90000519eff18334736f70e0145538f7b55f1754a0810bb",
     "build/obj/gameapi/aieditor_path_create_pc.obj": "16cbf3c517a689e7b82793756a1ea5c819d6989d46e04e3cb66afea7b061a811",
-    "build/obj/gameapi/aiscript.obj": "0e3eb45ee134beaadcd9b00c344f24c3c123a69d39c2a7388779858c0c34e061",
+    "build/obj/gameapi/aiscript.obj": "63c39ce432167ccca4effc1ae17a8be90db4dbcda4104081465859968766a7f1",
     "build/obj/gameapi/aiscript_diagnostics.obj": "f26b6bd8c204fc33e9899d0f48a5836b3fe3c944af3fe28c85665d05d72b578e",
     "build/obj/gameapi/aisys.obj": "877d854f5ee19f347a487b258b45039c19fe4a1711d8a15e5255019de25a1f7e",
     "build/obj/gameapi/apiobject.obj": "33df4e00c3f8b26f656280b9bcf3b87cfa1d40e06fbebd1cdf318dcfa98972bd",
@@ -893,7 +893,7 @@
     "build/obj/nu2api/nuparticle_runtime.obj": "d37feddc9320f24f3ba6f3de39ae295a4a86b0c99493002c90fb7faa1f3ad5dc",
     "build/obj/nu2api/nuparticle_state.obj": "a7171ad97ff6833bb8beb2a2e18e326f956a1a6fc76d0f241eea23117c1ecc09",
     "build/obj/nu2api/nuplane.obj": "b9b52c98b8a9e1904ed19d139f078695fa685f7150577dc2e5896ae91fd1f8e2",
-    "build/obj/nu2api/nuportal.obj": "1a77d4cfb9c8eaa5cbc19e9edabad6e1ba04d0b81fd77e0244020d22e59a8361",
+    "build/obj/nu2api/nuportal.obj": "4f3d506d658a5e5b08f5544dcd61c7c080c40c92aa6263f2190491c9b4ca66db",
     "build/obj/nu2api/nupostdeferred.obj": "be2b1dab738e54b545086cd65394043fe987f1bcc1c30eac123b8a0bbe7cebfd",
     "build/obj/nu2api/nupostfilter.obj": "5950553fcab9162a1007b0ec412d222b1888cb879069614b81dc8b18670fa4ad",
     "build/obj/nu2api/nuprim.obj": "d6d86d42ab97a8a4cb990b21f0b2f63585c533447e55ec63fb1ffd61998fedca",
@@ -82412,17 +82412,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aiscript.c",
-          "base_size": 588,
+          "base_size": 547,
           "exact_match": false,
           "target_sha256": "3fa0df2fca8138382861f8d77a127eccc95c0258c32154b2ae71d38aa261cd84",
-          "base_sha256": "50d3c1ee69a49076ed4832c7dc7016334ee0cb4950e5f492571b31c18b5ec75a",
-          "relocation_count": 41,
+          "base_sha256": "f55e4e618becefe67c0109efec79ebde538a8519c66ee61446262cdb0be28259",
+          "relocation_count": 38,
           "comparison_unit": "0052c000-37a07b571bda",
-          "objdiff_percent": 54.94672
+          "objdiff_percent": 58.32787
         }
       ],
       "status": "different",
-      "objdiff_percent": 54.94672
+      "objdiff_percent": 58.32787
     },
     {
       "name": "AIScriptLoadPakFilePc",
@@ -155641,17 +155641,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nuportal.c",
-          "base_size": 342,
+          "base_size": 432,
           "exact_match": false,
           "target_sha256": "4c31a4260ae8da29af616f66bc3a3d3e31841f30b988fa41b008d35dafe170d5",
-          "base_sha256": "cf1c7e381f13c53b14641cd75479ce5c6c7803b63a96c40a6c568689767868b6",
-          "relocation_count": 6,
+          "base_sha256": "0d8e2f7086afa208c93d18dfb37def7fee3ceef42a8625ebaa151a88a29a7d89",
+          "relocation_count": 10,
           "comparison_unit": "00600d00-3827c970b24b",
-          "objdiff_percent": 27.80814
+          "objdiff_percent": 67.12209
         }
       ],
       "status": "different",
-      "objdiff_percent": 27.80814
+      "objdiff_percent": 67.12209
     },
     {
       "name": "NuMtlCreatePS",
@@ -545805,10 +545805,10 @@
     "mapped_code_bytes": 2588290,
     "matched_code_bytes": 770100,
     "matching_percent": 22.185117390124468,
-    "fuzzy_coverage_percent": 62.632962530023164,
+    "fuzzy_coverage_percent": 62.639738490758894,
     "mapped_functions": 9882,
     "matched_functions": 6032,
-    "objdiff_fuzzy_percent": 85.79656,
+    "objdiff_fuzzy_percent": 85.80583,
     "objdiff_total_code": 2537031,
     "image_bytes": 40067072,
     "mapped_bytes": 4460836,
@@ -547182,7 +547182,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "e42bd81d165e5ecfa94d5ec5055db2f262b61ca7eeecb11ae6cef22785edc000",
-      "geometry_object_sha256": "e3620baa24b63f643343ab1975ea98ea5477769e814a0927a1a03cf54d362d8e",
+      "geometry_object_sha256": "80dafe435000b1ae9c92122146e1448e02d7de61ee4321450f5fa6b59adff2a0",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

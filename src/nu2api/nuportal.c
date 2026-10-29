@@ -516,39 +516,50 @@ void __cdecl PortalFlagRoomVisiblePc(NUGSCNROOM *room, NUGSCN *scene) {
 void __cdecl PortalClipRoomPc(NUGSCN *scene, NUGSCNROOM *room, NUPORTAL_FRUSTUM_PC *frustum) {
     PORTAL_SCENE_READER_PC *view = (PORTAL_SCENE_READER_PC *)scene;
     PORTAL_DISPLAY_READER_PC *display = (PORTAL_DISPLAY_READER_PC *)scene->display_list;
-    i32 i;
-    i32 center_extent = display != NULL && (display->render_flags & 0x4000) != 0;
-    for (i = 0; (u32)i < (u32)(i32)room->instance_count; ++i) {
-        u32 index = (u32)(i32)room->instance_indices[i];
-        u32 byte_index = index >> 3;
-        u8 mask = (u8)(1 << (index & 7));
-        i32 visible = 0;
-        if ((NuPortalVisibilityBitsPc[byte_index] & mask) != 0)
-            continue;
-        /* Native sphere branch dereferences display even if NULL; no invented guard. */
-        if ((display->visibility_overrides[byte_index] & mask) != 0)
-            visible = 1;
-        else if (center_extent) {
-            u8 flags = display->visibility_flags[index];
-            if ((flags & 1) != 0) {
-                if ((flags & 8) != 0)
-                    visible = 1;
-                else
-                    visible = NuPortalClipTestBox(&view->portal_boxes[index].first, &view->portal_boxes[index].second,
-                                                  frustum) != 0;
+    u32 i;
+    if (display != NULL && (display->render_flags & 0x4000) != 0) {
+        for (i = 0; i < (u32)(i32)room->instance_count; ++i) {
+            u32 index = (u32)(i32)room->instance_indices[i];
+            u32 byte_index = index >> 3;
+            u8 mask = (u8)(1 << (index & 7));
+            if ((NuPortalVisibilityBitsPc[byte_index] & mask) != 0)
+                continue;
+            display = (PORTAL_DISPLAY_READER_PC *)scene->display_list;
+            if ((display->visibility_overrides[byte_index] & mask) != 0) {
+                NuPortalVisibilityBitsPc[byte_index] |= mask;
+            } else {
+                u8 flags = display->visibility_flags[index];
+                if ((flags & 1) != 0) {
+                    if ((flags & 8) != 0)
+                        NuPortalVisibilityBitsPc[byte_index] |= mask;
+                    else if (NuPortalClipTestBox(&view->portal_boxes[index].first, &view->portal_boxes[index].second,
+                                                 frustum) != 0)
+                        NuPortalVisibilityBitsPc[byte_index] |= mask;
+                }
             }
-        } else if ((display->visibility_flags[index] & 8) != 0)
-            visible = 1;
-        else {
-            i32 result = clipTestSphere(&view->portal_spheres[index], frustum);
-            if (result == 1)
-                visible = 1;
-            else if (result == 2)
-                visible = clipTestBox(&view->portal_boxes[index].first, &view->portal_boxes[index].second,
-                                      frustum->planes, frustum->plane_count) != 0;
         }
-        if (visible != 0)
-            NuPortalVisibilityBitsPc[byte_index] |= mask;
+    } else {
+        for (i = 0; i < (u32)(i32)room->instance_count; ++i) {
+            u32 index = (u32)(i32)room->instance_indices[i];
+            u32 byte_index = index >> 3;
+            u8 mask = (u8)(1 << (index & 7));
+            if ((NuPortalVisibilityBitsPc[byte_index] & mask) != 0)
+                continue;
+            /* Native dereferences a null display only for an unseen instance. */
+            display = (PORTAL_DISPLAY_READER_PC *)scene->display_list;
+            if ((display->visibility_overrides[byte_index] & mask) != 0) {
+                NuPortalVisibilityBitsPc[byte_index] |= mask;
+            } else if ((display->visibility_flags[index] & 8) != 0) {
+                NuPortalVisibilityBitsPc[byte_index] |= mask;
+            } else {
+                i32 result = clipTestSphere(&view->portal_spheres[index], frustum);
+                if (result == 1)
+                    NuPortalVisibilityBitsPc[byte_index] |= mask;
+                else if (result == 2 && clipTestBox(&view->portal_boxes[index].first, &view->portal_boxes[index].second,
+                                                    frustum->planes, frustum->plane_count) != 0)
+                    NuPortalVisibilityBitsPc[byte_index] |= mask;
+            }
+        }
     }
 }
 
