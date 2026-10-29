@@ -101,3 +101,28 @@ i32 __cdecl NuTexRegisterDimensionsPc(NUTEXDIM_PC *texture) {
     }
     return 0;
 }
+
+STATIC_ASSERT(offsetof(NUTEXDIM_PC, checksum) == 8);
+STATIC_ASSERT(sizeof(((NUTEXDIM_PC *)0)->checksum) == 16);
+
+void __cdecl NuChecksumAsHex(u8 *checksum, char *out) {
+    i32 i;
+    char hex_digits[] = "0123456789abcdef";
+    for (i = 0; i < 16; ++i) {
+        u8 check_digit = checksum[i];
+        i32 high_digit = check_digit >> 4;
+        out[i * 2] = hex_digits[high_digit];
+        out[i * 2 + 1] = hex_digits[(u8)(check_digit - (high_digit << 4))];
+    }
+    out[32] = '\0';
+}
+
+void __cdecl NuTexHiresFilename(i32 texture_id, char *filename) {
+    NUTEXDIM_PC *texture;
+    char checksum_hex[33];
+    texture = NuTextureGetDimensions(texture_id);
+    NuStrCpy(filename, "c:\\temp\\stream\\textures\\");
+    NuChecksumAsHex((u8 *)((u32)texture + offsetof(NUTEXDIM_PC, checksum)), checksum_hex);
+    NuStrCat(filename, checksum_hex);
+    NuStrCat(filename, ".tex");
+}

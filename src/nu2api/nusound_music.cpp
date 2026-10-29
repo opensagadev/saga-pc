@@ -1378,7 +1378,7 @@ i32 NuMusic::StopTrack(u32 class_mask, i32 fade) {
         if (voice->status == 6 || voice->status == 7) {
             if ((fade & 1) != 0) {
                 voice->flags_word |= 1;
-                voice->fade_rate = 2.0f;
+                voice->fade_rate = -1.0f;
                 result = 1;
                 continue;
             }

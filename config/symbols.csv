@@ -5829,6 +5829,7 @@ address,symbol,size,ctype
 0x5c9af0,_NuAnimRelocatePtrsANI3,97,"void __cdecl (ANI3_HEADER_PC *, i32)"
 0x5c9b60,_NuAnimDataCalcTime,222,"void __cdecl (NUANIM_LEGACY_HEADER_PC *, f32, NUANIM_TIME2_PC *)"
 0x005c9c40,_NuAnimData2CalcTime,303,
+0x005c9d70,_NuAnimDataFindVersion,81,i32 __cdecl (char *)
 0x005c9dd0,_NuAnimDataChunkCreate,84,NuAnimReadChunk *__cdecl (i32)
 0x005c9e30,_NuAnimDataCreate,59,void *__cdecl (i32)
 0x005c9e70,_NuAnimCurveSetCreate,120,void *__cdecl (i32)
@@ -6178,7 +6179,8 @@ address,symbol,size,ctype
 0x5e5310,_NuTextureGetDimensions,22,NUTEXDIM_PC* __cdecl(i32)
 0x5e5390,_NuTexResolveReference,224,"i32 __cdecl(NUGSCN *,i32)"
 0x5e5470,_NuTexRegisterDimensionsPc,45,i32 __cdecl(NUTEXDIM_PC *)
-0x5e5550,_NuTexHiresFilename,109,
+0x005e54b0,_NuChecksumAsHex,149,"void __cdecl (u8 *, char *)"
+0x5e5550,_NuTexHiresFilename,109,"void __cdecl (i32, char *)"
 0x5e5630,_NuTexDestroy,66,void __cdecl(i32)
 0x5e57f0,_NuTexCreateFramebufferCopy,72,"i32 __cdecl(VARIPTR *, VARIPTR)"
 0x5e5a80,_PostShadowCopyVectorsPc,200,cdecl
@@ -16404,6 +16406,8 @@ address,symbol,size,ctype
 0x765314,??_C@_04DIMAIMCG@?$CFd?3?5?$AA@,,const char[5]
 0x76531c,??_C@_0BJ@HJOEEKPJ@?$DMfont?5color?5?$DN?5?$CC?$CD0000a0?$CC?$DO?$AA@,,const char[25]
 0x765338,??_C@_0BJ@PJDFEOIB@?$DMfont?5color?5?$DN?5?$CC?$CD00a000?$CC?$DO?$AA@,,const char[25]
+0x007653c4,??_C@_0BB@JCEFLFJE@0123456789abcdef?$AA@,,const char[17]
+0x007653d8,??_C@_0BJ@BFAKJOD@c?3?2temp?2stream?2textures?2?$AA@,,const char[25]
 0x7653f8,??_7NuMainFilterGen@@6B@,40,native exactVT binding; unimplemented extent unclaimed
 0x765424,??_7NuMotionAccumFilter@@6B@,40,native exactVT binding; unimplemented extent unclaimed
 0x765450,??_7NuSpeedBlurFilter@@6B@,40,native exactVT binding; unimplemented extent unclaimed

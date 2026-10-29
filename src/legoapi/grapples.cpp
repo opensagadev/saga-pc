@@ -1070,3 +1070,40 @@ extern "C" i32 __cdecl Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) 
     }
     return 1;
 }
+
+extern "C" void __cdecl Grapple_DrawLine(GAMEOBJECT *object) {
+    GRAPPLE_MOTION_PC *grapple = (GRAPPLE_MOTION_PC *)object->grapple;
+    if ((grapple->flags & 4) == 0 && object->character_model->model_data_b[object->field_7aa] != NULL &&
+        AnimPlaying(&object->anim_packet, object->field_7aa, 0, 0) == NULL)
+        return;
+    if (object->field_7b3 == 1)
+        return;
+
+    NURND_VERTEX3D_PC vertices[2];
+    NUVEC *positions[2];
+    grapple = (GRAPPLE_MOTION_PC *)object->grapple;
+    vertices[0].colour = vertices[1].colour = (grapple->flags & 8) != 0 ? 0xff003f5fu : GrappleRopeColourPc;
+    i32 count = GrappleAttachmentPositionsPc(object, positions);
+    vertices[0].position = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position;
+    vertices[1].position = *positions[0];
+    NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
+    if (count == 2) {
+        vertices[0].position = vertices[1].position;
+        vertices[1].position = *positions[1];
+        NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
+    }
+    grapple = (GRAPPLE_MOTION_PC *)object->grapple;
+    if ((grapple->flags & 4) != 0 && (grapple->flags & 8) == 0) {
+        if (GrappleCurvedRopeEnabledPc != 0) {
+            vertices[0].position = vertices[1].position;
+            DrawRopeCurved(&vertices[0].position, grapple->rope_points, 6, 0, NULL);
+        } else {
+            for (i32 point = 0; point < 6; ++point) {
+                vertices[0] = vertices[1];
+                vertices[1].position = ((GRAPPLE_MOTION_PC *)object->grapple)->rope_points[point];
+                vertices[1].colour = GrappleRopeColourPc;
+                NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
+            }
+        }
+    }
+}

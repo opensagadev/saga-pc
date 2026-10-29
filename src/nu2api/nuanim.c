@@ -3382,3 +3382,14 @@ void *__cdecl NuAnimGetAnimLOD(void *animation, i32 lod) {
     } while (--lod != 0);
     return block;
 }
+
+i32 __cdecl NuAnimDataFindVersion(char *path) {
+    u32 header[3] = {0, 0, 0};
+    NUFILE file = NuFileOpen(path, NUFILE_READ);
+    if (file != 0) {
+        NuFileRead(file, header, sizeof(header));
+        NuFileClose(file);
+        return (i32)header[0];
+    }
+    return -1;
+}
