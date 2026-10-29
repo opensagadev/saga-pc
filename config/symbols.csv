@@ -2511,6 +2511,10 @@ address,symbol,size,ctype
 0x004f03d0,_NuFileWrite,66,"i32 __cdecl (NUFILE, const void *, i32)"
 0x4f04b0,_NuFileWriteInt,126,"i32 __cdecl (NUFILE, i32)"
 0x4f0530,_NuFileWriteUnsignedInt,126,"u32 __cdecl (NUFILE, u32)"
+0x004f05b0,_NuFileWriteShort,115,"i32 __cdecl (NUFILE, i16)"
+0x004f0630,_NuFileWriteUnsignedShort,115,"i32 __cdecl (NUFILE, u16)"
+0x004f06b0,_NuFileWriteChar,77,"i32 __cdecl (NUFILE, i8)"
+0x004f0700,_NuFileWriteUnsignedChar,77,"i32 __cdecl (NUFILE, u8)"
 0x004f0750,_NuFileWriteString,93,"void __cdecl (NUFILE, const char *)"
 0x004f0880,_NuFileGetBlkSize,15,i32 __cdecl (void)
 0x4f0890,_NuFileExtractPath,56,
@@ -9168,7 +9172,7 @@ address,symbol,size,ctype
 0x6f8364,__powhlp,318,
 0x6f84a2,__commit,,
 0x6f8583,_strcpy_s,101,
-0x6f85e8,__crt_debugger_hook,,
+0x6f85e8,__crt_debugger_hook,8,
 0x6f8636,___TypeMatch,92,
 0x6f8692,___FrameUnwindFilter,68,
 0x6f86d6,___FrameUnwindToState,225,
@@ -9214,8 +9218,8 @@ address,symbol,size,ctype
 0x6f9f96,__umatherr,158,
 0x6fa034,__handle_qnan1,,
 0x6fa087,__handle_qnan2,,
-0x6fa0e6,__except1,,
-0x6fa1a0,__except2,,
+0x6fa0e6,__except1,186,
+0x6fa1a0,__except2,204,
 0x6fa26c,__statfp,11,
 0x6fa277,__clrfp,12,
 0x6fa283,__ctrlfp,39,
@@ -22292,6 +22296,7 @@ address,symbol,size,ctype
 0x82a5b0,___initiallocinfo,,
 0x82a688,___ptlocinfo,,
 0x82a68c,___lc_clike,,
+0x82a750,__matherr_flag,,u32[1]
 0x0082a754,??_R0?AVDNameNode@@@8,24,
 0x0082a76c,??_R0?AVcharNode@@@8,23,
 0x0082a784,??_R0?AVpDNameNode@@@8,25,
@@ -26313,6 +26318,7 @@ address,symbol,size,ctype
 0x029a99c4,_animduration_blendouttime,4,f32
 0x29a99c8,_APITrans_Mtl,,NUMTL *[2]
 0x029a99d0,_APIObjPlaySfxByIdFn,,"void (__cdecl *)(i32, NUVEC *)"
+0x29a9b28,__debugger_hook_dummy,,u32[1]
 0x29a9b30,___sbh_cntHeaderList,,
 0x29a9b34,___sbh_pHeaderList,,
 0x29a9b38,___sbh_threshold,,

@@ -8,6 +8,12 @@ typedef struct DOGFIGHT_AUDIO_DOOR_PC {
 STATIC_ASSERT(sizeof(DOGFIGHT_AUDIO_DOOR_PC) == 20);
 STATIC_ASSERT(offsetof(DOGFIGHT_AUDIO_DOOR_PC, distance) == 12);
 STATIC_ASSERT(offsetof(DOGFIGHT_AUDIO_DOOR_PC, timer) == 16);
+typedef struct DOGFIGHT_AUDIO_SPACE_PC {
+    u8 unknown_00[0x6371c];
+    f32 door_time;
+} DOGFIGHT_AUDIO_SPACE_PC;
+STATIC_ASSERT(offsetof(DOGFIGHT_AUDIO_SPACE_PC, door_time) == 0x6371c);
+STATIC_ASSERT(offsetof(WORLDINFO, level_specific_data) == 0x511c);
 STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, seek_offset) == 0x14);
 
 extern "C" {
@@ -19,6 +25,11 @@ extern "C" {
 
     void SetPreSeekStartPoint(f32 offset) {
         Music.seek_offset = offset;
+    }
+
+    void SpaceAudioPoint(void) {
+        music_man.SetTrackEntryTimeByClass(2, ((DOGFIGHT_AUDIO_SPACE_PC *)WORLD->level_specific_data)->door_time);
+        music_man.SetTrackEntryTimeByClass(0x20, ((DOGFIGHT_AUDIO_SPACE_PC *)WORLD->level_specific_data)->door_time);
     }
 
     void SpaceResetAudioPoint(void) {

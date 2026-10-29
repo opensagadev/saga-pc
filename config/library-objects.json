@@ -804,6 +804,15 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 351,
+   "member": "build\\intel\\mt_obj\\dbghook.obj",
+   "symbols": [
+    "__crt_debugger_hook",
+    "__debugger_hook_dummy"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 360,
    "member": "build\\intel\\mt_obj\\getqloc.obj",
    "symbols": [
@@ -1752,7 +1761,9 @@
     "__set_errno_from_matherr",
     "libcmt#00927:__get_fname",
     "__errcode",
-    "__umatherr"
+    "__umatherr",
+    "__except1",
+    "__except2"
    ]
   },
   {
@@ -1775,7 +1786,8 @@
    "index": 931,
    "member": "..\\build\\intel\\mt_obj\\matherr.obj",
    "symbols": [
-    "__matherr"
+    "__matherr",
+    "__matherr_flag"
    ]
   },
   {

@@ -107,34 +107,28 @@ void __cdecl NuFileCorrectSlashes(NUFILE_DEVICE *device, char *path) {
 }
 
 void __cdecl NuFileReldirFix(NUFILE_DEVICE *device, char *path) {
+    char *source = path;
+    char *destination = path;
     char separator;
-    char *source;
-    char *destination;
-
-    separator = device->dir_separator;
-    source = path;
-    destination = path;
+    char previous;
 
     while (*source != '\0') {
-        if (source > path && source[0] == separator && source[1] == '.' && source[2] == '.' && source[3] == separator) {
-            char *component = source;
-
-            while (component > path && component[-1] != separator && component[-1] != ':') {
-                component--;
-            }
-
-            if (component > path && component[-1] == separator) {
-                destination = component - 1;
-                source += 3;
-                continue;
-            }
-            if (component > path && component[-1] == ':') {
-                destination = component;
-                source += 4;
-                continue;
+        separator = device->dir_separator;
+        if (source[0] == separator && source[1] == '.' && source[2] == '.' && source[3] == separator) {
+            destination = source;
+            while (destination > path) {
+                previous = *--destination;
+                if (previous == separator) {
+                    source += 3;
+                    break;
+                }
+                if (previous == ':') {
+                    ++destination;
+                    source += 4;
+                    break;
+                }
             }
         }
-
         *destination++ = *source++;
     }
     *destination = '\0';

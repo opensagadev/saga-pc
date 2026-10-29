@@ -1708,3 +1708,33 @@ i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
         FileDirectoryErrorPc(result);
     return length;
 }
+
+i32 __cdecl NuFileWriteShort(NUFILE file, i16 value) {
+    PC_FILE_WRITE_WORD32 input, output;
+    input.value = (u16)value;
+    output.value = input.value;
+    if (NuFile_SwapEndianOnWrite != 0) {
+        output.bytes[0] = input.bytes[1];
+        output.bytes[1] = input.bytes[0];
+    }
+    return NuFileWrite(file, &output.value, 2);
+}
+
+i32 __cdecl NuFileWriteUnsignedShort(NUFILE file, u16 value) {
+    PC_FILE_WRITE_WORD32 input, output;
+    input.value = value;
+    output.value = input.value;
+    if (NuFile_SwapEndianOnWrite != 0) {
+        output.bytes[0] = input.bytes[1];
+        output.bytes[1] = input.bytes[0];
+    }
+    return NuFileWrite(file, &output.value, 2);
+}
+
+i32 __cdecl NuFileWriteChar(NUFILE file, i8 value) {
+    return NuFileWrite(file, &value, 1);
+}
+
+i32 __cdecl NuFileWriteUnsignedChar(NUFILE file, u8 value) {
+    return NuFileWrite(file, &value, 1);
+}
