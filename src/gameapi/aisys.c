@@ -16104,3 +16104,72 @@ void __cdecl creatureEditor_cb_stagger_start(eduimenu_s *menu, eduiitem_s *item,
     if (aieditor->mode_selection_36930 != NULL)
         ((AI_EDITOR_CREATURE_SAVE_PC *)aieditor->mode_selection_36930)->stagger_start = ((edui_slider_s *)item)->value;
 }
+
+/* Native settings names are observed 16-byte views within the initializer's
+ * 512-byte zero publication; Native owning allocations remain unknown. */
+#pragma section(".bss$AiEditorSavedPathNamePc", read, write)
+__declspec(allocate(".bss$AiEditorSavedPathNamePc")) char AiEditorSavedPathNamePc[16] = {0};
+#pragma section(".bss$AiEditorSavedAreaNamePc", read, write)
+__declspec(allocate(".bss$AiEditorSavedAreaNamePc")) char AiEditorSavedAreaNamePc[16] = {0};
+#pragma section(".bss$AiEditorSavedRouteNamePc", read, write)
+__declspec(allocate(".bss$AiEditorSavedRouteNamePc")) char AiEditorSavedRouteNamePc[16] = {0};
+
+NUCAMERA *__cdecl edmainGetCameraPc(void);
+STATIC_ASSERT(offsetof(NUCAMERA, near_clip) == 0x48);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, ai_system) == 0x64);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, mode_selection_36930) == 0x371b0);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_route) == 0x41208);
+STATIC_ASSERT(offsetof(AI_EDITOR_REBUILD_NAMED_PC, name) == 8);
+STATIC_ASSERT(offsetof(AI_EDITOR_ANTINODE_FLAGS_PC, flags) == 0x43828);
+
+void __cdecl aieditor_Leave(void) {
+    AIEDITOR_RENDER_STATE *state;
+    VARIPTR entry;
+    void(__cdecl * leave)(void);
+    u8 *source, *destination;
+    u8 value;
+    i32 index;
+    edmainGetCameraPc()->near_clip = 0.15f;
+    entry.void_ptr = &AiEditorModeBankPc.entries[0].leave;
+    for (index = 0; index < (i32)AiEditorModeBankPc.count; ++index) {
+        memcpy(&leave, entry.void_ptr, sizeof(leave));
+        if (leave != NULL)
+            leave();
+        entry.addr += sizeof(AI_EDITOR_MODE_ENTRY_PC);
+    }
+    state = aieditor;
+    if (state->mode_selection_36930 != NULL) {
+        source = (u8 *)((AI_EDITOR_REBUILD_NAMED_PC *)state->mode_selection_36930)->name;
+        destination = (u8 *)AiEditorSavedAreaNamePc;
+        do {
+            value = *source;
+            *destination = value;
+            ++source;
+            ++destination;
+        } while (value != 0);
+    }
+    if (state->current_path != NULL) {
+        source = (u8 *)((AI_EDITOR_REBUILD_NAMED_PC *)state->current_path)->name;
+        destination = (u8 *)AiEditorSavedPathNamePc;
+        do {
+            value = *source;
+            *destination = value;
+            ++source;
+            ++destination;
+        } while (value != 0);
+    }
+    if (state->current_route != NULL) {
+        source = (u8 *)((AI_EDITOR_REBUILD_NAMED_PC *)state->current_route)->name;
+        destination = (u8 *)AiEditorSavedRouteNamePc;
+        do {
+            value = *source;
+            *destination = value;
+            ++source;
+            ++destination;
+        } while (value != 0);
+    }
+    AISYSRebuildFromEditorData();
+    AIScriptInitConditions(aieditor->ai_system);
+    ((AI_EDITOR_ANTINODE_FLAGS_PC *)aieditor)->flags &= ~2u;
+}

@@ -713,3 +713,58 @@ void __cdecl cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
         emittimemenu->y = parent->y + 40;
     }
 }
+
+#pragma section(".data$EdPpScaleFactorPc", read, write)
+__declspec(allocate(".data$EdPpScaleFactorPc")) f32 edpp_scale_factor = 1.0f;
+#pragma section(".bss$EdPtlScaleEffectMenuPc", read, write)
+__declspec(allocate(".bss$EdPtlScaleEffectMenuPc")) eduimenu_s *edptl_scaleeffect_menu = NULL;
+
+void __cdecl edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent);
+void __cdecl edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+void __cdecl edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+STATIC_ASSERT(sizeof(EDPP_PARTICLE_PC) == 0x58);
+STATIC_ASSERT(offsetof(EDPP_PARTICLE_PC, instance_id) == 0x10);
+STATIC_ASSERT(offsetof(eduimenu_s, x) == 0x14);
+STATIC_ASSERT(offsetof(eduimenu_s, y) == 0x18);
+
+STATIC_ASSERT(offsetof(edui_slider_s, value) == 0x54);
+STATIC_ASSERT(sizeof(DEBRISKEY_PC) == 0x330);
+STATIC_ASSERT(offsetof(DEBRISKEY_PC, effect_index) == 0x182);
+STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
+STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
+
+void __cdecl edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edpp_scale_factor = ((edui_slider_s *)item)->value;
+}
+
+void __cdecl edptlcbApplyScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    eduimenu_s *parent;
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
+        DebrisReScale(debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index, edpp_scale_factor);
+    }
+    parent = menu->parent;
+    if (parent != NULL)
+        eduiMenuDetach(menu);
+    if (menu->callback != NULL)
+        menu->callback(menu, parent);
+}
+
+void __cdecl edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent) {
+    eduiMenuDestroy(edptl_scaleeffect_menu);
+    edptl_scaleeffect_menu = NULL;
+}
+
+void __cdecl edptlcbScaleEffectMenu(eduimenu_s *parent, eduiitem_s *item, u32 buttons) {
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edptl_scaleeffect_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelScaleEffectMenu, "Scale Effect");
+    if (edptl_scaleeffect_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_scaleeffect_menu, eduiItemSliderCreate(0, edblack, 0, edptlcbSetScaleFactor, 0.1f, 9.9f,
+                                                                 edpp_scale_factor, "Scale Factor"));
+    eduiMenuAddItem(edptl_scaleeffect_menu,
+                    eduiItemSelCreate(1, edblack, 0, 0, edptlcbApplyScaleFactor, "Scale Effect"));
+    eduiMenuAttach(parent, edptl_scaleeffect_menu);
+    edptl_scaleeffect_menu->x = (i32)((u32)parent->x + 10u);
+    edptl_scaleeffect_menu->y = (i32)((u32)parent->y + 40u);
+}

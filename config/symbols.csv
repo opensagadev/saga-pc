@@ -6854,7 +6854,9 @@ address,symbol,size,ctype
 0x629030,_eduiCheckForPadMenuCancel,76,
 0x629080,_eduiMenuProcessInput,948,
 0x629440,_cbSubMenu,57,
+0x629480,_cbTriggerSubMenu,73,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x006294d0,_cbCancelSubMenu,12,
+0x6294e0,_cbCancelSubMenuFromItem,12,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x006294f0,_cbColourPickSel,286,
 0x6297f0,_CreateColourPicker,427,
 0x629a30,_cbMMEditorConfig,73,
@@ -7017,12 +7019,15 @@ address,symbol,size,ctype
 0x637450,_RtlApplyModifiersToSinglePrivate,72,
 0x6374a0,_RtlProcessLightPrivate,960,
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
+0x6378f0,_edrtlSaveUndo,203,void __cdecl(void)
 0x637e10,_rtlAlloc,51,RTL_LIGHT_PC *__cdecl (void)
 0x637e50,_rtlFree,314,void __cdecl (RTL_LIGHT_PC *)
 0x637f90,_fogAlloc,48,RTL_FOG_MIGRATION_PC *__cdecl (void)
 0x637fc0,_fogFree,81,void __cdecl (RTL_FOG_MIGRATION_PC *)
 0x638020,_rtlGetFogSet,498,"RTL_FOG_MIGRATION_PC *__cdecl (RTL_SET_PC *, NUVEC *)"
 0x638220,_edrtlcbCancelMenu,11,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x638230,_edrtlcbCancelDeleteMenu,11,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x638240,_cbDeleteYes,57,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638280,_edrtlcbDeleteNo,19,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6382a0,_RefreshUI,1800,
 0x638b90,_edrtlcbToggleCastShadow,24,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
@@ -7031,10 +7036,19 @@ address,symbol,size,ctype
 0x638c50,_rtlCbRHighTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638c70,_rtlCbLowTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x638c90,_rtlCbRLowTimePc,20,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638df0,_rtlCbFogAlphaPc,73,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x638e40,_rtlCbFogDensityPc,20,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x638e60,_rtlCbFogDensityWiiPc,20,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x638e80,_rtlCbHazeDensityPc,73,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
+0x638ed0,_rtlCbBlurDensityPc,34,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x639130,_cbCopyLight,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x639150,_cbPasteLight,285,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x639270,_cbPasteIntoLight,307,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6393b0,_cbCopyToGroup,252,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6394b0,_cbCopyFog,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639570,_cbHideType,22,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639590,_cbNoZBuffer,18,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6395b0,_cbLightProperties,27,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x639660,_cbSetControls,14,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
 0x639b50,_edrtlAddBurnout,218,i32 __cdecl (NUVEC *)
@@ -7660,6 +7674,9 @@ address,symbol,size,ctype
 0x667de0,_cbPtlVarStartMenu,1304,
 0x668300,_cbPtlCancelStartVelMenu,25,
 0x668320,_cbPtlStartVelMenu,1320,
+0x668850,_edptlcbSetScaleFactor,14,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x668860,_edptlcbApplyScaleFactor,106,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6688d0,_edptlcbCancelScaleEffectMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x6688f0,_edptlcbScaleEffectMenu,244,
 0x668af0,_cbPtlChangePriority,117,
 0x668b70,_cbPtlToggleDynamicPriority,55,
@@ -17106,6 +17123,7 @@ address,symbol,size,ctype
 0x76dfd4,??_C@_0N@JGCBFCLO@Mag?5Velocity?$AA@,13,char []
 0x76dfe4,??_C@_0P@EHPHMKAG@Start?5Velocity?$AA@,15,char []
 0x76dff4,??_C@_0BE@KJIJHEPC@Emit?5Point?5Velocity?$AA@,20,char []
+0x76e008,??_C@_0N@HNNCKNEP@Scale?5Effect?$AA@,,const char[13]
 0x76e018,__real@4120000000000000,8,const f64
 0x76e030,??_C@_0P@BPPGINCH@?$CFs?2char?4?$CFs?4bak?$AA@,15,char []
 0x76e040,??_C@_0L@DGFFFNMG@?$CFs?2char?4?$CFs?$AA@,11,char []
@@ -22138,6 +22156,7 @@ address,symbol,size,ctype
 0x810a9c,_edgra_global_fadeout,,f32
 0x810ad8,_edpp_create_type,4,i32
 0x810adc,_edpp_copy_size,4,f32
+0x810ae0,_edpp_scale_factor,,f32
 0x810ae8,_edptl_superscale,4,i32
 0x810aec,_edptl_clipboard_entry,4,i32
 0x810b28,_TerrainSkinOriginalGroupCountPc,,i32
@@ -24355,6 +24374,9 @@ address,symbol,size,ctype
 0x921efc,_MenuSaveResultShownPc,4,i32
 0x921f00,_MenuLoadResultShownPc,4,i32
 0x00921f08,_global_aiscripts,8,NULISTHDR
+0x921f10,_AiEditorSavedPathNamePc,,char[16]
+0x921f20,_AiEditorSavedAreaNamePc,,char[16]
+0x921f30,_AiEditorSavedRouteNamePc,,char[16]
 0x00921f50,_AiEditorLocatorRotationPc,,i32
 0x921f70,_AiEditorDisplayOptionsPc,,u32
 0x921f84,_AiEditorPathScratchCursorPc,,void *
@@ -25630,14 +25652,22 @@ address,symbol,size,ctype
 0x2913248,_FmvFrequencyReadyPc,4,i32
 0x002913270,_theMemoryManager,584,MEMORYMANAGER
 0x29134c4,_burn_editor_position_pc,,
+0x29134dc,_curpos_undo,,NUVEC *
+0x2913508,_rtl_locked_undo,,RTL_LIGHT_PC **
+0x2913528,_redo_item,,eduiitem_s *
 0x291352c,_hide_types,,i32[8]
+0x2913578,_menu_undo,,RTL_LIGHT_PC
+0x2913604,_curr_rtl_undo,,RTL_LIGHT_PC **
 0x0291360c,_mtls,,NUMTL *[3]
 0x2913668,_clipboard_fog,,RTL_FOG_MIGRATION_PC
 0x2913740,_clipboard_light,,RTL_LIGHT_PC
+0x29137e4,_undo_item,,eduiitem_s *
 0x2913834,_curr_fog,,RTL_FOG_MIGRATION_PC *
 0x02913838,_base_rtl,,RTL_LIGHT_PC *
 0x02913844,_curr_rtl,,RTL_LIGHT_PC *
 0x029138bc,_curr_set,,RTL_SET_PC *
+0x29138d0,_rtl_undo,,RTL_LIGHT_PC *
+0x29138e0,_base_rtl_undo,,RTL_LIGHT_PC **
 0x2913974,_edrtl_active_menu,,eduimenu_s *
 0x2913978,_edrtl_burn_main_menu,,eduimenu_s *
 0x291397c,_edrtl_burn_defaults_menu,,eduimenu_s *
@@ -25659,6 +25689,7 @@ address,symbol,size,ctype
 0x029139e0,_maxundo,,i32
 0x029139e4,_rtl_undo_cnt,,i32
 0x029139e8,_rtl_undo_maxcnt,,i32
+0x29139ec,_rtl_undo_ix,,u32
 0x029139f4,_helpmode,,i32
 0x029139f8,_lockflash,,f32
 0x029139fc,_rtl_debug,,i32
@@ -26102,6 +26133,7 @@ address,symbol,size,ctype
 0x2962a8c,_edptl_ghost_menu,4,struct eduimenu_s *
 0x2962a90,_edptl_star_menu,4,struct eduimenu_s *
 0x2962a98,_edptl_drawflag_menu,4,struct eduimenu_s *
+0x2962a9c,_edptl_scaleeffect_menu,,eduimenu_s *
 0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *
 0x2962aa4,_edptl_instancesettings_menu,4,struct eduimenu_s *
 0x2962aa8,_edptl_detail_menu,4,struct eduimenu_s *
