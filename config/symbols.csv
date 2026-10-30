@@ -5047,6 +5047,8 @@ address,symbol,size,ctype
 0x595660,_SetLevelLights,190,"void __cdecl(void *,f32)"
 0x595720,_SetPanelLights,273,void __cdecl(f32)
 0x595840,_ResetLights,51,"void __cdecl(NUVEC *,RTL_DATA_PC *,void *)"
+0x595880,_rtlGetEnvPath,6,char *__cdecl(void)
+0x595890,_rtlGetEnvSceneName,11,char *__cdecl(void)
 0x5958b0,_SetZeroLights,96,void __cdecl(void)
 0x595910,_FindAndSetLights,92,"void __cdecl(NUVEC *,f32,void *)"
 0x595970,_LoadLights,150,"void __cdecl LoadLights(void *, char *)"
@@ -7027,6 +7029,7 @@ address,symbol,size,ctype
 0x6374a0,_RtlProcessLightPrivate,960,
 0x637860,_rtlProcessLights,133,"void __cdecl rtlProcessLights(void *, f32)"
 0x6378f0,_edrtlSaveUndo,203,void __cdecl(void)
+0x6379f0,_rtlCmp,838,
 0x637e10,_rtlAlloc,51,RTL_LIGHT_PC *__cdecl (void)
 0x637e50,_rtlFree,314,void __cdecl (RTL_LIGHT_PC *)
 0x637f90,_fogAlloc,48,RTL_FOG_MIGRATION_PC *__cdecl (void)
@@ -16660,6 +16663,7 @@ address,symbol,size,ctype
 0x0076b3f8,??_C@_0DB@NIAEMFDA@SQR?$DNADD?0?5TRI?$DNDEL?0?5L?9UP?$DNLOCK?0?5X?$DNA@,,const char[]
 0x0076b430,??_C@_0FD@GKLECNCP@L?9UP?1DOWN?$DNADJ?5FALLOFF?0?5L?9LEFT?1RI@,,const char[]
 0x0076b484,??_C@_0BC@MKBIODEM@SQR?$DNADD?0?5O?$DNSELECT?$AA@,,const char[]
+0x76b498,_RtlFileExtensionTextPc,,const char[5]
 0x0076b4a8,??_C@_05OKKAGJKI@NO?5ID?$AA@,,const char[]
 0x0076b4b0,??_C@_05OMLDBJFO@ID?515?$AA@,,const char[]
 0x0076b4b8,??_C@_05PFKICIBP@ID?514?$AA@,,const char[]
@@ -16686,6 +16690,7 @@ address,symbol,size,ctype
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
 0x76b788,_RtlSearchTimebarNamePc,,const char[9]
+0x76b794,_RtlFilePathFormatPc,,const char[7]
 0x76b79c,??_C@_0BF@HOEJBKMM@Source?5FallOff?5Power?$AA@,,const char[]
 0x76b7b4,??_C@_0BH@HPGDHHIB@Source?5Outer?5Intensity?$AA@,,const char[]
 0x76b7cc,??_C@_0BE@OALECHHG@Source?5Outer?5Radius?$AA@,,const char[]
@@ -22222,6 +22227,7 @@ address,symbol,size,ctype
 0x0080fe60,_userid_names,,char *[16]
 0x80fea0,_rtltimer1adv,4,f32
 0x0080fea4,_ctl_ix,,i32
+0x80ff04,_rtl_ext,,char *
 0x0080ff08,?help_text@?1??edrtlDrawHelp@@9@9,,const char *[2][6]
 0x0080ff38,_lockflash_rate,,f32
 0x0080ff44,_help_line,,i32

@@ -3462,3 +3462,291 @@ void __cdecl cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     if (fog != NULL)
         fog->end_psp = ((edui_slider_s *)item)->value;
 }
+
+STATIC_ASSERT(sizeof(NUVEC) == 12);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, position) == 0);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, direction) == 0x0c);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, colour) == 0x24);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, secondary_colour) == 0x30);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, inner_radius) == 0x3c);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, outer_radius) == 0x40);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, parameters) == 0x44);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, type) == 0x58);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, flags) == 0x59);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, pitch) == 0x5a);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, yaw) == 0x5c);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_5e) == 0x5e);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_60) == 0x60);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_68) == 0x68);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, intensity) == 0x6c);
+
+static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second) {
+    i32 different = 0;
+    different |= memcmp(&first->position, &second->position, sizeof(NUVEC));
+    different |= memcmp(&first->direction, &second->direction, sizeof(NUVEC));
+    different |= memcmp(&first->colour, &second->colour, sizeof(NUVEC));
+    different |= memcmp(&first->secondary_colour, &second->secondary_colour, sizeof(NUVEC));
+    different |= first->inner_radius != second->inner_radius;
+    different |= first->outer_radius != second->outer_radius;
+    different |= first->parameters[0] != second->parameters[0];
+    different |= first->parameters[1] != second->parameters[1];
+    different |= first->parameters[2] != second->parameters[2];
+    different |= first->parameters[3] != second->parameters[3];
+    different |= first->type != second->type;
+    different |= (first->flags & 1) != (second->flags & 1);
+    different |= first->pitch != second->pitch;
+    different |= first->yaw != second->yaw;
+    different |= first->field_5e != second->field_5e;
+    different |= first->field_60 != second->field_60;
+    different |= first->field_68 != second->field_68;
+    different |= first->intensity != second->intensity;
+    return different;
+}
+
+#pragma section(".rdata$RtlExtensionText", read)
+__declspec(allocate(".rdata$RtlExtensionText")) const char RtlFileExtensionTextPc[5] = ".rtl";
+#pragma section(".rdata$RtlFilePathFormat", read)
+__declspec(allocate(".rdata$RtlFilePathFormat")) const char RtlFilePathFormatPc[7] = "%s%s%s";
+#pragma section(".data$RtlExtensionPointer", read, write)
+__declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = (char *)RtlFileExtensionTextPc;
+
+void __cdecl edrtlUndo(void) {
+    VARIPTR source, address;
+    RTL_SET_PC *set;
+    RTL_LIGHT_PC *value;
+    u32 index, limit, word;
+    if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt != 0) {
+        source.void_ptr = curr_set;
+        source.addr += offsetof(RTL_SET_PC, lights);
+        index = rtl_undo_ix;
+        address.void_ptr = rtl_undo;
+        address.addr += index * 0x4600u;
+        PCByteCopy_candidate(address.void_ptr, source.void_ptr, 0x4600u);
+        index = rtl_undo_ix;
+        address.void_ptr = curpos_undo;
+        address.addr += index * sizeof(NUVEC);
+        edcamGetPosAng((NUVEC *)address.void_ptr, NULL, NULL);
+        index = rtl_undo_ix;
+        value = curr_rtl;
+        address.void_ptr = curr_rtl_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(address.void_ptr, &value, sizeof(value));
+        value = rtl_locked;
+        address.void_ptr = rtl_locked_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(address.void_ptr, &value, sizeof(value));
+        value = base_rtl;
+        address.void_ptr = base_rtl_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(address.void_ptr, &value, sizeof(value));
+        limit = (u32)maxundo - 1u;
+        set = curr_set;
+        rtl_undo_cnt = (i32)((u32)rtl_undo_cnt - 1u);
+        index = (index - 1u) & limit;
+        rtl_undo_ix = index;
+        source.void_ptr = rtl_undo;
+        source.addr += index * 0x4600u;
+        address.void_ptr = set;
+        address.addr += offsetof(RTL_SET_PC, lights);
+        PCByteCopy_candidate(address.void_ptr, source.void_ptr, 0x4600u);
+        index = rtl_undo_ix;
+        address.void_ptr = curpos_undo;
+        address.addr += index * sizeof(NUVEC);
+        edcamSetPos((NUVEC *)address.void_ptr);
+        index = rtl_undo_ix;
+        source.void_ptr = curpos_undo;
+        source.addr += index * sizeof(NUVEC);
+        memcpy(&word, source.void_ptr, sizeof(word));
+        memcpy(&burn_editor_position_pc.x, &word, sizeof(word));
+        source.addr += sizeof(u32);
+        memcpy(&word, source.void_ptr, sizeof(word));
+        memcpy(&burn_editor_position_pc.y, &word, sizeof(word));
+        source.addr += sizeof(u32);
+        memcpy(&word, source.void_ptr, sizeof(word));
+        memcpy(&burn_editor_position_pc.z, &word, sizeof(word));
+        address.void_ptr = curr_rtl_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(&value, address.void_ptr, sizeof(value));
+        curr_rtl = value;
+        address.void_ptr = rtl_locked_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(&value, address.void_ptr, sizeof(value));
+        rtl_locked = value;
+        address.void_ptr = base_rtl_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(&value, address.void_ptr, sizeof(value));
+        base_rtl = value;
+        redo_item->flags &= (u8)~2u;
+        if (rtl_undo_cnt == 0)
+            undo_item->flags |= 2u;
+        RefreshUI();
+    }
+}
+
+void __cdecl edrtlRedo(void) {
+    VARIPTR source, address;
+    RTL_SET_PC *set;
+    RTL_LIGHT_PC *value;
+    u32 index, limit, word;
+    i32 count;
+    if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt < rtl_undo_maxcnt) {
+        set = curr_set;
+        limit = (u32)maxundo - 1u;
+        index = rtl_undo_ix;
+        rtl_undo_cnt = (i32)((u32)rtl_undo_cnt + 1u);
+        index = (index + 1u) & limit;
+        rtl_undo_ix = index;
+        source.void_ptr = rtl_undo;
+        source.addr += index * 0x4600u;
+        address.void_ptr = set;
+        address.addr += offsetof(RTL_SET_PC, lights);
+        PCByteCopy_candidate(address.void_ptr, source.void_ptr, 0x4600u);
+        index = rtl_undo_ix;
+        address.void_ptr = curpos_undo;
+        address.addr += index * sizeof(NUVEC);
+        edcamSetPos((NUVEC *)address.void_ptr);
+        index = rtl_undo_ix;
+        source.void_ptr = curpos_undo;
+        source.addr += index * sizeof(NUVEC);
+        memcpy(&word, source.void_ptr, sizeof(word));
+        memcpy(&burn_editor_position_pc.x, &word, sizeof(word));
+        source.addr += sizeof(u32);
+        memcpy(&word, source.void_ptr, sizeof(word));
+        memcpy(&burn_editor_position_pc.y, &word, sizeof(word));
+        source.addr += sizeof(u32);
+        memcpy(&word, source.void_ptr, sizeof(word));
+        memcpy(&burn_editor_position_pc.z, &word, sizeof(word));
+        address.void_ptr = curr_rtl_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(&value, address.void_ptr, sizeof(value));
+        curr_rtl = value;
+        address.void_ptr = rtl_locked_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(&value, address.void_ptr, sizeof(value));
+        rtl_locked = value;
+        address.void_ptr = base_rtl_undo;
+        address.addr += index * sizeof(RTL_LIGHT_PC *);
+        memcpy(&value, address.void_ptr, sizeof(value));
+        count = rtl_undo_cnt;
+        base_rtl = value;
+        undo_item->flags &= (u8)~2u;
+        if (count == rtl_undo_maxcnt)
+            redo_item->flags |= 2u;
+        RefreshUI();
+    }
+}
+
+/* Genuine rtlCmp is defined by the separately frozen same-TU component. */
+static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second);
+char *__cdecl rtlGetEnvPath(void);
+char *__cdecl rtlGetEnvSceneName(void);
+void __cdecl edrtlUndo(void);
+void __cdecl edrtlRedo(void);
+
+void __cdecl cbLoad(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    char path[256];
+    VARIPTR buffer;
+    buffer.void_ptr = curr_set;
+    sprintf(path, RtlFilePathFormatPc, rtlGetEnvPath(), rtlGetEnvSceneName(), rtl_ext);
+    curr_set = rtlLoadSet(path, &buffer, 0x7fffffff);
+    curr_rtl = NULL;
+    base_rtl = NULL;
+    rtl_undo_cnt = 0;
+    rtl_undo_maxcnt = 0;
+    rtl_undo_ix = 0;
+    undo_item->flags |= 2u;
+    redo_item->flags |= 2u;
+    RefreshUI();
+}
+
+void __cdecl cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    char path[256];
+    RTL_SET_PC *set;
+    NUFILE file;
+    sprintf(path, RtlFilePathFormatPc, rtlGetEnvPath(), rtlGetEnvSceneName(), rtl_ext);
+    set = curr_set;
+    file = NuFileOpen(path, 1);
+    if (file != 0) {
+        NuFileWrite(file, set, sizeof(RTL_SET_PC));
+        NuFileClose(file);
+    }
+}
+
+void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent) {
+    RTL_LIGHT_PC *original = curr_rtl;
+    RTL_LIGHT_PC saved;
+    u32 word;
+    i32 index;
+    if (rtlCmp(original, &menu_undo) != 0) {
+        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
+            memcpy(&word, (u8 *)original + index * sizeof(u32), sizeof(word));
+            memcpy((u8 *)&saved + index * sizeof(u32), &word, sizeof(word));
+        }
+        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
+            memcpy(&word, (u8 *)&menu_undo + index * sizeof(u32), sizeof(word));
+            memcpy((u8 *)original + index * sizeof(u32), &word, sizeof(word));
+        }
+        edrtlSaveUndo();
+        original = curr_rtl;
+        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
+            memcpy(&word, (u8 *)&saved + index * sizeof(u32), sizeof(word));
+            memcpy((u8 *)original + index * sizeof(u32), &word, sizeof(word));
+        }
+    }
+    eduiMenuDetach(menu);
+}
+
+void __cdecl cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *destination, *current;
+    u32 word;
+    i32 index;
+    if (clipboard_fog.type != 0) {
+        destination = fogAlloc();
+        curr_fog = destination;
+        if (destination != NULL) {
+            for (index = 0; index < sizeof(RTL_FOG_MIGRATION_PC) / sizeof(u32); ++index) {
+                memcpy(&word, (u8 *)&clipboard_fog + index * sizeof(u32), sizeof(word));
+                memcpy((u8 *)destination + index * sizeof(u32), &word, sizeof(word));
+            }
+            current = curr_fog;
+            memcpy(&word, &burn_editor_position_pc.x, sizeof(word));
+            memcpy(&current->position.x, &word, sizeof(word));
+            memcpy(&word, &burn_editor_position_pc.y, sizeof(word));
+            memcpy(&current->position.y, &word, sizeof(word));
+            memcpy(&word, &burn_editor_position_pc.z, sizeof(word));
+            memcpy(&current->position.z, &word, sizeof(word));
+        }
+    }
+}
+
+void __cdecl cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    RTL_FOG_MIGRATION_PC *destination, *current;
+    u32 word, position_x, position_y, position_z;
+    i32 index;
+    if (clipboard_fog.type != 0) {
+        destination = curr_fog;
+        if (destination != NULL) {
+            memcpy(&position_x, &destination->position.x, sizeof(position_x));
+            memcpy(&position_y, &destination->position.y, sizeof(position_y));
+            memcpy(&position_z, &destination->position.z, sizeof(position_z));
+            for (index = 0; index < sizeof(RTL_FOG_MIGRATION_PC) / sizeof(u32); ++index) {
+                memcpy(&word, (u8 *)&clipboard_fog + index * sizeof(u32), sizeof(word));
+                memcpy((u8 *)destination + index * sizeof(u32), &word, sizeof(word));
+            }
+            current = curr_fog;
+            memcpy(&current->position.x, &position_x, sizeof(position_x));
+            memcpy(&current->position.y, &position_y, sizeof(position_y));
+            memcpy(&current->position.z, &position_z, sizeof(position_z));
+        } else {
+            cbPasteFog(menu, item, buttons);
+        }
+    }
+}
+
+void __cdecl cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edrtlUndo();
+}
+
+void __cdecl cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edrtlRedo();
+}

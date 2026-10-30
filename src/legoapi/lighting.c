@@ -502,3 +502,16 @@ void __cdecl BurnoutApply(i32 view) {
         NuRndrEnableDeferredPc();
     }
 }
+
+STATIC_ASSERT(offsetof(WORLDINFO, config_file) == 0x80);
+
+char *__cdecl rtlGetEnvPath(void) {
+    return "";
+}
+
+char *__cdecl rtlGetEnvSceneName(void) {
+    VARIPTR address;
+    address.void_ptr = WORLD;
+    address.addr += offsetof(WORLDINFO, config_file);
+    return address.char_ptr;
+}
