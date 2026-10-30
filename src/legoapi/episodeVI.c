@@ -1138,3 +1138,339 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
     }
     SarlaccPitB_SpecialUpdate(world);
 }
+
+STATIC_ASSERT(sizeof(EMPEROR_UPDATE_PACKET_PC) == 8);
+STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, state) == 0);
+STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, enabled) == 4);
+STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, zap) == 5);
+STATIC_ASSERT(offsetof(EMPEROR_UPDATE_PACKET_PC, player_floor_mask) == 6);
+STATIC_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
+STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
+STATIC_ASSERT(sizeof(AIAREA_PC) == 0x40);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, movement_look_target) == 0x4ac);
+extern i32 EmperorFloorRouteOnPc;
+extern f32 EmperorFloorRadiusPc;
+extern f32 EmperorFloorJitterPc;
+extern f32 EmperorFloorPushPc;
+extern f32 EmperorFloorSafeXMinimumPc;
+#define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket)
+#define EMPEROR_FLOOR_AREA_MASK(world, area)                                                                           \
+    ((u64)(i64)(i32)(1u << ((((i32)((u32)(area) - (u32)(world)->ai_sys->areas)) >> 6) & 31)))
+void __cdecl EmperorFightA_Update(WORLDINFO *world) {
+    i32 i;
+    i32 floor;
+    i32 floor_active;
+
+    if (LevGameObject[0] == NULL)
+        LevGameObject[0] = FindGameObject(id_THEEMPEROR, 1, 1, 0, 0);
+    if (FreePlay)
+        KillBossCompleteLevel(id_THEEMPEROR, 0, 0.0f);
+    else
+        KillBossPlayCutScene(id_THEEMPEROR, 0, 0.0f, "emperorfight_outro");
+    if (!netclient) {
+        GAMEOBJECT *player;
+        AIAREA_PC *area;
+        EMPEROR_UPDATE_PACKET_PC *packet;
+        i32 message_one;
+        GIZAIMESSAGE *message;
+
+        EMPEROR_PACKET->player_floor_mask = 0;
+        player = (GAMEOBJECT *)Player[0];
+        if (player != NULL && !player->dead && player->field_1010 <= 0.0f) {
+            area = LevArea[0];
+            if (area == NULL || !(U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area)))
+                goto emperor_second_player_mask;
+            EMPEROR_PACKET->player_floor_mask |= 1;
+        }
+        area = LevArea[0];
+    emperor_second_player_mask:
+        player = (GAMEOBJECT *)Player[1];
+        if (player != NULL && !player->dead && player->field_1010 <= 0.0f && area != NULL &&
+            (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area))) {
+            EMPEROR_PACKET->player_floor_mask |= 2;
+        }
+        message = LevAIMessage[1];
+        message_one = message->value == 1.0f;
+        packet = (EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket;
+        if (message_one && packet->player_floor_mask != 0) {
+            if (packet->zap) {
+                f64 frame;
+                frame = FRAMETIME;
+                eFloor_timer += frame;
+                switch (packet->state) {
+                    case 1:
+                    case 3:
+                        if (eFloor_timer > 2.0f) {
+                            packet->state = 2;
+                            eFloor_timer = 0.0f;
+                        }
+                        break;
+                    case 2:
+                        if (eFloor_timer > 3.0f) {
+                            packet->state = 3;
+                            eFloor_timer = 0.0f;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                packet->zap = 1;
+                EMPEROR_PACKET->state = 1;
+                eFloor_timer = 0.0f;
+            }
+        } else if (message->value == 2.0f) {
+            packet->zap = 0;
+            EMPEROR_PACKET->state = 4;
+        }
+    }
+    for (i = 0; i < 2; ++i) {
+        GAMEOBJECT *player;
+        player = (GAMEOBJECT *)Player[i];
+        if (player != NULL && player->character_context == 0x42)
+            player->character_context = -1;
+    }
+    if (netclient && EMPEROR_PACKET->zap && EMPEROR_PACKET->player_floor_mask && LevGameObject[0] != NULL) {
+        AILOCATOR_PC *locator;
+        NUVEC hands[2], end, delta;
+        locator = AIPathFindLocator(world->ai_sys, "Zap");
+
+        ForceLightning_Origin(LevGameObject[0], &hands[0], &hands[1]);
+        end = locator->position;
+        end.x = (f32)(((f64)0.2f - (f64)NuRandFloat() * (f64)0.4f) + (f64)end.x);
+        end.z = (f32)(((f64)0.2f - (f64)NuRandFloat() * (f64)0.4f) + (f64)end.z);
+        for (i = 0; i < 2; ++i) {
+            f32 distance;
+            if ((f64)hands[i].y == 1000000000.0) {
+                continue;
+            }
+            distance = NuVecDist(&end, &hands[i], &delta);
+            NuLgtLaser(lightning_type, lightning_sizew[0], lightning_sizel[0], lightning_sizewab[0], &hands[i], &delta,
+                       lightning_col[0], lightning_endw[0], distance);
+            PlaySfx("ForceLightningLp", &locator->position);
+        }
+        LevGameObject[0]->ai_packet.movement_look_target = &locator->position;
+    }
+    floor_active = 0;
+    if (hspecial_efloor != NULL && EMPEROR_PACKET->player_floor_mask) {
+        for (floor = 0; floor < 20; ++floor) {
+            NUINSTANIM_TIME_VIEW *animation;
+            NUVEC *floor_position;
+            f64 radius;
+            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&hspecial_efloor[floor]);
+            if (animation == NULL || !(animation->ltime > 1.0f))
+                continue;
+            floor_position = NuSpecialGetDrawPos(&hspecial_efloor[floor]);
+            floor_active = 1;
+            radius = EmperorFloorRadiusPc;
+            for (i = 0; i < 2; ++i) {
+                GAMEOBJECT *player;
+                f32 dx;
+                f32 negative_radius;
+                f32 dz;
+                f64 velocity_x;
+                f64 push;
+                NUVEC floor_end, player_end, delta;
+                f64 jitter;
+                f64 random;
+                f64 floor_x;
+                f64 clamp_radius;
+                f64 upper;
+                f64 floor_y;
+                GAMEOBJECT *jitter_player;
+                f32 height;
+                i32 random_integer;
+                f32 distance;
+                NUVEC *sound_position;
+                i32 sound;
+                player = ((GAMEOBJECT *)Player[i]);
+                if (player->dead || !(player->field_1010 <= 0.0f) || !(EMPEROR_PACKET->player_floor_mask & (1 << i)))
+                    continue;
+                if ((i8)player->flags_1fc_word < 0) {
+                    i32 invincible;
+                    invincible = Player_HasInvincibility(player);
+                    radius = EmperorFloorRadiusPc;
+                    if (invincible)
+                        continue;
+                }
+                player = ((GAMEOBJECT *)Player[i]);
+                if (!(player->position.y > floor_position->y))
+                    continue;
+                dx = player->position.x - floor_position->x;
+                if (!(dx < radius))
+                    continue;
+                negative_radius = (f32)-radius;
+                if (!(dx > negative_radius))
+                    continue;
+                dz = player->position.z - floor_position->z;
+                if (!(dz < radius && dz > negative_radius))
+                    continue;
+                player->character_context = 0x42;
+                player = (GAMEOBJECT *)Player[i];
+                if (!(player->flags_1f8 & 0x40000))
+                    ObjHitObj(NULL, player, 1, 0, 0, 1);
+                player = ((GAMEOBJECT *)Player[i]);
+                velocity_x = player->velocity.x;
+                push = EmperorFloorPushPc;
+                if (!(dx <= 0.0f))
+                    player->velocity.x = (f32)(velocity_x + push);
+                else
+                    player->velocity.x = (f32)(velocity_x - push);
+                player = (GAMEOBJECT *)Player[i];
+                if (dz > 0.0f)
+                    player->velocity.z = (f32)(player->velocity.z + push);
+                else
+                    player->velocity.z = (f32)(player->velocity.z - push);
+
+                floor_end.x = player->collision_position.x;
+                jitter = EmperorFloorJitterPc;
+                random = NuRandFloat();
+                floor_end.x = (f32)((jitter - (random + random) * jitter) + (f64)floor_end.x);
+                floor_x = floor_position->x;
+                clamp_radius = EmperorFloorRadiusPc;
+                upper = floor_x + clamp_radius;
+                if (floor_end.x > upper) {
+                    floor_end.x = (f32)upper;
+                } else {
+                    f64 lower;
+                    lower = floor_position->x - clamp_radius;
+                    if (lower > floor_end.x)
+                        floor_end.x = (f32)lower;
+                }
+                floor_y = floor_position->y;
+                jitter_player = (GAMEOBJECT *)Player[i];
+                floor_end.y = (f32)floor_y;
+                floor_end.z = jitter_player->collision_position.z;
+                jitter = EmperorFloorJitterPc;
+                random = NuRandFloat();
+                floor_end.z = (f32)((jitter - (random + random) * jitter) + (f64)floor_end.z);
+                clamp_radius = EmperorFloorRadiusPc;
+                upper = clamp_radius + floor_position->z;
+                if (floor_end.z > upper) {
+                    floor_end.z = (f32)upper;
+                } else {
+                    f64 lower;
+                    lower = floor_position->z - clamp_radius;
+                    if (lower > floor_end.z)
+                        floor_end.z = (f32)lower;
+                }
+                player = ((GAMEOBJECT *)Player[i]);
+                player_end.x = player->collision_position.x;
+                height = player->upper_position.y - player->lower_position.y;
+                random_integer = qrand();
+                player_end.y = (f32)(((f64)random_integer * 0.000015259021893143654) * ((f64)height * 0.5) +
+                                     ((f64)height * 0.25 + player->lower_position.y));
+                player_end.z = player->collision_position.z;
+                distance = NuVecDist(&player_end, &floor_end, &delta);
+                NuLgtLaser(testlaser_type, testlaser_sizew, testlaser_sizel, testlaser_sizewab, &floor_end, &delta,
+                           0xff808040, testlaser_endw, distance);
+                sound_position = &((GAMEOBJECT *)Player[i])->collision_position;
+                sound = GetSfxId("ForceLightningLp");
+                GameAudio_PlaySfxById(sound, sound_position, 0, 1);
+                break;
+            }
+        }
+        if (floor_active) {
+            GAMEOBJECT *player;
+            f64 minimum;
+            AIAREA_PC *area;
+            player = (GAMEOBJECT *)Player[0];
+            minimum = EmperorFloorSafeXMinimumPc;
+
+            if (!player->dead && player->field_1010 <= 0.0f) {
+                area = LevArea[0];
+                if (area == NULL || !(U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area)))
+                    goto emperor_second_safe_player;
+                if (!(player->collision_position.x < minimum))
+                    goto emperor_second_safe_player;
+                player->flags_ef4 |= 4;
+                ((GAMEOBJECT *)Player[0])->last_safe_position.x = (f32)minimum;
+                ((GAMEOBJECT *)Player[0])->respawn_position.x = (f32)minimum;
+            }
+            area = LevArea[0];
+        emperor_second_safe_player:
+            player = (GAMEOBJECT *)Player[1];
+            if (!player->dead && player->field_1010 <= 0.0f && area != NULL &&
+                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, area)) &&
+                player->collision_position.x < minimum) {
+                player->flags_ef4 |= 4;
+                ((GAMEOBJECT *)Player[1])->last_safe_position.x = (f32)minimum;
+                ((GAMEOBJECT *)Player[1])->respawn_position.x = (f32)minimum;
+            }
+        }
+    }
+
+    if (!netclient && routemask_efloor_on && routemask_efloor_off) {
+        i32 update_routes;
+        i32 routes_on;
+        update_routes = 0;
+        routes_on = 0;
+        if (EMPEROR_PACKET->enabled || (floor_active && !EmperorFloorRouteOnPc)) {
+            EMPEROR_PACKET->enabled = 0;
+            EmperorFloorRouteOnPc = 1;
+            routes_on = 1;
+            update_routes = 1;
+        } else if (!floor_active && EmperorFloorRouteOnPc) {
+            EmperorFloorRouteOnPc = 0;
+            update_routes = 1;
+        }
+        if (update_routes != 0) {
+            GAMEOBJECT *boss;
+            for (i = 0; i < world->ai_sys->path_sys->active_path->connection_count; ++i) {
+                u16 route_mask;
+                route_mask = world->ai_sys->path_sys->active_path->connections[i].route_mask;
+                if (route_mask & routemask_efloor_on) {
+                    if (routes_on) {
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
+                    } else {
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
+                    }
+                } else if (route_mask & routemask_efloor_off) {
+                    if (!routes_on) {
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
+                    } else {
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
+                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
+                    }
+                }
+            }
+            for (i = 0; i < 2; ++i) {
+                GAMEOBJECT *player;
+                player = (GAMEOBJECT *)Player[i];
+                if (player != NULL && (player->flags_1fc_word & 0x1001) == 0x1001)
+                    AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)player, &player->ai_packet, 0xff, 1);
+            }
+            boss = LevGameObject[0];
+            if (boss != NULL)
+                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)boss, &boss->ai_packet, 0xff, 1);
+        }
+    }
+    EmperorFightA_UpdateFloorObstaclesPc();
+    if (!((u8 *)LevFlag)[4]) {
+        for (i = 1; i < 5; ++i) {
+            if (!((u8 *)LevFlag)[i] && NuSpecialGetVisibilityFn(&LevHSpecial[i + 2])) {
+                PlaySfx("env_block_light_on", NuSpecialGetDrawPos(&LevHSpecial[i + 2]));
+                ((u8 *)LevFlag)[i] = 1;
+            }
+        }
+    }
+    for (i = 0; i < 12; ++i) {
+        if (NuSpecialGetVisibilityFn(&LevHSpecial[i + 30]) && !((u8 *)LevSfxFlag)[i]) {
+            PlaySfx("env_block_light_on", NuSpecialGetDrawPos(&LevHSpecial[i]));
+            ((u8 *)LevSfxFlag)[i] = 1;
+        } else if (!NuSpecialGetVisibilityFn(&LevHSpecial[i + 30])) {
+            ((u8 *)LevSfxFlag)[i] = 0;
+        }
+    }
+}
+
+#undef EMPEROR_FLOOR_AREA_MASK
+#undef EMPEROR_PACKET

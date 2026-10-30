@@ -35209,3 +35209,30 @@ extern "C" {
         0x00534e4fu, 0x444e4f43u, 0x4f495449u, 0x0000534eu, 0xffff0000u,
         0xff00ff00u, 0xff00ffffu, 0xffff00ffu, 0xffffff00u};
 }
+
+#pragma section(".bss$EmperorFloorRouteOnPc", read, write)
+extern "C" {
+    __declspec(allocate(".bss$EmperorFloorRouteOnPc")) i32 EmperorFloorRouteOnPc = 0;
+}
+
+#pragma data_seg(".data$EmperorFloorRadiusPc")
+extern "C" {
+    f32 EmperorFloorRadiusPc = 0.35f;
+}
+#pragma data_seg()
+#pragma data_seg(".data$EmperorFloorJitterPc")
+extern "C" {
+    f32 EmperorFloorJitterPc = 0.2f;
+}
+#pragma data_seg()
+#pragma data_seg(".data$EmperorFloorPushPc")
+extern "C" {
+    f32 EmperorFloorPushPc = 0.2f;
+}
+#pragma data_seg()
+
+#pragma data_seg(".data$EmperorFloorSafeXMinimumPc")
+extern "C" {
+    f32 EmperorFloorSafeXMinimumPc = 1.5f;
+}
+#pragma data_seg()

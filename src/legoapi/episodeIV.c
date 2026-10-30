@@ -1071,3 +1071,212 @@ void __cdecl AsteroidChaseC_Update(WORLDINFO *world) {
         }
     }
 }
+
+/* Native-observed mutable scalar providers; Native allocation extents unknown. */
+#pragma data_seg(".data$TrenchLaneOffsetPc")
+f32 TrenchLaneOffsetPc = 10.0f;
+#pragma data_seg(".data$TrenchSeekXPc")
+f32 TrenchSeekXPc = 4.0f;
+#pragma data_seg(".data$TrenchSeekYPc")
+f32 TrenchSeekYPc = 0.5f;
+#pragma data_seg(".data$TrenchSeekZPc")
+f32 TrenchSeekZPc = 0.5f;
+#pragma data_seg(".data$TrenchRollScalePc")
+f32 TrenchRollScalePc = 5000.0f;
+#pragma data_seg(".data$TrenchMaxHeightMovePc")
+f32 TrenchMaxHeightMovePc = 5.0f;
+#pragma data_seg()
+
+void __cdecl TrenchMove(GAMEOBJECT *object) {
+    f32 phase, target_x, target_y, height_difference;
+    i32 roll, target_roll;
+    i32 heading_right;
+    GAMEPAD_PC *pad;
+    f32 input_magnitude;
+    u16 input_angle;
+    object->previous_floor_height = object->floor_height;
+    pad = object->pad;
+    object->start_position = object->position;
+    object->initial_position = object->collision_position;
+    object->field_282 = object->field_281;
+    input_magnitude = pad->input_magnitude;
+    input_angle = pad->input_angle;
+    pad->previous_input_magnitude = input_magnitude;
+    pad->previous_input_angle = input_angle;
+    object->flags_ef0 &= ~0x4000;
+    object->previous_movement_angle = object->field_0x276;
+    object->flags_107a = 0;
+    if (object->model_draw_result != 0)
+        object->field_f10 = 0.0f;
+    else
+        object->field_f10 = FRAMETIME + object->field_f10;
+    if (object->character_context == 0x2b)
+        object->turn_braking += FRAMETIME;
+    if (object->character_context != 0x2a) {
+        if ((object->movement_facing_angle > 0x8000) != (player->movement_facing_angle > 0x8000)) {
+            StartTurn(object);
+        } else if (player->character_context == 0x2a && player->context_timer < 0.5 * TURNTIME) {
+            StartTurn(object);
+        } else if (object->character_context != 0x36 && player->character_context == 0x36 &&
+                   player->context_timer < 0.75 * VehicleLoopTimePc) {
+            object->character_context = player->character_context;
+            object->field_7aa = 1;
+            object->context_duration = VehicleLoopTimePc;
+            object->context_timer = VehicleLoopTimePc;
+        }
+    }
+    if (object->character_context == 0x2a) {
+        heading_right = object->movement_facing_angle > 0x8000;
+        phase = object->context_timer / TURNTIME;
+        target_x = phase * (heading_right ? TrenchLaneOffsetPc : -TrenchLaneOffsetPc) +
+                   (1.0f - phase) * (heading_right ? -TrenchLaneOffsetPc : TrenchLaneOffsetPc);
+        target_x = trenchrun.position.x + target_x;
+    } else if (object->movement_facing_angle > 0x8000) {
+        target_x = trenchrun.position.x + TrenchLaneOffsetPc;
+    } else {
+        target_x = trenchrun.position.x - TrenchLaneOffsetPc;
+    }
+    object->position.x = SeekValF(object->position.x, target_x, TrenchSeekXPc);
+    target_y = VehicleTurnOrLoopOffset(object) + (object->movement_spline_offset.y + trenchrun.position.y);
+    height_difference = target_y - object->position.y;
+    if (height_difference > TrenchMaxHeightMovePc)
+        target_y = TrenchMaxHeightMovePc + object->position.y;
+    object->position.y = SeekValF(object->position.y, target_y, TrenchSeekYPc);
+    object->position.z =
+        SeekValF(object->position.z, object->movement_spline_offset.z + trenchrun.position.z, TrenchSeekZPc);
+    NuVecSub(&object->velocity, &object->position, &object->start_position);
+    NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
+    if ((object->character_data->game_character->flags_090 & 1) != 0) {
+        roll = 0;
+        if (object->character_context != 0x2a && object->character_context != 0x36 && object->character_context != 0x3a)
+            roll = (i32)(object->velocity.z * TrenchRollScalePc);
+        if (player->movement_facing_angle < 0x8000)
+            roll = (i32)(0u - (u32)roll);
+        if (roll < -0x10000)
+            roll = -0x10000;
+        else if (roll > 0x10000)
+            roll = 0x10000;
+        target_roll = roll / 4;
+        if (target_roll < -0x2000)
+            target_roll = -0x2000;
+        else if (target_roll > 0x2000)
+            target_roll = 0x2000;
+        object->movement_lean_angle = SeekRot(object->movement_lean_angle, target_roll, 8.0f);
+    }
+    APIObjectVelocities(object);
+    GameObjectOrigin(object);
+}
+
+/* Native-observed mutable scalar minima; original allocation extents unknown. */
+#pragma data_seg(".data$TrenchBaseHeightPc")
+f32 TrenchBaseHeightPc = -10.5f;
+#pragma data_seg(".data$TrenchVerticalOffsetPc")
+f32 TrenchVerticalOffsetPc = 1.0f;
+#pragma data_seg(".data$TrenchLateralOffsetPc")
+f32 TrenchLateralOffsetPc = 2.0f;
+#pragma data_seg(".data$TrenchSpawnDistancePc")
+f32 TrenchSpawnDistancePc = 20.0f;
+#pragma data_seg(".data$TrenchSpawnHeightPc")
+f32 TrenchSpawnHeightPc = 40.0f;
+#pragma data_seg()
+STATIC_ASSERT(offsetof(TRENCHRUN_PC, objects) == 0);
+STATIC_ASSERT(offsetof(TRENCHRUN_PC, position) == 0xc);
+STATIC_ASSERT(offsetof(TRENCHRUN_PC, midtro_played) == 0x18);
+STATIC_ASSERT(offsetof(TRENCHRUN_PC, spawn_timer) == 0x1c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef8_word) == 0xef8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, tag_object_callback) == 0xea8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, move_override) == 0x10b0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_offset) == 0xe84);
+
+/* Native 0x004e5b70..0x004e5b94, complete 36-byte cdecl callback. */
+static void __cdecl TrenchKilledCallback(GAMEOBJECT *object) {
+    i32 index;
+    for (index = 0; index < 3; ++index) {
+        if (trenchrun.objects[index] == object) {
+            trenchrun.objects[index] = NULL;
+            return;
+        }
+    }
+}
+
+void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
+    GAMEOBJECT *trench_player, *ship;
+    NUVEC spawn, offset;
+    f32 base_height, lower, upper;
+    i32 index, model, left_present, free_play;
+    if (netclient == 0) {
+        trench_player = player;
+        trenchrun.position.x = trench_player->collision_position.x;
+        base_height = TrenchBaseHeightPc;
+        trenchrun.position.y = base_height;
+        if (trench_player->collision_position.x < -500.0) {
+            free_play = FreePlay;
+            trenchrun.position.y = base_height + TrenchSpawnHeightPc;
+            if (free_play == 0 && trenchrun.midtro_played == 0) {
+                for (index = 0; index < 3; ++index) {
+                    if (trenchrun.objects[index] != NULL) {
+                        KillGameObject(trenchrun.objects[index], 4, 0);
+                        trenchrun.objects[index] = NULL;
+                    }
+                }
+                NewCutScene(NULL, world->cutscene_sys, "deathstarbattle_midtro_ingame", 1);
+                trench_player = player;
+                trenchrun.midtro_played = 1;
+            }
+        }
+        left_present = trenchrun.objects[0] != NULL;
+        trenchrun.position.z = trench_player->collision_position.z;
+        lower = left_present ? 62.0f : 60.0f;
+        upper = trenchrun.objects[2] != NULL ? 70.0f : 72.0f;
+        if (lower > trenchrun.position.z)
+            trenchrun.position.z = lower;
+        else if (upper < trenchrun.position.z)
+            trenchrun.position.z = upper;
+        if (aicreature_sets_alive[0] == 0) {
+            trenchrun.spawn_timer -= FRAMETIME;
+            if (trenchrun.spawn_timer <= 0.0f) {
+                trenchrun.spawn_timer = 5.0f;
+                for (index = 0; index < 3; ++index) {
+                    if (index != 0)
+                        trench_player = player;
+                    spawn.x = trench_player->collision_position.x + TrenchSpawnDistancePc;
+                    spawn.y = trench_player->collision_position.y + TrenchSpawnHeightPc;
+                    spawn.z = trench_player->collision_position.z;
+                    offset.x = 0.0f;
+                    offset.y = 0.0f;
+                    offset.z = 0.0f;
+                    if (index == 0)
+                        offset.z = TrenchLateralOffsetPc;
+                    else if (index == 1)
+                        offset.y = TrenchVerticalOffsetPc;
+                    else if (index == 2)
+                        offset.z = -TrenchLateralOffsetPc;
+                    NuVecAdd(&spawn, &spawn, &offset);
+                    if (trenchrun.midtro_played == 0 && index == 1)
+                        model = VehicleBoltId7f196cPc;
+                    else
+                        model = id_TIEFIGHTER;
+                    ship = AddDynamicCreature(model, &spawn, 0xc000, "TrenchBaddie", &player->ai_packet.path_info, NULL,
+                                              0, NULL, NULL, 0, 1);
+                    if (ship != NULL) {
+                        ship->flags_ef8_word |= 4;
+                        ship->tag_object_callback = TrenchKilledCallback;
+                        ship->move_override = TrenchMove;
+                        trenchrun.objects[index] = ship;
+                        ship->movement_spline_offset = offset;
+                    }
+                }
+            }
+        }
+    }
+    if (((u8 *)LevFlag)[4] != 0)
+        return;
+    if (NuSpecialGetVisibilityFn(&LevHSpecial[0])) {
+        PlaySfx((char *)EpisodeVI_ffield, NuSpecialGetDrawPos(&LevHSpecial[0]));
+    } else {
+        PlaySfx((char *)EpisodeVI_ffieldoff, NuSpecialGetDrawPos(&LevHSpecial[0]));
+        ((u8 *)LevFlag)[4] = 1;
+    }
+}

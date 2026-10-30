@@ -2359,6 +2359,7 @@ address,symbol,size,ctype
 0x4e5770,_TrenchMove,946,
 0x004e5b30,_DeathStarBattleDInit,1,void __cdecl(WORLDINFO *)
 0x004e5b40,_DeathStarBattleDReset,43,void __cdecl(WORLDINFO *)
+0x4e5b70,_TrenchKilledCallback,36,static void __cdecl (GAMEOBJECT *)
 0x4e5ba0,_DeathStarBattleDUpdate,762,
 0x004e5ea0,_DeathStarBattleDDraw,1,void __cdecl(WORLDINFO *)
 0x4e5f10,_KilledTrooperCannon,198,
@@ -13989,6 +13990,7 @@ address,symbol,size,ctype
 0x75bc5c,_PCContextName_Hold,5,const char [5]
 0x75bc64,_PCContextName_Deactivated,12,const char [12]
 0x75bc70,_PCContextName_Zap,4,const char [4]
+0x75bc70,??_C@_03BMCBBHME@Zap?$AA@,,const char[4]
 0x75bc74,_PCContextName_TakeHit,8,const char [8]
 0x75bc7c,_PCContextName_Rocket,7,const char [7]
 0x75bc84,_PCContextName_HoverUp,8,const char [8]
@@ -14746,6 +14748,11 @@ address,symbol,size,ctype
 0x75e0a8,__real@4040400000000000,8,const f64
 0x75e0b0,??_C@_08FLIECBAD@bigbang1?$AA@,,const char[9]
 0x75e0bc,_EpisodeVI_ffieldoff,10,const char[10]
+0x75e0c8,??_C@_0N@OOMCJFBM@TrenchBaddie?$AA@,,const char[13]
+0x75e0d8,__real@42900000,,const f32
+0x75e0dc,__real@42780000,,const f32
+0x75e0e0,??_C@_0BO@OAIONFAE@deathstarbattle_midtro_ingame?$AA@,,const char[30]
+0x75e100,__real@c07f400000000000,,const f64
 0x75e108,_TrooperCannonAINamePc,14,const char[14]
 0x75e118,_TrooperCannonBaseFormatPc,8,const char[7]
 0x75e120,_TrooperCannonCharacterFormatPc,20,const char[17]
@@ -14865,6 +14872,7 @@ address,symbol,size,ctype
 0x75e670,_EpisodeVI_force16,8,const char[8]
 0x75e678,_EpisodeVI_force15,8,const char[8]
 0x75e680,_EpisodeVI_ElectricFloor,14,const char[14]
+0x75e690,??_C@_0BD@LBCKFEBL@emperorfight_outro?$AA@,,const char[19]
 0x75e6a4,??_C@_08KICOGDJP@grill_02?$AA@,9,char []
 0x75e6b0,__real@3f530dd8,4,const f32
 0x75e6b4,__real@41395183,4,const f32
@@ -21281,6 +21289,17 @@ address,symbol,size,ctype
 0x8000c8,_vadar_cam_pos,12,NUVEC
 0x8000d4,_vadar_cam_tgt,12,NUVEC
 0x800144,_test_tb,4,i32
+0x800148,_TrenchLaneOffsetPc,,f32
+0x80014c,_TrenchBaseHeightPc,,f32
+0x800150,_TrenchVerticalOffsetPc,,f32
+0x800154,_TrenchLateralOffsetPc,,f32
+0x800158,_TrenchSeekXPc,,f32
+0x80015c,_TrenchSeekYPc,,f32
+0x800160,_TrenchSeekZPc,,f32
+0x800164,_TrenchRollScalePc,,f32
+0x800168,_TrenchSpawnDistancePc,,f32
+0x80016c,_TrenchSpawnHeightPc,,f32
+0x800170,_TrenchMaxHeightMovePc,,f32
 0x8001e0,_BlockadeRunnerDEjectMomPc,12,NUVEC
 0x8001ec,_BlockadeRunnerDEjectVecPc,24,NUVEC[2]
 0x800214,_spotLightB_yrot,8,f32[2]
@@ -21293,6 +21312,10 @@ address,symbol,size,ctype
 0x8002bc,_DeathStarZapWidthBiasPc,,f32
 0x8002c0,_DeathStarZapEndWidthPc,,f32
 0x8002c4,_fire_clip_dist,4,i32
+0x8002c8,_EmperorFloorRadiusPc,,f32
+0x8002cc,_EmperorFloorJitterPc,,f32
+0x8002d0,_EmperorFloorPushPc,,f32
+0x8002d4,_EmperorFloorSafeXMinimumPc,,f32
 0x8002d8,_SarlaccDiscoHeightPc,,f32
 0x8002dc,_SarlaccDiscoSeekPc,,f32
 0x8002e0,_SarlaccDiscoTimePc,,f32
@@ -24236,6 +24259,7 @@ address,symbol,size,ctype
 0x88aaf0,_SarlaccBlowUpTargetCountPc,,i32
 0x88aaf4,_DeathStarZapLaserTypePc,,i32
 0x88aafc,_hspecial_efloor,,NUSPECIALHANDLE *
+0x88ab00,_EmperorFloorRouteOnPc,,i32
 0x88ab04,_eFloor_timer,,f32
 0x88ab0c,_SarlaccTakenOverPc,,i32
 0x88ab10,_SarlaccPowerPc,,i32
