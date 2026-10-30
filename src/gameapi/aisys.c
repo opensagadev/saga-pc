@@ -16528,3 +16528,269 @@ void pathEditorDrawPaths(void) {
         pathEditorDrawPath(aieditor->current_path, 0);
     }
 }
+
+/* PRIVATE PROPOSAL: append to src/gameapi/aisys.c after existing definitions.
+ * No changed registrations; no canonical edits. */
+extern void(__cdecl *GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
+extern void __cdecl pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32);
+/* Four-byte observed mutable cell; Native owning allocation unknown, zero credit.
+ * A distinct storage section preserves all existing owner comparison regions. */
+#pragma section(".bss$AiEditorPreviewCharacterTypePc", read, write)
+__declspec(allocate(".bss$AiEditorPreviewCharacterTypePc")) i32 AiEditorPreviewCharacterTypePc = 0;
+
+typedef struct AI_CREATURE_EDITOR_VIEW_PC {
+    u8 unknown_00[0x28];
+    NUVEC camera_position;
+    u8 unknown_34[0x48 - 0x34];
+    EDAIPATHCHECK_s check;
+    u8 unknown_64[0x371a4 - 0x64];
+    NULISTHDR creatures;
+    AI_EDITOR_CREATURE_SAVE_PC *nearest;
+    AI_EDITOR_CREATURE_SAVE_PC *selected;
+    u8 unknown_371b4[0x3cbe4 - 0x371b4];
+    EDLOCATOR_s *nearest_locator;
+    u8 unknown_3cbe8[0x43824 - 0x3cbe8];
+    f32 preview_width;
+} AI_CREATURE_EDITOR_VIEW_PC;
+STATIC_ASSERT(offsetof(AI_CREATURE_EDITOR_VIEW_PC, camera_position) == 0x28);
+STATIC_ASSERT(offsetof(AI_CREATURE_EDITOR_VIEW_PC, check) == 0x48);
+STATIC_ASSERT(offsetof(AI_CREATURE_EDITOR_VIEW_PC, creatures) == 0x371a4);
+STATIC_ASSERT(offsetof(AI_CREATURE_EDITOR_VIEW_PC, nearest) == 0x371ac);
+STATIC_ASSERT(offsetof(AI_CREATURE_EDITOR_VIEW_PC, selected) == 0x371b0);
+STATIC_ASSERT(offsetof(AI_CREATURE_EDITOR_VIEW_PC, nearest_locator) == 0x3cbe4);
+STATIC_ASSERT(offsetof(AI_CREATURE_EDITOR_VIEW_PC, preview_width) == 0x43824);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, position) == 0x28);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, angle) == 0x34);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, valid_positions) == 0x54);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, set) == 0x5a);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, group_count) == 0x5b);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, across_count) == 0x5c);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, x_spacing) == 0x60);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, z_spacing) == 0x64);
+STATIC_ASSERT(offsetof(AI_EDITOR_CREATURE_SAVE_PC, trigger_area) == 0x80);
+STATIC_ASSERT(offsetof(EDLOCATOR_s, name) == 8);
+STATIC_ASSERT(offsetof(EDLOCATOR_s, position) == 0x18);
+
+typedef struct AI_CREATURE_MODEL_BOUNDS_PC {
+    u8 unknown_00[0x1c4];
+    f32 min_height;
+    f32 height;
+    f32 radius;
+} AI_CREATURE_MODEL_BOUNDS_PC;
+STATIC_ASSERT(offsetof(AI_CREATURE_MODEL_BOUNDS_PC, min_height) == 0x1c4);
+STATIC_ASSERT(offsetof(AI_CREATURE_MODEL_BOUNDS_PC, height) == 0x1c8);
+STATIC_ASSERT(offsetof(AI_CREATURE_MODEL_BOUNDS_PC, radius) == 0x1cc);
+#define CREATURE_EDITOR_PC ((AI_CREATURE_EDITOR_VIEW_PC *)aieditor)
+
+i32 creatureEditor_IsSelectable(AI_EDITOR_CREATURE_SAVE_PC *creature) {
+    if ((AiEditorDisplayOptionsPc & 0x400) && CREATURE_EDITOR_PC->selected != NULL &&
+        CREATURE_EDITOR_PC->selected->set != creature->set)
+        return 0;
+    return 1;
+}
+
+AI_EDITOR_CREATURE_SAVE_PC *__cdecl creatureEditor_GetNearest(i32 use_radius) {
+    AI_EDITOR_CREATURE_SAVE_PC *nearest = NULL;
+    f32 nearest_distance = FLT_MAX;
+    AI_EDITOR_CREATURE_SAVE_PC *creature;
+    if (GlobalCharacterHGobjFn == NULL)
+        return NULL;
+    for (creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetHead(&CREATURE_EDITOR_PC->creatures); creature != NULL;
+         creature =
+             (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetNext(&CREATURE_EDITOR_PC->creatures, &creature->link)) {
+        AI_CREATURE_MODEL_BOUNDS_PC *model;
+        f32 height, min_height, radius, distance;
+        NUVEC delta;
+        if (!creatureEditor_IsSelectable(creature))
+            continue;
+        model = (AI_CREATURE_MODEL_BOUNDS_PC *)GlobalCharacterHGobjFn(creature->character_type);
+        if (model != NULL) {
+            radius = model->radius;
+            min_height = model->min_height;
+            height = model->height;
+        } else {
+            radius = 0.4f;
+            min_height = 0.0f;
+            height = 0.4f;
+        }
+        distance = NuVecXZDistSqr(&CREATURE_EDITOR_PC->camera_position, &creature->position, &delta);
+        if (distance < nearest_distance) {
+            if (use_radius) {
+                f32 lower = creature->position.y + min_height;
+                if (lower > creature->position.y) {
+                    height += lower - creature->position.y;
+                    lower = creature->position.y;
+                }
+                if (distance < radius * radius &&
+                    CREATURE_EDITOR_PC->camera_position.y >= lower - AiEditorPickHeightTolerancePc &&
+                    CREATURE_EDITOR_PC->camera_position.y <= lower + height + AiEditorPickHeightTolerancePc) {
+                    nearest_distance = distance;
+                    nearest = creature;
+                }
+            } else {
+                nearest_distance = distance;
+                nearest = creature;
+            }
+        }
+    }
+    return nearest;
+}
+
+typedef struct AI_CREATURE_ANGLE_WORD_PC {
+    u8 unknown_00[0x34];
+    i32 angle;
+} AI_CREATURE_ANGLE_WORD_PC;
+STATIC_ASSERT(offsetof(AI_CREATURE_ANGLE_WORD_PC, angle) == 0x34);
+
+i32 creatureEditor_CalculatePos(AI_EDITOR_CREATURE_SAVE_PC *creature, i32 index, NUVEC *position, i32 check_path) {
+    i32 column;
+    NUVEC offset;
+    if (index == 0) {
+        *position = creature->position;
+        return 1;
+    }
+    column = index % creature->across_count;
+    offset.x = ((column + 1) / 2) * creature->x_spacing;
+    if (column & 1)
+        offset.x = -offset.x;
+    offset.y = 0.0f;
+    offset.z = -creature->z_spacing * (index / creature->across_count);
+    NuVecRotateY(&offset, &offset, ((AI_CREATURE_ANGLE_WORD_PC *)creature)->angle);
+    NuVecAdd(position, &offset, &creature->position);
+    if (check_path) {
+        EDAIPATHCHECK_s result;
+        pathEditor_OnPathCheck(position, &result, creature->check.path, 0.0f);
+        return result.on_path;
+    }
+    return 1;
+}
+
+void creatureEditor_RenderAllCreatures(void) {
+    AI_EDITOR_CREATURE_SAVE_PC *creature;
+    if (GlobalCharacterRenderFn == NULL)
+        return;
+    for (creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetHead(&CREATURE_EDITOR_PC->creatures); creature != NULL;
+         creature =
+             (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetNext(&CREATURE_EDITOR_PC->creatures, &creature->link)) {
+        i32 group;
+        for (group = 0; group < creature->group_count; ++group) {
+            NURND_VERTEX3D_PC vertices[2];
+            NUVEC position;
+            vertices[0].colour = -1;
+            vertices[1].colour = -1;
+            if (!(creature->valid_positions & ((u64)1 << group)) || !creatureEditor_IsSelectable(creature))
+                continue;
+            creatureEditor_CalculatePos(creature, group, &position, 0);
+            GlobalCharacterRenderFn(&position, creature->angle, creature->character_type, 0, creature);
+            if (creature->locator != NULL) {
+                vertices[0].position = creature->position;
+                vertices[1].position = ((EDLOCATOR_s *)creature->locator)->position;
+                AiRndrLine3d(vertices, NULL, NULL);
+            }
+            if (creature->respawn_locator != NULL) {
+                vertices[0].colour = 0x8000;
+                vertices[1].colour = 0x8000;
+                vertices[0].position = creature->position;
+                vertices[1].position = ((EDLOCATOR_s *)creature->respawn_locator)->position;
+                vertices[0].position.y += (double)0.1f;
+                vertices[1].position.y += (double)0.1f;
+                AiRndrLine3d(vertices, NULL, NULL);
+            }
+        }
+    }
+}
+
+void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
+    char set_name[16];
+    NUVEC displacement;
+    AI_EDITOR_CREATURE_SAVE_PC *display, *creature;
+    i32 text_x;
+    if (GlobalCharacterRenderFn == NULL)
+        return;
+    text_x = (x + 10) * 16;
+    NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, "Creature Editor  (%d placed)",
+                  NuLinkedListCheck(&CREATURE_EDITOR_PC->creatures));
+    NuQFntSetColour(system_qfont, 0x80000000);
+    NuQFntSetScale(system_qfont, xscale, yscale);
+    display = CREATURE_EDITOR_PC->selected;
+    if (display == NULL)
+        display = CREATURE_EDITOR_PC->nearest;
+    if (display != NULL) {
+        f32 distance = NuVecXZDist(&display->position, &CREATURE_EDITOR_PC->camera_position, &displacement);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 120, 16, "\"%s\", xzrng=%.2f", display->name, distance);
+        if (display->set)
+            sprintf(set_name, "Set=%d", display->set);
+        else
+            sprintf(set_name, "Set=NONE");
+        if (strlen(display->script_name))
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, "Script = \"%s\", %s", display->script_name, set_name);
+        else
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, "Script = NONE, %s", set_name);
+        if (display->trigger_area != NULL)
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "Area = \"%s\"",
+                          ((EDLOCATOR_s *)display->trigger_area)->name);
+        if (display->locator != NULL)
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "Locator = \"%s\"",
+                          ((EDLOCATOR_s *)display->locator)->name);
+    }
+    NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "SQR - Options");
+    if (CREATURE_EDITOR_PC->nearest != NULL) {
+        if (CREATURE_EDITOR_PC->selected == CREATURE_EDITOR_PC->nearest) {
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, "X - Move selected");
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, "TRI - Delete selected");
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 960, 16, "LLEFT/LRight - Rotate");
+        } else {
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, "X - Select creature");
+        }
+    } else {
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, "X - Create creature");
+        if (CREATURE_EDITOR_PC->selected != NULL)
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, "TRI - Deselect selected");
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 960, 16, "LLEFT/LRight - Rotate");
+    }
+    if (CREATURE_EDITOR_PC->selected != NULL && CREATURE_EDITOR_PC->nearest_locator != NULL)
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, "O - Set locator.");
+    for (creature = (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetHead(&CREATURE_EDITOR_PC->creatures); creature != NULL;
+         creature =
+             (AI_EDITOR_CREATURE_SAVE_PC *)NuLinkedListGetNext(&CREATURE_EDITOR_PC->creatures, &creature->link)) {
+        i32 group;
+        i32 colour = creature == CREATURE_EDITOR_PC->selected
+                         ? (creature == CREATURE_EDITOR_PC->nearest ? 0xff0000ff : 0x800000ff)
+                         : (creature == CREATURE_EDITOR_PC->nearest ? -1 : 0);
+        for (group = 0; group < creature->group_count; ++group, colour = 0) {
+            NUVEC position;
+            NURND_VERTEX3D_PC line[2];
+            if (!(creature->valid_positions & ((u64)1 << group)) || !creatureEditor_IsSelectable(creature))
+                continue;
+            creatureEditor_CalculatePos(creature, group, &position, 0);
+            GlobalCharacterRenderFn(&position, creature->angle, creature->character_type, colour, creature);
+            if (creature->locator != NULL) {
+                line[0].position = creature->position;
+                line[1].position = ((EDLOCATOR_s *)creature->locator)->position;
+                line[0].colour = colour;
+                line[1].colour = colour;
+                AiRndrLine3d(line, NULL, NULL);
+            }
+            if (creature->respawn_locator != NULL) {
+                line[0].position = creature->position;
+                line[1].position = ((EDLOCATOR_s *)creature->respawn_locator)->position;
+                line[0].position.y += (double)0.1f;
+                line[1].position.y += (double)0.1f;
+                colour += 0x8000;
+                line[0].colour = colour;
+                line[1].colour = colour;
+                AiRndrLine3d(line, NULL, NULL);
+            }
+        }
+    }
+    if (CREATURE_EDITOR_PC->nearest == NULL && CREATURE_EDITOR_PC->check.on_path &&
+        CREATURE_EDITOR_PC->preview_width < 0.5f && AiEditorPreviewCharacterTypePc >= 0) {
+        GlobalCharacterRenderFn(&CREATURE_EDITOR_PC->camera_position, (u16)AiEditorLocatorRotationPc,
+                                AiEditorPreviewCharacterTypePc, 0, NULL);
+    }
+    pathEditorDrawPaths();
+    areaEditorDrawAreas();
+    locatorEditorDrawLocators();
+    antinodeEditorDrawAntinodes();
+}
+#undef CREATURE_EDITOR_PC

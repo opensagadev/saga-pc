@@ -300,3 +300,61 @@ void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mod
         NuStrCpy(subtitle, Text_UnknownText);
     }
 }
+typedef struct cut_average_rigid_system_pc_s {
+    void *rigids;
+    u16 count;
+} CUT_AVERAGE_RIGID_SYSTEM_PC;
+STATIC_ASSERT(offsetof(CUT_AVERAGE_RIGID_SYSTEM_PC, count) == 4);
+typedef struct cut_average_scene_pc_s {
+    u8 unknown_00[0x14];
+    CUT_AVERAGE_RIGID_SYSTEM_PC *rigid_system;
+} CUT_AVERAGE_SCENE_PC;
+STATIC_ASSERT(offsetof(CUT_AVERAGE_SCENE_PC, rigid_system) == 0x14);
+typedef struct cut_average_rigid_pc_s {
+    NUSPECIALHANDLE special;
+    u8 unknown_0c[4];
+} CUT_AVERAGE_RIGID_PC;
+STATIC_ASSERT(sizeof(CUT_AVERAGE_RIGID_PC) == 0x10);
+typedef struct cut_average_rigid_instance_pc_s {
+    CUT_AVERAGE_RIGID_PC *rigids;
+} CUT_AVERAGE_RIGID_INSTANCE_PC;
+typedef struct cut_average_instance_pc_s {
+    u8 unknown_00[0x58];
+    CUT_AVERAGE_SCENE_PC *scene;
+    u8 unknown_5c[4];
+    NUVEC center;
+    u8 unknown_6c[0x34];
+    CUT_AVERAGE_RIGID_INSTANCE_PC *rigid_instance;
+} CUT_AVERAGE_INSTANCE_PC;
+STATIC_ASSERT(offsetof(CUT_AVERAGE_INSTANCE_PC, scene) == 0x58);
+STATIC_ASSERT(offsetof(CUT_AVERAGE_INSTANCE_PC, center) == 0x60);
+STATIC_ASSERT(offsetof(CUT_AVERAGE_INSTANCE_PC, rigid_instance) == 0xa0);
+
+void __cdecl instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX *matrix, NUVEC *out) {
+    CUT_AVERAGE_INSTANCE_PC *instance = (CUT_AVERAGE_INSTANCE_PC *)owner;
+    f32 count = 0.0f;
+    i32 i;
+    out->x = 0.0f;
+    out->y = 0.0f;
+    out->z = 0.0f;
+    if (instance == NULL || instance->scene == NULL || instance->scene->rigid_system == NULL ||
+        instance->rigid_instance->rigids == NULL)
+        return;
+    for (i = 0; i < instance->scene->rigid_system->count; ++i) {
+        if (NuSpecialExistsFn(&instance->rigid_instance->rigids[i].special) != 0) {
+            NUVEC *position = NuSpecialGetPos(&instance->rigid_instance->rigids[i].special);
+            out->x += position->x;
+            out->y += position->y;
+            out->z += position->z;
+            count += 1.0;
+        }
+    }
+    if (count > 0.0f) {
+        f32 inverse = 1.0f / count;
+        out->x *= inverse;
+        out->y *= inverse;
+        out->z *= inverse;
+    }
+    if (matrix != NULL)
+        NuVecMtxTransform(&instance->center, &instance->center, matrix);
+}

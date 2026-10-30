@@ -1106,3 +1106,237 @@ extern "C" void __cdecl AddColourPick(eduimenu_s *parent, eduiitem_s *item, f32 
     NuSPrintf(text, "R:%1.2f G:%1.2f B:%1.2f", *target_red, *target_green, *target_blue);
     eduiItemSetText(cp_info, text);
 }
+
+STATIC_ASSERT(offsetof(edui_colour_pick_s, cursor_x) == 0x4c);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, cursor_y) == 0x50);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, hue) == 0x54);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, saturation) == 0x58);
+STATIC_ASSERT(offsetof(edui_colour_pick_s, value) == 0x5c);
+
+typedef union edui_gradient_colour_pc_u {
+    u32 word;
+    u8 channel[4];
+} EDUI_GRADIENT_COLOUR_PC;
+STATIC_ASSERT(sizeof(EDUI_GRADIENT_COLOUR_PC) == 4);
+
+static void EduiDrawGradientGridPc(i32 x, i32 y, i32 width, i32 height, f32 start, f32 end, u32 top_left, u32 top_right,
+                                   u32 bottom_left, u32 bottom_right, i32 steps) {
+    width <<= 4;
+    y <<= 3;
+    height <<= 3;
+    f32 scaled_width = (f32)width;
+    i32 left = (x << 4) + (i32)(scaled_width * start);
+    i32 right = (x << 4) + (i32)(scaled_width * end);
+    EDUI_GRADIENT_COLOUR_PC first, second, last_first, last_second;
+    first.word = top_left;
+    second.word = top_right;
+    last_first.word = bottom_left;
+    last_second.word = bottom_right;
+    EDUI_GRADIENT_COLOUR_PC colours[4];
+    colours[0] = first;
+    colours[1] = second;
+    for (i32 strip = 0; strip < steps; ++strip) {
+        colours[2].channel[0] = first.channel[0] + (last_first.channel[0] - first.channel[0]) * strip / steps;
+        colours[2].channel[1] = first.channel[1] + (last_first.channel[1] - first.channel[1]) * strip / steps;
+        colours[2].channel[2] = first.channel[2] + (last_first.channel[2] - first.channel[2]) * strip / steps;
+        colours[2].channel[3] = first.channel[3] + (last_first.channel[3] - first.channel[3]) * strip / steps;
+        colours[3].channel[0] = second.channel[0] + (last_second.channel[0] - second.channel[0]) * strip / steps;
+        colours[3].channel[1] = second.channel[1] + (last_second.channel[1] - second.channel[1]) * strip / steps;
+        colours[3].channel[2] = second.channel[2] + (last_second.channel[2] - second.channel[2]) * strip / steps;
+        colours[3].channel[3] = second.channel[3] + (last_second.channel[3] - second.channel[3]) * strip / steps;
+        if (edui_donotdraw == 0)
+            NuRndrGradRect2di(left, y + strip * height / steps, right - left, height / steps, &colours[0].word,
+                              (NUMTL *)uimtls[ui_bgmtl]);
+        colours[0] = colours[2];
+        colours[1] = colours[3];
+    }
+}
+
+extern "C" i32 __cdecl eduicbRenderColourPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                                              i32 unused_selected) {
+    edui_colour_pick_s *picker = (edui_colour_pick_s *)item;
+    item->x = x;
+    item->y = y;
+    i32 main_height = width * 3 / 4;
+    EduiDrawGradientGridPc(x, y, width, main_height, 0.0f, 1.0f / 6.0f, 0x80000000, 0x80000000, 0x800000ff, 0x8000ffff,
+                           8);
+    EduiDrawGradientGridPc(x, y, width, main_height, 1.0f / 6.0f, 2.0f / 6.0f, 0x80000000, 0x80000000, 0x8000ffff,
+                           0x8000ff00, 8);
+    EduiDrawGradientGridPc(x, y, width, main_height, 2.0f / 6.0f, 0.5f, 0x80000000, 0x80000000, 0x8000ff00, 0x80ffff00,
+                           8);
+    EduiDrawGradientGridPc(x, y, width, main_height, 0.5f, 4.0f / 6.0f, 0x80000000, 0x80000000, 0x80ffff00, 0x80ff0000,
+                           8);
+    EduiDrawGradientGridPc(x, y, width, main_height, 4.0f / 6.0f, 5.0f / 6.0f, 0x80000000, 0x80000000, 0x80ff0000,
+                           0x80ff00ff, 8);
+    EduiDrawGradientGridPc(x, y, width, main_height, 5.0f / 6.0f, 1.0f, 0x80000000, 0x80000000, 0x80ff00ff, 0x800000ff,
+                           8);
+    if (edui_donotdraw == 0) {
+        f32 line_height = (f32)main_height;
+        f32 line_y = (f32)y;
+        NuRndrLine2di(x << 4, (i32)(line_y + (i32)line_height * picker->cursor_y) << 3, ((x + width) << 4) - 16,
+                      (i32)(line_y + line_height * picker->cursor_y) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
+        if (edui_donotdraw == 0) {
+            i32 hue_x = (i32)(x + width * picker->cursor_x) << 4;
+            NuRndrLine2di(hue_x, y << 3, hue_x, ((y + main_height) << 3) - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+        }
+    }
+    i32 bar_height = width / 8;
+    y += main_height;
+    f32 red, green, blue;
+    eduiHSVToRGB(picker->hue, 1.0f, picker->value, red, green, blue);
+    u32 full = (u32)(red * 255.0) - (((((u32)(blue * -255.0) + 0x8000) << 8) + (u32)(green * -255.0)) << 8);
+    eduiHSVToRGB(picker->hue, 0.0f, picker->value, red, green, blue);
+    u32 grey = (u32)(red * 255.0) - (((((u32)(blue * -255.0) + 0x8000) << 8) + (u32)(green * -255.0)) << 8);
+    EduiDrawGradientSpanPc(x, y, width, bar_height, grey, full, 0.0f, 1.0f);
+    if (edui_donotdraw == 0) {
+        i32 middle = (y * 2 + (bar_height & ~1)) << 2;
+        f32 span = (f32)(width - 2);
+        i32 marker = (i32)((f32)(x + 1) + picker->saturation * span) << 4;
+        NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+        if (edui_donotdraw == 0) {
+            marker = (i32)((f32)x + picker->saturation * span) << 4;
+            NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+            if (edui_donotdraw == 0) {
+                marker = (i32)((f32)(x - 1) + picker->saturation * span) << 4;
+                NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+                if (edui_donotdraw == 0) {
+                    marker = (i32)((f32)(x + 1) + picker->saturation * span) << 4;
+                    NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000, (NUMTL *)uimtls[0]);
+                    if (edui_donotdraw == 0) {
+                        marker = (i32)((f32)x + picker->saturation * span) << 4;
+                        NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000,
+                                      (NUMTL *)uimtls[0]);
+                        if (edui_donotdraw == 0) {
+                            marker = (i32)((f32)(x - 1) + picker->saturation * span) << 4;
+                            NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000,
+                                          (NUMTL *)uimtls[0]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    eduiHSVToRGB(picker->hue, picker->saturation, picker->value, red, green, blue);
+    u32 selected = (u32)(red * 255.0) - (((((u32)(blue * -255.0) + 0x8000) << 8) + (u32)(green * -255.0)) << 8);
+    EduiDrawGradientSpanPc(x, y + bar_height, width, bar_height, selected, selected, 0.0f, 1.0f);
+    return width;
+}
+
+typedef struct edui_colour_pick_flags_pc_s {
+    eduiitem_s base;
+    i32(__cdecl *interact)(edui_interact_s *);
+    f32 cursor_x, cursor_y, hue, saturation, value, red, green, blue;
+    union {
+        u32 flags;
+        struct {
+            u32 dragging_colour : 1;
+            u32 dragging_saturation : 1;
+            u32 confirm : 1;
+            u32 unknown_flags : 29;
+        };
+    };
+    void(__cdecl *changed)(eduimenu_s *, eduiitem_s *, u32);
+} EDUI_COLOUR_PICK_FLAGS_PC;
+STATIC_ASSERT(sizeof(EDUI_COLOUR_PICK_FLAGS_PC) == 0x74);
+STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, cursor_x) == 0x4c);
+STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, saturation) == 0x58);
+STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, flags) == 0x6c);
+STATIC_ASSERT(offsetof(EDUI_COLOUR_PICK_FLAGS_PC, changed) == 0x70);
+
+extern "C" i32 __cdecl eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    EDUI_COLOUR_PICK_FLAGS_PC *pick = (EDUI_COLOUR_PICK_FLAGS_PC *)item;
+    if (!edui_cursor_buttons) {
+        pick->dragging_colour = 0;
+        pick->dragging_saturation = 0;
+    }
+    i32 dx = pad->analog_left_x - 128;
+    if (dx > 0) {
+        if (dx < 32)
+            dx = 0;
+        else
+            dx = (dx - 32) * 255 / 223;
+    } else {
+        if (dx > -32)
+            dx = 0;
+        else
+            dx = (dx + 32) * 255 / 223;
+    }
+    i32 dy = pad->analog_left_y - 128;
+    if (dy > 0) {
+        if (dy < 32)
+            dy = 0;
+        else
+            dy = (dy - 32) * 255 / 223;
+    } else {
+        if (dy > -32)
+            dy = 0;
+        else
+            dy = (dy + 32) * 255 / 223;
+    }
+    pick->cursor_x += dx * (f64)0.001f;
+    pick->cursor_y += dy * (f64)0.001f;
+    pick->cursor_x = MIN(1.0f, MAX(0.0f, pick->cursor_x));
+    pick->cursor_y = MIN(1.0f, MAX(0.0f, pick->cursor_y));
+    if (pad->analog_l2) {
+        pick->saturation = (f32)MAX(0.0f, pick->saturation - (u32)pad->analog_l2 * delta_time * (f64)0.005f);
+        return 1;
+    }
+    if (pad->analog_r2) {
+        pick->saturation = (f32)MIN(1.0f, pick->saturation + (u32)pad->analog_r2 * delta_time * (f64)0.005f);
+        return 1;
+    }
+    pick->hue = (f32)(pick->cursor_x * 360.0);
+    pick->value = pick->cursor_y;
+    eduiHSVToRGB(pick->hue, pick->saturation, pick->value, pick->red, pick->green, pick->blue);
+    if (((pad->digital_buttons_pressed & 0x40) || pick->confirm) && pick->changed)
+        pick->changed(menu, item, pad->digital_buttons);
+    return 0;
+}
+
+STATIC_ASSERT(offsetof(edui_interact_s, x) == 0);
+STATIC_ASSERT(offsetof(edui_interact_s, y) == 4);
+STATIC_ASSERT(offsetof(edui_interact_s, width) == 8);
+STATIC_ASSERT(offsetof(edui_interact_s, height) == 0xc);
+STATIC_ASSERT(offsetof(edui_interact_s, item) == 0x14);
+
+static i32 EduiColourPickWithinHuePc(edui_interact_s *interact) {
+    return edui_cursor_x >= interact->x && edui_cursor_y >= interact->y &&
+           edui_cursor_x < interact->x + interact->width && edui_cursor_y < interact->y + interact->height * 0.75;
+}
+
+static i32 EduiColourPickWithinSaturationPc(edui_interact_s *interact) {
+    return edui_cursor_x >= interact->x && edui_cursor_y >= interact->y + interact->height * 0.75 &&
+           edui_cursor_x < interact->x + interact->width &&
+           edui_cursor_y < interact->y + interact->height * 0.75 + interact->height * 0.125;
+}
+
+static i32 EduiColourPickWithinConfirmPc(edui_interact_s *interact) {
+    return edui_cursor_x >= interact->x &&
+           edui_cursor_y >= interact->y + interact->height * 0.75 + interact->height * 0.125 &&
+           edui_cursor_x < interact->x + interact->width && edui_cursor_y < interact->y + interact->height;
+}
+
+extern "C" i32 __cdecl eduicbInteractColourPick(edui_interact_s *interact) {
+    EDUI_COLOUR_PICK_FLAGS_PC *pick = (EDUI_COLOUR_PICK_FLAGS_PC *)interact->item;
+    if ((EduiColourPickWithinHuePc(interact) || pick->dragging_colour) && !pick->dragging_saturation) {
+        pick->cursor_x = (edui_cursor_x - interact->x) / interact->width;
+        pick->cursor_y = (f32)((edui_cursor_y - interact->y) / (interact->height * 0.75));
+        pick->dragging_colour = (edui_cursor_buttons & 0x40) != 0;
+    }
+    if ((EduiColourPickWithinSaturationPc(interact) || pick->dragging_saturation) && !pick->dragging_colour) {
+        pick->saturation = (edui_cursor_x - interact->x) / interact->width;
+        pick->dragging_saturation = (edui_cursor_buttons & 0x40) != 0;
+    }
+    pick->cursor_x = MIN(1.0f, MAX(0.0f, pick->cursor_x));
+    pick->cursor_y = MIN(1.0f, MAX(0.0f, pick->cursor_y));
+    pick->saturation = MIN(1.0f, MAX(0.0f, pick->saturation));
+    pick->hue = (f32)(pick->cursor_x * 360.0);
+    pick->value = pick->cursor_y;
+    eduiHSVToRGB(pick->hue, pick->saturation, pick->value, pick->red, pick->green, pick->blue);
+    if (EduiColourPickWithinConfirmPc(interact) && (edui_cursor_buttons_db & 0x40)) {
+        pick->dragging_colour = 0;
+        pick->dragging_saturation = 0;
+        pick->confirm = 1;
+    }
+    return pick->dragging_colour || pick->dragging_saturation;
+}

@@ -3340,6 +3340,7 @@ address,symbol,size,ctype
 0x524190,_pathEditorDrawPaths,273,
 0x524320,_pathEditor_UpdateNodesOnPlatforms,142,
 0x5243b0,_TestPointPathCheck,516,
+0x524900,_pathEditor_OnPathCheck,506,"void __cdecl (NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32)"
 0x524cb0,?pathEditorCalcRouteIterator@@YAXPAUAIPATH_PC@@PAMPAEHHMH@Z,306,
 0x524df0,?pathEditorCalculateDistanceTable@@YAPAPAMPAUAIPATH_PC@@HPATvariptr_u@@1@Z,306,
 0x524f30,?pathEditorPopulateRouteMatrix@@YAXPAUAIPATH_PC@@HPAPAMPAPAE@Z,325,
@@ -6693,6 +6694,7 @@ address,symbol,size,ctype
 0x618310,?EduiPrintAlignedTextPc@@YAXPAXHHHPADZZ,197,"void(void *, i32, i32, i32, char *, ...)"
 0x00618420,?EduiPrintClippedTextPc@@YAXPAXHHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
 0x00618920,?EduiDrawGradientSpanPc@@YAXHHHHIIMM@Z,148,"ordinary private C++ colour-span renderer; native colours ECX/EAX and six stack words"
+0x6189c0,?EduiDrawGradientGridPc@@YAXHHHHMMIIIIH@Z,615,ordinary private source helper; full native CFG extent
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
 0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item)"
@@ -6717,6 +6719,9 @@ address,symbol,size,ctype
 0x0061ad30,_eduiItemColourPickSetHSV,40,"void __cdecl(edui_colour_pick_s *, f32, f32, f32)"
 0x61ad60,_eduiItemColourPickSetRGB,69,
 0x61adb0,_eduicbProcessColourPick,686,
+0x61b120,?EduiColourPickWithinHuePc@@YAHPAUedui_interact_s@@@Z,85,ordinary private source helper; full native CFG extent
+0x61b180,?EduiColourPickWithinSaturationPc@@YAHPAUedui_interact_s@@@Z,111,ordinary private source helper; full native CFG extent
+0x61b1f0,?EduiColourPickWithinConfirmPc@@YAHPAUedui_interact_s@@@Z,99,ordinary private source helper; full native CFG extent
 0x61b260,_eduicbInteractColourPick,515,
 0x61b470,_eduicbRenderColourPick,1696,
 0x0061bb10,_eduicbRenderGreyPick,534,"i32 __cdecl(eduimenu_s *, eduiitem_s *, i32, i32, i32, i32)"
@@ -15378,6 +15383,22 @@ address,symbol,size,ctype
 0x760290,??_C@_0BE@KBOCPIMK@Select?5Trigger?5Area?$AA@,,char []
 0x7602a4,??_C@_0O@KBICCNAD@Creature?5Name?$AA@,,char []
 0x7602b4,??_C@_0BA@GNAEAMBE@Rename?5Creature?$AA@,,char []
+0x7602c4,??_C@_0BB@PPFMCLDK@O?5?9?5Set?5locator?4?$AA@,,const char[]
+0x7602d8,??_C@_0BI@JGMKHJAO@TRI?5?9?5Deselect?5selected?$AA@,,const char[]
+0x7602f0,??_C@_0BE@KLBBGDAB@X?5?9?5Create?5creature?$AA@,,const char[]
+0x760304,??_C@_0BE@OLECEHGE@X?5?9?5Select?5creature?$AA@,,const char[]
+0x760318,??_C@_0BG@NALLNKJK@LLEFT?1LRight?5?9?5Rotate?$AA@,,const char[]
+0x760330,??_C@_0BG@BPFJFFNK@TRI?5?9?5Delete?5selected?$AA@,,const char[]
+0x760348,??_C@_0BC@OJKJGGHA@X?5?9?5Move?5selected?$AA@,,const char[]
+0x76035c,??_C@_0O@PCOGLGMG@SQR?5?9?5Options?$AA@,,const char[]
+0x76036c,??_C@_0P@CHGBAGMF@Locator?5?$DN?5?$CC?$CFs?$CC?$AA@,,const char[]
+0x76037c,??_C@_0M@BPPCGDFN@Area?5?$DN?5?$CC?$CFs?$CC?$AA@,,const char[]
+0x760388,??_C@_0BC@LNNCCMJK@Script?5?$DN?5NONE?0?5?$CFs?$AA@,,const char[]
+0x76039c,??_C@_0BC@JKOLBJCJ@Script?5?$DN?5?$CC?$CFs?$CC?0?5?$CFs?$AA@,,const char[]
+0x7603b0,??_C@_08LJFPGNLP@Set?$DNNONE?$AA@,,const char[]
+0x7603bc,??_C@_06BJJDABJJ@Set?$DN?$CFd?$AA@,,const char[]
+0x7603c4,??_C@_0BB@LOPIDDMB@?$CC?$CFs?$CC?0?5xzrng?$DN?$CF?42f?$AA@,,const char[]
+0x7603d8,??_C@_0BN@PBFNBOPJ@Creature?5Editor?5?5?$CI?$CFd?5placed?$CJ?$AA@,,const char[]
 0x007603f8,??_C@_07DKPOBDJL@OnMacro?$AA@,8,const char[8]
 0x760400,??_C@_02FDNJECIE@?$CB?$DN?$AA@,,
 0x760404,??_C@_02EEKDKGMJ@?$DO?$DN?$AA@,,
@@ -16380,6 +16401,7 @@ address,symbol,size,ctype
 0x7640e0,_NuExp10SourcePathPc,50,const char[50]
 0x764118,__real@40c3880000000000,8,const f64
 0x764128,__real@40dfffc000000000,8,const f64
+0x764130,__real@c06fe00000000000,,const f64
 0x00764170,__real@401921fb60000000,8,const f64
 0x764178,??_C@_04EMPCAOBB@xref?$AA@,5,const char[5]
 0x764180,??_C@_04DJIAAGFC@xdef?$AA@,5,const char[5]
@@ -16597,12 +16619,15 @@ address,symbol,size,ctype
 0x0076ad98,__real@3fc4000000000000,8,const f64
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
 0x0076ada8,??_C@_06KLGABMJO@?$CF1?403f?$AA@,7,const char[7]
+0x76adb8,__real@3f555555,,const f32
+0x76adbc,__real@3f2aaaab,,const f32
 0x76adc0,__real@3e2aaaab,4,const f32
 0x76ae48,__real@c024000000000000,8,const f64
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
 0x0076ae80,??_C@_04EIOKKJMF@?3?5?$CFs?$AA@,,"const char[] minimum5B view; Native allocation extent unknown"
 0x0076ae88,__real@407c000000000000,8,const f64
 0x76ae90,__real@43600000,4,f32
+0x76ae98,__real@c050000000000000,,const double
 0x76aea0,__real@c030000000000000,8,const f64
 0x0076aea8,??_C@_0BN@OOILPCCN@?5?$CF?42d?1?$CF?42d?1?$CFd?5?$CF?42d?3?$CF?42d?3?$CF?42d?$AA@,,const char[29]
 0x0076af04,_FileSelParentNamePc,,const char[3]
@@ -24535,6 +24560,7 @@ address,symbol,size,ctype
 0x921f20,_AiEditorSavedAreaNamePc,,char[16]
 0x921f30,_AiEditorSavedRouteNamePc,,char[16]
 0x00921f50,_AiEditorLocatorRotationPc,,i32
+0x921f54,_AiEditorPreviewCharacterTypePc,,i32
 0x921f70,_AiEditorDisplayOptionsPc,,u32
 0x921f84,_AiEditorPathScratchCursorPc,,void *
 0x921f88,_AiEditorPathScratchEndPc,,void *
