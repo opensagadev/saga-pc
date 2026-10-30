@@ -212,3 +212,33 @@ void __cdecl InitMission(MISSIONSYS_PC *system, i32 index) {
     ResetTimer(&system->timer, 0.0f);
     Cheats_TurnOff(0);
 }
+
+STATIC_ASSERT(sizeof(MISSIONDATA_PC) == 0x18);
+STATIC_ASSERT(offsetof(MISSIONDATA_PC, time) == 0x10);
+STATIC_ASSERT(offsetof(MISSIONDATA_PC, index) == 0x12);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, missions) == 0);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
+STATIC_ASSERT(offsetof(MISSIONSYS_PC, state) == 0x1d);
+STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
+
+void __cdecl MenuDrawEndMission(MENU *menu) {
+    char text[32];
+    i32 index;
+    f32 remaining;
+    (void)menu;
+    if (MenuStopDraw != 0)
+        return;
+    if (MissionSys->state == 2) {
+        if ((f64)NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
+            index = (i8)MissionSys->active_mission->index;
+            remaining = (f32)(i32)MissionSys->missions[index].time - BonusTimer.time_elapsed;
+            if (remaining < 0.0f)
+                remaining = 0.0f;
+            Text_MakeTime(remaining, 0, 1, 1, text);
+            Text3D(text, 0.0f, STATSPOSY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+        }
+    } else {
+        SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, menu_flash == 0 ? 255 : 191,
+                    menu_flash == 0 ? 63 : 31, 0, 1.7f, 1);
+    }
+}

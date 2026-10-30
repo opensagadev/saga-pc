@@ -1569,6 +1569,7 @@ address,symbol,size,ctype
 0x496eb0,?MissionIconPositionsPc@@YAXPAUMISSION_SYSTEM_READER_PC@@H@Z,214,
 0x496f90,_MenuInitMissions,97,void __cdecl(MENU *)
 0x497000,_MenuDrawMissions,1340,void __cdecl(MENU *)
+0x4975a0,_MenuDrawEndMission,378,void __cdecl(MENU *)
 0x00497720,_InitMission,49,"void __cdecl(MISSIONSYS_PC *, i32)"
 0x497760,_EndMission,144,"void __cdecl(MISSIONSYS_PC *, i32, i32)"
 0x4977f0,_CheckMissionEnd,336,void __cdecl(MISSIONSYS_PC*)
@@ -2177,6 +2178,7 @@ address,symbol,size,ctype
 0x4d9ed0,_ResetPodStuff,181,void __cdecl(void)
 0x4d9f90,_PodRace_IncreaseLap,8,void __cdecl(void)
 0x4d9fa0,_PodRaceUpdate,1038,"void __cdecl(WORLDINFO *, f32)"
+0x4da3b0,_PodRacePanel,781,void __cdecl(WORLDINFO *)
 0x4da6c0,_UpdatePodRaceLapDisplay,500,void __cdecl(f32)
 0x4da8c0,_UpdatePacemakerDisplay,399,void __cdecl(WORLDINFO *)
 0x4daa70,_PodRace_InStartCountdown,55,i32 __cdecl(WORLDINFO *)
@@ -3340,6 +3342,7 @@ address,symbol,size,ctype
 0x524190,_pathEditorDrawPaths,273,
 0x524320,_pathEditor_UpdateNodesOnPlatforms,142,
 0x5243b0,_TestPointPathCheck,516,
+0x5245c0,_TestPointWithinPathCheckPc,582,"static compiler-private i32 (NUVEC *, EDAIPATHNODE_s *, EDAIPATHNODE_s *, f32 *, f32 *, i32 *, f32)"
 0x524900,_pathEditor_OnPathCheck,506,"void __cdecl (NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32)"
 0x524cb0,?pathEditorCalcRouteIterator@@YAXPAUAIPATH_PC@@PAMPAEHHMH@Z,306,
 0x524df0,?pathEditorCalculateDistanceTable@@YAPAPAMPAUAIPATH_PC@@HPATvariptr_u@@1@Z,306,
@@ -6725,7 +6728,7 @@ address,symbol,size,ctype
 0x61b260,_eduicbInteractColourPick,515,
 0x61b470,_eduicbRenderColourPick,1696,
 0x0061bb10,_eduicbRenderGreyPick,534,"i32 __cdecl(eduimenu_s *, eduiitem_s *, i32, i32, i32, i32)"
-0x61c1a0,_eduicbRenderTexturePick,827,
+0x61c030,_eduicbRenderTexturePick,1195,
 0x61cd60,_eduicbRenderGraph,2730,
 0x61d810,_eduiItemSliderSetValEx,61,
 0x61d850,_eduiItemSliderSetVal,47,
@@ -6770,6 +6773,7 @@ address,symbol,size,ctype
 0x620fa0,_edcamGetPosAng,57,
 0x620fe0,_edcamGetPosAngSnap,58,
 0x621040,_edcamSetDist,13,
+0x621050,_edcamGetDist,9,
 0x6210b0,_edcamMtx,138,
 0x621140,_edcamSet,48,
 0x621180,_EdFileSwapEndianess16,15,void __cdecl (void *)
@@ -7137,8 +7141,10 @@ address,symbol,size,ctype
 0x0063abb0,_edrtlBurnoutFileSave,309,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63acf0,_edrtlCancelBurnMainMenu,39,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x63ad30,_edrtlEnter,234,
+0x63ae40,_FindNearestRTL,679,
 0x63b0f0,_SelectNextRTL,239,void __cdecl (void)
 0x63b1e0,_SelectPrevRTL,235,void __cdecl (void)
+0x63b2d0,_edrtlProcRTL,2059,
 0x63c1b0,_edrtlDetermineNearestBurn,240,"void __cdecl edrtlDetermineNearestBurn(f32, BURN_SET_PC *)"
 0x63c2a0,_edrtlCalculateBurnout,1125,"void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32)"
 0x63c710,_edrtlCalculateBurnoutEx,58,"void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32)"
@@ -16622,7 +16628,11 @@ address,symbol,size,ctype
 0x76adb8,__real@3f555555,,const f32
 0x76adbc,__real@3f2aaaab,,const f32
 0x76adc0,__real@3e2aaaab,4,const f32
+0x76adc8,__real@4070000000000000,,const f64
+0x76add0,_EduiTextureValueFormatPc,,const char[]
 0x76ae48,__real@c024000000000000,8,const f64
+0x76ae68,__real@3ef1111120000000,,const f64
+0x76ae70,__real@342ec33f,,const f32
 0x76ae78,__real@3ff0ccccc0000000,8,const f64
 0x0076ae80,??_C@_04EIOKKJMF@?3?5?$CFs?$AA@,,"const char[] minimum5B view; Native allocation extent unknown"
 0x0076ae88,__real@407c000000000000,8,const f64
@@ -22208,6 +22218,7 @@ address,symbol,size,ctype
 0x0080f540,_eduimenu_selected_outline_colour,,u32
 0x0080f544,_EduiItemOutlineColourPc,,u32
 0x0080f548,_EduiMarkedItemOutlineColourPc,,u32
+0x80f54c,_EduiNominalFrameTimePc,,f32
 0x80f550,_edui_cursor_x,4,f32
 0x0080f554,_edui_cursor_y,,f32
 0x80f558,_edui_font_scale_x,4,f32
@@ -22228,6 +22239,8 @@ address,symbol,size,ctype
 0x0080fafc,_EduiColourClipboardRedPc,,"f32; minimum4Bworkingview Nativeextentunknown"
 0x0080fb00,_EduiColourClipboardGreenPc,,"f32; minimum4Bworkingview Nativeextentunknown"
 0x0080fb04,_EduiColourClipboardBluePc,,"f32; minimum4Bworkingview Nativeextentunknown"
+0x80fb78,_EduiSliderAccelerationPc,,f32
+0x80fb7c,_EduiSliderRepeatTimerPc,,i32
 0x80fb88,_MINFORCEAPART,,f32
 0x80fb8c,_MAXFORCEAPART,,f32
 0x80fb90,_AnimBlendModePc,,i32
@@ -22252,6 +22265,11 @@ address,symbol,size,ctype
 0x0080fe60,_userid_names,,char *[16]
 0x80fea0,_rtltimer1adv,4,f32
 0x0080fea4,_ctl_ix,,i32
+0x80fea8,_ctl,,u32[2][8]
+0x80fee8,_scale_rate,,f32
+0x80feec,_camscale_factor,,f32
+0x80fef0,_min_r,,f32
+0x80fef4,_def_fr,,f32
 0x80ff04,_rtl_ext,,char *
 0x0080ff08,?help_text@?1??edrtlDrawHelp@@9@9,,const char *[2][6]
 0x0080ff38,_lockflash_rate,,f32
@@ -22266,6 +22284,7 @@ address,symbol,size,ctype
 0x008100ac,??_R0?AVEdRef@@@8,20,
 0x008100c0,??_R0?AV?$CSListLink@VEdRef@@@@@8,36,
 0x008100e4,??_R0?AVEdRefFog@@@8,23,
+0x8100fc,_edrtl_dragundo_pc,,i32
 0x00810100,??_R0?AV?$EdValueControl@H@@@8,33,
 0x00810124,??_R0?AV?$EdValueControl@M@@@8,33,
 0x00810148,??_R0?AVEdIntControl@@@8,27,
@@ -25776,6 +25795,7 @@ address,symbol,size,ctype
 0x02912eb0,_ui_bgmtl,,i32
 0x02912eb4,_EduiSelectionMaterialPc,,i32
 0x02912eb8,_EduiColourClipboardPc,,"EDUI_COLOUR_CLIPBOARD_PC minimum 16-byte view; Native allocation extent unknown"
+0x2912ec8,_EduiSliderGlobalAccelerationPc,,f32
 0x2912ecc,_active_menu,4,struct eduimenu_s *
 0x2912ed0,_processing_menu,4,struct eduimenu_s *
 0x2912ed4,_default_active_menu,4,struct eduimenu_s *
@@ -25799,6 +25819,7 @@ address,symbol,size,ctype
 0x2913080,_FS_LastFileName,64,char[64]
 0x029130c0,_FileSelFilterBlockCountPc,,i32
 0x029130c4,_FileSelFilterOutBlockCountPc,,i32
+0x29130cc,_EduiSliderDynamicScalePc,,f32
 0x29130d0,?offsety@?1??cbInteractMenuTitle@@9@9,,
 0x29130d4,?offsetx@?1??cbInteractMenuTitle@@9@9,,
 0x29130dc,?TargetAng@?1??do_maya_mouse_camera@@9@9,,
@@ -25863,6 +25884,7 @@ address,symbol,size,ctype
 0x2913510,_fogstart_item,,eduiitem_s *
 0x2913514,_t_low_item,,eduiitem_s *
 0x2913518,_hide_directional_item,,eduiitem_s *
+0x291351c,_peax,,i32
 0x2913520,_hide_pointflicker_item,,eduiitem_s *
 0x2913524,_hide_camdir_item,,eduiitem_s *
 0x2913528,_redo_item,,eduiitem_s *
@@ -25887,6 +25909,7 @@ address,symbol,size,ctype
 0x2913660,_fog_copy_item,,eduiitem_s *
 0x2913664,_fog_paste_item,,eduiitem_s *
 0x2913668,_clipboard_fog,,RTL_FOG_MIGRATION_PC
+0x29136b4,_peay,,i32
 0x29136b8,_modifier_items,,eduiitem_s *[32]
 0x2913738,_fogdensitywii_item,,eduiitem_s *
 0x291373c,_jon_rt_hi_item,,eduiitem_s *
@@ -25944,6 +25967,7 @@ address,symbol,size,ctype
 0x2913990,_rtl_dynamic_pool,,NULSTHDR *
 0x2913994,_rtl_dynamic_max,,i32
 0x2913998,_rtl_dynamic_cnt,,i32
+0x291399c,_edrtl_mode,,i32
 0x29139a4,_rtl_error,,i32
 0x29139ac,_rtl_frametime,,f32
 0x29139b0,_rtltimer1,,i32
@@ -25953,6 +25977,8 @@ address,symbol,size,ctype
 0x29139c0,_rtled_menu_active,,i32
 0x29139c4,_delete_menu_active,,i32
 0x29139c8,_rtl_zoff,,i32
+0x29139d4,_ed_just_entered,,i32
+0x29139d8,_menu_cancelled,,i32
 0x029139dc,_rtl_locked,,RTL_LIGHT_PC *
 0x029139e0,_maxundo,,i32
 0x029139e4,_rtl_undo_cnt,,i32
@@ -25961,6 +25987,10 @@ address,symbol,size,ctype
 0x029139f4,_helpmode,,i32
 0x029139f8,_lockflash,,f32
 0x029139fc,_rtl_debug,,i32
+0x2913a00,_edrtl_dragoff_pc,,NUVEC
+0x2913a0c,_edrtl_dragstart_pc,,NUVEC
+0x2913a18,_edrtl_drag_rtl_pc,,RTL_LIGHT_PC *
+0x2913a1c,_edrtl_dragging_pc,,i32
 0x2913a40,_rtl_ui_initialised,,i32
 0x02913a4c,_part_page_on,32,i32[8]
 0x2913a6c,_edpart_varstart_menu,4,struct eduimenu_s *

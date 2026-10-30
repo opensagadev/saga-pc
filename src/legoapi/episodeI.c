@@ -2225,3 +2225,60 @@ i32 __cdecl Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
 void __cdecl PodRace_IncreaseLap(void) {
     Lap = (i32)((u32)Lap + 1u);
 }
+
+typedef struct pod_race_panel_netpacket_pc_s {
+    f32 start_countdown;
+    f32 remaining_time;
+    f32 available_time;
+    f32 lap_alpha;
+    i32 lap;
+} POD_RACE_PANEL_NETPACKET_PC;
+STATIC_ASSERT(sizeof(POD_RACE_PANEL_NETPACKET_PC) == 0x14);
+STATIC_ASSERT(offsetof(POD_RACE_PANEL_NETPACKET_PC, lap_alpha) == 0x0c);
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_countdown) == 0xb000);
+STATIC_ASSERT(offsetof(PODRACE_RESOURCE_PC, lap_display) == 0xb008);
+STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
+STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 0x10);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0x0e);
+STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
+
+void __cdecl PodRacePanel(WORLDINFO *world) {
+    char text[256];
+    LEVEL_OBJECT_RUNTIME_PC *icon;
+    f32 scale;
+    i32 count;
+    if (netclient != 0)
+        podlapalpha = ((POD_RACE_PANEL_NETPACKET_PC *)podrace_netpacket)->lap_alpha;
+    else
+        ((POD_RACE_PANEL_NETPACKET_PC *)podrace_netpacket)->lap_alpha = podlapalpha;
+    if (podlapalpha > 0.0f) {
+        icon = &world->level_objects[(i32)((u32)Lap + 0x135u)];
+        if (icon->active != 0)
+            DrawPanel3DObject(0.0f, HudBossIconYPc, 1.0f, PodSprintLapIconScalePc, PodSprintLapIconScalePc,
+                              PodSprintLapIconScalePc, 0, 0, 0, &icon->special, 0, podlapalpha);
+    }
+    if (podhurryalpha > 0.0f && PodRacePc->lap_display > 0.0f) {
+        count = (i32)PodRacePc->lap_display + 1;
+        sprintf(text, Text_TimeS, count);
+        scale = NuFmod(PodRacePc->lap_display, 1.0f);
+        if (scale >= 0.7f)
+            scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
+        else
+            scale = 1.0f;
+        scale = PodSprintCountdownScalePc * scale;
+        Text3DEx(text, 0.0f, PodSprintCountdownYPc, 1.0f, scale, scale, scale, 0, 255, 63, 0,
+                 (u8)(i32)(podhurryalpha * 128.0));
+    }
+    if (podstartracealpha != 0.0f && PodRacePc->lap_countdown > 0.0f) {
+        count = (i32)PodRacePc->lap_countdown + 1;
+        sprintf(text, Text_TimeS, count);
+        scale = NuFmod(PodRacePc->lap_countdown, 1.0f);
+        if (scale >= 0.7f)
+            scale = (f32)(((f64)scale - (f64)0.7f) / (f64)0.3f + 1.0);
+        else
+            scale = 1.0f;
+        scale = PodSprintCountdownScalePc * scale;
+        Text3DEx(text, 0.0f, PodSprintCountdownYPc, 1.0f, scale, scale, scale, 0, 0, 255, 0,
+                 (u8)(i32)(podstartracealpha * 128.0));
+    }
+}

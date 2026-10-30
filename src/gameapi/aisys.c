@@ -646,56 +646,23 @@ void pathEditor_UpdateNodesOnPlatforms(void) {
     }
 }
 
-static i32 TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction, f32 *width,
-                              i32 *angle, f32 tolerance) {
-    NUVEC horizontal;
-    f32 distance;
+/* Native 0x5243b0: geometric outputs only; validation belongs to the caller. */
+static void TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction, f32 *width,
+                               i32 *angle, f32 tolerance) {
     NUVEC direction;
+    f32 distance;
     NUVEC relative;
     f32 along;
     NUVEC nearest;
     f32 radius;
     NUVEC radial;
     f32 distance_squared;
-    AIPATH_PC path;
-    AIPATHCNX_PC connection;
-    AIPATHNODE_PC nodes[2];
-    AIPATHINFO_PC info;
-    memset(&path, 0, sizeof(path));
-    memset(&connection, 0, sizeof(connection));
-    memset(nodes, 0, sizeof(nodes));
-    memset(&info, 0, sizeof(info));
-    nodes[0].position = first->position;
-    nodes[0].radius = first->radius + tolerance;
-    nodes[0].min_height = first->position.y + first->lower_height - tolerance;
-    nodes[0].max_height = first->position.y + first->upper_height + tolerance;
-    nodes[1].position = second->position;
-    nodes[1].radius = second->radius + tolerance;
-    nodes[1].min_height = second->position.y + second->lower_height - tolerance;
-    nodes[1].max_height = second->position.y + second->upper_height + tolerance;
-    path.nodes = nodes;
-    path.connections = &connection;
-    path.node_count = 2;
-    path.connection_count = 1;
-    connection.node_indices[0] = 1;
-    horizontal = horizontal;
-    distance = NuVecXZDist(&first->position, &second->position, &horizontal);
-    connection.horizontal_distance = distance != 0.0f ? distance : 0.0001f;
-    connection.rotation = (i16)(NuAtan2(horizontal.x, horizontal.z) * 10430.378f);
-    if (!WithinConnection(NULL, point, &path, &connection, 1, NULL, 0xff, 0xff, &info, 0.0f, 0)) {
-        return 0;
-    }
-
-    direction = direction;
     NuVecSub(&direction, &second->position, &first->position);
     distance = NuVecMag(&direction);
     NuVecScale(&direction, &direction, 1.0f / distance);
-    relative = relative;
     NuVecSub(&relative, point, &first->position);
     along = NuVecDot(&direction, &relative);
     *fraction = along / distance;
-    nearest = nearest;
-
     if (*fraction <= 0.0f) {
         nearest = first->position;
         radius = first->radius;
@@ -705,28 +672,25 @@ static i32 TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_
     } else {
         NuVecScale(&nearest, &direction, along);
         NuVecAdd(&nearest, &nearest, &first->position);
-        radius = second->radius * *fraction + first->radius * (1.0f - *fraction);
+        radius = first->radius * (1.0f - *fraction) + second->radius * *fraction;
     }
-    radial = radial;
     distance_squared = NuVecXZDistSqr(&nearest, point, &radial);
     radius += tolerance;
-    *angle = (i32)(NuAtan2(direction.x, direction.z) * 10430.378f);
-    NuVecRotateY(&relative, &relative, -*angle);
+    *angle = (i32)(NuAtan2(direction.x, direction.z) * AIPathAngularScale);
+    NuVecRotateY(&relative, &relative, (i32)(0u - (u32)*angle));
     if (*fraction <= 0.0f) {
         f32 beyond = -*fraction * distance;
         *width = distance_squared - beyond * beyond;
         *width = NuFsqrt(*width) / radius;
     } else if (*fraction >= 1.0f) {
-        f32 beyond = (*fraction - 1.0f) * distance;
+        f32 beyond = (*fraction - 1.0) * distance;
         *width = distance_squared - beyond * beyond;
         *width = NuFsqrt(*width) / radius;
     } else {
         *width = NuFsqrt(distance_squared) / radius;
     }
-    if (relative.x < 0.0f) {
+    if (relative.x < 0.0f)
         *width = -*width;
-    }
-    return 1;
 }
 
 void antinodeEditor_UpdateAntiNodesOnPlatforms(void) {
@@ -16794,3 +16758,103 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     antinodeEditorDrawAntinodes();
 }
 #undef CREATURE_EDITOR_PC
+
+/* Native editor path geometry uses the established PC runtime records. */
+STATIC_ASSERT(sizeof(AIPATH_PC) == 0xa8);
+STATIC_ASSERT(sizeof(AIPATHCNX_PC) == 0x24);
+STATIC_ASSERT(sizeof(AIPATHNODE_PC) == 0x5c);
+STATIC_ASSERT(sizeof(AIPATHINFO_PC) == 0x18);
+STATIC_ASSERT(offsetof(AIPATH_PC, node_count) == 0x10);
+STATIC_ASSERT(offsetof(AIPATH_PC, connection_count) == 0x12);
+STATIC_ASSERT(offsetof(AIPATH_PC, nodes) == 0x7c);
+STATIC_ASSERT(offsetof(AIPATH_PC, connections) == 0x80);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, position) == 4);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, radius) == 0x10);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, min_height) == 0x18);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, max_height) == 0x20);
+STATIC_ASSERT(offsetof(AIPATHCNX_PC, node_indices) == 0x10);
+STATIC_ASSERT(offsetof(AIPATHCNX_PC, rotation) == 0x12);
+STATIC_ASSERT(offsetof(AIPATHCNX_PC, horizontal_distance) == 0x1c);
+STATIC_ASSERT(offsetof(EDAIPATH_s, nodes) == 0x18);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, position) == 0x18);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, radius) == 0x24);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, lower_height) == 0x28);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, upper_height) == 0x2c);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, connections) == 0x30);
+STATIC_ASSERT(offsetof(EDAIPATHNODE_s, index) == 0x90);
+STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, fraction) == 0x10);
+STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, width) == 0x14);
+STATIC_ASSERT(offsetof(EDAIPATHCHECK_s, angle) == 0x18);
+
+/* Native 0x5245c0: establish a temporary runtime connection, validate it,
+ * then calculate editor-space outputs. Ordinary static compiler-private ABI. */
+static i32 TestPointWithinPathCheckPc(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, f32 *fraction,
+                                      f32 *width, i32 *angle, f32 tolerance) {
+    AIPATH_PC path;
+    AIPATHCNX_PC connection;
+    AIPATHNODE_PC nodes[2];
+    AIPATHINFO_PC info;
+    NUVEC horizontal;
+    memset(&path, 0, sizeof(path));
+    memset(&connection, 0, sizeof(connection));
+    memset(nodes, 0, sizeof(nodes));
+    memset(&info, 0, sizeof(info));
+    nodes[0].position = first->position;
+    nodes[0].radius = first->radius + tolerance;
+    nodes[0].min_height = first->position.y + first->lower_height - tolerance;
+    nodes[0].max_height = first->position.y + first->upper_height + tolerance;
+    nodes[1].position = second->position;
+    nodes[1].radius = second->radius + tolerance;
+    nodes[1].min_height = second->position.y + second->lower_height - tolerance;
+    nodes[1].max_height = second->position.y + second->upper_height + tolerance;
+    path.nodes = nodes;
+    path.connections = &connection;
+    path.node_count = 2;
+    path.connection_count = 1;
+    connection.node_indices[0] = 1;
+    connection.horizontal_distance = NuVecXZDist(&first->position, &second->position, &horizontal);
+    if (connection.horizontal_distance == 0.0f)
+        connection.horizontal_distance = 0.0001f;
+    connection.rotation = (i16)(NuAtan2(horizontal.x, horizontal.z) * AIPathAngularScale);
+    if (!WithinConnection(NULL, point, &path, &connection, 1, NULL, 0xff, 0xff, &info, 0.0f, 0))
+        return 0;
+    TestPointPathCheck(point, first, second, fraction, width, angle, tolerance);
+    return 1;
+}
+
+void __cdecl pathEditor_OnPathCheck(NUVEC *point, EDAIPATHCHECK_s *result, EDAIPATH_s *path, f32 tolerance) {
+    u8 checked[255][32] = {0};
+    EDAIPATHNODE_s *node;
+    memset(result, 0, sizeof(*result));
+    if (path == NULL)
+        return;
+    node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes);
+    while (node != NULL) {
+        i32 node_index = node->index;
+        i32 slot;
+        for (slot = 0; slot < 8; ++slot) {
+            EDAIPATHNODE_s *other = node->connections[slot].node;
+            i32 other_index;
+            if (other == NULL)
+                continue;
+            other_index = other->index;
+            if (!(checked[node_index][other_index / 8] & (1 << (other_index % 8)))) {
+                f32 fraction;
+                f32 width;
+                i32 angle;
+                checked[node_index][other_index / 8] |= 1 << (other_index % 8);
+                checked[other_index][node_index / 8] |= 1 << (node_index % 8);
+                if (TestPointWithinPathCheckPc(point, node, other, &fraction, &width, &angle, tolerance)) {
+                    result->fraction = fraction;
+                    result->width = width;
+                    result->on_path = 1;
+                    result->path = path;
+                    result->angle = angle;
+                    result->first = node;
+                    result->second = node->connections[slot].node;
+                }
+            }
+        }
+        node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link);
+    }
+}

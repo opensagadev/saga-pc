@@ -3750,3 +3750,263 @@ void __cdecl cbUndoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 void __cdecl cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edrtlRedo();
 }
+
+/* Native RTL editor state views; allocation extents remain unknown. */
+#pragma section(".bss$RtlProc_menu_cancelled", read, write)
+__declspec(allocate(".bss$RtlProc_menu_cancelled")) i32 menu_cancelled = 0;
+#pragma section(".bss$RtlProc_ed_just_entered", read, write)
+__declspec(allocate(".bss$RtlProc_ed_just_entered")) i32 ed_just_entered = 0;
+#pragma section(".bss$RtlProc_peax", read, write)
+__declspec(allocate(".bss$RtlProc_peax")) i32 peax = 0;
+#pragma section(".bss$RtlProc_peay", read, write)
+__declspec(allocate(".bss$RtlProc_peay")) i32 peay = 0;
+#pragma section(".data$RtlProc_scale_rate", read, write)
+__declspec(allocate(".data$RtlProc_scale_rate")) f32 scale_rate = 0.1f;
+#pragma section(".data$RtlProc_camscale_factor", read, write)
+__declspec(allocate(".data$RtlProc_camscale_factor")) f32 camscale_factor = 0.1f;
+#pragma section(".data$RtlProc_min_r", read, write)
+__declspec(allocate(".data$RtlProc_min_r")) f32 min_r = 1.0f;
+#pragma section(".data$RtlProc_def_fr", read, write)
+__declspec(allocate(".data$RtlProc_def_fr")) f32 def_fr = 2.0f;
+#pragma section(".bss$RtlProc_edrtl_mode", read, write)
+__declspec(allocate(".bss$RtlProc_edrtl_mode")) i32 edrtl_mode = 0;
+#pragma section(".data$RtlProc_ctl", read, write)
+__declspec(allocate(".data$RtlProc_ctl")) u32 ctl[2][8] = {
+    {0x80, 0x10, 0x40, 0x1000, 0x100, 0x20, 0x8000, 0x2000},
+    {0x40, 0x10, 0x20, 0x1000, 0x80, 0x100, 0x4, 0x8},
+};
+#pragma section(".bss$RtlProc_edrtl_dragging_pc", read, write)
+__declspec(allocate(".bss$RtlProc_edrtl_dragging_pc")) i32 edrtl_dragging_pc = 0;
+#pragma section(".bss$RtlProc_edrtl_drag_rtl_pc", read, write)
+__declspec(allocate(".bss$RtlProc_edrtl_drag_rtl_pc")) RTL_LIGHT_PC *edrtl_drag_rtl_pc = NULL;
+#pragma section(".data$RtlProc_edrtl_dragundo_pc", read, write)
+__declspec(allocate(".data$RtlProc_edrtl_dragundo_pc")) i32 edrtl_dragundo_pc = 1;
+#pragma section(".bss$RtlProc_edrtl_dragstart_pc", read, write)
+__declspec(allocate(".bss$RtlProc_edrtl_dragstart_pc")) NUVEC edrtl_dragstart_pc = {0};
+#pragma section(".bss$RtlProc_edrtl_dragoff_pc", read, write)
+__declspec(allocate(".bss$RtlProc_edrtl_dragoff_pc")) NUVEC edrtl_dragoff_pc = {0};
+
+void __cdecl edcamSetAng(i32 pitch, i32 yaw);
+f32 __cdecl edcamGetDist(void);
+STATIC_ASSERT(offsetof(eduimenu_s, first) == 0);
+STATIC_ASSERT(offsetof(eduimenu_s, selected) == 8);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, position) == 0);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, pitch) == 0x5a);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, yaw) == 0x5c);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, outer_radius) == 0x40);
+STATIC_ASSERT(sizeof(ctl[0]) == 32);
+
+static RTL_LIGHT_PC *FindNearestRTL(NUVEC *position, int ignore_radius) {
+    i32 i;
+    i32 nearest = -1;
+    f32 nearest_distance = FLT_MAX;
+    f32 distance;
+    if (base_rtl != NULL) {
+        i = base_rtl->field_79;
+        while (i != -1) {
+            distance = (curr_set->lights[i].position.x - position->x) * (curr_set->lights[i].position.x - position->x) +
+                       (curr_set->lights[i].position.y - position->y) * (curr_set->lights[i].position.y - position->y) +
+                       (curr_set->lights[i].position.z - position->z) * (curr_set->lights[i].position.z - position->z);
+            if ((ignore_radius || distance < curr_set->lights[i].outer_radius * curr_set->lights[i].outer_radius) &&
+                distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = i;
+            }
+            i = curr_set->lights[i].field_79;
+        }
+    } else {
+        for (i = 0; i < 128; ++i) {
+            if (hide_types[curr_set->lights[i].type])
+                continue;
+            if (curr_set->lights[i].field_7a != -1)
+                continue;
+            distance = (curr_set->lights[i].position.x - position->x) * (curr_set->lights[i].position.x - position->x) +
+                       (curr_set->lights[i].position.y - position->y) * (curr_set->lights[i].position.y - position->y) +
+                       (curr_set->lights[i].position.z - position->z) * (curr_set->lights[i].position.z - position->z);
+            if ((ignore_radius || distance < curr_set->lights[i].outer_radius * curr_set->lights[i].outer_radius) &&
+                distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = i;
+            }
+        }
+    }
+    return nearest != -1 ? &curr_set->lights[nearest] : NULL;
+}
+
+i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
+    f32 dist;
+    i16 previous_yaw;
+    i16 previous_pitch;
+    f32 distance;
+    f32 move_scale;
+    NUVEC previous_position;
+    RTL_LIGHT_PC updated;
+
+    helpmode = 0;
+    if (delete_menu_active) {
+        eduiMenuProcess(delete_menu, delta_time, pad);
+    } else if (rtled_menu_active) {
+        eduiMenuProcess(main_menu, delta_time, pad);
+        if (!rtled_menu_active) {
+            menu_cancelled = 1;
+            edrtl_dragging_pc = 0;
+        }
+    } else if (pad->digital_buttons_pressed & ctl[ctl_ix][4]) {
+        rtled_menu_active = 1;
+        RefreshUI();
+    } else if (pad->digital_buttons & ctl[ctl_ix][5]) {
+        helpmode = 5;
+        edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
+        if (curr_rtl) {
+            edcamSetPos(&curr_rtl->position);
+            if (pad->digital_buttons_pressed & ctl[ctl_ix][7])
+                SelectNextRTL();
+            else if (pad->digital_buttons_pressed & ctl[ctl_ix][6])
+                SelectPrevRTL();
+        } else {
+            curr_rtl = FindNearestRTL(&burn_editor_position_pc, 1);
+        }
+        if (rtl_locked)
+            rtl_locked = curr_rtl;
+    } else {
+        edcamGetPosAng(&previous_position, NULL, NULL);
+        dist = edcamGetDist();
+        (void)dist;
+        edcamMoveEx(pad, delta_time);
+        previous_yaw = (i16)(peay);
+        previous_pitch = (i16)(peax);
+        edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
+        distance = fabsf(edcamGetDist());
+        move_scale = 1.0f > camscale_factor * distance ? 1.0f : camscale_factor * distance;
+
+        if (menu_cancelled && pad->digital_buttons)
+            return 0;
+        menu_cancelled = 0;
+        if (ed_just_entered && pad->digital_buttons)
+            return 0;
+        ed_just_entered = 0;
+        if (pad->digital_buttons_pressed & 0x800)
+            return 1;
+
+        helpmode = 1;
+        if (edrtl_dragging_pc) {
+            helpmode = 2;
+            if (!(pad->digital_buttons & ctl[ctl_ix][2])) {
+                edrtl_dragging_pc = 0;
+            } else {
+                updated = *edrtl_drag_rtl_pc;
+                NuVecSub(&edrtl_dragoff_pc, &burn_editor_position_pc, &edrtl_dragstart_pc);
+                NuVecAdd(&updated.position, &updated.position, &edrtl_dragoff_pc);
+                edrtl_dragstart_pc = burn_editor_position_pc;
+                updated.pitch += (i16)(peax)-previous_pitch;
+                updated.yaw += (i16)(peay)-previous_yaw;
+                edcamSetAng(previous_pitch, previous_yaw);
+                peax = previous_pitch;
+                peay = previous_yaw;
+                updated.direction.x = 0.0f;
+                updated.direction.y = 0.0f;
+                updated.direction.z = 1.0f;
+                NuVecRotateX(&updated.direction, &updated.direction, updated.pitch);
+                NuVecRotateY(&updated.direction, &updated.direction, updated.yaw);
+                updated.inner_radius += scale_rate *
+                                        ((i32)(pad->analog_left_pad_right) - (i32)(pad->analog_left_pad_left)) *
+                                        move_scale * delta_time;
+                updated.outer_radius += scale_rate *
+                                        ((i32)(pad->analog_left_pad_up) - (i32)(pad->analog_left_pad_down)) *
+                                        move_scale * delta_time;
+                updated.inner_radius = min_r > updated.inner_radius ? min_r : updated.inner_radius;
+                updated.outer_radius =
+                    updated.inner_radius > updated.outer_radius ? updated.inner_radius : updated.outer_radius;
+                if (edrtl_dragundo_pc) {
+                    if (rtlCmp(&updated, edrtl_drag_rtl_pc)) {
+                        edrtlSaveUndo();
+                        edrtl_dragundo_pc = 0;
+                    }
+                }
+                *edrtl_drag_rtl_pc = updated;
+            }
+        } else {
+            if (rtl_locked)
+                curr_rtl = rtl_locked;
+            else
+                curr_rtl = FindNearestRTL(&burn_editor_position_pc, 0);
+            if (base_rtl && (pad->digital_buttons_pressed & 0x8000)) {
+                edcamSetPos(&base_rtl->position);
+                base_rtl = NULL;
+                rtl_locked = NULL;
+            } else if (pad->digital_buttons_pressed & ctl[ctl_ix][0]) {
+                edrtlSaveUndo();
+                curr_rtl = rtlAlloc();
+                if (curr_rtl) {
+                    rtl_locked = NULL;
+                    curr_rtl->position = burn_editor_position_pc;
+                    curr_rtl->inner_radius = min_r;
+                    curr_rtl->outer_radius = def_fr;
+                    curr_rtl->colour.x = 1.0f;
+                    curr_rtl->colour.y = 1.0f;
+                    curr_rtl->colour.z = 1.0f;
+                    curr_rtl->secondary_colour.x = 0.5f;
+                    curr_rtl->secondary_colour.y = 0.5f;
+                    curr_rtl->secondary_colour.z = 0.5f;
+                    curr_rtl->type = 2;
+                    curr_rtl->flags &= (u8)~1u;
+                    curr_rtl->field_5e = 0;
+                    curr_rtl->field_60 = 0;
+                    curr_rtl->parameters[0] = 0.1f;
+                    curr_rtl->parameters[1] = 0.1f;
+                    curr_rtl->parameters[2] = 0.1f;
+                    curr_rtl->parameters[3] = 0.1f;
+                    curr_rtl->parameter_54 = 0.0f;
+                    curr_rtl->pitch = 0;
+                    curr_rtl->yaw = 0;
+                    curr_rtl->direction.x = 0.0f;
+                    curr_rtl->direction.y = 0.0f;
+                    curr_rtl->direction.z = 1.0f;
+                    curr_rtl->field_64 = 0.0f;
+                    NuVecRotateX(&curr_rtl->direction, &curr_rtl->direction, curr_rtl->pitch);
+                    NuVecRotateY(&curr_rtl->direction, &curr_rtl->direction, curr_rtl->yaw);
+                    curr_rtl->field_79 = -1;
+                    curr_rtl->field_7a = -1;
+                    curr_rtl->field_7b = 0;
+                    curr_rtl->field_7c = curr_set->lights;
+                    if (base_rtl) {
+                        *curr_rtl = *base_rtl;
+                        curr_rtl->field_79 = base_rtl->field_79;
+                        if (curr_rtl->field_79 != -1)
+                            curr_set->lights[curr_rtl->field_79].field_7a = (i8)(curr_rtl - curr_set->lights);
+                        curr_rtl->field_7a = (i8)(base_rtl - curr_set->lights);
+                        base_rtl->field_79 = (i8)(curr_rtl - curr_set->lights);
+                    }
+                }
+            } else if (curr_rtl) {
+                if (curr_rtl->field_7a != -1)
+                    helpmode = 4;
+                else
+                    helpmode = 3;
+                if (pad->digital_buttons_pressed & ctl[ctl_ix][2]) {
+                    edrtl_dragging_pc = 1;
+                    edrtl_dragundo_pc = 1;
+                    edrtl_dragstart_pc = burn_editor_position_pc;
+                    edrtl_drag_rtl_pc = curr_rtl;
+                } else if (pad->digital_buttons_pressed & ctl[ctl_ix][1]) {
+                    delete_menu_active = 1;
+                    delete_menu->selected = delete_menu->first;
+                } else if (pad->digital_buttons_pressed & ctl[ctl_ix][3]) {
+                    if (rtl_locked)
+                        rtl_locked = NULL;
+                    else
+                        rtl_locked = curr_rtl;
+                } else if (pad->digital_buttons_pressed & 0x8000) {
+                    if (!base_rtl)
+                        base_rtl = curr_rtl;
+                    rtl_locked = NULL;
+                }
+            }
+            if (pad->digital_buttons_pressed & 0x4000) {
+                curr_fog = NULL;
+                edrtl_mode = 2;
+            }
+        }
+    }
+    return 0;
+}
