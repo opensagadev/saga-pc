@@ -358,3 +358,154 @@ void __cdecl instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX
     if (matrix != NULL)
         NuVecMtxTransform(&instance->center, &instance->center, matrix);
 }
+
+typedef struct cut_memory_scene_pc_s {
+    u8 unknown_00[0x58];
+    u32 loaded_size;
+} CUT_MEMORY_SCENE_PC;
+typedef struct cut_memory_instance_pc_s {
+    u8 unknown_00[0x58];
+    CUT_MEMORY_SCENE_PC *scene;
+    u8 unknown_5c[0x94];
+    u32 allocation_size;
+} CUT_MEMORY_INSTANCE_PC;
+typedef struct cut_memory_entry_pc_s {
+    void *handle;
+    CUT_MEMORY_SCENE_PC *scene;
+    f32 accumulated_duration;
+    u8 flags;
+    u8 unknown_0d[3];
+} CUT_MEMORY_ENTRY_PC;
+typedef struct cut_memory_vertex_pc_s {
+    f32 x, y, z;
+    u32 colour;
+} CUT_MEMORY_VERTEX_PC;
+STATIC_ASSERT(offsetof(CUT_MEMORY_SCENE_PC, loaded_size) == 0x58);
+STATIC_ASSERT(offsetof(CUT_MEMORY_INSTANCE_PC, scene) == 0x58);
+STATIC_ASSERT(offsetof(CUT_MEMORY_INSTANCE_PC, allocation_size) == 0xf0);
+STATIC_ASSERT(sizeof(CUT_MEMORY_ENTRY_PC) == 0x10);
+STATIC_ASSERT(offsetof(CUT_MEMORY_ENTRY_PC, flags) == 0x0c);
+STATIC_ASSERT(offsetof(CUT_MEMORY_VERTEX_PC, colour) == 0x0c);
+
+#pragma section(".bss$DefragCutSceneEndMem", read, write)
+__declspec(allocate(".bss$DefragCutSceneEndMem")) void *DefragCutSceneEndMem = NULL;
+#pragma section(".bss$DefragCutSceneListSize", read, write)
+__declspec(allocate(".bss$DefragCutSceneListSize")) i32 DefragCutSceneListSize = 0;
+#pragma section(".bss$DefragCutSceneBaseMem", read, write)
+__declspec(allocate(".bss$DefragCutSceneBaseMem")) void *DefragCutSceneBaseMem = NULL;
+#pragma section(".bss$DefragInstBaseMem", read, write)
+__declspec(allocate(".bss$DefragInstBaseMem")) void *DefragInstBaseMem = NULL;
+#pragma section(".bss$DefragInstEndMem", read, write)
+__declspec(allocate(".bss$DefragInstEndMem")) void *DefragInstEndMem = NULL;
+#pragma section(".bss$DefragCutSceneListBase", read, write)
+__declspec(allocate(".bss$DefragCutSceneListBase")) CUT_MEMORY_ENTRY_PC *DefragCutSceneListBase = NULL;
+#pragma section(".bss$DefragGetInstFn", read, write)
+__declspec(allocate(".bss$DefragGetInstFn")) CUT_MEMORY_INSTANCE_PC *(__cdecl *DefragGetInstFn)(void *) = NULL;
+
+static void CutSceneSetPrimitiveColourPc(i32 colour) {
+    u32 converted;
+    if (NuPrimNeedsOverbrightening != 0) {
+        converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
+    } else {
+        converted =
+            ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
+    }
+    ((CUT_MEMORY_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+}
+
+void __cdecl DisplayCutSceneMemory(void) {
+    CUT_MEMORY_ENTRY_PC *entry;
+    CUT_MEMORY_ENTRY_PC *end;
+    CUT_MEMORY_INSTANCE_PC *instance;
+    CUT_MEMORY_SCENE_PC *scene;
+    u32 start;
+    u32 finish;
+    f32 scale;
+    f32 start_x;
+    f32 end_x;
+    if (DefragCutSceneEndMem == NULL || DefragCutSceneListSize == 0 || DefragCutSceneBaseMem == NULL)
+        return;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(16, 5, NULL);
+    if (DefragInstBaseMem == NULL) {
+        scale = (f32)(580.0 / (f64)((u32)DefragCutSceneEndMem - (u32)DefragCutSceneBaseMem));
+        CutSceneSetPrimitiveColourPc(0x40000080);
+        NuPrim2DAddXYZ(30.0f, 206.0f, 0.0f);
+        CutSceneSetPrimitiveColourPc(0x40000080);
+        NuPrim2DAddXYZ(610.0f, 210.0f, 0.0f);
+        end = DefragCutSceneListBase + DefragCutSceneListSize;
+        for (entry = DefragCutSceneListBase; entry < end; ++entry) {
+            if ((entry->flags & 4) == 0)
+                continue;
+            instance = DefragGetInstFn(entry->handle);
+            scene = instance->scene;
+            start = (u32)scene - (u32)DefragCutSceneBaseMem;
+            finish = start + scene->loaded_size;
+            start_x = (f32)((f64)start * scale);
+            end_x = (f32)((f64)finish * scale);
+            CutSceneSetPrimitiveColourPc(0x40008080);
+            start_x = (f32)(start_x + 30.0);
+            NuPrim2DAddXYZ(start_x, 206.0f, 0.0f);
+            CutSceneSetPrimitiveColourPc(0x40008080);
+            end_x = (f32)(end_x + 30.0);
+            NuPrim2DAddXYZ(end_x, 210.0f, 0.0f);
+            start = (u32)instance - (u32)DefragCutSceneBaseMem;
+            finish = start + instance->allocation_size;
+            start_x = (f32)((f64)start * scale);
+            end_x = (f32)((f64)finish * scale);
+            CutSceneSetPrimitiveColourPc(0x40800080);
+            start_x = (f32)(start_x + 30.0);
+            NuPrim2DAddXYZ(start_x, 206.0f, 0.0f);
+            CutSceneSetPrimitiveColourPc(0x40800080);
+            end_x = (f32)(end_x + 30.0);
+            NuPrim2DAddXYZ(end_x, 210.0f, 0.0f);
+        }
+    } else {
+        scale = (f32)(580.0 / (f64)((u32)DefragCutSceneEndMem - (u32)DefragCutSceneBaseMem));
+        CutSceneSetPrimitiveColourPc(0x40000080);
+        NuPrim2DAddXYZ(30.0f, 206.0f, 0.0f);
+        CutSceneSetPrimitiveColourPc(0x40000080);
+        NuPrim2DAddXYZ(610.0f, 208.0f, 0.0f);
+        end = DefragCutSceneListBase + DefragCutSceneListSize;
+        for (entry = DefragCutSceneListBase; entry < end; ++entry) {
+            if ((entry->flags & 4) == 0)
+                continue;
+            instance = DefragGetInstFn(entry->handle);
+            scene = instance->scene;
+            start = (u32)scene - (u32)DefragCutSceneBaseMem;
+            finish = start + scene->loaded_size;
+            start_x = (f32)((f64)start * scale);
+            end_x = (f32)((f64)finish * scale);
+            CutSceneSetPrimitiveColourPc(0x40008080);
+            start_x = (f32)(start_x + 30.0);
+            NuPrim2DAddXYZ(start_x, 206.0f, 0.0f);
+            CutSceneSetPrimitiveColourPc(0x40008080);
+            end_x = (f32)(end_x + 30.0);
+            NuPrim2DAddXYZ(end_x, 208.0f, 0.0f);
+        }
+        scale = (f32)(580.0 / (f64)((u32)DefragInstEndMem - (u32)DefragInstBaseMem));
+        CutSceneSetPrimitiveColourPc(0x40000060);
+        NuPrim2DAddXYZ(30.0f, 209.0f, 0.0f);
+        CutSceneSetPrimitiveColourPc(0x40000060);
+        NuPrim2DAddXYZ(610.0f, 211.0f, 0.0f);
+        for (entry = DefragCutSceneListBase; entry < end; ++entry) {
+            if ((entry->flags & 4) == 0)
+                continue;
+            instance = DefragGetInstFn(entry->handle);
+            start = (u32)instance - (u32)DefragInstBaseMem;
+            finish = start + instance->allocation_size;
+            start_x = (f32)((f64)start * scale);
+            end_x = (f32)((f64)finish * scale);
+            CutSceneSetPrimitiveColourPc(0x40800080);
+            start_x = (f32)(start_x + 30.0);
+            NuPrim2DAddXYZ(start_x, 209.0f, 0.0f);
+            CutSceneSetPrimitiveColourPc(0x40800080);
+            end_x = (f32)(end_x + 30.0);
+            NuPrim2DAddXYZ(end_x, 211.0f, 0.0f);
+        }
+    }
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}

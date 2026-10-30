@@ -632,90 +632,50 @@ void cbgpcfgAdd(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     eduiMenuDestroy(menu);
 }
 
-static i32 eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
-    struct edui_gradient_pick_s *gradient;
-    struct edui_gradient_node_s *stage;
-    f32 lower;
-    f32 upper;
-    u8 right2;
-    u8 left2;
-    u8 left1;
-    u8 right1;
-    i32 decrease;
-    i32 increase;
-    (void)delta_time;
-    gradient = ((edui_gradient_pick_s *)(item));
-    if (gradient->changed)
-        gradient->changed(menu, item, pad->digital_buttons);
-    if (pad->digital_buttons_pressed & 0x40) {
-        struct eduiitem_s *pick;
-        static eduimenu_s *gpcfg = 0;
-        gpcfg =
-            eduiMenuCreate(menu->x + 10, menu->y + 40, 180, 250, menu->font, eduicbPickCFGCancel, "GradPick Adjust");
-        if (!gpcfg)
-            return 0;
+i32 __cdecl eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+i32 __cdecl eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
+i32 __cdecl eduicbRenderGreyPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
 
-        if (item->type == 8) {
-            pick = eduiItemGreyPickCreate(((size_t)(item)), &ed_attr, cbgpcfgCPPress, "Colourpick");
-            if (gradient->selected_stage)
-                eduiItemColourPickSetHSV(((edui_colour_pick_s *)(pick)), gradient->selected_stage->hue,
-                                         gradient->selected_stage->saturation, gradient->selected_stage->value);
-        } else if (item->type == 9)
-            pick = eduiItemSelCreate(((size_t)(item)), &ed_attr, 0, 0, cbgpcfgCPPress, "Edit");
-        else {
-            pick = eduiItemColourPickCreate(((size_t)(item)), &ed_attr, cbgpcfgCPPress, "Colourpick");
-            if (gradient->selected_stage)
-                eduiItemColourPickSetHSV(((edui_colour_pick_s *)(pick)), gradient->selected_stage->hue,
-                                         gradient->selected_stage->saturation, gradient->selected_stage->value);
-        }
-        eduiMenuAddItem(gpcfg, pick);
-        eduiMenuAddItem(gpcfg, eduiItemSelCreate(((size_t)(item)), &ed_attr, 0, 0, cbgpcfgAdd, "Add"));
-        eduiMenuAddItem(gpcfg, eduiItemSelCreate(((size_t)(item)), &ed_attr, 0, 0, cbgpcfgDel, "Del"));
-        eduiMenuAddItem(gpcfg, eduiItemSelCreate(((size_t)(item)), &ed_attr, 0, 0, cbgpcfgCopy, "Copy"));
-        edui_last_item->type = item->type;
-        eduiMenuAddItem(gpcfg,
-                        eduiItemSelWithClipColourCreate(((size_t)(item)), &ed_attr, 0, 0, cbgpcfgPaste, "Paste"));
-        edui_last_item->type = item->type;
-        eduiMenuAttach(menu, gpcfg);
-        return 0;
-    }
-    if (!gradient->selected_stage)
-        gradient->selected_stage = gradient->first_stage;
-    stage = gradient->selected_stage;
-    if (!stage)
-        return 0;
-    if (pad->digital_buttons_pressed & 0x8000) {
-        if (stage->previous)
-            gradient->selected_stage = stage->previous;
-        return 1;
-    }
-    if (pad->digital_buttons_pressed & 0x2000) {
-        if (stage->next)
-            gradient->selected_stage = stage->next;
-        return 1;
-    }
-    if (pad->digital_buttons & 0xa000)
-        return 1;
-    lower = stage->previous ? stage->previous->time : 0.0f;
-    upper = stage->next ? stage->next->time : 1.0f;
-    right2 = pad->analog_r2;
-    left2 = pad->analog_l2;
-    left1 = pad->analog_l1;
-    right1 = pad->analog_r1;
-    decrease = left1 ? left1 : left2;
-    increase = right1 ? right1 : right2;
-    if (!(increase && !decrease)) {
-        if (decrease) {
-            f32 time = stage->time - ((f32)(decrease)) / 15360.0f;
-            stage->time = lower > time ? lower : time;
-            gradient->change_timer = 60;
-        }
+static void eduicbProcessGradPick(eduimenu_s *menu, eduiitem_s *item) {
+    edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;
+    eduiitem_s *pick;
+    static eduimenu_s *gpcfg = 0;
+    gpcfg = eduiMenuCreate(menu->x + 10, menu->y + 40, 180, 250, menu->font, eduicbPickCFGCancel, "GradPick Adjust");
+    if (!gpcfg)
+        return;
+    if (item->type == 9) {
+        pick = eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgCPPress, "Edit");
     } else {
-        f32 time = ((f32)(increase)) / 15360.0f + stage->time;
-        stage->time = upper < time ? upper : time;
-        gradient->change_timer = 60;
+        i32 grey = item->type == 8;
+        pick = eduiItemColourPickCreate((u32)item, &ed_attr, cbgpcfgCPPress, "Colourpick");
+        if (grey && pick) {
+            pick->type = 11;
+            pick->process = eduicbProcessGreyPick;
+            pick->render = eduicbRenderGreyPick;
+        }
+        if (gradient->selected_stage) {
+            f32 hue = gradient->selected_stage->hue;
+            f32 saturation = gradient->selected_stage->saturation;
+            f32 value = gradient->selected_stage->value;
+            edui_colour_pick_s *colour = (edui_colour_pick_s *)pick;
+            colour->hue = hue;
+            colour->saturation = saturation;
+            colour->value = value;
+            colour->cursor_x = (f32)(hue / 360.0);
+            colour->cursor_y = value;
+        }
     }
-    return 0;
+    eduiMenuAddItem(gpcfg, pick);
+    eduiMenuAddItem(gpcfg, eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgAdd, "Add"));
+    eduiMenuAddItem(gpcfg, eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgDel, "Del"));
+    eduiMenuAddItem(gpcfg, eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgCopy, "Copy"));
+    edui_last_item->type = item->type;
+    pick = eduiItemSelCreate((u32)item, &ed_attr, 0, 0, cbgpcfgPaste, "Paste");
+    if (pick)
+        pick->render = eduicbRenderSelWithClipColour;
+    eduiMenuAddItem(gpcfg, pick);
+    edui_last_item->type = item->type;
+    eduiMenuAttach(menu, gpcfg);
 }
 
 void eduiCreateMessageMenu(eduimenu_s *parent, char *message, i32 highlighted) {
@@ -2352,4 +2312,65 @@ void __cdecl RenderFileSel3(i32 draw_title) {
     NuQFntPrintU(system_qfont, SortStrings[FS_SortMode]);
     NuQFntPopCoordinateSystem();
     NuQFntPopPrintMode();
+}
+
+STATIC_ASSERT(offsetof(edui_gradient_pick_s, first_stage) == 0x4c);
+STATIC_ASSERT(offsetof(edui_gradient_pick_s, selected_stage) == 0x50);
+STATIC_ASSERT(offsetof(edui_gradient_pick_s, changed) == 0x54);
+STATIC_ASSERT(offsetof(edui_gradient_pick_s, change_timer) == 0x6c);
+STATIC_ASSERT(offsetof(edui_gradient_node_s, next) == 0);
+STATIC_ASSERT(offsetof(edui_gradient_node_s, previous) == 4);
+STATIC_ASSERT(offsetof(edui_gradient_node_s, time) == 8);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons) == 0x70);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, digital_buttons_pressed) == 0x78);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l1) == 0x9c);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r1) == 0x9d);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l2) == 0x9e);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r2) == 0x9f);
+
+i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;
+    edui_gradient_node_s *stage;
+    f32 lower, upper;
+    i32 decrease, increase;
+    (void)delta_time;
+    if (gradient->changed)
+        gradient->changed(menu, item, pad->digital_buttons);
+    if (pad->digital_buttons_pressed & 0x40) {
+        eduicbProcessGradPick(menu, item);
+        return 0;
+    }
+    if (!gradient->selected_stage)
+        gradient->selected_stage = gradient->first_stage;
+    stage = gradient->selected_stage;
+    if (!stage)
+        return 0;
+    if (pad->digital_buttons_pressed & 0x8000) {
+        if (stage->previous)
+            gradient->selected_stage = stage->previous;
+        return 1;
+    }
+    if (pad->digital_buttons_pressed & 0x2000) {
+        if (stage->next)
+            gradient->selected_stage = stage->next;
+        return 1;
+    }
+    if (pad->digital_buttons & 0xa000)
+        return 1;
+    lower = stage->previous ? stage->previous->time : 0.0f;
+    upper = stage->next ? stage->next->time : 1.0f;
+    decrease = pad->analog_l1 ? pad->analog_l1 : pad->analog_l2;
+    increase = pad->analog_r1 ? pad->analog_r1 : pad->analog_r2;
+    if (decrease) {
+        f32 step = (f32)(decrease / 15360.0);
+        f64 time = (f64)stage->time - step;
+        stage->time = lower > time ? lower : time;
+        gradient->change_timer = 60;
+    } else if (increase) {
+        f32 step = (f32)(increase / 15360.0);
+        f64 time = (f64)step + stage->time;
+        stage->time = upper < time ? upper : time;
+        gradient->change_timer = 60;
+    }
+    return 0;
 }

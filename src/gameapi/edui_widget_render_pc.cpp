@@ -1758,3 +1758,103 @@ extern "C" i32 __cdecl eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *i
     }
     return 0;
 }
+
+typedef struct edui_gradient_stage_pc_s {
+    f32 time, hue, saturation, value, red, green, blue;
+    u32 colour, metadata;
+} EDUI_GRADIENT_STAGE_PC;
+STATIC_ASSERT(sizeof(EDUI_GRADIENT_STAGE_PC) == 0x24);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, time) == 0);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, hue) == 4);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, saturation) == 8);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, value) == 0xc);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, red) == 0x10);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, green) == 0x14);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, blue) == 0x18);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, colour) == 0x1c);
+STATIC_ASSERT(offsetof(EDUI_GRADIENT_STAGE_PC, metadata) == 0x20);
+STATIC_ASSERT(offsetof(edui_gradient_node_s, hue) == 0x10);
+STATIC_ASSERT(offsetof(edui_gradient_node_s, saturation) == 0x14);
+STATIC_ASSERT(offsetof(edui_gradient_node_s, value) == 0x18);
+STATIC_ASSERT(offsetof(edui_gradient_node_s, metadata) == 0x1c);
+STATIC_ASSERT(offsetof(edui_gradient_pick_s, first_stage) == 0x4c);
+
+extern "C" edui_gradient_node_s *__cdecl eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green,
+                                                             f32 blue) {
+    f32 hue, saturation, value;
+    EduiColourRgbToHsvPc(red, green, blue, &hue, &saturation, &value);
+    return eduiGradStageAdd(item, time, hue, saturation, value);
+}
+
+extern "C" i32 __cdecl eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE_PC *stages, i32 capacity) {
+    edui_gradient_node_s *node = ((edui_gradient_pick_s *)item)->first_stage;
+    f32 red, green, blue;
+    i32 count = 0;
+    for (; node; node = node->next, ++count) {
+        if (count < capacity) {
+            EDUI_GRADIENT_STAGE_PC *stage = &stages[count];
+            stage->time = node->time;
+            stage->hue = node->hue;
+            stage->saturation = node->saturation;
+            stage->value = node->value;
+            eduiHSVToRGB(node->hue, node->saturation, node->value, red, green, blue);
+            stage->red = red;
+            stage->green = green;
+            stage->blue = blue;
+            stage->colour =
+                (u32)(red * 255.0) - (((((u32)(blue * -255.0) + 0x8000u) << 8) + (u32)(green * -255.0)) << 8);
+            stage->metadata = node->metadata;
+        }
+    }
+    return count;
+}
+
+extern "C" i32 __cdecl eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    edui_colour_pick_s *pick = (edui_colour_pick_s *)item;
+    i32 left = pad->analog_l1 ? pad->analog_l1 : pad->analog_l2;
+    i32 right = pad->analog_r1 ? pad->analog_r1 : pad->analog_r2;
+    (void)delta_time;
+    if (left) {
+        f64 value = pick->value - left / 4192.0;
+        pick->value = value < 0.0 ? 0.0 : value;
+        return 1;
+    }
+    if (right) {
+        f64 value = pick->value + right / 4192.0;
+        pick->value = value > 1.0 ? 1.0 : value;
+        return 1;
+    }
+    pick->saturation = 0.0f;
+    pick->hue = 0.0f;
+    if ((pad->digital_buttons_pressed & 0x40) && pick->changed)
+        pick->changed(menu, item, pad->digital_buttons);
+    return 0;
+}
+
+extern "C" i32 __cdecl eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                                                     i32 selected) {
+    i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+    f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
+    item->x = x;
+    item->y = y;
+    if (edui_donotdraw == 0) {
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted],
+                      (NUMTL *)uimtls[ui_bgmtl]);
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+        }
+    }
+    EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, item->text);
+    f32 red, green, blue;
+    if (item->type == 7)
+        eduiHSVToRGB(EduiColourClipboardPc.hue, EduiColourClipboardPc.saturation, EduiColourClipboardPc.value, red,
+                     green, blue);
+    else
+        eduiHSVToRGB(0.0f, 0.0f, EduiColourClipboardPc.gray, red, green, blue);
+    u32 colour = (u32)(red * 255.0) - (((((u32)(blue * -255.0) + 0x8000u) << 8) + (u32)(green * -255.0)) << 8);
+    EduiDrawGradientSpanPc(x + width - 45, y, 40, height, colour, colour, 0.0f, 1.0f);
+    return height;
+}

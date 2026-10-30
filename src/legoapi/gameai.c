@@ -1099,3 +1099,230 @@ i32 __cdecl AI_GetOutput(void *input, i32 output, i32 mode) {
         return (~(((LEVEL_SCRIPT_PROCESS_PC *)gizmo->object)->processor.flags >> 1)) & 1;
     return 0;
 }
+
+#pragma data_seg(".data$BatmanJumpDistancePc")
+f32 BatmanJumpDistancePc[3] = {0.8f, 1.2f, 10000.0f};
+#pragma data_seg()
+
+STATIC_ASSERT(sizeof(AIPATHNODE_PC) == 0x5c);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, position) == 4);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, radius) == 0x10);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, radius_squared) == 0x14);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, runtime_flags) == 0x2b);
+STATIC_ASSERT(offsetof(AIPATHNODE_PC, special_handle) == 0x40);
+STATIC_ASSERT(offsetof(AIPACKET_PC, movement_destination) == 0x104);
+STATIC_ASSERT(offsetof(AIPACKET_PC, movement_stopping_distance) == 0x110);
+STATIC_ASSERT(offsetof(AIPACKET_PC, mover_height) == 0x120);
+STATIC_ASSERT(offsetof(AIPACKET_PC, inside_path_node) == 0x124);
+STATIC_ASSERT(offsetof(AIPACKET_PC, path_connection_state) == 0x139);
+STATIC_ASSERT(offsetof(AIPACKET_PC, path_info) == 0x158);
+STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
+STATIC_ASSERT(offsetof(AIPACKET_PC, capabilities) == 0x1f4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_jump_destination_distance_pc) == 0xed0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, jump_reentry_timer) == 0xd28);
+STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_collision_priority_pc) == 0x292);
+
+i32 __cdecl Batman_PrepareJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
+    i32 index;
+    GAMEOBJECT *owner;
+    u32 flags;
+    i32 destination_index = 0;
+    AIPATHNODE_PC *destination = NULL;
+    NUVEC offset;
+    AIPATHCNX_PC *connection;
+    AIPATHNODE_PC *source = NULL;
+    f32 distance;
+    f32 radius;
+    i32 ready = 0;
+    f32 jump_distance;
+    i32 skip_ahead;
+    GAMEOBJECT *other;
+    f32 height;
+    f64 tolerance;
+    f32 clearance;
+
+    owner = (GAMEOBJECT *)object->owner;
+    flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
+    if ((packet->path_info.flags & 1) != 0) {
+        source =
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+        destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
+        destination = &packet->path_info.path->nodes[destination_index];
+        distance = NuVecXZDistSqr(&object->position, &destination->position, &offset);
+        if (!(distance < destination->radius_squared)) {
+            if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+                packet->inside_path_node != destination_index &&
+                (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
+                 (1 << (destination_index % 8))) != 0) {
+                if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
+                    return 1;
+                }
+                packet->path_connection_state = 1;
+            } else if (packet->path_connection_state == 0) {
+                distance = packet->path_info.distance * packet->path_info.connection->horizontal_distance;
+                packet->path_connection_state = 1;
+                if (packet->path_info.direction != 0) {
+                    if (source->radius > distance)
+                        packet->path_connection_state = 0;
+                } else if (distance > (f64)packet->path_info.connection->horizontal_distance - destination->radius) {
+                    packet->path_connection_state = 0;
+                }
+            }
+            goto check;
+        }
+    }
+    packet->path_connection_state = 0;
+check:
+    if (packet->path_connection_state == 0) {
+        return 0;
+    }
+    offset.x = destination->position.x - source->position.x;
+    offset.y = 0.0f;
+    offset.z = destination->position.z - source->position.z;
+    radius = source->radius;
+    if (radius < 0.0f) {
+        radius = 0.0f;
+    }
+    NuVecScale(&offset, &offset, radius / packet->path_info.connection->horizontal_distance);
+    NuVecAdd(&packet->movement_destination, &source->position, &offset);
+    distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
+    if (checks != 0 && (distance < (f64)ai_moveradius * ai_moveradius || owner->respawn_timer > jump_stuck_time ||
+                        owner->character_context == 0x44)) {
+        packet->movement_destination = object->position;
+        ready = 1;
+    }
+    packet->movement_stopping_distance = 0.0f;
+    if ((flags & 4) != 0)
+        jump_distance = BatmanJumpDistancePc[2];
+    else if ((flags & 2) != 0)
+        jump_distance = BatmanJumpDistancePc[1];
+    else if ((flags & 0x20) != 0)
+        jump_distance = BatmanJumpDistancePc[1];
+    else
+        jump_distance = BatmanJumpDistancePc[0];
+    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
+        packet->flags |= 0x800000;
+        packet->path_connection_state = 1;
+    }
+    flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
+    switch (packet->path_connection_state) {
+        case 1:
+            if (ready != 0) {
+                skip_ahead =
+                    (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x200) == 0 &&
+                    packet->inside_path_node != destination_index &&
+                    (packet->path_info.path->previous_inside_node_bits[destination_index / 8] &
+                     (1 << (destination_index % 8))) != 0;
+                if (skip_ahead) {
+                    if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
+                        return 1;
+                    }
+                } else if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) == 0) {
+                    if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x400) != 0 ||
+                        ((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
+                        NuSpecialCompare(&source->special_handle, &destination->special_handle) != 0) {
+                        packet->path_connection_state = 4;
+                    } else {
+                        packet->path_connection_state = 2;
+                    }
+                }
+            }
+            break;
+        case 2:
+            if ((flags & 0x400) != 0) {
+                packet->path_connection_state = 4;
+            } else {
+                distance = NuVecDist(&object->position, &destination->position, &offset);
+                if (((destination->runtime_flags | source->runtime_flags) & 2) == 0 ||
+                    (f64)distance - destination->radius > jump_distance) {
+                    packet->path_connection_state = 3;
+                    if ((destination->runtime_flags & 2) != 0)
+                        owner->ai_jump_destination_distance_pc = 0.0f;
+                    else
+                        owner->ai_jump_destination_distance_pc = distance;
+                }
+            }
+            break;
+        case 3:
+            if ((flags & 0x400) != 0) {
+                packet->path_connection_state = 4;
+            } else {
+                distance = NuVecDist(&object->position, &destination->position, &offset);
+                if (((destination->runtime_flags | source->runtime_flags) & 2) == 0) {
+                    owner->ai_jump_destination_distance_pc = 0.0f;
+                } else if (!((f64)distance - destination->radius < jump_distance)) {
+                    break;
+                }
+                if (!(distance > owner->ai_jump_destination_distance_pc)) {
+                    owner->ai_jump_destination_distance_pc = distance;
+                } else {
+                    packet->path_connection_state = 4;
+                    owner->ai_jump_destination_distance_pc = 0.0f;
+                }
+            }
+            break;
+        case 4:
+            if ((flags & 0x26) != 0) {
+                if (0.0f >= owner->jump_reentry_timer) {
+                    packet->path_connection_state = 5;
+                    owner->portal_flags |= 0x1000;
+                }
+                break;
+            }
+            packet->path_connection_state = 5;
+            owner->portal_flags &= ~0x1000;
+            // Single jumps immediately enter the launch state.
+        case 5:
+            if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
+                return 1;
+            }
+            connection = packet->path_info.connection;
+            if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0) {
+                other = Obj;
+                for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
+                    if ((other->flags_1fc_word & 1) == 0 || other == owner || (other->flags_1fc_word & 0x1000) == 0 ||
+                        other->dead != 0) {
+                        continue;
+                    }
+                    if (other != player && other->ai_packet.path_info.connection == packet->path_info.connection &&
+                        other->ai_packet.special_move_node == NULL &&
+                        other->ai_packet.path_update_flag < packet->path_connection_state) {
+                        continue;
+                    }
+                    height = destination->position.y;
+                    tolerance = 0.5 * ai_moveradius;
+                    if (owner->collision_min.y > height + tolerance) {
+                        if (other->collision_min.y > height + tolerance) {
+                            continue;
+                        }
+                    } else if (height - tolerance > owner->collision_min.y &&
+                               height - tolerance > other->collision_min.y) {
+                        continue;
+                    }
+                    clearance = (f32)((f64)other->ai_packet.mover_height + other->ai_packet.mover_height +
+                                      packet->mover_height);
+                    offset.x = other->position.x - destination->position.x;
+                    if (!(clearance > offset.x && offset.x > -clearance)) {
+                        continue;
+                    }
+                    offset.z = other->position.z - destination->position.z;
+                    if (!(clearance > offset.z) || !(other->collision_max.y >= height) ||
+                        !((f64)height + owner->scaled_height >= other->collision_min.y)) {
+                        continue;
+                    }
+                    distance = (f32)((f64)offset.x * offset.x + (f64)offset.z * offset.z);
+                    if (!((f64)clearance * clearance > distance))
+                        continue;
+                    packet->path_connection_state = 1;
+                    ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+                    return 1;
+                }
+            }
+            SetSpecialMove(owner, destination, NULL, 1);
+            owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+            break;
+    }
+    ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
+    return 1;
+}

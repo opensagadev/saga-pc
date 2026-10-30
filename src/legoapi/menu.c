@@ -1286,3 +1286,37 @@ void __cdecl MenuDrawMiniKit(MENU *menu) {
                     colour, colour, colour, 0.15f, 1, NULL, 0, opacity);
     }
 }
+
+extern i16 TextIdPc880fc4;
+
+void __cdecl MenuUpdateBonusWin(MENU *menu) {
+    if (menu->menu_time >= 5.0f) {
+        CompleteLevel(WORLD);
+    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
+        PlaySfx("Victory", NULL);
+        BonusWinFlag = 1;
+    }
+}
+
+void __cdecl MenuUpdateBonusComplete(MENU *menu) {
+    if (menu->menu_time >= 5.0f) {
+        CompleteLevel(WORLD);
+    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
+        PlaySfx("Victory", NULL);
+        BonusWinFlag = 1;
+    }
+}
+
+void __cdecl MenuDrawBonusComplete(MENU *menu) {
+    i32 red, green;
+    (void)menu;
+    if (MenuStopDraw != 0)
+        return;
+    red = 255;
+    green = 191;
+    if (menu_flash != 0) {
+        red = 191;
+        green = 143;
+    }
+    SmartTextPc(TTab[TextIdPc880fc4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
+}

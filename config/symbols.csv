@@ -61,6 +61,7 @@ address,symbol,size,ctype
 0x4050c0,_Batarang_MoveCode,2006,
 0x4058a0,_Batarang_SeekToTarget,530,
 0x405ac0,_Batarangs_Update,651,
+0x406030,_Batman_PrepareJumpPc,1856,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x4078d0,_Batman_PreparingForSpecialMove,389,
 0x407a60,_Batman_MidSpecialMove,112,
 0x407ad0,_Batman_GameAISysInit,144,
@@ -349,6 +350,7 @@ address,symbol,size,ctype
 0x42abf0,_NewGame,1156,void __cdecl(void)
 0x42b080,_ReCalculateCompletionPoints,1078,void __cdecl(void)
 0x42b4c0,_InitChallenge,47,
+0x42b4f0,_MenuUpdateEndChallenge,83,void __cdecl(MENU *)
 0x42b550,_MenuDrawEndChallenge,410,
 0x42b6f0,_SetBonusWinner,55,void __cdecl (i32)
 0x42b730,_BuyAllShopExtras,137,void __cdecl(void)
@@ -1257,6 +1259,8 @@ address,symbol,size,ctype
 0x00476010,_Arcade_AIKilled,258,void __cdecl (i32)
 0x476120,_Arcade_CoinCollected,231,"void __cdecl (i32, u32 *, u32)"
 0x00476250,_Arcade_Kill,67,"void __cdecl (i32, i32)"
+0x4762a0,_Arcade_UpdateEndMenu,80,void __cdecl(MENU *)
+0x4762f0,_Arcade_DrawEndMenu,112,void __cdecl(MENU *)
 0x476360,?HubInitBonusModePc@@YAXXZ,110,
 0x004763d0,?HubDrawBonusModeMenuPc@@YAXHM@Z,1076,
 0x476840,?Hub_MakeFreePlayList@@YAXHH@Z,526,
@@ -1566,11 +1570,15 @@ address,symbol,size,ctype
 0x496740,_MakeMenuPacket,89,void __cdecl(void)
 0x4967a0,_MenuUpdateMiniKit,5,void __cdecl(MENU *)
 0x4967b0,_MenuDrawMiniKit,1167,void __cdecl(MENU *)
+0x496c40,_MenuUpdateBonusWin,83,void __cdecl(MENU *)
 0x496ca0,_MenuDrawBonusWin,146,
+0x496d40,_MenuUpdateBonusComplete,83,void __cdecl(MENU *)
+0x496da0,_MenuDrawBonusComplete,113,void __cdecl(MENU *)
 0x496e60,_EndMissionsMenu,65,void __cdecl(void)
 0x496eb0,?MissionIconPositionsPc@@YAXPAUMISSION_SYSTEM_READER_PC@@H@Z,214,
 0x496f90,_MenuInitMissions,97,void __cdecl(MENU *)
 0x497000,_MenuDrawMissions,1340,void __cdecl(MENU *)
+0x497540,_MenuUpdateEndMission,83,void __cdecl(MENU *)
 0x4975a0,_MenuDrawEndMission,378,void __cdecl(MENU *)
 0x00497720,_InitMission,49,"void __cdecl(MISSIONSYS_PC *, i32)"
 0x497760,_EndMission,144,"void __cdecl(MISSIONSYS_PC *, i32, i32)"
@@ -2865,6 +2873,7 @@ address,symbol,size,ctype
 0x4fff10,_CutSceneMissingObjectDiagnosticPc,1,void __cdecl(char *)
 0x4fff20,_CutSceneStreamDiagnosticPc,1,void __cdecl CutSceneStreamDiagnosticPc(char *)
 0x4fffb0,_CutMatrixAssignPrivatePc,95,
+0x500020,_CutSceneSetPrimitiveColourPc,108,
 0x5000d0,_NuGCutSceneSysInit,22,void __cdecl(CUT_LOCATOR_FUNCTION_ENTRY_PC *)
 0x500140,_CutSceneRemapFocusPc,121,
 0x005001c0,_NuGCutSceneSysPostBackgroundLoad,55,void __cdecl (void)
@@ -2927,6 +2936,7 @@ address,symbol,size,ctype
 0x503770,_CutSceneTriggerSysUpdatePc,127,
 0x503820,_CutSceneTriggerSysResetPc,124,
 0x5038a0,_instNuGCutSceneCalculateAverageCentre,282,
+0x503ab0,_DisplayCutSceneMemory,1395,void __cdecl(void)
 0x505780,_CutSceneFixPtrsPc,154,
 0x505820,_NuGCutSceneLoad,608,"void *__cdecl(char *,VARIPTR *,VARIPTR *,i32)"
 0x505b20,_NuGCutSceneDestroy,26,void __cdecl(void *)
@@ -6711,6 +6721,7 @@ address,symbol,size,ctype
 0x6194c0,_eduicbInteractSel,81,
 0x00619570,_EduiDrawDisabledItemPc,298,"void(eduiitem_s *, i32, i32, i32, i32)"
 0x6196a0,_eduicbRenderSel,341,
+0x619800,_eduicbRenderSelWithClipColour,563,"i32 __cdecl(eduimenu_s *, eduiitem_s *, i32, i32, i32, i32)"
 0x619a40,_eduicbRenderCheck,518,
 0x619c50,_eduiItemTextPickSetFmt,135,
 0x619ff0,?EduiRenderTextCursorPc@@YAXPADHHHI@Z,287,ordinary private cursor helper; full Native extent
@@ -6726,6 +6737,7 @@ address,symbol,size,ctype
 0x0061ad30,_eduiItemColourPickSetHSV,40,"void __cdecl(edui_colour_pick_s *, f32, f32, f32)"
 0x61ad60,_eduiItemColourPickSetRGB,69,
 0x61adb0,_eduicbProcessColourPick,686,
+0x61b060,_eduicbProcessGreyPick,191,"i32 __cdecl(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *)"
 0x61b120,?EduiColourPickWithinHuePc@@YAHPAUedui_interact_s@@@Z,85,ordinary private source helper; full native CFG extent
 0x61b180,?EduiColourPickWithinSaturationPc@@YAHPAUedui_interact_s@@@Z,111,ordinary private source helper; full native CFG extent
 0x61b1f0,?EduiColourPickWithinConfirmPc@@YAHPAUedui_interact_s@@@Z,99,ordinary private source helper; full native CFG extent
@@ -15026,6 +15038,13 @@ address,symbol,size,ctype
 0x0075eca8,_FileDirectorySourceNamePc,,const char[56]
 0x0075ece0,_FileDirectoryWildcardPc,,const char[4]
 0x0075ece4,__real@7f7fffff,4,const f32
+0x75ece8,__real@43530000,,const f32
+0x75ecec,__real@43510000,,const f32
+0x75ecf0,__real@43500000,,const f32
+0x75ecf4,__real@44188000,,const f32
+0x75ecf8,__real@43520000,,const f32
+0x75ecfc,__real@434e0000,,const f32
+0x75ed00,__real@4082200000000000,,const f64
 0x75ee4c,??_C@_06OPMGJGJF@SCRIPT?$AA@,,char []
 0x75ee54,__real@be19999a,4,const f32
 0x75ee58,__real@3fc70a3d80000000,8,const f64
@@ -15431,6 +15450,8 @@ address,symbol,size,ctype
 0x760494,??_C@_0BG@IFCCHAGJ@?$CFsLevels?2?$CFs?2?$CFs?2ai?4pak?$AA@,22,const char[22]
 0x7604b4,??_C@_09DNOCENCD@Area?5Name?$AA@,,char []
 0x7604c0,??_C@_0M@PCEMPPIA@Rename?5Area?$AA@,,char []
+0x7604dc,_AiAntinodeRenderNearestPc,,const char[]
+0x7605a8,_AiAntinodeRenderMovePc,,const char[]
 0x7605d4,??_C@_0N@JOGKKIAG@Locator?5Name?$AA@,,char []
 0x7605e4,??_C@_0P@PMPBEANL@Rename?5Locator?$AA@,,char []
 0x7605f4,??_C@_08LOOAOMLJ@NewSet?$CFd?$AA@,,char []
@@ -15439,7 +15460,26 @@ address,symbol,size,ctype
 0x760638,??_C@_0BD@CFFFOHOC@Rename?5Locator?5Set?$AA@,,char []
 0x76064c,??_C@_0BF@GGJNDAIM@Add?5Locators?5By?5Name?$AA@,,char []
 0x760664,??_C@_0BD@OEHEHOJF@Select?5Locator?5Set?$AA@,,char []
+0x7606a0,_AiAntinodeRenderRotateRightPc,,const char[]
+0x7606b8,_AiAntinodeRenderRotateLeftPc,,const char[]
+0x7607a0,_AiAntinodeRenderDecreaseRadiusPc,,const char[]
+0x7607d4,_AiAntinodeRenderIncreaseRadiusPc,,const char[]
 0x760894,??_C@_04OEDFLLKD@?$CC?$CFs?$CC?$AA@,5,char []
+0x760920,_AiAntinodeRenderCreatePc,,const char[]
+0x760934,_AiAntinodeRenderSelectPc,,const char[]
+0x760948,_AiAntinodeRenderAdjustLowerPc,,const char[]
+0x760964,_AiAntinodeRenderAdjustUpperPc,,const char[]
+0x760980,_AiAntinodeRenderDecreaseLowerPc,,const char[]
+0x76099c,_AiAntinodeRenderIncreaseLowerPc,,const char[]
+0x7609b8,_AiAntinodeRenderDecreaseUpperPc,,const char[]
+0x7609d4,_AiAntinodeRenderIncreaseUpperPc,,const char[]
+0x7609f0,_AiAntinodeRenderDecreaseZPc,,const char[]
+0x760a04,_AiAntinodeRenderIncreaseZPc,,const char[]
+0x760a1c,_AiAntinodeRenderDecreaseXPc,,const char[]
+0x760a30,_AiAntinodeRenderIncreaseXPc,,const char[]
+0x760a4c,_AiAntinodeRenderNoPlatformPc,,const char[]
+0x760a68,_AiAntinodeRenderPlatformPc,,const char[]
+0x760a74,_AiAntinodeRenderTitlePc,,const char[]
 0x00760b70,_AIPathCurrentPositionName,17,const char[17]
 0x00760b84,_AIPathCurrentDistanceName,12,const char[12]
 0x00760b90,_AIPathFacingName,7,const char[7]
@@ -16638,6 +16678,7 @@ address,symbol,size,ctype
 0x0076ad98,__real@3fc4000000000000,8,const f64
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
 0x0076ada8,??_C@_06KLGABMJO@?$CF1?403f?$AA@,7,const char[7]
+0x76adb0,__real@40b0600000000000,,const f64
 0x76adb8,__real@3f555555,,const f32
 0x76adbc,__real@3f2aaaab,,const f32
 0x76adc0,__real@3e2aaaab,4,const f32
@@ -16674,6 +16715,7 @@ address,symbol,size,ctype
 0x76b014,??_C@_04BBNPPDNC@Edit?$AA@,5,char []
 0x76b01c,??_C@_0L@MDHMGCLC@Colourpick?$AA@,11,char []
 0x76b028,??_C@_0BA@FIGNFJFK@GradPick?5Adjust?$AA@,16,char []
+0x76b038,__real@40ce000000000000,,const f64
 0x76b040,__real@4097700000000000,8,const f64
 0x0076b048,??_C@_0BF@FPGFFGLP@Paste?5From?5Clipboard?$AA@,,"constchar minimum21B observedNativeCString; allocationextentunknown/0credit"
 0x0076b060,??_C@_0BC@GNPLLHLO@Copy?5To?5Clipboard?$AA@,,"constchar minimum18B observedNativeCString; allocationextentunknown/0credit"
@@ -20337,6 +20379,7 @@ address,symbol,size,ctype
 0x7ef1a0,_AttractoOutputNamePc,4,char *
 0x7ef210,_AttractoRegistryNamePc,4,char *
 0x7ef224,_BatarangCatwomanStunTimePc,4,f32
+0x7ef294,_BatmanJumpDistancePc,,f32[3]
 0x007ef388,_GlobalBoltType,7216,BOLTTYPE_PC[44]
 0x7f1024,_atat_locators,16,i32[4]
 0x7f1034,_cable_speed,4,f32
@@ -24445,10 +24488,16 @@ address,symbol,size,ctype
 0x9212b8,_CutSceneCameraMatrixPc,,NUMTX
 0x9212f8,_CutSceneBackgroundInstancesPc,,INSTNUGCUTSCENE *
 0x921324,_UpdateLocatorVfxFn,,"void (__cdecl *)(i32,NUMTX *)"
+0x921328,_DefragCutSceneListBase,,CUT_MEMORY_ENTRY_PC *
 0x92132c,_TriggerLocatorVfxFn,,"i32 (__cdecl *)(i32,NUMTX *)"
+0x921330,_DefragCutSceneEndMem,,void *
 0x921334,_ReleaseLocatorVfxFn,,void (__cdecl *)(i32)
 0x921338,_CutSceneFocusLocationPc,,NUVEC
 0x921348,_LookupLocatorVfxFn,,i32 (__cdecl *)(char *)
+0x92134c,_DefragInstEndMem,,void *
+0x921350,_DefragCutSceneBaseMem,,void *
+0x921354,_DefragInstBaseMem,,void *
+0x921358,_DefragGetInstFn,,CUT_MEMORY_INSTANCE_PC * (__cdecl *)(void *)
 0x92135c,_active_cutscene_instances,,INSTNUGCUTSCENE *
 0x92136c,_CutSceneLookupAllDebrisPagesPc,,i32
 0x921370,_CutSceneSynchroCounterPc,,i32
@@ -24485,6 +24534,7 @@ address,symbol,size,ctype
 0x9213e8,_CutSceneStreamLoadGuardPc,,i32
 0x9213ec,_CutSceneDebrisAxisSizePc,,f32
 0x9213f0,_CutSceneDebrisProcessModePc,,i32
+0x9213f4,_DefragCutSceneListSize,,i32
 0x921400,_dme_b,,u8
 0x921401,_dme_r,,u8
 0x921402,_dme_g,,u8
@@ -25866,7 +25916,7 @@ address,symbol,size,ctype
 0x29130e4,?PadRepeat@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130e8,?LastPad@?1??FS_GetPadWithRepeat@@9@9,,
 0x29130ec,?tpent@?1??eduiAddTextPickEntEx@@9@9,,
-0x29130f0,?gpcfg@?2??eduicbProcessGradPick@@9@9,4,eduimenu_s *
+0x29130f0,?gpcfg@?1??eduicbProcessGradPick@@9@9,4,eduimenu_s *
 0x29130f4,?down_rept@?1??eduiMenuProcessInput@@9@9,,
 0x29130f8,?up_rept@?1??eduiMenuProcessInput@@9@9,,
 0x029130fc,_EduiColourPickerInitializedPc,,"i32; minimum4Bworkingview Nativeextentunknown"

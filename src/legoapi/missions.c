@@ -242,3 +242,12 @@ void __cdecl MenuDrawEndMission(MENU *menu) {
                     menu_flash == 0 ? 63 : 31, 0, 1.7f, 1);
     }
 }
+
+void __cdecl MenuUpdateEndMission(MENU *menu) {
+    if (menu->menu_time >= 5.0f) {
+        CompleteLevel(WORLD);
+    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
+        PlaySfx("Victory", NULL);
+        BonusWinFlag = 1;
+    }
+}

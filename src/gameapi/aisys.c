@@ -16858,3 +16858,147 @@ void __cdecl pathEditor_OnPathCheck(NUVEC *point, EDAIPATHCHECK_s *result, EDAIP
         node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link);
     }
 }
+
+/* Independently observed NUL-terminated Native instruction strings.
+ * Separate sections preserve all existing Source data comparison spans. */
+#pragma const_seg(".rdata$AiAntinodeRenderNearestPc")
+const char AiAntinodeRenderNearestPc[] = "SELECT - Select nearest";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderMovePc")
+const char AiAntinodeRenderMovePc[] = "X - Move selected/Adjust size";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderRotateRightPc")
+const char AiAntinodeRenderRotateRightPc[] = "LRIGHT - Rotate right";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderRotateLeftPc")
+const char AiAntinodeRenderRotateLeftPc[] = "LLEFT - Rotate left";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderDecreaseRadiusPc")
+const char AiAntinodeRenderDecreaseRadiusPc[] = "LLEFT - Decrease radius";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderIncreaseRadiusPc")
+const char AiAntinodeRenderIncreaseRadiusPc[] = "LRIGHT - Increase radius, %.2f";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderCreatePc")
+const char AiAntinodeRenderCreatePc[] = "X - Create antinode";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderSelectPc")
+const char AiAntinodeRenderSelectPc[] = "X - Select antinode";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderAdjustLowerPc")
+const char AiAntinodeRenderAdjustLowerPc[] = "LDOWN - Adjust lower height";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderAdjustUpperPc")
+const char AiAntinodeRenderAdjustUpperPc[] = "LUP - Adjust upper height";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderDecreaseLowerPc")
+const char AiAntinodeRenderDecreaseLowerPc[] = "R1 - Decrease lower height";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderIncreaseLowerPc")
+const char AiAntinodeRenderIncreaseLowerPc[] = "L1 - Increase lower height";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderDecreaseUpperPc")
+const char AiAntinodeRenderDecreaseUpperPc[] = "R1 - Decrease upper height";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderIncreaseUpperPc")
+const char AiAntinodeRenderIncreaseUpperPc[] = "L1 - Increase upper height";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderDecreaseZPc")
+const char AiAntinodeRenderDecreaseZPc[] = "LDOWN - Decrease Z";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderIncreaseZPc")
+const char AiAntinodeRenderIncreaseZPc[] = "LUP - Increase Z, %.2f";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderDecreaseXPc")
+const char AiAntinodeRenderDecreaseXPc[] = "LLEFT - Decrease X";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderIncreaseXPc")
+const char AiAntinodeRenderIncreaseXPc[] = "LRIGHT - Increase X, %.2f";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderNoPlatformPc")
+const char AiAntinodeRenderNoPlatformPc[] = "Not attached to platform";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderPlatformPc")
+const char AiAntinodeRenderPlatformPc[] = "Platform=%s";
+#pragma const_seg()
+#pragma const_seg(".rdata$AiAntinodeRenderTitlePc")
+const char AiAntinodeRenderTitlePc[] = "Antinode Editor";
+#pragma const_seg()
+
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, camera_position) == 0x28);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, unknown_4088c) + offsetof(AI_EDITOR_ANTINODE_POOL_PC, selected) ==
+              0x4381c);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, unknown_4088c) + offsetof(AI_EDITOR_ANTINODE_POOL_PC, nearest) ==
+              0x43820);
+STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, pad_buttons) == 0xc3938);
+STATIC_ASSERT(offsetof(EDANTINODE_s, position) == 8);
+STATIC_ASSERT(offsetof(EDANTINODE_s, radius) == 0x14);
+STATIC_ASSERT(offsetof(EDANTINODE_s, special) == 0x20);
+STATIC_ASSERT(offsetof(EDANTINODE_s, base_radius) == 0x40);
+STATIC_ASSERT(offsetof(EDANTINODE_s, base_height) == 0x44);
+STATIC_ASSERT(offsetof(EDANTINODE_s, type) == 0x49);
+STATIC_ASSERT(sizeof(NUVEC) == 12);
+
+#define ANTINODE_RENDER_POOL_PC ((AI_EDITOR_ANTINODE_POOL_PC *)aieditor->unknown_4088c)
+
+void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
+    EDANTINODE_s *display;
+    EDANTINODE_s *nearest;
+    NUVEC displacement;
+    i32 text_x = (x + 10) * 16;
+
+    NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, AiAntinodeRenderTitlePc);
+    NuQFntSetColour(system_qfont, 0x80000000);
+    NuQFntSetScale(system_qfont, xscale, yscale);
+    display = ANTINODE_RENDER_POOL_PC->selected;
+    if (display == NULL)
+        display = ANTINODE_RENDER_POOL_PC->nearest;
+    if (display != NULL)
+        NuVecXZDist(&display->position, &aieditor->camera_position, &displacement);
+    nearest = ANTINODE_RENDER_POOL_PC->nearest;
+    if (nearest != NULL && nearest == ANTINODE_RENDER_POOL_PC->selected) {
+        char *platform_name = NuSpecialGetName(&display->special);
+        if (platform_name != NULL)
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 120, 16, AiAntinodeRenderPlatformPc, platform_name);
+        else
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 120, 16, AiAntinodeRenderNoPlatformPc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, AiAntinodeRenderMovePc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "TRI - Delete selected");
+        if (ANTINODE_RENDER_POOL_PC->selected->type == 0) {
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseRadiusPc,
+                          ANTINODE_RENDER_POOL_PC->selected->radius);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseRadiusPc);
+        } else if (aieditor->pad_buttons & 0x40) {
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseXPc,
+                          ANTINODE_RENDER_POOL_PC->selected->base_radius);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseXPc);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, AiAntinodeRenderIncreaseZPc,
+                          ANTINODE_RENDER_POOL_PC->selected->base_height);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, AiAntinodeRenderDecreaseZPc);
+        } else if ((AiEditorDisplayOptionsPc & 0x100) && (aieditor->pad_buttons & 0x1000)) {
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseUpperPc);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseUpperPc);
+        } else if ((AiEditorDisplayOptionsPc & 0x100) && (aieditor->pad_buttons & 0x4000)) {
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseLowerPc);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseLowerPc);
+        } else {
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderRotateLeftPc);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderRotateRightPc);
+            if (AiEditorDisplayOptionsPc & 0x100) {
+                NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, AiAntinodeRenderAdjustUpperPc);
+                NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, AiAntinodeRenderAdjustLowerPc);
+            }
+        }
+    } else {
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16,
+                      nearest != NULL ? AiAntinodeRenderSelectPc : AiAntinodeRenderCreatePc);
+        NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
+    }
+    antinodeEditorDrawAntinodes();
+    areaEditorDrawAreas();
+    pathEditorDrawPaths();
+    if (AiEditorDisplayOptionsPc & 8)
+        creatureEditor_RenderAllCreatures();
+    locatorEditorDrawLocators();
+}
+#undef ANTINODE_RENDER_POOL_PC

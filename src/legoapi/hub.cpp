@@ -5230,3 +5230,23 @@ extern "C" void __cdecl Hub_UpdateKit(void) {
         LevTime[4] = 0.6f;
     }
 }
+
+extern "C" void __cdecl Arcade_UpdateEndMenu(MENU *menu) {
+    if (menu->menu_time >= 5.0f) {
+        NewLData = HUB_LDATA;
+    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
+        PlaySfx("Victory", NULL);
+        BonusWinFlag = 1;
+    }
+}
+
+extern "C" void __cdecl Arcade_DrawEndMenu(MENU *menu) {
+    u32 flash, green;
+    (void)menu;
+    if (MenuStopDraw != 0)
+        return;
+    flash = (u32)menu_flash;
+    /* Native replaces only the low byte of the negated colour argument. */
+    green = ((0u - flash) & 0xffffff00u) | (flash != 0 ? 191u : 255u);
+    SmartTextEx(TTab[TextIdPc88075c], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, 0, green, 0, 1.7f, 1, NULL, 0, 128);
+}

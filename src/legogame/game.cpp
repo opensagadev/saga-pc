@@ -2455,3 +2455,12 @@ extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *op
 process_music:
     music_man.Process(FRAMETIME);
 }
+
+extern "C" void __cdecl MenuUpdateEndChallenge(MENU *menu) {
+    if (menu->menu_time >= 5.0f) {
+        CompleteLevel(WORLD);
+    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
+        PlaySfx("Victory", NULL);
+        BonusWinFlag = 1;
+    }
+}
