@@ -91,16 +91,29 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     return page;
 }
 
+/* Observed mouse delta fields of the existing PC input-state allocation.
+ * This view is not a separate object or a claim about the allocation extent. */
+typedef struct NuMouseVelocityStateViewPc {
+    u8 unknown_0000_to_6314[0x6314];
+    f32 delta_x;
+    f32 delta_y;
+    f32 delta_z;
+} NuMouseVelocityStateViewPc;
+STATIC_ASSERT(offsetof(NuMouseVelocityStateViewPc, delta_x) == 0x6314);
+STATIC_ASSERT(offsetof(NuMouseVelocityStateViewPc, delta_y) == 0x6318);
+STATIC_ASSERT(offsetof(NuMouseVelocityStateViewPc, delta_z) == 0x631c);
+STATIC_ASSERT(sizeof(NuMouseVelocityStateViewPc) == 0x6320);
+
 f32 NuMouseReadXVel(void) {
-    return 0.0f;
+    return (f32)(((NuMouseVelocityStateViewPc *)nu_input_state)->delta_x * -4.0);
 }
 
 f32 NuMouseReadYVel(void) {
-    return 0.0f;
+    return (f32)(((NuMouseVelocityStateViewPc *)nu_input_state)->delta_y * -4.0);
 }
 
 f32 NuMouseReadZVel(void) {
-    return 0.0f;
+    return (f32)(((NuMouseVelocityStateViewPc *)nu_input_state)->delta_z * -4.0);
 }
 
 void __cdecl NuKeyboardRead(void) {
@@ -505,4 +518,114 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
     camera->snapped_position.x = NuFloor(snap_delta.x) * camera->snap_step.x + camera->snap_origin.x;
     camera->snapped_position.y = NuFloor(snap_delta.y) * camera->snap_step.y + camera->snap_origin.y;
     camera->snapped_position.z = NuFloor(snap_delta.z) * camera->snap_step.z + camera->snap_origin.z;
+}
+
+/* PC Maya drag angles are observed through DWORD reads and low-WORD writes.
+ * The upper halves remain part of each view and are preserved by updates. */
+typedef union EdcamMayaAngleObservedPc {
+    u32 word;
+    struct {
+        u16 angle;
+        u16 upper;
+    } parts;
+} EdcamMayaAngleObservedPc;
+STATIC_ASSERT(sizeof(EdcamMayaAngleObservedPc) == 4);
+STATIC_ASSERT(offsetof(EdcamMayaAngleObservedPc, parts.angle) == 0);
+STATIC_ASSERT(offsetof(EdcamMayaAngleObservedPc, parts.upper) == 2);
+STATIC_ASSERT(offsetof(edcam_s, distance) == 0x14);
+STATIC_ASSERT(offsetof(edcam_s, distance_speed) == 0x6c);
+STATIC_ASSERT(offsetof(edcam_s, minimum_distance) == 0x70);
+STATIC_ASSERT(offsetof(edcam_s, mouse_pitch_speed) == 0x74);
+STATIC_ASSERT(offsetof(edcam_s, mouse_yaw_speed) == 0x78);
+STATIC_ASSERT(offsetof(edcam_s, mouse_move_speed) == 0x7c);
+STATIC_ASSERT(offsetof(edcam_s, auto_zoom_base) == 0x88);
+STATIC_ASSERT(offsetof(edcam_s, auto_zoom_dist_scale) == 0x8c);
+STATIC_ASSERT(offsetof(edcam_s, freedoms) == 0x90);
+
+#pragma section(".bss$EdcamMayaSmoothedAnglePc", read, write)
+#pragma section(".bss$EdcamMayaRawAnglePc", read, write)
+void do_maya_mouse_camera(edcam_s *camera) {
+    /* The historical mapped name TargetAng denotes the smoothed PC slot. */
+    __declspec(allocate(".bss$EdcamMayaSmoothedAnglePc")) static EdcamMayaAngleObservedPc TargetAng = {0};
+    __declspec(allocate(".bss$EdcamMayaRawAnglePc")) static EdcamMayaAngleObservedPc RawTargetAngPc = {0};
+    f32 zoom_scale = camera->auto_zoom_dist_scale == 0.0f
+                         ? 1.0f
+                         : fabsf(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base;
+    NUVEC movement = {0.0f, 0.0f, 0.0f};
+    f32 mouse_x;
+    f32 mouse_y;
+    f32 mouse_z;
+    u32 buttons;
+    f32 minimum;
+    NUMTX rotation;
+
+    if (NuKeyboard(0x38) == 0)
+        return;
+    mouse_x = NuMouseReadXVel() * camera->mouse_pitch_speed;
+    mouse_y = NuMouseReadYVel() * camera->mouse_yaw_speed;
+    mouse_z = NuMouseReadZVel() * camera->mouse_move_speed;
+    buttons = NuMouseReadButtons();
+    if (buttons == 2 || buttons == 5) {
+        if (camera->allow_distance) {
+            i32 difference;
+            f32 sine;
+            if (mouse_x != 0.0f || mouse_y != 0.0f)
+                RawTargetAngPc.parts.angle = (u16)NuAtan2D(-mouse_x, -mouse_y);
+            difference = (RawTargetAngPc.word - TargetAng.word) & 0xffff;
+            if (difference >= 0x8000)
+                difference -= 0x10000;
+            if (abs(difference) > 20000)
+                TargetAng.parts.angle = RawTargetAngPc.parts.angle;
+            else
+                TargetAng.parts.angle += difference / 4;
+            sine = NuTrigTable[((i32)(TargetAng.word + 0x2000) >> 1) & 0x7fff];
+            if (fabsf(sine) > (f64)0.1f) {
+                f32 length_squared;
+                f32 zoom_delta;
+                if (sine > 0.0f)
+                    sine = (f32)(sine - (f64)0.1f);
+                else
+                    sine = (f32)(sine + (f64)0.1f);
+                length_squared = mouse_x * mouse_x + mouse_y * mouse_y;
+                zoom_delta = NuFsqrt(length_squared) * sine;
+                camera->distance =
+                    camera->distance + camera->distance_speed * zoom_scale * zoom_delta * camera->mouse_move_speed;
+                minimum = -camera->minimum_distance;
+                if (minimum < camera->distance)
+                    camera->distance = minimum;
+            }
+        }
+    } else if (buttons == 1) {
+        if (camera->allow_pitch) {
+            camera->pitch += (i32)(mouse_y * -16.0);
+            if (camera->pitch > 0x4000)
+                camera->pitch = 0x4000;
+            if (camera->pitch < -0x4000)
+                camera->pitch = -0x4000;
+        }
+        if (camera->allow_yaw)
+            camera->yaw += (i32)(mouse_x * -16.0);
+    } else if (buttons == 4 || buttons == 3) {
+        movement.x = (f32)(movement.x + mouse_x * 0.0078125);
+        movement.y = (f32)(movement.y - mouse_y * 0.0078125);
+    }
+
+    camera->distance = camera->distance - camera->distance_speed * zoom_scale * mouse_z;
+    minimum = -camera->minimum_distance;
+    if (minimum < camera->distance)
+        camera->distance = minimum;
+    rotation = NuMtxSetIdentityTemplate;
+    NuMtxRotateX(&rotation, camera->pitch);
+    NuMtxRotateY(&rotation, camera->yaw);
+    NuVecMtxRotate(&movement, &movement, &rotation);
+    if (camera->allow_position_x)
+        camera->position.x += movement.x;
+    if (camera->allow_position_y)
+        camera->position.y += movement.y;
+    if (camera->allow_position_z)
+        camera->position.z += movement.z;
+}
+
+f32 __cdecl edcamGetDist(void) {
+    return gp_cam->distance;
 }

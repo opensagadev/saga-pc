@@ -2158,3 +2158,198 @@ f32 __cdecl FS_GetDirTextWidth(void) {
     }
     return max_width;
 }
+
+/* PC file-selector rendering. Data mapping extents remain separately reviewed. */
+#pragma section(".data$FS_Title", read, write)
+__declspec(allocate(".data$FS_Title")) char FS_Title[64] = "Title";
+#pragma section(".data$FS_X", read, write)
+__declspec(allocate(".data$FS_X")) f32 FS_X = 50.0f;
+#pragma section(".data$FS_Y", read, write)
+__declspec(allocate(".data$FS_Y")) f32 FS_Y = 40.0f;
+#pragma section(".data$FS_W", read, write)
+__declspec(allocate(".data$FS_W")) f32 FS_W = 0.0f;
+#pragma section(".data$FS_H", read, write)
+__declspec(allocate(".data$FS_H")) f32 FS_H = 0.0f;
+#pragma section(".data$SortStrings", read, write)
+__declspec(allocate(".data$SortStrings")) char *SortStrings[4] = {"A to Z", "Z to A", "Old to New", "New To Old"};
+extern void __cdecl NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material);
+
+void __cdecl RenderFileSel3(i32 draw_title) {
+    char buffer[256];
+    char date_time[64];
+    char *text, *entry;
+    f32 x, y, width, height, baseline, full_width, box_height, box_width;
+    f32 text_x, line_height, path_y, list_box_height, line_y, footer_base, footer_y, sort_length;
+    f64 list_height;
+    i32 line;
+    if (FS_Active == 0)
+        return;
+    x = FS_X;
+    y = FS_Y;
+    width = FS_Width;
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSet(system_qfont);
+    NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
+    height = NuQFntHeight(system_qfont);
+    baseline = NuQFntBaseline(system_qfont);
+    full_width = width;
+    if (FS_NumFiles > 14) {
+        full_width = width + 8.0;
+    }
+
+    if (draw_title)
+        box_height = height * 17.0 * 0.0625 + 6.0;
+    else
+        box_height = height * 16.0 * 0.0625 + 4.0;
+    box_width = full_width + 4.0;
+    NuRndrRect2d(x, y, 0.0f, box_width, box_height, 0xff808080, NULL);
+    x += 2.0;
+    y += 1.0;
+    FS_W = box_width;
+    FS_H = box_height;
+    text_x = (x + 4.0) * 16.0;
+    if (draw_title) {
+        f32 title_height = height * 0.0625;
+        f32 title_y;
+        NuRndrRect2d(x, y, 0.0f, full_width, title_height, 0xff404040, NULL);
+        NuRndrLine3dDbg(x, y, 0.0f, width + x, y, 0.0f, 0xff808080);
+        NuQFntSet(system_qfont);
+        NuQFntSetColour(system_qfont, 0x80808080);
+        title_y = y * 16.0 + baseline;
+        NuQFntMove(system_qfont, text_x, title_y, 0.0f);
+        NuQFntPrintU(system_qfont, FS_Title);
+        y += title_height + 2.0;
+    }
+
+    line_height = height * 0.0625;
+    path_y = y * 16.0 + baseline;
+    NuRndrRect2d(x, y, 0.0f, full_width, line_height, 0x20202020, NULL);
+    if (FS_ShowVolumes) {
+        NuStrCpy(buffer, "Volumes:-");
+        text = buffer;
+    } else {
+        f32 available = full_width - 8.0;
+        f32 length;
+        text = FS_Path;
+        length = NuQFntPrintLenU(system_qfont, text) * 0.0625;
+        if (length > available) {
+            f32 scale = available / length;
+            if (scale < 0.5f) {
+                // Too long even at half width: keep the drive and first
+                // directory, then "\....", then the last directory.
+                char *first = NuStrChr(text, '\\');
+                if (first != NULL) {
+                    char *last;
+                    i32 tail_length;
+                    char *second = NuStrChr(first + 1, '\\');
+                    if (second == NULL) {
+                        second = first;
+                    }
+                    *second = '\0';
+                    NuStrCpy(buffer, text);
+                    *second = '\\';
+                    NuStrCat(buffer, "\\....");
+                    tail_length = NuStrLen(second);
+                    if (tail_length != 0 && second[tail_length - 1] == '\\') {
+                        second[tail_length - 1] = '\0';
+                        last = NuStrRChr(second, '\\');
+                        second[tail_length - 1] = '\\';
+                    } else {
+                        last = NuStrRChr(second, '\\');
+                    }
+                    if ((u32)last > (u32)second) {
+                        NuStrCat(buffer, last);
+                        text = buffer;
+                    }
+                }
+                length = NuQFntPrintLenU(system_qfont, text) * 0.0625;
+                if (!(length > available)) {
+                    goto path_done;
+                }
+            }
+            NuQFntSetPointSize(system_qfont, available / length, 1.0f);
+        }
+    path_done:;
+    }
+    NuQFntSet(system_qfont);
+    NuQFntMove(system_qfont, text_x, path_y, 0.0f);
+    NuQFntSetColour(system_qfont, 0x80408080);
+    NuQFntPrintU(system_qfont, text);
+    NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
+
+    y += line_height + 2.0;
+    list_height = height * 14.0;
+    list_box_height = list_height * 0.0625;
+    NuRndrRect2d(x, y, 0.0f, width, list_box_height, 0x20202020, NULL);
+    if (FS_NumFiles > 14) {
+        f32 thumb, thumb_offset;
+        NuRndrRect2d(width + x, y, 0.0f, 8.0f, list_box_height, 0xff646464, NULL);
+        thumb = list_box_height / FS_NumFiles * 14.0;
+        if (thumb < 5.0f) {
+            thumb = 5.0f;
+        }
+        thumb_offset = (list_box_height - thumb) * FS_CurrentPosFileNum / (FS_NumFiles - 14);
+        NuRndrRect2d(width + x, thumb_offset + y, 0.0f, 8.0f, thumb, 0xffc8c8c8, NULL);
+    }
+
+    line_y = path_y + 32.0;
+    entry = FS_CurrentPos;
+    for (line = 0; line < 14; ++line) {
+        FS_PACKED_ENTRY_HEADER_PC *header;
+        char *name;
+        if (entry >= FS_FileListEnd) {
+            break;
+        }
+        line_y += height;
+        if (entry == FS_CurrentCursorPos) {
+            NuRndrRect2d(x, (line_y - baseline) * 0.0625, 0.0f, width, line_height, 0xff202060, NULL);
+        }
+        NuQFntSet(system_qfont);
+        NuQFntMove(system_qfont, text_x, line_y, 0.0f);
+        header = (FS_PACKED_ENTRY_HEADER_PC *)entry;
+        if (header->kind == 'V') {
+            NuQFntSetColour(system_qfont, 0x80204080);
+        } else if (header->kind == 'D') {
+            NuQFntSetColour(system_qfont, 0x80804020);
+        } else {
+            NuQFntSetColour(system_qfont, 0x80408080);
+        }
+        NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
+        name = (char *)(header + 1);
+        NuQFntPrintU(system_qfont, name);
+        if (header->encoded_year != '#') {
+            f32 length;
+            f64 time_x;
+            NuQFntSetPointSize(system_qfont, 0.8f, 1.0f);
+            NuSPrintf(date_time, " %.2d:%.2d:%.2d", header->encoded_hour - 'A', header->encoded_minute - 'A',
+                      header->encoded_second - 'A');
+            length = NuQFntPrintLenU(system_qfont, date_time);
+            NuQFntSetColour(system_qfont, 0x80208080);
+            time_x = (width + x) * 16.0 - length;
+            NuQFntMove(system_qfont, time_x, line_y, 0.0f);
+            NuQFntPrintU(system_qfont, date_time);
+            NuSPrintf(date_time, " %.2d/%.2d/%d", header->encoded_day - 'A', header->encoded_month - 'A',
+                      header->encoded_year + 1915);
+            length = NuQFntPrintLenU(system_qfont, date_time);
+            NuQFntSetColour(system_qfont, 0x80808020);
+            NuQFntMove(system_qfont, time_x - length, line_y, 0.0f);
+            NuQFntPrintU(system_qfont, date_time);
+        }
+        entry = name + NuStrLen(name) + 1;
+    }
+
+    footer_base = y * 16.0 + baseline;
+    footer_y = footer_base + list_height;
+    NuQFntSet(system_qfont);
+    NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
+    NuQFntSetColour(system_qfont, 0x80808080);
+    NuQFntMove(system_qfont, x * 16.0, footer_y, 0.0f);
+    NuQFntPrintU(system_qfont, FS_Filter);
+    NuQFntSetColour(system_qfont, 0x80000040);
+    sort_length = NuQFntPrintLenU(system_qfont, SortStrings[FS_SortMode]);
+    NuQFntMove(system_qfont, (full_width + x) * 16.0 - sort_length, footer_y, 0.0f);
+    NuQFntPrintU(system_qfont, SortStrings[FS_SortMode]);
+    NuQFntPopCoordinateSystem();
+    NuQFntPopPrintMode();
+}

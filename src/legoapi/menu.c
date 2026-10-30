@@ -1219,3 +1219,70 @@ void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u
     MENUFLASH1G = flash1_g;
     MENUFLASH1B = flash1_b;
 }
+
+STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
+STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
+
+#pragma data_seg(".data$MenuMiniKitUpperArrowYPc")
+f32 MenuMiniKitUpperArrowYPc = -0.175f;
+#pragma data_seg(".data$MenuMiniKitLowerArrowYPc")
+f32 MenuMiniKitLowerArrowYPc = -0.275f;
+#pragma data_seg(".data$MenuMiniKitInstructionYPc")
+f32 MenuMiniKitInstructionYPc = -0.375f;
+#pragma data_seg()
+
+void __cdecl Hub_UpdateKit(void);
+
+void __cdecl MenuUpdateMiniKit(MENU *menu) {
+    (void)menu;
+    Hub_UpdateKit();
+}
+
+void __cdecl MenuDrawMiniKit(MENU *menu) {
+    f32 alpha;
+    f32 pulse;
+    f32 scale;
+    u16 phase;
+    i32 colour;
+    i32 opacity;
+    (void)menu;
+    if (MenuStopDraw != 0)
+        return;
+    alpha = MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc;
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, alpha,
+                 alpha, 1, NULL);
+    alpha = MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc;
+    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, alpha,
+                 alpha, 1, NULL);
+    DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac,
+                          MissionMenuPacketPc.active_player[1], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac);
+    NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f);
+    phase = (u16)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
+    colour = menu_flash == 0 ? 255 : 191;
+    pulse = (f32)((f64)NuTrigTable[phase >> 1] * (f64)0.05f);
+    opacity = (i32)(MenuAlpha * 128.0);
+    if (HubMiniKitViewerMoveWaitPc > 0.0f) {
+        opacity = (i32)((1.0 - NuTrigTable[((i32)(HubMiniKitViewerMoveWaitPc * 32768.0) >> 1) & 0x7fff]) * opacity);
+    }
+    if (MissionMenuPacketPc.active_player[0] != 0) {
+        scale = (f32)(0.5 - pulse);
+        Text3DEx("[[lb]]", -ICONX, MenuMiniKitUpperArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
+                 (u8)opacity);
+        scale = (f32)(pulse + 0.5);
+        Text3DEx("[[rb]]", -ICONX, MenuMiniKitLowerArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
+                 (u8)opacity);
+        SmartTextEx(TTab[TextIdPc880888], -ICONX, MenuMiniKitInstructionYPc + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0,
+                    colour, colour, colour, 0.15f, 1, NULL, 0, opacity);
+    }
+    if (MissionMenuPacketPc.active_player[1] != 0) {
+        scale = (f32)(0.5 - pulse);
+        Text3DEx("[[lb]]", ICONX, MenuMiniKitUpperArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
+                 (u8)opacity);
+        scale = (f32)(pulse + 0.5);
+        Text3DEx("[[rb]]", ICONX, MenuMiniKitLowerArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
+                 (u8)opacity);
+        SmartTextEx(TTab[TextIdPc880888], ICONX, MenuMiniKitInstructionYPc + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0,
+                    colour, colour, colour, 0.15f, 1, NULL, 0, opacity);
+    }
+}

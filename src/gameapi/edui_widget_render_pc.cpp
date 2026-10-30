@@ -1520,3 +1520,241 @@ extern "C" i32 __cdecl eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f
     }
     return 0;
 }
+
+extern "C" i32 EduiRenderWidthPc;
+
+STATIC_ASSERT(offsetof(edui_textpicker_s, value) == 0x4c);
+STATIC_ASSERT(offsetof(edui_textpicker_s, keyboard_column) == 0x14c);
+STATIC_ASSERT(offsetof(edui_textpicker_s, keyboard_row) == 0x150);
+STATIC_ASSERT(offsetof(edui_textpicker_s, cursor) == 0x154);
+STATIC_ASSERT(offsetof(edui_textpicker_s, editing) == 0x158);
+STATIC_ASSERT(sizeof(((edui_textpicker_s *)0)->editing) == 2);
+STATIC_ASSERT(offsetof(edui_textpicker_s, format) == 0x160);
+STATIC_ASSERT(offsetof(edui_textpicker_s, keyboard_flags) == 0x164);
+
+extern "C" {
+#pragma const_seg(".rdata$EduiTextCopyHelpString")
+    extern const char EduiTextCopyHelpStringPc[] = "Copy L2+R2 Paste L1+R1";
+#pragma const_seg()
+#pragma data_seg(".data$EduiTextCopyHelp")
+    char *EduiTextCopyHelpPc = (char *)EduiTextCopyHelpStringPc;
+#pragma data_seg(".data$EduiTextCursorPeriod")
+    i32 EduiTextCursorPeriodPc = 32;
+#pragma data_seg()
+#pragma section(".bss$EduiTextCursorCountdown", read, write)
+    __declspec(allocate(".bss$EduiTextCursorCountdown")) i32 EduiTextCursorCountdownPc = 0;
+#pragma section(".bss$EduiTextCopyBuffer", read, write)
+    __declspec(allocate(".bss$EduiTextCopyBuffer")) char EduiTextCopyBufferPc[64] = {0};
+}
+
+static void EduiRenderTextCursorPc(char *value, i32 position, i32 x, i32 y, u32 colour) {
+    char at_cursor[2] = "@";
+    if (--EduiTextCursorCountdownPc <= 0)
+        EduiTextCursorCountdownPc = EduiTextCursorPeriodPc;
+    if (EduiTextCursorCountdownPc >= (EduiTextCursorPeriodPc >> 1)) {
+        i32 length = NuStrLen(value);
+        i32 offset = 0;
+        if (position) {
+            char prefix[256];
+            NuStrNCpy(prefix, value, position + 1);
+            offset = (i32)NuQFntPrintLenU((VUFNT *)edui_font, prefix);
+        }
+        at_cursor[0] = position < length ? value[position] : 'A';
+        i32 width = (i32)NuQFntPrintLenU((VUFNT *)edui_font, at_cursor);
+        i32 top = y - (i32)NuQFntBaseline((VUFNT *)edui_font);
+        i32 height = (i32)NuQFntHeight((VUFNT *)edui_font);
+        if (edui_donotdraw == 0)
+            NuRndrRect2di(x + offset, top, width, height, colour, NULL);
+    }
+}
+
+extern "C" i32 __cdecl eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width,
+                                            i32 unused_selected) {
+    edui_textpicker_s *picker = (edui_textpicker_s *)item;
+    i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
+    f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
+    i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
+    item->x = x;
+    item->y = y;
+    char letter[2] = "0";
+    if (picker->editing) {
+        EduiRenderWidthPc = MAX(width, height * 10);
+        if (picker->keyboard_flags & 2) {
+            if (edui_donotdraw == 0)
+                NuRndrRect2di(x << 4, y << 3, EduiRenderWidthPc << 4, (height * 6) << 3, item->colours[2],
+                              (NUMTL *)uimtls[ui_bgmtl]);
+        } else {
+            if (edui_donotdraw == 0)
+                NuRndrRect2di(x << 4, y << 3, EduiRenderWidthPc << 4, (height * 5) << 3, item->colours[2],
+                              (NUMTL *)uimtls[ui_bgmtl]);
+        }
+        i32 row;
+        for (row = 0; row < 4; ++row) {
+            for (i32 column = 0; column < 10; ++column) {
+                if (row == picker->keyboard_row && column == picker->keyboard_column) {
+                    if (edui_donotdraw == 0) {
+                        NuQFntSet((VUFNT *)edui_font);
+                        if (edui_donotdraw == 0)
+                            NuQFntSetColour((VUFNT *)edui_font, item->colours[1]);
+                    }
+                } else {
+                    if (edui_donotdraw == 0) {
+                        NuQFntSet((VUFNT *)edui_font);
+                        if (edui_donotdraw == 0)
+                            NuQFntSetColour((VUFNT *)edui_font, item->colours[0]);
+                    }
+                }
+                letter[0] = textrow[row][column];
+                EduiPrintAlignedTextPc(edui_font, (x + height * column) << 4, ((y + row * height) << 3) + baseline, 16,
+                                       letter);
+            }
+        }
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[1]);
+        }
+        i32 value_y = ((y + height * row) << 3) + baseline;
+        EduiPrintAlignedTextPc(edui_font, x << 4, value_y, 16, picker->value);
+        EduiRenderTextCursorPc(picker->value, picker->cursor, x << 4, value_y, item->colours[1] ^ 0xffffff);
+        ++row;
+        if (picker->keyboard_flags & 2) {
+            if (edui_donotdraw == 0) {
+                NuQFntSet((VUFNT *)edui_font);
+                if (edui_donotdraw == 0)
+                    NuQFntSetColour((VUFNT *)edui_font, item->colours[0]);
+            }
+            EduiPrintAlignedTextPc(edui_font, x << 4, ((y + height * row) << 3) + baseline, 16,
+                                   EduiTextCopyBufferPc[0] ? EduiTextCopyBufferPc : EduiTextCopyHelpPc);
+            return height * 6;
+        }
+        return height * 5;
+    }
+    if (picker->keyboard_flags & 1) {
+        if (edui_donotdraw == 0) {
+            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted],
+                          (NUMTL *)uimtls[ui_bgmtl]);
+            if (edui_donotdraw == 0) {
+                NuQFntSet((VUFNT *)edui_font);
+                if (edui_donotdraw == 0)
+                    NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+            }
+        }
+        i32 centre = (x * 2 + width) << 3;
+        EduiPrintAlignedTextPc(edui_font, centre, (y << 3) + baseline, 64, item->text);
+        EduiPrintAlignedTextPc(edui_font, centre, ((y + height) << 3) + baseline, 64, picker->format, picker->value);
+        return height * 2;
+    }
+    if (edui_donotdraw == 0)
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted],
+                      (NUMTL *)uimtls[ui_bgmtl]);
+    char formatted[64];
+    NuSPrintf(formatted, picker->format, picker->value);
+    if (edui_donotdraw == 0) {
+        NuQFntSet((VUFNT *)edui_font);
+        if (edui_donotdraw == 0)
+            NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+    }
+    EduiPrintAlignedTextPc(edui_font, x << 4, (y << 3) + baseline, 16, "%s %s", item->text, formatted);
+    return height;
+}
+
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, reserved98) + 1 == 0x99);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_l2) == 0x9e);
+STATIC_ASSERT(offsetof(FRAME_PAD_PC, analog_r2) == 0x9f);
+
+extern "C" {
+#pragma data_seg(".data$EduiColourSliderRepeatTimer")
+    i32 EduiColourSliderRepeatTimerPc = 30;
+#pragma data_seg()
+#pragma section(".bss$EduiColourSliderDynamicScale", read, write)
+    __declspec(allocate(".bss$EduiColourSliderDynamicScale")) f32 EduiColourSliderDynamicScalePc = 0.0f;
+}
+
+static void EduiColourSliderSetPc(eduimenu_s *menu, eduiitem_s *item, f32 value, FRAME_PAD_PC *pad) {
+    edui_slider_s *slider = (edui_slider_s *)item;
+    slider->value = value;
+    slider->normalized_value = (value - slider->minimum) / slider->range;
+    slider->change_timer = 60;
+    if (slider->changed)
+        slider->changed(menu, item, pad->digital_buttons);
+}
+
+static void EduiColourSliderRoundPc(eduimenu_s *menu, eduiitem_s *item, FRAME_PAD_PC *pad, f32 value) {
+    edui_slider_s *slider = (edui_slider_s *)item;
+    f32 step = slider->granularity;
+    if (value > 0.0f)
+        value += step * 0.5;
+    else
+        value -= step * 0.5;
+    value = (i32)(value / step) * step;
+    slider->value = value;
+    slider->normalized_value = (value - slider->minimum) / slider->range;
+    slider->change_timer = 60;
+    if (slider->changed)
+        slider->changed(menu, item, pad->digital_buttons);
+}
+
+extern "C" i32 __cdecl eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32 unused_delta_time,
+                                                 FRAME_PAD_PC *pad) {
+    edui_slider_s *slider = (edui_slider_s *)item;
+    if ((pad->digital_buttons & 4) && (pad->digital_buttons & 8)) {
+        if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 0.0)
+            EduiColourSliderSetPc(menu, item, 0.0f, pad);
+        EduiColourSliderRepeatTimerPc = 30;
+    } else if ((pad->digital_buttons & 1) && (pad->digital_buttons & 2)) {
+        if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 255.0)
+            EduiColourSliderSetPc(menu, item, 255.0f, pad);
+        EduiColourSliderRepeatTimerPc = 30;
+    } else if (pad->digital_buttons & 4) {
+        EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
+        if (EduiColourSliderRepeatTimerPc < 0)
+            EduiColourSliderRepeatTimerPc = 0;
+        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & 4)) {
+            f32 value = MAX(slider->minimum, slider->value - slider->granularity);
+            EduiColourSliderRoundPc(menu, item, pad, value);
+        }
+    } else if (pad->digital_buttons & 8) {
+        EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
+        if (EduiColourSliderRepeatTimerPc < 0)
+            EduiColourSliderRepeatTimerPc = 0;
+        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & 8)) {
+            f32 value = MIN(slider->minimum + slider->range, slider->value + slider->granularity);
+            EduiColourSliderRoundPc(menu, item, pad, value);
+        }
+    } else {
+        EduiColourSliderRepeatTimerPc = 30;
+        if (pad->analog_l2) {
+            if (pad->reserved98[1]) {
+                EduiColourSliderDynamicScalePc *= (f64)1.05f;
+                slider->normalized_value =
+                    MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * EduiColourSliderDynamicScalePc);
+            } else {
+                EduiColourSliderDynamicScalePc = 1.627604291343232e-7f;
+                slider->normalized_value =
+                    (f32)MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * (f64)1.627604251552839e-5f);
+            }
+            slider->value = slider->normalized_value * slider->range + slider->minimum;
+            slider->change_timer = 60;
+            if (slider->changed)
+                slider->changed(menu, item, pad->digital_buttons);
+        } else if (pad->analog_r2) {
+            if (pad->reserved98[1]) {
+                EduiColourSliderDynamicScalePc *= (f64)1.05f;
+                slider->normalized_value =
+                    MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * EduiColourSliderDynamicScalePc);
+            } else {
+                EduiColourSliderDynamicScalePc = 1.627604291343232e-7f;
+                slider->normalized_value =
+                    (f32)MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * (f64)1.627604251552839e-5f);
+            }
+            slider->value = slider->normalized_value * slider->range + slider->minimum;
+            slider->change_timer = 60;
+            if (slider->changed)
+                slider->changed(menu, item, pad->digital_buttons);
+        } else {
+            EduiColourSliderDynamicScalePc = 1.627604291343232e-7f;
+        }
+    }
+    return 0;
+}

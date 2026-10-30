@@ -669,3 +669,106 @@ void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edbriDetermineNearest(1.0f);
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
+
+STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
+STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, position) == 0);
+STATIC_ASSERT(offsetof(NURND_VERTEX3D_PC, colour) == 0x18);
+STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
+
+#pragma bss_seg(".bss$edbri_mtl")
+NUMTL *edbri_mtl = NULL;
+#pragma bss_seg()
+
+void __cdecl edbriDrawCursor(void) {
+    NURND_VERTEX3D_PC line[2];
+    NUVEC extent;
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edbri_cam_pos.x - 0.5;
+    line[0].position.y = edbri_cam_pos.y;
+    line[0].position.z = edbri_cam_pos.z;
+    line[1].position.x = edbri_cam_pos.x + 0.5;
+    line[1].position.y = edbri_cam_pos.y;
+    line[1].position.z = edbri_cam_pos.z;
+    NuRndrLine3d(line, edbri_mtl, NULL);
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edbri_cam_pos.x;
+    line[0].position.y = edbri_cam_pos.y - 0.5;
+    line[0].position.z = edbri_cam_pos.z;
+    line[1].position.x = edbri_cam_pos.x;
+    line[1].position.y = edbri_cam_pos.y + 0.5;
+    line[1].position.z = edbri_cam_pos.z;
+    NuRndrLine3d(line, edbri_mtl, NULL);
+    line[0].colour = 0xffffffff;
+    line[1].colour = 0xffffffff;
+    line[0].position.x = edbri_cam_pos.x;
+    line[0].position.y = edbri_cam_pos.y;
+    line[0].position.z = edbri_cam_pos.z - 0.5;
+    line[1].position.x = edbri_cam_pos.x;
+    line[1].position.y = edbri_cam_pos.y;
+    line[1].position.z = edbri_cam_pos.z + 0.5;
+    NuRndrLine3d(line, edbri_mtl, NULL);
+
+    extent.x = edbri_length;
+    extent.y = 0.0f;
+    extent.z = 0.0f;
+    NuVecRotateZ(&extent, &extent, edbri_rotz);
+    NuVecRotateY(&extent, &extent, edbri_roty);
+    line[0].colour = 0xff0000ff;
+    line[1].colour = 0xff0000ff;
+    line[0].position.x = edbri_cam_pos.x;
+    line[0].position.y = edbri_cam_pos.y;
+    line[0].position.z = edbri_cam_pos.z;
+    line[1].position.x = edbri_cam_pos.x + extent.x;
+    line[1].position.y = edbri_cam_pos.y + extent.y;
+    line[1].position.z = edbri_cam_pos.z + extent.z;
+    NuRndrLine3d(line, edbri_mtl, NULL);
+    extent.x = 0.0f;
+    extent.y = 0.0f;
+    extent.z = edbri_width;
+    NuVecRotateZ(&extent, &extent, edbri_rotz);
+    NuVecRotateY(&extent, &extent, edbri_roty);
+    line[0].colour = 0xff0000ff;
+    line[1].colour = 0xff0000ff;
+    line[0].position.x = edbri_cam_pos.x - extent.x;
+    line[0].position.y = edbri_cam_pos.y - extent.y;
+    line[0].position.z = edbri_cam_pos.z - extent.z;
+    line[1].position.x = edbri_cam_pos.x + extent.x;
+    line[1].position.y = edbri_cam_pos.y + extent.y;
+    line[1].position.z = edbri_cam_pos.z + extent.z;
+    NuRndrLine3d(line, edbri_mtl, NULL);
+
+    NuRndrRect2di(0x1720, 0x9b0, 0xdc0, 0x410, 0x80808080, (NUMTL *)edbri_mtl_zoff);
+    NuRndrRect2di(0x1710, 0x8f0, 0xde0, 0xc0, 0x80000000, (NUMTL *)edbri_mtl_zoff);
+    NuRndrLine2di(0x1710, 0x9b0, 0x1710, 0xdc8, 0x80000000, (NUMTL *)edbri_mtl_zoff);
+    NuRndrLine2di(0x24f0, 0x9b0, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edbri_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edbri_mtl_zoff);
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
+    NuQFntSet(system_qfont);
+    NuQFntSetColour(system_qfont, 0xe0e0e0e0);
+    NuQFntPrintEx(system_qfont, 0x17c0, 0x988, 0x10, "Info Box");
+    NuQFntSetColour(system_qfont, 0x80000000);
+    if (edbri_plank_instance_type == -1) {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Plank Inst: <none>");
+    } else {
+        NUSPECIALHANDLE special;
+        NuGScnGetSpecial(&special, edbits_base_scene, edbri_plank_instance_type);
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xa50, 0x10, "Plank Inst: %s", NuSpecialGetName(&special));
+    }
+    if (edbri_post_instance_type == -1) {
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Post Inst: <none>");
+    } else {
+        NUSPECIALHANDLE special;
+        NuGScnGetSpecial(&special, edbits_base_scene, edbri_post_instance_type);
+        NuQFntPrintEx(system_qfont, 0x17c0, 0xaf0, 0x10, "Post Inst: %s", NuSpecialGetName(&special));
+    }
+    NuQFntPrintEx(system_qfont, 0x17c0, 0xb90, 0x10, "Planks (Interval): %d (%d)", edbri_planks, edbri_post_interval);
+    NuQFntPrintEx(system_qfont, 0x17c0, 0xc30, 0x10, "Used: %d/%d", edbri_bridges_used, 64);
+    NuQFntPrintEx(system_qfont, 0x17c0, 0xd70, 0x10, "%5.2f", edbri_cam_pos.x);
+    NuQFntPrintEx(system_qfont, 0x1c20, 0xd70, 0x10, "%5.2f", edbri_cam_pos.y);
+    NuQFntPrintEx(system_qfont, 0x2080, 0xd70, 0x10, "%5.2f", edbri_cam_pos.z);
+    NuQFntPopPrintMode();
+    NuQFntPopCoordinateSystem();
+}
