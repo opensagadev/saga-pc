@@ -351,7 +351,7 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
                 panel->flags |= 0x10;
                 PlaySfx((char *)PanelActivateSfxPc, &panel->position);
             } else {
-                volatile f32 time = panel->activation_time + FRAMETIME;
+                f32 time = panel->activation_time + FRAMETIME;
                 panel->activation_time = time;
                 if ((f64)time > (f64)0.8f)
                     panel->activation_time = 0.8f;
@@ -363,7 +363,7 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
                 PlaySfx((char *)PanelDeactivateSfxPc, &panel->position);
             panel->flags &= (u8)~0x10;
             if (panel->activation_time > 0.0f) {
-                volatile f32 time = panel->activation_time - delta_time;
+                f32 time = panel->activation_time - delta_time;
                 panel->activation_time = time;
                 if (time < 0.0f)
                     panel->activation_time = 0.0f;
@@ -394,7 +394,7 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     PANEL_SYSTEM_PC *system;
     u16 target_spin;
-    volatile f32 target_alpha;
+    f32 target_alpha;
     i32 index;
     (void)unused;
     (void)unused_time;
@@ -481,7 +481,7 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
         if ((panel->flags & 0x20) == 0 && (panel->activation_time > 0.0f || editor_active != 0)) {
             NUVEC picture_offset, transition_offset;
             NUMTX transition_base, animated_matrix;
-            volatile f32 frame;
+            f32 frame;
             picture_offset.x = 0.0f;
             picture_offset.y = GizPanelPictureYPc;
             picture_offset.z = GizPanelPictureZPc;
@@ -495,8 +495,8 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             NuMtxTranslate(&transition_base, &transition_offset);
             if (1.2f > panel->activation_time && editor_active == 0) {
                 f64 progress = (f64)panel->activation_time / (f64)1.2f;
-                volatile f32 rounded_progress = progress;
-                volatile f32 alpha;
+                f32 rounded_progress = progress;
+                f32 alpha;
                 frame = progress * 23.0 + 1.0;
                 EvalAnim(&world->level_objects[models.transition].special, frame, &animated_matrix, 0);
                 animated_matrix.m32 = 0.0f;
@@ -687,7 +687,7 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     PANEL_MOVEMENT_PC *panel;
     f32 distance;
     f32 radius;
-    volatile f32 radius_squared;
+    f32 radius_squared;
     (void)world;
     if (object->field_db0 > 0.0f)
         object->field_db0 -= FRAMETIME;
