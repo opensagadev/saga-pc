@@ -314,9 +314,9 @@ static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
         return -1;
     GAMEANIMOBJ *object = spinner->primary_anim_obj;
     NUINSTANIM_TIME_VIEW *instance = object->instance_animation;
-    volatile f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
+    f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 length = rounded_length;
-    volatile f32 rounded_margin = length / 40.0;
+    f32 rounded_margin = length / 40.0;
     f32 margin = rounded_margin;
     i32 last = spinner->output_count - 1;
     for (i32 output = 0; output < last; ++output) {
@@ -334,33 +334,33 @@ static __declspec(noinline) void SpinnerSeekOutputPc(GIZSPINNER_s *spinner, i32 
         spinner->primary_anim_obj->instance_animation == NULL || output == -1 || (spinner->state_flags & 0x40) != 0)
         return;
     GAMEANIMOBJ *object = spinner->primary_anim_obj;
-    volatile f32 rounded_rate = object->instance_animation->fparam1;
+    f32 rounded_rate = object->instance_animation->fparam1;
     f32 rate = rounded_rate;
     u32 flags = spinner->state_flags;
     i32 direction = ((flags & 2) != 0 && (flags & 4) == 0) || ((flags & 2) == 0 && (flags & 4) != 0) ? 1 : -1;
-    volatile f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
+    f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 length = rounded_length;
-    volatile f32 rounded_target =
+    f32 rounded_target =
         spinner->output_count == 1 ? 1.0 : ((f64)spinner->animation_points[output + 1] - 1.0) / ((f64)length - 1.0);
     f32 target = rounded_target;
-    volatile f32 rounded_duration = length / ((f64)spinner->animation_speed * rate * 60.0);
+    f32 rounded_duration = length / ((f64)spinner->animation_speed * rate * 60.0);
     SpinnerFloatBitsPc duration;
     duration.value = rounded_duration;
     duration.bits &= 0x7fffffff;
-    volatile f32 rounded_frequency = 60.0 * spinner->animation_speed * rate / length;
+    f32 rounded_frequency = 60.0 * spinner->animation_speed * rate / length;
     SpinnerFloatBitsPc frequency;
     frequency.value = rounded_frequency;
     frequency.bits &= 0x7fffffff;
-    volatile f32 rounded_difference = (f64)target - spinner->field_70;
+    f32 rounded_difference = (f64)target - spinner->field_70;
     SpinnerFloatBitsPc difference;
     difference.value = rounded_difference;
     difference.bits &= 0x7fffffff;
     if (0.001f > difference.value) {
         GameAnimSet_Stop(spinner->anim_set);
         GameAnimSet_JumpToAnimPos(spinner->anim_set, target);
-        volatile f32 rounded_rotation_a = (f64)duration.value * 30.0;
-        volatile f32 rounded_rotation_b = (f64)rounded_rotation_a / length;
-        volatile f32 rounded_rotation_c = (f64)rounded_rotation_b * ((f64)length / 100.0);
+        f32 rounded_rotation_a = (f64)duration.value * 30.0;
+        f32 rounded_rotation_b = (f64)rounded_rotation_a / length;
+        f32 rounded_rotation_c = (f64)rounded_rotation_b * ((f64)length / 100.0);
         spinner->rotation = (u16)((i32)(((f64)target * 100.0 * rounded_rotation_c) * 65536.0 / 360.0 * direction) +
                                   spinner->initial_rotation);
     } else if (spinner->field_70 > target) {
@@ -450,10 +450,10 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
         GameAnimSet_Stop(spinner->anim_set);
         stopped = 1;
     }
-    volatile f32 minimum_x = (f64)spinner->position.x - spinner->field_0x09c;
-    volatile f32 maximum_x = (f64)spinner->field_0x09c + spinner->position.x;
-    volatile f32 minimum_z = (f64)spinner->position.z - spinner->field_0x09c;
-    volatile f32 maximum_z = (f64)spinner->field_0x09c + spinner->position.z;
+    f32 minimum_x = (f64)spinner->position.x - spinner->field_0x09c;
+    f32 maximum_x = (f64)spinner->field_0x09c + spinner->position.x;
+    f32 minimum_z = (f64)spinner->position.z - spinner->field_0x09c;
+    f32 maximum_z = (f64)spinner->field_0x09c + spinner->position.z;
     if ((spinner->state_flags & 0x0c) == 0) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
@@ -463,21 +463,21 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
                 object->collision_min.x > maximum_x || object->collision_max.z < minimum_z ||
                 object->collision_min.z > maximum_z)
                 continue;
-            volatile f32 radius = (f64)spinner->field_0x09c + 0.5 + object->bounds_radius;
-            volatile f32 dx = (f64)object->position.x - spinner->position.x;
-            volatile f32 dz = (f64)object->position.z - spinner->position.z;
-            volatile f32 radius_squared = (f64)radius * radius;
+            f32 radius = (f64)spinner->field_0x09c + 0.5 + object->bounds_radius;
+            f32 dx = (f64)object->position.x - spinner->position.x;
+            f32 dz = (f64)object->position.z - spinner->position.z;
+            f32 radius_squared = (f64)radius * radius;
             if (!(radius_squared > (f64)dz * dz + (f64)dx * dx))
                 continue;
             u16 radial = dx != 0.0f || dz != 0.0f ? NuAtan2D(dx, dz) : qrand();
             u16 movement;
-            volatile f32 speed;
+            f32 speed;
             if (object->velocity.x == 0.0f && object->velocity.z == 0.0f) {
                 movement = object->facing_angle;
                 speed = object->character_data->game_character->tiptoe_speed;
             } else {
                 movement = NuAtan2D(object->velocity.x, object->velocity.z);
-                volatile f32 length_squared =
+                f32 length_squared =
                     (f64)object->velocity.x * object->velocity.x + (f64)object->velocity.z * object->velocity.z;
                 speed = NuFsqrt(length_squared);
                 if (object->character_data->game_character->tiptoe_speed > speed)
@@ -499,14 +499,14 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
         u8 previous_state = spinner->state;
         f32 play_speed;
         if (spinner->field_0x090 > 0.0f) {
-            volatile f32 remaining = (f64)spinner->field_0x090 - FRAMETIME;
+            f32 remaining = (f64)spinner->field_0x090 - FRAMETIME;
             spinner->field_0x090 = remaining;
             if (remaining <= 0.0f) {
                 spinner->rotation = spinner->target_rotation;
                 GameAnimSet_Stop(spinner->anim_set);
                 spinner->field_0x090 = 0.0f;
             } else {
-                volatile f32 phase = 1.0 - (f64)remaining * 4.0;
+                f32 phase = 1.0 - (f64)remaining * 4.0;
                 f32 blend = NuTrigTable[((i32)((f64)phase * 16384.0) >> 1) & 0x7fff];
                 i32 difference = RotDiff(spinner->previous_rotation, spinner->target_rotation);
                 if ((spinner->state_flags & 1) != 0) {
