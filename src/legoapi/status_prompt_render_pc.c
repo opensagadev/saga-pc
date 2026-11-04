@@ -11,9 +11,9 @@ void __cdecl Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alp
     i32 locked = 0;
     i32 count;
     i32 row;
-    volatile f32 title;
-    volatile f32 step;
-    volatile f32 y;
+    f32 title;
+    f32 step;
+    f32 y;
     labels[1] = -1;
     if ((packet->flags_word & 0x100u) != 0 || packet->challenge_state != 0 || packet->mission_state != 0) {
         labels[0] = TextIdPc88083c;
@@ -96,7 +96,7 @@ void __cdecl Prompt_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 
     if (active != 0) {
         if (stage->field_0x18 < 0.5f) {
             i32 angle = (i32)(((f64)stage->field_0x18 + (f64)stage->field_0x18) * 16384.0);
-            volatile f32 alpha = NuTrigTable[(angle >> 1) & 0x7fff];
+            f32 alpha = NuTrigTable[(angle >> 1) & 0x7fff];
             if (stage->field_0x14 == 1)
                 alpha = 1.0 - (f64)alpha;
             Status_DrawPromptMenu(packet, 0, alpha);
