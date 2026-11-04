@@ -1727,18 +1727,18 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
     NUVEC average_camera_position, average_player_position, accumulated_target;
     NUVEC candidate_camera, look_position, displacement, local_right, local_x, local_y;
     i32 i;
-    volatile f32 magnitude, side, half_width, height_sum, pair_offset;
-    volatile f32 working_scale;
-    volatile f32 two_player_pullback;
-    volatile f32 single_player_pullback;
-    volatile f32 camera_height_above_ground;
+    f32 magnitude, side, half_width, height_sum, pair_offset;
+    f32 working_scale;
+    f32 two_player_pullback;
+    f32 single_player_pullback;
+    f32 camera_height_above_ground;
     i32 contributing_sockets;
     SOCKPOSITION_PC *candidate;
     i32 include;
     SOCK_PC *sock;
-    volatile f32 projection_x;
-    volatile f32 projection_y;
-    volatile f32 lateral_ratio;
+    f32 projection_x;
+    f32 projection_y;
+    f32 lateral_ratio;
     i32 have_limit;
     i32 look_from;
     i32 look_to;
@@ -1748,7 +1748,7 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
     u16 yaw;
     NUVEC scratch;
     i32 player;
-    volatile f32 rounded_player_count;
+    f32 rounded_player_count;
     SOCK_CAMERA_FLOAT_BITS_PC absolute_difference;
 
     scratch.x = scratch.y = scratch.z = 0.0f;
