@@ -3853,6 +3853,7 @@ address,symbol,size,ctype
 0x550690,_QuatInterpolateRotationMatrix,81,"void __cdecl(NUMTX *, NUMTX *, NUMTX *, f32)"
 0x005506f0,_GameShadow,305,
 0x550830,_BlobShadowFade,181,"f32 __cdecl(NUVEC *,f32,f32,f32)"
+0x005508f0,_SplinePointAngles,298,"static void (NUGSPLINE *, i32, i32, u16 *, u16 *)"
 0x00550a20,_PointAlongSpline,560,"void __cdecl (NUGSPLINE *, f32, NUVEC *, u16 *, u16 *, i32)"
 0x550cf0,_StreamingInsideLineXZPc,68,"i16 __cdecl(f32, f32, f32, f32, f32, f32)"
 0x00550ff0,_LineIntersectXY,380,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"

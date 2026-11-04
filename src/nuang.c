@@ -191,17 +191,6 @@ void NuAng2AltSol(NUANG *out_x, NUANG *out_y, NUANG *out_z, NUANG x, NUANG y, NU
     *out_z = z + 0x8000;
 }
 
-i32 __cdecl RotDiff(u16 current, u16 target) {
-    i32 difference = (i32)target - (i32)current;
-
-    if (difference > 0x8000) {
-        difference -= 0x10000;
-    } else if (difference < -0x8000) {
-        difference += 0x10000;
-    }
-    return difference;
-}
-
 static u16 NuAngAtanQuadrantI(u32 dx, u32 dy) {
     if (dx > dy) {
         return 0x4000 - ang[(dy << 9) / dx];

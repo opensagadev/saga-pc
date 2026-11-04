@@ -2,46 +2,65 @@
 
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 
-#define SPLINE_POINT_ANGLES(spline, index, looping, pitch, angle)                                                      \
-    do {                                                                                                               \
-        NUVEC *_angle_current = &(spline)->pts[(index)];                                                               \
-        NUVEC _angle_direction = {0.0f, 0.0f, 0.0f};                                                                   \
-        NUVEC *_angle_previous = NULL;                                                                                 \
-        NUVEC *_angle_next = NULL;                                                                                     \
-        if ((index) > 0) {                                                                                             \
-            _angle_previous = &(spline)->pts[(index) - 1];                                                             \
-        } else if (looping) {                                                                                          \
-            _angle_previous = &(spline)->pts[(spline)->length - 1];                                                    \
-        }                                                                                                              \
-        if (_angle_previous != NULL) {                                                                                 \
-            _angle_direction.x += _angle_current->x - _angle_previous->x;                                              \
-            _angle_direction.y += _angle_current->y - _angle_previous->y;                                              \
-            _angle_direction.z += _angle_current->z - _angle_previous->z;                                              \
-        }                                                                                                              \
-        if ((index) + 1 < (spline)->length) {                                                                          \
-            _angle_next = &(spline)->pts[(index) + 1];                                                                 \
-        } else if (looping) {                                                                                          \
-            _angle_next = &(spline)->pts[0];                                                                           \
-        }                                                                                                              \
-        if (_angle_next != NULL) {                                                                                     \
-            _angle_direction.x += _angle_next->x - _angle_current->x;                                                  \
-            _angle_direction.y += _angle_next->y - _angle_current->y;                                                  \
-            _angle_direction.z += _angle_next->z - _angle_current->z;                                                  \
-        }                                                                                                              \
-        if ((pitch) != NULL) {                                                                                         \
-            *(pitch) = NuAtan2D(_angle_direction.y, NuFsqrt(_angle_direction.x * _angle_direction.x +                  \
-                                                            _angle_direction.z * _angle_direction.z));                 \
-        }                                                                                                              \
-        if ((angle) != NULL) {                                                                                         \
-            *(angle) = NuAtan2D(_angle_direction.x, _angle_direction.z);                                               \
-        }                                                                                                              \
-    } while (0)
+i32 __cdecl RotDiff(u16 current, u16 target) {
+    i32 difference = (i32)target - (i32)current;
 
-#define SPLINE_ROTATION_DIFFERENCE(current, target)                                                                    \
-    (((i32)(u32)(target) - (i32)(u32)(current)) > 0x8000 ? ((i32)(u32)(target) - (i32)(u32)(current) - 0x10000)        \
-                                                         : (((i32)(u32)(target) - (i32)(u32)(current)) < -0x8000       \
-                                                                ? ((i32)(u32)(target) - (i32)(u32)(current) + 0x10000) \
-                                                                : ((i32)(u32)(target) - (i32)(u32)(current))))
+    if (difference > 0x8000) {
+        difference -= 0x10000;
+    } else if (difference < -0x8000) {
+        difference += 0x10000;
+    }
+    return difference;
+}
+
+static void SplinePointAngles(NUGSPLINE *spline, i32 index, i32 looping, u16 *pitch, u16 *angle) {
+    NUVEC *current;
+    NUVEC *previous;
+    NUVEC *next;
+    i32 previous_index;
+    i32 next_index;
+    f32 dx;
+    f32 dy;
+    f32 dz;
+
+    if (pitch == NULL && angle == NULL) {
+        return;
+    }
+    dx = 0.0f;
+    dy = 0.0f;
+    dz = 0.0f;
+    current = &spline->pts[index];
+    previous = NULL;
+    previous_index = index - 1;
+    if (previous_index < 0 && looping) {
+        previous = &spline->pts[spline->length - 1];
+    } else if (previous_index >= 0) {
+        previous = &spline->pts[previous_index];
+    }
+    if (previous != NULL) {
+        dx += current->x - previous->x;
+        dy += current->y - previous->y;
+        dz += current->z - previous->z;
+    }
+    next = NULL;
+    next_index = index + 1;
+    if (next_index >= spline->length && looping) {
+        next = spline->pts;
+    } else if (next_index < spline->length) {
+        next = &spline->pts[next_index];
+    }
+    if (next != NULL) {
+        dx += next->x - current->x;
+        dy += next->y - current->y;
+        dz += next->z - current->z;
+    }
+    if (pitch != NULL) {
+        *pitch = NuAtan2D(dy, NuFsqrt(dx * dx + dz * dz));
+    }
+    if (angle != NULL) {
+        *angle = NuAtan2D(dx, dz);
+    }
+}
 
 void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
     NUGSPLINE *spline;
@@ -311,9 +330,12 @@ void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16
     u32 extent;
     u32 fixed;
     i32 index;
+    i32 next_index;
     NUVEC *current;
     NUVEC *next;
     f32 fraction;
+    u16 next_angle;
+    u16 next_pitch;
 
     if (angle != NULL) {
         *angle = 0;
@@ -330,42 +352,42 @@ void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16
         along = 0.0f;
     }
 
-    extent = (u32)(looping ? spline->length : spline->length - 1) << 16;
+    if (looping) {
+        extent = (u32)spline->length << 16;
+    } else {
+        extent = (u32)(spline->length - 1) << 16;
+    }
     fixed = (u32)(i32)((f32)extent * along);
     index = (i32)(fixed >> 16);
     current = &spline->pts[index];
     *position = *current;
-    if (pitch != NULL || angle != NULL) {
-        SPLINE_POINT_ANGLES(spline, index, looping, pitch, angle);
-    }
-    index++;
-    if (index >= spline->length) {
+    SplinePointAngles(spline, index, looping, pitch, angle);
+    next_index = index + 1;
+    if (next_index >= spline->length) {
         if (!looping) {
             return;
         }
-        index = 0;
+        next_index = 0;
+    } else if (next_index < 0) {
+        return;
     }
     fixed &= 0xffff;
     if (fixed == 0) {
         return;
     }
 
+    next = &spline->pts[next_index];
     fraction = fixed * (1.0f / 65536.0f);
-    next = &spline->pts[index];
     position->x += (next->x - current->x) * fraction;
     position->y += (next->y - current->y) * fraction;
     position->z += (next->z - current->z) * fraction;
-    if (angle != NULL || pitch != NULL) {
-        u16 next_angle = 0;
-        u16 next_pitch = 0;
-        SPLINE_POINT_ANGLES(spline, index, looping, pitch != NULL ? &next_pitch : NULL,
-                            angle != NULL ? &next_angle : NULL);
-        if (angle != NULL) {
-            *angle = (u16)(*angle + (i32)(SPLINE_ROTATION_DIFFERENCE(*angle, next_angle) * fraction));
-        }
-        if (pitch != NULL) {
-            *pitch = (u16)(*pitch + (i32)(SPLINE_ROTATION_DIFFERENCE(*pitch, next_pitch) * fraction));
-        }
+    SplinePointAngles(spline, next_index, looping, pitch != NULL ? &next_pitch : NULL,
+                      angle != NULL ? &next_angle : NULL);
+    if (angle != NULL) {
+        *angle += (i32)(RotDiff(*angle, next_angle) * fraction);
+    }
+    if (pitch != NULL) {
+        *pitch += (i32)(RotDiff(*pitch, next_pitch) * fraction);
     }
 }
 
@@ -474,8 +496,6 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
     }
 }
 
-#undef SPLINE_ROTATION_DIFFERENCE
-#undef SPLINE_POINT_ANGLES
 #undef SPLINE_POINT
 
 i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_end, NUVEC *edge_start, i32 inside) {
