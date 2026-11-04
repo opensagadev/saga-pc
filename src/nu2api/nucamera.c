@@ -252,11 +252,11 @@ i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 fa
 }
 
 /* Reconstructed storage qualifiers express the original F32 checkpoints;
-   they do not assert historical volatile declarations. */
+   they do not assert historical declarations. */
 void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
         f32 far_clip, near_clip;
-        volatile f32 half_fov;
+        f32 half_fov;
         f32 cotangent;
         f32 horizontal;
         i32 angle;
@@ -286,7 +286,7 @@ void __cdecl NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, 
 void __cdecl NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
         f32 far_clip, near_clip;
-        volatile f32 half_fov;
+        f32 half_fov;
         f32 cotangent;
         f32 horizontal;
         i32 angle;
@@ -340,7 +340,7 @@ rejected:
 }
 
 void __cdecl NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
-    volatile f32 half_fov = (f32)((f64)fov * 0.5);
+    f32 half_fov = (f32)((f64)fov * 0.5);
     i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
     f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
     f32 depth_factor = far_clip / (far_clip - near_clip);
@@ -414,11 +414,11 @@ void __cdecl NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     NuMtxMulH(&vpsmtx, &vpmtx, &smtx);
     NuMtxMulH(&psmtx, &pmtx, &smtx);
     if (fast == 0) {
-        volatile f32 half_fov = (f32)((f64)global_camera.fov * 0.5);
+        f32 half_fov = (f32)((f64)global_camera.fov * 0.5);
         i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
-        volatile f32 side;
-        volatile f32 squared;
-        volatile f32 reciprocal;
+        f32 side;
+        f32 squared;
+        f32 reciprocal;
         zy = NuTrigTable[(angle >> 1) & 0x7fff] / NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
         zx = zy / global_camera.aspect;
         VisibilityAlternateWidthPc = zx * NuCameraScissorWidthPc / PS2_REZ_W;
