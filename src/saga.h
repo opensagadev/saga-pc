@@ -24796,6 +24796,17 @@ struct instNUGCUTRIGID_s {
 };
 STATIC_ASSERT(sizeof(struct instNUGCUTRIGID_s) == 16);
 
+struct EDAIPATHCHECK_s {
+    i32 on_path;
+    struct EDAIPATH_s *path;
+    struct EDAIPATHNODE_s *first;
+    struct EDAIPATHNODE_s *second;
+    f32 fraction;
+    f32 width;
+    i32 angle;
+};
+STATIC_ASSERT(sizeof(struct EDAIPATHCHECK_s) == 28);
+
 struct EDLOCATORSET_s {
     NULISTLNK link;
     char name[16];
@@ -24808,18 +24819,7 @@ struct EDLOCATOR_s {
     char name[16];
     NUVEC position;
     i32 direction;
-    union {
-        u8 path_check[28];
-        struct {
-            i32 on_path;
-            struct EDAIPATH_s *path;
-            struct EDAIPATHNODE_s *first_node;
-            struct EDAIPATHNODE_s *second_node;
-            f32 path_fraction;
-            f32 path_width;
-            i32 path_angle;
-        };
-    };
+    struct EDAIPATHCHECK_s path_check;
     u16 runtime_index;
     u8 drawn;
     u8 unknown_47;
@@ -24853,11 +24853,14 @@ struct EDAIPATH_s {
     i16 runtime_end;
     i16 runtime_nearest;
     i16 node_count;
-    i8 draw_index;
-    u8 unknown_037[5];
+    u8 unknown_036[2];
+    i8 draw_index; /* PC keeps the draw index at 0x38 (Android: 0x36). */
+    u8 unknown_039[7];
     struct EDAIPATHROUTE_s routes[16];
 };
 STATIC_ASSERT(sizeof(struct EDAIPATH_s) == 576);
+STATIC_ASSERT(offsetof(struct EDAIPATH_s, draw_index) == 0x38);
+STATIC_ASSERT(offsetof(struct EDAIPATH_s, routes) == 0x40);
 
 struct EDAIPATHCNX_s {
     struct EDAIPATHNODE_s *node;
@@ -24872,26 +24875,14 @@ struct EDAIPATHNODE_s {
     char name[16];
     NUVEC position;
     f32 radius;
-    union {
-        f32 lower_height;
-        f32 height_min;
-    };
-    union {
-        f32 upper_height;
-        f32 height_max;
-    };
-    union {
-        u8 unknown_030[96];
-        struct EDAIPATHCNX_s connections[8];
-    };
+    f32 lower_height;
+    f32 upper_height;
+    struct EDAIPATHCNX_s connections[8];
     i16 index;
     u8 flags;
     u8 unknown_093[3];
     u16 route_mask;
-    union {
-        struct nuhspecial_s special;
-        struct nuhspecial_s platform;
-    };
+    struct nuhspecial_s special;
     union {
         NUVEC special_position;
         NUVEC platform_position;
@@ -24908,97 +24899,145 @@ struct EDAISHAREDPATHNODE_s {
 };
 STATIC_ASSERT(sizeof(struct EDAISHAREDPATHNODE_s) == 12);
 
-struct AIEDITOR_RENDER_STATE {
+struct EDANTINODE_s {
+    NULISTLNK link;
+    NUVEC position;
+    f32 radius;
+    f32 lower_height;
+    f32 upper_height;
+    struct nuhspecial_s special;
+    NUVEC special_position;
+    i32 rotation_offset;
+    i32 flags;
+    f32 base_radius;
+    f32 base_height;
+    u8 game_flags;
+    u8 type;
+    u8 unknown_4a[2];
+};
+STATIC_ASSERT(sizeof(struct EDANTINODE_s) == 76);
+
+typedef struct EDAIAREA_s { /* Editor area record: a list link ahead of an AIAREA_PC image (rebuild copies it). */
+    NULISTLNK link;
+    char name[16];
+    NUVEC position;
+    NUVEC size;
+    u16 rotation;
+    u8 unknown_32;
+    u8 flags;
+    u8 unknown_34[20];
+} EDAIAREA_s;
+STATIC_ASSERT(sizeof(EDAIAREA_s) == 72);
+
+typedef struct EDAICREATURE_s { /* Editor creature record; its area/locator references are editor records. */
+    NULISTLNK link;
+    char name[16];
+    char script_name[16];
+    NUVEC position;
+    i32 angle;
+    struct EDAIPATHCHECK_s check;
+    u32 valid_positions;
+    i16 character_type;
+    u8 set;
+    u8 group_count;
+    u8 across_count;
+    u8 unknown_5d[3];
+    f32 x_spacing;
+    f32 z_spacing;
+    u32 flags;
+    struct EDAIAREA_s *activation_area;
+    f32 script_params[4];
+    struct EDAIAREA_s *trigger_area;
+    struct EDLOCATOR_s *locator;
+    struct EDLOCATOR_s *respawn_locator;
+    u8 difficulty;
+    i8 min_respawns;
+    i8 max_respawns;
+    u8 activation;
+    f32 min_respawn_time;
+    f32 max_respawn_time;
+    f32 stagger_start;
+    f32 view_distance;
+    f32 hear_distance;
+    f32 max_view_height;
+    f32 min_view_height;
+} EDAICREATURE_s;
+STATIC_ASSERT(sizeof(EDAICREATURE_s) == 172);
+
+struct AIEDITOR_RENDER_STATE { /* Each mode: fixed record pool, free list, live list, then its selection pointers. */
     u8 unknown_00[4];
     struct eduimenu_s *main_menu;
     void *enter_context;
     void *enter_owner;
-    union {
-        NUVEC selection_position;
-        NUVEC cursor_position;
-    };
+    NUVEC cursor_position;
     NUVEC cursor_movement;
     NUVEC camera_position;
-    union {
-        u8 unknown_34[48];
-        struct {
-            i32 camera_pitch;
-            i32 camera_yaw;
-            struct nuhspecial_s cursor_platform;
-            u8 unknown_48_to_64[28];
-        };
-    };
+    i32 camera_pitch;
+    i32 camera_yaw;
+    struct nuhspecial_s cursor_platform;
+    struct EDAIPATHCHECK_s cursor_check;
     struct AISYS_PC *ai_system;
     struct EDAIPATH_s path_storage[32];
     struct EDAIPATH_s *current_path;
-    union {
-        NULISTHDR free_paths;
-        u8 unknown_3fec[8];
-    };
+    NULISTHDR free_paths;
     NULISTHDR paths;
-    union {
-        u8 unknown_3ffc[185096];
-        struct {
-            struct EDAIPATHNODE_s node_storage[1024];
-            NULISTHDR free_path_nodes;
-            struct EDAISHAREDPATHNODE_s shared_node_storage[64];
-        };
-    };
-    union {
-        NULISTHDR free_shared_nodes;
-        NULISTHDR free_shared_path_nodes;
-    };
+    struct EDAIPATHNODE_s node_storage[1024];
+    NULISTHDR free_path_nodes;
+    struct EDAISHAREDPATHNODE_s shared_node_storage[64];
+    NULISTHDR free_shared_nodes;
     union {
         NULISTHDR path_walls;
         NULISTHDR shared_path_nodes;
     };
-    union {
-        u8 unknown_31314[22032];
-        struct {
-            struct AIPATHSYS_PC *cached_path_system;
-            struct AIPATH_PC *runtime_path;
-            u8 unknown_3131c_to_36924[22024];
-        };
-    };
+    struct AIPATHSYS_PC *cached_path_system;
+    struct AIPATH_PC *runtime_path;
+    struct EDAICREATURE_s creature_pool[128];
+    NULISTHDR free_creatures;
     NULISTHDR creatures;
-    u8 unknown_3692c[4];
-    struct EditorNamedEntry *mode_selection_36930;
-    u8 unknown_36934[4628];
-    void *mode_selection_37a48;
-    u8 unknown_37a4c[4];
+    struct EDAICREATURE_s *nearest_creature;
+    struct EDAICREATURE_s *selected_creature;
+    i32 rotation_repeat;
+    struct EDAIAREA_s area_pool[64];
+    NULISTHDR free_areas;
+    NULISTHDR areas;
+    struct EDAIAREA_s *selected_area;
+    struct EDAIAREA_s *hovered_area;
     struct EDLOCATOR_s locator_pool[256];
     NULISTHDR free_locators;
     NULISTHDR locators;
-    union {
-        void *mode_selection_3c260;
-        struct EDLOCATOR_s *current_locator;
-    };
-    union {
-        u8 unknown_3c264[4];
-        struct EDLOCATOR_s *nearest_locator;
-    };
+    struct EDLOCATOR_s *current_locator;
+    struct EDLOCATOR_s *nearest_locator;
     struct EDLOCATORSET_s locator_set_pool[64];
     char pending_locator_name[16];
     NULISTHDR free_locator_sets;
     NULISTHDR locator_sets;
-    union {
-        struct EditorNamedEntry *current_route;
-        struct EDLOCATORSET_s *current_locator_set;
-    };
-    u8 unknown_4088c[9744];
-    void *mode_selection_42e9c;
-    u8 unknown_42ea0[8];
-    u8 flags;
-    u8 unknown_42ea9[3];
-    void *enter_extra_1;
-    void *enter_extra_2;
-    void *enter_extra_3;
+    struct EDLOCATORSET_s *current_locator_set;
+    struct EDANTINODE_s antinode_pool[128];
+    NULISTHDR free_antinodes;
+    NULISTHDR antinodes;
+    struct EDANTINODE_s *selected_antinode;
+    struct EDANTINODE_s *nearest_antinode;
+    f32 preview_width;
+    u32 flags;
+    char *level_directory; /* aieditor_Save: "%sLevels\\<level_directory>\\<level_subdirectory>\\<level_file>.ai2" */
+    char *level_file;
+    char *level_subdirectory;
     u8 save_scratch[524288];
     char warning[256];
     u32 pad_buttons;
     u32 pad_pressed;
 };
 STATIC_ASSERT(sizeof(struct AIEDITOR_RENDER_STATE) == 801088);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, cursor_check) == 0x48);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, free_creatures) == 0x3719c);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, creatures) == 0x371a4);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, rotation_repeat) == 0x371b4);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, areas) == 0x383c0);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, hovered_area) == 0x383cc);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, locators) == 0x3cbd8);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, locator_sets) == 0x41200);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, antinodes) == 0x43814);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, preview_width) == 0x43824);
 
 struct EDAIPATHWALL_s {
     NULISTLNK link;
@@ -25060,35 +25099,6 @@ struct eduimenu_s {
     struct eduimenu_s *parent;
 };
 STATIC_ASSERT(sizeof(struct eduimenu_s) == 68);
-
-struct EDANTINODE_s {
-    NULISTLNK link;
-    NUVEC position;
-    f32 radius;
-    f32 lower_height;
-    f32 upper_height;
-    struct nuhspecial_s special;
-    NUVEC special_position;
-    i32 rotation_offset;
-    i32 flags;
-    f32 base_radius;
-    f32 base_height;
-    u8 game_flags;
-    u8 type;
-    u8 unknown_4a[2];
-};
-STATIC_ASSERT(sizeof(struct EDANTINODE_s) == 76);
-
-struct EDAIPATHCHECK_s {
-    i32 on_path;
-    struct EDAIPATH_s *path;
-    struct EDAIPATHNODE_s *first;
-    struct EDAIPATHNODE_s *second;
-    f32 fraction;
-    f32 width;
-    i32 angle;
-};
-STATIC_ASSERT(sizeof(struct EDAIPATHCHECK_s) == 28);
 
 struct edui_textpicker_s {
     struct eduiitem_s base;
