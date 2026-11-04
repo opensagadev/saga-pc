@@ -3586,20 +3586,20 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
         if (level_alpha > 0 && object->shadow_opacity > 0.0f && object->surface_normal.y > 0.0f &&
             (object->water_height == -1.0f || (TerLayer[object->field_283].flags & 1) == 0)) {
             if ((i16)object->id == id_MOUSEDROID && WORLD->level_objects[0xa2].active != 0) {
-                volatile f32 opacity;
+                f32 opacity;
                 special_matrix = *secondary_matrix;
                 opacity = (f32)((f64)object->shadow_opacity * (f64)object->surface_normal.y);
                 NuSpecialDrawAtAlpha(&WORLD->level_objects[0xa2].special, &special_matrix, opacity);
             } else if (CharacterBlobShadowsOnPc != 0) {
                 PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
                 i32 alpha = config->blob_shadow_alpha;
-                volatile f32 radius;
+                f32 radius;
                 if (alpha == 255)
                     alpha = level_alpha;
                 if (alpha > 0) {
                     radius = config->field_08c < 99.0f ? config->field_08c : object->character_data->collision_radius;
                     if (radius > 0.0f) {
-                        volatile f32 scaled_radius;
+                        f32 scaled_radius;
                         i32 shadow_alpha;
                         f32 final_radius;
                         scaled_radius = (f32)((f64)DropInOutScale(object) * (f64)radius);
@@ -3890,11 +3890,11 @@ void __cdecl DrawParaphernaliaPc(GAMEOBJECT *object) {
     i32 special_locator;
     f32 distance;
     i32 chosen;
-    volatile f32 next;
+    f32 next;
     NUMTX *special_matrix;
-    volatile f32 start;
-    volatile f32 finish;
-    volatile f32 fraction;
+    f32 start;
+    f32 finish;
+    f32 fraction;
     f32 special_scale;
     NUVEC special_scaling;
     i32 special_phase;
