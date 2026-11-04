@@ -81,8 +81,8 @@ extern "C" void __cdecl PostShadowProjectBoundsPc(i32 count, const NUVEC4 *verti
     for (i32 i = 0; i < count; ++i) {
         NUVEC result;
         NuVecAdd(&result, (NUVEC *)&vertices[i], offset);
-        volatile f32 x = result.x * scale / result.z;
-        volatile f32 y = result.y * scale / result.z;
+        f32 x = result.x * scale / result.z;
+        f32 y = result.y * scale / result.z;
         if (xmin > x)
             xmin = x;
         else if (xmax < x)
@@ -448,7 +448,7 @@ void NuDeferredFilterGen::render() {
     GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
     GRAPHICS_RENDER_TEXTURE_PC *depth_texture = depth_rt->texture;
     GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
-    volatile f32 last_sample = sample_count - 1.0;
+    f32 last_sample = sample_count - 1.0;
     bool first = true;
     for (i32 i = 0; i < dynamic_light_count; ++i) {
         PC_SPECIAL_SHADOW_LIGHT *light = (PC_SPECIAL_SHADOW_LIGHT *)dynamic_lights[i];
