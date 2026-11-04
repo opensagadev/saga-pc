@@ -166,7 +166,7 @@ void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 pri
     (void)priority;
 
     if (frames > 0) {
-        volatile f32 rounded_duration = (f64)frames / DEFAULTFPS;
+        f32 rounded_duration = (f64)frames / DEFAULTFPS;
         if (rounded_duration > duration) {
             duration = rounded_duration;
         }
