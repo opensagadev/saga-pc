@@ -1002,7 +1002,7 @@ static __declspec(noinline) void GizmoPickups_UpdateListPc(WORLDINFO *world, GIZ
     GIZMO_PC *gizmo;
     u8 effect_flags, previous;
     NUVEC position;
-    volatile f32 distance, timer;
+    f32 distance, timer;
     if (pickup == NULL || Missions_PickupsOff(MissionSys))
         return;
     if (play_nearby && FadeSys.fade == 0.0f && NuFmod(GameTimer.time_elapsed_mod_seconds, 0.2f) < (f64)(f32)0.1f) {
@@ -1100,7 +1100,7 @@ static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPI
     GIZMO_PICKUP_TYPE_PC *type;
     NUMTX matrix;
     NUVEC shadow_position;
-    volatile f32 maximum_distance_squared, shadow_distance_squared, dx, dz, distance_squared, factor;
+    f32 maximum_distance_squared, shadow_distance_squared, dx, dz, distance_squared, factor;
     f32 draw_distance;
     f64 half_distance;
     if (pickup == NULL || Missions_PickupsOff(MissionSys))
