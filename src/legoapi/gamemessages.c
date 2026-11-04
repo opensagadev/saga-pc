@@ -118,7 +118,7 @@ GAME_MESSAGE_PC *__cdecl AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
 void __cdecl UpdateGameMessages(void) {
     GAME_MESSAGE_PC *message = GameMessage;
     GAME_MESSAGE_CALLBACK_PC callback;
-    volatile f32 rounded_time, progress;
+    f32 rounded_time, progress;
     u32 flags;
     i32 index, angle;
     for (index = 0; index < 128; ++index, ++message) {
@@ -335,7 +335,7 @@ void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, u
 void __cdecl AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, u8 red, u8 green,
                                 u8 blue) {
     NUVEC position;
-    volatile f32 doubled_scale;
+    f32 doubled_scale;
     f64 half_scale;
     if (message_id != 0) {
         GameAudio_PlaySfx(0x2c, NULL, 0, 0);
