@@ -2,23 +2,30 @@
 
 i32 PC_CONTROL_SCREEN_PC::ItemAllowsBinding(PC_CONTROL_ROW_PC *row, i32 index, i32 player) {
     PC_CONTROL_ITEM_PC *item = &row->items[index];
-    if ((item->flags & 0x10) == 0 && (item->kind == 0 || item->kind == 2)) {
+    const i32 kind = item->kind;
+    const u8 flags = item->flags;
+    if (!(flags & 0x10) && (kind == 0 || kind == 2)) {
+        i32 blocked = 0;
         if (player == 0) {
-            if (item->flags & 0x20)
-                return 0;
-        } else if (player == 1 && (item->flags & 0x40)) {
-            return 0;
+            if (flags & 0x20)
+                blocked = 1;
+        } else if (player == 1) {
+            if (flags & 0x40)
+                blocked = 1;
         }
+        if (blocked)
+            return 0;
         return 1;
     }
     return 0;
 }
 
 void PC_CONTROL_SCREEN_PC::AdvanceSelection(PC_CONTROL_ROW_PC *row) {
+    PC_CONTROL_ITEM_PC *items = row->items;
     for (;;) {
-        PC_CONTROL_ITEM_PC *item = &row->items[row->selected];
-        if (!(drop_in && item->label != 0) && !(selected_player == 0 && (item->flags & 0x20)) &&
-            !(selected_player == 1 && (item->flags & 0x40)) && !(item->flags & 0x80))
+        if (!(drop_in && items[row->selected].label != 0) &&
+            !(selected_player == 0 && (items[row->selected].flags & 0x20)) &&
+            !(selected_player == 1 && (items[row->selected].flags & 0x40)) && !(items[row->selected].flags & 0x80))
             return;
         if (++row->selected >= row->count)
             row->selected = 0;
@@ -35,14 +42,14 @@ extern "C" {
 }
 
 u8 PC_CONTROL_SCREEN_PC::PortAllowed(i32 player, i32 port, i32 allow_keyboard_sharing) {
-    if (ports[player] == port)
-        return 1;
     i32 keyboard_used = 0;
+    if (port == ports[player])
+        return 1;
     for (i32 i = 0; i < player_count; ++i) {
         if (i != player) {
             if (TextInputIsKeyboardDevicePc(ports[i]))
                 keyboard_used = 1;
-            if (ports[i] == port)
+            if (port == ports[i])
                 return 0;
         }
     }
@@ -56,10 +63,22 @@ u8 PC_CONTROL_SCREEN_PC::HasMissingBindings(void) {
         if (ports[player] < 0 || original_ports[player] < 0)
             continue;
         for (i32 row = 0; row < row_count; ++row) {
-            for (i32 index = 0; index < rows[row].count; ++index) {
-                PC_CONTROL_ITEM_PC *item = &rows[row].items[index];
-                if (item->kind != 0 || (player == 0 && (item->flags & 0x20)) || (player == 1 && (item->flags & 0x40)) ||
-                    player > 1 || (item->flags & 8))
+            PC_CONTROL_ITEM_PC *item = rows[row].items;
+            for (i32 index = 0; index < rows[row].count; ++index, ++item) {
+                if (item->kind != 0)
+                    continue;
+                i32 blocked = 0;
+                if (player == 0) {
+                    if (item->flags & 0x20)
+                        blocked = 1;
+                } else if (player == 1) {
+                    if (item->flags & 0x40)
+                        blocked = 1;
+                } else
+                    blocked = 1;
+                if (blocked)
+                    continue;
+                if (item->flags & 8)
                     continue;
                 if (!PcInputBindingPresentPc(0, item->command, 1, player))
                     return 1;
@@ -170,6 +189,7 @@ extern "C" {
 }
 
 void PC_CONTROL_SCREEN_PC::Register(PC_CONTROL_CONFIG_PC *config, VARIPTR *, VARIPTR *) {
+    PC_CONTROL_ITEM_PC **list = config->rows;
     draw_background = config->draw_background;
     play_sound = config->play_sound;
     initialized = 1;
@@ -183,11 +203,12 @@ void PC_CONTROL_SCREEN_PC::Register(PC_CONTROL_CONFIG_PC *config, VARIPTR *, VAR
     NuMtlUpdate(material);
     NuMtlSetCurrentRenderPlane(plane);
     row_count = 0;
-    while (config->rows[row_count]) {
-        rows[row_count].items = config->rows[row_count];
+    PC_CONTROL_ITEM_PC *item;
+    while ((item = list[row_count]) != NULL) {
+        rows[row_count].items = item;
         i32 count = 0;
-        while (rows[row_count].items[count].label != 255) {
-            rows[row_count].items[count].pulse = 0.0f;
+        while (item[count].label != 255) {
+            item[count].pulse = 0.0f;
             ++count;
         }
         rows[row_count].count = count;
@@ -198,9 +219,9 @@ void PC_CONTROL_SCREEN_PC::Register(PC_CONTROL_CONFIG_PC *config, VARIPTR *, VAR
 
 i32 PC_CONTROL_SCREEN_PC::HashConfiguration(void) {
     i32 hash = PcInputHashAuxiliaryBindingsPc();
-    hash = PcInputMixConfigurationHashPc(hash, (i32)(i64)keyboard_deadzone);
+    hash = PcInputMixConfigurationHashPc(hash, (u32)keyboard_deadzone);
     for (i32 i = 0; i < 4; ++i)
-        hash = PcInputMixConfigurationHashPc(hash, (i32)(i64)deadzone[i]);
+        hash = PcInputMixConfigurationHashPc(hash, (u32)deadzone[i]);
     return hash;
 }
 
@@ -227,9 +248,10 @@ i32 PC_CONTROL_SCREEN_PC::WaitForRelease(void) {
     PcInputResetMouseMotionPc();
     i32 kind, value;
     if (PcInputSelectPressedDevicePc(0, 0x1a, &kind, &value, 0) < 0)
-        return --release_frames == 0;
-    release_frames = release_reset;
-    return release_reset == 0;
+        release_frames -= 1;
+    else
+        release_frames = release_reset;
+    return release_frames == 0;
 }
 
 void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u8 is_drop_in) {
@@ -788,9 +810,9 @@ static void PcControlPrimColourPc(u32 colour) {
 }
 i32 PC_CONTROL_SCREEN_PC::CountPlayerRows(PC_CONTROL_ROW_PC *row) {
     i32 result = 0;
-    for (i32 i = 0; i < row->count; ++i) {
-        PC_CONTROL_ITEM_PC *item = &row->items[i];
-        if ((item->kind == 0 || item->kind == 2) && (!(item->flags & 0x20) || !(item->flags & 0x40)))
+    PC_CONTROL_ITEM_PC *item = row->items;
+    for (i32 i = 0; i < row->count; ++i, ++item) {
+        if ((item->kind == 2 || item->kind == 0) && (!(item->flags & 0x20) || !(item->flags & 0x40)))
             ++result;
     }
     return result;
@@ -800,24 +822,23 @@ u32 PC_CONTROL_SCREEN_PC::ScaleAlpha(f32 alpha, u32 colour) {
     f32 scaled = (colour >> 24) * alpha;
     if (scaled > 255.0)
         scaled = 255.0f;
-    return ((u32)(i64)scaled << 24) | (colour & 0xffffff);
+    return ((u32)scaled << 24) | (colour & 0xffffff);
 }
 
 u32 PC_CONTROL_SCREEN_PC::ScaleColour(f32 brightness, f32 alpha, u32 colour) {
     f32 a = (colour >> 24) * alpha;
-    f32 r = (colour & 0xff) * brightness;
-    f32 g = ((colour >> 8) & 0xff) * brightness;
-    f32 b = ((colour >> 16) & 0xff) * brightness;
-    if (a >= 255.0)
+    if (a > 255.0)
         a = 255.0f;
+    f32 r = (colour & 0xff) * brightness;
     if (r > 255.0)
         r = 255.0f;
+    f32 g = ((colour >> 8) & 0xff) * brightness;
     if (g > 255.0)
         g = 255.0f;
+    f32 b = ((colour >> 16) & 0xff) * brightness;
     if (b > 255.0)
         b = 255.0f;
-    return (((u32)(i32)b & 0xff) << 16) | (((u32)(i32)g & 0xff) << 8) | (((u32)(i32)a & 0xff) << 24) |
-           ((u32)(i32)r & 0xff);
+    return (((i32)b & 0xff) << 16) | ((i32)a << 24) | (((i32)g & 0xff) << 8) | ((i32)r & 0xff);
 }
 
 u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
@@ -834,7 +855,7 @@ u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
     i32 tail = count & 3;
     count -= tail;
     for (i32 i = 0; i < count; i += 4) {
-        hash = (hash << 1) | (hash >> 31);
+        hash = (hash & 0x80000000) ? (hash << 1) | 1 : hash << 1;
         hash ^= *(const u32 *)string;
         string += 4;
     }
@@ -842,7 +863,7 @@ u32 PC_CONTROL_SCREEN_PC::HashString(const char *string) {
         u32 value = 0;
         for (i32 i = 0; i < tail; ++i)
             value = (value << 8) | (i32)(i8)*string++;
-        hash = ((hash << 1) | (hash >> 31)) ^ value;
+        hash = ((hash & 0x80000000) ? (hash << 1) | 1 : hash << 1) ^ value;
     }
     return hash;
 }

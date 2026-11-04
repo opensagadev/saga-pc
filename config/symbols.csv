@@ -221,7 +221,7 @@ address,symbol,size,ctype
 0x41f940,_Players_Init,1355,void __cdecl(void)
 0x41fe90,_InitAICreatures,526,void __cdecl(AISYS_PC *)
 0x4200c0,?PcControlPrimColourPc@@YAXI@Z,108,
-0x420220,?Register@PC_CONTROL_SCREEN_PC@@QAEXPAUPC_CONTROL_CONFIG_PC@@PATvariptr_u@@1@Z,247,
+0x420220,?Register@PC_CONTROL_SCREEN_PC@@QAEXPAUPC_CONTROL_CONFIG_PC@@PATvariptr_u@@1@Z,249,
 0x420330,?HashConfiguration@PC_CONTROL_SCREEN_PC@@QAEHXZ,142,
 0x4203c0,?WaitForRelease@PC_CONTROL_SCREEN_PC@@QAEHXZ,90,
 0x420450,?SaveConfiguration@PC_CONTROL_SCREEN_PC@@QAEXXZ,138,
