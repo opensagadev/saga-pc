@@ -9,7 +9,7 @@ EXPLOSION_PC *__cdecl Detonate(NUVEC *position, u16 flags) {
     NewRumbleAllPlayers(1.0f, 0.1f, 0, 0.0f);
     PlaySfx("exp_thermalDet", position);
     if ((flags & 0x1000) != 0) {
-        volatile f32 amount = qrand() < 0x8000 ? -1.0f : 1.0f;
+        f32 amount = qrand() < 0x8000 ? -1.0f : 1.0f;
         radius = 1.3125f;
         duration = 0.875f;
         amount *= 2.0f;
