@@ -2381,13 +2381,9 @@ void __cdecl cbNoZBuffer(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 }
 
 void __cdecl cbHideType(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    u32 highlighted;
-    u32 destination;
     (void)menu;
     (void)value;
-    highlighted = item->flags & 1u;
-    destination = (u32)&hide_types[0] + (u32)item->data * sizeof(hide_types[0]);
-    memcpy((void *)destination, &highlighted, sizeof(highlighted));
+    hide_types[item->data] = item->flags & 1u;
 }
 
 void __cdecl cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {

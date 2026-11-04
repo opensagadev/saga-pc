@@ -255,7 +255,7 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
         tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
         for (i = 0; i < 3; ++i)
             tail->metadata[i] = NuAllocTailMetadata[i];
-        filename_copy = (char *)((u32)record + (u32)size + 44);
+        filename_copy = (char *)(tail + 1);
         filename_read = file;
         do {
             byte = *filename_read++;

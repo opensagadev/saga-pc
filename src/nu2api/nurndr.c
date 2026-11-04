@@ -443,7 +443,7 @@ STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, x) == 0);
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, y) == 4);
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, z) == 8);
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, colour) == 0xc);
-static void NuRndrPrimSetColourPrivate(i32 colour) {
+static __declspec(noinline) void NuRndrPrimSetColourPrivate(i32 colour) {
     u32 converted;
     if (NuPrimNeedsOverbrightening != 0)
         converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
@@ -718,8 +718,6 @@ void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f3
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
-/* Native keeps the private colour call out of line in this loop. */
-#pragma inline_depth(0)
 i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count) {
     i32 i;
     ++NuPrimCSPos;
@@ -741,8 +739,6 @@ i32 __cdecl NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
     return 1;
 }
-
-#pragma inline_depth()
 
 #define PORTAL_DEBUG_SIN(ANGLE) NuTrigTable[((i32)(ANGLE) >> 1) & 0x7fff]
 #define PORTAL_DEBUG_COS(ANGLE) NuTrigTable[(((i32)(ANGLE) + 16384) >> 1) & 0x7fff]

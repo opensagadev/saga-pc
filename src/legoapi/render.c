@@ -981,7 +981,7 @@ void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
         stage->field_0x1c = 5.0f;
     } else if (stage->field_0x14 == 1) {
         f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18;
+        f32 accumulated = stage->field_0x18;
         accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c)
@@ -1006,7 +1006,7 @@ void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
         stage->field_0x1c = 6.5f;
     } else if (stage->field_0x14 == 1) {
         f32 previous = stage->field_0x18;
-        volatile f32 accumulated = stage->field_0x18;
+        f32 accumulated = stage->field_0x18;
         accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c)
@@ -1030,7 +1030,7 @@ void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *
         stage->field_0x18 = 0.0f;
         stage->field_0x1c = 1.0f;
     } else if (stage->field_0x14 == 1) {
-        volatile f32 accumulated = stage->field_0x18;
+        f32 accumulated = stage->field_0x18;
         accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c)
@@ -1069,7 +1069,7 @@ i32 StatusDrawPlayerIconsPc = 0;
 f32 __cdecl StatusIconsOnOff(f32 blend) {
     i32 angle;
     f32 high, low;
-    volatile f32 position;
+    f32 position;
     angle = (i32)((f64)blend * 16384.0);
     high = STATSPOSY;
     low = STATSPOS2YPc;
@@ -1098,8 +1098,7 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             StatusDrawPlayerIconsPc = 1;
             break;
         case 1: {
-            volatile f32 rounded_elapsed = elapsed + stage->field_0x18;
-            f32 accumulated = rounded_elapsed;
+            f32 accumulated = elapsed + stage->field_0x18;
             stage->field_0x18 = accumulated;
             if (accumulated >= stage->field_0x1c)
                 stage->field_0x14 = 2;
@@ -1138,8 +1137,7 @@ void __cdecl Coins_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             break;
         }
         case 3: {
-            volatile f32 rounded_elapsed = elapsed + stage->field_0x18;
-            f32 accumulated = rounded_elapsed;
+            f32 accumulated = elapsed + stage->field_0x18;
             stage->field_0x18 = accumulated;
             if (accumulated >= stage->field_0x1c)
                 NextStatusStage(packet);
@@ -1180,7 +1178,7 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
         }
         case 1: {
             const f32 previous = stage->field_0x18;
-            volatile f32 accumulated = stage->field_0x18 + elapsed;
+            f32 accumulated = stage->field_0x18 + elapsed;
             i32 index;
             stage->field_0x18 = accumulated;
             if (stage->field_0x18 >= stage->field_0x1c) {
@@ -1188,7 +1186,7 @@ void __cdecl GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
                 return;
             }
             for (index = 0; index <= last; ++index) {
-                volatile f32 award_time = (f64)index * 2.5 + 2.0;
+                f32 award_time = (f64)index * 2.5 + 2.0;
                 if (previous < award_time && stage->field_0x18 >= award_time) {
                     i32 total;
                     i16 message_id;
@@ -1261,7 +1259,7 @@ void __cdecl StatusRumbleUpdatePc(void) {
 
 void __cdecl UpdateStatusScreen(WORLDINFO *world) {
     const f32 elapsed = FRAMETIME;
-    volatile f32 seek_step = (f64)elapsed * 3.0;
+    f32 seek_step = (f64)elapsed * 3.0;
     i32 player;
     i32 select = 0;
     i32 up = 0;
@@ -1372,7 +1370,7 @@ void __cdecl StatusPacketReset(STATUSPACKET_s *packet) {
 
 f32 __cdecl StatusScoreRatioPc(f32 numerator, f32 denominator) {
     if (numerator != 0.0f && denominator != 0.0f) {
-        volatile f32 result = (f64)numerator / (f64)denominator;
+        f32 result = (f64)numerator / (f64)denominator;
         return result;
     }
     return 0.0f;
@@ -1557,7 +1555,7 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
             }
             p->time_reward_score = *p->score;
             if (p->new_best_time != 0.0f) {
-                volatile i32 whole = (i32)((f64)p->previous_best_time - (f64)p->new_best_time);
+                i32 whole = (i32)((f64)p->previous_best_time - (f64)p->new_best_time);
                 i32 scaled = (i32)((u32)whole * 100u);
                 u64 reward = (u64)(i64)scaled;
                 if (reward < 100)
@@ -1641,7 +1639,7 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
                 gold = AddGoldBrickMessage(p, TextIdPc8806e4);
             }
             {
-                volatile i32 whole = (i32)((f64)p->mission->time - (f64)p->elapsed_time);
+                i32 whole = (i32)((f64)p->mission->time - (f64)p->elapsed_time);
                 i32 scaled = (i32)((u32)whole * 150u);
                 u64 reward = (u64)(i64)scaled;
                 if (reward < 150)
@@ -1682,7 +1680,7 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
                 first = 1;
             }
             {
-                volatile i32 whole = (i32)((f64)ADataList[p->area_id].challenge_trial_time - (f64)p->elapsed_time);
+                i32 whole = (i32)((f64)ADataList[p->area_id].challenge_trial_time - (f64)p->elapsed_time);
                 i32 scaled = (i32)((u32)whole * 500u);
                 u64 reward = (u64)(i64)scaled;
                 if (reward < 500)
@@ -1724,8 +1722,8 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
     if ((p->field_0xb0 & 4) != 0)
         p->true_hero_percent = 100.0f;
     else {
-        volatile f32 target = p->true_hero_target;
-        volatile f32 numerator = (f64)p->collected_score * 100.0;
+        f32 target = p->true_hero_target;
+        f32 numerator = (f64)p->collected_score * 100.0;
         p->true_hero_percent = StatusScoreRatioPc(numerator, target);
         if (p->true_hero_percent > 99.0f)
             p->true_hero_percent = 99.0f;
@@ -1870,26 +1868,19 @@ void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
         case 0: {
             stage->field_0x18 = 0.0f;
             stage->field_0x14 = 1;
-            if (packet->newly_completed != 0) {
-                volatile f32 duration = 4.0f;
-                stage->field_0x1c = duration;
-            } else {
-                volatile f32 duration = 0.5f;
-                stage->field_0x1c = duration;
-            }
+            stage->field_0x1c = packet->newly_completed == 0 ? 0.5f : 4.0f;
             StatusDrawPlayerIconsPc = 1;
             break;
         }
         case 1: {
             SetDrawGoldBrick(packet, packet->current_gold_brick);
             {
-                volatile f32 previous = stage->field_0x18;
-                volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
-                f32 accumulated = rounded_elapsed;
+                f32 previous = stage->field_0x18;
+                f32 accumulated = stage->field_0x18 + elapsed;
                 stage->field_0x18 = accumulated;
                 if (stage->field_0x1c <= accumulated)
                     NextStatusStage(packet);
-                else if (packet->newly_completed != 0 && 0.5f > previous && 0.5f <= accumulated) {
+                else if (packet->newly_completed != 0 && previous < 0.5f && accumulated >= 0.5f) {
                     PlaySfx("StatusAward", NULL);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 }
@@ -1914,17 +1905,16 @@ void __cdecl BonusTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet,
         case 1: {
             SetDrawGoldBrick(packet, packet->current_gold_brick);
             {
-                volatile f32 previous = stage->field_0x18;
-                volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
-                f32 accumulated = rounded_elapsed;
+                f32 previous = stage->field_0x18;
+                f32 accumulated = stage->field_0x18 + elapsed;
                 stage->field_0x18 = accumulated;
                 if (stage->field_0x1c <= accumulated)
                     NextStatusStage(packet);
-                else if (0.5f > previous && 0.5f <= accumulated) {
-                    if (packet->new_best_time == 0.0f)
-                        GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                    else
+                else if (previous < 0.5f && accumulated >= 0.5f) {
+                    if (packet->new_best_time != 0.0f)
                         PlaySfx("StatusAward", NULL);
+                    else
+                        GameAudio_PlaySfx(0x32, NULL, 0, 0);
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 }
             }
@@ -1945,7 +1935,7 @@ f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *packet) {
         return 0.0f;
     if (stage->type == 10) {
         if (stage->field_0x18 < 1.0f) {
-            volatile f32 alpha = 1.0 - (f64)stage->field_0x18;
+            f32 alpha = 1.0 - (f64)stage->field_0x18;
             return alpha;
         }
         return 0.0f;
@@ -1954,13 +1944,12 @@ f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *packet) {
         if (stage->field_0x14 == 0)
             return 1.0f;
         if (stage->field_0x18 < 1.0f) {
-            volatile f32 alpha = 1.0 - (f64)stage->field_0x18;
+            f32 alpha = 1.0 - (f64)stage->field_0x18;
             return alpha;
         } else {
-            volatile f32 fade_start = (f64)stage->field_0x1c - 1.0;
+            f32 fade_start = (f64)stage->field_0x1c - 1.0;
             if (stage->field_0x18 >= fade_start) {
-                volatile f32 alpha =
-                    ((f64)stage->field_0x18 - (f64)fade_start) / ((f64)stage->field_0x1c - (f64)fade_start);
+                f32 alpha = ((f64)stage->field_0x18 - (f64)fade_start) / ((f64)stage->field_0x1c - (f64)fade_start);
                 return alpha;
             }
             return 0.0f;
@@ -1970,7 +1959,7 @@ f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *packet) {
 }
 
 void __cdecl DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {
-    volatile f32 y = StatusBonusTimeYPc * position;
+    f32 y = StatusBonusTimeYPc * position;
     char time[256];
     char previous[256];
     char *title;
@@ -1985,16 +1974,16 @@ void __cdecl DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {
         green = 0;
     }
     {
-        volatile f32 title_y = (f64)y + (f64)0.15f;
+        f32 title_y = (f64)y + (f64)0.15f;
         SmartTextEx(title, 0.0f, title_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, (u8)red, (u8)green, 0, 1.7f, 1, NULL, 0,
                     (u8)alpha);
     }
     {
-        volatile f32 value = packet->new_best_time != 0.0f ? packet->new_best_time : packet->elapsed_time;
+        f32 value = packet->new_best_time != 0.0f ? packet->new_best_time : packet->elapsed_time;
         Text_MakeTime(value, 1, 1, 1, time);
     }
     {
-        volatile f32 time_y = (f64)y + 0.0;
+        f32 time_y = (f64)y + 0.0;
         Text3DEx(time, 0.0f, time_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255, alpha);
     }
     Text_MakeTime(packet->previous_best_time, 1, 1, 1, time);
@@ -2002,7 +1991,7 @@ void __cdecl DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {
     NuStrCat(previous, time);
     NuStrCat(previous, ")");
     {
-        volatile f32 previous_y = (f64)y - (f64)0.15f;
+        f32 previous_y = (f64)y - (f64)0.15f;
         Text3DEx(previous, 0.0f, previous_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255,
                  (i32)(((u32)alpha & 0xffffff00u) | (((u32)alpha & 0xffu) >> 1)));
     }
@@ -2012,7 +2001,7 @@ void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
     if (current == 0)
         return;
     if (stage->field_0x14 > 0 && packet->newly_completed != 0) {
-        volatile f32 alpha;
+        f32 alpha;
         if (stage->field_0x18 < 0.5f)
             alpha = (f64)stage->field_0x18 * 2.0;
         else if (stage->field_0x18 < 3.5)
@@ -2020,7 +2009,7 @@ void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
         else
             alpha = 1.0 - ((f64)stage->field_0x18 - 3.5) * 2.0;
         if (alpha > 0.0f) {
-            volatile i32 opacity = (i32)((f64)alpha * 128.0);
+            i32 opacity = (i32)((f64)alpha * 128.0);
             SmartTextEx(TTab[TextIdPc880728], 0.0f, StatusTitleYPc, 1.0f, StatusTextScalePc, StatusTextScalePc,
                         StatusTextScalePc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0,
                         (u32)opacity);
@@ -2031,7 +2020,7 @@ void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
     else if (packet->newly_completed == 0)
         iconalphaoverride = stage->field_0x18 / stage->field_0x1c;
     else {
-        volatile f32 fade_start = (f64)stage->field_0x1c - 0.5;
+        f32 fade_start = (f64)stage->field_0x1c - 0.5;
         if (stage->field_0x18 < fade_start)
             iconalphaoverride = 0.0f;
         else
@@ -2042,7 +2031,7 @@ void __cdecl BonusComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packe
 void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     if (current != 0) {
         if (stage->field_0x14 > 0) {
-            volatile f32 alpha, time = 0.0f;
+            f32 alpha, time = 0.0f;
             if (stage->field_0x18 < 0.5f)
                 alpha = (f64)stage->field_0x18 + (f64)stage->field_0x18;
             else {
@@ -2051,14 +2040,14 @@ void __cdecl BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i
                     time = (f64)stage->field_0x18 - 3.0;
             }
             {
-                volatile i32 opacity = (i32)((f64)alpha * 128.0);
-                volatile i32 angle = (i32)((f64)time * 32768.0 + 16384.0);
-                volatile f32 position = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
+                i32 opacity = (i32)((f64)alpha * 128.0);
+                i32 angle = (i32)((f64)time * 32768.0 + 16384.0);
+                f32 position = 1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5;
                 DrawBonusTime(packet, position, opacity);
             }
         }
     } else if (stage->field_0x12 != 0) {
-        volatile i32 opacity = (i32)((f64)getFinishedStatusAlpha(packet) * 128.0);
+        i32 opacity = (i32)((f64)getFinishedStatusAlpha(packet) * 128.0);
         DrawBonusTime(packet, 1.0f, opacity);
     }
 }
@@ -2079,18 +2068,17 @@ void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
             break;
         }
         case 1: {
-            volatile f32 previous = stage->field_0x18;
-            volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
-            f32 accumulated = rounded_elapsed;
+            f32 previous = stage->field_0x18;
+            f32 accumulated = stage->field_0x18 + elapsed;
             stage->field_0x18 = accumulated;
             if (stage->field_0x1c <= accumulated) {
                 *packet->score = packet->time_reward_score;
                 NextStatusStage(packet);
-            } else if (0.5f > previous && 0.5f <= accumulated) {
-                if (packet->new_best_time == 0.0f)
-                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                else
+            } else if (previous < 0.5f && accumulated >= 0.5f) {
+                if (packet->new_best_time != 0.0f)
                     PlaySfx("StatusAward", NULL);
+                else
+                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
             }
             if (packet->new_best_time != 0.0f) {
@@ -2103,16 +2091,16 @@ void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
                     *packet->score = packet->time_reward_score;
                 else if (stage->field_0x18 >= 0.5f && stage->field_0x18 < 4.0f) {
                     u32 original = packet->original_score;
-                    volatile f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
+                    f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
                     i32 angle = (i32)((f64)progress * 16384.0);
                     u32 difference = packet->time_reward_score - original;
-                    i32 amount = (i32)((f64)difference * (f64)NuTrigTable[(angle >> 1) & 0x7fff]);
+                    i32 amount = (i32)((f32)difference * NuTrigTable[(angle >> 1) & 0x7fff]);
                     *packet->score = original;
                     IncreaseScore(packet->score, (u64)(i64)amount, 0);
                     {
                         i32 current_bucket = (i32)((f64)stage->field_0x18 / (f64)0.2f);
                         i32 previous_bucket = (i32)((f64)previous / (f64)0.2f);
-                        if (current_bucket != previous_bucket)
+                        if (previous_bucket != current_bucket)
                             PlaySfx("PickupCoin", NULL);
                     }
                 }
@@ -2123,8 +2111,8 @@ void __cdecl SuperStoryTime_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
 
 void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256], previous[256];
-    volatile f32 alpha, coin_progress;
-    volatile i32 opacity;
+    f32 alpha, coin_progress;
+    i32 opacity;
     char *title;
     i32 red, green;
     if (current == 0 || stage->field_0x14 <= 0)
@@ -2141,10 +2129,9 @@ void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pack
     }
     opacity = (i32)((f64)alpha * 128.0);
     {
-        volatile f32 coin_scale = CoinTotalScale;
-        volatile i32 angle = (i32)((f64)coin_progress * 16384.0);
-        volatile f32 coin_y =
-            ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
+        f32 coin_scale = CoinTotalScale;
+        i32 angle = (i32)((f64)coin_progress * 16384.0);
+        f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
         CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
     }
     if (packet->new_best_time != 0.0f) {
@@ -2158,9 +2145,9 @@ void __cdecl SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pack
     }
     SmartTextEx(title, 0.0f, 0.2f, 1.0f, 0.7f, 0.7f, 0.7f, 0, (u8)red, (u8)green, 0, 1.7f, 1, NULL, 0, (u32)opacity);
     {
-        volatile f32 displayed_time;
+        f32 displayed_time;
         if (packet->new_best_time != 0.0f) {
-            volatile f32 blend;
+            f32 blend;
             if (stage->field_0x18 < 0.5f)
                 blend = 0.0f;
             else if (stage->field_0x18 < 4.0f)
@@ -2197,14 +2184,13 @@ void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *p
             break;
         }
         case 1: {
-            volatile f32 previous = stage->field_0x18;
-            volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
-            f32 accumulated = rounded_elapsed;
+            f32 previous = stage->field_0x18;
+            f32 accumulated = stage->field_0x18 + elapsed;
             stage->field_0x18 = accumulated;
             if (stage->field_0x1c <= accumulated) {
                 *packet->score = packet->final_reward_score;
                 NextStatusStage(packet);
-            } else if (0.5f > previous && 0.5f <= accumulated) {
+            } else if (previous < 0.5f && accumulated >= 0.5f) {
                 if (packet->new_best_score != 0)
                     PlaySfx("StatusAward", NULL);
                 else
@@ -2221,17 +2207,17 @@ void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *p
                     *packet->score = packet->final_reward_score;
                 else if (stage->field_0x18 >= 0.5f && stage->field_0x18 < 4.0f) {
                     u32 original = packet->original_score;
-                    volatile f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
+                    f32 progress = ((f64)stage->field_0x18 - 0.5) / 3.5;
                     i32 angle = (i32)((f64)progress * 16384.0 + 16384.0);
                     u32 difference = packet->final_reward_score - original;
-                    volatile f32 blend = 1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff];
-                    i32 amount = (i32)((f64)difference * (f64)blend);
+                    f32 blend = 1.0 - (f64)NuTrigTable[(angle >> 1) & 0x7fff];
+                    i32 amount = (i32)((f32)difference * blend);
                     *packet->score = original;
                     IncreaseScore(packet->score, (u64)(i64)amount, 0);
                     {
                         i32 current_bucket = (i32)((f64)stage->field_0x18 / (f64)0.2f);
                         i32 previous_bucket = (i32)((f64)previous / (f64)0.2f);
-                        if (current_bucket != previous_bucket)
+                        if (previous_bucket != current_bucket)
                             PlaySfx("PickupCoin", NULL);
                     }
                 }
@@ -2242,11 +2228,11 @@ void __cdecl SuperStoryScore_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *p
 
 void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256], previous[256];
-    volatile f32 coin_progress;
+    f32 coin_progress;
     if (current == 0)
         return;
     if (stage->field_0x14 > 0) {
-        volatile f32 alpha, blend;
+        f32 alpha, blend;
         i32 opacity;
         char *title;
         i32 red, green;
@@ -2288,10 +2274,9 @@ void __cdecl SuperStoryScore_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
     } else
         coin_progress = 1.0f;
     {
-        volatile f32 coin_scale = CoinTotalScale;
+        f32 coin_scale = CoinTotalScale;
         i32 angle = (i32)((f64)coin_progress * 16384.0);
-        volatile f32 coin_y =
-            ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
+        f32 coin_y = ((f64)STATSPOSY - (f64)STATSPOS2YPc) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)STATSPOS2YPc;
         CoinTotal_Draw((i32)*packet->score, coin_y, coin_scale, 1, 1.0f, 255, 191, 0);
     }
 }
@@ -2311,9 +2296,8 @@ void __cdecl BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
             break;
         }
         case 1: {
-            volatile f32 previous = stage->field_0x18;
-            volatile f32 rounded_elapsed = stage->field_0x18 + elapsed;
-            f32 accumulated = rounded_elapsed;
+            f32 previous = stage->field_0x18;
+            f32 accumulated = stage->field_0x18 + elapsed;
             stage->field_0x18 = accumulated;
             if (stage->field_0x1c <= accumulated) {
                 NextStatusStage(packet);
@@ -2363,15 +2347,15 @@ void __cdecl BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
             iconalphaoverride = (f64)stage->field_0x18 + (f64)stage->field_0x18;
         if (stage->field_0x18 < 2.0f && (f64)NuFmod(stage->field_0x18, 0.2f) >= (f64)0.1f) {
             i32 second = (packet->flags_word >> 5) & 1;
-            volatile f32 winner_x = second != 0 ? 0.675f : -0.675f;
-            volatile i32 opacity = (i32)((f64)iconalphaoverride * 128.0);
+            f32 winner_x = second != 0 ? 0.675f : -0.675f;
+            i32 opacity = (i32)((f64)iconalphaoverride * 128.0);
             SmartTextEx(TTab[TextIdPc88075c], winner_x, STATSPOSY, 1.0f, 0.7f, 0.7f, 0.7f, second != 0 ? 8 : 2, 0, 255,
                         0, 0.35f, 1, NULL, 0, (u32)opacity);
         }
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, iconalphaoverride,
                        BonusScore);
     } else if (stage->field_0x12 != 0 && packet->stage->type != 25) {
-        volatile f32 alpha = getFinishedStatusAlpha(packet);
+        f32 alpha = getFinishedStatusAlpha(packet);
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, alpha, BonusScore);
     }
 }
