@@ -46,8 +46,8 @@ extern "C" i32 __cdecl ShadowAveragePlayerBoundsPc(NUVEC *center, f32 *radius) {
     return count;
 }
 void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
-    volatile f32 direction_y = target->y - eye->y;
-    volatile f32 direction_z = target->z - eye->z;
+    f32 direction_y = target->y - eye->y;
+    f32 direction_z = target->z - eye->z;
     shadow_direction_pc.x = target->x - eye->x;
     shadow_direction_pc.y = direction_y;
     shadow_direction_pc.z = direction_z;
@@ -63,8 +63,8 @@ void PC_SPECIAL_SHADOW_LIGHT::LookAtPc(NUVEC *eye, NUVEC *target, NUVEC *up) {
     NuMtxLookAtD3D(&view, eye, target, up);
 }
 void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const f32 *splits, i32 split_count) {
-    volatile f32 aspect = 1.0f / camera->aspect;
-    volatile f32 fov = ((f64)camera->fov * 180.0) / 3.1415927410125732;
+    f32 aspect = 1.0f / camera->aspect;
+    f32 fov = ((f64)camera->fov * 180.0) / 3.1415927410125732;
     NuMtxSetPerspectiveD3D(&PostShadowProjectionPc, fov, aspect, camera->near_clip, camera->far_clip);
     NuMtxInv(&PostShadowViewPc, &camera->mtx);
     camera_position_pc.x = camera->mtx.m30;
@@ -176,10 +176,10 @@ extern "C" void __cdecl SetShadowLight(void) {
     NuVecNorm(&direction, &direction);
     f64 weight = 1.0 + (f64)direction.y;
     weight = 1.0 < weight ? 1.0 : weight;
-    volatile f32 distance = NuVecDist(&camera_position, &target, NULL);
-    volatile f32 range = WORLD->shadow_editor->field_20;
-    volatile f32 weight32 = weight;
-    volatile f32 interpolation = NuPow(weight32, ShadowLightBlendPowerPc);
+    f32 distance = NuVecDist(&camera_position, &target, NULL);
+    f32 range = WORLD->shadow_editor->field_20;
+    f32 weight32 = weight;
+    f32 interpolation = NuPow(weight32, ShadowLightBlendPowerPc);
     if (alternate)
         range = 16.0f;
     f32 splits[3];
@@ -196,7 +196,7 @@ extern "C" void __cdecl SetShadowLight(void) {
         ShadowLightSplitCountPc = 1;
         splits[1] = distance + (range - distance) * interpolation;
     }
-    volatile f32 parameter = WORLD->shadow_editor->field_0c;
+    f32 parameter = WORLD->shadow_editor->field_0c;
     if (alternate)
         parameter = secondary_strength;
     PCShadowCurrentLight->parameter_0 = parameter;
