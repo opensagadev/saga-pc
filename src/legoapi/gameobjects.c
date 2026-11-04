@@ -4013,7 +4013,7 @@ __declspec(noinline) f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position,
     i32 handles[16];
     i32 handle_count = 0;
     i32 i;
-    volatile f32 height;
+    f32 height;
 
     if (object != NULL) {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
@@ -4042,7 +4042,7 @@ __declspec(noinline) f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position,
 }
 
 f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
-    volatile f32 height;
+    f32 height;
     i32 material;
     NewTerrPlatformsOff();
     height = NewShadowEx(position, 0.0f, 5.0f, 5.0f, -1);
