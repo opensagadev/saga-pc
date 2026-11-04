@@ -157,7 +157,7 @@ void __cdecl CharShadows_Update(void) {
     PLAYERCHARACTERCONFIG_PC *config;
     NUVEC position;
     NUVEC *locator_position;
-    volatile f32 height, extended_height;
+    f32 height, extended_height;
     i32 index, locator, count, layer;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
@@ -220,7 +220,7 @@ void __cdecl CharShadows_Draw(void) {
     CHARACTER_SHADOW_PACKET_PC *packet;
     CHARACTER_SHADOW_RESET_SLOT_PC *slot;
     NUVEC position;
-    volatile f32 alpha, radius;
+    f32 alpha, radius;
     i32 index, locator, count, level_alpha;
     if (CharacterBlobShadowsOnPc == 0 || PcWindowOptions.shadowmethod != 1 || PcWindowOptions.shadowsenabled == 0)
         return;
