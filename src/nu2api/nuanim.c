@@ -2889,7 +2889,7 @@ f32 __cdecl NuAnimCurve2CalcValEx(DWA_CURVE_CELL_PC *curve, NUANIM_TIME2_PC *tim
 /* Genuine in-place operations; no reconstruction-only helper symbols. */
 #define PC_LEGACY_CURVE_STORE(destination, channel)                                                                    \
     do {                                                                                                               \
-        volatile f32 pc_curve_value;                                                                                   \
+        f32 pc_curve_value;                                                                                            \
         if (formats[(channel)] == 0)                                                                                   \
             pc_curve_value = curves[(channel)].constant;                                                               \
         else                                                                                                           \
