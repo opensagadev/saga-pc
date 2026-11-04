@@ -572,7 +572,7 @@ i32 __cdecl GizTurrets_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJEC
     GAMEOBJECT *owner;
     NUVEC *centre, *origin;
     NUVEC normal;
-    volatile f32 turret_radius_spill, distance_spill;
+    f32 turret_radius_spill, distance_spill;
     f32 turret_radius, distance;
     f32 best_distance = 1000000000.0f;
     i32 index, point, player, damage;
@@ -665,8 +665,8 @@ GIZMO_PC *__cdecl GizTurrets_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dis
     NUVEC *previous_position = NULL;
     f32 best_distance = 1000000000.0f;
     NUVEC direction_copy, delta;
-    volatile f32 minimum_x, minimum_z, maximum_x, maximum_z;
-    volatile f32 distance_spill, dot_spill, dx_spill, dz_spill;
+    f32 minimum_x, minimum_z, maximum_x, maximum_z;
+    f32 distance_spill, dot_spill, dx_spill, dz_spill;
     f32 distance, dot;
     u16 target_angle;
     NUANG angle;
