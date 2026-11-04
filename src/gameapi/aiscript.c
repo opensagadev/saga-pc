@@ -1788,11 +1788,11 @@ i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     i32 random_angle;
     u16 heading;
     f32 distance = 0.0f;
-    volatile f64 weighted_term;
-    volatile f32 base_dx;
-    volatile f32 base_dy;
-    volatile f32 dx;
-    volatile f32 dy;
+    f64 weighted_term;
+    f32 base_dx;
+    f32 base_dy;
+    f32 dx;
+    f32 dy;
     char *value;
 
     if (first_time == 0)
