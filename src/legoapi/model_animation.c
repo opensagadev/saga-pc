@@ -49,7 +49,7 @@ void __cdecl EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *pack
             model->model_data_c[packet->blend_source_animation] != NULL && packet->blend_target_animation >= 0 &&
             packet->blend_target_animation < apicharsys->model_id_capacity &&
             model->model_data_c[packet->blend_target_animation] != NULL) {
-            volatile f32 fraction = packet->blend_elapsed_pc / packet->blend_duration_pc;
+            f32 fraction = packet->blend_elapsed_pc / packet->blend_duration_pc;
             *dwa_output =
                 NuHGobjEvalDwaBlend2(render_count, render_indices, model->model_data_c[packet->blend_source_animation],
                                      packet->blend_source_time, model->model_data_c[packet->blend_target_animation],
@@ -80,7 +80,7 @@ void __cdecl EvalModelAnim(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *pack
         model->model_data_b[packet->blend_source_animation] != NULL && packet->blend_target_animation >= 0 &&
         packet->blend_target_animation < apicharsys->model_id_capacity &&
         model->model_data_b[packet->blend_target_animation] != NULL) {
-        volatile f32 fraction = packet->blend_elapsed_pc / packet->blend_duration_pc;
+        f32 fraction = packet->blend_elapsed_pc / packet->blend_duration_pc;
         NuHGobjEvalAnimBlend2(model->hierarchy, model->model_data_b[packet->blend_source_animation],
                               packet->blend_source_time, model->model_data_b[packet->blend_target_animation],
                               packet->blend_target_time, fraction, 0, NULL, joint_matrices);
