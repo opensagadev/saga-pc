@@ -463,9 +463,9 @@ f32 *__cdecl NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NU
     curves = animation->prefix.curves;
     types = animation->prefix.curve_types;
     if (animation->node_flags[0] & 1) {
-        volatile f32 rx = CUT2_VALUE(curves, time, types, 3);
-        volatile f32 ry = CUT2_VALUE(curves, time, types, 4);
-        volatile f32 rz = CUT2_VALUE(curves, time, types, 5);
+        f32 rx = CUT2_VALUE(curves, time, types, 3);
+        f32 ry = CUT2_VALUE(curves, time, types, 4);
+        f32 rz = CUT2_VALUE(curves, time, types, 5);
         NUANGVEC angle;
         angle.x = (i32)(rx * AIPathAngularScale);
         angle.y = (i32)(ry * AIPathAngularScale);
@@ -503,9 +503,9 @@ void __cdecl NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *m
     flags = animation->node_flags[0];
     NuAnimData2CalcTime(&animation->prefix, frame, &time);
     if (flags & 1) {
-        volatile f32 rx = CUT2_VALUE(curves, &time, types, 3);
-        volatile f32 ry = CUT2_VALUE(curves, &time, types, 4);
-        volatile f32 rz = CUT2_VALUE(curves, &time, types, 5);
+        f32 rx = CUT2_VALUE(curves, &time, types, 3);
+        f32 ry = CUT2_VALUE(curves, &time, types, 4);
+        f32 rz = CUT2_VALUE(curves, &time, types, 5);
         NUANGVEC angle;
         angle.x = (i32)(rx * AIPathAngularScale);
         angle.y = (i32)(ry * AIPathAngularScale);
@@ -558,13 +558,13 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
     types = animation->prefix.curve_types;
     flags = animation->node_flags[0];
     if (character->animation->prefix.curve_count > 6) {
-        volatile f32 value = CUT2_VALUE(curves, &time, types, 6);
+        f32 value = CUT2_VALUE(curves, &time, types, 6);
         *visible = (i32)value;
     } else
         *visible = character->flags & 1;
     if (animation_index != NULL) {
         if (character->animation->prefix.curve_count > 7) {
-            volatile f32 value = CUT2_VALUE(curves, &time, types, 7);
+            f32 value = CUT2_VALUE(curves, &time, types, 7);
             if (value < 0.0f)
                 *animation_index = 255;
             else
@@ -575,7 +575,7 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
             if (*animation_index == 0 || *animation_index == 255)
                 *start_frame = 0.0f;
             else if (character->animation->prefix.curve_count > 10) {
-                volatile f32 value = CUT2_VALUE(curves, &time, types, 10);
+                f32 value = CUT2_VALUE(curves, &time, types, 10);
                 *start_frame = value;
             } else
                 *start_frame = character->start_frame;
@@ -586,15 +586,15 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
         return;
     if (layer_mask != NULL) {
         if (character->animation->prefix.curve_count > 11) {
-            volatile f32 value = CUT2_VALUE(curves, &time, types, 11);
+            f32 value = CUT2_VALUE(curves, &time, types, 11);
             *layer_mask = (i32)value;
         } else
             *layer_mask = -1;
     }
     if (flags & 1) {
-        volatile f32 rx = CUT2_VALUE(curves, &time, types, 3);
-        volatile f32 ry = CUT2_VALUE(curves, &time, types, 4);
-        volatile f32 rz = CUT2_VALUE(curves, &time, types, 5);
+        f32 rx = CUT2_VALUE(curves, &time, types, 3);
+        f32 ry = CUT2_VALUE(curves, &time, types, 4);
+        f32 rz = CUT2_VALUE(curves, &time, types, 5);
         NUANGVEC angle;
         angle.x = (i32)(rx * AIPathAngularScale);
         angle.y = (i32)(ry * AIPathAngularScale);
@@ -611,14 +611,14 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
     NuMtxPreScale(matrix, &scale);
     if (animation_rate != NULL) {
         if (character->animation->prefix.curve_count > 9) {
-            volatile f32 value = CUT2_VALUE(curves, &time, types, 9);
+            f32 value = CUT2_VALUE(curves, &time, types, 9);
             *animation_rate = value;
         } else
             *animation_rate = character->animation_rate;
     }
     if (blend_time != NULL) {
         if (character->animation->prefix.curve_count > 8) {
-            volatile f32 value = CUT2_VALUE(curves, &time, types, 8);
+            f32 value = CUT2_VALUE(curves, &time, types, 8);
             *blend_time = value;
         } else
             *blend_time = character->blend_time;
@@ -674,7 +674,7 @@ i32 __cdecl NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NU
     DWA_CURVE_CELL_PC *curves;
     i8 *types;
     i32 visible;
-    volatile f32 evaluated;
+    f32 evaluated;
     if (animation == NULL) {
         CUT_VISIBLE_LOCATOR_PC *constant = (CUT_VISIBLE_LOCATOR_PC *)locator;
         visible = constant->flags & 8;
