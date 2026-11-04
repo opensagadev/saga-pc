@@ -39,16 +39,16 @@ static __declspec(noinline) void ExplosionFeedbackPc(EXPLOSION_PC *explosion) {
     }
 }
 void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
-    volatile f32 progress, radius, inverse;
-    volatile f64 vertical_offset;
-    volatile f32 squared, normalized;
+    f32 progress, radius, inverse;
+    f64 vertical_offset;
+    f32 squared, normalized;
     u16 angle, hit_flags;
     i32 i, count, hit_character, damage;
     u32 hit_type;
     NUVEC position, maximum, minimum, points[3];
     GAMEOBJECT *target, *object, *source;
     BOLT_PC bolt;
-    volatile f32 x, z;
+    f32 x, z;
     progress = explosion->time / explosion->duration;
     radius = explosion->radius * progress;
     angle = explosion->random_angle;
@@ -207,7 +207,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
 void __cdecl UpdateExplosions(void) {
     i32 i;
     EXPLOSION_PC *explosion = Explosions;
-    volatile f32 time;
+    f32 time;
     for (i = 0; i < 8; ++i, ++explosion) {
         if (explosion->time < explosion->duration) {
             time = FRAMETIME + explosion->time;
