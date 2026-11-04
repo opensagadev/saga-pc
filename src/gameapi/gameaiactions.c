@@ -1390,7 +1390,7 @@ i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     f32 multiplier;
     f32 minimum;
     f32 maximum;
-    volatile f32 product;
+    f32 product;
     char *value;
     i32 index;
 
@@ -1465,7 +1465,7 @@ i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     GAMEOBJECT *object;
     f32 minimum;
     f32 maximum;
-    volatile f32 target;
+    f32 target;
     f32 time;
     f32 random;
     char *value;
