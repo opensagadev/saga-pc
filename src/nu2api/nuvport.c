@@ -10,9 +10,9 @@ NUVPCURRENT *NuVpGetCurrentViewport(void) {
 }
 
 void __cdecl NuVpBuildScalingTemplatePc(void) {
-    volatile f32 width = (f32)PS2_REZ_W;
-    volatile f32 height = (f32)PS2_REZ_H;
-    volatile f32 min_z = vpCurrent.min_z;
+    f32 width = (f32)PS2_REZ_W;
+    f32 height = (f32)PS2_REZ_H;
+    f32 min_z = vpCurrent.min_z;
     NuCameraScalingTemplate.m00 = (f32)((f64)width * NuQFntHalfScale);
     NuCameraScalingTemplate.m01 = 0.0f;
     NuCameraScalingTemplate.m02 = 0.0f;
@@ -36,9 +36,9 @@ void __cdecl NuVpUpdate(void) {
     i32 x, y, width, height, right, bottom, limit_x, limit_y;
     i32 clipped_left = 0;
     i32 clipped_top = 0;
-    volatile f32 rounded_width;
-    volatile f32 rounded_height;
-    volatile f32 reciprocal;
+    f32 rounded_width;
+    f32 rounded_height;
+    f32 reciprocal;
     if (NuVpDirtyPc == 0)
         return;
     NuCameraProjectionGlobalScaleX = 1.0f;
