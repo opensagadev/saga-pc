@@ -7,7 +7,7 @@ i32 __cdecl IntersectWater(GAMEOBJECT *object) {
            !(object->water_height < object->collision_min.y);
 }
 void __cdecl Surface_Deflect(NUVEC *normal, NUVEC *movement, NUVEC *result, i32 mode) {
-    volatile f32 correction;
+    f32 correction;
     correction = (-movement->y * normal->y - movement->x * normal->x) - movement->z * normal->z;
     if (mode == 2)
         correction = correction + FRAMETIME * (f64)0.015f;
