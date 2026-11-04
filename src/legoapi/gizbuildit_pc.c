@@ -658,7 +658,7 @@ STATIC_ASSERT(offsetof(GAMEPAD_PC, buttons_held) == 4);
 
 static __declspec(noinline) f32 BuildItSafeRatioPc(f32 numerator, f32 denominator) {
     if (numerator != 0.0f && denominator != 0.0f) {
-        volatile f32 ratio = numerator / denominator;
+        f32 ratio = numerator / denominator;
         return ratio;
     }
     return 0.0f;
@@ -683,7 +683,7 @@ static __declspec(noinline) f32 BuildItAxisWobbleFactorPc(NUVEC *axis) {
         f32 value;
         u32 bits;
     } vertical;
-    volatile f32 product, factor;
+    f32 product, factor;
     f32 sine;
     NuVecNorm(&normal, axis);
     vertical.value = NuVecDot(&normal, &v010);
@@ -1163,7 +1163,7 @@ void __cdecl GizBuildItPushAwayFromEnd(GAMEOBJECT *player) {
 void __cdecl BuildIt_MoveCode(GAMEOBJECT *player) {
     GIZBUILDIT_PC *buildit;
     i32 animation;
-    volatile f32 timer;
+    f32 timer;
     if (LEGOCONTEXT_BUILDIT == -1)
         return;
     if ((player->character_data->model_flags & 0x2010) != 0)
