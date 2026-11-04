@@ -1197,11 +1197,25 @@ i32 __cdecl GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     (void)mode;
     return (((GIZMOPICKUP_PC *)gizmo->object)->flags >> 3) & 1;
 }
+typedef struct PICKUP_VISIBILITY_VIEW_PC {
+    u8 unknown_00[0x17];
+    struct {
+        u8 unknown_0 : 2;
+        u8 visible : 1;
+        u8 unknown_3 : 5;
+    } flags;
+    u8 unknown_18[0x14];
+} PICKUP_VISIBILITY_VIEW_PC;
+STATIC_ASSERT(sizeof(PICKUP_VISIBILITY_VIEW_PC) == sizeof(GIZMOPICKUP_PC));
+STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW_PC, flags) == offsetof(GIZMOPICKUP_PC, flags));
+STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW_PC, flags) == 0x17);
+STATIC_ASSERT(sizeof(((PICKUP_VISIBILITY_VIEW_PC *)0)->flags) == 1);
+
 void __cdecl GizmoPickup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    GIZMOPICKUP_PC *pickup;
+    PICKUP_VISIBILITY_VIEW_PC *pickup;
     if (gizmo != NULL) {
-        pickup = (GIZMOPICKUP_PC *)gizmo->object;
-        pickup->visible = visible != 0;
+        pickup = (PICKUP_VISIBILITY_VIEW_PC *)gizmo->object;
+        pickup->flags.visible = visible != 0;
     }
 }
 void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {

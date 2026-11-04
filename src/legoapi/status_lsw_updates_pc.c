@@ -2,7 +2,7 @@
 
 void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
     if (stage->field_0x14 == 0) {
-        volatile f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
+        f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= 0.5f) {
             i32 player = 0;
@@ -53,7 +53,7 @@ void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f3
             }
         }
     } else if (stage->field_0x14 == 1) {
-        volatile f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
+        f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 > stage->field_0x1c)
             NextStatusStage(packet);
@@ -78,7 +78,7 @@ void __cdecl Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
         stage->field_0x18 = 0.0f;
         stage->field_0x1c = 0.6f;
     } else if (stage->field_0x14 == 1) {
-        volatile f32 accumulated = stage->field_0x18;
+        f32 accumulated = stage->field_0x18;
         accumulated += elapsed;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= stage->field_0x1c)
@@ -88,7 +88,7 @@ void __cdecl Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
             f32 denominator = stage->field_0x1c;
             f32 blend = 0.0f;
             if (numerator != 0.0f && denominator != 0.0f) {
-                volatile f32 result = (f64)numerator / (f64)denominator;
+                f32 result = (f64)numerator / (f64)denominator;
                 blend = result;
             }
             StatusIconYPc = -StatusIconsOnOff(blend);

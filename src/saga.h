@@ -5453,17 +5453,14 @@ typedef struct gameobject_s {
     BOLT *incoming_bolt;
     BOLT *blocked_bolt;
     union {
+        u8 unknown_d0c[0x8];
         struct {
-            u8 unknown_d0c[4];
+            u8 throw_reserved_d0c[4];
             struct gameobject_s *force_throw_target;
-            u8 unknown_d14[8];
-        };
-        struct {
-            u8 transform_reserved_d0c[8];
-            void *transform_target;
-            u8 transform_reserved_d18[4];
         };
     };
+    void *transform_target;
+    u8 unknown_d18[4];
     struct gameobject_s *airborne_collision_target;
     u32 field_d20;
     f32 ground_contact_grace_timer;
@@ -8822,13 +8819,7 @@ typedef struct GIZMOPICKUP_PC {
             u8 filter_byte, filter_reserved;
         };
     };
-    u8 model_variant;
-    union {
-        u8 flags;
-        struct {
-            u8 flags_0 : 2, visible : 1, flags_3 : 5;
-        };
-    };
+    u8 model_variant, flags;
     u8 unknown_18[4];
     f32 floor;
     u16 shadow_x, shadow_z;
