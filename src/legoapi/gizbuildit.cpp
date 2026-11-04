@@ -58,7 +58,7 @@ STATIC_ASSERT(offsetof(BUILDIT_ATTRACTO_READER_PC, step_duration) == 0x48);
 
 extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEANIMOBJ *piece) {
     BUILDIT_ATTRACTO_READER_PC *buildit = (BUILDIT_ATTRACTO_READER_PC *)buildit_pointer;
-    volatile f32 progress = 1.0 - (f64)buildit->step_timer / buildit->step_duration;
+    f32 progress = 1.0 - (f64)buildit->step_timer / buildit->step_duration;
     GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
     NUMTX *draw = NuSpecialGetDrawMtx(&piece->special);
     if (progress > 0.0f) {
@@ -102,7 +102,7 @@ extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflect
     if (buildit == NULL || buildit->builders_active == 0 || buildit->build_state != 0 ||
         buildit->anim_object_count == 0)
         return;
-    volatile f32 progress = 1.0 - (f64)buildit->step_timer / (f64)buildit->step_duration;
+    f32 progress = 1.0 - (f64)buildit->step_timer / (f64)buildit->step_duration;
     GAMEANIMOBJ *piece = buildit->anim_objects[buildit->built_object_count];
     GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
     NUMTX matrix = data->start_mtx;
