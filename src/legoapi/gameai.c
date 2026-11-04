@@ -758,7 +758,7 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
 
 f32 __cdecl AdaptiveDifficultyUpdatePc(ADAPTIVEDIFFICULTY_PC *difficulty) {
     f32 threshold;
-    volatile f32 elapsed;
+    f32 elapsed;
     i32 increase;
     if (difficulty != NULL && Cheat_IsOn(44) != 0 && BonusArea == 0 && GAMEDEMO == 0) {
         threshold = AdaptiveDifficultyRecoveryThresholdPc;
