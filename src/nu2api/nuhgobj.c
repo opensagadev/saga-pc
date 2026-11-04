@@ -76,7 +76,7 @@ void __cdecl NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *ani
                                     void *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn, void *root_data) {
     ANI3_BUFFER_PC buffer;
     NUVEC root_translation = {0.0f, 0.0f, 0.0f};
-    volatile f32 adjusted_time;
+    f32 adjusted_time;
     NUJOINTPROCANIMFN_PC callback;
     buffer.joint_count = 0;
     buffer.max_joints = globalbuffer->scratch_joint_capacity;
@@ -100,7 +100,7 @@ void __cdecl NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC
     ANI3_BUFFER_PC buffer;
     NUVEC root_translation = {0.0f, 0.0f, 0.0f};
     NUVEC blend_translation;
-    volatile f32 adjusted_time_a, adjusted_time_b;
+    f32 adjusted_time_a, adjusted_time_b;
     NUJOINTPROCANIMFN_PC callback;
     u8 quaternion_mode;
     buffer.joint_count = 0;
@@ -177,7 +177,7 @@ DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa2(i32 count, i16 *indices, NUANIMDAT
         if (weights == NULL)
             continue;
         for (curve = 0; curve < curve_count; ++curve) {
-            volatile f32 value =
+            f32 value =
                 types[curve] == 0 ? cells[curve].constant : NuAnimCurve2CalcValEx(&cells[curve], &time, types[curve]);
             weights->values[curve] = value;
         }
@@ -208,7 +208,7 @@ DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend2(i32 count, i16 *indices, NUAN
         DWA_CURVE_CELL_PC *cells_a = NULL, *cells_b = NULL;
         i8 *types_a = NULL, *types_b = NULL;
         DWA_WEIGHT_BLOCK_PC *weights;
-        volatile f64 inverse;
+        f64 inverse;
         if (node < 0)
             continue;
         if (animation_a != NULL && node < NuAnimNumNodes(animation_a)) {
@@ -228,7 +228,7 @@ DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend2(i32 count, i16 *indices, NUAN
             continue;
         inverse = 1.0 - (f64)blend;
         for (curve = 0; curve < curves; ++curve) {
-            volatile f32 value_a = 0.0f, value_b = 0.0f;
+            f32 value_a = 0.0f, value_b = 0.0f;
             if (curve < count_a)
                 value_a = types_a[curve] == 0 ? cells_a[curve].constant
                                               : NuAnimCurve2CalcValEx(&cells_a[curve], &time_a, types_a[curve]);
