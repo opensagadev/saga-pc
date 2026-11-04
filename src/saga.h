@@ -25038,6 +25038,13 @@ STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, locators) == 0x3cbd8);
 STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, locator_sets) == 0x41200);
 STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, antinodes) == 0x43814);
 STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, preview_width) == 0x43824);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, flags) == 0x43828);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, level_subdirectory) == 0x43834);
+STATIC_ASSERT(offsetof(struct AIEDITOR_RENDER_STATE, pad_pressed) == 0xc393c);
+STATIC_ASSERT(offsetof(EDAICREATURE_s, angle) == 0x34);
+STATIC_ASSERT(offsetof(EDAICREATURE_s, check.path) == 0x3c);
+STATIC_ASSERT(offsetof(EDAICREATURE_s, character_type) == 0x58);
+STATIC_ASSERT(offsetof(EDAICREATURE_s, script_params) == 0x70);
 
 struct EDAIPATHWALL_s {
     NULISTLNK link;
