@@ -63,19 +63,6 @@ GAMEOBJECT *__cdecl Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATH
     return NULL;
 }
 
-typedef struct GRAPPLE_MOTION_PC {
-    char name[16];
-    NUVEC position;
-    u8 has_terrain_platform, retain_attachment, flags, unknown_1f;
-    u16 y_rotation, x_rotation;
-    NUVEC ground_position, hook_position, shadow_probe_position;
-    u16 ground_x_rotation, ground_z_rotation;
-    f32 swing_scale, rope_length;
-    GAMEOBJECT *attached_object;
-    f32 activation_progress;
-    NUVEC rope_points[6], target_rope_points[6];
-    u8 display_special[12];
-} GRAPPLE_MOTION_PC;
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, name) == 0);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);
 

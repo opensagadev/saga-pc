@@ -5453,9 +5453,11 @@ typedef struct gameobject_s {
     BOLT *incoming_bolt;
     BOLT *blocked_bolt;
     union {
-        u8 unknown_d0c[0x8];
-        u32 field_d14;
-        u8 unknown_d18[0x4];
+        struct {
+            u8 unknown_d0c[4];
+            struct gameobject_s *force_throw_target;
+            u8 unknown_d14[8];
+        };
         struct {
             u8 transform_reserved_d0c[8];
             void *transform_target;
@@ -8820,7 +8822,13 @@ typedef struct GIZMOPICKUP_PC {
             u8 filter_byte, filter_reserved;
         };
     };
-    u8 model_variant, flags;
+    u8 model_variant;
+    union {
+        u8 flags;
+        struct {
+            u8 flags_0 : 2, visible : 1, flags_3 : 5;
+        };
+    };
     u8 unknown_18[4];
     f32 floor;
     u16 shadow_x, shadow_z;
@@ -20310,7 +20318,21 @@ extern "C" {
 #endif
 
 /* Public declarations only; private original grapple views/helpers remain in their owner. */
-typedef struct GRAPPLE_MOTION_PC GRAPPLE_MOTION_PC;
+typedef struct GRAPPLE_MOTION_PC {
+    char name[16];
+    NUVEC position;
+    u8 has_terrain_platform, retain_attachment, flags, unknown_1f;
+    u16 y_rotation, x_rotation;
+    NUVEC ground_position, hook_position, shadow_probe_position;
+    u16 ground_x_rotation, ground_z_rotation;
+    f32 swing_scale, rope_length;
+    GAMEOBJECT *attached_object;
+    f32 activation_progress;
+    NUVEC rope_points[6], target_rope_points[6];
+    u8 display_special[12];
+} GRAPPLE_MOTION_PC;
+STATIC_ASSERT(sizeof(GRAPPLE_MOTION_PC) == 0xf8);
+STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, has_terrain_platform) == 0x1c);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20415,8 +20437,6 @@ extern "C" {
     void __cdecl NuShaderManagerSetfv(i32 semantic, const f32 *values);
 #ifdef __cplusplus
 }
-#endif
-
 #endif
 
 #ifdef __cplusplus
@@ -20764,8 +20784,6 @@ extern "C" {
 #endif
 
 typedef struct HATMACHINE_PC HATMACHINE_PC;
-#ifndef SAGA_GIZMO_LEVER_PC_DEFINED
-#define SAGA_GIZMO_LEVER_PC_DEFINED
 typedef struct GIZMO_LEVER_PC GIZMO_LEVER_PC;
 struct GIZMO_LEVER_PC {
     NUMTX matrix;
@@ -20781,7 +20799,6 @@ struct GIZMO_LEVER_PC {
 STATIC_ASSERT(sizeof(GIZMO_LEVER_PC) == 0xa0);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, floor_position) == 0x40);
 STATIC_ASSERT(offsetof(GIZMO_LEVER_PC, position) == 0x68);
-#endif
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20944,8 +20961,6 @@ extern "C" {
 }
 #endif
 
-#ifndef SAGA_REGISTRATION_SIX_STATE_DECLARATIONS
-#define SAGA_REGISTRATION_SIX_STATE_DECLARATIONS
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20959,10 +20974,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_REGISTRATION_CHARACTER_MM_DECLARATIONS
-#define SAGA_REGISTRATION_CHARACTER_MM_DECLARATIONS
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20995,10 +21007,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
-
-#ifndef SAGA_CHARACTER_GIZSPECIAL_MM_DECLARATIONS
-#define SAGA_CHARACTER_GIZSPECIAL_MM_DECLARATIONS
 
 #ifdef __cplusplus
 extern "C" {
@@ -21018,8 +21026,6 @@ extern "C" {
 }
 #endif
 
-#ifndef SAGA_REMAINING_CALLBACK_STATE_DECLARATIONS
-#define SAGA_REMAINING_CALLBACK_STATE_DECLARATIONS
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21044,7 +21050,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -21055,13 +21060,6 @@ extern "C" {
 }
 #endif
 
-#endif
-
-#ifndef SAGA_REGISTRATION_CHARACTER_NN_DECLARATIONS
-#define SAGA_REGISTRATION_CHARACTER_NN_DECLARATIONS
-
-#ifndef SAGA_TECHNO_CONFIG_PC_DECLARATIONS
-#define SAGA_TECHNO_CONFIG_PC_DECLARATIONS
 typedef struct techno_config_pc_s {
     f32 interaction_time;
     i16 idle_object_ids[4];
@@ -21089,7 +21087,6 @@ extern "C" {
     extern i32 portal_gizmotype_id;
 #ifdef __cplusplus
 }
-#endif
 #endif
 
 #ifdef __cplusplus
@@ -21151,10 +21148,6 @@ extern "C" {
 }
 #endif
 
-#endif
-
-#ifndef SAGA_GAME_STARTUP_OO_DECLARATIONS
-#define SAGA_GAME_STARTUP_OO_DECLARATIONS
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21196,8 +21189,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 STATIC_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME_PC) == 16);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 14);
 
-#ifndef SAGA_GAME_CALLBACK_DISGUISE_REQUESTS
-#define SAGA_GAME_CALLBACK_DISGUISE_REQUESTS
 struct cut_player_clip_config_pc_s;
 #ifdef __cplusplus
 extern "C" {
@@ -21216,9 +21207,9 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target) == 0xd14);
+STATIC_ASSERT(offsetof(GAMEOBJECT, force_throw_target) == 0xd10);
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_alpha) == 0xd80);
 STATIC_ASSERT(offsetof(GAMEOBJECT, transform_target_scale) == 0xd8c);
 typedef struct attracto_pc_s ATTRACTO_PC;
@@ -21249,14 +21240,22 @@ typedef struct KAMINO_DISCO_MUSIC_VIEW_PC {
 } KAMINO_DISCO_MUSIC_VIEW_PC;
 STATIC_ASSERT(sizeof(KAMINO_DISCO_MUSIC_VIEW_PC) == 0x3e8);
 STATIC_ASSERT(offsetof(KAMINO_DISCO_MUSIC_VIEW_PC, mode) == 0x3d5);
-typedef struct SARLACC_BATTLE_MUSIC_VIEW_PC SARLACC_BATTLE_MUSIC_VIEW_PC;
+typedef struct SARLACC_NETPACKET_PC {
+    f32 height;
+    i16 off_mask, flash_mask, select_mask, on_mask, finish_mask, sound_mask;
+    u8 disco_active, reserved_11;
+    i16 completion_sound_played;
+} SARLACC_NETPACKET_PC;
+STATIC_ASSERT(sizeof(SARLACC_NETPACKET_PC) == 0x14);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, disco_active) == 0x10);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, completion_sound_played) == 0x12);
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern i32 COLLECTION_COMPLETIONCOUNT;
     extern HUB_AI_MUSIC_VIEW_PC HubAiMusicStatePc;
     extern KAMINO_DISCO_MUSIC_VIEW_PC KaminoDiscoMusicStatePc;
-    extern SARLACC_BATTLE_MUSIC_VIEW_PC *sarlaccb_netpacket;
+    extern SARLACC_NETPACKET_PC *sarlaccb_netpacket;
 #ifdef __cplusplus
 }
 #endif
@@ -27852,7 +27851,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -28015,8 +28013,6 @@ extern "C" {
 }
 #endif
 
-#ifndef SAGA_INDY_PATH_CONNECTION_PC_DECLARATIONS
-#define SAGA_INDY_PATH_CONNECTION_PC_DECLARATIONS
 /* Native Indy path-connection movement and lookup ABI. */
 typedef i32(__cdecl *AI_HELPER_FILTER_PC)(AI_HELPER_SLOT_PC *, GAMEOBJECT *, AIPATHCNX_PC *, u8, u8);
 typedef struct INDY_PREPARE_SPECIAL_MOVE_PC {
@@ -28088,10 +28084,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_BATARANG_NATIVE_PC_DECLARATIONS
-#define SAGA_BATARANG_NATIVE_PC_DECLARATIONS
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28109,10 +28102,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_TROOPER_CANNONS_NATIVE_PC_LAYOUT
-#define SAGA_TROOPER_CANNONS_NATIVE_PC_LAYOUT
 typedef struct TROOPERCANNON_PC {
     GIZMO_PC *base;
     GIZBUILDIT_s *buildit;
@@ -28141,10 +28131,7 @@ extern "C" {
 }
 #endif
 STATIC_ASSERT(sizeof(troopercannons) == 0xc0);
-#endif
 
-#ifndef SAGA_BONUS_GUNSHIP_NATIVE_PC
-#define SAGA_BONUS_GUNSHIP_NATIVE_PC
 typedef struct BONUS_GUNSHIP_B_NETPACKET_PC {
     u8 progress;
     u8 secondary;
@@ -28178,10 +28165,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_SPEEDERCHASE_A_NATIVE_PC
-#define SAGA_SPEEDERCHASE_A_NATIVE_PC
 typedef struct SPEEDERCHASE_NETPACKET_PC {
     u8 reserved_0;
     u8 target_count;
@@ -28213,10 +28197,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_JEDI_B_NATIVE_PC
-#define SAGA_JEDI_B_NATIVE_PC
 /* Original PC Jedi_B arena records; DWORD flags and eight-byte state alignment. */
 typedef struct JEDIB_CREATURE_PC {
     NUVEC position;
@@ -28330,10 +28311,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_TAG_TRANSFERS_NATIVE_PC
-#define SAGA_TAG_TRANSFERS_NATIVE_PC
 typedef struct tag_transfer_pc_s {
     GAMEOBJECT *source;
     NUVEC previous[3];
@@ -28355,10 +28333,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_INTERACTION_ARROW_TUNING_NATIVE_PC
-#define SAGA_INTERACTION_ARROW_TUNING_NATIVE_PC
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28366,10 +28341,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif
 
-#ifndef SAGA_VADERA_NATIVE_STATE_PC
-#define SAGA_VADERA_NATIVE_STATE_PC
 typedef struct vadera_pc_s {
     GIZAIMESSAGE *in_control_room_message;
     GIZAIMESSAGE *ceiling_collapse_message;

@@ -1961,12 +1961,6 @@ f32 __cdecl Condition_ForceBeingUsedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 0.0f;
 }
 
-typedef struct force_throw_target_view_pc_s {
-    u8 unknown_0000[0xd10];
-    GAMEOBJECT *target;
-} FORCE_THROW_TARGET_VIEW_PC;
-STATIC_ASSERT(offsetof(FORCE_THROW_TARGET_VIEW_PC, target) == 0xd10);
-
 PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 speed, f32 gravity, i32 unused) {
     NUSPECIALHANDLE *special = &force->anim_set->objects->special;
     NUMTX translated;
@@ -1981,10 +1975,10 @@ PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 spee
     } else {
         matrix = NuSpecialGetMtx(special);
     }
-    if (object == NULL || ((FORCE_THROW_TARGET_VIEW_PC *)object)->target == NULL)
+    if (object == NULL || object->force_throw_target == NULL)
         return NULL;
-    MakeThrowVector(&velocity, (NUVEC *)&matrix->m30,
-                    &((FORCE_THROW_TARGET_VIEW_PC *)object)->target->collision_position, &v000, speed, gravity);
+    MakeThrowVector(&velocity, (NUVEC *)&matrix->m30, &object->force_throw_target->collision_position, &v000, speed,
+                    gravity);
     params = Default_ADDPART;
     params.matrix = matrix;
     params.velocity = &velocity;

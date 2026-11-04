@@ -26,22 +26,12 @@ STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, height) == 0x3e8);
 STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, help_message) == 0x3f0);
 STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, complete_message) == 0x3f4);
 STATIC_ASSERT(offsetof(SARLACC_DISCO_PC, state_message) == 0x3f8);
-typedef struct SARLACC_PACKET_VIEW_PC {
-    f32 height;
-    i16 off_mask, flash_mask, select_mask, on_mask, finish_mask, sound_mask;
-    u8 disco_active, reserved_11;
-    i16 completion_sound_played;
-} SARLACC_PACKET_VIEW_PC;
-STATIC_ASSERT(sizeof(SARLACC_PACKET_VIEW_PC) == 20);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, off_mask) == 4);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, flash_mask) == 6);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, select_mask) == 8);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, on_mask) == 0xa);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, finish_mask) == 0xc);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, sound_mask) == 0xe);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, disco_active) == 0x10);
-STATIC_ASSERT(offsetof(SARLACC_PACKET_VIEW_PC, completion_sound_played) == 0x12);
-#define SARLACC_PACKET ((SARLACC_PACKET_VIEW_PC *)sarlaccb_netpacket)
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, off_mask) == 4);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, flash_mask) == 6);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, select_mask) == 8);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, on_mask) == 0xa);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, finish_mask) == 0xc);
+STATIC_ASSERT(offsetof(SARLACC_NETPACKET_PC, sound_mask) == 0xe);
 f32 SarlaccDiscoBaseOffsetPc = -0.12f;
 
 static SARLACC_DISCO_PC sarlaccdisco = {0};
@@ -217,20 +207,20 @@ void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         NuSpecialSetVisibility(&sarlaccdisco.on[index], 0);
         NuSpecialSetVisibility(&sarlaccdisco.finish[index], 0);
         if (netclient)
-            sarlaccdisco.height = SeekValF(sarlaccdisco.height, SARLACC_PACKET->height, 8.0f);
+            sarlaccdisco.height = SeekValF(sarlaccdisco.height, sarlaccb_netpacket->height, 8.0f);
         else
-            SARLACC_PACKET->height = sarlaccdisco.height;
+            sarlaccb_netpacket->height = sarlaccdisco.height;
         bit = 1u << index;
         shown = NULL;
-        if (SARLACC_PACKET->off_mask & bit)
+        if (sarlaccb_netpacket->off_mask & bit)
             shown = &sarlaccdisco.off[index];
-        else if (SARLACC_PACKET->flash_mask & bit)
+        else if (sarlaccb_netpacket->flash_mask & bit)
             shown = &sarlaccdisco.flash[index];
-        else if (SARLACC_PACKET->select_mask & bit)
+        else if (sarlaccb_netpacket->select_mask & bit)
             shown = &sarlaccdisco.select[index];
-        else if (SARLACC_PACKET->on_mask & bit)
+        else if (sarlaccb_netpacket->on_mask & bit)
             shown = &sarlaccdisco.on[index];
-        else if (SARLACC_PACKET->finish_mask & bit)
+        else if (sarlaccb_netpacket->finish_mask & bit)
             shown = &sarlaccdisco.finish[index];
         if (shown != NULL) {
             NuSpecialSetVisibility(shown, 1);
@@ -245,10 +235,10 @@ void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
             position->y = SarlaccDiscoBaseOffsetPc + sarlaccdisco.height;
             NuSpecialSetDrawPos(&LevHSpecial[1], position);
         }
-        if (SARLACC_PACKET->sound_mask & bit)
+        if (sarlaccb_netpacket->sound_mask & bit)
             PlaySfx("Kam_DiscoFloorPanelOn", &NuSpecialGetDrawMtx(&sarlaccdisco.on[index])->translation);
     }
-    if (SARLACC_PACKET->disco_active != 0) {
+    if (sarlaccb_netpacket->disco_active != 0) {
         SetGizAIMessage(gizaimessagesys, "DiscoComplete", 1.0f, sarlaccdisco.complete_message);
         PlayRadio("Speaker2", "Speaker21", 1);
         PlayRadio("Speaker1", "Speaker11", 1);
@@ -272,15 +262,15 @@ void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
             if (animation != NULL)
                 animation->flags |= 1;
         }
-        if (SARLACC_PACKET->completion_sound_played == 0) {
+        if (sarlaccb_netpacket->completion_sound_played == 0) {
             PlaySfx("Kam_DiscoFloorPanelDone", NuSpecialGetDrawPos(&sarlaccdisco.off[0]));
-            SARLACC_PACKET->completion_sound_played = 1;
+            sarlaccb_netpacket->completion_sound_played = 1;
         }
     } else {
         PlayRadio("Speaker2", "Speaker21", 0);
         PlayRadio("Speaker1", "Speaker11", 0);
         PlayRadio("decks", "decks", 0);
-        SARLACC_PACKET->completion_sound_played = 0;
+        sarlaccb_netpacket->completion_sound_played = 0;
     }
 }
 
@@ -290,7 +280,7 @@ void __cdecl SarlaccPitB_Init(WORLDINFO *world) {
     NUVEC *position;
     (void)world;
     memset(&sarlaccdisco, 0, sizeof(sarlaccdisco));
-    sarlaccb_netpacket = (SARLACC_BATTLE_MUSIC_VIEW_PC *)SetLevelHack(20);
+    sarlaccb_netpacket = (SARLACC_NETPACKET_PC *)SetLevelHack(20);
     index = &sarlaccdisco.count;
     *index = 0;
     for (;;) {
@@ -946,7 +936,7 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
     if (netclient == 0) {
         GIZMO_PC *panel;
         i32 ready = 0;
-        SARLACC_PACKET->sound_mask = 0;
+        sarlaccb_netpacket->sound_mask = 0;
         SetGizAIMessage(gizaimessagesys, "HelpWithDisco", 0.0f, sarlaccdisco.help_message);
         SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, sarlaccdisco.complete_message);
         SetGizAIMessage(gizaimessagesys, "DiscoState", (f32)sarlaccdisco.phase, sarlaccdisco.state_message);
@@ -960,7 +950,7 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
         }
         switch (sarlaccdisco.phase) {
             case 0:
-                SARLACC_PACKET->disco_active = 0;
+                sarlaccb_netpacket->disco_active = 0;
                 if (NuSpecialExistsFn(&SarlaccLevSpecialPc[0]) && ready) {
                     GAMEOBJECT *object = player;
                     i32 occupied = 0;
@@ -993,7 +983,7 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
                 i32 controlled_panel = -1;
                 i32 occupied[2];
                 i32 pass;
-                SARLACC_PACKET->disco_active = 0;
+                sarlaccb_netpacket->disco_active = 0;
                 if (!ready) {
                     SarlaccPitB_Reset(world);
                     break;
@@ -1024,7 +1014,7 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
                         sarlaccdisco.panel_state[*selected] == 2) {
                         sarlaccdisco.last_selected_position =
                             &NuSpecialGetDrawMtx(&sarlaccdisco.on[*selected])->translation;
-                        SARLACC_PACKET->sound_mask |= 1 << *selected;
+                        sarlaccb_netpacket->sound_mask |= 1 << *selected;
                     }
                 }
                 if (occupied[0] && occupied[1]) {
@@ -1072,10 +1062,10 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
                 break;
             }
             case 2:
-                SARLACC_PACKET->disco_active = 1;
+                sarlaccb_netpacket->disco_active = 1;
                 sarlaccdisco.timer += FRAMETIME;
                 if (sarlaccdisco.timer > SarlaccDiscoTimePc || !ready) {
-                    SARLACC_PACKET->disco_active = 0;
+                    sarlaccb_netpacket->disco_active = 0;
                     SarlaccPitB_Reset(world);
                     return;
                 }
@@ -1091,27 +1081,27 @@ void __cdecl SarlaccPitB_Update(WORLDINFO *world) {
             seek = rate * SarlaccDiscoSeekPc;
             sarlaccdisco.height = SeekValF(sarlaccdisco.height, SarlaccDiscoHeightPc, seek);
         }
-        SARLACC_PACKET->off_mask = 0;
-        SARLACC_PACKET->flash_mask = 0;
-        SARLACC_PACKET->select_mask = 0;
-        SARLACC_PACKET->on_mask = 0;
-        SARLACC_PACKET->finish_mask = 0;
+        sarlaccb_netpacket->off_mask = 0;
+        sarlaccb_netpacket->flash_mask = 0;
+        sarlaccb_netpacket->select_mask = 0;
+        sarlaccb_netpacket->on_mask = 0;
+        sarlaccb_netpacket->finish_mask = 0;
         for (index = 0; index < sarlaccdisco.count; ++index) {
             switch ((i8)sarlaccdisco.panel_state[index]) {
                 case 0:
-                    SARLACC_PACKET->off_mask |= 1 << index;
+                    sarlaccb_netpacket->off_mask |= 1 << index;
                     break;
                 case 1:
-                    SARLACC_PACKET->flash_mask |= 1 << index;
+                    sarlaccb_netpacket->flash_mask |= 1 << index;
                     break;
                 case 2:
-                    SARLACC_PACKET->select_mask |= 1 << index;
+                    sarlaccb_netpacket->select_mask |= 1 << index;
                     break;
                 case 3:
-                    SARLACC_PACKET->on_mask |= 1 << index;
+                    sarlaccb_netpacket->on_mask |= 1 << index;
                     break;
                 case 4:
-                    SARLACC_PACKET->finish_mask |= 1 << index;
+                    sarlaccb_netpacket->finish_mask |= 1 << index;
                     break;
             }
         }

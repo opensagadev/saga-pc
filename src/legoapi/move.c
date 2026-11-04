@@ -4917,11 +4917,6 @@ void __cdecl ForcedBackCode(GAMEOBJECT *object) {
         }
     }
 }
-typedef struct beast_grab_target_view_pc_s {
-    u8 unknown_0[0xd10];
-    GAMEOBJECT *force_throw_target;
-} BEAST_GRAB_TARGET_VIEW_PC;
-STATIC_ASSERT(offsetof(BEAST_GRAB_TARGET_VIEW_PC, force_throw_target) == 0xd10);
 static __declspec(noinline) void GrabCode(GAMEOBJECT *object) {
     f32 previous, time;
     GAMEOBJECT *target;
@@ -4973,7 +4968,7 @@ static __declspec(noinline) void GrabCode(GAMEOBJECT *object) {
         target->character_context = 0x39;
         target->field_7aa = 5;
         target->force_target = target;
-        ((BEAST_GRAB_TARGET_VIEW_PC *)target)->force_throw_target = NULL;
+        target->force_throw_target = NULL;
         PlayDieSfx(target);
         object->flags_e24 |= 1;
     } else if ((target->character_data->game_character->flags_090 & 0x8000) == 0) {
@@ -9710,7 +9705,6 @@ PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *, GIZFORCE_PC *, f32, f32, i32);
 static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     f32 distance = 1.0e9f;
     FORCE_TARGET_PC *target = (FORCE_TARGET_PC *)object;
-    BEAST_GRAB_TARGET_VIEW_PC *grab = (BEAST_GRAB_TARGET_VIEW_PC *)object;
     FORCE_GLOW_PC *glow = (FORCE_GLOW_PC *)object;
     PART_PC *part;
     if (object->character_context == 0x12) {
@@ -9789,7 +9783,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     object->context_variant_flags &= ~0x40u;
     object->context_timer = 2.0f;
     object->force_throw_part = NULL;
-    grab->force_throw_target = NULL;
+    object->force_throw_target = NULL;
     {
         i32 i;
         for (i = 0; i < 8; ++i) {
@@ -9799,14 +9793,15 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                 player->dead != 0 || (player->character_data->model_flags & 0x80000) != 0)
                 continue;
             next = NuVecDistSqr(&object->position, &player->position, NULL);
-            if (grab->force_throw_target != NULL) {
-                if (((object->flags_1fc_word & 0x80) != 0 || (grab->force_throw_target->flags_1fc_word & 0x80) == 0) &&
+            if (object->force_throw_target != NULL) {
+                if (((object->flags_1fc_word & 0x80) != 0 ||
+                     (object->force_throw_target->flags_1fc_word & 0x80) == 0) &&
                     next < distance) {
-                    grab->force_throw_target = Player[i];
+                    object->force_throw_target = Player[i];
                     distance = next;
                 }
             } else {
-                grab->force_throw_target = Player[i];
+                object->force_throw_target = Player[i];
                 distance = next;
             }
         }
@@ -10528,14 +10523,6 @@ void __cdecl SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
     }
 }
 
-typedef struct grab_throw_target_view_pc_s {
-    u8 unknown_000[0xd10];
-    GAMEOBJECT *force_throw_target;
-} GRAB_THROW_TARGET_VIEW_PC;
-STATIC_ASSERT(offsetof(GRAB_THROW_TARGET_VIEW_PC, force_throw_target) == 0xd10);
-STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_d0c) + 4 == 0xd10);
-STATIC_ASSERT(sizeof(((GAMEOBJECT *)0)->unknown_d0c) == 8);
-
 void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     f32 zero;
     if (object->character_context != -1)
@@ -10555,7 +10542,7 @@ void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     object->context_variant_flags &= ~0x40u;
     object->force_target = victim;
     object->blowup_target = NULL;
-    ((GRAB_THROW_TARGET_VIEW_PC *)object)->force_throw_target = NULL;
+    object->force_throw_target = NULL;
 }
 
 void __cdecl StartLaunch(GAMEOBJECT *object) {
