@@ -646,7 +646,7 @@ STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, ground_z_rotation) == 0x4a);
 STATIC_ASSERT(offsetof(GRAPPLE_MOTION_PC, activation_progress) == 0x58);
 
 static void Grapple_ResetRopeTargetsPc(GRAPPLE_MOTION_PC *grapple) {
-    volatile f32 rounded_segment = grapple->rope_length / 6.0;
+    f32 rounded_segment = grapple->rope_length / 6.0;
     f32 segment = rounded_segment;
     grapple->target_rope_points[0].x = grapple->hook_position.x;
     grapple->target_rope_points[0].y = grapple->hook_position.y - (0.0 * segment + segment);
@@ -670,7 +670,7 @@ static void Grapple_ResetRopeTargetsPc(GRAPPLE_MOTION_PC *grapple) {
 
 static void Grapple_ResetPositionPc(GRAPPLE_MOTION_PC *grapple, NUVEC *offset, NUVEC *position,
                                     i32 has_terrain_platform) {
-    volatile f32 rounded_height;
+    f32 rounded_height;
     f32 height;
     if (offset != NULL) {
         NuVecRotateX(&grapple->hook_position, offset, grapple->x_rotation);
@@ -696,7 +696,7 @@ static void Grapple_ResetPositionPc(GRAPPLE_MOTION_PC *grapple, NUVEC *offset, N
 }
 
 static void Grapple_ResetSinglePc(GRAPPLE_MOTION_PC *grapple) {
-    volatile f32 rounded_length;
+    f32 rounded_length;
     f32 length;
     i32 point;
     Grapple_ResetPositionPc(grapple, &GrapplePointOffset, &grapple->position, grapple->has_terrain_platform);
@@ -800,7 +800,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
     GAMEOBJECT *occupant, *attached, *linked;
     NUVEC attachment, direction;
     NUVEC *positions[2];
-    volatile f32 height, distance, sway, y_offset, inverse_distance, slack, segment, offset, wave_base, wave_scale;
+    f32 height, distance, sway, y_offset, inverse_distance, slack, segment, offset, wave_base, wave_scale;
     i32 index, point, count, context;
     u32 x_phase, z_phase;
     (void)unused_system;
@@ -918,28 +918,28 @@ extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i
         return;
     vertices[0].colour = 0xffffffffu;
     vertices[1].colour = 0xffffffffu;
-    volatile f32 previous_x = ((f64)points[0].x - start->x) * 0.5 + start->x;
-    volatile f32 previous_y = ((f64)points[0].y - start->y) * 0.5 + start->y;
-    volatile f32 previous_z = ((f64)points[0].z - start->z) * 0.5 + start->z;
+    f32 previous_x = ((f64)points[0].x - start->x) * 0.5 + start->x;
+    f32 previous_y = ((f64)points[0].y - start->y) * 0.5 + start->y;
+    f32 previous_z = ((f64)points[0].z - start->z) * 0.5 + start->z;
     vertices[0].position = *start;
     vertices[1].position.x = previous_x;
     vertices[1].position.y = previous_y;
     vertices[1].position.z = previous_z;
     NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
-    volatile f32 step = 1.0 / RopeCurveSubdivisionsPc;
-    volatile f32 first_phase = 1.0f - step;
+    f32 step = 1.0 / RopeCurveSubdivisionsPc;
+    f32 first_phase = 1.0f - step;
     for (i32 index = 0; index < count - 1; ++index) {
-        volatile f32 middle_x = ((f64)points[index + 1].x - points[index].x) * 0.5 + points[index].x;
-        volatile f32 middle_y = ((f64)points[index + 1].y - points[index].y) * 0.5 + points[index].y;
-        volatile f32 middle_z = ((f64)points[index + 1].z - points[index].z) * 0.5 + points[index].z;
+        f32 middle_x = ((f64)points[index + 1].x - points[index].x) * 0.5 + points[index].x;
+        f32 middle_y = ((f64)points[index + 1].y - points[index].y) * 0.5 + points[index].y;
+        f32 middle_z = ((f64)points[index + 1].z - points[index].z) * 0.5 + points[index].z;
         vertices[0].position.x = previous_x;
         vertices[0].position.y = previous_y;
         vertices[0].position.z = previous_z;
-        volatile f32 phase = first_phase;
+        f32 phase = first_phase;
         for (i32 sample = 0; sample < RopeCurveSubdivisionsPc; ++sample) {
-            volatile f32 complement = 1.0f - phase;
-            volatile f32 phase_squared = phase * phase;
-            volatile f32 complement_squared = complement * complement;
+            f32 complement = 1.0f - phase;
+            f32 phase_squared = phase * phase;
+            f32 complement_squared = complement * complement;
             f64 mixed = ((f64)phase + phase) * complement;
             vertices[1].position.x =
                 ((f64)phase_squared * previous_x + points[index].x * mixed) + (f64)complement_squared * middle_x;
@@ -1007,7 +1007,7 @@ extern "C" {
                 NuMtxRotateX(&matrix, grapple->ground_x_rotation);
             NuMtxScaleU(&matrix, 0.8f);
             NuMtxTranslate(&matrix, &grapple->ground_position);
-            volatile f32 alpha;
+            f32 alpha;
             if (editor_active != 0) {
                 alpha = target_alpha;
             } else {
@@ -1029,7 +1029,7 @@ extern "C" void __cdecl Grapples_Draw(void *world_pointer, void *unused, f32 unu
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     u16 rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     f64 pulse = (f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0;
-    volatile f32 target_alpha = (f64)NU_SIN_LUT(pulse) * (f64)0.2f + (f64)0.8f;
+    f32 target_alpha = (f64)NU_SIN_LUT(pulse) * (f64)0.2f + (f64)0.8f;
     (void)unused;
     (void)unused_delta;
     EnableShadowMapRendering(0);
