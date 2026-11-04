@@ -491,7 +491,7 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
                                           GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                           i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
     // Retail explicitly spills ceil's double result to binary32 before ftol2.
-    volatile f32 rounded_radius = (f32)ceil((f64)radius);
+    f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
     i32 work_width = PCGraphicsEffectTextureWidth(PCGraphicsPostEffectWorkTexturePc);
     i32 work_height = PCGraphicsEffectTextureHeight(PCGraphicsPostEffectWorkTexturePc);
@@ -515,8 +515,8 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
             i32 width, height, output_width, output_height;
             PCGraphicsEffectTextureDimensions(input, (u16)input_lod, &width, &height);
             PCGraphicsEffectTextureDimensions(output, (u16)output_lod, &output_width, &output_height);
-            volatile f32 dx = radius / (f32)width;
-            volatile f32 dy = radius / (f32)height;
+            f32 dx = radius / (f32)width;
+            f32 dy = radius / (f32)height;
             f64 dx2 = (f64)dx * 2.0;
             f64 dy2 = (f64)dy * 2.0;
             f64 dx3 = (f64)dx * 3.0;
@@ -651,7 +651,7 @@ extern "C" void __cdecl PostBlur7x7LowPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32
                                          GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
                                          i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
     f32 weights[4] = {.25f, .25f, .25f, .25f};
-    volatile f32 rounded_radius = (f32)ceil((f64)radius);
+    f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
     PC_VIEWPORT_PC viewport;
     i32 work_width = PCGraphicsPostEffectWorkTexturePc->width;
