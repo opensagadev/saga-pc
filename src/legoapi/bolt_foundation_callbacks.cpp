@@ -69,7 +69,7 @@ extern "C" void __cdecl Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
 
 extern "C" f32 __cdecl Torpedo_Scale(BOLT_PC *bolt) {
     if (bolt != NULL && bolt->owner != NULL) {
-        volatile f32 scale = 2.0f * static_cast<GAMEOBJECT *>(bolt->owner)->bounds_radius;
+        f32 scale = 2.0f * static_cast<GAMEOBJECT *>(bolt->owner)->bounds_radius;
         return scale;
     }
     return 3.0f;
@@ -102,7 +102,7 @@ extern "C" u16 __cdecl GetShootDirection_LSW(GAMEOBJECT *object, NUVEC *directio
     } else {
         angle = object->facing_angle;
         if (object->character_context == 0x2a) {
-            volatile f32 progress = 1.0f - object->context_timer / object->context_duration;
+            f32 progress = 1.0f - object->context_timer / object->context_duration;
             if (progress >= 0.25f)
                 angle += 0x8000;
         }
@@ -132,7 +132,7 @@ extern "C" u16 __cdecl GetShootDirection_Batman(GAMEOBJECT *object, NUVEC *direc
     } else {
         angle = object->facing_angle;
         if (object->character_context == 0x2a) {
-            volatile f32 progress = 1.0f - object->context_timer / object->context_duration;
+            f32 progress = 1.0f - object->context_timer / object->context_duration;
             if (progress >= 0.25f)
                 angle += 0x8000;
         }
