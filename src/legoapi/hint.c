@@ -280,7 +280,7 @@ i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distanc
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
         if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-            volatile f32 distance = NuVecDistSqr(&object->collision_position, position, NULL);
+            f32 distance = NuVecDistSqr(&object->collision_position, position, NULL);
             if (distance < range_squared) {
                 if (distance_squared != NULL)
                     *distance_squared = distance;
