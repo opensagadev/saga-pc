@@ -6,20 +6,6 @@ extern "C" const f32 InitOnceHalf;
 
 // Private PC path-build fragment. Original native filename is unknown.
 // Native entry and private dependency group; the original source language is unknown.
-struct AI_PATH_BUILD_PATH_PC {
-    NULISTLNK link;
-    char name[16];
-    NULISTHDR nodes;
-    u8 unknown20[0xc];
-    u8 flags;
-    u8 unknown2d[0xb];
-    i8 draw_index;
-    u8 unknown39[7];
-    EDAIPATHROUTE_s routes[16];
-};
-STATIC_ASSERT(sizeof(AI_PATH_BUILD_PATH_PC) == 0x240);
-STATIC_ASSERT(offsetof(AI_PATH_BUILD_PATH_PC, draw_index) == 0x38);
-STATIC_ASSERT(offsetof(AI_PATH_BUILD_PATH_PC, routes) == 0x40);
 struct AI_PATH_BUILD_SYSTEM_PC {
     u8 path_count;
     u8 unknown1;
@@ -30,19 +16,6 @@ struct AI_PATH_BUILD_SYSTEM_PC {
 };
 STATIC_ASSERT(sizeof(AI_PATH_BUILD_SYSTEM_PC) == 0x10);
 STATIC_ASSERT(offsetof(AI_PATH_BUILD_SYSTEM_PC, special_route_count) == 2);
-struct AI_PATH_BUILD_EDITOR_PC {
-    u8 unknown00[0x64];
-    AISYS_PC *ai_system;
-    u8 unknown68[0x4800];
-    AI_PATH_BUILD_PATH_PC *current_path;
-    NULISTHDR free_paths;
-    NULISTHDR paths;
-    u8 unknown487c[0x2d310];
-    NULISTHDR shared_path_nodes;
-};
-STATIC_ASSERT(offsetof(AI_PATH_BUILD_EDITOR_PC, current_path) == 0x4868);
-STATIC_ASSERT(offsetof(AI_PATH_BUILD_EDITOR_PC, paths) == 0x4874);
-STATIC_ASSERT(offsetof(AI_PATH_BUILD_EDITOR_PC, shared_path_nodes) == 0x31b8c);
 STATIC_ASSERT(sizeof(((AIPATHROUTE_PC *)0)->character_mask) == 16);
 STATIC_ASSERT(offsetof(AIPATHROUTE_PC, character_mask) == 0x18);
 STATIC_ASSERT(sizeof(EDAIPATHNODE_s) == 0xb4);
@@ -50,7 +23,6 @@ STATIC_ASSERT(offsetof(EDAIPATHNODE_s, connections) == 0x30);
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, index) == 0x90);
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, route_mask) == 0x96);
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, special) == 0x98);
-#define PATH_EDITOR_BUILD_STATE ((AI_PATH_BUILD_EDITOR_PC *)aieditor)
 static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
 
@@ -147,8 +119,7 @@ static void pathEditorPopulateRouteMatrix(AIPATH_PC *path, i32 route_mask, f32 *
         destination = (type)allocation_result;                                                                         \
     } while (0)
 
-static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, AI_PATH_BUILD_PATH_PC *editor_path, VARIPTR *cursor,
-                                             VARIPTR *end) {
+static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor_path, VARIPTR *cursor, VARIPTR *end) {
     i32 route_indices[16] = {};
     u8 route_members[16][32] = {};
     for (i32 slot = 0; slot < 16; ++slot) {
@@ -305,20 +276,19 @@ extern "C" AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *
     iterator_count = 0;
     VARIPTR scratch;
     scratch.void_ptr = *scratch_cursor;
-    if (PATH_EDITOR_BUILD_STATE->current_path == NULL) {
+    if (aieditor->current_path == NULL) {
         distance_tables = NULL;
         return NULL;
     }
-    AI_PATH_BUILD_PATH_PC *first_editor_path =
-        (AI_PATH_BUILD_PATH_PC *)NuLinkedListGetHead(&PATH_EDITOR_BUILD_STATE->paths);
+    EDAIPATH_s *first_editor_path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
     if ((first_editor_path == NULL)) {
         distance_tables = NULL;
         return NULL;
     }
 
     i32 path_count = 0;
-    for (AI_PATH_BUILD_PATH_PC *path = first_editor_path; path != NULL;
-         path = (AI_PATH_BUILD_PATH_PC *)NuLinkedListGetNext(&PATH_EDITOR_BUILD_STATE->paths, &path->link)) {
+    for (EDAIPATH_s *path = first_editor_path; path != NULL;
+         path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
         path->draw_index = path_count++;
     }
     if (path_count == 0) {
@@ -341,20 +311,18 @@ extern "C" AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *
     }
 
     system->special_route_count = 0;
-    for (EDAISHAREDPATHNODE_s *shared =
-             (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&PATH_EDITOR_BUILD_STATE->shared_path_nodes);
-         shared != NULL; shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetNext(
-                             &PATH_EDITOR_BUILD_STATE->shared_path_nodes, &shared->link)) {
+    for (EDAISHAREDPATHNODE_s *shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->shared_path_nodes);
+         shared != NULL;
+         shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetNext(&aieditor->shared_path_nodes, &shared->link)) {
         shared->runtime_index = system->special_route_count++;
     }
     if (system->special_route_count != 0) {
         system->special_routes = (AIPATHSPECIALROUTE_PC *)AISysBufferAlloc(
             &scratch, scratch_limit, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
         memset(system->special_routes, 0, system->special_route_count * sizeof(AIPATHSPECIALROUTE_PC));
-        for (EDAISHAREDPATHNODE_s *shared =
-                 (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&PATH_EDITOR_BUILD_STATE->shared_path_nodes);
-             shared != NULL; shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetNext(
-                                 &PATH_EDITOR_BUILD_STATE->shared_path_nodes, &shared->link)) {
+        for (EDAISHAREDPATHNODE_s *shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->shared_path_nodes);
+             shared != NULL;
+             shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetNext(&aieditor->shared_path_nodes, &shared->link)) {
             AIPATHSPECIALROUTE_PC *route = &system->special_routes[shared->runtime_index];
             PATH_BUILD_ALLOCATE(AIPATH_PC **, route->paths, &scratch, scratch_limit,
                                 shared->reference_count * sizeof(AIPATH_PC));
@@ -368,11 +336,8 @@ extern "C" AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *
     }
     memset(system->paths, 0, system->path_count * sizeof(AIPATH_PC *));
     i32 path_index = 0;
-    for (AI_PATH_BUILD_PATH_PC *editor_path =
-             (AI_PATH_BUILD_PATH_PC *)NuLinkedListGetHead(&PATH_EDITOR_BUILD_STATE->paths);
-         editor_path != NULL; editor_path = (AI_PATH_BUILD_PATH_PC *)NuLinkedListGetNext(
-                                  &PATH_EDITOR_BUILD_STATE->paths, &editor_path->link),
-                               ++path_index) {
+    for (EDAIPATH_s *editor_path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); editor_path != NULL;
+         editor_path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &editor_path->link), ++path_index) {
         system->paths[path_index] = (AIPATH_PC *)AISysBufferAlloc(cursor, end, sizeof(AIPATH_PC));
         AIPATH_PC *path = system->paths[path_index];
         if (path == NULL) {
@@ -531,8 +496,7 @@ extern "C" AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *
             AIPATH_PC *path = system->paths[path_index];
             for (i32 node_index = 0; node_index < path->node_count; ++node_index) {
                 AIPATHNODE_PC *node = &path->nodes[node_index];
-                AISysGetPathPosEx(PATH_EDITOR_BUILD_STATE->ai_system, &node->position, &info, first_path, 0xff, 0,
-                                  NULL);
+                AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0, NULL);
                 if ((info.flags & 1)) {
                     f64 half = InitOnceHalf;
                     f64 path_distance = info.distance;

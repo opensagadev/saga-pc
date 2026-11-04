@@ -3372,7 +3372,7 @@ address,symbol,size,ctype
 0x5264d0,_AiEditorRouteUsersCancelPc,12,
 0x5264e0,_AiEditorSetRouteUsersPc,114,
 0x526560,_routeEditor_cbRouteUsers,327,
-0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUAI_PATH_BUILD_PATH_PC@@PATvariptr_u@@2@Z,2382,
+0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUEDAIPATH_s@@PATvariptr_u@@2@Z,2382,
 0x527150,_AiEditorClearMainMenuPc,37,
 0x5271a0,_AiEditorDisplayBit4Pc,29,
 0x5271e0,_AiEditorDisplayBit8Pc,30,
