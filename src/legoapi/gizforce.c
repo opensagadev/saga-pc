@@ -951,7 +951,7 @@ static __declspec(noinline) void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_P
 static __declspec(noinline) f32 ForceAnimatedHeightPc(GIZFORCE_PC *force) {
     GAMEANIMOBJ *object;
     f32 minimum_y = 1.0e9f, maximum_y = -1.0e9f;
-    volatile f32 height;
+    f32 height;
     if (force == NULL || force->anim_set == NULL)
         return 0.0f;
     for (object = force->anim_set->objects; object != NULL; object = object->next) {
@@ -1208,7 +1208,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 GizForce_PlayBackwards(force);
             } else if ((force->runtime_flags & 0x20) == 0 &&
                        ((force->config_flags & 2) != 0 || force->field_48 > 0.0f)) {
-                volatile f32 remaining = (f64)force->field_48 - FRAMETIME;
+                f32 remaining = (f64)force->field_48 - FRAMETIME;
                 force->field_48 = remaining;
                 if (remaining <= 0.0f)
                     force->field_48 = 0.0f;
@@ -1231,7 +1231,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
             } else {
                 force->field_48 = force->force_strength;
                 if (force->force_range > 0.0f && (force->runtime_flags & 0x2000) == 0 && force->anim_set->state == 2) {
-                    volatile f32 elapsed;
+                    f32 elapsed;
                     started_shaking = force->field_50 == 0.0f;
                     elapsed = (f64)force->field_50 + FRAMETIME;
                     force->field_50 = elapsed;
@@ -1370,7 +1370,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
                     GIZFORCEANIMDATA_s *data = (GIZFORCEANIMDATA_s *)object->object_data;
                     NUVEC centre;
-                    volatile f32 radius = 0.0f;
+                    f32 radius = 0.0f;
                     NUVEC particle_offset;
                     if ((data->field_0x04 & 1) != 0 || !NuSpecialExistsFn(&object->special))
                         continue;
@@ -1390,7 +1390,7 @@ void __cdecl GizForces_Update(void *world_pointer, void *system_pointer, f32 unu
                 }
             } else if ((force->runtime_flags & 0x20000) == 0) {
                 NUVEC centre, particle_offset;
-                volatile f32 radius = 0.0f;
+                f32 radius = 0.0f;
                 GameAnimSet_GetCentreAndRadius(force->anim_set, &centre, (f32 *)&radius, 2, 1, 1);
                 radius = (f64)force->horizontal_range * (f64)1.2f * radius;
                 particle_offset.x = 0.0f;
@@ -1742,7 +1742,7 @@ i32 __cdecl GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT
     GIZFORCE_PC *force;
     GIZFORCE_PC *best = NULL;
     f32 best_distance = 1000000000.0f;
-    volatile f32 distance_spill;
+    f32 distance_spill;
     f32 distance;
     NUVEC *origin;
     NUVEC normal;
@@ -1827,8 +1827,8 @@ GIZMO_PC *__cdecl GizForces_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dist
     NUVEC *previous_position = NULL;
     f32 best_distance = 1000000000.0f;
     NUVEC direction_copy, delta;
-    volatile f32 minimum_x, minimum_z, maximum_x, maximum_z;
-    volatile f32 distance_spill, dot_spill, dx_spill, dz_spill;
+    f32 minimum_x, minimum_z, maximum_x, maximum_z;
+    f32 distance_spill, dot_spill, dx_spill, dz_spill;
     f32 distance, dot;
     u16 target_angle;
     NUANG angle;
