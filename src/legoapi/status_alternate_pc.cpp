@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Original source name unknown. Retail links a second status-screen stage set at
    0x458470-0x45e362, between the LSW hint code and the LSW status stages. Its stage
@@ -10,6 +11,8 @@ extern "C" {
 
     void __cdecl Text_FillInExtendedSaveInfo(void);
     i32 __cdecl TriggerAutoSave(void);
+    extern const char Text_UnknownText[];
+    void __cdecl DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
 
     f32 StatusAlt7f8214Pc = 1.2f;
     f32 StatusAltScalePc = 1.0f;
@@ -102,7 +105,10 @@ extern "C" {
                                      22, 23, 24, 25, 26, 27, 28, 29, 30, 8,  9,  10, 11, 12, 0};
 
     NUVEC StatusAltBgPosPc;
+    f32 StatusAltMiniKitXPc;
     u16 StatusAltSpinPc;
+    f32 StatusAltTrueHeroXPc;
+    f32 StatusAltMiniKitYPc;
     i32 StatusAltCoinsDonePc;
     f32 StatusAlt876df4Pc;
     u32 StatusAltSuitsShownPc;
@@ -1118,6 +1124,308 @@ extern "C" {
                 break;
             }
         }
+    }
+
+    /* Stage types 1 and 2. Draws the true-hero titles, the percentage and the bar. */
+    void __cdecl TrueHero_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        char text[32];
+        f32 full_fade = 1.0f;
+        f32 full_scale_in = 1.0f;
+        f32 full_scale_out = 1.0f;
+        f32 title_alpha, bar_alpha, percent_alpha, percent_scale, mode_scale, title_scale;
+        u16 title_angle, mode_angle;
+        i32 percent_angle;
+        u32 colour;
+        if (current == 0)
+            return;
+        title_alpha = 0.0f;
+        bar_alpha = 0.0f;
+        percent_alpha = 0.0f;
+        percent_scale = 0.0f;
+        mode_scale = 0.0f;
+        title_scale = 0.0f;
+        mode_angle = 0;
+        title_angle = 0;
+        percent_angle = 0;
+        switch (stage->field_0x14) {
+            case -1:
+                return;
+            case 0:
+                percent_angle = 0;
+                mode_angle = 0;
+                StatusAlt7f8260Pc = 0.33f;
+                title_angle = 0;
+                StatusAlt7f8244Pc = 1.3f;
+                StatusAlt7f8264Pc = -0.7f;
+                title_scale = 0.0f;
+                mode_scale = 0.0f;
+                bar_alpha = 0.0f;
+                title_alpha = 0.0f;
+                break;
+            case 1:
+                bar_alpha =
+                    1.0 - (NuTrigTable[((i32)(StatusCoinsRatioAltPc(stage->field_0x18, stage->field_0x1c) * 32768.0 +
+                                              16384.0) >>
+                                        1) &
+                                       0x7fff] +
+                           1.0f) *
+                              0.5;
+                percent_angle = StatusAltSpinPc;
+                mode_angle = 0;
+                title_angle = 0;
+                title_alpha = bar_alpha;
+                percent_scale = bar_alpha;
+                title_scale = 0.0f;
+                mode_scale = 0.0f;
+                break;
+            case 2:
+                bar_alpha = 1.0f;
+                title_alpha = 1.0f;
+                percent_scale = 1.0f;
+                title_scale =
+                    NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 16384.0 + 32768.0 + 16384.0) >>
+                                 1) &
+                                0x7fff] +
+                    1.0f;
+                title_angle = StatusAltSpinPc;
+                mode_angle = 0;
+                percent_angle = 0;
+                mode_scale = 0.0f;
+                break;
+            case 3:
+                mode_angle = 0;
+                title_angle = 0;
+                bar_alpha = 1.0f;
+                percent_angle = 0;
+                title_alpha = 1.0f;
+                percent_scale = 1.0f;
+                title_scale = 1.0f;
+                mode_scale = 0.0f;
+                break;
+            case 4:
+                bar_alpha = 1.0f;
+                title_alpha = 1.0f;
+                percent_scale = 1.0f;
+                title_scale = 1.0f;
+                mode_scale =
+                    NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 16384.0 + 32768.0 + 16384.0) >>
+                                 1) &
+                                0x7fff] +
+                    1.0f;
+                percent_angle = 0;
+                title_angle = 0;
+                mode_angle = (u16)-StatusAltSpinPc;
+                break;
+            case 5:
+                percent_angle = 0;
+                mode_angle = 0;
+                title_angle = 0;
+                bar_alpha = 1.0f;
+                title_alpha = 1.0f;
+                percent_scale = 1.0f;
+                mode_scale = 1.0f;
+                title_scale = 1.0f;
+                full_fade = stage->field_0x18;
+                if (full_fade > 1.0f)
+                    full_fade = 1.0f;
+                full_fade = 1.0 - (NuTrigTable[((i32)((f64)full_fade * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                break;
+            case 6:
+                percent_angle = 0;
+                mode_angle = 0;
+                title_angle = 0;
+                bar_alpha = 1.0f;
+                title_alpha = 1.0f;
+                percent_scale = 1.0f;
+                mode_scale = 1.0f;
+                title_scale = 1.0f;
+                if (stage->field_0x18 < 1.0f)
+                    full_fade = stage->field_0x18;
+                else
+                    full_fade = stage->field_0x18 < stage->field_0x1c ? 1.0f : 1.0f;
+                full_fade = 1.0 - (NuTrigTable[((i32)((f64)full_fade * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                if (full_fade < 1.0f) {
+                    full_scale_in = 1.0f + full_fade * 0.5;
+                    full_scale_out = 1.0f - full_fade * 0.5;
+                }
+                break;
+            case 7:
+                percent_angle = 0;
+                mode_angle = 0;
+                title_angle = 0;
+                percent_scale = 1.0f;
+                mode_scale = 1.0f;
+                title_scale = 1.0f;
+                bar_alpha = 1.0f;
+                title_alpha = 1.0f;
+                percent_alpha =
+                    1.0f -
+                    (1.0 - (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                        0x7fff] +
+                            1.0f) *
+                               0.5);
+                break;
+            case 8:
+                if (stage->field_0x18 < 1.0f)
+                    full_fade = 1.0f - stage->field_0x18;
+                else
+                    full_fade = 0.0f;
+                percent_angle = StatusAltSpinPc;
+                title_angle = StatusAltSpinPc;
+                mode_angle = (u16)-StatusAltSpinPc;
+                full_fade = NuTrigTable[((i32)((f64)full_fade * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
+                bar_alpha = full_fade;
+                title_alpha = full_fade;
+                percent_scale = full_fade;
+                mode_scale = full_fade;
+                title_scale = full_fade;
+                break;
+        }
+        if (stage->field_0x14 <= 0)
+            return;
+        title_scale = StatusAltScalePc * title_scale;
+        mode_scale = StatusAltScalePc * mode_scale;
+        percent_scale = StatusAltScalePc * percent_scale;
+        NuStrCpy(text, TTab[TextIdPc880818]);
+        colour = ((u8)(title_alpha * 128.0) << 24) | 0xffffff;
+        DrawStatusText(text, title_angle, title_scale * StatusAltTrueHeroXPc, StatusCoinsTitleYPc * title_scale,
+                       title_scale, colour, 0);
+        NuStrCpy(text, TTab[(packet->field_0xb0 & 0x40) ? TextIdPc8808a8 : TextIdPc8808a4]);
+        DrawStatusText(text, mode_angle, mode_scale * StatusAltTrueHeroXPc, -StatusCoinsTitleYPc * mode_scale,
+                       mode_scale, colour, 0);
+        if (stage->field_0x14 == 6) {
+            colour = ((u8)((1.0f - full_fade) * 64.0) << 24) | 0xbfff;
+            DrawStatusText((char *)StatusTrueHeroFullPercentTextPc, 0, 0.0f, -0.2f, StatusAltScalePc * full_scale_in,
+                           colour, 0);
+            DrawStatusText((char *)StatusTrueHeroFullPercentTextPc, 0, 0.0f, -0.2f, StatusAltScalePc * full_scale_out,
+                           colour, 0);
+        } else if (stage->field_0x14 == 7) {
+            sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
+            DrawStatusText(text, percent_angle, 0.0f, -0.2f, percent_scale,
+                           ((u8)(percent_alpha * 255.0) << 24) | 0xbfff, 0);
+        } else if (stage->field_0x14 < 6) {
+            sprintf(text, StatusTrueHeroPercentFormatPc, (i32)packet->true_hero_percent);
+            DrawStatusText(text, percent_angle, 0.0f, -0.2f, percent_scale, ((u8)(title_alpha * 255.0) << 24) | 0xbfff,
+                           0);
+        }
+        DrawBuildUpBar(0.0f, (f64)percent_scale * -0.0, (i32)packet->true_hero_percent, 100, 1.0f, percent_scale * 1.5,
+                       bar_alpha, percent_angle);
+    }
+
+    /* Stage type 4. Pops the new minikits into the count under the title. */
+    void __cdecl MiniKit_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        f32 title_alpha = 1.0f;
+        f32 count_alpha = 1.0f;
+        f32 size = 0.0f;
+        u32 colour;
+        if (current == 0)
+            return;
+        switch (stage->field_0x14) {
+            case -1:
+                return;
+            case 0:
+                title_alpha = 0.0f;
+                StatusAlt7f8244Pc = 1.3f;
+                StatusAltMiniKitYPc = 0.0f;
+                StatusAlt7f8270Pc = 0.7f;
+                StatusAlt7f8274Pc = StatusAlt7f826cPc;
+                break;
+            case 1:
+                count_alpha = stage->field_0x18 / stage->field_0x1c;
+                title_alpha = count_alpha;
+                count_alpha =
+                    1.0 - (NuTrigTable[((i32)((f64)count_alpha * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5;
+                size = count_alpha;
+                StatusAlt7f8274Pc =
+                    (1.0f -
+                     (1.0 - (NuTrigTable[((i32)(StatusCoinsRatioAltPc(stage->field_0x18, stage->field_0x1c) * 32768.0 +
+                                                16384.0) >>
+                                          1) &
+                                         0x7fff] +
+                             1.0f) *
+                                0.5)) *
+                        StatusAlt7f826cPc +
+                    1.0f;
+                break;
+            case 2:
+                count_alpha = 1.0f;
+                title_alpha = 1.0f;
+                size = 1.0f;
+                if (stage->field_0x18 < stage->field_0x1c - 0.25) {
+                    f32 duration = stage->field_0x1c - 0.25;
+                    StatusAlt7f8274Pc =
+                        NuTrigTable[((i32)(StatusCoinsRatioAltPc(stage->field_0x18, duration) * 16384.0 + 49152.0 +
+                                           16384.0) >>
+                                     1) &
+                                    0x7fff] *
+                        StatusAlt7f8228Pc;
+                } else {
+                    StatusAlt7f8274Pc = StatusAlt7f8228Pc;
+                }
+                break;
+            case 3: {
+                f32 pulse;
+                f32 inverse;
+                size = 1.0f;
+                count_alpha = 1.0f;
+                title_alpha = 1.0f;
+                if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc)
+                    StatusAlt7f8274Pc = (stage->field_0x18 - (stage->field_0x1c - StatusMiniKitJibberLengthPc)) /
+                                        StatusMiniKitJibberLengthPc;
+                else
+                    StatusAlt7f8274Pc = 0.0f;
+                pulse = StatusAltFabsPc(NuTrigTable[((i32)((f64)StatusAlt7f8274Pc * 32768.0 + 16384.0) >> 1) & 0x7fff]);
+                inverse = 1.0f - pulse;
+                StatusAlt7f8274Pc = inverse * 0.25 + 1.0f;
+                break;
+            }
+            case 4: {
+                f32 phase;
+                title_alpha = 1.0f;
+                phase = stage->field_0x18 / (stage->field_0x1c * 0.5);
+                count_alpha = StatusAltFabsPc(phase - 1.0);
+                size = 1.0f;
+                if (StatusCurrentMinikitPc == 0)
+                    StatusAlt7f8274Pc = 1.0f;
+                else
+                    StatusAlt7f8274Pc =
+                        1.0 -
+                        (NuTrigTable[((i32)(StatusCoinsRatioAltPc(stage->field_0x18, stage->field_0x1c) * 32768.0 +
+                                            16384.0) >>
+                                      1) &
+                                     0x7fff] +
+                         1.0f) *
+                            0.5;
+                break;
+            }
+            case 5:
+                count_alpha = 1.0f;
+                size = 1.0f;
+                title_alpha = 1.0f - stage->field_0x18 / stage->field_0x1c;
+                StatusAlt7f8274Pc = 1.0f;
+                if (stage->field_0x18 < stage->field_0x1c)
+                    DrawStatusMiniKit(StatusAltMiniKitXPc, StatusAltMiniKitYPc, StatusAlt7f8234Pc, StatusAlt7f8228Pc,
+                                      1.0f, Game.area_save[packet->area->index].minikit_count, packet, 0.0f);
+                break;
+        }
+        if (stage->field_0x14 <= 0)
+            return;
+        colour = ((u8)(title_alpha * 255.0) << 24) | 0xffffff;
+        DrawStatusText(TTab[TextIdPc8808d0], StatusAltSpinPc, 0.0f, size * StatusCoinsTitleYPc, StatusAltScalePc * size,
+                       colour, 0);
+        if (StatusCurrentMinikitPc == 0)
+            DrawStatusText((char *)Text_UnknownText, 0, 0.0f, 0.0f, StatusAlt7f8214Pc * size,
+                           ((u8)(count_alpha * 255.0) << 24) | 0xffffff, 0);
+        else
+            DrawStatusMiniKit(0.0f, 0.0f, 1.0f, StatusAlt7f8228Pc * StatusAlt7f8274Pc, 0.0f, StatusCurrentMinikitPc,
+                              packet, 0.0f);
+        if (StatusMiniKitPopTimerPc <= 0.0f)
+            DrawStatusTextFraction(StatusCurrentMinikitPc, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
+                                   -StatusAltSpinPc, StatusAltScalePc * size, colour, 0.0f, 0.0f);
+        else
+            DrawStatusTextFraction(StatusCurrentMinikitPc, packet->minikit_max, 0.0f, -StatusCoinsTitleYPc * size,
+                                   -StatusAltSpinPc, StatusAltScalePc * size, colour, 0.5 - StatusMiniKitPopTimerPc,
+                                   0.5f);
     }
 
     /* Stage type 5. Reveals the suits unlocked in this area one by one. */
