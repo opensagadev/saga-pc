@@ -18836,6 +18836,7 @@ extern "C" {
     extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc;
     extern i32 PcIntelShaderFallback;
     extern u8 PcCapsConfigured;
+    // Volatile in retail: filled from the window proc; NuKeyGet re-reads Head with no intervening store or call.
     extern volatile u8 PcKeyQueueHead;
     extern volatile u8 PcKeyQueueTail;
     extern volatile u8 PcKeyQueueScanCodes[256];
