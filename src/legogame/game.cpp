@@ -933,16 +933,19 @@ extern "C" {
 static void InitOptionsSaveDefaults(OPTIONSSAVE *options) {
     i32 aspect = NuVideoGetAspect();
 
-    options->unknown_0000[0] = 0;
-    options->unknown_0000[1] = 0;
-    options->unknown_0000[2] = 0;
+    options->option_0000 = 0;
+    options->option_0001 = 0;
+    options->option_0002 = 0;
     options->music_volume = 10;
     options->sound_volume = 10;
-    options->unknown_0007[0] = 0;
-    options->unknown_0007[1] = 0;
+    options->option_0007 = 0;
+    options->option_0008 = 0;
     options->master_volume = 10;
     options->music_enabled = 1;
-    options->widescreen = (aspect == 0 || aspect == 3) ? 0 : 1;
+    if (aspect == 0 || aspect == 3)
+        options->widescreen = 0;
+    else
+        options->widescreen = 1;
     options->brightness = 10;
     options->sound_volume = (u8)NuWindowsGetConfigValuePc(6);
     options->music_volume = (u8)NuWindowsGetConfigValuePc(5);
@@ -1031,11 +1034,6 @@ static void __cdecl GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK
     }
 }
 
-typedef struct game_callback_height_bits_pc_s {
-    u8 unknown_00[0xf08];
-    u32 saved_state_f08_bits;
-} GAME_CALLBACK_HEIGHT_BITS_PC;
-GAME_PUBLISHER_ASSERT(offsetof(GAME_CALLBACK_HEIGHT_BITS_PC, saved_state_f08_bits) == 0xf08);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, doomed_escape_locator) == 0xf14);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, current_route) == 0x404);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, next_route) == 0x405);
@@ -1056,12 +1054,11 @@ static void __cdecl Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) 
         object->suit = Suit_GetDefault((i16)object->id);
     }
     if (previous != object->suit) {
-        GAME_CALLBACK_HEIGHT_BITS_PC *height = (GAME_CALLBACK_HEIGHT_BITS_PC *)object;
         u8 current_route = object->ai_packet.current_route;
         u8 next_route = object->ai_packet.next_route;
         AIPATHINFO_PC path_info = object->ai_packet.path_info;
         AILOCATOR_PC *escape_locator = object->doomed_escape_locator;
-        u32 height_bits = height->saved_state_f08_bits;
+        i32 route_frame_state = object->route_frame_state;
         i32 frame_state = object->ai_packet.frame_state;
         u32 preserve_flag = object->flags_ef0 & 0x200000;
         InitPlayerAI(object);
@@ -1070,7 +1067,7 @@ static void __cdecl Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) 
         object->doomed_escape_locator = escape_locator;
         object->flags_ef0 = (object->flags_ef0 & ~0x200000u) | preserve_flag;
         object->ai_packet.current_route = current_route;
-        height->saved_state_f08_bits = height_bits;
+        object->route_frame_state = route_frame_state;
         object->ai_packet.frame_state = frame_state;
     }
 }

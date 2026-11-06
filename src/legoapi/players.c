@@ -1384,11 +1384,6 @@ typedef struct player_suit_name_pc_s {
     char *name;
 } PLAYER_SUIT_NAME_PC;
 STATIC_ASSERT(offsetof(PLAYER_SUIT_NAME_PC, name) == 0x4);
-typedef struct player_movement_vector_pc_s {
-    u8 unknown_000[0x200];
-    NUVEC movement_direction;
-} PLAYER_MOVEMENT_VECTOR_PC;
-STATIC_ASSERT(offsetof(PLAYER_MOVEMENT_VECTOR_PC, movement_direction) == 0x200);
 typedef struct player_packet_storage_pc_s {
     u8 unknown_000[0x6c4];
     u8 player_packet_storage[0x788];
@@ -1475,7 +1470,7 @@ void __cdecl ResetPlayerMoves(GAMEOBJECT *object) {
     object->fall_acceleration_timer = 0.0f;
     object->hud_icon_timer = 0.0f;
     object->movement_direction_x = v000.x;
-    ((PLAYER_MOVEMENT_VECTOR_PC *)object)->movement_direction.y = v000.y;
+    object->movement_direction.y = v000.y;
     object->movement_direction_z = v000.z;
     object->input_toggle_hold_time = TOGGLEHOLDTIME;
     object->flags_ef0 |= 0x80;
@@ -1690,17 +1685,6 @@ NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
     return position != NULL ? position : PlayerStartRecordInitPc[0].position;
 }
 
-/* Minimum original PC consumer views; no full allocation extent asserted. */
-typedef struct DYNAMIC_LIGHTING_VIEW_PC {
-    u8 unknown_000[0x4d8];
-    RTL_DATA_PC lighting_packet;
-} DYNAMIC_LIGHTING_VIEW_PC;
-STATIC_ASSERT(offsetof(DYNAMIC_LIGHTING_VIEW_PC, lighting_packet) == 0x4d8);
-typedef struct DYNAMIC_RUMBLE_VIEW_PC {
-    u8 unknown_00[0x40];
-    RUMBLE_PACKET_RESOURCE_PC rumble_packet;
-} DYNAMIC_RUMBLE_VIEW_PC;
-STATIC_ASSERT(offsetof(DYNAMIC_RUMBLE_VIEW_PC, rumble_packet) == 0x40);
 /* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
 void __cdecl InitPlayerAI(GAMEOBJECT *object);
@@ -1728,11 +1712,6 @@ typedef struct CREATURE_RESET_PACKET_VIEW_PC {
 } CREATURE_RESET_PACKET_VIEW_PC;
 STATIC_ASSERT(offsetof(CREATURE_RESET_PACKET_VIEW_PC, packet) == 0x6c4);
 STATIC_ASSERT(sizeof(((CREATURE_RESET_PACKET_VIEW_PC *)0)->packet) == 0x788);
-typedef struct CREATURE_MOVEMENT_RESET_VIEW_PC {
-    u8 unknown_000[0x200];
-    NUVEC movement;
-} CREATURE_MOVEMENT_RESET_VIEW_PC;
-STATIC_ASSERT(offsetof(CREATURE_MOVEMENT_RESET_VIEW_PC, movement) == 0x200);
 
 static const u8 CreatureMosHatPc[5] = {0, 0, 0, 7, 14};
 static const u8 CreatureMosHeadPc[5] = {20, 20, 8, 8, 4};
@@ -1838,7 +1817,7 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     object->pad->input_mode = 1;
     object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
     ResetPlayerPacket(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, object->character_data);
-    ((CREATURE_MOVEMENT_RESET_VIEW_PC *)object)->movement = v000;
+    object->movement_direction = v000;
     object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
     object->saved_hitpoints = 4;
     object->id = (u16)id;
@@ -1866,7 +1845,7 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     }
     ResetAnimPacket(&object->anim_packet, object->animation_index);
     ResetCharacterIdle(object, 2, GetDefaultIdle(object));
-    ResetLights(&object->position, &((DYNAMIC_LIGHTING_VIEW_PC *)object)->lighting_packet, WORLD->rtl_set);
+    ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
     object->ai_packet.mover_height = object->bounds_radius + default_mover_extra;
     GameObjectOrigin(object);
     object->last_safe_position = object->position;
@@ -2200,26 +2179,11 @@ void DrawGameObjects() {
     NuCameraSet(&global_camera);
 }
 
-typedef struct PLAYER_CHARACTER_CHANGE_VIEW_PC {
-    u8 unknown_000[0x230];
-    f32 view_distance;
-    f32 hear_distance;
-    f32 max_view_height;
-    f32 min_view_height;
-    u8 unknown_240[0x590];
-    u8 mini_packet[0x24];
-} PLAYER_CHARACTER_CHANGE_VIEW_PC;
-STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, view_distance) == 0x230);
-STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, hear_distance) == 0x234);
-STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, max_view_height) == 0x238);
-STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, min_view_height) == 0x23c);
-STATIC_ASSERT(offsetof(PLAYER_CHARACTER_CHANGE_VIEW_PC, mini_packet) == 0x7d0);
 void __cdecl Shards_HandleLostObj(WORLDINFO *, GAMEOBJECT *);
 void __cdecl DestroySnakeBody(GAMEOBJECT *);
 void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
 
 i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
-    PLAYER_CHARACTER_CHANGE_VIEW_PC *change = (PLAYER_CHARACTER_CHANGE_VIEW_PC *)object;
     PLAYERCHARACTERCONFIG_PC *config;
     NUVEC velocity;
     AIPATHINFO_PC path;
@@ -2287,7 +2251,7 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     object->current_hp = (i8)health;
     object->field_107e = hitpoints;
     object->flags_1fc_word = (object->flags_1fc_word & ~0x2000u) | saved_flag;
-    ResetMiniAnimPacket((MINIANIMPACKET_PC *)change->mini_packet, -1);
+    ResetMiniAnimPacket((MINIANIMPACKET_PC *)object->mini_anim_packet, -1);
     object->weapon_scale = (object->flags_e20 & 0x10000) != 0 ? 1.0f : 0.0f;
     object->field_e33 = 0;
     if (on_surface != 0)
@@ -2303,10 +2267,10 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     if (lean_enabled != 0 && (object->character_data->model_flags & 0x2000) != 0)
         object->movement_lean_angle = (u16)lean;
     config = apicharsys->char_data[(i16)object->id].game_character;
-    change->view_distance = config->viewdistance;
-    change->hear_distance = config->heardistance;
-    change->max_view_height = config->maxviewheight;
-    change->min_view_height = config->minviewheight;
+    object->view_distance = config->viewdistance;
+    object->hear_distance = config->heardistance;
+    object->max_view_height = config->maxviewheight;
+    object->min_view_height = config->minviewheight;
     config = object->character_data->game_character;
     object->flags_ef4 = (object->flags_ef4 & ~0x800u) | ((config->flags_090 >> 6) & 0x800);
     if (object->id == (u16)id_MOSEISLEYCITIZEN)
@@ -2908,11 +2872,6 @@ i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position
 }
 
 /* Native ResetPlayer shares the light packet at 4d8 with LightGameObject. */
-typedef struct PLAYER_RESET_LIGHT_VIEW_PC {
-    u8 reserved_000[0x4d8];
-    RTL_DATA_PC light_data;
-} PLAYER_RESET_LIGHT_VIEW_PC;
-STATIC_ASSERT(offsetof(PLAYER_RESET_LIGHT_VIEW_PC, light_data) == 0x4d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_dbc) == 0xdbc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_de0) == 0xde0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 0xc);
@@ -2948,9 +2907,9 @@ void __cdecl ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i
         object->use_model_origin = 0;
         object->origin_joint_ready = 0;
         GameObjectOrigin(object);
-        ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)object->pad->unknown_40);
-        ResetLights(&object->position, &((PLAYER_RESET_LIGHT_VIEW_PC *)object)->light_data, WORLD->rtl_set);
-        ResetMiniAnimPacket((MINIANIMPACKET_PC *)((PLAYER_CHARACTER_CHANGE_VIEW_PC *)object)->mini_packet, -1);
+        ResetRumble(&object->pad->rumble);
+        ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
+        ResetMiniAnimPacket((MINIANIMPACKET_PC *)object->mini_anim_packet, -1);
         object->sock_position.sock_index = -1;
         object->sock_position.segment = -1;
         if (WORLD->sock_sys != NULL) {
@@ -3168,10 +3127,6 @@ static void GameDrawMtxRotateZPc(NUMTX *matrix, NUANG angle) {
 
 #include <string.h>
 
-typedef struct DRAW_ATTACHMENTS_MINI_OBJECT_PC {
-    u8 unknown_000[0x7d0];
-    DRAW_ATTACHMENTS_MINI_PC mini;
-} DRAW_ATTACHMENTS_MINI_OBJECT_PC;
 typedef union DRAW_ATTACHMENTS_PACKET_PC {
     ANIMPACKET_PC packet;
     u32 words[18];
@@ -3180,7 +3135,6 @@ STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_MINI_PC) == 0x24);
 STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, flags) == 0x18);
 STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, source_animation) == 0x1a);
 STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_PC, requested_animation) == 0x22);
-STATIC_ASSERT(offsetof(DRAW_ATTACHMENTS_MINI_OBJECT_PC, mini) == 0x7d0);
 STATIC_ASSERT(sizeof(DRAW_ATTACHMENTS_PACKET_PC) == 0x48);
 STATIC_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
@@ -3283,7 +3237,7 @@ void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices)
         if (object->id != (u16)ID_DEFAULTCHARACTER_A)
             return;
         character_id = AreaExtraTargetId7f17bcPc;
-        AnimPacketMiniToFullPc(&((DRAW_ATTACHMENTS_MINI_OBJECT_PC *)object)->mini, &animation.packet);
+        AnimPacketMiniToFullPc((DRAW_ATTACHMENTS_MINI_PC *)object->mini_anim_packet, &animation.packet);
     } else if (object->id == (u16)PunchRangeUnitIdPc && (AnimPlaying(&object->anim_packet, 0x51, 1, 1) != NULL ||
                                                          AnimPlaying(&object->anim_packet, 0x55, 1, 1) != NULL ||
                                                          AnimPlaying(&object->anim_packet, 0x56, 1, 1) != NULL ||
@@ -3296,7 +3250,7 @@ void __cdecl DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices)
             return;
     } else if (object->id == (u16)AreaExtraSourceId7f17c8Pc) {
         character_id = AreaExtraTargetId7f17ccPc;
-        AnimPacketMiniToFullPc(&((DRAW_ATTACHMENTS_MINI_OBJECT_PC *)object)->mini, &animation.packet);
+        AnimPacketMiniToFullPc((DRAW_ATTACHMENTS_MINI_PC *)object->mini_anim_packet, &animation.packet);
     } else if (object->id == (u16)VehicleBoltId7f17d0Pc || object->id == (u16)VehicleBoltId7f17d4Pc) {
         if (AnimPacketModelsCompatiblePc(&object->anim_packet, (i16)object->id, PunchRangeCompanionIdPc) == 0)
             return;
@@ -3353,6 +3307,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_2a4) == 0x2a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1083) == 0x1083);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_108c) == 0x108c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, gizforce_target) == 0x10cc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction) == 0x200);
+STATIC_ASSERT(offsetof(GAMEOBJECT, view_distance) == 0x230);
+STATIC_ASSERT(offsetof(GAMEOBJECT, min_view_height) == 0x23c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, mini_anim_packet) == 0x7d0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_word) == 0xf00);
 extern i32 GameKeepMergeActionPc;
 extern i32 CharacterBlobShadowsOnPc;

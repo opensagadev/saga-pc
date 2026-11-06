@@ -1613,12 +1613,22 @@ STATIC_ASSERT(offsetof(MENUFNINFO, memory_x) == 0x14);
 STATIC_ASSERT(offsetof(MENUFNINFO, wrap) == 0x18);
 
 typedef struct optionssave_s {
-    u8 unknown_0000[3];
+    union {
+        u8 unknown_0000[3];
+        struct {
+            u8 option_0000;
+            u8 option_0001;
+            u8 option_0002;
+        };
+    };
     u8 sound_volume;
     u8 music_volume;
     u8 master_volume;
     u8 music_enabled;
-    u8 unknown_0007[4];
+    u8 option_0007;
+    u8 option_0008;
+    u8 option_0009;
+    u8 option_000a;
     u8 widescreen;
     u8 brightness;
 } OPTIONSSAVE;
@@ -4445,6 +4455,42 @@ typedef struct PAD_INPUT_PC {
     u8 analog_left_x;
     u8 analog_left_y;
 } PAD_INPUT_PC;
+typedef struct RUMBLE_PACKET_RESOURCE_PC {
+    union {
+        u8 unknown_00[4];
+        f32 intensity;
+    };
+    f32 amount;
+    union {
+        u8 unknown_08[4];
+        f32 decay_duration;
+    };
+    f32 duration;
+    u8 active;
+} RUMBLE_PACKET_RESOURCE_PC;
+typedef struct RTL_DATA_PC {
+    struct RTL_LIGHT_PC *directional_lights[3];
+    f32 directional_strengths[3];
+    struct RTL_LIGHT_PC *ambient_lights[3];
+    f32 ambient_strengths[3];
+    struct RTL_LIGHT_PC *anti_lights[3];
+    f32 anti_strengths[3];
+    i32 anti_light_count;
+    struct RTL_LIGHT_PC *cached_light;
+    NUVEC shadow_direction;
+    f32 cached_value;
+    NUVEC previous_shadow_direction;
+    f32 previous_shadow_value, shadow_blend;
+    u16 cached_light_uid;
+    u16 unknown_76;
+    NUVEC intensity_vectors[3], direction[3], ambient;
+    u32 unknown_cc[0x15];
+    f32 field_120;
+    NUVEC blended_shadow_direction;
+    f32 blended_shadow_value;
+    NUVEC field_134;
+    f32 specular_value;
+} RTL_DATA_PC;
 typedef struct GAMEPAD_PC {
     struct FRAME_PAD_PC *bound_pad;
     u32 buttons_held;
@@ -4464,7 +4510,10 @@ typedef struct GAMEPAD_PC {
     f32 animation_input_magnitude;
     f32 previous_input_magnitude;
     f32 waggle_magnitude;
-    u8 unknown_40[0x14];
+    union {
+        u8 unknown_40[0x14];
+        RUMBLE_PACKET_RESOURCE_PC rumble;
+    };
     NUVEC *operator_data;
     u16 previous_input_angle;
     u16 runtime_flags;
@@ -5253,9 +5302,14 @@ typedef struct gameobject_s {
             u32 flags_1fc_bits_14_31 : 18;
         };
     };
-    f32 movement_direction_x;
-    u8 unknown_0204[4];
-    f32 movement_direction_z;
+    union {
+        NUVEC movement_direction;
+        struct {
+            f32 movement_direction_x;
+            u8 unknown_0204[4];
+            f32 movement_direction_z;
+        };
+    };
     u8 unknown_020c[0xc];
     f32 previous_floor_height;
     f32 floor_height;
@@ -5266,7 +5320,10 @@ typedef struct gameobject_s {
     };
     f32 velocity_magnitude;
     f32 horizontal_velocity_magnitude;
-    u8 unknown_0230[0x10];
+    f32 view_distance;
+    f32 hear_distance;
+    f32 max_view_height;
+    f32 min_view_height;
     f32 ai_visibility_extension;
     u8 unknown_0244[0x34];
     u16 pitch_angle;
@@ -5331,7 +5388,9 @@ typedef struct gameobject_s {
             NUVEC ai_terrain_origin;
         };
     };
-    u8 unknown_4d4[0x18d];
+    u8 unknown_4d4[0x4];
+    RTL_DATA_PC lighting_packet;
+    u8 unknown_61c[0x45];
     u8 field_661;
     i16 sock_segment;
     u8 unknown_664[0xc];
@@ -5435,13 +5494,18 @@ typedef struct gameobject_s {
             u16 sock_body_heading;
         };
     };
-    u8 unknown_7d0[0x14];
-    u8 *field_7e4;
-    u8 field_7e8;
-    u8 unknown_7e9[0x5];
-    i16 mini_current_animation;
-    i16 mini_previous_animation;
-    u8 unknown_7f2[0x2];
+    union {
+        u8 mini_anim_packet[0x24];
+        struct {
+            u8 unknown_7d0[0x14];
+            u8 *field_7e4;
+            u8 field_7e8;
+            u8 unknown_7e9[0x5];
+            i16 mini_current_animation;
+            i16 mini_previous_animation;
+            u8 unknown_7f2[0x2];
+        };
+    };
     i16 *weapon_model_override_pc;
     u8 unknown_7f8[0x4];
     void *coin_packet;
@@ -10024,29 +10088,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(RTL_LIGHT_PC, uid) == 0x6a);
     STATIC_ASSERT(offsetof(RTL_LIGHT_PC, intensity) == 0x6c);
     STATIC_ASSERT(offsetof(RTL_LIGHT_PC, field_7a) == 0x7a);
-    typedef struct RTL_DATA_PC {
-        RTL_LIGHT_PC *directional_lights[3];
-        f32 directional_strengths[3];
-        RTL_LIGHT_PC *ambient_lights[3];
-        f32 ambient_strengths[3];
-        RTL_LIGHT_PC *anti_lights[3];
-        f32 anti_strengths[3];
-        i32 anti_light_count;
-        RTL_LIGHT_PC *cached_light;
-        NUVEC shadow_direction;
-        f32 cached_value;
-        NUVEC previous_shadow_direction;
-        f32 previous_shadow_value, shadow_blend;
-        u16 cached_light_uid;
-        u16 unknown_76;
-        NUVEC intensity_vectors[3], direction[3], ambient;
-        u32 unknown_cc[0x15];
-        f32 field_120;
-        NUVEC blended_shadow_direction;
-        f32 blended_shadow_value;
-        NUVEC field_134;
-        f32 specular_value;
-    } RTL_DATA_PC;
     STATIC_ASSERT(sizeof(RTL_DATA_PC) == 0x144);
     STATIC_ASSERT(offsetof(RTL_DATA_PC, directional_lights) == 0x0);
     STATIC_ASSERT(offsetof(RTL_DATA_PC, directional_strengths) == 0xc);
@@ -15960,19 +16001,6 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl PlayFootStepSfx(GAMEOBJECT *);
 
     /* Additive shared contracts only; existing RTL/flight/game/player types reused. */
-    typedef struct RUMBLE_PACKET_RESOURCE_PC {
-        union {
-            u8 unknown_00[4];
-            f32 intensity;
-        };
-        f32 amount;
-        union {
-            u8 unknown_08[4];
-            f32 decay_duration;
-        };
-        f32 duration;
-        u8 active;
-    } RUMBLE_PACKET_RESOURCE_PC;
     STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, amount) == 4);
     STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, duration) == 0xc);
     STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, active) == 0x10);
@@ -21494,7 +21522,7 @@ STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, intensity) == 0);
 STATIC_ASSERT(offsetof(RUMBLE_PACKET_RESOURCE_PC, decay_duration) == 8);
 STATIC_ASSERT(sizeof(RUMBLE_PACKET_RESOURCE_PC) == 0x14);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
-STATIC_ASSERT(offsetof(OPTIONSSAVE, unknown_0000) == 0);
+STATIC_ASSERT(offsetof(OPTIONSSAVE, option_0000) == 0);
 
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, active_mission) == 4);
 STATIC_ASSERT(offsetof(MISSIONSYS_PC, unknown_08) == 8);

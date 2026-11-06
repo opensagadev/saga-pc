@@ -3306,14 +3306,6 @@ extra:
         GameObjectDimensionsExtraFn(object);
 }
 
-/* Minimum named reader views; no new owning extent or allocation claim. */
-typedef struct UPDATE_GAMEPAD_RUMBLE_VIEW_PC {
-    u8 unknown_00[0x40];
-    RUMBLE_PACKET_RESOURCE_PC rumble;
-} UPDATE_GAMEPAD_RUMBLE_VIEW_PC;
-STATIC_ASSERT(offsetof(UPDATE_GAMEPAD_RUMBLE_VIEW_PC, rumble) == 0x40);
-STATIC_ASSERT(sizeof(UPDATE_GAMEPAD_RUMBLE_VIEW_PC) <= sizeof(GAMEPAD_PC));
-
 void __cdecl UpdateGameObjects(WORLDINFO *world) {
     i32 i;
     i32 setting;
@@ -3504,7 +3496,7 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         } else {
             if ((object->flags_1fc_word & 0x80) != 0) {
                 if (object->pad->bound_pad != NULL) {
-                    UpdateRumble(&((UPDATE_GAMEPAD_RUMBLE_VIEW_PC *)object->pad)->rumble);
+                    UpdateRumble(&object->pad->rumble);
                     Player_ToggleCharacter(object, 0, 1);
                 }
             } else if (FreePlay != 0) {
@@ -4238,17 +4230,6 @@ GAMEOBJECT *__cdecl AddGameObject(void) {
     return NULL;
 }
 
-/* Minimum original PC consumer views; no full allocation extent asserted. */
-typedef struct DYNAMIC_LIGHTING_VIEW_PC {
-    u8 unknown_000[0x4d8];
-    RTL_DATA_PC lighting_packet;
-} DYNAMIC_LIGHTING_VIEW_PC;
-STATIC_ASSERT(offsetof(DYNAMIC_LIGHTING_VIEW_PC, lighting_packet) == 0x4d8);
-typedef struct DYNAMIC_RUMBLE_VIEW_PC {
-    u8 unknown_00[0x40];
-    RUMBLE_PACKET_RESOURCE_PC rumble_packet;
-} DYNAMIC_RUMBLE_VIEW_PC;
-STATIC_ASSERT(offsetof(DYNAMIC_RUMBLE_VIEW_PC, rumble_packet) == 0x40);
 /* Genuine original call declarations: no placeholder implementations. */
 GAMEOBJECT *__cdecl AddCreature(i32 model, i32 mode);
 void __cdecl InitPlayerAI(GAMEOBJECT *object);
@@ -4350,8 +4331,8 @@ GAMEOBJECT *__cdecl AddDynamicCreature(i32 model, NUVEC *position, i32 angle, ch
         object->velocity = v000;
         GetTopBot(object);
         GameObjectDimensions(object);
-        ResetRumble(&((DYNAMIC_RUMBLE_VIEW_PC *)object->pad)->rumble_packet);
-        ResetLights(&object->position, &((DYNAMIC_LIGHTING_VIEW_PC *)object)->lighting_packet, WORLD->rtl_set);
+        ResetRumble(&object->pad->rumble);
+        ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
         object->sock_position.sock_index = -1;
         object->sock_position.segment = -1;
         if (WORLD->sock_sys != NULL) {
@@ -4503,6 +4484,8 @@ STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_collision_priority_pc) == 0x292);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_resolved_collision_priority_pc) == 0x294);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_link) == 0x298);
 STATIC_ASSERT(offsetof(AIPACKET_PC, antinode_timer) == 0x18c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, lighting_packet) == 0x4d8);
+STATIC_ASSERT(offsetof(GAMEPAD_PC, rumble) == 0x40);
 extern u8 grapple_attach_frames;
 __declspec(noinline) void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
                                                       f32 parameter) {
