@@ -730,9 +730,10 @@ extern "C" {
         for (i32 i = 0; i < CUTCOUNT; ++i) {
             if (CutList[i].level != level)
                 continue;
-            CUT_LOAD_RECORD_PC *cut = reinterpret_cast<CUT_LOAD_RECORD_PC *>(buf->void_ptr);
-            entries[sys->count] = cut;
+            void *mark = buf->void_ptr;
+            entries[sys->count] = reinterpret_cast<CUT_LOAD_RECORD_PC *>(mark);
             buf->addr = (buf->addr + sizeof(CUT_LOAD_RECORD_PC) + 3) & ~3U;
+            CUT_LOAD_RECORD_PC *cut = entries[sys->count];
             NuStrCpy(path, "cut\\");
             NuStrCat(path, CutList[i].directory);
             NuStrCat(path, WorldPathSeparator);
@@ -741,14 +742,14 @@ extern "C" {
             NuStrCat(config_path, AreaResidentsExtension);
             CutSceneConfigurePc(cut, config_path, buf, buf_end);
             if (!(cut->flags & 0x800) && InStory() == 0 && !(LDataList[level].flags & 0xe0)) {
-                buf->void_ptr = cut;
+                buf->void_ptr = mark;
                 continue;
             }
             NuStrCpy(config_path, path);
             NuStrCat(config_path, NuFileExt_cu2_PC);
             cut->scene = NuGCutSceneLoad(config_path, buf, buf_end, 0);
             if (cut->scene == NULL) {
-                buf->void_ptr = cut;
+                buf->void_ptr = mark;
                 continue;
             }
             NuStrCpy(cut->name, CutList[i].name);
