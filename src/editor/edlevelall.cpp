@@ -277,7 +277,6 @@ STATIC_ASSERT(offsetof(EdRegistry, types) == 0x4);
 STATIC_ASSERT(offsetof(EdRegistry, type_count) == 0x1c);
 STATIC_ASSERT(offsetof(EdRegistry, defunct_objects) == 0x38);
 STATIC_ASSERT(sizeof(EdRef) == 0x28);
-/* EdRef::next sits at 0x4 behind the vtable pointer; implied by type_id at 0xc. */
 STATIC_ASSERT(offsetof(EdRef, type_id) == 0xc);
 STATIC_ASSERT(offsetof(EdRef, member_offset) == 0x14);
 STATIC_ASSERT(offsetof(EdRef, size) == 0x18);

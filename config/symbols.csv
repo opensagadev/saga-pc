@@ -9077,6 +9077,7 @@ address,symbol,size,ctype
 0x6c6010,?GetTypeSize@EdRef@@QAEHHH@Z,122,
 0x6c6090,?GetMemberData@EdRef@@UAEXPAXH0H@Z,63,
 0x6c60d0,?SetMemberData@EdRef@@UAEXPAXH0HPAF@Z,63,
+0x6c6400,??0?$CSListLink@VEdRef@@@@QAE@XZ,20,
 0x6c7e90,?GetNumObjects@KnotHelper@@UAEHXZ,27,
 0x6c7eb0,?GetNextObject@KnotHelper@@UAEPAXPAX@Z,88,
 0x6c7f10,?DestroyObject@KnotHelper@@UAEXPAXH@Z,171,

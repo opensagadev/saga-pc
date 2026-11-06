@@ -29023,6 +29023,15 @@ STATIC_ASSERT(offsetof(EdClassInterface, object_class) == 0x4);
  * after the vtable pointer of the classes that derive from it. */
 template <class T> class CSListLink {
   public:
+    /* Retail's standalone copies of this constructor (0x6c1260, 0x6c6400, ...)
+     * test this against NULL before clearing the links. */
+    CSListLink() {
+        CSListLink *link = this;
+        if (link != NULL) {
+            link->next = NULL;
+            link->previous = NULL;
+        }
+    }
     T *next;
     T *previous;
 };

@@ -8,11 +8,6 @@ EdRef::EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i3
              EdControl *member_control, i32 group) {
     char direct_type[32];
     i32 length;
-    CSListLink<EdRef> *link = this;
-    if (link != NULL) {
-        link->next = NULL;
-        link->previous = NULL;
-    }
     attributes = 0;
     length = NuStrLen(type_name);
     if (length > 0 && type_name[length - 1] == '*') {
