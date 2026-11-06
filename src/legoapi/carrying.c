@@ -110,7 +110,7 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     CARRY_BASIS_PC *basis = (CARRY_BASIS_PC *)object;
     CARRY_BLOWUP_PC *blowup;
-    NUMTX matrix, left, right, basis_matrix;
+    NUMTX matrix;
     NUVEC position, offset, velocity;
     ADDPART_PC params;
     PART_PC *part;
@@ -122,30 +122,20 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
         if (SuperCarry_AlignObject)
             NuMtxSetRotationY(&matrix, object->takeover_start_angle);
         else {
-            matrix = numtx_identity;
-            matrix.m00 = basis->basis[0].x;
-            matrix.m01 = basis->basis[0].y;
-            matrix.m02 = basis->basis[0].z;
-            matrix.m10 = basis->basis[1].x;
-            matrix.m11 = basis->basis[1].y;
-            matrix.m12 = basis->basis[1].z;
-            matrix.m20 = basis->basis[2].x;
-            matrix.m21 = basis->basis[2].y;
-            matrix.m22 = basis->basis[2].z;
+            matrix = NuMtxSetIdentityTemplate;
+            *(NUVEC *)&matrix.m00 = basis->basis[0];
+            *(NUVEC *)&matrix.m10 = basis->basis[1];
+            *(NUVEC *)&matrix.m20 = basis->basis[2];
         }
         NuMtxRotateY(&matrix, object->field_0x276);
-        position.x = object->locator_matrices[first].m30;
-        position.y = object->locator_matrices[first].m31;
-        position.z = object->locator_matrices[first].m32;
-        NuMtxTranslate(&matrix, &position);
+        NuMtxTranslate(&matrix, (NUVEC *)&object->locator_matrices[first].m30);
     } else
         matrix = object->locator_matrices[first];
     second = object->character_data->game_character->hand_locators[1];
     if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
-        position.x = matrix.m30;
-        position.y = matrix.m31;
-        position.z = matrix.m32;
+        position = *(NUVEC *)&matrix.m30;
         if (!SuperCarry_KeepObjectLevel) {
+            NUMTX left, right;
             left = matrix;
             right = object->locator_matrices[second];
             left.m30 = left.m31 = left.m32 = 0.0f;
@@ -156,27 +146,19 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
         matrix.m31 = (f32)((position.y + object->locator_matrices[second].m31) * 0.5);
         matrix.m32 = (f32)((position.z + object->locator_matrices[second].m32) * 0.5);
     }
-    if (!SuperCarry_KeepObjectLevel) {
-        position.x = matrix.m30;
-        position.y = matrix.m31;
-        position.z = matrix.m32;
-        basis_matrix = numtx_identity;
-        basis_matrix.m00 = basis->basis[0].x;
-        basis_matrix.m01 = basis->basis[0].y;
-        basis_matrix.m02 = basis->basis[0].z;
-        basis_matrix.m10 = basis->basis[1].x;
-        basis_matrix.m11 = basis->basis[1].y;
-        basis_matrix.m12 = basis->basis[1].z;
-        basis_matrix.m20 = basis->basis[2].x;
-        basis_matrix.m21 = basis->basis[2].y;
-        basis_matrix.m22 = basis->basis[2].z;
+    if (SuperCarry_KeepObjectLevel) {
+        if (SuperCarry_AlignObject) {
+            NuVecRotateY(&offset, &basis->basis[0], object->field_0x276);
+            NuMtxTranslate(&matrix, &offset);
+        }
+    } else {
+        NUMTX basis_matrix;
+        position = *(NUVEC *)&matrix.m30;
+        *(NUVEC *)&basis_matrix.m00 = basis->basis[0];
+        *(NUVEC *)&basis_matrix.m10 = basis->basis[1];
+        *(NUVEC *)&basis_matrix.m20 = basis->basis[2];
         NuMtxMulR(&matrix, &basis_matrix, &matrix);
-        matrix.m30 = position.x;
-        matrix.m31 = position.y;
-        matrix.m32 = position.z;
-    } else if (SuperCarry_AlignObject) {
-        NuVecRotateY(&offset, &basis->basis[0], object->field_0x276);
-        NuMtxTranslate(&matrix, &offset);
+        *(NUVEC *)&matrix.m30 = position;
     }
     params = Default_ADDPART;
     params.matrix = &matrix;
@@ -188,7 +170,9 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     blowup = (CARRY_BLOWUP_PC *)object->grapple;
     params.field_14 = params.field_18 = (f32)(0.5 * blowup->target_scale);
     params.special = &((GIZMOBLOWUP_PC *)blowup)->type->animated_special;
-    params.flags = blowup->secondary_flags & 4 ? 0x8011 : 0x8111;
+    params.flags = 0x8011;
+    if (!(blowup->secondary_flags & 4))
+        params.flags = 0x8111;
     params.owner = object;
     params.time_step = FRAMETIME;
     params.gravity = SUPERCARRY_OBJGRAVITY;

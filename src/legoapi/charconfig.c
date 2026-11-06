@@ -2108,42 +2108,35 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     i32 bit;
     i32 layer;
     if (text == NULL) {
-        if (directory == NULL) {
-            SecondCharConfigure = 0;
-            return 0;
-        }
+        if (directory == NULL)
+            goto done;
         NuStrCpy(path, directory);
         NuStrCat(path, filename);
-        size = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
-        if (size < 1) {
-            SecondCharConfigure = 0;
-            return 0;
-        }
-        MiniBuffer[size] = 0;
-        text_length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
-        if (text_length < 1) {
-            SecondCharConfigure = 0;
-            return 0;
-        }
-        if (redirect != 0 &&
-            (redirected = RedirectTextFile(MiniBuffer, redirected_name, sizeof(redirected_name))) != 0) {
-            NuStrCpy(path, directory);
-            NuStrCat(path, redirected_name);
-            NuStrCat(path, ".txt");
-            size = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
-            if (size < 1) {
-                SecondCharConfigure = 0;
-                return 0;
-            }
-            MiniBuffer[size] = 0;
-            text_length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
-        }
         text = MiniBuffer;
+        text_length = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
+        if (text_length <= 0)
+            goto done;
+        MiniBuffer[text_length] = 0;
+        text_length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
+        if (text_length <= 0)
+            goto done;
+        if (redirect != 0) {
+            redirected = RedirectTextFile(MiniBuffer, redirected_name, sizeof(redirected_name));
+            if (redirected != 0) {
+                NuStrCpy(path, directory);
+                NuStrCat(path, redirected_name);
+                NuStrCat(path, ".txt");
+                text_length = NuFileLoadBuffer(path, MiniBuffer, sizeof(MiniBuffer));
+                if (text_length > 0) {
+                    MiniBuffer[text_length] = 0;
+                    text_length = Text_StripComments(MiniBuffer, MiniBuffer, 1);
+                } else
+                    redirected = 0;
+            }
+        }
     }
-    if (text_length < 1) {
-        SecondCharConfigure = 0;
-        return redirected;
-    }
+    if (text_length <= 0)
+        goto done;
 
     memset(&charconfig, 0, sizeof(charconfig));
     charconfig.character_id = (i16)(character_id);
@@ -2231,12 +2224,13 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
             }
         }
     }
+done:
     SecondCharConfigure = 0;
     return redirected;
 }
 
 /* 5845b0/1. Empty pack-lookup diagnostic; retail calls it with and without a path. */
-void __cdecl CharConfigPakDiagnosticPc() {
+__declspec(noinline) void __cdecl CharConfigPakDiagnosticPc() {
 }
 
 void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
