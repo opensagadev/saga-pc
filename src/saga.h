@@ -9292,7 +9292,7 @@ extern "C" {
     void __cdecl ObjHitShield(GAMEOBJECT *, GAMEOBJECT *, i32, void *);
     void __cdecl PlayerTakeHit(GAMEOBJECT *, GAMEOBJECT *);
     i32 __cdecl DeactivatePlayer(GAMEOBJECT *, f32, GAMEOBJECT *);
-    i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *, GAMEOBJECT *, f32, u16);
+    i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *, GAMEOBJECT *, f32, u32);
     void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
     i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *);
     /* SpecialMoveApplyDamagePc stays static with private ESI ABI in original caller TU; no public declaration. */

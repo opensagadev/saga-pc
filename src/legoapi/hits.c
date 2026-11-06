@@ -126,7 +126,7 @@ STATIC_ASSERT(offsetof(REACTION_FIELDS_PC, animation_speed) == 0x750);
 STATIC_ASSERT(offsetof(REACTION_FIELDS_PC, reaction_duration) == 0x778);
 void __cdecl Player_ClearContext(GAMEOBJECT *, i32);
 void __cdecl Player_ResetContexts(void *);
-i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u16 flags) {
+i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u32 flags) {
     REACTION_FIELDS_PC *view = (REACTION_FIELDS_PC *)target;
     void **animations;
     i32 choices[16], count = 0, animation, index;
@@ -252,7 +252,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
         if (target->character_context == 14 || target->character_context == 13)
             return 0;
     }
-    if (CInfo[target->character_context].parameter & 4)
+    if (U64_PAIR(&CInfo[target->character_context].flags) & 0x400000000ULL)
         return 0;
     if (attacker && !(attacker->flags_1fc_word & 1))
         attacker = NULL;
@@ -266,7 +266,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
     if (damage > 0 || damage == -1)
         target->portal_flags |= 1;
     if (flags & 0x100) {
-        if ((CInfo[target->character_context].flags & 0x4000000) ||
+        if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) ||
             (target->character_context != -1 && (target->character_context == LEGOCONTEXT_LAND_SLAM ||
                                                  target->character_context == LEGOCONTEXT_LAND_LUNGE))) {
             i32 rotation_difference = abs(RotDiff(attacker->movement_facing_angle, target->movement_facing_angle));
@@ -473,140 +473,141 @@ impact:
     }
     if ((target->character_data->model_flags & 0x40000000) && (health <= 0 || target->character_context == 23))
         goto refill;
-    if (health > 0)
-        goto surviving_hit;
-    if ((target->portal_flags & 0x08000000) && (!FreePlay || WORLD->current_level != CRUISERC_LDATA))
-        goto surviving_hit;
-    if (probe) {
-        result = 2;
-        goto finish;
-    }
-    if (target->character_context == 93) {
-        PopBalloon(target);
-        target->current_hp = 1;
-        goto hurt;
-    }
-    if (!StartupGameFlag1) {
-        u16 angle;
-        f32 speed;
-        COMBAT_REACTION_OWNER_PC *reaction = (COMBAT_REACTION_OWNER_PC *)target;
-        if (reaction_trigger) {
-            i32 reaction_result = PlayerTakeHitReactionPc(target, attacker, CombatReactionDurationPc, flags);
-            if (reaction_result != 0) {
-                target->current_hp = 1;
-                SetFlicker(target, 0.4f);
-                if (reaction_result == 2 && attacker != NULL && (attacker->flags_1fc_word & 0x80) && !no_rumble)
-                    KillRumble(attacker);
-                goto hurt;
+    if (health <= 0 &&
+        !((target->portal_flags & 0x08000000) && (!FreePlay || WORLD->current_level != CRUISERC_LDATA))) {
+        if (probe) {
+            result = 2;
+            goto finish;
+        }
+        if (target->character_context == 93) {
+            PopBalloon(target);
+            target->current_hp = 1;
+            goto hurt;
+        }
+        if (!StartupGameFlag1) {
+            u16 angle;
+            f32 speed;
+            COMBAT_REACTION_OWNER_PC *reaction = (COMBAT_REACTION_OWNER_PC *)target;
+            if (reaction_trigger) {
+                i32 reaction_result = PlayerTakeHitReactionPc(target, attacker, CombatReactionDurationPc, flags);
+                if (reaction_result != 0) {
+                    target->current_hp = 1;
+                    SetFlicker(target, 0.4f);
+                    if (reaction_result == 2 && attacker != NULL && (attacker->flags_1fc_word & 0x80) && !no_rumble)
+                        KillRumble(attacker);
+                    goto hurt;
+                }
             }
+            if (StartupGameFlag1 || (flags & 0x200) || attacker == NULL || target->field_280 != 0xff ||
+                (target->portal_flags & 0x08000000) || 0x8000 <= qrand() || (target->flags_1fc_word & 2))
+                goto ordinary_death;
+            target->character_context = 95;
+            target->field_7aa = 0xb8;
+            if (target->character_model->model_data_b[0xb8] == NULL)
+                target->field_7aa = 5;
+            target->current_hp = 1;
+            target->context_timer = 0.0f;
+            target->context_duration = 2.0f;
+            angle = NuAtan2D(target->collision_position.x - attacker->collision_position.x,
+                             target->collision_position.z - attacker->collision_position.z);
+            speed = (f32)(((f64)qrand() * 1.5259021893143654e-05 * 0.4000000059604645 + 0.800000011920929) *
+                          CombatReactionHorizontalScalePc);
+            target->external_force.x = NuTrigTable[angle >> 1] * speed;
+            target->external_force.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
+            target->movement_facing_angle = angle + 0x8000;
+            reaction->attacker_slot =
+                attacker->field_280 == 0 || attacker->field_280 == 1 ? (i8)attacker->field_280 : -1;
+            if (qrand() < 0x5555) {
+                target->context_variant_flags |= 0x100;
+                target->velocity.y =
+                    (f32)(((f64)qrand() * 1.5259021893143654e-05 * 0.30000001192092896 + 0.20000000298023224) *
+                          CombatReactionVerticalScalePc);
+                target->external_force.x *= 2.0f;
+                target->external_force.z *= 2.0f;
+            } else {
+                target->context_variant_flags &= ~0x100;
+                target->velocity.y =
+                    (f32)(((f64)qrand() * 1.5259021893143654e-05 * 0.4000000059604645 + 0.800000011920929) *
+                          CombatReactionVerticalScalePc);
+            }
+            ResetAnimPacket(&target->anim_packet, -1);
+            SetFlicker(target, 0.4f);
+            if ((attacker->flags_1fc_word & 0x80) && !no_rumble)
+                KillRumble(attacker);
+            goto hurt;
         }
-        if (StartupGameFlag1 || (flags & 0x200) || attacker == NULL || target->field_280 != 0xff ||
-            (target->portal_flags & 0x08000000) || 0x8000 <= qrand() || (target->flags_1fc_word & 2))
-            goto ordinary_death;
-        target->character_context = 95;
-        target->field_7aa = 0xb8;
-        if (target->character_model->model_data_b[0xb8] == NULL)
-            target->field_7aa = 5;
-        target->current_hp = 1;
-        target->context_timer = 0.0f;
-        target->context_duration = 2.0f;
-        angle = NuAtan2D(target->collision_position.x - attacker->collision_position.x,
-                         target->collision_position.z - attacker->collision_position.z);
-        speed = (f32)(((f64)qrand() * 1.5259021893143654e-05 * 0.4000000059604645 + 0.800000011920929) *
-                      CombatReactionHorizontalScalePc);
-        target->external_force.x = NuTrigTable[angle >> 1] * speed;
-        target->external_force.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
-        target->movement_facing_angle = angle + 0x8000;
-        reaction->attacker_slot = attacker->field_280 <= 1 ? (i8)attacker->field_280 : -1;
-        if (qrand() < 0x5555) {
-            target->context_variant_flags |= 0x100;
-            target->velocity.y =
-                (f32)(((f64)qrand() * 1.5259021893143654e-05 * 0.30000001192092896 + 0.20000000298023224) *
-                      CombatReactionVerticalScalePc);
-            target->external_force.x *= 2.0f;
-            target->external_force.z *= 2.0f;
-        } else {
-            target->context_variant_flags &= ~0x100;
-            target->velocity.y =
-                (f32)(((f64)qrand() * 1.5259021893143654e-05 * 0.4000000059604645 + 0.800000011920929) *
-                      CombatReactionVerticalScalePc);
-        }
-        ResetAnimPacket(&target->anim_packet, -1);
-        SetFlicker(target, 0.4f);
-        if ((attacker->flags_1fc_word & 0x80) && !no_rumble)
-            KillRumble(attacker);
-        goto hurt;
-    }
-ordinary_death:
-    target->current_hp = 0;
-    hearts = 0;
-    coins = 0;
-    if (target->field_280 == 0xff) {
-        if (!(target->flags_1fc_word & 0x80)) {
+    ordinary_death:
+        target->current_hp = 0;
+        hearts = 0;
+        coins = 0;
+        if (target->field_280 != 0xff) {
+            if ((target->flags_1fc_word & 0x80)) {
+                if (target->coin_packet && ((COMBAT_COINPACKET_PC *)target->coin_packet)->coins && BonusWinner == -1)
+                    coins = LoseCoins(target, 1);
+                if (!BuildUpTotal)
+                    BuildUpScale = 1.5f;
+                DrawBuildUpTime = 1.0f;
+                builduptime = 1.0f;
+            }
+        } else if (!(target->flags_1fc_word & 0x80)) {
             coins = BonusArea ? (u16)(target->character_data->game_character->coin_value) : (Cheat_IsOn(16) ? 350 : 0);
             hearts = ReleaseHearts();
         }
-    } else if ((target->flags_1fc_word & 0x80)) {
-        if (target->coin_packet && ((COMBAT_COINPACKET_PC *)target->coin_packet)->coins && BonusWinner == -1)
-            coins = LoseCoins(target, 1);
-        if (!BuildUpTotal)
-            BuildUpScale = 1.5f;
-        DrawBuildUpTime = 1.0f;
-        builduptime = 1.0f;
-    }
-    if (hearts || coins > 0)
-        AddPickups(coins, hearts, 0, 0, &target->collision_position, NULL, 2.0f, -1, 1.0f, 2000000.0f, attacker,
-                   !BonusArea && coins < 2500, BonusArea ? 1 : 0);
-    if (target->torpedo && WORLD->area != SPEEDERCHASE_ADATA && (!WORLD->area || !(WORLD->area->flags & 4)))
-        DropTorpedoPickups(target->torpedo, target->torpedo->count);
-    if (!parts_angle) {
-        if (!attacker)
-            parts_angle = NULL;
-        else if (flags & 0x240) {
-            computed_angle =
-                NuAtan2D(target->position.x - attacker->position.x, target->position.z - attacker->position.z);
-            parts_angle = (i16 *)(&computed_angle);
-        }
-    }
-    if (WORLD->current_level == VADERC_LDATA && !netclient) {
-        GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, "FinalFight", NULL);
-        if (message && message->value == 1.0f && (!attacker || ((attacker->flags_1fc_word & 0x80)))) {
-            LevelCompletionFallbackFlagPC = 1;
-            if (FreePlay)
-                CompleteLevel(WORLD);
-            else {
-                char name[16];
-                NUSPECIALHANDLE special;
-                i32 i;
-                for (i = 1; i != 12; ++i) {
-                    sprintf(name, "rock%d", i);
-                    if (NuSpecialFind(WORLD->current_gscn, &special, name, 1))
-                        NuSpecialSetVisibility(&special, 0);
-                }
-                if (attacker && attacker->id == (u16)id_OBIWANKENOBIEP3 && target->id == (u16)id_ANAKINJEDI)
-                    NewCutScene(NULL, WORLD->cutscene_sys, (char *)"ep3_darthvader_outro2", 1);
-                else
-                    NewCutScene(NULL, WORLD->cutscene_sys, (char *)"ep3_darthvader_outro1", 1);
+        if (coins > 0 || hearts)
+            AddPickups(coins, hearts, 0, 0, &target->collision_position, NULL, 2.0f, -1, 1.0f, 2000000.0f, attacker,
+                       !BonusArea && coins < 2500, BonusArea ? 1 : 0);
+        if (target->torpedo && WORLD->area != SPEEDERCHASE_ADATA && (!WORLD->area || !(WORLD->area->flags & 4)))
+            DropTorpedoPickups(target->torpedo, target->torpedo->count);
+        if (!parts_angle) {
+            if (!attacker)
+                parts_angle = NULL;
+            else if (flags & 0x240) {
+                computed_angle =
+                    NuAtan2D(target->position.x - attacker->position.x, target->position.z - attacker->position.z);
+                parts_angle = (i16 *)(&computed_angle);
             }
-            return 0;
         }
+        if (WORLD->current_level == VADERC_LDATA && !netclient) {
+            GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, "FinalFight", NULL);
+            if (message && message->value == 1.0f && (!attacker || ((attacker->flags_1fc_word & 0x80)))) {
+                LevelCompletionFallbackFlagPC = 1;
+                if (FreePlay)
+                    CompleteLevel(WORLD);
+                else {
+                    char name[16];
+                    NUSPECIALHANDLE special;
+                    i32 i;
+                    for (i = 1; i != 12; ++i) {
+                        sprintf(name, "rock%d", i);
+                        if (NuSpecialFind(WORLD->current_gscn, &special, name, 1))
+                            NuSpecialSetVisibility(&special, 0);
+                    }
+                    if (attacker && attacker->id == (u16)id_OBIWANKENOBIEP3 && target->id == (u16)id_ANAKINJEDI)
+                        NewCutScene(NULL, WORLD->cutscene_sys, (char *)"ep3_darthvader_outro2", 1);
+                    else
+                        NewCutScene(NULL, WORLD->cutscene_sys, (char *)"ep3_darthvader_outro1", 1);
+                }
+                return 0;
+            }
+        }
+        if (no_impact && target->rider) {
+            KillParts(target->rider, -1, target->rider->id == (u16)id_BODYGUARD ? 4 : -1, 1, 0.0f, 0,
+                      (u16 *)(parts_angle));
+            KillGameObject(target->rider, 2, 0);
+        }
+        KillParts(target, -1, (u16)id_BODYGUARD == target->id ? 4 : -1, 1, throw_up ? 1.0f : 0.0f, 0,
+                  (u16 *)(parts_angle));
+        KillGameObject(target, 2, 0);
+        if ((target->flags_1fc_word & 0x80))
+            GameCam_Judder(GameCam, 0.2f, 0, NULL);
+        if (attacker != NULL && (attacker->flags_1fc_word & 0x80) && (target->flags_1f8 & 1) &&
+            !(target->character_data->model_flags & 0x80000) && (flags & 4))
+            AdaptiveDifficultyAdjustPc(&adaptivedifficulty, CombatNpcKillDifficultyAmountPc);
+        else if ((target->flags_1fc_word & 0x80) && (flags & 2))
+            AdaptiveDifficultyAdjustPc(&adaptivedifficulty, CombatPlayerDeathDifficultyAmountPc);
+        result = 2;
+        goto finish;
     }
-    if (no_impact && target->rider) {
-        KillParts(target->rider, -1, target->rider->id == (u16)id_BODYGUARD ? 4 : -1, 1, 0.0f, 0, (u16 *)(parts_angle));
-        KillGameObject(target->rider, 2, 0);
-    }
-    KillParts(target, -1, (u16)id_BODYGUARD == target->id ? 4 : -1, 1, throw_up ? 1.0f : 0.0f, 0, (u16 *)(parts_angle));
-    KillGameObject(target, 2, 0);
-    if ((target->flags_1fc_word & 0x80))
-        GameCam_Judder(GameCam, 0.2f, 0, NULL);
-    if (attacker != NULL && (attacker->flags_1fc_word & 0x80) && (target->flags_1f8 & 1) &&
-        !(target->character_data->model_flags & 0x80000) && (flags & 4))
-        AdaptiveDifficultyAdjustPc(&adaptivedifficulty, CombatNpcKillDifficultyAmountPc);
-    else if ((target->flags_1fc_word & 0x80) && (flags & 2))
-        AdaptiveDifficultyAdjustPc(&adaptivedifficulty, CombatPlayerDeathDifficultyAmountPc);
-    result = 2;
-    goto finish;
-surviving_hit:
     if ((target->flags_1fc_word & 0x80))
         TakeHitRumble(target, 0.666f);
     target->current_hp = health;
@@ -619,9 +620,10 @@ surviving_hit:
             SnakeBeenHit(target);
         PlayerTakeHit(target, attacker);
         if (target->field_280 != 0xff && damage > 0) {
-            u8 value = target->saved_hitpoints - damage;
-            target->saved_hitpoints = value ? value : 1;
-            if ((target->character_data->model_flags & 0x20) && target->use_model_origin) {
+            target->saved_hitpoints -= damage;
+            if (target->saved_hitpoints < 1)
+                target->saved_hitpoints = 1;
+            if ((target->character_data->model_flags & 0x20) && target->origin_joint_ready) {
                 i32 index = target->saved_hitpoints - 1;
                 if (index > 2)
                     index = 2;
