@@ -10126,6 +10126,36 @@ extern "C" {
         u8 fog[0x980];
     } RTL_SET_PC;
     STATIC_ASSERT(sizeof(RTL_SET_PC) == 0x4f84);
+    typedef struct rtl_fog_migration_pc_s {
+        f32 start, end;
+        u32 colour;
+        i32 low_quality_density;
+        u32 low_quality_colour;
+        i32 type;
+        u8 depth_of_field_fstop;
+        u8 unknown_19[3];
+        f32 radius;
+        NUVEC position;
+        f32 density;
+        f32 start_psp, end_psp;
+        u8 unknown_38[4];
+        f32 density_wii;
+        u8 unknown_40[0xc];
+    } RTL_FOG_MIGRATION_PC;
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start) == 0);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end) == 4);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, depth_of_field_fstop) == 0x18);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start_psp) == 0x30);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end_psp) == 0x34);
+    STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, colour) == 8);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, low_quality_density) == 0xc);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, low_quality_colour) == 0x10);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, type) == 0x14);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, radius) == 0x1c);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, position) == 0x20);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density) == 0x2c);
+    STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density_wii) == 0x3c);
     STATIC_ASSERT(offsetof(RTL_SET_PC, header) == 0);
     STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
     STATIC_ASSERT(offsetof(RTL_SET_PC, fog) == 0x4604);
@@ -28555,5 +28585,62 @@ class EdClassInterface {
 };
 STATIC_ASSERT(sizeof(EdClassInterface) == 0x8);
 STATIC_ASSERT(offsetof(EdClassInterface, object_class) == 0x4);
+
+/* Property-menu control bound to one EdRef of an edited object. Controls live
+ * in theMemoryManager's size-class pools. */
+class EdControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdControl));
+    }
+    EdControl() {
+    }
+    virtual ~EdControl();
+    virtual void Refresh();
+    virtual void Process(EdInputContext &input);
+    virtual void Render();
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void SetMenuItemAttr(i32 state, eduiitem_s *item, eduiiattr_s *normal, eduiiattr_s *highlighted);
+
+    eduiitem_s *item;
+    EdRef *reference;
+    void *object;
+};
+STATIC_ASSERT(sizeof(EdControl) == 0x10);
+STATIC_ASSERT(offsetof(EdControl, item) == 0x4);
+STATIC_ASSERT(offsetof(EdControl, object) == 0xc);
+
+class EdEnumControl : public EdControl {
+  public:
+    struct Item {
+        char *name;
+        i32 value;
+    };
+
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdEnumControl));
+    }
+    EdEnumControl(Item *items);
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void Refresh();
+
+    Item *items;
+};
+STATIC_ASSERT(sizeof(EdEnumControl) == 0x14);
+STATIC_ASSERT(offsetof(EdEnumControl, items) == 0x10);
+
+class EdBitControl : public EdEnumControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdBitControl));
+    }
+    EdBitControl(u32 bit_mask, Item *items);
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void Refresh();
+
+    u32 bit_mask;
+};
+STATIC_ASSERT(sizeof(EdBitControl) == 0x18);
+STATIC_ASSERT(offsetof(EdBitControl, bit_mask) == 0x14);
 #endif
 #endif

@@ -9,6 +9,7 @@ extern "C" {
     extern f32 rtl_helper_radius;
     extern i32 rtl_helper_radius_mode;
     void __cdecl rtlFree(RTL_LIGHT_PC *light);
+    void __cdecl fogFree(RTL_FOG_MIGRATION_PC *fog);
 }
 
 class RTLHelper : public EdClassInterface {
@@ -135,4 +136,58 @@ void RTLHelper::Render(void *object, i32) {
     EdDrawPolyCylinder(&matrix, rtl_helper_radius * 0.75, rtl_helper_radius, rtl_helper_radius * 2.0f, 4, dark_colour,
                        0, 0);
     EdDrawEnd();
+}
+
+#define RTLHELPER_FOGS(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)
+
+/* EdClassInterface for the fog volumes of the current light set. */
+class FogHelper : public EdClassInterface {
+  public:
+    FogHelper();
+    virtual void Flush() {
+    }
+    virtual i32 GetNumObjects();
+    virtual void *GetNextObject(void *object);
+    virtual void *CreateObject(void *data, i32 guid, i32 flags);
+    virtual void DestroyObject(void *object, i32) {
+        fogFree(static_cast<RTL_FOG_MIGRATION_PC *>(object));
+    }
+    virtual void Render(void *object, i32 selected);
+};
+STATIC_ASSERT(sizeof(FogHelper) == 0x8);
+
+FogHelper::FogHelper() {
+}
+
+i32 FogHelper::GetNumObjects() {
+    i32 count = 0;
+    i32 i;
+    for (i = 0; i < 32; i++) {
+        if (RTLHELPER_FOGS(curr_set)[i].type != 0)
+            count++;
+    }
+    return count;
+}
+
+void *FogHelper::GetNextObject(void *object) {
+    RTL_SET_PC *rtl_set = curr_set;
+    i32 i;
+    if (rtl_set != NULL) {
+        if (object == NULL)
+            return &RTLHELPER_FOGS(rtl_set)[0];
+        for (i = static_cast<RTL_FOG_MIGRATION_PC *>(object) - RTLHELPER_FOGS(rtl_set) + 1; i < 32; i++) {
+            if (RTLHELPER_FOGS(rtl_set)[i].type != 0)
+                return &RTLHELPER_FOGS(rtl_set)[i];
+        }
+    }
+    return NULL;
+}
+
+EdControl::~EdControl() {
+}
+
+EdEnumControl::EdEnumControl(Item *items) : items(items) {
+}
+
+EdBitControl::EdBitControl(u32 bit_mask, Item *items) : EdEnumControl(items), bit_mask(bit_mask) {
 }

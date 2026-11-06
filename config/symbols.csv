@@ -7178,8 +7178,21 @@ address,symbol,size,ctype
 0x634340,?Import@EdClassInterface@@UAEXXZ,1,
 0x634350,??_EEdClassInterface@@UAEPAXI@Z,,COFF weak alias of ??_GEdClassInterface@@UAEPAXI@Z; no independent body
 0x634350,??_GEdClassInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x634390,??0EdControl@@QAE@XZ,9,
+0x6343a0,??3EdControl@@SAXPAX@Z,18,
+0x6343c0,??1EdControl@@UAE@XZ,7,
+0x6343d0,??_EEdControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdControl@@UAEPAXI@Z; no independent body
+0x6343d0,??_GEdControl@@UAEPAXI@Z,35,native scalar-deleting dtor exactVTidentity
+0x6344c0,??0EdEnumControl@@QAE@PAUItem@0@@Z,18,
+0x6344e0,??3EdEnumControl@@SAXPAX@Z,18,
+0x634500,??1EdEnumControl@@UAE@XZ,7,
+0x634530,??0EdBitControl@@QAE@IPAUItem@EdEnumControl@@@Z,25,
+0x634550,??3EdBitControl@@SAXPAX@Z,18,
+0x634570,??1EdBitControl@@UAE@XZ,7,
 0x6345e0,??0RTLHelper@@QAE@XZ,17,
 0x634600,??1RTLHelper@@UAE@XZ,7,
+0x634610,??0FogHelper@@QAE@XZ,16,
+0x634620,??1FogHelper@@UAE@XZ,7,
 0x634840,?Flush@RTLHelper@@UAEXXZ,8,
 0x634850,?GetNumObjects@RTLHelper@@UAEHXZ,73,
 0x6348a0,?GetNextObject@RTLHelper@@UAEPAXPAX@Z,121,
@@ -7189,6 +7202,10 @@ address,symbol,size,ctype
 0x634ea0,?PostLoadInitialisation@RTLHelper@@UAEXPAUMemoryBuffer@@0@Z,13,
 0x634eb0,?PreSaveInitialisation@RTLHelper@@UAEXXZ,9,
 0x634ec0,?PostSaveInitialisation@RTLHelper@@UAEXXZ,11,
+0x635340,?Flush@FogHelper@@UAEXXZ,1,
+0x635350,?GetNumObjects@FogHelper@@UAEHXZ,67,
+0x6353a0,?GetNextObject@FogHelper@@UAEPAXPAX@Z,116,
+0x635420,?Render@FogHelper@@UAEXPAXH@Z,126,
 0x6354a0,_edrtlInitBurnset,259,void __cdecl edrtlInitBurnset(BURN_SET_PC *)
 0x6355f0,_rtlFindByUserId,52,"i32 __cdecl rtlFindByUserId(RTL_SET_PC *, i32)"
 0x635630,_rtlGetDirection,48,"i32 __cdecl (RTL_SET_PC *, i32, NUVEC **)"
@@ -7342,12 +7359,20 @@ address,symbol,size,ctype
 0x63d8b0,_edrtlDrawFogInfo,638,
 0x63db30,_edrtlDrawBurnInfo,404,void __cdecl (void)
 0x63dcd0,_rtlFrameUpdate,66,void __cdecl(f32)
+0x63e060,??_EEdEnumControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdEnumControl@@UAEPAXI@Z; no independent body
+0x63e060,??_GEdEnumControl@@UAEPAXI@Z,35,native scalar-deleting dtor exactVTidentity
+0x63e090,??_EEdBitControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdBitControl@@UAEPAXI@Z; no independent body
+0x63e090,??_GEdBitControl@@UAEPAXI@Z,35,native scalar-deleting dtor exactVTidentity
 0x63e0c0,??_ERTLHelper@@UAEPAXI@Z,,COFF weak alias of ??_GRTLHelper@@UAEPAXI@Z; no independent body
 0x63e0c0,??_GRTLHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x63e0e0,??_EFogHelper@@UAEPAXI@Z,,COFF weak alias of ??_GFogHelper@@UAEPAXI@Z; no independent body
+0x63e0e0,??_GFogHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x63eb30,?CreateObject@RTLHelper@@UAEPAXPAXHH@Z,285,
 0x63ec50,?DestroyObject@RTLHelper@@UAEXPAXH@Z,14,
 0x63ec60,?Render@RTLHelper@@UAEXPAXH@Z,626,
 0x63f000,?AddMenuItems@RTLHelper@@UAEXPAUeduimenu_s@@@Z,64,
+0x63f5e0,?CreateObject@FogHelper@@UAEPAXPAXHH@Z,166,
+0x63f690,?DestroyObject@FogHelper@@UAEXPAXH@Z,14,
 0x63f6a0,_edrtlUndo,353,
 0x63f810,_edrtlRedo,248,
 0x63f910,_cbUndoLight,5,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
@@ -8813,7 +8838,25 @@ address,symbol,size,ctype
 0x6b8cb0,??1EditorSettings@@UAE@XZ,7,
 0x6b8cc0,??_EEditorSettings@@UAEPAXI@Z,,COFF weak alias of ??_GEditorSettings@@UAEPAXI@Z; no independent body
 0x6b8cc0,??_GEditorSettings@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6b8d40,??0PlaceableInterface@@QAE@XZ,23,
+0x6b8d90,??1PlaceableInterface@@UAE@XZ,7,
+0x6b8e60,??0KnotHelper@@QAE@XZ,16,
+0x6b8e70,?Flush@KnotHelper@@UAEXXZ,1,
+0x6b8e80,??1KnotHelper@@UAE@XZ,7,
+0x6b8e90,??1EdSubSystem@@UAE@XZ,7,
+0x6b8ea0,??3EdSubSystem@@SAXPAX@Z,1,
+0x6b8eb0,?SubInitialise@EdSubSystem@@UAEXAATvariptr_u@@0H@Z,3,
+0x6b8ec0,?SubReset@EdSubSystem@@UAEXXZ,1,
+0x6b8ed0,?SubProcess@EdSubSystem@@UAEXM@Z,3,
+0x6b8ee0,?SubRender@EdSubSystem@@UAEXXZ,1,
+0x6b8ef0,??_EEdSubSystem@@UAEPAXI@Z,,COFF weak alias of ??_GEdSubSystem@@UAEPAXI@Z; no independent body
+0x6b8ef0,??_GEdSubSystem@@UAEPAXI@Z,11,native scalar-deleting dtor exactVTidentity
 0x6b9100,?Initialise@BaseEditor@@UAEXAATvariptr_u@@0H@Z,10,
+0x6b9810,?Refresh@EdControl@@UAEXXZ,1,
+0x6b9820,?Process@EdControl@@UAEXAAUEdInputContext@@@Z,3,
+0x6b9830,?Render@EdControl@@UAEXXZ,1,
+0x6ba050,?Refresh@EdEnumControl@@UAEXXZ,100,
+0x6ba1e0,?Refresh@EdBitControl@@UAEXXZ,1,
 0x6ba6a0,_EdDrawBegin,186,
 0x6ba760,_EdDrawEnd,35,
 0x6ba790,_EdDrawMtx,54,
@@ -8849,8 +8892,23 @@ address,symbol,size,ctype
 0x6be170,?SerialiseColour3@@YAXAAUEdStream@@PAXH@Z,21,
 0x6be190,_SerialiseNuHSpecial,201,
 0x6be260,?GetNextObject@EdClassInterface@@UAEPAXPAXP6AH0@Z@Z,66,
+0x6c0690,?Render@KnotHelper@@UAEXPAXH@Z,186,
+0x6c2320,??_EPlaceableInterface@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceableInterface@@UAEPAXI@Z; no independent body
+0x6c2320,??_GPlaceableInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
+0x6c2520,??_GKnotHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
+0x6c7e90,?GetNumObjects@KnotHelper@@UAEHXZ,27,
+0x6c7eb0,?GetNextObject@KnotHelper@@UAEPAXPAX@Z,88,
+0x6c7f10,?DestroyObject@KnotHelper@@UAEXPAXH@Z,171,
+0x6c7fc0,?DistanceToObject@KnotHelper@@UAEMAAUVuVec@@0PAXPAPAUEdRef@@@Z,214,
 0x6cd250,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@0PAXPAPAUEdRef@@@Z,282,
 0x6cd370,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@PAXPAPAUEdRef@@@Z,342,
+0x6cf040,?CreateObject@KnotHelper@@UAEPAXPAXHH@Z,320,
+0x6cf180,?Process@KnotHelper@@UAEXPAXAAUEdInputContext@@@Z,77,
+0x6cf970,?AddMenuItem@EdControl@@UAEXPAUeduimenu_s@@PAUEdRef@@PAX@Z,90,
+0x6cf9d0,?AddMenuItem@EdEnumControl@@UAEXPAUeduimenu_s@@PAUEdRef@@PAX@Z,174,
+0x6cfa80,?AddMenuItem@EdBitControl@@UAEXPAUeduimenu_s@@PAUEdRef@@PAX@Z,294,
 0x6d05e0,_cbEdLevelSave,436,
 0x6d07a0,_cbEdLevelSettingsMenu,137,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
@@ -17111,7 +17169,11 @@ address,symbol,size,ctype
 0x0076b578,??_C@_05NKNPLGBO@POINT?$AA@,,const char[]
 0x0076b580,??_C@_07EFFMPHJG@AMBIENT?$AA@,,const char[]
 0x76b58c,??_7EdClassInterface@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b608,??_7EdControl@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b624,??_7EdEnumControl@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b640,??_7EdBitControl@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b65c,??_7RTLHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b6dc,??_7FogHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b77c,__real@3ff33333,,
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
@@ -18013,6 +18075,9 @@ address,symbol,size,ctype
 0x76f668,??_7EdTool@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f680,??_7BaseEditor@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f6b8,??_7EditorSettings@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76f6c4,??_7PlaceableInterface@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76f744,??_7KnotHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76f7c0,??_7EdSubSystem@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f888,__real@3ff99999a0000000,8,const f64
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x76fe70,_PcInputText76fe70,,char[6]
@@ -20599,10 +20664,26 @@ address,symbol,size,ctype
 0x7eb254,??_R3EdClassInterface@@8,,
 0x7eb264,??_R2EdClassInterface@@8,,
 0x7eb26c,??_R1A@?0A@EA@EdClassInterface@@8,,
+0x7eb288,??_R4EdControl@@6B@,,
+0x7eb29c,??_R3EdControl@@8,,
+0x7eb2ac,??_R2EdControl@@8,,
+0x7eb2b4,??_R1A@?0A@EA@EdControl@@8,,
+0x7eb2d0,??_R4EdEnumControl@@6B@,,
+0x7eb2e4,??_R3EdEnumControl@@8,,
+0x7eb2f4,??_R2EdEnumControl@@8,,
+0x7eb300,??_R1A@?0A@EA@EdEnumControl@@8,,
+0x7eb31c,??_R4EdBitControl@@6B@,,
+0x7eb330,??_R3EdBitControl@@8,,
+0x7eb340,??_R2EdBitControl@@8,,
+0x7eb350,??_R1A@?0A@EA@EdBitControl@@8,,
 0x7eb36c,??_R4RTLHelper@@6B@,,
 0x7eb380,??_R3RTLHelper@@8,,
 0x7eb390,??_R2RTLHelper@@8,,
 0x7eb39c,??_R1A@?0A@EA@RTLHelper@@8,,
+0x7eb3b8,??_R4FogHelper@@6B@,,
+0x7eb3cc,??_R3FogHelper@@8,,
+0x7eb3dc,??_R2FogHelper@@8,,
+0x7eb3e8,??_R1A@?0A@EA@FogHelper@@8,,
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -20631,6 +20712,26 @@ address,symbol,size,ctype
 0x7eb844,??_R3EditorSettings@@8,,
 0x7eb854,??_R2EditorSettings@@8,,
 0x7eb85c,??_R1A@?0A@EA@EditorSettings@@8,,
+0x7eb878,??_R4PlaceableInterface@@6B@,,
+0x7eb88c,??_R3PlaceableInterface@@8,,
+0x7eb89c,??_R2PlaceableInterface@@8,,
+0x7eb8a8,??_R1A@?0A@EA@PlaceableInterface@@8,,
+0x7eb8c4,??_R4KnotHelper@@6B@,,
+0x7eb8d8,??_R3KnotHelper@@8,,
+0x7eb8e8,??_R2KnotHelper@@8,,
+0x7eb8f4,??_R1A@?0A@EA@KnotHelper@@8,,
+0x7eb910,??_R4EdSubSystem@@6B@,,
+0x7eb924,??_R3EdSubSystem@@8,,
+0x7eb934,??_R2EdSubSystem@@8,,
+0x7eb944,??_R1A@?0A@EA@EdSubSystem@@8,,
+0x7eb960,??_R13?0A@EA@MemBufferAllocator@@8,,
+0x7eb97c,??_R3MemBufferAllocator@@8,,
+0x7eb98c,??_R2MemBufferAllocator@@8,,
+0x7eb994,??_R1A@?0A@EA@MemBufferAllocator@@8,,
+0x7eb9b0,??_R13?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
+0x7eb9cc,??_R3?$CSListLink@VEdSubSystem@@@@8,,
+0x7eb9dc,??_R2?$CSListLink@VEdSubSystem@@@@8,,
+0x7eb9e4,??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
 0x7ec898,??_R4ShaderBuilderGen@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec8ac,??_R3ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec8bc,??_R2ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed

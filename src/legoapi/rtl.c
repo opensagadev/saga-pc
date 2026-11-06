@@ -860,36 +860,6 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
     return 0;
 }
 
-typedef struct rtl_fog_migration_pc_s {
-    f32 start, end;
-    u32 colour;
-    i32 low_quality_density;
-    u32 low_quality_colour;
-    i32 type;
-    u8 depth_of_field_fstop;
-    u8 unknown_19[3];
-    f32 radius;
-    NUVEC position;
-    f32 density;
-    f32 start_psp, end_psp;
-    u8 unknown_38[4];
-    f32 density_wii;
-    u8 unknown_40[0xc];
-} RTL_FOG_MIGRATION_PC;
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start) == 0);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end) == 4);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, depth_of_field_fstop) == 0x18);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, start_psp) == 0x30);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, end_psp) == 0x34);
-STATIC_ASSERT(sizeof(RTL_FOG_MIGRATION_PC) == 0x4c);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, colour) == 8);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, low_quality_density) == 0xc);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, low_quality_colour) == 0x10);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, type) == 0x14);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, radius) == 0x1c);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, position) == 0x20);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density) == 0x2c);
-STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density_wii) == 0x3c);
 extern i32 RtlFileVersionPc;
 // Version 2/3 sets kept their fog table in the light slots from 64 onwards.
 #define RTL_OLD_FOG_PC(set) ((RTL_FOG_MIGRATION_PC *)&(set)->lights[64])

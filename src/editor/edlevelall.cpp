@@ -180,6 +180,29 @@ STATIC_ASSERT(offsetof(BaseEditor, id) == 0xc);
 BaseEditor::~BaseEditor() {
 }
 
+struct MemBufferAllocator {};
+
+/* Editor subsystem; storage is owned by the level editor buffer, so the
+ * deleting destructor never frees. */
+class EdSubSystem : public MemBufferAllocator, public CSListLink<EdSubSystem> {
+  public:
+    static void operator delete(void *) {
+    }
+    virtual ~EdSubSystem();
+    virtual void SubInitialise(variptr_u &, variptr_u &, i32) {
+    }
+    virtual void SubReset() {
+    }
+    virtual void SubProcess(f32) {
+    }
+    virtual void SubRender() {
+    }
+};
+STATIC_ASSERT(sizeof(EdSubSystem) == 0xc);
+
+EdSubSystem::~EdSubSystem() {
+}
+
 class EditorSettings {
   public:
     virtual ~EditorSettings();
@@ -189,4 +212,54 @@ class EditorSettings {
 STATIC_ASSERT(sizeof(EditorSettings) == 0xc);
 
 EditorSettings::~EditorSettings() {
+}
+
+void EdControl::Refresh() {
+}
+
+void EdControl::Process(EdInputContext &) {
+}
+
+void EdControl::Render() {
+}
+
+void EdBitControl::Refresh() {
+}
+
+/* Base interface for placeable scene objects; scene_id is the object-type ID
+ * PlaceableHelper::RegisterObjectType assigns (-1 until registered). */
+class PlaceableInterface : public EdClassInterface {
+  public:
+    PlaceableInterface();
+
+    i32 scene_id;
+};
+STATIC_ASSERT(sizeof(PlaceableInterface) == 0xc);
+STATIC_ASSERT(offsetof(PlaceableInterface, scene_id) == 0x8);
+
+PlaceableInterface::PlaceableInterface() : scene_id(-1) {
+}
+
+/* Spline knot editing: position and tangent references of the knot class. */
+class KnotHelper : public EdClassInterface {
+  public:
+    KnotHelper();
+    virtual void Flush() {
+    }
+    virtual i32 GetNumObjects();
+    virtual void *GetNextObject(void *object);
+    virtual void *CreateObject(void *data, i32 guid, i32 flags);
+    virtual void DestroyObject(void *object, i32 flags);
+    virtual void Process(void *object, EdInputContext &input);
+    virtual void Render(void *object, i32 selected);
+    virtual f32 DistanceToObject(VuVec &start, VuVec &end, void *object, EdRef **reference);
+    using EdClassInterface::DistanceToObject;
+
+    EdRef *position_ref;
+    EdRef *in_tangent_ref;
+    EdRef *out_tangent_ref;
+};
+STATIC_ASSERT(sizeof(KnotHelper) == 0x14);
+
+KnotHelper::KnotHelper() {
 }
