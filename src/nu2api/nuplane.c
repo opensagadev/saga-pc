@@ -25,23 +25,36 @@ void NuPlnEqn(NUPLANE *out, NUVEC *pnt0, NUVEC *pnt1, NUVEC *pnt2) {
 }
 
 i32 NuPlnLine(NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out) {
+    f32 dot;
+    f32 value;
+    f32 value_ep;
     f32 dot_sp;
     f32 dot_ep;
+    f32 sign_sp;
+    f32 sign_ep;
+    f32 t;
     NUVEC dir;
-    f32 inv_magnitude;
-    i32 is_acute;
 
-    dot_sp = NuVecDot(s, &plane->normal) + plane->d;
-    dot_ep = NuVecDot(e, &plane->normal) + plane->d;
+    dot = plane->a * s->x + plane->b * s->y + plane->c * s->z;
+    dot_sp = dot + plane->d;
+    dot = plane->a * e->x + e->y * plane->b + plane->c * e->z;
+    dot_ep = dot + plane->d;
 
-    if (NuFsign(dot_sp) != NuFsign(dot_ep)) {
-        NuVecSub(&dir, e, s);
-
-        inv_magnitude = -dot_sp / (dot_ep - dot_sp);
-        NuVecScale(out, &dir, inv_magnitude);
-
-        NuVecAdd(out, out, s);
-
+    value = dot_sp;
+    sign_sp = (*(u32 *)&value & 0x80000000) ? -1.0f : 1.0f;
+    value_ep = dot_ep;
+    sign_ep = (*(u32 *)&value_ep & 0x80000000) ? -1.0f : 1.0f;
+    if (sign_sp != sign_ep) {
+        dir.x = e->x - s->x;
+        dir.y = e->y - s->y;
+        dir.z = e->z - s->z;
+        t = -dot_sp / (dot_ep - dot_sp);
+        out->x = dir.x * t;
+        out->y = dir.y * t;
+        out->z = dir.z * t;
+        out->x = out->x + s->x;
+        out->y = out->y + s->y;
+        out->z = out->z + s->z;
         return 1;
     }
 
