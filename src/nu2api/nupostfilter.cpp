@@ -598,3 +598,69 @@ void NuMainFilter::destroyResources() {
 void NuMainFilter::destroyTextureResources() {
     texture_surface.Reset();
 }
+
+#define POST_FILTER_BIND_TEXTURE(stage, texture)                                                                       \
+    do {                                                                                                               \
+        GRAPHICS_RENDER_TEXTURE_PC *texture_pc = (texture);                                                            \
+        if (texture_pc != NULL) {                                                                                      \
+            u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);                                              \
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple_pc[0] ||                                           \
+                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple_pc[1])                                             \
+                PCGraphicsSetSamplerTuplePc(stage, PCGraphicsEffectTextureSamplerPc(texture_pc));                      \
+        }                                                                                                              \
+        PCGraphicsBindEffectTexture(texture_pc, stage);                                                                \
+    } while (0)
+
+extern "C" f32 NuMotionFilterCentrePc;
+f32 NuMotionFilterCentrePc = 0.5f;
+void NuMotionFilterGen::render() {
+    PC_FRAMEBUFFER_PC *output =
+        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+    PC_POST_BUFFER_PROXY_PC *color =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+    PC_POST_BUFFER_PROXY_PC *velocity =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[3].manager->entries[PostResourcePortsPc[3].index].data;
+    if (!color->resolved) {
+        PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
+        color->resolved = true;
+    }
+    if (!velocity->resolved) {
+        PCGraphicsFramebufferBarrierPc(velocity->kind, velocity->enabled);
+        velocity->resolved = true;
+    }
+    GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *velocity_texture = velocity->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[0]);
+    f32 ratio = maximum / scale;
+    __declspec(align(16)) f32 params[4];
+    __declspec(align(16)) f32 weights[7][4];
+    for (i32 i = 0; i < 7; ++i) {
+        weights[i][0] = (NuPow((f32)((i + 1.0) / 7.0), falloff) - 0.5) * ratio;
+        weights[i][1] = weights[i][0];
+        weights[i][3] = weights[i][2] = 0.0f;
+    }
+    params[0] = ratio;
+    params[1] = NuMotionFilterCentrePc;
+    params[3] = params[2] = 0.0f;
+    PCDeviceSetPixelShaderConstantsF(0x8a, params, 1);
+    PCDeviceSetPixelShaderConstantsF(0x8b, &weights[0][0], 7);
+    PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 2);
+    PCGraphicsEffectTextureSetWrapFields(color_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(0, color_texture);
+    PCGraphicsEffectTextureSetFilterFields(velocity_texture, 2, 2, 0);
+    PCGraphicsEffectTextureSetWrapFields(velocity_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(2, velocity_texture);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    PCGraphicsBindFramebuffer(output);
+    PCGraphicsDrawPostEffectQuadPc();
+    color->texture = destination;
+    color->kind = 4;
+    color->enabled = true;
+    color->resolved = false;
+    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+}

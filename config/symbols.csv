@@ -6416,7 +6416,7 @@ address,symbol,size,ctype
 0x5e5d80,?render@NuMainFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
 0x5e6400,??_ENuMotionFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMotionFilterGen@@UAEPAXI@Z; no independent body
 0x5e6400,??_GNuMotionFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
-0x5e6420,?render@NuMotionFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5e6420,?render@NuMotionFilterGen@@UAEXXZ,651,native exactVT binding
 0x5e66b0,_NuDynamicLightTestShadowExtrusionsSpecial,91,
 0x5e67d0,??0NuMotionAccumFilter@@QAE@XZ,30,native ctor fullvptr/field proof
 0x5e6800,??0NuSpeedBlurFilter@@QAE@XZ,29,native ctor fullvptr/field proof
@@ -22924,6 +22924,7 @@ address,symbol,size,ctype
 0x80c008,_PCShadowSurfaceSamplingEnabled,,i32
 0x80c050,?first@?1??DrawAlphaGrid@@9@9,,i32
 0x80c054,??_R0?AVNuMainFilterGen@@@8,30,native exactVT binding; unimplemented extent unclaimed
+0x80c078,_NuMotionFilterCentrePc,4,f32
 0x80c07c,??_R0?AVNuMotionAccumFilter@@@8,34,native exactVT binding; unimplemented extent unclaimed
 0x80c0a0,??_R0?AVNuSpeedBlurFilter@@@8,32,native exactVT binding; unimplemented extent unclaimed
 0x80c0c0,??_R0?AVNuDeferredFilter@@@8,31,native exactVT binding; unimplemented extent unclaimed
