@@ -11,8 +11,99 @@ extern "C" {
     void __cdecl Text_FillInExtendedSaveInfo(void);
     i32 __cdecl TriggerAutoSave(void);
 
+    f32 StatusAlt7f8214Pc = 1.2f;
     f32 StatusAltScalePc = 1.0f;
     f32 StatusAltTitleYPc = 0.5f;
+    f32 StatusAlt7f8220Pc = 0.5f;
+    f32 StatusAlt7f8224Pc = 0.5f;
+    f32 StatusAlt7f8228Pc = 0.333f;
+    f32 StatusAlt7f822cPc = -0.5f;
+    f32 StatusAlt7f8230Pc = -0.6f;
+    f32 StatusAlt7f8234Pc = 1.1f;
+    f32 StatusAlt7f8238Pc = -0.25f;
+    f32 StatusAlt7f823cPc = 0.5f;
+    f32 StatusAlt7f8240Pc = 0.3f;
+    f32 StatusAlt7f8244Pc = 1.1f;
+    f32 StatusAlt7f8248Pc = 0.4f;
+    f32 StatusAltGridStepXPc = 2.3f;
+    f32 StatusAltGridStepYPc = 2.3f;
+    f32 StatusAlt7f8254Pc = -0.2f;
+    f32 StatusAltZoomPc = 1.5f;
+    i32 StatusAltColumnsPc = 3;
+    f32 StatusAlt7f8260Pc = 0.333f;
+    f32 StatusAlt7f8264Pc = 0.7f;
+    f32 StatusAlt7f8268Pc = 5.0f;
+    f32 StatusAlt7f826cPc = 10.0f;
+    f32 StatusAlt7f8270Pc = 0.7f;
+    f32 StatusAlt7f8274Pc = 1.0f;
+    f32 StatusAlt7f8278Pc = 0.7f;
+
+    void __cdecl TrueHero_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl TrueHero_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl TrueHero_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl MiniKit_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl MiniKit_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl MiniKit_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl AllMiniKits_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl AllMiniKits_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl AllMiniKits_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl RedBrick_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl RedBrick_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl RedBrick_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl Coins_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl Coins_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl Coins_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl GoldBrick_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl GoldBrick_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl GoldBrick_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl Prompt_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl Prompt_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl Stage5_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl Stage5_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl Stage5_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl Stage6_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl Stage6_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl Stage6_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl LevelComplete_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl LevelComplete_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl LevelComplete_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl BonusComplete_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
+    void __cdecl BonusComplete_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl BonusComplete_Alt_Skip(STATUS_STAGE_s *, STATUSPACKET_s *);
+    void __cdecl Exit_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl Save_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+    void __cdecl Fade_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
+
+    /* field_0x10 is the panel object drawn for the stage on the background grid. */
+    STATUS_STAGE_s StatusStagesAltPc[20] = {
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 13, 3, 0, 0, 0, 0.0f, 0.0f},
+        {RedBrick_Alt_Draw, RedBrick_Alt_Update, RedBrick_Alt_Skip, 18, 4, 0, 0, 0, 0.0f, 0.0f},
+        {Stage5_Alt_Draw, Stage5_Alt_Update, Stage5_Alt_Skip, 5, 5, 0, 0, 0, 0.0f, 0.0f},
+        {Stage6_Alt_Draw, Stage6_Alt_Update, Stage6_Alt_Skip, 6, 6, 0, 0, 0, 0.0f, 0.0f},
+        {Coins_Alt_Draw, Coins_Alt_Update, Coins_Alt_Skip, 3, 7, 0, 0, 0, 0.0f, 0.0f},
+        {TrueHero_Alt_Draw, TrueHero_Alt_Update, TrueHero_Alt_Skip, 1, 8, 0, 0, 0, 0.0f, 0.0f},
+        {TrueHero_Alt_Draw, TrueHero_Alt_Update, TrueHero_Alt_Skip, 2, 3, 0, 0, 0, 0.0f, 0.0f},
+        {MiniKit_Alt_Draw, MiniKit_Alt_Update, MiniKit_Alt_Skip, 4, 4, 0, 0, 0, 0.0f, 0.0f},
+        {AllMiniKits_Alt_Draw, AllMiniKits_Alt_Update, AllMiniKits_Alt_Skip, 17, 5, 0, 0, 0, 0.0f, 0.0f},
+        {GoldBrick_Alt_Draw, GoldBrick_Alt_Update, GoldBrick_Alt_Skip, 19, 6, 0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 8, 7, 0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 14, 8, 0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 23, 3, 0, 0, 0, 0.0f, 0.0f},
+        {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, 26, 4, 0, 0, 0, 0.0f, 0.0f},
+        {BonusComplete_Alt_Draw, BonusComplete_Alt_Update, BonusComplete_Alt_Skip, 22, 5, 0, 0, 0, 0.0f, 0.0f},
+        {Prompt_Alt_Draw, Prompt_Alt_Update, NULL, 9, 6, 0, 0, 0, 0.0f, 0.0f},
+        {NULL, Exit_Alt_Update, NULL, 10, 0xffff, 0, 0, 0, 0.0f, 0.0f},
+        {NULL, Save_Alt_Update, NULL, 11, 0xffff, 0, 0, 0, 0.0f, 0.0f},
+        {NULL, Fade_Alt_Update, NULL, 12, 0xffff, 0, 0, 0, 0.0f, 0.0f},
+        {NULL, NULL, NULL, -1, 0xffff, 0, 0, 0, 0.0f, 0.0f},
+    };
+
+    i32 StatusStageOrderAltPc[30] = {1,  2,  3,  4,  5,  7,  13, 14, 15, 16, 17, 18, 19, 20, 21,
+                                     22, 23, 24, 25, 26, 27, 28, 29, 30, 8,  9,  10, 11, 12, 0};
+
+    NUVEC StatusAltBgPosPc;
+    static struct STATUSPACKET_LSW_s StatusPacketAltPc;
+
     f32 StatusAltTextScalePc = StatusAltScalePc;
 
     f32 __cdecl StatusCoinsRatioAltPc(f32 numerator, f32 denominator) {
@@ -336,6 +427,87 @@ extern "C" {
                             (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u32)opacity);
             }
         }
+    }
+
+    i32 __cdecl InitStatusScreen_Alt(WORLDINFO *world, STATUSPACKET_s *packet) {
+        (void)world;
+        /* Retail sets bit 24 of the packet word with a byte OR on its top byte. */
+        ((u8 *)&packet->lsw_packet->field_0x00)[3] |= 1;
+        StatusAltBgPosPc.x = -StatusAltGridStepXPc;
+        StatusAltBgPosPc.y = -StatusAltGridStepYPc * 2.0f;
+        StatusAltBgPosPc.z = -3.0f;
+        return 0;
+    }
+
+    void __cdecl DrawStatusBG_Alt(STATUSPACKET_s *packet) {
+        i32 selected = -1;
+        f32 w;
+        i32 i = 0;
+        STATUS_STAGE_s *stage;
+        for (; StatusStagesAltPc[i].type != -1; i++) {
+            if (StatusStagesAltPc[i].type == packet->stage_types[packet->current_gold_brick])
+                selected = i;
+            DrawPanel3DObjectNoAlpha((f32)(i % StatusAltColumnsPc) * StatusAltGridStepXPc + StatusAltBgPosPc.x,
+                                     (f32) - (i / StatusAltColumnsPc) * StatusAltGridStepYPc - StatusAltBgPosPc.y,
+                                     1.5 - StatusAltBgPosPc.z, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                                     &WORLD->level_objects[(i16)StatusStagesAltPc[i].field_0x10].special, 0);
+        }
+        stage = packet->stage;
+        if (stage->field_0x14 != -1)
+            return;
+        stage->field_0x18 += FRAMETIME;
+        stage = packet->stage;
+        if (stage->field_0x18 < 1.0f) {
+            if (StatusAltBgPosPc.z == 1.5f)
+                stage->field_0x18 = 1.0f;
+            else {
+                f32 speed =
+                    1.0 -
+                    ((f64)NuTrigTable[((i32)((f64)stage->field_0x18 * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                speed = (f64)speed * 0.25;
+                StatusAltBgPosPc.z = SeekLinearF(StatusAltBgPosPc.z, 0.0f, speed);
+            }
+        } else if (stage->field_0x18 < 2.0f) {
+            w = stage->field_0x18 - 1.0f;
+            w = NuTrigTable[((i32)((f64)w * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
+            StatusAltBgPosPc.x +=
+                ((f32)(-selected % StatusAltColumnsPc) * StatusAltGridStepXPc - StatusAltBgPosPc.x) * w;
+            StatusAltBgPosPc.y +=
+                ((f32) - (selected / StatusAltColumnsPc) * StatusAltGridStepYPc - StatusAltBgPosPc.y) * w;
+        } else if (stage->field_0x18 < 2.1f && (packet->field_0xb0 & 2) == 0) {
+            w = (f64)stage->field_0x18 - 2.0;
+            w = 1.0 - (f64)w / (f64)0.1f;
+            w = NuTrigTable[((i32)((f64)w * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
+            StatusAltBgPosPc.x +=
+                ((f32)(-selected % StatusAltColumnsPc) * StatusAltGridStepXPc - StatusAltBgPosPc.x) * w;
+            StatusAltBgPosPc.y +=
+                ((f32) - (selected / StatusAltColumnsPc) * StatusAltGridStepYPc - StatusAltBgPosPc.y) * w;
+        } else if (stage->field_0x18 < 3.1f && (packet->field_0xb0 & 2) == 0) {
+            f32 u = (f64)stage->field_0x18 - (f64)2.1f;
+            if (StatusAltZoomPc == 1.1f)
+                stage->field_0x18 = 3.1f;
+            else {
+                f32 speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)u * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                speed = (f64)speed * 0.25;
+                StatusAltBgPosPc.z = SeekLinearF(StatusAltBgPosPc.z, 0.5f, speed);
+            }
+        } else {
+            stage->field_0x18 = 0.0f;
+            packet->stage->field_0x14 = 0;
+            packet->previous_stage_2 = NULL;
+        }
+    }
+
+    void __cdecl Alt_registerStatusScreen(void) {
+        REGISTER_STATUS_PACKET_PC registration;
+        memset(&registration, 0, sizeof(registration));
+        registration.lsw_packet = &StatusPacketAltPc;
+        registration.init_callback = InitStatusScreen_Alt;
+        registration.reset_callback = ResetStatusPacket_Alt;
+        registration.finish_callback = FinishStatusPacket_Alt;
+        registration.draw_background_callback = DrawStatusBG_Alt;
+        registration.stage_delay = 2.0f;
+        RegisterStatusScreen(StatusStagesAltPc, StatusStageOrderAltPc, &registration);
     }
 
 } /* extern "C" */
