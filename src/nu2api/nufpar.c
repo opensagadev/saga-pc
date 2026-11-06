@@ -480,19 +480,31 @@ i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
     while (parser->line_buffer_ptr[parser->line_position & (parser->line_buffer_size - 1)] != '\0') {
         char character = parser->line_buffer_ptr[parser->line_position];
 
-        if (parser->separator_tokens != NULL && !in_quoted_text &&
-            NuStrChr(parser->separator_tokens, character) != NULL) {
-            if (length == 0) {
-                parser->word_buffer_ptr[0] = character;
-                length++;
-                parser->line_position++;
+        if (parser->separator_tokens != NULL && !in_quoted_text) {
+            char *separator;
+
+            for (separator = parser->separator_tokens; *separator != '\0'; separator++) {
+                if (*separator == character) {
+                    if (length == 0) {
+                        parser->word_buffer_ptr[0] = character;
+                        length++;
+                        parser->line_position++;
+                    }
+                    parser->word_buffer_ptr[length & (parser->word_buffer_size - 1)] = '\0';
+                    return length;
+                }
             }
-            parser->word_buffer_ptr[length & (parser->word_buffer_size - 1)] = '\0';
-            return length;
         }
 
-        if (parser->separator_list != NULL && !in_quoted_text && NuStrChr(parser->separator_list, character) != NULL) {
-            character = ' ';
+        if (parser->separator_list != NULL && !in_quoted_text) {
+            char *separator;
+
+            for (separator = parser->separator_list; *separator != '\0'; separator++) {
+                if (*separator == character) {
+                    character = ' ';
+                    break;
+                }
+            }
         }
 
         switch (character) {
