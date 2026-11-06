@@ -36,6 +36,19 @@ extern i32 EpisodeGoldBrickForSuperStoryPc, EpisodeGoldBrickForSuperBonusPc, Epi
 extern i32 HubBothTrueJediGoldBricksPc;
 extern EPISODE_SAVE_READER_PC *EpisodeSavePc;
 
+/* 59b700/86. Native early NULL save guard does not initialize output count. */
+extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
+    if (Game_AreaSave == NULL)
+        return 0;
+    i32 completed = 0;
+    for (i32 i = 0; i < episode->regular_areas; ++i)
+        if (Game_AreaSave[episode->area_ids[i]].area_complete != 0)
+            ++completed;
+    if (count != NULL)
+        *count = completed;
+    return completed == episode->regular_areas;
+}
+
 extern "C" i32 __cdecl Episodes_Completed(void) {
     i32 completed = 0;
     EPISODE_AREA_SAVE_READER_PC *saves = (EPISODE_AREA_SAVE_READER_PC *)Game_AreaSave;

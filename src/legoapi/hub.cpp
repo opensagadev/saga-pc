@@ -1736,19 +1736,6 @@ extern "C" i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser
     return c->second_animation == 190 || c->second_animation == 99;
 }
 
-/* 59b700/86. Native early NULL save guard does not initialize output count. */
-extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
-    if (Game_AreaSave == NULL)
-        return 0;
-    i32 completed = 0;
-    for (i32 i = 0; i < episode->regular_areas; ++i)
-        if (Game_AreaSave[episode->area_ids[i]].area_complete != 0)
-            ++completed;
-    if (count != NULL)
-        *count = completed;
-    return completed == episode->regular_areas;
-}
-
 /* 590da0/182. Add to the native buildit owner with the shared PC type. */
 extern "C" void __cdecl GizBuildIt_SetToEnd(GIZBUILDIT_PC *buildit) {
     if (buildit == NULL)
@@ -1948,24 +1935,21 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
         HubAreaTimePc = 0;
     } else {
         i32 selected = -1;
-        for (i32 i = 0; HubEpisodeInfoPc[i].episode >= 0 && HubEpisodeInfoPc[i].episode < 9; ++i) {
-            HUB_EPISODE_INFO_PC *info = &HubEpisodeInfoPc[i];
-            if (info->door != NULL && GizmoGetOutput(world->gizmo_sys, info->door, info->flags, 0) != 0) {
-                selected = info->episode;
-                break;
-            }
+        for (i32 i = 0; HubEpisodeInfoPc[i].episode >= 0 && HubEpisodeInfoPc[i].episode < 9 && selected == -1; ++i) {
+            if (HubEpisodeInfoPc[i].door != NULL &&
+                GizmoGetOutput(world->gizmo_sys, HubEpisodeInfoPc[i].door, HubEpisodeInfoPc[i].flags, 0) != 0)
+                selected = HubEpisodeInfoPc[i].episode;
         }
         i32 episode_index;
         for (episode_index = 0;
              HubEpisodeInfoPc[episode_index].episode >= 0 && HubEpisodeInfoPc[episode_index].episode < 9;
              ++episode_index) {
-            HUB_EPISODE_INFO_PC *info = &HubEpisodeInfoPc[episode_index];
-            if (info->door != NULL) {
-                HUB_DOOR_OBJECT_READER_PC *door = ((HUB_DOOR_READER_PC *)info->door)->object;
-                if (info->episode != selected && selected != -1)
-                    door->flags |= 8;
-                else if ((u8)info->force_open != 0 || Episode_CountOpenAreas(info->episode, -1, Game_AreaSave) != 0)
-                    door->flags &= ~8U;
+            if (HubEpisodeInfoPc[episode_index].door != NULL) {
+                if (HubEpisodeInfoPc[episode_index].episode != selected && selected != -1)
+                    ((HUB_DOOR_READER_PC *)HubEpisodeInfoPc[episode_index].door)->object->flags |= 8;
+                else if ((u8)HubEpisodeInfoPc[episode_index].force_open != 0 ||
+                         Episode_CountOpenAreas(HubEpisodeInfoPc[episode_index].episode, -1, Game_AreaSave) != 0)
+                    ((HUB_DOOR_READER_PC *)HubEpisodeInfoPc[episode_index].door)->object->flags &= ~8U;
             }
         }
         if (Missions_PartyAvailable(MissionSys) != 0) {
@@ -1981,34 +1965,32 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     for (i32 episode = 0; episode < 6; ++episode) {
         i32 completed;
         Episode_IsComplete(HubEpisodeInfoPc[episode].data, &completed);
-        if (completed == HubCompletedAreasPc) {
-            HUB_AREA_INFO_PC *info = &HubAreaInfoPc[(episode + 1) * HubAreasPerEpisodePc - 1];
-            info->flags = (info->flags & ~0xff00) | 0x100;
-        }
+        if (completed == HubCompletedAreasPc)
+            HubAreaInfoPc[(episode + 1) * HubAreasPerEpisodePc - 1].flags =
+                (HubAreaInfoPc[(episode + 1) * HubAreasPerEpisodePc - 1].flags & ~0xff00) | 0x100;
     }
     i32 selected_area = -1;
-    for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
-        HUB_AREA_INFO_PC *info = &HubAreaInfoPc[i];
-        if (info->area != NULL && info->door != NULL && GizmoGetOutput(world->gizmo_sys, info->door, 1, 0) != 0) {
-            selected_area = info->area->index;
-            break;
-        }
+    for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL && selected_area == -1; ++i) {
+        if (HubAreaInfoPc[i].area != NULL && HubAreaInfoPc[i].door != NULL &&
+            GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].door, 1, 0) != 0)
+            selected_area = HubAreaInfoPc[i].area->index;
     }
     if (selected_area != -1) {
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
-            HUB_AREA_INFO_PC *info = &HubAreaInfoPc[i];
-            if (info->door != NULL && info->area != NULL && info->area->index != selected_area)
-                ((HUB_DOOR_READER_PC *)info->door)->object->flags |= 8;
+            if (HubAreaInfoPc[i].door != NULL && HubAreaInfoPc[i].area != NULL &&
+                HubAreaInfoPc[i].area->index != selected_area)
+                ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags |= 8;
         }
     } else {
         for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
-            HUB_AREA_INFO_PC *info = &HubAreaInfoPc[i];
-            if (info->door != NULL &&
-                (Episode_CountOpenAreas((i8)info->area->episode_index, info->area->index, Game_AreaSave) != 0 ||
-                 (info->bonus_gizmo != NULL && GizmoGetOutput(world->gizmo_sys, info->bonus_gizmo, 0, 0) != 0) ||
-                 ((info->flags >> 8) & 255) == 1)) {
-                ((HUB_DOOR_READER_PC *)info->door)->object->flags &= ~8U;
-                NuSpecialSetVisibility(&info->lock, 1);
+            if (HubAreaInfoPc[i].door != NULL &&
+                (Episode_CountOpenAreas((i8)HubAreaInfoPc[i].area->episode_index, HubAreaInfoPc[i].area->index,
+                                        Game_AreaSave) != 0 ||
+                 (HubAreaInfoPc[i].bonus_gizmo != NULL &&
+                  GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].bonus_gizmo, 0, 0) != 0) ||
+                 ((HubAreaInfoPc[i].flags >> 8) & 255) == 1)) {
+                ((HUB_DOOR_READER_PC *)HubAreaInfoPc[i].door)->object->flags &= ~8U;
+                NuSpecialSetVisibility(&HubAreaInfoPc[i].lock, 1);
             }
         }
     }
@@ -2033,11 +2015,10 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
         HubMiniKitAreaPc = -1;
     }
     for (i32 i = 0; HubAreaInfoPc[i].area_name != NULL; ++i) {
-        HUB_AREA_INFO_PC *info = &HubAreaInfoPc[i];
-        if (info->area == NULL || info->second_bonus_gizmo == NULL ||
-            GizmoGetOutput(world->gizmo_sys, info->second_bonus_gizmo, 1, 0) == 0)
+        if (HubAreaInfoPc[i].area == NULL || HubAreaInfoPc[i].second_bonus_gizmo == NULL ||
+            GizmoGetOutput(world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo, 1, 0) == 0)
             continue;
-        NUVEC *position = GizmoGetPos((gizmosys_pc_s *)world->gizmo_sys, info->second_bonus_gizmo);
+        NUVEC *position = GizmoGetPos((gizmosys_pc_s *)world->gizmo_sys, HubAreaInfoPc[i].second_bonus_gizmo);
         if (position == NULL)
             continue;
         GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
