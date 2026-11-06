@@ -5439,9 +5439,14 @@ typedef struct gameobject_s {
         };
         NUVEC attack_target_position;
     };
-    f32 field_c8c;
-    f32 field_c90;
-    f32 field_c94;
+    union {
+        struct {
+            f32 field_c8c;
+            f32 field_c90;
+            f32 field_c94;
+        };
+        NUVEC attack_target_velocity;
+    };
     NUVEC suspension_normal;
     GAMEPAD_PC *pad;
     SOCKPOSITION_PC *previous_sock_position;

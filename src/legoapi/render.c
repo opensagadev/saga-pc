@@ -2372,3 +2372,14 @@ void __cdecl TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name) {
 void __cdecl GameAnimMissingAnimDiagnosticPc(char *name) {
     (void)name;
 }
+
+/* Original source name unknown. The native entry is exactly RET; the gizmo registry and loader call it with
+ * different argument lists (none, or the clashing prefix names). */
+void __cdecl GizmoDiagnosticPc() {
+}
+
+/* Original source name unknown. The native entry is exactly RET; LoadGizmoSys passes it each gizmo type name it
+ * reads, loads or skips. */
+void __cdecl GizmoNameDiagnosticPc(char *name) {
+    (void)name;
+}

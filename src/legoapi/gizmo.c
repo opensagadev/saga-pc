@@ -155,6 +155,9 @@ void __cdecl GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i3
 }
 
 extern i32 gizmoerrorlogsize;
+/* Retail calls one empty diagnostic entry with varying arguments. */
+void __cdecl GizmoDiagnosticPc();
+void __cdecl GizmoNameDiagnosticPc(char *name);
 
 __declspec(noinline) void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
     void *allocation = NULL;
@@ -168,7 +171,6 @@ __declspec(noinline) void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *en
 
 void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYPE_FN *register_functions,
                                 i32 max_levels) {
-    GIZMOTYPES_PC *registry;
     GIZMOTYPE_PC *type;
     ADDGIZMOTYPE_PC *definition;
     i32 count = 0;
@@ -177,34 +179,36 @@ void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CO
     i32 level;
 
     if (gizmotypes != NULL) {
-        STUBBED_NAMED("Gizmo registry already registered diagnostic");
+        GizmoDiagnosticPc();
         return;
     }
-    if (register_functions == NULL || register_functions[0] == NULL) {
+    if (register_functions == NULL) {
         return;
     }
     while (register_functions[count] != NULL) {
         ++count;
     }
-    registry = (GIZMOTYPES_PC *)GizmoBufferAlloc(buffer, end, sizeof(GIZMOTYPES_PC));
-    gizmotypes = registry;
-    if (registry == NULL) {
+    if (count == 0) {
         return;
     }
-    registry->max_levels = max_levels;
-    registry->types = (GIZMOTYPE_PC *)GizmoBufferAlloc(buffer, end, count * sizeof(GIZMOTYPE_PC));
-    if (registry->types == NULL) {
+    gizmotypes = GizmoBufferAlloc(buffer, end, sizeof(GIZMOTYPES_PC));
+    if (gizmotypes == NULL) {
         return;
     }
-    registry->count = count;
-    type = registry->types;
+    ((GIZMOTYPES_PC *)gizmotypes)->max_levels = max_levels;
+    ((GIZMOTYPES_PC *)gizmotypes)->types = (GIZMOTYPE_PC *)GizmoBufferAlloc(buffer, end, count * sizeof(GIZMOTYPE_PC));
+    if (((GIZMOTYPES_PC *)gizmotypes)->types == NULL) {
+        return;
+    }
+    ((GIZMOTYPES_PC *)gizmotypes)->count = count;
+    type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type) {
         definition = register_functions[index](index);
         if (definition->prefix[0] != '\0') {
             for (previous = 0; previous < index; ++previous) {
                 GIZMOTYPE_PC *other = &((GIZMOTYPES_PC *)gizmotypes)->types[previous];
                 if (other->prefix[0] != '\0' && NuStrICmp(definition->prefix, other->prefix) == 0) {
-                    STUBBED_NAMED("Duplicate gizmo prefix diagnostic");
+                    GizmoDiagnosticPc(definition->name, other->name);
                 }
             }
         }
@@ -259,12 +263,16 @@ void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     if (gizmotypes == NULL) {
         return NULL;
     }
-    if (buffer != NULL && end != NULL && buffer->addr + sizeof(GIZMOSYS_PC) < end->addr) {
-        system = (GIZMOSYS_PC *)((buffer->addr + 15) & ~15u);
-        buffer->addr = (u32)system + sizeof(GIZMOSYS_PC);
-        memset(system, 0, sizeof(GIZMOSYS_PC));
+    if (buffer != NULL && end != NULL) {
+        if (buffer->addr + sizeof(GIZMOSYS_PC) < end->addr) {
+            system = (GIZMOSYS_PC *)((buffer->addr + 15) & ~15u);
+            buffer->addr = (u32)system + sizeof(GIZMOSYS_PC);
+            memset(system, 0, sizeof(GIZMOSYS_PC));
+        } else {
+            GizmoDiagnosticPc();
+        }
     } else {
-        STUBBED_NAMED("Gizmo system allocation diagnostic");
+        GizmoDiagnosticPc();
     }
     if (system == NULL) {
         return NULL;
@@ -495,19 +503,19 @@ void __cdecl LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
             name_length = EdFileReadInt();
             while (name_length != 0) {
                 if (name_length > (i32)sizeof(gizmo_name)) {
-                    STUBBED_NAMED("Gizmo name too long diagnostic");
+                    GizmoDiagnosticPc();
                 }
                 memset(gizmo_name, 0, sizeof(gizmo_name));
                 EdFileRead(gizmo_name, name_length);
-                STUBBED_NAMED("Gizmo load name diagnostic");
+                GizmoNameDiagnosticPc(gizmo_name);
                 data_length = EdFileReadInt();
                 type_id = GizmoGetTypeIDByName(system, gizmo_name);
                 if (type_id >= 0 && data_length > 0 && type_id < ((GIZMOTYPES_PC *)gizmotypes)->count &&
                     ((GIZMOTYPES_PC *)gizmotypes)->types[type_id].fns.load_fn != NULL &&
                     ((GIZMOTYPES_PC *)gizmotypes)->types[type_id].fns.load_fn(world, system->sets[type_id].data) != 0) {
-                    STUBBED_NAMED("Gizmo load success diagnostic");
+                    GizmoNameDiagnosticPc(gizmo_name);
                 } else {
-                    STUBBED_NAMED("Gizmo skipped load diagnostic");
+                    GizmoNameDiagnosticPc(gizmo_name);
                     while (data_length != 0) {
                         EdFileReadChar();
                         --data_length;
@@ -553,7 +561,7 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
             previous = target;
             previous_position = target_position;
             previous_velocity = target_velocity;
-        } else if (best_distance > distance) {
+        } else if (distance < best_distance) {
             best = target;
             best_position = target_position;
             best_velocity = target_velocity;
@@ -562,18 +570,14 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
     }
     if (best != NULL) {
         object->attack_target_position = best_position;
-        object->field_c8c = best_velocity.x;
-        object->field_c90 = best_velocity.y;
-        object->field_c94 = best_velocity.z;
+        object->attack_target_velocity = best_velocity;
         object->flags_e20 |= 0x800;
         object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)best;
         return 1;
     }
     if (previous != NULL) {
         object->attack_target_position = previous_position;
-        object->field_c8c = previous_velocity.x;
-        object->field_c90 = previous_velocity.y;
-        object->field_c94 = previous_velocity.z;
+        object->attack_target_velocity = previous_velocity;
         object->flags_e20 |= 0x800;
         object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)previous;
         return 1;
@@ -1024,27 +1028,31 @@ extern "C" {
 void __cdecl Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
     i32 i;
+    i32 size;
     buffer->addr = (buffer->addr + 3) & ~3u;
     view->hub_minikits = buffer->void_ptr;
     buffer->addr = (buffer->addr + AREACOUNT * 0x7c + 3) & ~3u;
     view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
-    memset(view->pieces_by_id, 0, AREACOUNT * 4);
-    buffer->addr += AREACOUNT * 4;
+    size = AREACOUNT * 4;
+    memset(view->pieces_by_id, 0, size);
+    buffer->addr += size;
     for (i = 0; i < AREACOUNT; ++i) {
-        MINIKIT_PC *minikit;
+        i32 minikit_id;
+        i32 piece_count;
         view->pieces_by_id[i] = NULL;
-        if ((ADataList[i].flags & 0x10) == 0 || ADataList[i].minikit_id == -1)
-            continue;
-        view->pieces_by_id[i] = (MINIKIT_PC *)buffer->void_ptr;
-        buffer->addr += 0x18;
-        MiniKit_Load(view->pieces_by_id[i], ADataList[i].minikit_id, buffer, end, NULL);
-        minikit = view->pieces_by_id[i];
-        if (minikit->scene == NULL) {
-            view->pieces_by_id[i] = NULL;
-            buffer->addr -= 0x18;
-        } else {
-            MiniKit_InitPieces(minikit, 10, buffer, end);
-            view->pieces_by_id[i]->area_index = (i8)i;
+        piece_count = (ADataList[i].flags & 0x10) != 0 ? 10 : 0;
+        minikit_id = ADataList[i].minikit_id;
+        if (piece_count > 0 && minikit_id != -1) {
+            view->pieces_by_id[i] = (MINIKIT_PC *)buffer->void_ptr;
+            buffer->addr += 0x18;
+            MiniKit_Load(view->pieces_by_id[i], minikit_id, buffer, end, NULL);
+            if (view->pieces_by_id[i]->scene != NULL) {
+                MiniKit_InitPieces(view->pieces_by_id[i], piece_count, buffer, end);
+                view->pieces_by_id[i]->area_index = (i8)i;
+            } else {
+                view->pieces_by_id[i] = NULL;
+                buffer->addr -= 0x18;
+            }
         }
     }
 }
@@ -1070,32 +1078,31 @@ static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY",
 void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
     i32 direction_counts[6] = {0};
     i32 index, direction;
-    char name[76];
+    char name[64];
     (void)end;
-    if (minikit->scene == NULL) {
-        minikit->area_index = -1;
-        return;
-    }
-    buffer->addr = (buffer->addr + 3) & ~3u;
-    minikit->pieces = (MINIKIT_PIECE_PC *)buffer->void_ptr;
-    minikit->piece_count = 0;
-    for (index = 0; index < count; ++index) {
-        for (direction = 0; direction < 6; ++direction) {
-            MINIKIT_PIECE_PC *piece;
-            sprintf(name, "%s_%s_%i", CDataList[minikit->model_id].name, MiniKitDirectionNamesPc[direction], index);
-            piece = &minikit->pieces[minikit->piece_count];
-            if (NuSpecialFind(minikit->scene, &piece->special, name, 1) == 0)
-                continue;
-            piece->matrix = *NuSpecialGetInstanceMtx(&piece->special);
-            piece->direction = (u8)direction;
-            piece->direction_index = (u8)direction_counts[direction]++;
-            ++minikit->piece_count;
+    if (minikit->scene != NULL) {
+        buffer->addr = (buffer->addr + 3) & ~3u;
+        minikit->pieces = (MINIKIT_PIECE_PC *)buffer->void_ptr;
+        minikit->piece_count = 0;
+        for (index = 0; index < count; ++index) {
+            for (direction = 0; direction < 6; ++direction) {
+                sprintf(name, "%s_%s_%i", CDataList[minikit->model_id].name, MiniKitDirectionNamesPc[direction], index);
+                if (NuSpecialFind(minikit->scene, &minikit->pieces[minikit->piece_count].special, name, 1) != 0) {
+                    minikit->pieces[minikit->piece_count].matrix =
+                        *NuSpecialGetInstanceMtx(&minikit->pieces[minikit->piece_count].special);
+                    minikit->pieces[minikit->piece_count].direction = (u8)direction;
+                    minikit->pieces[minikit->piece_count].direction_index = (u8)direction_counts[direction]++;
+                    ++minikit->piece_count;
+                }
+            }
         }
+        sprintf(name, "%s_shadow", CDataList[minikit->model_id].name);
+        NuSpecialFind(minikit->scene, &minikit->shadow, name, 1);
+        if (minikit->piece_count > 0)
+            buffer->addr += minikit->piece_count * sizeof(MINIKIT_PIECE_PC);
+        else
+            minikit->pieces = NULL;
+    } else {
+        minikit->area_index = -1;
     }
-    sprintf(name, "%s_shadow", CDataList[minikit->model_id].name);
-    NuSpecialFind(minikit->scene, &minikit->shadow, name, 1);
-    if (minikit->piece_count == 0)
-        minikit->pieces = NULL;
-    else
-        buffer->addr += minikit->piece_count * sizeof(MINIKIT_PIECE_PC);
 }

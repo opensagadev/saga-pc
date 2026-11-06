@@ -3983,6 +3983,8 @@ address,symbol,size,ctype
 0x00559300,_GizmoObstacle_ActivateRev,229,"i32 __cdecl (void *, i32, i32)"
 0x5593f0,_GizObstacleUpdate_AutoStart,54,void __cdecl (GIZOBSTACLE *)
 0x00559430,_GizObstacles_RegisterGizmo,318,ADD_GIZMO_CONFIG_TYPE_PC * __cdecl (i32)
+0x00559570,_GizmoDiagnosticPc,1,void __cdecl ()
+0x00559580,_GizmoNameDiagnosticPc,1,void __cdecl (char *)
 0x5595b0,_GizmoFileReadName,35,i32 __cdecl (char *)
 0x5595e0,_DefaultGizmo_GetOutput,3,
 0x5595f0,_DefaultGizmo_GetOutputName,6,
