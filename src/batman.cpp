@@ -6,6 +6,11 @@ extern "C" void __cdecl NuMainTrailerLeafPc(void);
 extern "C" {
     extern i32 NuMainRendererControlPc;
     void __cdecl NuRndrShadowOnOff_candidate(i32);
+    void __cdecl Grabber_Update(WORLDINFO *world);
+    void __cdecl Detonators_Update(void);
+    void __cdecl UpdateCables(void);
+    void __cdecl UpdateRadios(void);
+    void __cdecl Hint_Process(f32 elapsed);
 #pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
 #pragma data_seg()
@@ -96,10 +101,10 @@ extern "C" {
 /* PC splits NuMain's per-frame game update (0x491d50) and world render (0x4927f0) into helpers. */
 static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     f32 water_speed;
-    GAMEOBJECT **player;
     GAMEOBJECT *object;
     LEVELDATA_PC *level;
     FADETYPE fade_type;
+    i32 i;
 
     UpdateFrameCounters();
     PortalDoors_Update(world);
@@ -130,9 +135,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                     memcard_autosaveenabled = 0;
                 }
             } else if (Paused == 0) {
-                for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[2]; player++) {
-                    if (*player != NULL && ((*player)->flags_1fc & 0x80) != 0) {
-                        PauseGame((i32)((GAMEPAD_INIT_RECORD *)(*player)->pad - GamePadStorage));
+                for (i = 0; i < 2; ++i) {
+                    object = (GAMEOBJECT *)Player[i];
+                    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+                        PauseGame((i32)((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage));
                         break;
                     }
                 }
@@ -146,8 +152,15 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetDPL(options, 0) at 0x00698820");
         NuSound3Update();
         UpdateLevelSfx(world, Paused);
-        STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetRumblePads, NuSound3UpdateRumble at 0x00698920, SoundUpdate at "
-                      "0x00653460");
+        NuSound3SetRumblePads(Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL &&
+                                      (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0
+                                  ? ((GAMEOBJECT *)Player[0])->pad->bound_pad
+                                  : NULL,
+                              Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL &&
+                                      (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0
+                                  ? ((GAMEOBJECT *)Player[1])->pad->bound_pad
+                                  : NULL);
+        STUBBED_NAMED("NuMainUpdateFrame: NuSound3UpdateRumble at 0x00698920, SoundUpdate at 0x00653460");
         ProcessMusicChanges(world->current_level, &Game.options_save);
     }
     SAGA_SOUND_CHECK("after sound");
@@ -159,10 +172,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         pNuCam->mtx = GameCam->render_mtx;
         NuCameraSet(pNuCam);
         UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
-        for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[2]; player++) {
-            object = *player;
+        for (i = 0; i < 2; ++i) {
+            object = (GAMEOBJECT *)Player[i];
             if (object != NULL) {
-                UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc >> 7) & 1,
+                UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc_word >> 7) & 1,
                                  (i8)object->field_280);
             }
         }
@@ -201,7 +214,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         }
         rtlProcessLights(world->rtl_set, FRAMETIME);
         CharPlatforms_Update((CHARPLATFORMSYS_s *)world->shadow_platform_list_pc);
-        STUBBED_NAMED("NuMainUpdateFrame: Grabber_Update(world) at 0x00471650");
+        Grabber_Update(world);
         TrafficAnimSys_Update(world->trafficanim_sys);
         SAGA_SOUND_CHECK("after TrafficAnimSys_Update");
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after TrafficAnimSys_Update world=%p", (void *)WORLD);
@@ -223,8 +236,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             SAGA_SOUND_CHECK("after UpdateGameObjects");
             LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateGameObjects world=%p", (void *)WORLD);
         } else {
-            for (player = (GAMEOBJECT **)Player; player < (GAMEOBJECT **)&Player[8]; player++) {
-                object = *player;
+            for (i = 0; i < 8; ++i) {
+                object = (GAMEOBJECT *)Player[i];
                 if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
                     UpdateRumble((RUMBLE_PACKET_RESOURCE_PC *)object->pad->unknown_40);
                 }
@@ -237,9 +250,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             }
             Teleports_UpdateAfterGameObjects(world);
             Pulses_Update((LEVEL_SFX_PULSE_PC *)world->pulses_sys);
-            STUBBED_NAMED("NuMainUpdateFrame: Detonators_Update at 0x00426fa0");
+            Detonators_Update();
             Batarangs_Update();
-            STUBBED_NAMED("NuMainUpdateFrame: UpdateCables at 0x00408af0");
+            UpdateCables();
             SAGA_SOUND_CHECK("before Level_Update");
             LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before Level_Update world=%p", (void *)WORLD);
             Level_Update(world);
@@ -273,7 +286,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             UpdateRepeatSfx();
             GizmoSysLateUpdate(world->gizmo_sys, world, FRAMETIME);
             SAGA_SOUND_CHECK("after GizmoSysLateUpdate");
-            STUBBED_NAMED("NuMainUpdateFrame: UpdateRadios at 0x004bcb10, Hint_Process at 0x005769d0");
+            UpdateRadios();
+            Hint_Process(FRAMETIME);
             Cheats_FrameUpdate();
         }
         UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
