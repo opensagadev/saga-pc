@@ -3317,34 +3317,34 @@ static void HubUpdateSelectModePc(void) {
     i16 ids[340];
     if (((FADEINFO_PC *)&FadeSys)->fade > 0 || MainRenderTime > 0)
         return;
+    const i32 area = (i8)LDataList[HubDoorNewLevelPc].area_index;
     LEVELDATA_PC *level = &LDataList[HubDoorNewLevelPc];
-    const i32 area = (i8)level->area_index;
     const i32 lost_temple = LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area;
     switch (selectmodemode) {
         case 0: {
+            i32 confirm = 0, cancel = 0, up = 0, down = 0;
             i32 last_choice;
             if (lost_temple)
                 last_choice = 1;
-            else if ((ADataList[area].flags & 0x1000) != 0)
+            else {
                 last_choice = 0;
-            else
-                last_choice = (ADataList[area].flags & 0x10) != 0 ? 2 : 1;
-            i32 confirm = 0, cancel = 0, up = 0, down = 0;
-            for (i32 player = 0; player < 2; ++player) {
-                if (confirm)
-                    break;
-                if (cancel)
-                    break;
+                if ((ADataList[area].flags & 0x1000) == 0) {
+                    last_choice = 1;
+                    if ((ADataList[area].flags & 0x10) != 0)
+                        last_choice = 2;
+                }
+            }
+            for (i32 player = 0; player < 2 && !confirm && !cancel; ++player) {
                 if (MissionMenuPacketPc.active_player[player] != 0) {
-                    const u32 pressed = GamePadStorage[player].menu_buttons_pressed;
-                    const u32 directions = GamePadStorage[player].menu_directions;
-                    if ((pressed & GAMEPAD_MENUSELECT) != 0)
+                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0)
                         confirm = 1;
-                    else if ((pressed & GAMEPAD_MENUCANCEL) != 0)
+                    else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0)
                         cancel = 1;
-                    else if (((pressed | directions) & GAMEPAD_DUP) != 0)
+                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
+                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0)
                         up = 1;
-                    else if (((pressed | directions) & GAMEPAD_DDOWN) != 0)
+                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
+                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0)
                         down = 1;
                 }
             }
@@ -3352,28 +3352,36 @@ static void HubUpdateSelectModePc(void) {
                 GameAudio_PlaySfx(0x30, NULL, 0, 0);
                 if (lost_temple)
                     selectmodemode = 4;
-                else if (hub_selectmode == 0)
-                    selectmodemode = 2;
-                else if (hub_selectmode == 1 || hub_selectmode == 2) {
-                    i32 first = -1, second = -1;
-                    if (hub_selectmode == 1 && (ADataList[area].flags & 1) != 0) {
-                        const i32 count =
-                            Collection_GetIDList(&VehicleCollectionPc, 0x4002000, 0x2000, ids, &first, &second, 0);
-                        if (count == 1) {
-                            selectmodemode = 1;
-                            MissionMenuPacketPc.player_model[1] = ids[0];
-                            MissionMenuPacketPc.player_model[0] = ids[0];
-                            selectmodetime = 0;
-                            selectmodeduration = 0.6f;
+                else {
+                    switch (hub_selectmode) {
+                        case 0:
+                            selectmodemode = 2;
+                            break;
+                        case 1:
+                            if ((ADataList[area].flags & 1) != 0) {
+                                i32 first, second;
+                                const i32 count = Collection_GetIDList(&VehicleCollectionPc, 0x4002000, 0x2000, ids,
+                                                                       &first, &second, 0);
+                                if (count == 1) {
+                                    selectmodemode = count;
+                                    MissionMenuPacketPc.player_model[1] = ids[0];
+                                    MissionMenuPacketPc.player_model[0] = ids[0];
+                                    break;
+                                }
+                                hub_freeplaysource = 0;
+                                HubInitFreePlaySelectPc(area, first, second);
+                                NewMenu(17, -1, -1);
+                                return;
+                            }
+                        case 2:
+                            hub_freeplaysource = 0;
+                            HubInitFreePlaySelectPc(area, -1, -1);
+                            NewMenu(17, -1, -1);
                             return;
-                        }
+                        default:
+                            return;
                     }
-                    hub_freeplaysource = 0;
-                    HubInitFreePlaySelectPc(area, first, second);
-                    NewMenu(17, -1, -1);
-                    return;
-                } else
-                    return;
+                }
                 selectmodetime = 0;
                 selectmodeduration = 0.6f;
             } else if (cancel) {
@@ -4590,14 +4598,14 @@ extern "C" {
         heart_object = object->takeover_source != NULL ? 0xcd : 0xcc;
         if (WORLD->level_objects[heart_object].active == 0)
             return;
-        if (object->field_107e != 0) {
+        if (object->field_107e > 0) {
             hitpoints = object->field_107e;
             current_hp = object->current_hp;
             if ((PlayerHitPointsTwoHeartsPc != 0 && (object->flags_1fc & 0x80) != 0) ||
                 WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
                 odd = (hitpoints & 1) != 0 && hitpoints == current_hp ? 0 : current_hp & 1;
                 current_hp = current_hp / 2 + odd;
-                hitpoints = hitpoints / 2 + (hitpoints & 1);
+                hitpoints = (hitpoints & 1) != 0 ? hitpoints / 2 + 1 : hitpoints / 2;
             }
         } else {
             hitpoints = 1;
@@ -4606,18 +4614,23 @@ extern "C" {
         transitioning = 0;
         if (two_rows != 0 && hitpoints < 2)
             two_rows = 0;
-        if (object->field_280 <= 1 && hitpoints > 1 && object->dead != 0 && object->field_1010 > 0.0f &&
-            object->field_1010 < 1.0f) {
-            current_hp = (i32)((1.0f - object->field_1010) * (f32)object->field_107e);
+        if ((object->field_280 == 0 || object->field_280 == 1) && hitpoints > 1 && object->dead != 0 &&
+            object->field_1010 > 0.0f && object->field_1010 < 1.0f) {
             transitioning = 1;
+            current_hp = (i32)((1.0f - object->field_1010) * (f32)object->field_107e);
         }
         spacing = PanelHeartSpacingPc * scale;
-        if (GetMenuID() == 4 ? TempOptions.widescreen != 0
-                             : Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
+        if (GetMenuID() == 4) {
+            if (TempOptions.widescreen != 0)
+                spacing *= PanelHeartWidescreenPc;
+        } else if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
             spacing *= PanelHeartWidescreenPc;
-        if (alignment == 0)
-            x -= (f32)(((f32)((two_rows != 0 ? hitpoints / 2 : hitpoints) - 1) * spacing) * 0.5);
-        else if (alignment == 8)
+        if (alignment == 0) {
+            if (two_rows != 0)
+                x -= (f32)((f32)(hitpoints / 2 - 1) * spacing * 0.5);
+            else
+                x -= (f32)((f32)(hitpoints - 1) * spacing * 0.5);
+        } else if (alignment == 8)
             spacing = -spacing;
         draw_y = PANEL3DMULY * y;
         start_x = x;

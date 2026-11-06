@@ -3495,10 +3495,12 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     i32 result = 0;
     f32 ratio, closest_distance;
     // Retail uses this inclusive upper check; loaded type IDs are 0..127.
-    if (effect_index <= 0 || effect_index > 128 ||
-        ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].effect_ids[0] == -1) {
+    if (effect_index < 1)
         return -1;
-    }
+    if (effect_index > 128)
+        return -1;
+    if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].effect_ids[0] == -1)
+        return -1;
     if (((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale != 1.0f) {
         // The final word identifies the original, unscaled type.
         effect_index = ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].field_174;
@@ -3513,52 +3515,53 @@ i32 __cdecl CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
         requested_scale = 0.01f;
     }
 
-    if (result != 0)
-        return result;
-    closest_index = effect_index;
-    ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale;
-    closest_distance = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
-    for (i = 0; i < 128; ++i) {
-        f32 distance;
-        if (((PART_RUNTIME_TYPE_PC *)part_types)[i].effect_ids[0] != -1 &&
-            ((PART_RUNTIME_TYPE_PC *)part_types)[i].field_174 == (u32)effect_index) {
-            ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[i].scale;
-            distance = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
-            if (distance < closest_distance) {
-                closest_index = i;
-                closest_distance = distance;
+    if (result == 0) {
+        closest_index = effect_index;
+        ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[effect_index].scale;
+        ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
+        closest_distance = ratio;
+        for (i = 0; i < 128; ++i) {
+            if (((PART_RUNTIME_TYPE_PC *)part_types)[i].effect_ids[0] != -1 &&
+                ((PART_RUNTIME_TYPE_PC *)part_types)[i].field_174 == (u32)effect_index) {
+                ratio = requested_scale / ((PART_RUNTIME_TYPE_PC *)part_types)[i].scale;
+                ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
+                if (ratio < closest_distance) {
+                    closest_index = i;
+                    closest_distance = ratio;
+                }
             }
         }
-    }
-    if (closest_index != 0 && closest_distance < 1.1f) {
-        return closest_index;
-    }
-
-    for (i = 0; i < 128; ++i) {
-        PART_RUNTIME_TYPE_PC *scaled;
-        PART_RUNTIME_TYPE_PC *source;
-        if (((PART_RUNTIME_TYPE_PC *)part_types)[i].effect_ids[0] != -1) {
-            continue;
+        if (closest_index != 0 && closest_distance < 1.1f)
+            return closest_index;
+        for (i = 0; i < 128; ++i) {
+            PART_RUNTIME_TYPE_PC *scaled;
+            PART_RUNTIME_TYPE_PC *source;
+            if (((PART_RUNTIME_TYPE_PC *)part_types)[i].effect_ids[0] != -1) {
+                continue;
+            }
+            scaled = &((PART_RUNTIME_TYPE_PC *)part_types)[i];
+            source = &((PART_RUNTIME_TYPE_PC *)part_types)[effect_index];
+            *scaled = *source;
+            edpartScaleType(i, requested_scale);
+            scaled->last_used_time = partglobaltime;
+            scaled->scale = requested_scale;
+            scaled->field_174 = effect_index;
+            if (strlen(source->name) > 12) {
+                char shortened[16];
+                sprintf(shortened, "%s", source->name);
+                shortened[12] = '\0';
+                sprintf(scaled->name, "%s%03d", shortened, i);
+            } else {
+                sprintf(scaled->name, "%s%03d", source->name, i);
+            }
+            ++part_types_used;
+            result = i;
+            break;
         }
-        scaled = &((PART_RUNTIME_TYPE_PC *)part_types)[i];
-        source = &((PART_RUNTIME_TYPE_PC *)part_types)[effect_index];
-        *scaled = *source;
-        edpartScaleType(i, requested_scale);
-        scaled->last_used_time = partglobaltime;
-        scaled->scale = requested_scale;
-        scaled->field_174 = effect_index;
-        if (strlen(source->name) > 12) {
-            char shortened[16];
-            sprintf(shortened, "%s", source->name);
-            shortened[12] = '\0';
-            sprintf(scaled->name, "%s%03d", shortened, i);
-        } else {
-            sprintf(scaled->name, "%s%03d", source->name, i);
-        }
-        ++part_types_used;
-        return i != 0 ? i : closest_index;
+        if (result == 0)
+            result = closest_index;
     }
-    return closest_index;
+    return result;
 }
 
 extern char PartNullInstanceNamePc[14];
