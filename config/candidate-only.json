@@ -1327,6 +1327,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/gameapi/edanim_update.c",
+   "symbol": "_EdAnimFabsPc",
+   "kind": "function"
+  },
+  {
    "unit": "src/gameapi/edui_widget_render_pc.cpp",
    "symbol": "?EduiFabsPc@@YAMM@Z",
    "kind": "function"

@@ -342,18 +342,17 @@ extern i32 edbits_particle_general_page;
 extern i32 edbits_particle_char_page;
 
 i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
-    i32 page, n, version, requested, skipped;
-    i32 type_index = 1, instance_index = 0;
+    i32 page, n, version, requested;
+    i32 skipped = 0;
+    i32 type_index = 1;
     DEBRIS_INFO_PC discarded;
-    i8 category = (i8)(flag);
+    i8 original_flag = flag;
     i32 page_index = -1;
     if (flag == 6) {
-        category = 1;
+        flag = 1;
     } else if (flag == 0) {
-        category = 0;
         page_index = 0;
     } else if (flag == 5) {
-        category = 5;
         page_index = 1;
     }
     if (page_index == -1) {
@@ -367,7 +366,10 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
             return -1;
     }
 
-    EdFileSetMedia(EdppUseMemcardPc == 0 ? 1 : 2);
+    if (EdppUseMemcardPc)
+        EdFileSetMedia(2);
+    else
+        EdFileSetMedia(1);
     if (EdFileOpen(path, 0) == 0) {
         return -1;
     }
@@ -384,7 +386,6 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     EdppPageScenesPc[page_index] = scene;
 
     requested = EdFileReadInt();
-    skipped = 0;
     if (requested + edpp_types_used > debinf_count) {
         skipped = requested + edpp_types_used - debinf_count;
         requested = debinf_count - edpp_types_used;
@@ -392,40 +393,38 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     }
 
     for (n = 0; n < requested; n++) {
-        i32 index;
-        index = type_index;
-        while (debtab[index] != NULL) {
-            index++;
+        while (debtab[type_index] != NULL) {
+            type_index++;
         }
-
-        type_index = index;
-        FileLoadSingleEffectType(&effecttypes[index], version, (char)(category));
-        effecttypes[index].page = (u8)(page_index);
-        effecttypes[index].native_data = NULL;
-        effecttypes[index].last_render_time = 0.0f;
-        debtab[index] = &effecttypes[index];
-        UpdateTotalPtls(debtab[index]);
+        FileLoadSingleEffectType(&effecttypes[type_index], version, (char)(flag));
+        effecttypes[type_index].page = (u8)(page_index);
+        effecttypes[type_index].native_data = NULL;
+        effecttypes[type_index].last_render_time = 0.0f;
+        debtab[type_index] = &effecttypes[type_index];
+        UpdateTotalPtls(debtab[type_index]);
         edpp_types_used++;
     }
 
     for (n = 0; n < skipped; ++n)
-        FileLoadSingleEffectType(&discarded, version, category);
+        FileLoadSingleEffectType(&discarded, version, flag);
 
-    if (flag == 1 || flag == 2) {
+    if (original_flag == 1 || original_flag == 2) {
+        i32 instance_index;
         i32 instances = EdFileReadInt();
         if (instances + edpp_instances_used > 512)
             instances = 512 - edpp_instances_used;
         edpp_num_orphans = 0;
+        instance_index = 0;
         for (n = 0; n < instances; ++n) {
-            i32 index = instance_index;
-            while (edpp_ptls[index].instance_id != -1)
-                ++index;
-            instance_index = index;
+            i32 index;
+            while (edpp_ptls[instance_index].instance_id != -1)
+                ++instance_index;
+            index = instance_index;
             edpp_ptls[index].page = (i8)(page_index);
             edpp_ptls[index].position.x = EdFileReadFloat();
             edpp_ptls[index].position.y = EdFileReadFloat();
             edpp_ptls[index].position.z = EdFileReadFloat();
-            if (version <= 6) {
+            if (version < 7) {
                 edpp_ptls[index].rotation_z = 0;
                 edpp_ptls[index].rotation_y = 0;
                 edpp_ptls[index].emitter_rotation_z = (i16)(EdFileReadInt());
@@ -436,10 +435,13 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].emitter_rotation_z = EdFileReadShort();
                 edpp_ptls[index].emitter_rotation_y = EdFileReadShort();
             }
-            edpp_ptls[index].emitter_rotation_x = version > 21 ? EdFileReadShort() : 0;
-            if (version > 33)
+            if (version >= 22)
+                edpp_ptls[index].emitter_rotation_x = EdFileReadShort();
+            else
+                edpp_ptls[index].emitter_rotation_x = 0;
+            if (version >= 34)
                 edpp_ptls[index].start_offset = EdFileReadFloat();
-            else if (version > 7)
+            else if (version >= 8)
                 edpp_ptls[index].start_offset = (f32)(EdFileReadInt()) / 60.0f;
             else
                 edpp_ptls[index].start_offset = 0.0f;
@@ -449,7 +451,7 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
             if (edpp_ptls[index].effect_index == -1)
                 ++edpp_num_orphans;
 
-            if (version > 8) {
+            if (version >= 9) {
                 edpp_ptls[index].switch_type = EdFileReadInt();
                 edpp_ptls[index].switch_id = EdFileReadInt();
                 edpp_ptls[index].switch_variable = EdFileReadFloat();
@@ -458,7 +460,7 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].switch_id = -1;
                 edpp_ptls[index].switch_variable = 0.0f;
             }
-            if (version > 11) {
+            if (version >= 12) {
                 edpp_ptls[index].reflection_rotation_z = EdFileReadShort();
                 edpp_ptls[index].reflection_rotation_y = EdFileReadShort();
                 edpp_ptls[index].reflection_offset = EdFileReadFloat();
@@ -467,13 +469,17 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].reflection_rotation_y = 0;
                 edpp_ptls[index].reflection_offset = 0.0f;
             }
-            if (version > 12)
+            if (version >= 13)
                 edpp_ptls[index].reflection_bounce = EdFileReadFloat();
             else
                 edpp_ptls[index].reflection_bounce = 0.9f;
-            edpp_ptls[index].render_group = version > 14 ? EdFileReadShort() : 0;
-            if (version > 26) {
+            if (version >= 15)
+                edpp_ptls[index].render_group = EdFileReadShort();
+            else
+                edpp_ptls[index].render_group = 0;
+            if (version >= 27) {
                 edpp_ptls[index].render_priority = EdFileReadUnsignedShort();
+                edpp_ptls[index].dynamic_priority = EdFileReadChar();
             } else {
                 edpp_ptls[index].render_priority = 20000;
                 if (edpp_ptls[index].effect_index != -1) {
@@ -482,15 +488,26 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                         edpp_ptls[index].render_priority = 40000;
                     else if (particle_type == 3)
                         edpp_ptls[index].render_priority = 30000;
+                    else if (particle_type == 0)
+                        edpp_ptls[index].render_priority = 20000;
                     else if (particle_type == 7)
                         edpp_ptls[index].render_priority = 10000;
                 }
+                edpp_ptls[index].dynamic_priority = 0;
             }
-            edpp_ptls[index].dynamic_priority = version > 26 ? EdFileReadChar() : 0;
-            edpp_ptls[index].detail_levels = version > 35 ? EdFileReadChar() : 7;
-            edpp_ptls[index].facing_mode = version > 37 ? EdFileReadChar() : 0;
-            edpp_ptls[index].facing_rotation_x = version > 37 ? EdFileReadShort() : 0;
-            edpp_ptls[index].facing_rotation_y = version > 37 ? EdFileReadShort() : 0;
+            if (version >= 36)
+                edpp_ptls[index].detail_levels = EdFileReadChar();
+            else
+                edpp_ptls[index].detail_levels = 7;
+            if (version >= 38) {
+                edpp_ptls[index].facing_mode = EdFileReadChar();
+                edpp_ptls[index].facing_rotation_x = EdFileReadShort();
+                edpp_ptls[index].facing_rotation_y = EdFileReadShort();
+            } else {
+                edpp_ptls[index].facing_mode = 0;
+                edpp_ptls[index].facing_rotation_x = 0;
+                edpp_ptls[index].facing_rotation_y = 0;
+            }
             ++edpp_instances_used;
         }
     }
@@ -499,13 +516,16 @@ i32 __cdecl edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     EdFileClose();
     edppDetermineNearest(1.0f);
 
-    if (flag == 0) {
+    if (original_flag == 0) {
         edbits_particle_general_page = page_index;
-    } else if (flag == 5) {
-        edbits_particle_char_page = page_index;
-    } else if (flag == 1) {
-        edbits_particle_level_page = page_index;
+        return page_index;
     }
+    if (original_flag == 5) {
+        edbits_particle_char_page = page_index;
+        return page_index;
+    }
+    if (original_flag == 1)
+        edbits_particle_level_page = page_index;
     return page_index;
 }
 
