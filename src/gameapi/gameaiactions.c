@@ -1491,7 +1491,14 @@ i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
             else
                 target = AIParamToFloat(processor, params[index]);
         }
-        if (time == 0.0f) {
+        if (time != 0.0f) {
+            if (minimum != MoveSplineRunSpeedSentinel && maximum != MoveSplineRunSpeedSentinel) {
+                random = NuRandFloat();
+                target = (1.0f - random) * minimum + random * maximum;
+            }
+            processor->action_data_4 = time;
+            processor->action_data_5 = (target - object->collision_scale_override) / time;
+        } else {
             if (minimum != MoveSplineRunSpeedSentinel && maximum != MoveSplineRunSpeedSentinel) {
                 random = NuRandFloat();
                 object->collision_scale_override = (1.0f - random) * minimum + random * maximum;
@@ -1500,22 +1507,16 @@ i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
             }
             return 1;
         }
-        if (minimum != MoveSplineRunSpeedSentinel && maximum != MoveSplineRunSpeedSentinel) {
-            random = NuRandFloat();
-            target = (1.0f - random) * minimum + random * maximum;
+    }
+    if (processor->action_data_4 > 0.0f) {
+        if (FRAMETIME < processor->action_data_4) {
+            object->collision_scale_override += FRAMETIME * processor->action_data_5;
+            processor->action_data_4 -= FRAMETIME;
+            return 0;
         }
-        processor->action_data_4 = time;
-        processor->action_data_5 = (target - object->collision_scale_override) / time;
+        object->collision_scale_override += processor->action_data_5 * processor->action_data_4;
+        processor->action_data_4 = 0.0f;
     }
-    if (!(0.0f < processor->action_data_4))
-        return 1;
-    if (FRAMETIME < processor->action_data_4) {
-        object->collision_scale_override += FRAMETIME * processor->action_data_5;
-        processor->action_data_4 -= FRAMETIME;
-        return 0;
-    }
-    object->collision_scale_override += processor->action_data_5 * processor->action_data_4;
-    processor->action_data_4 = 0.0f;
     return 1;
 }
 
