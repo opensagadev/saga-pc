@@ -1489,7 +1489,10 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
     p->flags_word &= ~0x1000u;
     p->stage_count = 0;
     p->mission = Mission_Active(NULL);
-    p->mission_state = p->mission == NULL ? 0 : (u8)Mission_CurrentState(NULL);
+    if (p->mission != NULL)
+        p->mission_state = (u8)Mission_CurrentState(NULL);
+    else
+        p->mission_state = 0;
     p->challenge_state = (u8)ChallengeMode;
     PauseSaveAndExitPc = 0;
     area = (i8)world->area_index;
@@ -1525,7 +1528,9 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
     if (p->init_callback(world, p) != 0)
         return;
     if ((p->flags_word & 0x400) != 0) {
-        if (NewLData == STATUS_LDATA || WORLD->current_level == STATUS_LDATA) {
+        /* Retail tests the current level separately for loaded and unloaded worlds. */
+        if (NewLData == STATUS_LDATA || (WORLD->loaded && WORLD->current_level == STATUS_LDATA) ||
+            (!WORLD->loaded && WORLD->current_level == STATUS_LDATA)) {
             GAME_EPISODE_START_PC *save = &Game.episode_start[episode];
             i32 gold = 0;
             p->previous_best_time = save->superstory_time_limit;
