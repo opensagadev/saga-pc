@@ -43,6 +43,7 @@ TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *object) {
  * diagnostic for each failed target lookup; it is defined in
  * techno_diagnostic_pc.c because VC8 drops calls to an empty body it can see. */
 void __cdecl TechnoTargetDiagnosticPc(char *name);
+void __cdecl TechnoMoveSpecialTargetPc(void);
 
 void *Technos_FindTgt(TECHNO_s *techno) {
     void *target;
@@ -566,33 +567,40 @@ TECHNO_PC *__cdecl Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJ
 
 void __cdecl Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     TECHNO_CALLBACK_PC *techno = (TECHNO_CALLBACK_PC *)techno_pointer;
-    f32 speed = 0.0f;
+    f32 speed;
     f32 rate;
     GIZOBSTACLE *obstacle;
-    if (object != NULL) {
-        if ((object->flags_1fc & 0x80) == 0 && object->field_f00 == 2) {
-            speed = 1.0f;
-        } else if ((techno->enabled & 1) != 0) {
-            if ((object->pad->runtime_flags & 8) != 0)
-                speed = 1.0f;
-        } else if ((techno->enabled & 2) != 0) {
-            speed = object->pad->waggle_magnitude;
-        } else if ((techno->enabled & 4) != 0) {
-            speed = object->pad->input_direction_x;
-        } else if ((techno->enabled & 8) != 0) {
-            speed = object->pad->input_direction_z;
-        }
-    }
+    if (object == NULL)
+        speed = 0.0f;
+    else if ((object->flags_1fc & 0x80) == 0 && object->field_f00 == 2)
+        speed = 1.0f;
+    else if ((techno->enabled & 1) != 0)
+        speed = (object->pad->runtime_flags & 8) != 0 ? 1.0f : 0.0f;
+    else if ((techno->enabled & 2) != 0)
+        speed = object->pad->waggle_magnitude;
+    else if ((techno->enabled & 4) != 0)
+        speed = object->pad->input_direction_x;
+    else if ((techno->enabled & 8) != 0)
+        speed = object->pad->input_direction_z;
+    else
+        speed = 0.0f;
     if ((techno->output & 1) != 0 && speed < 0.0f)
         speed = 0.0f;
     if (techno->controlled_object == NULL)
         Technos_FindTgt((TECHNO_s *)techno);
-    if (techno->target_mode != 3)
-        return;
+    switch (techno->target_mode) {
+        case 2:
+            TechnoMoveSpecialTargetPc();
+            return;
+        case 3:
+            break;
+        default:
+            return;
+    }
     if (NuStrICmp(((GIZMOTYPES_PC *)gizmotypes)->types[techno->controlled_object->type_id].name, "GIZOBSTACLE") != 0)
         return;
     obstacle = (GIZOBSTACLE *)techno->controlled_object->object;
-    if ((techno->enabled & 2) != 0 && object != NULL && (u8)object->field_280 < 2) {
+    if ((techno->enabled & 2) != 0 && object != NULL && (object->field_280 == 0 || object->field_280 == 1)) {
         rate = object->pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
         TechnoMoveSpeedPc[(i8)object->field_280] = SeekLinearF(TechnoMoveSpeedPc[(i8)object->field_280], speed, rate);
         GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeedPc[(i8)object->field_280]);
@@ -632,9 +640,9 @@ void __cdecl Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             return;
         range = (f32)((f64)object->bounds_radius + 0.25);
         hint_range = (f32)((f64)range * 2.5);
-        if ((f64)hint_range * hint_range > distance)
+        if (distance < (f64)hint_range * hint_range)
             techno->flags |= 4;
-        if (object->field_281 == 0 || ObjLandReady(object) == 0 || !((f64)range * range > distance) ||
+        if (object->field_281 == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
             ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->field_f00 != 2))
             return;
         if (Techno_isReady((TECHNO_s *)techno) != 0) {
@@ -644,7 +652,7 @@ void __cdecl Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->field_7aa = 0x99;
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-            if ((u8)object->field_280 < 2)
+            if (object->field_280 == 0 || object->field_280 == 1)
                 TechnoMoveSpeedPc[(i8)object->field_280] = 0.0f;
         } else {
             GameAudio_PlaySfx(0x32, &techno->position, 0, 0);

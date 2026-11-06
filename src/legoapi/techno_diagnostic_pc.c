@@ -5,3 +5,9 @@
    body it can see, so the definition lives outside techno.c. */
 void __cdecl TechnoTargetDiagnosticPc(char *name) {
 }
+
+/* Original source name unknown. Also empty on PC; the retail linker folded
+   it into TechnoTargetDiagnosticPc. Technos_MoveTarget tail-calls it for
+   special-object targets. */
+void __cdecl TechnoMoveSpecialTargetPc(void) {
+}

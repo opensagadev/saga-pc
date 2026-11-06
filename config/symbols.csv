@@ -2000,6 +2000,7 @@ address,symbol,size,ctype
 0x004cc9a0,_Suit_GetLast,87,"SUIT_LAYERS_PC * __cdecl(i32,i32)"
 0x4cca00,_Suit_GetDefault,52,SUIT_LAYERS_PC *__cdecl (i32)
 0x4cca60,_TechnoTargetDiagnosticPc,1,void __cdecl (char *)
+0x4cca60,_TechnoMoveSpecialTargetPc,1,void __cdecl (void)
 0x004cca90,_Technos_FindControllingTechno,57,TECHNO_PC *__cdecl (GAMEOBJECT *)
 0x4ccad0,_Technos_FindTgt,388,
 0x4ccc60,_Technos_MoveTarget,424,"void __cdecl(TECHNO_PC *, GAMEOBJECT *)"
