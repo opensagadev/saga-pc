@@ -174,7 +174,7 @@ class DatParserTests(unittest.TestCase):
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
                        ("nufile", "nufile_pc", "nufile_host", "nufile_device", "nupsfile", "nustring",
-                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nufpar", "nurdpi", "implode")]
+                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nurdpi", "implode")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
             sources.append(write_file_constants(directory))
             sources.append(write_clock_provider(directory))
