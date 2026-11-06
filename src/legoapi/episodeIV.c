@@ -1205,16 +1205,15 @@ static void __cdecl TrenchKilledCallback(GAMEOBJECT *object) {
 void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
     GAMEOBJECT *trench_player, *ship;
     NUVEC spawn, offset;
-    f32 base_height, lower, upper;
+    f32 lower, upper;
     i32 index, model, left_present, free_play;
     if (netclient == 0) {
         trench_player = player;
         trenchrun.position.x = trench_player->collision_position.x;
-        base_height = TrenchBaseHeightPc;
-        trenchrun.position.y = base_height;
+        trenchrun.position.y = TrenchBaseHeightPc;
         if (trench_player->collision_position.x < -500.0) {
             free_play = FreePlay;
-            trenchrun.position.y = base_height + TrenchSpawnHeightPc;
+            trenchrun.position.y = TrenchBaseHeightPc + TrenchSpawnHeightPc;
             if (free_play == 0 && trenchrun.midtro_played == 0) {
                 for (index = 0; index < 3; ++index) {
                     if (trenchrun.objects[index] != NULL) {
@@ -1231,7 +1230,7 @@ void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
         trenchrun.position.z = trench_player->collision_position.z;
         lower = left_present ? 62.0f : 60.0f;
         upper = trenchrun.objects[2] != NULL ? 70.0f : 72.0f;
-        if (lower > trenchrun.position.z)
+        if (trenchrun.position.z < lower)
             trenchrun.position.z = lower;
         else if (upper < trenchrun.position.z)
             trenchrun.position.z = upper;
@@ -1240,20 +1239,23 @@ void __cdecl DeathStarBattleDUpdate(WORLDINFO *world) {
             if (trenchrun.spawn_timer <= 0.0f) {
                 trenchrun.spawn_timer = 5.0f;
                 for (index = 0; index < 3; ++index) {
-                    if (index != 0)
-                        trench_player = player;
-                    spawn.x = trench_player->collision_position.x + TrenchSpawnDistancePc;
-                    spawn.y = trench_player->collision_position.y + TrenchSpawnHeightPc;
-                    spawn.z = trench_player->collision_position.z;
+                    spawn.x = player->collision_position.x + TrenchSpawnDistancePc;
+                    spawn.y = player->collision_position.y + TrenchSpawnHeightPc;
+                    spawn.z = player->collision_position.z;
                     offset.x = 0.0f;
                     offset.y = 0.0f;
                     offset.z = 0.0f;
-                    if (index == 0)
-                        offset.z = TrenchLateralOffsetPc;
-                    else if (index == 1)
-                        offset.y = TrenchVerticalOffsetPc;
-                    else if (index == 2)
-                        offset.z = -TrenchLateralOffsetPc;
+                    switch (index) {
+                        case 0:
+                            offset.z = TrenchLateralOffsetPc;
+                            break;
+                        case 1:
+                            offset.y = TrenchVerticalOffsetPc;
+                            break;
+                        case 2:
+                            offset.z = -TrenchLateralOffsetPc;
+                            break;
+                    }
                     NuVecAdd(&spawn, &spawn, &offset);
                     if (trenchrun.midtro_played == 0 && index == 1)
                         model = VehicleBoltId7f196cPc;

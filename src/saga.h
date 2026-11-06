@@ -28377,7 +28377,6 @@ extern "C" {
     extern NUVEC jedib_offsets[3];
     extern i32 jedib_yrot[3];
     extern i16 *JediB_playerids[3];
-    i32 __cdecl JediBInitLocator(WORLDINFO *, NUVEC *, i32, AILOCATOR_PC *, f32);
     void __cdecl JediB_Init(WORLDINFO *);
     void __cdecl JediB_Reset(WORLDINFO *);
     void __cdecl JediB_Update(WORLDINFO *);

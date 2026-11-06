@@ -2250,7 +2250,7 @@ address,symbol,size,ctype
 0x4ddd60,_DrawPaintLights,134,void __cdecl(void)
 0x4dddf0,_ResetPaintPuzzle,56,void __cdecl(WORLDINFO *)
 0x4dde30,_UpdatePaintPuzzle,708,
-0x4de100,_JediBInitLocator,406,"i32 __cdecl(WORLDINFO *, NUVEC *, i32, AILOCATOR_PC *, f32)"
+0x4de100,_JediBInitLocator,406,"private same-TU i32(WORLDINFO *, NUVEC *, i32, AILOCATOR_PC *, f32)"
 0x4de2a0,_JediBResetRecordPc,185,private same-TU void(JEDIB_CREATURE_PC *)
 0x4de360,_JediB_Init,977,void __cdecl(WORLDINFO *)
 0x4de740,_JediB_Reset,656,void __cdecl(WORLDINFO *)

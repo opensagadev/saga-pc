@@ -315,6 +315,46 @@ void __cdecl BonusGunshipB_PanelPc(WORLDINFO *world) {
     }
 }
 
+static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
+    f32 floor_y;
+    if (netclient == 0) {
+        if (world->ai_sys != NULL) {
+            i32 index;
+            i32 count = world->ai_sys->antinode_count;
+            AIANTINODE_PC *node = world->ai_sys->antinodes;
+            for (index = 0; index < count; index++, node++) {
+                if (node->radius != 0.0f) {
+                    f32 dx = position->x - node->position.x;
+                    f32 dz = position->z - node->position.z;
+                    f32 dist_sqr = dx * dx + dz * dz;
+                    f32 r = node->radius + 1.0f;
+                    if (dist_sqr < r * r) {
+                        f64 scale = (f64)r / NuFsqrt(dist_sqr);
+                        dx *= scale;
+                        position->x = node->position.x + dx;
+                        dz *= scale;
+                        position->z = node->position.z + dz;
+                        break;
+                    }
+                }
+            }
+        }
+        memset(locator, 0, sizeof(AILOCATOR_PC));
+        if (position->x * position->x + position->z * position->z < radius * radius) {
+            floor_y = GameShadow(NULL, position, 5.0f, 0);
+            if (floor_y != 2000000.0f)
+                position->y = floor_y;
+            AISysGetPathPos(world->ai_sys, position, &locator->path_info, NULL, 0xff);
+            if ((locator->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
+                locator->position = *position;
+                locator->rotation = angle;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 static __declspec(noinline) void JediBResetRecordPc(JEDIB_CREATURE_PC *record) {
     if (record == NULL)
         return;
@@ -377,7 +417,7 @@ void __cdecl JediB_Init(WORLDINFO *world) {
     NUVEC position, offset;
     AILOCATOR_PC locator;
     JEDIB_CREATURE_PC *goody, *baddie;
-    f32 step, x, z, distance;
+    f32 step, x, z, distance, floor_y;
     i32 angle, count, index;
     if (Mission_Active(MissionSys) != NULL)
         return;
@@ -394,9 +434,9 @@ void __cdecl JediB_Init(WORLDINFO *world) {
             position.z = jedib_offset - jedib_offset * 2.0f * NuRandFloatSeeded(&jedi_b.seed) + z;
             distance = position.x * position.x + position.z * position.z;
             if (distance < jedib_outer_r * jedib_outer_r && distance > jedib_inner * jedib_inner) {
-                position.y = GameShadow(NULL, &position, 5.0f, 0);
-                if (position.y == 2000000.0f)
-                    position.y = 0.0f;
+                floor_y = GameShadow(NULL, &position, 5.0f, 0);
+                if (floor_y != 2000000.0f)
+                    position.y = floor_y;
                 angle = NuRandIntSeeded(&jedi_b.seed);
                 if (JediBInitLocator(world, &position, angle, &locator, jedib_outer_r) != 0 &&
                     jedi_b.baddie_count < 256) {
@@ -1814,6 +1854,7 @@ extern i32 BoltNoSfxPc;
 
 void __cdecl KaminoE_Update(WORLDINFO *world) {
     f32 best_distance = 1000000000.0f;
+    GAMEOBJECT *nearest = NULL;
     NUMTX *matrix;
     NUVEC desired;
     f64 degrees;
@@ -1878,29 +1919,24 @@ void __cdecl KaminoE_Update(WORLDINFO *world) {
             if (kamino_e.departure_timer < KaminoShipPitchRatePc)
                 kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, kamino_e.departure_timer);
             else {
-                u16 next = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, KaminoShipPitchRatePc);
+                kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, KaminoShipPitchRatePc);
                 kamino_e.departure_timer = 0.0f;
-                kamino_e.pitch = next;
                 kamino_e.departing = 3;
             }
             break;
-        case 3: {
-            u16 next;
+        case 3:
             kamino_e.departure_timer += FRAMETIME;
             if (kamino_e.departure_timer < KaminoShipYawRatePc)
-                next = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, kamino_e.departure_timer);
+                kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, kamino_e.departure_timer);
             else {
-                next = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, KaminoShipYawRatePc);
+                kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, KaminoShipYawRatePc);
                 kamino_e.departure_timer = 0.0f;
                 kamino_e.departing = 4;
             }
-            kamino_e.yaw = next;
             kamino_e.pitch = SeekRot((u16)kamino_e.pitch, KaminoShipZeroAnglesPc.pitch, KaminoShipPitchRatePc);
             break;
-        }
         case 4: {
             f32 ratio;
-            u16 next;
             kamino_e.departure_timer += FRAMETIME;
             if (kamino_e.departure_timer < KaminoShipLiftTimePc) {
                 phase = kamino_e.departure_timer / KaminoShipLiftTimePc;
@@ -1914,8 +1950,7 @@ void __cdecl KaminoE_Update(WORLDINFO *world) {
             }
             kamino_e.position.x = desired.x * ratio + KaminoShipCentrePc.x * (1.0f - ratio);
             kamino_e.position.z = desired.z * ratio + KaminoShipCentrePc.z * (1.0f - ratio);
-            next = SeekRot((u16)kamino_e.pitch, (u16)KaminoShipTargetPitchPc, KaminoShipPitchRatePc);
-            kamino_e.pitch = next;
+            kamino_e.pitch = SeekRot((u16)kamino_e.pitch, (u16)KaminoShipTargetPitchPc, KaminoShipPitchRatePc);
             kamino_e.yaw = SeekRot((u16)kamino_e.yaw, (u16)KaminoShipTargetYawPc, KaminoShipYawRatePc);
             break;
         }
@@ -1930,7 +1965,6 @@ void __cdecl KaminoE_Update(WORLDINFO *world) {
                 aim.y = KaminoShipAimLiftPc + aim.y;
                 have_target = 1;
             } else if (kamino_e.can_fire->value == 1.0f) {
-                GAMEOBJECT *nearest = NULL;
                 i32 i;
                 for (i = 0; i < 8; ++i) {
                     GAMEOBJECT *object = Player[i];

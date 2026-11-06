@@ -510,46 +510,6 @@ void KaminoE_Init(WORLDINFO *world) {
         LevForce = *(i32 *)g;
 }
 
-i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
-    f32 floor_y;
-    if (netclient == 0) {
-        if (world->ai_sys != NULL) {
-            i32 index;
-            i32 count = world->ai_sys->antinode_count;
-            AIANTINODE_PC *node = world->ai_sys->antinodes;
-            for (index = 0; index < count; index++, node++) {
-                if (node->radius != 0.0f) {
-                    f32 dx = position->x - node->position.x;
-                    f32 dz = position->z - node->position.z;
-                    f32 dist_sqr = dx * dx + dz * dz;
-                    f32 r = node->radius + 1.0f;
-                    if (dist_sqr < r * r) {
-                        f64 scale = (f64)r / NuFsqrt(dist_sqr);
-                        dx *= scale;
-                        position->x = node->position.x + dx;
-                        dz *= scale;
-                        position->z = node->position.z + dz;
-                        break;
-                    }
-                }
-            }
-        }
-        memset(locator, 0, sizeof(AILOCATOR_PC));
-        if (position->x * position->x + position->z * position->z < radius * radius) {
-            floor_y = GameShadow(NULL, position, 5.0f, 0);
-            if (floor_y != 2000000.0f)
-                position->y = floor_y;
-            AISysGetPathPos(world->ai_sys, position, &locator->path_info, NULL, 0xff);
-            if ((locator->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
-                locator->position = *position;
-                locator->rotation = angle;
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
-
 void FactoryG_Init(WORLDINFO *world) {
     struct gizmo_pc_s *g;
     if (netclient != 0)
@@ -1914,10 +1874,12 @@ static void PodSprint_InitAISplinePc(WORLDINFO *world, PODSPRINT_AI_PC *ai, char
         if (count >= 6)
             break;
         pts = &ai->spline->pts[i];
-        line = (count & 1) != 0 ? PODSPRINT->finish_line : PODSPRINT->halfway;
+        line = PODSPRINT->finish_line;
+        if ((count & 1) == 0)
+            line = PODSPRINT->halfway;
         if (XZLinesIntersect(&pts[0], &pts[1], &line->pts[0], &line->pts[1], NULL, NULL) != 0) {
-            *vals++ = (i16)i;
             count++;
+            *vals++ = (i16)i;
         }
     }
     if (ai->vals[5] == 0)
