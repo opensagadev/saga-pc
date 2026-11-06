@@ -44,26 +44,29 @@ i32 __cdecl NuTexResolveReference(NUGSCN *scene, i32 tid) {
     u32 latest = 0;
     if ((tid & 0x4000) == 0)
         return scene->texture_ids[tid];
-    if (NuTextureCapacityPC == 0)
-        return 0;
     for (index = 0; index != NuTextureCapacityPC; ++index) {
         NUTEXDIM_PC *texture = NuTextureDimensions[index];
-        NUTEXDIM_PC *reference;
+        u8 *reference;
         if (texture == NULL || texture->ref_count < 0)
             continue;
-        reference = scene->textures[tid & 0x3fff];
-        for (byte = 0; byte < 16; ++byte) {
-            if (texture->checksum[byte] != reference->checksum[byte])
-                break;
-        }
-        if (byte == 16 && (u32)NuTextureLoadOrderPC[index] > latest) {
+        reference = scene->textures[tid & 0x3fff]->checksum;
+        byte = 0;
+        do {
+            if (*reference++ != texture->checksum[byte])
+                goto next;
+        } while (++byte < 16);
+        if ((u32)NuTextureLoadOrderPC[index] > latest) {
             resolved = index + 1;
             latest = NuTextureLoadOrderPC[index];
         }
+    next:;
     }
     if (resolved != 0) {
-        if (resolved > 0 && NuTextureDimensions[resolved - 1] != NULL)
-            ++NuTextureDimensions[resolved - 1]->ref_count;
+        if (resolved > 0) {
+            NUTEXDIM_PC *texture = NuTextureDimensions[resolved - 1];
+            if (texture != NULL)
+                ++texture->ref_count;
+        }
         scene->texture_ids[tid & 0x3fff] = resolved;
     }
     return resolved;

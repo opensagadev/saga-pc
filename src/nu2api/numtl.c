@@ -201,7 +201,7 @@ void NuMtlAnimateSetMask(i32 mask) {
     NuMtlAnimateMaskPc = mask;
 }
 
-static NUMTL *__cdecl NuMtlLookupVariantPC(NUMTL *original, u32 descriptor) {
+static __declspec(noinline) NUMTL *__cdecl NuMtlLookupVariantPC(NUMTL *original, u32 descriptor) {
     NULNKHDR *node;
     for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {
         PC_MATERIAL_VARIANT_RECORD *entry = ((PC_MATERIAL_VARIANT_RECORD *)(node));
@@ -214,36 +214,39 @@ static NUMTL *__cdecl NuMtlLookupVariantPC(NUMTL *original, u32 descriptor) {
 
 void __cdecl NuMtlRegisterForOverride(NUMTL *original, u32 *descriptors, i32 count) {
     i32 i;
-    for (i = 0; i < count; ++i) {
-        if (NuMtlLookupVariantPC(original, descriptors[i]) == NULL) {
+    for (i = 0; i < count; ++i, ++descriptors) {
+        if (NuMtlLookupVariantPC(original, *descriptors) == NULL) {
             PC_MATERIAL_VARIANT_RECORD *entry = ((PC_MATERIAL_VARIANT_RECORD *)(NuLstAlloc(g_overrideList)));
-            PC_MATERIAL_CREATE_VIEW *destination;
             u32 retained_28, retained_2c;
             entry->material = NuMtlCreatePoolPC(1, numtl_renderplane, 1);
             entry->original = original;
-            entry->vertex_descriptor = descriptors[i];
-            destination = ((PC_MATERIAL_CREATE_VIEW *)(entry->material));
-            retained_28 = destination->retained_28;
-            retained_2c = destination->retained_2c;
-            *destination = *((PC_MATERIAL_CREATE_VIEW *)(original));
-            destination->shader.shader_handle = destination->shader.shader_variant_handle = 0;
-            destination->retained_28 = retained_28;
-            destination->retained_2c = retained_2c;
-            destination->flags |= 1;
-            destination->shader.vertex_format = descriptors[i];
-            destination->vertex_declaration = NuGetVertexDeclaration(destination->shader.vertex_format);
+            entry->vertex_descriptor = *descriptors;
+            retained_2c = ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_2c;
+            retained_28 = ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_28;
+            *((PC_MATERIAL_CREATE_VIEW *)(entry->material)) = *((PC_MATERIAL_CREATE_VIEW *)(original));
+            ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.shader_handle =
+                ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.shader_variant_handle = 0;
+            ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_2c = retained_2c;
+            ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_28 = retained_28;
+            ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->flags |= 1;
+            ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.vertex_format = *descriptors;
+            ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->vertex_declaration =
+                NuGetVertexDeclaration(((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.vertex_format);
             NuMtlUpdate(entry->material);
         }
     }
 }
 
 NUMTL *__cdecl NuMtlFindVariantMtl(NUMTL *source, NUMTL *original) {
-    u32 *descriptor = &((PC_MATERIAL_CREATE_VIEW *)(source))->shader.vertex_format;
-    NUMTL *material = NuMtlLookupVariantPC(original, *descriptor);
-    if (material != NULL)
-        return material;
-    NuMtlRegisterForOverride(original, descriptor, 1);
-    return NuMtlLookupVariantPC(original, *descriptor);
+    NULNKHDR *node;
+    for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {
+        PC_MATERIAL_VARIANT_RECORD *entry = ((PC_MATERIAL_VARIANT_RECORD *)(node));
+        if (entry->original == original && ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.vertex_format ==
+                                               ((PC_MATERIAL_CREATE_VIEW *)(source))->shader.vertex_format)
+            return entry->material;
+    }
+    NuMtlRegisterForOverride(original, &((PC_MATERIAL_CREATE_VIEW *)(source))->shader.vertex_format, 1);
+    return NuMtlLookupVariantPC(original, ((PC_MATERIAL_CREATE_VIEW *)(source))->shader.vertex_format);
 }
 
 typedef struct FRAME_MTL_ANIM_DESC_PC {
