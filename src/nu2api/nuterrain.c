@@ -21,11 +21,6 @@ typedef union TERRAIN_SCAN_WORD_PC {
     u32 opaque_bits;
 } TERRAIN_SCAN_WORD_PC;
 
-typedef struct TERRAIN_SHADOW_QUERY_VIEW_PC {
-    u8 unknown_000[0x148];
-    TERRAIN_SCAN_WORD_PC scan_words[512];
-} TERRAIN_SHADOW_QUERY_VIEW_PC;
-
 typedef struct TERRAIN_INDEX_LEVEL_PC {
     i16 cache_age;
     u8 unknown_02[2];
@@ -103,8 +98,6 @@ typedef struct TERRAIN_SET_PC {
 } TERRAIN_SET_PC;
 
 STATIC_ASSERT(sizeof(TERRAIN_SCAN_WORD_PC) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SHADOW_QUERY_VIEW_PC, scan_words) == 0x148);
-STATIC_ASSERT(sizeof(TERRAIN_SHADOW_QUERY_VIEW_PC) == 0x948);
 STATIC_ASSERT(sizeof(TERRAIN_INDEX_LEVEL_PC) == 0x80c);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, cache_age) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_x) == 4);
@@ -158,6 +151,60 @@ typedef TERRAIN_GROUP_PC TERRAIN_GROUP;
 typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM;
 typedef TERRAIN_CELL_PC TERRAIN_CELL;
 typedef TERRAIN_POLYGON_INFO_PC TERRAIN_SHAPE;
+
+typedef struct TerrainQuery_s {
+    u32 flags;
+    NUVEC start_position;
+    NUVEC start_movement;
+    NUVEC position;
+    NUVEC movement;
+    u8 scan_result;
+    u8 shape_adjusted;
+    i16 object_index;
+    f32 radius;
+    f32 horizontal_movement_length;
+    u8 *hit_flags;
+    f32 movement_pitch;
+    f32 movement_yaw;
+    f32 movement_length;
+    f32 collision_radius;
+    f32 collision_radius_sq;
+    f32 inverse_collision_radius;
+    f32 object_scale;
+    f32 object_scale_sq;
+    f32 inverse_object_scale;
+    f32 inverse_object_scale_sq;
+    i16 terrain_group_index;
+    u8 pad_0x06e[2];
+    NUVEC local_start;
+    NUVEC local_end;
+    u8 hit_type;
+    u8 hit_edge;
+    i16 scan_group_index;
+    void *scan_list;
+    TERRAIN_SHAPE *surface;
+    TERRAIN_SHAPE *working_surface;
+    f32 hit_time;
+    f32 unclamped_hit_time;
+    f32 separation_epsilon;
+    f32 compare_epsilon;
+    NUVEC movement_normal;
+    NUVEC impact_normal;
+    NUVEC platform_position;
+    NUVEC platform_normal;
+    NUVEC previous_movement_normal;
+    u8 pad_0x0e4[0x18];
+    NUVEC transformed_vertices[4];
+    u8 pad_0x12c[0x1c];
+    union {
+        u8 scan_list_storage[0x800];
+        TERRAIN_SCAN_WORD_PC scan_words[512];
+    };
+} TerrainQuery_s;
+STATIC_ASSERT(sizeof(TerrainQuery_s) == 0x948);
+STATIC_ASSERT(offsetof(TerrainQuery_s, terrain_group_index) == 0x6c);
+STATIC_ASSERT(offsetof(TerrainQuery_s, surface) == 0x90);
+STATIC_ASSERT(offsetof(TerrainQuery_s, scan_words) == 0x148);
 
 struct TERRAIN_SHAPE_BATCH {
     i16 marker, shape_count;
@@ -678,7 +725,7 @@ extern i32 TerrainSkinPoolSlotCountPc;
 extern i32 TerrainSkinPoolSlotBytesPc;
 extern u8 *TerrainSkinPoolBasePc;
 /* Keep public CurrentTerrain/TerI as existing void* storage. Cast TerI locally
- * to TERRAIN_SHADOW_QUERY_VIEW_PC* for query.scan_words. Keep existing
+ * to TerrainQuery_s* (the 0x948-byte query packet). Keep existing
  * PLATFORM.scene_object as void*, locally accessed through NUMTX*; PLATFORM.instance_flags
  * points at the owning instance's flags word. No full scene-owner type transfer.
  */
@@ -873,7 +920,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         TERRAIN_SCAN_WORD_PC *entry;
 
         cache = &TERRAIN_ROT_SET->index_levels[hit_index];
-        group_header = ((TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI)->scan_words;
+        group_header = ((TerrainQuery_s *)TerI)->scan_words;
         max_x = saved_position.x + 0.10000000149011612;
         max_z = saved_position.z + 0.10000000149011612;
         min_x = saved_position.x - 0.10000000149011612;
@@ -909,7 +956,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         }
     } else {
         i32 cell_index;
-        TERRAIN_SHADOW_QUERY_VIEW_PC *query;
+        TerrainQuery_s *query;
 
         cache = &TERRAIN_ROT_SET->index_levels[oldest_index];
         if (cache->cache_age < 2) {
@@ -923,7 +970,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             max_z = saved_position.z + 0.10000000149011612;
             min_x = saved_position.x - 0.10000000149011612;
             min_z = saved_position.z - 0.10000000149011612;
-            group_header = ((TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI)->scan_words;
+            group_header = ((TerrainQuery_s *)TerI)->scan_words;
         }
         cursor = group_header + 1;
         limit = cursor + 508;
@@ -970,7 +1017,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 TERRAIN_ROT_FINISH_GROUP(group_indices[cell_group]);
             }
         }
-        query = (TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI;
+        query = (TerrainQuery_s *)TerI;
         if (TERRAIN_ROT_SET->index_levels[oldest_index].cache_age < 2) {
             TERRAIN_SCAN_WORD_PC *entry;
 
@@ -1249,7 +1296,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
 
     TERRAIN_GROUP_PC *groups;
     i32 remaining;
-    TERRAIN_SHADOW_QUERY_VIEW_PC *query;
+    TerrainQuery_s *query;
     volatile f32 plane_quotient;
     TERRAIN_SCAN_WORD_PC *scan;
     TERRAIN_POLYGON_INFO_PC *ordinary_floor;
@@ -1268,7 +1315,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     NUVEC extended_above_normal;
     i16 shape_count;
 
-    query = (TERRAIN_SHADOW_QUERY_VIEW_PC *)TerI;
+    query = (TerrainQuery_s *)TerI;
 
     scan = query->scan_words;
     TerrainShadowGroupIndexPc = -1;
@@ -1537,7 +1584,7 @@ f32 __cdecl NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_
     if (CurrentTerrain == NULL)
         return LevelConfigFarDistance;
 
-    TerI = (TERRAIN_SHADOW_QUERY_VIEW_PC *)NuScratchAlloc32(0x948);
+    TerI = (TerrainQuery_s *)NuScratchAlloc32(0x948);
     TerrainScaledShapeCursorPc = TerrainScaleWorkBasePc;
     local_position = *position;
     NewScanRot(&local_position, mask);
@@ -2965,20 +3012,6 @@ void TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) 
 #undef TERRAIN_TDP_GROUP
 }
 
-/* Original query packet field cohort used by the debug consumers. */
-typedef struct TERRAIN_DEBUG_QUERY_PC {
-    u8 unknown_00[0x6c];
-    i16 terrain_group_index;
-    u8 unknown_6e[0x22];
-    TERRAIN_POLYGON_INFO_PC *surface;
-    u8 unknown_94[0xb4];
-    TERRAIN_SCAN_WORD_PC scan_words[512];
-} TERRAIN_DEBUG_QUERY_PC;
-STATIC_ASSERT(offsetof(TERRAIN_DEBUG_QUERY_PC, terrain_group_index) == 0x6c);
-STATIC_ASSERT(offsetof(TERRAIN_DEBUG_QUERY_PC, surface) == 0x90);
-STATIC_ASSERT(offsetof(TERRAIN_DEBUG_QUERY_PC, scan_words) == 0x148);
-STATIC_ASSERT(sizeof(TERRAIN_DEBUG_QUERY_PC) == 0x948);
-
 typedef struct terrain_debug_source_link_pc_s {
     TERRAIN_POLYGON_INFO_PC *source_polygon;
 } TERRAIN_DEBUG_SOURCE_LINK_PC;
@@ -2986,7 +3019,7 @@ STATIC_ASSERT(offsetof(TERRAIN_DEBUG_SOURCE_LINK_PC, source_polygon) == 0);
 STATIC_ASSERT(sizeof(TERRAIN_DEBUG_SOURCE_LINK_PC) == 4);
 
 void TerrDrawImpactPolPc(void) {
-    TERRAIN_DEBUG_QUERY_PC *query = (TERRAIN_DEBUG_QUERY_PC *)TerI;
+    TerrainQuery_s *query = (TerrainQuery_s *)TerI;
     TERRAIN_POLYGON_INFO_PC *surface;
     if (query == NULL || query->surface == NULL)
         return;

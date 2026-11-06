@@ -28,11 +28,6 @@ typedef union TERRAIN_SCAN_WORD_PC {
     u32 opaque_bits;
 } TERRAIN_SCAN_WORD_PC;
 
-typedef struct TERRAIN_SHADOW_QUERY_VIEW_PC {
-    u8 unknown_000[0x148];
-    TERRAIN_SCAN_WORD_PC scan_words[512];
-} TERRAIN_SHADOW_QUERY_VIEW_PC;
-
 typedef struct TERRAIN_INDEX_LEVEL_PC {
     i16 cache_age;
     u8 unknown_02[2];
@@ -110,8 +105,6 @@ typedef struct TERRAIN_SET_PC {
 } TERRAIN_SET_PC;
 
 STATIC_ASSERT(sizeof(TERRAIN_SCAN_WORD_PC) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SHADOW_QUERY_VIEW_PC, scan_words) == 0x148);
-STATIC_ASSERT(sizeof(TERRAIN_SHADOW_QUERY_VIEW_PC) == 0x948);
 STATIC_ASSERT(sizeof(TERRAIN_INDEX_LEVEL_PC) == 0x80c);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, cache_age) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_x) == 4);
@@ -329,7 +322,10 @@ struct TerrainQuery_s {
     u8 pad_0x0e4[0x18];
     NUVEC transformed_vertices[4];
     u8 pad_0x12c[0x1c];
-    u8 scan_list_storage[0x800];
+    union {
+        u8 scan_list_storage[0x800];
+        TERRAIN_SCAN_WORD_PC scan_words[512];
+    };
 };
 STATIC_ASSERT(sizeof(TerrainQuery_s) == 0x948);
 STATIC_ASSERT(offsetof(TerrainQuery_s, position) == 0x1c);
@@ -342,6 +338,7 @@ STATIC_ASSERT(offsetof(TerrainQuery_s, inverse_object_scale) == 0x64);
 STATIC_ASSERT(offsetof(TerrainQuery_s, scan_group_index) == 0x8a);
 STATIC_ASSERT(offsetof(TerrainQuery_s, scan_list) == 0x8c);
 STATIC_ASSERT(offsetof(TerrainQuery_s, scan_list_storage) == 0x148);
+STATIC_ASSERT(offsetof(TerrainQuery_s, scan_words) == 0x148);
 typedef struct TerrainScanBounds TerrainScanBounds;
 typedef struct TerrainScanWriter TerrainScanWriter;
 struct TerrainScanBounds {
@@ -1032,7 +1029,7 @@ extern "C" {
             cache->center_z = position->z;
             group_header->header.shape_count = 0;
             group_header->header.terrain_group = 0;
-            group_header = static_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(TerI)->scan_words;
+            group_header = static_cast<TerrainQuery_s *>(TerI)->scan_words;
             cursor = group_header + 1;
             limit = cursor + 508;
             max_x = (f32)(saved_position.x + TerrainScanMargin10Pc);
@@ -1044,7 +1041,7 @@ extern "C" {
             TERRAIN_NS_CACHED_SHAPES(entry);
         } else {
             cache = &TERRAIN_NS_SET->index_levels[hit_index];
-            group_header = static_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(TerI)->scan_words;
+            group_header = static_cast<TerrainQuery_s *>(TerI)->scan_words;
             max_x = (f32)(saved_position.x + TerrainScanMargin10Pc);
             max_z = (f32)(saved_position.z + TerrainScanMargin10Pc);
             cache->cache_age = 8;
@@ -1205,7 +1202,7 @@ extern "C" {
             return;
         }
         query = TERRAIN_STH_QUERY;
-        group_header = reinterpret_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(query)->scan_words;
+        group_header = query->scan_words;
         const u8 scan_result = query->scan_result;
         cursor = group_header + 1;
         limit = cursor + 508;
@@ -1398,7 +1395,7 @@ extern "C" {
         vertices = reinterpret_cast<NUVEC4 *>((reinterpret_cast<u32>(NuScratchAlloc32(0xd0)) + 31) & ~u32(15));
         TerrainScaledShapeCursorPc = static_cast<TERRAIN_SHAPE *>(TerrainScaleWorkBasePc);
         query = TERRAIN_STH_QUERY;
-        group_header = reinterpret_cast<TERRAIN_SHADOW_QUERY_VIEW_PC *>(query)->scan_words;
+        group_header = query->scan_words;
         cursor = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(query->scan_list_storage) + 1;
         limit = cursor + 508;
         shape_count = 0;
