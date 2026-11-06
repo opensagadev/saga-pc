@@ -1951,7 +1951,7 @@ typedef struct parttype_lookup_pc_s {
     i8 effect_pages[8];
     i8 scene_indices[8];
     i8 variant_count;
-    u8 unknown_0b1;
+    u8 variant_mode;
     i8 page;
     u8 field_b3;
     f32 particle_scale;
@@ -1978,9 +1978,14 @@ typedef struct parttype_lookup_pc_s {
     i32 sounds[4];
     u8 sound_modes[4];
     f32 maximum_distance;
-    f32 field_160;
-    f32 field_164;
-    f32 field_168;
+    union {
+        NUVEC lighting_scale;
+        struct {
+            f32 field_160;
+            f32 field_164;
+            f32 field_168;
+        };
+    };
     f32 last_used_time;
     f32 scale;
     u8 unknown_174[0x4];
