@@ -489,8 +489,8 @@ AILOCATOR_PC *LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip
 i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                   i32 param_4, i32 param_5, f32 param_6) {
     GAMEOBJECT *object;
-    f32 initial_fire_fraction;
-    i32 explicit_fire_range;
+    f32 initial_fire_fraction = 0.0f;
+    i32 explicit_fire_range = 0;
     i32 index;
     char *value;
     GAMEOBJECT *opponent;
@@ -516,7 +516,6 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         processor->action_data_5 = engagefiretime;
         packet->movement_instruction_parameter = idealgoalrange;
         initial_fire_fraction = NuRandFloat();
-        explicit_fire_range = 0;
 
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIGameFireRangeName);
@@ -586,7 +585,8 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
 
     opponent = (GAMEOBJECT *)(processor->action_data_3);
     if (opponent != NULL) {
-        if ((opponent->flags_1fc_word & 0x1001) != 0x1001 || (opponent->dead != 0 && !(opponent->field_1010 > 0.0f)))
+        if (!(opponent->flags_1fc_word & 1) || !(opponent->flags_1fc_word & 0x1000) ||
+            (opponent->dead != 0 && !(opponent->field_1010 > 0.0f)))
             opponent = NULL;
     }
     if (processor->action_data_6 != 0) {
@@ -599,7 +599,8 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         opponent = (GAMEOBJECT *)api_opponent->owner;
     }
     object->portal_flags |= 0x20;
-    if ((opponent->flags_1fc_word & 0x1001) != 0x1001 || opponent->dead != 0 || opponent->character_context == 0x2b ||
+    if (!(opponent->flags_1fc_word & 1) || !(opponent->flags_1fc_word & 0x1000) || opponent->dead != 0 ||
+        opponent->character_context == 0x2b ||
         ((opponent->flags_1fc_word & 0x80u) != 0 && !(opponent->spawn_protection_timer > 1.5f)))
         return 0;
 
