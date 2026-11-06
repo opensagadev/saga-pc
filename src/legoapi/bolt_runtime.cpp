@@ -22,7 +22,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, facing_direction) == 0xf30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 /* Same lookup as BoltType_FindByID in bolts.c; retail Bolt_Init inlines it. */
-static BOLTTYPE_PC *BoltType_FindByIDInline(i32 id, WORLDINFO *world) {
+static __forceinline BOLTTYPE_PC *BoltType_FindByIDInline(i32 id, WORLDINFO *world) {
     BOLTSYS_PC *system = BoltSys;
     if (id >= 0 && id < system->count)
         return &system->types[id];
