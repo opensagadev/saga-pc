@@ -73,6 +73,22 @@ i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float
     return 0;
 }
 
+/* Original source name unknown. XZ distance from a point, given in the segment's
+   rotated frame, to the segment from start to end; also returns the fraction
+   along the segment. */
+static f32 XZPointToSegmentPc(NUVEC *point, f32 *fraction, NUVEC *start, NUVEC *end, f32 length) {
+    if (point->z < 0.0f) {
+        *fraction = 0.0f;
+        return NuVecXZDist(start, point, NULL);
+    }
+    if (point->z > length) {
+        *fraction = 1.0f;
+        return NuVecXZDist(end, point, NULL);
+    }
+    *fraction = point->z / length;
+    return UtilitiesFabsPc(point->x);
+}
+
 f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second) {
     i32 angle;
     f32 ab_length;
@@ -80,11 +96,11 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
     f32 closest;
     f32 distance;
     f32 fraction;
-    NUVEC ac;
-    NUVEC bc;
+    NUVEC direction;
     NUVEC ca;
     NUVEC da;
-    NUVEC direction;
+    NUVEC ac;
+    NUVEC bc;
     closest = 1000000000.0f;
     NuVecSub(&direction, b, a);
     angle = NuAtan2D(direction.x, direction.z);
@@ -108,65 +124,25 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
     ab_length = NuVecXZDist(b, a, NULL);
     cd_length = NuVecXZDist(d, c, NULL);
 
-    if (ca.z < 0.0f) {
-        distance = NuVecXZDist(a, &ca, NULL);
-        fraction = 0.0f;
-    } else if (ca.z > ab_length) {
-        distance = NuVecXZDist(b, &ca, NULL);
-        fraction = 1.0f;
-    } else {
-        fraction = ca.z / ab_length;
-        distance = UtilitiesFabsPc(ca.x);
-    }
+    distance = XZPointToSegmentPc(&ca, &fraction, a, b, ab_length);
     if (distance < closest) {
         *first = fraction;
         *second = 0.0f;
         closest = distance;
     }
-    if (da.z < 0.0f) {
-        distance = NuVecXZDist(a, &da, NULL);
-        fraction = 0.0f;
-    } else if (da.z > ab_length) {
-        distance = NuVecXZDist(b, &da, NULL);
-        fraction = 1.0f;
-    } else {
-        fraction = da.z / ab_length;
-        distance = UtilitiesFabsPc(da.x);
-    }
+    distance = XZPointToSegmentPc(&da, &fraction, a, b, ab_length);
     if (distance < closest) {
         *first = fraction;
         *second = 1.0f;
         closest = distance;
     }
-    if (!(ac.z < 0.0f)) {
-        if (ac.z > cd_length) {
-            distance = NuVecXZDist(d, &ac, NULL);
-            fraction = 1.0f;
-        } else {
-            fraction = ac.z / cd_length;
-            distance = UtilitiesFabsPc(ac.x);
-        }
-    } else {
-        distance = NuVecXZDist(c, &ac, NULL);
-        fraction = 0.0f;
-    }
+    distance = XZPointToSegmentPc(&ac, &fraction, c, d, cd_length);
     if (distance < closest) {
         *second = fraction;
         *first = 0.0f;
         closest = distance;
     }
-    if (!(bc.z < 0.0f)) {
-        if (bc.z > cd_length) {
-            distance = NuVecXZDist(d, &bc, NULL);
-            fraction = 1.0f;
-        } else {
-            fraction = bc.z / cd_length;
-            distance = UtilitiesFabsPc(bc.x);
-        }
-    } else {
-        distance = NuVecXZDist(c, &bc, NULL);
-        fraction = 0.0f;
-    }
+    distance = XZPointToSegmentPc(&bc, &fraction, c, d, cd_length);
     if (distance < closest) {
         *second = fraction;
         *first = 1.0f;

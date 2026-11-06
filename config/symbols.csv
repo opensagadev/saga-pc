@@ -3938,6 +3938,7 @@ address,symbol,size,ctype
 0x550cf0,_StreamingInsideLineXZPc,68,"i16 __cdecl(f32, f32, f32, f32, f32, f32)"
 0x00550ff0,_LineIntersectXY,380,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x551170,_XZLinesIntersect,505,
+0x551370,_XZPointToSegmentPc,106,"private same-TU f32(NUVEC *, f32 *, NUVEC *, NUVEC *, f32)"
 0x5513e0,_XZLinesClosest,838,
 0x551730,_LineIntersectSphere,205,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *, f32, f32 *)"
 0x551800,_LineIntersectSphereXZPc,153,"i32 __cdecl(NUVEC *, NUVEC *, NUVEC *, f32)"
