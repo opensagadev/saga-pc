@@ -344,7 +344,7 @@ extern "C" {
         }
     }
 
-    void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
+    __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
         SCENE_TRANSFER_PC *view = (SCENE_TRANSFER_PC *)scene;
         SCENE_INSTANCE_TRANSFER_PC *instance;
         i32 count;
@@ -1096,14 +1096,13 @@ static void WorldGetTitlesNamePrivatePc(char *titles) {
 }
 
 void __cdecl WorldInfo_Load(WORLDINFO *world) {
-    char path[268];
+    char path[256];
     char titles[64];
     char ai_name[32];
     char title_light_path[] = "levels\\titles\\titles";
     NUGSCN *cutscene_scene;
     WORLD_LOAD_READER_PC *resource = (WORLD_LOAD_READER_PC *)world;
     i32 index;
-    i32 selected_archive;
     LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index,
              world->level_idx, world->config_file);
     Level_LoadConfigFile(world);
@@ -1125,25 +1124,21 @@ void __cdecl WorldInfo_Load(WORLDINFO *world) {
         }
         NuStrCat(path, ".gsc");
         numtl_force_mipmode = (i32)(u8)world->current_level->mipmap_mode + 1;
-        selected_archive = 1;
-        for (index = 0; index < 11; ++index) {
+        LOG_INFO("Scene load begin: path=%s shadowmethod=%d", path, PcWindowOptions.shadowmethod);
+        for (index = 0; index != 11; ++index) {
             if (world->current_level == WorldArchiveOneLevelsPc[index]) {
-                break;
+                StartupDatsSelectPc(1);
+                goto archive_selected;
             }
         }
-        if (index == 11) {
-            selected_archive = 3;
-            for (index = 0; index < 4; ++index) {
-                if (world->current_level == WorldArchiveThreeLevelsPc[index]) {
-                    break;
-                }
+        for (index = 0; index != 4; ++index) {
+            if (world->current_level == WorldArchiveThreeLevelsPc[index]) {
+                StartupDatsSelectPc(3);
+                goto archive_selected;
             }
-            if (index == 4)
-                selected_archive = (i32)(i8)world->current_level->unknown_00a2 + 1;
         }
-        LOG_INFO("Scene load begin: path=%s archive=%d shadowmethod=%d", path, selected_archive,
-                 PcWindowOptions.shadowmethod);
-        StartupDatsSelectPc(selected_archive);
+        StartupDatsSelectPc((i32)(i8)world->current_level->unknown_00a2 + 1);
+    archive_selected:
         if (PcWindowOptions.shadowmethod == 2)
             world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
         else
