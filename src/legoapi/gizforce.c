@@ -655,58 +655,6 @@ static void *GizForces_ReserveBufferSpace(void *world_ptr) {
     return force_sys;
 }
 
-void GizForces_Draw(void *world_ptr, void *data, float unused2) {
-    struct GIZFORCE_s *force;
-    u16 force_sys_count;
-    i32 index;
-    WORLDINFO *world = (WORLDINFO *)(world_ptr);
-    GIZFORCESYS_s *force_sys = (GIZFORCESYS_s *)(data);
-    if (force_sys == NULL) {
-        return;
-    }
-
-    force = force_sys->forces;
-    force_sys_count = force_sys->count;
-    for (index = 0; index < force_sys_count; ++index, ++force) {
-        if ((force->progress_flags & GIZFORCE_PROGRESS_VISIBLE) == 0 || (i8)(force->progress_flags) >= 0 ||
-            (force->room_id >= 0 && world->rooms_visible_ptr[force->room_id] == 0)) {
-            continue;
-        }
-
-        ResetShadowMapRendering();
-        if ((force->config_flags & GIZFORCE_CONFIG_DRAW_REFLECTION) != 0) {
-            GameAnimSet_DrawReflection(force->anim_set, 2, force->vertical_range, NULL);
-        }
-        if ((force->config_flags & GIZFORCE_CONFIG_CAST_SHADOW) == 0) {
-            EnableShadowMapRendering(0);
-        }
-        if ((force->config_flags & GIZFORCE_CONFIG_ALONG_SOCKET) != 0) {
-            struct gameanimobj_s *anim_object;
-            struct numtx_s *draw_matrix;
-            if ((force->runtime_flags & GIZFORCE_RUNTIME_ALONG_SOCKET_HIDDEN) == 0) {
-                continue;
-            }
-
-            anim_object = force->anim_set->objects;
-            if (anim_object == NULL) {
-                continue;
-            }
-            draw_matrix = NuSpecialGetDrawMtx(&anim_object->special);
-            NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, draw_matrix);
-            if ((force->config_flags & GIZFORCE_CONFIG_DRAW_REFLECTION) != 0) {
-                NUMTX reflection_matrix;
-                if (MatrixReflection(draw_matrix, 2, draw_matrix->m31 + force->vertical_range,
-                                     WORLD->current_level->reflection_y, &reflection_matrix) != 0) {
-                    NuRndrStartReflectionRender(0);
-                    NuSpecialDrawAt((NUSPECIALHANDLE *)&force->along_socket, &reflection_matrix);
-                    NuRndrEndReflectionRender();
-                }
-            }
-        }
-    }
-    ResetShadowMapRendering();
-}
-
 typedef struct trigger_force_object_pc_s {
     u8 unknown000[0x10cc];
     GIZFORCE_PC *force;
@@ -1711,11 +1659,9 @@ i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT
     if (system == NULL)
         return 0;
     count = system->hit_test_gizmo_count;
-    if (count <= 0)
-        return 0;
     gizmos = system->hit_test_gizmos;
-    for (index = 0; index < count; ++index) {
-        force = (GIZFORCE_PC *)gizmos[index]->object;
+    for (index = 0; index < count; ++index, ++gizmos) {
+        force = (GIZFORCE_PC *)(*gizmos)->object;
         if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 || (force->runtime_flags & 0x100) == 0 ||
             (force->runtime_flags & 0x10000) != 0)
             continue;

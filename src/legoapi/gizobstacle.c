@@ -411,10 +411,12 @@ i32 __cdecl GizmoObstacle_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignore_acti
             return 0;
     }
 }
-i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *ptr, i32 activate, i32 flags) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)ptr;
-    GIZOBSTACLE *obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
-    i32 ai_active, reverse;
+i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *gizmo, i32 activate, i32 flags) {
+    GIZOBSTACLE *obstacle;
+    i32 ai_active;
+    if (!gizmo)
+        return 0;
+    obstacle = (GIZOBSTACLE *)gizmo->object;
     if (!obstacle)
         return 0;
     if ((obstacle->progress_flags & 0x100) && (obstacle->anim_set->state == 2 || obstacle->anim_set->state == 1))
@@ -422,19 +424,20 @@ i32 __cdecl GizmoObstacle_ActivateRev(GIZMO_PC *ptr, i32 activate, i32 flags) {
     ai_active = (obstacle->runtime_flags >> 2) & 1;
     if (ai_active)
         obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | 1;
-    if (!(flags & 1)) {
-        if (activate) {
-            GizObstacle_PlayBackwards((GIZOBSTACLE *)obstacle);
-            obstacle->progress_flags = (obstacle->progress_flags & ~1u) | 0x100;
-        } else
-            obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | 1;
+    if (flags & 1) {
+        if (activate == ((obstacle->progress_flags >> 8) & 1) &&
+            (!(flags & 4) || ((obstacle->progress_flags >> 1) & 1) != activate))
+            return 0;
+        if (activate == 1 && ai_active)
+            return 0;
         return 1;
     }
-    reverse = (obstacle->progress_flags >> 8) & 1;
-    if (activate == reverse && (!(flags & 4) || ((obstacle->progress_flags >> 1) & 1) != activate))
-        return 0;
-    if (activate == 1 && ai_active)
-        return 0;
+    if (activate) {
+        GizObstacle_PlayBackwards(obstacle);
+        obstacle->progress_flags = (obstacle->progress_flags & ~1u) | 0x100;
+        return 1;
+    }
+    obstacle->progress_flags = (obstacle->progress_flags & ~0x100u) | 1;
     return 1;
 }
 void *__cdecl GizObstacles_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

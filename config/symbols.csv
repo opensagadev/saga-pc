@@ -1065,7 +1065,6 @@ address,symbol,size,ctype
 0x467580,_ForceGroupPopPc,122,
 0x467600,_GizForce_UpdateHint,102,i32 __cdecl(HINT_PC*)
 0x467670,_GizForces_DrawPc,338,"void __cdecl(void *, void *, f32)"
-0x4676e0,_GizForces_Draw,226,
 0x4677d0,_GizForce_StoodOnForce,72,"i32 __cdecl(GIZFORCE_PC *, GAMEOBJECT *)"
 0x467820,_GizForces_AngleToForce,54,"u16 __cdecl(NUVEC *, GIZFORCE_PC *)"
 0x467860,_ForceAnimationDonePc,48,
