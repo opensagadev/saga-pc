@@ -34,17 +34,11 @@ typedef struct TERRAIN_INDEX_LEVEL_PC {
     TERRAIN_SCAN_WORD_PC scan_words[512];
 } TERRAIN_INDEX_LEVEL_PC;
 
-typedef struct TERRAIN_XZ_BOUNDS_VIEW_PC {
-    f32 x;
-    f32 y;
-    f32 z;
-} TERRAIN_XZ_BOUNDS_VIEW_PC;
-
 typedef struct TERRAIN_GROUP_PC {
     NUVEC origin;
     TERRAIN_SKIN_STREAM_VIEW_PC *data;
-    TERRAIN_XZ_BOUNDS_VIEW_PC bounds_min;
-    TERRAIN_XZ_BOUNDS_VIEW_PC bounds_max;
+    NUVEC bounds_min;
+    NUVEC bounds_max;
     u32 platform_flags;
     i32 chunk_type;
     i16 scene_index;
@@ -52,21 +46,13 @@ typedef struct TERRAIN_GROUP_PC {
     f32 radius;
 } TERRAIN_GROUP_PC;
 
-typedef struct TERRAIN_PREVIOUS_MATRIX_VIEW_PC {
-    u8 unknown_00[0x30];
-    f32 m30;
-    f32 m31;
-    f32 m32;
-    u8 unknown_3c[4];
-} TERRAIN_PREVIOUS_MATRIX_VIEW_PC;
-
 typedef union TERRAIN_SCENE_STATE_VIEW_PC {
     u32 flags;
     u8 low_flags;
 } TERRAIN_SCENE_STATE_VIEW_PC;
 
 typedef struct TERRAIN_PLATFORM_PC {
-    TERRAIN_PREVIOUS_MATRIX_VIEW_PC previous_matrix;
+    NUMTX previous_matrix;
     void *scene_object;
     u32 unknown_44;
     i16 terrain_group_index;
@@ -129,10 +115,6 @@ STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, cache_age) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_z) == 8);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, scan_words) == 0xc);
-STATIC_ASSERT(sizeof(TERRAIN_XZ_BOUNDS_VIEW_PC) == 0xc);
-STATIC_ASSERT(sizeof(TERRAIN_PREVIOUS_MATRIX_VIEW_PC) == 0x40);
-STATIC_ASSERT(offsetof(TERRAIN_PREVIOUS_MATRIX_VIEW_PC, m30) == 0x30);
-STATIC_ASSERT(offsetof(TERRAIN_PREVIOUS_MATRIX_VIEW_PC, m32) == 0x38);
 STATIC_ASSERT(sizeof(TERRAIN_SCENE_STATE_VIEW_PC) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, previous_matrix) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_x) == 4);
@@ -2144,7 +2126,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
 void __cdecl TerrainPlatGetMtx(i32 index, NUMTX **previous, NUMTX **current) {
     if (index > -1) {
-        *previous = (NUMTX *)&((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix;
+        *previous = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].previous_matrix;
         *current = (NUMTX *)((TERRAIN_SET_PC *)CurrentTerrain)->platforms[index].scene_object;
     }
 }
@@ -2403,7 +2385,6 @@ STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, group_for_type) == 0xc);
 STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, platforms) == 0x10c);
 STATIC_ASSERT(offsetof(TERRAIN_PICKUP_SET_PC, spatial_nodes) == 0xe8c);
 STATIC_ASSERT(sizeof(TERRAIN_PICKUP_SET_PC) == 0xa490);
-STATIC_ASSERT(offsetof(TERRAIN_PREVIOUS_MATRIX_VIEW_PC, m31) == 0x34);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_5c) == 0x5c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_60) == 0x60);
@@ -3120,7 +3101,6 @@ STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_groups) == 0xa488);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, max_platforms) == 0xa48c);
 STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, origin) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
-STATIC_ASSERT(offsetof(TERRAIN_XZ_BOUNDS_VIEW_PC, y) == 4);
 /* Native 680e90: this preparation updates group bounds/radius, leaving
  * the copied polygon and batch bounds intact. */
 #define TERRAIN_SKIN_BOUND(value, lo, hi)                                                                              \
