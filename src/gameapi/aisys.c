@@ -5926,11 +5926,11 @@ i32 __cdecl Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     NUVEC distance_vector;
     f32 distance_squared;
     f32 reach_distance;
-    i32 random_locator_count;
-    i32 use_personal_name;
-    i32 use_indexed_name;
-    f32 minimum_time;
-    f32 maximum_time;
+    i32 random_locator_count = 0;
+    i32 use_personal_name = 0;
+    i32 use_indexed_name = 0;
+    f32 minimum_time = 0.0f;
+    f32 maximum_time = 0.0f;
     char locator_name[64];
     i32 index;
     AILOCATOR_PC *locator_2;
@@ -5942,176 +5942,173 @@ i32 __cdecl Action_GoToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
         return 1;
     }
 
-    if (is_first_time == 0) {
-        locator = (AILOCATOR_PC *)(processor->action_data_3);
-        if (locator == NULL) {
+    if (is_first_time != 0) {
+        processor->action_data_1 = 0;
+        processor->action_data_3 = processor->locator;
+
+        if (param_count != 0) {
+            for (index = 0; index < param_count; ++index) {
+                if (AIActionParseSpeedFn != NULL &&
+                    AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                    continue;
+                }
+
+                if (NuStrIStr(params[index], "name") != NULL || NuStrIStr(params[index], "teleport") != NULL) {
+                    ++index;
+                    if (index < param_count) {
+                        if (use_indexed_name != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
+                            sprintf(locator_name, AILocatorIndexedFormat, params[index],
+                                    ((APIOBJECT_PC *)packet->owner)->locator_name_index);
+                        } else if (use_personal_name != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
+                            sprintf(locator_name, AILocatorPersonalFormat, params[index],
+                                    ((APIOBJECT_PC *)packet->owner)->character_data->name);
+                        } else if (random_locator_count != 0) {
+                            sprintf(locator_name, AILocatorIndexedFormat, params[index],
+                                    NuRand(NULL) % random_locator_count);
+                        } else {
+                            sprintf(locator_name, params[index]);
+                        }
+
+                        processor->action_data_3 = AIPathFindLocator(sys, locator_name);
+                    }
+                    if (NuStrIStr(params[index - 1], "teleport") != NULL) {
+                        locator_2 = (AILOCATOR_PC *)(processor->action_data_3);
+                        if (locator_2 == NULL) {
+                            return 1;
+                        }
+                        packet->owner->position = locator_2->position;
+                        return 1;
+                    }
+                    continue;
+                }
+
+                if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL) {
+                    use_personal_name = 1;
+                    continue;
+                }
+                if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL) {
+                    use_indexed_name = 1;
+                    continue;
+                }
+
+                value = NuStrIStr(params[index], "random");
+                if (value != NULL) {
+                    random_locator_count = AIParamToFloatEx(packet, processor, value + NuStrLen("random") + 1);
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
+                if (value != NULL) {
+                    processor->action_timer =
+                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
+                if (value != NULL) {
+                    minimum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIActionMaxTimeName);
+                if (value != NULL) {
+                    maximum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIPathGoalRangeName);
+                if (value != NULL) {
+                    packet->movement_instruction_parameter =
+                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
+                    continue;
+                }
+
+                if (NuStrICmp(params[index], "on_ground") == 0) {
+                    processor->action_data_1 |= 1u;
+                } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
+                    processor->action_data_1 |= 2u;
+                } else if (NuStrICmp(params[index], AIPathFaceOpponentName) == 0) {
+                    processor->action_data_1 |= 4u;
+                } else if (NuStrICmp(params[index], AIPathIgnorePathName) == 0) {
+                    processor->action_data_1 |= 8u;
+                } else if (NuStrICmp(params[index], AIPathMustReachDestinationName) == 0) {
+                    processor->action_data_1 |= 16u;
+                } else {
+                    packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+                }
+            }
+        }
+
+        if (processor->action_timer == 0.0f) {
+            if (maximum_time > minimum_time) {
+                processor->action_timer = NuRandFloat() * (maximum_time - minimum_time) + minimum_time;
+            } else {
+                processor->action_timer = 0.01f;
+            }
+        }
+
+        locator_3 = (AILOCATOR_PC *)(processor->action_data_3);
+        if (locator_3 == NULL) {
             return 1;
         }
 
-        if ((processor->action_data_1 & 8u) == 0) {
-            AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 1,
+        if ((processor->action_data_1 & 8u) != 0) {
+            AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 7,
                               packet->movement_instruction_parameter);
         } else {
-            AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 7,
+            AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 1,
                               packet->movement_instruction_parameter);
         }
 
-        if ((processor->action_data_1 & 4u) != 0 && packet->opponent != NULL) {
-            packet->movement_look_target = &packet->opponent->position;
-        }
-        if ((processor->action_data_1 & 1u) != 0 && ((APIOBJECT_PC *)packet->owner)->grounded == 0) {
-            return 0;
-        }
-
-        distance_squared = (processor->action_data_1 & 2u) != 0
-                               ? NuVecXZDistSqr(&packet->terrain_origin, &locator->position, &distance_vector)
-                               : NuVecDistSqr(&packet->terrain_origin, &locator->position, &distance_vector);
-        reach_distance = packet->movement_instruction_parameter + ai_moveradius;
-        reach_distance = elapsed * packet->owner->horizontal_velocity_magnitude + reach_distance;
-        if (reach_distance * reach_distance > distance_squared) {
-            if ((processor->action_data_1 & 4u) == 0 || packet->opponent == NULL) {
-                packet->movement_look_target = &processor->action_pos;
-            }
-            if (!(processor->action_timer > 0.0f)) {
-                return 1;
-            }
-            processor->action_timer -= elapsed;
-            if (processor->action_timer < 0.0f) {
-                processor->action_timer = 0.0f;
-            }
-            return 0;
-        } else {
-            if ((packet->flags & 0x400000u) != 0 && (processor->action_data_1 & 16u) != 0 &&
-                AIBigJumpToDestinationFn != NULL) {
-                return AIBigJumpToDestinationFn(((APIOBJECT_PC *)packet->owner), &locator->position) != 0;
-            }
-            return 0;
-        }
+        processor->action_pos.x = 0.0f;
+        processor->action_pos.y = 0.0f;
+        processor->action_pos.z = 1.0f;
+        NuVecRotateY(&processor->action_pos, &processor->action_pos, locator_3->rotation);
+        NuVecAdd(&processor->action_pos, &processor->action_pos, &locator_3->position);
+        return 0;
     }
-
-    processor->action_data_1 = 0;
-    processor->action_data_3 = processor->locator;
-
-    random_locator_count = 0;
-    use_personal_name = 0;
-    use_indexed_name = 0;
-    minimum_time = 0.0f;
-    maximum_time = 0.0f;
-
-    if (param_count != 0) {
-        for (index = 0; index < param_count; ++index) {
-            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
-                continue;
-            }
-
-            if (NuStrIStr(params[index], "name") != NULL || NuStrIStr(params[index], "teleport") != NULL) {
-                ++index;
-                if (index < param_count) {
-                    if (use_indexed_name != 0 && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
-                        sprintf(locator_name, AILocatorIndexedFormat, params[index],
-                                ((APIOBJECT_PC *)packet->owner)->locator_name_index);
-                    } else if (use_personal_name != 0 && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
-                        sprintf(locator_name, AILocatorPersonalFormat, params[index],
-                                ((APIOBJECT_PC *)packet->owner)->character_data->name);
-                    } else if (random_locator_count != 0) {
-                        sprintf(locator_name, AILocatorIndexedFormat, params[index],
-                                NuRand(NULL) % random_locator_count);
-                    } else {
-                        sprintf(locator_name, params[index]);
-                    }
-
-                    processor->action_data_3 = AIPathFindLocator(sys, locator_name);
-                }
-                if (NuStrIStr(params[index - 1], "teleport") != NULL) {
-                    locator_2 = (AILOCATOR_PC *)(processor->action_data_3);
-                    if (locator_2 == NULL) {
-                        return 1;
-                    }
-                    packet->owner->position = locator_2->position;
-                    return 1;
-                }
-                continue;
-            }
-
-            if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL) {
-                use_personal_name = 1;
-                continue;
-            }
-            if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL) {
-                use_indexed_name = 1;
-                continue;
-            }
-
-            value = NuStrIStr(params[index], "random");
-            if (value != NULL) {
-                random_locator_count = AIParamToFloatEx(packet, processor, value + NuStrLen("random") + 1);
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
-            if (value != NULL) {
-                processor->action_timer = AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIActionMinTimeName);
-            if (value != NULL) {
-                minimum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIActionMaxTimeName);
-            if (value != NULL) {
-                maximum_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIPathGoalRangeName);
-            if (value != NULL) {
-                packet->movement_instruction_parameter =
-                    AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
-                continue;
-            }
-
-            if (NuStrICmp(params[index], "on_ground") == 0) {
-                processor->action_data_1 |= 1u;
-            } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
-                processor->action_data_1 |= 2u;
-            } else if (NuStrICmp(params[index], AIPathFaceOpponentName) == 0) {
-                processor->action_data_1 |= 4u;
-            } else if (NuStrICmp(params[index], AIPathIgnorePathName) == 0) {
-                processor->action_data_1 |= 8u;
-            } else if (NuStrICmp(params[index], AIPathMustReachDestinationName) == 0) {
-                processor->action_data_1 |= 16u;
-            } else {
-                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
-            }
-        }
-    }
-
-    if (processor->action_timer == 0.0f) {
-        if (maximum_time > minimum_time) {
-            processor->action_timer = NuRandFloat() * (maximum_time - minimum_time) + minimum_time;
-        } else {
-            processor->action_timer = 0.01f;
-        }
-    }
-
-    locator_3 = (AILOCATOR_PC *)(processor->action_data_3);
-    if (locator_3 == NULL) {
+    locator = (AILOCATOR_PC *)(processor->action_data_3);
+    if (locator == NULL) {
         return 1;
     }
 
     if ((processor->action_data_1 & 8u) != 0) {
-        AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 7,
+        AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 7,
                           packet->movement_instruction_parameter);
     } else {
-        AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 1,
+        AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 1,
                           packet->movement_instruction_parameter);
     }
 
-    processor->action_pos.x = 0.0f;
-    processor->action_pos.y = 0.0f;
-    processor->action_pos.z = 1.0f;
-    NuVecRotateY(&processor->action_pos, &processor->action_pos, locator_3->rotation);
-    NuVecAdd(&processor->action_pos, &processor->action_pos, &locator_3->position);
-    return 0;
+    if ((processor->action_data_1 & 4u) != 0 && packet->opponent != NULL) {
+        packet->movement_look_target = &packet->opponent->position;
+    }
+    if ((processor->action_data_1 & 1u) != 0 && ((APIOBJECT_PC *)packet->owner)->grounded == 0) {
+        return 0;
+    }
+
+    distance_squared = (processor->action_data_1 & 2u) != 0
+                           ? NuVecXZDistSqr(&packet->terrain_origin, &locator->position, &distance_vector)
+                           : NuVecDistSqr(&packet->terrain_origin, &locator->position, &distance_vector);
+    reach_distance = packet->movement_instruction_parameter + ai_moveradius;
+    reach_distance = elapsed * packet->owner->horizontal_velocity_magnitude + reach_distance;
+    if (reach_distance * reach_distance > distance_squared) {
+        if ((processor->action_data_1 & 4u) == 0 || packet->opponent == NULL) {
+            packet->movement_look_target = &processor->action_pos;
+        }
+        if (!(processor->action_timer > 0.0f)) {
+            return 1;
+        }
+        processor->action_timer -= elapsed;
+        if (processor->action_timer < 0.0f) {
+            processor->action_timer = 0.0f;
+        }
+        return 0;
+    } else {
+        if ((packet->flags & 0x400000u) != 0 && (processor->action_data_1 & 16u) != 0 &&
+            AIBigJumpToDestinationFn != NULL) {
+            if (AIBigJumpToDestinationFn(((APIOBJECT_PC *)packet->owner), &locator->position) != 0) {
+                return 1;
+            }
+        }
+        return 0;
+    }
 }
 
 i32 __cdecl Action_SetLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
@@ -15964,9 +15961,38 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
         direction.x /= distance;
         direction.z /= distance;
     }
-    if (first->radius != second->radius) {
+    if (first->radius == second->radius) {
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x += first->radius * direction.z;
+        vertices[0].position.z -= first->radius * direction.x;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x += second->radius * direction.z;
+        vertices[1].position.z -= second->radius * direction.x;
+        vertices[0].position.y = first->lower_height + first->position.y;
+        vertices[1].position.y = second->lower_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position.y = first->upper_height + first->position.y;
+        vertices[1].position.y = second->upper_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position = first->position;
+        vertices[0].colour = colour;
+        vertices[0].position.x -= first->radius * direction.z;
+        vertices[0].position.z += first->radius * direction.x;
+        vertices[1].position = second->position;
+        vertices[1].colour = colour;
+        vertices[1].position.x -= second->radius * direction.z;
+        vertices[1].position.z += second->radius * direction.x;
+        vertices[0].position.y = first->lower_height + first->position.y;
+        vertices[1].position.y = second->lower_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+        vertices[0].position.y = first->upper_height + first->position.y;
+        vertices[1].position.y = second->upper_height + second->position.y;
+        AiRndrLine3d(vertices, NULL, NULL);
+    } else {
         NUVEC side;
-        i16 angle = (i16)(0x4000u - (u32)PCPathArcSine((second->radius - first->radius) / distance));
+        i16 angle = (i16)(0x4000 - PCPathArcSine((second->radius - first->radius) / distance));
         NuVecRotateY(&side, &direction, angle);
         vertices[0].position = first->position;
         vertices[0].colour = colour;
@@ -15991,35 +16017,6 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
         vertices[1].colour = colour;
         vertices[1].position.x += second->radius * side.x;
         vertices[1].position.z += second->radius * side.z;
-        vertices[0].position.y = first->lower_height + first->position.y;
-        vertices[1].position.y = second->lower_height + second->position.y;
-        AiRndrLine3d(vertices, NULL, NULL);
-        vertices[0].position.y = first->upper_height + first->position.y;
-        vertices[1].position.y = second->upper_height + second->position.y;
-        AiRndrLine3d(vertices, NULL, NULL);
-    } else {
-        vertices[0].position = first->position;
-        vertices[0].colour = colour;
-        vertices[0].position.x += first->radius * direction.z;
-        vertices[0].position.z -= first->radius * direction.x;
-        vertices[1].position = second->position;
-        vertices[1].colour = colour;
-        vertices[1].position.x += second->radius * direction.z;
-        vertices[1].position.z -= second->radius * direction.x;
-        vertices[0].position.y = first->lower_height + first->position.y;
-        vertices[1].position.y = second->lower_height + second->position.y;
-        AiRndrLine3d(vertices, NULL, NULL);
-        vertices[0].position.y = first->upper_height + first->position.y;
-        vertices[1].position.y = second->upper_height + second->position.y;
-        AiRndrLine3d(vertices, NULL, NULL);
-        vertices[0].position = first->position;
-        vertices[0].colour = colour;
-        vertices[0].position.x -= first->radius * direction.z;
-        vertices[0].position.z += first->radius * direction.x;
-        vertices[1].position = second->position;
-        vertices[1].colour = colour;
-        vertices[1].position.x -= second->radius * direction.z;
-        vertices[1].position.z += second->radius * direction.x;
         vertices[0].position.y = first->lower_height + first->position.y;
         vertices[1].position.y = second->lower_height + second->position.y;
         AiRndrLine3d(vertices, NULL, NULL);
