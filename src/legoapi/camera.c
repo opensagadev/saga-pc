@@ -1623,6 +1623,8 @@ mode_selected:
         case 3:
             position = WORLD->camera_splines[2]->pts[0];
             target = WORLD->camera_splines[2]->pts[1];
+            if (StartupGameFlag0 != 0)
+                yaw_override = 0;
             break;
         case 4: {
             position = DoorCutCameraPosition0Pc;
