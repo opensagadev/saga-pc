@@ -2251,7 +2251,7 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
     if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) {
         ids[0] = *HubLostTempleStoryTextPc;
         ids[1] = *HubLostTempleFreePlayTextPc;
-        opacity[0] = opacity[1] = 128;
+        opacity[1] = opacity[0] = 128;
         count = 2;
     } else {
         ids[0] = complete != 0 ? TextIdPc8808b8 : TextIdPc8808a4;
@@ -2272,20 +2272,26 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
     for (i32 i = 0; i < count; ++i) {
         i32 red, green, blue;
         if (selected != 0 && hub_selectmode == i) {
-            red = menu_flash != 0 ? MENUFLASH0R : MENUFLASH1R;
-            green = menu_flash != 0 ? MENUFLASH0G : MENUFLASH1G;
-            blue = menu_flash != 0 ? MENUFLASH0B : MENUFLASH1B;
+            if (menu_flash != 0) {
+                red = MENUFLASH0R;
+                green = MENUFLASH0G;
+                blue = MENUFLASH0B;
+            } else {
+                red = MENUFLASH1R;
+                green = MENUFLASH1G;
+                blue = MENUFLASH1B;
+            }
             if (menu_pulsate > 0.0f) {
-                red = (i32)(MENUFLASH0R * (1.0f - menu_pulsate) + MENUFLASH1R * menu_pulsate);
-                green = (i32)(MENUFLASH0G * (1.0f - menu_pulsate) + MENUFLASH1G * menu_pulsate);
-                blue = (i32)(MENUFLASH0B * (1.0f - menu_pulsate) + MENUFLASH1B * menu_pulsate);
+                red = (i32)(MENUFLASH0R * menu_pulsate + MENUFLASH1R * (1.0f - menu_pulsate));
+                green = (i32)(MENUFLASH0G * menu_pulsate + MENUFLASH1G * (1.0f - menu_pulsate));
+                blue = (i32)(MENUFLASH0B * menu_pulsate + MENUFLASH1B * (1.0f - menu_pulsate));
             }
         } else {
             red = MENUENTRYR;
             green = MENUENTRYG;
             blue = MENUENTRYB;
         }
-        SmartTextEx(TTab[ids[i]], 0.0f, y, 1.0f, 0.7f, 0.7f, 0.7f, 0, (u8)red, (u8)green, (u8)blue, 1.7f, 1, NULL, 0,
+        SmartTextEx(TTab[ids[i]], 0.0f, y, 1.0f, 0.7f, 0.7f, 0.7f, 0, red, green, blue, 1.7f, 1, NULL, 0,
                     (i32)(opacity[i] * alpha));
         y = (f32)(y - 0.20000000298023224);
     }
@@ -2372,20 +2378,26 @@ static void HubDrawArcadeMenuPc(i32 selected, f32 alpha) {
         }
         i32 red, green, blue;
         if (selected != 0 && hub_bonusmode == i) {
-            red = menu_flash != 0 ? MENUFLASH0R : MENUFLASH1R;
-            green = menu_flash != 0 ? MENUFLASH0G : MENUFLASH1G;
-            blue = menu_flash != 0 ? MENUFLASH0B : MENUFLASH1B;
+            if (menu_flash != 0) {
+                red = MENUFLASH0R;
+                green = MENUFLASH0G;
+                blue = MENUFLASH0B;
+            } else {
+                red = MENUFLASH1R;
+                green = MENUFLASH1G;
+                blue = MENUFLASH1B;
+            }
             if (menu_pulsate > 0.0f) {
-                red = (i32)(MENUFLASH0R * (1.0f - menu_pulsate) + MENUFLASH1R * menu_pulsate);
-                green = (i32)(MENUFLASH0G * (1.0f - menu_pulsate) + MENUFLASH1G * menu_pulsate);
-                blue = (i32)(MENUFLASH0B * (1.0f - menu_pulsate) + MENUFLASH1B * menu_pulsate);
+                red = (i32)(MENUFLASH0R * menu_pulsate + MENUFLASH1R * (1.0f - menu_pulsate));
+                green = (i32)(MENUFLASH0G * menu_pulsate + MENUFLASH1G * (1.0f - menu_pulsate));
+                blue = (i32)(MENUFLASH0B * menu_pulsate + MENUFLASH1B * (1.0f - menu_pulsate));
             }
         } else {
             red = MENUENTRYR;
             green = MENUENTRYG;
             blue = MENUENTRYB;
         }
-        SmartTextEx(text, 0.0f, y, 1.0f, .7f, .7f, .7f, 0, (u8)red, (u8)green, (u8)blue, 1.7f, 1, NULL, 0, opacity);
+        SmartTextEx(text, 0.0f, y, 1.0f, .7f, .7f, .7f, 0, red, green, blue, 1.7f, 1, NULL, 0, opacity);
         y = (f32)(y - 0.17499999701976776);
     }
 }
@@ -2489,13 +2501,19 @@ static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
     for (i32 i = 0; i < count; ++i) {
         i32 red, green, blue;
         if (selected != 0 && hub_bonusmode == i) {
-            red = menu_flash != 0 ? MENUFLASH0R : MENUFLASH1R;
-            green = menu_flash != 0 ? MENUFLASH0G : MENUFLASH1G;
-            blue = menu_flash != 0 ? MENUFLASH0B : MENUFLASH1B;
+            if (menu_flash != 0) {
+                red = MENUFLASH0R;
+                green = MENUFLASH0G;
+                blue = MENUFLASH0B;
+            } else {
+                red = MENUFLASH1R;
+                green = MENUFLASH1G;
+                blue = MENUFLASH1B;
+            }
             if (menu_pulsate > 0.0f) {
-                red = (i32)(MENUFLASH0R * (1.0f - menu_pulsate) + MENUFLASH1R * menu_pulsate);
-                green = (i32)(MENUFLASH0G * (1.0f - menu_pulsate) + MENUFLASH1G * menu_pulsate);
-                blue = (i32)(MENUFLASH0B * (1.0f - menu_pulsate) + MENUFLASH1B * menu_pulsate);
+                red = (i32)(MENUFLASH0R * menu_pulsate + MENUFLASH1R * (1.0f - menu_pulsate));
+                green = (i32)(MENUFLASH0G * menu_pulsate + MENUFLASH1G * (1.0f - menu_pulsate));
+                blue = (i32)(MENUFLASH0B * menu_pulsate + MENUFLASH1B * (1.0f - menu_pulsate));
             }
         } else {
             red = MENUENTRYR;
@@ -2505,14 +2523,15 @@ static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
         i32 opacity = full_opacity;
         if (i == 2 && Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, NULL, NULL, NULL, 0) < 1)
             opacity = full_opacity / 4;
-        SmartTextEx(text[i], 0.0f, y, 1.0f, .7f, .7f, .7f, 0, (u8)red, (u8)green, (u8)blue, 1.7f, 1, NULL, 0, opacity);
+        SmartTextEx(text[i], 0.0f, y, 1.0f, .7f, .7f, .7f, 0, red, green, blue, 1.7f, 1, NULL, 0, opacity);
         y = (f32)(y - 0.20000000298023224);
     }
 }
 
-/* PC511560 106 bytes. Cdecl all stack, original 13 args + fixed suffix0,0,128. */
-extern "C" void SmartTextPc(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align, i32 red, i32 green,
-                            i32 blue, f32 max_width, i32 center) {
+/* PC511560 106 bytes. Cdecl all stack, original 13 args + fixed suffix0,0,128. Retail lives in the menu
+   unit and is never inlined into hub callers. */
+extern "C" __declspec(noinline) void SmartTextPc(char *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 sz, i32 align,
+                                                 i32 red, i32 green, i32 blue, f32 max_width, i32 center) {
     SmartTextEx(text, x, y, z, sx, sy, sz, align, red, green, blue, max_width, center, NULL, 0, 128);
 }
 /* PC50ed50 282 bytes, native three stack parameters: action, player0, player1.
@@ -2570,59 +2589,100 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
     const f32 alpha[2] = {alpha0, alpha1};
     GetMenuID();
     const f32 max_width = HubPromptMaxWidthPc;
+    const i32 selecting[2] = {-1, -1};
     const f32 spacing = HubPromptSpacingPc;
     const i32 last_device = TextInputLastDevicePc();
     for (i32 player = 0; player < 2; ++player) {
         TextInputIsPrimaryDevicePc(TextInputLinkedDevicePc(player));
         TextInputSetLastDevicePc(player);
-        i32 count = (select[player] != -1) + (other[player] != -1) + (back[player] != -1) + (alternate[player] != -1);
+        i32 count = 0;
+        if (select[player] != -1) {
+            count = 1;
+            if (other[player] != -1) {
+                count++;
+                if (back[player] != -1) {
+                    count++;
+                    if (alternate[player] != -1) {
+                        count++;
+                        if (selecting[player] != -1)
+                            count++;
+                    }
+                }
+            }
+        }
         f32 y = .7f;
         if (count == 5)
-            y = (f32)(spacing * 3.5 + .7);
+            y = (f32)(spacing * 3.5 + .7f);
         else if (count == 4)
-            y = (f32)(spacing * 2.5 + .7);
+            y = (f32)(spacing * 2.5 + .7f);
         else if (count == 3)
-            y = (f32)(spacing * 1.5 + .7);
+            y = (f32)(spacing * 1.5 + .7f);
         else if (count == 2)
-            y = (f32)(spacing * .5 + .7);
-        const f32 x = player == 0 ? -HubPromptXPc : HubPromptXPc;
-        const i32 align = player == 0 ? 2 : 8;
+            y = (f32)(spacing * .5 + .7f);
+        f32 x;
+        i32 align;
+        if (player == 0) {
+            x = -HubPromptXPc;
+            align = 2;
+        } else {
+            x = HubPromptXPc;
+            align = 8;
+        }
         if (active[player] == 0)
             continue;
         y += spacing;
-        char text[128];
+        char text[256];
         if (select[player] != -1) {
+            const i32 green = menu_flash != 0 ? 191 : 255;
             y -= spacing;
             NuStrCpy(text, "[[accept]]");
             SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
-            SmartTextEx(TTab[select[player]], x, y, 1.0f, .35f, .25f, .4f, align, 0, menu_flash != 0 ? 191 : 255, 0,
-                        max_width, 1, NULL, 0, (u8)(i32)(alpha[player] * 128.0));
+            SmartTextEx(TTab[select[player]], x, y, 1.0f, .35f, .25f, .4f, align, 0, green, 0, max_width, 1, NULL, 0,
+                        (u8)(i32)(alpha[player] * 128.0));
         }
         if (alternate[player] != -1) {
             y -= spacing;
-            const i32 *colour = menu_flash != 0 ? HubPromptOnColourPc : HubPromptOffColourPc;
+            i32 red, green, blue;
+            if (menu_flash != 0) {
+                red = HubPromptOnColourPc[0];
+                green = HubPromptOnColourPc[1];
+                blue = HubPromptOnColourPc[2];
+            } else {
+                red = HubPromptOffColourPc[0];
+                green = HubPromptOffColourPc[1];
+                blue = HubPromptOffColourPc[2];
+            }
             Text_ExpandButtonString((char *)(alternate[player] == TextIdPc880780 ? "[T]" : "[O]"), text);
             SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
-            SmartTextEx(TTab[alternate[player]], x, y, 1.0f, .4f, .25f, .4f, align, (u8)colour[0], (u8)colour[1],
-                        (u8)colour[2], max_width, 1, NULL, 0, 128);
+            SmartTextEx(TTab[alternate[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, blue, max_width, 1,
+                        NULL, 0, 128);
         }
         if (other[player] != -1) {
+            const i32 red = menu_flash != 0 ? 192 : 255;
+            const i32 green = menu_flash != 0 ? 143 : 191;
             y -= spacing;
             Text_ExpandButtonString("[S]", text);
             SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
-            SmartTextEx(TTab[other[player]], x, y, 1.0f, .4f, .25f, .4f, align, menu_flash != 0 ? 192 : 255,
-                        menu_flash != 0 ? 143 : 191, 0, max_width, 1, NULL, 0, (u8)(i32)(alpha[player] * 128.0));
+            SmartTextEx(TTab[other[player]], x, y, 1.0f, .4f, .25f, .4f, align, red, green, 0, max_width, 1, NULL, 0,
+                        (u8)(i32)(alpha[player] * 128.0));
         }
         if (back[player] != -1) {
+            const i32 red = menu_flash != 0 ? 191 : 255;
             y -= spacing;
             NuStrCpy(text, "[[back]]");
             SmartTextPc(text, x, y, 1.0f, .275f, .275f, .275f, align, 255, 255, 255, .6f, 2);
             y = (f32)(y - (HubPromptLabelOffsetPc - .01));
-            SmartTextEx(TTab[back[player]], x, y, 1.0f, .35f, .25f, .4f, align, menu_flash != 0 ? 191 : 255, 0, 0,
-                        max_width, 1, NULL, 0, 128);
+            SmartTextEx(TTab[back[player]], x, y, 1.0f, .35f, .25f, .4f, align, red, 0, 0, max_width, 1, NULL, 0, 128);
+        }
+        if (selecting[player] != -1) {
+            y -= spacing;
+            y = (f32)(y - (HubPromptLabelOffsetPc - .01));
+            const u8 colour = menu_flash != 0 ? 196 : 255;
+            SmartTextEx(TTab[selecting[player]], x, y, 1.0f, .4f, .25f, .4f, align, colour, 0, colour, max_width, 1,
+                        NULL, 0, 128);
         }
     }
     TextInputSetLastDevicePc(last_device);
@@ -3002,7 +3062,7 @@ static void HubDrawFreePlaySelectPc(void) {
         f32 fade = 1.0f;
         if (freeplaymode == 2) {
             fade = 0.0f;
-            if (!(freeplaytime >= freeplayduration - .10000000149011612))
+            if (freeplaytime < freeplayduration - .10000000149011612)
                 fade = (f32)(1.0 - freeplaytime / (freeplayduration - .10000000149011612));
         }
         {
