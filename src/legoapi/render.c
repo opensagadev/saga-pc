@@ -1070,17 +1070,6 @@ void __cdecl Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
 f32 StatusIconYPc = 0;
 i32 StatusDrawPlayerIconsPc = 0;
 
-f32 __cdecl StatusIconsOnOff(f32 blend) {
-    i32 angle;
-    f32 high, low;
-    f32 position;
-    angle = (i32)((f64)blend * 16384.0);
-    high = STATSPOSY;
-    low = STATSPOS2YPc;
-    position = ((f64)high - (f64)low) * (f64)NuTrigTable[(angle >> 1) & 0x7fff] + (f64)low;
-    return position;
-}
-
 void __cdecl Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     u32 remaining;
     (void)stage;
