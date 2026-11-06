@@ -3344,6 +3344,7 @@ address,symbol,size,ctype
 0x005224a0,_AiEditorPrevLocatorInSetPc,84,EDLOCATOR_s * private ESI set / EDX current
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
+0x522a00,_pathEditor_GetNearestNode,280,
 0x522e30,_AiPathDrawSolidEdgePc,1000,
 0x523220,_AiPathDrawWireEdgePc,893,
 0x5235a0,_AiPathDrawCrossPc,157,
@@ -3359,6 +3360,7 @@ address,symbol,size,ctype
 0x524df0,?pathEditorCalculateDistanceTable@@YAPAPAMPAUAIPATH_PC@@HPATvariptr_u@@1@Z,306,
 0x524f30,?pathEditorPopulateRouteMatrix@@YAXPAUAIPATH_PC@@HPAPAMPAPAE@Z,325,
 0x525080,_pathEditorSaveData,1558,
+0x5256a0,_pathEditor_cbCancelSelectMenu,12,
 0x5256b0,_AiEditorRenamePathPc,146,
 0x525750,_AiEditorRenamePathCancelPc,12,
 0x525760,_pathEditor_cbRenamePathMenu,208,
@@ -3392,6 +3394,8 @@ address,symbol,size,ctype
 0x5277f0,_AiEditorAntinodeTypeCancelPc,12,
 0x527800,_AiEditorAntinodeTypeSetterPc,123,
 0x527880,_AiEditorAntinodeTypeMenuPc,210,
+0x527960,_antinodeEditor_InsideEllipse,358,
+0x527ad0,_antinodeEditor_InsideRectangle,238,
 0x527bc0,_antinodeEditor_GetNearestAntinode,370,EDANTINODE_s *__cdecl (i32)
 0x527d40,_AiEditorDeleteAntinodeCancelPc,37,
 0x527d70,_AiEditorDeleteAntinodeAnswerPc,98,
@@ -3420,7 +3424,8 @@ address,symbol,size,ctype
 0x5296d0,_AiEditorMaxViewHeightPc,34,
 0x529700,_AiEditorMinViewHeightPc,36,
 0x529730,_creatureEditor_cbVisionMenu,397,
-0x529a00,_creatureEditor_cbSelectType,195,
+0x5298c0,_creatureEditor_cbSetType,313,
+0x529a00,_creatureEditor_cbSelectType,195,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x529d70,_AiEditorSetTriggerAreaPc,122,
 0x529df0,_creatureEditor_cbSelectTriggerArea,290,
 0x529f20,_AiEditorSetLocatorPc,130,
@@ -3428,6 +3433,7 @@ address,symbol,size,ctype
 0x52a0c0,_AiEditorRenameCreaturePc,146,
 0x52a160,_creatureEditor_cbRenameCreatureMenu,192,
 0x52a630,_creatureEditor_CalculatePos,224,
+0x52a710,_creatureEditor_Updated,76,
 0x52a760,_creatureEditor_RenderAllCreatures,389,
 0x52a8f0,_creatureEditor_Render,1318,
 0x0052b3f0,_xConditions,1476,void __cdecl (NUFPAR_PC *)
@@ -3497,13 +3503,18 @@ address,symbol,size,ctype
 0x5319f0,_locatorEditor_Render,512,
 0x531ef0,_locatorEditor_Enter,745,
 0x5322d0,_pathEditorCreateData,2941,
-0x533060,_pathEditor_cbSelectPathMenu,158,
+0x532e50,_pathEditor_cbSetCurrentPath,219,
+0x533060,_pathEditor_cbSelectPathMenu,158,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x533810,_pathEditor_PathNodeMoved,435,
 0x5339d0,_pathEditor_Render,960,
 0x534110,_routeEditor_Render,437,
 0x5342d0,_antinodeEditor_Render,1010,
 0x5346d0,_creatureEditor_cbResetParams,108,
-0x534bc0,_creatureEditor_cbGroupMenu,417,
+0x534a80,_creatureEditor_cb_ngroup,87,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x534ae0,_creatureEditor_cb_nacross,87,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x534b40,_creatureEditor_cb_xspacing,50,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x534b80,_creatureEditor_cb_zspacing,50,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x534bc0,_creatureEditor_cbGroupMenu,417,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x534e10,_FollowAPIObject,266,"void __cdecl (APIOBJECT_PC *, APIOBJECT_PC *, i32, f32)"
 0x534f20,_Action_FollowOpponent,214,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x535000,_Action_FollowPlayer,218,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -15468,6 +15479,7 @@ address,symbol,size,ctype
 0x760664,??_C@_0BD@OEHEHOJF@Select?5Locator?5Set?$AA@,,char []
 0x7606a0,_AiAntinodeRenderRotateRightPc,,const char[]
 0x7606b8,_AiAntinodeRenderRotateLeftPc,,const char[]
+0x760740,??_C@_0M@DHNJIDNL@Select?5Path?$AA@,,char []
 0x7607a0,_AiAntinodeRenderDecreaseRadiusPc,,const char[]
 0x7607d4,_AiAntinodeRenderIncreaseRadiusPc,,const char[]
 0x760894,??_C@_04OEDFLLKD@?$CC?$CFs?$CC?$AA@,5,char []
@@ -15486,6 +15498,13 @@ address,symbol,size,ctype
 0x760a4c,_AiAntinodeRenderNoPlatformPc,,const char[]
 0x760a68,_AiAntinodeRenderPlatformPc,,const char[]
 0x760a74,_AiAntinodeRenderTitlePc,,const char[]
+0x760af4,??_C@_0BE@LLBMHAAD@Formation?5Z?5Spacing?$AA@,,char []
+0x760b08,__real@4099999a,4,const f32
+0x760b0c,??_C@_0BE@LPOJKADO@Formation?5X?5Spacing?$AA@,,char []
+0x760b20,??_C@_0BA@KMAKOHMK@Formation?5Width?$AA@,,char []
+0x760b30,??_C@_0N@MOIMJOCN@Stagger?5Time?$AA@,,char []
+0x760b40,??_C@_0L@GNGIGMLA@Group?5Size?$AA@,,char []
+0x760b4c,??_C@_0N@OLBNFFCK@Group?5Values?$AA@,,char []
 0x00760b70,_AIPathCurrentPositionName,17,const char[17]
 0x00760b84,_AIPathCurrentDistanceName,12,const char[12]
 0x00760b90,_AIPathFacingName,7,const char[7]

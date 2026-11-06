@@ -1024,8 +1024,16 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
 
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
 static __forceinline f32 AIPathFabs(f32 value) {
-    *(u32 *)&value &= 0x7fffffff;
-    return value;
+    union {
+        f32 value;
+        u32 bits;
+    } storage;
+    u32 bits;
+    storage.value = value;
+    bits = storage.bits;
+    bits &= 0x7fffffff;
+    storage.bits = bits;
+    return storage.value;
 }
 
 __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position, AIPATH_PC *path,
@@ -14104,6 +14112,45 @@ static void __cdecl AiEditorRenameLocatorPc(eduimenu_s *menu, eduiitem_s *item, 
     }
 }
 
+/* Native 522a00: private path EAX. */
+static EDAIPATHNODE_s *pathEditor_GetNearestNode(EDAIPATH_s *path, i32 require_radius) {
+    EDAIPATHNODE_s *nearest = NULL;
+    f32 nearest_distance = FLT_MAX;
+    EDAIPATHNODE_s *node;
+    NUVEC offset;
+    f32 distance;
+    f32 height;
+    f32 upper;
+    f32 lower;
+
+    if (path != NULL) {
+        for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+             node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link)) {
+            distance = NuVecXZDistSqr(&aieditor->cursor_position, &node->position, &offset);
+            if (!(distance < nearest_distance)) {
+                continue;
+            }
+            height = aieditor->cursor_position.y - node->position.y;
+            upper = node->upper_height < 0.2f ? 0.2f : node->upper_height;
+            lower = node->lower_height > -0.2f ? -0.2f : node->lower_height;
+            if (!(height <= upper && height >= lower)) {
+                continue;
+            }
+            if (require_radius && !(node->radius * node->radius > distance)) {
+                continue;
+            }
+            nearest = node;
+            nearest_distance = distance;
+        }
+    }
+    return nearest;
+}
+
+static void __cdecl pathEditor_cbCancelSelectMenu(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
 static void __cdecl AiEditorRenamePathPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATH_s *other;
     (void)menu;
@@ -14293,6 +14340,46 @@ static void AiEditorClearMainMenuPc(void) {
         eduiMenuDestroy(aieditor->main_menu);
         aieditor->main_menu = NULL;
     }
+}
+
+static void __cdecl pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAIPATH_s *path;
+    i32 index = 0;
+    (void)menu;
+    (void)event;
+    if (item != NULL) {
+        for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
+             index++, path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
+            if (item->data == index) {
+                aieditor->current_path = path;
+                aieditor->current_path->nearest_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
+                aieditor->current_path->current_node = aieditor->current_path->nearest_node;
+                if (aieditor->current_path->nearest_node != NULL) {
+                    edcamSetPos(&aieditor->current_path->nearest_node->position);
+                }
+                break;
+            }
+        }
+    }
+    AiEditorClearMainMenuPc();
+}
+
+void __cdecl pathEditor_cbSelectPathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    EDAIPATH_s *path;
+    i32 index = 0;
+    (void)item;
+    (void)event;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, pathEditor_cbCancelSelectMenu, "Select Path");
+    if (menu == NULL)
+        return;
+    for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
+         path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(index, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbSetCurrentPath,
+                                                path->name));
+        index++;
+    }
+    eduiMenuAttach(parent, menu);
 }
 
 static EDLOCATORSET_s *AiEditorCreateLocatorSetPc(void) {
@@ -15436,10 +15523,113 @@ STATIC_ASSERT(offsetof(EDANTINODE_s, special_position) == 0x2c);
 STATIC_ASSERT(offsetof(EDANTINODE_s, rotation_offset) == 0x38);
 STATIC_ASSERT(offsetof(EDANTINODE_s, flags) == 0x3c);
 
-/* Native 527bc0..527d32 is an external ordinary cdecl supplier in this
- * projection. Its held body and both held private shape bodies are omitted.
- * No replacement, guard, activation or callback registration is introduced. */
-extern EDANTINODE_s *__cdecl antinodeEditor_GetNearestAntinode(i32 require_inside);
+/* Native 527960: private node ESI, position ECX. */
+static i32 antinodeEditor_InsideEllipse(EDANTINODE_s *node, NUVEC *position) {
+    f32 extent;
+    NUVEC offset;
+    NUVEC rotated;
+    f32 distance;
+    f32 aspect;
+    i32 angle;
+
+    extent = node->base_radius > node->base_height ? node->base_radius : node->base_height;
+    offset.x = position->x - node->position.x;
+    if (offset.x > extent || offset.x < -extent) {
+        return 0;
+    }
+    offset.z = position->z - node->position.z;
+    if (offset.z > extent || offset.z < -extent) {
+        return 0;
+    }
+    distance = offset.x * offset.x + offset.z * offset.z;
+    if (!(distance < extent * extent)) {
+        return 0;
+    }
+    aspect = node->base_height / node->base_radius;
+    offset.y = 0.0f;
+    NuVecRotateY(&rotated, &offset, -node->flags);
+    angle = NuAtan2D(aspect * rotated.x, rotated.z);
+    offset.x = NU_SIN_LUT(angle) * node->base_radius;
+    offset.z = NU_COS_LUT(angle) * node->base_height;
+    extent = offset.x * offset.x + offset.z * offset.z;
+    if (!(distance < extent)) {
+        return 0;
+    }
+    return 1;
+}
+
+/* Native 527ad0: private node ESI, position EDI. */
+static i32 antinodeEditor_InsideRectangle(EDANTINODE_s *node, NUVEC *position) {
+    f32 diagonal;
+    NUVEC offset;
+
+    diagonal = NuFsqrt(node->base_radius * node->base_radius + node->base_height * node->base_height);
+    offset.x = position->x - node->position.x;
+    if (offset.x > diagonal || offset.x < -diagonal) {
+        return 0;
+    }
+    offset.z = position->z - node->position.z;
+    if (offset.z > diagonal || offset.z < -diagonal) {
+        return 0;
+    }
+    NuVecRotateY(&offset, &offset, -node->flags);
+    if (!(AIPathFabs(offset.x) < node->base_radius)) {
+        return 0;
+    }
+    if (!(AIPathFabs(offset.z) < node->base_height)) {
+        return 0;
+    }
+    return 1;
+}
+
+EDANTINODE_s *__cdecl antinodeEditor_GetNearestAntinode(i32 require_inside) {
+    EDANTINODE_s *nearest = NULL;
+    f32 nearest_distance = FLT_MAX;
+    EDANTINODE_s *node;
+    NUVEC offset;
+    f32 distance;
+    f32 height;
+    f32 upper;
+    f32 lower;
+
+    for (node = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes); node != NULL;
+         node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link)) {
+        distance = NuVecXZDistSqr(&aieditor->camera_position, &node->position, &offset);
+        if (!(distance < nearest_distance)) {
+            continue;
+        }
+        height = aieditor->camera_position.y - node->position.y;
+        upper = node->upper_height < 0.2f ? 0.2f : node->upper_height;
+        lower = node->lower_height > -0.2f ? -0.2f : node->lower_height;
+        if (!(height <= upper && height >= lower)) {
+            continue;
+        }
+        if (require_inside) {
+            switch (node->type) {
+                case 0:
+                    if (!(node->radius * node->radius > distance)) {
+                        continue;
+                    }
+                    break;
+                case 1:
+                    if (!antinodeEditor_InsideEllipse(node, &aieditor->camera_position)) {
+                        continue;
+                    }
+                    break;
+                case 2:
+                    if (!antinodeEditor_InsideRectangle(node, &aieditor->camera_position)) {
+                        continue;
+                    }
+                    break;
+                default:
+                    continue;
+            }
+        }
+        nearest = node;
+        nearest_distance = distance;
+    }
+    return nearest;
+}
 
 /* Native 5274f0..5275e0: private position argument EDI. */
 static EDANTINODE_s *CreateAntinode(NUVEC *position) {
@@ -16259,6 +16449,62 @@ extern void __cdecl pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_
 #pragma section(".bss$AiEditorPreviewCharacterTypePc", read, write)
 __declspec(allocate(".bss$AiEditorPreviewCharacterTypePc")) i32 AiEditorPreviewCharacterTypePc = 0;
 
+static void __cdecl creatureEditor_cbSetType(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (item != NULL) {
+        AiEditorPreviewCharacterTypePc = item->data;
+    }
+    if (aieditor->selected_creature != NULL && aieditor->nearest_creature == aieditor->selected_creature) {
+        aieditor->selected_creature->character_type = (i16)AiEditorPreviewCharacterTypePc;
+        if (GetViewRangeFn != NULL) {
+            aieditor->selected_creature->view_distance = GetViewRangeFn(AiEditorPreviewCharacterTypePc);
+        } else {
+            aieditor->selected_creature->view_distance = 1.0f;
+        }
+        if (GetHearDistanceFn != NULL) {
+            aieditor->selected_creature->hear_distance = GetHearDistanceFn(AiEditorPreviewCharacterTypePc);
+        } else {
+            aieditor->selected_creature->hear_distance = 1.0f;
+        }
+        if (GetMaxViewHeightFn != NULL) {
+            aieditor->selected_creature->max_view_height = GetMaxViewHeightFn(AiEditorPreviewCharacterTypePc);
+        } else {
+            aieditor->selected_creature->max_view_height = 1.0f;
+        }
+        if (GetMinViewHeightFn != NULL) {
+            aieditor->selected_creature->min_view_height = GetMinViewHeightFn(AiEditorPreviewCharacterTypePc);
+        } else {
+            aieditor->selected_creature->min_view_height = 1.0f;
+        }
+    }
+}
+
+void __cdecl creatureEditor_cbSelectType(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    i32 index;
+    i32 type;
+    i32 selected;
+    (void)item;
+    (void)event;
+    if (LevelCharacterGlobalIDFn == NULL || GlobalCharacterNameFn == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select AI Type");
+    if (menu == NULL)
+        return;
+    index = 0;
+    type = LevelCharacterGlobalIDFn(index);
+    while (type != -1) {
+        selected = AiEditorPreviewCharacterTypePc == type;
+        eduiMenuAddItem(menu, eduiItemCheckCreate(type, &AiEditorSaveMessageColoursPc, selected, 1,
+                                                  creatureEditor_cbSetType, GlobalCharacterNameFn(type)));
+        if (selected)
+            menu->selected = edui_last_item;
+        eduiMenuAttach(parent, menu);
+        type = LevelCharacterGlobalIDFn(++index);
+    }
+}
+
 STATIC_ASSERT(offsetof(EDLOCATOR_s, name) == 8);
 STATIC_ASSERT(offsetof(EDLOCATOR_s, position) == 0x18);
 
@@ -16346,6 +16592,78 @@ i32 creatureEditor_CalculatePos(EDAICREATURE_s *creature, i32 index, NUVEC *posi
         return result.on_path;
     }
     return 1;
+}
+
+/* Native 52a710: private creature ESI. */
+static void creatureEditor_Updated(EDAICREATURE_s *creature) {
+    i32 index;
+    NUVEC position;
+
+    creature->valid_positions = 1;
+    for (index = 1; index < creature->group_count; index++) {
+        if (creatureEditor_CalculatePos(creature, index, &position, 1)) {
+            creature->valid_positions |= (u32)((u64)1 << index);
+        }
+    }
+}
+
+void __cdecl creatureEditor_cb_ngroup(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (aieditor->selected_creature != NULL) {
+        aieditor->selected_creature->group_count = (u8)((edui_slider_s *)item)->value;
+        creatureEditor_Updated(aieditor->selected_creature);
+    }
+}
+
+void __cdecl creatureEditor_cb_nacross(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (aieditor->selected_creature != NULL) {
+        aieditor->selected_creature->across_count = (u8)((edui_slider_s *)item)->value;
+        creatureEditor_Updated(aieditor->selected_creature);
+    }
+}
+
+void __cdecl creatureEditor_cb_xspacing(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (aieditor->selected_creature != NULL) {
+        aieditor->selected_creature->x_spacing = ((edui_slider_s *)item)->value;
+        creatureEditor_Updated(aieditor->selected_creature);
+    }
+}
+
+void __cdecl creatureEditor_cb_zspacing(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (aieditor->selected_creature != NULL) {
+        aieditor->selected_creature->z_spacing = ((edui_slider_s *)item)->value;
+        creatureEditor_Updated(aieditor->selected_creature);
+    }
+}
+
+void __cdecl creatureEditor_cbGroupMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)item;
+    (void)event;
+    if (aieditor->selected_creature == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Group Values");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_ngroup, 1, 31,
+                                                  aieditor->selected_creature->group_count, "Group Size"));
+    eduiMenuAddItem(menu,
+                    eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_stagger_start, 0.0f,
+                                         60.0f, aieditor->selected_creature->stagger_start, "Stagger Time"));
+    eduiMenuAddItem(menu, eduiItemSliderCreateInt(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_nacross, 1, 31,
+                                                  aieditor->selected_creature->across_count, "Formation Width"));
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_xspacing, 0.2f,
+                                               4.8f, aieditor->selected_creature->x_spacing, "Formation X Spacing"));
+    eduiMenuAddItem(menu, eduiItemSliderCreate(1, &AiEditorSaveMessageColoursPc, 0, creatureEditor_cb_zspacing, 0.2f,
+                                               4.8f, aieditor->selected_creature->z_spacing, "Formation Z Spacing"));
+    eduiMenuAttach(parent, menu);
 }
 
 void creatureEditor_RenderAllCreatures(void) {

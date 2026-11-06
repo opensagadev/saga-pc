@@ -1546,6 +1546,11 @@ void __cdecl eduicbItemFilePickDestroy(eduimenu_s *menu, eduiitem_s *item) {
     eduicbItemDestroy(menu, item);
 }
 
+void __cdecl eduicbPickCFGCancel(eduimenu_s *menu, eduimenu_s *child) {
+    (void)child;
+    eduiMenuDestroy(menu);
+}
+
 void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
     char temporary[256];
     char *current;
