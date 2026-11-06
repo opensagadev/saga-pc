@@ -212,7 +212,7 @@ extern i32 CombatHitReactionIntervalPc;
 i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
     i32 reaction_trigger;
 
-    i32 no_hurt, no_impact, no_rumble, throw_up, random, hit, result, health, coins, hearts;
+    i32 no_hurt, no_impact, no_rumble, throw_up, random, original_damage, result, health, coins, hearts;
     i16 *parts_angle;
     BOLT *bolt;
     u16 computed_angle;
@@ -229,7 +229,7 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
     result = 0;
     reaction_trigger = 0;
     random = qrand();
-    hit = damage;
+    original_damage = damage;
     random_unit = (f32)((f64)random * 1.5259021893143654e-05);
     objhitobj_nohurtsfx = 0;
     objhitobj_noimpactsfx = 0;
@@ -260,12 +260,11 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
     if (target->field_280 != 0xff)
         ObstacleCamHoldUntilPlayersMove = 0;
     if (target->character_context == 81 || target->character_context == 76) {
-        hit = 0;
         damage = 0;
     }
     if (attacker && ((attacker->flags_1fc_word & 0x80)))
         AlertSurroundingCreatures(attacker, &target->collision_position);
-    if (hit > 0 || hit == -1)
+    if (damage > 0 || damage == -1)
         target->portal_flags |= 1;
     if (flags & 0x100) {
         if ((CInfo[target->character_context].flags & 0x4000000) ||
@@ -280,58 +279,61 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
                 if (LEGOCONTEXT_HOLD != -1 && target->character_context == LEGOCONTEXT_HOLD) {
                     NewBlockAction(target);
                     if ((target->id == (u16)id_IMPERIALGUARD || target->id == (u16)id_GAMORREANGUARD) &&
-                        (target->character_context == 24 || target->character_context == 12))
+                        (target->character_context == 12 || target->character_context == 24))
                         GameAudio_PlaySfx(74, &target->collision_position, 0, 0);
                 }
                 return 0;
             }
         }
-    } else {
-        damage = 0;
     }
     if (target->origin_scale_override >= 1.0f) {
-        if ((flags & 0x100) &&
-            (damage == -1 || (LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO &&
-                              attacker->combo_branch == 6)))
-            damage = target->shield_hitpoints;
-        ObjHitShield(attacker, target, damage, bolt);
+        if (flags & 0x100) {
+            if (damage == -1 || (LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO &&
+                                 attacker->combo_branch == 6))
+                ObjHitShield(attacker, target, target->shield_hitpoints, bolt);
+            else
+                ObjHitShield(attacker, target, original_damage, bolt);
+        } else {
+            ObjHitShield(attacker, target, 0, bolt);
+        }
         return 0;
     }
     if (flags == 0)
         flags = ObjHitObj_Flags(attacker);
     if ((target->portal_flags & 0x08000000) || WORLD->current_level == VADERC_LDATA) {
-        if ((u32)(hit) >= 2)
-            hit = 1;
+        if (damage > 1 || damage < 0)
+            damage = 1;
     } else if (attacker && (flags & 0x100) && attacker->character_context == 5 && attacker->combo_branch == 6 &&
                target->field_280 == 0xff) {
-        hit = -1;
+        damage = -1;
     }
     if ((target->portal_flags & 0x00080000) && (flags & 0x80)) {
-        hit = 0;
+        damage = 0;
     } else {
-        if (WORLD->current_level == SPEEDERCHASEA_LDATA) {
-            if (!disable_narrow_socks && (flags & 4) && ((target->flags_1fc_word & 0x80))) {
-                hit = 0;
-                goto attributed_hit;
-            }
-            if ((u16)id_SPEEDERBIKE == target->id && !(0x80 & target->flags_1fc_word)) {
-                if (attacker && !(attacker->character_data->model_flags & 0x2000))
-                    hit = 0;
-                else if (target->ai_packet.creature_set != 2)
-                    hit = 0;
-                goto attributed_hit;
-            }
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks && (flags & 4) &&
+            ((target->flags_1fc_word & 0x80))) {
+            damage = 0;
+            goto attributed_hit;
+        }
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && target->id == (u16)id_SPEEDERBIKE &&
+            !(0x80 & target->flags_1fc_word)) {
+            if (attacker && !(attacker->character_data->model_flags & 0x2000))
+                damage = 0;
+            else if (target->ai_packet.creature_set != 2)
+                damage = 0;
+            goto attributed_hit;
         }
         if (WORLD->area == HOTHBATTLE_ADATA &&
-            ((target->id == (u16)id_ATAT && !(target->flags_1fc_word & 0x80) &&
-              (!attacker || !(attacker->flags_1fc_word & 0x80))) ||
-             (attacker && (u16)id_ATAT == attacker->id && !(target->flags_1fc_word & 0x80) &&
-              !(attacker->flags_1fc_word & 0x80)))) {
-            if (hit == -1 && target->id == (u16)id_ATAT) {
-                if (target->character_context != 23)
-                    hit = 0;
-            } else
-                hit = attacker && attacker->id == (u16)id_ATAT && target->id == (u16)id_DRAGBOMB ? -1 : 0;
+            (target->id == (u16)id_ATAT || (attacker && attacker->id == (u16)id_ATAT)) &&
+            !(target->flags_1fc_word & 0x80) && (!attacker || !(attacker->flags_1fc_word & 0x80))) {
+            if (damage == -1 && target->id == (u16)id_ATAT && target->character_context != 23)
+                damage = 0;
+            else if (damage == -1 && target->id == (u16)id_ATAT && target->character_context == 23)
+                damage = -1;
+            else if (attacker && attacker->id == (u16)id_ATAT && target->id == (u16)id_DRAGBOMB)
+                damage = -1;
+            else
+                damage = 0;
             goto attributed_hit;
         }
         if (flags & 1)
@@ -347,21 +349,25 @@ i32 __cdecl ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 
                     goto attributed_hit;
                 }
             }
-            hit = 0;
+            damage = 0;
             goto attributed_hit;
         }
-        if ((4 & flags) && (target->flags_1f8 & 0x10405) == 0x400 && WORLD->current_level != HUB_LDATA) {
-            hit = 0;
+        if ((4 & flags) && (target->flags_1f8 & 0x400) && !(target->flags_1f8 & 0x10005) &&
+            WORLD->current_level != HUB_LDATA) {
+            damage = 0;
             goto attributed_hit;
         }
-        if ((flags & 12) == 8 && ((target->flags_1fc_word & 0x80)) && WORLD->current_level != HUB_LDATA &&
+        if ((flags & 8) && !(flags & 4) && ((target->flags_1fc_word & 0x80)) && WORLD->current_level != HUB_LDATA &&
             VADERC_LDATA != WORLD->current_level) {
-            hit = 0;
+            damage = 0;
             goto attributed_hit;
         }
-        if ((MiniCutCam && ((target->flags_1fc_word & 0x80))) || target->pad == ViewCamGetGamePad() ||
-            ((target->character_data->model_flags & 0x20000000) && target->rider == NULL))
-            hit = 0;
+        if (MiniCutCam && ((target->flags_1fc_word & 0x80)))
+            damage = 0;
+        else if (target->pad == ViewCamGetGamePad())
+            damage = 0;
+        else if ((target->character_data->model_flags & 0x20000000) && target->rider == NULL)
+            damage = 0;
         else if ((flags & 4) && !(target->flags_1fc_word & 0x80) && !(target->portal_flags & 0x08000000) &&
                  !StartupGameFlag1 && CombatHitReactionIntervalPc != 0 && attacker != NULL &&
                  !(2 & target->flags_1fc_word)) {
@@ -393,7 +399,7 @@ impact:
         else if (attacker && attacker->id == (u16)id_IMPERIALGUARD)
             PlaySfx("wpn_bib_stab", &target->collision_position);
         else if (bolt) {
-            if (!(bolt->type_id >= 27 && bolt->type_id <= 29) && WORLD->area &&
+            if (bolt->type_id != 27 && bolt->type_id != 28 && bolt->type_id != 29 && WORLD->area &&
                 (WORLD->area == PODRACE_ADATA || WORLD->area == PODSPRINT_ADATA)) {
                 PlaySfx("Pod_TuskHit", &bolt->position);
                 no_hurt = 1;
@@ -429,15 +435,15 @@ impact:
         DeactivatePlayer(target, 5.0f, NULL);
         goto finish;
     }
-    if (hit != -1 && !(target->vehicle_hit_timer <= 0.0f) && (!attacker || !(attacker->flags_1fc_word & 0x80)))
-        return 0;
+    if (damage != -1 && !(target->vehicle_hit_timer <= 0.0f) && (!attacker || !(attacker->flags_1fc_word & 0x80)))
+        goto finish;
     if (target->character_context == 45 && !Player_HasFastBuild(target))
         GizBuildIt_SetToStart(target->grapple, 1, 1);
     Player_ClearContext(target, 0);
     ReleaseForce(target, 1);
     if (target->helmet && 1)
         LoseHelmet(target, 0, 0);
-    if (hit != -1) {
+    if (damage != -1) {
         if (!target->current_hp || (((target->flags_1fc_word & 0x80)) && Player_HasInvincibility(target))) {
             if (target->id == (u16)id_ROYALGUARD || target->id == (u16)id_WOOKIEE)
                 SetFlicker(target, 0.4f);
@@ -446,7 +452,7 @@ impact:
                 TakeHitRumble(target, 0.666f);
             goto hurt;
         }
-        health = target->current_hp - hit;
+        health = target->current_hp - damage;
     } else
         health = 0;
     no_impact = 0;
@@ -605,7 +611,7 @@ surviving_hit:
     if ((target->flags_1fc_word & 0x80))
         TakeHitRumble(target, 0.666f);
     target->current_hp = health;
-    if (hit != 0) {
+    if (damage != 0) {
         if (AIScriptSetBaseScriptStateByName(&*(AISCRIPTPROCESS_PC *)&target->ai_packet, "LostHitPoints"))
             AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)target, &target->ai_packet,
                             &*(AISCRIPTPROCESS_PC *)&target->ai_packet, FRAMETIME);
@@ -613,8 +619,8 @@ surviving_hit:
         if (target->id == (u16)id_SNAKE)
             SnakeBeenHit(target);
         PlayerTakeHit(target, attacker);
-        if (target->field_280 != 0xff && hit > 0) {
-            u8 value = target->saved_hitpoints - hit;
+        if (target->field_280 != 0xff && damage > 0) {
+            u8 value = target->saved_hitpoints - damage;
             target->saved_hitpoints = value ? value : 1;
             if ((target->character_data->model_flags & 0x20) && target->use_model_origin) {
                 i32 index = target->saved_hitpoints - 1;
