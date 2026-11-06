@@ -1,8 +1,22 @@
 #include "saga.h"
 
-/* Retail inlines this test into Tube_MoveCode but calls it everywhere else. */
-static __forceinline i32 Tube_InCylinderBodyPc(GAMEOBJECT *object, TUBE_PC *tube, f32 *horizontal_distance_squared,
-                                               i32 ignore_height) {
+TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_height) {
+    TUBE_PC *tube = world->tubes;
+    i32 index;
+
+    if (tube != NULL) {
+        for (index = 0; index < world->tube_count; ++index, ++tube) {
+            if ((tube->flags & 2) != 0 && (tube->flags & 1) != 0 && (tube->flags & 4) == 0 &&
+                Tube_InCylinder(object, tube, NULL, ignore_height) != 0) {
+                return tube;
+            }
+        }
+    }
+    return NULL;
+}
+
+/* Retail inlines this test into Tube_MoveCode but calls it from Tube_InAnyCylinder. */
+i32 __cdecl Tube_InCylinder(GAMEOBJECT *object, TUBE_PC *tube, f32 *horizontal_distance_squared, i32 ignore_height) {
     f32 delta_x;
     f32 delta_z;
     f32 distance_squared;
@@ -23,26 +37,6 @@ static __forceinline i32 Tube_InCylinderBodyPc(GAMEOBJECT *object, TUBE_PC *tube
         *horizontal_distance_squared = distance_squared;
     }
     return 1;
-}
-
-__declspec(noinline) i32 __cdecl Tube_InCylinder(GAMEOBJECT *object, TUBE_PC *tube, f32 *horizontal_distance_squared,
-                                                 i32 ignore_height) {
-    return Tube_InCylinderBodyPc(object, tube, horizontal_distance_squared, ignore_height);
-}
-
-TUBE_PC *__cdecl Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_height) {
-    TUBE_PC *tube = world->tubes;
-    i32 index;
-
-    if (tube != NULL) {
-        for (index = 0; index < world->tube_count; ++index, ++tube) {
-            if ((tube->flags & 2) != 0 && (tube->flags & 1) != 0 && (tube->flags & 4) == 0 &&
-                Tube_InCylinder(object, tube, NULL, ignore_height) != 0) {
-                return tube;
-            }
-        }
-    }
-    return NULL;
 }
 
 i32 __cdecl ObjInTube(GAMEOBJECT *object) {
@@ -115,14 +109,14 @@ void __cdecl Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     TUBE_PC *tube;
     i32 index;
     if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE && object->techno != NULL) {
-        if (Tube_InCylinderBodyPc(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
+        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
             object->techno = NULL;
         return;
     }
     if (LEGOCONTEXT_TUBE == -1)
         return;
     if (object->character_context == LEGOCONTEXT_TUBE) {
-        if (Tube_InCylinderBodyPc(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
+        if (Tube_InCylinder(object, (TUBE_PC *)object->techno, NULL, 0) == 0)
             object->character_context = -1;
         return;
     }
@@ -133,7 +127,7 @@ void __cdecl Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         TUBE_COOLDOWN_VIEW_PC *cooldown;
         if ((tube->flags & 2) == 0 || (tube->flags & 1) == 0 || (tube->flags & 4) != 0)
             continue;
-        if (Tube_InCylinderBodyPc(object, tube, NULL, 0) == 0 &&
+        if (Tube_InCylinder(object, tube, NULL, 0) == 0 &&
             (((TUBE_ENTRY_VIEW_PC *)object)->entry_state != 5 || ((TUBE_ENTRY_VIEW_PC *)object)->entry_data == NULL))
             continue;
         if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE) {
