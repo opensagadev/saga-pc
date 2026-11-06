@@ -12992,7 +12992,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     i32 __cdecl Player_HasPurpleForce(GAMEOBJECT *);
     i32 __cdecl Player_HasDoubleWeaponDamage(GAMEOBJECT *);
     i32 __cdecl AnakinGreenSabre(GAMEOBJECT *);
-    i32 __cdecl ObjHitObj_Flags(GAMEOBJECT *);
+    u16 __cdecl ObjHitObj_Flags(GAMEOBJECT *);
     i32 __cdecl SphereSphereOverlapScaleY(NUVEC *, f32, f32, NUVEC *, f32, f32);
     void __cdecl FindAnglesXY(NUVEC *, u16 *, u16 *);
     i32 __cdecl SphereSphereOverlap(NUVEC *, f32, NUVEC *, f32);

@@ -193,8 +193,10 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     bolt->hit_part_debris = type->field_38;
     bolt->index = bolt - Bolt;
     if (hit_flags == 0)
-        hit_flags = ObjHitObj_Flags(owner);
-    bolt->hit_flags = hit_flags | 0x80;
+        bolt->hit_flags = ObjHitObj_Flags(owner);
+    else
+        bolt->hit_flags = hit_flags;
+    bolt->hit_flags |= 0x80;
     u32 flags = type->flags_60;
     if (owner != NULL) {
         if ((owner->flags_1fc & 0x80) != 0) {
