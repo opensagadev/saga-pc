@@ -2917,7 +2917,7 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
     quotient = interval == 0.0f || partglobaltime == 0.0f ? 0.0f : partglobaltime / interval;
     aligned_time = (i32)quotient * interval;
     emission_time = aligned_time + interval;
-    for (count = 0; emission_time <= end_time && count < 100; ++count) {
+    for (count = 0; emission_time <= end_time && ++count < 100;) {
         ADDPART_PC params = Default_ADDPART;
         NUVEC part_position, velocity;
         NUSPECIALHANDLE special;

@@ -2590,24 +2590,6 @@ typedef struct player_position_record_pc_s {
     i16 angle;
     u8 unknown_0e[2];
 } PLAYER_POSITION_RECORD_PC;
-typedef struct player_door_pc_s {
-    char name[128];
-    char camera_name[32];
-    NUGSPLINE *spline;
-    u8 unknown_a4[0x30];
-    NUVEC position;
-    u8 unknown_e0[0x10];
-    i16 level;
-    i16 freeplay_area;
-    u32 flags;
-    u8 unknown_f8[0x30];
-} PLAYER_DOOR_PC;
-typedef struct player_world_doors_pc_s {
-    u8 unknown_00[0x4698];
-    PLAYER_DOOR_PC *doors;
-    i32 door_count;
-    PLAYER_DOOR_PC *start_door;
-} PLAYER_WORLD_DOORS_PC;
 typedef union player_position_sock_pc_u {
     SOCKPOSITION_PC sock;
     struct {
@@ -2621,15 +2603,6 @@ STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, sock_location) == 4);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, sock_ratio) == 8);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_RECORD_PC, angle) == 12);
 STATIC_ASSERT(sizeof(PlayerList) == sizeof(PLAYER_POSITION_RECORD_PC));
-STATIC_ASSERT(sizeof(PLAYER_DOOR_PC) == 0x128);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, name) == 0);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, spline) == 0xa0);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, position) == 0xd4);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, level) == 0xf0);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, flags) == 0xf4);
-STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, doors) == 0x4698);
-STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, door_count) == 0x469c);
-STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, start_door) == 0x46a0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.location) == 0);
 STATIC_ASSERT(offsetof(PLAYER_POSITION_SOCK_PC, start.ratio) == 4);
 extern char DoorExitNamePc[];
@@ -2650,7 +2623,6 @@ extern NUVEC DoorCutCameraPosition1Pc;
 extern char PlayerMissionStartDoorPc[];
 extern char PlayerArcadeStartDoorPc[];
 void __cdecl Players_InitPositions(WORLDINFO *world) {
-    PLAYER_WORLD_DOORS_PC *doors = (PLAYER_WORLD_DOORS_PC *)world;
     i32 bonus = world->area != NULL && (world->area->flags & 4) != 0;
     NUGSPLINE *spline = NULL;
     i32 first_pair = 0;
@@ -2659,8 +2631,8 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
         PlayerStartRecordInitPc[index].position = &v000;
         PlayerStartRecordInitPc[index].angle = 0;
     }
-    if (doors->start_door != NULL && !bonus) {
-        spline = doors->start_door->spline;
+    if (world->start_door != NULL && !bonus) {
+        spline = world->start_door->spline;
         first_pair = 2;
     } else if (PlayerStartSplineIndexPc != -1) {
         spline = world->camera_splines[PlayerStartSplineIndexPc];
@@ -2676,18 +2648,17 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
             if (pair * 2 + 2 > spline->length)
                 pair = first_pair;
         }
-        if (bonus && spline->length > 3) {
+        if (bonus && spline->length >= 4) {
             i32 count = spline->length / 4;
-            i32 choice = qrand() / (65535 / count + 1);
-            NUVEC direction;
-            PlayerStartRecordInitPc[0].position = &spline->pts[choice * 4];
-            direction.z = spline->pts[choice * 4 + 1].z - PlayerStartRecordInitPc[0].position->z;
-            direction.x = spline->pts[choice * 4 + 1].x - PlayerStartRecordInitPc[0].position->x;
-            PlayerStartRecordInitPc[0].angle = NuAtan2D(direction.x, direction.z);
-            PlayerStartRecordInitPc[1].position = &spline->pts[choice * 4 + 2];
-            direction.z = spline->pts[choice * 4 + 3].z - PlayerStartRecordInitPc[1].position->z;
-            direction.x = spline->pts[choice * 4 + 3].x - PlayerStartRecordInitPc[0].position->x;
-            PlayerStartRecordInitPc[1].angle = NuAtan2D(direction.x, direction.z);
+            i32 start = qrand() / (65535 / count + 1) * 4;
+            PlayerStartRecordInitPc[0].position = &spline->pts[start];
+            PlayerStartRecordInitPc[0].angle =
+                NuAtan2D(spline->pts[start + 1].x - PlayerStartRecordInitPc[0].position->x,
+                         spline->pts[start + 1].z - PlayerStartRecordInitPc[0].position->z);
+            PlayerStartRecordInitPc[1].position = &spline->pts[start + 2];
+            PlayerStartRecordInitPc[1].angle =
+                NuAtan2D(spline->pts[start + 3].x - PlayerStartRecordInitPc[0].position->x,
+                         spline->pts[start + 3].z - PlayerStartRecordInitPc[1].position->z);
         }
     }
     if (HUB_ADATA != NULL && HUB_ADATA == world->area && last_area != world->area_index &&
@@ -2706,9 +2677,9 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
             i32 area = last_area;
             AREA_DATA_PC *area_data = &ADataList[area];
             if ((area_data->flags & 4) != 0 && area_data->episode_index != -1) {
-                i32 episode_area = Episode_FindAreaFromFlags(&EDataList[area_data->episode_index], 5, 5);
-                if (episode_area != -1)
-                    area = episode_area;
+                area = Episode_FindAreaFromFlags(&EDataList[area_data->episode_index], 5, 5);
+                if (area == -1)
+                    area = last_area;
             }
             door = Door_FindByIndex(world, area, -1, NULL);
         }
@@ -2720,11 +2691,11 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
     if (DoorExitCameraSplineNamePc[0] != '\0') {
         NUGSPLINE *camera = NuSplineFind(world->current_gscn, DoorExitCameraSplineNamePc);
         DoorCutSplinePc = camera;
-        if (camera == NULL)
-            Door_UseCutCam = 0;
-        else {
+        if (camera != NULL) {
             DoorCutCameraPosition0Pc = camera->pts[0];
             DoorCutCameraPosition1Pc = camera->pts[1];
+        } else {
+            Door_UseCutCam = 0;
         }
     }
     DoorExitCameraSplineNamePc[0] = '\0';
