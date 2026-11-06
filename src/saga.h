@@ -1092,6 +1092,11 @@ typedef struct APIOBJECT_PC {
     u8 leader_selection_state;
     u8 unknown_28c;
     u8 object_id;
+    u8 unknown_28e[0x4];
+    u16 ai_collision_priority_pc;
+    u16 ai_resolved_collision_priority_pc;
+    u8 unknown_296[0x2];
+    struct APIOBJECT_PC *collision_link;
 } APIOBJECT_PC;
 STATIC_ASSERT(offsetof(APIOBJECT_PC, owner) == 0);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, ai) == 4);
@@ -3673,7 +3678,7 @@ typedef struct WORLDINFO_s {
     void *giz_obstacle_sys;
     struct GIZBUILDITSYS_s *giz_buildit_sys;
     struct GIZFORCESYS_s *giz_force_sys;
-    void *equivalent_groups;
+    struct EQUIVALENT_GROUP_PC *equivalent_groups;
     i32 equivalent_group_count;
     struct GIZTURRETSYS_s *giz_turret_sys;
     struct pushblock_s *push_blocks;
@@ -5287,7 +5292,7 @@ typedef struct gameobject_s {
             u8 ai_priority_reserved_296[0x2];
         };
     };
-    u32 field_298;
+    struct APIOBJECT_PC *collision_link;
     u8 unknown_29c[0x4];
     u32 field_2a0;
     u32 field_2a4;
@@ -20770,7 +20775,7 @@ struct PC_GEOMETRY_MESH_PC;
 extern "C" {
 #endif
     typedef struct PUSH_SPINNER_PC PUSH_SPINNER_PC;
-    typedef struct PUSH_BLOCK_PC PUSH_BLOCK_PC;
+    typedef struct pushblock_s PUSH_BLOCK_PC;
     typedef struct TELEPORT_MOTION_PC TELEPORT_MOTION_PC;
     void __cdecl PushCode(GAMEOBJECT *, i32);
     PUSH_SPINNER_PC *__cdecl GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
@@ -25363,14 +25368,17 @@ struct pushblock_s {
     f32 snap_timer;
     f32 settled_height;
     i8 terrain_info[4];
-    i8 extra_terrain_info[4];
+    union {
+        i8 bytes[4];
+        i32 word;
+    } extra_terrain_info;
     i32 previous_extra_terrain_info;
     union {
         struct pushblock_s *supporting_block;
         struct pushblock_s *block_below;
     };
     struct pushblock_s *previous_supporting_block;
-    struct nuhspecial_s special;
+    NUSPECIALHANDLE special;
     struct gameobject_s *pushing_object;
     i32 platform_id;
     u8 fields_038[8];
@@ -25378,7 +25386,7 @@ struct pushblock_s {
     char name[16];
     struct nuvec_s *snap_positions;
     struct nuvec_s *position;
-    struct nuhspecial_s end_position_specials[2];
+    NUSPECIALHANDLE end_position_specials[2];
     NUVEC end_position_origins[2];
     NUVEC velocity;
     NUVEC target_velocity;
@@ -25386,55 +25394,40 @@ struct pushblock_s {
     NUVEC bounds_min;
     NUVEC bounds_max;
     union {
+        u32 packed_state_flags;
         struct {
             u8 runtime_flags_0c8;
             u8 runtime_flags_0c9;
-            union {
-                u8 flags_0ca;
-                struct {
-                    u8 fields_0ca_0_1 : 2;
-                    u8 push_visible : 1;
-                    u8 fields_0ca_3 : 1;
-                    u8 config_0ca_4 : 1;
-                    u8 config_0ca_5 : 1;
-                    u8 config_0ca_6 : 1;
-                    u8 config_0ca_7 : 1;
-                };
-            };
-            union {
-                u8 flags_0cb;
-                struct {
-                    u8 fields_0cb_0_1 : 2;
-                    u8 config_0cb_2 : 1;
-                    u8 config_0cb_3 : 1;
-                    u8 field_0cb_4 : 1;
-                    u8 config_0cb_5 : 1;
-                    u8 config_0cb_6 : 1;
-                    u8 field_0cb_7 : 1;
-                };
-            };
+            u8 flags_0ca;
+            u8 flags_0cb;
         };
-        u8 state_flags[4];
-        u32 packed_state_flags;
-    };
-    union {
-        u16 completion_flags;
-        u16 field_0xcc;
-    };
-    union {
         struct {
-            u8 end_position_count;
-            u8 output_count;
+            u32 flag_000 : 1;
+            u32 unknown_flags_001_005 : 5;
+            u32 flag_006 : 1;
+            u32 flag_007 : 1;
+            u32 unknown_flags_008_011 : 4;
+            u32 animation_positions : 3;
+            u32 unknown_flags_015_017 : 3;
+            u32 push_visible : 1;
+            u32 unknown_flags_019_023 : 5;
+            u32 push_active : 1;
+            u32 progress_state : 1;
+            u32 unknown_flags_026_031 : 6;
         };
-        u16 field_0xce;
     };
+    u8 unknown_0cc[4];
+    u8 completed_snap_positions;
+    u8 end_position_count;
+    u8 output_count;
+    u8 unknown_0d3;
 };
-STATIC_ASSERT(sizeof(struct pushblock_s) == 208);
+STATIC_ASSERT(sizeof(struct pushblock_s) == 0xd4);
 
 struct PUSHPROGRESS {
-    u32 visible_mask;
-    u32 state_mask;
-    u32 position_mask;
+    u32 visible_mask[1];
+    u32 state_mask[1];
+    u32 position_mask[1];
     NUVEC positions[16];
     NUVEC end_positions[2][16];
 };

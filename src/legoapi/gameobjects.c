@@ -4497,54 +4497,25 @@ void __cdecl GameAntiNodeData_Read(void *opaque_data) {
     data->mode = (u8)EdFileReadChar();
 }
 
-typedef struct CAN_USE_VIEW_PC {
-    u8 unknown[0xefc];
-    void *object;
-    u8 action;
-    u8 frames;
-    u8 unknown_f02[2];
-    f32 parameter;
-} CAN_USE_VIEW_PC;
-STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, object) == 0xefc);
-STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, action) == 0xf00);
-STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, frames) == 0xf01);
-STATIC_ASSERT(offsetof(CAN_USE_VIEW_PC, parameter) == 0xf04);
+STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_frames) == 0xf01);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_collision_priority_pc) == 0x292);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_resolved_collision_priority_pc) == 0x294);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_link) == 0x298);
+STATIC_ASSERT(offsetof(AIPACKET_PC, antinode_timer) == 0x18c);
 extern u8 grapple_attach_frames;
 __declspec(noinline) void __cdecl GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
                                                       f32 parameter) {
-    CAN_USE_VIEW_PC *view = (CAN_USE_VIEW_PC *)object;
-    view->object = target;
-    view->action = action;
-    view->frames = grapple_attach_frames;
-    view->parameter = parameter;
+    object->can_use_object = target;
+    object->field_f00 = action;
+    object->use_action_frames = grapple_attach_frames;
+    object->use_action_parameter = parameter;
 }
 
-typedef struct INTERACTION_PACKET_VIEW_PC {
-    u8 unknown[0x18c];
-    f32 antinode_timer;
-} INTERACTION_PACKET_VIEW_PC;
-STATIC_ASSERT(offsetof(INTERACTION_PACKET_VIEW_PC, antinode_timer) == 0x18c);
-typedef struct INTERACTION_OBJECT_VIEW_PC {
-    u8 unknown[0x292];
-    u16 priority;
-    u16 resolved_priority;
-    u8 unknown296[2];
-    APIOBJECT_PC *collision_link;
-} INTERACTION_OBJECT_VIEW_PC;
-STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, priority) == 0x292);
-STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, resolved_priority) == 0x294);
-STATIC_ASSERT(offsetof(INTERACTION_OBJECT_VIEW_PC, collision_link) == 0x298);
-typedef struct INTERACTION_ANTINODE_VIEW_PC {
-    u8 unknown[0x50];
-    u64 excluded_character_types;
-} INTERACTION_ANTINODE_VIEW_PC;
-STATIC_ASSERT(offsetof(INTERACTION_ANTINODE_VIEW_PC, excluded_character_types) == 0x50);
-#define INTERACTION_PACKET(p) ((INTERACTION_PACKET_VIEW_PC *)(p))
-#define INTERACTION_OBJECT(p) ((INTERACTION_OBJECT_VIEW_PC *)(p))
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 // Copies the antinode timer and its 0x8000 flag from one creature's packet to the other's.
 #define INTERACTION_COPY_ANTINODE(source, target)                                                                      \
-    INTERACTION_PACKET((target)->ai)->antinode_timer = INTERACTION_PACKET((source)->ai)->antinode_timer;               \
+    (target)->ai->antinode_timer = (source)->ai->antinode_timer;                                                       \
     (target)->ai->flags ^= ((source)->ai->flags ^ (target)->ai->flags) & 0x8000
 extern f32 antinode_time;
 typedef void(__cdecl *CHECK_ANTINODE_FN_PC)(APIOBJECT_PC *, AIANTINODE_PC *, NUVEC *, f32);
@@ -4588,9 +4559,9 @@ void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOB
     f32 radius, minimum;
     for (index = 0; index < object_count; ++index) {
         first = objects[index];
-        INTERACTION_PACKET(first->ai)->antinode_timer -= delta_time;
-        if (INTERACTION_PACKET(first->ai)->antinode_timer < 0.0f)
-            INTERACTION_PACKET(first->ai)->antinode_timer = 0.0f;
+        first->ai->antinode_timer -= delta_time;
+        if (first->ai->antinode_timer < 0.0f)
+            first->ai->antinode_timer = 0.0f;
     }
     for (first_index = 0; first_index < object_count - 1; ++first_index) {
         first = objects[first_index];
@@ -4606,8 +4577,7 @@ void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOB
             if (INTERACTION_GEOMETRY(first)->collision_min.y > INTERACTION_GEOMETRY(second)->collision_max.y ||
                 INTERACTION_GEOMETRY(second)->collision_min.y > INTERACTION_GEOMETRY(first)->collision_max.y)
                 continue;
-            if (INTERACTION_OBJECT(first)->collision_link == second ||
-                INTERACTION_OBJECT(second)->collision_link == first)
+            if (first->collision_link == second || second->collision_link == first)
                 continue;
             if (immovable != NULL) {
                 first_fixed = immovable[first_index];
@@ -4620,11 +4590,11 @@ void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOB
                 first_fixed = 1;
             if (second->flags_low & 0x80)
                 second_fixed = 1;
-            if (INTERACTION_OBJECT(second)->priority < INTERACTION_OBJECT(first)->priority) {
+            if (second->ai_collision_priority_pc < first->ai_collision_priority_pc) {
                 first_fixed = 1;
                 if (second_fixed)
                     continue;
-            } else if (INTERACTION_OBJECT(second)->priority > INTERACTION_OBJECT(first)->priority) {
+            } else if (second->ai_collision_priority_pc > first->ai_collision_priority_pc) {
                 second_fixed = 1;
                 if (first_fixed)
                     continue;
@@ -4635,33 +4605,32 @@ void __cdecl GameCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOB
                 continue;
             difference.y = 0.0f;
             if (first_fixed) {
-                if (INTERACTION_OBJECT(first)->priority > INTERACTION_OBJECT(second)->resolved_priority) {
-                    INTERACTION_OBJECT(second)->resolved_priority = INTERACTION_OBJECT(first)->priority;
+                if (first->ai_collision_priority_pc > second->ai_resolved_collision_priority_pc) {
+                    second->ai_resolved_collision_priority_pc = first->ai_collision_priority_pc;
                     difference.x = -difference.x;
                     difference.z = -difference.z;
                     CreatureInteractionOrbitPc(second, &difference, first, radius);
                 }
             } else if (second_fixed) {
-                if (INTERACTION_OBJECT(second)->priority > INTERACTION_OBJECT(first)->resolved_priority) {
-                    INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
+                if (second->ai_collision_priority_pc > first->ai_resolved_collision_priority_pc) {
+                    first->ai_resolved_collision_priority_pc = second->ai_collision_priority_pc;
                     CreatureInteractionOrbitPc(first, &difference, second, radius);
                 }
             } else {
-                INTERACTION_OBJECT(first)->resolved_priority = INTERACTION_OBJECT(second)->priority;
+                first->ai_resolved_collision_priority_pc = second->ai_collision_priority_pc;
                 difference.x = -difference.x;
                 difference.z = -difference.z;
                 CreatureInteractionOrbitPc(second, &difference, first, radius);
             }
-            if (INTERACTION_PACKET(first->ai)->antinode_timer > antinode_time &&
-                INTERACTION_PACKET(second->ai)->antinode_timer > antinode_time) {
-                if (INTERACTION_PACKET(first->ai)->antinode_timer > INTERACTION_PACKET(second->ai)->antinode_timer) {
+            if (first->ai->antinode_timer > antinode_time && second->ai->antinode_timer > antinode_time) {
+                if (first->ai->antinode_timer > second->ai->antinode_timer) {
                     INTERACTION_COPY_ANTINODE(first, second);
                 } else {
                     INTERACTION_COPY_ANTINODE(second, first);
                 }
-            } else if (INTERACTION_PACKET(second->ai)->antinode_timer > antinode_time) {
+            } else if (second->ai->antinode_timer > antinode_time) {
                 INTERACTION_COPY_ANTINODE(second, first);
-            } else if (INTERACTION_PACKET(first->ai)->antinode_timer > 0.0f) {
+            } else if (first->ai->antinode_timer > 0.0f) {
                 INTERACTION_COPY_ANTINODE(first, second);
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {

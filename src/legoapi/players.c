@@ -1635,7 +1635,7 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->joint_override_count = 0;
     object->head_target = NULL;
     object->ai_packet.dont_avoid_character = NULL;
-    object->field_298 = 0;
+    object->collision_link = NULL;
     object->field_2a0 = 0;
     object->field_2a4 = 0;
     if ((character->model_flags & 0x4000) != 0 && (object->field_280 == 0xff || object->rider != NULL))
@@ -3348,7 +3348,7 @@ STATIC_ASSERT(offsetof(CHARACTER_DRAW_HIERARCHY_PC, suppress_shadow_surface_poin
 STATIC_ASSERT(offsetof(GAMEOBJECT, joint_overrides) == 0xf3c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, head_target) == 0xfd8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, joint_override_count) == 0x107d);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_298) == 0x298);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_2a4) == 0x2a4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1083) == 0x1083);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_108c) == 0x108c);

@@ -1,37 +1,32 @@
 #include "saga.h"
 
-typedef struct PUSH_BLOCK_PC {
-    u8 unknown_000[0x24];
-    NUSPECIALHANDLE special;
-    GAMEOBJECT *pushing_object;
-    u8 unknown_034[0x58 - 0x34];
-    NUVEC *position;
-    u8 unknown_05c[0xb0 - 0x5c];
-    NUVEC bounds_min, bounds_max;
-    union {
-        u32 packed_state_flags;
-        struct {
-            u8 runtime_flags_0c8, runtime_flags_0c9, flags_0ca, flags_0cb;
-        };
-    };
-    u8 unknown_0cc[0xd4 - 0xcc];
-} PUSH_BLOCK_PC;
-typedef struct PUSH_BLOCK_WORLD_PC {
-    u8 unknown_000[0x46bc];
-    PUSH_BLOCK_PC *blocks;
-    i32 count;
-} PUSH_BLOCK_WORLD_PC;
-STATIC_ASSERT(sizeof(PUSH_BLOCK_PC) == 0xd4);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, extra_terrain_info) == 0x14);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, supporting_block) == 0x1c);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, special) == 0x24);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, pushing_object) == 0x30);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, platform_id) == 0x34);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, snap_distance) == 0x40);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, name) == 0x44);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, snap_positions) == 0x54);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, position) == 0x58);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, end_position_specials) == 0x5c);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, end_position_origins) == 0x74);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, velocity) == 0x8c);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, target_velocity) == 0x98);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, snap_origin) == 0xa4);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, bounds_min) == 0xb0);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, bounds_max) == 0xbc);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, packed_state_flags) == 0xc8);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, runtime_flags_0c8) == 0xc8);
 STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, flags_0ca) == 0xca);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_WORLD_PC, blocks) == 0x46bc);
-STATIC_ASSERT(offsetof(PUSH_BLOCK_WORLD_PC, count) == 0x46c0);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, completed_snap_positions) == 0xd0);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, end_position_count) == 0xd1);
+STATIC_ASSERT(offsetof(PUSH_BLOCK_PC, output_count) == 0xd2);
+STATIC_ASSERT(offsetof(WORLDINFO, push_blocks) == 0x46bc);
+STATIC_ASSERT(offsetof(WORLDINFO, push_block_count) == 0x46c0);
+STATIC_ASSERT(offsetof(WORLDINFO, push_block_positions) == 0x46c4);
+STATIC_ASSERT(offsetof(WORLDINFO, push_block_position_count) == 0x46c8);
+STATIC_ASSERT(offsetof(LEVELDATA_PC, max_pushblock_endpos) == 0x100);
+STATIC_ASSERT(offsetof(PUSHPROGRESS, end_positions) == 0xcc);
 extern "C" {
     extern i32 LEGOCONTEXT_PUSH;
     extern u16 PushBlockFacingTolerancePc;
@@ -42,9 +37,9 @@ typedef union PUSH_FABS_BITS_PC {
     u32 bits;
 } PUSH_FABS_BITS_PC;
 extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
-    PUSH_BLOCK_WORLD_PC *push_world = (PUSH_BLOCK_WORLD_PC *)world;
-    if (push_world == NULL || push_world->blocks == NULL || push_world->count == 0 || LEGOCONTEXT_PUSH == -1 ||
-        object->character_context != LEGOCONTEXT_PUSH)
+    WORLDINFO *push_world = (WORLDINFO *)world;
+    if (push_world == NULL || push_world->push_blocks == NULL || push_world->push_block_count == 0 ||
+        LEGOCONTEXT_PUSH == -1 || object->character_context != LEGOCONTEXT_PUSH)
         return NULL;
     f32 max_y = object->upper_position.y;
     u16 facing = object->movement_facing_angle;
@@ -72,8 +67,8 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *world, GAMEO
     f32 nearest_dist = 1000000000.0f;
     nearest = NULL;
     f32 gap = 0.0f;
-    for (i32 i = 0; i < push_world->count; ++i) {
-        PUSH_BLOCK_PC *block = &push_world->blocks[i];
+    for (i32 i = 0; i < push_world->push_block_count; ++i) {
+        PUSH_BLOCK_PC *block = &push_world->push_blocks[i];
         if (NuSpecialExistsFn(&block->special) != 0) {
             if (NuSpecialGetOnScreenFn(&block->special) == 0)
                 continue;
@@ -210,54 +205,10 @@ extern "C" i32 __cdecl PushBlock(GAMEOBJECT *object) {
     return 0;
 }
 
-typedef struct PUSH_SUPPORT_BLOCK_VIEW_PC {
-    u8 unknown_000[0x24];
-    NUSPECIALHANDLE special;
-    GAMEOBJECT *pushing_object;
-    u8 unknown_034[0x58 - 0x34];
-    NUVEC *position;
-    u8 unknown_05c[0xb0 - 0x5c];
-    NUVEC bounds_min, bounds_max;
-    union {
-        u32 packed_state_flags;
-        struct {
-            u32 unknown_flags_000_011 : 12;
-            u32 animation_positions : 3;
-            u32 unknown_flags_015_017 : 3;
-            u32 push_visible : 1;
-            u32 unknown_flags_019_024 : 6;
-            u32 progress_state : 1;
-            u32 unknown_flags_026_031 : 6;
-        };
-    };
-    u8 unknown_0cc[4];
-    u8 completed_snap_positions;
-    u8 end_position_count;
-    u8 output_count;
-    u8 unknown_0d3;
-} PUSH_SUPPORT_BLOCK_VIEW_PC;
-typedef struct PUSH_SUPPORT_WORLD_VIEW_PC {
-    u8 unknown_000[0x46bc];
-    PUSH_SUPPORT_BLOCK_VIEW_PC *blocks;
-    i32 count;
-} PUSH_SUPPORT_WORLD_VIEW_PC;
-STATIC_ASSERT(sizeof(PUSH_SUPPORT_BLOCK_VIEW_PC) == 0xd4);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, special) == 0x24);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, pushing_object) == 0x30);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, position) == 0x58);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_min) == 0xb0);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, bounds_max) == 0xbc);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, end_position_count) == 0xd1);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
-STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
-
 extern "C" void __cdecl PushSeekComplete(PUSH_BLOCK_PC *opaque_block, i32 index) {
-    PUSH_SUPPORT_BLOCK_VIEW_PC *block = (PUSH_SUPPORT_BLOCK_VIEW_PC *)opaque_block;
+    PUSH_BLOCK_PC *block = opaque_block;
     block->packed_state_flags &= ~0x200u;
-    block->completed_snap_positions |= (u8)(1u << (index & 31));
+    block->completed_snap_positions |= (u8)(1 << index);
     if ((block->packed_state_flags & 0x20000000u) == 0)
         block->packed_state_flags |= 0x02000100u;
     if (block->pushing_object != NULL)
@@ -266,19 +217,19 @@ extern "C" void __cdecl PushSeekComplete(PUSH_BLOCK_PC *opaque_block, i32 index)
 
 extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, NUVEC *position,
                                          i32 excluded) {
-    PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
-    PUSH_SUPPORT_BLOCK_VIEW_PC *block = (PUSH_SUPPORT_BLOCK_VIEW_PC *)opaque_block;
+    WORLDINFO *world = (WORLDINFO *)opaque_world;
+    PUSH_BLOCK_PC *block = (PUSH_BLOCK_PC *)opaque_block;
     NUVEC centre;
     f32 radius;
     NuSpecialGetRadius(&block->special, &centre, &radius);
     radius *= radius;
-    for (i32 i = 0; i < world->count; ++i) {
-        PUSH_SUPPORT_BLOCK_VIEW_PC *other;
+    for (i32 i = 0; i < world->push_block_count; ++i) {
+        PUSH_BLOCK_PC *other;
         NUVEC minimum, maximum;
         f32 other_radius, x, z, sum, distance;
         if (i == excluded)
             continue;
-        other = &world->blocks[i];
+        other = &world->push_blocks[i];
         if ((other->packed_state_flags & 0x01040000u) != 0x01040000u || (other->packed_state_flags & 0x04000000u) != 0)
             continue;
         if (NuSpecialGetVisibilityFn(&other->special) == 0)
@@ -315,100 +266,11 @@ extern "C" {
     extern char *PushBlocksNamePc;
 }
 
-typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
-    f32 ground_offset, ground_height, snap_timer, settled_height;
-    i8 terrain_info[4];
-    union {
-        i8 bytes[4];
-        i32 word;
-    } extra_terrain_info;
-    i32 previous_extra_terrain_info;
-    PUSH_BLOCK_PC *supporting_block, *previous_supporting_block;
-    NUSPECIALHANDLE special;
-    GAMEOBJECT *pushing_object;
-    i32 platform_id;
-    u8 unknown_038[8];
-    f32 snap_distance;
-    char name[16];
-    NUVEC *snap_positions, *position;
-    NUSPECIALHANDLE end_position_specials[2];
-    NUVEC end_position_origins[2];
-    NUVEC velocity, target_velocity, snap_origin, bounds_min, bounds_max;
-    union {
-        u32 packed_state_flags;
-        struct {
-            u32 unknown_flags_000_011 : 12;
-            u32 animation_positions : 3;
-            u32 unknown_flags_015_017 : 3;
-            u32 push_visible : 1;
-            u32 unknown_flags_019_024 : 6;
-            u32 progress_state : 1;
-            u32 unknown_flags_026_031 : 6;
-        };
-    };
-    u8 unknown_0cc[4];
-    u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
-} PUSH_RUNTIME_BLOCK_VIEW_PC;
-typedef struct PUSH_RUNTIME_LEVEL_VIEW_PC {
-    u8 unknown_000[0xff];
-    u8 max_push_blocks;
-    u8 max_push_block_positions;
-} PUSH_RUNTIME_LEVEL_VIEW_PC;
-typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
-    u8 unknown_000[0x104];
-    VARIPTR giz_buffer;
-    u8 unknown_108[0x128 - 0x108];
-    PUSH_RUNTIME_LEVEL_VIEW_PC *current_level;
-    u8 unknown_12c[0x13c - 0x12c];
-    NUGSCN *current_gscn;
-    u8 unknown_140[0x2ac8 - 0x140];
-    void *gizmo_sys;
-    u8 unknown_2acc[0x46bc - 0x2acc];
-    PUSH_RUNTIME_BLOCK_VIEW_PC *blocks;
-    i32 count;
-    NUVEC *positions;
-    i32 position_count;
-} PUSH_RUNTIME_WORLD_VIEW_PC;
-STATIC_ASSERT(sizeof(PUSH_RUNTIME_BLOCK_VIEW_PC) == 0xd4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_LEVEL_VIEW_PC, max_push_blocks) == 0xff);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_level) == 0x128);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, gizmo_sys) == 0x2ac8);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, blocks) == 0x46bc);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, count) == 0x46c0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_offset) == 0x0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_height) == 0x4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_timer) == 0x8);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, settled_height) == 0xc);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, terrain_info) == 0x10);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, extra_terrain_info) == 0x14);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_extra_terrain_info) == 0x18);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, supporting_block) == 0x1c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_supporting_block) == 0x20);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, special) == 0x24);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, pushing_object) == 0x30);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, platform_id) == 0x34);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_distance) == 0x40);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, name) == 0x44);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_positions) == 0x54);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, position) == 0x58);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_specials) == 0x5c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_origins) == 0x74);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, velocity) == 0x8c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, target_velocity) == 0x98);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_origin) == 0xa4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_min) == 0xb0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_max) == 0xbc);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_count) == 0xd1);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, output_count) == 0xd2);
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 
 extern "C" void __cdecl KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(opaque_block);
+    PUSH_BLOCK_PC *block = reinterpret_cast<PUSH_BLOCK_PC *>(opaque_block);
     if (block != NULL) {
         block->velocity.x = -direction->x;
         block->velocity.y = -direction->y;
@@ -419,15 +281,15 @@ extern "C" void __cdecl KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direc
 }
 
 extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVEC *position, f32 range) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = reinterpret_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(opaque_world);
+    WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque_world);
     if (world == NULL || position == NULL)
         return NULL;
     NUVEC minimum = {position->x - range, position->y - range, position->z - range};
     NUVEC maximum = {position->x + range, position->y + range, position->z + range};
-    PUSH_RUNTIME_BLOCK_VIEW_PC *nearest = NULL;
+    PUSH_BLOCK_PC *nearest = NULL;
     f32 nearest_distance = 1000000000.0f;
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
-    for (i32 index = 0; index < world->count; ++index, ++block) {
+    PUSH_BLOCK_PC *block = world->push_blocks;
+    for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         if ((block->packed_state_flags & 0x01040100u) != 0x01040000u)
             continue;
         NUVEC *candidate = block->position;
@@ -443,18 +305,6 @@ extern "C" PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *opaque_world, NUVE
     return reinterpret_cast<PUSH_BLOCK_PC *>(nearest);
 }
 
-// Full PC runtime views; the Android/shared pushblock_s has a shorter tail.
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_LEVEL_VIEW_PC, max_push_block_positions) == 0x100);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, positions) == 0x46c4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, position_count) == 0x46c8);
-typedef struct PUSH_RESET_PROGRESS_PC {
-    u32 visible_mask[1], state_mask[1], position_mask[1];
-    NUVEC positions[16];
-    NUVEC end_positions[2][16];
-} PUSH_RESET_PROGRESS_PC;
-STATIC_ASSERT(sizeof(PUSH_RESET_PROGRESS_PC) == 0x24c);
-STATIC_ASSERT(offsetof(PUSH_RESET_PROGRESS_PC, positions) == 0xc);
-STATIC_ASSERT(offsetof(PUSH_RESET_PROGRESS_PC, end_positions) == 0xcc);
 extern "C" {
     extern NUVEC PushBlockMissingSpecialPositionPc;
     extern i32 RunOutOfPosTabSpacePc;
@@ -462,7 +312,7 @@ extern "C" {
 }
 
 extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i32) {
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(opaque);
+    PUSH_BLOCK_PC *block = reinterpret_cast<PUSH_BLOCK_PC *>(opaque);
     block->platform_id = FindPlatInst(NuSpecialGetInstanceix(&block->special));
     SetAnimFrame(reinterpret_cast<struct nuhspecial_s *>(&block->special), 1.0f);
     block->packed_state_flags &= 0xfdfc70f2u;
@@ -482,12 +332,12 @@ extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *op
 }
 
 extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = reinterpret_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(opaque);
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
-    if (block == NULL || world->count <= 0)
+    WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
+    PUSH_BLOCK_PC *block = world->push_blocks;
+    if (block == NULL || world->push_block_count <= 0)
         return;
-    PUSH_RESET_PROGRESS_PC *progress = static_cast<PUSH_RESET_PROGRESS_PC *>(progress_data);
-    for (i32 index = 0; index < world->count; ++index, ++block) {
+    PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_data);
+    for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         if (progress != NULL && index < 16) {
             const u32 bit = 1u << (index & 31);
             block->progress_state = (progress->state_mask[index / 32] & bit) != 0;
@@ -534,10 +384,10 @@ extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data
 }
 
 extern "C" void __cdecl ResetSinglePushBlockHeight(WORLDINFO *world, struct pushblock_s *opaque, i32 index) {
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(opaque);
+    PUSH_BLOCK_PC *block = reinterpret_cast<PUSH_BLOCK_PC *>(opaque);
     BlockInBlock(world, reinterpret_cast<PUSH_BLOCK_PC *>(block), index, &block->supporting_block);
     if (block->supporting_block != NULL) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *support = reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(block->supporting_block);
+        PUSH_BLOCK_PC *support = reinterpret_cast<PUSH_BLOCK_PC *>(block->supporting_block);
         block->ground_height = support->position->y + support->bounds_max.y + PushBlockGapEpsilonPc;
     }
     f32 height = block->bounds_min.y + block->position->y;
@@ -550,33 +400,33 @@ extern "C" void __cdecl ResetSinglePushBlockHeight(WORLDINFO *world, struct push
 }
 
 extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = reinterpret_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(opaque);
-    world->position_count = 0;
+    WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
+    world->push_block_position_count = 0;
     RunOutOfPosTabSpacePc = 0;
     pushposincrease = 0;
-    world->positions = static_cast<NUVEC *>(world->giz_buffer.void_ptr);
+    world->push_block_positions = static_cast<NUVEC *>(world->giz_buffer.void_ptr);
     world->giz_buffer.addr =
-        (world->giz_buffer.addr + world->current_level->max_push_block_positions * sizeof(NUVEC) + 3) & ~3u;
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
+        (world->giz_buffer.addr + world->current_level->max_pushblock_endpos * sizeof(NUVEC) + 3) & ~3u;
+    PUSH_BLOCK_PC *block = world->push_blocks;
     ResetPushProgress(opaque, progress);
-    for (i32 index = 0; index < world->count; ++index, ++block) {
+    for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         block->animation_positions = 0;
         NUINSTANIM_TIME_VIEW *animation = static_cast<NUINSTANIM_TIME_VIEW *>(NuSpecialGetInstAnim(&block->special));
         if (animation != NULL) {
             block->animation_positions = static_cast<i32>(NuAnimEndFrameOld(
                 static_cast<NUGSCN *>(block->special.scene)->instance_animation_data[animation->animation_index]));
             block->output_count = static_cast<u8>(block->animation_positions);
-            i32 required = world->position_count + block->animation_positions;
-            if (required > world->current_level->max_push_block_positions) {
+            i32 required = world->push_block_position_count + block->animation_positions;
+            if (required > world->current_level->max_pushblock_endpos) {
                 if (RunOutOfPosTabSpacePc != 0)
                     pushposincrease += block->animation_positions;
                 else {
                     RunOutOfPosTabSpacePc = 1;
-                    pushposincrease += required - world->current_level->max_push_block_positions;
+                    pushposincrease += required - world->current_level->max_pushblock_endpos;
                 }
             }
             if (block->animation_positions != 0 && RunOutOfPosTabSpacePc == 0) {
-                block->snap_positions = &world->positions[world->position_count];
+                block->snap_positions = &world->push_block_positions[world->push_block_position_count];
                 f32 frame = 1.0f;
                 for (i32 position = 0; position < static_cast<i32>(block->animation_positions);
                      ++position, frame += 1.0) {
@@ -587,14 +437,14 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
                     block->snap_positions[position].x += evaluated.m30;
                     block->snap_positions[position].y += evaluated.m31;
                     block->snap_positions[position].z += evaluated.m32;
-                    ++world->position_count;
+                    ++world->push_block_position_count;
                 }
             }
         }
         ResetSinglePushBlock(opaque, reinterpret_cast<struct pushblock_s *>(block), index);
     }
-    block = world->blocks;
-    for (i32 index = 0; index < world->count; ++index, ++block) {
+    block = world->push_blocks;
+    for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         NUVEC centre = *block->position;
         block->velocity = v000;
         block->target_velocity = v000;
@@ -644,6 +494,6 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         // PC has no Android TerrainBlockOnBlock call here.
         block->previous_extra_terrain_info = block->extra_terrain_info.word;
     }
-    for (i32 index = 0; index < world->count; ++index)
-        ResetSinglePushBlockHeight(opaque, reinterpret_cast<struct pushblock_s *>(&world->blocks[index]), index);
+    for (i32 index = 0; index < world->push_block_count; ++index)
+        ResetSinglePushBlockHeight(opaque, reinterpret_cast<struct pushblock_s *>(&world->push_blocks[index]), index);
 }

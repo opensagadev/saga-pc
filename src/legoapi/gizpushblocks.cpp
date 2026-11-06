@@ -20,92 +20,6 @@ extern "C" {
     char *__cdecl NuIToA(i32, char *, i32);
     extern char *PushBlocksNamePc;
 }
-typedef struct PUSH_RUNTIME_BLOCK_VIEW_PC {
-    f32 ground_offset, ground_height, snap_timer, settled_height;
-    i8 terrain_info[4];
-    union {
-        i8 bytes[4];
-        i32 word;
-    } extra_terrain_info;
-    i32 previous_extra_terrain_info;
-    PUSH_BLOCK_PC *supporting_block, *previous_supporting_block;
-    NUSPECIALHANDLE special;
-    GAMEOBJECT *pushing_object;
-    i32 platform_id;
-    u8 unknown_038[8];
-    f32 snap_distance;
-    char name[16];
-    NUVEC *snap_positions, *position;
-    NUSPECIALHANDLE end_position_specials[2];
-    NUVEC end_position_origins[2];
-    NUVEC velocity, target_velocity, snap_origin, bounds_min, bounds_max;
-    union {
-        u32 packed_state_flags;
-        struct {
-            u32 flag_000 : 1;
-            u32 unknown_flags_001_005 : 5;
-            u32 flag_006 : 1;
-            u32 flag_007 : 1;
-            u32 unknown_flags_008_017 : 10;
-            u32 push_visible : 1;
-            u32 unknown_flags_019_031 : 13;
-        };
-    };
-    u8 unknown_0cc[4];
-    u8 completed_snap_positions, end_position_count, output_count, unknown_0d3;
-} PUSH_RUNTIME_BLOCK_VIEW_PC;
-typedef struct PUSH_RUNTIME_LEVEL_VIEW_PC {
-    u8 unknown_000[0xff];
-    u8 max_push_blocks;
-} PUSH_RUNTIME_LEVEL_VIEW_PC;
-typedef struct PUSH_RUNTIME_WORLD_VIEW_PC {
-    u8 unknown_000[0x104];
-    VARIPTR giz_buffer;
-    u8 unknown_108[0x128 - 0x108];
-    PUSH_RUNTIME_LEVEL_VIEW_PC *current_level;
-    u8 unknown_12c[0x13c - 0x12c];
-    NUGSCN *current_gscn;
-    u8 unknown_140[0x2ac8 - 0x140];
-    void *gizmo_sys;
-    u8 unknown_2acc[0x46bc - 0x2acc];
-    PUSH_RUNTIME_BLOCK_VIEW_PC *blocks;
-    i32 count;
-} PUSH_RUNTIME_WORLD_VIEW_PC;
-STATIC_ASSERT(sizeof(PUSH_RUNTIME_BLOCK_VIEW_PC) == 0xd4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_LEVEL_VIEW_PC, max_push_blocks) == 0xff);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, giz_buffer) == 0x104);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_level) == 0x128);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, gizmo_sys) == 0x2ac8);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, blocks) == 0x46bc);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_WORLD_VIEW_PC, count) == 0x46c0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_offset) == 0x0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, ground_height) == 0x4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_timer) == 0x8);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, settled_height) == 0xc);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, terrain_info) == 0x10);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, extra_terrain_info) == 0x14);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_extra_terrain_info) == 0x18);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, supporting_block) == 0x1c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, previous_supporting_block) == 0x20);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, special) == 0x24);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, pushing_object) == 0x30);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, platform_id) == 0x34);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_distance) == 0x40);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, name) == 0x44);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_positions) == 0x54);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, position) == 0x58);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_specials) == 0x5c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_origins) == 0x74);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, velocity) == 0x8c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, target_velocity) == 0x98);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, snap_origin) == 0xa4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_min) == 0xb0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, bounds_max) == 0xbc);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, packed_state_flags) == 0xc8);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, completed_snap_positions) == 0xd0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_count) == 0xd1);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, output_count) == 0xd2);
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 
@@ -120,13 +34,13 @@ STATIC_ASSERT(sizeof(PUSH_ABSOLUTE_FLOAT_BITS_PC) == 4);
 
 extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
     static f32 snap_time = 0.5f;
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
+    WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
     i32 target_seen = 0;
-    if (world == NULL || world->count == 0 || world->blocks == NULL)
+    if (world == NULL || world->push_block_count == 0 || world->push_blocks == NULL)
         return;
     snap_time = 0.25f;
-    for (i32 index = 0; index < world->count; ++index) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *p = &world->blocks[index];
+    for (i32 index = 0; index < world->push_block_count; ++index) {
+        PUSH_BLOCK_PC *p = &world->push_blocks[index];
         p->push_visible = NuSpecialGetVisibilityFn(&p->special);
         if (p->push_visible == 0)
             continue;
@@ -277,14 +191,14 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             p->target_velocity.y = 0.0f;
         }
     }
-    for (i32 index = 0; index < world->count; ++index) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *p = &world->blocks[index];
+    for (i32 index = 0; index < world->push_block_count; ++index) {
+        PUSH_BLOCK_PC *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) != 0 && (p->packed_state_flags & 0x06000100u) == 0 &&
             (p->packed_state_flags & 0x69u) != 0)
             MoveBlocks(reinterpret_cast<WORLDINFO *>(world), reinterpret_cast<PUSH_BLOCK_PC *>(p), index, &p->velocity);
     }
-    for (i32 index = 0; index < world->count; ++index) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *p = &world->blocks[index];
+    for (i32 index = 0; index < world->push_block_count; ++index) {
+        PUSH_BLOCK_PC *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000000u) != 0)
             continue;
         if (NuSpecialGetVisibilityFn(&p->special) == 0 || (p->packed_state_flags & 0x4du) == 0)
@@ -377,8 +291,7 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             p->ground_offset = (p->position->y + p->bounds_min.y) - p->ground_height;
         }
         if (p->supporting_block != NULL) {
-            p->ground_height =
-                p->position->y + reinterpret_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(p->supporting_block)->bounds_max.y;
+            p->ground_height = p->position->y + reinterpret_cast<PUSH_BLOCK_PC *>(p->supporting_block)->bounds_max.y;
             p->ground_offset = (p->position->y + p->bounds_min.y) - p->ground_height;
         }
         if (p->ground_offset > 0.0f) {
@@ -394,8 +307,8 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
         if (safe < 4)
             p->packed_state_flags |= 0x400u;
     }
-    for (i32 index = 0; index < world->count; ++index) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *p = &world->blocks[index];
+    for (i32 index = 0; index < world->push_block_count; ++index) {
+        PUSH_BLOCK_PC *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000100u) != 0)
             continue;
         if ((p->packed_state_flags & 0x400u) == 0 && (p->packed_state_flags & 1u) != 0)
@@ -439,8 +352,8 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                 Hint_SetComplete(PushBlockHintIdPc);
         }
     }
-    for (i32 index = 0; world->count > index; ++index) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *p = &world->blocks[index];
+    for (i32 index = 0; world->push_block_count > index; ++index) {
+        PUSH_BLOCK_PC *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0)
             continue;
         if (p->pushing_object != NULL) {
@@ -468,76 +381,69 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
 }
 
 static void *__cdecl PushBlocks_ReserveBufferSpace(void *world_ptr) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    PUSH_RUNTIME_LEVEL_VIEW_PC *level = world->current_level;
-    world->blocks = NULL;
-    world->count = 0;
-    if (level->max_push_blocks != 0) {
+    WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+    LEVELDATA_PC *level = world->current_level;
+    world->push_blocks = NULL;
+    world->push_block_count = 0;
+    if (level->max_pushblocks != 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-        world->blocks = static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(world->giz_buffer.void_ptr);
-        world->giz_buffer.addr += level->max_push_blocks * sizeof(PUSH_RUNTIME_BLOCK_VIEW_PC);
+        world->push_blocks = static_cast<PUSH_BLOCK_PC *>(world->giz_buffer.void_ptr);
+        world->giz_buffer.addr += level->max_pushblocks * sizeof(PUSH_BLOCK_PC);
     }
-    return world->blocks;
+    return world->push_blocks;
 }
 
 static i32 __cdecl Push_GetMaxGizmos(void *world_ptr) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    return world != NULL ? world->current_level->max_push_blocks : 0;
+    WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+    return world != NULL ? world->current_level->max_pushblocks : 0;
 }
 
 static void __cdecl Push_AddGizmos(void *system, i32 type_id, void *world_ptr, void *) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    for (i32 index = 0; index < world->count; ++index) {
-        if (NuStrLen(world->blocks[index].name) != 0)
-            AddGizmo(system, type_id, NULL, &world->blocks[index]);
+    WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+    for (i32 index = 0; index < world->push_block_count; ++index) {
+        if (NuStrLen(world->push_blocks[index].name) != 0)
+            AddGizmo(system, type_id, NULL, &world->push_blocks[index]);
     }
 }
 
 static char *__cdecl GizPush_GetGizmoName(GIZMO_PC *gizmo) {
-    if (gizmo == NULL)
-        return NULL;
-    return static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(gizmo->object)->name;
+    if (gizmo != NULL)
+        return static_cast<PUSH_BLOCK_PC *>(gizmo->object)->name;
+    return NULL;
 }
 
 static i32 __cdecl GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(gizmo->object);
-    if (block == NULL)
-        return 0;
-    if (output_index == 0)
-        return block->completed_snap_positions != 0;
-    return (block->completed_snap_positions & static_cast<u8>(1u << (output_index & 31))) != 0;
+    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
+    if (block != NULL) {
+        if (output_index == 0) {
+            if (block->completed_snap_positions == 0)
+                return 0;
+        } else if ((block->completed_snap_positions & (1 << output_index)) == 0) {
+            return 0;
+        }
+        return 1;
+    }
+    return 0;
 }
 
 static i32 __cdecl GizPush_GetNumOutputs(GIZMO_PC *gizmo) {
-    return static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(gizmo->object)->output_count;
+    return static_cast<PUSH_BLOCK_PC *>(gizmo->object)->output_count;
 }
 
 static void __cdecl Push_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(gizmo->object);
-    block->packed_state_flags = (block->packed_state_flags & ~0x40000u) | (visible != 0 ? 0x40000u : 0u);
+    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
+    block->push_visible = visible != 0;
     NuSpecialSetVisibility(&block->special, visible);
     for (i32 index = 0; index < block->end_position_count; ++index)
-        NuSpecialSetVisibility(&block->end_position_specials[index], (block->packed_state_flags >> 18) & 1);
+        NuSpecialSetVisibility(&block->end_position_specials[index], block->push_visible);
 }
-
-typedef struct PUSH_RUNTIME_PROGRESS_VIEW_PC {
-    u32 visible_mask[1], state_mask[1], position_mask[1];
-    NUVEC positions[16];
-    NUVEC end_positions[2][16];
-} PUSH_RUNTIME_PROGRESS_VIEW_PC;
-STATIC_ASSERT(sizeof(PUSH_RUNTIME_PROGRESS_VIEW_PC) == 0x24c);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_PROGRESS_VIEW_PC, visible_mask) == 0);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_PROGRESS_VIEW_PC, state_mask) == 4);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_PROGRESS_VIEW_PC, position_mask) == 8);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_PROGRESS_VIEW_PC, positions) == 0xc);
-STATIC_ASSERT(offsetof(PUSH_RUNTIME_PROGRESS_VIEW_PC, end_positions) == 0xcc);
 
 static void *__cdecl Push_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x24c);
 }
 
 static void __cdecl Push_ClearProgress(void *, void *progress_ptr) {
-    PUSH_RUNTIME_PROGRESS_VIEW_PC *progress = static_cast<PUSH_RUNTIME_PROGRESS_VIEW_PC *>(progress_ptr);
+    PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_ptr);
     if (progress != NULL) {
         progress->state_mask[0] = 0;
         progress->visible_mask[0] = ~0u;
@@ -548,14 +454,14 @@ static void __cdecl Push_ClearProgress(void *, void *progress_ptr) {
 
 static i32 __cdecl edpush_Load(void *world_ptr, void *) {
     static i32 version = -1;
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    if (world->count == 0) {
+    WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+    if (world->push_block_count == 0) {
         version = EdFileReadInt();
-        world->count = EdFileReadInt();
+        world->push_block_count = EdFileReadInt();
         i32 valid_count = 0;
         char special_name[256];
-        for (i32 file_index = 0; file_index < world->count; ++file_index) {
-            PUSH_RUNTIME_BLOCK_VIEW_PC *block = &world->blocks[valid_count];
+        for (i32 file_index = 0; file_index < world->push_block_count; ++file_index) {
+            PUSH_BLOCK_PC *block = &world->push_blocks[valid_count];
             i32 missing = 0;
             memset(special_name, 0, sizeof(special_name));
             EdFileRead(special_name, static_cast<i8>(EdFileReadChar()));
@@ -611,7 +517,7 @@ static i32 __cdecl edpush_Load(void *world_ptr, void *) {
             if (missing == 0)
                 ++valid_count;
         }
-        world->count = valid_count;
+        world->push_block_count = valid_count;
         return 1;
     }
     return 0;
@@ -625,22 +531,22 @@ static void __cdecl Push_Reset(void *world, void *, void *progress) {
 }
 
 static void __cdecl Push_Activate(GIZMO_PC *gizmo, i32 active) {
-    if (gizmo == NULL)
-        return;
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(gizmo->object);
-    block->packed_state_flags = (block->packed_state_flags & ~0x01000000u) | (active != 0 ? 0x01000000u : 0u);
-    if (active != 0) {
-        PUSH_RUNTIME_WORLD_VIEW_PC *world = reinterpret_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(WORLD);
-        const i32 count = world->count;
-        PUSH_RUNTIME_BLOCK_VIEW_PC *candidate = world->blocks;
-        i32 index;
-        for (index = 0; index < count; ++index, ++candidate)
-            if (candidate == block)
-                break;
-        if (index < count) {
-            ResetSinglePushBlock(WORLD, reinterpret_cast<struct pushblock_s *>(block), index);
+    PUSH_BLOCK_PC *block;
+    WORLDINFO *world;
+    i32 index;
+    if (gizmo != NULL) {
+        block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
+        block->push_active = active != 0;
+        if (active != 0) {
+            world = WORLD;
+            for (index = 0; index < world->push_block_count; ++index) {
+                if (block == &world->push_blocks[index])
+                    break;
+            }
+            if (index < world->push_block_count)
+                ResetSinglePushBlock(world, block, index);
+            block->push_visible = 1;
         }
-        block->packed_state_flags |= 0x00040000u;
     }
 }
 
@@ -649,7 +555,7 @@ static char outputName[13] = "Any Complete";
 static char *__cdecl GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
     if (output_index < 0)
         return NULL;
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(gizmo->object);
+    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
     if (output_index > block->output_count)
         return NULL;
     if (output_index == 0)
@@ -660,7 +566,7 @@ static char *__cdecl GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
 }
 
 static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_ptr) {
-    PUSH_RUNTIME_PROGRESS_VIEW_PC *progress = static_cast<PUSH_RUNTIME_PROGRESS_VIEW_PC *>(progress_ptr);
+    PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_ptr);
     if (progress == NULL)
         return;
     // This initialization is the native inline ClearProgress operation, including its zero length.
@@ -668,11 +574,11 @@ static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_p
     progress->visible_mask[0] = ~0u;
     progress->position_mask[0] = 0;
     NuMemSet128(progress->positions, 0, 0);
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    if (world == NULL || world->blocks == NULL)
+    WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+    if (world == NULL || world->push_blocks == NULL)
         return;
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = world->blocks;
-    for (i32 index = 0; index < world->count && index < 16; ++index, ++block) {
+    PUSH_BLOCK_PC *block = world->push_blocks;
+    for (i32 index = 0; index < world->push_block_count && index < 16; ++index, ++block) {
         const i32 word = index / 32;
         const u32 mask = 1u << (index & 31);
         if ((block->packed_state_flags & 0x40000u) == 0)
@@ -704,10 +610,10 @@ STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
 STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
 
 static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT_PC *bolt, u8 *) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = static_cast<PUSH_RUNTIME_WORLD_VIEW_PC *>(world_ptr);
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = static_cast<PUSH_RUNTIME_BLOCK_VIEW_PC *>(blocks_ptr);
+    WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
+    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(blocks_ptr);
     if (block != NULL) {
-        for (i32 index = 0; index < world->count; ++index, ++block) {
+        for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
             if ((block->packed_state_flags & 0x40000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
                 (block->packed_state_flags & 0x02000000u) != 0)
                 continue;
