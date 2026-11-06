@@ -5005,8 +5005,9 @@ STATIC_ASSERT(sizeof(MAINFRAMECOUNTERS) == 5);
 typedef struct cutinfo_s {
     u8 opaque_00_04[0x4];
     void *instance;
-    char name[1];
-    u8 unknown_09[3];
+    char name[0x40];
+    u8 unknown_48[0xa4];
+    i16 skip_level;
 } CUTINFO;
 STATIC_ASSERT(offsetof(CUTINFO, instance) == 4);
 STATIC_ASSERT(offsetof(CUTINFO, name) == 8);

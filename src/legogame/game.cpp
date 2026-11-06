@@ -2403,11 +2403,7 @@ extern "C" void MusicClearAll() {
     CurrentMusicPair_Quiet = -1;
 }
 
-struct MUSIC_CUT_STOP_VIEW_PC {
-    u8 unknown_0000[0xec];
-    i16 skip_level;
-};
-STATIC_ASSERT(offsetof(MUSIC_CUT_STOP_VIEW_PC, skip_level) == 0xec);
+STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent) == 0x39c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, nearest_opponent_metric) == 0x3a0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, opponent) == 0x3ac);
@@ -2419,16 +2415,22 @@ extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *op
     if (GameAudio_ActionMusicFn != NULL) {
         MusicActiveReset = GameAudio_ActionMusicFn();
     } else {
-        MusicActiveReset =
-            DoubleScore != 0 || Cheat_PowerUpActive(-1) != 0 ||
-            (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->ai_packet.opponent != NULL ||
-                                   (((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent != NULL &&
-                                    ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent->dead == 0 &&
-                                    ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent_metric < 3.0f))) ||
-            (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->ai_packet.opponent != NULL ||
-                                   (((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent != NULL &&
-                                    ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent->dead == 0 &&
-                                    ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent_metric < 3.0f)));
+        if (DoubleScore != 0)
+            MusicActiveReset = 1;
+        else if (Cheat_PowerUpActive(-1) != 0)
+            MusicActiveReset = 1;
+        else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->ai_packet.opponent != NULL ||
+                                       (((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent != NULL &&
+                                        ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent->dead == 0 &&
+                                        ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent_metric < 3.0f)))
+            MusicActiveReset = 1;
+        else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->ai_packet.opponent != NULL ||
+                                       (((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent != NULL &&
+                                        ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent->dead == 0 &&
+                                        ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent_metric < 3.0f)))
+            MusicActiveReset = 1;
+        else
+            MusicActiveReset = 0;
     }
     if (CheckMusicOtherFn != NULL)
         MusicOther = CheckMusicOtherFn();
@@ -2441,7 +2443,7 @@ extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *op
         sticky_attack_time = ActionMusicStickyTimeoutPc[MusicActiveReset];
     }
     if (CutStopInfo != NULL) {
-        MUSIC_CUT_STOP_VIEW_PC *cut = (MUSIC_CUT_STOP_VIEW_PC *)CutStopInfo;
+        CUTINFO *cut = (CUTINFO *)CutStopInfo;
         if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & 1) != 0)
             level = &LDataList[cut->skip_level];
     }
