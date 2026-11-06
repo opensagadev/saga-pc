@@ -89,7 +89,7 @@ void __cdecl Doors_Init(WORLDINFO *world) {
         NuVecAdd(&door->opposite_midpoint, &door->opposite_midpoint, &door->point0);
         NuVecSurfaceNormal(&door->normal, &door->point0, &door->point1, &door->point3);
         NuPlnEqn(&door->plane, &door->point0, &door->point1, &door->point3);
-        if (view->start_door == NULL && (door->flags & 0x800) != 0 && door->spline->point_count >= 6)
+        if (view->start_door == NULL && (door->flags & 8) != 0 && door->spline->point_count >= 6)
             view->start_door = door;
     }
 }
@@ -110,7 +110,7 @@ typedef struct player_door_pc_s {
     u8 unknown_e0[0x10];
     i16 level;
     i16 freeplay_area;
-    u32 flags;
+    u8 next_sock, flags, vehicle, active;
     u8 unknown_f8[0x30];
 } PLAYER_DOOR_PC;
 typedef struct player_world_doors_pc_s {
@@ -137,7 +137,7 @@ STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, name) == 0);
 STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, spline) == 0xa0);
 STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, position) == 0xd4);
 STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, level) == 0xf0);
-STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, flags) == 0xf4);
+STATIC_ASSERT(offsetof(PLAYER_DOOR_PC, flags) == 0xf5);
 STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, doors) == 0x4698);
 STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, door_count) == 0x469c);
 STATIC_ASSERT(offsetof(PLAYER_WORLD_DOORS_PC, start_door) == 0x46a0);
@@ -199,22 +199,24 @@ i32 __cdecl StartDoorPositions(void) {
     return 0;
 }
 void *__cdecl Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
-    PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)world;
-    PLAYER_DOOR_PC *door = view->doors;
-    PLAYER_DOOR_PC *nearest = NULL;
-    f32 nearest_distance = 1000000.0f;
+    PLAYER_DOOR_PC *door = ((PLAYER_WORLD_DOORS_PC *)world)->doors;
+    PLAYER_DOOR_PC *nearest;
+    f32 nearest_distance;
+    f32 distance;
     i32 index;
-    for (index = 0; door != NULL && index < view->door_count; ++index, ++door) {
-        if ((door->flags & 0x400) == 0 && door->level != -1 &&
+    if (door == NULL)
+        return NULL;
+    nearest_distance = 1000000.0f;
+    nearest = NULL;
+    for (index = 0; index < ((PLAYER_WORLD_DOORS_PC *)world)->door_count; ++index, ++door) {
+        if ((door->flags & 4) == 0 && door->level != -1 &&
             ((level != -1 && door->level == level) || (area != -1 && LDataList[door->level].area_index == area))) {
             if (position == NULL)
                 return door;
-            {
-                f32 distance = NuVecDistSqr(position, &door->position, NULL);
-                if (distance < nearest_distance) {
-                    nearest_distance = distance;
-                    nearest = door;
-                }
+            distance = NuVecDistSqr(position, &door->position, NULL);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = door;
             }
         }
     }
@@ -540,9 +542,7 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
         if (NuFParGetWord(parser) == 0)
             continue;
         if (in_door) {
-            if (NuStrICmp(parser->word_buffer_ptr, "door_end") != 0)
-                NuFParInterpretWord(parser);
-            else {
+            if (NuStrICmp(parser->word_buffer_ptr, "door_end") == 0) {
                 in_door = 0;
                 if (door->spline != NULL && door->level != -1) {
                     if (door->freeplay_level == -1)
@@ -550,6 +550,8 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
                     ++door;
                     ++world->door_count;
                 }
+            } else {
+                NuFParInterpretWord(parser);
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "door_start") == 0) {
             D_worldinfo = world;
@@ -562,9 +564,9 @@ void __cdecl Doors_Configure(WORLDINFO *world_ptr, char *config) {
             door->normal = v001;
             door->level = -1;
             door->freeplay_level = -1;
-            door->next_sock = 0xff;
+            door->next_sock = -1;
             door->flags = 0;
-            door->vehicle = 0xff;
+            door->vehicle = -1;
             door->active = 0;
             door->camera_spline = NULL;
             door->camera_wait = 0.0f;
@@ -789,16 +791,17 @@ void __cdecl NeedScreenGrab(i32 needed);
 
 i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene) {
     CUTSYS_PC *system = WorldInfo_CurrentlyActive()->cutscene_sys;
-    i32 found = -1;
+    i32 found;
     i32 index;
-    if (system == NULL || cutscene == NULL || system->count <= 0)
-        return 0;
-    for (index = 0; index < system->count; ++index) {
-        if (system->records[index] == cutscene)
-            found = index;
+    if (system != NULL && cutscene != NULL) {
+        found = -1;
+        for (index = 0; index < system->count; ++index) {
+            if (system->records[index] == cutscene)
+                found = index;
+        }
+        if (found != -1)
+            return (WorldInfo_CurrentlyActive()->level_progress->progress_state & (1 << found)) != 0;
     }
-    if (found != -1)
-        return (WorldInfo_CurrentlyActive()->level_progress->progress_state & (1u << (found & 31))) != 0;
     return 0;
 }
 
