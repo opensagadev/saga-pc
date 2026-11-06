@@ -10450,7 +10450,8 @@ extern "C" {
         u8 group_id;
         i8 field_79, field_7a, field_7b;
         struct RTL_LIGHT_PC *field_7c;
-        u8 unknown_80[12];
+        i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */
+        u8 unknown_82[10];
     } RTL_LIGHT_PC;
     STATIC_ASSERT(sizeof(RTL_LIGHT_PC) == 0x8c);
     STATIC_ASSERT(offsetof(RTL_LIGHT_PC, colour) == 0x24);
@@ -10521,7 +10522,8 @@ extern "C" {
         NUVEC position;
         f32 density;
         f32 start_psp, end_psp;
-        u8 unknown_38[4];
+        i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */
+        u8 unknown_3a[2];
         f32 density_wii;
         u8 unknown_40[0xc];
     } RTL_FOG_MIGRATION_PC;
@@ -10576,7 +10578,7 @@ extern "C" {
     void __cdecl rtlApplySetScale(void *, struct RTL_DATA_PC *, NUVEC *, NUMTX *, i32, f32);
     extern i32 rtl_dynamic_lights_enabled, rtl_error;
     extern f32 rtl_frametime, rtl_shadow_blend_rate, rtlwob;
-    extern NUVEC rtl_shadow_flicker, RtlUnitDirectionYPc;
+    extern NUVEC rtl_shadow_flicker, RtlUnitDirectionYPc, RtlUnitDirectionZPc;
     extern f32 *modifiers;
     extern i32 rtltimer1;
     extern f32 rtltimer1adv;
@@ -29028,5 +29030,60 @@ class EdBitControl : public EdEnumControl {
 };
 STATIC_ASSERT(sizeof(EdBitControl) == 0x18);
 STATIC_ASSERT(offsetof(EdBitControl, bit_mask) == 0x14);
+
+/* Editor string: data[0] holds the pool block size, the text starts at
+ * data + 1. */
+struct EdString {
+    char *data;
+
+    void Set(const char *value);
+    ~EdString();
+};
+
+/* Base of every placeable level-editor object (Android legoapi_types.h). */
+class Placeable {
+  public:
+    i16 scene_id;
+    i16 led_file;
+    i32 attributes;
+    EdString name;
+    EdString params;
+    u32 reserved_14;
+
+    static i16 CurrentLedFile;
+
+    virtual ~Placeable();
+    virtual Placeable *Clone(i32) const {
+        return NULL;
+    }
+    virtual void Reset() {
+    }
+    virtual const char *GetName() const {
+        const char *value = name.data ? name.data + 1 : NULL;
+        return value ? value : "No Name";
+    }
+    virtual void SetName(const char *value) {
+        name.Set(value);
+    }
+    virtual f32 GetRadius() const {
+        return 1.0f;
+    }
+    virtual const VuMtx *GetInitialTransform() const {
+        return NULL;
+    }
+    virtual void SetInitialTransform(const VuMtx *) {
+    }
+    virtual const VuMtx *GetCurrentTransform() const {
+        return NULL;
+    }
+    virtual void SetCurrentTransform(const VuMtx *) {
+    }
+    virtual const VuVec *GetInitialPosition() const;
+    virtual void SetInitialPosition(const VuVec *position);
+    virtual const VuVec *GetCurrentPosition() const;
+    virtual void SetCurrentPosition(const VuVec *position);
+    virtual void Render(const VuMtx *) const {
+    }
+};
 #endif
 #endif

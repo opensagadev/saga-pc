@@ -17958,6 +17958,10 @@ extern "C" {
     NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
 #pragma data_seg()
 
+#pragma data_seg(".data$RtlUnitDirectionZPc")
+    NUVEC RtlUnitDirectionZPc = {0.0f, 0.0f, 1.0f};
+#pragma data_seg()
+
 #pragma data_seg(".data$rtl_helper_radius")
     f32 rtl_helper_radius = 0.25f;
 #pragma data_seg()

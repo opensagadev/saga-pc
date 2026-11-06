@@ -8888,6 +8888,12 @@ address,symbol,size,ctype
 0x6bc910,?cbEdLevelSetSliderInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,20,
 0x6bc930,?cbEdLevelSetText@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
 0x6bc950,?cbEdLevelToggleInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,22,
+0x6bd500,??1EdString@@QAE@XZ,22,
+0x6bd520,?Set@EdString@@QAEXPBD@Z,152,
+0x6bd5c0,?GetInitialPosition@Placeable@@UBEPBUVuVec@@XZ,18,
+0x6bd5e0,?SetInitialPosition@Placeable@@UAEXPBUVuVec@@@Z,79,
+0x6bd630,?GetCurrentPosition@Placeable@@UBEPBUVuVec@@XZ,18,
+0x6bd650,?SetCurrentPosition@Placeable@@UAEXPBUVuVec@@@Z,79,
 0x6bdfb0,?GetNextDefaultActiveMenu@PropertyTool@@QAEPAUeduimenu_s@@PAU2@@Z,35,
 0x6bdfe0,?GetMenuActiveChild@@YAPAUeduimenu_s@@PAU1@@Z,24,
 0x6be0b0,?SerialiseVuVec@@YAXAAUEdStream@@PAXH@Z,21,
@@ -8900,6 +8906,19 @@ address,symbol,size,ctype
 0x6be190,_SerialiseNuHSpecial,201,
 0x6be260,?GetNextObject@EdClassInterface@@UAEPAXPAXP6AH0@Z@Z,66,
 0x6c0690,?Render@KnotHelper@@UAEXPAXH@Z,186,
+0x6c21d0,?Clone@Placeable@@UBEPAV1@H@Z,5,
+0x6c21e0,?Reset@Placeable@@UAEXXZ,1,
+0x6c21f0,?GetName@Placeable@@UBEPBDXZ,18,
+0x6c2210,?GetRadius@Placeable@@UBEMXZ,3,
+0x6c2220,?GetInitialTransform@Placeable@@UBEPBUVuMtx@@XZ,3,
+0x6c2230,?SetInitialTransform@Placeable@@UAEXPBUVuMtx@@@Z,3,
+0x6c2240,?GetCurrentTransform@Placeable@@UBEPBUVuMtx@@XZ,3,
+0x6c2250,?SetCurrentTransform@Placeable@@UAEXPBUVuMtx@@@Z,3,
+0x6c2260,?Render@Placeable@@UBEXPBUVuMtx@@@Z,3,
+0x6c2270,??1Placeable@@UAE@XZ,55,
+0x6c22c0,?SetName@Placeable@@UAEXPBD@Z,8,
+0x6c22d0,??_EPlaceable@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceable@@UAEPAXI@Z; no independent body
+0x6c22d0,??_GPlaceable@@UAEPAXI@Z,75,native scalar-deleting dtor exactVTidentity
 0x6c2320,??_EPlaceableInterface@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceableInterface@@UAEPAXI@Z; no independent body
 0x6c2320,??_GPlaceableInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
@@ -18085,6 +18104,8 @@ address,symbol,size,ctype
 0x76f744,??_7KnotHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f7c0,??_7EdSubSystem@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f888,__real@3ff99999a0000000,8,const f64
+0x76f9dc,??_7Placeable@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76fa18,??_C@_07OAEEHIKM@No?5Name?$AA@,8,char []
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x76fe70,_PcInputText76fe70,,char[6]
 0x7701ac,??_C@_06JPHCLLC@Error?$CB?$AA@,7,
@@ -20738,6 +20759,10 @@ address,symbol,size,ctype
 0x7eb9cc,??_R3?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9dc,??_R2?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9e4,??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
+0x7ebee8,??_R4Placeable@@6B@,,
+0x7ebefc,??_R3Placeable@@8,,
+0x7ebf0c,??_R2Placeable@@8,,
+0x7ebf14,??_R1A@?0A@EA@Placeable@@8,,
 0x7ec898,??_R4ShaderBuilderGen@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec8ac,??_R3ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec8bc,??_R2ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
@@ -22591,6 +22616,7 @@ address,symbol,size,ctype
 0x80657c,_NuPortalBoundsMinusOnePc,,const NUVEC
 0x806588,_LightingUnitDirectionPc,,NUVEC
 0x806594,_RtlUnitDirectionYPc,,NUVEC
+0x8065a0,_RtlUnitDirectionZPc,,NUVEC
 0x008065bc,_NuWindQS,4,u32
 0x008065c0,_ANI3_EVAL_IDENTITY_MATRIX,64,const NUMTX
 0x806630,_PostShadowWhitePc,16,NUVEC4 initial four ones
@@ -27108,6 +27134,7 @@ address,symbol,size,ctype
 0x2973a9c,_edLevelActiveMenu,4,struct eduimenu_s *
 0x2973aa0,_edLevelPinnedMenu,4,struct eduimenu_s *
 0x2973ab4,_pad_disabled,4,i32
+0x2973ac0,?CurrentLedFile@Placeable@@2FA,,i16
 0x2974cf4,_PCDevicePrimitiveCallCountPc,,u32
 0x2974cf8,_PCDeviceIndexedPrimitiveCallCountPc,,u32
 0x2974cfc,_PCDevicePrimitiveUPCallCountPc,,u32

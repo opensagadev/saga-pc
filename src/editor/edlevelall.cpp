@@ -240,6 +240,67 @@ STATIC_ASSERT(offsetof(PlaceableInterface, scene_id) == 0x8);
 PlaceableInterface::PlaceableInterface() : scene_id(-1) {
 }
 
+EdString::~EdString() {
+    if (data != NULL)
+        theMemoryManager.FreePool(data, data[0]);
+}
+
+void EdString::Set(const char *value) {
+    if (value != NULL) {
+        i32 size = NuStrLen(value) + 2;
+        if (data != NULL && size > data[0]) {
+            theMemoryManager.FreePool(data, data[0]);
+            data = NULL;
+        }
+        if (data == NULL) {
+            data = static_cast<char *>(theMemoryManager.AllocPool(size, 1));
+            data[0] = static_cast<char>(((size - 1) / 32 + 1) * 32);
+        }
+        NuStrNCpy(data + 1, value, 250);
+    } else if (data != NULL) {
+        theMemoryManager.FreePool(data, data[0]);
+        data = NULL;
+    }
+}
+
+i16 Placeable::CurrentLedFile;
+
+Placeable::~Placeable() {
+}
+
+const VuVec *Placeable::GetInitialPosition() const {
+    const VuMtx *matrix = GetInitialTransform();
+    return matrix ? reinterpret_cast<const VuVec *>(&matrix->matrix.m30) : NULL;
+}
+
+/* Retail only translates a scratch copy; the object is left unchanged. */
+void Placeable::SetInitialPosition(const VuVec *position) {
+    NUMTX matrix;
+    const VuMtx *initial = GetInitialTransform();
+    if (initial) {
+        matrix = initial->matrix;
+        NuMtxTranslate(&matrix, const_cast<NUVEC *>(&position->xyz));
+    } else {
+        NuMtxSetTranslation(&matrix, const_cast<NUVEC *>(&position->xyz));
+    }
+}
+
+const VuVec *Placeable::GetCurrentPosition() const {
+    const VuMtx *matrix = GetCurrentTransform();
+    return matrix ? reinterpret_cast<const VuVec *>(&matrix->matrix.m30) : NULL;
+}
+
+void Placeable::SetCurrentPosition(const VuVec *position) {
+    NUMTX matrix;
+    const VuMtx *current = GetCurrentTransform();
+    if (current) {
+        matrix = current->matrix;
+        NuMtxTranslate(&matrix, const_cast<NUVEC *>(&position->xyz));
+    } else {
+        NuMtxSetTranslation(&matrix, const_cast<NUVEC *>(&position->xyz));
+    }
+}
+
 /* Spline knot editing: position and tangent references of the knot class. */
 class KnotHelper : public EdClassInterface {
   public:

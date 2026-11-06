@@ -8,6 +8,8 @@ extern "C" {
     extern RTL_SET_PC *curr_set;
     extern f32 rtl_helper_radius;
     extern i32 rtl_helper_radius_mode;
+    extern f32 min_r, def_fr;
+    extern RTL_LIGHT_PC *rtl_locked;
     void __cdecl rtlFree(RTL_LIGHT_PC *light);
     void __cdecl fogFree(RTL_FOG_MIGRATION_PC *fog);
 }
@@ -70,6 +72,56 @@ void *RTLHelper::GetNextObject(void *object) {
         }
     }
     return NULL;
+}
+
+/* A new light: the first free slot of the current set with the editor's
+ * default radii, colours and direction, tagged with the current LED file. */
+void *RTLHelper::CreateObject(void *, i32, i32) {
+    RTL_LIGHT_PC *light;
+    i32 i;
+    /* rtlAlloc, inlined here in retail's single C++ rtl unit. */
+    if (curr_set != NULL) {
+        for (i = 0; i < 128; i++) {
+            if (curr_set->lights[i].type == 0)
+                goto found;
+        }
+    }
+    return NULL;
+found:
+    light = &curr_set->lights[i];
+    if (light != NULL) {
+        rtl_locked = NULL;
+        light->position = APIObjectZeroMomentumPC;
+        light->inner_radius = min_r;
+        light->outer_radius = def_fr;
+        light->colour.x = 1.0f;
+        light->colour.y = 1.0f;
+        light->colour.z = 1.0f;
+        light->secondary_colour.x = 0.5f;
+        light->secondary_colour.y = 0.5f;
+        light->secondary_colour.z = 0.5f;
+        light->type = 2;
+        light->flags &= static_cast<u8>(~1u);
+        light->field_5e = 0;
+        light->field_60 = 0;
+        light->parameters[0] = 0.1f;
+        light->parameters[1] = 0.1f;
+        light->parameters[2] = 0.1f;
+        light->parameters[3] = 0.1f;
+        light->parameter_54 = 0.0f;
+        light->pitch = 0;
+        light->yaw = 0;
+        light->direction = RtlUnitDirectionZPc;
+        light->field_64 = 0.0f;
+        NuVecRotateX(&light->direction, &light->direction, light->pitch);
+        NuVecRotateY(&light->direction, &light->direction, light->yaw);
+        light->field_79 = -1;
+        light->field_7a = -1;
+        light->field_7b = 0;
+        light->field_7c = curr_set->lights;
+        light->led_file = Placeable::CurrentLedFile;
+    }
+    return light;
 }
 
 void RTLHelper::EnterEditor() {
@@ -228,6 +280,39 @@ void *FogHelper::GetNextObject(void *object) {
         }
     }
     return NULL;
+}
+
+/* A new fog zone in the first free slot of the current set. */
+void *FogHelper::CreateObject(void *, i32, i32) {
+    RTL_FOG_MIGRATION_PC *fog;
+    i32 i;
+    /* fogAlloc, inlined here in retail's single C++ rtl unit. */
+    if (curr_set != NULL) {
+        for (i = 0; i < 32; i++) {
+            if (RTLHELPER_FOGS(curr_set)[i].type == 0)
+                goto found;
+        }
+    }
+    return NULL;
+found:
+    fog = &RTLHELPER_FOGS(curr_set)[i];
+    if (fog != NULL) {
+        fog->type = 1;
+        fog->position = APIObjectZeroMomentumPC;
+        fog->radius = min_r;
+        fog->start = 10.0f;
+        fog->end = 100.0f;
+        fog->start_psp = 10.0f;
+        fog->end_psp = 100.0f;
+        fog->colour = 0x80808080;
+        fog->low_quality_density = 0;
+        fog->low_quality_colour = 0;
+        fog->density = 0.0f;
+        fog->density_wii = 0.0f;
+        fog->depth_of_field_fstop = 1;
+        fog->led_file = Placeable::CurrentLedFile;
+    }
+    return fog;
 }
 
 EdControl::~EdControl() {
