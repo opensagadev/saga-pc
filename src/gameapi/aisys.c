@@ -14453,6 +14453,170 @@ static void __cdecl pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *it
     AiEditorClearMainMenuPc();
 }
 
+static __declspec(noinline) EDAISHAREDPATHNODE_s *pathEditor_AllocSharedNode(void) {
+    EDAISHAREDPATHNODE_s *shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->free_shared_nodes);
+    if (shared != NULL) {
+        NuLinkedListRemove(&aieditor->free_shared_nodes, &shared->link);
+        NuLinkedListAppend(&aieditor->shared_path_nodes, &shared->link);
+    }
+    return shared;
+}
+static __declspec(noinline) void pathEditor_DestroySharedNode(EDAISHAREDPATHNODE_s *shared) {
+    EDAIPATH_s *path;
+    EDAIPATHNODE_s *node;
+    if (shared == NULL)
+        return;
+    for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
+         path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
+        for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes); node != NULL;
+             node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&aieditor->current_path->nodes, &node->link)) {
+            if (node->shared_node == shared) {
+                node->shared_node = NULL;
+                break;
+            }
+        }
+    }
+    NuLinkedListRemove(&aieditor->shared_path_nodes, &shared->link);
+    NuLinkedListAppend(&aieditor->free_shared_nodes, &shared->link);
+}
+static __declspec(noinline) void pathEditor_ReleaseSharedNode(EDAIPATHNODE_s *node) {
+    if (node != NULL && node->shared_node != NULL) {
+        --node->shared_node->reference_count;
+        if (node->shared_node->reference_count < 2)
+            pathEditor_DestroySharedNode(node->shared_node);
+        node->shared_node = NULL;
+    }
+}
+static __declspec(noinline) void pathEditor_SetSharedNode(EDAIPATHNODE_s *node, EDAISHAREDPATHNODE_s *shared) {
+    if (shared == NULL || node == NULL)
+        return;
+    if (node->shared_node != NULL) {
+        if (node->shared_node == shared)
+            return;
+        pathEditor_ReleaseSharedNode(node);
+    }
+    node->shared_node = shared;
+    ++shared->reference_count;
+}
+void __cdecl pathEditor_cbSetShareNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAISHAREDPATHNODE_s *shared;
+    EDAIPATHNODE_s *matches[16];
+    EDAIPATHNODE_s *nearest;
+    EDAIPATHNODE_s *node;
+    EDAIPATH_s *path;
+    i32 path_number = 1;
+    i32 match_count = 0;
+    i32 index;
+    f32 best;
+    (void)menu;
+    (void)event;
+    if (aieditor->current_path != NULL && aieditor->current_path->current_node != NULL) {
+        shared = aieditor->current_path->current_node->shared_node;
+        for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
+             path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
+            if (aieditor->current_path == path)
+                continue;
+            if (item->data == 0 || path_number == item->data) {
+                best = FLT_MAX;
+                nearest = NULL;
+                for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+                     node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link)) {
+                    NUVEC difference;
+                    f32 distance;
+                    difference.x = node->position.x - aieditor->current_path->current_node->position.x;
+                    difference.z = node->position.z - aieditor->current_path->current_node->position.z;
+                    distance = NuFsqrt(difference.x * difference.x + difference.z * difference.z);
+                    if (distance < node->radius + aieditor->current_path->current_node->radius) {
+                        f32 current_bottom = aieditor->current_path->current_node->position.y +
+                                             aieditor->current_path->current_node->lower_height;
+                        f32 current_top = aieditor->current_path->current_node->position.y +
+                                          aieditor->current_path->current_node->upper_height;
+                        f32 node_bottom = node->position.y + node->lower_height;
+                        f32 node_top = node->position.y + node->upper_height;
+                        if (current_bottom > node_top || current_top < node_bottom)
+                            continue;
+                        if (distance < best) {
+                            best = distance;
+                            nearest = node;
+                        }
+                    }
+                }
+                if (nearest != NULL && match_count < 16) {
+                    matches[match_count++] = nearest;
+                    if (shared == NULL)
+                        shared = nearest->shared_node;
+                }
+            }
+            ++path_number;
+        }
+        if (match_count != 0) {
+            if (item->data != 0 && !(item->flags & 1)) {
+                if (aieditor->current_path->current_node->shared_node != NULL) {
+                    for (index = 0; index < match_count; ++index) {
+                        node = matches[index];
+                        if (node->shared_node == aieditor->current_path->current_node->shared_node)
+                            pathEditor_ReleaseSharedNode(node);
+                    }
+                }
+            } else if (shared != NULL || (shared = pathEditor_AllocSharedNode()) != NULL) {
+                if (aieditor->current_path->current_node->shared_node == NULL)
+                    pathEditor_SetSharedNode(aieditor->current_path->current_node, shared);
+                for (index = 0; index < match_count; ++index) {
+                    node = matches[index];
+                    if (node->shared_node != NULL && node->shared_node != shared)
+                        pathEditor_ReleaseSharedNode(node);
+                    if (node->shared_node != shared)
+                        pathEditor_SetSharedNode(node, shared);
+                    node->position = aieditor->current_path->current_node->position;
+                    node->radius = aieditor->current_path->current_node->radius;
+                    node->lower_height = aieditor->current_path->current_node->lower_height;
+                    node->upper_height = aieditor->current_path->current_node->upper_height;
+                    node->special = aieditor->current_path->current_node->special;
+                    node->special_position = aieditor->current_path->current_node->special_position;
+                }
+            }
+        }
+    }
+    if (item->data == 0)
+        AiEditorClearMainMenuPc();
+}
+void __cdecl pathEditor_cbShareNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    EDAIPATH_s *path;
+    EDAIPATHNODE_s *node;
+    i32 row;
+    i32 selected;
+    (void)item;
+    (void)event;
+    if (aieditor->current_path == NULL || aieditor->current_path->current_node == NULL)
+        return;
+    menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, pathEditor_cbCancelSelectMenu, "Share node with...");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu,
+                    eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 1, pathEditor_cbSetShareNode, "All paths"));
+    row = 1;
+    for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
+         path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
+        if (aieditor->current_path == path)
+            continue;
+        selected = 0;
+        if (aieditor->current_path->current_node->shared_node != NULL) {
+            for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+                 node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link)) {
+                if (node->shared_node == aieditor->current_path->current_node->shared_node) {
+                    selected = 1;
+                    break;
+                }
+            }
+        }
+        eduiMenuAddItem(menu, eduiItemToggleCreate(row, &AiEditorSaveMessageColoursPc, selected, row + 1,
+                                                   pathEditor_cbSetShareNode, path->name));
+        ++row;
+    }
+    eduiMenuAttach(parent, menu);
+}
+
 void __cdecl pathEditor_cbCreatePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATH_s *path;
     EDAIPATH_s *existing;
