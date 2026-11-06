@@ -531,6 +531,7 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
     HATMACHINE_SYS_PC *system;
     if (world == NULL || (system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys) == NULL || system->count == 0)
         return;
+    NUVEC draw_position;
     u16 spin_angle = (u16)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     f32 target_pulse =
         (f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] *
@@ -568,6 +569,11 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
         } else if (world->level_objects[287].active != 0)
             NuSpecialDrawAt(&world->level_objects[287].special, &machine->matrix);
         NUMTX matrix;
+        NUVEC offset;
+        union {
+            f32 value;
+            u32 bits;
+        } magnitude;
         if ((machine->flags & 0x20) == 0 && machine->target_offset.y != 2000000.0f &&
             world->level_objects[85].active != 0) {
             NUVEC target;
@@ -604,15 +610,10 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
                             if (machine->idle_bounce_timer < 0.0f)
                                 machine->idle_bounce_timer = 0.0f;
                             else {
-                                union {
-                                    f32 value;
-                                    u32 bits;
-                                } magnitude;
                                 frame = NuTrigTable
                                     [((i32)((f64)machine->idle_bounce_timer / (f64)0.15f * 32768.0 + 16384.0) >> 1) &
                                      0x7fff];
-                                magnitude.value = frame;
-                                magnitude.bits &= 0x7fffffff;
+                                magnitude.bits = *(u32 *)&frame & 0x7fffffff;
                                 frame = (1.0 - magnitude.value) * 1.5 + 16.0;
                             }
                         } else if (qrand() < 0x800)
@@ -627,7 +628,7 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
                 if ((machine->flags & 8) != 0 && (machine->flags & 3) == 0 && world->level_objects[41].active != 0)
                     NuSpecialDrawAtAlpha(&world->level_objects[41].special, &matrix, ready_alpha);
             }
-            NUVEC draw_position = machine->position;
+            draw_position = machine->position;
             for (i32 effect = 1; effect < 4; ++effect) {
                 if (specials[effect] != NULL && animations[effect] != NULL) {
                     frame = (f64)machine->animation_time * animations[0]->tfactor * 60.0;
@@ -644,7 +645,7 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
             }
             if ((machine->flags & 8) != 0 && machine->displayed_hat != 0 &&
                 world->level_objects[machine->displayed_hat + 249].active != 0) {
-                NUVEC offset = HatMachine_HatOffset;
+                offset = HatMachine_HatOffset;
                 if (machine->animation_time < 2.35f) {
                     f32 hat_scale =
                         1.0 -
@@ -693,7 +694,7 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
             }
             /* Retail draws the two arm specials with separate copies of the same code. */
             if (world->level_objects[285].active != 0) {
-                NUVEC offset = v000;
+                offset = v000;
                 switch (machine->animation_state) {
                     case 2:
                         offset.z =
@@ -738,7 +739,7 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
                 NuSpecialDrawAt(&world->level_objects[285].special, &matrix);
             }
             if (world->level_objects[284].active != 0) {
-                NUVEC offset = v000;
+                offset = v000;
                 switch (machine->animation_state) {
                     case 2:
                         offset.z =
@@ -784,7 +785,7 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
             }
             if ((machine->flags & 8) != 0 && machine->displayed_hat != 0 &&
                 world->level_objects[machine->displayed_hat + 249].active != 0) {
-                NUVEC offset = HatMachine_HatOffset;
+                offset = HatMachine_HatOffset;
                 switch (machine->animation_state) {
                     case 2:
                         offset.z =
