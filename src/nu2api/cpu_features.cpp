@@ -1,79 +1,205 @@
 #include "saga.h"
-#include <intrin.h>
 #include <excpt.h>
 
-/* Partial supported-platform reconstruction: CPUID must be available. Native
-   EFLAGS.ID probing, its side effect and the no-support path remain omitted. */
+/* Retail detects the CPU with a hand-written inline assembly block, ported as is;
+   the shifts by zero come from its uniform field-extraction pattern. */
 extern "C" void __cdecl CpuDetectFeaturesPc(void) {
-    i32 registers[4];
-    STUBBED_NAMED(0x006e5f93); /* Native EFLAGS.ID toggle and unavailable-CPUID path. */
-    __cpuid(registers, 0);
-    CpuHasCpuidPc = 1;
-    CpuBasicLeafMaxPc = (u32)registers[0];
-    CpuVendorNamePc.word0 = (u32)registers[1];
-    CpuVendorNamePc.word1 = (u32)registers[3];
-    CpuVendorNamePc.word2 = (u32)registers[2];
-    if (CpuVendorNamePc.word0 == CpuVendorIntelPc.word0 && CpuVendorNamePc.word1 == CpuVendorIntelPc.word1 &&
-        CpuVendorNamePc.word2 == CpuVendorIntelPc.word2) {
-        CpuVendorPc = 1;
-    } else if (CpuVendorNamePc.word0 == CpuVendorAmdPc.word0 && CpuVendorNamePc.word1 == CpuVendorAmdPc.word1 &&
-               CpuVendorNamePc.word2 == CpuVendorAmdPc.word2) {
-        CpuVendorPc = 2;
-    } else if (CpuVendorNamePc.word0 == CpuVendorCyrixPc.word0 && CpuVendorNamePc.word1 == CpuVendorCyrixPc.word1 &&
-               CpuVendorNamePc.word2 == CpuVendorCyrixPc.word2) {
-        CpuVendorPc = 3;
-    } else {
-        CpuVendorPc = 0;
-    }
-    if (CpuBasicLeafMaxPc != 0) {
-        __cpuid(registers, 1);
-        u32 signature = (u32)registers[0];
-        u32 features = (u32)registers[3];
-        CpuProcessorTypePc = (signature & 0x3000) >> 12;
-        CpuFamilyPc = (signature & 0xf00) >> 8;
-        CpuModelPc = (signature & 0xf0) >> 4;
-        CpuSteppingPc = signature & 0xf;
-        CpuBrandIndexPc = (u8)registers[1];
-        CpuHasFpuPc = (features >> 0) & 1;
-        CpuHasVmePc = (features >> 1) & 1;
-        CpuHasFpuPc = features & 1;
-        CpuHasDePc = (features >> 2) & 1;
-        CpuHasPsePc = (features >> 3) & 1;
-        CpuHasTscPc = (features >> 4) & 1;
-        CpuHasMsrPc = (features >> 5) & 1;
-        CpuHasPaePc = (features >> 6) & 1;
-        CpuHasMcePc = (features >> 7) & 1;
-        CpuHasCmpxchg8bPc = (features >> 8) & 1;
-        CpuHasApicPc = (features >> 9) & 1;
-        CpuHasPgePc = (features >> 12) & 1;
-        CpuHasMcaPc = (features >> 13) & 1;
-        CpuHasCmovPc = (features >> 14) & 1;
-        CpuHasPatPc = (features >> 15) & 1;
-        CpuHasMmxPc = (features >> 23) & 1;
-        if (CpuVendorPc == 1) {
-            PCClipUseSSE = (features >> 25) & 1;
-            CpuHasSse2Pc = (features >> 26) & 1;
-        } else if (CpuVendorPc == 2) {
-            PCClipUseSSE = (features >> 25) & 1;
-            __cpuid(registers, (i32)0x80000000);
-            CpuExtendedLeafMaxPc = (u32)registers[0];
-            if (CpuExtendedLeafMaxPc != 0) {
-                __cpuid(registers, (i32)0x80000001);
-                CpuExtendedFeaturesPc = (u32)registers[3];
-                CpuHas3dnowPc = CpuExtendedFeaturesPc >> 31;
-            }
-        } else if (CpuVendorPc == 3) {
-            __cpuid(registers, (i32)0x80000000);
-            CpuExtendedLeafMaxPc = (u32)registers[0];
-            if (CpuExtendedLeafMaxPc >= 0x80000001U) {
-                __cpuid(registers, (i32)0x80000001);
-                CpuExtendedFeaturesPc = (u32)registers[3];
-            }
-        }
+    __asm {
+        pushfd
+        pop eax
+        mov ecx, eax
+        xor eax, 0x200000
+        push eax
+        popfd
+        pushfd
+        pop eax
+        xor eax, ecx
+        jne has_cpuid
+        mov CpuHasCpuidPc, 0
+        mov CpuBasicLeafMaxPc, 0
+        mov ebx, CpuVendorNoCpuidPc.word0
+        mov edx, CpuVendorNoCpuidPc.word1
+        mov ecx, CpuVendorNoCpuidPc.word2
+        mov CpuVendorNamePc.word0, ebx
+        mov CpuVendorNamePc.word1, edx
+        mov CpuVendorNamePc.word2, ecx
+        jmp done
+    has_cpuid:
+        mov CpuHasCpuidPc, 1
+        mov eax, 0
+        cpuid
+        mov CpuBasicLeafMaxPc, eax
+        mov CpuVendorNamePc.word0, ebx
+        mov CpuVendorNamePc.word1, edx
+        mov CpuVendorNamePc.word2, ecx
+        cmp ebx, CpuVendorIntelPc.word0
+        jne not_intel
+        cmp edx, CpuVendorIntelPc.word1
+        jne not_intel
+        cmp ecx, CpuVendorIntelPc.word2
+        jne not_intel
+        mov CpuVendorPc, 1
+        jmp vendor_known
+    not_intel:
+        cmp ebx, CpuVendorAmdPc.word0
+        jne not_amd
+        cmp edx, CpuVendorAmdPc.word1
+        jne not_amd
+        cmp ecx, CpuVendorAmdPc.word2
+        jne not_amd
+        mov CpuVendorPc, 2
+        jmp vendor_known
+    not_amd:
+        cmp ebx, CpuVendorCyrixPc.word0
+        jne not_cyrix
+        cmp edx, CpuVendorCyrixPc.word1
+        jne not_cyrix
+        cmp ecx, CpuVendorCyrixPc.word2
+        jne not_cyrix
+        mov CpuVendorPc, 3
+        jmp vendor_known
+    not_cyrix:
+        mov CpuVendorPc, 0
+    vendor_known:
+        cmp eax, 0
+        je done
+        mov eax, 1
+        cpuid
+        mov edi, eax
+        and edi, 0x3000
+        shr edi, 12
+        mov CpuProcessorTypePc, edi
+        mov edi, eax
+        and edi, 0xf00
+        shr edi, 8
+        mov CpuFamilyPc, edi
+        mov edi, eax
+        and edi, 0xf0
+        shr edi, 4
+        mov CpuModelPc, edi
+        mov edi, eax
+        and edi, 0xf
+        shr edi, 0
+        mov CpuSteppingPc, edi
+        mov CpuBrandIndexPc, bl
+        mov edi, edx
+        and edi, 0x1
+        shr edi, 0
+        mov CpuHasFpuPc, edi
+        mov edi, edx
+        and edi, 0x2
+        shr edi, 1
+        mov CpuHasVmePc, edi
+        mov edi, edx
+        and edi, 0x1
+        shr edi, 0
+        mov CpuHasFpuPc, edi
+        mov edi, edx
+        and edi, 0x4
+        shr edi, 2
+        mov CpuHasDePc, edi
+        mov edi, edx
+        and edi, 0x8
+        shr edi, 3
+        mov CpuHasPsePc, edi
+        mov edi, edx
+        and edi, 0x10
+        shr edi, 4
+        mov CpuHasTscPc, edi
+        mov edi, edx
+        and edi, 0x20
+        shr edi, 5
+        mov CpuHasMsrPc, edi
+        mov edi, edx
+        and edi, 0x40
+        shr edi, 6
+        mov CpuHasPaePc, edi
+        mov edi, edx
+        and edi, 0x80
+        shr edi, 7
+        mov CpuHasMcePc, edi
+        mov edi, edx
+        and edi, 0x100
+        shr edi, 8
+        mov CpuHasCmpxchg8bPc, edi
+        mov edi, edx
+        and edi, 0x200
+        shr edi, 9
+        mov CpuHasApicPc, edi
+        mov edi, edx
+        and edi, 0x1000
+        shr edi, 12
+        mov CpuHasPgePc, edi
+        mov edi, edx
+        and edi, 0x2000
+        shr edi, 13
+        mov CpuHasMcaPc, edi
+        mov edi, edx
+        and edi, 0x4000
+        shr edi, 14
+        mov CpuHasCmovPc, edi
+        mov edi, edx
+        and edi, 0x8000
+        shr edi, 15
+        mov CpuHasPatPc, edi
+        mov edi, edx
+        and edi, 0x800000
+        shr edi, 23
+        mov CpuHasMmxPc, edi
+        mov eax, CpuVendorPc
+        cmp eax, 1
+        je intel_features
+        cmp eax, 2
+        je amd_features
+        cmp eax, 3
+        je cyrix_features
+        jmp done
+    intel_features:
+        mov edi, edx
+        and edi, 0x2000000
+        shr edi, 25
+        mov PCClipUseSSE, edi
+        mov edi, edx
+        and edi, 0x4000000
+        shr edi, 26
+        mov CpuHasSse2Pc, edi
+        jmp done
+    amd_features:
+        mov edi, edx
+        and edi, 0x2000000
+        shr edi, 25
+        mov PCClipUseSSE, edi
+        mov eax, 0x80000000
+        cpuid
+        mov CpuExtendedLeafMaxPc, eax
+        test eax, eax
+        je done
+        mov eax, 0x80000001
+        cpuid
+        mov CpuExtendedFeaturesPc, edx
+        mov edi, edx
+        and edi, 0x80000000
+        shr edi, 31
+        mov CpuHas3dnowPc, edi
+        jmp done
+    cyrix_features:
+        mov eax, 0x80000000
+        cpuid
+        mov CpuExtendedLeafMaxPc, eax
+        cmp eax, 0x80000000
+        jl done
+        mov eax, 0x80000001
+        cmp eax, CpuExtendedLeafMaxPc
+        ja done
+        cpuid
+        mov CpuExtendedFeaturesPc, edx
+        jmp done
+    done:
     }
     if (CpuVendorPc == 2 && PCClipUseSSE != 0) {
+        // Executing an SSE instruction faults when the OS has not enabled SSE state saving.
         __try {
-            volatile __m128 probe = _mm_setzero_ps();
+            __asm orps xmm0, xmm0
         } __except (EXCEPTION_EXECUTE_HANDLER) {
             PCClipUseSSE = 0;
         }
