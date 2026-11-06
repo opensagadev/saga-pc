@@ -3332,8 +3332,11 @@ address,symbol,size,ctype
 0x5204e0,_AiEditorChangeModePc,102,
 0x520600,_NuSpecialFindByPlatformID,163,
 0x520e10,_areaEditorCreateArea,131,
+0x520ea0,_areaEditorDestroyArea,54,
 0x520ee0,_areaEditorSaveData,256,
+0x520fe0,_areaEditorFindHover,373,
 0x521160,_AiEditorRenameAreaPc,146,
+0x521200,_areaEditor_cbCylinderToggle,40,
 0x521230,_AiEditorRenameAreaCancelPc,12,
 0x521240,_DrawAreaBox,1366,
 0x521800,_areaEditorDrawAreas,274,
@@ -3528,6 +3531,8 @@ address,symbol,size,ctype
 0x00530240,_AISysCharacterMovement,433,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x530530,_aieditor_Proc,1060,
 0x530960,_areaEditor_cbRenameAreaMenu,192,
+0x530a20,_areaEditor_cbDeleteArea,214,
+0x530b00,_areaEditor_cbCancelDeleteAreaMenu,37,
 0x530b30,_areaEditor_Render,672,
 0x530dd0,_AiEditorDestroyLocatorPc,118,
 0x530e50,_locatorEditor_PathNodeDeleted,148,"void __cdecl (EDAIPATHNODE_s *)"
@@ -3591,6 +3596,7 @@ address,symbol,size,ctype
 0x537900,_AISYSRebuildFromEditorData,3327,
 0x538600,_aieditor_Save,539,
 0x538820,_aieditor_Leave,216,
+0x538900,_areaEditorDeleteMenu,153,
 0x5389a0,_locatorEditor_DeleteLocatorMenu,153,
 0x538a40,_pathEditor_DestroyPath,95,
 0x538aa0,_pathEditor_cbDeletePath,353,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
@@ -3599,6 +3605,8 @@ address,symbol,size,ctype
 0x538d60,_aieditor_cbSave,235,
 0x538e50,_antinodeEditor_MainMenu,509,
 0x539050,_antinodeEditor_Process,2218,
+0x53a390,_areaEditorOptionsMenu,492,
+0x53a580,_areaEditor_Process,1673,
 0x53ac10,_locatorEditor_MainMenu,614,
 0x53ae80,_locatorEditor_Process,2338,
 0x53b7b0,_pathEditor_MainMenu,1180,eduimenu_s *__cdecl (void)
@@ -15623,6 +15631,7 @@ address,symbol,size,ctype
 0x00760c20,_AICharacterInitialiseName,11,const char [11]
 0x760c2c,??_C@_06FCGCPEED@?$CFs?4bak?$AA@,7,const char[7]
 0x760c34,_AiEditorDatedBackupFormatPc,32,const char[32]
+0x760c54,??_C@_0O@LHPMAEGC@Delete?5area?$DP?$DP?$AA@,,char []
 0x760c64,??_C@_0BB@BOHJJGDJ@Delete?5locator?$DP?$DP?$AA@,,char []
 0x760c78,??_C@_0BG@OLJIIPJD@Delete?5current?5path?$DP?$DP?$AA@,,char []
 0x760c90,??_C@_0BL@KDCOBKOE@Delete?5current?5path?5node?$DP?$DP?$AA@,,char []
@@ -15640,7 +15649,9 @@ address,symbol,size,ctype
 0x760db8,??_C@_0N@GGGLBEOI@Save?5AI?5Data?$AA@,,char []
 0x760dc8,??_C@_07KHIHFBFN@Options?$AA@,8,char []
 0x760dd0,__real@3fefae1480000000,8,const f64
+0x760e40,??_C@_08OPEIJNOM@Cylinder?$AA@,,char []
 0x760e4c,??_C@_0BC@POFMJFLK@?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$AA@,,char []
+0x760e60,??_C@_06CLFKLAHF@Area?$CFd?$AA@,,char []
 0x760e68,??_C@_0BC@IKHMFJMJ@Empty?5Locator?5Set?$AA@,,char []
 0x760e7c,??_C@_0BM@MABHGHEJ@Add?5Locators?5To?5Set?5By?5Name?$AA@,,char []
 0x760e98,??_C@_0BD@JJNGIDJL@Delete?5Locator?5Set?$AA@,,char []

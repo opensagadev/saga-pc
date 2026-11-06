@@ -15371,6 +15371,260 @@ eduimenu_s *__cdecl locatorEditor_MainMenu(void) {
     return menu;
 }
 
+/* Native 520ea0..520ed6: private area argument ESI. */
+static __declspec(noinline) void areaEditorDestroyArea(EDAIAREA_s *area) {
+    if (area != NULL) {
+        NuLinkedListRemove(&aieditor->areas, &area->link);
+        memset(area, 0, sizeof(EDAIAREA_s));
+        NuLinkedListAppend(&aieditor->free_areas, &area->link);
+    }
+}
+
+/* Native 520fe0..521155. */
+static __declspec(noinline) EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
+    EDAIAREA_s *area;
+    EDAIAREA_s *nearest = NULL;
+    f32 best = FLT_MAX;
+    f32 distance;
+    NUVEC difference;
+    for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
+         area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
+        distance = NuVecXZDistSqr(&aieditor->camera_position, &area->position, &difference);
+        if (distance < best) {
+            difference.y = aieditor->camera_position.y - area->position.y;
+            if (check_inside == 0) {
+                best = distance;
+                nearest = area;
+            } else if (area->flags & 1) {
+                if (area->size.x * area->size.x > distance && area->size.y > difference.y && difference.y > -2.0f) {
+                    best = distance;
+                    nearest = area;
+                }
+            } else {
+                NuVecRotateY(&difference, &difference, -area->rotation);
+                if (area->size.x > difference.x && area->size.y > difference.y && area->size.z > difference.z &&
+                    -area->size.x < difference.x && difference.y > -2.0f && -area->size.z < difference.z) {
+                    best = distance;
+                    nearest = area;
+                }
+            }
+        }
+    }
+    return nearest;
+}
+
+void __cdecl areaEditor_cbCylinderToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (aieditor->selected_area != NULL) {
+        if (item->flags & 1)
+            aieditor->selected_area->flags |= 1;
+        else
+            aieditor->selected_area->flags &= ~1;
+    }
+}
+
+void __cdecl areaEditor_cbDeleteArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAICREATURE_s *creature;
+    (void)menu;
+    (void)event;
+    if (item != NULL && item->data != 0 && aieditor->selected_area != NULL &&
+        aieditor->selected_area == aieditor->hovered_area) {
+        for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
+             creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
+            if (creature->trigger_area == aieditor->selected_area)
+                creature->trigger_area = NULL;
+            if (creature->activation_area == aieditor->selected_area)
+                creature->activation_area = NULL;
+        }
+        areaEditorDestroyArea(aieditor->selected_area);
+        aieditor->selected_area = NULL;
+    }
+    AiEditorClearMainMenuPc();
+}
+
+void __cdecl areaEditor_cbCancelDeleteAreaMenu(eduimenu_s *menu, eduimenu_s *child) {
+    (void)menu;
+    (void)child;
+    AiEditorClearMainMenuPc();
+}
+
+eduimenu_s *__cdecl areaEditorDeleteMenu(void) {
+    eduimenu_s *menu;
+    if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
+        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, areaEditor_cbCancelDeleteAreaMenu, "Delete area??");
+        if (menu != NULL) {
+            eduiMenuAddItem(menu,
+                            eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, areaEditor_cbDeleteArea, "No"));
+            eduiMenuAddItem(menu,
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, areaEditor_cbDeleteArea, "Yes"));
+            return menu;
+        }
+    }
+    return NULL;
+}
+
+eduimenu_s *__cdecl areaEditorOptionsMenu(void) {
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    if (menu != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                AiEditorModeMenuPc, "Select Editor Mode"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+        if (aieditor->selected_area != NULL && AIScriptNameFromIx(aieditor->ai_system, 0) != NULL)
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, areaEditor_cbRenameAreaMenu,
+                                                    "Rename Area"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 25) >> 31, 3,
+                                                   AiEditorDisplayBit6Pc, "Stop Platforms"));
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 27) >> 31, 2,
+                                                   AiEditorDisplayBit4Pc, "Snap Height"));
+        if (aieditor->selected_area != NULL) {
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
+            eduiMenuAddItem(menu,
+                            eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, aieditor->selected_area->flags & 1,
+                                                 4, areaEditor_cbCylinderToggle, "Cylinder"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
+        }
+        return menu;
+    }
+    return NULL;
+}
+
+eduimenu_s *__cdecl areaEditor_Process(FRAME_PAD_PC *pad) {
+    EDAIAREA_s *previous;
+    EDAIAREA_s *area;
+    char name[16];
+    i32 index = 0;
+    f32 size;
+    if (pad->digital_buttons_pressed & 0x80)
+        return areaEditorOptionsMenu();
+    aieditor->hovered_area = areaEditorFindHover(1);
+    if (pad->digital_buttons & 0x40) {
+        if (aieditor->hovered_area != NULL) {
+            if (pad->digital_buttons_pressed & 0x40) {
+                aieditor->selected_area = aieditor->hovered_area;
+                aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+                edcamSetPos(&aieditor->selected_area->position);
+            } else {
+                if (aieditor->selected_area == NULL)
+                    goto done;
+                aieditor->selected_area->position = aieditor->camera_position;
+            }
+            if (aieditor->selected_area == NULL)
+                goto done;
+            if (aieditor->selected_area->flags & 1) {
+                if (pad->digital_buttons & 0x2000)
+                    aieditor->selected_area->size.x *= (f64)1.01f;
+                else if (pad->digital_buttons & 0x8000)
+                    aieditor->selected_area->size.x *= (f64)0.99f;
+                aieditor->selected_area->size.z = aieditor->selected_area->size.x;
+            } else {
+                if (pad->digital_buttons & 0x2000)
+                    aieditor->selected_area->size.x *= (f64)1.01f;
+                else if (pad->digital_buttons & 0x8000)
+                    aieditor->selected_area->size.x *= (f64)0.99f;
+                if (pad->digital_buttons & 0x1000)
+                    aieditor->selected_area->size.z *= (f64)1.01f;
+                else if (pad->digital_buttons & 0x4000)
+                    aieditor->selected_area->size.z *= (f64)0.99f;
+            }
+        } else if (pad->digital_buttons_pressed & 0x40) {
+            previous = aieditor->selected_area;
+            aieditor->selected_area =
+                areaEditorCreateArea(&aieditor->camera_position, NULL, aieditorsettings.locator_rotation,
+                                     previous != NULL ? (i8)previous->flags : 0);
+            if (aieditor->selected_area == NULL)
+                goto done;
+            if (previous != NULL) {
+                aieditor->selected_area->size.x = previous->size.x;
+                aieditor->selected_area->size.y = previous->size.y;
+                aieditor->selected_area->size.z = previous->size.z;
+            } else {
+                aieditor->selected_area->size.z = aieditor->selected_area->size.y = aieditor->selected_area->size.x =
+                    1.0f;
+            }
+            do {
+                sprintf(name, "Area%d", ++index);
+                for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
+                     area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
+                    if (NuStrICmp(name, area->name) == 0)
+                        break;
+                }
+            } while (area != NULL);
+            strcpy(aieditor->selected_area->name, name);
+        }
+    } else if (pad->digital_buttons_pressed & 0x10) {
+        if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area)
+            return areaEditorDeleteMenu();
+    } else if (pad->digital_buttons_pressed & 0x100) {
+        aieditor->selected_area = areaEditorFindHover(0);
+        if (aieditor->selected_area != NULL)
+            edcamSetPos(&aieditor->selected_area->position);
+    } else if (pad->digital_buttons & 0x2000) {
+        if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area)
+            aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+        if (pad->digital_buttons_pressed & 0x8000) {
+            aieditor->rotation_repeat = 20;
+        } else {
+            aieditor->rotation_repeat += 20;
+            if (aieditor->rotation_repeat > 600)
+                aieditor->rotation_repeat = 600;
+        }
+        aieditorsettings.locator_rotation = NuAngAdd(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
+        if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area)
+            aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
+    } else if (pad->digital_buttons & 0x8000) {
+        if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area)
+            aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+        if (pad->digital_buttons_pressed & 0x2000) {
+            aieditor->rotation_repeat = 20;
+        } else {
+            aieditor->rotation_repeat += 20;
+            if (aieditor->rotation_repeat > 600)
+                aieditor->rotation_repeat = 600;
+        }
+        aieditorsettings.locator_rotation = NuAngSub(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
+        if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area)
+            aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
+    } else if (pad->digital_buttons & 0x4000) {
+        if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area)
+            aieditor->selected_area->size.y *= (f64)0.99f;
+    } else if (pad->digital_buttons & 0x1000) {
+        if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area)
+            aieditor->selected_area->size.y *= (f64)1.01f;
+    } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8)) {
+        if (aieditor->selected_area != NULL)
+            aieditor->selected_area =
+                (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &aieditor->selected_area->link);
+        if (aieditor->selected_area == NULL)
+            aieditor->selected_area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas);
+        if (aieditor->selected_area != NULL)
+            edcamSetPos(&aieditor->selected_area->position);
+    } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2)) {
+        if (aieditor->selected_area != NULL)
+            aieditor->selected_area =
+                (EDAIAREA_s *)NuLinkedListGetPrev(&aieditor->areas, &aieditor->selected_area->link);
+        if (aieditor->selected_area == NULL)
+            aieditor->selected_area = (EDAIAREA_s *)NuLinkedListGetTail(&aieditor->areas);
+        if (aieditor->selected_area != NULL)
+            edcamSetPos(&aieditor->selected_area->position);
+    }
+done:
+    if (aieditor->selected_area != NULL && (aieditor->selected_area->flags & 1) &&
+        aieditor->selected_area->size.x != aieditor->selected_area->size.z) {
+        size = aieditor->selected_area->size.z > aieditor->selected_area->size.x ? aieditor->selected_area->size.x
+                                                                                 : aieditor->selected_area->size.z;
+        aieditor->selected_area->size.x = size;
+    }
+    return NULL;
+}
+
 STATIC_ASSERT(sizeof(EDLOCATOR_s) == 0x48);
 STATIC_ASSERT(sizeof(EDLOCATORSET_s) == 0x118);
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, creatures) == 0x371a4);
