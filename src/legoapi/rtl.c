@@ -129,13 +129,13 @@ f32 ApplyAntilights(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, f32 strengt
 static RTL_LIGHT_PC *GetNextRTL(void *set, RTL_LIGHT_PC *light, char *indices, int *index) {
     if (set != NULL) {
         if (indices != NULL && index != NULL) {
-            if (*index < (i32)(*indices)) {
+            if (*index >= (i32)(*indices)) {
+                light = NULL;
+            } else {
                 i32 light_index;
                 ++*index;
                 light_index = indices[*index];
                 light = &((RTL_SET_PC *)set)->lights[light_index];
-            } else {
-                light = NULL;
             }
         } else {
             ++light;
@@ -306,13 +306,14 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
 #define RTL_RADIUS_FRACTION ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))
 #define RTL_FALLOFF                                                                                                    \
     do {                                                                                                               \
-        if (!(light->inner_radius >= light->outer_radius)) {                                                           \
+        if (light->outer_radius <= light->inner_radius)                                                                \
+            strength = 1.0f;                                                                                           \
+        else {                                                                                                         \
             distance = NuFsqrt(distance_sq);                                                                           \
             strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f                        \
                                    ? 0.0f                                                                              \
                                    : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));                       \
-        } else                                                                                                         \
-            strength = 1.0f;                                                                                           \
+        }                                                                                                              \
         if (light->field_79 == -1 && light->field_7a == -1)                                                            \
             strength *= modifiers[light->field_7b];                                                                    \
     } while (0)
@@ -325,16 +326,10 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                 continue;
             }
             if (identity >= 0 && light->type != 7) {
-                if (((u16)(light->field_60) >> identity) & 1) {
-                    light = GetNextRTL(set, light, indices, &index);
-                    continue;
-                }
-                if (light->field_5e != 0 && light->type == 5 &&
-                    (identity == -1 || !(((u16)(light->field_5e) >> identity) & 1))) {
-                    light = GetNextRTL(set, light, indices, &index);
-                    continue;
-                }
-                if (restricted != 0 && light->field_5e == 0) {
+                if (((1 << identity) & (u16)light->field_60) ||
+                    (light->field_5e != 0 && light->type == 5 &&
+                     (identity == -1 || !((1 << identity) & (u16)light->field_5e))) ||
+                    (restricted != 0 && light->field_5e == 0)) {
                     light = GetNextRTL(set, light, indices, &index);
                     continue;
                 }
@@ -363,10 +358,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                             distance_sq = RTL_DISTANCE_SQ;
                         else
                             distance_sq = 0.0f;
-                        if (!(distance_sq < light->outer_radius * light->outer_radius)) {
-                            if (lighting_data->cached_light == light)
-                                lighting_data->cached_value = 0.0000001f;
-                        } else {
+                        if (distance_sq < light->outer_radius * light->outer_radius) {
                             RTL_FALLOFF;
                             if (strength != 0.0f && lighting_data->directional_strengths[2] <= strength &&
                                 (light->ambient.x != 0.0f || light->ambient.y != 0.0f || light->ambient.z != 0.0f))
@@ -389,24 +381,29 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA_PC *lighting_data, NUVEC *p
                                 }
                             }
                             if (position != NULL && (light->flags & 2)) {
-                                if (lighting_data->cached_light == light) {
+                                if (light != lighting_data->cached_light) {
+                                    if (strength != 0.0f && lighting_data->cached_value < strength) {
+                                        lighting_data->cached_light = light;
+                                        lighting_data->cached_light_uid = light->uid;
+                                        lighting_data->cached_value = strength;
+                                        if (light->type == 4) {
+                                            NuVecScale(&lighting_data->shadow_direction, &light->direction, -1.0f);
+                                            lighting_data->shadow_blend = 1.0f;
+                                        } else {
+                                            NuVecSub(&lighting_data->shadow_direction, position, &light->position);
+                                            lighting_data->shadow_blend = 1.0f;
+                                        }
+                                    }
+                                } else {
                                     lighting_data->cached_value = strength;
                                     if (light->type == 4)
                                         NuVecScale(&lighting_data->shadow_direction, &light->direction, -1.0f);
                                     else
                                         NuVecSub(&lighting_data->shadow_direction, position, &light->position);
-                                } else if (strength != 0.0f && lighting_data->cached_value < strength) {
-                                    lighting_data->cached_light = light;
-                                    lighting_data->cached_light_uid = light->uid;
-                                    lighting_data->cached_value = strength;
-                                    if (light->type == 4)
-                                        NuVecScale(&lighting_data->shadow_direction, &light->direction, -1.0f);
-                                    else
-                                        NuVecSub(&lighting_data->shadow_direction, position, &light->position);
-                                    lighting_data->shadow_blend = 1.0f;
                                 }
                             }
-                        }
+                        } else if (lighting_data->cached_light == light)
+                            lighting_data->cached_value = 0.0000001f;
                         break;
                     case 5:
                         InsertLight(light, lighting_data, 2.0f);
