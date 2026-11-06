@@ -146,6 +146,7 @@ extern "C" {
         NUVEC depth;
         NUVEC position;
         minisnowtrooper_s *trooper;
+        const i32 row_count = team->trooper_count >> 2;
 
         switch (team->formation_shape) {
             case 0: {
@@ -167,14 +168,15 @@ extern "C" {
             }
             case 4: {
                 const u16 angle = static_cast<u16>(team->facing_angle + 0x8000);
-                depth.y = 0.0f;
+                NUVEC formation;
+                formation.y = 0.0f;
                 trooper = team->troopers;
                 for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
-                    depth.x = trooper->formation_x;
-                    depth.z = trooper->formation_z;
-                    NuVecRotateY(&position, &depth, angle);
-                    trooper->formation_x = depth.x;
-                    trooper->formation_z = depth.z;
+                    formation.x = trooper->formation_x;
+                    formation.z = trooper->formation_z;
+                    NuVecRotateY(&position, &formation, angle);
+                    trooper->formation_x = formation.x;
+                    trooper->formation_z = formation.z;
                 }
                 break;
             }
@@ -189,12 +191,12 @@ extern "C" {
                 }
                 break;
             case 1: {
-                const i32 row_count = team->trooper_count >> 2;
-                width.x = team->formation_width / static_cast<f32>(row_count);
+                const f32 rows = static_cast<f32>(row_count);
+                width.x = team->formation_width / rows;
                 width.z = 0.0f;
                 depth.x = 0.0f;
                 depth.z = team->formation_depth * 0.25f;
-                position.x = -(static_cast<f32>(row_count) * 0.5f * width.x);
+                position.x = -(rows * 0.5f * width.x);
                 position.z = -(depth.z + depth.z);
                 NuVecRotateY(&width, &width, team->facing_angle + 0x8000);
                 NuVecRotateY(&depth, &depth, team->facing_angle + 0x8000);
@@ -202,21 +204,20 @@ extern "C" {
 
                 trooper = team->troopers;
                 for (i32 column = 0; column < 4; ++column) {
-                    if (droid_hack != 0 && column != 0 && (column & 1) == 0) {
+                    if (droid_hack != 0 && column != 0 && column % 2 == 0) {
                         position.x += depth.x;
                         position.z += depth.z;
                     }
 
-                    f32 x = position.x;
-                    f32 z = position.z;
+                    NUVEC row_position = position;
                     for (i32 row = 0; row < row_count; ++row, ++trooper) {
-                        trooper->formation_x = x;
-                        trooper->formation_z = z;
+                        trooper->formation_x = row_position.x;
+                        trooper->formation_z = row_position.z;
+                        row_position.x += width.x;
+                        row_position.z += width.z;
                         if (initialize_rotation != 0)
                             trooper->rotation = team->facing_angle;
                         trooper->target_rotation = team->facing_angle;
-                        z += width.z;
-                        x += width.x;
                     }
 
                     position.x += depth.x;
