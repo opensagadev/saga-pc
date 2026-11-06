@@ -21,9 +21,7 @@ STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m20) == 0xd8);
 STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m30) == 0xe8);
 STATIC_ASSERT(offsetof(GAMECAMERA, target) == 0x128);
 
-extern "C" NUCAMERA *__cdecl edmainGetCameraPc(void) {
-    return EdMainCurrentCameraPc;
-}
+extern "C" NUCAMERA *__cdecl edmainGetCameraPc(void);
 /* Native private EDI=center, stack=radius pointer. */
 extern "C" i32 __cdecl ShadowAveragePlayerBoundsPc(NUVEC *center, f32 *radius) {
     *center = APIObjectZeroMomentumPC;
@@ -104,6 +102,7 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
 
 extern "C" void __cdecl SetShadowLight(void) {
     NUVEC center, target, eye, secondary_eye, direction, camera_position;
+    __declspec(align(16)) NUVEC4 view_direction;
     NUCAMERA *camera;
     f32 secondary_strength;
     if (CutStopInfo != NULL) {
@@ -122,60 +121,66 @@ extern "C" void __cdecl SetShadowLight(void) {
     target.x = center.x;
     target.y = ShadowLightFocusHeightPc + center.y;
     target.z = center.z;
-    bool alternate =
+    i32 alternate =
         WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0 && (WORLD->current_level->flags & 0x400) == 0;
     if (CutStopInfo != NULL) {
         direction = WORLD->shadow_editor->direction;
         secondary_strength = WORLD->shadow_editor->field_0c;
-        eye.x = center.x - ShadowLightEyeDistancePc * direction.x;
-        eye.y = center.y - ShadowLightEyeDistancePc * direction.y;
-        eye.z = center.z - ShadowLightEyeDistancePc * direction.z;
-        secondary_eye.x = center.x + (f64)ShadowLightEyeDistancePc * 2.0;
-        secondary_eye.y = center.y + (f64)ShadowLightEyeDistancePc * 10.0;
-        secondary_eye.z = center.z + (f64)ShadowLightEyeDistancePc * 2.0;
+        eye = center;
+        eye.x -= ShadowLightEyeDistancePc * direction.x;
+        eye.y -= ShadowLightEyeDistancePc * direction.y;
+        eye.z -= ShadowLightEyeDistancePc * direction.z;
+        secondary_eye = center;
+        secondary_eye.x += (f64)ShadowLightEyeDistancePc * 2.0;
+        secondary_eye.y += (f64)ShadowLightEyeDistancePc * 10.0;
+        secondary_eye.z += (f64)ShadowLightEyeDistancePc * 2.0;
     } else if (ShadowAveragePlayerBoundsPc(&direction, &secondary_strength) != 0 && secondary_strength > 0.0f) {
         NuVecAdd(&direction, &direction, &WORLD->shadow_editor->direction);
         NuVecNorm(&direction, &direction);
-        eye.x = center.x - ShadowLightEyeDistancePc * direction.x;
-        eye.y = center.y - ShadowLightEyeDistancePc * direction.y;
-        eye.z = center.z - ShadowLightEyeDistancePc * direction.z;
-        secondary_eye.x = center.x + (ShadowLightEyeDistancePc + ShadowLightEyeDistancePc);
-        secondary_eye.y = center.y + (f64)ShadowLightEyeDistancePc * 10.0;
-        secondary_eye.z = center.z + (ShadowLightEyeDistancePc + ShadowLightEyeDistancePc);
+        eye = center;
+        eye.x -= ShadowLightEyeDistancePc * direction.x;
+        eye.y -= ShadowLightEyeDistancePc * direction.y;
+        eye.z -= ShadowLightEyeDistancePc * direction.z;
+        secondary_eye = center;
+        secondary_eye.x += (ShadowLightEyeDistancePc + ShadowLightEyeDistancePc);
+        secondary_eye.y += (f64)ShadowLightEyeDistancePc * 10.0;
+        secondary_eye.z += (ShadowLightEyeDistancePc + ShadowLightEyeDistancePc);
     } else {
-        eye.x = (f64)GameCam->position.x - 1.2000000476837158;
+        eye = GameCam->position;
+        eye.x = (f64)eye.x - 1.2000000476837158;
         eye.y = ShadowLightFallbackHeightPc;
-        eye.z = (f64)GameCam->position.z - 1.5;
+        eye.z = (f64)eye.z - 1.5;
         secondary_eye = eye;
     }
     if (alternate)
         secondary_strength = 0.5f;
     if (CutStopInfo != NULL) {
-        direction.x = GameCam->render_mtx.m20;
-        direction.y = GameCam->render_mtx.m21;
-        direction.z = GameCam->render_mtx.m22;
-        camera_position.x = GameCam->render_mtx.m30;
-        camera_position.y = GameCam->render_mtx.m31;
-        camera_position.z = GameCam->render_mtx.m32;
+        f32 forward_y = GameCam->render_mtx.m21;
+        f32 forward_z = GameCam->render_mtx.m22;
+        view_direction.x = GameCam->render_mtx.m20;
+        view_direction.y = forward_y;
+        view_direction.z = forward_z;
+        view_direction.w = 1.0f;
+        camera_position = *(NUVEC *)&GameCam->render_mtx.m30;
         camera = pNuCam;
     } else if (editor_active != 0) {
         NUCAMERA *current = NuCameraGetCam();
-        direction.x = current->mtx.m20;
-        direction.y = current->mtx.m21;
-        direction.z = current->mtx.m22;
-        current = NuCameraGetCam();
-        camera_position.x = current->mtx.m30;
-        camera_position.y = current->mtx.m31;
-        camera_position.z = current->mtx.m32;
+        f32 forward_y = current->mtx.m21;
+        f32 forward_z = current->mtx.m22;
+        view_direction.x = current->mtx.m20;
+        view_direction.y = forward_y;
+        view_direction.z = forward_z;
+        view_direction.w = 1.0f;
+        camera_position = *(NUVEC *)&NuCameraGetCam()->mtx.m30;
         camera = edmainGetCameraPc();
     } else {
-        NuVecSub(&direction, &GameCam->target, &GameCam->position);
+        NuVecSub((NUVEC *)&view_direction, &GameCam->target, &GameCam->position);
         camera_position = GameCam->position;
         camera = pNuCam;
     }
-    NuVecNorm(&direction, &direction);
-    f64 weight = 1.0 + (f64)direction.y;
-    weight = 1.0 < weight ? 1.0 : weight;
+    NuVecNorm((NUVEC *)&view_direction, (NUVEC *)&view_direction);
+    view_direction.w = 1.0f;
+    f64 weight = 1.0 < 1.0 + (f64)view_direction.y ? 1.0 : 1.0 + (f64)view_direction.y;
     f32 distance = NuVecDist(&camera_position, &target, NULL);
     f32 range = WORLD->shadow_editor->field_20;
     f32 weight32 = weight;
@@ -187,8 +192,8 @@ extern "C" void __cdecl SetShadowLight(void) {
     if (CutStopInfo != NULL) {
         splits[0] = pNuCam->near_clip;
         split_count = 3;
-        ShadowLightSplitCountPc = split_count;
         splits[1] = pNuCam->near_clip + ShadowLightNearOffsetPc;
+        ShadowLightSplitCountPc = split_count;
         splits[2] = distance + (range - distance) * interpolation;
     } else {
         splits[0] = pNuCam->near_clip;
