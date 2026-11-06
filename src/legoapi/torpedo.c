@@ -82,21 +82,26 @@ STATIC_ASSERT(offsetof(TORPEDO_TARGET_WORLD_QUERY_PC, obstacles) == 0x46a4);
 STATIC_ASSERT(offsetof(TORPEDO_TARGET_WORLD_QUERY_PC, turrets) == 0x46b8);
 void *__cdecl FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squared, u8 *target_type) {
     TORPEDO_TARGET_WORLD_QUERY_PC *view = (TORPEDO_TARGET_WORLD_QUERY_PC *)world;
-    void *nearest = NULL;
-    u8 type = 0;
+    void *nearest;
+    u8 type;
+    f32 best;
     NUVEC delta;
     i32 index;
     if (world->gizmo_blowup_count == 0)
         return NULL;
+    best = distance_squared;
+    nearest = NULL;
+    type = 0;
     for (index = 0; index < world->gizmo_blowup_count; ++index) {
         GIZMOBLOWUP_PC *blowup = &world->gizmo_blowups[index];
         f32 distance;
         if ((blowup->status_flags & 0x4000) == 0 || (blowup->status_flags & 0x8000) == 0 ||
-            (blowup->status_flags & 0x800001) != 0x800000 || (blowup->draw_flags & 0x1000000) == 0)
+            (blowup->status_flags & 1) != 0 || (blowup->status_flags & 0x800000) == 0 ||
+            (blowup->draw_flags & 0x1000000) == 0)
             continue;
         distance = NuVecDistSqr(&blowup->mid_position, position, &delta);
-        if (distance < distance_squared) {
-            distance_squared = distance;
+        if (distance < best) {
+            best = distance;
             nearest = blowup;
             type = 0;
         }
@@ -104,12 +109,13 @@ void *__cdecl FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 dista
     if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->turrets != NULL) {
         TORPEDO_TURRET_QUERY_PC *turret = view->turrets->turrets;
         for (index = 0; index < view->turrets->count; ++index, ++turret) {
-            if ((turret->flags & 6) == 6 && (turret->flags & 0x30) == 0 && turret->primary_anim_obj != NULL) {
+            if ((turret->flags & 4) != 0 && (turret->flags & 2) != 0 && (turret->flags & 0x30) == 0 &&
+                turret->primary_anim_obj != NULL) {
                 NUVEC *draw_position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
                 if (draw_position != NULL) {
                     f32 distance = NuVecDistSqr(draw_position, position, &delta);
-                    if (distance < distance_squared) {
-                        distance_squared = distance;
+                    if (distance < best) {
+                        best = distance;
                         nearest = turret;
                         type = 1;
                     }
@@ -120,19 +126,23 @@ void *__cdecl FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 dista
     if (WORLD->area != NULL && WORLD->area == BOUNTYHUNTERPURSUIT_ADATA && view->obstacles != NULL) {
         for (index = 0; index < view->obstacles->active_gizmo_count; ++index) {
             TORPEDO_OBSTACLE_QUERY_PC *obstacle = view->obstacles->active_gizmos[index]->object;
-            if ((obstacle->progress_flags & 3) == 3 && (obstacle->runtime_flags & 0x80) == 0) {
+            if ((obstacle->progress_flags & 2) != 0 && (obstacle->progress_flags & 1) != 0 &&
+                (obstacle->runtime_flags & 0x80) == 0) {
                 f32 distance = NuVecDistSqr(&obstacle->evaluated_position, position, &delta);
-                if (distance < distance_squared) {
-                    distance_squared = distance;
+                if (distance < best) {
+                    best = distance;
                     nearest = obstacle;
                     type = 2;
                 }
             }
         }
     }
-    if (nearest != NULL && target_type != NULL)
-        *target_type = type;
-    return nearest;
+    if (nearest != NULL) {
+        if (target_type != NULL)
+            *target_type = type;
+        return nearest;
+    }
+    return NULL;
 }
 
 void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
