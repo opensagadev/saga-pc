@@ -4246,7 +4246,7 @@ void __cdecl AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOB
     packet->flags &= ~7u;
 }
 
-void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
+static __declspec(noinline) void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
     if (!(node->flags & 0x80) && NuSpecialExistsFn(&aieditor->cursor_platform)) {
         node->special = aieditor->cursor_platform;
         NuVecInvMtxTransform(&node->platform_position, &node->position,
@@ -15555,6 +15555,447 @@ eduimenu_s *__cdecl pathEditor_MainMenu(void) {
                                                    cbNearClipAtCursor, "Near Clip At Cursor"));
         return menu;
     }
+    return NULL;
+}
+
+extern f32 default_path_radius;
+
+static __declspec(noinline) EDAIPATHNODE_s *pathEditor_CreateNode(EDAIPATH_s *path) {
+    EDAIPATHNODE_s *node = NULL;
+    if (path != NULL && path->node_count < 254) {
+        node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->free_path_nodes);
+        if (node != NULL) {
+            NuLinkedListRemove(&aieditor->free_path_nodes, &node->link);
+            NuLinkedListAppend(&path->nodes, &node->link);
+            ++path->node_count;
+            node->position = aieditor->camera_position;
+            node->radius = default_path_radius;
+            node->lower_height = -default_path_heighttol;
+            node->upper_height = default_path_heighttol;
+        }
+    }
+    return node;
+}
+static __declspec(noinline) EDAIPATHNODE_s *pathEditor_GetNearestPathNode(EDAIPATH_s **nearest_path, i32 require_radius,
+                                                                          EDAIPATH_s *exclude) {
+    EDAIPATH_s *path;
+    EDAIPATH_s *best_path = NULL;
+    EDAIPATHNODE_s *best_node = NULL;
+    EDAIPATHNODE_s *node;
+    NUVEC delta;
+    f32 best = FLT_MAX;
+    f32 distance;
+    for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
+         path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
+        if (path == exclude)
+            continue;
+        node = pathEditor_GetNearestNode(path, require_radius);
+        if (node == NULL)
+            continue;
+        distance = NuVecXZDistSqr(&aieditor->cursor_position, &node->position, &delta);
+        if (distance < best) {
+            best = distance;
+            best_path = path;
+            best_node = node;
+        }
+    }
+    if (best_node != NULL && best_path != NULL) {
+        if (nearest_path != NULL)
+            *nearest_path = best_path;
+        return best_node;
+    }
+    return NULL;
+}
+static __declspec(noinline) void pathEditor_SelectNearestPath(void) {
+    EDAIPATH_s *path;
+    EDAIPATHNODE_s *node = pathEditor_GetNearestPathNode(&path, 0, NULL);
+    if (node != NULL) {
+        aieditor->current_path = path;
+        aieditor->current_path->current_node = node;
+        edcamSetPos(&aieditor->current_path->current_node->position);
+    }
+}
+static __declspec(noinline) i32 pathEditor_GetNearestRuntimeNode(AIPATH_PC *runtime) {
+    i32 nearest = -1;
+    i32 index;
+    NUVEC delta;
+    f32 best = FLT_MAX;
+    f32 distance;
+    AIPATHNODE_PC *node;
+    if (runtime != NULL) {
+        for (index = 0; index < runtime->node_count; ++index) {
+            node = &runtime->nodes[index];
+            distance = NuVecXZDistSqr(&aieditor->cursor_position, &node->position, &delta);
+            if (distance < best && distance < node->radius_squared) {
+                best = distance;
+                nearest = index;
+            }
+        }
+    }
+    return nearest;
+}
+static __declspec(noinline) i32 pathEditor_ConnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
+    i32 index;
+    i32 other_index;
+    if (node != NULL && other != NULL) {
+        for (index = 0; index < 8; ++index) {
+            if (node->connections[index].node != NULL)
+                continue;
+            for (other_index = 0; other_index < 8; ++other_index) {
+                if (other->connections[other_index].node == NULL) {
+                    node->connections[index].node = other;
+                    node->connections[index].flags = 0;
+                    other->connections[other_index].node = node;
+                    other->connections[other_index].flags = 0;
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+extern void(__cdecl *AIPathNodeMovedFn)(EDAIPATHNODE_s *node);
+extern void __cdecl pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32);
+extern NUVEC edpath_addoffset;
+
+void __cdecl creatureEditor_PathNodeDeleted(EDAIPATHNODE_s *node) {
+    EDAICREATURE_s *creature;
+    EDAICREATURE_s *next;
+    creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures);
+    while (creature != NULL) {
+        next = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link);
+        if (creature->check.first == node || creature->check.second == node) {
+            pathEditor_OnPathCheck(&creature->position, &creature->check, aieditor->current_path, 0.0f);
+            if (creature->check.on_path == 0) {
+                NuLinkedListRemove(&aieditor->creatures, &creature->link);
+                memset(creature, 0, sizeof(*creature));
+                NuLinkedListAppend(&aieditor->free_creatures, &creature->link);
+                if (creature == aieditor->selected_creature)
+                    aieditor->selected_creature = NULL;
+            }
+        }
+        creature = next;
+    }
+}
+void __cdecl locatorEditor_PathNodeDeleted(EDAIPATHNODE_s *node) {
+    EDLOCATOR_s *locator;
+    EDLOCATOR_s *next;
+    locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
+    while (locator != NULL) {
+        next = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
+        if (locator->path_check.first == node || locator->path_check.second == node) {
+            pathEditor_OnPathCheck(&locator->position, &locator->path_check, aieditor->current_path, 0.0f);
+            if (locator->path_check.on_path == 0) {
+                AiEditorDestroyLocatorPc(locator);
+                if (locator == aieditor->current_locator)
+                    aieditor->current_locator = NULL;
+            }
+        }
+        locator = next;
+    }
+}
+void __cdecl pathEditor_cbDeletePathNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAIPATHNODE_s *node;
+    (void)menu;
+    (void)event;
+    if (item != NULL && item->data != 0 && aieditor->current_path->current_node != NULL &&
+        aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
+        node = aieditor->current_path->current_node;
+        pathEditor_DestroyNode(node, aieditor->current_path);
+        creatureEditor_PathNodeDeleted(node);
+        locatorEditor_PathNodeDeleted(node);
+        if (AIPathNodeMovedFn != NULL)
+            AIPathNodeMovedFn(node);
+        if (aieditor->current_path->current_node == node)
+            aieditor->current_path->current_node = NULL;
+    }
+    AiEditorClearMainMenuPc();
+}
+void __cdecl pathEditor_cbCancelDeleteNodeMenu(eduimenu_s *menu, eduimenu_s *child) {
+    (void)menu;
+    (void)child;
+    AiEditorClearMainMenuPc();
+}
+void __cdecl pathEditor_cbDisconnectPathNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    if (item != NULL && item->data != 0 && aieditor->current_path->current_node != NULL &&
+        aieditor->current_path->nearest_node != NULL &&
+        aieditor->current_path->current_node != aieditor->current_path->nearest_node) {
+        pathEditor_DisconnectNodes(aieditor->current_path->current_node, aieditor->current_path->nearest_node);
+        creatureEditor_PathNodeDeleted(aieditor->current_path->current_node);
+        locatorEditor_PathNodeDeleted(aieditor->current_path->current_node);
+        if (AIPathNodeMovedFn != NULL)
+            AIPathNodeMovedFn(aieditor->current_path->current_node);
+    }
+    AiEditorClearMainMenuPc();
+}
+void __cdecl pathEditor_cbCancelDisconnectNodeMenu(eduimenu_s *menu, eduimenu_s *child) {
+    (void)menu;
+    (void)child;
+    AiEditorClearMainMenuPc();
+}
+eduimenu_s *__cdecl pathEditor_DeleteNodeMenu(void) {
+    eduimenu_s *menu;
+    if (aieditor->current_path->current_node != NULL &&
+        aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
+        menu =
+            eduiMenuCreate(200, 70, 240, 270, ed_fnt, pathEditor_cbCancelDeleteNodeMenu, "Delete current path node??");
+        if (menu != NULL) {
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePathNode, "No"));
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePathNode, "Yes"));
+            return menu;
+        }
+    }
+    return NULL;
+}
+eduimenu_s *__cdecl pathEditor_DisconnectNodeMenu(void) {
+    eduimenu_s *menu;
+    if (aieditor->current_path->current_node != NULL && aieditor->current_path->nearest_node != NULL &&
+        aieditor->current_path->current_node != aieditor->current_path->nearest_node) {
+        menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, pathEditor_cbCancelDisconnectNodeMenu,
+                              "Disconnect current path node??");
+        if (menu != NULL) {
+            eduiMenuAddItem(
+                menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDisconnectPathNode, "No"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    pathEditor_cbDisconnectPathNode, "Yes"));
+            return menu;
+        }
+    }
+    return NULL;
+}
+
+eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
+    EDAIPATH_s *path;
+    EDAIPATHNODE_s *previous;
+    EDAIPATHNODE_s *nearest;
+    EDAIPATHNODE_s *node;
+    EDAIPATHNODE_s *start;
+    NUVEC position;
+    f32 step;
+    i32 named;
+    if (pad->digital_buttons_pressed & 0x80)
+        return pathEditor_MainMenu();
+    if (aieditor->current_path == NULL)
+        return NULL;
+    previous = aieditor->current_path->current_node;
+    if (!(aieditor->current_path->flags & 1))
+        aieditorsettings.display_options &= ~1;
+    if (aieditorsettings.display_options & 1) {
+        aieditor->current_path->runtime_nearest = (i16)pathEditor_GetNearestRuntimeNode(aieditor->runtime_path);
+        if ((pad->digital_buttons_pressed & 0x40) && aieditor->current_path->runtime_nearest >= 0)
+            aieditor->current_path->runtime_start = aieditor->current_path->runtime_nearest;
+        if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->runtime_nearest >= 0)
+            aieditor->current_path->runtime_end = aieditor->current_path->runtime_nearest;
+        if (pad->digital_buttons_pressed & 0x100) {
+            if (aieditor->current_path->runtime_nearest >= 0) {
+                aieditor->current_path->runtime_start = aieditor->current_path->runtime_nearest;
+                edcamSetPos(&aieditor->runtime_path->nodes[aieditor->current_path->runtime_nearest].position);
+            }
+            aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
+            if (aieditor->current_path->current_node != NULL)
+                edcamSetPos(&aieditor->current_path->current_node->position);
+        }
+        return NULL;
+    }
+    if (pad->digital_buttons & 0x40) {
+        nearest = aieditor->current_path->nearest_node;
+        if (nearest != NULL) {
+            if (pad->digital_buttons_pressed & 0x40) {
+                aieditor->current_path->current_node = nearest;
+                node = aieditor->current_path->current_node;
+                if (node != NULL) {
+                    position.x = node->position.x;
+                    position.y = aieditor->cursor_position.y;
+                    position.z = node->position.z;
+                    edcamSetPos(&position);
+                }
+            } else if (aieditor->current_path->current_node != NULL &&
+                       nearest == aieditor->current_path->current_node) {
+                position = nearest->position;
+                nearest->position = aieditor->camera_position;
+                pathEditor_PathNodeMoved(aieditor->current_path->current_node);
+                locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
+                if (AIPathNodeDeletedFn != NULL)
+                    AIPathNodeDeletedFn(aieditor->current_path->current_node);
+                if (pad->digital_buttons & 0x200) {
+                    path = aieditor->current_path;
+                    start = path->current_node;
+                    position.x = start->position.x - position.x;
+                    position.z = start->position.z - position.z;
+                    for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+                         node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&aieditor->current_path->nodes, &node->link)) {
+                        if (node != aieditor->current_path->current_node) {
+                            node->position.x += position.x;
+                            node->position.z = position.z + node->position.z;
+                            locatorEditor_PathNodeMoved(node);
+                            if (AIPathNodeDeletedFn != NULL)
+                                AIPathNodeDeletedFn(node);
+                        }
+                    }
+                }
+            }
+        } else if (pad->digital_buttons_pressed & 0x40) {
+            aieditor->current_path->current_node = pathEditor_CreateNode(aieditor->current_path);
+            if (previous != NULL) {
+                if (aieditor->current_path->current_node != NULL) {
+                    aieditor->current_path->current_node->radius = previous->radius;
+                    aieditor->current_path->current_node->upper_height = previous->upper_height;
+                    aieditor->current_path->current_node->lower_height = previous->lower_height;
+                }
+                if (!pathEditor_ConnectNodes(aieditor->current_path->current_node, previous)) {
+                    pathEditor_DestroyNode(aieditor->current_path->current_node, aieditor->current_path);
+                    aieditor->current_path->current_node = previous;
+                }
+            }
+        }
+    }
+    if (pad->digital_buttons_pressed & 0x20) {
+        node = aieditor->current_path->current_node;
+        if (node != NULL) {
+            nearest = aieditor->current_path->nearest_node;
+            if (nearest != NULL && nearest != node) {
+                if (pathEditor_FindConnection(node, nearest) != NULL)
+                    return pathEditor_DisconnectNodeMenu();
+                pathEditor_ConnectNodes(node, nearest);
+                position.x = nearest->position.x;
+                position.y = aieditor->cursor_position.y;
+                position.z = nearest->position.z;
+                edcamSetPos(&position);
+            }
+        }
+    }
+    if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->current_node != NULL &&
+        aieditor->current_path->current_node == aieditor->current_path->nearest_node)
+        return pathEditor_DeleteNodeMenu();
+    if (pad->digital_buttons_pressed & 0x100) {
+        if (aieditorsettings.display_options & 2) {
+            pathEditor_SelectNearestPath();
+        } else {
+            aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
+            if (aieditor->current_path->current_node != NULL) {
+                if (edpath_addoffset.x != 0.0f || edpath_addoffset.y != 0.0f || edpath_addoffset.z != 0.0f) {
+                    NuVecAdd(&aieditor->current_path->current_node->position,
+                             &aieditor->current_path->current_node->position, &edpath_addoffset);
+                    pathEditor_PathNodeMoved(aieditor->current_path->current_node);
+                    locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
+                }
+                edcamSetPos(&aieditor->current_path->current_node->position);
+            }
+        }
+    }
+    aieditor->flags &= ~1;
+    if (aieditor->current_path->current_node != NULL &&
+        aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
+        if (pad->digital_buttons & 0x8000 || pad->digital_buttons & 0x2000) {
+            if (pad->digital_buttons & 0x8000)
+                aieditor->current_path->current_node->radius =
+                    aieditor->current_path->current_node->radius * (f64)0.99f;
+            else
+                aieditor->current_path->current_node->radius =
+                    aieditor->current_path->current_node->radius * (f64)1.01f;
+            if (aieditor->current_path->current_node->radius < 0.01f)
+                aieditor->current_path->current_node->radius = 0.01f;
+            pathEditor_PathNodeMoved(aieditor->current_path->current_node);
+            locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
+            if (AIPathNodeDeletedFn != NULL)
+                AIPathNodeDeletedFn(aieditor->current_path->current_node);
+        }
+        if (aieditorsettings.display_options & 0x80) {
+            if (pad->digital_buttons & 0x1000) {
+                aieditor->flags |= 4;
+                step = aieditor->current_path->current_node->upper_height * (f64)0.05f;
+                if (pad->digital_buttons & 4)
+                    aieditor->current_path->current_node->upper_height += step;
+                else if (pad->digital_buttons & 1)
+                    aieditor->current_path->current_node->upper_height -= step;
+                if (aieditor->current_path->current_node->upper_height < 0.01f)
+                    aieditor->current_path->current_node->upper_height = 0.01f;
+            } else if (pad->digital_buttons & 0x4000) {
+                aieditor->flags |= 4;
+                step = -aieditor->current_path->current_node->lower_height * (f64)0.05f;
+                if (pad->digital_buttons & 4)
+                    aieditor->current_path->current_node->lower_height += step;
+                else if (pad->digital_buttons & 1)
+                    aieditor->current_path->current_node->lower_height -= step;
+                if (aieditor->current_path->current_node->lower_height > -0.01f)
+                    aieditor->current_path->current_node->lower_height = -0.01f;
+            }
+        }
+        aieditor->flags |= 1;
+    }
+    named = 0;
+    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8))
+        goto next_node;
+    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2))
+        goto previous_node;
+    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 4)) {
+        named = 1;
+        goto next_node;
+    }
+    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 1)) {
+        named = 1;
+        goto previous_node;
+    }
+    if (aieditorsettings.display_options & 0x80)
+        goto done;
+    if (pad->digital_buttons_pressed & 0x1000)
+        goto next_node;
+    if (!(pad->digital_buttons_pressed & 0x4000))
+        goto done;
+previous_node:
+    if (aieditor->current_path->current_node != NULL)
+        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
+            &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+    if (aieditor->current_path->current_node == NULL)
+        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
+    if (named && aieditor->current_path->current_node != NULL &&
+        NuStrLen(aieditor->current_path->current_node->name) == 0) {
+        start = aieditor->current_path->current_node;
+        do {
+            aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
+                &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+            if (aieditor->current_path->current_node == NULL) {
+                aieditor->current_path->current_node =
+                    (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
+                if (aieditor->current_path->current_node == NULL)
+                    break;
+            }
+            if (aieditor->current_path->current_node == start)
+                break;
+        } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+    }
+    goto set_camera;
+next_node:
+    if (aieditor->current_path->current_node != NULL)
+        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
+            &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+    if (aieditor->current_path->current_node == NULL)
+        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
+    if (named && aieditor->current_path->current_node != NULL &&
+        NuStrLen(aieditor->current_path->current_node->name) == 0) {
+        start = aieditor->current_path->current_node;
+        do {
+            aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
+                &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+            if (aieditor->current_path->current_node == NULL) {
+                aieditor->current_path->current_node =
+                    (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
+                if (aieditor->current_path->current_node == NULL)
+                    break;
+            }
+            if (aieditor->current_path->current_node == start)
+                break;
+        } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+    }
+set_camera:
+    if (aieditor->current_path->current_node != NULL)
+        edcamSetPos(&aieditor->current_path->current_node->position);
+done:
+    aieditor->current_path->nearest_node = pathEditor_GetNearestNode(aieditor->current_path, 1);
     return NULL;
 }
 

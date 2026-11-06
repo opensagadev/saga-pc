@@ -11134,6 +11134,9 @@ extern "C" {
 #pragma bss_seg(".bss$dynamic_antinodes")
     AIANTINODE_PC dynamic_antinodes[64] = {0};
 #pragma bss_seg()
+#pragma data_seg(".data$default_path_radius")
+    f32 default_path_radius = 0.25f;
+#pragma data_seg()
 #pragma data_seg(".data$default_path_heighttol")
     f32 default_path_heighttol = 0.2f;
 #pragma data_seg()
@@ -35117,6 +35120,8 @@ extern "C" {
     void(__cdecl *AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *) = NULL;
     void(__cdecl *AIPathDeletedFn)(struct EDAIPATH_s *) = NULL;
     i32 near_clip_at_cursor = 0;
+    void(__cdecl *AIPathNodeMovedFn)(struct EDAIPATHNODE_s *) = NULL;
+    NUVEC edpath_addoffset = {0};
     extern const char AiEditorDatedBackupFormatPc[32] = "ai_backups\\%s.%d_%d_%d_%d_%d_%d";
 }
 

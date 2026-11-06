@@ -3345,8 +3345,13 @@ address,symbol,size,ctype
 0x005224a0,_AiEditorPrevLocatorInSetPc,84,EDLOCATOR_s * private ESI set / EDX current
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
+0x522970,_pathEditor_CreateNode,140,
 0x522a00,_pathEditor_GetNearestNode,280,
+0x522b60,_pathEditor_GetNearestPathNode,202,
+0x522c30,_pathEditor_SelectNearestPath,80,
+0x522c80,_pathEditor_GetNearestRuntimeNode,151,
 0x522d20,_pathEditor_FindConnection,42,
+0x522d50,_pathEditor_ConnectNodes,108,
 0x522dc0,_pathEditor_DisconnectNodes,99,
 0x522e30,_AiPathDrawSolidEdgePc,1000,
 0x523220,_AiPathDrawWireEdgePc,893,
@@ -3449,6 +3454,7 @@ address,symbol,size,ctype
 0x52a0c0,_AiEditorRenameCreaturePc,146,
 0x52a160,_creatureEditor_cbRenameCreatureMenu,192,
 0x52a2f0,_creatureEditor_PathNodeMoved,446,void __cdecl (EDAIPATHNODE_s *)
+0x52a4b0,_creatureEditor_PathNodeDeleted,212,"void __cdecl (EDAIPATHNODE_s *)"
 0x52a590,_creatureEditor_PathDeleted,146,"void __cdecl (EDAIPATH_s *)"
 0x52a630,_creatureEditor_CalculatePos,224,
 0x52a710,_creatureEditor_Updated,76,
@@ -3506,6 +3512,7 @@ address,symbol,size,ctype
 0x530960,_areaEditor_cbRenameAreaMenu,192,
 0x530b30,_areaEditor_Render,672,
 0x530dd0,_AiEditorDestroyLocatorPc,118,
+0x530e50,_locatorEditor_PathNodeDeleted,148,"void __cdecl (EDAIPATHNODE_s *)"
 0x530ef0,_locatorEditor_PathDeleted,101,"void __cdecl (EDAIPATH_s *)"
 0x530f60,_locatorEditor_cbRenameLocatorMenu,192,
 0x531020,_AiEditorDeleteLocatorSelectionPc,176,
@@ -3528,6 +3535,10 @@ address,symbol,size,ctype
 0x533060,_pathEditor_cbSelectPathMenu,158,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x533100,_pathEditor_cbSetShareNode,994,
 0x5334f0,_pathEditor_cbShareNodeMenu,369,
+0x533670,_pathEditor_cbDeletePathNode,143,
+0x533700,_pathEditor_cbCancelDeleteNodeMenu,37,
+0x533730,_pathEditor_cbDisconnectPathNode,171,
+0x5337e0,_pathEditor_cbCancelDisconnectNodeMenu,37,
 0x533810,_pathEditor_PathNodeMoved,435,
 0x5339d0,_pathEditor_Render,960,
 0x534110,_routeEditor_Render,437,
@@ -3563,12 +3574,15 @@ address,symbol,size,ctype
 0x5389a0,_locatorEditor_DeleteLocatorMenu,153,
 0x538a40,_pathEditor_DestroyPath,95,
 0x538aa0,_pathEditor_cbDeletePath,353,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x538c10,_pathEditor_DeleteNodeMenu,156,eduimenu_s *__cdecl (void)
+0x538cb0,_pathEditor_DisconnectNodeMenu,166,eduimenu_s *__cdecl (void)
 0x538d60,_aieditor_cbSave,235,
 0x538e50,_antinodeEditor_MainMenu,509,
 0x539050,_antinodeEditor_Process,2218,
 0x53ac10,_locatorEditor_MainMenu,614,
 0x53ae80,_locatorEditor_Process,2338,
 0x53b7b0,_pathEditor_MainMenu,1180,eduimenu_s *__cdecl (void)
+0x53bc50,_pathEditor_Process,2624,eduimenu_s *__cdecl (FRAME_PAD_PC *)
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -15583,6 +15597,8 @@ address,symbol,size,ctype
 0x760c34,_AiEditorDatedBackupFormatPc,32,const char[32]
 0x760c64,??_C@_0BB@BOHJJGDJ@Delete?5locator?$DP?$DP?$AA@,,char []
 0x760c78,??_C@_0BG@OLJIIPJD@Delete?5current?5path?$DP?$DP?$AA@,,char []
+0x760c90,??_C@_0BL@KDCOBKOE@Delete?5current?5path?5node?$DP?$DP?$AA@,,char []
+0x760cac,??_C@_0BP@PAKJFAIO@Disconnect?5current?5path?5node?$DP?$DP?$AA@,,char []
 0x760cd0,??_C@_0EA@NJPLHKLK@Make?5sure?5there?5is?5a?5folder?5call@,64,const char[64]
 0x760d10,??_C@_0P@EMGNAMLC@AI?5Save?5FAILED?$AA@,15,const char[15]
 0x760d20,??_C@_0BJ@GAKJAFLA@Disbale?5direction?5memory?$AA@,,char []
@@ -21687,6 +21703,7 @@ address,symbol,size,ctype
 0x801720,_AIScriptCommandsPc,,NUFPCOMJMP[9]
 0x801768,_api_aiconditiondefs,600,AICONDITIONDEF_PC[50]
 0x8019c0,_api_aiactiondefs,660,AIACTIONDEF_PC[55]
+0x801c54,_default_path_radius,4,f32
 0x00801c58,_default_path_heighttol,4,f32
 0x801c5c,_AiLoadActivationDifficultyPc,,u8
 0x801c68,_ai_usepackfile,,i32
@@ -24820,6 +24837,7 @@ address,symbol,size,ctype
 0x923908,_GameAISYSRebuildFromEditorDataFn,,"void (__cdecl *)(AISYS_PC *, VARIPTR *, VARIPTR *)"
 0x92390c,_GameAISaveFn,,void (__cdecl *)(struct AIPATHSYS_PC *)
 0x923910,_AIPathNodeDeletedFn,,void (__cdecl *)(struct EDAIPATHNODE_s *)
+0x923914,_AIPathNodeMovedFn,,void (__cdecl *)(struct EDAIPATHNODE_s *)
 0x923918,_AIPathDeletedFn,,void (__cdecl *)(struct EDAIPATH_s *)
 0x0092391c,_PreparingForSpecialMoveFn,4,AI_PREPARING_SPECIAL_MOVE_PC
 0x00923920,_MidSpecialMoveFn,4,AI_MID_SPECIAL_MOVE_PC
@@ -24831,6 +24849,7 @@ address,symbol,size,ctype
 0x9242bc,_AiEditorLowerHeightOverridePc,,f32
 0x9242c0,_iterator_count,,i32
 0x9242c4,_distance_tables,,f32 ***
+0x9242c8,_edpath_addoffset,,NUVEC
 0x9242d4,_AiEditorMovePlayersCallbackPc,,
 0x9242d8,_creatureEditor_ResetParamsItem,4,eduiitem_s *
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *
