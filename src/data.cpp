@@ -35115,6 +35115,8 @@ extern "C" {
 extern "C" {
     void(__cdecl *GameAISaveFn)(AIPATHSYS_PC *) = NULL;
     void(__cdecl *AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *) = NULL;
+    void(__cdecl *AIPathDeletedFn)(struct EDAIPATH_s *) = NULL;
+    i32 near_clip_at_cursor = 0;
     extern const char AiEditorDatedBackupFormatPc[32] = "ai_backups\\%s.%d_%d_%d_%d_%d_%d";
 }
 

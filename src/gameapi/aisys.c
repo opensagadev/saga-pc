@@ -15341,6 +15341,223 @@ static void AiEditorDestroyLocatorPc(EDLOCATOR_s *locator) {
     NuLinkedListAppend(&aieditor->free_locators, &locator->link);
 }
 
+extern void(__cdecl *AIPathDeletedFn)(EDAIPATH_s *path);
+
+static __declspec(noinline) i32 pathEditor_DisconnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
+    i32 index;
+    i32 other_index;
+    if (node != NULL && other != NULL) {
+        for (index = 0; index < 8; ++index) {
+            if (node->connections[index].node != other)
+                continue;
+            for (other_index = 0; other_index < 8; ++other_index) {
+                if (other->connections[other_index].node == node) {
+                    memset(&node->connections[index], 0, sizeof(node->connections[index]));
+                    memset(&other->connections[other_index], 0, sizeof(other->connections[other_index]));
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+void __cdecl pathEditor_DestroyNode(EDAIPATHNODE_s *node, EDAIPATH_s *path) {
+    i32 index;
+    if (node == NULL || path == NULL)
+        return;
+    if (node->shared_node != NULL) {
+        --node->shared_node->reference_count;
+        if (node->shared_node->reference_count < 2)
+            pathEditor_DestroySharedNode(node->shared_node);
+        node->shared_node = NULL;
+    }
+    for (index = 0; index < 8; ++index) {
+        if (node->connections[index].node != NULL)
+            pathEditor_DisconnectNodes(node, node->connections[index].node);
+    }
+    NuLinkedListRemove(&path->nodes, &node->link);
+    --path->node_count;
+    memset(node, 0, sizeof(*node));
+    NuLinkedListAppend(&aieditor->free_path_nodes, &node->link);
+}
+void __cdecl creatureEditor_PathDeleted(EDAIPATH_s *path) {
+    EDAICREATURE_s *creature;
+    EDAICREATURE_s *next;
+    creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures);
+    while (creature != NULL) {
+        next = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link);
+        if (creature->check.path == path) {
+            NuLinkedListRemove(&aieditor->creatures, &creature->link);
+            memset(creature, 0, sizeof(*creature));
+            NuLinkedListAppend(&aieditor->free_creatures, &creature->link);
+            if (creature == aieditor->selected_creature)
+                aieditor->selected_creature = NULL;
+        }
+        creature = next;
+    }
+}
+void __cdecl locatorEditor_PathDeleted(EDAIPATH_s *path) {
+    EDLOCATOR_s *locator;
+    EDLOCATOR_s *next;
+    locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
+    while (locator != NULL) {
+        next = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
+        if (locator->path_check.path == path) {
+            AiEditorDestroyLocatorPc(locator);
+            if (locator == aieditor->current_locator)
+                aieditor->current_locator = NULL;
+        }
+        locator = next;
+    }
+}
+static __declspec(noinline) void pathEditor_DestroyPath(EDAIPATH_s *path) {
+    EDAIPATHNODE_s *node;
+    if (path == NULL)
+        return;
+    for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+         node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes)) {
+        pathEditor_DestroyNode(node, path);
+    }
+    NuLinkedListRemove(&aieditor->paths, &path->link);
+    memset(path, 0, sizeof(*path));
+    NuLinkedListAppend(&aieditor->free_paths, &path->link);
+}
+void __cdecl pathEditor_cbDeletePath(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    (void)event;
+    if (item == NULL)
+        return;
+    switch (item->data) {
+        case 0:
+            menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current path??");
+            if (menu != NULL) {
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePath, "No"));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePath, "Yes"));
+                eduiMenuAttach(parent, menu);
+            }
+            break;
+        case 1:
+            if (aieditor->current_path == NULL || (aieditor->current_path->flags & 1))
+                return;
+            creatureEditor_PathDeleted(aieditor->current_path);
+            locatorEditor_PathDeleted(aieditor->current_path);
+            if (AIPathDeletedFn != NULL)
+                AIPathDeletedFn(aieditor->current_path);
+            pathEditor_DestroyPath(aieditor->current_path);
+            aieditor->current_path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
+            AiEditorClearMainMenuPc();
+            break;
+        case 2:
+            AiEditorClearMainMenuPc();
+            break;
+    }
+}
+
+extern i32 near_clip_at_cursor;
+void __cdecl cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+
+eduimenu_s *__cdecl pathEditor_MainMenu(void) {
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    EDAIPATHNODE_s *node;
+    EDAIPATHNODE_s *other;
+    EDAIPATHCNX_s *connection;
+    i32 index;
+    i32 row;
+    if (menu != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                AiEditorModeMenuPc, "Select Editor Mode"));
+        if (aieditor->current_path != NULL && aieditor->current_path->current_node != NULL)
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbRenameNodeMenu,
+                                                    "Rename Node"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbSelectPathMenu,
+                                                "Select Path Network"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorCameraToPlayerPc, "Go To Player"));
+        eduiMenuAddItem(
+            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorMovePlayersPc, "Move Player"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbCreatePath,
+                                                "Create Path Network"));
+        if (aieditor->current_path != NULL) {
+            if (aieditor->current_path->current_node != NULL)
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        pathEditor_cbShareNodeMenu, "Share node with..."));
+            if (aieditor->current_path != NULL && !(aieditor->current_path->flags & 1))
+                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, pathEditor_cbDeletePath,
+                                                        "Delete Path Network"));
+            if (aieditor->current_path != NULL && !(aieditor->current_path->flags & 1))
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                        pathEditor_cbRenamePathMenu, "Rename Path Network"));
+        }
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 24) >> 31, 1,
+                                                   aieditor_cbSolidPathDisplayToggle, "Solid Path Display"));
+        row = 2;
+        if (aieditor->current_path != NULL) {
+            node = aieditor->current_path->current_node;
+            other = aieditor->current_path->other_node;
+            connection = NULL;
+            if (node != NULL && other != NULL) {
+                for (index = 0; index < 8; ++index) {
+                    if (node->connections[index].node == other) {
+                        connection = &node->connections[index];
+                        break;
+                    }
+                }
+                {
+                    if (connection != NULL && AIPathConnectionTypeCountPc != 0) {
+                        eduiMenuAddItem(
+                            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
+                        for (index = 0; index < AIPathConnectionTypeCountPc; ++index) {
+                            eduiMenuAddItem(menu, eduiItemToggleCreate(index, &AiEditorSaveMessageColoursPc,
+                                                                       (AIPathConnectionTypesPc[index].connection_flag &
+                                                                        connection->flags) != 0,
+                                                                       row, pathEditor_cbCnxFlagsToggle,
+                                                                       AIPathConnectionTypesPc[index].name));
+                            ++row;
+                        }
+                        eduiMenuAddItem(
+                            menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, NULL, "================="));
+                    }
+                }
+            }
+            if (aieditor->current_path->current_node != NULL) {
+                eduiMenuAddItem(menu, eduiItemToggleCreate(0x80, &AiEditorSaveMessageColoursPc,
+                                                           aieditor->current_path->current_node->flags >> 7, row,
+                                                           pathEditor_cbNodeFlagsToggle, "Never On A Platform"));
+                ++row;
+            }
+        }
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 25) >> 31, row,
+                                                   AiEditorDisplayBit6Pc, "Stop Platforms"));
+        ++row;
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 22) >> 31, row,
+                                                   pathEditor_cbDrawWallsplinesToggle, "Draw Wallsplines"));
+        ++row;
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 30) >> 31, row,
+                                                   aieditor_cbDrawAllToggle, "Draw All Paths"));
+        ++row;
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 27) >> 31, row,
+                                                   AiEditorDisplayBit4Pc, "Snap Height"));
+        ++row;
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                                   (i32)(aieditorsettings.display_options << 28) >> 31, row,
+                                                   aieditor_cbShowCreaturesToggle, "Show Creatures"));
+        ++row;
+        eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, near_clip_at_cursor, row,
+                                                   cbNearClipAtCursor, "Near Clip At Cursor"));
+        return menu;
+    }
+    return NULL;
+}
+
 static void __cdecl AiEditorDeleteLocatorSelectionPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAICREATURE_s *creature;
     (void)menu;

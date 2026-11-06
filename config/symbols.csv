@@ -3347,6 +3347,7 @@ address,symbol,size,ctype
 0x5226b0,_locatorEditorDrawLocators,428,
 0x522a00,_pathEditor_GetNearestNode,280,
 0x522d20,_pathEditor_FindConnection,42,
+0x522dc0,_pathEditor_DisconnectNodes,99,
 0x522e30,_AiPathDrawSolidEdgePc,1000,
 0x523220,_AiPathDrawWireEdgePc,893,
 0x5235a0,_AiPathDrawCrossPc,157,
@@ -3448,6 +3449,7 @@ address,symbol,size,ctype
 0x52a0c0,_AiEditorRenameCreaturePc,146,
 0x52a160,_creatureEditor_cbRenameCreatureMenu,192,
 0x52a2f0,_creatureEditor_PathNodeMoved,446,void __cdecl (EDAIPATHNODE_s *)
+0x52a590,_creatureEditor_PathDeleted,146,"void __cdecl (EDAIPATH_s *)"
 0x52a630,_creatureEditor_CalculatePos,224,
 0x52a710,_creatureEditor_Updated,76,
 0x52a760,_creatureEditor_RenderAllCreatures,389,
@@ -3504,6 +3506,7 @@ address,symbol,size,ctype
 0x530960,_areaEditor_cbRenameAreaMenu,192,
 0x530b30,_areaEditor_Render,672,
 0x530dd0,_AiEditorDestroyLocatorPc,118,
+0x530ef0,_locatorEditor_PathDeleted,101,"void __cdecl (EDAIPATH_s *)"
 0x530f60,_locatorEditor_cbRenameLocatorMenu,192,
 0x531020,_AiEditorDeleteLocatorSelectionPc,176,
 0x5310d0,_AiEditorDeleteLocatorCancelPc,37,
@@ -3518,6 +3521,7 @@ address,symbol,size,ctype
 0x531920,_locatorEditor_cbSelectLocatorSet,197,
 0x5319f0,_locatorEditor_Render,1276,
 0x531ef0,_locatorEditor_Enter,745,
+0x532220,_pathEditor_DestroyNode,162,"void __cdecl (EDAIPATHNODE_s *, EDAIPATH_s *)"
 0x5322d0,_pathEditorCreateData,2941,
 0x532e50,_pathEditor_cbSetCurrentPath,219,
 0x532f30,_pathEditor_cbCreatePath,289,
@@ -3557,11 +3561,14 @@ address,symbol,size,ctype
 0x538600,_aieditor_Save,539,
 0x538820,_aieditor_Leave,216,
 0x5389a0,_locatorEditor_DeleteLocatorMenu,153,
+0x538a40,_pathEditor_DestroyPath,95,
+0x538aa0,_pathEditor_cbDeletePath,353,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x538d60,_aieditor_cbSave,235,
 0x538e50,_antinodeEditor_MainMenu,509,
 0x539050,_antinodeEditor_Process,2218,
 0x53ac10,_locatorEditor_MainMenu,614,
 0x53ae80,_locatorEditor_Process,2338,
+0x53b7b0,_pathEditor_MainMenu,1180,eduimenu_s *__cdecl (void)
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -15575,6 +15582,7 @@ address,symbol,size,ctype
 0x760c2c,??_C@_06FCGCPEED@?$CFs?4bak?$AA@,7,const char[7]
 0x760c34,_AiEditorDatedBackupFormatPc,32,const char[32]
 0x760c64,??_C@_0BB@BOHJJGDJ@Delete?5locator?$DP?$DP?$AA@,,char []
+0x760c78,??_C@_0BG@OLJIIPJD@Delete?5current?5path?$DP?$DP?$AA@,,char []
 0x760cd0,??_C@_0EA@NJPLHKLK@Make?5sure?5there?5is?5a?5folder?5call@,64,const char[64]
 0x760d10,??_C@_0P@EMGNAMLC@AI?5Save?5FAILED?$AA@,15,const char[15]
 0x760d20,??_C@_0BJ@GAKJAFLA@Disbale?5direction?5memory?$AA@,,char []
@@ -15588,12 +15596,21 @@ address,symbol,size,ctype
 0x760db8,??_C@_0N@GGGLBEOI@Save?5AI?5Data?$AA@,,char []
 0x760dc8,??_C@_07KHIHFBFN@Options?$AA@,8,char []
 0x760dd0,__real@3fefae1480000000,8,const f64
+0x760e4c,??_C@_0BC@POFMJFLK@?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$DN?$AA@,,char []
 0x760e68,??_C@_0BC@IKHMFJMJ@Empty?5Locator?5Set?$AA@,,char []
 0x760e7c,??_C@_0BM@MABHGHEJ@Add?5Locators?5To?5Set?5By?5Name?$AA@,,char []
 0x760e98,??_C@_0BD@JJNGIDJL@Delete?5Locator?5Set?$AA@,,char []
 0x760eac,??_C@_0BD@KJOCJGPG@Create?5Locator?5Set?$AA@,,char []
 0x00760ec0,??_C@_0BP@NKOGFJBN@Add?5locators?5?$CC?$CFs?$CC?5to?5set?5?$CC?$CFs?$CC?$DP?$AA@,,const char[]
 0x760ee0,??_C@_0BE@NPELFGFL@Near?5Clip?5At?5Cursor?$AA@,,const char [20]
+0x760ef4,??_C@_0P@MDCKNOHE@Show?5Creatures?$AA@,,char []
+0x760f04,??_C@_0P@OLAADCLD@Draw?5All?5Paths?$AA@,,char []
+0x760f14,??_C@_0BB@JLOAEFMG@Draw?5Wallsplines?$AA@,,char []
+0x760f28,??_C@_0BD@HLHMGOKP@Solid?5Path?5Display?$AA@,,char []
+0x760f3c,??_C@_0BE@EAJNNGD@Rename?5Path?5Network?$AA@,,char []
+0x760f50,??_C@_0BE@CNGMJHJP@Delete?5Path?5Network?$AA@,,char []
+0x760f64,??_C@_0BE@BOFPLOGP@Create?5Path?5Network?$AA@,,char []
+0x760f78,??_C@_0BE@MKKJBIGF@Select?5Path?5Network?$AA@,,char []
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
 0x7610e0,??_C@_0N@NGPHCBFG@ManCam_MAX_X?$AA@,13,const char[]
@@ -24803,6 +24820,7 @@ address,symbol,size,ctype
 0x923908,_GameAISYSRebuildFromEditorDataFn,,"void (__cdecl *)(AISYS_PC *, VARIPTR *, VARIPTR *)"
 0x92390c,_GameAISaveFn,,void (__cdecl *)(struct AIPATHSYS_PC *)
 0x923910,_AIPathNodeDeletedFn,,void (__cdecl *)(struct EDAIPATHNODE_s *)
+0x923918,_AIPathDeletedFn,,void (__cdecl *)(struct EDAIPATH_s *)
 0x0092391c,_PreparingForSpecialMoveFn,4,AI_PREPARING_SPECIAL_MOVE_PC
 0x00923920,_MidSpecialMoveFn,4,AI_MID_SPECIAL_MOVE_PC
 0x00923924,_GetNamedGameObjectCallback,4,GAMEOBJECT_LOOKUP_CALLBACK_PC
@@ -25989,6 +26007,7 @@ address,symbol,size,ctype
 0x2913080,_FS_LastFileName,64,char[64]
 0x029130c0,_FileSelFilterBlockCountPc,,i32
 0x029130c4,_FileSelFilterOutBlockCountPc,,i32
+0x29130c8,_near_clip_at_cursor,,i32
 0x29130cc,_EduiSliderDynamicScalePc,,f32
 0x29130d0,?offsety@?1??cbInteractMenuTitle@@9@9,,
 0x29130d4,?offsetx@?1??cbInteractMenuTitle@@9@9,,

@@ -2053,3 +2053,11 @@ extern "C" i32 __cdecl eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_
     EduiDrawGradientSpanPc(x + width - 45, y, 40, height, colour, colour, 0.0f, 1.0f);
     return height;
 }
+
+extern "C" i32 near_clip_at_cursor;
+
+extern "C" void __cdecl cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    (void)menu;
+    (void)buttons;
+    near_clip_at_cursor = item->flags & 1;
+}
