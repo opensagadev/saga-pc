@@ -2295,6 +2295,85 @@ void __cdecl edrtlDrawCursor(void) {
     EDRTL_RNDR_LINE3D_PC(line);
 }
 
+i32 numsegs = 16;
+
+extern RTL_LIGHT_PC *curr_rtl;
+extern i32 rtl_zoff;
+
+#define EDRTL_LIGHT_MTL() mtls[rtl_zoff != 0]
+static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
+    __declspec(align(16)) NUVEC first = vertices[0].position;
+    __declspec(align(16)) NUVEC second = vertices[1].position;
+    if (matrix != NULL) {
+        __declspec(align(16)) NUMTX matrix_copy;
+        NUMTX *transform = matrix;
+        if (((size_t)(transform) & 15) != 0) {
+            matrix_copy = *transform;
+            transform = &matrix_copy;
+        }
+        NuVecMtxTransform(&first, &first, transform);
+        NuVecMtxTransform(&second, &second, transform);
+    }
+    NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
+}
+#define EDRTL_RNDR_VTX_LINE(line) edrtlRndrLine3d(NULL, line)
+#define EDRTL_RADIUS_PAIR(light)                                                                                       \
+    RndrOSphere(&(light).position, (light).inner_radius, inner_colour, numsegs, EDRTL_LIGHT_MTL());                    \
+    if ((light).outer_radius > (light).inner_radius)                                                                   \
+        RndrOSphere(&(light).position, (light).outer_radius, outer_colour, numsegs, EDRTL_LIGHT_MTL());                \
+    if (&(light) == curr_rtl)                                                                                          \
+    RndrOSquare(&(light).position, (light).outer_radius, -1, EDRTL_LIGHT_MTL())
+
+void __cdecl edrtlDrawLightEx(i32 index, i32 style) {
+    u32 colour;
+    u32 inner_colour;
+    u32 outer_colour;
+    NURND_VERTEX3D_PC line[2];
+
+    colour = (((u32)(curr_set->lights[index].colour.z * 255.0) & 0xff) << 16 | 0x80000000) |
+             (((u32)(curr_set->lights[index].colour.y * 255.0) & 0xff) << 8) |
+             ((u32)(curr_set->lights[index].colour.x * 255.0) & 0xff);
+    inner_colour = outer_colour = colour;
+    if (style == 1)
+        inner_colour = ~inner_colour;
+    else if (style == 2)
+        outer_colour = ~outer_colour;
+    switch (curr_set->lights[index].type) {
+        case 1:
+            EDRTL_RADIUS_PAIR(curr_set->lights[index]);
+            return;
+        case 4:
+            line[0].colour = line[1].colour = colour;
+            line[0].position = curr_set->lights[index].position;
+            NuVecScale(&line[1].position, &curr_set->lights[index].direction, curr_set->lights[index].outer_radius);
+            NuVecSub(&line[1].position, &line[0].position, &line[1].position);
+            EDRTL_RNDR_VTX_LINE(line);
+            EDRTL_RADIUS_PAIR(curr_set->lights[index]);
+            return;
+        case 5:
+            line[0].colour = line[1].colour = colour;
+            line[0].position = curr_set->lights[index].position;
+            NuVecScale(&line[1].position, &curr_set->lights[index].direction, 2.0f);
+            NuVecMtxRotate(&line[1].position, &line[1].position, &global_camera.mtx);
+            NuVecSub(&line[1].position, &line[0].position, &line[1].position);
+            EDRTL_RNDR_VTX_LINE(line);
+            RndrOSphere(&curr_set->lights[index].position, 2.0f, colour, numsegs, EDRTL_LIGHT_MTL());
+            if (&curr_set->lights[index] == curr_rtl)
+                RndrOSquare(&curr_set->lights[index].position, 2.0f, -1, EDRTL_LIGHT_MTL());
+            return;
+        case 2:
+        case 3:
+        case 6:
+        case 7:
+        case 8:
+            EDRTL_RADIUS_PAIR(curr_set->lights[index]);
+            return;
+    }
+}
+#undef EDRTL_RADIUS_PAIR
+#undef EDRTL_LIGHT_MTL
+#undef EDRTL_RNDR_VTX_LINE
+
 void __cdecl edrtlDrawFogInfo(void) {
     const char *fog_types[3] = {"INVALID", "SPHERICAL", "ALSO INVALID"};
     i32 x, y, height;

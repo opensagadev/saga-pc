@@ -7714,7 +7714,7 @@ typedef struct memorymanager_s {
     u32 unknown_10;
     u32 unknown_14;
     u32 size;
-    u8 free_lists[0x22c];
+    void *free_lists[139];
 #ifdef __cplusplus
     void *AllocPool(u32 size, i32 clear);
     void FreePool(void *memory, u32 size);
@@ -17826,6 +17826,8 @@ extern "C" {
     void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
     void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32);
     void __cdecl edrtlDrawLightEx(i32 index, i32 style);
+    void __cdecl RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *mtl);
+    void __cdecl RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *mtl);
     void __cdecl EdDrawBegin(i32 index);
     void __cdecl EdDrawEnd(void);
     void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments,
