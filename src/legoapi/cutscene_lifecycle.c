@@ -1354,9 +1354,12 @@ static void CutSceneLocatorSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 pa
     u32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_LOCATOR *locator = &system->locators[i];
-        if ((locator->flags & 3) == 0)
-            instNuGCutLocatorUpdate(owner, system, &states->locators[i], locator, frame,
-                                    (instance->flags_88 & 0x80) != 0 ? &instance->matrix : NULL, paused);
+        if ((locator->flags & 3) == 0) {
+            if ((instance->flags_88 & 0x80) != 0)
+                instNuGCutLocatorUpdate(owner, system, &states->locators[i], locator, frame, &instance->matrix, paused);
+            else
+                instNuGCutLocatorUpdate(owner, system, &states->locators[i], locator, frame, NULL, paused);
+        }
     }
 }
 
@@ -1643,7 +1646,7 @@ static void CutSceneRigidSysStartPc(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_
         CUT_LOAD_RIGID *rigid = &system->rigids[i];
         CUT_LOAD_RIGID_INSTANCE *state = &states->rigids[i];
         state->state_index = 0;
-        if ((rigid->flags & 6) == 6)
+        if ((rigid->flags & 4) != 0 && (rigid->flags & 2) != 0)
             state->visible = rigid->flags & 1;
     }
 }
@@ -1651,9 +1654,10 @@ static void CutSceneRigidSysStartPc(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_
 static void CutSceneLocatorSysStartPc(CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states, CUT_LOAD_LOCATOR_SYSTEM *system) {
     u32 i;
     for (i = 0; i < system->count; ++i) {
-        states->locators[i].frame = 0.0f;
+        CUT_LOAD_LOCATOR_INSTANCE *state = &states->locators[i];
+        state->frame = 0.0f;
         if ((system->types[system->locators[i].type_index].flags & 0x10) != 0)
-            states->locators[i].effect.index = -1;
+            state->effect.index = -1;
     }
 }
 
