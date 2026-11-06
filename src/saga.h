@@ -24892,8 +24892,8 @@ STATIC_ASSERT(sizeof(struct EDLOCATOR_s) == 72);
 struct EDAIPATHROUTE_s {
     char name[16];
     u64 user_mask;
-    u8 flags;
-    u8 unknown_19[3];
+    u32 flags;
+    /* 0x18 is a full dword: retail sets and clears bit 0 with dword OR/AND. */
 };
 STATIC_ASSERT(sizeof(struct EDAIPATHROUTE_s) == 32);
 

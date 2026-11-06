@@ -2379,3 +2379,98 @@ i32 __cdecl eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 de
     }
     return 0;
 }
+
+extern u8 FS_RefreshDir;
+
+i32 __cdecl ProcessFileSel3(f32 elapsed, FRAME_PAD_PC *pad) {
+    i32 buttons;
+    i32 length;
+    char *separator;
+    f32 width;
+    if (FS_Active == 0)
+        return 0;
+    if (FS_RefreshDir != 0) {
+        FS_GetDirList(FS_Path, FS_Filter, FS_FilterOut);
+        NuQFntPushCoordinateSystem(1);
+        NuQFntSet(system_qfont);
+        NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
+        width = FS_GetDirTextWidth() * 0.0625;
+        NuQFntPopCoordinateSystem();
+        if (width < 240.0)
+            width = 240.0f;
+        FS_Width = width + 8.0;
+        FS_GetPadWithRepeat(pad, 0.05f, elapsed);
+        if (FS_LastFileName[0] != '\0')
+            FS_SetCursorToLastFileName();
+        FS_RefreshDir = 0;
+    }
+    buttons = FS_GetPadWithRepeat(pad, 0.05f, elapsed);
+    if (buttons & 0x4000)
+        FS_MoveCursorDown(1);
+    if (buttons & 0x1000)
+        FS_MoveCursorUp(1);
+    if (buttons & 1)
+        FS_MoveCursorDown(14);
+    if (buttons & 4)
+        FS_MoveCursorUp(14);
+    if (buttons & 2)
+        FS_MoveCursorDown(FS_NumFiles);
+    if (buttons & 8)
+        FS_MoveCursorUp(FS_NumFiles);
+    if (buttons & 0x80) {
+        if (++FS_SortMode == 4)
+            FS_SortMode = 0;
+        FS_RefreshDir = 2;
+        NuStrCpy(FS_LastFileName, FS_CurrentCursorPos + 7);
+    }
+    if (buttons & 0x20) {
+        length = NuStrLen(FS_Path);
+        if (length != 0 && FS_Path[length - 1] == '\\')
+            FS_Path[length - 1] = '\0';
+        separator = NuStrRChr(FS_Path, '\\');
+        if (separator != NULL) {
+            separator[1] = '\0';
+        } else {
+            NuStrCat(FS_Path, WorldPathSeparator);
+            FS_ShowVolumes = 1;
+        }
+        FS_RefreshDir = 1;
+        FS_LastFileName[0] = '\0';
+    }
+    if (buttons & 0x40) {
+        if (FS_CurrentCursorPos[0] == 'V') {
+            FS_ShowVolumes = 0;
+            NuStrCpy(FS_Path, FS_CurrentCursorPos + 7);
+            FS_LastFileName[0] = '\0';
+            FS_RefreshDir = 1;
+        } else if (FS_CurrentCursorPos[0] == 'D') {
+            if (FS_CurrentCursorPos[7] == '.' && FS_CurrentCursorPos[8] == '.' && FS_CurrentCursorPos[9] == '\0') {
+                length = NuStrLen(FS_Path);
+                if (length != 0 && FS_Path[length - 1] == '\\')
+                    FS_Path[length - 1] = '\0';
+                separator = NuStrRChr(FS_Path, '\\');
+                if (separator != NULL) {
+                    separator[1] = '\0';
+                } else {
+                    NuStrCat(FS_Path, WorldPathSeparator);
+                    FS_ShowVolumes = 1;
+                }
+            } else {
+                length = NuStrLen(FS_Path);
+                if (length != 0 && FS_Path[length - 1] != '\\')
+                    NuStrCat(FS_Path, WorldPathSeparator);
+                NuStrCat(FS_Path, FS_CurrentCursorPos + 7);
+                NuStrCat(FS_Path, WorldPathSeparator);
+            }
+            FS_LastFileName[0] = '\0';
+            FS_RefreshDir = 1;
+        } else {
+            FS_Active = 0;
+            NuStrCpy(FS_LastFileName, FS_CurrentCursorPos + 7);
+            if (FS_Callback != NULL)
+                FS_Callback(FS_Path, FS_CurrentCursorPos + 7);
+            return 1;
+        }
+    }
+    return 0;
+}

@@ -1430,7 +1430,54 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
 extern "C" {
     i32 show_x_scale_help = 0;
     i32 show_y_scale_help = 0;
-    void __cdecl eduiRenderGraphLine(nugraph_s *graph, i32 x, i32 y, i32 width, i32 height, u32 colour);
+    i32 EduiGraphDrawCurvePc = 1;
+    i32 EduiGraphDrawDebugPc = 0;
+    i32 EduiGraphDrawDebugBoundPc = 0;
+    i32 EduiGraphDebugIterationsPc = 3;
+    i32 EduiGraphDebugBoundIterationsPc = 10;
+    f32 __cdecl nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations);
+
+    void __cdecl eduiRenderGraphLine(nugraph_s *graph, i32 x, i32 y, i32 width, i32 height, u32 colour) {
+        if (EduiGraphDrawCurvePc != 0) {
+            f32 fheight = (f32)height;
+            i32 previous_x = 0;
+            i32 previous_y = height - (i32)(graph->y[0] * fheight);
+            f32 fraction = 0.0f;
+            f32 fwidth = (f32)width;
+            do {
+                i32 current_x = (i32)(fwidth * fraction);
+                i32 current_y =
+                    height - (i32)(nugraphGetYatX(graph, fraction * graph->x_extent * graph->x_scale, 2) * fheight);
+                if (edui_donotdraw == 0)
+                    NuRndrLine2di((previous_x + x) << 4, (previous_y + y) << 3, (current_x + x) << 4,
+                                  (current_y + y) << 3, colour, (NUMTL *)uimtls[0]);
+                previous_x = current_x;
+                previous_y = current_y;
+                fraction += (f64)0.01f;
+            } while (fraction <= 1.0f);
+        }
+        if (EduiGraphDrawDebugPc != 0) {
+            i32 index;
+            f32 fwidth = (f32)width;
+            f32 fheight = (f32)height;
+            for (index = 1; index < 100; ++index) {
+                f32 t = index / 100.0;
+                f32 bound;
+                i32 px;
+                i32 top;
+                i32 bottom;
+                if (EduiGraphDrawDebugBoundPc != 0)
+                    bound = nugraphGetYatX(graph, t, EduiGraphDebugBoundIterationsPc);
+                else
+                    bound = 0.0f;
+                px = (i32)(fwidth * t) + x;
+                top = y - (i32)(nugraphGetYatX(graph, t, EduiGraphDebugIterationsPc) * fheight) + height;
+                bottom = y - (i32)(fheight * bound) + height;
+                if (edui_donotdraw == 0)
+                    NuRndrLine2di(px << 4, top << 3, px << 4, bottom << 3, 0x80000080, (NUMTL *)uimtls[0]);
+            }
+        }
+    }
 }
 STATIC_ASSERT(offsetof(edui_graph_s, graph) == 0x4c);
 STATIC_ASSERT(offsetof(edui_graph_s, onion_skins) == 0x50);

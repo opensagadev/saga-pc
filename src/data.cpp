@@ -28834,6 +28834,9 @@ extern "C" {
 #pragma bss_seg(".bss$FS_Active")
     u8 FS_Active = 0;
 
+#pragma bss_seg(".bss$FS_RefreshDir")
+    u8 FS_RefreshDir = 0;
+
 #pragma bss_seg(".bss$FS_Path")
     char FS_Path[256] = {0};
 

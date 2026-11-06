@@ -3541,6 +3541,8 @@ address,symbol,size,ctype
 0x5337e0,_pathEditor_cbCancelDisconnectNodeMenu,37,
 0x533810,_pathEditor_PathNodeMoved,435,
 0x5339d0,_pathEditor_Render,960,
+0x533d90,_routeEditor_cbCreateRoute,308,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x533ed0,_routeEditor_cbDeleteRoute,571,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x534110,_routeEditor_Render,437,
 0x5342d0,_antinodeEditor_Render,1010,
 0x5346d0,_creatureEditor_cbResetParams,108,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
@@ -3583,6 +3585,7 @@ address,symbol,size,ctype
 0x53ae80,_locatorEditor_Process,2338,
 0x53b7b0,_pathEditor_MainMenu,1180,eduimenu_s *__cdecl (void)
 0x53bc50,_pathEditor_Process,2624,eduimenu_s *__cdecl (FRAME_PAD_PC *)
+0x53c690,_routeEditor_MainMenu,301,eduimenu_s *__cdecl (void)
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -5749,6 +5752,7 @@ address,symbol,size,ctype
 0x005b9e70,_NuRandSetSeed,27,"void __cdecl (NURAND *, i32)"
 0x005b9e90,_NuRand,90,i32 __cdecl (NURAND *)
 0x005b9ef0,_NuFloatRand,37,f32 __cdecl (NURAND *)
+0x5bd100,_nugraphGetYatX,1634,"f32 __cdecl (nugraph_s *, f32, i32)"
 0x005bdd50,_NuTrigInit,56,void __cdecl (void)
 0x5bde60,_NuAngAtanQuadrantI,45,
 0x5bde90,_NuAtani,130,"i32 __cdecl (i32, i32)"
@@ -15554,6 +15558,8 @@ address,symbol,size,ctype
 0x760884,??_C@_0P@LHMPKFJD@SQR?5?9?5Sub?5menu?$AA@,,char []
 0x760894,??_C@_04OEDFLLKD@?$CC?$CFs?$CC?$AA@,5,char []
 0x76089c,??_C@_0BD@PLHJNJLJ@Show?5Routes?5?3?5?$CC?$CFs?$CC?$AA@,,char []
+0x7608b0,??_C@_07GNAEHNJD@route?$CFd?$AA@,,char []
+0x7608b8,??_C@_0BH@OJNFEKIN@Delete?5current?5route?$DP?$DP?$AA@,,char []
 0x7608d0,??_C@_0BN@FACFIHBA@O?5?9?5Add?1remove?5cnx?5to?5route?4?$AA@,,char []
 0x7608f0,??_C@_0BE@MDCIMJPA@NO?5ROUTES?5AVAILABLE?$AA@,,char []
 0x760904,??_C@_0BK@HPDKIDC@Edit?5Routes?5?$CIPath?5?$DN?5?$CC?$CFs?$CC?$CJ?$AA@,,char []
@@ -15627,6 +15633,10 @@ address,symbol,size,ctype
 0x760f50,??_C@_0BE@CNGMJHJP@Delete?5Path?5Network?$AA@,,char []
 0x760f64,??_C@_0BE@BOFPLOGP@Create?5Path?5Network?$AA@,,char []
 0x760f78,??_C@_0BE@MKKJBIGF@Select?5Path?5Network?$AA@,,char []
+0x760f8c,??_C@_0M@MAHBEGNK@Route?5Users?$AA@,,char []
+0x760f98,??_C@_0BG@NALOCPAL@Destroy?5Current?5Route?$AA@,,char []
+0x760fb0,??_C@_0BF@EBBJLAKO@Rename?5Current?5Route?$AA@,,char []
+0x760fc8,??_C@_0BB@POFJKFOP@Create?5New?5Route?$AA@,,char []
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
 0x7610e0,??_C@_0N@NGPHCBFG@ManCam_MAX_X?$AA@,13,const char[]
@@ -22416,6 +22426,7 @@ address,symbol,size,ctype
 0x80f568,_edui_textrow_default,16,char *[4]
 0x80f588,_EduiTextCopyHelpPc,,char *; minimum4B view Native extent unknown
 0x80f58c,_EduiTextCursorPeriodPc,,i32; minimum4B view Native extent unknown
+0x80f594,_EduiGraphDrawCurvePc,4,i32
 0x0080f5a0,_NuKeyChar,520,NUKEYCHAR[65]
 0x80f7ec,_gp_cam,4,edcam_s *
 0x80f7f0,_edcam_default,148,edcam_s
@@ -22435,6 +22446,8 @@ address,symbol,size,ctype
 0x0080fafc,_EduiColourClipboardRedPc,,"f32; minimum4Bworkingview Nativeextentunknown"
 0x0080fb00,_EduiColourClipboardGreenPc,,"f32; minimum4Bworkingview Nativeextentunknown"
 0x0080fb04,_EduiColourClipboardBluePc,,"f32; minimum4Bworkingview Nativeextentunknown"
+0x80fb70,_EduiGraphDebugIterationsPc,4,i32
+0x80fb74,_EduiGraphDebugBoundIterationsPc,4,i32
 0x80fb78,_EduiSliderAccelerationPc,,f32
 0x80fb7c,_EduiSliderRepeatTimerPc,,i32
 0x80fb80,_EduiColourSliderRepeatTimerPc,,i32; minimum4B view Native extent unknown
@@ -26009,6 +26022,8 @@ address,symbol,size,ctype
 0x2912ef8,_EduiTextCopyBufferPc,,char[]; minimum64B view Native extent unknown
 0x2912f40,_show_x_scale_help,4,i32
 0x2912f44,_show_y_scale_help,4,i32
+0x2912f48,_EduiGraphDrawDebugPc,4,i32
+0x2912f4c,_EduiGraphDrawDebugBoundPc,4,i32
 0x02912f50,_EduiUsingMenuFocusPc,,i32
 0x2912f54,_selection_value,4,i32
 0x2912f58,_PadFlyMode,4,i32
@@ -26018,6 +26033,7 @@ address,symbol,size,ctype
 0x2912f68,_edfile_readwrongendianess,4,i32
 0x2912f6c,_FS_ShowVolumes,1,u8
 0x2912f6d,_FS_Active,1,u8
+0x2912f6e,_FS_RefreshDir,1,u8
 0x2912f70,_FS_Path,256,char[256]
 0x2913070,_FS_CursorLine,,
 0x2913074,_FS_CurrentPosFileNum,4,i32

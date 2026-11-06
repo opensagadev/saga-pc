@@ -15999,6 +15999,113 @@ done:
     return NULL;
 }
 
+void __cdecl routeEditor_cbCreateRoute(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAIPATH_s *path = aieditor->current_path;
+    EDAIPATHROUTE_s *route;
+    i32 index;
+    i32 attempt;
+    i32 number;
+    i32 i;
+    char name[16];
+    (void)menu;
+    (void)item;
+    (void)event;
+    index = path->current_route != NULL ? path->current_route - path->routes : 0;
+    for (attempt = 0; attempt < 16; ++attempt) {
+        if (++index >= 16)
+            index = 0;
+        route = &path->routes[index];
+        if (!(route->flags & 1))
+            goto found;
+    }
+    return;
+found:
+    route->flags |= 1;
+    route->user_mask = 0;
+    aieditor->current_path->current_route = route;
+    number = 0;
+    do {
+        sprintf(name, "route%d", ++number);
+        for (i = 0; i < 16; ++i) {
+            if ((aieditor->current_path->routes[i].flags & 1) &&
+                NuStrICmp(name, aieditor->current_path->routes[i].name) == 0)
+                break;
+        }
+    } while (i < 16);
+    strcpy(aieditor->current_path->current_route->name, name);
+    AiEditorClearMainMenuPc();
+}
+void __cdecl routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32 event) {
+    eduimenu_s *menu;
+    EDAIPATHNODE_s *node;
+    i32 index;
+    i32 i;
+    u16 mask;
+    (void)event;
+    if (item == NULL)
+        return;
+    switch (item->data) {
+        case 0:
+            menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current route??");
+            if (menu != NULL) {
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbDeleteRoute, "No"));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbDeleteRoute, "Yes"));
+                eduiMenuAttach(parent, menu);
+            }
+            break;
+        case 1:
+            if (aieditor->current_path->current_route == NULL)
+                return;
+            index = aieditor->current_path->current_route - aieditor->current_path->routes;
+            aieditor->current_path->current_route->flags &= ~1;
+            aieditor->current_path->current_route = NULL;
+            node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
+            if (node != NULL) {
+                mask = (u16) ~((u64)1 << index);
+                do {
+                    for (i = 0; i < 8; ++i)
+                        node->connections[i].route_mask &= mask;
+                    node->route_mask &= mask;
+                    node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&aieditor->current_path->nodes, &node->link);
+                } while (node != NULL);
+            }
+            for (i = 0; i < 16; ++i) {
+                if (++index >= 16)
+                    index = 0;
+                if (aieditor->current_path->routes[index].flags & 1)
+                    aieditor->current_path->current_route = &aieditor->current_path->routes[index];
+            }
+            AiEditorClearMainMenuPc();
+            break;
+        case 2:
+            eduiMenuDestroy(parent);
+            break;
+    }
+}
+eduimenu_s *__cdecl routeEditor_MainMenu(void) {
+    eduimenu_s *menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorMessageCloseMenuPc, "Options");
+    if (menu != NULL) {
+        eduiMenuAddItem(menu, eduiItemSelCreate(AiEditorRouteModeIdPc, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                AiEditorModeMenuPc, "Select Editor Mode"));
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, aieditor_cbSave, "Save AI Data"));
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbCreateRoute,
+                                                "Create New Route"));
+        if (aieditor->current_path != NULL && aieditor->current_path->current_route != NULL) {
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0,
+                                                    routeEditor_cbRenameRouteMenu, "Rename Current Route"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbDeleteRoute,
+                                                    "Destroy Current Route"));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, routeEditor_cbRouteUsers,
+                                                    "Route Users"));
+        }
+        return menu;
+    }
+    return NULL;
+}
+
 static void __cdecl AiEditorDeleteLocatorSelectionPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAICREATURE_s *creature;
     (void)menu;
