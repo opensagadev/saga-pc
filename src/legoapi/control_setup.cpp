@@ -662,104 +662,116 @@ i32 PC_CONTROL_SCREEN_PC::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 
                         result = 2;
                     } else if (PcControlButtonsPc & 0x40) {
                         PC_CONTROL_ITEM_PC *item = &row->items[row->selected];
-                        if (item->kind == 4) {
-                            if (play_sound)
-                                play_sound(2);
-                            switch (item->label) {
-                                case 0:
-                                    if (ports[selected_player] == -1) {
-                                        if (play_sound)
-                                            play_sound(1);
-                                        phase = 3;
-                                    }
-                                    missing_binding = HasMissingBindings();
-                                    if (!missing_binding) {
-                                        result = 3;
-                                        phase = 3;
-                                        if (play_sound)
-                                            play_sound(1);
-                                    } else if (play_sound) {
-                                        play_sound(6);
-                                    }
-                                    break;
-                                case 1:
-                                    if (play_sound)
-                                        play_sound(0);
-                                    phase = 3;
-                                    result = 2;
-                                    break;
-                                case 3:
-                                    release_reset = release_frames = 3;
-                                    PcInputResetMouseMotionPc();
-                                    capture_state = 2;
-                                    break;
-                                case 40: {
-                                    i32 key = selected_player;
-                                    for (i32 attempt = 0; attempt < 2; ++attempt) {
-                                        PC_INPUT_CONFIG_PC *config =
-                                            PcInputFindConfigPc(1, ports[selected_player], key);
-                                        if (config) {
-                                            PcInputInstallConfigPc(config, ports[selected_player], selected_player, 1,
-                                                                   selected_player);
-                                            PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);
-                                            deadzone[selected_player] = (f32)PcInputDeadzonePc(ports[selected_player]);
-                                            break;
+                        switch (item->kind) {
+                            case 4:
+                                if (play_sound)
+                                    play_sound(2);
+                                switch (item->label) {
+                                    case 43: {
+                                        i32 player = PcInputCapturedPortPc();
+                                        if (player >= 0 && PcInputIsMouseDevicePc(ports[player])) {
+                                            ++ports[player];
+                                            PcInputSelectConfigurationPc(ports[player], player, player);
                                         }
-                                        if (++key == 2)
-                                            key = 0;
-                                    }
-                                    break;
-                                }
-                                case 43: {
-                                    i32 player = PcInputCapturedPortPc();
-                                    if (player >= 0 && PcInputIsMouseDevicePc(ports[player])) {
-                                        ++ports[player];
-                                        PcInputSelectConfigurationPc(ports[player], player, player);
-                                    }
-                                    ++player;
-                                    if (player >= player_count) {
-                                        player = -1;
-                                    } else {
-                                        i32 keyboard = TextInputIsKeyboardDevicePc(ports[player]);
-                                        if (!keyboard) {
-                                            ++player;
-                                            if (player >= player_count)
-                                                player = -1;
-                                            else
-                                                keyboard = TextInputIsKeyboardDevicePc(ports[player]);
-                                        }
-                                        if (player >= 0 && keyboard) {
+                                        ++player;
+                                        if (player >= player_count) {
+                                            player = -1;
+                                        } else {
+                                            if (!TextInputIsKeyboardDevicePc(ports[player])) {
+                                                ++player;
+                                                if (player >= player_count) {
+                                                    player = -1;
+                                                    goto set_captured_port;
+                                                }
+                                                if (!TextInputIsKeyboardDevicePc(ports[player]))
+                                                    goto set_captured_port;
+                                            }
                                             if (!PcInputIsMouseDevicePc(ports[player]))
                                                 --ports[player];
                                             PcInputSelectConfigurationPc(ports[player], player, player);
                                         }
+                                    set_captured_port:
+                                        PcInputSetCapturedPortPc(player);
+                                        RefreshItems();
+                                        break;
                                     }
-                                    PcInputSetCapturedPortPc(player);
-                                    RefreshItems();
+                                    case 40: {
+                                        i32 key = selected_player;
+                                        for (i32 attempt = 0; attempt < 2; ++attempt) {
+                                            PC_INPUT_CONFIG_PC *config =
+                                                PcInputFindConfigPc(1, ports[selected_player], key);
+                                            if (config) {
+                                                PcInputInstallConfigPc(config, ports[selected_player], selected_player,
+                                                                       1, selected_player);
+                                                PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);
+                                                deadzone[selected_player] =
+                                                    (f32)PcInputDeadzonePc(ports[selected_player]);
+                                                break;
+                                            }
+                                            if (++key == 2)
+                                                key = 0;
+                                        }
+                                        break;
+                                    }
+                                    case 3:
+                                        release_reset = release_frames = 3;
+                                        PcInputResetMouseMotionPc();
+                                        capture_state = 2;
+                                        break;
+                                    case 1:
+                                        if (play_sound)
+                                            play_sound(0);
+                                        phase = 3;
+                                        result = 2;
+                                        break;
+                                    case 0:
+                                        if (ports[selected_player] == -1) {
+                                            if (play_sound)
+                                                play_sound(1);
+                                            phase = 3;
+                                        }
+                                        missing_binding = HasMissingBindings();
+                                        if (!missing_binding) {
+                                            result = 3;
+                                            phase = 3;
+                                            if (play_sound)
+                                                play_sound(1);
+                                        } else if (play_sound) {
+                                            play_sound(6);
+                                        }
+                                        break;
+                                }
+                                break;
+                            case 2:
+                                if (!ItemAllowsBinding(row, row->selected, selected_player)) {
+                                    if (play_sound)
+                                        play_sound(6);
                                     break;
                                 }
-                            }
-                        } else if (item->kind == 2 || item->kind == 0) {
-                            if (!ItemAllowsBinding(row, row->selected, selected_player)) {
-                                if (play_sound)
-                                    play_sound(6);
-                            } else {
                                 if (play_sound)
                                     play_sound(2);
                                 release_reset = release_frames = 3;
                                 PcInputResetMouseMotionPc();
-                                if (item->kind == 2) {
-                                    if (TextInputIsKeyboardDevicePc(ports[selected_player])) {
-                                        capture_state = 4;
-                                        saved_keyboard_deadzone = keyboard_deadzone;
-                                    } else {
-                                        saved_deadzone[selected_player] = deadzone[selected_player];
-                                        capture_state = 3;
-                                    }
+                                if (TextInputIsKeyboardDevicePc(ports[selected_player])) {
+                                    capture_state = 4;
+                                    saved_keyboard_deadzone = keyboard_deadzone;
                                 } else {
-                                    capture_state = 1;
+                                    saved_deadzone[selected_player] = deadzone[selected_player];
+                                    capture_state = 3;
                                 }
-                            }
+                                break;
+                            case 0:
+                                if (!ItemAllowsBinding(row, row->selected, selected_player)) {
+                                    if (play_sound)
+                                        play_sound(6);
+                                    break;
+                                }
+                                if (play_sound)
+                                    play_sound(2);
+                                release_reset = release_frames = 3;
+                                PcInputResetMouseMotionPc();
+                                capture_state = 1;
+                                break;
                         }
                     }
                     break;
@@ -1043,38 +1055,53 @@ void PC_CONTROL_SCREEN_PC::DrawDeadzone(f32 x, f32 y, f32 z, f32 width, f32 heig
 }
 
 void PC_CONTROL_SCREEN_PC::Draw(void) {
+    u32 missing_colour = 0;
     if (!active)
         return;
+    f32 left = 0.0f, right = 0.0f;
     f32 old_x = TextScaleX_candidate, old_y = TextScaleY_candidate;
     TextScaleX_candidate = TextScaleY_candidate = 1.0f;
     SmartTextSetFWNMode(2);
     if (draw_background)
         draw_background(0.0f, 0.0f, fade);
-    f32 left = 0.0f, right = 0.0f;
+    f32 label_x = 0.0f;
     if (player_count > 1) {
-        left = -0.6499999761581421f;
-        right = 0.6499999761581421f;
+        left = (f32)(label_x - 0.6499999761581421);
+        right = (f32)(label_x + 0.6499999761581421);
     }
-    f32 primary = selected_player == 0 ? -0.6499999761581421f : 0.6499999761581421f;
-    f32 secondary = selected_player == 0 ? 0.6499999761581421f : -0.6499999761581421f;
+    f32 primary, secondary;
+    if (selected_player == 0) {
+        primary = -0.6499999761581421f;
+        secondary = 0.6499999761581421f;
+    } else {
+        primary = 0.6499999761581421f;
+        secondary = -0.6499999761581421f;
+    }
     NuQFntPushPrintMode(2);
     NuQFntPushCoordinateSystem(3);
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);
     i32 port0 = ports[0], port1 = ports[1];
-    f32 label_x = player_count == 1 ? 0.3f : 0.0f;
+    if (player_count == 1)
+        label_x = 0.3f;
     DrawText(PcControlTextPc[2], 0.0f, 0.9f, 0.0f, 0x40, 2.0f, 2.0f, 0x80ff2080, 2, 0.0f);
     f32 pulse = (f32)(unknown10 + unknown10 * 0.5);
-    u32 missing_colour = 0;
     if (missing_binding)
         missing_colour = ScaleColour(pulse, pulse, 0x800000ff);
     u32 selected_colour = ScaleColour(pulse, pulse, 0x80c0c0c0);
     u32 capture_colour = ScaleColour(pulse, pulse, 0x80c0c000);
     for (i32 r = 0; r < row_count; ++r) {
         PC_CONTROL_ROW_PC *row = &rows[r];
+        PC_CONTROL_ITEM_PC *item = row->items;
         i32 previous_kind = -1;
-        u32 player0_colour = selected_player == 0 ? 0x80a0a0a0 : 0x80303030;
-        u32 player1_colour = selected_player == 0 ? 0x80303030 : 0x80a0a0a0;
+        u32 player0_colour, player1_colour;
+        if (selected_player == 0) {
+            player0_colour = 0x80a0a0a0;
+            player1_colour = 0x80303030;
+        } else {
+            player0_colour = 0x80303030;
+            player1_colour = 0x80a0a0a0;
+        }
         if (drop_in)
             player0_colour = player1_colour = 0x80a0a0a0;
         if (capture_state == 2) {
@@ -1113,9 +1140,8 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
         }
         PcInputSetMouseFieldPc(1);
         i32 show_empty0 = 1, show_empty1 = 1;
-        for (i32 index = 0; index < row->count; ++index) {
-            PC_CONTROL_ITEM_PC *item = &row->items[index];
-            if ((item->flags & 0x60) == 0x60)
+        for (i32 index = 0; index < row->count; ++index, ++item) {
+            if ((((item->flags >> 6) & 1) & ((item->flags >> 5) & 1)) != 0)
                 continue;
             u32 binding0 = player0_colour, binding1 = player1_colour;
             u32 label_colour = item->kind == 4 ? 0x80408040 : 0x80408080;
