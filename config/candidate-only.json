@@ -512,6 +512,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/grapples.cpp",
+   "symbol": "?GrappleFabsPc@@YAMM@Z",
+   "kind": "function"
+  },
+  {
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"

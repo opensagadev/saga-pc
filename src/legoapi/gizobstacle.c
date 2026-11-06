@@ -1100,7 +1100,7 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
             continue;
         if (target->x < min_x || target->x > max_x || target->z < min_z || target->z > max_z)
             continue;
-        distance = planar ? NuVecXZDistSqr(target, position, &delta) : NuVecDistSqr(target, position, &delta);
+        distance = !planar ? NuVecDistSqr(target, position, &delta) : NuVecXZDistSqr(target, position, &delta);
         if (!(range_squared > distance))
             continue;
         if (!directional)

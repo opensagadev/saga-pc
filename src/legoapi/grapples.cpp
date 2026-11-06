@@ -183,21 +183,28 @@ static void Grapple_JumpPc(GAMEOBJECT *object) {
     }
 }
 
+static inline f32 GrappleFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grapple, i32 count, GAMEOBJECT *object,
                                       GRAPPLE_MOTION_PC **nearest, f32 *nearest_distance) {
     NUVEC local;
     for (i32 index = 0; index < count; ++index, ++grapple) {
         f32 distance;
         if (object != NULL) {
-            if ((grapple->flags & (1 | 2)) != (1 | 2) ||
+            u8 hooked;
+            if (!(grapple->flags & 2) || !(grapple->flags & 1) ||
                 (grapple->has_terrain_platform != 0 && grapple->attached_object == NULL)) {
                 continue;
             }
-            if ((grapple->flags & 4) != 0) {
+            hooked = (grapple->flags >> 2) & 1;
+            if (hooked) {
                 if (Grapple_Occupied(grapple, NULL, NULL) != NULL) {
                     continue;
                 }
-                if (((object->flags_1fc & 0x80) != 0) != 0 &&
+                if ((object->flags_1fc & 0x80) != 0 &&
                     (object->field_281 != 0 || !(object->velocity.y <= 0.0f) ||
                      (object->character_context != -1 &&
                       (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
@@ -206,22 +213,20 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
                 }
             }
             if ((grapple->flags & 8) != 0 &&
-                ((object->character_data->game_character->flags_094 & 0x20000000) == 0 || (grapple->flags & 4) == 0)) {
+                ((object->character_data->game_character->flags_094 & 0x20000000) == 0 || !hooked)) {
                 continue;
             }
             if (!(object->upper_position.y < grapple->shadow_probe_position.y)) {
                 continue;
             }
-            if ((grapple->flags & 4) != 0) {
-                if (!(object->upper_position.y > grapple->hook_position.y - ((f64)0.1f + grapple->rope_length))) {
-                    continue;
-                }
-            } else if (!(object->collision_position.y > grapple->ground_position.y)) {
+            if (!((hooked &&
+                   object->upper_position.y > grapple->hook_position.y - ((f64)0.1f + grapple->rope_length)) ||
+                  (!hooked && object->collision_position.y > grapple->ground_position.y))) {
                 continue;
             }
             NuVecSub(&local, &object->upper_position, &grapple->hook_position);
             NuVecRotateY(&local, &local, -GameCam->input_yaw);
-            if (!((f32)fabs((f64)local.z) < 0.5f)) {
+            if (!(GrappleFabsPc(local.z) < 0.5f)) {
                 continue;
             }
             distance = local.x * local.x;
@@ -229,8 +234,8 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION_PC *grappl
             distance = NuVecDistSqr(position, &grapple->hook_position, NULL);
         }
         if (distance < *nearest_distance) {
-            *nearest = grapple;
             *nearest_distance = distance;
+            *nearest = grapple;
         }
     }
 }
