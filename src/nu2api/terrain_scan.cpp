@@ -620,7 +620,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(group_index);
+            TERRAIN_FINISH_SCAN_GROUP_PC(TERRAIN_SET_CURRENT_PC->max_groups + pick_index);
         }
     }
     TERRAIN_QUERY_PC->scan_list = group_header;
@@ -705,9 +705,9 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 if (group.chunk_type == -1) {
                     continue;
                 }
-                const f32 y = (min_y + max_y) * NuQFntHalfScale - group.origin.y;
-                const f32 x = (max_x + min_x) * NuQFntHalfScale - group.origin.x;
-                const f32 z = (max_z + min_z) * NuQFntHalfScale - group.origin.z;
+                const f32 y = (min_y + max_y) * 0.5f - group.origin.y;
+                const f32 x = (max_x + min_x) * 0.5f - group.origin.x;
+                const f32 z = (max_z + min_z) * 0.5f - group.origin.z;
                 const f32 reach = group.radius + scan_radius;
                 const f32 distance_sq = x * x + y * y + z * z;
                 if (!(reach * reach > distance_sq)) {

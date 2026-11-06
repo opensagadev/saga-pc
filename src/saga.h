@@ -6299,7 +6299,7 @@ typedef struct gamecamera_s {
     NUVEC shake_offset;
     NUVEC shake_direction;
     NUVEC shake_target;
-    f32 field_1b8;
+    i32 field_1b8;
     f32 blend_time;
     f32 blend_duration;
     f32 blend_curve;
@@ -6334,7 +6334,7 @@ typedef struct gamecamera_s {
     u8 reset_blend;
     u8 blend_mode;
     i8 mode;
-    u8 previous_mode;
+    i8 previous_mode;
     u8 previous_camera_mode;
 } GAMECAMERA;
 STATIC_ASSERT(offsetof(GAMECAMERA, input_yaw) == 0x1fc);

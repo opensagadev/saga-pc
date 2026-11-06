@@ -633,19 +633,18 @@ void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, 
     f32 scaled = (spline->point_count - 1) * along;
     i32 index = (i32)scaled;
     f32 fraction = scaled - index;
+    __declspec(align(16)) NUVEC4 direction;
     __declspec(align(16)) NUVEC4 first, last;
-    __declspec(align(16)) NUVEC direction;
+    __declspec(align(16)) NUVEC4 constant, linear, quadratic, coefficient, cubic;
     NUVEC4 *previous, *current, *next, *following;
-    f32 squared, cubed;
-    if (index > 0) {
-        if (index > spline->point_count - 1)
-            index = spline->point_count;
-        previous = &spline->points[index - 1];
-    } else {
+    f32 squared, cubed, sum;
+    if (index <= 0) {
         direction.x = spline->points[0].x - spline->points[1].x;
         direction.y = spline->points[0].y - spline->points[1].y;
         direction.z = spline->points[0].z - spline->points[1].z;
-        NuVecNorm(&direction, &direction);
+        index = 0;
+        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+        direction.w = 1.0f;
         direction.x *= 10.0;
         direction.y *= 10.0;
         direction.z *= 10.0;
@@ -654,58 +653,92 @@ void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, 
         first.z = spline->points[0].z + direction.z;
         first.w = spline->points[0].w;
         previous = &first;
-        index = 0;
+    } else {
+        if (index > spline->point_count - 1)
+            index = spline->point_count;
+        previous = &spline->points[index - 1];
     }
     current = &spline->points[index];
     next = &spline->points[index + 1];
     if (index >= spline->point_count - 2) {
-        i32 end = spline->point_count - 1;
-        direction.x = spline->points[end].x - spline->points[end - 1].x;
-        direction.y = spline->points[end].y - spline->points[end - 1].y;
-        direction.z = spline->points[end].z - spline->points[end - 1].z;
-        NuVecNorm(&direction, &direction);
+        NUVEC4 *before_end = &spline->points[spline->point_count - 2];
+        NUVEC4 *end_point = &spline->points[spline->point_count - 1];
+        direction.x = end_point->x - before_end->x;
+        direction.y = end_point->y - before_end->y;
+        direction.z = end_point->z - before_end->z;
+        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+        direction.w = 1.0f;
         direction.x *= 10.0;
         direction.y *= 10.0;
         direction.z *= 10.0;
-        last.x = spline->points[end].x + direction.x;
-        last.y = spline->points[end].y + direction.y;
-        last.z = spline->points[end].z + direction.z;
-        last.w = spline->points[end].w;
+        last.x = spline->points[spline->point_count - 1].x + direction.x;
+        last.y = spline->points[spline->point_count - 1].y + direction.y;
+        last.z = spline->points[spline->point_count - 1].z + direction.z;
+        last.w = spline->points[spline->point_count - 1].w;
         following = &last;
     } else {
         following = &spline->points[index + 2];
     }
-    squared = fraction * fraction;
-    cubed = (f32)((f64)fraction * fraction * fraction);
-    /* Original vector arithmetic rounds each vector operation to its PC f32 field. */
-#define SPLINE_COMPONENT(member)                                                                                       \
-    {                                                                                                                  \
-        f32 constant = current->member * 2.0f;                                                                         \
-        f32 linear = next->member - previous->member;                                                                  \
-        f32 quadratic = previous->member * 2.0f;                                                                       \
-        f32 coefficient = current->member * 5.0;                                                                       \
-        f32 cubic = current->member - next->member;                                                                    \
-        f32 sum;                                                                                                       \
-        linear *= fraction;                                                                                            \
-        quadratic -= coefficient;                                                                                      \
-        coefficient = next->member * 4.0;                                                                              \
-        quadratic += coefficient;                                                                                      \
-        quadratic -= following->member;                                                                                \
-        quadratic *= squared;                                                                                          \
-        cubic *= 3.0;                                                                                                  \
-        cubic -= previous->member;                                                                                     \
-        cubic += following->member;                                                                                    \
-        cubic *= cubed;                                                                                                \
-        sum = linear + constant;                                                                                       \
-        sum += quadratic;                                                                                              \
-        sum += cubic;                                                                                                  \
-        result->member = sum * 0.5;                                                                                    \
-    }
-    SPLINE_COMPONENT(x);
-    SPLINE_COMPONENT(y);
-    SPLINE_COMPONENT(z);
-#undef SPLINE_COMPONENT
-    result->w = current->w + (next->w - current->w) * fraction;
+    constant.x = current->x + current->x;
+    constant.y = current->y + current->y;
+    constant.z = current->z + current->z;
+    linear.x = next->x - previous->x;
+    linear.y = next->y - previous->y;
+    linear.z = next->z - previous->z;
+    linear.x *= fraction;
+    linear.y *= fraction;
+    linear.z *= fraction;
+    quadratic.x = previous->x + previous->x;
+    quadratic.y = previous->y + previous->y;
+    quadratic.z = previous->z + previous->z;
+    coefficient.x = current->x * 5.0;
+    coefficient.y = current->y * 5.0;
+    coefficient.z = current->z * 5.0;
+    quadratic.x -= coefficient.x;
+    quadratic.y -= coefficient.y;
+    quadratic.z -= coefficient.z;
+    coefficient.x = next->x * 4.0;
+    coefficient.y = next->y * 4.0;
+    coefficient.z = next->z * 4.0;
+    quadratic.x += coefficient.x;
+    quadratic.y += coefficient.y;
+    quadratic.z += coefficient.z;
+    quadratic.x -= following->x;
+    quadratic.y -= following->y;
+    quadratic.z -= following->z;
+    sum = fraction * fraction;
+    quadratic.x *= sum;
+    quadratic.y *= sum;
+    quadratic.z *= sum;
+    cubic.x = current->x - next->x;
+    cubic.y = current->y - next->y;
+    cubic.z = current->z - next->z;
+    cubic.x *= 3.0;
+    cubic.y *= 3.0;
+    cubic.z *= 3.0;
+    cubic.x -= previous->x;
+    cubic.y -= previous->y;
+    cubic.z -= previous->z;
+    cubic.x = cubic.x + following->x;
+    cubic.y = following->y + cubic.y;
+    cubic.z += following->z;
+    sum *= fraction;
+    cubic.x *= sum;
+    cubic.y *= sum;
+    cubic.z *= sum;
+    sum = linear.x + constant.x;
+    sum += quadratic.x;
+    sum += cubic.x;
+    result->x = sum * 0.5;
+    sum = linear.y + constant.y;
+    sum += quadratic.y;
+    sum += cubic.y;
+    result->y = sum * 0.5;
+    sum = linear.z + constant.z;
+    sum += quadratic.z;
+    sum += cubic.z;
+    result->z = sum * 0.5;
+    result->w = (next->w - current->w) * fraction + current->w;
 }
 
 void __cdecl CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance) {
