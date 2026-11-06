@@ -173,7 +173,7 @@ void MiniCam_ChangeMode(i32 mode) {
 
 void Minicam_AddDeltas(float duration) {
     f32 fraction;
-    if ((duration == 0.0f) | (MiniCam.delta_time == 0.0f)) {
+    if (MiniCam.delta_time == 0.0f || duration == 0.0f) {
         fraction = 0.0f;
     } else {
         fraction = MiniCam.delta_time / duration;
@@ -197,7 +197,7 @@ void Minicam_AddDeltas(float duration) {
                 f32 doubled_fraction = fraction + fraction;
                 fraction = NuTrigTable[(((i32)(doubled_fraction * 16384.0f)) >> 1) & 0x7fff] * 0.5f;
             } else if (fraction > 0.5f) {
-                f32 doubled_fraction = (fraction - 0.5f) + (fraction - 0.5f);
+                f32 doubled_fraction = (fraction - 0.5f) * 2.0f;
                 fraction =
                     (1.0f - NuTrigTable[(((i32)(doubled_fraction * 16384.0f + 16384.0f)) >> 1) & 0x7fff]) * 0.5f + 0.5f;
             } else {
@@ -206,17 +206,18 @@ void Minicam_AddDeltas(float duration) {
             break;
     }
     if (MiniCam.mode == 0) {
-        i32 pitch_delta = MiniCam.target_pitch - MiniCam.start_pitch;
-        i32 yaw_delta = MiniCam.target_yaw - MiniCam.start_yaw;
-        i32 roll_delta = MiniCam.target_roll - MiniCam.start_roll;
+        i32 pitch_delta, yaw_delta, roll_delta;
+        pitch_delta = MiniCam.target_pitch - MiniCam.start_pitch;
         if (pitch_delta > 32768)
             pitch_delta -= 65536;
         else if (pitch_delta < -65536)
             pitch_delta += 65536;
+        yaw_delta = MiniCam.target_yaw - MiniCam.start_yaw;
         if (yaw_delta > 32768)
             yaw_delta -= 65536;
         else if (yaw_delta < -65536)
             yaw_delta += 65536;
+        roll_delta = MiniCam.target_roll - MiniCam.start_roll;
         if (roll_delta > 32768)
             roll_delta -= 65536;
         else if (roll_delta < -65536)
