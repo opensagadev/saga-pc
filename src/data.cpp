@@ -18544,6 +18544,18 @@ extern "C" {
 #pragma bss_seg(".bss$PCOggCriticalSectionPc")
     i32 PCOggCriticalSectionPc = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$EdDrawMaterialsPc")
+    NUMTL *EdDrawMaterialsPc[2] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$EdDrawPrimStatePc")
+    i32 EdDrawPrimStatePc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EdDrawMaterialIndexPc")
+    i32 EdDrawMaterialIndexPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$EdDrawMatrixPc")
+    NUMTX *EdDrawMatrixPc = 0;
+#pragma bss_seg()
 }
 
 extern "C" {
@@ -19285,6 +19297,7 @@ extern "C" {
     u8 default_nacross = 2;
     f32 default_xspacing = 0.4f;
     f32 default_zspacing = 0.4f;
+    i32 aisys_maxnumcreaturesets = 32;
 }
 
 extern "C" {
@@ -35184,12 +35197,14 @@ extern "C" {
 #pragma section(".data$AiEditorPathsModeIdPc", read, write)
 #pragma section(".data$AiEditorCreaturesModeIdPc", read, write)
 #pragma section(".data$AiEditorLocatorsModeIdPc", read, write)
+#pragma section(".data$AiEditorAreasModeIdPc", read, write)
 #pragma section(".bss$AiEditorUpperHeightOverridePc", read, write)
 #pragma section(".bss$AiEditorLowerHeightOverridePc", read, write)
 extern "C" {
     __declspec(allocate(".data$AiEditorPathsModeIdPc")) i32 AiEditorPathsModeIdPc = -1;
     __declspec(allocate(".data$AiEditorCreaturesModeIdPc")) i32 AiEditorCreaturesModeIdPc = -1;
     __declspec(allocate(".data$AiEditorLocatorsModeIdPc")) i32 AiEditorLocatorsModeIdPc = -1;
+    __declspec(allocate(".data$AiEditorAreasModeIdPc")) i32 AiEditorAreasModeIdPc = -1;
     __declspec(allocate(".bss$AiEditorUpperHeightOverridePc")) f32 AiEditorUpperHeightOverridePc = 0;
     __declspec(allocate(".bss$AiEditorLowerHeightOverridePc")) f32 AiEditorLowerHeightOverridePc = 0;
 }
