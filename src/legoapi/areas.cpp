@@ -9,6 +9,7 @@ extern "C" {
 }
 extern "C" {
     AREA_DATA_PC *__cdecl Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
+    void __cdecl AreasConfigDiagnosticPc(char *message);
     void __cdecl NewAreaMusicChanges(void);
     void __cdecl ClearTakeOverObjectSys(void);
     void __cdecl Door_Reset(void);
@@ -427,8 +428,7 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
 
     parser = NuFParCreate(path);
     if (parser == NULL) {
-        STUBBED_NAMED("Areas_ConfigureList: unresolved ret-only PC failure helper "
-                      "at 0x00572ad0");
+        AreasConfigDiagnosticPc(path);
         if (count_out != NULL) {
             *count_out = 0;
         }
@@ -571,9 +571,8 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
     }
 
     NuFParDestroy(parser);
-    if (area_count == 0) {
-        STUBBED_NAMED("Areas_ConfigureList: unresolved ret-only PC zero-record "
-                      "helper at 0x00572ad0");
+    if (area_count <= 0) {
+        AreasConfigDiagnosticPc(path);
         return NULL;
     }
 

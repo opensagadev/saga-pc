@@ -455,6 +455,8 @@ void __cdecl Level_RegisterGameConfigKeywords(NUFPCOMJMP *before_load, NUFPCOMJM
     Level_ConfigAfterLoad_GameKeywords = after_load;
 }
 
+void __cdecl LevelsConfigDiagnosticPc(char *message);
+
 LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                            i32 *count_out, void *set_defaults_fn) {
     NUFPAR_PC *parser;
@@ -465,6 +467,8 @@ LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR 
     u32 aligned_address;
 
     parser = NuFParCreate(path);
+    if (parser == NULL)
+        LevelsConfigDiagnosticPc(path);
     MAXLDATA = max_count;
     aligned_address = (buffer->addr + 3) & ~3u;
     buffer->addr = aligned_address;
@@ -610,15 +614,14 @@ LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR 
     }
 
     NuFParDestroy(parser);
-    if (level_count == 0) {
-        return NULL;
+    if (level_count > 0) {
+        buffer->void_ptr = current_level;
+        if (count_out != NULL)
+            *count_out = level_count;
+        return level_data;
     }
-
-    buffer->void_ptr = current_level;
-    if (count_out != NULL) {
-        *count_out = level_count;
-    }
-    return level_data;
+    LevelsConfigDiagnosticPc(path);
+    return NULL;
 }
 
 void __cdecl LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end) {

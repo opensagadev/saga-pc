@@ -14,6 +14,8 @@ i32 LEVOBJREF_LASTOBJ = -1;
 i32 LEVOBJREF_FIRSTREFOBJ = -1;
 i32 LEVOBJREF_LASTREFOBJ = -1;
 
+void __cdecl LevelObjectsArenaDiagnosticPc(i32 size);
+
 void __cdecl LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *buffer, VARIPTR *buffer_end, i32 maximum,
                                       i32 name_table_size) {
     i32 reflection_range;
@@ -22,34 +24,33 @@ void __cdecl LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG_PC *table, VARIPTR *bu
     LEVOBJREF_LASTOBJ = -1;
     LEVOBJREF_FIRSTREFOBJ = -1;
     LEVOBJREF_LASTREFOBJ = -1;
-    LEVELOBJECTMAX = maximum;
     ObjTabList = table;
     LEVELSPLINECOUNT = 0;
+    LEVELOBJECTMAX = maximum;
     for (; table->kind != 0xff; ++table, ++LEVELOBJECTCOUNT) {
         if (table->reflection == 1) {
+            LEVOBJREF_LASTOBJ = LEVELOBJECTCOUNT;
             if (LEVOBJREF_FIRSTOBJ == -1)
                 LEVOBJREF_FIRSTOBJ = LEVELOBJECTCOUNT;
-            LEVOBJREF_LASTOBJ = LEVELOBJECTCOUNT;
         }
         if (table->reflection == 2) {
+            LEVOBJREF_LASTREFOBJ = LEVELOBJECTCOUNT;
             if (LEVOBJREF_FIRSTREFOBJ == -1)
                 LEVOBJREF_FIRSTREFOBJ = LEVELOBJECTCOUNT;
-            LEVOBJREF_LASTREFOBJ = LEVELOBJECTCOUNT;
         }
     }
-    reflection_range = LEVOBJREF_LASTREFOBJ - LEVOBJREF_FIRSTREFOBJ;
     object_range = LEVOBJREF_LASTOBJ - LEVOBJREF_FIRSTOBJ;
-    if (object_range > reflection_range)
+    reflection_range = LEVOBJREF_LASTREFOBJ - LEVOBJREF_FIRSTREFOBJ;
+    if (reflection_range < object_range)
         LEVOBJREF_LASTOBJ = LEVOBJREF_FIRSTOBJ + reflection_range;
-    else if (object_range < reflection_range)
+    else if (reflection_range > object_range)
         LEVOBJREF_LASTREFOBJ = LEVOBJREF_FIRSTREFOBJ + object_range;
     if (name_table_size > 0) {
         ExtraLevelObject_NameTable = (char *)buffer->void_ptr;
         ExtraLevelObject_NameTableSize = name_table_size;
         buffer->addr += name_table_size;
-        if (buffer->addr >= buffer_end->addr) {
-            STUBBED_NAMED("LevelObjects_InitForGame: unresolved name arena diagnostic at 0x00578890");
-        }
+        if (buffer->addr >= buffer_end->addr)
+            LevelObjectsArenaDiagnosticPc(name_table_size);
     }
 }
 

@@ -4475,6 +4475,7 @@ address,symbol,size,ctype
 0x5727c0,_IntersectWater,69,i32 __cdecl (GAMEOBJECT *)
 0x572810,_Surface_Deflect,135,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, i32)"
 0x005728a0,_InitSurfaceInfo,538,
+0x572ad0,_AreasConfigDiagnosticPc,1,void __cdecl (char *)
 0x00572b00,_Areas_ConfigureList,1853,"AREA_DATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *)"
 0x00573240,_Areas_ConfigureResidents,481,"void __cdecl (VARIPTR *, VARIPTR *)"
 0x00573430,_Area_FindByName,107,"AREA_DATA_PC * __cdecl (char *, i32 *)"
@@ -4560,6 +4561,8 @@ address,symbol,size,ctype
 0x578140,_GameCameraMakeMiniCut3,1496,"void __cdecl(u32,f32,i32,i32,i32,void *,i32,NUVEC *,f32,f32,f32,f32,f32,f32,f32,i32,NUGSPLINE *,i8,i8)"
 0x00578750,_SetLevelHack,64,void *__cdecl (i32)
 0x578790,_objInNetWaitContext,52,"i32 __cdecl(GAMEOBJECT *,i32)"
+0x578890,_LevelsConfigDiagnosticPc,1,void __cdecl (char *)
+0x578890,_LevelObjectsArenaDiagnosticPc,1,void __cdecl (i32)
 0x005788d0,_Level_RegisterGameConfigKeywords,20,"void __cdecl (NUFPCOMJMP *, NUFPCOMJMP *)"
 0x005788f0,_Levels_ConfigureList,1196,"LEVELDATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *, void *)"
 0x00578da0,_Level_FindByName,107,"LEVELDATA_PC * __cdecl (char *, i32 *)"
