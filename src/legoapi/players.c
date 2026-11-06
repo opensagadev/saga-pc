@@ -160,7 +160,7 @@ extern i16 LEGOACT_SUPERCARRY_WALK;
 extern i32 LEGOCONTEXT_COMBO;
 extern const f64 PlayerStepInnerActionPc, PlayerStepOuterActionPc, PlayerStepInnerPc, PlayerStepOuterPc;
 extern const f64 TerrainSkinSampleCountPc;
-extern const f64 PlayerSlideSpeedPc, PlayerTightRopePhasePc, PlayerRandomScalePc;
+extern const f64 PlayerTightRopePhasePc, PlayerRandomScalePc;
 extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
 extern void *PlayerSpecialMoveDataPc;
 
@@ -314,16 +314,21 @@ __declspec(noinline) i32 __cdecl SuperCarry_Carrying(GAMEOBJECT *object) {
 __declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 input_angle, f32 input_speed) {
     u16 direction;
     NUVEC lateral;
-    if (object->field_281 != 0 &&
-        (fabsf(object->surface_normal.x) > 0.001f || fabsf(object->surface_normal.z) > 0.001f))
+    union {
+        f32 value;
+        u32 bits;
+    } magnitude, absolute;
+    if (object->field_281 != 0 && ((magnitude.value = object->surface_normal.x,
+                                    absolute.bits = magnitude.bits & 0x7fffffff, absolute.value > 0.001f) ||
+                                   (magnitude.value = object->surface_normal.z,
+                                    absolute.bits = magnitude.bits & 0x7fffffff, absolute.value > 0.001f)))
         direction = NuAtan2D(object->surface_normal.x, object->surface_normal.z);
     else
         direction = object->movement_facing_angle;
-    object->target_velocity.x = NuTrigTable[direction >> 1] * PlayerSlideSpeedPc;
-    object->target_velocity.z = NuTrigTable[((direction + 0x4000) >> 1) & 0x7fff] * PlayerSlideSpeedPc;
+    object->target_velocity.x = NuTrigTable[direction >> 1] * 1.2f;
+    object->target_velocity.z = NuTrigTable[((direction + 0x4000) >> 1) & 0x7fff] * 1.2f;
     if (object->field_281 != 0 && input_speed > 0.0f) {
         lateral.x = NuTrigTable[input_angle >> 1] * input_speed;
-        lateral.y = 0.0f;
         lateral.z = NuTrigTable[((input_angle + 0x4000) >> 1) & 0x7fff] * input_speed;
         NuVecRotateY(&lateral, &lateral, -(i32)direction);
         lateral.z = 0.0f;
@@ -1288,72 +1293,23 @@ void __cdecl ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
     }
 }
 
-typedef struct player_hit_context_view_pc_s {
-    u8 unknown_0000[0x6c4];
-    u8 reset_contexts;
-    u8 unknown_06c5[0xd30 - 0x6c5];
-    f32 model_state;
-} PLAYER_HIT_CONTEXT_VIEW_PC;
-STATIC_ASSERT(offsetof(PLAYER_HIT_CONTEXT_VIEW_PC, reset_contexts) == 0x6c4);
-STATIC_ASSERT(offsetof(PLAYER_HIT_CONTEXT_VIEW_PC, model_state) == 0xd30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 STATIC_ASSERT(offsetof(GAMEOBJECT, force_target) == 0x790);
-void __cdecl PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
-    PLAYER_HIT_CONTEXT_VIEW_PC *view = (PLAYER_HIT_CONTEXT_VIEW_PC *)object;
-    u8 state;
-    i32 animation;
-    f32 duration;
-    u16 angle;
-    if (object->field_280 != 0xff)
-        return;
-    state = object->jump_variant_state;
-    animation = state == 1 ? 0x3e : 0x3d;
-    if (object->character_model->model_data_b[animation] == NULL) {
-        if (object->portal_flags & 0x08000000) {
-            ResetAnimPacket(&object->anim_packet, -1);
-            Player_ClearContext(object, 1);
-            Player_ResetContexts(&view->reset_contexts);
-        }
-        return;
-    }
-    if (object->character_context == 0x1b && object->force_target != NULL &&
-        object->force_target->character_context == 0x1c)
-        object->force_target->character_context = -1;
-    object->field_7aa = (i16)animation;
-    ResetAnimPacket(&object->anim_packet, -1);
-    Player_ClearContext(object, 1);
-    Player_ResetContexts(&view->reset_contexts);
-    object->character_context = 0x15;
-    duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
-    object->context_timer = duration;
-    if (duration <= 0.0f)
-        object->context_timer = 1.0f;
-    object->jump_variant_state = state;
-    SetFlicker(object, 0.4f);
-    if (attacker != NULL) {
-        angle = NuAtan2D(attacker->collision_position.x - object->collision_position.x,
-                         attacker->collision_position.z - object->collision_position.z);
-        object->field_0x276 = angle;
-        object->movement_facing_angle = angle;
-        object->facing_angle = angle;
-    }
-}
 i32 __cdecl DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
-    PLAYER_HIT_CONTEXT_VIEW_PC *view = (PLAYER_HIT_CONTEXT_VIEW_PC *)object;
     f32 model_state;
     CHARACTERDATA_PC *character;
     CHARACTER_MODEL_LAYERS_PC *model;
     PLAYERCHARACTERCONFIG_PC *runtime;
     if (object->character_context == 0x17 && !(duration > object->context_timer))
         return 0;
-    model_state = view->model_state;
+    model_state = object->origin_scale_override;
     Player_ClearContext(object, 1);
     if (object->character_context == 0x3e)
         return 0;
-    Player_ResetContexts(&view->reset_contexts);
+    Player_ResetContexts(object->ai_player_packet_pc);
     object->character_context = 0x17;
-    view->model_state = model_state;
+    object->origin_scale_override = model_state;
     if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS_PC *)&object->ai_packet, (char *)PlayerBeenDeactivatedPc))
         AIScriptProcess(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet,
                         (AISCRIPTPROCESS_PC *)&object->ai_packet, FRAMETIME);
@@ -1378,7 +1334,7 @@ i32 __cdecl DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *sourc
     return 1;
 }
 
-void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
+__declspec(noinline) void __cdecl Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     if (Player_ClearContextFn != NULL)
         Player_ClearContextFn(object, mode);
     Whip_Release(object);
@@ -1917,7 +1873,7 @@ static void SetLayersBobPc(GAMEOBJECT *object) {
     object->layer_mask |= 1u << arms[qrand() / 0x8000];
     object->layer_mask |= 1u << hands[qrand() / 0x8000];
 }
-static void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
+static __declspec(noinline) void InitCreatureModelFlagsPc(GAMEOBJECT *object) {
     if ((object->character_data->game_character->flags_090 & 0x8000) != 0)
         object->flags_1f8 |= 0x20000;
     else
@@ -1936,22 +1892,22 @@ void ClearAICreatures() {
 }
 
 i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
-    CHARACTERDATA_PC *character;
-    PLAYERCHARACTERCONFIG_PC *config;
     NUVEC start;
     void **animations;
     i32 animation;
     addcreature_override_id_check = 0;
-    if (id < 0 || id >= 0x154 || apicharsys->playermodelids[id] == -1)
+    if (id < 0)
         return 0;
-    character = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
-    object->character_data = character;
-    config = character->game_character;
-    object->layer_mask = config->layer_mask;
+    if (id >= 0x154)
+        return 0;
+    if (apicharsys->playermodelids[id] == -1)
+        return 0;
+    object->character_data = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
+    object->layer_mask = object->character_data->game_character->layer_mask;
     object->flags_1f8 = 0;
     object->level_object_index = -1;
     memset(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, 0, 0x788);
-    object->field_280 = 0xff;
+    object->field_280 = -1;
     start = *Player_StartPos(object);
     object->flags_1f8 |= 2;
     if (parameter != 0)
@@ -1960,11 +1916,10 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
         object->flags_1f8 |= 0x40;
     object->pad = GamePad_Allocate();
     object->pad->input_mode = 1;
-    object->field_107e = config->hitpoints;
-    object->current_hp = config->hitpoints;
-    ResetPlayerPacket(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, character);
+    object->current_hp = object->field_107e = object->character_data->game_character->hitpoints;
+    ResetPlayerPacket(((CREATURE_RESET_PACKET_VIEW_PC *)object)->packet, object->character_data);
     ((CREATURE_MOVEMENT_RESET_VIEW_PC *)object)->movement = v000;
-    object->shield_hitpoints = character->game_character->shield_hitpoints;
+    object->shield_hitpoints = object->character_data->game_character->shield_hitpoints;
     object->saved_hitpoints = 4;
     object->id = (u16)id;
     object->character_model = &apicharsys->models[apicharsys->playermodelids[id]];
@@ -1982,8 +1937,8 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     if (object->character_model != NULL) {
         animations = object->character_model->action_animations;
         if (animations[1] == NULL) {
-            for (animation = 0; animation < 0xe9; ++animation)
-                if (animations[animation] != NULL)
+            for (animation = 0; animation < 0xe9; ++animation, ++animations)
+                if (*animations != NULL)
                     break;
             if (animation < 0xe9)
                 object->animation_index = (i16)animation;
@@ -1994,7 +1949,7 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     ResetLights(&object->position, &((DYNAMIC_LIGHTING_VIEW_PC *)object)->lighting_packet, WORLD->rtl_set);
     object->ai_packet.mover_height = object->bounds_radius + default_mover_extra;
     GameObjectOrigin(object);
-    object->previous_position = object->position;
+    object->last_safe_position = object->position;
     object->ai_update_position = object->position;
     object->flags_ef4 =
         (object->flags_ef4 & ~0x800u) | ((object->character_data->game_character->flags_090 >> 6) & 0x800);
@@ -2007,7 +1962,7 @@ i32 __cdecl InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     else if (object->id == (u16)id_BOB)
         SetLayersBobPc(object);
     else if (object->id == (u16)id_GEONOSIAN)
-        object->flags_ef0 = (object->flags_ef0 & ~0x200u) | ((qrand() < 0x8000) ? 0x200 : 0);
+        ((PLAYER_LAYER_FLAGS_PC *)&object->flags_ef0)->bob = qrand() < 0x8000;
     InitCreatureModelFlagsPc(object);
     return 1;
 }
@@ -2681,15 +2636,14 @@ extern NUVEC DoorCutCameraPosition1Pc;
 extern char PlayerMissionStartDoorPc[];
 extern char PlayerArcadeStartDoorPc[];
 void __cdecl Players_InitPositions(WORLDINFO *world) {
-    PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
     PLAYER_WORLD_DOORS_PC *doors = (PLAYER_WORLD_DOORS_PC *)world;
     i32 bonus = world->area != NULL && (world->area->flags & 4) != 0;
     NUGSPLINE *spline = NULL;
     i32 first_pair = 0;
     i32 index;
     for (index = 0; index < 8; ++index) {
-        starts[index].position = &v000;
-        starts[index].angle = 0;
+        PlayerStartRecordInitPc[index].position = &v000;
+        PlayerStartRecordInitPc[index].angle = 0;
     }
     if (doors->start_door != NULL && !bonus) {
         spline = doors->start_door->spline;
@@ -2698,13 +2652,12 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
         spline = world->camera_splines[PlayerStartSplineIndexPc];
     }
     if (spline != NULL) {
-        NUVEC *points = spline->pts;
         i32 pair = first_pair;
         for (index = 0; index < 8; ++index) {
             NUVEC direction;
-            starts[index].position = &points[pair * 2];
-            NuVecSub(&direction, &points[pair * 2 + 1], starts[index].position);
-            starts[index].angle = NuAtan2D(direction.x, direction.z);
+            PlayerStartRecordInitPc[index].position = &spline->pts[pair * 2];
+            NuVecSub(&direction, &spline->pts[pair * 2 + 1], PlayerStartRecordInitPc[index].position);
+            PlayerStartRecordInitPc[index].angle = NuAtan2D(direction.x, direction.z);
             ++pair;
             if (pair * 2 + 2 > spline->length)
                 pair = first_pair;
@@ -2713,14 +2666,14 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
             i32 count = spline->length / 4;
             i32 choice = qrand() / (65535 / count + 1);
             NUVEC direction;
-            starts[0].position = &points[choice * 4];
-            direction.z = points[choice * 4 + 1].z - starts[0].position->z;
-            direction.x = points[choice * 4 + 1].x - starts[0].position->x;
-            starts[0].angle = NuAtan2D(direction.x, direction.z);
-            starts[1].position = &points[choice * 4 + 2];
-            direction.z = points[choice * 4 + 3].z - starts[1].position->z;
-            direction.x = points[choice * 4 + 3].x - starts[0].position->x;
-            starts[1].angle = NuAtan2D(direction.x, direction.z);
+            PlayerStartRecordInitPc[0].position = &spline->pts[choice * 4];
+            direction.z = spline->pts[choice * 4 + 1].z - PlayerStartRecordInitPc[0].position->z;
+            direction.x = spline->pts[choice * 4 + 1].x - PlayerStartRecordInitPc[0].position->x;
+            PlayerStartRecordInitPc[0].angle = NuAtan2D(direction.x, direction.z);
+            PlayerStartRecordInitPc[1].position = &spline->pts[choice * 4 + 2];
+            direction.z = spline->pts[choice * 4 + 3].z - PlayerStartRecordInitPc[1].position->z;
+            direction.x = spline->pts[choice * 4 + 3].x - PlayerStartRecordInitPc[0].position->x;
+            PlayerStartRecordInitPc[1].angle = NuAtan2D(direction.x, direction.z);
         }
     }
     if (HUB_ADATA != NULL && HUB_ADATA == world->area && last_area != world->area_index &&
@@ -2763,9 +2716,9 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
     DoorExitCameraSplineNamePc[0] = '\0';
     for (index = 0; index < 8; ++index) {
         PLAYER_POSITION_SOCK_PC position;
-        ComplexSockPosition(world->sock_sys, starts[index].position, -1, -1, &position.sock);
-        starts[index].sock_location = position.start.location;
-        starts[index].sock_ratio = position.start.ratio;
+        ComplexSockPosition(world->sock_sys, PlayerStartRecordInitPc[index].position, -1, -1, &position.sock);
+        PlayerStartRecordInitPc[index].sock_location = position.start.location;
+        PlayerStartRecordInitPc[index].sock_ratio = position.start.ratio;
     }
     if (HUB_ADATA != NULL && HUB_ADATA == world->area) {
         hub_from_superstory = -1;

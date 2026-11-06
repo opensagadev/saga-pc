@@ -15917,7 +15917,10 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     STATIC_ASSERT(offsetof(SUIT_INITIALIZER_RECORD_PC, index) == 0x16);
     typedef struct PLAYER_START_INITIALIZER_RECORD_PC {
         NUVEC *position;
-        u8 unknown_04[0xc];
+        i32 sock_location;
+        f32 sock_ratio;
+        i16 angle;
+        u8 unknown_0e[2];
     } PLAYER_START_INITIALIZER_RECORD_PC;
     STATIC_ASSERT(sizeof(PLAYER_START_INITIALIZER_RECORD_PC) == 0x10);
     STATIC_ASSERT(offsetof(PLAYER_START_INITIALIZER_RECORD_PC, position) == 0);

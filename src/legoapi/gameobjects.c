@@ -427,6 +427,46 @@ void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     }
 }
 
+void __cdecl PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
+    i32 state;
+    i32 animation;
+    f32 duration;
+    if ((i8)object->field_280 != -1)
+        return;
+    if (object->jump_variant_state == 1 && object->character_model->model_data_b[0x3e] != NULL)
+        animation = 0x3e;
+    else if (object->jump_variant_state != 1 && object->character_model->model_data_b[0x3d] != NULL)
+        animation = 0x3d;
+    else {
+        if (object->portal_flags & 0x08000000) {
+            ResetAnimPacket(&object->anim_packet, -1);
+            Player_ClearContext(object, 1);
+            Player_ResetContexts(object->ai_player_packet_pc);
+        }
+        return;
+    }
+    state = object->jump_variant_state;
+    if (object->character_context == 0x1b && object->force_target != NULL &&
+        object->force_target->character_context == 0x1c)
+        object->force_target->character_context = -1;
+    object->field_7aa = (i16)animation;
+    ResetAnimPacket(&object->anim_packet, -1);
+    Player_ClearContext(object, 1);
+    Player_ResetContexts(object->ai_player_packet_pc);
+    object->character_context = 0x15;
+    duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+    object->context_timer = duration;
+    if (duration <= 0.0f)
+        object->context_timer = 1.0f;
+    object->jump_variant_state = state;
+    SetFlicker(object, 0.4f);
+    if (attacker != NULL) {
+        object->facing_angle = object->movement_facing_angle = object->field_0x276 =
+            NuAtan2D(attacker->collision_position.x - object->collision_position.x,
+                     attacker->collision_position.z - object->collision_position.z);
+    }
+}
+
 void __cdecl GameObjectOrigin(GAMEOBJECT *object) {
     f32 min_y;
     f32 max_y;
