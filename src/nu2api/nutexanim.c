@@ -472,7 +472,7 @@ void __cdecl NuTexAnimProgRelease(void) {
     GHGTextureProgramsPC = NULL;
 }
 
-static i32 __cdecl TextureAnimationLabelIndexPrivatePc(char *name) {
+i32 __cdecl TextureAnimationLabelIndexPrivatePc(char *name) {
     i32 i;
     if (strlen(name) >= 21)
         name[20] = 0;
@@ -486,7 +486,7 @@ static i32 __cdecl TextureAnimationLabelIndexPrivatePc(char *name) {
     return TextureAnimationLabelCountPrivatePc - 1;
 }
 
-static i32 __cdecl TextureAnimationExternalLabelIndexPrivatePc(char *name) {
+i32 __cdecl TextureAnimationExternalLabelIndexPrivatePc(char *name) {
     i32 i;
     if (strlen(name) >= 21)
         name[20] = 0;
@@ -661,7 +661,7 @@ static void __cdecl TextureAnimationEndPrivatePc(NUFPAR_PC *parser) {
 static void __cdecl TextureAnimationScriptNamePrivatePc(NUFPAR_PC *parser) {
     NuFParGetWord(parser);
     parser->word_buffer_ptr[32] = 0;
-    NuStrCpy(TextureAnimationParseProgramPrivatePc->name, parser->word_buffer_ptr);
+    strcpy(TextureAnimationParseProgramPrivatePc->name, parser->word_buffer_ptr);
 }
 static void __cdecl TextureAnimationExternalDefinitionPrivatePc(NUFPAR_PC *parser) {
     i32 label, index;
