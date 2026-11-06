@@ -60,41 +60,46 @@ ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *
             return programs[i];
     return NULL;
 }
-void ShaderCompilerDictionaryPc::AddDefinition(const char *name, const char *value, i32 emit) {
-    ShaderMacroDefinitionPc *definition = FindDefinition(name);
-    if (definition != NULL) {
-        const char *stored_value = NULL;
-        if (value != NULL) {
-            i32 bytes = (i32)strlen(value) + 1;
-            char *copy = reinterpret_cast<char *>(scratch.cursor);
-            scratch.cursor += bytes;
-            memcpy(copy, value, bytes);
-            stored_value = copy;
-        }
-        definition->value = stored_value;
-        definition->emit = (u8)emit;
-    } else {
-        i32 bytes = (i32)strlen(name) + 1;
-        char *stored_name = reinterpret_cast<char *>(scratch.cursor);
-        scratch.cursor += bytes;
-        memcpy(stored_name, name, bytes);
-        const char *stored_value = NULL;
-        if (value != NULL) {
-            bytes = (i32)strlen(value) + 1;
-            char *copy = reinterpret_cast<char *>(scratch.cursor);
-            scratch.cursor += bytes;
-            memcpy(copy, value, bytes);
-            stored_value = copy;
-        }
-        definition = reinterpret_cast<ShaderMacroDefinitionPc *>(scratch.cursor);
-        scratch.cursor += sizeof(ShaderMacroDefinitionPc);
-        if (definition != NULL) {
-            definition->name = stored_name;
-            definition->value = stored_value;
-            definition->emit = (u8)emit;
-        }
-        programs[program_count++] = definition;
-    }
+// AddDefinition body; retail inlines it into EmitProgram only.
+#define SHADER_ADD_DEFINITION_PC(DICTIONARY, NAME, VALUE, EMIT)                                                        \
+    do {                                                                                                               \
+        ShaderMacroDefinitionPc *definition = (DICTIONARY)->FindDefinition(NAME);                                      \
+        if (definition != NULL) {                                                                                      \
+            const char *stored_value = NULL;                                                                           \
+            if ((VALUE) != NULL) {                                                                                     \
+                i32 bytes = (i32)strlen(VALUE) + 1;                                                                    \
+                char *copy = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                   \
+                (DICTIONARY)->scratch.cursor += bytes;                                                                 \
+                memcpy(copy, (VALUE), bytes);                                                                          \
+                stored_value = copy;                                                                                   \
+            }                                                                                                          \
+            definition->value = stored_value;                                                                          \
+            definition->emit = (u8)(EMIT);                                                                             \
+        } else {                                                                                                       \
+            i32 bytes = (i32)strlen(NAME) + 1;                                                                         \
+            char *stored_name = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                \
+            (DICTIONARY)->scratch.cursor += bytes;                                                                     \
+            memcpy(stored_name, NAME, bytes);                                                                          \
+            const char *stored_value = NULL;                                                                           \
+            if ((VALUE) != NULL) {                                                                                     \
+                bytes = (i32)strlen(VALUE) + 1;                                                                        \
+                char *copy = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                   \
+                (DICTIONARY)->scratch.cursor += bytes;                                                                 \
+                memcpy(copy, (VALUE), bytes);                                                                          \
+                stored_value = copy;                                                                                   \
+            }                                                                                                          \
+            definition = reinterpret_cast<ShaderMacroDefinitionPc *>((DICTIONARY)->scratch.cursor);                    \
+            (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinitionPc);                                           \
+            if (definition != NULL) {                                                                                  \
+                definition->name = stored_name;                                                                        \
+                definition->value = stored_value;                                                                      \
+                definition->emit = (u8)(EMIT);                                                                         \
+            }                                                                                                          \
+            (DICTIONARY)->programs[(DICTIONARY)->program_count++] = definition;                                        \
+        }                                                                                                              \
+    } while (0)
+__declspec(noinline) void ShaderCompilerDictionaryPc::AddDefinition(const char *name, const char *value, i32 emit) {
+    SHADER_ADD_DEFINITION_PC(this, name, value, emit);
 }
 void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorPc *buffer) {
     ShaderMacroDefinitionPc **cursor = programs;
@@ -397,43 +402,36 @@ void ShaderCompilerDictionaryPc::EmitVertexInput(ShaderCompilerBufferAllocatorPc
 
 static const i32 ShaderCompilerTypeComponentsPc[22] = {-1, 1, 1, 2,  3, 4, 9,  16, 1,  1,  2,
                                                        3,  4, 9, 16, 1, 1, -1, -1, -1, -1, -1};
-static const char *ShaderRegisterComponentsPc(i32 first, i32 count) {
+const char *ShaderRegisterComponentsPc(i32 first, i32 count) {
     switch (first) {
         case 0:
-            switch (count) {
-                case 1:
-                    return ".x";
-                case 2:
-                    return ".xy";
-                case 3:
-                    return ".xyz";
-                case 4:
-                    return ".xyzw";
-                default:
-                    return "????";
-            }
+            if (count == 1)
+                return ".x";
+            if (count == 2)
+                return ".xy";
+            if (count == 3)
+                return ".xyz";
+            if (count == 4)
+                return ".xyzw";
+            return "????";
         case 1:
-            switch (count) {
-                case 1:
-                    return ".y";
-                case 2:
-                    return ".yz";
-                case 3:
-                    return ".yzw";
-                default:
-                    return "????";
-            }
+            if (count == 1)
+                return ".y";
+            if (count == 2)
+                return ".yz";
+            if (count == 3)
+                return ".yzw";
+            return "????";
         case 2:
-            switch (count) {
-                case 1:
-                    return ".z";
-                case 2:
-                    return ".zw";
-                default:
-                    return "????";
-            }
+            if (count == 1)
+                return ".z";
+            if (count == 2)
+                return ".zw";
+            return "????";
         case 3:
-            return count == 1 ? ".w" : "????";
+            if (count == 1)
+                return ".w";
+            return "????";
         default:
             return "??????";
     }
@@ -629,7 +627,7 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         output->AppendText("#define ");
         output->AppendText(alias);
         output->AppendText("\r\n");
-        AddDefinition(alias, NULL, 0);
+        SHADER_ADD_DEFINITION_PC(this, alias, NULL, 0);
         if (node->type == 21)
             continue;
         const char *shared = !unavailable && emit_semantics != 0 && (flags & 0x4020) == 0x4020 ? "shared " : "";
@@ -675,11 +673,11 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
     }
 }
 
-static char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena) {
-    i32 bytes = (i32)strlen(source) + 1;
+__declspec(noinline) char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena) {
+    i32 length = (i32)strlen(source);
     char *result = reinterpret_cast<char *>(arena->cursor);
-    arena->cursor += bytes;
-    memcpy(result, source, bytes);
+    arena->cursor += length + 1;
+    memcpy(result, source, length + 1);
     return result;
 }
 void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocatorPc *output) {
