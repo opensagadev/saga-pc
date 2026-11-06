@@ -140,51 +140,31 @@ f32 __cdecl CalcValue1648(char *data, i32 quarter, i32 stride, f32 fraction, ANI
     return 0.0f;
 }
 
+#define CALC_1648_VALUE(start, end, fraction)                                                                          \
+    (((f32)((i32)(end) - (i32)(start)) * (fraction) / 4095.0 + (start)) * scale_min->scale + scale_min->minimum)
+#define CALC_1648_LAST(keys) ((u16)(((keys)[2] & 0xf000) >> 8 | ((keys)[3] & 0xf000) >> 4 | (keys)[1] >> 12))
+
 void __cdecl CalcValue1648Get2Values(char *data, i32 quarter, i32 stride, ANI3_SCALEMIN_PC *scale_min, f32 *first,
                                      f32 *second) {
-    u16 *keys;
-    u16 *next;
-    i32 start;
-    i32 delta;
-    i32 end;
-    i32 last;
+    u16 *keys = (u16 *)data;
+    u16 *next = (u16 *)(data + stride);
 
-    keys = (u16 *)data;
-    next = (u16 *)(data + stride);
     switch (quarter) {
         case 0:
-            start = keys[0];
-            delta = (i32)next[0] - start;
-            *first =
-                ((f32)(keys[1] & 0xfff) * (f32)delta / 4095.0f + (f32)start) * scale_min->scale + scale_min->minimum;
-            *second =
-                ((f32)(keys[2] & 0xfff) * (f32)delta / 4095.0f + (f32)start) * scale_min->scale + scale_min->minimum;
+            *first = CALC_1648_VALUE(keys[0], next[0], keys[1] & 0xfff);
+            *second = CALC_1648_VALUE(keys[0], next[0], keys[2] & 0xfff);
             break;
         case 1:
-            start = keys[0];
-            delta = (i32)next[0] - start;
-            *first =
-                ((f32)(keys[2] & 0xfff) * (f32)delta / 4095.0f + (f32)start) * scale_min->scale + scale_min->minimum;
-            *second =
-                ((f32)(keys[3] & 0xfff) * (f32)delta / 4095.0f + (f32)start) * scale_min->scale + scale_min->minimum;
+            *first = CALC_1648_VALUE(keys[0], next[0], keys[2] & 0xfff);
+            *second = CALC_1648_VALUE(keys[0], next[0], keys[3] & 0xfff);
             break;
         case 2:
-            start = keys[0];
-            delta = (i32)next[0] - start;
-            *first =
-                ((f32)(keys[3] & 0xfff) * (f32)delta / 4095.0f + (f32)start) * scale_min->scale + scale_min->minimum;
-            last = ((keys[2] & 0xf000) >> 8) | ((keys[3] & 0xf000) >> 4) | (keys[1] >> 12);
-            *second = ((f32)last * (f32)delta / 4095.0f + (f32)start) * scale_min->scale + scale_min->minimum;
+            *first = CALC_1648_VALUE(keys[0], next[0], keys[3] & 0xfff);
+            *second = CALC_1648_VALUE(keys[0], next[0], CALC_1648_LAST(keys));
             break;
         case 3:
-            last = ((keys[2] & 0xf000) >> 8) | ((keys[3] & 0xf000) >> 4) | (keys[1] >> 12);
-            start = keys[0];
-            end = next[0];
-            *first = ((f32)last * (f32)(end - start) / 4095.0f + (f32)start) * scale_min->scale + scale_min->minimum;
-            *second =
-                ((f32)((i32)next[(u32)stride / sizeof(u16)] - end) * (f32)(next[1] & 0xfff) / 4095.0f + (f32)end) *
-                    scale_min->scale +
-                scale_min->minimum;
+            *first = CALC_1648_VALUE(keys[0], next[0], CALC_1648_LAST(keys));
+            *second = CALC_1648_VALUE(next[0], next[(u32)stride / sizeof(u16)], next[1] & 0xfff);
             break;
     }
 }
