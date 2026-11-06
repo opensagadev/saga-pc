@@ -477,30 +477,13 @@ static i32 __cdecl Game_IgnoreInput(void) {
     return newgamecam != 0;
 }
 
-typedef struct CHECK_RESET_WORLD_VIEW_PC {
-    u8 unknown_000[0x118];
-    i32 reset_flags;
-    u8 unknown_11c[0x4678 - 0x11c];
-    TRIGGER_SYSTEM_PC *ai_trigger_set_sys;
-} CHECK_RESET_WORLD_VIEW_PC;
-GAME_PUBLISHER_ASSERT(offsetof(CHECK_RESET_WORLD_VIEW_PC, reset_flags) == 0x118);
-GAME_PUBLISHER_ASSERT(offsetof(CHECK_RESET_WORLD_VIEW_PC, ai_trigger_set_sys) == 0x4678);
-typedef struct CHECK_RESET_PROGRESS_VIEW_PC {
-    SCENEPROGRESS scene_progress;
-    u32 flags;
-    u8 unknown_2804[0x2c24 - 0x2804];
-    u8 giz_flow_progress[1];
-} CHECK_RESET_PROGRESS_VIEW_PC;
-GAME_PUBLISHER_ASSERT(offsetof(CHECK_RESET_PROGRESS_VIEW_PC, flags) == 0x2800);
-GAME_PUBLISHER_ASSERT(offsetof(CHECK_RESET_PROGRESS_VIEW_PC, giz_flow_progress) == 0x2c24);
-typedef struct CHECK_RESET_MISSION_VIEW_PC {
-    u8 unknown_00[8];
-    TIMER timer;
-} CHECK_RESET_MISSION_VIEW_PC;
-GAME_PUBLISHER_ASSERT(offsetof(CHECK_RESET_MISSION_VIEW_PC, timer) == 8);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, trafficanim_sys) == 0x5168);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, pulses_sys) == 0x5050);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
+GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, reset_flags) == 0x118);
+GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, ai_trigger_set) == 0x4678);
+GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, flags) == 0x2800);
+GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, giz_flow_progress) == 0x2c24);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 2 * sizeof(void *) == 0x70);
 GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS_PC, area_phase) == 0xc);
@@ -539,16 +522,18 @@ extern "C" void __cdecl GameFog_Reset(void);
 
 extern "C" void __cdecl InitGameMode(void) {
     i32 i;
+    GIZMO_PICKUP_TYPE_PC *type;
     f32 speed;
+    GAMEOBJECT *object;
     GAMEOBJECT **players = (GAMEOBJECT **)Player;
     if ((WORLD->current_level->flags & 2) != 0)
         MenuReset();
     for (i = 0; i < 8; ++i) {
-        if (players[i] != NULL && (players[i]->flags_ef0 & 0x01000000u) == 0)
+        if (players[i] != NULL && (players[i]->flags_ef3 & 1) == 0)
             ResetPlayer(players[i], 1, NULL, 1);
     }
     speed = GetVehicleAreaRememberSpeed();
-    if (VehicleAreaRememberSpeed < speed)
+    if (speed > VehicleAreaRememberSpeed)
         VehicleAreaRememberSpeed = speed;
     AveragePlayerCurrentSpeedMul();
     SetPlayer();
@@ -558,16 +543,17 @@ extern "C" void __cdecl InitGameMode(void) {
     NewMode = 0;
     for (i = 0; i < 2; ++i) {
         if (players[i] != NULL && players[i]->coin_packet != NULL) {
-            GIZMO_PICKUP_TYPE_PC *type = &GizmoPickupType[GetRandomCoinType()];
-            PLAYER_COIN_PACKET_PC *coins = (PLAYER_COIN_PACKET_PC *)players[i]->coin_packet;
-            coins->last_coin = type->first_model_id;
-            if (type->random_model_count != 0)
-                coins->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
+            type = &GizmoPickupType[GetRandomCoinType()];
+            ((PLAYER_COIN_PACKET_PC *)players[i]->coin_packet)->last_coin = type->first_model_id;
+            if (type->random_model_count > 0)
+                ((PLAYER_COIN_PACKET_PC *)players[i]->coin_packet)->last_coin +=
+                    (i16)(qrand() / (0xffff / type->random_model_count + 1));
         }
     }
-    for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-        if ((Obj[i].flags_1fc_word & 0x1001) == 0x1001)
-            Obj[i].flags_ef0 |= 0x80;
+    object = Obj;
+    for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
+        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0)
+            object->flags_ef0 |= 0x80;
     }
     GameFog_Reset();
     ConfigureComplexShadow(NULL);
@@ -582,7 +568,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     Cheats_Reset();
     if (WORLD->level_progress != NULL) {
         ResetScene(WORLD->current_gscn, &WORLD->level_progress->scene_progress);
-        ((CHECK_RESET_PROGRESS_VIEW_PC *)WORLD->level_progress)->flags |= 1;
+        WORLD->level_progress->flags |= 1;
     }
     GizmoBlowupVisibilityOverrides(WORLD);
     texanimbits = 0;
@@ -619,7 +605,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     ResetTimer(&PauseTimer, 0.0f);
     ResetTimer(&JoinInTimer, 0.0f);
     if ((ResetBits & 0x20) != 0 && MissionSys != NULL)
-        ResetTimer(&((CHECK_RESET_MISSION_VIEW_PC *)MissionSys)->timer, 0.0f);
+        ResetTimer(&MissionSys->timer, 0.0f);
     Hint_SetHintFromId(-1, 0, 0);
     ResetRepeatSfx();
     DEFAULT_MOVE_RANGE = 0.0f;
@@ -743,8 +729,8 @@ extern "C" void __cdecl CheckResetBits(void) {
     ResetRadios();
     SpecialMiniKits_Reset(WORLD);
     SuperCounters_FixUpGizmos(WORLD);
-    AITriggerSetSysReset(((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->ai_trigger_set_sys);
-    AITriggerSysAutoSetUp(WORLD, (AITRIGGERSETSYS_s *)((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->ai_trigger_set_sys);
+    AITriggerSetSysReset((TRIGGER_SYSTEM_PC *)WORLD->ai_trigger_set);
+    AITriggerSysAutoSetUp(WORLD, (AITRIGGERSETSYS_s *)WORLD->ai_trigger_set);
     if ((ResetBits & 0x10) != 0) {
         for (player_slot = (GAMEOBJECT **)Player; player_slot < (GAMEOBJECT **)Player + 8; ++player_slot) {
             if (*player_slot != NULL)
@@ -765,9 +751,8 @@ extern "C" void __cdecl CheckResetBits(void) {
     TempOptions.master_volume = Game.options_save.master_volume;
     TempOptions.sound_volume = Game.options_save.sound_volume;
     TempOptions.music_volume = Game.options_save.music_volume;
-    if (WORLD->level_progress != NULL && (((CHECK_RESET_PROGRESS_VIEW_PC *)WORLD->level_progress)->flags & 2) == 0 &&
-        WORLD->camera_splines[1] != NULL && gone_through_door_to_new_mode == 0 && gone_through_door_to_new_level == 0 &&
-        come_from_an_editor == 0)
+    if (WORLD->level_progress != NULL && (WORLD->level_progress->flags & 2) == 0 && WORLD->camera_splines[1] != NULL &&
+        gone_through_door_to_new_mode == 0 && gone_through_door_to_new_level == 0 && come_from_an_editor == 0)
         GameCameraMakeMiniCut(WORLD->camera_splines[1], 0.0f, 2.0f, 0.0f, 1.0f, 0, 1);
     gone_through_door_to_new_mode = 0;
     come_from_an_editor = 0;
@@ -788,16 +773,15 @@ extern "C" void __cdecl CheckResetBits(void) {
     CutScene_StartAudio();
     if (NOSOUND == 0)
         NuSound3Update();
-    ((CHECK_RESET_WORLD_VIEW_PC *)WORLD)->reset_flags = 1;
+    WORLD->reset_flags = 1;
     LookAtBoth = 0;
     oneAtOnce_SetNumAttackers(1);
     if (WORLD->level_progress != NULL) {
-        if ((((CHECK_RESET_PROGRESS_VIEW_PC *)WORLD->level_progress)->flags & 2) != 0)
-            WORLD->progress_flag_5174 = (((CHECK_RESET_PROGRESS_VIEW_PC *)WORLD->level_progress)->flags >> 2) & 1;
+        if ((WORLD->level_progress->flags & 2) != 0)
+            WORLD->progress_flag_5174 = (WORLD->level_progress->flags >> 2) & 1;
     }
     if (WORLD->level_progress != NULL)
-        ResetGizFlow(WORLD->giz_flow,
-                     (GIZFLOWPROGRESS_PC *)((CHECK_RESET_PROGRESS_VIEW_PC *)WORLD->level_progress)->giz_flow_progress);
+        ResetGizFlow(WORLD->giz_flow, (GIZFLOWPROGRESS_PC *)WORLD->level_progress->giz_flow_progress);
     else
         ResetGizFlow(WORLD->giz_flow, NULL);
     EffectOffProgress_Reset(WORLD->level_progress);
@@ -854,35 +838,38 @@ static void __cdecl BigJump_EndOfLand(GAMEOBJECT *object) {
 
 static i32 __cdecl Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 sound) {
     i32 previous, selected;
-    u32 available;
     SUIT_INITIALIZER_RECORD_PC *record;
-    if (object->suit == NULL)
-        return 0;
-    previous = Suit_GetIndex(object->suit);
-    available = areaSuitBits;
-    selected = previous;
-    record = &SuitRecordInitPc[selected];
-    for (;;) {
-        if (left != 0) {
-            --selected;
-            --record;
-        } else {
-            ++selected;
-            ++record;
+    if (object->suit != NULL) {
+        previous = Suit_GetIndex(object->suit);
+        selected = previous;
+        record = &SuitRecordInitPc[selected];
+        for (;;) {
+            if (left != 0) {
+                --selected;
+                --record;
+            } else {
+                ++selected;
+                ++record;
+            }
+            if (selected < 0 || selected == 10 || record->character_id != (i16)object->id || selected == previous)
+                return 0;
+            if ((areaSuitBits & (1 << selected)) != 0)
+                break;
         }
-        if (selected < 0 || selected == 10 || record->character_id != (i16)object->id || selected == previous)
-            return 0;
-        if ((available & (1u << ((u32)selected & 31))) != 0)
-            break;
+        if (selected != -1) {
+            NewPlayerCharacter(object, (i16)object->id, -1, 1);
+            if (sound != 0) {
+                if (left != 0)
+                    GameAudio_PlaySfx(0x23, &object->collision_position, 0, 0);
+                else
+                    GameAudio_PlaySfx(0x24, &object->collision_position, 0, 0);
+            }
+            object->suit = (SUIT_LAYERS_PC *)&SuitRecordInitPc[selected];
+            InitPlayerAI(object);
+            return 1;
+        }
     }
-    if (selected == -1)
-        return 0;
-    NewPlayerCharacter(object, (i16)object->id, -1, 1);
-    if (sound != 0)
-        GameAudio_PlaySfx(left != 0 ? 0x23 : 0x24, &object->collision_position, 0, 0);
-    object->suit = (SUIT_LAYERS_PC *)&SuitRecordInitPc[selected];
-    InitPlayerAI(object);
-    return 1;
+    return 0;
 }
 
 static void __cdecl Punch_HitExtraCode_alternate_PC(GAMEOBJECT *object, NUVEC *position) {

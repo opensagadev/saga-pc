@@ -2830,7 +2830,10 @@ STATIC_ASSERT(sizeof(SCENEPROGRESS) == 0x2800);
 
 typedef struct level_progress_pc_s {
     SCENEPROGRESS scene_progress;
-    u8 unknown_2800[0x14];
+    union {
+        u8 unknown_2800[0x14];
+        u32 flags;
+    };
     f32 minimum_tfactor;
     union {
         u8 unknown_2818[8];
@@ -2840,7 +2843,13 @@ typedef struct level_progress_pc_s {
         };
     };
     u32 progress_state;
-    u8 unknown_2824[0x544];
+    union {
+        u8 unknown_2824[0x544];
+        struct {
+            u8 unknown_2824_pc[0x400];
+            u8 giz_flow_progress[0x144];
+        };
+    };
     char disabled_effect_names[12][16];
 } LEVEL_PROGRESS;
 STATIC_ASSERT(sizeof(LEVEL_PROGRESS) == 0x2e28);
@@ -3619,7 +3628,13 @@ typedef struct WORLDINFO_s {
     VARIPTR buffer_end;
     i32 config_count;
     i32 loaded;
-    u32 unknown_0114[2];
+    union {
+        u32 unknown_0114[2];
+        struct {
+            u32 unknown_0114_pc;
+            i32 reset_flags;
+        };
+    };
     i32 level_idx;
     i32 area_index;
     i32 episode_index;
