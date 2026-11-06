@@ -1596,49 +1596,52 @@ u32 __cdecl GetLevelExBlowupFlags(void) {
 }
 GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
                                         NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *flags) {
-    u32 exclude_flag_1 = EXBLOWUPFLAGS & 1;
     u32 exclude_flag_2 = EXBLOWUPFLAGS & 2;
+    u32 exclude_flag_1 = EXBLOWUPFLAGS & 1;
     i32 airborne_damage = object != NULL && object->character_data->game_character->field_028 > 0.0f;
-    GIZMOBLOWUP_PC *nearest = NULL;
-    f32 nearest_distance = 1000000.0f;
+    GIZMOBLOWUP_PC *nearest;
+    f32 nearest_distance;
     GIZMOBLOWUP_PC *blowup = WORLD->gizmo_blowups;
     i32 index, damage, cause;
     if (blowup == NULL) {
         return NULL;
     }
+    nearest_distance = 1000000.0f;
+    nearest = NULL;
     for (index = 0; index < WORLD->gizmo_blowup_count; ++index, ++blowup) {
-        u32 properties = blowup->draw_flags;
-        NUVEC center;
-        f32 extent;
         i32 point;
-        if ((blowup->status_flags & 0x804001) != 0x804000 ||
-            (exclude_flag_1 && (properties & 0x80000) && airborne_damage)) {
+        if ((blowup->status_flags & 1) != 0 || (blowup->status_flags & 0x800000) == 0 ||
+            (blowup->status_flags & 0x4000) == 0) {
             continue;
         }
-        if (exclude_flag_2 && (properties & 0x200000) && hit_type - 8 < 2 && BlowupExFunc != NULL &&
-            BlowupExFunc(blowup, hit_type)) {
+        if (exclude_flag_1 && (blowup->draw_flags & 0x80000) && airborne_damage) {
             continue;
         }
-        properties = blowup->draw_flags;
-        if (bolt != NULL && (blowup->platform_id != -1 || (properties & 0x8000) == 0 ||
-                             ((properties & 0x80000) && (object == NULL || object->rider == NULL)))) {
+        if (exclude_flag_2 && (blowup->draw_flags & 0x200000) && (hit_type == 8 || hit_type == 9) &&
+            BlowupExFunc != NULL && BlowupExFunc(blowup, hit_type)) {
             continue;
         }
-        if (hit_type == 0 && (properties & 0x10000) == 0) {
+        if (bolt != NULL && (blowup->platform_id != -1 || (blowup->draw_flags & 0x8000) == 0 ||
+                             ((blowup->draw_flags & 0x80000) && (object == NULL || object->rider == NULL)))) {
             continue;
         }
-        if ((hit_type == 3 && (properties & 0x200000)) || ((properties & 0x20) && ShadowMode == 0) ||
-            ((properties & 0x40) != 0) != (hit_type == 7)) {
+        if (hit_type == 0 && (blowup->draw_flags & 0x10000) == 0) {
             continue;
         }
-        center = blowup->mid_position;
-        extent = blowup->target_scale;
-        if (center.x - extent > maximum->x || minimum->x > center.x + extent || center.z - extent > maximum->z ||
-            minimum->z > center.z + extent || center.y - extent > maximum->y || minimum->y > center.y + extent) {
+        if ((hit_type == 3 && (blowup->draw_flags & 0x200000)) || ((blowup->draw_flags & 0x20) && ShadowMode == 0) ||
+            (hit_type == 7) != ((blowup->draw_flags & 0x40) != 0)) {
+            continue;
+        }
+        if (maximum->x < blowup->mid_position.x - blowup->target_scale ||
+            minimum->x > blowup->mid_position.x + blowup->target_scale ||
+            maximum->z < blowup->mid_position.z - blowup->target_scale ||
+            minimum->z > blowup->target_scale + blowup->mid_position.z ||
+            maximum->y < blowup->mid_position.y - blowup->target_scale ||
+            minimum->y > blowup->target_scale + blowup->mid_position.y) {
             continue;
         }
         for (point = point_count - 1; point >= 0; --point) {
-            if (SphereSphereOverlap(&blowup->mid_position, extent, &points[point], radius)) {
+            if (SphereSphereOverlap(&blowup->mid_position, blowup->target_scale, &points[point], radius)) {
                 NUVEC *origin = object != NULL ? &object->collision_position : &points[point];
                 f32 distance = NuVecDistSqr(origin, &blowup->mid_position, NULL);
                 if (distance < nearest_distance) {
@@ -1649,36 +1652,39 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
             }
         }
     }
-    if (nearest == NULL) {
-        return NULL;
-    }
-
-    if (hit_type == 7 || hit_type == 2) {
-        damage = -1;
-        cause = 9;
-    } else {
-        damage = 1;
-        if (bolt != NULL) {
-            damage = BoltType_FindByID(bolt->type_id, WORLD)->field_3c;
-            if (Cheats_CheckFlags(2) && (bolt->flags & 3)) {
-                damage *= 2;
+    if (nearest != NULL) {
+        if (hit_type == 2 || hit_type == 7) {
+            damage = -1;
+        } else {
+            damage = 1;
+            if (bolt != NULL) {
+                damage = BoltType_FindByID(bolt->type_id, WORLD)->field_3c;
+                if (Cheats_CheckFlags(2) && (bolt->flags & 3)) {
+                    damage *= 2;
+                }
             }
         }
-        cause = hit_type == 3 ? 10 : (hit_type == 0 ? 13 : 3);
-    }
-    if (GizmoBlowupBlowup(nearest, 1, cause, damage, NULL, 1) == 0) {
-        if (bolt != NULL) {
+        if (hit_type == 3) {
+            cause = 10;
+        } else if (hit_type == 2 || hit_type == 7) {
+            cause = 9;
+        } else {
+            cause = hit_type == 0 ? 13 : 3;
+        }
+        if (GizmoBlowupBlowup(nearest, 1, cause, damage, NULL, 1) != 0) {
+            if (object != NULL) {
+                NewRumble(object->pad->bound_pad, 0.4f, 0);
+                GameCam_HitJudder();
+            }
+        } else if (bolt != NULL) {
             NUVEC normal;
             NuVecSub(&normal, &nearest->position, &bolt->position);
             NuVecNorm(&normal, &normal);
             Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, flags);
         }
-    } else if (object != NULL) {
-        NewRumble(object->pad->bound_pad, 0.4f, 0);
-        GameCam_HitJudder();
-    }
-    if (BoltSys->stop_targeting != NULL) {
-        BoltSys->stop_targeting(object, points);
+        if (BoltSys->stop_targeting != NULL) {
+            BoltSys->stop_targeting(object, points);
+        }
     }
     return nearest;
 }
