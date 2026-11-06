@@ -119,38 +119,38 @@ i32 HothBattle_StartNewWave() {
     if (melee.field_0x2 != 0) {
         switch (melee.field_0x1) {
             case 1:
+                melee.waves[0].character_id = VehicleBoltId7f18b4Pc;
                 melee.waves[0].field_0x18 = 11;
                 melee.waves[0].field_0x19 = 11;
-                melee.waves[0].character_id = VehicleBoltId7f18b4Pc;
                 NuStrCpy(melee.waves[0].name, "Probe");
                 melee.creature_count = 1;
                 break;
             case 2:
+                melee.waves[0].character_id = id_ATST_LOWRES;
                 melee.waves[0].field_0x18 = 11;
                 melee.waves[0].field_0x19 = 11;
-                melee.waves[0].character_id = id_ATST_LOWRES;
                 NuStrCpy(melee.waves[0].name, "rider");
                 melee.creature_count = 1;
                 break;
             case 3:
+                melee.waves[0].character_id = id_ATAT;
                 melee.waves[0].field_0x18 = 2;
                 melee.waves[0].field_0x19 = 2;
-                melee.waves[0].character_id = id_ATAT;
                 NuStrCpy(melee.waves[0].name, "ATAT");
                 melee.creature_count = 1;
                 break;
             case 4:
+                melee.waves[0].character_id = VehicleBoltId7f18b4Pc;
                 melee.waves[0].field_0x18 = 4;
                 melee.waves[0].field_0x19 = 4;
-                melee.waves[0].character_id = VehicleBoltId7f18b4Pc;
                 NuStrCpy(melee.waves[0].name, "Probe");
+                melee.waves[1].character_id = id_ATST_LOWRES;
                 melee.waves[1].field_0x18 = 6;
                 melee.waves[1].field_0x19 = 6;
-                melee.waves[1].character_id = id_ATST_LOWRES;
                 NuStrCpy(melee.waves[1].name, "rider");
+                melee.waves[2].character_id = id_ATAT;
                 melee.waves[2].field_0x18 = 1;
                 melee.waves[2].field_0x19 = 1;
-                melee.waves[2].character_id = id_ATAT;
                 NuStrCpy(melee.waves[2].name, "ATAT");
                 melee.creature_count = 3;
                 break;
