@@ -5842,6 +5842,27 @@ address,symbol,size,ctype
 0x005b9e70,_NuRandSetSeed,27,"void __cdecl (NURAND *, i32)"
 0x005b9e90,_NuRand,90,i32 __cdecl (NURAND *)
 0x005b9ef0,_NuFloatRand,37,f32 __cdecl (NURAND *)
+0x5b9f20,_NuCubicToBez3,57,"void __cdecl (f32 *, f32 *)"
+0x5b9f60,_NuBez3ToCubic,68,"void __cdecl (f32 *, f32 *)"
+0x5b9fb0,_NuBez3Subdiv,162,"void __cdecl (f32 *, f32, f32 *, f32 *)"
+0x5ba060,_NuBezierCubicPatchEvaluate,399,"NUVEC __cdecl (NUVEC *, f32, f32)"
+0x5ba1f0,_NuBezierCubicPatchEvaluatePartials,808,"NUVEC __cdecl (NUVEC *, f32, f32, i32, i32)"
+0x5ba520,_NuBezierCubicPatchPartialsU,290,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5ba650,_NuBezierCubicPatchPartialsV,281,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5ba770,_NuBezierCubicPatchPartialsUUVV,1302,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bac90,_NuBezierCubicPatchPartialsUUV,871,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bb000,_NuBezierCubicPatchPartialsUVV,870,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bb370,_NuBezierCubicPatchPartialsUUVVV,955,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bb730,_NuBezierCubicPatchPartialsVV,430,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bb8e0,_NuBezierCubicPatchPartialsVVV,351,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bba40,_NuBezierCubicPatchPartialsUU,448,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bbc00,_NuBezierCubicPatchPartialsUUU,360,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bbd70,_NuBezierQuadraticTriangleEvaluateBarycentric,428,"NUVEC __cdecl (NUVEC *, f32, f32, f32)"
+0x5bbf20,_NuBezierQuadraticTriangleEvaluateParametric,468,"NUVEC __cdecl (NUVEC *, f32, f32)"
+0x5bc100,_NuBezierQuadraticTrianglePartialsUU,132,NUVEC __cdecl (NUVEC *)
+0x5bc190,_NuBezierQuadraticTrianglePartialsVV,131,NUVEC __cdecl (NUVEC *)
+0x5bc220,_NuBezierQuadraticTrianglePartialsUeV,131,NUVEC __cdecl (NUVEC *)
+0x5bc2b0,_NuBez3EvaluateX,183,"f32 __cdecl (NUVEC4 *, f32)"
 0x5bd100,_nugraphGetYatX,1634,"f32 __cdecl (nugraph_s *, f32, i32)"
 0x005bdd50,_NuTrigInit,56,void __cdecl (void)
 0x5bde60,_NuAngAtanQuadrantI,45,
@@ -11416,6 +11437,7 @@ address,symbol,size,ctype
 0x7531e0,__real@4032000000000000,8,const f64
 0x7531e8,__real@403b000000000000,8,const f64
 0x7531f0,_CharacterWeaponScaleUpperBoundPc,4,const f32
+0x7531f4,__real@41900000,4,const f32
 0x007531f8,__real@406fe00000000000,8,const f64
 0x00753200,_TerrainScanTriangleSentinel,,
 0x753200,__real@47800000,4,const f32
@@ -12086,6 +12108,7 @@ address,symbol,size,ctype
 0x755178,__real@4560ec29,4,const f32
 0x00755180,_NuScale1000,8,const f64
 0x755180,__real@408f400000000000,8,const f64
+0x755188,__real@c008000000000000,8,const f64
 0x75519c,??_C@_07IOKLEMJI@GoonBox?$AA@,8,char []
 0x7551a4,??_C@_0BG@GOFIHBHI@ep1_podsprint_sebulba?$AA@,22,char []
 0x7551bc,??_C@_0BI@PLMGKKAN@ep1_podsprint_outoftime?$AA@,24,char []
@@ -16912,6 +16935,15 @@ address,symbol,size,ctype
 0x00763ff0,__real@3fcc987dc0000000,8,const f64
 0x00763ff8,__real@3f7eb852,4,const f32
 0x00764000,__real@3e00000000000000,8,f64
+0x764008,__real@c1900000,4,const f32
+0x764010,__real@4062000000000000,8,const f64
+0x764018,__real@4052000000000000,8,const f64
+0x764020,__real@4042000000000000,8,const f64
+0x764028,__real@c032000000000000,8,const f64
+0x764030,__real@406b000000000000,8,const f64
+0x764038,__real@405b000000000000,8,const f64
+0x764040,__real@c042000000000000,8,const f64
+0x764048,__real@c018000000000000,8,const f64
 0x00764090,__real@3f2921fb60000000,8,const f64
 0x7640b8,__real@3fc90fdb,,const f32
 0x7640bc,__real@4096cbe4,,const f32

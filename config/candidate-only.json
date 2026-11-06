@@ -1365,6 +1365,16 @@
    "unit": "src/legoapi/gizpushblocks.cpp",
    "symbol": "?GizPushFabsPc@@YAMM@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nubezier.c",
+   "symbol": "_BezVecScale",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nubezier.c",
+   "symbol": "_BezVecScaleAccum",
+   "kind": "function"
   }
  ]
 }
