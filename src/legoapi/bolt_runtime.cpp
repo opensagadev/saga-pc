@@ -21,6 +21,15 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, facing_direction) == 0xf30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
+/* Same lookup as BoltType_FindByID in bolts.c; retail Bolt_Init inlines it. */
+static BOLTTYPE_PC *BoltType_FindByIDInline(i32 id, WORLDINFO *world) {
+    BOLTSYS_PC *system = BoltSys;
+    if (id >= 0 && id < system->count)
+        return &system->types[id];
+    if (world != NULL && id >= system->count && id < system->count + 8)
+        return &world->bolt_types[id - system->count];
+    return NULL;
+}
 static void Bolt_GeneratePointsPrivate(BOLT_PC *bolt, NUVEC *points) {
     points[1] = bolt->position;
     if (!(bolt->flags & 0x200)) {
@@ -135,11 +144,9 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     }
     if (message.data != NULL) {
         PCByteCopy_candidate(&position, message.data->bytes + message.read_offset, 12);
-        if (message.swap_endianness) {
-            EdFileSwapEndianess32(&position.x);
-            EdFileSwapEndianess32(&position.y);
-            EdFileSwapEndianess32(&position.z);
-        }
+        if (message.swap_endianness)
+            for (i32 i = 0; i < 3; ++i)
+                EdFileSwapEndianess32(&(&position.x)[i]);
         message.read_offset += 12;
     }
     if (message.data != NULL) {
@@ -161,14 +168,15 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
             EdFileSwapEndianess32(&hit_flags);
         message.read_offset += 4;
     }
-    GAMEOBJECT *owner = owner_index < 0 ? NULL : &Obj[owner_index];
-    BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
+    GAMEOBJECT *owner = owner_index >= 0 ? &Obj[owner_index] : NULL;
+    BOLTTYPE_PC *type = BoltType_FindByIDInline(type_id, WORLD);
     NUVEC momentum = APIObjectZeroMomentumPC;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 no_sfx = BoltNoSfxPc;
     BoltNoSfxPc = 0;
     i32 no_momentum = BoltNoObjectMomentumPc;
     BoltNoObjectMomentumPc = 0;
+    i32 shoot_id = -1;
     BoltShootIdScratch = -1;
     if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)))
         return;
@@ -200,10 +208,11 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     u32 flags = type->flags_60;
     if (owner != NULL) {
         if ((owner->flags_1fc & 0x80) != 0) {
+            flags |= 0x28;
             if (owner->field_280 == 0)
-                flags |= 0x29;
-            else
-                flags |= owner->field_280 == 1 ? 0x2a : 0x28;
+                flags |= 1;
+            else if (owner->field_280 == 1)
+                flags |= 2;
         }
         bool add_speed = InitBolt_AddMomentumType != NULL && InitBolt_AddMomentumType(bolt, owner, &momentum) != 0;
         if (!add_speed) {
@@ -220,12 +229,13 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
         if (owner->rider != NULL)
             flags |= 0x40000;
         if (BoltInitSfxFn != NULL)
-            BoltShootIdScratch = BoltInitSfxFn(owner);
-        if (BoltShootIdScratch == -1)
-            BoltShootIdScratch = owner->character_data->game_character->sfx_shoot;
+            shoot_id = BoltInitSfxFn(owner);
+        if (shoot_id == -1)
+            shoot_id = owner->character_data->game_character->sfx_shoot;
     }
-    if (BoltShootIdScratch == -1)
-        BoltShootIdScratch = type->field_64;
+    if (shoot_id == -1)
+        shoot_id = type->field_64;
+    BoltShootIdScratch = shoot_id;
     if (!no_sfx && BoltShootIdScratch != -1)
         GameAudio_PlaySfxById(BoltShootIdScratch, &position, 0, 0);
     BoltShootPositionScratch = position;
