@@ -1069,15 +1069,19 @@ void PC_INPUT_RUNTIME_PC::CaptureBindingPc(i32 port) {
         i32 groups = (key_count + 3) / 4;
         const u32 *words = (const u32 *)keyboard_state;
         for (i32 group = 0; group < groups; ++group) {
-            if (!words[group])
-                continue;
-            for (i32 key = group * 4; key < key_count && key < group * 4 + 4; ++key)
-                if (keyboard_state[key]) {
-                    captures[10].kind[0] = 7;
-                    captures[10].value[0] = (i16)key;
-                    group = groups;
-                    break;
+            if (words[group] != 0) {
+                i32 key = group * 4;
+                for (i32 lane = 0; lane < 4; ++lane, ++key) {
+                    if (key >= key_count)
+                        break;
+                    if (keyboard_state[key]) {
+                        captures[10].kind[0] = 7;
+                        captures[10].value[0] = (i16)key;
+                        break;
+                    }
                 }
+                break;
+            }
         }
         if (nu_keyboard_owner.mouse_axes && nu_keyboard_owner.mouse_buttons && nu_keyboard_owner.mouse_axes >= 2 &&
             nu_keyboard_owner.mouse_buttons >= 2) {
@@ -1090,26 +1094,45 @@ void PC_INPUT_RUNTIME_PC::CaptureBindingPc(i32 port) {
             i32 x = (i32)mouse.accumulated[0];
             i32 y = (i32)mouse.accumulated[1];
             i32 z = (i32)mouse.accumulated[2];
-            i32 ax = x < 0 ? -x : x, ay = y < 0 ? -y : y;
-            if (ax > ay) {
-                if (ax > motion_threshold) {
-                    captures[10].kind[2] = x > 0 ? 5 : 6;
-                    captures[10].value[2] = 0;
+            if (abs(x) > abs(y)) {
+                if (abs(x) > motion_threshold) {
+                    if (x > 0) {
+                        captures[10].kind[2] = 5;
+                        captures[10].value[2] = 0;
+                    } else {
+                        captures[10].kind[2] = 6;
+                        captures[10].value[2] = 0;
+                    }
                 }
-            } else if (ay > motion_threshold) {
-                captures[10].kind[2] = y > 0 ? 5 : 6;
-                captures[10].value[2] = 1;
+            } else if (abs(y) > motion_threshold) {
+                if (y > 0) {
+                    captures[10].kind[2] = 5;
+                    captures[10].value[2] = 1;
+                } else {
+                    captures[10].kind[2] = 6;
+                    captures[10].value[2] = 1;
+                }
             }
             if (z) {
-                captures[10].kind[2] = z > 0 ? 5 : 6;
-                captures[10].value[2] = 2;
+                if (z > 0) {
+                    captures[10].kind[2] = 5;
+                    captures[10].value[2] = 2;
+                } else {
+                    captures[10].kind[2] = 6;
+                    captures[10].value[2] = 2;
+                }
             }
         }
         return;
     }
     for (i32 axis = 0; axis < 32; ++axis) {
-        if (raw_sample.axes[axis] > 16384 || raw_sample.axes[axis] < -16384) {
-            captures[port].kind[2] = raw_sample.axes[axis] > 16384 ? 2 : 3;
+        if (raw_sample.axes[axis] > 16384) {
+            captures[port].kind[2] = 2;
+            captures[port].value[2] = (i16)axis;
+            break;
+        }
+        if (raw_sample.axes[axis] < -16384) {
+            captures[port].kind[2] = 3;
             captures[port].value[2] = (i16)axis;
             break;
         }
