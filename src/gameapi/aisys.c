@@ -17967,32 +17967,44 @@ extern f32 default_xspacing, default_zspacing;
 
 /* Native 528450..5285ae: private type argument EDI. */
 static __declspec(noinline) EDAICREATURE_s *CreateCreature(i32 type, NUVEC *position, i32 angle) {
-    EDAICREATURE_s *creature;
-    if (type == -1)
-        return NULL;
-    creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->free_creatures);
-    if (creature != NULL) {
-        NuLinkedListRemove(&aieditor->free_creatures, &creature->link);
-        NuLinkedListAppend(&aieditor->creatures, &creature->link);
-        creature->character_type = (i16)type;
-        creature->set = 0;
-        creature->group_count = default_ngroup;
-        creature->across_count = default_nacross;
-        creature->x_spacing = default_xspacing;
-        creature->z_spacing = default_zspacing;
-        creature->stagger_start = AiLoadStartStaggerPc;
-        creature->view_distance = GetViewRangeFn != NULL ? GetViewRangeFn(type) : 1.0f;
-        creature->hear_distance = GetHearDistanceFn != NULL ? GetHearDistanceFn(type) : 1.0f;
-        creature->max_view_height = GetMaxViewHeightFn != NULL ? GetMaxViewHeightFn(type) : 1.0f;
-        creature->min_view_height = GetMinViewHeightFn != NULL ? GetMinViewHeightFn(type) : 1.0f;
-        creature->difficulty = AiLoadActivationDifficultyPc;
-        creature->min_respawns = AiLoadMinimumRespawnCountPc;
-        creature->max_respawns = AiLoadMaximumRespawnCountPc;
-        creature->min_respawn_time = AiLoadMinimumRespawnTimePc;
-        creature->max_respawn_time = AiLoadMaximumRespawnTimePc;
-        if (position != NULL) {
-            creature->position = *position;
-            creature->angle = angle;
+    EDAICREATURE_s *creature = NULL;
+    if (type != -1) {
+        creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->free_creatures);
+        if (creature != NULL) {
+            NuLinkedListRemove(&aieditor->free_creatures, &creature->link);
+            NuLinkedListAppend(&aieditor->creatures, &creature->link);
+            creature->character_type = (i16)type;
+            creature->set = 0;
+            creature->group_count = default_ngroup;
+            creature->across_count = default_nacross;
+            creature->x_spacing = default_xspacing;
+            creature->z_spacing = default_zspacing;
+            creature->stagger_start = AiLoadStartStaggerPc;
+            if (GetViewRangeFn != NULL)
+                creature->view_distance = GetViewRangeFn(type);
+            else
+                creature->view_distance = 1.0f;
+            if (GetHearDistanceFn != NULL)
+                creature->hear_distance = GetHearDistanceFn(type);
+            else
+                creature->hear_distance = 1.0f;
+            if (GetMaxViewHeightFn != NULL)
+                creature->max_view_height = GetMaxViewHeightFn(type);
+            else
+                creature->max_view_height = 1.0f;
+            if (GetMinViewHeightFn != NULL)
+                creature->min_view_height = GetMinViewHeightFn(type);
+            else
+                creature->min_view_height = 1.0f;
+            creature->difficulty = AiLoadActivationDifficultyPc;
+            creature->min_respawns = AiLoadMinimumRespawnCountPc;
+            creature->max_respawns = AiLoadMaximumRespawnCountPc;
+            creature->min_respawn_time = AiLoadMinimumRespawnTimePc;
+            creature->max_respawn_time = AiLoadMaximumRespawnTimePc;
+            if (position != NULL) {
+                creature->position = *position;
+                creature->angle = angle;
+            }
         }
     }
     return creature;
@@ -18289,6 +18301,152 @@ void creatureEditor_RenderAllCreatures(void) {
                 vertices[0].position.y += (double)0.1f;
                 vertices[1].position.y += (double)0.1f;
                 AiRndrLine3d(vertices, NULL, NULL);
+            }
+        }
+    }
+}
+
+extern void(__cdecl *ClearAICreaturesFn)(void);
+
+void __cdecl creatureEditor_Enter(void) {
+    AICREATURE_PC *source;
+    EDAICREATURE_s *creature;
+    EDAIPATH_s *path;
+    AISCRIPT_PC *script;
+    EDAIAREA_s *area;
+    EDLOCATOR_s *locator;
+    NULISTHDR *list;
+    char *name;
+    f32 offset;
+    i32 i;
+    list = &aieditor->creatures;
+    list->head = NULL;
+    list->tail = NULL;
+    for (i = 0; i < 128; ++i)
+        NuLinkedListAppend(&aieditor->free_creatures, &aieditor->creature_pool[i].link);
+    if (aieditor->ai_system != NULL) {
+        for (i = 0; i < aieditor->ai_system->creature_count; ++i) {
+            source = &aieditor->ai_system->creatures[i];
+            creature = CreateCreature(source->type, &source->position, source->y_rotation);
+            if (creature == NULL)
+                continue;
+            path = pathEditor_GetPath(source->path_info.path->name);
+            offset = 0.0f;
+            pathEditor_OnPathCheck(&creature->position, &creature->check, path, offset);
+            while (creature->check.on_path == 0) {
+                offset = offset + (f64)0.01f;
+                pathEditor_OnPathCheck(&creature->position, &creature->check, path, offset);
+            }
+            creature->check.angle = NuAngSub(creature->angle, creature->check.angle);
+            strcpy(creature->name, source->name);
+            strcpy(creature->script_name, source->script_name);
+            creature->set = source->set;
+            creature->group_count = source->count;
+            creature->across_count = source->count_across;
+            creature->valid_positions = source->active_mask;
+            creature->x_spacing = source->x_spacing;
+            creature->z_spacing = source->z_spacing;
+            creature->flags = source->flags;
+            creature->script_params[0] = source->script_params[0];
+            creature->script_params[1] = source->script_params[1];
+            creature->script_params[2] = source->script_params[2];
+            creature->script_params[3] = source->script_params[3];
+            name = creature->script_name;
+            if (name != NULL) {
+                if (aieditor->ai_system != NULL) {
+                    for (script = (AISCRIPT_PC *)NuLinkedListGetHead(&aieditor->ai_system->scripts); script != NULL;
+                         script = (AISCRIPT_PC *)NuLinkedListGetNext(&aieditor->ai_system->scripts, &script->link)) {
+                        if (NuStrICmp(name, script->name) == 0)
+                            goto found;
+                    }
+                }
+                for (script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts); script != NULL;
+                     script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link)) {
+                    if (NuStrICmp(name, script->name) == 0)
+                        goto found;
+                }
+            }
+            for (script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts); script != NULL;
+                 script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link)) {
+                if (NuStrICmp(GizmoDefaultOutputName, script->name) == 0)
+                    goto found;
+            }
+            goto areas;
+        found:
+            if ((source->flags & 2) == 0)
+                creature->script_params[0] = script->params[0].default_value;
+            if ((source->flags & 4) == 0)
+                creature->script_params[1] = script->params[1].default_value;
+            if ((source->flags & 8) == 0)
+                creature->script_params[2] = script->params[2].default_value;
+            if ((source->flags & 0x10) == 0)
+                creature->script_params[3] = script->params[3].default_value;
+        areas:
+            if (source->area != NULL) {
+                for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
+                     area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
+                    if (NuStrICmp(area->name, (char *)source->area) == 0) {
+                        creature->trigger_area = area;
+                        break;
+                    }
+                }
+            }
+            if (source->locator != NULL) {
+                for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
+                     locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
+                    if (NuStrICmp(locator->name, (char *)source->locator) == 0) {
+                        creature->locator = locator;
+                        break;
+                    }
+                }
+            }
+            if (source->respawn_locator != NULL) {
+                for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
+                     locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
+                    if (NuStrICmp(locator->name, (char *)source->respawn_locator) == 0) {
+                        creature->respawn_locator = locator;
+                        break;
+                    }
+                }
+            }
+            creature->activation = source->activation_type;
+            if (source->activation_type == 1) {
+                creature->activation = 0;
+                if (source->activate_area != NULL) {
+                    for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
+                         area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
+                        if (NuStrICmp(area->name, (char *)source->activate_area) == 0) {
+                            creature->activation_area = area;
+                            creature->activation = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            creature->difficulty = source->activation_difficulty;
+            creature->min_respawns = source->min_respawn_count;
+            creature->max_respawns = source->max_respawn_count;
+            creature->min_respawn_time = source->min_respawn_time;
+            creature->max_respawn_time = source->max_respawn_time;
+            creature->stagger_start = source->start_stagger;
+            creature->view_distance = source->view_distance;
+            creature->hear_distance = source->hear_distance;
+            creature->max_view_height = source->max_view_height;
+            creature->min_view_height = source->min_view_height;
+        }
+    }
+    if (aieditorsettings.character_type == -1 && LevelCharacterGlobalIDFn != NULL)
+        aieditorsettings.character_type = LevelCharacterGlobalIDFn(0);
+    if (ClearAICreaturesFn != NULL)
+        ClearAICreaturesFn();
+    if (strlen(aieditorsettings.creature_name) != 0) {
+        for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
+             creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
+            if (NuStrICmp(creature->name, aieditorsettings.creature_name) == 0) {
+                aieditor->selected_creature = creature;
+                if (aieditor->selected_creature != NULL)
+                    aieditor_SetCurrentScript(aieditor->selected_creature->script_name, aieditor->selected_creature);
+                return;
             }
         }
     }

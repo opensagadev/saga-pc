@@ -3477,6 +3477,7 @@ address,symbol,size,ctype
 0x52a710,_creatureEditor_Updated,76,
 0x52a760,_creatureEditor_RenderAllCreatures,389,
 0x52a8f0,_creatureEditor_Render,1318,
+0x52ae20,_creatureEditor_Enter,1369,
 0x0052b3f0,_xConditions,1476,void __cdecl (NUFPAR_PC *)
 0x0052b9c0,_xActions,749,void __cdecl (NUFPAR_PC *)
 0x52bcb0,_AIScriptOpenPakFileParse,308,"void __cdecl(AISCRIPT_PC **, void *, char *, char *, VARIPTR *, VARIPTR *)"

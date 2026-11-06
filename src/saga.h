@@ -1328,8 +1328,8 @@ typedef struct AIGROUP_PC {
 } AIGROUP_PC;
 STATIC_ASSERT(sizeof(AIGROUP_PC) == 0x134);
 typedef struct AICREATURE_PC {
-    char name[1];
-    u8 unknown_01[0x1f];
+    char name[16];
+    char script_name[16];
     NUVEC position;
     i32 y_rotation;
     AIPATHINFO_PC path_info;
