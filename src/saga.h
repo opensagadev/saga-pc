@@ -5393,7 +5393,9 @@ typedef struct gameobject_s {
     u8 unknown_7d0[0x14];
     u8 *field_7e4;
     u8 field_7e8;
-    u8 unknown_7e9[0x13];
+    u8 unknown_7e9[0xb];
+    i16 *weapon_model_override_pc;
+    u8 unknown_7f8[0x4];
     void *coin_packet;
     void *gizforce_los_info;
     NUMTX locator_matrices[16];

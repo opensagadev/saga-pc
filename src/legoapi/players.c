@@ -1403,7 +1403,7 @@ typedef struct player_initialize_view_pc_s {
     i16 animation_override_from;
     i16 animation_override_to;
     u8 unknown_3f2[0x62];
-    u32 field_454;
+    f32 field_454;
     u8 unknown_458[0x868];
     void *held_batarang;
     u8 unknown_cc4[0x9c];
@@ -1624,11 +1624,10 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
     CHARACTERDATA_PC *character;
     i32 can_pull_levers;
-    i32 type;
+    u8 type;
     char *name;
     u64 route_mask;
     u32 route_mask_word;
-    u32 flags;
     if (StartupGameFlag0 != 0)
         PlayerInitCapabilitiesVariant0Pc(object);
     else if (StartupGameFlag1 != 0)
@@ -1649,7 +1648,7 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
         object->ai_packet.route_mask_high = route_mask_word;
     } else if (SpecialRouteCharacterTypeIDFn != NULL) {
         name = object->suit != NULL ? ((PLAYER_SUIT_NAME_PC *)object->suit)->name : object->character_data->name;
-        type = (u8)SpecialRouteCharacterTypeIDFn(name);
+        type = SpecialRouteCharacterTypeIDFn(name);
         if (type != 0xff) {
             if (type < 64) {
                 route_mask = (u64)1 << type;
@@ -1665,34 +1664,47 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
             }
         }
     }
-    character = object->character_data;
     object->run_speed_override = 1000000000.0f;
     object->walk_speed_override = 1000000000.0f;
+    character = object->character_data;
     object->ai_packet.creature_set = 0;
-    flags = state->ai_state_flags | 2;
-    flags = (flags & ~4u) | ((character->model_flags >> 5) & 4);
+    state->ai_state_flags |= 2;
+    if ((character->model_flags & 0x80) != 0)
+        state->ai_state_flags |= 4;
+    else
+        state->ai_state_flags &= ~4u;
     object->flags_ef0 &= 0xc7ffe6c0;
     object->hover_height_override = 1000000000.0f;
     object->flags_ef4 &= 0x31f7e95c;
     object->collision_scale_override = 1000000000.0f;
     object->flags_ef8_word &= 0xfffffffc;
-    flags = (flags & 0x25fffc27) | 8;
+    state->ai_state_flags = (state->ai_state_flags & 0x25fffc27) | 8;
     object->doomed_escape_locator = NULL;
-    object->flags_ef4 = (object->flags_ef4 & ~0x40000u) | ((object->flags_1f8 & 0x400) == 0 ? 0x40000u : 0);
+    if ((object->flags_1f8 & 0x400) != 0)
+        object->flags_ef4 &= ~0x40000u;
+    else
+        object->flags_ef4 |= 0x40000u;
     object->extra_layer_mask = 0;
     object->ai_packet.movement_target_radius = DEFAULT_MOVE_RANGE;
     object->ai_packet.flags &= ~0x10000000u;
-    object->ai_packet.flags = (object->ai_packet.flags & ~0xc000000u) | (DEFAULT_MOVE_RANGE > 0.0f ? 0x4000000u : 0);
+    if (object->ai_packet.movement_target_radius > 0.0f)
+        object->ai_packet.flags = (object->ai_packet.flags & ~0x8000000u) | 0x4000000u;
+    else
+        object->ai_packet.flags &= ~0xc000000u;
     object->flags_ef4 &= 0xfe5fffff;
-    flags = (flags & ~0x1c0000u) | ((character->model_flags >> 7) & 0x100000);
+    state->ai_state_flags &= 0xfff3ffff;
+    if ((character->model_flags & 0x8000000) != 0)
+        state->ai_state_flags |= 0x100000;
+    else
+        state->ai_state_flags &= ~0x100000u;
     object->movement_speed_scale_pc = 1.0f;
     object->tag_flags &= ~2u;
     object->field_ec4 = 0.0f;
     object->ai_packet.flags &= 0xffffafff;
     object->ai_packet.target_metric_e0 = 1000000000.0f;
     object->ai_packet.target_metric_f0 = 1000000000.0f;
-    state->field_454 = 0;
-    state->ai_state_flags = flags & 0xfadff7fe;
+    state->field_454 = 0.0f;
+    state->ai_state_flags &= 0xfadff7fe;
     object->timer_ecc = 0.0f;
     object->flags_ef0 &= ~0x1000000u;
     object->field_ec0 = 0;
@@ -1716,11 +1728,14 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     state->field_298 = 0;
     state->field_2a0 = 0;
     state->field_2a4 = 0;
-    object->flags_1fc_word =
-        (object->flags_1fc_word & ~2u) |
-        (((character->model_flags & 0x4000) != 0 && (object->field_280 == 0xff || object->rider != NULL)) ? 2u : 0);
-    object->flags_ef0 =
-        (object->flags_ef0 & ~0x80000000u) | ((character->game_character->flags_090 << 18) & 0x80000000u);
+    if ((character->model_flags & 0x4000) != 0 && (object->field_280 == 0xff || object->rider != NULL))
+        object->flags_1fc_word |= 2;
+    else
+        object->flags_1fc_word &= ~2u;
+    if ((character->game_character->flags_090 & 0x2000) != 0)
+        object->flags_ef0 |= 0x80000000u;
+    else
+        object->flags_ef0 &= ~0x80000000u;
     object->flags_1fc_word &= 0xffe7f7ff;
     object->flags_ef4 &= ~4u;
     object->animation_speed_multiplier = 1.0f;
@@ -2024,177 +2039,182 @@ static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i
     }
 }
 
+extern i16 CharacterFixupIdPc007f1810;
+STATIC_ASSERT(offsetof(GAMEOBJECT, weapon_model_override_pc) == 0x7f4);
+
 void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
-    struct PLAYERCHARACTERCONFIG_PC *data;
+    PLAYERCHARACTERCONFIG_PC *data;
+    NUMTX blade_matrix;
+    NUMTX hilt_matrix;
+    NUMTX reflected;
     NUMTX saved_matrix;
-    NUVEC reverse;
-    i32 sabre;
-    u16 rotation;
-    f32 f0x1020;
+    NUVEC scale;
+    NUVEC hilt_scale;
+    NUMTX *matrix;
     i32 hand;
-    NUVEC hilt_scale_vec;
+    i32 joint;
+    i32 part;
+    i32 count;
+    i32 side;
+    i32 passes;
+    i32 model;
+    i32 reflected_model;
+    i32 red, green, blue, purple;
+    u16 rotation = 0;
     i32 models[4] = {-1, -1, -1, -1};
     i32 hilt = -1;
     i32 reflected_models[4] = {-1, -1, -1, -1};
-    if (weapon_scale <= 0.0f) {
+    i32 sabre = 0;
+    if (weapon_scale <= 0.0f)
         return;
-    }
-    data = (PLAYERCHARACTERCONFIG_PC *)(object->character_data->game_character);
-    if (data->flags_094 & 0x200000) {
+    if ((object->character_data->game_character->flags_094 & 0x200000) != 0)
         return;
-    }
-    sabre = 0;
-    rotation = 0;
-    f0x1020 = object->shadow_opacity;
     for (hand = 0; hand < 4; ++hand) {
-        i32 joint;
-        data = (PLAYERCHARACTERCONFIG_PC *)(object->character_data->game_character);
-        joint = data->weapon_joints[hand];
+        joint = object->character_data->game_character->weapon_joints[hand];
         if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-            i32 count;
-            i32 part;
-            const i32 disguise = Cheat_IsOn(15);
-            // Services may replace the character data; the reference reloads it.
-            data = (PLAYERCHARACTERCONFIG_PC *)(object->character_data->game_character);
-            if (disguise && (data->weapon_action == 8 || data->weapon_action == 1)) {
+            red = 0;
+            green = 0;
+            blue = 0;
+            purple = 0;
+            if (Cheat_IsOn(15) && (object->character_data->game_character->weapon_action == 1 ||
+                                   object->character_data->game_character->weapon_action == 8)) {
                 models[0] = 0x59;
             } else {
+                data = object->character_data->game_character;
                 models[0] = data->weapon_model;
             }
             if (models[0] != -1) {
-                if (object->id == id_JANGOFETT) {
+                if (object->id == (u16)id_JANGOFETT) {
                     rotation = 0xd1c8;
                 } else if (models[0] == 0x65 || models[0] == 0x67 || models[0] == 0x69 || models[0] == 0x6b) {
-                    i32 red, green, blue, purple;
-                    if (object->field_280 != -1 && Cheat_IsOn(25)) {
+                    if (object->field_280 != 0xff && Cheat_IsOn(25))
                         red = 1;
-                        green = blue = purple = 0;
-                    } else if (object->field_280 != -1 && Player_HasPurpleForce(object)) {
+                    else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
                         purple = 1;
-                        red = green = blue = 0;
-                    } else {
-                        red = models[0] == 0x65;
-                        green = models[0] == 0x67;
-                        blue = models[0] == 0x69;
-                        purple = models[0] == 0x6b;
-                    }
+                    else if (models[0] == 0x65)
+                        red = 1;
+                    else if (models[0] == 0x67)
+                        green = 1;
+                    else if (models[0] == 0x69)
+                        blue = 1;
+                    else
+                        purple = 1;
                     DrawWeapon_SetSabreObjects(object, red, green, blue, purple, models, &hilt);
                     sabre = 1;
                 }
-            } else {
+            } else if (StartupGameFlag0 != 0) {
+                if (object->weapon_model_override_pc != NULL)
+                    models[0] = *object->weapon_model_override_pc;
+                if (models[0] == -1)
+                    continue;
+            } else if (StartupGameFlag1 != 0) {
                 if ((object->character_data->model_flags & 0x90) == 0x80) {
                     models[0] = 0xd;
                 } else {
-                    i32 red = 0, green = 0, blue = 0, purple = 0;
-                    if (object->id == id_BOB) {
-                        if (object->field_efd & 2)
+                    if (object->id == (u16)id_BOB) {
+                        if ((object->flags_ef0 & 0x200) != 0)
                             green = 1;
                         else
                             blue = 1;
                     } else if (AnakinGreenSabre(object)) {
                         green = 1;
-                    } else {
-                        const u8 color =
-                            ((PLAYERCHARACTERCONFIG_PC *)(object->character_data->game_character))->streak_color;
-                        if (color == 0)
-                            red = 1;
-                        else if (color == 1)
-                            green = 1;
-                        else if (color == 2)
-                            blue = 1;
-                        else if (color == 3)
-                            purple = 1;
+                    } else if (data->streak_color == 0) {
+                        red = 1;
+                    } else if (data->streak_color == 1) {
+                        green = 1;
+                    } else if (data->streak_color == 2) {
+                        blue = 1;
+                    } else if (data->streak_color == 3) {
+                        purple = 1;
                     }
-                    if (red || green || blue || purple) {
-                        if (object->field_280 != -1 && Cheat_IsOn(25)) {
-                            red = 1;
-                            green = blue = purple = 0;
-                        } else if (object->field_280 != -1 && Player_HasPurpleForce(object)) {
+                    if (object->field_280 != 0xff && Cheat_IsOn(25)) {
+                        red = 1;
+                        green = blue = purple = 0;
+                    } else if (red || green || blue || purple) {
+                        if (object->field_280 != 0xff && Player_HasPurpleForce(object)) {
                             purple = 1;
                             red = green = blue = 0;
-                        } else if (green && object->id == id_GRIEVOUS && (hand == 0 || hand == 3)) {
+                        } else if (green && object->id == (u16)id_GRIEVOUS && (hand == 0 || hand == 3)) {
                             blue = 1;
                             green = 0;
                         }
+                    }
+                    if (red || green || blue || purple) {
                         DrawWeapon_SetSabreObjects(object, red, green, blue, purple, models, &hilt);
                         sabre = 1;
                     }
                 }
+            } else if (object->id == (u16)CharacterFixupIdPc007f1810 ||
+                       (object->character_data->model_flags & 0x80) != 0) {
+                models[0] = 0xc;
             }
             count = 0;
             for (part = 0; part < 4; ++part) {
                 if (models[part] != -1) {
-                    if (part != 3) {
+                    if (part != 3)
                         ++count;
-                    }
                     reflected_models[part] = LevelObject_GetReflection(models[part]);
                 }
             }
-            if (count != 0) {
-                i32 side;
-                NUMTX blade_matrix = object->locator_matrices[joint];
-                NUMTX hilt_matrix;
-                NUVEC scale = {weapon_scale, weapon_scale, weapon_scale};
+            if (count > 0) {
+                blade_matrix = object->locator_matrices[joint];
+                scale.z = scale.y = scale.x = weapon_scale;
                 if (hilt != -1) {
-
-                    hilt_scale_vec.x = weapon_scale + weapon_scale;
-                    hilt_matrix = blade_matrix;
-                    if (hilt_scale_vec.x > 1.0f) {
-                        hilt_scale_vec.x = 1.0f;
-                    }
-                    hilt_scale_vec.z = hilt_scale_vec.x;
-                    hilt_scale_vec.y = hilt_scale_vec.x;
-                    NuMtxPreScale(&hilt_matrix, &hilt_scale_vec);
+                    hilt_scale.x = weapon_scale + weapon_scale;
+                    hilt_matrix = object->locator_matrices[joint];
+                    if (hilt_scale.x > 1.0f)
+                        hilt_scale.x = 1.0f;
+                    hilt_scale.z = hilt_scale.x;
+                    hilt_scale.y = hilt_scale.x;
+                    NuMtxPreScale(&hilt_matrix, &hilt_scale);
                 }
-                if (rotation != 0) {
+                side = 0;
+                if (rotation != 0)
                     NuMtxPreRotateX(&blade_matrix, rotation);
-                }
                 NuMtxPreScale(&blade_matrix, &scale);
-
-                memcpy(&saved_matrix, &blade_matrix, sizeof(blade_matrix));
-                for (side = 0;; ++side) {
-                    i32 part;
+                saved_matrix = blade_matrix;
+                passes = 1;
+                do {
                     for (part = 0; part < 4; ++part) {
-                        if (!(side && models[part] == hilt) && models[part] != -1) {
-                            struct numtx_s *matrix;
-                            if (part == 3) {
-                                blade_matrix.m30 += object->weapon_trail_offset.x;
-                                blade_matrix.m31 += object->weapon_trail_offset.y;
-                                blade_matrix.m32 += object->weapon_trail_offset.z;
-                            }
-                            matrix = models[part] == hilt ? &hilt_matrix : &blade_matrix;
-                            Draw3DObjectMtx(NULL, models[part], matrix);
-                            if (reflection) {
-                                NUMTX reflected;
-                                i32 model = reflected_models[part];
-                                if (model == -1 || !WORLD->level_objects[model].active) {
-                                    model = models[part];
-                                }
-                                if (MatrixReflection(matrix, object->field_1087, f0x1020,
-                                                     WORLD->current_level->reflection_y, &reflected)) {
-                                    NuRndrStartReflectionRender(0);
-                                    Draw3DObjectMtx(NULL, model, &reflected);
-                                    NuRndrEndReflectionRender();
-                                }
+                        if (side && models[part] == hilt)
+                            continue;
+                        model = models[part];
+                        if (model == -1)
+                            continue;
+                        if (part == 3) {
+                            blade_matrix.m30 += object->weapon_trail_offset.x;
+                            blade_matrix.m31 += object->weapon_trail_offset.y;
+                            blade_matrix.m32 += object->weapon_trail_offset.z;
+                        }
+                        matrix = model == hilt ? &hilt_matrix : &blade_matrix;
+                        Draw3DObjectMtx(NULL, model, matrix);
+                        if (reflection) {
+                            reflected_model = reflected_models[part];
+                            if (reflected_model == -1 || !WORLD->level_objects[reflected_model].active)
+                                reflected_model = model;
+                            if (MatrixReflection(matrix, object->reflection_enabled, object->reflection_height,
+                                                 WORLD->current_level->reflection_y, &reflected)) {
+                                NuRndrStartReflectionRender(0);
+                                Draw3DObjectMtx(NULL, reflected_model, &reflected);
+                                NuRndrEndReflectionRender();
                             }
                         }
                     }
-                    if (side || object->id != id_DARTHMAUL || object->field_280 == -1 ||
-                        (!Cheat_IsOn(25) && (object->field_280 == -1 || !Player_HasPurpleForce(object)))) {
-                        break;
+                    if (!side && object->id == (u16)id_DARTHMAUL &&
+                        ((object->field_280 != 0xff && Cheat_IsOn(25)) ||
+                         (object->field_280 != 0xff && Player_HasPurpleForce(object)))) {
+                        scale.z = scale.x = 1.0f;
+                        scale.y = -1.0f;
+                        blade_matrix = saved_matrix;
+                        side = 1;
+                        NuMtxPreScale(&blade_matrix, &scale);
+                        ++passes;
                     }
-                    memcpy(&blade_matrix, &saved_matrix, sizeof(blade_matrix));
-
-                    reverse.x = 1.0f;
-                    reverse.y = -1.0f;
-                    reverse.z = 1.0f;
-                    NuMtxPreScale(&blade_matrix, &reverse);
-                }
+                } while (--passes > 0);
             }
         }
-        if (sabre && object->id != id_GRIEVOUS) {
+        if (sabre && object->id != (u16)id_GRIEVOUS)
             return;
-        }
     }
 }
 
