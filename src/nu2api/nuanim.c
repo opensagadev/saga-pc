@@ -1090,7 +1090,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint_EulerQuat(ANI3_HEADER_PC *anim, f32 fram
 
 i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *anim, f32 frame, ANI3_BUFFER_PC *buffer, i32 joint_count,
                                         i32 first_joint) {
-    const u8 *node_flags = anim->node_flags;
+    const u8 *node_flags;
     i32 key_stride;
     f32 *out;
     i32 whole;
@@ -1114,6 +1114,7 @@ i32 __cdecl ANI_SimpleAni3PlayerV4Joint(ANI3_HEADER_PC *anim, f32 frame, ANI3_BU
     if (ForceEulerToQuat != 0)
         return ANI_SimpleAni3PlayerV4Joint_EulerQuat(anim, frame, buffer, joint_count, first_joint);
     buffer->use_quaternions = 0;
+    node_flags = anim->node_flags;
     if (anim->key_count == 1) {
         frame = 0.0f;
     } else {
