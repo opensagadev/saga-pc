@@ -6,7 +6,16 @@ typedef struct security_door_record_pc_s {
     NUVEC position;
     i16 platform_id[2];
     u16 yaw;
-    u8 flags;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 opened : 1;
+            u8 drawn : 1;
+            u8 unused : 4;
+        } bits;
+    };
     u8 state;
     NUVEC player_position;
     u16 terrain_angle_z;
@@ -15,9 +24,9 @@ typedef struct security_door_record_pc_s {
     u8 unknown_b8[8];
 } SECURITY_DOOR_RECORD_PC;
 typedef struct security_door_progress_pc_s {
-    u32 visible_mask;
-    u32 active_mask;
-    u32 opened_mask;
+    u32 visible_mask[1];
+    u32 active_mask[1];
+    u32 opened_mask[1];
 } SECURITY_DOOR_PROGRESS_PC;
 STATIC_ASSERT(sizeof(SECURITY_DOOR_RECORD_PC) == 0xc0);
 STATIC_ASSERT(offsetof(SECURITY_DOOR_RECORD_PC, name) == 0x80);
@@ -107,14 +116,14 @@ void *__cdecl SecurityDoors_ReserveBufferSpace(WORLDINFO *world) {
 void __cdecl SecurityDoor_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)gizmo->object;
-        door->flags = (u8)((door->flags & ~1u) | (active != 0));
+        door->bits.active = active != 0;
     }
 }
 
 void __cdecl SecurityDoor_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)gizmo->object;
-        door->flags = (u8)((door->flags & ~2u) | ((visible != 0) << 1));
+        door->bits.visible = visible != 0;
     }
 }
 
@@ -147,15 +156,17 @@ void __cdecl SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_P
         return;
     door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
+        i32 word;
         u32 mask;
         SecurityDoorInitRecordPc(door);
         if (progress == NULL || index >= 32)
             continue;
-        mask = 1u << index;
-        door->flags = (u8)((door->flags & ~2u) | (((progress->visible_mask & mask) != 0) << 1));
-        door->flags = (u8)((door->flags & ~1u) | ((progress->active_mask & mask) != 0));
-        door->flags = (u8)((door->flags & ~4u) | (((progress->opened_mask & mask) != 0) << 2));
-        if ((door->flags & 4) != 0) {
+        word = index / 32;
+        mask = 1u << (index & 31);
+        door->bits.visible = (progress->visible_mask[word] & mask) != 0;
+        door->bits.active = (progress->active_mask[word] & mask) != 0;
+        door->bits.opened = (progress->opened_mask[word] & mask) != 0;
+        if (door->bits.opened) {
             door->opening = 1.0f;
             door->state = 2;
             SecurityDoorUpdateMatricesPc(door, 0x4000);
@@ -299,9 +310,9 @@ void *__cdecl SecurityDoors_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) 
 
 void __cdecl SecurityDoors_ClearProgress(void *world, SECURITY_DOOR_PROGRESS_PC *progress) {
     if (progress != NULL) {
-        progress->visible_mask = 0xffffffffu;
-        progress->active_mask = 0xffffffffu;
-        progress->opened_mask = 0;
+        progress->visible_mask[0] = 0xffffffffu;
+        progress->active_mask[0] = 0xffffffffu;
+        progress->opened_mask[0] = 0;
     }
 }
 
@@ -310,20 +321,25 @@ void __cdecl SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURIT
     i32 index;
     if (progress == NULL)
         return;
-    progress->visible_mask = 0xffffffffu;
-    progress->active_mask = 0xffffffffu;
-    progress->opened_mask = 0;
+    progress->visible_mask[0] = 0xffffffffu;
+    progress->active_mask[0] = 0xffffffffu;
+    progress->opened_mask[0] = 0;
     if (world == NULL || world->security_doors == NULL)
         return;
     door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
-    for (index = 0; index < world->security_door_count && index < 32; ++index, ++door) {
-        u32 mask = 1u << index;
-        if ((door->flags & 2) == 0)
-            progress->visible_mask &= ~mask;
-        if ((door->flags & 1) == 0)
-            progress->active_mask &= ~mask;
-        if ((door->flags & 4) != 0)
-            progress->opened_mask |= mask;
+    for (index = 0; index < world->security_door_count; ++index, ++door) {
+        i32 word;
+        u32 mask;
+        if (index >= 32)
+            break;
+        word = index / 32;
+        mask = 1u << (index & 31);
+        if (!door->bits.visible)
+            progress->visible_mask[word] &= ~mask;
+        if (!door->bits.active)
+            progress->active_mask[word] &= ~mask;
+        if (door->bits.opened)
+            progress->opened_mask[word] |= mask;
     }
 }
 
