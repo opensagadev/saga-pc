@@ -16,8 +16,10 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
     DwaPointerCursorPc = 0x800;
     PCFrameBeginScenePc();
     PCFrameCriticalSectionEnter_candidate();
-    for (i32 i = 0; i != 4; ++i)
-        PCDeviceSetTexture((u32)i, NULL);
+    PCDeviceSetTexture(0, NULL);
+    PCDeviceSetTexture(1, NULL);
+    PCDeviceSetTexture(2, NULL);
+    PCDeviceSetTexture(3, NULL);
     PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
     PCDeviceSetStreamSourcePc(1, NULL, 0, 0);
     PCDeviceSetStreamSourcePc(2, NULL, 0, 0);
@@ -56,11 +58,11 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         bool rendered_effect = false;
         RenderFrameSceneFlagsPc = scene->unknown_24;
         PC_FRAMEBUFFER_PC *destination = i >= last_effect_scene ? PcBootSecondaryFramebuffer : PcBootDefaultFramebuffer;
-        f32 dimensions[4];
-        dimensions[0] = (f32)PS2_REZ_W;
-        dimensions[1] = (f32)PS2_REZ_H;
-        dimensions[2] = 1.0f / dimensions[0];
-        dimensions[3] = 1.0f / dimensions[1];
+        NUVEC4 dimensions;
+        dimensions.x = (f32)PS2_REZ_W;
+        dimensions.y = (f32)PS2_REZ_H;
+        dimensions.z = 1.0f / dimensions.x;
+        dimensions.w = 1.0f / dimensions.y;
         if (scene->dyn_light_count != 0) {
             NURNDRLIGHTRECORD *light = static_cast<NURNDRLIGHTRECORD *>(scene->dyn_light_ptr);
             if (NuDynamicLightIsEnabled(light)) {
@@ -96,7 +98,7 @@ extern "C" i32 __cdecl NuRndrSwapScreen(i32 mode) {
         } else {
             PCFrameResetTargetsPc();
         }
-        NuShaderManagerSetfv(0x3e, dimensions);
+        NuShaderManagerSetfv(0x3e, &dimensions.x);
         if (scene->clear_flags_08 != 0) {
             u32 flags = scene->clear_flags_08;
             u32 clear = 0;
