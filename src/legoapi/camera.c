@@ -993,7 +993,6 @@ void MoveGameCamera(GAMECAMERA *camera) {
     i32 menu_id;
     i32 previous_mode;
     SOCKPOSITION_PC previous_sock_position;
-    struct level_data_pc_s *seek_level;
     NUVEC position;
     NUVEC offset;
     NUVEC direction;
@@ -1093,19 +1092,15 @@ void MoveGameCamera(GAMECAMERA *camera) {
         if (ObstacleCamTime >= ObstacleCamEnd) {
             ObstacleCamTime = ObstacleCamEnd;
             if (ObstacleCamHoldUntilPlayersMove) {
-                u32 buttons;
                 i32 i;
                 camera->mode = 2;
-                buttons = GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_SPECIAL | GAMEPAD_ACTION | GAMEPAD_TAG |
-                          GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT;
-                for (i = 0; i < 2; i++) {
+                for (i = 0; ObstacleCamHoldUntilPlayersMove && i < 2; i++) {
                     GAMEOBJECT *object = Player[i];
-                    if (object != NULL && ((i8)(object->flags_1fc)) < 0 &&
+                    if (object != NULL && (object->flags_1fc & 0x80) != 0 &&
                         (object->model_draw_result == 0 || object->pad->input_magnitude > 0.0f ||
-                         (object->pad->buttons_held & buttons) != 0)) {
+                         (object->pad->buttons_held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL |
+                                                       GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0))
                         ObstacleCamHoldUntilPlayersMove = 0;
-                        break;
-                    }
                 }
             } else {
                 ObstacleCamSpl = NULL;
@@ -1168,19 +1163,22 @@ mode_selected:
                 GameCam_Blend(camera, duration, 0.0f, 1);
         }
     }
-    if (camera->mode == 4 || camera->mode == 2)
-        MiniCutCam = camera->blend_duration > camera->blend_time ? 1 : (ObstacleCamHoldUntilPlayersMove ? 3 : 2);
-    else if (camera->blend_duration > camera->blend_time &&
-             (camera->previous_camera_mode == 4 || camera->previous_camera_mode == 2))
+    if (camera->mode == 2 || camera->mode == 4)
+        MiniCutCam = camera->blend_time < camera->blend_duration ? 1 : (ObstacleCamHoldUntilPlayersMove ? 3 : 2);
+    else if (camera->blend_time < camera->blend_duration &&
+             (camera->previous_camera_mode == 2 || camera->previous_camera_mode == 4))
         MiniCutCam = 4;
-    seek_level = WORLD->current_level;
     position = *PlayerStartRecordInitPc[0].position;
 
+    position_seek = ((u32)(((u8)(WORLD->current_level->cam_pos_seek))));
+    angle_seek = ((u32)(((u8)(WORLD->current_level->cam_angle_seek))));
+    target = v000;
+    pitch_override = -1, yaw_override = -1, roll_override = 0;
+    roll_hint = 0;
+    roll_hint_valid = 0;
+    roll_seek_override = 0.0f, stop_blend_rate = 0.1f;
     // The per-mode camera blend duration starts afresh after transition selection.
     blend_duration = 0.5f;
-    position_seek = ((u32)(((u8)(seek_level->cam_pos_seek))));
-    angle_seek = ((u32)(((u8)(seek_level->cam_angle_seek))));
-    target = v000;
     selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD_PC *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
     {
@@ -1206,10 +1204,6 @@ mode_selected:
         GAME_CAMERA_ABSOLUTE_PC(magnitude, right_x);
         right_x = magnitude < 34.0f ? 0.0f : right_x / 127.5f;
     }
-    pitch_override = -1, yaw_override = -1, roll_override = 0;
-    roll_hint = 0;
-    roll_hint_valid = 0;
-    roll_seek_override = 0.0f, stop_blend_rate = 0.1f;
     switch (camera->mode) {
         i32 index;
 
