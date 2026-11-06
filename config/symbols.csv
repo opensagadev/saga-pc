@@ -7024,6 +7024,7 @@ address,symbol,size,ctype
 0x6332f0,_RadFmvCreateImagePc,93,
 0x633350,_RadFmvDestroyImagePc,54,
 0x633df0,_rtlSwapSetEndianess,1,void __cdecl rtlSwapSetEndianess(void *)
+0x633df0,_RtlUiCreateFailedPc,1,void __cdecl(void)
 0x633e40,_RtlDirectionStatePc,183,
 0x6354a0,_edrtlInitBurnset,259,void __cdecl edrtlInitBurnset(BURN_SET_PC *)
 0x6355f0,_rtlFindByUserId,52,"i32 __cdecl rtlFindByUserId(RTL_SET_PC *, i32)"
