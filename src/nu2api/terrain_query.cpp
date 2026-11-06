@@ -53,11 +53,6 @@ typedef struct TERRAIN_GROUP_PC {
     f32 radius;
 } TERRAIN_GROUP_PC;
 
-typedef union TERRAIN_SCENE_STATE_VIEW_PC {
-    u32 flags;
-    u8 low_flags;
-} TERRAIN_SCENE_STATE_VIEW_PC;
-
 typedef struct TERRAIN_PLATFORM_PC {
     NUMTX previous_matrix;
     void *scene_object;
@@ -71,7 +66,7 @@ typedef struct TERRAIN_PLATFORM_PC {
     f32 bounce_5c;
     f32 bounce_60;
     f32 bounce_64;
-    void *scene_transform;
+    u32 *instance_flags;
 } TERRAIN_PLATFORM_PC;
 
 typedef struct TERRAIN_CELL_PC {
@@ -122,7 +117,6 @@ STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, cache_age) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_z) == 8);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, scan_words) == 0xc);
-STATIC_ASSERT(sizeof(TERRAIN_SCENE_STATE_VIEW_PC) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, previous_matrix) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_z) == 8);
@@ -150,7 +144,7 @@ STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, terrain_group_index) == 0x48);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, flags) == 0x4c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_54) == 0x54);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_transform) == 0x68);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, instance_flags) == 0x68);
 STATIC_ASSERT(sizeof(TERRAIN_TRACK_SLOT_PC) == 0x18);
 STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, platform_index) == 0x4);
 STATIC_ASSERT(sizeof(TERRAIN_CELL_PC) == 0x14);
@@ -1073,15 +1067,14 @@ extern "C" {
                  ++platform_index, ++platform_groups) {
                 TERRAIN_GROUP_PC *group = &TERRAIN_NS_SET->groups[*platform_groups];
                 TERRAIN_PLATFORM_PC *platform = &TERRAIN_NS_PLATFORM(group);
-                if (platform->scene_transform != NULL) {
-                    TERRAIN_SCENE_STATE_VIEW_PC *scene_state =
-                        static_cast<TERRAIN_SCENE_STATE_VIEW_PC *>(platform->scene_transform);
+                if (platform->instance_flags != NULL) {
+                    u32 *scene_state = platform->instance_flags;
                     if ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0) {
-                        const u32 state_flags = scene_state->flags;
+                        const u32 state_flags = *scene_state;
                         if ((state_flags & 2) == 0) {
                             continue;
                         }
-                    } else if ((scene_state->low_flags & 1) == 0) {
+                    } else if ((*scene_state & 1) == 0) {
                         continue;
                     }
                 }
@@ -2335,8 +2328,6 @@ i16 *NewScanHandelSubsetPc(i16 *subset, NUVEC *position, NUVEC *movement, f32 ra
 #undef TERRAIN_NSS_FINISH_GROUP
 #undef TERRAIN_NSS_FILTER_SHAPES
 
-STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, flags) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, low_flags) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_NODE, point_count) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SPATIAL_CHUNK, previous) == 0);
 struct TERRAIN_HANDLE_END_PC {
@@ -2498,10 +2489,8 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
         for (i32 i = 0; i < TERRAIN_NSF_SET->platform_cell.group_count; ++i, ++indices) {
             TERRAIN_GROUP_PC *group = &TERRAIN_NSF_SET->groups[*indices];
             TERRAIN_PLATFORM_PC *platform = &TERRAIN_NSF_PLATFORM(group);
-            TERRAIN_SCENE_STATE_VIEW_PC *scene_state =
-                static_cast<TERRAIN_SCENE_STATE_VIEW_PC *>(platform->scene_transform);
-            if (scene_state == NULL ||
-                ((platform->flags & 4) != 0 ? (scene_state->flags & 2) != 0 : (scene_state->low_flags & 1) != 0)) {
+            u32 *scene_state = platform->instance_flags;
+            if (scene_state == NULL || ((platform->flags & 4) != 0 ? (*scene_state & 2) : (*scene_state & 1)) != 0) {
                 f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
                 if (platform->scene_object != NULL) {
                     if (TERRAIN_NSF_MATRIX(group)->m30 > TERRAIN_NSF_PLATFORM(group).previous_matrix.m30) {

@@ -53,11 +53,6 @@ typedef struct TERRAIN_GROUP_PC {
     f32 radius;
 } TERRAIN_GROUP_PC;
 
-typedef union TERRAIN_SCENE_STATE_VIEW_PC {
-    u32 flags;
-    u8 low_flags;
-} TERRAIN_SCENE_STATE_VIEW_PC;
-
 typedef struct TERRAIN_PLATFORM_PC {
     NUMTX previous_matrix;
     void *scene_object;
@@ -71,7 +66,7 @@ typedef struct TERRAIN_PLATFORM_PC {
     f32 bounce_5c;
     f32 bounce_60;
     f32 bounce_64;
-    void *scene_transform;
+    u32 *instance_flags;
 } TERRAIN_PLATFORM_PC;
 
 typedef struct TERRAIN_CELL_PC {
@@ -122,7 +117,6 @@ STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, cache_age) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_z) == 8);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, scan_words) == 0xc);
-STATIC_ASSERT(sizeof(TERRAIN_SCENE_STATE_VIEW_PC) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, previous_matrix) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_z) == 8);
@@ -150,7 +144,7 @@ STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, terrain_group_index) == 0x48);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, flags) == 0x4c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_54) == 0x54);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_transform) == 0x68);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, instance_flags) == 0x68);
 STATIC_ASSERT(sizeof(TERRAIN_TRACK_SLOT_PC) == 0x18);
 STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, platform_index) == 0x4);
 STATIC_ASSERT(sizeof(TERRAIN_CELL_PC) == 0x14);

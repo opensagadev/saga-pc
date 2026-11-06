@@ -46,11 +46,6 @@ typedef struct TERRAIN_GROUP_PC {
     f32 radius;
 } TERRAIN_GROUP_PC;
 
-typedef union TERRAIN_SCENE_STATE_VIEW_PC {
-    u32 flags;
-    u8 low_flags;
-} TERRAIN_SCENE_STATE_VIEW_PC;
-
 typedef struct TERRAIN_PLATFORM_PC {
     NUMTX previous_matrix;
     void *scene_object;
@@ -64,7 +59,7 @@ typedef struct TERRAIN_PLATFORM_PC {
     f32 bounce_5c;
     f32 bounce_60;
     f32 bounce_64;
-    void *scene_transform;
+    u32 *instance_flags;
 } TERRAIN_PLATFORM_PC;
 
 typedef struct TERRAIN_CELL_PC {
@@ -115,7 +110,6 @@ STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, cache_age) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, center_z) == 8);
 STATIC_ASSERT(offsetof(TERRAIN_INDEX_LEVEL_PC, scan_words) == 0xc);
-STATIC_ASSERT(sizeof(TERRAIN_SCENE_STATE_VIEW_PC) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, previous_matrix) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_x) == 4);
 STATIC_ASSERT(offsetof(TERRAIN_CELL_PC, min_z) == 8);
@@ -143,7 +137,7 @@ STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, terrain_group_index) == 0x48);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, flags) == 0x4c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_54) == 0x54);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, scene_transform) == 0x68);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, instance_flags) == 0x68);
 STATIC_ASSERT(sizeof(TERRAIN_TRACK_SLOT_PC) == 0x18);
 STATIC_ASSERT(offsetof(TERRAIN_TRACK_SLOT_PC, platform_index) == 0x4);
 STATIC_ASSERT(sizeof(TERRAIN_CELL_PC) == 0x14);
@@ -227,22 +221,24 @@ enum {
 typedef u32 usize;
 struct TERRAIN_SCENE_OBJECT {
     u8 pad_0x00[0x44];
-    u8 transform[4];
+    u32 flags;
     void *object;
     u8 pad_0x4c[4];
 };
 STATIC_ASSERT(sizeof(TERRAIN_SCENE_OBJECT) == 0x50);
+STATIC_ASSERT(offsetof(TERRAIN_SCENE_OBJECT, flags) == 0x44);
 
 struct TERRAIN_DISPLAY_OBJECT {
     u8 pad_0x00[0x40];
     u8 embedded_object[0x78];
-    u8 transform[8];
+    u32 flags;
+    u32 unknown_bc;
     i32 scene_object_index;
     void *object;
     u8 pad_0xc8[8];
 };
 STATIC_ASSERT(sizeof(TERRAIN_DISPLAY_OBJECT) == 0xd0);
-STATIC_ASSERT(offsetof(TERRAIN_DISPLAY_OBJECT, transform) == 0xb8);
+STATIC_ASSERT(offsetof(TERRAIN_DISPLAY_OBJECT, flags) == 0xb8);
 STATIC_ASSERT(offsetof(TERRAIN_DISPLAY_OBJECT, scene_object_index) == 0xc0);
 
 struct TERRAIN_DISPLAY_SCENE {
@@ -340,7 +336,7 @@ i32 __cdecl NewPlatInst(void *object, i32 instance) {
     TERRAIN_NPI_SET->platforms[new_index].scene_object = object;
     TERRAIN_NPI_SET->platforms[new_index].terrain_group_index = TERRAIN_NPI_SET->group_count;
     TERRAIN_NPI_SET->platforms[new_index].scene_object_index = (i16)instance;
-    TERRAIN_NPI_SET->platforms[new_index].scene_transform = NULL;
+    TERRAIN_NPI_SET->platforms[new_index].instance_flags = NULL;
     TERRAIN_NPI_SET->platforms[new_index].flags ^=
         (TERRAIN_NPI_SET->platforms[source_index].flags ^ TERRAIN_NPI_SET->platforms[new_index].flags) & 1;
     TERRAIN_NPI_SET->group_indices[TERRAIN_NPI_SET->group_index_count] = TERRAIN_NPI_SET->group_count;
@@ -685,8 +681,8 @@ extern i32 TerrainSkinPoolSlotBytesPc;
 extern u8 *TerrainSkinPoolBasePc;
 /* Keep public CurrentTerrain/TerI as existing void* storage. Cast TerI locally
  * to TERRAIN_SHADOW_QUERY_VIEW_PC* for query.scan_words. Keep existing
- * PLATFORM.scene_object/scene_transform as void*, locally accessed through
- * NUMTX* / TERRAIN_SCENE_STATE_VIEW_PC*. No full scene-owner type transfer.
+ * PLATFORM.scene_object as void*, locally accessed through NUMTX*; PLATFORM.instance_flags
+ * points at the owning instance's flags word. No full scene-owner type transfer.
  */
 
 /* Genuine C draft for insertion into existing nuterrain.c.
@@ -1091,13 +1087,13 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 distance_squared = dx * dx + dz * dz;
                 if (!(reach * reach > distance_squared))
                     continue;
-                if (platform->scene_transform != NULL) {
-                    const TERRAIN_SCENE_STATE_VIEW_PC *scene_state = platform->scene_transform;
+                if (platform->instance_flags != NULL) {
+                    const u32 *scene_state = platform->instance_flags;
                     if ((platform->flags & 4) != 0) {
-                        const u32 state_flags = scene_state->flags;
+                        const u32 state_flags = *scene_state;
                         if ((state_flags & 2) == 0)
                             continue;
-                    } else if ((scene_state->low_flags & 1) == 0) {
+                    } else if ((*scene_state & 1) == 0) {
                         continue;
                     }
                 }
@@ -1211,13 +1207,13 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 if (!TERRAIN_ROT_GROUP_OVERLAP(local_min_x, local_min_z, local_max_x, local_max_z, group) ||
                     group->chunk_type == -1)
                     continue;
-                if (platform->scene_transform != NULL) {
-                    const TERRAIN_SCENE_STATE_VIEW_PC *scene_state = platform->scene_transform;
+                if (platform->instance_flags != NULL) {
+                    const u32 *scene_state = platform->instance_flags;
                     if ((platform->flags & 4) != 0) {
-                        const u32 state_flags = scene_state->flags;
+                        const u32 state_flags = *scene_state;
                         if ((state_flags & 2) == 0)
                             continue;
-                    } else if ((scene_state->low_flags & 1) == 0) {
+                    } else if ((*scene_state & 1) == 0) {
                         continue;
                     }
                 }
@@ -2109,12 +2105,12 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             } else {
                 platform->scene_object = display_object->object;
             }
-            platform->scene_transform = display_object->transform;
+            platform->instance_flags = &display_object->flags;
             platform->flags |= TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
         } else {
             scene_object = &(scene->objects[scene_object_index]);
             platform->scene_object = scene_object->object != NULL ? scene_object->object : scene_object;
-            platform->scene_transform = scene_object->transform;
+            platform->instance_flags = &scene_object->flags;
         }
 
         ++platform_count;
@@ -2151,7 +2147,7 @@ typedef struct TERRAIN_PLATFORM_LIFECYCLE_PC {
     i16 bounce_frames;
     u8 unknown_52[2];
     f32 bounce_impulse, bounce_offset, bounce_velocity, bounce_spring, bounce_damping;
-    TERRAIN_SCENE_STATE_VIEW_PC *scene_transform;
+    u32 *instance_flags;
 } TERRAIN_PLATFORM_LIFECYCLE_PC;
 STATIC_ASSERT(sizeof(TERRAIN_PLATFORM_LIFECYCLE_PC) == 0x6c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, previous_matrix) == 0);
@@ -2164,7 +2160,7 @@ STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_offset) == 0x58);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_velocity) == 0x5c);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_spring) == 0x60);
 STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, bounce_damping) == 0x64);
-STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, scene_transform) == 0x68);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_LIFECYCLE_PC, instance_flags) == 0x68);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platform_count) == 0x154);
 STATIC_ASSERT(offsetof(TERRAIN_SET_PC, removed_platforms) == 0x158);
 
@@ -2286,11 +2282,11 @@ void __cdecl TerrainPlatformNewUpdate(void) {
         TERRAIN_GROUP_PC *group = &TERRAIN_TPNU_SET->groups[*group_index];
         i32 index = group->scene_index;
         TERRAIN_PLATFORM_LIFECYCLE_PC *platform = &TERRAIN_TPNU_PLATFORM(index);
-        if (platform->scene_transform != NULL) {
+        if (platform->instance_flags != NULL) {
             if ((platform->flags & 4) != 0) {
-                if ((platform->scene_transform->flags & 2) == 0)
+                if ((*platform->instance_flags & 2) == 0)
                     continue;
-            } else if ((platform->scene_transform->flags & 1) == 0)
+            } else if ((*platform->instance_flags & 1) == 0)
                 continue;
         }
         if (group->chunk_type == 0)
@@ -2609,7 +2605,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     group->origin.z = matrix->m32;
     TERRAIN_APTR_SET->platforms[found].terrain_group_index = TERRAIN_APTR_SET->group_count;
     TERRAIN_APTR_SET->platforms[found].scene_object_index = 0;
-    TERRAIN_APTR_SET->platforms[found].scene_transform = NULL;
+    TERRAIN_APTR_SET->platforms[found].instance_flags = NULL;
     TERRAIN_APTR_SET->group_indices[TERRAIN_APTR_SET->group_index_count] = TERRAIN_APTR_SET->group_count;
     ++TERRAIN_APTR_SET->group_index_count;
     TERRAIN_APTR_SET->platforms[found].bounce_54 = 0;
@@ -2668,7 +2664,7 @@ i32 NewPlatPickupInst(void *object, i32 type) {
     group->origin.z = ((NUMTX *)object)->m32;
     TERRAIN_NPPI_SET->platforms[index].terrain_group_index = TERRAIN_NPPI_SET->group_count;
     TERRAIN_NPPI_SET->platforms[index].scene_object_index = 0;
-    TERRAIN_NPPI_SET->platforms[index].scene_transform = NULL;
+    TERRAIN_NPPI_SET->platforms[index].instance_flags = NULL;
     TERRAIN_NPPI_SET->group_indices[TERRAIN_NPPI_SET->group_index_count] = TERRAIN_NPPI_SET->group_count;
     TERRAIN_NPPI_SET->group_index_count++;
     TERRAIN_NPPI_SET->platforms[index].bounce_54 = 0;
@@ -2705,8 +2701,6 @@ STATIC_ASSERT(sizeof(TERRAIN_POLYGON_INFO_PC) == 0x64);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, vertices) == 0x18);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, normals) == 0x48);
 STATIC_ASSERT(offsetof(TERRAIN_POLYGON_INFO_PC, flags) == 0x62);
-STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, flags) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SCENE_STATE_VIEW_PC, low_flags) == 0);
 
 void TerrDrawPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
     TERRAIN_POLYGON_INFO_PC *record;
@@ -2838,11 +2832,11 @@ void TerrDrawPlatPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index) {
     }
 
     platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index];
-    if (platform->scene_transform != NULL) {
+    if (platform->instance_flags != NULL) {
         if (platform->flags & 4) {
-            if (!(((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->flags & 2))
+            if (!(*platform->instance_flags & 2))
                 return;
-        } else if (!(((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->low_flags & 1))
+        } else if (!(*platform->instance_flags & 1))
             return;
     }
 
@@ -2921,11 +2915,11 @@ void TerrDrawPlatColPc(TERRAIN_POLYGON_INFO_PC *terrain, i16 index, i32 colour) 
                     (origin->z + points[p].z + normals[n].z), 0xff)
 
     platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TDP_GROUP.scene_index];
-    if (platform->scene_transform != NULL) {
+    if (platform->instance_flags != NULL) {
         if (platform->flags & 4) {
-            if ((((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->flags & 2) == 0)
+            if ((*platform->instance_flags & 2) == 0)
                 return;
-        } else if ((((TERRAIN_SCENE_STATE_VIEW_PC *)platform->scene_transform)->low_flags & 1) == 0)
+        } else if ((*platform->instance_flags & 1) == 0)
             return;
     }
 
