@@ -94,21 +94,27 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadowPc(NUGSCN *scene) {
             for (i32 set = 0; set < render_set_count; ++set) {
                 SHADOW_PRODUCER_BOUNDS_PC *world_bounds =
                     static_cast<SHADOW_PRODUCER_BOUNDS_PC *>(scene->portal_boxes) + instance;
-                if (ShadowSegmentClipPc(reinterpret_cast<NUVEC *>(&world_bounds->center_radius),
+                NUVEC4 sphere = {world_bounds->center_radius.x, world_bounds->center_radius.y,
+                                 world_bounds->center_radius.z, world_bounds->center_radius.w};
+                if (ShadowSegmentClipPc(reinterpret_cast<NUVEC *>(&sphere),
                                         reinterpret_cast<NUVEC *>(&sets[set].endpoint1),
                                         reinterpret_cast<NUVEC *>(&sets[set].endpoint0), sets[set].radius,
                                         world_bounds->center_radius.w) != 0) {
-                    NUVEC minimum = {world_bounds->center_radius.x - world_bounds->extent.x,
-                                     world_bounds->center_radius.y - world_bounds->extent.y,
-                                     world_bounds->center_radius.z - world_bounds->extent.z};
-                    NUVEC maximum = {world_bounds->center_radius.x + world_bounds->extent.x,
-                                     world_bounds->center_radius.y + world_bounds->extent.y,
-                                     world_bounds->center_radius.z + world_bounds->extent.z};
+                    world_bounds = static_cast<SHADOW_PRODUCER_BOUNDS_PC *>(scene->portal_boxes) + instance;
+                    NUVEC extent = {world_bounds->extent.x, world_bounds->extent.y, world_bounds->extent.z};
+                    NUVEC center = {world_bounds->center_radius.x, world_bounds->center_radius.y,
+                                    world_bounds->center_radius.z};
+                    NUVEC minimum = {center.x - extent.x, center.y - extent.y, center.z - extent.z};
+                    NUVEC maximum = {center.x + extent.x, center.y + extent.y, center.z + extent.z};
                     if (reinterpret_cast<PCFrustumClipSet *>(this)->TestBox(&minimum, &maximum, set)) {
                         for (i32 material_index = 0; material_index < object->material_count; ++material_index) {
                             NUMTL *material = scene->materials[object->material_ids[material_index]];
-                            i32 variant = reinterpret_cast<SHADOW_PRODUCER_MATERIAL_PC *>(material)->alternate > 0;
                             SHADOW_PRODUCER_SET_PC &record = sets[set];
+                            SHADOW_PRODUCER_SET_PC::List *list =
+                                reinterpret_cast<SHADOW_PRODUCER_MATERIAL_PC *>(material)->alternate > 0
+                                    ? &record.lists[1]
+                                    : &record.lists[0];
+                            i32 variant = list - record.lists;
                             if (record.cursor[variant] >= record.last[variant]) {
                                 if (record.cursor[variant] > record.last[variant])
                                     AnimationDiagnosticNoOpPc();
