@@ -1,34 +1,44 @@
 #include "saga.h"
 
+/* Retail takes this absolute value through the float's bit pattern. */
+static __forceinline f32 PushFabsPc(f32 value) {
+    i32 bits = *(i32 *)&value & 0x7fffffff;
+    f32 result = *(f32 *)&bits;
+    return result;
+}
+
 f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
     SOCKSYS_PC *system = WorldInfo_CurrentlyActive()->sock_sys;
     SOCK_PC *sock;
     f32 inner, outer, amount;
-    union {
-        f32 value;
-        u32 bits;
-    } absolute;
-    if (system == NULL || object->sock_position.sock_index == -1 || (u8)object->sock_position.candidate_count > 1)
+    i32 planar;
+    i32 index;
+    f32 ratio;
+    if (system == NULL)
         return 0.0f;
-    sock = &system->socks[object->sock_position.sock_index];
+    index = object->sock_position.sock_index;
+    if (index == -1)
+        return 0.0f;
+    sock = &system->socks[index];
+    if ((u8)object->sock_position.candidate_count > 1)
+        return 0.0f;
     inner = sock->mid_force_inner_radius;
     outer = sock->mid_force_outer_radius;
+    amount = 0.0f;
     if (sock->flags & 2) {
         f32 dy;
-        if (object->movement_mode == 4 || !(inner > 0.0f) || !(outer > 0.0f))
-            return 0.0f;
-        dy = object->sock_position.midpoint.y - object->position.y;
-        if (!(dy * dy >= inner * inner))
-            return 0.0f;
-        absolute.value = dy;
-        absolute.bits &= 0x7fffffff;
-        amount = (absolute.value - inner) / (outer - inner);
-        object->target_velocity.y += (dy * object->character_data->game_character->run_speed) * amount;
+        if (object->movement_mode != 4 && inner > 0.0f && outer > 0.0f) {
+            dy = object->sock_position.midpoint.y - object->position.y;
+            if (dy * dy >= inner * inner) {
+                ratio = (PushFabsPc(dy) - inner) / (outer - inner);
+                object->target_velocity.y += (dy * object->character_data->game_character->run_speed) * ratio;
+                amount = ratio;
+            }
+        }
         return amount;
     }
-    amount = 0.0f;
+    planar = sock->flags & 4;
     if (inner > 0.0f && outer > 0.0f) {
-        i32 planar = sock->flags & 4;
         NUVEC delta;
         f32 distance_squared;
         f32 inner_squared = inner * inner;
@@ -39,15 +49,14 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
             distance_squared = delta.x * delta.x + delta.z * delta.z;
         } else {
             NuVecSub(&delta, &object->sock_position.midpoint, &object->position);
-            distance_squared = delta.x * delta.x + (delta.y * delta.y + delta.z * delta.z);
+            distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         }
         if (distance_squared >= inner_squared) {
             f32 inverse, speed;
-            f32 ratio = (NuFsqrt(distance_squared) - inner) / (outer - inner);
+            ratio = (NuFsqrt(distance_squared) - inner) / (outer - inner);
             if (ratio > 3.0f)
                 ratio = 3.0f;
             if (ratio >= 0.0f) {
-                amount = ratio;
                 if (planar == 0 && sock->vertical_scale != 1.0f) {
                     if (object->movement_mode == 4) {
                         NuVecInvMtxRotate(&delta, &delta, &object->vehicle_orientation);
@@ -64,15 +73,16 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
                     }
                 }
                 inverse = 1.0f / NuFsqrt(distance_squared);
-                speed = object->character_data->game_character->run_speed * amount;
                 delta.x *= inverse;
                 if (planar == 0)
                     delta.y *= inverse;
                 delta.z *= inverse;
+                speed = object->character_data->game_character->run_speed * ratio;
                 object->target_velocity.x += delta.x * speed;
                 if (planar == 0)
                     object->target_velocity.y += delta.y * speed;
                 object->target_velocity.z += delta.z * speed;
+                amount = ratio;
             }
         }
         if (planar == 0)
@@ -81,7 +91,7 @@ f32 __cdecl ForceTowardsMid(GAMEOBJECT *object) {
     if ((sock->flags & 8) != 0 && object->position.y >= object->sock_position.midpoint.y) {
         CHARACTERDATA_PC *data = object->character_data;
         f32 ceiling = (f32)((f64)data->model_scale * data->collision_radius * 3.0 + object->sock_position.midpoint.y);
-        f32 vertical = ceiling > object->position.y ? (object->position.y - object->sock_position.midpoint.y) /
+        f32 vertical = object->position.y < ceiling ? (object->position.y - object->sock_position.midpoint.y) /
                                                           (ceiling - object->sock_position.midpoint.y)
                                                     : 1.0f;
         object->target_velocity.y -= vertical * data->game_character->run_speed;

@@ -1340,6 +1340,11 @@
    "unit": "src/legoapi/ledges.cpp",
    "symbol": "?LedgeFabsPc@@YAMM@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/pushing.cpp",
+   "symbol": "?PushFabsPc@@YAMM@Z",
+   "kind": "function"
   }
  ]
 }
