@@ -26,46 +26,36 @@ i32 __cdecl SpecialMove_ReleaseVictim(GAMEOBJECT *object) {
     return 1;
 }
 
-typedef struct SPECIALMOVE_TABLE_VIEW_PC {
-    i16 attacker_animation;
-    i16 attacker_id;
-    i8 attacker_action_type;
-    i8 victim_action_type;
-    i16 victim_id;
-    i16 victim_animation;
-    u16 flags;
-    f32 distance;
-} SPECIALMOVE_TABLE_VIEW_PC;
-STATIC_ASSERT(sizeof(SPECIALMOVE_TABLE_VIEW_PC) == 0x10);
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, attacker_animation) == 0);
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, attacker_id) == 2);
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, attacker_action_type) == 4);
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, victim_action_type) == 5);
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, victim_id) == 6);
-
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, victim_animation) == 8);
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, flags) == 0xa);
+STATIC_ASSERT(sizeof(SPECIALMOVE_PC) == 0x10);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_animation) == 0);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_id) == 2);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, attacker_action_type) == 4);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_action_type) == 5);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_id) == 6);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, victim_animation) == 8);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, flags) == 0xa);
+STATIC_ASSERT(offsetof(SPECIALMOVE_PC, distance_apart) == 0xc);
 extern i32 PlayerSpecialMoveCountPc;
 i32 __cdecl SpecialMove_GetAttackerAction(i32 index) {
     if (index != -1)
-        return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].attacker_animation;
+        return PlayerSpecialMoveDataPc[index].attacker_animation;
     return -1;
 }
 i32 __cdecl SpecialMove_GetVictimAction(i32 index) {
     if (index != -1)
-        return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].victim_animation;
+        return PlayerSpecialMoveDataPc[index].victim_animation;
     return -1;
 }
 u32 __cdecl SpecialMove_GetFlags(i32 index, u32 mask) {
     if (index != -1) {
         if (mask != 0)
-            return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].flags & mask;
-        return ((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[index].flags;
+            return PlayerSpecialMoveDataPc[index].flags & mask;
+        return PlayerSpecialMoveDataPc[index].flags;
     }
     return 0;
 }
 i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
-    SPECIALMOVE_TABLE_VIEW_PC *moves = (SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc;
+    SPECIALMOVE_PC *moves = PlayerSpecialMoveDataPc;
     i32 i;
     if (moves == NULL)
         return -1;
@@ -74,7 +64,7 @@ i32 __cdecl SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || LEGOCONTEXT_SPECIALMOVE_VICTIM == -1)
         return -1;
     for (i = 0; i < PlayerSpecialMoveCountPc; ++i) {
-        SPECIALMOVE_TABLE_VIEW_PC *move = &moves[i];
+        SPECIALMOVE_PC *move = &moves[i];
         if ((attacker->id == (u16)move->attacker_id ||
              (move->attacker_action_type != -1 &&
               attacker->character_data->game_character->weapon_action == move->attacker_action_type)) &&
@@ -105,7 +95,6 @@ void __cdecl SpecialMove_Cancel(GAMEOBJECT *object) {
     }
 }
 
-STATIC_ASSERT(offsetof(SPECIALMOVE_TABLE_VIEW_PC, distance) == 0xc);
 void __cdecl SpecialMovesConfigMissingPc(char *filename);
 static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 *variant, i16 *animation) {
     while (NuFParGetWord(parser)) {
@@ -124,7 +113,7 @@ static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 
 
 void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR_PC *parser;
-    SPECIALMOVE_TABLE_VIEW_PC *move;
+    SPECIALMOVE_PC *move;
     PlayerSpecialMoveDataPc = NULL;
     PlayerSpecialMoveCountPc = 0;
     parser = NuFParCreate(filename);
@@ -134,11 +123,11 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     }
 
     buffer->addr = (buffer->addr + 3) & ~3u;
-    PlayerSpecialMoveDataPc = (SPECIALMOVE_TABLE_VIEW_PC *)buffer->addr;
+    PlayerSpecialMoveDataPc = (SPECIALMOVE_PC *)buffer->addr;
     while (NuFParGetLine(parser)) {
         if (!NuFParGetWord(parser) || NuStrICmp(parser->word_buffer_ptr, "specialmove_start") != 0)
             continue;
-        move = &((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc)[PlayerSpecialMoveCountPc];
+        move = &PlayerSpecialMoveDataPc[PlayerSpecialMoveCountPc];
         move->attacker_action_type = -1;
         move->attacker_animation = -1;
         move->attacker_id = -1;
@@ -146,7 +135,7 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
         move->victim_animation = -1;
         move->victim_id = -1;
         move->flags = 0;
-        move->distance = 0.0f;
+        move->distance_apart = 0.0f;
         while (NuFParGetLine(parser) && NuFParGetWord(parser)) {
             if (NuStrICmp(parser->word_buffer_ptr, "specialmove_end") == 0) {
                 if ((move->attacker_action_type != -1 || move->attacker_id != -1) && move->attacker_animation != -1 &&
@@ -161,7 +150,7 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
                 SpecialMove_ConfigParticipant(parser, &move->victim_id, &move->victim_action_type,
                                               &move->victim_animation);
             else if (NuStrICmp(parser->word_buffer_ptr, "distance_apart") == 0)
-                move->distance = NuFParGetFloat(parser);
+                move->distance_apart = NuFParGetFloat(parser);
             else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_end") == 0)
                 move->flags |= 2;
             else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_release") == 0)
@@ -176,7 +165,7 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     }
     NuFParDestroy(parser);
     if (PlayerSpecialMoveCountPc > 0)
-        buffer->addr = (u32)((SPECIALMOVE_TABLE_VIEW_PC *)PlayerSpecialMoveDataPc + PlayerSpecialMoveCountPc);
+        buffer->addr = (u32)(PlayerSpecialMoveDataPc + PlayerSpecialMoveCountPc);
     else
         PlayerSpecialMoveDataPc = NULL;
 }

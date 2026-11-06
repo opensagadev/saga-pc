@@ -162,17 +162,9 @@ extern const f64 PlayerStepInnerActionPc, PlayerStepOuterActionPc, PlayerStepInn
 extern const f64 TerrainSkinSampleCountPc;
 extern const f64 PlayerTightRopePhasePc, PlayerRandomScalePc;
 extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
-extern void *PlayerSpecialMoveDataPc;
-
-typedef struct specialmove_distance_pc_s {
-    u8 unknown_00[0xc];
-    f32 distance_apart;
-} SPECIALMOVE_DISTANCE_PC;
-STATIC_ASSERT(sizeof(SPECIALMOVE_DISTANCE_PC) == 0x10);
-STATIC_ASSERT(offsetof(SPECIALMOVE_DISTANCE_PC, distance_apart) == 0xc);
 
 __declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
-    SPECIALMOVE_DISTANCE_PC *moves = (SPECIALMOVE_DISTANCE_PC *)PlayerSpecialMoveDataPc;
+    SPECIALMOVE_PC *moves = PlayerSpecialMoveDataPc;
     f32 distance = object->special_move_pc != -1 ? moves[object->special_move_pc].distance_apart : 0.0f;
     u16 angle = object->movement_facing_angle;
     f32 z = object->force_target->position.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * distance;

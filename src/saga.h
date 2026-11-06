@@ -3987,6 +3987,17 @@ STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
 STATIC_ASSERT(sizeof(INDY_GUIDELINE_PC) == 0x24);
 STATIC_ASSERT(offsetof(INDY_GUIDELINE_PC, endpoints) == 8);
 
+typedef struct specialmove_pc_s {
+    i16 attacker_animation;
+    i16 attacker_id;
+    i8 attacker_action_type;
+    i8 victim_action_type;
+    i16 victim_id;
+    i16 victim_animation;
+    u16 flags;
+    f32 distance_apart;
+} SPECIALMOVE_PC;
+
 typedef struct level_script_process_pc_s {
     char name[16];
     AISCRIPTPROCESS_PC processor;
@@ -11858,7 +11869,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern i32 LEGOCONTEXT_PUSHSPINNER;
     extern i32 PlayerPushSpinnerDegreesPc;
     extern i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *);
-    extern void *PlayerSpecialMoveDataPc;
+    extern struct specialmove_pc_s *PlayerSpecialMoveDataPc;
     extern const char EpisodeVI_ShowHearts[11];
     extern const char EpisodeVI_ElectricFloor[14];
     extern const char EpisodeVI_obstacle21[11];

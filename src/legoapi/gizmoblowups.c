@@ -221,40 +221,12 @@ i32 __cdecl GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
 
 void *__cdecl GameAntinode_RegisterAntiNodeUsingData(void *, NUVEC *, u16, void *, f32, i32);
 
-typedef struct blowup_mid_type_pc_s {
-    u8 unknown_00[0x30];
-    NUSPECIALHANDLE animated_special;
-    u8 unknown_3c[0x78];
-    u8 anti_node_data[0x24];
-} BLOWUP_MID_TYPE_PC;
-typedef struct blowup_mid_view_pc_s {
-    NUMTX transform;
-    u8 unknown_40[0xc];
-    NUVEC mid_position;
-    u8 unknown_58[0x3c];
-    u32 status_flags, draw_flags;
-    u8 unknown_9c[8];
-    BLOWUP_MID_TYPE_PC *type;
-    f32 target_scale;
-    u8 unknown_ac[0x2c];
-    void *anti_node;
-    u8 unknown_dc[0xe];
-    u16 angle_a, angle_b;
-} BLOWUP_MID_VIEW_PC;
-STATIC_ASSERT(offsetof(BLOWUP_MID_TYPE_PC, animated_special) == 0x30);
-STATIC_ASSERT(offsetof(BLOWUP_MID_TYPE_PC, anti_node_data) == 0xb4);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, transform) == 0);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, mid_position) == 0x4c);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, status_flags) == 0x94);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, draw_flags) == 0x98);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, type) == 0xa4);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, target_scale) == 0xa8);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, anti_node) == 0xd8);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, angle_a) == 0xea);
-STATIC_ASSERT(offsetof(BLOWUP_MID_VIEW_PC, angle_b) == 0xec);
+STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, anti_node_data) == 0xb4);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_y) == 0xea);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, model_rotation_z) == 0xec);
 
-void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *opaque_blowup) {
-    BLOWUP_MID_VIEW_PC *blowup = (BLOWUP_MID_VIEW_PC *)opaque_blowup;
+void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *blowup) {
     NUVEC minimum, maximum, corners[8];
     NUVEC delta;
     i32 i;
@@ -298,8 +270,8 @@ void __cdecl UpdateMidPos(GIZMOBLOWUP_PC *opaque_blowup) {
     }
     if (blowup->anti_node == NULL && (blowup->status_flags & 0x4000) != 0)
         blowup->anti_node = GameAntinode_RegisterAntiNodeUsingData(
-            WORLD->game_antinode_sys, &blowup->mid_position, (u16)(blowup->angle_a + blowup->angle_b),
-            blowup->type->anti_node_data, 0.0f, blowup->draw_flags & 0x4000);
+            WORLD->game_antinode_sys, &blowup->mid_position, (u16)(blowup->model_rotation_y + blowup->model_rotation_z),
+            &blowup->type->anti_node_data, 0.0f, blowup->draw_flags & 0x4000);
     delta.x = maximum.x - blowup->mid_position.x;
     delta.y = maximum.y - blowup->mid_position.y;
     delta.z = maximum.z - blowup->mid_position.z;
@@ -568,39 +540,17 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, 
     return nearest != NULL ? nearest : fallback;
 }
 
-typedef struct PUNCH_BLOWUP_VIEW_PC {
-    u8 unknown_00[0x4c];
-    NUVEC mid_position;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    u8 unknown_70[0x24];
-    u32 status_flags;
-    u32 draw_flags;
-    u32 secondary_flags;
-    u8 unknown_a0[8];
-    f32 target_scale;
-    u8 unknown_ac[0x56];
-    i16 platform_id;
-    u8 unknown_104[0x10];
-} PUNCH_BLOWUP_VIEW_PC;
-STATIC_ASSERT(sizeof(PUNCH_BLOWUP_VIEW_PC) == 0x114);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, mid_position) == 0x4c);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, draw_flags) == 0x98);
-
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, bounds_min) == 0x58);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, bounds_max) == 0x64);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, status_flags) == 0x94);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, secondary_flags) == 0x9c);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, target_scale) == 0xa8);
-STATIC_ASSERT(offsetof(PUNCH_BLOWUP_VIEW_PC, platform_id) == 0x102);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, bounds_min) == 0x58);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, secondary_flags) == 0x9c);
+STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
 
 extern i32 GizmoBlowUpOpponent_Behind;
 extern f32 GizmoBlowUpOpponent_Range2;
 extern i16 LegoActPunchBehindPc;
 GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, f32 minimum_radius,
                                             i32 mode, u32 mask, u32 value, u32 secondary_mask) {
-    PUNCH_BLOWUP_VIEW_PC *target = (PUNCH_BLOWUP_VIEW_PC *)WORLD->gizmo_blowups;
-    PUNCH_BLOWUP_VIEW_PC *nearest = NULL;
+    GIZMOBLOWUP_PC *target = WORLD->gizmo_blowups;
+    GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance, distance, radius, maximum, minimum;
     u32 flags;
     NUVEC delta;
@@ -672,7 +622,7 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 e
         }
     }
     GizmoBlowUpOpponent_Range2 = nearest_distance;
-    return (GIZMOBLOWUP_PC *)nearest;
+    return nearest;
 }
 
 void __cdecl GizmoBlowupResetNameTable(void) {
@@ -1599,11 +1549,14 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
                                         NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *flags) {
     u32 exclude_flag_2 = EXBLOWUPFLAGS & 2;
     u32 exclude_flag_1 = EXBLOWUPFLAGS & 1;
-    i32 airborne_damage = object != NULL && object->character_data->game_character->field_028 > 0.0f;
+    i32 airborne_damage = 0;
     GIZMOBLOWUP_PC *nearest;
     f32 nearest_distance;
-    GIZMOBLOWUP_PC *blowup = WORLD->gizmo_blowups;
+    GIZMOBLOWUP_PC *blowup;
     i32 index, damage, cause;
+    if (object != NULL)
+        airborne_damage = object->character_data->game_character->field_028 > 0.0f;
+    blowup = WORLD->gizmo_blowups;
     if (blowup == NULL) {
         return NULL;
     }
@@ -1611,11 +1564,8 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
     nearest = NULL;
     for (index = 0; index < WORLD->gizmo_blowup_count; ++index, ++blowup) {
         i32 point;
-        if ((blowup->status_flags & 1) != 0 || (blowup->status_flags & 0x800000) == 0 ||
-            (blowup->status_flags & 0x4000) == 0) {
-            continue;
-        }
-        if (exclude_flag_1 && (blowup->draw_flags & 0x80000) && airborne_damage) {
+        if ((blowup->status_flags & 1) || !(blowup->status_flags & 0x800000) || !(blowup->status_flags & 0x4000) ||
+            (exclude_flag_1 && (blowup->draw_flags & 0x80000) && airborne_damage)) {
             continue;
         }
         if (exclude_flag_2 && (blowup->draw_flags & 0x200000) && (hit_type == 8 || hit_type == 9) &&
@@ -1626,19 +1576,21 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
                              ((blowup->draw_flags & 0x80000) && (object == NULL || object->rider == NULL)))) {
             continue;
         }
-        if (hit_type == 0 && (blowup->draw_flags & 0x10000) == 0) {
+        if (hit_type == 0) {
+            if ((blowup->draw_flags & 0x10000) == 0)
+                continue;
+        } else if (hit_type == 3 && (blowup->draw_flags & 0x200000)) {
             continue;
         }
-        if ((hit_type == 3 && (blowup->draw_flags & 0x200000)) || ((blowup->draw_flags & 0x20) && ShadowMode == 0) ||
-            (hit_type == 7) != ((blowup->draw_flags & 0x40) != 0)) {
+        if (((blowup->draw_flags & 0x20) && ShadowMode == 0) || (hit_type == 7) != ((blowup->draw_flags & 0x40) != 0)) {
             continue;
         }
         if (maximum->x < blowup->mid_position.x - blowup->target_scale ||
-            minimum->x > blowup->mid_position.x + blowup->target_scale ||
+            minimum->x > blowup->target_scale + blowup->mid_position.x ||
             maximum->z < blowup->mid_position.z - blowup->target_scale ||
-            minimum->z > blowup->target_scale + blowup->mid_position.z ||
+            minimum->z > blowup->mid_position.z + blowup->target_scale ||
             maximum->y < blowup->mid_position.y - blowup->target_scale ||
-            minimum->y > blowup->target_scale + blowup->mid_position.y) {
+            minimum->y > blowup->mid_position.y + blowup->target_scale) {
             continue;
         }
         for (point = point_count - 1; point >= 0; --point) {
@@ -1665,14 +1617,13 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 p
                 }
             }
         }
-        if (hit_type == 3) {
+        if (hit_type == 3)
             cause = 10;
-        } else if (hit_type == 2 || hit_type == 7) {
+        else if (hit_type == 2 || hit_type == 7)
             cause = 9;
-        } else {
+        else
             cause = hit_type == 0 ? 13 : 3;
-        }
-        if (GizmoBlowupBlowup(nearest, 1, cause, damage, NULL, 1) != 0) {
+        if (GizmoBlowupBlowup(nearest, 1, cause, damage, NULL, 1)) {
             if (object != NULL) {
                 NewRumble(object->pad->bound_pad, 0.4f, 0);
                 GameCam_HitJudder();

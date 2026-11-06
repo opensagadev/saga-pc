@@ -14164,7 +14164,7 @@ extern "C" {
     i32(__cdecl *CanMagnetClimbFn)(GAMEOBJECT *) = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PlayerSpecialMoveDataPc")
-    void *PlayerSpecialMoveDataPc = 0;
+    struct specialmove_pc_s *PlayerSpecialMoveDataPc = 0;
 #pragma bss_seg()
 #pragma const_seg(".rdata$EpisodeVI_ShowHearts")
     extern const char EpisodeVI_ShowHearts[11] = "ShowHearts";
