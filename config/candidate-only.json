@@ -1335,6 +1335,11 @@
    "unit": "src/nu2api/nuanim.c",
    "symbol": "_NuAnimRebaseChar",
    "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/ledges.cpp",
+   "symbol": "?LedgeFabsPc@@YAMM@Z",
+   "kind": "function"
   }
  ]
 }

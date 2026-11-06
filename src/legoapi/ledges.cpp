@@ -5,7 +5,14 @@ typedef struct LEDGE_MOTION_PC {
     NUVEC position;
     u16 y_rotation;
     i8 type_code;
-    u8 state_flags;
+    union {
+        u8 state_flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 unused : 6;
+        } state_bits;
+    };
     u8 type_index, flags;
     u8 unknown_01a[2];
     i16 field_1c, field_1e;
@@ -60,93 +67,110 @@ static void LedgeSetAttachPositionPc(NUVEC *position, u16 angle, GAMEOBJECT *obj
     object->launch_origin.z =
         object->external_force.z - NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * object->bounds_radius;
 }
+/* Retail takes these absolute values through the float's bit pattern. */
+static __forceinline f32 LedgeFabsPc(f32 value) {
+    f32 result;
+    *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
+    return result;
+}
 static LEDGE_MOTION_PC *LedgeAttachPointPc(WORLDINFO *world, NUVEC *position, NUVEC *bounds_min, NUVEC *bounds_max,
                                            u16 *angle) {
     LEDGE_MOTION_PC *ledge = static_cast<LEDGE_MOTION_PC *>(((LEDGE_WORLD_PC *)world)->ledges);
+    LEDGE_MOTION_PC *nearest_segment;
+    LEDGE_MOTION_PC *nearest_endpoint;
+    f32 segment_distance;
+    f32 endpoint_distance;
+    f32 distance;
+    f32 distance_squared;
+    NUVEC segment_position;
+    NUVEC endpoint_position;
+    NUVEC local;
+    NUVEC point;
+    u16 segment_angle;
+    u16 endpoint_angle;
+    u16 local_angle;
+    i32 check_end;
+    LEDGEPIECE *piece;
+
     if (ledge == NULL)
         return NULL;
-    LEDGE_MOTION_PC *nearest_segment = NULL;
-    LEDGE_MOTION_PC *nearest_endpoint = NULL;
-    f32 segment_distance = 100000.0f;
-    f32 endpoint_distance = 100000.0f;
-    NUVEC segment_position, endpoint_position;
-    u16 segment_angle = 0, endpoint_angle = 0;
-    i32 count = ((LEDGE_WORLD_PC *)world)->count;
-    for (i32 i = 0; i < count; ++i, ++ledge) {
-        if ((ledge->state_flags & 3) != 3 || ((ledge->flags & 1) && ShadowMode == 0))
+    endpoint_distance = segment_distance = 100000.0f;
+    nearest_segment = NULL;
+    nearest_endpoint = NULL;
+    segment_angle = 0;
+    endpoint_angle = 0;
+    for (i32 i = 0; i < ((LEDGE_WORLD_PC *)world)->count; ++i, ++ledge) {
+        if ((ledge->state_flags & 2) == 0 || (ledge->state_flags & 1) == 0)
             continue;
-        if (bounds_min->x > ledge->bounds_max.x || ledge->bounds_min.x > bounds_max->x ||
-            bounds_min->z > ledge->bounds_max.z || ledge->bounds_min.z > bounds_max->z ||
-            bounds_min->y > ledge->bounds_max.y || ledge->bounds_min.y > bounds_max->y)
+        if ((ledge->flags & 1) != 0 && ShadowMode == 0)
             continue;
-        LEDGEPIECE *piece = &LedgePiece[ledge->type_index];
-        NUVEC local = {position->x - ledge->position.x, 0.0f, position->z - ledge->position.z};
+        if (bounds_min->x > ledge->bounds_max.x || bounds_max->x < ledge->bounds_min.x ||
+            bounds_min->z > ledge->bounds_max.z || bounds_max->z < ledge->bounds_min.z ||
+            bounds_min->y > ledge->bounds_max.y || bounds_max->y < ledge->bounds_min.y)
+            continue;
+        piece = &LedgePiece[ledge->type_index];
+        local.x = position->x - ledge->position.x;
+        local.y = 0.0f;
+        local.z = position->z - ledge->position.z;
         NuVecRotateY(&local, &local, -ledge->y_rotation);
-        bool check_end = false;
+        check_end = 0;
         if (piece->straight != 0) {
             if (local.x >= piece->start.x && local.x <= piece->end.x) {
-                f32 distance = (f32)fabs((f64)local.z);
+                distance = LedgeFabsPc(local.z);
                 if (distance < segment_distance) {
+                    segment_distance = distance;
                     local.z = 0.0f;
+                    nearest_segment = ledge;
                     NuVecRotateY(&local, &local, ledge->y_rotation);
                     NuVecAdd(&segment_position, &local, &ledge->position);
-                    nearest_segment = ledge;
-                    segment_distance = distance;
                     segment_angle = ledge->y_rotation;
                 }
-                goto next_ledge;
+                continue;
             }
-            if (local.x < piece->start.x) {
-                check_end = false;
-                goto check_start_endpoint;
-            }
-            goto check_end_endpoint;
-        } else {
-            u16 local_angle = NuAtan2D(local.x - piece->start.x, local.z - piece->end.z);
-            if (static_cast<u32>(RotDiff(piece->arc_mid_angle, local_angle) + 0x2000) <= 0x4000) {
-                f32 radius = (f32)fabs((f64)piece->start.x);
-                NUVEC point = {radius * NuTrigTable[((u16)(local_angle)) >> 1] + piece->start.x, 0.0f,
-                               radius * NuTrigTable[((((u16)(local_angle)) + 0x4000) >> 1) & 0x7fff] + piece->end.z};
-                f32 distance = NuVecDist(&local, &point, NULL);
-                if (distance < segment_distance) {
-                    NuVecRotateY(&local, &point, ledge->y_rotation);
-                    NuVecAdd(&segment_position, &local, &ledge->position);
-                    nearest_segment = ledge;
-                    segment_distance = distance;
-                    segment_angle = local_angle + ledge->y_rotation;
-                    if (piece->exit_angle > 0x8000)
-                        segment_angle += 0x8000;
-                }
-                goto next_ledge;
-            }
-            check_end = true;
+            if (local.x < piece->start.x)
+                goto check_start;
+            goto check_end_point;
         }
-    check_start_endpoint: {
-        f32 distance = NuVecDistSqr(&local, &piece->start, NULL);
-        if (distance < endpoint_distance) {
+        local_angle = NuAtan2D(local.x - piece->start.x, local.z - piece->end.z);
+        if ((u32)(RotDiff(piece->arc_mid_angle, local_angle) + 0x2000) <= 0x4000) {
+            point.x = LedgeFabsPc(piece->start.x) * NuTrigTable[local_angle >> 1] + piece->start.x;
+            point.y = 0.0f;
+            point.z = LedgeFabsPc(piece->start.x) * NuTrigTable[((local_angle + 0x4000) >> 1) & 0x7fff] + piece->end.z;
+            distance = NuVecDist(&local, &point, NULL);
+            if (distance < segment_distance) {
+                segment_distance = distance;
+                nearest_segment = ledge;
+                NuVecRotateY(&local, &point, ledge->y_rotation);
+                NuVecAdd(&segment_position, &local, &ledge->position);
+                segment_angle = ledge->y_rotation + local_angle;
+                if (piece->exit_angle > 0x8000)
+                    segment_angle += 0x8000;
+            }
+            continue;
+        }
+        check_end = 1;
+    check_start:
+        distance_squared = NuVecDistSqr(&local, &piece->start, NULL);
+        if (distance_squared < endpoint_distance) {
+            endpoint_distance = distance_squared;
+            nearest_endpoint = ledge;
             NuVecRotateY(&local, &piece->start, ledge->y_rotation);
             NuVecAdd(&endpoint_position, &local, &ledge->position);
-            nearest_endpoint = ledge;
-            endpoint_distance = distance;
             endpoint_angle = ledge->y_rotation;
         }
-    }
-        if (!check_end)
-            goto next_ledge;
-    check_end_endpoint: {
-        f32 distance = NuVecDistSqr(&local, &piece->end, NULL);
-        if (!(distance < endpoint_distance))
-            goto next_ledge;
-        NuVecRotateY(&local, &piece->end, ledge->y_rotation);
-        NuVecAdd(&endpoint_position, &local, &ledge->position);
-        nearest_endpoint = ledge;
-        endpoint_distance = distance;
-        endpoint_angle = ledge->y_rotation;
-        if (piece->straight == 0)
-            endpoint_angle += piece->exit_angle;
-    }
-    next_ledge:
-        count = ((LEDGE_WORLD_PC *)world)->count;
+        if (check_end == 0)
+            continue;
+    check_end_point:
+        distance_squared = NuVecDistSqr(&local, &piece->end, NULL);
+        if (distance_squared < endpoint_distance) {
+            endpoint_distance = distance_squared;
+            nearest_endpoint = ledge;
+            NuVecRotateY(&local, &piece->end, ledge->y_rotation);
+            NuVecAdd(&endpoint_position, &local, &ledge->position);
+            endpoint_angle = ledge->y_rotation;
+            if (piece->straight == 0)
+                endpoint_angle += piece->exit_angle;
+        }
     }
     if (nearest_segment != NULL) {
         *position = segment_position;
@@ -307,34 +331,30 @@ extern "C" {
         ledge->state_flags |= 3;
     }
     i32 __cdecl Ledges_Load(WORLDINFO *world, void *unused) {
-        if (world->ledge_count != 0)
-            return 0;
-        i32 version = EdFileReadInt();
-        world->ledge_count = EdFileReadInt();
-        for (i32 i = 0; i < world->ledge_count; ++i) {
-            EdFileRead(((LEDGE_MOTION_PC *)world->ledges)[i].name, 8);
-            EdFileReadNuVec(&((LEDGE_MOTION_PC *)world->ledges)[i].position);
-            u16 angle = EdFileReadShort();
-            ((LEDGE_MOTION_PC *)world->ledges)[i].y_rotation = angle;
-            i8 type = EdFileReadChar();
-            ((LEDGE_MOTION_PC *)world->ledges)[i].type_code = type;
-            if (version >= 2) {
-                i16 value = EdFileReadShort();
-                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1c = value;
-                value = EdFileReadShort();
-                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1e = value;
-            } else {
-                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1c = -1;
-                ((LEDGE_MOTION_PC *)world->ledges)[i].field_1e = -1;
+        if (world->ledge_count == 0) {
+            i32 version = EdFileReadInt();
+            world->ledge_count = EdFileReadInt();
+            for (i32 i = 0; i < world->ledge_count; ++i) {
+                EdFileRead(((LEDGE_MOTION_PC *)world->ledges)[i].name, 8);
+                EdFileReadNuVec(&((LEDGE_MOTION_PC *)world->ledges)[i].position);
+                ((LEDGE_MOTION_PC *)world->ledges)[i].y_rotation = EdFileReadShort();
+                ((LEDGE_MOTION_PC *)world->ledges)[i].type_code = EdFileReadChar();
+                if (version >= 2) {
+                    ((LEDGE_MOTION_PC *)world->ledges)[i].field_1c = EdFileReadShort();
+                    ((LEDGE_MOTION_PC *)world->ledges)[i].field_1e = EdFileReadShort();
+                } else {
+                    ((LEDGE_MOTION_PC *)world->ledges)[i].field_1c = -1;
+                    ((LEDGE_MOTION_PC *)world->ledges)[i].field_1e = -1;
+                }
+                if (version >= 3) {
+                    ((LEDGE_MOTION_PC *)world->ledges)[i].flags = EdFileReadUnsignedChar();
+                } else {
+                    ((LEDGE_MOTION_PC *)world->ledges)[i].flags = 0;
+                }
             }
-            if (version >= 3) {
-                u8 flags = EdFileReadUnsignedChar();
-                ((LEDGE_MOTION_PC *)world->ledges)[i].flags = flags;
-            } else {
-                ((LEDGE_MOTION_PC *)world->ledges)[i].flags = 0;
-            }
+            return 1;
         }
-        return 1;
+        return 0;
     }
     void *__cdecl Ledges_ReserveBufferSpace(WORLDINFO *world) {
         LEVELDATA_PC *level = world->current_level;
@@ -350,13 +370,13 @@ extern "C" {
     void __cdecl Ledge_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         if (gizmo != NULL) {
             LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
-            ledge->state_flags = (ledge->state_flags & ~2u) | ((visible != 0) << 1);
+            ledge->state_bits.visible = visible != 0;
         }
     }
     void __cdecl Ledge_Activate(GIZMO_PC *gizmo, i32 active) {
         if (gizmo != NULL) {
             LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)gizmo->object;
-            ledge->state_flags = (ledge->state_flags & ~1u) | (active != 0);
+            ledge->state_bits.active = active != 0;
         }
     }
     void __cdecl Ledges_Reset(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
@@ -366,9 +386,10 @@ extern "C" {
         for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
             LedgeInitRecordPc(ledge);
             if (progress != NULL && i < 128) {
+                i32 word = i / 32;
                 u32 mask = 1u << (i & 31);
-                ledge->state_flags = (ledge->state_flags & ~2u) | (((progress->visible[i >> 5] & mask) != 0) << 1);
-                ledge->state_flags = (ledge->state_flags & ~1u) | ((progress->active[i >> 5] & mask) != 0);
+                ledge->state_bits.visible = (progress->visible[word] & mask) != 0;
+                ledge->state_bits.active = (progress->active[word] & mask) != 0;
             }
         }
     }
@@ -413,28 +434,27 @@ extern "C" {
     }
     void __cdecl Ledges_ClearProgress(void *unused, LEDGE_PROGRESS_PC *progress) {
         if (progress != NULL) {
-            for (i32 i = 0; i < 4; ++i)
-                progress->active[i] = -1;
-            for (i32 i = 0; i < 4; ++i)
-                progress->visible[i] = -1;
+            memset(progress->active, 0xff, sizeof(progress->active));
+            memset(progress->visible, 0xff, sizeof(progress->visible));
         }
     }
     void __cdecl Ledges_StoreProgress(WORLDINFO *world, void *unused, LEDGE_PROGRESS_PC *progress) {
         if (progress == NULL)
             return;
-        for (i32 i = 0; i < 4; ++i)
-            progress->active[i] = -1;
-        for (i32 i = 0; i < 4; ++i)
-            progress->visible[i] = -1;
+        memset(progress->active, 0xff, sizeof(progress->active));
+        memset(progress->visible, 0xff, sizeof(progress->visible));
         if (world == NULL || world->ledges == NULL)
             return;
         LEDGE_MOTION_PC *ledge = (LEDGE_MOTION_PC *)world->ledges;
-        for (i32 i = 0; i < world->ledge_count && i < 128; ++i, ++ledge) {
+        for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
+            if (i >= 128)
+                break;
+            i32 word = i / 32;
             u32 mask = 1u << (i & 31);
-            if ((ledge->state_flags & 2) == 0)
-                progress->visible[i >> 5] &= ~mask;
-            if ((ledge->state_flags & 1) == 0)
-                progress->active[i >> 5] &= ~mask;
+            if (!ledge->state_bits.visible)
+                progress->visible[word] &= ~mask;
+            if (!ledge->state_bits.active)
+                progress->active[word] &= ~mask;
         }
     }
 }
