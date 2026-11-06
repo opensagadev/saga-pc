@@ -4850,14 +4850,13 @@ extern "C" {
                     red = 0;
                     green = 255;
                 }
-                const f32 y =
-                    (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.430f) / (f64)0.430f * 65536.0) >> 1] *
-                              (f64)0.035f -
-                          (f64)STATSPOSY);
-                const f32 x =
-                    (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.479f) / (f64)0.479f * 65536.0) >> 1] *
-                          (f64)0.035f);
-                Text3D(bonus_score, x, y, 1.0f, 0.3f, 0.3f, 0.3f, 0, red, green, 0);
+                Text3D(bonus_score,
+                       (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.479f) / (f64)0.479f * 65536.0) >> 1] *
+                             (f64)0.035f),
+                       (f32)((f64)NuTrigTable[(u16)(NuFmod(WaitingForLevelTime, 0.430f) / (f64)0.430f * 65536.0) >> 1] *
+                                 (f64)0.035f -
+                             (f64)STATSPOSY),
+                       1.0f, 0.3f, 0.3f, 0.3f, 0, red, green, 0);
             }
             if (gone_through_door_to_new_level != 0) {
                 if (menu == -1 && editor_active == 0)
