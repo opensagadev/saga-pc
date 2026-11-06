@@ -3335,6 +3335,7 @@ address,symbol,size,ctype
 0x521b30,_AiEditorAddLocatorToSetPc,225,
 0x521cb0,_locatorEditorSaveData,794,
 0x00521fd0,_locatorEditor_GetNearest,295,EDLOCATOR_s *__cdecl (i32)
+0x522100,_locatorEditor_PathNodeMoved,387,void __cdecl (EDAIPATHNODE_s *)
 0x522290,_AiEditorRenameLocatorPc,146,
 0x522330,_AiEditorRenameLocatorCancelPc,12,
 0x522340,_AiEditorRenameLocatorSetPc,178,
@@ -3432,6 +3433,7 @@ address,symbol,size,ctype
 0x529fb0,_AiEditorSelectLocatorMenuPc,271,
 0x52a0c0,_AiEditorRenameCreaturePc,146,
 0x52a160,_creatureEditor_cbRenameCreatureMenu,192,
+0x52a2f0,_creatureEditor_PathNodeMoved,446,void __cdecl (EDAIPATHNODE_s *)
 0x52a630,_creatureEditor_CalculatePos,224,
 0x52a710,_creatureEditor_Updated,76,
 0x52a760,_creatureEditor_RenderAllCreatures,389,
@@ -15467,8 +15469,17 @@ address,symbol,size,ctype
 0x760494,??_C@_0BG@IFCCHAGJ@?$CFsLevels?2?$CFs?2?$CFs?2ai?4pak?$AA@,22,const char[22]
 0x7604b4,??_C@_09DNOCENCD@Area?5Name?$AA@,,char []
 0x7604c0,??_C@_0M@PCEMPPIA@Rename?5Area?$AA@,,char []
+0x7604cc,??_C@_0BA@NFOINGFB@X?5?9?5Create?5area?$AA@,,char []
 0x7604dc,_AiAntinodeRenderNearestPc,,const char[]
+0x7604f4,??_C@_0BA@EIBDDPGL@X?5?9?5Select?5area?$AA@,,char []
+0x760504,??_C@_0BI@CDBCGHMH@LDOWN?5?9?5Decrease?5height?$AA@,,char []
+0x76051c,??_C@_0BG@EDIHFECI@LUP?5?9?5Increase?5height?$AA@,,char []
+0x760534,??_C@_0BG@DAAMLNJI@LLEFT?1LRIGHT?5?9?5Rotate?$AA@,,char []
+0x76054c,??_C@_0BK@NLCMFMLC@LUP?1LDOWN?5?9?5Adjust?5Z?5size?$AA@,,char []
+0x760568,??_C@_0BN@HCNNBOOF@LRIGHT?1LLEFT?5?9?5Adjust?5X?5size?$AA@,,char []
+0x760588,??_C@_0BN@NHKNCBBK@LRIGHT?1LLEFT?5?9?5Adjust?5Radius?$AA@,,char []
 0x7605a8,_AiAntinodeRenderMovePc,,const char[]
+0x7605c8,??_C@_0M@KHKJLDLE@Area?5Editor?$AA@,,char []
 0x7605d4,??_C@_0N@JOGKKIAG@Locator?5Name?$AA@,,char []
 0x7605e4,??_C@_0P@PMPBEANL@Rename?5Locator?$AA@,,char []
 0x7605f4,??_C@_08LOOAOMLJ@NewSet?$CFd?$AA@,,char []
@@ -15480,9 +15491,14 @@ address,symbol,size,ctype
 0x7606a0,_AiAntinodeRenderRotateRightPc,,const char[]
 0x7606b8,_AiAntinodeRenderRotateLeftPc,,const char[]
 0x760740,??_C@_0M@DHNJIDNL@Select?5Path?$AA@,,char []
+0x760794,??_C@_0L@IIGMEPDF@X?5?9?5Select?$AA@,,char []
 0x7607a0,_AiAntinodeRenderDecreaseRadiusPc,,const char[]
 0x7607d4,_AiAntinodeRenderIncreaseRadiusPc,,const char[]
+0x760884,??_C@_0P@LHMPKFJD@SQR?5?9?5Sub?5menu?$AA@,,char []
 0x760894,??_C@_04OEDFLLKD@?$CC?$CFs?$CC?$AA@,5,char []
+0x7608d0,??_C@_0BN@FACFIHBA@O?5?9?5Add?1remove?5cnx?5to?5route?4?$AA@,,char []
+0x7608f0,??_C@_0BE@MDCIMJPA@NO?5ROUTES?5AVAILABLE?$AA@,,char []
+0x760904,??_C@_0BK@HPDKIDC@Edit?5Routes?5?$CIPath?5?$DN?5?$CC?$CFs?$CC?$CJ?$AA@,,char []
 0x760920,_AiAntinodeRenderCreatePc,,const char[]
 0x760934,_AiAntinodeRenderSelectPc,,const char[]
 0x760948,_AiAntinodeRenderAdjustLowerPc,,const char[]
@@ -24756,6 +24772,7 @@ address,symbol,size,ctype
 0x923904,_aieditor,4,struct AIEDITOR_RENDER_STATE *
 0x923908,_GameAISYSRebuildFromEditorDataFn,,"void (__cdecl *)(AISYS_PC *, VARIPTR *, VARIPTR *)"
 0x92390c,_GameAISaveFn,,void (__cdecl *)(struct AIPATHSYS_PC *)
+0x923910,_AIPathNodeDeletedFn,,void (__cdecl *)(struct EDAIPATHNODE_s *)
 0x0092391c,_PreparingForSpecialMoveFn,4,AI_PREPARING_SPECIAL_MOVE_PC
 0x00923920,_MidSpecialMoveFn,4,AI_MID_SPECIAL_MOVE_PC
 0x00923924,_GetNamedGameObjectCallback,4,GAMEOBJECT_LOOKUP_CALLBACK_PC

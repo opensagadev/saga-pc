@@ -4246,7 +4246,7 @@ void __cdecl AISysCharacterMovement(AISYS_PC *system, AIPACKET_PC *packet, APIOB
     packet->flags &= ~7u;
 }
 
-static void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
+void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
     if (!(node->flags & 0x80) && NuSpecialExistsFn(&aieditor->cursor_platform)) {
         node->special = aieditor->cursor_platform;
         NuVecInvMtxTransform(&node->platform_position, &node->position,
@@ -14066,6 +14066,47 @@ void __cdecl creatureEditor_cbRenameCreatureMenu(eduimenu_s *parent, eduiitem_s 
     menu->y = parent->y + 40;
 }
 
+void __cdecl creatureEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
+    EDAICREATURE_s *creature;
+    NUVEC difference;
+    NUVEC direction;
+    NUVEC movement;
+    f32 radius;
+    f32 normalized_x;
+    f32 old_y;
+    i32 angle;
+
+    for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
+         creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
+        if (creature->check.first == node || creature->check.second == node) {
+            NuVecSub(&difference, &creature->check.second->position, &creature->check.first->position);
+            NuVecNorm(&direction, &difference);
+            if (creature->check.fraction > 1.0f) {
+                radius = creature->check.second->radius;
+            } else if (creature->check.fraction < 0.0f) {
+                radius = creature->check.first->radius;
+            } else {
+                radius = (1.0f - creature->check.fraction) * creature->check.first->radius +
+                         creature->check.second->radius * creature->check.fraction;
+            }
+            normalized_x = direction.x;
+            direction.x = direction.z * radius;
+            direction.z = -normalized_x * radius;
+            old_y = creature->position.y;
+            creature->position = creature->check.first->position;
+            NuVecScale(&movement, &difference, creature->check.fraction);
+            NuVecAdd(&creature->position, &creature->position, &movement);
+            NuVecScale(&movement, &direction, creature->check.width);
+            NuVecAdd(&creature->position, &creature->position, &movement);
+            if (AIPathFabs(old_y - creature->position.y) > 1.5f) {
+                creature->position.y = old_y;
+            }
+            angle = (i32)(NuAtan2(difference.x, difference.z) * 10430.378f);
+            creature->angle = NuAngAdd(angle, creature->check.angle);
+        }
+    }
+}
+
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, paths) == 0x4874);
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator) == 0x3cbe0);
@@ -15300,6 +15341,42 @@ EDLOCATOR_s *__cdecl locatorEditor_GetNearest(i32 use_width) {
         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link);
     }
     return nearest;
+}
+
+void __cdecl locatorEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
+    EDLOCATOR_s *locator;
+    NUVEC difference;
+    NUVEC direction;
+    NUVEC movement;
+    f32 radius;
+    f32 normalized_x;
+    i32 angle;
+
+    for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
+         locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
+        if (locator->path_check.first == node || locator->path_check.second == node) {
+            NuVecSub(&difference, &locator->path_check.second->position, &locator->path_check.first->position);
+            NuVecNorm(&direction, &difference);
+            if (locator->path_check.fraction > 1.0f) {
+                radius = locator->path_check.second->radius;
+            } else if (locator->path_check.fraction < 0.0f) {
+                radius = locator->path_check.first->radius;
+            } else {
+                radius = (1.0f - locator->path_check.fraction) * locator->path_check.first->radius +
+                         locator->path_check.second->radius * locator->path_check.fraction;
+            }
+            normalized_x = direction.x;
+            direction.x = direction.z * radius;
+            direction.z = -normalized_x * radius;
+            locator->position = locator->path_check.first->position;
+            NuVecScale(&movement, &difference, locator->path_check.fraction);
+            NuVecAdd(&locator->position, &locator->position, &movement);
+            NuVecScale(&movement, &direction, locator->path_check.width);
+            NuVecAdd(&locator->position, &locator->position, &movement);
+            angle = (i32)(NuAtan2(difference.x, difference.z) * 10430.378f);
+            locator->direction = NuAngAdd(angle, locator->path_check.angle);
+        }
+    }
 }
 
 extern EDAICREATURE_s *__cdecl creatureEditor_GetNearest(i32 use_radius);
@@ -17028,4 +17105,98 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     if (AiEditorDisplayOptionsPc & 8)
         creatureEditor_RenderAllCreatures();
     locatorEditorDrawLocators();
+}
+
+void __cdecl areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
+    EDAIAREA_s *focus;
+    NUVEC delta;
+    f32 range;
+    i32 text_x = (x + 10) * 16;
+    (void)xscale;
+    (void)yscale;
+
+    NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, "Area Editor");
+    NuQFntSetColour(system_qfont, 0x80000000);
+    if (aieditor->selected_area != NULL)
+        focus = aieditor->selected_area;
+    else if (aieditor->hovered_area != NULL)
+        focus = aieditor->hovered_area;
+    else
+        focus = NULL;
+    if (focus != NULL) {
+        range = NuVecXZDist(&focus->position, &aieditor->camera_position, &delta);
+        y += 15;
+        NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "\"%s\", xzrng=%.2f", focus->name, (f64)range);
+    }
+    y += 15;
+    NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "SQR - Options");
+    y += 15;
+    if (aieditor->hovered_area != NULL) {
+        if (aieditor->selected_area == aieditor->hovered_area) {
+            NuQFntPrintEx(system_qfont, text_x, y * 8, 16, AiAntinodeRenderMovePc);
+            if (aieditor->pad_buttons & 0x40) {
+                if (aieditor->hovered_area->flags & 1) {
+                    NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "LRIGHT/LLEFT - Adjust Radius");
+                } else {
+                    y += 15;
+                    NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "LRIGHT/LLEFT - Adjust X size");
+                    NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "LUP/LDOWN - Adjust Z size");
+                }
+            } else {
+                y += 15;
+                NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "TRI - Delete selected");
+                if (!(aieditor->hovered_area->flags & 1)) {
+                    y += 15;
+                    NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "LLEFT/LRIGHT - Rotate");
+                }
+                y += 15;
+                NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "LUP - Increase height");
+                NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "LDOWN - Decrease height");
+            }
+        } else {
+            NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "X - Select area");
+            NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, AiAntinodeRenderNearestPc);
+        }
+    } else {
+        NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "X - Create area");
+        NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, AiAntinodeRenderNearestPc);
+    }
+    areaEditorDrawAreas();
+    pathEditorDrawPaths();
+    if (AiEditorDisplayOptionsPc & 8)
+        creatureEditor_RenderAllCreatures();
+    antinodeEditorDrawAntinodes();
+    locatorEditorDrawLocators();
+}
+
+void __cdecl routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
+    if (aieditor->current_path != NULL) {
+        NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 - 40, 16, "Edit Routes (Path = \"%s\")",
+                      aieditor->current_path->name);
+        NuQFntSetColour(system_qfont, 0x80000000);
+        NuQFntSetScale(system_qfont, xscale, yscale);
+        if (aieditor->current_path->current_route != NULL) {
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 120, 16, "\"%s\"",
+                          aieditor->current_path->current_route->name);
+        } else {
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 120, 16, "NO ROUTES AVAILABLE");
+        }
+        if (aieditor->current_path->current_node != NULL) {
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 240, 16, "SQR - Sub menu");
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
+            if (aieditor->current_path->nearest_node != NULL &&
+                aieditor->current_path->nearest_node != aieditor->current_path->current_node) {
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "X - Select");
+            }
+            if (!(aieditor->flags & 1) && aieditor->current_path->nearest_node != NULL) {
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 720, 16, "O - Add/remove cnx to route.");
+            }
+        }
+    }
+    pathEditorDrawPaths();
+    if (AiEditorDisplayOptionsPc & 8)
+        creatureEditor_RenderAllCreatures();
+    areaEditorDrawAreas();
+    locatorEditorDrawLocators();
+    antinodeEditorDrawAntinodes();
 }
