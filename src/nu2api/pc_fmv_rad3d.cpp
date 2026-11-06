@@ -194,11 +194,15 @@ static void RadFmvSetDrawStatePc(RADFMV_IMAGE_PC *image, f32 alpha) {
     image->device->methods->set_texture_stage_state(image->device, 0, 5, 2);
     image->device->methods->set_texture_stage_state(image->device, 0, 1, 4);
 }
-static RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha, u32 maximum) {
+RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha, u32 maximum) {
     u32 bytes = alpha ? context->alpha_bytes : context->opaque_bytes;
     u32 pitch = (bytes * width + 15) & ~15u;
-    u32 columns = width / maximum, rows = height / maximum;
-    u32 rw = width % maximum, rh = height % maximum;
+    u32 columns = width / maximum;
+    u32 rw = width % maximum;
+    u32 texture_width = RadFmvRoundTexturePc(rw);
+    u32 rows = height / maximum;
+    u32 rh = height % maximum;
+    u32 texture_height = RadFmvRoundTexturePc(rh);
     u32 count = ((width + maximum - 1) / maximum) * ((height + maximum - 1) / maximum);
     RADFMV_IMAGE_PC *image = static_cast<RADFMV_IMAGE_PC *>(malloc(0x50 + count * 4));
     if (!image)
@@ -213,32 +217,34 @@ static RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 widt
     image->texture_count = count;
     image->full_columns = columns;
     image->full_rows = rows;
-    image->remainder_width = RadFmvRoundTexturePc(rw);
-    image->remainder_height = RadFmvRoundTexturePc(rh);
+    image->remainder_width = texture_width;
+    image->remainder_height = texture_height;
     image->source_remainder_width = rw;
     image->source_remainder_height = rh;
-    rw = image->remainder_width;
-    rh = image->remainder_height;
     image->maximum_texture = maximum;
     image->alpha = alpha;
     image->bink_format = alpha ? context->alpha_bink_format : context->opaque_bink_format;
     image->format = alpha ? context->alpha_format : context->opaque_format;
     RADFMV_TEXTURE_PC **out = image->textures;
-    for (u32 row = 0; row < rows; ++row) {
-        for (u32 col = 0; col < columns; ++col)
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, pitch, bytes, maximum, maximum);
-        if (rw)
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, pitch, bytes, rw, maximum);
+    for (u32 row = 0; row < image->full_rows; ++row) {
+        for (u32 col = 0; col < image->full_columns; ++col)
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
+                                           image->maximum_texture, image->maximum_texture);
+        if (image->remainder_width)
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
+                                           image->remainder_width, image->maximum_texture);
     }
-    if (rh) {
-        for (u32 col = 0; col < columns; ++col)
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, pitch, bytes, maximum, rh);
-        if (rw)
-            *out++ = RadFmvCreateTexturePc(context->device, image->format, pitch, bytes, rw, rh);
+    if (image->remainder_height) {
+        for (u32 col = 0; col < image->full_columns; ++col)
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
+                                           image->maximum_texture, image->remainder_height);
+        if (image->remainder_width)
+            *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel,
+                                           image->remainder_width, image->remainder_height);
     }
-    for (u32 i = 0; i < count; ++i) {
+    for (u32 i = 0; i < image->texture_count; ++i) {
         if (image->textures[i] == NULL) {
-            for (u32 j = 0; j < count; ++j) {
+            for (u32 j = 0; j < image->texture_count; ++j) {
                 if (image->textures[j]) {
                     image->textures[j]->methods->release(image->textures[j]);
                     image->textures[j] = NULL;
