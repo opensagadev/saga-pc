@@ -506,10 +506,12 @@ static i32 __cdecl TextureAnimationReadComparisonPrivatePc(NUFPAR_PC *parser) {
     word = parser->word_buffer_ptr;
     switch (word[0]) {
         case '<':
-            if (word[1] == '=')
-                return 3;
-            if (word[1] == '>')
-                return 5;
+            switch (word[1]) {
+                case '=':
+                    return 3;
+                case '>':
+                    return 5;
+            }
             return 1;
         case '>':
             return word[1] == '=' ? 4 : 2;
@@ -632,10 +634,12 @@ static void __cdecl TextureAnimationReturnPrivatePc(NUFPAR_PC *parser) {
 }
 static void __cdecl TextureAnimationRepeatPrivatePc(NUFPAR_PC *parser) {
     i32 value = NuFParGetInt(parser);
-    i32 random = NuFParGetInt(parser);
-    TEXTURE_ANIM_PROGRAM_PC *p = TextureAnimationParseProgramPrivatePc;
+    i32 random;
+    TEXTURE_ANIM_PROGRAM_PC *p;
     if (value == 0)
-        value = -1;
+        value = 0x7fffffff;
+    random = NuFParGetInt(parser);
+    p = TextureAnimationParseProgramPrivatePc;
     p->instructions[p->instruction_count++] = 13;
     p->instructions[p->instruction_count++] = (i16)value;
     p->instructions[p->instruction_count++] = (i16)random;
