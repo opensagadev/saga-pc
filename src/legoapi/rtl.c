@@ -2777,161 +2777,161 @@ void __cdecl cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent);
 
 #pragma section(".bss$RtlUI_associd_menu", read, write)
-__declspec(allocate(".bss$RtlUI_associd_menu")) eduimenu_s *associd_menu = NULL;
+__declspec(allocate(".bss$RtlUI_associd_menu")) static eduimenu_s *associd_menu = NULL;
 #pragma section(".bss$RtlUI_associd_items", read, write)
-__declspec(allocate(".bss$RtlUI_associd_items")) eduiitem_s *associd_items[16] = {0};
+__declspec(allocate(".bss$RtlUI_associd_items")) static eduiitem_s *associd_items[16] = {0};
 #pragma section(".bss$RtlUI_excludeid_menu", read, write)
-__declspec(allocate(".bss$RtlUI_excludeid_menu")) eduimenu_s *excludeid_menu = NULL;
+__declspec(allocate(".bss$RtlUI_excludeid_menu")) static eduimenu_s *excludeid_menu = NULL;
 #pragma section(".bss$RtlUI_excludeid_items", read, write)
-__declspec(allocate(".bss$RtlUI_excludeid_items")) eduiitem_s *excludeid_items[16] = {0};
+__declspec(allocate(".bss$RtlUI_excludeid_items")) static eduiitem_s *excludeid_items[16] = {0};
 #pragma section(".bss$RtlUI_userid_menu", read, write)
-__declspec(allocate(".bss$RtlUI_userid_menu")) eduimenu_s *userid_menu = NULL;
+__declspec(allocate(".bss$RtlUI_userid_menu")) static eduimenu_s *userid_menu = NULL;
 #pragma section(".bss$RtlUI_userid_items", read, write)
-__declspec(allocate(".bss$RtlUI_userid_items")) eduiitem_s *userid_items[16] = {0};
+__declspec(allocate(".bss$RtlUI_userid_items")) static eduiitem_s *userid_items[16] = {0};
 #pragma section(".bss$RtlUI_type_menu", read, write)
-__declspec(allocate(".bss$RtlUI_type_menu")) eduimenu_s *type_menu = NULL;
+__declspec(allocate(".bss$RtlUI_type_menu")) static eduimenu_s *type_menu = NULL;
 #pragma section(".bss$RtlUI_point_item", read, write)
-__declspec(allocate(".bss$RtlUI_point_item")) eduiitem_s *point_item = NULL;
+__declspec(allocate(".bss$RtlUI_point_item")) static eduiitem_s *point_item = NULL;
 #pragma section(".bss$RtlUI_jonflicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_jonflicker_item")) eduiitem_s *jonflicker_item = NULL;
+__declspec(allocate(".bss$RtlUI_jonflicker_item")) static eduiitem_s *jonflicker_item = NULL;
 #pragma section(".bss$RtlUI_pointflicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_pointflicker_item")) eduiitem_s *pointflicker_item = NULL;
+__declspec(allocate(".bss$RtlUI_pointflicker_item")) static eduiitem_s *pointflicker_item = NULL;
 #pragma section(".bss$RtlUI_pointblend_item", read, write)
-__declspec(allocate(".bss$RtlUI_pointblend_item")) eduiitem_s *pointblend_item = NULL;
+__declspec(allocate(".bss$RtlUI_pointblend_item")) static eduiitem_s *pointblend_item = NULL;
 #pragma section(".bss$RtlUI_ambient_item", read, write)
-__declspec(allocate(".bss$RtlUI_ambient_item")) eduiitem_s *ambient_item = NULL;
+__declspec(allocate(".bss$RtlUI_ambient_item")) static eduiitem_s *ambient_item = NULL;
 #pragma section(".bss$RtlUI_directional_item", read, write)
-__declspec(allocate(".bss$RtlUI_directional_item")) eduiitem_s *directional_item = NULL;
+__declspec(allocate(".bss$RtlUI_directional_item")) static eduiitem_s *directional_item = NULL;
 #pragma section(".bss$RtlUI_antilight_item", read, write)
-__declspec(allocate(".bss$RtlUI_antilight_item")) eduiitem_s *antilight_item = NULL;
+__declspec(allocate(".bss$RtlUI_antilight_item")) static eduiitem_s *antilight_item = NULL;
 #pragma section(".bss$RtlUI_camdir_item", read, write)
-__declspec(allocate(".bss$RtlUI_camdir_item")) eduiitem_s *camdir_item = NULL;
+__declspec(allocate(".bss$RtlUI_camdir_item")) static eduiitem_s *camdir_item = NULL;
 #pragma section(".bss$RtlUI_modifier_menu", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_menu")) eduimenu_s *modifier_menu = NULL;
+__declspec(allocate(".bss$RtlUI_modifier_menu")) static eduimenu_s *modifier_menu = NULL;
 #pragma section(".bss$RtlUI_modifier_items", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_items")) eduiitem_s *modifier_items[32] = {0};
+__declspec(allocate(".bss$RtlUI_modifier_items")) static eduiitem_s *modifier_items[32] = {0};
 #pragma section(".bss$RtlUI_modifier_adj_menu", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_adj_menu")) eduimenu_s *modifier_adj_menu = NULL;
+__declspec(allocate(".bss$RtlUI_modifier_adj_menu")) static eduimenu_s *modifier_adj_menu = NULL;
 #pragma section(".bss$RtlUI_flicker_menu", read, write)
-__declspec(allocate(".bss$RtlUI_flicker_menu")) eduimenu_s *flicker_menu = NULL;
+__declspec(allocate(".bss$RtlUI_flicker_menu")) static eduimenu_s *flicker_menu = NULL;
 #pragma section(".bss$RtlUI_t_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_t_hi_item")) eduiitem_s *t_hi_item = NULL;
+__declspec(allocate(".bss$RtlUI_t_hi_item")) static eduiitem_s *t_hi_item = NULL;
 #pragma section(".bss$RtlUI_rt_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_rt_hi_item")) eduiitem_s *rt_hi_item = NULL;
+__declspec(allocate(".bss$RtlUI_rt_hi_item")) static eduiitem_s *rt_hi_item = NULL;
 #pragma section(".bss$RtlUI_t_low_item", read, write)
-__declspec(allocate(".bss$RtlUI_t_low_item")) eduiitem_s *t_low_item = NULL;
+__declspec(allocate(".bss$RtlUI_t_low_item")) static eduiitem_s *t_low_item = NULL;
 #pragma section(".bss$RtlUI_rt_low_item", read, write)
-__declspec(allocate(".bss$RtlUI_rt_low_item")) eduiitem_s *rt_low_item = NULL;
+__declspec(allocate(".bss$RtlUI_rt_low_item")) static eduiitem_s *rt_low_item = NULL;
 #pragma section(".bss$RtlUI_jonflicker_menu", read, write)
-__declspec(allocate(".bss$RtlUI_jonflicker_menu")) eduimenu_s *jonflicker_menu = NULL;
+__declspec(allocate(".bss$RtlUI_jonflicker_menu")) static eduimenu_s *jonflicker_menu = NULL;
 #pragma section(".bss$RtlUI_jon_t_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_jon_t_hi_item")) eduiitem_s *jon_t_hi_item = NULL;
+__declspec(allocate(".bss$RtlUI_jon_t_hi_item")) static eduiitem_s *jon_t_hi_item = NULL;
 #pragma section(".bss$RtlUI_jon_rt_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_jon_rt_hi_item")) eduiitem_s *jon_rt_hi_item = NULL;
+__declspec(allocate(".bss$RtlUI_jon_rt_hi_item")) static eduiitem_s *jon_rt_hi_item = NULL;
 #pragma section(".bss$RtlUI_jon_t_low_item", read, write)
-__declspec(allocate(".bss$RtlUI_jon_t_low_item")) eduiitem_s *jon_t_low_item = NULL;
+__declspec(allocate(".bss$RtlUI_jon_t_low_item")) static eduiitem_s *jon_t_low_item = NULL;
 #pragma section(".bss$RtlUI_prop_menu", read, write)
-__declspec(allocate(".bss$RtlUI_prop_menu")) eduimenu_s *prop_menu = NULL;
+__declspec(allocate(".bss$RtlUI_prop_menu")) static eduimenu_s *prop_menu = NULL;
 #pragma section(".bss$RtlUI_colour_item", read, write)
-__declspec(allocate(".bss$RtlUI_colour_item")) eduiitem_s *colour_item = NULL;
+__declspec(allocate(".bss$RtlUI_colour_item")) static eduiitem_s *colour_item = NULL;
 #pragma section(".bss$RtlUI_flicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_flicker_item")) eduiitem_s *flicker_item = NULL;
+__declspec(allocate(".bss$RtlUI_flicker_item")) static eduiitem_s *flicker_item = NULL;
 #pragma section(".bss$RtlUI_associd_item", read, write)
-__declspec(allocate(".bss$RtlUI_associd_item")) eduiitem_s *associd_item = NULL;
+__declspec(allocate(".bss$RtlUI_associd_item")) static eduiitem_s *associd_item = NULL;
 #pragma section(".bss$RtlUI_multiplier_item", read, write)
-__declspec(allocate(".bss$RtlUI_multiplier_item")) eduiitem_s *multiplier_item = NULL;
+__declspec(allocate(".bss$RtlUI_multiplier_item")) static eduiitem_s *multiplier_item = NULL;
 #pragma section(".bss$RtlUI_groupid_item", read, write)
-__declspec(allocate(".bss$RtlUI_groupid_item")) eduiitem_s *groupid_item = NULL;
+__declspec(allocate(".bss$RtlUI_groupid_item")) static eduiitem_s *groupid_item = NULL;
 #pragma section(".bss$RtlUI_modifierid_item", read, write)
-__declspec(allocate(".bss$RtlUI_modifierid_item")) eduiitem_s *modifierid_item = NULL;
+__declspec(allocate(".bss$RtlUI_modifierid_item")) static eduiitem_s *modifierid_item = NULL;
 #pragma section(".bss$RtlUI_castshadow_item", read, write)
-__declspec(allocate(".bss$RtlUI_castshadow_item")) eduiitem_s *castshadow_item = NULL;
+__declspec(allocate(".bss$RtlUI_castshadow_item")) static eduiitem_s *castshadow_item = NULL;
 #pragma section(".bss$RtlUI_hasspecular_item", read, write)
-__declspec(allocate(".bss$RtlUI_hasspecular_item")) eduiitem_s *hasspecular_item = NULL;
+__declspec(allocate(".bss$RtlUI_hasspecular_item")) static eduiitem_s *hasspecular_item = NULL;
 #pragma section(".bss$RtlUI_hide_menu", read, write)
-__declspec(allocate(".bss$RtlUI_hide_menu")) eduimenu_s *hide_menu = NULL;
+__declspec(allocate(".bss$RtlUI_hide_menu")) static eduimenu_s *hide_menu = NULL;
 #pragma section(".bss$RtlUI_hide_point_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_point_item")) eduiitem_s *hide_point_item = NULL;
+__declspec(allocate(".bss$RtlUI_hide_point_item")) static eduiitem_s *hide_point_item = NULL;
 #pragma section(".bss$RtlUI_hide_pointflicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_pointflicker_item")) eduiitem_s *hide_pointflicker_item = NULL;
+__declspec(allocate(".bss$RtlUI_hide_pointflicker_item")) static eduiitem_s *hide_pointflicker_item = NULL;
 #pragma section(".bss$RtlUI_hide_pointblend_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_pointblend_item")) eduiitem_s *hide_pointblend_item = NULL;
+__declspec(allocate(".bss$RtlUI_hide_pointblend_item")) static eduiitem_s *hide_pointblend_item = NULL;
 #pragma section(".bss$RtlUI_hide_ambient_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_ambient_item")) eduiitem_s *hide_ambient_item = NULL;
+__declspec(allocate(".bss$RtlUI_hide_ambient_item")) static eduiitem_s *hide_ambient_item = NULL;
 #pragma section(".bss$RtlUI_hide_directional_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_directional_item")) eduiitem_s *hide_directional_item = NULL;
+__declspec(allocate(".bss$RtlUI_hide_directional_item")) static eduiitem_s *hide_directional_item = NULL;
 #pragma section(".bss$RtlUI_hide_antilight_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_antilight_item")) eduiitem_s *hide_antilight_item = NULL;
+__declspec(allocate(".bss$RtlUI_hide_antilight_item")) static eduiitem_s *hide_antilight_item = NULL;
 #pragma section(".bss$RtlUI_hide_camdir_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_camdir_item")) eduiitem_s *hide_camdir_item = NULL;
+__declspec(allocate(".bss$RtlUI_hide_camdir_item")) static eduiitem_s *hide_camdir_item = NULL;
 #pragma section(".bss$RtlUI_delete_menu", read, write)
-__declspec(allocate(".bss$RtlUI_delete_menu")) eduimenu_s *delete_menu = NULL;
+__declspec(allocate(".bss$RtlUI_delete_menu")) static eduimenu_s *delete_menu = NULL;
 #pragma section(".bss$RtlUI_global_confirm_menu", read, write)
-__declspec(allocate(".bss$RtlUI_global_confirm_menu")) eduimenu_s *global_confirm_menu = NULL;
+__declspec(allocate(".bss$RtlUI_global_confirm_menu")) static eduimenu_s *global_confirm_menu = NULL;
 #pragma section(".bss$RtlUI_global_menu", read, write)
-__declspec(allocate(".bss$RtlUI_global_menu")) eduimenu_s *global_menu = NULL;
+__declspec(allocate(".bss$RtlUI_global_menu")) static eduimenu_s *global_menu = NULL;
 #pragma section(".bss$RtlUI_global_scale_item", read, write)
-__declspec(allocate(".bss$RtlUI_global_scale_item")) eduiitem_s *global_scale_item = NULL;
+__declspec(allocate(".bss$RtlUI_global_scale_item")) static eduiitem_s *global_scale_item = NULL;
 #pragma section(".bss$RtlUI_load_confirm_menu", read, write)
-__declspec(allocate(".bss$RtlUI_load_confirm_menu")) eduimenu_s *load_confirm_menu = NULL;
+__declspec(allocate(".bss$RtlUI_load_confirm_menu")) static eduimenu_s *load_confirm_menu = NULL;
 #pragma section(".bss$RtlUI_main_menu", read, write)
-__declspec(allocate(".bss$RtlUI_main_menu")) eduimenu_s *main_menu = NULL;
+__declspec(allocate(".bss$RtlUI_main_menu")) static eduimenu_s *main_menu = NULL;
 #pragma section(".bss$RtlUI_prop_item", read, write)
-__declspec(allocate(".bss$RtlUI_prop_item")) eduiitem_s *prop_item = NULL;
+__declspec(allocate(".bss$RtlUI_prop_item")) static eduiitem_s *prop_item = NULL;
 #pragma section(".bss$RtlUI_copy_item", read, write)
-__declspec(allocate(".bss$RtlUI_copy_item")) eduiitem_s *copy_item = NULL;
+__declspec(allocate(".bss$RtlUI_copy_item")) static eduiitem_s *copy_item = NULL;
 #pragma section(".bss$RtlUI_paste_item", read, write)
-__declspec(allocate(".bss$RtlUI_paste_item")) eduiitem_s *paste_item = NULL;
+__declspec(allocate(".bss$RtlUI_paste_item")) static eduiitem_s *paste_item = NULL;
 #pragma section(".bss$RtlUI_pasteinto_item", read, write)
-__declspec(allocate(".bss$RtlUI_pasteinto_item")) eduiitem_s *pasteinto_item = NULL;
+__declspec(allocate(".bss$RtlUI_pasteinto_item")) static eduiitem_s *pasteinto_item = NULL;
 #pragma section(".bss$RtlUI_copytogroup_item", read, write)
-__declspec(allocate(".bss$RtlUI_copytogroup_item")) eduiitem_s *copytogroup_item = NULL;
+__declspec(allocate(".bss$RtlUI_copytogroup_item")) static eduiitem_s *copytogroup_item = NULL;
 extern eduiitem_s *undo_item;
 extern eduiitem_s *redo_item;
 #pragma section(".bss$RtlUI_fog_menu", read, write)
-__declspec(allocate(".bss$RtlUI_fog_menu")) eduimenu_s *fog_menu = NULL;
+__declspec(allocate(".bss$RtlUI_fog_menu")) static eduimenu_s *fog_menu = NULL;
 #pragma section(".bss$RtlUI_fogcol_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogcol_item")) eduiitem_s *fogcol_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogcol_item")) static eduiitem_s *fogcol_item = NULL;
 #pragma section(".bss$RtlUI_fogalpha_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogalpha_item")) eduiitem_s *fogalpha_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogalpha_item")) static eduiitem_s *fogalpha_item = NULL;
 #pragma section(".bss$RtlUI_fogdensity_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogdensity_item")) eduiitem_s *fogdensity_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogdensity_item")) static eduiitem_s *fogdensity_item = NULL;
 #pragma section(".bss$RtlUI_fogdensitywii_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogdensitywii_item")) eduiitem_s *fogdensitywii_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogdensitywii_item")) static eduiitem_s *fogdensitywii_item = NULL;
 #pragma section(".bss$RtlUI_fogstart_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogstart_item")) eduiitem_s *fogstart_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogstart_item")) static eduiitem_s *fogstart_item = NULL;
 #pragma section(".bss$RtlUI_fogend_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogend_item")) eduiitem_s *fogend_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogend_item")) static eduiitem_s *fogend_item = NULL;
 #pragma section(".bss$RtlUI_fogstartpsp_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogstartpsp_item")) eduiitem_s *fogstartpsp_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogstartpsp_item")) static eduiitem_s *fogstartpsp_item = NULL;
 #pragma section(".bss$RtlUI_fogendpsp_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogendpsp_item")) eduiitem_s *fogendpsp_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogendpsp_item")) static eduiitem_s *fogendpsp_item = NULL;
 #pragma section(".bss$RtlUI_hazecol_item", read, write)
-__declspec(allocate(".bss$RtlUI_hazecol_item")) eduiitem_s *hazecol_item = NULL;
+__declspec(allocate(".bss$RtlUI_hazecol_item")) static eduiitem_s *hazecol_item = NULL;
 #pragma section(".bss$RtlUI_hazedensity_item", read, write)
-__declspec(allocate(".bss$RtlUI_hazedensity_item")) eduiitem_s *hazedensity_item = NULL;
+__declspec(allocate(".bss$RtlUI_hazedensity_item")) static eduiitem_s *hazedensity_item = NULL;
 #pragma section(".bss$RtlUI_blurdensity_item", read, write)
-__declspec(allocate(".bss$RtlUI_blurdensity_item")) eduiitem_s *blurdensity_item = NULL;
+__declspec(allocate(".bss$RtlUI_blurdensity_item")) static eduiitem_s *blurdensity_item = NULL;
 #pragma section(".bss$RtlUI_fogadjrng_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogadjrng_item")) eduiitem_s *fogadjrng_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogadjrng_item")) static eduiitem_s *fogadjrng_item = NULL;
 #pragma section(".bss$RtlUI_fogadjnear_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogadjnear_item")) eduiitem_s *fogadjnear_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogadjnear_item")) static eduiitem_s *fogadjnear_item = NULL;
 #pragma section(".bss$RtlUI_fogadjfar_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogadjfar_item")) eduiitem_s *fogadjfar_item = NULL;
+__declspec(allocate(".bss$RtlUI_fogadjfar_item")) static eduiitem_s *fogadjfar_item = NULL;
 #pragma section(".bss$RtlUI_dof_fstop_item", read, write)
-__declspec(allocate(".bss$RtlUI_dof_fstop_item")) eduiitem_s *dof_fstop_item = NULL;
+__declspec(allocate(".bss$RtlUI_dof_fstop_item")) static eduiitem_s *dof_fstop_item = NULL;
 #pragma section(".bss$RtlUI_fog_main_menu", read, write)
-__declspec(allocate(".bss$RtlUI_fog_main_menu")) eduimenu_s *fog_main_menu = NULL;
+__declspec(allocate(".bss$RtlUI_fog_main_menu")) static eduimenu_s *fog_main_menu = NULL;
 #pragma section(".bss$RtlUI_fog_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_item")) eduiitem_s *fog_item = NULL;
+__declspec(allocate(".bss$RtlUI_fog_item")) static eduiitem_s *fog_item = NULL;
 #pragma section(".bss$RtlUI_fog_copy_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_copy_item")) eduiitem_s *fog_copy_item = NULL;
+__declspec(allocate(".bss$RtlUI_fog_copy_item")) static eduiitem_s *fog_copy_item = NULL;
 #pragma section(".bss$RtlUI_fog_paste_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_paste_item")) eduiitem_s *fog_paste_item = NULL;
+__declspec(allocate(".bss$RtlUI_fog_paste_item")) static eduiitem_s *fog_paste_item = NULL;
 #pragma section(".bss$RtlUI_fog_pasteinto_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_pasteinto_item")) eduiitem_s *fog_pasteinto_item = NULL;
+__declspec(allocate(".bss$RtlUI_fog_pasteinto_item")) static eduiitem_s *fog_pasteinto_item = NULL;
 #pragma section(".bss$RtlUI_modifier_adj_items", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_adj_items")) eduiitem_s *modifier_adj_items[32] = {0};
+__declspec(allocate(".bss$RtlUI_modifier_adj_items")) static eduiitem_s *modifier_adj_items[32] = {0};
 #pragma section(".bss$RtlUI_initialised", read, write)
 __declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0;
 /* Source-only Native-observed table initializer; no provider/binding until actual emission. */
@@ -3259,7 +3259,125 @@ __declspec(allocate(".bss$RtlEditorFarClip")) f32 game_farclip = 0.0f;
 #pragma section(".bss$RtlEditorNearClip", read, write)
 __declspec(allocate(".bss$RtlEditorNearClip")) f32 game_nearclip = 0.0f;
 
-void __cdecl RefreshUI(void);
+void __cdecl eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
+
+void __cdecl RefreshUI(void) {
+    i32 i;
+
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
+
+    prop_item->disabled = 1;
+    copy_item->disabled = 1;
+    flicker_item->disabled = 1;
+    paste_item->disabled = clipboard_light.type == 0;
+    pasteinto_item->disabled = clipboard_light.type == 0 || curr_rtl == NULL;
+    if (curr_rtl == NULL)
+        copytogroup_item->disabled = 1;
+    else if (curr_rtl->group_id == 0)
+        copytogroup_item->disabled = 1;
+    else
+        copytogroup_item->disabled = 0;
+
+    if (curr_rtl != NULL) {
+        prop_item->disabled = 0;
+        copy_item->disabled = 0;
+        if (curr_rtl->field_79 != -1 && curr_rtl->field_7a == -1)
+            colour_item->disabled = 1;
+        else
+            colour_item->disabled = 0;
+        switch (curr_rtl->type) {
+            case 1:
+                eduiMenuHighlight(type_menu, ambient_item);
+                break;
+            case 2:
+                eduiMenuHighlight(type_menu, point_item);
+                break;
+            case 3:
+                eduiMenuHighlight(type_menu, pointflicker_item);
+                flicker_item->disabled = 0;
+                flicker_item->data_ptr = flicker_menu;
+                break;
+            case 6:
+                eduiMenuHighlight(type_menu, pointblend_item);
+                flicker_item->disabled = 0;
+                flicker_item->data_ptr = flicker_menu;
+                break;
+            case 4:
+                eduiMenuHighlight(type_menu, directional_item);
+                break;
+            case 7:
+                eduiMenuHighlight(type_menu, antilight_item);
+                break;
+            case 5:
+                eduiMenuHighlight(type_menu, camdir_item);
+                break;
+            case 8:
+                eduiMenuHighlight(type_menu, jonflicker_item);
+                flicker_item->disabled = 0;
+                flicker_item->data_ptr = jonflicker_menu;
+                break;
+            default:
+                break;
+        }
+        castshadow_item->highlighted = curr_rtl->flags >> 1;
+        hasspecular_item->highlighted = curr_rtl->flags >> 2;
+        eduiMenuHighlight(
+            modifier_menu,
+            modifier_items[curr_rtl->field_7b > modifier_cnt - 1 ? modifier_cnt - 1 : curr_rtl->field_7b]);
+        for (i = 0; i < 16; i++) {
+            if (((curr_rtl->field_5e & (1 << i)) != 0) != associd_items[i]->highlighted)
+                eduiMenuHighlight(associd_menu, associd_items[i]);
+        }
+        for (i = 0; i < 16; i++) {
+            if (((curr_rtl->field_60 & (1 << i)) != 0) != excludeid_items[i]->highlighted)
+                eduiMenuHighlight(excludeid_menu, excludeid_items[i]);
+        }
+        for (i = 0; i < 16; i++) {
+            if (i == curr_rtl->field_68)
+                eduiMenuHighlight(userid_menu, userid_items[i]);
+        }
+        eduiItemSliderSetValEx((edui_slider_s *)multiplier_item, curr_rtl->intensity, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)groupid_item, (f32)curr_rtl->group_id, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)t_hi_item, curr_rtl->parameters[0], 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)rt_hi_item, curr_rtl->parameters[1], 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)t_low_item, curr_rtl->parameters[2], 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)rt_low_item, curr_rtl->parameters[3], 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)jon_t_hi_item, curr_rtl->parameters[0], 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)jon_rt_hi_item, curr_rtl->parameters[1], 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)jon_t_low_item, curr_rtl->parameters[2], 0, 0);
+    }
+    if (clipboard_light.type != 0) {
+        paste_item->colours[2] = ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | 0x80000000) |
+                                 (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
+                                 ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
+        pasteinto_item->colours[2] = ((((i32)(clipboard_light.colour.z * 255.0f) & 0xff) << 16) | 0x80000000) |
+                                     (((i32)(clipboard_light.colour.y * 255.0f) << 8) & 0xffff) |
+                                     ((i32)(clipboard_light.colour.x * 255.0f) & 0xff);
+    }
+
+    fog_copy_item->disabled = 1;
+    fog_paste_item->disabled = clipboard_fog.type == 0;
+    fog_pasteinto_item->disabled = clipboard_fog.type == 0 || curr_fog == NULL;
+    fog_item->disabled = 1;
+    if (curr_fog != NULL) {
+        eduiItemSliderSetValEx((edui_slider_s *)fogalpha_item, (f32)(curr_fog->colour >> 24), 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)fogdensity_item, curr_fog->density, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)fogdensitywii_item, curr_fog->density_wii, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)fogstartpsp_item, curr_fog->start_psp, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)fogendpsp_item, curr_fog->end_psp, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)fogstart_item, curr_fog->start, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)fogend_item, curr_fog->end, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)dof_fstop_item, curr_fog->depth_of_field_fstop / 10.0f, 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)hazedensity_item, (f32)(curr_fog->low_quality_colour >> 24), 0, 0);
+        eduiItemSliderSetValEx((edui_slider_s *)blurdensity_item, 0.0078125f * curr_fog->low_quality_density, 0, 0);
+        fog_item->disabled = 0;
+        fog_copy_item->disabled = 0;
+    }
+    for (i = 0; i < modifier_cnt; i++)
+        eduiItemSliderSetValEx((edui_slider_s *)modifier_adj_items[i], modifiers[i], 0, 0);
+    NuQFntPopCoordinateSystem();
+}
 
 void __cdecl cbScaleAllMultipliersUp(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     edui_slider_s *slider;

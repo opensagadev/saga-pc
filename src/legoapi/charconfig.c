@@ -2235,28 +2235,31 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     return redirected;
 }
 
+/* 5845b0/1. Empty pack-lookup diagnostic; retail calls it with and without a path. */
+void __cdecl CharConfigPakDiagnosticPc() {
+}
+
 void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
-    void *pak = NULL;
+    i32 size;
+    void *address;
+    void *pak;
+    char path[256];
+    char filename[256];
+    char directory[256];
+    char original_path[256];
+    CHARACTERDATA_PC *character;
     i32 id;
     configureallcharacters_perm = permanent;
     if (CHARPAK != 0 && permanent != 0) {
         VARIPTR cursor;
         cursor.addr = superbuffer_end.addr - 0x100000;
         pak = NuFilePakLoad("chars\\charstxt.fpk", &cursor, superbuffer_end, 4);
-    }
-    for (id = 0; id < CHARCOUNT; ++id) {
-        CHARACTERDATA_PC *character = &CDataList[id];
-        char directory[256];
-        char filename[256];
-        char path[256];
-        char original_path[256];
+    } else
+        pak = NULL;
+    for (id = 0, character = CDataList; id < CHARCOUNT; ++id, ++character) {
         i32 item;
-        void *address;
-        i32 size;
-        char *text;
+        i32 result;
         char saved;
-        i32 length;
-        i32 redirected;
         if (permanent == 0 && apicharsys->playermodelids[id] == -1)
             continue;
         NuStrCpy(path, "chars\\");
@@ -2268,70 +2271,68 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
         NuStrCpy(filename, character->name);
         NuStrCat(filename, ".txt");
         NuStrCpy(original_path, path);
-        if (pak == NULL) {
-            VARIPTR *arena = permanent != 0 ? &permbuffer_ptr : NULL;
-            VARIPTR *end = permanent != 0 ? &permbuffer_end : NULL;
-            if (CharConfig(id, directory, filename, arena, end, permanent != 0, NULL, 0, 1, game_keywords) == 2) {
-                SecondCharConfigure = 1;
-                CharConfig(id, directory, filename, arena, end, permanent != 0, NULL, 0, 0, game_keywords);
-            }
-            continue;
-        }
-        STUBBED_NAMED("CharConfig_ConfigureAll: unresolved pack lookup diagnostic "
-                      "at 0x005845b0");
-        item = NuFilePakGetItem(pak, path);
-        if (item == 0) {
-            STUBBED_NAMED("CharConfig_ConfigureAll: unresolved missing pack item "
-                          "diagnostic at 0x005845b0");
-            continue;
-        }
-        STUBBED_NAMED("CharConfig_ConfigureAll: unresolved pack item diagnostic at "
-                      "0x005845b0");
-        if (NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size < 1) {
-            STUBBED_NAMED("CharConfig_ConfigureAll: unresolved invalid pack item "
-                          "diagnostic at 0x005845b0");
-            continue;
-        }
-        text = (char *)(address);
-        saved = text[size];
-        text[size] = 0;
-        length = Text_StripComments(text, ConfigBuffer.bytes, 1);
-        text[size] = saved;
-        redirected = RedirectTextFile(text, filename, 64);
-        if (redirected != 0) {
-            NuStrCat(filename, ".txt");
-            NuStrCpy(path, directory);
-            NuStrCat(path, filename);
+        if (pak != NULL) {
+            CharConfigPakDiagnosticPc(path);
             item = NuFilePakGetItem(pak, path);
-            if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0) {
-                redirected = 0;
-            } else {
-                if (size < 1)
-                    continue;
-                text = (char *)(address);
-                saved = text[size];
-                text[size] = 0;
-                length = Text_StripComments(text, ConfigBuffer.bytes, 1);
-                text[size] = saved;
-                if (length < 1)
-                    redirected = 0;
-            }
-        }
-        CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, length, 0, game_keywords);
-        if (redirected == 2) {
-            item = NuFilePakGetItem(pak, original_path);
-            if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size < 1)
+            if (item == 0) {
+                CharConfigPakDiagnosticPc(path);
                 continue;
-            text = (char *)(address);
-            saved = text[size];
-            text[size] = 0;
-            length = Text_StripComments(text, ConfigBuffer.bytes, 1);
-            text[size] = saved;
-            if (length > 0) {
-                SecondCharConfigure = 1;
-                CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer.bytes, length, 0,
-                           game_keywords);
             }
+            CharConfigPakDiagnosticPc();
+            if (NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0) {
+                CharConfigPakDiagnosticPc();
+                continue;
+            }
+            saved = ((char *)address)[size];
+            ((char *)address)[size] = 0;
+            size = Text_StripComments(address, ConfigBuffer.bytes, 1);
+            ((char *)address)[size] = saved;
+            if (size <= 0)
+                continue;
+            result = RedirectTextFile(address, filename, 64);
+            if (result != 0) {
+                NuStrCat(filename, ".txt");
+                NuStrCpy(path, directory);
+                NuStrCat(path, filename);
+                item = NuFilePakGetItem(pak, path);
+                if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0)
+                    result = 0;
+                else if (size <= 0)
+                    result = 0;
+                else {
+                    saved = ((char *)address)[size];
+                    ((char *)address)[size] = 0;
+                    size = Text_StripComments(address, ConfigBuffer.bytes, 1);
+                    ((char *)address)[size] = saved;
+                    if (size <= 0)
+                        result = 0;
+                }
+            }
+            if (size > 0)
+                CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 1, ConfigBuffer.bytes, size, 0,
+                           game_keywords);
+        } else {
+            result = CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL,
+                                permanent != 0 ? &permbuffer_end : NULL, permanent != 0, NULL, 0, 1, game_keywords);
+        }
+        if (result != 2)
+            continue;
+        if (pak != NULL) {
+            item = NuFilePakGetItem(pak, original_path);
+            if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0)
+                continue;
+            saved = ((char *)address)[size];
+            ((char *)address)[size] = 0;
+            size = Text_StripComments(address, ConfigBuffer.bytes, 1);
+            ((char *)address)[size] = saved;
+            if (size <= 0)
+                continue;
+            SecondCharConfigure = 1;
+            CharConfig(id, NULL, NULL, &permbuffer_ptr, &permbuffer_end, 0, ConfigBuffer.bytes, size, 0, game_keywords);
+        } else {
+            SecondCharConfigure = 1;
+            CharConfig(id, directory, filename, permanent != 0 ? &permbuffer_ptr : NULL,
+                       permanent != 0 ? &permbuffer_end : NULL, permanent != 0, NULL, 0, 0, game_keywords);
         }
     }
 }

@@ -15,9 +15,9 @@ static void EduiPrintAlignedTextPc(void *font, i32 x, i32 y, i32 alignment, char
         NuVSPrintf(text, format, args);
         va_end(args);
         width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
-        left = x;
         switch (alignment) {
             case 16:
+                left = x;
                 break;
             case 32:
                 left = x - width;
@@ -1425,6 +1425,195 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
                            picker->uv_x[picker->selected_corner] * 256.0,
                            picker->uv_y[picker->selected_corner] * 256.0);
     return width + height;
+}
+
+extern "C" {
+    i32 show_x_scale_help = 0;
+    i32 show_y_scale_help = 0;
+    void __cdecl eduiRenderGraphLine(nugraph_s *graph, i32 x, i32 y, i32 width, i32 height, u32 colour);
+}
+STATIC_ASSERT(offsetof(edui_graph_s, graph) == 0x4c);
+STATIC_ASSERT(offsetof(edui_graph_s, onion_skins) == 0x50);
+STATIC_ASSERT(offsetof(edui_graph_s, cursor_x) == 0x74);
+STATIC_ASSERT(offsetof(edui_graph_s, width) == 0x7c);
+STATIC_ASSERT(offsetof(edui_graph_s, x_scale) == 0x84);
+STATIC_ASSERT(offsetof(edui_graph_s, selected_point) == 0x8c);
+STATIC_ASSERT(offsetof(edui_graph_s, x_label) == 0x90);
+STATIC_ASSERT(offsetof(nugraph_s, point_count) == 1);
+STATIC_ASSERT(offsetof(nugraph_s, y) == 0x24);
+STATIC_ASSERT(offsetof(nugraph_s, x_scale) == 0x44);
+STATIC_ASSERT(offsetof(nugraph_s, y_extent) == 0x50);
+
+extern "C" i32 __cdecl eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 unused_width,
+                                         i32 selected) {
+    edui_graph_s *picker = (edui_graph_s *)item;
+    f32 cursor_x = picker->cursor_x;
+    f32 cursor_y = 1.0f - picker->cursor_y;
+    item->x = x;
+    item->y = y;
+    i32 total_width = picker->width;
+    i32 graph_width = total_width - 60;
+    i32 total_height = picker->height;
+    i32 plot_x = x + 30;
+    i32 plot_y = y + 30;
+    i32 graph_height = total_height - 60;
+    if (edui_donotdraw == 0) {
+        NuRndrRect2di(x << 4, y << 3, total_width << 4, total_height << 3, 0x80000000, (NUMTL *)uimtls[0]);
+        if (edui_donotdraw == 0)
+            NuRndrRect2di(plot_x << 4, plot_y << 3, graph_width << 4, graph_height << 3, 0x80100000,
+                          (NUMTL *)uimtls[0]);
+    }
+    if (picker->graph == NULL) {
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, 0x80000080);
+        }
+        EduiPrintAlignedTextPc(edui_font, (x + total_width) << 3, (y + total_height) << 2, 64,
+                               (char *)"Invalid Graph Pointer");
+        return total_height;
+    }
+    if (edui_donotdraw == 0) {
+        NuQFntSet((VUFNT *)edui_font);
+        if (edui_donotdraw == 0)
+            NuQFntSetColour((VUFNT *)edui_font, 0x80808080);
+    }
+    if (picker->x_scale > 0.0f) {
+        f32 tick_count = picker->graph->x_extent * picker->graph->x_scale / picker->x_scale;
+        i32 label_interval = 1 - (i32)(tick_count / -10.0);
+        for (i32 tick = 1; tick <= (i32)tick_count; ++tick) {
+            f32 tick_offset = (f32)(graph_width * tick) / tick_count;
+            u32 colour;
+            if (tick % label_interval == 0) {
+                if (edui_donotdraw == 0)
+                    NuQFntSet((VUFNT *)edui_font);
+                EduiPrintAlignedTextPc(edui_font, (i32)(plot_x + tick_offset) << 4,
+                                       ((plot_y + graph_height) << 3) - 48 + (i32)NuQFntHeight((VUFNT *)edui_font), 64,
+                                       (char *)"%1.01f", (f32)tick * picker->x_scale);
+                colour = 0x80340000;
+            } else {
+                colour = 0x80260000;
+            }
+            if (edui_donotdraw == 0) {
+                i32 line_x = (i32)(plot_x + tick_offset) << 4;
+                NuRndrLine2di(line_x, plot_y << 3, line_x, ((plot_y + graph_height) << 3) - 8, colour,
+                              (NUMTL *)uimtls[0]);
+            }
+        }
+    }
+    if (picker->y_scale > 0.0f) {
+        f32 tick_count = picker->graph->y_extent * picker->graph->y_scale / picker->y_scale;
+        i32 label_interval = 1 - (i32)(tick_count / -10.0);
+        for (i32 tick = 1; tick <= (i32)tick_count; ++tick) {
+            f32 tick_offset = (f32)(graph_height * tick) / tick_count;
+            u32 colour;
+            if (tick % label_interval == 0) {
+                if (edui_donotdraw == 0)
+                    NuQFntSet((VUFNT *)edui_font);
+                EduiPrintAlignedTextPc(edui_font, (plot_x - 2) << 4,
+                                       ((i32)((plot_y + graph_height) - tick_offset) << 3) +
+                                           ((i32)NuQFntHeight((VUFNT *)edui_font) >> 1),
+                                       32, (char *)"%1.01f", (f32)tick * picker->y_scale);
+                colour = 0x80340000;
+            } else {
+                colour = 0x80260000;
+            }
+            if (edui_donotdraw == 0) {
+                i32 line_y = (i32)((plot_y + graph_height) - tick_offset) << 3;
+                NuRndrLine2di(plot_x << 4, line_y, (plot_x + graph_width - 1) << 4, line_y, colour, (NUMTL *)uimtls[0]);
+            }
+        }
+    }
+    if (edui_donotdraw == 0)
+        NuQFntSet((VUFNT *)edui_font);
+    EduiPrintAlignedTextPc(edui_font, (plot_x + graph_width) << 4, (y << 3) + (i32)NuQFntHeight((VUFNT *)edui_font), 32,
+                           picker->x_label);
+    EduiPrintAlignedTextPc(edui_font, (x + total_width - 3) << 4, (y + total_height) << 3, 32, picker->y_label);
+    EduiPrintAlignedTextPc(edui_font, plot_x << 4, (y << 3) + (i32)NuQFntHeight((VUFNT *)edui_font), 16, picker->title);
+    EduiPrintAlignedTextPc(edui_font, (plot_x - 2) << 4,
+                           ((plot_y + graph_height) << 3) - 48 + (i32)NuQFntHeight((VUFNT *)edui_font), 32,
+                           (char *)"0.0");
+    u32 cursor_colour = 0x80303030;
+    if (selected)
+        cursor_colour = 0x80707070;
+    if (edui_donotdraw == 0) {
+        i32 cursor_line_y = (i32)(plot_y + cursor_y * graph_height) << 3;
+        NuRndrLine2di(plot_x << 4, cursor_line_y, (plot_x + graph_width - 1) << 4, cursor_line_y, cursor_colour,
+                      (NUMTL *)uimtls[0]);
+        if (edui_donotdraw == 0) {
+            i32 cursor_line_x = (i32)(plot_x + cursor_x * graph_width) << 4;
+            NuRndrLine2di(cursor_line_x, plot_y << 3, cursor_line_x, ((plot_y + graph_height) << 3) - 8, cursor_colour,
+                          (NUMTL *)uimtls[0]);
+        }
+    }
+    picker->selected_point = -1;
+    f32 closest = 1.0f;
+    for (i32 point = 0; point < picker->graph->point_count; ++point) {
+        i32 px = plot_x + (i32)(picker->graph->x[point] * (f32)graph_width);
+        i32 py = plot_y - (i32)(picker->graph->y[point] * (f32)graph_height) + graph_height;
+        if (edui_donotdraw == 0) {
+            NuRndrLine2di((px - 10) << 4, py << 3, (px + 10) << 4, py << 3, 0x80505050, (NUMTL *)uimtls[0]);
+            if (edui_donotdraw == 0)
+                NuRndrLine2di(px << 4, (py << 3) - 80, px << 4, (py << 3) + 80, 0x80505050, (NUMTL *)uimtls[0]);
+        }
+        f32 dx = picker->cursor_x - picker->graph->x[point];
+        f32 dy = picker->cursor_y - picker->graph->y[point];
+        f32 distance = (f32)fabs((f64)dx) + (f32)fabs((f64)dy);
+        if (distance < closest && distance < 0.05f) {
+            picker->selected_point = point;
+            closest = distance;
+        }
+    }
+    for (i32 skin = 0; skin < 8; ++skin) {
+        if (picker->onion_skins[skin] != NULL)
+            eduiRenderGraphLine(picker->onion_skins[skin], plot_x, plot_y, graph_width, graph_height, 0x80402000);
+    }
+    eduiRenderGraphLine(picker->graph, plot_x, plot_y, graph_width, graph_height, 0x80800000);
+    if (picker->selected_point >= 0 && edui_donotdraw == 0) {
+        i32 point = picker->selected_point;
+        NuRndrLineRect2di((plot_x + (i32)(picker->graph->x[point] * graph_width) - 6) << 4,
+                          (((plot_y + graph_height) - (i32)(picker->graph->y[point] * graph_height)) << 3) - 48, 192,
+                          96, 0x80ffffff, (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+    }
+    if (show_x_scale_help || show_y_scale_help) {
+        if (edui_donotdraw == 0)
+            NuQFntSet((VUFNT *)edui_font);
+        i32 help_y = (plot_y << 3) + (i32)NuQFntHeight((VUFNT *)edui_font);
+        if (edui_donotdraw == 0)
+            NuQFntSetColour((VUFNT *)edui_font, 0x80808080);
+        EduiPrintAlignedTextPc(edui_font, (plot_x + (graph_width >> 1)) << 4, help_y, 64, (char *)"Scaling %c Axis",
+                               show_x_scale_help ? 'X' : 'Y');
+        help_y += (i32)NuQFntHeight((VUFNT *)edui_font);
+        EduiPrintAlignedTextPc(edui_font, (plot_x + (graph_width >> 1)) << 4, help_y, 64, (char *)"%1.03f",
+                               show_x_scale_help ? picker->graph->x_scale : picker->graph->y_scale);
+        NuQFntHeight((VUFNT *)edui_font);
+    }
+    i32 label_height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.125) >> 3;
+    i32 result = total_height + label_height;
+    i32 label_row = y + total_height;
+    i32 label_baseline =
+        (((label_height << 3) - (i32)NuQFntHeight((VUFNT *)edui_font)) >> 1) + (i32)NuQFntBaseline((VUFNT *)edui_font);
+    if (edui_donotdraw == 0) {
+        NuRndrRect2di(x << 4, label_row << 3, total_width << 4, label_height << 3, item->colours[2 + item->highlighted],
+                      (NUMTL *)uimtls[ui_bgmtl]);
+        if (edui_donotdraw == 0) {
+            NuQFntSet((VUFNT *)edui_font);
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+        }
+    }
+    if (picker->selected_point >= 0) {
+        i32 point = picker->selected_point;
+        EduiPrintAlignedTextPc(edui_font, (x + 2) << 4, (label_row << 3) + label_baseline, 16,
+                               (char *)"Point %d = %1.02f, %1.02f", point,
+                               picker->graph->x[point] * picker->graph->x_scale * picker->graph->x_extent,
+                               picker->graph->y[point] * picker->graph->y_scale * picker->graph->y_extent);
+    }
+    EduiPrintAlignedTextPc(edui_font, (x + total_width - 4) << 4, (label_row << 3) + label_baseline, 32,
+                           (char *)"Cursor pos = %1.02f, %1.02f",
+                           picker->cursor_x * picker->graph->x_scale * picker->graph->x_extent,
+                           picker->cursor_y * picker->graph->y_scale * picker->graph->y_extent);
+    return result;
 }
 
 extern "C" i32 __cdecl eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {

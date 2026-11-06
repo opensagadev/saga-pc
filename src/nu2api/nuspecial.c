@@ -314,13 +314,13 @@ NUMTX *__cdecl NuSpecialGetDrawMtx(NUSPECIALHANDLE *special) {
         return draw_matrix != NULL ? draw_matrix : instance;
     }
     display = (NuSpecialDisplayView *)special->display_special;
-    if (display == NULL) {
-        return NULL;
+    if (display != NULL) {
+        if (display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
+            return &display->draw_matrix;
+        }
+        return (NUMTX *)display->instance_animation;
     }
-    if (display->instance_animation == NULL || display->instance_animation == (void *)-1) {
-        return &display->draw_matrix;
-    }
-    return (NUMTX *)display->instance_animation;
+    return NULL;
 }
 
 NUMTX *__cdecl NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special) {
@@ -600,12 +600,6 @@ void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *handle, i32 visible) {
     }
 }
 
-/* The PC backend's transform-update leaf is a single ret instruction. */
-void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
-    (void)special;
-    (void)matrix;
-}
-
 void __cdecl NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
     NUDISPLAY_SPECIAL_PC *display;
     NUDISPLAY_LIST_PC *display_scene;
@@ -662,6 +656,85 @@ void __cdecl NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
     }
 
     DisplayListUpdateSpecialTransformPS(special, &draw_matrix);
+}
+
+void __cdecl xxxNuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
+    NUDISPLAY_LIST_PC *scene = ((NUGSCN *)special->scene)->display_list;
+    NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+    __declspec(align(16)) NUMTX matrix = *NuSpecialGetDrawMtx(special);
+    __declspec(align(16)) NUVEC4 corners[8];
+    __declspec(align(16)) NUVEC4 maximum;
+    __declspec(align(16)) NUVEC4 minimum;
+
+    corners[0].x = display->bounds_min.x;
+    corners[0].y = display->bounds_min.y;
+    corners[0].z = display->bounds_min.z;
+    corners[1].x = display->bounds_max.x;
+    corners[1].y = display->bounds_max.y;
+    corners[1].z = display->bounds_max.z;
+    corners[2].x = display->bounds_min.x;
+    corners[2].y = display->bounds_min.y;
+    corners[2].z = display->bounds_max.z;
+    corners[3].x = display->bounds_max.x;
+    corners[3].y = display->bounds_max.y;
+    corners[3].z = display->bounds_min.z;
+    corners[4].x = display->bounds_min.x;
+    corners[4].y = display->bounds_max.y;
+    corners[4].z = display->bounds_min.z;
+    corners[5].x = display->bounds_min.x;
+    corners[5].y = display->bounds_max.y;
+    corners[5].z = display->bounds_max.z;
+    corners[6].x = display->bounds_max.x;
+    corners[6].y = display->bounds_min.y;
+    corners[6].z = display->bounds_min.z;
+    corners[7].x = display->bounds_max.x;
+    corners[7].y = display->bounds_min.y;
+    corners[7].z = display->bounds_max.z;
+    NuVecMtxTransform((NUVEC *)&corners[0], (NUVEC *)&corners[0], &matrix);
+    NuVecMtxTransform((NUVEC *)&corners[1], (NUVEC *)&corners[1], &matrix);
+    NuVecMtxTransform((NUVEC *)&corners[2], (NUVEC *)&corners[2], &matrix);
+    NuVecMtxTransform((NUVEC *)&corners[3], (NUVEC *)&corners[3], &matrix);
+    NuVecMtxTransform((NUVEC *)&corners[4], (NUVEC *)&corners[4], &matrix);
+    NuVecMtxTransform((NUVEC *)&corners[5], (NUVEC *)&corners[5], &matrix);
+    NuVecMtxTransform((NUVEC *)&corners[6], (NUVEC *)&corners[6], &matrix);
+    NuVecMtxTransform((NUVEC *)&corners[7], (NUVEC *)&corners[7], &matrix);
+    NuVecMin((NUVEC *)&minimum, (NUVEC *)&corners[0], (NUVEC *)&corners[1]);
+    NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[2]);
+    NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[3]);
+    NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[4]);
+    NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[5]);
+    NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[6]);
+    NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[7]);
+    NuVecMax((NUVEC *)&maximum, (NUVEC *)&corners[0], (NUVEC *)&corners[1]);
+    NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[2]);
+    NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[3]);
+    NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[4]);
+    NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[5]);
+    NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[6]);
+    NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[7]);
+    if ((scene->render_flags & 0x4000) != 0) {
+        __declspec(align(16)) NUVEC4 center;
+        __declspec(align(16)) NUVEC4 extent;
+        center.x = minimum.x + maximum.x;
+        center.y = minimum.y + maximum.y;
+        center.z = minimum.z + maximum.z;
+        center.x *= 0.5f;
+        center.y *= 0.5f;
+        center.z *= 0.5f;
+        extent.x = maximum.x - minimum.x;
+        extent.y = maximum.y - minimum.y;
+        extent.z = maximum.z - minimum.z;
+        extent.x *= 0.5f;
+        extent.y *= 0.5f;
+        extent.z *= 0.5f;
+        center.w = NuFsqrt(extent.y + extent.x + extent.z);
+        scene->clip_bounds[display->instance_ix * 2] = center;
+        scene->clip_bounds[display->instance_ix * 2 + 1] = extent;
+    } else {
+        scene->clip_bounds[display->instance_ix * 2] = minimum;
+        scene->clip_bounds[display->instance_ix * 2 + 1] = maximum;
+    }
+    DisplayListUpdateSpecialTransformPS(special, &matrix);
 }
 
 void __cdecl NuSpecialUpdate(NUSPECIALHANDLE *special) {

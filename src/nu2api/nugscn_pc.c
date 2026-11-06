@@ -108,6 +108,13 @@ void __cdecl DisplayListSetAlphaPS(NUDISPLAYLISTITEM *item, NUDISPLAYLISTITEM *g
 void __cdecl DisplayListSwapBuffersPS(void) {
 }
 
+/* The PC backend's transform-update leaf is a single ret instruction; retail
+ * reaches it through a jump thunk, so callers in other units never inline it. */
+void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
+    (void)special;
+    (void)matrix;
+}
+
 typedef struct SCENE_INSTANCE_ANIMATION_PC {
     NUMTX matrix;
     f32 tfactor, first_frame, interval, time;

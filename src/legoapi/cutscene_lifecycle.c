@@ -1736,7 +1736,7 @@ i32 CutSceneUpdateCamerasPc = 1;
 
 extern INSTNUGCUTSCENE *CutSceneLoadingInstancePc;
 
-static void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
+void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
     i32 i;
     if ((target->version & 0xff) >= 5) {
         target->camera_system->focus_animation = source->camera_system->focus_animation;
@@ -1777,56 +1777,70 @@ static void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_
     target->duration = source->duration;
 }
 
-static void CutSceneSwapStreamAssetPc(CUT_INSTANCE_LOAD_PC *instance) {
+void CutSceneSwapStreamAssetPc(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_SCENE_LOAD_PC *saved = instance->saved_scene;
     CUT_SCENE_LOAD_PC *scene =
         (CUT_SCENE_LOAD_PC *)((instance->flags_88 & 0x10000000) != 0 ? instance->stream_buffer_1
                                                                      : instance->stream_buffer_0);
+    CUT_LOAD_LOCATOR_SYSTEM *locators, *saved_locators;
+    CUT_LOAD_RIGID_SYSTEM *rigids, *saved_rigids;
+    CUT_LOAD_CHARACTER_SYSTEM *characters, *saved_characters;
+    CUT_LOAD_TRIGGER_SYSTEM *triggers;
     i32 i;
     instance->scene = scene;
     scene->filename = saved->filename;
     scene->stream_buffer_0 = saved->stream_buffer_0;
     scene->stream_buffer_1 = saved->stream_buffer_1;
     scene->flags = (scene->flags & ~2U) | (saved->flags & 2);
-    if (scene->locator_system != NULL) {
-        for (i = 0; i < scene->locator_system->count; ++i) {
-            CUT_LOAD_LOCATOR *to = &scene->locator_system->locators[i];
-            void *animation = to->animation;
-            *to = saved->locator_system->locators[i];
-            to->animation = animation;
+    saved_locators = saved->locator_system;
+    locators = scene->locator_system;
+    if (locators != NULL) {
+        for (i = 0; i < locators->count; ++i) {
+            void *animation = locators->locators[i].animation;
+            locators->locators[i] = saved_locators->locators[i];
+            locators->locators[i].animation = animation;
         }
-        scene->locator_system->types = saved->locator_system->types;
+        locators->types = saved_locators->types;
     }
-    if (scene->rigid_system != NULL && scene->rigid_system->rigids != NULL) {
-        for (i = 0; i < scene->rigid_system->count; ++i) {
-            CUT_LOAD_RIGID *to = &scene->rigid_system->rigids[i];
-            void *animation = to->animation;
-            STATE_ANIM_PC *state_animation = to->state_animation;
-            *to = saved->rigid_system->rigids[i];
-            to->animation = animation;
-            to->state_animation = state_animation;
-            if (to->locator.pointer != NULL && to->uses_locator != 0 && to->locator_index != 0xff)
-                to->locator.pointer = &scene->locator_system->locators[to->locator_index];
-        }
-    }
-    if (scene->character_system != NULL) {
-        for (i = 0; i < scene->character_system->count; ++i) {
-            CUT_LOAD_CHARACTER *to = &scene->character_system->characters[i];
-            void *animation = to->animation, *face = to->face_animation, *extra = to->extra_animation;
-            CUT_LOAD_LOCATOR *locator = to->locator;
-            *to = saved->character_system->characters[i];
-            to->animation = animation;
-            to->face_animation = face;
-            to->extra_animation = extra;
-            if (locator != NULL && to->uses_locator != 0 && to->locator_index != 0xff)
-                to->locator = &scene->locator_system->locators[to->locator_index];
+    saved_rigids = saved->rigid_system;
+    rigids = scene->rigid_system;
+    if (rigids != NULL && rigids->rigids != NULL) {
+        for (i = 0; i < rigids->count; ++i) {
+            void *animation = rigids->rigids[i].animation;
+            STATE_ANIM_PC *state_animation = rigids->rigids[i].state_animation;
+            rigids->rigids[i] = saved_rigids->rigids[i];
+            rigids->rigids[i].animation = animation;
+            rigids->rigids[i].state_animation = state_animation;
+            if (rigids->rigids[i].locator.pointer != NULL && rigids->rigids[i].uses_locator != 0 &&
+                rigids->rigids[i].locator_index != 0xff)
+                rigids->rigids[i].locator.pointer = &scene->locator_system->locators[rigids->rigids[i].locator_index];
         }
     }
-    if (scene->trigger_system != NULL) {
-        for (i = 0; i < scene->trigger_system->count; ++i) {
-            CUT_LOAD_TRIGGER_EVENT *to = &scene->trigger_system->events[i];
+    saved_characters = saved->character_system;
+    characters = scene->character_system;
+    if (characters != NULL) {
+        for (i = 0; i < characters->count; ++i) {
+            void *animation = characters->characters[i].animation;
+            void *face = characters->characters[i].face_animation;
+            void *extra = characters->characters[i].extra_animation;
+            CUT_LOAD_LOCATOR *locator = characters->characters[i].locator;
+            characters->characters[i] = saved_characters->characters[i];
+            characters->characters[i].animation = animation;
+            characters->characters[i].face_animation = face;
+            characters->characters[i].extra_animation = extra;
+            if (locator != NULL && characters->characters[i].uses_locator != 0 &&
+                characters->characters[i].locator_index != 0xff)
+                characters->characters[i].locator =
+                    &scene->locator_system->locators[characters->characters[i].locator_index];
+        }
+    }
+    triggers = scene->trigger_system;
+    if (triggers != NULL) {
+        CUT_LOAD_TRIGGER_EVENT *from = saved->trigger_system->events;
+        CUT_LOAD_TRIGGER_EVENT *to = triggers->events;
+        for (i = 0; i < triggers->count; ++i, ++from, ++to) {
             STATE_ANIM_PC *animation = to->state_animation;
-            *to = saved->trigger_system->events[i];
+            *to = *from;
             to->state_animation = animation;
         }
     }
@@ -2251,27 +2265,33 @@ void __cdecl instNuGCutSceneServiceLoad(void) {
     instance->pending_stream = NULL;
     if (buffer.void_ptr == NULL)
         return;
-    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c |= 0x80;
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c =
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c | 0x80;
     buffer_end.addr = buffer.addr + ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_size;
     ((void(__cdecl *)(char *, ...))CutSceneMissingObjectDiagnosticPc)(path, buffer.void_ptr);
     CutSceneStreamDiagnosticPc(path);
     NuGCutSceneLoad(path, &buffer, &buffer_end, 1);
     CutSceneStreamDiagnosticPc(path);
-    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 |= 0x08000000;
-    instance = (CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc;
-    if (instance->stream_index == 0 && (instance->scene->flags & 8) != 0) {
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 =
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 | 0x08000000;
+    if (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index == 0 &&
+        (((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->flags & 8) != 0) {
         instNuGCutSceneSwapBuffers(CutSceneLoadingInstancePc, 1);
-        instance = (CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc;
         if (CutSceneSingleStreamBufferPc < 2) {
-            CutSceneCopyStreamAnimationsPc(instance->scene, (CUT_SCENE_LOAD_PC *)instance->scene->stream_buffer_1);
+            CutSceneCopyStreamAnimationsPc(
+                ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene,
+                (CUT_SCENE_LOAD_PC *)((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->stream_buffer_1);
         } else {
-            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 |= 0x10000000;
+            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 =
+                ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 | 0x10000000;
             CutSceneSwapStreamAssetPc((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc);
         }
         ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->scene->flags &= ~8U;
-        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 &= ~0x08000000U;
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 =
+            ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_88 & ~0x08000000U;
         ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->stream_index = 1;
     }
-    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c &= ~0x80U;
+    ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c =
+        ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c & ~0x80U;
     CutSceneLoadingInstancePc = NULL;
 }
