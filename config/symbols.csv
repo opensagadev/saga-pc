@@ -5789,7 +5789,7 @@ address,symbol,size,ctype
 0x5c1260,_NuVec4MtxTransformHVU0,5,
 0x005c12e0,_AnimationDiagnosticNoOpPc,1,
 0x005c12f0,_PCAnimationLoadFailureNoOp,1,void __cdecl (char *)
-0x005c1300,_PCSpecialEmptyHandler_candidate,1,void __cdecl (void)
+0x005c1300,_PCSpecialEmptyHandler_candidate,1,"void __cdecl (const char *, ...)"
 0x5c13c0,_RenderPostASinPc,320,i32 __cdecl(f32)
 0x5c1600,_VisibilityAbsoluteFourPc,90,
 0x5c1880,@NuQuatMulAlignedPc@12,118,"void private (const NUQUAT *parent ECX, const NUQUAT *rotation EDX, NUQUAT *out stack; caller cleanup)"

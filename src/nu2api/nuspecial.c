@@ -483,7 +483,8 @@ void __cdecl NuSpecialGetNext(NUSPECIALHANDLE *special) {
     }
 }
 
-void __cdecl PCSpecialEmptyHandler_candidate(void) {
+/* Retail's debug print, compiled empty; varargs keeps the calls out-of-line. */
+void __cdecl PCSpecialEmptyHandler_candidate(const char *format, ...) {
 }
 
 i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags) {
@@ -503,7 +504,7 @@ i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags
     special->special = NULL;
     special->display_special = NULL;
     if (flags != 0) {
-        PCSpecialEmptyHandler_candidate();
+        PCSpecialEmptyHandler_candidate(NULL); /* retail pushes no argument here */
     }
     return 0;
 }
@@ -796,6 +797,24 @@ i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
 
 i32 special_debug = 0;
 
+/* Debug listing of a scene's specials; the retail print call is the empty handler. */
+void __cdecl NuSpecialList(NUGSCN *scene) {
+    NUSPECIAL_LEGACY_PC *special;
+    NUDISPLAY_SPECIAL_PC *display_special;
+    i32 index;
+
+    if (scene == NULL)
+        return;
+    special = scene->specials;
+    for (index = 0; index < scene->special_count; ++index, ++special)
+        PCSpecialEmptyHandler_candidate((const char *)index, special->name);
+    if (scene->display_list != NULL) {
+        display_special = scene->display_list->specials;
+        for (index = 0; index < scene->display_list->special_count; ++index, ++display_special)
+            PCSpecialEmptyHandler_candidate((const char *)index, display_special->name);
+    }
+}
+
 i32 __cdecl NuSpecialFindDisplay(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
     NUDISPLAY_SPECIAL_PC *special;
     i32 index;
@@ -811,7 +830,7 @@ i32 __cdecl NuSpecialFindDisplay(NUGSCN *scene, NUSPECIALHANDLE *handle, char *n
         }
     }
     if (flags != 0 && special_debug != 0) {
-        STUBBED_NAMED("NuSpecialFindDisplay: unresolved missing special diagnostic at 0x005c1300");
+        PCSpecialEmptyHandler_candidate(name);
     }
     handle->scene = NULL;
     handle->special = NULL;
