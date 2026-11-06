@@ -3512,23 +3512,23 @@ static void HubUpdateBonusModePc(void) {
     switch (bonusmodemode) {
         case 0: {
             i32 confirm = 0, cancel = 0, up = 0, down = 0, left = 0, right = 0;
-            for (i32 player = 0; player < 2; ++player) {
-                if (confirm || cancel)
-                    break;
+            for (i32 player = 0; player < 2 && !confirm && !cancel; ++player) {
                 if (MissionMenuPacketPc.active_player[player] != 0) {
-                    const u32 pressed = GamePadStorage[player].menu_buttons_pressed;
-                    const u32 directions = GamePadStorage[player].menu_directions;
-                    if ((pressed & GAMEPAD_MENUSELECT) != 0)
+                    if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0)
                         confirm = 1;
-                    else if ((pressed & GAMEPAD_MENUCANCEL) != 0)
+                    else if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0)
                         cancel = 1;
-                    else if (((pressed | directions) & GAMEPAD_DUP) != 0)
+                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DUP) != 0 ||
+                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DUP) != 0)
                         up = player_up[player] = 1;
-                    else if (((pressed | directions) & GAMEPAD_DDOWN) != 0)
+                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DDOWN) != 0 ||
+                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DDOWN) != 0)
                         down = player_down[player] = 1;
-                    else if (((pressed | directions) & GAMEPAD_DLEFT) != 0)
+                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DLEFT) != 0 ||
+                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DLEFT) != 0)
                         left = player_left[player] = 1;
-                    else if (((pressed | directions) & GAMEPAD_DRIGHT) != 0)
+                    else if ((GamePadStorage[player].menu_directions & GAMEPAD_DRIGHT) != 0 ||
+                             (GamePadStorage[player].menu_buttons_pressed & GAMEPAD_DRIGHT) != 0)
                         right = player_right[player] = 1;
                 }
             }
@@ -3963,20 +3963,20 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
     switch (freeplaymode) {
         case 0:
             freeplaytime += FRAMETIME;
-            if (!(freeplayduration <= freeplaytime))
-                break;
-            freeplaytime = 0;
-            freeplaymode = 1;
-            freeplayduration = 0;
-            for (i32 player = 0; player < 2; ++player) {
-                freeplay_i[player] =
-                    InCollectList_Index(MissionMenuPacketPc.player_model[player], collection->list, collection->count);
-                if (freeplay_i[player] == -1) {
-                    freeplay_i[player] = player;
-                    if (player == 1 && freeplay_i[0] == 1)
-                        freeplay_i[1] = 0;
+            if (freeplaytime >= freeplayduration) {
+                freeplaytime = 0;
+                freeplaymode = 1;
+                freeplayduration = 0;
+                for (i32 player = 0; player < 2; ++player) {
+                    freeplay_i[player] = InCollectList_Index(MissionMenuPacketPc.player_model[player], collection->list,
+                                                             collection->count);
+                    if (freeplay_i[player] == -1) {
+                        freeplay_i[player] = player;
+                        if (player == 1 && freeplay_i[0] == 1)
+                            freeplay_i[1] = 0;
+                    }
+                    freeplay_selected[player] = 0;
                 }
-                freeplay_selected[player] = 0;
             }
             break;
         case 1: {
