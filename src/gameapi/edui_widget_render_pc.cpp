@@ -1671,11 +1671,12 @@ extern "C" i32 __cdecl eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *it
 
 extern "C" i32 __cdecl eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    if ((pad->digital_buttons & 4) && (pad->digital_buttons & 8)) {
+    u32 buttons = pad->digital_buttons;
+    if ((buttons & 4) && (buttons & 8)) {
         f32 value;
-        if (slider->minimum <= 0.0f && slider->minimum + slider->range >= 0.0f)
+        if (slider->minimum <= 0.0f && 0.0f <= slider->minimum + slider->range)
             value = 0.0f;
-        else if (slider->minimum <= 1.0f && slider->minimum + slider->range >= 1.0f)
+        else if (slider->minimum <= 1.0f && 1.0f <= slider->minimum + slider->range)
             value = 1.0f;
         else {
             EduiSliderRepeatTimerPc = 30;
@@ -1687,9 +1688,12 @@ extern "C" i32 __cdecl eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f
         if (slider->changed)
             slider->changed(menu, item, pad->digital_buttons);
         EduiSliderRepeatTimerPc = 30;
-    } else if (pad->digital_buttons & 4) {
-        if (--EduiSliderRepeatTimerPc < 0)
+    } else if (buttons & 4) {
+        i32 timer = EduiSliderRepeatTimerPc - 1;
+        if (timer < 0)
             EduiSliderRepeatTimerPc = 0;
+        else
+            EduiSliderRepeatTimerPc = timer;
         if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & 4)) {
             f64 step = (f64)slider->granularity * EduiSliderAccelerationPc;
             slider->value = MAX(slider->minimum, slider->value - step);
@@ -1697,60 +1701,70 @@ extern "C" i32 __cdecl eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f
                 slider->value += step * 0.5;
             else
                 slider->value -= step * 0.5;
-            slider->value = (i32)(slider->value / step) * step;
+            slider->value = step * (i32)(slider->value / step);
             slider->normalized_value = (slider->value - slider->minimum) / slider->range;
             slider->change_timer = 60;
             if (slider->changed)
                 slider->changed(menu, item, pad->digital_buttons);
             EduiSliderAccelerationPc += EduiSliderGlobalAccelerationPc;
+            return 0;
         }
-    } else if (pad->digital_buttons & 8) {
-        if (--EduiSliderRepeatTimerPc < 0)
+    } else if (buttons & 8) {
+        i32 timer = EduiSliderRepeatTimerPc - 1;
+        if (timer < 0)
             EduiSliderRepeatTimerPc = 0;
+        else
+            EduiSliderRepeatTimerPc = timer;
         if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & 8)) {
+            f32 maximum = slider->minimum + slider->range;
             f64 step = (f64)slider->granularity * EduiSliderAccelerationPc;
-            slider->value = MIN(slider->minimum + slider->range, slider->value + step);
+            slider->value = MIN(maximum, slider->value + step);
             if (slider->value > 0.0f)
                 slider->value += step * 0.5;
             else
                 slider->value -= step * 0.5;
-            slider->value = (i32)(slider->value / step) * step;
+            slider->value = step * (i32)(slider->value / step);
             slider->normalized_value = (slider->value - slider->minimum) / slider->range;
             slider->change_timer = 60;
             if (slider->changed)
                 slider->changed(menu, item, pad->digital_buttons);
             EduiSliderAccelerationPc += EduiSliderGlobalAccelerationPc;
+            return 0;
         }
     } else {
         EduiSliderAccelerationPc = 1.0f;
         EduiSliderRepeatTimerPc = 30;
-        if (pad->analog_l2) {
-            if (pad->digital_buttons & 0x20) {
+        u8 l2 = pad->analog_l2;
+        if (l2) {
+            if (buttons & 0x20) {
                 EduiSliderDynamicScalePc *= (f64)1.05f;
                 slider->normalized_value =
-                    (f32)MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * delta_time /
-                                                                  EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
+                    (f32)MAX(0.0f, slider->normalized_value -
+                                       (u32)l2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
             } else {
                 EduiSliderDynamicScalePc = 1.627604291343232e-7f;
                 slider->normalized_value =
-                    (f32)MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * delta_time /
-                                                                  EduiNominalFrameTimePc * (f64)1.627604251552839e-5f);
+                    (f32)MAX(0.0f, slider->normalized_value -
+                                       (u32)l2 * delta_time / EduiNominalFrameTimePc * (f64)1.627604251552839e-5f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
             if (slider->changed)
                 slider->changed(menu, item, pad->digital_buttons);
-        } else if (pad->analog_r2) {
-            if (pad->digital_buttons & 0x20) {
+            return 0;
+        }
+        u8 r2 = pad->analog_r2;
+        if (r2) {
+            if (buttons & 0x20) {
                 EduiSliderDynamicScalePc *= (f64)1.05f;
                 slider->normalized_value =
-                    (f32)MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * delta_time /
-                                                                  EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
+                    (f32)MIN(1.0f, slider->normalized_value +
+                                       (u32)r2 * delta_time / EduiNominalFrameTimePc * EduiSliderDynamicScalePc);
             } else {
                 EduiSliderDynamicScalePc = 1.627604291343232e-7f;
                 slider->normalized_value =
-                    (f32)MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * delta_time /
-                                                                  EduiNominalFrameTimePc * (f64)1.627604251552839e-5f);
+                    (f32)MIN(1.0f, slider->normalized_value +
+                                       (u32)r2 * delta_time / EduiNominalFrameTimePc * (f64)1.627604251552839e-5f);
             }
             slider->value = slider->normalized_value * slider->range + slider->minimum;
             slider->change_timer = 60;
