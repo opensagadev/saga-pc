@@ -1738,30 +1738,47 @@ extern INSTNUGCUTSCENE *CutSceneLoadingInstancePc;
 
 void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
     i32 i;
+    CUT_LOAD_CAMERA_SYSTEM *source_camera = source->camera_system;
+    CUT_LOAD_CAMERA_SYSTEM *target_camera = target->camera_system;
+    CUT_LOAD_LOCATOR_SYSTEM *source_locators;
+    CUT_LOAD_LOCATOR_SYSTEM *target_locators;
+    CUT_LOAD_RIGID_SYSTEM *source_rigids;
+    CUT_LOAD_RIGID_SYSTEM *target_rigids;
+    CUT_LOAD_CHARACTER_SYSTEM *source_characters;
+    CUT_LOAD_CHARACTER_SYSTEM *target_characters;
+    CUT_LOAD_TRIGGER_SYSTEM *source_triggers;
+    CUT_LOAD_TRIGGER_SYSTEM *target_triggers;
+
     if ((target->version & 0xff) >= 5) {
-        target->camera_system->focus_animation = source->camera_system->focus_animation;
-        target->camera_system->focus_state_animation = source->camera_system->focus_state_animation;
+        target_camera->focus_animation = source_camera->focus_animation;
+        target_camera->focus_state_animation = source_camera->focus_state_animation;
     }
-    if (source->camera_system->animation != NULL)
-        target->camera_system->animation = source->camera_system->animation;
-    target->camera_system->state_animation = source->camera_system->state_animation;
-    if (source->locator_system != NULL && source->locator_system->locators != NULL) {
-        for (i = 0; i < source->locator_system->count; ++i) {
-            if (source->locator_system->locators[i].animation != NULL)
-                target->locator_system->locators[i].animation = source->locator_system->locators[i].animation;
+    if (source_camera->animation != NULL)
+        target_camera->animation = source_camera->animation;
+    target_camera->state_animation = source_camera->state_animation;
+    source_locators = source->locator_system;
+    if (source_locators != NULL && source_locators->locators != NULL) {
+        target_locators = target->locator_system;
+        for (i = 0; i < source_locators->count; ++i) {
+            if (source_locators->locators[i].animation != NULL)
+                target_locators->locators[i].animation = source_locators->locators[i].animation;
         }
     }
-    if (source->rigid_system != NULL && source->rigid_system->rigids != NULL) {
-        for (i = 0; i < source->rigid_system->count; ++i) {
-            if (source->rigid_system->rigids[i].animation != NULL)
-                target->rigid_system->rigids[i].animation = source->rigid_system->rigids[i].animation;
-            target->rigid_system->rigids[i].state_animation = source->rigid_system->rigids[i].state_animation;
+    source_rigids = source->rigid_system;
+    if (source_rigids != NULL && source_rigids->rigids != NULL) {
+        target_rigids = target->rigid_system;
+        for (i = 0; i < source_rigids->count; ++i) {
+            if (source_rigids->rigids[i].animation != NULL)
+                target_rigids->rigids[i].animation = source_rigids->rigids[i].animation;
+            target_rigids->rigids[i].state_animation = source_rigids->rigids[i].state_animation;
         }
     }
-    if (source->character_system != NULL && source->character_system->characters != NULL) {
-        for (i = 0; i < source->character_system->count; ++i) {
-            CUT_LOAD_CHARACTER *from = &source->character_system->characters[i];
-            CUT_LOAD_CHARACTER *to = &target->character_system->characters[i];
+    source_characters = source->character_system;
+    if (source_characters != NULL && source_characters->characters != NULL) {
+        target_characters = target->character_system;
+        for (i = 0; i < source_characters->count; ++i) {
+            CUT_LOAD_CHARACTER *from = &source_characters->characters[i];
+            CUT_LOAD_CHARACTER *to = &target_characters->characters[i];
             if (from->animation != NULL)
                 to->animation = from->animation;
             if (from->face_animation != NULL)
@@ -1770,9 +1787,11 @@ void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC
                 to->extra_animation = from->extra_animation;
         }
     }
-    if (source->trigger_system != NULL && source->trigger_system->events != NULL) {
-        for (i = 0; i < source->trigger_system->count; ++i)
-            target->trigger_system->events[i].state_animation = source->trigger_system->events[i].state_animation;
+    source_triggers = source->trigger_system;
+    if (source_triggers != NULL && source_triggers->events != NULL) {
+        target_triggers = target->trigger_system;
+        for (i = 0; i < source_triggers->count; ++i)
+            target_triggers->events[i].state_animation = source_triggers->events[i].state_animation;
     }
     target->duration = source->duration;
 }
