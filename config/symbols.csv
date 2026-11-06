@@ -5863,6 +5863,23 @@ address,symbol,size,ctype
 0x5bc190,_NuBezierQuadraticTrianglePartialsVV,131,NUVEC __cdecl (NUVEC *)
 0x5bc220,_NuBezierQuadraticTrianglePartialsUeV,131,NUVEC __cdecl (NUVEC *)
 0x5bc2b0,_NuBez3EvaluateX,183,"f32 __cdecl (NUVEC4 *, f32)"
+0x5bc370,_nugraphInit,46,void __cdecl (nugraph_s *)
+0x5bc3a0,_nugraphAddPoint,245,"i32 __cdecl (nugraph_s *, f32, f32)"
+0x5bc4a0,_nugraphDeletePoint,85,"i32 __cdecl (nugraph_s *, i32)"
+0x5bc500,_nugraphGetXatIndex,88,"f32 __cdecl (nugraph_s *, i32)"
+0x5bc560,_nugraphGetYatIndex,88,"f32 __cdecl (nugraph_s *, i32)"
+0x5bc5c0,_nugraph_blend,407,"f32 __cdecl (i32, i32, i32 *, f32)"
+0x5bc760,_nugraph_compute_point,105,"void __cdecl (i32 *, i32, i32, f32, NUVEC *, NUVEC *)"
+0x5bc7d0,_nugraph_compute_catmull_point,723,"void __cdecl (i32, f32, NUVEC *, NUVEC *)"
+0x5bcab0,_nugraph_compute_linear_point,456,"void __cdecl (i32, f32, NUVEC *, NUVEC *)"
+0x5bcc80,_nugraph_compute_intervals,76,"void __cdecl (i32 *, i32, i32)"
+0x5bccd0,_nugraph_bspline,208,"void __cdecl (i32, i32, NUVEC *, NUVEC *, i32)"
+0x5bcda0,_nugraph_catmullrom,167,"void __cdecl (i32, NUVEC *, NUVEC *, i32)"
+0x5bce50,_nugraph_linear,167,"void __cdecl (i32, NUVEC *, NUVEC *, i32)"
+0x5bcf00,_nugraphFreeTempCurveData,77,void __cdecl (void)
+0x5bcf50,_nugraphCalcCurve,301,"i32 __cdecl (nugraph_s *, i32)"
+0x5bd080,_nugraphGetXatT,62,"f32 __cdecl (nugraph_s *, f32)"
+0x5bd0c0,_nugraphGetYatT,63,"f32 __cdecl (nugraph_s *, f32)"
 0x5bd100,_nugraphGetYatX,1634,"f32 __cdecl (nugraph_s *, f32, i32)"
 0x005bdd50,_NuTrigInit,56,void __cdecl (void)
 0x5bde60,_NuAngAtanQuadrantI,45,
@@ -16944,6 +16961,7 @@ address,symbol,size,ctype
 0x764038,__real@405b000000000000,8,const f64
 0x764040,__real@c042000000000000,8,const f64
 0x764048,__real@c018000000000000,8,const f64
+0x764050,_NugraphSourcePathPc,52,const char[52]
 0x00764090,__real@3f2921fb60000000,8,const f64
 0x7640b8,__real@3fc90fdb,,const f32
 0x7640bc,__real@4096cbe4,,const f32
@@ -26100,8 +26118,11 @@ address,symbol,size,ctype
 0x95e568,_NuPowBasesPc,,f32[32]
 0x95e5e8,_APIObjectZeroMomentumPC,,NUVEC
 0x0095e5f4,_fseed,4,u32
+0x95e5f8,_curve_points,4,i32
+0x95e5fc,_curve,4,NUVEC *
 0x95e610,_PcGeometryDefaultOriginPc,,NUVEC4
 0x95e620,_VisibilityZeroMatrixTemplatePc,,NUMTX
+0x95e660,_control,4,NUVEC *
 0x95e664,_NuPowCacheIndexPc,,i32
 0x0095e690,_numtl_defaultmtl3d,4,NUMTL *
 0x95e694,_NuVpDirtyPc,,
