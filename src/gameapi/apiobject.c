@@ -2101,6 +2101,12 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
     return 1;
 }
 
+/* Float fabs by clearing the sign bit; retail inlines it this way. */
+static __forceinline f32 APIObjectFabs(f32 value) {
+    *(u32 *)&value &= 0x7fffffff;
+    return value;
+}
+
 i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
     API_COLLISION_VIEW_PC *first = (API_COLLISION_VIEW_PC *)first_input;
     API_COLLISION_VIEW_PC *second = (API_COLLISION_VIEW_PC *)second_input;
@@ -2139,10 +2145,12 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
             return 2;
         if ((second->motion_flags & 0x80) != 0)
             return 2;
-        if (fabsf(second_position->x - first_position->x) < 0.0001f &&
-            fabsf(second_position->z - first_position->z) < 0.0001f && fabsf(first->previous_velocity.x) < 0.0001f &&
-            fabsf(first->previous_velocity.z) < 0.0001f && fabsf(second->previous_velocity.x) < 0.0001f &&
-            fabsf(second->previous_velocity.z) < 0.0001f) {
+        if (APIObjectFabs(second_position->x - first_position->x) < 0.0001f &&
+            APIObjectFabs(second_position->z - first_position->z) < 0.0001f &&
+            APIObjectFabs(first->previous_velocity.x) < 0.0001f &&
+            APIObjectFabs(first->previous_velocity.z) < 0.0001f &&
+            APIObjectFabs(second->previous_velocity.x) < 0.0001f &&
+            APIObjectFabs(second->previous_velocity.z) < 0.0001f) {
             GameObjectForceApart2D(first, second);
             return 2;
         }
@@ -2201,10 +2209,10 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
         return 1;
     if ((second->motion_flags & 0x80) != 0)
         return 1;
-    if (fabsf(second_position->x - first_position->x) < 0.0001f &&
-        fabsf(second_position->z - first_position->z) < 0.0001f && fabsf(first->previous_velocity.x) < 0.0001f &&
-        fabsf(first->previous_velocity.z) < 0.0001f && fabsf(second->previous_velocity.x) < 0.0001f &&
-        fabsf(second->previous_velocity.z) < 0.0001f) {
+    if (APIObjectFabs(second_position->x - first_position->x) < 0.0001f &&
+        APIObjectFabs(second_position->z - first_position->z) < 0.0001f &&
+        APIObjectFabs(first->previous_velocity.x) < 0.0001f && APIObjectFabs(first->previous_velocity.z) < 0.0001f &&
+        APIObjectFabs(second->previous_velocity.x) < 0.0001f && APIObjectFabs(second->previous_velocity.z) < 0.0001f) {
         GameObjectForceApart2D(first, second);
         return 1;
     }

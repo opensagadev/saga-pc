@@ -1315,6 +1315,16 @@
    "unit": "src/gameapi/aisys.c",
    "symbol": "_AIPathFabs",
    "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/apiobject.c",
+   "symbol": "_APIObjectFabs",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edui_widget_render_pc.cpp",
+   "symbol": "?EduiFabsPc@@YAMM@Z",
+   "kind": "function"
   }
  ]
 }

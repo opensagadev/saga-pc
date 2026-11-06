@@ -1444,6 +1444,12 @@ STATIC_ASSERT(offsetof(nugraph_s, y) == 0x24);
 STATIC_ASSERT(offsetof(nugraph_s, x_scale) == 0x44);
 STATIC_ASSERT(offsetof(nugraph_s, y_extent) == 0x50);
 
+/* Float fabs by clearing the sign bit; retail inlines it this way. */
+static __forceinline f32 EduiFabsPc(f32 value) {
+    *(u32 *)&value &= 0x7fffffff;
+    return value;
+}
+
 extern "C" i32 __cdecl eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 unused_width,
                                          i32 selected) {
     edui_graph_s *picker = (edui_graph_s *)item;
@@ -1558,7 +1564,7 @@ extern "C" i32 __cdecl eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *it
         }
         f32 dx = picker->cursor_x - picker->graph->x[point];
         f32 dy = picker->cursor_y - picker->graph->y[point];
-        f32 distance = (f32)fabs((f64)dx) + (f32)fabs((f64)dy);
+        f32 distance = EduiFabsPc(dx) + EduiFabsPc(dy);
         if (distance < closest && distance < 0.05f) {
             picker->selected_point = point;
             closest = distance;
