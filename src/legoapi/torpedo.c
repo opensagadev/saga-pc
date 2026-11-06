@@ -216,90 +216,95 @@ void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *);
 extern f32 TorpedoStealTimerPc, TorpedoStealRangePc;
 void *__cdecl FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
 
+#define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
 void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
-    TORPEDO_RUNTIME_PC *packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
-    TORPEDO_RUNTIME_PC *player_packet;
     GAMEOBJECT *player;
     NUVEC position, direction;
-    f32 timer, distance, scale;
-    u32 z, y;
+    f32 distance, scale, cos_y;
     u16 target_z, target_y;
-    i32 index, player_index = -1, destination, source, phase;
-    if (packet->steal_timer > 0.0f) {
-        timer = packet->steal_timer - FRAMETIME;
-        packet->steal_timer = timer;
-        if (0.0f > timer)
-            packet->steal_timer = 0.0f;
+    i32 index, phase;
+    if (TORPEDO_PACKET_PC(object)->steal_timer > 0.0f) {
+        TORPEDO_PACKET_PC(object)->steal_timer -= FRAMETIME;
+        if (TORPEDO_PACKET_PC(object)->steal_timer < 0.0f)
+            TORPEDO_PACKET_PC(object)->steal_timer = 0.0f;
     }
-    for (index = 0; index < packet->count; ++index) {
-        z = packet->pickup_data[index];
-        y = packet->pickup_flags[index];
+    for (index = 0; index < TORPEDO_PACKET_PC(object)->count; ++index) {
+        cos_y = NuTrigTable[(((i32)TORPEDO_PACKET_PC(object)->pickup_flags[index] + 0x4000) >> 1) & 0x7fff];
         distance = (f32)((f64)index * (f64)object->bounds_radius * 1.25 + (f64)object->bounds_radius * 1.5);
-        position.x = (f32)((f64)NuTrigTable[(z >> 1) & 0x7fff] * NuTrigTable[((y + 0x4000) >> 1) & 0x7fff] * distance +
+        position.x = (f32)((f64)NuTrigTable[((i32)TORPEDO_PACKET_PC(object)->pickup_data[index] >> 1) & 0x7fff] *
+                               cos_y * distance +
                            (f64)object->collision_position.x);
-        position.y = (f32)((f64)NuTrigTable[(y >> 1) & 0x7fff] * distance + (f64)object->collision_position.y);
-        position.z = (f32)((f64)NuTrigTable[((y + 0x4000) >> 1) & 0x7fff] * distance *
-                               NuTrigTable[((z + 0x4000) >> 1) & 0x7fff] +
-                           (f64)object->collision_position.z);
-        if (packet->pickup_timer < 0.8f && index + 1 == packet->count) {
-            NuVecSub(&direction, &position, &packet->pickup_positions[index]);
-            phase = (i32)((f64)packet->pickup_timer / (f64)0.8f * 32768.0 + 16384.0);
+        position.y =
+            (f32)((f64)NuTrigTable[((i32)TORPEDO_PACKET_PC(object)->pickup_flags[index] >> 1) & 0x7fff] * distance +
+                  (f64)object->collision_position.y);
+        position.z =
+            (f32)((f64)cos_y * distance *
+                      NuTrigTable[(((i32)TORPEDO_PACKET_PC(object)->pickup_data[index] + 0x4000) >> 1) & 0x7fff] +
+                  (f64)object->collision_position.z);
+        if (TORPEDO_PACKET_PC(object)->pickup_timer < 0.8f && index + 1 == TORPEDO_PACKET_PC(object)->count) {
+            NuVecSub(&direction, &position, &TORPEDO_PACKET_PC(object)->pickup_positions[index]);
+            phase = (i32)((f64)TORPEDO_PACKET_PC(object)->pickup_timer / (f64)0.8f * 32768.0 + 16384.0);
             scale = (f32)(1.0 - ((f64)NuTrigTable[(phase >> 1) & 0x7fff] + 1.0) * 0.5);
             NuVecScale(&direction, &direction, scale);
-            NuVecAdd(&packet->pickup_positions[index], &packet->pickup_positions[index], &direction);
+            NuVecAdd(&TORPEDO_PACKET_PC(object)->pickup_positions[index],
+                     &TORPEDO_PACKET_PC(object)->pickup_positions[index], &direction);
         } else
-            packet->pickup_positions[index] = position;
-        if (index == 0) {
+            TORPEDO_PACKET_PC(object)->pickup_positions[index] = position;
+        if (index != 0) {
+            target_z = (u16)TORPEDO_PACKET_PC(object)->pickup_data[index - 1];
+            target_y = (u16)TORPEDO_PACKET_PC(object)->pickup_flags[index - 1];
+        } else {
             target_z = NuAngAdd(object->field_0x276, 0x8000);
             target_y = (u16)-object->secondary_lean_angle;
-        } else {
-            target_z = (u16)packet->pickup_data[index - 1];
-            target_y = (u16)packet->pickup_flags[index - 1];
         }
-        packet->pickup_data[index] = SeekRot((u16)packet->pickup_data[index], target_z, 5.0f);
-        packet->pickup_flags[index] = SeekRot((u16)packet->pickup_flags[index], target_y, 5.0f);
+        TORPEDO_PACKET_PC(object)->pickup_data[index] =
+            SeekRot((u16)TORPEDO_PACKET_PC(object)->pickup_data[index], target_z, 5.0f);
+        TORPEDO_PACKET_PC(object)->pickup_flags[index] =
+            SeekRot((u16)TORPEDO_PACKET_PC(object)->pickup_flags[index], target_y, 5.0f);
         if (index != 0) {
-            NuVecSub(&direction, &packet->pickup_positions[index], &packet->pickup_positions[index - 1]);
+            NuVecSub(&direction, &TORPEDO_PACKET_PC(object)->pickup_positions[index],
+                     &TORPEDO_PACKET_PC(object)->pickup_positions[index - 1]);
             GetRotationAngles(&direction, &target_z, &target_y);
             AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[129].effect,
-                                              &packet->pickup_positions[index - 1], 90, FRAMETIME, (i16)target_z,
-                                              (i16)target_y, NULL);
+                                              &TORPEDO_PACKET_PC(object)->pickup_positions[index - 1], 90, FRAMETIME,
+                                              (i16)target_z, (i16)target_y, NULL);
         } else
             AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[129].effect, &object->position, 90,
-                                              FRAMETIME, (i16)(packet->pickup_flags[0] - 0x4000),
-                                              (i16)(packet->pickup_data[0] - 0x4000), NULL);
+                                              FRAMETIME, (i16)(TORPEDO_PACKET_PC(object)->pickup_flags[0] - 0x4000),
+                                              (i16)(TORPEDO_PACKET_PC(object)->pickup_data[0] - 0x4000), NULL);
     }
-    if ((packet->flags & 0x20) == 0 || packet->count == 0 || object->field_280 != 0xff)
+    if ((TORPEDO_PACKET_PC(object)->flags & 0x20) == 0 || TORPEDO_PACKET_PC(object)->count == 0 ||
+        object->field_280 != 0xff)
         return;
     for (index = 0; index < 2; ++index) {
         player = Player[index];
         if (player == NULL || (player->flags_1fc_word & 0x1000) == 0 || player->dead != 0 ||
-            (i8)player->flags_1fc >= 0 || (player->flags_e20 & 0x20) != 0)
+            (i8)player->flags_1fc_word >= 0 || (player->flags_e20 & 0x20) != 0)
             continue;
-        player_packet = (TORPEDO_RUNTIME_PC *)player->torpedo;
-        if (player_packet->count >= 5 || player_packet->steal_timer != 0.0f)
+        if (TORPEDO_PACKET_PC(player)->count >= 5 || TORPEDO_PACKET_PC(player)->steal_timer != 0.0f)
             continue;
-        distance =
-            NuVecXZDistSqr(&packet->pickup_positions[packet->count - 1], &player->collision_position, &direction);
+        distance = NuVecXZDistSqr(&TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count - 1],
+                                  &player->collision_position, &direction);
         if (distance < TorpedoStealRangePc * TorpedoStealRangePc) {
-            player_index = index;
-            break;
+            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])
+                ->pickup_positions[TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->count] =
+                TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count - 1];
+            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])
+                ->pickup_data[TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->count] =
+                TORPEDO_PACKET_PC(object)->pickup_data[TORPEDO_PACKET_PC(object)->count - 1];
+            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])
+                ->pickup_flags[TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->count] =
+                TORPEDO_PACKET_PC(object)->pickup_flags[TORPEDO_PACKET_PC(object)->count - 1];
+            ++TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->count;
+            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->pickup_timer = 0.0f;
+            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->pickup_state = 1;
+            --TORPEDO_PACKET_PC(object)->count;
+            TORPEDO_PACKET_PC((GAMEOBJECT *)Player[index])->steal_timer = TorpedoStealTimerPc;
+            return;
         }
     }
-    if (player_index != -1) {
-        player_packet = (TORPEDO_RUNTIME_PC *)((GAMEOBJECT *)Player[player_index])->torpedo;
-        destination = player_packet->count;
-        source = packet->count - 1;
-        player_packet->pickup_positions[destination] = packet->pickup_positions[source];
-        player_packet->pickup_data[destination] = packet->pickup_data[source];
-        player_packet->pickup_flags[destination] = packet->pickup_flags[source];
-        ++player_packet->count;
-        player_packet->pickup_timer = 0.0f;
-        player_packet->pickup_state = 1;
-        --packet->count;
-        player_packet->steal_timer = TorpedoStealTimerPc;
-    }
 }
+#undef TORPEDO_PACKET_PC
 
 void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     TORPEDO_RUNTIME_PC *packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
