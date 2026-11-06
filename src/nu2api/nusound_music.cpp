@@ -414,7 +414,7 @@ void NuMusic::Debug(i32 unused, i32 y) {
                                  NuMusicDebugClassSignature, NuMusicDebugClassOverlay, NuMusicDebugClassCutscene,
                                  NuMusicDebugClassNoMusic};
     struct StreamInfoPc {
-        u8 unknown_0000[12];
+        u32 unknown_0000[3];
         f32 playback_position;
     } stream_info;
     STATIC_ASSERT(sizeof(StreamInfoPc) == 0x10);

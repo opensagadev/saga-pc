@@ -776,20 +776,39 @@ void __cdecl NuRndrSphere(NUVEC *, f32, i32, f32);
 
 static void drawPortalRectangle(NUVEC *maximum, NUVEC *minimum, i32 colour) {
     PORTAL_LINE_VERTEX_PC vertices[8];
-    f32 min_x = 0.5f * (1.0f + minimum->x);
-    f32 min_y = 0.5f * (1.0f - minimum->y);
-    f32 max_x = 0.5f * (1.0f + maximum->x);
-    f32 max_y = 0.5f * (1.0f - maximum->y);
+    f32 min_x, min_y, max_x, max_y;
     i32 i;
-    vertices[0].x = vertices[7].x = vertices[1].x = vertices[2].x = min_x;
-    vertices[3].x = vertices[4].x = vertices[5].x = vertices[6].x = max_x;
-    vertices[0].y = vertices[7].y = vertices[5].y = vertices[6].y = min_y;
-    vertices[1].y = vertices[2].y = vertices[3].y = vertices[4].y = max_y;
-    for (i = 0; i < 8; ++i) {
-        vertices[i].z = 1.0f;
+    for (i = 0; i < 8; ++i)
         vertices[i].colour = (u32)colour;
-    }
-    /* Native line-strip consumer reads only x/y; untouched padding are not fabricated. */
+    min_x = minimum->x * 0.5 + 0.5;
+    vertices[0].x = min_x;
+    min_y = 0.5 - minimum->y * 0.5;
+    vertices[0].y = min_y;
+    vertices[0].z = 1.0f;
+    vertices[1].x = min_x;
+    max_y = 0.5 - maximum->y * 0.5;
+    vertices[1].y = max_y;
+    vertices[1].z = 1.0f;
+    vertices[2].x = min_x;
+    vertices[2].y = max_y;
+    vertices[2].z = 1.0f;
+    max_x = maximum->x * 0.5 + 0.5;
+    vertices[3].x = max_x;
+    vertices[3].y = max_y;
+    vertices[3].z = 1.0f;
+    vertices[4].x = max_x;
+    vertices[4].y = max_y;
+    vertices[4].z = 1.0f;
+    vertices[5].x = max_x;
+    vertices[5].y = min_y;
+    vertices[5].z = 1.0f;
+    vertices[6].x = max_x;
+    vertices[6].y = min_y;
+    vertices[6].z = 1.0f;
+    vertices[7].x = min_x;
+    vertices[7].y = min_y;
+    vertices[7].z = 1.0f;
+    /* Native line-strip consumer reads only x/y/z/colour; the padding words are not written. */
     NuRndrLineStrip2d(vertices, NULL, 8);
 }
 
