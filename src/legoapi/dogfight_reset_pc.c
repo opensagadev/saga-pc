@@ -1309,9 +1309,11 @@ static __declspec(noinline) void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, 
 }
 
 static __declspec(noinline) void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer) {
-    NUVEC player0, player1, step;
+    __declspec(align(16)) NUVEC player0;
+    __declspec(align(16)) NUVEC player1;
+    __declspec(align(16)) NUVEC step;
     DOGFIGHT_QUICK_BOLT_PC *bolt, *end;
-    i32 valid0 = 0, valid1 = 0;
+    i32 valid0, valid1;
     f64 dx, dy, dz;
     if (buffer == NULL || buffer->capacity == 0)
         return;
@@ -1320,37 +1322,41 @@ static __declspec(noinline) void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *b
         player0.x = ((GAMEOBJECT *)Player[0])->transform.m30;
         player0.y = ((GAMEOBJECT *)Player[0])->transform.m31;
         player0.z = ((GAMEOBJECT *)Player[0])->transform.m32;
+    } else {
+        valid0 = 0;
     }
     if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
         valid1 = 1;
         player1.x = ((GAMEOBJECT *)Player[1])->transform.m30;
         player1.y = ((GAMEOBJECT *)Player[1])->transform.m31;
         player1.z = ((GAMEOBJECT *)Player[1])->transform.m32;
+    } else {
+        valid1 = 0;
     }
     bolt = buffer->records;
     end = bolt + buffer->capacity;
     for (; bolt < end; ++bolt) {
         if (bolt->duration == 0.0f)
             continue;
-        step.x = (f64)bolt->velocity.x * FRAMETIME;
-        step.y = (f64)bolt->velocity.y * FRAMETIME;
-        step.z = (f64)bolt->velocity.z * FRAMETIME;
+        step.x = bolt->velocity.x * FRAMETIME;
+        step.y = bolt->velocity.y * FRAMETIME;
+        step.z = bolt->velocity.z * FRAMETIME;
         bolt->matrix.m30 += step.x;
         bolt->matrix.m31 += step.y;
         bolt->matrix.m32 += step.z;
         if (Player[0] != NULL && valid0 != 0) {
-            dx = (f64)bolt->matrix.m30 - player0.x;
-            dy = (f64)bolt->matrix.m31 - player0.y;
-            dz = (f64)bolt->matrix.m32 - player0.z;
+            dy = bolt->matrix.m31 - player0.y;
+            dx = bolt->matrix.m30 - player0.x;
+            dz = bolt->matrix.m32 - player0.z;
             if (dy * dy + dx * dx + dz * dz < 1.0) {
                 bolt->duration = 0.0f;
                 ObjHitObj(NULL, Player[0], 1, 0, 0, 1);
             }
         }
         if (valid1 != 0 && Player[1] != NULL) {
-            dx = (f64)bolt->matrix.m30 - player1.x;
-            dy = (f64)bolt->matrix.m31 - player1.y;
-            dz = (f64)bolt->matrix.m32 - player1.z;
+            dy = bolt->matrix.m31 - player1.y;
+            dx = bolt->matrix.m30 - player1.x;
+            dz = bolt->matrix.m32 - player1.z;
             if (dy * dy + dx * dx + dz * dz < 1.0) {
                 bolt->duration = 0.0f;
                 ObjHitObj(NULL, Player[1], 1, 0, 0, 1);
