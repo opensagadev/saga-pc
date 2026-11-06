@@ -8760,6 +8760,22 @@ address,symbol,size,ctype
 0x6bbc30,_EdDrawPolyCylinderEx,641,
 0x6bbec0,_EdDrawPolyArrow,827,
 0x6bc200,_EdDrawPolyAxis,495,
+0x6bc3f0,?eduiSetPinnedMenu@@YAXPAUeduimenu_s@@@Z,10,
+0x6bc400,?edSetPadDisabled@@YAXH@Z,10,
+0x6bc410,?edGetPadDisabled@@YAHXZ,6,
+0x6bc900,?cbEdLevelSetSliderFloat@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,13,
+0x6bc910,?cbEdLevelSetSliderInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,20,
+0x6bc930,?cbEdLevelSetText@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
+0x6bc950,?cbEdLevelToggleInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,22,
+0x6bdfb0,?GetNextDefaultActiveMenu@PropertyTool@@QAEPAUeduimenu_s@@PAU2@@Z,35,
+0x6bdfe0,?GetMenuActiveChild@@YAPAUeduimenu_s@@PAU1@@Z,24,
+0x6be0b0,?SerialiseVuVec@@YAXAAUEdStream@@PAXH@Z,21,
+0x6be0d0,?SerialiseVuMtx@@YAXAAUEdStream@@PAXH@Z,21,
+0x6be0f0,?SerialiseNuVec@@YAXAAUEdStream@@PAXH@Z,21,
+0x6be110,?SerialiseNuMtx@@YAXAAUEdStream@@PAXH@Z,21,
+0x6be130,?SerialiseString@@YAXAAUEdStream@@PAXH@Z,22,
+0x6be150,?SerialiseStringAddr@@YAXAAUEdStream@@PAXH@Z,22,
+0x6be170,?SerialiseColour3@@YAXAAUEdStream@@PAXH@Z,21,
 0x6be190,_SerialiseNuHSpecial,201,
 0x6d05e0,_cbEdLevelSave,436,
 0x6d07a0,_cbEdLevelSettingsMenu,137,
@@ -26872,6 +26888,9 @@ address,symbol,size,ctype
 0x2973a80,_NewPrim,,i32
 0x2973a84,_NewMtl,,i32
 0x2973a88,_NewMtx,,NUMTX *
+0x2973a9c,_edLevelActiveMenu,4,struct eduimenu_s *
+0x2973aa0,_edLevelPinnedMenu,4,struct eduimenu_s *
+0x2973ab4,_pad_disabled,4,i32
 0x2974cf4,_PCDevicePrimitiveCallCountPc,,u32
 0x2974cf8,_PCDeviceIndexedPrimitiveCallCountPc,,u32
 0x2974cfc,_PCDevicePrimitiveUPCallCountPc,,u32

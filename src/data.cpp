@@ -18556,6 +18556,15 @@ extern "C" {
 #pragma bss_seg(".bss$NewMtx")
     NUMTX *NewMtx = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$edLevelActiveMenu")
+    struct eduimenu_s *edLevelActiveMenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edLevelPinnedMenu")
+    struct eduimenu_s *edLevelPinnedMenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$pad_disabled")
+    i32 pad_disabled = 0;
+#pragma bss_seg()
 }
 
 extern "C" {
