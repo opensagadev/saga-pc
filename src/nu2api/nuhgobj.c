@@ -531,7 +531,7 @@ i32 NuCameraClipHGobj(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *root) {
     return NuCameraClipTestExtents(&min, &half, &matrix, 0.0f, 0);
 }
 
-void NuMtxMulHArrayPc(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
+__declspec(noinline) void NuMtxMulHArrayPc(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
     while (count != 0) {
         D3DXMatrixMultiply(((D3DXMATRIX *)(out)), ((D3DXMATRIX *)(left)), ((D3DXMATRIX *)(right)));
         ++out;
@@ -589,23 +589,28 @@ void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX
 i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render_count, i16 *render_indices, NUMTX *joints,
                       DWA_WEIGHT_BLOCK_PC **weights, i32 render_flags) {
     i32 index;
-    NUHGOBJ_EVAL_PC *object;
     i32 clip;
     i32 shadow;
     i32 old_clip;
     i32 drawn;
+    i32 layer;
+    i32 joint;
+    NUMTX *skin;
+    DWA_WEIGHT_BLOCK_PC *blend;
+    NUSPECIALHANDLE *handle;
+    VARIPTR *cursor;
+    NUMTX matrix;
+    NUVEC min;
+    NUVEC max;
 
-    object = hierarchy;
     clip = PCSpecialClipState;
     if (clip == -1)
         clip = NuCameraClipHGobj(hierarchy, world, joints);
-    shadow = 0;
-    if (PCSpecialActiveShadowLights > 0) {
-        NUVEC min;
-        NUVEC max;
-
-        NuVecMtxTransform(&min, &object->bounds_min, world);
-        NuVecMtxTransform(&max, &object->bounds_max, world);
+    if (PCSpecialActiveShadowLights <= 0) {
+        shadow = 0;
+    } else {
+        NuVecMtxTransform(&min, &hierarchy->bounds_min, world);
+        NuVecMtxTransform(&max, &hierarchy->bounds_max, world);
         shadow = NuSpecialClipTestShadowLights(&min, &max, 1);
     }
     if (clip == 0 && shadow == 0) {
@@ -617,54 +622,58 @@ i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render_count
     NuHGobjSubmitShadowGroupsPc(hierarchy, world, joints);
     drawn = 0;
     for (index = 0; index < render_count; ++index) {
-        i32 pass;
-        i32 layer;
-        NUHGOBJ_RENDER_PART_PC *part;
-        NUMTX *skin;
-        DWA_WEIGHT_BLOCK_PC *blend;
-        NUSPECIALHANDLE **lists[2];
-
         if (render_indices != NULL) {
             layer = render_indices[index];
-            if (layer < 0 || layer >= object->render_count)
+            if (layer < 0 || layer >= hierarchy->render_count)
                 continue;
         } else {
             render_count = 1;
             layer = 0;
         }
-        part = &object->render_parts[layer];
-        skin = NULL;
-        if (part->smooth != NULL || part->alternate_smooth != NULL) {
+        if (hierarchy->render_parts[layer].smooth != NULL || hierarchy->render_parts[layer].alternate_smooth != NULL) {
             NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
-            NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 127) & ~127u;
-            skin = ((NUMTX *)(NuDisplayListStreamCursor->addr));
-            NuDisplayListStreamCursor->addr += object->joint_count * sizeof(NUMTX);
+            cursor = NuDisplayListStreamCursor;
+            skin = ((NUMTX *)((cursor->addr + 127) & ~127u));
+            cursor->addr = (cursor->addr + 127) & ~127u;
+            cursor->addr += hierarchy->joint_count * sizeof(NUMTX);
         }
         blend = weights != NULL ? weights[index] : NULL;
-        lists[0] = part->rigid;
-        lists[1] = part->alternate_rigid;
-        for (pass = 0; pass < 2; ++pass)
-            if (lists[pass] != NULL) {
-                i32 joint;
-
-                for (joint = 0; joint < object->joint_count; ++joint)
-                    if (lists[pass][joint] != NULL) {
-                        NUMTX matrix;
-
-                        NuMtxMulVU0(&matrix, &joints[joint], world);
-                        if (lists[pass][joint]->scene != NULL && lists[pass][joint]->display_special != NULL)
-                            drawn |= NuDisplayListRndrSpecial(lists[pass][joint], &matrix, 0, NULL, NULL);
-                    }
+        if (hierarchy->render_parts[layer].rigid != NULL) {
+            for (joint = 0; joint < hierarchy->joint_count; ++joint) {
+                if (hierarchy->render_parts[layer].rigid[joint] != NULL) {
+                    NuMtxMulVU0(&matrix, &joints[joint], world);
+                    handle = hierarchy->render_parts[layer].rigid[joint];
+                    drawn |= handle != NULL && handle->scene != NULL && handle->display_special != NULL
+                                 ? NuDisplayListRndrSpecial(handle, &matrix, 0, NULL, NULL)
+                                 : 0;
+                }
             }
-        if (part->smooth != NULL || part->alternate_smooth != NULL) {
-            NuMtxMulHArrayPc(skin, object->inverse_bind, joints, object->joint_count);
+        }
+        if (hierarchy->render_parts[layer].alternate_rigid != NULL) {
+            for (joint = 0; joint < hierarchy->joint_count; ++joint) {
+                if (hierarchy->render_parts[layer].alternate_rigid[joint] != NULL) {
+                    NuMtxMulVU0(&matrix, &joints[joint], world);
+                    handle = hierarchy->render_parts[layer].alternate_rigid[joint];
+                    drawn |= handle != NULL && handle->scene != NULL && handle->display_special != NULL
+                                 ? NuDisplayListRndrSpecial(handle, &matrix, 0, NULL, NULL)
+                                 : 0;
+                }
+            }
+        }
+        if (hierarchy->render_parts[layer].smooth != NULL || hierarchy->render_parts[layer].alternate_smooth != NULL) {
+            NuMtxMulHArrayPc(skin, hierarchy->inverse_bind, joints, hierarchy->joint_count);
             SAGA_SKIN_CALL(skin_trace_skin, (unsigned)hierarchy, (unsigned)joints, world, (unsigned)skin,
-                           object->joint_count);
-            if (part->smooth != NULL && part->smooth->scene != NULL && part->smooth->display_special != NULL)
-                drawn |= NuDisplayListRndrSpecial(part->smooth, world, 2, skin, blend);
-            if (part->alternate_smooth != NULL && part->alternate_smooth->scene != NULL &&
-                part->alternate_smooth->display_special != NULL)
-                drawn |= NuDisplayListRndrSpecial(part->alternate_smooth, world, 2, skin, blend);
+                           hierarchy->joint_count);
+            handle = hierarchy->render_parts[layer].smooth;
+            if (handle != NULL)
+                drawn |= handle->scene == NULL             ? 0
+                         : handle->display_special == NULL ? 0
+                                                           : NuDisplayListRndrSpecial(handle, world, 2, skin, blend);
+            handle = hierarchy->render_parts[layer].alternate_smooth;
+            if (handle != NULL)
+                drawn |= handle->scene == NULL             ? 0
+                         : handle->display_special == NULL ? 0
+                                                           : NuDisplayListRndrSpecial(handle, world, 2, skin, blend);
         }
     }
     PCSpecialClipState = old_clip;
