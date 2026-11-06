@@ -131,13 +131,11 @@ void NuMusic::Track::ManageEntryTime(void) {
 NuMusic::Voice *NuMusic::FindVoiceByTrack(Track *track) {
     i32 index;
 
-    if (track == NULL) {
-        return NULL;
-    }
-    for (index = 0; index < 2; index++) {
-        Voice *voice = &voices[index];
-        if (voice->tracks[voice->track_index] == track) {
-            return voice;
+    if (track != NULL) {
+        for (index = 0; index < 2; index++) {
+            if (voices[index].tracks[voices[index].track_index] == track) {
+                return &voices[index];
+            }
         }
     }
     return NULL;
@@ -147,10 +145,9 @@ NuMusic::Voice *NuMusic::FindVoiceByClass(u32 class_mask) {
     i32 index;
 
     for (index = 0; index < 2; index++) {
-        Voice *voice = &voices[index];
-        Track *track = voice->tracks[voice->track_index];
+        Track *track = voices[index].tracks[voices[index].track_index];
         if (track != NULL && track->clazz == class_mask) {
-            return voice;
+            return &voices[index];
         }
     }
     return NULL;
@@ -160,10 +157,9 @@ NuMusic::Voice *NuMusic::FindVoiceByClassAndStatus(u32 class_mask, u32 status) {
     i32 index;
 
     for (index = 0; index < 2; index++) {
-        Voice *voice = &voices[index];
-        Track *track = voice->tracks[voice->track_index];
-        if (track != NULL && track->clazz == class_mask && (u32)voice->status == status) {
-            return voice;
+        Track *track = voices[index].tracks[voices[index].track_index];
+        if (track != NULL && track->clazz == class_mask && (u32)voices[index].status == status) {
+            return &voices[index];
         }
     }
     return NULL;
@@ -341,9 +337,12 @@ bool NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
     return false;
 }
 
+/* Empty diagnostic hook; retail calls it with the track name when a name lookup fails. */
+extern "C" __declspec(noinline) void PCMusicTrackNotFound(...) {
+}
+
 i32 NuMusic::GetTrackHandle(u32 class_mask, const char *name) {
-    Album *current_album;
-    i32 track_index;
+    i32 index;
 
     if (this == NULL) {
         return -1;
@@ -352,39 +351,32 @@ i32 NuMusic::GetTrackHandle(u32 class_mask, const char *name) {
         return -1;
     }
 
-    current_album = album;
-    if (name == NULL) {
-        i32 class_index;
-        i32 current_album_index;
-        Track *track;
-
-        if (current_album == NULL) {
-            return -1;
+    if (album != NULL) {
+        if (name != NULL) {
+            for (index = 0; index < album->tracks_count; index++) {
+                if (album->tracks_source[index].clazz == class_mask && album->tracks_source[index].ident != NULL &&
+                    NuStrICmp(album->tracks_source[index].ident, name) == 0) {
+                    return ((i32)(album - albums) << 11) | index;
+                }
+            }
+            PCMusicTrackNotFound(name);
+        } else {
+            index = ClassToIX(class_mask);
+            if (index == -1 || album->tracks[index] == NULL) {
+                return -1;
+            }
+            return (i32)(album->tracks[index] - album->tracks_source) | ((i32)(album - albums) << 11);
         }
-        class_index = ClassToIX(class_mask);
-        if (class_index < 0 || current_album->tracks[class_index] == NULL) {
-            return -1;
-        }
-        track = current_album->tracks[class_index];
-        track_index = (i32)(track - current_album->tracks_source);
-        current_album_index = (i32)(current_album - albums);
-        return (current_album_index << 11) | track_index;
     }
 
-    if (current_album != NULL) {
-        for (track_index = 0; track_index < current_album->tracks_count; track_index++) {
-            Track *track = &current_album->tracks_source[track_index];
-            if (track->clazz == class_mask && track->ident != NULL && NuStrICmp(track->ident, name) == 0) {
-                return ((i32)(current_album - albums) << 11) | track_index;
+    if (name != NULL) {
+        for (index = 0; index < extra_track_count; index++) {
+            if (extra_tracks[index].clazz == class_mask && extra_tracks[index].ident != NULL &&
+                NuStrICmp(extra_tracks[index].ident, name) == 0) {
+                return (album_count << 11) | index;
             }
         }
-    }
-
-    for (track_index = 0; track_index < extra_track_count; track_index++) {
-        Track *track = &extra_tracks[track_index];
-        if (track->clazz == class_mask && track->ident != NULL && NuStrICmp(track->ident, name) == 0) {
-            return (album_count << 11) | track_index;
-        }
+        PCMusicTrackNotFound(name);
     }
     return -1;
 }
@@ -1239,7 +1231,9 @@ i32 NuMusic::Voice::Play(void) {
 }
 
 i32 NuMusic::CueTrack(u32 class_mask) {
-    if (this == NULL || the_music_player == NULL)
+    if (this == NULL)
+        return -1;
+    if (the_music_player == NULL)
         return -1;
     if (album == NULL)
         return -2;
@@ -1268,7 +1262,9 @@ i32 NuMusic::CueTrack(u32 class_mask) {
 }
 
 i32 NuMusic::PlayTrackI(u32 class_mask, u32 prepare_only) {
-    if (this == NULL || the_music_player == NULL)
+    if (this == NULL)
+        return -1;
+    if (the_music_player == NULL)
         return -1;
     if (album == NULL)
         return -2;

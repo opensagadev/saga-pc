@@ -8062,13 +8062,14 @@ address,symbol,size,ctype
 0x692eb0,_cbPtlDataMenu,708,
 0x693180,_cbPtlEmitMenu,880,
 0x693b60,_PCStereoUnknownToken,1,void __cdecl(...) [C++ logical prototype; true retail RET no arguments consumed]
+0x00693b70,_PCMusicTrackNotFound,1,void __cdecl(...) [C++ logical prototype; retail passes the track name]
 0x00693bb0,?GetPlayer@NuMusic@@SAPAV1@XZ,6,NuMusic *__cdecl (void)
 0x00693bc0,??0NuMusic@@QAE@XZ,66,NuMusic *__thiscall (NuMusic *)
 0x00693c20,?NoMusic@NuMusic@@QAEXH@Z,31,"void __thiscall (NuMusic *, i32)"
 0x693c40,?InitVoiceManager@NuMusic@@QAEXXZ,78,void  __thiscall NuMusic::InitVoiceManager(void)
 0x00693c90,?FindVoiceByTrack@NuMusic@@QAEPAVVoice@1@PAVTrack@1@@Z,72,"NuMusic::Voice *__thiscall (NuMusic *, NuMusic::Track *)"
 0x00693ce0,?FindVoiceByClass@NuMusic@@QAEPAVVoice@1@I@Z,75,"NuMusic::Voice *__thiscall (NuMusic *, u32)"
-0x00693d30,?FindVoiceByClassAndStatus@NuMusic@@QAEPAVVoice@1@II@Z,89,"NuMusic::Voice *__thiscall (NuMusic *, u32, u32)"
+0x00693d30,?FindVoiceByClassAndStatus@NuMusic@@QAEPAVVoice@1@II@Z,97,"NuMusic::Voice *__thiscall (NuMusic *, u32, u32)"
 0x00693da0,?FindIdleVoice@NuMusic@@QAEPAVVoice@1@XZ,63,NuMusic::Voice *__thiscall (NuMusic *)
 0x00693e10,?ManageEntryTime@Track@NuMusic@@QAEXXZ,38,void __thiscall (NuMusic::Track *)
 0x00693e50,?ClassToIX@NuMusic@@SAHI@Z,33,i32 __cdecl (u32)
