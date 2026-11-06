@@ -2564,8 +2564,8 @@ i32 __cdecl RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, 
         PLAYERCHARACTERCONFIG_PC *runtime;
         if (excluded != NULL && InModelList(excluded, id, NULL) != 0)
             continue;
-        if (Game_Customiser != NULL && (((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] == id ||
-                                        ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1] == id))
+        if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] ||
+                                        id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1]))
             continue;
         runtime = character->game_character;
         if (character->move_fn == Move_DEFAULT || (runtime->flags_090 & game_flags) != game_flags ||
@@ -2577,11 +2577,12 @@ i32 __cdecl RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, 
         if (count < 500)
             candidates[count++] = (i16)id;
     }
-    if (count == 0)
-        return -1;
-    if (count == 1)
+    if (count > 0) {
+        if (count > 1)
+            return candidates[qrand() / (0xffff / count + 1)];
         return candidates[0];
-    return candidates[qrand() / (0xffff / count + 1)];
+    }
+    return -1;
 }
 
 extern i16 id_SUPERBATTLEDROID, id_BARMAN;
