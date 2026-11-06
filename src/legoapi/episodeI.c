@@ -602,6 +602,11 @@ extern NUSPECIALHANDLE SebulbaMineSpecialPc;
 extern f32 SebulbaDistanceBiasPc, SebulbaThrowIntervalPc;
 static f32 PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc;
 
+/* The throw timer is read through the process argument, as retail does. This is the
+   processor AIScriptProcess is running, which resets its action_timer on the action's
+   first frame. It is often packet->script_processor but can be an alternate processor,
+   so it is not always an alias of the packet's own timer (commit 610f69c's message
+   claimed it was). */
 i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **unused3, i32 unused4,
                    i32 first_time, float unused6) {
     struct gameobject_s *object;
