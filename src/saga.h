@@ -24083,30 +24083,23 @@ struct GIZTURRET_s {
     u8 field_0x136[2];
     i16 field_0x138;
     union {
-        u8 flags;
+        u16 flags;
         struct {
-            u8 : 1;
-            u8 active : 1;
-            u8 visible : 1;
-            u8 aim_locked : 1;
-            u8 aim_at_fixed_angles : 1;
-            u8 update_disabled : 1;
-            u8 rapid_fire_pending : 1;
-            u8 fired_this_frame : 1;
+            u16 : 1;
+            u16 active : 1;
+            u16 visible : 1;
+            u16 aim_locked : 1;
+            u16 aim_at_fixed_angles : 1;
+            u16 update_disabled : 1;
+            u16 rapid_fire_pending : 1;
+            u16 fired_this_frame : 1;
+            u16 : 3;
+            u16 rotation_sound_playing : 1;
+            u16 : 4;
         };
     };
-    union {
-        u8 runtime_flags;
-        struct {
-            u8 : 3;
-            u8 rotation_sound_playing : 1;
-            u8 : 4;
-        };
-    };
-    struct MechObjectInterface *mech_object_interface;
-    f32 field_0x140;
 };
-STATIC_ASSERT(sizeof(struct GIZTURRET_s) == 324);
+STATIC_ASSERT(sizeof(struct GIZTURRET_s) == 0x13c);
 
 struct GIZBOMBGEN_s {
     char name[16];
