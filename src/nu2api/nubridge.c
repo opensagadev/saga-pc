@@ -3,17 +3,68 @@
 /* Retail performs these absolute-value operations inline with x87 FABS. */
 #define NUBRIDGE_ABS(value) ((value) < 0.0f ? -(value) : (value))
 
+/* Builds a scaled frame for each rope segment; the PC build has the draw calls compiled out. */
+void __cdecl NuBridgeDrawRopeSegmentPc(NUMTL *material, NUVEC *points, i32 count, i32 colour) {
+    i32 i;
+    NUVEC *next;
+    NUVEC side;
+    NUVEC up;
+    NUVEC edge;
+    NUVEC corner;
+    NUVEC direction;
+    (void)material;
+    (void)colour;
+
+    next = points + 1;
+    for (i = 0; i < count; ++i, ++points, ++next) {
+        if (i == count - 1) {
+            continue;
+        }
+        direction.x = next->x - points->x;
+        direction.y = next->y - points->y;
+        direction.z = next->z - points->z;
+        NuVecNorm(&direction, &direction);
+        if (direction.x != direction.z) {
+            side.x = -direction.z;
+            side.y = direction.y;
+            side.z = direction.x;
+        } else {
+            side.x = -direction.y;
+            side.y = direction.x;
+            side.z = direction.z;
+        }
+        NuVecCross(&up, &direction, &side);
+        NuVecNorm(&up, &up);
+        edge.x = side.x + (up.x - side.x) * 0.5f;
+        edge.y = side.y + (up.y - side.y) * 0.5f;
+        edge.z = side.z + (up.z - side.z) * 0.5f;
+        NuVecNorm(&edge, &edge);
+        corner.x = up.x + (-side.x - up.x) * 0.5f;
+        corner.y = up.y + (-side.y - up.y) * 0.5f;
+        corner.z = up.z + (-side.z - up.z) * 0.5f;
+        NuVecNorm(&corner, &corner);
+        side.x *= 0.08f;
+        side.y *= 0.08f;
+        side.z *= 0.08f;
+        up.x *= 0.08f;
+        up.y *= 0.08f;
+        up.z *= 0.08f;
+        edge.x *= 0.08f;
+        edge.y *= 0.08f;
+        edge.z *= 0.08f;
+        corner.x *= 0.08f;
+        corner.y *= 0.08f;
+        corner.z *= 0.08f;
+    }
+}
+
 void __cdecl NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 count, i32 *boundaries, i32 colour) {
     i32 i;
-    (void)material;
     (void)count;
     for (i = 0; boundaries[i] < boundaries[i + 1]; ++i) {
-        STUBBED_NAMED("NuBridgeDrawRope: call PC helper 0x00545030 for first edge segment");
-        STUBBED_NAMED("NuBridgeDrawRope: call PC helper 0x00545030 for second edge segment");
+        NuBridgeDrawRopeSegmentPc(material, &first[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);
+        NuBridgeDrawRopeSegmentPc(material, &second[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);
     }
-    (void)first;
-    (void)second;
-    (void)colour;
 }
 
 void __cdecl NuBridgeDraw(NUMTL *material) {

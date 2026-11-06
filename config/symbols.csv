@@ -3748,6 +3748,7 @@ address,symbol,size,ctype
 0x00543fd0,_NuBridgeRemove,144,void __cdecl (i32)
 0x00544070,_NuBridgeCreate,939,"i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, NUSPECIALHANDLE *, NUVEC *, NUVEC *, f32, i16, f32, f32, f32, f32, i32, f32, f32, i32, u32)"
 0x00544420,_NuBridgeUpdate,3073,void __cdecl (NUVEC *)
+0x00545030,_NuBridgeDrawRopeSegmentPc,513,"void __cdecl (NUMTL *, NUVEC *, i32, i32)"
 0x00545240,_NuBrdigeDrawRope,120,"void __cdecl (NUMTL *, NUVEC *, NUVEC *, i32, i32 *, i32)"
 0x005452c0,_NuBridgeDraw,617,void __cdecl (NUMTL *)
 0x545540,_NuFadeObjInit,187,void __cdecl(void)
@@ -15976,6 +15977,7 @@ address,symbol,size,ctype
 0x761548,??_C@_02JDPG@rb?$AA@,3,const char[3]
 0x76154c,_SaveSlotCaptionFormatPc,13,const char[13]
 0x76155c,??_C@_02GMLFBBN@wb?$AA@,3,const char[3]
+0x00761578,__real@3fb47ae140000000,8,const f64
 0x761584,__real@cb189680,4,const f32
 0x761588,__real@4b189680,4,const f32
 0x76158c,__real@2d2febff,4,const f32
