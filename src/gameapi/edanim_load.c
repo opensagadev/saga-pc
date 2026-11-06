@@ -44,31 +44,8 @@ STATIC_ASSERT(offsetof(EDANIM_LOAD_PARAM_PC, bounce_spring) == 0x2c8);
 STATIC_ASSERT(offsetof(EDANIM_LOAD_PARAM_PC, bounce_damping) == 0x2cc);
 STATIC_ASSERT(offsetof(EDANIM_LOAD_PARAM_PC, page) == 0x2d0);
 
-typedef struct EDANIM_PLATFORM_VIEW_PC {
-    u8 unknown_00[0x40];
-    void *scene_object;
-    u8 unknown_44[6];
-    i16 scene_object_index;
-    u8 unknown_4c[8];
-    f32 bounce_54, bounce_58, bounce_5c, bounce_60, bounce_64;
-    void *scene_transform;
-} EDANIM_PLATFORM_VIEW_PC;
-STATIC_ASSERT(sizeof(EDANIM_PLATFORM_VIEW_PC) == 0x6c);
-STATIC_ASSERT(offsetof(EDANIM_PLATFORM_VIEW_PC, scene_object) == 0x40);
-STATIC_ASSERT(offsetof(EDANIM_PLATFORM_VIEW_PC, scene_object_index) == 0x4a);
-STATIC_ASSERT(offsetof(EDANIM_PLATFORM_VIEW_PC, bounce_54) == 0x54);
-STATIC_ASSERT(offsetof(EDANIM_PLATFORM_VIEW_PC, bounce_58) == 0x58);
-STATIC_ASSERT(offsetof(EDANIM_PLATFORM_VIEW_PC, bounce_5c) == 0x5c);
-STATIC_ASSERT(offsetof(EDANIM_PLATFORM_VIEW_PC, bounce_60) == 0x60);
-STATIC_ASSERT(offsetof(EDANIM_PLATFORM_VIEW_PC, bounce_64) == 0x64);
-typedef struct EDANIM_TERRAIN_VIEW_PC {
-    u8 unknown_00[0x68];
-    EDANIM_PLATFORM_VIEW_PC *platforms;
-    u8 unknown_6c[0xa48c - 0x6c];
-    i32 max_platforms;
-} EDANIM_TERRAIN_VIEW_PC;
-STATIC_ASSERT(offsetof(EDANIM_TERRAIN_VIEW_PC, platforms) == 0x68);
-STATIC_ASSERT(offsetof(EDANIM_TERRAIN_VIEW_PC, max_platforms) == 0xa48c);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_58) == 0x58);
+STATIC_ASSERT(offsetof(TERRAIN_PLATFORM_PC, bounce_64) == 0x64);
 
 extern NUGSCN *edbits_base_scene;
 extern i32 edbits_anim_page;
@@ -255,8 +232,8 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
     NUVEC discarded_position;
     NUSPECIALHANDLE special;
     EDANIM_LOAD_PARAM_PC *param;
-    EDANIM_TERRAIN_VIEW_PC *terrain;
-    EDANIM_PLATFORM_VIEW_PC *platform;
+    TERRAIN_SET_PC *terrain;
+    TERRAIN_PLATFORM_PC *platform;
     for (page = 0; page < 8; ++page) {
         if (!edanim_page_used[page])
             break;
@@ -348,7 +325,7 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
         NuGScnGetSpecial(&special, scene, param->instance_id);
         instance = NuSpecialGetInstanceix(&special);
         param->platform_id = -1;
-        terrain = (EDANIM_TERRAIN_VIEW_PC *)CurrentTerrain;
+        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
         if (instance != -1) {
             for (item = 0; item < terrain->max_platforms; ++item) {
                 platform = &terrain->platforms[item];
@@ -368,7 +345,7 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
             param->bounce_damping = 0;
         }
         item = param->platform_id;
-        terrain = (EDANIM_TERRAIN_VIEW_PC *)CurrentTerrain;
+        terrain = (TERRAIN_SET_PC *)CurrentTerrain;
         if (item >= 0 && item < terrain->max_platforms) {
             platform = &terrain->platforms[item];
             if (platform->bounce_54 == 0.0f) {
@@ -396,11 +373,12 @@ i32 __cdecl edanimLoadPage(char *path, NUGSCN *scene) {
 }
 
 void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     f32 value;
     if (edanim_nearest == -1) {
         return;
     }
-    value = ((edui_slider_s *)(item))->value;
+    value = slider->value;
     AnimParams[edanim_nearest_param_id].bounce_impulse = value;
     if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
         PlatInstBounce(
@@ -410,11 +388,12 @@ void edanimcbSetBouncyPlayerGrav(eduimenu_s *unused0, eduiitem_s *item, u32 unus
 }
 
 void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     f32 value;
     if (edanim_nearest == -1) {
         return;
     }
-    value = ((edui_slider_s *)(item))->value;
+    value = slider->value;
     AnimParams[edanim_nearest_param_id].bounce_spring = value;
     if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
         PlatInstBounce(
@@ -424,11 +403,12 @@ void edanimcbSetBouncyTension(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
 }
 
 void edanimcbSetBouncyDamping(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edui_slider_s *slider = (edui_slider_s *)item;
     f32 value;
     if (edanim_nearest == -1) {
         return;
     }
-    value = ((edui_slider_s *)(item))->value;
+    value = slider->value;
     AnimParams[edanim_nearest_param_id].bounce_damping = value;
     if (AnimParams[edanim_nearest_param_id].platform_id != -1) {
         PlatInstBounce(
