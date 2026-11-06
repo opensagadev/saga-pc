@@ -527,7 +527,7 @@ f32 __cdecl Condition_OnGroundPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, 
 f32 __cdecl Condition_BeenAlertedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                     void *argument) {
     if (packet != NULL && packet->owner != NULL) {
-        if (packet->owner->objptr->field_ec0 != 0)
+        if (packet->owner->objptr->alert_target != NULL)
             return 1.0f;
         return 0.0f;
     }

@@ -341,24 +341,26 @@ __declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 inpu
 
 __declspec(noinline) i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *object) {
     NUVEC *anchor;
-    TIGHTROPE_MOVEMENT_PC *rope = (TIGHTROPE_MOVEMENT_PC *)object->grapple;
-    u16 rotation = rope->rotation + 0x4000;
-    f32 fraction, amplitude, direction;
+    TIGHTROPE_MOVEMENT_PC *rope;
+    u16 rotation;
+    f32 fraction, amplitude;
     anchor = (object->character_data->game_character->flags_090 & 0x80000) ? &object->lower_position
                                                                            : &object->upper_position;
     object->target_velocity.x = (object->launch_origin.x - anchor->x) * NuTimeBarColumnStep;
     object->target_velocity.y = (object->launch_origin.y - anchor->y) * NuTimeBarColumnStep;
     object->target_velocity.z = (object->launch_origin.z - anchor->z) * NuTimeBarColumnStep;
+    rope = (TIGHTROPE_MOVEMENT_PC *)object->grapple;
+    rotation = rope->rotation + 0x4000;
     fraction = object->context_hover_target_y / rope->horizontal_length;
     if (fraction > 1.0f)
         fraction = 1.0f;
     amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * PlayerTightRopePhasePc)) >> 1) & 0x7fff];
-    direction = NuTrigTable[rotation >> 1];
-    object->target_velocity.x += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * direction;
+    object->target_velocity.x +=
+        (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];
     object->target_velocity.y -= qrand() * PlayerRandomScalePc * amplitude;
-    direction = NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
-    object->target_velocity.z += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * direction;
-    return object->field_7aa != 5 && object->field_7aa != 6;
+    object->target_velocity.z += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude *
+                                 NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
+    return object->field_7aa != 6 && object->field_7aa != 5;
 }
 
 i32 __cdecl CanClimbSurface(GAMEOBJECT *, i32);
@@ -1402,9 +1404,7 @@ typedef struct player_initialize_view_pc_s {
     u8 unknown_2c8[0x126];
     i16 animation_override_from;
     i16 animation_override_to;
-    u8 unknown_3f2[0x62];
-    f32 field_454;
-    u8 unknown_458[0x868];
+    u8 unknown_3f2[0x8ce];
     void *held_batarang;
     u8 unknown_cc4[0x9c];
     f32 pause_input_state;
@@ -1452,7 +1452,6 @@ STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_animation) == 0x2c4);
 STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, previous_idle_animation) == 0x2c6);
 STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, animation_override_from) == 0x3ee);
 STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, animation_override_to) == 0x3f0);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_454) == 0x454);
 STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, held_batarang) == 0xcc0);
 STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, pause_input_state) == 0xd60);
 STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, ai_state_flags) == 0xeec);
@@ -1703,11 +1702,11 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.flags &= 0xffffafff;
     object->ai_packet.target_metric_e0 = 1000000000.0f;
     object->ai_packet.target_metric_f0 = 1000000000.0f;
-    state->field_454 = 0.0f;
+    object->ai_packet.antinode_timer = 0.0f;
     state->ai_state_flags &= 0xfadff7fe;
     object->timer_ecc = 0.0f;
     object->flags_ef0 &= ~0x1000000u;
-    object->field_ec0 = 0;
+    object->alert_target = NULL;
     object->ai_packet.nearest_opponent = NULL;
     object->ai_packet.target_dc = NULL;
     object->ai_packet.opponent = NULL;
@@ -1781,11 +1780,6 @@ NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
 }
 
 /* Minimum original PC consumer views; no full allocation extent asserted. */
-typedef struct DYNAMIC_AI_TIMER_VIEW_PC {
-    u8 unknown_000[0x18c];
-    f32 antinode_timer;
-} DYNAMIC_AI_TIMER_VIEW_PC;
-STATIC_ASSERT(offsetof(DYNAMIC_AI_TIMER_VIEW_PC, antinode_timer) == 0x18c);
 typedef struct DYNAMIC_LIGHTING_VIEW_PC {
     u8 unknown_000[0x4d8];
     RTL_DATA_PC lighting_packet;
@@ -2561,7 +2555,7 @@ void __cdecl Players_Init(void) {
             object->field_eb4 = 0;
             object->opponent = NULL;
             object->last_attacker = NULL;
-            object->field_ec0 = 0;
+            object->alert_target = NULL;
             object->ai_opponent_exclusion_mask[0] = 0;
             object->ai_opponent_exclusion_mask[1] = 0;
             object->timer_ecc = 0.0f;

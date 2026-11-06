@@ -7054,7 +7054,7 @@ i32 __cdecl Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
             if ((old_state & new_state & 0x10005) == 0) {
                 object->ai_packet.flags &= ~0x800u;
                 object->ai_packet.opponent = NULL;
-                object->field_ec0 = 0;
+                object->alert_target = NULL;
                 object->field_ec4 = 0.0f;
             }
         }
@@ -7113,7 +7113,7 @@ i32 __cdecl Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
                 if ((old_state & new_state & 0x10005) == 0) {
                     candidate->ai_packet.flags &= ~0x800u;
                     candidate->ai_packet.opponent = NULL;
-                    candidate->field_ec0 = 0;
+                    candidate->alert_target = NULL;
                     candidate->field_ec4 = 0.0f;
                 }
             }

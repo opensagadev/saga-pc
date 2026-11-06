@@ -777,9 +777,9 @@ void UpdatePlayerCameraOcclusionPc(void) {
                 ((object->character_data->model_flags & 0x40) != 0 && object->communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
-                object->field_efe &= ~0x18;
+                object->flags_ef0 &= ~0x180000u;
             } else {
-                i32 was_blocked = (object->field_efe >> 3) & 1;
+                i32 was_blocked = (object->flags_ef0 >> 19) & 1;
                 i32 changed = 0;
                 if ((GameTimer.update_count & 1) == i) {
                     NUVEC ray;
@@ -795,7 +795,7 @@ void UpdatePlayerCameraOcclusionPc(void) {
 
                     NuVecSub(&ray, &sample, &GameCam->position);
                     blocked = NewRayCastScaleYMask(&GameCam->position, &ray, 0.0f, 1.0f, 0, 0x1f) & 1;
-                    object->field_efe = (object->field_efe & ~8) | (blocked << 3);
+                    object->flags_ef0 = (object->flags_ef0 & ~0x80000u) | ((u32)blocked << 19);
                     if (was_blocked != blocked) {
                         object->tag_reset_timer = 0.0f;
                         changed = 1;
@@ -805,12 +805,12 @@ void UpdatePlayerCameraOcclusionPc(void) {
                     object->tag_reset_timer += FRAMETIME;
                     if (object->tag_reset_timer >= 0.3f) {
                         object->tag_reset_timer = 0.3f;
-                        object->field_efe = (object->field_efe & ~0x10) | (was_blocked << 4);
+                        object->flags_ef0 = (object->flags_ef0 & ~0x100000u) | ((u32)was_blocked << 20);
                     }
                 }
             }
-            object->pause_context_state =
-                SeekLinearF(object->pause_context_state, (object->field_efe & 0x10) ? 1.0f : 0.0f, 3.0f * FRAMETIME);
+            object->pause_context_state = SeekLinearF(object->pause_context_state,
+                                                      (object->flags_ef0 & 0x100000) ? 1.0f : 0.0f, 3.0f * FRAMETIME);
         }
     }
 }

@@ -972,7 +972,15 @@ struct AIPACKET_PC {
     u8 unknown_1c8[4];
     AIPATHINFO_PC fallback_path_info;
     NUVEC *movement_look_target;
-    u32 flags;
+    union {
+        u32 flags;
+        struct {
+            u8 flags_low;
+            u8 selection_flags;
+            u8 route_flags;
+            u8 priority_flags;
+        };
+    };
     u32 navigation_flags;
     f32 movement_target_radius;
     u32 capabilities;
@@ -4427,7 +4435,7 @@ typedef struct GAMEPAD_PC {
     u32 previous_left_directions;
     u32 right_directions;
     u32 previous_right_directions;
-    u8 unknown_20[0x4];
+    u32 ai_input_state;
     u8 input_state;
     u8 input_mode;
     u16 input_angle;
@@ -5228,7 +5236,9 @@ typedef struct gameobject_s {
     };
     f32 velocity_magnitude;
     f32 horizontal_velocity_magnitude;
-    u8 unknown_0230[0x48];
+    u8 unknown_0230[0x10];
+    f32 ai_visibility_extension;
+    u8 unknown_0244[0x34];
     u16 pitch_angle;
     u16 field_0x276;
     u16 roll_angle;
@@ -5263,7 +5273,8 @@ typedef struct gameobject_s {
         struct {
             u8 ai_priority_reserved_28e[4];
             u16 ai_collision_priority_pc;
-            u8 ai_priority_reserved_294[0x14];
+            u16 ai_resolved_collision_priority_pc;
+            u8 ai_priority_reserved_296[0x12];
         };
     };
     union {
@@ -5524,7 +5535,7 @@ typedef struct gameobject_s {
     f32 field_ddc;
     f32 field_de0;
     f32 hold_timer;
-    f32 ai_jump_timer;
+    f32 ai_hop_timer;
     f32 powerup_time;
     f32 pre_terrain_speed;
     f32 post_terrain_speed;
@@ -5605,7 +5616,7 @@ typedef struct gameobject_s {
     u32 field_eb0;
     u32 field_eb4;
     u32 ai_opponent_exclusion_mask[2];
-    u32 field_ec0;
+    struct gameobject_s *alert_target;
     f32 field_ec4;
     f32 movement_speed_scale_pc;
     f32 timer_ecc;
@@ -5627,6 +5638,12 @@ typedef struct gameobject_s {
             u32 respawn_at_origin : 1;
             u32 portal_bits_22_31 : 10;
         };
+        struct {
+            u8 combat_flags;
+            u8 combat_flags2;
+            u8 combat_flags3;
+            u8 combat_flags4;
+        };
     };
     union {
         u32 flags_ef0;
@@ -5637,7 +5654,10 @@ typedef struct gameobject_s {
             u8 flags_ef3;
         };
     };
-    u32 flags_ef4;
+    union {
+        u32 flags_ef4;
+        u8 ai_update_flags;
+    };
     union {
         u32 flags_ef8_word;
         struct {
@@ -5647,18 +5667,12 @@ typedef struct gameobject_s {
             u8 field_efb;
         };
     };
-    u8 field_efc;
-    u8 field_efd;
-    u8 field_efe;
-    u8 field_eff;
-    u8 field_f00;
-    u8 field_f01;
-    u8 field_f02;
-    u8 field_f03;
-    u8 field_f04;
-    u8 edge_stop_requests;
-    u8 unknown_f06[0x2];
     void *can_use_object;
+    u8 field_f00;
+    u8 use_action_frames;
+    u8 unknown_f02[0x2];
+    f32 use_action_parameter;
+    i32 route_frame_state;
     f32 big_jump_height;
     f32 field_f10;
     union {
@@ -5714,7 +5728,10 @@ typedef struct gameobject_s {
     u16 field_1062;
     u16 id;
     i16 route_character_id;
-    u16 reflection_x;
+    union {
+        u16 reflection_x;
+        i16 route_suit_index;
+    };
     union {
         i16 portal_room;
         u16 reflection_z;
@@ -5724,6 +5741,7 @@ typedef struct gameobject_s {
     i16 level_object_index;
     union {
         u8 unknown_1072[6];
+        u8 ai_frame_event;
         AI_SPECIAL_PROGRESS_PC special_move_progress_view_pc;
         INDY_GUIDELINE_STATE_PC indy_guideline_state;
     };
@@ -5738,7 +5756,7 @@ typedef struct gameobject_s {
     u8 field_107e;
     i8 current_hp;
     i8 head_target_priority;
-    u8 unknown_1081;
+    u8 route_start_index;
     u8 helmet;
     u8 unknown_1083;
     u8 one_at_once_player;
@@ -5746,7 +5764,7 @@ typedef struct gameobject_s {
     u8 field_1086;
     u8 field_1087;
     u8 field_1088;
-    u8 field_1089;
+    u8 route_search_index;
     u8 unknown_108a[2];
     union {
         struct {
@@ -5767,7 +5785,7 @@ typedef struct gameobject_s {
     union {
         struct {
             u8 field_1094;
-            u8 route_search_index;
+            u8 field_1095;
             u8 unknown_1096[2];
         };
         AIPATHNODE_PC *special_move_source_pc;
@@ -5888,7 +5906,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, collision_target) == 0xcc8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, reset_velocity) == 0xdf8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_eb0) == 0xeb0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_eb4) == 0xeb4);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_ec0) == 0xec0);
+STATIC_ASSERT(offsetof(GAMEOBJECT, alert_target) == 0xec0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_scale) == 0xff8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_radius_unscaled) == 0xffc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_y_scale) == 0x1004);
@@ -5940,7 +5958,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_c90) == 0xc90);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_c94) == 0xc94);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_e4c) == 0xe4c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_ef8) == 0xef8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_efc) == 0xefc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, can_use_object) == 0xefc);
 STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hover_height_override) == 0x1028);
 STATIC_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
