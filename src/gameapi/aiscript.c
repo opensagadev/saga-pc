@@ -1432,7 +1432,7 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
                                                                            AISCRIPTPROCESS_PC *processor,
                                                                            i32 stack_index) {
     AICONDITION_PC *condition;
-    f32 condition_value;
+    f32 condition_value = 0.0f;
     f32 comparison_value;
     AICONDITION_EVAL_PC comparison_fn;
     i32 comparison_passed;
@@ -1440,7 +1440,6 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
         return NULL;
     condition = (AICONDITION_PC *)NuLinkedListGetHead(conditions);
     while (condition != NULL) {
-        condition_value = 0.0f;
         comparison_passed = 0;
         if (condition->definition != NULL) {
             if (condition->definition->eval_fn != NULL) {
@@ -1487,7 +1486,13 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
                     break;
             }
         }
-        if (!comparison_passed) {
+        if (comparison_passed) {
+            if ((condition->flags & 1) == 0) {
+                AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
+                processor->param_stack[stack_index].is_first_time_state = 0;
+                return condition;
+            }
+        } else {
             while ((condition->flags & 1) != 0) {
                 condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
                 if (condition == NULL)
@@ -1498,10 +1503,6 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
                     condition->param_value = processor->param_stack[stack_index].complex_params[condition->param_index];
                 }
             }
-        } else if ((condition->flags & 1) == 0) {
-            AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
-            processor->param_stack[stack_index].is_first_time_state = 0;
-            return condition;
         }
         if (condition != NULL)
             condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
