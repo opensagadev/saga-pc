@@ -1691,15 +1691,22 @@ extern i32 terraincnt, curSphereter, platinrange, PlatImpactId, TerrShapeAdjCnt;
 extern TERRAIN_SHAPE *ShadPoly, *TerrPoly;
 extern u8 TerrWallInfo;
 extern i16 debug_index;
+/* Normals exported as NaN (0xffc00000) are replaced by straight up. */
+#define TERRAIN_FIX_NORMAL(normal)                                                                                     \
+    if (*(u32 *)&(normal).x == 0xffc00000 || *(u32 *)&(normal).y == 0xffc00000 || *(u32 *)&(normal).z == 0xffc00000) { \
+        (normal).x = 0;                                                                                                \
+        (normal).z = 0;                                                                                                \
+        (normal).y = 1;                                                                                                \
+    }
+
 void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id,
                     u32 max_group_indices, u32 max_groups, u32 max_platforms) {
     i32 level;
     i32 group_index;
     i32 reset_cell;
-    u32 platform_index;
+    i32 platform_index;
     i32 slot;
     i32 shape_index;
-    i32 n;
     i32 vector_index;
     i32 cell_index;
     i32 object_index;
@@ -1728,19 +1735,12 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     f32 radius_squared;
     TERRAIN_SHAPE_BATCH *batch;
     TERRAIN_SHAPE *shape;
-    TERRAIN_FLOAT_BITS_PC normal_bits;
     u8 legacy_material;
-    const NUVEC *vector;
-    f64 world_y;
     f32 length_squared;
     f32 terrain_min_x;
     f32 terrain_min_z;
     f32 terrain_max_x;
     f32 terrain_max_z;
-    f32 batch_min_x;
-    f32 batch_max_x;
-    f32 batch_min_z;
-    f32 batch_max_z;
     i32 x_distance;
     i32 x_cell;
     i32 z_distance;
@@ -1791,45 +1791,42 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
     terrain = ((TERRSET *)(cursor->char_ptr));
     cursor->char_ptr += sizeof(TERRSET);
-
-    terrain->groups = ((TERRAIN_GROUP *)(cursor->char_ptr));
-    cursor->char_ptr += (sizeof(TERRAIN_GROUP)) * ((max_groups + 0x80));
-    terrain->group_indices = ((i16 *)(cursor->char_ptr));
-    cursor->char_ptr += max_group_indices * sizeof(i16);
-    terrain->platforms = ((TERRAIN_PLATFORM *)(cursor->char_ptr));
-    cursor->char_ptr += max_platforms * sizeof(TERRAIN_PLATFORM);
-
+    terrain->max_platforms = max_platforms;
     terrain->max_group_indices = max_group_indices;
     terrain->max_groups = max_groups;
-    terrain->max_platforms = max_platforms;
+
+    terrain->groups = ((TERRAIN_GROUP *)(cursor->char_ptr));
+    cursor->char_ptr += (max_groups + 0x80) * sizeof(TERRAIN_GROUP) / 2 * 2;
+    terrain->group_indices = ((i16 *)(cursor->char_ptr));
+    cursor->char_ptr += max_group_indices * sizeof(i16) / 2 * 2;
+    terrain->platforms = ((TERRAIN_PLATFORM *)(cursor->char_ptr));
+    cursor->char_ptr += terrain->max_platforms * sizeof(TERRAIN_PLATFORM) / 2 * 2;
 
     for (level = 0; level < TERRAIN_INDEX_LEVEL_COUNT; ++level) {
         terrain->index_levels[level].cache_age = 0;
         terrain->index_levels[level].scan_words[0].shape = NULL;
     }
 
-    memset(terrain->groups, 0, max_groups * sizeof(TERRAIN_GROUP));
-    for (group_index = 0; group_index < max_groups; ++group_index) {
+    memset(terrain->groups, 0, terrain->max_groups * sizeof(TERRAIN_GROUP));
+    for (group_index = 0; group_index < terrain->max_groups; ++group_index) {
         terrain->groups[group_index].chunk_type = -1;
     }
 
-    for (reset_cell = 0; reset_cell < TERRAIN_CELL_RECORD_COUNT; ++reset_cell) {
-        if (reset_cell < 256)
-            terrain->cells[reset_cell].group_count = 0;
-        else
-            terrain->platform_cell.group_count = 0;
+    /* The platform cell directly follows the 256 grid cells. */
+    cell = terrain->cells;
+    for (reset_cell = 0; reset_cell < TERRAIN_CELL_RECORD_COUNT; ++reset_cell, ++cell) {
+        cell->group_count = 0;
     }
 
-    for (platform_index = 0; platform_index < max_platforms; ++platform_index) {
-        platform = &(terrain->platforms[platform_index]);
-        platform->flags &= ~TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
-        platform->scene_object = NULL;
-        platform->unknown_44 = 0;
-        platform->bounce_54 = 0;
-        platform->bounce_58 = 0;
-        platform->bounce_5c = 0;
-        platform->bounce_60 = 0;
-        platform->bounce_64 = 0;
+    for (platform_index = 0; platform_index < terrain->max_platforms; ++platform_index) {
+        terrain->platforms[platform_index].scene_object = NULL;
+        terrain->platforms[platform_index].unknown_44 = 0;
+        terrain->platforms[platform_index].bounce_54 = 0;
+        terrain->platforms[platform_index].bounce_58 = 0;
+        terrain->platforms[platform_index].bounce_5c = 0;
+        terrain->platforms[platform_index].bounce_64 = 0;
+        terrain->platforms[platform_index].bounce_60 = 0;
+        terrain->platforms[platform_index].flags &= ~TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
     }
 
     for (slot = 0; slot < TERRAIN_TRACK_SLOT_COUNT; ++slot) {
@@ -1862,9 +1859,9 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
     terrain->minimum_height = INT_MAX;
 
-    for (group_index = 0; group_index < group_count; ++group_index) {
-        group = &(terrain->groups[group_index]);
-        if (((u32)(group->chunk_type)) > TERRAIN_CHUNK_GROUP_SECONDARY) {
+    group = terrain->groups;
+    for (group_index = 0; group_index < terrain->group_count; ++group_index, ++group) {
+        if (group->chunk_type != TERRAIN_CHUNK_GROUP_PRIMARY && group->chunk_type != TERRAIN_CHUNK_GROUP_SECONDARY) {
             continue;
         }
 
@@ -1880,21 +1877,8 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
         while (batch->marker >= 0) {
             shape = ((TERRAIN_SHAPE *)(batch + 1));
             for (shape_index = 0; shape_index < batch->shape_count; ++shape_index, ++shape) {
-                for (n = 0; n < 2; ++n) {
-
-                    memcpy(&normal_bits.bits, &shape->normals[n].x, sizeof(normal_bits.bits));
-                    if (normal_bits.bits != 0xffc00000) {
-                        memcpy(&normal_bits.bits, &shape->normals[n].y, sizeof(normal_bits.bits));
-                        if (normal_bits.bits != 0xffc00000) {
-                            memcpy(&normal_bits.bits, &shape->normals[n].z, sizeof(normal_bits.bits));
-                            if (normal_bits.bits != 0xffc00000)
-                                continue;
-                        }
-                    }
-                    shape->normals[n].x = 0;
-                    shape->normals[n].y = 1;
-                    shape->normals[n].z = 0;
-                }
+                TERRAIN_FIX_NORMAL(shape->normals[0]);
+                TERRAIN_FIX_NORMAL(shape->normals[1]);
 
                 if (shape->material[1] > 0xef) {
                     legacy_material = shape->material[1];
@@ -1936,15 +1920,14 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                     max_z = shape->max_z;
 
                 for (vector_index = 0; vector_index < 4; ++vector_index) {
-                    vector = &(shape->vertices[vector_index]);
-                    world_y = (f64)group->origin.y + vector->y;
-                    if (((f64)(terrain->minimum_height)) > world_y) {
-                        terrain->minimum_height = ((i32)(world_y));
+                    if (terrain->minimum_height > shape->vertices[vector_index].y + group->origin.y) {
+                        terrain->minimum_height = (i32)(shape->vertices[vector_index].y + group->origin.y);
                     }
                 }
                 for (vector_index = 0; vector_index < 4; ++vector_index) {
-                    vector = &(shape->vertices[vector_index]);
-                    length_squared = vector->x * vector->x + vector->y * vector->y + vector->z * vector->z;
+                    length_squared = shape->vertices[vector_index].x * shape->vertices[vector_index].x +
+                                     shape->vertices[vector_index].y * shape->vertices[vector_index].y +
+                                     shape->vertices[vector_index].z * shape->vertices[vector_index].z;
                     if (length_squared > radius_squared) {
                         radius_squared = length_squared;
                     }
@@ -1978,7 +1961,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     terrain_max_z = kBoundsMinimum;
     terrain_max_x = kBoundsMinimum;
 
-    for (group_index = 0; group_index < group_count; ++group_index) {
+    for (group_index = 0; group_index < terrain->group_count; ++group_index) {
         group = &(terrain->groups[group_index]);
         if (group->chunk_type != TERRAIN_CHUNK_GROUP_PRIMARY) {
             continue;
@@ -1986,86 +1969,70 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
         batch = ((TERRAIN_SHAPE_BATCH *)(group->data));
         while (0 <= batch->marker) {
-            min_x = group->origin.x + batch->min_x;
-            max_x = group->origin.x + batch->max_x;
-            min_z = group->origin.z + batch->min_z;
-            max_z = group->origin.z + batch->max_z;
-            if (min_x < terrain_min_x)
-                terrain_min_x = min_x;
-            if (max_x > terrain_max_x)
-                terrain_max_x = max_x;
-            if (min_z < terrain_min_z)
-                terrain_min_z = min_z;
-            if (max_z > terrain_max_z)
-                terrain_max_z = max_z;
+            if (batch->min_x + group->origin.x < terrain_min_x)
+                terrain_min_x = batch->min_x + group->origin.x;
+            if (batch->max_x + group->origin.x > terrain_max_x)
+                terrain_max_x = batch->max_x + group->origin.x;
+            if (batch->min_z + group->origin.z < terrain_min_z)
+                terrain_min_z = batch->min_z + group->origin.z;
+            if (batch->max_z + group->origin.z > terrain_max_z)
+                terrain_max_z = batch->max_z + group->origin.z;
 
             batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_SHAPE *)(batch + 1)) + batch->shape_count));
         }
     }
 
     terrain->group_index_count = 0;
-    for (group_index = 0; group_index < group_count; ++group_index) {
+    for (group_index = 0; group_index < terrain->group_count; ++group_index) {
         group = &(terrain->groups[group_index]);
         if (group->chunk_type != TERRAIN_CHUNK_GROUP_PRIMARY) {
             continue;
         }
 
-        min_x = kBoundsMaximum;
-        min_z = kBoundsMaximum;
-        max_x = kBoundsMinimum;
-        max_z = kBoundsMinimum;
+        group_min_x[group_index] = kBoundsMaximum;
+        group_min_z[group_index] = kBoundsMaximum;
+        group_max_x[group_index] = kBoundsMinimum;
+        group_max_z[group_index] = kBoundsMinimum;
         batch = ((TERRAIN_SHAPE_BATCH *)(group->data));
         while (batch->marker >= 0) {
-            batch_min_x = group->origin.x + batch->min_x;
-            batch_max_x = group->origin.x + batch->max_x;
-            batch_min_z = group->origin.z + batch->min_z;
-            batch_max_z = group->origin.z + batch->max_z;
-            if (batch_min_x < min_x)
-                min_x = batch_min_x;
-            if (batch_max_x > max_x)
-                max_x = batch_max_x;
-            if (batch_min_z < min_z)
-                min_z = batch_min_z;
-            if (batch_max_z > max_z)
-                max_z = batch_max_z;
+            if (batch->min_x + group->origin.x < group_min_x[group_index])
+                group_min_x[group_index] = batch->min_x + group->origin.x;
+            if (batch->max_x + group->origin.x > group_max_x[group_index])
+                group_max_x[group_index] = batch->max_x + group->origin.x;
+            if (batch->min_z + group->origin.z < group_min_z[group_index])
+                group_min_z[group_index] = batch->min_z + group->origin.z;
+            if (batch->max_z + group->origin.z > group_max_z[group_index])
+                group_max_z[group_index] = batch->max_z + group->origin.z;
 
             batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_SHAPE *)(batch + 1)) + batch->shape_count));
         }
 
-        group_min_x[group_index] = min_x;
-        group_min_z[group_index] = min_z;
-        group_max_x[group_index] = max_x;
-        group_max_z[group_index] = max_z;
-
-        x_distance = ((i32)((min_x + max_x) * 0.5f - terrain_min_x));
-        x_cell = ((i32)(((f32)(x_distance * TERRAIN_GRID_WIDTH)) / (terrain_max_x - terrain_min_x)));
+        x_distance = (i32)((group_max_x[group_index] + group_min_x[group_index]) * 0.5f - terrain_min_x);
+        x_cell = (i32)((f32)(x_distance * TERRAIN_GRID_WIDTH) / (terrain_max_x - terrain_min_x));
         if (x_cell < 0)
             x_cell = 0;
-        else if (x_cell >= TERRAIN_GRID_WIDTH)
+        else if (x_cell > TERRAIN_GRID_WIDTH - 1)
             x_cell = TERRAIN_GRID_WIDTH - 1;
 
-        z_distance = ((i32)((min_z + max_z) * 0.5f - terrain_min_z));
-        z_cell = ((i32)(((f32)(z_distance * TERRAIN_GRID_WIDTH)) / (terrain_max_z - terrain_min_z)));
+        z_distance = (i32)((group_max_z[group_index] + group_min_z[group_index]) * 0.5f - terrain_min_z);
+        z_cell = (i32)((f32)(z_distance * TERRAIN_GRID_WIDTH) / (terrain_max_z - terrain_min_z));
         if (z_cell < 0)
             z_cell = 0;
-        else if (z_cell >= TERRAIN_GRID_WIDTH)
+        else if (z_cell > TERRAIN_GRID_WIDTH - 1)
             z_cell = TERRAIN_GRID_WIDTH - 1;
 
         group_cells[group_index] = ((i16)(z_cell * TERRAIN_GRID_WIDTH + x_cell));
     }
 
     terrain->used_cell_count = 0;
-    terrain->group_index_count = 0;
     for (cell_index = 0; cell_index < TERRAIN_GRID_CELL_COUNT; ++cell_index) {
-        cell = &(terrain->cells[terrain->used_cell_count]);
-        cell->first_group = ((u16)(terrain->group_index_count));
-
+        terrain->cells[terrain->used_cell_count].first_group = ((i16)(terrain->group_index_count));
         min_x = kBoundsMaximum;
         min_z = kBoundsMaximum;
         max_x = kBoundsMinimum;
         max_z = kBoundsMinimum;
-        for (group_index = 0; group_index < group_count; ++group_index) {
-            group = &(terrain->groups[group_index]);
+        group = terrain->groups;
+        for (group_index = 0; group_index < terrain->group_count; ++group_index, ++group) {
             if (group_cells[group_index] != cell_index || group->chunk_type != TERRAIN_CHUNK_GROUP_PRIMARY) {
                 continue;
             }
@@ -2079,16 +2046,16 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             if (group_max_z[group_index] > max_z)
                 max_z = group_max_z[group_index];
 
-            ++cell->group_count;
+            ++terrain->cells[terrain->used_cell_count].group_count;
             terrain->group_indices[terrain->group_index_count] = ((i16)(group_index));
             ++terrain->group_index_count;
         }
 
-        if (cell->group_count != 0) {
-            cell->min_x = min_x;
-            cell->min_z = min_z;
-            cell->max_x = max_x;
-            cell->max_z = max_z;
+        if (terrain->cells[terrain->used_cell_count].group_count != 0) {
+            terrain->cells[terrain->used_cell_count].min_x = min_x;
+            terrain->cells[terrain->used_cell_count].min_z = min_z;
+            terrain->cells[terrain->used_cell_count].max_x = max_x;
+            terrain->cells[terrain->used_cell_count].max_z = max_z;
             ++terrain->used_cell_count;
         }
     }
@@ -2097,7 +2064,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     platform_cell->first_group = ((u16)(terrain->group_index_count));
 
     platform_count = 0;
-    for (group_index = 0; group_index < group_count; ++group_index) {
+    for (group_index = 0; group_index < terrain->group_count; ++group_index) {
         group = &(terrain->groups[group_index]);
         if (group->chunk_type != TERRAIN_CHUNK_GROUP_SECONDARY) {
             continue;
