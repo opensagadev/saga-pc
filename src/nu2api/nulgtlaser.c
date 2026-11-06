@@ -563,32 +563,30 @@ void __cdecl NuLgtArcLaserDraw(i32 paused) {
 void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
                         u32 colour, f32 end_width, f32 length) {
     NULGTLASER_PC *laser;
-    if (NuLgtLaserCnt > 63)
+    i32 i;
+    if (NuLgtLaserCnt >= 64)
         return;
 
     laser = &NuLgtLaserData[NuLgtLaserCnt];
+    laser->arc = 0;
+    laser->type = (u8)type;
+    laser->width = width;
     laser->width_wobble = width_wobble;
     laser->segment_length = segment_length;
-    laser->arc = 0;
-    laser->width = width;
-    laser->type = (u8)type;
-    laser->start = *start;
+    laser->end_width_ratio = end_width / width;
     laser->length = length;
+    laser->start = *start;
     laser->end.x = delta->x + start->x;
     laser->end.y = delta->y + start->y;
     laser->end.z = delta->z + start->z;
     laser->colour = colour;
-    laser->end_width_ratio = end_width / width;
     // The original tests the arc cursor here, even for a straight laser.
     if ((NuLgtArcLaserFrame & 1) == 0 || NuLgtLaserData[NuLgtArcLaserCnt].seed == 0) {
         NuLgtLaserData[NuLgtLaserCnt].seed = NU_LGT_RAND();
     }
-    NU_LGT_RAND();
-    NU_LGT_RAND();
-    NU_LGT_RAND();
-    NU_LGT_RAND();
-    NU_LGT_RAND();
-    NU_LGT_RAND();
+    for (i = 0; i < 6; ++i) {
+        NU_LGT_RAND();
+    }
     ++NuLgtLaserCnt;
 }
 
@@ -596,44 +594,41 @@ void __cdecl NuLgtArcLaserEx(i32 type, NUVEC *start, NUVEC *end, NUVEC *bend, f3
                              f32 bend_amount, i32 colour, i32 flags) {
     i32 i;
     i32 index;
-    NULGTARCLASER_PC *laser;
     u32 red;
     u32 green;
     u32 blue;
     u32 alpha;
+
+    alpha = ((u32)colour >> 24) * 2;
+    if (alpha > 255)
+        alpha = 255;
+    alpha <<= 24;
+    blue = ((u8)((u32)colour >> 16)) * 2;
+    if (blue > 255)
+        blue = 255;
+    green = ((u32)colour & 0xff00) * 2;
+    if (green > 0xff00)
+        green = 0xff00;
+    red = ((u8)colour) * 2;
+    if (red > 255)
+        red = 255;
+
     index = NuLgtArcLaserCnt;
     if (index >= 16)
         return;
 
-    laser = &NuLgtArcLaserData[index];
-    laser->type = (u8)type;
-    laser->start = *start;
-    laser->end = *end;
-    laser->bend = *bend;
-    laser->width = width;
-    laser->segment_length = segment_length;
-    laser->wobble = wobble;
-    laser->bend_amount = bend_amount;
-
-    red = colour & 0xff;
-
-    green = (colour >> 8) & 0xff;
-
-    blue = (u8)(colour >> 16);
-
-    alpha = (u8)(colour >> 24);
-    if (red > 255)
-        red = 255;
-    if (green > 0xff00)
-        green = 0xff00;
-    if (blue > 255)
-        blue = 255;
-    if (alpha > 255)
-        alpha = 255;
-    laser->colour = blue | (red << 16) | green | (alpha << 24);
-    laser->flags = flags;
-    if ((NuLgtArcLaserFrame & 1) == 0 || laser->seed == 0)
-        laser->seed = NU_LGT_RAND();
+    NuLgtArcLaserData[index].type = (u8)type;
+    NuLgtArcLaserData[index].start = *start;
+    NuLgtArcLaserData[index].end = *end;
+    NuLgtArcLaserData[index].bend = *bend;
+    NuLgtArcLaserData[index].width = width;
+    NuLgtArcLaserData[index].segment_length = segment_length;
+    NuLgtArcLaserData[index].wobble = wobble;
+    NuLgtArcLaserData[index].bend_amount = bend_amount;
+    NuLgtArcLaserData[index].colour = (red << 16) | green | blue | alpha;
+    NuLgtArcLaserData[index].flags = flags;
+    if ((NuLgtArcLaserFrame & 1) == 0 || NuLgtArcLaserData[index].seed == 0)
+        NuLgtArcLaserData[index].seed = NU_LGT_RAND();
     for (i = 0; i < 6; ++i)
         NU_LGT_RAND();
     ++NuLgtArcLaserCnt;
