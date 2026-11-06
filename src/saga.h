@@ -3044,7 +3044,7 @@ typedef struct bolt_s {
     u8 index;
     i8 field_104;
     i8 field_105;
-    u8 unknown_106[2];
+    u16 unknown_106;
     NUVEC bounds_min;
     NUVEC bounds_max;
     NUVEC hit_normal;
@@ -3113,7 +3113,7 @@ typedef struct animpacket_pc_s {
     f32 blend_duration_pc;
     f32 blend_source_time;
     f32 blend_target_time;
-    u8 unknown_18[0x18];
+    u32 unknown_18[6];
     u8 flags;
     u8 blending;
     i16 blend_source_animation;
@@ -3124,9 +3124,10 @@ typedef struct animpacket_pc_s {
     u8 reversed_3c;
     u8 reversed_3d;
     u8 reversed_3e;
-    u8 unknown_3f[3];
+    u8 unknown_3f, unknown_40, unknown_41;
     i16 overlay_animation;
 } ANIMPACKET_PC;
+STATIC_ASSERT(offsetof(ANIMPACKET_PC, overlay_animation) == 0x42);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, current_time) == 0);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_elapsed_pc) == 8);
 STATIC_ASSERT(offsetof(ANIMPACKET_PC, blend_duration_pc) == 0xc);
