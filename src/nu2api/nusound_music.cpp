@@ -292,38 +292,32 @@ bool NuMusic::SelectTrack(u32 class_mask, const char *name) {
 
 bool NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
     i32 class_index;
-    i32 current_album_index;
     i32 handle_album_index;
     i32 track_index;
+    Album *selected_album;
 
-    if (this == NULL || the_music_player == NULL || album == NULL) {
-        return false;
-    }
-    class_index = ClassToIX(class_mask);
-    if (class_index < 0) {
-        return false;
-    }
-    if (handle == -1) {
-        album->tracks[class_index] = NULL;
-        return true;
-    }
-
-    handle_album_index = handle >> 11;
-    track_index = handle & 0x7ff;
-    current_album_index = (i32)(album - albums);
-    if (handle_album_index == current_album_index) {
-        if (track_index < 0 || track_index >= album->tracks_count) {
-            return false;
+    if (this != NULL && the_music_player != NULL && (selected_album = album) != NULL) {
+        class_index = ClassToIX(class_mask);
+        if (class_index >= 0 && class_index < 6) {
+            if (handle != -1) {
+                handle_album_index = handle >> 11;
+                track_index = handle & 0x7ff;
+                if (handle_album_index == (i32)(selected_album - albums)) {
+                    if (track_index >= 0 && track_index < selected_album->tracks_count) {
+                        selected_album->tracks[class_index] = &selected_album->tracks_source[track_index];
+                        return true;
+                    }
+                } else if (handle_album_index == album_count) {
+                    if (track_index >= 0 && track_index < extra_track_count) {
+                        selected_album->tracks[class_index] = &extra_tracks[track_index];
+                        return true;
+                    }
+                }
+            } else {
+                /* Retail clears the slot but still reports failure. */
+                selected_album->tracks[class_index] = NULL;
+            }
         }
-        album->tracks[class_index] = &album->tracks_source[track_index];
-        return true;
-    }
-    if (handle_album_index == album_count) {
-        if (track_index < 0 || track_index >= extra_track_count) {
-            return false;
-        }
-        album->tracks[class_index] = &extra_tracks[track_index];
-        return true;
     }
     return false;
 }
@@ -373,47 +367,49 @@ i32 NuMusic::GetTrackHandle(u32 class_mask, const char *name) {
 }
 
 i32 NuMusic::GetStatus(u32 class_mask, i32 *per_class_status) {
-    i32 result = 0;
+    i32 result;
+    i32 voice_status;
     i32 voice_index;
+    i32 index;
+    Voice *voice;
 
-    if (this == NULL || the_music_player == NULL) {
+    if (this == NULL)
         return 0;
-    }
+    if (the_music_player == NULL)
+        return 0;
+    voice_status = 0;
+    result = 0;
 
     if (per_class_status != NULL) {
-        i32 index;
         for (index = 0; index < 6; index++) {
             per_class_status[index] = 0;
         }
     }
 
-    for (voice_index = 0; voice_index < 2; voice_index++) {
-        Voice *voice = &voices[voice_index];
-        Track *track = voice->tracks[voice->track_index];
-        i32 voice_status = 0;
-        i32 class_index;
-
-        if (track == NULL || (track->clazz & class_mask) == 0) {
-            continue;
-        }
-
-        if (voice->status == 1) {
-            voice_status = 0;
-        } else if (voice->status == 3) {
-            voice_status = 2;
-        } else if (voice->status == 7) {
-            voice_status = 4;
-        } else {
-            voice_status = 1;
-        }
-        result |= voice_status;
-
-        for (class_index = 0; class_index < 6; class_index++) {
-            if (track->clazz == (1u << class_index)) {
-                if (per_class_status != NULL) {
-                    per_class_status[class_index] |= voice_status;
-                }
-                break;
+    for (voice_index = 0, voice = voices; voice_index < 2; voice_index++, voice++) {
+        if (voice->tracks[voice->track_index] != NULL && (voice->tracks[voice->track_index]->clazz & class_mask) != 0) {
+            switch (voice->status) {
+                case 1:
+                    voice_status = 0;
+                    break;
+                case 0:
+                case 2:
+                case 4:
+                case 5:
+                case 6:
+                    voice_status = 1;
+                    break;
+                case 3:
+                    voice_status = 2;
+                    break;
+                case 7:
+                    voice_status = 4;
+                    break;
+            }
+            result |= voice_status;
+            index = ClassToIX(voice->tracks[voice->track_index]->clazz);
+            if (per_class_status != NULL && index != -1) {
+                per_class_status[index] |= voice_status;
             }
         }
     }
@@ -1400,16 +1396,20 @@ i32 NuMusic::StopTrack(u32 class_mask, i32 fade) {
 }
 
 i32 NuMusic::SetTrackEntryTimeByClass(u32 class_mask, f32 time) {
-    if (this == NULL || the_music_player == NULL)
+    Album *selected_album;
+    i32 index;
+
+    if (this == NULL)
         return 0;
-    Album *selected_album = album;
-    if (selected_album == NULL)
+    if (the_music_player == NULL)
         return 0;
-    i32 index = ClassToIX(class_mask);
-    if (index == -1)
-        return 0;
-    if (time < 0.0f)
-        time = 0.0f;
-    selected_album->tracks[index]->start_offset = time;
-    return 1;
+    selected_album = album;
+    if (selected_album != NULL) {
+        index = ClassToIX(class_mask);
+        if (index != -1) {
+            selected_album->tracks[index]->start_offset = MAX(0.0f, time);
+            return 1;
+        }
+    }
+    return 0;
 }
