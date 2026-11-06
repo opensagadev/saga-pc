@@ -92,6 +92,7 @@ i32 SoundQueue::Stop() {
     return SendCommand(3, 0);
 }
 
+/* Command 4 stops a playing buffer and keeps its position (pause). */
 i32 SoundQueue::Pause() {
     if (this == NULL) {
         return 0;
@@ -99,9 +100,10 @@ i32 SoundQueue::Pause() {
     if (active == 0) {
         return 0;
     }
-    return SendCommand(5, 0);
+    return SendCommand(4, 0);
 }
 
+/* Command 5 restarts a paused buffer (resume). */
 i32 SoundQueue::Resume() {
     if (this == NULL) {
         return 0;
@@ -109,7 +111,7 @@ i32 SoundQueue::Resume() {
     if (active == 0) {
         return 0;
     }
-    return SendCommand(4, 0);
+    return SendCommand(5, 0);
 }
 
 i32 SoundQueue::SetVolume(i32 volume) {
@@ -205,18 +207,18 @@ extern "C" void __cdecl NuSound3StopStereoStream(i32 index) {
     NuSound3StereoStreams[index]->Stop();
 }
 
-extern "C" void __cdecl NuSound3PauseStereoStream(i32 index) {
-    if (index != 0) {
-        index = 1;
-    }
-    NuSound3StereoStreams[index]->Pause();
-}
-
 extern "C" void __cdecl NuSound3ResumeStereoStream(i32 index) {
     if (index != 0) {
         index = 1;
     }
     NuSound3StereoStreams[index]->Resume();
+}
+
+extern "C" void __cdecl NuSound3PauseStereoStream(i32 index) {
+    if (index != 0) {
+        index = 1;
+    }
+    NuSound3StereoStreams[index]->Pause();
 }
 
 extern "C" i32 __cdecl NuSound3SetStreamVolume(i32 index, i32 volume) {

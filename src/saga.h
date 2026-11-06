@@ -17139,10 +17139,10 @@ class NuMusic {
     void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
     i32 PauseTrack(u32 class_mask);
     i32 ResumeTrack(u32 class_mask);
-    bool SelectTrackByHandle(u32 class_mask, i32 handle);
+    i32 SelectTrackByHandle(u32 class_mask, i32 handle);
     i32 GetTrackHandle(u32 class_mask, const char *name);
     i32 GetStatus(u32 class_mask, i32 *per_class_status);
-    bool SelectTrack(u32 class_mask, const char *name);
+    i32 SelectTrack(u32 class_mask, const char *name);
     Voice *FindVoiceByTrack(Track *track);
     Voice *FindVoiceByClass(u32 class_mask);
     Voice *FindVoiceByClassAndStatus(u32 class_mask, u32 status);

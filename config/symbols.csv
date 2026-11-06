@@ -8109,7 +8109,7 @@ address,symbol,size,ctype
 0x694030,?StopTrack@NuMusic@@QAEHIH@Z,194,"i32 __thiscall (NuMusic *, u32, i32)"
 0x00694100,?PauseTrack@NuMusic@@QAEHI@Z,157,"i32 __thiscall (NuMusic *, u32)"
 0x006941a0,?ResumeTrack@NuMusic@@QAEHI@Z,147,"i32 __thiscall (NuMusic *, u32)"
-0x00694240,?SelectTrackByHandle@NuMusic@@QAE_NIH@Z,212,"bool __thiscall (NuMusic *, u32, i32)"
+0x00694240,?SelectTrackByHandle@NuMusic@@QAEHIH@Z,212,"i32 __thiscall (NuMusic *, u32, i32)"
 0x00694320,?GetTrackHandle@NuMusic@@QAEHIPBD@Z,358,"i32 __thiscall (NuMusic *, u32, const char *)"
 0x00694490,?GetStatus@NuMusic@@QAEHIPAH@Z,191,"i32 __thiscall (NuMusic *, u32, i32 *)"
 0x694570,?GlobalParseErrorFn@NuMusic@@SAXPAUnufpar_pc_s@@@Z,31,static void  __cdecl NuMusic::GlobalParseErrorFn(NUFPAR_PC *)
@@ -8146,7 +8146,7 @@ address,symbol,size,ctype
 0x00695ef0,?SetTrackEntryTimeByClass@NuMusic@@QAEHIM@Z,100,"i32 __thiscall (NuMusic *, u32, f32)"
 0x695f60,?CueTrack@NuMusic@@QAEHI@Z,223,"i32 __thiscall (NuMusic *, u32)"
 0x00696040,?PlayTrackI@NuMusic@@QAEHII@Z,294,"i32 __thiscall (NuMusic *, u32, u32)"
-0x00696170,?SelectTrack@NuMusic@@QAE_NIPBD@Z,52,"bool __thiscall (NuMusic *, u32, const char *)"
+0x00696170,?SelectTrack@NuMusic@@QAEHIPBD@Z,52,"i32 __thiscall (NuMusic *, u32, const char *)"
 0x6961b0,?xsIndex@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,57,"static void  __cdecl NuMusic::xsIndex(NUFPAR_PC *,void *)"
 0x6961f0,?xsNoDuck@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,12,"static void  __cdecl NuMusic::xsNoDuck(NUFPAR_PC *,void *)"
 0x696200,?xsLooping@NuMusic@@SAXPAUnufpar_pc_s@@PAX@Z,12,"static void  __cdecl NuMusic::xsLooping(NUFPAR_PC *,void *)"
@@ -8214,8 +8214,8 @@ address,symbol,size,ctype
 0x698210,_PCSoundPlayPositionedWrapper,67,"void __cdecl(NUVEC *,i32,i32,i32,i32,f32,i32,f32,f32)"
 0x698260,_PCSoundPlayPositionedLoop,411,"void __cdecl(NUVEC *,i32,i32,i32,i32,f32,i32,f32,f32)"
 0x00698400,_NuSound3StopStereoStream,25,void __cdecl (i32)
-0x00698420,_NuSound3PauseStereoStream,25,void __cdecl (i32)
-0x00698440,_NuSound3ResumeStereoStream,25,void __cdecl (i32)
+0x00698420,_NuSound3ResumeStereoStream,25,void __cdecl (i32)
+0x00698440,_NuSound3PauseStereoStream,25,void __cdecl (i32)
 0x00698460,_NuSound3SetStreamVolume,72,"i32 __cdecl (i32, i32)"
 0x006984c0,_NuSound3GetStereoStreamStatus,25,i32 __cdecl (i32)
 0x698520,_PCStereoStartPacket,181,void __cdecl(PC_STEREO_PLAY_PACKET *)
@@ -8246,8 +8246,8 @@ address,symbol,size,ctype
 0x00699640,?SetStreamFile@SoundQueue@@QAEHPBDM@Z,68,"i32 __thiscall (SoundQueue *, const char *, f32)"
 0x00699690,?SetStreamFlags@SoundQueue@@QAEHH@Z,29,"i32 __thiscall (SoundQueue *, i32)"
 0x006996b0,?Stop@SoundQueue@@QAEHXZ,22,i32 __thiscall (SoundQueue *)
-0x006996d0,?Resume@SoundQueue@@QAEHXZ,22,i32 __thiscall (SoundQueue *)
-0x006996f0,?Pause@SoundQueue@@QAEHXZ,22,i32 __thiscall (SoundQueue *)
+0x006996d0,?Pause@SoundQueue@@QAEHXZ,22,i32 __thiscall (SoundQueue *)
+0x006996f0,?Resume@SoundQueue@@QAEHXZ,22,i32 __thiscall (SoundQueue *)
 0x00699710,?SetVolume@SoundQueue@@QAEHH@Z,82,"i32 __thiscall (SoundQueue *, i32)"
 0x00699770,?IsStreamIdle@SoundQueue@@QAEHXZ,37,"i32 __thiscall (SoundQueue *, i32)"
 0x006997a0,?GetStatus@SoundQueue@@QAEHXZ,77,"i32 __thiscall (SoundQueue *, i32)"

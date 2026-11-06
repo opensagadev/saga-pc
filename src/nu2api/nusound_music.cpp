@@ -237,9 +237,7 @@ i32 NuMusic::PauseTrack(u32 class_mask) {
             if (tracks_to_pause[track_index] != NULL) {
                 voice = FindVoiceByTrack(tracks_to_pause[track_index]);
                 if (voice != NULL && (voice->status == 6 || voice->status == 7) && (voice->flags_word & 2) == 0) {
-                    /* The 0x698420/0x698440 symbol names are swapped relative to
-                       behaviour: retail pauses through the "Resume" entry. */
-                    NuSound3ResumeStereoStream(voice->stream_index * 2);
+                    NuSound3PauseStereoStream(voice->stream_index * 2);
                     voice->flags_word |= 2;
                     changed = 1;
                 }
@@ -266,7 +264,7 @@ i32 NuMusic::ResumeTrack(u32 class_mask) {
             if (tracks_to_resume[track_index] != NULL) {
                 voice = FindVoiceByTrack(tracks_to_resume[track_index]);
                 if (voice != NULL && (voice->status == 6 || voice->status == 7) && (voice->flags_word & 2) != 0) {
-                    NuSound3PauseStereoStream(voice->stream_index * 2);
+                    NuSound3ResumeStereoStream(voice->stream_index * 2);
                     voice->flags_word &= ~2U;
                     changed = 1;
                 }
@@ -276,15 +274,15 @@ i32 NuMusic::ResumeTrack(u32 class_mask) {
     return changed;
 }
 
-bool NuMusic::SelectTrack(u32 class_mask, const char *name) {
+i32 NuMusic::SelectTrack(u32 class_mask, const char *name) {
     if (this == NULL)
-        return false;
+        return 0;
     if (the_music_player == NULL)
-        return false;
+        return 0;
     return SelectTrackByHandle(class_mask, GetTrackHandle(class_mask, name));
 }
 
-bool NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
+i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
     i32 class_index;
     i32 handle_album_index;
     i32 track_index;
@@ -299,12 +297,12 @@ bool NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
                 if (handle_album_index == (i32)(selected_album - albums)) {
                     if (track_index >= 0 && track_index < selected_album->tracks_count) {
                         selected_album->tracks[class_index] = &selected_album->tracks_source[track_index];
-                        return true;
+                        return 1;
                     }
                 } else if (handle_album_index == album_count) {
                     if (track_index >= 0 && track_index < extra_track_count) {
                         selected_album->tracks[class_index] = &extra_tracks[track_index];
-                        return true;
+                        return 1;
                     }
                 }
             } else {
@@ -313,7 +311,7 @@ bool NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
             }
         }
     }
-    return false;
+    return 0;
 }
 
 /* Empty diagnostic hook; retail calls it with the track name when a name lookup fails. */
@@ -645,7 +643,7 @@ void NuMusic::Process(f32 delta) {
                             voice->play_time = 0.0f;
                         }
                     } else {
-                        NuSound3ResumeStereoStream(voice->stream_index * 2);
+                        NuSound3PauseStereoStream(voice->stream_index * 2);
                         if (voice->status != 3) {
                             voice->status = 3;
                             voice->play_time = 0.0f;
@@ -1203,7 +1201,7 @@ i32 NuMusic::Voice::Play(void) {
     if (NuSound3GetStereoStreamStatus(stream_index * 2) == 0 && status == 3)
         status = 1;
     if (status == 3) {
-        NuSound3PauseStereoStream(stream_index * 2);
+        NuSound3ResumeStereoStream(stream_index * 2);
         if (status != 6) {
             play_time = 0.0f;
             status = 6;
