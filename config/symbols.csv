@@ -938,6 +938,19 @@ address,symbol,size,ctype
 0x457ec0,_CurrentHintAlpha,145,
 0x457f70,_DrawHint_LSW,1217,"void __cdecl (HINT_PC *, i32)"
 0x458440,_initGameHintSys_LSW,33,void __cdecl(void)
+0x00458490,_StatusCoinsRatioAltPc,54,"f32 __cdecl(f32, f32)"
+0x004584f0,_ResetStatusPacket_Alt,13,void __cdecl(STATUSPACKET_s *)
+0x00458ec0,_TrueHero_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x00459af0,_MiniKit_Alt_Skip,91,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045a520,_AllMiniKits_Alt_Skip,27,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045a540,_AllMiniKits_Alt_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045a8e0,_RedBrick_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045ba40,_GoldBrick_Alt_Skip,21,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045c580,_Prompt_Alt_Update,531,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045c8b0,_Stage5_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045d380,_LevelComplete_Alt_Skip,66,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045df20,_BonusComplete_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
+0x0045e140,_Exit_Alt_Update,102,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045e370,?StatusCoinsRatioPc@@YAMMM@Z,54,"static f32 __cdecl(f32, f32)"
 0x0045e3d0,_ResetStatusPacket_LSW,13,void __cdecl(STATUSPACKET_s *)
 0x0045e3e0,_InitStatusScreen_LSW,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *)"
