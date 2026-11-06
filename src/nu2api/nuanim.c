@@ -2128,60 +2128,37 @@ STATIC_ASSERT(sizeof(NuAnimData2RelocHeader_PC) == 24);
 
 void *__cdecl NuAnimData2FixPtrs(void *data, i32 delta, i32 external_delta, i32 flags) {
     NuAnimData2RelocHeader_PC *anim;
-    u32 word;
+    NuAnimData2RelocCurve_PC *slot;
+    NuAnimData2RelocKeys_PC *curve;
     i32 curve_count;
     i32 curve_index;
 
     if (NuAnimDataBitCountInitialized == 0)
         buildBitCountTable();
-    anim = data == NULL ? NULL : (NuAnimData2RelocHeader_PC *)((u32)data + (u32)delta);
-    if (anim == NULL)
-        return NULL;
-
-    if (anim->magic == 0x414e4934 || anim->magic == 0x414e4935) {
-        if (external_delta != 0)
-            ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, delta, flags);
-        else
-            ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, (i32)anim, flags);
-    } else {
-        word = anim->curves;
-        if (word != 0)
-            word += (u32)delta;
-        anim->curves = word;
-        word = anim->curve_types;
-        if (word != 0)
-            word += (u32)delta;
-        anim->curve_types = word;
-        word = anim->node_flags;
-        if (word != 0)
-            word += (u32)delta;
-        curve_count = (i32)anim->node_count;
-        curve_count *= (i32)anim->curve_count;
-        anim->node_flags = word;
+    anim = (NuAnimData2RelocHeader_PC *)data;
+    anim = anim != NULL ? (NuAnimData2RelocHeader_PC *)((u32)anim + (u32)delta) : NULL;
+    if (anim != NULL) {
+        if ((i32)anim->magic >= 0x414e4934 && (i32)anim->magic <= 0x414e4935) {
+            if (external_delta != 0)
+                ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, delta, flags);
+            else
+                ANI_FixUpAddrs((ANI3_HEADER_PC *)anim, (i32)anim, flags);
+            return anim;
+        }
+        anim->curves = anim->curves != 0 ? anim->curves + (u32)delta : 0;
+        anim->curve_types = anim->curve_types != 0 ? anim->curve_types + (u32)delta : 0;
+        anim->node_flags = anim->node_flags != 0 ? anim->node_flags + (u32)delta : 0;
+        curve_count = (i32)anim->node_count * (i32)anim->curve_count;
         for (curve_index = 0; curve_index < curve_count; ++curve_index) {
             if (*((u8 *)(anim->curve_types + (u32)curve_index)) != 0) {
-                NuAnimData2RelocCurve_PC *slot =
-                    (NuAnimData2RelocCurve_PC *)(anim->curves + (u32)curve_index * sizeof(NuAnimData2RelocCurve_PC));
-                NuAnimData2RelocKeys_PC *curve;
-                word = slot->curve_data;
-                if (word != 0)
-                    word += (u32)delta;
-                slot->curve_data = word;
-                curve = (NuAnimData2RelocKeys_PC *)word;
-                word = curve->key_mask;
-                if (word != 0)
-                    word += (u32)delta;
-                curve->key_mask = word;
+                slot = (NuAnimData2RelocCurve_PC *)(anim->curves + (u32)curve_index * sizeof(NuAnimData2RelocCurve_PC));
+                slot->curve_data = slot->curve_data != 0 ? slot->curve_data + (u32)delta : 0;
                 curve = (NuAnimData2RelocKeys_PC *)slot->curve_data;
-                word = curve->key_offsets;
-                if (word != 0)
-                    word += (u32)delta;
-                curve->key_offsets = word;
+                curve->key_mask = curve->key_mask != 0 ? curve->key_mask + (u32)delta : 0;
                 curve = (NuAnimData2RelocKeys_PC *)slot->curve_data;
-                word = curve->key_data;
-                if (word != 0)
-                    word += (u32)delta;
-                curve->key_data = word;
+                curve->key_offsets = curve->key_offsets != 0 ? curve->key_offsets + (u32)delta : 0;
+                curve = (NuAnimData2RelocKeys_PC *)slot->curve_data;
+                curve->key_data = curve->key_data != 0 ? curve->key_data + (u32)delta : 0;
             }
         }
     }
