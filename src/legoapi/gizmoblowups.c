@@ -1797,8 +1797,7 @@ void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_tim
     NUSPECIALHANDLE *special;
     NUINSTANIM_TIME_VIEW *animation;
     NUMTX animated_matrix, draw_matrix;
-    f32 end_frame, frame, difference, reflection_height;
-    f64 accumulated_frame;
+    f32 end_frame, frame, reflection_height;
     i32 type_index, instance_index, drawn;
     for (type_index = 0; type_index < world->gizmo_blowup_type_count; ++type_index) {
         type = type_instances->type;
@@ -1823,18 +1822,17 @@ void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_tim
             if (animation != NULL && (blowup->status_flags & 0x80000)) {
                 end_frame = NuAnimEndFrameOld((ANI3_HEADER_PC *)((NUGSCN *)blowup->type->animated_special.scene)
                                                   ->instance_animation_data[animation->animation_index]);
-                accumulated_frame = (f64)blowup->type->animation_base_frame + blowup->animation_offset;
-                if (accumulated_frame > end_frame) {
-                    difference = (f32)(accumulated_frame - end_frame);
-                    frame = (f32)((f64)difference + ((BLOWUP_ANIM_FIRST_DRAW_PC *)animation)->first_frame);
+                frame = blowup->type->animation_base_frame;
+                if (blowup->animation_offset + frame > end_frame) {
+                    end_frame = blowup->animation_offset + frame - end_frame;
+                    frame = end_frame + ((BLOWUP_ANIM_FIRST_DRAW_PC *)animation)->first_frame;
                 } else
-                    frame = (f32)accumulated_frame;
+                    frame = blowup->animation_offset + frame;
                 if (blowup->type->animation_flags & 0x2000)
                     EvalAnim(special, frame, &animated_matrix, 1);
                 else {
-                    if (!(blowup->status_flags & 0x400000))
-                        frame = blowup->animation_time;
-                    EvalAnim(special, frame, &animated_matrix, 0);
+                    EvalAnim(special, (blowup->status_flags & 0x400000) ? frame : blowup->animation_time,
+                             &animated_matrix, 0);
                     NuMtxMulVU0(&animated_matrix, &animated_matrix, &blowup->transform);
                 }
                 drawn = NuSpecialDrawAt(special, &animated_matrix);
@@ -1852,7 +1850,7 @@ void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_tim
                                                 1, NULL);
             }
             ResetShadowMapRendering();
-            if ((blowup->status_flags & 0x808000) == 0x808000 && (blowup->draw_flags & 0x10) &&
+            if ((blowup->status_flags & 0x800000) && (blowup->status_flags & 0x8000) && (blowup->draw_flags & 0x10) &&
                 GizmoBlowup_TransformDrawFn != NULL)
                 GizmoBlowup_TransformDrawFn(blowup);
             if (blowup->draw_flags & 0x40000000) {
