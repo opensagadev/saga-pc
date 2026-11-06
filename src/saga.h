@@ -18836,10 +18836,10 @@ extern "C" {
     extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc;
     extern i32 PcIntelShaderFallback;
     extern u8 PcCapsConfigured;
-    extern u8 PcKeyQueueHead;
-    extern u8 PcKeyQueueTail;
-    extern u8 PcKeyQueueScanCodes[256];
-    extern u8 PcKeyQueueModifiers[256];
+    extern volatile u8 PcKeyQueueHead;
+    extern volatile u8 PcKeyQueueTail;
+    extern volatile u8 PcKeyQueueScanCodes[256];
+    extern volatile u8 PcKeyQueueModifiers[256];
     extern u8 PcPressedScanCodes[256];
     extern u32 NuHwParameter19Pc;
     extern WNDCLASSEXA PcWindowClass;

@@ -898,10 +898,10 @@ extern "C" {
     CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc = NULL;
     i32 PcIntelShaderFallback = 0;
     u8 PcCapsConfigured = 0;
-    u8 PcKeyQueueHead = 0;
-    u8 PcKeyQueueTail = 0;
-    u8 PcKeyQueueScanCodes[256] = {0};
-    u8 PcKeyQueueModifiers[256] = {0};
+    volatile u8 PcKeyQueueHead = 0;
+    volatile u8 PcKeyQueueTail = 0;
+    volatile u8 PcKeyQueueScanCodes[256] = {0};
+    volatile u8 PcKeyQueueModifiers[256] = {0};
     u8 PcPressedScanCodes[256] = {0};
     u32 NuHwParameter19Pc = 0;
     WNDCLASSEXA PcWindowClass = {0};
