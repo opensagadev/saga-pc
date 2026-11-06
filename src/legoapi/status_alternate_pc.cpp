@@ -112,6 +112,13 @@ extern "C" {
 
     f32 StatusAltTextScalePc = StatusAltScalePc;
 
+    /* Retail keeps an out-of-line copy at 0x458470; the draws inline it. */
+    f32 __cdecl StatusAltFabsPc(f32 value) {
+        i32 bits = *(i32 *)&value;
+        bits &= 0x7fffffff;
+        return *(f32 *)&bits;
+    }
+
     f32 __cdecl StatusCoinsRatioAltPc(f32 numerator, f32 denominator) {
         if (numerator == 0.0f || denominator == 0.0f)
             return 0.0f;
@@ -445,6 +452,93 @@ extern "C" {
         return 0;
     }
 
+    /* Unreferenced in retail: the three-panel variant of DrawStatusBG_Alt. It slides the
+       previous, current and next stage panels along x and seeks the shared zoom. */
+    void __cdecl StatusAltDrawStagePanelsPc(STATUSPACKET_s *packet) {
+        NUMTX mtx;
+        STATUS_STAGE_s *stage;
+        f32 x;
+        f32 w;
+        f32 speed;
+        f32 previous_x;
+        f32 previous_2_x;
+        NuMtxSetIdentity(&mtx);
+        if (packet == NULL || packet->stage == NULL)
+            return;
+        if (packet->stage->field_0x14 == -1) {
+            packet->stage->field_0x18 += FRAMETIME;
+            stage = packet->stage;
+            if (stage->field_0x18 < 1.0f) {
+                x = StatusAltGridStepXPc;
+                if (StatusAltZoomPc == 1.5f)
+                    stage->field_0x18 = 1.0f;
+                else {
+                    speed = 1.0 - ((f64)NuTrigTable[((i32)((f64)stage->field_0x18 * 32768.0 + 16384.0) >> 1) & 0x7fff] +
+                                   1.0) *
+                                      0.5;
+                    speed = (f64)speed * 0.25;
+                    StatusAltZoomPc = SeekLinearF(StatusAltZoomPc, 1.5f, speed);
+                }
+            } else {
+                if (stage->field_0x18 < 2.0f) {
+                    w = stage->field_0x18 - 1.0f;
+                    w = 1.0f - w;
+                    x = NuTrigTable[((i32)((f64)w * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
+                    x = ((f64)StatusAltGridStepXPc + (f64)0.1f) * (f64)x - (f64)0.1f;
+                } else if (stage->field_0x18 < 2.1f && (packet->field_0xb0 & 2) == 0) {
+                    w = (f64)stage->field_0x18 - 2.0;
+                    w = 1.0 - (f64)w / (f64)0.1f;
+                    x = (f64)NuTrigTable[((i32)((f64)w * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] * -(f64)0.1f;
+                } else if (stage->field_0x18 < 3.1f && (packet->field_0xb0 & 2) == 0) {
+                    speed = (f64)stage->field_0x18 - (f64)2.1f;
+                    x = 0.0f;
+                    if (StatusAltZoomPc == 1.1f)
+                        stage->field_0x18 = 3.1f;
+                    else {
+                        speed =
+                            1.0 - ((f64)NuTrigTable[((i32)((f64)speed * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5;
+                        speed = (f64)speed * 0.25;
+                        StatusAltZoomPc = SeekLinearF(StatusAltZoomPc, 1.1f, speed);
+                    }
+                } else {
+                    stage->field_0x18 = 0.0f;
+                    packet->stage->field_0x14 = 0;
+                    packet->previous_stage_2 = NULL;
+                    x = 0.0f;
+                }
+            }
+            stage = packet->stage;
+            previous_x = x - StatusAltGridStepXPc;
+            previous_2_x = previous_x - StatusAltGridStepXPc;
+            DrawPanel3DObjectNoAlpha(x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                                     &WORLD->level_objects[(i16)stage->field_0x10].special, 0);
+            if (packet->previous_stage_2 != NULL)
+                DrawPanel3DObjectNoAlpha(previous_2_x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0,
+                                         0, &WORLD->level_objects[(i16)packet->previous_stage_2->field_0x10].special,
+                                         0);
+            if (packet->previous_stage != NULL)
+                DrawPanel3DObjectNoAlpha(previous_x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                                         &WORLD->level_objects[(i16)packet->previous_stage->field_0x10].special, 0);
+            if (packet->next_stage != NULL) {
+                x = StatusAltGridStepXPc + x;
+                DrawPanel3DObjectNoAlpha(x, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                                         &WORLD->level_objects[(i16)packet->next_stage->field_0x10].special, 0);
+            }
+        } else {
+            if (packet->previous_stage != NULL)
+                DrawPanel3DObjectNoAlpha(-StatusAltGridStepXPc, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f,
+                                         0xc000, 0, 0,
+                                         &WORLD->level_objects[(i16)packet->previous_stage->field_0x10].special, 0);
+            if (packet->stage != NULL)
+                DrawPanel3DObjectNoAlpha(0.0f, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
+                                         &WORLD->level_objects[(i16)packet->stage->field_0x10].special, 0);
+            if (packet->next_stage != NULL)
+                DrawPanel3DObjectNoAlpha(StatusAltGridStepXPc, StatusAlt7f8254Pc, StatusAltZoomPc, 3.0f, 3.0f, 3.0f,
+                                         0xc000, 0, 0,
+                                         &WORLD->level_objects[(i16)packet->next_stage->field_0x10].special, 0);
+        }
+    }
+
     void __cdecl DrawStatusBG_Alt(STATUSPACKET_s *packet) {
         i32 selected = -1;
         f32 w;
@@ -502,6 +596,10 @@ extern "C" {
             packet->stage->field_0x14 = 0;
             packet->previous_stage_2 = NULL;
         }
+    }
+
+    /* 0x457f60: LoadPermData calls this right after Alt_registerStatusScreen; retail's body is empty. */
+    void __cdecl Alt_registerStatusScreenExtraPc(void) {
     }
 
     void __cdecl Alt_registerStatusScreen(void) {

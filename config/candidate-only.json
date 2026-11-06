@@ -1308,11 +1308,6 @@
   },
   {
    "unit": "src/legoapi/screen.cpp",
-   "symbol": "?StatusFabsPc@@YAMM@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/screen.cpp",
    "symbol": "?StatusLerpPc@@YAMMMM@Z",
    "kind": "function"
   },
