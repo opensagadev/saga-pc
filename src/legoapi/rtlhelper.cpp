@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Real-time light editor class glue. The retail rtl unit is C++: these are the
  * EdClassInterface implementation for the light set (RTLHelper) that sits
@@ -13,6 +14,11 @@ extern "C" {
     void __cdecl rtlFree(RTL_LIGHT_PC *light);
     void __cdecl fogFree(RTL_FOG_MIGRATION_PC *fog);
 }
+
+STATIC_ASSERT(RTL_EDITOR_SET_SIZE_PC == 0x6fac);
+STATIC_ASSERT(offsetof(RTL_LIGHT_PC, led_file) == 0x80);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, led_file) == 0x38);
+STATIC_ASSERT(offsetof(RTL_FOG_MIGRATION_PC, density_wii) == 0x3c);
 
 class RTLHelper : public EdClassInterface {
   public:
@@ -313,6 +319,213 @@ found:
         fog->led_file = Placeable::CurrentLedFile;
     }
     return fog;
+}
+
+/* Editor member references into a light. member_offset carries a pseudo id
+ * (0x80000002 up) instead of a byte offset. */
+struct EdRefRTL : public EdRef {
+    virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
+    virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
+};
+
+void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) {
+    RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000002:
+            sprintf(static_cast<char *>(data), "Light%d", light - curr_set->lights);
+            break;
+        case 0x80000003: {
+            NUMTX *matrix = static_cast<NUMTX *>(data);
+            RtlHelperCopyMtx(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+            matrix->translation = light->position;
+            NuMtxAlignZ(matrix, &light->direction);
+            break;
+        }
+        case 0x80000004:
+            *static_cast<i32 *>(data) = light->type;
+            break;
+        case 0x80000005:
+            *static_cast<i32 *>(data) = light->flags & 1;
+            break;
+        case 0x80000006:
+            *static_cast<i32 *>(data) = (light->flags >> 1) & 1;
+            break;
+        case 0x80000007:
+            *static_cast<i32 *>(data) = (light->flags >> 2) & 1;
+            break;
+        case 0x80000008:
+            *static_cast<f32 *>(data) = light->inner_radius;
+            break;
+        case 0x80000009:
+            *static_cast<f32 *>(data) = light->outer_radius;
+            break;
+        case 0x8000000a:
+            *static_cast<i32 *>(data) = static_cast<u16>(light->field_5e);
+            break;
+        case 0x8000000b:
+            *static_cast<i32 *>(data) = static_cast<u16>(light->field_60);
+            break;
+        case 0x8000000c:
+            *static_cast<i32 *>(data) = light->field_68;
+            break;
+        case 0x8000000d:
+            *static_cast<i32 *>(data) = light->group_id;
+            break;
+        case 0x8000000e:
+            *static_cast<i32 *>(data) = light->field_7b;
+            break;
+    }
+}
+
+void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, i16 *) {
+    RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
+    f32 radius;
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000003: {
+            NUMTX *matrix = static_cast<NUMTX *>(data);
+            light->position = matrix->translation;
+            light->direction = *reinterpret_cast<NUVEC *>(&matrix->m20);
+            break;
+        }
+        case 0x80000004:
+            light->type = *static_cast<u8 *>(data);
+            break;
+        case 0x80000005:
+            light->flags = light->flags & ~1 | *static_cast<u8 *>(data) & 1;
+            break;
+        case 0x80000006:
+            light->flags = light->flags & ~2 | (*static_cast<u8 *>(data) & 1) << 1;
+            break;
+        case 0x80000007:
+            light->flags = light->flags & ~4 | (*static_cast<u8 *>(data) & 1) << 2;
+            break;
+        case 0x80000008:
+            if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f))
+                *static_cast<f32 *>(data) = 0.1f;
+            radius = *static_cast<f32 *>(data);
+            light->inner_radius = radius;
+            if (light->outer_radius < radius)
+                light->outer_radius = radius;
+            break;
+        case 0x80000009:
+            if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f))
+                *static_cast<f32 *>(data) = 0.1f;
+            radius = *static_cast<f32 *>(data);
+            light->outer_radius = radius;
+            if (light->inner_radius > radius)
+                light->inner_radius = radius;
+            break;
+        case 0x8000000a:
+            light->field_5e = *static_cast<i16 *>(data);
+            light->field_60 &= ~light->field_5e;
+            break;
+        case 0x8000000b:
+            light->field_60 = *static_cast<i16 *>(data);
+            light->field_5e &= ~light->field_60;
+            break;
+        case 0x8000000c:
+            light->field_68 = *static_cast<u16 *>(data);
+            break;
+        case 0x8000000d:
+            light->group_id = *static_cast<u8 *>(data);
+            break;
+        case 0x8000000e:
+            light->field_7b = *static_cast<i8 *>(data);
+            break;
+    }
+}
+
+/* Editor member references into a fog zone; colours are edited as 0..1
+ * vectors, alphas and the low-quality density as 0..1 against 128. */
+struct EdRefFog : public EdRef {
+    virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
+    virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
+};
+
+void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) {
+    RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000002:
+            sprintf(static_cast<char *>(data), "Fog%d", fog - RTLHELPER_FOGS(curr_set));
+            break;
+        case 0x80000003: {
+            NUVEC *colour = static_cast<NUVEC *>(data);
+            u8 *bytes = reinterpret_cast<u8 *>(&fog->colour);
+            colour->x = bytes[0] * (1.0f / 255.0f);
+            colour->y = bytes[1] * (1.0f / 255.0f);
+            colour->z = bytes[2] * (1.0f / 255.0f);
+            break;
+        }
+        case 0x80000004:
+            *static_cast<f32 *>(data) = reinterpret_cast<u8 *>(&fog->colour)[3] * (1.0f / 128.0f);
+            break;
+        case 0x80000005: {
+            NUVEC *colour = static_cast<NUVEC *>(data);
+            u8 *bytes = reinterpret_cast<u8 *>(&fog->low_quality_colour);
+            colour->x = bytes[0] * (1.0f / 255.0f);
+            colour->y = bytes[1] * (1.0f / 255.0f);
+            colour->z = (1.0f / 255.0f) * bytes[2];
+            break;
+        }
+        case 0x80000006:
+            *static_cast<f32 *>(data) = reinterpret_cast<u8 *>(&fog->low_quality_colour)[3] * (1.0f / 128.0f);
+            break;
+        case 0x80000007:
+            *static_cast<f32 *>(data) = fog->low_quality_density * (1.0f / 128.0f);
+            break;
+        case 0x80000008:
+            *static_cast<f32 *>(data) = fog->depth_of_field_fstop * 0.1f;
+            break;
+        case 0x80000009:
+            *static_cast<NUVEC *>(data) = fog->position;
+            break;
+    }
+}
+
+void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, i16 *) {
+    RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000003: {
+            NUVEC *colour = static_cast<NUVEC *>(data);
+            fog->colour =
+                (fog->colour & 0xff000000) |
+                (((static_cast<u32>(colour->z * 255.0f) & 0xff) << 8 | (static_cast<u32>(colour->y * 255.0f) & 0xff))
+                 << 8) |
+                (static_cast<u32>(colour->x * 255.0f) & 0xff);
+            break;
+        }
+        case 0x80000004:
+            reinterpret_cast<u8 *>(&fog->colour)[3] = 0;
+            fog->colour |= static_cast<u32>(*static_cast<f32 *>(data) * 128.0f) << 24;
+            break;
+        case 0x80000005: {
+            NUVEC *colour = static_cast<NUVEC *>(data);
+            fog->low_quality_colour =
+                (fog->low_quality_colour & 0xff000000) |
+                (((static_cast<u32>(colour->z * 255.0f) & 0xff) << 8 | (static_cast<u32>(colour->y * 255.0f) & 0xff))
+                 << 8) |
+                (static_cast<u32>(colour->x * 255.0f) & 0xff);
+
+            break;
+        }
+        case 0x80000006:
+            reinterpret_cast<u8 *>(&fog->low_quality_colour)[3] = 0;
+            fog->low_quality_colour |= static_cast<u32>(*static_cast<f32 *>(data) * 128.0f) << 24;
+            break;
+        case 0x80000007:
+            fog->low_quality_density = static_cast<i32>(*static_cast<f32 *>(data) * 128.0f);
+            break;
+        case 0x80000008:
+            fog->depth_of_field_fstop = static_cast<u8>(*static_cast<f32 *>(data) * 10.0f);
+            break;
+        case 0x80000009:
+            fog->position = *static_cast<NUVEC *>(data);
+            break;
+    }
 }
 
 EdControl::~EdControl() {

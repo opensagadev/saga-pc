@@ -265,6 +265,30 @@ Placeable::~Placeable() {
 void EdTrace(const char *, ...) {
 }
 
+/* Layouts of the editor classes declared in saga.h, checked here rather than
+ * in the header (assert typedefs there shift codegen in unrelated units). */
+STATIC_ASSERT(sizeof(EdString) == 4);
+STATIC_ASSERT(sizeof(Placeable) == 0x18);
+STATIC_ASSERT(offsetof(Placeable, scene_id) == 0x4);
+STATIC_ASSERT(offsetof(Placeable, led_file) == 0x6);
+STATIC_ASSERT(offsetof(Placeable, attributes) == 0x8);
+STATIC_ASSERT(offsetof(Placeable, name) == 0xc);
+STATIC_ASSERT(offsetof(Placeable, params) == 0x10);
+STATIC_ASSERT(sizeof(EdType) == 0xc);
+STATIC_ASSERT(offsetof(EdType, serialise) == 0x8);
+STATIC_ASSERT(sizeof(EdDefunctList) == 0xc);
+STATIC_ASSERT(sizeof(EdRegistry) == 0x44);
+STATIC_ASSERT(offsetof(EdRegistry, types) == 0x4);
+STATIC_ASSERT(offsetof(EdRegistry, type_count) == 0x1c);
+STATIC_ASSERT(offsetof(EdRegistry, defunct_objects) == 0x38);
+STATIC_ASSERT(sizeof(EdRef) == 0x28);
+STATIC_ASSERT(offsetof(EdRef, next) == 0x4);
+STATIC_ASSERT(offsetof(EdRef, type_id) == 0xc);
+STATIC_ASSERT(offsetof(EdRef, member_offset) == 0x14);
+STATIC_ASSERT(offsetof(EdRef, size) == 0x18);
+STATIC_ASSERT(offsetof(EdRef, attributes) == 0x1c);
+STATIC_ASSERT(offsetof(EdRef, replication_group) == 0x24);
+
 EdRegistry theRegistry;
 i32 EdType_VuVec;
 i32 EdType_VuMtx;

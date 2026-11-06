@@ -7198,6 +7198,7 @@ address,symbol,size,ctype
 0x634600,??1RTLHelper@@UAE@XZ,7,
 0x634610,??0FogHelper@@QAE@XZ,16,
 0x634620,??1FogHelper@@UAE@XZ,7,
+0x634670,?SetMemberData@EdRefRTL@@UAEXPAXH0HPAF@Z,456,
 0x634840,?Flush@RTLHelper@@UAEXXZ,8,
 0x634850,?GetNumObjects@RTLHelper@@UAEHXZ,73,
 0x6348a0,?GetNextObject@RTLHelper@@UAEPAXPAX@Z,121,
@@ -7207,6 +7208,8 @@ address,symbol,size,ctype
 0x634ea0,?PostLoadInitialisation@RTLHelper@@UAEXPAUMemoryBuffer@@0@Z,13,
 0x634eb0,?PreSaveInitialisation@RTLHelper@@UAEXXZ,9,
 0x634ec0,?PostSaveInitialisation@RTLHelper@@UAEXXZ,11,
+0x634f10,?GetMemberData@EdRefFog@@UAEXPAXH0H@Z,404,
+0x6350b0,?SetMemberData@EdRefFog@@UAEXPAXH0HPAF@Z,652,
 0x635340,?Flush@FogHelper@@UAEXXZ,1,
 0x635350,?GetNumObjects@FogHelper@@UAEHXZ,67,
 0x6353a0,?GetNextObject@FogHelper@@UAEPAXPAX@Z,116,
@@ -7373,6 +7376,7 @@ address,symbol,size,ctype
 0x63e0c0,??_GRTLHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x63e0e0,??_EFogHelper@@UAEPAXI@Z,,COFF weak alias of ??_GFogHelper@@UAEPAXI@Z; no independent body
 0x63e0e0,??_GFogHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x63e100,?GetMemberData@EdRefRTL@@UAEXPAXH0H@Z,396,
 0x63eb30,?CreateObject@RTLHelper@@UAEPAXPAXHH@Z,285,
 0x63ec50,?DestroyObject@RTLHelper@@UAEXPAXH@Z,14,
 0x63ec60,?Render@RTLHelper@@UAEXPAXH@Z,626,
@@ -17206,6 +17210,7 @@ address,symbol,size,ctype
 0x76b640,??_7EdBitControl@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b65c,??_7RTLHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b6dc,??_7FogHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b774,??_C@_05BFLILCKD@Fog?$CFd?$AA@,6,char []
 0x76b77c,__real@3ff33333,,
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
@@ -17291,6 +17296,7 @@ address,symbol,size,ctype
 0x76bcbc,??_C@_0BG@MFFBFAJN@Default?5Radius?3?5?$CF0?42f?$AA@,,const char[]
 0x76bcd4,??_C@_0O@DCHJGBMD@Used?3?5?$CFd?5?1?5?$CFd?$AA@,,const char[]
 0x76bce4,??_C@_0P@BDIIODKE@Burnout?5Editor?$AA@,,const char[]
+0x76bd6c,??_C@_07JNDIOAAP@Light?$CFd?$AA@,8,char []
 0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
 0x76bda8,??_C@_07MKNMKJLE@User?5ID?$AA@,,const char [8]
 0x76bdf8,??_C@_08NFMAFENF@Low?5Time?$AA@,,const char [9]
