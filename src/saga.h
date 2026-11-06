@@ -1268,7 +1268,7 @@ typedef struct AIANTINODE_PC {
     NUVEC special_position;
     i32 rotation;
     i32 rotation_offset;
-    u8 unknown_40[8];
+    f32 base_radius, base_height;
     u8 enabled;
     u8 game_flags;
     u8 type;

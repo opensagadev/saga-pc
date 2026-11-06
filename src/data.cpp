@@ -19281,6 +19281,10 @@ extern "C" {
 
 extern "C" {
     u8 AiLoadActivationDifficultyPc = 1;
+    u8 default_ngroup = 1;
+    u8 default_nacross = 2;
+    f32 default_xspacing = 0.4f;
+    f32 default_zspacing = 0.4f;
 }
 
 extern "C" {

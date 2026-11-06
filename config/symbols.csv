@@ -3331,11 +3331,13 @@ address,symbol,size,ctype
 0x520470,_InitFn_GetAICreatureOrigin,10,
 0x5204e0,_AiEditorChangeModePc,102,
 0x520600,_NuSpecialFindByPlatformID,163,
+0x520e10,_areaEditorCreateArea,131,
 0x520ee0,_areaEditorSaveData,256,
 0x521160,_AiEditorRenameAreaPc,146,
 0x521230,_AiEditorRenameAreaCancelPc,12,
 0x521240,_DrawAreaBox,1366,
 0x521800,_areaEditorDrawAreas,274,
+0x521920,_areaEditor_Enter,165,
 0x005219d0,_AiEditorCreateLocatorPc,95,EDLOCATOR_s * private EDI position / stack i32 direction
 0x521a30,_AiEditorCreateLocatorSetPc,84,
 0x521a90,_AiEditorDestroyLocatorSetPc,57,
@@ -3353,6 +3355,7 @@ address,symbol,size,ctype
 0x005224a0,_AiEditorPrevLocatorInSetPc,84,EDLOCATOR_s * private ESI set / EDX current
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
+0x522880,_aieditor_RegisterPathCnxType,150,
 0x522970,_pathEditor_CreateNode,140,
 0x522a00,_pathEditor_GetNearestNode,280,
 0x522b60,_pathEditor_GetNearestPathNode,202,
@@ -3368,10 +3371,12 @@ address,symbol,size,ctype
 0x5236d0,_pathEditorDrawConnectionInfo,1387,
 0x523c40,_pathEditorDrawPath,1343,
 0x524190,_pathEditorDrawPaths,273,
+0x5242b0,_pathEditor_CalcNodeIXs,106,
 0x524320,_pathEditor_UpdateNodesOnPlatforms,142,
 0x5243b0,_TestPointPathCheck,516,
 0x5245c0,_TestPointWithinPathCheckPc,582,"static compiler-private i32 (NUVEC *, EDAIPATHNODE_s *, EDAIPATHNODE_s *, f32 *, f32 *, i32 *, f32)"
 0x524900,_pathEditor_OnPathCheck,506,"void __cdecl (NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32)"
+0x524b00,_pathEditor_GetPath,98,
 0x524b70,_pathEditorDrawRoute,317,
 0x524cb0,?pathEditorCalcRouteIterator@@YAXPAUAIPATH_PC@@PAMPAEHHMH@Z,306,
 0x524df0,?pathEditorCalculateDistanceTable@@YAPAPAMPAUAIPATH_PC@@HPATvariptr_u@@1@Z,306,
@@ -3391,12 +3396,14 @@ address,symbol,size,ctype
 0x525b80,_pathEditor_DestroySharedNode,197,
 0x525c50,_pathEditor_ReleaseSharedNode,48,
 0x525c80,_pathEditor_SetSharedNode,42,
+0x525cb0,_pathEditor_Enter,1696,
 0x526350,_AiEditorRenameRoutePc,134,
 0x5263e0,_AiEditorRenameRouteCancelPc,12,
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
 0x5264d0,_AiEditorRouteUsersCancelPc,12,
 0x5264e0,_AiEditorSetRouteUsersPc,114,
 0x526560,_routeEditor_cbRouteUsers,327,
+0x5266b0,_routeEditor_AddToRoute,333,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUEDAIPATH_s@@PATvariptr_u@@2@Z,2382,
 0x527150,_AiEditorClearMainMenuPc,37,
 0x527180,_aieditor_cbDrawAllToggle,28,
@@ -3430,7 +3437,9 @@ address,symbol,size,ctype
 0x527de0,_antinodeEditor_DeleteAntinodeMenu,153,
 0x00527e80,_antinodeEditorDrawOnePc,394,
 0x00528010,_antinodeEditorDrawAntinodes,226,void __cdecl(void)
+0x528100,_antinodeEditor_Enter,257,
 0x528210,_antinodeEditorSaveData,567,
+0x528450,_CreateCreature,350,
 0x5285f0,_creatureEditorSaveData,1273,
 0x528af0,_creatureEditor_IsSelectable,53,
 0x00528b30,_creatureEditor_GetNearest,451,AI_EDITOR_CREATURE_SAVE_PC *__cdecl (i32)
@@ -3594,6 +3603,7 @@ address,symbol,size,ctype
 0x53b7b0,_pathEditor_MainMenu,1180,eduimenu_s *__cdecl (void)
 0x53bc50,_pathEditor_Process,2624,eduimenu_s *__cdecl (FRAME_PAD_PC *)
 0x53c690,_routeEditor_MainMenu,301,eduimenu_s *__cdecl (void)
+0x53c7c0,_routeEditor_Process,1313,
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -15459,6 +15469,7 @@ address,symbol,size,ctype
 0x7600a8,??_C@_0M@CBEGMLMN@Rename?5Path?$AA@,,char []
 0x7600b4,??_C@_09KJIDJHAF@Node?5Name?$AA@,,char []
 0x7600c0,??_C@_0M@LHMBEICA@Rename?5Node?$AA@,,char []
+0x7600cc,??_C@_09HNFPOLG@LevelPath?$AA@,,char []
 0x7600d8,??_C@_0L@OEJGLLFA@Route?5Name?$AA@,,char []
 0x7600e4,??_C@_0N@KCAGEFDP@Rename?5Route?$AA@,,char []
 0x7600f4,??_C@_0BD@DGAHFINH@Select?5route?5users?$AA@,,char []
@@ -21729,6 +21740,10 @@ address,symbol,size,ctype
 0x801c54,_default_path_radius,4,f32
 0x00801c58,_default_path_heighttol,4,f32
 0x801c5c,_AiLoadActivationDifficultyPc,,u8
+0x801c5d,_default_ngroup,,u8
+0x801c5e,_default_nacross,,u8
+0x801c60,_default_xspacing,,f32
+0x801c64,_default_zspacing,,f32
 0x801c68,_ai_usepackfile,,i32
 0x00801c6c,_ai_moveradius,4,f32
 0x801c70,_AiLevelPathName,,char *
