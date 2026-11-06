@@ -5001,6 +5001,7 @@ address,symbol,size,ctype
 0x58a9b0,_Missions_NumCompleted,138,"i32 __cdecl(MISSIONSYS_PC *, MISSION_SAVE_READER_PC *, i32)"
 0x58aa40,_Mission_FindTarget,107,"GAMEOBJECT *__cdecl(MISSIONSYS_PC *, u64 *)"
 0x58aab0,_Missions_PickupsOff,44,i32 __cdecl(MISSIONSYS_PC *)
+0x58aae0,_SpecialMovesConfigMissingPc,1,void __cdecl (char *)
 0x58ab10,_SpecialMove_ConfigParticipant,219,
 0x58abf0,_SpecialMoves_Configure,718,"void __cdecl(char*,VARIPTR*,VARIPTR*)"
 0x58aec0,_SpecialMove_GetAttackerAction,27,i32 __cdecl(i32)
