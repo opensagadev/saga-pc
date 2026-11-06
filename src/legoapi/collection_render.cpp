@@ -10,7 +10,7 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
     if (collection->list == NULL || ((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
         return;
     const i32 columns = collection->columns, count = collection->count;
-    if (columns == 0 || count == 0)
+    if (columns <= 0 || count <= 0)
         return;
     const i32 rows = count / columns + 1;
     if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
@@ -25,12 +25,13 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
             i32 found = 0;
             for (i32 row = 0; row < rows; ++row)
                 for (i32 col = 0; col < columns; ++col) {
-                    const i32 index = row * columns + col;
-                    if (found != 2 && index < count &&
-                        (collection->list[index].id == ids[0] || collection->list[index].id == ids[1])) {
-                        selected_x[found] = col;
-                        selected_y[found] = row;
-                        ++found;
+                    if (found != 2 && row * columns + col < count) {
+                        const i16 id = collection->list[row * columns + col].id;
+                        if (id == ids[0] || id == ids[1]) {
+                            selected_x[found] = col;
+                            selected_y[found] = row;
+                            ++found;
+                        }
                     }
                 }
         }
@@ -57,8 +58,14 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                             px += dx;
                             continue;
                         }
-                        if (model_index == 0 || model_index == 1) {
-                            frame = model_index == 0 ? LEGOOBJ_ICON_FRAME_BLUE : LEGOOBJ_ICON_FRAME_GREEN;
+                        if (model_index == 0) {
+                            frame = LEGOOBJ_ICON_FRAME_BLUE;
+                            opacity = (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) &
+                                                        0x7fff] *
+                                                .125 +
+                                            .375);
+                        } else if (model_index == 1) {
+                            frame = LEGOOBJ_ICON_FRAME_GREEN;
                             opacity = (f32)(NuTrigTable[((i32)(GlobalTimer.time_elapsed_mod_seconds * 65536.0) >> 1) &
                                                         0x7fff] *
                                                 .125 +
@@ -74,17 +81,20 @@ extern "C" void Collection_DrawPc(COLLECTION_BUILD_PC *collection, f32 x, f32 y,
                     if (opacity > 0.0f) {
                         u32 neighbours = 0;
                         for (i32 i = 0; i < 2; ++i) {
-                            if (selected_x[i] == -1 || selected_y[i] == -1)
-                                continue;
-                            const i32 cx = selected_x[i], cy = selected_y[i];
-                            if ((col == cx && (row == cy - 1 || row == cy + 1)) ||
-                                (row == cy && (col == cx - 1 || col == cx + 1)))
-                                neighbours |= 1;
-                            else if ((col == cx - 1 || col == cx + 1) && (row == cy - 1 || row == cy + 1))
-                                neighbours |= 2;
-                            else if ((col == cx && (row == cy - 2 || row == cy + 2)) ||
-                                     (row == cy && (col == cx - 2 || col == cx + 2)))
-                                neighbours |= 4;
+                            const i32 cx = selected_x[i];
+                            if (cx != -1) {
+                                const i32 cy = selected_y[i];
+                                if (cy != -1) {
+                                    if ((col == cx && (row == cy - 1 || row == cy + 1)) ||
+                                        (row == cy && (col == cx - 1 || col == cx + 1)))
+                                        neighbours |= 1;
+                                    else if ((col == cx - 1 || col == cx + 1) && (row == cy - 1 || row == cy + 1))
+                                        neighbours |= 2;
+                                    else if ((col == cx && (row == cy - 2 || row == cy + 2)) ||
+                                             (row == cy && (col == cx - 2 || col == cx + 2)))
+                                        neighbours |= 4;
+                                }
+                            }
                         }
                         if ((neighbours & 1) != 0)
                             opacity = (f32)(opacity * .3330000042915344);
