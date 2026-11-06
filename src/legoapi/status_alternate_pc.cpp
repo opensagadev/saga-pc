@@ -13,6 +13,8 @@ extern "C" {
     i32 __cdecl TriggerAutoSave(void);
     extern const char Text_UnknownText[];
     void __cdecl DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
+    extern f32 CoinTotalScoreSizePc, CoinTotalCoinOffsetPc;
+    extern i16 TextIdPc880778;
 
     f32 StatusAlt7f8214Pc = 1.2f;
     f32 StatusAltScalePc = 1.0f;
@@ -618,6 +620,132 @@ extern "C" {
         registration.draw_background_callback = DrawStatusBG_Alt;
         registration.stage_delay = 2.0f;
         RegisterStatusScreen(StatusStagesAltPc, StatusStageOrderAltPc, &registration);
+    }
+
+    /* Stage type 19. Draws the gold-brick title, the spinning brick and the brick count. */
+    void __cdecl GoldBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        f32 title_alpha, count_alpha, title_scale, brick_scale, count_scale;
+        u16 title_angle, count_angle, rotation;
+        i32 displayed;
+        if (current == 0 || stage->field_0x14 <= 0)
+            return;
+        brick_scale = 0.0f;
+        count_scale = 0.0f;
+        title_scale = 0.0f;
+        count_alpha = 0.0f;
+        title_alpha = 0.0f;
+        count_angle = 0;
+        title_angle = 0;
+        switch (stage->field_0x14) {
+            case 1:
+                brick_scale =
+                    1.0 - (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                       0x7fff] +
+                           1.0f) *
+                              0.5;
+                count_angle = 0;
+                title_angle = 0;
+                title_alpha = 0.0f;
+                title_scale = 0.0f;
+                count_alpha = 0.0f;
+                count_scale = 0.0f;
+                break;
+            case 2:
+                brick_scale = 1.0f;
+                title_alpha =
+                    1.0 - (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                       0x7fff] +
+                           1.0f) *
+                              0.5;
+                title_angle = StatusAltSpinPc;
+                count_angle = 0;
+                title_scale = title_alpha;
+                count_alpha = 0.0f;
+                count_scale = 0.0f;
+                break;
+            case 3:
+                brick_scale = 1.0f;
+                count_angle = 0;
+                title_alpha = 1.0f;
+                title_angle = 0;
+                title_scale = 1.0f;
+                count_alpha = 0.0f;
+                count_scale = 0.0f;
+                break;
+            case 4:
+                brick_scale = 1.0f;
+                title_alpha = 1.0f;
+                title_scale = 1.0f;
+                count_alpha =
+                    1.0 - (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                       0x7fff] +
+                           1.0f) *
+                              0.5;
+                title_angle = 0;
+                count_angle = (u16)-StatusAltSpinPc;
+                count_scale = count_alpha;
+                break;
+            case 5:
+                brick_scale = 1.0f;
+                count_angle = 0;
+                title_alpha = 1.0f;
+                title_angle = 0;
+                title_scale = 1.0f;
+                count_alpha = 1.0f;
+                count_scale = 1.0f;
+                break;
+            case 6:
+            case 7:
+                title_alpha = 1.0f;
+                count_angle = 0;
+                title_scale = 1.0f;
+                title_angle = 0;
+                count_alpha = 1.0f;
+                count_scale = 1.0f;
+                if (stage->field_0x18 < StatusAlt7f8224Pc)
+                    brick_scale =
+                        NuTrigTable[((i32)((f64)(stage->field_0x18 / StatusAlt7f8224Pc) * 32768.0) >> 1) & 0x7fff] *
+                            0.25 +
+                        1.0;
+                else
+                    brick_scale = 1.0f;
+                break;
+            case 8:
+                count_alpha =
+                    1.0f -
+                    (1.0 - (NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                        0x7fff] +
+                            1.0f) *
+                               0.5);
+                title_angle = StatusAltSpinPc;
+                count_angle = (u16)-StatusAltSpinPc;
+                title_alpha = count_alpha;
+                count_scale = count_alpha;
+                title_scale = count_alpha;
+                brick_scale = count_alpha;
+                break;
+        }
+        displayed = packet->displayed_gold_bricks;
+        if (displayed > 1)
+            DrawStatusText(TTab[TextIdPc88077c], title_angle, 0.0f, title_scale * StatusCoinsTitleYPc,
+                           StatusAltScalePc * title_scale, ((u32)(title_alpha * 255.0) << 24) | 0xc8ff, 0);
+        else
+            DrawStatusText(TTab[TextIdPc880778], title_angle, 0.0f, title_scale * StatusCoinsTitleYPc,
+                           StatusAltScalePc * title_scale, ((u32)(title_alpha * 255.0) << 24) | 0xc8ff, 0);
+        rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
+        DrawPanel3DObjectNoAlpha(0.0f, 0.0f, 1.0f, brick_scale, brick_scale, brick_scale,
+                                 (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f), rotation, 0,
+                                 &WORLD->level_objects[211].special, 2);
+        if (stage->field_0x14 == 6 && stage->field_0x18 < 1.0f)
+            DrawStatusTextFraction(displayed, GOLDBRICKPOINTS, 0.0f, -StatusCoinsTitleYPc * count_scale, count_angle,
+                                   StatusAltScalePc * count_scale, 0xbf00c8ff, stage->field_0x18, 1.0f);
+        else
+            DrawStatusTextFraction(displayed, GOLDBRICKPOINTS, 0.0f, -StatusCoinsTitleYPc * count_scale, count_angle,
+                                   StatusAltScalePc * count_scale, ((u32)(count_alpha * 255.0) << 24) | 0xc8ff, 0.0f,
+                                   0.0f);
+        if (Game.gold_bricks > 60)
+            CoinTotal_Draw(*packet->score, (STATSPOSY - STATSPOS2YPc) * title_alpha + STATSPOS2YPc, CoinTotalScale, 1,
+                           1.0f, 0xff, 0xbf, 0);
     }
 
     /* Stage type 19. Awards the level's gold bricks one at a time. */
@@ -1310,6 +1438,156 @@ extern "C" {
         }
         DrawBuildUpBar(0.0f, (f64)percent_scale * -0.0, (i32)packet->true_hero_percent, 100, 1.0f, percent_scale * 1.5,
                        bar_alpha, percent_angle);
+    }
+
+    /* Stage type 3. Draws both players' coin counts and the score total. */
+    void __cdecl Coins_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        f32 total_scale = 0.0f;
+        f32 players_scale = 0.0f;
+        f32 total_ratio = 0.0f;
+        f32 title_alpha = 1.0f;
+        f32 y_offset = STATSPOS2YPc;
+        u16 angle0 = 0;
+        u16 angle1 = 0;
+        i32 title_angle = 0;
+        f32 players_y;
+        f32 coin_x;
+        i32 player;
+        if (current == 0)
+            return;
+        switch (stage->field_0x14) {
+            case 0:
+                title_alpha = 0.0f;
+                break;
+            case 1:
+                if (stage->field_0x18 < StatusAlt7f8220Pc) {
+                    total_scale =
+                        1.0 -
+                        (NuTrigTable[((i32)((f64)(stage->field_0x18 / StatusAlt7f8220Pc) * 32768.0 + 16384.0) >> 1) &
+                                     0x7fff] +
+                         1.0f) *
+                            0.5;
+                    title_angle = StatusAltSpinPc;
+                    angle1 = 0;
+                    angle0 = 0;
+                    title_alpha = total_scale;
+                    players_scale = 0.0f;
+                } else {
+                    if (stage->field_0x18 < StatusAlt7f8220Pc * 2.0f) {
+                        total_scale = 1.0f;
+                        title_alpha = 1.0f;
+                        players_scale =
+                            1.0 -
+                            (NuTrigTable[((i32)((f64)((stage->field_0x18 - StatusAlt7f8220Pc) / StatusAlt7f8220Pc) *
+                                                    32768.0 +
+                                                16384.0) >>
+                                          1) &
+                                         0x7fff] +
+                             1.0f) *
+                                0.5;
+                        angle1 = StatusAltSpinPc;
+                        angle0 = (u16)-StatusAltSpinPc;
+                    } else {
+                        angle0 = 0;
+                        angle1 = 0;
+                        total_scale = 1.0f;
+                        players_scale = 1.0f;
+                        title_alpha = 1.0f;
+                    }
+                    title_angle = 0;
+                }
+                StatusIconYPc = StatusIconsOnOff(StatusCoinsRatioAltPc(stage->field_0x18, stage->field_0x1c));
+                y_offset = -StatusCoinsTitleYPc;
+                break;
+            case 2:
+                angle0 = 0;
+                title_angle = 0;
+                angle1 = 0;
+                y_offset = -StatusCoinsTitleYPc;
+                players_scale = 1.0f;
+                total_scale = 1.0f;
+                break;
+            case 3:
+                angle0 = 0;
+                title_angle = 0;
+                angle1 = 0;
+                y_offset = -StatusCoinsTitleYPc;
+                players_scale = 1.0f;
+                total_scale = 1.0f;
+                total_ratio = stage->field_0x18 / stage->field_0x1c;
+                break;
+            case 4:
+                angle1 = StatusAltSpinPc;
+                title_alpha = 1.0f - stage->field_0x18;
+                title_angle = StatusAltSpinPc;
+                angle0 = (u16)-StatusAltSpinPc;
+                players_scale =
+                    1.0 -
+                    (NuTrigTable[((i32)((f64)(1.0f - stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                 0x7fff] +
+                     1.0f) *
+                        0.5;
+                total_scale = players_scale;
+                y_offset = -StatusCoinsTitleYPc;
+                break;
+        }
+        if (stage->field_0x14 <= 0)
+            return;
+        players_y = y_offset * players_scale;
+        for (player = 0; player < 2; player++) {
+            char text[40];
+            f32 alpha;
+            f32 text_x;
+            u32 coins;
+            i32 object_index;
+            LEVEL_OBJECT_RUNTIME_PC *object;
+            Text_MakeScore(packet->coins_remaining[player], text);
+            alpha = packet->player_active[player] != 0 ? 1.0f : title_alpha * 0.25;
+            coins = packet->coins_remaining[player];
+            object_index = coins >= 10000 ? 0xd9 : coins >= 1000 ? 0xc3 : coins >= 100 ? 0xbb : 0xb3;
+            coin_x = player == 0 ? -0.75f : 0.75f;
+            text_x = coin_x;
+            object = &WORLD->level_objects[object_index];
+            if (object->active != 0) {
+                f32 scale = StatusAltScalePc * players_scale;
+                DrawPanel3DObject(players_scale * coin_x, players_y, 1.0f, scale, scale, scale, 0, 0,
+                                  player == 0 ? angle0 : angle1, &object->special, 0, alpha);
+            }
+            DrawStatusText(text, player == 0 ? angle0 : angle1, players_scale * text_x, players_y,
+                           StatusAltScalePc * players_scale, ((u32)(alpha * 255.0) << 24) | 0xbfff,
+                           player == 0 ? 2 : 8);
+        }
+        if (stage->field_0x14 == 3) {
+            char total[32];
+            f32 size, grow, shrink, coin_scale, coin_size;
+            u8 alpha;
+            Text_MakeScore(*packet->score, total);
+            size = CoinTotalScoreSizePc * players_scale * StatusAltScalePc * total_scale * 1.5;
+            grow = (1.0f + total_ratio * 0.5) * size;
+            shrink = (1.0f - total_ratio * 0.5) * size;
+            alpha = (u8)((1.0f - total_ratio) * 128.0);
+            Text3DEx(total, 0.0f, 0.0f, 1.0f, shrink, shrink, shrink, 0, 0xff, 0xbf, 0, alpha);
+            Text3DEx(total, 0.0f, 0.0f, 1.0f, grow, grow, grow, 0, 0xff, 0xbf, 0, alpha);
+            coin_scale = StatusAltScalePc * total_scale * 1.5;
+            coin_size =
+                COINTOTAL_COINSIZE * coin_scale * NuTrigTable[((i32)((f64)title_alpha * 16384.0) >> 1) & 0x7fff];
+            if (WORLD->level_objects[cointotal_i_obj[0]].active != 0)
+                DrawPanel3DObject(-(text3d_width * 0.5) - coin_scale * CoinTotalCoinOffsetPc, 0.0f, 1.0f, coin_size,
+                                  coin_size, coin_size, 0, 0, 0, &WORLD->level_objects[cointotal_i_obj[0]].special, 0,
+                                  1.0f);
+            if (WORLD->level_objects[cointotal_i_obj[1]].active != 0)
+                DrawPanel3DObject(coin_scale * CoinTotalCoinOffsetPc + text3d_width * 0.5, 0.0f, 1.0f, coin_size,
+                                  coin_size, coin_size, 0, 0, 0, &WORLD->level_objects[cointotal_i_obj[1]].special, 0,
+                                  1.0f);
+        } else {
+            CoinTotal_Draw(*packet->score, 0.0f, StatusAltScalePc * total_scale * 1.5, 1, title_alpha, 0xff, 0xbf, 0);
+        }
+        if (title_alpha < 0.0f)
+            title_alpha = 0.0f;
+        else if (title_alpha > 1.0f)
+            title_alpha = 1.0f;
+        DrawStatusText(TTab[TextIdPc8808d4], title_angle, 0.0f, total_scale * StatusCoinsTitleYPc,
+                       StatusAltScalePc * total_scale, ((u32)(title_alpha * 255.0) << 24) | 0xffffff, 0);
     }
 
     /* Stage type 4. Pops the new minikits into the count under the title. */
