@@ -1196,6 +1196,85 @@ u16 __cdecl NuFileReadWChar(NUFILE file) {
     return value;
 }
 
+i32 __cdecl GetLineW(u16 *line, NUFILE file) {
+    i32 length = 0;
+    i32 end_of_line;
+    i32 has_text = 0;
+    i32 quoted = 0;
+    u16 character;
+
+    for (;;) {
+        character = NuFileReadWChar(file);
+        switch (character) {
+            case '\r':
+                NuFileReadWChar(file);
+                /* fall through */
+            case '\n':
+                if (length == 0 || has_text == 0) {
+                    has_text = 0;
+                    break;
+                }
+                /* fall through */
+            case '\0':
+                line[length] = 0;
+                return length;
+            case '"':
+                quoted = 1 - quoted;
+                has_text = 1;
+                line[length++] = character;
+                break;
+            case ';':
+                if (quoted == 0) {
+                    if (length == 0 || has_text == 0) {
+                        end_of_line = 0;
+                        do {
+                            character = NuFileReadWChar(file);
+                            switch (character) {
+                                case '\r':
+                                    NuFileReadWChar(file);
+                                    /* fall through */
+                                case '\n':
+                                case '\0':
+                                    end_of_line = 1;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } while (end_of_line == 0);
+                        length = 0;
+                        has_text = 0;
+                        break;
+                    }
+
+                    for (;;) {
+                        character = NuFileReadWChar(file);
+                        switch (character) {
+                            case '\r':
+                                NuFileReadWChar(file);
+                                /* fall through */
+                            case '\n':
+                            case '\0':
+                                line[length] = 0;
+                                return length;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                /* fall through */
+            default:
+                has_text = 1;
+                /* fall through */
+            case ' ':
+            case '\t':
+                if (has_text != 0) {
+                    line[length++] = character;
+                }
+                break;
+        }
+    }
+}
+
 i32 __cdecl NuFileLoadBuffer(char *filepath, void *destination, i32 capacity) {
     NUFILE file;
     i32 loaded = 0;
