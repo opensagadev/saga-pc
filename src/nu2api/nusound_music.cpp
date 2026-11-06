@@ -782,14 +782,16 @@ char *NuMusic::AllocString(const char *str) {
     return p;
 }
 void NuMusic::SubstituteString(char *src, char *dst, char *find, char *subst) {
-    char *hit = NuStrIStr(src, find);
-    while (hit != NULL) {
-        i32 offset = (i32)(hit - src);
+    char *hit;
+    i32 offset;
+
+    while ((hit = NuStrIStr(src, find)) != NULL) {
+        offset = (i32)(hit - src);
         NuStrNCpy(dst, src, offset + 1);
-        NuStrCpy(dst + offset, subst);
+        dst += offset;
+        NuStrCpy(dst, subst);
         src = hit + NuStrLen(find);
-        dst += offset + NuStrLen(subst);
-        hit = NuStrIStr(src, find);
+        dst += NuStrLen(subst);
     }
     NuStrCpy(dst, src);
 }
@@ -908,30 +910,32 @@ void NuMusic::TrackParseErrorFn(NUFPAR_PC *parser) {
     PCStereoUnknownToken(parser->word_buffer_ptr, parser->line_number, parser->file_name);
 }
 void NuMusic::ParseTrack(u32 category, NUFPAR_PC *parser) {
+    NUFPCOMFN old_handler = NULL;
+    char substituted[256];
+    char path[256];
+
     if (extra_track_count >= 2048)
         PCStereoUnknownToken();
-    Track *track = &extra_tracks[extra_track_count++];
-    current_track = track;
+    current_track = &extra_tracks[extra_track_count++];
     if (current_album != NULL)
         ++current_album->tracks_count;
-    memset(track, 0, sizeof(*track));
-    track->entry_times = indexes + index_count;
-    track->clazz = category;
-    track->pitch = pitch_default;
-    track->duck_volume = track->duck_fade = track->attenuation = 1.0f;
+    memset(current_track, 0, sizeof(*current_track));
+    current_track->entry_times = indexes + index_count;
+    current_track->clazz = category;
+    current_track->pitch = pitch_default;
+    current_track->duck_volume = 1.0f;
+    current_track->duck_fade = 1.0f;
+    current_track->attenuation = 1.0f;
     if (category != 4 && category != 8 && category != 16)
-        track->flags |= 2;
+        current_track->flags |= 2;
     else
-        track->flags &= ~2u;
-    char path[256];
-    char substituted[264];
+        current_track->flags &= ~2u;
     NuFParGetWord(parser);
     NuStrCpy(path, current_path);
     NuStrCat(path, parser->word_buffer_ptr);
     SubstituteString(path, substituted, NuMusicLanguageTokenPc, language);
-    track->filenames[0] = AllocString(substituted);
-    track->ident = RemovePath(track->filenames[0]);
-    NUFPCOMFN old_handler = NULL;
+    current_track->filenames[0] = AllocString(substituted);
+    current_track->ident = RemovePath(current_track->filenames[0]);
     if (strict_mode != 0)
         old_handler = NuFParSetInterpreterErrorHandler(TrackParseErrorFn);
     NuFParPushComCTX(parser, track_jmp_tab);
@@ -1224,34 +1228,38 @@ i32 NuMusic::Voice::Play(void) {
 }
 
 i32 NuMusic::CueTrack(u32 class_mask) {
+    Track *track;
+    i32 selected_subtrack;
+    Voice *voice;
+
     if (this == NULL)
         return -1;
     if (the_music_player == NULL)
         return -1;
     if (album == NULL)
         return -2;
-    Track *track = album->GetTrack(class_mask);
-    if (track == NULL)
-        return -3;
-    i32 selected_subtrack = track_index;
-    if (track->file_indexes[selected_subtrack] == -1)
-        return -3;
-    if (FindVoiceByTrack(track) != NULL)
-        return 1;
-    Voice *voice;
-    if (track->clazz == 8) {
-        voice = FindVoiceByClass(8);
-        if (voice != NULL) {
-            if (voice->status == 6 || voice->status == 7)
-                return -5;
-            if (voice->Load(track, selected_subtrack) != 0)
-                return voice->Cue();
+    track = album->GetTrack(class_mask);
+    if (track != NULL) {
+        selected_subtrack = track_index;
+        if (track->file_indexes[selected_subtrack] == -1)
+            return -3;
+        if (FindVoiceByTrack(track) != NULL)
+            return 1;
+        if (track->clazz == 8) {
+            voice = FindVoiceByClass(8);
+            if (voice != NULL) {
+                if (voice->status == 6 || voice->status == 7)
+                    return -5;
+                if (voice->Load(track, selected_subtrack) != 0)
+                    return voice->Cue();
+            }
         }
+        voice = FindIdleVoice();
+        if (voice == NULL || voice->Load(track, track_index) == 0)
+            return -5;
+        return voice->Cue();
     }
-    voice = FindIdleVoice();
-    if (voice == NULL || voice->Load(track, track_index) == 0)
-        return -5;
-    return voice->Cue();
+    return -3;
 }
 
 i32 NuMusic::PlayTrackI(u32 class_mask, u32 prepare_only) {
