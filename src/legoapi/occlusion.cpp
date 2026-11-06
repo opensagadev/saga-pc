@@ -38,7 +38,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
     for (i32 i = 0; i < 8; ++i) {
         NUVEC4 &v = corners[i];
         NuVec4MtxTransform(&v, reinterpret_cast<NUVEC *>(&v), &transform);
-        if (v.w <= 0.0f)
+        if (!(0.0f < v.w))
             return false;
         float x = v.x / v.w;
         v.x = x;
@@ -68,25 +68,39 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         if (min_x > record.max_x || min_y > record.max_y || record.min_x > max_x || record.min_y > max_y)
             continue;
         NUVEC4 *v = record.transformed;
-        float winding = (v[2].x - v[0].x) * (v[1].y - v[0].y) - (v[1].x - v[0].x) * (v[2].y - v[0].y);
-        bool inside = true;
-        for (i32 edge = 0; edge < 4 && inside; ++edge) {
-            i32 start = winding > 0.0f ? edge : 3 - edge;
-            i32 end = winding > 0.0f ? (edge + 1) & 3 : (6 - edge) & 3;
-            NUVEC4 normal = {v[end].y - v[start].y, -(v[end].x - v[start].x), 0.0f, 0.0f};
+        NUVEC edge_a, edge_b, cross;
+        edge_a.x = v[1].x - v[0].x;
+        edge_a.y = v[1].y - v[0].y;
+        edge_a.z = v[1].z - v[0].z;
+        edge_b.x = v[2].x - v[0].x;
+        edge_b.y = v[2].y - v[0].y;
+        edge_b.z = v[2].z - v[0].z;
+        NuVecCross(&cross, &edge_b, &edge_a);
+        bool clockwise = cross.z > 0.0f;
+        for (i32 edge = 0; edge < 4; ++edge) {
+            i32 start = edge;
+            i32 end = (edge + 1) % 4;
+            if (!clockwise) {
+                end = 3 - end;
+                start = 3 - edge;
+            }
+            NUVEC4 normal;
+            normal.x = v[end].y - v[start].y;
+            normal.y = -(v[end].x - v[start].x);
             NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
             normal.z = normal.w = 0.0f;
             for (u32 corner = 0; corner < 8; ++corner) {
-                float distance =
-                    (corners[corner].x - v[start].x) * normal.x + (corners[corner].y - v[start].y) * normal.y + 0.0f;
-                if (distance < 0.01f) {
-                    inside = false;
-                    break;
-                }
+                NUVEC delta;
+                delta.x = corners[corner].x - v[start].x;
+                delta.y = corners[corner].y - v[start].y;
+                delta.z = 0.0f;
+                f32 distance = delta.y * normal.y + normal.x * delta.x + delta.z * normal.z;
+                if (distance < 0.01f)
+                    goto next_occluder;
             }
         }
-        if (inside)
-            return true;
+        return true;
+    next_occluder:;
     }
     return false;
 }
