@@ -231,18 +231,21 @@ ShaderSourceNodePc::ShaderSourceNodePc(u32 input_flags, i32 input_type, i32 inpu
 }
 const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) {
     register_buffer.length = 0;
-    switch (node->flags) {
+    switch ((i32)node->flags) {
         case 0x1004:
             register_buffer.AppendText("USE_");
             register_buffer << node->name;
             break;
         case 0x2002:
-        case 0x3008:
             register_buffer.AppendText("USE_");
             register_buffer.AppendText(node->name);
             break;
         case 0x2010:
             register_buffer.AppendText("USE_attribute_");
+            register_buffer.AppendText(node->name);
+            break;
+        case 0x3008:
+            register_buffer.AppendText("USE_");
             register_buffer.AppendText(node->name);
             break;
         case 0x1020:
@@ -255,13 +258,15 @@ const char *ShaderCompilerDictionaryPc::RenderASTName(ShaderSourceNodePc *node) 
             register_buffer.AppendText(node->name);
             break;
     }
-    if (register_buffer.length > 0 && register_buffer.data[register_buffer.length - 1] != 0) {
-        i32 required = register_buffer.length + 1;
-        if (required > register_buffer.capacity)
-            register_buffer.Resize((3 * required) / 2);
-        register_buffer.data[register_buffer.length++] = 0;
+    ShaderCompilerBufferAllocatorPc *buffer = &register_buffer;
+    if (buffer->length > 0) {
+        if (buffer->data[buffer->length - 1] == 0)
+            return reinterpret_cast<const char *>(buffer->data);
+        if (buffer->length + 1 > buffer->capacity)
+            buffer->Resize((3 * (buffer->length + 1)) / 2);
+        buffer->data[buffer->length++] = 0;
     }
-    return reinterpret_cast<const char *>(register_buffer.data);
+    return reinterpret_cast<const char *>(buffer->data);
 }
 ShaderSourceNodePc *ShaderCompilerDictionaryPc::FindASTExact(const char *name, u32 flags) {
     i32 count = definition_count;
