@@ -7698,6 +7698,10 @@ typedef struct memorymanager_s {
     u32 unknown_14;
     u32 size;
     u8 free_lists[0x22c];
+#ifdef __cplusplus
+    void *AllocPool(u32 size, i32 clear);
+    void FreePool(void *memory, u32 size);
+#endif
 } MEMORYMANAGER;
 STATIC_ASSERT(sizeof(MEMORYMANAGER) == 0x248);
 STATIC_ASSERT(offsetof(MEMORYMANAGER, buffer_end) == 0x4);
@@ -17774,6 +17778,11 @@ extern "C" {
     BURN_SET_PC *__cdecl edrtlBurnoutLoad(char *, VARIPTR *, i32);
     void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
     void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32);
+    void __cdecl edrtlDrawLightEx(i32 index, i32 style);
+    void __cdecl EdDrawBegin(i32 index);
+    void __cdecl EdDrawEnd(void);
+    void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments,
+                                    i32 colour, i32 cap_bottom, i32 cap_top);
     void __cdecl LoadLights(void *, char *);
 
     typedef struct CAMERA_CLIP_PACKET_PC {
@@ -28471,5 +28480,80 @@ extern "C" {
     extern VADERA_PC vader_a;
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+struct EdClass;
+struct EdInputContext;
+struct EdRef;
+struct EdStream;
+struct MemoryBuffer;
+
+/* Editor object-class interface (Android gameapi_edtools_types.h). MSVC lays
+ * overloaded virtuals out in reverse declaration order, so the filtered
+ * GetNextObject sits in slot 4 and the two-vector DistanceToObject in slot 27. */
+class EdClassInterface {
+  public:
+    EdClassInterface() : object_class(NULL) {
+    }
+    virtual ~EdClassInterface() {
+    }
+    virtual void ClearLevel(i32) {
+    }
+    virtual void Flush() = 0;
+    virtual i32 GetNumObjects() = 0;
+    virtual void *GetNextObject(void *object) = 0;
+    virtual void *GetNextObject(void *object, i32 (*filter)(void *));
+    virtual void *CreateObject(void *data, i32 guid, i32 flags) = 0;
+    virtual void DestroyObject(void *object, i32 flags) = 0;
+    virtual void DefunctObject(void *) {
+    }
+    virtual void ReviveObject(void *) {
+    }
+    virtual void SetObjectGuid(void *, i32) {
+    }
+    virtual i32 GetObjectGuid(void *) {
+        return 0;
+    }
+    virtual i32 GetConstructorData(void *, void *, i32) {
+        return 0;
+    }
+    virtual void Construct(void *, void *) {
+    }
+    virtual void Process(void *, EdInputContext &) {
+    }
+    virtual void Render(void *, i32) {
+    }
+    virtual void EnterEditor() {
+    }
+    virtual void ExitEditor() {
+    }
+    virtual void EnterLevel() {
+    }
+    virtual void ExitLevel() {
+    }
+    virtual void UpdateLists(MemoryBuffer *, MemoryBuffer *) {
+    }
+    virtual void PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
+    }
+    virtual void PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
+    }
+    virtual void PreSaveInitialisation() {
+    }
+    virtual void PostSaveInitialisation() {
+    }
+    virtual void SerialiseObject(EdStream &, void *) {
+    }
+    virtual f32 DistanceToObject(VuVec &start, VuVec &end, void *object, EdRef **reference);
+    virtual f32 DistanceToObject(VuVec &position, void *object, EdRef **reference);
+    virtual void AddMenuItems(eduimenu_s *) {
+    }
+    virtual void Import() {
+    }
+
+    EdClass *object_class;
+};
+STATIC_ASSERT(sizeof(EdClassInterface) == 0x8);
+STATIC_ASSERT(offsetof(EdClassInterface, object_class) == 0x4);
 #endif
 #endif

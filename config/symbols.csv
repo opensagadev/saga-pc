@@ -7147,9 +7147,48 @@ address,symbol,size,ctype
 0x6332c0,_RadFmvUnlockImagePc,47,
 0x6332f0,_RadFmvCreateImagePc,93,
 0x633350,_RadFmvDestroyImagePc,54,
+0x633440,?AllocPool@memorymanager_s@@QAEPAXIH@Z,134,
+0x6334d0,?FreePool@memorymanager_s@@QAEXPAXI@Z,35,
 0x633df0,_rtlSwapSetEndianess,1,void __cdecl rtlSwapSetEndianess(void *)
 0x633df0,_RtlUiCreateFailedPc,1,void __cdecl(void)
 0x633e40,_RtlDirectionStatePc,183,
+0x6340e0,?RtlHelperCopyMtx@@YAXPAUnumtx_s@@PBU1@@Z,95,
+0x6341e0,??0EdClassInterface@@QAE@XZ,16,
+0x6341f0,??1EdClassInterface@@UAE@XZ,7,
+0x634200,?ClearLevel@EdClassInterface@@UAEXH@Z,3,
+0x634210,?DefunctObject@EdClassInterface@@UAEXPAX@Z,3,
+0x634220,?ReviveObject@EdClassInterface@@UAEXPAX@Z,3,
+0x634230,?SetObjectGuid@EdClassInterface@@UAEXPAXH@Z,3,
+0x634240,?GetObjectGuid@EdClassInterface@@UAEHPAX@Z,5,
+0x634250,?GetConstructorData@EdClassInterface@@UAEHPAX0H@Z,5,
+0x634260,?Construct@EdClassInterface@@UAEXPAX0@Z,3,
+0x634270,?Process@EdClassInterface@@UAEXPAXAAUEdInputContext@@@Z,3,
+0x634280,?Render@EdClassInterface@@UAEXPAXH@Z,3,
+0x634290,?EnterEditor@EdClassInterface@@UAEXXZ,1,
+0x6342a0,?ExitEditor@EdClassInterface@@UAEXXZ,1,
+0x6342b0,?EnterLevel@EdClassInterface@@UAEXXZ,1,
+0x6342c0,?ExitLevel@EdClassInterface@@UAEXXZ,1,
+0x6342d0,?UpdateLists@EdClassInterface@@UAEXPAUMemoryBuffer@@0@Z,3,
+0x6342e0,?PreLoadInitialisation@EdClassInterface@@UAEXPAUMemoryBuffer@@0@Z,3,
+0x6342f0,?PostLoadInitialisation@EdClassInterface@@UAEXPAUMemoryBuffer@@0@Z,3,
+0x634300,?PreSaveInitialisation@EdClassInterface@@UAEXXZ,1,
+0x634310,?PostSaveInitialisation@EdClassInterface@@UAEXXZ,1,
+0x634320,?SerialiseObject@EdClassInterface@@UAEXAAUEdStream@@PAX@Z,3,
+0x634330,?AddMenuItems@EdClassInterface@@UAEXPAUeduimenu_s@@@Z,3,
+0x634340,?Import@EdClassInterface@@UAEXXZ,1,
+0x634350,??_EEdClassInterface@@UAEPAXI@Z,,COFF weak alias of ??_GEdClassInterface@@UAEPAXI@Z; no independent body
+0x634350,??_GEdClassInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6345e0,??0RTLHelper@@QAE@XZ,17,
+0x634600,??1RTLHelper@@UAE@XZ,7,
+0x634840,?Flush@RTLHelper@@UAEXXZ,8,
+0x634850,?GetNumObjects@RTLHelper@@UAEHXZ,73,
+0x6348a0,?GetNextObject@RTLHelper@@UAEPAXPAX@Z,121,
+0x634920,?Process@RTLHelper@@UAEXPAXAAUEdInputContext@@@Z,1197,
+0x634dd0,?EnterEditor@RTLHelper@@UAEXXZ,35,
+0x634e00,?PreLoadInitialisation@RTLHelper@@UAEXPAUMemoryBuffer@@0@Z,145,
+0x634ea0,?PostLoadInitialisation@RTLHelper@@UAEXPAUMemoryBuffer@@0@Z,13,
+0x634eb0,?PreSaveInitialisation@RTLHelper@@UAEXXZ,9,
+0x634ec0,?PostSaveInitialisation@RTLHelper@@UAEXXZ,11,
 0x6354a0,_edrtlInitBurnset,259,void __cdecl edrtlInitBurnset(BURN_SET_PC *)
 0x6355f0,_rtlFindByUserId,52,"i32 __cdecl rtlFindByUserId(RTL_SET_PC *, i32)"
 0x635630,_rtlGetDirection,48,"i32 __cdecl (RTL_SET_PC *, i32, NUVEC **)"
@@ -7296,12 +7335,19 @@ address,symbol,size,ctype
 0x63c2a0,_edrtlCalculateBurnout,1125,"void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32)"
 0x63c710,_edrtlCalculateBurnoutEx,58,"void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32)"
 0x63c810,_edrtlDrawCursor,502,
+0x63ca10,_edrtlDrawLightEx,1148,"void __cdecl(i32 index, i32 style)"
 0x63ced0,_edrtlDrawFogs,96,
 0x0063cff0,_edrtlDrawHelp,243,void __cdecl (void)
 0x63d0f0,_edrtlDrawRTLInfo,1984,
 0x63d8b0,_edrtlDrawFogInfo,638,
 0x63db30,_edrtlDrawBurnInfo,404,void __cdecl (void)
 0x63dcd0,_rtlFrameUpdate,66,void __cdecl(f32)
+0x63e0c0,??_ERTLHelper@@UAEPAXI@Z,,COFF weak alias of ??_GRTLHelper@@UAEPAXI@Z; no independent body
+0x63e0c0,??_GRTLHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x63eb30,?CreateObject@RTLHelper@@UAEPAXPAXHH@Z,285,
+0x63ec50,?DestroyObject@RTLHelper@@UAEXPAXH@Z,14,
+0x63ec60,?Render@RTLHelper@@UAEXPAXH@Z,626,
+0x63f000,?AddMenuItems@RTLHelper@@UAEXPAUeduimenu_s@@@Z,64,
 0x63f6a0,_edrtlUndo,353,
 0x63f810,_edrtlRedo,248,
 0x63f910,_cbUndoLight,5,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
@@ -8743,6 +8789,31 @@ address,symbol,size,ctype
 0x6b7650,_Newton_Raphson,452,
 0x6b7820,_vorbis_lpc_to_lsp,1044,"int vorbis_lpc_to_lsp(float *lpc,float *lsp,int m);"
 0x6b8510,_EdDrawSetVertexColour,108,
+0x6b8940,??1EdTool@@UAE@XZ,7,
+0x6b8950,?Initialise@EdTool@@UAEXAATvariptr_u@@0H@Z,3,
+0x6b8960,?GetName@EdTool@@UAEPBDXZ,6,
+0x6b8970,?Process@EdTool@@UAEHAAUEdInputContext@@@Z,5,
+0x6b8980,?Render@EdTool@@UAEXXZ,1,
+0x6b8990,??_EEdTool@@UAEPAXI@Z,,COFF weak alias of ??_GEdTool@@UAEPAXI@Z; no independent body
+0x6b8990,??_GEdTool@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6b8b00,??1BaseEditor@@UAE@XZ,7,
+0x6b8b10,?GetName@BaseEditor@@UAEPBDXZ,6,
+0x6b8b20,?ReadBlock@BaseEditor@@UAEHPAUDATAPTR@@@Z,5,
+0x6b8b30,?WriteBlock@BaseEditor@@UAEXH@Z,3,
+0x6b8b40,?Serialise@BaseEditor@@UAEXAAUEdStream@@@Z,3,
+0x6b8b50,?ClearLevel@BaseEditor@@UAEXH@Z,3,
+0x6b8b60,?Flush@BaseEditor@@UAEXXZ,1,
+0x6b8b70,?Enter@BaseEditor@@UAEXXZ,1,
+0x6b8b80,?Exit@BaseEditor@@UAEXXZ,1,
+0x6b8b90,?Process@BaseEditor@@UAEXAAUEdInputContext@@@Z,3,
+0x6b8ba0,?Render@BaseEditor@@UAEXXZ,1,
+0x6b8bb0,?AddMenuItems@BaseEditor@@UAEXPAUeduimenu_s@@@Z,3,
+0x6b8bc0,??_EBaseEditor@@UAEPAXI@Z,,COFF weak alias of ??_GBaseEditor@@UAEPAXI@Z; no independent body
+0x6b8bc0,??_GBaseEditor@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6b8cb0,??1EditorSettings@@UAE@XZ,7,
+0x6b8cc0,??_EEditorSettings@@UAEPAXI@Z,,COFF weak alias of ??_GEditorSettings@@UAEPAXI@Z; no independent body
+0x6b8cc0,??_GEditorSettings@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6b9100,?Initialise@BaseEditor@@UAEXAATvariptr_u@@0H@Z,10,
 0x6ba6a0,_EdDrawBegin,186,
 0x6ba760,_EdDrawEnd,35,
 0x6ba790,_EdDrawMtx,54,
@@ -8777,6 +8848,9 @@ address,symbol,size,ctype
 0x6be150,?SerialiseStringAddr@@YAXAAUEdStream@@PAXH@Z,22,
 0x6be170,?SerialiseColour3@@YAXAAUEdStream@@PAXH@Z,21,
 0x6be190,_SerialiseNuHSpecial,201,
+0x6be260,?GetNextObject@EdClassInterface@@UAEPAXPAXP6AH0@Z@Z,66,
+0x6cd250,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@0PAXPAPAUEdRef@@@Z,282,
+0x6cd370,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@PAXPAPAUEdRef@@@Z,342,
 0x6d05e0,_cbEdLevelSave,436,
 0x6d07a0,_cbEdLevelSettingsMenu,137,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
@@ -17036,6 +17110,8 @@ address,symbol,size,ctype
 0x0076b55c,??_C@_0M@OHINNGCO@DIRECTIONAL?$AA@,,const char[]
 0x0076b578,??_C@_05NKNPLGBO@POINT?$AA@,,const char[]
 0x0076b580,??_C@_07EFFMPHJG@AMBIENT?$AA@,,const char[]
+0x76b58c,??_7EdClassInterface@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b65c,??_7RTLHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b77c,__real@3ff33333,,
 0x76b780,__real@3f13b646,,
 0x76b784,__real@33d6bf95,4,const f32
@@ -17934,6 +18010,9 @@ address,symbol,size,ctype
 0x76f638,__real@3eb0c6f7a0b5ed8d,,
 0x76f640,__real@3bc79ca10c924223,,
 0x76f660,_MenuPcString76f660,3,const char[3]
+0x76f668,??_7EdTool@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76f680,??_7BaseEditor@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76f6b8,??_7EditorSettings@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f888,__real@3ff99999a0000000,8,const f64
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x76fe70,_PcInputText76fe70,,char[6]
@@ -20516,6 +20595,14 @@ address,symbol,size,ctype
 0x7eac48,??_R3length_error@std@@8,,Natural owning C++ RTTI/throw metadata
 0x7eac58,??_R2length_error@std@@8,,Natural owning C++ RTTI/throw metadata
 0x7eac68,??_R1A@?0A@EA@length_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eb240,??_R4EdClassInterface@@6B@,,
+0x7eb254,??_R3EdClassInterface@@8,,
+0x7eb264,??_R2EdClassInterface@@8,,
+0x7eb26c,??_R1A@?0A@EA@EdClassInterface@@8,,
+0x7eb36c,??_R4RTLHelper@@6B@,,
+0x7eb380,??_R3RTLHelper@@8,,
+0x7eb390,??_R2RTLHelper@@8,,
+0x7eb39c,??_R1A@?0A@EA@RTLHelper@@8,,
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -20524,6 +20611,26 @@ address,symbol,size,ctype
 0x7eb6c0,??_R3OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb6d0,??_R2OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb6dc,??_R1A@?0A@EA@OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6f8,??_R4EdTool@@6B@,,
+0x7eb70c,??_R3EdTool@@8,,
+0x7eb71c,??_R2EdTool@@8,,
+0x7eb728,??_R1A@?0A@EA@EdTool@@8,,
+0x7eb744,??_R13?0A@EA@?$CSListLink@VEdTool@@@@8,,
+0x7eb760,??_R3?$CSListLink@VEdTool@@@@8,,
+0x7eb770,??_R2?$CSListLink@VEdTool@@@@8,,
+0x7eb778,??_R1A@?0A@EA@?$CSListLink@VEdTool@@@@8,,
+0x7eb794,??_R4BaseEditor@@6B@,,
+0x7eb7a8,??_R3BaseEditor@@8,,
+0x7eb7b8,??_R2BaseEditor@@8,,
+0x7eb7c4,??_R1A@?0A@EA@BaseEditor@@8,,
+0x7eb7e0,??_R13?0A@EA@?$CSListLink@VBaseEditor@@@@8,,
+0x7eb7fc,??_R3?$CSListLink@VBaseEditor@@@@8,,
+0x7eb80c,??_R2?$CSListLink@VBaseEditor@@@@8,,
+0x7eb814,??_R1A@?0A@EA@?$CSListLink@VBaseEditor@@@@8,,
+0x7eb830,??_R4EditorSettings@@6B@,,
+0x7eb844,??_R3EditorSettings@@8,,
+0x7eb854,??_R2EditorSettings@@8,,
+0x7eb85c,??_R1A@?0A@EA@EditorSettings@@8,,
 0x7ec898,??_R4ShaderBuilderGen@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec8ac,??_R3ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
 0x7ec8bc,??_R2ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
@@ -22601,6 +22708,7 @@ address,symbol,size,ctype
 0x80fc60,_FmvCopyFlagsPc,4,i32
 0x80fc64,_FmvVolumePc,4,f32
 0x80fcd0,_FmvFrequencyPc,8,LARGE_INTEGER
+0x80fde0,_rtl_helper_radius,,f32
 0x80fde4,_rtl_dynamic_lights_enabled,,i32
 0x80fde8,_RtlFileVersionPc,,i32
 0x80fdec,_rtl_shadow_blend_rate,,f32
@@ -26331,6 +26439,7 @@ address,symbol,size,ctype
 0x29138e4,_dof_fstop_item,,eduiitem_s *
 0x29138e8,_blurdensity_item,,eduiitem_s *
 0x29138f0,_modifier_adj_items,,eduiitem_s *[32]
+0x2913970,_rtl_helper_radius_mode,,i32
 0x2913974,_edrtl_active_menu,,eduimenu_s *
 0x2913978,_edrtl_burn_main_menu,,eduimenu_s *
 0x291397c,_edrtl_burn_defaults_menu,,eduimenu_s *

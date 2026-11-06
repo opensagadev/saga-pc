@@ -110,3 +110,83 @@ eduimenu_s *GetMenuActiveChild(eduimenu_s *menu) {
         return GetMenuActiveChild(menu->child);
     return menu;
 }
+
+/* Intrusive list link (Android CSListLink<T>); non-polymorphic, so it sits
+ * after the vtable pointer of the classes that derive from it. */
+template <class T> class CSListLink {
+  public:
+    T *next;
+    T *previous;
+};
+
+struct DATAPTR;
+struct EdInputContext;
+
+class EdTool : public CSListLink<EdTool> {
+  public:
+    virtual ~EdTool();
+    virtual void Initialise(variptr_u &, variptr_u &, i32) {
+    }
+    virtual char const *GetName() {
+        return "";
+    }
+    virtual i32 Process(EdInputContext &) {
+        return 0;
+    }
+    virtual void Render() {
+    }
+};
+STATIC_ASSERT(sizeof(EdTool) == 0xc);
+
+EdTool::~EdTool() {
+}
+
+class BaseEditor : public CSListLink<BaseEditor> {
+  public:
+    virtual ~BaseEditor();
+    virtual void Initialise(variptr_u &, variptr_u &, i32 id) {
+        this->id = id;
+    }
+    virtual char const *GetName() {
+        return "";
+    }
+    virtual i32 ReadBlock(DATAPTR *) {
+        return 0;
+    }
+    virtual void WriteBlock(i32) {
+    }
+    virtual void Serialise(EdStream &) {
+    }
+    virtual void ClearLevel(i32) {
+    }
+    virtual void Flush() {
+    }
+    virtual void Enter() {
+    }
+    virtual void Exit() {
+    }
+    virtual void Process(EdInputContext &) {
+    }
+    virtual void Render() {
+    }
+    virtual void AddMenuItems(eduimenu_s *) {
+    }
+
+    i32 id;
+};
+STATIC_ASSERT(sizeof(BaseEditor) == 0x10);
+STATIC_ASSERT(offsetof(BaseEditor, id) == 0xc);
+
+BaseEditor::~BaseEditor() {
+}
+
+class EditorSettings {
+  public:
+    virtual ~EditorSettings();
+    f32 cursor_radius;
+    i32 snap_terrain;
+};
+STATIC_ASSERT(sizeof(EditorSettings) == 0xc);
+
+EditorSettings::~EditorSettings() {
+}

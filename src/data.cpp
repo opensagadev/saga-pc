@@ -17964,6 +17964,10 @@ extern "C" {
     NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
 #pragma data_seg()
 
+#pragma data_seg(".data$rtl_helper_radius")
+    f32 rtl_helper_radius = 0.25f;
+#pragma data_seg()
+
 #pragma data_seg(".data$rtl_dynamic_lights_enabled")
     i32 rtl_dynamic_lights_enabled = 1;
 #pragma data_seg()
@@ -18561,6 +18565,9 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$edLevelPinnedMenu")
     struct eduimenu_s *edLevelPinnedMenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$rtl_helper_radius_mode")
+    i32 rtl_helper_radius_mode = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$pad_disabled")
     i32 pad_disabled = 0;
