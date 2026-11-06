@@ -1142,4 +1142,159 @@ extern "C" {
         }
     }
 
+    /* Stage type 17. */
+    void __cdecl AllMiniKits_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        f32 icon_alpha = 0.0f;
+        f32 title_alpha;
+        i32 sliding = 1;
+        (void)packet;
+        if (current == 0 || stage->field_0x14 <= 0)
+            return;
+        if (stage->field_0x18 < 0.5f) {
+            title_alpha = stage->field_0x18 + stage->field_0x18;
+        } else if (stage->field_0x18 < 3.5) {
+            title_alpha = 1.0f;
+        } else if (stage->field_0x18 < 4.0f) {
+            icon_alpha = (stage->field_0x18 - 3.5) * 2.0;
+            title_alpha = 1.0f - icon_alpha;
+        } else {
+            title_alpha = 0.0f;
+            if (stage->field_0x18 < 6.0f) {
+                icon_alpha = 1.0f;
+            } else if (stage->field_0x18 < 6.5) {
+                icon_alpha = 1.0f - (stage->field_0x18 - 6.0) * 2.0;
+                sliding = 0;
+            } else {
+                return;
+            }
+        }
+        if (icon_alpha > 0.0f) {
+            DrawCharIcon(VehicleBoltId7f195cPc, 0.0f,
+                         (sliding ? (1.0f - NuTrigTable[((i32)(icon_alpha * 16384.0f) >> 1) & 0x7fff]) * -0.5f : 0.0f) +
+                             0.225f,
+                         0.0f, 0.4f, 0xa7, icon_alpha, icon_alpha, 1, NULL);
+            SmartTextEx(TTab[CDataList[VehicleBoltId7f195cPc].name_id], 0.0f, -0.1f, 1.0f, StatusAlt7f823cPc,
+                        StatusAlt7f823cPc, StatusAlt7f823cPc, 0, (u8)StatusRedPc, (u8)StatusGreenPc, (u8)StatusBluePc,
+                        1.7f, 1, NULL, 0, (i32)(icon_alpha * 128.0f));
+        }
+        if (title_alpha > 0.0f)
+            DrawStatusText(TTab[TextIdPc880740], StatusAltSpinPc, 0.0f, 0.225f, StatusAlt7f8278Pc,
+                           ((u32)(title_alpha * 255.0) << 24) | ((u8)StatusBluePc << 16) | ((u8)StatusGreenPc << 8) |
+                               (u8)StatusRedPc,
+                           0);
+    }
+
+    /* Stage type 18. Shows the red brick's cheat name, the spinning brick and the title. */
+    void __cdecl RedBrick_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        f32 cheat_alpha, cheat_scale, title_alpha, title_scale, brick_scale;
+        u16 cheat_angle, title_angle, rotation;
+        if (current == 0 || stage->field_0x14 <= 0)
+            return;
+        cheat_scale = 0.0f;
+        title_alpha = 0.0f;
+        title_scale = 0.0f;
+        cheat_alpha = 0.0f;
+        title_angle = 0;
+        cheat_angle = 0;
+        brick_scale = 1.0f;
+        switch (stage->field_0x14) {
+            case 1:
+                title_angle = 0;
+                cheat_angle = 0;
+                brick_scale =
+                    1.0 -
+                    ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                      0x7fff] +
+                     1.0) *
+                        0.5;
+                cheat_alpha = 0.0f;
+                cheat_scale = 0.0f;
+                title_alpha = 0.0f;
+                title_scale = 0.0f;
+                break;
+            case 2:
+                cheat_angle = StatusAltSpinPc;
+                title_angle = 0;
+                cheat_alpha =
+                    1.0 -
+                    ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                      0x7fff] +
+                     1.0) *
+                        0.5;
+                cheat_scale = cheat_alpha;
+                title_alpha = 0.0f;
+                title_scale = 0.0f;
+                break;
+            case 3:
+                cheat_alpha = 1.0f;
+                title_angle = 0;
+                cheat_scale = 1.0f;
+                cheat_angle = 0;
+                title_alpha = 0.0f;
+                title_scale = 0.0f;
+                break;
+            case 4:
+                cheat_alpha = 1.0f;
+                cheat_scale = 1.0f;
+                cheat_angle = 0;
+                title_angle = (u16)-StatusAltSpinPc;
+                title_alpha =
+                    1.0 -
+                    ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                      0x7fff] +
+                     1.0) *
+                        0.5;
+                title_scale = title_alpha;
+                break;
+            case 5:
+                cheat_alpha = 1.0f;
+                title_angle = 0;
+                cheat_scale = 1.0f;
+                cheat_angle = 0;
+                title_alpha = 1.0f;
+                title_scale = 1.0f;
+                break;
+            case 6:
+                title_alpha = 1.0f;
+                title_angle = 0;
+                title_scale = 1.0f;
+                cheat_angle = 0;
+                cheat_alpha = 1.0f;
+                cheat_scale = 1.0f;
+                brick_scale =
+                    (f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0) >> 1) & 0x7fff] *
+                        0.25 +
+                    1.0;
+                break;
+            case 7: {
+                f32 blend;
+                cheat_angle = StatusAltSpinPc;
+                title_angle = (u16)-StatusAltSpinPc;
+                blend =
+                    1.0 -
+                    (1.0 -
+                     ((f64)NuTrigTable[((i32)((f64)(stage->field_0x18 / stage->field_0x1c) * 32768.0 + 16384.0) >> 1) &
+                                       0x7fff] +
+                      1.0) *
+                         0.5);
+                title_alpha = blend;
+                cheat_alpha = blend;
+                title_scale = blend;
+                cheat_scale = blend;
+                brick_scale = blend;
+                break;
+            }
+        }
+        cheat_scale = StatusAltScalePc * cheat_scale;
+        title_scale = StatusAltScalePc * title_scale;
+        DrawStatusText(TTab[*ExtrasCheatsPc[packet->area->cheat].text_id], cheat_angle, 0.0f,
+                       cheat_scale * StatusCoinsTitleYPc, cheat_scale, ((u32)(cheat_alpha * 255.0) << 24) | 0xa0af5, 0);
+        rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+        DrawPanel3DObjectNoAlpha(0.0f, 0.0f, 1.0f, brick_scale, brick_scale, brick_scale,
+                                 (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0), rotation, 0,
+                                 &WORLD->level_objects[210].special, 2);
+        DrawStatusText(TTab[TextIdPc880748], title_angle, 0.0f, title_scale * -StatusCoinsTitleYPc, title_scale,
+                       ((u32)(title_alpha * 255.0) << 24) | 0xa0af5, 0);
+    }
+
 } /* extern "C" */
