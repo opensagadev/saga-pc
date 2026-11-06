@@ -1037,50 +1037,61 @@ void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v) {
     m->m21 = m->m02 * m->m10 - m->m00 * m->m12;
     m->m22 = m->m00 * m->m11 - m->m01 * m->m10;
 }
+// Retail inlines a guarded divide and the NuVecCross body here.
+static __forceinline f32 NuFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+#define NUMTX_CROSS(out, left, right)                                                                                  \
+    {                                                                                                                  \
+        NUVEC *cross_out = (out);                                                                                      \
+        NUVEC *cross_left = (left);                                                                                    \
+        NUVEC *cross_right = (right);                                                                                  \
+        f32 cross_y = cross_left->z * cross_right->x - cross_right->z * cross_left->x;                                 \
+        f32 cross_z = cross_right->y * cross_left->x - cross_left->y * cross_right->x;                                 \
+        cross_out->x = cross_left->y * cross_right->z - cross_left->z * cross_right->y;                                \
+        cross_out->y = cross_y;                                                                                        \
+        cross_out->z = cross_z;                                                                                        \
+    }
 void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v) {
     f32 x_squared = m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02;
     f32 y_squared = m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12;
     f32 z_squared = m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22;
-    f32 denominator = v->x * v->x + v->y * v->y + v->z * v->z;
-    f32 quotient = z_squared == 0.0f || denominator == 0.0f ? 0.0f : z_squared / denominator;
-    f32 len = NuFsqrt(quotient);
+    f32 len = NuFsqrt(NuFdiv(z_squared, v->x * v->x + v->y * v->y + v->z * v->z));
     f32 dot;
     m->m20 = v->x * len;
     m->m21 = v->y * len;
     m->m22 = v->z * len;
-    dot = m->m10 * m->m20 + m->m11 * m->m21 + m->m12 * m->m22;
-    if (fabsf(dot) > 0.86602540378f) {
-        NuVecCross((NUVEC *)&m->m10, (NUVEC *)&m->m20, (NUVEC *)&m->m00);
-        denominator = m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12;
-        quotient = y_squared == 0.0f || denominator == 0.0f ? 0.0f : y_squared / denominator;
-        len = NuFsqrt(quotient);
+    dot = m->m11 * m->m21 + m->m10 * m->m20 + m->m12 * m->m22;
+    *(u32 *)&dot &= 0x7fffffff;
+    if (dot > 0.8660254f) {
+        NUMTX_CROSS((NUVEC *)&m->m10, (NUVEC *)&m->m20, (NUVEC *)&m->m00);
+        len = NuFsqrt(NuFdiv(y_squared, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
         m->m10 *= len;
         m->m11 *= len;
         m->m12 *= len;
-        NuVecCross((NUVEC *)&m->m00, (NUVEC *)&m->m10, (NUVEC *)&m->m20);
-        denominator = m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02;
-        quotient = x_squared == 0.0f || denominator == 0.0f ? 0.0f : x_squared / denominator;
-        len = NuFsqrt(quotient);
+        NUMTX_CROSS((NUVEC *)&m->m00, (NUVEC *)&m->m10, (NUVEC *)&m->m20);
+        len = NuFsqrt(NuFdiv(x_squared, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
         m->m00 *= len;
         m->m01 *= len;
         m->m02 *= len;
     } else {
-        NuVecCross((NUVEC *)&m->m00, (NUVEC *)&m->m10, (NUVEC *)&m->m20);
-        denominator = m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02;
-        quotient = x_squared == 0.0f || denominator == 0.0f ? 0.0f : x_squared / denominator;
-        len = NuFsqrt(quotient);
+        NUMTX_CROSS((NUVEC *)&m->m00, (NUVEC *)&m->m10, (NUVEC *)&m->m20);
+        len = NuFsqrt(NuFdiv(x_squared, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
         m->m00 *= len;
         m->m01 *= len;
         m->m02 *= len;
-        NuVecCross((NUVEC *)&m->m10, (NUVEC *)&m->m20, (NUVEC *)&m->m00);
-        denominator = m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12;
-        quotient = y_squared == 0.0f || denominator == 0.0f ? 0.0f : y_squared / denominator;
-        len = NuFsqrt(quotient);
+        NUMTX_CROSS((NUVEC *)&m->m10, (NUVEC *)&m->m20, (NUVEC *)&m->m00);
+        len = NuFsqrt(NuFdiv(y_squared, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
         m->m10 *= len;
         m->m11 *= len;
         m->m12 *= len;
     }
 }
+
+#undef NUMTX_CROSS
 void __cdecl NuMtxLookAtY(NUMTX *m, NUVEC *point) {
     NUVEC v;
     v.x = point->x - m->m30;
