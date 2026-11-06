@@ -35,13 +35,8 @@ extern "C" {
 #include <stdio.h>
 #include <string.h>
 
-    typedef struct world_bounds_view_pc_s {
-        u8 unknown_0000[0x144];
-        NUVEC level_max;
-        NUVEC level_min;
-    } WORLD_BOUNDS_VIEW_PC;
-    STATIC_ASSERT(offsetof(WORLD_BOUNDS_VIEW_PC, level_max) == 0x144);
-    STATIC_ASSERT(offsetof(WORLD_BOUNDS_VIEW_PC, level_min) == 0x150);
+    STATIC_ASSERT(offsetof(WORLDINFO, level_min) == 0x144);
+    STATIC_ASSERT(offsetof(WORLDINFO, level_max) == 0x150);
 
     typedef struct scene_instance_transfer_pc_s {
         u8 unknown_0000[0x48];
@@ -51,13 +46,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(SCENE_INSTANCE_TRANSFER_PC, animation) == 0x48);
     STATIC_ASSERT(sizeof(SCENE_INSTANCE_TRANSFER_PC) == 0x50);
 
-    typedef struct scene_portal_bounds_pc_s {
-        NUVEC4 first;
-        NUVEC4 second;
-    } SCENE_PORTAL_BOUNDS_PC;
-    STATIC_ASSERT(offsetof(SCENE_PORTAL_BOUNDS_PC, second) == 0x10);
-    STATIC_ASSERT(sizeof(SCENE_PORTAL_BOUNDS_PC) == 0x20);
-
     typedef struct scene_transfer_pc_s {
         u8 unknown_0000[0x1c];
         i32 instance_count;
@@ -65,36 +53,18 @@ extern "C" {
         u8 unknown_0024[0xf4 - 0x24];
         i32 portal_instance_count;
         u8 unknown_00f8[4];
-        SCENE_PORTAL_BOUNDS_PC *portal_boxes;
+        NUVEC4 *portal_bounds;
         u8 unknown_0100[0x10];
         NUDISPLAY_LIST_PC *display_list;
     } SCENE_TRANSFER_PC;
     STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, instance_count) == 0x1c);
     STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, instances) == 0x20);
     STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, portal_instance_count) == 0xf4);
-    STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, portal_boxes) == 0xfc);
+    STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, portal_bounds) == 0xfc);
     STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, display_list) == 0x110);
 
-    typedef void(__cdecl *GIZMO_CLEAR_PROGRESS_FN_PC)(void *owner, void *progress);
-
-    typedef struct gizmo_progress_type_view_pc_s {
-        u8 unknown_000[0x7c];
-        GIZMO_CLEAR_PROGRESS_FN_PC clear_progress_fn;
-        u8 unknown_080[0x18];
-        void **level_progress_data;
-    } GIZMO_PROGRESS_TYPE_VIEW_PC;
-    STATIC_ASSERT(offsetof(GIZMO_PROGRESS_TYPE_VIEW_PC, clear_progress_fn) == 0x7c);
-    STATIC_ASSERT(offsetof(GIZMO_PROGRESS_TYPE_VIEW_PC, level_progress_data) == 0x98);
-    STATIC_ASSERT(sizeof(GIZMO_PROGRESS_TYPE_VIEW_PC) == 0x9c);
-
-    typedef struct gizmo_progress_types_view_pc_s {
-        i32 count;
-        i32 max_levels;
-        GIZMO_PROGRESS_TYPE_VIEW_PC *types;
-    } GIZMO_PROGRESS_TYPES_VIEW_PC;
-    STATIC_ASSERT(offsetof(GIZMO_PROGRESS_TYPES_VIEW_PC, max_levels) == 4);
-    STATIC_ASSERT(offsetof(GIZMO_PROGRESS_TYPES_VIEW_PC, types) == 8);
-    STATIC_ASSERT(sizeof(GIZMO_PROGRESS_TYPES_VIEW_PC) == 0x0c);
+    STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns.clear_progress_fn) == 0x7c);
+    STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
 
     void WorldInfo_InitOnce(void) {
         memset(WorldInfo, 0, sizeof(WorldInfo));
@@ -323,8 +293,8 @@ extern "C" {
     }
 
     void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index) {
-        GIZMO_PROGRESS_TYPES_VIEW_PC *registry = (GIZMO_PROGRESS_TYPES_VIEW_PC *)gizmotypes;
-        GIZMO_PROGRESS_TYPE_VIEW_PC *type;
+        GIZMOTYPES_PC *registry = (GIZMOTYPES_PC *)gizmotypes;
+        GIZMOTYPE_PC *type;
         i32 i;
 
         if (registry == NULL || registry->count <= 0) {
@@ -333,13 +303,13 @@ extern "C" {
 
         type = registry->types;
         for (i = 0; i < registry->count; ++i, ++type) {
-            if (type->clear_progress_fn != NULL) {
+            if (type->fns.clear_progress_fn != NULL) {
                 void *progress = NULL;
-                if (index >= 0 && type->level_progress_data != NULL && index < registry->max_levels) {
-                    progress = type->level_progress_data[index];
+                if (index >= 0 && type->progress != NULL && index < registry->max_levels) {
+                    progress = type->progress[index];
                 }
-                type->clear_progress_fn(owner, progress);
-                registry = (GIZMO_PROGRESS_TYPES_VIEW_PC *)gizmotypes;
+                type->fns.clear_progress_fn(owner, progress);
+                registry = (GIZMOTYPES_PC *)gizmotypes;
             }
         }
     }
@@ -367,7 +337,6 @@ extern "C" {
     }
 
     void __cdecl CalculateWorldSize(WORLDINFO *world) {
-        WORLD_BOUNDS_VIEW_PC *view = (WORLD_BOUNDS_VIEW_PC *)world;
         SCENE_TRANSFER_PC *scene;
         NUVEC minimum = v000;
         NUVEC maximum = v000;
@@ -377,35 +346,40 @@ extern "C" {
             return;
         }
         scene = (SCENE_TRANSFER_PC *)world->current_gscn;
-        for (index = 0; index < scene->portal_instance_count; ++index) {
-            SCENE_PORTAL_BOUNDS_PC *box = &scene->portal_boxes[index];
+        for (index = 0; index < scene->portal_instance_count * 2; index += 2) {
             NUVEC box_minimum;
             NUVEC box_maximum;
 
             if (scene->display_list != NULL && (scene->display_list->render_flags & 0x4000) != 0) {
-                box_minimum.x = box->first.x - box->second.x;
-                box_minimum.y = box->first.y - box->second.y;
-                box_minimum.z = box->first.z - box->second.z;
-                box_maximum.x = box->first.x + box->second.x;
-                box_maximum.y = box->first.y + box->second.y;
-                box_maximum.z = box->first.z + box->second.z;
+                box_minimum.x = scene->portal_bounds[index].x - scene->portal_bounds[index + 1].x;
+                box_minimum.y = scene->portal_bounds[index].y - scene->portal_bounds[index + 1].y;
+                box_minimum.z = scene->portal_bounds[index].z - scene->portal_bounds[index + 1].z;
+                box_maximum.x = scene->portal_bounds[index].x + scene->portal_bounds[index + 1].x;
+                box_maximum.y = scene->portal_bounds[index].y + scene->portal_bounds[index + 1].y;
+                box_maximum.z = scene->portal_bounds[index + 1].z + scene->portal_bounds[index].z;
             } else {
-                box_minimum.x = box->first.x;
-                box_minimum.y = box->first.y;
-                box_minimum.z = box->first.z;
-                box_maximum.x = box->second.x;
-                box_maximum.y = box->second.y;
-                box_maximum.z = box->second.z;
+                box_minimum.x = scene->portal_bounds[index].x;
+                box_minimum.y = scene->portal_bounds[index].y;
+                box_minimum.z = scene->portal_bounds[index].z;
+                box_maximum.x = scene->portal_bounds[index + 1].x;
+                box_maximum.y = scene->portal_bounds[index + 1].y;
+                box_maximum.z = scene->portal_bounds[index + 1].z;
             }
-            minimum.x = box_minimum.x < minimum.x ? box_minimum.x : minimum.x;
-            minimum.y = box_minimum.y < minimum.y ? box_minimum.y : minimum.y;
-            minimum.z = box_minimum.z < minimum.z ? box_minimum.z : minimum.z;
-            maximum.x = box_maximum.x > maximum.x ? box_maximum.x : maximum.x;
-            maximum.y = box_maximum.y > maximum.y ? box_maximum.y : maximum.y;
-            maximum.z = box_maximum.z > maximum.z ? box_maximum.z : maximum.z;
+            if (box_minimum.x < minimum.x)
+                minimum.x = box_minimum.x;
+            if (box_maximum.x > maximum.x)
+                maximum.x = box_maximum.x;
+            if (box_minimum.y < minimum.y)
+                minimum.y = box_minimum.y;
+            if (box_maximum.y > maximum.y)
+                maximum.y = box_maximum.y;
+            if (box_minimum.z < minimum.z)
+                minimum.z = box_minimum.z;
+            if (box_maximum.z > maximum.z)
+                maximum.z = box_maximum.z;
         }
-        view->level_max = maximum;
-        view->level_min = minimum;
+        world->level_max = maximum;
+        world->level_min = minimum;
     }
 
     typedef struct world_script_progress_pc_s {
@@ -415,28 +389,10 @@ extern "C" {
     STATIC_ASSERT(sizeof(WORLD_SCRIPT_PROGRESS_PC) == 0x20);
     STATIC_ASSERT(offsetof(WORLD_SCRIPT_PROGRESS_PC, params) == 0x10);
 
-    typedef struct world_script_processor_pc_s {
-        char name[16];
-        u8 unknown_0010[0x14];
-        f32 params[4];
-        u8 unknown_0034[0xa8];
-    } WORLD_SCRIPT_PROCESSOR_PC;
-    STATIC_ASSERT(sizeof(WORLD_SCRIPT_PROCESSOR_PC) == 0xdc);
-    STATIC_ASSERT(offsetof(WORLD_SCRIPT_PROCESSOR_PC, params) == 0x24);
-
-    typedef struct world_persistence_view_pc_s {
-        u8 unknown_0000[0x2960];
-        GAMEANIMSYS *game_anim_sys;
-        u8 unknown_2964[0x168];
-        GIZFLOW_PC *giz_flow;
-        u8 unknown_2ad0[0x1c];
-        i32 processor_count;
-        WORLD_SCRIPT_PROCESSOR_PC processors[32];
-    } WORLD_PERSISTENCE_VIEW_PC;
-    STATIC_ASSERT(offsetof(WORLD_PERSISTENCE_VIEW_PC, game_anim_sys) == 0x2960);
-    STATIC_ASSERT(offsetof(WORLD_PERSISTENCE_VIEW_PC, giz_flow) == 0x2acc);
-    STATIC_ASSERT(offsetof(WORLD_PERSISTENCE_VIEW_PC, processor_count) == 0x2aec);
-    STATIC_ASSERT(offsetof(WORLD_PERSISTENCE_VIEW_PC, processors) == 0x2af0);
+    STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
+    STATIC_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
+    STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
+    STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
 
     typedef struct level_progress_transfer_pc_s {
         SCENEPROGRESS scene_progress;
@@ -463,7 +419,7 @@ extern "C" {
     void __cdecl Grabber_StoreProgress(WORLDINFO *world, LEVEL_PROGRESS *progress);
     void __cdecl GizmoSysStoreProgress(void *system, void *world, i32 index);
 
-    static void WorldStoreScriptProgressPC(WORLDINFO *world, WORLD_SCRIPT_PROCESSOR_PC *processor,
+    static void WorldStoreScriptProgressPC(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *processor,
                                            LEVEL_PROGRESS *progress) {
         LEVEL_PROGRESS_TRANSFER_PC *saved = (LEVEL_PROGRESS_TRANSFER_PC *)progress;
         i32 index;
@@ -479,24 +435,22 @@ extern "C" {
             } else if (NuStrICmp(script->name, processor->name) != 0) {
                 continue;
             }
-            script->params[0] = processor->params[0];
-            script->params[1] = processor->params[1];
-            script->params[2] = processor->params[2];
-            script->params[3] = processor->params[3];
+            script->params[0] = processor->processor.params[0];
+            script->params[1] = processor->processor.params[1];
+            script->params[2] = processor->processor.params[2];
+            script->params[3] = processor->processor.params[3];
             break;
         }
     }
 
     static void WorldStoreScriptsProgressPC(WORLDINFO *world, LEVEL_PROGRESS *progress) {
-        WORLD_PERSISTENCE_VIEW_PC *view = (WORLD_PERSISTENCE_VIEW_PC *)world;
         i32 index;
-        for (index = 0; index < view->processor_count; ++index) {
-            WorldStoreScriptProgressPC(world, &view->processors[index], progress);
+        for (index = 0; index < world->script_processor_count; ++index) {
+            WorldStoreScriptProgressPC(world, &world->script_processors[index], progress);
         }
     }
 
     void __cdecl StoreLevelProgressFn(WORLDINFO *world, LEVEL_PROGRESS *progress, i32 area_progress) {
-        WORLD_PERSISTENCE_VIEW_PC *view;
         LEVEL_PROGRESS_TRANSFER_PC *saved = (LEVEL_PROGRESS_TRANSFER_PC *)progress;
         i32 index;
 
@@ -523,17 +477,16 @@ extern "C" {
                 goto store_flags;
             }
         }
-        view = (WORLD_PERSISTENCE_VIEW_PC *)world;
         StoreProgressAICharacter(progress);
         if (StartupGameFlag1 != 0) {
             Grabber_StoreProgress(world, progress);
         }
         GizmoSysStoreProgress(world->gizmo_sys, world, index);
         if (saved != NULL) {
-            GizFlowStoreProgress(view->giz_flow, &saved->giz_flow_progress);
+            GizFlowStoreProgress(world->giz_flow, &saved->giz_flow_progress);
             StoreSceneProgress(world->current_gscn, &saved->scene_progress, 0);
         }
-        GameAnimSys_StoreProgress(view->game_anim_sys, index);
+        GameAnimSys_StoreProgress(world->game_anim_sys, index);
         WorldStoreScriptsProgressPC(world, progress);
     store_flags:
         if (saved != NULL) {

@@ -5742,17 +5742,10 @@ void __cdecl DrawAutoSaveIcon(void) {
 }
 
 /* Native 0x0043fda0, 390 bytes. */
-typedef struct ai_reset_world_pc_s {
-    u8 unknown_0000[0x2aec];
-    i32 processor_count;
-    LEVEL_SCRIPT_PROCESS_PC processors[32];
-    AI_CONTROL_SYSTEM_PC *ai_path_cnx_control_sys;
-    AI_HELPER_SYSTEM_PC *ai_path_cnx_helper_sys;
-} AI_RESET_WORLD_PC;
-STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, processor_count) == 0x2aec);
-STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, processors) == 0x2af0);
-STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, ai_path_cnx_control_sys) == 0x4670);
-STATIC_ASSERT(offsetof(AI_RESET_WORLD_PC, ai_path_cnx_helper_sys) == 0x4674);
+STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
+STATIC_ASSERT(offsetof(WORLDINFO, script_processors) == 0x2af0);
+STATIC_ASSERT(offsetof(WORLDINFO, ai_path_cnx_control_sys) == 0x4670);
+STATIC_ASSERT(offsetof(WORLDINFO, ai_connection_helpers) == 0x4674);
 void __cdecl LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS_PC *);
 void __cdecl GameAIResetPathConnectionsPc(AISYS_PC *);
 
@@ -5764,7 +5757,7 @@ void __cdecl GameAISysReset(AISYS_PC *system) {
     if (system == NULL)
         return;
     AISysSetLevelPath(system, NULL);
-    ((AI_RESET_WORLD_PC *)WORLD)->processor_count = 0;
+    WORLD->script_processor_count = 0;
     for (script_index = 0; script_index < 32; ++script_index) {
         if (script_index != 0)
             sprintf(script_name, GameAILevelScriptFormatPc, script_index);
@@ -5772,22 +5765,18 @@ void __cdecl GameAISysReset(AISYS_PC *system) {
             sprintf(script_name, AIScriptKeywordLevel);
         if (AIScriptFind(WORLD->ai_sys, script_name, 0, 1, 0) == NULL)
             continue;
-        AIScriptProcessorInit(
-            system, NULL,
-            &((AI_RESET_WORLD_PC *)WORLD)->processors[((AI_RESET_WORLD_PC *)WORLD)->processor_count].processor, NULL,
-            script_name, NULL, 0, NULL, NULL);
-        NuStrCpy(((AI_RESET_WORLD_PC *)WORLD)->processors[((AI_RESET_WORLD_PC *)WORLD)->processor_count].name,
-                 script_name);
-        LevelScriptReStoreProgress(
-            WORLD, &((AI_RESET_WORLD_PC *)WORLD)->processors[((AI_RESET_WORLD_PC *)WORLD)->processor_count]);
-        ++((AI_RESET_WORLD_PC *)WORLD)->processor_count;
+        AIScriptProcessorInit(system, NULL, &WORLD->script_processors[WORLD->script_processor_count].processor, NULL,
+                              script_name, NULL, 0, NULL, NULL);
+        NuStrCpy(WORLD->script_processors[WORLD->script_processor_count].name, script_name);
+        LevelScriptReStoreProgress(WORLD, &WORLD->script_processors[WORLD->script_processor_count]);
+        ++WORLD->script_processor_count;
     }
     GameAIResetPathConnectionsPc(system);
-    AIPathCnxControlSysReset(((AI_RESET_WORLD_PC *)WORLD)->ai_path_cnx_control_sys);
-    AIPathCnxHelperSysReset(WORLD, ((AI_RESET_WORLD_PC *)WORLD)->ai_path_cnx_helper_sys);
+    AIPathCnxControlSysReset(WORLD->ai_path_cnx_control_sys);
+    AIPathCnxHelperSysReset(WORLD, WORLD->ai_connection_helpers);
     InitAICreatures(system);
     ResetAICreatures(system);
-    if (((AI_RESET_WORLD_PC *)WORLD)->processor_count != 0)
+    if (WORLD->script_processor_count != 0)
         GizmoSysAddGizmos(WORLD->gizmo_sys, WORLD->giz_flow, WORLD);
 }
 

@@ -3647,6 +3647,12 @@ STATIC_ASSERT(offsetof(CLIMB_SYSTEM_PC, capacity) == 6);
 STATIC_ASSERT(sizeof(INDY_GUIDELINE_PC) == 0x24);
 STATIC_ASSERT(offsetof(INDY_GUIDELINE_PC, endpoints) == 8);
 
+typedef struct level_script_process_pc_s {
+    char name[16];
+    AISCRIPTPROCESS_PC processor;
+    u8 unknown_d8[4];
+} LEVEL_SCRIPT_PROCESS_PC;
+
 typedef struct WORLDINFO_s {
     char name[0x80];
     char config_file[0x80];
@@ -3672,8 +3678,8 @@ typedef struct WORLDINFO_s {
     PARTDEBRISSYS *part_debris_sys;
     NUGSCN *current_gscn;
     NUGSCN *secondary_gscn;
-    f32 level_min[3];
-    f32 level_max[3];
+    NUVEC level_min;
+    NUVEC level_max;
     SCENEPROGRESS scene_progress;
     void *terrain;
     GAMEANIMSYS *game_anim_sys;
@@ -3703,7 +3709,9 @@ typedef struct WORLDINFO_s {
     struct HUBMINIKIT_s *hub_minikits;
     i32 ai_loaded;
     AISYS_PC *ai_sys;
-    u8 unknown_2aec[0x1b88];
+    i32 script_processor_count;
+    LEVEL_SCRIPT_PROCESS_PC script_processors[32];
+    struct ai_control_system_pc_s *ai_path_cnx_control_sys;
     AI_HELPER_SYSTEM_PC *ai_connection_helpers;
     void *ai_trigger_set;
     CLIMB_SYSTEM_PC *climb_objects;
@@ -27925,12 +27933,6 @@ extern "C" {
 }
 #endif
 
-/* PC level AI reset/population ABI. */
-typedef struct level_script_process_pc_s {
-    char name[16];
-    AISCRIPTPROCESS_PC processor;
-    u8 unknown_d8[4];
-} LEVEL_SCRIPT_PROCESS_PC;
 STATIC_ASSERT(sizeof(AISCRIPTPROCESS_PC) == 0xc8);
 STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROCESS_PC) == 0xdc);
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, unknown_d8) == 0xd8);
