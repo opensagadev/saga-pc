@@ -1567,7 +1567,8 @@ typedef struct menu_s {
     i32 draw_item;
     f32 item_scale;
     f32 draw_x, draw_y, draw_z, draw_offset, centre_offset;
-    u8 unknown_00a8[0x38];
+    u8 unknown_00a8[0x34];
+    i32 state;
 } MENU;
 STATIC_ASSERT(sizeof(MENU) == 0xe0);
 STATIC_ASSERT(offsetof(MENU, selected_column) == 0x08);

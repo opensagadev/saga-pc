@@ -296,43 +296,7 @@ void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_sca
     Text3DEx(text, x, y, z, x_scale, y_scale, z_scale, alignment, red, green, blue, 128);
 }
 
-typedef struct SAVE_MENU_VIEW_PC {
-    f32 menu_time;
-    f32 time_04;
-    i16 selected_column;
-    i16 selected_row;
-    i16 first_column;
-    i16 first_row;
-    i16 last_column;
-    i16 last_row;
-    i16 menu;
-    u8 unknown_16[0x26];
-    i32 previous_item;
-    u8 unknown_40[0x24];
-    i32 confirm_pressed;
-    i32 cancel_pressed;
-    u8 unknown_6c[0x20];
-    i32 draw_item;
-    f32 item_scale;
-    f32 draw_x;
-    f32 draw_y;
-    f32 draw_z;
-    u8 unknown_a0[0x3c];
-    i32 state;
-} SAVE_MENU_VIEW_PC;
-STATIC_ASSERT(sizeof(SAVE_MENU_VIEW_PC) == sizeof(MENU));
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, menu_time) == 0);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, time_04) == 4);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, selected_column) == 8);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, selected_row) == 0xa);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, first_column) == 0xc);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, last_column) == 0x10);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, last_row) == 0x12);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, menu) == 0x14);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, previous_item) == 0x3c);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, confirm_pressed) == 0x64);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, cancel_pressed) == 0x68);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, state) == 0xdc);
+STATIC_ASSERT(offsetof(MENU, state) == 0xdc);
 STATIC_ASSERT(offsetof(MENUFNINFO, cancel_prompt) == 0x1a);
 
 extern i32 Menu_DisableCancel;
@@ -371,7 +335,7 @@ void __cdecl MenuEnterAutoSaveCancel(MENU *menu) {
     if (MenuASCancelFinished == 0) {
         memcard_autosaveenabled = 0;
         memcard_autosavedisabled = 0;
-        ((SAVE_MENU_VIEW_PC *)menu)->last_row = 0;
+        menu->last_row = 0;
     }
 }
 
@@ -411,13 +375,12 @@ void __cdecl MenuExitCardWarning(MENU *menu) {
 }
 
 void __cdecl MenuUpdateSave(MENU *menu) {
-    SAVE_MENU_VIEW_PC *view = (SAVE_MENU_VIEW_PC *)menu;
     i32 slot;
     MenuInfo[menu->menu].cancel_prompt = Menu_DisableCancel == 0;
     if (memcard_cardchanged != 0 || saveload_cardtype != 2) {
         MenuEnterSave(menu);
     }
-    slot = menu->selected_column - view->first_column;
+    slot = menu->selected_column - menu->first_column;
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 0) {
@@ -427,7 +390,7 @@ void __cdecl MenuUpdateSave(MENU *menu) {
                 memcard_slot = slot;
                 NewMenu(1008, 1, -1);
             }
-        } else if (menu->selected_row == view->last_row && Menu_DisableCancel == 0) {
+        } else if (menu->selected_row == menu->last_row && Menu_DisableCancel == 0) {
             NewMenu(1016, 1, -1);
         }
     } else if (menu->cancel_pressed != 0 && Menu_DisableCancel == 0) {
@@ -442,7 +405,7 @@ void __cdecl MenuUpdateInsertCard(MENU *menu) {
         BackupMenuNoFn();
         NewMenu(1016, 1, -1);
     }
-    if (menu->confirm_pressed != 0 && menu->selected_row == ((SAVE_MENU_VIEW_PC *)menu)->last_row) {
+    if (menu->confirm_pressed != 0 && menu->selected_row == menu->last_row) {
         MenuSFX = MENUSFX_MENUSELECT;
         BackupMenuNoFn();
         NewMenu(1016, 1, -1);
@@ -633,12 +596,12 @@ void __cdecl MenuUpdateLoad(MENU *menu) {
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 0) {
-            memcard_slot = menu->selected_column - ((SAVE_MENU_VIEW_PC *)menu)->first_column;
+            memcard_slot = menu->selected_column - menu->first_column;
             if (saveload_slotused[memcard_slot] != 0)
                 NewMenu(1013, 1, -1);
             else
                 MenuSFX = MENUSFX_MENUNOENTRY;
-        } else if (menu->selected_row == ((SAVE_MENU_VIEW_PC *)menu)->last_row) {
+        } else if (menu->selected_row == menu->last_row) {
             NewMenu(1017, 1, -1);
         }
     } else if (menu->cancel_pressed != 0) {
@@ -740,8 +703,6 @@ void __cdecl MenuUpdateFormatCancel(MENU *menu) {
     }
 }
 
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, first_row) == 0xe);
-
 static i32 SaveMenuLastSlotPc = 0;
 static i32 SaveMenuSlideLeftPc = 0;
 static i32 SaveMenuSlideRightPc = 0;
@@ -753,14 +714,13 @@ extern u8 MENUFLASH0R, MENUFLASH0G, MENUFLASH0B;
 extern u8 MENUFLASH1R, MENUFLASH1G, MENUFLASH1B;
 
 void __cdecl MenuEnterLoad(MENU *menu) {
-    SAVE_MENU_VIEW_PC *view = (SAVE_MENU_VIEW_PC *)menu;
     i32 last_column = SAVESLOTS;
     memcard_cardchanged = 0;
     if (last_column > 6)
         last_column = memcard_slotsused;
-    view->last_column = (i16)(last_column - 1);
-    view->state = 2;
-    view->last_row = 1;
+    menu->last_column = (i16)(last_column - 1);
+    menu->state = 2;
+    menu->last_row = 1;
     SaveMenuSlideRightPc = SaveMenuSlideLeftPc = SaveMenuLastSlotPc = 0;
     MenuKeyboardSecondaryPc = 1;
     Menu_LastFlow = 3;
@@ -775,26 +735,25 @@ void __cdecl MenuEnterLoad(MENU *menu) {
 }
 
 void __cdecl MenuEnterSave(MENU *menu) {
-    SAVE_MENU_VIEW_PC *view = (SAVE_MENU_VIEW_PC *)menu;
     MenuSaveOccurred = 0;
     memcard_cardchanged = 0;
     Menu_DisableCancel = 0;
     MenuKeyboardAlwaysPc = 1;
     Menu_LastFlow = 2;
     if (SAVESLOTS <= 6) {
-        view->last_column = (i16)(SAVESLOTS - 1);
+        menu->last_column = (i16)(SAVESLOTS - 1);
     } else {
-        view->last_column = (i16)memcard_slotsused;
+        menu->last_column = (i16)memcard_slotsused;
         if (SAVESLOTS == memcard_slotsused || saveload_freespace < SAVESIZE_ADDITIONAL)
-            --view->last_column;
+            --menu->last_column;
     }
-    view->state = 2;
+    menu->state = 2;
     SaveMenuLastSlotPc = SaveMenuSlideLeftPc = SaveMenuSlideRightPc = 0;
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    view->last_row = 1;
+    menu->last_row = 1;
     if (saveload_cardtype != 2)
         NewMenu(1002, -1, -1);
     else if (saveload_filecorrupt != 0)
@@ -810,7 +769,6 @@ void __cdecl MenuEnterSave(MENU *menu) {
 }
 
 void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
-    SAVE_MENU_VIEW_PC *view = (SAVE_MENU_VIEW_PC *)menu;
     i32 count = SAVESLOTS;
     i32 first, last, slot, highlight;
     i32 red, green, blue;
@@ -820,17 +778,17 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     if (SaveMenuSlideLeftPc > 0)
         --SaveMenuSlideLeftPc;
     if (count > 3) {
-        if (view->selected_column != SaveMenuLastSlotPc) {
-            if (view->selected_column < SaveMenuLastSlotPc)
+        if (menu->selected_column != SaveMenuLastSlotPc) {
+            if (menu->selected_column < SaveMenuLastSlotPc)
                 SaveMenuSlideRightPc = 10;
             else
                 SaveMenuSlideLeftPc = 10;
-            SaveMenuLastSlotPc = view->selected_column;
+            SaveMenuLastSlotPc = menu->selected_column;
         }
-        first = view->selected_column - 1;
+        first = menu->selected_column - 1;
         if (SaveMenuSlideLeftPc != 0)
             --first;
-        last = view->selected_column + 1;
+        last = menu->selected_column + 1;
         if (SaveMenuSlideRightPc != 0)
             ++last;
     } else {
@@ -840,19 +798,19 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     if (count > 6)
         count = memcard_slotsused;
     if (SAVESLOTS > 3)
-        x = 0.0 - (view->selected_column - first) * 0.5 - SaveMenuSlideRightPc * 0.5 / 10.0 +
+        x = 0.0 - (menu->selected_column - first) * 0.5 - SaveMenuSlideRightPc * 0.5 / 10.0 +
             SaveMenuSlideLeftPc * 0.5 / 10.0;
     else
         x = (SAVESLOTS - 1) * -0.25;
     for (slot = first; slot <= last; ++slot, x += 0.5) {
-        highlight = view->selected_row == view->first_row && view->selected_column == slot &&
+        highlight = menu->selected_row == menu->first_row && menu->selected_column == slot &&
                     SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0;
-        if (slot < 0 || slot > view->last_column)
+        if (slot < 0 || slot > menu->last_column)
             continue;
         if (slot < count) {
             drawslotinfofn(x, y, highlight, slot);
         } else {
-            if (view->selected_column == count && view->selected_row == 0) {
+            if (menu->selected_column == count && menu->selected_row == 0) {
                 if (menu_flash != 0) {
                     red = MENUFLASH0R;
                     green = MENUFLASH0G;
@@ -876,7 +834,7 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
                          (f32)(MenuTextScalePc * (f64)0.85f), MenuTextScalePc, 0, red, green, blue, (u8)MenuA);
         }
     }
-    if (view->selected_row == 0) {
+    if (menu->selected_row == 0) {
         if (menu_flash != 0) {
             red = MENUFLASH0R;
             green = MENUFLASH0G;
@@ -900,16 +858,11 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
     if (SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0) {
         if (first > 0)
             MenuText3DEx("<", -0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
-        if (view->last_column > last)
+        if (menu->last_column > last)
             MenuText3DEx(">", 0.8f, y, 1.0f, scale, scale, scale, 0, red, green, blue, (u8)MenuA);
     }
 }
 
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, draw_item) == 0x8c);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, item_scale) == 0x90);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, draw_x) == 0x94);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, draw_y) == 0x98);
-STATIC_ASSERT(offsetof(SAVE_MENU_VIEW_PC, draw_z) == 0x9c);
 extern f32 MENUBOTY;
 extern u8 MENUWARNR, MENUWARNG, MENUWARNB;
 void __cdecl DrawMenuEntryEx(MENU *, char *, i32);
@@ -920,9 +873,9 @@ void __cdecl MenuDrawSave(MENU *menu) {
     header_b = MENUHEADERB;
     if (drawslotsfn != NULL && MenuAlpha > (f64)0.2f && MenuStopDraw == 0)
         drawslotsfn(menu, -0.3f);
-    ++((SAVE_MENU_VIEW_PC *)menu)->draw_item;
+    ++menu->draw_item;
     if (Menu_DisableCancel == 0) {
-        ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY;
+        menu->draw_y = MENUBOTY;
         DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
     }
 }
@@ -934,13 +887,13 @@ void __cdecl MenuDrawLoad(MENU *menu) {
     header_b = MENUHEADERB;
     if (drawslotsfn != NULL && MenuAlpha > (f64)0.2f && MenuStopDraw == 0)
         drawslotsfn(menu, -0.2f);
-    ++((SAVE_MENU_VIEW_PC *)menu)->draw_item;
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY;
+    ++menu->draw_item;
+    menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
 }
 
 void __cdecl MenuDrawNoMemoryCard(MENU *menu) {
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY - MENUDY;
+    menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_RETRY, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
 }
@@ -948,7 +901,7 @@ void __cdecl MenuDrawNoMemoryCard(MENU *menu) {
 void __cdecl MenuDrawDeleteConfirm(MENU *menu) {
     MenuSmartTextEx(apitxt_CONFIRMDELETE, 0.0f, 0.0f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                     MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY - MENUDY;
+    menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
@@ -964,7 +917,7 @@ void __cdecl MenuDrawSaveConfirm(MENU *menu) {
     else
         MenuSmartTextEx(apitxt_CONFIRMSAVE, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                         MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.2f, 2, NULL, 0, MenuA);
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY - MENUDY;
+    menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
@@ -976,7 +929,7 @@ void __cdecl MenuDrawSaveCancel(MENU *menu) {
     header_b = MENUHEADERB;
     MenuSmartTextEx(apitxt_DOYOUWANTTOABORT, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                     MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY - MENUDY;
+    menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
@@ -988,7 +941,7 @@ void __cdecl MenuDrawLoadCancel(MENU *menu) {
     header_b = MENUHEADERB;
     MenuSmartTextEx(apitxt_DOYOUWANTTOABORTLOAD, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc,
                     0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY - MENUDY;
+    menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
@@ -996,7 +949,7 @@ void __cdecl MenuDrawLoadCancel(MENU *menu) {
 void __cdecl MenuDrawFormatCancel(MENU *menu) {
     MenuSmartTextEx(apitxt_DOYOUWANTTOABORTFORMAT, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc,
                     0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.5f, 2, NULL, 0, MenuA);
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY - MENUDY;
+    menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
@@ -1008,7 +961,7 @@ void __cdecl MenuDrawLoadConfirm(MENU *menu) {
     header_b = MENUHEADERB;
     MenuText3DEx(apitxt_CONFIRMLOAD, 0.0f, -0.3f, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0,
                  MENUNORMALR, MENUNORMALG, MENUNORMALB, (u8)MenuA);
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY - MENUDY;
+    menu->draw_y = MENUBOTY - MENUDY;
     DrawMenuEntryEx(menu, apitxt_YES, (u8)MenuA);
     DrawMenuEntryEx(menu, apitxt_NO, (u8)MenuA);
 }
@@ -1072,7 +1025,7 @@ void __cdecl MenuEnterNoMemoryCard(MENU *menu) {
 
 void __cdecl MenuDrawNoData(MENU *menu) {
     MenuDrawNoDataMessagePc();
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY;
+    menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_CANCEL, (u8)MenuA);
 }
 
@@ -1106,18 +1059,27 @@ void __cdecl MenuDrawLoading(MENU *menu) {
     if (memcard_loadneeded != 0 || memcard_loadstarted != 0 || memcard_loadmessage_delay > 0.0f) {
         MenuLoadResultShownPc = 0;
         MenuDrawLoadingMessagePc();
+    } else if (memcard_loadfailed != 0) {
+        if (MenuLoadResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuLoadResultShownPc = 1;
+        }
+        MenuDrawLoadFailedMessagePc();
+    } else if (memcard_loadcorrupt != 0) {
+        if (MenuLoadResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuLoadResultShownPc = 1;
+        }
+        MenuDrawLoadCorruptMessagePc();
     } else {
         if (MenuLoadResultShownPc == 0) {
             MenuAlpha = 0.0f;
             MenuA = 0;
             MenuLoadResultShownPc = 1;
         }
-        if (memcard_loadfailed != 0)
-            MenuDrawLoadFailedMessagePc();
-        else if (memcard_loadcorrupt != 0)
-            MenuDrawLoadCorruptMessagePc();
-        else
-            MenuDrawLoadedMessagePc();
+        MenuDrawLoadedMessagePc();
     }
 }
 
@@ -1128,7 +1090,8 @@ void __cdecl MenuEnterInsertCard(MENU *menu) {
 void __cdecl MenuDrawInsertCard(MENU *menu) {
     char message[1024];
     (void)menu;
-    (void)message;
+    if (0)
+        sprintf(message, "");
 }
 
 void __cdecl MenuDrawFormatConfirm(MENU *menu) {
@@ -1188,7 +1151,8 @@ static void MenuDrawAutoSaveWarningMessagePc(void) {
 void __cdecl MenuDrawNotEnoughSpace(MENU *menu) {
     char message[1024];
     (void)menu;
-    (void)message;
+    if (0)
+        sprintf(message, "");
     MenuDrawNotEnoughSpaceMessagePc();
 }
 
@@ -1202,16 +1166,20 @@ void __cdecl MenuDrawSaving(MENU *menu) {
     if (memcard_saveneeded != 0 || memcard_savestarted != 0 || memcard_savemessage_delay > 0.0f) {
         MenuSaveResultShownPc = 0;
         MenuDrawSavingMessagePc();
+    } else if (memcard_savefailed != 0) {
+        if (MenuSaveResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuSaveResultShownPc = 1;
+        }
+        MenuDrawSaveFailedMessagePc();
     } else {
         if (MenuSaveResultShownPc == 0) {
             MenuAlpha = 0.0f;
             MenuA = 0;
             MenuSaveResultShownPc = 1;
         }
-        if (memcard_savefailed != 0)
-            MenuDrawSaveFailedMessagePc();
-        else
-            MenuDrawSavedMessagePc();
+        MenuDrawSavedMessagePc();
     }
 }
 
@@ -1225,19 +1193,24 @@ void __cdecl MenuDrawDeleting(MENU *menu) {
     if (memcard_deleteneeded != 0 || memcard_deletestarted != 0 || memcard_deletemessage_delay > 0.0f) {
         MenuDeleteResultShownPc = 0;
         MenuDrawDeletingMessagePc();
+    } else if (memcard_deletefailed != 0) {
+        if (MenuDeleteResultShownPc == 0) {
+            MenuAlpha = 0.0f;
+            MenuA = 0;
+            MenuDeleteResultShownPc = 1;
+        }
     } else {
         if (MenuDeleteResultShownPc == 0) {
             MenuAlpha = 0.0f;
             MenuA = 0;
             MenuDeleteResultShownPc = 1;
         }
-        if (memcard_deletefailed == 0)
-            MenuDrawDeletedMessagePc();
+        MenuDrawDeletedMessagePc();
     }
 }
 
 void __cdecl MenuDrawAutoSaveWarning(MENU *menu) {
     MenuDrawAutoSaveWarningMessagePc();
-    ((SAVE_MENU_VIEW_PC *)menu)->draw_y = MENUBOTY;
+    menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);
 }
