@@ -17482,7 +17482,7 @@ struct SoundQueue {
     __declspec(noinline) i32 Pause();
     __declspec(noinline) i32 Resume();
     __declspec(noinline) i32 SetVolume(i32 volume);
-    __declspec(noinline) i32 HasCommand(i32 command);
+    __declspec(noinline) bool HasCommand(i32 command);
     __declspec(noinline) i32 IsStreamIdle();
     __declspec(noinline) i32 GetStatus();
     void StartTimer();

@@ -144,7 +144,7 @@ f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
     NuSpecialAnimationInstanceView *animation_instance;
     NuSpecialAnimFallbackTableView *fallback_table;
     void *animation;
-    void **animation_data;
+    void *animation_data;
     u32 animation_index;
 
     if (special == NULL || special->scene == NULL) {
@@ -156,23 +156,19 @@ f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
         animation = legacy_instance->field_48.animation;
     } else {
         display = (NuSpecialDisplayView *)special->display_special;
-        if (display == NULL) {
+        if (display == NULL || display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
             return 0.0f;
         }
         animation = display->instance_animation;
-        if (animation == (void *)-1) {
-            return 0.0f;
-        }
     }
     if (animation == NULL) {
         return 0.0f;
     }
 
     animation_instance = (NuSpecialAnimationInstanceView *)animation;
-    animation_index = animation_instance->animation_index;
-    animation_data = ((NUGSCN *)special->scene)->instance_animation_data;
-    if (animation_data[animation_index] != NULL) {
-        return NuAnimEndFrameOld(animation_data[animation_index]);
+    animation_data = ((NUGSCN *)special->scene)->instance_animation_data[animation_instance->animation_index];
+    if (animation_data != NULL) {
+        return NuAnimEndFrameOld(animation_data);
     }
 
     animation_index = animation_instance->flags >> 22;

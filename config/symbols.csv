@@ -8338,7 +8338,7 @@ address,symbol,size,ctype
 0x698fa0,_NuSound3SuspendForFocusPc,42,void __cdecl(void)
 0x699070,?SetFormatPc@SoundQueue@@QAEHPBUtWAVEFORMATEX@@@Z,266,"i32 __thiscall(SoundQueue *,const WAVEFORMATEX *)"
 0x00699180,?SendCommand@SoundQueue@@QAEHHH@Z,117,"i32 __thiscall (SoundQueue *, i32, i32)"
-0x00699260,?HasCommand@SoundQueue@@QAEHH@Z,85,"i32 __thiscall (SoundQueue *, i32)"
+0x00699260,?HasCommand@SoundQueue@@QAE_NH@Z,85,"bool __thiscall (SoundQueue *, i32)"
 0x6992c0,?FillBufferPc@SoundQueue@@QAEHHI@Z,893,"i32 __thiscall(SoundQueue *,i32,u32)"
 0x00699640,?SetStreamFile@SoundQueue@@QAEHPBDM@Z,68,"i32 __thiscall (SoundQueue *, const char *, f32)"
 0x00699690,?SetStreamFlags@SoundQueue@@QAEHH@Z,29,"i32 __thiscall (SoundQueue *, i32)"

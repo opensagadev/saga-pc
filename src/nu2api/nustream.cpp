@@ -128,15 +128,12 @@ i32 SoundQueue::SetVolume(i32 volume) {
     return 1;
 }
 
-i32 SoundQueue::HasCommand(i32 command_value) {
-    if (this == NULL) {
-        return 0;
-    }
-    i32 found = 0;
+bool SoundQueue::HasCommand(i32 command_value) {
+    bool found = false;
     EnterCriticalSection(&lock);
-    for (i32 index = 0; index < count; ++index) {
+    for (i32 index = 0; index != count; ++index) {
         if (command[index] == command_value) {
-            found = 1;
+            found = true;
             break;
         }
     }
