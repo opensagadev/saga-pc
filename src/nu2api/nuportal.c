@@ -11,22 +11,13 @@ void NuPortalInit(void) {
 }
 
 void NuPortalSetActive(NUGSCN *scene, i32 portal_id, i32 active) {
-    if (scene->max_portals != 0) {
-        NUPORTAL *portal = scene->portals;
-        if (active == 0) {
-            u32 index;
-            for (index = 0; index < scene->max_portals; index++, portal++) {
-                if (portal->id == portal_id) {
-                    portal->flags = 0;
-                }
-            }
-        } else {
-            u32 index;
-            for (index = 0; index < scene->max_portals; index++, portal++) {
-                if (portal->id == portal_id) {
-                    portal->flags |= NUPORTAL_FLAG_ACTIVE;
-                }
-            }
+    u32 index;
+    for (index = 0; index < (u32)scene->max_portals; ++index) {
+        if (scene->portals[index].id == portal_id) {
+            if (active != 0)
+                scene->portals[index].flags |= NUPORTAL_FLAG_ACTIVE;
+            else
+                scene->portals[index].flags = 0;
         }
     }
 }

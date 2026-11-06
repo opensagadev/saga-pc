@@ -149,16 +149,13 @@ void __cdecl NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
 }
 
 void __cdecl NuVecCrossRel(NUVEC *out, NUVEC *base, NUVEC *p0, NUVEC *p1) {
-    NUVEC edge0;
-    NUVEC edge1;
-
-    edge0.x = p0->x - base->x;
-    edge0.y = p0->y - base->y;
-    edge0.z = p0->z - base->z;
-    edge1.x = p1->x - base->x;
-    edge1.y = p1->y - base->y;
-    edge1.z = p1->z - base->z;
-    NuVecCross(out, &edge0, &edge1);
+    f32 x, y, z;
+    y = (p0->z - base->z) * (p1->x - base->x) - (p1->z - base->z) * (p0->x - base->x);
+    z = (p0->x - base->x) * (p1->y - base->y) - (p1->x - base->x) * (p0->y - base->y);
+    x = (p0->y - base->y) * (p1->z - base->z) - (p1->y - base->y) * (p0->z - base->z);
+    out->x = x;
+    out->y = y;
+    out->z = z;
 }
 
 void __cdecl NuVecMax(NUVEC *out, NUVEC *left, NUVEC *right) {
