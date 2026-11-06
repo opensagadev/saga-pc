@@ -9531,9 +9531,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuTimeBarQFontScale")
     extern const f32 NuTimeBarQFontScale = 0.0625f;
 #pragma const_seg()
-#pragma const_seg(".rdata$NuTimeBarTop")
-    extern const f64 NuTimeBarTop = 0.05000000074505806;
-#pragma const_seg()
 #pragma const_seg(".rdata$NuTimeBarColumnStep")
     extern const f64 NuTimeBarColumnStep = 3.0;
 #pragma const_seg()
@@ -14344,9 +14341,6 @@ extern "C" {
 #pragma bss_seg(".bss$TerrOverRideScan")
     void *TerrOverRideScan = 0;
 #pragma bss_seg()
-#pragma const_seg(".rdata$TerrainScanMargin02Pc")
-    extern const f64 TerrainScanMargin02Pc = 0.019999999552965164;
-#pragma const_seg()
 #pragma const_seg(".rdata$TerrainScanMargin10Pc")
     extern const f64 TerrainScanMargin10Pc = 0.10000000149011612;
 #pragma const_seg()

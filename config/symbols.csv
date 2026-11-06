@@ -10823,7 +10823,6 @@ address,symbol,size,ctype
 0x007517b4,__real@40800000,4,const f32
 0x007517b8,_NuPrimTwo,4,const f32
 0x007517b8,__real@40000000,4,const f32
-0x007517c0,_NuTimeBarTop,8,const f64
 0x007517c0,__real@3fa99999a0000000,8,const f64
 0x7517c8,_StarWarsTakeOverJumpPc,13,
 0x7517d8,??_C@_0O@IFBKLDMO@DONT_JUMP_NOW?$AA@,14,const char[]
@@ -11369,7 +11368,6 @@ address,symbol,size,ctype
 0x7532b8,__real@3ecccccd,4,const f32
 0x7532bc,??_C@_07IFMLPBAP@?$CFs?5?$CI?$CFs?$CJ?$AA@,8,const char[8]
 0x7532c4,__real@3ee66666,4,const f32
-0x7532c8,_TerrainScanMargin02Pc,,const f64
 0x7532c8,__real@3f947ae140000000,8,const f64
 0x7532d0,__real@3fb33333,4,f32
 0x7532d4,__real@3f266666,4,const f32

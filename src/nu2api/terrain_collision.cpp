@@ -6,7 +6,6 @@ extern "C" {
     extern i32 WallSplinesOnly, IgnoreWallSplines, WallSplCount, curPickInst;
     extern void *TerI, *TerrOverRideScan;
     extern TERRAIN_POLYGON_INFO_PC *TerrainScaledShapeCursorPc;
-    extern const f64 TerrainScanMargin02Pc, TerrainScanMargin10Pc;
     void __cdecl ScanWallSplineTerrain(i32, i32, i32);
     f32 __cdecl TerrainDivideNonzeroPC(f32, f32);
     void __cdecl TerrainSkinAllocate(TERRAIN_GROUP_PC *);

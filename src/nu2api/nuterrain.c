@@ -752,10 +752,10 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         const i16 *platform_groups;
         i32 platform_count;
 
-        min_x -= NuTimeBarTop;
-        max_x += NuTimeBarTop;
-        min_z -= NuTimeBarTop;
-        max_z += NuTimeBarTop;
+        min_x -= 0.05f;
+        max_x += 0.05f;
+        min_z -= 0.05f;
+        max_z += 0.05f;
         if (min_x > TERRAIN_ROT_SET->platform_query_min_x && max_x < TERRAIN_ROT_SET->platform_query_max_x &&
             min_z > TERRAIN_ROT_SET->platform_query_min_z && max_z < TERRAIN_ROT_SET->platform_query_max_z) {
             platform_groups = TERRAIN_ROT_SET->active_platform_groups;
