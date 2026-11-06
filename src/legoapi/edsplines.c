@@ -482,78 +482,89 @@ void EvaluateSplineXZIntersection(NUGSPLINE *first, i32 first_looping, SPLINEPOS
 #undef SPLINE_POINT
 
 i32 __cdecl OutSideSplineArea(NUVEC *position, NUGSPLINE *spline, NUVEC *edge_end, NUVEC *edge_start, i32 inside) {
-    NUVEC ray_start;
-    NUVEC ray_end;
-    NUVEC end;
-    NUVEC closest;
-    NUVEC before;
-    NUVEC after;
-    i32 intersections = 0;
-    i32 closest_index = 0;
-    i32 i;
-    i32 previous;
-    i32 next;
     f32 best = 1000000000.0f;
-    f32 ax;
-    f32 az;
-    f32 bx;
-    f32 bz;
+    i32 closest_index, count, i;
+    NUVEC closest;
 
-    if (position == NULL || spline == NULL) {
+    if (position == NULL || spline == NULL)
         return 0;
+    {
+        NUVEC ray_start, ray_end, end;
+        f32 end_y;
+        i32 intersections, odd;
+        ray_end = *position;
+        ray_start = *position;
+        end_y = ray_start.y;
+        ray_start.y = -ray_start.z;
+        ray_start.z = end_y;
+        ray_end.z = ray_end.y;
+        ray_end.y = 100000.0f;
+        end = spline->pts[0];
+        end_y = end.y;
+        end.y = -end.z;
+        end.z = end_y;
+        intersections = 0;
+        for (i = 1; i < spline->length; ++i) {
+            NUVEC start = end;
+            end = spline->pts[i];
+            end_y = end.y;
+            end.y = -end.z;
+            end.z = end_y;
+            intersections += LineIntersectXY(&ray_start, &ray_end, &start, &end, NULL, NULL);
+        }
+        odd = intersections & 1;
+        if (inside == 0) {
+            if (odd != 0)
+                return 0;
+        } else if (odd == 0)
+            return 0;
     }
-    ray_start.x = position->x;
-    ray_start.y = -position->z;
-    ray_start.z = position->y;
-    ray_end.x = position->x;
-    ray_end.y = 100000.0f;
-    ray_end.z = position->y;
-    end.x = spline->pts[0].x;
-    end.y = -spline->pts[0].z;
-    end.z = spline->pts[0].y;
-    for (i = 1; i < spline->length; ++i) {
-        NUVEC start = end;
-        end.x = spline->pts[i].x;
-        end.y = -spline->pts[i].z;
-        end.z = spline->pts[i].y;
-        intersections += LineIntersectXY(&ray_start, &ray_end, &start, &end, NULL, NULL);
-    }
-    if ((intersections & 1) != 0 ? inside == 0 : inside != 0) {
-        return 0;
-    }
+    closest_index = 0;
     closest = spline->pts[0];
-    for (i = 0; i < spline->length - 1; ++i) {
-        f32 dx = spline->pts[i].x - position->x;
-        f32 dz = spline->pts[i].z - position->z;
-        f32 distance = dx * dx + dz * dz;
+    count = spline->length;
+    for (i = 0; i < count - 1; ++i) {
+        NUVEC point = spline->pts[i];
+        NUVEC delta;
+        f32 distance;
+        delta.x = point.x - position->x;
+        delta.z = point.z - position->z;
+        distance = delta.x * delta.x + delta.z * delta.z;
         if (distance < best) {
             closest_index = i;
-            closest = spline->pts[i];
+            closest = point;
             best = distance;
         }
     }
-    previous = closest_index == 0 ? spline->length - 2 : closest_index - 1;
-    next = closest_index == spline->length - 2 ? 0 : closest_index + 1;
-    before = spline->pts[previous];
-    after = spline->pts[next];
-    ax = after.x - position->x;
-    az = after.z - position->z;
-    bx = before.x - position->x;
-    bz = before.z - position->z;
-    if (bx * bx + bz * bz > ax * ax + az * az) {
-        if (edge_end != NULL) {
-            *edge_end = after;
+    {
+        NUVEC next_point, previous_point, end_point, start_point, a, b;
+        i32 previous, next;
+        if (closest_index == 0) {
+            previous = count - 2;
+            next = 1;
+        } else if (closest_index == count - 2) {
+            previous = closest_index - 1;
+            next = 0;
+        } else {
+            previous = closest_index - 1;
+            next = closest_index + 1;
         }
-        if (edge_start != NULL) {
-            *edge_start = closest;
+        next_point = spline->pts[next];
+        previous_point = spline->pts[previous];
+        a.x = next_point.x - position->x;
+        a.z = next_point.z - position->z;
+        b.x = previous_point.x - position->x;
+        b.z = previous_point.z - position->z;
+        if (b.x * b.x + b.z * b.z > a.x * a.x + a.z * a.z) {
+            end_point = next_point;
+            start_point = closest;
+        } else {
+            end_point = closest;
+            start_point = previous_point;
         }
-    } else {
-        if (edge_end != NULL) {
-            *edge_end = closest;
-        }
-        if (edge_start != NULL) {
-            *edge_start = before;
-        }
+        if (edge_end != NULL)
+            *edge_end = end_point;
+        if (edge_start != NULL)
+            *edge_start = start_point;
     }
     return 1;
 }
