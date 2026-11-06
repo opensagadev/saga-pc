@@ -458,10 +458,11 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
             if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-                (object->flags_e20 & 0x20) != 0 || (CInfo[object->character_context].flags & 0x40000000) != 0 ||
-                (CInfo[object->character_context].flags & 0x8000) != 0 || object->collision_max.x < minimum_x ||
-                object->collision_min.x > maximum_x || object->collision_max.z < minimum_z ||
-                object->collision_min.z > maximum_z)
+                (object->flags_e20 & 0x20) != 0 ||
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) != 0 ||
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0 ||
+                minimum_x > object->collision_max.x || maximum_x < object->collision_min.x ||
+                minimum_z > object->collision_max.z || maximum_z < object->collision_min.z)
                 continue;
             f32 radius = (f64)spinner->field_0x09c + 0.5 + object->bounds_radius;
             f32 dx = (f64)object->position.x - spinner->position.x;
