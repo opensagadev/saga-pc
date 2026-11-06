@@ -1631,8 +1631,8 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->head_target = NULL;
     object->ai_packet.dont_avoid_character = NULL;
     object->collision_link = NULL;
-    object->field_2a0 = 0;
-    object->field_2a4 = 0;
+    object->collision_exclusion_mask[0] = 0;
+    object->collision_exclusion_mask[1] = 0;
     if ((character->model_flags & 0x4000) != 0 && (object->field_280 == 0xff || object->rider != NULL))
         object->flags_1fc_word |= 2;
     else
@@ -3303,7 +3303,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, joint_overrides) == 0xf3c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, head_target) == 0xfd8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, joint_override_count) == 0x107d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
-STATIC_ASSERT(offsetof(GAMEOBJECT, field_2a4) == 0x2a4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_exclusion_mask) == 0x2a0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_1083) == 0x1083);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_108c) == 0x108c);
 STATIC_ASSERT(offsetof(GAMEOBJECT, gizforce_target) == 0x10cc);

@@ -1764,20 +1764,9 @@ void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *
     }
 }
 
-typedef struct LOS_OBJECT_VIEW_PC {
-    u8 unknown000[0x240];
-    f32 visibility_range_extension;
-} LOS_OBJECT_VIEW_PC;
-STATIC_ASSERT(offsetof(LOS_OBJECT_VIEW_PC, visibility_range_extension) == 0x240);
-typedef struct LOS_SYSTEM_VIEW_PC {
-    u32 object_size;
-    GAMEOBJECT *objects;
-    u64 line_of_sight[64];
-} LOS_SYSTEM_VIEW_PC;
-STATIC_ASSERT(offsetof(LOS_SYSTEM_VIEW_PC, line_of_sight) == 8);
-#define LOS_OBJECT(p) ((LOS_OBJECT_VIEW_PC *)(p))
-#define LOS_SYSTEM(p) ((LOS_SYSTEM_VIEW_PC *)(p))
-#define LOS_GEOMETRY(p) ((GAMEOBJECT *)(p))
+STATIC_ASSERT(offsetof(APIOBJECT_PC, collision_position) == 0x80);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, bounds_half_height) == 0x1e0);
+STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_visibility_extension) == 0x240);
 i32 __cdecl NewRayCast(NUVEC *, NUVEC *, f32, i32);
 static f32 APIObjectSafeDividePc(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f)
@@ -1847,19 +1836,19 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
         do {
             source = sources[system->los_cursor_208];
             source_index = source->object_id;
-            NuVecSub(&difference, &LOS_GEOMETRY(target)->collision_position, &LOS_GEOMETRY(source)->collision_position);
+            NuVecSub(&difference, &target->collision_position, &source->collision_position);
             distance_squared = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
-            source_range = source->view_distance + LOS_OBJECT(target)->visibility_range_extension;
-            target_range = target->view_distance + LOS_OBJECT(source)->visibility_range_extension;
+            source_range = source->view_distance + target->ai_visibility_extension;
+            target_range = target->view_distance + source->ai_visibility_extension;
             if ((source->flags_low & 0x200)) {
                 source_visible = 1;
             } else if (((source->flags_low & 0x4000) || (target->flags_low & 0x4000)) &&
-                       (LOS_SYSTEM(system)->line_of_sight[source_index] & ((u64)1 << target->object_id)) != 0 &&
+                       (U64_PAIR(system->hostility_masks[source_index]) & ((u64)1 << target->object_id)) != 0 &&
                        distance_squared < source_range * source_range) {
                 source_visible = 1;
             } else if (distance_squared < source_range * source_range &&
-                       difference.y - LOS_GEOMETRY(target)->bounds_half_height < source->max_view_height &&
-                       difference.y + LOS_GEOMETRY(target)->bounds_half_height > source->min_view_height) {
+                       difference.y - target->bounds_half_height < source->max_view_height &&
+                       difference.y + target->bounds_half_height > source->min_view_height) {
                 source_visible = 1;
             } else {
                 source_visible = 0;
@@ -1867,12 +1856,12 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             if ((target->flags_low & 0x200)) {
                 target_visible = 1;
             } else if (((target->flags_low & 0x4000) || (source->flags_low & 0x4000)) &&
-                       (LOS_SYSTEM(system)->line_of_sight[target_index] & ((u64)1 << source->object_id)) != 0 &&
+                       (U64_PAIR(system->hostility_masks[target_index]) & ((u64)1 << source->object_id)) != 0 &&
                        distance_squared < target_range * target_range) {
                 target_visible = 1;
             } else if (distance_squared < target_range * target_range &&
-                       -difference.y - LOS_GEOMETRY(source)->bounds_half_height < target->max_view_height &&
-                       LOS_GEOMETRY(source)->bounds_half_height - difference.y > target->min_view_height) {
+                       -difference.y - source->bounds_half_height < target->max_view_height &&
+                       source->bounds_half_height - difference.y > target->min_view_height) {
                 target_visible = 1;
             } else {
                 target_visible = 0;
@@ -1880,36 +1869,35 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             if ((source_visible | target_visible) != 0) {
                 if ((system->flags & 1) || (target->flags_low & 0x400) || (source->flags_low & 0x400)) {
                     if (source_visible != 0)
-                        LOS_SYSTEM(system)->line_of_sight[source_index] |= (u64)1 << target_index;
+                        U64_PAIR(system->hostility_masks[source_index]) |= (u64)1 << target_index;
                     else
-                        LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+                        U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
                     if (target_visible != 0)
-                        LOS_SYSTEM(system)->line_of_sight[target_index] |= (u64)1 << source_index;
+                        U64_PAIR(system->hostility_masks[target_index]) |= (u64)1 << source_index;
                     else
-                        LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
-                } else if (QuickNewRayCast(&LOS_GEOMETRY(source)->collision_position, &difference, 0.0f, 0, 100.0f,
-                                           ray_step) == 0) {
+                        U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
+                } else if (QuickNewRayCast(&source->collision_position, &difference, 0.0f, 0, 100.0f, ray_step) == 0) {
                     if (source_visible != 0)
-                        LOS_SYSTEM(system)->line_of_sight[source_index] |= (u64)1 << target_index;
+                        U64_PAIR(system->hostility_masks[source_index]) |= (u64)1 << target_index;
                     else
-                        LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+                        U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
                     if (target_visible != 0)
-                        LOS_SYSTEM(system)->line_of_sight[target_index] |= (u64)1 << source_index;
+                        U64_PAIR(system->hostility_masks[target_index]) |= (u64)1 << source_index;
                     else
-                        LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
+                        U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
                 } else {
                     if (source_visible != 0 && (source->flags_low & 0x400))
-                        LOS_SYSTEM(system)->line_of_sight[source_index] |= (u64)1 << target_index;
+                        U64_PAIR(system->hostility_masks[source_index]) |= (u64)1 << target_index;
                     else
-                        LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+                        U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
                     if (target_visible != 0 && (target->flags_low & 0x400))
-                        LOS_SYSTEM(system)->line_of_sight[target_index] |= (u64)1 << source_index;
+                        U64_PAIR(system->hostility_masks[target_index]) |= (u64)1 << source_index;
                     else
-                        LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
+                        U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
                 }
             } else {
-                LOS_SYSTEM(system)->line_of_sight[target_index] &= ~((u64)1 << source_index);
-                LOS_SYSTEM(system)->line_of_sight[source_index] &= ~((u64)1 << target_index);
+                U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
+                U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
             }
             ++system->los_cursor_208;
             --checks;
@@ -1928,54 +1916,17 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
 done:;
 }
 
-typedef struct api_collision_view_pc_s {
-    u8 unknown_0000[0x68];
-    NUVEC velocity, previous_velocity, collision_position;
-    u8 unknown_008c[0xc];
-    NUVEC initial_position;
-    f32 scaled_radius;
-    u8 unknown_00a8[0x134];
-    f32 bounds_radius, bounds_half_height;
-    u8 unknown_01e4[4];
-    u64 collision_identity_mask, collision_contact_mask;
-    u32 motion_flags;
-    union {
-        u32 flags_low;
-        struct {
-            u32 flags_1fc_bit_0 : 1;
-            u32 flags_1fc_bit_1 : 1;
-            u32 flags_1fc_bits_2_31 : 30;
-        };
-    };
-    NUVEC movement_direction;
-    u8 unknown_020c[0x81];
-    u8 object_id;
-    u8 unknown_028e[0xa];
-    struct api_collision_view_pc_s *collision_excluded_object;
-    u8 unknown_029c[4];
-    u64 collision_exclusion_mask;
-} API_COLLISION_VIEW_PC;
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, velocity) == 0x68);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, previous_velocity) == 0x74);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_position) == 0x80);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, initial_position) == 0x98);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, scaled_radius) == 0xa4);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, bounds_radius) == 0x1dc);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, bounds_half_height) == 0x1e0);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_identity_mask) == 0x1e8);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_contact_mask) == 0x1f0);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, motion_flags) == 0x1f8);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, flags_low) == 0x1fc);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, movement_direction) == 0x200);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, object_id) == 0x28d);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_excluded_object) == 0x298);
-STATIC_ASSERT(offsetof(API_COLLISION_VIEW_PC, collision_exclusion_mask) == 0x2a0);
-STATIC_ASSERT(sizeof(API_COLLISION_VIEW_PC) == 0x2a8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, initial_position) == 0x98);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_identity_mask) == 0x1e8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, movement_direction) == 0x200);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_link) == 0x298);
+STATIC_ASSERT(offsetof(GAMEOBJECT, collision_exclusion_mask) == 0x2a0);
 
 static f32 MINFORCEAPART = 0.333f;
 static f32 MAXFORCEAPART = 0.666f;
 
-static void GameObjectForceApart2D(API_COLLISION_VIEW_PC *first, API_COLLISION_VIEW_PC *second) {
+static void GameObjectForceApart2D(GAMEOBJECT *first, GAMEOBJECT *second) {
     const u16 angle = (u16)((f64)NuRandFloat() * 65536.0);
 
     if (first->flags_1fc_bit_1 != 0 && second->flags_1fc_bit_1 == 0) {
@@ -2005,8 +1956,8 @@ static void GameObjectForceApart2D(API_COLLISION_VIEW_PC *first, API_COLLISION_V
 }
 
 i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
-    API_COLLISION_VIEW_PC *first = (API_COLLISION_VIEW_PC *)first_input;
-    API_COLLISION_VIEW_PC *second = (API_COLLISION_VIEW_PC *)second_input;
+    GAMEOBJECT *first = (GAMEOBJECT *)first_input;
+    GAMEOBJECT *second = (GAMEOBJECT *)second_input;
     f32 value;
     f32 first_weight;
     f32 second_weight;
@@ -2022,10 +1973,10 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
     NUVEC first_component;
     NUVEC second_component;
     NUVEC average;
-    already_touching = ((first->collision_contact_mask & second->collision_identity_mask) |
-                        (second->collision_contact_mask & first->collision_identity_mask)) != 0;
-    first->collision_contact_mask |= second->collision_identity_mask;
-    second->collision_contact_mask |= first->collision_identity_mask;
+    already_touching = ((U64_PAIR(first->collision_contact_mask) & U64_PAIR(second->collision_identity_mask)) |
+                        (U64_PAIR(second->collision_contact_mask) & U64_PAIR(first->collision_identity_mask))) != 0;
+    U64_PAIR(first->collision_contact_mask) |= U64_PAIR(second->collision_identity_mask);
+    U64_PAIR(second->collision_contact_mask) |= U64_PAIR(first->collision_identity_mask);
     value = first->scaled_radius + second->scaled_radius;
     if (value > 0.0f) {
         first_weight = first->scaled_radius / value * 2.0f;
@@ -2034,9 +1985,9 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         first_weight = second_weight = 1.0f;
     }
     if (already_touching == 0) {
-        if ((first->motion_flags & 0x80) != 0)
+        if ((first->flags_1f8 & 0x80) != 0)
             return 2;
-        if ((second->motion_flags & 0x80) != 0)
+        if ((second->flags_1f8 & 0x80) != 0)
             return 2;
         NuVecSub(&normal, second_position, first_position);
         NuVecNorm(&normal, &normal);
@@ -2062,11 +2013,11 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         second_component.x = normal.x * value;
         second_component.y = normal.y * value;
         second_component.z = normal.z * value;
-        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
             second->velocity.x += (first_component.x - second_component.x) * first_weight * 2.0f;
             second->velocity.y += (first_component.y - second_component.y) * first_weight * 2.0f;
             second->velocity.z += (first_component.z - second_component.z) * first_weight * 2.0f;
-        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
             first->velocity.x += (second_component.x - first_component.x) * second_weight * 2.0f;
             first->velocity.y += (second_component.y - first_component.y) * second_weight * 2.0f;
             first->velocity.z += (second_component.z - first_component.z) * second_weight * 2.0f;
@@ -2080,9 +2031,9 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         }
         return 2;
     }
-    if ((first->motion_flags & 0x80) != 0)
+    if ((first->flags_1f8 & 0x80) != 0)
         return 1;
-    if ((second->motion_flags & 0x80) != 0)
+    if ((second->flags_1f8 & 0x80) != 0)
         return 1;
     average.x = 0.5f * (first->velocity.x + second->velocity.x);
     average.y = 0.5f * (first->velocity.y + second->velocity.y);
@@ -2099,10 +2050,10 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         force = 3.0f;
         value = (f32)((f64)value * (3.0 / (f64)2.1f));
         NuVecScale(&normal, &normal, value);
-        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
             NuVecAdd(&second->velocity, &average, &normal);
             NuVecAdd(&second->velocity, &average, &normal);
-        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
             NuVecSub(&first->velocity, &average, &normal);
             NuVecSub(&first->velocity, &average, &normal);
         } else {
@@ -2120,8 +2071,8 @@ static __forceinline f32 APIObjectFabs(f32 value) {
 }
 
 i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
-    API_COLLISION_VIEW_PC *first = (API_COLLISION_VIEW_PC *)first_input;
-    API_COLLISION_VIEW_PC *second = (API_COLLISION_VIEW_PC *)second_input;
+    GAMEOBJECT *first = (GAMEOBJECT *)first_input;
+    GAMEOBJECT *second = (GAMEOBJECT *)second_input;
     f32 value;
     f32 first_weight;
     f32 second_weight;
@@ -2138,13 +2089,13 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
     NUVEC first_component;
     NUVEC second_component;
     NUVEC average;
-    if ((first->collision_contact_mask & second->collision_identity_mask) != 0 ||
-        (second->collision_contact_mask & first->collision_identity_mask) != 0)
+    if ((U64_PAIR(first->collision_contact_mask) & U64_PAIR(second->collision_identity_mask)) != 0 ||
+        (U64_PAIR(second->collision_contact_mask) & U64_PAIR(first->collision_identity_mask)) != 0)
         already_touching = 1;
     else
         already_touching = 0;
-    first->collision_contact_mask |= second->collision_identity_mask;
-    second->collision_contact_mask |= first->collision_identity_mask;
+    U64_PAIR(first->collision_contact_mask) |= U64_PAIR(second->collision_identity_mask);
+    U64_PAIR(second->collision_contact_mask) |= U64_PAIR(first->collision_identity_mask);
     value = first->scaled_radius + second->scaled_radius;
     if (value > 0.0f) {
         first_weight = first->scaled_radius / value * 2.0f;
@@ -2153,9 +2104,9 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
         first_weight = second_weight = 1.0f;
     }
     if (already_touching == 0) {
-        if ((first->motion_flags & 0x80) != 0)
+        if ((first->flags_1f8 & 0x80) != 0)
             return 2;
-        if ((second->motion_flags & 0x80) != 0)
+        if ((second->flags_1f8 & 0x80) != 0)
             return 2;
         if (APIObjectFabs(second_position->x - first_position->x) < 0.0001f &&
             APIObjectFabs(second_position->z - first_position->z) < 0.0001f &&
@@ -2199,10 +2150,10 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
         value = second_dot * second_speed;
         second_component.x = normal.x * value;
         second_component.z = normal.z * value;
-        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
             second->velocity.x += (first_component.x - second_component.x) * first_weight * 2.0f;
             second->velocity.z += (first_component.z - second_component.z) * first_weight * 2.0f;
-        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
             first->velocity.x += (second_component.x - first_component.x) * second_weight * 2.0f;
             first->velocity.z += (second_component.z - first_component.z) * second_weight * 2.0f;
         } else {
@@ -2217,9 +2168,9 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
         second->movement_direction.z = second->velocity.z;
         return 2;
     }
-    if ((first->motion_flags & 0x80) != 0)
+    if ((first->flags_1f8 & 0x80) != 0)
         return 1;
-    if ((second->motion_flags & 0x80) != 0)
+    if ((second->flags_1f8 & 0x80) != 0)
         return 1;
     if (APIObjectFabs(second_position->x - first_position->x) < 0.0001f &&
         APIObjectFabs(second_position->z - first_position->z) < 0.0001f &&
@@ -2249,10 +2200,10 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
         value = (f32)((f64)value * (3.0 / (f64)2.1f));
         normal.x *= value;
         normal.z *= value;
-        if ((first->flags_low & 2) != 0 && (second->flags_low & 2) == 0) {
+        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
             second->velocity.x = average.x + normal.x * 2.0f;
             second->velocity.z = average.z + normal.z * 2.0f;
-        } else if ((first->flags_low & 2) == 0 && (second->flags_low & 2) != 0) {
+        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
             first->velocity.x = average.x - normal.x * 2.0f;
             first->velocity.z = average.z - normal.z * 2.0f;
         } else {
@@ -2272,45 +2223,41 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
 void __cdecl APIObjectCollisions(i32 count, APIOBJECT_PC **objects, NUVEC *minimums, NUVEC *maximums,
                                  i32(__cdecl *collide)(APIOBJECT_PC *, APIOBJECT_PC *)) {
     i32 outer, inner;
-    API_COLLISION_VIEW_PC *first, *second;
-    NUVEC *first_min, *first_max, *second_min, *second_max;
+    GAMEOBJECT *first, *second;
     f32 dx, dy, dz, distance_squared, radius;
     if (collide == NULL)
         return;
     for (outer = 1; outer < count; ++outer) {
-        second = (API_COLLISION_VIEW_PC *)objects[outer];
-        second_min = &minimums[outer];
-        second_max = &maximums[outer];
+        second = (GAMEOBJECT *)objects[outer];
         for (inner = 0; inner < outer; ++inner) {
-            first = (API_COLLISION_VIEW_PC *)objects[inner];
-            first_min = &minimums[inner];
-            first_max = &maximums[inner];
-            if (first->collision_excluded_object == second || second->collision_excluded_object == first)
+            first = (GAMEOBJECT *)objects[inner];
+            if ((GAMEOBJECT *)first->collision_link == second || (GAMEOBJECT *)second->collision_link == first)
                 goto no_collision;
-            if (second->object_id < 64 && (first->collision_exclusion_mask & ((u64)1 << second->object_id)))
+            if (((u64)1 << second->hostility_group) & U64_PAIR(first->collision_exclusion_mask))
                 goto no_collision;
-            if (first->object_id < 64 && (second->collision_exclusion_mask & ((u64)1 << first->object_id)))
+            if (((u64)1 << first->hostility_group) & U64_PAIR(second->collision_exclusion_mask))
                 goto no_collision;
-            if (first_min->x > second_max->x || second_min->x > first_max->x || first_min->z > second_max->z ||
-                second_min->z > first_max->z || first_min->y > second_max->y || second_min->y > first_max->y)
+            if (minimums[inner].x > maximums[outer].x || maximums[inner].x < minimums[outer].x ||
+                minimums[inner].z > maximums[outer].z || maximums[inner].z < minimums[outer].z ||
+                minimums[inner].y > maximums[outer].y || maximums[inner].y < minimums[outer].y)
                 goto no_collision;
             dx = second->collision_position.x - first->collision_position.x;
             dy = second->collision_position.y - first->collision_position.y;
             dz = second->collision_position.z - first->collision_position.z;
             if (first->bounds_radius != first->bounds_half_height ||
                 second->bounds_radius != second->bounds_half_height) {
-                dy = (f32)((f64)dy * (((f64)first->bounds_radius + second->bounds_radius) /
-                                      ((f64)first->bounds_half_height + second->bounds_half_height)));
+                dy = (second->bounds_radius + first->bounds_radius) /
+                     (second->bounds_half_height + first->bounds_half_height) * dy;
             }
-            radius = first->bounds_radius + second->bounds_radius;
-            distance_squared = (f32)((f64)dx * dx + (f64)dy * dy + (f64)dz * dz);
-            if ((f64)distance_squared < (f64)radius * radius) {
+            radius = second->bounds_radius + first->bounds_radius;
+            distance_squared = dx * dx + dy * dy + dz * dz;
+            if (distance_squared < radius * radius) {
                 collide((APIOBJECT_PC *)first, (APIOBJECT_PC *)second);
                 continue;
             }
         no_collision:
-            first->collision_contact_mask &= ~second->collision_identity_mask;
-            second->collision_contact_mask &= ~first->collision_identity_mask;
+            U64_PAIR(first->collision_contact_mask) &= ~U64_PAIR(second->collision_identity_mask);
+            U64_PAIR(second->collision_contact_mask) &= ~U64_PAIR(first->collision_identity_mask);
         }
     }
 }
@@ -2743,9 +2690,9 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target) {
     if (source != NULL) {
-        LOS_SYSTEM(system)->line_of_sight[source->hostility_group] &= ~((u64)1 << target->hostility_group);
+        U64_PAIR(system->hostility_masks[source->hostility_group]) &= ~((u64)1 << target->hostility_group);
     } else {
-        LOS_SYSTEM(system)->line_of_sight[target->hostility_group] = 0;
+        U64_PAIR(system->hostility_masks[target->hostility_group]) = 0;
     }
 }
 void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object) {

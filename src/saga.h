@@ -1049,7 +1049,11 @@ typedef struct APIOBJECT_PC {
     u16 facing_angle;
     u16 movement_facing_angle;
     NUVEC position;
-    u8 unknown_68[0x3c];
+    NUVEC velocity;
+    NUVEC previous_velocity;
+    NUVEC collision_position;
+    NUVEC start_position;
+    NUVEC initial_position;
     f32 scaled_radius;
     u8 unknown_a8[0x4];
     f32 collision_radius;
@@ -1060,7 +1064,12 @@ typedef struct APIOBJECT_PC {
             NUVEC last_safe_position;
             NUVEC previous_position;
             NUVEC respawn_position;
-            u8 unknown_1d8[0x20];
+            u8 unknown_1d8[0x4];
+            f32 bounds_radius;
+            f32 bounds_half_height;
+            u8 unknown_1e4[0x4];
+            u32 collision_identity_mask[2];
+            u32 collision_contact_mask[2];
         };
     };
     u32 motion_flags;
@@ -1076,7 +1085,8 @@ typedef struct APIOBJECT_PC {
     f32 hear_distance;
     f32 max_view_height;
     f32 min_view_height;
-    u8 unknown_240_b[0x1c];
+    f32 ai_visibility_extension;
+    u8 unknown_244[0x18];
     f32 previous_animation_root_time;
     f32 previous_blend_target_root_time;
     struct CHARACTERANIM_CONFIG_PC *previous_animation_root_info;
@@ -5308,6 +5318,11 @@ typedef struct gameobject_s {
             u32 flags_1fc_bit_13 : 1;
             u32 flags_1fc_bits_14_31 : 18;
         };
+        struct {
+            u32 flags_1fc_bit_0 : 1;
+            u32 flags_1fc_bit_1 : 1;
+            u32 flags_1fc_bits_2_31 : 30;
+        };
     };
     union {
         NUVEC movement_direction;
@@ -5373,8 +5388,7 @@ typedef struct gameobject_s {
     };
     struct APIOBJECT_PC *collision_link;
     u8 unknown_29c[0x4];
-    u32 field_2a0;
-    u32 field_2a4;
+    u32 collision_exclusion_mask[2];
     union {
         u32 hostility_mask[2];
         struct {
