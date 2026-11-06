@@ -466,11 +466,9 @@ void __cdecl NuAnimDataDestroy(void *animation) {
 }
 
 void *__cdecl NuAnimDataRead(NUFILE file) {
-    char *name = NULL;
+    char *name;
     i32 name_size;
     f32 duration;
-    i32 chunk_count;
-    u32 allocation_size;
     NuAnimReadData *animation;
     i32 chunk_index;
 
@@ -482,73 +480,64 @@ void *__cdecl NuAnimDataRead(NUFILE file) {
     if (name_size != 0) {
         name = (char *)NuAlloc(name_size, NuAnimSourceFileName, 0x43f);
         NuFileRead(file, name, name_size);
+    } else {
+        name = NULL;
     }
 
     duration = NuFileReadFloat(file);
-    chunk_count = NuFileReadInt(file);
-    allocation_size = (u32)chunk_count * sizeof(void *) + offsetof(NuAnimReadData, chunk_storage);
-    animation = (NuAnimReadData *)NuAlloc((i32)allocation_size, NuAnimSourceFileName, 0x4bb);
-    memset(animation, 0, allocation_size);
+    animation = (NuAnimReadData *)NuAnimDataCreate(NuFileReadInt(file));
     animation->duration = duration;
     animation->name = name;
-    animation->chunk_count = chunk_count;
-    animation->chunks = animation->chunk_storage;
 
     for (chunk_index = 0; chunk_index < animation->chunk_count; ++chunk_index) {
         i32 curve_set_count = NuFileReadInt(file);
-        NuAnimReadChunk *chunk = (NuAnimReadChunk *)NuAlloc(0x14, NuAnimSourceFileName, 0x4a8);
-        i32 curve_data_count;
-        i32 shared_curve_count;
+        NuAnimReadChunk *chunk;
+        i32 count;
         i32 set_index;
         u8 *shared_cursor;
         u8 *curve_data_cursor;
 
+        animation->chunks[chunk_index] = NuAnimDataChunkCreate(curve_set_count);
+        chunk = animation->chunks[chunk_index];
         chunk->curve_set_count = curve_set_count;
-        chunk->shared_curve_count = 0;
-        chunk->curve_data = NULL;
-        chunk->shared_curves = NULL;
-        chunk->curve_sets =
-            (NuAnimReadCurveSet **)NuAlloc(curve_set_count * (i32)sizeof(void *), NuAnimSourceFileName, 0x4ac);
-        memset(chunk->curve_sets, 0, curve_set_count * sizeof(void *));
-        animation->chunks[chunk_index] = chunk;
 
-        curve_data_count = NuFileReadInt(file);
-        if (curve_data_count != 0) {
-            const u32 curve_data_size = (u32)curve_data_count * 0x10;
-            chunk->curve_data = NuAlloc((i32)curve_data_size, NuAnimSourceFileName, 0x459);
-            NuFileRead(file, chunk->curve_data, (i32)curve_data_size);
+        count = NuFileReadInt(file);
+        if (count != 0) {
+            chunk->curve_data = NuAlloc(count * 0x10, NuAnimSourceFileName, 0x459);
+            NuFileRead(file, chunk->curve_data, count * 0x10);
+        } else {
+            chunk->curve_data = NULL;
         }
+        curve_data_cursor = (u8 *)chunk->curve_data;
 
-        shared_curve_count = NuFileReadInt(file);
-        if (shared_curve_count != 0) {
-            const u32 shared_curve_size = (u32)shared_curve_count * 0x10;
-            chunk->shared_curves =
-                (NuAnimReadSharedCurve *)NuAlloc((i32)shared_curve_size, NuAnimSourceFileName, 0x466);
-            NuFileRead(file, chunk->shared_curves, (i32)shared_curve_size);
+        count = NuFileReadInt(file);
+        if (count != 0) {
+            chunk->shared_curves = (NuAnimReadSharedCurve *)NuAlloc(count * 0x10, NuAnimSourceFileName, 0x466);
+            NuFileRead(file, chunk->shared_curves, count * 0x10);
+        } else {
+            chunk->shared_curves = NULL;
         }
 
         for (set_index = 0; set_index < curve_set_count; ++set_index) {
-            const i32 curve_count = NuFileReadChar(file);
+            i32 curve_count = NuFileReadChar(file);
             if (curve_count != 0) {
                 i32 curve_index;
-                NuAnimReadCurveSet *curve_set = (NuAnimReadCurveSet *)NuAnimCurveSetCreate(curve_count);
-                chunk->curve_sets[set_index] = curve_set;
-                curve_set->constant_count = NuFileReadInt(file);
-                for (curve_index = 0; curve_index < curve_set->curve_count; ++curve_index) {
-                    curve_set->constants[curve_index] = NuFileReadFloat(file);
+                chunk->curve_sets[set_index] = (NuAnimReadCurveSet *)NuAnimCurveSetCreate(curve_count);
+                chunk->curve_sets[set_index]->constant_count = NuFileReadInt(file);
+                for (curve_index = 0; curve_index < chunk->curve_sets[set_index]->curve_count; ++curve_index) {
+                    chunk->curve_sets[set_index]->constants[curve_index] = NuFileReadFloat(file);
                 }
             }
         }
 
         shared_cursor = (u8 *)chunk->shared_curves;
-        curve_data_cursor = (u8 *)chunk->curve_data;
         for (set_index = 0; set_index < chunk->curve_set_count; ++set_index) {
-            NuAnimReadCurveSet *curve_set = chunk->curve_sets[set_index];
             i32 curve_index;
-            if (curve_set == NULL) {
+            if (chunk->curve_sets[set_index] == NULL) {
                 continue;
             }
-            for (curve_index = 0; curve_index < curve_set->curve_count; ++curve_index) {
+            for (curve_index = 0; curve_index < chunk->curve_sets[set_index]->curve_count; ++curve_index) {
+                NuAnimReadCurveSet *curve_set = chunk->curve_sets[set_index];
                 if (curve_set->constants[curve_index] == NuAnimDataFloatMax) {
                     NuAnimReadSharedCurve *shared_curve = (NuAnimReadSharedCurve *)shared_cursor;
                     curve_set->curves[curve_index] = shared_curve;
