@@ -670,191 +670,198 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 ApplyGravity(object, NULL, 0.0f, 0.0f, NULL);
             }
         } else {
-            i32 check_terrain_hazards;
             u32 held_buttons;
             u32 pressed_buttons;
 
-            check_terrain_hazards = object->character_context != 0x2b && (api->flags_1fc_word & 4) == 0 &&
-                                    gone_through_door_to_new_level == 0;
-
-            if (object->character_context == 0x2b &&
-                (api->field_281 != 0 || api->model_draw_result == 0 || object->turn_braking >= 5.0f ||
-                 (object->wall_run_state == 3 && object->contact_count != 0))) {
-                if (api->model_draw_result != 0) {
-                    InstantKillParts(object, 0, 0.0f);
+            if (object->character_context == 0x2b) {
+                if (api->field_281 != 0 || api->model_draw_result == 0 || object->turn_braking >= 5.0f ||
+                    (object->wall_run_state == 3 && object->contact_count != 0)) {
+                    if (api->model_draw_result != 0) {
+                        InstantKillParts(object, 0, 0.0f);
+                    }
+                    KillPlayer(object, 3, 1, NULL);
+                    if (WORLD->current_level == CRUISERD_LDATA && object->wall_run_state == 3) {
+                        MiscTime = 0.1f;
+                    }
                 }
-                KillPlayer(object, 3, 1, NULL);
-                if (WORLD->current_level == CRUISERD_LDATA && object->wall_run_state == 3) {
-                    MiscTime = 0.1f;
+            } else if ((api->flags_1fc_word & 4) == 0 && gone_through_door_to_new_level == 0) {
+                TERRAIN_PLAYER_IMPACT_PC *impacts;
+                i32 count;
+
+                if (impact_count == -1) {
+                    count = 1;
+                    impacts = (TERRAIN_PLAYER_IMPACT_PC *)&object->contact_position;
+                } else {
+                    impacts = impact_records;
+                    count = impact_count;
                 }
-            }
-            if (check_terrain_hazards && CannotKill(object) == 0 && api->dead == 0 &&
-                (VehicleArea == 0 || ((api->flags_1fc_word & 0x80) != 0)) && (object->flags_ef0 & 0x40000) != 0 &&
-                (object->portal_flags & 0x40000) == 0 && object->character_context != 0x5d) {
-                if (object->contact_count != 0) {
-                    i32 count;
-                    i32 i;
+                if (CannotKill(object) == 0 && api->dead == 0 &&
+                    (VehicleArea == 0 || ((api->flags_1fc_word & 0x80) != 0)) && (object->flags_ef0 & 0x40000) != 0 &&
+                    (object->portal_flags & 0x40000) == 0 && object->character_context != 0x5d) {
+                    if (object->contact_count != 0) {
+                        i32 i;
 
-                    count = impact_count == -1 ? 1 : impact_count;
-                    for (i = 0; i < count; ++i) {
-                        i32 surface;
-                        NUVEC *normal;
+                        for (i = 0; i < count; ++i) {
+                            i32 surface;
+                            NUVEC *normal;
 
-                        normal = impact_count == -1 ? &object->contact_normal : &impact_records[i].normal;
-                        surface =
-                            ((i8)(impact_count == -1 ? object->contact_material_word : impact_records[i].material[0]));
-                        if (((u32)(surface)) > 31) {
-                            continue;
-                        }
-                        if (WORLD->current_level == BONUS_GUNSHIPA_LDATA ||
-                            (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA && GameTimer.time_elapsed >= 1.0f)) {
-                            NewRumble(object->pad->bound_pad, (((f32)(qrand())) * (1.0f / 65535.0f)) * 0.5f, 0);
-                            if (api->model_draw_result == 0 && object->character_context != 0x23) {
-                                if (((api->flags_1fc_word & 0x80) != 0)) {
-                                    LoseCoins(object, 2);
+                            surface = ((i8)(impacts[i].material[0]));
+                            normal = &impacts[i].normal;
+                            if (((u32)(surface)) > 31) {
+                                continue;
+                            }
+                            if (WORLD->current_level == BONUS_GUNSHIPA_LDATA ||
+                                (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA &&
+                                 GameTimer.time_elapsed >= 1.0f)) {
+                                NewRumble(object->pad->bound_pad, (((f32)(qrand())) * (1.0f / 65535.0f)) * 0.5f, 0);
+                                if (api->model_draw_result == 0 && object->character_context != 0x23) {
+                                    if (((api->flags_1fc_word & 0x80) != 0)) {
+                                        LoseCoins(object, 2);
+                                    }
+                                    KillPlayer(object, 2, 1, NULL);
+                                    break;
                                 }
-                                KillPlayer(object, 2, 1, NULL);
+                            } else if (((api->character_data->model_flags & 0x2000) != 0 ||
+                                        (api->character_data->game_character->flags_090 & 0x04000000) != 0) &&
+                                       api->field_283 == 6) {
                                 break;
                             }
-                        } else if (((api->character_data->model_flags & 0x2000) != 0 ||
-                                    (api->character_data->game_character->flags_090 & 0x04000000) != 0) &&
-                                   api->field_283 == 6) {
-                            break;
-                        }
-                        if ((WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA) &&
-                            TerrainKillPlayer(object, surface, normal) != 0) {
-                            if (WORLD->current_level == ASTEROIDCHASEC_LDATA) {
-                                GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+                            if ((WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA) &&
+                                TerrainKillPlayer(object, surface, normal) != 0) {
+                                if (WORLD->current_level == ASTEROIDCHASEC_LDATA) {
+                                    GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+                                }
+                                break;
                             }
-                            break;
-                        }
-                        if ((TerSurface[surface].flags & 0x80) != 0 && WORLD->current_level != BONUS_GUNSHIPA_LDATA) {
-                            NewRumble(object->pad->bound_pad, 0.6f, 0);
-                            NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                            if (object->origin_scale_override != 1.0f && CannotKill(object) == 0) {
-                                ObjHitObj(NULL, object, 1, 0, 0, 1);
-                            }
-                            break;
-                        }
-                    }
-                } else if (api->field_281 != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) {
-                    i32 surface;
-
-                    surface = ((i8)(api->jump_animation_state));
-                    if (((u32)(surface)) <= 31) {
-                        TerrainKillPlayer(object, surface, &object->surface_normal);
-                    }
-                }
-            }
-            if (check_terrain_hazards && CannotKill(object) == 0 && (object->portal_flags & 0x40000) == 0 &&
-                api->dead == 0 && api->water_height != 2000000.0f) {
-                i32 layer;
-                i32 tractor_swamp;
-
-                layer = ((i8)(api->field_283));
-                tractor_swamp =
-                    layer == 9 && object->id == id_TRACTOR && WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA;
-                if ((layer == 3 || tractor_swamp || (TerLayer[layer].flags & 0x20) != 0 ||
-                     ((api->character_data->model_flags & 0x2000) == 0 &&
-                      (api->character_data->game_character->flags_090 & 0x04000000) == 0)) &&
-                    NoLayerKill(object) == 0 && object->character_context != 0x5d) {
-                    u32 layer_flags;
-
-                    layer_flags = TerLayer[((i8)(api->field_283))].flags;
-                    if ((((layer_flags & 1) != 0 || (api->field_283 == 9 && object->id == id_TRACTOR &&
-                                                     WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA)) &&
-                         api->position.y < api->water_height &&
-                         !(VehicleArea != 0 && BonusArea != 0 &&
-                           api->character_data->game_character->field_028 > 0.0f) &&
-                         ((api->flags_1fc_word & 0x80) != 0 ||
-                          (object->character_context != 0x47 && object->character_context != 0x46))) ||
-                        ((layer_flags & 0x20) != 0 && api->collision_max.y > api->water_height &&
-                         ((api->flags_1fc_word & 0x80) != 0 ||
-                          (object->character_context != 0x47 && object->character_context != 0x46)))) {
-                        if (object->doomed_escape_locator != NULL && !((api->flags_1fc_word & 0x80) != 0)) {
-                            if ((object->flags_ef0 & 0x800) != 0) {
-                                ObjHitObj(NULL, object, 1, 0, 0, 1);
-                            }
-                            if (api->dead == 0) {
-                                StartBigJump(object, &object->doomed_escape_locator->position, 0, 1.0f, 1.0f, 0);
-                            }
-                        } else {
-                            i32 standing_surface;
-                            i32 saved_rescue_surface;
-
-                            standing_surface = (i8)api->jump_animation_state;
-                            saved_rescue_surface = StartupGameFlag1 == 0 && StartupGameFlag0 == 0 &&
-                                                   api->field_283 == 6 && (u32)standing_surface < 32 &&
-                                                   (TerSurface[standing_surface].flags & 1) != 0;
-                            if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0 && api->field_283 == 6 &&
-                                (u32)standing_surface < 32 && (TerSurface[standing_surface].flags & 1) == 0) {
-                                if (object->vehicle_hit_timer <= 0.0f)
+                            if ((TerSurface[surface].flags & 0x80) != 0 &&
+                                WORLD->current_level != BONUS_GUNSHIPA_LDATA) {
+                                NewRumble(object->pad->bound_pad, 0.6f, 0);
+                                NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                                if (object->origin_scale_override != 1.0f && CannotKill(object) == 0) {
                                     ObjHitObj(NULL, object, 1, 0, 0, 1);
-                            } else {
-                                ClearLastSafeTakeOver(object);
-                                Player_ClearContext(object, 1);
-                                object->field_7aa = 5;
-                                if (object->character_context != -1 &&
-                                    api->character_model->model_data_b[api->anim_packet.requested_animation] != NULL) {
-                                    object->field_7aa = api->anim_packet.requested_animation;
                                 }
-                                object->character_context = 0x2b;
-                                object->jump_variant_state = 0;
-                                if ((TerLayer[((i8)(api->field_283))].flags & 0x20) != 0) {
-                                    object->wall_run_state = 3;
-                                } else if (saved_rescue_surface || api->field_283 == 6) {
-                                    api->velocity.y = -0.25f;
-                                    object->wall_run_state = 2;
-                                    NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                                } else if (WORLD->current_level == VADERC_LDATA) {
-                                    api->velocity.y = -0.5f;
-                                    object->wall_run_state = 4;
-                                    NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                                } else {
-                                    object->wall_run_state = 1;
-                                }
-                                object->turn_braking = 0.0f;
-                                PlayDieSfx(object);
-                                object->current_hp = 0;
-                                if (((api->flags_1fc_word & 0x80) != 0) &&
-                                    ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet)) != NULL &&
-                                    ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->coins != 0 &&
-                                    BonusWinner == -1) {
-                                    i32 coins;
-
-                                    coins = LoseCoins(object, 2);
-                                    if (coins > 0) {
-                                        f32 height;
-
-                                        height = api->water_height;
-                                        if (height != 2000000.0f && (TerLayer[((i8)(api->field_283))].flags & 1) == 0) {
-                                            height = 2000000.0f;
-                                        }
-                                        AddPickups(coins, 0, 0, 0, &api->collision_position, NULL, 2.0f,
-                                                   ((i8)(api->field_280)), 1.0f, height, NULL, 1, 0);
-                                    }
-                                    ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->scale = 1.5f;
-                                }
+                                break;
                             }
                         }
-                    } else if ((api->character_data->model_flags & 0x40) == 0 && object->id != id_SNAKE &&
-                               api->field_283 == 9 && api->water_height > api->collision_max.y) {
-                        if (BonusWinner == -1) {
-                            i32 coins;
+                    } else if (api->field_281 != 0 && (WORLD->area == NULL || WORLD->area != PODSPRINT_ADATA)) {
+                        i32 surface;
 
-                            coins = LoseCoins(object, 2);
-                            if (coins > 0) {
-                                AddPickups(coins, 0, 0, 0, &api->upper_position, NULL, 2.0f, ((i8)(api->field_280)),
-                                           1.0f, 2000000.0f, NULL, 1, 0);
-                            }
+                        surface = ((i8)(api->jump_animation_state));
+                        if (((u32)(surface)) <= 31) {
+                            TerrainKillPlayer(object, surface, &object->surface_normal);
                         }
-                        InstantKillParts(object, 1, 2.0f);
-                        KillPlayer(object, 3, 1, NULL);
                     }
                 }
-            }
+                if (CannotKill(object) == 0 && (object->portal_flags & 0x40000) == 0 && api->dead == 0 &&
+                    api->water_height != 2000000.0f) {
+                    i32 layer;
+                    i32 tractor_swamp;
 
-            if (check_terrain_hazards) {
+                    layer = ((i8)(api->field_283));
+                    tractor_swamp =
+                        layer == 9 && object->id == id_TRACTOR && WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA;
+                    if ((layer == 3 || tractor_swamp || (TerLayer[layer].flags & 0x20) != 0 ||
+                         ((api->character_data->model_flags & 0x2000) == 0 &&
+                          (api->character_data->game_character->flags_090 & 0x04000000) == 0)) &&
+                        NoLayerKill(object) == 0 && object->character_context != 0x5d) {
+                        u32 layer_flags;
+
+                        layer_flags = TerLayer[((i8)(api->field_283))].flags;
+                        if ((((layer_flags & 1) != 0 || (api->field_283 == 9 && object->id == id_TRACTOR &&
+                                                         WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA)) &&
+                             api->position.y < api->water_height &&
+                             !(VehicleArea != 0 && BonusArea != 0 &&
+                               api->character_data->game_character->field_028 > 0.0f) &&
+                             ((api->flags_1fc_word & 0x80) != 0 ||
+                              (object->character_context != 0x47 && object->character_context != 0x46))) ||
+                            ((layer_flags & 0x20) != 0 && api->collision_max.y > api->water_height &&
+                             ((api->flags_1fc_word & 0x80) != 0 ||
+                              (object->character_context != 0x47 && object->character_context != 0x46)))) {
+                            if (object->doomed_escape_locator != NULL && !((api->flags_1fc_word & 0x80) != 0)) {
+                                if ((object->flags_ef0 & 0x800) != 0) {
+                                    ObjHitObj(NULL, object, 1, 0, 0, 1);
+                                }
+                                if (api->dead == 0) {
+                                    StartBigJump(object, &object->doomed_escape_locator->position, 0, 1.0f, 1.0f, 0);
+                                }
+                            } else {
+                                i32 standing_surface;
+                                i32 saved_rescue_surface;
+
+                                standing_surface = (i8)api->jump_animation_state;
+                                saved_rescue_surface = StartupGameFlag1 == 0 && StartupGameFlag0 == 0 &&
+                                                       api->field_283 == 6 && (u32)standing_surface < 32 &&
+                                                       (TerSurface[standing_surface].flags & 1) != 0;
+                                if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0 && api->field_283 == 6 &&
+                                    (u32)standing_surface < 32 && (TerSurface[standing_surface].flags & 1) == 0) {
+                                    if (object->vehicle_hit_timer <= 0.0f)
+                                        ObjHitObj(NULL, object, 1, 0, 0, 1);
+                                } else {
+                                    ClearLastSafeTakeOver(object);
+                                    Player_ClearContext(object, 1);
+                                    object->field_7aa = 5;
+                                    if (object->character_context != -1 &&
+                                        api->character_model->model_data_b[api->anim_packet.requested_animation] !=
+                                            NULL) {
+                                        object->field_7aa = api->anim_packet.requested_animation;
+                                    }
+                                    object->character_context = 0x2b;
+                                    object->jump_variant_state = 0;
+                                    if ((TerLayer[((i8)(api->field_283))].flags & 0x20) != 0) {
+                                        object->wall_run_state = 3;
+                                    } else if (saved_rescue_surface || api->field_283 == 6) {
+                                        api->velocity.y = -0.25f;
+                                        object->wall_run_state = 2;
+                                        NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                                    } else if (WORLD->current_level == VADERC_LDATA) {
+                                        api->velocity.y = -0.5f;
+                                        object->wall_run_state = 4;
+                                        NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                                    } else {
+                                        object->wall_run_state = 1;
+                                    }
+                                    object->turn_braking = 0.0f;
+                                    PlayDieSfx(object);
+                                    object->current_hp = 0;
+                                    if (((api->flags_1fc_word & 0x80) != 0) &&
+                                        ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet)) != NULL &&
+                                        ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->coins != 0 &&
+                                        BonusWinner == -1) {
+                                        i32 coins;
+
+                                        coins = LoseCoins(object, 2);
+                                        if (coins > 0) {
+                                            f32 height;
+
+                                            height = api->water_height;
+                                            if (height != 2000000.0f &&
+                                                (TerLayer[((i8)(api->field_283))].flags & 1) == 0) {
+                                                height = 2000000.0f;
+                                            }
+                                            AddPickups(coins, 0, 0, 0, &api->collision_position, NULL, 2.0f,
+                                                       ((i8)(api->field_280)), 1.0f, height, NULL, 1, 0);
+                                        }
+                                        ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->scale = 1.5f;
+                                    }
+                                }
+                            }
+                        } else if ((api->character_data->model_flags & 0x40) == 0 && object->id != id_SNAKE &&
+                                   api->field_283 == 9 && api->water_height > api->collision_max.y) {
+                            if (BonusWinner == -1) {
+                                i32 coins;
+
+                                coins = LoseCoins(object, 2);
+                                if (coins > 0) {
+                                    AddPickups(coins, 0, 0, 0, &api->upper_position, NULL, 2.0f, ((i8)(api->field_280)),
+                                               1.0f, 2000000.0f, NULL, 1, 0);
+                                }
+                            }
+                            InstantKillParts(object, 1, 2.0f);
+                            KillPlayer(object, 3, 1, NULL);
+                        }
+                    }
+                }
+
                 api->is_underwater = ((u8)(UnderWater(object)));
                 api->water_intersects = ((u8)(IntersectWater(object)));
             }
