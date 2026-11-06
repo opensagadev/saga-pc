@@ -356,13 +356,13 @@ void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             *static_cast<i32 *>(data) = light->type;
             break;
         case 0x80000005:
-            *static_cast<i32 *>(data) = light->flags & 1;
+            *static_cast<i32 *>(data) = light->disabled;
             break;
         case 0x80000006:
-            *static_cast<i32 *>(data) = (light->flags >> 1) & 1;
+            *static_cast<i32 *>(data) = light->cast_shadow;
             break;
         case 0x80000007:
-            *static_cast<i32 *>(data) = (light->flags >> 2) & 1;
+            *static_cast<i32 *>(data) = light->has_specular;
             break;
         case 0x80000008:
             *static_cast<f32 *>(data) = light->inner_radius;
@@ -403,13 +403,13 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             light->type = *static_cast<u8 *>(data);
             break;
         case 0x80000005:
-            light->flags = light->flags & ~1 | *static_cast<u8 *>(data) & 1;
+            light->disabled = *static_cast<u8 *>(data);
             break;
         case 0x80000006:
-            light->flags = light->flags & ~2 | (*static_cast<u8 *>(data) & 1) << 1;
+            light->cast_shadow = *static_cast<u8 *>(data);
             break;
         case 0x80000007:
-            light->flags = light->flags & ~4 | (*static_cast<u8 *>(data) & 1) << 2;
+            light->has_specular = *static_cast<u8 *>(data);
             break;
         case 0x80000008:
             if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f))

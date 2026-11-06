@@ -10467,7 +10467,16 @@ extern "C" {
     typedef struct RTL_LIGHT_PC {
         NUVEC position, direction, ambient, colour, secondary_colour;
         f32 inner_radius, outer_radius, parameters[4], parameter_54;
-        u8 type, flags;
+        u8 type;
+        union {
+            u8 flags;
+            struct {
+                u8 disabled : 1;
+                u8 cast_shadow : 1;
+                u8 has_specular : 1;
+                u8 reserved_flags : 5;
+            };
+        };
         i16 pitch, yaw, field_5e, field_60;
         u8 unknown_62[2];
         f32 field_64;
