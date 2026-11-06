@@ -253,8 +253,8 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
     if (animation->action_id == -1)
         return;
     effect = &effects[*effect_count];
-    effect->frame_1 = 1.0f;
-    effect->frame_2 = 1.0f;
+    effect->frame[0] = 1.0f;
+    effect->frame[1] = 1.0f;
     effect->rumble = 0.0f;
     effect->shake = 0.0f;
     effect->judder = 0.0f;
@@ -306,9 +306,9 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 ||
                    NuStrICmp(parser->word_buffer_ptr, "frame1") == 0) {
-            effect->frame_1 = NuFParGetFloat(parser);
+            effect->frame[0] = NuFParGetFloat(parser);
         } else if (NuStrICmp(parser->word_buffer_ptr, "frame2") == 0)
-            effect->frame_2 = NuFParGetFloat(parser);
+            effect->frame[1] = NuFParGetFloat(parser);
         else if (NuStrICmp(parser->word_buffer_ptr, "random") == 0)
             effect->random = (u8)(NuFParGetFloat(parser) * 255.0f);
         else if (NuStrICmp(parser->word_buffer_ptr, "rumble") == 0)
