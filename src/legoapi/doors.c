@@ -160,36 +160,39 @@ void *__cdecl Door_FindByName(WORLDINFO *world, char *name) {
 }
 
 i32 __cdecl StartDoorPositions(void) {
-    PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)WORLD;
     PLAYER_DOOR_PC *door;
-    PLAYER_POSITION_RECORD_PC *starts = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
+    PLAYER_POSITION_RECORD_PC *start;
     i32 index;
+    i32 point;
     Door_Start = 0;
-    if (DoorExitNamePc[0] == '\0')
-        return 0;
-    door = view->doors;
-    for (index = 0; door != NULL && index < view->door_count; ++index, ++door) {
-        if (door->spline != NULL && NuStrICmp(door->name, DoorExitNamePc) == 0) {
-            i32 player_index;
-            for (player_index = 0; player_index < 8; ++player_index) {
-                i32 point = player_index * 2 + 4;
-                if (door->spline->length > point + 1) {
-                    NUVEC direction;
-                    starts[player_index].position = &door->spline->pts[point];
-                    NuVecSub(&direction, &door->spline->pts[point + 1], starts[player_index].position);
-                    starts[player_index].angle = NuAtan2D(direction.x, direction.z);
-                } else {
-                    PLAYER_POSITION_RECORD_PC *previous =
-                        player_index == 0 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : &starts[player_index - 1];
-                    starts[player_index].position = previous->position;
-                    starts[player_index].angle = previous->angle;
+    if (DoorExitNamePc[0] != '\0') {
+        door = ((PLAYER_WORLD_DOORS_PC *)WORLD)->doors;
+        if (door != NULL) {
+            for (index = 0; index < ((PLAYER_WORLD_DOORS_PC *)WORLD)->door_count; ++index, ++door) {
+                if (door->spline != NULL && NuStrICmp(door->name, DoorExitNamePc) == 0) {
+                    start = (PLAYER_POSITION_RECORD_PC *)PlayerStartRecordInitPc;
+                    for (point = 5; point < 21; point += 2, ++start) {
+                        NUANG angle;
+                        if (door->spline->length > point) {
+                            NUVEC direction;
+                            start->position = &door->spline->pts[point - 1];
+                            NuVecSub(&direction, &door->spline->pts[point], start->position);
+                            angle = NuAtan2D(direction.x, direction.z);
+                        } else {
+                            PLAYER_POSITION_RECORD_PC *previous =
+                                point == 5 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : start - 1;
+                            start->position = previous->position;
+                            angle = previous->angle;
+                        }
+                        start->angle = angle;
+                    }
+                    Door_Start = 1;
+                    return 1;
                 }
             }
-            Door_Start = 1;
-            return 1;
         }
+        DoorExitNamePc[0] = '\0';
     }
-    DoorExitNamePc[0] = '\0';
     return 0;
 }
 void *__cdecl Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
