@@ -7399,6 +7399,7 @@ address,symbol,size,ctype
 0x63ec50,?DestroyObject@RTLHelper@@UAEXPAXH@Z,14,
 0x63ec60,?Render@RTLHelper@@UAEXPAXH@Z,626,
 0x63eee0,?GetIndexedSet@RTLHelper@@QAEPAURTL_SET_PC@@XZ,80,
+0x63ef30,_cbRtlHelperModifiers,200,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63f000,?AddMenuItems@RTLHelper@@UAEXPAUeduimenu_s@@@Z,64,
 0x63f5e0,?CreateObject@FogHelper@@UAEPAXPAXHH@Z,166,
 0x63f690,?DestroyObject@FogHelper@@UAEXPAXH@Z,14,
@@ -23073,6 +23074,7 @@ address,symbol,size,ctype
 0x81f738,_INVSQ2EXP_LOOKUP,,
 0x81f840,_FROMdB_LOOKUP,,
 0x81f8d0,_FROMdB2_LOOKUP,,
+0x81f9a0,_EdLevelAttr,16,struct eduiiattr_s
 0x0081fe6c,??_R0?AVEdTool@@@8,21,
 0x0081fe84,??_R0?AV?$CSListLink@VEdTool@@@@@8,37,
 0x0081feac,??_R0?AVBaseEditor@@@8,25,

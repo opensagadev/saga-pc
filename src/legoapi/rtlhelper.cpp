@@ -10,6 +10,10 @@ extern "C" {
     extern f32 rtl_helper_radius;
     extern i32 rtl_helper_radius_mode;
     extern f32 min_r, def_fr;
+    extern struct eduiiattr_s EdLevelAttr;
+    eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
+    /* 0x63ef30: opens the per-modifier strength sliders (not yet ported). */
+    void __cdecl cbRtlHelperModifiers(eduimenu_s *menu, eduiitem_s *item, u32 data);
     extern RTL_LIGHT_PC *rtl_locked;
     void __cdecl rtlFree(RTL_LIGHT_PC *light);
     void __cdecl fogFree(RTL_FOG_MIGRATION_PC *fog);
@@ -128,6 +132,11 @@ found:
         light->led_file = Placeable::CurrentLedFile;
     }
     return light;
+}
+
+void RTLHelper::AddMenuItems(eduimenu_s *menu) {
+    eduiMenuAddItem(menu, eduiItemSeparatorCreate(0, &EdLevelAttr));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 1, cbRtlHelperModifiers, "Modifiers"));
 }
 
 void RTLHelper::EnterEditor() {
