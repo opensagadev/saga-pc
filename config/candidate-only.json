@@ -1325,6 +1325,11 @@
    "unit": "src/gameapi/edui_widget_render_pc.cpp",
    "symbol": "?EduiFabsPc@@YAMM@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nusound_music.cpp",
+   "symbol": "?NuMusicDecibelsToGain@@YAMM@Z",
+   "kind": "function"
   }
  ]
 }

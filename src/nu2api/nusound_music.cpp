@@ -29,11 +29,15 @@ void NuMusic::SetMasterVolume(f32 volume) {
 }
 
 i32 NuMusic::GetAlbumHandle(const char *name) {
-    if (this != NULL && the_music_player != NULL) {
-        for (i32 i = 0; i < album_count; i++) {
-            if (NuStrICmp(albums[i].name, name) == 0) {
-                return i + 0x12345678;
-            }
+    i32 i;
+
+    if (this == NULL)
+        return 0;
+    if (the_music_player == NULL)
+        return 0;
+    for (i = 0; i < album_count; i++) {
+        if (NuStrICmp(albums[i].name, name) == 0) {
+            return i + 0x12345678;
         }
     }
     return 0;
@@ -62,19 +66,15 @@ void NuMusic::SetClassVolume(u32 class_mask, f32 volume) {
 
 void NuMusic::GetSoundFiles(nusound_filename_info_s **files, i32 *count) {
     if (this != NULL) {
-        if (files != NULL) {
+        if (files != NULL)
             *files = fileinfo;
-        }
-    } else if (files != NULL) {
-        *files = NULL;
-    }
-
-    if (count != NULL) {
-        if (this != NULL) {
+        if (count != NULL)
             *count = file_count;
-        } else {
+    } else {
+        if (files != NULL)
+            *files = NULL;
+        if (count != NULL)
             *count = 0;
-        }
     }
 }
 
@@ -212,16 +212,13 @@ void NuMusic::Album::Initialise(void) {
 
     for (class_index = 0; class_index < 6; class_index++) {
         i32 track_index;
-        Track *track;
 
         tracks[class_index] = NULL;
-        track = tracks_source;
         for (track_index = 0; track_index < tracks_count; track_index++) {
-            if (track->clazz == (1u << class_index)) {
-                tracks[class_index] = track;
+            if (tracks_source[track_index].clazz == (1u << class_index)) {
+                tracks[class_index] = &tracks_source[track_index];
                 break;
             }
-            track++;
         }
     }
 }
@@ -818,20 +815,27 @@ i32 NuMusic::FindOrCreateSoundFile(nusound_filename_info_s *files, i32 *count, c
     return index;
 }
 void NuMusic::BuildSoundTable(VARIPTR *cursor, VARIPTR end) {
+    i32 count;
+    i32 i;
+
     (void)end;
     fileinfo = (nusound_filename_info_s *)cursor->void_ptr;
-    i32 count = 0;
-    for (i32 i = 0; i < extra_track_count; ++i) {
-        Track *t = &extra_tracks[i];
-        i32 streaming = -((t->flags >> 1) & 1);
-        t->file_indexes[0] = FindOrCreateSoundFile(fileinfo, &count, t->filenames[0], streaming, t->pitch);
-        t->file_indexes[1] = FindOrCreateSoundFile(fileinfo, &count, t->filenames[1], streaming, t->pitch);
+    count = 0;
+    for (i = 0; i < extra_track_count; ++i) {
+        /* Bit 1 of the track flags is read as a signed one-bit field (0 or -1). */
+        extra_tracks[i].file_indexes[0] =
+            FindOrCreateSoundFile(fileinfo, &count, extra_tracks[i].filenames[0],
+                                  (i32)(extra_tracks[i].flags << 30) >> 31, extra_tracks[i].pitch);
+        extra_tracks[i].file_indexes[1] =
+            FindOrCreateSoundFile(fileinfo, &count, extra_tracks[i].filenames[1],
+                                  (i32)(extra_tracks[i].flags << 30) >> 31, extra_tracks[i].pitch);
     }
     fileinfo[count].filename = NULL;
     fileinfo[count].pitch = 0;
     fileinfo[count].static_sample = 0;
     fileinfo[count].index = -1;
-    cursor->void_ptr = &fileinfo[count + 1];
+    count++;
+    cursor->void_ptr = &fileinfo[count];
 }
 void NuMusic::InitData(const char *file, VARIPTR *cursor, VARIPTR end) {
     VARIPTR original = *cursor;
@@ -1005,33 +1009,30 @@ void NuMusic::xCutscene(NUFPAR_PC *parser) {
 void NuMusic::xNoMusicC(NUFPAR_PC *parser) {
     ParseTrack(32, parser);
 }
+/* Converts a decibel attenuation to a linear gain: -100 dB and below is silence. */
+static inline f32 NuMusicDecibelsToGain(f32 decibels) {
+    if (decibels <= -100.0)
+        return 0.0f;
+    if (decibels >= 0.0f)
+        return 1.0f;
+    return NuExp10((f32)(decibels / 20.0));
+}
+
 void NuMusic::xDuck(NUFPAR_PC *parser) {
     current_track->duck_volume = NuFParGetFloatRDP(parser);
-    if (current_track->duck_volume < 0.0f) {
-        if (current_track->duck_volume < -100.0)
-            current_track->duck_volume = 0.0f;
-        else
-            current_track->duck_volume = NuExp10((f32)(current_track->duck_volume / 20.0));
-    }
+    if (current_track->duck_volume < 0.0f)
+        current_track->duck_volume = NuMusicDecibelsToGain(current_track->duck_volume);
     current_track->duck_fade = NuFParGetFloatRDP(parser);
 }
 void NuMusic::xAttenuation(NUFPAR_PC *parser) {
     current_track->attenuation = NuFParGetFloatRDP(parser);
-    if (current_track->attenuation < 0.0f) {
-        if (current_track->attenuation < -100.0)
-            current_track->attenuation = 0.0f;
-        else
-            current_track->attenuation = NuExp10((f32)(current_track->attenuation / 20.0));
-    }
+    if (current_track->attenuation < 0.0f)
+        current_track->attenuation = NuMusicDecibelsToGain(current_track->attenuation);
 }
 void NuMusic::xGlobalAttenuation(NUFPAR_PC *parser) {
     global_attenuation = NuFParGetFloatRDP(parser);
-    if (global_attenuation < 0.0f) {
-        if (global_attenuation < -100.0)
-            global_attenuation = 0.0f;
-        else
-            global_attenuation = NuExp10((f32)(global_attenuation / 20.0));
-    }
+    if (global_attenuation < 0.0f)
+        global_attenuation = NuMusicDecibelsToGain(global_attenuation);
 }
 
 void NuMusic::xsAlbum(NUFPAR_PC *p, void *ctx) {
