@@ -105,58 +105,84 @@ extern "C" void __cdecl EnableShadowMapRenderingFn(void);
  * Native never reads its passed WORLDINFO argument; it reads canonical WORLD.
  * No default state is written on the miss path. */
 static i32 __cdecl SetSoundFadeDistCallBackFn_LSW(WORLDINFO_s *) {
-    LEVELDATA_PC *level = WORLD->current_level;
-    AREA_DATA_PC *area = WORLD->area;
-    if (level == KAMINOE_LDATA) {
+    if (WORLD->current_level == KAMINOE_LDATA) {
         nusound_fade_start = 3.0f;
         nusound_fade_end = 22.5f;
-    } else if (area != NULL && (area == GUNSHIP_ADATA || area == BONUS_GUNSHIP_ADATA)) {
+        return 1;
+    }
+    if (WORLD->area != NULL && (WORLD->area == GUNSHIP_ADATA || WORLD->area == BONUS_GUNSHIP_ADATA)) {
         nusound_fade_start = 25.0f;
         nusound_fade_end = 125.0f;
-    } else if (area != NULL && area == BATTLEOVERCORUSCANT_ADATA) {
+        return 1;
+    }
+    if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA) {
         nusound_fade_start = 100.0f;
         nusound_fade_end = 250.0f;
-    } else if (level == DEATHSTARRESCUEE_LDATA) {
+        return 1;
+    }
+    if (WORLD->current_level == DEATHSTARRESCUEE_LDATA) {
         nusound_fade_start = 5.0f;
         nusound_fade_end = 50.0f;
-    } else if (area != NULL && area == DEATHSTARESCAPE_ADATA) {
+        return 1;
+    }
+    if (WORLD->area != NULL && WORLD->area == DEATHSTARESCAPE_ADATA) {
         nusound_fade_start = 3.0f;
         nusound_fade_end = 15.0f;
-    } else if (area != NULL && area == ASTEROIDCHASE_ADATA) {
+        return 1;
+    }
+    if (WORLD->area != NULL && WORLD->area == ASTEROIDCHASE_ADATA) {
         nusound_fade_start = 25.0f;
         nusound_fade_end = 150.0f;
-    } else if (area != NULL && area == JABBASPALACE_ADATA) {
+        return 1;
+    }
+    if (WORLD->area != NULL && WORLD->area == JABBASPALACE_ADATA) {
         nusound_fade_start = 3.0f;
         nusound_fade_end = 20.0f;
-    } else if (level == SARLACCPITA_LDATA) {
+        return 1;
+    }
+    if (WORLD->current_level == SARLACCPITA_LDATA) {
         nusound_fade_start = 7.5f;
         nusound_fade_end = 20.0f;
-    } else if (level == SARLACCPITC_LDATA) {
+        return 1;
+    }
+    if (WORLD->current_level == SARLACCPITC_LDATA) {
         nusound_fade_start = 7.5f;
         nusound_fade_end = 55.0f;
-    } else if (area != NULL && area == SPEEDERCHASE_ADATA) {
+        return 1;
+    }
+    if (WORLD->area != NULL && WORLD->area == SPEEDERCHASE_ADATA) {
         nusound_fade_start = 15.0f;
         nusound_fade_end = 50.0f;
-    } else if (level == ENDORBATTLEA_LDATA) {
+        return 1;
+    }
+    if (WORLD->current_level == ENDORBATTLEA_LDATA) {
         nusound_fade_start = 4.0f;
         nusound_fade_end = 12.0f;
-    } else if (level == ENDORBATTLEB_LDATA || level == ENDORBATTLEC_LDATA) {
+        return 1;
+    }
+    if (WORLD->current_level == ENDORBATTLEB_LDATA || WORLD->current_level == ENDORBATTLEC_LDATA) {
         nusound_fade_start = 15.0f;
         nusound_fade_end = 45.0f;
-    } else if (level == ENDORBATTLED_LDATA) {
+        return 1;
+    }
+    if (WORLD->current_level == ENDORBATTLED_LDATA) {
         nusound_fade_start = 3.0f;
         nusound_fade_end = 12.0f;
-    } else if (area != NULL && area == DEATHSTARBATTLE2_ADATA) {
+        return 1;
+    }
+    if (WORLD->area != NULL && WORLD->area == DEATHSTARBATTLE2_ADATA) {
         nusound_fade_start = 50.0f;
         nusound_fade_end = 200.0f;
-    } else if (area != NULL && (area == E1CHARACTER_ADATA || area == E2CHARACTER_ADATA || area == E3CHARACTER_ADATA ||
-                                area == BONUSKAMINO_ADATA || area == BONUSDAGOBAH_ADATA)) {
+        return 1;
+    }
+    if (WORLD->area != NULL &&
+        (WORLD->area == E1CHARACTER_ADATA || WORLD->area == E2CHARACTER_ADATA || WORLD->area == E3CHARACTER_ADATA ||
+         WORLD->area == BONUSKAMINO_ADATA || WORLD->area == BONUSDAGOBAH_ADATA)) {
         nusound_fade_start = 4.0f;
         nusound_fade_end = 40.0f;
-    } else {
-        return 0;
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 // Source lease:
@@ -1260,8 +1286,8 @@ static i32 __cdecl GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 static i32 __cdecl Tag_NoHiddenIcon(GAMEOBJECT *object) {
-    if (WorldInfo_CurrentlyActive()->current_level == DEATHSTARESCAPEB_LDATA)
-        return GameCam->sock_position.sock_index == 5;
+    if (WorldInfo_CurrentlyActive()->current_level == DEATHSTARESCAPEB_LDATA && GameCam->sock_position.sock_index == 5)
+        return 1;
     return 0;
 }
 
@@ -1756,7 +1782,9 @@ i32 __cdecl GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) 
 
 i32 __cdecl GameAudio_CheckReverb_LSW(void) {
     LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
-    if (level == LevelFixupSlotPc0087b200 || level == LevelFixupSlotPc0087b264)
+    if (level == LevelFixupSlotPc0087b200)
+        return 1;
+    if (level == LevelFixupSlotPc0087b264)
         return 1;
     if (level == LevelFixupSlotPc0087b228 && GameCam->sock_position.sock_index == 4)
         return 1;
@@ -2284,17 +2312,20 @@ STATIC_ASSERT(offsetof(MUSIC_PAIR_ARENA_PC, ambient_first) == 0x38);
 
 extern "C" nusound_filename_info_s *__cdecl ConfigureMusic(char *ignored_file, VARIPTR *cursor, VARIPTR *end) {
     nusound_filename_info_s *files;
-    MUSIC_PAIR_ARENA_PC *arena;
+    VARIPTR buffer;
     music_man.Initialise("audio\\music.cfg", NULL, cursor, *end);
     music_man.GetSoundFiles(&files, NULL);
     SfxMusicExtensionPc = ".mib";
-    arena = (MUSIC_PAIR_ARENA_PC *)((cursor->addr + 3) & ~3u);
-    arena->prefix_word = 0;
-    arena->action_first = -1;
-    ActionPairTab = (PC_MUSIC_ACTION_PAIR_PC *)&arena->action_first;
-    arena->ambient_first = -1;
-    AmbientPairTab = &arena->ambient_first;
-    cursor->void_ptr = arena + 1;
+    buffer.addr = (cursor->addr + 3) & ~3u;
+    *(i32 *)buffer.void_ptr = 0;
+    buffer.addr += offsetof(MUSIC_PAIR_ARENA_PC, action_first);
+    *(i16 *)buffer.void_ptr = -1;
+    ActionPairTab = (PC_MUSIC_ACTION_PAIR_PC *)buffer.void_ptr;
+    buffer.addr += offsetof(MUSIC_PAIR_ARENA_PC, ambient_first) - offsetof(MUSIC_PAIR_ARENA_PC, action_first);
+    *(i16 *)buffer.void_ptr = -1;
+    AmbientPairTab = (i16 *)buffer.void_ptr;
+    buffer.addr += sizeof(MUSIC_PAIR_ARENA_PC) - offsetof(MUSIC_PAIR_ARENA_PC, ambient_first);
+    *cursor = buffer;
     return files;
 }
 
