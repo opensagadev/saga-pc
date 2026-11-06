@@ -14268,7 +14268,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
             u8 unknown_3c2[0x2];
             NUVEC *focus;
             NUVEC focus_offset, target, position;
-            struct nuvec_s *position_source;
+            NUGSPLINE *position_spline;
             f32 delta_time;
             f32 duration;
             f32 elapsed_time;
