@@ -119,7 +119,7 @@ char *ShaderLexicalSlicePc::HeapCopy() {
     result[length] = 0;
     return result;
 }
-char *ShaderLexicalSlicePc::ArenaCopy(VirtualStackAllocator *arena) {
+__declspec(noinline) char *ShaderLexicalSlicePc::ArenaCopy(VirtualStackAllocator *arena) {
     char *result = reinterpret_cast<char *>(arena->cursor);
     arena->cursor += length + 1;
     memcpy(result, begin, length);
@@ -237,7 +237,7 @@ bool ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cu
     return false;
 }
 
-ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *operand) {
+__declspec(noinline) ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *operand) {
     if (left != NULL) {
         if (right != NULL)
             return NULL;
@@ -282,28 +282,41 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
     ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
     while (reader->Next(input, cursor, &slice)) {
         char *token = slice.ArenaCopy(arena);
-        ShaderConditionNodePc *node = reinterpret_cast<ShaderConditionNodePc *>(arena->cursor);
+        ShaderConditionNodePc *memory = reinterpret_cast<ShaderConditionNodePc *>(arena->cursor);
+        ShaderConditionNodePc *node;
         arena->cursor += sizeof(ShaderConditionNodePc);
-        if (node != NULL) {
-            node->left = NULL;
-            node->right = NULL;
-            node->token = token;
+        if (memory != NULL) {
+            memory->left = NULL;
+            memory->right = NULL;
+            memory->token = token;
+            node = memory;
+        } else {
+            node = NULL;
         }
         if (current == NULL) {
             current = node;
         } else if (strcmp(token, "(") == 0) {
+        append_operand:
             stack[count++] = current;
-            current = current->AppendOperand(node);
+            if (current->left == NULL) {
+                current->left = node;
+                current = node;
+            } else if (current->right == NULL) {
+                current->right = node;
+                current = node;
+            } else {
+                current = NULL;
+            }
         } else if (strcmp(token, ")") == 0) {
-            while (strcmp(current->token, "(") != 0) {
+            do {
+                if (strcmp(current->token, "(") == 0)
+                    break;
                 if (count == 0) {
                     current = NULL;
                     break;
                 }
                 current = stack[--count];
-                if (current == NULL)
-                    break;
-            }
+            } while (current != NULL);
             const_cast<char *>(current->token)[0] = '\x80';
         } else if ((ShaderLexicalClassesPc[(u8)token[0]] & 4) != 0 || strcmp(token, "defined") == 0) {
             if (strcmp(current->token, "(") == 0) {
@@ -314,28 +327,30 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
                 stack[count++] = current;
                 current = current->AppendOperand(node);
             } else {
-                ShaderConditionNodePc *parent = NULL;
                 while (count != 0) {
-                    parent = stack[count - 1];
-                    if (strcmp(parent->token, "(") == 0 ||
-                        ShaderConditionPrecedencePc(token) > ShaderConditionPrecedencePc(parent->token))
-                        break;
+                    ShaderConditionNodePc *parent = stack[count - 1];
+                    if (strcmp(parent->token, "(") == 0) {
+                        node->left = current;
+                        parent->left = node;
+                        current = node;
+                        goto next;
+                    }
+                    if (ShaderConditionPrecedencePc(token) > ShaderConditionPrecedencePc(parent->token)) {
+                        node->left = current;
+                        parent->right = node;
+                        current = node;
+                        goto next;
+                    }
                     current = stack[--count];
                 }
                 node->left = current;
-                if (count != 0) {
-                    if (strcmp(parent->token, "(") == 0)
-                        parent->left = node;
-                    else
-                        parent->right = node;
-                }
                 current = node;
             }
         } else if (strcmp(current->token, "(") == 0 || (ShaderLexicalClassesPc[(u8)current->token[0]] & 4) != 0 ||
                    strcmp(current->token, "defined") == 0) {
-            stack[count++] = current;
-            current = current->AppendOperand(node);
+            goto append_operand;
         }
+    next:;
     }
     return stack[0];
 }
