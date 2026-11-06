@@ -1031,6 +1031,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
     AIPATHNODE_PC *second;
     f32 first_radius;
     f32 second_radius;
+    f32 radius_difference;
     i32 narrow = 0;
     NUVEC delta;
     NUVEC local;
@@ -1045,69 +1046,68 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
         connection->last_search_checksum = path->search_checksum;
     }
 
-    if (route_index != 0xff && previous_connection != NULL &&
-        ((u64)connection->route_mask & ((u64)1 << route_index)) == 0) {
-        AIPATHNODE_PC *shared = NULL;
-        u8 first_index = connection->node_indices[0];
-        u8 second_index = connection->node_indices[1];
+    if (route_index != 0xff && previous_connection != NULL && (((i64)1 << route_index) & connection->route_mask) == 0) {
+        AIPATHNODE_PC *shared;
+        u8 shared_index;
 
-        if (previous_connection->node_indices[0] == first_index) {
-            shared = &path->nodes[first_index];
-        } else if (previous_connection->node_indices[0] == second_index) {
-            shared = &path->nodes[second_index];
-        } else if (previous_connection->node_indices[1] == first_index) {
-            shared = &path->nodes[first_index];
-        } else if (previous_connection->node_indices[1] == second_index) {
-            shared = &path->nodes[second_index];
+        if (previous_connection->node_indices[0] == connection->node_indices[0] ||
+            previous_connection->node_indices[0] == connection->node_indices[1]) {
+            shared_index = previous_connection->node_indices[0];
+        } else if (previous_connection->node_indices[1] == connection->node_indices[0] ||
+                   previous_connection->node_indices[1] == connection->node_indices[1]) {
+            shared_index = previous_connection->node_indices[1];
         } else {
             return 0;
         }
-
-        if ((shared->route_boundary_mask & (u16)(1u << route_index)) == 0) {
+        shared = &path->nodes[shared_index];
+        if (shared == NULL || (((i64)1 << route_index) & shared->route_boundary_mask) == 0) {
             return 0;
         }
     }
 
     first = &path->nodes[connection->node_indices[0]];
     second = &path->nodes[connection->node_indices[1]];
-    first_radius = first->radius;
-    second_radius = second->radius;
-    if (first_radius > radius + AIPathConnectionMargin) {
-        first_radius -= radius;
+    if (first->radius > radius + AIPathConnectionMargin) {
+        first_radius = first->radius - radius;
     } else {
         narrow = 1;
+        first_radius = first->radius;
     }
-    if (second_radius > radius + AIPathConnectionMargin) {
-        second_radius -= radius;
+    if (second->radius > radius + AIPathConnectionMargin) {
+        second_radius = second->radius - radius;
     } else {
         narrow = 1;
+        second_radius = second->radius;
     }
 
-    if (first->has_special != 0 && (path->updated_node_bits[connection->node_indices[0] >> 3] &
-                                    (u8)(1u << (connection->node_indices[0] & 7))) == 0) {
-        AIPathNodeUpdatePos(context, path, first);
+    if (first->has_special != 0) {
+        i32 index = connection->node_indices[0];
+        if ((path->updated_node_bits[index >> 3] & (1 << (index % 8))) == 0) {
+            AIPathNodeUpdatePos(context, path, first);
+        }
     }
-    if (second->has_special != 0 && (path->updated_node_bits[connection->node_indices[1] >> 3] &
-                                     (u8)(1u << (connection->node_indices[1] & 7))) == 0) {
-        AIPathNodeUpdatePos(context, path, second);
+    if (second->has_special != 0) {
+        i32 index = connection->node_indices[1];
+        if ((path->updated_node_bits[index >> 3] & (1 << (index % 8))) == 0) {
+            AIPathNodeUpdatePos(context, path, second);
+        }
     }
 
     delta.x = position->x - first->position.x;
-    delta.y = 0.0f;
     delta.z = position->z - first->position.z;
     NuVecRotateY(&local, &delta, -connection->rotation);
 
-    if ((second_radius - first_radius < 0.0f ? first_radius - second_radius : second_radius - first_radius) >
-        connection->horizontal_distance) {
+    radius_difference = second_radius - first_radius;
+    *(u32 *)&radius_difference &= 0x7fffffff; /* fabs on the float bits */
+    if (connection->horizontal_distance < radius_difference) {
         if (second_radius > first_radius) {
             first = second;
             first_radius = second_radius;
         }
-        if (first->min_height > position->y || position->y > first->max_height) {
+        if (position->y < first->min_height || position->y > first->max_height) {
             return 0;
         }
         delta.x = position->x - first->position.x;
-        delta.y = 0.0f;
         delta.z = position->z - first->position.z;
         if (first_radius * first_radius < delta.x * delta.x + delta.z * delta.z) {
             return 0;
@@ -1133,7 +1133,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
         NuVecRotateY(&wall, &wall, -intersection_angle);
 
         if (wall.z < 0.0f) {
-            if (first->min_height > position->y || position->y > first->max_height) {
+            if (position->y < first->min_height || position->y > first->max_height) {
                 return 0;
             }
             if (first_radius * first_radius < NuVecXZDistSqr(position, &first->position, &delta)) {
@@ -1144,7 +1144,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
             f32 end_circle = NuTrigTable[trig_index & 0x7fff] * connection->horizontal_distance;
 
             if (wall.z > end_circle) {
-                if (second->min_height > position->y || position->y > second->max_height) {
+                if (position->y < second->min_height || position->y > second->max_height) {
                     return 0;
                 }
                 if (second_radius * second_radius < NuVecXZDistSqr(position, &second->position, &delta)) {
