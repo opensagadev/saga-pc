@@ -33,21 +33,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) == 0xc5c);
 STATIC_ASSERT(offsetof(NUVEC, y) == 4);
 STATIC_ASSERT(offsetof(NUVEC, z) == 8);
 
-extern "C" i32 __cdecl NuKeyboardBasePortPc(void) {
-    return 10;
-}
+extern "C" i32 __cdecl NuKeyboardBasePortPc(void);
+extern "C" i32 __cdecl PlayerDevicePortPc(i32 player_index);
 
-extern "C" i32 __cdecl PlayerDevicePortPc(i32 player_index) {
-    if (player_index < 0)
-        return -1;
-    return PlayerDevicePortsPc[player_index];
-}
-
-extern "C" void __cdecl PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints) {
-    object->current_hp = hitpoints;
-    if ((i32)hitpoints > (i32)object->field_107e)
-        object->current_hp = object->field_107e;
-}
+extern "C" void __cdecl PlayerSetCurrentHpPc(GAMEOBJECT *object, i8 hitpoints);
 
 extern "C" void __cdecl CheckForPlayersTurnedOff(void) {
     for (i32 source_index = 0; source_index < 2; ++source_index) {
@@ -94,13 +83,9 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
                 if (object == NULL || (object->flags_1fc_word & 0x80))
                     continue;
                 if (object->flags_ef0 & 0x200000) {
-                    if (FreePlay_DropInToPlayerPos(object)) {
+                    if (FreePlay_DropInToPlayerPos(object) ||
+                        ((GAMEOBJECT *)Player[index])->camera_screen_position.z < 1.0f)
                         force_join = 1;
-                        break;
-                    }
-                    if (!(object->camera_screen_position.z < 1.0f))
-                        break;
-                    force_join = 1;
                     break;
                 }
                 if (drop_in_teleport == 3 && FreePlay_DropInToPlayerPos(object)) {
@@ -121,17 +106,18 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
         i32 port = TextInputLinkedDevicePc(1);
         if (port >= 0)
             DropInCapturePortPc[1] = (i16)port;
-        if (GetMenuID() == -1 && !(object->flags_1fc_word & 0x80)) {
+        if (GetMenuID() == -1) {
             i32 kind;
             i32 value;
-            if (DropInCaptureDelayPc[index]) {
+            i32 off = (object->flags_1fc_word >> 7) & 1;
+            if (off == 0 && DropInCaptureDelayPc[index]) {
                 --DropInCaptureDelayPc[index];
                 if (DropInCapturePortPc[index] >= 0) {
                     port = PcInputSelectPressedDevicePc(~(1u << DropInCapturePortPc[index]), 0x1a, &kind, &value, 1);
                     if (port >= 0)
                         DropInCaptureDelayPc[index] = 5;
                 }
-            } else {
+            } else if (off == 0) {
                 u32 excluded = 0;
                 port0 = TextInputLinkedDevicePc(0);
                 if (port0 >= 0)
@@ -147,7 +133,7 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
                     input_join = 1;
                     if (TextInputIsKeyboardDevicePc(port)) {
                         port = PcInputMapKeyboardPortPc(port, index);
-                        input_join = value == (index == 0 ? 0x3b : 0x3c);
+                        input_join = index != 0 ? value == 0x3c : value == 0x3b;
                         if (input_join && !PcInputInstallDropInConfigurationPc(port, index)) {
                             NuPadMapPlayerToPort(index, port);
                             PauseGame(index);
@@ -177,7 +163,7 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
             !(object->portal_flags & 0x4000000) && object->character_context != 0x24 &&
             object->character_context != 0x1f) {
             if (DROPIN_SCREEN_INSIDE(object) &&
-                (force_join || object->field_281 != 0 || object->id == id_SPEEDERBIKE ||
+                (force_join || object->field_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
                  (object->jump_variant_state == 1 && object->character_data->game_character->field_028 > 0.0f)))
                 join = true;
             else if (force_join)
@@ -228,7 +214,7 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
         if (VehicleArea != 0 && object->character_context != 0x24)
             StartDropIn(object);
         object->flags_ef0 |= 0x80;
-        GameAudio_PlaySfx(0x1f, &object->position, 0, 0);
+        GameAudio_PlaySfx(0x1f, &object->collision_position, 0, 0);
         drop_back_in_timer = 0.0f;
         force_join = 0;
     }
