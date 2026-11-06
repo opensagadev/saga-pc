@@ -29248,22 +29248,36 @@ class EdRef : public CSListLink<EdRef> {
  * RTTI class names (NetStats, NetSmallStats, TTNetwork, V2SessionManager). */
 struct NetStatCounters {
     u32 values[4];
+    NetStatCounters();
     void Clear();
+    NetStatCounters &KeepMax(const NetStatCounters &other);
     NetStatCounters &operator+=(const NetStatCounters &other);
     NetStatCounters &operator-=(const NetStatCounters &other);
 };
 
-class NetStats {
+class NetSmallStats {
   public:
-    NetStats(const char *name);
+    NetSmallStats(const char *name);
     virtual void Update();
     virtual void Draw(i32 x, i32 y);
 
     const char *name;
     NetStatCounters totals;
-    u32 unknown_18[10];
+};
+
+class NetStats : public NetSmallStats {
+  public:
+    NetStats(const char *name);
+    virtual void Update();
+    virtual void Draw(i32 x, i32 y);
+
+    i32 history_index;
+    u32 last_time;
+    NetStatCounters peak;
+    NetStatCounters previous;
     NetStatCounters history[30];
 };
+extern "C" u32 __cdecl NetTimeGetMs(void);
 
 class V2Peer {
   public:

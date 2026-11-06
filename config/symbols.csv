@@ -6897,12 +6897,17 @@ address,symbol,size,ctype
 0x60dd60,?initResources@NuSpeedBlurFilter@@UAEXXZ,81,native exactVT binding; unimplemented extent unclaimed
 0x60ddc0,_NuMtlInitShaderResourcesPc,265,void __cdecl(void)
 0x60ded0,_NuMtlInitExPS,5,void __cdecl(VARIPTR*)
+0x60df10,??0NetStatCounters@@QAE@XZ,16,
+0x60df20,??0NetSmallStats@@QAE@PBD@Z,32,
+0x60df40,?Update@NetSmallStats@@UAEXXZ,1,
 0x60df50,??0NetStats@@QAE@PBD@Z,89,
 0x60e390,?NotifyPeerRemoved@TTNetwork@@QAEXPAVV2Peer@@H@Z,42,
 0x60f4b0,?Clear@NetStatCounters@@QAEXXZ,14,
 0x60f4c0,??YNetStatCounters@@QAEAAU0@ABU0@@Z,31,
 0x60f4e0,??ZNetStatCounters@@QAEAAU0@ABU0@@Z,31,
+0x60f500,?KeepMax@NetStatCounters@@QAEAAU1@ABU1@@Z,72,
 0x60f550,?Update@NetStats@@UAEXXZ,134,
+0x60f5e0,?Draw@NetSmallStats@@UAEXHH@Z,610,
 0x60f850,?Draw@NetStats@@UAEXHH@Z,1880,
 0x60ffd0,?SetPlayerSlots@V2SessionManager@@QAEXPBHH@Z,52,
 0x610010,?V2SessionPrintf@@YAXPBDZZ,107,
@@ -6942,6 +6947,7 @@ address,symbol,size,ctype
 0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,
 0x00610690,_refpack,918,"i32 __cdecl(u8 *,i32,u8 *)"
+0x617a00,_NetTimeGetMs,6,u32 __cdecl(void)
 0x617d50,_edmainSetReturn,10,
 0x617d60,_edmainCurrent,21,
 0x617d80,_edmainActivate,114,
@@ -17243,6 +17249,7 @@ address,symbol,size,ctype
 0x76a8c0,??_7length_error@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a8c8,??_C@_0BD@OLBABOEK@vector?$DMT?$DO?5too?5long?$AA@,,const char[19]
 0x76a8dc,_NuMaterialSourcePathPc,56,const char[56]
+0x76a918,??_7NetSmallStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a924,??_7NetStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
 0x76aa30,??_C@_0L@HPABEAAN@mPeerList?6?$AA@,11,const char[]
@@ -20872,6 +20879,14 @@ address,symbol,size,ctype
 0x7eac48,??_R3length_error@std@@8,,Natural owning C++ RTTI/throw metadata
 0x7eac58,??_R2length_error@std@@8,,Natural owning C++ RTTI/throw metadata
 0x7eac68,??_R1A@?0A@EA@length_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eac84,??_R4NetSmallStats@@6B@,,
+0x7eac98,??_R3NetSmallStats@@8,,
+0x7eaca8,??_R2NetSmallStats@@8,,
+0x7eacb0,??_R1A@?0A@EA@NetSmallStats@@8,,
+0x7eaccc,??_R4NetStats@@6B@,,
+0x7eace0,??_R3NetStats@@8,,
+0x7eacf0,??_R2NetStats@@8,,
+0x7eacfc,??_R1A@?0A@EA@NetStats@@8,,
 0x7eae64,??_R4V2SessionManager@@6B@,,
 0x7eae78,??_R3V2SessionManager@@8,,
 0x7eae88,??_R2V2SessionManager@@8,,
