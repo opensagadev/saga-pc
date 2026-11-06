@@ -62,12 +62,6 @@ struct KILLPARTS_PART_PC {
 };
 STATIC_ASSERT(offsetof(KILLPARTS_PART_PC, speeder_index) == 0x20c);
 
-struct KILLPARTS_CAMERA_PC {
-    u8 unknown_0[0x68];
-    NUMTX mtx;
-};
-STATIC_ASSERT(offsetof(KILLPARTS_CAMERA_PC, mtx) == 0x68);
-
 struct KILLPARTS_RIDER_LIGHT_PC {
     u8 unknown_0[0x628];
     NUVEC intensity[2];
@@ -602,12 +596,12 @@ extern "C" {
     }
 
     void SpeederPart_Update(PART_PC *part) {
-        f32 time = part->time_remaining / part->initial_time;
         f32 distance = reinterpret_cast<GAMEOBJECT *>(Player[0])->horizontal_velocity_magnitude * FRAMETIME *
                        static_cast<f64>(1.1f);
+        f32 time = part->time_remaining / part->initial_time;
         KILLPARTS_BIKE_PC *bike =
             &KillPartsBikesPc[static_cast<i32>(reinterpret_cast<KILLPARTS_PART_PC *>(part)->speeder_index)];
-        KILLPARTS_CAMERA_PC *camera = reinterpret_cast<KILLPARTS_CAMERA_PC *>(GameCam);
+        NUVEC *camera = reinterpret_cast<NUVEC *>(&GameCam->mtx.m30);
         NUVEC previous_position;
         NUVEC position;
         NUVEC velocity;
@@ -622,14 +616,16 @@ extern "C" {
                 yaw += 0x8000;
                 pitch = -pitch;
             }
+            u16 tilt_angle = static_cast<u16>(static_cast<i32>(
+                -((1.0f - (NU_SIN_LUT(static_cast<i32>(time * 32768.0f + 16384.0f)) + 1.0f) * 0.5f) * 5461.0f)));
             f32 tilt = NU_SIN_LUT(static_cast<i32>(time * 32768.0f + 16384.0f));
-            i32 spin = static_cast<i32>((NU_SIN_LUT(static_cast<i32>(time * 16384.0f + 32768.0f + 16384.0f)) + 1.0f) *
-                                        196608.0f);
-            part->rotation_x =
-                SeekRot(part->rotation_x, static_cast<i32>(-((1.0f - (tilt + 1.0f) * 0.5f) * 5461.0f)) - pitch, 10.0f);
+            f32 tilt_magnitude;
+            *reinterpret_cast<u32 *>(&tilt_magnitude) = *reinterpret_cast<u32 *>(&tilt) & 0x7fffffff;
+            u16 spin = static_cast<u16>(static_cast<i32>(
+                (NU_SIN_LUT(static_cast<i32>(time * 16384.0f + 32768.0f + 16384.0f)) + 1.0f) * 196608.0f));
+            part->rotation_x = SeekRot(part->rotation_x, tilt_angle - pitch, 10.0f);
             part->rotation_y =
-                SeekRot(part->rotation_y,
-                        yaw + static_cast<i32>(2730.0f - (1.0f - fabs(static_cast<f64>(tilt))) * 5461.0f), 10.0f);
+                SeekRot(part->rotation_y, yaw + static_cast<i32>(2730.0f - (1.0f - tilt_magnitude) * 5461.0f), 10.0f);
             part->rotation_z = SeekRot(part->rotation_z, spin + yaw, 10.0f);
             GameShadow(NULL, &bike->spline_position.position, 3.0f, 0);
             NuMtxSetIdentity(&matrix);
@@ -669,9 +665,9 @@ extern "C" {
             NuVecScale(&velocity, &velocity,
                        reinterpret_cast<GAMEOBJECT *>(Player[0])->horizontal_velocity_magnitude / FRAMETIME);
             velocity.y = 1.0f / NU_COS_LUT(part->rotation_x);
-            position.x = SeekLinearF(previous_position.x, camera->mtx.m30, FRAMETIME * static_cast<f64>(1.8f));
-            position.y = SeekLinearF(previous_position.y, camera->mtx.m31, FRAMETIME * static_cast<f64>(1.8f));
-            position.z = SeekLinearF(previous_position.z, camera->mtx.m32, FRAMETIME * static_cast<f64>(1.8f));
+            position.x = SeekLinearF(previous_position.x, camera->x, FRAMETIME * static_cast<f64>(1.8f));
+            position.y = SeekLinearF(previous_position.y, camera->y, FRAMETIME * static_cast<f64>(1.8f));
+            position.z = SeekLinearF(previous_position.z, camera->z, FRAMETIME * static_cast<f64>(1.8f));
             NuVecAdd(&position, &position, &velocity);
             NuMtxSetIdentity(&matrix);
             NuMtxPreRotateX(&matrix, part->rotation_x);
@@ -687,9 +683,9 @@ extern "C" {
                 bike->rider->flags_ef0 |= 0x400000;
                 bike->rider->flags_1fc_word |= 0x20;
                 bike->rider->flags_ef4 |= 0x20;
-                bike->rider_position.x = SeekLinearF(bike->rider_position.x, camera->mtx.m30, FRAMETIME);
-                bike->rider_position.y = SeekLinearF(bike->rider_position.y, camera->mtx.m31 - 2.0f, FRAMETIME * 1.5f);
-                bike->rider_position.z = SeekLinearF(bike->rider_position.z, camera->mtx.m32, FRAMETIME);
+                bike->rider_position.x = SeekLinearF(bike->rider_position.x, camera->x, FRAMETIME);
+                bike->rider_position.y = SeekLinearF(bike->rider_position.y, camera->y - 2.0f, FRAMETIME * 1.5f);
+                bike->rider_position.z = SeekLinearF(bike->rider_position.z, camera->z, FRAMETIME);
                 bike->rider->position = bike->rider_position;
                 bike->rider->ai_update_position = bike->rider_position;
                 bike->rider->velocity = velocity;
