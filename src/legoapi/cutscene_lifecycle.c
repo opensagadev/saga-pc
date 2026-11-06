@@ -1295,10 +1295,65 @@ void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
         CutSceneCameraCTRL = 0;
 }
 
+/* Jumps an instance to its last frame and settles the rigid and locator systems there. */
+static __declspec(noinline) void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *instance, i32 flag) {
+    CUT_SCENE_LIFECYCLE_PC *scene;
+    instance->flags_88 = (instance->flags_88 & ~2U) | ((flag & 1) << 1) | 0x1001;
+    scene = instance->scene;
+    instance->current_frame = scene->duration;
+    instance->flags_8c = (instance->flags_8c & ~0x40U) | ((flag & 1) << 6);
+    ForcePlayEndFrame = 1;
+    if ((instance->flags_88 & 0x40000) != 0) {
+        if (scene->rigid_system != NULL)
+            CutSceneEndRigidsPC((INSTNUGCUTSCENE *)instance, instance->scene->duration - instance->current_frame);
+    } else {
+        if (scene->rigid_system != NULL)
+            CutSceneEndRigidsPC((INSTNUGCUTSCENE *)instance, instance->current_frame);
+    }
+    if (instance->locator_instance != NULL)
+        CutSceneEndLocatorsPC(instance->locator_instance, scene->locator_system);
+    ForcePlayEndFrame = 0;
+    if (instance->camera_instance != NULL && instance->camera_instance->camera_index >= 0)
+        CutSceneCameraCTRL = 0;
+}
+
+/* No retail references; named after what they do. */
+void __cdecl instNuGCutSceneJumpToEnd_candidate(INSTNUGCUTSCENE *owner) {
+    CutSceneJumpToEndPc((CUT_INSTANCE_LIFECYCLE_PC *)owner, 0);
+}
+
+void __cdecl instNuGCutSceneJumpToEndFlagged_candidate(INSTNUGCUTSCENE *owner) {
+    CutSceneJumpToEndPc((CUT_INSTANCE_LIFECYCLE_PC *)owner, 1);
+}
+
+void __cdecl instNuGCutSceneSetTranslation_candidate(INSTNUGCUTSCENE *owner, NUVEC *translation) {
+    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+    instance->flags_88 |= 0x80;
+    NuMtxSetTranslation(&instance->matrix, translation);
+    NuGCutSceneUpdateMtx(instance, &instance->matrix);
+}
+
+void __cdecl instNuGCutSceneTranslate_candidate(INSTNUGCUTSCENE *owner, NUVEC *translation) {
+    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+    if ((instance->flags_88 & 0x80) == 0) {
+        instance->flags_88 |= 0x80;
+        NuMtxSetIdentity(&instance->matrix);
+    }
+    NuMtxTranslate(&instance->matrix, translation);
+    NuGCutSceneUpdateMtx(instance, &instance->matrix);
+}
+
 void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *owner, NUMTX *mtx) {
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     instance->flags_88 |= 0x80;
     instance->matrix = *mtx;
+    NuGCutSceneUpdateMtx(instance, &instance->matrix);
+}
+
+void __cdecl instNuGCutSceneRotateY_candidate(INSTNUGCUTSCENE *owner, NUANG angle) {
+    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+    instance->flags_88 |= 0x80;
+    NuMtxRotateY(&instance->matrix, angle);
     NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
 

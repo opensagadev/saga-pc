@@ -2949,7 +2949,13 @@ address,symbol,size,ctype
 0x505f20,_instNuGCutSceneStart,270,void __cdecl instNuGCutSceneStart(INSTNUGCUTSCENE *)
 0x5060e0,_instNuGCutSceneEnd,251,void __cdecl(INSTNUGCUTSCENE *)
 0x5061e0,_instNuGCutSceneEndFirstFrame,221,void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *)
+0x005062c0,_CutSceneJumpToEndPc,194,
+0x00506390,_instNuGCutSceneJumpToEnd_candidate,11,void __cdecl (INSTNUGCUTSCENE *)
+0x005063a0,_instNuGCutSceneJumpToEndFlagged_candidate,14,void __cdecl (INSTNUGCUTSCENE *)
+0x005063b0,_instNuGCutSceneSetTranslation_candidate,43,"void __cdecl (INSTNUGCUTSCENE *, NUVEC *)"
+0x005063e0,_instNuGCutSceneTranslate_candidate,66,"void __cdecl (INSTNUGCUTSCENE *, NUVEC *)"
 0x00506430,_instNuGCutSceneSetMtx,42,"void __cdecl (INSTNUGCUTSCENE *, NUMTX *)"
+0x00506460,_instNuGCutSceneRotateY_candidate,43,"void __cdecl (INSTNUGCUTSCENE *, NUANG)"
 0x506490,_instNuGCutSceneServiceLoad,627,void __cdecl (void)
 0x506710,_CutSceneStreamSkipPc,362,
 0x506880,_CutSceneCameraSysUpdatePc,1463,
@@ -6549,6 +6555,7 @@ address,symbol,size,ctype
 0x005fe5a0,_NuRndrCreateBlendShapeDeformerWeightsArray,63,
 0x005fe5e0,_NuRndrCreateBlendShapeDWAPointers,39,
 0x5fe610,_NuRndrInitWorld,1,void __cdecl(void)
+0x005fe970,_NuRndrGobj,8,"i32 __cdecl (void *, NUMTX *)"
 0x005feab0,_NuRndrGradClear,27,"void (i32, i32, i32, f32)"
 0x5fed10,_NuRndrShadPolys,353,void __cdecl(NUMTL *)
 0x5fee80,_NuRndrAddShadow,104,"void __cdecl(NUVEC *,f32,i32,i32,i32,i32)"

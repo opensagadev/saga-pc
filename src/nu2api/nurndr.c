@@ -554,6 +554,12 @@ void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i3
 void __cdecl NuRndrInitWorld(void) {
 }
 
+/* Direct object rendering is not supported on PC: retail reports it and draws nothing. */
+i32 __cdecl NuRndrGobj(void *object, NUMTX *matrix) {
+    PCClipScreenUnsupported();
+    return 0;
+}
+
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, u) == 0x10);
 STATIC_ASSERT(offsetof(LOCATOR_PRIM_VERTEX_PC, v) == 0x14);
 

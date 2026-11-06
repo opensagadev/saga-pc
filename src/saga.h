@@ -2672,10 +2672,7 @@ typedef struct NUGSCN_s {
     u8 field9_0x15;
     u8 field10_0x16;
     u8 field11_0x17;
-    u8 field12_0x18;
-    u8 field13_0x19;
-    u8 field14_0x1a;
-    u8 field15_0x1b;
+    void **objects;
     i32 num_instances;
     u8 *instances;
     i32 special_count;
@@ -2717,6 +2714,7 @@ typedef struct NUGSCN_s {
     u8 unknown_0114[0xbc];
     void *native_scene;
 } NUGSCN;
+STATIC_ASSERT(offsetof(NUGSCN, objects) == 0x18);
 STATIC_ASSERT(offsetof(NUGSCN, frame_reset_marker) == 0x44);
 STATIC_ASSERT(offsetof(NUGSCN, portal_depth) == 0xe4);
 STATIC_ASSERT(offsetof(NUGSCN, additional_scenes) == 0x40);
@@ -16678,6 +16676,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     void __cdecl WorldInfo_Init(WORLDINFO *);
     void __cdecl NuRndrInitWorld(void);
+    i32 __cdecl NuRndrGobj(void *object, NUMTX *matrix);
 
     /* Qualified CPU visibility/tree views; original owning extents remain unknown. */
     typedef struct visibility_result_reader_pc_s {

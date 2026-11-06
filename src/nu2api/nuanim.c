@@ -345,6 +345,12 @@ void NuSpecialBurstDrawAt(nuhspecial_s *special, u32 count, NUMTX *matrices, i32
 
     runtime = ((NuSpecialLegacyRuntimeLayout *)(handle->special));
     if (runtime != NULL && runtime->instance != NULL) {
+        /* Legacy specials draw their scene object once per matrix. */
+        void *object = ((NUGSCN *)handle->scene)
+                           ->objects[((struct NuSpecialLegacyInstanceBoundsLayout *)runtime->instance)->object_index];
+        i32 i;
+        for (i = 0; i < (i32)count; ++i)
+            NuRndrGobj(object, &matrices[i]);
         return;
     }
     if (handle->display_special == NULL) {
