@@ -248,17 +248,30 @@ ShaderConditionNodePc *ShaderConditionNodePc::AppendOperand(ShaderConditionNodeP
     return operand;
 }
 
-static i32 ShaderConditionPrecedencePc(const char *token) {
-    if (strcmp(token, "&&") == 0 || strcmp(token, "||") == 0)
+i32 ShaderConditionPrecedencePc(const char *token) {
+    if (strcmp(token, "&&") == 0)
         return 1;
-    if (strcmp(token, "==") == 0 || strcmp(token, "<=") == 0 || strcmp(token, ">=") == 0 || strcmp(token, "<") == 0 ||
-        strcmp(token, ">") == 0 || strcmp(token, "!=") == 0)
+    if (strcmp(token, "||") == 0)
+        return 1;
+    if (strcmp(token, "==") == 0)
+        return 2;
+    if (strcmp(token, "<=") == 0)
+        return 2;
+    if (strcmp(token, ">=") == 0)
+        return 2;
+    if (strcmp(token, "<") == 0)
+        return 2;
+    if (strcmp(token, ">") == 0)
+        return 2;
+    if (strcmp(token, "!=") == 0)
         return 2;
     if (strcmp(token, "!") == 0)
         return 3;
     if (strcmp(token, "defined") == 0)
         return 4;
-    return strcmp(token, "\x80") == 0 ? 10 : 1000;
+    if (strcmp(token, "\x80") == 0)
+        return 10;
+    return 1000;
 }
 
 ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBufferAllocatorPc *input, i32 *cursor) {
