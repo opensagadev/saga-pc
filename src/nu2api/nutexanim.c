@@ -782,20 +782,28 @@ void __cdecl NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program) {
     while (index < program->instruction_count) {
         switch (program->instructions[index]) {
             case 0:
-            case 1:
-            case 17:
                 index += 2;
+                break;
+            case 1:
+                index += 2;
+                break;
+            case 2:
+                index += 4;
                 break;
             case 3:
                 index += 5;
                 break;
             case 4:
+                index += 3;
+                break;
             case 7:
-            case 13:
-            case 15:
                 index += 3;
                 break;
             case 9:
+                program->instructions[index + 1] =
+                    (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 1]];
+                index += 2;
+                break;
             case 10:
                 program->instructions[index + 1] =
                     (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 1]];
@@ -806,13 +814,23 @@ void __cdecl NuTexAnimProgAssembleEnd(TEXTURE_ANIM_PROGRAM_PC *program) {
                     (i16)TextureAnimationLabelOffsetsPrivatePc[program->instructions[index + 3]];
                 index += 4;
                 break;
-            case 2:
-                index += 4;
-                break;
             case 12:
+                ++index;
+                break;
+            case 13:
+                index += 3;
+                break;
             case 14:
+                ++index;
+                break;
+            case 15:
+                index += 3;
+                break;
             case 16:
                 ++index;
+                break;
+            case 17:
+                index += 2;
                 break;
         }
     }
