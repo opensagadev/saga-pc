@@ -791,70 +791,68 @@ extern "C" f32 __cdecl NuPow(f32, f32);
 extern "C" f32 __cdecl PcInputAspectRatioPc(void);
 
 i32 PC_INPUT_RUNTIME_PC::UpdateMousePc() {
-    if ((nu_keyboard_device_flags & 1) || mouse_polled)
-        return 0;
-    i32 button_count =
-        nu_keyboard_owner.mouse_axes && nu_keyboard_owner.mouse_buttons ? nu_keyboard_owner.mouse_buttons : 0;
-    mouse_polled = 1;
-    const PC_DI_MOUSE_STATE_PC *state = nu_keyboard_owner.PollMousePc();
-    for (i32 axis = 0; axis < 3; ++axis)
-        mouse.previous[axis] = mouse.current[axis];
-    if (state == NULL) {
+    if (!(nu_keyboard_device_flags & 1) && !mouse_polled) {
+        i32 button_count =
+            nu_keyboard_owner.mouse_axes && nu_keyboard_owner.mouse_buttons ? nu_keyboard_owner.mouse_buttons : 0;
+        mouse_polled = 1;
+        const PC_DI_MOUSE_STATE_PC *state = nu_keyboard_owner.PollMousePc();
+        for (i32 axis = 0; axis < 3; ++axis)
+            mouse.previous[axis] = mouse.current[axis];
+        if (state != NULL) {
+            f32 multiplier = (f32)devices[10].alternate_deadzone * 2.0f;
+            multiplier *= multiplier;
+            for (i32 axis = 0; axis < 3; ++axis)
+                mouse.current[axis] = (i16)state->axes[axis];
+            if (first_mouse) {
+                first_mouse = 0;
+                for (i32 axis = 0; axis < 3; ++axis) {
+                    mouse.accumulated[axis] = 0;
+                    mouse.previous[axis] = mouse.current[axis];
+                }
+                mouse.position[0] = 0.5f;
+                mouse.position[1] = 0.5f;
+            }
+            for (i32 axis = 0; axis < 3; ++axis) {
+                f32 change = (f32)((i32)mouse.current[axis] - mouse.previous[axis]);
+                if (change > 32767.0)
+                    change = (f32)(change - 65536.0);
+                if (change < -32768.0f)
+                    change = (f32)(change + 65536.0);
+                mouse.delta[axis] = axis < 2 ? multiplier * change : change;
+            }
+            mouse.accumulated[0] += mouse.delta[0] * 0.00390625;
+            mouse.accumulated[1] += mouse.delta[1] * 0.00390625;
+            mouse.accumulated[2] += mouse.delta[2];
+            f32 reciprocal = 1.0f / PcInputAspectRatioPc();
+            mouse.position[0] += mouse.delta[0] * reciprocal * 0.00000762939453125;
+            mouse.position[1] += mouse.delta[1] * 0.00000762939453125;
+            if (mouse.position[0] < 0.0f)
+                mouse.position[0] = 0.0f;
+            else if (mouse.position[0] > 1.0f)
+                mouse.position[0] = 1.0f;
+            if (mouse.position[1] < 0.0f)
+                mouse.position[1] = 0.0f;
+            else if (mouse.position[1] > 1.0f)
+                mouse.position[1] = 1.0f;
+            u32 previous = PcMouseButtonsMaskPc;
+            PcMouseButtonsMaskPc = 0;
+            u32 mask = 0;
+            for (i32 button = 0; button < button_count; ++button)
+                if (mouse.buttons[button])
+                    mask |= 1u << button;
+            PcMouseButtonsMaskPc = mask;
+            PcMousePressedMaskPc = (mask ^ previous) & mask;
+            memset(mouse.buttons, 0, 8);
+            PCByteCopy_candidate(mouse.buttons, state->buttons, button_count);
+            return 1;
+        }
         memset(mouse.buttons, 0, 16);
-        for (i32 axis = 0; axis < 3; ++axis) {
-            mouse.delta[axis] = 0;
-            mouse.accumulated[axis] = 0;
+        mouse.accumulated[0] = mouse.accumulated[1] = mouse.accumulated[2] = mouse.delta[0] = mouse.delta[1] =
+            mouse.delta[2] = 0.0f;
+        for (i32 axis = 0; axis < 3; ++axis)
             mouse.previous[axis] = mouse.current[axis];
-        }
-        return 0;
     }
-    f32 multiplier = (f32)devices[10].alternate_deadzone * 2.0f;
-    multiplier *= multiplier;
-    for (i32 axis = 0; axis < 3; ++axis)
-        mouse.current[axis] = (i16)state->axes[axis];
-    if (first_mouse) {
-        first_mouse = 0;
-        for (i32 axis = 0; axis < 3; ++axis) {
-            mouse.accumulated[axis] = 0;
-            mouse.previous[axis] = mouse.current[axis];
-        }
-        mouse.position[0] = mouse.position[1] = 0.5f;
-    }
-    for (i32 axis = 0; axis < 3; ++axis) {
-        f32 change = (f32)((i32)mouse.current[axis] - mouse.previous[axis]);
-        if (change > 32767.0)
-            change = (f32)(change - 65536.0);
-        if (change < -32768.0f)
-            change = (f32)(change + 65536.0);
-        mouse.delta[axis] = axis < 2 ? multiplier * change : change;
-    }
-    mouse.accumulated[0] = (f32)(mouse.accumulated[0] + mouse.delta[0] * 0.00390625);
-    mouse.accumulated[1] = (f32)(mouse.accumulated[1] + mouse.delta[1] * 0.00390625);
-    mouse.accumulated[2] += mouse.delta[2];
-    f32 reciprocal = (f32)(1.0f / PcInputAspectRatioPc());
-    f32 x = (f32)(mouse.position[0] + (mouse.delta[0] * reciprocal) * 0.00000762939453125);
-    f32 y = (f32)(mouse.position[1] + mouse.delta[1] * 0.00000762939453125);
-    if (x < 0.0f)
-        x = 0.0f;
-    else if (x > 1.0f)
-        x = 1.0f;
-    if (y < 0.0f)
-        y = 0.0f;
-    else if (y > 1.0f)
-        y = 1.0f;
-    mouse.position[0] = x;
-    mouse.position[1] = y;
-    u32 previous = PcMouseButtonsMaskPc;
-    PcMouseButtonsMaskPc = 0;
-    u32 mask = 0;
-    for (i32 button = 0; button < button_count; ++button)
-        if (mouse.buttons[button])
-            mask |= 1u << button;
-    PcMouseButtonsMaskPc = mask;
-    PcMousePressedMaskPc = (mask ^ previous) & mask;
-    memset(mouse.buttons, 0, 8);
-    PCByteCopy_candidate(mouse.buttons, state->buttons, button_count);
-    return 1;
+    return 0;
 }
 
 void PC_INPUT_RUNTIME_PC::ApplyMouseAxisPc(PC_INPUT_SAMPLE_PC *sample) {

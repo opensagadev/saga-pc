@@ -4,11 +4,6 @@ extern NUVEC nusound_special_positions[5];
 extern f32 nusound_fade_start;
 extern f32 nusound_fade_end;
 extern u32 nusound_seed;
-extern NUMTX *NuSound3Listener;
-
-NUMTX *__cdecl NuSound3GetListener(void) {
-    return NuSound3Listener != NULL ? NuSound3Listener : &global_camera.mtx;
-}
 
 void __cdecl PlaySfx(char *name, NUVEC *position) {
     i32 sfx_id = GetSfxId(name);
@@ -157,9 +152,8 @@ void __cdecl AudioGroup_Parse(NUFPAR_PC *parser) {
 }
 
 void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
-    SFX_RECORD_PC *record;
     const NUMTX *listener;
-    i8 priority;
+    i32 priority;
     i32 sample_id;
     i32 voice_volume;
     i32 pitch_parameter;
@@ -171,86 +165,68 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     f32 buzz_timer;
     f32 rumble_sustain;
     f32 rumble_release;
-    f32 falloff_near;
-    f32 falloff_far;
-    f32 saved_fade_start;
-    f32 saved_fade_end;
+    f32 saved_fade_start = 0.0f;
+    f32 saved_fade_end = 0.0f;
     f32 volume_scale;
-    i32 changed_fade;
 
     if (sfx_id == -1) {
         return;
     }
 
-    record = &SfxInfo[sfx_id];
-    if ((record->sample_id_flags & 0x000c0000u) != 0) {
+    if ((SfxInfo[sfx_id].sample_id_flags & 0x000c0000u) != 0) {
         return;
     }
 
-    priority = record->priority;
-    if (record->group != -1) {
-        sample_id = GroupBuffer_GetSample(record->group, (record->sample_id_flags >> 16) & 1);
-        record = &SfxInfo[sample_id];
+    priority = SfxInfo[sfx_id].priority;
+    if (SfxInfo[sfx_id].group != -1) {
+        sfx_id = GroupBuffer_GetSample(SfxInfo[sfx_id].group, (SfxInfo[sfx_id].sample_id_flags >> 16) & 1);
     }
 
-    pitch_parameter = (i32)((f64)record->pitch * 3763.0 / 44100.0);
-    sample_id = (i32)(record->sample_id_flags << 17) >> 17;
-    loop = (record->sample_id_flags & 0x8000u) != 0;
-    pan = record->pan;
-    buzz_timer = record->buzz_timer;
-    rumble_strength = record->rumble_strength;
-    rumble_sustain = record->rumble_sustain;
-    rumble_release = record->rumble_release;
-    falloff_near = record->falloff_near;
-    falloff_far = record->falloff_far;
-    saved_fade_start = 0.0f;
-    saved_fade_end = 0.0f;
-    changed_fade = 0;
+    sample_id = (i32)(SfxInfo[sfx_id].sample_id_flags << 17) >> 17;
+    pitch_parameter = (i32)((f64)SfxInfo[sfx_id].pitch * 3763.0 / 44100.0);
+    pan = SfxInfo[sfx_id].pan;
+    buzz_timer = SfxInfo[sfx_id].buzz_timer;
+    rumble_strength = SfxInfo[sfx_id].rumble_strength;
+    rumble_sustain = SfxInfo[sfx_id].rumble_sustain;
+    loop = (SfxInfo[sfx_id].sample_id_flags & 0x8000u) != 0;
+    rumble_release = SfxInfo[sfx_id].rumble_release;
 
-    if (record->falloff_near != 0.0f || record->falloff_far != 0.0f) {
+    if (SfxInfo[sfx_id].falloff_near != 0.0f || SfxInfo[sfx_id].falloff_far != 0.0f) {
         saved_fade_start = nusound_fade_start;
         saved_fade_end = nusound_fade_end;
-        nusound_fade_start = falloff_near * saved_fade_start * 0.5f;
-        nusound_fade_end = falloff_far * saved_fade_end / 15.0f;
-        changed_fade = 1;
-    } else {
-        falloff_near = 2.0f;
-        falloff_far = 15.0f;
+        nusound_fade_start = SfxInfo[sfx_id].falloff_near * saved_fade_start * 0.5;
+        nusound_fade_end = SfxInfo[sfx_id].falloff_far * saved_fade_end / 15.0;
     }
 
     listener = NuSound3GetListener();
-    if (listener == NULL) {
-        goto restore_fade;
-    }
     if (position != NULL) {
-        f64 dx = (f64)position->x - (f64)listener->m30;
-        f64 dy = (f64)position->y - (f64)listener->m31;
-        f64 dz = (f64)position->z - (f64)listener->m32;
-        f32 max_distance = nusound_fade_end;
-        if (dx * dx + dy * dy + dz * dz > max_distance * max_distance) {
+        if ((position->x - listener->m30) * (position->x - listener->m30) +
+                (position->y - listener->m31) * (position->y - listener->m31) +
+                (position->z - listener->m32) * (position->z - listener->m32) >
+            nusound_fade_end * nusound_fade_end) {
             goto restore_fade;
         }
     }
 
     if (pitch != 1.0f) {
-        pitch_parameter = (i32)((f64)pitch * record->pitch * 3763.0 / 44100.0);
+        pitch_parameter = (i32)((f64)pitch * SfxInfo[sfx_id].pitch * 3763.0 / 44100.0);
     }
     if (volume != 1.0f) {
         if (volume > 1.0f) {
             volume = 1.0f;
         }
-        volume_scale = (f32)record->volume * volume;
+        volume_scale = (f32)SfxInfo[sfx_id].volume * volume;
     } else {
-        volume_scale = (f32)record->volume;
+        volume_scale = (f32)SfxInfo[sfx_id].volume;
     }
-    if ((record->sample_id_flags & 0x00400000u) == 0) {
+    if ((SfxInfo[sfx_id].sample_id_flags & 0x00400000u) == 0) {
         volume_scale *= AUDIOFADELEVEL;
         volume_scale *= numusicGetDuckVolume();
     }
     voice_volume = (i32)(volume_scale * MASTERVOLUME);
 
-    if (record->pitch_rnd != 0.0f) {
-        f32 pitch_variation = NuRandFloatSeeded(&nusound_seed) * record->pitch_rnd;
+    if (SfxInfo[sfx_id].pitch_rnd != 0.0f) {
+        f32 pitch_variation = NuRandFloatSeeded(&nusound_seed) * SfxInfo[sfx_id].pitch_rnd;
         f32 pitch_scale;
         if ((NuRandIntSeeded(&nusound_seed) & 1u) == 0) {
             pitch_scale = (f32)(1.0 - (f64)pitch_variation * 0.5);
@@ -261,8 +237,8 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
         if (loop != 0)
             pitch_parameter = -pitch_parameter;
     }
-    if (record->volume_rnd != 0.0f) {
-        f32 volume_factor = 1.0f + NuRandFloatSeeded(&nusound_seed) * record->volume_rnd;
+    if (SfxInfo[sfx_id].volume_rnd != 0.0f) {
+        f32 volume_factor = 1.0f + NuRandFloatSeeded(&nusound_seed) * SfxInfo[sfx_id].volume_rnd;
         voice_volume = (i32)((f64)volume_factor * (f64)voice_volume);
     }
 
@@ -282,15 +258,9 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
             volume_left = pan < 0.0f ? voice_volume : (i32)((1.0f - pan) * voice_volume);
             volume_right = pan > 0.0f ? voice_volume : (i32)((1.0f + pan) * voice_volume);
             if (loop != 0) {
-                NUVEC forward;
                 listener = NuSound3GetListener();
-                PCSoundListenerLoopPositionPc.x = listener->m30;
-                PCSoundListenerLoopPositionPc.y = listener->m31;
-                PCSoundListenerLoopPositionPc.z = listener->m32;
-                forward.x = listener->m20;
-                forward.y = listener->m21;
-                forward.z = listener->m22;
-                NuVecAdd(&PCSoundListenerLoopPositionPc, &PCSoundListenerLoopPositionPc, &forward);
+                PCSoundListenerLoopPositionPc = *(NUVEC *)&listener->m30;
+                NuVecAdd(&PCSoundListenerLoopPositionPc, &PCSoundListenerLoopPositionPc, (NUVEC *)&listener->m20);
                 PCSoundPlayPositionedLoop(&PCSoundListenerLoopPositionPc, sample_id, volume_left, volume_right,
                                           pitch_parameter, buzz_timer, rumble_strength, rumble_sustain, rumble_release);
             } else {
@@ -306,7 +276,7 @@ void __cdecl PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     }
 
 restore_fade:
-    if (changed_fade != 0) {
+    if (SfxInfo[sfx_id].falloff_near != 0.0f || SfxInfo[sfx_id].falloff_far != 0.0f) {
         nusound_fade_start = saved_fade_start;
         nusound_fade_end = saved_fade_end;
     }

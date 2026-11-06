@@ -399,7 +399,6 @@ f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x,
             u16 *word_start = next;
             i32 extra_spaces = 0;
             f32 word_width;
-            f64 combined_word_width;
             length = 0;
             while (*next != 0 && *next != hyphen) {
                 if (*next != 0x20) {
@@ -426,14 +425,13 @@ f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x,
                 ++next;
             line[length] = 0;
             word_width = NuQFntPrintLenW(font, line);
-            combined_word_width = (f64)word_width + words_width;
-            if (words != 0 &&
-                !((f64)width * qfnt_justify_squash >=
-                  (f64)(words + punctuation_spaces + extra_spaces) * printed_space_width + combined_word_width)) {
+            if (words != 0 && !(width * qfnt_justify_squash >=
+                                (f32)(words + punctuation_spaces + extra_spaces) * printed_space_width +
+                                    (words_width + word_width))) {
                 next = word_start;
                 break;
             }
-            words_width = (f32)combined_word_width;
+            words_width += word_width;
             ++words;
             punctuation_spaces += extra_spaces;
             if (*next == 0)
@@ -456,13 +454,13 @@ f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x,
         line[length] = 0;
         spaces = words - 1 + punctuation_spaces;
         if (*next == 0) {
-            f64 ratio = (f64)width / ((f64)printed_space_width * spaces + words_width);
-            scale = (f32)(1.0 < ratio ? 1.0 : ratio);
+            f32 ratio = width / ((f32)spaces * printed_space_width + words_width);
+            scale = 1.0f < ratio ? 1.0f : ratio;
         } else if (words == 1)
             scale = width / words_width;
         else {
-            f64 ratio = (f64)width / ((f64)printed_space_width * spaces + words_width);
-            scale = (f32)(qfnt_justify_stretch < ratio ? qfnt_justify_stretch : ratio);
+            f32 ratio = width / ((f32)spaces * printed_space_width + words_width);
+            scale = qfnt_justify_stretch < ratio ? qfnt_justify_stretch : ratio;
         }
         NuQFntSetScaleRS(stream, font, sx * scale, sy);
         scaled_words_width = words_width * scale;
@@ -471,16 +469,16 @@ f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x,
         else if (words == 1)
             NuQFntSetSpaceWidth(font, space_width);
         else
-            NuQFntSetSpaceWidth(font, (f32)((f64)space_width * ((f64)width - scaled_words_width) /
-                                            ((f64)scale * printed_space_width * (spaces < 0 ? 0 : spaces))));
-        NuQFntMoveRS(stream, font, x, (f32)((f64)line_number * line_height * line_spacing + y), z);
+            NuQFntSetSpaceWidth(font, (width - scaled_words_width) * space_width /
+                                          (scale * printed_space_width * (spaces < 0 ? 0 : spaces)));
+        NuQFntMoveRS(stream, font, x, (f32)line_number * line_height * line_spacing + y, z);
         NuQFntPrintCharW(font, line, matrix == NULL ? 0 : 4);
         ++line_number;
         text = next;
     } while (*text != 0);
     NuQFntSetSpaceWidth(font, saved_space_width);
     font->ic_gap = saved_ic_gap;
-    return (f32)((f64)line_number * line_height * line_spacing);
+    return (f32)line_number * line_height * line_spacing;
 }
 f32 __cdecl NuQFntPrintJustifiedW(VUFNT *font, u16 *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 width,
                                   f32 line_spacing, u32 colour, NUMTX *matrix) {

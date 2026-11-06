@@ -864,3 +864,9 @@ extern "C" void __cdecl NuSound3SetSFXPitch(i32 pitch) {
 
 extern "C" void __cdecl NuSound3CancelCheckStereo(void) {
 }
+
+extern "C" NUMTX *__cdecl NuSound3GetListener(void) {
+    extern NUMTX *NuSound3Listener;
+
+    return NuSound3Listener != NULL ? NuSound3Listener : &global_camera.mtx;
+}

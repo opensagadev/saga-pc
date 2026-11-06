@@ -945,14 +945,6 @@ void *__cdecl NuFileLoad(char *path) {
     return data;
 }
 
-i32 __cdecl NuMcWrite(i32 file, const void *data, i32 size, i32 flags) {
-    (void)file;
-    (void)data;
-    (void)size;
-    (void)flags;
-    return 0;
-}
-
 i32 __cdecl NuFileWrite(NUFILE file, const void *data, i32 size) {
     if (file >= 0x1000) {
         return NuMcWrite(file - 0x1000, data, size, 0);
@@ -967,21 +959,7 @@ i32 __cdecl NuFileWrite(NUFILE file, const void *data, i32 size) {
 }
 
 void __cdecl NuFileWriteString(NUFILE file, const char *text) {
-    const char *end = text;
-    i32 size;
-
-    while (*end != '\0') {
-        ++end;
-    }
-    size = (i32)(end - text);
-
-    if (file >= 0x1000) {
-        NuMcWrite(file - 0x1000, text, size, 0);
-    } else if (file >= 0x400) {
-        NuMemFileWrite(file, text, size);
-    } else {
-        NuPSFileWrite(file - 1, text, size);
-    }
+    NuFileWrite(file, text, (i32)strlen(text));
 }
 
 i32 __cdecl NuFileCopyEx(char *destination, char *source, void *buffer, i32 capacity) {
@@ -1348,25 +1326,23 @@ i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 whence) {
 }
 
 i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin) {
-    PC_NUMEMFILE *memory;
-
     if (file >= 0x800) {
         return NuDatFileSeek(file, offset, origin);
     }
 
-    memory = &pc_memfiles[file - 0x400];
+    file -= 0x400;
     switch (origin) {
         case 1:
-            memory->position += (i32)offset;
+            pc_memfiles[file].position += (i32)offset;
             break;
         case 2:
-            memory->position = memory->end - (i32)offset;
+            pc_memfiles[file].position = pc_memfiles[file].end - (i32)offset;
             break;
         default:
-            memory->position = memory->buffer + (i32)offset;
+            pc_memfiles[file].position = pc_memfiles[file].buffer + (i32)offset;
             break;
     }
-    return memory->position - memory->buffer;
+    return pc_memfiles[file].position - pc_memfiles[file].buffer;
 }
 
 i64 __cdecl NuFileSeek(NUFILE file, i64 offset, i32 origin) {
