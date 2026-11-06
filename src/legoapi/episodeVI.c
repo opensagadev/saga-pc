@@ -130,8 +130,7 @@ void __cdecl KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_opponent_exclusion_mask) == 0xeb8);
 #define RANCOR_PLAYER_IN_AREA_PC(player, world, n)                                                                     \
-    (U64_PAIR((player)->ai_area_mask) &                                                                                \
-     (i64)(i32)(1u << (((i32)((u32)LevArea[n] - (u32)(world)->ai_sys->areas) >> 6) & 31)))
+    (U64_PAIR((player)->ai_area_mask) & (i64)(i32)(1u << ((i32)((u32)LevArea[n] - (u32)(world)->ai_sys->areas) >> 6)))
 
 void __cdecl JabbasPalaceE_Update(WORLDINFO *world) {
     i32 i;
@@ -1154,7 +1153,7 @@ extern f32 EmperorFloorPushPc;
 extern f32 EmperorFloorSafeXMinimumPc;
 #define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket)
 #define EMPEROR_FLOOR_AREA_MASK(world, area)                                                                           \
-    ((u64)(i64)(i32)(1u << ((((i32)((u32)(area) - (u32)(world)->ai_sys->areas)) >> 6) & 31)))
+    ((u64)(i64)(i32)(1u << (((i32)((u32)(area) - (u32)(world)->ai_sys->areas)) >> 6)))
 void __cdecl EmperorFightA_Update(WORLDINFO *world) {
     i32 i;
     i32 floor;
