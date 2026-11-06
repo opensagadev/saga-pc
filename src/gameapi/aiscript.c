@@ -2229,3 +2229,122 @@ void __cdecl AIScriptInitConditions(AISYS_PC *sys) {
         script = (AISCRIPT_PC *)NuLinkedListGetNext(&global_aiscripts, &script->link);
     }
 }
+
+/* Game-side AI callback registration; retail keeps these in the AI script unit so
+   GameAISysInit calls them out of line. */
+typedef char *(__cdecl *AI_CHARACTER_NAME_PC)(u8);
+typedef char *(__cdecl *AI_GLOBAL_CHARACTER_NAME_PC)(i32);
+typedef void *(__cdecl *AI_GLOBAL_CHARACTER_HGOBJ_PC)(i32);
+typedef void(__cdecl *AI_GLOBAL_CHARACTER_RENDER_PC)(NUVEC *, i16, i32, i32, void *);
+typedef void(__cdecl *AI_CLEAR_CREATURES_PC)(void);
+typedef APIOBJECT_PC *(__cdecl *AI_GET_NAMED_OBJECT_PC)(void *, char *);
+typedef NUVEC *(__cdecl *AI_GET_CREATURE_ORIGIN_PC)(AISYS_PC *, AIPACKET_PC *);
+extern AI_CHARACTER_NAME_PC LevelCharacterNameFn, SpecialRouteCharacterNameFn;
+extern AI_GLOBAL_CHARACTER_NAME_PC GlobalCharacterNameFn;
+extern AI_GLOBAL_CHARACTER_HGOBJ_PC GlobalCharacterHGobjFn;
+extern AI_GLOBAL_CHARACTER_RENDER_PC GlobalCharacterRenderFn;
+extern AI_CLEAR_CREATURES_PC ClearAICreaturesFn;
+extern AIACTIONDEF_PC api_aiactiondefs[], *game_aiactiondefs;
+extern AICONDITIONDEF_PC *game_aiconditiondefs;
+typedef void(__cdecl *AI_LOAD_PC)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
+void __cdecl InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC function) {
+    LevelCharacterTypeIDFn = function;
+    SpecialRouteCharacterTypeIDFn = function;
+}
+void __cdecl InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC function) {
+    SpecialRouteCharacterTypeIDFn = function;
+}
+void __cdecl InitFn_LevelCharacterName(AI_CHARACTER_NAME_PC function) {
+    LevelCharacterNameFn = function;
+    SpecialRouteCharacterNameFn = function;
+}
+void __cdecl InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME_PC function) {
+    SpecialRouteCharacterNameFn = function;
+}
+void __cdecl InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID_PC function) {
+    LevelCharacterGlobalIDFn = function;
+}
+void __cdecl InitFn_GlobalCharacterTypeID(i32(__cdecl *function)(char *)) {
+    GlobalCharacterTypeIDFn = function;
+}
+void __cdecl InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME_PC function) {
+    GlobalCharacterNameFn = function;
+}
+void __cdecl InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER_PC function) {
+    GlobalCharacterRenderFn = function;
+}
+void __cdecl InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ_PC function) {
+    GlobalCharacterHGobjFn = function;
+}
+void __cdecl InitFn_ClearAICreatures(AI_CLEAR_CREATURES_PC function) {
+    ClearAICreaturesFn = function;
+}
+void __cdecl InitFn_GameAILoad(AI_LOAD_PC function) {
+    GameAILoadFn = function;
+}
+void __cdecl InitFn_AIActionParseSpeed(AI_PARSE_SPEED_PC function) {
+    AIActionParseSpeedFn = function;
+}
+void __cdecl InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH_PC function) {
+    AIRespawnOnPathFn = function;
+}
+void __cdecl InitFn_GetViewRange(AI_CHARACTER_DISTANCE_PC function) {
+    GetViewRangeFn = function;
+}
+void __cdecl InitFn_GetHearDistance(AI_CHARACTER_DISTANCE_PC function) {
+    GetHearDistanceFn = function;
+}
+void __cdecl InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE_PC function) {
+    GetMaxViewHeightFn = function;
+}
+void __cdecl InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC function) {
+    GetMinViewHeightFn = function;
+}
+void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC function) {
+    PreparingForSpecialMoveFn = function;
+}
+void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC function) {
+    MidSpecialMoveFn = function;
+}
+void __cdecl InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT_PC function) {
+    GetNamedGameObjectCallback = function;
+}
+void __cdecl InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC function) {
+    GetOriginPositionFn = function;
+}
+void __cdecl SetScriptErrorLevel(i32 level) {
+    if ((u32)level <= 2)
+        AIActionDiagnosticMode = level;
+}
+
+void __cdecl RegisterAIScriptActions(AIACTIONDEF_PC *actions) {
+    AIACTIONDEF_PC *def;
+    i32 index = 0;
+    game_aiactiondefs = actions;
+    for (def = actions; def->name != NULL; def++) {
+        def->is_game_action = 1;
+        def->index = (i16)index;
+        index++;
+    }
+    index = 0;
+    for (def = api_aiactiondefs; def->name != NULL; def++) {
+        def->is_game_action = 0;
+        def->index = (i16)index;
+        index++;
+    }
+}
+void __cdecl RegisterAIScriptConditions(AICONDITIONDEF_PC *conditions) {
+    game_aiconditiondefs = conditions;
+}
+void *__cdecl AISysBufferAlloc(VARIPTR *cursor, VARIPTR *end, u32 size) {
+    void *result = NULL;
+
+    if (cursor != NULL && end != NULL && cursor->addr + size < end->addr) {
+        result = (void *)((cursor->addr + 15) & ~15u);
+        cursor->addr = ((cursor->addr + 15) & ~15u) + size;
+        memset(result, 0, size);
+    } else {
+        AIScriptMissingStateDiagnostic();
+    }
+    return result;
+}

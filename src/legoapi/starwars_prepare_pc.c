@@ -13,6 +13,109 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, takeover_source) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, attached_tube_pc) == 0x798);
 STATIC_ASSERT(offsetof(AIPACKET_PC, flags) == 0x1e8);
+typedef struct STARWARS_PREPARE_PC {
+    u32 capabilities;
+    AI_PREPARING_SPECIAL_MOVE_PC prepare;
+} STARWARS_PREPARE_PC;
+STATIC_ASSERT(sizeof(STARWARS_PREPARE_PC) == 8);
+typedef struct ai_special_terrain_platform_pc_s {
+    u8 unknown_00[0x4a];
+    i16 scene_object_index;
+    u8 unknown_4c[0x20];
+} AI_SPECIAL_TERRAIN_PLATFORM_PC;
+typedef struct ai_special_terrain_view_pc_s {
+    u8 unknown_00[0x68];
+    AI_SPECIAL_TERRAIN_PLATFORM_PC *platforms;
+} AI_SPECIAL_TERRAIN_VIEW_PC;
+STATIC_ASSERT(sizeof(AI_SPECIAL_TERRAIN_PLATFORM_PC) == 0x6c);
+STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
+STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_VIEW_PC, platforms) == 0x68);
+extern STARWARS_PREPARE_PC starwars_prepareforspecialmove[8];
+extern AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4];
+extern const char StarWarsTakeOverJumpPc[13];
+extern u32 LEGO_AIPATHCNX_BIGJUMP, LEGO_AIPATHCNX_REQUIRESPERMISSION;
+extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK, LEGO_AIPATHCNX_JUMP_NOW, LEGO_AIPATHCNX_DONT_JUMP_NOW;
+void __cdecl ClearSpecialMove(GAMEOBJECT *);
+void __cdecl InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
+void __cdecl InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
+void __cdecl LSW_Hub_ResetAI(WORLDINFO *);
+void __cdecl LSW_Hub_UpdateAI(WORLDINFO *);
+i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *, APIOBJECT_PC *, i32);
+i32 __cdecl StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
+    u32 capabilities =
+        packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
+    AIPATHNODE_PC *source = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+    AIPATHNODE_PC *destination = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+    AIPATHNODE_PC *node;
+    AIPATH_PC *path;
+    i32 skip_inside = 0;
+    i32 index, instance;
+    NuVecSub(&owner->special_move_look_position_pc, &destination->position, &source->position);
+    NuVecNorm(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc);
+    NuVecAdd(&owner->special_move_look_position_pc, &owner->special_move_look_position_pc, &destination->position);
+    packet->movement_look_target = &owner->special_move_look_position_pc;
+    node = owner->ai_packet.special_move_node;
+    if (node->has_special != 0 && (node->runtime_flags & 2) != 0) {
+        path = owner->ai_packet.path_info.path;
+        if (path != NULL) {
+            index = node - path->nodes;
+            if ((path->updated_node_bits[index / 8] & (1u << (index % 8))) == 0)
+                AIPathNodeUpdatePos(system, path, node);
+        }
+        skip_inside = 1;
+        if (owner->field_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
+            instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
+            if (instance == ((AI_SPECIAL_TERRAIN_VIEW_PC *)CurrentTerrain)
+                                ->platforms[owner->supporting_platform_id]
+                                .scene_object_index)
+                skip_inside = 0;
+        }
+    }
+    if (((GAMEOBJECT *)object)->respawn_timer > 2.0f ||
+        (skip_inside == 0 && owner->ai_packet.inside_path_node ==
+                                 owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes)) {
+        ClearSpecialMove(owner);
+    } else if (owner->character_context != 0 &&
+               (owner->ai_packet.special_move_node->min_height > owner->position.y ||
+                (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
+                ((capabilities & 0x40) != 0 && owner->field_281 != 0))) {
+        ClearSpecialMove(owner);
+    }
+    node = owner->ai_packet.special_move_node;
+    if (node == NULL)
+        return 0;
+    if ((capabilities & 0x40) == 0) {
+        if ((capabilities & 4) != 0) {
+            if (packet->terrain_origin.y >= destination->min_height) {
+                owner->pad->buttons_held |= GAMEPAD_JUMP;
+                if (owner->jump_variant_state == 3 || owner->jump_variant_state == 0)
+                    owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+            }
+        } else if ((owner->portal_flags & 0x1000) != 0 && 0.0f > owner->velocity.y) {
+            owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+            owner->portal_flags &= ~0x1000;
+        }
+    }
+    owner->ai_packet.movement_destination = node->position;
+    owner->ai_packet.movement_stopping_distance = 0.0f;
+    ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+    return 1;
+}
+i32 __cdecl StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    if (owner->character_context == 0) {
+        SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
+        owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
+        owner->ai_packet.movement_stopping_distance = 0.0f;
+    } else {
+        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+    }
+    return 1;
+}
+
 i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
     GAMEOBJECT *owner;
     AIPATHNODE_PC *nodes;
@@ -111,6 +214,34 @@ i32 __cdecl StarWars_PrepareHatch(AIPACKET_PC *packet, APIOBJECT_PC *object, i32
     }
 }
 
+i32 __cdecl StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    switch ((i8)owner->field_1087) {
+        case 0:
+            if (owner->character_context == 0x0f || owner->character_context == 0x47 ||
+                (owner->character_context == 0 && owner->action_movement_state == 6)) {
+                owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
+                owner->ai_packet.movement_stopping_distance = 0.0f;
+                ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+                return 1;
+            }
+            owner->field_1087 = 1;
+            owner->special_move_timer_pc = 1.0f;
+        case 1:
+            owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
+            owner->ai_packet.movement_stopping_distance = 0.0f;
+            if (owner->ai_packet.inside_path_node ==
+                    owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes ||
+                0.0f >= owner->special_move_timer_pc) {
+                ClearSpecialMove(owner);
+                return 0;
+            }
+            ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+            return 1;
+    }
+    return 0;
+}
+
 i32 __cdecl StarWars_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks_unused) {
     GAMEOBJECT *object;
     AIPATH_PC *path;
@@ -201,6 +332,17 @@ i32 __cdecl StarWars_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i
     return 0;
 }
 
+i32 __cdecl StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
+    GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+    if (owner->character_context == 0x1f) {
+        owner->launch_origin = owner->ai_packet.special_move_node->position;
+        ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x4000;
+        return 1;
+    }
+    ClearSpecialMove(owner);
+    return 0;
+}
+
 i32 __cdecl StarWars_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
     GAMEOBJECT *owner;
     i32 result;
@@ -285,6 +427,81 @@ i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, 
     }
     ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
     return 1;
+}
+
+i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *packet, APIOBJECT_PC *apiobject, i32 checks) {
+    GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
+    GAMEOBJECT *owner = object->objptr;
+    u32 flags, capabilities;
+    STARWARS_PREPARE_PC *entry;
+    if (owner->character_context == 0x5b)
+        owner->pad->buttons_pressed |= GAMEPAD_JUMP;
+    flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
+    if (flags != 0 && (flags & 0x40000000) == 0) {
+        capabilities = flags & packet->capabilities;
+        if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & 0x40) == 0 &&
+            owner->takeover_target == NULL && owner->character_context != 0x3c && (capabilities & 0xffff7fff) == 0) {
+            AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, (char *)StarWarsTakeOverJumpPc);
+            return 1;
+        }
+        if (capabilities != 0 && (flags & 0x98000000) == 0) {
+            for (entry = starwars_prepareforspecialmove; entry->prepare != NULL; ++entry) {
+                if ((entry->capabilities & capabilities) != 0) {
+                    if (entry->prepare(packet, apiobject, checks) != 0)
+                        return 1;
+                    break;
+                }
+            }
+        } else {
+            packet->movement_destination = object->position;
+            packet->movement_stopping_distance = 0.0f;
+            object->ai_collision_priority_pc |= 0x2000;
+            return 1;
+        }
+    }
+    if ((packet->navigation_flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
+        (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0)
+        TryToTeleportToNextNode(
+            owner,
+            &packet->path_info.path
+                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]],
+            0);
+    return 0;
+}
+i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *apiobject) {
+    GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
+    GAMEOBJECT *owner = object->objptr;
+    AI_MID_SPECIAL_MOVE_PC function;
+    owner->special_move_timer_pc -= FRAMETIME;
+    if (owner->ai_packet.special_move_node != NULL) {
+        if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0)
+            ClearSpecialMove(owner);
+        else {
+            function = starwars_midspecialmovefns[(i8)owner->field_1086];
+            if (function != NULL)
+                return function(system, packet, apiobject);
+        }
+    }
+    return 0;
+}
+void __cdecl StarWars_GameAISysInit(void) {
+    LEGO_AIPATHCNX_JUMP = 0x1;
+    LEGO_AIPATHCNX_R2D2GLIDE = 0x4;
+    LEGO_AIPATHCNX_FORGOODIES = 0x80;
+    LEGO_AIPATHCNX_FORBADDIES = 0x100;
+    LEGO_AIPATHCNX_BLOCKAGE = 0x40000;
+    LEGO_AIPATHCNX_DONTTOGGLE = 0x80000;
+    LEGO_AIPATHCNX_FULLTERRAIN = 0x100000;
+    LEGO_AIPATHCNX_BIGJUMP = 0x1000;
+    LEGO_AIPATHCNX_REQUIRESPERMISSION = 0x2000;
+    LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0x200;
+    LEGO_AIPATHCNX_JUMP_NOW = 0x400;
+    LEGO_AIPATHCNX_DONT_JUMP_NOW = 0x800;
+    InitFn_PreparingForSpecialMove(StarWars_PreparingForSpecialMove);
+    InitFn_MidSpecialMove(StarWars_MidSpecialMove);
+    HubInitAIFnPc = LSW_Hub_InitAI;
+    HubResetAIFnPc = LSW_Hub_ResetAI;
+    HubUpdateAIFnPc = LSW_Hub_UpdateAI;
 }
 
 i32 __cdecl StarWars_PrepareJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
@@ -489,3 +706,15 @@ check:
 const char StarWarsStairsTopPc[11] = "stairs_top";
 const char StarWarsStairsTop2Pc[12] = "stairs_top2";
 f32 StarWarsJumpDistancePc[3] = {0.8f, 1.2f, 1.5f};
+AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4] = {
+    StarWars_MidSpecialMove_Default,
+    StarWars_MidSpecialMove_StartJump,
+    StarWars_MidSpecialMove_UseHatch,
+    StarWars_MidSpecialMove_BigJump,
+};
+STARWARS_PREPARE_PC starwars_prepareforspecialmove[8] = {
+    {0x23, StarWars_PrepareJump},           {0x4, StarWars_PrepareR2D2Glide},
+    {0x18, StarWars_PrepareHatch},          {0x40, StarWars_PrepareHoverTube},
+    {0x1000, StarWars_PrepareBigJump},      {0x8000, StarWars_PrepareTakeOverJump},
+    {0x20000000, StarWars_PrepareObstacle}, {0, NULL}};
+const char StarWarsTakeOverJumpPc[13] = "TakeOverJump";
