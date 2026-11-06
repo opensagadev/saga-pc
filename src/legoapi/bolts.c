@@ -824,22 +824,25 @@ void __cdecl BoltTypes_Init(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < BoltSys->count; ++index, ++type) {
         i32 reflected;
-        memset(&type->specials.object_special, 0, 4 * sizeof(NUSPECIALHANDLE));
+        memset(&type->specials.object_special, 0, sizeof(NUSPECIALHANDLE));
+        memset(&type->specials.glow_special, 0, sizeof(NUSPECIALHANDLE));
+        memset(&type->specials.reference_object_special, 0, sizeof(NUSPECIALHANDLE));
+        memset(&type->specials.reference_glow_special, 0, sizeof(NUSPECIALHANDLE));
         if (type->object_ids[0] != -1) {
             type->specials.object_special = world->level_objects[type->object_ids[0]].special;
             if (type->object_ids[1] != -1)
                 type->specials.glow_special = world->level_objects[type->object_ids[1]].special;
             reflected = LevelObject_GetReflection(type->object_ids[0]);
-            if (reflected == -1) {
-                type->specials.reference_object_special = type->specials.object_special;
-                type->specials.reference_glow_special = type->specials.glow_special;
-            } else {
+            if (reflected != -1) {
                 type->specials.reference_object_special = world->level_objects[reflected].special;
                 if (type->object_ids[1] != -1) {
                     reflected = LevelObject_GetReflection(type->object_ids[1]);
                     if (reflected != -1)
                         type->specials.reference_glow_special = world->level_objects[reflected].special;
                 }
+            } else {
+                type->specials.reference_object_special = type->specials.object_special;
+                type->specials.reference_glow_special = type->specials.glow_special;
             }
         }
         if (type->object_ids[2] != -1)
