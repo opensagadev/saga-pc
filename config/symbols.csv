@@ -6095,6 +6095,7 @@ address,symbol,size,ctype
 0x5d9130,_NuPortalMaxDepth,15,"void __cdecl(NUGSCN *,i32)"
 0x5d9140,_allocateFrustrum,104,
 0x5d91b0,_copyFrustrum,109,
+0x005d9220,_PortalPointInRoomPc,106,"i16 __cdecl (NUGSCNROOM *, NUVEC *)"
 0x005d92b0,_NuPortalWhichRoom,484,"i16 __cdecl (NUGSCN *, NUVEC *)"
 0x5d94a0,_clipTestSphere,212,"i32 __cdecl(NUPORTALSPHERE_PC *,NUPORTAL_FRUSTUM_PC *)"
 0x5d9580,_clipTestBox,486,"i32 __cdecl(NUVEC*,NUVEC*,NUPLANE*,i32)"
