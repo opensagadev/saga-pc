@@ -745,16 +745,17 @@ extern "C" {
 
                 f32 ground;
                 if (((i + GameTimer.update_count) & MiniTrooperGroundRefreshMaskPc) == 0) {
-                    ground = team->reserved_02c;
-                    if (ground == 2000000.0f) {
+                    if (team->reserved_02c == 2000000.0f) {
                         position.y = 10.0f;
                         ground = GameShadow(NULL, &position, 5.0f, -1);
+                    } else {
+                        ground = team->reserved_02c;
                     }
                     trooper->shot_position.y = ground;
                 } else {
                     ground = trooper->shot_position.y;
                 }
-                team->height += ground;
+                team->height += trooper->shot_position.y;
 
                 const i32 frame = TrooperStepFrames[trooper->step_frame];
                 const u16 draw_rotation = static_cast<u16>(trooper->rotation + 0x8000);
@@ -782,15 +783,17 @@ extern "C" {
             team->height /= static_cast<f32>(static_cast<i32>(team->trooper_count));
         }
 
-        NUMTX *second_side[3];
+        next[0] = matrices[0];
+        next[1] = matrices[1];
+        next[2] = matrices[2];
         for (i32 frame = 0; frame < 3; ++frame) {
-            NuSpecialBurstDrawAt(&((struct nuhspecial_s *)hothtroopers)[frame], first_side_counts[frame],
-                                 matrices[frame], 1);
-            second_side[frame] = matrices[frame] + first_side_counts[frame];
+            NuSpecialBurstDrawAt(&((struct nuhspecial_s *)hothtroopers)[frame], first_side_counts[frame], next[frame],
+                                 1);
+            matrices[frame] = next[frame] + first_side_counts[frame];
         }
         for (i32 frame = 0; frame < 3; ++frame) {
             NuSpecialBurstDrawAt(&((struct nuhspecial_s *)hothtroopers)[frame + 3],
-                                 counts[frame] - first_side_counts[frame], second_side[frame], 1);
+                                 counts[frame] - first_side_counts[frame], matrices[frame], 1);
         }
     }
 }
