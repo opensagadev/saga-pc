@@ -237,15 +237,14 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             object->velocity = v000;
             switch (object->field_7b3) {
                 case 0:
-                    if (playing != NULL && 0.0f < *playing) {
+                    if (playing != NULL && *playing > 0.0f) {
                         f32 frame;
 
                         frame = AnimListFrame(object->character_model, object->field_7aa, 0);
-                        if (frame > 1.0f && AnimEndFrame(object->character_model, object->field_7aa) > frame) {
-                            f32 progress;
-
-                            progress = (*playing - 1.0f) / (frame - 1.0f);
-                            fraction = 1.0f < progress ? 1.0f : progress;
+                        if (frame > 1.0f && frame < AnimEndFrame(object->character_model, object->field_7aa)) {
+                            fraction = (*playing - 1.0f) / (frame - 1.0f);
+                            if (fraction > 1.0f)
+                                fraction = 1.0f;
                             goto have_fraction;
                         }
                     }
@@ -301,7 +300,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         hook = &zipup->hook_origin;
         destination = object->field_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
         if ((zipup->flags_word & 1) == 0) {
-            if (NuVecDistSqr(&object->position, hook, NULL) < 0.01f || object->context_timer >= 5.0f) {
+            if (NuVecDistSqr(&object->position, hook, NULL) < ForcePushApproachInnerSquare ||
+                object->context_timer >= 5.0f) {
                 StartJump(object, 6);
                 PlaySfx(GrapDetach_text, &object->collision_position);
                 if ((object->flags_1fc & 0x80) != 0)
