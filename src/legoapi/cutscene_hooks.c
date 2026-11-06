@@ -276,12 +276,6 @@ void SpeedBlur_Apply(WORLDINFO *world) {
     NuLightSpeedBlur(Paused, 0.5f);
 }
 
-void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *inst, NUMTX *mtx) {
-    inst->flags_88 |= 0x80;
-    inst->matrix = *mtx;
-    NuGCutSceneUpdateMtx(&inst->matrix);
-}
-
 i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {
     KAMINOEPLATE *hit;
 

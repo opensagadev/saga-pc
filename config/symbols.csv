@@ -2885,7 +2885,7 @@ address,symbol,size,ctype
 0x5009d0,_instNuGCutSceneSwapBuffers,133,"i32 __cdecl (INSTNUGCUTSCENE *, i32)"
 0x500a70,_CutSceneStreamHoldFramePc,29,
 0x500b00,_CutCameraFixPtrsPc,132,
-0x00500b90,_NuGCutSceneUpdateMtx,86,void (NUMTX *)
+0x00500b90,_NuGCutSceneUpdateMtx,87,"void (CUT_INSTANCE_LOAD_PC *, NUMTX *)"
 0x500bf0,_CutCameraInstanceCreatePc,87,
 0x500c80,_CutLocatorFixPtrsPc,207,
 0x00500d50,_PCCutLocatorAni3,253,"f32 *__cdecl (CUT_LOCATOR_ANIMATION_PC *, NUMTX *, f32)"
@@ -2948,7 +2948,7 @@ address,symbol,size,ctype
 0x505f20,_instNuGCutSceneStart,270,void __cdecl instNuGCutSceneStart(INSTNUGCUTSCENE *)
 0x5060e0,_instNuGCutSceneEnd,251,void __cdecl(INSTNUGCUTSCENE *)
 0x5061e0,_instNuGCutSceneEndFirstFrame,221,void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *)
-0x00506430,_instNuGCutSceneSetMtx,41,"void __cdecl (INSTNUGCUTSCENE *, NUMTX *)"
+0x00506430,_instNuGCutSceneSetMtx,42,"void __cdecl (INSTNUGCUTSCENE *, NUMTX *)"
 0x506490,_instNuGCutSceneServiceLoad,627,void __cdecl (void)
 0x506710,_CutSceneStreamSkipPc,362,
 0x506880,_CutSceneCameraSysUpdatePc,1463,

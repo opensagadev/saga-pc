@@ -194,16 +194,16 @@ extern "C" {
     }
 
     static void CS_in_game(NUFPAR_PC *) {
-        CS_CutInfo->flags &= ~3U;
-        CS_CutInfo->flags |= 0x800;
+        CUT_LOAD_RECORD_PC *info = CS_CutInfo;
+        info->flags = (info->flags & ~3U) | 0x800;
     }
 
     static void CS_blobshadow_alpha(NUFPAR_PC *fp) {
         i32 alpha = NuFParGetInt(fp);
-        if (alpha < 0) {
-            alpha = 0;
-        } else if (alpha > 0xfe) {
+        if (alpha > 0xfe) {
             alpha = 0xfe;
+        } else if (alpha < 0) {
+            alpha = 0;
         }
         CS_CutInfo->blob_shadow_alpha = static_cast<u8>(alpha);
     }
@@ -2132,6 +2132,8 @@ extern "C" {
 extern "C" {
     static void bgLoadStreamCutScene(BGPROCINFO *) {
         if (cutscene_load_instance != NULL) {
+            /* Retail's debug trace of the frame counter; the print is compiled empty. */
+            CutSceneConfigMissingPc(reinterpret_cast<char *>(nuvideo_global_vbcnt));
             instNuGCutSceneServiceLoad();
         }
     }

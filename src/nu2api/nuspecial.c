@@ -272,11 +272,11 @@ i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special) {
 }
 
 NUVEC *__cdecl NuSpecialGetPos(NUSPECIALHANDLE *special) {
-    NUMTX *matrix = special->display_special;
-    if (matrix == NULL) {
-        matrix = special->special;
-    }
-    return matrix != NULL ? (NUVEC *)&matrix->m30 : NULL;
+    if (special->display_special != NULL)
+        return (NUVEC *)&special->display_special->m30;
+    if (special->special != NULL)
+        return (NUVEC *)&special->special->m30;
+    return NULL;
 }
 
 NUVEC *__cdecl NuSpecialGetDrawPos(NUSPECIALHANDLE *special) {

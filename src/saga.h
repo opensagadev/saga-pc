@@ -6424,12 +6424,14 @@ STATIC_ASSERT(offsetof(NUQUAT, w) == 0xc);
 typedef struct instnugcutscene_s {
     u8 opaque_00_18[0x18];
     NUMTX matrix;
-    u8 opaque_58_88[0x70];
+    u8 opaque_58_88[0x30];
     u32 flags_88;
     u8 opaque_8c_90[0x4];
     f32 current_frame;
     u8 opaque_94[0x4];
 } INSTNUGCUTSCENE;
+STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, flags_88) == 0x88);
+STATIC_ASSERT(offsetof(INSTNUGCUTSCENE, current_frame) == 0x90);
 STATIC_ASSERT(sizeof(NUMTX) == 0x40);
 STATIC_ASSERT(offsetof(NUMTX, m00) == 0x0);
 STATIC_ASSERT(offsetof(NUMTX, m01) == 0x4);

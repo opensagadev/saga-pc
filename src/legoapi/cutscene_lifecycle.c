@@ -111,7 +111,14 @@ typedef struct cut_instance_lifecycle_pc_s {
     CUT_SCENE_LIFECYCLE_PC *scene;
     CUT_SCENE_LIFECYCLE_PC *saved_scene;
     u8 unknown_60[0x28];
-    u32 flags_88;
+    union {
+        u32 flags_88;
+        struct {
+            u32 flags_88_low : 2;
+            u32 paused : 1;
+            u32 flags_88_high : 29;
+        };
+    };
     u32 flags_8c;
     f32 current_frame;
     f32 render_frame;
@@ -992,6 +999,22 @@ void __cdecl NuGCutSceneFixUpExtra(void *asset, NUGSCN *gscene) {
         CutSceneRigidFixUpExtraPc(scene, gscene);
 }
 
+/* Places the instance's bounding-box centre in world space for its matrix. */
+static __declspec(noinline) void NuGCutSceneUpdateMtx(CUT_INSTANCE_LOAD_PC *instance, NUMTX *matrix) {
+    CUT_SCENE_LOAD_PC *scene = instance->scene;
+    if (scene->bounds != NULL) {
+        instance->center.x = (scene->bounds->max.x + scene->bounds->min.x) * 0.5;
+        instance->center.y = (scene->bounds->max.y + scene->bounds->min.y) * 0.5;
+        instance->center.z = (scene->bounds->max.z + scene->bounds->min.z) * 0.5;
+    } else {
+        instance->center.x = 0.0f;
+        instance->center.y = 0.0f;
+        instance->center.z = 0.0f;
+    }
+    if (matrix != NULL)
+        NuVecMtxTransform(&instance->center, &instance->center, matrix);
+}
+
 static __declspec(noinline) CUT_LOAD_CAMERA_INSTANCE *CutCameraInstanceCreatePc(CUT_LOAD_CAMERA_SYSTEM *system,
                                                                                 VARIPTR *buffer) {
     CUT_LOAD_CAMERA_INSTANCE *instance = NULL;
@@ -1270,6 +1293,13 @@ void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
         CutSceneEndLocatorsPC(instance->locator_instance, scene->locator_system);
     if (instance->camera_instance != NULL && instance->camera_instance->camera_index >= 0)
         CutSceneCameraCTRL = 0;
+}
+
+void __cdecl instNuGCutSceneSetMtx(INSTNUGCUTSCENE *owner, NUMTX *mtx) {
+    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+    instance->flags_88 |= 0x80;
+    instance->matrix = *mtx;
+    NuGCutSceneUpdateMtx(instance, &instance->matrix);
 }
 
 extern void(__cdecl *CutSceneRigidRenderCallbackPc)(CUT_LOAD_RIGID *, NUMTX *);
@@ -2230,12 +2260,13 @@ void __cdecl instNuGCutSceneStop(INSTNUGCUTSCENE *owner) {
 }
 
 i32 __cdecl instNuGCutSceneIsFinished(INSTNUGCUTSCENE *owner) {
-    return ((CUT_INSTANCE_LIFECYCLE_PC *)owner)->flags_88 & 0x1000 ? -1 : 0;
+    /* Retail sign-extends bit 12 of the flags word. */
+    return (i32)(((CUT_INSTANCE_LIFECYCLE_PC *)owner)->flags_88 << 19) >> 31;
 }
 
 void __cdecl instNuGCutScenePause(INSTNUGCUTSCENE *owner, i32 paused) {
     CUT_INSTANCE_LIFECYCLE_PC *instance = (CUT_INSTANCE_LIFECYCLE_PC *)owner;
-    instance->flags_88 ^= ((u32)paused * 4U ^ instance->flags_88) & 4U;
+    instance->paused = paused;
 }
 
 void __cdecl NuGCutSceneSysPostBackgroundLoad(void) {
