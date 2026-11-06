@@ -351,49 +351,61 @@ static void computePortalExtents(NUPORTAL *portal, NUVEC *maximum, NUVEC *minimu
 
 static NUPORTAL_FRUSTUM_PC *buildFrustrum(NUVEC *minimum, NUVEC *maximum, i16 room_id) {
     NUPORTAL_FRUSTUM_PC *frustum = allocateFrustrum(4);
-    f32 half_angle = NuPortalCameraPc->fov * 0.5f;
-    i64 phase = (i64)((f64)half_angle * (f64)10430.378f);
-    f32 tangent = NuTrigTable[((i32)phase >> 1) & 0x7fff] / NuTrigTable[(((i32)phase + 0x4000) >> 1) & 0x7fff];
-    f32 horizontal_tangent = tangent / NuPortalCameraPc->aspect;
+    f32 half_angle, tangent, horizontal_tangent;
     f32 edge, squared, inverse_length;
-    i32 i;
+    NUVEC camera_position;
+    NUPLANE *planes;
+    u32 phase;
+
     frustum->minimum = *minimum;
     frustum->maximum = *maximum;
     frustum->room_id = room_id;
+    planes = frustum->planes;
+    half_angle = NuPortalCameraPc->fov * 0.5f;
+    phase = (u32)(half_angle * 10430.3779296875);
+    tangent = NU_SIN_LUT(phase) / NU_COS_LUT(phase);
+    horizontal_tangent = tangent / NuPortalCameraPc->aspect;
     edge = minimum->y * tangent;
     squared = edge * edge + 1.0f;
     inverse_length = 1.0f / NuFsqrt(squared);
-    frustum->planes[2].a = 0.0f;
-    frustum->planes[2].b = inverse_length;
-    frustum->planes[2].c = -edge * inverse_length;
-    frustum->planes[2].d = 0.0f;
+    planes[2].a = 0.0f;
+    planes[2].b = inverse_length;
+    planes[2].c = -edge * inverse_length;
+    planes[2].d = 0.0f;
     edge = maximum->y * tangent;
     squared = edge * edge + 1.0f;
     inverse_length = 1.0f / NuFsqrt(squared);
-    frustum->planes[3].a = 0.0f;
-    frustum->planes[3].b = -inverse_length;
-    frustum->planes[3].c = edge * inverse_length;
-    frustum->planes[3].d = 0.0f;
+    planes[3].a = 0.0f;
+    planes[3].b = -inverse_length;
+    planes[3].c = edge * inverse_length;
+    planes[3].d = 0.0f;
     edge = maximum->x * horizontal_tangent;
     squared = edge * edge + 1.0f;
     inverse_length = 1.0f / NuFsqrt(squared);
-    frustum->planes[0].a = -inverse_length;
-    frustum->planes[0].b = 0.0f;
-    frustum->planes[0].c = edge * inverse_length;
-    frustum->planes[0].d = 0.0f;
+    planes[0].a = -inverse_length;
+    planes[0].b = 0.0f;
+    planes[0].c = edge * inverse_length;
+    planes[0].d = 0.0f;
     edge = minimum->x * horizontal_tangent;
     squared = edge * edge + 1.0f;
     inverse_length = 1.0f / NuFsqrt(squared);
-    frustum->planes[1].a = inverse_length;
-    frustum->planes[1].b = 0.0f;
-    frustum->planes[1].c = -edge * inverse_length;
-    frustum->planes[1].d = 0.0f;
-    for (i = 0; i < 4; ++i) {
-        NUPLANE *plane = &frustum->planes[i];
-        NuVec4MtxTransformH((NUVEC4 *)plane, (NUVEC4 *)plane, &NuPortalLocalViewPc);
-        plane->d = -(NuPortalLocalViewPc.m30 * plane->a + NuPortalLocalViewPc.m31 * plane->b +
-                     NuPortalLocalViewPc.m32 * plane->c);
-    }
+    planes[1].a = inverse_length;
+    planes[1].b = 0.0f;
+    planes[1].c = -edge * inverse_length;
+    planes[1].d = 0.0f;
+    camera_position = NuPortalLocalViewPc.translation;
+    NuVec4MtxTransformH((NUVEC4 *)&planes[0], (NUVEC4 *)&planes[0], &NuPortalLocalViewPc);
+    planes[0].d =
+        -(planes[0].a * camera_position.x + planes[0].b * camera_position.y + planes[0].c * camera_position.z);
+    NuVec4MtxTransformH((NUVEC4 *)&planes[1], (NUVEC4 *)&planes[1], &NuPortalLocalViewPc);
+    planes[1].d =
+        -(planes[1].a * camera_position.x + planes[1].b * camera_position.y + planes[1].c * camera_position.z);
+    NuVec4MtxTransformH((NUVEC4 *)&planes[2], (NUVEC4 *)&planes[2], &NuPortalLocalViewPc);
+    planes[2].d =
+        -(planes[2].a * camera_position.x + planes[2].b * camera_position.y + planes[2].c * camera_position.z);
+    NuVec4MtxTransformH((NUVEC4 *)&planes[3], (NUVEC4 *)&planes[3], &NuPortalLocalViewPc);
+    planes[3].d =
+        -(planes[3].a * camera_position.x + planes[3].b * camera_position.y + planes[3].c * camera_position.z);
     transposeClipPlanes(frustum);
     return frustum;
 }
