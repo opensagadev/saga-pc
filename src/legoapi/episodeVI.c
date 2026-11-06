@@ -1165,8 +1165,6 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
     if (!netclient) {
         GAMEOBJECT *player;
         AIAREA_PC *area;
-        EMPEROR_UPDATE_PACKET_PC *packet;
-        i32 message_one;
         GIZAIMESSAGE *message;
 
         EMPEROR_PACKET->player_floor_mask = 0;
@@ -1185,37 +1183,33 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
             EMPEROR_PACKET->player_floor_mask |= 2;
         }
         message = LevAIMessage[1];
-        message_one = message->value == 1.0f;
-        packet = (EMPEROR_UPDATE_PACKET_PC *)emperorfighta_netpacket;
-        if (message_one && packet->player_floor_mask != 0) {
-            if (packet->zap) {
-                f64 frame;
-                frame = FRAMETIME;
-                eFloor_timer += frame;
-                switch (packet->state) {
+        if (message->value == 1.0f && EMPEROR_PACKET->player_floor_mask != 0) {
+            if (!EMPEROR_PACKET->zap) {
+                EMPEROR_PACKET->zap = 1;
+                EMPEROR_PACKET->state = 1;
+                eFloor_timer = 0.0f;
+            } else {
+                eFloor_timer = FRAMETIME + eFloor_timer;
+                switch (EMPEROR_PACKET->state) {
                     case 1:
                     case 3:
                         if (eFloor_timer > 2.0f) {
-                            packet->state = 2;
+                            EMPEROR_PACKET->state = 2;
                             eFloor_timer = 0.0f;
                         }
                         break;
                     case 2:
                         if (eFloor_timer > 3.0f) {
-                            packet->state = 3;
+                            EMPEROR_PACKET->state = 3;
                             eFloor_timer = 0.0f;
                         }
                         break;
                     default:
                         break;
                 }
-            } else {
-                packet->zap = 1;
-                EMPEROR_PACKET->state = 1;
-                eFloor_timer = 0.0f;
             }
         } else if (message->value == 2.0f) {
-            packet->zap = 0;
+            EMPEROR_PACKET->zap = 0;
             EMPEROR_PACKET->state = 4;
         }
     }
@@ -1396,42 +1390,34 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
     }
 
     if (!netclient && routemask_efloor_on && routemask_efloor_off) {
-        i32 update_routes;
-        i32 routes_on;
-        update_routes = 0;
-        routes_on = 0;
         if (EMPEROR_PACKET->enabled || (floor_active && !EmperorFloorRouteOnPc)) {
             EMPEROR_PACKET->enabled = 0;
             EmperorFloorRouteOnPc = 1;
-            routes_on = 1;
-            update_routes = 1;
-        } else if (!floor_active && EmperorFloorRouteOnPc) {
-            EmperorFloorRouteOnPc = 0;
-            update_routes = 1;
-        }
-        if (update_routes != 0) {
-            GAMEOBJECT *boss;
             for (i = 0; i < world->ai_sys->path_sys->active_path->connection_count; ++i) {
-                u16 route_mask;
-                route_mask = world->ai_sys->path_sys->active_path->connections[i].route_mask;
-                if (route_mask & routemask_efloor_on) {
-                    if (routes_on) {
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
-                    } else {
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
-                    }
-                } else if (route_mask & routemask_efloor_off) {
-                    if (!routes_on) {
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
-                    } else {
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
-                        world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
-                    }
+                if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_on) {
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
+                } else if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_off) {
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
                 }
             }
+        } else {
+            if (floor_active || !EmperorFloorRouteOnPc)
+                goto emperor_routes_done;
+            EmperorFloorRouteOnPc = 0;
+            for (i = 0; i < world->ai_sys->path_sys->active_path->connection_count; ++i) {
+                if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_on) {
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
+                } else if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_off) {
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
+                }
+            }
+        }
+        {
+            GAMEOBJECT *boss;
             for (i = 0; i < 2; ++i) {
                 GAMEOBJECT *player;
                 player = (GAMEOBJECT *)Player[i];
@@ -1443,6 +1429,7 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
                 AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)boss, &boss->ai_packet, 0xff, 1);
         }
     }
+emperor_routes_done:
     EmperorFightA_UpdateFloorObstaclesPc();
     if (!((u8 *)LevFlag)[4]) {
         for (i = 1; i < 5; ++i) {
