@@ -6639,7 +6639,10 @@ STATIC_ASSERT(sizeof(NUHGOBJ_EVAL_JOINT_PC) == 0x60);
 
 typedef struct NUHGOBJ_RENDER_PART_PC {
     const char *name;
-    u8 unknown_04[0x10];
+    NUSPECIALHANDLE **rigid;
+    NUSPECIALHANDLE *smooth;
+    NUSPECIALHANDLE **alternate_rigid;
+    NUSPECIALHANDLE *alternate_smooth;
 } NUHGOBJ_RENDER_PART_PC;
 STATIC_ASSERT(sizeof(NUHGOBJ_RENDER_PART_PC) == 0x14);
 STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, name) == 0);
@@ -6679,7 +6682,7 @@ typedef struct NUHGOBJ_EVAL_PC {
     i32 joint_count;
     NUHGOBJ_EVAL_JOINT_PC *joints;
     NUMTX *bind_matrices;
-    u8 unknown_174[4];
+    NUMTX *inverse_bind;
     i32 joint_override_map_count;
     u8 *joint_override_map;
     u8 data_0x180[4];
@@ -6688,6 +6691,11 @@ typedef struct NUHGOBJ_EVAL_PC {
     u8 *point_index_map;
     i32 render_count;
     NUHGOBJ_RENDER_PART_PC *render_parts;
+    u8 unknown_198[4];
+    struct PC_HG_SHADOW_GROUP *shadow_groups;
+    u8 suppress_shadow_points;
+    u8 unknown_1a1[11];
+    NUVEC bounds_min, bounds_max;
 } NUHGOBJ_EVAL_PC;
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_count) == 0x168);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joints) == 0x16c);
@@ -6697,6 +6705,13 @@ STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, joint_override_map) == 0x17c);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, points) == 0x184);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, point_index_count) == 0x188);
 STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, point_index_map) == 0x18c);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, inverse_bind) == 0x174);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, shadow_groups) == 0x19c);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, suppress_shadow_points) == 0x1a0);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, bounds_min) == 0x1ac);
+STATIC_ASSERT(offsetof(NUHGOBJ_EVAL_PC, bounds_max) == 0x1b8);
+STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, rigid) == 4);
+STATIC_ASSERT(offsetof(NUHGOBJ_RENDER_PART_PC, alternate_smooth) == 16);
 
 typedef void(__cdecl *NUJOINTPROCANIMFN_PC)(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
 

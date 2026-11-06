@@ -289,7 +289,9 @@ void __cdecl NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *anima
     if (object->joint_count > DdMaxJointsPc)
         DdMaxJointsPc = object->joint_count;
     legacy = (NUANIMDATA2_SKELETAL_PC *)animation;
-    scales[255].x = scales[255].y = scales[255].z = 1.0f;
+    scales[255].x = 1.0f;
+    scales[255].y = 1.0f;
+    scales[255].z = 1.0f;
     NuAnimData2CalcTime(&legacy->prefix, time, &anim_time);
     if (override_count != 0) {
         memset(joint_overrides, 0, object->joint_count * 4);
@@ -307,7 +309,7 @@ void __cdecl NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *anima
         NUHGOBJ_EVAL_JOINT_PC *joint;
         DWA_CURVE_CELL_PC *curves;
         i8 *types;
-        i8 flags;
+        i32 flags;
         if ((i32)i >= legacy->prefix.node_count.legacy) {
             *output = NuMtxSetIdentityTemplate;
             continue;
@@ -316,15 +318,25 @@ void __cdecl NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *anima
         curves = &legacy->prefix.curves[i * legacy->prefix.curve_count];
         types = &legacy->prefix.curve_types[i * legacy->prefix.curve_count];
         flags = legacy->node_flags[i];
+        if (i == 0) {
+            joint = &object->joints[0];
+            PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[0],
+                                       &scales[joint->parent_index], &local_matrix, override_anim, &translation,
+                                       &locator_translation);
+            if (root_fn != NULL)
+                root_fn(&local_matrix, root_data, &translation, NULL, &locator_translation, 0.0f);
+        } else {
+            joint = &object->joints[i];
+            PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[i],
+                                       &scales[joint->parent_index], &local_matrix, override_anim, NULL, NULL);
+        }
         joint = &object->joints[i];
-        PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[i], &scales[joint->parent_index],
-                                   &local_matrix, override_anim, i == 0 ? &translation : NULL,
-                                   i == 0 ? &locator_translation : NULL);
-        if (i == 0 && root_fn != NULL)
-            root_fn(&local_matrix, root_data, &translation, NULL, &locator_translation, 0.0f);
         if (joint->parent_index == 255) {
-            if (flags & 0x40)
-                scales[i].x = scales[i].y = scales[i].z = 1.0f;
+            if (flags & 0x40) {
+                scales[i].x = 1.0f;
+                scales[i].y = 1.0f;
+                scales[i].z = 1.0f;
+            }
             *output = local_matrix;
         } else {
             NuMtxMulVU0(output, &local_matrix, &matrices[joint->parent_index]);
@@ -351,8 +363,6 @@ typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
 typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
 typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
 typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
-typedef struct PC_HG_RENDER_PART PC_HG_RENDER_PART;
-typedef struct PC_HG_RENDER_VIEW PC_HG_RENDER_VIEW;
 typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
 typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
 
@@ -376,33 +386,6 @@ struct PC_HG_SHADOW_GROUP {
     void *third_shape;
     u8 ellipse_count, cylinder_count, third_count, joint_index;
 };
-struct PC_HG_RENDER_PART {
-    char *name;
-    NUSPECIALHANDLE **rigid;
-    NUSPECIALHANDLE *smooth;
-    NUSPECIALHANDLE **alternate_rigid;
-    NUSPECIALHANDLE *alternate_smooth;
-};
-struct PC_HG_RENDER_VIEW {
-    u8 unknown_000[0x168];
-    i32 joint_count;
-    NUHGOBJ_EVAL_JOINT_PC *joints;
-    NUMTX *bind_matrices;
-    NUMTX *inverse_bind;
-    i32 joint_override_map_count;
-    u8 *joint_override_map;
-    u8 unknown_180[4];
-    NUHGOBJ_POI_PC *points;
-    i32 point_index_count;
-    u8 *point_index_map;
-    i32 render_count;
-    PC_HG_RENDER_PART *render_parts;
-    u8 unknown_198[4];
-    PC_HG_SHADOW_GROUP *shadow_groups;
-    u8 suppress_shadow_points;
-    u8 unknown_1a1[11];
-    NUVEC bounds_min, bounds_max;
-};
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
@@ -414,26 +397,6 @@ STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
-STATIC_ASSERT(sizeof(PC_HG_RENDER_PART) == 20);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, rigid) == 4);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, smooth) == 8);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, alternate_rigid) == 12);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, alternate_smooth) == 16);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_count) == 0x168);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joints) == 0x16c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bind_matrices) == 0x170);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, inverse_bind) == 0x174);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_override_map_count) == 0x178);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_override_map) == 0x17c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, points) == 0x184);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, point_index_count) == 0x188);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, point_index_map) == 0x18c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, render_count) == 0x190);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, render_parts) == 0x194);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, shadow_groups) == 0x19c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, suppress_shadow_points) == 0x1a0);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bounds_min) == 0x1ac);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bounds_max) == 0x1b8);
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);
@@ -454,7 +417,7 @@ STATIC_ASSERT(offsetof(PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
 i32 NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *joints, i32 count,
                                        NUVEC *positions, i32 exclusion_mask) {
     i32 i;
-    PC_HG_RENDER_VIEW *object;
+    NUHGOBJ_EVAL_PC *object;
     PC_HG_SHADOW_GROUP *groups;
     i32 total;
     PC_HG_SHADOW_GROUP *group;
@@ -463,7 +426,7 @@ i32 NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world,
     NUMTX combined;
     NUVEC4 point;
 
-    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    object = hierarchy;
     if (PCShadowSurfaceSamplingEnabled == 0 ||
         NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0) == 0)
         return 0;
@@ -551,12 +514,12 @@ i32 NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world,
 }
 
 i32 NuCameraClipHGobj(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *root) {
-    PC_HG_RENDER_VIEW *object;
+    NUHGOBJ_EVAL_PC *object;
     NUVEC half;
     NUVEC min;
     NUMTX matrix;
 
-    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    object = hierarchy;
     if (CutSceneBoundingBoxTrackRoot == 0)
         return NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0);
 
@@ -605,9 +568,9 @@ void PCEnqueueHierarchyShadowGroup(NUMTX *matrix, void *ellipse, i32 ellipse_cou
 
 void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *joints) {
     PC_HG_SHADOW_GROUP *group;
-    PC_HG_RENDER_VIEW *object;
+    NUHGOBJ_EVAL_PC *object;
 
-    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    object = hierarchy;
     if (PcWindowOptions.shadowsenabled == 0 || PcWindowOptions.shadowmethod != 1 || object->shadow_groups == NULL ||
         object->suppress_shadow_points != 0)
         return;
@@ -626,13 +589,13 @@ void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX
 i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render_count, i16 *render_indices, NUMTX *joints,
                       DWA_WEIGHT_BLOCK_PC **weights, i32 render_flags) {
     i32 index;
-    PC_HG_RENDER_VIEW *object;
+    NUHGOBJ_EVAL_PC *object;
     i32 clip;
     i32 shadow;
     i32 old_clip;
     i32 drawn;
 
-    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    object = hierarchy;
     clip = PCSpecialClipState;
     if (clip == -1)
         clip = NuCameraClipHGobj(hierarchy, world, joints);
@@ -656,7 +619,7 @@ i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render_count
     for (index = 0; index < render_count; ++index) {
         i32 pass;
         i32 layer;
-        PC_HG_RENDER_PART *part;
+        NUHGOBJ_RENDER_PART_PC *part;
         NUMTX *skin;
         DWA_WEIGHT_BLOCK_PC *blend;
         NUSPECIALHANDLE **lists[2];
