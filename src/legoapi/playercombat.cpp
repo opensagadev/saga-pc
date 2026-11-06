@@ -4,7 +4,8 @@ extern "C" void __cdecl JediLightCode(GAMEOBJECT *object) {
     if (object->dynamic_light_id != -1) {
         NUVEC colour;
         NUVEC position;
-        if (object->character_context == 0x1b && (object->flags_e20 & 0x500) == 0x100 && object->force_target != NULL) {
+        if (object->character_context == 0x1b && (object->flags_e20 & 0x100) != 0 && (object->flags_e20 & 0x400) == 0 &&
+            object->force_target != NULL) {
             rtlDynamicEnable(object->dynamic_light_id, 1);
             NUVEC delta;
             f32 distance = NuVecDist(&object->force_target->collision_position, &object->collision_position, &delta);
@@ -14,22 +15,17 @@ extern "C" void __cdecl JediLightCode(GAMEOBJECT *object) {
             colour.z = colour.y;
             rtlDynamicSetColours(object->dynamic_light_id, &colour, NULL);
             position.x = delta.x * 0.5f + object->collision_position.x;
-            position.z = delta.z * 0.5f + object->collision_position.z;
             position.y = delta.y * 0.5f + object->collision_position.y;
+            position.z = delta.z * 0.5f + object->collision_position.z;
             rtlDynamicSetPos(object->dynamic_light_id, &position);
             return;
         }
         if (!(object->weapon_scale > 0.0f) || object->sabre_flags == 0)
             return;
         position = v000;
-        if (object->origin_joint_ready == 0)
-            return;
         i32 point_count = 0;
-        u32 f0xe23 = object->flags_e20;
         for (i32 blade = 0; blade < 4; ++blade) {
-            if (object->origin_joint_ready == 0)
-                break;
-            if ((f0xe23 & 0x08000000) == 0)
+            if (object->origin_joint_ready == 0 || (object->flags_e20 & 0x08000000) == 0)
                 continue;
             PLAYERCHARACTERCONFIG_PC *data = object->character_data->game_character;
             i32 first = data->streak_joints[blade][0];
@@ -54,18 +50,22 @@ extern "C" void __cdecl JediLightCode(GAMEOBJECT *object) {
             blade = 0;
         else if (object->field_280 != 0xff && Player_HasPurpleForce(object))
             blade = 3;
-        else if (object->id == id_GRIEVOUS) {
+        else if (object->id == (u16)id_GRIEVOUS) {
+            NUVEC other;
+            colour.x = BladeTab[1].colour[0];
+            colour.y = BladeTab[1].colour[1];
+            colour.z = BladeTab[1].colour[2];
+            other.x = BladeTab[2].colour[0];
+            other.y = BladeTab[2].colour[1];
+            other.z = BladeTab[2].colour[2];
             f32 phase =
                 (NuTrigTable[(u16)(i32)(NuFmod(GameTimer.time_elapsed, 2.0f) * 0.5f * 65536.0f) >> 1] + 1.0f) * 0.5f;
-            colour.x =
-                ((BladeTab[2].colour[0] - static_cast<f32>(BladeTab[1].colour[0])) * phase + BladeTab[1].colour[0]) *
-                brightness;
-            colour.y =
-                ((BladeTab[2].colour[1] - static_cast<f32>(BladeTab[1].colour[1])) * phase + BladeTab[1].colour[1]) *
-                brightness;
-            colour.z =
-                ((BladeTab[2].colour[2] - static_cast<f32>(BladeTab[1].colour[2])) * phase + BladeTab[1].colour[2]) *
-                brightness;
+            colour.x += (other.x - colour.x) * phase;
+            colour.y += (other.y - colour.y) * phase;
+            colour.z += (other.z - colour.z) * phase;
+            colour.x *= brightness;
+            colour.y *= brightness;
+            colour.z *= brightness;
         } else
             blade = static_cast<i8>(object->character_data->game_character->blade_colour);
         if (blade != -1) {
