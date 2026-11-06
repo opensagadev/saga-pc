@@ -39,7 +39,14 @@ TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *object) {
     return NULL;
 }
 
+/* Original source name unknown. Retail keeps a call to this empty (RET-only)
+ * diagnostic for each failed target lookup; it is defined in
+ * techno_diagnostic_pc.c because VC8 drops calls to an empty body it can see. */
+void __cdecl TechnoTargetDiagnosticPc(char *name);
+
 void *Technos_FindTgt(TECHNO_s *techno) {
+    void *target;
+
     if (techno == NULL) {
         return NULL;
     }
@@ -48,52 +55,58 @@ void *Technos_FindTgt(TECHNO_s *techno) {
     }
 
     switch (techno->target_mode) {
-        case 0: {
-            void *target = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
-            if (target != NULL) {
-                techno->controlled_object = target;
-                techno->target_mode = 1;
-                break;
-            }
-            target = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
-            if (target != NULL) {
-                techno->controlled_object = target;
-                techno->target_mode = 3;
-                break;
-            }
-            if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
-                              techno->target_name, 0) != 0) {
-                techno->target_mode = 2;
-                techno->controlled_object = techno->target_special_storage;
-                break;
-            }
-            techno->target_mode = 0;
-            techno->controlled_object = NULL;
-            break;
-        }
         case 1:
             techno->controlled_object = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
             if (techno->controlled_object == NULL) {
                 techno->target_mode = 0;
+                TechnoTargetDiagnosticPc(techno->target_name);
+                return NULL;
             }
             break;
         case 2:
             techno->controlled_object = techno->target_special_storage;
             if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
                               techno->target_name, 0) == 0) {
-                techno->target_mode = 0;
                 techno->controlled_object = NULL;
+                techno->target_mode = 0;
+                TechnoTargetDiagnosticPc(techno->target_name);
+                return NULL;
             }
             break;
         case 3:
             techno->controlled_object = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
             if (techno->controlled_object == NULL) {
                 techno->target_mode = 0;
+                TechnoTargetDiagnosticPc(techno->target_name);
+                return NULL;
             }
             break;
+        case 0:
+            target = GetNamedGameObject(WORLD->ai_sys, techno->target_name);
+            if (target == NULL) {
+                target = GizmoFindByName(WORLD->gizmo_sys, -1, techno->target_name);
+                if (target == NULL) {
+                    if (NuSpecialFind(WORLD->current_gscn, (nuhspecial_s *)(techno->target_special_storage),
+                                      techno->target_name, 0) == 0) {
+                        techno->target_mode = 0;
+                        techno->controlled_object = NULL;
+                        return NULL;
+                    }
+                    techno->controlled_object = techno->target_special_storage;
+                    techno->target_mode = 2;
+                    return techno->target_special_storage;
+                }
+                techno->controlled_object = target;
+                techno->target_mode = 3;
+                return target;
+            }
+            techno->controlled_object = target;
+            techno->target_mode = 1;
+            return target;
         default:
             techno->target_mode = 0;
-            break;
+            TechnoTargetDiagnosticPc(NULL);
+            return NULL;
     }
     return techno->controlled_object;
 }
@@ -110,7 +123,16 @@ typedef struct techno_callback_pc_s {
     u8 enabled;
     u8 target_mode;
     i32 output;
-    u8 flags;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 in_use : 1;
+            u8 triggered : 1;
+            u8 unused : 4;
+        } bits;
+    };
     char target_name[16];
     char target_object_name[31];
     GIZMO_PC *controlled_object;
@@ -128,8 +150,8 @@ typedef struct techno_obstacle_view_pc_s {
     GAMEANIMSET *anim_set;
 } TECHNO_OBSTACLE_VIEW_PC;
 typedef struct techno_progress_pc_s {
-    u32 active;
-    u32 visible;
+    u32 active[1];
+    u32 visible[1];
 } TECHNO_PROGRESS_PC;
 STATIC_ASSERT(sizeof(TECHNO_CALLBACK_PC) == 0x70);
 STATIC_ASSERT(offsetof(TECHNO_CALLBACK_PC, name) == 0);
@@ -187,14 +209,14 @@ static void __cdecl Techno_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL)
         return;
     techno = (TECHNO_CALLBACK_PC *)gizmo->object;
-    techno->flags = (techno->flags & ~2) | (visible != 0 ? 2 : 0);
+    techno->bits.visible = visible != 0;
 }
 static void __cdecl Techno_Activate(GIZMO_PC *gizmo, i32 active) {
     TECHNO_CALLBACK_PC *techno;
     if (gizmo == NULL)
         return;
     techno = (TECHNO_CALLBACK_PC *)gizmo->object;
-    techno->flags = (techno->flags & ~1) | (active != 0);
+    techno->bits.active = active != 0;
 }
 static void __cdecl Technos_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
@@ -208,9 +230,10 @@ static void __cdecl Technos_Reset(void *world_ptr, void *data, void *progress_pt
     for (index = 0; index < world->techno_count; ++index, ++techno) {
         Techno_ResetFields(techno);
         if (progress != NULL && index < 32) {
+            i32 word = index / 32;
             bit = 1u << (index & 31);
-            techno->flags = (techno->flags & ~2) | ((progress->visible & bit) != 0 ? 2 : 0);
-            techno->flags = (techno->flags & ~1) | ((progress->active & bit) != 0);
+            techno->bits.visible = (progress->visible[word] & bit) != 0;
+            techno->bits.active = (progress->active[word] & bit) != 0;
         }
     }
 }
@@ -308,19 +331,23 @@ static char *__cdecl Techno_GetGizmoName(GIZMO_PC *gizmo) {
 static i32 __cdecl Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
     TECHNO_CALLBACK_PC *techno;
     GIZMO_PC *target;
-    TECHNO_GIZMO_TYPE_NAME_PC *types;
     if (gizmo == NULL || gizmo->object == NULL)
         return 0;
     techno = (TECHNO_CALLBACK_PC *)gizmo->object;
-    if ((techno->flags & 3) != 3 || techno->controlled_object == NULL)
+    if (!techno->bits.visible || !techno->bits.active || techno->controlled_object == NULL)
         return 0;
     switch (techno->target_mode) {
+        case 0:
+            return 0;
+        case 2:
+            return 0;
         case 1:
             return (techno->flags >> 3) & 1;
         case 3:
-            target = techno->controlled_object;
-            types = (TECHNO_GIZMO_TYPE_NAME_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
-            if (NuStrICmp(types[target->type_id].name, "GIZOBSTACLE") == 0) {
+            if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME_PC *)((GIZMOTYPES_PC *)gizmotypes)
+                               ->types)[techno->controlled_object->type_id]
+                              .name,
+                          "GIZOBSTACLE") == 0) {
                 target = techno->controlled_object;
                 return ((TECHNO_OBSTACLE_VIEW_PC *)target->object)->anim_set->state == 2;
             }
@@ -344,8 +371,8 @@ static void *__cdecl Technos_AllocateProgressData(VARIPTR *buffer, VARIPTR *end)
 static void __cdecl Technos_ClearProgress(void *world, void *progress_ptr) {
     TECHNO_PROGRESS_PC *progress = (TECHNO_PROGRESS_PC *)progress_ptr;
     if (progress != NULL) {
-        progress->active = 0xffffffff;
-        progress->visible = 0xffffffff;
+        progress->active[0] = 0xffffffff;
+        progress->visible[0] = 0xffffffff;
     }
 }
 static void __cdecl Technos_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -356,54 +383,67 @@ static void __cdecl Technos_StoreProgress(void *world_ptr, void *data, void *pro
     u32 bit;
     if (progress == NULL)
         return;
-    progress->active = progress->visible = 0xffffffff;
+    progress->active[0] = 0xffffffff;
+    progress->visible[0] = 0xffffffff;
     if (world == NULL || world->technos == NULL)
         return;
     techno = (TECHNO_CALLBACK_PC *)world->technos;
-    for (index = 0; index < world->techno_count && index < 32; ++index, ++techno) {
+    for (index = 0; index < world->techno_count; ++index, ++techno) {
+        i32 word;
+        if (index >= 32)
+            break;
+        word = index / 32;
         bit = 1u << (index & 31);
-        if ((techno->flags & 2) == 0)
-            progress->visible &= ~bit;
-        if ((techno->flags & 1) == 0)
-            progress->active &= ~bit;
+        if (!techno->bits.visible)
+            progress->visible[word] &= ~bit;
+        if (!techno->bits.active)
+            progress->active[word] &= ~bit;
     }
 }
 static void *__cdecl Technos_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    u8 capacity = ((TECHNO_LEVEL_VIEW_PC *)world->current_level)->max_technos;
+    TECHNO_LEVEL_VIEW_PC *level = (TECHNO_LEVEL_VIEW_PC *)world->current_level;
     world->technos = NULL;
     world->techno_count = 0;
-    if (capacity != 0) {
+    if (level->max_technos > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
         world->technos = (TECHNO_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += capacity * sizeof(TECHNO_CALLBACK_PC);
+        world->giz_buffer.addr += level->max_technos * sizeof(TECHNO_CALLBACK_PC);
     }
     return world->technos;
 }
 static i32 __cdecl Technos_Load(void *world_ptr, void *data) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    TECHNO_CALLBACK_PC *techno;
-    i32 version, index, length;
-    if (world->techno_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->techno_count = EdFileReadInt();
-    for (index = 0; index < world->techno_count; ++index) {
-        techno = &((TECHNO_CALLBACK_PC *)world->technos)[index];
-        EdFileRead(techno->name, 16);
-        EdFileReadNuVec(&techno->position);
-        techno->y_rotation = (u16)EdFileReadShort();
-        if (version >= 2) {
-            techno->target_mode = (u8)EdFileReadChar();
-            length = EdFileReadInt();
-            EdFileRead(techno->target_object_name, length);
-            NuStrCpy(techno->target_name, techno->target_object_name);
-            techno->enabled = version >= 3 ? (u8)EdFileReadChar() : 1;
+    i32 version, index;
+    if (world->techno_count == 0) {
+        version = EdFileReadInt();
+        world->techno_count = EdFileReadInt();
+        for (index = 0; index < world->techno_count; ++index) {
+            EdFileRead(((TECHNO_CALLBACK_PC *)world->technos)[index].name, 16);
+            EdFileReadNuVec(&((TECHNO_CALLBACK_PC *)world->technos)[index].position);
+            ((TECHNO_CALLBACK_PC *)world->technos)[index].y_rotation = EdFileReadShort();
+            if (version >= 2) {
+                ((TECHNO_CALLBACK_PC *)world->technos)[index].target_mode = EdFileReadChar();
+                EdFileRead(((TECHNO_CALLBACK_PC *)world->technos)[index].target_object_name, EdFileReadInt());
+                NuStrCpy(((TECHNO_CALLBACK_PC *)world->technos)[index].target_name,
+                         ((TECHNO_CALLBACK_PC *)world->technos)[index].target_object_name);
+                if (version >= 3)
+                    ((TECHNO_CALLBACK_PC *)world->technos)[index].enabled = EdFileReadChar();
+                else
+                    ((TECHNO_CALLBACK_PC *)world->technos)[index].enabled = 1;
+            }
+            if (version >= 4)
+                ((TECHNO_CALLBACK_PC *)world->technos)[index].scale = EdFileReadFloat();
+            else
+                ((TECHNO_CALLBACK_PC *)world->technos)[index].scale = 1.0f;
+            if (version >= 5)
+                ((TECHNO_CALLBACK_PC *)world->technos)[index].output = EdFileReadInt();
+            else
+                ((TECHNO_CALLBACK_PC *)world->technos)[index].output = 0;
         }
-        techno->scale = version >= 4 ? EdFileReadFloat() : 1.0f;
-        techno->output = version >= 5 ? EdFileReadInt() : 0;
+        return 1;
     }
-    return 1;
+    return 0;
 }
 ADDGIZMOTYPE_PC *__cdecl Technos_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC addtype = {0};
