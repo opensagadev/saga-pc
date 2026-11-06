@@ -280,75 +280,169 @@ void Minicam_Update(void) {
     i32 pitch = MiniCam.pitch;
     i32 yaw = MiniCam.yaw;
     i32 roll = MiniCam.roll;
-    NUVEC *focus = MiniCam.focus;
     NUVEC position = MiniCam.position;
     i32 pitch_rate = 0, yaw_rate = 0, roll_rate = 0;
-    f32 command_duration;
-read_command:
-    if (MiniCam.current_command < MiniCam.command_count)
-        goto dispatch_command;
-    command_duration = 0.0f;
+    NUVEC *focus = MiniCam.focus;
+    f32 command_duration = 0.0f;
+    i32 type;
+
+    while (MiniCam.current_command < MiniCam.command_count) {
+        switch (MiniCam.commands[MiniCam.current_command].type) {
+            case 0:
+                return;
+            case 1:
+            case 3:
+            case 4:
+                command_duration = MiniCam.commands[MiniCam.current_command].duration;
+                goto execute_command;
+            case 2:
+                goto execute_command;
+            case 5:
+                command_duration = MiniCam.commands[MiniCam.current_command].duration;
+                Minicam_ClearDeltas();
+                goto execute_command;
+            case 6: {
+                u16 target_pitch;
+                i32 old_yaw, old_roll;
+                f32 old_distance;
+                MiniCam_ChangeMode(MiniCam.commands[MiniCam.current_command].argument);
+                target_pitch = pitch_rate == 0 ? pitch : (i32)(pitch_rate * 0.0f);
+                old_yaw = MiniCam.target_yaw;
+                old_roll = MiniCam.target_roll;
+                old_distance = MiniCam.target_distance;
+                MiniCam.target_pitch = target_pitch;
+                MiniCam.start_pitch = MiniCam.pitch;
+                Minicam_ClearDeltas();
+                if (target_pitch == pitch)
+                    pitch = MiniCam.target_pitch;
+                if (old_yaw == yaw)
+                    yaw = MiniCam.target_yaw;
+                if (old_roll == roll)
+                    roll = MiniCam.target_roll;
+                if (old_distance == distance)
+                    distance = MiniCam.target_distance;
+                break;
+            }
+            case 7:
+                MiniCam.easing = MiniCam.commands[MiniCam.current_command].argument;
+                break;
+            case 8:
+                focus = MiniCam.commands[MiniCam.current_command].target;
+                break;
+            case 9:
+                distance = MiniCam.commands[MiniCam.current_command].duration;
+                break;
+            case 10:
+                pitch = MiniCam.commands[MiniCam.current_command].argument;
+                break;
+            case 11:
+                yaw = MiniCam.commands[MiniCam.current_command].argument;
+                break;
+            case 12:
+                roll = MiniCam.commands[MiniCam.current_command].argument;
+                break;
+            case 13:
+                pitch_rate = MiniCam.commands[MiniCam.current_command].argument;
+                break;
+            case 14:
+                yaw_rate = MiniCam.commands[MiniCam.current_command].argument;
+                break;
+            case 15:
+                roll_rate = MiniCam.commands[MiniCam.current_command].argument;
+                break;
+            case 16:
+                position = MiniCam.commands[MiniCam.current_command].position;
+                break;
+            case 17:
+                MiniCam.position_spline = (NUGSPLINE *)MiniCam.commands[MiniCam.current_command].target;
+                break;
+            default:
+                ++MiniCam.current_command;
+                return;
+        }
+        ++MiniCam.current_command;
+    }
+
 execute_command:
     MiniCam.elapsed_time += FRAMETIME;
     if (MiniCam.duration != 0.0f && MiniCam.elapsed_time > MiniCam.duration) {
         Minicam_AddDeltas(command_duration);
-        goto end_cut;
+        Minicam_CalcCamPos();
+        ObstacleCamEnd = 0.0f;
+        if (ObstacleCamBlendOutTime == 0.0f) {
+            MINI_CAM_CAMERA.mode = -1;
+            Minicam_ResetForNextCommand();
+        }
+        if (MiniCutCam == 0)
+            Minicam_ResetForNextCommand();
+        return;
     }
     if (MiniCam.current_command >= MiniCam.command_count) {
         Minicam_AddDeltas(1000000000.0f);
         Minicam_CalcCamPos();
         return;
     }
-    if (MiniCam.commands[MiniCam.current_command].type == 1) {
-        if (command_duration > MiniCam.delta_time) {
+    type = MiniCam.commands[MiniCam.current_command].type;
+    if (type == 1) {
+        if (MiniCam.delta_time < command_duration) {
             MiniCam.delta_time += FRAMETIME;
         } else {
             NUVEC delta;
-            MiniCam.distance = MiniCam.start_distance =
-                NuVecDist(&MINI_CAM_CAMERA.render_position, MiniCam.focus, &delta);
-            MiniCam.pitch = MiniCam.start_pitch = MINI_CAM_CAMERA.pitch + 0x8000;
-            MiniCam.yaw = MiniCam.start_yaw = MINI_CAM_CAMERA.yaw;
+            MiniCam.distance = NuVecDist(&MINI_CAM_CAMERA.render_position, MiniCam.focus, &delta);
+            MiniCam.start_distance = MiniCam.distance;
+            MiniCam.pitch = MINI_CAM_CAMERA.pitch + 0x8000;
+            MiniCam.start_pitch = MiniCam.pitch;
+            MiniCam.yaw = MINI_CAM_CAMERA.yaw;
+            MiniCam.start_yaw = MiniCam.yaw;
             MiniCam.position = MINI_CAM_CAMERA.position;
             Minicam_ResetForNextCommand();
         }
         return;
     }
-    if (MiniCam.commands[MiniCam.current_command].type == 3) {
-        if (command_duration > MiniCam.delta_time) {
+    if (type == 3) {
+        if (MiniCam.delta_time < command_duration) {
             MiniCam.delta_time += FRAMETIME;
             Minicam_AddDeltas(command_duration);
             Minicam_CalcCamPos();
             return;
         }
         ObstacleCamAlwaysSnapAnglesPc = 0;
-        goto end_cut;
+        Minicam_CalcCamPos();
+        ObstacleCamEnd = 0.0f;
+        if (ObstacleCamBlendOutTime == 0.0f) {
+            MINI_CAM_CAMERA.mode = -1;
+            Minicam_ResetForNextCommand();
+        }
+        if (MiniCutCam == 0)
+            Minicam_ResetForNextCommand();
+        return;
     }
-    if (MiniCam.commands[MiniCam.current_command].type == 4 && MiniCam.delta_time == 0.0f) {
+    if (type == 4 && MiniCam.delta_time == 0.0f) {
         if (command_duration == 0.0f) {
             MiniCam.focus = focus;
             MiniCam.distance = distance;
+            MiniCam.focus_offset = v000;
+            MiniCam.position = position;
             MiniCam.pitch = pitch;
             MiniCam.yaw = yaw;
             MiniCam.roll = roll;
-            MiniCam.focus_offset = v000;
-            MiniCam.position = position;
             Minicam_ClearDeltas();
             MINI_CAM_CAMERA.mode = -1;
         } else {
-            if (pitch_rate != 0)
-                MiniCam.target_pitch = (i32)(pitch_rate * command_duration);
-            else
+            if (pitch_rate == 0)
                 MiniCam.target_pitch = pitch;
+            else
+                MiniCam.target_pitch = (i32)(pitch_rate * command_duration);
             MiniCam.start_pitch = MiniCam.pitch;
-            if (yaw_rate != 0)
-                MiniCam.target_yaw = (i32)(yaw_rate * command_duration);
-            else
+            if (yaw_rate == 0)
                 MiniCam.target_yaw = yaw;
-            MiniCam.start_yaw = MiniCam.yaw;
-            if (roll_rate != 0)
-                MiniCam.target_roll = (i32)(roll_rate * command_duration);
             else
+                MiniCam.target_yaw = (i32)(yaw_rate * command_duration);
+            MiniCam.start_yaw = MiniCam.yaw;
+            if (roll_rate == 0)
                 MiniCam.target_roll = roll;
+            else
+                MiniCam.target_roll = (i32)(roll_rate * command_duration);
             MiniCam.target_distance = distance;
             MiniCam.start_roll = MiniCam.roll;
             MiniCam.start_distance = MiniCam.distance;
@@ -369,95 +463,6 @@ execute_command:
         Minicam_AddDeltas(command_duration);
     }
     Minicam_CalcCamPos();
-    return;
-end_cut:
-    Minicam_CalcCamPos();
-    ObstacleCamEnd = 0.0f;
-    if (ObstacleCamBlendOutTime == 0.0f) {
-        MINI_CAM_CAMERA.mode = -1;
-        Minicam_ResetForNextCommand();
-    }
-    if (MiniCutCam == 0)
-        Minicam_ResetForNextCommand();
-    return;
-dispatch_command: {
-    MINICAM_COMMAND_PC *command = &MiniCam.commands[MiniCam.current_command];
-    switch (command->type) {
-        case 0:
-            return;
-        case 1:
-        case 3:
-        case 4:
-            command_duration = command->duration;
-            goto execute_command;
-        case 2:
-            command_duration = 0.0f;
-            goto execute_command;
-        case 5:
-            command_duration = command->duration;
-            Minicam_ClearDeltas();
-            goto execute_command;
-        case 6: {
-            u16 target_pitch, old_yaw, old_roll;
-            f32 old_distance;
-            MiniCam_ChangeMode(command->argument);
-            target_pitch = pitch_rate != 0 ? (i32)(pitch_rate * 0.0f) : pitch;
-            old_yaw = MiniCam.target_yaw;
-            old_roll = MiniCam.target_roll;
-            old_distance = MiniCam.target_distance;
-            MiniCam.target_pitch = target_pitch;
-            MiniCam.start_pitch = MiniCam.pitch;
-            Minicam_ClearDeltas();
-            if (pitch == target_pitch)
-                pitch = MiniCam.target_pitch;
-            if (yaw == old_yaw)
-                yaw = MiniCam.target_yaw;
-            if (roll == old_roll)
-                roll = MiniCam.target_roll;
-            if (distance == old_distance)
-                distance = MiniCam.target_distance;
-            break;
-        }
-        case 7:
-            MiniCam.easing = command->argument;
-            break;
-        case 8:
-            focus = command->target;
-            break;
-        case 9:
-            distance = command->duration;
-            break;
-        case 10:
-            pitch = command->argument;
-            break;
-        case 11:
-            yaw = command->argument;
-            break;
-        case 12:
-            roll = command->argument;
-            break;
-        case 13:
-            pitch_rate = command->argument;
-            break;
-        case 14:
-            yaw_rate = command->argument;
-            break;
-        case 15:
-            roll_rate = command->argument;
-            break;
-        case 16:
-            position = command->position;
-            break;
-        case 17:
-            MiniCam.position_spline = (NUGSPLINE *)command->target;
-            break;
-        default:
-            ++MiniCam.current_command;
-            return;
-    }
-    ++MiniCam.current_command;
-    goto read_command;
-}
 }
 
 void __cdecl Minicam_InitSystem(void) {
