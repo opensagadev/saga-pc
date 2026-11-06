@@ -124,9 +124,13 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
             }
         }
         if (blowup->platform_id != -1) {
-            PlatOnOff(blowup->platform_id, 0);
-            if (has_burst && blowup->burst_platform_id != -1)
-                PlatOnOff(blowup->burst_platform_id, 1);
+            if (!has_burst) {
+                PlatOnOff(blowup->platform_id, 0);
+            } else {
+                PlatOnOff(blowup->platform_id, 0);
+                if (blowup->burst_platform_id != -1)
+                    PlatOnOff(blowup->burst_platform_id, 1);
+            }
             if ((type->animation_flags & 0x2000) != 0)
                 NuSpecialSetVisibility(&type->animated_special, 0);
         }
@@ -407,7 +411,7 @@ void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32
     BLOWUP_EFFECT_TYPE_PC *type = (BLOWUP_EFFECT_TYPE_PC *)blowup->type;
     BLOWUP_EFFECT_INSTANCE_PC *instance = (BLOWUP_EFFECT_INSTANCE_PC *)blowup;
     NUVEC effect_position = *position;
-    i32 i, j, count, key, hearts, range, half, random, explosion_flags;
+    i32 i, j, count, key, hearts, random, explosion_flags;
     NUVEC direction, velocity;
     NUMTX matrix;
     ADDPART_PC part;
@@ -439,23 +443,20 @@ void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32
         GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
         NewRumbleAllPlayers(1.0f, 0.1f, 0, 0.0f);
     }
-    if ((i32)blowup->draw_flags < 0 || (i8)blowup->remaining_health <= 0)
+    if (((blowup->draw_flags & 0x80000000) != 0 && (i8)blowup->remaining_health > 0) ||
+        (i8)blowup->remaining_health <= 0)
         for (i = 0; i < 4; ++i) {
             if (!NuSpecialExistsFn(&type->alternate_specials[i]))
                 continue;
             for (j = 0; j < type->fragment_count; ++j) {
                 NuMtxSetIdentity(&matrix);
-                matrix.m30 = position->x;
-                matrix.m31 = position->y;
-                matrix.m32 = position->z;
+                *(NUVEC *)&matrix.m30 = *position;
                 velocity = v010;
-                range = (MAXBLOWUPRANDSPANG << 16) / 360;
-                half = ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360;
-                random = (i16)(qrand() * PlayerRandomScalePc * range - half);
+                random = (i16)(qrand() * PlayerRandomScalePc * ((MAXBLOWUPRANDSPANG << 16) / 360) -
+                               ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
                 NuVecRotateX(&velocity, &velocity, instance->launch_pitch + random);
-                range = (MAXBLOWUPRANDSPANG << 16) / 360;
-                half = ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360;
-                random = (i16)(qrand() * PlayerRandomScalePc * range - half);
+                random = (i16)(qrand() * PlayerRandomScalePc * ((MAXBLOWUPRANDSPANG << 16) / 360) -
+                               ((i16)(MAXBLOWUPRANDSPANG * 0.5) << 16) / 360);
                 NuVecRotateY(&velocity, &velocity, instance->launch_yaw + random);
                 NuVecScale(&velocity, &velocity, type->fragment_speed);
                 if (object != NULL) {
@@ -464,15 +465,15 @@ void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32
                     velocity.z += 0.75 * object->velocity.z;
                 }
                 part = Default_ADDPART;
+                part.time_step = FRAMETIME;
                 part.matrix = &matrix;
                 part.velocity = &velocity;
-                part.special = &type->alternate_specials[i];
-                part.gravity = type->fragment_gravity;
-                part.flags |= 0x80;
+                part.field_c4 = 1;
                 part.stop_fn = PartStop_Flickerer;
                 part.draw_fn = PartDraw_Flickerer;
-                part.time_step = FRAMETIME;
-                part.field_c4 = 1;
+                part.flags |= 0x80;
+                part.gravity = type->fragment_gravity;
+                part.special = &type->alternate_specials[i];
                 AddPart(&part);
             }
         }
@@ -481,7 +482,7 @@ void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32
     else
         GameAudio_PlaySfx(0x33, position, 0, 0);
     if (flags & 8) {
-        explosion_flags = (blowup->draw_flags & 0x40) ? 0x122 : 0x127;
+        explosion_flags = (blowup->draw_flags & 0x40) ? 0x122 : 0x27;
         if (blowup->draw_flags & 0x10000000)
             explosion_flags |= 8;
         AddExplosion(position, blowup->effect_delay, 0.5f, NULL, -1, explosion_flags);
