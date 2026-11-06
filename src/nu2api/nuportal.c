@@ -154,40 +154,49 @@ i32 __cdecl NuPortalClipTest(NUGSCN *scene, NUVEC *position, f32 radius, i16 roo
 }
 
 i32 __cdecl clipTestBox(NUVEC *minimum, NUVEC *maximum, NUPLANE *planes, i32 plane_count) {
-    NUVEC min = *minimum;
-    NUVEC max = *maximum;
+    NUVEC corners[8];
     i32 inside_vertices = 0;
     i32 plane_index;
-    for (plane_index = 0; plane_index < plane_count; ++plane_index) {
-        const NUPLANE *plane = &planes[plane_index];
-        i32 inside_plane = 0;
-        f32 distance1, distance2, distance3, distance4;
-        f32 distance5, distance6, distance7, distance8;
-        distance1 = plane->a * min.x + plane->b * min.y + plane->c * min.z + plane->d;
-        if (!(distance1 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        distance2 = plane->a * max.x + plane->b * min.y + plane->c * min.z + plane->d;
-        if (!(distance2 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        distance3 = plane->a * max.x + plane->b * max.y + plane->c * min.z + plane->d;
-        if (!(distance3 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        distance4 = plane->a * min.x + plane->b * max.y + plane->c * min.z + plane->d;
-        if (!(distance4 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        distance5 = plane->a * min.x + plane->b * min.y + plane->c * max.z + plane->d;
-        if (!(distance5 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        distance6 = plane->a * max.x + plane->b * min.y + plane->c * max.z + plane->d;
-        if (!(distance6 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        distance7 = plane->a * max.x + plane->b * max.y + plane->c * max.z + plane->d;
-        if (!(distance7 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        distance8 = plane->a * min.x + plane->b * max.y + plane->c * max.z + plane->d;
-        if (!(distance8 < 0.0f))
-            ++inside_plane, ++inside_vertices;
-        if (inside_plane == 0) {
+    i32 corner_index;
+
+    corners[0].x = minimum->x;
+    corners[0].y = minimum->y;
+    corners[0].z = minimum->z;
+    corners[1].x = maximum->x;
+    corners[1].y = minimum->y;
+    corners[1].z = minimum->z;
+    corners[2].x = minimum->x;
+    corners[2].y = maximum->y;
+    corners[2].z = minimum->z;
+    corners[3].x = maximum->x;
+    corners[3].y = maximum->y;
+    corners[3].z = minimum->z;
+    corners[4].x = minimum->x;
+    corners[4].y = minimum->y;
+    corners[4].z = maximum->z;
+    corners[5].x = maximum->x;
+    corners[5].y = minimum->y;
+    corners[5].z = maximum->z;
+    corners[6].x = minimum->x;
+    corners[6].y = maximum->y;
+    corners[6].z = maximum->z;
+    corners[7].x = maximum->x;
+    corners[7].y = maximum->y;
+    corners[7].z = maximum->z;
+
+    for (plane_index = 0; plane_index < plane_count; plane_index++) {
+        i32 outside = 0;
+        for (corner_index = 0; corner_index < 8; corner_index++) {
+            f32 distance = planes[plane_index].a * corners[corner_index].x +
+                           planes[plane_index].b * corners[corner_index].y +
+                           planes[plane_index].c * corners[corner_index].z + planes[plane_index].d;
+            if (distance < 0.0f) {
+                outside++;
+            } else {
+                inside_vertices++;
+            }
+        }
+        if (outside == 8) {
             return 0;
         }
     }
@@ -291,14 +300,14 @@ void __cdecl NuMtxInvH(NUMTX *, NUMTX *);
 f32 __cdecl NuVecMtxTransformH(NUVEC *, NUVEC *, NUMTX *);
 void __cdecl NuVec4MtxTransformH(NUVEC4 *, NUVEC4 *, NUMTX *);
 
-static NUPORTAL_FRUSTUM_PC *allocateFrustrum(i16 plane_count) {
+static NUPORTAL_FRUSTUM_PC *allocateFrustrum(i32 plane_count) {
     NUPORTAL_FRUSTUM_PC *frustum = (NUPORTAL_FRUSTUM_PC *)fstack_top.void_ptr;
     u32 planes_address = ((fstack_top.addr + 15) & ~15U) + sizeof(*frustum);
     if (planes_address >= fstack_limit.addr) {
         AnimationDiagnosticNoOpPc();
     }
     frustum->planes = (NUPLANE *)planes_address;
-    fstack_top.addr = planes_address + (i32)plane_count * sizeof(NUPLANE);
+    fstack_top.addr = planes_address + plane_count * sizeof(NUPLANE);
     if (fstack_top.addr >= fstack_limit.addr) {
         AnimationDiagnosticNoOpPc();
     }
