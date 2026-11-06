@@ -1866,7 +1866,7 @@ void __cdecl BonusComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *pac
         case 0: {
             stage->field_0x18 = 0.0f;
             stage->field_0x14 = 1;
-            stage->field_0x1c = packet->newly_completed == 0 ? 0.5f : 4.0f;
+            stage->field_0x1c = packet->newly_completed != 0 ? 4.0f : 0.5f;
             StatusDrawPlayerIconsPc = 1;
             break;
         }

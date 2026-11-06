@@ -236,3 +236,45 @@ void __cdecl Fade_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
         }
     }
 }
+
+/* Stage type 3. */
+void __cdecl Coins_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    u32 remaining;
+    (void)stage;
+    remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
+    IncreaseScore(packet->score, (u64)remaining, 0);
+    packet->coins_remaining[0] = 0;
+    packet->coins_remaining[1] = 0;
+    NextStatusStage(packet);
+}
+
+/* Stage type 22: the LSW update without the gold-brick draw. */
+void __cdecl BonusComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    switch (stage->field_0x14) {
+        case 0: {
+            stage->field_0x18 = 0.0f;
+            stage->field_0x14 = 1;
+            stage->field_0x1c = packet->newly_completed != 0 ? 4.0f : 0.5f;
+            StatusDrawPlayerIconsPc = 1;
+            break;
+        }
+        case 1: {
+            f32 previous = stage->field_0x18;
+            f32 accumulated = stage->field_0x18 + elapsed;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x1c <= accumulated)
+                NextStatusStage(packet);
+            else if (packet->newly_completed != 0 && previous < 0.5f && accumulated >= 0.5f) {
+                PlaySfx("StatusAward", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            }
+        }
+    }
+}
+
+i32 __cdecl FinishStatusPacket_Alt(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
+    (void)world;
+    (void)packet;
+    (void)result;
+    return 0;
+}
