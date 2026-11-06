@@ -213,7 +213,22 @@ struct gizforce_pc_s {
     i16 pickup_count, pickup_rotation_x, pickup_rotation_y;
     NUVEC effect_position;
     f32 activation_radius;
-    u32 runtime_flags;
+    union {
+        u32 runtime_flags;
+        struct {
+            u32 enabled : 1;
+            u32 visible : 1;
+            u32 runtime_bits_2_8 : 7;
+            u32 reward_released : 1;
+            u32 runtime_bit_10 : 1;
+            u32 socket_hidden : 1;
+            u32 runtime_bits_12_13 : 2;
+            u32 completion_released : 1;
+            u32 completion_pending : 1;
+            u32 destroyed : 1;
+            u32 runtime_bits_17_31 : 15;
+        };
+    };
 };
 STATIC_ASSERT(sizeof(GIZFORCE_PC) == 0xa4);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, reset_word) == 0x3c);
@@ -920,30 +935,24 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
     FORCE_RESET_PROGRESS_PC *progress = (FORCE_RESET_PROGRESS_PC *)progress_ptr;
     GIZFORCE_PC *force;
     i32 index;
+    NUVEC offset;
     memset(system->groups, 0, 0x140);
     force = (GIZFORCE_PC *)system->forces;
     for (index = 0; index < system->count; ++index, ++force) {
-        i32 group_index;
         ForceResetSinglePc(world, force);
         if (progress != NULL && index < 128) {
-            i32 word = index >> 5;
+            i32 word = index / 32;
             u32 bit = 1u << (index & 31);
-            force->runtime_flags = (force->runtime_flags & ~2u) | ((progress->visible[word] & bit) != 0 ? 2u : 0);
-            force->runtime_flags = (force->runtime_flags & ~1u) | ((progress->enabled[word] & bit) != 0 ? 1u : 0);
-            force->runtime_flags =
-                (force->runtime_flags & ~0x200u) | ((progress->reward_released[word] & bit) != 0 ? 0x200u : 0);
-            force->runtime_flags =
-                (force->runtime_flags & ~0x800u) | ((progress->socket_hidden[word] & bit) != 0 ? 0x800u : 0);
-            force->runtime_flags =
-                (force->runtime_flags & ~0x4000u) | ((progress->completion_released[word] & bit) != 0 ? 0x4000u : 0);
-            force->runtime_flags =
-                (force->runtime_flags & ~0x8000u) | ((progress->completion_pending[word] & bit) != 0 ? 0x8000u : 0);
-            force->runtime_flags =
-                (force->runtime_flags & ~0x10000u) | ((progress->destroyed[word] & bit) != 0 ? 0x10000u : 0);
+            force->visible = (progress->visible[word] & bit) != 0;
+            force->enabled = (progress->enabled[word] & bit) != 0;
+            force->reward_released = (progress->reward_released[word] & bit) != 0;
+            force->socket_hidden = (progress->socket_hidden[word] & bit) != 0;
+            force->completion_released = (progress->completion_released[word] & bit) != 0;
+            force->completion_pending = (progress->completion_pending[word] & bit) != 0;
+            force->destroyed = (progress->destroyed[word] & bit) != 0;
         }
-        group_index = (i8)force->group_index;
-        if (group_index >= 0 && group_index < 8) {
-            force->group = (FORCE_RESET_GROUP_PC *)&system->groups[group_index];
+        if ((i8)force->group_index >= 0 && (i8)force->group_index < 8) {
+            force->group = (FORCE_RESET_GROUP_PC *)&system->groups[(i8)force->group_index];
             ++force->group->configured_count;
         } else {
             force->group = NULL;
@@ -969,7 +978,6 @@ void __cdecl GizForces_Reset(void *world_ptr, void *data_ptr, void *progress_ptr
                     }
                 }
                 if ((force->runtime_flags & 0x20) != 0) {
-                    NUVEC offset;
                     offset.x = 0.0f;
                     offset.y = GameAnimSet_GetCompletionRatio(force->anim_set) * force->group->combined_height;
                     offset.z = 0.0f;
