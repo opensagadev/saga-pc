@@ -971,20 +971,22 @@ void __cdecl RedBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 }
 
 void __cdecl RedBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 5.0f;
-    } else if (stage->field_0x14 == 1) {
-        f32 previous = stage->field_0x18;
-        f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (stage->field_0x18 >= stage->field_0x1c)
-            NextStatusStage(packet);
-        else if (previous < 0.75f && stage->field_0x18 >= 0.75f) {
-            PlaySfx("TrueJedi_100pc", NULL);
-            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 5.0f;
+            break;
+        case 1: {
+            f32 previous = stage->field_0x18;
+            stage->field_0x18 = stage->field_0x18 + elapsed;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                NextStatusStage(packet);
+            else if (previous < 0.75f && stage->field_0x18 >= 0.75f) {
+                PlaySfx("TrueJedi_100pc", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            }
+            break;
         }
     }
 }
@@ -996,22 +998,24 @@ void __cdecl AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet)
 }
 
 void __cdecl AllMiniKits_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 6.5f;
-    } else if (stage->field_0x14 == 1) {
-        f32 previous = stage->field_0x18;
-        f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (stage->field_0x18 >= stage->field_0x1c)
-            NextStatusStage(packet);
-        else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
-            PlaySfx("StatusAward", NULL);
-            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-        } else if (previous < 4.0f && stage->field_0x18 >= 4.0f)
-            PlaySfx("Char_Icon_App", NULL);
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 6.5f;
+            break;
+        case 1: {
+            f32 previous = stage->field_0x18;
+            stage->field_0x18 = stage->field_0x18 + elapsed;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                NextStatusStage(packet);
+            else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
+                PlaySfx("StatusAward", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            } else if (previous < 4.0f && stage->field_0x18 >= 4.0f)
+                PlaySfx("Char_Icon_App", NULL);
+            break;
+        }
     }
 }
 
@@ -1021,16 +1025,20 @@ void __cdecl CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *pa
 }
 
 void __cdecl CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 1.0f;
-    } else if (stage->field_0x14 == 1) {
-        f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (stage->field_0x18 >= stage->field_0x1c)
-            NextStatusStage(packet);
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 1.0f;
+            break;
+        case 1: {
+            f32 accumulated = stage->field_0x18;
+            accumulated += elapsed;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                NextStatusStage(packet);
+            break;
+        }
     }
 }
 

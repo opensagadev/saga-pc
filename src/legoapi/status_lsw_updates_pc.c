@@ -73,25 +73,29 @@ void __cdecl Exit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
 }
 
 void __cdecl Fade_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 0.6f;
-    } else if (stage->field_0x14 == 1) {
-        f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (stage->field_0x18 >= stage->field_0x1c)
-            FinishStatusPacket(packet->prompt_choice);
-        {
-            f32 numerator = stage->field_0x18;
-            f32 denominator = stage->field_0x1c;
-            f32 blend = 0.0f;
-            if (numerator != 0.0f && denominator != 0.0f) {
-                f32 result = (f64)numerator / (f64)denominator;
-                blend = result;
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 0.6f;
+            break;
+        case 1: {
+            f32 accumulated = stage->field_0x18;
+            accumulated += elapsed;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                FinishStatusPacket(packet->prompt_choice);
+            {
+                f32 numerator = stage->field_0x18;
+                f32 denominator = stage->field_0x1c;
+                f32 blend;
+                if (numerator == 0.0f || denominator == 0.0f)
+                    blend = 0.0f;
+                else
+                    blend = numerator / denominator;
+                StatusIconYPc = -StatusIconsOnOff(blend);
             }
-            StatusIconYPc = -StatusIconsOnOff(blend);
+            break;
         }
     }
 }

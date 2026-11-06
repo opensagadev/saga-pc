@@ -43,22 +43,24 @@ void __cdecl AllMiniKits_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet)
 }
 
 void __cdecl AllMiniKits_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-    if (stage->field_0x14 == 0) {
-        stage->field_0x14 = 1;
-        stage->field_0x18 = 0.0f;
-        stage->field_0x1c = 6.5f;
-    } else if (stage->field_0x14 == 1) {
-        f32 previous = stage->field_0x18;
-        f32 accumulated = stage->field_0x18;
-        accumulated += elapsed;
-        stage->field_0x18 = accumulated;
-        if (stage->field_0x18 >= stage->field_0x1c)
-            NextStatusStage(packet);
-        else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
-            PlaySfx("StatusAward", NULL);
-            NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
-        } else if (previous < 4.0f && stage->field_0x18 >= 4.0f)
-            PlaySfx("Char_Icon_App", NULL);
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 6.5f;
+            break;
+        case 1: {
+            f32 previous = stage->field_0x18;
+            stage->field_0x18 = stage->field_0x18 + elapsed;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                NextStatusStage(packet);
+            else if (previous < 0.5f && stage->field_0x18 >= 0.5f) {
+                PlaySfx("StatusAward", NULL);
+                NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+            } else if (previous < 4.0f && stage->field_0x18 >= 4.0f)
+                PlaySfx("Char_Icon_App", NULL);
+            break;
+        }
     }
 }
 
@@ -167,5 +169,70 @@ void __cdecl Exit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 
             stage->field_0x1c = 0.1f;
         else
             FinishStatusPacket(packet->prompt_choice);
+    }
+}
+
+/* Stage type 6. */
+void __cdecl Stage6_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
+    if (stage->field_0x14 == 0)
+        stage->field_0x14 = 1;
+    NextStatusStage(packet);
+    if (packet->stage->type == 7)
+        NextStatusStage(packet);
+}
+
+void __cdecl Stage6_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    (void)stage;
+    (void)packet;
+    (void)elapsed;
+}
+
+void __cdecl Stage6_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 player) {
+    (void)stage;
+    (void)packet;
+    (void)player;
+}
+
+/* Stage type 11. Unlike the LSW save stage, a plain level exit finishes the status
+   screen here instead of setting flag 0x1000, and there is no memory-card menu state. */
+void __cdecl Save_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    if (packet->save_state == 3) {
+        f32 accumulated = elapsed + stage->field_0x18;
+        stage->field_0x18 = accumulated;
+        if (stage->field_0x18 >= stage->field_0x1c) {
+            u32 flags = packet->flags_word;
+            if ((flags & 0x400) == 0 && packet->prompt_choice == 0 && (flags & 0x40) == 0 &&
+                packet->mission_state == 0 && packet->challenge_state == 0)
+                FinishStatusPacket(0);
+            else
+                NextStatusStage(packet);
+        }
+    } else if (packet->save_state == 0) {
+        packet->save_state = 1;
+        Text_FillInExtendedSaveInfo();
+        if (TriggerAutoSave() == 0) {
+            packet->save_state = 3;
+            NewMenu(1000, -1, -1);
+        }
+    } else if (memcard_autosaveinprogress == 0)
+        packet->save_state = 3;
+}
+
+/* Stage type 12. */
+void __cdecl Fade_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    switch (stage->field_0x14) {
+        case 0:
+            stage->field_0x14 = 1;
+            stage->field_0x18 = 0.0f;
+            stage->field_0x1c = 0.6f;
+            break;
+        case 1: {
+            f32 accumulated = stage->field_0x18;
+            accumulated += elapsed;
+            stage->field_0x18 = accumulated;
+            if (stage->field_0x18 >= stage->field_0x1c)
+                FinishStatusPacket(packet->prompt_choice);
+            break;
+        }
     }
 }
