@@ -944,7 +944,7 @@ address,symbol,size,ctype
 0x00458540,_FinishStatusPacket_Alt,3,"i32 __cdecl(WORLDINFO *, STATUSPACKET_s *, i32)"
 0x00458ac0,_DrawStatusBG_Alt,1021,void __cdecl(STATUSPACKET_s *)
 0x00458ec0,_TrueHero_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
-0x00458ed0,_TrueHero_Alt_Update,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x00458ed0,_TrueHero_Alt_Update,1168,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x00459360,_TrueHero_Alt_Draw,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x00459af0,_MiniKit_Alt_Skip,91,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x00459b50,_MiniKit_Alt_Update,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
@@ -953,7 +953,7 @@ address,symbol,size,ctype
 0x0045a540,_AllMiniKits_Alt_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045a630,_AllMiniKits_Alt_Draw,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045a8e0,_RedBrick_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
-0x0045a8f0,_RedBrick_Alt_Update,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045a8f0,_RedBrick_Alt_Update,692,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045abb0,_RedBrick_Alt_Draw,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045afe0,_Coins_Alt_Skip,62,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045b020,_Coins_Alt_Update,620,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"

@@ -699,4 +699,202 @@ extern "C" {
         }
     }
 
+    /* Stage type 18. */
+    void __cdecl RedBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+        if (stage->field_0x14 >= 0)
+            stage->field_0x18 = elapsed + stage->field_0x18;
+        switch (stage->field_0x14) {
+            case 0:
+                StatusAltSpinPc = 0;
+                stage->field_0x18 = 0.0f;
+                stage->field_0x14 = 1;
+                stage->field_0x1c = StatusAlt7f8220Pc;
+                break;
+            case 1:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x18 >= stage->field_0x1c) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 2;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                break;
+            case 2:
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x18 >= stage->field_0x1c) {
+                    PlaySfx("TrueJedi_100pc", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8224Pc;
+                    stage->field_0x14 = 3;
+                }
+                break;
+            case 3:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x18 >= stage->field_0x1c) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 4;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                break;
+            case 4:
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x18 >= stage->field_0x1c) {
+                    PlaySfx("TrueJedi_100pc", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8224Pc;
+                    stage->field_0x14 = 5;
+                }
+                break;
+            case 5:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x18 >= stage->field_0x1c) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 6;
+                    stage->field_0x1c = StatusAlt7f8224Pc;
+                }
+                break;
+            case 6:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x18 >= stage->field_0x1c) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 7;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                break;
+            case 7:
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x18 >= stage->field_0x1c)
+                    NextStatusStage(packet);
+                break;
+        }
+    }
+
+    /* Stage types 1 and 2. Fills the true-hero bar up to the collected percentage. */
+    void __cdecl TrueHero_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+        switch (stage->field_0x14) {
+            case -1:
+                return;
+            case 0:
+                stage->field_0x18 = 0.0f;
+                stage->field_0x14 = 1;
+                stage->field_0x1c = StatusAlt7f8220Pc;
+                StatusAltSpinPc = 0;
+                packet->true_hero_percent = 0.0f;
+                return;
+            case 1: {
+                f32 accumulated = stage->field_0x18 + elapsed;
+                stage->field_0x18 = accumulated;
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x14 = 2;
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                return;
+            }
+            case 2: {
+                f32 accumulated = stage->field_0x18 + elapsed;
+                stage->field_0x18 = accumulated;
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x1c <= accumulated) {
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8224Pc;
+                    stage->field_0x14 = 3;
+                    packet->true_hero_percent = 0.0f;
+                    StatusAlt7f8268Pc = 5.0f;
+                }
+                return;
+            }
+            case 3: {
+                f32 accumulated = stage->field_0x18 + elapsed;
+                StatusAltSpinPc = 0;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x14 = 4;
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                return;
+            }
+            case 4: {
+                f32 accumulated = stage->field_0x18 + elapsed;
+                stage->field_0x18 = accumulated;
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x1c <= accumulated) {
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 5;
+                    stage->field_0x1c = 3.0f;
+                }
+                return;
+            }
+            case 5: {
+                f32 target;
+                SetDrawGoldBrick(packet, 3);
+                if ((packet->field_0xb0 & 4) == 0) {
+                    target = (f64)packet->collected_score * 100.0 / (f64)packet->true_hero_target;
+                    if (target > 99.0f)
+                        target = 99.0f;
+                } else
+                    target = 100.0f;
+                stage->field_0x18 += elapsed;
+                packet->true_hero_percent =
+                    (f64)elapsed * (100.0 / (f64)stage->field_0x1c) + (f64)packet->true_hero_percent;
+                if (packet->true_hero_percent > target)
+                    packet->true_hero_percent = target;
+                else if (packet->true_hero_percent >= StatusAlt7f8268Pc) {
+                    PlaySfx("Status_GoldBarDec", NULL);
+                    StatusAlt7f8268Pc = (f64)StatusAlt7f8268Pc + 10.0;
+                }
+                if (stage->field_0x18 > stage->field_0x1c) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = 1.0f;
+                    if (packet->stage->type == 2) {
+                        stage->field_0x14 = 7;
+                        PlaySfx("TrueJedi_NOT", NULL);
+                    } else {
+                        stage->field_0x14 = 6;
+                        PlaySfx("TrueJedi_100pc", NULL);
+                    }
+                }
+                return;
+            }
+            case 6: {
+                f32 accumulated;
+                if (stage->field_0x18 == 0.0f)
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                StatusAltSpinPc = 0;
+                accumulated = stage->field_0x18 + elapsed;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 8;
+                    stage->field_0x1c = 1.0f;
+                }
+                return;
+            }
+            case 7: {
+                f32 accumulated = stage->field_0x18 + elapsed;
+                StatusAltSpinPc = 0;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x14 = 8;
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = 1.0f;
+                }
+                return;
+            }
+            case 8: {
+                f32 accumulated = stage->field_0x18 + elapsed;
+                stage->field_0x18 = accumulated;
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x1c <= accumulated)
+                    NextStatusStage(packet);
+                return;
+            }
+        }
+    }
+
 } /* extern "C" */
