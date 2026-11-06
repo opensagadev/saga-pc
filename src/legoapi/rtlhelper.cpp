@@ -38,6 +38,7 @@ class RTLHelper : public EdClassInterface {
         curr_set = NULL;
     }
     virtual void AddMenuItems(eduimenu_s *menu);
+    RTL_SET_PC *GetIndexedSet();
 
     RTL_SET_PC *set;
 };
@@ -69,6 +70,34 @@ void *RTLHelper::GetNextObject(void *object) {
         }
     }
     return NULL;
+}
+
+void RTLHelper::EnterEditor() {
+    curr_set = rtlGetEnvSet();
+    if (curr_set == NULL)
+        curr_set = set;
+    RTL_SET_INDEX_PC(curr_set)->enabled = 0;
+}
+
+/* The 16-byte-aligned permanent-buffer carve is the inline allocator retail
+ * also uses in refpack_init. */
+void RTLHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
+    if (set == NULL) {
+        MEMORYMANAGER *manager = &theMemoryManager;
+        RTL_SET_PC *fresh = NULL;
+        if (RTL_EDITOR_SET_SIZE_PC < *manager->end_anchor - *manager->start_anchor) {
+            *manager->start_anchor = (*manager->start_anchor + 15) & ~15;
+            fresh = reinterpret_cast<RTL_SET_PC *>(*manager->start_anchor);
+            *manager->start_anchor += RTL_EDITOR_SET_SIZE_PC;
+            memset(fresh, 0, RTL_EDITOR_SET_SIZE_PC);
+            manager->unknown_14 += RTL_EDITOR_SET_SIZE_PC;
+            manager->size -= RTL_EDITOR_SET_SIZE_PC;
+            manager->unknown_10 = *manager->start_anchor;
+        }
+        set = fresh;
+        RTL_SET_INDEX_PC(set)->enabled = 0;
+    }
+    curr_set = set;
 }
 
 static __declspec(noinline) void RtlHelperCopyMtx(NUMTX *dst, const NUMTX *src) {
@@ -136,6 +165,24 @@ void RTLHelper::Render(void *object, i32) {
     EdDrawPolyCylinder(&matrix, rtl_helper_radius * 0.75, rtl_helper_radius, rtl_helper_radius * 2.0f, 4, dark_colour,
                        0, 0);
     EdDrawEnd();
+}
+
+/* Makes this helper's set current and builds its light index on first use;
+ * returns NULL while the set is missing or empty. */
+RTL_SET_PC *RTLHelper::GetIndexedSet() {
+    if (set != NULL) {
+        curr_set = set;
+        if (GetNumObjects() > 0) {
+            RTL_INDEX_PC *index = RTL_SET_INDEX_PC(set);
+            if (index->enabled == 0) {
+                VARIPTR buffer;
+                buffer.void_ptr = index;
+                IndexLights(set, &buffer, buffer.addr + RTL_SET_INDEX_AREA_SIZE_PC);
+            }
+            return set;
+        }
+    }
+    return NULL;
 }
 
 #define RTLHELPER_FOGS(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)

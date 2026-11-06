@@ -10192,6 +10192,13 @@ extern "C" {
     STATIC_ASSERT(offsetof(RTL_INDEX_PC, offset_x) == 0x18);
     STATIC_ASSERT(offsetof(RTL_INDEX_PC, offset_z) == 0x1c);
     STATIC_ASSERT(offsetof(RTL_INDEX_PC, cells) == 0x20);
+    /* The editor keeps a set's light index directly behind it: the
+     * RTL_INDEX_PC header, then IndexLights' cell table and index lists, in
+     * one 0x2028-byte area (0x6fac bytes with the set). rtlLoadSet still advances by sizeof(RTL_SET_PC)
+     * only; the game builds the index from its own buffer. */
+#define RTL_SET_INDEX_PC(set) ((RTL_INDEX_PC *)((set) + 1))
+#define RTL_SET_INDEX_AREA_SIZE_PC 0x2028
+#define RTL_EDITOR_SET_SIZE_PC (sizeof(RTL_SET_PC) + RTL_SET_INDEX_AREA_SIZE_PC)
 
     struct RTL_DATA_PC;
     struct RTL_INDEX_PC;
@@ -17826,6 +17833,7 @@ extern "C" {
     void __cdecl edrtlCalculateBurnout(BURN_SET_PC *, f32 *, f32 *, f32 *, NUVEC *, f32);
     void __cdecl edrtlCalculateBurnoutEx(BURN_SET_PC *, BURN_PARAMETERS_PC *, NUVEC *, f32);
     void __cdecl edrtlDrawLightEx(i32 index, i32 style);
+    RTL_SET_PC *__cdecl rtlGetEnvSet(void);
     void __cdecl RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *mtl);
     void __cdecl RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *mtl);
     void __cdecl EdDrawBegin(i32 index);

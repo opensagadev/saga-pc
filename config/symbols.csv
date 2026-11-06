@@ -5170,6 +5170,7 @@ address,symbol,size,ctype
 0x595840,_ResetLights,51,"void __cdecl(NUVEC *,RTL_DATA_PC *,void *)"
 0x595880,_rtlGetEnvPath,6,char *__cdecl(void)
 0x595890,_rtlGetEnvSceneName,11,char *__cdecl(void)
+0x5958a0,_rtlGetEnvSet,12,RTL_SET_PC *__cdecl(void)
 0x5958b0,_SetZeroLights,96,void __cdecl(void)
 0x595910,_FindAndSetLights,92,"void __cdecl(NUVEC *,f32,void *)"
 0x595970,_LoadLights,150,"void __cdecl LoadLights(void *, char *)"
@@ -7375,6 +7376,7 @@ address,symbol,size,ctype
 0x63eb30,?CreateObject@RTLHelper@@UAEPAXPAXHH@Z,285,
 0x63ec50,?DestroyObject@RTLHelper@@UAEXPAXH@Z,14,
 0x63ec60,?Render@RTLHelper@@UAEXPAXH@Z,626,
+0x63eee0,?GetIndexedSet@RTLHelper@@QAEPAURTL_SET_PC@@XZ,80,
 0x63f000,?AddMenuItems@RTLHelper@@UAEXPAUeduimenu_s@@@Z,64,
 0x63f5e0,?CreateObject@FogHelper@@UAEPAXPAXHH@Z,166,
 0x63f690,?DestroyObject@FogHelper@@UAEXPAXH@Z,14,

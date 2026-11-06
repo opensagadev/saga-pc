@@ -515,3 +515,7 @@ char *__cdecl rtlGetEnvSceneName(void) {
     address.addr += offsetof(WORLDINFO, config_file);
     return address.char_ptr;
 }
+
+RTL_SET_PC *__cdecl rtlGetEnvSet(void) {
+    return (RTL_SET_PC *)WORLD->rtl_set;
+}
