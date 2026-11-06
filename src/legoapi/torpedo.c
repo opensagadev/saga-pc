@@ -306,6 +306,7 @@ void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
 }
 #undef TORPEDO_PACKET_PC
 
+#define TORPEDO_PACKET_PC(object) ((TORPEDO_RUNTIME_PC *)(object)->torpedo)
 void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     TORPEDO_RUNTIME_PC *packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
     TORPEDO_TIMERS_PC *timers = (TORPEDO_TIMERS_PC *)object;
@@ -314,8 +315,8 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     GAME_MESSAGE_PC *message;
     NUVEC *target_position;
     void *target;
-    f32 distance, range, timer, strength;
-    i32 maximum, debris;
+    f32 distance, range, timer;
+    i32 maximum;
     u8 target_type;
     if (packet == NULL)
         return;
@@ -326,83 +327,94 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     }
     if (timers->fire_cooldown > 0.0f)
         timers->fire_cooldown -= FRAMETIME;
-    if ((WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 &&
-         Bolt_Find(16, NULL, object) != NULL) ||
-        Bolt_Find(15, NULL, object) != NULL)
-        packet->flags |= 2;
+    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 && Bolt_Find(16, NULL, object) != NULL)
+        TORPEDO_PACKET_PC(object)->flags |= 2;
+    else if (Bolt_Find(15, NULL, object) != NULL)
+        TORPEDO_PACKET_PC(object)->flags |= 2;
     else
-        packet->flags &= (u8)~2;
-    if (fire != 0 && object->character_context == -1 && 0.0f >= timers->fire_cooldown && object->dead == 0 &&
-        (packet->flags & 2) == 0 && packet->pickup_timer >= 0.8f && packet->count != 0) {
+        TORPEDO_PACKET_PC(object)->flags &= (u8)~2;
+    /* Retail tests the pickup timer twice before firing. */
+    if (fire != 0 && object->character_context == -1 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
+        (TORPEDO_PACKET_PC(object)->flags & 2) == 0 && TORPEDO_PACKET_PC(object)->pickup_timer >= 0.8f &&
+        TORPEDO_PACKET_PC(object)->count > 0 && TORPEDO_PACKET_PC(object)->pickup_timer >= 0.8f) {
         PlaySfx((char *)TorpedoFireSfxPc, &object->collision_position);
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
         object->flags_e20 |= 0x4000000;
         object->portal_flags |= 0x800;
         timers->fire_cooldown = fire_cooldown;
-        packet->fire_index = 0;
+        TORPEDO_PACKET_PC(object)->fire_index = 0;
         if (object->flags_1fc & 0x80)
             Hint_SetComplete(0x289);
     }
     maximum = getMaxTorpedos(object);
-    while (packet->count > maximum) {
-        debris = WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 ? 72 : 71;
-        AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[debris].effect,
-                                    &packet->pickup_positions[packet->count - 1], 30, 0, 0);
-        --packet->count;
+    while (TORPEDO_PACKET_PC(object)->count > maximum) {
+        /* Retail spawns the discarded torpedo's debris at pickup_positions[count]. */
+        if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0)
+            AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[72].effect,
+                                        &TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count],
+                                        30, 0, 0);
+        else
+            AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[71].effect,
+                                        &TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count],
+                                        30, 0, 0);
+        --TORPEDO_PACKET_PC(object)->count;
     }
-    if (packet->pickup_timer < 0.8f) {
-        packet->pickup_timer += FRAMETIME;
-        if (packet->pickup_timer >= 0.8f)
-            packet->pickup_state = 0;
+    if (TORPEDO_PACKET_PC(object)->pickup_timer < 0.8f) {
+        TORPEDO_PACKET_PC(object)->pickup_timer += FRAMETIME;
+        if (TORPEDO_PACKET_PC(object)->pickup_timer >= 0.8f)
+            TORPEDO_PACKET_PC(object)->pickup_state = 0;
     } else {
-        if (TorpedoFillEnabledPc != 0 && (object->flags_1fc & 0x80) != 0 && 0.0f >= timers->fire_cooldown &&
-            object->dead == 0 && (packet->flags & 2) == 0 && packet->count < maximum) {
-            packet->pickup_positions[packet->count] = object->position;
-            ++packet->count;
-            packet->pickup_timer = 0.0f;
-        } else if (Cheat_IsOn(42) != 0 && (object->flags_1fc & 0x80) != 0 && 0.0f >= timers->fire_cooldown &&
-                   object->dead == 0 && (packet->flags & 2) == 0 && packet->count < maximum) {
-            packet->pickup_positions[packet->count] = object->position;
-            ++packet->count;
-            packet->pickup_timer = 0.0f;
-            packet->pickup_state = 0;
-        } else if (packet->count < maximum) {
+        if (TorpedoFillEnabledPc != 0 && (object->flags_1fc & 0x80) != 0 && timers->fire_cooldown <= 0.0f &&
+            object->dead == 0 && (TORPEDO_PACKET_PC(object)->flags & 2) == 0 &&
+            TORPEDO_PACKET_PC(object)->count < maximum) {
+            TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count] = object->position;
+            ++TORPEDO_PACKET_PC(object)->count;
+            TORPEDO_PACKET_PC(object)->pickup_timer = 0.0f;
+        } else if (Cheat_IsOn(42) != 0 && (object->flags_1fc & 0x80) != 0 && timers->fire_cooldown <= 0.0f &&
+                   object->dead == 0 && (TORPEDO_PACKET_PC(object)->flags & 2) == 0 &&
+                   TORPEDO_PACKET_PC(object)->count < maximum) {
+            TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count] = object->position;
+            ++TORPEDO_PACKET_PC(object)->count;
+            TORPEDO_PACKET_PC(object)->pickup_timer = 0.0f;
+            TORPEDO_PACKET_PC(object)->pickup_state = 0;
+        } else if (TORPEDO_PACKET_PC(object)->count < maximum) {
             machine =
                 (TORPEDO_MACHINE_READER_PC *)GizTorpMachine_FindNearest(WORLD, &object->collision_position, &distance);
             if (machine != NULL && (machine->flags & 1) != 0 && distance < TorpedoGrabRangeSquaredPc) {
-                strength = (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f);
-                NewRumble(object->pad->bound_pad, strength, 0);
-                if (packet->count < maximum) {
+                NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * PlayerRandomScalePc * (f64)0.4f), 0);
+                if (TORPEDO_PACKET_PC(object)->count < maximum) {
                     NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                    packet->pickup_positions[packet->count] = machine->position;
-                    ++packet->count;
+                    TORPEDO_PACKET_PC(object)->pickup_positions[TORPEDO_PACKET_PC(object)->count] = machine->position;
+                    ++TORPEDO_PACKET_PC(object)->count;
                     machine->activation_time = 0.0f;
-                    packet->pickup_timer = 0.0f;
-                    packet->pickup_state = 0;
+                    TORPEDO_PACKET_PC(object)->pickup_timer = 0.0f;
+                    TORPEDO_PACKET_PC(object)->pickup_state = 0;
                 }
             }
         }
     }
     Torpedo_UpdateJobbies(object);
-    if (packet->count == 0)
+    if (TORPEDO_PACKET_PC(object)->count == 0)
         return;
-    type = BoltType_FindByID(WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 ? 16 : 15, WORLD);
+    type = WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 ? BoltType_FindByID(16, WORLD)
+                                                                                 : BoltType_FindByID(15, WORLD);
     range = type->field_14 * type->field_10;
     range *= range;
-    if ((packet->flags & 2) != 0 && packet->target != NULL) {
-        target = packet->target;
-        target_type = packet->target_type;
+    if ((TORPEDO_PACKET_PC(object)->flags & 2) != 0 && TORPEDO_PACKET_PC(object)->target != NULL) {
+        target = TORPEDO_PACKET_PC(object)->target;
+        target_type = TORPEDO_PACKET_PC(object)->target_type;
     } else
         target = FindNearestTorpTarget(WORLD, &object->position, range, &target_type);
     if (target != NULL) {
-        if (target == packet->target) {
-            timers->target_timer += FRAMETIME;
+        if (target == TORPEDO_PACKET_PC(object)->target) {
+            timer = FRAMETIME + timers->target_timer;
+            timers->target_timer = timer;
             if (timers->target_timer > 0.25f)
                 timers->target_timer = 0.25f;
-        } else if (!(0.0f < timers->target_timer) || packet->target == NULL) {
-            packet->target = target;
-            packet->target_type = target_type;
+        } else if (!(timers->target_timer > 0.0f) || TORPEDO_PACKET_PC(object)->target == NULL) {
+            TORPEDO_PACKET_PC(object)->target = target;
+            TORPEDO_PACKET_PC(object)->target_type = target_type;
             timers->target_timer = 0.0f;
         } else {
             timer = timers->target_timer - 2.0f * FRAMETIME;
@@ -410,27 +422,27 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
             if (0.0f > timer)
                 timers->target_timer = 0.0f;
         }
-    } else if ((packet->flags & 6) == 0) {
-        if (0.0f < timers->target_timer) {
+    } else if ((TORPEDO_PACKET_PC(object)->flags & 6) == 0) {
+        if (timers->target_timer > 0.0f) {
             timer = timers->target_timer - 2.0f * FRAMETIME;
             timers->target_timer = timer;
             if (0.0f > timer)
                 timers->target_timer = 0.0f;
         } else
-            packet->target = NULL;
+            TORPEDO_PACKET_PC(object)->target = NULL;
     }
-    if ((object->flags_1fc & 0x80) != 0 && packet->target != NULL && 0.0f < timers->target_timer) {
+    if ((object->flags_1fc & 0x80) != 0 && TORPEDO_PACKET_PC(object)->target != NULL && timers->target_timer > 0.0f) {
         target_position = NULL;
-        switch (packet->target_type) {
+        switch (TORPEDO_PACKET_PC(object)->target_type) {
             case 0:
-                target_position = &((BLOWUP_TARGET_PC *)packet->target)->mid_position;
+                target_position = &((BLOWUP_TARGET_PC *)TORPEDO_PACKET_PC(object)->target)->mid_position;
                 break;
             case 1:
-                target_position =
-                    NuSpecialGetDrawPos(&((TORPEDO_TURRET_READER_PC *)packet->target)->primary_anim_obj->special);
+                target_position = NuSpecialGetDrawPos(
+                    &((TORPEDO_TURRET_READER_PC *)TORPEDO_PACKET_PC(object)->target)->primary_anim_obj->special);
                 break;
             case 2:
-                target_position = &((TORPEDO_OBSTACLE_READER_PC *)packet->target)->position;
+                target_position = &((TORPEDO_OBSTACLE_READER_PC *)TORPEDO_PACKET_PC(object)->target)->position;
                 break;
         }
         if (target_position != NULL) {
@@ -444,6 +456,7 @@ void __cdecl TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         }
     }
 }
+#undef TORPEDO_PACKET_PC
 
 typedef struct torpedo_packet_alloc_pc_s {
     u8 count, flags;
