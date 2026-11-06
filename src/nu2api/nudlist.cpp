@@ -1914,7 +1914,7 @@ extern "C" void __cdecl NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 
         return;
     PC_DISPLAY_CLIP_OBJECT_PC *object = static_cast<PC_DISPLAY_CLIP_OBJECT_PC *>(special->clip_objects);
     f32 *range = special->clip_range;
-    while (*range > 0.0f && object->material_count == 0) {
+    while (*range > 0.0f && static_cast<u32>(object->material_count) <= 0) {
         ++range;
         ++object;
     }

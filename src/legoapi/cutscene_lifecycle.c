@@ -1389,6 +1389,7 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     CUT_LOAD_CAMERA_STATE_PC *camera_state;
     CUT_LOAD_CAMERA_TARGET_PC *target;
     u8 value;
+    u8 focus_value;
     i32 index;
     f32 duration, blend;
     i32 reverse;
@@ -1400,8 +1401,12 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     CutSceneUseFocusLocationPc = 0;
     CutSceneFStopPc = 0.0f;
     if ((instance->scene->version & 0xff) >= 5 && system->focus_state_animation != NULL &&
-        StateAnimEvaluate(system->focus_state_animation, &state->focus_state_index, &value, frame) != 0)
-        state->focus_index = value == 0xff ? -1 : (i8)instance->scene->focus_indices[value];
+        StateAnimEvaluate(system->focus_state_animation, &state->focus_state_index, &focus_value, frame) != 0) {
+        if (focus_value != 0xff)
+            state->focus_index = (i8)instance->scene->focus_indices[focus_value];
+        else
+            state->focus_index = -1;
+    }
     if (system->state_animation != NULL) {
         if (StateAnimEvaluate(system->state_animation, &state->state_index, &value, frame) != 0) {
             state->camera_index = (i8)value;
@@ -1409,13 +1414,12 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
             CutSceneCameraChangedPc = 1;
         }
         if (state->state_index < system->state_animation->count) {
-            f32 next_frame = system->state_animation->times[state->state_index];
-            if (next_frame - frame < 1.0f &&
+            if (system->state_animation->times[state->state_index] - frame < 1.0f &&
                 system->state_animation->values[state->state_index] != state->camera_index) {
-                f32 render_frame = next_frame - 1.0f;
-                if ((instance->flags_88 & 0x40000) != 0)
-                    render_frame = instance->scene->duration - render_frame;
+                f32 render_frame = system->state_animation->times[state->state_index] - 1.0f;
                 instance->render_frame = render_frame;
+                if ((instance->flags_88 & 0x40000) != 0)
+                    instance->render_frame = instance->scene->duration - render_frame;
                 if (instance->render_frame < 1.0f)
                     instance->render_frame = 1.0f;
             }
@@ -1423,22 +1427,25 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     }
     while (state->next_target_index < state->target_count &&
            frame >= state->targets[state->next_target_index].start_frame) {
-        index = system->target_camera_map[state->targets[state->next_target_index].target_index];
-        state->states[index].flags |= 2;
-        state->states[index].event_index = state->next_target_index++;
+        camera_state = &state->states[system->target_camera_map[state->targets[state->next_target_index].target_index]];
+        camera_state->flags |= 2;
+        camera_state->event_index = state->next_target_index;
+        ++state->next_target_index;
     }
-    while (state->next_target_index != 0 && frame < state->targets[state->next_target_index - 1].start_frame) {
+    while (state->next_target_index > 0 && frame < state->targets[state->next_target_index - 1].start_frame) {
         --state->next_target_index;
-        index = system->target_camera_map[state->targets[state->next_target_index].target_index];
-        state->states[index].flags |= 2;
-        state->states[index].event_index = state->next_target_index;
+        camera_state = &state->states[system->target_camera_map[state->targets[state->next_target_index].target_index]];
+        camera_state->flags |= 2;
+        camera_state->event_index = state->next_target_index;
     }
-    if (state->camera_index < 0) {
+    if (state->camera_index >= 0) {
+        CutSceneCameraCTRL = 1;
+        CutSceneCameraDofModePc = 2;
+    } else {
         CutSceneCameraCTRL = 0;
-        return;
     }
-    CutSceneCameraCTRL = 1;
-    CutSceneCameraDofModePc = 2;
+    if (state->camera_index < 0)
+        return;
     index = state->camera_index;
     if ((u32)index >= (u32)system->count)
         ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
@@ -1447,7 +1454,7 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
     if ((camera->flags & 1) == 0 || camera->animation_node >= NuAnimNumNodes((NUANIMDATA2_PC *)system->animation))
         CutSceneCameraMatrixPc = camera->matrix;
     else {
-        ANI3_HEADER_PC *animation = (ANI3_HEADER_PC *)system->animation;
+        ANI3_HEADER_PC *animation;
         ANI3_HEADER_PC *focus = (ANI3_HEADER_PC *)system->focus_animation;
         if ((instance->scene->version & 0xff) >= 5 && focus != NULL && (i32)focus->magic >= 0x414e4934 &&
             (i32)focus->magic <= 0x414e4935) {
@@ -1471,6 +1478,7 @@ static void CutSceneCameraSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame) {
                 }
             }
         }
+        animation = (ANI3_HEADER_PC *)system->animation;
         if ((i32)animation->magic >= 0x414e4934 && (i32)animation->magic <= 0x414e4935)
             NuAnimCurve2SetApplyToMatrix_3(animation, camera->animation_node, instance->render_frame,
                                            &CutSceneCameraMatrixPc);
@@ -1882,14 +1890,15 @@ static void CutSceneClipTestPc(CUT_INSTANCE_LOAD_PC *instance) {
 }
 
 static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
-    u8 last_stream = (u8)instance->saved_scene->unknown_40;
-    if (instance->stream_index == last_stream)
+    if (instance->stream_index == (u8)instance->saved_scene->unknown_40)
         instance->current_frame = instance->scene->duration - 1.0f;
     instance->current_frame -= instance->rate * elapsed;
     if (CutSceneLoadingInstancePc != NULL)
         return;
-    if ((i32)instance->stream_index == (i32)last_stream - 1) {
-        if ((instance->flags_8c & 0x80) != 0 || instance->pending_stream != NULL)
+    if ((i32)instance->stream_index == (i32)(u8)instance->saved_scene->unknown_40 - 1) {
+        if ((instance->flags_8c & 0x80) != 0)
+            CutSceneStreamDiagnosticPc(instance->scene->filename);
+        else if (instance->pending_stream != NULL)
             CutSceneStreamDiagnosticPc(instance->scene->filename);
         else {
             if ((instance->flags_88 & 0x10000000) != 0) {
