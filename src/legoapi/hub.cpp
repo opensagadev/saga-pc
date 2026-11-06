@@ -3011,6 +3011,11 @@ extern "C" i32 hub_freeplay_area, freeplaymode, freeplay_selected[2], fpcount;
 extern "C" f32 freeplaytime, freeplayduration, freeplay_time[2], BigIconAlpha[2];
 extern "C" f32 HubFreePlayBigSizePc, HubFreePlayBigYPc, HubFreePlayNameYPc, HubFreePlayFinalSizePc, COLLECTION_Y_HUB;
 extern "C" APICHARACTERMODELLIST HubFreePlayDrawListPc[341];
+static __forceinline f32 HubFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 static void HubDrawFreePlaySelectPc(void) {
     const u32 flags = ADataList[hub_freeplay_area].flags;
     COLLECTION_BUILD_PC *collection =
@@ -3028,11 +3033,13 @@ static void HubDrawFreePlaySelectPc(void) {
                 HubDrawSuperBonusStatsPc(area, alpha);
                 HubDrawBonusModeMenuPc(0, alpha);
             } else if ((area->flags & 4) != 0) {
-                if (bonusmodearcade != 0)
+                if (bonusmodearcade != 0) {
                     HubDrawArcadeStatsPc(alpha);
-                else
+                    HubDrawBonusModeMenuPc(0, alpha);
+                } else {
                     HubDrawBonusStatsPc(alpha, -1, hub_bonusepisode, hub_bonusmode);
-                HubDrawBonusModeMenuPc(0, alpha);
+                    HubDrawBonusModeMenuPc(0, alpha);
+                }
             } else {
                 HubDrawAreaStatsPc(alpha, HubDoorAreaPc, -1);
                 HubDrawSelectModeMenuPc(0, alpha);
@@ -3040,12 +3047,14 @@ static void HubDrawFreePlaySelectPc(void) {
         }
     }
     if (freeplaymode != 3 && freeplaymode != 4) {
-        f32 fade = 1.0f;
+        f32 fade;
         if (freeplaymode == 2) {
-            fade = 0.0f;
-            if (freeplaytime < freeplayduration - .10000000149011612)
-                fade = (f32)(1.0 - freeplaytime / (freeplayduration - .10000000149011612));
-        }
+            if (freeplaytime >= freeplayduration - .10000000149011612)
+                fade = 0.0f;
+            else
+                fade = (f32)(1.0f - freeplaytime / (freeplayduration - .10000000149011612));
+        } else
+            fade = 1.0f;
         {
             i32 model = FreePlayModelList[0].model_id;
             f32 opacity = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * fade;
@@ -3074,6 +3083,7 @@ static void HubDrawFreePlaySelectPc(void) {
         }
         if (freeplaymode == 1) {
             for (i32 player = 0; player < 2; ++player) {
+                const i32 other = (player + 1) & 1;
                 if (MissionMenuPacketPc.active_player[player] == 0)
                     continue;
                 i32 model = MissionMenuPacketPc.player_model[player];
@@ -3082,12 +3092,25 @@ static void HubDrawFreePlaySelectPc(void) {
                 f32 opacity = 1.0f;
                 if (freeplay_time[player] <= 0.0f)
                     opacity *= BigIconAlpha[player];
-                f32 base_x = player == 0 ? -.4f : .4f;
-                if (MissionMenuPacketPc.active_player[1 - player] == 0)
+                f32 base_x;
+                i32 frame;
+                f32 target_x;
+                if (player == 0) {
+                    base_x = -.4f;
+                    frame = 166;
+                    target_x = -ICONX;
+                } else {
+                    base_x = .4f;
+                    frame = 165;
+                    target_x = ICONX;
+                }
+                if (MissionMenuPacketPc.active_player[other] == 0)
                     base_x = 0.0f;
                 f32 base_size = HubFreePlayBigSizePc;
                 if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
                     base_size = (f32)(base_size * .875);
+                f32 target_y = STATSPOSY;
+                f32 target_size = COLLECTION_ICONSIZE;
                 f32 eased = 0.0f, progress = 1.0f;
                 if (freeplay_time[player] > 0.0f) {
                     progress = freeplay_time[player] / HubFreePlaySelectionWaitPc;
@@ -3101,11 +3124,9 @@ static void HubDrawFreePlaySelectPc(void) {
                     progress = 0.0f;
                 }
                 if (opacity > 0.0f) {
-                    const f32 target_x = player == 0 ? -ICONX : ICONX;
                     DrawCharIcon(model, (target_x - base_x) * eased + base_x,
-                                 (STATSPOSY - HubFreePlayBigYPc) * eased + HubFreePlayBigYPc, 0.0f,
-                                 (COLLECTION_ICONSIZE - base_size) * eased + base_size, player == 0 ? 166 : 165,
-                                 opacity, opacity, 1, NULL);
+                                 (target_y - HubFreePlayBigYPc) * eased + HubFreePlayBigYPc, 0.0f,
+                                 (target_size - base_size) * eased + base_size, frame, opacity, opacity, 1, NULL);
                 }
                 if (model != -1 && progress > 0.0f) {
                     char name[64];
@@ -3120,13 +3141,7 @@ static void HubDrawFreePlaySelectPc(void) {
         list[0].model_id = MissionMenuPacketPc.player_model[0];
         list[1].model_id = MissionMenuPacketPc.player_model[1];
         list[2].model_id = -1;
-        union {
-            f32 value;
-            u32 bits;
-        } collection_y;
-        collection_y.value = COLLECTION_Y_HUB;
-        collection_y.bits &= 0x7fffffff;
-        const f32 offset = -(2.0f - collection_y.value);
+        const f32 offset = -((1.0f - HubFabsPc(COLLECTION_Y_HUB)) + 1.0f);
         const f32 y = (COLLECTION_Y_HUB - offset) *
                           NuTrigTable[((i32)(freeplaytime / freeplayduration * 16384.0) >> 1) & 0x7fff] +
                       offset;
@@ -3142,7 +3157,10 @@ static void HubDrawFreePlaySelectPc(void) {
         HubDrawIconCursorsPc(collection, 1, 1.0f, 1.0f);
         i32 select[2], back[2], status[2];
         for (i32 player = 0; player < 2; ++player) {
-            select[player] = back[player] = status[player] = -1;
+            const i32 other = (player + 1) & 1;
+            select[player] = -1;
+            back[player] = -1;
+            status[player] = -1;
             switch (freeplay_selected[player]) {
                 case 0:
                     if (freeplay_time[player] <= 0.0f) {
@@ -3160,8 +3178,8 @@ static void HubDrawFreePlaySelectPc(void) {
                     break;
                 case 2:
                 case 3:
-                    if (MissionMenuPacketPc.active_player[1 - player] != 0 &&
-                        freeplay_selected[1 - player] < freeplay_selected[player]) {
+                    if (MissionMenuPacketPc.active_player[other] != 0 &&
+                        freeplay_selected[other] < freeplay_selected[player]) {
                         back[player] = TextIdPc880890;
                         status[player] = TextIdPc880eb4;
                     }
