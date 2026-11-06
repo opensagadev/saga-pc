@@ -94,10 +94,14 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
 void OccluderSet::PrepareForQueries(NUMTX const *query, NUMTX const *projection) {
     projection_matrix = *projection;
     query_matrix = *query;
-    for (u32 index = 0; index < count; ++index) {
+    for (u32 index = 0; index != count; ++index) {
         PC_OCCLUDER_RECORD &record = occluders[index];
-        record.min_x = record.min_y = record.min_depth = 1000000.0f;
-        record.max_x = record.max_y = record.depth = -1000000.0f;
+        record.min_x = 1000000.0f;
+        record.min_y = 1000000.0f;
+        record.min_depth = 1000000.0f;
+        record.max_x = -1000000.0f;
+        record.max_y = -1000000.0f;
+        record.depth = -1000000.0f;
         bool valid = true;
         for (u32 vertex = 0; vertex < 4; ++vertex) {
             NUVEC4 &v = record.transformed[vertex];
@@ -109,12 +113,12 @@ void OccluderSet::PrepareForQueries(NUMTX const *query, NUMTX const *projection)
             v.x /= v.w;
             v.y /= v.w;
             v.z /= v.w;
-            record.min_x = v.x < record.min_x ? v.x : record.min_x;
-            record.max_x = v.x > record.max_x ? v.x : record.max_x;
-            record.min_y = v.y < record.min_y ? v.y : record.min_y;
-            record.max_y = v.y > record.max_y ? v.y : record.max_y;
-            record.min_depth = v.w < record.min_depth ? v.w : record.min_depth;
-            record.depth = v.w > record.depth ? v.w : record.depth;
+            record.min_x = record.min_x > v.x ? v.x : record.min_x;
+            record.min_y = record.min_y > v.y ? v.y : record.min_y;
+            record.max_x = record.max_x < v.x ? v.x : record.max_x;
+            record.max_y = record.max_y < v.y ? v.y : record.max_y;
+            record.min_depth = record.min_depth > v.w ? v.w : record.min_depth;
+            record.depth = record.depth < v.w ? v.w : record.depth;
         }
         if (valid && (record.depth < 0.0f || record.min_depth < 0.0f || record.max_x < -1.0f || record.min_x > 1.0f ||
                       record.max_y < -1.0f || record.min_y > 1.0f)) {
