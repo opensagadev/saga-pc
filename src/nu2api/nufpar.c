@@ -100,41 +100,33 @@ NUFPAR_PC *__cdecl NuFParOpen(NUFILE file_handle) {
 NUFPAR_PC *__cdecl NuFParCreateGivenFH(char *file_name, NUFILE file_handle) {
     NUFPAR_PC *parser;
 
-    if (file_handle == 0) {
-        return NULL;
-    }
-
-    parser = NuFParOpen(file_handle);
-    if (parser == NULL) {
+    if (file_handle != 0) {
+        parser = NuFParOpen(file_handle);
+        if (parser != NULL) {
+            NuStrCpy(parser->file_name, file_name);
+            return parser;
+        }
         NuFileClose(file_handle);
-        return NULL;
     }
-
-    NuStrCpy(parser->file_name, file_name);
-    return parser;
+    return NULL;
 }
 
 NUFPAR_PC *__cdecl NuFParCreate(char *file_name) {
     NUFILE file_handle;
     NUFPAR_PC *parser;
 
-    if (!NuFileExists(file_name)) {
-        return NULL;
+    if (NuFileExists(file_name)) {
+        file_handle = NuFileOpenDF(file_name, 0, curr_dat, 0);
+        if (file_handle != 0) {
+            parser = NuFParOpen(file_handle);
+            if (parser != NULL) {
+                NuStrCpy(parser->file_name, file_name);
+                return parser;
+            }
+            NuFileClose(file_handle);
+        }
     }
-
-    file_handle = NuFileOpenDF(file_name, 0, curr_dat, 0);
-    if (file_handle == 0) {
-        return NULL;
-    }
-
-    parser = NuFParOpen(file_handle);
-    if (parser == NULL) {
-        NuFileClose(file_handle);
-        return NULL;
-    }
-
-    NuStrCpy(parser->file_name, file_name);
-    return parser;
+    return NULL;
 }
 
 void __cdecl NuFParSuspend(NUFPAR_PC *parser) {
@@ -661,39 +653,6 @@ f32 __cdecl NuFParGetFloat(NUFPAR_PC *parser) {
     }
 
     return buffer[0] != '\0' ? NuAToF(buffer) : 0.0f;
-}
-
-NUFPAR_PC *__cdecl NuFParCreateMem(char *name, char *buffer, i32 buffer_size) {
-    NUFILE file_handle;
-    NUFPAR_PC *parser;
-    i32 index;
-
-    if (buffer_size == 0 || buffer == NULL || buffer_size <= 0) {
-        return NULL;
-    }
-    for (index = 0; index < 20; index++) {
-        if (pc_memfiles[index].used == 0) {
-            break;
-        }
-    }
-    if (index == 20) {
-        return NULL;
-    }
-
-    pc_memfiles[index].buffer = (u8 *)buffer;
-    pc_memfiles[index].end = (u8 *)buffer + buffer_size - 1;
-    pc_memfiles[index].position = (u8 *)buffer;
-    pc_memfiles[index].mode = 0;
-    pc_memfiles[index].used = 1;
-    file_handle = index + 0x400;
-    parser = NuFParOpen(file_handle);
-    if (parser != NULL) {
-        NuStrCpy(parser->file_name, name);
-        return parser;
-    }
-
-    NuFileClose(file_handle);
-    return NULL;
 }
 
 i32 __cdecl NuFParPushCom2(NUFPAR_PC *parser, NUFPCOMJMP *commands, NUFPCOMJMP *commands2) {

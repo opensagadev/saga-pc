@@ -360,18 +360,14 @@ void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
 
 u32 __cdecl SfxNameHash(const char *name) {
     u32 hash = 0;
-    i32 index = 0;
 
-    while (name[index] != '\0') {
-        u8 character = (u8)name[index];
-        i32 table_index;
+    while (*name != '\0') {
+        char character = *name++;
 
-        if (character >= 'a' && character <= 'z') {
-            character = (u8)(character - ('a' - 'A'));
+        if ((u8)(character - 'a') <= 'z' - 'a') {
+            character -= 'a' - 'A';
         }
-        table_index = (i8)character ^ (i32)(hash >> 24);
-        hash = (hash << 8) ^ SfxCRCTable[table_index];
-        index++;
+        hash = (hash << 8) ^ SfxCRCTable[character ^ (hash >> 24)];
     }
     return hash;
 }
@@ -431,12 +427,13 @@ void __cdecl SetSfxBit_OffEx(i32 sfx_id) {
 }
 
 i32 __cdecl SfxBitEx(i32 sfx_id) {
-    u32 index = (u32)sfx_id;
-
-    if (index > 0x63f) {
-        return -1;
+    i32 word;
+    if ((u32)sfx_id <= 0x63f) {
+        word = sfx_id / 16;
+        if (word < 100)
+            return (SfxBits[word] & (u16)(1 << (sfx_id & 0xf))) != 0;
     }
-    return (SfxBits[index >> 4] & (u16)(1u << (index & 0xf))) != 0;
+    return -1;
 }
 
 void __cdecl SetSfxBit_On(i32 sound_id) {

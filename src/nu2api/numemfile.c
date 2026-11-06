@@ -21,6 +21,24 @@ NUFILE __cdecl NuMemFileOpen(void *buffer, i32 buffer_size, i32 mode) {
     return 0;
 }
 
+NUFPAR_PC *__cdecl NuFParCreateMem(char *name, char *buffer, i32 buffer_size) {
+    NUFILE file_handle;
+    NUFPAR_PC *parser;
+
+    if (buffer_size != 0 && buffer != NULL) {
+        file_handle = NuMemFileOpen(buffer, buffer_size, 0);
+        if (file_handle != 0) {
+            parser = NuFParOpen(file_handle);
+            if (parser != NULL) {
+                NuStrCpy(parser->file_name, name);
+                return parser;
+            }
+            NuFileClose(file_handle);
+        }
+    }
+    return NULL;
+}
+
 void *__cdecl NuMemFileAddr(NUFILE file) {
     file -= 0x400;
     return pc_memfiles[file].position;
