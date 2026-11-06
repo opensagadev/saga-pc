@@ -123,17 +123,22 @@ extern NUGSCN *area_scene, *vehicle_scene, *big_icon_scene;
 extern i32 KNOBS;
 void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
     i32 index;
+    u32 size;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     world->level_objects = (LEVEL_OBJECT_RUNTIME_PC *)world->giz_buffer.void_ptr;
-    world->giz_buffer.addr += LEVELOBJECTCOUNT * sizeof(LEVEL_OBJECT_RUNTIME_PC);
-    memset(world->level_objects, 0, LEVELOBJECTCOUNT * sizeof(LEVEL_OBJECT_RUNTIME_PC));
+    size = LEVELOBJECTCOUNT * sizeof(LEVEL_OBJECT_RUNTIME_PC);
+    world->giz_buffer.addr += size;
+    memset(world->level_objects, 0, size);
     if (ObjTabList == NULL)
         return;
     for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
-        NUGSCN *scene = NULL;
-        i32 area_override = 0;
+        NUGSCN *scene;
+        i32 found;
+        i32 area_override;
         if (NuStrICmp(ObjTabList[index].name, "power_up") == 0)
             KNOBS = index;
+        found = 0;
+        area_override = 0;
         switch ((i8)ObjTabList[index].kind) {
             case 1:
                 scene = world->current_gscn;
@@ -143,11 +148,11 @@ void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
                 break;
             case 3: {
                 i32 character;
-                i32 found = 0;
-                for (character = 0; character < CHARCOUNT && !found; ++character) {
+                for (character = 0; !found && character < CHARCOUNT; ++character) {
                     scene = IconScene_FindById(character);
-                    if (scene != NULL)
-                        found = NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1);
+                    if (scene != NULL &&
+                        NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) != 0)
+                        found = 1;
                 }
                 if (found)
                     goto resolved;
@@ -170,7 +175,8 @@ void __cdecl LevelObjects_InitForLevel(WORLDINFO *world) {
         }
         if (scene == NULL)
             continue;
-        if (!NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) && area_override)
+        if (NuSpecialFind(scene, &world->level_objects[index].special, ObjTabList[index].name, 1) == 0 &&
+            area_override != 0)
             NuSpecialFind(things_scene, &world->level_objects[index].special, ObjTabList[index].name, 1);
     resolved:
         world->level_objects[index].active = (u8)NuSpecialExistsFn(&world->level_objects[index].special);
