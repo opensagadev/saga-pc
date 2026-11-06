@@ -1414,8 +1414,8 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
         i8 action;
         if (excluded != NULL && InModelList(excluded, id, NULL) != 0)
             continue;
-        if (Game_Customiser != NULL && (((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] == id ||
-                                        ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1] == id))
+        if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[0] ||
+                                        id == ((CUSTOMISER_LAYERS_PC *)Game_Customiser)->character_ids[1]))
             continue;
         if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0)
             continue;
@@ -1425,11 +1425,12 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
             count < 500)
             candidates[count++] = (i16)id;
     }
-    if (count == 0)
-        return -1;
-    if (count == 1)
+    if (count > 0) {
+        if (count > 1)
+            return candidates[qrand() / (0xffff / count + 1)];
         return candidates[0];
-    return candidates[qrand() / (0xffff / count + 1)];
+    }
+    return -1;
 }
 
 static i32 World_AppendFreePlayPrivate(i32 model) {
