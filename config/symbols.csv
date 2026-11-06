@@ -6887,6 +6887,47 @@ address,symbol,size,ctype
 0x60dd60,?initResources@NuSpeedBlurFilter@@UAEXXZ,81,native exactVT binding; unimplemented extent unclaimed
 0x60ddc0,_NuMtlInitShaderResourcesPc,265,void __cdecl(void)
 0x60ded0,_NuMtlInitExPS,5,void __cdecl(VARIPTR*)
+0x60df50,??0NetStats@@QAE@PBD@Z,89,
+0x60e390,?NotifyPeerRemoved@TTNetwork@@QAEXPAVV2Peer@@H@Z,42,
+0x60f4b0,?Clear@NetStatCounters@@QAEXXZ,14,
+0x60f4c0,??YNetStatCounters@@QAEAAU0@ABU0@@Z,31,
+0x60f4e0,??ZNetStatCounters@@QAEAAU0@ABU0@@Z,31,
+0x60f550,?Update@NetStats@@UAEXXZ,134,
+0x60f850,?Draw@NetStats@@UAEXHH@Z,1880,
+0x60ffd0,?SetPlayerSlots@V2SessionManager@@QAEXPBHH@Z,52,
+0x610010,?V2SessionPrintf@@YAXPBDZZ,107,
+0x610080,?FilterNames@V2SessionManager@@UAEHPAPAE0HPAE@Z,71,
+0x6100d0,??0V2HostList@@QAE@XZ,13,
+0x6100e0,?GetCount@V2HostList@@QAEHXZ,4,
+0x6100f0,??0V2PeerList@@QAE@XZ,13,
+0x610100,?Remove@V2PeerList@@QAEXPAVV2Peer@@@Z,68,
+0x610150,?GetCount@V2PeerList@@QAEHXZ,4,
+0x610160,??0V2PendingList@@QAE@XZ,13,
+0x610170,??0V2ClosingList@@QAE@XZ,13,
+0x610180,?Reset@V2SessionManager@@QAEXXZ,104,
+0x6101f0,?UpdateStats@V2SessionManager@@UAEXXZ,69,
+0x610240,?RemoveAllPeers@V2SessionManager@@QAEXH@Z,79,
+0x610290,?RemovePeer@V2SessionManager@@UAEXPAVV2Peer@@H@Z,119,
+0x610310,??0V2SessionManager@@QAE@PBD@Z,110,
+0x610380,?Shutdown@V2SessionManager@@UAEXH@Z,3,
+0x610390,?Update@V2SessionManager@@UAEXXZ,1,
+0x6103a0,?StartHost@V2SessionManager@@UAEXXZ,1,
+0x6103b0,?StopHost@V2SessionManager@@UAEXXZ,1,
+0x6103c0,?GetHostCount@V2SessionManager@@UAEHXZ,3,
+0x6103d0,?Poll@V2SessionManager@@UAEXXZ,1,
+0x6103e0,?IsHost@V2SessionManager@@UAE_NXZ,3,
+0x6103f0,?IsConnected@V2SessionManager@@UAE_NXZ,3,
+0x610400,?SetLocalPlayer@V2SessionManager@@UAEXH@Z,3,
+0x610410,?IsSearching@V2SessionManager@@UAE_NXZ,3,
+0x610420,?SetSearchMode@V2SessionManager@@UAEXH@Z,3,
+0x610430,?SetGameMode@V2SessionManager@@UAEXH@Z,3,
+0x610440,?SetSessionData@V2SessionManager@@UAEXPAXH@Z,3,
+0x610450,?SetMaxPlayers@V2SessionManager@@UAEXH@Z,10,
+0x610460,?SetPrivateSlots@V2SessionManager@@UAEXH@Z,10,
+0x610470,?SetJoinable@V2SessionManager@@UAEXH@Z,3,
+0x610480,?CancelSearch@V2SessionManager@@UAEXXZ,1,
+0x610490,?SetPresence@V2SessionManager@@UAEXH@Z,3,
+0x6104a0,?ClearPresence@V2SessionManager@@UAEXXZ,1,
 0x00610540,_RefpackGetMatchLengthPc,46,"u32 __cdecl(u8 *,u8 *,u32)"
 0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,
@@ -9255,6 +9296,8 @@ address,symbol,size,ctype
 0x6de1c0,_WindowProcPc@16,751,"LRESULT __stdcall(HWND,UINT,WPARAM,LPARAM)"
 0x6de4b0,_CreateWindowPc,420,"i32 __cdecl(HINSTANCE,i32,u16)"
 0x006de6d0,_NuPadSetMotorsPc,1,"void __cdecl(NUPAD_INIT_STATE *, i32, i32)"
+0x6de730,_PcDebugPrintUnlock,1,void __cdecl(void)
+0x6de740,_PcDebugPrintLock,1,void __cdecl(void)
 0x6de750,_PcEnableThreadSwap,1,void __cdecl(void)
 0x6de760,_PcDisableThreadSwap,1,void __cdecl(void)
 0x006de8c0,_NuScratchReset,11,void __cdecl(void)
@@ -9414,6 +9457,7 @@ address,symbol,size,ctype
 0x006e7633,_free,133,void __cdecl (void *)
 0x6e76c1,_realloc,,"void *__cdecl (void *, size_t); supplied pinned static CRT"
 0x6e78dc,__recalloc,,
+0x6e7955,_printf,281,
 0x6e7a6e,__set_printf_count_output,37,
 0x6e7a93,__get_printf_count_output,22,
 0x006e7b25,_vsprintf,23,"i32 __cdecl (char *, const char *, va_list)"
@@ -9493,6 +9537,7 @@ address,symbol,size,ctype
 0x6ea45c,__IsExceptionObjectToBeDestroyed,33,
 0x6ea47d,__FindAndUnlinkFrame,76,
 0x6ea4c9,?_CallCatchBlock2@@YAPAXPAUEHRegistrationNode@@PBU_s_FuncInfo@@PAXHK@Z,94,
+0x6ea5d8,__vsnprintf,27,
 0x6ea600,__aulldiv,104,
 0x6ea668,__copysign,38,
 0x6ea68e,__chgsign,43,
@@ -17183,7 +17228,13 @@ address,symbol,size,ctype
 0x76a8c0,??_7length_error@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a8c8,??_C@_0BD@OLBABOEK@vector?$DMT?$DO?5too?5long?$AA@,,const char[19]
 0x76a8dc,_NuMaterialSourcePathPc,56,const char[56]
+0x76a924,??_7NetStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
+0x76aa30,??_C@_0L@HPABEAAN@mPeerList?6?$AA@,11,const char[]
+0x76aa3c,??_C@_0L@HFCAGBJ@mHostList?6?$AA@,11,const char[]
+0x76aa48,??_C@_0CK@HPDJNGLO@V2SessionManager?3?3RemoveAllPeers@,42,const char[]
+0x76aa74,??_C@_0L@MDLIAHED@SessionAll?$AA@,11,const char[]
+0x76aa84,??_7V2SessionManager@@6B@,88,
 0x76acb4,??_C@_0L@CGOOPECH@New?5To?5Old?$AA@,,char []
 0x76acc0,??_C@_0L@JHAHFKHN@Old?5to?5New?$AA@,,char []
 0x76accc,??_C@_06FMKCAKLA@Z?5to?5A?$AA@,,char []
@@ -20806,6 +20857,10 @@ address,symbol,size,ctype
 0x7eac48,??_R3length_error@std@@8,,Natural owning C++ RTTI/throw metadata
 0x7eac58,??_R2length_error@std@@8,,Natural owning C++ RTTI/throw metadata
 0x7eac68,??_R1A@?0A@EA@length_error@std@@8,,Natural owning C++ RTTI/throw metadata
+0x7eae64,??_R4V2SessionManager@@6B@,,
+0x7eae78,??_R3V2SessionManager@@8,,
+0x7eae88,??_R2V2SessionManager@@8,,
+0x7eae90,??_R1A@?0A@EA@V2SessionManager@@8,,
 0x7eb240,??_R4EdClassInterface@@6B@,,
 0x7eb254,??_R3EdClassInterface@@8,,
 0x7eb264,??_R2EdClassInterface@@8,,
@@ -26512,7 +26567,9 @@ address,symbol,size,ctype
 0x2857250,_PCSpecialProjectionScale,,NUMTX
 0x2857290,_PostBlurInputBiasPc,4,f32 private BSS scalar only native read60635a
 0x2857294,_RenderFrameShaderTimePc,,f32
+0x2857308,?theTTNetwork@@3VTTNetwork@@A,,
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,616448,NETMESSAGE_PC::MessageData[512]
+0x28fec24,?sm_instance@V2SessionManager@@2PAV1@A,4,V2SessionManager *
 0x28fec28,_RefpackLinkArrayPc,,
 0x28fec2c,_RefpackHashTablePc,,
 0x02900a70,_colourmenu,,"eduimenu_s *; minimum4Bworkingview Nativeextentunknown"

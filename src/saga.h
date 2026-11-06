@@ -29224,4 +29224,163 @@ class EdRef : public CSListLink<EdRef> {
     i32 GetTypeSize(i32 requested_type, i32 data_size);
 };
 #endif
+
+#ifdef __cplusplus
+/* PC network session layer (0x60dee0-0x617d50). Provisional names except the
+ * RTTI class names (NetStats, NetSmallStats, TTNetwork, V2SessionManager). */
+struct NetStatCounters {
+    u32 values[4];
+    void Clear();
+    NetStatCounters &operator+=(const NetStatCounters &other);
+    NetStatCounters &operator-=(const NetStatCounters &other);
+};
+
+class NetStats {
+  public:
+    NetStats(const char *name);
+    virtual void Update();
+    virtual void Draw(i32 x, i32 y);
+
+    const char *name;
+    NetStatCounters totals;
+    u32 unknown_18[10];
+    NetStatCounters history[30];
+};
+
+class V2Peer {
+  public:
+    virtual ~V2Peer();
+    virtual void Disconnect();
+
+    V2Peer *next;
+    V2Peer *prev;
+    u32 unknown_0c[3];
+    NetStatCounters counters;
+};
+
+class V2HostList {
+  public:
+    V2HostList();
+    i32 GetCount();
+
+    V2Peer *head;
+    V2Peer *tail;
+    i32 count;
+};
+
+class V2PeerList {
+  public:
+    V2PeerList();
+    void Remove(V2Peer *peer);
+    i32 GetCount();
+
+    V2Peer *head;
+    V2Peer *tail;
+    i32 count;
+};
+
+class V2PendingList {
+  public:
+    V2PendingList();
+
+    V2Peer *head;
+    V2Peer *tail;
+    i32 count;
+};
+
+class V2ClosingList {
+  public:
+    V2ClosingList();
+
+    V2Peer *head;
+    V2Peer *tail;
+    i32 count;
+};
+
+class TTNetwork {
+  public:
+    void NotifyPeerRemoved(V2Peer *peer, i32 reason);
+};
+extern TTNetwork theTTNetwork;
+
+class V2SessionManager {
+  public:
+    V2SessionManager(const char *name);
+    virtual void Shutdown(i32 reason) {
+    }
+    virtual void Update() {
+    }
+    virtual void UpdateStats();
+    virtual void StartHost() {
+    }
+    virtual void StopHost() {
+    }
+    virtual i32 GetHostCount() {
+        return 0;
+    }
+    virtual void RemovePeer(V2Peer *peer, i32 reason);
+    virtual void Poll() {
+    }
+    virtual bool IsHost() {
+        return false;
+    }
+    virtual bool IsConnected() {
+        return false;
+    }
+    virtual void SetLocalPlayer(i32 player) {
+    }
+    virtual bool IsSearching() {
+        return false;
+    }
+    virtual void SetSearchMode(i32 mode) {
+    }
+    virtual void SetGameMode(i32 mode) {
+    }
+    virtual void SetSessionData(void *data, i32 size) {
+    }
+    virtual void SetMaxPlayers(i32 count) {
+        max_players = count;
+    }
+    virtual void SetPrivateSlots(i32 count) {
+        private_slots = count;
+    }
+    virtual void SetJoinable(i32 joinable) {
+    }
+    virtual void CancelSearch() {
+    }
+    virtual void SetPresence(i32 presence) {
+    }
+    virtual void ClearPresence() {
+    }
+    virtual i32 FilterNames(u8 **source, u8 **destination, i32 count, u8 *replacement);
+
+    void SetPlayerSlots(const i32 *slots, i32 count);
+    void Reset();
+    void RemoveAllPeers(i32 reason);
+
+    i32 state;
+    u32 unknown_08[3];
+    char name[0x20];
+    i32 field_34;
+    i32 max_players;
+    i32 private_slots;
+    i32 slot_mode;
+    i32 local_slot;
+    i32 player_slots[8];
+    f32 timer_68;
+    f32 timer_6c;
+    u32 unknown_70;
+    f32 timer_74;
+    u8 field_78;
+    u8 unknown_79[3];
+    i32 field_7c;
+    u32 unknown_80;
+    V2Peer *local_peer;
+    V2HostList host_list;
+    V2PeerList peer_list;
+    NetStats stats;
+
+    static V2SessionManager *sm_instance;
+};
+#endif
 #endif
