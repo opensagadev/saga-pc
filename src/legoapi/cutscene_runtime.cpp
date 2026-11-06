@@ -86,7 +86,10 @@ void __cdecl CutScenes_Destroy(CUTSYS_PC *system) {
 
 typedef struct CUT_LOAD_STATE_PC {
     NUSPECIALHANDLE special;
-    u8 flags;
+    u8 on : 1;
+    u8 off : 1;
+    u8 end_anim : 1;
+    u8 unknown_0c_bits : 5;
     u8 unknown_0d, unknown_0e, unknown_0f;
 } CUT_LOAD_STATE_PC;
 STATIC_ASSERT(sizeof(CUT_LOAD_STATE_PC) == 0x10);
@@ -513,25 +516,29 @@ extern "C" {
     }
 
     static void CS_cutsceneplayerobj(NUFPAR_PC *fp) {
-        if (CS_CutInfo->state_count > 0x1f || NuFParGetWord(fp) == 0) {
+        if (CS_CutInfo->state_count >= 0x20 || NuFParGetWord(fp) == 0) {
             return;
         }
-
-        CUT_LOAD_STATE_PC *object = &CS_CutInfo->state_entries[CS_CutInfo->state_count];
-        if (NuSpecialFind(CS_worldinfo->current_gscn, &object->special, fp->word_buffer_ptr, 1) == 0) {
+        if (NuSpecialFind(CS_worldinfo->current_gscn, &CS_CutInfo->state_entries[CS_CutInfo->state_count].special,
+                          fp->word_buffer_ptr, 1) == 0) {
             return;
         }
-        object->flags &= ~(1 | 2);
+        CS_CutInfo->state_entries[CS_CutInfo->state_count].on = 0;
+        CS_CutInfo->state_entries[CS_CutInfo->state_count].off = 0;
         while (NuFParGetWord(fp) != 0) {
             if (NuStrICmp(fp->word_buffer_ptr, "on") == 0) {
-                object->flags = (object->flags | 1) & ~2;
+                CS_CutInfo->state_entries[CS_CutInfo->state_count].on = 1;
+                CS_CutInfo->state_entries[CS_CutInfo->state_count].off = 0;
             } else if (NuStrICmp(fp->word_buffer_ptr, "off") == 0) {
-                object->flags = (object->flags & ~1) | 2;
+                CS_CutInfo->state_entries[CS_CutInfo->state_count].on = 0;
+                CS_CutInfo->state_entries[CS_CutInfo->state_count].off = 1;
             } else if (NuStrICmp(fp->word_buffer_ptr, "end_anim") == 0 ||
                        NuStrICmp(fp->word_buffer_ptr, "endanim") == 0 ||
                        NuStrICmp(fp->word_buffer_ptr, "anim_end") == 0 ||
                        NuStrICmp(fp->word_buffer_ptr, "animend") == 0) {
-                object->flags = (object->flags & ~(1 | 2)) | 4;
+                CS_CutInfo->state_entries[CS_CutInfo->state_count].on = 0;
+                CS_CutInfo->state_entries[CS_CutInfo->state_count].off = 0;
+                CS_CutInfo->state_entries[CS_CutInfo->state_count].end_anim = 1;
             }
         }
         ++CS_CutInfo->state_count;
