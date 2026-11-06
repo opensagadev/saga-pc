@@ -2963,7 +2963,7 @@ typedef struct nudisplay_list_pc_s {
         };
     };
     struct NUGSCN_s *gscene;
-    u32 unknown_007c;
+    u32 *native_word;
     struct nuglobalrndrstate_pc_s *local_state;
     u8 unknown_84[0x4];
     u8 *portal_visibility_overrides;
@@ -2980,7 +2980,7 @@ STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, display_materials) == 80);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_lists) == 84);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_used) == 88);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, gscene) == 120);
-STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, unknown_007c) == 124);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, native_word) == 124);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, material_animations) == 0x8c);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, allocation) == 0);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, item_count) == 4);
@@ -16298,7 +16298,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl DebReAlloc(DEBRISKEY_PC *, i32);
     extern NUDISPLAY_LIST_PC PCDynamicDisplayScene;
 #define nudlist_flags (PCDynamicDisplayScene.render_flags)                  // NOLINT(readability-identifier-naming)
-#define nudlist_field_e58 (PCDynamicDisplayScene.unknown_007c)              // NOLINT(readability-identifier-naming)
+#define nudlist_field_e58 (PCDynamicDisplayScene.native_word)               // NOLINT(readability-identifier-naming)
 #define PCDisplayMaterialRegistry (PCDynamicDisplayScene.display_materials) // NOLINT(readability-identifier-naming)
 #define PCDisplayMaterialCount (PCDynamicDisplayScene.material_count)       // NOLINT(readability-identifier-naming)
     extern u32 numtl_renderplane;

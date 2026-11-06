@@ -202,11 +202,6 @@ STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, geometries) == 0x10);
 STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, geometry_count) == 0x14);
 STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_streams) == 0x18);
 STATIC_ASSERT(offsetof(SCENE_FIXUP_NATIVE_PC, vertex_stream_count) == 0x1c);
-typedef struct SCENE_FIXUP_PORTAL_FIELDS_PC {
-    u8 unknown_00[0x6c];
-    i32 max_portals;
-} SCENE_FIXUP_PORTAL_FIELDS_PC;
-STATIC_ASSERT(offsetof(SCENE_FIXUP_PORTAL_FIELDS_PC, max_portals) == 0x6c);
 void __cdecl NuMtlUpdate(NUMTL *);
 void __cdecl NuPortalMaxDepth(NUGSCN *, i32);
 
@@ -249,24 +244,17 @@ void __cdecl NuGScnFixupPS(NUGSCN *scene) {
            SceneVideoResourcesPC.index_buffer_count * sizeof(*native->index_buffers));
     for (material_index = 0; material_index < scene->material_count; ++material_index)
         NuMtlUpdate(scene->materials[material_index]);
-    NuPortalMaxDepth(scene, ((SCENE_FIXUP_PORTAL_FIELDS_PC *)scene)->max_portals);
+    NuPortalMaxDepth(scene, scene->max_portals);
 }
 
-typedef struct PC_CLONE_NATIVE_VIEW {
-    u8 unknown_0000[0x7c];
-    u32 *word;
-} PC_CLONE_NATIVE_VIEW;
-STATIC_ASSERT(offsetof(PC_CLONE_NATIVE_VIEW, word) == 0x7c);
+STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, native_word) == 0x7c);
 void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *source_scene, NUDISPLAY_LIST_PC *clone_scene, VARIPTR *buffer) {
-    PC_CLONE_NATIVE_VIEW *source = (PC_CLONE_NATIVE_VIEW *)source_scene;
-    PC_CLONE_NATIVE_VIEW *scene = (PC_CLONE_NATIVE_VIEW *)clone_scene;
     u32 *word;
-    scene->word = NULL;
-    if (source->word != NULL) {
-        buffer->addr = (buffer->addr + 3) & ~3u;
-        word = (u32 *)buffer->void_ptr;
-        buffer->addr += sizeof(*word);
-        *word = *source->word;
-        scene->word = word;
+    clone_scene->native_word = NULL;
+    if (source_scene->native_word != NULL) {
+        word = (u32 *)((buffer->addr + 3) & ~3u);
+        buffer->addr = ((buffer->addr + 3) & ~3u) + sizeof(*word);
+        *word = *source_scene->native_word;
+        clone_scene->native_word = word;
     }
 }
