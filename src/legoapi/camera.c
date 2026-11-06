@@ -1478,22 +1478,10 @@ mode_selected:
                             NUVEC *offset;
                             f32 amount;
                             i32 is_player = 0;
-                            if (Player[0] != NULL && Player[0] == walker)
-                                is_player = 1;
-                            if (Player[1] != NULL && Player[1] == walker)
-                                is_player = 1;
-                            if (Player[2] != NULL && Player[2] == walker)
-                                is_player = 1;
-                            if (Player[3] != NULL && Player[3] == walker)
-                                is_player = 1;
-                            if (Player[4] != NULL && Player[4] == walker)
-                                is_player = 1;
-                            if (Player[5] != NULL && Player[5] == walker)
-                                is_player = 1;
-                            if (Player[6] != NULL && Player[6] == walker)
-                                is_player = 1;
-                            if (Player[7] != NULL && Player[7] == walker)
-                                is_player = 1;
+                            for (index = 0; index < 8; ++index) {
+                                if (Player[index] != NULL && Player[index] == walker)
+                                    is_player = 1;
+                            }
                             landspeeder_lookahead = is_player ? CamWalkerLiftPc : CamWalkerLiftPc * 0.5;
                             distance = NuFsqrt(walker_distance_sq);
                             factor = MAX(0.0f, 1.0f - distance / CamWalkerRadiusPc);
@@ -1773,23 +1761,21 @@ mode_selected:
             (*offset).x = 0.0f;
             (*offset).y = 0.0f;
             shared_count = 0;
-            if (Player[0] != NULL) {
-                f32 projection = (((GAMEOBJECT *)Player[0])->collision_position.x - target.x) * lateral.x +
-                                 (((GAMEOBJECT *)Player[0])->collision_position.z - target.z) * lateral.z;
-                (*offset).x = lateral.x * projection + (*offset).x;
-                (*offset).z = projection * lateral.z + (*offset).z;
-                shared_count = 1;
-            }
-            if (Player[1] != NULL) {
-                f32 projection = (((GAMEOBJECT *)Player[1])->collision_position.x - target.x) * lateral.x +
-                                 (((GAMEOBJECT *)Player[1])->collision_position.z - target.z) * lateral.z;
-                (*offset).x = lateral.x * projection + (*offset).x;
-                (*offset).z = projection * lateral.z + (*offset).z;
-                ++shared_count;
-                if (shared_count == 2) {
-                    (*offset).x *= 0.5f;
-                    (*offset).z *= 0.5f;
+            for (index = 0; index < 2; ++index) {
+                if (Player[index] != NULL) {
+                    NUVEC delta;
+                    f32 projection;
+                    ++shared_count;
+                    delta.x = ((GAMEOBJECT *)Player[index])->collision_position.x - target.x;
+                    delta.z = ((GAMEOBJECT *)Player[index])->collision_position.z - target.z;
+                    projection = delta.z * lateral.z + delta.x * lateral.x;
+                    (*offset).x = lateral.x * projection + (*offset).x;
+                    (*offset).z = projection * lateral.z + (*offset).z;
                 }
+            }
+            if (shared_count == 2) {
+                (*offset).x *= 0.5f;
+                (*offset).z *= 0.5f;
             }
             NuVecAdd(&position, &target, &GunshipAOffset);
             position.x += (*offset).x;
