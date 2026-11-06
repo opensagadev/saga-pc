@@ -1379,23 +1379,23 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
     item->y = y;
     f32 origin_u = (f32)(picker->uv_x[picker->selected_corner] - 0.5 / picker->zoom);
     f32 origin_v = (f32)(picker->uv_y[picker->selected_corner] - 0.5 / picker->zoom);
-    f32 uv_span = 1.0f / picker->zoom;
-    f32 maximum = 1.0f - uv_span;
-    origin_u = MIN(maximum, MAX(0.0f, origin_u));
-    origin_v = MIN(maximum, MAX(0.0f, origin_v));
+    f32 span_u = 1.0f / picker->zoom;
+    f32 span_v = 1.0f / picker->zoom;
+    origin_u = MIN(1.0f - span_u, MAX(0.0f, origin_u));
+    origin_v = MIN(1.0f - span_v, MAX(0.0f, origin_v));
     f32 point_u[2];
     f32 point_v[2];
     for (i32 corner = 0; corner < 2; ++corner) {
-        point_u[corner] = (picker->uv_x[corner] - origin_u) / uv_span;
+        point_u[corner] = (picker->uv_x[corner] - origin_u) / span_u;
         point_u[corner] = MIN(1.0f, MAX(0.0f, point_u[corner]));
-        point_v[corner] = (picker->uv_y[corner] - origin_v) / uv_span;
+        point_v[corner] = (picker->uv_y[corner] - origin_v) / span_v;
         point_v[corner] = MIN(1.0f, MAX(0.0f, point_v[corner]));
     }
     u32 colours[2] = {0x807f7f7f, 0x807f7f7f};
     colours[picker->selected_corner] = 0x80ffffff;
     if (edui_donotdraw == 0)
-        NuRndrRectUV2di(x << 4, y << 3, width << 4, width << 3, origin_u, origin_v, origin_u + uv_span,
-                        origin_v + uv_span, 0x80808080, (NUMTL *)picker->material);
+        NuRndrRectUV2di(x << 4, y << 3, width << 4, width << 3, origin_u, origin_v, origin_u + span_u,
+                        origin_v + span_v, 0x80808080, (NUMTL *)picker->material);
     for (i32 corner = 0; corner < 2; ++corner) {
         if (edui_donotdraw == 0) {
             f32 line_width = (f32)width;
