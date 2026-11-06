@@ -1603,7 +1603,7 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     i16 icon;
     i32 first_green, first_blue;
     u8 first_red;
-    u8 alpha;
+    i32 alpha;
     if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
         !(object->pause_context_state > 0.0f)) {
         return;
@@ -1618,7 +1618,7 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
         first_green = 255;
         first_blue = 0;
     }
-    alpha = (u8)(i32)(((f64)game_pulse * (f64)0.2f + (f64)0.8f) * 128.0 * object->pause_context_state);
+    alpha = (i32)(((f64)game_pulse * (f64)0.2f + (f64)0.8f) * 128.0 * object->pause_context_state);
     position.x = object->upper_position.x;
     position.y = (f32)((f64)object->character_top * object->origin_scale + object->position.y + (f64)0.05f);
     position.z = object->upper_position.z;
@@ -1651,7 +1651,7 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.red = first_red;
     message.green = (u8)first_green;
     message.blue = (u8)first_blue;
-    message.alpha = alpha;
+    message.alpha = (u8)alpha;
     message.target_is_coin_total = 2;
     if (object->field_280 == 1) {
         message.unknown_34 = 0.0f;
