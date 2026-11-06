@@ -5393,7 +5393,10 @@ typedef struct gameobject_s {
     u8 unknown_7d0[0x14];
     u8 *field_7e4;
     u8 field_7e8;
-    u8 unknown_7e9[0xb];
+    u8 unknown_7e9[0x5];
+    i16 mini_current_animation;
+    i16 mini_previous_animation;
+    u8 unknown_7f2[0x2];
     i16 *weapon_model_override_pc;
     u8 unknown_7f8[0x4];
     void *coin_packet;

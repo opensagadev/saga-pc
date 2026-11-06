@@ -5207,6 +5207,7 @@ address,symbol,size,ctype
 0x005a01f0,_Buck_StartRiderJump,294,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x005a0320,_Buck_Start,168,"void __cdecl (GAMEOBJECT *, GAMEOBJECT *)"
 0x005a03d0,_Buck_MoveCode,110,"void __cdecl (GAMEOBJECT *, i32)"
+0x005a0450,_GameAnimMissingAnimDiagnosticPc,1,void __cdecl (char *)
 0x005a0480,_GameAnimSys_AllocateLevelProgressData,108,"void __cdecl (VARIPTR *, VARIPTR *, i32, i32)"
 0x005a04f0,_GameAnimSys_StoreProgress,83,"void __cdecl (GAMEANIMSYS *, i32)"
 0x005a0550,_GameAnimSys_GetProgressData,29,u8 *__cdecl (i32)

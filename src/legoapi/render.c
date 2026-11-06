@@ -2366,3 +2366,9 @@ void __cdecl TakeOverReleaseDiagnosticPc(char *rider_name, char *object_name) {
     (void)rider_name;
     (void)object_name;
 }
+
+/* Original source name unknown. The native entry is exactly RET; GameAnimSet_AddObject passes it the name of a
+ * special whose animation has no frames. */
+void __cdecl GameAnimMissingAnimDiagnosticPc(char *name) {
+    (void)name;
+}
