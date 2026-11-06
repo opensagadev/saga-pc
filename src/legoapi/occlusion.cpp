@@ -253,7 +253,7 @@ extern "C" void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *camera, N
     corners[3].y = -height;
     corners[3].z = camera->near_clip;
     corners[3].w = 1.0f;
-    NUVEC4 scaled;
+    __declspec(align(16)) NUVEC4 scaled;
     for (i32 i = 0; i < 4; ++i) {
         scaled.x = corners[i].x * far_scale;
         scaled.y = corners[i].y * far_scale;
