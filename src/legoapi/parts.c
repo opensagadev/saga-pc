@@ -2680,7 +2680,7 @@ STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, multiplier) == 0xa);
 STATIC_ASSERT(offsetof(COINPACKET_PICKUP_PC, timer) == 0xc);
 void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant,
                                      GAMEOBJECT *object, i32 ignored) {
-    i32 player_index, player0_active, main_total, model_id, multiplier = 0;
+    i32 player_index, player0_active, player1_active, main_total, model_id, multiplier = 0;
     NUVEC target;
     f32 target_scale;
     u32 score;
@@ -2692,16 +2692,17 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
         player_index = (i8)object->field_280;
     else {
         player0_active = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0;
-        if (Player[1] == NULL || (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) == 0) {
-            if (!player0_active)
-                return;
+        player1_active = Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
+        if (player0_active && player1_active)
+            player_index = qrand() / 32768;
+        else if (player0_active)
             player_index = 0;
-        } else if (!player0_active)
+        else if (player1_active)
             player_index = 1;
         else
-            player_index = qrand() / 32768;
+            return;
     }
-    if ((u32)player_index > 1)
+    if (player_index != 0 && player_index != 1)
         return;
     if (type_index >= 2 && type_index <= 3 && object != NULL) {
         if (world->area != NULL && (world->area->flags & 0x104) == 4)
@@ -2709,17 +2710,19 @@ void __cdecl GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type
         else
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
     }
-    PlaySfx((char *)(DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3 ? PickupTypeLiteral758c5c
-                                                                                  : PickupCoinSfx_PC),
-            position);
-    main_total = CoinsGoToMainTotal() != 0;
-    if (main_total) {
+    if (DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3)
+        PlaySfx((char *)PickupTypeLiteral758c5c, position);
+    else
+        PlaySfx((char *)PickupCoinSfx_PC, position);
+    if (CoinsGoToMainTotal()) {
         target.x = cointotal_x[player_index];
+        main_total = 1;
         target.y = STATSPOSY;
         DrawCoinTotalTime = (f32)(COINMSGTIME + 1.0);
         target_scale = COINTOTAL_COINSIZE;
     } else {
         target.x = player_index == 1 ? PANEL_COINX : -PANEL_COINX;
+        main_total = 0;
         target.y = STATSPOSY + PANEL_COINY;
         DrawBuildUpTime = (f32)(COINMSGTIME + 1.0);
         target_scale = PANEL_COINSCALE_END;
@@ -4533,7 +4536,7 @@ void __cdecl CastPart(PART_PC *part, f32 time) {
 impact:
     part->active |= 4;
     state->platform_id = TerrainPlatId();
-    part->active = (part->active & ~0x10) | (state->platform_id != (u32)-1 ? 0x10 : 0);
+    part->active ^= (((u32)(state->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
     part->field_f4 *= NewRayCastGetTOFI();
     part->impact_normal = PART_NORM;
     part->impact_position.x = part->position.x + cast_movement.x;
