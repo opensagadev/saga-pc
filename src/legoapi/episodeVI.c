@@ -195,7 +195,6 @@ void __cdecl JabbasPalaceE_Panel(WORLDINFO *world) {
 void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
     i32 index;
     u32 bit;
-    NUSPECIALHANDLE *shown;
     NUVEC *position;
     NUINSTANIM_TIME_VIEW *animation;
     (void)world;
@@ -210,25 +209,27 @@ void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         else
             sarlaccb_netpacket->height = sarlaccdisco.height;
         bit = 1u << index;
-        shown = NULL;
+        /* Retail expands the show-and-raise code separately in each branch. */
+#define SARLACC_SHOW_PANEL_PC(handle)                                                                                  \
+    do {                                                                                                               \
+        NuSpecialSetVisibility(handle, 1);                                                                             \
+        position = NuSpecialGetDrawPos(handle);                                                                        \
+        if (position != NULL) {                                                                                        \
+            position->y = sarlaccdisco.height;                                                                         \
+            NuSpecialSetDrawPos(handle, position);                                                                     \
+        }                                                                                                              \
+    } while (0)
         if (sarlaccb_netpacket->off_mask & bit)
-            shown = &sarlaccdisco.off[index];
+            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.off[index]);
         else if (sarlaccb_netpacket->flash_mask & bit)
-            shown = &sarlaccdisco.flash[index];
+            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.flash[index]);
         else if (sarlaccb_netpacket->select_mask & bit)
-            shown = &sarlaccdisco.select[index];
+            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.select[index]);
         else if (sarlaccb_netpacket->on_mask & bit)
-            shown = &sarlaccdisco.on[index];
+            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.on[index]);
         else if (sarlaccb_netpacket->finish_mask & bit)
-            shown = &sarlaccdisco.finish[index];
-        if (shown != NULL) {
-            NuSpecialSetVisibility(shown, 1);
-            position = NuSpecialGetDrawPos(shown);
-            if (position != NULL) {
-                position->y = sarlaccdisco.height;
-                NuSpecialSetDrawPos(shown, position);
-            }
-        }
+            SARLACC_SHOW_PANEL_PC(&sarlaccdisco.finish[index]);
+#undef SARLACC_SHOW_PANEL_PC
         position = NuSpecialGetDrawPos(&LevHSpecial[1]);
         if (position != NULL) {
             position->y = SarlaccDiscoBaseOffsetPc + sarlaccdisco.height;
