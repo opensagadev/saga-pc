@@ -22,7 +22,14 @@ typedef union NuSpecialLegacyInstanceField48 {
 
 typedef struct NuSpecialLegacyInstanceView {
     u8 unknown_00[0x44];
-    u32 flags;
+    union {
+        u32 flags;
+        struct {
+            u32 flags_low : 3;
+            u32 no_visibility_test : 1;
+            u32 flags_high : 28;
+        };
+    };
     NuSpecialLegacyInstanceField48 field_48;
 } NuSpecialLegacyInstanceView;
 
@@ -416,20 +423,16 @@ void __cdecl NuSpecialSetNoVisiTest(NUSPECIALHANDLE *special, i32 enabled) {
     if (special->scene == NULL) {
         return;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
-    if (legacy != NULL) {
+    if (special->special != NULL) {
+        legacy = (NuSpecialLegacyView *)special->special;
         instance = (NuSpecialLegacyInstanceView *)legacy->instance;
-        if (enabled != 0) {
-            instance->flags |= NUINSTANCE_NO_VISIBILITY_TEST_FLAG;
-        } else {
-            instance->flags &= (u8)~NUINSTANCE_NO_VISIBILITY_TEST_FLAG;
-        }
+        instance->no_visibility_test = enabled;
+        return;
+    }
+    if (special->display_special == NULL) {
         return;
     }
     display = (NuSpecialDisplayView *)special->display_special;
-    if (display == NULL) {
-        return;
-    }
     if (enabled != 0) {
         display->flags |= NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
     } else {
