@@ -188,29 +188,26 @@ static void TextureAnimationCrossReferencePrivatePc(i32 label, PC_TEXTURE_ANIM_E
 void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
     TEXTURE_ANIM_PROGRAM_PC *program = (TEXTURE_ANIM_PROGRAM_PC *)environment->program;
     TEXTURE_ANIM_MATERIAL_PC *material;
-    u32 signals;
     i32 i;
     if (program == NULL || (program->mask & TextureAnimationActiveMaskPc) == 0)
         return;
     material = (TEXTURE_ANIM_MATERIAL_PC *)environment->material;
-    signals = TextureAnimationSignalsOffPc & program->off_mask;
-    if (signals != 0) {
+    if ((TextureAnimationSignalsOffPc & program->off_mask) != 0) {
         for (i = 0; i < 32; ++i) {
-            if ((signals & (1U << i)) != 0) {
-                environment->wait_remaining = 0;
+            if ((TextureAnimationSignalsOffPc & (program->off_mask & (1U << i))) != 0) {
                 environment->instruction_index = program->off_signal[i];
+                environment->wait_remaining = 0;
                 environment->call_depth = 0;
                 environment->loop_depth = 0;
                 break;
             }
         }
     }
-    signals = TextureAnimationSignalsOnPc & program->on_mask;
-    if (signals != 0) {
+    if ((TextureAnimationSignalsOnPc & program->on_mask) != 0) {
         for (i = 0; i < 32; ++i) {
-            if ((signals & (1U << i)) != 0) {
-                environment->wait_remaining = 0;
+            if ((TextureAnimationSignalsOnPc & (program->on_mask & (1U << i))) != 0) {
                 environment->instruction_index = program->on_signal[i];
+                environment->wait_remaining = 0;
                 environment->call_depth = 0;
                 environment->loop_depth = 0;
                 break;
@@ -222,79 +219,28 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
     if (environment->wait_remaining > 0)
         return;
     for (;;) {
-        i16 *instruction = program->instructions + environment->instruction_index;
-        switch (instruction[0]) {
-            case 0:
-                environment->texture_index = instruction[1];
-                material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
-                environment->instruction_index += 2;
-                goto texture_yield;
-            case 1: {
-                i32 random = NuRand(&TextureAnimationRandomPc);
-                instruction = program->instructions + environment->instruction_index;
-                environment->texture_index = random % instruction[1];
-                material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
-                environment->instruction_index += 2;
-                goto texture_yield;
-            }
-            case 2: {
-                i32 texture = environment->texture_index + instruction[1];
-                if (texture < instruction[2])
-                    texture = instruction[2];
-                if (texture > instruction[3])
-                    texture = instruction[3];
-                environment->texture_index = texture;
-                material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
-                environment->instruction_index += 4;
-                goto texture_yield;
-            }
-            case 3: {
-                i32 range = instruction[2] - instruction[1] + 1;
-                i32 instruction_index = environment->instruction_index;
-                i32 random = NuRand(&TextureAnimationRandomPc);
-                i32 texture = random % range;
-                instruction = program->instructions + instruction_index;
-                texture += instruction[1] + environment->texture_index;
-                if (texture < instruction[3])
-                    texture = instruction[3];
-                if (texture > instruction[4])
-                    texture = instruction[4];
-                environment->texture_index = texture;
-                material->texture_id = environment->texture_ids[environment->texture_index];
-                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
-                environment->instruction_index += 5;
-                goto texture_yield;
-            }
-            case 4:
-                environment->wait_remaining += instruction[1];
-                if (instruction[2] != 0)
-                    environment->wait_remaining += NuRand(&TextureAnimationRandomPc) % instruction[2];
-                environment->instruction_index += 3;
-                if (environment->wait_remaining < 0)
-                    environment->wait_remaining = 0;
-                return;
+        switch (program->instructions[environment->instruction_index]) {
             case 7:
-                environment->wait_base = instruction[1];
-                environment->wait_random = instruction[2];
+                environment->wait_base = program->instructions[environment->instruction_index + 1];
+                environment->wait_random = program->instructions[environment->instruction_index + 2];
                 environment->instruction_index += 3;
                 continue;
             case 9:
-                environment->instruction_index = instruction[1];
+                environment->instruction_index = program->instructions[environment->instruction_index + 1];
+                continue;
+            case 11:
+                if (TextureAnimationConditionPrivatePc(program->instructions[environment->instruction_index + 1],
+                                                       environment->texture_index,
+                                                       program->instructions[environment->instruction_index + 2]))
+                    environment->instruction_index = program->instructions[environment->instruction_index + 3];
+                else
+                    environment->instruction_index += 4;
                 continue;
             case 10:
                 if (environment->call_depth >= 16)
                     ((void(__cdecl *)(i32))AnimationDiagnosticNoOpPc)(environment->instruction_index);
                 environment->return_stack[environment->call_depth++] = environment->instruction_index + 2;
-                environment->instruction_index = instruction[1];
-                continue;
-            case 11:
-                if (TextureAnimationConditionPrivatePc(instruction[1], environment->texture_index, instruction[2]))
-                    environment->instruction_index = instruction[3];
-                else
-                    environment->instruction_index += 4;
+                environment->instruction_index = program->instructions[environment->instruction_index + 1];
                 continue;
             case 12:
                 if (environment->call_depth == 0)
@@ -304,12 +250,12 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
             case 13:
                 if (environment->loop_depth >= 16)
                     ((void(__cdecl *)(i32))AnimationDiagnosticNoOpPc)(environment->instruction_index);
-                environment->loop_counts[environment->loop_depth] = instruction[1];
-                if (instruction[2] != 0) {
+                environment->loop_counts[environment->loop_depth] =
+                    program->instructions[environment->instruction_index + 1];
+                if (program->instructions[environment->instruction_index + 2] != 0) {
                     i32 *loop_count = &environment->loop_counts[environment->loop_depth];
                     i32 random = NuRand(&TextureAnimationRandomPc);
-                    instruction = program->instructions + environment->instruction_index;
-                    *loop_count += random % instruction[2];
+                    *loop_count += random % program->instructions[environment->instruction_index + 2];
                 }
                 environment->instruction_index += 3;
                 environment->loop_starts[environment->loop_depth++] = environment->instruction_index;
@@ -328,7 +274,9 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
             case 15:
                 if (environment->loop_depth == 0)
                     ((void(__cdecl *)(i32))AnimationDiagnosticNoOpPc)(environment->instruction_index);
-                if (TextureAnimationConditionPrivatePc(instruction[1], environment->texture_index, instruction[2]) ||
+                if (TextureAnimationConditionPrivatePc(program->instructions[environment->instruction_index + 1],
+                                                       environment->texture_index,
+                                                       program->instructions[environment->instruction_index + 2]) ||
                     environment->loop_counts[environment->loop_depth - 1] == 0) {
                     --environment->loop_depth;
                     environment->instruction_index += 3;
@@ -337,14 +285,66 @@ void __cdecl NuTexAnimEnvProc(PC_TEXTURE_ANIM_ENV *environment) {
                     environment->instruction_index = environment->loop_starts[environment->loop_depth - 1];
                 }
                 continue;
+            case 17:
+                TextureAnimationCrossReferencePrivatePc(program->instructions[environment->instruction_index + 1],
+                                                        environment);
+                environment->instruction_index += 2;
+                continue;
+            case 0:
+                environment->texture_index = program->instructions[environment->instruction_index + 1];
+                material->texture_id = environment->texture_ids[environment->texture_index];
+                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                environment->instruction_index += 2;
+                goto texture_yield;
+            case 1: {
+                i32 random = NuRand(&TextureAnimationRandomPc);
+                environment->texture_index = random % program->instructions[environment->instruction_index + 1];
+                material->texture_id = environment->texture_ids[environment->texture_index];
+                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                environment->instruction_index += 2;
+                goto texture_yield;
+            }
+            case 2: {
+                i32 texture = environment->texture_index + program->instructions[environment->instruction_index + 1];
+                if (texture < program->instructions[environment->instruction_index + 2])
+                    texture = program->instructions[environment->instruction_index + 2];
+                if (texture > program->instructions[environment->instruction_index + 3])
+                    texture = program->instructions[environment->instruction_index + 3];
+                environment->texture_index = texture;
+                material->texture_id = environment->texture_ids[environment->texture_index];
+                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                environment->instruction_index += 4;
+                goto texture_yield;
+            }
+            case 3: {
+                i32 range = program->instructions[environment->instruction_index + 2] -
+                            program->instructions[environment->instruction_index + 1] + 1;
+                i32 random = NuRand(&TextureAnimationRandomPc);
+                i32 texture = random % range;
+                texture += program->instructions[environment->instruction_index + 1] + environment->texture_index;
+                if (texture < program->instructions[environment->instruction_index + 3])
+                    texture = program->instructions[environment->instruction_index + 3];
+                if (texture > program->instructions[environment->instruction_index + 4])
+                    texture = program->instructions[environment->instruction_index + 4];
+                environment->texture_index = texture;
+                material->texture_id = environment->texture_ids[environment->texture_index];
+                material->diffuse_texture_id = environment->texture_ids[environment->texture_index] & 0x7fff;
+                environment->instruction_index += 5;
+                goto texture_yield;
+            }
+            case 4:
+                environment->wait_remaining += program->instructions[environment->instruction_index + 1];
+                if (program->instructions[environment->instruction_index + 2] != 0)
+                    environment->wait_remaining +=
+                        NuRand(&TextureAnimationRandomPc) % program->instructions[environment->instruction_index + 2];
+                environment->instruction_index += 3;
+                if (environment->wait_remaining < 0)
+                    environment->wait_remaining = 0;
+                return;
             case 16:
                 if (environment->wait_remaining < 0)
                     environment->wait_remaining = 0;
                 return;
-            case 17:
-                TextureAnimationCrossReferencePrivatePc(instruction[1], environment);
-                environment->instruction_index += 2;
-                continue;
             default:
                 continue;
         }
