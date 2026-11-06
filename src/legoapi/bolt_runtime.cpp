@@ -21,15 +21,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 STATIC_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
 STATIC_ASSERT(offsetof(GAMEOBJECT, facing_direction) == 0xf30);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
-/* Same lookup as BoltType_FindByID in bolts.c; retail Bolt_Init inlines it. */
-static __forceinline BOLTTYPE_PC *BoltType_FindByIDInline(i32 id, WORLDINFO *world) {
-    BOLTSYS_PC *system = BoltSys;
-    if (id >= 0 && id < system->count)
-        return &system->types[id];
-    if (world != NULL && id >= system->count && id < system->count + 8)
-        return &world->bolt_types[id - system->count];
-    return NULL;
-}
 static void Bolt_GeneratePointsPrivate(BOLT_PC *bolt, NUVEC *points) {
     points[1] = bolt->position;
     if (!(bolt->flags & 0x200)) {
@@ -169,7 +160,14 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
         message.read_offset += 4;
     }
     GAMEOBJECT *owner = owner_index >= 0 ? &Obj[owner_index] : NULL;
-    BOLTTYPE_PC *type = BoltType_FindByIDInline(type_id, WORLD);
+    /* BoltType_FindByID(type_id, WORLD), written in place as retail inlines it. */
+    BOLTTYPE_PC *type;
+    if (type_id >= 0 && type_id < BoltSys->count)
+        type = &BoltSys->types[type_id];
+    else if (WORLD != NULL && type_id >= BoltSys->count && type_id < BoltSys->count + 8)
+        type = &WORLD->bolt_types[type_id - BoltSys->count];
+    else
+        type = NULL;
     NUVEC momentum = APIObjectZeroMomentumPC;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 no_sfx = BoltNoSfxPc;
