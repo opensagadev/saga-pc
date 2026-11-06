@@ -15723,6 +15723,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern PC_SHADER_SLOT_VIEW *PCShaderSlots;
     extern NUGSCN *PCRegisteredNativeScenes[100];
     extern i32 NuUnresolvedTextureIDPC;
+    extern u8 NuUnresolvedTextureDdsPc[0x2080];
     extern const u8 NuUnresolvedTextureDDS[8320];
     void __cdecl NuGScnRemove(NUGSCN *);
     void __cdecl NuGScnFixupTIDs(NUGSCN *);

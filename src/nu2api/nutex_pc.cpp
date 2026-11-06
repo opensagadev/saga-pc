@@ -74,8 +74,16 @@ void __cdecl NuTexInitExPS(VARIPTR *buffer) {
     PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
 }
 
+/* Creates, once, the placeholder texture used for references that fail to resolve. */
 extern "C" i32 NuTexGetUnresolvedTextureTIDPS() {
-    return 0;
+    if (NuUnresolvedTextureIDPC == -1) {
+        NUTEXDIM_PC *texture = (NUTEXDIM_PC *)NuAlloc(sizeof(NUTEXDIM_PC), NuTextureSourcePathPC, 0xd9);
+        memset(texture, 0, sizeof(*texture));
+        texture->image_data = NuUnresolvedTextureDdsPc;
+        texture->image_size = sizeof(NuUnresolvedTextureDdsPc);
+        NuUnresolvedTextureIDPC = NuTexCreateNative(texture);
+    }
+    return NuUnresolvedTextureIDPC;
 }
 
 void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
@@ -400,12 +408,6 @@ extern "C" void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *texture, 
     PCDeviceSetTexture(stage, texture->resource);
 }
 
-// Native PCDeviceBackend+44 is D3DCAPS9.TextureCaps (caps begins at +8).
-typedef struct POST_EFFECT_TEXTURE_CAPS_VIEW_PC {
-    u8 unknown_00[0x44];
-    u32 texture_caps;
-} POST_EFFECT_TEXTURE_CAPS_VIEW_PC;
-STATIC_ASSERT(offsetof(POST_EFFECT_TEXTURE_CAPS_VIEW_PC, texture_caps) == 0x44);
 STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 8);
 STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
 
@@ -421,36 +423,6 @@ extern "C" void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 hei
     (void)height;
     PCGraphicsPostEffectWorkTexturePc =
         PCGraphicsCreateEffectTexture(PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 1, 0x11, 2);
-}
-
-extern "C" void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
-    GRAPHICS_RENDER_TEXTURE_PC *texture;
-    i32 index;
-    PCGraphicsPostEffectWidthPc = width < 512 ? width : 512;
-    PCGraphicsPostEffectHeightPc = height < 512 ? height : 512;
-    if ((((POST_EFFECT_TEXTURE_CAPS_VIEW_PC *)&PCDeviceBackend)->texture_caps & 0x102) != 0) {
-        u32 width_power = 1;
-        u32 height_power = 1;
-        while (width_power <= (width < 512 ? width : 512))
-            width_power += width_power;
-        PCGraphicsPostEffectWidthPc = width_power >> 1;
-        while (height_power <= (height < 512 ? height : 512))
-            height_power += height_power;
-        PCGraphicsPostEffectHeightPc = height_power >> 1;
-    }
-    PCGraphicsCreatePostEffectWorkTexture(width, height);
-    for (index = 0; index != 32; ++index)
-        if (PCGraphicsRenderTextureActive[index] == 0)
-            break;
-    if (index == 32) {
-        PCGraphicsRenderTextureAllocationError();
-        texture = NULL;
-    } else {
-        PCGraphicsRenderTextureActive[index] = 1;
-        texture = &PCGraphicsRenderTextures[index];
-    }
-    PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0, 1, 0, 2);
-    PCGraphicsPostEffectBackBufferTexturePc = texture;
 }
 
 STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);

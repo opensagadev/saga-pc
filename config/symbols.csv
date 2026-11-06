@@ -22342,6 +22342,7 @@ address,symbol,size,ctype
 0x80c0e4,?first@?1??DrawAlphaImage@@9@9,,i32
 0x0080c0e8,_NuTimeBarRenderPeakReset,4,i32
 0x0080c0ec,_NuTimeBarHorizontalPeakReset,4,i32
+0x0080c0f0,_NuUnresolvedTextureDdsPc,8320,u8[8320]
 0x80e188,_PCGraphicsPostEffectWidthPc,4,u32
 0x80e18c,_PCGraphicsPostEffectHeightPc,4,u32
 0x80e190,_RndrStateTransformScalePc,,f32

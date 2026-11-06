@@ -1346,6 +1346,46 @@ void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
     NuRndrGeometryBuffersInitPc();
 }
 
+extern u32 PCGraphicsPostEffectWidthPc;
+extern u32 PCGraphicsPostEffectHeightPc;
+extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
+void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
+
+/* Sizes the post-effect targets (power-of-two when the device needs it) and claims the back-buffer copy. */
+void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
+    GRAPHICS_RENDER_TEXTURE_PC *texture;
+    i32 index;
+    PCGraphicsPostEffectWidthPc = width;
+    if (width >= 512)
+        PCGraphicsPostEffectWidthPc = 512;
+    PCGraphicsPostEffectHeightPc = height;
+    if (height >= 512)
+        PCGraphicsPostEffectHeightPc = 512;
+    if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
+        u32 width_power = 1;
+        u32 height_power = 1;
+        while (width_power <= (width < 512 ? width : 512))
+            width_power += width_power;
+        PCGraphicsPostEffectWidthPc = width_power >> 1;
+        while (height_power <= (height < 512 ? height : 512))
+            height_power += height_power;
+        PCGraphicsPostEffectHeightPc = height_power >> 1;
+    }
+    PCGraphicsCreatePostEffectWorkTexture(width, height);
+    for (index = 0; index != 32; ++index) {
+        if (PCGraphicsRenderTextureActive[index] == 0) {
+            PCGraphicsRenderTextureActive[index] = 1;
+            texture = &PCGraphicsRenderTextures[index];
+            goto allocated;
+        }
+    }
+    PCGraphicsRenderTextureAllocationError();
+    texture = NULL;
+allocated:
+    PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0, 1, 0, 2);
+    PCGraphicsPostEffectBackBufferTexturePc = texture;
+}
+
 void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
     RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
     NUVEC defaults;
