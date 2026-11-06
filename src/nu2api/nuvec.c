@@ -303,73 +303,132 @@ void __cdecl NuVecMtxTransformBlock(NUVEC *out, NUVEC *vectors, NUMTX *matrix, i
     }
 }
 
-void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *out, NUVEC4BLOCK_PC *in, NUMTX *matrix, i32 count,
+/* Retail is a hand-written SSE block: four points per iteration, three outputs (x, y, z blocks) and one outcode
+ * vector. Outcodes: 32 near, 16 far, 1/2 left/right (|x| against z*zx), 8/4 bottom/top (|y| against z*zy). */
+void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *destination, NUVEC4BLOCK_PC *source, NUMTX *matrix, i32 count,
                                          u32 *outcodes) {
-    i32 block_count = (count + 3) >> 2;
-    i32 block;
-    __m128 m00, m01, m02;
-    __m128 m10, m11, m12;
-    __m128 m20, m21, m22;
-    __m128 m30, m31, m32;
-    __m128 near_clip, far_clip, minus_one;
-    __m128 zx_scale, zy_scale;
-    __m128 mask32, mask16, mask1, mask2, mask8, mask4;
-
-    if (block_count <= 0) {
+    count = (count + 3) >> 2;
+    if (count <= 0)
         return;
-    }
-
-    m00 = _mm_set1_ps(matrix->m00);
-    m01 = _mm_set1_ps(matrix->m01);
-    m02 = _mm_set1_ps(matrix->m02);
-    m10 = _mm_set1_ps(matrix->m10);
-    m11 = _mm_set1_ps(matrix->m11);
-    m12 = _mm_set1_ps(matrix->m12);
-    m20 = _mm_set1_ps(matrix->m20);
-    m21 = _mm_set1_ps(matrix->m21);
-    m22 = _mm_set1_ps(matrix->m22);
-    m30 = _mm_set1_ps(matrix->m30);
-    m31 = _mm_set1_ps(matrix->m31);
-    m32 = _mm_set1_ps(matrix->m32);
-    near_clip = _mm_set1_ps(global_camera.near_clip);
-    far_clip = _mm_load_ps(ClipFarLimits);
-    minus_one = _mm_load_ps(ClipOutcodeMinusOne);
-    zx_scale = _mm_set1_ps(zx);
-    zy_scale = _mm_set1_ps(zy);
-    mask32 = _mm_load_ps((const f32 *)ClipOutcodeMask32);
-    mask16 = _mm_load_ps((const f32 *)ClipOutcodeMask16);
-    mask1 = _mm_load_ps((const f32 *)ClipOutcodeMask1);
-    mask2 = _mm_load_ps((const f32 *)ClipOutcodeMask2);
-    mask8 = _mm_load_ps((const f32 *)ClipOutcodeMask8);
-    mask4 = _mm_load_ps((const f32 *)ClipOutcodeMask4);
-
-    for (block = 0; block < block_count; ++block) {
-        NUVEC4BLOCK_PC *source = &in[block];
-        NUVEC4BLOCK_PC *destination = &out[block];
-        __m128 x = _mm_load_ps(source->x);
-        __m128 y = _mm_load_ps(source->y);
-        __m128 z = _mm_load_ps(source->z);
-        __m128 transformed_x =
-            _mm_add_ps(_mm_add_ps(_mm_add_ps(m30, _mm_mul_ps(x, m00)), _mm_mul_ps(y, m10)), _mm_mul_ps(z, m20));
-        __m128 transformed_y =
-            _mm_add_ps(_mm_add_ps(_mm_add_ps(m31, _mm_mul_ps(x, m01)), _mm_mul_ps(y, m11)), _mm_mul_ps(z, m21));
-        __m128 transformed_z =
-            _mm_add_ps(_mm_add_ps(_mm_add_ps(m32, _mm_mul_ps(x, m02)), _mm_mul_ps(y, m12)), _mm_mul_ps(z, m22));
-        __m128 z_times_zx = _mm_mul_ps(transformed_z, zx_scale);
-        __m128 z_times_zy = _mm_mul_ps(transformed_z, zy_scale);
-        __m128 code;
-
-        _mm_store_ps(destination->x, transformed_x);
-        _mm_store_ps(destination->y, transformed_y);
-        _mm_store_ps(destination->z, transformed_z);
-
-        code = _mm_and_ps(_mm_cmplt_ps(transformed_z, near_clip), mask32);
-        code = _mm_or_ps(code, _mm_and_ps(_mm_cmpnle_ps(transformed_z, far_clip), mask16));
-        code = _mm_or_ps(code, _mm_and_ps(_mm_cmplt_ps(transformed_x, _mm_mul_ps(z_times_zx, minus_one)), mask1));
-        code = _mm_or_ps(code, _mm_and_ps(_mm_cmpnle_ps(transformed_x, z_times_zx), mask2));
-        code = _mm_or_ps(code, _mm_and_ps(_mm_cmplt_ps(transformed_y, _mm_mul_ps(z_times_zy, minus_one)), mask8));
-        code = _mm_or_ps(code, _mm_and_ps(_mm_cmpnle_ps(transformed_y, z_times_zy), mask4));
-        _mm_store_ps((f32 *)&outcodes[block * 4], code);
+    __asm {
+        push esi
+        push edi
+        push ebx
+        push ecx
+        push edx
+        mov edi, destination
+        mov esi, source
+        mov ebx, outcodes
+        mov ecx, matrix
+        mov edx, count
+        movaps xmm4, [ecx]
+        movaps xmm5, [ecx + 0x10]
+        movaps xmm6, [ecx + 0x20]
+        movaps xmm7, [ecx + 0x30]
+    next_block:
+        movaps xmm0, [esi]
+        movaps xmm1, xmm4
+        shufps xmm1, xmm1, 0x0
+        mulps xmm1, xmm0
+        movaps xmm0, [esi + 0x10]
+        movaps xmm2, xmm5
+        shufps xmm2, xmm2, 0x0
+        mulps xmm2, xmm0
+        movaps xmm0, [esi + 0x20]
+        movaps xmm3, xmm6
+        shufps xmm3, xmm3, 0x0
+        mulps xmm3, xmm0
+        movaps xmm0, xmm7
+        shufps xmm0, xmm0, 0x0
+        addps xmm0, xmm1
+        addps xmm0, xmm2
+        addps xmm0, xmm3
+        movaps [edi], xmm0
+        add edi, 0x10
+        movaps xmm0, [esi]
+        movaps xmm1, xmm4
+        shufps xmm1, xmm1, 0x55
+        mulps xmm1, xmm0
+        movaps xmm0, [esi + 0x10]
+        movaps xmm2, xmm5
+        shufps xmm2, xmm2, 0x55
+        mulps xmm2, xmm0
+        movaps xmm0, [esi + 0x20]
+        movaps xmm3, xmm6
+        shufps xmm3, xmm3, 0x55
+        mulps xmm3, xmm0
+        movaps xmm0, xmm7
+        shufps xmm0, xmm0, 0x55
+        addps xmm0, xmm1
+        addps xmm0, xmm2
+        addps xmm0, xmm3
+        movaps [edi], xmm0
+        add edi, 0x10
+        movaps xmm0, [esi]
+        movaps xmm1, xmm4
+        shufps xmm1, xmm1, 0xaa
+        mulps xmm1, xmm0
+        movaps xmm0, [esi + 0x10]
+        movaps xmm2, xmm5
+        shufps xmm2, xmm2, 0xaa
+        mulps xmm2, xmm0
+        movaps xmm0, [esi + 0x20]
+        movaps xmm3, xmm6
+        shufps xmm3, xmm3, 0xaa
+        mulps xmm3, xmm0
+        movaps xmm0, xmm7
+        shufps xmm0, xmm0, 0xaa
+        addps xmm0, xmm1
+        addps xmm0, xmm2
+        addps xmm0, xmm3
+        movaps [edi], xmm0
+        add edi, 0x10
+        movaps xmm3, xmm0
+        movss xmm1, global_camera.near_clip
+        shufps xmm1, xmm1, 0x0
+        cmpltps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask32
+        movaps xmm2, xmm0
+        movaps xmm0, xmm3
+        cmpnleps xmm0, ClipFarLimits
+        andps xmm0, ClipOutcodeMask16
+        orps xmm2, xmm0
+        movss xmm1, zx
+        shufps xmm1, xmm1, 0x0
+        mulps xmm1, xmm3
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x30]
+        cmpltps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask1
+        orps xmm2, xmm0
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x30]
+        cmpnleps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask2
+        orps xmm2, xmm0
+        movss xmm1, zy
+        shufps xmm1, xmm1, 0x0
+        mulps xmm1, xmm3
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x20]
+        cmpltps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask8
+        orps xmm2, xmm0
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x20]
+        cmpnleps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask4
+        orps xmm2, xmm0
+        movaps [ebx], xmm2
+        add ebx, 0x10
+        add esi, 0x30
+        dec edx
+        jne next_block
+        pop edx
+        pop ecx
+        pop ebx
+        pop edi
+        pop esi
     }
 }
 
