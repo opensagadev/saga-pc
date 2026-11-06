@@ -1161,8 +1161,8 @@ extern "C" {
         char path[256];
         i32 area = Area;
         i32 level = Level;
-        APICHARACTERMODELLIST *list = NULL;
-        APICHARACTERMODELLIST *story = NULL;
+        APICHARACTERMODELLIST *list;
+        APICHARACTERMODELLIST *story;
         NUGSCN *scene;
         (void)bg_info;
         if (area != -1) {
@@ -1195,7 +1195,9 @@ extern "C" {
                 scene->display_list->render_flags |= 0x10;
         }
         if (makefreeplaymodellist != 0) {
-            if ((ADataList[area].flags & 1) != 0 || (Area_PlayerModelCount >= 2 && BonusArea == 0))
+            if ((ADataList[area].flags & 1) != 0)
+                MakeFreePlayModelList(AreaPlayerModelsPc[0].model_id, AreaPlayerModelsPc[1].model_id, area, level, 0);
+            else if (Area_PlayerModelCount >= 2 && BonusArea == 0)
                 MakeFreePlayModelList(AreaPlayerModelsPc[0].model_id, AreaPlayerModelsPc[1].model_id, area, level, 0);
             else
                 MakeFreePlayModelList(id_DEFAULTCHARACTER[0], id_DEFAULTCHARACTER[1], area, level, 0);
@@ -1203,6 +1205,7 @@ extern "C" {
             list = FreePlayModelList;
             makefreeplaymodellist = 0;
         } else if (area != -1 && area == last_area) {
+            story = list = NULL;
             CharacterDataLoad = 2;
             goto done;
         } else {
