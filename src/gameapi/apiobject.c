@@ -717,9 +717,7 @@ void __cdecl WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_spe
     output->m13 = shear_x * input->m03 + input->m13 + shear_z * input->m23;
 }
 
-typedef struct PC_ROOT_MOTION_VIEW PC_ROOT_MOTION_VIEW;
 typedef struct PC_ANIMATION_RENDER_VIEW PC_ANIMATION_RENDER_VIEW;
-typedef struct PC_GAMEOBJECT_RENDER_VIEW PC_GAMEOBJECT_RENDER_VIEW;
 typedef struct PC_CHARACTERDATA_RENDER_VIEW PC_CHARACTERDATA_RENDER_VIEW;
 typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
 typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
@@ -827,35 +825,17 @@ STATIC_ASSERT(sizeof(PC_HG_SHADOW_STATE_VIEW) == 16);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
 
 #include <float.h>
-struct PC_ROOT_MOTION_VIEW {
-    u8 unknown_000[8];
-    ANIMPACKET_PC anim_packet;
-    u8 unknown_04c[4];
-    CHARACTER_MODEL_LAYERS_PC *character_model;
-    u8 unknown_054[0x64];
-    NUMTX transform;
-    u8 unknown_0f8[0x14c];
-    NUVEC previous_animation_root, previous_blend_target_root;
-    f32 previous_animation_root_time, previous_blend_target_root_time;
-    CHARACTERANIM_CONFIG_PC *previous_animation_root_info, *previous_blend_target_root_info;
-    NUVEC animation_root_delta;
-};
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, anim_packet) == 8);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, character_model) == 0x50);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, transform) == 0xb8);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, previous_animation_root) == 0x244);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, previous_blend_target_root) == 0x250);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, previous_animation_root_time) == 0x25c);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, previous_blend_target_root_time) == 0x260);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, previous_animation_root_info) == 0x264);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, previous_blend_target_root_info) == 0x268);
-STATIC_ASSERT(offsetof(PC_ROOT_MOTION_VIEW, animation_root_delta) == 0x26c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, transform) == 0xb8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, previous_animation_root) == 0x244);
+STATIC_ASSERT(offsetof(GAMEOBJECT, previous_animation_root_time) == 0x25c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, previous_blend_target_root_info) == 0x268);
+STATIC_ASSERT(offsetof(GAMEOBJECT, animation_root_delta) == 0x26c);
 
 void RootFnEx(NUMTX *matrix, void *data, NUVEC *sampled_root, NUVEC *unused_target, NUVEC *translation,
               f32 unused_blend, i32 include_y) {
-    PC_ROOT_MOTION_VIEW *object;
+    GAMEOBJECT *object;
 
-    object = ((PC_ROOT_MOTION_VIEW *)(data));
+    object = ((GAMEOBJECT *)(data));
 
     if (object->previous_animation_root_time > object->anim_packet.current_time) {
         object->previous_animation_root = *sampled_root;
@@ -912,10 +892,15 @@ void RootFnY(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_root, 
     RootFnEx(matrix, data, source_root, target_root, root_delta, blend, 1);
 }
 
+#define BLEND_SOURCE_CONFIG_PC(object)                                                                                 \
+    ((CHARACTERANIM_CONFIG_PC *)(object)                                                                               \
+         ->character_model->animation_configs[(object)->anim_packet.blend_source_animation])
+#define BLEND_TARGET_CONFIG_PC(object)                                                                                 \
+    ((CHARACTERANIM_CONFIG_PC *)(object)                                                                               \
+         ->character_model->animation_configs[(object)->anim_packet.blend_target_animation])
+
 void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_root, NUVEC *root_delta, f32 blend) {
-    PC_ROOT_MOTION_VIEW *object;
-    CHARACTERANIM_CONFIG_PC *source_animation;
-    CHARACTERANIM_CONFIG_PC *target_animation;
+    GAMEOBJECT *object;
     NUVEC source_motion;
     NUVEC target_motion;
     NUVEC source_position;
@@ -923,31 +908,25 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
     NUVEC source_offset;
     NUVEC target_offset;
     NUVEC blended_offset;
-    f32 root_motion_epsilon;
 
-    object = ((PC_ROOT_MOTION_VIEW *)(data));
-    source_animation =
-        ((CHARACTERANIM_CONFIG_PC *)(object->character_model
-                                         ->animation_configs[object->anim_packet.blend_source_animation]));
-    target_animation =
-        ((CHARACTERANIM_CONFIG_PC *)(object->character_model
-                                         ->animation_configs[object->anim_packet.blend_target_animation]));
+    object = ((GAMEOBJECT *)(data));
 
-    if ((source_animation->flags & 0x20) != 0) {
+    if ((BLEND_SOURCE_CONFIG_PC(object)->flags & 0x20) != 0) {
         if (object->previous_animation_root_time > object->anim_packet.blend_source_time ||
-            object->previous_animation_root_info != source_animation) {
+            BLEND_SOURCE_CONFIG_PC(object) != object->previous_animation_root_info) {
             object->previous_animation_root = *source_root;
-            object->previous_animation_root_info = source_animation;
+            object->previous_animation_root_info = BLEND_SOURCE_CONFIG_PC(object);
         }
 
         source_motion.x = source_root->x - object->previous_animation_root.x;
-        source_motion.y =
-            (source_animation->flags & 0x200) != 0 ? source_root->y - object->previous_animation_root.y : 0.0f;
+        source_motion.y = (BLEND_SOURCE_CONFIG_PC(object)->flags & 0x200) != 0
+                              ? source_root->y - object->previous_animation_root.y
+                              : 0.0f;
         source_motion.z = source_root->z - object->previous_animation_root.z;
         object->previous_animation_root = *source_root;
 
         source_position.x = 0.0f;
-        source_position.y = (source_animation->flags & 0x200) != 0 ? 0.0f : source_root->y;
+        source_position.y = (BLEND_SOURCE_CONFIG_PC(object)->flags & 0x200) != 0 ? 0.0f : source_root->y;
         source_position.z = 0.0f;
         object->previous_animation_root_time = object->anim_packet.blend_source_time;
     } else {
@@ -958,23 +937,26 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         object->previous_animation_root_time = FLT_MAX;
     }
 
-    source_offset = source_animation->root_translation;
+    source_offset.x = BLEND_SOURCE_CONFIG_PC(object)->root_translation.x;
+    source_offset.y = BLEND_SOURCE_CONFIG_PC(object)->root_translation.y;
+    source_offset.z = BLEND_SOURCE_CONFIG_PC(object)->root_translation.z;
 
-    if ((target_animation->flags & 0x20) != 0) {
+    if ((BLEND_TARGET_CONFIG_PC(object)->flags & 0x20) != 0) {
         if (object->previous_blend_target_root_time > object->anim_packet.blend_target_time ||
-            object->previous_blend_target_root_info != target_animation) {
+            BLEND_TARGET_CONFIG_PC(object) != object->previous_blend_target_root_info) {
             object->previous_blend_target_root = *target_root;
-            object->previous_blend_target_root_info = target_animation;
+            object->previous_blend_target_root_info = BLEND_TARGET_CONFIG_PC(object);
         }
 
         target_motion.x = target_root->x - object->previous_blend_target_root.x;
-        target_motion.y =
-            (target_animation->flags & 0x200) != 0 ? target_root->y - object->previous_blend_target_root.y : 0.0f;
+        target_motion.y = (BLEND_TARGET_CONFIG_PC(object)->flags & 0x200) != 0
+                              ? target_root->y - object->previous_blend_target_root.y
+                              : 0.0f;
         target_motion.z = target_root->z - object->previous_blend_target_root.z;
         object->previous_blend_target_root = *target_root;
 
         target_position.x = 0.0f;
-        target_position.y = (target_animation->flags & 0x200) != 0 ? 0.0f : target_root->y;
+        target_position.y = (BLEND_TARGET_CONFIG_PC(object)->flags & 0x200) != 0 ? 0.0f : target_root->y;
         target_position.z = 0.0f;
         object->previous_blend_target_root_time = object->anim_packet.blend_target_time;
     } else {
@@ -985,7 +967,9 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
         object->previous_blend_target_root_time = FLT_MAX;
     }
 
-    target_offset = target_animation->root_translation;
+    target_offset.x = BLEND_TARGET_CONFIG_PC(object)->root_translation.x;
+    target_offset.y = BLEND_TARGET_CONFIG_PC(object)->root_translation.y;
+    target_offset.z = BLEND_TARGET_CONFIG_PC(object)->root_translation.z;
     NuVecLerp(&matrix->translation, &target_position, &source_position, blend);
 
     NuVecLerp(&blended_offset, &target_offset, &source_offset, blend);
@@ -995,22 +979,22 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
     NuMtxTranslate(matrix, root_delta);
 
     NuVecMtxRotate(&source_motion, &source_motion, &object->transform);
-    if ((source_animation->flags & 0x200) == 0) {
+    if ((BLEND_SOURCE_CONFIG_PC(object)->flags & 0x200) == 0) {
         source_motion.y = 0.0f;
     }
     NuVecMtxRotate(&target_motion, &target_motion, &object->transform);
-    if ((target_animation->flags & 0x200) == 0) {
+    if ((BLEND_TARGET_CONFIG_PC(object)->flags & 0x200) == 0) {
         target_motion.y = 0.0f;
     }
     NuVecLerp(&object->animation_root_delta, &target_motion, &source_motion, blend);
 
-    root_motion_epsilon = 1.0e-11f;
-    if (((source_animation->flags & 0x200) != 0 || (target_animation->flags & 0x200) != 0) &&
+    if (((BLEND_SOURCE_CONFIG_PC(object)->flags & 0x200) != 0 ||
+         (BLEND_TARGET_CONFIG_PC(object)->flags & 0x200) != 0) &&
         object->animation_root_delta.y == 0.0f) {
-        object->animation_root_delta.y = root_motion_epsilon;
+        object->animation_root_delta.y = 1.0e-11f;
     } else if (object->animation_root_delta.x == 0.0f && object->animation_root_delta.y == 0.0f &&
                object->animation_root_delta.z == 0.0f) {
-        object->animation_root_delta.x = root_motion_epsilon;
+        object->animation_root_delta.x = 1.0e-11f;
     }
 }
 
@@ -1018,19 +1002,14 @@ struct PC_ANIMATION_RENDER_VIEW {
     ANIMPACKET_PC packet;
     f32 overlay_weight;
 };
-struct PC_GAMEOBJECT_RENDER_VIEW {
-    u8 unknown_000[0x28e];
-    u16 surface_effect_count;
-    u16 surface_effect_id;
-};
 struct PC_CHARACTERDATA_RENDER_VIEW {
     u8 unknown_00[0x28];
     CHARACTER_EFFECT_CONFIG_PC *effects;
     u8 unknown_2c[0x20];
 };
 STATIC_ASSERT(offsetof(PC_ANIMATION_RENDER_VIEW, overlay_weight) == 0x44);
-STATIC_ASSERT(offsetof(PC_GAMEOBJECT_RENDER_VIEW, surface_effect_count) == 0x28e);
-STATIC_ASSERT(offsetof(PC_GAMEOBJECT_RENDER_VIEW, surface_effect_id) == 0x290);
+STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
+STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
 STATIC_ASSERT(offsetof(PC_CHARACTERDATA_RENDER_VIEW, effects) == 0x28);
 STATIC_ASSERT(sizeof(PC_CHARACTERDATA_RENDER_VIEW) == 0x4c);
 
@@ -1288,21 +1267,19 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
             }
             result = NuHGobjRndrMtxDwa(model->hierarchy, matrix, render_count, render_indices, output_matrices, dwa,
                                        render_flags);
-            if (object != NULL && ((PC_GAMEOBJECT_RENDER_VIEW *)(object))->surface_effect_count != 0) {
+            if (object != NULL && object->surface_effect_count != 0) {
                 i32 i;
                 NUVEC points[16];
 
-                if (((PC_GAMEOBJECT_RENDER_VIEW *)(object))->surface_effect_count > 16)
-                    ((PC_GAMEOBJECT_RENDER_VIEW *)(object))->surface_effect_count = 16;
+                if (object->surface_effect_count > 16)
+                    object->surface_effect_count = 16;
 
                 NuHGobjRndrRandShadowSurfacePoints(model->hierarchy, matrix, output_matrices,
-                                                   ((PC_GAMEOBJECT_RENDER_VIEW *)(object))->surface_effect_count,
-                                                   points, 0);
-                for (i = 0; i < ((PC_GAMEOBJECT_RENDER_VIEW *)(object))->surface_effect_count; ++i) {
-                    AddVariableShotDebrisEffect(((PC_GAMEOBJECT_RENDER_VIEW *)(object))->surface_effect_id, &points[i],
-                                                1, 0, 0);
+                                                   object->surface_effect_count, points, 0);
+                for (i = 0; i < object->surface_effect_count; ++i) {
+                    AddVariableShotDebrisEffect(object->surface_effect_id, &points[i], 1, 0, 0);
                 }
-                ((PC_GAMEOBJECT_RENDER_VIEW *)(object))->surface_effect_count = 0;
+                object->surface_effect_count = 0;
             }
             if (reflection_matrix != NULL) {
                 ((PC_HG_RENDER_VIEW *)(model->hierarchy))->suppress_shadow_points = 1;

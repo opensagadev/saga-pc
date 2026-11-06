@@ -5706,7 +5706,13 @@ typedef struct gameobject_s {
     f32 max_view_height;
     f32 min_view_height;
     f32 ai_visibility_extension;
-    u8 unknown_0244[0x34];
+    NUVEC previous_animation_root;
+    NUVEC previous_blend_target_root;
+    f32 previous_animation_root_time;
+    f32 previous_blend_target_root_time;
+    struct CHARACTERANIM_CONFIG_PC *previous_animation_root_info;
+    struct CHARACTERANIM_CONFIG_PC *previous_blend_target_root_info;
+    NUVEC animation_root_delta;
     u16 pitch_angle;
     u16 field_0x276;
     u16 roll_angle;
@@ -5739,7 +5745,8 @@ typedef struct gameobject_s {
     union {
         u8 unknown_028e[0xa];
         struct {
-            u8 ai_priority_reserved_28e[4];
+            u16 surface_effect_count;
+            u16 surface_effect_id;
             u16 ai_collision_priority_pc;
             u16 ai_resolved_collision_priority_pc;
             u8 ai_priority_reserved_296[0x2];
