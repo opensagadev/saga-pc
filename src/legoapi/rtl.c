@@ -2285,6 +2285,86 @@ void SelectPrevRTL(void) {
     }
 }
 
+extern RTL_FOG_MIGRATION_PC *curr_fog;
+/* Native-observed fog editor mode (0x29139a0) and cursor size (0x80ff3c). */
+#pragma section(".bss$RtlFogModePc", read, write)
+__declspec(allocate(".bss$RtlFogModePc")) i32 fogmode = 0;
+f32 cursor_size = 1.0f;
+
+#define EDRTL_RNDR_LINE3D_PC(line)                                                                                     \
+    NuRndrLine3dDbg((line)[0].x, (line)[0].y, (line)[0].z, (line)[1].x, (line)[1].y, (line)[1].z, -1)
+void __cdecl edrtlDrawCursor(void) {
+    __declspec(align(16)) NUVEC line[2];
+    NUVEC v;
+    v.x = burn_editor_position_pc.x - cursor_size;
+    v.y = burn_editor_position_pc.y;
+    v.z = burn_editor_position_pc.z;
+    line[0] = v;
+    v.x = burn_editor_position_pc.x + cursor_size;
+    v.y = burn_editor_position_pc.y;
+    v.z = burn_editor_position_pc.z;
+    line[1] = v;
+    EDRTL_RNDR_LINE3D_PC(line);
+    v.x = burn_editor_position_pc.x;
+    v.y = burn_editor_position_pc.y - cursor_size;
+    v.z = burn_editor_position_pc.z;
+    line[0] = v;
+    v.x = burn_editor_position_pc.x;
+    v.y = burn_editor_position_pc.y + cursor_size;
+    v.z = burn_editor_position_pc.z;
+    line[1] = v;
+    EDRTL_RNDR_LINE3D_PC(line);
+    v.x = burn_editor_position_pc.x;
+    v.y = burn_editor_position_pc.y;
+    v.z = burn_editor_position_pc.z - cursor_size;
+    line[0] = v;
+    v.x = burn_editor_position_pc.x;
+    v.y = burn_editor_position_pc.y;
+    v.z = burn_editor_position_pc.z + cursor_size;
+    line[1] = v;
+    EDRTL_RNDR_LINE3D_PC(line);
+}
+
+void __cdecl edrtlDrawFogInfo(void) {
+    const char *fog_types[3] = {"INVALID", "SPHERICAL", "ALSO INVALID"};
+    i32 x, y, height;
+    NuQFntSet(system_qfont);
+    NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
+    NuQFntSetColour(system_qfont, 0x80ffffff);
+    x = 640;
+    y = 512;
+    height = (i32)NuQFntHeight(system_qfont);
+    if (curr_fog != NULL) {
+        NuRndrRect2di(128, y - height, 4800, 1440, 0x20000080, mtls[2]);
+        NuQFntSet(system_qfont);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Fog Editor");
+        y += height;
+        if (fogmode == 0)
+            NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: SELECTION");
+        else
+            NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: CAMERA POS");
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)curr_fog->position.x,
+                      (f64)curr_fog->position.y, (f64)curr_fog->position.z);
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "TYPE: %s", fog_types[curr_fog->type]);
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "RADIUS: %.03f", (f64)curr_fog->radius);
+    } else {
+        NuRndrRect2di(128, y - height, 4800, height * 5 / 2, 0x20000080, mtls[2]);
+        NuQFntSet(system_qfont);
+        NuQFntPrintEx(system_qfont, x, y, 16, "Fog Editor");
+        y += height;
+        if (fogmode == 0)
+            NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: SELECTION");
+        else
+            NuQFntPrintEx(system_qfont, x, y, 16, "FOGMODE: CAMERA POS");
+        y += height;
+        NuQFntPrintEx(system_qfont, x, y, 16, "POS: %.03f %.03f %.03f", (f64)burn_editor_position_pc.x,
+                      (f64)burn_editor_position_pc.y, (f64)burn_editor_position_pc.z);
+    }
+}
+
 void edrtlDrawBurnInfo(void) {
     i32 x, y, height;
     NuQFntSet(system_qfont);
@@ -3266,6 +3346,34 @@ void __cdecl InitUI(void) {
     eduiMenuAddItem(fog_main_menu, created);
     eduiMenuFitWidth(fog_main_menu, 5);
     NuQFntPopCoordinateSystem();
+}
+
+/* Native-observed editor camera (0x29139cc). */
+#pragma section(".bss$RtlUsrCamPc", read, write)
+__declspec(allocate(".bss$RtlUsrCamPc")) NUCAMERA *usr_cam = 0;
+
+void __cdecl edrtlInit(void) {
+    usr_cam = NuCameraCreate();
+    clipboard_light.type = 0;
+    mtls[0] = NuMtlCreate3D(1);
+    if (mtls[0] != NULL) {
+        mtls[0]->attribs.z_mode = 0;
+        mtls[0]->attribs.alpha_mode = 0;
+        NuMtlUpdate(mtls[0]);
+    }
+    mtls[1] = NuMtlCreate3D(1);
+    if (mtls[1] != NULL) {
+        mtls[1]->attribs.z_mode = 3;
+        mtls[1]->attribs.alpha_mode = 0;
+        NuMtlUpdate(mtls[1]);
+    }
+    mtls[2] = NuMtlCreate3D(1);
+    if (mtls[2] != NULL) {
+        mtls[2]->attribs.z_mode = 3;
+        mtls[2]->attribs.alpha_mode = 1;
+        NuMtlUpdate(mtls[2]);
+    }
+    InitUI();
 }
 
 /* Native editor-owned f32 cells. Observed minimum four bytes each; allocation unknown. */

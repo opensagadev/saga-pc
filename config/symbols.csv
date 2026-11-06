@@ -16992,6 +16992,10 @@ address,symbol,size,ctype
 0x0076bc10,??_C@_0O@GBNMBALJ@POINT?5FLICKER?$AA@,,const char[]
 0x76bc20,??_C@_07DNODLGKM@INVALID?$AA@,,
 0x76bc20,_NuMusicDebugClassInvalid,8,const char[8]
+0x76bc28,??_C@_0BE@LLIDCHDE@FOGMODE?3?5CAMERA?5POS?$AA@,,char []
+0x76bc3c,??_C@_0BD@OECPEDMI@FOGMODE?3?5SELECTION?$AA@,,char []
+0x76bc50,??_C@_0L@OALGOOHF@Fog?5Editor?$AA@,,char []
+0x76bc5c,??_C@_09GANPOLNL@SPHERICAL?$AA@,,char []
 0x76bc68,??_C@_0BC@GHONCPCP@NO?5BURNSET?5LOADED?$AA@,,const char[]
 0x76bc7c,??_C@_0CG@HBGJJIG@Current?5Global?5Scale?1Intensity?3?5@,,const char[]
 0x76bca4,??_C@_0BH@OKCIJOJM@Default?5Falloff?3?5?$CF0?42f?$AA@,,const char[]
@@ -22491,6 +22495,7 @@ address,symbol,size,ctype
 0x80ff04,_rtl_ext,,char *
 0x0080ff08,?help_text@?1??edrtlDrawHelp@@9@9,,const char *[2][6]
 0x0080ff38,_lockflash_rate,,f32
+0x80ff3c,_cursor_size,,f32
 0x0080ff44,_help_line,,i32
 0x0080fff4,??_R0?AVEdClassInterface@@@8,31,
 0x00810014,??_R0?AVEdControl@@@8,24,
@@ -26202,6 +26207,7 @@ address,symbol,size,ctype
 0x2913994,_rtl_dynamic_max,,i32
 0x2913998,_rtl_dynamic_cnt,,i32
 0x291399c,_edrtl_mode,,i32
+0x29139a0,_fogmode,,i32
 0x29139a4,_rtl_error,,i32
 0x29139ac,_rtl_frametime,,f32
 0x29139b0,_rtltimer1,,i32
@@ -26211,6 +26217,7 @@ address,symbol,size,ctype
 0x29139c0,_rtled_menu_active,,i32
 0x29139c4,_delete_menu_active,,i32
 0x29139c8,_rtl_zoff,,i32
+0x29139cc,_usr_cam,,NUCAMERA *
 0x29139d4,_ed_just_entered,,i32
 0x29139d8,_menu_cancelled,,i32
 0x029139dc,_rtl_locked,,RTL_LIGHT_PC *
