@@ -102,6 +102,8 @@ extern "C" {
                                      22, 23, 24, 25, 26, 27, 28, 29, 30, 8,  9,  10, 11, 12, 0};
 
     NUVEC StatusAltBgPosPc;
+    u16 StatusAltSpinPc;
+    i32 StatusAltCoinsDonePc;
     static struct STATUSPACKET_LSW_s StatusPacketAltPc;
 
     f32 StatusAltTextScalePc = StatusAltScalePc;
@@ -508,6 +510,193 @@ extern "C" {
         registration.draw_background_callback = DrawStatusBG_Alt;
         registration.stage_delay = 2.0f;
         RegisterStatusScreen(StatusStagesAltPc, StatusStageOrderAltPc, &registration);
+    }
+
+    /* Stage type 19. Awards the level's gold bricks one at a time. */
+    void __cdecl GoldBrick_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+        f32 previous = stage->field_0x18;
+        char text[256];
+        NUVEC position;
+        f32 accumulated = elapsed + stage->field_0x18;
+        stage->field_0x18 = accumulated;
+        switch (stage->field_0x14) {
+            case 0:
+                StatusAltSpinPc = 0;
+                stage->field_0x18 = StatusMiniKitPopTimerPc = 0.0f;
+                stage->field_0x14 = 1;
+                stage->field_0x1c = StatusAlt7f8220Pc;
+                break;
+            case 1:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 2;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                break;
+            case 2:
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x1c <= accumulated) {
+                    PlaySfx("TrueJedi_100pc", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8224Pc;
+                    stage->field_0x14 = 3;
+                }
+                break;
+            case 3:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 4;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                break;
+            case 4:
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 5;
+                    stage->field_0x1c = StatusAlt7f8224Pc;
+                }
+                break;
+            case 5:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x14 = 6;
+                    stage->field_0x1c = 2.5f;
+                }
+                break;
+            case 6:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    if (packet->displayed_gold_bricks < Game.gold_bricks) {
+                        stage->field_0x1c = 2.5f;
+                        stage->field_0x14 = 6;
+                    } else {
+                        stage->field_0x1c = StatusAlt7f8224Pc;
+                        stage->field_0x14 = 7;
+                    }
+                } else if (previous == 0.0f) {
+                    i16 message_id;
+                    char *message;
+                    PlaySfx("TrueJedi_100pc", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    packet->displayed_gold_bricks++;
+                    position.x = 0.0f;
+                    position.y = 0.0375f;
+                    position.z = 1.0f;
+                    message_id = ((i16 *)packet->field_0x12c)[packet->displayed_gold_bricks];
+                    if (message_id == TextIdPc880818) {
+                        NuStrCpy(text, TTab[message_id]);
+                        NuStrCat(text, CutPlayerTextSeparatorPc);
+                        NuStrCat(text, TTab[(packet->field_0xb0 & 0x40) != 0 ? TextIdPc8808a8 : TextIdPc8808a4]);
+                        message = text;
+                    } else
+                        message = TTab[message_id];
+                    AddGameMessage(message, &position, 0.7f, &position, 0.7f, 255, 0, 127, 0x4020, 2.0f);
+                    if (packet->displayed_gold_bricks > 60) {
+                        IncreaseScore(packet->score, 100000, 0);
+                        CoinTotalScale = 1.5f;
+                        PlaySfx("Shop_BuyCheat", NULL);
+                        Text_MakeScore(100000, text);
+                        AddFancyMessage(text, 0.0f, -STATSPOSY, 0.5f, 1.25f, 0, 0);
+                    }
+                }
+                break;
+            case 7:
+                StatusAltSpinPc = 0;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x14 = 8;
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+            case 8:
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x18 >= stage->field_0x1c)
+                    NextStatusStage(packet);
+                break;
+        }
+    }
+
+    /* Stage type 3. Counts the remaining coins into the score. */
+    void __cdecl Coins_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+        switch (stage->field_0x14) {
+            case 0:
+                stage->field_0x18 = 0.0f;
+                stage->field_0x14 = 1;
+                StatusAltSpinPc = 0;
+                stage->field_0x1c = StatusAlt7f8220Pc + StatusAlt7f8220Pc + StatusAlt7f8224Pc;
+                StatusDrawPlayerIconsPc = 1;
+                break;
+            case 1: {
+                f32 accumulated = elapsed + stage->field_0x18;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated)
+                    stage->field_0x14 = 2;
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 8.0);
+                break;
+            }
+            case 2: {
+                i32 player;
+                StatusAltCoinsDonePc = 0;
+                StatusAltSpinPc = 0;
+                for (player = 0; player < 2; ++player) {
+                    u32 remaining = packet->coins_remaining[player];
+                    if (remaining > 0) {
+                        i32 rate = 40;
+                        u32 threshold = 100;
+                        i32 amount;
+                        while (remaining >= threshold) {
+                            threshold *= 10;
+                            rate *= 10;
+                        }
+                        amount = (i32)((f32)rate * elapsed);
+                        if ((u32)amount > remaining)
+                            amount = remaining;
+                        else if (amount < 1)
+                            amount = 1;
+                        packet->coins_remaining[player] = remaining - amount;
+                        IncreaseScore(packet->score, (i64)amount, 0);
+                        if (packet->coins_remaining[player] == 0)
+                            StatusAltCoinsDonePc++;
+                    } else
+                        StatusAltCoinsDonePc++;
+                }
+                PlaySfx((char *)PickupCoinSfx_PC, NULL);
+                if (StatusAltCoinsDonePc == 2) {
+                    stage->field_0x14 = 3;
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = 1.0f;
+                    if (packet->coins_collected[0] + packet->coins_collected[1] == 0)
+                        GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                    else
+                        PlaySfx("Shop_BuyCheat", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                }
+                break;
+            }
+            case 3: {
+                f32 accumulated = elapsed + stage->field_0x18;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x14 = 4;
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8220Pc;
+                }
+                break;
+            }
+            case 4: {
+                f32 accumulated = elapsed + stage->field_0x18;
+                stage->field_0x18 = accumulated;
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                if (stage->field_0x1c <= accumulated)
+                    NextStatusStage(packet);
+                break;
+            }
+        }
     }
 
 } /* extern "C" */
