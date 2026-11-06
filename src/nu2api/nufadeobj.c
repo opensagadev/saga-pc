@@ -57,23 +57,23 @@ PC_NUFADEGROUP *__cdecl NuFadeObjAllocateGrp(void) {
 PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matrices, i16 count, f32 near_distance,
                                            f32 far_distance, i32 flags) {
     PC_NUFADEGROUP *group;
-    NUDISPLAY_SPECIAL_PC *special;
     NUMTX *matrix = matrices;
-    i16 *platform = NULL;
+    i16 *platform;
     i32 i;
     f32 min_x, max_x, min_y, max_y, min_z, max_z;
     group = NuFadeObjAllocateGrp();
     if (NuFadeObjDataIndex + count < NuFadeMaxDataPC) {
-        platform = &NuFadeData[NuFadeObjDataIndex];
         NuFadeObjDataIndex += count;
+        platform = &NuFadeData[NuFadeObjDataIndex - count];
+    } else {
+        platform = NULL;
     }
     if (group != NULL && matrices != NULL && platform != NULL) {
         group->matrices = matrices;
         group->platforms = platform;
         group->scene = (NUGSCN *)source->scene;
-        special = (NUDISPLAY_SPECIAL_PC *)source->display_special;
-        group->special = special;
-        group->instance_index = (i16)special->instance_ix;
+        group->special = (NUDISPLAY_SPECIAL_PC *)source->display_special;
+        group->instance_index = (i16)((NUDISPLAY_SPECIAL_PC *)source->display_special)->instance_ix;
         group->terrain = TerrainGetCur();
         group->count = count;
         group->flags = (i16)flags;
