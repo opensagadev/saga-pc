@@ -455,16 +455,32 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             EdFileSwapEndianess16(&object_index);
         message.read_offset += 2;
     }
-    for (i32 i = 0; i < 3; ++i) {
-        if (message.data != NULL) {
-            PCByteCopy_candidate(&points[i], message.data->bytes + message.read_offset, 12);
-            if (message.swap_endianness) {
-                EdFileSwapEndianess32(&points[i].x);
-                EdFileSwapEndianess32(&points[i].y);
-                EdFileSwapEndianess32(&points[i].z);
-            }
-            message.read_offset += 12;
+    if (message.data != NULL) {
+        PCByteCopy_candidate(&points[0], message.data->bytes + message.read_offset, sizeof(NUVEC));
+        if (message.swap_endianness) {
+            f32 *component = &points[0].x;
+            for (i32 i = 0; i < 3; ++i)
+                EdFileSwapEndianess32(component++);
         }
+        message.read_offset += sizeof(NUVEC);
+    }
+    if (message.data != NULL) {
+        PCByteCopy_candidate(&points[1], message.data->bytes + message.read_offset, sizeof(NUVEC));
+        if (message.swap_endianness) {
+            f32 *component = &points[1].x;
+            for (i32 i = 0; i < 3; ++i)
+                EdFileSwapEndianess32(component++);
+        }
+        message.read_offset += sizeof(NUVEC);
+    }
+    if (message.data != NULL) {
+        PCByteCopy_candidate(&points[2], message.data->bytes + message.read_offset, sizeof(NUVEC));
+        if (message.swap_endianness) {
+            f32 *component = &points[2].x;
+            for (i32 i = 0; i < 3; ++i)
+                EdFileSwapEndianess32(component++);
+        }
+        message.read_offset += sizeof(NUVEC);
     }
     if (message.data != NULL) {
         PCByteCopy_candidate(&hit, message.data->bytes + message.read_offset, 4);
@@ -478,19 +494,21 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             EdFileSwapEndianess32(&client);
         message.read_offset += 4;
     }
-    GAMEOBJECT *object = &Obj[object_index];
     BOLT_PC *bolt = &Bolt[bolt_index];
+    GAMEOBJECT *object = &Obj[object_index];
     BOLTTYPE_PC *type = bolt->type;
     GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
     if (BoltSys->stop_targeting != NULL && bolt->owner != NULL &&
         (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 0x80) != 0)
         BoltSys->stop_targeting(static_cast<GAMEOBJECT *>(bolt->owner), &bolt->position);
-    i32 deflect = 0;
-    if ((object->flags_1fc & 0x80) != 0)
-        deflect = Player_HasDeflectBolts(object) != 0;
+    i32 deflect;
+    if ((object->flags_1fc & 0x80) != 0 && Player_HasDeflectBolts(object) != 0)
+        deflect = 1;
+    else
+        deflect = 0;
     i32 cheat_deflect = 0;
     if (Cheats_CheckFlags(0x100000) != 0)
-        cheat_deflect = (object->flags_1fc & 0x80) != 0;
+        cheat_deflect = (object->flags_1fc & 0x80) != 0 ? 1 : 0;
     NewRumble(object->pad->bound_pad, 0.5f, 0);
     if ((bolt->flags & 0x100) == 0 || deflect) {
         u64 context_flags = reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags;
@@ -554,34 +572,7 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
                       ((character->flags_094 & 0x4000000) != 0 && VehicleArea != 0 && BonusArea != 0) ||
                       (object->current_hp == 0 && (data->model_flags & 0x2000) != 0) ||
                       ((data->model_flags & 0x20000000) != 0 && object->rider == NULL);
-        if (shield) {
-            if ((bolt->flags & 0x4000000) != 0) {
-                BoltSys->debris(bolt, points, hit, &object->velocity, 0);
-                ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, type->field_3c, bolt);
-            } else {
-                BoltSys->debris(bolt, points, hit, &object->velocity, 1);
-                ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, 0, bolt);
-                GameAudio_PlaySfx(41, &bolt->position, 0, 0);
-                NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                if ((bolt->flags & 0x100000) == 0) {
-                    ConfigBuffer.fields.find_angles_y_rotation =
-                        NuAtan2D(bolt->position.x - object->collision_position.x,
-                                 bolt->position.z - object->collision_position.z);
-                    ConfigBuffer.fields.find_angles_y_rotation +=
-                        static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
-                    temp_zrot = static_cast<i32>(-1820.0f - (qrand() * static_cast<f64>(1.0f / 65535.0f)) * 6371.0f);
-                    NUMTX matrix;
-                    NUANGVEC angles;
-                    angles.x = temp_zrot;
-                    angles.y = ConfigBuffer.fields.find_angles_y_rotation;
-                    NuMtxSetRotationXYVU0(&matrix, &angles);
-                    BoltNoSfxPc = 1;
-                    BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
-                    if (reflected_bolt != NULL)
-                        reflected_bolt->flags |= 0x10000000;
-                }
-            }
-        } else {
+        if (!shield) {
             BoltSys->debris(bolt, points, hit, &object->velocity, 0);
             i32 damage = 0;
             if ((bolt->flags & 0x800000) == 0) {
@@ -608,6 +599,33 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
         owner_feedback:
             if (bolt->owner != NULL && static_cast<GAMEOBJECT *>(bolt->owner)->pad != NULL)
                 NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.7f, 0);
+        } else {
+            if ((bolt->flags & 0x4000000) != 0) {
+                BoltSys->debris(bolt, points, hit, &object->velocity, 0);
+                ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, type->field_3c, bolt);
+            } else {
+                BoltSys->debris(bolt, points, hit, &object->velocity, 1);
+                ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, 0, bolt);
+                GameAudio_PlaySfx(41, &bolt->position, 0, 0);
+                NewBuzz(object->pad->bound_pad, 0.1f, 0);
+                if ((bolt->flags & 0x100000) == 0) {
+                    ConfigBuffer.fields.find_angles_y_rotation =
+                        NuAtan2D(bolt->position.x - object->collision_position.x,
+                                 bolt->position.z - object->collision_position.z);
+                    ConfigBuffer.fields.find_angles_y_rotation +=
+                        static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
+                    temp_zrot = static_cast<i32>(-1820.0f - (qrand() * static_cast<f64>(1.0f / 65535.0f)) * 6371.0f);
+                    NUMTX matrix;
+                    NUANGVEC angles;
+                    angles.x = temp_zrot;
+                    angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+                    NuMtxSetRotationXYVU0(&matrix, &angles);
+                    BoltNoSfxPc = 1;
+                    BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
+                    if (reflected_bolt != NULL)
+                        reflected_bolt->flags |= 0x10000000;
+                }
+            }
         }
     }
 finish:
