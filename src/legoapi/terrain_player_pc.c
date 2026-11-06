@@ -155,7 +155,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             (api->character_data->game_character->flags_090 & 0x8000) == 0) {
             terrain_mask |= GetSurfaceInfoRuntimeMaskPc.word;
         }
-        if ((api->flags_1f8 & 0x400) != 0 && object->id != id_DRAGBOMB &&
+        if ((api->flags_1f8 & 0x400) != 0 && object->id != (u16)id_DRAGBOMB &&
             (WORLD->area != HOTHBATTLE_ADATA || api->character_data->game_character->field_028 != 0.0f)) {
             terrain_mask |= 0x40;
         }
@@ -181,7 +181,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             api->velocity.x = 0.0f;
             api->velocity.z = 0.0f;
             shadow_grounding = 1;
-        } else if ((api->flags_1fc_word & 0x40) == 0 && (CInfo[object->character_context].flags & 0x8000) == 0) {
+        } else if ((api->flags_1fc_word & 0x40) == 0 &&
+                   (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) == 0) {
             i32 ai_controlled;
             i32 ordinary_ai_path;
 
@@ -219,8 +220,9 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             i32 probe_edge;
 
             walkable_floor = api->floor_height != 2000000.0f && object->surface_normal.y > NuTrigTable[0x238e];
-            probe_edge =
-                walkable_floor ? (player_edge_probe || 0 != ((CInfo[object->character_context].parameter & 1))) : 0;
+            probe_edge = walkable_floor ? (player_edge_probe ||
+                                           0 != ((U64_PAIR(&CInfo[object->character_context].flags) & 0x100000000ULL)))
+                                        : 0;
             if (probe_edge && api->movement_direction_x == 0.0f && api->movement_direction_z == 0.0f &&
                 (api->velocity.x != 0.0f || api->velocity.z != 0.0f)) {
                 NUVEC next_position;
@@ -257,7 +259,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             object->ai_packet.path_target == NULL && !((api->flags_1fc_word & 0x80) != 0) &&
             (object->flags_e20 & 0x10000000) == 0 && object->jump_variant_state == 0 &&
             object->character_context != 0 && object->character_context != 0x1c && api->jump_animation_state != 8 &&
-            (((u32)(GameTimer.update_count)) > 1 || (api->flags_1f8 & 5) != 0) && (api->field_281 & 3) != 0 &&
+            (((u32)(GameTimer.update_count)) >= 2 || (api->flags_1f8 & 5) != 0) && (api->field_281 & 3) != 0 &&
             api->supporting_platform_id == -1 && movement_threshold * movement_threshold >= speed_squared &&
             object->character_context != 0x0f && object->character_context != 0x0b && object->character_context != 0x1e)
             api->flags_1fc_word |= 4;
@@ -543,16 +545,16 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     if (wall_impact) {
                         api->respawn_timer += FRAMETIME;
                     } else {
-                        api->respawn_timer -= FRAMETIME;
+                        api->respawn_timer -= FRAMETIME * 0.333f;
                         if (api->respawn_timer < 0.0f) {
                             api->respawn_timer = 0.0f;
                         }
                     }
                 }
             }
-            floor_height = (api->flags_1fc_word & 4) != 0
-                               ? api->floor_height
-                               : GameShadow(object, &api->position, 5.0f, terrain_mask | 0x1f);
+            floor_height = (api->flags_1fc_word & 4) == 0
+                               ? GameShadow(object, &api->position, 5.0f, terrain_mask | 0x1f)
+                               : api->floor_height;
             stopped_without_terrain = 0;
             if (floor_height != 2000000.0f) {
                 f32 bottom_offset;
@@ -755,29 +757,29 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 if (CannotKill(object) == 0 && (object->portal_flags & 0x40000) == 0 && api->dead == 0 &&
                     api->water_height != 2000000.0f) {
                     i32 layer;
-                    i32 tractor_swamp;
 
                     layer = ((i8)(api->field_283));
-                    tractor_swamp =
-                        layer == 9 && object->id == id_TRACTOR && WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA;
-                    if ((layer == 3 || tractor_swamp || (TerLayer[layer].flags & 0x20) != 0 ||
+                    if ((layer == 3 ||
+                         (layer == 9 && object->id == (u16)id_TRACTOR && WORLD->area != NULL &&
+                          WORLD->area == DAGOBAH_ADATA) ||
+                         (TerLayer[layer].flags & 0x20) != 0 ||
                          ((api->character_data->model_flags & 0x2000) == 0 &&
                           (api->character_data->game_character->flags_090 & 0x04000000) == 0)) &&
                         NoLayerKill(object) == 0 && object->character_context != 0x5d) {
                         u32 layer_flags;
 
                         layer_flags = TerLayer[((i8)(api->field_283))].flags;
-                        if ((((layer_flags & 1) != 0 || (api->field_283 == 9 && object->id == id_TRACTOR &&
+                        if ((((layer_flags & 1) != 0 || (api->field_283 == 9 && object->id == (u16)id_TRACTOR &&
                                                          WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA)) &&
                              api->position.y < api->water_height &&
                              !(VehicleArea != 0 && BonusArea != 0 &&
                                api->character_data->game_character->field_028 > 0.0f) &&
-                             ((api->flags_1fc_word & 0x80) != 0 ||
+                             (((api->flags_1fc_word >> 7) & 1) != 0 ||
                               (object->character_context != 0x47 && object->character_context != 0x46))) ||
                             ((layer_flags & 0x20) != 0 && api->collision_max.y > api->water_height &&
-                             ((api->flags_1fc_word & 0x80) != 0 ||
+                             (((api->flags_1fc_word >> 7) & 1) != 0 ||
                               (object->character_context != 0x47 && object->character_context != 0x46)))) {
-                            if (object->doomed_escape_locator != NULL && !((api->flags_1fc_word & 0x80) != 0)) {
+                            if (object->doomed_escape_locator != NULL && ((api->flags_1fc_word >> 7) & 1) == 0) {
                                 if ((object->flags_ef0 & 0x800) != 0) {
                                     ObjHitObj(NULL, object, 1, 0, 0, 1);
                                 }
@@ -845,8 +847,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                                     }
                                 }
                             }
-                        } else if ((api->character_data->model_flags & 0x40) == 0 && object->id != id_SNAKE &&
-                                   api->field_283 == 9 && api->water_height > api->collision_max.y) {
+                        } else if ((api->character_data->model_flags & 0x40) == 0 && object->id != (u16)id_SNAKE &&
+                                   api->field_283 == 9 && api->collision_max.y < api->water_height) {
                             if (BonusWinner == -1) {
                                 i32 coins;
 
@@ -870,8 +872,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 i32 splash;
 
                 splash = object->character_context == 0x1f || object->character_context == 0 ||
-                         (CInfo[object->character_context].flags & 4) != 0 || object->character_context == 0x0e ||
-                         object->character_context == 0x0d;
+                         (U64_PAIR(&CInfo[object->character_context].flags) & 4) != 0 ||
+                         object->character_context == 0x0e || object->character_context == 0x0d;
                 if (!splash) {
                     i32 animation;
 

@@ -7216,8 +7216,8 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
     force_flip = -1;
     world = WorldInfo_CurrentlyActive();
 
-    flip_kind = 0;
     player_flag = (object->flags_1fc_word >> 7) & 1;
+    flip_kind = 0;
     if (player_flag != 0 || (object->portal_flags & 0x100) != 0) {
         if (JumpBackFlipActionPc != -1 && object->character_model->model_data_b[JumpBackFlipActionPc] != NULL)
             flip_kind = 1;
@@ -7360,8 +7360,8 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                 variant_flags |= 0x8000;
                 object->context_variant_flags = variant_flags;
             }
-            if ((movement_state == 0 || movement_state == 2 || movement_state == 8) && object->context_timer >= 2.0f &&
-                object->start_position.y <= object->position.y && object->field_281 == 0) {
+            if ((movement_state == 8 || movement_state == 2 || movement_state == 0) && object->context_timer >= 2.0f &&
+                object->position.y >= object->start_position.y && object->field_281 == 0) {
                 object->character_context = -1;
                 aux->jump_reentry_timer = 0.0f;
                 aux->fall_animation_timer = 0.2f;
@@ -7373,18 +7373,20 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                   (player_flag == 0 && object->contact_count != 0 && object->jump_variant_state == 3))) ||
                 (movement_state != 5 && object->field_281 != 0 && object->context_timer >= 0.1f) ||
                 ((movement_state == 4 || movement_state == 3) && object->context_timer >= 2.5f)) {
+                restart_jump = 0;
                 if (player_flag != 0)
                     object->portal_flags |= 0x800;
-                restart_jump = jump_held != 0 && 0 == ((object->flags_e20 & 0x100000)) &&
-                               object->action_movement_state != 3 && object->action_movement_state != 4 &&
-                               object->action_movement_state != 5 && object->action_movement_state != 8;
-                if (restart_jump && (object->action_movement_state == 1 || object->action_movement_state == 2) &&
-                    0.0f < object->pad->input_magnitude && (0x200000 & object->flags_e20) != 0) {
-                    i32 difference = RotDiff(object->movement_facing_angle, object->current_input_angle);
-                    if (difference < 0)
-                        difference = -difference;
-                    if (object->action_movement_state == 1 ? difference > 0x6aaa : difference < 0x1555)
+                if (jump_held != 0 && 0 == ((object->flags_e20 & 0x100000)) && object->action_movement_state != 3 &&
+                    object->action_movement_state != 4 && object->action_movement_state != 5 &&
+                    object->action_movement_state != 8) {
+                    if ((object->action_movement_state == 1 && 0.0f < object->pad->input_magnitude &&
+                         (0x200000 & object->flags_e20) != 0 &&
+                         abs(RotDiff(object->movement_facing_angle, object->current_input_angle)) > 0x6aaa) ||
+                        (object->action_movement_state == 2 && 0.0f < object->pad->input_magnitude &&
+                         (0x200000 & object->flags_e20) != 0 &&
+                         abs(RotDiff(object->movement_facing_angle, object->current_input_angle)) < 0x1555))
                         force_flip = 1;
+                    restart_jump = 1;
                 }
                 {
                     if (object->action_movement_state == 3) {
@@ -7405,7 +7407,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                             NewRumble(object->pad->bound_pad, 0.6f, 0);
                             object->character_context = LEGOCONTEXT_LAND_LUNGE;
                             object->field_7aa = LEGOACT_LUNGELAND;
-                            object->context_timer = AnimDuration(object->id, LEGOACT_LUNGELAND, 0.0f, 0.0f, 1);
+                            object->context_timer = AnimDuration((i16)object->id, LEGOACT_LUNGELAND, 0.0f, 0.0f, 1);
                             object->context_variant_flags = object->context_variant_flags & (~0x40u);
                             aux->jump_reentry_timer = 0.0f;
                             if (!restart_jump)
@@ -7426,7 +7428,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                                 object->slam_effect = Slam_GetDebrisFn(object, hit_effect);
                             object->character_context = LEGOCONTEXT_LAND_SLAM;
                             object->field_7aa = LEGOACT_SLAMLAND;
-                            duration = AnimDuration(object->id, LEGOACT_SLAMLAND, 0.0f, 0.0f, 1);
+                            duration = AnimDuration((i16)object->id, LEGOACT_SLAMLAND, 0.0f, 0.0f, 1);
                             object->context_timer = duration <= 0.0f ? 0.75f : duration;
                             aux->jump_reentry_timer = 0.0f;
                             if (!restart_jump) {
@@ -7457,7 +7459,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                                                         object->character_model->model_data_b[LEGOACT_FLIPLAND] != NULL
                                                     ? LEGOACT_FLIPLAND
                                                     : BigJumpLandPreferredPc;
-                            object->context_timer = AnimDuration(object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                            object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                         } else {
                             object->character_context = -1;
                         }
@@ -7469,7 +7471,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                         if (object->pad->input_magnitude == 0.0f) {
                             object->character_context = LEGOCONTEXT_LAND_FLIP;
                             object->field_7aa = LEGOACT_FLIPLAND;
-                            object->context_timer = AnimDuration(object->id, LEGOACT_FLIPLAND, 0.0f, 0.0f, 1);
+                            object->context_timer = AnimDuration((i16)object->id, LEGOACT_FLIPLAND, 0.0f, 0.0f, 1);
                             if (!restart_jump)
                                 ResetAnimPacket(&object->anim_packet, -1);
                         } else {
@@ -7483,7 +7485,8 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                             object->character_context = ZipUpLandCombatRollContextPc;
                             object->field_7b3 = 0;
                             object->field_7aa = LEGOACT_COMBATROLL_LAND;
-                            object->context_timer = AnimDuration(object->id, LEGOACT_COMBATROLL_LAND, 0.0f, 0.0f, 1);
+                            object->context_timer =
+                                AnimDuration((i16)object->id, LEGOACT_COMBATROLL_LAND, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
                             aux->jump_reentry_timer = 0.0f;
                             if (!restart_jump)
@@ -7527,7 +7530,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                                     object->field_7aa = LEGOACT_EXTRA_LAND2;
                                 else
                                     object->field_7aa = BigJumpLandSecondaryPc;
-                                object->context_timer = AnimDuration(object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                                object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                                 if (!restart_jump)
                                     ResetAnimPacket(&object->anim_packet, -1);
                             }
@@ -7549,7 +7552,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                                 if (CanMagnetClimbFn != NULL && CanMagnetClimbFn(object) && LEGOACT_MAGNET_JUMP != -1 &&
                                     object->character_model->model_data_b[LEGOACT_MAGNET_JUMP] != NULL)
                                     object->field_7aa = LEGOACT_MAGNET_JUMP;
-                                object->context_timer = AnimDuration(object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                                object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                                 aux->jump_reentry_timer = object->jump_sequence > 1 ? 0.0f : 0.2f;
                                 if (!restart_jump)
                                     ResetAnimPacket(&object->anim_packet, -1);
@@ -7569,20 +7572,21 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                 }
                 return;
             } else {
-                PLAYERCHARACTERCONFIG_PC *game_character = object->character_data->game_character;
+                PLAYERCHARACTERCONFIG_PC *game_character;
                 i32 can_start_second_jump;
-                if (action_pressed != 0 && vertical_speed > -1.25f && (variant_flags & 0x8000) == 0) {
-                    if (movement_state == 0 && object->jump_sequence < 2 &&
-                        (game_character->hover_fall_mode != 0 || (object->character_data->model_flags & 8) != 0) &&
-                        LEGOACT_LUNGE != -1 && object->character_model->model_data_b[LEGOACT_LUNGE] != NULL) {
-                        object->force_target = NULL;
-                        object->blowup_target = NULL;
-                        StartLunge(object, 0.0f, object->bounds_half_height);
-                        return;
-                    }
+                if (action_pressed != 0 && object->velocity.y > -1.25f &&
+                    (object->character_data->game_character->hover_fall_mode != 0 ||
+                     (object->character_data->model_flags & 8) != 0) &&
+                    movement_state == 0 && (object->context_variant_flags & 0x8000) == 0 && object->jump_sequence < 2 &&
+                    LEGOACT_LUNGE != -1 && object->character_model->model_data_b[LEGOACT_LUNGE] != NULL) {
+                    object->force_target = NULL;
+                    object->blowup_target = NULL;
+                    StartLunge(object, 0.0f, object->bounds_half_height);
+                    return;
                 }
+                game_character = object->character_data->game_character;
                 if (DoubleJump_JediSlam != 0 && (animation_set & 0x10) != 0 && action_pressed != 0 &&
-                    vertical_speed > -1.25f && (variant_flags & 0x8000) == 0 &&
+                    object->velocity.y > -1.25f && (object->context_variant_flags & 0x8000) == 0 &&
                     ((movement_state == 0 &&
                       (object->jump_sequence == 2 || (game_character->flags_098[0] & 0x20) != 0)) ||
                      movement_state == 1 || movement_state == 2) &&
@@ -7635,7 +7639,8 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                             object->action_movement_state = 8;
                             object->context_variant_flags &= ~0x8000u;
                             object->field_7aa = LEGOACT_COMBATROLL_JUMP;
-                            object->context_duration = AnimDuration(object->id, LEGOACT_COMBATROLL_JUMP, 0.0f, 0.0f, 1);
+                            object->context_duration =
+                                AnimDuration((i16)object->id, LEGOACT_COMBATROLL_JUMP, 0.0f, 0.0f, 1);
                         }
                     } else {
                         i16 action;
@@ -7666,7 +7671,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
             if ((animation_set & 0x80) == 0 && object->fall_acceleration_timer <= 0.0f &&
                 (jump_pressed != 0 || ((object->portal_flags & 0x100) != 0 && flip_kind != 0)) &&
                 (object->field_281 != 0 || aux->ground_grace_timer > 0.0f) &&
-                (CInfo[object->character_context].flags & 0x1000) != 0 &&
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x1000) != 0 &&
                 ((animation_set & 4) == 0 || (!(aux->jump_chain_timer > 0.0f) &&
                                               (object->is_underwater == 0 || aux->communication_blend == 0.0f)))) {
             jump_takeoff:;

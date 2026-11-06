@@ -26,11 +26,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
 extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
 extern "C" char *PushBlocksNamePc;
 
-typedef union PUSH_ABSOLUTE_FLOAT_BITS_PC {
-    f32 value;
-    u32 bits;
-} PUSH_ABSOLUTE_FLOAT_BITS_PC;
-STATIC_ASSERT(sizeof(PUSH_ABSOLUTE_FLOAT_BITS_PC) == 4);
+static __inline f32 GizPushFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
 
 extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
     static f32 snap_time = 0.5f;
@@ -141,12 +140,8 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             if (p->pushing_object != NULL) {
                 if ((p->packed_state_flags & 0x40u) == 0)
                     p->target_velocity.z = p->target_velocity.x = 0.0f;
-                PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_x, absolute_z;
-                absolute_x.value = p->pushing_object->target_velocity.x;
-                absolute_x.bits &= 0x7fffffffu;
-                absolute_z.value = p->pushing_object->target_velocity.z;
-                absolute_z.bits &= 0x7fffffffu;
-                if (absolute_x.value > absolute_z.value) {
+                if (GizPushFabsPc(p->pushing_object->target_velocity.x) >
+                    GizPushFabsPc(p->pushing_object->target_velocity.z)) {
                     p->target_velocity.x = p->pushing_object->target_velocity.x * FRAMETIME;
                     p->velocity.z = p->target_velocity.z = 0.0f;
                 } else {
@@ -164,18 +159,12 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             p->velocity.z = SeekValF(p->velocity.z, p->target_velocity.z, PushVelocitySeekRatePc);
             f32 stop_speed = (30.0 / (1.0 / static_cast<f64>(FRAMETIME))) * static_cast<f64>(0.00001f);
             if (p->velocity.x == 0.0f) {
-                PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_z;
-                absolute_z.value = p->velocity.z;
-                absolute_z.bits &= 0x7fffffffu;
-                if (absolute_z.value <= stop_speed) {
+                if (GizPushFabsPc(p->velocity.z) <= stop_speed) {
                     p->velocity.z = p->target_velocity.z = 0.0f;
                     p->packed_state_flags &= ~0xc0u;
                 }
             } else {
-                PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_x;
-                absolute_x.value = p->velocity.x;
-                absolute_x.bits &= 0x7fffffffu;
-                if (absolute_x.value <= stop_speed) {
+                if (GizPushFabsPc(p->velocity.x) <= stop_speed) {
                     p->target_velocity.x = p->velocity.x = 0.0f;
                     p->packed_state_flags &= ~0xc0u;
                 }
@@ -203,31 +192,16 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             continue;
         if (NuSpecialGetVisibilityFn(&p->special) == 0 || (p->packed_state_flags & 0x4du) == 0)
             continue;
-        PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_left;
-        absolute_left.value = p->bounds_min.x;
-        absolute_left.bits &= 0x7fffffffu;
-        f32 left = absolute_left.value + PushCornerInsetPc;
-        PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_right;
-        absolute_right.value = p->bounds_max.x;
-        absolute_right.bits &= 0x7fffffffu;
-        f32 right = absolute_right.value + PushCornerInsetPc;
-        PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_back;
-        absolute_back.value = p->bounds_min.z;
-        absolute_back.bits &= 0x7fffffffu;
-        f32 back = absolute_back.value + PushCornerInsetPc;
-        PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_front;
-        absolute_front.value = p->bounds_max.z;
-        absolute_front.bits &= 0x7fffffffu;
-        f32 front = absolute_front.value + PushCornerInsetPc;
+        f32 left = GizPushFabsPc(p->bounds_min.x) + PushCornerInsetPc;
+        f32 right = GizPushFabsPc(p->bounds_max.x) + PushCornerInsetPc;
+        f32 back = GizPushFabsPc(p->bounds_min.z) + PushCornerInsetPc;
+        f32 front = GizPushFabsPc(p->bounds_max.z) + PushCornerInsetPc;
         NUVEC corners[4];
+        corners[1] = corners[2] = corners[3] = corners[0] = *p->position;
+        corners[0].y = (corners[0].y - GizPushFabsPc(p->bounds_min.y)) - PushGroundOffsetPc;
+        corners[1].y = corners[2].y = corners[3].y = corners[0].y;
         for (i32 j = 0; j < 4; ++j)
-            corners[j] = *p->position;
-        PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_y;
-        absolute_y.value = p->bounds_min.y;
-        absolute_y.bits &= 0x7fffffffu;
-        f32 y = (corners[0].y - absolute_y.value) - PushGroundOffsetPc;
-        for (i32 j = 0; j < 4; ++j)
-            corners[j].y = (static_cast<f64>(0.025f)) + (static_cast<f64>(y));
+            corners[j].y += 0.025f;
         corners[0].x -= left;
         corners[0].z -= back;
         corners[1].x += right;
@@ -313,9 +287,10 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             continue;
         if ((p->packed_state_flags & 0x400u) == 0 && (p->packed_state_flags & 1u) != 0)
             GameAudio_PlaySfx(72, p->position, GameAudio_GetPlrSfxBits(p->pushing_object), 0);
-        if ((p->packed_state_flags & 0xc00u) != 0) {
+        const u32 snapped = (p->packed_state_flags >> 10) & 1;
+        if (snapped != 0 || (p->packed_state_flags & 0x800u) != 0) {
             NUVEC *position = p->position;
-            if ((p->packed_state_flags & 0x400u) != 0) {
+            if (snapped != 0) {
                 position->x = p->snap_origin.x;
                 position->z = p->snap_origin.z;
                 p->extra_terrain_info.word = p->previous_extra_terrain_info;
@@ -347,8 +322,8 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
             if ((p->packed_state_flags & 2u) == 0 && p->pushing_object != NULL)
                 GameAudio_PlaySfx(71, &p->pushing_object->collision_position,
                                   GameAudio_GetPlrSfxBits(p->pushing_object), 0);
-            if (PushBlockHintIdPc != -1 && p->pushing_object != NULL &&
-                (p->pushing_object->flags_1fc_word & 0x81u) == 0x81u)
+            if (PushBlockHintIdPc != -1 && p->pushing_object != NULL && (p->pushing_object->flags_1fc_word & 1u) != 0 &&
+                (p->pushing_object->flags_1fc_word & 0x80u) != 0)
                 Hint_SetComplete(PushBlockHintIdPc);
         }
     }
@@ -632,12 +607,7 @@ static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOL
                         direction.z = static_cast<f64>(qrand()) * 0.000015259021893143654;
                     }
                 }
-                PUSH_ABSOLUTE_FLOAT_BITS_PC absolute_x, absolute_z;
-                absolute_x.value = direction.x;
-                absolute_x.bits &= 0x7fffffffu;
-                absolute_z.value = direction.z;
-                absolute_z.bits &= 0x7fffffffu;
-                if (absolute_x.value > absolute_z.value)
+                if (GizPushFabsPc(direction.x) > GizPushFabsPc(direction.z))
                     direction.z = 0.0f;
                 else
                     direction.x = 0.0f;

@@ -1350,6 +1350,11 @@
    "unit": "src/legoapi/pushing.cpp",
    "symbol": "?PushFabsPc@@YAMM@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/gizpushblocks.cpp",
+   "symbol": "?GizPushFabsPc@@YAMM@Z",
+   "kind": "function"
   }
  ]
 }
