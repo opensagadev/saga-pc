@@ -1028,11 +1028,7 @@ static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION_PC *position) {
     SOCK_PC *sock;
     i32 segment;
     i32 next;
-    SOCKROT_PC *cam_from;
-    SOCKROT_PC *cam_to;
-    SOCKROT_PC *mid_from;
-    SOCKROT_PC *mid_to;
-    i32 divisor;
+    i32 delta;
 
     if (sock_sys == NULL) {
         return;
@@ -1042,23 +1038,37 @@ static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION_PC *position) {
     next = position->next_segment;
     SockSysPointAlongSpline(&temp_sockcampos, sock->cam, segment, next, position->ratio);
 
-    cam_from = &sock->cam_rotations[segment];
-    cam_to = &sock->cam_rotations[next];
-    position->camera_rotation.x =
-        (u16)(cam_from->x + (f32)SOCK_ROTATION_DELTA(cam_from->x, cam_to->x) * position->ratio);
-    position->camera_rotation.y =
-        (u16)(cam_from->y + (f32)SOCK_ROTATION_DELTA(cam_from->y, cam_to->y) * position->ratio);
+    delta = sock->cam_rotations[next].x - sock->cam_rotations[segment].x;
+    if (delta > 0x8000)
+        delta -= 0x10000;
+    else if (delta < -0x8000)
+        delta += 0x10000;
+    position->camera_rotation.x = (u16)((f32)delta * position->ratio + sock->cam_rotations[segment].x);
+    delta = sock->cam_rotations[next].y - sock->cam_rotations[segment].y;
+    if (delta > 0x8000)
+        delta -= 0x10000;
+    else if (delta < -0x8000)
+        delta += 0x10000;
+    position->camera_rotation.y = (u16)((f32)delta * position->ratio + sock->cam_rotations[segment].y);
 
-    mid_from = &sock->mid_rotations[segment];
-    mid_to = &sock->mid_rotations[next];
-    position->midpoint_rotation.x =
-        (u16)(mid_from->x + (f32)SOCK_ROTATION_DELTA(mid_from->x, mid_to->x) * position->ratio);
-    position->midpoint_rotation.y =
-        (u16)(mid_from->y + (f32)SOCK_ROTATION_DELTA(mid_from->y, mid_to->y) * position->ratio);
+    delta = sock->mid_rotations[next].x - sock->mid_rotations[segment].x;
+    if (delta > 0x8000)
+        delta -= 0x10000;
+    else if (delta < -0x8000)
+        delta += 0x10000;
+    position->midpoint_rotation.x = (u16)((f32)delta * position->ratio + sock->mid_rotations[segment].x);
+    delta = sock->mid_rotations[next].y - sock->mid_rotations[segment].y;
+    if (delta > 0x8000)
+        delta -= 0x10000;
+    else if (delta < -0x8000)
+        delta += 0x10000;
+    position->midpoint_rotation.y = (u16)((f32)delta * position->ratio + sock->mid_rotations[segment].y);
 
-    position->distance = (f32)segment + position->ratio;
-    divisor = sock->length + (sock->unknown_33 != 0 ? 1 : 0);
-    position->normalized_distance = position->distance / (f32)divisor;
+    position->distance = (f32)position->segment + position->ratio;
+    if (sock->unknown_33 != 0)
+        position->normalized_distance = position->distance / (f32)(sock->length + 1);
+    else
+        position->normalized_distance = position->distance / (f32)sock->length;
 }
 
 static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC *result, i32 sock_index,
