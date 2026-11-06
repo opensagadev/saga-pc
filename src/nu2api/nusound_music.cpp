@@ -99,12 +99,9 @@ i32 NuMusic::ClassToIX(u32 class_mask) {
 }
 
 NuMusic::Track *NuMusic::Album::GetTrack(u32 class_mask) {
-    i32 index;
-    for (index = 0; index < 6; index++) {
-        if (class_mask == (1u << index)) {
-            return tracks[index];
-        }
-    }
+    i32 index = ClassToIX(class_mask);
+    if (index != -1)
+        return tracks[index];
     return NULL;
 }
 
@@ -551,19 +548,18 @@ extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
 }
 
 i32 NuMusic::Voice::Unload(void) {
-    i32 index = track_index;
-    if (tracks[index] == NULL || index == 0)
+    if (tracks[track_index] == NULL || track_index == 0)
         return 0;
-    if (tracks[index]->clazz == 8) {
+    if (tracks[track_index]->clazz == 8) {
         --track_index;
         if (tracks[track_index] != NULL) {
             gain = 0.0f;
             NuSound3StopStereoStream(stream_index * 2);
-            Track *track = tracks[track_index];
-            i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, 0, 6,
-                                             0, 10, (f64)track->start_offset, 1);
+            i32 result =
+                NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0,
+                                    6, 0, 10, tracks[track_index]->start_offset, 1);
             last_volume = 0.0f;
-            track->ManageEntryTime();
+            tracks[track_index]->ManageEntryTime();
             if (result != 0 && status != 4) {
                 status = 4;
                 play_time = 0.0f;
@@ -965,8 +961,9 @@ void NuMusic::xIdent(NUFPAR_PC *parser) {
 void NuMusic::xIndex(NUFPAR_PC *parser) {
     if (index_count >= 2048)
         PCStereoUnknownToken();
-    indexes[index_count++] = NuFParGetFloatRDP(parser);
-    ++current_track->entry_count;
+    indexes[index_count] = NuFParGetFloatRDP(parser);
+    current_track->entry_count++;
+    index_count++;
 }
 void NuMusic::xNoMusic(NUFPAR_PC *parser) {
     char substituted[256];
@@ -1173,23 +1170,24 @@ i32 NuMusic::Voice::Cue(void) {
 }
 
 i32 NuMusic::Voice::Play(void) {
-    Track *track = tracks[track_index];
-    if (track == NULL || track->file_indexes[track_sub[track_index]] == -1)
+    if (tracks[track_index] == NULL)
+        return -4;
+    if (tracks[track_index]->file_indexes[track_sub[track_index]] == -1)
         return -4;
     Voice *other = &the_music_player->voices[1 - stream_index];
     Track *other_track = other->tracks[other->track_index];
     f32 target_gain = 1.0f;
     fade_rate = 0.0f;
     flags_word &= ~1U;
-    if (track->clazz != 8 && (other_track == NULL || other_track->clazz != 8)) {
+    if (tracks[track_index]->clazz != 8 && (other_track == NULL || other_track->clazz != 8)) {
         if (other->status == 7) {
             other->fade_rate = -1.0f;
             fade_rate = 1.0f;
             other->flags_word &= ~1U;
             target_gain = gain;
-        } else if (track->start_offset != 0.0f) {
+        } else if (tracks[track_index]->start_offset != 0.0f) {
             if (status == 6 || status == 7) {
-                fade_rate = 0.0f;
+                fade_rate = 1.0f;
                 target_gain = gain;
             } else {
                 fade_rate = 1.0f;
@@ -1210,18 +1208,19 @@ i32 NuMusic::Voice::Play(void) {
     }
     if (status == 6 || status == 7)
         return 1;
-    track = tracks[track_index];
+    Track *track = tracks[track_index];
     i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, track->pitch,
                                      6, 0, 10, (f64)track->start_offset, 1);
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
-    if (result == 0)
-        return -6;
-    if (status != 6) {
-        play_time = 0.0f;
-        status = 6;
+    if (result != 0) {
+        if (status != 6) {
+            play_time = 0.0f;
+            status = 6;
+        }
+        return 1;
     }
-    return 1;
+    return -6;
 }
 
 i32 NuMusic::CueTrack(u32 class_mask) {
