@@ -3907,7 +3907,10 @@ typedef struct debris_info_pc_s {
     f32 field_044, momentum_base, momentum_random_x;
     f32 rotor_speed_x, rotor_speed_y;
     NUVEC emitter_random_extent, emitter_velocity;
-    f32 unknown_070[12];
+    union {
+        f32 unknown_070[12];
+        f32 file_parameters[12];
+    };
     f32 gravity, particle_lifetime;
     i16 field_0a8;
     i8 field_0aa, field_0ab;
@@ -5620,7 +5623,8 @@ typedef struct gameobject_s {
             f32 transform_alpha;
             u8 transform_reserved_d84[8];
             f32 transform_target_scale;
-            u8 transform_reserved_d90[8];
+            u32 transform_reserved_d90;
+            f32 engine_level;
         };
     };
     f32 turn_braking;
