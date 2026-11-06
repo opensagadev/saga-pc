@@ -1330,6 +1330,11 @@
    "unit": "src/nu2api/nusound_music.cpp",
    "symbol": "?NuMusicDecibelsToGain@@YAMM@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nuanim.c",
+   "symbol": "_NuAnimRebaseChar",
+   "kind": "function"
   }
  ]
 }

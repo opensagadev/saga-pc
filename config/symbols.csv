@@ -5911,8 +5911,8 @@ address,symbol,size,ctype
 0x005ca470,_NuAnimEndFrame,58,f32 __cdecl (void *)
 0x005ca4b0,_NuAnimEndFrameOld,65,f32 __cdecl (void *)
 0x5ca550,_findrange,73,
-0x005ca5a0,_CalcValue1648Get2Values,629,"void __cdecl (char *, i32, i32, ANI3_SCALEMIN_PC *, f32 *, f32 *)"
-0x005ca830,_CalcValue1648,544,"f32 __cdecl (char *, i32, i32, f32, ANI3_SCALEMIN_PC *)"
+0x005ca5a0,_CalcValue1648Get2Values,648,"void __cdecl (char *, i32, i32, ANI3_SCALEMIN_PC *, f32 *, f32 *)"
+0x005ca830,_CalcValue1648,560,"f32 __cdecl (char *, i32, i32, f32, ANI3_SCALEMIN_PC *)"
 0x005caaa0,_ANI_SimpleAni3PlayerV4Joint_Quat3,1990,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32)"
 0x005cb270,_ANI_SimpleAni3PlayerV4Joint_Quat3W,1807,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32)"
 0x005cb980,_ANI_SimpleAni3PlayerV4Joint_EulerQuat,1865,"i32 __cdecl (ANI3_HEADER_PC *, f32, ANI3_BUFFER_PC *, i32, i32)"

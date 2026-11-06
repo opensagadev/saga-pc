@@ -99,45 +99,48 @@ i32 findrange(NUGSCN *scene, i32 first_joint) {
     return end_joint - 1;
 }
 
+#define CALC_1648_LAST_KEY(keys) ((u16)(((keys)[2] & 0xf000) >> 8 | ((keys)[3] & 0xf000) >> 4 | (keys)[1] >> 12))
+
 f32 __cdecl CalcValue1648(char *data, i32 quarter, i32 stride, f32 fraction, ANI3_SCALEMIN_PC *scale_min) {
     u16 *keys;
     u16 *next;
     i32 start;
-    i32 end;
     i32 tangent;
     i32 next_value;
     f32 a;
     f32 b;
     f32 value;
+    f32 result = 0.0f;
 
     keys = (u16 *)data;
     next = (u16 *)(data + stride);
     switch (quarter) {
         case 0:
-            tangent = (keys[2] & 0xfff) - (keys[1] & 0xfff);
-            value = ((f32)tangent * fraction + (f32)(keys[1] & 0xfff)) / 4095.0f;
-            value = value * ((i32)*next - (i32)keys[0]) + (f32)keys[0];
-            return value * scale_min->scale + scale_min->minimum;
+            start = keys[1] & 0xfff;
+            tangent = (keys[2] & 0xfff) - start;
+            value = (tangent * fraction + start) / 4095.0;
+            result = (value * (*next - keys[0]) + keys[0]) * scale_min->scale + scale_min->minimum;
+            break;
         case 1:
-            tangent = (keys[3] & 0xfff) - (keys[2] & 0xfff);
-            value = ((f32)tangent * fraction + (f32)(keys[2] & 0xfff)) / 4095.0f;
-            value = value * ((i32)*next - (i32)keys[0]) + (f32)keys[0];
-            return value * scale_min->scale + scale_min->minimum;
+            start = keys[2] & 0xfff;
+            tangent = (keys[3] & 0xfff) - start;
+            value = (tangent * fraction + start) / 4095.0;
+            result = (value * (*next - keys[0]) + keys[0]) * scale_min->scale + scale_min->minimum;
+            break;
         case 2:
             start = keys[3] & 0xfff;
-            end = ((keys[2] & 0xf000) >> 8) | ((keys[3] & 0xf000) >> 4) | (keys[1] >> 12);
-            value = ((f32)(end - start) * fraction + (f32)start) / 4095.0f;
-            value = value * ((i32)*next - (i32)keys[0]) + (f32)keys[0];
-            return value * scale_min->scale + scale_min->minimum;
+            tangent = (((keys[2] & 0xf000) >> 8) | ((keys[3] & 0xf000) >> 4) | (keys[1] >> 12)) - start;
+            value = (tangent * fraction + start) / 4095.0;
+            result = (value * (*next - keys[0]) + keys[0]) * scale_min->scale + scale_min->minimum;
+            break;
         case 3:
             next_value = *next;
-            tangent = ((keys[2] & 0xf000) >> 8) | ((keys[3] & 0xf000) >> 4) | (keys[1] >> 12);
-            a = (f32)tangent * (f32)(next_value - (i32)keys[0]) / 4095.0f + (f32)keys[0];
-            b = (f32)((i32)((u16 *)data)[stride] - next_value) * (f32)(next[1] & 0xfff) / 4095.0f + (f32)next_value;
-            value = (b - a) * fraction + a;
-            return value * scale_min->scale + scale_min->minimum;
+            a = CALC_1648_LAST_KEY(keys) * (f32)(next_value - keys[0]) / 4095.0 + keys[0];
+            b = (f32)(((u16 *)data)[stride] - next_value) * (f32)(next[1] & 0xfff) / 4095.0 + next_value;
+            result = ((b - a) * fraction + a) * scale_min->scale + scale_min->minimum;
+            break;
     }
-    return 0.0f;
+    return result;
 }
 
 #define CALC_1648_VALUE(start, end, fraction)                                                                          \
@@ -2044,39 +2047,46 @@ STATIC_ASSERT(offsetof(NuAnimReadData, name) == 4);
 STATIC_ASSERT(offsetof(NuAnimReadData, chunk_count) == 8);
 STATIC_ASSERT(offsetof(NuAnimReadChunk, curve_set_count) == 0);
 
+/* Pointer-typed rebase; retail selects between the moved pointer and NULL. */
+static void *NuAnimRebaseChar(void *pointer, i32 amount) {
+    return pointer != NULL ? (char *)pointer + amount : NULL;
+}
+
 void *__cdecl NuAnimDataFixPtrs(void *animation, i32 delta) {
     NuAnimReadData *data;
     i32 chunk_index;
     if (NuAnimDataBitCountInitialized == 0)
         buildBitCountTable();
-    data = (NuAnimReadData *)NUANIM_REBASE_POINTER(animation, delta);
-    data->name = (char *)NUANIM_REBASE_POINTER(data->name, delta);
-    data->chunks = (NuAnimReadChunk **)NUANIM_REBASE_POINTER(data->chunks, delta);
+    animation = NuAnimRebaseChar(animation, delta);
+    data = (NuAnimReadData *)animation;
+    data->name = (char *)NuAnimRebaseChar(data->name, delta);
+    data->chunks = (NuAnimReadChunk **)NuAnimRebaseChar(data->chunks, delta);
     if (data->chunks != NULL) {
         for (chunk_index = 0; chunk_index < data->chunk_count; ++chunk_index) {
             NuAnimReadChunk *chunk;
-            data->chunks[chunk_index] = (NuAnimReadChunk *)NUANIM_REBASE_POINTER(data->chunks[chunk_index], delta);
-            chunk = data->chunks[chunk_index];
-            if (chunk != NULL) {
-                chunk->curve_sets = (NuAnimReadCurveSet **)NUANIM_REBASE_POINTER(chunk->curve_sets, delta);
+            data->chunks[chunk_index] = (NuAnimReadChunk *)NuAnimRebaseChar(data->chunks[chunk_index], delta);
+            if (data->chunks[chunk_index] != NULL) {
+                chunk = data->chunks[chunk_index];
+                chunk->curve_sets = (NuAnimReadCurveSet **)NuAnimRebaseChar(chunk->curve_sets, delta);
                 if (chunk->curve_sets != NULL) {
                     i32 set_index;
                     for (set_index = 0; set_index < chunk->curve_set_count; ++set_index) {
                         NuAnimReadCurveSet *set;
                         chunk->curve_sets[set_index] =
-                            (NuAnimReadCurveSet *)NUANIM_REBASE_POINTER(chunk->curve_sets[set_index], delta);
-                        set = chunk->curve_sets[set_index];
-                        if (set != NULL) {
-                            set->constants = (f32 *)NUANIM_REBASE_POINTER(set->constants, delta);
-                            set->curves = (void **)NUANIM_REBASE_POINTER(set->curves, delta);
+                            (NuAnimReadCurveSet *)NuAnimRebaseChar(chunk->curve_sets[set_index], delta);
+                        if (chunk->curve_sets[set_index] != NULL) {
+                            set = chunk->curve_sets[set_index];
+                            set->constants = (f32 *)NuAnimRebaseChar(set->constants, delta);
+                            set->curves = (void **)NuAnimRebaseChar(set->curves, delta);
                             if (set->curves != NULL) {
                                 i32 curve_index;
                                 for (curve_index = 0; curve_index < set->curve_count; ++curve_index) {
                                     NUANIM_LEGACY_CURVE_PC *curve;
-                                    set->curves[curve_index] = NUANIM_REBASE_POINTER(set->curves[curve_index], delta);
-                                    curve = (NUANIM_LEGACY_CURVE_PC *)set->curves[curve_index];
-                                    if (curve != NULL)
-                                        curve->keys = (NUANIM_LEGACY_KEY_PC *)NUANIM_REBASE_POINTER(curve->keys, delta);
+                                    set->curves[curve_index] = NuAnimRebaseChar(set->curves[curve_index], delta);
+                                    if (set->curves[curve_index] != NULL) {
+                                        curve = (NUANIM_LEGACY_CURVE_PC *)set->curves[curve_index];
+                                        curve->keys = (NUANIM_LEGACY_KEY_PC *)NuAnimRebaseChar(curve->keys, delta);
+                                    }
                                 }
                             }
                         }
@@ -2985,42 +2995,41 @@ void __cdecl PCBuildLegacySkeletalJoint(DWA_CURVE_CELL_PC *curves, i8 *formats, 
 f32 NuAnimCurveCalcVal2(NUANIM_LEGACY_CURVE_PC *curve, NUANIM_TIME2_PC *time) {
     i32 key = 0;
     NUANIM_LEGACY_KEY_PC *first;
-    f32 t, span, tangent0, tangent1, polynomial;
+    f32 t, span, tangent0, tangent1, polynomial, result;
     f64 delta;
     switch (time->time_byte) {
-        case 3:
-            key += NuAnimDataBitCount[curve->key_mask[2]];
-            key += NuAnimDataBitCount[curve->key_mask[1]];
-            key += NuAnimDataBitCount[curve->key_mask[0]];
-            key += NuAnimDataBitCount[curve->key_mask[3] & time->time_mask];
-            break;
-        case 2:
-            key += NuAnimDataBitCount[curve->key_mask[1]];
-            key += NuAnimDataBitCount[curve->key_mask[0]];
-            key += NuAnimDataBitCount[curve->key_mask[2] & time->time_mask];
-            break;
-        case 1:
-            key += NuAnimDataBitCount[curve->key_mask[0]];
-            key += NuAnimDataBitCount[curve->key_mask[1] & time->time_mask];
-            break;
         case 0:
             key = NuAnimDataBitCount[curve->key_mask[0] & time->time_mask];
+            break;
+        case 1:
+            key = NuAnimDataBitCount[curve->key_mask[1] & time->time_mask] + NuAnimDataBitCount[curve->key_mask[0]];
+            break;
+        case 2:
+            key = NuAnimDataBitCount[curve->key_mask[2] & time->time_mask] + NuAnimDataBitCount[curve->key_mask[1]] +
+                  NuAnimDataBitCount[curve->key_mask[0]];
+            break;
+        case 3:
+            key = NuAnimDataBitCount[curve->key_mask[3] & time->time_mask] + NuAnimDataBitCount[curve->key_mask[2]] +
+                  NuAnimDataBitCount[curve->key_mask[1]] + NuAnimDataBitCount[curve->key_mask[0]];
             break;
     }
     first = &curve->keys[key - 1];
     if (curve->flags & 1) {
         if ((curve->flags & 2) && key - 1 < curve->key_count &&
             (f64)time->time - first->time > (f64)first[1].time - time->time)
-            return first[1].value;
-        return first->value;
+            result = first[1].value;
+        else
+            result = first->value;
+        return result;
     }
     t = (time->time - first->time) * first->reciprocal_span;
     span = first[1].time - first->time;
     tangent0 = first->tangent * span;
     tangent1 = first[1].tangent * span;
-    delta = (f64)first->value - first[1].value;
-    polynomial = (delta + delta + tangent0 + tangent1) * t - delta * 3.0 - (tangent0 + (f64)tangent0) - tangent1;
-    return (polynomial * (f64)t + tangent0) * t + first->value;
+    delta = first->value - first[1].value;
+    polynomial = (delta * 2.0 + tangent0 + tangent1) * t - delta * 3.0 - tangent0 * 2.0 - tangent1;
+    result = (polynomial * (f64)t + tangent0) * t + first->value;
+    return result;
 }
 
 void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *animation, f32 frame, NUANIM_TIME2_PC *time) {
