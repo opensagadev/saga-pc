@@ -65,28 +65,32 @@ ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *
     do {                                                                                                               \
         ShaderMacroDefinitionPc *definition = (DICTIONARY)->FindDefinition(NAME);                                      \
         if (definition != NULL) {                                                                                      \
-            const char *stored_value = NULL;                                                                           \
+            const char *stored_value;                                                                                  \
             if ((VALUE) != NULL) {                                                                                     \
-                i32 bytes = (i32)strlen(VALUE) + 1;                                                                    \
+                i32 length = (i32)strlen(VALUE);                                                                       \
                 char *copy = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                   \
-                (DICTIONARY)->scratch.cursor += bytes;                                                                 \
-                memcpy(copy, (VALUE), bytes);                                                                          \
+                (DICTIONARY)->scratch.cursor += length + 1;                                                            \
+                memcpy(copy, (VALUE), length + 1);                                                                     \
                 stored_value = copy;                                                                                   \
+            } else {                                                                                                   \
+                stored_value = NULL;                                                                                   \
             }                                                                                                          \
             definition->value = stored_value;                                                                          \
             definition->emit = (u8)(EMIT);                                                                             \
         } else {                                                                                                       \
-            i32 bytes = (i32)strlen(NAME) + 1;                                                                         \
+            i32 length = (i32)strlen(NAME);                                                                            \
             char *stored_name = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                \
-            (DICTIONARY)->scratch.cursor += bytes;                                                                     \
-            memcpy(stored_name, NAME, bytes);                                                                          \
-            const char *stored_value = NULL;                                                                           \
+            (DICTIONARY)->scratch.cursor += length + 1;                                                                \
+            memcpy(stored_name, NAME, length + 1);                                                                     \
+            const char *stored_value;                                                                                  \
             if ((VALUE) != NULL) {                                                                                     \
-                bytes = (i32)strlen(VALUE) + 1;                                                                        \
+                length = (i32)strlen(VALUE);                                                                           \
                 char *copy = reinterpret_cast<char *>((DICTIONARY)->scratch.cursor);                                   \
-                (DICTIONARY)->scratch.cursor += bytes;                                                                 \
-                memcpy(copy, (VALUE), bytes);                                                                          \
+                (DICTIONARY)->scratch.cursor += length + 1;                                                            \
+                memcpy(copy, (VALUE), length + 1);                                                                     \
                 stored_value = copy;                                                                                   \
+            } else {                                                                                                   \
+                stored_value = NULL;                                                                                   \
             }                                                                                                          \
             definition = reinterpret_cast<ShaderMacroDefinitionPc *>((DICTIONARY)->scratch.cursor);                    \
             (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinitionPc);                                           \
