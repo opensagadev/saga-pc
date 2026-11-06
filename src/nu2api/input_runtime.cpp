@@ -1278,27 +1278,42 @@ extern "C" PC_INPUT_CONFIG_PC *__cdecl PcInputFindConfigPc(u8 mask, i32 port, i3
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->FindConfig(mask, port, key);
 }
 i32 PC_INPUT_RUNTIME_PC::BindingAvailablePc(i32 bank, i32 bank_count, i32 kind, i32 value) {
-    if ((u32)(auxiliary_ports[bank] - 10) > 3)
+    i32 port;
+    const char *key;
+    i32 blocked;
+    const i8 *order;
+    PC_INPUT_BINDING_PC *bindings;
+    i32 other;
+    i32 action;
+
+    port = auxiliary_ports[bank];
+    if (port < 10 || port > 13)
         return 1;
-    if (kind == 7)
-        for (const char *key = blocked_keys; *key; ++key)
-            if ((i32)(i8)*key == value)
+    if (kind == 7) {
+        key = blocked_keys;
+        while ((blocked = *key++) != 0) {
+            if (value == blocked)
                 return 0;
-    for (i32 other = 0; other < bank_count; ++other) {
-        if (other == bank || auxiliary_ports[other] == -1 || (u32)(auxiliary_ports[other] - 10) > 3)
-            continue;
-        if (PcInputActionOrder[0] >= 0) {
-            for (i32 entry = 0; PcInputActionOrder[entry] >= 0; ++entry) {
-                i32 action = PcInputActionOrder[entry];
-                if ((i32)(i16)auxiliary_bindings[other][action].value == value &&
-                    auxiliary_bindings[other][action].kind == kind)
-                    return 0;
+        }
+    }
+    bindings = auxiliary_bindings[0];
+    for (other = 0; other < bank_count; ++other, bindings += 32) {
+        if (other != bank) {
+            port = auxiliary_ports[other];
+            if (port != -1 && port >= 10 && port <= 13) {
+                if (PcInputActionOrder[0] >= 0) {
+                    order = PcInputActionOrder;
+                    while ((action = *order++) >= 0) {
+                        if (value == (i16)bindings[action].value && kind == bindings[action].kind)
+                            return 0;
+                    }
+                } else {
+                    for (action = 0; action < 32; ++action) {
+                        if (value == (i16)bindings[action].value && kind == bindings[action].kind)
+                            return 0;
+                    }
+                }
             }
-        } else {
-            for (i32 action = 0; action < 32; ++action)
-                if ((i32)(i16)auxiliary_bindings[other][action].value == value &&
-                    auxiliary_bindings[other][action].kind == kind)
-                    return 0;
         }
     }
     return 1;
@@ -1307,17 +1322,29 @@ extern "C" i32 __cdecl PcInputBindingAvailablePc(i32 bank, i32 bank_count, i32 k
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->BindingAvailablePc(bank, bank_count, kind, value);
 }
 void PC_INPUT_RUNTIME_PC::ClearOtherBankConflictsPc(i32 bank, i32 bank_count) {
-    if ((u32)(auxiliary_ports[bank] - 10) > 3)
+    PC_INPUT_BINDING_PC *source;
+    PC_INPUT_BINDING_PC *target;
+    i32 port;
+    i32 other;
+    i32 action;
+
+    port = auxiliary_ports[bank];
+    if (port < 10 || port > 13)
         return;
-    for (i32 other = 0; other < bank_count; ++other) {
-        if (other == bank || (u32)(auxiliary_ports[other] - 10) > 3)
-            continue;
-        for (i32 action = 0; action < 32; ++action)
-            if (auxiliary_bindings[bank][action].value == auxiliary_bindings[other][action].value &&
-                auxiliary_bindings[bank][action].kind == auxiliary_bindings[other][action].kind) {
-                auxiliary_bindings[other][action].value = 0;
-                auxiliary_bindings[other][action].kind = 0;
+    source = auxiliary_bindings[bank];
+    for (other = 0; other < bank_count; ++other) {
+        if (other != bank) {
+            port = auxiliary_ports[other];
+            if (port >= 10 && port <= 13) {
+                target = auxiliary_bindings[other];
+                for (action = 0; action < 32; ++action) {
+                    if (source[action].value == target[action].value && source[action].kind == target[action].kind) {
+                        target[action].value = 0;
+                        target[action].kind = 0;
+                    }
+                }
             }
+        }
     }
 }
 extern "C" void __cdecl PcInputClearOtherBankConflictsPc(i32 bank, i32 bank_count) {

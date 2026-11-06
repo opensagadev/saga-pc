@@ -300,30 +300,28 @@ void __cdecl SfxSetFileTable(SFX_FILE_INFO_PC *records) {
 }
 
 void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
-    u32 *table;
-    i32 index;
+    u32 index;
+    u32 value;
+    u32 top_bit;
+    i32 bit;
 
     if (SfxCRCTableInitialized != 0) {
         return;
     }
 
-    buffer_cursor->addr = (buffer_cursor->addr + 3) & ~3u;
-    table = (u32 *)buffer_cursor->void_ptr;
-    SfxCRCTable = table;
-    buffer_cursor->addr += 0x400;
+    SfxCRCTable = (u32 *)((buffer_cursor->addr + 3) & ~3u);
+    buffer_cursor->addr = ((buffer_cursor->addr + 3) & ~3u) + 0x400;
 
     for (index = 0; index < 256; index++) {
-        u32 value = (u32)index << 24;
-        i32 bit;
-
+        value = index << 24;
         for (bit = 0; bit < 8; bit++) {
-            if ((value & 0x80000000) != 0) {
-                value = (value << 1) ^ 0x04c11db7;
-            } else {
-                value <<= 1;
+            top_bit = value >> 31;
+            value <<= 1;
+            if (top_bit != 0) {
+                value ^= 0x04c11db7;
             }
         }
-        table[index] = value;
+        SfxCRCTable[index] = value;
     }
     SfxCRCTableInitialized = 1;
 }
