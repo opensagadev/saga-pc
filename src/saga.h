@@ -28930,7 +28930,7 @@ extern "C" {
 #ifdef __cplusplus
 struct EdClass;
 struct EdInputContext;
-struct EdRef;
+class EdRef;
 struct EdStream;
 struct MemoryBuffer;
 
@@ -29130,7 +29130,16 @@ struct EdType {
     void (*serialise)(EdStream &, void *, i32);
 };
 
-struct EdClass;
+/* A registered editor class: its member list and object interface. */
+struct EdClass {
+    char *name;
+    i32 flags;
+    EdRef *members;
+    EdRef *last_member;
+    i32 member_count;
+    EdClassInterface *object_interface; /* Android "interface" (an objbase.h macro) */
+};
+
 struct EdObjectNotifier;
 struct EdDefunctListEntry;
 struct EdDefunctList {
@@ -29162,18 +29171,34 @@ struct EdRegistry {
     i32 notifier_count;
     EdDefunctList defunct_objects;
 
+    void Initialise(VARIPTR &buffer, VARIPTR &, i32 max_classes, i32 max_types, i32 max_mappings, i32 max_notifiers);
+    void Flush();
+    i32 RegisterType(char *name, i32 size, void (*serialise)(EdStream &, void *, i32));
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+    EdClass *RegisterClass(char *name, EdClassInterface *object_interface, i32 flags);
+#pragma pop_macro("RegisterClass")
+    i32 AddMapping(char *source, char *destination);
+    char *MapName(char *name);
+    i32 GetTypeId(char *name);
+    EdType *GetType(char *name);
     EdType *GetType(i32 index) {
         if (index < 0 || index >= type_count)
             return NULL;
         return &types[index];
     }
+    i32 GetClassId(char *name);
+    i32 GetClassId(EdClass *object_class);
 };
 extern EdRegistry theRegistry;
 extern i32 EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
 
 /* One member of an editor class: where it sits in the object, its type and
  * the control that edits it. Attribute bit 30 marks a pointer member. */
-struct EdRef : public CSListLink<EdRef> {
+class EdRef : public CSListLink<EdRef> {
+  public:
+    EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
+          EdControl *member_control, i32 group);
     virtual void *GetMemberObject(void *object);
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);

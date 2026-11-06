@@ -8929,7 +8929,17 @@ address,symbol,size,ctype
 0x6be190,_SerialiseNuHSpecial,201,
 0x6be260,?GetNextObject@EdClassInterface@@UAEPAXPAXP6AH0@Z@Z,66,
 0x6be2b0,?GetMemberObject@EdRef@@UAEPAXPAX@Z,28,
+0x6be450,?Initialise@EdRegistry@@QAEXAATvariptr_u@@0HHHH@Z,270,
+0x6be560,?Flush@EdRegistry@@QAEXXZ,12,
+0x6be590,?RegisterType@EdRegistry@@QAEHPADHP6AXAAUEdStream@@PAXH@Z@Z,41,
+0x6be5c0,?RegisterClass@EdRegistry@@QAEPAUEdClass@@PADPAVEdClassInterface@@H@Z,48,
+0x6be5f0,?AddMapping@EdRegistry@@QAEHPAD0@Z,36,
+0x6be620,?MapName@EdRegistry@@QAEPADPAD@Z,65,
+0x6be670,?GetTypeId@EdRegistry@@QAEHPAD@Z,69,
+0x6be6c0,?GetType@EdRegistry@@QAEPAUEdType@@PAD@Z,75,
 0x6be710,?GetType@EdRegistry@@QAEPAUEdType@@H@Z,30,
+0x6be730,?GetClassId@EdRegistry@@QAEHPAD@Z,69,
+0x6be780,?GetClassId@EdRegistry@@QAEHPAUEdClass@@@Z,27,
 0x6c0690,?Render@KnotHelper@@UAEXPAXH@Z,186,
 0x6c21d0,?Clone@Placeable@@UBEPAV1@H@Z,5,
 0x6c21e0,?Reset@Placeable@@UAEXXZ,1,
@@ -8949,6 +8959,7 @@ address,symbol,size,ctype
 0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
 0x6c2520,??_GKnotHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
+0x6c5da0,??0EdRef@@QAE@PAD0HHHPAVEdControl@@H@Z,258,
 0x6c5f80,?CheckType@EdRef@@QAEXH@Z,129,
 0x6c6010,?GetTypeSize@EdRef@@QAEHHH@Z,122,
 0x6c6090,?GetMemberData@EdRef@@UAEXPAXH0H@Z,63,
@@ -8956,14 +8967,14 @@ address,symbol,size,ctype
 0x6c7e90,?GetNumObjects@KnotHelper@@UAEHXZ,27,
 0x6c7eb0,?GetNextObject@KnotHelper@@UAEPAXPAX@Z,88,
 0x6c7f10,?DestroyObject@KnotHelper@@UAEXPAXH@Z,171,
-0x6c7fc0,?DistanceToObject@KnotHelper@@UAEMAAUVuVec@@0PAXPAPAUEdRef@@@Z,214,
-0x6cd250,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@0PAXPAPAUEdRef@@@Z,282,
-0x6cd370,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@PAXPAPAUEdRef@@@Z,342,
+0x6c7fc0,?DistanceToObject@KnotHelper@@UAEMAAUVuVec@@0PAXPAPAVEdRef@@@Z,214,
+0x6cd250,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@0PAXPAPAVEdRef@@@Z,282,
+0x6cd370,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@PAXPAPAVEdRef@@@Z,342,
 0x6cf040,?CreateObject@KnotHelper@@UAEPAXPAXHH@Z,320,
 0x6cf180,?Process@KnotHelper@@UAEXPAXAAUEdInputContext@@@Z,77,
-0x6cf970,?AddMenuItem@EdControl@@UAEXPAUeduimenu_s@@PAUEdRef@@PAX@Z,90,
-0x6cf9d0,?AddMenuItem@EdEnumControl@@UAEXPAUeduimenu_s@@PAUEdRef@@PAX@Z,174,
-0x6cfa80,?AddMenuItem@EdBitControl@@UAEXPAUeduimenu_s@@PAUEdRef@@PAX@Z,294,
+0x6cf970,?AddMenuItem@EdControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,90,
+0x6cf9d0,?AddMenuItem@EdEnumControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,174,
+0x6cfa80,?AddMenuItem@EdBitControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,294,
 0x6d05e0,_cbEdLevelSave,436,
 0x6d07a0,_cbEdLevelSettingsMenu,137,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
@@ -18135,6 +18146,7 @@ address,symbol,size,ctype
 0x76f744,??_7KnotHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f7c0,??_7EdSubSystem@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f888,__real@3ff99999a0000000,8,const f64
+0x76f9a8,??_7EdRef@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9dc,??_7Placeable@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76fa18,??_C@_07OAEEHIKM@No?5Name?$AA@,8,char []
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
@@ -20742,6 +20754,13 @@ address,symbol,size,ctype
 0x7eb3cc,??_R3FogHelper@@8,,
 0x7eb3dc,??_R2FogHelper@@8,,
 0x7eb3e8,??_R1A@?0A@EA@FogHelper@@8,,
+0x7eb454,??_R1A@?0A@EA@EdRef@@8,,
+0x7eb470,??_R3EdRef@@8,,
+0x7eb480,??_R2EdRef@@8,,
+0x7eb48c,??_R13?0A@EA@?$CSListLink@VEdRef@@@@8,,
+0x7eb4a8,??_R3?$CSListLink@VEdRef@@@@8,,
+0x7eb4b8,??_R2?$CSListLink@VEdRef@@@@8,,
+0x7eb4c0,??_R1A@?0A@EA@?$CSListLink@VEdRef@@@@8,,
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -20790,6 +20809,7 @@ address,symbol,size,ctype
 0x7eb9cc,??_R3?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9dc,??_R2?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9e4,??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
+0x7ebe84,??_R4EdRef@@6B@,,
 0x7ebee8,??_R4Placeable@@6B@,,
 0x7ebefc,??_R3Placeable@@8,,
 0x7ebf0c,??_R2Placeable@@8,,

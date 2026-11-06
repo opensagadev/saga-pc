@@ -323,7 +323,8 @@ found:
 
 /* Editor member references into a light. member_offset carries a pseudo id
  * (0x80000002 up) instead of a byte offset. */
-struct EdRefRTL : public EdRef {
+class EdRefRTL : public EdRef {
+  public:
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 };
@@ -439,7 +440,8 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
 
 /* Editor member references into a fog zone; colours are edited as 0..1
  * vectors, alphas and the low-quality density as 0..1 against 128. */
-struct EdRefFog : public EdRef {
+class EdRefFog : public EdRef {
+  public:
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 };

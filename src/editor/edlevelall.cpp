@@ -260,11 +260,6 @@ i16 Placeable::CurrentLedFile;
 Placeable::~Placeable() {
 }
 
-/* Retail's editor trace hook: the format strings were compiled out, leaving an
- * empty variadic call where type mismatches were reported. */
-void EdTrace(const char *, ...) {
-}
-
 /* Layouts of the editor classes declared in saga.h, checked here rather than
  * in the header (assert typedefs there shift codegen in unrelated units). */
 STATIC_ASSERT(sizeof(EdString) == 4);
@@ -289,7 +284,111 @@ STATIC_ASSERT(offsetof(EdRef, size) == 0x18);
 STATIC_ASSERT(offsetof(EdRef, attributes) == 0x1c);
 STATIC_ASSERT(offsetof(EdRef, replication_group) == 0x24);
 
+STATIC_ASSERT(sizeof(EdClass) == 0x18);
+STATIC_ASSERT(offsetof(EdClass, object_interface) == 0x14);
+
 EdRegistry theRegistry;
+
+void EdRegistry::Initialise(VARIPTR &buffer, VARIPTR &, i32 max_classes, i32 max_types, i32 max_mappings,
+                            i32 max_notifiers) {
+    type_capacity = max_types;
+    class_capacity = max_classes;
+    mapping_capacity = max_mappings;
+    notifier_capacity = max_notifiers;
+    type_count = 0;
+    class_count = 0;
+    object_count = 0;
+    notifier_count = 0;
+    types = reinterpret_cast<EdType *>((buffer.addr + 15) & ~15);
+    buffer.addr = (buffer.addr + 15) & ~15;
+    buffer.addr += sizeof(EdType) * type_capacity;
+    memset(types, 0, sizeof(EdType) * type_capacity);
+    classes = reinterpret_cast<EdClass *>((buffer.addr + 15) & ~15);
+    buffer.addr = (buffer.addr + 15) & ~15;
+    buffer.addr += sizeof(EdClass) * class_capacity;
+    memset(classes, 0, sizeof(EdClass) * class_capacity);
+    mappings = reinterpret_cast<NameMapping *>((buffer.addr + 15) & ~15);
+    buffer.addr = (buffer.addr + 15) & ~15;
+    buffer.addr += sizeof(NameMapping) * mapping_capacity;
+    memset(mappings, 0, sizeof(NameMapping) * mapping_capacity);
+    notifiers = reinterpret_cast<EdObjectNotifier **>((buffer.addr + 15) & ~15);
+    buffer.addr = (buffer.addr + 15) & ~15;
+    buffer.addr += sizeof(EdObjectNotifier *) * notifier_capacity;
+    memset(notifiers, 0, sizeof(EdObjectNotifier *) * notifier_capacity);
+    initialised = 1;
+}
+
+void EdRegistry::Flush() {
+    type_count = 0;
+    class_count = 0;
+    object_count = 0;
+}
+
+i32 EdRegistry::RegisterType(char *name, i32 size, void (*serialise)(EdStream &, void *, i32)) {
+    i32 index = type_count++;
+    EdType *type = &types[index];
+    type->name = name;
+    type->size = size;
+    type->serialise = serialise;
+    return index;
+}
+
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+EdClass *EdRegistry::RegisterClass(char *name, EdClassInterface *object_interface, i32 flags) {
+    i32 index = class_count++;
+    EdClass *object_class = &classes[index];
+    object_class->name = name;
+    object_class->object_interface = object_interface;
+    object_class->flags = flags;
+    if (object_interface != NULL)
+        object_interface->object_class = object_class;
+    return object_class;
+}
+#pragma pop_macro("RegisterClass")
+
+i32 EdRegistry::AddMapping(char *source, char *destination) {
+    NameMapping *mapping = &mappings[object_count++];
+    mapping->source = source;
+    mapping->destination = destination;
+    return 1;
+}
+
+char *EdRegistry::MapName(char *name) {
+    for (i32 index = 0; index < object_count; index++) {
+        if (NuStrICmp(mappings[index].source, name) == 0)
+            return mappings[index].destination;
+    }
+    return name;
+}
+
+i32 EdRegistry::GetTypeId(char *name) {
+    for (i32 index = 0; index < type_count; index++) {
+        if (NuStrICmp(types[index].name, name) == 0)
+            return index;
+    }
+    return -1;
+}
+
+EdType *EdRegistry::GetType(char *name) {
+    for (i32 index = 0; index < type_count; index++) {
+        if (NuStrICmp(types[index].name, name) == 0)
+            return &types[index];
+    }
+    return NULL;
+}
+
+i32 EdRegistry::GetClassId(char *name) {
+    for (i32 index = 0; index < class_count; index++) {
+        if (NuStrICmp(classes[index].name, name) == 0)
+            return index;
+    }
+    return -1;
+}
+
+i32 EdRegistry::GetClassId(EdClass *object_class) {
+    return object_class - classes;
+}
 i32 EdType_VuVec;
 i32 EdType_VuMtx;
 i32 EdType_NuVec;
@@ -397,4 +496,12 @@ class KnotHelper : public EdClassInterface {
 STATIC_ASSERT(sizeof(KnotHelper) == 0x14);
 
 KnotHelper::KnotHelper() {
+}
+
+/* Retail's editor trace hook: the format strings were compiled out, leaving an
+ * empty variadic call where the registry reported type mismatches. Defined
+ * last so the calls above keep retail's codegen; EdRef's constructor lives in
+ * edref.cpp because this body would let the compiler drop its one-argument
+ * call. */
+void EdTrace(const char *, ...) {
 }
