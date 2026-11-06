@@ -1454,10 +1454,12 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
     i16 ids[340];
     i32 models[2];
     i32 index;
-    u32 flags = 0;
+    u32 flags;
     AREA_DATA_PC *lost_temple;
     if (WORLD != NULL && WORLD->area != NULL && WORLD->area == HUB_ADATA && bonusmodearcade != 0)
         flags = Arcade_Mode[ArcadeItem.mode].flags;
+    else
+        flags = 0;
     FreePlayModelCount = 0;
     FreePlayResidentCount = 0;
     FreePlayBonusCount = 0;
@@ -1478,20 +1480,22 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
             if (models[index] != -1)
                 World_AppendFreePlayPrivate(models[index]);
         }
-        Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, makefreeplaymodellist != 0);
-        for (i16 *id = ids; *id != -1; ++id)
-            World_AppendFreePlayPrivate(*id);
+        if (makefreeplaymodellist != 0)
+            Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, 1);
+        else
+            Collection_GetIDList(&MiniKitCollection, 0x4000000, 0x4000000, ids, NULL, NULL, 0);
+        for (index = 0; ids[index] != -1; ++index)
+            World_AppendFreePlayPrivate(ids[index]);
         if (FreePlayModelCount == 1)
             PlayerList[1] = PlayerList[0];
         lost_temple = LOSTTEMPLE_ADATA;
         PlayerList[2] = -1;
     } else {
         for (index = 0; index < 2; ++index) {
-            i32 model = models[index];
-            if (model == -1 && Player[index] != NULL)
-                model = ((GAMEOBJECT *)Player[index])->id;
-            if (model != -1)
-                World_AppendFreePlayPrivate(model);
+            if (models[index] != -1)
+                World_AppendFreePlayPrivate(models[index]);
+            else if (Player[index] != NULL)
+                World_AppendFreePlayPrivate((i16)((GAMEOBJECT *)Player[index])->id);
         }
         if (FreePlayModelCount == 1) {
             PlayerList[1] = PlayerList[0];
@@ -1509,7 +1513,7 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
     if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index)
         goto extras;
     if ((ADataList[area].flags & 1) != 0) {
-        i32 second = PlayerList[1];
+        i16 second = PlayerList[1];
         if ((ADataList[area].flags & 4) != 0) {
             if (second == -1 || (CDataList[second].model_flags & 0x4000000) == 0 || Collection_Got(second) == 0)
                 PlayerList[1] = PlayerList[0];
@@ -1533,9 +1537,9 @@ void __cdecl MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, 
                 ids[12] = VehicleBoltId7f1b34Pc;
                 ids[13] = id_NEW_REPUBLIC_GUNSHIP;
                 ids[14] = id_JEDISTARFIGHTERYELLOWEP3;
-                ids[15] = id_ZAMSSPEEDER;
-                ids[16] = VehicleBoltId7f19e8Pc;
-                ids[17] = id_SEBULBASPOD;
+                ids[15] = VehicleBoltId7f19e8Pc;
+                ids[16] = id_SEBULBASPOD;
+                ids[17] = id_ZAMSSPEEDER;
                 ids[18] = FreePlayId007f1b44Pc;
                 ids[19] = FreePlayId007f1b40Pc;
                 ids[20] = FreePlayId007f1a98Pc;
