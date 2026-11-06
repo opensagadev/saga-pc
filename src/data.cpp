@@ -16532,7 +16532,7 @@ extern "C" {
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$Temphgobj")
-    PC_HG_RENDER_VIEW *Temphgobj = 0;
+    NUHGOBJ_EVAL_PC *Temphgobj = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$APITrans_Mtl")

@@ -1012,7 +1012,7 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
 
         if (old_position.x == node->position.x && old_position.y == node->position.y &&
             old_position.z == node->position.z) {
-            NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&node->special_handle);
+            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&node->special_handle);
             if (animation == NULL || (animation->flags & 1) == 0 || animation->tfactor == 0.0f) {
                 node->runtime_flags &= (u8)~0x02;
                 return;

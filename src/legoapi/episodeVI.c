@@ -196,7 +196,7 @@ void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
     i32 index;
     u32 bit;
     NUVEC *position;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     (void)world;
     for (index = 0; index < sarlaccdisco.count; ++index) {
         NuSpecialSetVisibility(&sarlaccdisco.off[index], 0);
@@ -250,15 +250,15 @@ void __cdecl SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
         if (NuSpecialExistsFn(&SarlaccLevSpecialPc[1]))
             NuSpecialSetVisibility(&SarlaccLevSpecialPc[1], 1);
         if (NuSpecialExistsFn(&SarlaccLevSpecialPc[4])) {
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[4]);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[4]);
             if (animation != NULL)
                 animation->flags |= 1;
         }
         if (NuSpecialExistsFn(&SarlaccLevSpecialPc[5]) && NuSpecialExistsFn(&SarlaccLevSpecialPc[6])) {
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[5]);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[5]);
             if (animation != NULL)
                 animation->flags |= 1;
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[6]);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&SarlaccLevSpecialPc[6]);
             if (animation != NULL)
                 animation->flags |= 1;
         }
@@ -389,7 +389,7 @@ static f32 EndorBattleAPartTimePc = 0.75f;
 static f32 EndorBattleAPartTimerPc = 0.75f;
 
 void __cdecl EndorBattleA_Update(WORLDINFO *world) {
-    NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[0]);
+    NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[0]);
     if (animation != NULL && (animation->flags & 1) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
         if (EndorBattleAPartTimerPc >= EndorBattleAPartTimePc)
             AddPartDebris(WORLD->part_debris_sys, 7, NuSpecialGetDrawPos(&LevHSpecial[0]));
@@ -1143,7 +1143,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_1010) == 0x1010);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1f8) == 0x1f8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_area_mask) == 0x2b0);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
+STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
 STATIC_ASSERT(sizeof(AIAREA_PC) == 0x40);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) == 0x2c8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, movement_look_target) == 0x4ac);
@@ -1247,10 +1247,10 @@ void __cdecl EmperorFightA_Update(WORLDINFO *world) {
     floor_active = 0;
     if (hspecial_efloor != NULL && EMPEROR_PACKET->player_floor_mask) {
         for (floor = 0; floor < 20; ++floor) {
-            NUINSTANIM_TIME_VIEW *animation;
+            NUINSTANIM *animation;
             NUVEC *floor_position;
             f64 radius;
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&hspecial_efloor[floor]);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&hspecial_efloor[floor]);
             if (animation == NULL || !(animation->ltime > 1.0f))
                 continue;
             floor_position = NuSpecialGetDrawPos(&hspecial_efloor[floor]);

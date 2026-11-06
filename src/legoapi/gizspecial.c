@@ -348,7 +348,7 @@ ADDGIZMOTYPE_PC *__cdecl GizSpecial_RegisterGizmo(i32 type_id) {
     return &addtype;
 }
 
-i32 GetAnimDirection(NUINSTANIM_TIME_VIEW *animation) {
+i32 GetAnimDirection(NUINSTANIM *animation) {
     if (animation == NULL || animation->tfactor == 0.0f) {
         return -1;
     }

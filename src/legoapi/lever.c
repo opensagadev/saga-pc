@@ -531,9 +531,9 @@ static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
               (f64)0.85f);
     EnableShadowMapRendering(0);
     if (StartupGameFlag1 != 0 && world->level_objects[30].active != 0) {
-        NUINSTANIM_TIME_VIEW *animation;
+        NUINSTANIM *animation;
         animated_special = &world->level_objects[30].special;
-        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(animated_special);
+        animation = (NUINSTANIM *)NuSpecialGetInstAnim(animated_special);
         if (animation != NULL)
             NuAnimEndFrameOld(((NUGSCN *)animated_special->scene)->instance_animation_data[animation->animation_index]);
     }

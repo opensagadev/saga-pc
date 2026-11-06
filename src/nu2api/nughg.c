@@ -1,35 +1,14 @@
 #include "saga.h"
 #include <string.h>
 
-typedef struct SCENE_INGEST_EXTRA_FIELDS_PC {
-    u8 unknown_00[0x60];
-    i32 texture_animation_count;
-    void *texture_animations;
-    u16 *texture_animation_ids;
-    u8 unknown_6c[0xfc];
-    i32 character_version_selector;
-    u8 unknown_16c[0x68];
-} SCENE_INGEST_EXTRA_FIELDS_PC;
-STATIC_ASSERT(sizeof(SCENE_INGEST_EXTRA_FIELDS_PC) == 0x1d4);
-STATIC_ASSERT(offsetof(SCENE_INGEST_EXTRA_FIELDS_PC, texture_animation_count) == 0x60);
-STATIC_ASSERT(offsetof(SCENE_INGEST_EXTRA_FIELDS_PC, texture_animations) == 0x64);
-STATIC_ASSERT(offsetof(SCENE_INGEST_EXTRA_FIELDS_PC, texture_animation_ids) == 0x68);
-STATIC_ASSERT(offsetof(SCENE_INGEST_EXTRA_FIELDS_PC, character_version_selector) == 0x168);
-typedef struct SCENE_INGEST_PC {
-    union {
-        NUGSCN scene;
-        SCENE_INGEST_EXTRA_FIELDS_PC ingestion;
-    };
-    u8 unknown_1d4[0x20];
-    u32 legacy_format;
-    u8 unknown_1f8[0x14];
-} SCENE_INGEST_PC;
-STATIC_ASSERT(sizeof(NUGSCN) == 0x1d4);
-STATIC_ASSERT(sizeof(SCENE_INGEST_PC) == 0x20c);
-STATIC_ASSERT(offsetof(SCENE_INGEST_PC, legacy_format) == 0x1f4);
+STATIC_ASSERT(sizeof(NUGSCN) == 0x20c);
+STATIC_ASSERT(offsetof(NUGSCN, num_texture_anims) == 0x60);
+STATIC_ASSERT(offsetof(NUGSCN, texture_anim_ids) == 0x68);
+STATIC_ASSERT(offsetof(NUGSCN, character_version_selector) == 0x168);
+STATIC_ASSERT(offsetof(NUGSCN, legacy_format) == 0x1f4);
 typedef struct SCENE_INGEST_PTR_BLOCK_PC {
     u32 table_relative_offset;
-    SCENE_INGEST_PC *scene;
+    NUGSCN *scene;
 } SCENE_INGEST_PTR_BLOCK_PC;
 STATIC_ASSERT(sizeof(SCENE_INGEST_PTR_BLOCK_PC) == 8);
 STATIC_ASSERT(offsetof(SCENE_INGEST_PTR_BLOCK_PC, scene) == 4);
@@ -73,7 +52,7 @@ static const char SceneIngestSceneVersionWarningPc[] =
     "Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d";
 
 static NUGSCN *NuReadGraphicsData(VARIPTR *buffer, VARIPTR *buffer_end, char *path, SCENE_INGEST_FILE_PC *scene_data) {
-    SCENE_INGEST_PC *scene;
+    NUGSCN *scene;
     SCENE_INGEST_TEXTURE_ANIMATION_PC *animations;
     SCENE_INGEST_TEXTURE_PROGRAM_PC *program;
     i32 version, i;
@@ -99,8 +78,8 @@ static NUGSCN *NuReadGraphicsData(VARIPTR *buffer, VARIPTR *buffer_end, char *pa
         NuFileClose(file);
     }
     version = scene_data->version;
-    scene = *(SCENE_INGEST_PC **)NuPtrBlockFix(&scene_data->pointer_block);
-    if (scene->ingestion.character_version_selector > 0) {
+    scene = *(NUGSCN **)NuPtrBlockFix(&scene_data->pointer_block);
+    if (scene->character_version_selector > 0) {
         if (version < 0 || version > 2)
             NuSevereWarning(SceneIngestCharacterVersionWarningPc, version, 0, 2);
     } else if (version < 0 || version > 2) {
@@ -108,34 +87,34 @@ static NUGSCN *NuReadGraphicsData(VARIPTR *buffer, VARIPTR *buffer_end, char *pa
     }
     if (version < 2)
         scene->legacy_format = 1;
-    NuGScnCreatePS(&scene->scene, buffer, buffer_end);
-    for (i = 0; i < scene->scene.texture_count; ++i) {
-        NUTEXDIM_PC *texture = scene->scene.textures[i];
+    NuGScnCreatePS(scene, buffer, buffer_end);
+    for (i = 0; i < scene->texture_count; ++i) {
+        NUTEXDIM_PC *texture = scene->textures[i];
         if (texture->ref_count < 0)
-            scene->scene.texture_ids[i] = (i32)0xabcdabcd;
+            scene->texture_ids[i] = (i32)0xabcdabcd;
         else
-            scene->scene.texture_ids[i] = NuTexCreateNative(texture);
+            scene->texture_ids[i] = NuTexCreateNative(texture);
     }
-    NuGScnFixupTIDs(&scene->scene);
-    animations = (SCENE_INGEST_TEXTURE_ANIMATION_PC *)scene->scene.texture_animations;
+    NuGScnFixupTIDs(scene);
+    animations = (SCENE_INGEST_TEXTURE_ANIMATION_PC *)scene->texture_animations;
     texture_count = 0;
-    for (i = 0; i < scene->ingestion.texture_animation_count; ++i) {
+    for (i = 0; i < scene->num_texture_anims; ++i) {
         end = (u32)animations[i].texture_ids + (i32)animations[i].texture_count;
         if (texture_count < end)
             texture_count = end;
     }
     for (end = 0; end < texture_count; ++end) {
-        u16 index = scene->ingestion.texture_animation_ids[end];
-        scene->ingestion.texture_animation_ids[end] = (u16)scene->scene.texture_ids[index];
+        u16 index = scene->texture_anim_ids[end];
+        scene->texture_anim_ids[end] = (u16)scene->texture_ids[index];
     }
-    for (i = 0; i < scene->ingestion.texture_animation_count; ++i) {
+    for (i = 0; i < scene->num_texture_anims; ++i) {
         SCENE_INGEST_TEXTURE_ANIMATION_PC *animation =
-            &((SCENE_INGEST_TEXTURE_ANIMATION_PC *)scene->scene.texture_animations)[i];
+            &((SCENE_INGEST_TEXTURE_ANIMATION_PC *)scene->texture_animations)[i];
         animation->next = NULL;
         animation->previous = NULL;
-        animation->texture_ids = scene->ingestion.texture_animation_ids + (u32)animation->texture_ids;
+        animation->texture_ids = scene->texture_anim_ids + (u32)animation->texture_ids;
         animation->flags = 0;
-        animation->material = scene->scene.materials[(u32)animation->material];
+        animation->material = scene->materials[(u32)animation->material];
         program = (SCENE_INGEST_TEXTURE_PROGRAM_PC *)GHGTextureProgramsPC;
         while (program != NULL) {
             if (NuStrICmp(animation->program_name, program->name) == 0)
@@ -144,18 +123,18 @@ static NUGSCN *NuReadGraphicsData(VARIPTR *buffer, VARIPTR *buffer_end, char *pa
         }
         animation->environment = NuTexAnimEnvCreate(buffer, animation->material, animation->texture_ids, program);
     }
-    for (i = 0; i < scene->ingestion.texture_animation_count - 1; ++i) {
-        animations = (SCENE_INGEST_TEXTURE_ANIMATION_PC *)scene->scene.texture_animations;
+    for (i = 0; i < scene->num_texture_anims - 1; ++i) {
+        animations = (SCENE_INGEST_TEXTURE_ANIMATION_PC *)scene->texture_animations;
         animations[i].next = &animations[i + 1];
         animations[i + 1].previous = &animations[i];
     }
-    NuTexAnimAddList(scene->scene.texture_animations);
-    if (scene->scene.display_list != NULL)
-        NuDisplaySceneAdd(scene->scene.display_list);
-    NuGScnFixupPS(&scene->scene);
-    scene->scene.additional_scenes = NULL;
-    scene->scene.frame_reset_marker = 0;
-    return &scene->scene;
+    NuTexAnimAddList(scene->texture_animations);
+    if (scene->display_list != NULL)
+        NuDisplaySceneAdd(scene->display_list);
+    NuGScnFixupPS(scene);
+    scene->additional_scenes = NULL;
+    scene->frame_reset_marker = 0;
+    return scene;
 }
 
 NUGSCN *__cdecl NuGScnRead(VARIPTR *buffer, VARIPTR buffer_end, char *path) {
@@ -164,21 +143,21 @@ NUGSCN *__cdecl NuGScnRead(VARIPTR *buffer, VARIPTR buffer_end, char *path) {
 
 NUGSCN *__cdecl PCGraphicsSceneReadClones(VARIPTR *buffer, VARIPTR buffer_end, char *path, i32 count) {
     NUGSCN *scene = NuReadGraphicsData(buffer, &buffer_end, path, NULL);
-    SCENE_INGEST_PC **clones;
+    NUGSCN **clones;
     i32 i;
     if (scene == NULL)
         return NULL;
     if (count > 1) {
         buffer->addr = (buffer->addr + 31) & ~31u;
-        clones = (SCENE_INGEST_PC **)buffer->void_ptr;
+        clones = (NUGSCN **)buffer->void_ptr;
         buffer->addr += count * sizeof(*clones);
         for (i = 0; i < count - 1; ++i) {
             buffer->addr = (buffer->addr + 31) & ~31u;
-            clones[i] = (SCENE_INGEST_PC *)buffer->void_ptr;
+            clones[i] = (NUGSCN *)buffer->void_ptr;
             buffer->addr += sizeof(*clones[i]);
             memcpy(clones[i], scene, sizeof(*clones[i]));
-            clones[i]->scene.display_list = NuDisplaySceneClone(scene->display_list, buffer);
-            clones[i]->scene.display_list->gscene = &clones[i]->scene;
+            clones[i]->display_list = NuDisplaySceneClone(scene->display_list, buffer);
+            clones[i]->display_list->gscene = clones[i];
         }
         clones[count - 1] = NULL;
         scene->additional_scenes = (NUGSCN **)clones;

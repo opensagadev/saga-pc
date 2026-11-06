@@ -51,7 +51,7 @@ static __forceinline f32 EdAnimFabsPc(f32 value) {
 }
 
 void __cdecl edanimUpdateObjects(f32 elapsed) {
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     NUSPECIALHANDLE special;
     f32 seconds;
     i32 index, particle_index, sound_index, play;
@@ -62,7 +62,7 @@ void __cdecl edanimUpdateObjects(f32 elapsed) {
         animation = NULL;
         if (edanim_page_scene[AnimParams[index].page] != NULL) {
             NuGScnGetSpecial(&special, edanim_page_scene[AnimParams[index].page], AnimParams[index].instance_id);
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&special);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&special);
             NuSpecialGetInstanceix(&special);
         }
         if (animation != NULL) {

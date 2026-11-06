@@ -32,7 +32,7 @@ void __cdecl KashyyykD_Reset(WORLDINFO *world) {
         sprintf(name, "ball%i", i + 1);
         if (NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1)) {
             NuSpecialSetVisibility(&LevHSpecial[i], 0);
-            LevInstAnimResetPc.animations[i] = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            LevInstAnimResetPc.animations[i] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
             LevInstAnimResetPc.animations[i]->ltime = 0.0f;
             LevInstAnimResetPc.animations[i]->flags &= ~1u;
         }

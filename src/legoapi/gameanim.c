@@ -107,7 +107,7 @@ void __cdecl GameAnimSet_AddToSystemList(GAMEANIMSET *set) {
 
 void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     i32 all_at_end = 1;
     i32 all_at_start = 1;
     f32 direction;
@@ -229,7 +229,7 @@ void __cdecl GameAnimSet_RemoveAllObjects(GAMEANIMSET *set) {
 
 void __cdecl GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor) {
     GAMEANIMOBJ *object;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     f32 direction;
 
     if (set == NULL) {
@@ -262,7 +262,7 @@ void __cdecl GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale) {
 
 i32 __cdecl GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     i32 animated_count = 0;
     i32 repeating_count = 0;
     f32 direction;
@@ -313,7 +313,7 @@ i32 __cdecl GameAnimSet_Reset(GAMEANIMSET *set) {
 
 i32 __cdecl GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
     GAMEANIMOBJ *object;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     f32 direction;
     f32 current_frame;
 
@@ -375,7 +375,7 @@ i32 __cdecl GameAnimSet_Stop(GAMEANIMSET *set) {
 
 i32 __cdecl GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating) {
     GAMEANIMOBJ *object;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
 
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
@@ -418,7 +418,7 @@ i32 __cdecl GameAnimSet_JumpToStart(GAMEANIMSET *set) {
 
 void __cdecl GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position) {
     GAMEANIMOBJ *object;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     f32 direction;
 
     if (set == NULL) {
@@ -585,7 +585,7 @@ GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *sp
         object_index = (i32)(object - pool->objects);
         object->object_data = (u8 *)pool->object_data + pool->object_data_size * object_index;
         object->special = *special;
-        object->instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&object->special);
+        object->instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(&object->special);
         if (object->instance_animation != NULL) {
             object->animation =
                 ((NUGSCN *)object->special.scene)->instance_animation_data[object->instance_animation->animation_index];
@@ -693,7 +693,7 @@ void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
 }
 
 void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
-    NUINSTANIM_TIME_VIEW *instance_animation;
+    NUINSTANIM *instance_animation;
     ANI3_HEADER_PC *animation;
     NUGSCN *scene;
     NUMTX *instance_matrix;
@@ -701,7 +701,7 @@ void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 up
     if (special == NULL || matrix == NULL) {
         return;
     }
-    instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(special);
+    instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(special);
     if (instance_animation != NULL) {
         scene = (NUGSCN *)special->scene;
         animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
@@ -726,13 +726,13 @@ void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 up
 }
 
 void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
-    NUINSTANIM_TIME_VIEW *instance_animation;
+    NUINSTANIM *instance_animation;
     ANI3_HEADER_PC *animation;
     NUGSCN *scene;
     NUMTX *instance_matrix;
     i32 animation_index;
 
-    instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(special);
+    instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(special);
     if (instance_animation == NULL) {
         return;
     }
@@ -755,7 +755,7 @@ void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
 f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
     f32 end_frame;
     f32 position;
-    NUINSTANIM_TIME_VIEW *animation = NuSpecialGetInstAnim(special);
+    NUINSTANIM *animation = NuSpecialGetInstAnim(special);
     if (animation == NULL || special->scene->instance_animation_data[animation->animation_index] == NULL) {
         return 0.0f;
     }

@@ -63,7 +63,7 @@ extern "C" TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *object, f32 ran
         if (teleport->active != 0 || teleport->enabled == 0)
             continue;
         if (NuSpecialExistsFn(&teleport->blocking_special)) {
-            NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&teleport->blocking_special);
+            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&teleport->blocking_special);
             if (animation != NULL) {
                 if ((animation->flags & 1) || animation->ltime == 1.0f)
                     continue;

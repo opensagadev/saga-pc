@@ -391,7 +391,7 @@ i32 __cdecl MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_pla
 
 void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     NUMTX matrix;
-    NUINSTANIM_TIME_VIEW *instance_animation;
+    NUINSTANIM *instance_animation;
     f32 **animation;
     NUMTX *instance_matrix;
     f32 end_frame;

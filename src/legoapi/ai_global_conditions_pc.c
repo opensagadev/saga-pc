@@ -544,7 +544,7 @@ void *__cdecl Condition_AnimationFinishedInitPc(AISYS_PC *system, char *name, AI
 
 f32 __cdecl Condition_AnimationFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                           char *name, void *argument) {
-    NUINSTANIM_TIME_VIEW *instance = (NUINSTANIM_TIME_VIEW *)argument;
+    NUINSTANIM *instance = (NUINSTANIM *)argument;
     void *animation;
     f64 time;
     if (instance != NULL && (instance->flags & 1) == 0) {
@@ -696,7 +696,7 @@ f32 __cdecl Condition_TakeOverRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
 
 STATIC_ASSERT(sizeof(NUSPECIALHANDLE) == 0xc);
 STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
+STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
 
 void *__cdecl Condition_RigidAnimFrameInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     NUSPECIALHANDLE special;
@@ -709,7 +709,7 @@ void *__cdecl Condition_RigidAnimFrameInitPc(AISYS_PC *system, char *name, AISCR
 f32 __cdecl Condition_RigidAnimFramePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                        void *argument) {
     if (argument != NULL)
-        return ((NUINSTANIM_TIME_VIEW *)argument)->ltime;
+        return ((NUINSTANIM *)argument)->ltime;
     return 1.0f;
 }
 

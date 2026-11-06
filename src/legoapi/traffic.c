@@ -76,13 +76,13 @@ static void Traffic_vehicle(NUFPAR_PC *parser) {
 static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {{"yoffset", TrafficAnim_yoffset}, {NULL, NULL}};
 static void Traffic_animobj(NUFPAR_PC *parser) {
     NUSPECIALHANDLE special;
-    NUINSTANIM_TIME_VIEW *instance;
+    NUINSTANIM *instance;
     TRAFFICANIM_PC *animation;
     if (NuFParGetWord(parser) == 0)
         return;
     if (NuSpecialFind(parse_worldinfo->current_gscn, &special, parser->word_buffer_ptr, 1) == 0)
         return;
-    instance = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&special);
+    instance = (NUINSTANIM *)NuSpecialGetInstAnim(&special);
     if (instance == NULL || parse_trafficanimsys->animation_count >= 64)
         return;
     animation = &parse_trafficanimsys->animations[parse_trafficanimsys->animation_count++];

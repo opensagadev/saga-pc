@@ -255,7 +255,7 @@ void AddMiscPickups(NUVEC *position, i32 player_id, i32 coins, i32 torpedoes) {
 
 typedef struct SPECIAL_MINIKIT_PC {
     NUSPECIALHANDLE special;
-    NUINSTANIM_TIME_VIEW *instance_animation;
+    NUINSTANIM *instance_animation;
     void *animation_data;
     f32 end_frame;
     char special_name[16];
@@ -339,7 +339,7 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         } else if (NuSpecialExistsFn(&cursor->special) == 0)
             continue;
         if (NuSpecialExistsFn(&cursor->special) != 0) {
-            cursor->instance_animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&cursor->special);
+            cursor->instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(&cursor->special);
             if (cursor->instance_animation != NULL) {
                 cursor->animation_data = ((NUGSCN *)cursor->special.scene)
                                              ->instance_animation_data[cursor->instance_animation->animation_index];
@@ -430,7 +430,7 @@ void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
     SPECIAL_MINIKIT_PC *item;
     GIZMOPICKUP_PC *pickup;
     GIZMO_PICKUP_TYPE_PC *type;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     NUVEC scale, *position;
     NUMTX matrix;
     u16 spin, tilt;

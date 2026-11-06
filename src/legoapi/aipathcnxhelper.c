@@ -257,7 +257,7 @@ STATIC_ASSERT(offsetof(GIZBUILDIT_PC, build_state) == 0x6d);
 STATIC_ASSERT(offsetof(struct ZIPUP_s, flags) == 0x68);
 void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
     struct AIPATHCNXCONTROLLER_s *controller;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     CONTROLLER_CUT_VIEW_PC *cut;
     void *data;
     i32 end, frame;
@@ -274,7 +274,7 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
             case 0:
                 if ((controller->flags_word & 4) != 0 && NuSpecialGetVisibilityFn(&controller->special) == 0)
                     break;
-                animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&controller->special);
+                animation = (NUINSTANIM *)NuSpecialGetInstAnim(&controller->special);
                 if (animation == NULL)
                     goto frame_one;
                 data = ((NUGSCN *)controller->special.scene)->instance_animation_data[animation->animation_index];

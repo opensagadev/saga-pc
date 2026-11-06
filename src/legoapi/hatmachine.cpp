@@ -543,12 +543,12 @@ extern "C" void __cdecl HatMachine_Draw(void *world_ptr, void *, f32) {
         (f64)0.85f;
     EnableShadowMapRendering(0);
     NUSPECIALHANDLE *specials[4];
-    NUINSTANIM_TIME_VIEW *animations[4];
+    NUINSTANIM *animations[4];
     f32 end_frames[4];
     if (StartupGameFlag1 != 0) {
         for (i32 effect = 0; effect < 4; ++effect) {
             specials[effect] = &world->level_objects[HatMachineDrawSpecialIndicesPc[effect]].special;
-            animations[effect] = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(specials[effect]);
+            animations[effect] = (NUINSTANIM *)NuSpecialGetInstAnim(specials[effect]);
             if (specials[effect] != NULL && animations[effect] != NULL)
                 end_frames[effect] = NuAnimEndFrameOld(
                     ((NUGSCN *)specials[effect]->scene)->instance_animation_data[animations[effect]->animation_index]);

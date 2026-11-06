@@ -222,7 +222,7 @@ void __cdecl CloudCityEscapeC_Update(WORLDINFO *world) {
     TerSurface[14].flags = 0x2002;
     for (i = 0; i < 3; i++) {
         if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
-            NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
             if (animation != NULL && animation->ltime == 1.0f) {
                 PlaySfx("env_steam_lp", NuSpecialGetDrawPos(&LevHSpecial[i]));
                 TerSurface[14].flags |= 0x4042;

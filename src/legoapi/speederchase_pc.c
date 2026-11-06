@@ -6,9 +6,9 @@ STATIC_ASSERT(offsetof(WORLDINFO, current_gscn) == 0x13c);
 STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
 STATIC_ASSERT(offsetof(GAMEOBJECT, rider) == 0xcd0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef4) == 0xef4);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, flags) == 0x50);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, animation_index) == 0x5c);
+STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
+STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
+STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 
 SPEEDERCHASE_NETPACKET_PC *SpeederChaseNetPacketPc = NULL;
 i32 SpeederChaseState0Pc = 0;
@@ -40,7 +40,7 @@ void __cdecl SpeederChaseA_Init(WORLDINFO *world) {
 
 void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
     GAMEOBJECT *object;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     NUVEC *position;
     void *animation_data;
     f64 animation_time;
@@ -77,7 +77,7 @@ void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 9; ++i) {
-        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+        animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
         position = NuSpecialGetDrawPos(&LevHSpecial[i]);
         if (animation != NULL) {
             animation_data = WORLD->current_gscn->instance_animation_data[animation->animation_index];

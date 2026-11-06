@@ -718,14 +718,11 @@ void __cdecl WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_spe
 }
 
 typedef struct PC_ANIMATION_RENDER_VIEW PC_ANIMATION_RENDER_VIEW;
-typedef struct PC_CHARACTERDATA_RENDER_VIEW PC_CHARACTERDATA_RENDER_VIEW;
 typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
 typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
 typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
 typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
 typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
-typedef struct PC_HG_RENDER_PART PC_HG_RENDER_PART;
-typedef struct PC_HG_RENDER_VIEW PC_HG_RENDER_VIEW;
 typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
 typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
 
@@ -749,33 +746,6 @@ struct PC_HG_SHADOW_GROUP {
     void *third_shape;
     u8 ellipse_count, cylinder_count, third_count, joint_index;
 };
-struct PC_HG_RENDER_PART {
-    char *name;
-    NUSPECIALHANDLE **rigid;
-    NUSPECIALHANDLE *smooth;
-    NUSPECIALHANDLE **alternate_rigid;
-    NUSPECIALHANDLE *alternate_smooth;
-};
-struct PC_HG_RENDER_VIEW {
-    u8 unknown_000[0x168];
-    i32 joint_count;
-    NUHGOBJ_EVAL_JOINT_PC *joints;
-    NUMTX *bind_matrices;
-    NUMTX *inverse_bind;
-    i32 joint_override_map_count;
-    u8 *joint_override_map;
-    u8 unknown_180[4];
-    NUHGOBJ_POI_PC *points;
-    i32 point_index_count;
-    u8 *point_index_map;
-    i32 render_count;
-    PC_HG_RENDER_PART *render_parts;
-    u8 unknown_198[4];
-    PC_HG_SHADOW_GROUP *shadow_groups;
-    u8 suppress_shadow_points;
-    u8 unknown_1a1[11];
-    NUVEC bounds_min, bounds_max;
-};
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
@@ -787,26 +757,6 @@ STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
-STATIC_ASSERT(sizeof(PC_HG_RENDER_PART) == 20);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, rigid) == 4);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, smooth) == 8);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, alternate_rigid) == 12);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_PART, alternate_smooth) == 16);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_count) == 0x168);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joints) == 0x16c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bind_matrices) == 0x170);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, inverse_bind) == 0x174);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_override_map_count) == 0x178);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, joint_override_map) == 0x17c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, points) == 0x184);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, point_index_count) == 0x188);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, point_index_map) == 0x18c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, render_count) == 0x190);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, render_parts) == 0x194);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, shadow_groups) == 0x19c);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, suppress_shadow_points) == 0x1a0);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bounds_min) == 0x1ac);
-STATIC_ASSERT(offsetof(PC_HG_RENDER_VIEW, bounds_max) == 0x1b8);
 STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
 STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);
@@ -1002,16 +952,10 @@ struct PC_ANIMATION_RENDER_VIEW {
     ANIMPACKET_PC packet;
     f32 overlay_weight;
 };
-struct PC_CHARACTERDATA_RENDER_VIEW {
-    u8 unknown_00[0x28];
-    CHARACTER_EFFECT_CONFIG_PC *effects;
-    u8 unknown_2c[0x20];
-};
 STATIC_ASSERT(offsetof(PC_ANIMATION_RENDER_VIEW, overlay_weight) == 0x44);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_count) == 0x28e);
 STATIC_ASSERT(offsetof(GAMEOBJECT, surface_effect_id) == 0x290);
-STATIC_ASSERT(offsetof(PC_CHARACTERDATA_RENDER_VIEW, effects) == 0x28);
-STATIC_ASSERT(sizeof(PC_CHARACTERDATA_RENDER_VIEW) == 0x4c);
+STATIC_ASSERT(offsetof(APICHARACTERDATA, effects) == 0x28);
 
 extern i32 drawcharactermodel_locatorsupdated, drawcharactermodel_nobsa, drawcharactermodel_noani,
     drawcharactermodel_restpose, drawcharactermodel_keepmergeaction;
@@ -1089,8 +1033,8 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
         i32 evaluated;
         i32 render_flags;
 
-        bounds_min = ((PC_HG_RENDER_VIEW *)(model->hierarchy))->bounds_min;
-        bounds_max = ((PC_HG_RENDER_VIEW *)(model->hierarchy))->bounds_max;
+        bounds_min = model->hierarchy->bounds_min;
+        bounds_max = model->hierarchy->bounds_max;
         if ((object == NULL || (object->flags_1f8 & 0x200) == 0) &&
             NuCameraClipTestExtents(&bounds_min, &bounds_max, matrix, 0.0f, 0) == 0) {
             if (evaluate_only == 0)
@@ -1244,11 +1188,10 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
         PCStoreModelLocatorCoordinates(model, matrix, output_matrices, locator_positions, locator_matrices);
         drawcharactermodel_locatorsupdated = 1;
 
-        if (locator_matrices != NULL && paused == 0 && character_data != NULL &&
-            ((PC_CHARACTERDATA_RENDER_VIEW *)(character_data))->effects != NULL) {
+        if (locator_matrices != NULL && paused == 0 && character_data != NULL && character_data->effects != NULL) {
             AddAnimEffects(model, character_data, animation, locator_matrices, object,
-                           ((PC_CHARACTERDATA_RENDER_VIEW *)(&apicharsys->char_data[model->model_id]))->effects, 0,
-                           frame_time, footprint_callback, debris_sys);
+                           apicharsys->char_data[model->model_id].effects, 0, frame_time, footprint_callback,
+                           debris_sys);
         }
 
         render_flags = object == NULL || (object->flags_1f8 & 0x200) == 0;
@@ -1282,7 +1225,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *ch
                 object->surface_effect_count = 0;
             }
             if (reflection_matrix != NULL) {
-                ((PC_HG_RENDER_VIEW *)(model->hierarchy))->suppress_shadow_points = 1;
+                model->hierarchy->suppress_shadow_points = 1;
                 if (object == NULL || (object->flags_1f8 & 0x1000) == 0)
                     PCSpecialForcedLOD = 1;
                 NuRndrStartReflectionRender(result);
@@ -1309,7 +1252,7 @@ cleanup:
 }
 
 void NuHGobjRestrictEvaluation(NUHGOBJ_EVAL_PC *object) {
-    Temphgobj = ((PC_HG_RENDER_VIEW *)(object));
+    Temphgobj = object;
     if (object != NULL) {
         TempNumJoints = (u8)object->joint_count;
         object->joint_count = 1;
@@ -1328,7 +1271,7 @@ void APITransparentCharDraw(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render
     i32 i;
     i32 six;
     i32 zero;
-    PC_HG_RENDER_VIEW *object;
+    NUHGOBJ_EVAL_PC *object;
     i32 old;
 
     six = 0;
@@ -1350,7 +1293,7 @@ void APITransparentCharDraw(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render
         }
     PCSpecialForcedMaterial = APITrans_Mtl[0];
     NuSpecialForceMaterials(2, APITrans_Mtl);
-    object = ((PC_HG_RENDER_VIEW *)(hierarchy));
+    object = hierarchy;
     old = object->suppress_shadow_points;
     object->suppress_shadow_points = 1;
     NuSpecialConstAlpha(1, 0.0f);

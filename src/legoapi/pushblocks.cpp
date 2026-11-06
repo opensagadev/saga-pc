@@ -411,7 +411,7 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
     ResetPushProgress(opaque, progress);
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         block->animation_positions = 0;
-        NUINSTANIM_TIME_VIEW *animation = static_cast<NUINSTANIM_TIME_VIEW *>(NuSpecialGetInstAnim(&block->special));
+        NUINSTANIM *animation = static_cast<NUINSTANIM *>(NuSpecialGetInstAnim(&block->special));
         if (animation != NULL) {
             block->animation_positions = static_cast<i32>(NuAnimEndFrameOld(
                 static_cast<NUGSCN *>(block->special.scene)->instance_animation_data[animation->animation_index]));

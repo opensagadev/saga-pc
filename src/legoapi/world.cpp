@@ -38,30 +38,12 @@ extern "C" {
     STATIC_ASSERT(offsetof(WORLDINFO, level_min) == 0x144);
     STATIC_ASSERT(offsetof(WORLDINFO, level_max) == 0x150);
 
-    typedef struct scene_instance_transfer_pc_s {
-        u8 unknown_0000[0x48];
-        NUINSTANIM_TIME_VIEW *animation;
-        u8 unknown_004c[4];
-    } SCENE_INSTANCE_TRANSFER_PC;
-    STATIC_ASSERT(offsetof(SCENE_INSTANCE_TRANSFER_PC, animation) == 0x48);
-    STATIC_ASSERT(sizeof(SCENE_INSTANCE_TRANSFER_PC) == 0x50);
-
-    typedef struct scene_transfer_pc_s {
-        u8 unknown_0000[0x1c];
-        i32 instance_count;
-        SCENE_INSTANCE_TRANSFER_PC *instances;
-        u8 unknown_0024[0xf4 - 0x24];
-        i32 portal_instance_count;
-        u8 unknown_00f8[4];
-        NUVEC4 *portal_bounds;
-        u8 unknown_0100[0x10];
-        NUDISPLAY_LIST_PC *display_list;
-    } SCENE_TRANSFER_PC;
-    STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, instance_count) == 0x1c);
-    STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, instances) == 0x20);
-    STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, portal_instance_count) == 0xf4);
-    STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, portal_bounds) == 0xfc);
-    STATIC_ASSERT(offsetof(SCENE_TRANSFER_PC, display_list) == 0x110);
+    STATIC_ASSERT(offsetof(NUINSTANCE, animation) == 0x48);
+    STATIC_ASSERT(sizeof(NUINSTANCE) == 0x50);
+    STATIC_ASSERT(offsetof(NUGSCN, instances) == 0x20);
+    STATIC_ASSERT(offsetof(NUGSCN, portal_boxes) == 0xfc);
+    STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
+#define WORLD_PORTAL_BOUNDS_PC(scene) ((NUVEC4 *)(scene)->portal_boxes)
 
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns.clear_progress_fn) == 0x7c);
     STATIC_ASSERT(offsetof(GIZMOTYPE_PC, progress) == 0x98);
@@ -250,7 +232,7 @@ extern "C" {
         count = NuSpecialGetNumSpecials(scene);
         for (i = 0; i < count; ++i) {
             SCENESPECIALPROGRESS_PC *saved = &progress->specials[i];
-            NUINSTANIM_TIME_VIEW *animation;
+            NUINSTANIM *animation;
             i32 visible;
 
             if (i == 0) {
@@ -266,7 +248,7 @@ extern "C" {
             if (scene->instance_animation_data == NULL) {
                 continue;
             }
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&special);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&special);
             if (animation == NULL || scene->instance_animation_data[animation->animation_index] == NULL) {
                 continue;
             }
@@ -315,15 +297,14 @@ extern "C" {
     }
 
     __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
-        SCENE_TRANSFER_PC *view = (SCENE_TRANSFER_PC *)scene;
-        SCENE_INSTANCE_TRANSFER_PC *instance;
+        NUINSTANCE *instance;
         i32 count;
 
-        if (scene == NULL || view->display_list != NULL) {
+        if (scene == NULL || scene->display_list != NULL) {
             return;
         }
-        count = view->instance_count;
-        instance = view->instances + count;
+        count = scene->num_instances;
+        instance = scene->instances + count;
         if (count == 0) {
             return;
         }
@@ -337,7 +318,7 @@ extern "C" {
     }
 
     void __cdecl CalculateWorldSize(WORLDINFO *world) {
-        SCENE_TRANSFER_PC *scene;
+        NUGSCN *scene;
         NUVEC minimum = v000;
         NUVEC maximum = v000;
         i32 index;
@@ -345,25 +326,25 @@ extern "C" {
         if (world == NULL || world->current_gscn == NULL) {
             return;
         }
-        scene = (SCENE_TRANSFER_PC *)world->current_gscn;
+        scene = world->current_gscn;
         for (index = 0; index < scene->portal_instance_count * 2; index += 2) {
             NUVEC box_minimum;
             NUVEC box_maximum;
 
             if (scene->display_list != NULL && (scene->display_list->render_flags & 0x4000) != 0) {
-                box_minimum.x = scene->portal_bounds[index].x - scene->portal_bounds[index + 1].x;
-                box_minimum.y = scene->portal_bounds[index].y - scene->portal_bounds[index + 1].y;
-                box_minimum.z = scene->portal_bounds[index].z - scene->portal_bounds[index + 1].z;
-                box_maximum.x = scene->portal_bounds[index].x + scene->portal_bounds[index + 1].x;
-                box_maximum.y = scene->portal_bounds[index].y + scene->portal_bounds[index + 1].y;
-                box_maximum.z = scene->portal_bounds[index + 1].z + scene->portal_bounds[index].z;
+                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index].x - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].x;
+                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index].y - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].y;
+                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index].z - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].z;
+                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index].x + WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].x;
+                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index].y + WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].y;
+                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].z + WORLD_PORTAL_BOUNDS_PC(scene)[index].z;
             } else {
-                box_minimum.x = scene->portal_bounds[index].x;
-                box_minimum.y = scene->portal_bounds[index].y;
-                box_minimum.z = scene->portal_bounds[index].z;
-                box_maximum.x = scene->portal_bounds[index + 1].x;
-                box_maximum.y = scene->portal_bounds[index + 1].y;
-                box_maximum.z = scene->portal_bounds[index + 1].z;
+                box_minimum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index].x;
+                box_minimum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index].y;
+                box_minimum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index].z;
+                box_maximum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].x;
+                box_maximum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].y;
+                box_maximum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].z;
             }
             if (box_minimum.x < minimum.x)
                 minimum.x = box_minimum.x;
@@ -1791,7 +1772,7 @@ extern "C" void __cdecl Credits_Draw_Game(WORLDINFO *world) {
 void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
     i32 count, i;
     NUSPECIALHANDLE special;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     ANI3_HEADER_PC *data;
     NUMTX *base;
     u32 packed;
@@ -1812,7 +1793,7 @@ void __cdecl ResetScene(NUGSCN *scene, SCENEPROGRESS *progress) {
         NuSpecialUpdate(&special);
         if (scene->instance_animation_data == NULL)
             continue;
-        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&special);
+        animation = (NUINSTANIM *)NuSpecialGetInstAnim(&special);
         if (animation == NULL)
             continue;
         data = (ANI3_HEADER_PC *)scene->instance_animation_data[animation->animation_index];

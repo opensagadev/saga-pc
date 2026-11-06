@@ -62,7 +62,7 @@ void PortalDoors_Update(WORLDINFO *world) {
 
     index = 0;
     do {
-        NUINSTANIM_TIME_VIEW *animation = NuSpecialGetInstAnim(&door->special);
+        NUINSTANIM *animation = NuSpecialGetInstAnim(&door->special);
         if (animation != NULL) {
             const f32 end_frame =
                 NuAnimEndFrameOld(door->special.scene->instance_animation_data[animation->animation_index]);

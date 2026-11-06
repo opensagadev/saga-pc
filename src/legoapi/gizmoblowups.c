@@ -9,8 +9,8 @@ void __cdecl GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
 
 i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 damage, GAMEOBJECT *object,
                               i32 hit_context) {
-    NUINSTANIM_TIME_VIEW *animation;
-    NUINSTANIM_TIME_VIEW *burst;
+    NUINSTANIM *animation;
+    NUINSTANIM *burst;
     GIZMOBLOWUPTYPE_PC *type;
     i32 has_burst;
     i32 destroyed = 0;
@@ -26,7 +26,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
         return 0;
     if ((blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)
         return 0;
-    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+    animation = (NUINSTANIM *)NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
         type = blowup->type;
         if (type->animation_start_frame != type->animation_end_frame) {
@@ -92,7 +92,7 @@ i32 __cdecl GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type,
     }
     has_burst = NuSpecialExistsFn(&type->burst_special);
     if (has_burst) {
-        burst = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&type->burst_special);
+        burst = (NUINSTANIM *)NuSpecialGetInstAnim(&type->burst_special);
         if (burst != NULL)
             burst->flags |= 1;
     }
@@ -296,11 +296,11 @@ STATIC_ASSERT(offsetof(RESPAWN_INITIAL_PC, initial_health) == 0x111);
 STATIC_ASSERT(offsetof(RESPAWN_PARTICLE_TYPES_PC, initial_particle_types) == 0xa4);
 static __declspec(noinline) void GizmoBlowupRestoreInitialStatePc(GIZMOBLOWUP_PC *blowup) {
     RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     blowup->status_flags = (blowup->status_flags & 0xfeff7ffe) | 0x804000;
     blowup->remaining_health = initial->initial_health;
     blowup->damage = initial->initial_damage;
-    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+    animation = (NUINSTANIM *)NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL && (animation->flags & 1)) {
         blowup->status_flags |= 0x100000;
         if (animation->flags & 8)
@@ -310,7 +310,7 @@ static __declspec(noinline) void GizmoBlowupRestoreInitialStatePc(GIZMOBLOWUP_PC
 }
 void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
     RESPAWN_INITIAL_PC *initial = (RESPAWN_INITIAL_PC *)blowup;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     i32 i, key;
     if (blowup == NULL)
         return;
@@ -326,7 +326,7 @@ void __cdecl GizBlowup_Respawn(GIZMOBLOWUP_PC *blowup) {
     blowup->damage = initial->initial_damage;
     blowup->remaining_health = initial->initial_health;
     blowup->status_flags &= 0xfdf1e401;
-    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+    animation = (NUINSTANIM *)NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
         if (BonusArea && VehicleArea && (blowup->draw_flags & 0x1000000) && (blowup->status_flags & 0x100000))
             animation->flags |= 1;
@@ -773,7 +773,7 @@ void __cdecl GizmoBlowupLateUpdate(void *world_ptr, void *data, f32 delta_time) 
 void __cdecl GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     GIZMOBLOWUP_PC *blowup;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     i32 index, particle;
     f32 x, z, radius, end_frame;
     NUMTX matrix;
@@ -795,7 +795,7 @@ void __cdecl GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time)
                 PushAway(&blowup->mid_position, radius, &blowup->bounds_min, &blowup->bounds_max, NULL, NULL, 1.0f, 4);
             }
         }
-        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+        animation = (NUINSTANIM *)NuSpecialGetInstAnim(&blowup->type->animated_special);
         if (((blowup->status_flags & 0x800000) && !(blowup->status_flags & 1)) || (blowup->status_flags & 0x20000)) {
             if (blowup->draw_flags & 0x400000) {
                 blowup->transform = *NuSpecialGetInstanceMtx(&blowup->type->animated_special);
@@ -937,7 +937,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
     char text[256], lookup_text[256], particle_text[256], part_text[256];
     i32 version, file_types = 0, file_instances, index, particle, alternate, length;
     i32 missing_type, added_types = 0;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     NUVEC position;
     GIZMOBLOWUPTYPE_PC *found_type;
     (void)data;
@@ -1039,7 +1039,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
                 type.animation_end_frame = EdFileReadFloat();
             } else {
                 type.animation_start_frame = 1.0f;
-                animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&type.animated_special);
+                animation = (NUINSTANIM *)NuSpecialGetInstAnim(&type.animated_special);
                 type.animation_end_frame =
                     animation != NULL ? NuAnimEndFrameOld(((NUGSCN *)type.animated_special.scene)
                                                               ->instance_animation_data[animation->animation_index])
@@ -1299,13 +1299,13 @@ void __cdecl GizBlowup_DeleteTerrain(void) {
 void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *world) {
     GIZMOBLOWUPTYPE_PC *type;
     GIZMOBLOWUP_PC *blowup;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     NUVEC centre;
     i32 index;
     for (index = 0; index < world->gizmo_blowup_type_count; ++index) {
         type = &world->gizmo_blowup_types[index];
         type->animation_runtime_flags &= ~1;
-        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&type->animated_special);
+        animation = (NUINSTANIM *)NuSpecialGetInstAnim(&type->animated_special);
         if (animation)
             type->animation_base_frame = animation->ltime;
         else
@@ -1332,7 +1332,7 @@ void __cdecl GizmoBlowupsFinalSetup(WORLDINFO *world) {
             blowup->bounds_max.x = centre.x + blowup->target_scale;
             blowup->bounds_max.y = centre.y + blowup->target_scale;
             blowup->bounds_max.z = centre.z + blowup->target_scale;
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(&blowup->type->animated_special);
             if (animation && (animation->flags & 1)) {
                 blowup->status_flags |= 0x100000;
                 if (animation->flags & 8)
@@ -1449,7 +1449,7 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, field_0fb) == 0xfb);
 GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, i32 flags, i32 *result) {
     i32 i;
     GIZMOBLOWUPTYPE_PC *type;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     for (i = 0; i < world->gizmo_blowup_type_count; ++i) {
         if (NuSpecialCompare(&world->gizmo_blowup_types[i].animated_special, special) &&
             ((world->gizmo_blowup_types[i].animation_flags & 0x2000) || flags)) {
@@ -1472,7 +1472,7 @@ GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE
     if (flags)
         type->animation_flags = 0xe000;
     type->animation_start_frame = 1.0f;
-    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&type->animated_special);
+    animation = (NUINSTANIM *)NuSpecialGetInstAnim(&type->animated_special);
     if (animation)
         type->animation_end_frame = NuAnimEndFrameOld(
             ((NUGSCN *)type->animated_special.scene)->instance_animation_data[animation->animation_index]);
@@ -1738,7 +1738,7 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, burst_special) == 0x54);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_flags) == 0x7c);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animation_base_frame) == 0x90);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, instance_count) == 0xb2);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, animation_index) == 0x5c);
+STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 STATIC_ASSERT(offsetof(NUGSCN, instance_animation_data) == 0x54);
 void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
@@ -1746,7 +1746,7 @@ void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_tim
     GIZMOBLOWUP_PC *blowup, *next_type_instances;
     GIZMOBLOWUPTYPE_PC *type;
     NUSPECIALHANDLE *special;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     NUMTX animated_matrix, draw_matrix;
     f32 end_frame, frame, reflection_height;
     i32 type_index, instance_index, drawn;
@@ -1769,7 +1769,7 @@ void __cdecl GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_tim
             else
                 EnableShadowMapRendering(0);
             special = &type->animated_special;
-            animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(special);
+            animation = (NUINSTANIM *)NuSpecialGetInstAnim(special);
             if (animation != NULL && (blowup->status_flags & 0x80000)) {
                 end_frame = NuAnimEndFrameOld((ANI3_HEADER_PC *)((NUGSCN *)blowup->type->animated_special.scene)
                                                   ->instance_animation_data[animation->animation_index]);
@@ -1847,7 +1847,7 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, type) == 0xa4);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, anti_node) == 0xd8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
 STATIC_ASSERT(offsetof(GIZMOBLOWUPTYPE_PC, animated_special) == 0x30);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, flags) == 0x50);
+STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
 STATIC_ASSERT(offsetof(WORLDINFO, game_antinode_sys) == 0x510c);
 
 i32 __cdecl Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
@@ -1880,12 +1880,12 @@ typedef struct BLOWUP_STATUS_BITS_PC {
 STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS_PC) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
 void __cdecl Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZMOBLOWUP_PC *blowup;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     if (gizmo == NULL)
         return;
     blowup = (GIZMOBLOWUP_PC *)gizmo->object;
     ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->active = active != 0;
-    animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&blowup->type->animated_special);
+    animation = (NUINSTANIM *)NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
         if (active == 0) {
             animation->flags &= ~1u;

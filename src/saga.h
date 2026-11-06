@@ -2858,9 +2858,10 @@ STATIC_ASSERT(offsetof(NUPORTAL, front_room) == 0x16);
 STATIC_ASSERT(offsetof(NUPORTAL, back_room) == 0x18);
 
 typedef struct nuspecial_legacy_pc_s {
-    u8 unknown_0000[0x44];
+    NUMTX matrix;
+    struct nuinstance_s *instance;
     char *name;
-    u8 unknown_0048[4];
+    u32 flags;
 } NUSPECIAL_LEGACY_PC;
 STATIC_ASSERT(sizeof(NUSPECIAL_LEGACY_PC) == 0x4c);
 STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, name) == 0x44);
@@ -2899,16 +2900,19 @@ STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, capacity) == 4);
 STATIC_ASSERT(offsetof(APIDEBRISSYS_PC, entries) == 8);
 
 typedef struct nudisplay_special_pc_s {
-    u8 unknown_0000[0x80];
+    NUMTX instance_matrix;
+    NUMTX draw_matrix;
     NUVEC4 bounds_min;
     NUVEC4 bounds_max;
-    u8 unknown_a0[0x10];
+    NUVEC center;
+    f32 radius;
     void *clip_objects;
     char *name;
     u32 flags;
     f32 *clip_range;
     u32 instance_ix;
-    u8 unknown_00c4[0xc];
+    struct nuinstanim_s *instance_animation;
+    u8 unknown_00c8[8];
 } NUDISPLAY_SPECIAL_PC;
 STATIC_ASSERT(sizeof(NUDISPLAY_SPECIAL_PC) == 0xd0);
 STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, bounds_min) == 0x80);
@@ -2992,20 +2996,6 @@ STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, instance_visibility_enabled) == 0x76);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, special_count) == 0x6c);
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, specials) == 0x70);
 
-typedef struct nulegacyinstance_s {
-    u8 opaque_00_44[0x44];
-    u32 visible;
-    u8 opaque_48[0x4];
-} NULEGACYINSTANCE;
-
-typedef struct nulegacyspecial_s {
-    u8 opaque_00_40[0x40];
-    NULEGACYINSTANCE *instance;
-    u32 visible_flags;
-    u32 flags_48;
-    u8 opaque_50[0x8];
-} NULEGACYSPECIAL;
-
 typedef struct NUPORTAL_FRUSTUM_PC {
     f32 transposed_planes[32];
     NUPLANE *planes;
@@ -3028,25 +3018,55 @@ STATIC_ASSERT(offsetof(NUPORTAL_FRUSTUM_PC, room_id) == 0x9e);
 STATIC_ASSERT(sizeof(NUPORTALSPHERE_PC) == 0x10);
 STATIC_ASSERT(offsetof(NUPORTALSPHERE_PC, radius) == 0xc);
 
+typedef struct nuinstance_s {
+    NUMTX matrix;
+    i16 object_index;
+    u16 pad_42;
+    union {
+        u32 flags;
+        struct {
+            u32 visible : 1;
+            u32 flags_low : 2;
+            u32 no_visibility_test : 1;
+            u32 flags_high : 28;
+        };
+    };
+    struct nuinstanim_s *animation;
+    u32 pad_4c;
+} NUINSTANCE;
+
+typedef struct nugobj_s {
+    u8 unknown_00[0x14];
+    f32 origin_radius;
+    u8 unknown_18[4];
+    NUVEC bounds_min;
+    NUVEC bounds_max;
+    NUVEC center;
+    f32 radius;
+    u8 unknown_44[8];
+    struct nugobj_s *next;
+} NUGOBJ;
+
+typedef struct nugscn_anim_lookup_pc_s {
+    u16 count;
+    u16 end_frame;
+    f32 *times;
+    u8 *values;
+} NUGSCN_ANIM_LOOKUP_PC;
+
 typedef struct NUGSCN_s {
     i32 *texture_ids;
     i32 texture_count;
     NUTEXDIM_PC **textures;
     NUMTL **materials;
     i32 material_count;
-    u8 field8_0x14;
-    u8 field9_0x15;
-    u8 field10_0x16;
-    u8 field11_0x17;
-    void **objects;
+    i32 num_objects;
+    struct nugobj_s **objects;
     i32 num_instances;
-    u8 *instances;
+    NUINSTANCE *instances;
     i32 special_count;
     NUSPECIAL_LEGACY_PC *specials;
-    u8 field26_0x2c;
-    u8 field27_0x2d;
-    u8 field28_0x2e;
-    u8 field29_0x2f;
+    u32 unknown_002c;
     i32 spline_count;
     struct nugspline_s *splines;
     u32 unknown_0038[2];
@@ -3054,7 +3074,7 @@ typedef struct NUGSCN_s {
     i32 frame_reset_marker;
     i16 num_instance_animations;
     i16 num_instance_animation_data;
-    struct nuinstanim_time_view_s *instance_animations;
+    struct nuinstanim_s *instance_animations;
     struct numtx_s *instance_animation_matrices;
     void **instance_animation_data;
     i32 num_instance_ids;
@@ -3077,8 +3097,15 @@ typedef struct NUGSCN_s {
     void *portal_boxes;
     u32 unknown_100[4];
     NUDISPLAY_LIST_PC *display_list;
-    u32 unknown_0114[0x2f];
+    u32 unknown_0114[0x15];
+    i32 character_version_selector;
+    u32 unknown_016c[0x19];
     void *native_scene;
+    u32 unknown_01d4[3];
+    struct nugscn_anim_lookup_pc_s *end_frame_lookup;
+    u32 unknown_01e4[4];
+    u32 legacy_format;
+    u32 unknown_01f8[5];
 } NUGSCN;
 STATIC_ASSERT(offsetof(NUGSCN, objects) == 0x18);
 STATIC_ASSERT(offsetof(NUGSCN, frame_reset_marker) == 0x44);
@@ -7436,30 +7463,31 @@ typedef struct gameanimobj_s GAMEANIMOBJ;
 typedef struct gameanimobjpool_s GAMEANIMOBJPOOL;
 typedef struct gameanimset_s GAMEANIMSET;
 
-/* This is a verified field view, not a declaration of full retail owner extent. */
-typedef struct nuinstanim_time_view_s {
+typedef struct nuinstanim_s {
     NUMTX matrix;
     f32 tfactor;
-    u8 unknown_44[8];
+    f32 first_frame;
+    f32 interval;
     f32 ltime;
     u32 flags;
     f32 fparam1;
     f32 prev_eval_time;
     u16 animation_index;
-} NUINSTANIM_TIME_VIEW;
-STATIC_ASSERT(sizeof(NUINSTANIM_TIME_VIEW) == 0x60);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, matrix) == 0);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, tfactor) == 0x40);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, flags) == 0x50);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, fparam1) == 0x54);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, prev_eval_time) == 0x58);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, animation_index) == 0x5c);
+    u16 instance_index;
+} NUINSTANIM;
+STATIC_ASSERT(sizeof(NUINSTANIM) == 0x60);
+STATIC_ASSERT(offsetof(NUINSTANIM, matrix) == 0);
+STATIC_ASSERT(offsetof(NUINSTANIM, tfactor) == 0x40);
+STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
+STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
+STATIC_ASSERT(offsetof(NUINSTANIM, fparam1) == 0x54);
+STATIC_ASSERT(offsetof(NUINSTANIM, prev_eval_time) == 0x58);
+STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
 
 struct gameanimobj_s {
     GAMEANIMOBJ *next;
     NUSPECIALHANDLE special;
-    NUINSTANIM_TIME_VIEW *instance_animation;
+    NUINSTANIM *instance_animation;
     void *animation;
     f32 start_frame;
     f32 end_frame;
@@ -9632,7 +9660,6 @@ STATIC_ASSERT(sizeof(struct PC_HG_SHADOW_STATE_VIEW) == 16);
 STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
 STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_STATE_VIEW, direction) == 0);
 STATIC_ASSERT(offsetof(struct PC_HG_SHADOW_STATE_VIEW, packed_colour) == 12);
-struct PC_HG_RENDER_VIEW;
 
 typedef struct level_sfx_pulse_prefix_s LEVEL_SFX_PULSE_PC;
 
@@ -9917,7 +9944,7 @@ extern "C" {
     extern i32 notransparentchardraw;
     extern void(__cdecl *APIObjResetShadowMapRenderingFn)(void);
     extern void(__cdecl *APIObjEnableShadowMapRenderingFn)(void);
-    extern struct PC_HG_RENDER_VIEW *Temphgobj;
+    extern NUHGOBJ_EVAL_PC *Temphgobj;
     extern NUMTL *APITrans_Mtl[2];
 
     void __cdecl NuMtxMulHArrayPc(NUMTX *, NUMTX *, NUMTX *, i32);
@@ -17043,7 +17070,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
 
     typedef union LEVEL_INST_ANIM_RESET_VIEW_PC {
         u32 reset_words[12];
-        NUINSTANIM_TIME_VIEW *animations[12];
+        NUINSTANIM *animations[12];
         struct {
             u8 unknown_00[0x20];
             f32 miscellaneous_time;
@@ -18399,7 +18426,7 @@ extern "C" {
     void __cdecl LoadSpecialSfxFile(void *);
     i32 __cdecl SpecialSfxLoad(char *, void *);
     void __cdecl UpdateSpecialSfx(WORLDINFO *);
-    i32 __cdecl GetAnimDirection(NUINSTANIM_TIME_VIEW *);
+    i32 __cdecl GetAnimDirection(NUINSTANIM *);
 
     void __cdecl AveragePlayerCurrentSpeedMul(void);
     void __cdecl SetPlayer(void);

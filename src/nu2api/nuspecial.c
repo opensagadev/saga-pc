@@ -8,100 +8,34 @@ extern i32 nuspecial_const_tint_enabled;
 extern f32 nuspecial_const_alpha;
 extern NUVEC nuspecial_const_tint;
 
-typedef struct NuSpecialLegacyView {
-    u8 unknown_00[0x40];
-    void *instance;
-    char *name;
-    u32 flags;
-} NuSpecialLegacyView;
+STATIC_ASSERT(sizeof(NUINSTANCE) == 0x50);
+STATIC_ASSERT(offsetof(NUINSTANCE, object_index) == 0x40);
+STATIC_ASSERT(offsetof(NUINSTANCE, flags) == 0x44);
+STATIC_ASSERT(offsetof(NUINSTANCE, animation) == 0x48);
+STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, instance) == 0x40);
+STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, flags) == 0x48);
+STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
+STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, draw_matrix) == 0x40);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, center) == 0xa0);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, radius) == 0xac);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, clip_objects) == 0xb0);
+STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, instance_animation) == 0xc4);
+STATIC_ASSERT(sizeof(NUGOBJ) == 0x50);
+STATIC_ASSERT(offsetof(NUGOBJ, origin_radius) == 0x14);
+STATIC_ASSERT(offsetof(NUGOBJ, bounds_min) == 0x1c);
+STATIC_ASSERT(offsetof(NUGOBJ, center) == 0x34);
+STATIC_ASSERT(offsetof(NUGOBJ, radius) == 0x40);
+STATIC_ASSERT(offsetof(NUGOBJ, next) == 0x4c);
+STATIC_ASSERT(offsetof(NUGSCN, num_objects) == 0x14);
+STATIC_ASSERT(offsetof(NUGSCN, objects) == 0x18);
+STATIC_ASSERT(offsetof(NUGSCN, num_instances) == 0x1c);
+STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
+STATIC_ASSERT(offsetof(NUGSCN, end_frame_lookup) == 0x1e0);
 
-typedef union NuSpecialLegacyInstanceField48 {
-    void *animation;
-    NUMTX *draw_matrix;
-} NuSpecialLegacyInstanceField48;
-
-typedef struct NuSpecialLegacyInstanceView {
-    u8 unknown_00[0x44];
-    union {
-        u32 flags;
-        struct {
-            u32 flags_low : 3;
-            u32 no_visibility_test : 1;
-            u32 flags_high : 28;
-        };
-    };
-    NuSpecialLegacyInstanceField48 field_48;
-} NuSpecialLegacyInstanceView;
-
-typedef struct NuSpecialDisplayView {
-    NUMTX instance_matrix;
-    NUMTX draw_matrix;
-    u8 unknown_80[0x34];
-    char *name;
-    u32 flags;
-    u8 unknown_bc[8];
-    void *instance_animation;
-    u8 unknown_c8[8];
-} NuSpecialDisplayView;
-
-typedef struct NuSpecialDisplayListView {
-    u8 unknown_00[0x6c];
-    i32 special_count;
-} NuSpecialDisplayListView;
-
-typedef struct NuSpecialSceneView {
-    u8 unknown_00[0x24];
-    i32 special_count;
-    void *specials;
-    u8 unknown_2c[0xe4];
-    NuSpecialDisplayListView *display_list;
-} NuSpecialSceneView;
-
-typedef struct NuSpecialLegacyObjectView {
-    u8 unknown_00[0x14];
-    f32 origin_radius;
-    u8 unknown_18[4];
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    NUVEC center;
-    f32 radius;
-    u8 unknown_44[8];
-    struct NuSpecialLegacyObjectView *next;
-} NuSpecialLegacyObjectView;
-
-typedef struct NuSpecialLegacyInstanceIndexView {
-    u8 unknown_00[0x40];
-    i16 object_index;
-} NuSpecialLegacyInstanceIndexView;
-
-typedef struct NuSpecialAnimationInstanceView {
-    u8 unknown_00[0x50];
-    u32 flags;
-    u8 unknown_54[8];
-    u16 animation_index;
-} NuSpecialAnimationInstanceView;
-
-typedef struct NuSpecialAnimFallbackRecord {
-    u16 unknown_00;
-    u16 end_frame;
-    u8 unknown_04[8];
-} NuSpecialAnimFallbackRecord;
-
-typedef struct NuSpecialAnimFallbackTableView {
-    u8 unknown_0000[0x1e0];
-    NuSpecialAnimFallbackRecord *records;
-} NuSpecialAnimFallbackTableView;
-
-typedef struct NuSpecialBoundsDisplayView {
-    u8 unknown_00[0xa0];
-    NUVEC center;
-    f32 radius;
-} NuSpecialBoundsDisplayView;
-
-typedef struct NuSpecialLegacySceneObjectsView {
-    u8 unknown_00[0x18];
-    NuSpecialLegacyObjectView **objects;
-} NuSpecialLegacySceneObjectsView;
+#define SPECIAL_LEGACY(handle) ((NUSPECIAL_LEGACY_PC *)(handle)->special)
+#define SPECIAL_DISPLAY(handle) ((NUDISPLAY_SPECIAL_PC *)(handle)->display_special)
+#define SPECIAL_GOBJ(handle) (((NUGSCN *)(handle)->scene)->objects[SPECIAL_LEGACY(handle)->instance->object_index])
 
 enum {
     NUSPECIAL_COLLISION_FLAG = 1 << 9,
@@ -109,40 +43,12 @@ enum {
     NUINSTANCE_NO_VISIBILITY_TEST_FLAG = 1 << 3
 };
 
-STATIC_ASSERT(offsetof(NuSpecialLegacyView, instance) == 0x40);
-STATIC_ASSERT(offsetof(NuSpecialLegacyView, name) == 0x44);
-STATIC_ASSERT(offsetof(NuSpecialLegacyView, flags) == 0x48);
-STATIC_ASSERT(sizeof(NuSpecialLegacyView) == 0x4c);
-STATIC_ASSERT(offsetof(NuSpecialLegacyInstanceView, field_48) == 0x48);
-STATIC_ASSERT(offsetof(NuSpecialLegacyInstanceView, flags) == 0x44);
-STATIC_ASSERT(sizeof(NuSpecialLegacyInstanceView) == 0x4c);
-STATIC_ASSERT(offsetof(NuSpecialDisplayView, draw_matrix) == 0x40);
-STATIC_ASSERT(offsetof(NuSpecialDisplayView, name) == 0xb4);
-STATIC_ASSERT(offsetof(NuSpecialDisplayView, flags) == 0xb8);
-STATIC_ASSERT(offsetof(NuSpecialDisplayView, instance_animation) == 0xc4);
-STATIC_ASSERT(sizeof(NuSpecialDisplayView) == 0xd0);
-STATIC_ASSERT(offsetof(NuSpecialDisplayListView, special_count) == 0x6c);
-STATIC_ASSERT(offsetof(NuSpecialSceneView, special_count) == 0x24);
-STATIC_ASSERT(offsetof(NuSpecialSceneView, display_list) == 0x110);
-STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, origin_radius) == 0x14);
-STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, center) == 0x34);
-STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, radius) == 0x40);
-STATIC_ASSERT(offsetof(NuSpecialLegacyInstanceIndexView, object_index) == 0x40);
-STATIC_ASSERT(offsetof(NuSpecialAnimationInstanceView, flags) == 0x50);
-STATIC_ASSERT(offsetof(NuSpecialAnimationInstanceView, animation_index) == 0x5c);
-STATIC_ASSERT(offsetof(NuSpecialAnimFallbackTableView, records) == 0x1e0);
-STATIC_ASSERT(offsetof(NuSpecialAnimFallbackRecord, end_frame) == 2);
-STATIC_ASSERT(sizeof(NuSpecialAnimFallbackRecord) == 0xc);
-STATIC_ASSERT(offsetof(NuSpecialBoundsDisplayView, center) == 0xa0);
-STATIC_ASSERT(offsetof(NuSpecialBoundsDisplayView, radius) == 0xac);
-STATIC_ASSERT(offsetof(NuSpecialLegacySceneObjectsView, objects) == 0x18);
-
 f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceView *legacy_instance;
-    NuSpecialDisplayView *display;
-    NuSpecialAnimationInstanceView *animation_instance;
-    NuSpecialAnimFallbackTableView *fallback_table;
+    NUSPECIAL_LEGACY_PC *legacy;
+    NUINSTANCE *legacy_instance;
+    NUDISPLAY_SPECIAL_PC *display;
+    NUINSTANIM *animation_instance;
+    NUGSCN *fallback_table;
     void *animation;
     void *animation_data;
     u32 animation_index;
@@ -150,12 +56,12 @@ f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
     if (special == NULL || special->scene == NULL) {
         return 0.0f;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
+    legacy = (NUSPECIAL_LEGACY_PC *)special->special;
     if (legacy != NULL) {
-        legacy_instance = (NuSpecialLegacyInstanceView *)legacy->instance;
-        animation = legacy_instance->field_48.animation;
+        legacy_instance = (NUINSTANCE *)legacy->instance;
+        animation = legacy_instance->animation;
     } else {
-        display = (NuSpecialDisplayView *)special->display_special;
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
         if (display == NULL || display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
             return 0.0f;
         }
@@ -165,7 +71,7 @@ f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
         return 0.0f;
     }
 
-    animation_instance = (NuSpecialAnimationInstanceView *)animation;
+    animation_instance = (NUINSTANIM *)animation;
     animation_data = ((NUGSCN *)special->scene)->instance_animation_data[animation_instance->animation_index];
     if (animation_data != NULL) {
         return NuAnimEndFrameOld(animation_data);
@@ -175,50 +81,27 @@ f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
     if (animation_index == 0) {
         return 0.0f;
     }
-    fallback_table = (NuSpecialAnimFallbackTableView *)special->scene;
-    if (fallback_table->records == NULL) {
+    fallback_table = (NUGSCN *)special->scene;
+    if (fallback_table->end_frame_lookup == NULL) {
         return 0.0f;
     }
-    return (f32)fallback_table->records[animation_index - 1].end_frame;
+    return (f32)fallback_table->end_frame_lookup[animation_index - 1].end_frame;
 }
 
 void __cdecl NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *position, f32 *radius) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceIndexView *instance;
-    NuSpecialLegacySceneObjectsView *scene;
-    NuSpecialLegacyObjectView *object;
-    NuSpecialBoundsDisplayView *display;
-
-    legacy = (NuSpecialLegacyView *)special->special;
-    if (legacy != NULL) {
-        instance = (NuSpecialLegacyInstanceIndexView *)legacy->instance;
-        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
-        object = scene->objects[instance->object_index];
-        *radius = object->radius;
-        *position = object->center;
-        return;
+    if (special->special != NULL) {
+        *radius = SPECIAL_GOBJ(special)->radius;
+        *position = SPECIAL_GOBJ(special)->center;
+    } else {
+        *position = SPECIAL_DISPLAY(special)->center;
+        *radius = SPECIAL_DISPLAY(special)->radius;
     }
-    display = (NuSpecialBoundsDisplayView *)special->display_special;
-    *position = display->center;
-    *radius = display->radius;
 }
 
 f32 __cdecl NuSpecialGetOriginRadius(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceIndexView *instance;
-    NuSpecialLegacySceneObjectsView *scene;
-    NuSpecialLegacyObjectView *object;
-    NuSpecialBoundsDisplayView *display;
-
-    legacy = (NuSpecialLegacyView *)special->special;
-    if (legacy != NULL) {
-        instance = (NuSpecialLegacyInstanceIndexView *)legacy->instance;
-        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
-        object = scene->objects[instance->object_index];
-        return object->origin_radius;
-    }
-    display = (NuSpecialBoundsDisplayView *)special->display_special;
-    return NuVecMag(&display->center) + display->radius;
+    if (special->special != NULL)
+        return SPECIAL_GOBJ(special)->origin_radius;
+    return NuVecMag(&SPECIAL_DISPLAY(special)->center) + SPECIAL_DISPLAY(special)->radius;
 }
 
 NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special) {
@@ -246,32 +129,28 @@ i32 __cdecl NuSpecialExistsFn(NUSPECIALHANDLE *special) {
 }
 
 char *__cdecl NuSpecialGetName(NUSPECIALHANDLE *special) {
-    NuSpecialDisplayView *display;
-    NuSpecialLegacyView *legacy;
+    NUDISPLAY_SPECIAL_PC *display;
+    NUSPECIAL_LEGACY_PC *legacy;
     if (special == NULL) {
         return NULL;
     }
-    display = (NuSpecialDisplayView *)special->display_special;
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
     if (display != NULL) {
         return display->name;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
+    legacy = (NUSPECIAL_LEGACY_PC *)special->special;
     return legacy != NULL ? legacy->name : NULL;
 }
 
 i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special) {
-    NuSpecialDisplayView *display = (NuSpecialDisplayView *)special->display_special;
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceView *instance;
-    if (display != NULL) {
-        return display->instance_animation != NULL && display->instance_animation != (void *)-1;
+    if (special->display_special != NULL) {
+        if (SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 &&
+            SPECIAL_DISPLAY(special)->instance_animation != NULL)
+            return 1;
+    } else if (special->special != NULL && SPECIAL_LEGACY(special)->instance->animation != NULL) {
+        return 1;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
-    if (legacy == NULL) {
-        return 0;
-    }
-    instance = (NuSpecialLegacyInstanceView *)legacy->instance;
-    return instance->field_48.animation != NULL;
+    return 0;
 }
 
 NUVEC *__cdecl NuSpecialGetPos(NUSPECIALHANDLE *special) {
@@ -283,40 +162,33 @@ NUVEC *__cdecl NuSpecialGetPos(NUSPECIALHANDLE *special) {
 }
 
 NUVEC *__cdecl NuSpecialGetDrawPos(NUSPECIALHANDLE *special) {
-    NuSpecialDisplayView *display = (NuSpecialDisplayView *)special->display_special;
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceView *instance_view;
-    NUMTX *instance;
-    NUMTX *draw_matrix;
-    if (display != NULL) {
-        if (display->instance_animation != NULL && display->instance_animation != (void *)-1) {
-            return (NUVEC *)&((NUMTX *)display->instance_animation)->m30;
-        }
-        return (NUVEC *)&display->draw_matrix.m30;
+    if (special->display_special != NULL) {
+        if (SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 &&
+            SPECIAL_DISPLAY(special)->instance_animation != NULL)
+            return (NUVEC *)&SPECIAL_DISPLAY(special)->instance_animation->matrix.m30;
+        return (NUVEC *)&SPECIAL_DISPLAY(special)->draw_matrix.m30;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
-    if (legacy == NULL) {
-        return NULL;
+    if (special->special != NULL) {
+        if (SPECIAL_LEGACY(special)->instance->animation != NULL)
+            return (NUVEC *)&SPECIAL_LEGACY(special)->instance->animation->matrix.m30;
+        return (NUVEC *)&SPECIAL_LEGACY(special)->instance->matrix.m30;
     }
-    instance = (NUMTX *)legacy->instance;
-    instance_view = (NuSpecialLegacyInstanceView *)legacy->instance;
-    draw_matrix = instance_view->field_48.draw_matrix;
-    return draw_matrix != NULL ? (NUVEC *)&draw_matrix->m30 : (NUVEC *)&instance->m30;
+    return NULL;
 }
 
 NUMTX *__cdecl NuSpecialGetDrawMtx(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy = (NuSpecialLegacyView *)special->special;
-    NuSpecialLegacyInstanceView *instance_view;
-    NuSpecialDisplayView *display;
+    NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+    NUINSTANCE *instance_view;
+    NUDISPLAY_SPECIAL_PC *display;
     NUMTX *instance;
     NUMTX *draw_matrix;
     if (legacy != NULL) {
         instance = (NUMTX *)legacy->instance;
-        instance_view = (NuSpecialLegacyInstanceView *)legacy->instance;
-        draw_matrix = instance_view->field_48.draw_matrix;
+        instance_view = (NUINSTANCE *)legacy->instance;
+        draw_matrix = &instance_view->animation->matrix;
         return draw_matrix != NULL ? draw_matrix : instance;
     }
-    display = (NuSpecialDisplayView *)special->display_special;
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
     if (display != NULL) {
         if (display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
             return &display->draw_matrix;
@@ -327,128 +199,88 @@ NUMTX *__cdecl NuSpecialGetDrawMtx(NUSPECIALHANDLE *special) {
 }
 
 NUMTX *__cdecl NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy = (NuSpecialLegacyView *)special->special;
-    NuSpecialDisplayView *display;
+    NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+    NUDISPLAY_SPECIAL_PC *display;
     if (legacy != NULL) {
         return (NUMTX *)legacy->instance;
     }
-    display = (NuSpecialDisplayView *)special->display_special;
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
     return display != NULL ? &display->draw_matrix : NULL;
 }
 
-typedef struct NuSpecialClipDisplayView {
-    u8 unknown_00[0x80];
-    NUVEC bounds_min;
-    u8 unknown_8c[4];
-    NUVEC bounds_max;
-} NuSpecialClipDisplayView;
-
 i32 __cdecl NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix) {
-    NuSpecialLegacyInstanceIndexView *instance;
-    NuSpecialLegacySceneObjectsView *scene;
-    NuSpecialLegacyObjectView *object;
-    NuSpecialClipDisplayView *display;
-    if (special->special != NULL) {
-        instance = (NuSpecialLegacyInstanceIndexView *)((NuSpecialLegacyView *)((void **)special)[1])->instance;
-        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
-        object = scene->objects[instance->object_index];
-        return NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, matrix, 0.0f, 0);
-    }
-    display = (NuSpecialClipDisplayView *)special->display_special;
-    return NuCameraClipTestExtents(&display->bounds_min, &display->bounds_max, matrix, 0.0f, 0);
+    if (special->special != NULL)
+        return NuCameraClipTestExtents(&SPECIAL_GOBJ(special)->bounds_min, &SPECIAL_GOBJ(special)->bounds_max, matrix,
+                                       0.0f, 0);
+    return NuCameraClipTestExtents((NUVEC *)&SPECIAL_DISPLAY(special)->bounds_min,
+                                   (NUVEC *)&SPECIAL_DISPLAY(special)->bounds_max, matrix, 0.0f, 0);
 }
 
 void *__cdecl NuSpecialGetInstAnim(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy = (NuSpecialLegacyView *)special->special;
-    NuSpecialLegacyInstanceView *instance;
-    NuSpecialDisplayView *display;
-    if (legacy != NULL) {
-        instance = (NuSpecialLegacyInstanceView *)legacy->instance;
-        return instance->field_48.animation;
-    }
-    display = (NuSpecialDisplayView *)special->display_special;
-    if (display != NULL && display->instance_animation != (void *)-1) {
-        return display->instance_animation;
-    }
+    if (special->special != NULL)
+        return SPECIAL_LEGACY(special)->instance->animation;
+    if (special->display_special != NULL && SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 &&
+        SPECIAL_DISPLAY(special)->instance_animation != NULL)
+        return SPECIAL_DISPLAY(special)->instance_animation;
     return NULL;
 }
 
 void __cdecl NuSpecialSetCollision(NUSPECIALHANDLE *special, i32 enabled) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialDisplayView *display;
-    if (special == NULL || special->scene == NULL) {
+    if (special == NULL || special->scene == NULL)
         return;
-    }
-    legacy = (NuSpecialLegacyView *)special->special;
-    if (legacy != NULL) {
-        if (enabled != 0) {
-            legacy->flags |= NUSPECIAL_COLLISION_FLAG;
-        } else {
-            legacy->flags &= ~NUSPECIAL_COLLISION_FLAG;
-        }
-        return;
-    }
-    display = (NuSpecialDisplayView *)special->display_special;
-    if (display != NULL) {
-        if (enabled != 0) {
-            display->flags |= NUSPECIAL_COLLISION_FLAG;
-        } else {
-            display->flags &= ~NUSPECIAL_COLLISION_FLAG;
-        }
+    if (special->special != NULL) {
+        if (enabled != 0)
+            SPECIAL_LEGACY(special)->flags |= NUSPECIAL_COLLISION_FLAG;
+        else
+            SPECIAL_LEGACY(special)->flags &= ~NUSPECIAL_COLLISION_FLAG;
+    } else if (special->display_special != NULL) {
+        if (enabled != 0)
+            SPECIAL_DISPLAY(special)->flags |= NUSPECIAL_COLLISION_FLAG;
+        else
+            SPECIAL_DISPLAY(special)->flags &= ~NUSPECIAL_COLLISION_FLAG;
     }
 }
 
 i32 __cdecl NuSpecialGetCollision(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialDisplayView *display;
+    NUSPECIAL_LEGACY_PC *legacy;
+    NUDISPLAY_SPECIAL_PC *display;
     if (special == NULL || special->scene == NULL) {
         return 0;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
+    legacy = (NUSPECIAL_LEGACY_PC *)special->special;
     if (legacy != NULL) {
         return legacy->flags & NUSPECIAL_COLLISION_FLAG;
     }
-    display = (NuSpecialDisplayView *)special->display_special;
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
     return display != NULL ? display->flags & NUSPECIAL_COLLISION_FLAG : 0;
 }
 
 void __cdecl NuSpecialSetNoVisiTest(NUSPECIALHANDLE *special, i32 enabled) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceView *instance;
-    NuSpecialDisplayView *display;
-    if (special->scene == NULL) {
+    if (special->scene == NULL)
         return;
-    }
     if (special->special != NULL) {
-        legacy = (NuSpecialLegacyView *)special->special;
-        instance = (NuSpecialLegacyInstanceView *)legacy->instance;
-        instance->no_visibility_test = enabled;
-        return;
-    }
-    if (special->display_special == NULL) {
-        return;
-    }
-    display = (NuSpecialDisplayView *)special->display_special;
-    if (enabled != 0) {
-        display->flags |= NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
-    } else {
-        display->flags &= ~NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
+        SPECIAL_LEGACY(special)->instance->no_visibility_test = enabled;
+    } else if (special->display_special != NULL) {
+        if (enabled != 0)
+            SPECIAL_DISPLAY(special)->flags |= NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
+        else
+            SPECIAL_DISPLAY(special)->flags &= ~NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
     }
 }
 
 i32 __cdecl NuSpecialGetNoVisiTestFn(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceView *instance;
-    NuSpecialDisplayView *display;
+    NUSPECIAL_LEGACY_PC *legacy;
+    NUINSTANCE *instance;
+    NUDISPLAY_SPECIAL_PC *display;
     if (special->scene == NULL) {
         return 0;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
+    legacy = (NUSPECIAL_LEGACY_PC *)special->special;
     if (legacy != NULL) {
-        instance = (NuSpecialLegacyInstanceView *)legacy->instance;
+        instance = (NUINSTANCE *)legacy->instance;
         return (instance->flags >> 3) & 1;
     }
-    display = (NuSpecialDisplayView *)special->display_special;
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
     return display != NULL ? display->flags & NUSPECIAL_NO_VISIBILITY_TEST_FLAG : 0;
 }
 
@@ -476,9 +308,9 @@ void __cdecl NuSpecialConstTint(i32 enabled, const NUVEC *tint) {
 
 void __cdecl NuSpecialGetNext(NUSPECIALHANDLE *special) {
     if (special->special != NULL) {
-        special->special = (NUMTX *)((NuSpecialLegacyView *)special->special + 1);
+        special->special = (NUMTX *)((NUSPECIAL_LEGACY_PC *)special->special + 1);
     } else if (special->display_special != NULL) {
-        special->display_special = (NUMTX *)((NuSpecialDisplayView *)special->display_special + 1);
+        special->display_special = (NUMTX *)((NUDISPLAY_SPECIAL_PC *)special->display_special + 1);
     }
 }
 
@@ -509,38 +341,37 @@ i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags
 }
 
 i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene) {
-    NuSpecialSceneView *view = (NuSpecialSceneView *)scene;
-    i32 count = view->special_count;
-    if (count == 0 && view->display_list != NULL) {
-        count = view->display_list->special_count;
-    }
-    return count;
+    if (scene->special_count != 0)
+        return scene->special_count;
+    if (scene->display_list != NULL && scene->display_list->special_count != 0)
+        return scene->display_list->special_count;
+    return 0;
 }
 
 i32 __cdecl NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceView *instance;
+    NUSPECIAL_LEGACY_PC *legacy;
+    NUINSTANCE *instance;
     if (special->scene != NULL && special->special != NULL) {
-        legacy = (NuSpecialLegacyView *)special->special;
-        instance = (NuSpecialLegacyInstanceView *)legacy->instance;
+        legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        instance = (NUINSTANCE *)legacy->instance;
         return (instance->flags >> 1) & 1;
     }
     return 1;
 }
 
 i32 __cdecl NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceView *instance;
-    NuSpecialDisplayView *display;
+    NUSPECIAL_LEGACY_PC *legacy;
+    NUINSTANCE *instance;
+    NUDISPLAY_SPECIAL_PC *display;
     if (special->scene == NULL) {
         return 0;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
+    legacy = (NUSPECIAL_LEGACY_PC *)special->special;
     if (legacy != NULL) {
-        instance = (NuSpecialLegacyInstanceView *)legacy->instance;
+        instance = (NUINSTANCE *)legacy->instance;
         return instance->flags & 1;
     }
-    display = (NuSpecialDisplayView *)special->display_special;
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
     return display != NULL ? (display->flags >> 1) & 1 : 0;
 }
 
@@ -561,42 +392,34 @@ void __cdecl NuSpecialClear(NUSPECIALHANDLE *special) {
 }
 
 void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *handle, i32 visible) {
-    NULEGACYSPECIAL *legacy;
     NUDISPLAY_SPECIAL_PC *display;
     NUDISPLAY_LIST_PC *display_list;
 
-    if (handle == NULL || handle->scene == NULL) {
+    if (handle == NULL || handle->scene == NULL)
+        return;
+    if (handle->special != NULL) {
+        if (SPECIAL_LEGACY(handle)->instance != NULL)
+            SPECIAL_LEGACY(handle)->instance->visible = visible;
+        if (visible != 0)
+            SPECIAL_LEGACY(handle)->flags |= 0x200;
+        else
+            SPECIAL_LEGACY(handle)->flags &= ~0x200;
         return;
     }
-    legacy = (NULEGACYSPECIAL *)handle->special;
-    if (legacy != NULL) {
-        if (legacy->instance != NULL) {
-            legacy->instance->visible ^= (legacy->instance->visible ^ visible) & 1;
-        }
-        if (visible != 0) {
-            legacy->flags_48 |= 0x200;
-        } else {
-            legacy->flags_48 &= ~0x200;
-        }
+    display = SPECIAL_DISPLAY(handle);
+    if (display == NULL)
         return;
-    }
-    display = (NUDISPLAY_SPECIAL_PC *)handle->display_special;
-    if (display == NULL) {
-        return;
-    }
     if (visible != 0) {
         display->flags |= 0x202;
         display_list = ((NUGSCN *)handle->scene)->display_list;
-        if ((display_list->instance_visibility_enabled & 1) != 0) {
+        if ((display_list->instance_visibility_enabled & 1) != 0)
             display_list->visibility_flags[display->instance_ix] |= 1;
-        }
     } else {
         display->flags &= ~0x2;
-        display->flags &= ~0x200;
+        SPECIAL_DISPLAY(handle)->flags &= ~0x200;
         display_list = ((NUGSCN *)handle->scene)->display_list;
-        if ((display_list->instance_visibility_enabled & 1) != 0) {
+        if ((display_list->instance_visibility_enabled & 1) != 0)
             display_list->visibility_flags[display->instance_ix] &= ~1;
-        }
     }
 }
 
@@ -738,59 +561,28 @@ void __cdecl xxxNuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
 }
 
 void __cdecl NuSpecialUpdate(NUSPECIALHANDLE *special) {
-    NUGSCN *scene;
-    NUDISPLAY_SPECIAL_PC *display;
-    NUDISPLAY_LIST_PC *display_scene;
-
-    if (special == NULL) {
+    if (special == NULL || special->display_special == NULL || special->scene == NULL)
         return;
-    }
-    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
-    if (display == NULL || special->scene == NULL) {
+    if (((NUGSCN *)special->scene)->display_list == NULL ||
+        (((NUGSCN *)special->scene)->display_list->instance_visibility_enabled & 1) == 0)
         return;
-    }
-    scene = (NUGSCN *)special->scene;
-    display_scene = scene->display_list;
-    if (display_scene == NULL || (display_scene->instance_visibility_enabled & 1) == 0) {
-        return;
-    }
-    display->flags |= 0x400;
+    SPECIAL_DISPLAY(special)->flags |= 0x400;
     NuDisplayListUpdateSpecial(special);
 }
 
-typedef struct NuSpecialInstanceRecordPC {
-    u8 unknown_00[0x50];
-} NuSpecialInstanceRecordPC;
-
-typedef struct NuSpecialInstanceScenePC {
-    u8 unknown_00[0x1c];
-    i32 instance_count;
-    NuSpecialInstanceRecordPC *instances;
-} NuSpecialInstanceScenePC;
-
-typedef struct NuSpecialInstanceDisplayPC {
-    u8 unknown_00[0xc0];
-    i32 instance_index;
-} NuSpecialInstanceDisplayPC;
-
-STATIC_ASSERT(sizeof(NuSpecialInstanceRecordPC) == 0x50);
-STATIC_ASSERT(offsetof(NuSpecialInstanceScenePC, instance_count) == 0x1c);
-STATIC_ASSERT(offsetof(NuSpecialInstanceScenePC, instances) == 0x20);
-STATIC_ASSERT(offsetof(NuSpecialInstanceDisplayPC, instance_index) == 0xc0);
-
 i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
-    NuSpecialLegacyView *legacy = (NuSpecialLegacyView *)handle->special;
+    NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)handle->special;
     i32 i;
     if (legacy != NULL) {
-        NuSpecialInstanceScenePC *scene = (NuSpecialInstanceScenePC *)handle->scene;
-        for (i = 0; i < scene->instance_count; ++i) {
+        NUGSCN *scene = (NUGSCN *)handle->scene;
+        for (i = 0; i < scene->num_instances; ++i) {
             if (&scene->instances[i] == legacy->instance)
                 return i;
         }
         return -1;
     }
     if (handle->display_special != NULL)
-        return ((NuSpecialInstanceDisplayPC *)handle->display_special)->instance_index;
+        return ((NUDISPLAY_SPECIAL_PC *)handle->display_special)->instance_ix;
     return -1;
 }
 
@@ -841,17 +633,21 @@ i32 __cdecl NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i3
     NUSPECIAL_LEGACY_PC *special;
     i32 index;
     (void)flags;
-    if (scene != NULL && name != NULL) {
-        if (scene->display_list != NULL)
-            return NuSpecialFindDisplay(scene, handle, name, 1);
-        special = scene->specials;
-        for (index = 0; index < scene->special_count; ++index, ++special) {
-            if (NuStrICmp(name, special->name) == 0) {
-                handle->scene = scene;
-                handle->special = (NUMTX *)special;
-                handle->display_special = NULL;
-                return 1;
-            }
+    if (scene == NULL || name == NULL) {
+        handle->scene = NULL;
+        handle->special = NULL;
+        handle->display_special = NULL;
+        return 0;
+    }
+    if (scene->display_list != NULL)
+        return NuSpecialFindDisplay(scene, handle, name, 1);
+    special = scene->specials;
+    for (index = 0; index < scene->special_count; ++index, ++special) {
+        if (NuStrICmp(name, special->name) == 0) {
+            handle->scene = scene;
+            handle->special = (NUMTX *)special;
+            handle->display_special = NULL;
+            return 1;
         }
     }
     handle->scene = NULL;
@@ -886,62 +682,39 @@ void __cdecl NuGScnGetSpecial(NUSPECIALHANDLE *special, NUGSCN *scene, i32 index
     special->display_special = NULL;
 }
 
-typedef struct NuSpecialLegacyMatrixPc {
-    NUMTX matrix;
-} NuSpecialLegacyMatrixPc;
-STATIC_ASSERT(offsetof(NuSpecialLegacyMatrixPc, matrix) == 0);
-
 void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialDisplayView *display;
+    NUSPECIAL_LEGACY_PC *legacy;
+    NUDISPLAY_SPECIAL_PC *display;
     NUDISPLAY_LIST_PC *display_list;
 
     if (special == NULL || special->scene == NULL) {
         return;
     }
-    legacy = (NuSpecialLegacyView *)special->special;
+    legacy = (NUSPECIAL_LEGACY_PC *)special->special;
     if (legacy != NULL) {
-        ((NuSpecialLegacyMatrixPc *)legacy->instance)->matrix = *matrix;
+        ((NUINSTANCE *)legacy->instance)->matrix = *matrix;
         return;
     }
-    display = (NuSpecialDisplayView *)special->display_special;
+    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
     display->draw_matrix = *matrix;
     display_list = ((NUGSCN *)special->scene)->display_list;
     if ((display_list->instance_visibility_enabled & 1) != 0) {
         NuDisplayListUpdateSpecial(special);
-        ((NuSpecialDisplayView *)special->display_special)->flags |= 0x400;
+        ((NUDISPLAY_SPECIAL_PC *)special->display_special)->flags |= 0x400;
     }
 }
 
-STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, bounds_min) == 0x1c);
-STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, bounds_max) == 0x28);
-STATIC_ASSERT(offsetof(NuSpecialLegacyObjectView, next) == 0x4c);
-
 void __cdecl NuSpecialGetBounds(NUSPECIALHANDLE *special, NUVEC *minimum, NUVEC *maximum) {
-    NuSpecialLegacyView *legacy;
-    NuSpecialLegacyInstanceIndexView *instance;
-    NuSpecialLegacySceneObjectsView *scene;
-    NuSpecialLegacyObjectView *object;
-    NUDISPLAY_SPECIAL_PC *display;
-    legacy = (NuSpecialLegacyView *)special->special;
-    if (legacy != NULL) {
-        instance = (NuSpecialLegacyInstanceIndexView *)legacy->instance;
-        scene = (NuSpecialLegacySceneObjectsView *)special->scene;
-        object = scene->objects[instance->object_index];
+    NUGOBJ *object;
+    if (special->special != NULL) {
+        object = SPECIAL_GOBJ(special);
         while (object->next != NULL)
             object = object->next;
         *minimum = object->bounds_min;
         *maximum = object->bounds_max;
-        return;
-    }
-    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
-    if (display != NULL) {
-        minimum->x = display->bounds_min.x;
-        minimum->y = display->bounds_min.y;
-        minimum->z = display->bounds_min.z;
-        maximum->x = display->bounds_max.x;
-        maximum->y = display->bounds_max.y;
-        maximum->z = display->bounds_max.z;
+    } else if (special->display_special != NULL) {
+        *minimum = *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_min;
+        *maximum = *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_max;
     }
 }
 
@@ -951,17 +724,17 @@ void __cdecl NuSpecialSetDrawPos(nuhspecial_s *special_pointer, NUVEC *position)
     if (special == NULL || special->scene == NULL)
         return;
     if (special->special != NULL) {
-        ((NuSpecialLegacyMatrixPc *)((NuSpecialLegacyView *)special->special)->instance)->matrix.m30 = position->x;
-        ((NuSpecialLegacyMatrixPc *)((NuSpecialLegacyView *)special->special)->instance)->matrix.m31 = position->y;
-        ((NuSpecialLegacyMatrixPc *)((NuSpecialLegacyView *)special->special)->instance)->matrix.m32 = position->z;
+        ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m30 = position->x;
+        ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m31 = position->y;
+        ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m32 = position->z;
     } else {
-        ((NuSpecialDisplayView *)special->display_special)->draw_matrix.m30 = position->x;
-        ((NuSpecialDisplayView *)special->display_special)->draw_matrix.m31 = position->y;
-        ((NuSpecialDisplayView *)special->display_special)->draw_matrix.m32 = position->z;
+        ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m30 = position->x;
+        ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m31 = position->y;
+        ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m32 = position->z;
         display_list = ((NUGSCN *)special->scene)->display_list;
         if ((display_list->instance_visibility_enabled & 1) != 0) {
             NuDisplayListUpdateSpecial(special);
-            ((NuSpecialDisplayView *)special->display_special)->flags |= 0x400;
+            ((NUDISPLAY_SPECIAL_PC *)special->display_special)->flags |= 0x400;
         }
     }
 }

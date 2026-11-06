@@ -283,7 +283,7 @@ void CloudCityEscapeC_Init(WORLDINFO *world) {
 
 /* Native 0x004e5170, 204 bytes. */
 void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
-    NUINSTANIM_TIME_VIEW *animation[2];
+    NUINSTANIM *animation[2];
     void *data;
     i32 index;
     DeathStarEscapeBNetPacketPc = (i8 *)SetLevelHack(4);
@@ -293,7 +293,7 @@ void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)DeathStarEscapeBSpongePc, 1);
     fakeanimendframe[0] = 0.0f;
     for (index = 0; index < 2; ++index) {
-        animation[index] = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[index]);
+        animation[index] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
             data = ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
             if (data != NULL)
@@ -304,7 +304,7 @@ void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
 
 /* Native 0x004e5240, 307 bytes. */
 void __cdecl DeathStarEscapeB_Update(WORLDINFO *world) {
-    NUINSTANIM_TIME_VIEW *animation[2] = {NULL, NULL};
+    NUINSTANIM *animation[2] = {NULL, NULL};
     void *data[2] = {NULL, NULL};
     i32 index;
     if (netclient == 0)
@@ -314,7 +314,7 @@ void __cdecl DeathStarEscapeB_Update(WORLDINFO *world) {
     if (LevGameObject[1] == NULL && DeathStarEscapeBNetPacketPc[0] == 0)
         LevGameObject[1] = GetNamedGameObject(world->ai_sys, (char *)DeathStarEscapeBWasher2Pc);
     for (index = 0; index < 2; ++index) {
-        animation[index] = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[index]);
+        animation[index] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL)
             data[index] =
                 ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
@@ -360,7 +360,7 @@ void __cdecl CloudCityEscapeA_Reset(WORLDINFO *world) {
 }
 void __cdecl CloudCityEscapeA_Update(WORLDINFO *world) {
     i32 i;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     if (((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
         PlaySfx((char *)CloudCityEscapeDeskSfxPc, NuSpecialGetDrawPos(&LevHSpecial[0]));
         ((CLOUDCITY_LEVEL_FLAG_VIEW_PC *)LevFlag)->started = 1;
@@ -369,7 +369,7 @@ void __cdecl CloudCityEscapeA_Update(WORLDINFO *world) {
     if (LevGizPanel == NULL || (((CLOUDCITY_PANEL_FLAGS_VIEW_PC *)LevGizPanel)->flags & 2) == 0) {
         for (i = 1; i <= 3; ++i) {
             if (NuSpecialExistsFn(&LevHSpecial[i])) {
-                animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+                animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
                 if (animation != NULL && animation->ltime > 1.0f) {
                     PlaySfx((char *)CloudCityEscapeSteamSfxPc, NuSpecialGetDrawPos(&LevHSpecial[i]));
                     TerSurface[14].flags |= 0x4042;
@@ -553,7 +553,7 @@ void __cdecl DeathStarRescueB_Update(WORLDINFO *world) {
     for (i = 0; i < 6; i++) {
         if (flags[i] == 0) {
             NUVEC *position = NuSpecialGetDrawPos(&LevHSpecial[i]);
-            NUINSTANIM_TIME_VIEW *animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&LevHSpecial[i]);
+            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[i]);
             if (animation != NULL) {
                 f64 frame = animation->ltime;
                 u16 index = animation->animation_index;

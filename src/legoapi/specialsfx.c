@@ -108,7 +108,7 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
     i32 i, j, direction, play;
     SPECIAL_RESOURCE_ENTRY_PC *entry;
     SPECIAL_RESOURCE_EVENT_PC *event;
-    NUINSTANIM_TIME_VIEW *animation;
+    NUINSTANIM *animation;
     void *animation_data;
     NUVEC *position;
     f32 end_frame, frame;
@@ -118,7 +118,7 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
         event = entry->events;
         if (NuSpecialExistsFn(&entry->special) == 0 || NuSpecialGetVisibilityFn(&entry->special) == 0)
             continue;
-        animation = (NUINSTANIM_TIME_VIEW *)NuSpecialGetInstAnim(&entry->special);
+        animation = (NUINSTANIM *)NuSpecialGetInstAnim(&entry->special);
         if (animation == NULL)
             continue;
         animation_data = ((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index];

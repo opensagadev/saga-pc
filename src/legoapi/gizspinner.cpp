@@ -254,8 +254,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, grapple) == 0x798);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, instance_animation) == 0x10);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, start_frame) == 0x18);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, end_frame) == 0x1c);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, ltime) == 0x4c);
-STATIC_ASSERT(offsetof(NUINSTANIM_TIME_VIEW, fparam1) == 0x54);
+STATIC_ASSERT(offsetof(NUINSTANIM, ltime) == 0x4c);
+STATIC_ASSERT(offsetof(NUINSTANIM, fparam1) == 0x54);
 
 static __declspec(noinline) GAMEOBJECT *SpinnerOwnerPc(GIZSPINNER_s *spinner) {
     if (LEGOCONTEXT_PUSHSPINNER == -1)
@@ -313,7 +313,7 @@ static __declspec(noinline) i32 SpinnerCurrentOutputPc(GIZSPINNER_s *spinner) {
         spinner->primary_anim_obj->instance_animation == NULL)
         return -1;
     GAMEANIMOBJ *object = spinner->primary_anim_obj;
-    NUINSTANIM_TIME_VIEW *instance = object->instance_animation;
+    NUINSTANIM *instance = object->instance_animation;
     f32 rounded_length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 length = rounded_length;
     f32 rounded_margin = length / 40.0;

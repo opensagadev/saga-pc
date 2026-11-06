@@ -951,18 +951,6 @@ void __cdecl edanimDrawCursor(void) {
     NuQFntPopCoordinateSystem();
 }
 
-typedef struct edanim_special_view_pc_s {
-    u8 unknown_00[0x40];
-    void *instance;
-    char *name;
-    u32 flags;
-} EDANIM_SPECIAL_VIEW_PC;
-
-typedef struct edanim_instance_view_pc_s {
-    u8 unknown_00[0x48];
-    NUINSTANIM_TIME_VIEW *animation;
-} EDANIM_INSTANCE_VIEW_PC;
-
 extern struct eduimenu_s *edanim_localsound_menu;
 void edanimcbCancelLocalSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1);
 void edanimcbToggleSoundType(eduimenu_s *menu, eduiitem_s *item, u32 unused2);
@@ -994,14 +982,12 @@ void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
         if (NuSpecialTestAnim(&special)) {
             eduiMenuAddItem(
                 edanim_localsound_menu,
-                eduiItemSliderCreate(0, colours, 0, edanimcbSetSoundTiming, 1.0f,
-                                     *(f32 *)edbits_base_scene->instance_animation_data
-                                          [((EDANIM_INSTANCE_VIEW_PC *)((EDANIM_SPECIAL_VIEW_PC *)
-                                                                            edbits_base_scene->specials)[edanim_nearest]
-                                                .instance)
-                                               ->animation->animation_index],
-                                     AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound],
-                                     (char *)("Sound Trigger Time")));
+                eduiItemSliderCreate(
+                    0, colours, 0, edanimcbSetSoundTiming, 1.0f,
+                    *(f32 *)edbits_base_scene->instance_animation_data[edbits_base_scene->specials[edanim_nearest]
+                                                                           .instance->animation->animation_index],
+                    AnimParams[edanim_nearest_param_id].sound_values[edanim_nearest_sound],
+                    (char *)("Sound Trigger Time")));
             eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, (char *)("(%1.01f)"));
             eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
         }

@@ -1695,13 +1695,7 @@ i32 __cdecl Action_SetAnimation(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
     return 1;
 }
 
-typedef struct AI_ADD_SCRIPT_WORLD_PC {
-    u8 unknown_0000[0x2aec];
-    i32 processor_count;
-    LEVEL_SCRIPT_PROCESS_PC processors[32];
-} AI_ADD_SCRIPT_WORLD_PC;
-STATIC_ASSERT(offsetof(AI_ADD_SCRIPT_WORLD_PC, processor_count) == 0x2aec);
-STATIC_ASSERT(offsetof(AI_ADD_SCRIPT_WORLD_PC, processors) == 0x2af0);
+STATIC_ASSERT(offsetof(WORLDINFO, script_processor_count) == 0x2aec);
 STATIC_ASSERT(sizeof(LEVEL_SCRIPT_PROCESS_PC) == 0xdc);
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) == 0x10);
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_a0) == 0xa0);
@@ -1726,7 +1720,7 @@ i32 __cdecl Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     i32 index, slot;
     char *value, *separator;
     AISCRIPTPROCESS_PC *created;
-    AI_ADD_SCRIPT_WORLD_PC *world;
+    WORLDINFO *world;
     (void)packet;
     (void)elapsed;
     if (first_time != 0 && 0 < count) {
@@ -1759,9 +1753,9 @@ i32 __cdecl Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                 }
             }
         }
-        world = (AI_ADD_SCRIPT_WORLD_PC *)WORLD;
-        if (script_name != NULL && world->processor_count < 32) {
-            created = &world->processors[world->processor_count].processor;
+        world = WORLD;
+        if (script_name != NULL && world->script_processor_count < 32) {
+            created = &world->script_processors[world->script_processor_count].processor;
             AIScriptProcessorInit(system, NULL, created, NULL, script_name, NULL, 0, NULL, NULL);
             created->locator_set = locator_set;
             created->locator = locator;
@@ -1769,11 +1763,11 @@ i32 __cdecl Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
             created->creature_set = (u8)set;
             created->myspline = spline;
             if (name != NULL) {
-                world = (AI_ADD_SCRIPT_WORLD_PC *)WORLD;
-                NuStrCpy(world->processors[world->processor_count].name, name);
+                world = WORLD;
+                NuStrCpy(world->script_processors[world->script_processor_count].name, name);
             }
-            world = (AI_ADD_SCRIPT_WORLD_PC *)WORLD;
-            LevelScriptReStoreProgress(WORLD, &world->processors[world->processor_count]);
+            world = WORLD;
+            LevelScriptReStoreProgress(WORLD, &world->script_processors[world->script_processor_count]);
             if (override_count != 0 && created->script != NULL) {
                 for (index = 0; index < override_count; ++index) {
                     for (slot = 0; slot < 4; ++slot) {
@@ -1784,7 +1778,7 @@ i32 __cdecl Action_AddScriptProcessor(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                     }
                 }
             }
-            ++((AI_ADD_SCRIPT_WORLD_PC *)WORLD)->processor_count;
+            ++WORLD->script_processor_count;
             GizmoSysAddGizmos(WORLD->gizmo_sys, WORLD->giz_flow, WORLD);
         }
     }
