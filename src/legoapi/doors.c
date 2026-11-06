@@ -179,6 +179,9 @@ i32 __cdecl StartDoorPositions(void) {
                             NuVecSub(&direction, &door->spline->pts[point], start->position);
                             angle = NuAtan2D(direction.x, direction.z);
                         } else {
+                            /* Retail reads start[-1] here, which in retail's data layout is PlayerList.
+                               The rebuild does not place PlayerList before PlayerStartRecordInitPc, so
+                               name it explicitly (costs the byte match: ~94% -> ~70%). */
                             PLAYER_POSITION_RECORD_PC *previous =
                                 point == 5 ? (PLAYER_POSITION_RECORD_PC *)PlayerList : start - 1;
                             start->position = previous->position;
