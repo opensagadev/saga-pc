@@ -18522,7 +18522,7 @@ struct PC_INPUT_RUNTIME_PC {
     PC_INPUT_RUNTIME_PC();
     void InitConfiguration();
     void ReadConfiguration(PC_INPUT_CONFIG_PC *, const char *);
-    PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
+    __declspec(noinline) PC_INPUT_CONFIG_PC *FindConfig(u8 mask, i32 port, i32 key);
     void InstallConfig(PC_INPUT_CONFIG_PC *, i32 port, i32 key, i32 auxiliary, i32 auxiliary_port);
     void BindPreferredConfig(i32 mask, i32 port);
     i32 ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count);
