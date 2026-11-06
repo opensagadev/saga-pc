@@ -22,34 +22,43 @@ static __declspec(noinline) void OcclusionMtxCopyPrivate(NUMTX *destination, con
 }
 
 bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMTX const *matrix) {
+    float min_x = 1000000.0f, min_y = 1000000.0f, min_depth = 1000000.0f;
+    float max_x = -1000000.0f, max_y = -1000000.0f;
     if (!queries_prepared)
         return false;
     NUVEC4 corners[8] = {{minimum->x, maximum->y, minimum->z, 1.0f}, {minimum->x, maximum->y, maximum->z, 1.0f},
                          {maximum->x, maximum->y, maximum->z, 1.0f}, {maximum->x, maximum->y, minimum->z, 1.0f},
                          {minimum->x, minimum->y, minimum->z, 1.0f}, {minimum->x, minimum->y, maximum->z, 1.0f},
                          {maximum->x, minimum->y, maximum->z, 1.0f}, {maximum->x, minimum->y, minimum->z, 1.0f}};
-    NUMTX transform;
+    __declspec(align(16)) NUMTX transform;
     if (matrix)
         NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
     else
         OcclusionMtxCopyPrivate(&transform, &projection_matrix);
-    float min_x = 1000000.0f, min_y = 1000000.0f, min_depth = 1000000.0f;
-    float max_x = -1000000.0f, max_y = -1000000.0f;
-    for (u32 i = 0; i < 8; ++i) {
+    for (i32 i = 0; i < 8; ++i) {
         NUVEC4 &v = corners[i];
         NuVec4MtxTransform(&v, reinterpret_cast<NUVEC *>(&v), &transform);
         if (v.w <= 0.0f)
             return false;
-        v.x /= v.w;
-        v.y /= v.w;
+        float x = v.x / v.w;
+        v.x = x;
+        float y = v.y / v.w;
+        v.y = y;
         v.z /= v.w;
-        min_x = v.x < min_x ? v.x : min_x;
-        min_y = v.y < min_y ? v.y : min_y;
-        max_x = v.x > max_x ? v.x : max_x;
-        max_y = v.y > max_y ? v.y : max_y;
-        min_depth = v.w < min_depth ? v.w : min_depth;
+        if (min_x > x)
+            min_x = x;
+        if (min_y > y)
+            min_y = y;
+        if (max_x < x)
+            max_x = x;
+        if (max_y < y)
+            max_y = y;
+        if (min_depth > v.w)
+            min_depth = v.w;
     }
-    i32 limit = static_cast<i32>(count) < 100 ? static_cast<i32>(count) : 100;
+    i32 limit = 100;
+    if (static_cast<i32>(count) <= 100)
+        limit = static_cast<i32>(count);
     for (i32 i = 0; i != limit; ++i) {
         if (indices[i] == 0xffffffffu)
             continue;
