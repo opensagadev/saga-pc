@@ -1088,9 +1088,8 @@ f32 TrenchMaxHeightMovePc = 5.0f;
 #pragma data_seg()
 
 void __cdecl TrenchMove(GAMEOBJECT *object) {
-    f32 phase, target_x, target_y, height_difference;
+    f32 phase, target_x, target_y, target_z, height_difference;
     i32 roll, target_roll;
-    i32 heading_right;
     GAMEPAD_PC *pad;
     f32 input_magnitude;
     u16 input_angle;
@@ -1126,10 +1125,11 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
         }
     }
     if (object->character_context == 0x2a) {
-        heading_right = object->movement_facing_angle > 0x8000;
         phase = object->context_timer / TURNTIME;
-        target_x = phase * (heading_right ? TrenchLaneOffsetPc : -TrenchLaneOffsetPc) +
-                   (1.0f - phase) * (heading_right ? -TrenchLaneOffsetPc : TrenchLaneOffsetPc);
+        if (object->movement_facing_angle > 0x8000)
+            target_x = phase * TrenchLaneOffsetPc + (1.0f - phase) * -TrenchLaneOffsetPc;
+        else
+            target_x = phase * -TrenchLaneOffsetPc + (1.0f - phase) * TrenchLaneOffsetPc;
         target_x = trenchrun.position.x + target_x;
     } else if (object->movement_facing_angle > 0x8000) {
         target_x = trenchrun.position.x + TrenchLaneOffsetPc;
@@ -1142,14 +1142,15 @@ void __cdecl TrenchMove(GAMEOBJECT *object) {
     if (height_difference > TrenchMaxHeightMovePc)
         target_y = TrenchMaxHeightMovePc + object->position.y;
     object->position.y = SeekValF(object->position.y, target_y, TrenchSeekYPc);
-    object->position.z =
-        SeekValF(object->position.z, object->movement_spline_offset.z + trenchrun.position.z, TrenchSeekZPc);
+    target_z = object->movement_spline_offset.z + trenchrun.position.z;
+    object->position.z = SeekValF(object->position.z, target_z, TrenchSeekZPc);
     NuVecSub(&object->velocity, &object->position, &object->start_position);
     NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
     if ((object->character_data->game_character->flags_090 & 1) != 0) {
-        roll = 0;
         if (object->character_context != 0x2a && object->character_context != 0x36 && object->character_context != 0x3a)
             roll = (i32)(object->velocity.z * TrenchRollScalePc);
+        else
+            roll = 0;
         if (player->movement_facing_angle < 0x8000)
             roll = (i32)(0u - (u32)roll);
         if (roll < -0x10000)

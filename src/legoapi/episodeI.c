@@ -408,7 +408,7 @@ static void RacePodAlignPrivatePc(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f
 i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **params,
                              i32 param_count, i32 first_time, f32 ignored) {
     i32 spline_id = -1, pacemaker = 0, damaged = 0;
-    i16 model_id = -1;
+    u16 model_id = 0xffff;
     f32 start = 0.0f, end = 1.0f, time_factor = 1.0f;
     i32 i, spline_index;
     PODRACE_RESOURCE_PC *race;
@@ -429,10 +429,9 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
             spline_id = (i32)AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 10);
         else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral7576f8)) != NULL) {
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                u8 type = LevelCharacterTypeIDFn(value + 5);
-                model_id = type;
-                if (type != 0xff)
-                    model_id = LevelCharacterGlobalIDFn(type);
+                model_id = LevelCharacterTypeIDFn(value + 5);
+                if (model_id != 0xff)
+                    model_id = LevelCharacterGlobalIDFn(model_id);
             }
         } else if ((value = NuStrIStr(params[i], PodCreateStartKeywordPc)) != NULL)
             start = AIParamToFloat((AISCRIPTPROCESS_PC *)packet, value + 13);
@@ -445,15 +444,13 @@ i32 __cdecl Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
         else if (NuStrICmp(params[i], PodCreateDamagedKeywordPc) == 0)
             damaged = 1;
     }
-    if ((u32)spline_id > 31 || model_id == -1)
+    if ((u32)spline_id > 31 || model_id == 0xffff)
         return 1;
     race = (PODRACE_RESOURCE_PC *)PodRacePc;
-    spline = &race->splines[0];
-    for (spline_index = 0; spline_index < 32; ++spline_index) {
-        spline = &race->splines[spline_index];
+    spline = race->splines;
+    for (spline_index = 0; spline_index < 32; ++spline_index, ++spline)
         if (spline->id == spline_id)
             break;
-    }
     if (start < 0.0f)
         start = 0.0f;
     else if (start > 1.0f)
@@ -515,45 +512,42 @@ void KaminoE_Init(WORLDINFO *world) {
 
 i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR_PC *locator, f32 radius) {
     f32 floor_y;
-    if (netclient != 0) {
-        return 0;
-    }
-    if (world->ai_sys != NULL) {
-        i32 index;
-        i32 count = world->ai_sys->antinode_count;
-        AIANTINODE_PC *node = world->ai_sys->antinodes;
-        for (index = 0; index < count; index++, node++) {
-            if (node->radius != 0.0f) {
-                f32 dx = position->x - node->position.x;
-                f32 dz = position->z - node->position.z;
-                f32 dist_sqr = dx * dx + dz * dz;
-                f32 r = node->radius + 1.0f;
-                if (dist_sqr < r * r) {
-                    f64 scale = (f64)r / NuFsqrt(dist_sqr);
-                    dx *= scale;
-                    position->x = node->position.x + dx;
-                    dz *= scale;
-                    position->z = node->position.z + dz;
-                    break;
+    if (netclient == 0) {
+        if (world->ai_sys != NULL) {
+            i32 index;
+            i32 count = world->ai_sys->antinode_count;
+            AIANTINODE_PC *node = world->ai_sys->antinodes;
+            for (index = 0; index < count; index++, node++) {
+                if (node->radius != 0.0f) {
+                    f32 dx = position->x - node->position.x;
+                    f32 dz = position->z - node->position.z;
+                    f32 dist_sqr = dx * dx + dz * dz;
+                    f32 r = node->radius + 1.0f;
+                    if (dist_sqr < r * r) {
+                        f64 scale = (f64)r / NuFsqrt(dist_sqr);
+                        dx *= scale;
+                        position->x = node->position.x + dx;
+                        dz *= scale;
+                        position->z = node->position.z + dz;
+                        break;
+                    }
                 }
             }
         }
+        memset(locator, 0, sizeof(AILOCATOR_PC));
+        if (position->x * position->x + position->z * position->z < radius * radius) {
+            floor_y = GameShadow(NULL, position, 5.0f, 0);
+            if (floor_y != 2000000.0f)
+                position->y = floor_y;
+            AISysGetPathPos(world->ai_sys, position, &locator->path_info, NULL, 0xff);
+            if ((locator->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
+                locator->position = *position;
+                locator->rotation = angle;
+                return 1;
+            }
+        }
     }
-    memset(locator, 0, sizeof(AILOCATOR_PC));
-    if (!(position->x * position->x + position->z * position->z < radius * radius)) {
-        return 0;
-    }
-    floor_y = GameShadow(NULL, position, 5.0f, 0);
-    if (floor_y != 2000000.0f) {
-        position->y = floor_y;
-    }
-    AISysGetPathPos(world->ai_sys, position, &locator->path_info, NULL, 0xff);
-    if ((locator->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) {
-        return 0;
-    }
-    locator->position = *position;
-    locator->rotation = angle;
-    return 1;
+    return 0;
 }
 
 void FactoryG_Init(WORLDINFO *world) {
@@ -608,7 +602,7 @@ extern NUSPECIALHANDLE SebulbaMineSpecialPc;
 extern f32 SebulbaDistanceBiasPc, SebulbaThrowIntervalPc;
 static f32 PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc;
 
-i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char **unused3, i32 unused4,
+i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char **unused3, i32 unused4,
                    i32 first_time, float unused6) {
     struct gameobject_s *object;
     struct gameobject_s *target;
@@ -628,19 +622,20 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
         object->movement_speed_scale_pc = 1.0f;
     }
 
-    target = player;
-    if (target != NULL && player2 != NULL) {
-        f32 x = object->position.x - target->position.x;
-        f32 z = object->position.z - target->position.z;
-        f32 distance1 = x * x + z * z;
-        f32 distance2;
-        x = object->position.x - player2->position.x;
-        z = object->position.z - player2->position.z;
-        distance2 = x * x + z * z;
-        if (distance1 < distance2)
-            target = player;
-        else
-            target = player2;
+    target = NULL;
+    if (player != NULL) {
+        target = player2;
+        if (target != NULL) {
+            f32 x = object->position.x - player->position.x;
+            f32 z = object->position.z - player->position.z;
+            f32 distance1 = x * x + z * z;
+            f32 distance2;
+            x = object->position.x - target->position.x;
+            z = object->position.z - target->position.z;
+            distance2 = x * x + z * z;
+            if (distance1 < distance2)
+                target = player;
+        }
     }
 
     sock = WORLD->sock_sys;
@@ -671,25 +666,27 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
         NuVecRotateY(&target_offset, &target_offset, -target->sock_heading);
         NuVecSub(&object_offset, &object->position, &object->sock_position.midpoint);
         NuVecRotateY(&object_offset, &object_offset, -object->sock_heading);
-        goal.x = object_offset.x * sebulba_lerpf + target_offset.x * (1.0f - sebulba_lerpf);
         goal.z = 0.0f;
         goal.y = 0.0f;
+        goal.x = object_offset.x * sebulba_lerpf + target_offset.x * (1.0f - sebulba_lerpf);
         NuVecAdd(&goal, &goal, &ahead.midpoint);
 
-        packet->script_processor.action_timer += FRAMETIME;
-        if (packet->script_processor.action_timer > SebulbaThrowIntervalPc) {
+        process->action_timer += FRAMETIME;
+        if (process->action_timer > SebulbaThrowIntervalPc) {
             if (do_mine != 0) {
                 if (CreatePodRaceMinePc(&object->lower_position) != NULL)
-                    packet->script_processor.action_timer = 0.0f;
+                    process->action_timer = 0.0f;
             } else if (NuSpecialExistsFn(&SebulbaMineSpecialPc) != 0) {
                 NUVEC target_delta;
                 NUVEC throw_velocity;
                 NUMTX matrix;
                 ADDPART_PC part;
-                NUVEC origin = object->position;
-                origin.y += 1.0f;
+                NUVEC origin;
+                origin.x = object->position.x;
+                origin.y = object->position.y + 1.0f;
+                origin.z = object->position.z;
                 target_delta = target_delta;
-                NuVecSub(&target_delta, &target->velocity, &target->collision_position);
+                NuVecSub(&target_delta, &target->velocity, &object->velocity);
                 throw_velocity = throw_velocity;
                 MakeThrowVector(&throw_velocity, &origin, &target->collision_position, &target_delta,
                                 PodSebulbaThrowSpeedPc, PodSebulbaThrowGravityPc);
@@ -707,7 +704,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *
                 part.collision_fn = PartCollide_3D;
                 part.time_step = FRAMETIME;
                 AddPart(&part);
-                packet->script_processor.action_timer = 0.0f;
+                process->action_timer = 0.0f;
             }
         }
     } else {
