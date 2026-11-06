@@ -87,10 +87,10 @@ void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
     f32 speed = type->field_10;
     f32 duration = type->field_14;
     NUVEC aimed_position, adjusted_position, delta, target_velocity, origin, direction;
-    NUVEC *target_position = NULL;
-    NUVEC *intercept_position = NULL;
-    NUVEC *velocity = NULL;
-    f32 target_distance = 0.0f;
+    NUVEC *target_position;
+    NUVEC *intercept_position;
+    NUVEC *velocity;
+    f32 target_distance;
     i16 sounds[8];
     NUVEC sound_positions[8];
     i32 sound_count = 0;
@@ -130,33 +130,41 @@ void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
         } else {
             target_distance = NuVecDist(&origin, &aimed_position, NULL);
         }
-    }
-    if ((object->portal_flags & 0x8000) == 0) {
-        if (object->field_ea0_target != NULL) {
-            GAMEOBJECT *target = object->field_ea0_target;
-            velocity = &target->velocity;
-            target_position = intercept_position = &target->collision_position;
-            if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
-                adjusted_position = target->collision_position;
-                adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
-                target_position = &adjusted_position;
-            }
-        } else if ((object->flags_e20 & 0x800) != 0) {
-            target_position = intercept_position = &aimed_position;
-        }
     } else {
+        target_distance = 0.0f;
+    }
+    target_position = NULL;
+    intercept_position = NULL;
+    velocity = NULL;
+    if ((object->portal_flags & 0x8000) != 0) {
         target_position = intercept_position = &object->field_e4c;
         if ((object->portal_flags & 0x10000) == 0 && (object->portal_flags & 0x20000) != 0) {
             NuVecSub(&target_velocity, &object->field_e4c, &object->field_e58);
             NuVecScale(&target_velocity, &target_velocity, 1.0f / FRAMETIME);
             velocity = &target_velocity;
         }
+    } else if (object->field_ea0_target != NULL) {
+        GAMEOBJECT *target = object->field_ea0_target;
+        velocity = &target->velocity;
+        target_position = intercept_position = &target->collision_position;
+        if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
+            adjusted_position = target->collision_position;
+            adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
+            target_position = &adjusted_position;
+        }
+    } else if ((object->flags_e20 & 0x800) != 0) {
+        target_position = intercept_position = &aimed_position;
     }
     for (index = 0; index < 5; ++index) {
         NUVEC *shot_position;
         NUMTX matrix;
         BOLT_PC *bolt;
-        if ((index == 1 && fire_flags == 1) || (index == 0 && fire_flags == 2))
+        i32 skip_index = -1;
+        if (fire_flags == 1)
+            skip_index = 1;
+        else if (fire_flags == 2)
+            skip_index = 0;
+        if (index == skip_index)
             continue;
         if (BoltSys->alternate_fire != NULL && BoltSys->alternate_fire(object, index) == 0)
             continue;
@@ -183,7 +191,7 @@ void __cdecl Bolt_Shoot(GAMEOBJECT *object, i32 type_id, i32 fire_flags) {
         if ((flags & 0x600000) != 0) {
             u16 pitch;
             NUANGVEC angles;
-            if ((i32)flags < 0 && (object->flags_1fc & 0x80) == 0 && object->field_ea0_target != NULL) {
+            if ((flags & 0x80000000) != 0 && (object->flags_1fc & 0x80) == 0 && object->field_ea0_target != NULL) {
                 f32 distance =
                     NuVecXZDist(&object->field_ea0_target->collision_position, &object->collision_position, NULL);
                 f32 degrees;
