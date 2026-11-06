@@ -8500,6 +8500,7 @@ extern "C" {
     i32 startnewgame_initiated = 0;
     i32 startnewgame = 0;
     i32 saveload_autosave = -1;
+    i32 NuFadeObjEnabledPc = 1;
     i32 BGLOAD = 1;
     i32 PermDataLoaded = 1;
     i32 LOADEROFF = 0;
@@ -13579,6 +13580,9 @@ extern "C" {
 #pragma bss_seg(".bss$NuFadeObjGroup")
     PC_NUFADEGROUP *NuFadeObjGroup = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$NuFadeObjCurGrp")
+    PC_NUFADEGROUP *NuFadeObjCurGrp = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuFadeMaxGroupsPC")
     i32 NuFadeMaxGroupsPC = 0;
 #pragma bss_seg()
@@ -13602,6 +13606,9 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuWindGroup")
     PC_NUWINDGROUP *NuWindGroup = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuWindCurGrp")
+    PC_NUWINDGROUP *NuWindCurGrp = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuWindMaxGroupsPC")
     i32 NuWindMaxGroupsPC = 0;

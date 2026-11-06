@@ -127,3 +127,105 @@ void __cdecl NuFadeObjAngleTerrain(NUMTX *matrix) {
     matrix->m31 = position.y;
     matrix->m32 = position.z;
 }
+
+void __cdecl NuFadeObjUpdateArray(NUVEC **positions) {
+    i32 i, g, p, nearby;
+    NUMTX *matrix;
+    i16 *platform;
+    PC_NUFADEGROUP *group = NuFadeObjGroup;
+    void *terrain;
+    NuFadeObjWave += 501;
+    NuFadeObjDir += 133;
+    NuFadeObjDir2 += 377;
+    if (NuFadeObjEnabledPc == 0)
+        return;
+    terrain = TerrainGetCur();
+    for (g = 0; g < NuFadeMaxGroupsPC; ++g, ++group) {
+        if (group->active) {
+            if ((group->centre.x - global_camera.mtx.m30) * (group->centre.x - global_camera.mtx.m30) +
+                    (group->centre.y - global_camera.mtx.m31) * (group->centre.y - global_camera.mtx.m31) +
+                    (group->centre.z - global_camera.mtx.m32) * (group->centre.z - global_camera.mtx.m32) <
+                group->cull_distance_squared) {
+                group->in_range = 1;
+                if (group->flags) {
+                    TerrainSetCur(group->terrain);
+                    matrix = group->matrices;
+                    platform = group->platforms;
+                    for (i = 0; i < group->count; ++i, ++matrix, ++platform) {
+                        nearby = 0;
+                        for (p = 0; p < 8; ++p) {
+                            if (positions[p]) {
+                                if ((matrix->m30 - positions[p]->x) * (matrix->m30 - positions[p]->x) +
+                                        (matrix->m31 - positions[p]->y) * (matrix->m31 - positions[p]->y) +
+                                        (matrix->m32 - positions[p]->z) * (matrix->m32 - positions[p]->z) <
+                                    4.0) {
+                                    nearby = 1;
+                                    break;
+                                }
+                            }
+                        }
+                        if (nearby) {
+                            if (*platform == -1) {
+                                *platform = (i16)NewPlatInst(matrix, group->instance_index);
+                                PlatInstRotate(*platform, 1);
+                            }
+                        } else if (*platform != -1) {
+                            DeletePlatinst(*platform);
+                            *platform = -1;
+                        }
+                    }
+                }
+            } else {
+                group->in_range = 0;
+            }
+        }
+    }
+    TerrainSetCur(terrain);
+}
+
+void __cdecl NuFadeObjUpdate(NUVEC *position) {
+    i32 i;
+    NUVEC *positions[8];
+    for (i = 1; i < 8; ++i)
+        positions[i] = NULL;
+    positions[0] = position;
+    NuFadeObjUpdateArray(positions);
+}
+
+void __cdecl NuFadeObjDraw(void) {
+    i32 i, g;
+    NUMTX *matrix;
+    PC_NUFADEGROUP *group;
+    f32 near_squared, far_squared, distance_squared;
+    NUSPECIALHANDLE special;
+    special.special = NULL;
+    if (NuFadeObjEnabledPc == 0)
+        return;
+    group = NuFadeObjGroup;
+    for (g = 0; g < NuFadeMaxGroupsPC; ++g, ++group) {
+        if (group->active && group->in_range) {
+            NuFadeObjCurGrp = group;
+            group->drawn = 0;
+            matrix = group->matrices;
+            near_squared = group->near_distance * group->near_distance;
+            far_squared = group->far_distance * group->far_distance;
+            if (matrix == NULL)
+                continue;
+            for (i = 0; i < group->count; ++i, ++matrix) {
+                distance_squared = (matrix->m30 - global_camera.mtx.m30) * (matrix->m30 - global_camera.mtx.m30) +
+                                   (matrix->m31 - global_camera.mtx.m31) * (matrix->m31 - global_camera.mtx.m31) +
+                                   (matrix->m32 - global_camera.mtx.m32) * (matrix->m32 - global_camera.mtx.m32);
+                if (distance_squared < far_squared) {
+                    if (distance_squared < near_squared)
+                        matrix->m23 = 0.0f;
+                    else
+                        matrix->m23 = 1.0e-11f;
+                    special.scene = group->scene;
+                    special.display_special = (NUMTX *)group->special;
+                    if (NuSpecialDrawAt(&special, matrix))
+                        group->drawn = 1;
+                }
+            }
+        }
+    }
+}
