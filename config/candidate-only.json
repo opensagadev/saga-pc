@@ -1310,6 +1310,11 @@
    "unit": "src/legoapi/screen.cpp",
    "symbol": "?StatusLerpPc@@YAMMMM@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/aisys.c",
+   "symbol": "_AIPathFabs",
+   "kind": "function"
   }
  ]
 }
