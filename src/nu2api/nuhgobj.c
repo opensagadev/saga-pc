@@ -188,54 +188,67 @@ DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa2(i32 count, i16 *indices, NUANIMDAT
 DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend2(i32 count, i16 *indices, NUANIMDATA2_PC *animation_a, f32 frame_a,
                                                    NUANIMDATA2_PC *animation_b, f32 frame_b, f32 blend) {
     NUANIM_TIME2_PC time_a, time_b;
-    DWA_WEIGHT_BLOCK_PC **result;
+    DWA_WEIGHT_BLOCK_PC **result = NULL;
+    DWA_CURVE_CELL_PC *cells_a = NULL, *cells_b = NULL;
+    i8 *types_a = NULL, *types_b = NULL;
     i32 render;
-    if ((animation_a == NULL && animation_b == NULL) || count == 0)
-        return NULL;
-    if (animation_a != NULL)
-        NuAnimData2CalcTime(animation_a, frame_a, &time_a);
-    if (animation_b != NULL)
-        NuAnimData2CalcTime(animation_b, frame_b, &time_b);
-    if (indices == NULL)
-        count = 1;
-    result = NuRndrCreateBlendShapeDWAPointers(count);
-    memset(result, 0, ((u32)count * 4 + 15u) >> 4);
-    if (result == NULL)
-        return NULL;
-    for (render = 0; render < count; ++render) {
-        i32 node = indices == NULL ? 0 : indices[render];
-        i32 count_a = 0, count_b = 0, curves, curve;
-        DWA_CURVE_CELL_PC *cells_a = NULL, *cells_b = NULL;
-        i8 *types_a = NULL, *types_b = NULL;
-        DWA_WEIGHT_BLOCK_PC *weights;
-        f64 inverse;
-        if (node < 0)
-            continue;
-        if (animation_a != NULL && node < NuAnimNumNodes(animation_a)) {
-            count_a = animation_a->curve_count;
-            cells_a = &animation_a->curves[count_a * node];
-            types_a = &animation_a->curve_types[count_a * node];
-        }
-        if (animation_b != NULL && node < NuAnimNumNodes(animation_b)) {
-            count_b = animation_b->curve_count;
-            cells_b = &animation_b->curves[count_b * node];
-            types_b = &animation_b->curve_types[count_b * node];
-        }
-        curves = count_a > count_b ? count_a : count_b;
-        weights = NuRndrCreateBlendShapeDeformerWeightsArray(curves);
-        result[render] = weights;
-        if (weights == NULL || curves <= 0)
-            continue;
-        inverse = 1.0 - (f64)blend;
-        for (curve = 0; curve < curves; ++curve) {
-            f32 value_a = 0.0f, value_b = 0.0f;
-            if (curve < count_a)
-                value_a = types_a[curve] == 0 ? cells_a[curve].constant
-                                              : NuAnimCurve2CalcValEx(&cells_a[curve], &time_a, types_a[curve]);
-            if (curve < count_b)
-                value_b = types_b[curve] == 0 ? cells_b[curve].constant
-                                              : NuAnimCurve2CalcValEx(&cells_b[curve], &time_b, types_b[curve]);
-            weights->values[curve] = (f64)value_b * blend + (f64)value_a * inverse;
+    if ((animation_a != NULL || animation_b != NULL) && count != 0) {
+        if (animation_a != NULL)
+            NuAnimData2CalcTime(animation_a, frame_a, &time_a);
+        if (animation_b != NULL)
+            NuAnimData2CalcTime(animation_b, frame_b, &time_b);
+        if (indices == NULL)
+            count = 1;
+        result = NuRndrCreateBlendShapeDWAPointers(count);
+        memset(result, 0, ((u32)count * 4 + 15u) >> 4);
+        if (result != NULL) {
+            for (render = 0; render < count; ++render) {
+                i32 node;
+                i32 count_a, count_b, curves, curve;
+                DWA_WEIGHT_BLOCK_PC *weights;
+                f64 inverse;
+                if (indices != NULL) {
+                    node = indices[render];
+                    if (node < 0)
+                        continue;
+                } else {
+                    node = 0;
+                }
+                if (animation_a != NULL && node < NuAnimNumNodes(animation_a)) {
+                    count_a = animation_a->curve_count;
+                    cells_a = &animation_a->curves[count_a * node];
+                    types_a = &animation_a->curve_types[count_a * node];
+                } else {
+                    count_a = 0;
+                }
+                if (animation_b != NULL && node < NuAnimNumNodes(animation_b)) {
+                    count_b = animation_b->curve_count;
+                    cells_b = &animation_b->curves[count_b * node];
+                    types_b = &animation_b->curve_types[count_b * node];
+                } else {
+                    count_b = 0;
+                }
+                curves = count_a > count_b ? count_a : count_b;
+                weights = NuRndrCreateBlendShapeDeformerWeightsArray(curves);
+                result[render] = weights;
+                if (weights == NULL || curves <= 0)
+                    continue;
+                inverse = 1.0 - (f64)blend;
+                for (curve = 0; curve < curves; ++curve) {
+                    f32 value_a, value_b;
+                    if (curve < count_a)
+                        value_a = types_a[curve] == 0 ? cells_a[curve].constant
+                                                      : NuAnimCurve2CalcValEx(&cells_a[curve], &time_a, types_a[curve]);
+                    else
+                        value_a = 0.0f;
+                    if (curve < count_b)
+                        value_b = types_b[curve] == 0 ? cells_b[curve].constant
+                                                      : NuAnimCurve2CalcValEx(&cells_b[curve], &time_b, types_b[curve]);
+                    else
+                        value_b = 0.0f;
+                    weights->values[curve] = value_b * blend + value_a * inverse;
+                }
+            }
         }
     }
     return result;
@@ -809,59 +822,72 @@ DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend(i32 render_count, i16 *render_
                                                   NUANIM_LEGACY_HEADER_PC *animation_a, f32 frame_a,
                                                   NUANIM_LEGACY_HEADER_PC *animation_b, f32 frame_b, f32 blend) {
     NUANIM_TIME2_PC time_a, time_b;
-    DWA_WEIGHT_BLOCK_PC **weights_by_render;
+    DWA_WEIGHT_BLOCK_PC **weights_by_render = NULL;
     i32 render;
-    if ((animation_a == NULL && animation_b == NULL) || render_count == 0)
-        return NULL;
-    if (animation_a != NULL)
-        NuAnimDataCalcTime(animation_a, frame_a, &time_a);
-    if (animation_b != NULL)
-        NuAnimDataCalcTime(animation_b, frame_b, &time_b);
-    if (render_indices == NULL)
-        render_count = 1;
-    weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
-    memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
-    if (weights_by_render == NULL)
-        return NULL;
-    for (render = 0; render < render_count; ++render) {
-        i32 node = render_indices == NULL ? 0 : render_indices[render];
-        i32 count_a = 0, count_b = 0, curve_count, curve;
-        DWA_WEIGHT_BLOCK_PC *weights;
-        f64 inverse_blend;
-        if (node < 0)
-            continue;
-        if (animation_a != NULL) {
-            NUANIM_LEGACY_CHUNK_PC *chunk = (NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk];
-            if (node < chunk->node_count && chunk->curve_sets[node] != NULL)
-                count_a = chunk->curve_sets[node]->curve_count;
-        }
-        if (animation_b != NULL) {
-            NUANIM_LEGACY_CHUNK_PC *chunk = (NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk];
-            if (node < chunk->node_count && chunk->curve_sets[node] != NULL)
-                count_b = chunk->curve_sets[node]->curve_count;
-        }
-        curve_count = count_a < count_b ? count_b : count_a;
-        weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
-        weights_by_render[render] = weights;
-        if (weights == NULL || curve_count <= 0)
-            continue;
-        inverse_blend = 1.0 - blend;
-        for (curve = 0; curve < curve_count; ++curve) {
-            f32 value_a = 0.0f;
-            f64 value_b = 0.0;
-            if (curve < count_a) {
-                NUANIM_LEGACY_SET_PC *set =
-                    ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->curve_sets[node];
-                value_a = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_a)
-                                                     : set->constants[curve];
+    if ((animation_a != NULL || animation_b != NULL) && render_count != 0) {
+        if (animation_a != NULL)
+            NuAnimDataCalcTime(animation_a, frame_a, &time_a);
+        if (animation_b != NULL)
+            NuAnimDataCalcTime(animation_b, frame_b, &time_b);
+        if (render_indices == NULL)
+            render_count = 1;
+        weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
+        memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
+        if (weights_by_render != NULL) {
+            for (render = 0; render < render_count; ++render) {
+                i32 node;
+                i32 count_a, count_b, curve_count, curve;
+                DWA_WEIGHT_BLOCK_PC *weights;
+                f64 inverse_blend;
+                if (render_indices != NULL) {
+                    node = render_indices[render];
+                    if (node < 0)
+                        continue;
+                } else {
+                    node = 0;
+                }
+                if (animation_a != NULL &&
+                    node < ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->node_count &&
+                    ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->curve_sets[node] != NULL) {
+                    count_a =
+                        ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->curve_sets[node]->curve_count;
+                } else {
+                    count_a = 0;
+                }
+                if (animation_b != NULL &&
+                    node < ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->node_count &&
+                    ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->curve_sets[node] != NULL) {
+                    count_b =
+                        ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->curve_sets[node]->curve_count;
+                } else {
+                    count_b = 0;
+                }
+                curve_count = count_a > count_b ? count_a : count_b;
+                weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+                weights_by_render[render] = weights;
+                if (weights == NULL || curve_count <= 0)
+                    continue;
+                inverse_blend = 1.0 - blend;
+                for (curve = 0; curve < curve_count; ++curve) {
+                    f32 value_a, value_b;
+                    NUANIM_LEGACY_SET_PC *set;
+                    if (curve < count_a) {
+                        set = ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->curve_sets[node];
+                        value_a = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_a)
+                                                             : set->constants[curve];
+                    } else {
+                        value_a = 0.0f;
+                    }
+                    if (curve < count_b) {
+                        set = ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->curve_sets[node];
+                        value_b = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_b)
+                                                             : set->constants[curve];
+                    } else {
+                        value_b = 0.0f;
+                    }
+                    weights->values[curve] = value_b * blend + value_a * inverse_blend;
+                }
             }
-            if (curve < count_b) {
-                NUANIM_LEGACY_SET_PC *set =
-                    ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->curve_sets[node];
-                value_b = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_b)
-                                                     : set->constants[curve];
-            }
-            weights->values[curve] = value_b * blend + inverse_blend * value_a;
         }
     }
     return weights_by_render;
