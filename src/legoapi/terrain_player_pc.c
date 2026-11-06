@@ -940,9 +940,14 @@ STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
 STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
 STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
 
+static __inline f32 TerrainBlockFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 i32 __cdecl TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *points, f32 *heights) {
     PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
-    i32 i;
+    i32 i, j;
     if (points == NULL || heights == NULL)
         return 0;
     heights[0] = -10000.0f;
@@ -951,18 +956,19 @@ i32 __cdecl TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, N
     heights[3] = -10000.0f;
     for (i = 0; i < world->count; ++i) {
         PUSH_SUPPORT_BLOCK_VIEW_PC *other = &world->blocks[i];
-        f32 xmin, xmax, zmin, zmax, height;
-        i32 j;
+        NUVEC min, max;
         if ((PUSH_BLOCK_PC *)other == block)
             continue;
-        xmin = other->position->x - (f32)fabs((f64)other->bounds_min.x);
-        zmin = other->position->z - (f32)fabs((f64)other->bounds_min.z);
-        xmax = other->position->x + (f32)fabs((f64)other->bounds_max.x);
-        height = other->position->y + (f32)fabs((f64)other->bounds_max.y);
-        zmax = other->position->z + (f32)fabs((f64)other->bounds_max.z);
+        min = *other->position;
+        max = *other->position;
+        min.x -= TerrainBlockFabs(other->bounds_min.x);
+        min.z -= TerrainBlockFabs(other->bounds_min.z);
+        max.x += TerrainBlockFabs(other->bounds_max.x);
+        max.y += TerrainBlockFabs(other->bounds_max.y);
+        max.z += TerrainBlockFabs(other->bounds_max.z);
         for (j = 0; j < 4; ++j) {
-            if (points[j].x > xmin && points[j].x < xmax && points[j].z > zmin && points[j].z < zmax)
-                heights[j] = height;
+            if (points[j].x > min.x && points[j].x < max.x && points[j].z > min.z && points[j].z < max.z)
+                heights[j] = max.y;
         }
     }
     return 1;

@@ -63,107 +63,90 @@ static void SplinePointAngles(NUGSPLINE *spline, i32 index, i32 looping, u16 *pi
 }
 
 void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
-    NUGSPLINE *spline;
-    i32 segments;
+    i32 points;
     NUVEC offset;
+    NUVEC *current, *next;
+    f32 fraction;
 
-    if (position == NULL || position->spline == NULL || position->spline->length <= 1) {
+    if (position == NULL || position->spline == NULL || position->spline->length <= 1)
         return;
-    }
-    spline = position->spline;
-    segments = spline->length - 1 + (position->looping != 0);
-    if (position->segment >= segments) {
+    if (position->looping)
+        points = position->spline->length + 1;
+    else
+        points = position->spline->length;
+    if (position->segment >= points - 1)
         return;
-    }
 
-    if (distance > 0.0f) {
-        while (distance > 0.0f) {
-            position->segment_distance += distance;
-            if (!(position->segment_distance >= position->segment_length)) {
-                break;
-            }
-            distance = position->segment_distance - position->segment_length;
-            {
-                i16 previous = position->segment;
+    if (distance >= 0.0f) {
+        if (distance > 0.0f)
+            do {
+                position->segment_distance += distance;
+                if (!(position->segment_distance >= position->segment_length)) {
+                    current = SPLINE_POINT(position->spline, position->segment);
+                    next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
+                    NuVecSub(&offset, next, current);
+                    fraction =
+                        position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
+                    NuVecScale(&offset, &offset, fraction);
+                    NuVecAdd(&position->position, current, &offset);
+                    break;
+                }
+                distance = position->segment_distance - position->segment_length;
                 position->segment++;
-                if (position->segment >= segments) {
+                if (position->segment >= points - 1) {
                     if (!position->looping) {
                         position->finished = 1;
-                        position->position = *SPLINE_POINT(spline, position->segment);
-                        position->segment = previous;
+                        position->position = *SPLINE_POINT(position->spline, position->segment);
+                        position->segment--;
                         position->along = 1.0f;
                         position->segment_distance = position->segment_length;
                         return;
                     }
                     position->segment = 0;
                 }
-            }
-            {
-                NUVEC *current = SPLINE_POINT(spline, position->segment);
-                NUVEC *next = SPLINE_POINT(spline, (position->segment + 1) % spline->length);
+                current = SPLINE_POINT(position->spline, position->segment);
+                next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
                 position->segment_distance = 0.0f;
                 position->segment_length = NuVecDist(next, current, &offset);
-                if (distance == 0.0f) {
+                if (distance == 0.0f)
                     position->position = *current;
-                }
-            }
-            spline = position->spline;
-        }
-        if (!(distance > 0.0f)) {
-            goto update_along;
-        }
-    } else if (distance < 0.0f && position->segment >= 0) {
-        for (;;) {
+            } while (distance > 0.0f);
+    } else if (position->segment >= 0 && distance < 0.0f) {
+        do {
             position->segment_distance += distance;
             if (!(position->segment_distance < 0.0f)) {
+                current = SPLINE_POINT(position->spline, position->segment);
+                next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
+                NuVecSub(&offset, next, current);
+                fraction =
+                    position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
+                NuVecScale(&offset, &offset, fraction);
+                NuVecAdd(&position->position, current, &offset);
                 break;
             }
             distance = position->segment_distance;
-            {
-                i16 previous = position->segment;
-                position->segment--;
-                if (position->segment < 0) {
-                    if (!position->looping) {
-                        position->finished = 1;
-                        position->position = *SPLINE_POINT(spline, 0);
-                        position->segment = previous;
-                        position->along = 0.0f;
-                        position->segment_distance = 0.0f;
-                        return;
-                    }
-                    position->segment = (i16)(segments - 1);
+            position->segment--;
+            if (position->segment < 0) {
+                if (!position->looping) {
+                    position->finished = 1;
+                    position->position = *SPLINE_POINT(position->spline, 0);
+                    position->segment++;
+                    position->along = 0.0f;
+                    position->segment_distance = 0.0f;
+                    return;
                 }
+                position->segment = (i16)(points - 2);
             }
-            {
-                NUVEC *current = SPLINE_POINT(spline, position->segment);
-                NUVEC *next = SPLINE_POINT(spline, (position->segment + 1) % spline->length);
-                position->segment_length = NuVecDist(next, current, &offset);
-                position->segment_distance = position->segment_length;
-                if (distance == 0.0f) {
-                    position->position = *next;
-                }
-            }
-            spline = position->spline;
-        }
-    } else {
-        goto update_along;
+            current = SPLINE_POINT(position->spline, position->segment);
+            next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
+            position->segment_length = NuVecDist(next, current, &offset);
+            position->segment_distance = position->segment_length;
+            if (distance == 0.0f)
+                position->position = *next;
+        } while (distance < 0.0f);
     }
-
-    {
-        NUVEC *current = SPLINE_POINT(spline, position->segment);
-        NUVEC *next = SPLINE_POINT(spline, (position->segment + 1) % spline->length);
-        f32 fraction = 0.0f;
-
-        NuVecSub(&offset, next, current);
-        if (position->segment_length != 0.0f) {
-            fraction = position->segment_distance / position->segment_length;
-        }
-        NuVecScale(&offset, &offset, fraction);
-        NuVecAdd(&position->position, current, &offset);
-    }
-
-update_along:
-    position->along = (position->segment_distance / position->segment_length + position->segment) / segments;
+    fraction = position->segment_distance / position->segment_length;
+    position->along = (fraction + position->segment) / (points - 1);
 }
 
 void __cdecl InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping) {

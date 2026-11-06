@@ -507,6 +507,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/terrain_player_pc.c",
+   "symbol": "_TerrainBlockFabs",
+   "kind": "function"
+  },
+  {
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
