@@ -144,14 +144,10 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
         i32 special_path_endpoints;
         i32 shadow_grounding;
         i32 retain_floor;
-        f32 lower_bound;
+        NUVEC incoming_velocity;
         i32 player_edge_probe;
         f32 movement_threshold;
         f32 speed_squared;
-        i32 skip_motion;
-        i32 direct_integration;
-        i32 left_platform;
-        i32 landed_platform;
 
         api = object;
         terrain_mask = GetSurfaceInfoDefaultMaskPc.word;
@@ -172,9 +168,10 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             const AIPATHNODE_PC *nodes;
 
             nodes = path_info->path->nodes;
-            special_path_endpoints = ((nodes[path_connection->node_indices[path_info->direction]].runtime_flags |
-                                       nodes[path_connection->node_indices[path_info->direction == 0]].runtime_flags) &
-                                      0x82) != 0;
+            if ((nodes[path_connection->node_indices[path_info->direction == 0]].runtime_flags |
+                 nodes[path_connection->node_indices[path_info->direction]].runtime_flags) &
+                0x82)
+                special_path_endpoints = 1;
         }
         shadow_grounding = 0;
         retain_floor = 0;
@@ -203,7 +200,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 shadow_grounding = 1;
                 retain_floor = (api->flags_1fc_word & 0x10) != 0;
             } else {
-                retain_floor = !ai_controlled && (0x10 & api->flags_1fc_word) != 0;
+                retain_floor = ai_controlled ? 0 : (0x10 & api->flags_1fc_word) != 0;
                 if (0 != (object->flags_ef4 & 0x40)) {
                     object->flags_ef4 &= ~0x40u;
                     shadow_grounding = 1;
@@ -212,8 +209,6 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 }
             }
         }
-
-        lower_bound = object->character_bottom * api->origin_scale;
 
         player_edge_probe = ((api->flags_1fc_word & 0x80) != 0) && object->spawn_protection_timer > 1.25f;
 
@@ -236,7 +231,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 next_position.z = api->position.z + api->velocity.z * FRAMETIME;
                 next_floor = GameShadow(object, &next_position, 5.0f, terrain_mask | 0x1f);
                 if (next_floor != 2000000.0f && ShadNorm.y > NuTrigTable[0x238e] &&
-                    (player_edge_probe ? api->collision_min.y : api->floor_height) - next_floor > 0.2f) {
+                    (player_edge_probe ? api->collision_min.y - next_floor : api->floor_height - next_floor) > 0.2f) {
 
                     api->velocity.z = 0.0f;
                     api->velocity.x = 0.0f;
@@ -245,12 +240,11 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
         }
         movement_threshold = 0.0f;
         if (!(object->pad->input_magnitude > 0.0f) && object->character_context != 0x33) {
-            i32 surface;
+            i8 surface;
             i32 slippery;
 
             surface = ((i8)(api->jump_animation_state));
-            slippery =
-                api->field_281 != 0 && surface >= 0 && surface <= 31 && TerSurface[surface].movement_scale < 1.0f;
+            slippery = api->field_281 != 0 && surface >= 0 && surface < 32 && TerSurface[surface].movement_scale < 1.0f;
             if (!slippery && AnimSpeed(api->character_model, CurrentAnim(&api->anim_packet)) == 0.0f &&
                 (api->character_data->model_flags & 0x800) == 0) {
                 movement_threshold = api->character_data->game_character->stop_speed * api->origin_scale;
@@ -259,22 +253,23 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
 
         speed_squared =
             (api->velocity.x * api->velocity.x + api->velocity.y * api->velocity.y) + api->velocity.z * api->velocity.z;
-        skip_motion =
-            (object->flags_ef0 & 0x20) == 0 && (object->flags_ef4 & 0x400000) != 0 && !special_path_endpoints &&
+        if ((object->flags_ef0 & 0x20) == 0 && (object->flags_ef4 & 0x400000) != 0 && !special_path_endpoints &&
             object->ai_packet.path_target == NULL && !((api->flags_1fc_word & 0x80) != 0) &&
             (object->flags_e20 & 0x10000000) == 0 && object->jump_variant_state == 0 &&
             object->character_context != 0 && object->character_context != 0x1c && api->jump_animation_state != 8 &&
             (((u32)(GameTimer.update_count)) > 1 || (api->flags_1f8 & 5) != 0) && (api->field_281 & 3) != 0 &&
             api->supporting_platform_id == -1 && movement_threshold * movement_threshold >= speed_squared &&
-            object->character_context != 0x0f && object->character_context != 0x0b && object->character_context != 0x1e;
-        api->flags_1fc_word = (api->flags_1fc_word & ~4u) | (skip_motion ? 4u : 0u);
+            object->character_context != 0x0f && object->character_context != 0x0b && object->character_context != 0x1e)
+            api->flags_1fc_word |= 4;
+        else
+            api->flags_1fc_word &= ~4u;
+        incoming_velocity = api->velocity;
         object->contact_count = 0;
-        direct_integration = (api->flags_1fc_word & 0x20) != 0 || (object->flags_e20 & 0x20) != 0 ||
-                             object->movement_spline_position.spline != NULL || object->move_override != NULL ||
-                             (object->character_context == 0x0f && object->field_7b3 <= 1) ||
-                             (object->character_context == 0x2c && object->field_7b3 == 0) ||
-                             (object->character_context == 0x47 && object->action_movement_state == 1);
-        if (direct_integration) {
+        if ((api->flags_1fc_word & 0x20) != 0 || (object->flags_e20 & 0x20) != 0 ||
+            object->movement_spline_position.spline != NULL || object->move_override != NULL ||
+            (object->character_context == 0x0f && (object->field_7b3 == 1 || object->field_7b3 == 0)) ||
+            (object->character_context == 0x2c && object->field_7b3 == 0) ||
+            (object->character_context == 0x47 && object->action_movement_state == 1)) {
 
             api->respawn_timer = 0.0f;
             object->flags_e20 |= 2;
@@ -287,7 +282,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
         } else if (shadow_grounding || retain_floor || 0 != (WORLD->current_level->flags & 0x10)) {
 
             api->respawn_timer = 0.0f;
-            if (!skip_motion) {
+            if ((api->flags_1fc_word & 4) == 0) {
                 f32 grounded_lower_bound;
 
                 object->flags_e20 |= 2;
@@ -312,9 +307,12 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         api->floor_height = GameShadow(object, &api->collision_position, 5.0f, terrain_mask | 0x1f);
                     }
                     api->supporting_platform_id = ((i16)(NewShadowOnPlatform()));
-                    GetSurfaceInfo(object, api->floor_height != 2000000.0f ? 1 : 0, api->floor_height);
-                    if (api->floor_height == 2000000.0f)
+                    if (api->floor_height != 2000000.0f) {
+                        GetSurfaceInfo(object, 1, api->floor_height);
+                    } else {
+                        GetSurfaceInfo(object, 0, api->floor_height);
                         TerrainPlayerResetContactPc(object);
+                    }
                     api->is_underwater = ((u8)(UnderWater(object)));
                     api->water_intersects = ((u8)(IntersectWater(object)));
                     if (api->supporting_platform_id == -1 && api->field_281 != 0 && object->terrain_platform_id != -1) {
@@ -350,12 +348,11 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             f32 floor_height;
             i32 stopped_without_terrain;
 
-            if (skip_motion) {
+            if ((api->flags_1fc_word & 4) != 0) {
                 api->velocity.x = 0.0f;
                 api->velocity.y = 0.0f;
                 api->velocity.z = 0.0f;
             } else {
-                NUVEC incoming_velocity;
                 NUVEC collision_position;
                 NUVEC movement;
                 f32 movement_scale;
@@ -365,9 +362,10 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms;
                 i32 i;
 
-                incoming_velocity = api->velocity;
-                collision_position = api->position;
-                collision_position.y += lower_bound;
+                collision_position.x = api->position.x;
+                collision_position.y = api->origin_scale * object->character_bottom + api->position.y;
+                collision_position.z = api->position.z;
+                object_index = ((u32)(((u32)(object)) - ((u32)(Obj)))) / sizeof(GAMEOBJECT);
 
                 NuVecScale(&movement, &api->velocity, FRAMETIME);
 
@@ -408,9 +406,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     PLAYERCHARACTERCONFIG_PC *character;
 
                     character = api->character_data->game_character;
-                    if (object->id != id_SPEEDERBIKE) {
-                        movement_scale = TerrainPlayerOtherMovementScalePc / character->run_speed;
-                    } else {
+                    if (object->id == (u16)id_SPEEDERBIKE) {
                         if (object->ai_packet.goal_speed_mode == 1) {
                             movement_scale = TerrainPlayerBikeMovementScalePc / character->walk_speed;
                         } else if (object->ai_packet.goal_speed_mode == 2) {
@@ -418,12 +414,12 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         } else {
                             movement_scale = TerrainPlayerBikeMovementScalePc / character->run_speed;
                         }
+                    } else {
+                        movement_scale = TerrainPlayerOtherMovementScalePc / character->run_speed;
                     }
                     movement.x *= movement_scale;
                     movement.z *= movement_scale;
                 }
-                object_index = ((u32)(((u32)(object)) - ((u32)(Obj)))) / sizeof(GAMEOBJECT);
-
                 excluded_count = 0;
                 if (object->field_106e != -1) {
                     excluded_platforms[excluded_count++] = object->field_106e;
@@ -569,7 +565,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 top = object->character_top * api->origin_scale + api->position.y;
                 bottom = api->position.y + bottom_offset;
                 height = top - bottom;
-                if (!skip_motion && floor_height > 0.1f * height + bottom &&
+                if ((api->flags_1fc_word & 4) == 0 && floor_height > 0.1f * height + bottom &&
                     height + 0.01f >= (floor_height + height) - top) {
                     api->position.y = floor_height - bottom_offset;
                 }
@@ -610,17 +606,12 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
             }
         }
 
-        landed_platform = api->field_281 != 0 && entry_platform == -1 && api->supporting_platform_id != -1 &&
-                          api->supporting_platform_id == object->terrain_platform_id && entry_vertical_velocity < 0.0f;
-        left_platform = api->field_281 == 0 && entry_platform != -1 && api->supporting_platform_id == -1 &&
-                        object->terrain_platform_id == entry_platform;
-        if (left_platform || landed_platform) {
-            i32 platform_id;
+        if (api->field_281 != 0 && entry_platform == -1 && api->supporting_platform_id != -1 &&
+            api->supporting_platform_id == object->terrain_platform_id && entry_vertical_velocity < 0.0f) {
             TERRAIN_PLAYER_GRABBER_PC *grabber;
 
-            platform_id = left_platform ? entry_platform : api->supporting_platform_id;
             grabber = ((TERRAIN_PLAYER_WORLD_PC *)(WORLD))->grabber;
-            if (grabber != NULL && grabber->platform_id == platform_id) {
+            if (grabber != NULL && grabber->platform_id == api->supporting_platform_id) {
                 if (grabber->platform_contact_timer <= 0.0f) {
                     grabber->platform_contact_timer = 0.25f;
                 }
@@ -628,13 +619,28 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                 GAMEOBJECT *platform_owner;
 
                 platform_owner = CharPlatform_FindObjFromPlatID(
-                    ((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc)), platform_id);
+                    ((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc)), api->supporting_platform_id);
                 if (platform_owner != NULL && platform_owner->character_data->game_character->field_028 > 0.0f) {
-                    if (left_platform) {
-                        platform_owner->velocity.y -= entry_vertical_velocity * 0.5f;
-                    } else {
-                        platform_owner->velocity.y = entry_vertical_velocity * 0.5f + platform_owner->velocity.y;
-                    }
+                    platform_owner->velocity.y = entry_vertical_velocity * 0.5f + platform_owner->velocity.y;
+                }
+            }
+        }
+        if (api->field_281 == 0 && entry_platform != -1 && api->supporting_platform_id == -1 &&
+            object->terrain_platform_id == entry_platform) {
+            TERRAIN_PLAYER_GRABBER_PC *grabber;
+
+            grabber = ((TERRAIN_PLAYER_WORLD_PC *)(WORLD))->grabber;
+            if (grabber != NULL && grabber->platform_id == entry_platform) {
+                if (grabber->platform_contact_timer <= 0.0f) {
+                    grabber->platform_contact_timer = 0.25f;
+                }
+            } else {
+                GAMEOBJECT *platform_owner;
+
+                platform_owner = CharPlatform_FindObjFromPlatID(
+                    ((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc)), entry_platform);
+                if (platform_owner != NULL && platform_owner->character_data->game_character->field_028 > 0.0f) {
+                    platform_owner->velocity.y -= entry_vertical_velocity * 0.5f;
                 }
             }
         }
@@ -753,18 +759,18 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                       (api->character_data->game_character->flags_090 & 0x04000000) == 0)) &&
                     NoLayerKill(object) == 0 && object->character_context != 0x5d) {
                     u32 layer_flags;
-                    i32 exempt_context;
-                    i32 rescue_below;
-                    i32 rescue_above;
 
                     layer_flags = TerLayer[((i8)(api->field_283))].flags;
-                    exempt_context = !((api->flags_1fc_word & 0x80) != 0) &&
-                                     (object->character_context == 0x46 || object->character_context == 0x47);
-                    rescue_below =
-                        ((layer_flags & 1) != 0 || tractor_swamp) && api->position.y < api->water_height &&
-                        !(VehicleArea != 0 && BonusArea != 0 && api->character_data->game_character->field_028 > 0.0f);
-                    rescue_above = (layer_flags & 0x20) != 0 && api->collision_max.y > api->water_height;
-                    if ((rescue_below || rescue_above) && !exempt_context) {
+                    if ((((layer_flags & 1) != 0 || (api->field_283 == 9 && object->id == id_TRACTOR &&
+                                                     WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA)) &&
+                         api->position.y < api->water_height &&
+                         !(VehicleArea != 0 && BonusArea != 0 &&
+                           api->character_data->game_character->field_028 > 0.0f) &&
+                         ((api->flags_1fc_word & 0x80) != 0 ||
+                          (object->character_context != 0x47 && object->character_context != 0x46))) ||
+                        ((layer_flags & 0x20) != 0 && api->collision_max.y > api->water_height &&
+                         ((api->flags_1fc_word & 0x80) != 0 ||
+                          (object->character_context != 0x47 && object->character_context != 0x46)))) {
                         if (object->doomed_escape_locator != NULL && !((api->flags_1fc_word & 0x80) != 0)) {
                             if ((object->flags_ef0 & 0x800) != 0) {
                                 ObjHitObj(NULL, object, 1, 0, 0, 1);
