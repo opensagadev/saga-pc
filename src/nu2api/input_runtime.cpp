@@ -1442,7 +1442,7 @@ void PC_INPUT_RUNTIME_PC::AssignBindingPc(i32 action, i32 port, i32 kind, i32 va
                     index += 8;
                 u8 remapped_kind = PcInputAxisRemap[index];
                 bindings[i].kind = remapped_kind;
-                bindings[i].value = remapped_kind ? (u16)value : 0;
+                bindings[i].value = (u16)(remapped_kind ? value : 0);
             }
         }
         return;
