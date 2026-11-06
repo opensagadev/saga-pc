@@ -13031,8 +13031,54 @@ STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
 STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
 STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
 
-extern void *AiEditorPathScratchCursorPc;
-extern void *AiEditorPathScratchEndPc;
+typedef struct AI_EDITOR_MODE_ENTRY_PC {
+    char name[32];
+    void(__cdecl *enter)(void);
+    eduimenu_s *(__cdecl *process)(FRAME_PAD_PC *);
+    void(__cdecl *draw)(i32, i32, f32, f32);
+    void(__cdecl *leave)(void);
+} AI_EDITOR_MODE_ENTRY_PC;
+typedef struct AI_EDITOR_MODE_BANK_PC {
+    AI_EDITOR_MODE_ENTRY_PC entries[8];
+    i16 count;
+    i16 current;
+} AI_EDITOR_MODE_BANK_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_MODE_ENTRY_PC) == 48);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, enter) == 32);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, process) == 36);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, draw) == 40);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, leave) == 44);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, count) == 384);
+STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, current) == 386);
+STATIC_ASSERT(sizeof(AI_EDITOR_MODE_BANK_PC) == 388);
+/* AI editor settings block (0x200 bytes, zeroed by the editor initializer). */
+typedef struct AIEDITORSETTINGS_PC {
+    char path_name[16];     /* restored current path on enter */
+    char creature_name[16]; /* restored selected creature on enter */
+    char locator_set_name[16];
+    char script_name[16];
+    i32 locator_rotation;
+    i32 character_type;
+    f32 height_offset;
+    f32 script_params[4];
+    u32 script_flags;
+    u32 display_options;
+    f32 elapsed_time;
+    NUMTL *path_material;
+    NUMTL *route_material;
+    NUMTL *overlay_material;
+    void *path_scratch_cursor;
+    void *path_scratch_end;
+    AI_EDITOR_MODE_BANK_PC modes;
+} AIEDITORSETTINGS_PC;
+STATIC_ASSERT(offsetof(AIEDITORSETTINGS_PC, locator_rotation) == 0x40);
+STATIC_ASSERT(offsetof(AIEDITORSETTINGS_PC, script_params) == 0x4c);
+STATIC_ASSERT(offsetof(AIEDITORSETTINGS_PC, display_options) == 0x60);
+STATIC_ASSERT(offsetof(AIEDITORSETTINGS_PC, path_scratch_cursor) == 0x74);
+STATIC_ASSERT(offsetof(AIEDITORSETTINGS_PC, modes) == 0x7c);
+STATIC_ASSERT(sizeof(AIEDITORSETTINGS_PC) == 0x200);
+#pragma section(".bss$aieditorsettings", read, write)
+__declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS_PC aieditorsettings = {0};
 extern void(__cdecl *GameAISaveFn)(AIPATHSYS_PC *);
 extern const char AiEditorDatedBackupFormatPc[];
 AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
@@ -13053,7 +13099,8 @@ i32 __cdecl aieditor_Save(void) {
     cursor.char_ptr = (char *)aieditor->save_scratch;
     end.char_ptr = cursor.char_ptr + sizeof(aieditor->save_scratch);
     memset(cursor.char_ptr, 0, sizeof(aieditor->save_scratch));
-    paths = pathEditorCreateData(&cursor, &end, &AiEditorPathScratchCursorPc, &AiEditorPathScratchEndPc);
+    paths =
+        pathEditorCreateData(&cursor, &end, &aieditorsettings.path_scratch_cursor, &aieditorsettings.path_scratch_end);
     if (paths == NULL)
         return 1;
     if (aieditor->level_file == NULL)
@@ -13183,8 +13230,9 @@ void __cdecl AISYSRebuildFromEditorData(void) {
     REBUILD_STORAGE(system)->cursor.void_ptr = REBUILD_STORAGE(system)->storage;
     REBUILD_STORAGE(aieditor->ai_system)->size = storage_size;
     system = aieditor->ai_system;
-    created_path_system = pathEditorCreateData(&REBUILD_STORAGE(system)->cursor, &REBUILD_STORAGE(system)->end,
-                                               &AiEditorPathScratchCursorPc, &AiEditorPathScratchEndPc);
+    created_path_system =
+        pathEditorCreateData(&REBUILD_STORAGE(system)->cursor, &REBUILD_STORAGE(system)->end,
+                             &aieditorsettings.path_scratch_cursor, &aieditorsettings.path_scratch_end);
     aieditor->ai_system->path_sys = created_path_system;
     memset(aieditor->ai_system->groups, 0, sizeof(aieditor->ai_system->groups));
     area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas);
@@ -14836,29 +14884,7 @@ void __cdecl routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 
     }
 }
 
-typedef struct AI_EDITOR_MODE_ENTRY_PC {
-    char name[32];
-    void(__cdecl *enter)(void);
-    eduimenu_s *(__cdecl *process)(FRAME_PAD_PC *);
-    void(__cdecl *draw)(i32, i32, f32, f32);
-    void(__cdecl *leave)(void);
-} AI_EDITOR_MODE_ENTRY_PC;
-typedef struct AI_EDITOR_MODE_BANK_PC {
-    AI_EDITOR_MODE_ENTRY_PC entries[8];
-    i16 count;
-    i16 current;
-} AI_EDITOR_MODE_BANK_PC;
-STATIC_ASSERT(sizeof(AI_EDITOR_MODE_ENTRY_PC) == 48);
-STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, enter) == 32);
-STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, process) == 36);
-STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, draw) == 40);
-STATIC_ASSERT(offsetof(AI_EDITOR_MODE_ENTRY_PC, leave) == 44);
-STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, count) == 384);
-STATIC_ASSERT(offsetof(AI_EDITOR_MODE_BANK_PC, current) == 386);
-STATIC_ASSERT(sizeof(AI_EDITOR_MODE_BANK_PC) == 388);
 extern i32 AiEditorRouteModeIdPc;
-extern u32 AiEditorDisplayOptionsPc;
-extern AI_EDITOR_MODE_BANK_PC AiEditorModeBankPc;
 extern void(__cdecl *AiEditorMovePlayersCallbackPc)(NUVEC *);
 STATIC_ASSERT(offsetof(AISYS_PC, scripts) == 0x1c);
 STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 8);
@@ -14904,8 +14930,8 @@ char *__cdecl AIScriptNameFromIx(AISYS_PC *system, i32 index) {
 }
 
 void __cdecl AiEditorChangeModePc(i32 mode) {
-    i16 previous = AiEditorModeBankPc.current;
-    AiEditorModeBankPc.current = (i16)mode;
+    i16 previous = aieditorsettings.modes.current;
+    aieditorsettings.modes.current = (i16)mode;
     if (aieditor != NULL && previous != (i16)mode) {
         if (aieditor->current_path != NULL)
             aieditor->current_path->current_node = NULL;
@@ -14919,12 +14945,12 @@ void __cdecl AiEditorChangeModePc(i32 mode) {
 static void __cdecl AiEditorDisplayBit4Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    AiEditorDisplayOptionsPc = (AiEditorDisplayOptionsPc & ~16u) | (((u32)item->flags & 1) << 4);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~16u) | (((u32)item->flags & 1) << 4);
 }
 static void __cdecl AiEditorDisplayBit6Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    AiEditorDisplayOptionsPc = (AiEditorDisplayOptionsPc & ~64u) | (((u32)item->flags & 1) << 6);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~64u) | (((u32)item->flags & 1) << 6);
 }
 static void __cdecl AiEditorModeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;
@@ -14933,7 +14959,7 @@ static void __cdecl AiEditorModeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
 static void __cdecl AiEditorModeSelectPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    if ((u32)item->data < (u32)(i32)AiEditorModeBankPc.count) {
+    if ((u32)item->data < (u32)(i32)aieditorsettings.modes.count) {
         AiEditorChangeModePc(item->data);
         AiEditorClearMainMenuPc();
     }
@@ -14946,10 +14972,10 @@ static void __cdecl AiEditorModeMenuPc(eduimenu_s *parent, eduiitem_s *item, u32
     menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorModeCancelPc, "Select Editor Mode");
     if (menu == NULL)
         return;
-    for (index = 0; index < AiEditorModeBankPc.count; ++index) {
-        i32 selected = index == AiEditorModeBankPc.current;
+    for (index = 0; index < aieditorsettings.modes.count; ++index) {
+        i32 selected = index == aieditorsettings.modes.current;
         eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
-                                                  AiEditorModeSelectPc, AiEditorModeBankPc.entries[index].name));
+                                                  AiEditorModeSelectPc, aieditorsettings.modes.entries[index].name));
         if (selected)
             menu->selected = edui_last_item;
         eduiMenuAttach(parent, menu);
@@ -15002,12 +15028,12 @@ eduimenu_s *__cdecl locatorEditor_MainMenu(void) {
                                                     locatorEditor_cbEmptyLocatorSet, "Empty Locator Set"));
         }
     }
-    eduiMenuAddItem(menu,
-                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 25) >> 31,
-                                         3, AiEditorDisplayBit6Pc, "Stop Platforms"));
-    eduiMenuAddItem(menu,
-                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 27) >> 31,
-                                         2, AiEditorDisplayBit4Pc, "Snap Height"));
+    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                               (i32)(aieditorsettings.display_options << 25) >> 31, 3,
+                                               AiEditorDisplayBit6Pc, "Stop Platforms"));
+    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                               (i32)(aieditorsettings.display_options << 27) >> 31, 2,
+                                               AiEditorDisplayBit4Pc, "Snap Height"));
     return menu;
 }
 
@@ -15092,7 +15118,7 @@ STATIC_ASSERT(offsetof(EDANTINODE_s, type) == 0x49);
 static void __cdecl AiEditorDisplayBit8Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    AiEditorDisplayOptionsPc = (AiEditorDisplayOptionsPc & ~256u) | (((u32)item->flags & 1) << 8);
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~256u) | (((u32)item->flags & 1) << 8);
 }
 
 static void __cdecl AiEditorAntinodeGameFlagsPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -15173,15 +15199,15 @@ eduimenu_s *__cdecl antinodeEditor_MainMenu(void) {
     if (aieditor->selected_antinode != NULL)
         eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColoursPc, 0, 0, AiEditorAntinodeTypeMenuPc,
                                                 "Select Antinode Type"));
-    eduiMenuAddItem(menu,
-                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 23) >> 31,
-                                         1, AiEditorDisplayBit8Pc, "Solid Antinode Display"));
-    eduiMenuAddItem(menu,
-                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 25) >> 31,
-                                         2, AiEditorDisplayBit6Pc, "Stop Platforms"));
-    eduiMenuAddItem(menu,
-                    eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc, (i32)(AiEditorDisplayOptionsPc << 27) >> 31,
-                                         3, AiEditorDisplayBit4Pc, "Snap Height"));
+    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                               (i32)(aieditorsettings.display_options << 23) >> 31, 1,
+                                               AiEditorDisplayBit8Pc, "Solid Antinode Display"));
+    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                               (i32)(aieditorsettings.display_options << 25) >> 31, 2,
+                                               AiEditorDisplayBit6Pc, "Stop Platforms"));
+    eduiMenuAddItem(menu, eduiItemToggleCreate(1, &AiEditorSaveMessageColoursPc,
+                                               (i32)(aieditorsettings.display_options << 27) >> 31, 3,
+                                               AiEditorDisplayBit4Pc, "Snap Height"));
     if (aieditor->selected_antinode != NULL) {
         eduiMenuAddItem(menu, eduiItemToggleCreate(0x80, &AiEditorSaveMessageColoursPc,
                                                    aieditor->selected_antinode->game_flags >> 7, 4,
@@ -15250,13 +15276,11 @@ eduimenu_s *__cdecl antinodeEditor_DeleteAntinodeMenu(void) {
  * src/data.cpp is retained byte-for-byte from baseline, avoiding its measured
  * constructor/data region displacement. All old aisys complete spans remain a
  * hard measured gate. No section attributes, extra helpers, aliases or bank. */
-i32 AiEditorLocatorRotationPc = 0;
 f32 AiEditorPickHeightTolerancePc = 0.1f;
 
 /* SOURCE DRAFT ONLY. Append to existing src/gameapi/aisys.c, where the
  * existing genuine static set/menu helpers and asserted creature record live.
  * No caller registration/activation, header change, attributes or ABI forcing. */
-extern i32 AiEditorLocatorRotationPc;
 extern f32 AiEditorPickHeightTolerancePc;
 extern void *(__cdecl *GlobalCharacterHGobjFn)(i32);
 
@@ -15412,7 +15436,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
             if ((pad->digital_buttons_pressed & 0x40) != 0) {
                 aieditor->current_locator = aieditor->nearest_locator;
                 aieditor->current_path = aieditor->current_locator->path_check.path;
-                AiEditorLocatorRotationPc = aieditor->current_locator->direction;
+                aieditorsettings.locator_rotation = aieditor->current_locator->direction;
                 edcamSetPos(&aieditor->current_locator->position);
             } else if (aieditor->current_locator != NULL && aieditor->cursor_check.on_path != 0) {
                 aieditor->current_locator->position = aieditor->camera_position;
@@ -15439,7 +15463,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                 *suffix = 0;
         create_locator:
             previous = aieditor->current_locator;
-            created = AiEditorCreateLocatorPc(&aieditor->camera_position, AiEditorLocatorRotationPc);
+            created = AiEditorCreateLocatorPc(&aieditor->camera_position, aieditorsettings.locator_rotation);
             aieditor->current_locator = created;
             if (aieditor->current_locator != NULL) {
                 char name[16];
@@ -15505,7 +15529,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
         }
     } else if ((pad->digital_buttons & 0x2000) != 0) {
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator)
-            AiEditorLocatorRotationPc = aieditor->current_locator->direction;
+            aieditorsettings.locator_rotation = aieditor->current_locator->direction;
         if ((pad->digital_buttons_pressed & 0x8000) != 0)
             aieditor->rotation_repeat = 20;
         else {
@@ -15513,15 +15537,15 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
             if (aieditor->rotation_repeat > 600)
                 aieditor->rotation_repeat = 600;
         }
-        AiEditorLocatorRotationPc = NuAngAdd(AiEditorLocatorRotationPc, aieditor->rotation_repeat);
+        aieditorsettings.locator_rotation = NuAngAdd(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
-            aieditor->current_locator->direction = AiEditorLocatorRotationPc;
+            aieditor->current_locator->direction = aieditorsettings.locator_rotation;
             angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
             aieditor->current_locator->path_check.angle = angle;
         }
     } else if ((pad->digital_buttons & 0x8000) != 0) {
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator)
-            AiEditorLocatorRotationPc = aieditor->current_locator->direction;
+            aieditorsettings.locator_rotation = aieditor->current_locator->direction;
         if ((pad->digital_buttons_pressed & 0x2000) != 0)
             aieditor->rotation_repeat = 20;
         else {
@@ -15529,23 +15553,23 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
             if (aieditor->rotation_repeat > 600)
                 aieditor->rotation_repeat = 600;
         }
-        AiEditorLocatorRotationPc = NuAngSub(AiEditorLocatorRotationPc, aieditor->rotation_repeat);
+        aieditorsettings.locator_rotation = NuAngSub(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
-            aieditor->current_locator->direction = AiEditorLocatorRotationPc;
+            aieditor->current_locator->direction = aieditorsettings.locator_rotation;
             angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
             aieditor->current_locator->path_check.angle = angle;
         }
     } else if ((pad->digital_buttons & 0x4000) != 0) {
-        i32 difference = NuAngSub(AiEditorLocatorRotationPc, aieditor->cursor_check.angle);
+        i32 difference = NuAngSub(aieditorsettings.locator_rotation, aieditor->cursor_check.angle);
         i32 quadrant = difference < 0 ? (difference + 0x3fff) >> 14 : difference >> 14;
         i32 remainder = difference % 0x4000;
         if (remainder > 0x2000)
             ++quadrant;
         else if (remainder < -0x2000)
             --quadrant;
-        AiEditorLocatorRotationPc = NuAngAdd(quadrant << 14, aieditor->cursor_check.angle);
+        aieditorsettings.locator_rotation = NuAngAdd(quadrant << 14, aieditor->cursor_check.angle);
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
-            aieditor->current_locator->direction = AiEditorLocatorRotationPc;
+            aieditor->current_locator->direction = aieditorsettings.locator_rotation;
             angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
             aieditor->current_locator->path_check.angle = angle;
         }
@@ -15572,7 +15596,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
         if (AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->nearest_locator, before) != 0) {
             aieditor->current_locator = aieditor->nearest_locator;
             aieditor->current_path = aieditor->current_locator->path_check.path;
-            AiEditorLocatorRotationPc = aieditor->current_locator->direction;
+            aieditorsettings.locator_rotation = aieditor->current_locator->direction;
             edcamSetPos(&aieditor->current_locator->position);
         }
     }
@@ -15585,7 +15609,7 @@ refresh_hover:
 }
 
 /* SOURCE-ONLY R66 three-function carry: append to genuine gameapi/aisys.c after fresh rebind.
- * Reuses locator's AiEditorLocatorRotationPc and AI_EDITOR_LOCATOR_HOVER_VIEW_PC;
+ * Reuses locator's aieditorsettings.locator_rotation and AI_EDITOR_LOCATOR_HOVER_VIEW_PC;
  * does not redefine either. No ABI attributes, helper forcing or compiler measures.
  * Native private register arguments must emerge naturally when all same-TU bodies
  * are compiled; these declarations express their ordinary typed object contracts.
@@ -15868,7 +15892,7 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
                 if (aieditor->selected_antinode->radius < ((double)0.05f))
                     aieditor->selected_antinode->radius = 0.05f;
             } else {
-                AiEditorLocatorRotationPc = aieditor->selected_antinode->flags;
+                aieditorsettings.locator_rotation = aieditor->selected_antinode->flags;
                 /* Crossed Native pressed bits are intentional. */
                 if (pad->digital_buttons_pressed & 0x2000)
                     aieditor->rotation_repeat = 20;
@@ -15877,9 +15901,10 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
                     if (aieditor->rotation_repeat > 600)
                         aieditor->rotation_repeat = 600;
                 }
-                AiEditorLocatorRotationPc = NuAngSub(AiEditorLocatorRotationPc, aieditor->rotation_repeat);
+                aieditorsettings.locator_rotation =
+                    NuAngSub(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
                 if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode)
-                    aieditor->selected_antinode->flags = AiEditorLocatorRotationPc;
+                    aieditor->selected_antinode->flags = aieditorsettings.locator_rotation;
                 antinodeEditor_AntinodeMoved(aieditor->selected_antinode);
             }
         }
@@ -15888,7 +15913,7 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
             if (aieditor->selected_antinode->type == 0) {
                 aieditor->selected_antinode->radius = aieditor->selected_antinode->radius * ((double)1.01f);
             } else {
-                AiEditorLocatorRotationPc = aieditor->selected_antinode->flags;
+                aieditorsettings.locator_rotation = aieditor->selected_antinode->flags;
                 if (pad->digital_buttons_pressed & 0x8000)
                     aieditor->rotation_repeat = 20;
                 else {
@@ -15896,13 +15921,14 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
                     if (aieditor->rotation_repeat > 600)
                         aieditor->rotation_repeat = 600;
                 }
-                AiEditorLocatorRotationPc = NuAngAdd(AiEditorLocatorRotationPc, aieditor->rotation_repeat);
+                aieditorsettings.locator_rotation =
+                    NuAngAdd(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
                 if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode)
-                    aieditor->selected_antinode->flags = AiEditorLocatorRotationPc;
+                    aieditor->selected_antinode->flags = aieditorsettings.locator_rotation;
                 antinodeEditor_AntinodeMoved(aieditor->selected_antinode);
             }
         }
-    } else if ((pad->digital_buttons & 0x1000) && (AiEditorDisplayOptionsPc & 0x100)) {
+    } else if ((pad->digital_buttons & 0x1000) && (aieditorsettings.display_options & 0x100)) {
         if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) *
@@ -15914,7 +15940,7 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
             if (aieditor->selected_antinode->upper_height < aieditor->selected_antinode->lower_height + ((double)0.01f))
                 aieditor->selected_antinode->upper_height = aieditor->selected_antinode->lower_height + ((double)0.01f);
         }
-    } else if ((pad->digital_buttons & 0x4000) && (AiEditorDisplayOptionsPc & 0x100)) {
+    } else if ((pad->digital_buttons & 0x4000) && (aieditorsettings.display_options & 0x100)) {
         if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) *
@@ -16069,13 +16095,13 @@ static void antinodeEditorDrawOnePc(EDANTINODE_s *node, i32 segments, u32 colour
 }
 
 void __cdecl antinodeEditorDrawAntinodes(void) {
-    i32 solid = (AiEditorDisplayOptionsPc >> 8) & 1;
+    i32 solid = (aieditorsettings.display_options >> 8) & 1;
     EDANTINODE_s *node;
     for (node = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes); node != NULL;
          node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link)) {
         u32 colour = 0x50505050;
         i32 segments = 8;
-        if (AiEditorModeBankPc.current == AiEditorAntinodeModeIdPc) {
+        if (aieditorsettings.modes.current == AiEditorAntinodeModeIdPc) {
             if (node == aieditor->selected_antinode) {
                 segments = 32;
                 if (node == aieditor->nearest_antinode)
@@ -16104,12 +16130,6 @@ void __cdecl creatureEditor_cb_stagger_start(eduimenu_s *menu, eduiitem_s *item,
 
 /* Native settings names are observed 16-byte views within the initializer's
  * 512-byte zero publication; Native owning allocations remain unknown. */
-#pragma section(".bss$AiEditorSavedPathNamePc", read, write)
-__declspec(allocate(".bss$AiEditorSavedPathNamePc")) char AiEditorSavedPathNamePc[16] = {0};
-#pragma section(".bss$AiEditorSavedCreatureNamePc", read, write)
-__declspec(allocate(".bss$AiEditorSavedCreatureNamePc")) char AiEditorSavedCreatureNamePc[16] = {0};
-#pragma section(".bss$AiEditorSavedLocatorSetNamePc", read, write)
-__declspec(allocate(".bss$AiEditorSavedLocatorSetNamePc")) char AiEditorSavedLocatorSetNamePc[16] = {0};
 
 NUCAMERA *__cdecl edmainGetCameraPc(void);
 STATIC_ASSERT(offsetof(NUCAMERA, near_clip) == 0x48);
@@ -16119,51 +16139,18 @@ STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_locator_set) == 0x41208);
 
 void __cdecl aieditor_Leave(void) {
-    AIEDITOR_RENDER_STATE *state;
-    VARIPTR entry;
-    void(__cdecl * leave)(void);
-    u8 *source, *destination;
-    u8 value;
     i32 index;
     edmainGetCameraPc()->near_clip = 0.15f;
-    entry.void_ptr = &AiEditorModeBankPc.entries[0].leave;
-    for (index = 0; index < (i32)AiEditorModeBankPc.count; ++index) {
-        memcpy(&leave, entry.void_ptr, sizeof(leave));
-        if (leave != NULL)
-            leave();
-        entry.addr += sizeof(AI_EDITOR_MODE_ENTRY_PC);
+    for (index = 0; index < aieditorsettings.modes.count; ++index) {
+        if (aieditorsettings.modes.entries[index].leave != NULL)
+            aieditorsettings.modes.entries[index].leave();
     }
-    state = aieditor;
-    if (state->selected_creature != NULL) {
-        source = (u8 *)state->selected_creature->name;
-        destination = (u8 *)AiEditorSavedCreatureNamePc;
-        do {
-            value = *source;
-            *destination = value;
-            ++source;
-            ++destination;
-        } while (value != 0);
-    }
-    if (state->current_path != NULL) {
-        source = (u8 *)state->current_path->name;
-        destination = (u8 *)AiEditorSavedPathNamePc;
-        do {
-            value = *source;
-            *destination = value;
-            ++source;
-            ++destination;
-        } while (value != 0);
-    }
-    if (state->current_locator_set != NULL) {
-        source = (u8 *)state->current_locator_set->name;
-        destination = (u8 *)AiEditorSavedLocatorSetNamePc;
-        do {
-            value = *source;
-            *destination = value;
-            ++source;
-            ++destination;
-        } while (value != 0);
-    }
+    if (aieditor->selected_creature != NULL)
+        strcpy(aieditorsettings.creature_name, aieditor->selected_creature->name);
+    if (aieditor->current_path != NULL)
+        strcpy(aieditorsettings.path_name, aieditor->current_path->name);
+    if (aieditor->current_locator_set != NULL)
+        strcpy(aieditorsettings.locator_set_name, aieditor->current_locator_set->name);
     AISYSRebuildFromEditorData();
     AIScriptInitConditions(aieditor->ai_system);
     aieditor->flags &= ~2u;
@@ -16370,8 +16357,8 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
     u32 colour;
     EDAIPATHNODE_s *node;
     memset(drawn_connections, 0, sizeof(drawn_connections));
-    mode = AiEditorModeBankPc.current;
-    solid = (AiEditorDisplayOptionsPc & 0x80) &&
+    mode = aieditorsettings.modes.current;
+    solid = (aieditorsettings.display_options & 0x80) &&
             (mode == AiEditorPathsModeIdPc || mode == AiEditorCreaturesModeIdPc || mode == AiEditorLocatorsModeIdPc);
     if (mode == AiEditorRouteModeIdPc) {
         EDAIPATH_s *selected = aieditor->current_path;
@@ -16495,7 +16482,7 @@ void pathEditorDrawPaths(void) {
         wall = (EDAIPATHWALL_s *)NuLinkedListGetNext(&aieditor->path_walls, &wall->link);
     }
 
-    if ((AiEditorDisplayOptionsPc & 2)) {
+    if ((aieditorsettings.display_options & 2)) {
         i32 index = 0;
         EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
         while (path != NULL) {
@@ -16523,34 +16510,32 @@ extern void(__cdecl *GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
 extern void __cdecl pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32);
 /* Four-byte observed mutable cell; Native owning allocation unknown, zero credit.
  * A distinct storage section preserves all existing owner comparison regions. */
-#pragma section(".bss$AiEditorPreviewCharacterTypePc", read, write)
-__declspec(allocate(".bss$AiEditorPreviewCharacterTypePc")) i32 AiEditorPreviewCharacterTypePc = 0;
 
 static void __cdecl creatureEditor_cbSetType(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     if (item != NULL) {
-        AiEditorPreviewCharacterTypePc = item->data;
+        aieditorsettings.character_type = item->data;
     }
     if (aieditor->selected_creature != NULL && aieditor->nearest_creature == aieditor->selected_creature) {
-        aieditor->selected_creature->character_type = (i16)AiEditorPreviewCharacterTypePc;
+        aieditor->selected_creature->character_type = (i16)aieditorsettings.character_type;
         if (GetViewRangeFn != NULL) {
-            aieditor->selected_creature->view_distance = GetViewRangeFn(AiEditorPreviewCharacterTypePc);
+            aieditor->selected_creature->view_distance = GetViewRangeFn(aieditorsettings.character_type);
         } else {
             aieditor->selected_creature->view_distance = 1.0f;
         }
         if (GetHearDistanceFn != NULL) {
-            aieditor->selected_creature->hear_distance = GetHearDistanceFn(AiEditorPreviewCharacterTypePc);
+            aieditor->selected_creature->hear_distance = GetHearDistanceFn(aieditorsettings.character_type);
         } else {
             aieditor->selected_creature->hear_distance = 1.0f;
         }
         if (GetMaxViewHeightFn != NULL) {
-            aieditor->selected_creature->max_view_height = GetMaxViewHeightFn(AiEditorPreviewCharacterTypePc);
+            aieditor->selected_creature->max_view_height = GetMaxViewHeightFn(aieditorsettings.character_type);
         } else {
             aieditor->selected_creature->max_view_height = 1.0f;
         }
         if (GetMinViewHeightFn != NULL) {
-            aieditor->selected_creature->min_view_height = GetMinViewHeightFn(AiEditorPreviewCharacterTypePc);
+            aieditor->selected_creature->min_view_height = GetMinViewHeightFn(aieditorsettings.character_type);
         } else {
             aieditor->selected_creature->min_view_height = 1.0f;
         }
@@ -16572,7 +16557,7 @@ void __cdecl creatureEditor_cbSelectType(eduimenu_s *parent, eduiitem_s *item, u
     index = 0;
     type = LevelCharacterGlobalIDFn(index);
     while (type != -1) {
-        selected = AiEditorPreviewCharacterTypePc == type;
+        selected = aieditorsettings.character_type == type;
         eduiMenuAddItem(menu, eduiItemCheckCreate(type, &AiEditorSaveMessageColoursPc, selected, 1,
                                                   creatureEditor_cbSetType, GlobalCharacterNameFn(type)));
         if (selected)
@@ -16580,6 +16565,51 @@ void __cdecl creatureEditor_cbSelectType(eduimenu_s *parent, eduiitem_s *item, u
         eduiMenuAttach(parent, menu);
         type = LevelCharacterGlobalIDFn(++index);
     }
+}
+
+void __cdecl aieditor_SetCurrentScript(char *name, EDAICREATURE_s *creature) {
+    AISCRIPT_PC *script;
+
+    if (NuStrICmp(name, aieditorsettings.script_name) != 0)
+        strcpy(aieditorsettings.script_name, name);
+    if (creature != NULL) {
+        aieditorsettings.script_params[0] = creature->script_params[0];
+        aieditorsettings.script_params[1] = creature->script_params[1];
+        aieditorsettings.script_params[2] = creature->script_params[2];
+        aieditorsettings.script_params[3] = creature->script_params[3];
+        aieditorsettings.script_flags = creature->flags & 0x1e;
+        return;
+    }
+    script = AIScriptFind(aieditor->ai_system, aieditorsettings.script_name, 1, 1, 1);
+    if (script != NULL) {
+        aieditorsettings.script_params[0] = script->params[0].default_value;
+        aieditorsettings.script_params[1] = script->params[1].default_value;
+        aieditorsettings.script_params[2] = script->params[2].default_value;
+        aieditorsettings.script_params[3] = script->params[3].default_value;
+        aieditorsettings.script_flags = 0;
+        return;
+    }
+    aieditorsettings.script_flags = 0;
+    aieditorsettings.script_params[3] = aieditorsettings.script_params[2] = aieditorsettings.script_params[1] =
+        aieditorsettings.script_params[0] = 0.0f;
+}
+
+eduiitem_s *creatureEditor_ResetParamsItem = NULL;
+
+void __cdecl creatureEditor_cbResetParams(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)item;
+    (void)event;
+    aieditor_SetCurrentScript(aieditorsettings.script_name, NULL);
+    if (aieditor->selected_creature != NULL) {
+        aieditor->selected_creature->script_params[0] = aieditorsettings.script_params[0];
+        aieditor->selected_creature->script_params[1] = aieditorsettings.script_params[1];
+        aieditor->selected_creature->script_params[2] = aieditorsettings.script_params[2];
+        aieditor->selected_creature->script_params[3] = aieditorsettings.script_params[3];
+        aieditor->selected_creature->flags &= ~0x1e;
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+    creatureEditor_ResetParamsItem = NULL;
 }
 
 STATIC_ASSERT(offsetof(EDLOCATOR_s, name) == 8);
@@ -16596,7 +16626,7 @@ STATIC_ASSERT(offsetof(AI_CREATURE_MODEL_BOUNDS_PC, height) == 0x1c8);
 STATIC_ASSERT(offsetof(AI_CREATURE_MODEL_BOUNDS_PC, radius) == 0x1cc);
 
 i32 creatureEditor_IsSelectable(EDAICREATURE_s *creature) {
-    if ((AiEditorDisplayOptionsPc & 0x400) && aieditor->selected_creature != NULL &&
+    if ((aieditorsettings.display_options & 0x400) && aieditor->selected_creature != NULL &&
         aieditor->selected_creature->set != creature->set)
         return 0;
     return 1;
@@ -16860,9 +16890,9 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         }
     }
     if (aieditor->nearest_creature == NULL && aieditor->cursor_check.on_path && aieditor->preview_width < 0.5f &&
-        AiEditorPreviewCharacterTypePc >= 0) {
-        GlobalCharacterRenderFn(&aieditor->camera_position, (u16)AiEditorLocatorRotationPc,
-                                AiEditorPreviewCharacterTypePc, 0, NULL);
+        aieditorsettings.character_type >= 0) {
+        GlobalCharacterRenderFn(&aieditor->camera_position, (u16)aieditorsettings.locator_rotation,
+                                aieditorsettings.character_type, 0, NULL);
     }
     pathEditorDrawPaths();
     areaEditorDrawAreas();
@@ -17080,16 +17110,16 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, AiAntinodeRenderIncreaseZPc,
                           aieditor->selected_antinode->base_height);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, AiAntinodeRenderDecreaseZPc);
-        } else if ((AiEditorDisplayOptionsPc & 0x100) && (aieditor->pad_buttons & 0x1000)) {
+        } else if ((aieditorsettings.display_options & 0x100) && (aieditor->pad_buttons & 0x1000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseUpperPc);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseUpperPc);
-        } else if ((AiEditorDisplayOptionsPc & 0x100) && (aieditor->pad_buttons & 0x4000)) {
+        } else if ((aieditorsettings.display_options & 0x100) && (aieditor->pad_buttons & 0x4000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderIncreaseLowerPc);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderDecreaseLowerPc);
         } else {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, AiAntinodeRenderRotateLeftPc);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, AiAntinodeRenderRotateRightPc);
-            if (AiEditorDisplayOptionsPc & 0x100) {
+            if (aieditorsettings.display_options & 0x100) {
                 NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, AiAntinodeRenderAdjustUpperPc);
                 NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, AiAntinodeRenderAdjustLowerPc);
             }
@@ -17102,7 +17132,7 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     antinodeEditorDrawAntinodes();
     areaEditorDrawAreas();
     pathEditorDrawPaths();
-    if (AiEditorDisplayOptionsPc & 8)
+    if (aieditorsettings.display_options & 8)
         creatureEditor_RenderAllCreatures();
     locatorEditorDrawLocators();
 }
@@ -17163,10 +17193,98 @@ void __cdecl areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     }
     areaEditorDrawAreas();
     pathEditorDrawPaths();
-    if (AiEditorDisplayOptionsPc & 8)
+    if (aieditorsettings.display_options & 8)
         creatureEditor_RenderAllCreatures();
     antinodeEditorDrawAntinodes();
     locatorEditorDrawLocators();
+}
+
+void __cdecl locatorEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
+    EDLOCATOR_s *display;
+    NUVEC delta;
+    f32 range;
+    i32 text_x = (x + 10) * 16;
+    NURND_VERTEX3D_PC vertices[2];
+    NUVEC current;
+    NUVEC previous;
+    NUVEC direction;
+    NUVEC midpoint;
+    i32 index;
+
+    if (aieditor->current_locator_set != NULL) {
+        NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, "Locator Editor: Set=\"%s\"",
+                      aieditor->current_locator_set->name);
+    } else {
+        NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, "Locator Editor: Set=\"NONE\"");
+    }
+    NuQFntSetColour(system_qfont, 0x80000000);
+    NuQFntSetScale(system_qfont, xscale, yscale);
+    if (aieditor->current_locator != NULL)
+        display = aieditor->current_locator;
+    else if (aieditor->nearest_locator != NULL)
+        display = aieditor->nearest_locator;
+    else
+        display = NULL;
+    if (display != NULL) {
+        range = NuVecXZDist(&display->position, &aieditor->camera_position, &delta);
+        NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "\"%s\", xzrng=%.2f", display->name, (f64)range);
+    }
+    NuQFntPrintEx(system_qfont, text_x, (y + 30) * 8, 16, "SQR - Options");
+    if (aieditor->nearest_locator != NULL) {
+        if (aieditor->current_locator == aieditor->nearest_locator) {
+            NuQFntPrintEx(system_qfont, text_x, (y + 45) * 8, 16, "X - Move selected");
+            NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, "TRI - Delete selected");
+            NuQFntPrintEx(system_qfont, text_x, (y + 75) * 8, 16, AiAntinodeRenderRotateLeftPc);
+            NuQFntPrintEx(system_qfont, text_x, (y + 90) * 8, 16, AiAntinodeRenderRotateRightPc);
+        } else {
+            NuQFntPrintEx(system_qfont, text_x, (y + 45) * 8, 16, "X - Select locator");
+            NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, AiAntinodeRenderNearestPc);
+        }
+    } else {
+        NuQFntPrintEx(system_qfont, text_x, (y + 45) * 8, 16, "X - Create locator");
+        NuQFntPrintEx(system_qfont, text_x, (y + 60) * 8, 16, AiAntinodeRenderNearestPc);
+    }
+    if (aieditor->nearest_locator == NULL && aieditor->cursor_check.on_path && aieditorsettings.elapsed_time < 0.5f) {
+        DrawLocator(&aieditor->camera_position, aiEditor_LocatorWidth, aieditorsettings.locator_rotation, 0);
+    }
+    areaEditorDrawAreas();
+    locatorEditorDrawLocators();
+    pathEditorDrawPaths();
+    antinodeEditorDrawAntinodes();
+    if (aieditorsettings.display_options & 8)
+        creatureEditor_RenderAllCreatures();
+    if (aieditor->current_locator_set != NULL) {
+        vertices[0].colour = 0x32323232;
+        vertices[1].colour = 0x32323232;
+        if (aieditor->current_locator_set->locators[0] != NULL)
+            current = aieditor->current_locator_set->locators[0]->position;
+        for (index = 0; index < 64; index++) {
+            if (aieditor->current_locator_set->locators[index] == NULL)
+                break;
+            previous = current;
+            current = aieditor->current_locator_set->locators[index]->position;
+            if (index != 0) {
+                vertices[0].position = current;
+                vertices[1].position = previous;
+                AiRndrLine3d(vertices, NULL, NULL);
+                NuVecSub(&direction, &previous, &current);
+                NuVecNorm(&direction, &direction);
+                NuVecScale(&direction, &direction, 0.05f);
+                NuVecAdd(&midpoint, &current, &previous);
+                NuVecScale(&midpoint, &midpoint, 0.5f);
+                vertices[0].position = midpoint;
+                vertices[0].position.x -= direction.x * 0.5f;
+                vertices[0].position.y -= direction.y * 0.5f;
+                vertices[0].position.z -= direction.z * 0.5f;
+                NuVecRotateY(&vertices[1].position, &direction, 0xe39);
+                NuVecAdd(&vertices[1].position, &vertices[1].position, &vertices[0].position);
+                AiRndrLine3d(vertices, NULL, NULL);
+                NuVecRotateY(&vertices[1].position, &direction, -0xe39);
+                NuVecAdd(&vertices[1].position, &vertices[1].position, &vertices[0].position);
+                AiRndrLine3d(vertices, NULL, NULL);
+            }
+        }
+    }
 }
 
 void __cdecl routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
@@ -17194,7 +17312,7 @@ void __cdecl routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         }
     }
     pathEditorDrawPaths();
-    if (AiEditorDisplayOptionsPc & 8)
+    if (aieditorsettings.display_options & 8)
         creatureEditor_RenderAllCreatures();
     areaEditorDrawAreas();
     locatorEditorDrawLocators();
@@ -17251,7 +17369,7 @@ static void pathEditorDrawRoute(void) {
 
 void __cdecl pathEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     if (aieditor->current_path != NULL) {
-        if (AiEditorDisplayOptionsPc & 1) {
+        if (aieditorsettings.display_options & 1) {
             NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 - 40, 16, "Show Routes : \"%s\"",
                           aieditor->current_path->name);
             NuQFntSetColour(system_qfont, 0x80000000);
@@ -17300,10 +17418,10 @@ void __cdecl pathEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             }
         }
     }
-    if (AiEditorDisplayOptionsPc & 1)
+    if (aieditorsettings.display_options & 1)
         pathEditorDrawRoute();
     pathEditorDrawPaths();
-    if (AiEditorDisplayOptionsPc & 8)
+    if (aieditorsettings.display_options & 8)
         creatureEditor_RenderAllCreatures();
     areaEditorDrawAreas();
     locatorEditorDrawLocators();

@@ -3428,6 +3428,7 @@ address,symbol,size,ctype
 0x529730,_creatureEditor_cbVisionMenu,397,
 0x5298c0,_creatureEditor_cbSetType,313,
 0x529a00,_creatureEditor_cbSelectType,195,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x529ad0,_aieditor_SetCurrentScript,218,"void __cdecl (char *, EDAICREATURE_s *)"
 0x529d70,_AiEditorSetTriggerAreaPc,122,
 0x529df0,_creatureEditor_cbSelectTriggerArea,290,
 0x529f20,_AiEditorSetLocatorPc,130,
@@ -3503,7 +3504,7 @@ address,symbol,size,ctype
 0x531700,_locatorEditor_cbAddLocatorsByName,252,
 0x531800,_locatorEditor_cbSetLocatorSet,280,
 0x531920,_locatorEditor_cbSelectLocatorSet,197,
-0x5319f0,_locatorEditor_Render,512,
+0x5319f0,_locatorEditor_Render,1276,
 0x531ef0,_locatorEditor_Enter,745,
 0x5322d0,_pathEditorCreateData,2941,
 0x532e50,_pathEditor_cbSetCurrentPath,219,
@@ -3512,7 +3513,7 @@ address,symbol,size,ctype
 0x5339d0,_pathEditor_Render,960,
 0x534110,_routeEditor_Render,437,
 0x5342d0,_antinodeEditor_Render,1010,
-0x5346d0,_creatureEditor_cbResetParams,108,
+0x5346d0,_creatureEditor_cbResetParams,108,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x534a80,_creatureEditor_cb_ngroup,87,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x534ae0,_creatureEditor_cb_nacross,87,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x534b40,_creatureEditor_cb_xspacing,50,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
@@ -15491,8 +15492,12 @@ address,symbol,size,ctype
 0x760638,??_C@_0BD@CFFFOHOC@Rename?5Locator?5Set?$AA@,,char []
 0x76064c,??_C@_0BF@GGJNDAIM@Add?5Locators?5By?5Name?$AA@,,char []
 0x760664,??_C@_0BD@OEHEHOJF@Select?5Locator?5Set?$AA@,,char []
+0x760678,??_C@_0BD@OFEHOHOB@X?5?9?5Create?5locator?$AA@,,char []
+0x76068c,??_C@_0BD@GJGIOEAL@X?5?9?5Select?5locator?$AA@,,char []
 0x7606a0,_AiAntinodeRenderRotateRightPc,,const char[]
 0x7606b8,_AiAntinodeRenderRotateLeftPc,,const char[]
+0x7606cc,??_C@_0BL@MNNFHBDO@Locator?5Editor?3?5Set?$DN?$CCNONE?$CC?$AA@,,char []
+0x7606e8,??_C@_0BJ@BEJGACKD@Locator?5Editor?3?5Set?$DN?$CC?$CFs?$CC?$AA@,,char []
 0x760740,??_C@_0M@DHNJIDNL@Select?5Path?$AA@,,char []
 0x76076c,??_C@_0L@DJKDICBL@X?5?9?5Create?$AA@,,char []
 0x760778,??_C@_0BM@CNNFMMBL@O?5?9?5Link?1unlink?5to?5selected?$AA@,,char []
@@ -24722,15 +24727,7 @@ address,symbol,size,ctype
 0x921efc,_MenuSaveResultShownPc,4,i32
 0x921f00,_MenuLoadResultShownPc,4,i32
 0x00921f08,_global_aiscripts,8,NULISTHDR
-0x921f10,_AiEditorSavedPathNamePc,,char[16]
-0x921f20,_AiEditorSavedCreatureNamePc,,char[16]
-0x921f30,_AiEditorSavedLocatorSetNamePc,,char[16]
-0x00921f50,_AiEditorLocatorRotationPc,,i32
-0x921f54,_AiEditorPreviewCharacterTypePc,,i32
-0x921f70,_AiEditorDisplayOptionsPc,,u32
-0x921f84,_AiEditorPathScratchCursorPc,,void *
-0x921f88,_AiEditorPathScratchEndPc,,void *
-0x921f8c,_AiEditorModeBankPc,,AI_EDITOR_MODE_BANK_PC
+0x921f10,_aieditorsettings,512,AIEDITORSETTINGS_PC
 0x922110,_AIScriptConstantRecordsPc,,AISCRIPT_CONST_RECORD_PC[8]
 0x922230,_AiRndrCullDistance,4,f32
 0x00922234,_aiscript_load_buffer,4,VARIPTR *
@@ -24799,6 +24796,7 @@ address,symbol,size,ctype
 0x9242c0,_iterator_count,,i32
 0x9242c4,_distance_tables,,f32 ***
 0x9242d4,_AiEditorMovePlayersCallbackPc,,
+0x9242d8,_creatureEditor_ResetParamsItem,4,eduiitem_s *
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *
 0x9242e8,_SocksOnPreviousStatusPc,,u32[2]
 0x9242f0,_temp_sockmidpos,12,NUVEC
