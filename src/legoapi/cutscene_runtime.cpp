@@ -42,17 +42,17 @@ extern "C" void __cdecl CutScene_StartAudio(void) {
 }
 
 extern "C" i32 CutScene_PlayingOrRequested(CUTINFO *cut) {
-    if (cut == NULL) {
-        if (CutStopInfo != NULL || NewCutInfoCount != 0)
+    if (cut != NULL) {
+        if (cut == CutStopInfo)
             return 1;
+        for (i32 i = 0; i < NewCutInfoCount; ++i) {
+            if (cut == NewCutInfo[i])
+                return 1;
+        }
         return 0;
     }
-    if (cut == CutStopInfo)
+    if (CutStopInfo != NULL || NewCutInfoCount != 0)
         return 1;
-    for (i32 i = 0; i < NewCutInfoCount; ++i) {
-        if (NewCutInfo[i] == cut)
-            return 1;
-    }
     return 0;
 }
 
@@ -1522,10 +1522,12 @@ extern "C" {
     static void CutScene_ResetCharacters(INSTNUGCUTSCENE *owner) {
         CUT_DRAW_REGISTRATION_INSTANCE_PC *instance = reinterpret_cast<CUT_DRAW_REGISTRATION_INSTANCE_PC *>(owner);
         CUT_DRAW_CHARACTER_SYSTEM_PC *system = instance->scene->characters;
+        CUT_DRAW_CHAR_INSTANCE_SYSTEM_PC *states = instance->characters;
         for (i32 i = 0; i < system->count; ++i) {
-            instance->characters->characters[i].blend_progress = 0;
-            instance->characters->characters[i].flags = 0;
-            instance->characters->characters[i].current_animation = 0xff;
+            CUT_DRAW_CHAR_INSTANCE_PC *state = &states->characters[i];
+            state->blend_progress = 0;
+            state->flags = 0;
+            state->current_animation = 0xff;
         }
     }
     static void CutScene_EvalCharacter(INSTNUGCUTSCENE *owner, CUT_DRAW_SCENE_PC *, CUT_DRAW_CHAR_INSTANCE_PC *instance,
