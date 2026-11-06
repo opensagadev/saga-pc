@@ -1389,91 +1389,6 @@ typedef struct player_movement_vector_pc_s {
     NUVEC movement_direction;
 } PLAYER_MOVEMENT_VECTOR_PC;
 STATIC_ASSERT(offsetof(PLAYER_MOVEMENT_VECTOR_PC, movement_direction) == 0x200);
-typedef struct player_initialize_view_pc_s {
-    u8 unknown_000[0x298];
-    u32 field_298;
-    u8 unknown_29c[0x4];
-    u32 field_2a0;
-    u32 field_2a4;
-    u8 unknown_2a8[0x10];
-    f32 idle_total_time;
-    f32 idle_animation_time;
-    f32 idle_animation_limit;
-    i16 idle_animation;
-    i16 previous_idle_animation;
-    u8 unknown_2c8[0x126];
-    i16 animation_override_from;
-    i16 animation_override_to;
-    u8 unknown_3f2[0x8ce];
-    void *held_batarang;
-    u8 unknown_cc4[0x9c];
-    f32 pause_input_state;
-    u8 unknown_d64[0x16c];
-    u32 field_ed0;
-    u8 unknown_ed4[0x18];
-    u32 ai_state_flags;
-    u8 unknown_ef0[0xc];
-    u32 field_efc_word;
-    u32 field_f00_word;
-    u32 field_f04_word;
-    u32 field_f08_word;
-    u8 unknown_f0c[0x30];
-    u8 ai_reset_workspace[0x68];
-    u8 unknown_fa4[0x34];
-    u32 field_fd8;
-    u8 unknown_fdc[0x5c];
-    f32 field_1038;
-    u8 unknown_103c[0x41];
-    u8 field_107d;
-    u8 unknown_107e[0x5];
-    u8 field_1083;
-    u8 unknown_1084[0x2];
-    u8 field_1086;
-    u8 field_1087;
-    u8 field_1088;
-    u8 unknown_1089[0x3];
-    u32 field_108c;
-    f32 field_1090;
-    u8 unknown_1094[0x10];
-    u32 field_10a4;
-    u32 field_10a8;
-    u8 unknown_10ac[0x8];
-    u32 field_10b4;
-    u8 unknown_10b8[0x14];
-    u32 field_10cc;
-} PLAYER_INITIALIZE_VIEW_PC;
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_298) == 0x298);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_2a0) == 0x2a0);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_2a4) == 0x2a4);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_total_time) == 0x2b8);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_animation_time) == 0x2bc);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_animation_limit) == 0x2c0);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, idle_animation) == 0x2c4);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, previous_idle_animation) == 0x2c6);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, animation_override_from) == 0x3ee);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, animation_override_to) == 0x3f0);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, held_batarang) == 0xcc0);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, pause_input_state) == 0xd60);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, ai_state_flags) == 0xeec);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_ed0) == 0xed0);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_efc_word) == 0xefc);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_f00_word) == 0xf00);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_f04_word) == 0xf04);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_f08_word) == 0xf08);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, ai_reset_workspace) == 0xf3c);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_fd8) == 0xfd8);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1038) == 0x1038);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_107d) == 0x107d);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1083) == 0x1083);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1086) == 0x1086);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1087) == 0x1087);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1088) == 0x1088);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_108c) == 0x108c);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_1090) == 0x1090);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10a4) == 0x10a4);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10a8) == 0x10a8);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10b4) == 0x10b4);
-STATIC_ASSERT(offsetof(PLAYER_INITIALIZE_VIEW_PC, field_10cc) == 0x10cc);
 typedef struct player_packet_storage_pc_s {
     u8 unknown_000[0x6c4];
     u8 player_packet_storage[0x788];
@@ -1511,7 +1426,7 @@ void __cdecl SetGameObjectCharacterData(GAMEOBJECT *object) {
 
 i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
     i32 animation = 0x19;
-    PLAYER_BATARANG_IDLE_PC *batarang = (PLAYER_BATARANG_IDLE_PC *)((PLAYER_INITIALIZE_VIEW_PC *)object)->held_batarang;
+    PLAYER_BATARANG_IDLE_PC *batarang = (PLAYER_BATARANG_IDLE_PC *)object->batarang;
     if (((PLAYER_IDLE_CHARACTER_PC *)object->character_data->game_character)->use_standard_idle == 0 &&
         (object->character_data->model_flags & 0x80) != 0)
         animation = 0x76;
@@ -1525,14 +1440,13 @@ i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
 }
 
 void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
-    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
     CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
     CHARACTERANIM_CONFIG_PC *info;
     i32 minimum, maximum, repetitions;
     if (animation == 0x97)
         return;
-    state->idle_animation = (i16)animation;
-    state->idle_animation_time = 0.0f;
+    object->idle_animation = (i16)animation;
+    object->idle_animation_time = 0.0f;
     minimum = 0;
     if (model->action_animations[(i16)animation] != NULL) {
         info = model->animation_configs[(i16)animation];
@@ -1543,24 +1457,23 @@ void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
         repetitions = minimum;
         if (maximum > minimum)
             repetitions += qrand() / (0xffff / (maximum - minimum) + 1);
-        state->idle_animation_limit =
-            (f32)((f64)AnimDuration((i16)object->id, state->idle_animation, 0.0f, 0.0f, 0) * (f64)repetitions -
+        object->idle_animation_limit =
+            (f32)((f64)AnimDuration((i16)object->id, object->idle_animation, 0.0f, 0.0f, 0) * (f64)repetitions -
                   (f64)animduration_blendouttime);
     } else {
-        state->idle_animation_limit = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 7.0 + 8.0);
+        object->idle_animation_limit = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 7.0 + 8.0);
     }
     if (mode > 0) {
-        state->idle_total_time = 0.0f;
+        object->idle_total_time = 0.0f;
         if (mode > 1)
-            state->previous_idle_animation = -1;
+            object->previous_idle_animation = -1;
     }
 }
 
 void __cdecl ResetPlayerMoves(GAMEOBJECT *object) {
-    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
     ResetPlayerPacket(((PLAYER_PACKET_STORAGE_PC *)object)->player_packet_storage, object->character_data);
     object->fall_acceleration_timer = 0.0f;
-    state->pause_input_state = 0.0f;
+    object->hud_icon_timer = 0.0f;
     object->movement_direction_x = v000.x;
     ((PLAYER_MOVEMENT_VECTOR_PC *)object)->movement_direction.y = v000.y;
     object->movement_direction_z = v000.z;
@@ -1584,28 +1497,27 @@ void __cdecl ResetPlayerMoves(GAMEOBJECT *object) {
 }
 
 void __cdecl ResetPlayerAI(GAMEOBJECT *object) {
-    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
-    state->field_1090 = 0.0f;
-    object->ai_packet.flags &= 0xfffffd9f;
+    object->special_move_timer_pc = 0.0f;
+    object->ai_packet.animation_override_from = -1;
+    object->ai_packet.animation_override_to = -1;
     object->flags_ef0 &= ~0x200000u;
+    object->ai_packet.flags &= 0xfffffd9f;
     object->ai_packet.intersection_connection = NULL;
     object->ai_packet.intersection_target_connection = NULL;
-    state->animation_override_from = -1;
-    state->animation_override_to = -1;
     object->ai_packet.path_target = NULL;
-    state->field_1086 = 0;
-    state->field_1087 = 0;
-    state->field_108c = 0;
-    state->field_1088 = 0;
-    state->field_efc_word = 0;
-    state->field_f00_word = 0;
-    state->field_f04_word = 0;
+    object->field_1086 = 0;
+    object->field_1087 = 0;
+    object->field_108c = 0;
+    object->field_1088 = 0;
+    object->can_use_object = NULL;
+    object->use_action_word = 0;
+    object->use_action_parameter_word = 0;
     object->ai_packet.frame_state = 0;
-    state->field_f08_word = 0;
+    object->route_frame_state = 0;
     memset(&object->ai_packet.path_info, 0, sizeof(object->ai_packet.path_info));
+    object->ai_packet.inside_path_node = -1;
     object->ai_packet.current_route = 0xff;
     object->ai_packet.next_route = 0;
-    object->ai_packet.inside_path_node = -1;
     AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
 }
 
@@ -1620,7 +1532,6 @@ STATIC_ASSERT(offsetof(PLAYER_ROUTE_MASK_WORDS_PC, high) == 4);
 extern u64 CharacterMaskAllPc;
 
 void __cdecl InitPlayerAI(GAMEOBJECT *object) {
-    PLAYER_INITIALIZE_VIEW_PC *state = (PLAYER_INITIALIZE_VIEW_PC *)object;
     CHARACTERDATA_PC *character;
     i32 can_pull_levers;
     u8 type;
@@ -1667,17 +1578,17 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->walk_speed_override = 1000000000.0f;
     character = object->character_data;
     object->ai_packet.creature_set = 0;
-    state->ai_state_flags |= 2;
+    object->portal_flags |= 2;
     if ((character->model_flags & 0x80) != 0)
-        state->ai_state_flags |= 4;
+        object->portal_flags |= 4;
     else
-        state->ai_state_flags &= ~4u;
+        object->portal_flags &= ~4u;
     object->flags_ef0 &= 0xc7ffe6c0;
     object->hover_height_override = 1000000000.0f;
     object->flags_ef4 &= 0x31f7e95c;
     object->collision_scale_override = 1000000000.0f;
     object->flags_ef8_word &= 0xfffffffc;
-    state->ai_state_flags = (state->ai_state_flags & 0x25fffc27) | 8;
+    object->portal_flags = (object->portal_flags & 0x25fffc27) | 8;
     object->doomed_escape_locator = NULL;
     if ((object->flags_1f8 & 0x400) != 0)
         object->flags_ef4 &= ~0x40000u;
@@ -1691,11 +1602,11 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     else
         object->ai_packet.flags &= ~0xc000000u;
     object->flags_ef4 &= 0xfe5fffff;
-    state->ai_state_flags &= 0xfff3ffff;
+    object->portal_flags &= 0xfff3ffff;
     if ((character->model_flags & 0x8000000) != 0)
-        state->ai_state_flags |= 0x100000;
+        object->portal_flags |= 0x100000;
     else
-        state->ai_state_flags &= ~0x100000u;
+        object->portal_flags &= ~0x100000u;
     object->movement_speed_scale_pc = 1.0f;
     object->tag_flags &= ~2u;
     object->field_ec4 = 0.0f;
@@ -1703,7 +1614,7 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.target_metric_e0 = 1000000000.0f;
     object->ai_packet.target_metric_f0 = 1000000000.0f;
     object->ai_packet.antinode_timer = 0.0f;
-    state->ai_state_flags &= 0xfadff7fe;
+    object->portal_flags &= 0xfadff7fe;
     object->timer_ecc = 0.0f;
     object->flags_ef0 &= ~0x1000000u;
     object->alert_target = NULL;
@@ -1715,18 +1626,18 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->ai_seen_mask = 0;
     object->field_eb0 = 0;
     object->field_eb4 = 0;
-    state->field_10a4 = 0;
-    state->field_10a8 = 0;
+    object->opponent = NULL;
+    object->last_attacker = NULL;
     object->ai_opponent_exclusion_mask[0] = 0;
     object->ai_opponent_exclusion_mask[1] = 0;
-    memset(state->ai_reset_workspace, 0, sizeof(state->ai_reset_workspace));
+    memset(object->joint_overrides, 0, 2 * sizeof(object->joint_overrides[0]));
     character = object->character_data;
-    state->field_107d = 0;
-    state->field_fd8 = 0;
+    object->joint_override_count = 0;
+    object->head_target = NULL;
     object->ai_packet.dont_avoid_character = NULL;
-    state->field_298 = 0;
-    state->field_2a0 = 0;
-    state->field_2a4 = 0;
+    object->field_298 = 0;
+    object->field_2a0 = 0;
+    object->field_2a4 = 0;
     if ((character->model_flags & 0x4000) != 0 && (object->field_280 == 0xff || object->rider != NULL))
         object->flags_1fc_word |= 2;
     else
@@ -1740,10 +1651,10 @@ void __cdecl InitPlayerAI(GAMEOBJECT *object) {
     object->animation_speed_multiplier = 1.0f;
     object->flags_ef0 &= 0xfbbfffff;
     object->flags_ef8_word &= 0xfffffff3;
-    state->field_1038 = 0.0f;
-    state->field_10b4 = 0;
-    state->field_1083 = 0;
-    state->field_10cc = 0;
+    object->field_1038 = 0.0f;
+    object->indy_climb = NULL;
+    object->field_1083 = 0;
+    object->gizforce_target = NULL;
     ResetPlayerAI(object);
 }
 
@@ -2308,7 +2219,6 @@ void __cdecl DestroySnakeBody(GAMEOBJECT *);
 void __cdecl GizForce_ResetLOS(GAMEOBJECT *);
 
 i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
-    PLAYER_INITIALIZE_VIEW_PC *init = (PLAYER_INITIALIZE_VIEW_PC *)object;
     PLAYER_CHARACTER_CHANGE_VIEW_PC *change = (PLAYER_CHARACTER_CHANGE_VIEW_PC *)object;
     PLAYERCHARACTERCONFIG_PC *config;
     NUVEC velocity;
@@ -2339,7 +2249,7 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     object->takeover_owner = NULL;
     object->suit = Suit_GetDefault(id);
     saved_locator = object->doomed_escape_locator;
-    saved_f08 = init->field_f08_word;
+    saved_f08 = object->route_frame_state;
     saved_ai_flag = object->flags_ef0 & 0x200000;
     route = object->ai_packet.current_route;
     next_route = object->ai_packet.next_route;
@@ -2348,7 +2258,7 @@ i32 __cdecl NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unuse
     InitPlayerAI(object);
     object->flags_ef0 = (object->flags_ef0 & ~0x200000u) | saved_ai_flag;
     object->doomed_escape_locator = saved_locator;
-    init->field_f08_word = saved_f08;
+    object->route_frame_state = saved_f08;
     object->ai_packet.current_route = route;
     object->ai_packet.next_route = next_route;
     object->ai_packet.path_info = path;
@@ -3434,17 +3344,16 @@ typedef struct CHARACTER_DRAW_HIERARCHY_PC {
     u8 unknown_000[0x1a0];
     u8 suppress_shadow_surface_points;
 } CHARACTER_DRAW_HIERARCHY_PC;
-typedef struct CHARACTER_DRAW_OBJECT_PC {
-    u8 unknown_000[0xf3c];
-    NUHGOBJ_JOINT_OVERRIDE_PC joint_overrides[1];
-    u8 unknown_f70[0x107c - 0xf70];
-    u8 reflection_active;
-    u8 joint_override_count;
-} CHARACTER_DRAW_OBJECT_PC;
 STATIC_ASSERT(offsetof(CHARACTER_DRAW_HIERARCHY_PC, suppress_shadow_surface_points) == 0x1a0);
-STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, joint_overrides) == 0xf3c);
-STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, reflection_active) == 0x107c);
-STATIC_ASSERT(offsetof(CHARACTER_DRAW_OBJECT_PC, joint_override_count) == 0x107d);
+STATIC_ASSERT(offsetof(GAMEOBJECT, joint_overrides) == 0xf3c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, head_target) == 0xfd8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, joint_override_count) == 0x107d);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_298) == 0x298);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_2a4) == 0x2a4);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_1083) == 0x1083);
+STATIC_ASSERT(offsetof(GAMEOBJECT, field_108c) == 0x108c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, gizforce_target) == 0x10cc);
+STATIC_ASSERT(offsetof(GAMEOBJECT, use_action_word) == 0xf00);
 extern i32 GameKeepMergeActionPc;
 extern i32 CharacterBlobShadowsOnPc;
 extern i32 GameDrawCharacterModelFlagPc;
@@ -3457,7 +3366,6 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
     NUMTX scaled_reflection;
     NUMTX output_matrices[256];
     NUVEC half_scale;
-    CHARACTER_DRAW_OBJECT_PC *draw_object = (CHARACTER_DRAW_OBJECT_PC *)object;
     i32 drag_bomb = 0;
     i32 complex_shadow = 0;
     i32 result;
@@ -3496,12 +3404,12 @@ i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_
     }
     drawcharactermodel_keepmergeaction = GameKeepMergeActionPc;
     ModelAnimLayerListDispatchPc = GCDataList[model->model_id].make_layer_list;
-    result = APIDrawCharacterModel(
-        model, object != NULL ? (APICHARACTERDATA *)object->character_data : NULL, animation, matrix, secondary_matrix,
-        reflection_matrix, NULL, auxiliary_matrix, object, flags,
-        object != NULL && GameDrawCharacterModelFlagPc != 0 ? draw_object->joint_overrides : NULL,
-        object != NULL && GameDrawCharacterModelFlagPc != 0 ? draw_object->joint_override_count : 0, Paused, FRAMETIME,
-        output_matrices, NULL, WORLD->game_debris_sys);
+    result =
+        APIDrawCharacterModel(model, object != NULL ? (APICHARACTERDATA *)object->character_data : NULL, animation,
+                              matrix, secondary_matrix, reflection_matrix, NULL, auxiliary_matrix, object, flags,
+                              object != NULL && GameDrawCharacterModelFlagPc != 0 ? object->joint_overrides : NULL,
+                              object != NULL && GameDrawCharacterModelFlagPc != 0 ? object->joint_override_count : 0,
+                              Paused, FRAMETIME, output_matrices, NULL, WORLD->game_debris_sys);
     draw_shadow = 0;
     if (result == 0) {
         if (object != NULL && auxiliary_matrix != NULL) {

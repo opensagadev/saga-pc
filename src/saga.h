@@ -5162,6 +5162,16 @@ typedef struct INDY_GUIDELINE_STATE_PC {
 #pragma pack(pop)
 STATIC_ASSERT(sizeof(AI_SPECIAL_PROGRESS_PC) == 6);
 STATIC_ASSERT(offsetof(AI_SPECIAL_PROGRESS_PC, progress) == 2);
+typedef struct NUHGOBJ_JOINT_OVERRIDE_PC {
+    NUVEC rotation;
+    NUVEC translation;
+    NUVEC scale_pc;
+    i16 rotation_max_pc[3];
+    i16 rotation_min_pc[3];
+    u8 joint_index;
+    u8 flags_pc;
+    u8 unknown_32[2];
+} NUHGOBJ_JOINT_OVERRIDE_PC;
 typedef struct gameobject_s {
     union {
         struct {
@@ -5269,14 +5279,18 @@ typedef struct gameobject_s {
     u8 origin_joint_ready;
     u8 hostility_group;
     union {
-        u8 unknown_028e[0x1a];
+        u8 unknown_028e[0xa];
         struct {
             u8 ai_priority_reserved_28e[4];
             u16 ai_collision_priority_pc;
             u16 ai_resolved_collision_priority_pc;
-            u8 ai_priority_reserved_296[0x12];
+            u8 ai_priority_reserved_296[0x2];
         };
     };
+    u32 field_298;
+    u8 unknown_29c[0x4];
+    u32 field_2a0;
+    u32 field_2a4;
     union {
         u32 hostility_mask[2];
         struct {
@@ -5673,10 +5687,18 @@ typedef struct gameobject_s {
         };
     };
     void *can_use_object;
-    u8 field_f00;
-    u8 use_action_frames;
-    u8 unknown_f02[0x2];
-    f32 use_action_parameter;
+    union {
+        struct {
+            u8 field_f00;
+            u8 use_action_frames;
+            u8 unknown_f02[0x2];
+        };
+        u32 use_action_word;
+    };
+    union {
+        f32 use_action_parameter;
+        u32 use_action_parameter_word;
+    };
     i32 route_frame_state;
     f32 big_jump_height;
     f32 field_f10;
@@ -5687,9 +5709,7 @@ typedef struct gameobject_s {
     NUVEC target_velocity;
     NUVEC surface_normal;
     NUVEC facing_direction;
-    u8 unknown_f3c[0xc];
-    u8 field_f48[104];
-    u8 unknown_fb0[0x28];
+    NUHGOBJ_JOINT_OVERRIDE_PC joint_overrides[3];
     NUVEC *head_target;
     NUVEC head_target_position;
     f32 head_target_timer;
@@ -5757,13 +5777,19 @@ typedef struct gameobject_s {
         i8 movement_mode;
     };
     u8 reflection_enabled;
-    i16 field_107c;
+    union {
+        i16 field_107c;
+        struct {
+            u8 reflection_active;
+            u8 joint_override_count;
+        };
+    };
     u8 field_107e;
     i8 current_hp;
     i8 head_target_priority;
     u8 route_start_index;
     u8 helmet;
-    u8 unknown_1083;
+    u8 field_1083;
     u8 one_at_once_player;
     u8 attack_override;
     u8 field_1086;
@@ -5777,6 +5803,7 @@ typedef struct gameobject_s {
             u8 field_108e;
             u8 field_108f;
         };
+        u32 field_108c;
         AI_HELPER_SLOT_PC *indy_connection_helper;
     };
     union {
@@ -6684,16 +6711,6 @@ STATIC_ASSERT(sizeof(NUHGOBJ_POI_PC) == 0x50);
 STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, matrix) == 0);
 STATIC_ASSERT(offsetof(NUHGOBJ_POI_PC, joint_index) == 0x44);
 
-typedef struct NUHGOBJ_JOINT_OVERRIDE_PC {
-    NUVEC rotation;
-    NUVEC translation;
-    NUVEC scale_pc;
-    i16 rotation_max_pc[3];
-    i16 rotation_min_pc[3];
-    u8 joint_index;
-    u8 flags_pc;
-    u8 unknown_32[2];
-} NUHGOBJ_JOINT_OVERRIDE_PC;
 STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
 STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, rotation) == 0);
 STATIC_ASSERT(offsetof(NUHGOBJ_JOINT_OVERRIDE_PC, translation) == 0xc);
