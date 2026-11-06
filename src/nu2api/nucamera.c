@@ -23,6 +23,11 @@ NUCAMERA *__cdecl NuCameraCreate(void) {
     return camera;
 }
 
+void __cdecl NuCameraDestroy(NUCAMERA *camera) {
+    if (camera != NULL)
+        NuFree(camera, NuCameraAllocSource, 0x13e);
+}
+
 void __cdecl NuCameraGet(NUCAMERA *camera) {
     *camera = global_camera;
 }

@@ -353,6 +353,110 @@ STATIC_ASSERT(offsetof(eduiitem_s, text) == 0x24);
 STATIC_ASSERT(offsetof(eduimenu_s, callback) == 0x30);
 STATIC_ASSERT(offsetof(eduimenu_s, title) == 0x34);
 
+extern i32 editor_return;
+extern void *dir_list;
+extern i32 edui_filepick_listsize;
+extern NUCAMERA *EdMainCurrentCameraPc;
+extern NUVEC *EdMainLocationVectorPc;
+extern i32 edmain_cursor_enabled;
+void __cdecl PcEditorCursorEnablePc(i32 enabled);
+
+void __cdecl edmainSetReturn(i32 result) {
+    editor_return = result;
+}
+
+ed_module_s *__cdecl edmainCurrent(void) {
+    if (ed_module_active != 0 && ed_curr != NULL)
+        return ed_curr;
+    return NULL;
+}
+
+i32 __cdecl edmainActivate(ed_module_s *module, i32 notify) {
+    ed_module_s *entry;
+    void(__cdecl * callback)(void);
+    if (module != NULL) {
+        for (entry = ed_list; entry != NULL; entry = entry->next) {
+            if (entry == module) {
+                ed_curr = module;
+                callback = module->activate;
+                ed_module_active = 1;
+                if (callback != NULL && notify != 0)
+                    callback();
+                return 1;
+            }
+        }
+    } else if (ed_curr != NULL) {
+        callback = ed_curr->deactivate;
+        if (callback != NULL && notify != 0)
+            callback();
+        ed_curr = NULL;
+        ed_module_active = 0;
+    }
+    return 0;
+}
+
+void __cdecl edmainSetCamera(NUMTX *matrix) {
+    NUCAMERA *camera = EdMainCurrentCameraPc;
+    camera->mtx = *matrix;
+    NuCameraSet(camera);
+}
+
+void __cdecl edmainSetCursorEnabled(i32 enabled) {
+    edmain_cursor_enabled = enabled;
+    PcEditorCursorEnablePc(enabled);
+}
+
+void __cdecl edmainReadConfig(void) {
+    NUFILE file;
+    i32 block;
+    ed_module_s *module;
+    if (ed_levelfile[0] != 0) {
+        file = NuFileOpen(ed_levelfile, 0);
+        if (file != 0) {
+            NuFileBeginBlkRead(file, 0x3032554e);
+            while ((block = NuFileBeginBlkRead(file, 0)) != 0) {
+                for (module = ed_list; module != NULL; module = module->next) {
+                    if (module->block_id == (u32)block) {
+                        if (module->read != NULL)
+                            module->read(file);
+                        break;
+                    }
+                }
+                NuFileEndBlkRead(file);
+            }
+            NuFileEndBlkRead(file);
+            NuFileClose(file);
+        }
+    }
+}
+
+void __cdecl cbMMRegSel(eduimenu_s *menu, eduiitem_s *selected, u32 buttons) {
+    ed_module_s *module = (ed_module_s *)selected->data_ptr;
+    ed_curr = module;
+    if (module->reserved == NULL) {
+        void(__cdecl * activate)(void) = module->activate;
+        ed_module_active = 1;
+        if (activate != NULL)
+            activate();
+    }
+}
+
+void __cdecl cbMMCancel(eduimenu_s *menu, eduimenu_s *parent) {
+    edmainSetReturn(1);
+}
+
+void __cdecl cbMMReturnToApp(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edmainSetReturn(1);
+}
+
+eduimenu_s *__cdecl edGetMainMenu(void) {
+    return ed_main_menu;
+}
+
+void __cdecl edmainSetLocVec(NUVEC *location) {
+    EdMainLocationVectorPc = location;
+}
+
 eduiitem_s *__cdecl eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
     if (menu->last != NULL)
         menu->last->next = item;
@@ -848,8 +952,136 @@ void cbmcfgCameraSpeed(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     cam->distance_speed = 1.0f / divisor;
 }
 
+void __cdecl cbSetAutoSpeed(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edcam_s *cam = gp_cam;
+    edmain_auto_speed = item->highlighted;
+    if (edmain_auto_speed != 0) {
+        cam->auto_move_base = 0.15f;
+        cam->auto_move_dist_scale = 0.2f;
+        cam->auto_zoom_base = 0.01f;
+        cam->auto_zoom_dist_scale = 0.1f;
+    } else {
+        cam->auto_move_base = 0.0f;
+        cam->auto_move_dist_scale = 0.0f;
+        cam->auto_zoom_base = 0.0f;
+        cam->auto_zoom_dist_scale = 0.0f;
+    }
+}
+
+void __cdecl cbMMEditorConfig(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    eduimenu_s *config = ed_cfg_menu;
+    config->x = menu->x + 10;
+    config->y = menu->y + 10;
+    eduiMenuAttach(menu, config);
+}
+
 void cbmcfgCancel(eduimenu_s *menu, eduimenu_s *unused1) {
     eduiMenuDetach(menu);
+}
+
+void __cdecl edmainCreateMenus(void) {
+    ed_module_s *module;
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSetScale(system_qfont, edmain_menu_scale, edmain_menu_scale);
+    ed_cfg_menu = eduiMenuCreate(220, 50, 180, 320, ed_fnt, cbmcfgCancel, "Editor Config");
+    if (ed_cfg_menu != NULL) {
+        eduiMenuAddItem(ed_cfg_menu, eduiItemSliderCreate(0, &ed_attr, 0, cbmcfgCameraSpeed, 1.0f, 20.0f,
+                                                          edmain_default_camera_speed, "Camera Speed"));
+        eduiMenuAddItem(ed_cfg_menu, eduiItemToggleCreate(0, &ed_attr, edmain_auto_speed, 1, cbSetAutoSpeed,
+                                                          "Proportional Cursor Speed"));
+        eduiMenuFitWidth(ed_cfg_menu, 8);
+    }
+    ed_main_menu = eduiMenuCreate(ed_main_menu_x, ed_main_menu_y, ed_main_menu_w, ed_main_menu_h, ed_fnt, cbMMCancel,
+                                  "Editor Options");
+    if (ed_main_menu != NULL) {
+        for (module = ed_list; module != NULL; module = module->next) {
+            eduiitem_s *item =
+                eduiMenuAddItem(ed_main_menu, eduiItemSelCreate((u32)module, &ed_attr, 0, 1, cbMMRegSel, module->name));
+            if (module == ed_curr)
+                eduiMenuHighlight(ed_main_menu, item);
+        }
+        eduiMenuAddItem(ed_main_menu, eduiItemSelCreate(0, &ed_attr, 0, 0, cbMMEditorConfig, "Editor Config"));
+        eduiMenuAddItem(ed_main_menu, eduiItemSelCreate(0, &ed_attr, 0, 0, cbMMReturnToApp, "Return To App"));
+        eduiMenuFitWidth(ed_main_menu, 8);
+    }
+    NuQFntPopCoordinateSystem();
+}
+
+void __cdecl edmainClose(void) {
+    if (ed_init != 0) {
+        NuCameraDestroy(edinternalcam);
+        while (ed_list != NULL) {
+            void(__cdecl * close)(void) = ed_list->close;
+            if (close != NULL)
+                close();
+            ed_list = ed_list->next;
+        }
+        if (ed_main_menu != NULL) {
+            eduiMenuDestroy(ed_main_menu);
+            ed_main_menu = NULL;
+        }
+        if (ed_cfg_menu != NULL) {
+            eduiMenuDestroy(ed_cfg_menu);
+            ed_cfg_menu = NULL;
+        }
+        ed_list = NULL;
+        ed_curr = NULL;
+        ed_init = 0;
+    }
+}
+
+void __cdecl edmainRender(void) {
+    if (ed_main_menu != NULL) {
+        NuQFntPushPrintMode(2);
+        NuQFntPushCoordinateSystem(1);
+        NuQFntSet(system_qfont);
+        NuQFntSetScale(system_qfont, edmain_menu_scale, edmain_menu_scale);
+        eduiMenuRender(ed_main_menu);
+        NuQFntPopCoordinateSystem();
+        NuQFntPopPrintMode();
+    }
+}
+
+f32 __cdecl edmainSetMenuScale(f32 scale) {
+    f32 previous = edmain_menu_scale;
+    edmain_menu_scale = scale;
+    if (ed_main_menu != NULL)
+        eduiMenuFitWidth(ed_main_menu, 8);
+    return previous;
+}
+
+void __cdecl edmainInit(void *font, char *configuration_file) {
+    ed_module_s *module;
+    if (ed_init != 0)
+        edmainClose();
+    ed_fnt = font;
+    ed_module_active = 0;
+    for (module = ed_list; module != NULL; module = module->next) {
+        if (module->init != NULL)
+            module->init();
+    }
+    edinternalcam = NuCameraCreate();
+    EdMainCurrentCameraPc = edinternalcam;
+    eduiInitMaterials();
+    if (edui_filepick_listsize != 0 && dir_list == NULL)
+        dir_list = NuAlloc(edui_filepick_listsize * 0x118, EduiSourcePathPc, 0x821);
+    edmainCreateMenus();
+    if (configuration_file != NULL)
+        NuStrCpy(ed_levelfile, configuration_file);
+    else
+        ed_levelfile[0] = 0;
+    edmainReadConfig();
+    ed_init = 1;
+}
+
+void __cdecl edmainInitEx(void *font, char *configuration_file, eduiiattr_s *colours, i32 x, i32 y, i32 width,
+                          i32 height) {
+    ed_attr = *colours;
+    ed_main_menu_x = x;
+    ed_main_menu_y = y;
+    ed_main_menu_w = width;
+    ed_main_menu_h = height;
+    edmainInit(font, configuration_file);
 }
 
 void __cdecl eduiGradStageSetHSV(edui_gradient_node_s *stage, f32 hue, f32 saturation, f32 value);

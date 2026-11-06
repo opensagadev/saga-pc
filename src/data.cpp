@@ -18544,17 +18544,17 @@ extern "C" {
 #pragma bss_seg(".bss$PCOggCriticalSectionPc")
     i32 PCOggCriticalSectionPc = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$EdDrawMaterialsPc")
-    NUMTL *EdDrawMaterialsPc[2] = {0};
+#pragma bss_seg(".bss$EdDrawMtl")
+    NUMTL *EdDrawMtl[2] = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$EdDrawPrimStatePc")
-    i32 EdDrawPrimStatePc = 0;
+#pragma bss_seg(".bss$NewPrim")
+    i32 NewPrim = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$EdDrawMaterialIndexPc")
-    i32 EdDrawMaterialIndexPc = 0;
+#pragma bss_seg(".bss$NewMtl")
+    i32 NewMtl = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$EdDrawMatrixPc")
-    NUMTX *EdDrawMatrixPc = 0;
+#pragma bss_seg(".bss$NewMtx")
+    NUMTX *NewMtx = 0;
 #pragma bss_seg()
 }
 
@@ -30292,14 +30292,41 @@ extern "C" {
 #pragma data_seg(".data$edmain_default_camera_speed")
     f32 edmain_default_camera_speed = 1.0f;
 
-#pragma bss_seg(".bss$edmain_auto_speed")
-    i32 edmain_auto_speed = 0;
+#pragma bss_seg(".bss$ed_cfg_menu")
+    struct eduimenu_s *ed_cfg_menu = 0;
 
-#pragma data_seg(".data$ed_main_menu_w")
-    i32 ed_main_menu_w = 50;
+#pragma bss_seg(".bss$ed_init")
+    i32 ed_init = 0;
+
+#pragma bss_seg(".bss$ed_module_active")
+    i32 ed_module_active = 0;
+
+#pragma bss_seg(".bss$editor_return")
+    i32 editor_return = 0;
+
+#pragma bss_seg(".bss$ed_levelfile")
+    char ed_levelfile[256] = {0};
+
+#pragma bss_seg(".bss$dir_list")
+    void *dir_list = 0;
+
+#pragma data_seg(".data$edui_filepick_listsize")
+    i32 edui_filepick_listsize = 8;
+
+#pragma data_seg(".data$ed_main_menu_x")
+    i32 ed_main_menu_x = 220;
 
 #pragma data_seg(".data$ed_main_menu_y")
-    i32 ed_main_menu_y = 220;
+    i32 ed_main_menu_y = 50;
+
+#pragma data_seg(".data$ed_main_menu_w")
+    i32 ed_main_menu_w = 180;
+
+#pragma data_seg(".data$ed_main_menu_h")
+    i32 ed_main_menu_h = 320;
+
+#pragma data_seg(".data$edmain_auto_speed")
+    i32 edmain_auto_speed = 1;
 
 #pragma bss_seg(".bss$ed_main_menu")
     struct eduimenu_s *ed_main_menu = 0;

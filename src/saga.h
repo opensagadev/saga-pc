@@ -14510,6 +14510,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern NUVEC cam_axes;
     void __cdecl NuCameraGet(NUCAMERA *camera);
     NUCAMERA *__cdecl NuCameraCreate(void);
+    void __cdecl NuCameraDestroy(NUCAMERA *camera);
     extern NUCAMERA *pNuCam;
     extern const char NuCameraAllocSource[54];
     NUMTX *__cdecl NuCameraGetMtx(void);

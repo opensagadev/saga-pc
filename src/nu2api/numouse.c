@@ -14,3 +14,6 @@ f32 __cdecl NuMouseReadX(void) {
 f32 __cdecl NuMouseReadY(void) {
     return PcMouseY;
 }
+
+void __cdecl PcEditorCursorEnablePc(i32 enabled) {
+}
