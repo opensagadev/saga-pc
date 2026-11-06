@@ -3346,6 +3346,7 @@ address,symbol,size,ctype
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
 0x522a00,_pathEditor_GetNearestNode,280,
+0x522d20,_pathEditor_FindConnection,42,
 0x522e30,_AiPathDrawSolidEdgePc,1000,
 0x523220,_AiPathDrawWireEdgePc,893,
 0x5235a0,_AiPathDrawCrossPc,157,
@@ -3369,6 +3370,9 @@ address,symbol,size,ctype
 0x525830,_AiEditorRenameNodePc,185,
 0x5258f0,_AiEditorRenameNodeCancelPc,12,
 0x525900,_pathEditor_cbRenameNodeMenu,209,
+0x5259e0,_pathEditor_cbDrawWallsplinesToggle,32,
+0x525a00,_pathEditor_cbCnxFlagsToggle,170,
+0x525ab0,_pathEditor_cbNodeFlagsToggle,117,
 0x526350,_AiEditorRenameRoutePc,134,
 0x5263e0,_AiEditorRenameRouteCancelPc,12,
 0x5263f0,_routeEditor_cbRenameRouteMenu,209,
@@ -3377,9 +3381,13 @@ address,symbol,size,ctype
 0x526560,_routeEditor_cbRouteUsers,327,
 0x526800,?pathEditorCreateSpecialRouteData@@YAXPAUAIPATH_PC@@PAUEDAIPATH_s@@PATvariptr_u@@2@Z,2382,
 0x527150,_AiEditorClearMainMenuPc,37,
+0x527180,_aieditor_cbDrawAllToggle,28,
 0x5271a0,_AiEditorDisplayBit4Pc,29,
+0x5271c0,_aieditor_cbSolidPathDisplayToggle,32,
 0x5271e0,_AiEditorDisplayBit8Pc,30,
 0x527200,_AiEditorDisplayBit6Pc,29,
+0x527220,_aieditor_cbShowCreaturesToggle,32,
+0x527240,_aieditor_cbShowCreaturesSetToggle,32,
 0x527260,_AiEditorModeCancelPc,12,
 0x527270,_AiEditorModeSelectPc,63,
 0x5272b0,_AiEditorModeMenuPc,161,
@@ -3508,6 +3516,7 @@ address,symbol,size,ctype
 0x531ef0,_locatorEditor_Enter,745,
 0x5322d0,_pathEditorCreateData,2941,
 0x532e50,_pathEditor_cbSetCurrentPath,219,
+0x532f30,_pathEditor_cbCreatePath,289,
 0x533060,_pathEditor_cbSelectPathMenu,158,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x533810,_pathEditor_PathNodeMoved,435,
 0x5339d0,_pathEditor_Render,960,
@@ -15498,6 +15507,7 @@ address,symbol,size,ctype
 0x7606b8,_AiAntinodeRenderRotateLeftPc,,const char[]
 0x7606cc,??_C@_0BL@MNNFHBDO@Locator?5Editor?3?5Set?$DN?$CCNONE?$CC?$AA@,,char []
 0x7606e8,??_C@_0BJ@BEJGACKD@Locator?5Editor?3?5Set?$DN?$CC?$CFs?$CC?$AA@,,char []
+0x760734,??_C@_09BMNHKPL@NewPath?$CFd?$AA@,,char []
 0x760740,??_C@_0M@DHNJIDNL@Select?5Path?$AA@,,char []
 0x76076c,??_C@_0L@DJKDICBL@X?5?9?5Create?$AA@,,char []
 0x760778,??_C@_0BM@CNNFMMBL@O?5?9?5Link?1unlink?5to?5selected?$AA@,,char []

@@ -14453,6 +14453,37 @@ static void __cdecl pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *it
     AiEditorClearMainMenuPc();
 }
 
+void __cdecl pathEditor_cbCreatePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAIPATH_s *path;
+    EDAIPATH_s *existing;
+    i32 number;
+    char name[16];
+    (void)menu;
+    (void)item;
+    (void)event;
+    path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->free_paths);
+    if (path != NULL) {
+        NuLinkedListRemove(&aieditor->free_paths, &path->link);
+        NuLinkedListAppend(&aieditor->paths, &path->link);
+    }
+    number = 0;
+    if (path == NULL)
+        return;
+    do {
+        sprintf(name, "NewPath%d", ++number);
+        existing = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
+        while (existing != NULL) {
+            if (NuStrICmp(name, existing->name) == 0)
+                break;
+            existing = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &existing->link);
+        }
+    } while (existing != NULL);
+    strcpy(path->name, name);
+    path->flags &= ~1;
+    aieditor->current_path = path;
+    AiEditorClearMainMenuPc();
+}
+
 void __cdecl pathEditor_cbSelectPathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     EDAIPATH_s *path;
@@ -14951,6 +14982,93 @@ static void __cdecl AiEditorDisplayBit6Pc(eduimenu_s *menu, eduiitem_s *item, u3
     (void)menu;
     (void)event;
     aieditorsettings.display_options = (aieditorsettings.display_options & ~64u) | (((u32)item->flags & 1) << 6);
+}
+void __cdecl aieditor_cbDrawAllToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~2u) | (((u32)item->flags & 1) << 1);
+}
+void __cdecl aieditor_cbSolidPathDisplayToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~128u) | (((u32)item->flags & 1) << 7);
+}
+void __cdecl aieditor_cbShowCreaturesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~8u) | (((u32)item->flags & 1) << 3);
+}
+void __cdecl aieditor_cbShowCreaturesSetToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~1024u) | (((u32)item->flags & 1) << 10);
+}
+void __cdecl pathEditor_cbDrawWallsplinesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    (void)menu;
+    (void)event;
+    aieditorsettings.display_options = (aieditorsettings.display_options & ~512u) | (((u32)item->flags & 1) << 9);
+}
+static __declspec(noinline) EDAIPATHCNX_s *pathEditor_FindConnection(EDAIPATHNODE_s *from, EDAIPATHNODE_s *to) {
+    i32 index;
+    if (from != NULL && to != NULL) {
+        for (index = 0; index < 8; ++index) {
+            if (from->connections[index].node == to)
+                return &from->connections[index];
+        }
+    }
+    return NULL;
+}
+void __cdecl pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    AI_PATH_CONNECTION_TYPE_PC *type = &AIPathConnectionTypesPc[item->data];
+    EDAIPATHNODE_s *node;
+    EDAIPATHNODE_s *other;
+    EDAIPATHCNX_s *connection;
+    EDAIPATHCNX_s *reverse;
+    i32 index;
+    (void)menu;
+    (void)event;
+    if (aieditor->current_path == NULL)
+        return;
+    node = aieditor->current_path->current_node;
+    other = aieditor->current_path->other_node;
+    if (node == NULL || other == NULL)
+        return;
+    for (index = 0; index < 8; ++index) {
+        if (node->connections[index].node == other)
+            break;
+    }
+    if (index == 8)
+        return;
+    connection = &node->connections[index];
+    if (connection == NULL)
+        return;
+    if (connection->flags & type->connection_flag)
+        connection->flags &= ~type->connection_flag;
+    else
+        connection->flags |= type->connection_flag;
+    if (type->flags == 0)
+        return;
+    reverse = pathEditor_FindConnection(aieditor->current_path->other_node, aieditor->current_path->current_node);
+    if (reverse == NULL)
+        return;
+    if (connection->flags & type->connection_flag)
+        reverse->flags |= type->connection_flag;
+    else
+        reverse->flags &= ~type->connection_flag;
+}
+void __cdecl pathEditor_cbNodeFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
+    EDAIPATHNODE_s *node = aieditor->current_path->current_node;
+    (void)menu;
+    (void)event;
+    if (node == NULL)
+        return;
+    if ((u8)item->data & node->flags)
+        aieditor->current_path->current_node->flags &= ~(u8)item->data;
+    else
+        aieditor->current_path->current_node->flags |= (u8)item->data;
+    node = aieditor->current_path->current_node;
+    if (node->flags & 0x80)
+        node->special.display_special = node->special.special = node->special.scene = NULL;
 }
 static void __cdecl AiEditorModeCancelPc(eduimenu_s *menu, eduimenu_s *child) {
     (void)child;

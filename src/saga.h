@@ -24903,8 +24903,8 @@ struct EDAIPATH_s {
         struct EDAIPATHROUTE_s *current_route;
         u32 unknown_28;
     };
-    u8 flags;
-    u8 unknown_02d[3];
+    u32 flags;
+    /* 0x2c is a full dword: retail clears bit 0 with a dword AND. */
     i16 runtime_start;
     i16 runtime_end;
     i16 runtime_nearest;
