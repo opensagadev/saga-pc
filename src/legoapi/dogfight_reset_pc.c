@@ -921,60 +921,62 @@ i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFE
     starfighter_s *fighter = &record->fields;
     DOGFIGHT_GROUP_PC *parent;
     DOGFIGHT_FIGHTER_PC *missile;
-    NUVEC4 parent_position, direction, shot_velocity;
-    NUVEC impulse, step;
+    NUVEC4 shot_velocity;
+    __declspec(align(16)) NUVEC4 direction;
     NUMTX aim_matrix;
     f32 magnitude, scale, distance_squared, camera_distance, pitch, distance, speed;
     f64 dx, dy, dz;
-    i32 finished = 0;
+    i32 finished;
     i32 fire_result;
     if (Player[0] != NULL && ((GAMEOBJECT *)Player[0])->sock_position.distance > 435.0)
         MissileDist = 2.0f;
     if (fighter->hit_count != 0) {
-        if (fighter->spline != NULL && (fighter->spline->id == 84 || fighter->spline->id == 85))
+        if (fighter->spline != NULL && (fighter->spline->id == 85 || fighter->spline->id == 84))
             fighter->health = 0;
         else
             --fighter->health;
         --fighter->hit_count;
         if (fighter->health == 0) {
-            if (fighter->spline != NULL && (fighter->spline->id == 84 || fighter->spline->id == 85))
+            if (fighter->spline != NULL && (fighter->spline->id == 85 || fighter->spline->id == 84))
                 fighter->death_timer = 1.0f;
             else
                 fighter->death_timer = 2.0f;
             parent = (DOGFIGHT_GROUP_PC *)fighter->parent;
-            if (parent == NULL) {
-                impulse = v010;
-            } else {
-                impulse.x = fighter->matrix.m30 - parent->matrix.m30;
-                impulse.y = fighter->matrix.m31 - parent->matrix.m31;
-                impulse.z = fighter->matrix.m32 - parent->matrix.m32;
+            if (parent != NULL) {
+                direction.x = fighter->matrix.m30 - parent->matrix.m30;
+                direction.y = fighter->matrix.m31 - parent->matrix.m31;
+                direction.z = fighter->matrix.m32 - parent->matrix.m32;
                 parent->target = *(NUVEC4 *)&fighter->matrix.m30;
+            } else {
+                *(NUVEC *)&direction = v010;
             }
-            magnitude = (f64)impulse.y * impulse.y + (f64)impulse.x * impulse.x + (f64)impulse.z * impulse.z;
+            magnitude =
+                (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
             magnitude = NuFsqrt(magnitude);
             if (magnitude != 0.0f) {
                 scale = qrand() * (((f64)DogfightDeathImpulseScalePc + 1.0) / 65535.0) / magnitude;
-                impulse.x *= scale;
-                impulse.y *= scale;
-                impulse.z *= scale;
+                direction.x *= scale;
+                direction.y *= scale;
+                direction.z *= scale;
             }
-            fighter->velocity.x += impulse.x;
-            fighter->velocity.y += impulse.y;
-            fighter->velocity.z += impulse.z;
+            fighter->velocity.x += direction.x;
+            fighter->velocity.y += direction.y;
+            fighter->velocity.z += direction.z;
             fighter->death_rotate_x = qrand() * 1.0000152587890625 - 32768.0;
             fighter->death_rotate_z = qrand() * 1.0000152587890625 - 32768.0;
-            if (fighter->spline == NULL || (fighter->spline->id != 84 && fighter->spline->id != 85))
+            if (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84))
                 AddGameDebris(WORLD->game_debris_sys, 23, (NUVEC *)&fighter->matrix.m30);
         }
         if (fighter->health == -2)
             fighter->death_timer = 0.0f;
     }
-    if (fighter->health <= 0 && (fighter->spline == NULL || (fighter->spline->id != 84 && fighter->spline->id != 85))) {
+    if (fighter->health <= 0 && (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84))) {
         fighter->death_timer -= FRAMETIME;
         if (fighter->death_timer <= 0.0f) {
             AddGameDebris(WORLD->game_debris_sys, 23, (NUVEC *)&fighter->matrix.m30);
             fighter->active = 0;
         } else {
+            NUVEC step;
             NuMtxPreRotateX(&fighter->matrix, (i16)(i32)((f64)fighter->death_rotate_x * FRAMETIME * 4.0));
             NuMtxPreRotateZ(&fighter->matrix, (i16)(i32)((f64)fighter->death_rotate_z * FRAMETIME * 4.0));
             step.x = (f64)fighter->velocity.x * FRAMETIME;
@@ -995,6 +997,7 @@ i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFE
         NuVecMtxTransform((NUVEC *)&fighter->matrix.m30, (NUVEC *)&fighter->parent_offset, &parent->matrix);
         fighter->shoot_timer -= FRAMETIME;
         if (fighter->shoot_timer <= 0.0f) {
+            NUVEC4 parent_position;
             parent_position.x = parent_position.y = 0.0f;
             parent_position.z = -10.0f;
             parent_position.w = 1.0f;
@@ -1005,6 +1008,7 @@ i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFE
     }
     if (fighter->spline == NULL)
         return 0;
+    finished = 0;
     direction.x = fighter->target_position.x - fighter->matrix.m30;
     direction.y = fighter->target_position.y - fighter->matrix.m31;
     direction.z = fighter->target_position.z - fighter->matrix.m32;
@@ -1106,7 +1110,7 @@ i32 __cdecl ProcessStarFighter(DOGFIGHT_FIGHTER_PC *record, DOGFIGHT_QUICK_BUFFE
             fighter->delete_when_done = 1;
         return 1;
     }
-    if (fighter->missile_count != 0 && fighter->spline->id != 84 && fighter->spline->id != 85 &&
+    if (fighter->missile_count != 0 && fighter->spline->id != 85 && fighter->spline->id != 84 &&
         NuRandFloat() < (f64)0.2f) {
         missile = QueuedFighterSelectorPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
         if (missile != NULL) {
