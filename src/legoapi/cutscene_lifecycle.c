@@ -1731,19 +1731,20 @@ static void CutSceneLocatorSysResetPc(INSTNUGCUTSCENE *owner) {
 }
 
 static void CutSceneTriggerSysResetPc(CUT_INSTANCE_LOAD_PC *instance) {
-    CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     CUT_LOAD_TRIGGER_INSTANCE *states = instance->trigger_instance;
+    CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     i32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_TRIGGER_EVENT *event = &system->events[i];
         u8 value;
-        states->states[i].state_index = 0;
-        if (StateAnimEvaluate(event->state_animation, &states->states[i].state_index, &value, 1.0f) != 0) {
-            CUT_LOAD_TRIGGER_FLAG_PC *target = &states->owner->trigger_states[(i16)event->index];
+        CUT_LOAD_TRIGGER_STATE_PC *state = &states->states[i];
+        state->state_index = 0;
+        if (StateAnimEvaluate(event->state_animation, &state->state_index, &value, 1.0f) != 0) {
+            u8 *flags = &states->owner->trigger_states[(i16)event->index].flags;
             if (value != 0)
-                target->flags |= 1;
+                *flags |= 1;
             else
-                target->flags &= ~1;
+                *flags &= ~1;
         }
     }
 }
