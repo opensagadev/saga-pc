@@ -355,7 +355,7 @@ void __cdecl SetCreatureLights(APIOBJECT_PC *object) {
     GAME_LIGHT_VIEW_PC *view = (GAME_LIGHT_VIEW_PC *)owner;
     NUVEC ambient, intensity[3], direction[3];
     PLAYERCHARACTERCONFIG_PC *character;
-    f32 red = 1.0f, green = 1.0f, blue = 1.0f;
+    f32 red, green, blue;
     i32 index;
     if (Cheats_CheckFlags(1) != 0) {
         SetZeroLights();
@@ -367,14 +367,16 @@ void __cdecl SetCreatureLights(APIOBJECT_PC *object) {
                   &view->light_data.intensity_vectors[2], &view->light_data.direction[2], &view->light_data.ambient);
         return;
     }
+    red = 1.0f;
+    green = 1.0f;
+    blue = 1.0f;
     ambient = view->lighting_state.ambient;
     intensity[0] = view->lighting_state.intensity[0];
-    intensity[1] = view->lighting_state.intensity[1];
-    intensity[2] = view->lighting_state.intensity[2];
     direction[0] = view->lighting_state.direction[0];
+    intensity[1] = view->lighting_state.intensity[1];
     direction[1] = view->lighting_state.direction[1];
+    intensity[2] = view->lighting_state.intensity[2];
     direction[2] = view->lighting_state.direction[2];
-    character = owner->character_data->game_character;
     if (owner->vehicle_hit_timer > 0.0f) {
         f32 flash = (f32)(owner->vehicle_hit_timer / (f64)0.4f);
         red = (f32)(((f64)Lighting_RedFlashRedPc - 1.0) * flash + 1.0);
@@ -391,7 +393,7 @@ void __cdecl SetCreatureLights(APIOBJECT_PC *object) {
             green = 1.85f;
             blue = 2.0f;
         }
-    } else if ((character->flags_090 & 0x8000) && !(owner->flags_1fc_word & 0x80)) {
+    } else if ((owner->character_data->game_character->flags_090 & 0x8000) && !(owner->flags_1fc_word & 0x80)) {
         red = 1.4f;
         green = 1.85f;
         blue = 2.0f;
