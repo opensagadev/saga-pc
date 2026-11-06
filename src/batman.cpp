@@ -105,6 +105,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     LEVELDATA_PC *level;
     FADETYPE fade_type;
     i32 i;
+    NUVEC *wind_objects[8];
 
     UpdateFrameCounters();
     PortalDoors_Update(world);
@@ -165,6 +166,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     }
     SAGA_SOUND_CHECK("after sound");
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", (void *)WORLD);
+    for (i = 0; i < 8; ++i) {
+        wind_objects[i] = Player[i] != NULL ? &((GAMEOBJECT *)Player[i])->lower_position : NULL;
+    }
     if (Paused != 0 && screendump == 0 && !IsGrabbingScreen()) {
         NuMtlAnimateSetSpeedScale(0.0f);
         NuTexAnimSetMask(2);
@@ -210,7 +214,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         edanimUpdateObjects(1.0f);
         NuBridgeUpdate(&plr_lastpos);
         if (Grass_Available != 0) {
-            STUBBED_NAMED("NuMainUpdateFrame: NuWindUpdateArray at 0x00546380, NuFadeObjUpdateArray at 0x00545a80");
+            NuWindUpdateArray(wind_objects);
+            NuFadeObjUpdateArray(wind_objects);
         }
         rtlProcessLights(world->rtl_set, FRAMETIME);
         CharPlatforms_Update((CHARPLATFORMSYS_s *)world->shadow_platform_list_pc);
@@ -433,7 +438,8 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         NuBridgeDraw(NULL);
     }
     if (Grass_Available != 0) {
-        STUBBED_NAMED("NuMainRenderWorld: NuWindDraw at 0x00546e60, NuFadeObjDraw at 0x00545c80");
+        NuWindDraw();
+        NuFadeObjDraw();
     }
     STUBBED_NAMED("NuMainRenderWorld: theGameThings->RenderThings(NULL) via 0x0095e438");
     CutScenes_Draw(world);
