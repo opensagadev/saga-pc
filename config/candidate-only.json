@@ -502,6 +502,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/doors.c",
+   "symbol": "_DoorsFabsPc",
+   "kind": "function"
+  },
+  {
    "unit": "src/legoapi/utilities.c",
    "symbol": "_UtilitiesFabsPc",
    "kind": "function"

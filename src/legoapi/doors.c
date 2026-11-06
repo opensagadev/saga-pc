@@ -26,7 +26,7 @@ typedef struct startup_door_pc_s {
     f32 radius;
     NUVEC normal;
     u8 unknown_f0[4];
-    u32 flags;
+    u8 next_sock, flags, vehicle, active;
     u8 unknown_f8[0x18];
     NUPLANE plane;
     u8 unknown_120[8];
@@ -48,7 +48,7 @@ STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, point3) == 0xc8);
 STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, position) == 0xd4);
 STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, radius) == 0xe0);
 STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, normal) == 0xe4);
-STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, flags) == 0xf4);
+STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, flags) == 0xf5);
 STATIC_ASSERT(offsetof(STARTUP_DOOR_PC, plane) == 0x110);
 STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, doors) == 0x4698);
 STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, door_count) == 0x469c);
@@ -56,32 +56,34 @@ STATIC_ASSERT(offsetof(STARTUP_WORLD_DOORS_PC, start_door) == 0x46a0);
 extern void *LastDoorPointerPc;
 void __cdecl Doors_Init(WORLDINFO *world) {
     STARTUP_WORLD_DOORS_PC *view = (STARTUP_WORLD_DOORS_PC *)world;
-    STARTUP_DOOR_PC *door = view->doors;
+    STARTUP_DOOR_PC *door;
     i32 index;
     LastDoorPointerPc = NULL;
+    door = view->doors;
     view->start_door = NULL;
-    for (index = 0; door != NULL && index < view->door_count; ++index, ++door) {
-        NUVEC *points = door->spline->points;
+    if (door == NULL)
+        return;
+    for (index = 0; index < view->door_count; ++index, ++door) {
         f32 distance;
-        NuVecAdd(&door->position, &points[0], &points[1]);
-        NuVecAdd(&door->position, &door->position, &points[2]);
-        NuVecAdd(&door->position, &door->position, &points[3]);
+        NuVecAdd(&door->position, &door->spline->points[0], &door->spline->points[1]);
+        NuVecAdd(&door->position, &door->position, &door->spline->points[2]);
+        NuVecAdd(&door->position, &door->position, &door->spline->points[3]);
         NuVecScale(&door->position, &door->position, 0.25f);
-        door->radius = NuVecDist(&door->position, &points[0], NULL);
-        distance = NuVecDist(&door->position, &points[1], NULL);
+        door->radius = NuVecDist(&door->position, &door->spline->points[0], NULL);
+        distance = NuVecDist(&door->position, &door->spline->points[1], NULL);
         if (distance > door->radius)
             door->radius = distance;
-        distance = NuVecDist(&door->position, &points[2], NULL);
+        distance = NuVecDist(&door->position, &door->spline->points[2], NULL);
         if (distance > door->radius)
             door->radius = distance;
-        distance = NuVecDist(&door->position, &points[3], NULL);
+        distance = NuVecDist(&door->position, &door->spline->points[3], NULL);
         if (distance > door->radius)
             door->radius = distance;
         door->radius *= 1.01f;
-        NuVecSurfaceNormal(&door->normal, &points[0], &points[1], &points[3]);
-        door->point0 = points[0];
-        door->point1 = points[1];
-        door->point3 = points[3];
+        NuVecSurfaceNormal(&door->normal, &door->spline->points[0], &door->spline->points[1], &door->spline->points[3]);
+        door->point0 = door->spline->points[0];
+        door->point1 = door->spline->points[1];
+        door->point3 = door->spline->points[3];
         NuVecAdd(&door->opposite_midpoint, &door->point1, &door->point3);
         NuVecScale(&door->opposite_midpoint, &door->opposite_midpoint, 0.5f);
         NuVecSub(&door->opposite_midpoint, &door->opposite_midpoint, &door->point0);
@@ -153,9 +155,11 @@ void *__cdecl Door_FindByName(WORLDINFO *world, char *name) {
     PLAYER_WORLD_DOORS_PC *view = (PLAYER_WORLD_DOORS_PC *)world;
     PLAYER_DOOR_PC *door = view->doors;
     i32 index;
-    for (index = 0; door != NULL && index < view->door_count; ++index, ++door)
-        if (NuStrICmp(name, door->name) == 0)
-            return door;
+    if (door != NULL) {
+        for (index = 0; index < view->door_count; ++index, ++door)
+            if (NuStrICmp(name, door->name) == 0)
+                return door;
+    }
     return NULL;
 }
 
@@ -225,10 +229,9 @@ void *__cdecl Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *pos
 
 static i32 Door_GetMaxGizmos(void *door) {
     WORLDINFO *world = ((WORLDINFO *)(door));
-    if (world == NULL) {
-        return 0;
-    }
-    return world->current_level->max_doors;
+    if (world != NULL)
+        return world->current_level->max_doors;
+    return 0;
 }
 
 static void Door_AddGizmos(GIZMOSYS_PC *gizmo_sys, i32 type_id, void *world_ptr, void *unused3) {
@@ -323,47 +326,42 @@ void Hint_ExpandButtons(char *input, char *output) {
 
     *output = '\0';
     while (*input != '\0') {
-        i32 token_length;
-        char literal;
-        if (*input != '[') {
+        if (*input == '[') {
+            i32 token_length;
+            char *next = input + 1;
+            token[0] = *input;
+            token_length = 1;
+            while (input[token_length] != '\0' && input[token_length] != ']') {
+                token[token_length] = input[token_length];
+                ++token_length;
+            }
+            if (input[token_length] != '\0') {
+                token[token_length] = ']';
+                token[token_length + 1] = '\0';
+                token_length = NuStrLen(token);
+                if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
+                    char *character = expanded;
+                    while (*character != '\0') {
+                        *output = *character;
+                        output[1] = '\0';
+                        ++character;
+                        ++output;
+                    }
+                    NuStrCat(output, expanded);
+                    input += token_length;
+                    continue;
+                }
+            }
             *output = *input;
             output[1] = '\0';
-            ++input;
             ++output;
-            continue;
+            input = next;
+        } else {
+            *output = *input;
+            output[1] = '\0';
+            ++output;
+            ++input;
         }
-
-        token[0] = '[';
-        token_length = 1;
-        while (input[token_length] != ']' && input[token_length] != '\0') {
-            token[token_length] = input[token_length];
-            ++token_length;
-        }
-
-        literal = '[';
-        if (input[token_length] != '\0') {
-            token[token_length] = ']';
-            token[token_length + 1] = '\0';
-            token_length = NuStrLen(token);
-            if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
-                char *character = expanded;
-                while (*character != '\0') {
-                    *output = *character;
-                    output[1] = '\0';
-                    ++character;
-                    ++output;
-                }
-                NuStrCat(output, expanded);
-                input += token_length;
-                continue;
-            }
-            literal = *input;
-        }
-
-        *output = literal;
-        output[1] = '\0';
-        ++input;
-        ++output;
     }
     *output = '\0';
 }
@@ -630,6 +628,7 @@ void __cdecl Door_SetCutCam(DOOR_s *door) {
 }
 
 void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
+    void *cutscene;
     i32 destination;
     i32 index;
     (void)player_triggered;
@@ -644,16 +643,12 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
             door_cutscenesnap = 0;
             goto choose_destination;
         }
-        if (door->cutscene == NULL)
+        cutscene = door->cutscene;
+        if (cutscene == NULL)
             goto choose_destination;
-        if (door_cutscenesnap == 0) {
-            newmode_cutinfo = door->cutscene;
-            StartDoorPositions();
-            NewGameMode();
-        } else {
-            WORLDINFO *active = WorldInfo_CurrentlyActive();
-            NewCutScene((CUTINFO *)door->cutscene, active->cutscene_sys, NULL, 0);
-        }
+        if (door_cutscenesnap == 0)
+            goto start_cutscene;
+        NewCutScene((CUTINFO *)cutscene, WorldInfo_CurrentlyActive()->cutscene_sys, NULL, 0);
         goto set_camera;
     choose_destination:
         if (InStory() != 0) {
@@ -672,7 +667,7 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
             GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
             if (object != NULL) {
                 PlayerProgress[index].field_b = object->jump_variant_state == 1;
-                PlayerProgress[index].field_9 = object->dead == 0 ? object->saved_hitpoints : 4;
+                PlayerProgress[index].field_9 = object->dead != 0 ? 4 : object->saved_hitpoints;
             }
         }
         gone_through_door_to_new_mode = 1;
@@ -681,11 +676,18 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
         NewLData = &LDataList[destination];
         if (FreePlay != 0 && (NewLData->flags & 0x80) != 0) {
             NewLData = Area_FindStatusLevel(WORLD->area, NULL);
-            if (NewLData == NULL)
+            if (NewLData != NULL) {
+                if (ChallengeMode != 0)
+                    ChallengeMode = 4;
+            } else {
                 NewLData = &LDataList[destination];
-            else if (ChallengeMode != 0)
-                ChallengeMode = 4;
+            }
         }
+        goto set_camera;
+    start_cutscene:
+        newmode_cutinfo = cutscene;
+        StartDoorPositions();
+        NewGameMode();
     set_camera:
         Door_NextSock = (i8)door->next_sock;
         Door_SetCutCam(door);
@@ -702,16 +704,18 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
         Door_GoThrough_ExtraCodeFn(world, (struct game_door_callback_pc_s *)door);
 }
 
+static __inline f32 DoorsFabsPc(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 void __cdecl Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     DOOR_s *door;
     NUVEC previous, current, previous_offset, current_offset, intersection, block_normal;
     f32 centre_height, previous_distance, current_distance, ratio;
     i32 index, direction, two_players;
-    union {
-        f32 value;
-        u32 bits;
-    } previous_abs, current_abs, normal_abs;
-    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && LEGOCONTEXT_DOOMED == (i8)object->character_context) ||
+    f32 previous_abs, current_abs;
+    if (object->dead != 0 || (LEGOCONTEXT_DOOMED != -1 && (i8)object->character_context == LEGOCONTEXT_DOOMED) ||
         NewLData != NULL)
         return;
     door = WORLD->doors;
@@ -720,10 +724,12 @@ void __cdecl Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     two_players = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
                   (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
     centre_height = (f32)(((f64)object->character_top + object->character_bottom) * object->origin_scale * 0.5);
-    previous = object->start_position;
-    previous.y = (f32)((f64)previous.y + centre_height);
-    current = object->position;
-    current.y = (f32)((f64)current.y + centre_height);
+    previous.x = object->start_position.x;
+    previous.y = object->start_position.y + centre_height;
+    previous.z = object->start_position.z;
+    current.x = object->position.x;
+    current.y = object->position.y + centre_height;
+    current.z = object->position.z;
     for (index = 0; index < WORLD->door_count; ++index, ++door) {
         if ((door->flags & 4) != 0 || door->active != 0)
             continue;
@@ -740,11 +746,9 @@ void __cdecl Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
             direction = 2;
         if (direction == 0)
             continue;
-        previous_abs.value = previous_distance;
-        previous_abs.bits &= 0x7fffffff;
-        current_abs.value = current_distance;
-        current_abs.bits &= 0x7fffffff;
-        ratio = (f32)((f64)previous_abs.value / ((f64)current_abs.value + previous_abs.value));
+        previous_abs = DoorsFabsPc(previous_distance);
+        current_abs = DoorsFabsPc(current_distance);
+        ratio = (f32)((f64)previous_abs / ((f64)current_abs + previous_abs));
         intersection.x = (f32)((f64)previous.x + ((f64)current.x - previous.x) * ratio);
         intersection.y = (f32)((f64)previous.y + ((f64)current.y - previous.y) * ratio);
         intersection.z = (f32)((f64)previous.z + ((f64)current.z - previous.z) * ratio);
@@ -755,9 +759,7 @@ void __cdecl Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
             Door_GoThrough(world, door, 1);
             return;
         }
-        normal_abs.value = door->normal.y;
-        normal_abs.bits &= 0x7fffffff;
-        if (!(normal_abs.value < NuTrigTable[0xaaa]))
+        if (!(DoorsFabsPc(door->normal.y) < NuTrigTable[0xaaa]))
             return;
         object->position = object->start_position;
         block_normal = door->normal;
