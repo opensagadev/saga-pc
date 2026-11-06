@@ -10,7 +10,7 @@ typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 #include "saga.h"
 
 /* Local PC accessed cohorts; historical whole owners remain unclaimed. */
-typedef struct TERRAIN_SKIN_STREAM_VIEW_PC TERRAIN_SKIN_STREAM_VIEW_PC;
+typedef struct TERRAIN_SKIN_STREAM_PC TERRAIN_SKIN_STREAM_PC;
 
 typedef union TERRAIN_SCAN_WORD_PC {
     struct {
@@ -36,7 +36,7 @@ typedef struct TERRAIN_INDEX_LEVEL_PC {
 
 typedef struct TERRAIN_GROUP_PC {
     NUVEC origin;
-    TERRAIN_SKIN_STREAM_VIEW_PC *data;
+    TERRAIN_SKIN_STREAM_PC *data;
     NUVEC bounds_min;
     NUVEC bounds_max;
     u32 platform_flags;
@@ -408,51 +408,49 @@ i32 __cdecl NewShadowOnPlatform(void) {
     return group->scene_index;
 }
 
-typedef struct TERRAIN_SKIN_BLEND_VIEW_PC {
+typedef struct TERRAIN_SKIN_BLEND_PC {
     NUMTX end_matrix;    /* +00 */
     NUVEC row_amplitude; /* +40 */
     u8 opaque4c_50[4];
     NUVEC translation_amplitude; /* +50 */
-} TERRAIN_SKIN_BLEND_VIEW_PC;
+} TERRAIN_SKIN_BLEND_PC;
 
-typedef struct TERRAIN_SKIN_INFO_VIEW_PC {
-    NUMTX *matrix;                               /* +00 */
-    const TERRAIN_SKIN_BLEND_VIEW_PC *blend;     /* +04 */
-    const NUVEC4 *sample_rows;                   /* +08: sampled row banks */
-    f32 scale;                                   /* +0c */
-    TERRAIN_SKIN_STREAM_VIEW_PC *original_shape; /* +10 */
-    i16 group_index;                             /* +14 */
-    i16 pool_slot;                               /* +16 */
-    i16 mode;                                    /* +18 */
-    i16 vertex_order;                            /* +1a */
-} TERRAIN_SKIN_INFO_VIEW_PC;
+typedef struct TERRAIN_SKIN_INFO_PC {
+    NUMTX *matrix;                          /* +00 */
+    const TERRAIN_SKIN_BLEND_PC *blend;     /* +04 */
+    const NUVEC4 *sample_rows;              /* +08: sampled row banks */
+    f32 scale;                              /* +0c */
+    TERRAIN_SKIN_STREAM_PC *original_shape; /* +10 */
+    i16 group_index;                        /* +14 */
+    i16 pool_slot;                          /* +16 */
+    i16 mode;                               /* +18 */
+    i16 vertex_order;                       /* +1a */
+} TERRAIN_SKIN_INFO_PC;
 
 typedef struct TERRAIN_SKIN_USE_RECORD_PC {
     i32 last_use;
     i16 skin_index;
     u8 unknown_06[2];
 } TERRAIN_SKIN_USE_RECORD_PC;
-STATIC_ASSERT(sizeof(TERRAIN_SKIN_INFO_VIEW_PC) == 0x1c);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, original_shape) == 0x10);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, group_index) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, pool_slot) == 0x16);
+STATIC_ASSERT(sizeof(TERRAIN_SKIN_INFO_PC) == 0x1c);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, original_shape) == 0x10);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, group_index) == 0x14);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, pool_slot) == 0x16);
 STATIC_ASSERT(sizeof(TERRAIN_SKIN_USE_RECORD_PC) == 8);
 STATIC_ASSERT(offsetof(TERRAIN_SKIN_USE_RECORD_PC, last_use) == 0);
 STATIC_ASSERT(offsetof(TERRAIN_SKIN_USE_RECORD_PC, skin_index) == 4);
 
-typedef struct TERRAIN_SKIN_BATCH_VIEW_PC {
+typedef struct TERRAIN_SKIN_BATCH_PC {
     i16 kind;
     i16 count;
     f32 min_x, max_x, min_z, max_z;
-} TERRAIN_SKIN_BATCH_VIEW_PC;
+} TERRAIN_SKIN_BATCH_PC;
 
-typedef TERRAIN_POLYGON_INFO_PC TERRAIN_SKIN_POLYGON_VIEW_PC;
-
-/* Raw records remain variable-length. These named views expose the observed
- * 20-byte header followed by count 100-byte polygons; they are not an owner. */
-struct TERRAIN_SKIN_STREAM_VIEW_PC {
-    TERRAIN_SKIN_BATCH_VIEW_PC header;
-    TERRAIN_SKIN_POLYGON_VIEW_PC polygons[1];
+/* Raw records remain variable-length: a stream is the observed
+ * 20-byte header followed by count 100-byte polygons. */
+struct TERRAIN_SKIN_STREAM_PC {
+    TERRAIN_SKIN_BATCH_PC header;
+    TERRAIN_POLYGON_INFO_PC polygons[1];
 };
 
 extern const f32 TerrainSkinBoundsMaxPc;
@@ -460,7 +458,7 @@ extern const f32 TerrainSkinBoundsMinPc;
 
 /* Explicit output-pointer interface preserves the verified PC five-word ABI.
  * Android's aggregate return is a source candidate, not a historical PC type. */
-NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_VIEW_PC *info, const NUVEC *position, f32 weight, i32 mode) {
+NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_PC *info, const NUVEC *position, f32 weight, i32 mode) {
     NUVEC4 point;
     NUMTX matrix;
     const NUVEC4 *rows;
@@ -509,7 +507,7 @@ NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_VIEW_PC *info, const N
                 matrix.m33 = rows[33 - sample].w;
             } else {
                 const NUMTX *start = info->matrix;
-                const TERRAIN_SKIN_BLEND_VIEW_PC *blend = info->blend;
+                const TERRAIN_SKIN_BLEND_PC *blend = info->blend;
                 i32 angle = (i32)(weight * 32768.0);
 #define TERRAIN_SKIN_ROW(M, A)                                                                                         \
     matrix.M = (weight * blend->end_matrix.M + start->M * (1.0f - weight)) *                                           \
@@ -569,11 +567,11 @@ NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO_VIEW_PC *info, const N
 
 /* Valid initialized variable records, vertex_order 0 or 1, and enough output
  * storage for each complete 20-byte header and 100-byte polygon. */
-void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM_VIEW_PC *output, const TERRAIN_SKIN_INFO_VIEW_PC *info) {
-    TERRAIN_SKIN_STREAM_VIEW_PC *input;
-    TERRAIN_SKIN_STREAM_VIEW_PC *cursor;
-    TERRAIN_SKIN_POLYGON_VIEW_PC *source;
-    TERRAIN_SKIN_POLYGON_VIEW_PC *polygon;
+void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM_PC *output, const TERRAIN_SKIN_INFO_PC *info) {
+    TERRAIN_SKIN_STREAM_PC *input;
+    TERRAIN_SKIN_STREAM_PC *cursor;
+    TERRAIN_POLYGON_INFO_PC *source;
+    TERRAIN_POLYGON_INFO_PC *polygon;
     NUVEC *p;
     NUVEC transformed;
     NUVEC a, b;
@@ -647,8 +645,8 @@ void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM_VIEW_PC *output, 
         cursor->header.max_x = max_x + (f64)0.05f;
         cursor->header.min_z = min_z - (f64)0.05f;
         cursor->header.max_z = max_z + (f64)0.05f;
-        input = (TERRAIN_SKIN_STREAM_VIEW_PC *)source;
-        cursor = (TERRAIN_SKIN_STREAM_VIEW_PC *)polygon;
+        input = (TERRAIN_SKIN_STREAM_PC *)source;
+        cursor = (TERRAIN_SKIN_STREAM_PC *)polygon;
     }
     cursor->header.kind = -1;
     cursor->header.count = -1;
@@ -658,22 +656,22 @@ void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM_VIEW_PC *output, 
 #undef TERRAIN_SKIN_NORMAL
 #undef TERRAIN_SKIN_BOUND
 
-STATIC_ASSERT(sizeof(TERRAIN_SKIN_BATCH_VIEW_PC) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_STREAM_VIEW_PC, polygons) == 0x14);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, matrix) == 0);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, blend) == 4);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, sample_rows) == 8);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, scale) == 0xc);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, mode) == 0x18);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_VIEW_PC, vertex_order) == 0x1a);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_VIEW_PC, row_amplitude) == 0x40);
-STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_VIEW_PC, translation_amplitude) == 0x50);
+STATIC_ASSERT(sizeof(TERRAIN_SKIN_BATCH_PC) == 0x14);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_STREAM_PC, polygons) == 0x14);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, matrix) == 0);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, blend) == 4);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, sample_rows) == 8);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, scale) == 0xc);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, mode) == 0x18);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_INFO_PC, vertex_order) == 0x1a);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_PC, row_amplitude) == 0x40);
+STATIC_ASSERT(offsetof(TERRAIN_SKIN_BLEND_PC, translation_amplitude) == 0x50);
 
 /* Insert after skin-info/use-record declarations; storage root-owned.
  * All seven new views retain BLANK original CSVsize and ctype / zero credit.
  */
 extern i32 TerrainSkinInfoCountPc;
-extern TERRAIN_SKIN_INFO_VIEW_PC *TerrainSkinInfosPc;
+extern TERRAIN_SKIN_INFO_PC *TerrainSkinInfosPc;
 extern u32 TerrainSkinUseEpochPc;
 extern TERRAIN_SKIN_USE_RECORD_PC *TerrainSkinUseRecordsPc;
 extern i32 TerrainSkinPoolSlotCountPc;
@@ -697,7 +695,7 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     i16 previous_skin;
     i32 original_scene_index = group->scene_index;
     TERRAIN_SKIN_USE_RECORD_PC *records;
-    TERRAIN_SKIN_INFO_VIEW_PC *infos;
+    TERRAIN_SKIN_INFO_PC *infos;
 
     if (-1 - original_scene_index >= TerrainSkinInfoCountPc)
         return;
@@ -736,7 +734,7 @@ void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
     group->data = infos[-1 - group->scene_index].original_shape;
     infos[-1 - group->scene_index].pool_slot = (i16)selected;
     records[selected].skin_index = -1 - group->scene_index;
-    SkinPlatform(group, (TERRAIN_SKIN_STREAM_VIEW_PC *)(TerrainSkinPoolBasePc + TerrainSkinPoolSlotBytesPc * selected),
+    SkinPlatform(group, (TERRAIN_SKIN_STREAM_PC *)(TerrainSkinPoolBasePc + TerrainSkinPoolSlotBytesPc * selected),
                  &infos[-(group->scene_index + 1)]);
     TerrainSkinUseRecordsPc[selected].last_use = (i32)TerrainSkinUseEpochPc;
 }
@@ -942,7 +940,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 TERRAIN_GROUP_PC *group = &groups[group_indices[cell_group]];
                 f32 local_min_x, local_max_x;
                 f32 local_min_z, local_max_z;
-                TERRAIN_SKIN_STREAM_VIEW_PC *batch;
+                TERRAIN_SKIN_STREAM_PC *batch;
 
                 if (!TERRAIN_ROT_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) || group->chunk_type == -1)
                     continue;
@@ -967,7 +965,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                     } else {
                         shape += count;
                     }
-                    batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)shape;
+                    batch = (TERRAIN_SKIN_STREAM_PC *)shape;
                 }
                 TERRAIN_ROT_FINISH_GROUP(group_indices[cell_group]);
             }
@@ -1038,7 +1036,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             TERRAIN_PLATFORM_PC *platform;
             f32 local_min_x, local_max_x;
             f32 local_min_z, local_max_z;
-            TERRAIN_SKIN_STREAM_VIEW_PC *batch;
+            TERRAIN_SKIN_STREAM_PC *batch;
 
             if (group->origin.x - group->radius > max_x || group->radius + group->origin.x < min_x ||
                 group->origin.z - group->radius > max_z || group->origin.z + group->radius < min_z)
@@ -1200,7 +1198,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         ++shape_count;
                         ++transformed_count;
                     }
-                    batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)shape;
+                    batch = (TERRAIN_SKIN_STREAM_PC *)shape;
                 }
                 TERRAIN_ROT_FINISH_GROUP(*platform_groups);
             } else {
@@ -1235,7 +1233,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                     } else {
                         shape += count;
                     }
-                    batch = (TERRAIN_SKIN_STREAM_VIEW_PC *)shape;
+                    batch = (TERRAIN_SKIN_STREAM_PC *)shape;
                 }
                 TERRAIN_ROT_FINISH_GROUP(*platform_groups);
             }
@@ -1610,7 +1608,7 @@ i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET
                 terrain->groups[first_group].origin.x = chunk[i].origin.x;
                 terrain->groups[first_group].origin.y = chunk[i].origin.y;
                 terrain->groups[first_group].origin.z = chunk[i].origin.z;
-                terrain->groups[first_group].data = (TERRAIN_SKIN_STREAM_VIEW_PC *)*buffer;
+                terrain->groups[first_group].data = (TERRAIN_SKIN_STREAM_PC *)*buffer;
                 terrain->groups[first_group].platform_flags = chunk[i].platform_flags;
                 ++first_group;
                 break;
@@ -2413,7 +2411,7 @@ i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET
                 terrain->groups[group_count].origin.x = chunk->origin.x;
                 terrain->groups[group_count].origin.y = chunk->origin.y;
                 terrain->groups[group_count].origin.z = chunk->origin.z;
-                terrain->groups[group_count].data = (TERRAIN_SKIN_STREAM_VIEW_PC *)*buffer;
+                terrain->groups[group_count].data = (TERRAIN_SKIN_STREAM_PC *)*buffer;
                 terrain->groups[group_count].platform_flags = chunk->platform_flags;
                 ++group_count;
                 break;
@@ -3118,12 +3116,11 @@ STATIC_ASSERT(offsetof(TERRAIN_GROUP_PC, scene_index) == 0x30);
         (normal)->y = (normal)->y * inverse;                                                                           \
         (normal)->z = (normal)->z * inverse;                                                                           \
     } while (0)
-void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_VIEW_PC *output,
-                               const TERRAIN_SKIN_INFO_VIEW_PC *info) {
+void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_PC *output, const TERRAIN_SKIN_INFO_PC *info) {
     TERRAIN_GROUP_PC *group;
-    TERRAIN_SKIN_STREAM_VIEW_PC *input;
-    TERRAIN_SKIN_POLYGON_VIEW_PC *source;
-    TERRAIN_SKIN_POLYGON_VIEW_PC *polygon;
+    TERRAIN_SKIN_STREAM_PC *input;
+    TERRAIN_POLYGON_INFO_PC *source;
+    TERRAIN_POLYGON_INFO_PC *polygon;
     NUVEC *p;
     NUVEC transformed;
     NUVEC a, b;
@@ -3187,8 +3184,8 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_VIEW_PC *out
                 ++source;
                 ++polygon;
             }
-            input = (TERRAIN_SKIN_STREAM_VIEW_PC *)source;
-            output = (TERRAIN_SKIN_STREAM_VIEW_PC *)polygon;
+            input = (TERRAIN_SKIN_STREAM_PC *)source;
+            output = (TERRAIN_SKIN_STREAM_PC *)polygon;
         }
         output->header.kind = -1;
         output->header.count = -1;
@@ -3215,9 +3212,9 @@ void TerrainSkinPrepareGroupPc(i32 group_index, TERRAIN_SKIN_STREAM_VIEW_PC *out
 /* Native 681470: preserve the native ordered error checks and live group
  * count reloads across the genuine skin preparation call. */
 #define TERRAIN_SCI_SET ((TERRAIN_SET_PC *)CurrentTerrain)
-i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_VIEW_PC *blend, const NUVEC4 *sample_rows,
-                            f32 scale, i32 source_scene_index, i16 mode, TERRAIN_SET_PC *source_terrain) {
-    TERRAIN_SKIN_INFO_VIEW_PC *info;
+i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_PC *blend, const NUVEC4 *sample_rows, f32 scale,
+                            i32 source_scene_index, i16 mode, TERRAIN_SET_PC *source_terrain) {
+    TERRAIN_SKIN_INFO_PC *info;
     i32 count, skin_index, index, found;
     if (CurrentTerrain == NULL || source_terrain == NULL)
         return -1;
@@ -3251,7 +3248,7 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_VIEW_PC *ble
         info->vertex_order = 1;
     else
         info->vertex_order = 0;
-    TerrainSkinPrepareGroupPc(TERRAIN_SCI_SET->group_count, (TERRAIN_SKIN_STREAM_VIEW_PC *)TerrainSkinPoolBasePc, info);
+    TerrainSkinPrepareGroupPc(TERRAIN_SCI_SET->group_count, (TERRAIN_SKIN_STREAM_PC *)TerrainSkinPoolBasePc, info);
     skin_index = TerrainSkinInfoCountPc;
     info = &TerrainSkinInfosPc[skin_index];
     info->group_index = TERRAIN_SCI_SET->group_count;
@@ -3266,7 +3263,7 @@ i32 TerrainSkinCreateInfoPc(NUMTX *matrix, const TERRAIN_SKIN_BLEND_VIEW_PC *ble
 
 /* Native 6813e0: caller-owned arena start/end and explicit record capacity.
  * This partitions an existing arena; it does not establish its allocation. */
-void TerrainSkinInitArenaPc(TERRAIN_SKIN_INFO_VIEW_PC *base, u8 *end, i32 capacity) {
+void TerrainSkinInitArenaPc(TERRAIN_SKIN_INFO_PC *base, u8 *end, i32 capacity) {
     TerrainSkinPoolBasePc = (u8 *)(base + capacity);
     TerrainSkinInfosPc = base;
     TerrainSkinInfoCapacityPc = capacity;

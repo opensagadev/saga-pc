@@ -12538,7 +12538,7 @@ extern "C" {
 #pragma const_seg()
 }
 
-struct TERRAIN_SKIN_INFO_VIEW_PC;
+struct TERRAIN_SKIN_INFO_PC;
 struct TERRAIN_SKIN_USE_RECORD_PC;
 
 extern "C" {
@@ -12589,7 +12589,7 @@ extern "C" {
     i32 TerrainSkinInfoCountPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinInfosPc")
-    struct TERRAIN_SKIN_INFO_VIEW_PC *TerrainSkinInfosPc = 0;
+    struct TERRAIN_SKIN_INFO_PC *TerrainSkinInfosPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainSkinUseEpochPc")
     u32 TerrainSkinUseEpochPc = 0;

@@ -19710,16 +19710,16 @@ extern "C" {
     void __cdecl SphereDrawPc(NUVEC *, f32, f32);
     void __cdecl DrawWallSplinePc(f32);
 
-    struct TERRAIN_SKIN_STREAM_VIEW_PC;
-    struct TERRAIN_SKIN_INFO_VIEW_PC;
-    struct TERRAIN_SKIN_BLEND_VIEW_PC;
+    struct TERRAIN_SKIN_STREAM_PC;
+    struct TERRAIN_SKIN_INFO_PC;
+    struct TERRAIN_SKIN_BLEND_PC;
     struct TERRAIN_SET_PC;
-    void __cdecl TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM_VIEW_PC *output,
-                                           const struct TERRAIN_SKIN_INFO_VIEW_PC *info);
-    i32 __cdecl TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND_VIEW_PC *blend,
+    void __cdecl TerrainSkinPrepareGroupPc(i32 group_index, struct TERRAIN_SKIN_STREAM_PC *output,
+                                           const struct TERRAIN_SKIN_INFO_PC *info);
+    i32 __cdecl TerrainSkinCreateInfoPc(NUMTX *matrix, const struct TERRAIN_SKIN_BLEND_PC *blend,
                                         const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index, i16 mode,
                                         struct TERRAIN_SET_PC *source_terrain);
-    void __cdecl TerrainSkinInitArenaPc(struct TERRAIN_SKIN_INFO_VIEW_PC *base, u8 *end, i32 capacity);
+    void __cdecl TerrainSkinInitArenaPc(struct TERRAIN_SKIN_INFO_PC *base, u8 *end, i32 capacity);
     void __cdecl TerrainSkinResetArenaPc(void);
     u8 *__cdecl TerrainSkinRebuildIndexPc(i32 pool_slots);
 

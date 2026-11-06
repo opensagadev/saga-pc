@@ -10,7 +10,7 @@ typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 #include "saga.h"
 
 /* Local PC accessed cohorts; historical whole owners remain unclaimed. */
-typedef struct TERRAIN_SKIN_STREAM_VIEW_PC TERRAIN_SKIN_STREAM_VIEW_PC;
+typedef struct TERRAIN_SKIN_STREAM_PC TERRAIN_SKIN_STREAM_PC;
 
 typedef union TERRAIN_SCAN_WORD_PC {
     struct {
@@ -36,7 +36,7 @@ typedef struct TERRAIN_INDEX_LEVEL_PC {
 
 typedef struct TERRAIN_GROUP_PC {
     NUVEC origin;
-    TERRAIN_SKIN_STREAM_VIEW_PC *data;
+    TERRAIN_SKIN_STREAM_PC *data;
     NUVEC bounds_min;
     NUVEC bounds_max;
     u32 platform_flags;
