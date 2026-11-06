@@ -1246,9 +1246,9 @@ void __cdecl TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
 
 void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     char text[256];
+    f32 alpha = 1.0f;
     if (current == 0)
         return;
-    f32 alpha = 1.0f;
     switch (stage->field_0x14) {
         case 0:
             alpha = 0.0f;
@@ -1286,13 +1286,13 @@ void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
             if (blend < 1.0f) {
                 f32 grow = blend * 0.5f + 1.0f;
                 f32 shrink = 1.0f - blend * 0.5f;
-                u8 opacity = (u8)((1.0f - blend) * 64.0f);
-                f32 scale = StatusTrueHeroTextScalePc * grow;
-                Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f, scale, scale,
-                         scale, 0, 255, 191, 0, opacity);
-                scale = StatusTrueHeroTextScalePc * shrink;
-                Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f, scale, scale,
-                         scale, 0, 255, 191, 0, opacity);
+                i32 opacity = (u8)((1.0f - blend) * 64.0f);
+                Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f,
+                         StatusTrueHeroTextScalePc * grow, StatusTrueHeroTextScalePc * grow,
+                         StatusTrueHeroTextScalePc * grow, 0, 255, 191, 0, opacity);
+                Text3DEx((char *)StatusTrueHeroFullPercentTextPc, 0.0f, StatusTrueHeroTextYPc, 1.0f,
+                         StatusTrueHeroTextScalePc * shrink, StatusTrueHeroTextScalePc * shrink,
+                         StatusTrueHeroTextScalePc * shrink, 0, 255, 191, 0, opacity);
             }
             DrawBuildUpBar(0.0f, StatusTrueHeroBarYPc, packet->true_hero_percent, 100, 1.0f, StatusTrueHeroBarScalePc,
                            1.0f, 0);
@@ -1305,7 +1305,11 @@ void __cdecl TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
                 Text3DEx(text, 0.0f, StatusTrueHeroTextYPc, 1.0f, StatusTrueHeroTextScalePc, StatusTrueHeroTextScalePc,
                          StatusTrueHeroTextScalePc, 0, 255, 191, 0, (u8)(alpha * 128.0f));
             }
-            f32 ratio = stage->field_0x18 < 1.0f ? 1.0f - stage->field_0x18 : 0.0f;
+            f32 ratio;
+            if (stage->field_0x18 < 1.0f)
+                ratio = 1.0f - stage->field_0x18;
+            else
+                ratio = 0.0f;
             f32 blend = 1.0f - (NuTrigTable[((i32)(ratio * 32768.0f + 16384.0f) >> 1) & 0x7fff] + 1.0f) * 0.5f;
             DrawBuildUpBar(
                 0.0f,
