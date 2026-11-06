@@ -605,16 +605,17 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
 }
 void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {
     i32 count = definition_count;
-    i32 insertion = count;
-    for (i32 i = 0; i < count; ++i) {
+    i32 i;
+    for (i = 0; i < count; ++i) {
         if (ShaderCompilerTypeComponentsPc[definitions[i]->type] < ShaderCompilerTypeComponentsPc[node->type]) {
-            insertion = i;
-            break;
+            for (i32 j = count; j > i; --j)
+                definitions[j] = definitions[j - 1];
+            definitions[i] = node;
+            ++definition_count;
+            return;
         }
     }
-    for (i32 i = count; i > insertion; --i)
-        definitions[i] = definitions[i - 1];
-    definitions[insertion] = node;
+    definitions[count] = node;
     ++definition_count;
 }
 
