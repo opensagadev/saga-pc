@@ -28974,6 +28974,14 @@ class EdClassInterface {
 STATIC_ASSERT(sizeof(EdClassInterface) == 0x8);
 STATIC_ASSERT(offsetof(EdClassInterface, object_class) == 0x4);
 
+/* Intrusive list link (Android CSListLink<T>); non-polymorphic, so it sits
+ * after the vtable pointer of the classes that derive from it. */
+template <class T> class CSListLink {
+  public:
+    T *next;
+    T *previous;
+};
+
 /* Property-menu control bound to one EdRef of an edited object. Controls live
  * in theMemoryManager's size-class pools. */
 class EdControl {
@@ -29084,6 +29092,75 @@ class Placeable {
     virtual void SetCurrentPosition(const VuVec *position);
     virtual void Render(const VuMtx *) const {
     }
+};
+
+void EdTrace(const char *, ...);
+
+/* A registered editor value type (Android EdType). */
+struct EdType {
+    char *name;
+    i32 size;
+    void (*serialise)(EdStream &, void *, i32);
+};
+
+struct EdClass;
+struct EdObjectNotifier;
+struct EdDefunctListEntry;
+struct EdDefunctList {
+    EdDefunctListEntry *first;
+    EdDefunctListEntry *last;
+    i32 count;
+};
+
+/* The editor's type/class registry (Android EdRegistry), theRegistry. */
+struct EdRegistry {
+    struct NameMapping {
+        char *source;
+        char *destination;
+    };
+
+    i32 initialised;
+    EdType *types;
+    EdClass *classes;
+    NameMapping *mappings;
+    EdObjectNotifier **notifiers;
+    i32 (*create_object_guid)();
+    i32 type_capacity;
+    i32 type_count;
+    i32 class_capacity;
+    i32 class_count;
+    i32 mapping_capacity;
+    i32 object_count;
+    i32 notifier_capacity;
+    i32 notifier_count;
+    EdDefunctList defunct_objects;
+
+    EdType *GetType(i32 index) {
+        if (index < 0 || index >= type_count)
+            return NULL;
+        return &types[index];
+    }
+};
+extern EdRegistry theRegistry;
+extern i32 EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
+
+/* One member of an editor class: where it sits in the object, its type and
+ * the control that edits it. Attribute bit 30 marks a pointer member. */
+struct EdRef : public CSListLink<EdRef> {
+    virtual void *GetMemberObject(void *object);
+    virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
+    virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
+
+    i32 type_id;
+    char *name;
+    i32 member_offset;
+    i32 size;
+    i32 attributes;
+    EdControl *control;
+    i32 replication_group;
+
+    void CheckType(i32 requested_type);
+    i32 GetTypeSize(i32 requested_type, i32 data_size);
 };
 #endif
 #endif

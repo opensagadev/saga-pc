@@ -111,14 +111,6 @@ eduimenu_s *GetMenuActiveChild(eduimenu_s *menu) {
     return menu;
 }
 
-/* Intrusive list link (Android CSListLink<T>); non-polymorphic, so it sits
- * after the vtable pointer of the classes that derive from it. */
-template <class T> class CSListLink {
-  public:
-    T *next;
-    T *previous;
-};
-
 struct DATAPTR;
 struct EdInputContext;
 
@@ -266,6 +258,64 @@ void EdString::Set(const char *value) {
 i16 Placeable::CurrentLedFile;
 
 Placeable::~Placeable() {
+}
+
+/* Retail's editor trace hook: the format strings were compiled out, leaving an
+ * empty variadic call where type mismatches were reported. */
+void EdTrace(const char *, ...) {
+}
+
+EdRegistry theRegistry;
+i32 EdType_VuVec;
+i32 EdType_VuMtx;
+i32 EdType_NuVec;
+i32 EdType_NuMtx;
+
+void *EdRef::GetMemberObject(void *object) {
+    void *member = static_cast<u8 *>(object) + member_offset;
+    if (member != NULL) {
+        if (attributes & 0x40000000)
+            return *static_cast<void **>(member);
+        return member;
+    }
+    return NULL;
+}
+
+void EdRef::CheckType(i32 requested_type) {
+    if (requested_type == type_id || (type_id == EdType_NuVec && requested_type == EdType_VuVec) ||
+        (type_id == EdType_NuMtx && requested_type == EdType_VuMtx))
+        return;
+    EdType *requested = theRegistry.GetType(requested_type);
+    EdType *actual = theRegistry.GetType(type_id);
+    EdTrace(requested->name, actual->name);
+}
+
+i32 EdRef::GetTypeSize(i32 requested_type, i32 data_size) {
+    CheckType(requested_type);
+    i32 type_size = size > 0 ? size : theRegistry.GetType(type_id)->size;
+    if (data_size > 0 && type_size > data_size)
+        EdTrace(theRegistry.GetType(type_id)->name, type_size);
+    return type_size;
+}
+
+void EdRef::GetMemberData(void *object, i32 requested_type, void *data, i32 data_size) {
+    void *member = static_cast<u8 *>(object) + member_offset;
+    i32 type_size = GetTypeSize(requested_type, data_size);
+    if (member != NULL) {
+        if (attributes & 0x40000000)
+            member = *static_cast<void **>(member);
+        PCByteCopy_candidate(data, member, type_size);
+    }
+}
+
+void EdRef::SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *) {
+    void *member = static_cast<u8 *>(object) + member_offset;
+    i32 type_size = GetTypeSize(requested_type, data_size);
+    if (member != NULL) {
+        if (attributes & 0x40000000)
+            member = *static_cast<void **>(member);
+        PCByteCopy_candidate(member, data, type_size);
+    }
 }
 
 const VuVec *Placeable::GetInitialPosition() const {
