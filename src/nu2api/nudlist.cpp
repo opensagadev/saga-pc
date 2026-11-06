@@ -227,34 +227,50 @@ extern "C" {
     }
 
     static void __cdecl DisplayUpdateClipWordsPC(NUDISPLAY_LIST_PC *scene) {
-        u32 buffer = (scene->render_flags >> 15) & 1;
-        u32 *current = (u32 *)scene->clip_used[buffer];
-        u32 *other = (u32 *)scene->clip_used[buffer ^ 1];
+        u32 *current = (u32 *)scene->clip_used[(scene->render_flags >> 15) & 1];
+        u32 *other = (u32 *)scene->clip_used[~(scene->render_flags >> 15) & 1];
+        u16 *counts = scene->clip_counts;
         i32 words = (scene->clip_count + 15) / 16;
-        i32 word, object = 0;
-        NUDISPLAYLISTITEM *items = (NUDISPLAYLISTITEM *)scene->items;
-        for (word = 0; word < words; ++word) {
-            if (current[word] != other[word]) {
-                u8 *bytes = (u8 *)&current[word];
-                i32 byte_index, shift;
-                for (byte_index = 0; byte_index < 4; ++byte_index) {
-                    for (shift = 0; shift < 8; shift += 2) {
-                        i32 index;
-                        u8 code = (u8)((bytes[byte_index] >> shift) & 3);
-                        PC_DISPLAY_CLIP_OBJECT_PC *clip = &scene->clip_objects[object];
-                        u16 count = scene->clip_counts[object];
-                        for (index = 0; index < count; ++index) {
-                            i32 item = clip->item_indices[index];
-                            items[item].id = code == 0 ? 0 : 3;
-                            items[item - 1].id = code == 0 ? 0 : 3;
+        i32 object = 0;
+        i32 word, byte_index, shift, index;
+        u8 bits;
+        u32 code;
+        i32 *indices;
+        NUDISPLAYLISTITEM *item;
+
+        for (word = 0; word < words; word++) {
+            if (current[word] == other[word]) {
+                object += 16;
+                continue;
+            }
+            for (byte_index = 0; byte_index < 4; byte_index++) {
+                bits = ((u8 *)&current[word])[byte_index];
+                for (shift = 0; shift < 8; shift += 2) {
+                    indices = scene->clip_objects[object].item_indices;
+                    code = (bits >> shift) & 3;
+                    if (code == 0) {
+                        for (index = 0; index < counts[object]; index++) {
+                            item = &((NUDISPLAYLISTITEM *)scene->items)[indices[index]];
+                            item->id = 0;
+                            item[-1].id = 0;
                         }
-                        ++object;
-                        if (object >= scene->clip_count)
-                            return;
+                    } else if (code == 1) {
+                        for (index = 0; index < counts[object]; index++) {
+                            item = &((NUDISPLAYLISTITEM *)scene->items)[indices[index]];
+                            item->id = 3;
+                            item[-1].id = 3;
+                        }
+                    } else {
+                        for (index = 0; index < counts[object]; index++) {
+                            item = &((NUDISPLAYLISTITEM *)scene->items)[indices[index]];
+                            item->id = 3;
+                            item[-1].id = 3;
+                        }
+                    }
+                    if (++object >= scene->clip_count) {
+                        return;
                     }
                 }
-            } else {
-                object += 16;
             }
         }
     }
