@@ -826,8 +826,6 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
     i32 alignment, lines, colour_index;
     u16 pulse_angle, rotation;
     i32 red, green, blue;
-    u8 text_alpha;
-    char *text;
     char expanded[1024];
     LEVEL_OBJECT_RUNTIME_PC *icon;
     if (hint == NULL || FadeSys.fade != 0.0f)
@@ -841,12 +839,11 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
         text_x = 0.0f;
     } else {
         alignment = 2;
-        text_x = (f32)((f64)0.09f - (f64)ICONX);
+        text_x = (f32)(-(f64)ICONX + (f64)0.09f);
     }
     icon_x = -ICONX;
-    text = TTab[hint->id];
-    if (text != NULL) {
-        Text_ExpandAllButtonStrings(text, expanded);
+    if (TTab[hint->id] != NULL) {
+        Text_ExpandAllButtonStrings(TTab[hint->id], expanded);
         pulse_angle = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
         pulse = (f32)((f64)NU_SIN_LUT(pulse_angle) * 0.5 + 0.5);
         colour_index = hint->colour_index;
@@ -859,19 +856,18 @@ void __cdecl DrawHint_LSW(HINT_PC *hint, i32 max_lines) {
         base = (f32)HintRGB[colour_index][2];
         blue = (i32)((((f64)base + 255.0) * 0.5 - (f64)base) * (f64)pulse + (f64)base);
         lines = max_lines == -1 ? 3 : max_lines;
-        text_alpha = (u8)(i32)((f64)alpha * 128.0);
         if (alignment == 0) {
             SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, red, green, blue, 1.4f, lines, NULL, 0,
-                        text_alpha);
-            icon_x = (f32)(-(f64)SmartTextLongestWidthPc * 0.5 - (f64)0.075f);
+                        (u8)(i32)((f64)alpha * 128.0));
+            icon_x = (f32)(-((f64)SmartTextLongestWidthPc * 0.5) - (f64)0.075f);
         } else {
             SmartTextEx(expanded, text_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, alignment, red, green, blue,
-                        (f32)(2.0 - (1.0 + (f64)text_x) - (f64)0.15f), lines, NULL, 0, text_alpha);
+                        (f32)(2.0 - (1.0 + (f64)text_x) - (f64)0.15f), lines, NULL, 0, (u8)(i32)((f64)alpha * 128.0));
         }
     }
-    icon = &WORLD->level_objects[0xd4];
-    if (icon->active == 0)
+    if (WORLD->level_objects[0xd4].active == 0)
         return;
+    icon = &WORLD->level_objects[0xd4];
     wave_x = (f32)(((f64)icon_x - (f64)-1.1f) * (f64)NU_SIN_LUT((i32)((f64)alpha * 16384.0)) - (f64)1.1f);
     rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.5f) / 2.5 * 65536.0);
     DrawPanel3DObjectNoAlpha(wave_x, text_y, 1.0f, 0.5f, 0.5f, 0.5f, 0, rotation, 0, &icon->special, 2);
