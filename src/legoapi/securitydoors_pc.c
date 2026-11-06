@@ -61,7 +61,7 @@ STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS_PC, action_animations) == 0xc);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *SecurityDoorOutputNamePc;
 
-static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
+static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, NUANG angle) {
     NUVEC translation = {0.0f, 0.0f, 0.0f};
     NuMtxSetRotationY(&door->leaf_matrix[0], -(i32)angle);
     translation.x = 0.2667f;
@@ -78,17 +78,18 @@ static void SecurityDoorUpdateMatricesPc(SECURITY_DOOR_RECORD_PC *door, u16 angl
 i32 __cdecl SecurityDoors_Load(WORLDINFO *world, void *unused) {
     SECURITY_DOOR_RECORD_PC *door;
     i32 index;
-    if (world->security_door_count != 0)
-        return 0;
-    EdFileReadInt();
-    world->security_door_count = EdFileReadInt();
-    door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
-    for (index = 0; index < world->security_door_count; ++index, ++door) {
-        EdFileRead(door->name, 16);
-        EdFileReadNuVec(&door->position);
-        door->yaw = EdFileReadShort();
+    if (world->security_door_count == 0) {
+        EdFileReadInt();
+        world->security_door_count = EdFileReadInt();
+        door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+        for (index = 0; index < world->security_door_count; ++index, ++door) {
+            EdFileRead(door->name, 16);
+            EdFileReadNuVec(&door->position);
+            door->yaw = EdFileReadShort();
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 void __cdecl SecurityDoors_InitTerrain(WORLDINFO *world) {
