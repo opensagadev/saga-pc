@@ -3357,6 +3357,7 @@ address,symbol,size,ctype
 0x5243b0,_TestPointPathCheck,516,
 0x5245c0,_TestPointWithinPathCheckPc,582,"static compiler-private i32 (NUVEC *, EDAIPATHNODE_s *, EDAIPATHNODE_s *, f32 *, f32 *, i32 *, f32)"
 0x524900,_pathEditor_OnPathCheck,506,"void __cdecl (NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32)"
+0x524b70,_pathEditorDrawRoute,317,
 0x524cb0,?pathEditorCalcRouteIterator@@YAXPAUAIPATH_PC@@PAMPAEHHMH@Z,306,
 0x524df0,?pathEditorCalculateDistanceTable@@YAPAPAMPAUAIPATH_PC@@HPATvariptr_u@@1@Z,306,
 0x524f30,?pathEditorPopulateRouteMatrix@@YAXPAUAIPATH_PC@@HPAPAMPAPAE@Z,325,
@@ -15493,11 +15494,22 @@ address,symbol,size,ctype
 0x7606a0,_AiAntinodeRenderRotateRightPc,,const char[]
 0x7606b8,_AiAntinodeRenderRotateLeftPc,,const char[]
 0x760740,??_C@_0M@DHNJIDNL@Select?5Path?$AA@,,char []
+0x76076c,??_C@_0L@DJKDICBL@X?5?9?5Create?$AA@,,char []
+0x760778,??_C@_0BM@CNNFMMBL@O?5?9?5Link?1unlink?5to?5selected?$AA@,,char []
 0x760794,??_C@_0L@IIGMEPDF@X?5?9?5Select?$AA@,,char []
 0x7607a0,_AiAntinodeRenderDecreaseRadiusPc,,const char[]
+0x7607b8,??_C@_0BJ@EGFKDIOB@LRIGHT?5?9?5Increase?5radius?$AA@,,char []
 0x7607d4,_AiAntinodeRenderIncreaseRadiusPc,,const char[]
+0x7607f4,??_C@_08JNFKHGHM@?$CFd?5nodes?$AA@,,char []
+0x760800,??_C@_0BA@OAPFDJEL@ix?$DN?$CFd?0?5?$CFd?5nodes?$AA@,,char []
+0x760810,??_C@_0O@OKMKDJEE@?$CC?$CFs?$CC?5?$CFd?5nodes?$AA@,,char []
+0x760820,??_C@_0BF@PBNMBNJJ@AI?5Path?5Editor?3?5?$CC?$CFs?$CC?$AA@,,char []
+0x760838,??_C@_0BI@NLHFLPAI@X?5?9?5Set?5as?5end?5of?5route?$AA@,,char []
+0x760850,??_C@_0BM@PLCKBJJN@TRI?5?9?5Set?5as?5start?5of?5route?$AA@,,char []
+0x76086c,??_C@_0BG@BNIKMOOF@SELECT?5?9?5Goto?5nearest?$AA@,,char []
 0x760884,??_C@_0P@LHMPKFJD@SQR?5?9?5Sub?5menu?$AA@,,char []
 0x760894,??_C@_04OEDFLLKD@?$CC?$CFs?$CC?$AA@,5,char []
+0x76089c,??_C@_0BD@PLHJNJLJ@Show?5Routes?5?3?5?$CC?$CFs?$CC?$AA@,,char []
 0x7608d0,??_C@_0BN@FACFIHBA@O?5?9?5Add?1remove?5cnx?5to?5route?4?$AA@,,char []
 0x7608f0,??_C@_0BE@MDCIMJPA@NO?5ROUTES?5AVAILABLE?$AA@,,char []
 0x760904,??_C@_0BK@HPDKIDC@Edit?5Routes?5?$CIPath?5?$DN?5?$CC?$CFs?$CC?$CJ?$AA@,,char []
@@ -21655,6 +21667,7 @@ address,symbol,size,ctype
 0x801cb4,_AiEditorSaveMessageColoursPc,,struct eduiiattr_s
 0x801cc4,_aiEditor_LocatorWidth,4,f32
 0x801cc8,_aiEditor_DrawYOffset,,f32
+0x801ccc,_AiEditorRouteYOffsetPc,,f32
 0x801cd0,_AiEditorAntinodeTypeNamesPc,,const char *[3]
 0x00801ce0,_AiEditorPickHeightTolerancePc,,f32
 0x801d54,_AIPathDefaultChecks,4,i32

@@ -17200,3 +17200,112 @@ void __cdecl routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     locatorEditorDrawLocators();
     antinodeEditorDrawAntinodes();
 }
+
+#pragma section(".data$AiEditorRouteYOffsetPc", read, write)
+__declspec(allocate(".data$AiEditorRouteYOffsetPc")) f32 AiEditorRouteYOffsetPc = 0.1f;
+
+static void pathEditorDrawRoute(void) {
+    AIPATH_PC *path;
+    AIPATHCNX_PC *connection;
+    AIPATHNODE_PC *node;
+    AIPATHNODE_PC *next_node;
+    i32 current;
+    i32 end;
+    i32 next;
+    u32 edge;
+    NURND_VERTEX3D_PC vertices[2];
+
+    if (aieditor->cached_path_system == NULL)
+        return;
+    path = aieditor->cached_path_system->paths[0];
+    if (path == NULL)
+        return;
+    if (aieditor->current_path->runtime_start < 0 || aieditor->current_path->runtime_start >= path->node_count ||
+        aieditor->current_path->runtime_end < 0 || aieditor->current_path->runtime_end >= path->node_count)
+        return;
+    end = aieditor->current_path->runtime_end;
+    current = aieditor->current_path->runtime_start;
+    if (current == end)
+        return;
+    do {
+        edge = path->route_matrix[current][end];
+        if (edge == 0xff)
+            break;
+        connection = path->nodes[current].connections[edge];
+        next = connection->node_indices[0];
+        if (next == current)
+            next = connection->node_indices[1];
+        node = &path->nodes[current];
+        next_node = &path->nodes[next];
+        vertices[0].position = node->position;
+        vertices[1].position = next_node->position;
+        vertices[0].position.y += AiEditorRouteYOffsetPc;
+        vertices[1].position.y += AiEditorRouteYOffsetPc;
+        vertices[0].colour = 0xff0000ff;
+        vertices[1].colour = 0xff0000ff;
+        AiRndrLine3d(vertices, NULL, NULL);
+        current = next;
+        end = aieditor->current_path->runtime_end;
+    } while (current != end);
+}
+
+void __cdecl pathEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
+    if (aieditor->current_path != NULL) {
+        if (AiEditorDisplayOptionsPc & 1) {
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 - 40, 16, "Show Routes : \"%s\"",
+                          aieditor->current_path->name);
+            NuQFntSetColour(system_qfont, 0x80000000);
+            NuQFntSetScale(system_qfont, xscale, yscale);
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 120, 16, "\"%s\"", aieditor->current_path->name);
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 240, 16, "SQR - Sub menu");
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 360, 16, "SELECT - Goto nearest");
+            if (aieditor->current_path->runtime_nearest >= 0) {
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "TRI - Set as start of route");
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 600, 16, "X - Set as end of route");
+            }
+        } else {
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 - 40, 16, "AI Path Editor: \"%s\"",
+                          aieditor->current_path->name);
+            NuQFntSetColour(system_qfont, 0x80000000);
+            NuQFntSetScale(system_qfont, xscale, yscale);
+            if (aieditor->current_path->current_node != NULL) {
+                if (strlen(aieditor->current_path->current_node->name) != 0) {
+                    NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 120, 16, "\"%s\" %d nodes",
+                                  aieditor->current_path->current_node->name, aieditor->current_path->node_count);
+                } else {
+                    NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 120, 16, "ix=%d, %d nodes",
+                                  aieditor->current_path->current_node->index, aieditor->current_path->node_count);
+                }
+            } else {
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 120, 16, "%d nodes",
+                              aieditor->current_path->node_count);
+            }
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 240, 16, "SQR - Sub menu");
+            NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 360, 16, AiAntinodeRenderNearestPc);
+            if (aieditor->flags & 1) {
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "X - Move selected");
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 600, 16, "TRI - Delete selected");
+                if (aieditor->current_path != NULL && aieditor->current_path->current_node != NULL) {
+                    NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 840, 16, AiAntinodeRenderIncreaseRadiusPc,
+                                  aieditor->current_path->current_node->radius);
+                } else {
+                    NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 840, 16, "LRIGHT - Increase radius");
+                }
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 960, 16, AiAntinodeRenderDecreaseRadiusPc);
+            } else if (aieditor->current_path->nearest_node != NULL) {
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "X - Select");
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 720, 16, "O - Link/unlink to selected");
+            } else {
+                NuQFntPrintEx(system_qfont, (x + 10) * 16, y * 8 + 480, 16, "X - Create");
+            }
+        }
+    }
+    if (AiEditorDisplayOptionsPc & 1)
+        pathEditorDrawRoute();
+    pathEditorDrawPaths();
+    if (AiEditorDisplayOptionsPc & 8)
+        creatureEditor_RenderAllCreatures();
+    areaEditorDrawAreas();
+    locatorEditorDrawLocators();
+    antinodeEditorDrawAntinodes();
+}

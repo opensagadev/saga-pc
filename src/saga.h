@@ -24887,18 +24887,18 @@ struct EDAIPATH_s {
         u32 unknown_28;
     };
     u8 flags;
-    u8 unknown_02d;
+    u8 unknown_02d[3];
     i16 runtime_start;
     i16 runtime_end;
     i16 runtime_nearest;
     i16 node_count;
-    u8 unknown_036[2];
     i8 draw_index; /* PC keeps the draw index at 0x38 (Android: 0x36). */
     u8 unknown_039[7];
     struct EDAIPATHROUTE_s routes[16];
 };
 STATIC_ASSERT(sizeof(struct EDAIPATH_s) == 576);
 STATIC_ASSERT(offsetof(struct EDAIPATH_s, draw_index) == 0x38);
+STATIC_ASSERT(offsetof(struct EDAIPATH_s, node_count) == 0x36);
 STATIC_ASSERT(offsetof(struct EDAIPATH_s, routes) == 0x40);
 
 struct EDAIPATHCNX_s {
