@@ -947,7 +947,7 @@ address,symbol,size,ctype
 0x00458ed0,_TrueHero_Alt_Update,1168,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x00459360,_TrueHero_Alt_Draw,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x00459af0,_MiniKit_Alt_Skip,91,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
-0x00459b50,_MiniKit_Alt_Update,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x00459b50,_MiniKit_Alt_Update,1040,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x00459f60,_MiniKit_Alt_Draw,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045a520,_AllMiniKits_Alt_Skip,27,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045a540,_AllMiniKits_Alt_Update,233,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
@@ -964,13 +964,13 @@ address,symbol,size,ctype
 0x0045c580,_Prompt_Alt_Update,531,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045c7a0,_Prompt_Alt_Draw,268,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045c8b0,_Stage5_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
-0x0045c8c0,_Stage5_Alt_Update,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045c8c0,_Stage5_Alt_Update,508,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045cac0,_Stage5_Alt_Draw,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045d320,_Stage6_Alt_Skip,54,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045d360,_Stage6_Alt_Update,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045d370,_Stage6_Alt_Draw,1,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045d380,_LevelComplete_Alt_Skip,66,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
-0x0045d3d0,_LevelComplete_Alt_Update,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
+0x0045d3d0,_LevelComplete_Alt_Update,870,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
 0x0045d740,_LevelComplete_Alt_Draw,,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, i32)"
 0x0045df20,_BonusComplete_Alt_Skip,12,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *)"
 0x0045df30,_BonusComplete_Alt_Update,254,"void __cdecl(STATUS_STAGE_s *, STATUSPACKET_s *, f32)"
@@ -23473,9 +23473,13 @@ address,symbol,size,ctype
 0x00876db8,_prev_droid_ix,4,i32
 0x876dbc,_LswForceUsedHintFlagsPc,,u32
 0x00876dc0,_StatusAltBgPosPc,12,NUVEC
+0x00876dcc,_StatusAltSuitsShownPc,4,u32
 0x00876dd4,_StatusAltSpinPc,2,u16
+0x00876de0,_StatusAltSuitIndexPc,4,i32
+0x00876de4,_StatusAlt876de4Pc,4,i32
 0x00876dec,_StatusPacketAltPc,,struct STATUSPACKET_LSW_s
 0x00876df0,_StatusAltTextScalePc,4,f32
+0x00876df4,_StatusAlt876df4Pc,4,f32
 0x00876df8,_StatusAltCoinsDonePc,4,i32
 0x876dfc,_StatusMiniKitXPc,4,f32
 0x876e00,_StatusMiniKitYPc,4,f32

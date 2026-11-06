@@ -104,6 +104,10 @@ extern "C" {
     NUVEC StatusAltBgPosPc;
     u16 StatusAltSpinPc;
     i32 StatusAltCoinsDonePc;
+    f32 StatusAlt876df4Pc;
+    u32 StatusAltSuitsShownPc;
+    i32 StatusAltSuitIndexPc;
+    i32 StatusAlt876de4Pc;
     static struct STATUSPACKET_LSW_s StatusPacketAltPc;
 
     f32 StatusAltTextScalePc = StatusAltScalePc;
@@ -893,6 +897,247 @@ extern "C" {
                 if (stage->field_0x1c <= accumulated)
                     NextStatusStage(packet);
                 return;
+            }
+        }
+    }
+
+    /* Stage type 4. */
+    void __cdecl MiniKit_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+        if (StatusMiniKitPopTimerPc > 0.0f)
+            StatusMiniKitPopTimerPc -= elapsed;
+        switch (stage->field_0x14) {
+            case 0:
+                StatusNewMinikitCountPc = packet->new_minikits;
+                if (StatusNewMinikitCountPc <= 0)
+                    StatusCurrentMinikitPc = Game.area_save[packet->area->index].minikit_count;
+                else
+                    StatusCurrentMinikitPc =
+                        Game.area_save[packet->area->index].minikit_count - StatusNewMinikitCountPc;
+                stage->field_0x18 = 0.0f;
+                stage->field_0x14 = 1;
+                stage->field_0x1c = 1.0f;
+                StatusAltSpinPc = 0;
+                break;
+            case 1: {
+                f32 accumulated;
+                StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                accumulated = elapsed + stage->field_0x18;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    if (StatusNewMinikitCountPc == 0 && Game.area_save[packet->area->index].minikit_complete == 0) {
+                        PlaySfx("TrueJedi_NOT", NULL);
+                        stage->field_0x1c = 1.0f;
+                        stage->field_0x14 = 4;
+                        StatusAlt876df4Pc = 0.0f;
+                    } else {
+                        stage->field_0x14 = 2;
+                        stage->field_0x1c = 0.5f;
+                        StatusMiniKitProgressPc = 1.0f;
+                    }
+                }
+                break;
+            }
+            case 2: {
+                f32 accumulated = elapsed + stage->field_0x18;
+                StatusAltSpinPc = 0;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated) {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = StatusAlt7f8248Pc;
+                    stage->field_0x14 = 3;
+                    PlaySfx((char *)PCContextName_Jump, NULL);
+                }
+                break;
+            }
+            case 3:
+                if (StatusNewMinikitCountPc > 0) {
+                    f32 previous = stage->field_0x18;
+                    f32 accumulated = elapsed + stage->field_0x18;
+                    f32 sound_start;
+                    stage->field_0x18 = accumulated;
+                    sound_start = stage->field_0x1c - StatusMiniKitJibberLengthPc;
+                    if (previous < sound_start && accumulated >= sound_start) {
+                        NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+                        PlaySfx(ScorePanelName, NULL);
+                    }
+                    if (UpdateNewMiniKits(packet, stage) == 1) {
+                        if (StatusCurrentMinikitPc >= packet->minikit_count + packet->new_minikits) {
+                            stage->field_0x1c = 1.0f;
+                            stage->field_0x18 = 0.0f;
+                            StatusAlt876df4Pc = 0.0f;
+                            stage->field_0x14 = 4;
+                        } else {
+                            stage->field_0x14 = 2;
+                            stage->field_0x1c = 0.5f;
+                            stage->field_0x18 = 0.0f;
+                        }
+                    }
+                } else {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = 3.0f;
+                    StatusAlt876df4Pc = 0.0f;
+                    stage->field_0x14 = 4;
+                }
+                if (stage->field_0x14 == 4) {
+                    if ((packet->field_0xb0 & 0x10) != 0) {
+                        stage->field_0x1c = 1.0f;
+                        stage->field_0x14 = 5;
+                    } else
+                        PlaySfx("TrueJedi_NOT", NULL);
+                }
+                break;
+            case 4: {
+                f32 accumulated;
+                StatusAltSpinPc = 0;
+                accumulated = elapsed + stage->field_0x18;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated)
+                    NextStatusStage(packet);
+                break;
+            }
+            case 5: {
+                f32 previous;
+                f32 accumulated;
+                SetDrawGoldBrick(packet, 5);
+                previous = stage->field_0x18;
+                accumulated = stage->field_0x18 + elapsed;
+                stage->field_0x18 = accumulated;
+                if (stage->field_0x1c <= accumulated) {
+                    if (previous < stage->field_0x1c) {
+                        AddStatusMiniKitParts();
+                        NewStatusRumbleBuzz(-1, 1.0f, 0.1f, 0);
+                        PlaySfx((char *)ForceThrowExplodeNamePc, NULL);
+                    } else if (FindGameMsgsWithID(1, 0, -1, NULL) == 0) {
+                        PlaySfx("Shop_BuyCheat", NULL);
+                        NextStatusStage(packet);
+                    }
+                } else {
+                    u32 frame = (u32)GameTimer.update_count;
+                    if (frame % 6u < 3u && (frame - 1u) % 6u >= 3u)
+                        NewStatusRumbleBuzz(-1, 0.0f, 0.0f, 2);
+                }
+                break;
+            }
+        }
+    }
+
+    /* Stage type 5. Reveals the suits unlocked in this area one by one. */
+    void __cdecl Stage5_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+        f32 previous = stage->field_0x18;
+        if (stage->field_0x14 >= 0)
+            stage->field_0x18 = elapsed + stage->field_0x18;
+        switch (stage->field_0x14) {
+            case 0:
+                stage->field_0x1c = 0.15f;
+                StatusAltSuitIndexPc = 0;
+                stage->field_0x14 = 1;
+            case 1:
+                if (StatusAltSuitIndexPc < 10) {
+                    if (stage->field_0x18 >= stage->field_0x1c) {
+                        stage->field_0x18 = 0.0f;
+                        StatusAltSuitIndexPc++;
+                    }
+                } else {
+                    stage->field_0x18 = 0.0f;
+                    stage->field_0x1c = 1.5f;
+                    stage->field_0x14 = 2;
+                    for (StatusAltSuitIndexPc = 0; StatusAltSuitIndexPc < 10; StatusAltSuitIndexPc++) {
+                        if ((StatusAltSuitsShownPc & (1 << StatusAltSuitIndexPc)) == 0 &&
+                            (areaSuitBits & (1 << StatusAltSuitIndexPc)) != 0) {
+                            stage->field_0x18 = 0.0f;
+                            PlaySfx("LegoClicks", NULL);
+                            StatusAlt876de4Pc = 0;
+                            break;
+                        }
+                    }
+                }
+                break;
+            case 2:
+                if (previous < 1.0f && stage->field_0x18 >= 1.0f)
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                else if (stage->field_0x18 > stage->field_0x1c) {
+                    StatusAltSuitsShownPc |= 1 << StatusAltSuitIndexPc;
+                    for (StatusAltSuitIndexPc++; StatusAltSuitIndexPc < 10; StatusAltSuitIndexPc++) {
+                        if ((StatusAltSuitsShownPc & (1 << StatusAltSuitIndexPc)) == 0 &&
+                            (areaSuitBits & (1 << StatusAltSuitIndexPc)) != 0) {
+                            stage->field_0x18 = 0.0f;
+                            PlaySfx("LegoClicks", NULL);
+                            StatusAlt876de4Pc = 0;
+                            break;
+                        }
+                    }
+                }
+                if (StatusAltSuitIndexPc == 10) {
+                    stage->field_0x1c = 1.0f;
+                    stage->field_0x14 = 3;
+                    stage->field_0x18 = 0.0f;
+                }
+                break;
+            case 3:
+                if (stage->field_0x18 > stage->field_0x1c)
+                    NextStatusStage(packet);
+                break;
+        }
+    }
+
+    /* Stage types 8, 13, 14, 23 and 26. */
+    void __cdecl LevelComplete_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+        switch (stage->field_0x14) {
+            case 0:
+                stage->field_0x14 = 1;
+                stage->field_0x18 = 0.0f;
+                StatusAltSpinPc = 0;
+                stage->field_0x1c = (f64)StatusAlt7f8220Pc * 3.0 + 3.0;
+                break;
+            case 1: {
+                f32 previous;
+                f32 accumulated;
+                SetDrawGoldBrick(packet, 1);
+                previous = stage->field_0x18;
+                accumulated = stage->field_0x18 + elapsed;
+                stage->field_0x18 = accumulated;
+                if (accumulated < StatusAlt7f8220Pc)
+                    StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                else if (accumulated >= StatusAlt7f8220Pc + StatusAlt7f8224Pc) {
+                    if (stage->field_0x18 < (f64)StatusAlt7f8220Pc * 2.0 + StatusAlt7f8224Pc)
+                        StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                    else if (stage->field_0x18 > stage->field_0x1c - StatusAlt7f8224Pc)
+                        StatusAltSpinPc += (i16)((f64)elapsed * 65536.0 * 4.0);
+                    else
+                        StatusAltSpinPc = 0;
+                } else
+                    StatusAltSpinPc = 0;
+                if (stage->field_0x18 >= stage->field_0x1c) {
+                    if (packet->stage->type == 26 && packet->mission_state == 2)
+                        *packet->score = packet->reward_score;
+                    if (packet->stage->type == 23 && packet->challenge_state == 2)
+                        *packet->score = packet->reward_score;
+                    NextStatusStage(packet);
+                    return;
+                }
+                if ((previous < StatusAlt7f8220Pc && stage->field_0x18 >= StatusAlt7f8220Pc) ||
+                    (previous < (f64)StatusAlt7f8220Pc * 2.0 + StatusAlt7f8224Pc &&
+                     stage->field_0x18 >= (f64)StatusAlt7f8220Pc * 2.0 + StatusAlt7f8224Pc)) {
+                    if ((packet->stage->type == 23 && packet->challenge_state == 3) ||
+                        (packet->stage->type == 26 && packet->mission_state == 3))
+                        GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                    else
+                        PlaySfx("StatusAward", NULL);
+                    NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
+                    return;
+                }
+                if ((packet->stage->type == 26 && packet->mission_state == 2) ||
+                    (stage->type == 23 && packet->challenge_state == 2)) {
+                    f32 reward_end = stage->field_0x1c - 0.75;
+                    if (previous < reward_end && stage->field_0x18 >= reward_end) {
+                        CoinTotalScale = 1.5f;
+                        NewStatusRumbleBuzz(-1, 0.0f, 0.1f, 0);
+                        PlaySfx("Shop_BuyCheat", NULL);
+                    } else if (stage->field_0x18 >= 0.75f && stage->field_0x18 < reward_end)
+                        PlaySfx((char *)PickupCoinSfx_PC, NULL);
+                }
+                break;
             }
         }
     }
