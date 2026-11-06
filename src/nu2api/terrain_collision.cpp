@@ -575,36 +575,37 @@ extern "C" {
 #undef TERRAIN_HP_FACE
 #undef TERRAIN_HP_EDGE
 #undef TERRAIN_HP_VERTEX
+// Retail re-reads the wall list after every call.
+#define TERRAIN_HWS_A (((TERRAIN_WALL_POINT *)WallSplList)[i].position)
+#define TERRAIN_HWS_B (((TERRAIN_WALL_POINT *)WallSplList)[i + 1].position)
     i32 HitWallSpline() {
         f32 hit = 0.0f;
         if (WallSplCount == 0)
             return hit;
         for (i32 i = 0; i < WallSplCount; i += 2) {
-            const NUVEC &a = ((TERRAIN_WALL_POINT *)WallSplList)[i].position;
-            const NUVEC &b = ((TERRAIN_WALL_POINT *)WallSplList)[i + 1].position;
             TerrainQuery_s *query = (TerrainQuery_s *)TerI;
             TERRAIN_FLOAT_BITS_PC absolute_0;
-            absolute_0.value = (query->position.x - a.x);
+            absolute_0.value = (query->position.x - TERRAIN_HWS_A.x);
             absolute_0.bits &= 0x7fffffff;
             if (!(absolute_0.value < 64.0f))
                 continue;
             TERRAIN_FLOAT_BITS_PC absolute_1;
-            absolute_1.value = (query->position.z - a.z);
+            absolute_1.value = (query->position.z - TERRAIN_HWS_A.z);
             absolute_1.bits &= 0x7fffffff;
             if (!(absolute_1.value < 64.0f))
                 continue;
-            NUVEC normal = {b.z - a.z, 0.0f, a.x - b.x};
+            NUVEC normal = {TERRAIN_HWS_B.z - TERRAIN_HWS_A.z, 0.0f, TERRAIN_HWS_A.x - TERRAIN_HWS_B.x};
             NuVecNorm(&normal, &normal);
             query = (TerrainQuery_s *)TerI;
-            const f32 end_distance = ((query->movement.x + query->position.x) - a.x) * normal.x +
-                                     ((query->movement.z + query->position.z) - a.z) * normal.z -
+            const f32 end_distance = ((query->movement.x + query->position.x) - TERRAIN_HWS_A.x) * normal.x +
+                                     ((query->movement.z + query->position.z) - TERRAIN_HWS_A.z) * normal.z -
                                      query->collision_radius;
-            const f32 start_distance =
-                (query->position.x - a.x) * normal.x + (query->position.z - a.z) * normal.z - query->collision_radius;
+            const f32 start_distance = (query->position.x - TERRAIN_HWS_A.x) * normal.x +
+                                       (query->position.z - TERRAIN_HWS_A.z) * normal.z - query->collision_radius;
             if ((end_distance < 0.0f || start_distance < 0.0f) && start_distance > -query->collision_radius) {
                 f32 time, x, z;
-                const f32 dx = b.x - a.x;
-                const f32 dz = b.z - a.z;
+                const f32 dx = TERRAIN_HWS_B.x - TERRAIN_HWS_A.x;
+                const f32 dz = TERRAIN_HWS_B.z - TERRAIN_HWS_A.z;
                 if (start_distance < 0.0f) {
                     time = start_distance;
                     x = (query->position.x - normal.x * start_distance) - normal.x * query->collision_radius;
@@ -614,8 +615,8 @@ extern "C" {
                     x = (query->movement.x * time + query->position.x) - normal.x * query->collision_radius;
                     z = (query->movement.z * time + query->position.z) - normal.z * query->collision_radius;
                 }
-                if ((x - a.x) * dx + dz * (z - a.z) >= -0.00005f && -dx * (x - b.x) - (z - b.z) * dz >= -0.00005f &&
-                    time < query->hit_time) {
+                if ((x - TERRAIN_HWS_A.x) * dx + dz * (z - TERRAIN_HWS_A.z) >= -0.00005f &&
+                    -dx * (x - TERRAIN_HWS_B.x) - (z - TERRAIN_HWS_B.z) * dz >= -0.00005f && time < query->hit_time) {
                     query->shape_adjusted = 4;
                     query->terrain_group_index = -1;
                     query->hit_type = start_distance > 0.0f ? 1 : 0x11;
@@ -628,13 +629,13 @@ extern "C" {
                     hit = 1.0f;
                 }
             }
-            const f32 dx = a.x - query->position.x;
+            const f32 dx = TERRAIN_HWS_A.x - query->position.x;
             TERRAIN_FLOAT_BITS_PC absolute_2;
             absolute_2.value = dx;
             absolute_2.bits &= 0x7fffffff;
             if (!(absolute_2.value < 64.0f))
                 continue;
-            const f32 dz = a.z - query->position.z;
+            const f32 dz = TERRAIN_HWS_A.z - query->position.z;
             TERRAIN_FLOAT_BITS_PC absolute_3;
             absolute_3.value = dz;
             absolute_3.bits &= 0x7fffffff;
@@ -648,6 +649,7 @@ extern "C" {
                 continue;
             NUVEC direction = {query->movement.x, 0.0f, query->movement.z};
             NuVecNorm(&direction, &direction);
+            query = (TerrainQuery_s *)TerI;
             const f32 along = direction.x * dx + direction.z * dz;
             const f32 padded_radius = query->collision_radius + 0.0005f;
             bool penetrating = false;
@@ -657,13 +659,14 @@ extern "C" {
                     continue;
                 penetrating = true;
             } else {
-                const f32 side_x = a.x - (direction.x * along + query->position.x);
-                const f32 side_z = a.z - (direction.z * along + query->position.z);
+                const f32 side_x = TERRAIN_HWS_A.x - (direction.x * along + query->position.x);
+                const f32 side_z = TERRAIN_HWS_A.z - (direction.z * along + query->position.z);
                 const f32 side_x_sq = side_x * side_x;
                 const f32 side_z_sq = side_z * side_z;
                 if (side_x_sq + side_z_sq <= padded_radius * padded_radius) {
                     const f32 distance =
                         along - NuFsqrt((query->collision_radius * query->collision_radius - side_x_sq) - side_z_sq);
+                    query = (TerrainQuery_s *)TerI;
                     const f32 movement_sq =
                         query->movement.x * query->movement.x + query->movement.z * query->movement.z;
                     if (distance < -0.0005f || movement_sq < distance * distance) {
@@ -677,9 +680,10 @@ extern "C" {
                         query = (TerrainQuery_s *)TerI;
                         if (!(time < query->hit_time))
                             continue;
-                        normal.x = direction.x * distance + query->position.x - a.x;
-                        normal.z = distance * direction.z + query->position.z - a.z;
+                        normal.x = direction.x * distance + query->position.x - TERRAIN_HWS_A.x;
+                        normal.z = distance * direction.z + query->position.z - TERRAIN_HWS_A.z;
                         NuVecNorm(&normal, &normal);
+                        query = (TerrainQuery_s *)TerI;
                     }
                 } else {
                     if (distance_sq > padded_radius * padded_radius)
@@ -688,10 +692,12 @@ extern "C" {
                 }
             }
             if (penetrating) {
-                normal.x = query->position.x - a.x;
-                normal.z = query->position.z - a.z;
+                normal.x = query->position.x - TERRAIN_HWS_A.x;
+                normal.z = query->position.z - TERRAIN_HWS_A.z;
                 NuVecNorm(&normal, &normal);
+                query = (TerrainQuery_s *)TerI;
                 time = (NuFsqrt(distance_sq) - query->collision_radius) - 0.0005f;
+                query = (TerrainQuery_s *)TerI;
             }
             query->hit_type = penetrating ? 0x11 : 1;
             query->hit_time = time;
@@ -709,6 +715,8 @@ extern "C" {
             ((TerrainQuery_s *)TerI)->hit_time = 0.0f;
         return hit;
     }
+#undef TERRAIN_HWS_A
+#undef TERRAIN_HWS_B
 #define TERRAIN_HT_DISTANCE(point, normal, vertex, plane)                                                              \
     (((point).y - surface->vertices[vertex].y) * surface->normals[plane].y +                                           \
      ((point).x - surface->vertices[vertex].x) * surface->normals[plane].x +                                           \
