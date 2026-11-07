@@ -187,8 +187,14 @@ struct PRIMITIVE_D3D_DEVICE_VIEW;
 struct PRIMITIVE_D3D_VTABLE_VIEW {
     void *unknown_000[83];
     HRESULT(__stdcall *draw_primitive_up)(PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, const void *, u32);
+    HRESULT(__stdcall *draw_indexed_primitive_up)
+    (PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, u32, u32, const void *, i32, const void *, u32);
+    void *unknown_154[4];
+    HRESULT(__stdcall *set_fvf)(PRIMITIVE_D3D_DEVICE_VIEW *, u32);
 };
 STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, draw_primitive_up) == 0x14c);
+STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, draw_indexed_primitive_up) == 0x150);
+STATIC_ASSERT(offsetof(PRIMITIVE_D3D_VTABLE_VIEW, set_fvf) == 0x164);
 struct PRIMITIVE_D3D_DEVICE_VIEW {
     PRIMITIVE_D3D_VTABLE_VIEW *methods;
 };
@@ -198,6 +204,37 @@ extern "C" void __cdecl PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const voi
     PCDeviceStateCachePc.index_buffer = NULL;
     PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
     PCDeviceLastResult = device->methods->draw_primitive_up(device, type, count, vertices, stride);
+}
+
+extern "C" __declspec(noinline) void __cdecl PCDeviceDrawIndexedPrimitiveUPPc(i32 type, u32 minimum_vertex,
+                                                                              u32 vertex_count, u32 primitive_count,
+                                                                              const void *indices, i32 index_format,
+                                                                              const void *vertices, u32 stride) {
+    ++PCDeviceIndexedPrimitiveUPCallCountPc;
+    PCDeviceStateCachePc.vertex_buffer = NULL;
+    PCDeviceStateCachePc.index_buffer = NULL;
+    PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
+    PCDeviceLastResult = device->methods->draw_indexed_primitive_up(
+        device, type, minimum_vertex, vertex_count, primitive_count, indices, index_format, vertices, stride);
+}
+
+extern "C" __declspec(noinline) void __cdecl PCDeviceSetFVFPc(u32 fvf) {
+    PCDeviceStateCachePc.vertex_declaration = NULL;
+    PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
+    PCDeviceLastResult = device->methods->set_fvf(device, fvf);
+}
+
+/* Draws the [-1, 1] cube transformed by matrix as 12 untextured triangles (no retail caller). */
+extern "C" void __cdecl PCGraphicsDrawUnitBoxPc(NUMTX *matrix) {
+    NUVEC4 corners[8] = {{-1.0f, -1.0f, -1.0f, 1.0f}, {-1.0f, 1.0f, -1.0f, 1.0f}, {1.0f, 1.0f, -1.0f, 1.0f},
+                         {1.0f, -1.0f, -1.0f, 1.0f},  {-1.0f, -1.0f, 1.0f, 1.0f}, {-1.0f, 1.0f, 1.0f, 1.0f},
+                         {1.0f, 1.0f, 1.0f, 1.0f},    {1.0f, -1.0f, 1.0f, 1.0f}};
+    for (i32 i = 0; i < 8; ++i)
+        NuVec4MtxTransformH(&corners[i], &corners[i], matrix);
+    u16 indices[36] = {0, 1, 3, 3, 1, 2, 4, 0, 7, 7, 0, 3, 3, 2, 7, 7, 2, 6,
+                       6, 2, 5, 5, 2, 1, 5, 1, 4, 4, 1, 0, 4, 7, 5, 5, 7, 6};
+    PCDeviceSetFVFPc(0x4002);
+    PCDeviceDrawIndexedPrimitiveUPPc(4, 0, 8, 12, indices, 0x65, corners, sizeof(NUVEC4));
 }
 
 extern "C" const char PCDeviceTextureCubeSourcePathPc[];

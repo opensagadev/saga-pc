@@ -16609,6 +16609,9 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void *__cdecl PCShaderCurrentObjectPc(void);
     void __cdecl PCDeviceDrawPrimitiveUPPc(i32, u32, const void *, u32);
     extern u32 PCDevicePrimitiveUPCallCountPc;
+    void __cdecl PCDeviceDrawIndexedPrimitiveUPPc(i32, u32, u32, u32, const void *, i32, const void *, u32);
+    void __cdecl PCDeviceSetFVFPc(u32);
+    extern u32 PCDeviceIndexedPrimitiveUPCallCountPc;
 
     extern GAMEOBJECT *PodPacemakerPc;
     /* PodRacePc: see episodeI.c. */

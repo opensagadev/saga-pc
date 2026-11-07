@@ -6684,6 +6684,7 @@ address,symbol,size,ctype
 0x5fb530,_PCGraphicsDestroyPostEffectTexturesPc,18,void __cdecl (void)
 0x5fb550,_PCGraphicsDrawPostEffectQuadPc,10,
 0x5fb560,_PCGraphicsDrawPostEffectIndexedPc,10,void __cdecl (void)
+0x5fb570,_PCGraphicsDrawUnitBoxPc,594,void __cdecl (NUMTX *)
 0x5fb810,?Reset@PC_EFFECT_SURFACE_PC@@QAEXXZ,81,
 0x5fb870,?Attach@PC_EFFECT_SURFACE_PC@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@H_N@Z,170,
 0x5fb960,?ReleaseResources@PC_EFFECT_SURFACE_PC@@SAXXZ,64,
@@ -9540,11 +9541,13 @@ address,symbol,size,ctype
 0x6e4850,_PCDeviceCreateVertexDeclaration,32,"void __cdecl(const PC_VERTEX_ELEMENT_PC*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e4870,_PCDeviceCreateVertexShader,32,"HRESULT __cdecl(const DWORD*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e48e0,_PCDeviceDrawIndexedPrimitivePc,59,"void __cdecl(i32,i32,u32,u32,u32,u32)"
+0x6e4920,_PCDeviceDrawIndexedPrimitiveUPPc,81,"void __cdecl (i32, u32, u32, u32, const void *, i32, const void *, u32)"
 0x6e4980,_PCDeviceDrawPrimitivePc,44,"void __cdecl(i32,u32,u32)"
 0x6e49b0,_PCDeviceDrawPrimitiveUPPc,61,"void __cdecl(i32,u32,const void *,u32)"
 0x6e4a10,_PCDeviceEndScenePc,10,HRESULT __cdecl(void)
 0x6e4a40,_PCDeviceEvictManagedResources,19,void __cdecl(void)
 0x6e4ff0,_NuPs2GetViewport,62,void __cdecl(NUVPCURRENT *)
+0x6e51a0,_PCDeviceSetFVFPc,37,void __cdecl (u32)
 0x6e51d0,_PCDeviceSetIndicesPc,50,void __cdecl(PC_BUFFER_RESOURCE_PC*)
 0x6e5290,_PCDeviceSetPixelShaderPc,27,void __cdecl(PC_TEXTURE_RESOURCE_PC*)
 0x6e52e0,_PCDeviceSetPixelShaderConstantsF,37,"void __cdecl(UINT,const f32*,UINT)"
@@ -27596,6 +27599,7 @@ address,symbol,size,ctype
 0x2974cf4,_PCDevicePrimitiveCallCountPc,,u32
 0x2974cf8,_PCDeviceIndexedPrimitiveCallCountPc,,u32
 0x2974cfc,_PCDevicePrimitiveUPCallCountPc,,u32
+0x2974d00,_PCDeviceIndexedPrimitiveUPCallCountPc,4,u32
 0x02974d14,_StartupDatList,,NUDATHDR *[7]
 0x2974d3c,_PCDeviceHardwareVertexProcessingPC,,i32
 0x2974d40,_PcIntelShaderFallback,,i32

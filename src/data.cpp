@@ -7979,6 +7979,9 @@ extern "C" {
 #pragma bss_seg(".bss$PCDevicePrimitiveUPCallCountPc")
     u32 PCDevicePrimitiveUPCallCountPc = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$PCDeviceIndexedPrimitiveUPCallCountPc")
+    u32 PCDeviceIndexedPrimitiveUPCallCountPc = 0;
+#pragma bss_seg()
 }
 
 struct SoundQueue;
