@@ -7076,6 +7076,7 @@ address,symbol,size,ctype
 0x610480,?CancelSearch@V2SessionManager@@UAEXXZ,1,
 0x610490,?SetPresence@V2SessionManager@@UAEXH@Z,3,
 0x6104a0,?ClearPresence@V2SessionManager@@UAEXXZ,1,
+0x6104e0,?AllocLinear@memorymanager_s@@QAEPAXIIH@Z,92,"void *__thiscall(u32,u32,i32)"
 0x00610540,_RefpackGetMatchLengthPc,46,"u32 __cdecl(u8 *,u8 *,u32)"
 0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,

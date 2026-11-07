@@ -8155,6 +8155,7 @@ typedef struct memorymanager_s {
 #ifdef __cplusplus
     void *AllocPool(u32 size, i32 clear);
     void FreePool(void *memory, u32 size);
+    void *AllocLinear(u32 bytes, u32 alignment, i32 clear);
 #endif
 } MEMORYMANAGER;
 STATIC_ASSERT(sizeof(MEMORYMANAGER) == 0x248);
