@@ -5998,8 +5998,11 @@ i32 ClassEditor::CreateObject(ClassObject &source) {
         return 1;
     }
     Placeable::CurrentLedFile = theLevelEditor.current_led_file;
-    created.object = theRegistry.CreateObject(source.ed_class->object_interface,
-                                              (source.ed_class->flags & 0x4000000) ? source.object : NULL, 4, 0, 2);
+    EdClassInterface *object_interface = source.ed_class->object_interface;
+    if (source.ed_class->flags & 0x4000000)
+        created.object = theRegistry.CreateObject(object_interface, source.object, 4, 0, 2);
+    else
+        created.object = theRegistry.CreateObject(object_interface, NULL, 4, 0, 2);
     if (created.object == NULL)
         return 0;
     if (source.ed_class->flags & 0x4000000) {
@@ -6212,7 +6215,7 @@ i32 ClassEditor::FindNearestObject(VuVec &origin, VuVec &direction, ClassObject 
              object = object_class->object_interface->GetNextObject(object)) {
             if (!Editable(object, object_class, -1))
                 continue;
-            EdRef *reference;
+            __declspec(align(16)) EdRef *reference;
             f32 distance = object_class->object_interface->DistanceToObject(origin, direction, object, &reference);
             if (distance < best_distance) {
                 best_distance = distance;
@@ -6234,7 +6237,7 @@ i32 ClassEditor::FindNearestObject(VuVec &origin, VuVec &direction, ClassObject 
  * one after `after`, or the first. */
 i32 ClassEditor::FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, ClassObject &after,
                                    i32 filter) {
-    ClassObject candidates[16];
+    __declspec(align(16)) ClassObject candidates[16];
     i32 count = 0;
     for (i32 class_index = 0; class_index < theRegistry.class_count; class_index++) {
         EdClass *object_class = &theRegistry.classes[class_index];
@@ -6246,7 +6249,7 @@ i32 ClassEditor::FindNearestObject(VuVec &origin, VuVec &direction, ClassObject 
                 continue;
             EdRef *reference;
             f32 distance = object_class->object_interface->DistanceToObject(origin, direction, object, &reference);
-            if (distance <= 0.0f && count < 16) {
+            if (distance < 0.01f && count < 16) {
                 candidates[count].ed_class = object_class;
                 candidates[count].object = object;
                 candidates[count].reference = reference;
@@ -6256,7 +6259,7 @@ i32 ClassEditor::FindNearestObject(VuVec &origin, VuVec &direction, ClassObject 
     }
     if (count == 0)
         return 0;
-    for (i32 i = 0; i < count; i++) {
+    for (i32 i = 0; i <= count; i++) {
         if (candidates[i].object == after.object) {
             if (i < count - 1) {
                 nearest = candidates[i + 1];
@@ -6451,8 +6454,12 @@ void ClassEditor::Process(EdInputContext &input) {
         snap_ray.y = -1000.0f;
         snap_ray.z = 0.0f;
     }
-    if (snap_mode == 2)
-        snap_ray = input.ray_direction;
+    if (snap_mode == 2) {
+        snap_ray.x = input.ray_direction.x;
+        snap_ray.y = input.ray_direction.y;
+        snap_ray.z = input.ray_direction.z;
+        snap_ray.w = input.ray_direction.w;
+    }
     UpdateSelectedObjects(input);
     UpdateClassFilter(input);
     if (menu != NULL) {
