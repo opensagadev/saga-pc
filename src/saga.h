@@ -29666,7 +29666,7 @@ struct EdRegistry {
     void SerialiseObjects(EdStream &stream, EdRegistry *source_registry);
 };
 extern EdRegistry theRegistry;
-extern i32 EdType_Short, EdType_Float, EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
+extern i32 EdType_Char, EdType_Short, EdType_Int, EdType_Float, EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
 
 /* One member of an editor class: where it sits in the object, its type and
  * the control that edits it. Attribute bit 30 marks a pointer member. */
@@ -29998,6 +29998,8 @@ class V2Peer {
     u8 unknown_0d[3];
     u32 unknown_10[2];
     NetStatCounters counters;
+    u32 unknown_28[157];
+    i32 time_offset;
 };
 
 class V2HostList {
@@ -30265,6 +30267,11 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
         void NextStage();
         void Stop();
         void Sync();
+        i32 IsReady() const;
+        i32 IsSyncing() const;
+        i32 GetStage() const;
+        i32 GetNextObject() const;
+        void SetNextObject(i32 index);
 
         const V2Peer *peer;
         NETMESSAGE_PC *message;
