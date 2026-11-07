@@ -7215,30 +7215,26 @@ void NuPadUpdatePads(void) {
 }
 
 void __cdecl NuPadMapPlayerToPort(i32 player, i32 port) {
-    i32 previous;
-    if (port < 0) {
-        previous = TextInputDeviceLinksPc[player].device;
-        if (previous >= 0)
-            g_nupadScannedPads[previous].mapped_to_pad = -1;
-        TextInputDeviceLinksPc[player].available = 0;
-        return;
+    i32 old_port;
+
+    if (port >= 0) {
+        NuKeyboardClearActiveDevicesPc();
+        NuPadSetStatus(player, 0);
+
+        old_port = TextInputDeviceLinksPc[player].device;
+        if (old_port >= 0) {
+            g_nupadScannedPads[old_port].mapped_to_pad = -1;
+        }
+        g_nupadScannedPads[port].digital_buttons_pressed = 0;
+        TextInputDeviceLinksPc[player].device = port;
+        g_nupadScannedPads[port].mapped_to_pad = player;
+
+        NuPadSetStatus(player, 1);
+        PlayerLastPort[player] = (i16)port;
+        NuKeyboardApplyActionKeys_candidate(PlayerLastPort, 8);
+    } else {
+        NuPadSetStatus(player, 0);
     }
-    NuKeyboardClearActiveDevicesPc();
-    previous = TextInputDeviceLinksPc[player].device;
-    if (previous >= 0)
-        g_nupadScannedPads[previous].mapped_to_pad = -1;
-    TextInputDeviceLinksPc[player].available = 0;
-    if (previous >= 0)
-        g_nupadScannedPads[previous].mapped_to_pad = -1;
-    g_nupadScannedPads[port].digital_buttons_pressed = 0;
-    TextInputDeviceLinksPc[player].device = port;
-    g_nupadScannedPads[port].mapped_to_pad = player;
-    if (FramePadActivatedPc == 0)
-        FramePadProfilePortPc = port;
-    PlayerLastPort[player] = (i16)port;
-    FramePadActivatedPc = 1;
-    TextInputDeviceLinksPc[player].available = 1;
-    NuKeyboardApplyActionKeys_candidate(PlayerLastPort, 8);
 }
 
 void NuPadInit(void) {
@@ -7369,12 +7365,10 @@ void NuPadResetState(i32 preserve_scanned_state) {
 void NuPadSetStatus(i32 pad, i32 status) {
     i32 device = TextInputDeviceLinksPc[pad].device;
     if (device >= 0) {
-        if (status != 0)
+        if (status != 0) {
             g_nupadScannedPads[device].mapped_to_pad = pad;
-        else {
-            TextInputDeviceLinksPc[pad].available = status;
+        } else {
             g_nupadScannedPads[device].mapped_to_pad = -1;
-            return;
         }
     }
     if (status == 1) {
