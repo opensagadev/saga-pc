@@ -202,9 +202,9 @@ __declspec(noinline) i32 __cdecl ShipDropCoins(starfighter_s *fighter) {
 
 static __declspec(noinline) i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position,
                                                        NUVEC *velocity) {
-    NUVEC relative_position;
-    NUVEC relative_velocity;
-    NUVEC step;
+    __declspec(align(16)) NUVEC relative_position;
+    __declspec(align(16)) NUVEC relative_velocity;
+    __declspec(align(16)) NUVEC step;
     NUVEC *ship_position = (NUVEC *)&fighter->matrix.m30;
     f32 a, dot, b, c, root, enter, leave, time;
     f64 denominator;

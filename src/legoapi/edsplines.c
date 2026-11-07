@@ -850,7 +850,7 @@ static __declspec(noinline) void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC 
 static __declspec(noinline) f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
     f32 distance = 0.0f;
     f32 along = 1.0f;
-    NUVEC4 current, previous;
+    __declspec(align(16)) NUVEC4 current, previous;
     NUVEC difference;
     f32 squared;
     if (spline->point_count != 0) {
@@ -879,7 +879,7 @@ static __declspec(noinline) f32 FlightSplineCumulativeLengthPc(FLIGHT_SPLINE_RES
     f32 distance = 0.0f;
     i32 point, sample;
     f32 point_value, along, squared;
-    NUVEC4 previous, current;
+    __declspec(align(16)) NUVEC4 previous, current;
     NUVEC difference;
     for (point = 0; point < spline->point_count; ++point) {
         point_value = (f32)point;

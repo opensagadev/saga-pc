@@ -461,7 +461,7 @@ static __declspec(noinline) void CopyFlightMatrixPc(NUMTX *destination, const NU
 
 void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode) {
     DOGFIGHT_GROUP_PC *group = SelectFreeFlightGroupPc();
-    NUVEC4 offset;
+    __declspec(align(16)) NUVEC4 offset;
     u16 angle, step;
     i32 i;
     f32 speed;
@@ -766,7 +766,7 @@ static __declspec(noinline) void StarFighterTargetPc(starfighter_s *fighter) {
 }
 
 static __declspec(noinline) void StarFighterAlignPc(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode) {
-    NUVEC4 local, up;
+    __declspec(align(16)) NUVEC4 local, up;
     i16 yaw, pitch, world_yaw, world_pitch, roll;
     f64 limit;
     f32 adjustment;
@@ -809,7 +809,7 @@ static __declspec(noinline) void StarFighterAlignPc(starfighter_s *fighter, NUVE
 /* Return 0: prepared shot; 1: lost target; 2: target retained without a shot. */
 static __declspec(noinline) i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix,
                                                   f32 shot_speed) {
-    NUVEC offset, local;
+    __declspec(align(16)) NUVEC offset, local;
     NUVEC *target_position, *target_velocity, *axis;
     GAMEOBJECT *player;
     f32 forward, square, ratio, closing_speed, travel_time, least, up_dot, front_dot;
@@ -1226,7 +1226,7 @@ void ChrisAnakinCInit() {
 static __declspec(noinline) void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
                                                       DOGFIGHT_FIGHTER_PC *record) {
     starfighter_s *fighter = &record->fields;
-    NUVEC4 direction;
+    __declspec(align(16)) NUVEC4 direction;
     i32 model;
     if (spline->point_count == 0)
         return;
@@ -1308,7 +1308,7 @@ static __declspec(noinline) void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_
 }
 
 static __declspec(noinline) void ProcessFlightGroupPc(DOGFIGHT_GROUP_PC *group, DOGFIGHT_QUICK_BUFFER_PC *buffer) {
-    NUVEC step;
+    __declspec(align(16)) NUVEC step;
     f32 speed;
     i32 i, active = 0;
     if (group->active == 0)
@@ -1413,7 +1413,7 @@ static __declspec(noinline) void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *b
 }
 
 static __declspec(noinline) void ProcessFormationActionsPc(DOGFIGHT_ACTION_STATE_PC *state) {
-    NUVEC4 start, target;
+    __declspec(align(16)) NUVEC4 start, target;
     if (state->actions == NULL)
         return;
     if (state->command == 4) {
@@ -1575,7 +1575,7 @@ static __declspec(noinline) void SampleFlightSplinePc(FLIGHT_SPLINE_RESOURCE_PC 
 
 /* Native debug paths retain these vector evaluations without line submission calls. */
 static __declspec(noinline) void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
-    NUVEC4 points[512], direction, axis;
+    __declspec(align(16)) NUVEC4 points[512], direction, axis;
     i32 count, i, from;
     i16 yaw, pitch;
     if (mode == 1 || (mode != 2 && mode != 3))
@@ -1637,7 +1637,7 @@ static __declspec(noinline) i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_i
 
 static __declspec(noinline) void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record) {
     starfighter_s *fighter = &record->fields;
-    NUMTX scaled;
+    __declspec(align(16)) NUMTX scaled;
     NUMTX *matrix;
     if (fighter->model_id < 0) {
         matrix = &fighter->matrix;
@@ -1754,7 +1754,7 @@ static __declspec(noinline) void DrawSpaceLevelPc(DOGFIGHT_SPACE_PC *space) {
 static __declspec(noinline) void DrawSelectedSockPc(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode,
                                                     i32 count) {
     SOCK_PC *sock;
-    NUVEC a, b, c, d, difference;
+    __declspec(align(16)) NUVEC a, b, c, d, difference;
     i32 i, end;
     f32 square;
     if (position->sock_index == -1 || mode != 5)
