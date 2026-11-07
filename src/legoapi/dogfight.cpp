@@ -2329,31 +2329,35 @@ extern "C" {
                 state->next_index = 1;
                 state->command = state->actions[0].command;
             }
-            if (state->command == 0) {
-                state->timer = state->current->value;
-            } else if (state->command == 1) {
-                start.x = 0.0f;
-                start.y = 0.0f;
-                start.z = 300.0f;
-                start.w = 1.0f;
-                *(NUVEC *)&target = *(NUVEC *)&GameCam->render_mtx.m30;
-                NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
-                MakeWingFormation(&start, &target, state->current->value, 1);
-                state->command = 4;
-            } else if (state->command == 2) {
-                start.x = -10.0f;
-                start.y = -5.0f;
-                start.z = -10.0f;
-                start.w = 1.0f;
-                NuVecRotateZ((NUVEC *)&start, (NUVEC *)&start, qrand());
-                NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
-                target.x = 0.0f;
-                target.y = 0.0f;
-                target.z = 400.0f;
-                target.w = 1.0f;
-                NuVecMtxTransform((NUVEC *)&target, (NUVEC *)&target, &GameCam->render_mtx);
-                MakeWingFormation(&start, &target, state->current->value, 0);
-                state->command = 4;
+            switch (state->command) {
+                case 2:
+                    start.x = -10.0f;
+                    start.y = -5.0f;
+                    start.z = -10.0f;
+                    start.w = 1.0f;
+                    NuVecRotateZ((NUVEC *)&start, (NUVEC *)&start, qrand());
+                    NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
+                    target.x = 0.0f;
+                    target.y = 0.0f;
+                    target.z = 400.0f;
+                    target.w = 1.0f;
+                    NuVecMtxTransform((NUVEC *)&target, (NUVEC *)&target, &GameCam->render_mtx);
+                    MakeWingFormation(&start, &target, state->current->value, 0);
+                    state->command = 4;
+                    break;
+                case 1:
+                    *(NUVEC *)&target = *(NUVEC *)&GameCam->render_mtx.m30;
+                    start.x = 0.0f;
+                    start.y = 0.0f;
+                    start.z = 300.0f;
+                    start.w = 1.0f;
+                    NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
+                    MakeWingFormation(&start, &target, state->current->value, 1);
+                    state->command = 4;
+                    break;
+                case 0:
+                    state->timer = state->current->value;
+                    break;
             }
         }
         if (state->command == 0) {
