@@ -44,43 +44,7 @@ extern "C" {
                                  f32 radius_scale, f32 radius_bias);
 }
 
-class EdStream {
-  public:
-    EdStream();
-    virtual ~EdStream() {
-    }
-    virtual i32 Eat(i32, i32) = 0;
-    virtual i32 SerialiseBuffer(void *data, i32 size, i32 count) = 0;
-    /* MSVC lays overloaded virtuals out in reverse declaration order, so
-     * SerialiseString(char *, i32) lands in slot 5 (+0x14). */
-    virtual i32 SerialiseString(char *text, i32 count) = 0;
-    virtual i32 SerialiseString(char **text) = 0;
-    virtual i32 SerialiseString(char **text, i32 count) = 0;
-    virtual char const *BeginBlock(char const *name) = 0;
-    virtual void EndBlock() = 0;
-
-    i32 version;
-    i32 mode;
-    i32 swap_endianness;
-    i32 unknown_10;
-    void *memory_buffer;
-    void *secondary_buffer;
-    i32 flags;
-};
 STATIC_ASSERT(sizeof(EdStream) == 0x20);
-
-/* Writes strings as a length-prefixed buffer through SerialiseBuffer. */
-class EdOutputStream : public EdStream {
-  public:
-    EdOutputStream() {
-        mode = 2;
-    }
-    virtual ~EdOutputStream() {
-    }
-    virtual i32 SerialiseString(char *text, i32 count);
-    virtual i32 SerialiseString(char **text);
-    virtual i32 SerialiseString(char **text, i32 count);
-};
 
 /* Writes the editor's block-structured .led format to an open NuFile; each
  * block starts with a size word that EndBlock patches once it is closed. */
@@ -545,6 +509,7 @@ class LevelEditor : public BaseThing {
     void SetPadText(i32 buttons, char *text);
     NUGSCN *GetScene(i32 index);
     LevelEditorScene *GetEdScene(i32 index);
+    void Flush();
     i32 WriteStream(EdFileOutputStream &stream);
     i32 Save();
     void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
@@ -686,6 +651,13 @@ i32 LevelEditor::Save() {
     }
     theClassEditor.PostSaveInitialisation();
     return saved_any;
+}
+
+void LevelEditor::Flush() {
+    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next)
+        editor->Flush();
+    reset_pending = 0;
+    memset(scenes, 0, sizeof(scenes));
 }
 
 NUGSCN *LevelEditor::GetScene(i32 index) {
@@ -1157,6 +1129,119 @@ i32 EdRegistry::GetClassId(char *name) {
 
 i32 EdRegistry::GetClassId(EdClass *object_class) {
     return object_class - classes;
+}
+
+EdClass *EdRegistry::GetClass(char *name) {
+    for (i32 index = 0; index < class_count; index++) {
+        if (NuStrICmp(classes[index].name, name) == 0)
+            return &classes[index];
+    }
+    return NULL;
+}
+
+EdClass *EdRegistry::GetClass(i32 index) {
+    if (index < 0 || index >= class_count)
+        return NULL;
+    return &classes[index];
+}
+
+void EdRegistry::ClassIFaceProcess(i32 class_id, void *object, EdInputContext &context) {
+    EdClass *object_class = GetClass(class_id);
+    if (object_class != NULL && object_class->object_interface != NULL)
+        object_class->object_interface->Process(object, context);
+}
+
+void EdRegistry::ClassIFaceProcess(EdClass *object_class, void *object, EdInputContext &context) {
+    if (object_class != NULL && object_class->object_interface != NULL)
+        object_class->object_interface->Process(object, context);
+}
+
+void EdRegistry::ClassIFaceRender(i32 class_id, void *object, i32 flags) {
+    EdClass *object_class = GetClass(class_id);
+    if (object_class != NULL && object_class->object_interface != NULL)
+        object_class->object_interface->Render(object, flags);
+}
+
+void EdRegistry::ClassIFaceRender(EdClass *object_class, void *object, i32 flags) {
+    if (object_class != NULL && object_class->object_interface != NULL)
+        object_class->object_interface->Render(object, flags);
+}
+
+void EdRegistry::AddObjectNotifier(EdObjectNotifier *notifier) {
+    if (notifier_count < notifier_capacity)
+        notifiers[notifier_count++] = notifier;
+}
+
+void EdRegistry::NotifyCreateObject(void *object, EdClass *object_class, void *source, i32 index, i32 context,
+                                    i32 flags) {
+    for (i32 i = 0; i < notifier_count; i++)
+        notifiers[i]->NotifyCreateObject(object, object_class, source, index, context, flags);
+}
+
+void EdRegistry::NotifyDestroyObject(void *object, EdClass *object_class, i32 index, i32 flags) {
+    for (i32 i = 0; i < notifier_count; i++)
+        notifiers[i]->NotifyDestroyObject(object, object_class, index, flags);
+}
+
+void EdRegistry::NotifyDefunctObject(void *object, EdClass *object_class, i32 flags) {
+    for (i32 i = 0; i < notifier_count; i++)
+        notifiers[i]->NotifyDefunctObject(object, object_class, flags);
+}
+
+void EdRegistry::NotifyReviveObject(void *object, EdClass *object_class, i32 flags) {
+    for (i32 i = 0; i < notifier_count; i++)
+        notifiers[i]->NotifyReviveObject(object, object_class, flags);
+}
+
+void *EdRegistry::CreateObject(EdClassInterface *object_interface, void *source, i32 index, i32 guid, i32 flags) {
+    if (guid == 0 && create_object_guid != NULL)
+        guid = create_object_guid();
+    void *object = object_interface->CreateObject(source, index, flags);
+    if (object != NULL) {
+        object_interface->SetObjectGuid(object, guid);
+        if (!(flags & 2))
+            NotifyCreateObject(object, object_interface->object_class, source, index, guid, flags);
+    }
+    return object;
+}
+
+/* Writes (or reads) the byte saying whether an object follows. */
+i32 EdClass::SerialiseObjectHeader(EdStream &stream, void *object) {
+    u8 present = 0;
+    if (stream.mode == 2 && object != NULL)
+        present = 1;
+    stream.SerialiseBuffer(&present, 1, 1);
+    return present;
+}
+
+struct EdDefunctListEntry {
+    EdDefunctListEntry *next;
+    EdDefunctListEntry *previous;
+    EdClass *object_class;
+    void *object;
+
+    EdDefunctListEntry() : next(NULL), previous(NULL) {
+    }
+};
+STATIC_ASSERT(sizeof(EdDefunctListEntry) == 0x10);
+
+void EdRegistry::DefunctObject(EdClassInterface *object_interface, void *object, i32, i32 flags) {
+    if (object != NULL) {
+        if (!(flags & 2))
+            NotifyDefunctObject(object, object_interface->object_class, flags);
+        object_interface->DefunctObject(object);
+        EdDefunctListEntry *entry = new EdDefunctListEntry;
+        entry->object_class = object_interface->object_class;
+        entry->object = object;
+        entry->next = NULL;
+        entry->previous = defunct_objects.last;
+        if (defunct_objects.last != NULL)
+            defunct_objects.last->next = entry;
+        defunct_objects.last = entry;
+        if (defunct_objects.first == NULL)
+            defunct_objects.first = entry;
+        defunct_objects.count++;
+    }
 }
 i32 EdType_Short;
 i32 EdType_Float;

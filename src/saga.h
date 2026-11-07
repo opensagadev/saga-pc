@@ -29409,6 +29409,43 @@ class Placeable {
 
 void EdTrace(const char *, ...);
 
+/* Editor serialisation stream (Android EdStream); mode is 1 reading, 2 writing. */
+class EdStream {
+  public:
+    EdStream();
+    virtual ~EdStream() {
+    }
+    virtual i32 Eat(i32, i32) = 0;
+    virtual i32 SerialiseBuffer(void *data, i32 size, i32 count) = 0;
+    /* MSVC lays overloaded virtuals out in reverse declaration order, so
+     * SerialiseString(char *, i32) lands in slot 5 (+0x14). */
+    virtual i32 SerialiseString(char *text, i32 count) = 0;
+    virtual i32 SerialiseString(char **text) = 0;
+    virtual i32 SerialiseString(char **text, i32 count) = 0;
+    virtual char const *BeginBlock(char const *name) = 0;
+    virtual void EndBlock() = 0;
+
+    i32 version;
+    i32 mode;
+    i32 swap_endianness;
+    i32 unknown_10;
+    void *memory_buffer;
+    void *secondary_buffer;
+    i32 flags;
+};
+/* Writes strings as a length-prefixed buffer through SerialiseBuffer. */
+class EdOutputStream : public EdStream {
+  public:
+    EdOutputStream() {
+        mode = 2;
+    }
+    virtual ~EdOutputStream() {
+    }
+    virtual i32 SerialiseString(char *text, i32 count);
+    virtual i32 SerialiseString(char **text);
+    virtual i32 SerialiseString(char **text, i32 count);
+};
+
 /* A registered editor value type (Android EdType). */
 struct EdType {
     char *name;
@@ -29426,9 +29463,20 @@ struct EdClass {
     EdClassInterface *object_interface; /* Android "interface" (an objbase.h macro) */
 
     i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);
+    i32 SerialiseObjectHeader(EdStream &stream, void *object);
 };
 
-struct EdObjectNotifier;
+/* Receives the registry's object create/destroy/defunct/revive events. */
+struct EdObjectNotifier {
+    virtual void NotifyCreateObject(void *, EdClass *, void *, i32, i32, i32) {
+    }
+    virtual void NotifyDestroyObject(void *, EdClass *, i32, i32) {
+    }
+    virtual void NotifyDefunctObject(void *, EdClass *, i32) {
+    }
+    virtual void NotifyReviveObject(void *, EdClass *, i32) {
+    }
+};
 struct EdDefunctListEntry;
 struct EdDefunctList {
     EdDefunctListEntry *first;
@@ -29477,6 +29525,19 @@ struct EdRegistry {
     }
     i32 GetClassId(char *name);
     i32 GetClassId(EdClass *object_class);
+    EdClass *GetClass(char *name);
+    EdClass *GetClass(i32 index);
+    void ClassIFaceProcess(i32 class_id, void *object, EdInputContext &context);
+    void ClassIFaceProcess(EdClass *object_class, void *object, EdInputContext &context);
+    void ClassIFaceRender(i32 class_id, void *object, i32 flags);
+    void ClassIFaceRender(EdClass *object_class, void *object, i32 flags);
+    void AddObjectNotifier(EdObjectNotifier *notifier);
+    void NotifyCreateObject(void *object, EdClass *object_class, void *source, i32 index, i32 context, i32 flags);
+    void NotifyDestroyObject(void *object, EdClass *object_class, i32 index, i32 flags);
+    void NotifyDefunctObject(void *object, EdClass *object_class, i32 flags);
+    void NotifyReviveObject(void *object, EdClass *object_class, i32 flags);
+    void *CreateObject(EdClassInterface *object_interface, void *source, i32 index, i32 guid, i32 flags);
+    void DefunctObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags);
 };
 extern EdRegistry theRegistry;
 extern i32 EdType_Short, EdType_Float, EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
