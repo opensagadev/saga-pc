@@ -4717,34 +4717,52 @@ static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
 static inline void VuMtxRotateX(VuMtx &matrix, i32 angle) {
     f32 cosine = NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff];
     f32 sine = NuTrigTable[angle >> 1 & 0x7fff];
-    f32 *row = &matrix.matrix.m00;
-    for (i32 index = 0; index < 4; index++, row += 4) {
-        f32 y = row[1];
-        row[1] = y * cosine - row[2] * sine;
-        row[2] = row[2] * cosine + y * sine;
-    }
+    f32 y0 = matrix.matrix.m01;
+    f32 y1 = matrix.matrix.m11;
+    f32 y2 = matrix.matrix.m21;
+    f32 y3 = matrix.matrix.m31;
+    matrix.matrix.m01 = y0 * cosine - matrix.matrix.m02 * sine;
+    matrix.matrix.m02 = matrix.matrix.m02 * cosine + y0 * sine;
+    matrix.matrix.m11 = y1 * cosine - matrix.matrix.m12 * sine;
+    matrix.matrix.m12 = matrix.matrix.m12 * cosine + y1 * sine;
+    matrix.matrix.m21 = y2 * cosine - matrix.matrix.m22 * sine;
+    matrix.matrix.m22 = matrix.matrix.m22 * cosine + y2 * sine;
+    matrix.matrix.m31 = y3 * cosine - matrix.matrix.m32 * sine;
+    matrix.matrix.m32 = matrix.matrix.m32 * cosine + y3 * sine;
 }
 
 static inline void VuMtxRotateY(VuMtx &matrix, i32 angle) {
     f32 cosine = NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff];
     f32 sine = NuTrigTable[angle >> 1 & 0x7fff];
-    f32 *row = &matrix.matrix.m00;
-    for (i32 index = 0; index < 4; index++, row += 4) {
-        f32 x = row[0];
-        row[0] = x * cosine + row[2] * sine;
-        row[2] = row[2] * cosine - x * sine;
-    }
+    f32 x0 = matrix.matrix.m00;
+    f32 x1 = matrix.matrix.m10;
+    f32 x2 = matrix.matrix.m20;
+    f32 x3 = matrix.matrix.m30;
+    matrix.matrix.m00 = x0 * cosine + matrix.matrix.m02 * sine;
+    matrix.matrix.m02 = matrix.matrix.m02 * cosine - x0 * sine;
+    matrix.matrix.m10 = x1 * cosine + matrix.matrix.m12 * sine;
+    matrix.matrix.m12 = matrix.matrix.m12 * cosine - x1 * sine;
+    matrix.matrix.m20 = x2 * cosine + matrix.matrix.m22 * sine;
+    matrix.matrix.m22 = matrix.matrix.m22 * cosine - x2 * sine;
+    matrix.matrix.m30 = x3 * cosine + matrix.matrix.m32 * sine;
+    matrix.matrix.m32 = matrix.matrix.m32 * cosine - x3 * sine;
 }
 
 static inline void VuMtxRotateZ(VuMtx &matrix, i32 angle) {
     f32 cosine = NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff];
     f32 sine = NuTrigTable[angle >> 1 & 0x7fff];
-    f32 *row = &matrix.matrix.m00;
-    for (i32 index = 0; index < 4; index++, row += 4) {
-        f32 x = row[0];
-        row[0] = x * cosine - row[1] * sine;
-        row[1] = x * sine + row[1] * cosine;
-    }
+    f32 x0 = matrix.matrix.m00;
+    f32 x1 = matrix.matrix.m10;
+    f32 x2 = matrix.matrix.m20;
+    f32 x3 = matrix.matrix.m30;
+    matrix.matrix.m00 = x0 * cosine - matrix.matrix.m01 * sine;
+    matrix.matrix.m01 = x0 * sine + matrix.matrix.m01 * cosine;
+    matrix.matrix.m10 = x1 * cosine - matrix.matrix.m11 * sine;
+    matrix.matrix.m11 = x1 * sine + matrix.matrix.m11 * cosine;
+    matrix.matrix.m20 = x2 * cosine - matrix.matrix.m21 * sine;
+    matrix.matrix.m21 = x2 * sine + matrix.matrix.m21 * cosine;
+    matrix.matrix.m30 = x3 * cosine - matrix.matrix.m31 * sine;
+    matrix.matrix.m31 = x3 * sine + matrix.matrix.m31 * cosine;
 }
 
 /* Handle positions: 0 origin, 1-3 axis tips, 4-6 plane boxes, 7 centre. */
@@ -5144,21 +5162,29 @@ i32 EdManRotate::RotateItem(EdInputContext &, ClassObjectList &objects, i32 angl
     for (; entry != NULL; entry = entry->next) {
         ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
         __declspec(align(16)) VuMtx matrix;
-        matrix.matrix = ANI3_EVAL_IDENTITY_MATRIX;
+        VuMtxCopy(matrix, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
         if (!object->GetAttributeData(0x10, EdType_VuMtx, &matrix, 0))
             continue;
-        position.x = matrix.matrix.m30;
-        position.y = matrix.matrix.m31;
-        position.z = matrix.matrix.m32;
-        position.w = matrix.matrix.m33;
         switch (axis) {
             case 1:
+                position.x = matrix.matrix.m30;
+                position.y = matrix.matrix.m31;
+                position.z = matrix.matrix.m32;
+                position.w = matrix.matrix.m33;
                 VuMtxRotateX(matrix, angle);
                 break;
             case 2:
+                position.x = matrix.matrix.m30;
+                position.y = matrix.matrix.m31;
+                position.z = matrix.matrix.m32;
+                position.w = matrix.matrix.m33;
                 VuMtxRotateY(matrix, angle);
                 break;
             case 3:
+                position.x = matrix.matrix.m30;
+                position.y = matrix.matrix.m31;
+                position.z = matrix.matrix.m32;
+                position.w = matrix.matrix.m33;
                 VuMtxRotateZ(matrix, angle);
                 break;
             default:
