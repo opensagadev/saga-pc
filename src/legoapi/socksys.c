@@ -452,10 +452,7 @@ static void AdjustMinMaxBox(NUVEC *pnt, NUVEC *min, NUVEC *max) {
     }
 }
 
-/* Native PC entry 0x0053db60 is RET-only: the missing-camera warning was compiled out. */
-void __cdecl SockSysMissingCameraDiagnostic(char *name) {
-    (void)name;
-}
+void __cdecl SockSysMissingCameraDiagnostic(char *name);
 
 void SockSysFindInScene(SOCKSYS_PC *sock_sys, NUGSCN *gscn) {
     i32 i;

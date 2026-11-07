@@ -856,11 +856,7 @@ char *FlightSplineExtensionPc = ".FSP";
 f32 FlightSplineDefaultIncrementPc = 0.009999999776482582f;
 #pragma data_seg()
 
-/* Original source name unknown. The native diagnostic entry is exactly RET;
- * exceeding capacity therefore does not stop or truncate the native loader. */
-__declspec(noinline) void __cdecl FlightSplineCapacityDiagnosticPc(char *filename) {
-    (void)filename;
-}
+void __cdecl FlightSplineCapacityDiagnosticPc(char *filename);
 
 static __declspec(noinline) void FlightSplineLoadRecordPc(FLIGHT_SPLINE_FILE_PC *spline, i32 version, i32 index) {
     i32 point;
