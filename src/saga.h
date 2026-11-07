@@ -29090,7 +29090,7 @@ struct EdClass;
 struct EdInputContext;
 struct EdMember;
 class EdRef;
-struct EdStream;
+class EdStream;
 struct MemoryBuffer;
 
 struct ThingLevelData;

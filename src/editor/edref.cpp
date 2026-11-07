@@ -32,3 +32,10 @@ EdRef::EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i3
     control = member_control;
     replication_group = group;
 }
+
+/* A second compiled-out editor message hook (retail 0x6b7c50, beside EdTrace
+ * in the edlevelall unit); LevelEditor::Save reports scenes it could not
+ * write through it. Defined here for the same reason as the constructor
+ * above: with the empty body visible, the compiler drops one-argument calls. */
+void EdMessage(char const *, ...) {
+}

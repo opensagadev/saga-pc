@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <string.h>
+#include <stdio.h>
 
 /* Level editor (Android editor/edlevelall.cpp). The retail unit is C++; the
  * EdDraw primitives that share it live in eddraw.c. */
@@ -28,13 +29,16 @@ extern "C" {
     void __cdecl PcGetMousePositionPc(f32 *x, f32 *y);
     void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera);
     eduimenu_s *__cdecl eduiGetActiveMenu(void);
+    void __cdecl eduiSetCameraEnabled(i32 enabled);
     extern i32 NewPrim;
     void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
     void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
                                  f32 radius_scale, f32 radius_bias);
 }
 
-struct EdStream {
+class EdStream {
+  public:
+    EdStream();
     virtual ~EdStream() {
     }
     virtual i32 Eat(i32, i32) = 0;
@@ -56,6 +60,146 @@ struct EdStream {
     i32 flags;
 };
 STATIC_ASSERT(sizeof(EdStream) == 0x20);
+
+/* Writes strings as a length-prefixed buffer through SerialiseBuffer. */
+class EdOutputStream : public EdStream {
+  public:
+    EdOutputStream() {
+        mode = 2;
+    }
+    virtual ~EdOutputStream() {
+    }
+    virtual i32 SerialiseString(char *text, i32 count);
+    virtual i32 SerialiseString(char **text);
+    virtual i32 SerialiseString(char **text, i32 count);
+};
+
+/* Writes the editor's block-structured .led format to an open NuFile; each
+ * block starts with a size word that EndBlock patches once it is closed. */
+class EdFileOutputStream : public EdOutputStream {
+  public:
+    EdFileOutputStream() {
+        block_count = 0;
+        file = 0;
+    }
+    virtual ~EdFileOutputStream() {
+    }
+    virtual i32 Eat(i32 size, i32 count);
+    virtual i32 SerialiseBuffer(void *data, i32 size, i32 count);
+    virtual char const *BeginBlock(char const *name);
+    virtual void EndBlock();
+
+    void Open(NUFILE handle, i32 stream_version) {
+        file = handle;
+        version = stream_version;
+        if (BeginBlock("StreamInfo")) {
+            SerialiseBuffer(&version, sizeof(version), 1);
+            EndBlock();
+        }
+    }
+
+    i32 block_positions[8];
+    i32 block_count;
+    NUFILE file;
+};
+STATIC_ASSERT(offsetof(EdFileOutputStream, block_positions) == 0x20);
+STATIC_ASSERT(offsetof(EdFileOutputStream, block_count) == 0x40);
+STATIC_ASSERT(offsetof(EdFileOutputStream, file) == 0x44);
+STATIC_ASSERT(sizeof(EdFileOutputStream) == 0x48);
+
+EdStream::EdStream() {
+    memory_buffer = NULL;
+    secondary_buffer = NULL;
+    mode = 0;
+    swap_endianness = 0;
+    flags = 0;
+}
+
+i32 EdOutputStream::SerialiseString(char **text) {
+    return SerialiseString(*text, 0);
+}
+
+i32 EdOutputStream::SerialiseString(char **text, i32) {
+    return SerialiseString(*text, 0);
+}
+
+i32 EdFileOutputStream::Eat(i32, i32) {
+    return 0;
+}
+
+i32 EdFileOutputStream::SerialiseBuffer(void *data, i32 size, i32 count) {
+    i32 result;
+    u8 *cursor;
+    i32 i;
+    if (swap_endianness && size > 1) {
+        cursor = (u8 *)data;
+        for (i = 0; i < count; i++) {
+            switch (size) {
+                case 2:
+                    EdFileSwapEndianess16(cursor);
+                    break;
+                case 4:
+                    EdFileSwapEndianess32(cursor);
+                    break;
+            }
+            cursor += size;
+        }
+    }
+    result = NuFileWrite(file, data, size * count);
+    if (swap_endianness && size > 1) {
+        cursor = (u8 *)data;
+        for (i = 0; i < count; i++) {
+            switch (size) {
+                case 2:
+                    EdFileSwapEndianess16(cursor);
+                    break;
+                case 4:
+                    EdFileSwapEndianess32(cursor);
+                    break;
+            }
+            cursor += size;
+        }
+    }
+    return result;
+}
+
+i32 EdOutputStream::SerialiseString(char *text, i32) {
+    i32 length;
+    i32 written;
+    if (text == NULL)
+        text = (char *)"(NULL)";
+    length = NuStrLen(text) + 1;
+    written = SerialiseBuffer(&length, sizeof(length), 1);
+    return written + SerialiseBuffer(text, 1, length);
+}
+
+/* Retail keeps an argument-less EdTrace call on the overflow paths of
+ * BeginBlock/EndBlock; with EdTrace's empty body in this unit the compiler
+ * drops it. */
+char const *EdFileOutputStream::BeginBlock(char const *name) {
+    i32 position = (i32)NuFilePos(file);
+    if (block_count < 8)
+        block_positions[block_count++] = position;
+    else
+        EdTrace(NULL);
+    SerialiseBuffer(&position, sizeof(position), 1);
+    SerialiseString((char *)name, 0);
+    return name;
+}
+
+void EdFileOutputStream::EndBlock() {
+    i32 position;
+    i32 end;
+    i32 size;
+    if (block_count < 1)
+        EdTrace(NULL);
+    position = block_positions[--block_count];
+    end = (i32)NuFilePos(file);
+    size = end - position;
+    NuFileSeek(file, position, 0);
+    SerialiseBuffer(&size, sizeof(size), 1);
+    NuFileSeek(file, end, 0);
+}
 
 struct PropertyTool {
     eduimenu_s *GetNextDefaultActiveMenu(eduimenu_s *menu);
@@ -117,6 +261,22 @@ void cbEdLevelToggleInt(eduimenu_s *, eduiitem_s *item, u32) {
     i32 *value = static_cast<i32 *>(item->data_ptr);
     *value ^= 1;
     item->highlighted = *value;
+}
+
+/* Menu close callback for the level editor's menus: tears the menu down,
+ * re-enables the camera and falls back to the pinned menu. */
+void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *) {
+    if (menu->flags & 4)
+        return;
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+    eduiSetCameraEnabled(1);
+    if (menu == edLevelActiveMenu)
+        edLevelActiveMenu = NULL;
+    if (menu == edLevelPinnedMenu)
+        edLevelPinnedMenu = NULL;
+    else if (edLevelPinnedMenu != NULL && edLevelActiveMenu == NULL)
+        edLevelActiveMenu = edLevelPinnedMenu;
 }
 
 eduimenu_s *PropertyTool::GetNextDefaultActiveMenu(eduimenu_s *menu) {
@@ -247,6 +407,8 @@ class LevelEditor : public BaseThing {
     virtual void Display(ThingRenderData *);
 
     void SetPadText(i32 buttons, char *text);
+    i32 WriteStream(EdFileOutputStream &stream);
+    i32 Save();
     void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
                       i32 background);
 
@@ -318,6 +480,75 @@ STATIC_ASSERT(offsetof(LevelEditor, settings) == 0x109c);
 STATIC_ASSERT(offsetof(LevelEditor, editors_entered) == 0x10a8);
 STATIC_ASSERT(offsetof(LevelEditor, active) == 0x10ac);
 STATIC_ASSERT(sizeof(LevelEditor) == 0x10b0);
+
+void EdMessage(char const *, ...);
+
+/* Writes the file header, the editor settings and every editor's block. */
+i32 LevelEditor::WriteStream(EdFileOutputStream &stream) {
+    i32 count;
+    BaseEditor *editor;
+    ++file_version;
+    stream.BeginBlock("FileInfo");
+    stream.SerialiseBuffer(&file_version, sizeof(file_version), 1);
+    stream.EndBlock();
+    stream.BeginBlock("Settings");
+    stream.SerialiseBuffer(&settings.cursor_radius, sizeof(settings.cursor_radius), 1);
+    stream.SerialiseBuffer(&settings.snap_terrain, sizeof(settings.snap_terrain), 1);
+    stream.EndBlock();
+    stream.BeginBlock("Editors");
+    count = editor_count;
+    stream.SerialiseBuffer(&count, sizeof(count), 1);
+    for (editor = first_editor; editor != NULL; editor = editor->next) {
+        stream.BeginBlock(editor->GetName());
+        editor->Serialise(stream);
+        stream.EndBlock();
+    }
+    stream.EndBlock();
+    return 1;
+}
+
+/* Saves every editable scene to <directory>/<name>.led through a memory
+ * file in the editor buffer; returns whether any scene was written. */
+i32 LevelEditor::Save() {
+    i32 saved_any;
+    i32 i;
+    if (!active)
+        return 0;
+    saved_any = 0;
+    for (i = 0; i < 10; i++) {
+        theClassEditor.PreSaveInitialisation();
+        sprintf(save_filename, "%s/%s.led", scenes[i].directory, scenes[i].name);
+        if (scenes[i].editable && save_filename) {
+            VARIPTR buffer = editor_buffer_begin;
+            NUFILE memory_file;
+            editor_buffer_cursor = buffer;
+            memory_file = NuMemFileOpen(buffer.void_ptr, editor_buffer_end.addr - buffer.addr, 1);
+            if (memory_file) {
+                EdFileOutputStream stream;
+                i32 size;
+                NUFILE output_file;
+                stream.Open(memory_file, 4);
+                stream.unknown_10 = i;
+                WriteStream(stream);
+                size = (i32)NuFilePos(memory_file);
+                stream.file = 0;
+                NuFileClose(memory_file);
+                output_file = NuFileOpen(save_filename, 1);
+                if (output_file) {
+                    NuFileWrite(output_file, buffer.void_ptr, size);
+                    NuFileClose(output_file);
+                    scenes[i].saved = 1;
+                    saved_any = 1;
+                    continue;
+                }
+                scenes[i].saved = 0;
+            }
+            EdMessage(save_filename);
+        }
+    }
+    theClassEditor.PostSaveInitialisation();
+    return saved_any;
+}
 
 /* Labels every pad button whose bit is set in the mask. */
 void LevelEditor::SetPadText(i32 buttons, char *text) {

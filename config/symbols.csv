@@ -7080,6 +7080,13 @@ address,symbol,size,ctype
 0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,
 0x00610690,_refpack,918,"i32 __cdecl(u8 *,i32,u8 *)"
+0x611900,??1EdStream@@UAE@XZ,7,
+0x611920,??_EEdStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdStream@@UAEPAXI@Z; no independent body
+0x611920,??_GEdStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x611970,??0EdOutputStream@@QAE@XZ,25,
+0x611990,??1EdOutputStream@@UAE@XZ,7,
+0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body
+0x613210,??_GEdOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6179c0,?UtilGetTime@@YAIXZ,61,u32 __cdecl(void)
 0x617a00,?UtilGetFrameStartTime@@YAIXZ,6,u32 __cdecl(void)
 0x617a10,?UtilFrameStart@@YAXXZ,66,void __cdecl(void)
@@ -7471,7 +7478,7 @@ address,symbol,size,ctype
 0x6342f0,?PostLoadInitialisation@EdClassInterface@@UAEXPAUMemoryBuffer@@0@Z,3,
 0x634300,?PreSaveInitialisation@EdClassInterface@@UAEXXZ,1,
 0x634310,?PostSaveInitialisation@EdClassInterface@@UAEXXZ,1,
-0x634320,?SerialiseObject@EdClassInterface@@UAEXAAUEdStream@@PAX@Z,3,
+0x634320,?SerialiseObject@EdClassInterface@@UAEXAAVEdStream@@PAX@Z,3,
 0x634330,?AddMenuItems@EdClassInterface@@UAEXPAUeduimenu_s@@@Z,3,
 0x634340,?Import@EdClassInterface@@UAEXXZ,1,
 0x634350,??_EEdClassInterface@@UAEPAXI@Z,,COFF weak alias of ??_GEdClassInterface@@UAEPAXI@Z; no independent body
@@ -9120,7 +9127,9 @@ address,symbol,size,ctype
 0x6b7650,_Newton_Raphson,452,
 0x6b7820,_vorbis_lpc_to_lsp,1044,"int vorbis_lpc_to_lsp(float *lpc,float *lsp,int m);"
 0x6b7c40,?EdTrace@@YAXPBDZZ,1,
+0x6b7c50,?EdMessage@@YAXPBDZZ,1,
 0x6b8510,_EdDrawSetVertexColour,108,
+0x6b86f0,??1EdFileOutputStream@@UAE@XZ,7,
 0x6b8940,??1EdTool@@UAE@XZ,7,
 0x6b8950,?Initialise@EdTool@@UAEXAATvariptr_u@@0H@Z,3,
 0x6b8960,?GetName@EdTool@@UAEPBDXZ,6,
@@ -9132,7 +9141,7 @@ address,symbol,size,ctype
 0x6b8b10,?GetName@BaseEditor@@UAEPBDXZ,6,
 0x6b8b20,?ReadBlock@BaseEditor@@UAEHPAUDATAPTR@@@Z,5,
 0x6b8b30,?WriteBlock@BaseEditor@@UAEXH@Z,3,
-0x6b8b40,?Serialise@BaseEditor@@UAEXAAUEdStream@@@Z,3,
+0x6b8b40,?Serialise@BaseEditor@@UAEXAAVEdStream@@@Z,3,
 0x6b8b50,?ClearLevel@BaseEditor@@UAEXH@Z,3,
 0x6b8b60,?Flush@BaseEditor@@UAEXXZ,1,
 0x6b8b70,?Enter@BaseEditor@@UAEXXZ,1,
@@ -9194,6 +9203,7 @@ address,symbol,size,ctype
 0x6bc400,?edSetPadDisabled@@YAXH@Z,10,
 0x6bc410,?edGetPadDisabled@@YAHXZ,6,
 0x6bc430,?SetPadText@LevelEditor@@QAEXHPAD@Z,51,
+0x6bc860,?cbEdLevelDestroy@@YAXPAUeduimenu_s@@0@Z,87,
 0x6bc900,?cbEdLevelSetSliderFloat@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,13,
 0x6bc910,?cbEdLevelSetSliderInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,20,
 0x6bc930,?cbEdLevelSetText@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
@@ -9207,13 +9217,13 @@ address,symbol,size,ctype
 0x6bd650,?SetCurrentPosition@Placeable@@UAEXPBUVuVec@@@Z,79,
 0x6bdfb0,?GetNextDefaultActiveMenu@PropertyTool@@QAEPAUeduimenu_s@@PAU2@@Z,35,
 0x6bdfe0,?GetMenuActiveChild@@YAPAUeduimenu_s@@PAU1@@Z,24,
-0x6be0b0,?SerialiseVuVec@@YAXAAUEdStream@@PAXH@Z,21,
-0x6be0d0,?SerialiseVuMtx@@YAXAAUEdStream@@PAXH@Z,21,
-0x6be0f0,?SerialiseNuVec@@YAXAAUEdStream@@PAXH@Z,21,
-0x6be110,?SerialiseNuMtx@@YAXAAUEdStream@@PAXH@Z,21,
-0x6be130,?SerialiseString@@YAXAAUEdStream@@PAXH@Z,22,
-0x6be150,?SerialiseStringAddr@@YAXAAUEdStream@@PAXH@Z,22,
-0x6be170,?SerialiseColour3@@YAXAAUEdStream@@PAXH@Z,21,
+0x6be0b0,?SerialiseVuVec@@YAXAAVEdStream@@PAXH@Z,21,
+0x6be0d0,?SerialiseVuMtx@@YAXAAVEdStream@@PAXH@Z,21,
+0x6be0f0,?SerialiseNuVec@@YAXAAVEdStream@@PAXH@Z,21,
+0x6be110,?SerialiseNuMtx@@YAXAAVEdStream@@PAXH@Z,21,
+0x6be130,?SerialiseString@@YAXAAVEdStream@@PAXH@Z,22,
+0x6be150,?SerialiseStringAddr@@YAXAAVEdStream@@PAXH@Z,22,
+0x6be170,?SerialiseColour3@@YAXAAVEdStream@@PAXH@Z,21,
 0x6be190,_SerialiseNuHSpecial,201,
 0x6be260,?GetNextObject@EdClassInterface@@UAEPAXPAXP6AH0@Z@Z,66,
 0x6be2b0,?GetMemberObject@EdRef@@UAEPAXPAX@Z,28,
@@ -9221,7 +9231,7 @@ address,symbol,size,ctype
 0x6be380,?SetAttributeData@EdRef@@QAEHPAXHH0H@Z,201,
 0x6be450,?Initialise@EdRegistry@@QAEXAATvariptr_u@@0HHHH@Z,270,
 0x6be560,?Flush@EdRegistry@@QAEXXZ,12,
-0x6be590,?RegisterType@EdRegistry@@QAEHPADHP6AXAAUEdStream@@PAXH@Z@Z,41,
+0x6be590,?RegisterType@EdRegistry@@QAEHPADHP6AXAAVEdStream@@PAXH@Z@Z,41,
 0x6be5c0,?RegisterClass@EdRegistry@@QAEPAUEdClass@@PADPAVEdClassInterface@@H@Z,48,
 0x6be5f0,?AddMapping@EdRegistry@@QAEHPAD0@Z,36,
 0x6be620,?MapName@EdRegistry@@QAEPADPAD@Z,65,
@@ -9231,6 +9241,14 @@ address,symbol,size,ctype
 0x6be730,?GetClassId@EdRegistry@@QAEHPAD@Z,69,
 0x6be780,?GetClassId@EdRegistry@@QAEHPAUEdClass@@@Z,27,
 0x6c0690,?Render@KnotHelper@@UAEXPAXH@Z,186,
+0x6c0780,??0EdStream@@QAE@XZ,26,
+0x6c0820,?SerialiseString@EdOutputStream@@UAEHPAPAD@Z,19,
+0x6c0840,?SerialiseString@EdOutputStream@@UAEHPAPADH@Z,25,
+0x6c08f0,?Eat@EdFileOutputStream@@UAEHHH@Z,5,
+0x6c0900,?SerialiseBuffer@EdFileOutputStream@@UAEHPAXHH@Z,164,
+0x6c1ef0,??0EdFileOutputStream@@QAE@XZ,43,
+0x6c1f20,??_EEdFileOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileOutputStream@@UAEPAXI@Z; no independent body
+0x6c1f20,??_GEdFileOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c21d0,?Clone@Placeable@@UBEPAV1@H@Z,5,
 0x6c21e0,?Reset@Placeable@@UAEXXZ,1,
 0x6c21f0,?GetName@Placeable@@UBEPBDXZ,18,
@@ -9261,8 +9279,13 @@ address,symbol,size,ctype
 0x6c7eb0,?GetNextObject@KnotHelper@@UAEPAXPAX@Z,88,
 0x6c7f10,?DestroyObject@KnotHelper@@UAEXPAXH@Z,171,
 0x6c7fc0,?DistanceToObject@KnotHelper@@UAEMAAUVuVec@@0PAXPAPAVEdRef@@@Z,214,
+0x6c81b0,?SerialiseString@EdOutputStream@@UAEHPADH@Z,79,
+0x6c8430,?Open@EdFileOutputStream@@QAEXHH@Z,66,
+0x6c8480,?BeginBlock@EdFileOutputStream@@UAEPBDPBD@Z,86,
+0x6c84e0,?EndBlock@EdFileOutputStream@@UAEXXZ,109,
 0x6c8760,?GetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c94a0,?DrawObjectSphere@ClassEditor@@QAEXAAUClassObject@@H@Z,413,
+0x6cb820,?WriteStream@LevelEditor@@QAEHAAVEdFileOutputStream@@@Z,243,
 0x6cd250,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@0PAXPAPAVEdRef@@@Z,282,
 0x6cd370,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@PAXPAPAVEdRef@@@Z,342,
 0x6cf040,?CreateObject@KnotHelper@@UAEPAXPAXHH@Z,320,
@@ -9270,6 +9293,7 @@ address,symbol,size,ctype
 0x6cf970,?AddMenuItem@EdControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,90,
 0x6cf9d0,?AddMenuItem@EdEnumControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,174,
 0x6cfa80,?AddMenuItem@EdBitControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,294,
+0x6d0240,?Save@LevelEditor@@QAEHXZ,411,
 0x6d05e0,_cbEdLevelSave,436,
 0x6d07a0,_cbEdLevelSettingsMenu,137,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
@@ -17484,6 +17508,8 @@ address,symbol,size,ctype
 0x76aa48,??_C@_0CK@HPDJNGLO@V2SessionManager?3?3RemoveAllPeers@,42,const char[]
 0x76aa74,??_C@_0L@MDLIAHED@SessionAll?$AA@,11,const char[]
 0x76aa84,??_7V2SessionManager@@6B@,88,
+0x76ab5c,??_7EdStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76acb4,??_C@_0L@CGOOPECH@New?5To?5Old?$AA@,,char []
 0x76acc0,??_C@_0L@JHAHFKHN@Old?5to?5New?$AA@,,char []
 0x76accc,??_C@_06FMKCAKLA@Z?5to?5A?$AA@,,char []
@@ -18523,11 +18549,18 @@ address,symbol,size,ctype
 0x76f744,??_7KnotHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f7c0,??_7EdSubSystem@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f888,__real@3ff99999a0000000,8,const f64
+0x76f984,??_7EdFileOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9a8,??_7EdRef@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9dc,??_7Placeable@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76fa18,??_C@_07OAEEHIKM@No?5Name?$AA@,8,char []
+0x76fc0c,??_C@_06LHGEHABH@?$CINULL?$CJ?$AA@,7,char []
+0x76fc14,??_C@_0L@HFFGLEHP@StreamInfo?$AA@,11,char []
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x76fe70,_PcInputText76fe70,,char[6]
+0x76ff00,??_C@_07JHNCONCK@Editors?$AA@,8,char []
+0x76ff08,??_C@_08EEOHOBEO@Settings?$AA@,9,char []
+0x76ff14,??_C@_08EPNAOIMG@FileInfo?$AA@,9,char []
+0x770058,??_C@_09MMGMHBF@?$CFs?1?$CFs?4led?$AA@,10,char []
 0x7701ac,??_C@_06JPHCLLC@Error?$CB?$AA@,7,
 0x770208,??_C@_0IL@DKEGECNI@Sorry?0?5but?5your?5machine?5is?5unabl@,139,
 0x770298,??_C@_0JD@MODJFIG@Helaas?5is?5je?5pc?5niet?5geschikt?5vo@,147,
@@ -21122,6 +21155,14 @@ address,symbol,size,ctype
 0x7eae78,??_R3V2SessionManager@@8,,
 0x7eae88,??_R2V2SessionManager@@8,,
 0x7eae90,??_R1A@?0A@EA@V2SessionManager@@8,,
+0x7eaefc,??_R4EdStream@@6B@,,
+0x7eaf10,??_R3EdStream@@8,,
+0x7eaf20,??_R2EdStream@@8,,
+0x7eaf28,??_R1A@?0A@EA@EdStream@@8,,
+0x7eaf90,??_R4EdOutputStream@@6B@,,
+0x7eafa4,??_R3EdOutputStream@@8,,
+0x7eafb4,??_R2EdOutputStream@@8,,
+0x7eafc0,??_R1A@?0A@EA@EdOutputStream@@8,,
 0x7eb22c,??_R4BaseThing@@6B@,,
 0x7eb240,??_R4EdClassInterface@@6B@,,
 0x7eb254,??_R3EdClassInterface@@8,,
@@ -21202,6 +21243,10 @@ address,symbol,size,ctype
 0x7eb9cc,??_R3?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9dc,??_R2?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9e4,??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
+0x7ebe34,??_R4EdFileOutputStream@@6B@,,
+0x7ebe48,??_R3EdFileOutputStream@@8,,
+0x7ebe58,??_R2EdFileOutputStream@@8,,
+0x7ebe68,??_R1A@?0A@EA@EdFileOutputStream@@8,,
 0x7ebe84,??_R4EdRef@@6B@,,
 0x7ebee8,??_R4Placeable@@6B@,,
 0x7ebefc,??_R3Placeable@@8,,
