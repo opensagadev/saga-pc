@@ -1342,21 +1342,19 @@ void __cdecl AIScriptProcessorInit(AISYS_PC *system, AIPACKET_PC *packet, AISCRI
             for (i = 0; i < 4; i++)
                 processor->params[i] = creature->script_params[i];
             for (i = 0; i < 4; i++) {
-                if (((u64)(i64)creature->flags & ((u64)2 << i)) == 0)
+                if ((creature->flags & ((i64)2 << i)) == 0)
                     processor->params[i] = script->params[i].default_value;
             }
         } else {
             for (i = 0; i < 4; i++)
                 processor->params[i] = script->params[i].default_value;
         }
-        if (start_state != NULL ||
-            (start_state_name != NULL && (start_state = AIStateFind(start_state_name, script)) != NULL)) {
+        if (start_state == NULL && start_state_name != NULL)
+            start_state = AIStateFind(start_state_name, script);
+        if (start_state != NULL)
             AIScriptSetState(processor, start_state);
-        } else if (processor->script != NULL) {
-            start_state = AIStateFind(AIScriptKeywordBase, processor->script);
-            if (start_state != NULL)
-                AIScriptSetState(processor, start_state);
-        }
+        else
+            AIScriptSetStateByName(processor, (char *)AIScriptKeywordBase);
     }
     processor->interrupt_timer = 0.0f;
     processor->interrupt_priority = 0;
