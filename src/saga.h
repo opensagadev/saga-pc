@@ -22598,6 +22598,7 @@ struct PC_POST_DATA_PORT_ENTRY {
 struct PC_POST_DATA_PORT_MANAGER {
     PC_POST_DATA_PORT_ENTRY entries[256];
     i32 __thiscall Register(const char *name, void *data);
+    void __thiscall ResetReferences();
 };
 struct PC_POST_DATA_PORT {
     i32 index;

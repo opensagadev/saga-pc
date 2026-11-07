@@ -152,3 +152,14 @@ extern "C" {
     const WCHAR PostEffectRenderLabelPc[] = L"Post-processing-effect render";
 #pragma const_seg()
 }
+
+void __thiscall PC_POST_DATA_PORT_MANAGER::ResetReferences() {
+    PC_POST_DATA_PORT_ENTRY *entry = entries;
+    for (i32 i = 255; i >= 0; --i) {
+        entry->references = 0;
+        ++entry;
+    }
+}
+
+extern "C" void __cdecl NuPostEffectPortsNoOpPc(void) {
+}

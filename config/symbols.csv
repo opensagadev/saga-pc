@@ -6505,7 +6505,10 @@ address,symbol,size,ctype
 0x5e6930,??_GNuCopyFilter@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e6950,_NuPostEffectReleasePc,226,void __cdecl (void)
 0x5e6a80,_NuPostEffectRender,774,void __cdecl(PC_FRAMEBUFFER_PC*)
+0x5e6d90,?ResetReferences@PC_POST_DATA_PORT_MANAGER@@QAEXXZ,32,void __thiscall (void)
+0x5e6db0,_NuPostEffectPortsNoOpPc,1,void __cdecl (void)
 0x5e6dc0,_NuPostEffectReleasePortsPc,160,void __cdecl (void)
+0x5e6e60,_PostBlurGaussianChainPc,521,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32, bool)"
 0x5e7070,?render@NuMotionAccumFilterGen@@UAEXXZ,1146,native exactVT binding
 0x5e74f0,?render@NuSpeedBlurFilterGen@@UAEXXZ,627,native exactVT binding
 0x005e7f40,?Init@OccluderSet@@QAEXIPATvariptr_u@@T2@@Z,585,"void __thiscall OccluderSet::Init(u32,VARIPTR*,VARIPTR)"
@@ -26807,6 +26810,7 @@ address,symbol,size,ctype
 0x97adf8,?row@?1??DrawAlphaGrid@@9@9,,i32
 0x97adfc,?adjacent@?1??DrawAlphaGrid@@9@9,,f32
 0x97ae00,?saved_fov@?1??DrawAlphaGrid@@9@9,,f32
+0x97ae04,_PostGaussianTexelBiasPc,4,f32
 0x0097ae08,_ANI3_EVAL_SCALE_ARRAY,,NUVEC[]
 0x97ba08,_NuLightSpeedBlurViewProjectionPc,64,private NUMTX zero
 0x97ba48,_NuLightSpeedBlurPreviousViewProjectionPc,64,private NUMTX zero

@@ -32998,6 +32998,9 @@ extern "C" {
 #pragma bss_seg(".bss$PCGraphicsPostEffectBackBufferTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$PostGaussianTexelBiasPc")
+    f32 PostGaussianTexelBiasPc = 0.0f;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuQFntScanXPc")
     i32 NuQFntScanXPc = 0;
 #pragma bss_seg()

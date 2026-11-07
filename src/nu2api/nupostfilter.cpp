@@ -1141,6 +1141,60 @@ extern "C" void __cdecl NuPostEffectReleasePortsPc(void) {
     }
 }
 
+extern "C" {
+    extern POST_SHADER_PROGRAM_PC *PostBlendTexProgramPc;
+    extern PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
+    extern f32 PostGaussianTexelBiasPc;
+    void __cdecl PostGaussianKernelPc(i32 width, i32 height, NUVEC4 *taps, f32 scale);
+}
+
+/* Blurs a texture chain with the 13-tap Gaussian kernel, one level at a time. */
+extern "C" void __cdecl PostBlurGaussianChainPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
+                                                GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
+                                                i32 levels, bool mip_chain) {
+    PostShaderProgramBindPc(PostBlendTexProgramPc);
+    for (i32 lod = 0; lod < levels; ++lod) {
+        GRAPHICS_RENDER_TEXTURE_PC *input;
+        i32 input_lod;
+        if (lod == 0) {
+            input = source;
+            input_lod = source_lod;
+        } else if (mip_chain) {
+            input = textures;
+            input_lod = first_lod + lod - 1;
+        } else {
+            input = textures + first_lod + lod - 1;
+            input_lod = 0;
+        }
+        GRAPHICS_RENDER_TEXTURE_PC *output = mip_chain ? textures : textures + first_lod + lod;
+        i32 output_lod = mip_chain ? first_lod + lod : 0;
+        for (i32 pass = 0; pass < iterations; ++pass) {
+            i32 width, height, output_width, output_height;
+            __declspec(align(16)) NUVEC4 taps[13];
+            PCGraphicsEffectTextureDimensions(input, (u16)input_lod, &width, &height);
+            PCGraphicsEffectTextureDimensions(output, (u16)output_lod, &output_width, &output_height);
+            PostGaussianKernelPc(width, height, taps, 1.0f);
+            f32 bias[4] = {1.0f, 1.0f, PostGaussianTexelBiasPc / (f32)width, PostGaussianTexelBiasPc / (f32)height};
+            PCGraphicsAttachFramebuffer(PostBlurFramebufferPc, 0, output, output_lod);
+            PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
+            PCGraphicsSubmitViewportPc(0, 0, output_width, output_height);
+            PCGraphicsEffectTextureSetWrapFields(input, 2, 2);
+            if (width <= output_width && height <= output_height)
+                PCGraphicsEffectTextureSetFilterFields(input, 1, 1, 1);
+            else
+                PCGraphicsEffectTextureSetFilterFields(input, 2, 2, 1);
+            PCGraphicsEffectTextureSetLowNibbles(input, input_lod, input_lod);
+            POST_FILTER_BIND_TEXTURE(0, input);
+            PCDeviceSetVertexShaderConstantsF(0xa0, &taps[0].x, 13);
+            PCDeviceSetVertexShaderConstantsF(0xad, bias, 1);
+            PCGraphicsDrawPostEffectQuadPc();
+            PCGraphicsFramebufferBarrierPc(0, 1);
+            input = output;
+            input_lod = output_lod;
+        }
+    }
+}
+
 extern "C" void __cdecl PCGraphicsDestroyPostEffectTexturesPc(void) {
     NuPostEffectReleasePortsPc();
     PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectBackBufferTexturePc);
