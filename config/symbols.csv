@@ -9767,6 +9767,7 @@ address,symbol,size,ctype
 0x6d58b0,_NuMouseReadButtons,6,
 0x6d5950,?ScheduleRescan@NuKeyboardOwner_PC@@QAEXMH@Z,19,"void __thiscall(f32,i32)"
 0x006d5990,@NuKeyboardPoll@4,368,u8 *__fastcall (NuKeyboardOwner_PC *)
+0x6d5b30,_NuMouseSmoothAxisPc,120,f32 __cdecl(i32)
 0x6d5bb0,_NuMouseReadXRel,11,
 0x6d5bc0,_NuMouseReadYRel,11,
 0x6d5bd0,_NuMouseReadZRel,26,

@@ -91,29 +91,47 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     return page;
 }
 
-/* Observed mouse delta fields of the existing PC input-state allocation.
- * This view is not a separate object or a claim about the allocation extent. */
-typedef struct NuMouseVelocityStateViewPc {
-    u8 unknown_0000_to_6314[0x6314];
-    f32 delta_x;
-    f32 delta_y;
-    f32 delta_z;
-} NuMouseVelocityStateViewPc;
-STATIC_ASSERT(offsetof(NuMouseVelocityStateViewPc, delta_x) == 0x6314);
-STATIC_ASSERT(offsetof(NuMouseVelocityStateViewPc, delta_y) == 0x6318);
-STATIC_ASSERT(offsetof(NuMouseVelocityStateViewPc, delta_z) == 0x631c);
-STATIC_ASSERT(sizeof(NuMouseVelocityStateViewPc) == 0x6320);
+STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_delta) == 0x6314);
+STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_smoothed) == 0x6320);
+
+/* Eases the smoothed mouse axis towards the latest delta and returns it scaled, with a small dead zone. */
+f32 __cdecl NuMouseSmoothAxisPc(i32 axis) {
+    f32 value = nu_input_state->mouse_delta[axis] - nu_input_state->mouse_smoothed[axis];
+    f32 magnitude;
+    u32 magnitude_bits;
+    value = value * 0.125 + nu_input_state->mouse_smoothed[axis];
+    nu_input_state->mouse_smoothed[axis] = value;
+    value = value * 4.0;
+    magnitude = value;
+    magnitude_bits = *(u32 *)&magnitude & 0x7fffffff;
+    if (*(f32 *)&magnitude_bits < 0.01f) {
+        value = 0.0f;
+    }
+    return value;
+}
+
+f32 NuMouseReadXRel(void) {
+    return NuMouseSmoothAxisPc(0);
+}
+
+f32 NuMouseReadYRel(void) {
+    return NuMouseSmoothAxisPc(1);
+}
+
+f32 NuMouseReadZRel(void) {
+    return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+}
 
 f32 NuMouseReadXVel(void) {
-    return (f32)(((NuMouseVelocityStateViewPc *)nu_input_state)->delta_x * -4.0);
+    return (f32)(nu_input_state->mouse_delta[0] * -4.0);
 }
 
 f32 NuMouseReadYVel(void) {
-    return (f32)(((NuMouseVelocityStateViewPc *)nu_input_state)->delta_y * -4.0);
+    return (f32)(nu_input_state->mouse_delta[1] * -4.0);
 }
 
 f32 NuMouseReadZVel(void) {
-    return (f32)(((NuMouseVelocityStateViewPc *)nu_input_state)->delta_z * -4.0);
+    return (f32)(nu_input_state->mouse_delta[2] * -4.0);
 }
 
 void __cdecl NuKeyboardRead(void) {

@@ -2464,7 +2464,10 @@ STATIC_ASSERT(__alignof(GAMEPAD_INIT_RECORD) == 4);
 typedef struct NuKeyboardState_PC {
     u8 unknown_0000_to_4e10[0x4e10];
     u8 keyboard_polled;
-    u8 unknown_4e11_to_68b0[0x68b0 - 0x4e11];
+    u8 unknown_4e11_to_6314[0x6314 - 0x4e11];
+    f32 mouse_delta[3];
+    f32 mouse_smoothed[3];
+    u8 unknown_632c_to_68b0[0x68b0 - 0x632c];
     u8 *keyboard_state;
 } NuKeyboardState_PC;
 STATIC_ASSERT(sizeof(NuKeyboardState_PC) == 0x68b4);
