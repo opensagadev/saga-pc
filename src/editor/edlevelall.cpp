@@ -479,6 +479,13 @@ extern "C" {
     void __cdecl EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
     void __cdecl EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
     void __cdecl EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+#define EDDRAW_SET_POINT(v, px, py, pz)                                                                                \
+    do {                                                                                                               \
+        (v).x = (px);                                                                                                  \
+        (v).y = (py);                                                                                                  \
+        (v).z = (pz);                                                                                                  \
+        (v).w = 0.0f;                                                                                                  \
+    } while (0)
     void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour);
     void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
     void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
@@ -971,13 +978,6 @@ static inline void VuVecCopy(VuVec &destination, const VuVec &source) {
     destination.y = source.y;
     destination.z = source.z;
     destination.w = source.w;
-}
-
-static inline void VuVecSet(VuVec &v, f32 x, f32 y, f32 z, f32 w) {
-    v.x = x;
-    v.y = y;
-    v.z = z;
-    v.w = w;
 }
 
 /* A VuVec built by value; the editor drawing code copies these temporaries
@@ -1599,13 +1599,13 @@ void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
     __declspec(align(16)) VuVec points[4];
     __declspec(align(16)) VuVec point;
     i32 i;
-    VuVecSet(point, 0.0f, 0.0f, -size, 0.0f);
+    EDDRAW_SET_POINT(point, 0.0f, 0.0f, -size);
     VuVecCopy(points[0], point);
-    VuVecSet(point, 0.0f, 0.0f, size, 0.0f);
+    EDDRAW_SET_POINT(point, 0.0f, 0.0f, size);
     VuVecCopy(points[1], point);
-    VuVecSet(point, size * 0.5f, 0.0f, 0.0f, 0.0f);
+    EDDRAW_SET_POINT(point, size * 0.5f, 0.0f, 0.0f);
     VuVecCopy(points[2], point);
-    VuVecSet(point, -size * 0.5f, 0.0f, 0.0f, 0.0f);
+    EDDRAW_SET_POINT(point, -size * 0.5f, 0.0f, 0.0f);
     VuVecCopy(points[3], point);
     for (i = 0; i < 4; i++)
         NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
@@ -1619,23 +1619,23 @@ void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
     __declspec(align(16)) VuVec points[9];
     __declspec(align(16)) VuVec point;
     i32 i;
-    VuVecSet(point, size, size, -size, 0.0f);
+    EDDRAW_SET_POINT(point, size, size, -size);
     VuVecCopy(points[0], point);
-    VuVecSet(point, size, size, size, 0.0f);
+    EDDRAW_SET_POINT(point, size, size, size);
     VuVecCopy(points[1], point);
-    VuVecSet(point, -size, size, size, 0.0f);
+    EDDRAW_SET_POINT(point, -size, size, size);
     VuVecCopy(points[2], point);
-    VuVecSet(point, -size, size, -size, 0.0f);
+    EDDRAW_SET_POINT(point, -size, size, -size);
     VuVecCopy(points[3], point);
-    VuVecSet(point, size, -size, -size, 0.0f);
+    EDDRAW_SET_POINT(point, size, -size, -size);
     VuVecCopy(points[4], point);
-    VuVecSet(point, size, -size, size, 0.0f);
+    EDDRAW_SET_POINT(point, size, -size, size);
     VuVecCopy(points[5], point);
-    VuVecSet(point, -size, -size, size, 0.0f);
+    EDDRAW_SET_POINT(point, -size, -size, size);
     VuVecCopy(points[6], point);
-    VuVecSet(point, -size, -size, -size, 0.0f);
+    EDDRAW_SET_POINT(point, -size, -size, -size);
     VuVecCopy(points[7], point);
-    VuVecSet(point, 0.0f, 0.0f, size, 0.0f);
+    EDDRAW_SET_POINT(point, 0.0f, 0.0f, size);
     VuVecCopy(points[8], point);
     for (i = 0; i < 9; i++)
         NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
@@ -3600,26 +3600,26 @@ i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first
     }
     switch (nearest) {
         case 1:
-            VuVecSet(first, 1.0f, 0.0f, 0.0f, 1.0f);
+            VuVecCopy(first, VuVecMake(1.0f, 0.0f, 0.0f, 1.0f));
             break;
         case 2:
-            VuVecSet(first, 0.0f, 1.0f, 0.0f, 1.0f);
+            VuVecCopy(first, VuVecMake(0.0f, 1.0f, 0.0f, 1.0f));
             break;
         case 3:
-            VuVecSet(first, 0.0f, 0.0f, 1.0f, 1.0f);
+            VuVecCopy(first, VuVecMake(0.0f, 0.0f, 1.0f, 1.0f));
             break;
         case 4:
-            VuVecSet(first, 1.0f, 0.0f, 0.0f, 1.0f);
-            VuVecSet(second, 0.0f, 1.0f, 0.0f, 1.0f);
+            VuVecCopy(first, VuVecMake(1.0f, 0.0f, 0.0f, 1.0f));
+            VuVecCopy(second, VuVecMake(0.0f, 1.0f, 0.0f, 1.0f));
             break;
         case 5:
-            VuVecSet(first, 1.0f, 0.0f, 0.0f, 1.0f);
-            VuVecSet(second, 0.0f, 0.0f, 1.0f, 1.0f);
+            VuVecCopy(first, VuVecMake(1.0f, 0.0f, 0.0f, 1.0f));
+            VuVecCopy(second, VuVecMake(0.0f, 0.0f, 1.0f, 1.0f));
             break;
         case 6:
         case 7:
-            VuVecSet(first, 0.0f, 1.0f, 0.0f, 1.0f);
-            VuVecSet(second, 0.0f, 0.0f, 1.0f, 1.0f);
+            VuVecCopy(first, VuVecMake(0.0f, 1.0f, 0.0f, 1.0f));
+            VuVecCopy(second, VuVecMake(0.0f, 0.0f, 1.0f, 1.0f));
             break;
     }
     if (matrix != NULL) {
@@ -3748,9 +3748,9 @@ i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &pl
         angle_delta = 0;
         return axis;
     }
-    VuVecSet(normals[0], 1.0f, 0.0f, 0.0f, -center.x);
-    VuVecSet(normals[1], 0.0f, 1.0f, 0.0f, -center.y);
-    VuVecSet(normals[2], 0.0f, 0.0f, 1.0f, -center.z);
+    VuVecCopy(normals[0], VuVecMake(1.0f, 0.0f, 0.0f, -center.x));
+    VuVecCopy(normals[1], VuVecMake(0.0f, 1.0f, 0.0f, -center.y));
+    VuVecCopy(normals[2], VuVecMake(0.0f, 0.0f, 1.0f, -center.z));
     if (LineToSphereIntersection(input.ray_start, input.ray_direction, center, radius + 0.01f, &hits[0], &hits[1])) {
         VuVecCopy(SpherePos1, hits[0]);
         VuVecCopy(SpherePos2, hits[1]);
@@ -3780,17 +3780,17 @@ i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &pl
     f32 z = chosen.z - center.z;
     switch (axis) {
         case 1:
-            VuVecSet(plane, 1.0f, 0.0f, 0.0f, 1.0f);
+            VuVecCopy(plane, VuVecMake(1.0f, 0.0f, 0.0f, 1.0f));
             plane.w = -center.x;
             angle = NuAtan2DA(y, z);
             break;
         case 2:
-            VuVecSet(plane, 0.0f, 1.0f, 0.0f, 1.0f);
+            VuVecCopy(plane, VuVecMake(0.0f, 1.0f, 0.0f, 1.0f));
             plane.w = -center.y;
             angle = NuAtan2DA(x, -z);
             break;
         case 3:
-            VuVecSet(plane, 0.0f, 0.0f, 1.0f, 1.0f);
+            VuVecCopy(plane, VuVecMake(0.0f, 0.0f, 1.0f, 1.0f));
             plane.w = -center.z;
             angle = NuAtan2DA(x, y);
             break;
@@ -5557,7 +5557,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
         __declspec(align(16)) VuVec scale;
         __declspec(align(16)) VuVec projected;
         __declspec(align(16)) VuVec unit;
-        VuVecSet(unit, 1.0f, 1.0f, 1.0f, 1.0f);
+        VuVecCopy(unit, VuVecMake(1.0f, 1.0f, 1.0f, 1.0f));
         object->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
         switch (axis) {
             case 1:
