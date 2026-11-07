@@ -266,10 +266,10 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
         u16 character = *text++;
         VUFNTCHAR *glyph = &font->glyphs[character];
         f32 advance;
-        f32 glyph_width;
-        f64 precise_left = x;
         f32 left;
         f32 right;
+        f32 top;
+        f32 bottom;
 
         if (character == 0x20) {
             advance = space_width;
@@ -277,18 +277,25 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
             advance = glyph->width * *font->x_scale;
         }
 
-        glyph_width = advance;
+        if (is_3d) {
+            top = y - height;
+            bottom = y;
+        } else {
+            top = y;
+            bottom = y + height;
+        }
         if ((flags & 1) != 0 && character >= 0x30 && character < 0x3a) {
             u16 zero_index = NuQFntEncodeUnicodeChar(font, 0x30);
             VUFNTCHAR *zero = &font->glyphs[(i16)zero_index];
             f32 digit_width = zero->width * *font->x_scale;
-            f32 adjustment = digit_width - glyph_width;
-            precise_left = (f64)adjustment + x;
+            f32 adjustment = digit_width - advance;
+            left = adjustment + x;
+            right = left + advance;
             advance = digit_width;
+        } else {
+            left = x;
+            right = x + advance;
         }
-
-        left = (f32)precise_left;
-        right = (f32)(precise_left + glyph_width);
         if (character != 0x20) {
             f32 u0 = glyph->x * inverse_texture_width;
             f32 v0 = glyph->y * inverse_texture_height;
@@ -296,21 +303,19 @@ void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
             f32 v1 = (glyph->y + font->height) * inverse_texture_height;
 
             if (is_3d) {
-                f32 top = y - height;
                 QFONT_VERTEX(left, top, z, u0, v1);
                 QFONT_VERTEX(right, top, z, u1, v1);
-                QFONT_VERTEX(right, y, z, u1, v0);
-                QFONT_VERTEX(right, y, z, u1, v0);
-                QFONT_VERTEX(left, y, z, u0, v0);
+                QFONT_VERTEX(right, bottom, z, u1, v0);
+                QFONT_VERTEX(right, bottom, z, u1, v0);
+                QFONT_VERTEX(left, bottom, z, u0, v0);
                 QFONT_VERTEX(left, top, z, u0, v1);
             } else {
                 QFONT_PRIM_VERTEX_PC *vertex;
-                f32 bottom = y + height;
                 NuRndrPrimSetColourPrivate((i32)colour);
                 vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
                 vertex->u = u0;
                 vertex->v = v0;
-                NuPrim2DAddXYZ(left, y, 0.0f);
+                NuPrim2DAddXYZ(left, top, 0.0f);
                 NuRndrPrimSetColourPrivate((i32)colour);
                 vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
                 vertex->u = u1;
