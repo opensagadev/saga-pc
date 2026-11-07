@@ -1647,6 +1647,12 @@ extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit) {
     return 0;
 }
 
+extern "C" void __cdecl Hub_ClearStats(void) {
+    statstime = 0.0f;
+    cointotaltime = 0.0f;
+    goldbricktime = 0.0f;
+}
+
 extern "C" void __cdecl Hub_ResetPanel(void) {
     HubAreaTimePc = 0.0f;
     HubAreaPc = -1;

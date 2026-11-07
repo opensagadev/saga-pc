@@ -340,6 +340,10 @@ void Text_DecodeButtons(char *source, char *destination) {
     }
 }
 
+/* Retail 4cf4b0 consists solely of RET. */
+void __cdecl Text_FillInExtendedSaveInfo(void) {
+}
+
 __declspec(noinline) void TextRegisterButtonMapFn(void (*fn)(char *, char *)) {
     if (fn != NULL) {
         buttonmapfn = fn;
@@ -599,6 +603,15 @@ i32 GetParentMenuID(void) {
         return -1;
     }
     return MenuInfo[menu].id;
+}
+
+i32 __cdecl TriggerAutoSave(void) {
+    if (memcard_autosave != 0 && memcard_autosaveenabled != 0 && saveload_autosave != -1) {
+        memcard_autosaveneeded = 1;
+        MenuSaveOccurred = 0;
+        return 1;
+    }
+    return 0;
 }
 
 void __cdecl Text3DStringEncodeFont(u8 *source, u16 *destination, VUFNT *font) {

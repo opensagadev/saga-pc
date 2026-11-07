@@ -3,7 +3,6 @@
 
 extern "C" {
     extern i32 HubForceShopSavePc;
-    extern i32 memcard_autosaveneeded, MenuSaveOccurred;
     i32 __cdecl UpdateShop(void *);
     void __cdecl MenuRememberCursor(MENU *);
     void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *);
@@ -49,26 +48,5 @@ extern "C" {
         }
         shop_save_done = 1;
         NewMenu(1000, -1, -1);
-    }
-
-    void __cdecl Hub_ClearStats(void) {
-        statstime = 0.0f;
-        cointotaltime = 0.0f;
-        goldbricktime = 0.0f;
-    }
-
-    i32 __cdecl TriggerAutoSave(void) {
-        if (memcard_autosave != 0 && memcard_autosaveenabled != 0 && saveload_autosave != -1) {
-            memcard_autosaveneeded = 1;
-            MenuSaveOccurred = 0;
-            return 1;
-        }
-        return 0;
-    }
-
-    /* Retail 486c00 and 4cf4b0 each consist solely of RET. */
-    void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *) {
-    }
-    void __cdecl Text_FillInExtendedSaveInfo(void) {
     }
 }

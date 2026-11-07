@@ -532,6 +532,10 @@ extern "C" void __cdecl FinishStatusPacket(i32 choice) {
     NuSound3StopRumble();
 }
 
+/* Retail 486c00 consists solely of RET. */
+extern "C" void __cdecl NuMainStatusHelperPc(STATUSPACKET_s *) {
+}
+
 void __cdecl RedBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 blend;
     if (current == 0 || stage->field_0x14 <= 0)
