@@ -442,8 +442,8 @@ void __cdecl xParam(NUFPAR_PC *parser) {
     if (index < 0 || index >= 4 || NuFParGetWord(parser) == 0) {
         return;
     }
-    AISCRIPT_COPY_ARENA_STRING(parser->word_buffer, aiscript_load_script->params[index].name, aiscript_load_buffer,
-                               aiscript_load_end_buffer);
+    aiscript_load_script->params[index].name =
+        AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
     aiscript_load_script->params[index].default_value = NuFParGetFloat(parser);
 }
 
@@ -578,23 +578,6 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
         }
     } while (done == 0);
 }
-
-#define AISCRIPT_COPY_STRING(source, destination)                                                                      \
-    do {                                                                                                               \
-        const char *copy_source = (source);                                                                            \
-        i32 copy_length;                                                                                               \
-        (destination) = NULL;                                                                                          \
-        if (copy_source != NULL) {                                                                                     \
-            copy_length = NuStrLen(copy_source);                                                                       \
-            if (copy_length != 0) {                                                                                    \
-                (destination) =                                                                                        \
-                    (char *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer, (u32)(copy_length + 1));  \
-                if ((destination) != NULL) {                                                                           \
-                    NuStrCpy((destination), copy_source);                                                              \
-                }                                                                                                      \
-            }                                                                                                          \
-        }                                                                                                              \
-    } while (0)
 
 void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 extern AIACTIONDEF_PC *game_aiactiondefs;
@@ -1008,43 +991,39 @@ void __cdecl xConditions(NUFPAR_PC *parser) {
 void __cdecl xConditionMacro(NUFPAR_PC *parser) {
     AICONDITIONMACRO_PC *macro;
 
-    if (aiscript_load_script == NULL || NuFParGetWord(parser) == 0) {
+    if (NuFParGetWord(parser) == 0) {
         return;
     }
-    macro = (AICONDITIONMACRO_PC *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                    sizeof(AICONDITIONMACRO_PC));
-    if (macro == NULL) {
-        return;
+    macro = (AICONDITIONMACRO_PC *)AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                             sizeof(AICONDITIONMACRO_PC));
+    if (macro != NULL) {
+        memset(macro, 0, sizeof(AICONDITIONMACRO_PC));
+        macro->name = AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+        NuLinkedListAppend(&aiscript_load_script->condition_macros, &macro->link);
+        aiscript_load_conditions = &macro->conditions;
+        condition_has_no_goto = 1;
+        xConditions(parser);
+        aiscript_load_conditions = NULL;
+        condition_has_no_goto = 0;
     }
-    macro->link.next = NULL;
-    macro->link.prev = NULL;
-    AISCRIPT_COPY_STRING(parser->word_buffer, macro->name);
-    NuLinkedListAppend(&aiscript_load_script->condition_macros, &macro->link);
-    aiscript_load_conditions = &macro->conditions;
-    condition_has_no_goto = 1;
-    xConditions(parser);
-    aiscript_load_conditions = NULL;
-    condition_has_no_goto = 0;
 }
 
 void __cdecl xActionMacro(NUFPAR_PC *parser) {
     AIACTIONMACRO_PC *macro;
 
-    if (aiscript_load_script == NULL || NuFParGetWord(parser) == 0) {
+    if (NuFParGetWord(parser) == 0) {
         return;
     }
-    macro =
-        (AIACTIONMACRO_PC *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AIACTIONMACRO_PC));
-    if (macro == NULL) {
-        return;
+    macro = (AIACTIONMACRO_PC *)AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                          sizeof(AIACTIONMACRO_PC));
+    if (macro != NULL) {
+        memset(macro, 0, sizeof(AIACTIONMACRO_PC));
+        macro->name = AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+        NuLinkedListAppend(&aiscript_load_script->action_macros, &macro->link);
+        aiscript_load_actions = &macro->actions;
+        xActions(parser);
+        aiscript_load_actions = NULL;
     }
-    macro->link.next = NULL;
-    macro->link.prev = NULL;
-    AISCRIPT_COPY_STRING(parser->word_buffer, macro->name);
-    NuLinkedListAppend(&aiscript_load_script->action_macros, &macro->link);
-    aiscript_load_actions = &macro->actions;
-    xActions(parser);
-    aiscript_load_actions = NULL;
 }
 
 void __cdecl xRefScript(NUFPAR_PC *parser) {
