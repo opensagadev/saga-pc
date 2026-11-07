@@ -33,7 +33,7 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
                 water = EShadY;
                 if ((f64)water != 2000000.0) {
                     layer = EShadowInfo();
-                    if ((layer == 1 || layer == 9) && water > part->position.y) {
+                    if ((layer == 1 || layer == 9) && part->position.y < water) {
                         PlaySfx((char *)TerrainWaterJumpSoundNamePc, &part->position);
                         stuck = 1;
                     }
@@ -51,7 +51,7 @@ void __cdecl PartImpact_ThermalDetonator(PART_PC *part) {
         PartImpact_Brick(part);
         PlaySfx("ThermalDet_Bnce", &part->position);
     }
-    if ((part->active & 3) == 1) {
+    if ((part->active & 1) != 0 && (part->active & 2) == 0) {
         trail.x = part->impact_position.x - part->impact_normal.x * part->field_e0;
         trail.y = part->impact_position.y - part->impact_normal.y * part->field_e0;
         trail.z = part->impact_position.z - part->impact_normal.z * part->field_e0;
