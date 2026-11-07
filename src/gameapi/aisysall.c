@@ -10123,8 +10123,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
                         if (editor_connection->route_mask & (1u << route_slot)) {
                             i32 route_index = route_indices[route_slot];
                             u64 bit = ((u64)1) << route_index;
-                            AIPATHCNX_PC *const volatile *connection_input = connections;
-                            if ((connection_input[edge]->route_mask & bit) == 0) {
+                            if ((runtime_node->connections[edge]->route_mask & bit) == 0) {
                                 i32 endpoint;
                                 connections[edge]->route_mask |= bit;
                                 connections = runtime_node->connections;
@@ -15013,7 +15012,6 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                      node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&editor_path->nodes, &node->link)) {
                     AIPATHNODE_PC *runtime = &path->nodes[node->index];
                     i32 length = strlen(node->name);
-                    const volatile f32 *position_y;
                     i32 slot;
                     if (length != 0) {
                         runtime->name = (char *)AISysBufferAlloc(cursor, end, length + 1);
@@ -15028,11 +15026,10 @@ AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void *
                         runtime->has_special = 1;
                     }
                     runtime->special_position = node->special_position;
-                    position_y = &runtime->position.y;
-                    runtime->min_height = node->lower_height + *position_y;
-                    runtime->max_height = node->upper_height + *position_y;
-                    runtime->min_height_offset = runtime->min_height - *position_y;
-                    runtime->max_height_offset = runtime->max_height - *position_y;
+                    runtime->min_height = node->lower_height + runtime->position.y;
+                    runtime->max_height = node->upper_height + runtime->position.y;
+                    runtime->min_height_offset = runtime->min_height - runtime->position.y;
+                    runtime->max_height_offset = runtime->max_height - runtime->position.y;
                     for (slot = 0; slot < 8; ++slot) {
                         if ((node->connections[slot].node != NULL)) {
                             ++runtime->connection_count;
