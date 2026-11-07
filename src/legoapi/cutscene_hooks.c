@@ -36,7 +36,7 @@ i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut) {
         return 0;
     }
 
-    NuMtxSetRotationY(&matrix, (NUANG)((u32)degrees << 16 / 360));
+    NuMtxSetRotationY(&matrix, (NUANG)(((i32)degrees << 16) / 360));
     NuMtxTranslate(&matrix, position);
     instNuGCutSceneSetMtx((INSTNUGCUTSCENE *)cut->instance, &matrix);
     return 1;

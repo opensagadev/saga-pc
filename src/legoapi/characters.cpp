@@ -655,12 +655,10 @@ i32 __cdecl RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *a
 void __cdecl LSW_SetIndy(i32 area_index) {
     i16 object_id;
     f32 initial_delay, hold_time;
-    AREA_DATA_PC *area;
-    area = area_index == -1 ? NULL : &ADataList[area_index];
-    PUNCHGAP = 0.3f;
-    PUNCHCHARGAP = 0.3f;
-    if (area_index != -1 && (area == LOSTTEMPLE_ADATA || area == JIMTEST_ADATA)) {
+    if (area_index != -1 && (&ADataList[area_index] == LOSTTEMPLE_ADATA || &ADataList[area_index] == JIMTEST_ADATA)) {
         LEDGETERRAINLOOKAHEAD = 0.075f;
+        PUNCHGAP = 0.3f;
+        PUNCHCHARGAP = 0.3f;
         LedgeTerrain_CheckAnims = 0;
         LEGOHINT_PUNCH = 0;
         StartupGameFlag0 = 1;
@@ -682,6 +680,8 @@ void __cdecl LSW_SetIndy(i32 area_index) {
         initial_delay = 0.1f;
         hold_time = 3.0f;
     } else {
+        PUNCHGAP = 0.3f;
+        PUNCHCHARGAP = 0.3f;
         StartupGameFlag0 = 0;
         DefaultMotionLedgeTerrainEnabledPc = 0;
         Grapples_Available = 0;
