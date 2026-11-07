@@ -114,6 +114,47 @@ extern "C" {
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&TextIdPc8810c0, NULL};
 }
 
+extern "C" {
+    i32 NuMainSplineDebugModePc = 0;
+    i32 NuMainSplineDebugPhasePc = 0;
+}
+
+/* Debug view of the scene splines (retail 0x491bd0); NuMainRenderWorld calls it only while
+ * NuMainSplineDebugModePc is set, and mode 2 animates the dash pattern. */
+static void NuMainDrawSplinesPc(NUGSCN *gscn) {
+    i32 colours[8] = {-1, -1, -1, -1, 0, 0, 0, 0};
+    NURND_VERTEX3D_PC vertices[2];
+    NUGSPLINE *spline;
+    NUVEC *point;
+    i32 animate;
+    i32 phase;
+    i32 i;
+    i32 j;
+
+    if (gscn == NULL) {
+        return;
+    }
+    i = gscn->spline_count;
+    NuMainSplineDebugPhasePc--;
+    animate = NuMainSplineDebugModePc > 1;
+    while (i != 0) {
+        i--;
+        spline = &gscn->splines[i];
+        phase = NuMainSplineDebugPhasePc * animate;
+        point = spline->pts;
+        vertices[0].position = *point;
+        vertices[0].colour = 0xffff0000;
+        for (j = 1; j < spline->length; j++) {
+            point = (NUVEC *)((char *)point + (i16)spline->pt_size);
+            vertices[1].position = *point;
+            phase += animate;
+            vertices[1].colour = colours[phase & 7];
+            NuRndrLine3d(vertices, NULL, NULL);
+            vertices[0] = vertices[1];
+        }
+    }
+}
+
 /* PC splits NuMain's per-frame game update (0x491d50) and world render (0x4927f0) into helpers. */
 static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     f32 water_speed;
@@ -488,7 +529,9 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuMainRenderLeafPc();
     if (BURNOUTON != 0)
         BurnoutApply(paused);
-    STUBBED_NAMED("NuMainRenderWorld: 0x00491bd0(world->current_gscn) when 0x0087b580 is set");
+    if (NuMainSplineDebugModePc != 0) {
+        NuMainDrawSplinesPc(world->current_gscn);
+    }
     NuRndrEndScene();
     NuRndrFx(paused, &plr_lastpos);
     NuRndrBeginScene(1);
