@@ -6057,6 +6057,7 @@ address,symbol,size,ctype
 0x5c3990,_PCGraphicsCreatePostEffectWorkTexture,33,"void __cdecl(i32,i32)"
 0x5c3bb0,_PostFilterBlitTexturePc,318,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *)"
 0x5c3da0,_PostBlur7x7HighPc,1959,"void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*,i32,GRAPHICS_RENDER_TEXTURE_PC*,i32,i32,i32,bool,f32,POST_SHADER_PROGRAM_PC*)"
+0x5c4550,_PostBlur7x7DirectPc,1351,"void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*,i32,GRAPHICS_RENDER_TEXTURE_PC*,i32,i32,i32,bool,f32,POST_SHADER_PROGRAM_PC*)"
 0x5c4aa0,_PostGaussianWeightPc,103,"f32 __cdecl (f32, f32, f32)"
 0x5c4b10,_PostGaussianKernelPc,499,"void __cdecl (i32, i32, NUVEC4 *, f32)"
 0x5c4d10,_PostBlurNoOp0Pc,1,void __cdecl (void)
@@ -26894,6 +26895,8 @@ address,symbol,size,ctype
 0x9784a0,_PostResourceManagerPc,10240,PC_POST_DATA_PORT_MANAGER
 0x97aca0,_PostShadowViewPc,64,NUMTX standalone BSS; native outputs5e8950 and copysetter5c6d90
 0x97ace0,_NuPostEffectBackBufferCopyPc,,GRAPHICS_RENDER_TEXTURE_PC *
+0x97ace8,_PostBlurDirectOutputBiasPc,4,f32 BSS; only read by PostBlur7x7DirectPc
+0x97acec,_PostBlurDirectInputBiasPc,4,f32 BSS; only read by PostBlur7x7DirectPc
 0x97acf0,_debris_box_camera_cache,,NUMTX
 0x97ad30,?clip_inverse@?1??NuCameraCalcClipMtx@@9@9,,NUMTX
 0x97ad70,_NuPortalProjectionInversePc,,NUMTX

@@ -602,6 +602,100 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
     }
 }
 
+extern "C" {
+    extern f32 PostBlurDirectInputBiasPc, PostBlurDirectOutputBiasPc;
+}
+
+/* Unreferenced 7x7 blur variant: both passes render straight into the output level, no work texture. */
+extern "C" void __cdecl PostBlur7x7DirectPc(GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_lod,
+                                            GRAPHICS_RENDER_TEXTURE_PC *textures, i32 first_lod, i32 iterations,
+                                            i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
+    PostShaderProgramBindPc(program);
+    for (i32 lod = 0; lod < levels; ++lod) {
+        GRAPHICS_RENDER_TEXTURE_PC *input;
+        i32 input_lod;
+        if (lod == 0) {
+            input = source;
+            input_lod = source_lod;
+        } else if (mip_chain) {
+            input = textures;
+            input_lod = first_lod + lod - 1;
+        } else {
+            input = textures + first_lod + lod - 1;
+            input_lod = 0;
+        }
+        GRAPHICS_RENDER_TEXTURE_PC *output = mip_chain ? textures : textures + first_lod + lod;
+        i32 output_lod = mip_chain ? first_lod + lod : 0;
+        for (i32 pass = 0; pass < iterations; ++pass) {
+            i32 width, height, output_width, output_height;
+            PCGraphicsEffectTextureDimensions(input, (u16)input_lod, &width, &height);
+            PCGraphicsEffectTextureDimensions(output, (u16)output_lod, &output_width, &output_height);
+            f32 dx = radius / (f32)width;
+            f32 dy = radius / (f32)height;
+            f64 dx2 = (f64)dx * 2.0;
+            f64 dy2 = (f64)dy * 2.0;
+            f64 dx3 = (f64)dx * 3.0;
+            f64 dy3 = (f64)dy * 3.0;
+            __declspec(align(16)) f32 horizontal[7][4] = {
+                {dx * 0.0f, 0, .34f, 0}, {dx, 0, .18f, 0},        {(f32)dx2, 0, .10f, 0},  {(f32)dx3, 0, .05f, 0},
+                {-dx, 0, .18f, 0},       {(f32)-dx2, 0, .10f, 0}, {(f32)-dx3, 0, .05f, 0},
+            };
+            f32 vertical[7][4] = {
+                {0, dy * 0.0f, .34f, 0}, {0, dy, .18f, 0},        {0, (f32)dy2, .10f, 0},  {0, (f32)dy3, .05f, 0},
+                {0, -dy, .18f, 0},       {0, (f32)-dy2, .10f, 0}, {0, (f32)-dy3, .05f, 0},
+            };
+            f32 bias[4] = {1, 1, PostBlurDirectInputBiasPc / (f32)width, PostBlurDirectInputBiasPc / (f32)height};
+            f32 output_bias[4] = {1, 1, PostBlurDirectOutputBiasPc / output_width,
+                                  PostBlurDirectOutputBiasPc / output_height};
+            PCGraphicsAttachFramebuffer(PostBlurFramebufferPc, 0, output, output_lod);
+            PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
+            PCGraphicsSubmitViewportPc(0, 0, output_width, output_height);
+            PCGraphicsEffectTextureSetWrapFields(input, 2, 2);
+            if (width <= output_width && height <= output_height)
+                PCGraphicsEffectTextureSetFilterFields(input, 1, 1, 1);
+            else
+                PCGraphicsEffectTextureSetFilterFields(input, 2, 2, 1);
+            PCGraphicsEffectTextureSetLowNibbles(input, input_lod, input_lod);
+            {
+                GRAPHICS_RENDER_TEXTURE_PC *texture = input;
+                if (texture != NULL) {
+                    u32 *tuple = PCGraphicsEffectTextureSamplerPc(texture);
+                    if ((u32)PCDeviceSamplerInvalidation[0][0] != tuple[0] ||
+                        (u32)PCDeviceSamplerInvalidation[0][1] != tuple[1])
+                        PCGraphicsSetSamplerTuplePc(0, PCGraphicsEffectTextureSamplerPc(texture));
+                }
+                PCGraphicsBindEffectTexture(texture, 0);
+            }
+            PCDeviceSetVertexShaderConstantsF(0xa0, horizontal[0], 7);
+            PCDeviceSetVertexShaderConstantsF(0xad, bias, 1);
+            PCGraphicsDrawPostEffectQuadPc();
+            PCGraphicsFramebufferBarrierPc(0, 1);
+            PCGraphicsAttachFramebuffer(PostBlurFramebufferPc, 0, output, output_lod);
+            PCGraphicsBindFramebuffer(PostBlurFramebufferPc);
+            PCGraphicsSubmitViewportPc(0, 0, output_width, output_height);
+            PCGraphicsEffectTextureSetWrapFields(output, 2, 2);
+            PCGraphicsEffectTextureSetFilterFields(output, 1, 1, 1);
+            PCGraphicsEffectTextureSetLowNibbles(output, output_lod, output_lod);
+            {
+                GRAPHICS_RENDER_TEXTURE_PC *texture = output;
+                if (texture != NULL) {
+                    u32 *tuple = PCGraphicsEffectTextureSamplerPc(texture);
+                    if ((u32)PCDeviceSamplerInvalidation[0][0] != tuple[0] ||
+                        (u32)PCDeviceSamplerInvalidation[0][1] != tuple[1])
+                        PCGraphicsSetSamplerTuplePc(0, PCGraphicsEffectTextureSamplerPc(texture));
+                }
+                PCGraphicsBindEffectTexture(texture, 0);
+            }
+            PCDeviceSetVertexShaderConstantsF(0xa0, vertical[0], 7);
+            PCDeviceSetVertexShaderConstantsF(0xad, output_bias, 1);
+            PCGraphicsDrawPostEffectQuadPc();
+            PCGraphicsFramebufferBarrierPc(0, 1);
+            input = output;
+            input_lod = output_lod;
+        }
+    }
+}
+
 /* Two-dimensional normal distribution weight at (x, y). */
 extern "C" f32 __cdecl PostGaussianWeightPc(f32 x, f32 y, f32 sigma) {
     f32 exponent = -(x * x + y * y) / (2.0f * sigma * sigma);
@@ -835,6 +929,10 @@ extern "C" void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *source
 extern "C" {
 #pragma bss_seg(".bss$PostBlurInputBiasPc")
     f32 PostBlurInputBiasPc = 0;
+#pragma bss_seg(".bss$PostBlurDirectOutputBiasPc")
+    f32 PostBlurDirectOutputBiasPc = 0;
+#pragma bss_seg(".bss$PostBlurDirectInputBiasPc")
+    f32 PostBlurDirectInputBiasPc = 0;
 #pragma bss_seg()
 }
 
