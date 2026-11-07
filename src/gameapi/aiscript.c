@@ -8,11 +8,6 @@ extern const char AIScriptKeywordActions[8];
 
 void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 
-#undef AISCRIPT_COPY_ARENA_STRING
-
-#undef AISCRIPT_SET_OWNER_FLAG
-#undef AISCRIPT_SET_PACKET_FLAG
-
 /* Candidate source for src/gameapi/aiscript.c. Readonly access-view bindings
  * retain their separately reviewed original owner and extent policies. */
 extern const char ActionSnapPlayer1Name[8];

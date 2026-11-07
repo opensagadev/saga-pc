@@ -4466,8 +4466,6 @@ STATIC_ASSERT(offsetof(AIPATH_PC, route_matrix) == 0x84);
 STATIC_ASSERT(offsetof(AIPATH_PC, bounds_min) == 0x90);
 STATIC_ASSERT(offsetof(AIPATH_PC, bounds_max) == 0x9c);
 
-#undef PATH_LOAD_ALLOCATE
-
 /* Original AISYS PC callbacks; bounded native evidence in ../native. */
 
 typedef struct ai_context_reset_view_pc_s {
@@ -5269,7 +5267,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 STATIC_ASSERT(offsetof(edui_sel_s, selected) == 0x4c);
 STATIC_ASSERT(offsetof(edui_sel_s, held) == 0x50);
 
-#undef REBUILD_ALLOCATE
 STATIC_ASSERT(sizeof(((AIEDITOR_RENDER_STATE *)0)->pending_locator_name) == 16);
 STATIC_ASSERT(offsetof(AISYS_PC, scripts) == 0x1c);
 STATIC_ASSERT(offsetof(AISYS_PC, player_1) == 0x138c);

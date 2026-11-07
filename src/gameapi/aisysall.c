@@ -1465,22 +1465,6 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
     return ret;
 }
 
-#define AISCRIPT_COPY_ARENA_STRING(source, destination, cursor, end)                                                   \
-    do {                                                                                                               \
-        const char *copy_source = (source);                                                                            \
-        i32 copy_length;                                                                                               \
-        (destination) = NULL;                                                                                          \
-        if (copy_source != NULL) {                                                                                     \
-            copy_length = NuStrLen(copy_source);                                                                       \
-            if (copy_length != 0) {                                                                                    \
-                (destination) = (char *)AISysBufferAlloc((cursor), (end), (u32)(copy_length + 1));                     \
-                if ((destination) != NULL) {                                                                           \
-                    NuStrCpy((destination), copy_source);                                                              \
-                }                                                                                                      \
-            }                                                                                                          \
-        }                                                                                                              \
-    } while (0)
-
 #define AISCRIPT_COPY_NATIVE_STRING(source, destination, buffer, end)                                                  \
     do {                                                                                                               \
         char *text = (source);                                                                                         \
@@ -2176,9 +2160,10 @@ void __cdecl xDeriveFromScript(NUFPAR_PC *parser) {
             if (NuStrICmp(parser->word_buffer, AIScriptKeywordEnd) == 0) {
                 done = 1;
             } else if ((cursor = NuStrIStr(parser->word_buffer, (char *)AIScriptKeywordScript)) != NULL) {
-                AISCRIPT_COPY_ARENA_STRING(cursor + NuStrLen(AIScriptKeywordScript) + 1,
-                                           aiscript_load_script->derived_from, aiscript_load_buffer,
-                                           aiscript_load_end_buffer);
+                char *copy;
+                AISCRIPT_COPY_NATIVE_STRING(cursor + sizeof("Script"), copy, aiscript_load_buffer,
+                                            aiscript_load_end_buffer);
+                aiscript_load_script->derived_from = copy;
             } else if (NuStrIStr(parser->word_buffer, (char *)AIScriptKeywordSource) != NULL) {
                 if (NuStrIStr(parser->word_buffer, (char *)AIScriptKeywordGlobal) != NULL) {
                     aiscript_load_script->flags_3c &= ~4u;
