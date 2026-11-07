@@ -1427,7 +1427,6 @@ i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
 }
 
 void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
-    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
     CHARACTERANIM_CONFIG_PC *info;
     i32 minimum, maximum, repetitions;
     if (animation == 0x97)
@@ -1435,8 +1434,8 @@ void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
     object->idle_animation = (i16)animation;
     object->idle_animation_time = 0.0f;
     minimum = 0;
-    if (model->action_animations[(i16)animation] != NULL) {
-        info = model->animation_configs[(i16)animation];
+    if (object->character_model->action_animations[(i16)animation] != NULL) {
+        info = object->character_model->animation_configs[(i16)animation];
         minimum = info->minimum_repetitions;
     }
     if (minimum > 0) {

@@ -426,39 +426,45 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
                             (character->model_flags & 0x80) != 0
                         ? 118
                         : 25;
-    CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
     i32 candidates[233];
     i32 count = 0;
     i32 animation, repetitions, minimum, maximum;
     CHARACTERANIM_CONFIG_PC *info;
     for (animation = 0; animation < 233; ++animation) {
-        if (model->action_animations[animation] == NULL)
+        if (object->character_model->action_animations[animation] == NULL)
             continue;
-        info = model->animation_configs[animation];
-        if ((info->flags & 0x10) != 0 && ((info->flags & 0x800) != 0) == (default_idle == alternate))
-            candidates[count++] = animation;
+        info = object->character_model->animation_configs[animation];
+        if ((info->flags & 0x10) == 0)
+            continue;
+        if (default_idle == alternate) {
+            if ((info->flags & 0x800) == 0)
+                continue;
+        } else if ((info->flags & 0x800) != 0)
+            continue;
+        candidates[count++] = animation;
     }
     if (count <= 0) {
         ResetCharacterIdle(object, 0, default_idle);
         return;
     }
     do {
-        animation = candidates[count > 1 ? qrand() / (65535 / count + 1) : 0];
-        state->idle_animation = (i16)animation;
+        state->idle_animation = (i16)candidates[count > 1 ? qrand() / (65535 / count + 1) : 0];
     } while (count > 1 && state->idle_animation == state->previous_idle_animation);
-    info = model->animation_configs[state->idle_animation];
+    info = object->character_model->animation_configs[state->idle_animation];
     minimum = info->minimum_repetitions;
-    maximum = info->maximum_repetitions;
-    repetitions = minimum > 0 ? minimum : 1;
-    if (minimum > 0 && maximum > minimum)
-        repetitions += qrand() / (65535 / (maximum - minimum) + 1);
+    repetitions = 1;
+    if (minimum > 0) {
+        maximum = info->maximum_repetitions;
+        repetitions = minimum;
+        if (maximum > 0 && maximum > minimum)
+            repetitions += qrand() / (65535 / (maximum - minimum) + 1);
+    }
     state->previous_idle_animation = state->idle_animation;
-    if (repetitions > 1 && (model->animation_configs[state->idle_animation]->flags & 2) == 0)
+    if (repetitions > 1 && (object->character_model->animation_configs[state->idle_animation]->flags & 2) == 0)
         repetitions = 1;
     state->idle_animation_time = 0.0f;
     state->idle_animation_limit =
-        (f32)((f64)AnimDuration((i16)object->id, state->idle_animation, 0.0f, 0.0f, 0) * (f64)repetitions -
-              (f64)animduration_blendouttime);
+        AnimDuration((i16)object->id, state->idle_animation, 0.0f, 0.0f, 0) * repetitions - animduration_blendouttime;
 }
 
 extern "C" void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {

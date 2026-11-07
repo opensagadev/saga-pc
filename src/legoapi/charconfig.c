@@ -486,9 +486,9 @@ static void CC_anim_start(NUFPAR_PC *parser) {
             else
                 animation.flags &= ~0x40u;
         } else if (NuStrICmp(parser->word_buffer_ptr, "minreps") == 0) {
-            animation.minimum_repetitions = (i8)(abs(NuFParGetInt(parser)));
+            animation.minimum_repetitions = (u8)(abs(NuFParGetInt(parser)));
         } else if (NuStrICmp(parser->word_buffer_ptr, "maxreps") == 0) {
-            animation.maximum_repetitions = (i8)(abs(NuFParGetInt(parser)));
+            animation.maximum_repetitions = (u8)(abs(NuFParGetInt(parser)));
         } else if (NuStrICmp(parser->word_buffer_ptr, "speed") == 0) {
             animation.action_speed = NuFParGetFloat(parser);
         } else if (NuStrICmp(parser->word_buffer_ptr, "frame") == 0 ||

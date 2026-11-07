@@ -4612,8 +4612,8 @@ typedef struct CHARACTERANIM_CONFIG_PC {
     i16 action_id;
     u8 unknown_0a;
     u8 priority;
-    i8 minimum_repetitions;
-    i8 maximum_repetitions;
+    u8 minimum_repetitions;
+    u8 maximum_repetitions;
     u8 unknown_0e[2];
     f32 blend_in_time;
     f32 blend_out_time;
