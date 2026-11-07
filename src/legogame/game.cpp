@@ -10,6 +10,7 @@ extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
 extern "C" void __cdecl Grabber_Reset(WORLDINFO *world);
+extern "C" void __cdecl TransformDrawTargetPc(NUVEC *position, f32 radius, f32 alpha);
 extern "C" void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
 extern "C" u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
                                            u32 *obstacles, u32 *turrets, u32 *characters);
@@ -1696,15 +1697,8 @@ GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, mid_position) == 0x4c);
 GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
 
 void __cdecl GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
-    if (Transform_TargettedByObj(target) == NULL) {
-        f32 radius = (f32)((f64)target->target_scale * (f64)1.4f);
-        NUVEC *position = &target->mid_position;
-        f32 alpha = 0.4f;
-        (void)radius;
-        (void)position;
-        (void)alpha;
-        STUBBED_NAMED("GizmoBlowup_TransformDraw_Game: 4d5588 Transform_DrawTarget(position, radius, alpha)");
-    }
+    if (Transform_TargettedByObj(target) == NULL)
+        TransformDrawTargetPc(&target->mid_position, target->target_scale * 1.4f, 0.4f);
 }
 
 static void __cdecl LEGO_AllGoldBricksFn(void) {
