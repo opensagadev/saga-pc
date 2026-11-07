@@ -29991,7 +29991,6 @@ class NetFtpManager : public NetListenerInterface {
     i32 field_1604;
 };
 
-
 struct NOSContext {
     u32 words[4];
 };
