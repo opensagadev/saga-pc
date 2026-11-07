@@ -15135,6 +15135,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl EndPerm(void);
     void __cdecl LoadPermData(void *process);
     void __cdecl Level_SetDefaults(LEVELDATA_PC *level);
+    void __cdecl CutScenes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR end);
     EPISODEDATA_PC *__cdecl Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                                    i32 *count_out);
     extern const char LoadPermLevelsPath[18];

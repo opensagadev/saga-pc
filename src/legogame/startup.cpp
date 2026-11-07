@@ -456,7 +456,7 @@ extern "C" {
         InitGameAfterConfig();
 
         if (StartupGameFlag1 == 0) {
-            STUBBED_NAMED("LoadPermData: cutscene list load (cut\\cutscenes.txt at 0x57a870)");
+            CutScenes_ConfigureList((char *)"cut\\cutscenes.txt", &permbuffer_ptr, permbuffer_end);
         }
 
         APICharacterSysInit(&permbuffer_ptr, permbuffer_end, CHARCOUNT, 0x30, 0xe9, 0x400,

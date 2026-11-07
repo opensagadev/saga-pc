@@ -4751,6 +4751,7 @@ address,symbol,size,ctype
 0x0057a6d0,_NewLevelFromMenu,160,"void __cdecl(LEVELDATA_PC*, i32, i32, i32)"
 0x57a770,_LevelStreaming_DoorOverride,156,
 0x57a820,_CutSceneConfigMissingPc,1,void __cdecl(char *)
+0x57a870,_CutScenes_ConfigureList,912,
 0x57acb0,_CS_fpsec,23,void __cdecl(NUFPAR_PC *)
 0x57acd0,_CS_no_fog,10,void __cdecl(NUFPAR_PC *)
 0x57ace0,_CS_draw_world,88,void __cdecl(NUFPAR_PC *)
@@ -13241,6 +13242,7 @@ address,symbol,size,ctype
 0x757e40,_AIControllerLiteralPc00757e40,10,const char[10]
 0x757e4c,??_C@_08EFLEDCEA@grapple?$DN?$AA@,9,const char[]
 0x757e58,??_C@_0N@LIODCHEB@jump_off_dy?$DN?$AA@,13,const char[]
+0x757e68,??_C@_04LNEJFJGI@path?$AA@,,const char[]
 0x757e68,_AITransferLiteral757e68,5,const char[5]
 0x757e70,_AITransferLiteral757e70,15,const char[15]
 0x00757e80,_AIPathFaceName,5,const char[5]
@@ -15044,6 +15046,7 @@ address,symbol,size,ctype
 0x75d04c,??_C@_0BJ@EEJPJHNF@stuff?2text?2starwars_font?$AA@,,const char[]
 0x75d068,??_C@_0BL@GKNGJJIC@stuff?2text?2starwars_font_j?$AA@,,const char[]
 0x75d084,??_C@_0BD@NJDNDEOK@stuff?2text?2pc_font?$AA@,,const char[]
+0x75d0ac,??_C@_0BC@OEADKIKD@cut?2cutscenes?4txt?$AA@,18,
 0x0075d0c0,_LoadPermEpisodesPath,20,const char[20]
 0x0075d0d4,_LoadPermAreasPath,17,const char[17]
 0x0075d0e8,_LoadPermLevelsPath,18,const char[18]
@@ -16621,6 +16624,9 @@ address,symbol,size,ctype
 0x762498,??_C@_0L@DCPGEDCJ@draw_world?$AA@,11,const char[11]
 0x7624a4,??_C@_06INIBCLAO@no_fog?$AA@,7,const char[7]
 0x7624ac,??_C@_05BAAEGMAJ@fpsec?$AA@,6,const char[6]
+0x7624b4,??_C@_08BABJIOEM@filename?$AA@,9,
+0x7624c0,??_C@_0N@CHOIELKO@cutscene_end?$AA@,13,
+0x7624d0,??_C@_0P@FKNLAMM@cutscene_start?$AA@,15,
 0x7624e0,??_C@_03PCBNCGFH@pos?$AA@,4,const char[4]
 0x7624e4,??_C@_05MIJNFGED@frame?$AA@,6,const char[6]
 0x7624ec,??_C@_09OJJKDIGP@fade_time?$AA@,10,const char[10]

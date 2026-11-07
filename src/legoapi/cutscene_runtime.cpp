@@ -644,6 +644,87 @@ extern "C" {
 }
 
 extern "C" {
+    void __cdecl CutScenes_ConfigureList(char *filename, VARIPTR *buffer, VARIPTR end) {
+        CUT_LOAD_LIST_ENTRY_PC entries[1000];
+        char file[128];
+        char path[128];
+        NUFPAR_PC *fp;
+        char *cursor;
+        u32 size;
+        i32 duplicate;
+        i32 level;
+        i32 i;
+        (void)end;
+        CutList = NULL;
+        CUTCOUNT = 0;
+        fp = NuFParCreate(filename);
+        if (fp == NULL)
+            return;
+        buffer->addr = (buffer->addr + 3) & ~3U;
+        cursor = buffer->char_ptr;
+        while (CUTCOUNT < 1000 && NuFParGetLine(fp) != 0) {
+            if (NuFParGetWord(fp) == 0 || NuStrICmp(fp->word_buffer_ptr, "cutscene_start") != 0)
+                continue;
+            path[0] = '\0';
+            file[0] = '\0';
+            entries[CUTCOUNT].level = -1;
+            while (NuFParGetLine(fp) != 0 && NuFParGetWord(fp) != 0) {
+                if (NuStrICmp(fp->word_buffer_ptr, "cutscene_end") == 0) {
+                    if (path[0] == '\0' || file[0] == '\0' || entries[CUTCOUNT].level == -1)
+                        break;
+                    duplicate = 0;
+                    i = 0;
+                    while (i < CUTCOUNT && duplicate == 0) {
+                        if (NuStrICmp(path, entries[i].directory) == 0 && NuStrICmp(file, entries[i].name) == 0 &&
+                            entries[CUTCOUNT].level == entries[i].level)
+                            duplicate = 1;
+                        else
+                            ++i;
+                    }
+                    if (duplicate == 0) {
+                        entries[CUTCOUNT].directory = cursor;
+                        NuStrCpy(cursor, path);
+                        cursor += NuStrLen(path);
+                        *cursor++ = '\0';
+                        entries[CUTCOUNT].name = cursor;
+                        NuStrCpy(cursor, file);
+                        cursor += NuStrLen(file);
+                        *cursor++ = '\0';
+                        ++CUTCOUNT;
+                    } else {
+                        reinterpret_cast<void(__cdecl *)(char *, char *, char *)>(CutSceneConfigMissingPc)(
+                            path, file, LDataList[entries[CUTCOUNT].level].name);
+                    }
+                    break;
+                }
+                if (NuStrICmp(fp->word_buffer_ptr, "dir") == 0 || NuStrICmp(fp->word_buffer_ptr, "path") == 0) {
+                    if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 0x80)
+                        NuStrCpy(path, fp->word_buffer_ptr);
+                } else if (NuStrICmp(fp->word_buffer_ptr, "file") == 0 ||
+                           NuStrICmp(fp->word_buffer_ptr, "filename") == 0) {
+                    if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 0x40)
+                        NuStrCpy(file, fp->word_buffer_ptr);
+                } else if (NuStrICmp(fp->word_buffer_ptr, "level") == 0 ||
+                           NuStrICmp(fp->word_buffer_ptr, "in_level") == 0) {
+                    if (NuFParGetWord(fp) != 0) {
+                        Level_FindByName(fp->word_buffer_ptr, &level);
+                        entries[CUTCOUNT].level = (i16)level;
+                    }
+                }
+            }
+        }
+        NuFParDestroy(fp);
+        if (CUTCOUNT > 0) {
+            buffer->addr = ((u32)cursor + 3) & ~3U;
+            CutList = static_cast<CUT_LOAD_LIST_ENTRY_PC *>(buffer->void_ptr);
+            size = CUTCOUNT * sizeof(CUT_LOAD_LIST_ENTRY_PC);
+            PCByteCopy_candidate(CutList, entries, size);
+            buffer->addr += size;
+        }
+    }
+}
+
+extern "C" {
     static __declspec(noinline) void CutSceneConfigurePc(CUT_LOAD_RECORD_PC *cut, char *name, VARIPTR *buf,
                                                          VARIPTR *buf_end) {
         CUT_LOAD_STATE_PC states[32];
