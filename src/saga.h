@@ -29628,19 +29628,13 @@ class NetTransporter : public NetTransporterInterface {
     NetTransportList clients;
 };
 
-class BaseThing {
-  public:
-    virtual ~BaseThing();
-
-    u32 unknown_04[3];
-};
-
 class TTNetwork : public NetTransporter, public BaseThing {
   public:
     virtual void Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer);
     virtual void SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1);
     virtual void Broadcast(NETMESSAGE_PC message, u8 channel);
     virtual void BroadcastEx(NETMESSAGE_PC message, u8 channel);
+    virtual char const *GetName();
     i32 QueryAll08(i32 value);
     void NotifyAll0c(i32 value);
     void NotifyPeerRemoved(V2Peer *peer, i32 reason);
