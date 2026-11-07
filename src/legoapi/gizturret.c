@@ -100,14 +100,22 @@ STATIC_ASSERT(offsetof(AI_TURRET_SYSTEM_PC, opponent_cursor) == 0xc);
 
 static i32 GizTurretPointWithinBoundsPc(AI_TURRET_RECORD_PC *turret, NUVEC *position) {
     NUVEC local;
-    if (!(turret->behavior_flags & 1))
-        return 1;
-    NuVecSub(&local, position, &turret->opponent_origin);
-    NuVecRotateY(&local, &local, -(i32)turret->y_rotation);
-    if (local.x > turret->opponent_bounds.x || local.x < -turret->opponent_bounds.x ||
-        local.y > turret->opponent_bounds.y || local.y < 0.0f || local.z > turret->opponent_bounds.z ||
-        local.z < -turret->opponent_bounds.z)
-        return 0;
+    if (turret->behavior_flags & 1) {
+        NuVecSub(&local, position, &turret->opponent_origin);
+        NuVecRotateY(&local, &local, -(i32)turret->y_rotation);
+        if (local.x > turret->opponent_bounds.x)
+            return 0;
+        if (local.x < -turret->opponent_bounds.x)
+            return 0;
+        if (local.y > turret->opponent_bounds.y)
+            return 0;
+        if (local.y < 0.0f)
+            return 0;
+        if (local.z > turret->opponent_bounds.z)
+            return 0;
+        if (local.z < -turret->opponent_bounds.z)
+            return 0;
+    }
     return 1;
 }
 
