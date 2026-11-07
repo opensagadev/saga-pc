@@ -303,12 +303,13 @@ void __cdecl AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
 
 i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizmo) {
     char *name;
-    struct AILOCATOR_PC *locator;
-    if (set == NULL || system == NULL || !(set->flags & 1) || set->trigger_count >= 8 || gizmo == NULL)
+    struct AILOCATOR_PC *locator = NULL;
+    if (system == NULL || set == NULL || !(set->flags & 1) || set->trigger_count >= 8 || gizmo == NULL)
         return 0;
 
     name = GizmoGetName(gizmo);
-    locator = name != NULL ? AIPathFindLocator(system, name) : NULL;
+    if (name != NULL)
+        locator = AIPathFindLocator(system, name);
     if (gizmo->type_id == lever_gizmotype_id) {
         GIZMO_LEVER_PC *lever = (GIZMO_LEVER_PC *)gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
@@ -336,10 +337,6 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
                              &set->locators[set->trigger_count].path_info, &set->locators[set->trigger_count].position,
                              NULL, 0xff);
         }
-        if (set->locators[set->trigger_count].path_info.connection == NULL)
-            return 0;
-        ++set->trigger_count;
-        return 1;
     } else if (gizmo->type_id == spinner_gizmotype_id) {
         GIZSPINNER_s *spinner = ((GIZSPINNER_s *)(gizmo->object));
         set->gizmos[set->trigger_count] = gizmo;
