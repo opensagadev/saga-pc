@@ -28,8 +28,8 @@ i32 __cdecl TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
         return 0;
     }
 found:
-    source_active = (source->flags_1fc_word >> 7) & 1;
-    target_active = (target->flags_1fc_word >> 7) & 1;
+    target_active = target->player_controlled;
+    source_active = source->player_controlled;
     result = TagCode(source, target, 0, 0, mode);
     if (result == 2) {
         source->tag_flags = (source->tag_flags & ~8U) | 4;
@@ -39,7 +39,7 @@ found:
     }
     if (result == 0)
         return 0;
-    target->flags_1fc_word = (target->flags_1fc_word & ~0x80U) | (source_active << 7);
-    source->flags_1fc_word = (source->flags_1fc_word & ~0x80U) | (target_active << 7);
+    target->player_controlled = source_active;
+    source->player_controlled = target_active;
     return 1;
 }

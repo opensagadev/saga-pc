@@ -5757,7 +5757,7 @@ typedef struct gameobject_s {
         struct {
             u32 flags_1fc_bit_0 : 1;
             u32 flags_1fc_bit_1 : 1;
-            u32 flags_1fc_bits_2_31 : 30;
+            u32 flags_1fc_bits_2_6 : 5, player_controlled : 1;
         };
     };
     union {
