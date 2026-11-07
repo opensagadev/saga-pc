@@ -29155,6 +29155,7 @@ struct EdInputContext;
 struct EdMember;
 class EdRef;
 class EdStream;
+class EdFileOutputStream;
 struct MemoryBuffer;
 
 struct ThingLevelData;
@@ -29737,6 +29738,121 @@ class ClassEditor : public BaseEditor {
     void PostSaveInitialisation();
 };
 extern ClassEditor theClassEditor;
+
+class EditorSettings {
+  public:
+    EditorSettings();
+    virtual ~EditorSettings();
+    void AddMenuItems(eduimenu_s *menu);
+    f32 cursor_radius;
+    i32 snap_terrain;
+};
+
+/* The editor's per-frame input state (Android EdInputContext): the camera
+ * view, the cursor ray and 40 logical inputs with press/release/repeat
+ * edges. The PC layout has 8 more bytes at the end than Android's. */
+struct EdInputContext {
+    VuVec view_position;
+    VuVec view_direction;
+    VuVec ray_start;
+    VuVec ray_direction;
+    FRAME_PAD_PC *pad;
+    f32 delta_time;
+    f32 current_time;
+    f32 repeat_window;
+    u8 held[40];
+    u8 pressed[40];
+    u8 released[40];
+    u8 repeated[40];
+    u8 cleared[40];
+    f32 values[40];
+    f32 repeat_times[40];
+    u8 reserved_258[8];
+
+    void Set(i32 input, f32 value, f32 repeat_delay);
+    void Clear(i32 input);
+    f32 Get(i32 input);
+    f32 GetPress(i32 input);
+    f32 GetRelease(i32 input);
+    f32 GetHold(i32 input);
+    f32 GetRepeat(i32 input);
+    void Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed, bool menu_active);
+};
+
+/* The level editor thing (Android LevelEditor), theLevelEditor. The PC input
+ * context is 8 bytes larger than Android's, so every field after it sits 8
+ * bytes later. */
+class LevelEditor : public BaseThing {
+  public:
+    virtual ~LevelEditor() {
+    }
+    virtual char const *GetName() {
+        return "LevelEditor";
+    }
+    virtual void ProcessEvenWhenPaused(ThingProcessData *);
+    virtual void Display(ThingRenderData *);
+
+    void SetPadText(i32 buttons, char *text);
+    NUGSCN *GetScene(i32 index);
+    LevelEditorScene *GetEdScene(i32 index);
+    void Flush();
+    i32 WriteStream(EdFileOutputStream &stream);
+    i32 Save();
+    void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
+                      i32 background);
+
+    f32 background_colour[4];
+    i32 field_0x20;
+    i32 field_0x24;
+    i32 field_0x28;
+    i32 field_0x2c;
+    i32 field_0x30;
+    f32 overlay_alpha;
+    i32 field_0x38;
+    i32 editor_buffer_from_front;
+    EdInputContext input;
+    u8 reserved_0x2a0;
+    u8 destroying_objects;
+    u8 reserved_0x2a2[2];
+    i32 editable_scene_count;
+    i32 reset_pending;
+    LevelEditorScene scenes[10];
+    BaseEditor *first_editor;
+    BaseEditor *last_editor;
+    i32 editor_count;
+    BaseEditor *active_editor;
+    char save_filename[0x80];
+    char editor_filename[0x80];
+    i32 file_version;
+    i32 multi_load_active;
+    i16 current_led_file;
+    u8 reserved_0xa56[2];
+    VARIPTR editor_buffer_cursor;
+    VARIPTR editor_buffer_begin;
+    VARIPTR editor_buffer_end;
+    char text_buffer[0x400];
+    i32 text_length;
+    char *info_text[32];
+    i32 info_x;
+    i32 info_y;
+    i32 info_width;
+    i32 info_height;
+    u32 info_colour;
+    u32 info_background;
+    u8 reserved_0xf00[0x100];
+    i32 pad_x;
+    i32 pad_y;
+    i32 pad_width;
+    i32 pad_height;
+    u32 pad_background;
+    u32 pad_colour;
+    u8 reserved_0x1018[4];
+    char *pad_text[32];
+    EditorSettings settings;
+    i32 editors_entered;
+    i32 active;
+};
+extern LevelEditor theLevelEditor;
 #endif
 
 #ifdef __cplusplus
