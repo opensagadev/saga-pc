@@ -4935,6 +4935,7 @@ address,symbol,size,ctype
 0x580d90,?Read16@NETMESSAGE_PC@@QAEXAAF@Z,55,identical copy at 0x580e10
 0x580dd0,?Read32@NETMESSAGE_PC@@QAEXAAH@Z,55,
 0x580e50,?Write@NETMESSAGE_PC@@QAEXPBXHH@Z,120,
+0x580ed0,?Read@NETMESSAGE_PC@@QAEXPAXHH@Z,117,
 0x580f50,?Bolt_HitPlatPrivate@@YAHPAUbolt_s@@PAE@Z,445,
 0x581110,?Bolt_HitBlowupPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@11MPAE@Z,223,
 0x5811f0,_Bolt_HitGameObjectRC,2495,void __cdecl(NETMESSAGE_PC&)
@@ -7251,7 +7252,13 @@ address,symbol,size,ctype
 0x611960,??1EdInputStream@@UAE@XZ,7,
 0x611970,??0EdOutputStream@@QAE@XZ,25,
 0x611990,??1EdOutputStream@@UAE@XZ,7,
+0x611a70,??0NetInputStream@@QAE@XZ,32,
+0x611a90,?SetMessage@NetInputStream@@QAEXPAUNETMESSAGE_PC@@@Z,10,
+0x611aa0,?BeginBlock@NetInputStream@@UAEPBDPBD@Z,7,
+0x611ab0,?EndBlock@NetInputStream@@UAEXXZ,1,
 0x611ac0,??1NetOutputStream@@UAE@XZ,7,ICF-folded with the NetInputStream destructor
+0x611ac0,??1NetInputStream@@UAE@XZ,7,ICF-folded with the NetOutputStream destructor
+0x611ad0,?Eat@NetInputStream@@UAEHHH@Z,24,
 0x611af0,??0NetOutputStream@@QAE@XZ,25,
 0x611b10,?SetMessage@NetOutputStream@@QAEXPAUNETMESSAGE_PC@@@Z,10,
 0x611b20,?Eat@NetOutputStream@@UAEHHH@Z,5,
@@ -7275,6 +7282,12 @@ address,symbol,size,ctype
 0x6121c0,?PredictValue@NetPredictor2@@UAEXPBUEdClass@@PAXPAUPredictorTime@NetPredictor@@PAPAUPredictorData@4@PAMH@Z,762,
 0x6124c0,?PredictValue@NetPredictor3@@UAEXPBUEdClass@@PAXPAUPredictorTime@NetPredictor@@PAPAUPredictorData@4@PAMH@Z,262,
 0x6125d0,?PredictValue@NetRotator2@@UAEXPBUEdClass@@PAXPAUPredictorTime@NetPredictor@@PAPAUPredictorData@4@PAMH@Z,271,
+0x6126e0,??0EdObjectNotifier@@QAE@XZ,9,
+0x6126f0,?NotifyCreateObject@EdObjectNotifier@@UAEXPAXPAUEdClass@@0HHH@Z,3,
+0x612700,?NotifyDestroyObject@EdObjectNotifier@@UAEXPAXPAUEdClass@@HH@Z,3,
+0x612710,?NotifyDefunctObject@EdObjectNotifier@@UAEXPAXPAUEdClass@@H@Z,3,
+0x612720,?NotifyReviveObject@EdObjectNotifier@@UAEXPAXPAUEdClass@@H@Z,3,
+0x612730,??1NetworkObjectManager@@UAE@XZ,24,
 0x612750,?Init@NetworkObjectManager@@QAEXXZ,111,
 0x6127c0,?InitClassStats@NetworkObjectManager@@QAEXXZ,89,
 0x612820,?Reset@NetworkObjectManager@@QAEXXZ,1,
@@ -7309,6 +7322,9 @@ address,symbol,size,ctype
 0x6131f0,??_GEdInputStream@@UAEPAXI@Z,31,
 0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body
 0x613210,??_GEdOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x613250,??_GNetInputStream@@UAEPAXI@Z,31,
+0x613250,??_ENetInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GNetInputStream@@UAEPAXI@Z; no independent body
+0x613270,?SerialiseBuffer@NetInputStream@@UAEHPAXHH@Z,35,
 0x6132a0,??_GNetOutputStream@@UAEPAXI@Z,31,
 0x6132a0,??_ENetOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GNetOutputStream@@UAEPAXI@Z; no independent body
 0x6132c0,?SerialiseBuffer@NetOutputStream@@UAEHPAXHH@Z,35,
@@ -7325,6 +7341,7 @@ address,symbol,size,ctype
 0x613db0,?NOSGetGuid@@YAHXZ,11,
 0x613dd0,?Term@NetworkObjectManager@@QAEXXZ,14,
 0x613de0,?ReceiveConstructorMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,340,
+0x613f40,?ReceiveReplicaMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,477,
 0x614120,?ReceiveAdoptedMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,132,
 0x6141b0,?ReceiveReleaseMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,210,
 0x614290,?ReceiveRemoteCallMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,91,
@@ -7333,6 +7350,9 @@ address,symbol,size,ctype
 0x6144f0,?ReceiveStatusMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,328,
 0x614640,?SerialiseObject@NetPredictor@@UAEHAAVEdStream@@PAVV2Peer@@PBUEdClass@@PAXAAUReplicatorData@@PAF@Z,365,
 0x6147b0,?DoPrediction@NetPredictor@@UAEHPBUEdClass@@PAXAAUReplicatorData@@H@Z,106,
+0x614820,??0NetworkObjectManager@@QAE@XZ,93,
+0x614880,??_GNetworkObjectManager@@UAEPAXI@Z,48,
+0x614880,??_ENetworkObjectManager@@UAEPAXI@Z,,COFF weak alias of ??_GNetworkObjectManager@@UAEPAXI@Z; no independent body
 0x614a30,?ObjectCall@NetworkObjectManager@@QAEHPAXHUNETMESSAGE_PC@@PBVV2Peer@@@Z,500,
 0x614c30,?ObjectOwnerCall@NetworkObjectManager@@QAEHPAXHUNETMESSAGE_PC@@@Z,453,
 0x614e00,?ObjectOtherCall@NetworkObjectManager@@QAEHPAXHUNETMESSAGE_PC@@@Z,399,
@@ -7358,6 +7378,7 @@ address,symbol,size,ctype
 0x616230,?Push@NetworkObjectManager@@QAEHPBUNetworkObject@@PAVNetReplicator@@AAUReplicatorData@@PAUNetPeerPush@1@@Z,519,
 0x616440,?ReceiveAcquireMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,196,
 0x616510,?ReceiveAcquiredMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,215,
+0x6165f0,?Receive@NetworkObjectManager@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,700,
 0x6168e0,?PeerLeft@NetworkObjectManager@@UAEXABVV2Peer@@H@Z,410,
 0x616a80,?RegisterObject@NetworkObjectManager@@QAEHPAXPAUEdClass@@H@Z,201,
 0x616b50,?PushObject@NetworkObjectManager@@QAEHPAUNetworkObject@@PAUNetPeerPush@1@H@Z,386,
@@ -9619,7 +9640,7 @@ address,symbol,size,ctype
 0x6be850,?ClassIFaceProcess@EdRegistry@@QAEXPAUEdClass@@PAXAAUEdInputContext@@@Z,37,
 0x6be880,?ClassIFaceRender@EdRegistry@@QAEXHPAXH@Z,57,
 0x6be8c0,?ClassIFaceRender@EdRegistry@@QAEXPAUEdClass@@PAXH@Z,37,
-0x6be8f0,?AddObjectNotifier@EdRegistry@@QAEXPAUEdObjectNotifier@@@Z,27,
+0x6be8f0,?AddObjectNotifier@EdRegistry@@QAEXPAVEdObjectNotifier@@@Z,27,
 0x6be910,?NotifyCreateObject@EdRegistry@@QAEXPAXPAUEdClass@@0HHH@Z,70,
 0x6be960,?NotifyDestroyObject@EdRegistry@@QAEXPAXPAUEdClass@@HH@Z,61,
 0x6be9a0,?NotifyDefunctObject@EdRegistry@@QAEXPAXPAUEdClass@@H@Z,56,
@@ -18026,9 +18047,13 @@ address,symbol,size,ctype
 0x76ab5c,??_7EdStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76ab80,??_7EdInputStream@@6B@,,
 0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76abc8,??_7NetInputStream@@6B@,32,
 0x76abec,??_7NetOutputStream@@6B@,32,
+0x76ac10,??_7EdObjectNotifier@@6B@,16,
+0x76ac24,??_7NetworkObjectManager@@6BEdObjectNotifier@@@,16,
 0x76ac34,??_C@_03EPCAMLIH@NOS?$AA@,4,char []
 0x76ac3c,??_7NetReplicator@@6B@,12,
+0x76ac4c,??_7NetworkObjectManager@@6BNetListenerInterface@@@,44,
 0x76ac78,??_C@_03LBMKPMDK@FTP?$AA@,4,char []
 0x76ac80,??_7NetFtpManager@@6B@,52,
 0x76acb4,??_C@_0L@CGOOPECH@New?5To?5Old?$AA@,,char []
@@ -21767,10 +21792,23 @@ address,symbol,size,ctype
 0x7eafa4,??_R3EdOutputStream@@8,,
 0x7eafb4,??_R2EdOutputStream@@8,,
 0x7eafc0,??_R1A@?0A@EA@EdOutputStream@@8,,
+0x7eafdc,??_R4NetInputStream@@6B@,,
+0x7eaff0,??_R3NetInputStream@@8,,
+0x7eb000,??_R2NetInputStream@@8,,
+0x7eb010,??_R1A@?0A@EA@NetInputStream@@8,,
 0x7eb02c,??_R4NetOutputStream@@6B@,,
 0x7eb040,??_R3NetOutputStream@@8,,
 0x7eb050,??_R2NetOutputStream@@8,,
 0x7eb060,??_R1A@?0A@EA@NetOutputStream@@8,,
+0x7eb07c,??_R4EdObjectNotifier@@6B@,,
+0x7eb090,??_R3EdObjectNotifier@@8,,
+0x7eb0a0,??_R2EdObjectNotifier@@8,,
+0x7eb0a8,??_R1A@?0A@EA@EdObjectNotifier@@8,,
+0x7eb0c4,??_R4NetworkObjectManager@@6BEdObjectNotifier@@@,,
+0x7eb0d8,??_R3NetworkObjectManager@@8,,
+0x7eb0e8,??_R2NetworkObjectManager@@8,,
+0x7eb0f8,??_R1A@?0A@EA@NetworkObjectManager@@8,,
+0x7eb114,??_R13?0A@EA@EdObjectNotifier@@8,,
 0x7eb130,??_R4NetReplicator@@6B@,,
 0x7eb144,??_R3NetReplicator@@8,,
 0x7eb154,??_R2NetReplicator@@8,,
@@ -21779,6 +21817,7 @@ address,symbol,size,ctype
 0x7eb198,??_R3?$CSListLink@VNetReplicator@@@@8,,
 0x7eb1a8,??_R2?$CSListLink@VNetReplicator@@@@8,,
 0x7eb1b0,??_R1A@?0A@EA@?$CSListLink@VNetReplicator@@@@8,,
+0x7eb1cc,??_R4NetworkObjectManager@@6BNetListenerInterface@@@,,
 0x7eb1e0,??_R4NetFtpManager@@6B@,,
 0x7eb1f4,??_R3NetFtpManager@@8,,
 0x7eb204,??_R2NetFtpManager@@8,,

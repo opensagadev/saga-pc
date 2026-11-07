@@ -59,6 +59,36 @@ class NetOutputStream : public EdOutputStream {
 };
 STATIC_ASSERT(sizeof(NetOutputStream) == 0x24);
 
+/* Reads replicated members back out of a NETMESSAGE_PC (Android NetInputStream). */
+class NetInputStream : public EdInputStream {
+  public:
+    NetInputStream() : message(NULL) {
+    }
+    virtual ~NetInputStream() {
+    }
+    virtual i32 Eat(i32 size, i32 count) {
+        i32 bytes = size * count;
+        if (message->data != NULL)
+            message->read_offset += bytes;
+        return bytes;
+    }
+    virtual i32 SerialiseBuffer(void *data, i32 size, i32 count) {
+        message->Read(data, size, count);
+        return size * count;
+    }
+    virtual char const *BeginBlock(char const *name) {
+        return name;
+    }
+    virtual void EndBlock() {
+    }
+    void SetMessage(NETMESSAGE_PC *new_message) {
+        message = new_message;
+    }
+
+    NETMESSAGE_PC *message;
+};
+STATIC_ASSERT(sizeof(NetInputStream) == 0x24);
+
 /* Replicator data is a packed run of word-aligned per-object records. */
 #define REPLICATOR_ALIGN(cursor) (((u32)(cursor) + 3) & ~3)
 
@@ -536,6 +566,18 @@ i32 NetworkObjectManager::GetPeerStatus() {
 
 i32 NOSGetGuid() {
     return theNos->GetNextGuid();
+}
+
+NetworkObjectManager::NetworkObjectManager() {
+    active = 0;
+    guid_group = -1;
+    next_guid = -1;
+    theNos = this;
+    theRegistry.create_object_guid = NOSGetGuid;
+}
+
+NetworkObjectManager::~NetworkObjectManager() {
+    theNos = NULL;
 }
 
 void NetworkObjectManager::Term() {
@@ -1046,6 +1088,40 @@ void NetworkObjectManager::ReceiveConstructorMessage(NETMESSAGE_PC &message, con
     if (network_object->object == NULL) {
         void *object = theRegistry.CreateObject(object_class->object_interface, constructor_data, size, guid, 1);
         network_object->Initialise(guid, object, object_class, peer, 0);
+    }
+}
+
+void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+    NetInputStream stream;
+    i16 guid;
+    i16 class_id;
+    i16 replicator_id;
+    i16 flags;
+    i32 offset = 0;
+    message.Read16(guid);
+    message.Read16(class_id);
+    message.Read16(replicator_id);
+    message.Read16(flags);
+    EdClass *object_class = theRegistry.GetClass(class_id);
+    NetworkObject *object = &objects[guid];
+    object->flags = flags | 8;
+    NetReplicator *replicator = replicators[class_id].head;
+    while (replicator != NULL && replicator->id != replicator_id) {
+        offset += replicator->data_size;
+        replicator = replicator->next;
+    }
+    if (object->object != NULL && object->object_class == object_class) {
+        if (flags & 2)
+            replicator->replication_group |= 8;
+        ReplicatorData data;
+        data.start = (u8 *)object->replicator_data + offset;
+        data.cursor = data.start;
+        data.end = data.start + replicator->data_size;
+        replicator->AllowPush(object_class, object->object, data, 1, 0);
+        stream.SetMessage(&message);
+        replicator->SerialiseObject(stream, (V2Peer *)&peer, object_class, object->object, data, (i16 *)&object->flags);
+    } else if (message.data != NULL) {
+        message.read_offset += replicator->message_size;
     }
 }
 
@@ -1621,4 +1697,87 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
     if (check_only == 0 && (time->values[0] >= time->values[1] || time->values[1] >= time->values[2]))
         return 1;
     return DoPrediction(object_class, object, data, time, check_only);
+}
+
+void NetworkObjectManager::Receive(NETMESSAGE_PC message, u8, const V2Peer &peer) {
+    i32 error = 0;
+    do {
+        u8 type;
+        message.Read8(type);
+        switch (type) {
+            case 9:
+                ReceiveStartMessage(message, peer);
+                break;
+            case 10:
+                ReceiveStopMessage(message, peer);
+                break;
+            case 11:
+                ReceiveStatusMessage(message, peer);
+                break;
+            case 0:
+                if (active && IsPeerReady(peer))
+                    message.Read32(guid_group);
+                else
+                    error = 1;
+                break;
+            case 1:
+                if (active && IsPeerStarted(peer))
+                    ReceiveConstructorMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 2:
+                if (active && IsPeerStarted(peer))
+                    ReceiveReplicaMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 3:
+                if (active && IsPeerReady(peer))
+                    ReceiveAcquireMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 4:
+                if (active && IsPeerReady(peer))
+                    ReceiveAcquiredMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 5:
+                if (active && IsPeerReady(peer))
+                    ReceiveAdoptedMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 6:
+                if (active && IsPeerReady(peer))
+                    ReceiveReleaseMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 7:
+                if (active && IsPeerReady(peer))
+                    ReceiveRemoteCallMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 8:
+                if (active && IsPeerReady(peer))
+                    ReceiveObjectCallMessage(message, peer);
+                else
+                    error = 1;
+                break;
+            case 12:
+                if (active && IsPeerReady(peer))
+                    ReceiveContinuityBreak(message, peer);
+                else
+                    error = 1;
+                break;
+            default:
+                error = 1;
+                break;
+        }
+    } while (message.GetSize() > 0 && !error);
+    message.Release();
 }

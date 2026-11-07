@@ -1475,6 +1475,11 @@
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "??0MemoryBuffer@@QAE@PATvariptr_u@@0@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "??0ReplicatorList@NetworkObjectManager@@QAE@XZ",
+   "kind": "function"
   }
  ]
 }

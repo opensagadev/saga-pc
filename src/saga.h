@@ -17989,6 +17989,7 @@ struct NETMESSAGE_PC {
         }
     }
     void Write(const void *values, i32 size, i32 count);
+    void Read(void *values, i32 size, i32 count);
     void Read(void *value, u32 size) {
         if (data != NULL) {
             PCByteCopy_candidate(value, data->bytes + read_offset, size);
@@ -29587,7 +29588,8 @@ struct EdClass {
 };
 
 /* Receives the registry's object create/destroy/defunct/revive events. */
-struct EdObjectNotifier {
+class EdObjectNotifier {
+  public:
     virtual void NotifyCreateObject(void *, EdClass *, void *, i32, i32, i32) {
     }
     virtual void NotifyDestroyObject(void *, EdClass *, i32, i32) {
@@ -30286,6 +30288,8 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
         NetworkObject *object;
     };
     struct ReplicatorList {
+        ReplicatorList() : head(NULL), tail(NULL), count(0) {
+        }
         NetReplicator *head;
         NetReplicator *tail;
         i32 count;
@@ -30338,6 +30342,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void ReceiveContinuityBreak(NETMESSAGE_PC &message, const V2Peer &peer);
     void ReceiveObjectCallMessage(NETMESSAGE_PC &message, const V2Peer &peer);
     void ReceiveReleaseMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveReplicaMessage(NETMESSAGE_PC &message, const V2Peer &peer);
     void ReceiveRemoteCallMessage(NETMESSAGE_PC &message, const V2Peer &peer);
     void ReceiveStartMessage(NETMESSAGE_PC &message, const V2Peer &peer);
     void ReceiveStatusMessage(NETMESSAGE_PC &message, const V2Peer &peer);
