@@ -9455,6 +9455,7 @@ address,symbol,size,ctype
 0x6b7c40,?EdTrace@@YAXPBDZZ,1,
 0x6b7c50,?EdMessage@@YAXPBDZZ,1,
 0x6b8510,_EdDrawSetVertexColour,108,
+0x6b86d0,??1EdFileInputStream@@UAE@XZ,7,
 0x6b86f0,??1EdFileOutputStream@@UAE@XZ,7,
 0x6b8940,??1EdTool@@UAE@XZ,7,
 0x6b8950,?Initialise@EdTool@@UAEXAATvariptr_u@@0H@Z,3,
@@ -9602,6 +9603,8 @@ address,symbol,size,ctype
 0x6c07f0,?SerialiseString@EdInputStream@@UAEHPAPADH@Z,39,
 0x6c0820,?SerialiseString@EdOutputStream@@UAEHPAPAD@Z,19,
 0x6c0840,?SerialiseString@EdOutputStream@@UAEHPAPADH@Z,25,
+0x6c0860,?Eat@EdFileInputStream@@UAEHHH@Z,32,
+0x6c0880,?SerialiseBuffer@EdFileInputStream@@UAEHPAXHH@Z,111,
 0x6c08f0,?Eat@EdFileOutputStream@@UAEHHH@Z,5,
 0x6c0900,?SerialiseBuffer@EdFileOutputStream@@UAEHPAXHH@Z,164,
 0x6c0a10,?LineToPointDistance@@YAMAAUVuVec@@00PAU1@@Z,499,
@@ -9610,6 +9613,10 @@ address,symbol,size,ctype
 0x6c1500,??0?$CSListLink@VPropertyMenu@@@@QAE@XZ,20,
 0x6c1540,??0PropertyMenuList@@QAE@XZ,13,
 0x6c1570,?InsertBefore@PropertyMenuList@@QAEXPAVPropertyMenu@@0@Z,96,
+0x6c1e50,??0EdInputStream@@QAE@PAUMemoryBuffer@@0@Z,40,
+0x6c1e80,??0EdFileInputStream@@QAE@PAUMemoryBuffer@@0@Z,68,
+0x6c1ed0,??_EEdFileInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileInputStream@@UAEPAXI@Z; no independent body
+0x6c1ed0,??_GEdFileInputStream@@UAEPAXI@Z,31,
 0x6c1ef0,??0EdFileOutputStream@@QAE@XZ,43,
 0x6c1f20,??_EEdFileOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileOutputStream@@UAEPAXI@Z; no independent body
 0x6c1f20,??_GEdFileOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -9672,6 +9679,9 @@ address,symbol,size,ctype
 0x6c80a0,?SerialiseString@EdInputStream@@UAEHPADH@Z,160,
 0x6c8140,?SerialiseString@EdInputStream@@UAEHPAPAD@Z,112,
 0x6c81b0,?SerialiseString@EdOutputStream@@UAEHPADH@Z,79,
+0x6c8200,?Open@EdFileInputStream@@QAEXHH@Z,87,
+0x6c8260,?BeginBlock@EdFileInputStream@@UAEPBDPBD@Z,342,
+0x6c83c0,?EndBlock@EdFileInputStream@@UAEXXZ,103,
 0x6c8430,?Open@EdFileOutputStream@@QAEXHH@Z,66,
 0x6c8480,?BeginBlock@EdFileOutputStream@@UAEPBDPBD@Z,86,
 0x6c84e0,?EndBlock@EdFileOutputStream@@UAEXXZ,109,
@@ -19039,6 +19049,7 @@ address,symbol,size,ctype
 0x76f888,__real@3ff99999a0000000,8,const f64
 0x76f8dc,??_C@_0N@JCLCLEOM@Snap?5Terrain?$AA@,13,char []
 0x76f8ec,??_C@_0O@BHGPKLAP@Cursor?5Radius?$AA@,14,char []
+0x76f960,??_7EdFileInputStream@@6B@,,
 0x76f984,??_7EdFileOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9a8,??_7EdRef@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9dc,??_7Placeable@@6B@,,native exactVT binding; unimplemented extent unclaimed
@@ -21813,6 +21824,10 @@ address,symbol,size,ctype
 0x7eb9cc,??_R3?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9dc,??_R2?$CSListLink@VEdSubSystem@@@@8,,
 0x7eb9e4,??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
+0x7ebde4,??_R4EdFileInputStream@@6B@,,
+0x7ebdf8,??_R3EdFileInputStream@@8,,
+0x7ebe08,??_R2EdFileInputStream@@8,,
+0x7ebe18,??_R1A@?0A@EA@EdFileInputStream@@8,,
 0x7ebe34,??_R4EdFileOutputStream@@6B@,,
 0x7ebe48,??_R3EdFileOutputStream@@8,,
 0x7ebe58,??_R2EdFileOutputStream@@8,,

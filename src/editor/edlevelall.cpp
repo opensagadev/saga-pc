@@ -120,6 +120,43 @@ STATIC_ASSERT(offsetof(EdFileOutputStream, block_count) == 0x40);
 STATIC_ASSERT(offsetof(EdFileOutputStream, file) == 0x44);
 STATIC_ASSERT(sizeof(EdFileOutputStream) == 0x48);
 
+/* Reads the .led block format back. Block names are kept in one pool;
+ * BeginBlock reads a block header once and keeps it pending until a caller
+ * asks for that block by name. */
+class EdFileInputStream : public EdInputStream {
+  public:
+    struct Block {
+        i32 position;
+        i32 size;
+        i32 name_offset;
+    };
+
+    EdFileInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary);
+    virtual ~EdFileInputStream() {
+    }
+    virtual i32 Eat(i32 size, i32 count);
+    virtual i32 SerialiseBuffer(void *data, i32 size, i32 count);
+    virtual char const *BeginBlock(char const *name);
+    virtual void EndBlock();
+    void Open(NUFILE handle, i32 stream_version);
+
+    Block blocks[8];
+    i32 block_count;
+    char block_names[256];
+    i32 name_length;
+    Block pending_block;
+    i32 pending;
+    NUFILE file;
+};
+STATIC_ASSERT(offsetof(EdFileInputStream, blocks) == 0x20);
+STATIC_ASSERT(offsetof(EdFileInputStream, block_count) == 0x80);
+STATIC_ASSERT(offsetof(EdFileInputStream, block_names) == 0x84);
+STATIC_ASSERT(offsetof(EdFileInputStream, name_length) == 0x184);
+STATIC_ASSERT(offsetof(EdFileInputStream, pending_block) == 0x188);
+STATIC_ASSERT(offsetof(EdFileInputStream, pending) == 0x194);
+STATIC_ASSERT(offsetof(EdFileInputStream, file) == 0x198);
+STATIC_ASSERT(sizeof(EdFileInputStream) == 0x19c);
+
 EdStream::EdStream() {
     memory_buffer = NULL;
     secondary_buffer = NULL;
@@ -216,6 +253,102 @@ i32 EdInputStream::SerialiseString(char **text) {
     char *allocation = (char *)memory_buffer->Allocate(length);
     *text = allocation;
     return SerialiseBuffer(allocation, 1, length);
+}
+
+EdInputStream::EdInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : EdStream(buffer, secondary) {
+    mode = 1;
+}
+
+EdFileInputStream::EdFileInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : EdInputStream(buffer, secondary) {
+    block_count = 0;
+    file = 0;
+    name_length = 0;
+    pending = 0;
+}
+
+i32 EdFileInputStream::Eat(i32 size, i32 count) {
+    return (i32)NuFileSeek(file, size * count, 1);
+}
+
+i32 EdFileInputStream::SerialiseBuffer(void *data, i32 size, i32 count) {
+    i32 result;
+    u8 *cursor;
+    i32 i;
+    result = NuFileRead(file, data, size * count);
+    if (swap_endianness && size > 1) {
+        cursor = (u8 *)data;
+        for (i = 0; i < count; i++) {
+            switch (size) {
+                case 2:
+                    EdFileSwapEndianess16(cursor);
+                    break;
+                case 4:
+                    EdFileSwapEndianess32(cursor);
+                    break;
+            }
+            cursor += size;
+        }
+    }
+    return result;
+}
+
+/* Retail reports through EdMessage with the block names alone; the format
+ * strings are not in the executable. */
+char const *EdFileInputStream::BeginBlock(char const *name) {
+    i32 position = (i32)NuFilePos(file);
+    char *block_name;
+    if (block_count > 0) {
+        if (block_count < 1)
+            EdTrace(NULL);
+        Block &parent = blocks[block_count - 1];
+        if (position >= parent.position + parent.size) {
+            EdMessage(block_names + parent.name_offset);
+            return NULL;
+        }
+    }
+    if (!pending) {
+        pending_block.position = position;
+        pending_block.name_offset = name_length;
+        pending = 1;
+        SerialiseBuffer(&pending_block.size, sizeof(pending_block.size), 1);
+        block_name = block_names + name_length;
+        SerialiseString(block_name, sizeof(block_names) - name_length);
+        name_length += NuStrLen(block_name) + 1;
+    } else {
+        block_name = block_names + pending_block.name_offset;
+    }
+    if (name != NULL && NuStrICmp(name, block_name)) {
+        EdMessage(name, block_name);
+        return NULL;
+    }
+    if (block_count < 8)
+        blocks[block_count++] = pending_block;
+    else
+        EdTrace(NULL);
+    pending = 0;
+    return block_name;
+}
+
+void EdFileInputStream::EndBlock() {
+    if (block_count < 1)
+        EdTrace(NULL);
+    Block block = blocks[--block_count];
+    i32 end = block.position + block.size;
+    if ((i32)NuFilePos(file) != end)
+        NuFileSeek(file, end, 0);
+    name_length = block.name_offset;
+}
+
+/* A version mismatch is reported with the two numbers only. */
+void EdFileInputStream::Open(NUFILE handle, i32 stream_version) {
+    file = handle;
+    version = 0;
+    if (BeginBlock("StreamInfo")) {
+        SerialiseBuffer(&version, sizeof(version), 1);
+        EndBlock();
+    }
+    if (version != stream_version)
+        EdMessage((char const *)version, stream_version);
 }
 
 /* Retail keeps an argument-less EdTrace call on the overflow paths of

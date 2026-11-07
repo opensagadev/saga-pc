@@ -29499,6 +29499,13 @@ void EdTrace(const char *, ...);
 class EdStream {
   public:
     EdStream();
+    EdStream(MemoryBuffer *buffer, MemoryBuffer *secondary) {
+        memory_buffer = buffer;
+        secondary_buffer = secondary;
+        mode = 0;
+        swap_endianness = 0;
+        flags = 0;
+    }
     virtual ~EdStream() {
     }
     virtual i32 Eat(i32, i32) = 0;
@@ -29537,6 +29544,7 @@ class EdInputStream : public EdStream {
     EdInputStream() {
         mode = 1;
     }
+    EdInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary);
     virtual ~EdInputStream() {
     }
     virtual i32 SerialiseString(char *text, i32 count);

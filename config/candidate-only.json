@@ -1460,6 +1460,11 @@
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "?Allocate@MemoryBuffer@@QAEPAXI@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??0EdStream@@QAE@PAUMemoryBuffer@@0@Z",
+   "kind": "function"
   }
  ]
 }
