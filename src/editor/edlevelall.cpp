@@ -746,11 +746,12 @@ void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *) {
 }
 
 eduimenu_s *PropertyTool::GetNextDefaultActiveMenu(eduimenu_s *menu) {
+    eduimenu_s *next = NULL;
     if (menu == NULL)
-        return edLevelActiveMenu;
-    if (menu != edLevelActiveMenu)
-        return NULL;
-    return edLevelPinnedMenu;
+        next = edLevelActiveMenu;
+    else if (menu == edLevelActiveMenu)
+        next = edLevelPinnedMenu;
+    return next;
 }
 
 eduimenu_s *GetMenuActiveChild(eduimenu_s *menu) {

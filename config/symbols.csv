@@ -9886,7 +9886,7 @@ address,symbol,size,ctype
 0x6bdf00,?SelectAttr@PropertyMenu@@QAEXH@Z,53,
 0x6bdf40,?Initialise@PropertyTool@@UAEXAATvariptr_u@@0H@Z,3,
 0x6bdf50,?RefreshMenuControls@PropertyTool@@QAEXPAVPropertyMenu@@@Z,81,
-0x6bdfb0,?GetNextDefaultActiveMenu@PropertyTool@@QAEPAUeduimenu_s@@PAU2@@Z,35,
+0x6bdfb0,?GetNextDefaultActiveMenu@PropertyTool@@QAEPAUeduimenu_s@@PAU2@@Z,37,
 0x6bdfe0,?GetMenuActiveChild@@YAPAUeduimenu_s@@PAU1@@Z,24,
 0x6be0b0,?SerialiseVuVec@@YAXAAVEdStream@@PAXH@Z,21,
 0x6be0d0,?SerialiseVuMtx@@YAXAAVEdStream@@PAXH@Z,21,
