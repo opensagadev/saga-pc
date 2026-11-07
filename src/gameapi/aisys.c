@@ -17686,7 +17686,6 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
         if (aieditor->selected_antinode != NULL)
             edcamSetPos(&aieditor->selected_antinode->position);
     } else if (pad->digital_buttons & 0x100) {
-        /* PC branches on 8/2/4/1 individually; no cycle when all four are clear. */
         if (pad->digital_buttons_pressed & 8) {
             forward = 1;
             skip_platforms = 0;
@@ -17702,37 +17701,53 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
         } else {
             goto nearest;
         }
-        first = NULL;
-        do {
-            if (aieditor->selected_antinode != NULL) {
-                if (forward)
+        if (forward) {
+            if (aieditor->selected_antinode != NULL)
+                aieditor->selected_antinode =
+                    (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &aieditor->selected_antinode->link);
+            if (aieditor->selected_antinode == NULL)
+                aieditor->selected_antinode = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes);
+            if (skip_platforms && aieditor->selected_antinode != NULL &&
+                NuSpecialExistsFn(&aieditor->selected_antinode->special)) {
+                first = aieditor->selected_antinode;
+                do {
                     aieditor->selected_antinode =
                         (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &aieditor->selected_antinode->link);
-                else
+                    if (aieditor->selected_antinode == NULL) {
+                        aieditor->selected_antinode = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes);
+                        if (aieditor->selected_antinode == NULL)
+                            break;
+                    }
+                    if (aieditor->selected_antinode == first) {
+                        aieditor->selected_antinode = NULL;
+                        break;
+                    }
+                } while (NuSpecialExistsFn(&aieditor->selected_antinode->special));
+            }
+        } else {
+            if (aieditor->selected_antinode != NULL)
+                aieditor->selected_antinode =
+                    (EDANTINODE_s *)NuLinkedListGetPrev(&aieditor->antinodes, &aieditor->selected_antinode->link);
+            if (aieditor->selected_antinode == NULL)
+                aieditor->selected_antinode = (EDANTINODE_s *)NuLinkedListGetTail(&aieditor->antinodes);
+            if (skip_platforms && aieditor->selected_antinode != NULL &&
+                NuSpecialExistsFn(&aieditor->selected_antinode->special)) {
+                first = aieditor->selected_antinode;
+                do {
                     aieditor->selected_antinode =
                         (EDANTINODE_s *)NuLinkedListGetPrev(&aieditor->antinodes, &aieditor->selected_antinode->link);
+                    if (aieditor->selected_antinode == NULL) {
+                        aieditor->selected_antinode = (EDANTINODE_s *)NuLinkedListGetTail(&aieditor->antinodes);
+                        if (aieditor->selected_antinode == NULL)
+                            break;
+                    }
+                    if (aieditor->selected_antinode == first) {
+                        aieditor->selected_antinode = NULL;
+                        break;
+                    }
+                } while (NuSpecialExistsFn(&aieditor->selected_antinode->special));
             }
-            if (aieditor->selected_antinode == NULL) {
-                if (forward)
-                    aieditor->selected_antinode = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes);
-                else
-                    aieditor->selected_antinode = (EDANTINODE_s *)NuLinkedListGetTail(&aieditor->antinodes);
-            }
-            if (!skip_platforms)
-                break;
-            if (aieditor->selected_antinode == NULL)
-                goto nearest;
-            if (first != NULL && aieditor->selected_antinode == first) {
-                aieditor->selected_antinode = NULL;
-                goto nearest;
-            }
-            if (!NuSpecialExistsFn(&aieditor->selected_antinode->special))
-                break;
-            /* The initial callback may publish another selected node. Remember
-             * the current shared slot after that call, as Native does. */
-            if (first == NULL)
-                first = aieditor->selected_antinode;
-        } while (1);
+        }
         if (aieditor->selected_antinode != NULL)
             edcamSetPos(&aieditor->selected_antinode->position);
     } else if (pad->digital_buttons & 0x8000) {
@@ -17778,8 +17793,9 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
                 antinodeEditor_AntinodeMoved(aieditor->selected_antinode);
             }
         }
-    } else if ((pad->digital_buttons & 0x1000) && (aieditorsettings.display_options & 0x100)) {
-        if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
+    } else if (pad->digital_buttons & 0x1000) {
+        if ((aieditorsettings.display_options & 0x100) && aieditor->selected_antinode != NULL &&
+            aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) *
                    ((double)0.05f);
@@ -17790,8 +17806,9 @@ eduimenu_s *__cdecl antinodeEditor_Process(FRAME_PAD_PC *pad) {
             if (aieditor->selected_antinode->upper_height < aieditor->selected_antinode->lower_height + ((double)0.01f))
                 aieditor->selected_antinode->upper_height = aieditor->selected_antinode->lower_height + ((double)0.01f);
         }
-    } else if ((pad->digital_buttons & 0x4000) && (aieditorsettings.display_options & 0x100)) {
-        if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
+    } else if (pad->digital_buttons & 0x4000) {
+        if ((aieditorsettings.display_options & 0x100) && aieditor->selected_antinode != NULL &&
+            aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) *
                    ((double)0.05f);
