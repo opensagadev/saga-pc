@@ -166,18 +166,20 @@ GAMEOBJECT *__cdecl Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
     GAMEOBJECT *target;
     if (system == NULL)
         system = MissionSys;
-    if (system == NULL) {
-        if (identity != NULL)
-            *identity = 0;
-        return NULL;
+    if (system != NULL) {
+        reader = (MISSION_SYSTEM_READER_PC *)system;
+        target = FindGameObject(reader->active_mission->find_character, 0, 0, 1, 0);
+        if (identity != NULL) {
+            if (target != NULL)
+                *identity = U64_PAIR(target->collision_identity_mask);
+            else
+                *identity = 0;
+        }
+        return target;
     }
-    reader = (MISSION_SYSTEM_READER_PC *)system;
-    target = FindGameObject(reader->active_mission->find_character, 0, 0, 1, 0);
-    if (identity != NULL) {
-        *identity =
-            target == NULL ? 0 : ((u64)target->collision_identity_mask[1] << 32) | target->collision_identity_mask[0];
-    }
-    return target;
+    if (identity != NULL)
+        *identity = 0;
+    return NULL;
 }
 
 i32 __cdecl Missions_PickupsOff(MISSIONSYS_PC *system) {
