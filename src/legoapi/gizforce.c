@@ -341,9 +341,14 @@ i32 __cdecl GizForce_Complete(GIZFORCE_PC *force) {
         return 0;
     if (force->anim_set == NULL)
         return 1;
-    if (force->runtime_flags & 0x40)
-        return force->anim_set->state == 0;
-    return force->anim_set->state == 2;
+    if (force->runtime_flags & 0x40) {
+        if (force->anim_set->state == 0)
+            return 1;
+        return 0;
+    }
+    if (force->anim_set->state == 2)
+        return 1;
+    return 0;
 }
 
 typedef struct GIZFORCE_GROUP_BEST_PC {
@@ -1087,12 +1092,16 @@ static __declspec(noinline) void ForceGroupPopPc(GIZFORCE_PC *force) {
     }
 }
 
-static __declspec(noinline) i32 ForceAnimationDonePc(GIZFORCE_PC *force) {
-    if (force == NULL || force->anim_set == NULL)
-        return 1;
-    if (force->runtime_flags & 0x40)
-        return force->anim_set->state == 0;
-    return force->anim_set->state == 2;
+i32 __cdecl ForceAnimationDonePc(GIZFORCE_PC *force) {
+    if (force != NULL && force->anim_set != NULL) {
+        if (force->runtime_flags & 0x40) {
+            if (force->anim_set->state != 0)
+                return 0;
+        } else if (force->anim_set->state != 2) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 extern i32 force_gizmotype_id;

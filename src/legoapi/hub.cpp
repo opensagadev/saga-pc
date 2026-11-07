@@ -4818,6 +4818,7 @@ extern "C" {
 
     void __cdecl CutScene_DrawSubtitles(void);
     extern i32 DRAWBGLOAD;
+    extern i32 FPSDISPLAY;
 
     void __cdecl DrawPanel(void) {
         i32 menu = GetMenuID();
@@ -4970,7 +4971,10 @@ extern "C" {
                 }
             }
         }
-        STUBBED_NAMED("DrawPanel: frame-rate diagnostics at 0x004bb319");
+        if (FPSDISPLAY != 0) {
+            sprintf(coordinate_text, "fps: %d", (i32)(1.0f / FRAMETIME));
+            Text3D(coordinate_text, 0.85f, -0.85f, 1.0f, 0.4f, 0.4f, 0.4f, 12, 255, 255, 255);
+        }
         if (CUTSTOPGAME != 0) {
             CutScene_DrawSubtitles();
             goto draw_menu;

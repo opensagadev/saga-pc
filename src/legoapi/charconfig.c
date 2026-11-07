@@ -30,6 +30,9 @@ STATIC_ASSERT(offsetof(CHARCONFIG_PC, arena_end) == 0x24);
 STATIC_ASSERT(offsetof(CHARCONFIG_PC, animation_names) == 0x28);
 CHARCONFIG_PC charconfig = {0};
 
+/* Defined in charconfig_diagnostic_pc.c; retail calls it with and without a path. */
+void __cdecl CharConfigPakDiagnosticPc();
+
 static __declspec(noinline) f32 CharConfigAbsFloat(f32 value) {
     union {
         f32 value;
@@ -406,10 +409,9 @@ static void CC_anim_start(NUFPAR_PC *parser) {
     if (charconfig.animation_count >= 100) {
         while (NuFParGetLine(parser) != 0) {
             if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0)
-                break;
+                return;
         }
-        STUBBED_NAMED("CC_anim_start: unresolved animation capacity diagnostic at "
-                      "0x005845b0");
+        CharConfigPakDiagnosticPc(100, charconfig.character->name);
         return;
     }
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 40)
@@ -2228,9 +2230,6 @@ done:
     SecondCharConfigure = 0;
     return redirected;
 }
-
-/* Defined in charconfig_diagnostic_pc.c; retail calls it with and without a path. */
-void __cdecl CharConfigPakDiagnosticPc();
 
 void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
     i32 size;

@@ -392,6 +392,13 @@ f32 __cdecl Condition_GotVictimPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     return 0.0f;
 }
 
+f32 __cdecl Condition_ScreenWipePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                   void *argument) {
+    if (FadeSys.fade > 0.0f)
+        return 1.0f;
+    return 0.0f;
+}
+
 f32 __cdecl Condition_BeenSpawnedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                     void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->field_280 == 0xff && packet->creature_index == 0xff)
@@ -533,10 +540,18 @@ f32 __cdecl Condition_Player2ActivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
         return 1.0f;
     return 0.0f;
 }
+f32 __cdecl Condition_PSPPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                            void *argument) {
+    return 0.0f;
+}
 f32 __cdecl Condition_BoltsDontGetDeflectedBackPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                                   char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && (packet->owner->objptr->field_ef0 & 8) != 0)
         return 1.0f;
+    return 0.0f;
+}
+f32 __cdecl Condition_CheatProgressPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
     return 0.0f;
 }
 f32 __cdecl Condition_BigJumpCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -683,6 +698,16 @@ f32 __cdecl Condition_FinishedSplinePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
         return 1.0f;
     }
     return -1.0f;
+}
+
+extern f32 debug_condition;
+f32 __cdecl Condition_GlynTestPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                 void *argument) {
+    return 1.0f;
+}
+f32 __cdecl Condition_DebugPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                              void *argument) {
+    return debug_condition;
 }
 
 STATIC_ASSERT(offsetof(AIPACKET_PC, reset_mode) == 0x13e);
@@ -838,5 +863,10 @@ f32 __cdecl Condition_ObstacleAtStartPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
                                         void *argument) {
     if (argument != NULL && GizmoGetOutput(WORLD->gizmo_sys, argument, 1, 1) == 0)
         return 1.0f;
+    return 0.0f;
+}
+
+f32 __cdecl Condition_NetworkGameOnGoingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
+                                           char *name, void *argument) {
     return 0.0f;
 }

@@ -99,6 +99,15 @@ f32 __cdecl Condition_ForceCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return 0.0f;
 }
 
+i32 __cdecl ForceAnimationDonePc(GIZFORCE_PC *force);
+
+f32 __cdecl Condition_ForceFinishedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
+                                      void *argument) {
+    if (argument != NULL && ForceAnimationDonePc((GIZFORCE_PC *)argument) != 0)
+        return 1.0f;
+    return 0.0f;
+}
+
 f32 __cdecl Condition_MissionModePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                     void *argument) {
     if (Mission_Active(NULL) != NULL)
@@ -632,6 +641,10 @@ f32 __cdecl Condition_PlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
             return 1.0f;
     }
     return 0.0f;
+}
+
+void *__cdecl Condition_EitherPlayerLocatorRangeXZInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    return name != NULL ? AIPathFindLocator(system, name) : NULL;
 }
 
 f32 __cdecl Condition_EitherPlayerOnObjectPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,

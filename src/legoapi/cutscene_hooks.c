@@ -42,14 +42,38 @@ i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut) {
     return 1;
 }
 
+extern void *game_cutscenes_podrace_avalanche;
+extern NUVEC PodAvalanchePeakPos;
+extern f32 PodAvalancheShakeFrames;
+extern f32 PodAvalancheShakeRange;
+
+/* Retail keeps this TU's out-of-line NuFabs copy at 0x428930. */
+static f32 CutSceneFabsPc(f32 value) {
+    i32 bits = *(i32 *)&value;
+    bits &= 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
 void __cdecl CutScene_PreUpdateFn_LSW(CUTINFO *cut) {
-    STUBBED_NAMED("CutScene_PreUpdateFn_LSW: avalanche rumble/shake"
-                  " (podrace_avalanche and podsprint_avalanche cutscenes only:"
-                  " intensity = 111.0f - instance frame clamped via the -110 test,"
-                  " 1 - |intensity| / 110, NuVecDist(&GameCam->position,"
-                  " &PodAvalanchePeakPos, NULL) scaled at 750.0f,"
-                  " NewRumbleAllPlayers(qrand() / 65536 * intensity, 0, 0, 0),"
-                  " GameCam_NewShake(GameCam, intensity + intensity, 0.1f, 1.25f))");
+    f32 intensity;
+    f32 distance;
+
+    if (cut != game_cutscenes_podrace_avalanche && cut != game_cutscenes_cutscene) {
+        return;
+    }
+    intensity = PodAvalancheShakeFrames - ((INSTNUGCUTSCENE *)cut->instance)->current_frame;
+    if (intensity < -(PodAvalancheShakeFrames - 1.0f)) {
+        intensity = -(PodAvalancheShakeFrames - 1.0f);
+    }
+    intensity = 1.0f - CutSceneFabsPc(intensity) / (PodAvalancheShakeFrames - 1.0f);
+
+    distance = NuVecDist(&GameCam->position, &PodAvalanchePeakPos, NULL);
+    if (distance < PodAvalancheShakeRange) {
+        intensity *= 1.0f - distance / PodAvalancheShakeRange;
+    }
+
+    NewRumbleAllPlayers((f32)qrand() * (1.0f / 65535.0f) * intensity, 0.0f, 0, 0);
+    GameCam_NewShake(GameCam, intensity + intensity, 0.1f, 1.25f);
 }
 
 void __cdecl CutScene_PostUpdateFn_LSW(void) {

@@ -8551,7 +8551,9 @@ extern "C" {
 #pragma bss_seg(".bss$GizObstacle_SetDefaultSFXFn")
     void(__cdecl *GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle) = 0;
 #pragma bss_seg()
+    f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
+    f32 PodAvalancheShakeRange = 750.0f;
     LEVEL_PROGRESS *LevelProgressData = 0;
     LEVELSPLINE_PC *LevSplList = 0;
 #pragma const_seg(".rdata$LevelSplineNamePointCamPc")
@@ -8699,6 +8701,7 @@ extern "C" {
     MEMORYMANAGER theMemoryManager = {0};
     f32 DEFAULTFRAMETIME = 0;
     i32 PAL = 0;
+    i32 FPSDISPLAY = 0;
     PART_EMIT_PC part_emits[40] = {0};
     i32 part_page_on[8] = {0};
     GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
@@ -13441,6 +13444,9 @@ extern "C" {
 #pragma const_seg()
 #pragma bss_seg(".bss$part_types")
     PARTTYPE_LOOKUP_PC part_types[128] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$debug_condition")
+    f32 debug_condition = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$script_spline_selected")
     NUGSPLINE *script_spline_selected = 0;

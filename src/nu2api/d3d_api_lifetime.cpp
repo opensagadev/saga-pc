@@ -71,10 +71,12 @@ extern "C" void __cdecl PcRendererShutdown(i32 unused) {
     NuFmvTextureReleasePc();
 }
 
+extern "C" void __cdecl NuPostEffectResizePc(void);
+
 extern "C" void __cdecl PCGraphicsRecreateResources(i32 reset_available) {
     PCDeviceBackend.RestoreDefaultPoolResources();
     if (reset_available != 0) {
-        STUBBED_NAMED("void action5c3900 at6dfe33");
+        NuPostEffectResizePc();
         ResizeStillRenderPc(PS2_REZ_W, PS2_REZ_H);
     }
     PCGraphicsRestoreEffectTextures(reset_available == 1);

@@ -2039,6 +2039,20 @@ i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     return 1;
 }
 
+i32 __cdecl Action_LetGoOfBalloonPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 count, i32 first_time, f32 elapsed) {
+    if (packet != NULL && packet->owner != NULL)
+        LetGoOfBalloon(packet->owner->objptr);
+    return 1;
+}
+
+i32 __cdecl Action_DrawBossHitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                       char **params, i32 count, i32 first_time, f32 elapsed) {
+    if (packet != NULL && packet->owner != NULL)
+        DrawBossHitPoints(packet->owner->objptr);
+    return 1;
+}
+
 i32 __cdecl Action_GrabVictim(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object;

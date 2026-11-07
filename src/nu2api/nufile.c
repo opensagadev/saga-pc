@@ -1076,7 +1076,6 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
 
     if (arena == NULL) {
         NuFileError();
-        STUBBED_NAMED("NuDatOpenEx: permanent arena not initialized");
         goto close_file;
     }
 

@@ -1632,6 +1632,7 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
     }
     nodes = path->nodes;
     node = &nodes[start_node];
+    destination = &nodes[destination_node];
     if (excluded_route_mask == 0 && route_index == 0xff) {
         if (node->distance_cache_nodes[0] == destination_node) {
             return node->distance_cache[0];
@@ -1654,7 +1655,6 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
         }
     }
 
-    destination = &nodes[destination_node];
     while (node != destination) {
         AIPATHCNX_PC *connection;
         i32 connection_index = 0xff;
@@ -1664,7 +1664,7 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
                 if (from < route->route_count && route->node_routes[destination_node] < route->route_count) {
                     connection_index = route->route_nodes[from][route->node_routes[destination_node]];
                 } else {
-                    STUBBED_NAMED("PC path route-map diagnostic at 0x00512860");
+                    AIScriptMissingStateDiagnosticAlternate(route->name, node_index, destination_node);
                     return FLT_MAX;
                 }
             } else {

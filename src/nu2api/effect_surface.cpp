@@ -106,6 +106,22 @@ void PC_EFFECT_SURFACE_PC::RestoreResources() {
     }
 }
 /* After a D3D reset, rebinds each live frame texture's resource and clears it to opaque black. */
+/* Non-virtual post-filter resize members; NuPostEffectResizePc calls them after a device reset. */
+void NuMainFilter::ResizeTexturesPc(i32, i32) {
+}
+void NuDeferredFilter::ResizeTexturesPc(i32, i32) {
+    if (textures[2] != NULL)
+        PCGraphicsResizeEffectTexture(textures[2], -1, -1, -1);
+    if (textures[0] != NULL)
+        PCGraphicsResizeEffectTexture(textures[0], -1, -1, -1);
+    for (i32 i = 0; i < 2; ++i) {
+        if (textures[4 + i] != NULL)
+            PCGraphicsResizeEffectTexture(textures[4 + i], textures[2]->width, textures[2]->height, -1);
+    }
+}
+void NuSpeedBlurFilter::ResizeTexturesPc(i32, i32) {
+}
+
 extern "C" void __cdecl PCGraphicsClearFrameTexturesPc(void) {
     PC_EFFECT_SURFACE_PC surface;
     for (i32 i = 0; i < 16; ++i) {

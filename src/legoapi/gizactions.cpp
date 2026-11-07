@@ -656,6 +656,11 @@ extern "C" {
         }
         return reinterpret_cast<void *>(static_cast<intptr_t>(flags));
     }
+
+    /* Retail returns zero unconditionally. */
+    f32 __cdecl Condition_NumForceObjectsPc(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *) {
+        return 0.0f;
+    }
 }
 
 extern "C" {

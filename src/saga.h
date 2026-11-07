@@ -22879,6 +22879,7 @@ class NuMainFilter : public NuMainFilterGen {
   public:
     NuMainFilter();
     void RenderBloomPc();
+    void ResizeTexturesPc(i32 width, i32 height);
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
     virtual void destroyResources();
@@ -22933,6 +22934,7 @@ class NuSpeedBlurFilterGen : public NuPostFilter {
 };
 class NuSpeedBlurFilter : public NuSpeedBlurFilterGen {
   public:
+    void ResizeTexturesPc(i32 width, i32 height);
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();
@@ -22969,6 +22971,7 @@ class NuDeferredFilterGen : public NuPostFilter {
 };
 class NuDeferredFilter : public NuDeferredFilterGen {
   public:
+    void ResizeTexturesPc(i32 width, i32 height);
     virtual void initResources();
     virtual void initTextureResources(i32, i32);
 };

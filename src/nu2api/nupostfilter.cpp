@@ -46,6 +46,21 @@ GRAPHICS_RENDER_TEXTURE_PC *__cdecl NuPostEffectGetBackBuffer(i32 frame) {
     return NuPostEffectBackBufferCopyPc;
 }
 
+extern "C" void __cdecl PCGraphicsResizePostEffectTexturesPc(u32, u32);
+
+/* Re-creates the size-dependent filter textures after a device reset. */
+extern "C" void __cdecl NuPostEffectResizePc(void) {
+    i32 width = PS2_REZ_W;
+    i32 height = PS2_REZ_H;
+    if (NuPostMainFilterPc != NULL)
+        ((NuMainFilter *)NuPostMainFilterPc)->ResizeTexturesPc(width, height);
+    if (NuPostSpeedFilterPc != NULL)
+        ((NuSpeedBlurFilter *)NuPostSpeedFilterPc)->ResizeTexturesPc(width, height);
+    if (NuPostDeferredFilterPc != NULL)
+        ((NuDeferredFilter *)NuPostDeferredFilterPc)->ResizeTexturesPc(width, height);
+    PCGraphicsResizePostEffectTexturesPc(width, height);
+}
+
 /* Original nupostfilter source family. This is an append proposal to existing
  * nupostfilter.c; includes/layout declarations supplied separately. */
 void __cdecl NuPostEffectReset(void) {
