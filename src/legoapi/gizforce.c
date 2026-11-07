@@ -1646,6 +1646,12 @@ static __declspec(noinline) i32 __cdecl GizForces_BoltHitPlat(GIZFORCE_PC *force
     config = force->config_flags;
     if ((config & 0x100) != 0) {
         force->runtime_flags = flags | 0x8000;
+        if (player_index != -1) {
+            player = (GAMEOBJECT *)Player[player_index];
+            if ((player->flags_1fc_word & 0x80) != 0)
+                NewBuzz(player->pad->bound_pad, 0.1f, 0);
+        }
+        return 1;
     } else if ((config & 0x200) != 0) {
         if (force->blowup_type != -1) {
             if ((config & 0x20) != 0) {
