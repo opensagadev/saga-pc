@@ -9003,27 +9003,29 @@ i32 __cdecl Action_SetPathCnxFlag(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     i32 set;
     i32 both_ways;
     i32 index;
+    i32 direction;
     (void)processor;
     (void)packet;
     (void)param_6;
-    if (sys == NULL || sys->path_sys == NULL || sys->path_sys->path_count == 0 || first_time == 0 || param_count < 1) {
-        return 1;
-    }
-
     from = NULL;
     to = NULL;
     add_flags = 0;
     remove_flags = 0;
     set = 1;
     both_ways = 0;
+    direction = 0;
+    if (sys == NULL || sys->path_sys == NULL || sys->path_sys->path_count == 0 || first_time == 0) {
+        return 1;
+    }
+
     for (index = 0; index < param_count; ++index) {
         u32 flag;
-        char *match = NuStrIStr(params[index], (char *)"from=");
+        char *match = NuStrIStr(params[index], (char *)"from");
         if (match != NULL) {
             from = match + 5;
             continue;
         }
-        match = NuStrIStr(params[index], (char *)"to=");
+        match = NuStrIStr(params[index], (char *)AIControllerLiteralPc00757d6c);
         if (match != NULL) {
             to = match + 3;
             continue;
@@ -9048,21 +9050,21 @@ i32 __cdecl Action_SetPathCnxFlag(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     }
 
     if (from != NULL && to != NULL) {
-        i32 direction = 0;
         AIPATHCNX_PC *connection =
             (AIPATHCNX_PC *)(AIPAthFindPathCnx(sys, sys->path_sys->active_path, from, to, &direction));
         if (connection != NULL) {
             if (set) {
-                connection->traversal_flags[direction] =
-                    (connection->traversal_flags[direction] | add_flags) & ~remove_flags;
-                if (both_ways) {
-                    connection->traversal_flags[direction ^ 1] =
-                        (connection->traversal_flags[direction ^ 1] | add_flags) & ~remove_flags;
-                }
+                connection->traversal_flags[direction] |= add_flags;
+                connection->traversal_flags[direction] &= ~remove_flags;
             } else {
                 connection->traversal_flags[direction] &= ~add_flags;
-                if (both_ways) {
-                    connection->traversal_flags[direction ^ 1] &= ~add_flags;
+            }
+            if (both_ways) {
+                if (set) {
+                    connection->traversal_flags[!direction] |= add_flags;
+                    connection->traversal_flags[!direction] &= ~remove_flags;
+                } else {
+                    connection->traversal_flags[!direction] &= ~add_flags;
                 }
             }
         }
