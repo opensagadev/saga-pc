@@ -17,7 +17,7 @@
     "config/library-objects.json": "9727c009368075a0e525a27ae8337b66c444838945fc976fb2676f9f1fe372a9",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "5ff5f8d774eb2d6cdfe73b1ba10a454ca7b52e7532eb26d97a3fa8860ae9f8fa",
+    "config/symbols.csv": "484e34bfabd8f0cd755410f6cd15ebedfe578bcfc4b717d0d64aab19c4e1dc0d",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -174,7 +174,7 @@
     "src/nu2api/input_detection.cpp": "958d85117bc5a8f0ff95acabf1f9f2f255b8cba9530954bd79d9d1282ab6aaf7",
     "src/nu2api/input_runtime.cpp": "b8ca8fcbcca707eb748a7415665234de52ae915daa01158fd8364ea2b5f95cae",
     "src/nu2api/key_events.cpp": "6becdae8d9abc72d084253a1ed12a74699d4fcf2d932ecc48429e692454e9289",
-    "src/nu2api/nu3d_includes.cpp": "17d7a665877b4ee022ea0e94c3449467fe49980852ab08f82ecadf82ef815f55",
+    "src/nu2api/nu3d_includes.cpp": "9f2d28185027b36df954d9cb998cb1a185777fb964d31758de51f46928ae63a2",
     "src/nu2api/nucore.cpp": "88ecea07cda386a80fc63ff74195834e25527a08a00046510178060d5a5c119b",
     "src/nu2api/nudebug_pc.cpp": "88310cb6d37bd0d69571c6f9cf140b93fe26496405f80671ea8763863fe96cfb",
     "src/nu2api/nudlist.cpp": "34759251f7cc3c6a5945778c3cc054a10e1dc085647475c829cfa3773e17d533",
@@ -889,7 +889,7 @@
     "build/obj/nu2api/key_events.obj": "5a58528da429a711250492e1b7735ec48fb8c59b25ee46e686c4699a6851b43d",
     "build/obj/nu2api/keyboard_init.obj": "69b383fe953cf1dd641d578fc31b8b6860b4cc4746a84a6b1a8f0015460bae09",
     "build/obj/nu2api/keyboard_read.obj": "45de3aa4a4f818a0d7fb338147d777c15ce0ff853a0e3b98516cab3338728c07",
-    "build/obj/nu2api/nu3d_includes.obj": "501c58972a812ff450f307958ddc2fa66df58e9fa4a64840a40fb2c8837e4924",
+    "build/obj/nu2api/nu3d_includes.obj": "adec4a5fe54123c7db1a329e42d028793d433e76a6bef71473758c934e411ba5",
     "build/obj/nu2api/nualloc.obj": "aefc608c1b30339374f6c22875697e3f54e35f8c16d2118e2f6db52345917609",
     "build/obj/nu2api/nuapi.obj": "a71d66cf126a9a6a44f94ec3d2a7790865f8bb7a52817c9eb34763bc17405d7e",
     "build/obj/nu2api/nubridge.obj": "c81a4574ce11998f1e300428597f26afc59e8b27f71392104b9bd3a3c79f45e0",
@@ -151417,21 +151417,21 @@
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 222,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 248,
-          "exact_match": false,
+          "base_size": 222,
+          "exact_match": true,
           "target_sha256": "d9356f8441ef2536ab315e14975828bea8326a194373519139e01fae86eb8542",
-          "base_sha256": "e49054d24b414531c30d2a835b459426c94900afaf13b23189f57daf95a7f4be",
+          "base_sha256": "d9356f8441ef2536ab315e14975828bea8326a194373519139e01fae86eb8542",
           "relocation_count": 4,
           "comparison_unit": "005c9b60-d8b54c8db8ea",
-          "objdiff_percent": 83.0
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 83.0
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimData2CalcTime",
@@ -151441,21 +151441,21 @@
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 303,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 310,
-          "exact_match": false,
+          "base_size": 303,
+          "exact_match": true,
           "target_sha256": "edeccf6932e957371332eff19faffc0fb472305f0fd2f5fd061f246546dd2f3c",
-          "base_sha256": "9a6e5c9926e36e5e8964baa3378a408b4c87e980646c43c771995a28d15be733",
+          "base_sha256": "edeccf6932e957371332eff19faffc0fb472305f0fd2f5fd061f246546dd2f3c",
           "relocation_count": 5,
           "comparison_unit": "005c9c40-3d28425b397e",
-          "objdiff_percent": 94.77391
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 94.77391
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimDataFindVersion",
@@ -151465,21 +151465,21 @@
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 81,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 88,
-          "exact_match": false,
+          "base_size": 81,
+          "exact_match": true,
           "target_sha256": "63a8f3776ae3a54e3c76406a37d0f83ffa95734b3584243631b5eda2472e8691",
-          "base_sha256": "8eb9f6c83f18818559050194e589621e503d783cecc775b1029543ce614013ed",
+          "base_sha256": "63a8f3776ae3a54e3c76406a37d0f83ffa95734b3584243631b5eda2472e8691",
           "relocation_count": 3,
           "comparison_unit": "005c9d70-1c1e411d37cb",
-          "objdiff_percent": 83.8
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 83.8
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimDataChunkCreate",
@@ -151537,21 +151537,21 @@
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 120,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 122,
-          "exact_match": false,
+          "base_size": 120,
+          "exact_match": true,
           "target_sha256": "baf9ebd9246ac169b024bcfc9195c04f0632f6de56a79a41ce7a72f7495eb8a8",
-          "base_sha256": "cd4fff5face1eafcb630e942ef3b41ce19417f27a274eeee2391c66da2e6a327",
+          "base_sha256": "baf9ebd9246ac169b024bcfc9195c04f0632f6de56a79a41ce7a72f7495eb8a8",
           "relocation_count": 8,
           "comparison_unit": "005c9e70-8881d5795ae6",
-          "objdiff_percent": 89.30232
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 89.30232
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimCurveDestroy",
@@ -151637,17 +151637,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 469,
+          "base_size": 481,
           "exact_match": false,
           "target_sha256": "df322eee5734360b6b7c74f8a612782ec62719c712b3c548b5df7da0c916a6f6",
-          "base_sha256": "9131da2f73cd973872fd13a34372400ecfd8e0ce2297b3a5754dfec5accd728a",
-          "relocation_count": 8,
+          "base_sha256": "8fdcb7f7ef2a7c0e2e0a2d29fde1b9487770b1aafccb8132d3328ceb0af3d58c",
+          "relocation_count": 6,
           "comparison_unit": "005ca000-ba305b6110cb",
-          "objdiff_percent": 81.4898
+          "objdiff_percent": 97.5034
         }
       ],
       "status": "different",
-      "objdiff_percent": 81.4898
+      "objdiff_percent": 97.5034
     },
     {
       "name": "NuAnimBuffCreateScratch",
@@ -152213,17 +152213,17 @@
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 1363,
+          "base_size": 1407,
           "exact_match": false,
           "target_sha256": "58d518df2fc498f28b05aa1bece00cc608bdca53a5d15b89c5881c616e810743",
-          "base_sha256": "20d023d1aa8ae2b98ac899d6b34be60af351d51a5ca3b28e62e65d2f03f6f535",
-          "relocation_count": 23,
+          "base_sha256": "31a403c55f6bea3eafeb05f85993a08dc0d3febd2b07269a4dd0cab7bcf28474",
+          "relocation_count": 28,
           "comparison_unit": "005ceee0-4c4cf7f2c828",
-          "objdiff_percent": 80.4874
+          "objdiff_percent": 99.21218
         }
       ],
       "status": "different",
-      "objdiff_percent": 80.4874
+      "objdiff_percent": 99.21218
     },
     {
       "name": "NuSpecialList",
@@ -161491,21 +161491,21 @@
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 89,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 84,
-          "exact_match": false,
+          "base_size": 89,
+          "exact_match": true,
           "target_sha256": "fc34e67c2b06e2275248183001a9f965709d80cf0afbea274c51097ff34e35f3",
-          "base_sha256": "6e47738551fae3e66b865b3c7313b857dc5f5f90df07bde8651a91f597d77422",
+          "base_sha256": "fc34e67c2b06e2275248183001a9f965709d80cf0afbea274c51097ff34e35f3",
           "relocation_count": 3,
           "comparison_unit": "005e9020-054e1a289c9f",
-          "objdiff_percent": 80.29032
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 80.29032
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimDataFixPtrs",
@@ -161683,21 +161683,21 @@
         "src/nu2api/nu3d_includes.cpp"
       ],
       "target_size": 196,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/nu2api/nu3d_includes.cpp",
-          "base_size": 194,
-          "exact_match": false,
+          "base_size": 196,
+          "exact_match": true,
           "target_sha256": "bdb90ed6cfeb28c09b69c7a5635117b871706d59b48b3ba40aa2d909b94fe969",
-          "base_sha256": "e5a2f3539d2691f3e04c2b4499242aaab5bc8493372b4223e4213f3e767e9693",
+          "base_sha256": "bdb90ed6cfeb28c09b69c7a5635117b871706d59b48b3ba40aa2d909b94fe969",
           "relocation_count": 6,
           "comparison_unit": "005ea2c0-b0a1a7f5f4a0",
-          "objdiff_percent": 86.5
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 86.5
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "NuAnimCurve2SetApplyToMatrix_3",
@@ -294764,6 +294764,7 @@
         "src/legoapi/text.c",
         "src/legoapi/torpedo.c",
         "src/legoapi/zipup.c",
+        "src/nu2api/nu3d_includes.cpp",
         "src/nu2api/nudlist_material_pc.cpp",
         "src/nu2api/nulgtlaser.c",
         "src/nu2api/numath_includes.c",
@@ -294871,6 +294872,14 @@
         },
         {
           "unit": "src/legoapi/zipup.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440",
+          "base_sha256": "e77817b649821c634355a917817c1224a360514b1244fe09e832bac4e8ea4440"
+        },
+        {
+          "unit": "src/nu2api/nu3d_includes.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -381921,6 +381930,27 @@
       "objects": [
         {
           "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "f233221d5b2507399db0889acde2de49cef8e039ed7e327656cc9067469546c3",
+          "base_sha256": "f233221d5b2507399db0889acde2de49cef8e039ed7e327656cc9067469546c3"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@3f1921fb60000000",
+      "symbol": "__real@3f1921fb60000000",
+      "address": "0x0075bfd0",
+      "units": [
+        "src/nu2api/nu3d_includes.cpp"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nu3d_includes.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -611980,12 +612010,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2884822,
-    "matched_code_bytes": 949735,
-    "matching_percent": 27.3600603356835,
-    "fuzzy_coverage_percent": 74.8835715620822,
+    "matched_code_bytes": 950746,
+    "matching_percent": 27.38918532423228,
+    "fuzzy_coverage_percent": 74.89690130649963,
     "mapped_functions": 11513,
-    "matched_functions": 7636,
-    "objdiff_fuzzy_percent": 90.22538,
+    "matched_functions": 7642,
+    "objdiff_fuzzy_percent": 90.241394,
     "objdiff_total_code": 2885342,
     "image_bytes": 40067072,
     "mapped_bytes": 4787266,
@@ -612022,7 +612052,7 @@
         "mapped_zero_fill_data_bytes": 1504380
       }
     ],
-    "mapping_known_size_symbols": 21067,
+    "mapping_known_size_symbols": 21068,
     "mapping_unknown_size_symbols": 8243,
     "mapping_code_bytes": 2886016,
     "mapping_code_total_bytes": 3471246,
@@ -612044,16 +612074,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2884822,
-    "exact_reconstruction_bytes": 949735,
-    "mapped_not_exact_bytes": 1935087,
+    "exact_reconstruction_bytes": 950746,
+    "mapped_not_exact_bytes": 1934076,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 585230,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 27.3600603356835,
+    "strict_original_text_exact_percent": 27.38918532423228,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 27.36947457847894,
+    "reconstruction_scope_exact_percent": 27.39860958855948,
     "mapped_scope_denominator_bytes": 2884822,
-    "mapped_scope_exact_percent": 32.92178858868935,
+    "mapped_scope_exact_percent": 32.956834078497735,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -613359,7 +613389,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "276d2a386f28246cb78f856d5fd2ae5f56a24f6bafb49782b5ab35fd22d4456a",
-      "geometry_object_sha256": "826a9d73ed4d606fa50dab957b6ef6416c1aa4851fda088f6590ce258fbc77eb",
+      "geometry_object_sha256": "ed668e86ea83715e9dd23c7220e410bdd77e503496075db1d1cfe97908ced8f3",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
