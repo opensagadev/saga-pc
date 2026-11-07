@@ -29329,9 +29329,101 @@ class V2ClosingList {
     i32 count;
 };
 
-class TTNetwork {
+/* Client callback interface reached through NetTransportEntry::client. */
+class NetTransportClient {
   public:
+    virtual void Slot00() = 0;
+    virtual void Slot04() = 0;
+    virtual i32 Query08(i32 value) = 0;
+    virtual void Notify0c(i32 value) = 0;
+    virtual void OnPeerRemoved(V2Peer *peer, i32 reason) = 0;
+    virtual void Notify14(i32 value) = 0;
+    virtual void Notify18(i32 value) = 0;
+    virtual void Notify1c(i32 value) = 0;
+    virtual void Notify20(i32 value, i32 extra) = 0;
+    virtual i32 Query24(i32 value, i32 extra) = 0;
+    virtual void Notify28(i32 value, i32 extra) = 0;
+};
+
+class NetListLink {
+  public:
+    NetListLink();
+    NetListLink *GetNext();
+
+    NetListLink *next;
+    NetListLink *prev;
+};
+
+/* 0x250-byte pool-allocated entry registered with a NetTransporter. */
+class NetTransportEntry : public NetListLink {
+  public:
+    NetTransportEntry(NetTransportClient *client, u8 channel, const char *name);
+    static void *operator new(u32 size);
+    static void operator delete(void *memory);
+    NetTransportEntry &operator=(const NetTransportEntry &other);
+    i32 operator==(const NetTransportEntry &other);
+
+    NetTransportClient *client;
+    u8 channel;
+    char name[0x21];
+    NetStats stats;
+};
+
+class NetTransportList {
+  public:
+    NetListLink *GetHead();
+    void Insert(NetTransportEntry *entry, NetTransportEntry *after);
+    void Remove(NetTransportEntry *entry);
+    NetTransportEntry *Find(const NetTransportEntry &key);
+
+    NetListLink *head;
+    NetListLink *tail;
+    i32 count;
+};
+
+class NetTransporterInterface {
+  public:
+    virtual void Slot00() = 0;
+    virtual void Slot04() = 0;
+    virtual void Slot08() = 0;
+    virtual void Slot0c() = 0;
+    virtual void AddClient(NetTransportClient *client, u8 channel, const char *name) = 0;
+    virtual void RemoveClient(NetTransportClient *client, u8 channel) = 0;
+    virtual ~NetTransporterInterface() {
+    }
+};
+
+class NetTransporter : public NetTransporterInterface {
+  public:
+    virtual void AddClient(NetTransportClient *client, u8 channel, const char *name);
+    virtual void RemoveClient(NetTransportClient *client, u8 channel);
+
+    NetTransportList clients;
+};
+
+class BaseThing {
+  public:
+    virtual ~BaseThing();
+
+    u32 unknown_04[3];
+};
+
+class TTNetwork : public NetTransporter, public BaseThing {
+  public:
+    virtual void Slot00();
+    virtual void Slot04();
+    virtual void Slot08();
+    virtual void Slot0c();
+    i32 QueryAll08(i32 value);
+    void NotifyAll0c(i32 value);
     void NotifyPeerRemoved(V2Peer *peer, i32 reason);
+    void NotifyAll14(i32 value);
+    void NotifyAll18(i32 value);
+    void NotifyAll1c(i32 value);
+    void NotifyAll20(i32 value, i32 extra);
+    i32 QueryAll24(i32 value, i32 extra);
+    void NotifyAll28(i32 value, i32 extra);
+    void UpdateClientStats();
 };
 extern TTNetwork theTTNetwork;
 
