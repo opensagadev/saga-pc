@@ -5675,8 +5675,7 @@ void __cdecl GameAIProcess(void) {
     }
     GameCreatureOpponentSelection(WORLD->ai_sys, interactive_count, interactive_objects, goody_count, goodies,
                                   baddy_count, baddies, awareness, FRAMETIME);
-    GizTurrets_OpponentSelection((AI_TURRET_SYSTEM_PC *)WORLD->giz_turret_sys, goody_count, goodies, baddy_count,
-                                 baddies);
+    GizTurrets_OpponentSelection(WORLD->giz_turret_sys, goody_count, goodies, baddy_count, baddies);
     oneAtOnce_MaintainArray();
 }
 

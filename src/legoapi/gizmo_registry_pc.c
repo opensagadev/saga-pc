@@ -82,32 +82,6 @@ void __cdecl GizmoPickups_ResetPc(void *, void *, void *);
 void *__cdecl GizmoPickups_ReserveBufferSpace(void *);
 i32 __cdecl GizmoPickups_Load(void *, void *);
 void __cdecl GizmoPickups_PostLoad(void *, void *);
-i32 __cdecl GizTurrets_GetMaxGizmos(void *);
-void __cdecl GizTurrets_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
-void __cdecl GizTurrets_Update(void *, void *, f32);
-void __cdecl GizTurrets_Draw(void *, void *, f32);
-char *__cdecl GizmoTurret_GetGizmoName(GIZMO_PC *);
-i32 __cdecl GizmoTurret_GetOutput(GIZMO_PC *, i32, i32);
-char *__cdecl GizmoTurret_GetOutputName(GIZMO_PC *, i32);
-i32 __cdecl GizmoTurret_GetNumOutputs(GIZMO_PC *);
-void __cdecl GizmoTurret_Activate(GIZMO_PC *, i32);
-i32 __cdecl GizmoTurret_ActivateRev(GIZMO_PC *, i32, i32);
-void __cdecl GizmoTurret_SetVisibility(GIZMO_PC *, i32);
-NUVEC *__cdecl GizmoTurret_GetPos(GIZMO_PC *);
-i32 __cdecl GizTurrets_BoltHitPlat(WORLDINFO *, void *, BOLT_PC *, u8 *);
-GIZMO_PC *__cdecl GizTurrets_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32,
-                                               f32, i32, i32, i32);
-i32 __cdecl GizTurrets_BoltHit(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32,
-                               u8 *);
-void *__cdecl GizTurrets_AllocateProgressData(VARIPTR *, VARIPTR *);
-void __cdecl GizTurrets_ClearProgress(void *, void *);
-void __cdecl GizTurrets_StoreProgress(void *, void *, void *);
-void __cdecl GizTurrets_ResetPc(void *, void *, void *);
-void *__cdecl GizTurrets_ReserveBufferSpace(void *);
-i32 __cdecl GizTurrets_Load(void *, void *);
-void __cdecl GizTurrets_PostLoad(void *, void *);
-void __cdecl GizTurrets_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
-extern i32 turret_gizmotype_id;
 i32 __cdecl GizBombGens_GetMaxGizmos(void *);
 void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
 void __cdecl GizBombGens_Update(void *, void *, f32);
@@ -171,7 +145,6 @@ const char GizmoRegistrySpinnerNamePc[] = "Spinner";
 const char GizmoRegistryGizTurretsNamePc[] = "GizTurret";
 #pragma const_seg()
 char *GizmoRegistryGizTurretsNamePtrPc = (char *)GizmoRegistryGizTurretsNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizTurretsAddTypePc = {0};
 char *GizmoRegistryGizBombGenNamePtrPc = "BombGenerator";
 static ADDGIZMOTYPE_PC GizmoRegistryGizBombGenAddTypePc = {0};
 static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc = {0};
@@ -379,45 +352,6 @@ ADDGIZMOTYPE_PC *__cdecl Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizSpinner_ResetAllPc;
     addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizSpinner_ReserveBufferSpace;
     addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizSpinner_Load;
-    return addtype;
-}
-
-ADDGIZMOTYPE_PC *__cdecl GizTurrets_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizTurretsAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGizTurretsNamePtrPc;
-    addtype->fns.early_update_fn = NULL;
-    addtype->fns.panel_draw_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.using_special_fn = NULL;
-    addtype->prefix = "";
-    addtype->fns.options = 0x70;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizTurrets_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)GizTurrets_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizTurrets_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizTurrets_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoTurret_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoTurret_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoTurret_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)GizmoTurret_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoTurret_Activate;
-    addtype->fns.activate_rev_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoTurret_ActivateRev;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoTurret_SetVisibility;
-    addtype->fns.get_pos_fn = (void *)GizmoTurret_GetPos;
-    addtype->fns.bolt_hit_plat_fn = (void *)GizTurrets_BoltHitPlat;
-    addtype->fns.get_best_bolt_target_fn =
-        (GIZMO_PC * (__cdecl *)(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32,
-                                i32)) GizTurrets_GetBestBoltTarget;
-    addtype->fns.bolt_hit_fn = (void *)GizTurrets_BoltHit;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizTurrets_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizTurrets_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizTurrets_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizTurrets_ResetPc;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizTurrets_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizTurrets_Load;
-    addtype->fns.post_load_fn = (void(__cdecl *)(void *, void *))GizTurrets_PostLoad;
-    addtype->fns.add_level_sfx_fn = (void *)GizTurrets_AddLevelSfx;
-    turret_gizmotype_id = type_id;
     return addtype;
 }
 
@@ -636,13 +570,6 @@ i32 __cdecl GizSpinner_GetMaxGizmos(void *world_ptr) {
     return world->current_level->max_spinners;
 }
 
-i32 __cdecl GizTurrets_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world == NULL)
-        return 0;
-    return world->current_level->max_turrets;
-}
-
 i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world == NULL)
@@ -701,10 +628,6 @@ void *__cdecl GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 void *__cdecl GizSpinner_AllocateProgressData(void *buffer, void *end) {
     return GizmoBufferAlloc((VARIPTR *)buffer, (VARIPTR *)end, 0x40);
-}
-
-void *__cdecl GizTurrets_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, 0x70);
 }
 
 void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

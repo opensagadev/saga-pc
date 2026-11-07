@@ -20,10 +20,6 @@ typedef struct {
     u8 flags, unused;
 } SPINNER_PROGRESS_PC;
 typedef struct {
-    u32 enabled[2], visible[2], reward[2], fired[2], stopped[2], completed[2];
-    u8 timers[64];
-} TURRET_PROGRESS_PC;
-typedef struct {
     u32 enabled[3], visible[3];
 } BOMB_PROGRESS_PC;
 typedef struct {
@@ -41,8 +37,6 @@ STATIC_ASSERT(sizeof(PICKUP_PROGRESS_PC) == 0x100);
 STATIC_ASSERT(sizeof(SPINNER_PROGRESS_PC) == 8);
 STATIC_ASSERT(offsetof(SPINNER_PROGRESS_PC, rotation) == 4);
 STATIC_ASSERT(offsetof(SPINNER_PROGRESS_PC, flags) == 6);
-STATIC_ASSERT(sizeof(TURRET_PROGRESS_PC) == 0x70);
-STATIC_ASSERT(offsetof(TURRET_PROGRESS_PC, timers) == 0x30);
 STATIC_ASSERT(sizeof(BOMB_PROGRESS_PC) == 0x18);
 STATIC_ASSERT(sizeof(PANEL_PROGRESS_PC) == 0xc);
 STATIC_ASSERT(sizeof(GRAPPLE_PROGRESS_PC) == 8);
@@ -73,17 +67,6 @@ typedef struct {
     FORCE_PROGRESS_GROUP_PC groups[8];
 } FORCE_PROGRESS_SYSTEM_PC;
 typedef struct {
-    u8 unused00[0x12e];
-    u8 timer;
-    u8 unused12f[11];
-    u16 flags;
-} TURRET_PROGRESS_RECORD_PC;
-typedef struct {
-    TURRET_PROGRESS_RECORD_PC *records;
-    u8 unused04[4];
-    u16 count;
-} TURRET_PROGRESS_SYSTEM_PC;
-typedef struct {
     u8 unused00[0x2a];
     u8 flags, unused2b;
 } BOMB_PROGRESS_RECORD_PC;
@@ -111,10 +94,6 @@ STATIC_ASSERT(sizeof(FORCE_PROGRESS_GROUP_PC) == 40);
 STATIC_ASSERT(offsetof(FORCE_PROGRESS_GROUP_PC, member_count) == 0x26);
 STATIC_ASSERT(offsetof(FORCE_PROGRESS_SYSTEM_PC, count) == 0xe);
 STATIC_ASSERT(offsetof(FORCE_PROGRESS_SYSTEM_PC, groups) == 0x18);
-STATIC_ASSERT(sizeof(TURRET_PROGRESS_RECORD_PC) == 316);
-STATIC_ASSERT(offsetof(TURRET_PROGRESS_RECORD_PC, timer) == 0x12e);
-STATIC_ASSERT(offsetof(TURRET_PROGRESS_RECORD_PC, flags) == 0x13a);
-STATIC_ASSERT(offsetof(TURRET_PROGRESS_SYSTEM_PC, count) == 8);
 STATIC_ASSERT(sizeof(BOMB_PROGRESS_RECORD_PC) == 44);
 STATIC_ASSERT(offsetof(BOMB_PROGRESS_RECORD_PC, flags) == 0x2a);
 STATIC_ASSERT(offsetof(BOMB_PROGRESS_SYSTEM_PC, count) == 4);
@@ -189,19 +168,6 @@ void __cdecl GizmoPickups_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->enabled, -1, 64);
     memset(progress->collected, 0, 64);
     memset(progress->reserved, 0, 64);
-}
-
-void __cdecl GizTurrets_ClearProgress(void *owner, void *progress_ptr) {
-    TURRET_PROGRESS_PC *progress = (TURRET_PROGRESS_PC *)progress_ptr;
-    if (progress == NULL)
-        return;
-    memset(progress->enabled, -1, sizeof(progress->enabled));
-    memset(progress->visible, -1, sizeof(progress->visible));
-    memset(progress->reward, 0, sizeof(progress->reward));
-    memset(progress->fired, 0, sizeof(progress->fired));
-    memset(progress->stopped, 0, sizeof(progress->stopped));
-    memset(progress->completed, 0, sizeof(progress->completed));
-    memset(progress->timers, 255, 64);
 }
 
 void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
@@ -395,45 +361,6 @@ void __cdecl GizSpinner_StoreProgressData(void *world_ptr, void *data, void *pro
             else if (spinner->anim_set != NULL)
                 progress->animation_position = GameAnimSet_GetAnimPos(spinner->primary_anim_obj);
         }
-    }
-}
-
-void __cdecl GizTurrets_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    TURRET_PROGRESS_PC *progress = (TURRET_PROGRESS_PC *)progress_ptr;
-    TURRET_PROGRESS_SYSTEM_PC *system = (TURRET_PROGRESS_SYSTEM_PC *)data;
-    TURRET_PROGRESS_RECORD_PC *record;
-    i32 index;
-    i32 word;
-    u32 bit;
-    if (progress == NULL)
-        return;
-    memset(progress->enabled, -1, sizeof(progress->enabled));
-    memset(progress->visible, -1, sizeof(progress->visible));
-    memset(progress->reward, 0, sizeof(progress->reward));
-    memset(progress->fired, 0, sizeof(progress->fired));
-    memset(progress->stopped, 0, sizeof(progress->stopped));
-    memset(progress->completed, 0, sizeof(progress->completed));
-    memset(progress->timers, 255, 64);
-
-    record = system->records;
-    for (index = 0; index < system->count; ++index, ++record) {
-        if (index >= 64)
-            break;
-        word = index / 32;
-        bit = 1u << (index & 31);
-        if (!(record->flags & 4))
-            progress->visible[word] &= ~bit;
-        if (!(record->flags & 2))
-            progress->enabled[word] &= ~bit;
-        if (record->flags & 8)
-            progress->reward[word] |= bit;
-        if (record->flags & 0x10)
-            progress->fired[word] |= bit;
-        if (record->flags & 0x20)
-            progress->stopped[word] |= bit;
-        if (record->flags & 0x400)
-            progress->completed[word] |= bit;
-        progress->timers[index] = record->timer;
     }
 }
 

@@ -42,7 +42,7 @@ extern "C" void __cdecl GizActions_HitBlowup(GIZFLOW_PC *unused0, FLOWBOX_PC *un
         case 1: {
             GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, name);
             if (gizmo != NULL && gizmo->object != NULL)
-                GizTurrets_Hit(WORLD, (AI_TURRET_RECORD_PC *)gizmo->object, NULL, -1, damage);
+                GizTurrets_Hit(WORLD, (GIZTURRET_s *)gizmo->object, NULL, -1, damage);
             break;
         }
     }

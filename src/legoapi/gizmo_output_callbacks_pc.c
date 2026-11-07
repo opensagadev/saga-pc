@@ -15,21 +15,16 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinners) == 0xf2);
 STATIC_ASSERT(offsetof(GAMEANIMSET, objects) == 0x18);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, next) == 0);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
-STATIC_ASSERT(offsetof(GIZTURRET_s, field_0x131) == 0x131);
 extern char AIRegistryTextPc007575bc[7];
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *BlowupOutputNamesPc[3];
 extern char *PickupOutputNamePc;
 extern char SpinnerOutputBufferPc[14];
-extern char TurretOutputBufferPc[32];
 extern char AIProcessingOutputTextPc[11];
 extern const char GrappleOccupiedOutputTextPc[9];
 extern const char GrappleOccupiedByTwoOutputTextPc[14];
 extern const char SpinnerCompleteSuffixPc[12];
 extern const char SpinnerAllCompletePc[15];
-extern const char TurretDestroyedOutputTextPc[10];
-extern const char TurretFiredOutputTextPc[6];
-extern const char TurretFiredShotsFormatPc[15];
 
 char *__cdecl GizmoBuildit_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return "Finished";
@@ -112,26 +107,6 @@ i32 __cdecl GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 capa
         }
     }
     return count;
-}
-char *__cdecl GizmoTurret_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    switch (output) {
-        case 0:
-            return (char *)TurretDestroyedOutputTextPc;
-        case 1:
-            return (char *)TurretFiredOutputTextPc;
-        case 2: {
-            GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
-            if (turret == NULL)
-                return NULL;
-            sprintf(TurretOutputBufferPc, TurretFiredShotsFormatPc, turret->field_0x131);
-            return TurretOutputBufferPc;
-        }
-        default:
-            return NULL;
-    }
-}
-i32 __cdecl GizmoTurret_GetNumOutputs(GIZMO_PC *gizmo) {
-    return 3;
 }
 char *__cdecl AI_GetOutputName(void *gizmo, i32 output) {
     return AIProcessingOutputTextPc;

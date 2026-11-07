@@ -26,19 +26,6 @@ STATIC_ASSERT(offsetof(REGISTRY_FORCE_RECORD_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_RECORD_PC, blowup_type) == 0x88);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_RECORD_PC, runtime_flags) == 0xa0);
 
-typedef struct registry_turret_record_pc_s {
-    u8 unknown_00[0x18];
-    GAMEANIMSET *anim_set;
-    u8 unknown_1c[0x108];
-    i16 blowup_type;
-    u8 unknown_126[0x14];
-    u16 flags;
-} REGISTRY_TURRET_RECORD_PC;
-STATIC_ASSERT(sizeof(REGISTRY_TURRET_RECORD_PC) == 0x13c);
-STATIC_ASSERT(offsetof(REGISTRY_TURRET_RECORD_PC, anim_set) == 0x18);
-STATIC_ASSERT(offsetof(REGISTRY_TURRET_RECORD_PC, blowup_type) == 0x124);
-STATIC_ASSERT(offsetof(REGISTRY_TURRET_RECORD_PC, flags) == 0x13a);
-
 typedef struct registry_panel_record_pc_s {
     u8 storage[0x90];
 } REGISTRY_PANEL_RECORD_PC;
@@ -78,18 +65,6 @@ STATIC_ASSERT(offsetof(REGISTRY_FORCE_SYSTEM_PC, capacity) == 0xc);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_SYSTEM_PC, count) == 0xe);
 STATIC_ASSERT(offsetof(REGISTRY_FORCE_SYSTEM_PC, anim_pool) == 0x14);
 
-typedef struct registry_turret_system_pc_s {
-    REGISTRY_TURRET_RECORD_PC *turrets;
-    GAMEANIMOBJPOOL *anim_pool;
-    u16 count;
-    u16 capacity;
-    u8 unknown_0c[4];
-} REGISTRY_TURRET_SYSTEM_PC;
-STATIC_ASSERT(sizeof(REGISTRY_TURRET_SYSTEM_PC) == 0x10);
-STATIC_ASSERT(offsetof(REGISTRY_TURRET_SYSTEM_PC, anim_pool) == 4);
-STATIC_ASSERT(offsetof(REGISTRY_TURRET_SYSTEM_PC, count) == 8);
-STATIC_ASSERT(offsetof(REGISTRY_TURRET_SYSTEM_PC, capacity) == 0xa);
-
 typedef struct registry_panel_system_pc_s {
     i32 count;
     REGISTRY_PANEL_RECORD_PC *panels;
@@ -114,7 +89,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(WORLDINFO, game_anim_sys) == 0x2960);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_force_sys) == 0x46ac);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_turret_sys) == 0x46b8);
 STATIC_ASSERT(offsetof(WORLDINFO, spinners) == 0x46e0);
 STATIC_ASSERT(offsetof(WORLDINFO, spinner_count) == 0x46e4);
 STATIC_ASSERT(offsetof(WORLDINFO, spinner_anim_pool) == 0x46e8);
@@ -196,22 +170,6 @@ void *__cdecl GizSpinner_ReserveBufferSpace(void *pointer) {
             GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, world->spinner_anim_pool, world->game_anim_sys);
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
     return world->spinners;
-}
-
-void *__cdecl GizTurrets_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
-    REGISTRY_TURRET_SYSTEM_PC *system;
-    i32 i;
-    system = (REGISTRY_TURRET_SYSTEM_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
-    system->capacity = world->current_level->max_turrets;
-    system->turrets = (REGISTRY_TURRET_RECORD_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                   system->capacity * sizeof(*system->turrets));
-    system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 4, system->capacity * 2);
-    for (i = 0; i < system->capacity; ++i)
-        system->turrets[i].anim_set =
-            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
-    world->giz_turret_sys = (GIZTURRETSYS_s *)system;
-    return system;
 }
 
 void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
@@ -322,20 +280,4 @@ void __cdecl GizForces_PostLoad(void *world, void *pointer) {
 void __cdecl GizmoPickups_PostLoad(void *world, void *system) {
     (void)world;
     (void)system;
-}
-
-void __cdecl GizTurrets_PostLoad(void *world, void *pointer) {
-    REGISTRY_TURRET_SYSTEM_PC *system = (REGISTRY_TURRET_SYSTEM_PC *)pointer;
-    REGISTRY_TURRET_RECORD_PC *turret;
-    i32 i;
-    if (system == NULL)
-        return;
-    turret = system->turrets;
-    for (i = 0; i < system->count; ++i, ++turret) {
-        if (turret->flags & 0x100) {
-            i32 type_id = GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, turret->blowup_type);
-            turret->flags &= ~0x100;
-            turret->blowup_type = (i16)type_id;
-        }
-    }
 }

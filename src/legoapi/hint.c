@@ -247,21 +247,6 @@ STATIC_ASSERT(sizeof(HINT_ZIPUP_PC) == 0x7c);
 STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, lower_position) == 0x10);
 STATIC_ASSERT(offsetof(HINT_ZIPUP_PC, flags) == 0x68);
 
-typedef struct HINT_TURRET_PC {
-    u8 reserved00[0x24];
-    NUVEC position;
-    u8 reserved30[0xb4];
-    GAMEOBJECT *opponent;
-    u8 reservede8[0x20];
-    u32 behavior_flags;
-    u8 reserved10c[0x2e];
-    u16 flags;
-} HINT_TURRET_PC;
-STATIC_ASSERT(sizeof(HINT_TURRET_PC) == 0x13c);
-STATIC_ASSERT(offsetof(HINT_TURRET_PC, position) == 0x24);
-STATIC_ASSERT(offsetof(HINT_TURRET_PC, opponent) == 0xe4);
-STATIC_ASSERT(offsetof(HINT_TURRET_PC, behavior_flags) == 0x108);
-STATIC_ASSERT(offsetof(HINT_TURRET_PC, flags) == 0x13a);
 STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
 STATIC_ASSERT(offsetof(GAMESAVE, losttemple_trailer_watched) == 0x7c1d);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
@@ -270,8 +255,6 @@ STATIC_ASSERT(offsetof(GIZOBSTACLE, anim_set) == 0x34);
 STATIC_ASSERT(offsetof(GIZBUILDIT_PC, builders_active) == 0x6e);
 STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
-STATIC_ASSERT(offsetof(WORLDINFO, giz_turret_sys) == 0x46b8);
-STATIC_ASSERT(offsetof(struct GIZTURRETSYS_s, count) == 8);
 
 NUVEC PercentHint_TriggerPos = {-28.421f, 0.0f, -52.462f};
 
@@ -489,24 +472,6 @@ i32 __cdecl Push_UpdateHints(HINT_PC *hint) {
         if (object != NULL && (object->flags_1fc & 0x80) != 0 &&
             object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
             NearestPushBlock(WORLD, &object->collision_position, 2.0f) != NULL)
-            return 1;
-    }
-    return 0;
-}
-
-i32 __cdecl GizTurrets_UpdateHint(HINT_PC *hint) {
-    WORLDINFO *world = WorldInfo_CurrentlyActive();
-    struct GIZTURRETSYS_s *system = world->giz_turret_sys;
-    HINT_TURRET_PC *turret;
-    i32 index;
-    (void)hint;
-    if ((world->area != NULL && world->area == HUB_ADATA) || VehicleArea != 0 || system == NULL)
-        return 0;
-    turret = (HINT_TURRET_PC *)system->turrets;
-    for (index = 0; index < system->count; ++index, ++turret) {
-        if ((turret->flags & 2) != 0 && (turret->flags & 4) != 0 && (turret->behavior_flags & 0x4000) != 0 &&
-            (turret->behavior_flags & 0x10) == 0 && turret->opponent != NULL &&
-            NuVecDistSqr(&GameCam->position, &turret->position, NULL) < 36.0f)
             return 1;
     }
     return 0;

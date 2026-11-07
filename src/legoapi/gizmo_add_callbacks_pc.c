@@ -10,11 +10,6 @@ typedef struct {
     u8 opaque[0xa4 - 16];
 } ADD_FORCE_PC;
 typedef struct {
-    u8 opaque_00[8];
-    char name[16];
-    u8 opaque_18[0x13c - 0x18];
-} ADD_TURRET_PC;
-typedef struct {
     u8 opaque_00[0x40];
     char name[16];
     u8 opaque_50[0x90 - 0x50];
@@ -58,8 +53,6 @@ typedef struct {
 extern i32 come_from_an_editor;
 STATIC_ASSERT(sizeof(ADD_BUILDIT_PC) == 0x7c);
 STATIC_ASSERT(sizeof(ADD_FORCE_PC) == 0xa4);
-STATIC_ASSERT(sizeof(ADD_TURRET_PC) == 0x13c);
-STATIC_ASSERT(offsetof(ADD_TURRET_PC, name) == 8);
 STATIC_ASSERT(sizeof(ADD_PANEL_PC) == 0x90);
 STATIC_ASSERT(offsetof(ADD_PANEL_PC, name) == 0x40);
 STATIC_ASSERT(sizeof(ADD_TELEPORT_PC) == 0xfc);
@@ -86,7 +79,6 @@ STATIC_ASSERT(offsetof(WORLDINFO, grapple_count) == 0x5084);
 STATIC_ASSERT(offsetof(WORLDINFO, torpedo_machine_sys) == 0x5100);
 STATIC_ASSERT(offsetof(struct GIZBUILDITSYS_s, count) == 4);
 STATIC_ASSERT(offsetof(struct GIZFORCESYS_s, count) == 0xe);
-STATIC_ASSERT(offsetof(struct GIZTURRETSYS_s, count) == 8);
 STATIC_ASSERT(offsetof(struct GIZBOMBGENSYS_s, count) == 4);
 STATIC_ASSERT(offsetof(struct GIZPANELSYS_s, panels) == 4);
 
@@ -135,16 +127,6 @@ void __cdecl GizSpinner_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, v
     for (i = 0; i < w->current_level->max_spinners; ++i)
         if ((w->spinners[i].flags & 1) && NuStrLen(w->spinners[i].name) != 0)
             AddGizmo(giz, type, NULL, &w->spinners[i]);
-}
-void __cdecl GizTurrets_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
-    GIZTURRETSYS_s *s = (GIZTURRETSYS_s *)data;
-    i32 i;
-    (void)world;
-    if (s == NULL)
-        return;
-    for (i = 0; i < s->count; ++i)
-        if (NuStrLen(((ADD_TURRET_PC *)s->turrets)[i].name) != 0)
-            AddGizmo(giz, type, NULL, &((ADD_TURRET_PC *)s->turrets)[i]);
 }
 void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
     GIZBOMBGENSYS_s *s = (GIZBOMBGENSYS_s *)data;

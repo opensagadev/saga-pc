@@ -106,9 +106,9 @@ void Asteroid_PartKill(PART_PC *part, i32 reason) {
 }
 
 static __forceinline void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
-    if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->field_0xe4 == NULL) {
-        StarDestroyerTurrets[index]->field_0xe4 = position;
-        StarDestroyerTurrets[index]->field_0x12c = 2;
+    if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->opponent == NULL) {
+        StarDestroyerTurrets[index]->opponent = position;
+        StarDestroyerTurrets[index]->opponent_type = 2;
     }
 }
 

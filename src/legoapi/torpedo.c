@@ -728,7 +728,7 @@ static __declspec(noinline) void TorpedoHitDispatchPc(void *target, i32 player, 
             GizmoBlowupBlowup((GIZMOBLOWUP_PC *)target, 1, 11, 1, NULL, 1);
             break;
         case 1:
-            GizTurrets_Hit(WORLD, (struct AI_TURRET_RECORD_PC *)target, position, player, -1);
+            GizTurrets_Hit(WORLD, (GIZTURRET_s *)target, position, player, -1);
             break;
         case 2:
             GizObstacles_Hit(WORLD, (GIZOBSTACLE *)target, position, player, -1);
