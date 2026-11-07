@@ -419,7 +419,12 @@ f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x,
             f32 word_width;
             length = 0;
             while (*next != 0 && *next != hyphen) {
-                if (*next != 0x20) {
+                if (*next == 0x20) {
+                    u16 following = next[1];
+                    if (following != '!' && following != '?' && following != '.' && following != ',')
+                        break;
+                    ++extra_spaces;
+                } else {
                     line[length] = *next;
                     line[length + 1] = 0;
                     if (NuQFntPrintLenW(font, line) > width) {
@@ -427,11 +432,6 @@ f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x,
                         break;
                     }
                     ++length;
-                } else {
-                    u16 following = next[1];
-                    if (following != '!' && following != '?' && following != '.' && following != ',')
-                        break;
-                    ++extra_spaces;
                 }
                 ++next;
             }
@@ -490,7 +490,10 @@ f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x,
             NuQFntSetSpaceWidth(font, (width - scaled_words_width) * space_width /
                                           (scale * printed_space_width * (spaces < 0 ? 0 : spaces)));
         NuQFntMoveRS(stream, font, x, (f32)line_number * line_height * line_spacing + y, z);
-        NuQFntPrintCharW(font, line, matrix == NULL ? 0 : 4);
+        if (matrix != NULL)
+            NuQFntPrintCharW(font, line, 4);
+        else
+            NuQFntPrintCharW(font, line, 0);
         ++line_number;
         text = next;
     } while (*text != 0);
