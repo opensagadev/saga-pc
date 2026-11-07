@@ -1972,9 +1972,11 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
         deflect = 1;
     else
         deflect = 0;
-    i32 cheat_deflect = 0;
-    if (Cheats_CheckFlags(0x100000) != 0)
-        cheat_deflect = (object->flags_1fc & 0x80) != 0 ? 1 : 0;
+    i32 cheat_deflect;
+    if (Cheats_CheckFlags(0x100000) != 0 && (object->flags_1fc & 0x80) != 0)
+        cheat_deflect = 1;
+    else
+        cheat_deflect = 0;
     NewRumble(object->pad->bound_pad, 0.5f, 0);
     if ((bolt->flags & 0x100) == 0 || deflect) {
         u64 context_flags = reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags;
