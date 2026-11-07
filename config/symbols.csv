@@ -3860,9 +3860,9 @@ address,symbol,size,ctype
 0x543970,_saveloadUnFormatCard,6,
 0x543990,_saveloadCheckSlotsUsed,55,
 0x5439d0,_PCSaveSlot,575,"i32 __cdecl(i32,void *,i32,u32)"
-0x543c10,_saveloadSaveSlot,26,
+0x543c10,_saveloadSaveSlot,26,"i32 __cdecl(i32,void *,i32)"
 0x543c30,_saveloadLoadSlot,186,"i32 __cdecl(i32,void *,i32)"
-0x543cf0,_saveloadDeleteSlot,45,
+0x543cf0,_saveloadDeleteSlot,45,i32 __cdecl(i32)
 0x543d20,_saveloadCheckKeyCode,3,
 0x543d30,_saveloadWriteKeyCode,3,
 0x543d40,_saveloadASSave,74,"void __cdecl(i32,void *,i32,u32)"
@@ -10010,7 +10010,7 @@ address,symbol,size,ctype
 0x006de900,_NuScratchAlloc64,37,void *__cdecl(i32)
 0x006de930,_NuScratchAlloc128,37,void *__cdecl(i32)
 0x006de960,_NuScratchRelease,15,void __cdecl(void)
-0x6de9a0,_NuPs2VideoScreenDump,1,
+0x6de9a0,_NuPs2VideoScreenDump,1,"void __cdecl(char *, i32, f32, f32, i32, i32, i32)"
 0x6dea60,_PCAnimationEffectCheckpoint,1,void __cdecl (void)
 0x6dec10,_NuPs2ApplyDeadZone,64,
 0x6ded20,_MenuPcStringsInit,177,void __cdecl(void)
@@ -11808,6 +11808,34 @@ address,symbol,size,ctype
 0x00751ab8,__real@3fc00000,4,const f32
 0x751ac0,_PlayerStepInnerPc,8,const f64
 0x00751ac0,__real@3fe8000000000000,8,const f64
+0x751ac8,??_C@_07LMEKKBGJ@door16r?$AA@,8,const char[8]
+0x751ad0,??_C@_06JCCJGDKB@door16?$AA@,7,const char[7]
+0x751ad8,??_C@_07LOAMBPDA@door15r?$AA@,8,const char[8]
+0x751ae0,??_C@_06LJAEDAGC@door15?$AA@,7,const char[7]
+0x751ae8,??_C@_07LLEDAJLF@door12r?$AA@,8,const char[8]
+0x751af0,??_C@_06PGEFKGKF@door12?$AA@,7,const char[7]
+0x751af8,??_C@_07LJAFLHOM@door11r?$AA@,8,const char[8]
+0x751b00,??_C@_06NNGIPFGG@door11?$AA@,7,const char[7]
+0x751b08,??_C@_07LIMHNNNL@door10r?$AA@,8,const char[8]
+0x751b10,??_C@_06MEHDMECH@door10?$AA@,7,const char[7]
+0x751b18,??_C@_06ICPLIBI@door9r?$AA@,7,const char[7]
+0x751b20,??_C@_05PMIOCFFN@door9?$AA@,6,const char[6]
+0x751b28,??_C@_06JONNCCP@door8r?$AA@,7,const char[7]
+0x751b30,??_C@_05OFJFBEBM@door8?$AA@,6,const char[6]
+0x751b38,??_C@_06CLBJFBC@door7r?$AA@,7,const char[7]
+0x751b40,??_C@_05GCANAIND@door7?$AA@,6,const char[6]
+0x751b48,??_C@_06DHDPPCF@door6r?$AA@,7,const char[7]
+0x751b50,??_C@_05HLBGDJJC@door6?$AA@,6,const char[6]
+0x751b58,??_C@_06BDFEBHM@door5r?$AA@,7,const char[7]
+0x751b60,??_C@_05FADLGKFB@door5?$AA@,6,const char[6]
+0x751b68,??_C@_06PHCLEL@door4r?$AA@,7,const char[7]
+0x751b70,??_C@_05EJCAFLBA@door4?$AA@,6,const char[6]
+0x751b78,??_C@_06FLIDNMO@door3r?$AA@,7,const char[7]
+0x751b80,??_C@_05GGBMNNH@door3?$AA@,6,const char[6]
+0x751b88,??_C@_06EHKFHPJ@door2r?$AA@,7,const char[7]
+0x751b90,??_C@_05BPHKPMJG@door2?$AA@,6,const char[6]
+0x751b98,??_C@_06GDMOJKA@door1r?$AA@,7,const char[7]
+0x751ba0,??_C@_05DEFHKPFF@door1?$AA@,6,const char[6]
 0x751ba8,??_C@_04CNBCFDNL@?4FSP?$AA@,5,const char[5]
 0x751bb0,??_C@_0BD@GEDFNHGE@Dog_TriFighterGuns?$AA@,19,const char[19]
 0x751bc4,??_C@_0BG@PHHIKGAO@Dog_DroidFighterBlast?$AA@,22,const char[22]
@@ -22084,7 +22112,7 @@ address,symbol,size,ctype
 0x7f120c,_DogfightPassingSpeedPc,4,f32
 0x7f1270,_DogfightDoorsPc,140,DOGFIGHT_DOOR_PC[7]
 0x7f12fc,_DogfightWingSpeedPc,4,f32
-0x7f1310,_DoorSetupList,,
+0x7f1300,_DoorSetupList,600,anakin_door_setup_s[15]
 0x7f1558,_DogfightAnakinActionsPc,80,DOGFIGHT_ACTION_PC[10]
 0x7f15d8,_DogfightCollisionRadiusSquaredPc,4,f32
 0x7f15dc,_FlightSplineDefaultIncrementPc,4,f32
@@ -23996,7 +24024,7 @@ address,symbol,size,ctype
 0x0080f3e4,??_R0?AV?$CSListLink@VNetReplicator@@@@@8,44,
 0x0080f480,??_R0?AVNetFtpManager@@@8,28,
 0x80f510,_edmain_menu_scale,4,f32
-0x80f514,_ed_attr,,
+0x80f514,_ed_attr,16,eduiiattr_s
 0x80f524,_ed_main_menu_x,4,i32
 0x80f528,_ed_main_menu_y,4,i32
 0x80f52c,_ed_main_menu_w,4,i32
@@ -24027,8 +24055,8 @@ address,symbol,size,ctype
 0x80f7f0,_edcam_default,148,edcam_s
 0x80f884,_edfile_handle,4,i32
 0x80f888,_FS_Title,,char[64]
-0x80f8c8,_FS_Filter,,
-0x80f9c8,_FS_FilterOut,,
+0x80f8c8,_FS_Filter,256,char[256]
+0x80f9c8,_FS_FilterOut,256,char[256]
 0x80fac8,_FS_FileListEnd,,
 0x80facc,_FS_CurrentPos,,
 0x80fad0,_FS_CurrentCursorPos,,char *

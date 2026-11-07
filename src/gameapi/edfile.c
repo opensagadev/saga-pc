@@ -2272,6 +2272,8 @@ void __cdecl FS_SortStrings(char *start, char *end, i32 mode) {
     }
 }
 
+char FS_Filter[256] = "*.nup | *.hgp   ";
+char FS_FilterOut[256] = "_PC. | _360. | _PS3.";
 char *FS_CurrentPos = FS_FileList;
 char *FS_CurrentCursorPos = FS_FileList;
 i32 FS_CursorLine = 0;

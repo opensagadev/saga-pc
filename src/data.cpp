@@ -30370,6 +30370,9 @@ extern "C" {
 #pragma data_seg(".data$edmain_menu_scale")
     f32 edmain_menu_scale = 1.0f;
 
+#pragma data_seg(".data$ed_attr")
+    eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+
 #pragma data_seg(".data$edmain_default_camera_speed")
     f32 edmain_default_camera_speed = 1.0f;
 

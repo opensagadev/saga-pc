@@ -762,6 +762,25 @@ void ChrisAnakinBInit() {
     }
 }
 
+/* Anakin C door pairs; the table ends with an empty name. */
+anakin_door_setup_s DoorSetupList[15] = {
+    {"door1", "door1r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door2", "door2r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door3", "door3r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door4", "door4r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door5", "door5r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door6", "door6r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door7", "door7r", 15.0f, 1.0f, 0, {0}, {1.0f, 1.0f, 0.0f}, -0.5f, 0.0f},
+    {"door8", "door8r", 15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
+    {"door9", "door9r", 15.0f, 1.0f, 0, {0}, {0.0f, 1.0f, 0.0f}, -0.5f, 0.0f},
+    {"door10", "door10r", 15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
+    {"door11", "door11r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door12", "door12r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door15", "door15r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"door16", "door16r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+    {"", NULL, 0.0f, 0.0f, 0, {0}, {0.0f, 0.0f, 0.0f}, 0.0f, 0.0f},
+};
+
 void ChrisAnakinCReset() {
     struct anakin_door_setup_s *setup;
     anakin_door_s *door = AnakinC;

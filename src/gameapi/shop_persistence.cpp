@@ -24,6 +24,8 @@ STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, slot_caption) == 0x828);
 STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, reserved_caption) == 0x1028);
 STATIC_ASSERT(offsetof(PC_SAVE_HEADER_PC, date_time) == 0x1828);
 
+extern const char *PcProductName;
+
 extern "C" {
     extern char SaveFolderPathPc[256];
     /* User-approved Debug save-location exception; the game requires the res cwd. */
@@ -101,6 +103,9 @@ extern "C" {
         fclose(file);
         return 1;
     }
+    i32 __cdecl saveloadSaveSlot(i32 slot, void *buffer, i32 size) {
+        return PCSaveSlot(slot, buffer, size, (u32)-1);
+    }
     i32 __cdecl saveloadLoadSlot(i32 slot, void *buffer, i32 size) {
         PC_SAVE_HEADER_PC header;
         FILE *file = fopen(fullslotname(slot), "rb");
@@ -111,6 +116,11 @@ extern "C" {
             fseek(file, header.api_data_size, SEEK_CUR);
         fread(buffer, size, 1, file);
         fclose(file);
+        return 1;
+    }
+    i32 __cdecl saveloadDeleteSlot(i32 slot) {
+        sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
+        remove(SaveSlotNamePc);
         return 1;
     }
     void __cdecl saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash) {

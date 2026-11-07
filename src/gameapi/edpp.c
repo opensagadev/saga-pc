@@ -2250,6 +2250,11 @@ extern struct eduimenu_s *ptlvaremitmenu;
 extern struct eduimenu_s *ptlvarstartmenu;
 extern struct eduimenu_s *ptlstartvelmenu;
 
+void cbPtlCancelCutOffMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlcutoffmenu);
+    ptlcutoffmenu = NULL;
+}
+
 static void cbPtlCancelVarEmitMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlvaremitmenu);
     ptlvaremitmenu = NULL;
