@@ -1539,6 +1539,10 @@ void edanimcbMCTBCardFormat(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     }
 }
 
+void edanimClose(void) {
+    eduiMenuDestroy(edanim_options_menu);
+}
+
 void edanimEnter() {
     edanim_nearest = -1;
     edanim_nearest_param_id = -1;

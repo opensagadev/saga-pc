@@ -15413,6 +15413,15 @@ extern "C" {
 #pragma data_seg(".data$id_test")
     char id_test[17] = "Travellers Tales";
 #pragma data_seg()
+    void __cdecl edanimInit(void);
+    void __cdecl edanimClose(void);
+    void __cdecl edanimEnter(void);
+    i32 __cdecl edanimProc(f32 delta_time, FRAME_PAD_PC *pad);
+    void __cdecl edanimRender(void);
+#pragma data_seg(".data$edanimdesc")
+    ed_module_s edanimdesc = {NULL, NULL, "Anim Editor", edanimInit, edanimClose, edanimEnter,  NULL,
+                              NULL, NULL, NULL,          0x6d696e61, edanimProc,  edanimRender, NULL};
+#pragma data_seg()
 #pragma data_seg(".data$edbits_editor_enabled")
     i32 *edbits_editor_enabled = &edbits_editor_state;
 #pragma data_seg()
@@ -29922,6 +29931,15 @@ extern "C" {
 
 #pragma data_seg(".data$edbri_post_interval")
     i32 edbri_post_interval = 5;
+    void __cdecl edbriInit(void);
+    void __cdecl edbriClose(void);
+    void __cdecl edbriEnter(void);
+    i32 __cdecl edbriProc(f32 delta_time, FRAME_PAD_PC *pad);
+    void __cdecl edbriRender(void);
+#pragma data_seg(".data$edbridesc")
+    ed_module_s edbridesc = {NULL, NULL, "Bridge Editor", edbriInit, edbriClose,  edbriEnter, NULL, NULL,
+                             NULL, NULL, 0x64697262,      edbriProc, edbriRender, NULL};
+#pragma data_seg()
 
 #pragma bss_seg(".bss$edbri_dpadmode_menu")
     struct eduimenu_s *edbri_dpadmode_menu = 0;

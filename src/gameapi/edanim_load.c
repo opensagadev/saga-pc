@@ -972,3 +972,22 @@ void edanimInit(void) {
     eduiMenuAddItem(edanim_options_menu,
                     eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBMenu, (char *)("Memory Card Test Bed...")));
 }
+
+i32 edanimProc(f32 delta_time, FRAME_PAD_PC *pad) {
+    if (edanim_active_menu) {
+        eduiMenuProcess(edanim_active_menu, delta_time, pad);
+        return 0;
+    }
+    edanimDoInput(pad);
+    if (edanim_particle_mode)
+        edanimDetermineNearestParticle(1.0f);
+    else if (edanim_sound_mode)
+        edanimDetermineNearestSound(1.0f);
+    else
+        edanimDetermineNearestAnim(1.0f);
+    if (pad->digital_buttons_pressed & 0x800) {
+        edanim_particle_mode = 0;
+        return 1;
+    }
+    return 0;
+}

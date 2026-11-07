@@ -13,6 +13,7 @@ void EdFileWriteNuVec(NUVEC *value);
 void __cdecl edcamMove(FRAME_PAD_PC *pad);
 void __cdecl edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+extern NUMTL *edbri_mtl;
 
 void __cdecl edbriBridgesReset(void) {
     i32 i;
@@ -25,6 +26,17 @@ void __cdecl edbriBridgesReset(void) {
     memset(edbri_page_scene, 0, sizeof(edbri_page_scene));
     memset(edbri_page_on, 0, sizeof(edbri_page_on));
     edbri_bridges_used = 0;
+}
+
+void edbriClose(void) {
+    if (edbri_options_menu) {
+        eduiMenuDestroy(edbri_options_menu);
+        edbri_options_menu = NULL;
+    }
+}
+
+void edbriEnter(void) {
+    edbri_nearest = -1;
 }
 
 void __cdecl edbriStopPage(i8 page) {
@@ -261,6 +273,30 @@ void edbriRender() {
     }
     if (edbri_active_menu)
         eduiMenuRender(edbri_active_menu);
+}
+
+void edbriInit(void) {
+    edbriBridgesReset();
+    edbri_mtl = NuMtlCreate3D(1);
+    edbri_mtl->diffuse_r = 0.5f;
+    edbri_mtl->diffuse_g = 0.5f;
+    edbri_mtl->diffuse_b = 0.5f;
+    edbri_mtl->attribs.cull_mode = 2;
+    edbri_mtl->attribs.z_mode = 0;
+    edbri_mtl->opacity = 1.0f;
+    edbri_mtl->attribs.alpha_mode = 0;
+    NuMtlUpdate(edbri_mtl);
+    edbri_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
+    ((NUMTL *)edbri_mtl_zoff)->diffuse_r = 0.5f;
+    ((NUMTL *)edbri_mtl_zoff)->diffuse_g = 0.5f;
+    ((NUMTL *)edbri_mtl_zoff)->diffuse_b = 0.5f;
+    ((NUMTL *)edbri_mtl_zoff)->attribs.cull_mode = 2;
+    ((NUMTL *)edbri_mtl_zoff)->attribs.z_mode = 3;
+    ((NUMTL *)edbri_mtl_zoff)->opacity = 1.0f;
+    ((NUMTL *)edbri_mtl_zoff)->attribs.alpha_mode = 0;
+    NuMtlUpdate((NUMTL *)edbri_mtl_zoff);
+    edbri_plank_instance_type = -1;
+    edbri_post_instance_type = -1;
 }
 
 void __cdecl edbriStartPage(i32 page_number) {
