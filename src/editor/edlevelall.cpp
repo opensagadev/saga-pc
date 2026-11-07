@@ -68,6 +68,7 @@ extern "C" {
     void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour,
                                   i32 segments);
     f32 __cdecl eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
+    void __cdecl eduiGetCursorDelta(f32 *x, f32 *y);
     eduiitem_s *__cdecl eduiItemFilterCreate(u32 data, void *colours, char *text, char *value);
     void __cdecl eduiMenuSortItemsByTxt(eduimenu_s *menu);
     void __cdecl edcamSetDist(f32 distance);
@@ -676,6 +677,43 @@ class EdColourControl : public EdControl {
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 flags);
 };
+
+/* Three "%.2f" rows (x, y, z) under an expander for a VuVec member. */
+class EdVectorControl : public EdControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdVectorControl));
+    }
+    EdVectorControl();
+    virtual ~EdVectorControl() {
+        Destroy();
+    }
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void Refresh();
+    void Destroy();
+    /* Drags the row's value by the cursor and analogue pad. */
+    static void Drag(eduiitem_s *item) {
+        edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
+        property->button_latched = 1;
+        FRAME_PAD_PC *pad = EdControl::Input->pad;
+        f32 value = NuAToF(property->property_text);
+        f32 dx;
+        f32 dy;
+        eduiGetCursorDelta(&dx, &dy);
+        value -= dy * 100.0;
+        dy = eduiGetAnalougePadValue(pad);
+        value -= dy;
+        char text[128];
+        NuSPrintf(text, "%.2f", value);
+        eduiItemPropSetText(property, text);
+    }
+    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32 value);
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbSelected(eduimenu_s *menu, eduiitem_s *item, u32);
+
+    eduiitem_s *components[3];
+};
+STATIC_ASSERT(sizeof(EdVectorControl) == 0x1c);
 STATIC_ASSERT(sizeof(EdColourControl) == 0x10);
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
@@ -1386,6 +1424,55 @@ void EdControl::Process(EdInputContext &) {
 }
 
 void EdControl::Render() {
+}
+
+EdVectorControl::EdVectorControl() {
+}
+
+void EdVectorControl::Destroy() {
+    if (components[0] != NULL)
+        components[0]->data_ptr = NULL;
+    if (components[1] != NULL)
+        components[1]->data_ptr = NULL;
+    if (components[2] != NULL)
+        components[2]->data_ptr = NULL;
+}
+
+/* Stores the edited row back into the member; w is always 1. */
+void EdVectorControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    EdVectorControl *control = static_cast<EdVectorControl *>(item->data_ptr);
+    __declspec(align(16)) VuVec vector;
+    f32 value = 0.0f;
+    control->reference->GetMemberData(control->object, EdType_VuVec, &vector, 0);
+    if (item == control->components[0]) {
+        value = NuAToF(reinterpret_cast<edui_prop_s *>(item)->property_text);
+        vector.x = value;
+    }
+    if (item == control->components[1]) {
+        value = NuAToF(reinterpret_cast<edui_prop_s *>(item)->property_text);
+        vector.y = value;
+    }
+    if (item == control->components[2]) {
+        value = NuAToF(reinterpret_cast<edui_prop_s *>(item)->property_text);
+        vector.z = value;
+    }
+    vector.w = 1.0f;
+    control->reference->SetMemberData(control->object, EdType_VuVec, &vector, 0, NULL);
+    char text[128];
+    NuSPrintf(text, "%.2f", value);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), text);
+}
+
+void EdVectorControl::Refresh() {
+    __declspec(align(16)) VuVec vector;
+    reference->GetMemberData(object, EdType_VuVec, &vector, 0);
+    char value[128];
+    NuSPrintf(value, "%.2f", vector.x);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(components[0]), value);
+    NuSPrintf(value, "%.2f", vector.y);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(components[1]), value);
+    NuSPrintf(value, "%.2f", vector.z);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(components[2]), value);
 }
 
 /* Accepts a typed choice by name or by number; anything else restores the
@@ -3468,6 +3555,11 @@ void EdControl::SetMenuItemAttr(i32 mask, eduiitem_s *menu_item, eduiiattr_s *se
     memcpy(menu_item->colours, selected, sizeof(eduiiattr_s));
 }
 
+void EdVectorControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    Drag(item);
+    cbChanged(menu, item, value);
+}
+
 void EdEnumControl::cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     if (active_enum_control != NULL) {
         Item *choice = static_cast<Item *>(item->data_ptr);
@@ -5184,6 +5276,50 @@ i32 EdControl::SelectSubObject() {
         theClassEditor.SelectObject(selection, 1);
     }
     return 1;
+}
+
+void EdVectorControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {
+    EdVectorControl *control = static_cast<EdVectorControl *>(item->data_ptr);
+    control->item = item;
+    if (control->SelectSubObject() != 0)
+        theClassEditor.SetMode(3);
+    else
+        theClassEditor.SetMode(0);
+    for (PropertyMenu *property_menu = thePropertyTool.menus.first; property_menu != NULL;
+         property_menu = property_menu->next) {
+        if (property_menu->menu == menu) {
+            property_menu->control = control;
+            return;
+        }
+    }
+}
+
+void EdVectorControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdVectorControl *control = new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl;
+    if (control == NULL)
+        return;
+    control->reference = member;
+    control->object = target;
+    __declspec(align(16)) VuVec vector;
+    member->GetMemberData(control->object, EdType_VuVec, &vector, 0);
+    control->item = eduiItemExpanderCreate((u32)control, &EdLevelAttr, cbSelected, member->name);
+    eduiMenuAddItem(menu, control->item);
+    char value[128];
+    NuSPrintf(value, "%.2f", vector.x);
+    control->components[0] =
+        eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "tx", value);
+    control->components[0]->unknown_10 = 1;
+    eduiItemExpanderAddChild(control->item, control->components[0]);
+    NuSPrintf(value, "%.2f", vector.y);
+    control->components[1] =
+        eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "ty", value);
+    control->components[1]->unknown_10 = 2;
+    eduiItemExpanderAddChild(control->item, control->components[1]);
+    NuSPrintf(value, "%.2f", vector.z);
+    control->components[2] =
+        eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "tz", value);
+    control->components[2]->unknown_10 = 3;
+    eduiItemExpanderAddChild(control->item, control->components[2]);
 }
 
 /* Labels every pad button whose bit is set in the mask. */
