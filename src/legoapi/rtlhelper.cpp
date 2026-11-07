@@ -297,6 +297,21 @@ void *FogHelper::GetNextObject(void *object) {
     return NULL;
 }
 
+/* The fog's editor sphere; a spherical fog also shows its extent, boxed when
+ * selected. */
+void FogHelper::Render(void *object, i32 selected) {
+    RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
+    ClassObject fog_object(object_class, fog);
+    theClassEditor.DrawObjectSphere(fog_object, fog->colour);
+    switch (fog->type) {
+        case 1:
+            RndrOSphere(&fog->position, fog->radius, (fog->colour & 0xffffff) | 0x80000000, 16, NULL);
+            if (selected)
+                RndrOSquare(&fog->position, fog->radius, -1, NULL);
+            break;
+    }
+}
+
 /* A new fog zone in the first free slot of the current set. */
 void *FogHelper::CreateObject(void *, i32, i32) {
     RTL_FOG_MIGRATION_PC *fog;

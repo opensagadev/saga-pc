@@ -28957,8 +28957,10 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
+struct DATAPTR;
 struct EdClass;
 struct EdInputContext;
+struct EdMember;
 class EdRef;
 struct EdStream;
 struct MemoryBuffer;
@@ -29176,6 +29178,8 @@ struct EdClass {
     EdRef *last_member;
     i32 member_count;
     EdClassInterface *object_interface; /* Android "interface" (an objbase.h macro) */
+
+    i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);
 };
 
 struct EdObjectNotifier;
@@ -29229,7 +29233,7 @@ struct EdRegistry {
     i32 GetClassId(EdClass *object_class);
 };
 extern EdRegistry theRegistry;
-extern i32 EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
+extern i32 EdType_Short, EdType_Float, EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
 
 /* One member of an editor class: where it sits in the object, its type and
  * the control that edits it. Attribute bit 30 marks a pointer member. */
@@ -29249,9 +29253,131 @@ class EdRef : public CSListLink<EdRef> {
     EdControl *control;
     i32 replication_group;
 
+    i32 GetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
+    i32 SetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
     void CheckType(i32 requested_type);
     i32 GetTypeSize(i32 requested_type, i32 data_size);
 };
+
+/* A member reference bound to the object (or sub-object) that holds it. */
+struct EdMember {
+    void *object;
+    EdRef *reference;
+};
+
+/* An editor object together with its class and the member it was picked by. */
+struct ClassObject {
+    EdClass *ed_class;
+    void *object;
+    EdRef *reference;
+
+    ClassObject(EdClass *object_class, void *object_data)
+        : ed_class(object_class), object(object_data), reference(NULL) {
+    }
+    i32 GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
+};
+
+struct ClassObjectListEntry {
+    ClassObjectListEntry *next;
+    ClassObjectListEntry *previous;
+    EdClass *ed_class;
+    void *object;
+    EdRef *reference;
+};
+
+struct ClassObjectList {
+    ClassObjectListEntry *first;
+    ClassObjectListEntry *last;
+    i32 count;
+};
+
+class EdTool : public CSListLink<EdTool> {
+  public:
+    virtual ~EdTool();
+    virtual void Initialise(variptr_u &, variptr_u &, i32) {
+    }
+    virtual char const *GetName() {
+        return "";
+    }
+    virtual i32 Process(EdInputContext &) {
+        return 0;
+    }
+    virtual void Render() {
+    }
+};
+
+class BaseEditor : public CSListLink<BaseEditor> {
+  public:
+    virtual ~BaseEditor();
+    virtual void Initialise(variptr_u &, variptr_u &, i32 id) {
+        this->id = id;
+    }
+    virtual char const *GetName() {
+        return "";
+    }
+    virtual i32 ReadBlock(DATAPTR *) {
+        return 0;
+    }
+    virtual void WriteBlock(i32) {
+    }
+    virtual void Serialise(EdStream &) {
+    }
+    virtual void ClearLevel(i32) {
+    }
+    virtual void Flush() {
+    }
+    virtual void Enter() {
+    }
+    virtual void Exit() {
+    }
+    virtual void Process(EdInputContext &) {
+    }
+    virtual void Render() {
+    }
+    virtual void AddMenuItems(eduimenu_s *) {
+    }
+
+    i32 id;
+};
+
+struct EdManipulator;
+
+/* The class/object editor (Android ClassEditor), theClassEditor. */
+class ClassEditor : public BaseEditor {
+  public:
+    virtual ~ClassEditor();
+    virtual void Initialise(variptr_u &, variptr_u &, i32);
+    virtual char const *GetName();
+    virtual i32 ReadBlock(DATAPTR *);
+    virtual void WriteBlock(i32);
+    virtual void Serialise(EdStream &);
+    virtual void ClearLevel(i32);
+    virtual void Flush();
+    virtual void Enter();
+    virtual void Exit();
+    virtual void Process(EdInputContext &);
+    virtual void Render();
+    virtual void AddMenuItems(eduimenu_s *);
+
+    EdTool *first_tool;
+    EdTool *last_tool;
+    i32 tool_count;
+    EdTool *active_tool;
+    EdManipulator *manipulator;
+    ClassObjectList selected_objects;
+    ClassObject current_object;
+    i32 field_3c;
+    ClassObject pending_object;
+    eduimenu_s *menu;
+    VuVec snap_ray;
+    f32 snap_distance;
+    i32 snap_mode;
+    i32 mode;
+    i32 class_filter;
+
+    void DrawObjectSphere(ClassObject &selected, i32 colour);
+};
+extern ClassEditor theClassEditor;
 #endif
 
 #ifdef __cplusplus

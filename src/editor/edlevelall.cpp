@@ -111,66 +111,31 @@ eduimenu_s *GetMenuActiveChild(eduimenu_s *menu) {
     return menu;
 }
 
-struct DATAPTR;
-struct EdInputContext;
-
-class EdTool : public CSListLink<EdTool> {
-  public:
-    virtual ~EdTool();
-    virtual void Initialise(variptr_u &, variptr_u &, i32) {
-    }
-    virtual char const *GetName() {
-        return "";
-    }
-    virtual i32 Process(EdInputContext &) {
-        return 0;
-    }
-    virtual void Render() {
-    }
-};
 STATIC_ASSERT(sizeof(EdTool) == 0xc);
 
 EdTool::~EdTool() {
 }
 
-class BaseEditor : public CSListLink<BaseEditor> {
-  public:
-    virtual ~BaseEditor();
-    virtual void Initialise(variptr_u &, variptr_u &, i32 id) {
-        this->id = id;
-    }
-    virtual char const *GetName() {
-        return "";
-    }
-    virtual i32 ReadBlock(DATAPTR *) {
-        return 0;
-    }
-    virtual void WriteBlock(i32) {
-    }
-    virtual void Serialise(EdStream &) {
-    }
-    virtual void ClearLevel(i32) {
-    }
-    virtual void Flush() {
-    }
-    virtual void Enter() {
-    }
-    virtual void Exit() {
-    }
-    virtual void Process(EdInputContext &) {
-    }
-    virtual void Render() {
-    }
-    virtual void AddMenuItems(eduimenu_s *) {
-    }
-
-    i32 id;
-};
 STATIC_ASSERT(sizeof(BaseEditor) == 0x10);
 STATIC_ASSERT(offsetof(BaseEditor, id) == 0xc);
 
 BaseEditor::~BaseEditor() {
 }
+
+STATIC_ASSERT(sizeof(EdMember) == 0x8);
+STATIC_ASSERT(sizeof(ClassObject) == 0xc);
+STATIC_ASSERT(offsetof(ClassObject, reference) == 0x8);
+STATIC_ASSERT(sizeof(ClassObjectListEntry) == 0x14);
+STATIC_ASSERT(sizeof(ClassObjectList) == 0xc);
+STATIC_ASSERT(offsetof(ClassEditor, first_tool) == 0x10);
+STATIC_ASSERT(offsetof(ClassEditor, manipulator) == 0x20);
+STATIC_ASSERT(offsetof(ClassEditor, selected_objects) == 0x24);
+STATIC_ASSERT(offsetof(ClassEditor, current_object) == 0x30);
+STATIC_ASSERT(offsetof(ClassEditor, pending_object) == 0x40);
+STATIC_ASSERT(offsetof(ClassEditor, menu) == 0x4c);
+STATIC_ASSERT(offsetof(ClassEditor, snap_ray) == 0x50);
+STATIC_ASSERT(offsetof(ClassEditor, class_filter) == 0x6c);
+STATIC_ASSERT(sizeof(ClassEditor) == 0x70);
 
 struct MemBufferAllocator {};
 
@@ -388,6 +353,8 @@ i32 EdRegistry::GetClassId(char *name) {
 i32 EdRegistry::GetClassId(EdClass *object_class) {
     return object_class - classes;
 }
+i32 EdType_Short;
+i32 EdType_Float;
 i32 EdType_VuVec;
 i32 EdType_VuMtx;
 i32 EdType_NuVec;
@@ -438,6 +405,46 @@ void EdRef::SetMemberData(void *object, i32 requested_type, void *data, i32 data
             member = *static_cast<void **>(member);
         PCByteCopy_candidate(member, data, type_size);
     }
+}
+
+/* Attribute-tagged access: 8 asks a matrix member for its translation and 0x100
+ * reads a short-sized member. */
+i32 EdRef::GetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    if (attributes & attribute) {
+        if ((attribute & 8) && type_id == EdType_VuMtx) {
+            __declspec(align(16)) NUMTX matrix;
+            GetMemberData(object, EdType_VuMtx, &matrix, 0);
+            PCByteCopy_candidate(data, &matrix.m30, sizeof(VuVec));
+            return 1;
+        }
+        if (attribute & 0x100) {
+            i16 value;
+            GetMemberData(object, EdType_Short, &value, 0);
+            PCByteCopy_candidate(data, &value, sizeof(i16));
+            return 1;
+        }
+        GetMemberData(object, requested_type, data, data_size);
+        return 1;
+    }
+    return 0;
+}
+
+i32 EdRef::SetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    if (!(attributes & attribute))
+        return 0;
+    if ((attribute & 8) && type_id == EdType_VuMtx) {
+        __declspec(align(16)) NUMTX matrix;
+        GetMemberData(object, EdType_VuMtx, &matrix, 0);
+        PCByteCopy_candidate(&matrix.m30, data, sizeof(VuVec));
+        SetMemberData(object, EdType_VuMtx, &matrix, 0, NULL);
+        return 1;
+    }
+    if (attribute & 0x100) {
+        SetMemberData(object, EdType_Short, &data, sizeof(i16), NULL);
+        return 0;
+    }
+    SetMemberData(object, requested_type, data, data_size, NULL);
+    return 1;
 }
 
 const VuVec *Placeable::GetInitialPosition() const {
@@ -495,6 +502,104 @@ class KnotHelper : public EdClassInterface {
 STATIC_ASSERT(sizeof(KnotHelper) == 0x14);
 
 KnotHelper::KnotHelper() {
+}
+
+/* Finds the first member carrying any of the attributes, descending into
+ * class-typed members when recursive. */
+i32 EdClass::FindMember(EdMember *result, void *object, i32 attributes, i32 recursive) {
+    EdRef *member;
+    for (member = members; member != NULL; member = member->next) {
+        if (member->attributes & 0x80000000) {
+            if (recursive) {
+                EdClass *member_class;
+                void *member_object;
+                i32 id = member->type_id;
+                if (id >= 0 && id < theRegistry.class_count)
+                    member_class = &theRegistry.classes[id];
+                else
+                    member_class = NULL;
+                member_object = member->GetMemberObject(object);
+                if (member_class->FindMember(result, member_object, attributes, 1))
+                    return 1;
+            }
+        } else if (member->attributes & attributes) {
+            result->object = object;
+            result->reference = member;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* Reads an attribute through the picked member first, then through the
+ * first class member that carries it. */
+i32 ClassObject::GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    EdMember member;
+    if (reference != NULL && reference->GetAttributeData(object, attribute, requested_type, data, data_size))
+        return 1;
+    if (ed_class->FindMember(&member, object, attribute, 1))
+        return member.reference->GetAttributeData(member.object, attribute, requested_type, data, data_size);
+    return 0;
+}
+
+extern "C" {
+    extern i32 NewPrim;
+    void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
+    void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
+                                 f32 radius_scale, f32 radius_bias);
+}
+
+/* Arrow-head shape of the facing arrow DrawObjectSphere draws. */
+f32 ClassEditorArrowMinRadius = 0.1f;
+f32 ClassEditorArrowMaxRadius = 0.1f;
+f32 ClassEditorArrowRadiusScale = 0.1f;
+f32 ClassEditorArrowRadiusBias = 0.1f;
+
+/* Outlines an object with a sphere of its radius attribute (1 by default) and,
+ * when it has a transform, an arrow down its facing axis. */
+void ClassEditor::DrawObjectSphere(ClassObject &selected, i32 colour) {
+    f32 radius;
+    __declspec(align(16)) VuMtx transform;
+    VuVec position;
+
+    if (selected.object == NULL)
+        return;
+    if (!selected.GetAttributeData(0x40, EdType_Float, &radius, 0))
+        radius = 1.0f;
+    if (selected.GetAttributeData(0x10, EdType_VuMtx, &transform, 0)) {
+        VuVec difference;
+        EdDrawBegin(0);
+        EdDrawLineSphere(&transform.matrix.translation, radius, 1.0f, colour);
+        {
+            VuVec scaled;
+            scaled.x = transform.matrix.m20 * radius;
+            scaled.y = transform.matrix.m21 * radius;
+            scaled.z = transform.matrix.m22 * radius;
+            difference.x = transform.matrix.m30 - scaled.x;
+            difference.y = transform.matrix.m31 - scaled.y;
+            difference.z = transform.matrix.m32 - scaled.z;
+        }
+        /* Retail copies the difference's unset w along with it. */
+        {
+            VuVec tip;
+            tip.x = difference.x;
+            tip.y = difference.y;
+            tip.z = difference.z;
+            tip.w = difference.w;
+            EdDrawPolyArrow(&transform.matrix.translation, &tip.xyz, 4, colour, ClassEditorArrowMinRadius,
+                            ClassEditorArrowMaxRadius, ClassEditorArrowRadiusScale, ClassEditorArrowRadiusBias);
+        }
+    } else {
+        if (!selected.GetAttributeData(8, EdType_VuVec, &position, 0))
+            return;
+        EdDrawBegin(0);
+        EdDrawLineSphere(&position.xyz, radius, 1.0f, colour);
+    }
+    if (NewPrim != 0) {
+        if (NewPrim == 2 || NewPrim == 3)
+            NuPrim3DEnd();
+        NewPrim = 0;
+    }
 }
 
 /* Retail's editor trace hook: the format strings were compiled out, leaving an
