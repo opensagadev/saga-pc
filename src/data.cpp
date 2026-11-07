@@ -29957,6 +29957,12 @@ extern "C" {
 #pragma data_seg(".data$edui_cursor_x")
     f32 edui_cursor_x = 50.0f;
 
+#pragma data_seg(".data$EduiScaleXPc")
+    f32 EduiScaleXPc = 16.0f;
+
+#pragma data_seg(".data$EduiScaleYPc")
+    f32 EduiScaleYPc = 8.0f;
+
 #pragma data_seg(".data$edui_textrow_default")
     char *edui_textrow_default[4] = {"1234567890", "QWERTYUIOP", "ASDFGHJKL_", "ZXCVBNM<>?"};
 

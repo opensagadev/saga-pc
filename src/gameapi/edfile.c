@@ -1415,10 +1415,19 @@ typedef struct EDUI_EXPANDER_PC {
     eduiitem_s *first_child;
     eduiitem_s *last_child;
     u32 open : 1;
-    u32 unknown_flags : 31;
+    u32 hover : 1;
+    u32 unknown_flags : 30;
+    f32 button_size;
+    f32 button_x;
+    f32 button_y;
+    i32 depth;
+    void(__cdecl *changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 } EDUI_EXPANDER_PC;
 STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, first_child) == 0x4c);
 STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, last_child) == 0x50);
+STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, button_size) == 0x58);
+STATIC_ASSERT(offsetof(EDUI_EXPANDER_PC, depth) == 0x64);
+STATIC_ASSERT(sizeof(EDUI_EXPANDER_PC) == 0x6c);
 
 void __cdecl eduicbItemExpanderClose(eduiitem_s *item) {
     EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
@@ -1444,6 +1453,294 @@ void __cdecl eduicbMenuCloseAllexpanders(eduimenu_s *menu) {
         if (item->type == 19)
             eduicbItemExpanderClose(item);
     }
+}
+
+extern struct PC_SCENE_MTL_VIEW *uimtls[5];
+extern i32 EduiSelectionMaterialPc;
+extern f32 EduiScaleXPc;
+extern f32 EduiScaleYPc;
+i32 __cdecl NuVSPrintf(char *dest, const char *format, va_list args);
+void __cdecl NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
+
+static void EduiExpanderOpenPc(EDUI_EXPANDER_PC *expander) {
+    if (expander->first_child && !expander->open) {
+        expander->last_child->next = expander->base.next;
+        if (expander->base.next)
+            expander->base.next->previous = expander->last_child;
+        expander->base.next = expander->first_child;
+        expander->first_child->previous = &expander->base;
+        expander->open = 1;
+    }
+}
+
+/* Is the editor cursor over the expander's open/close button? */
+static i32 EduiExpanderOverButtonPc(EDUI_EXPANDER_PC *expander) {
+    f32 top = expander->button_y * 0.5;
+    f32 right = expander->button_size + expander->button_x;
+    f32 bottom = (expander->button_y + expander->button_size) * 0.5;
+    if (edui_cursor_x >= expander->button_x && edui_cursor_y >= top && edui_cursor_x < right && edui_cursor_y < bottom)
+        return 1;
+    return 0;
+}
+
+static i32 __cdecl eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    (void)delta_time;
+    if (pad->digital_buttons_pressed & 0x40) {
+        if (expander->changed)
+            expander->changed(menu, item, 0);
+        if (expander->first_child) {
+            if (expander->open)
+                eduicbItemExpanderClose(item);
+            else
+                EduiExpanderOpenPc(expander);
+        }
+    }
+    return 0;
+}
+
+static i32 __cdecl eduicbInteractExpander(edui_interact_s *interact) {
+    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)interact->item;
+    if (edui_cursor_buttons_db & 0x40) {
+        if (expander->changed)
+            expander->changed(interact->menu, &expander->base, 0);
+        if (EduiExpanderOverButtonPc(expander) && expander->first_child) {
+            if (expander->open)
+                eduicbItemExpanderClose(&expander->base);
+            else
+                EduiExpanderOpenPc(expander);
+        }
+    }
+    return 0;
+}
+
+static void __cdecl eduicbItemDestroyExpander(eduimenu_s *menu, eduiitem_s *item) {
+    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    if (expander->last_child)
+        expander->last_child->next = NULL;
+    while (expander->first_child) {
+        eduiitem_s *next = expander->first_child->next;
+        expander->first_child->destroy(menu, expander->first_child);
+        expander->first_child = next;
+    }
+}
+
+void __cdecl eduiIitemExpanderSetDepth(eduiitem_s *item, i32 depth) {
+    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    eduiitem_s *child;
+    expander->depth = depth;
+    for (child = expander->first_child; child; child = child->next) {
+        if (child->type == 19)
+            eduiIitemExpanderSetDepth(child, depth + 1);
+        if (child->type == 17)
+            ((edui_prop_s *)child)->depth = depth + 1;
+        if (child == expander->last_child)
+            break;
+    }
+}
+
+void __cdecl eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child) {
+    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    child->previous = expander->last_child;
+    if (expander->last_child)
+        expander->last_child->next = child;
+    expander->last_child = child;
+    if (!expander->first_child)
+        expander->first_child = child;
+    child->next = NULL;
+    if (child->type == 19)
+        eduiIitemExpanderSetDepth(child, expander->depth + 1);
+    if (child->type == 17)
+        ((edui_prop_s *)child)->depth = expander->depth + 1;
+}
+
+eduimenu_s *__cdecl eduiGetTopLevelParent(eduimenu_s *menu) {
+    if (menu != NULL) {
+        eduimenu_s *parent = menu->parent;
+        if (parent != NULL)
+            return eduiGetTopLevelParent(parent);
+    }
+    return menu;
+}
+
+eduimenu_s *__cdecl eduiGetActiveMenuParent(void) {
+    return eduiGetTopLevelParent(active_menu);
+}
+
+/* The menu itself or one of its open children when it holds the focus. */
+static eduimenu_s *EduiMenuChainActivePc(eduimenu_s *menu) {
+    if (menu == NULL)
+        return NULL;
+    if (menu == active_menu)
+        return menu;
+    return EduiMenuChainActivePc(menu->child);
+}
+
+/* Screen-space helpers in 640x448 units; EduiScaleXPc/EduiScaleYPc convert to
+ * the 16x/8x sub-pixel coordinates of the 2D renderer. */
+static void EduiDrawRectPc(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0)
+        NuRndrRect2di((i32)(x * EduiScaleXPc), (i32)(y * EduiScaleYPc), (i32)(width * EduiScaleXPc),
+                      (i32)(height * EduiScaleYPc), colour, material);
+}
+
+/* Line primitives in 640x448 units; the coordinates are rounded to f32 first. */
+#define EDUI_DRAW_LINE(x0, y0, x1, y1, colour, material)                                                               \
+    do {                                                                                                               \
+        f32 line_x0 = (x0), line_y0 = (y0), line_x1 = (x1), line_y1 = (y1);                                            \
+        if (edui_donotdraw == 0)                                                                                       \
+            NuRndrLine2di((i32)(line_x0 * EduiScaleXPc), (i32)(line_y0 * EduiScaleYPc), (i32)(line_x1 * EduiScaleXPc), \
+                          (i32)(line_y1 * EduiScaleYPc), colour, material);                                            \
+    } while (0)
+
+#define EDUI_DRAW_LINE_RECT(x, y, width, height, colour, material)                                                     \
+    do {                                                                                                               \
+        f32 rect_x = (x), rect_y = (y), rect_width = (width), rect_height = (height);                                  \
+        if (edui_donotdraw == 0)                                                                                       \
+            NuRndrLineRect2di((i32)(rect_x * EduiScaleXPc), (i32)(rect_y * EduiScaleYPc),                              \
+                              (i32)(rect_width * EduiScaleXPc), (i32)(rect_height * EduiScaleYPc), colour, material);  \
+    } while (0)
+
+static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
+    if (edui_donotdraw == 0) {
+        char text[1024];
+        va_list args;
+        i32 left = (i32)(x * EduiScaleXPc);
+        i32 top = (i32)(y * EduiScaleYPc);
+        i32 clip_left = (i32)(clip_x * EduiScaleXPc);
+        i32 clip_right = (i32)(clip_width * EduiScaleXPc);
+        i32 width;
+        i32 text_x;
+        char *end;
+        NuQFntPushPrintMode(2);
+        va_start(args, format);
+        NuVSPrintf(text, format, args);
+        va_end(args);
+        width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        switch (alignment) {
+            case 16:
+                break;
+            case 32:
+                left -= width;
+                break;
+            case 64:
+                left -= width / 2;
+                break;
+        }
+        text_x = left;
+        if (left < clip_left)
+            text_x = clip_left;
+        end = text + NuStrLen(text) - 1;
+        while (width > clip_right && end > text) {
+            *end-- = 0;
+            width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        }
+        NuQFntMove((VUFNT *)font, (f32)text_x, (f32)top, 0.0f);
+        NuQFntPrintU((VUFNT *)font, text);
+        NuQFntPopPrintMode();
+    }
+}
+
+static i32 __cdecl eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
+    EDUI_EXPANDER_PC *expander = (EDUI_EXPANDER_PC *)item;
+    u32 button_colours[2];
+    f32 item_x = (f32)x;
+    f32 item_y = (f32)y;
+    f32 item_width = (f32)width;
+    f32 row_height;
+    f32 baseline;
+    f32 text_x;
+    i32 depth;
+    (void)height;
+    button_colours[0] = 0xff000000;
+    button_colours[1] = 0xffffffff;
+    item->x = x;
+    item->y = y;
+    expander->hover = EduiExpanderOverButtonPc(expander);
+    if (edui_donotdraw == 0) {
+        NuQFntSet((VUFNT *)edui_font);
+        if (edui_donotdraw == 0)
+            NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+    }
+    row_height = NuQFntHeight((VUFNT *)edui_font) * 1.25 * (1.0f / EduiScaleYPc);
+    baseline = (NuQFntHeight((VUFNT *)edui_font) * 0.125 + NuQFntBaseline((VUFNT *)edui_font)) * (1.0f / EduiScaleYPc);
+    if (menu != NULL && EduiMenuChainActivePc(menu))
+        EduiDrawRectPc(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted],
+                       (NUMTL *)uimtls[ui_bgmtl]);
+    for (depth = 0; depth < expander->depth; depth++) {
+        f32 guide_x = item_x + ((f32)depth + 0.5) * (row_height - 2.0);
+        EDUI_DRAW_LINE(guide_x, item_y, guide_x, item_y + row_height, 0xff000000, (NUMTL *)uimtls[0]);
+    }
+    expander->button_size = row_height - 2.0f;
+    expander->button_x = item_x + expander->depth * expander->button_size + 1.0f;
+    expander->button_y = item_y + 1.0f;
+    if (expander->first_child) {
+        EDUI_DRAW_LINE_RECT(expander->button_x, expander->button_y, expander->button_size, expander->button_size,
+                            0xff000000, (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+        EDUI_DRAW_LINE(expander->button_x + 2.0f, expander->button_y + expander->button_size * 0.5,
+                       expander->button_x + expander->button_size - 2.0f,
+                       expander->button_y + expander->button_size * 0.5, button_colours[expander->hover],
+                       (NUMTL *)uimtls[0]);
+        if (!expander->open)
+            EDUI_DRAW_LINE(expander->button_x + expander->button_size * 0.5, expander->button_y + 2.0f,
+                           expander->button_x + expander->button_size * 0.5,
+                           expander->button_y + expander->button_size - 2.0f, button_colours[expander->hover],
+                           (NUMTL *)uimtls[0]);
+    }
+    text_x = expander->button_x + expander->button_size + 2.0f;
+    eduiFntPrintClipEx(edui_font, text_x, item_y + baseline, 16, text_x, item_width - (expander->button_size - 2.0f),
+                       item->text);
+    return (i32)row_height;
+}
+
+eduiitem_s *__cdecl eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text) {
+    EDUI_EXPANDER_PC *item = (EDUI_EXPANDER_PC *)NuAlloc(sizeof(EDUI_EXPANDER_PC), EduiSourcePathPc, 0x1473);
+    if (item != NULL) {
+        memset(item, 0, sizeof(EDUI_EXPANDER_PC));
+        item->base.data = data;
+        item->base.type = 19;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.highlighted = 0;
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessExpander;
+        item->base.render = eduicbRenderExpander;
+        item->base.destroy = eduicbItemDestroyExpander;
+        item->interact = eduicbInteractExpander;
+        eduiItemSetText(&item->base, text);
+        item->changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        return &item->base;
+    }
+    return NULL;
+}
+
+void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item) {
+    if (menu->first == item)
+        menu->first = item->next;
+    if (menu->last == item)
+        menu->last = item->previous;
+    if (menu->selected == item)
+        menu->selected = item->next ? item->next : item->previous;
+    menu->field_0c = menu->first;
+    menu->field_10 = NULL;
+    if (item->next)
+        item->next->previous = item->previous;
+    if (item->previous)
+        item->previous->next = item->next;
+    item->next = NULL;
+    item->previous = NULL;
+}
+
+void __cdecl eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours) {
+    eduiitem_s *item;
+    for (item = menu->first; item; item = item->next) {
+        item->colours[0] = colours[0];
+        item->colours[1] = colours[1];
+        item->colours[2] = colours[2];
+        item->colours[3] = colours[3];
+    }
+    if (menu->child)
+        eduiMenuSetAttr(menu->child, colours);
 }
 
 i32 __cdecl eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);

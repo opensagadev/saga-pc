@@ -1385,6 +1385,11 @@
    "unit": "src/nu2api/nutex_pc.cpp",
    "symbol": "?NuQFntColumnOpaque32Inline@@YAHPAUnutexbmp_pc_s@@HHH@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??_FClassObject@@QAEXXZ",
+   "kind": "function"
   }
  ]
 }

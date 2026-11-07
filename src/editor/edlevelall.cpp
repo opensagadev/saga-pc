@@ -33,6 +33,13 @@ extern "C" {
     void __cdecl eduiSetCameraEnabled(i32 enabled);
     extern i32 NewPrim;
     void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
+    eduiitem_s *__cdecl eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text);
+    void __cdecl eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child);
+    void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
+    void __cdecl eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours);
+    eduimenu_s *__cdecl eduiGetActiveMenuParent(void);
+    void __cdecl eduiSetActiveMenu(eduimenu_s *menu);
+    void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
     void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
                                  f32 radius_scale, f32 radius_bias);
 }
@@ -202,9 +209,112 @@ void EdFileOutputStream::EndBlock() {
     NuFileSeek(file, end, 0);
 }
 
-struct PropertyTool {
-    eduimenu_s *GetNextDefaultActiveMenu(eduimenu_s *menu);
+/* Transform gizmo of the class editor (Android EdManipulator). */
+class EdManipulator {
+  public:
+    virtual i32 Process(EdInputContext &input, ClassObjectList &objects);
+    virtual void Render(ClassObjectList &objects);
+
+    u32 unknown_04[3];
+    i32 selected_attribute;
 };
+
+/* Property menu of the objects that share one editor class. */
+class PropertyMenu : public CSListLink<PropertyMenu> {
+  public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(PropertyMenu));
+    }
+
+    eduimenu_s *menu;
+    EdControl *control;
+    ClassObject objects[8];
+    i32 object_count;
+    i32 order;
+
+    void SelectAttr(i32 selected);
+};
+
+class PropertyMenuList {
+  public:
+    PropertyMenuList() : first(NULL), last(NULL), count(0) {
+    }
+
+    PropertyMenu *first;
+    PropertyMenu *last;
+    i32 count;
+
+    void InsertBefore(PropertyMenu *menu, PropertyMenu *position);
+    void InsertSorted(PropertyMenu *menu);
+};
+
+struct PropertyMenuMetrics {
+    i32 x;
+    i32 y;
+    i32 width;
+    i32 height;
+};
+
+/* Edits the properties of the class editor's selected objects through one
+ * floating menu per object, thePropertyTool. */
+class PropertyTool : public EdTool {
+  public:
+    PropertyTool() {
+        show_type_names = 1;
+        menu_attr.background = 0x80000000;
+        menu_attr.text = 0x80ff0000;
+        menu_attr.highlight = 0x80804040;
+        menu_attr.disabled = 0x80404040;
+        selected_attr.background = 0x80000000;
+        selected_attr.text = 0x80ff0000;
+        selected_attr.highlight = 0x80406080;
+        selected_attr.disabled = 0x80404040;
+        unselected_attr.background = 0x80000000;
+        unselected_attr.text = 0x80ff0000;
+        unselected_attr.highlight = 0x80707080;
+        unselected_attr.disabled = 0x80808080;
+    }
+    virtual ~PropertyTool() {
+    }
+    virtual void Initialise(variptr_u &, variptr_u &, i32);
+    virtual char const *GetName() {
+        return "Property Tool";
+    }
+    virtual i32 Process(EdInputContext &input);
+    virtual void Render();
+
+    PropertyMenuList menus;
+    i32 show_type_names;
+    eduiiattr_s menu_attr;
+    eduiiattr_s selected_attr;
+    eduiiattr_s unselected_attr;
+
+    void AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, void *object, eduiitem_s *parent);
+    void AutoLocateMenu(PropertyMenu *property_menu);
+    PropertyMenu *CreatePropertyMenu(ClassObject &object);
+    PropertyMenu *FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry);
+    PropertyMenu *GetActiveMenu(PropertyMenu *menu);
+    eduimenu_s *GetNextDefaultActiveMenu(eduimenu_s *menu);
+    i32 ProcessControls(EdInputContext &input);
+    i32 ProcessMenu(EdInputContext &input);
+    void RefreshMenuControls(PropertyMenu *property_menu);
+    void RenderMenu(PropertyMenu *property_menu);
+    void SetDefaultActiveMenu(PropertyMenu *menu);
+    void ToggleActiveMenu();
+};
+STATIC_ASSERT(sizeof(PropertyMenu) == 0x78);
+STATIC_ASSERT(offsetof(PropertyMenu, objects) == 0x10);
+STATIC_ASSERT(offsetof(PropertyMenu, order) == 0x74);
+STATIC_ASSERT(sizeof(PropertyTool) == 0x4c);
+STATIC_ASSERT(offsetof(PropertyTool, menus) == 0xc);
+STATIC_ASSERT(offsetof(PropertyTool, selected_attr) == 0x2c);
+STATIC_ASSERT(offsetof(EdManipulator, selected_attribute) == 0x10);
+
+PropertyTool thePropertyTool;
+PropertyMenuMetrics menu_startmetrics = {20, 5, 200, 400};
 
 void SerialiseVuVec(EdStream &stream, void *data, i32) {
     stream.SerialiseBuffer(data, 4, 3);
@@ -1054,6 +1164,7 @@ i32 EdType_VuVec;
 i32 EdType_VuMtx;
 i32 EdType_NuVec;
 i32 EdType_NuMtx;
+i32 EdType_String;
 
 void *EdRef::GetMemberObject(void *object) {
     void *member = static_cast<u8 *>(object) + member_offset;
@@ -1432,4 +1543,350 @@ void ClassEditor::DrawObjectSphere(ClassObject &selected, i32 colour) {
  * edref.cpp because this body would let the compiler drop its one-argument
  * call. */
 void EdTrace(const char *, ...) {
+}
+
+EdInputContext *EdControl::Input = NULL;
+
+void PropertyTool::Initialise(variptr_u &, variptr_u &, i32) {
+}
+
+void PropertyMenu::SelectAttr(i32 selected) {
+    for (eduiitem_s *item = menu->first; item != NULL; item = item->next) {
+        EdControl *control = static_cast<EdControl *>(item->data_ptr);
+        if (control != NULL)
+            control->SetMenuItemAttr(selected, item, &thePropertyTool.selected_attr, &thePropertyTool.unselected_attr);
+    }
+}
+
+/* Keeps the list ordered by PropertyMenu::order. */
+void PropertyMenuList::InsertSorted(PropertyMenu *menu) {
+    for (PropertyMenu *position = first; position != NULL; position = position->next) {
+        if (menu->order < position->order) {
+            InsertBefore(menu, position);
+            return;
+        }
+    }
+    menu->next = NULL;
+    menu->previous = last;
+    if (last != NULL)
+        last->next = menu;
+    last = menu;
+    if (first == NULL)
+        first = menu;
+    count++;
+}
+
+void PropertyMenuList::InsertBefore(PropertyMenu *menu, PropertyMenu *position) {
+    if (position != NULL) {
+        menu->next = position;
+        menu->previous = position->previous;
+        if (position->previous != NULL)
+            position->previous->next = menu;
+        else
+            first = menu;
+        position->previous = menu;
+        count++;
+    } else {
+        menu->next = first;
+        menu->previous = NULL;
+        if (first != NULL)
+            first->previous = menu;
+        if (last == NULL)
+            last = menu;
+        count++;
+        first = menu;
+    }
+}
+
+PropertyMenu *PropertyTool::FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry) {
+    for (; menu != NULL; menu = menu->next) {
+        for (i32 i = 0; i < menu->object_count; i++) {
+            if (menu->objects[i].object == entry->object)
+                return menu;
+        }
+    }
+    return NULL;
+}
+
+void PropertyTool::RefreshMenuControls(PropertyMenu *property_menu) {
+    eduiitem_s *item = property_menu->menu->field_0c;
+    NuFntSet(EdLevelFnt);
+    NuFntScale(EdLevelFntScale, EdLevelFntScale);
+    for (; item != NULL; item = item->next) {
+        EdControl *control = static_cast<EdControl *>(item->data_ptr);
+        if (control != NULL)
+            control->Refresh();
+        if (item == property_menu->menu->field_10)
+            break;
+    }
+}
+
+PropertyMenu *PropertyTool::GetActiveMenu(PropertyMenu *menu) {
+    if (menu == NULL)
+        return NULL;
+    if (menu->menu == eduiGetActiveMenuParent())
+        return menu;
+    return GetActiveMenu(menu->next);
+}
+
+void PropertyTool::SetDefaultActiveMenu(PropertyMenu *menu) {
+    if (menu != NULL && menu->menu != NULL)
+        eduiSetActiveMenu(GetMenuActiveChild(menu->menu));
+    else
+        eduiSetActiveMenu(edLevelActiveMenu != NULL ? edLevelActiveMenu : edLevelPinnedMenu);
+}
+
+void PropertyTool::ToggleActiveMenu() {
+    PropertyMenu *menu = GetActiveMenu(menus.first);
+    if (menu == NULL) {
+        if (GetNextDefaultActiveMenu(eduiGetActiveMenu()) == NULL)
+            SetDefaultActiveMenu(menus.first);
+    } else if (menu == menus.last) {
+        eduiSetActiveMenu(NULL);
+    } else {
+        menu = GetActiveMenu(menus.first);
+        SetDefaultActiveMenu(menu != NULL ? menu->next : NULL);
+    }
+}
+
+i32 PropertyTool::ProcessControls(EdInputContext &input) {
+    for (PropertyMenu *menu = menus.first; menu != NULL; menu = menu->next) {
+        if (menu->control != NULL)
+            menu->control->Process(input);
+    }
+    return 0;
+}
+
+void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, void *object, eduiitem_s *parent) {
+    for (EdRef *member = ed_class->members; member != NULL; member = member->next) {
+        if (member->attributes & 0x80000000) {
+            eduiitem_s *expander = eduiItemExpanderCreate(0, &EdLevelAttr, NULL, member->name);
+            if (parent != NULL)
+                eduiItemExpanderAddChild(parent, expander);
+            else
+                eduiMenuAddItem(menu, expander);
+            i32 class_id = member->type_id;
+            EdClass *member_class =
+                class_id >= 0 && class_id < theRegistry.class_count ? &theRegistry.classes[class_id] : NULL;
+            AddPropertyMenuItems(menu, member_class, member->GetMemberObject(object), expander);
+        } else if (member->control != NULL) {
+            eduiitem_s *last = menu->last;
+            member->control->AddMenuItem(menu, member, object);
+            if (parent != NULL) {
+                eduiitem_s *item = last != NULL ? last->next : menu->first;
+                while (item != NULL) {
+                    eduiitem_s *next = item->next;
+                    eduiMenuRemoveItem(menu, item);
+                    eduiItemExpanderAddChild(parent, item);
+                    item = next;
+                }
+            }
+        }
+    }
+}
+
+/* Places a new menu right of the others, wrapping back to the left edge. */
+void PropertyTool::AutoLocateMenu(PropertyMenu *property_menu) {
+    eduimenu_s *menu = property_menu->menu;
+    bool use_stored_metrics = true;
+    bool placed;
+    menu->x = 20;
+    menu->y = 5;
+    do {
+        placed = true;
+        for (PropertyMenu *other = menus.first; other != NULL; other = other->next) {
+            eduimenu_s *other_menu = other->menu;
+            if (other_menu != menu) {
+                use_stored_metrics = false;
+                if (menu->x + menu->width >= other_menu->x && menu->x <= other_menu->x + other_menu->width) {
+                    placed = false;
+                    menu->x += 10;
+                    break;
+                }
+            }
+        }
+        if (use_stored_metrics) {
+            menu->x = menu_startmetrics.x;
+            menu->y = menu_startmetrics.y;
+            menu->width = menu_startmetrics.width;
+            menu->height = menu_startmetrics.height;
+        }
+        if (menu->x + menu->width > 640.0 - 0.0) {
+            menu->x = 20;
+            menu->y = 5;
+            return;
+        }
+    } while (!placed);
+}
+
+PropertyMenu *PropertyTool::CreatePropertyMenu(ClassObject &object) {
+    PropertyMenu *property_menu = new PropertyMenu;
+    if (property_menu == NULL)
+        return NULL;
+    PropertyMenuMetrics metrics = menu_startmetrics;
+    char name[64];
+    char title[128];
+    if (!object.GetAttributeData(2, EdType_String, name, sizeof(name)))
+        NuStrCpy(name, "no name");
+    NuSPrintf(title, "%s - %s", object.ed_class->name, name);
+    eduimenu_s *menu = eduiMenuCreate(metrics.x, metrics.y, metrics.width, metrics.height,
+                                      reinterpret_cast<void *>(EdLevelFnt), NULL, title);
+    if (menu != NULL) {
+        AddPropertyMenuItems(menu, object.ed_class, object.object, NULL);
+        menu->selected = menu->first;
+        eduiMenuFitWidth(menu, 5);
+    }
+    eduiMenuSetAttr(menu, &selected_attr.background);
+    property_menu->menu = menu;
+    property_menu->objects[0] = object;
+    property_menu->object_count = 1;
+    property_menu->control = NULL;
+    property_menu->SelectAttr(theClassEditor.manipulator != NULL ? theClassEditor.manipulator->selected_attribute : 0);
+    return property_menu;
+}
+
+void PropertyTool::RenderMenu(PropertyMenu *property_menu) {
+    eduimenu_s *menu = property_menu->menu;
+    VuVec start;
+    VuVec end;
+    if (property_menu->order == -1)
+        AutoLocateMenu(property_menu);
+    NuCameraCalcRay((f32)((menu->x + menu->width * 0.5) / 640.0), (f32)((menu->y + menu->height * 0.125) / 448.0),
+                    (NUVEC *)&start, (NUVEC *)&end, NULL);
+    property_menu->objects[0].GetAttributeData(8, EdType_VuVec, &end, 0);
+    EdDrawBegin(0);
+    EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, (i32)&selected_attr);
+    if (NewPrim != 0) {
+        if (NewPrim == 2 || NewPrim == 3)
+            NuPrim3DEnd();
+        NewPrim = 0;
+    }
+    if (property_menu->menu != NULL)
+        eduiMenuRender(menu);
+    if (menu->selected != NULL) {
+        EdControl *control = static_cast<EdControl *>(menu->selected->data_ptr);
+        if (control != NULL)
+            control->Render();
+    }
+}
+
+void PropertyTool::Render() {
+    PropertyMenu *selected = NULL;
+    for (PropertyMenu *menu = menus.last; menu != NULL; menu = menu->previous) {
+        if (menu == GetActiveMenu(menus.first))
+            selected = menu;
+        else
+            RenderMenu(menu);
+    }
+    if (selected != NULL)
+        RenderMenu(selected);
+}
+
+/* Rebuilds the menu list from the class editor's selection, keeping the
+ * menus of objects that stay selected, then lets the menus take the input. */
+i32 PropertyTool::ProcessMenu(EdInputContext &input) {
+    PropertyMenuList list;
+    i32 order = 0;
+    PropertyMenu *menu;
+    for (menu = menus.first; menu != NULL; menu = menu->next)
+        menu->order = order++;
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        ClassObject &object = *reinterpret_cast<ClassObject *>(&entry->ed_class);
+        for (menu = menus.first; menu != NULL; menu = menu->next) {
+            i32 i;
+            for (i = 0; i < menu->object_count; i++) {
+                if (menu->objects[i].object == entry->object)
+                    break;
+            }
+            if (i < menu->object_count)
+                break;
+        }
+        if (menu != NULL) {
+            menu->object_count = 0;
+            menu->objects[menu->object_count++] = object;
+            if (menu->next != NULL)
+                menu->next->previous = menu->previous;
+            else
+                menus.last = menu->previous;
+            if (menu->previous != NULL)
+                menu->previous->next = menu->next;
+            else
+                menus.first = menu->next;
+            menu->next = NULL;
+            menu->previous = NULL;
+            menus.count--;
+            list.InsertSorted(menu);
+        } else {
+            menu = FindItemMenu(list.first, entry);
+            if (menu != NULL) {
+                if (menu->object_count < 8)
+                    menu->objects[menu->object_count++] = object;
+            } else {
+                for (PropertyMenu *other = menus.first; other != NULL; other = other->next) {
+                    eduimenu_s *other_menu = other->menu;
+                    menu_startmetrics.x = other_menu->x > 0 ? other_menu->x : 20;
+                    menu_startmetrics.y = other_menu->y > 0 ? other_menu->y : 5;
+                    menu_startmetrics.width = other_menu->width;
+                    menu_startmetrics.height = other_menu->height;
+                }
+                menu = CreatePropertyMenu(object);
+                menu->menu->x = menu_startmetrics.x;
+                menu->menu->y = menu_startmetrics.y;
+                menu->menu->width = menu_startmetrics.width;
+                menu->menu->height = menu_startmetrics.height;
+                menu->order = -1;
+                list.InsertSorted(menu);
+            }
+        }
+    }
+    while (menus.first != NULL) {
+        menu = menus.first;
+        if (menu->next != NULL)
+            menu->next->previous = menu->previous;
+        else
+            menus.last = menu->previous;
+        if (menu->previous != NULL)
+            menu->previous->next = menu->next;
+        else
+            menus.first = menu->next;
+        menu->next = NULL;
+        menu->previous = NULL;
+        menus.count--;
+        eduicbMenuCloseAllexpanders(menu->menu);
+        if (menu->menu != NULL) {
+            for (eduiitem_s *item = menu->menu->first; item != NULL; item = item->next)
+                delete static_cast<EdControl *>(item->data_ptr);
+        }
+        eduiMenuDestroy(menu->menu);
+        delete menu;
+    }
+    menus = list;
+    if (edLevelActiveMenu != NULL)
+        return 0;
+    EdControl::Input = &input;
+    PropertyMenu *active = GetActiveMenu(menus.first);
+    if (active != NULL) {
+        RefreshMenuControls(active);
+        if (eduiMenuProcess(active->menu, input.delta_time, input.pad) != 0)
+            return 1;
+    }
+    for (menu = menus.first; menu != NULL;) {
+        PropertyMenu *next = menu->next;
+        if (menu != active) {
+            RefreshMenuControls(menu);
+            if (eduiMenuProcess(menu->menu, input.delta_time, input.pad) != 0)
+                return 1;
+        }
+        menu = next;
+    }
+    if (input.pad->digital_buttons_pressed & 0x100)
+        ToggleActiveMenu();
+    EdControl::Input = NULL;
+    return 0;
+}
+
+i32 PropertyTool::Process(EdInputContext &input) {
+    i32 result = ProcessMenu(input);
+    ProcessControls(input);
+    return result;
 }

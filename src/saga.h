@@ -29237,6 +29237,7 @@ class EdControl {
     eduiitem_s *item;
     EdRef *reference;
     void *object;
+    static EdInputContext *Input;
 };
 STATIC_ASSERT(sizeof(EdControl) == 0x10);
 STATIC_ASSERT(offsetof(EdControl, item) == 0x4);
@@ -29440,7 +29441,7 @@ struct ClassObject {
     void *object;
     EdRef *reference;
 
-    ClassObject(EdClass *object_class, void *object_data)
+    ClassObject(EdClass *object_class = NULL, void *object_data = NULL)
         : ed_class(object_class), object(object_data), reference(NULL) {
     }
     i32 GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
