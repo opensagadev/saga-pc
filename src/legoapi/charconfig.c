@@ -2062,12 +2062,12 @@ static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
             if (NuStrICmp(parser->word_buffer_ptr, "txt_file") == 0) {
                 if (result == 0 && NuFParGetWord(parser) != 0 &&
                     NuStrLen(parser->word_buffer_ptr) < filename_capacity) {
-                    result = 1;
                     NuStrCpy(filename, parser->word_buffer_ptr);
+                    result = 1;
                 }
             } else if (result != 0) {
-                result = 2;
-                break;
+                NuFParDestroy(parser);
+                return 2;
             }
         }
         NuFParDestroy(parser);
