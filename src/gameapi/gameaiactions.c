@@ -986,31 +986,32 @@ i32 __cdecl Action_GoToLevelPath(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
     if (packet == NULL || packet->owner == NULL)
         return 1;
     if (first_time != 0) {
-        if (system == NULL || packet->path_info.path == NULL || packet->path_info.connection == NULL)
-            return 0;
-        if (packet->path_info.path != system->path_sys->active_path) {
-            AISysCharacterSetPath(packet, system->path_sys->active_path);
-            AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)packet->owner, packet, 0xff, 1);
+        if (system != NULL && packet->path_info.path != NULL && packet->path_info.connection != NULL) {
+            if (packet->path_info.path != system->path_sys->active_path) {
+                AISysCharacterSetPath(packet, system->path_sys->active_path);
+                AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)packet->owner, packet, 0xff, 1);
+            }
+            return 1;
         }
-        return 1;
+    } else {
+        node = (AIPATHNODE_PC *)processor->action_data_3;
+        if (node != NULL) {
+            distance_squared = NuVecXZDistSqr(&packet->owner->position, &node->position, &difference);
+            if (node->radius_squared > distance_squared) {
+                memset(&packet->path_info, 0, sizeof(packet->path_info));
+                AISysCharacterSetPath(packet, system->path_sys->active_path);
+                if ((node->runtime_flags & 1) != 0) {
+                    connection_index = (u16)node->path_flags;
+                    AISysCharacterSetPathCnx(packet, &packet->owner->position,
+                                             &packet->path_info.path->connections[connection_index], 0);
+                }
+                return 1;
+            }
+            AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1,
+                              packet->movement_instruction_parameter);
+        }
     }
-    node = (AIPATHNODE_PC *)processor->action_data_3;
-    if (node == NULL)
-        return 0;
-    distance_squared = NuVecXZDistSqr(&packet->owner->position, &node->position, &difference);
-    if (!(distance_squared < node->radius_squared)) {
-        AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1,
-                          packet->movement_instruction_parameter);
-        return 0;
-    }
-    memset(&packet->path_info, 0, sizeof(packet->path_info));
-    AISysCharacterSetPath(packet, system->path_sys->active_path);
-    if ((node->runtime_flags & 1) != 0) {
-        connection_index = (u16)node->path_flags;
-        AISysCharacterSetPathCnx(packet, &packet->owner->position,
-                                 &packet->path_info.path->connections[connection_index], 0);
-    }
-    return 1;
+    return 0;
 }
 
 i32 __cdecl Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
