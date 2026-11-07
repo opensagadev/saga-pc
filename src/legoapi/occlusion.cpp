@@ -628,6 +628,172 @@ NUMTL *OccluderSet::ms_pZOnlyMtl3D = 0;
 NUMTL *OccluderSet::ms_pZOnlyMtl2D = 0;
 NUMTL *OccluderSet::ms_pAlphaMtl2D = 0;
 
+/* NuDynamicLight shadow helpers; unreferenced in retail but kept by the linker. */
+extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const NUVEC4 *plane) {
+    i32 count = 0;
+    for (i32 edge = 0; edge < 12; ++edge) {
+        const NUVEC4 *a = &input[cubeEdgeIndices[edge][0]];
+        const NUVEC4 *b = &input[cubeEdgeIndices[edge][1]];
+        f32 dot_a = a->x * plane->x + a->y * plane->y + a->z * plane->z;
+        f32 da = dot_a + plane->w;
+        f32 dot_b = plane->x * b->x + plane->y * b->y + b->z * plane->z;
+        f32 db = dot_b + plane->w;
+        if (da > 0.0f) {
+            output[count].x = a->x;
+            output[count].y = a->y;
+            output[count].z = a->z;
+            output[count].w = a->w;
+            ++count;
+            if (db > 0.0f) {
+                output[count].x = b->x;
+                output[count].y = b->y;
+                output[count].z = b->z;
+                output[count].w = b->w;
+                ++count;
+            } else {
+                f32 t = da / (da - db);
+                __declspec(align(16)) NUVEC4 delta;
+                delta.x = b->x - a->x;
+                delta.y = b->y - a->y;
+                delta.z = b->z - a->z;
+                __declspec(align(16)) NUVEC4 scaled;
+                scaled.x = delta.x * t;
+                scaled.y = delta.y * t;
+                scaled.z = delta.z * t;
+                __declspec(align(16)) NUVEC4 point;
+                point.x = a->x + scaled.x;
+                point.y = a->y + scaled.y;
+                point.z = a->z + scaled.z;
+                output[count].x = point.x;
+                output[count].y = point.y;
+                output[count].z = point.z;
+                output[count].w = point.w;
+                ++count;
+            }
+        } else if (db > 0.0f) {
+            output[count].x = b->x;
+            output[count].y = b->y;
+            output[count].z = b->z;
+            output[count].w = b->w;
+            ++count;
+            f32 t = -da / (db - da);
+            __declspec(align(16)) NUVEC4 delta;
+            delta.x = b->x - a->x;
+            delta.y = b->y - a->y;
+            delta.z = b->z - a->z;
+            __declspec(align(16)) NUVEC4 scaled;
+            scaled.x = delta.x * t;
+            scaled.y = delta.y * t;
+            scaled.z = delta.z * t;
+            __declspec(align(16)) NUVEC4 point;
+            point.x = a->x + scaled.x;
+            point.y = a->y + scaled.y;
+            point.z = a->z + scaled.z;
+            output[count].x = point.x;
+            output[count].y = point.y;
+            output[count].z = point.z;
+            output[count].w = point.w;
+            ++count;
+        }
+    }
+    return count;
+}
+extern "C" void __cdecl PostShadowComputeBoundingSpacePc(const NUVEC4 *points, NUMTX *matrix) {
+    f32 min_x = 3.4028234663852886e+38f, max_x = -3.4028234663852886e+38f;
+    f32 min_y = 3.4028234663852886e+38f, max_y = -3.4028234663852886e+38f;
+    f32 min_z = 3.4028234663852886e+38f, max_z = -3.4028234663852886e+38f;
+    for (i32 i = 0; i < 8; i++) {
+        if (min_x > points[i].x)
+            min_x = points[i].x;
+        else if (max_x < points[i].x)
+            max_x = points[i].x;
+        if (min_y > points[i].y)
+            min_y = points[i].y;
+        else if (max_y < points[i].y)
+            max_y = points[i].y;
+        if (min_z > points[i].z)
+            min_z = points[i].z;
+        else if (max_z < points[i].z)
+            max_z = points[i].z;
+    }
+    NuMtxSetFrustumBlend(matrix, min_x, max_x, min_y, max_y, min_z, max_z);
+}
+extern "C" void __cdecl PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero_near, NUVEC4 *left,
+                                                          NUVEC4 *right, NUVEC4 *bottom, NUVEC4 *top,
+                                                          NUVEC4 *near_plane, NUVEC4 *far_plane) {
+    __declspec(align(16)) const NUVEC4 symmetric[8] = {{-1, -1, -1, 1}, {-1, 1, -1, 1}, {1, 1, -1, 1}, {1, -1, -1, 1},
+                                                       {-1, -1, 1, 1},  {-1, 1, 1, 1},  {1, 1, 1, 1},  {1, -1, 1, 1}};
+    __declspec(align(16)) const NUVEC4 positive[8] = {{-1, -1, 0, 1}, {-1, 1, 0, 1}, {1, 1, 0, 1}, {1, -1, 0, 1},
+                                                      {-1, -1, 1, 1}, {-1, 1, 1, 1}, {1, 1, 1, 1}, {1, -1, 1, 1}};
+    const NUVEC4 *source = zero_near ? positive : symmetric;
+    __declspec(align(16)) NUVEC4 corners[8];
+    for (i32 i = 0; i < 8; ++i) {
+        const NUVEC4 *in = &source[i];
+        NUVEC4 *out = &corners[i];
+        out->x = in->y * matrix->m10 + in->x * matrix->m00 + matrix->m20 * in->z + matrix->m30;
+        out->y = in->y * matrix->m11 + matrix->m01 * in->x + in->z * matrix->m21 + matrix->m31;
+        out->z = in->y * matrix->m12 + matrix->m02 * in->x + in->z * matrix->m22 + matrix->m32;
+        out->w = in->y * matrix->m13 + matrix->m03 * in->x + in->z * matrix->m23 + matrix->m33;
+        f32 inverse = 1.0f / out->w;
+        out->x *= inverse;
+        out->y *= inverse;
+        out->z *= inverse;
+    }
+    __declspec(align(16)) NUVEC4 near_up;
+    near_up.x = corners[1].x - corners[0].x;
+    near_up.y = corners[1].y - corners[0].y;
+    near_up.z = corners[1].z - corners[0].z;
+    __declspec(align(16)) NUVEC4 depth_left;
+    depth_left.x = corners[4].x - corners[0].x;
+    depth_left.y = corners[4].y - corners[0].y;
+    depth_left.z = corners[4].z - corners[0].z;
+    __declspec(align(16)) NUVEC4 far_left;
+    far_left.x = corners[5].x - corners[6].x;
+    far_left.y = corners[5].y - corners[6].y;
+    far_left.z = corners[5].z - corners[6].z;
+    __declspec(align(16)) NUVEC4 near_right;
+    near_right.x = corners[3].x - corners[0].x;
+    near_right.y = corners[3].y - corners[0].y;
+    near_right.z = corners[3].z - corners[0].z;
+    __declspec(align(16)) NUVEC4 far_down;
+    far_down.x = corners[7].x - corners[6].x;
+    far_down.y = corners[7].y - corners[6].y;
+    far_down.z = corners[7].z - corners[6].z;
+    __declspec(align(16)) NUVEC4 depth_right;
+    depth_right.x = corners[2].x - corners[6].x;
+    depth_right.y = corners[2].y - corners[6].y;
+    depth_right.z = corners[2].z - corners[6].z;
+    NuVecCross(reinterpret_cast<NUVEC *>(left), reinterpret_cast<NUVEC *>(&near_up),
+               reinterpret_cast<NUVEC *>(&depth_left));
+    NuVecNorm(reinterpret_cast<NUVEC *>(left), reinterpret_cast<NUVEC *>(left));
+    f32 dot = (left->y * corners[0].y + left->x * corners[0].x) + left->z * corners[0].z;
+    left->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(right), reinterpret_cast<NUVEC *>(&depth_right),
+               reinterpret_cast<NUVEC *>(&far_down));
+    NuVecNorm(reinterpret_cast<NUVEC *>(right), reinterpret_cast<NUVEC *>(right));
+    dot = (right->y * corners[6].y + right->x * corners[6].x) + right->z * corners[6].z;
+    right->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(top), reinterpret_cast<NUVEC *>(&far_left),
+               reinterpret_cast<NUVEC *>(&depth_right));
+    NuVecNorm(reinterpret_cast<NUVEC *>(top), reinterpret_cast<NUVEC *>(top));
+    dot = (top->y * corners[6].y + top->x * corners[6].x) + top->z * corners[6].z;
+    top->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(bottom), reinterpret_cast<NUVEC *>(&depth_left),
+               reinterpret_cast<NUVEC *>(&near_right));
+    NuVecNorm(reinterpret_cast<NUVEC *>(bottom), reinterpret_cast<NUVEC *>(bottom));
+    dot = (bottom->y * corners[0].y + bottom->x * corners[0].x) + bottom->z * corners[0].z;
+    bottom->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(far_plane), reinterpret_cast<NUVEC *>(&far_down),
+               reinterpret_cast<NUVEC *>(&far_left));
+    NuVecNorm(reinterpret_cast<NUVEC *>(far_plane), reinterpret_cast<NUVEC *>(far_plane));
+    dot = (far_plane->y * corners[6].y + far_plane->x * corners[6].x) + far_plane->z * corners[6].z;
+    far_plane->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(near_plane), reinterpret_cast<NUVEC *>(&near_right),
+               reinterpret_cast<NUVEC *>(&near_up));
+    NuVecNorm(reinterpret_cast<NUVEC *>(near_plane), reinterpret_cast<NUVEC *>(near_plane));
+    dot = (near_plane->y * corners[0].y + near_plane->x * corners[0].x) + near_plane->z * corners[0].z;
+    near_plane->w = -dot;
+}
 /* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
 static __declspec(noinline) void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin,
                                                               const NUVEC4 *point_a, const NUVEC4 *point_b) {

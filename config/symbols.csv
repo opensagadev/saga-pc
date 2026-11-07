@@ -6149,6 +6149,9 @@ address,symbol,size,ctype
 0x005c7050,?TestBoxes@PCFrustumClipSet@@QAEHPBUnuvec_s@@0@Z,69,"i32 __thiscall PCFrustumClipSet::TestBoxes(const NUVEC *,const NUVEC *)"
 0x5c70a0,?RenderConstantsPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAX@Z,816,thiscall native light program argument unused
 0x5c73d0,_PostShadowProjectBoundsPc,247,normalized private EAX count ECX vertices; remaining stack args unchanged
+0x5c74d0,_rawClip,607,"i32 __cdecl(const NUVEC4 *,NUVEC4 *,i32,const NUVEC4 *)"
+0x5c7730,_PostShadowComputeBoundingSpacePc,689,"void __cdecl(const NUVEC4 *,NUMTX *)"
+0x5c79f0,_PostShadowComputeClippingPlanesPc,1451,"void __cdecl(const NUMTX *,bool,NUVEC4 *,NUVEC4 *,NUVEC4 *,NUVEC4 *,NUVEC4 *,NUVEC4 *)"
 0x5c7fa0,?PostShadowMakePlanePrivatePc@@YAXPAUNUVEC4@@PBU1@11@Z,135,
 0x5c8030,_PostShadowComputeFrustumCubePc,558,"void __cdecl(const NUCAMERA *,NUVEC4 *,NUVEC4 *)"
 0x5c82c0,_PostShadowComputePlanesPc,626,"i32 __cdecl(const NUVEC4 *,const NUVEC4 *,NUVEC4 *)"
