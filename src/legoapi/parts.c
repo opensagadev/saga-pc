@@ -4183,7 +4183,7 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
 
 void __cdecl UpdatePartEmits(f32 time) {
     i32 switch_changes[32][2];
-    i32 i, sound, axis, state, remaining, variant;
+    i32 i, sound, axis, remaining, variant;
     i8 next;
     PART_EMIT_PC *emitter;
     PART_RUNTIME_TYPE_PC *type;
@@ -4191,8 +4191,8 @@ void __cdecl UpdatePartEmits(f32 time) {
     NUVEC position, velocity;
     NUMTX matrix;
     NUSPECIALHANDLE special;
-    f32 interval, shift, previous_distance, emission_time, pause, random, lifetime;
-    f32 random_x, random_y, random_z, range_x, range_y, range_z;
+    f32 interval, shift, previous_distance, emission_time, pause, random, range;
+    i16 angle_x, angle_y, angle_z;
     i32 last_switch_change = -1;
     for (i = 0; i < 40; ++i) {
         emitter = &part_emits[i];
@@ -4202,33 +4202,37 @@ void __cdecl UpdatePartEmits(f32 time) {
         if (type->effect_ids[0] == -1)
             continue;
         interval = 1.0f / type->emission_rate;
-        if (emitter->field_44 == 1 && emitter->field_3d != 2 && emitter->field_46 != -1) {
-            state = debris_object_switches[emitter->field_46];
-            switch (state) {
-                case 0:
-                    emitter->field_3d = 0;
-                    break;
-                case 1:
-                    emitter->field_3d = 1;
-                    break;
-                case 2:
-                case 3: {
-                    last_switch_change = (last_switch_change + 1) & 31;
-                    emitter->field_3d = 2;
-                    switch_changes[last_switch_change][0] = emitter->field_46;
-                    switch_changes[last_switch_change][1] = state == 2 ? 4 : 0;
-                    PARTStartOffset(i, 0.0f);
-                    shift = emitter->time_24 - partglobaltime;
-                    emitter->time_20 = partglobaltime - interval;
-                    emitter->time_24 -= shift;
-                    emitter->time_28 -= shift;
-                    break;
+        if (emitter->field_44 == 1 && emitter->field_3d != 2) {
+            if (emitter->field_46 != -1) {
+                switch (debris_object_switches[emitter->field_46]) {
+                    case 0:
+                        emitter->field_3d = 0;
+                        break;
+                    case 1:
+                        emitter->field_3d = 1;
+                        break;
+                    case 2:
+                        last_switch_change = (last_switch_change + 1) & 31;
+                        emitter->field_3d = 2;
+                        switch_changes[last_switch_change][0] = emitter->field_46;
+                        switch_changes[last_switch_change][1] = 4;
+                        break;
+                    case 3:
+                        emitter->field_3d = 2;
+                        /* fallthrough */
+                    case 4:
+                        last_switch_change = (last_switch_change + 1) & 31;
+                        switch_changes[last_switch_change][0] = emitter->field_46;
+                        switch_changes[last_switch_change][1] = 0;
+                        break;
                 }
-                case 4:
-                    last_switch_change = (last_switch_change + 1) & 31;
-                    switch_changes[last_switch_change][0] = emitter->field_46;
-                    switch_changes[last_switch_change][1] = 0;
-                    break;
+            }
+            if (emitter->field_3d == 2) {
+                PARTStartOffset(i, 0.0f);
+                shift = emitter->time_24 - partglobaltime;
+                emitter->time_24 -= shift;
+                emitter->time_28 -= shift;
+                emitter->time_20 = partglobaltime - interval;
             }
         }
         previous_distance = emitter->camera_distance;
@@ -4244,9 +4248,9 @@ void __cdecl UpdatePartEmits(f32 time) {
         }
         if ((type->flags & 0x400000) != 0) {
             if (type->maximum_distance > emitter->camera_distance && previous_distance >= type->maximum_distance) {
-                emitter->time_24 = partglobaltime;
-                emitter->time_28 = partglobaltime - 1.0f;
                 emitter->time_20 = partglobaltime - interval + 0.001f;
+                emitter->time_24 = partglobaltime;
+                emitter->time_28 = emitter->time_24 - 1.0f;
             } else if (emitter->time_24 > emitter->time_28) {
                 emitter->time_28 += time;
                 emitter->time_24 += time;
@@ -4254,8 +4258,8 @@ void __cdecl UpdatePartEmits(f32 time) {
             }
         }
         emission_time = emitter->time_20 + interval;
-        remaining = 101;
-        while (partglobaltime + time > emission_time && --remaining != 0) {
+        remaining = 0;
+        while (partglobaltime + time > emission_time && remaining++ < 100) {
             while (emission_time >= emitter->time_28 && emission_time > emitter->time_24 &&
                    partglobaltime + time > emission_time) {
                 if (emitter->time_24 >= emitter->time_28) {
@@ -4339,22 +4343,24 @@ void __cdecl UpdatePartEmits(f32 time) {
                     params.special = &special;
                     NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
                 }
-                lifetime = type->lifetime;
-                params.field_a4 = lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
+                params.field_a4 = type->lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
                 NuMtxSetIdentity(&matrix);
-                random_x = NuRandFloatSeeded(&partseed);
-                range_x = (f32)(type->rotation_random[0]);
-                random_y = NuRandFloatSeeded(&partseed);
-                range_y = (f32)(type->rotation_random[1]);
-                random_z = NuRandFloatSeeded(&partseed);
-                range_z = (f32)(type->rotation_random[2]);
+                range = (f32)type->rotation_random[0];
+                random = NuRandFloatSeeded(&partseed);
+                angle_x = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[0] - range);
+                range = (f32)type->rotation_random[1];
+                random = NuRandFloatSeeded(&partseed);
+                angle_y = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[1] - range);
+                range = (f32)type->rotation_random[2];
+                random = NuRandFloatSeeded(&partseed);
+                angle_z = (i16)(i32)((f64)(random + random) * range + (f64)type->rotation[2] - range);
                 for (axis = 0; axis < 3; ++axis) {
                     params.field_a8[axis] = type->rotation[axis];
                     params.field_a8[axis + 3] = type->rotation_random[axis];
                 }
-                NuMtxRotateX(&matrix, (i16)((i32)((random_x + random_x) * range_x + (f64)type->rotation[0] - range_x)));
-                NuMtxRotateY(&matrix, (i16)((i32)((random_y + random_y) * range_y + (f64)type->rotation[1] - range_y)));
-                NuMtxRotateZ(&matrix, (i16)((i32)((random_z + random_z) * range_z + (f64)type->rotation[2] - range_z)));
+                NuMtxRotateX(&matrix, angle_x);
+                NuMtxRotateY(&matrix, angle_y);
+                NuMtxRotateZ(&matrix, angle_z);
                 matrix.m30 = position.x;
                 matrix.m31 = position.y;
                 matrix.m32 = position.z;
