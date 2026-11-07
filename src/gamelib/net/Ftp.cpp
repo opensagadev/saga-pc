@@ -7,8 +7,7 @@ STATIC_ASSERT(sizeof(FtpFile) == 0xb0);
 STATIC_ASSERT(offsetof(FtpFile, name) == 0xc);
 STATIC_ASSERT(offsetof(FtpFile, size) == 0x8c);
 STATIC_ASSERT(offsetof(FtpFile, transferred) == 0x98);
-STATIC_ASSERT(offsetof(FtpFile, message_swap_endianness) == 0x9c);
-STATIC_ASSERT(offsetof(FtpFile, message_data) == 0xa0);
+STATIC_ASSERT(offsetof(FtpFile, message) == 0x9c);
 STATIC_ASSERT(offsetof(FtpFile, transfer) == 0xac);
 STATIC_ASSERT(offsetof(NetFtpManager, files) == 0x4);
 STATIC_ASSERT(offsetof(NetFtpManager, field_1604) == 0x1604);
@@ -43,6 +42,15 @@ void FtpFile::Init(i32 new_direction, const char *new_name, i32 new_size, const 
 }
 
 void FtpFile::Term() {
+}
+
+/* Once an accepted send's message is no longer shared, start a fresh one. */
+void FtpFile::Update() {
+    if (direction == 1 && message.data != NULL && message.data->references == 1 && accepted == 1) {
+        NETMESSAGE_PC next(0xc);
+        message = next;
+        next.Release();
+    }
 }
 
 i32 FtpFile::Accept(i32 new_capacity, void *new_buffer) {

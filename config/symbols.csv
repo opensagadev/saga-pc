@@ -7495,7 +7495,9 @@ address,symbol,size,ctype
 0x6174d0,?FindTransfer@NetFtpManager@@QAEPAUFtpFile@@PBDABUNetAddress@@H@Z,111,
 0x617540,?FindTransfer@NetFtpManager@@QBEPBUFtpFile@@PBDABUNetAddress@@H@Z,111,
 0x6175b0,??0FtpFileArray@@QAE@XZ,35,FtpFileArray::FtpFileArray(void)
+0x6175e0,??4NETMESSAGE_PC@@QAEAAU0@ABU0@@Z,80,NETMESSAGE_PC &__thiscall NETMESSAGE_PC::operator=(const NETMESSAGE_PC &)
 0x617630,?Receive@NetFtpManager@@UAEXUNETMESSAGE_PC@@EABUNetAddress@@@Z,44,
+0x617660,?Update@FtpFile@@QAEXXZ,108,void __thiscall FtpFile::Update(void)
 0x617750,?Close@FtpFile@@QAEXXZ,63,
 0x617790,??1FtpFileArray@@QAE@XZ,85,FtpFileArray::~FtpFileArray(void)
 0x6177f0,?Reset@NetFtpManager@@QAEXXZ,108,

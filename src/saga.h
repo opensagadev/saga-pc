@@ -17960,6 +17960,10 @@ struct NETMESSAGE_PC {
         write_offset = offset;
         swap_endianness = 1;
     }
+    /* Leaves the message unset; FtpFile embeds one and its constructor does
+     * not touch it. */
+    NETMESSAGE_PC() {
+    }
     NETMESSAGE_PC(const NETMESSAGE_PC &other) {
         data = other.data;
         read_offset = other.read_offset;
@@ -17970,6 +17974,17 @@ struct NETMESSAGE_PC {
         } else {
             NetMessagePoolError();
         }
+    }
+    /* Drops this message's reference and shares other's buffer; the swap
+     * flag is kept. */
+    NETMESSAGE_PC &operator=(const NETMESSAGE_PC &other) {
+        Release();
+        data = other.data;
+        read_offset = other.read_offset;
+        write_offset = other.write_offset;
+        if (data != NULL)
+            data->references++;
+        return *this;
     }
     /* Standalone copy at 0x53d640 (likely the destructor in retail). */
     void Release() {
@@ -30282,12 +30297,12 @@ struct FtpFile {
         return transfer > 0;
     }
     void Close() {
-        if (InUse() && message_data != NULL) {
-            u32 references = message_data->references;
+        if (InUse() && message.data != NULL) {
+            u32 references = message.data->references;
             if (references > 1)
-                message_data->references = references - 1;
+                message.data->references = references - 1;
             else
-                message_data->references = 0;
+                message.data->references = 0;
         }
         transfer = 0;
     }
@@ -30298,6 +30313,7 @@ struct FtpFile {
     i32 Accept(i32 new_size);
     i32 Accept();
     void Term();
+    void Update();
 
     u32 address;
     i32 direction;
@@ -30307,10 +30323,7 @@ struct FtpFile {
     void *buffer;
     i32 capacity;
     i32 transferred;
-    i32 message_swap_endianness;
-    NETMESSAGE_PC::MessageData *message_data;
-    u32 message_read_offset;
-    u32 message_write_offset;
+    NETMESSAGE_PC message;
     u32 transfer;
 };
 

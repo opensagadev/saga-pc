@@ -1455,6 +1455,11 @@
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "?GetNextObject@PlaceableHelper@@QAEPAXPAX@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/Ftp.cpp",
+   "symbol": "??0NETMESSAGE_PC@@QAE@XZ",
+   "kind": "function"
   }
  ]
 }
