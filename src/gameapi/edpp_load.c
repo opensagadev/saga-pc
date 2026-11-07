@@ -271,6 +271,69 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     }
 }
 
+eduiitem_s *__cdecl eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text);
+
+/* Stores the picked texture corners in the effect (biased by 524288 so the
+ * coordinates keep 1/256 steps) and closes the selector. */
+static void cbPtlChangeTextureSelect(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    edui_texture_pick_s *texture;
+    eduimenu_s *parent = NULL;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    texture = (edui_texture_pick_s *)item;
+    effect->texture_u0 = texture->uv_x[0] * 256.0 + 524288.0;
+    effect->texture_v0 = texture->uv_y[0] * 256.0 + 524288.0;
+    effect->texture_u1 = texture->uv_x[1] * 256.0 + 524288.0;
+    effect->texture_v1 = texture->uv_y[1] * 256.0 + 524288.0;
+    if (menu->parent) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback)
+        menu->callback(menu, parent);
+    GenericDebinfoDmaTypeUpdate(effect);
+}
+
+void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
+        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        if (textureselectmenu == NULL) {
+            edui_texture_pick_s *texture;
+            textureselectmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, NULL, "Texture Select");
+            if (textureselectmenu == NULL)
+                return;
+            eduiMenuAddItem(textureselectmenu,
+                            eduiItemTexturePickCreate(0, colours, cbPtlChangeTextureSelect, "Texture Select"));
+            texture = (edui_texture_pick_s *)edui_last_item;
+            texture->material = NuMtlCreate(1);
+            texture->material->texture_id = DebMat[1]->texture_id;
+            texture->material->attribs.unknown_1_1_2 = DebMat[1]->attribs.unknown_1_1_2;
+            texture->material->attribs.unknown_1_4_8 = DebMat[1]->attribs.unknown_1_4_8;
+            texture->material->diffuse_r = DebMat[1]->diffuse_r;
+            texture->material->diffuse_g = DebMat[1]->diffuse_g;
+            texture->material->diffuse_b = DebMat[1]->diffuse_b;
+            texture->material->opacity = DebMat[1]->opacity;
+            texture->material->attribs.unknown_2_1_2 = DebMat[1]->attribs.unknown_2_1_2;
+            texture->material->attribs.alpha_mode = DebMat[1]->attribs.alpha_mode;
+            texture->material->attribs.z_mode = DebMat[1]->attribs.z_mode;
+            texture->material->attribs.unknown_0_64_128 = DebMat[1]->attribs.unknown_0_64_128;
+            NuMtlUpdate(texture->material);
+            texture->uv_x[0] = (effect->texture_u0 - 524288.0) * (1.0 / 256.0);
+            texture->uv_y[0] = (effect->texture_v0 - 524288.0) * (1.0 / 256.0);
+            texture->uv_x[1] = (effect->texture_u1 - 524288.0) * (1.0 / 256.0);
+            texture->uv_y[1] = (effect->texture_v1 - 524288.0) * (1.0 / 256.0);
+        }
+        if (textureselectmenu) {
+            eduiMenuAttach(menu, textureselectmenu);
+            textureselectmenu->x = menu->x + 10;
+            textureselectmenu->y = menu->y + 40;
+        }
+    }
+}
+
 void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {

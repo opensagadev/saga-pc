@@ -1408,7 +1408,7 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
     colours[picker->selected_corner] = 0x80ffffff;
     if (edui_donotdraw == 0)
         NuRndrRectUV2di(x << 4, y << 3, width << 4, width << 3, origin_u, origin_v, origin_u + span_u,
-                        origin_v + span_v, 0x80808080, (NUMTL *)picker->material);
+                        origin_v + span_v, 0x80808080, picker->material);
     for (i32 corner = 0; corner < 2; ++corner) {
         if (edui_donotdraw == 0) {
             f32 line_width = (f32)width;

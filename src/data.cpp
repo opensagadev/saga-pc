@@ -2315,7 +2315,6 @@ static char PcInputText7517a8[3] = "\302\247";
 static char PcInputText755d70[2] = ")";
 static char PcInputText75c044[2] = ":";
 static char PcInputText75eba8[2] = ".";
-static char PcInputText76afa8[2] = "/";
 static char PcInputText76fe70[6] = "START";
 static char PcInputText770634[7] = "O. Win";
 static char PcInputText77063c[5] = "Alas";
@@ -4957,7 +4956,7 @@ char *PcInputKeyNames8231d8[238] = {TextInputKeyNameTextPc771d80,
                                     TextInputKeyNameTextPc771d60,
                                     TextInputKeyNameTextPc771d5c,
                                     TextInputKeyNameTextPc771d58,
-                                    PcInputText76afa8,
+                                    "/",
                                     PcInputText770bc8,
                                     TextInputKeyNameTextPc771d3c,
                                     TextInputKeyNameTextPc771d38,
@@ -5655,7 +5654,7 @@ char *PcInputKeyNames822e60[238] = {PcInputText770d28,
                                     TextInputKeyNameTextPc771d60,
                                     TextInputKeyNameTextPc771d5c,
                                     TextInputKeyNameTextPc771d58,
-                                    PcInputText76afa8,
+                                    "/",
                                     PcInputText770bc8,
                                     TextInputKeyNameTextPc771d3c,
                                     TextInputKeyNameTextPc771d38};
@@ -5950,7 +5949,7 @@ char *PcInputKeyNames823590[238] = {TextInputKeyNameTextPc771d80,
                                     TextInputKeyNameTextPc771c9c,
                                     PcInputText771088,
                                     PcInputText75eba8,
-                                    PcInputText76afa8,
+                                    "/",
                                     PcInputText770b68,
                                     TextInputKeyNameTextPc771c6c,
                                     TextInputKeyNameTextPc771c64,
@@ -29985,6 +29984,9 @@ extern "C" {
 
 #pragma data_seg(".data$edui_textrow_default")
     char *edui_textrow_default[4] = {"1234567890", "QWERTYUIOP", "ASDFGHJKL_", "ZXCVBNM<>?"};
+
+#pragma data_seg(".data$edui_textrow_lower")
+    char *edui_textrow_lower[4] = {"1234567890", "qwertyuiop", "asdfghjkl_", "zxcvbnm<>?"};
 
 #pragma bss_seg(".bss$textrow")
     char *textrow[4] = {0};

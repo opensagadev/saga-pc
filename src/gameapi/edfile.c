@@ -1,5 +1,8 @@
 #include "saga.h"
 
+#define EDUI_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define EDUI_MAX(a, b) ((a) > (b) ? (a) : (b))
+
 static i32 edfile_media = 0;
 static void *edfile_pakfile = 0;
 i32 edfile_handle = -1;
@@ -1772,6 +1775,91 @@ eduiitem_s *__cdecl eduiItemColourPickCreate(u32 data, void *colours, void *call
     return NULL;
 }
 
+i32 __cdecl eduicbRenderTexturePick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
+
+/* The left stick pans the selected texture corner (scaled by the zoom), the
+ * shoulder buttons zoom, and the face buttons snap, switch corners or apply. */
+static i32 __cdecl eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    edui_texture_pick_s *pick = (edui_texture_pick_s *)item;
+    i32 stick_x = pad->analog_left_x - 128;
+    i32 stick_y = pad->analog_left_y - 128;
+    i32 left;
+    i32 right;
+    (void)delta_time;
+    if (stick_x > 0) {
+        if (stick_x < 32)
+            stick_x = 0;
+        else
+            stick_x = (stick_x - 32) * 255 / 223;
+    } else if (stick_x > -32) {
+        stick_x = 0;
+    } else {
+        stick_x = (stick_x + 32) * 255 / 223;
+    }
+    if (stick_y > 0) {
+        if (stick_y < 32)
+            stick_y = 0;
+        else
+            stick_y = (stick_y - 32) * 255 / 223;
+    } else if (stick_y > -32) {
+        stick_y = 0;
+    } else {
+        stick_y = (stick_y + 32) * 255 / 223;
+    }
+    pick->uv_x[pick->selected_corner] += stick_x / (pick->zoom * 8192.0);
+    pick->uv_y[pick->selected_corner] += stick_y / (pick->zoom * 8192.0);
+    pick->uv_x[pick->selected_corner] = EDUI_MIN(1.0f, EDUI_MAX(0.0f, pick->uv_x[pick->selected_corner]));
+    pick->uv_y[pick->selected_corner] = EDUI_MIN(1.0f, EDUI_MAX(0.0f, pick->uv_y[pick->selected_corner]));
+    left = pad->analog_l2;
+    right = pad->analog_r2;
+    if (pad->analog_l1)
+        left = pad->analog_l1;
+    if (pad->analog_r1)
+        right = pad->analog_r1;
+    if (left) {
+        pick->zoom = EDUI_MAX(1.0f, pick->zoom - left / 4192.0);
+        return 1;
+    }
+    if (right) {
+        pick->zoom = EDUI_MIN(16.0f, right / 4192.0 + pick->zoom);
+        return 1;
+    }
+    if (pad->digital_buttons_pressed & 0x100) {
+        pick->uv_x[pick->selected_corner] = (i32)(pick->uv_x[pick->selected_corner] * 256.0 + 0.5) * (1.0 / 256.0);
+        pick->uv_y[pick->selected_corner] = (i32)(pick->uv_y[pick->selected_corner] * 256.0 + 0.5) * (1.0 / 256.0);
+    }
+    if (pad->digital_buttons_pressed & 0x80)
+        pick->selected_corner = pick->selected_corner != 1;
+    if ((pad->digital_buttons_pressed & 0x40) && pick->changed)
+        pick->changed(menu, item, pad->digital_buttons);
+    return 0;
+}
+
+eduiitem_s *__cdecl eduiItemTexturePickCreate(u32 data, void *colours, void *callback, char *text) {
+    edui_texture_pick_s *item = (edui_texture_pick_s *)NuAlloc(sizeof(edui_texture_pick_s), EduiSourcePathPc, 0xce1);
+    if (item) {
+        memset(item, 0, sizeof(edui_texture_pick_s));
+        item->base.data = data;
+        item->base.type = 12;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessTexturePick;
+        item->base.render = eduicbRenderTexturePick;
+        item->base.destroy = eduicbItemDestroy;
+        eduiItemSetText(&item->base, text);
+        item->uv_x[0] = 0.4f;
+        item->uv_y[0] = 0.4f;
+        item->changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        item->uv_x[1] = 0.5f;
+        item->selected_corner = 0;
+        item->uv_y[1] = 0.5f;
+        item->zoom = 1.0f;
+        return &item->base;
+    }
+    return NULL;
+}
+
 eduiitem_s *__cdecl eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 range,
                                          f32 value, char *text) {
     edui_slider_s *item = (edui_slider_s *)NuAlloc(sizeof(edui_slider_s), EduiSourcePathPc, 0xfd4);
@@ -1841,9 +1929,188 @@ eduiitem_s *__cdecl eduiItemColourSliderCreate(u32 data, void *colours, i32 grou
     return NULL;
 }
 
-i32 __cdecl eduicbProcessTextPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
 void __cdecl eduicbItemTextPickDestroy(eduimenu_s *menu, eduiitem_s *item);
 extern char *edui_textrow_default[4];
+extern char *edui_textrow_lower[4];
+extern char EduiTextCopyBufferPc[64];
+
+/* On-screen keyboard of the text picker: rows 0-3 are the letter rows, rows
+ * 4 and 5 the copy/paste row when the picker allows pasting (flag 2). */
+static void EduiTextPickPreviousRowPc(edui_textpicker_s *picker) {
+    if (--picker->keyboard_row < 0)
+        picker->keyboard_row = (picker->keyboard_flags & 2) ? 5 : 3;
+}
+
+static void EduiTextPickNextRowPc(edui_textpicker_s *picker) {
+    picker->keyboard_row++;
+    if (picker->keyboard_flags & 2) {
+        if (picker->keyboard_row > 5)
+            picker->keyboard_row = 0;
+    } else if (picker->keyboard_row > 3) {
+        picker->keyboard_row = 0;
+    }
+}
+
+static void EduiTextPickPreviousColumnPc(edui_textpicker_s *picker) {
+    if (picker->keyboard_row >= 4)
+        return;
+    if (--picker->keyboard_column < 0)
+        picker->keyboard_column = NuStrLen(textrow[picker->keyboard_row]) - 1;
+}
+
+static void EduiTextPickNextColumnPc(edui_textpicker_s *picker) {
+    if (picker->keyboard_row >= 4)
+        return;
+    if (++picker->keyboard_column >= NuStrLen(textrow[picker->keyboard_row]))
+        picker->keyboard_column = 0;
+}
+
+/* Clears the text and, when pasting is allowed, replaces it with the copy
+ * buffer. */
+static void EduiTextPickPastePc(edui_textpicker_s *picker) {
+    picker->cursor = 0;
+    picker->value[0] = '\0';
+    if ((picker->keyboard_flags & 2) && EduiTextCopyBufferPc[0]) {
+        NuStrNCpy(picker->value, EduiTextCopyBufferPc, picker->max_length - 1);
+        picker->value[picker->max_length - 1] = '\0';
+        picker->cursor = NuStrLen(picker->value);
+    }
+}
+
+static void EduiTextPickInsertPc(edui_textpicker_s *picker, char character) {
+    i32 index;
+    if (NuStrLen(picker->value) >= picker->max_length)
+        return;
+    for (index = sizeof(picker->value); index > picker->cursor; index--)
+        picker->value[index - 1] = picker->value[index - 2];
+    picker->value[picker->cursor++] = character;
+}
+
+static void EduiTextPickCursorRightPc(edui_textpicker_s *picker) {
+    picker->cursor = EDUI_MIN(NuStrLen(picker->value), picker->cursor + 1);
+}
+
+static void EduiTextPickDeletePc(edui_textpicker_s *picker) {
+    i32 index;
+    if (picker->cursor == 0)
+        return;
+    if (picker->value[picker->cursor]) {
+        picker->cursor--;
+        for (index = picker->cursor; index < 0xff; index++)
+            picker->value[index] = picker->value[index + 1];
+    } else {
+        picker->value[--picker->cursor] = '\0';
+    }
+}
+
+/* Swaps the keyboard letter rows between upper and lower case. */
+static void EduiTextPickToggleCasePc(void) {
+    if (textrow[1] == edui_textrow_default[1])
+        memcpy(textrow, edui_textrow_lower, sizeof(textrow));
+    else
+        memcpy(textrow, edui_textrow_default, sizeof(textrow));
+}
+
+static i32 EduiTextPickKeyboardPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD_PC *pad) {
+    u32 modifiers;
+    i32 key = NuKeyGet(&modifiers);
+    NuStrLen(picker->value);
+    if (key != -1) {
+        switch (key) {
+            case 1:
+            case 0x1c:
+                if (picker->callback)
+                    picker->callback(menu, &picker->base, pad->digital_buttons);
+                break;
+            case 0xcb:
+                EduiTextPickPreviousColumnPc(picker);
+                break;
+            case 0xcd:
+                EduiTextPickNextColumnPc(picker);
+                break;
+            case 0xc8:
+                EduiTextPickPreviousRowPc(picker);
+                break;
+            case 0xd0:
+                EduiTextPickNextRowPc(picker);
+                break;
+            case 0x0e:
+            case 0xd3:
+                EduiTextPickDeletePc(picker);
+                break;
+            default: {
+                char character = NuKeyToAscii(key, modifiers & 1);
+                if (character)
+                    EduiTextPickInsertPc(picker, character);
+            } break;
+        }
+    }
+    return 0;
+}
+
+static void tpentOnEnter(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edui_textpicker_s *source = (edui_textpicker_s *)item->data_ptr;
+    NuStrCpy(source->value, ((edui_textpicker_s *)item)->value);
+    if (source->callback)
+        source->callback(menu->parent, &source->base, buttons);
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+/* Opens an entry menu that edits a copy of the picker's text. */
+void eduiAddTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
+    edui_textpicker_s *source = (edui_textpicker_s *)item;
+    edui_textpicker_s *picker = eduiAddTextPickEntEx(menu, item, tpentOnEnter);
+    if (picker) {
+        NuStrCpy(picker->value, source->value);
+        picker->cursor = NuStrLen(picker->value);
+        memcpy(picker->base.colours, item->colours, sizeof(picker->base.colours));
+        picker->max_length = source->max_length;
+        picker->keyboard_flags = (picker->keyboard_flags & ~2u) | (source->keyboard_flags & 2);
+    }
+}
+
+static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD_PC *pad) {
+    if (picker == NULL || !picker->editing) {
+        if (pad->digital_buttons_pressed & 0x40)
+            eduiAddTextPickEnt(menu, &picker->base);
+        return 0;
+    }
+    if (pad->digital_buttons_pressed & 0x4000)
+        EduiTextPickNextRowPc(picker);
+    if (pad->digital_buttons_pressed & 0x1000)
+        EduiTextPickPreviousRowPc(picker);
+    if (pad->digital_buttons_pressed & 0x8000)
+        EduiTextPickPreviousColumnPc(picker);
+    if (pad->digital_buttons_pressed & 0x2000)
+        EduiTextPickNextColumnPc(picker);
+    if ((pad->digital_buttons_pressed & 0x10) && picker->callback)
+        picker->callback(menu, &picker->base, pad->digital_buttons);
+    if ((pad->digital_buttons & 0xc) == 0xc)
+        EduiTextPickPastePc(picker);
+    if ((pad->digital_buttons & 3) == 3 && (picker->keyboard_flags & 2)) {
+        NuStrNCpy(EduiTextCopyBufferPc, picker->value, sizeof(EduiTextCopyBufferPc));
+        picker->value[sizeof(EduiTextCopyBufferPc) - 1] = '\0';
+    }
+    if (pad->digital_buttons_pressed & 4)
+        picker->cursor = EDUI_MAX(picker->cursor - 1, 0);
+    if (pad->digital_buttons_pressed & 8)
+        EduiTextPickCursorRightPc(picker);
+    if (pad->digital_buttons_pressed & 0x40)
+        EduiTextPickInsertPc(picker, textrow[picker->keyboard_row][picker->keyboard_column]);
+    if (pad->digital_buttons_pressed & 0x80)
+        EduiTextPickDeletePc(picker);
+    if (pad->digital_buttons_pressed & 0x20)
+        EduiTextPickToggleCasePc();
+    return 1;
+}
+
+i32 __cdecl eduicbProcessTextPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    (void)delta_time;
+    EduiTextPickKeyboardPc((edui_textpicker_s *)item, menu, pad);
+    EduiTextPickPadPc((edui_textpicker_s *)item, menu, pad);
+    return 0;
+}
 
 void __cdecl eduiItemTextPickSetFmt(edui_textpicker_s *item, char *format) {
     if (item->format) {
@@ -2497,8 +2764,8 @@ i32 __cdecl FS_FileNameFilter(char *name) {
 }
 
 typedef struct FILE_DIRECTORY_TIME_PC {
-    u8 second, minute, hour, day, month, reserved;
-    u16 year;
+    i8 second, minute, hour, day, month, reserved;
+    i16 year;
 } FILE_DIRECTORY_TIME_PC;
 typedef struct FILE_DIRECTORY_ENTRY_PC {
     u32 flags, size;
@@ -2506,6 +2773,124 @@ typedef struct FILE_DIRECTORY_ENTRY_PC {
     char name[256];
 } FILE_DIRECTORY_ENTRY_PC;
 STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
+
+/* File picker directory menu: the picker and menu it was opened for. */
+static eduimenu_s *filepick_menu = 0;
+static edui_file_pick_s *filepick_item = 0;
+static i32 dir_size = 0;
+
+static void eduicbDestroyDirectoryList(eduimenu_s *menu, eduimenu_s *parent) {
+    (void)parent;
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+static void eduicbSelectDirectoryExit(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    (void)item;
+    (void)value;
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+/* Steps into a directory (or up for the "<..>" entry 9999), or picks a file. */
+static void eduicbSelectDirectoryEntry(eduimenu_s *menu, eduiitem_s *item, u32 value) {
+    if (dir_list == NULL)
+        return;
+    if (item->data == 9999) {
+        char *separator = NuStrRChr(filepick_item->filename, '/');
+        if (separator)
+            *separator = '\0';
+        else
+            filepick_item->filename[0] = '\0';
+        filepick_item->reopen_directory = 1;
+    }
+    if (((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].flags & 8) {
+        if (filepick_item->filename[0])
+            NuStrCat(filepick_item->filename, "/");
+        NuStrCat(filepick_item->filename, ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].name);
+        filepick_item->reopen_directory = 1;
+    }
+    if (!(((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].flags & 8)) {
+        NuStrCpy(filepick_item->name, ((FILE_DIRECTORY_ENTRY_PC *)dir_list)[item->data].name);
+        if (filepick_item->changed)
+            filepick_item->changed(filepick_menu, &filepick_item->base, value);
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+/* Lists the picker's directory (filtered by its filter text) in a menu. */
+static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker) {
+    eduimenu_s *directory_menu;
+    eduiitem_s *item;
+    FILE_DIRECTORY_ENTRY_PC *entry;
+    i32 directory;
+    i32 index;
+    char text[1024];
+    if (dir_list == NULL)
+        return;
+    picker->reopen_directory = 0;
+    filepick_menu = menu;
+    filepick_item = picker;
+    directory_menu =
+        eduiMenuCreate(menu->x + 20, menu->y + 20, 250, 300, menu->font, eduicbDestroyDirectoryList, "Directory");
+    if (directory_menu == NULL)
+        return;
+    NuSPrintf(text, "%s%s", picker->directory, picker->filename);
+    directory = NuFileOpenDir(text);
+    if (directory) {
+        dir_size = 0;
+        while (NuFileReadDir(directory, &((FILE_DIRECTORY_ENTRY_PC *)dir_list)[dir_size]) > 0 &&
+               dir_size < edui_filepick_listsize)
+            dir_size++;
+        if (picker->compare_entries)
+            qsort(dir_list, dir_size, sizeof(FILE_DIRECTORY_ENTRY_PC),
+                  (i32(__cdecl *)(const void *, const void *))picker->compare_entries);
+        if (picker->filename[0]) {
+            item = eduiItemSelCreate(9999, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, "<..>");
+            item->text_alignment = 0x10;
+            eduiMenuAddItem(directory_menu, item);
+        }
+        for (index = 0; index < dir_size; index++) {
+            entry = &((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index];
+            if (entry->flags & 8) {
+                NuSPrintf(text, "<%s>", entry->name);
+                item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
+                item->text_alignment = 0x10;
+                eduiMenuAddItem(directory_menu, item);
+            }
+        }
+        for (index = 0; index < dir_size; index++) {
+            entry = &((FILE_DIRECTORY_ENTRY_PC *)dir_list)[index];
+            if (picker->filter[0] && !NuStrIStr(entry->name, picker->filter))
+                continue;
+            if (entry->flags & 8)
+                continue;
+            NuSPrintf(text, "%s  ( size=%d  date=%d/%d/%d %d:%d )", entry->name, entry->size, entry->modified.day,
+                      entry->modified.month, entry->modified.year, entry->modified.hour, entry->modified.minute);
+            item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
+            item->text_alignment = 0x10;
+            eduiMenuAddItem(directory_menu, item);
+        }
+        if (directory_menu->first == NULL)
+            eduiMenuAddItem(directory_menu, eduiItemSelCreate(dir_size, picker->base.colours, 0, 1,
+                                                              eduicbSelectDirectoryExit, "No Files"));
+        NuFileCloseDir(directory);
+    }
+    eduiMenuFitWidth(directory_menu, 8);
+    eduiMenuAttach(menu, directory_menu);
+}
+
+i32 __cdecl eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    edui_file_pick_s *picker = (edui_file_pick_s *)item;
+    (void)delta_time;
+    if ((pad->digital_buttons_pressed & 0x40) || picker->reopen_directory) {
+        eduiMenuHighlight(menu, item);
+        eduicbAttachDirectoryList(menu, picker);
+    }
+    return 0;
+}
+
 typedef struct FILE_DIRECTORY_RAW_TIME_PC {
     u8 second, minute, hour, day, month, year_low, year_high;
 } FILE_DIRECTORY_RAW_TIME_PC;

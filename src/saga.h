@@ -26334,7 +26334,7 @@ struct edui_texture_pick_s {
     f32 uv_x[2];
     f32 uv_y[2];
     void(__cdecl *changed)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
-    struct PC_SCENE_MTL_VIEW *material;
+    NUMTL *material;
     i32 selected_corner;
     f32 zoom;
 };
@@ -26475,7 +26475,7 @@ struct edui_file_pick_s {
     u16 reopen_directory;
     char name[64];
     char directory[256];
-    char filename[264];
+    char filename[256], filter[8];
     i32(__cdecl *compare_entries)(void *arg0, void *arg1);
 };
 STATIC_ASSERT(sizeof(struct edui_file_pick_s) == 676);
