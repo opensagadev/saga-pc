@@ -8522,7 +8522,8 @@ STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, texture_count) == 0x10);
 STATIC_ASSERT(offsetof(SCENE_VIDEO_RESOURCE_HEADER_PC, textures) == 0x14);
 typedef struct PC_D3D9_DEVICE_PC PC_D3D9_DEVICE_PC;
 typedef struct PC_D3D9_METHODS_PC {
-    void *unknown_0000[12];
+    void *unknown_0000[11];
+    void(__stdcall *set_cursor_position)(PC_D3D9_DEVICE_PC *, i32, i32, DWORD);
     HRESULT(__stdcall *show_cursor)(PC_D3D9_DEVICE_PC *, BOOL);
     void *unknown_0034[13];
     HRESULT(__stdcall *create_vertex_buffer)
@@ -29528,6 +29529,8 @@ class ClassEditor : public BaseEditor {
     i32 class_filter;
 
     void DrawObjectSphere(ClassObject &selected, i32 colour);
+    void PreSaveInitialisation();
+    void PostSaveInitialisation();
 };
 extern ClassEditor theClassEditor;
 #endif

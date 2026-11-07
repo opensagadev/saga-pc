@@ -7130,6 +7130,8 @@ address,symbol,size,ctype
 0x61dfd0,_eduicbRenderSliderInt,609,
 0x0061e240,_eduicbRenderNumber,366,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
 0x0061e3b0,_eduicbRenderTextSelector,371,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
+0x61e5c0,_eduiGetCameraEnabled,6,
+0x61e5d0,_eduiSetCameraEnabled,10,
 0x0061e6b0,_NuKeyToAscii,50,"i32 __cdecl (u32, i32)"
 0x0061ea40,_eduicbProcessSeparator,3,"i32 __cdecl(eduimenu_s *,eduiitem_s *,f32,FRAME_PAD_PC *)"
 0x0061ea50,_eduicbRenderSeparator,201,"i32 __cdecl(eduimenu_s *,eduiitem_s *,i32,i32,i32,i32)"
@@ -7137,6 +7139,8 @@ address,symbol,size,ctype
 0x0061ebc0,_eduicbMenuOpenAllexpanders,71,void __cdecl(eduimenu_s *)
 0x61ec10,_eduicbMenuCloseAllexpanders,40,
 0x0061ef20,_EduiRenderItemPc,168,"i32 __cdecl(eduiitem_s *, eduimenu_s *, i32, i32, i32, i32)"
+0x61eff0,_eduiSetDefaultActiveMenu,10,
+0x61f000,_eduiGetActiveMenu,6,
 0x61f070,_EduiDeepestChildPc,20,
 0x61f180,_cbSel,14,
 0x61f190,_cbGradChange,1,
@@ -7253,6 +7257,8 @@ address,symbol,size,ctype
 0x627230,_cbInteractMenuKeySelect,98,
 0x6272a0,_EduiInteractHelperPc6272a0,126,
 0x627320,_eduiProcessInteracts,125,
+0x6273a0,_eduiProcessCursorDefault,406,
+0x627650,_eduiProcessCursor,22,
 0x627670,_eduiItemColourSliderCreate,243,
 0x627820,_edmainClose,127,
 0x6278a0,_edmainRender,88,
@@ -9133,6 +9139,15 @@ address,symbol,size,ctype
 0x6b8ef0,??_EEdSubSystem@@UAEPAXI@Z,,COFF weak alias of ??_GEdSubSystem@@UAEPAXI@Z; no independent body
 0x6b8ef0,??_GEdSubSystem@@UAEPAXI@Z,11,native scalar-deleting dtor exactVTidentity
 0x6b9100,?Initialise@BaseEditor@@UAEXAATvariptr_u@@0H@Z,10,
+0x6b9450,?PreSaveInitialisation@ClassEditor@@QAEXXZ,58,
+0x6b9490,?PostSaveInitialisation@ClassEditor@@QAEXXZ,58,
+0x6b9680,?Set@EdInputContext@@QAEXHMM@Z,167,
+0x6b9730,?Clear@EdInputContext@@QAEXH@Z,29,
+0x6b9750,?Get@EdInputContext@@QAEMH@Z,24,
+0x6b9770,?GetPress@EdInputContext@@QAEMH@Z,31,
+0x6b9790,?GetRelease@EdInputContext@@QAEMH@Z,34,
+0x6b97c0,?GetHold@EdInputContext@@QAEMH@Z,31,
+0x6b97e0,?GetRepeat@EdInputContext@@QAEMH@Z,34,
 0x6b9810,?Refresh@EdControl@@UAEXXZ,1,
 0x6b9820,?Process@EdControl@@UAEXAAUEdInputContext@@@Z,3,
 0x6b9830,?Render@EdControl@@UAEXXZ,1,
@@ -9213,6 +9228,7 @@ address,symbol,size,ctype
 0x6c2320,??_GPlaceableInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
 0x6c2520,??_GKnotHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c3240,?Update@EdInputContext@@QAEXPAUnucamera_s@@PAUFRAME_PAD_PC@@M_N@Z,2104,
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
 0x6c5da0,??0EdRef@@QAE@PAD0HHHPAVEdControl@@H@Z,258,
 0x6c5f80,?CheckType@EdRef@@QAEXH@Z,129,
@@ -9442,6 +9458,8 @@ address,symbol,size,ctype
 0x6ddd90,_PcRegisterSaveMetadataPc,25,void __cdecl(const void *)
 0x006dddb0,_NuHwSetParameter33Pc,10,void __cdecl(void *)
 0x6dddf0,_PcEditorCursorEnablePc,1,
+0x6dde00,_PcGetMousePositionPc,33,
+0x6dde30,_PcSetMousePositionPc,106,
 0x006ddea0,_NuMouseReadX,7,f32 __cdecl(void)
 0x006ddeb0,_NuMouseReadY,7,f32 __cdecl(void)
 0x006ddec0,_PcCreateCursorMaterialPc,217,void __cdecl(void)
@@ -9580,6 +9598,7 @@ address,symbol,size,ctype
 0x6e5750,_PCDeviceSetVertexShaderConstantsF,37,"void __cdecl(UINT,const f32*,UINT)"
 0x6e57b0,_NuVpSubmitPc,20,
 0x006e57d0,_PCDeviceShowCursorPc,45,i32 __cdecl(i32)
+0x6e5800,_PCDeviceSetCursorPositionPc,28,
 0x6e5820,_PCDeviceStretchRectPc,47,"void __cdecl (PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32)"
 0x6e5850,_PCDeviceTestCooperativeLevel,14,HRESULT __cdecl(void)
 0x006e59f0,_PCDeviceCreateTextureFromMemory,32,"void __cdecl (const void *, u32, PC_TEXTURE_RESOURCE_PC **)"
@@ -23243,6 +23262,8 @@ address,symbol,size,ctype
 0x80f58c,_EduiTextCursorPeriodPc,,i32; minimum4B view Native extent unknown
 0x80f590,_edui_filepick_listsize,4,i32
 0x80f594,_EduiGraphDrawCurvePc,4,i32
+0x80f598,_edui_camera_enabled,4,i32
+0x80f59c,_eduiPropTextPos,4,i32
 0x0080f5a0,_NuKeyChar,520,NUKEYCHAR[65]
 0x80f7e8,_edui_cursor_colour,4,u32
 0x80f7ec,_gp_cam,4,edcam_s *
@@ -23490,6 +23511,8 @@ address,symbol,size,ctype
 0x008201e4,??_R0?AVSplineObject@@@8,27,
 0x00820200,??_R0?AV?$CSListLink@VSplineObject@@@@@8,43,
 0x0082022c,??_R0?AVEdClassObjectNameControl@@@8,39,
+0x820254,?EdInputMouseY@@3MA,4,f32
+0x820258,?EdInputMouseX@@3MA,4,f32
 0x0082025c,??_R0?AVSpecialObject@@@8,28,
 0x00820278,??_R0?AVEdRefSpecialObject@@@8,33,
 0x0082029c,??_R0?AVSceneObject@@@8,26,
@@ -26886,6 +26909,8 @@ address,symbol,size,ctype
 0x2912ee0,_edui_cursor_dy,4,f32
 0x2912ee4,_edui_cursor_buttons,4,u32
 0x2912ee8,_edui_cursor_buttons_db,4,u32
+0x2912eec,_edui_cursor_buttons_old,4,u32
+0x2912ef0,_edui_cursor_locked,4,i32
 0x2912ef4,_EduiTextCursorCountdownPc,,i32; minimum4B view Native extent unknown
 0x2912ef8,_EduiTextCopyBufferPc,,char[]; minimum64B view Native extent unknown
 0x2912f38,_dir_list,4,void *
@@ -27623,6 +27648,7 @@ address,symbol,size,ctype
 0x2973af0,?EdType_NuVec@@3HA,,i32
 0x2973af4,?EdType_NuMtx@@3HA,,i32
 0x2973ba8,?theRegistry@@3UEdRegistry@@A,,EdRegistry
+0x2974cc4,?EdInputUseMouse@@3EA,1,u8
 0x2974cf4,_PCDevicePrimitiveCallCountPc,,u32
 0x2974cf8,_PCDeviceIndexedPrimitiveCallCountPc,,u32
 0x2974cfc,_PCDevicePrimitiveUPCallCountPc,,u32

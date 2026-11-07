@@ -22,6 +22,12 @@ extern "C" {
     void __cdecl NuFntScale(i32 x, i32 y);
     void __cdecl eduiSetCursorColour(u32 colour);
     void __cdecl eduiRenderCursor(void);
+    extern i32 eduiPropTextPos;
+    i32 __cdecl eduiUsedAlgPad(FRAME_PAD_PC *pad);
+    void __cdecl eduiSetCursorCoords(f32 x, f32 y);
+    void __cdecl PcGetMousePositionPc(f32 *x, f32 *y);
+    void __cdecl NuCameraCalcRay(f32 screen_x, f32 screen_y, NUVEC *ray_start, NUVEC *ray_end, NUCAMERA *camera);
+    eduimenu_s *__cdecl eduiGetActiveMenu(void);
     extern i32 NewPrim;
     void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
     void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
@@ -189,6 +195,44 @@ STATIC_ASSERT(sizeof(EditorSettings) == 0xc);
 EditorSettings::~EditorSettings() {
 }
 
+/* The editor's per-frame input state (Android EdInputContext): the camera
+ * view, the cursor ray and 40 logical inputs with press/release/repeat
+ * edges. The PC layout has 8 more bytes at the end than Android's. */
+struct EdInputContext {
+    VuVec view_position;
+    VuVec view_direction;
+    VuVec ray_start;
+    VuVec ray_direction;
+    FRAME_PAD_PC *pad;
+    f32 delta_time;
+    f32 current_time;
+    f32 repeat_window;
+    u8 held[40];
+    u8 pressed[40];
+    u8 released[40];
+    u8 repeated[40];
+    u8 cleared[40];
+    f32 values[40];
+    f32 repeat_times[40];
+    u8 reserved_258[8];
+
+    void Set(i32 input, f32 value, f32 repeat_delay);
+    void Clear(i32 input);
+    f32 Get(i32 input);
+    f32 GetPress(i32 input);
+    f32 GetRelease(i32 input);
+    f32 GetHold(i32 input);
+    f32 GetRepeat(i32 input);
+    void Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed, bool menu_active);
+};
+STATIC_ASSERT(offsetof(EdInputContext, pad) == 0x40);
+STATIC_ASSERT(offsetof(EdInputContext, held) == 0x50);
+STATIC_ASSERT(offsetof(EdInputContext, pressed) == 0x78);
+STATIC_ASSERT(offsetof(EdInputContext, cleared) == 0xf0);
+STATIC_ASSERT(offsetof(EdInputContext, values) == 0x118);
+STATIC_ASSERT(offsetof(EdInputContext, repeat_times) == 0x1b8);
+STATIC_ASSERT(sizeof(EdInputContext) == 0x260);
+
 /* The level editor thing (Android LevelEditor), theLevelEditor. The PC input
  * context is 8 bytes larger than Android's, so every field after it sits 8
  * bytes later. */
@@ -215,7 +259,7 @@ class LevelEditor : public BaseThing {
     f32 overlay_alpha;
     i32 field_0x38;
     i32 editor_buffer_from_front;
-    u8 input[0x260]; /* EdInputContext; its PC layout is not recovered yet */
+    EdInputContext input;
     u8 reserved_0x2a0;
     u8 destroying_objects;
     u8 reserved_0x2a2[2];
@@ -328,6 +372,227 @@ void LevelEditor::DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 availa
         NuQFntPopCoordinateSystem();
         NuQFntPopPrintMode();
     }
+}
+
+void ClassEditor::PreSaveInitialisation() {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        EdClass *object_class = &theRegistry.classes[i];
+        if (object_class->object_interface != NULL)
+            object_class->object_interface->PreSaveInitialisation();
+    }
+}
+
+void ClassEditor::PostSaveInitialisation() {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        EdClass *object_class = &theRegistry.classes[i];
+        if (object_class->object_interface != NULL)
+            object_class->object_interface->PostSaveInitialisation();
+    }
+}
+
+void EdInputContext::Set(i32 input, f32 value, f32 repeat_delay) {
+    if (value != 0.0f) {
+        pressed[input] = held[input] == 0;
+        held[input] = 1;
+        values[input] = value;
+        if (repeat_times[input] >= repeat_window + current_time) {
+            repeat_times[input] = current_time;
+            repeated[input] = 1;
+        } else if (repeat_times[input] == 0.0f) {
+            repeated[input] = 1;
+        }
+        repeat_times[input] += repeat_delay;
+    } else {
+        released[input] = held[input] != 0;
+        held[input] = 0;
+        values[input] = value;
+        repeat_times[input] = 0.0f;
+    }
+}
+
+void EdInputContext::Clear(i32 input) {
+    if (input >= 0 && input <= 39) {
+        cleared[input] = 1;
+        values[input] = 0.0f;
+    }
+}
+
+f32 EdInputContext::Get(i32 input) {
+    if (input >= 0 && input <= 39)
+        return values[input];
+    return 0.0f;
+}
+
+f32 EdInputContext::GetPress(i32 input) {
+    if (input >= 0 && input <= 39 && pressed[input] != 0)
+        return values[input];
+    return 0.0f;
+}
+
+f32 EdInputContext::GetRelease(i32 input) {
+    if (input >= 0 && input <= 39 && released[input] != 0)
+        return values[input];
+    return 0.0f;
+}
+
+f32 EdInputContext::GetHold(i32 input) {
+    if (input >= 0 && input <= 39 && held[input] != 0)
+        return values[input];
+    return 0.0f;
+}
+
+f32 EdInputContext::GetRepeat(i32 input) {
+    if (input >= 0 && input <= 39 && repeated[input] != 0)
+        return values[input];
+    return 0.0f;
+}
+
+u8 EdInputUseMouse;
+f32 EdInputMouseY = 0.5f;
+f32 EdInputMouseX = 0.5f;
+
+/* Samples the camera, the cursor ray and every logical input for this frame.
+ * While a property text field is being edited every input is released. */
+void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed, bool) {
+    f32 cursor_y = 0.5f;
+    f32 cursor_x = 0.5f;
+    f32 mouse_y;
+    f32 mouse_x;
+    __declspec(align(16)) VuVec ray_end;
+    VuVec direction;
+    i32 i;
+
+    pad = new_pad;
+    view_position.x = camera->mtx.m30;
+    view_position.y = camera->mtx.m31;
+    view_position.z = camera->mtx.m32;
+    view_direction.x = camera->mtx.m10;
+    view_direction.y = camera->mtx.m11;
+    view_direction.z = camera->mtx.m12;
+    view_direction.x *= 1000.0;
+    view_direction.y *= 1000.0;
+    view_direction.z *= 1000.0;
+    if (eduiUsedAlgPad(new_pad) > 0) {
+        eduiSetCursorCoords(0.5f, 0.5f);
+        EdInputUseMouse = 0;
+        cursor_x = cursor_y = 0.5f;
+    } else {
+        PcGetMousePositionPc(&mouse_x, &mouse_y);
+        if (mouse_x != EdInputMouseX || mouse_y != EdInputMouseY) {
+            EdInputUseMouse = 1;
+            EdInputMouseX = mouse_x;
+            EdInputMouseY = mouse_y;
+        }
+        if (EdInputUseMouse) {
+            cursor_x = EdInputMouseX;
+            cursor_y = EdInputMouseY;
+        }
+    }
+    {
+        VuVec *start = &ray_start;
+        NuCameraCalcRay(cursor_x, cursor_y, &start->xyz, &ray_end.xyz, camera);
+        direction.x = ray_end.x - start->x;
+        direction.y = ray_end.y - start->y;
+        direction.z = ray_end.z - start->z;
+    }
+    ray_direction.x = direction.x;
+    ray_direction.y = direction.y;
+    ray_direction.z = direction.z;
+    ray_direction.w = direction.w;
+    delta_time = elapsed;
+
+    if (eduiPropTextPos < 0) {
+        i32 shift = NuKeyboard(0x2a) | NuKeyboard(0x36) | NuKeyboard(0x1f);
+        i32 alt = NuKeyboard(0x38) | NuKeyboard(0xb8) | NuKeyboard(0x39);
+        i32 control = NuKeyboard(0x1d) | NuKeyboard(0x9d) | NuKeyboard(0x2e);
+        i32 left_click = NuMouseReadButtons() == 1 || (pad->digital_buttons & 0x800);
+        i32 square = 0;
+        i32 left_select = left_click && !alt && !control;
+        i32 right_click;
+        i32 key;
+        f32 mouse_dx = NuMouseReadXVel();
+        f32 mouse_dy = NuMouseReadYVel();
+        f32 mouse_dz = NuMouseReadZVel();
+        if (!edGetPadDisabled()) {
+            if (eduiGetActiveMenu() == NULL) {
+                u32 buttons = pad->digital_buttons;
+                square = buttons & 0x80;
+                Set(38, static_cast<f32>(static_cast<i32>(buttons & 0x40)), elapsed);
+            }
+            right_click = NuMouseReadButtons() == 2 || (pad->digital_buttons & 0x20);
+        } else {
+            right_click = NuMouseReadButtons() == 2;
+        }
+        Set(0, mouse_dx, elapsed);
+        Set(1, mouse_dy, elapsed);
+        Set(2, mouse_dz, elapsed);
+        Set(3, static_cast<f32>(left_select), elapsed);
+        Set(4, static_cast<f32>(right_click && !alt && !control), elapsed);
+        key = NuKeyboard(0x10);
+        Set(5, key, elapsed);
+        key = NuKeyboard(0x11);
+        Set(6, key, elapsed);
+        key = NuKeyboard(0x12);
+        Set(7, key, elapsed);
+        key = NuKeyboard(0x13);
+        Set(8, key, elapsed);
+        key = NuKeyboard(0x21);
+        Set(9, key, elapsed);
+        key = NuKeyboard(0x22);
+        Set(10, key, elapsed);
+        key = NuKeyboard(0xd2);
+        Set(11, key, elapsed);
+        key = NuKeyboard(0xd3);
+        Set(12, key, elapsed);
+        Set(13, static_cast<f32>(alt), elapsed);
+        key = NuKeyboard(0x0d);
+        Set(14, key, elapsed);
+        key = NuKeyboard(0x0c);
+        Set(15, key, elapsed);
+        Set(16, static_cast<f32>(shift), elapsed);
+        key = NuKeyboard(0x1b);
+        Set(17, key, elapsed);
+        key = NuKeyboard(0x1a);
+        Set(18, key, elapsed);
+        key = NuKeyboard(0xcd);
+        Set(19, key, elapsed);
+        key = NuKeyboard(0xcb);
+        Set(20, key, elapsed);
+        Set(21, static_cast<f32>(shift), elapsed);
+        Set(22, static_cast<f32>(control), elapsed);
+        Set(23, static_cast<f32>(NuKeyboard(0x1f) && control), elapsed);
+        key = NuKeyboard(0x01);
+        Set(24, key, elapsed);
+        Set(25, static_cast<f32>(left_click && !alt && control), elapsed);
+        key = NuKeyboard(2);
+        Set(26, key, elapsed);
+        key = NuKeyboard(3);
+        Set(27, key, elapsed);
+        key = NuKeyboard(4);
+        Set(28, key, elapsed);
+        key = NuKeyboard(5);
+        Set(29, key, elapsed);
+        key = NuKeyboard(6);
+        Set(30, key, elapsed);
+        key = NuKeyboard(7);
+        Set(31, key, elapsed);
+        key = NuKeyboard(8);
+        Set(32, key, elapsed);
+        key = NuKeyboard(9);
+        Set(33, key, elapsed);
+        key = NuKeyboard(10);
+        Set(34, key, elapsed);
+        key = NuKeyboard(11);
+        Set(35, key, elapsed);
+        Set(37, static_cast<f32>(square), elapsed);
+        Set(39, static_cast<f32>(static_cast<i32>(pad->digital_buttons & 0x800)), elapsed);
+    } else {
+        for (i = 0; i < 40; i++)
+            Set(i, 0.0f, elapsed);
+    }
+    memset(cleared, 0, sizeof(cleared));
 }
 
 void EdControl::Refresh() {

@@ -1336,6 +1336,71 @@ void __cdecl eduiSetFont(void *font) {
     edui_font = font;
 }
 
+i32 edui_camera_enabled = 1;
+i32 eduiPropTextPos = -1;
+
+i32 __cdecl eduiGetCameraEnabled(void) {
+    return edui_camera_enabled;
+}
+
+void __cdecl eduiSetCameraEnabled(i32 enabled) {
+    edui_camera_enabled = enabled;
+}
+
+void __cdecl eduiSetDefaultActiveMenu(eduimenu_s *menu) {
+    default_active_menu = menu;
+}
+
+eduimenu_s *__cdecl eduiGetActiveMenu(void) {
+    return active_menu;
+}
+
+void __cdecl PcGetMousePositionPc(f32 *x, f32 *y);
+void __cdecl PcSetMousePositionPc(f32 x, f32 y);
+u32 edui_cursor_buttons_old;
+i32 edui_cursor_locked;
+
+/* A stick nudge recentres the cursor, otherwise it follows the mouse; holding
+ * key 0x38 locks it, parking the OS cursor where the editor cursor is. */
+void __cdecl eduiProcessCursorDefault(f32 delta_time, FRAME_PAD_PC *pad) {
+    u8 centred = 0;
+    (void)delta_time;
+    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & 0x40)) {
+        centred = 1;
+        edui_cursor_x = 320.0f;
+        edui_cursor_y = 112.0f;
+    } else {
+        edui_cursor_dx = -NuMouseReadXVel() * 0.1f;
+        edui_cursor_dy = -NuMouseReadYVel() * 0.1f;
+    }
+    if (NuKeyboard(0x38)) {
+        if (edui_cursor_locked == 0) {
+            PcEditorCursorEnablePc(0);
+            edui_cursor_locked = 1;
+        }
+    } else if (edui_cursor_locked == 1) {
+        PcEditorCursorEnablePc(1);
+        edui_cursor_locked = 0;
+    }
+    if (edui_cursor_locked) {
+        PcSetMousePositionPc(edui_cursor_x / 640.0, edui_cursor_y / 224.0);
+    } else if (!centred) {
+        PcGetMousePositionPc(&edui_cursor_x, &edui_cursor_y);
+        edui_cursor_x *= 640.0;
+        edui_cursor_y *= 224.0;
+    }
+    EduiClampCursorPc();
+    edui_cursor_buttons_old = edui_cursor_buttons;
+    edui_cursor_buttons = 0;
+    edui_cursor_buttons |= NuMouseReadButtons() == 1 ? 0x40 : 0;
+    edui_cursor_buttons |= NuMouseReadButtons() == 2 ? 0x10 : 0;
+    edui_cursor_buttons_db = (edui_cursor_buttons ^ edui_cursor_buttons_old) & edui_cursor_buttons;
+}
+
+void __cdecl eduiProcessCursor(f32 delta_time, FRAME_PAD_PC *pad) {
+    eduiProcessCursorDefault(delta_time, pad);
+}
+
 extern f32 edui_font_scale_x;
 extern f32 edui_font_scale_y;
 

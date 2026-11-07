@@ -1620,6 +1620,11 @@ extern "C" void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *source, co
                                                                        destination, destination_rect, filter);
 }
 
+extern "C" i32 __cdecl PCDeviceSetCursorPositionPc(i32 x, i32 y) {
+    PCDeviceBackend.device->methods->set_cursor_position(PCDeviceBackend.device, x, y, 0);
+    return 0;
+}
+
 extern "C" u32 __cdecl PcGetRefreshRatePc(void) {
     return PCDeviceBackend.parameters.refresh_rate;
 }
