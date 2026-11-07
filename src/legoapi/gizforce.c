@@ -1953,3 +1953,19 @@ PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 spee
     force->runtime_flags |= 0x10000;
     return part;
 }
+
+/* Studs the level's force objects release (TotalLevelCoinTally). */
+u32 __cdecl GizForce_TotalScore(WORLDINFO *world) {
+    GIZFORCESYS_s *system = world->giz_force_sys;
+    GIZFORCE_PC *force;
+    u32 total = 0;
+    i32 i;
+    if (system != NULL) {
+        force = (GIZFORCE_PC *)system->forces;
+        if (force != NULL) {
+            for (i = 0; i < system->count; i++, force++)
+                total += (u16)force->pickup_count;
+        }
+    }
+    return total;
+}

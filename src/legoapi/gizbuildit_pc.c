@@ -162,7 +162,9 @@ typedef struct buildit_reset_pc_s {
     f32 bounds_radius;
     f32 reset_step_timer, reset_step_duration;
     f32 interaction_radius, field_50;
-    i16 wobble_parameter, field_56, field_58, field_5a;
+    i16 wobble_parameter;
+    i16 completion_score;
+    i16 field_58, field_5a;
     NUVEC effect_position;
     f32 activation_radius;
     u8 anim_object_count, build_state, builders_active, built_object_count;
@@ -475,7 +477,7 @@ STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, reset_step_duration) == 0x48);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, interaction_radius) == 0x4c);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, field_50) == 0x50);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, wobble_parameter) == 0x54);
-STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, field_56) == 0x56);
+STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, completion_score) == 0x56);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, field_58) == 0x58);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, field_5a) == 0x5a);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, effect_position) == 0x5c);
@@ -516,7 +518,7 @@ i32 __cdecl GizBuildIts_Load(void *world_pointer, void *system_pointer) {
         buildit->interaction_radius = EdFileReadFloat();
         if (version <= 6)
             EdFileReadFloat();
-        buildit->field_56 = EdFileReadShort();
+        buildit->completion_score = EdFileReadShort();
         buildit->wobble_parameter = EdFileReadShort();
         buildit->batch_size = (u8)EdFileReadChar();
         buildit->progress = (u8)EdFileReadChar();
@@ -739,11 +741,11 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                 if ((buildit->availability_flags & 0x200) == 0) {
                     buildit->availability_flags |= 0x200;
                     hearts = ReleaseHearts();
-                    if ((u16)buildit->field_56 > 0 || hearts != 0) {
+                    if ((u16)buildit->completion_score > 0 || hearts != 0) {
                         NuVecRotateX(&reward_direction, &v010, (u16)buildit->field_58);
                         NuVecRotateY(&reward_direction, &reward_direction, (u16)buildit->field_5a);
-                        AddPickups((u16)buildit->field_56, hearts, 0, 0, &finish_position, &reward_direction, 2.0f, -1,
-                                   1.75f, 2000000.0f, NULL, 1, 0);
+                        AddPickups((u16)buildit->completion_score, hearts, 0, 0, &finish_position, &reward_direction,
+                                   2.0f, -1, 1.75f, 2000000.0f, NULL, 1, 0);
                     }
                 }
                 if (buildit->blowup_type != -1) {
@@ -1247,4 +1249,20 @@ void __cdecl GizBuildit_SetVisibility(GIZBUILDIT_s *buildit, i32 visible) {
         GameAnimSet_SetVisibility(buildit->anim_set, visible);
         buildit->state_flags = (buildit->state_flags & ~2u) | ((visible != 0) << 1);
     }
+}
+
+/* Studs the level's build-its release (TotalLevelCoinTally). */
+u32 __cdecl GizBuildIts_TotalScore(WORLDINFO *world) {
+    BUILDIT_RESET_SYSTEM_PC *system = (BUILDIT_RESET_SYSTEM_PC *)world->giz_buildit_sys;
+    BUILDIT_RESET_PC *buildit;
+    u32 total = 0;
+    i32 i;
+    if (system != NULL) {
+        buildit = system->buildits;
+        if (buildit != NULL) {
+            for (i = 0; i < system->count; i++, buildit++)
+                total += (u16)buildit->completion_score;
+        }
+    }
+    return total;
 }

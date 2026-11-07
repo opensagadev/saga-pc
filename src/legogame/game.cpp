@@ -10,6 +10,8 @@ extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
 extern "C" void __cdecl Grabber_Reset(WORLDINFO *world);
+extern "C" u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
+                                           u32 *obstacles, u32 *turrets, u32 *characters);
 extern "C" void __cdecl SurfaceMaskOff(u32 *surface_mask);
 extern "C" void __cdecl VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 extern "C" void __cdecl PodRace_IncreaseLap(void);
@@ -789,7 +791,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     }
     if (BonusArea != 0)
         Cheats_TurnOff(1);
-    STUBBED_NAMED("CheckResetBits: BonusCoinTarget = TotalLevelCoinTally(WORLD, NULL x7) at 0x0046c350");
+    BonusCoinTarget = TotalLevelCoinTally(WORLD, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
     if (BonusCoinTarget > 1000000)
         BonusCoinTarget = 1000000;
     if (netclient != 0)

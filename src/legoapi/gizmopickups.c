@@ -1349,3 +1349,16 @@ void __cdecl GizmoPickup_TurnOnPickup(GIZMOPICKUP_PC *pickup) {
 i32 __cdecl GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *pickup) {
     return pickup != NULL ? pickup->flags >> 7 : 0;
 }
+
+/* Studs the level's placed pickups are worth (TotalLevelCoinTally). */
+u32 __cdecl GizmoPickups_TotalScore(WORLDINFO *world) {
+    struct GIZMOPICKUPRUNTIMESYS_s *system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    GIZMOPICKUP_PC *pickup = system->pickups;
+    u32 score = 0;
+    i32 i;
+    if (pickup != NULL) {
+        for (i = 0; i < system->pickup_count; i++, pickup++)
+            score += GizmoPickupSys->types[pickup->type_index].score;
+    }
+    return score;
+}

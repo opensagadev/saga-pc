@@ -1012,3 +1012,21 @@ check:
     ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
     return 1;
 }
+
+/* Studs the level's active AI characters drop (TotalLevelCoinTally); Gonk
+ * droids and characters flagged 0x40 count for nothing. */
+u32 __cdecl GameAI_TotalScore(void) {
+    GAMEOBJECT *object = Obj;
+    PLAYERCHARACTERCONFIG_PC *config;
+    u32 total = 0;
+    i32 i;
+    for (i = 0; i < HIGHGAMEOBJECT; i++, object++) {
+        if ((object->flags_1fc & 1) != 0 && (object->flags_1f8 & 0x400) != 0 &&
+            object->ai_packet.creature_index != 0xff) {
+            config = object->character_data->game_character;
+            if ((config->flags_090 & 0x40) == 0 && object->id != id_GONKDROID)
+                total += (u16)config->coin_value;
+        }
+    }
+    return total;
+}

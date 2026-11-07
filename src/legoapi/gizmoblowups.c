@@ -1949,3 +1949,15 @@ void __cdecl GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
         }
     }
 }
+
+/* Studs the level's blowups release (TotalLevelCoinTally). */
+u32 __cdecl GizmoBlowups_TotalScore(WORLDINFO *world) {
+    GIZMOBLOWUP_PC *blowup = world->gizmo_blowups;
+    u32 total = 0;
+    i32 i;
+    if (blowup != NULL) {
+        for (i = 0; i < world->gizmo_blowup_count; i++, blowup++)
+            total += (i8)blowup->score_multiplier * blowup->score;
+    }
+    return total;
+}

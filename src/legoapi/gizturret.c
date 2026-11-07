@@ -748,3 +748,19 @@ GIZMO_PC *__cdecl GizTurrets_GetBestBoltTarget(GIZMOSET_PC *set, f32 *output_dis
     }
     return NULL;
 }
+
+/* Studs the level's turrets release (TotalLevelCoinTally). */
+u32 __cdecl GizTurrets_TotalScore(WORLDINFO *world) {
+    AI_TURRET_SYSTEM_PC *system = (AI_TURRET_SYSTEM_PC *)world->giz_turret_sys;
+    AI_TURRET_RECORD_PC *turret;
+    u32 total = 0;
+    i32 i;
+    if (system != NULL) {
+        turret = system->turrets;
+        if (turret != NULL) {
+            for (i = 0; i < system->count; i++, turret++)
+                total += (u16)turret->completion_score;
+        }
+    }
+    return total;
+}

@@ -511,6 +511,7 @@ address,symbol,size,ctype
 0x43e380,_AI_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
 0x43e390,_AI_Activate,35,"void __cdecl(GIZMO_PC *, i32)"
 0x43e3c0,_AI_RegisterGizmo,225,
+0x43e4b0,_GameAI_TotalScore,113,u32 __cdecl (void)
 0x0043e530,_GameAIProcess,6245,void __cdecl(void)
 0x43fda0,_GameAISysReset,390,
 0x43ff30,_AIPathCnxControlSysCreate,97,"void * __cdecl (VARIPTR *, VARIPTR *, i32)"
@@ -1151,6 +1152,7 @@ address,symbol,size,ctype
 0x4680b0,_GizForces_GetBestBoltTarget,943,"GIZMO_PC * __cdecl(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x468460,_GizForces_BoltHit,684,"i32 __cdecl (WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
 0x468710,_GizForces_FindForce,41,
+0x468740,_GizForce_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x468780,_GizmoForce_Activate,183,
 0x468840,_GizmoForce_ActivateRev,126,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x4688c0,_GizForces_Reset,646,"void __cdecl(void *, void *, void *)"
@@ -1193,6 +1195,7 @@ address,symbol,size,ctype
 0x46c100,_PowerUp_UpdatePart,173,void __cdecl (PART_PC *)
 0x46c1b0,_PowerUp_DrawPart,90,i32 __cdecl (PART_PC *)
 0x46c210,_PowerUp_AddPart,317,"void __cdecl (NUVEC *, NUVEC *, f32, f32)"
+0x46c350,_TotalLevelCoinTally,176,"u32 __cdecl (WORLDINFO *, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *)"
 0x46c400,_CollectHitPoint,227,"void __cdecl (GAMEOBJECT *, NUVEC *, i32)"
 0x46c4f0,_ReleaseHearts,288,i32 __cdecl (void)
 0x46c610,_SetCoinType,127,"void __cdecl(i32,GIZMOPICKUP_PC*)"
@@ -4186,6 +4189,7 @@ address,symbol,size,ctype
 0x558ba0,_GizObstacles_BoltHitPlat,191,
 0x558c60,_GizObstacles_GetBestBoltTarget,943,"GIZMO_PC * __cdecl (GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x559010,_GizObstacles_BoltHit,679,
+0x5592c0,_GizObstacles_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x00559300,_GizmoObstacle_ActivateRev,229,"i32 __cdecl (void *, i32, i32)"
 0x5593f0,_GizObstacleUpdate_AutoStart,54,void __cdecl (GIZOBSTACLE *)
 0x00559430,_GizObstacles_RegisterGizmo,318,ADD_GIZMO_CONFIG_TYPE_PC * __cdecl (i32)
@@ -4427,6 +4431,7 @@ address,symbol,size,ctype
 0x566ac0,_Blowup_StoreProgress,223,"void __cdecl(void *, void *, void *)"
 0x566ba0,_GizmoBlowupRestoreInitialStatePc,119,void(GIZMOBLOWUP_PC *)
 0x566c20,_GizBlowup_Respawn,379,void __cdecl(GIZMOBLOWUP_PC *)
+0x566da0,_GizmoBlowups_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x566de0,_GizmoBlowupTypeAdd,395,"GIZMOBLOWUPTYPE_PC *__cdecl (WORLDINFO *, NUSPECIALHANDLE *, i32, i32 *)"
 0x566f70,_GizmoBlowupTypeRemove,290,"void __cdecl (GIZMOBLOWUPTYPE_PC *, WORLDINFO *)"
 0x5670a0,_GizmoBlowup_SetAutoSetReflectY,131,
@@ -4569,6 +4574,7 @@ address,symbol,size,ctype
 0x56fcb0,_GizmoPickups_ResetPc,477,"void __cdecl(void *, void *, void *)"
 0x56fe90,_GizmoPickup_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
 0x56fea0,_GizmoPickups_Load,309,
+0x56ffe0,_GizmoPickups_TotalScore,79,u32 __cdecl (WORLDINFO *)
 0x570030,_GizmoPickup_NumberOfTypePc,82,"i32 __cdecl (WORLDINFO *,i32,u8)"
 0x570090,_GizmoPickup_FindByName,84,"GIZMOPICKUP_PC *__cdecl(WORLDINFO *, char *)"
 0x5700f0,_GizmoPickup_TurnOnPickup,13,void __cdecl(GIZMOPICKUP_PC *)
@@ -5242,6 +5248,7 @@ address,symbol,size,ctype
 0x590a40,_GizBuildIts_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x590a60,_GizBuildIts_ClearProgress,56,"void __cdecl(void *, void *)"
 0x590aa0,_GizBuildIts_StoreProgress,183,"void __cdecl(void *, void *, void *)"
+0x590b60,_GizBuildIts_TotalScore,49,u32 __cdecl (WORLDINFO *)
 0x590ba0,_GizBuildIt_Finish,58,void __cdecl(GIZBUILDIT_s *)
 0x590be0,_GizBuildIt_SetStepTime,48,
 0x00590c10,_GizBuildIt_SetToStart,393,"void __cdecl(void*,i32,i32)"
@@ -5623,6 +5630,7 @@ address,symbol,size,ctype
 0x5ad7e0,_GizTurrets_BoltHitPlat,246,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
 0x5ad8e0,_GizTurrets_GetBestBoltTarget,932,"GIZMO_PC * __cdecl(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x5adc90,_GizTurrets_BoltHit,737,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
+0x5adf80,_GizTurrets_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x5adfc0,_GizTurrets_RegisterGizmo,318,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x5ae130,_GizSpecial_GetMaxGizmos,18,
 0x5ae150,_GizSpecial_AddGizmos,98,

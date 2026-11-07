@@ -5502,3 +5502,49 @@ PART_PC *__cdecl Part_FindFromHSpecial(NUSPECIALHANDLE *special) {
     }
     return NULL;
 }
+
+u32 __cdecl GizmoPickups_TotalScore(WORLDINFO *world);
+u32 __cdecl GizmoBlowups_TotalScore(WORLDINFO *world);
+u32 __cdecl GizBuildIts_TotalScore(WORLDINFO *world);
+u32 __cdecl GizForce_TotalScore(WORLDINFO *world);
+u32 __cdecl GizObstacles_TotalScore(WORLDINFO *world);
+u32 __cdecl GizTurrets_TotalScore(WORLDINFO *world);
+u32 __cdecl GameAI_TotalScore(void);
+
+/* Every stud the level can release, optionally split per source. AI
+ * characters count only in areas flagged 0x100. */
+u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
+                                u32 *obstacles, u32 *turrets, u32 *characters) {
+    u32 value = GizmoPickups_TotalScore(world);
+    u32 total = value;
+    if (pickups != NULL)
+        *pickups = value;
+    value = GizmoBlowups_TotalScore(world);
+    total += value;
+    if (blowups != NULL)
+        *blowups = value;
+    value = GizBuildIts_TotalScore(world);
+    total += value;
+    if (buildits != NULL)
+        *buildits = value;
+    value = GizForce_TotalScore(world);
+    total += value;
+    if (forces != NULL)
+        *forces = value;
+    value = GizObstacles_TotalScore(world);
+    total += value;
+    if (obstacles != NULL)
+        *obstacles = value;
+    value = GizTurrets_TotalScore(world);
+    total += value;
+    if (turrets != NULL)
+        *turrets = value;
+    if (world->area != NULL && (world->area->flags & 0x100) != 0)
+        value = GameAI_TotalScore();
+    else
+        value = 0;
+    total += value;
+    if (characters != NULL)
+        *characters = value;
+    return total;
+}

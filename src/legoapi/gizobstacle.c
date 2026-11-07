@@ -1501,3 +1501,19 @@ i32 __cdecl GizmoBombGen_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     (void)mode;
     return ((GIZBOMBGEN_s *)gizmo->object)->flags & 1;
 }
+
+/* Studs the level's obstacles release (TotalLevelCoinTally). */
+u32 __cdecl GizObstacles_TotalScore(WORLDINFO *world) {
+    GIZOBSTACLESYS_s *system = (GIZOBSTACLESYS_s *)world->giz_obstacle_sys;
+    GIZOBSTACLE *obstacle;
+    u32 total = 0;
+    i32 i;
+    if (system != NULL) {
+        obstacle = system->obstacles;
+        if (obstacle != NULL) {
+            for (i = 0; i < system->count; i++, obstacle++)
+                total += (u16)obstacle->pickup_count;
+        }
+    }
+    return total;
+}
