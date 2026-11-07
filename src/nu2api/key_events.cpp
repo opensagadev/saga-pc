@@ -13,6 +13,10 @@ extern "C" i32 __cdecl NuKeyGet(u32 *modifiers) {
     return -1;
 }
 
+extern "C" void __cdecl NuKeyFlush(void) {
+    PcKeyQueueHead = PcKeyQueueTail;
+}
+
 extern "C" i32 QueueKeyPressPc(i32 scan_code, i32 modifiers) {
     if ((u8)(PcKeyQueueTail + 1) != PcKeyQueueHead) {
         PcKeyQueueScanCodes[PcKeyQueueTail] = (u8)scan_code;

@@ -32,6 +32,14 @@ static void EduiPrintAlignedTextPc(void *font, i32 x, i32 y, i32 alignment, char
     }
 }
 
+extern "C" f32 EduiScaleXPc;
+extern "C" f32 EduiScaleYPc;
+
+/* Prints at a 640x448 position, scaled to the 2D renderer's sub-pixels. */
+extern "C" void __cdecl EduiFntPrintScaledPc(void *font, f32 x, f32 y, i32 alignment, char *text) {
+    EduiPrintAlignedTextPc(font, (i32)(x * EduiScaleXPc), (i32)(y * EduiScaleYPc), alignment, text);
+}
+
 i32 __cdecl eduicbRenderSel(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 unused_height) {
     i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 0.15625);
     f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;

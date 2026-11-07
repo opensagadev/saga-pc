@@ -1717,6 +1717,394 @@ eduiitem_s *__cdecl eduiItemExpanderCreate(u32 data, const void *colours, void *
     return NULL;
 }
 
+/* Property items: a label, a divider the cursor can drag, an editable value
+ * and an optional button (1 arrow, 2 up/down arrows, 3 colour swatch). */
+static char eduiPropTextStore[256] = {0};
+static char eduiPropTextEdit[256] = {0};
+f32 EduiPropLabelWidthPc = 50.0f;
+extern i32 eduiPropTextPos;
+extern i32 edui_camera_enabled;
+extern f32 edui_cursor_x;
+extern void __cdecl NuKeyFlush(void);
+extern void __cdecl EduiFntPrintScaledPc(void *font, f32 x, f32 y, i32 alignment, char *text);
+extern void __cdecl NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *material);
+
+i32 __cdecl eduiItemPropSetText(edui_prop_s *item, char *text) {
+    if (item->property_text && NuStrLen(item->property_text) < NuStrLen(text)) {
+        NuFree(item->property_text, EduiSourcePathPc, 0x1108);
+        item->property_text = NULL;
+    }
+    if (item->property_text == NULL)
+        item->property_text = (char *)NuAlloc(NuStrLen(text) + 1, EduiSourcePathPc, 0x110d);
+    if (item->property_text) {
+        NuStrCpy(item->property_text, text);
+        return 1;
+    }
+    return 0;
+}
+
+/* Dragging the divider resizes the label column of every property item. */
+static i32 EduiPropDragLabelPc(edui_prop_s *property, eduimenu_s *menu) {
+    eduiitem_s *other;
+    if (property->dragging_label) {
+        property->label_width = edui_cursor_x - property->base.x;
+        if (property->label_width < 5.0f)
+            property->label_width = 5.0f;
+        for (other = menu->first; other != NULL; other = other->next) {
+            if (other->type == 17 && other != &property->base)
+                ((edui_prop_s *)other)->label_width = property->label_width;
+        }
+        if (!(edui_cursor_buttons & 0x40))
+            property->dragging_label = 0;
+    }
+    return 0;
+}
+
+/* Keyboard editing of the value text in eduiPropTextEdit. */
+static i32 EduiPropKeyboardPc(edui_prop_s *property, eduimenu_s *menu) {
+    u32 modifiers;
+    i32 length;
+    i32 key;
+    char *cursor;
+    char *insertion;
+    if (!property->editing)
+        return 0;
+    length = NuStrLen(eduiPropTextEdit);
+    if (eduiPropTextPos < 0)
+        eduiPropTextPos = 0;
+    if (eduiPropTextPos > length)
+        eduiPropTextPos = length;
+    key = NuKeyGet(&modifiers);
+    if (key == -1)
+        return 0;
+    switch (key) {
+        case 0x1c:
+            eduiItemPropSetText(property, eduiPropTextEdit);
+            if (property->changed)
+                property->changed(menu, &property->base, 0);
+        case 1:
+            property->editing = 0;
+            eduiPropTextPos = -1;
+            return 0;
+        case 0xcb:
+            if (eduiPropTextPos > 0)
+                eduiPropTextPos--;
+            return 0;
+        case 0xcd:
+            if (eduiPropTextPos < length)
+                eduiPropTextPos++;
+            return 0;
+        case 0x0e:
+            if (eduiPropTextPos > 0) {
+                eduiPropTextPos--;
+                for (cursor = &eduiPropTextEdit[eduiPropTextPos]; *cursor; cursor++)
+                    *cursor = cursor[1];
+            }
+            return 0;
+        case 0xd3:
+            if (eduiPropTextPos < length) {
+                for (cursor = &eduiPropTextEdit[eduiPropTextPos]; *cursor; cursor++)
+                    *cursor = cursor[1];
+            }
+            return 0;
+        default: {
+            char letter = NuKeyToAscii(key, modifiers & 1);
+            if (letter) {
+                insertion = &eduiPropTextEdit[eduiPropTextPos];
+                eduiPropTextEdit[length + 1] = '\0';
+                for (cursor = &eduiPropTextEdit[length]; cursor > insertion; cursor--)
+                    *cursor = cursor[-1];
+                eduiPropTextPos++;
+                *cursor = letter;
+            }
+        }
+    }
+    return 0;
+}
+
+/* Runs the button callback while it is held (or the item is activated). */
+static i32 EduiPropButtonPc(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD_PC *pad) {
+    edui_camera_enabled = 1;
+    if (property->button_held || (property->base.type == 17 && (pad->digital_buttons & 0x40))) {
+        if (property->button) {
+            edui_camera_enabled = 0;
+            property->button(menu, &property->base, edui_cursor_buttons);
+            property->button_held = 0;
+        }
+        if (!(edui_cursor_buttons & 0x40))
+            property->button_held = 0;
+    }
+    return 0;
+}
+
+static i32 __cdecl eduicbProcessProp(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    (void)delta_time;
+    EduiPropDragLabelPc((edui_prop_s *)item, menu);
+    EduiPropKeyboardPc((edui_prop_s *)item, menu);
+    EduiPropButtonPc((edui_prop_s *)item, menu, pad);
+    return 0;
+}
+
+static i32 EduiPropOverLabelPc(edui_interact_s *interact) {
+    return edui_cursor_x >= interact->x && edui_cursor_y >= interact->y &&
+           edui_cursor_x < ((edui_prop_s *)interact->item)->label_width + interact->x - 1.0 &&
+           edui_cursor_y < interact->height + interact->y;
+}
+
+static i32 EduiPropOverDividerPc(edui_interact_s *interact) {
+    f32 divider = ((edui_prop_s *)interact->item)->label_width + interact->x;
+    return edui_cursor_x >= divider - 1.0f && edui_cursor_y >= interact->y && edui_cursor_x < divider + 1.0f &&
+           edui_cursor_y < interact->height + interact->y;
+}
+
+static i32 EduiPropOverValuePc(edui_interact_s *interact) {
+    edui_prop_s *property = (edui_prop_s *)interact->item;
+    return edui_cursor_x >= property->label_width + interact->x + 1.0 && edui_cursor_y >= interact->y &&
+           edui_cursor_x < property->button_x && edui_cursor_y < interact->height + interact->y;
+}
+
+static i32 EduiPropOverButtonPc(edui_prop_s *property) {
+    return edui_cursor_x >= property->button_x && edui_cursor_y >= property->button_y * 0.5 &&
+           edui_cursor_x < property->button_x + property->button_size &&
+           edui_cursor_y < (property->button_y + property->button_size) * 0.5;
+}
+
+static i32 __cdecl eduicbInteractProp(edui_interact_s *interact) {
+    eduimenu_s *menu = interact->menu;
+    edui_prop_s *property = (edui_prop_s *)interact->item;
+    i32 handled = 0;
+    if (edui_cursor_buttons & 0x40) {
+        if (!property->dragging_label && !property->button_held) {
+            if (!property->editing) {
+                if (EduiPropOverLabelPc(interact) && property->selected)
+                    property->selected(menu, &property->base, 0);
+                if (EduiPropOverDividerPc(interact)) {
+                    property->dragging_label = 1;
+                    property->divider_active = 1;
+                }
+                if (EduiPropOverValuePc(interact) && !property->editing) {
+                    if (property->selected)
+                        property->selected(menu, &property->base, 0);
+                    NuKeyFlush();
+                    property->editing = 1;
+                    NuStrCpy(eduiPropTextStore, property->property_text);
+                    NuStrCpy(eduiPropTextEdit, property->property_text);
+                    eduiPropTextPos = NuStrLen(property->property_text);
+                }
+                if ((EduiPropOverButtonPc(property) || eduiInteractLocked) && property->button) {
+                    property->button(menu, &property->base, 0);
+                    if (property->button_latched)
+                        handled = 1;
+                }
+            } else if (EduiPropOverValuePc(interact)) {
+                property->editing = 1;
+                eduiPropTextPos = -1;
+                handled = 1;
+            }
+        }
+    }
+    return property->editing || property->dragging_label || property->button_held || handled;
+}
+
+static void __cdecl eduicbItemDestroyProp(eduimenu_s *menu, eduiitem_s *item) {
+    edui_prop_s *property = (edui_prop_s *)item;
+    if (item->text) {
+        NuFree(item->text, EduiSourcePathPc, 0x1313);
+        item->text = NULL;
+    }
+    if (property->property_text) {
+        NuFree(property->property_text, EduiSourcePathPc, 0x1318);
+        property->property_text = NULL;
+    }
+    NuFree(item, EduiSourcePathPc, 0x131c);
+    menu->field_0c = menu->first;
+}
+
+static void EduiDrawLinePc(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
+    if (edui_donotdraw == 0)
+        NuRndrLine2di((i32)(x0 * EduiScaleXPc), (i32)(y0 * EduiScaleYPc), (i32)(x1 * EduiScaleXPc),
+                      (i32)(y1 * EduiScaleYPc), colour, material);
+}
+
+static i32 __cdecl eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
+    edui_prop_s *property = (edui_prop_s *)item;
+    char prefix[256];
+    u32 divider_colours[2];
+    u32 button_colours[2];
+    i32 points[6];
+    f32 draw_x = (f32)x;
+    f32 draw_y = (f32)y;
+    f32 draw_width = (f32)width;
+    f32 row_height;
+    f32 baseline;
+    f64 indent_width;
+    f32 indentation;
+    f32 value_x;
+    f32 clip_x;
+    i32 depth;
+    (void)height;
+    item->x = x;
+    item->y = y;
+    divider_colours[0] = 0x0ff00000;
+    divider_colours[1] = 0xffffffff;
+    button_colours[0] = 0xff000000;
+    button_colours[1] = 0xffffffff;
+    if ((EduiPropOverButtonPc(property) && eduiInteractLocked == NULL) || property->button_held)
+        property->button_hover = 1;
+    else
+        property->button_hover = 0;
+    if (edui_donotdraw == 0)
+        NuQFntSet((VUFNT *)edui_font);
+    switch (item->unknown_10) {
+        case 1:
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, 0xff000060);
+            break;
+        case 2:
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, 0xff006000);
+            break;
+        case 3:
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, 0xff600000);
+            break;
+        default:
+            if (edui_donotdraw == 0)
+                NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
+            break;
+    }
+    row_height = NuQFntHeight((VUFNT *)edui_font) * 1.25 * (1.0f / EduiScaleYPc);
+    baseline = (NuQFntHeight((VUFNT *)edui_font) * 0.125 + NuQFntBaseline((VUFNT *)edui_font)) * (1.0f / EduiScaleYPc);
+    indent_width = row_height - 2.0;
+    indentation = property->depth * indent_width;
+    if (property->editing) {
+        f32 text_width = NuQFntPrintLenU((VUFNT *)edui_font, eduiPropTextEdit) * (1.0f / EduiScaleXPc);
+        f32 edit_width = draw_width - property->label_width - 4.0;
+        f32 caret_x;
+        text_width = EDUI_MAX(text_width, edit_width);
+        EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted],
+                       (NUMTL *)uimtls[0]);
+        if (edui_donotdraw == 0)
+            NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleXPc),
+                          (i32)((draw_y + 2.0) * EduiScaleYPc), (i32)(text_width * EduiScaleXPc),
+                          (i32)((row_height - 4.0) * EduiScaleYPc), 0xffffffff, (NUMTL *)uimtls[0]);
+        for (depth = 0; depth < property->depth; depth++) {
+            f32 guide_x = draw_x + (depth + 0.5) * indent_width;
+            if (edui_donotdraw == 0)
+                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc),
+                              (i32)(guide_x * EduiScaleXPc), (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000,
+                              (NUMTL *)uimtls[0]);
+        }
+        if (edui_donotdraw == 0)
+            NuRndrLine2di((i32)((draw_x + property->label_width) * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc),
+                          (i32)((draw_x + property->label_width) * EduiScaleXPc),
+                          (i32)((draw_y + row_height) * EduiScaleYPc), divider_colours[property->divider_active],
+                          (NUMTL *)uimtls[0]);
+        eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation,
+                           property->label_width, item->text);
+        EduiFntPrintScaledPc(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, 16, eduiPropTextEdit);
+        NuStrNCpy(prefix, eduiPropTextEdit, eduiPropTextPos + 1);
+        prefix[eduiPropTextPos + 1] = '\0';
+        caret_x =
+            draw_x + property->label_width + 2.0f + NuQFntPrintLenU((VUFNT *)edui_font, prefix) * (1.0f / EduiScaleXPc);
+        if (edui_donotdraw == 0)
+            NuRndrLine2di((i32)(caret_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc), (i32)(caret_x * EduiScaleXPc),
+                          (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000, (NUMTL *)uimtls[0]);
+    } else {
+        property->button_size = indent_width;
+        property->button_x = draw_x + draw_width - (property->button_size + 1.0f);
+        property->button_y = draw_y + 1.0f;
+        if (menu != NULL && EduiMenuChainActivePc(menu))
+            EduiDrawRectPc(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted],
+                           (NUMTL *)uimtls[ui_bgmtl]);
+        EduiDrawLinePc(draw_x + property->label_width, draw_y, draw_x + property->label_width, draw_y + row_height,
+                       divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
+        for (depth = 0; depth < property->depth; depth++) {
+            f32 guide_x = draw_x + (depth + 0.5) * indent_width;
+            if (edui_donotdraw == 0)
+                NuRndrLine2di((i32)(guide_x * EduiScaleXPc), (i32)(draw_y * EduiScaleYPc),
+                              (i32)(guide_x * EduiScaleXPc), (i32)((draw_y + row_height) * EduiScaleYPc), 0xff000000,
+                              (NUMTL *)uimtls[0]);
+        }
+        eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation,
+                           property->label_width, item->text);
+        value_x = property->button_x - 1.0;
+        clip_x = draw_x + property->label_width;
+        eduiFntPrintClipEx(edui_font, value_x, draw_y + baseline, 32, clip_x, value_x - clip_x,
+                           property->property_text);
+        if (property->button_type == 3 && edui_donotdraw == 0)
+            NuRndrRect2di((i32)(property->button_x * EduiScaleXPc), (i32)(property->button_y * EduiScaleYPc),
+                          (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc),
+                          property->button_colour, (NUMTL *)uimtls[0]);
+        if (edui_donotdraw == 0)
+            NuRndrLineRect2di((i32)(property->button_x * EduiScaleXPc), (i32)(property->button_y * EduiScaleYPc),
+                              (i32)(property->button_size * EduiScaleXPc), (i32)(property->button_size * EduiScaleYPc),
+                              0xff000000, (NUMTL *)uimtls[EduiSelectionMaterialPc]);
+        if (property->button_type == 1) {
+            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleXPc);
+            points[1] = (i32)((property->button_y + property->button_size * 0.1f) * EduiScaleYPc);
+            points[2] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleXPc);
+            points[3] = (i32)((property->button_y + property->button_size * 0.5) * EduiScaleYPc);
+            points[4] = points[0];
+            points[5] = (i32)((property->button_y + property->button_size * 0.9f) * EduiScaleYPc);
+            if (edui_donotdraw == 0)
+                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
+        }
+        if (property->button_type == 2) {
+            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleXPc);
+            points[1] = (i32)((property->button_y + property->button_size * 0.45f) * EduiScaleYPc);
+            points[2] = (i32)((property->button_x + property->button_size * 0.5) * EduiScaleXPc);
+            points[3] = (i32)((property->button_y + property->button_size * 0.1f) * EduiScaleYPc);
+            points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleXPc);
+            points[5] = points[1];
+            if (edui_donotdraw == 0)
+                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
+            points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleXPc);
+            points[1] = (i32)((property->button_y + property->button_size * 0.55f) * EduiScaleYPc);
+            points[2] = (i32)((property->button_x + property->button_size * 0.5) * EduiScaleXPc);
+            points[3] = (i32)((property->button_y + property->button_size * 0.9f) * EduiScaleYPc);
+            points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleXPc);
+            points[5] = points[1];
+            if (edui_donotdraw == 0)
+                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
+        }
+    }
+    return (i32)row_height;
+}
+
+eduiitem_s *__cdecl eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button,
+                                         i32 button_type, char *text, char *value, i32 extra_data) {
+    edui_prop_s *item = (edui_prop_s *)NuAlloc(sizeof(edui_prop_s), EduiSourcePathPc, 0x1327);
+    if (item) {
+        memset(item, 0, sizeof(edui_prop_s));
+        item->base.data = data;
+        item->base.type = 17;
+        memcpy(item->base.colours, colours, sizeof(item->base.colours));
+        item->base.highlighted = 0;
+        item->base.text_alignment = 0x40;
+        item->base.selection_group = 0;
+        item->base.process = eduicbProcessProp;
+        item->base.render = eduicbRenderProp;
+        item->base.destroy = eduicbItemDestroyProp;
+        item->interact = eduicbInteractProp;
+        eduiItemSetText(&item->base, text);
+        eduiItemPropSetText(item, value);
+        item->label_width = EduiPropLabelWidthPc;
+        item->selected = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))selected;
+        item->button_type = button_type;
+        item->extra_data = extra_data;
+        item->changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))changed;
+        item->button = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))button;
+        return &item->base;
+    }
+    return NULL;
+}
+
+eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
+                                       i32 button_type, char *text, char *value) {
+    return eduiItemPropCreateEx(data, colours, selected, changed, button, button_type, text, value, 0);
+}
+
 void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item) {
     if (menu->first == item)
         menu->first = item->next;

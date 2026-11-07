@@ -26410,10 +26410,10 @@ STATIC_ASSERT(sizeof(struct edcam_s) == 148);
 struct edui_prop_s {
     struct eduiitem_s base;
     i32(__cdecl *interact)(struct edui_interact_s *arg0);
-    u16 unknown_property_flags : 6;
-    u16 button_type : 3;
-    u16 remaining_property_flags : 7;
-    u8 unknown_4e[6];
+    u32 editing : 1, dragging_label : 1, divider_active : 1, button_held : 1, button_hover : 1, button_latched : 1;
+    u32 button_type : 3;
+    u32 remaining_property_flags : 23;
+    u32 button_colour;
     f32 label_width;
     f32 button_size;
     f32 button_x;
