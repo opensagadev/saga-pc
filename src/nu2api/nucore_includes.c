@@ -881,16 +881,18 @@ i64 __cdecl NuFileOpenSize(NUFILE file) {
 
 NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 quiet) {
     char path[256];
-    NUFILE_DEVICE *device;
-    i32 index;
     i64 length;
-    FILEINFO *info;
+    NUFILE_DEVICE *device;
+    i32 mc_slot;
+    i32 mc_port;
+    i32 file_index;
+    i32 ps_index;
 
     device = NuFileGetDeviceFromPath(filepath);
     if (device == NULL) {
         if (header != NULL && mode != 1 && mode != 2) {
             NUFILE file = NuDatFileOpen(header, (char *)filepath, mode);
-            if (file > 0)
+            if (file != 0)
                 return file;
         }
         device = default_device;
@@ -900,53 +902,55 @@ NUFILE __cdecl NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i3
     if (device->id == 2)
         NuStrCat(path, nufile_disc_suffix);
     if (device->id == 1) {
-        i32 file = NuMcOpen(path[2] - '0', path[3] - '0', path + device->name_len, mode, 0);
-        if (file >= 0)
-            return file + 0x1000;
+        mc_port = path[2] - '0';
+        mc_slot = path[3] - '0';
+        file_index = NuMcOpen(mc_port, mc_slot, path + device->name_len, mode, 0);
+        if (file_index >= 0)
+            return file_index + 0x1000;
         return 0;
     }
 
-    index = NuPSFileOpen(path, mode);
-    if (index < 0)
+    file_index = NuPSFileOpen(path, mode);
+    if (file_index < 0)
         return 0;
 
-    info = &file_info[index];
-    memset(info, 0, sizeof(FILEINFO));
-    info->handle = index;
-    info->mode = mode;
+    ps_index = file_index;
+    memset(&file_info[ps_index], 0, sizeof(FILEINFO));
+    file_info[ps_index].handle = file_index;
+    file_info[ps_index].mode = mode;
 
     if (mode != 1) {
-        if (index <= 16) {
+        if (file_index <= 16) {
             do {
-                length = NuFileSeek(index + 1, 0, 2);
+                length = NuFileSeek(ps_index + 1, 0, 2);
                 if (length < 0 && quiet == 0)
                     NuFileRetry();
             } while (length < 0);
-            info->file_len = length;
+            file_info[ps_index].file_len = length;
 
             if (mode == 3) {
-                while (NuFileStatus(index + 1) != 0) {
+                while (NuFileStatus(ps_index + 1) != 0) {
                 }
             }
 
             do {
-                length = NuFileSeek(index + 1, 0, 0);
+                length = NuFileSeek(ps_index + 1, 0, 0);
                 if (length < 0 && quiet == 0)
                     NuFileRetry();
             } while (length < 0);
 
             if (mode == 3) {
-                while (NuFileStatus(index + 1) != 0) {
+                while (NuFileStatus(ps_index + 1) != 0) {
                 }
             }
         }
     } else {
-        info->file_len = 0;
+        file_info[ps_index].file_len = 0;
     }
 
     if (mode == 0)
-        info->use_buf = nufile_buffering_enabled;
-    return index + 1;
+        file_info[ps_index].use_buf = nufile_buffering_enabled;
+    return ps_index + 1;
 }
 
 NUFILE __cdecl NuFileOpen(const char *filepath, i32 mode) {
