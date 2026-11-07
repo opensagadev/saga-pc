@@ -1152,24 +1152,31 @@ extern "C" {
             return 1;
         switch (panel->model_variant) {
             case 0:
-                return (object->character_data->model_flags & 0x40) != 0 ||
-                       (object->character_data->model_flags & 0x1000010) == 0x1000010;
+                if ((object->character_data->model_flags & 0x40) != 0 ||
+                    (object->character_data->model_flags & 0x1000010) == 0x1000010)
+                    return 1;
+                break;
             case 1:
-                return (object->character_data->model_flags & 0x20) != 0 ||
-                       (object->character_data->model_flags & 0x1000010) == 0x1000010;
-            case 2:
-                return (object->character_data->model_flags & 0x1000000) != 0 || object->helmet == 6;
+                if ((object->character_data->model_flags & 0x20) != 0 ||
+                    (object->character_data->model_flags & 0x1000010) == 0x1000010)
+                    return 1;
+                break;
             case 3:
                 if (object->helmet == 5 || (object->character_data->game_character->flags_090 & 0x40000) != 0)
                     return 1;
-                if (GCDataList[(i16)object->id].weapon_action == 8 || GCDataList[(i16)object->id].weapon_action == 1)
+                if (GCDataList[(i16)object->id].weapon_action == 1 || GCDataList[(i16)object->id].weapon_action == 8)
                     return 1;
-                return object->id == FreePlayId007f199cPc || object->id == id_THEEMPEROR ||
-                       object->id == FreePlayId007f1a4cPc || object->id == FreePlayId007f1a48Pc ||
-                       object->id == FreePlayId007f1a44Pc;
-            default:
-                return 0;
+                if ((i16)object->id == FreePlayId007f199cPc || (i16)object->id == id_THEEMPEROR ||
+                    (i16)object->id == FreePlayId007f1a4cPc || (i16)object->id == FreePlayId007f1a48Pc ||
+                    (i16)object->id == FreePlayId007f1a44Pc)
+                    return 1;
+                break;
+            case 2:
+                if ((object->character_data->model_flags & 0x1000000) != 0 || object->helmet == 6)
+                    return 1;
+                break;
         }
+        return 0;
     }
     i32 __cdecl GizTechno_CanUseTechno(GAMEOBJECT *, BULK_AI_TECHNO_PC *) {
         return 1;

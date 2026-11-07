@@ -1037,27 +1037,29 @@ i32 __cdecl GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position
     (void)damage;
     if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
         return 0;
-    if (obstacle->config_flags & 0x800)
+    if (obstacle->config_flags & 0x800) {
         obstacle->runtime_flags |= 0x40;
-    else {
-        if (!(obstacle->config_flags & 0x1000))
-            return 0;
-        if (obstacle->blowup_type != -1) {
-            if (obstacle->config_flags & 0x200) {
-                GAMEANIMOBJ *object;
-                for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object; object = object->next) {
-                    NUVEC *draw_position = NuSpecialGetDrawPos(&object->special);
-                    if (draw_position)
-                        GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, draw_position);
-                }
-            } else
-                GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, &obstacle->evaluated_position);
-        }
-        GameAnimSet_JumpToEnd(obstacle->anim_set);
-        GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
-        GameAnimSet_SetVisibility(obstacle->anim_set, 0);
-        obstacle->runtime_flags |= 0x80;
+        if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc & 0x80))
+            NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
+        return 1;
     }
+    if (!(obstacle->config_flags & 0x1000))
+        return 0;
+    if (obstacle->blowup_type != -1) {
+        if (obstacle->config_flags & 0x200) {
+            GAMEANIMOBJ *object;
+            for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object; object = object->next) {
+                NUVEC *draw_position = NuSpecialGetDrawPos(&object->special);
+                if (draw_position)
+                    GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, draw_position);
+            }
+        } else
+            GizmoBlowUpTypeBlowUp((WORLDINFO *)world, obstacle->blowup_type, &obstacle->evaluated_position);
+    }
+    GameAnimSet_JumpToEnd(obstacle->anim_set);
+    GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
+    GameAnimSet_SetVisibility(obstacle->anim_set, 0);
+    obstacle->runtime_flags |= 0x80;
     if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc & 0x80))
         NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
     return 1;

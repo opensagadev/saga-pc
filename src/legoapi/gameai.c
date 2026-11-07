@@ -499,36 +499,43 @@ APIOBJECT_PC *__cdecl GetNamedAPIObject(void *system_pointer, char *name) {
     i32 index;
     char player_name[64];
     system = (AISYS_PC *)system_pointer;
+    object = NULL;
     if (system != NULL) {
         for (index = 0; index < HIGHGAMEOBJECT; index++) {
-            object = &Obj[index];
-            if ((object->flags_1fc & 1u) == 0)
+            if ((Obj[index].flags_1fc & 1u) == 0)
                 continue;
-            if ((object->flags_1f8 & 0x400u) != 0 && object->ai_packet.creature_index != 0xff) {
-                creature = &system->creatures[object->ai_packet.creature_index];
-                if (creature != NULL && NuStrICmp(creature->name, name) == 0)
-                    goto found_object;
+            if ((Obj[index].flags_1f8 & 0x400u) != 0 && Obj[index].ai_packet.creature_index != 0xff) {
+                creature = &system->creatures[Obj[index].ai_packet.creature_index];
+                if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
+                    object = &Obj[index];
+                    break;
+                }
             }
-            if (NuStrICmp(object->character_data->name, name) == 0)
-                goto found_object;
+            if (NuStrICmp(Obj[index].character_data->name, name) == 0) {
+                object = &Obj[index];
+                break;
+            }
         }
     }
-    goto player_fallback;
-found_object:
     if (object != NULL)
         return (APIOBJECT_PC *)object;
-player_fallback:
     if (NuStrICmp(name, (char *)GameAIPlayerName) == 0)
-        return (APIOBJECT_PC *)player;
-    if (NuStrICmp(name, (char *)GameAIPlayer2Name) == 0)
-        return (APIOBJECT_PC *)(Player[0] != player ? Player[0] : Player[1]);
-    for (index = 0; index < 8; index++) {
-        if (Player[index] == NULL)
-            continue;
-        sprintf(player_name, GameAIPlayerFormat, index);
-        if (NuStrICmp(player_name, name) == 0)
-            return (APIOBJECT_PC *)Player[index];
+        object = player;
+    else if (NuStrICmp(name, (char *)GameAIPlayer2Name) == 0)
+        object = player != Player[0] ? Player[0] : Player[1];
+    else {
+        for (index = 0; index < 8; index++) {
+            if (Player[index] == NULL)
+                continue;
+            sprintf(player_name, GameAIPlayerFormat, index);
+            if (NuStrICmp(player_name, name) == 0) {
+                object = Player[index];
+                break;
+            }
+        }
     }
+    if (object != NULL)
+        return (APIOBJECT_PC *)object;
     return NULL;
 }
 
