@@ -6118,7 +6118,7 @@ address,symbol,size,ctype
 0x5c4d50,?destroyResources@NuPostFilterGen@@UAEXXZ,24,native exactVT binding; unimplemented extent unclaimed
 0x5c4d70,?initResources@NuCopyFilter@@UAEXXZ,47,native exactVT binding; unimplemented extent unclaimed
 0x5c4da0,?destroyResources@NuCopyFilter@@UAEXXZ,33,Native VT cleanup complete CFG bound; working partial where applicable
-0x5c4dd0,?render@NuCopyFilter@@UAEXPAUPC_FRAMEBUFFER_PC@@@Z,,native exactVT binding; unimplemented extent unclaimed
+0x5c4dd0,?render@NuCopyFilter@@UAEXPAUPC_FRAMEBUFFER_PC@@@Z,65,void __thiscall (PC_FRAMEBUFFER_PC *)
 0x5c4e20,?reset@NuCopyFilter@@UAEXXZ,14,native exactVT binding; unimplemented extent unclaimed
 0x5c4e30,??0NuMotionAccumFilterGen@@QAE@XZ,30,native ctor fullvptr/field proof
 0x5c4e50,??_ENuMotionAccumFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMotionAccumFilterGen@@UAEPAXI@Z; no independent body
@@ -6837,6 +6837,7 @@ address,symbol,size,ctype
 0x5fb550,_PCGraphicsDrawPostEffectQuadPc,10,
 0x5fb560,_PCGraphicsDrawPostEffectIndexedPc,10,void __cdecl (void)
 0x5fb570,_PCGraphicsDrawUnitBoxPc,594,void __cdecl (NUMTX *)
+0x5fb7d0,?copy@NuPostFilterGen@@SAXPAUGRAPHICS_RENDER_TEXTURE_PC@@0PAUPC_FRAMEBUFFER_PC@@@Z,5,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *)"
 0x5fb7e0,?ResizeTexturesPc@NuMainFilter@@QAEXHH@Z,3,
 0x5fb810,?Reset@PC_EFFECT_SURFACE_PC@@QAEXXZ,81,
 0x5fb870,?Attach@PC_EFFECT_SURFACE_PC@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@H_N@Z,170,
@@ -7073,6 +7074,7 @@ address,symbol,size,ctype
 0x60c030,??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,129,native typed VC8 helper
 0x60c0a7,__catch$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0,,
 0x60c1c0,_NuTexRegisterRenderTargetPc,147,i32 __cdecl(GRAPHICS_RENDER_TEXTURE_PC *)
+0x60c260,?copy@NuPostFilterGen@@SAXPAUGRAPHICS_RENDER_TEXTURE_PC@@PAUPC_FRAMEBUFFER_PC@@@Z,126,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *)"
 0x60c2e0,_PostFilterCopyTexturePc,219,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *)"
 0x60c3c0,??_ENuMainFilter@@UAEPAXI@Z,,COFF weak alias of ??_GNuMainFilter@@UAEPAXI@Z; no independent body
 0x60c3c0,??_GNuMainFilter@@UAEPAXI@Z,61,native scalar-deleting dtor exactVTidentity
@@ -11322,6 +11324,7 @@ address,symbol,size,ctype
 0x750350,??__FfadeStillWipe@@YAXXZ,11,
 0x750360,??__FfadeStill@@YAXXZ,11,
 0x750370,??__FNuPostFilterAllocatorPc@@YAXXZ,10,native atexit destructor thunk
+0x7504e0,??__Fsurface@?1??copy@NuPostFilterGen@@SAXPAUGRAPHICS_RENDER_TEXTURE_PC@@PAUPC_FRAMEBUFFER_PC@@@Z@YAXXZ,29,void __cdecl (void)
 0x750500,??__Fdestination_surface@?4??PostFilterCopyTexturePc@@9@YAXXZ,29,void __cdecl (void)
 0x750520,??__Fsource_surface@?4??PostFilterCopyTexturePc@@9@YAXXZ,29,void __cdecl (void)
 0x750540,??__FPcFramebufferPool@@YAXXZ,37,
@@ -27552,9 +27555,11 @@ address,symbol,size,ctype
 0x2857250,_PCSpecialProjectionScale,,NUMTX
 0x2857290,_PostBlurInputBiasPc,4,f32 private BSS scalar only native read60635a
 0x2857294,_RenderFrameShaderTimePc,,f32
+0x28572a4,?surface@?1??copy@NuPostFilterGen@@SAXPAUGRAPHICS_RENDER_TEXTURE_PC@@PAUPC_FRAMEBUFFER_PC@@@Z@4UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
+0x28572c0,?$S1@?1??copy@NuPostFilterGen@@SAXPAUGRAPHICS_RENDER_TEXTURE_PC@@PAUPC_FRAMEBUFFER_PC@@@Z@4IA,4,u32
 0x28572c4,?destination_surface@?4??PostFilterCopyTexturePc@@9@4UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
 0x28572e0,?source_surface@?4??PostFilterCopyTexturePc@@9@4UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
-0x28572fc,?$S1@?4??PostFilterCopyTexturePc@@9@4IA,4,u32
+0x28572fc,?$S2@?4??PostFilterCopyTexturePc@@9@4IA,4,u32
 0x2857300,?theNetSessionManager@@3PAVNetSessionManager@@A,4,
 0x2857308,?theTTNetwork@@3VTTNetwork@@A,,
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,616448,NETMESSAGE_PC::MessageData[512]

@@ -106,6 +106,10 @@ void PC_EFFECT_SURFACE_PC::RestoreResources() {
     }
 }
 /* After a D3D reset, rebinds each live frame texture's resource and clears it to opaque black. */
+/* The colour+depth copy has no PC implementation; its only call is to the shared empty function. */
+void NuPostFilterGen::copy(GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *) {
+    NuQFntAtlasErrorPc();
+}
 /* Non-virtual post-filter resize members; NuPostEffectResizePc calls them after a device reset. */
 void NuMainFilter::ResizeTexturesPc(i32, i32) {
 }

@@ -595,6 +595,13 @@ void NuCopyFilter::destroyResources() {
     PCGraphicsDestroyFramebuffer(copy_fbo);
     NuPostFilterGen::destroyResources();
 }
+void NuCopyFilter::render(PC_FRAMEBUFFER_PC *output) {
+    GRAPHICS_RENDER_TEXTURE_PC *color = PCGraphicsGetFramebufferAttachmentPc(input_fbo, 0, NULL, NULL);
+    if (copy_texture != NULL)
+        copy(color, copy_texture, output);
+    else
+        copy(color, output);
+}
 void NuMotionAccumFilterGen::destroyResources() {
     PCGraphicsDestroyFramebuffer(accumulation_fbo);
     accumulation_fbo = NULL;

@@ -22841,6 +22841,8 @@ class NuPostFilterGen {
     virtual void resetAll();
     virtual bool isEnabled();
     virtual PC_FRAMEBUFFER_PC *getInputFbo();
+    static void copy(GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
+    static void copy(GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *);
     bool enabled;
     u8 unknown_005[3];
     PC_FRAMEBUFFER_PC *input_fbo;

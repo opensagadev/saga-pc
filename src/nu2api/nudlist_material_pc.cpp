@@ -1126,6 +1126,14 @@ void NuMainFilter::RenderBloomPc() {
     PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
 }
 
+/* Stretch-copies a colour texture into the output framebuffer's first target. */
+void NuPostFilterGen::copy(GRAPHICS_RENDER_TEXTURE_PC *color, PC_FRAMEBUFFER_PC *output) {
+    static PC_EFFECT_SURFACE_PC surface;
+    surface.Attach(color, 0, false);
+    bool scaled = output->targets[0].width != surface.width || output->targets[0].height != surface.height;
+    PCDeviceStretchRectPc(surface.surface, NULL, output->targets[0].surface, NULL, scaled ? 2 : 0);
+}
+
 /* Same unit as ??_GNuMainFilter: the atexit thunks for its static surfaces expand the inline destructor. */
 extern "C" void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination, i32 destination_level,
                                                 GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_level,
