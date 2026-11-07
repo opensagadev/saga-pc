@@ -1,31 +1,11 @@
 #include "saga.h"
 
-typedef struct streaming_door_reader_pc_s {
-    u8 unknown_00[0xd4];
-    NUVEC position;
-    u8 unknown_e0[0x10];
-    i16 level;
-    i16 freeplay_level;
-    u8 unknown_f4[0x34];
-} STREAMING_DOOR_READER_PC;
-STATIC_ASSERT(sizeof(STREAMING_DOOR_READER_PC) == 0x128);
-STATIC_ASSERT(offsetof(STREAMING_DOOR_READER_PC, position) == 0xd4);
-STATIC_ASSERT(offsetof(STREAMING_DOOR_READER_PC, level) == 0xf0);
-STATIC_ASSERT(offsetof(STREAMING_DOOR_READER_PC, freeplay_level) == 0xf2);
-
-typedef struct streaming_world_reader_pc_s {
-    u8 unknown_00[0x4698];
-    STREAMING_DOOR_READER_PC *doors;
-    i32 door_count;
-} STREAMING_WORLD_READER_PC;
-STATIC_ASSERT(offsetof(STREAMING_WORLD_READER_PC, doors) == 0x4698);
-STATIC_ASSERT(offsetof(STREAMING_WORLD_READER_PC, door_count) == 0x469c);
-
-typedef struct streaming_cut_reader_pc_s {
-    u8 unknown_00[0xec];
-    i16 skip_level;
-} STREAMING_CUT_READER_PC;
-STATIC_ASSERT(offsetof(STREAMING_CUT_READER_PC, skip_level) == 0xec);
+STATIC_ASSERT(offsetof(WORLDINFO, doors) == 0x4698);
+STATIC_ASSERT(offsetof(WORLDINFO, door_count) == 0x469c);
+STATIC_ASSERT(offsetof(DOOR_s, pos) == 0xd4);
+STATIC_ASSERT(offsetof(DOOR_s, level) == 0xf0);
+STATIC_ASSERT(offsetof(DOOR_s, freeplay_level) == 0xf2);
+STATIC_ASSERT(offsetof(CUTINFO, skip_level) == 0xec);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
@@ -63,8 +43,7 @@ static i32 LevelStreamingChooseSplitPc(WORLDINFO *world, NUVEC *position, i32 fi
 }
 
 void __cdecl LevelStreaming_Update(WORLDINFO *world) {
-    STREAMING_WORLD_READER_PC *streaming = (STREAMING_WORLD_READER_PC *)world;
-    STREAMING_CUT_READER_PC *cut;
+    CUTINFO *cut;
     NUVEC position;
     i32 i, level;
     f32 best_distance, distance;
@@ -75,7 +54,7 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
         return;
     other_level = -1;
     if (no_more_loads == 0) {
-        cut = (STREAMING_CUT_READER_PC *)CutStopInfo;
+        cut = (CUTINFO *)CutStopInfo;
         if (other_level_override != -1) {
             other_level = other_level_override;
         } else if (CUTSTOPGAME != 0 && cut != NULL && cut->skip_level != -1 &&
@@ -84,14 +63,16 @@ void __cdecl LevelStreaming_Update(WORLDINFO *world) {
         } else if (!(world->current_level->flags & 0xe0) && Players_AveragePos(&position, NULL) != 0) {
             best_distance = 1000000000.0f;
             other_level = -1;
-            for (i = 0; i < streaming->door_count; ++i) {
-                STREAMING_DOOR_READER_PC *door = &streaming->doors[i];
-                level = InStory() != 0 || door->freeplay_level == -1 ? door->level : door->freeplay_level;
+            for (i = 0; i < world->door_count; ++i) {
+                if (InStory() != 0 || world->doors[i].freeplay_level == -1)
+                    level = world->doors[i].level;
+                else
+                    level = world->doors[i].freeplay_level;
                 if (level != world->level_idx) {
-                    distance = NuVecDistSqr(&door->position, &position, NULL);
+                    distance = NuVecDistSqr(&world->doors[i].pos, &position, NULL);
                     if (distance < best_distance) {
                         best_distance = distance;
-                        other_level = door->level;
+                        other_level = world->doors[i].level;
                     }
                 }
             }
