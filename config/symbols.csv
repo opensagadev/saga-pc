@@ -9956,6 +9956,7 @@ address,symbol,size,ctype
 0x6c15d0,?InsertAfter@PropertyMenuList@@QAEXPAVPropertyMenu@@0@Z,94,
 0x6c1630,?Remove@PropertyMenuList@@QAEXPAVPropertyMenu@@@Z,63,
 0x6c18e0,?InsertAfter@SplineKnotList@@QAEXPAUSplineKnot@@0@Z,94,
+0x6c1940,?Remove@SplineKnotList@@QAEXPAUSplineKnot@@@Z,63,
 0x6c1e50,??0EdInputStream@@QAE@PAUMemoryBuffer@@0@Z,40,
 0x6c1e80,??0EdFileInputStream@@QAE@PAUMemoryBuffer@@0@Z,68,
 0x6c1ed0,??_EEdFileInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileInputStream@@UAEPAXI@Z; no independent body

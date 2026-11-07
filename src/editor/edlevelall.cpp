@@ -2649,6 +2649,7 @@ struct SplineKnotList {
 
     ~SplineKnotList();
     void InsertAfter(SplineKnot *knot, SplineKnot *after);
+    void Remove(SplineKnot *knot);
 };
 
 /* A block of generated spline points. */
@@ -2794,20 +2795,24 @@ void KnotHelper::Process(void *object, EdInputContext &) {
 
 KnotHelper theKnotHelper;
 
+void SplineKnotList::Remove(SplineKnot *knot) {
+    if (knot->next != NULL)
+        knot->next->previous = knot->previous;
+    else
+        last = knot->previous;
+    if (knot->previous != NULL)
+        knot->previous->next = knot->next;
+    else
+        first = knot->next;
+    knot->next = NULL;
+    knot->previous = NULL;
+    count--;
+}
+
 SplineKnotList::~SplineKnotList() {
     SplineKnot *knot;
     while ((knot = first) != NULL) {
-        if (knot->next != NULL)
-            knot->next->previous = knot->previous;
-        else
-            last = knot->previous;
-        if (knot->previous != NULL)
-            knot->previous->next = knot->next;
-        else
-            first = knot->next;
-        knot->next = NULL;
-        knot->previous = NULL;
-        count--;
+        Remove(knot);
         theMemoryManager.FreePool(knot, sizeof(SplineKnot));
     }
 }
@@ -2998,17 +3003,7 @@ void KnotHelper::DestroyObject(void *object, i32) {
     SplineKnot *knot = static_cast<SplineKnot *>(object);
     theLevelEditor.destroying_objects = 1;
     SplineObject *spline = knot->spline;
-    if (knot->next != NULL)
-        knot->next->previous = knot->previous;
-    else
-        spline->knots.last = knot->previous;
-    if (knot->previous != NULL)
-        knot->previous->next = knot->next;
-    else
-        spline->knots.first = knot->next;
-    knot->next = NULL;
-    knot->previous = NULL;
-    spline->knots.count--;
+    spline->knots.Remove(knot);
     theMemoryManager.FreePool(knot, sizeof(SplineKnot));
     if (spline->knots.count == 0) {
         if (spline->next != NULL)
@@ -3320,17 +3315,7 @@ void SplineObject::ReverseKnots() {
     knots.count = 0;
     SplineKnot *knot;
     while ((knot = reversed.last) != NULL) {
-        if (knot->next != NULL)
-            knot->next->previous = knot->previous;
-        else
-            reversed.last = knot->previous;
-        if (knot->previous != NULL)
-            knot->previous->next = knot->next;
-        else
-            reversed.first = knot->next;
-        knot->next = NULL;
-        knot->previous = NULL;
-        reversed.count--;
+        reversed.Remove(knot);
         knot->previous = knots.last;
         if (knots.last != NULL)
             knots.last->next = knot;
