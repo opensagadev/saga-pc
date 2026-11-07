@@ -177,31 +177,32 @@ extern "C" {
     i32 __cdecl EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 visible) {
         i32 i;
 
-        if (name == NULL || progress == NULL || NuStrLen(name) > 15) {
-            return 0;
-        }
-
-        for (i = 0; i < 12; ++i) {
-            if (NuStrICmp(progress->disabled_effect_names[i], name) == 0) {
+        if (progress != NULL && name != NULL && NuStrLen(name) < 16) {
+            for (i = 0; i < 12; ++i) {
+                if (NuStrICmp(progress->disabled_effect_names[i], name) == 0) {
+                    break;
+                }
+            }
+            if (i < 12) {
                 if (visible != 0) {
                     progress->disabled_effect_names[i][0] = '\0';
                     return 2;
                 }
                 return 3;
             }
-        }
-
-        if (visible != 0) {
-            return 0;
-        }
-
-        for (i = 0; i < 12; ++i) {
-            if (progress->disabled_effect_names[i][0] == '\0') {
-                NuStrCpy(progress->disabled_effect_names[i], name);
-                break;
+            if (visible == 0) {
+                for (i = 0; i < 12; ++i) {
+                    if (progress->disabled_effect_names[i][0] == '\0') {
+                        break;
+                    }
+                }
+                if (i < 12) {
+                    NuStrCpy(progress->disabled_effect_names[i], name);
+                }
+                return 1;
             }
         }
-        return 1;
+        return 0;
     }
 
     void __cdecl EffectOffProgress_Reset(LEVEL_PROGRESS *progress) {

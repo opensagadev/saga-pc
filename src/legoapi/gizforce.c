@@ -50,30 +50,37 @@ void __cdecl EndForce(GAMEOBJECT *object, i32 mode) {
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
 void __cdecl ReleaseForce(GAMEOBJECT *object, i32 mode) {
-    if (object->character_context == 0x1b) {
-        if (object->force_target != NULL) {
-            if (object->force_target->character_context == 0x1c) {
-                object->force_target->character_context = -1;
-                object->force_target->force_target = NULL;
+    switch (object->character_context) {
+        case 0x1b: {
+            GAMEOBJECT *target = object->force_target;
+            if (target != NULL) {
+                if (target->character_context == 0x1c) {
+                    target->character_context = -1;
+                    target->force_target = NULL;
+                }
+                object->force_target = NULL;
             }
-            object->force_target = NULL;
+            EndForce(object, mode);
+            break;
         }
-    } else if (object->character_context == 0x1d) {
-        if (object->force_part != NULL) {
-            u8 mask = (u8)(1u << (object->field_280 & 31));
-            object->force_part->field_206 = (i8)((u8)object->force_part->field_206 & ~mask);
-            if (object->force_part->field_206 == 0)
-                object->force_part->field_206 = -1;
-            object->force_part->gravity = GameDeflectPartGravity;
-            object->force_part = NULL;
-        }
-        object->character_context = -1;
-    } else if (object->character_context == 8) {
-        if (object->flags_1fc_word & 0x80)
-            GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
-    } else
-        return;
-    EndForce(object, mode);
+        case 0x1d:
+            if (object->force_part != NULL) {
+                u8 mask = (u8)(1 << object->field_280);
+                object->force_part->field_206 = (i8)((u8)object->force_part->field_206 & ~mask);
+                if (object->force_part->field_206 == 0)
+                    object->force_part->field_206 = -1;
+                object->force_part->gravity = GameDeflectPartGravity;
+                object->force_part = NULL;
+            }
+            object->character_context = -1;
+            EndForce(object, mode);
+            break;
+        case 8:
+            if (object->flags_1fc_word & 0x80)
+                GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+            EndForce(object, mode);
+            break;
+    }
 }
 static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 lightning_index) {
     f32 height;
