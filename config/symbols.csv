@@ -6821,8 +6821,8 @@ address,symbol,size,ctype
 0x005f75a0,_PcGeometryCopyMatrixPc,95,"void __cdecl(NUMTX *, const NUMTX *)"
 0x5f7610,_PCSpecialTransposeMatrix,133,"void __cdecl(NUMTX *,NUMTX *)"
 0x005f77d0,_NuLgtSetVertexColor,108,
-0x5f7980,?PCGraphicsFormatToD3d@@YAHH@Z,92,
-0x5f79e0,?PCGraphicsFormatFromD3d@@YAHH@Z,123,
+0x5f7980,_PCGraphicsFormatToD3d,92,
+0x5f79e0,_PCGraphicsFormatFromD3d,123,
 0x5f7a90,_NuEffectTexLockVP,1,"void __cdecl(VARIPTR *, VARIPTR)"
 0x5f7aa0,_NuEffectTexUnlockVP,3,i32 __cdecl(void)
 0x5f7b40,_PCGraphicsDestroyRenderTexture,255,void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*)

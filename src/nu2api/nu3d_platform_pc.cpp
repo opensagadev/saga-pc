@@ -5,8 +5,10 @@
 // order. Modules merged so far: nugscn_pc, nuportal_pc, numtl PS/Pc, the nudlist and nupostfilter
 // platform members, the render-state/stream/scene/gobj/particle backends and the geometry backend.
 
+#define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
 
+#include <stdio.h>
 #include <string.h>
 
 extern "C" {
@@ -753,6 +755,395 @@ extern "C" {
         texture->image_size = 0x338;
         NuDisplayMaterialDistortTexturePc = NuTexCreateNative(texture);
     }
+    typedef struct PC_SPECIAL_GEOMETRY {
+        u8 unknown_0000[8];
+        u16 vertex_stride;
+        u8 joint_indices[8];
+        u8 unknown_0012[2];
+        u32 base_vertex, vertex_count;
+        u8 unknown_001c[8];
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;
+        u32 morph_count;
+        NUVEC **morph_deltas;
+        u32 unknown_0030;
+        void *dynamic_vertices;
+    } PC_SPECIAL_GEOMETRY;
+    STATIC_ASSERT(sizeof(PC_SPECIAL_GEOMETRY) == 0x38);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, vertex_stride) == 8);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, joint_indices) == 0xa);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, base_vertex) == 0x14);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, vertex_count) == 0x18);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, vertex_buffer) == 0x24);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, morph_count) == 0x28);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, morph_deltas) == 0x2c);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_GEOMETRY, dynamic_vertices) == 0x34);
+    typedef struct PC_SPECIAL_DEFORMER_WEIGHTS {
+        u32 unknown_0000[2];
+        f32 weights[1];
+    } PC_SPECIAL_DEFORMER_WEIGHTS;
+    STATIC_ASSERT(offsetof(PC_SPECIAL_DEFORMER_WEIGHTS, weights) == 8);
+    typedef struct PC_SPECIAL_FACEON {
+        i32 kind;
+    } PC_SPECIAL_FACEON;
+    typedef struct PC_SPECIAL_TRANSFORM_PACKET {
+        NUMTX matrix;
+    } PC_SPECIAL_TRANSFORM_PACKET;
+    STATIC_ASSERT(offsetof(PC_SPECIAL_TRANSFORM_PACKET, matrix.m32) == 0x38);
+    STATIC_ASSERT(offsetof(PC_SPECIAL_TRANSFORM_PACKET, matrix.m33) == 0x3c);
+
+    typedef struct display_primitive_packet_pc_s {
+        u32 type;
+        u8 unknown_0004[0x14];
+        u32 vertex_count;
+        u8 unknown_001c[0x1c];
+    } DISPLAY_PRIMITIVE_PACKET_PC;
+    STATIC_ASSERT(sizeof(DISPLAY_PRIMITIVE_PACKET_PC) == 0x38);
+    STATIC_ASSERT(offsetof(DISPLAY_PRIMITIVE_PACKET_PC, vertex_count) == 0x18);
+
+    typedef struct PC_DL_SKIN_PALETTE_READER {
+        i32 count;
+        f32 elements[1];
+    } PC_DL_SKIN_PALETTE_READER;
+    STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, count) == 0);
+    STATIC_ASSERT(offsetof(PC_DL_SKIN_PALETTE_READER, elements) == 4);
+
+    typedef struct PC_DL_LIGHTS_READER {
+        NUVEC4 ambient;
+        NUVEC4 intensity[3];
+        NUVEC4 direction[3];
+        NUMTX shine_matrix;
+    } PC_DL_LIGHTS_READER;
+    STATIC_ASSERT(sizeof(PC_DL_LIGHTS_READER) == 0xb0);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, intensity) == 0x10);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, direction) == 0x40);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTS_READER, shine_matrix) == 0x70);
+
+    typedef union PC_DL_NORMALIZED_DIRECTION {
+        NUVEC4 four;
+        struct {
+            NUVEC three;
+            f32 w;
+        } normalized;
+    } PC_DL_NORMALIZED_DIRECTION;
+    STATIC_ASSERT(sizeof(PC_DL_NORMALIZED_DIRECTION) == 16);
+    STATIC_ASSERT(offsetof(PC_DL_NORMALIZED_DIRECTION, normalized.w) == 12);
+
+    typedef struct PC_DL_FOG_READER {
+        i32 enabled;
+        u32 colour;
+        f32 near_distance, far_distance, density;
+    } PC_DL_FOG_READER;
+    STATIC_ASSERT(sizeof(PC_DL_FOG_READER) == 0x14);
+    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, colour) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, near_distance) == 8);
+    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, far_distance) == 0xc);
+    STATIC_ASSERT(offsetof(PC_DL_FOG_READER, density) == 0x10);
+
+    typedef struct PC_DL_LEGACY_LIGHTMAP_READER {
+        i32 texture_id[3];
+        f32 x_offset, y_offset;
+    } PC_DL_LEGACY_LIGHTMAP_READER;
+    STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, x_offset) == 0xc);
+    STATIC_ASSERT(offsetof(PC_DL_LEGACY_LIGHTMAP_READER, y_offset) == 0x10);
+
+    typedef struct PC_DL_CAMERA_READER {
+        i32 id;
+        NUMTX view, projection;
+        f32 viewport[4];
+    } PC_DL_CAMERA_READER;
+    STATIC_ASSERT(sizeof(PC_DL_CAMERA_READER) == 0x94);
+    STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, view) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, projection) == 0x44);
+    STATIC_ASSERT(offsetof(PC_DL_CAMERA_READER, viewport) == 0x84);
+
+    /* Source-local working declarations; backing and canonical union remain separate gates. */
+    typedef struct PC_DL_MATERIAL_READER {
+        u8 unknown_0000[0x40];
+        u32 reflection_flags;
+    } PC_DL_MATERIAL_READER;
+    STATIC_ASSERT(offsetof(PC_DL_MATERIAL_READER, reflection_flags) == 0x40);
+    extern NUVEC4 NuDisplayHandlerTintPc;
+    extern void *NuDisplayHandlerMaterialPc;
+    extern i32 NuDisplayHandlerReflectionPc;
+    extern i32 NuDisplayHandlerCameraIdPc;
+    extern PC_GRAPHICS_FRAME_SCRATCH_VIEW_PC PCGraphicsFrameScratchCount;
+    void __cdecl NuVec4Add(NUVEC4 *, NUVEC4 *, NUVEC4 *);
+
+    typedef struct PC_DL_CAMERA_PROJECTION_READER {
+        NUMTX projection;
+        f32 viewport[4];
+    } PC_DL_CAMERA_PROJECTION_READER;
+    STATIC_ASSERT(offsetof(PC_DL_CAMERA_PROJECTION_READER, viewport) == 0x40);
+
+    typedef struct PC_DL_VERTEX_GROUPS_READER {
+        i32 count;
+        u32 flags;
+        NUVEC4 values[1];
+    } PC_DL_VERTEX_GROUPS_READER;
+    STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, count) == 0);
+    STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, flags) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_VERTEX_GROUPS_READER, values) == 8);
+
+    typedef struct PC_DL_VERTEX_OFFSETS_READER {
+        i32 count;
+        NUVEC4 values[1];
+    } PC_DL_VERTEX_OFFSETS_READER;
+    STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, count) == 0);
+    STATIC_ASSERT(offsetof(PC_DL_VERTEX_OFFSETS_READER, values) == 4);
+
+    extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
+
+    /* PC-only table slot 0xad; no Android function identity is asserted. */
+    typedef struct PC_DL_AD_COLOURS {
+        NUVEC colour[5];
+    } PC_DL_AD_COLOURS;
+    STATIC_ASSERT(sizeof(PC_DL_AD_COLOURS) == 0x3c);
+
+    typedef struct PC_DL_AD_RECORD {
+        u8 unknown_0000[0x14];
+        u8 enabled;
+        u8 unknown_0015[3];
+        i32 segment_count;
+        f32 pixel_parameter, vertex_parameter_x, vertex_parameter_y, vertex_parameter_z;
+        f32 pixel_parameter_x, pixel_parameter_y, pixel_parameter_z, pixel_scalar;
+        PC_DL_AD_COLOURS colours;
+    } PC_DL_AD_RECORD;
+    STATIC_ASSERT(sizeof(PC_DL_AD_RECORD) == 0x78);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, enabled) == 0x14);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, segment_count) == 0x18);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter) == 0x1c);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_x) == 0x20);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_y) == 0x24);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, vertex_parameter_z) == 0x28);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_x) == 0x2c);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_y) == 0x30);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_parameter_z) == 0x34);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, pixel_scalar) == 0x38);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD, colours) == 0x3c);
+
+    typedef struct PC_DL_AD_RECORD_LIST {
+        u32 unknown_0000;
+        i32 count;
+        u32 unknown_0008;
+        PC_DL_AD_RECORD *records;
+    } PC_DL_AD_RECORD_LIST;
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, count) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_AD_RECORD_LIST, records) == 0xc);
+
+    typedef struct PC_DL_AD_PACKET {
+        PC_DL_AD_RECORD_LIST *list;
+        u32 instances;
+        u8 unknown_0008[0xc];
+        PC_BUFFER_RESOURCE_PC *instance_buffer, *vertex_buffer, *index_buffer;
+    } PC_DL_AD_PACKET;
+    STATIC_ASSERT(sizeof(PC_DL_AD_PACKET) == 0x20);
+    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, list) == 0);
+    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, instances) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, instance_buffer) == 0x14);
+    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, vertex_buffer) == 0x18);
+    STATIC_ASSERT(offsetof(PC_DL_AD_PACKET, index_buffer) == 0x1c);
+
+    void __cdecl PCDeviceSetStreamSourceFreqPc(u32, u32);
+    void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
+    void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
+    void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
+
+    typedef struct PC_DL_GEOMETRY_READER {
+        u32 kind, primitive_count;
+        u16 vertex_stride;
+        u8 unknown_000a[0xa];
+        i32 base_vertex;
+        u32 vertex_count, start_index;
+        PC_BUFFER_RESOURCE_PC *index_buffer, *vertex_buffer;
+        u32 dynamic_count;
+        void *morph_deltas;
+        PC_BUFFER_RESOURCE_PC *dynamic_buffer;
+        void *dynamic_vertices;
+    } PC_DL_GEOMETRY_READER;
+    STATIC_ASSERT(sizeof(PC_DL_GEOMETRY_READER) == 0x38);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, kind) == 0);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, primitive_count) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_stride) == 8);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, base_vertex) == 0x14);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_count) == 0x18);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, start_index) == 0x1c);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, index_buffer) == 0x20);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, vertex_buffer) == 0x24);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_count) == 0x28);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_buffer) == 0x30);
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_READER, dynamic_vertices) == 0x34);
+
+    typedef struct PC_DL_GEOMETRY_MATERIAL_READER {
+        u8 unknown_0000[0x26c];
+        u32 lightmap_flags;
+    } PC_DL_GEOMETRY_MATERIAL_READER;
+    STATIC_ASSERT(offsetof(PC_DL_GEOMETRY_MATERIAL_READER, lightmap_flags) == 0x26c);
+
+    typedef struct PC_DL_FACEON_DRAW_READER {
+        u32 unknown_0000, primitive_count;
+        PC_BUFFER_RESOURCE_PC *vertex_buffer;
+        u32 first_vertex;
+    } PC_DL_FACEON_DRAW_READER;
+    STATIC_ASSERT(sizeof(PC_DL_FACEON_DRAW_READER) == 0x10);
+    STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, primitive_count) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, vertex_buffer) == 8);
+    STATIC_ASSERT(offsetof(PC_DL_FACEON_DRAW_READER, first_vertex) == 0xc);
+
+    typedef struct PC_DL_DEBRIS_DRAW_READER {
+        u8 buffer_index;
+        u8 unknown_0001[3];
+        u32 use_system_buffer, first_vertex, vertex_count;
+    } PC_DL_DEBRIS_DRAW_READER;
+    STATIC_ASSERT(sizeof(PC_DL_DEBRIS_DRAW_READER) == 0x10);
+    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, buffer_index) == 0);
+    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, use_system_buffer) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, first_vertex) == 8);
+    STATIC_ASSERT(offsetof(PC_DL_DEBRIS_DRAW_READER, vertex_count) == 0xc);
+
+    typedef struct PC_DL_LIGHTMAP_UPDATE_READER {
+        i32 mode, texture_id;
+        i32 texture_ids[3];
+        f32 x_offset, y_offset;
+    } PC_DL_LIGHTMAP_UPDATE_READER;
+    STATIC_ASSERT(sizeof(PC_DL_LIGHTMAP_UPDATE_READER) == 0x1c);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, mode) == 0);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, texture_id) == 4);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, texture_ids) == 8);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, x_offset) == 0x14);
+    STATIC_ASSERT(offsetof(PC_DL_LIGHTMAP_UPDATE_READER, y_offset) == 0x18);
+
+    /* Existing canonical integer slot holds the native 32-bit packet identity. */
+    extern i32 PCGraphicsBoundShader;
+    void __cdecl PCDeviceSetStreamSourcePc(u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
+    void __cdecl PCDeviceDrawPrimitivePc(i32, u32, u32);
+    void __cdecl PCDeviceSetIndicesPc(PC_BUFFER_RESOURCE_PC *);
+    void __cdecl PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
+
+    extern "C" void __cdecl NuStrFixExt(char *, char *, char *, i32);
+    extern const char NuTextureSourcePathPC[];
+    extern const char NuTextureDdsExtensionPc[];
+    extern const char NuTextureEnvironmentCubePathPc[];
+    extern const char NuTexturePhongCubePathPc[];
+    extern PC_TEXTURE_RESOURCE_PC *NuTextureEnvironmentCubePc, *NuTexturePhongCubePc;
+    void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource);
+
+    /* The leading pad keeps the 14-byte file header's 32-bit fields naturally aligned. */
+    typedef struct nutexbmp_file_header_pc_s {
+        u16 pad_00;
+        u16 type;
+        u32 size;
+        u16 reserved_08;
+        u16 reserved_0a;
+        u32 data_offset;
+    } NUTEXBMP_FILE_HEADER_PC;
+
+    typedef struct nutexbmp_info_header_pc_s {
+        u32 size;
+        i32 width;
+        i32 height;
+        u16 planes;
+        u16 bit_count;
+        u32 compression;
+        u32 image_size;
+        i32 x_resolution;
+        i32 y_resolution;
+        u32 colours_used;
+        u32 colours_important;
+    } NUTEXBMP_INFO_HEADER_PC;
+
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, original_mip_count) == 0xc);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_10) == 0x10);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, format) == 0x14);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, usage) == 0x18);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, pool) == 0x1c);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
+    typedef struct PC_TEXTURE_LEVEL_COUNT_METHODS_PC {
+        void *reserved00[13];
+        u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE_PC *);
+    } PC_TEXTURE_LEVEL_COUNT_METHODS_PC;
+    STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_COUNT_METHODS_PC, get_level_count) == 0x34);
+
+    STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) == 8);
+    STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
+
+    extern "C" {
+        extern u32 PCGraphicsPostEffectWidthPc;
+        extern u32 PCGraphicsPostEffectHeightPc;
+        extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
+        extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
+    }
+
+    STATIC_ASSERT(sizeof(GRAPHICS_RENDER_TEXTURE_PC) == 0x30);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, mip_count) == 0xa);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, flags) == 0x20);
+    STATIC_ASSERT(offsetof(GRAPHICS_RENDER_TEXTURE_PC, field_24) == 0x24);
+
+    /* Font atlas builder: scans a BMP glyph strip for glyph cells and builds a font around it. */
+    extern "C" i32 NuStrLenW(const NUWCHAR *str);
+
+    /* Nonzero when any texel of the 32-bit column at (x, y) has a nonzero alpha. */
+    static __forceinline i32 NuQFntColumnOpaque32Inline(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
+        i32 width = bitmap->width;
+        u8 *alpha = bitmap->data + (width * y + x) * 4 + 3;
+        i32 i;
+
+        for (i = 0; i < count && y + i < bitmap->height; i++) {
+            if (*alpha != 0) {
+                return 1;
+            }
+            alpha += width * 4;
+        }
+        return 0;
+    }
+
+    /* The material fields the atlas font set-up writes. */
+    typedef struct nuqfnt_atlas_material_pc_s {
+        u8 unknown_000[0x40];
+        u32 attributes;
+        u32 attributes_high;
+        u8 unknown_048[0xc];
+        NUVEC diffuse;
+        u8 unknown_060[0x10];
+        f32 opacity;
+        i16 texture_id;
+    } NUQFNT_ATLAS_MATERIAL_PC;
+    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, attributes) == 0x40);
+    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, diffuse) == 0x54);
+    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, opacity) == 0x70);
+    STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, texture_id) == 0x74);
+
+#define NUQFNT_ATLAS_MAP_SIZE 808
+#define NUQFNT_ATLAS_GLYPH_SIZE 750
+
+/* Finds the next glyph cell with the scanner that suits the strip's format. */
+#define NUQFNT_ATLAS_NEXT_GLYPH()                                                                                      \
+    if (bitmap->type == 5) {                                                                                           \
+        NuQFntNextGlyph8Pc(bitmap, cell_height, key_colour, &x, &y, &width);                                           \
+    } else {                                                                                                           \
+        NuQFntNextGlyph32Pc(bitmap, cell_height, &x, &y, &width);                                                      \
+    }
+
+    extern "C" {
+        extern PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256];
+        extern u8 PcSurfaceRegistryInitialized;
+        extern PC_FRAMEBUFFER_PC PcFramebufferPool[32];
+        extern u8 PcFramebufferActive[32];
+        extern PC_FRAMEBUFFER_PC *PcBoundFramebuffer;
+        extern PC_FRAMEBUFFER_PC *PcDefaultFramebuffer;
+        extern PC_FRAMEBUFFER_PC *PcSecondaryFramebuffer;
+    }
+
+    extern "C" {
+        PC_EFFECT_SURFACE_PC *PcSurfaceRegistry[256] = {NULL};
+        u8 PcSurfaceRegistryInitialized = 0;
+        PC_FRAMEBUFFER_PC PcFramebufferPool[32];
+        u8 PcFramebufferActive[32] = {0};
+        PC_FRAMEBUFFER_PC *PcBoundFramebuffer = NULL;
+        PC_FRAMEBUFFER_PC *PcDefaultFramebuffer = NULL;
+        PC_FRAMEBUFFER_PC *PcSecondaryFramebuffer = NULL;
+        PC_BOOT_FRAMEBUFFER_VIEW_PC PcBootFramebuffersPc = {NULL, NULL};
+    }
     // @@FUNCTIONS
 
     /* The PC backend's transform-update leaf is a single ret instruction; retail
@@ -760,6 +1151,685 @@ extern "C" {
     void __cdecl DisplayListUpdateSpecialTransformPS(NUSPECIALHANDLE *special, NUMTX *matrix) {
         (void)special;
         (void)matrix;
+    }
+
+    static __declspec(noinline) void PCSpecialTransposeMatrix(NUMTX *out, NUMTX *matrix) {
+        f32 saved;
+        out->m00 = matrix->m00;
+        saved = matrix->m01;
+        out->m01 = matrix->m10;
+        out->m10 = saved;
+        saved = matrix->m02;
+        out->m02 = matrix->m20;
+        out->m20 = saved;
+        saved = matrix->m03;
+        out->m03 = matrix->m30;
+        out->m30 = saved;
+        out->m11 = matrix->m11;
+        saved = matrix->m12;
+        out->m12 = matrix->m21;
+        out->m21 = saved;
+        saved = matrix->m13;
+        out->m13 = matrix->m31;
+        out->m31 = saved;
+        out->m22 = matrix->m22;
+        saved = matrix->m23;
+        out->m23 = matrix->m32;
+        out->m32 = saved;
+        out->m33 = matrix->m33;
+    }
+
+    static i32 PCGraphicsFormatToD3d(i32 format) {
+        switch (format) {
+            case 1:
+                return 22;
+            case 2:
+                return 21;
+            case 4:
+                return 75;
+            case 5:
+                return 83;
+            case 10:
+                return 114;
+            default:
+                return -1;
+        }
+    }
+
+    static i32 PCGraphicsFormatFromD3d(i32 format) {
+        switch (format) {
+            case 21:
+            case 22:
+                return 2;
+            case 75:
+                return 4;
+            case 83:
+                return 5;
+            default:
+                return 0;
+        }
+    }
+
+    void __cdecl NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end) {
+        (void)buffer;
+        (void)end;
+    }
+
+    i32 __cdecl NuEffectTexUnlockVP(void) {
+        return 0;
+    }
+
+    void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        i32 i;
+        i32 memory_delta;
+        f32 multiplier;
+        if (texture == NULL)
+            return;
+        for (i = 0; i != 32; ++i)
+            if (&PCGraphicsRenderTextures[i] == texture)
+                break;
+        if (i == 32)
+            return;
+        if (texture->external_id == -1) {
+            if (PCGraphicsRenderTextures[i].resource != NULL) {
+                PCGraphicsRenderTextures[i].resource->methods->release(PCGraphicsRenderTextures[i].resource);
+                PCGraphicsRenderTextures[i].resource = NULL;
+            }
+            if (PCGraphicsRenderTextures[i].surface != NULL) {
+                PCGraphicsRenderTextures[i].surface->methods->release(PCGraphicsRenderTextures[i].surface);
+                PCGraphicsRenderTextures[i].surface = NULL;
+            }
+        }
+        multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+        memory_delta = (i32)((0u - (u32)texture->width * (u32)texture->height) * 4u);
+        PCGraphicsRenderTextureBytes += (i32)((f64)memory_delta * (f64)multiplier);
+        memset(&PCGraphicsRenderTextures[i], 0, sizeof(GRAPHICS_RENDER_TEXTURE_PC));
+        PCGraphicsRenderTextureActive[i] = 0;
+    }
+
+    i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        return texture->width;
+    }
+
+    i32 __cdecl PCGraphicsEffectTextureHeight(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        return texture->height;
+    }
+
+    void __cdecl PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *texture, u16 level, i32 *width,
+                                                   i32 *height) {
+        *width = (texture->width >> (u8)level) & ~1;
+        *height = (texture->height >> (u8)level) & ~1;
+    }
+
+    i32 __cdecl PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        return texture->mip_count;
+    }
+
+    void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 low, i32 high) {
+        texture->flags = (texture->flags & ~0xffu) | (((u32)high & 0xfu) << 4) | ((u32)low & 0xfu);
+    }
+
+    void __cdecl PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 value) {
+        texture->field_24 = (u32)value;
+    }
+
+    void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second,
+                                                        i32 third) {
+        i32 value;
+        switch (first) {
+            case 0:
+                value = 0;
+                break;
+            case 1:
+                value = 1;
+                break;
+            case 2:
+                value = 2;
+                break;
+            case 3:
+                value = 3;
+                break;
+            default:
+                value = -1;
+                break;
+        }
+        texture->flags ^= (((u32)value << 17) ^ texture->flags) & 0xe0000u;
+        switch (second) {
+            case 0:
+                value = 0;
+                break;
+            case 1:
+                value = 1;
+                break;
+            case 2:
+                value = 2;
+                break;
+            case 3:
+                value = 3;
+                break;
+            default:
+                value = -1;
+                break;
+        }
+        texture->flags ^= (((u32)value << 20) ^ texture->flags) & 0x700000u;
+        switch (third) {
+            case 0:
+                value = 0;
+                break;
+            case 1:
+                value = 1;
+                break;
+            case 2:
+                value = 2;
+                break;
+            case 3:
+                value = 3;
+                break;
+            default:
+                value = -1;
+                break;
+        }
+        texture->flags ^= (((u32)value << 23) ^ texture->flags) & 0x3800000u;
+    }
+
+    void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second) {
+        i32 value;
+        switch (first) {
+            case 0:
+                value = 1;
+                break;
+            case 1:
+                value = 2;
+                break;
+            case 2:
+                value = 3;
+                break;
+            case 3:
+                value = 4;
+                break;
+            default:
+                value = -1;
+                break;
+        }
+        texture->flags ^= (((u32)value << 8) ^ texture->flags) & 0x700u;
+        switch (second) {
+            case 0:
+                value = 1;
+                break;
+            case 1:
+                value = 2;
+                break;
+            case 2:
+                value = 3;
+                break;
+            case 3:
+                value = 4;
+                break;
+            default:
+                value = -1;
+                break;
+        }
+        texture->flags ^= (((u32)value << 11) ^ texture->flags) & 0x3800u;
+    }
+
+    void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        i32 memory_delta;
+        f32 multiplier;
+        multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+        memory_delta = (i32)((0u - (u32)texture->width * (u32)texture->height) * 4u);
+        PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+        if (texture->external_id == -1 && texture->resource != NULL) {
+            texture->resource->methods->release(texture->resource);
+            texture->resource = NULL;
+        }
+        texture->width = 0;
+        texture->height = 0;
+        texture->unknown_08 = 0;
+        texture->mip_count = 0;
+        texture->original_mip_count = 0;
+        texture->field_10 = 1;
+        texture->format = 0;
+        texture->usage = 0;
+        texture->pool = 0;
+        texture->resource = NULL;
+        texture->external_id = -1;
+        texture->field_24 = 0;
+        texture->flags = 0x012449d0;
+        if (texture->surface != NULL) {
+            texture->surface->methods->release(texture->surface);
+            texture->surface = NULL;
+        }
+    }
+
+    void __cdecl PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height, i32 levels,
+                                             i32 usage, i32 pool, i32 format) {
+        u32 d3d_usage;
+        i32 memory_delta;
+        f32 multiplier;
+        texture->width = (u16)width;
+        texture->height = (u16)height;
+        texture->mip_count = (u16)levels;
+        texture->original_mip_count = (u16)levels;
+        texture->unknown_08 = 0;
+        texture->field_10 = 1;
+        texture->format = format;
+        texture->usage = usage;
+        texture->pool = pool;
+        texture->external_id = -1;
+        texture->surface = NULL;
+        texture->field_24 = 0;
+        texture->flags = 0x012449d0;
+        if (format == 4) {
+            texture->pool = 0;
+            texture->mip_count = 1;
+            PCDeviceCreateDepthSurface(
+                texture->width, texture->height, PCGraphicsFormatToD3d(4), PCDeviceBackend.GetMultisampleType(),
+                PCDeviceBackend.quality[PCDeviceBackend.multisample_index], FALSE, &texture->surface, NULL);
+            PCGraphicsRenderTextureBytes += (i32)((u32)texture->width * texture->height * 4u);
+            return;
+        }
+        d3d_usage = 0;
+        if (texture->usage == 1)
+            d3d_usage = format == 5 || format == 6 || format == 7 ? 2 : 1;
+        PCDeviceCreateTexture(texture->width, texture->height, texture->mip_count, d3d_usage,
+                              PCGraphicsFormatToD3d(format), texture->pool, &texture->resource);
+        if (texture->resource != NULL) {
+            texture->mip_count = (u16)((const PC_TEXTURE_LEVEL_COUNT_METHODS_PC *)texture->resource->methods)
+                                     ->get_level_count(texture->resource);
+            multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+            memory_delta = (i32)((u32)texture->width * texture->height * 4u);
+            PCGraphicsRenderTextureBytes += (i32)((f64)memory_delta * (f64)multiplier);
+        }
+    }
+
+    u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        return &texture->flags;
+    }
+
+    /* Retail calls this from NuDeferredFilter::ResizeTexturesPc instead of inlining it: its x87
+     * byte-count conversion (fnstcw/fistp, not reproduced here) keeps it above VC8's inline limit. */
+    __declspec(noinline) void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width,
+                                                                    i32 height, i32 levels) {
+        if (texture == NULL)
+            return;
+        f32 multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+        i32 memory_delta = (i32)((0u - (u32)texture->width * texture->height) * 4u);
+        PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+        if (texture->external_id == -1 && texture->resource != NULL) {
+            texture->resource->methods->release(texture->resource);
+            texture->resource = NULL;
+        }
+        if (texture->surface != NULL) {
+            texture->surface->methods->release(texture->surface);
+            texture->surface = NULL;
+        }
+        if (width <= 0)
+            width = texture->width;
+        if (height <= 0)
+            height = texture->height;
+        if (levels <= 0)
+            levels = texture->original_mip_count;
+        PCGraphicsInitRenderTexture(texture, width, height, levels, texture->usage, texture->pool, texture->format);
+    }
+
+    void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 stage) {
+        PCDeviceSetTexture(stage, texture != NULL ? texture->resource : NULL);
+    }
+
+    void __cdecl PCGraphicsReleaseEffectTextures(void) {
+        for (i32 index = 0; index != 32; ++index) {
+            GRAPHICS_RENDER_TEXTURE_PC *texture = &PCGraphicsRenderTextures[index];
+            if (PCGraphicsRenderTextureActive[index] && texture->external_id == -1) {
+                if (texture->resource != NULL) {
+                    texture->resource->methods->release(texture->resource);
+                    texture->resource = NULL;
+                }
+                if (texture->surface != NULL) {
+                    texture->surface->methods->release(texture->surface);
+                    texture->surface = NULL;
+                }
+                f32 multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+                i32 memory_delta = (i32)((0u - (u32)texture->width * texture->height) * 4u);
+                PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+            }
+        }
+    }
+
+    void __cdecl PCGraphicsRestoreEffectTextures(i32 unused) {
+        (void)unused;
+        for (i32 index = 0; index != 32; ++index) {
+            GRAPHICS_RENDER_TEXTURE_PC *texture = &PCGraphicsRenderTextures[index];
+            if (PCGraphicsRenderTextureActive[index] && texture->usage == 1 && texture->external_id == -1 &&
+                texture->resource == NULL && texture->surface == NULL)
+                PCGraphicsInitRenderTexture(texture, texture->width, texture->height, texture->mip_count,
+                                            texture->usage, texture->pool, texture->format);
+        }
+    }
+
+    /* Two additional genuine original leaves, proposed in existing effect_surface.cpp.
+     * Complete native entries are6B and1B; neither replaces the held copy operation. */
+    PC_FRAMEBUFFER_PC *__cdecl PCGraphicsGetBoundFramebufferPc(void) {
+        return PcBoundFramebuffer;
+    }
+
+    PC_FRAMEBUFFER_PC *__cdecl NuFramebufferGetObject(i32 index) {
+        return PcBootFramebuffersPc.slots[index];
+    }
+
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsGetFramebufferAttachmentPc(PC_FRAMEBUFFER_PC *framebuffer, i32 index,
+                                                                             i32 *level, i32 *field) {
+        PC_EFFECT_SURFACE_PC *target = &framebuffer->targets[index];
+        GRAPHICS_RENDER_TEXTURE_PC *texture = target->texture;
+        if (texture == NULL) {
+            if (level != NULL)
+                *level = 0;
+            if (field != NULL)
+                *field = 0;
+            return NULL;
+        }
+        if (level != NULL)
+            *level = target->level;
+        /* Retail tests field but writes through level, including when level is null. */
+        if (field != NULL)
+            *level = target->field_10;
+        return texture;
+    }
+
+    i32 __cdecl NuFramebufferGetWidth(PC_FRAMEBUFFER_PC *framebuffer) {
+        if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer)
+            return PCDeviceBackend.parameters.width;
+        return framebuffer != NULL ? framebuffer->targets[0].width : 0;
+    }
+
+    i32 __cdecl NuFramebufferGetHeight(PC_FRAMEBUFFER_PC *framebuffer) {
+        if (framebuffer == PcDefaultFramebuffer || framebuffer == PcSecondaryFramebuffer)
+            return PCDeviceBackend.parameters.height;
+        return framebuffer != NULL ? framebuffer->targets[0].height : 0;
+    }
+
+    void __cdecl PCGraphicsFramebufferBarrierPc(i32, i32) {
+    }
+
+    void __cdecl PCGraphicsFramebufferActionPc(i32) {
+    }
+
+    void __cdecl PCGraphicsEnableFramebufferGuardsPc(PC_FRAMEBUFFER_PC *frame, i32 enabled) {
+        (void)frame;
+        (void)enabled;
+    }
+
+    void __cdecl PCGraphicsBindFramebuffer(PC_FRAMEBUFFER_PC *frame) {
+        if (PcBoundFramebuffer == frame && (frame == NULL || frame->changed == 0))
+            return;
+        if (frame == PcDefaultFramebuffer)
+            PCDeviceBackend.ConfigureCurrentTargets();
+        else if (frame == PcSecondaryFramebuffer)
+            PCDeviceBackend.ResetTargets();
+        else if (frame != NULL) {
+            PCDeviceBackend.SetSurfaceRenderTarget(&frame->targets[0], 0);
+            PCDeviceBackend.SetSurfaceRenderTarget(&frame->targets[1], 1);
+            PCDeviceBackend.SetSurfaceRenderTarget(&frame->targets[2], 2);
+            PCDeviceBackend.SetSurfaceRenderTarget(&frame->targets[3], 3);
+            PCDeviceBackend.SetDepthStencilSurface(&frame->targets[4]);
+        }
+        PcBoundFramebuffer = frame;
+        if (frame != NULL)
+            frame->changed = 1;
+    }
+
+    void __cdecl PCGraphicsBindDefaultFramebuffer(void) {
+        PCGraphicsBindFramebuffer(PcDefaultFramebuffer);
+    }
+
+    void __cdecl PCGraphicsClearFramebuffer(u32 mask, u32 colour) {
+        u32 flags = 0;
+        if (PcBoundFramebuffer->targets[0].texture != NULL && (mask & 0x100))
+            flags = 1;
+        if (PcBoundFramebuffer->targets[4].texture != NULL && (mask & 0x200))
+            flags |= 6;
+        if (flags != 0) {
+            u32 converted =
+                (colour & 0xff000000u) | ((colour & 0xffu) << 16) | (colour & 0xff00u) | ((colour >> 16) & 0xffu);
+            PCDeviceClear(0, NULL, flags, converted, 1.0f, 0);
+        }
+    }
+
+    PC_EFFECT_SURFACE_PC *__cdecl PCGraphicsFramebufferTarget(PC_FRAMEBUFFER_PC *frame, i32 index) {
+        return &frame->targets[index];
+    }
+
+    i32 __cdecl NuTexReadPc(char *name, VARIPTR *buffer, VARIPTR end) {
+        char filename[1024];
+        NUFILE file;
+        i32 size, id;
+        void *data;
+        NUTEXDIM_PC *texture;
+        (void)end;
+        NuStrFixExt(filename, name, (char *)NuTextureDdsExtensionPc, sizeof(filename));
+        file = NuFileOpen(filename, 0);
+        if (file == 0)
+            return 0;
+        size = (i32)NuFileOpenSize(file);
+        data = NuAlloc(size, NuTextureSourcePathPC, 0x2f);
+        NuFileRead(file, data, size);
+        NuFileClose(file);
+        texture = (NUTEXDIM_PC *)buffer->addr;
+        buffer->addr += sizeof(NUTEXDIM_PC);
+        memset(texture, 0, sizeof(*texture));
+        texture->image_data = data;
+        texture->image_size = size;
+        id = NuTexCreateNative(texture);
+        NuFree(data, NuTextureSourcePathPC, 0x4d);
+        return id;
+    }
+
+    void __cdecl NuTexCreatePS(NUTEXDIM_PC *texture) {
+        PC_TEXTURE_LEVEL_DESC_PC description;
+        if (texture != NULL && texture->image_data != NULL && texture->image_size != 0) {
+            PCFrameCriticalSectionEnter_candidate();
+            PCDeviceCreateTextureFromMemory(texture->image_data, texture->image_size, &texture->resource);
+            texture->resource->methods->get_level_desc(texture->resource, 0, &description);
+            PCFrameCriticalSectionLeave_candidate();
+            texture->width = (i32)description.width;
+            texture->height = (i32)description.height;
+            texture->image_data = NULL;
+            texture->image_size = 0;
+        }
+    }
+
+    void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture) {
+        if (texture != NULL) {
+            PCFrameCriticalSectionEnter_candidate();
+            PCDeviceReleaseTexture(&texture->resource);
+            PCFrameCriticalSectionLeave_candidate();
+        }
+    }
+
+    i32 __cdecl NuTexGetReqSize(i32, i32) {
+        return 0;
+    }
+
+    i32 __cdecl NuTexReserve(i32) {
+        return -1;
+    }
+
+    void __cdecl NuTexUnReserve(void) {
+    }
+
+    void __cdecl PCGraphicsBindTextureDimensionsPc(NUTEXDIM_PC *texture, u32 stage) {
+        PCDeviceSetTexture(stage, texture->resource);
+    }
+
+    void __cdecl NuTexInitExPS(VARIPTR *buffer) {
+        (void)buffer;
+        PCDeviceCreateCubeTextureFromFile((char *)NuTextureEnvironmentCubePathPc, &NuTextureEnvironmentCubePc);
+        PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
+    }
+
+    /* Native PC entries 0x005f8fb0 and 0x005f8fc0 are RET-only; the D3D release and
+     * restore paths call them for textures. Their historical names are unknown. */
+    void __cdecl NuTexReleaseResourcesPc(void) {
+    }
+
+    void __cdecl NuTexRestoreResourcesPc(void) {
+    }
+
+    /* Creates, once, the placeholder texture used for references that fail to resolve. */
+    i32 NuTexGetUnresolvedTextureTIDPS() {
+        if (NuUnresolvedTextureIDPC == -1) {
+            NUTEXDIM_PC *texture = (NUTEXDIM_PC *)NuAlloc(sizeof(NUTEXDIM_PC), NuTextureSourcePathPC, 0xd9);
+            memset(texture, 0, sizeof(*texture));
+            texture->image_data = NuUnresolvedTextureDdsPc;
+            texture->image_size = sizeof(NuUnresolvedTextureDdsPc);
+            NuUnresolvedTextureIDPC = NuTexCreateNative(texture);
+        }
+        return NuUnresolvedTextureIDPC;
+    }
+
+    /* Bits per texel of a source image type. */
+    i32 __cdecl NuTexPixelBitsPc(i32 type) {
+        switch (type) {
+            case 0:
+            case 1:
+                return 16;
+            case 2:
+                return 24;
+            case 3:
+                return 32;
+            case 5:
+            case 20:
+                return 8;
+            case 4:
+                return 4;
+            default:
+                return 0;
+        }
+    }
+
+    i32 __cdecl NuTexImageSizePc(i32 type, i32 width, i32 height) {
+        return NuTexPixelBitsPc(type) * width * height / 8;
+    }
+
+    i32 __cdecl NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips) {
+        i32 bits = NuTexPixelBitsPc(type);
+        i32 size = (bits * width * height) >> 3;
+        i32 level;
+
+        for (level = 0; level < mips;) {
+            level++;
+            size += ((width >> level) * (height >> level) * bits) >> 3;
+        }
+        return size;
+    }
+
+    /* Loads an uncompressed BMP into a bitmap record, flipping it top to bottom. */
+    i32 __cdecl NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap) {
+        NUFILE file;
+        NUTEXBMP_FILE_HEADER_PC file_header;
+        NUTEXBMP_INFO_HEADER_PC info_header;
+        i32 palette_size;
+        i32 width, height, levels;
+        i32 row_size, size;
+        u8 *row;
+        u8 *top;
+        u8 *bottom;
+        NUTEXBMP_COLOUR_PC swapped;
+        u8 blue;
+        i32 i;
+
+        file = NuFileOpen(path, 0);
+        if (file != 0) {
+            if (bitmap != NULL) {
+                memset(bitmap, 0, sizeof(*bitmap));
+                NuFilePos(file);
+                NuFileRead(file, &file_header.type, 14);
+                NuFileRead(file, &info_header, sizeof(info_header));
+                switch (info_header.bit_count) {
+                    case 32:
+                        bitmap->type = 3;
+                        palette_size = 0;
+                        break;
+                    case 24:
+                        bitmap->type = 2;
+                        palette_size = 0;
+                        break;
+                    case 4:
+                        bitmap->type = 4;
+                        palette_size = 0x40;
+                        NuFileRead(file, NuTexBmpPalettePc, 0x40);
+                        for (i = 0; i < 0x10; i++) {
+                            swapped = NuTexBmpPalettePc[i];
+                            blue = swapped.blue;
+                            swapped.blue = swapped.red;
+                            swapped.red = blue;
+                            NuTexBmpPalettePc[i] = swapped;
+                        }
+                        break;
+                    case 8:
+                        bitmap->type = 5;
+                        palette_size = 0x400;
+                        NuFileRead(file, NuTexBmpPalettePc, 0x400);
+                        for (i = 0; i < 0x100; i++) {
+                            swapped = NuTexBmpPalettePc[i];
+                            blue = swapped.blue;
+                            swapped.blue = swapped.red;
+                            swapped.red = blue;
+                            NuTexBmpPalettePc[i] = swapped;
+                        }
+                        break;
+                    default:
+                        NuTexBmpUnsupportedDepthPc(info_header.bit_count, path);
+                        break;
+                }
+                bitmap->width = width = info_header.width;
+                bitmap->height = height = info_header.height;
+                bitmap->mips = mips;
+                row_size = (NuTexPixelBitsPc(bitmap->type) * width + 7) / 8;
+                size = 0;
+                levels = mips + 1;
+                do {
+                    size += NuTexPixelBitsPc(bitmap->type) * height * width / 8;
+                    width >>= 1;
+                    height >>= 1;
+                } while (--levels > 0);
+                bitmap->data = (u8 *)NuAlloc(size, NuTextureSourcePathPC, 0x195);
+                if (palette_size != 0) {
+                    bitmap->palette = (u8 *)NuAlloc(palette_size, NuTextureSourcePathPC, 0x198);
+                } else {
+                    bitmap->palette = NULL;
+                }
+                _flushall();
+                NuFileSeek(file, file_header.data_offset, 0);
+                NuFileRead(file, bitmap->data, NuTexImageSizePc(bitmap->type, bitmap->height, bitmap->width));
+                row = (u8 *)NuAlloc(row_size, NuTextureSourcePathPC, 0x1a0);
+                top = bitmap->data;
+                bottom = top + NuTexImageSizePc(bitmap->type, bitmap->height, bitmap->width) - row_size;
+                while (bottom > top) {
+                    memcpy(row, top, row_size);
+                    memcpy(top, bottom, row_size);
+                    memcpy(bottom, row, row_size);
+                    top += row_size;
+                    bottom -= row_size;
+                }
+                NuFree(row, NuTextureSourcePathPC, 0x1af);
+                if (palette_size != 0) {
+                    memcpy(bitmap->palette, NuTexBmpPalettePc, palette_size);
+                }
+            }
+            NuFileClose(file);
+            return 1;
+        }
+        sprintf(NuTexBmpErrorTextPc, "Cannot open file: %s", path);
+        return 0;
+    }
+
+    NUTEXBMP_PC *__cdecl NuTexCreateBmpPc(const char *path) {
+        NUTEXBMP_PC *bitmap = (NUTEXBMP_PC *)NuAlloc(sizeof(NUTEXBMP_PC), NuTextureSourcePathPC, 0x1e1);
+        if (!NuTexLoadBmpPc(path, 0, bitmap)) {
+            NuFree(bitmap, NuTextureSourcePathPC, 0x1e5);
+            return NULL;
+        }
+        return bitmap;
     }
 
     void __cdecl NuRndrShadowVolumeFinishPc(void) {
@@ -867,6 +1937,17 @@ extern "C" {
         }
     }
 
+    void __cdecl PCGraphicsSubmitViewportPc(i32 x, i32 y, i32 width, i32 height) {
+        PC_VIEWPORT_PC viewport;
+        viewport.x = x;
+        viewport.y = y;
+        viewport.width = width;
+        viewport.height = height;
+        viewport.min_z = 0.0f;
+        viewport.max_z = 1.0f;
+        NuVpSubmitPc(&viewport);
+    }
+
     void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *view, NUMTX *projection) {
         NUVEC scale = {PCSpecialProjectionAdjust.x_scale, PCSpecialProjectionAdjust.y_scale, 1.0f};
         NUVEC translation = {PCSpecialProjectionAdjust.x_offset, PCSpecialProjectionAdjust.y_offset, 0.0f};
@@ -898,13 +1979,563 @@ extern "C" {
         NuShaderManagerSetfv(0x47, &frustum.x);
     }
 
+    void __cdecl PCGraphicsSetSamplerTuplePc(u32 stage, const u32 *tuple) {
+        union {
+            f32 value;
+            u32 bits;
+        } bias;
+        PCDeviceSetSamplerState(stage, 9, tuple[0] & 15);
+        bias.value = (((tuple[0] >> 4) ^ tuple[0]) & 15) == 0 ? -10.0f : 0.0f;
+        PCDeviceSetSamplerState(stage, 8, bias.bits);
+        PCDeviceSetSamplerState(stage, 1, (tuple[0] >> 8) & 7);
+        PCDeviceSetSamplerState(stage, 2, (tuple[0] >> 11) & 7);
+        PCDeviceSetSamplerState(stage, 3, (tuple[0] >> 14) & 7);
+        PCDeviceSetSamplerState(stage, 5, (tuple[0] >> 17) & 7);
+        PCDeviceSetSamplerState(stage, 6, (tuple[0] >> 20) & 7);
+        PCDeviceSetSamplerState(stage, 7, (tuple[0] >> 23) & 7);
+        PCDeviceSetSamplerState(stage, 4, tuple[1]);
+        PCDeviceSamplerInvalidation[stage][0] = tuple[0];
+        PCDeviceSamplerInvalidation[stage][1] = tuple[1];
+    }
+
+    /* Converts a byte string into glyph indices of the font. */
+    void __cdecl NuQFntAsciiToQCodePc(VUFNT *font, u16 *encoded, const char *text) {
+        while (*text != '\0') {
+            *encoded = UnicodeToIndexFast(font->unicode_map, font->unicode_count, (u16)(i16)*text);
+            text++;
+            encoded++;
+        }
+        *encoded = 0;
+    }
+
+    /* Nonzero when any texel of the 8-bit column at (x, y) differs from the key value. */
+    i32 __cdecl NuQFntColumnDiffers8Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count, i32 value) {
+        i32 width = bitmap->width;
+        u8 *texel = bitmap->data + width * y + x;
+        i32 i;
+
+        for (i = 0; i < count; i++) {
+            if (*texel != value) {
+                return 1;
+            }
+            texel += width;
+        }
+        return 0;
+    }
+
+    i32 __cdecl NuQFntColumnOpaque32Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
+        return NuQFntColumnOpaque32Inline(bitmap, x, y, count);
+    }
+
+    i32 __cdecl NuQFntFindGlyphStart8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+        do {
+            do {
+                if (NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
+                    return 1;
+                }
+                (*x)++;
+            } while (*x < bitmap->width);
+            *x = 0;
+            *y += count;
+        } while (*y + count < bitmap->height);
+        return 0;
+    }
+
+    i32 __cdecl NuQFntFindGlyphEnd8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+        do {
+            do {
+                if (!NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
+                    return 1;
+                }
+                (*x)++;
+            } while (*x < bitmap->width);
+            *x = 0;
+            *y += count;
+        } while (*y + count < bitmap->height);
+        return 0;
+    }
+
+    i32 __cdecl NuQFntFindGlyphStart32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+        do {
+            do {
+                if (NuQFntColumnOpaque32Inline(bitmap, *x, *y, count)) {
+                    return 1;
+                }
+                (*x)++;
+            } while (*x < bitmap->width);
+            *x = 0;
+            *y += count;
+        } while (*y + count < bitmap->height);
+        return 0;
+    }
+
+    i32 __cdecl NuQFntFindGlyphEnd32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+        do {
+            do {
+                if (!NuQFntColumnOpaque32Inline(bitmap, *x, *y, count)) {
+                    return 1;
+                }
+                (*x)++;
+            } while (*x < bitmap->width);
+            *x = 0;
+            *y += count;
+        } while (*y + count < bitmap->height);
+        return 0;
+    }
+
+    void __cdecl NuQFntScanResetPc(void) {
+        NuQFntScanYPc = 0;
+        NuQFntScanXPc = 0;
+    }
+
+    /* Finds the next glyph cell in an 8-bit strip; returns nonzero once the strip is exhausted. */
+    i32 __cdecl NuQFntNextGlyph8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 value, f32 *x, f32 *y, f32 *width) {
+        i32 exhausted = 0;
+        i32 start;
+
+        if (!NuQFntFindGlyphStart8Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc, value)) {
+            exhausted = 1;
+            NuQFntScanXPc = 0;
+            NuQFntScanYPc = 0;
+        }
+        *x = (f32)NuQFntScanXPc;
+        *y = (f32)NuQFntScanYPc;
+        start = NuQFntScanXPc;
+        if (!NuQFntFindGlyphEnd8Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc, value)) {
+            exhausted = 1;
+            NuQFntScanXPc = bitmap->width;
+            NuQFntScanYPc = bitmap->height;
+        }
+        *width = (f32)(NuQFntScanXPc - start);
+        return exhausted;
+    }
+
+    /* Finds the next glyph cell in a 32-bit strip; returns nonzero once the strip is exhausted. */
+    i32 __cdecl NuQFntNextGlyph32Pc(NUTEXBMP_PC *bitmap, i32 count, f32 *x, f32 *y, f32 *width) {
+        i32 exhausted = 0;
+        i32 start;
+
+        if (!NuQFntFindGlyphStart32Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc)) {
+            exhausted = 1;
+            NuQFntScanYPc = 0;
+            NuQFntScanXPc = 0;
+        }
+        *x = (f32)NuQFntScanXPc;
+        *y = (f32)NuQFntScanYPc;
+        start = NuQFntScanXPc;
+        if (!NuQFntFindGlyphEnd32Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc)) {
+            exhausted = 1;
+            NuQFntScanXPc = bitmap->width;
+            NuQFntScanYPc = bitmap->height;
+        }
+        *width = (f32)(NuQFntScanXPc - start);
+        return exhausted;
+    }
+
+    u16 __cdecl NuQFntMapLookupPc(VUCHARIDX *map, i32 count, u16 unicode) {
+        u16 i;
+
+        for (i = 0; i < count; i++) {
+            if (map[i].unicode == unicode) {
+                return map[i].index;
+            }
+        }
+        return 0xffff;
+    }
+
+    i32 __cdecl NuQFntMapAddPc(VUCHARIDX *map, i32 slot, u16 unicode, u16 index) {
+        if (slot > 808 || slot < 0) {
+            NuQFntAtlasErrorPc();
+        }
+        map[slot].unicode = unicode;
+        map[slot].index = index;
+        return slot + 1;
+    }
+
+    /* Font material set-up used by the atlas builder; mirrors NuQFntReadPS. */
+    i32 __cdecl NuQFntAtlasReadPSPc(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
+        NUQFNT_RENDER_DATA_PC *platform;
+        NUQFNT_ATLAS_MATERIAL_PC *material;
+
+        (void)end;
+        NuTexGetWidth(texture_id);
+        NuTexGetHeight(texture_id);
+        buffer->addr = (buffer->addr + 15) & ~15U;
+        font->platform_data = (NUQFNT_RENDER_DATA_PC *)buffer->void_ptr;
+        buffer->addr += 0x58;
+        platform = font->platform_data;
+        font->color_abgr = &platform->colour;
+        font->x_scale = (f32 *)((u8 *)platform + 0x50);
+        font->y_scale = (f32 *)((u8 *)platform + 0x54);
+        font->material = NuMtlCreateEx(1, plane);
+        if (font->material == NULL) {
+            return 0;
+        }
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.x = 1.0f;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.y = 1.0f;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.z = 1.0f;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x1000U) | 0x2000U;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->opacity = 1.0f;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~14U) | 1U;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0x40000U;
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->texture_id = (i16)texture_id;
+        material = (NUQFNT_ATLAS_MATERIAL_PC *)font->material;
+        if (flags & 8) {
+            material->attributes_high &= ~4U;
+        } else {
+            material->attributes_high |= 4U;
+        }
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10000U) | 0x20000U;
+        if (flags & 2) {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~15U;
+        } else {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~14U) | 1U;
+        }
+        if (flags & 0x40) {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0xc000U;
+        } else if (flags & 0x20) {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x8000U) | 0x4000U;
+        } else {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
+        }
+        if (flags & 4) {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x20U) | 0x10U;
+        } else if (flags & 0x10) {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10U) | 0x20U;
+        } else {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0x30U;
+        }
+        NuMtlUpdate(font->material);
+        return 1;
+    }
+
+    int __cdecl NuQFntMapComparePc(const void *a, const void *b) {
+        u16 left = ((const VUCHARIDX *)a)->unicode;
+        u16 right = ((const VUCHARIDX *)b)->unicode;
+
+        if (left < right) {
+            return -1;
+        }
+        return left != right;
+    }
+
+    /* Builds a font from a BMP glyph strip, one cell per character of text in strip order. */
+    VUFNT *__cdecl NuQFntCreateFromBmpPc(const char *path, i32 cell_height, i32 baseline, i32 key_colour, u16 *text,
+                                         i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
+        f32 width, y, x;
+        i32 max_count;
+        i32 count;
+        NUTEXBMP_PC *bitmap;
+        VUCHARIDX map[NUQFNT_ATLAS_MAP_SIZE];
+        VUFNTCHAR glyphs[NUQFNT_ATLAS_GLYPH_SIZE];
+        PC_LOCKED_RECT_PC locked;
+        PC_TEXTURE_RESOURCE_PC *resource;
+        NUTEXDIM_PC *texture;
+        VUFNT *font;
+        u8 *source, *destination;
+        i32 row_size, row;
+        i32 index, next, c, size;
+        u16 glyph;
+        i32 texture_id;
+
+        NuStrLenW(text);
+        memset(glyphs, 0, sizeof(glyphs));
+        memset(map, 0xff, sizeof(map));
+        bitmap = NuTexCreateBmpPc(path);
+        if (bitmap == NULL) {
+            return NULL;
+        }
+        if (bitmap->type != 5) {
+            if (bitmap->type != 3) {
+                NuQFntAtlasErrorPc();
+            }
+        } else {
+            for (c = 0; c < 256; c++) {
+                if (c == key_colour) {
+                    bitmap->palette[c * 4 + 3] = 0;
+                } else {
+                    ((u32 *)bitmap->palette)[c] |= 0x7f000000;
+                }
+            }
+        }
+
+        NuQFntScanResetPc();
+        index = 1;
+        max_count = 0;
+        for (; *text != 0; text++) {
+            /* Skip the slots that characters with their own fixed slot occupy. */
+            if (index == ' ') {
+                index = '!';
+            }
+            if (index == '!') {
+                index = '"';
+            }
+            if (index == '%') {
+                index = '&';
+            }
+            if (index == '?') {
+                index = '@';
+            }
+            if (index == '.') {
+                index = '/';
+            }
+            if (index == ',') {
+                index = '-';
+            }
+            if (index == '0') {
+                index = ':';
+            }
+            if (index == 'A') {
+                index = '[';
+            }
+            if (index == 'a') {
+                index = '{';
+            }
+            if (index == '[') {
+                index = '\\';
+            }
+            if (index == ']') {
+                index = '^';
+            }
+            if (*text == ' ') {
+                continue;
+            }
+            if ((*text >= 'a' && *text <= 'z') || (*text >= 'A' && *text <= 'Z') || (*text >= '0' && *text <= '9') ||
+                *text == '!' || *text == '?' || *text == '.' || *text == ',' || *text == '%' || *text == '[' ||
+                *text == ']') {
+                NUQFNT_ATLAS_NEXT_GLYPH();
+                glyphs[*text].x = x;
+                glyphs[*text].y = y;
+                glyphs[*text].width = width;
+                next = NuQFntMapAddPc(map, *text, *text, *text);
+            } else {
+                NUQFNT_ATLAS_NEXT_GLYPH();
+                glyphs[index].x = x;
+                glyphs[index].y = y;
+                glyphs[index].width = width;
+                index = NuQFntMapAddPc(map, index, *text, (u16)index);
+                next = index + 1;
+            }
+            if (max_count <= next) {
+                max_count = next;
+            }
+        }
+
+        glyphs[' '].x = 0.0f;
+        glyphs[' '].y = 0.0f;
+        glyphs[' '].width = (f32)(cell_height >> 2);
+        count = max_count;
+        map[' '].unicode = ' ';
+        map[' '].index = ' ';
+
+        /* Lower case letters without a cell borrow the upper case glyph. */
+        for (c = 'a'; c <= 'z'; c++) {
+            if (map[c].unicode == 0xffff) {
+                glyph = NuQFntMapLookupPc(map, count, NuToUpper((u8)c));
+                if (glyph != 0xffff) {
+                    NuQFntMapAddPc(map, c, (u16)c, glyph);
+                    if (max_count <= c) {
+                        max_count = c;
+                    }
+                }
+            }
+        }
+        /* Accented lower case letters fall back to their upper case forms. */
+        for (c = 0xe0; c <= 0xff; c++) {
+            if (NuQFntMapLookupPc(map, index, (u16)c) == 0xffff) {
+                glyph = NuQFntMapLookupPc(map, count, NuToUpper((u8)c));
+                if (glyph != 0xffff) {
+                    index = NuQFntMapAddPc(map, index, (u16)c, glyph);
+                }
+            }
+        }
+        /* Curly quotes reuse the apostrophe. */
+        if (NuQFntMapLookupPc(map, index, 0x91) == 0xffff) {
+            glyph = NuQFntMapLookupPc(map, count, '\'');
+            if (glyph != 0xffff) {
+                index = NuQFntMapAddPc(map, index, 0x91, glyph);
+            }
+        }
+        if (NuQFntMapLookupPc(map, index, 0x92) == 0xffff) {
+            glyph = NuQFntMapLookupPc(map, count, '\'');
+            if (glyph != 0xffff) {
+                index = NuQFntMapAddPc(map, index, 0x92, glyph);
+            }
+        }
+        if (index <= 'z') {
+            index = '{';
+        }
+        qsort(map, index, sizeof(VUCHARIDX), NuQFntMapComparePc);
+
+        texture = (NUTEXDIM_PC *)buffer->void_ptr;
+        buffer->addr += sizeof(NUTEXDIM_PC);
+        memset(texture, 0, sizeof(*texture));
+        texture->width = bitmap->width;
+        texture->height = bitmap->height;
+        PCDeviceCreateTexture(bitmap->width, bitmap->height, bitmap->mips, 0, 0x15, 1, &texture->resource);
+        texture_id = NuTexCreateNative(texture);
+        if (texture_id == 0) {
+            NuQFntAtlasErrorPc();
+        }
+        resource = NuTextureGetDimensions(texture_id)->resource;
+        if (resource->methods->lock_rect(resource, 0, &locked, NULL, 0) >= 0) {
+            source = bitmap->data;
+            row_size = bitmap->width * 4;
+            destination = (u8 *)locked.bits;
+            for (row = 0; row < bitmap->height; row++) {
+                memcpy(destination, source, row_size);
+                destination += locked.pitch;
+                source += row_size;
+            }
+            resource = NuTextureGetDimensions(texture_id)->resource;
+            resource->methods->unlock_rect(resource, 0);
+        }
+        NuFree(bitmap->data, NuQFntSourcePathPC, 0x264);
+        NuFree(bitmap, NuQFntSourcePathPC, 0x265);
+        NuTexGetWidth(texture_id);
+        NuTexGetHeight(texture_id);
+
+        font = (VUFNT *)((buffer->addr + 15) & ~15U);
+        buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(VUFNT);
+        memset(font, 0, sizeof(VUFNT));
+        font->glyph_count = count;
+        font->height = (f32)cell_height;
+        font->unicode_count = index;
+        font->legacy_font = NULL;
+        font->baseline = (f32)baseline;
+        font->ic_gap = 0.0f;
+        font->space_width = glyphs[' '].width;
+
+        buffer->addr = (buffer->addr + 15) & ~15U;
+        font->glyphs = (VUFNTCHAR *)buffer->void_ptr;
+        buffer->addr += font->glyph_count * sizeof(VUFNTCHAR);
+        memcpy(font->glyphs, glyphs, font->glyph_count * sizeof(VUFNTCHAR));
+        for (size = font->glyph_count * sizeof(VUFNTCHAR); size & 15; size += 4) {
+            *(u32 *)buffer->void_ptr = 0;
+            buffer->addr += 4;
+        }
+
+        buffer->addr = (buffer->addr + 15) & ~15U;
+        font->unicode_map = (VUCHARIDX *)buffer->void_ptr;
+        buffer->addr += font->unicode_count * sizeof(VUCHARIDX);
+        memcpy(font->unicode_map, map, font->unicode_count * sizeof(VUCHARIDX));
+        buffer->addr = (buffer->addr + 15) & ~15U;
+        font->size = buffer->addr - (u32)font;
+        NuQFntAtlasReadPSPc(font, texture_id, flags, plane, buffer, end);
+        return font;
+    }
+
     void __cdecl PCGraphicsDestroyPostEffectTexturesPc(void) {
         NuPostEffectReleasePortsPc();
         PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectBackBufferTexturePc);
     }
 
+    /* After a D3D reset, rebinds each live frame texture's resource and clears it to opaque black. */
+    /* The colour+depth copy has no PC implementation; its only call is to the shared empty function. */
+    void NuPostFilterGen::copy(GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *) {
+        NuQFntAtlasErrorPc();
+    }
+
+    /* Non-virtual post-filter resize members; NuPostEffectResizePc calls them after a device reset. */
+    void NuMainFilter::ResizeTexturesPc(i32, i32) {
+    }
+
+    void PC_EFFECT_SURFACE_PC::Reset() {
+        if (texture != NULL && texture->surface != NULL)
+            surface = NULL;
+        else if (surface != NULL) {
+            surface->methods->release(surface);
+            surface = NULL;
+        }
+        if (texture != NULL && owns_texture)
+            PCGraphicsDestroyRenderTexture(texture);
+        texture = NULL;
+        owns_texture = 0;
+        level = 0;
+        field_10 = 0;
+        width = height = 0;
+    }
+
+    void PC_EFFECT_SURFACE_PC::Attach(GRAPHICS_RENDER_TEXTURE_PC *new_texture, i32 new_level, bool own) {
+        if (texture == new_texture && (i32)level == new_level)
+            return;
+        Reset();
+        texture = new_texture;
+        owns_texture = (u8)own;
+        surface = NULL;
+        level = (u16)new_level;
+        field_10 = 0;
+        height = width = 0;
+        if (new_texture == NULL)
+            return;
+        if (new_texture->surface != NULL) {
+            surface = new_texture->surface;
+            width = new_texture->width;
+            height = new_texture->height;
+        } else {
+            PC_TEXTURE_LEVEL_DESC_PC description;
+            new_texture->resource->methods->get_surface_level(new_texture->resource, level, &surface);
+            texture->resource->methods->get_level_desc(texture->resource, level, &description);
+            width = (u16)description.width;
+            height = (u16)description.height;
+        }
+    }
+
+    void PC_EFFECT_SURFACE_PC::ReleaseResources() {
+        for (i32 index = 0; index != 256; ++index) {
+            PC_EFFECT_SURFACE_PC *item = PcSurfaceRegistry[index];
+            if (item != NULL && item->surface != NULL) {
+                if (item->texture->surface == NULL)
+                    item->surface->methods->release(item->surface);
+                PcSurfaceRegistry[index]->surface = NULL;
+            }
+        }
+    }
+
+    void PC_EFFECT_SURFACE_PC::RestoreResources() {
+        for (i32 index = 0; index != 256; ++index) {
+            PC_EFFECT_SURFACE_PC *item = PcSurfaceRegistry[index];
+            if (item == NULL)
+                continue;
+            if (item->texture == NULL)
+                item->surface = NULL;
+            else if (item->texture->surface != NULL) {
+                item->surface = item->texture->surface;
+                PcSurfaceRegistry[index]->width = PcSurfaceRegistry[index]->texture->width;
+                PcSurfaceRegistry[index]->height = PcSurfaceRegistry[index]->texture->height;
+            } else {
+                PC_TEXTURE_LEVEL_DESC_PC description;
+                item->texture->resource->methods->get_surface_level(item->texture->resource, item->level,
+                                                                    &item->surface);
+                item = PcSurfaceRegistry[index];
+                item->texture->resource->methods->get_level_desc(item->texture->resource, item->level, &description);
+                PcSurfaceRegistry[index]->width = (u16)description.width;
+                PcSurfaceRegistry[index]->height = (u16)description.height;
+            }
+        }
+    }
+
     void NuDeferredFilter::initTextureResources(i32 width, i32 height) {
         NuDeferredFilterGen::initTextureResources(width, height);
+    }
+
+    void NuDeferredFilter::ResizeTexturesPc(i32, i32) {
+        if (textures[2] != NULL)
+            PCGraphicsResizeEffectTexture(textures[2], -1, -1, -1);
+        if (textures[0] != NULL)
+            PCGraphicsResizeEffectTexture(textures[0], -1, -1, -1);
+        for (i32 i = 0; i < 2; ++i) {
+            if (textures[4 + i] != NULL)
+                PCGraphicsResizeEffectTexture(textures[4 + i], textures[2]->width, textures[2]->height, -1);
+        }
     }
 
     void NuMotionAccumFilter::initResources() {
@@ -918,6 +2549,9 @@ extern "C" {
 
     void NuSpeedBlurFilter::destroyTextureResources() {
         texture_surface.Reset();
+    }
+
+    void NuSpeedBlurFilter::ResizeTexturesPc(i32, i32) {
     }
 
     i32 __cdecl PcInitializeDynamicGeometryBuffersPc(PC_DYNAMIC_GEOMETRY_PC *geometry, i32 count) {
@@ -1179,6 +2813,286 @@ extern "C" {
         NuRndrResetStreamBufferPc();
     }
 
+    void __cdecl NuDisplayListDrawPrimitive2DPc(void *data) {
+        DISPLAY_PRIMITIVE_PACKET_PC *packet = (DISPLAY_PRIMITIVE_PACKET_PC *)data;
+        u32 count;
+        const void *vertices;
+        u32 point_size;
+        f32 point_size_float;
+        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0)
+            return;
+        count = packet->vertex_count;
+        vertices = packet + 1;
+        switch (packet->type) {
+            case 12:
+            case 16:
+                if (count > 2)
+                    PCDeviceDrawPrimitiveUPPc(4, count / 3, vertices, 24);
+                break;
+            case 15:
+                if (count > 1)
+                    PCDeviceDrawPrimitiveUPPc(3, count - 1, vertices, 24);
+                break;
+            case 13:
+                if (count > 2)
+                    PCDeviceDrawPrimitiveUPPc(5, count - 2, vertices, 24);
+                break;
+            case 14:
+                if (count > 1)
+                    PCDeviceDrawPrimitiveUPPc(2, count / 2, vertices, 24);
+                break;
+            case 18:
+                point_size_float = 32.0f;
+                memcpy(&point_size, &point_size_float, sizeof(point_size));
+                PCDeviceSetRenderState(154, point_size);
+                PCDeviceDrawPrimitiveUPPc(1, packet->vertex_count, vertices, 24);
+                point_size_float = 1.0f;
+                memcpy(&point_size, &point_size_float, sizeof(point_size));
+                PCDeviceSetRenderState(154, point_size);
+                break;
+        }
+    }
+
+    void __cdecl NuDisplayListSkinPalettePc(void *arg) {
+        PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
+        i32 count = packet->count;
+        void *elements = packet->elements;
+        PC_SHADER_OBJECT_FULL_VIEW *shader = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+        if (shader != NULL) {
+            if (count > 8)
+                NuPtlDmaSlotsExhaustedPc();
+            NuShaderObjectSetElementsfv(shader, 0x18, 0, count, (const f32 *)elements);
+            SAGA_SKIN_CALL(skin_trace_palette, (unsigned)arg, count);
+        }
+    }
+
+    void __cdecl NuDisplayListDrawFaceOnPc(void *arg) {
+        PC_DL_FACEON_DRAW_READER *packet = (PC_DL_FACEON_DRAW_READER *)arg;
+        if (packet == NULL)
+            return;
+        PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, 32);
+        PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->primitive_count * 2u);
+    }
+
+    void __cdecl NuDisplayListLightsPc(void *arg) {
+        PC_DL_LIGHTS_READER *packet = (PC_DL_LIGHTS_READER *)arg;
+        if (PCDeviceHardwareVertexProcessingPC != 4) {
+            NuShaderManagerSetfv(1, &packet->ambient.x);
+            NuShaderManagerSetfv(6, &packet->direction[0].x);
+            NuShaderManagerSetfv(7, &packet->direction[1].x);
+            NuShaderManagerSetfv(8, &packet->direction[2].x);
+            NuShaderManagerSetfv(3, &packet->intensity[0].x);
+            NuShaderManagerSetfv(4, &packet->intensity[1].x);
+            NuShaderManagerSetfv(5, &packet->intensity[2].x);
+            NuShaderManagerSetfv(0x49, &packet->shine_matrix.m00);
+        } else {
+            NuShaderManagerSetfv(0x23, &packet->ambient.x);
+        }
+        if (PCDeviceHardwareVertexProcessingPC != 4) {
+            PC_DL_NORMALIZED_DIRECTION direction;
+
+            NuVec4Add(&direction.four, &packet->direction[0], &packet->direction[1]);
+            NuVec4Add(&direction.four, &direction.four, &packet->direction[2]);
+            NuVecNorm(&direction.normalized.three, &direction.normalized.three);
+            NuShaderManagerSetfv(0x4c, &direction.four.x);
+            direction.four.x =
+                packet->intensity[0].x > (packet->intensity[1].x > packet->intensity[2].x ? packet->intensity[1].x
+                                                                                          : packet->intensity[2].x)
+                    ? packet->intensity[0].x
+                    : (packet->intensity[1].x > packet->intensity[2].x ? packet->intensity[1].x
+                                                                       : packet->intensity[2].x);
+            direction.four.y =
+                packet->intensity[0].y > (packet->intensity[1].y > packet->intensity[2].y ? packet->intensity[1].y
+                                                                                          : packet->intensity[2].y)
+                    ? packet->intensity[0].y
+                    : (packet->intensity[1].y > packet->intensity[2].y ? packet->intensity[1].y
+                                                                       : packet->intensity[2].y);
+            direction.four.z =
+                packet->intensity[0].z > (packet->intensity[1].z > packet->intensity[2].z ? packet->intensity[1].z
+                                                                                          : packet->intensity[2].z)
+                    ? packet->intensity[0].z
+                    : (packet->intensity[1].z > packet->intensity[2].z ? packet->intensity[1].z
+                                                                       : packet->intensity[2].z);
+            direction.four.w = 1.0f;
+            NuShaderManagerSetfv(0x4b, &direction.four.x);
+        }
+    }
+
+    void __cdecl NuDisplayListTintPc(void *arg) {
+        NUVEC4 tint = {1.0f, 1.0f, 1.0f, *(f32 *)arg};
+        NuDisplayHandlerTintPc = tint;
+        NuShaderManagerSetfv(0x38, &tint.x);
+    }
+
+    void __cdecl NuDisplayListFogPc(void *arg) {
+        PC_DL_FOG_READER *packet = (PC_DL_FOG_READER *)arg;
+        if (packet->enabled != 0) {
+            i32 packed = (i32)packet->colour;
+            NUVEC4 colour;
+            NUVEC4 params;
+            colour.x = (f32)((f32)(packed & 255) / 255.0);
+            colour.y = (f32)((f32)((packed >> 8) & 255) / 255.0);
+            colour.z = (f32)((f32)((packed >> 16) & 255) / 255.0);
+            colour.w = (f32)((f32)((packed >> 24) & 255) / 255.0);
+            params.x = packet->near_distance;
+            params.y = packet->far_distance;
+            params.z = packet->far_distance - packet->near_distance;
+            params.w = packet->density;
+            NuShaderManagerSetfv(0x44, &colour.x);
+            NuShaderManagerSetfv(0x45, &params.x);
+        } else {
+            NUVEC4 params = {0.0f, 0.0f, 0.0f, 0.0f};
+            NuShaderManagerSetfv(0x45, &params.x);
+        }
+    }
+
+    void __cdecl NuDisplayListLightmapPacketPc(void *arg) {
+        PCGraphicsFrameScratchCount.lightmap_packet = arg;
+    }
+
+    void __cdecl NuDisplayListUpdateLightmapPc(void) {
+        PC_DL_LIGHTMAP_UPDATE_READER *packet =
+            (PC_DL_LIGHTMAP_UPDATE_READER *)PCGraphicsFrameScratchCount.lightmap_packet;
+        i32 mode, stage;
+        f32 offset[3];
+        if (packet == NULL || (u32)packet == (u32)PCGraphicsBoundShader)
+            return;
+        PCGraphicsBoundShader = (i32)(u32)packet;
+        mode = packet->mode;
+        if (mode == 2 && PcWindowOptions.usehires == 0) {
+            packet->mode = 1;
+            mode = 1;
+        }
+        if (mode == 1) {
+            NUTEXDIM_PC *texture;
+            stage = PCDeviceHardwareVertexProcessingPC == 1 ? 1 : 0;
+            texture = NuTextureGetDimensions(packet->texture_id == -1 ? 1 : packet->texture_id);
+            PCDeviceSetTexture(stage, texture->resource);
+            PCDeviceSetSamplerState(stage, 1, 1);
+            PCDeviceSetSamplerState(stage, 2, 1);
+            PCDeviceSetSamplerState(stage, 5, 2);
+            PCDeviceSetSamplerState(stage, 6, 2);
+            PCDeviceSetSamplerState(stage, 7, 0);
+            offset[0] = packet->x_offset;
+            offset[1] = -packet->y_offset;
+            offset[2] = 0.0f;
+            NuShaderManagerSetfv(0x60, offset);
+        } else if (mode == 2) {
+            for (stage = 0; stage < 3; ++stage) {
+                NUTEXDIM_PC *texture =
+                    NuTextureGetDimensions(packet->texture_ids[stage] == -1 ? 1 : packet->texture_ids[stage]);
+                PCDeviceSetTexture(stage, texture->resource);
+                PCDeviceSetSamplerState(stage, 1, 1);
+                PCDeviceSetSamplerState(stage, 2, 1);
+                PCDeviceSetSamplerState(stage, 5, 2);
+                PCDeviceSetSamplerState(stage, 6, 2);
+                PCDeviceSetSamplerState(stage, 7, 0);
+            }
+            offset[0] = packet->x_offset;
+            offset[1] = -packet->y_offset;
+            offset[2] = 0.0f;
+            NuShaderManagerSetfv(0x60, offset);
+        }
+    }
+
+    void __cdecl NuDisplayListLegacyLightmapPc(void *arg) {
+        i32 *texture_ids = (i32 *)arg;
+        f32 offset[3] = {0.0f, 0.0f, 0.0f};
+        i32 i;
+        for (i = 0; i < 3; ++i) {
+            NUTEXDIM_PC *texture;
+            if (texture_ids[i] != -1)
+                texture = NuTextureGetDimensions(texture_ids[i]);
+            else
+                texture = NuTextureGetDimensions(1);
+            PCDeviceSetTexture(i, texture->resource);
+            PCDeviceSetSamplerState(i, 1, 1);
+            PCDeviceSetSamplerState(i, 2, 1);
+        }
+        NuShaderManagerSetfv(0x60, offset);
+    }
+
+    void __cdecl NuDisplayListLegacyLightmapOffsetPc(void *arg) {
+        PC_DL_LEGACY_LIGHTMAP_READER *packet = (PC_DL_LEGACY_LIGHTMAP_READER *)arg;
+        f32 offset[3];
+        i32 i;
+        for (i = 0; i < 3; ++i) {
+            NUTEXDIM_PC *texture;
+            if (packet->texture_id[i] != -1)
+                texture = NuTextureGetDimensions(packet->texture_id[i]);
+            else
+                texture = NuTextureGetDimensions(1);
+            PCDeviceSetTexture(i, texture->resource);
+            PCDeviceSetSamplerState(i, 1, 1);
+            PCDeviceSetSamplerState(i, 2, 1);
+        }
+        offset[0] = packet->x_offset;
+        offset[1] = -packet->y_offset;
+        offset[2] = 0.0f;
+        NuShaderManagerSetfv(0x60, offset);
+    }
+
+    void __cdecl NuDisplayListPacketAdPc(void *arg) {
+        PC_DL_AD_PACKET *packet = (PC_DL_AD_PACKET *)arg;
+        PC_DL_AD_RECORD *record;
+        NUVEC4 values;
+        NUVEC colour0, colour1, colour2, colour3, colour4;
+        i32 segments;
+        u32 vertex_count;
+        u32 instances = packet->instances;
+        if (packet->vertex_buffer == NULL || packet->instance_buffer == NULL || packet->list == NULL)
+            return;
+        record = &packet->list->records[packet->list->count - 1];
+        segments = record->segment_count;
+        values.x = (f32)segments;
+        values.y = record->enabled > 0 ? 1.0f : 0.0f;
+        values.z = record->vertex_parameter_x;
+        values.w = record->vertex_parameter_y;
+        PCDeviceSetVertexShaderConstantsF(0xc8, &values.x, 1);
+        values.x = record->vertex_parameter_z;
+        values.y = 0.0f;
+        values.z = 0.0f;
+        values.w = 0.0f;
+        PCDeviceSetVertexShaderConstantsF(0xc9, &values.x, 1);
+        colour0 = record->colours.colour[0];
+        colour1 = record->colours.colour[1];
+        colour2 = record->colours.colour[2];
+        colour3 = record->colours.colour[3];
+        colour4 = record->colours.colour[4];
+#define AD_COLOUR_CONSTANT(n)                                                                                          \
+    values.x = colour##n.x;                                                                                            \
+    values.y = colour##n.y;                                                                                            \
+    values.z = colour##n.z;                                                                                            \
+    values.w = 1.0f;                                                                                                   \
+    PCDeviceSetPixelShaderConstantsF(0xca + (n), &values.x, 1)
+        AD_COLOUR_CONSTANT(0);
+        AD_COLOUR_CONSTANT(1);
+        AD_COLOUR_CONSTANT(2);
+        AD_COLOUR_CONSTANT(3);
+        AD_COLOUR_CONSTANT(4);
+#undef AD_COLOUR_CONSTANT
+        values.x = record->pixel_parameter;
+        values.y = record->pixel_parameter_x;
+        values.z = record->pixel_parameter_y;
+        values.w = record->pixel_parameter_z;
+        PCDeviceSetPixelShaderConstantsF(0xd3, &values.x, 1);
+        values.x = record->pixel_scalar;
+        values.y = 0.0f;
+        values.z = 0.0f;
+        values.w = 0.0f;
+        PCDeviceSetPixelShaderConstantsF(0xd4, &values.x, 1);
+        PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, 0x10);
+        PCDeviceSetStreamSourceFreqPc(0, instances | 0x40000000u);
+        PCDeviceSetStreamSourcePc(1, packet->instance_buffer, 0, 0x50);
+        PCDeviceSetStreamSourceFreqPc(1, 0x80000001u);
+        PCDeviceSetIndicesPc(packet->index_buffer);
+        vertex_count = (u32)segments * 2u + 2u;
+        PCDeviceDrawIndexedPrimitivePc(5, 0, 0, vertex_count, 0, vertex_count - 2u);
+        PCDeviceSetStreamSourcePc(0, NULL, 0, 0);
+        PCDeviceSetStreamSourceFreqPc(0, 1);
+        PCDeviceSetStreamSourceFreqPc(1, 1);
+    }
+
     i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
         i32 result;
         if (handle->scene == NULL || alpha <= 0.0f)
@@ -1246,6 +3160,19 @@ extern "C" {
             PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
                                      NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
         return 1;
+    }
+
+    void __cdecl NuDisplayListDrawDebrisPc(void *arg) {
+        PC_DL_DEBRIS_DRAW_READER *packet = (PC_DL_DEBRIS_DRAW_READER *)arg;
+        if (packet->vertex_count == 0)
+            return;
+        if (packet->use_system_buffer != 0) {
+            const void *vertices = (const u8 *)NuDebrisSystemBuffers[packet->buffer_index] + packet->first_vertex * 24u;
+            PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
+        } else {
+            PCDeviceSetStreamSourcePc(0, NuDebrisVertexBuffers[packet->buffer_index], 0, 24);
+            PCDeviceDrawPrimitivePc(4, packet->first_vertex, packet->vertex_count / 3u);
+        }
     }
 
     DEBRIS_PARTICLE_CHUNK_PC *__cdecl CreateDmaParticleSet(void *memory, i32 *size) {
@@ -1602,6 +3529,29 @@ extern "C" {
         mtl->diffuse.x = (mtl->shader.packed_diffuse_colour & 0xff) / 255.0;
         mtl->diffuse.y = ((mtl->shader.packed_diffuse_colour >> 8) & 0xff) / 255.0;
         mtl->diffuse.z = ((mtl->shader.packed_diffuse_colour >> 16) & 0xff) / 255.0;
+    }
+
+    void __cdecl NuDisplayListReflectionPc(void *arg) {
+        i32 reflection = *(i32 *)arg;
+        PC_DL_MATERIAL_READER *material;
+        NuDisplayHandlerReflectionPc = reflection;
+        material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
+        if (material != NULL) {
+            switch ((material->reflection_flags >> 12) & 3) {
+                case 0:
+                    if (reflection != 0)
+                        PCDeviceSetRenderState(0x16, 2);
+                    else
+                        PCDeviceSetRenderState(0x16, 3);
+                    break;
+                case 1:
+                    if (reflection != 0)
+                        PCDeviceSetRenderState(0x16, 3);
+                    else
+                        PCDeviceSetRenderState(0x16, 2);
+                    break;
+            }
+        }
     }
 
     void __cdecl NuMtlSetRenderPlanePc(NUMTL *material, i32 plane) {
@@ -1974,12 +3924,151 @@ extern "C" {
         item->next = NULL;
     }
 
+    void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end) {
+        (void)scene;
+        (void)buffer;
+        (void)end;
+    }
+
+    VARIPTR *__cdecl NuDisplayListLinkItems(NUDISPLAYLIST_PC *list, i32 count) {
+        VARIPTR *cursor;
+        NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
+        cursor = NuDisplayListStreamCursor;
+        ((NUDISPLAYLISTITEM *)list->material_last)->next = cursor->void_ptr;
+        list->items = cursor->void_ptr;
+        cursor->addr += count * sizeof(NUDISPLAYLISTITEM);
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = 0x8d;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = 1;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = (NUDISPLAYLISTITEM *)list->dynamic_geometry + 1;
+        list->material_last = cursor->void_ptr;
+        cursor->addr += sizeof(NUDISPLAYLISTITEM);
+        return cursor;
+    }
+
+    void *__cdecl DisplayListCreateGeomTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *geometry,
+                                                   void *existing) {
+        NUVEC translation, scale;
+        NUMTX *result;
+        (void)material;
+        (void)geometry;
+        (void)existing;
+        NuCameraGetProjectionMtx();
+        NuCameraGetViewMtx();
+        scale.z = 1.0f;
+        translation.z = translation.y = translation.x = 0.0f;
+        scale.x = PCSpecialProjectionAdjust.x_scale;
+        scale.y = PCSpecialProjectionAdjust.y_scale;
+        NuMtxSetScale(&PCSpecialProjectionScale, &scale);
+        translation.x = PCSpecialProjectionAdjust.x_offset;
+        translation.y = PCSpecialProjectionAdjust.y_offset;
+        NuMtxSetTranslation(&PCSpecialProjectionTranslate, &translation);
+        buffer->addr = (buffer->addr + 3) & ~3u;
+        result = (NUMTX *)buffer->void_ptr;
+        PCSpecialTransposeMatrix(result, matrix);
+        buffer->addr += sizeof(NUMTX);
+        return result;
+    }
+
+    void *__cdecl DisplayListCreateFaceonTransformPS(VARIPTR *buffer, NUMTX *matrix, NUMTL *material, void *faceon) {
+        NUMTX *result, *orientation;
+        NUVEC direction;
+        f32 magnitude;
+        (void)material;
+        buffer->addr = (buffer->addr + 3) & ~3u;
+        result = (NUMTX *)buffer->void_ptr;
+        *result = *matrix;
+        magnitude = NuFsqrt((f32)(((f64)NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m10) +
+                                   NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m00) +
+                                   NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m20)) *
+                                  (f64)0.3333333432674408f));
+        buffer->addr += sizeof(NUMTX);
+        *(f32 *)buffer->void_ptr = magnitude;
+        buffer->addr += sizeof(f32);
+        orientation = (NUMTX *)buffer->void_ptr;
+        if (((PC_SPECIAL_FACEON *)faceon)->kind == 0) {
+            direction.x = direction.y = direction.z = 0.0f;
+            buffer->addr += sizeof(NUMTX);
+            NuMtxCalcCheapFaceOn(orientation, &direction);
+        } else {
+            direction.x = matrix->m10;
+            direction.y = matrix->m11;
+            direction.z = matrix->m12;
+            buffer->addr += sizeof(NUMTX);
+            NuMtxCalcCheapFaceY_v2(orientation, &direction);
+        }
+        return result;
+    }
+
+    void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *buffer, NUMTX *skin, void *weights, void *geometry_ptr,
+                                                   void **render_geometry, void *unused) {
+        PC_SPECIAL_GEOMETRY *geometry = (PC_SPECIAL_GEOMETRY *)geometry_ptr;
+        PC_SPECIAL_DEFORMER_WEIGHTS *weight_view = (PC_SPECIAL_DEFORMER_WEIGHTS *)weights;
+        i32 *matrix_count;
+        u32 vertex, morph;
+        u8 *destination;
+        void *locked;
+        PC_SPECIAL_GEOMETRY *copy;
+        i32 i;
+        (void)unused;
+        if (weights != NULL && geometry->morph_count != 0) {
+            *render_geometry = (void *)((buffer->addr + 31) & ~31u);
+            buffer->addr = ((buffer->addr + 31) & ~31u) + sizeof(*copy);
+            copy = (PC_SPECIAL_GEOMETRY *)*render_geometry;
+            *copy = *geometry;
+            locked = NULL;
+            PCDeviceLockVertexBuffer(geometry->base_vertex * geometry->vertex_stride,
+                                     geometry->vertex_count * geometry->vertex_stride, &locked, 0x10,
+                                     geometry->vertex_buffer);
+            copy->dynamic_vertices = (u8 *)((buffer->addr + 31) & ~31u);
+            buffer->addr = (buffer->addr + 31) & ~31u;
+            buffer->addr += geometry->vertex_count * geometry->vertex_stride;
+            destination = (u8 *)copy->dynamic_vertices;
+            PCByteCopy_candidate(destination, locked, geometry->vertex_count * geometry->vertex_stride);
+            for (vertex = 0; vertex != geometry->vertex_count; ++vertex) {
+                for (morph = 0; morph != geometry->morph_count; ++morph) {
+                    f32 weight = weight_view->weights[morph];
+                    if (geometry->morph_deltas[morph] != NULL && weight != 0.0f) {
+                        ((NUVEC *)destination)->x += geometry->morph_deltas[morph][vertex].x * weight;
+                        ((NUVEC *)destination)->y += geometry->morph_deltas[morph][vertex].y * weight;
+                        ((NUVEC *)destination)->z += geometry->morph_deltas[morph][vertex].z * weight;
+                    }
+                }
+                locked = (u8 *)locked + geometry->vertex_stride;
+                destination += geometry->vertex_stride;
+            }
+            PCDeviceUnlockVertexBuffer(geometry->vertex_buffer);
+        } else {
+            geometry->dynamic_vertices = NULL;
+            *render_geometry = geometry;
+        }
+        matrix_count = (i32 *)buffer->void_ptr;
+        buffer->addr += sizeof(*matrix_count);
+        *matrix_count = 0;
+        for (i = 0; geometry->joint_indices[i] != 255 && i < 8; ++i) {
+            *(NUMTX *)buffer->void_ptr = skin[geometry->joint_indices[i]];
+            buffer->addr += sizeof(NUMTX);
+            ++*matrix_count;
+        }
+        return matrix_count;
+    }
+
     void __cdecl DisplayListPrintItemPS(NUDISPLAYLISTITEM *item, i32 file_handle) {
         (void)item;
         (void)file_handle;
     }
 
     void __cdecl DisplayListSwapBuffersPS(void) {
+    }
+
+    /* Native603960 is an actual empty cross-TU operation, also empty in source. */
+    void __cdecl DisplayGenerateTransformsNoOpPc(NUDISPLAY_LIST_PC *scene) {
+        (void)scene;
+    }
+
+    void *__cdecl NuDisplayListPrepareFaceonPS(VARIPTR *buffer, void *faceon, NUMTX *matrix) {
+        (void)buffer;
+        (void)matrix;
+        return faceon;
     }
 
     void __cdecl NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *scene) {
@@ -2007,6 +4096,38 @@ extern "C" {
         }
     }
 
+    void __cdecl NuDisplayListVertexGroupsPc(void *arg) {
+        PC_DL_VERTEX_GROUPS_READER *packet = (PC_DL_VERTEX_GROUPS_READER *)arg;
+        NUVEC4 *values = packet->values;
+        i32 groups = (i32)((u32)packet->count + 3u) / 4;
+        i32 i;
+        for (i = 0; i < groups && i < 32; ++i, ++values)
+            NuShaderManagerSetElementfv(0x4f, i, &values->x);
+    }
+
+    void __cdecl NuDisplayListVertexOffsetsPc(void *arg) {
+        PC_DL_VERTEX_OFFSETS_READER *packet = (PC_DL_VERTEX_OFFSETS_READER *)arg;
+        i32 count = packet->count;
+        i32 i;
+        NUVEC4 *values = packet->values;
+        for (i = 0; i < count && i < 8; ++i, ++values)
+            NuShaderManagerSetElementfv(0x4e, i, &values->x);
+    }
+
+    void __cdecl PostShadowSelectHandlersPc(i32 mode) {
+        switch (mode) {
+            case 0:
+                PCDisplayItemHandlersPc = PCDisplayItemHandlerPrefixPc;
+                break;
+            case 1:
+                PCDisplayItemHandlersPc = PCDisplayShadowItemHandlersPc;
+                break;
+            default:
+                PCGraphicsRenderTextureAllocationError();
+                break;
+        }
+    }
+
     void __cdecl DisplayListSetAlphaPS(NUDISPLAYLISTITEM *item, NUDISPLAYLISTITEM *geometry, f32 alpha) {
         NUMTX *matrix = (NUMTX *)item->next;
         (void)geometry;
@@ -2015,6 +4136,259 @@ extern "C" {
         if (alpha > 1.0f)
             alpha = 1.0f;
         matrix->m33 = alpha;
+    }
+
+    void __cdecl DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *first, NUDISPLAYLISTITEM *last, i32 shadow) {
+        PC_SPECIAL_TRANSFORM_PACKET *packet = (PC_SPECIAL_TRANSFORM_PACKET *)first->next;
+        (void)last;
+        packet->matrix.m32 = (f32)shadow;
+    }
+
+    void __cdecl NuDisplayListCameraPc(void *arg) {
+        PC_DL_CAMERA_READER *packet = (PC_DL_CAMERA_READER *)arg;
+        if (packet->id != NuDisplayHandlerCameraIdPc) {
+            PC_VIEWPORT_PC viewport;
+            NUMTX *view;
+            PC_DL_CAMERA_PROJECTION_READER *projection;
+            i32 viewport_x;
+            view = &packet->view;
+            projection = (PC_DL_CAMERA_PROJECTION_READER *)(view + 1);
+            NuDisplayHandlerCameraIdPc = packet->id;
+            PcUpdateGeometryCameraOriginPc(view, &projection->projection);
+            viewport_x = (i32)projection->viewport[0];
+            viewport.x = (u32)viewport_x;
+            viewport.y = (u32)projection->viewport[1];
+            viewport.width = (u32)projection->viewport[2];
+            viewport.height = (u32)projection->viewport[3];
+            viewport.min_z = 0.0f;
+            viewport.max_z = 1.0f;
+            NuVpSubmitPc(&viewport);
+        }
+    }
+
+    void __cdecl PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end) {
+        i32 index;
+        (void)buffer;
+        (void)end;
+        memset(PCGraphicsRenderTextures, 0, sizeof(PCGraphicsRenderTextures));
+        for (index = 0; index != 32; ++index) {
+            PCGraphicsRenderTextureActive[index] = 0;
+            PCGraphicsResetRenderTexture(&PCGraphicsRenderTextures[index]);
+        }
+    }
+
+    /* Claims a free render-texture slot; retail inlines it into each creator. */
+    static GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsAllocRenderTexturePc(void) {
+        for (i32 i = 0; i != 32; ++i) {
+            if (PCGraphicsRenderTextureActive[i] == 0) {
+                PCGraphicsRenderTextureActive[i] = 1;
+                return &PCGraphicsRenderTextures[i];
+            }
+        }
+        PCGraphicsRenderTextureAllocationError();
+        return NULL;
+    }
+
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateEffectTexture(i32 width, i32 height, i32 levels, i32 usage,
+                                                                      i32 format) {
+        GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsAllocRenderTexturePc();
+        usage &= ~0x10;
+        if (usage != 0 && usage != 1) {
+            PCGraphicsRenderTextureAllocationError();
+            return NULL;
+        }
+        PCGraphicsInitRenderTexture(texture, width, height, levels, usage, 0, format);
+        return texture;
+    }
+
+    /* Returns the render texture behind a frame-copy texture id, or NULL for other textures. */
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32 texture_id) {
+        FRAME_NATIVE_TEXTURE_PC *texture = (FRAME_NATIVE_TEXTURE_PC *)NuTextureGetDimensions(texture_id);
+        u32 index = (u32)(texture - FrameNativeTexturePoolPc.records);
+        if (index > 15)
+            return NULL;
+        return texture->render_texture;
+    }
+
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTarget(i32 divider, i32 levels) {
+        i32 format = PCGraphicsFormatFromD3d(PCDeviceBackend.parameters.format);
+        u32 height = PCDeviceBackend.parameters.height / (u32)divider;
+        u32 width = PCDeviceBackend.parameters.width / (u32)divider;
+        GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsAllocRenderTexturePc();
+        PCGraphicsInitRenderTexture(texture, width, height, levels, 1, 0, format);
+        texture->flags = (texture->flags & 0xffffdbffu) | 0x1b00;
+        return texture;
+    }
+
+    GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateColourTargetFormat(i32 divider, i32 levels, i32 format) {
+        u32 height = PCDeviceBackend.parameters.height / (u32)divider;
+        u32 width = PCDeviceBackend.parameters.width / (u32)divider;
+        GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsAllocRenderTexturePc();
+        PCGraphicsInitRenderTexture(texture, width, height, levels, 1, 0, format);
+        texture->flags = (texture->flags & 0xffffdbffu) | 0x1b00;
+        return texture;
+    }
+
+    void __cdecl PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE_PC *texture) {
+        if (texture != NULL) {
+            const u32 *tuple = &texture->flags;
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] ||
+                (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])
+                PCGraphicsSetSamplerTuplePc(stage, tuple);
+            PCDeviceSetTexture(stage, texture->resource);
+        } else {
+            PCDeviceSetTexture(stage, NULL);
+        }
+    }
+
+    PC_FRAMEBUFFER_PC *__cdecl PCGraphicsCreateFramebuffer(void) {
+        i32 index;
+        for (index = 0; index != 32; ++index)
+            if (PcFramebufferActive[index] == 0)
+                break;
+        if (index == 32) {
+            PCGraphicsRenderTextureAllocationError();
+            return NULL;
+        }
+        PcFramebufferActive[index] = 1;
+        PC_FRAMEBUFFER_PC *frame = &PcFramebufferPool[index];
+        if (frame == NULL) {
+            PCGraphicsRenderTextureAllocationError();
+            return NULL;
+        }
+        for (index = 0; index != 5; ++index) {
+            frame->targets[index].Reset();
+            frame->clear_colour[index] = 0xffffffff;
+        }
+        frame->changed = 1;
+        return frame;
+    }
+
+    void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *frame) {
+        for (i32 index = 0; index != 5; ++index)
+            frame->targets[index].Reset();
+        for (i32 index = 0; index != 32; ++index)
+            if (frame == &PcFramebufferPool[index])
+                PcFramebufferActive[index] = 0;
+    }
+
+    void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *frame, i32 index, GRAPHICS_RENDER_TEXTURE_PC *texture,
+                                             i32 level) {
+        frame->targets[index].Attach(texture, level, false);
+        frame->changed = 1;
+    }
+
+    void __cdecl PCGraphicsAttachOwnedFramebuffer(PC_FRAMEBUFFER_PC *frame, i32 index,
+                                                  GRAPHICS_RENDER_TEXTURE_PC *texture, i32 level) {
+        frame->targets[index].Attach(texture, level, true);
+    }
+
+    void __cdecl PCGraphicsReleaseFramebuffers(void) {
+        {
+            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
+            PC_EFFECT_SURFACE_PC *target = &frame->targets[0];
+            if (target->texture != NULL || target->level != 0) {
+                target->Reset();
+                target->texture = NULL;
+                target->owns_texture = 0;
+                target->surface = NULL;
+                target->level = 0;
+                target->field_10 = 0;
+                target->width = target->height = 0;
+            }
+            frame->changed = 1;
+        }
+        {
+            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
+            PC_EFFECT_SURFACE_PC *target = &frame->targets[1];
+            if (target->texture != NULL || target->level != 0) {
+                target->Reset();
+                target->texture = NULL;
+                target->owns_texture = 0;
+                target->surface = NULL;
+                target->level = 0;
+                target->field_10 = 0;
+                target->width = target->height = 0;
+            }
+            frame->changed = 1;
+        }
+        {
+            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
+            PC_EFFECT_SURFACE_PC *target = &frame->targets[2];
+            if (target->texture != NULL || target->level != 0) {
+                target->Reset();
+                target->texture = NULL;
+                target->owns_texture = 0;
+                target->surface = NULL;
+                target->level = 0;
+                target->field_10 = 0;
+                target->width = target->height = 0;
+            }
+            frame->changed = 1;
+        }
+        {
+            PC_FRAMEBUFFER_PC *frame = PcSecondaryFramebuffer;
+            PC_EFFECT_SURFACE_PC *target = &frame->targets[0];
+            if (target->texture != NULL || target->level != 0) {
+                target->Reset();
+                target->texture = NULL;
+                target->owns_texture = 0;
+                target->surface = NULL;
+                target->level = 0;
+                target->field_10 = 0;
+                target->width = target->height = 0;
+            }
+            frame->changed = 1;
+        }
+    }
+
+    void __cdecl PCGraphicsRestoreFramebuffers(void) {
+        {
+            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
+            frame->targets[0].Attach(PCDeviceBackend.textures[0], 0, false);
+            frame->changed = 1;
+        }
+        {
+            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
+            frame->targets[1].Attach(PCDeviceBackend.textures[1], 0, false);
+            frame->changed = 1;
+        }
+        {
+            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
+            frame->targets[2].Attach(PCDeviceBackend.textures[2], 0, false);
+            frame->changed = 1;
+        }
+        {
+            PC_FRAMEBUFFER_PC *frame = PcSecondaryFramebuffer;
+            frame->targets[0].Attach(PCDeviceBackend.textures[0], 0, false);
+            frame->changed = 1;
+        }
+    }
+
+    PC_EFFECT_SURFACE_PC::PC_EFFECT_SURFACE_PC() {
+        texture = NULL;
+        owns_texture = 0;
+        surface = NULL;
+        level = 0;
+        field_10 = 0;
+        height = width = 0;
+        registry_index = -1;
+        Reset();
+        if (!PcSurfaceRegistryInitialized) {
+            memset(PcSurfaceRegistry, 0, sizeof(PcSurfaceRegistry));
+            PcSurfaceRegistryInitialized = 1;
+        }
+        for (i32 index = 0; index != 256; ++index)
+            if (PcSurfaceRegistry[index] == NULL) {
+                PcSurfaceRegistry[index] = this;
+                registry_index = (i16)index;
+                return;
+            }
+    }
+
+    inline PC_EFFECT_SURFACE_PC::~PC_EFFECT_SURFACE_PC() {
+        Reset();
+        PcSurfaceRegistry[registry_index] = NULL;
     }
 
     u8 __cdecl PcInitializeGeometryBasisPc(PC_GEOMETRY_BASIS_SOURCE_PC *source, NUMTX *palette,
@@ -2086,6 +4460,90 @@ extern "C" {
         return 1;
     }
 
+    void __cdecl DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state) {
+        NUGLOBALRNDRSTATE_PC *previous;
+        if (state == NULL)
+            return;
+        previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
+        if (previous->counter_0020 == state->counter_0020)
+            return;
+        if (previous->vertex_groups_id != state->vertex_groups_id) {
+            void *packet = DisplayListBuildVertexGroupPacket(state);
+            if (packet != NULL)
+                NuDisplayListLinkItem(list, 0xa9, packet);
+            previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
+            previous->vertex_groups_id = state->vertex_groups_id;
+        }
+        previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
+        previous->counter_0020 = state->counter_0020;
+    }
+
+    void __cdecl NuDisplayListDrawGeometryPc(void *arg) {
+        PC_DL_GEOMETRY_READER *packet = (PC_DL_GEOMETRY_READER *)arg;
+        PC_DL_GEOMETRY_MATERIAL_READER *material = (PC_DL_GEOMETRY_MATERIAL_READER *)NuDisplayHandlerMaterialPc;
+        u32 primitive_count;
+        const void *vertices;
+        void *locked;
+        u32 point_size;
+        f32 point_size_float;
+        if (packet == NULL || PCShaderCurrentObjectPc() == NULL || packet->vertex_count == 0)
+            return;
+        primitive_count = packet->primitive_count;
+        if (material->lightmap_flags & 0x4000000)
+            NuDisplayListUpdateLightmapPc();
+        vertices = packet + 1;
+        switch (packet->kind) {
+            case 6:
+                if (packet->dynamic_count != 0 && packet->dynamic_vertices != NULL) {
+                    PCDeviceLockVertexBuffer(0, 0, &locked, 0x2000, packet->dynamic_buffer);
+                    PCByteCopy_candidate(locked, packet->dynamic_vertices,
+                                         packet->vertex_stride * packet->vertex_count);
+                    PCDeviceUnlockVertexBuffer(packet->dynamic_buffer);
+                    PCDeviceSetStreamSourcePc(0, packet->dynamic_buffer, 0, packet->vertex_stride);
+                    PCDeviceSetIndicesPc(packet->index_buffer);
+                    SAGA_SKIN_CALL(skin_trace_capture_geometry, (unsigned)packet, (unsigned)NuDisplayHandlerMaterialPc,
+                                   PCShaderSlots, (unsigned)packet->dynamic_buffer, (unsigned)packet->index_buffer, 0,
+                                   packet->start_index);
+                    PCDeviceDrawIndexedPrimitivePc(5, 0, 0, packet->vertex_count, packet->start_index, primitive_count);
+                } else {
+                    PCDeviceSetStreamSourcePc(0, packet->vertex_buffer, 0, packet->vertex_stride);
+                    PCDeviceSetIndicesPc(packet->index_buffer);
+                    SAGA_SKIN_CALL(skin_trace_capture_geometry, (unsigned)packet, (unsigned)NuDisplayHandlerMaterialPc,
+                                   PCShaderSlots, (unsigned)packet->vertex_buffer, (unsigned)packet->index_buffer,
+                                   packet->base_vertex, packet->start_index);
+                    PCDeviceDrawIndexedPrimitivePc(5, packet->base_vertex, 0, packet->vertex_count, packet->start_index,
+                                                   primitive_count);
+                }
+                break;
+            case 12:
+                PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
+                break;
+            case 13:
+                if (packet->vertex_count >= 3u)
+                    PCDeviceDrawPrimitiveUPPc(5, packet->vertex_count - 2u, vertices, 24);
+                break;
+            case 14:
+                PCDeviceDrawPrimitiveUPPc(2, packet->vertex_count >> 1, vertices, 24);
+                break;
+            case 15:
+                PCDeviceDrawPrimitiveUPPc(3, packet->vertex_count - 1u, vertices, 24);
+                break;
+            case 17:
+                if (packet->vertex_count >= 3u)
+                    PCDeviceDrawPrimitiveUPPc(6, packet->vertex_count - 2u, vertices, 24);
+                break;
+            case 18:
+                point_size_float = 32.0f;
+                memcpy(&point_size, &point_size_float, sizeof(point_size));
+                PCDeviceSetRenderState(0x9a, point_size);
+                PCDeviceDrawPrimitiveUPPc(1, packet->vertex_count, vertices, 24);
+                point_size_float = 1.0f;
+                memcpy(&point_size, &point_size_float, sizeof(point_size));
+                PCDeviceSetRenderState(0x9a, point_size);
+                break;
+        }
+    }
+
     void __cdecl NuInitDebrisRenderer(VARIPTR *buffer, VARIPTR buffer_end) {
         i32 index;
         (void)buffer_end;
@@ -2135,6 +4593,77 @@ extern "C" {
         }
         if (child->native_resource != NULL && child->native_resource->resource != NULL)
             PCDeviceReleaseTexture(&child->native_resource->resource);
+    }
+
+    FRAME_NATIVE_TEXTURE_PC *FRAME_NATIVE_TEXTURE_POOL_PC::Allocate() {
+        i32 index;
+        for (index = cursor; index < 16; ++index) {
+            if (((occupied[index >> 3] >> (index & 7)) & 1) == 0) {
+                occupied[index >> 3] |= (u8)(1u << (index & 7));
+                cursor = (index + 1) % 16;
+                return &records[index];
+            }
+        }
+        for (index = 0; index < cursor; ++index) {
+            if (((occupied[index >> 3] >> (index & 7)) & 1) == 0) {
+                occupied[index >> 3] |= (u8)(1u << (index & 7));
+                cursor = (index + 1) % 16;
+                return &records[index];
+            }
+        }
+        return NULL;
+    }
+
+    void __cdecl PCGraphicsClearFrameTexturesPc(void) {
+        PC_EFFECT_SURFACE_PC surface;
+        for (i32 i = 0; i < 16; ++i) {
+            FRAME_NATIVE_TEXTURE_PC *record = &FrameNativeTexturePoolPc.records[i];
+            if (record->texture_id != 0 && record->render_texture != NULL) {
+                record->dimensions.resource = record->render_texture->resource;
+                surface.Attach(record->render_texture, 0, false);
+                PCDeviceBackend.SetSurfaceRenderTarget(&surface, 0);
+                PCDeviceBackend.ClearDepthStencilSurface();
+                PCDeviceClear(0, NULL, 1, 0xff000000, 1.0f, 0);
+            }
+        }
+    }
+
+    PC_FRAMEBUFFER_PC::PC_FRAMEBUFFER_PC() {
+    }
+
+    PC_FRAMEBUFFER_PC::~PC_FRAMEBUFFER_PC() {
+    }
+
+    void __cdecl PCGraphicsInitializeFramebuffers(u8 flags, i32 unused, VARIPTR *buffer, VARIPTR end) {
+        (void)unused;
+        (void)buffer;
+        (void)end;
+        memset(PcFramebufferPool, 0, sizeof(PcFramebufferPool));
+        memset(PcFramebufferActive, 0, sizeof(PcFramebufferActive));
+        PcBoundFramebuffer = PcDefaultFramebuffer = PcSecondaryFramebuffer = NULL;
+        bool multi = PCDeviceBackend.caps.simultaneous_render_targets > 1;
+        bool second = multi && (flags & 2);
+        bool third = multi && (flags & 4);
+        PcDefaultFramebuffer = PCGraphicsCreateFramebuffer();
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 0, PCDeviceBackend.textures[0], 0);
+        PcDefaultFramebuffer->clear_colour[0] = 0;
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 2, PCDeviceBackend.textures[2], 0);
+        PcDefaultFramebuffer->clear_colour[2] = 0xffffffff;
+        if (second && PCDeviceBackend.target_count > 1) {
+            PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 1, PCDeviceBackend.textures[1], 0);
+            PcDefaultFramebuffer->clear_colour[1] = 0x808080;
+        }
+        if (third && PCDeviceBackend.target_count > 2) {
+            PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 2, PCDeviceBackend.textures[2], 0);
+            PcDefaultFramebuffer->clear_colour[2] = 0x8080;
+        }
+        PcSecondaryFramebuffer = PCGraphicsCreateFramebuffer();
+        PCGraphicsAttachFramebuffer(PcSecondaryFramebuffer, 0, PCDeviceBackend.textures[0], 0);
+        PcSecondaryFramebuffer->clear_colour[0] = 0;
+        PcBootDefaultFramebuffer = PcBootSecondaryFramebuffer = NULL;
+        PcBootDefaultFramebuffer = PcDefaultFramebuffer;
+        PcBootSecondaryFramebuffer = PcSecondaryFramebuffer;
+        PCGraphicsBindFramebuffer(PcDefaultFramebuffer);
     }
 
     void __cdecl BuildDebrisVerts(DEBRIS_PART_HEADER_PC *header, DEBRIS_PARTICLE_CHUNK_PC *chunk, NUMTL *material,
@@ -2255,6 +4784,26 @@ extern "C" {
         NuDebrisCurrentPacket->vertex_count += (i32)emitted;
         NuDebrisCurrentVertexCount += emitted;
         NuDebrisFrameVertexCount += emitted;
+    }
+
+    i32 __cdecl NuTexRegisterRenderTargetPc(GRAPHICS_RENDER_TEXTURE_PC *target) {
+        FRAME_NATIVE_TEXTURE_PC *texture = FrameNativeTexturePoolPc.Allocate();
+        texture->render_texture = target;
+        texture->texture_id = NuTexRegisterDimensionsPc(&texture->dimensions);
+        if (texture->texture_id == 0) {
+            i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePoolPc.records[0]) / 0x30;
+            FrameNativeTexturePoolPc.occupied[index >> 3] &= (u8) ~(1u << (index & 7));
+            FrameNativeTexturePoolPc.cursor = index;
+            return 0;
+        }
+        texture->dimensions.width = target->width;
+        texture->dimensions.height = target->height;
+        texture->dimensions.ref_count = 1;
+        memset(texture->dimensions.checksum, 0, sizeof(texture->dimensions.checksum));
+        texture->dimensions.image_data = NULL;
+        texture->dimensions.image_size = 0;
+        texture->dimensions.resource = target->resource;
+        return texture->texture_id;
     }
 
     void NuMainFilter::render() {

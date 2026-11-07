@@ -1352,8 +1352,13 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nutex_pc.cpp",
-   "symbol": "?NuQFntColumnOpaque32Inline@@YAHPAUnutexbmp_pc_s@@HHH@Z",
+   "unit": "src/nu2api/nu3d_platform_pc.cpp",
+   "symbol": "_NuQFntColumnOpaque32Inline",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nu3d_platform_pc.cpp",
+   "symbol": "_PCGraphicsAllocRenderTexturePc",
    "kind": "function"
   },
   {
