@@ -577,12 +577,3 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             break;
     }
 }
-
-EdControl::~EdControl() {
-}
-
-EdEnumControl::EdEnumControl(Item *items) : items(items) {
-}
-
-EdBitControl::EdBitControl(u32 bit_mask, Item *items) : EdEnumControl(items), bit_mask(bit_mask) {
-}

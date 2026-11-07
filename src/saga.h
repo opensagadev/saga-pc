@@ -29409,15 +29409,14 @@ class EdControl {
     virtual void Render();
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
     virtual void SetMenuItemAttr(i32 state, eduiitem_s *item, eduiiattr_s *normal, eduiiattr_s *highlighted);
+    i32 SelectSubObject();
+    static void cbSelected(eduimenu_s *menu, eduiitem_s *item, u32);
 
     eduiitem_s *item;
     EdRef *reference;
     void *object;
     static EdInputContext *Input;
 };
-STATIC_ASSERT(sizeof(EdControl) == 0x10);
-STATIC_ASSERT(offsetof(EdControl, item) == 0x4);
-STATIC_ASSERT(offsetof(EdControl, object) == 0xc);
 
 class EdEnumControl : public EdControl {
   public:
@@ -29429,28 +29428,33 @@ class EdEnumControl : public EdControl {
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdEnumControl));
     }
-    EdEnumControl(Item *items);
+    EdEnumControl(Item *items) : items(items) {
+    }
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
+    char *GetEnumString(i32 value);
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
+    static void cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32);
 
     Item *items;
 };
-STATIC_ASSERT(sizeof(EdEnumControl) == 0x14);
-STATIC_ASSERT(offsetof(EdEnumControl, items) == 0x10);
 
 class EdBitControl : public EdEnumControl {
   public:
     static void operator delete(void *memory) {
         theMemoryManager.FreePool(memory, sizeof(EdBitControl));
     }
-    EdBitControl(u32 bit_mask, Item *items);
+    EdBitControl(u32 bit_mask, Item *items) : EdEnumControl(items), bit_mask(bit_mask) {
+    }
     virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
     virtual void Refresh();
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
+    static void cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32);
 
     u32 bit_mask;
 };
-STATIC_ASSERT(sizeof(EdBitControl) == 0x18);
-STATIC_ASSERT(offsetof(EdBitControl, bit_mask) == 0x14);
 
 /* Editor string: data[0] holds the pool block size, the text starts at
  * data + 1. */
@@ -29586,6 +29590,7 @@ struct EdClass {
     i32 SerialiseObjectHeader(EdStream &stream, void *object);
     void AddType(EdRef *member);
     EdRef *FindTypeRef(char *member_name, i32 recursive);
+    EdRef *FindTypeRef(i32 attributes, i32 recursive);
     void *FindObject(char *object_name);
     i32 GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count, i32 capacity);
     void Serialise(EdStream &stream, i32 *class_mapping);
@@ -29737,6 +29742,7 @@ struct ClassObjectList {
     i32 count;
 
     void Remove(ClassObjectListEntry *entry);
+    i32 GetAveragePosition(VuVec &average);
 };
 
 class EdTool : public CSListLink<EdTool> {

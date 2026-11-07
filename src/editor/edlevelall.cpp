@@ -47,6 +47,11 @@ extern "C" {
     extern i32 NewPrim;
     void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
     eduiitem_s *__cdecl eduiItemExpanderCreate(u32 data, const void *colours, void *callback, char *text);
+    eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
+                                           i32 button_type, char *text, char *value);
+    eduiitem_s *__cdecl eduiItemPropCreateEx(u32 data, void *colours, void *selected, void *changed, void *button,
+                                             i32 button_type, char *text, char *value, i32 extra_data);
+    i32 __cdecl eduiItemPropSetText(edui_prop_s *item, char *text);
     void __cdecl eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child);
     void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
     void __cdecl eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours);
@@ -396,6 +401,12 @@ class EdManipulator {
 
     u32 unknown_04[3];
     i32 selected_attribute;
+    i32 attribute_selected;
+    u32 unknown_18[10];
+    VuVec last_point;
+    VuVec delta;
+    VuVec cursor;
+    u32 unknown_70[4];
 
     static f32 Scale;
 };
@@ -494,9 +505,20 @@ STATIC_ASSERT(sizeof(PropertyTool) == 0x4c);
 STATIC_ASSERT(offsetof(PropertyTool, menus) == 0xc);
 STATIC_ASSERT(offsetof(PropertyTool, selected_attr) == 0x2c);
 STATIC_ASSERT(offsetof(EdManipulator, selected_attribute) == 0x10);
+STATIC_ASSERT(offsetof(EdManipulator, last_point) == 0x40);
+STATIC_ASSERT(offsetof(EdManipulator, cursor) == 0x60);
+STATIC_ASSERT(sizeof(EdManipulator) == 0x80);
+STATIC_ASSERT(sizeof(EdControl) == 0x10);
+STATIC_ASSERT(offsetof(EdControl, item) == 0x4);
+STATIC_ASSERT(offsetof(EdControl, object) == 0xc);
+STATIC_ASSERT(sizeof(EdEnumControl) == 0x14);
+STATIC_ASSERT(offsetof(EdEnumControl, items) == 0x10);
+STATIC_ASSERT(sizeof(EdBitControl) == 0x18);
+STATIC_ASSERT(offsetof(EdBitControl, bit_mask) == 0x14);
 
 LevelEditor theLevelEditor;
 PropertyTool thePropertyTool;
+EdManipulator theDefaultManipulator;
 PropertyMenuMetrics menu_startmetrics = {20, 5, 200, 400};
 
 void SerialiseChar(EdStream &stream, void *data, i32) {
@@ -1613,6 +1635,9 @@ void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed
     memset(cleared, 0, sizeof(cleared));
 }
 
+EdControl::~EdControl() {
+}
+
 void EdControl::Refresh() {
 }
 
@@ -1620,6 +1645,68 @@ void EdControl::Process(EdInputContext &) {
 }
 
 void EdControl::Render() {
+}
+
+char *EdEnumControl::GetEnumString(i32 value) {
+    for (Item *entry = items; entry->name != NULL; entry++) {
+        if (entry->value == value)
+            return entry->name;
+    }
+    return "Unknown";
+}
+
+/* Accepts a typed choice by name or by number; anything else restores the
+ * member's current value. */
+void EdEnumControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    EdEnumControl *control = static_cast<EdEnumControl *>(item->data_ptr);
+    edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
+    Item *entry;
+    for (entry = control->items; entry->name != NULL; entry++) {
+        if (NuStrICmp(entry->name, property->property_text) == 0) {
+            eduiItemPropSetText(property, entry->name);
+            return;
+        }
+    }
+    i32 value = NuAToI(property->property_text);
+    for (entry = control->items; entry->name != NULL; entry++) {
+        if (entry->value == value) {
+            eduiItemPropSetText(property, entry->name);
+            return;
+        }
+    }
+    control->reference->GetMemberData(control->object, EdType_Int, &value, 0);
+    char text[128];
+    NuSPrintf(text, "%d", value);
+    eduiItemPropSetText(property, text);
+}
+
+void EdEnumControl::Refresh() {
+    i32 value;
+    reference->GetMemberData(object, EdType_Int, &value, 0);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), GetEnumString(value));
+}
+
+void EdBitControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    EdBitControl *control = static_cast<EdBitControl *>(item->data_ptr);
+    edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
+    Item *entry;
+    for (entry = control->items; entry->name != NULL; entry++) {
+        if (NuStrICmp(entry->name, property->property_text) == 0) {
+            eduiItemPropSetText(property, entry->name);
+            return;
+        }
+    }
+    i32 value = NuAToI(property->property_text);
+    for (entry = control->items; entry->name != NULL; entry++) {
+        if (entry->value == value) {
+            eduiItemPropSetText(property, entry->name);
+            return;
+        }
+    }
+    control->reference->GetMemberData(control->object, EdType_Int, &value, 0);
+    char text[128];
+    NuSPrintf(text, "%d", value);
+    eduiItemPropSetText(property, text);
 }
 
 void EdBitControl::Refresh() {
@@ -2089,6 +2176,31 @@ class KnotHelper : public EdClassInterface {
 STATIC_ASSERT(sizeof(KnotHelper) == 0x14);
 
 KnotHelper::KnotHelper() {
+}
+
+/* Average position of the objects that have one; returns how many had. */
+i32 ClassObjectList::GetAveragePosition(VuVec &average) {
+    average.x = 0.0f;
+    average.y = 0.0f;
+    average.z = 0.0f;
+    average.w = 1.0f;
+    i32 count = 0;
+    for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
+        __declspec(align(16)) VuVec position;
+        if (reinterpret_cast<ClassObject *>(&entry->ed_class)->GetAttributeData(8, EdType_VuVec, &position, 0)) {
+            average.x += position.x;
+            average.y += position.y;
+            average.z += position.z;
+            count++;
+        }
+    }
+    if (count > 0) {
+        f32 scale = 1.0f / count;
+        average.x *= scale;
+        average.y *= scale;
+        average.z *= scale;
+    }
+    return count;
 }
 
 void ClassObjectList::Remove(ClassObjectListEntry *entry) {
@@ -2897,6 +3009,23 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
 
 /* Finds a member by name, descending into class-typed members when
  * recursive. */
+/* First member carrying one of the attribute bits, searching embedded
+ * classes when recursive. */
+EdRef *EdClass::FindTypeRef(i32 attributes, i32 recursive) {
+    for (EdRef *member = members; member != NULL; member = member->next) {
+        if (member->attributes & 0x80000000) {
+            if (recursive) {
+                EdRef *reference = theRegistry.GetClass(member->type_id)->FindTypeRef(attributes, 1);
+                if (reference != NULL)
+                    return reference;
+            }
+        } else if (member->attributes & attributes) {
+            return member;
+        }
+    }
+    return NULL;
+}
+
 EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
     for (EdRef *member = members; member != NULL; member = member->next) {
         if (member->attributes & 0x80000000) {
@@ -3398,6 +3527,180 @@ void EdTrace(const char *, ...) {
 
 EdInputContext *EdControl::Input = NULL;
 
+/* Selects the member this control edits as the class editor's sub-object;
+ * the select button held toggles it instead. */
+i32 EdControl::SelectSubObject() {
+    ClassObjectListEntry *entry;
+    for (entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->object == object)
+            break;
+    }
+    if (entry == NULL)
+        return 1;
+    ClassObject selection(entry->ed_class, entry->object);
+    selection.reference = entry->reference;
+    if (selection.object != NULL) {
+        i32 mode = static_cast<i32>(Input->GetHold(16)) != 0 ? 1 : 2;
+        selection.reference = reference;
+        theClassEditor.SelectObject(selection, mode);
+        for (entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+            if (entry->object == object)
+                return 1;
+        }
+        theClassEditor.SelectObject(selection, 1);
+    }
+    return 1;
+}
+
+/* Scales the gizmo with the zoom inputs and tracks the cursor ray at the
+ * selection's depth. */
+i32 EdManipulator::Process(EdInputContext &input, ClassObjectList &objects) {
+    f32 step = 1.0f;
+    if (input.GetHold(21) != 0.0f)
+        step = 3.0f;
+    if (input.GetHold(14) != 0.0f)
+        Scale += step * input.delta_time;
+    if (input.GetHold(15) != 0.0f) {
+        if (Scale > 0.1)
+            Scale -= step * input.delta_time;
+        else
+            Scale = 0.1f;
+    }
+    __declspec(align(16)) VuVec point;
+    f32 distance = 0.0f;
+    if (objects.GetAveragePosition(point)) {
+        VuVec offset;
+        offset.x = point.x - input.ray_start.x;
+        offset.y = point.y - input.ray_start.y;
+        offset.z = point.z - input.ray_start.z;
+        f32 length_squared = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+        distance = NuFsqrt(length_squared);
+    }
+    VuVec direction = input.ray_direction;
+    NuVecNorm(&direction.xyz, &direction.xyz);
+    direction.w = 1.0f;
+    {
+        VuVec scaled;
+        scaled.x = direction.x * distance;
+        scaled.y = direction.y * distance;
+        scaled.z = direction.z * distance;
+        point.x = input.ray_start.x + scaled.x;
+        point.y = input.ray_start.y + scaled.y;
+        point.z = input.ray_start.z + scaled.z;
+    }
+    if (input.GetPress(3) != 0.0f) {
+        delta.x = 0.0f;
+        delta.y = 0.0f;
+        delta.z = 0.0f;
+        delta.w = 1.0f;
+        last_point.x = point.x;
+        last_point.y = point.y;
+        last_point.z = point.z;
+        last_point.w = point.w;
+    } else {
+        VuVec difference;
+        difference.x = point.x - last_point.x;
+        difference.y = point.y - last_point.y;
+        difference.z = point.z - last_point.z;
+        delta.x = difference.x;
+        delta.y = difference.y;
+        delta.z = difference.z;
+        delta.w = difference.w;
+        last_point.x = point.x;
+        last_point.y = point.y;
+        last_point.z = point.z;
+        last_point.w = point.w;
+    }
+    VuVec *target = &cursor;
+    target->x = input.view_position.x;
+    target->y = input.view_position.y;
+    target->z = input.view_position.z;
+    target->w = input.view_position.w;
+    target->x = last_point.x;
+    target->y = last_point.y;
+    target->z = last_point.z;
+    target->w = last_point.w;
+    attribute_selected = 0;
+    last_point.w = 1.0f;
+    delta.w = 1.0f;
+    cursor.w = 1.0f;
+    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+        if (entry->ed_class->FindTypeRef(selected_attribute, 1) != NULL) {
+            attribute_selected = 1;
+            break;
+        }
+    }
+    return 0;
+}
+
+void EdManipulator::Render(ClassObjectList &objects) {
+    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next)
+        theClassEditor.DrawObjectSphere(*reinterpret_cast<ClassObject *>(&entry->ed_class), 0xff800000);
+}
+
+void EdControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {
+    EdControl *control = static_cast<EdControl *>(item->data_ptr);
+    i32 selected = control->SelectSubObject();
+    theClassEditor.mode = 0;
+    theClassEditor.manipulator = &theDefaultManipulator;
+    thePropertyTool.SelectAttr(theClassEditor.manipulator->selected_attribute);
+    if (selected != 0)
+        *reinterpret_cast<eduiiattr_s *>(item->colours) = thePropertyTool.unselected_attr;
+    for (PropertyMenu *property_menu = thePropertyTool.menus.first; property_menu != NULL;
+         property_menu = property_menu->next) {
+        if (property_menu->menu == menu) {
+            property_menu->control = control;
+            return;
+        }
+    }
+}
+
+void EdControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdControl *control = new (theMemoryManager.AllocPool(sizeof(EdControl), 1)) EdControl;
+    if (control != NULL) {
+        control->reference = member;
+        control->object = target;
+        control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, NULL, NULL, 0, member->name, NULL);
+        eduiMenuAddItem(menu, control->item);
+    }
+}
+
+void EdEnumControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdEnumControl *control = new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(items);
+    if (control != NULL) {
+        control->reference = member;
+        control->object = target;
+        i32 value;
+        member->GetMemberData(target, EdType_Int, &value, 0);
+        control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 1, member->name,
+                                           GetEnumString(value));
+        eduiMenuAddItem(menu, control->item);
+    }
+}
+
+/* One expander with a child property per bit of the mask. */
+void EdBitControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdBitControl *control = new (theMemoryManager.AllocPool(sizeof(EdBitControl), 1)) EdBitControl(bit_mask, items);
+    if (control != NULL) {
+        control->reference = member;
+        control->object = target;
+        i32 value;
+        member->GetMemberData(control->object, EdType_Int, &value, 0);
+        control->item = eduiItemExpanderCreate((u32)control, &EdLevelAttr, cbSelected, member->name);
+        eduiMenuAddItem(menu, control->item);
+        for (i32 bit = 0; bit < 32; bit++) {
+            u32 mask = 1 << bit;
+            if (control->bit_mask & mask) {
+                char bit_name[32];
+                NuSPrintf(bit_name, "%d", bit);
+                eduiItemExpanderAddChild(control->item, eduiItemPropCreateEx((u32)control, &EdLevelAttr, cbSelected,
+                                                                             cbChanged, cbButton, 1, bit_name,
+                                                                             GetEnumString((value & mask) != 0), bit));
+            }
+        }
+    }
+}
+
 void PropertyTool::Initialise(variptr_u &, variptr_u &, i32) {
 }
 
@@ -3412,6 +3715,93 @@ void PropertyMenu::SelectAttr(i32 selected) {
 void PropertyTool::SelectAttr(i32 selected) {
     for (PropertyMenu *property_menu = menus.first; property_menu != NULL; property_menu = property_menu->next)
         property_menu->SelectAttr(selected);
+}
+
+/* Members the active manipulator edits (mask) are drawn unselected unless
+ * another member of the same object is the selected sub-object. */
+void EdControl::SetMenuItemAttr(i32 mask, eduiitem_s *menu_item, eduiiattr_s *selected, eduiiattr_s *unselected) {
+    if (reference->attributes & mask) {
+        ClassObjectListEntry *entry = theClassEditor.selected_objects.first;
+        i32 subobject_count = 0;
+        if (entry != NULL) {
+            for (; entry != NULL; entry = entry->next) {
+                if (entry->object == object && entry->reference != NULL) {
+                    subobject_count++;
+                    if (entry->reference == reference)
+                        break;
+                }
+            }
+            if (entry == NULL && subobject_count != 0) {
+                memcpy(menu_item->colours, selected, sizeof(eduiiattr_s));
+                return;
+            }
+        }
+        memcpy(menu_item->colours, unselected, sizeof(eduiiattr_s));
+        return;
+    }
+    memcpy(menu_item->colours, selected, sizeof(eduiiattr_s));
+}
+
+static EdEnumControl *active_enum_control;
+static EdBitControl *edBitControl;
+static edui_prop_s *edBitItem;
+static i32 edBitIndex;
+
+void EdEnumControl::cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+    if (active_enum_control != NULL) {
+        Item *choice = static_cast<Item *>(item->data_ptr);
+        eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(active_enum_control->item),
+                            active_enum_control->GetEnumString(choice->value));
+        active_enum_control->reference->SetMemberData(active_enum_control->object, EdType_Int, &choice->value, 0, NULL);
+        cbEdLevelDestroyOnSelect(menu, item, flags);
+    }
+}
+
+/* Pops up the list of choices next to the item. */
+void EdEnumControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
+    active_enum_control = static_cast<EdEnumControl *>(item->data_ptr);
+    eduimenu_s *choices = eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                         cbEdLevelDestroy, NULL);
+    if (choices == NULL)
+        return;
+    for (Item *entry = active_enum_control->items; entry->name != NULL; entry++)
+        eduiMenuAddItem(choices, eduiItemSelCreate((u32)entry, item->colours, 0, 0, cbSelectItem, entry->name));
+    choices->flags |= 1;
+    eduiMenuAttach(menu, choices);
+    eduiMenuFitWidth(choices, 5);
+    eduiMenuFitOnScreen(choices, 30);
+    reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
+}
+
+void EdBitControl::cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+    if (edBitControl != NULL) {
+        Item *choice = static_cast<Item *>(item->data_ptr);
+        eduiItemPropSetText(edBitItem, edBitControl->GetEnumString(choice->value));
+        u32 value;
+        edBitControl->reference->GetMemberData(edBitControl->object, EdType_Int, &value, 0);
+        if (choice->value != 0)
+            value |= 1 << edBitIndex;
+        else
+            value &= ~(1 << edBitIndex);
+        edBitControl->reference->SetMemberData(edBitControl->object, EdType_Int, &value, 0, NULL);
+        cbEdLevelDestroyOnSelect(menu, item, flags);
+    }
+}
+
+void EdBitControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
+    edBitItem = reinterpret_cast<edui_prop_s *>(item);
+    edBitControl = static_cast<EdBitControl *>(item->data_ptr);
+    edBitIndex = edBitItem->extra_data;
+    eduimenu_s *choices = eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                         cbEdLevelDestroy, NULL);
+    if (choices == NULL)
+        return;
+    for (Item *entry = edBitControl->items; entry->name != NULL; entry++)
+        eduiMenuAddItem(choices, eduiItemSelCreate((u32)entry, item->colours, 0, 0, cbSelectItem, entry->name));
+    choices->flags |= 1;
+    eduiMenuAttach(menu, choices);
+    eduiMenuFitWidth(choices, 5);
+    reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
 }
 
 /* Keeps the list ordered by PropertyMenu::order. */
