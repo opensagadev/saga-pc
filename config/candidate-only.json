@@ -1317,7 +1317,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nuanim.c",
+   "unit": "src/nu2api/nu3d_includes.cpp",
    "symbol": "_NuAnimRebaseChar",
    "kind": "function"
   },
