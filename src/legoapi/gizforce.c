@@ -285,11 +285,13 @@ static void GizForce_PlayForwardAnimationPc(GIZFORCE_PC *force) {
     f32 speed;
     if (force != NULL) {
         GameAnimSet_SetRepeating(force->anim_set, 0);
-        if (force->animation_speed < 0.0f)
+        if (force->animation_speed < 0.0f) {
             speed = force->end_frame * force->animation_speed;
-        else
+            GameAnimSet_Play(force->anim_set, speed, 0);
+        } else {
             speed = force->start_frame * force->animation_speed;
-        GameAnimSet_Play(force->anim_set, speed, 0);
+            GameAnimSet_Play(force->anim_set, speed, 0);
+        }
     }
 }
 
@@ -297,11 +299,13 @@ static void GizForce_PlayBackwardAnimationPc(GIZFORCE_PC *force) {
     f32 speed;
     if (force != NULL) {
         GameAnimSet_SetRepeating(force->anim_set, 0);
-        if (force->animation_speed < 0.0f)
+        if (force->animation_speed < 0.0f) {
             speed = force->start_frame * -force->animation_speed;
-        else
+            GameAnimSet_Play(force->anim_set, speed, 0);
+        } else {
             speed = force->end_frame * -force->animation_speed;
-        GameAnimSet_Play(force->anim_set, speed, 0);
+            GameAnimSet_Play(force->anim_set, speed, 0);
+        }
     }
 }
 
