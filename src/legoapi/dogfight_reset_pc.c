@@ -1622,16 +1622,17 @@ static __declspec(noinline) void DrawFlightSplineDebugPc(FLIGHT_SPLINE_RESOURCE_
 }
 
 static __declspec(noinline) i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale) {
-    NUMTX scaled;
-    i16 model_index = apicharsys->playermodelids[model_id];
-    if (model_index == -1)
-        return 0;
-    if (scale != 1.0f) {
-        scaled = *matrix;
-        NuMtxPreScaleUVU0(&scaled, scale);
-        matrix = &scaled;
+    __declspec(align(16)) NUMTX scaled;
+    i32 model_index = apicharsys->playermodelids[model_id];
+    if (model_index != -1) {
+        if (scale != 1.0f) {
+            scaled = *matrix;
+            matrix = &scaled;
+            NuMtxPreScaleUVU0(matrix, scale);
+        }
+        return GameDrawCharacterModel(&apicharsys->models[model_index], NULL, matrix, NULL, NULL, NULL, NULL, flags);
     }
-    return GameDrawCharacterModel(&apicharsys->models[model_index], NULL, matrix, NULL, NULL, NULL, NULL, flags);
+    return 0;
 }
 
 static __declspec(noinline) void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record) {
