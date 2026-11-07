@@ -661,14 +661,11 @@ extern "C" {
     /* PC native 0x005c9dd0, 84 bytes. */
     NuAnimReadChunk *__cdecl NuAnimDataChunkCreate(i32 curve_set_count) {
         NuAnimReadChunk *chunk = (NuAnimReadChunk *)NuAlloc(sizeof(NuAnimReadChunk), NuAnimSourceFileName, 0x4a8);
-        u32 array_size = (u32)curve_set_count * sizeof(void *);
-        chunk->shared_curve_count = 0;
-        chunk->curve_sets = NULL;
-        chunk->curve_data = NULL;
-        chunk->shared_curves = NULL;
+        memset(chunk, 0, sizeof(NuAnimReadChunk));
         chunk->curve_set_count = curve_set_count;
-        chunk->curve_sets = (NuAnimReadCurveSet **)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4ac);
-        memset(chunk->curve_sets, 0, array_size);
+        chunk->curve_sets =
+            (NuAnimReadCurveSet **)NuAlloc(curve_set_count * sizeof(NuAnimReadCurveSet *), NuAnimSourceFileName, 0x4ac);
+        memset(chunk->curve_sets, 0, curve_set_count * sizeof(NuAnimReadCurveSet *));
         return chunk;
     }
 
@@ -889,7 +886,7 @@ extern "C" {
         NuAnimDataPrefixView *animation = (NuAnimDataPrefixView *)animation_data;
         if (animation->first_word.magic < 0x414e4934 || animation->first_word.magic > 0x414e4935)
             return animation->first_word.legacy_end_frame;
-        return (f32)((i32)animation->frame_count + (i32)animation->first_frame);
+        return (f32)animation->frame_count + (f32)animation->first_frame;
     }
 
     f32 __cdecl NuAnimEndFrameOld(void *animation_data) {
@@ -3365,6 +3362,7 @@ extern "C" {
     void *__cdecl NuAnimData2Fixup(i32 file_size, void **data) {
         u32 *header = (u32 *)*data;
         u32 magic = header[0];
+        NuAnimData2FileHeader_PC **file;
 
         if ((i32)header[1] >= (i32)0x414e4935)
             return NuPtrBlockFix(header);
@@ -3373,14 +3371,13 @@ extern "C" {
             return header;
         }
 
+        if (magic != 2)
+            AnimationDiagnosticNoOpPc();
         header[0] = (u32)file_size;
-        {
-            i32 relocation_delta = (i32)((u32)header - header[1]);
-            header[2] = (u32)NuAnimData2FixPtrs((void *)header[2], relocation_delta, 0, 0);
-        }
-        header = (u32 *)*data;
-        header[1] = (u32)header;
-        return (void *)header[2];
+        file = (NuAnimData2FileHeader_PC **)data;
+        (*file)->animation = NuAnimData2FixPtrs((*file)->animation, (i32)((u32)*file - (*file)->relocation_base), 0, 0);
+        (*file)->relocation_base = (u32)*file;
+        return (*file)->animation;
     }
 
     void *__cdecl NuAnimData2Relocate(void **data, VARIPTR *cursor) {
