@@ -166,6 +166,19 @@ AISTATE_PC *__cdecl AIStateFind(const char *name, AISCRIPT_PC *script) {
     return NULL;
 }
 
+static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size) {
+    void *ret = NULL;
+
+    if (buf != NULL && buf_end != NULL && buf->addr + size < buf_end->addr) {
+        ret = (void *)((buf->addr + 15) & ~15u);
+        buf->addr = ((buf->addr + 15) & ~15u) + size;
+        memset(ret, 0, size);
+    } else {
+        AIScriptMissingStateDiagnostic();
+    }
+    return ret;
+}
+
 #define AISCRIPT_COPY_ARENA_STRING(source, destination, cursor, end)                                                   \
     do {                                                                                                               \
         const char *copy_source = (source);                                                                            \
@@ -190,10 +203,7 @@ AISTATE_PC *__cdecl AIStateFind(const char *name, AISCRIPT_PC *script) {
         if (text != NULL) {                                                                                            \
             length = NuStrLen(text);                                                                                   \
             if (length != 0) {                                                                                         \
-                (destination) = (char *)AIScriptBufferAlloc((buffer), (end), length + 1);                              \
-                if ((destination) == NULL) {                                                                           \
-                    AIScriptMissingStateDiagnostic();                                                                  \
-                }                                                                                                      \
+                (destination) = (char *)AIScriptBufferAllocOrWarn((buffer), (end), length + 1);                        \
                 NuStrCpy((destination), text);                                                                         \
             }                                                                                                          \
         }                                                                                                              \
@@ -206,7 +216,7 @@ void __cdecl AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf
     while (src_cond != NULL) {
         AICONDITION_PC *dst_cond;
 
-        dst_cond = (AICONDITION_PC *)AIScriptBufferAlloc(buf, buf_end, sizeof(AICONDITION_PC));
+        dst_cond = (AICONDITION_PC *)AIScriptBufferAllocOrWarn(buf, buf_end, sizeof(AICONDITION_PC));
         if (dst_cond != NULL) {
             memset(dst_cond, 0, sizeof(AICONDITION_PC));
             PCByteCopy_candidate(dst_cond, src_cond, sizeof(AICONDITION_PC));
@@ -218,8 +228,6 @@ void __cdecl AIScriptCopyConditions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf
             AISCRIPT_COPY_NATIVE_STRING(src_cond->next_state_name, dst_cond->next_state_name, buf, buf_end);
 
             NuLinkedListAppend(dst, &dst_cond->link);
-        } else {
-            AIScriptMissingStateDiagnostic();
         }
 
         src_cond = (AICONDITION_PC *)NuLinkedListGetNext(src, &src_cond->link);
@@ -234,23 +242,30 @@ void __cdecl AIScriptCopyActions(NULISTHDR *src, NULISTHDR *dst, VARIPTR *buf, V
         AIACTION_PC *dst_action;
         i32 i;
 
-        dst_action = (AIACTION_PC *)AIScriptBufferAlloc(buf, buf_end, sizeof(AIACTION_PC));
+        dst_action = (AIACTION_PC *)AIScriptBufferAllocOrWarn(buf, buf_end, sizeof(AIACTION_PC));
         if (dst_action != NULL) {
-            dst_action->params = (char **)AIScriptBufferAlloc(buf, buf_end, src_action->param_count * sizeof(char *));
-            if (dst_action->params == NULL) {
-                AIScriptMissingStateDiagnostic();
-            }
+            dst_action->params =
+                (char **)AIScriptBufferAllocOrWarn(buf, buf_end, src_action->param_count * sizeof(char *));
             dst_action->param_count = src_action->param_count;
 
             for (i = 0; i < dst_action->param_count; i++) {
-                AISCRIPT_COPY_NATIVE_STRING(src_action->params[i], dst_action->params[i], buf, buf_end);
+                char *text = src_action->params[i];
+                char *copy = NULL;
+                u32 length;
+
+                if (text != NULL) {
+                    length = NuStrLen(text);
+                    if (length != 0) {
+                        copy = (char *)AIScriptBufferAllocOrWarn(buf, buf_end, length + 1);
+                        NuStrCpy(copy, text);
+                    }
+                }
+                dst_action->params[i] = copy;
             }
 
             dst_action->definition = src_action->definition;
 
             NuLinkedListAppend(dst, &dst_action->link);
-        } else {
-            AIScriptMissingStateDiagnostic();
         }
 
         src_action = (AIACTION_PC *)NuLinkedListGetNext(src, &src_action->link);
@@ -261,18 +276,16 @@ static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer
     AISTATE_PC *copy;
     AIREFSCRIPT_PC *source_reference;
 
-    copy = (AISTATE_PC *)AIScriptBufferAlloc(buffer, end_buffer, sizeof(AISTATE_PC));
-    if (copy == NULL) {
-        AIScriptMissingStateDiagnostic();
+    copy = (AISTATE_PC *)AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AISTATE_PC));
+    if (copy == NULL)
         return NULL;
-    }
     copy->name = AIScriptCopyStringPc(source_state->name, buffer, end_buffer);
     AIScriptCopyConditions(&source_state->conditions, &copy->conditions, buffer, end_buffer);
     AIScriptCopyActions(&source_state->actions, &copy->actions, buffer, end_buffer);
     source_reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&source_state->reference_scripts);
     while (source_reference != NULL) {
         AIREFSCRIPT_PC *reference_copy;
-        reference_copy = (AIREFSCRIPT_PC *)AIScriptBufferAlloc(buffer, end_buffer, sizeof(AIREFSCRIPT_PC));
+        reference_copy = (AIREFSCRIPT_PC *)AIScriptBufferAllocOrWarn(buffer, end_buffer, sizeof(AIREFSCRIPT_PC));
         if (reference_copy != NULL) {
             char *reference_string;
             AISCRIPT_COPY_NATIVE_STRING(source_reference->name, reference_string, buffer, end_buffer);
@@ -283,8 +296,6 @@ static AISTATE_PC *AIScriptCopyStatePc(AISTATE_PC *source_state, VARIPTR *buffer
             reference_copy->check_level_scripts = source_reference->check_level_scripts;
             AIScriptCopyConditions(&source_reference->conditions, &reference_copy->conditions, buffer, end_buffer);
             NuLinkedListAppend(&copy->reference_scripts, &reference_copy->link);
-        } else {
-            AIScriptMissingStateDiagnostic();
         }
         source_reference =
             (AIREFSCRIPT_PC *)NuLinkedListGetNext(&source_state->reference_scripts, &source_reference->link);
@@ -1524,39 +1535,48 @@ static __declspec(noinline) i32 AIScriptProcessReferences(AISYS_PC *system, AIPA
     NULISTHDR *references;
     AIREFSCRIPT_PC *reference;
     AICONDITION_PC *entry_condition;
-    i32 index;
     if (system == NULL || processor == NULL || processor->script == NULL || processor->active_ref_count >= 4)
         return 0;
-    references = &processor->script->reference_scripts;
-    for (index = 0; index < 2; index++) {
-        reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(references);
-        while (reference != NULL) {
-            processor->param_stack[1].is_first_time_state = 1;
-            processor->param_stack[1].force_complex_eval = 1;
-            if (NuLinkedListGetHead(&reference->conditions) == NULL ||
-                AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) {
-                if (reference->script != NULL) {
-                    processor->param_stack[0].is_first_time_state = 1;
-                    processor->param_stack[0].force_complex_eval = 1;
-                    entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions,
-                                                                     packet, processor, 0);
-                    if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state) {
-                        processor->active_refs[processor->active_ref_count] = reference;
-                        processor->active_ref_count++;
-                        AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0, reference->script,
-                                              entry_condition->next_state);
-                        return 1;
-                    }
-                }
-            }
-            reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(
-                index == 0 ? &processor->script->reference_scripts : references, &reference->link);
+    for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(&processor->script->reference_scripts); reference != NULL;
+         reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(&processor->script->reference_scripts, &reference->link)) {
+        processor->param_stack[1].is_first_time_state = 1;
+        processor->param_stack[1].force_complex_eval = 1;
+        if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
+             AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) &&
+            reference->script != NULL) {
+            processor->param_stack[0].is_first_time_state = 1;
+            processor->param_stack[0].force_complex_eval = 1;
+            entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions, packet,
+                                                             processor, 0);
+            if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state)
+                goto found;
         }
-        if (processor->state == NULL)
-            break;
-        references = &processor->state->reference_scripts;
+    }
+    if (processor->state == NULL)
+        return 0;
+    references = &processor->state->reference_scripts;
+    for (reference = (AIREFSCRIPT_PC *)NuLinkedListGetHead(references); reference != NULL;
+         reference = (AIREFSCRIPT_PC *)NuLinkedListGetNext(references, &reference->link)) {
+        processor->param_stack[1].is_first_time_state = 1;
+        processor->param_stack[1].force_complex_eval = 1;
+        if ((NuLinkedListGetHead(&reference->conditions) == NULL ||
+             AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) != NULL) &&
+            reference->script != NULL) {
+            processor->param_stack[0].is_first_time_state = 1;
+            processor->param_stack[0].force_complex_eval = 1;
+            entry_condition = AIScriptProcessStateConditions(system, &reference->script->base_state->conditions, packet,
+                                                             processor, 0);
+            if (entry_condition != NULL && entry_condition->next_state != reference->script->base_state)
+                goto found;
+        }
     }
     return 0;
+found:
+    processor->active_refs[processor->active_ref_count] = reference;
+    processor->active_ref_count++;
+    AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0, reference->script,
+                          entry_condition->next_state);
+    return 1;
 }
 
 void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC *packet, AISCRIPTPROCESS_PC *processor,

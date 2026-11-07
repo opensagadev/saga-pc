@@ -1450,6 +1450,11 @@
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "??0?$CSListLink@VSplineObject@@@@QAE@XZ",
    "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/aiscript.c",
+   "symbol": "_AIScriptBufferAllocOrWarn",
+   "kind": "function"
   }
  ]
 }
