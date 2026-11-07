@@ -40,7 +40,7 @@ extern "C" {
         i32 menu_id = GetMenuID();
         i32 menu_active, active_players, device, both_pads = 0;
         i32 first_active, second_active, previous_item, previous_column, result;
-        i16 previous_menu;
+        i32 previous_menu;
         u8 widescreen;
         if (check_buttons != 0 && WORLD != NULL) {
             MenuUpdateButtonHistoryPc();
@@ -88,9 +88,7 @@ extern "C" {
                 second_active = PlayerProgress[1].active;
                 if (second_active != 0 && first_active == 0)
                     pad = (MENU_INPUT_PAD_PC *)&GamePadStorage[1];
-                if (first_active != 0 && second_active != 0)
-                    both_pads = 1;
-                else if (first_active == 0 && second_active == 0) {
+                if (first_active == 0 && second_active == 0) {
                     readpads_always = 1;
                     both_pads = 1;
                 }
