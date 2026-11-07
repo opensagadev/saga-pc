@@ -17815,6 +17815,7 @@ class SoundQueueVolumeSink {
     virtual i32 __stdcall SetVolume(i32 volume) = 0;
 };
 
+void NetMessagePoolError(void);
 struct NETMESSAGE_PC {
     struct MessageData {
         u8 bytes[0x4b0];
@@ -17826,6 +17827,35 @@ struct NETMESSAGE_PC {
     u32 read_offset;
     u32 write_offset;
     NETMESSAGE_PC(u32 offset);
+    NETMESSAGE_PC(const NETMESSAGE_PC &other) {
+        data = other.data;
+        read_offset = other.read_offset;
+        write_offset = other.write_offset;
+        swap_endianness = other.swap_endianness;
+        if (data != NULL) {
+            data->references++;
+        } else {
+            NetMessagePoolError();
+        }
+    }
+    /* Standalone copy at 0x53d640 (likely the destructor in retail). */
+    void Release() {
+        if (data != NULL) {
+            u32 references = data->references;
+            if (references > 1) {
+                data->references = references - 1;
+            } else {
+                data->references = 0;
+            }
+        }
+    }
+    i32 GetSize() {
+        if (data == NULL) {
+            return 0;
+        }
+        return write_offset - read_offset;
+    }
+    void MakeUnique();
     void Write16(const i16 *value);
     void Write32(const i32 *value);
 };
@@ -29466,6 +29496,8 @@ class V2Peer {
   public:
     virtual ~V2Peer();
     virtual void Disconnect();
+    virtual void Send(NETMESSAGE_PC message);
+    virtual void SendEx(NETMESSAGE_PC message, i32 arg0, i32 arg1);
 
     V2Peer *next;
     V2Peer *prev;
@@ -29516,7 +29548,7 @@ class V2ClosingList {
 class NetTransportClient {
   public:
     virtual void Slot00() = 0;
-    virtual void Slot04() = 0;
+    virtual void OnMessage(NETMESSAGE_PC message, u8 channel, i32 arg) = 0;
     virtual i32 Query08(i32 value) = 0;
     virtual void Notify0c(i32 value) = 0;
     virtual void OnPeerRemoved(V2Peer *peer, i32 reason) = 0;
@@ -29566,10 +29598,10 @@ class NetTransportList {
 
 class NetTransporterInterface {
   public:
-    virtual void Slot00() = 0;
-    virtual void Slot04() = 0;
-    virtual void Slot08() = 0;
-    virtual void Slot0c() = 0;
+    virtual void Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer) = 0;
+    virtual void SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) = 0;
+    virtual void Broadcast(NETMESSAGE_PC message, u8 channel) = 0;
+    virtual void BroadcastEx(NETMESSAGE_PC message, u8 channel) = 0;
     virtual void AddClient(NetTransportClient *client, u8 channel, const char *name) = 0;
     virtual void RemoveClient(NetTransportClient *client, u8 channel) = 0;
     virtual ~NetTransporterInterface() {
@@ -29593,10 +29625,10 @@ class BaseThing {
 
 class TTNetwork : public NetTransporter, public BaseThing {
   public:
-    virtual void Slot00();
-    virtual void Slot04();
-    virtual void Slot08();
-    virtual void Slot0c();
+    virtual void Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer);
+    virtual void SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1);
+    virtual void Broadcast(NETMESSAGE_PC message, u8 channel);
+    virtual void BroadcastEx(NETMESSAGE_PC message, u8 channel);
     i32 QueryAll08(i32 value);
     void NotifyAll0c(i32 value);
     void NotifyPeerRemoved(V2Peer *peer, i32 reason);
@@ -29607,6 +29639,9 @@ class TTNetwork : public NetTransporter, public BaseThing {
     i32 QueryAll24(i32 value, i32 extra);
     void NotifyAll28(i32 value, i32 extra);
     void UpdateClientStats();
+    void DeliverMessage(NETMESSAGE_PC &message, u8 channel, i32 arg);
+    void RecordSent(NETMESSAGE_PC message, u8 channel);
+    void RecordReceived(NETMESSAGE_PC message, u8 channel);
 };
 extern TTNetwork theTTNetwork;
 
@@ -29689,5 +29724,6 @@ class V2SessionManager {
 
     static V2SessionManager *sm_instance;
 };
+extern V2SessionManager *theNetSessionManager;
 #endif
 #endif

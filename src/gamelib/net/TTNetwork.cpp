@@ -1,5 +1,7 @@
 #include "saga.h"
 
+V2SessionManager *theNetSessionManager;
+
 /* TTNetwork object (0x60dee0-0x60ffcb): network statistics and the TTNetwork
  * singleton. Only the statistics helpers are ported so far. */
 
@@ -214,6 +216,99 @@ void TTNetwork::UpdateClientStats() {
     TT_FOR_EACH_CLIENT(entry) {
         entry->stats.Update();
     }
+}
+
+void TTNetwork::DeliverMessage(NETMESSAGE_PC &message, u8 channel, i32 arg) {
+    TT_FOR_EACH_CLIENT(entry) {
+        if (entry->channel == channel) {
+            entry->stats.totals.values[1] += message.GetSize();
+            entry->stats.totals.values[3] += 1;
+            entry->client->OnMessage(message, channel, arg);
+        }
+    }
+}
+
+void TTNetwork::RecordSent(NETMESSAGE_PC message, u8 channel) {
+    TT_FOR_EACH_CLIENT(entry) {
+        if (entry->channel == channel) {
+            entry->stats.totals.values[0] += message.GetSize();
+            entry->stats.totals.values[2] += 1;
+            break;
+        }
+    }
+    message.Release();
+}
+
+void TTNetwork::RecordReceived(NETMESSAGE_PC message, u8 channel) {
+    TT_FOR_EACH_CLIENT(entry) {
+        if (entry->channel == channel) {
+            entry->stats.totals.values[1] += message.GetSize();
+            entry->stats.totals.values[3] += 1;
+            break;
+        }
+    }
+    message.Release();
+}
+
+void NETMESSAGE_PC::MakeUnique() {
+    MessageData *entry;
+    for (entry = sm_poolMessageData; entry != sm_poolMessageData + 512; ++entry) {
+        if (entry->references <= 0) {
+            entry->references = 1;
+            goto found;
+        }
+    }
+    entry = NULL;
+found:
+    if (data != NULL && entry != NULL) {
+        PCByteCopy_candidate(entry->bytes + read_offset, data->bytes + read_offset, write_offset - read_offset);
+    } else {
+        NetMessagePoolError();
+    }
+    Release();
+    data = entry;
+}
+
+void TTNetwork::Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer) {
+    if (message.GetSize() > 0) {
+        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        RecordSent(message, channel);
+        peer->Send(message);
+    }
+    message.Release();
+}
+
+void TTNetwork::SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) {
+    if (message.GetSize() > 0) {
+        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        RecordSent(message, channel);
+        peer->SendEx(message, arg0, arg1);
+    }
+    message.Release();
+}
+
+void TTNetwork::Broadcast(NETMESSAGE_PC message, u8 channel) {
+    if (message.GetSize() > 0) {
+        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        RecordSent(message, channel);
+        for (V2Peer *peer = V2SessionManager::sm_instance->peer_list.head; peer != NULL; peer = peer->next) {
+            message.MakeUnique();
+            peer->Send(message);
+        }
+    }
+    message.Release();
+}
+
+void TTNetwork::BroadcastEx(NETMESSAGE_PC message, u8 channel) {
+    if (message.GetSize() > 0) {
+        PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
+        RecordSent(message, channel);
+        for (V2Peer *peer = V2SessionManager::sm_instance->peer_list.head; peer != NULL; peer = peer->next) {
+            message.MakeUnique();
+            peer->SendEx(message, 0, 0);
+        }
+    }
+    message.Release();
 }
 
 void NetStatCounters::Clear() {

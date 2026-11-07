@@ -3696,8 +3696,11 @@ address,symbol,size,ctype
 0x53c690,_routeEditor_MainMenu,301,eduimenu_s *__cdecl (void)
 0x53c7c0,_routeEditor_Process,1313,
 0x53ccf0,_aieditor_Init,1081,
+0x53d180,?GetSize@NETMESSAGE_PC@@QAEHXZ,16,
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
+0x53d460,??0NETMESSAGE_PC@@QAE@ABU0@@Z,60,
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
+0x53d640,?Release@NETMESSAGE_PC@@QAEXXZ,39,
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x53dc80,_SplineLength,141,"f32 __cdecl (NUGSPLINE *, i32)"
 0x53dd10,_OnOrOutsidePlane,54,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -6952,6 +6955,9 @@ address,symbol,size,ctype
 0x60e480,?QueryAll24@TTNetwork@@QAEHHH@Z,57,
 0x60e4c0,?NotifyAll28@TTNetwork@@QAEXHH@Z,42,
 0x60e4f0,?UpdateClientStats@TTNetwork@@QAEXXZ,26,
+0x60e510,?DeliverMessage@TTNetwork@@QAEXAAUNETMESSAGE_PC@@EH@Z,118,
+0x60e590,?RecordSent@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
+0x60e5f0,?RecordReceived@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
 0x60ed30,?RemoveDependancies@BaseThing@@UAEHPAUThingRemoveData@@@Z,8,
 0x60ed40,?EnterLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
 0x60ed50,?ExitLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
@@ -6960,6 +6966,12 @@ address,symbol,size,ctype
 0x60ed80,?ProcessOnlyWhenPaused@BaseThing@@UAEXPAUThingProcessData@@@Z,3,
 0x60ed90,?Render@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
 0x60eda0,?Effects@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
+0x60ee80,?MakeUnique@NETMESSAGE_PC@@QAEXXZ,144,
+0x60ef10,?Send@TTNetwork@@UAEXUNETMESSAGE_PC@@EPAVV2Peer@@@Z,180,
+0x60efd0,?SendEx@TTNetwork@@UAEXUNETMESSAGE_PC@@EPAVV2Peer@@HH@Z,190,
+0x60f090,?Broadcast@TTNetwork@@UAEXUNETMESSAGE_PC@@E@Z,256,
+0x60f190,?BroadcastEx@TTNetwork@@UAEXUNETMESSAGE_PC@@E@Z,260,
+0x60f2d0,?NetMessagePoolError@@YAXXZ,13,
 0x60f4b0,?Clear@NetStatCounters@@QAEXXZ,14,
 0x60f4c0,??YNetStatCounters@@QAEAAU0@ABU0@@Z,31,
 0x60f4e0,??ZNetStatCounters@@QAEAAU0@ABU0@@Z,31,
@@ -26725,6 +26737,7 @@ address,symbol,size,ctype
 0x28572c4,?destination_surface@?4??PostFilterCopyTexturePc@@9@4UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
 0x28572e0,?source_surface@?4??PostFilterCopyTexturePc@@9@4UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
 0x28572fc,?$S1@?4??PostFilterCopyTexturePc@@9@4IA,4,u32
+0x2857300,?theNetSessionManager@@3PAVV2SessionManager@@A,4,
 0x2857308,?theTTNetwork@@3VTTNetwork@@A,,
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,616448,NETMESSAGE_PC::MessageData[512]
 0x28fec24,?sm_instance@V2SessionManager@@2PAV1@A,4,V2SessionManager *
