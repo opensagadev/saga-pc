@@ -2,44 +2,49 @@
 
 #include <string.h>
 
+extern u16 PodRaceBDieAngle, PodRaceCDieAngle;
+
 i32 __cdecl CutScene_StartFn_LSW(CUTINFO *cut) {
     NUMTX matrix;
     NUVEC *position;
-    u16 degrees;
+    u16 rotation;
 
-    if (PODRACE_ADATA != NULL && PODRACE_ADATA == WORLD->area) {
+    if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
         if (cut != game_cutscenes_podrace_pod_explode && cut != game_cutscenes_podrace_out_of_time) {
             return 0;
         }
         if (WORLD->current_level == PODRACEA_LDATA) {
             position = &PodRaceADiePos;
-            degrees = podrace_die_angle_a;
+            rotation = (u16)((podrace_die_angle_a << 16) / 360);
         } else if (WORLD->current_level == PODRACEB_LDATA) {
             position = &PodRaceBDiePos;
-            degrees = 90;
+            rotation = (u16)((PodRaceBDieAngle << 16) / 360);
         } else {
             position = &PodRaceCDiePos;
-            degrees = 90;
+            rotation = (u16)((PodRaceCDieAngle << 16) / 360);
         }
-    } else if (BONUS_GUNSHIP_ADATA != NULL && BONUS_GUNSHIP_ADATA == WORLD->area) {
+        NuMtxSetRotationY(&matrix, rotation);
+        NuMtxTranslate(&matrix, position);
+        instNuGCutSceneSetMtx((INSTNUGCUTSCENE *)cut->instance, &matrix);
+        return 1;
+    }
+    if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
         if (cut != game_cutscenes_bonus_gunship_cavalry_explode) {
             return 0;
         }
         if (WORLD->current_level == BONUS_GUNSHIPA_LDATA) {
             position = &GunshipADiePos;
-            degrees = podrace_die_angle_b;
+            rotation = (u16)((podrace_die_angle_b << 16) / 360);
         } else {
             position = &GunshipBDiePos;
-            degrees = podrace_die_angle_c;
+            rotation = (u16)((podrace_die_angle_c << 16) / 360);
         }
-    } else {
-        return 0;
+        NuMtxSetRotationY(&matrix, rotation);
+        NuMtxTranslate(&matrix, position);
+        instNuGCutSceneSetMtx((INSTNUGCUTSCENE *)cut->instance, &matrix);
+        return 1;
     }
-
-    NuMtxSetRotationY(&matrix, (NUANG)(((i32)degrees << 16) / 360));
-    NuMtxTranslate(&matrix, position);
-    instNuGCutSceneSetMtx((INSTNUGCUTSCENE *)cut->instance, &matrix);
-    return 1;
+    return 0;
 }
 
 extern void *game_cutscenes_podrace_avalanche;

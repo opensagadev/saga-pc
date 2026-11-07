@@ -22600,9 +22600,9 @@ address,symbol,size,ctype
 0x007f5d04,_PodAvalancheShakeRange,4,f32
 0x007f5d08,_PodRaceADiePos,12,NUVEC
 0x007f5d14,_PodRaceBDiePos,12,NUVEC
-0x007f5d20,__real@000000000000005a,2,const u16
+0x007f5d20,_PodRaceBDieAngle,2,u16
 0x007f5d24,_PodRaceCDiePos,12,NUVEC
-0x007f5d30,__real@000000000000005a_2,2,const u16
+0x007f5d30,_PodRaceCDieAngle,2,u16
 0x007f5d34,_GunshipADiePos,12,NUVEC
 0x007f5d40,_GunshipBDiePos,12,NUVEC
 0x7f5db0,_AdaptiveDifficultyRecoveryTimePc,4,f32

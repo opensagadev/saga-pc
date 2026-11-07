@@ -8648,7 +8648,9 @@ extern "C" {
     void *game_cutscenes_podrace_avalanche = 0;
     NUVEC PodRaceADiePos = {350.0f, 0.25f, -15.0f};
     NUVEC PodRaceBDiePos = {138.0f, 0.15f, 178.0f};
+    u16 PodRaceBDieAngle = 90;
     NUVEC PodRaceCDiePos = {140.0f, -7.2f, 52.0f};
+    u16 PodRaceCDieAngle = 90;
     NUVEC GunshipADiePos = {10.0f, -1.0f, -20.0f};
     NUVEC GunshipBDiePos = {0.0f, -1.0f, -150.0f};
     LEVELDATA_PC *PODRACEA_LDATA = 0;
