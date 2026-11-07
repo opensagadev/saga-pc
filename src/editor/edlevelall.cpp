@@ -479,13 +479,6 @@ extern "C" {
     void __cdecl EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
     void __cdecl EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
     void __cdecl EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
-#define EDDRAW_SET_POINT(v, px, py, pz)                                                                                \
-    do {                                                                                                               \
-        (v).x = (px);                                                                                                  \
-        (v).y = (py);                                                                                                  \
-        (v).z = (pz);                                                                                                  \
-        (v).w = 0.0f;                                                                                                  \
-    } while (0)
     void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour);
     void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
     void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
@@ -985,6 +978,17 @@ static inline void VuVecSet(VuVec &v, f32 x, f32 y, f32 z, f32 w) {
     v.y = y;
     v.z = z;
     v.w = w;
+}
+
+/* A VuVec built by value; the editor drawing code copies these temporaries
+ * into its points with VuVecCopy. */
+static inline VuVec VuVecMake(f32 x, f32 y, f32 z, f32 w) {
+    VuVec v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
 }
 
 /* The origin as a point: 0 0 0 1. */
@@ -1592,55 +1596,70 @@ void __cdecl EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segmen
 }
 
 void __cdecl EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
-    __declspec(align(16)) NUVEC4 points[4];
+    __declspec(align(16)) VuVec points[4];
+    __declspec(align(16)) VuVec point;
     i32 i;
-    EDDRAW_SET_POINT(points[0], 0.0f, 0.0f, -size);
-    EDDRAW_SET_POINT(points[1], 0.0f, 0.0f, size);
-    EDDRAW_SET_POINT(points[2], size * 0.5f, 0.0f, 0.0f);
-    EDDRAW_SET_POINT(points[3], -size * 0.5f, 0.0f, 0.0f);
+    VuVecSet(point, 0.0f, 0.0f, -size, 0.0f);
+    VuVecCopy(points[0], point);
+    VuVecSet(point, 0.0f, 0.0f, size, 0.0f);
+    VuVecCopy(points[1], point);
+    VuVecSet(point, size * 0.5f, 0.0f, 0.0f, 0.0f);
+    VuVecCopy(points[2], point);
+    VuVecSet(point, -size * 0.5f, 0.0f, 0.0f, 0.0f);
+    VuVecCopy(points[3], point);
     for (i = 0; i < 4; i++)
-        NuVecMtxTransform((NUVEC *)&points[i], (NUVEC *)&points[i], transform);
-    EdDrawLineSegment((NUVEC *)&points[0], (NUVEC *)&points[1], colour);
-    EdDrawLineSegment((NUVEC *)&points[1], (NUVEC *)&points[2], colour);
-    EdDrawLineSegment((NUVEC *)&points[1], (NUVEC *)&points[3], colour);
-    EdDrawLineSegment((NUVEC *)&points[2], (NUVEC *)&points[3], colour);
+        NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
+    EdDrawLineSegment(&points[0].xyz, &points[1].xyz, colour);
+    EdDrawLineSegment(&points[1].xyz, &points[2].xyz, colour);
+    EdDrawLineSegment(&points[1].xyz, &points[3].xyz, colour);
+    EdDrawLineSegment(&points[2].xyz, &points[3].xyz, colour);
 }
 
 void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
-    __declspec(align(16)) NUVEC4 points[9];
+    __declspec(align(16)) VuVec points[9];
+    __declspec(align(16)) VuVec point;
     i32 i;
-    EDDRAW_SET_POINT(points[0], size, size, -size);
-    EDDRAW_SET_POINT(points[1], size, size, size);
-    EDDRAW_SET_POINT(points[2], -size, size, size);
-    EDDRAW_SET_POINT(points[3], -size, size, -size);
-    EDDRAW_SET_POINT(points[4], size, -size, -size);
-    EDDRAW_SET_POINT(points[5], size, -size, size);
-    EDDRAW_SET_POINT(points[6], -size, -size, size);
-    EDDRAW_SET_POINT(points[7], -size, -size, -size);
-    EDDRAW_SET_POINT(points[8], 0.0f, 0.0f, size);
+    VuVecSet(point, size, size, -size, 0.0f);
+    VuVecCopy(points[0], point);
+    VuVecSet(point, size, size, size, 0.0f);
+    VuVecCopy(points[1], point);
+    VuVecSet(point, -size, size, size, 0.0f);
+    VuVecCopy(points[2], point);
+    VuVecSet(point, -size, size, -size, 0.0f);
+    VuVecCopy(points[3], point);
+    VuVecSet(point, size, -size, -size, 0.0f);
+    VuVecCopy(points[4], point);
+    VuVecSet(point, size, -size, size, 0.0f);
+    VuVecCopy(points[5], point);
+    VuVecSet(point, -size, -size, size, 0.0f);
+    VuVecCopy(points[6], point);
+    VuVecSet(point, -size, -size, -size, 0.0f);
+    VuVecCopy(points[7], point);
+    VuVecSet(point, 0.0f, 0.0f, size, 0.0f);
+    VuVecCopy(points[8], point);
     for (i = 0; i < 9; i++)
-        NuVecMtxTransform((NUVEC *)&points[i], (NUVEC *)&points[i], transform);
-    EdDrawLineSegment((NUVEC *)&points[0], (NUVEC *)&points[1], colour);
-    EdDrawLineSegment((NUVEC *)&points[1], (NUVEC *)&points[2], colour);
-    EdDrawLineSegment((NUVEC *)&points[2], (NUVEC *)&points[3], colour);
-    EdDrawLineSegment((NUVEC *)&points[3], (NUVEC *)&points[0], colour);
-    EdDrawLineSegment((NUVEC *)&points[0], (NUVEC *)&points[2], colour);
-    EdDrawLineSegment((NUVEC *)&points[1], (NUVEC *)&points[3], colour);
-    EdDrawLineSegment((NUVEC *)&points[4], (NUVEC *)&points[5], colour);
-    EdDrawLineSegment((NUVEC *)&points[5], (NUVEC *)&points[6], colour);
-    EdDrawLineSegment((NUVEC *)&points[6], (NUVEC *)&points[7], colour);
-    EdDrawLineSegment((NUVEC *)&points[7], (NUVEC *)&points[4], colour);
-    EdDrawLineSegment((NUVEC *)&points[0], (NUVEC *)&points[4], colour);
-    EdDrawLineSegment((NUVEC *)&points[1], (NUVEC *)&points[5], colour);
-    EdDrawLineSegment((NUVEC *)&points[2], (NUVEC *)&points[6], colour);
-    EdDrawLineSegment((NUVEC *)&points[3], (NUVEC *)&points[7], colour);
-    EdDrawLineSegment((NUVEC *)&points[5], (NUVEC *)&points[8], colour);
-    EdDrawLineSegment((NUVEC *)&points[6], (NUVEC *)&points[8], colour);
+        NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
+    EdDrawLineSegment(&points[0].xyz, &points[1].xyz, colour);
+    EdDrawLineSegment(&points[1].xyz, &points[2].xyz, colour);
+    EdDrawLineSegment(&points[2].xyz, &points[3].xyz, colour);
+    EdDrawLineSegment(&points[3].xyz, &points[0].xyz, colour);
+    EdDrawLineSegment(&points[0].xyz, &points[2].xyz, colour);
+    EdDrawLineSegment(&points[1].xyz, &points[3].xyz, colour);
+    EdDrawLineSegment(&points[4].xyz, &points[5].xyz, colour);
+    EdDrawLineSegment(&points[5].xyz, &points[6].xyz, colour);
+    EdDrawLineSegment(&points[6].xyz, &points[7].xyz, colour);
+    EdDrawLineSegment(&points[7].xyz, &points[4].xyz, colour);
+    EdDrawLineSegment(&points[0].xyz, &points[4].xyz, colour);
+    EdDrawLineSegment(&points[1].xyz, &points[5].xyz, colour);
+    EdDrawLineSegment(&points[2].xyz, &points[6].xyz, colour);
+    EdDrawLineSegment(&points[3].xyz, &points[7].xyz, colour);
+    EdDrawLineSegment(&points[5].xyz, &points[8].xyz, colour);
+    EdDrawLineSegment(&points[6].xyz, &points[8].xyz, colour);
 }
 
 void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) {
-    __declspec(align(16)) NUVEC4 first;
-    __declspec(align(16)) NUVEC4 second;
+    __declspec(align(16)) VuVec first;
+    __declspec(align(16)) VuVec second;
     f64 radius_squared = radius * radius;
     f32 first_radius;
     f32 second_radius;
@@ -1648,6 +1667,8 @@ void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) 
     f32 second_height;
     i32 latitude;
     i32 angle;
+    f32 cosine;
+    f32 sine;
     for (latitude = 0; latitude < 8; latitude++) {
         if (latitude < 4)
             first_radius = radius * NU_SIN_LUT(latitude * 0x1000);
@@ -1666,15 +1687,17 @@ void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) 
         first_height += center->y;
         second_height += center->y;
         for (angle = 0; angle < 0x10000; angle += 0x2000) {
-            EDDRAW_SET_VEC4(&first, center->x + first_radius * NU_COS_LUT(angle), first_height,
-                            center->z + first_radius * NU_SIN_LUT(angle));
-            EDDRAW_SET_VEC4(&second, center->x + second_radius * NU_COS_LUT(angle), second_height,
-                            center->z + second_radius * NU_SIN_LUT(angle));
-            EdDrawLineSegment((NUVEC *)&first, (NUVEC *)&second, colour);
+            cosine = NU_COS_LUT(angle);
+            sine = NU_SIN_LUT(angle);
+            VuVecCopy(first, VuVecMake(center->x + first_radius * cosine, first_height, center->z + first_radius * sine,
+                                       1.0f));
+            VuVecCopy(second, VuVecMake(center->x + second_radius * cosine, second_height,
+                                        center->z + second_radius * sine, 1.0f));
+            EdDrawLineSegment(&first.xyz, &second.xyz, colour);
             if (latitude != 0) {
-                EDDRAW_SET_VEC4(&second, center->x + first_radius * NU_COS_LUT(angle + 0x2000), first_height,
-                                center->z + first_radius * NU_SIN_LUT(angle + 0x2000));
-                EdDrawLineSegment((NUVEC *)&first, (NUVEC *)&second, colour);
+                VuVecCopy(second, VuVecMake(center->x + first_radius * NU_COS_LUT(angle + 0x2000), first_height,
+                                            center->z + first_radius * NU_SIN_LUT(angle + 0x2000), 1.0f));
+                EdDrawLineSegment(&first.xyz, &second.xyz, colour);
             }
         }
     }
