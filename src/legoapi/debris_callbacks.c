@@ -8,33 +8,59 @@ void __cdecl NuVecMtxTransformVU0(NUVEC *out, NUVEC *v, NUMTX *m) {
     out->z = z;
 }
 
-i32 __cdecl DebrisNuASin(f32 value) {
+#define ASIN_NEG_1_OVER_6 PCPathArcSineCoefficient3
+#define ASIN_NEG_3_OVER_40 PCPathArcSineCoefficient5
+#define ASIN_NEG_5_OVER_112 PCPathArcSineCoefficient7
+#define ASIN_NEG_35_OVER_1152 PCPathArcSineCoefficient9
+#define ASIN_POW2(x) ((x) * (x))
+#define ASIN_POW3(x) ((x) * ASIN_POW2(x))
+#define ASIN_POW4(x) (ASIN_POW2(x) * ASIN_POW2(x))
+#define ASIN_POW5(x) (ASIN_POW2(x) * ASIN_POW3(x))
+/* NuASin polynomial; this unit carries its own instance. */
+i32 __cdecl DebrisNuASin(f32 sin) {
+    f32 abs;
+    f32 sqrt;
+    f32 unknown_a;
+    f32 unknown_b;
+    f32 unknown_c;
+    f32 unknown_d;
+
     union {
         f32 value;
         u32 bits;
-    } in, magnitude;
-    f32 root, low, b, c, d;
-    f64 t, square, cube, fourth;
-    f64 polynomial, x;
-    in.value = value;
-    magnitude.bits = in.bits & 0x7fffffff;
-    root = NuFsqrt(1.0f - value * value);
-    low = root < magnitude.value ? root : magnitude.value;
-    x = (magnitude.value - (f64)0.70710677f) * (f64)3.40282e38f;
-    b = (f32)(x < 1.0 ? (x > -1.0 ? x : -1.0) : 1.0);
-    x = value * (f64)3.40282e38f;
-    c = (f32)(x < 1.0 ? x : 1.0);
-    c = c > -1.0f ? c : -1.0f;
-    d = b * c + c;
-    t = low * (b * c);
-    square = t * t;
-    cube = square * t;
-    fourth = square * square;
-    polynomial = d * (f64)0.785398f - t + t * PCPathArcSineCoefficient3 * square +
-                 PCPathArcSineCoefficient5 * square * cube + cube * PCPathArcSineCoefficient7 * fourth +
-                 fourth * PCPathArcSineCoefficient9 * (square * cube);
-    return (i32)(polynomial * (f64)10430.4f);
+    } magnitude;
+    magnitude.value = sin;
+    magnitude.bits &= 0x7fffffff;
+    abs = magnitude.value;
+    sqrt = NuFsqrt(1.0f - sin * sin);
+
+    unknown_a = MIN(sqrt, abs);
+
+    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+
+    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
+    unknown_c = MAX(unknown_c, -1.0f);
+
+    unknown_d = unknown_b * unknown_c + unknown_c;
+
+    return (ASIN_NEG_3_OVER_40 * ASIN_POW2(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW3(unknown_b * unknown_c * unknown_a) +
+            (unknown_d * 0.785398f - (unknown_b * unknown_c * unknown_a) +
+             ASIN_NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * ASIN_POW2(unknown_b * unknown_c * unknown_a)) +
+            ASIN_NEG_5_OVER_112 * ASIN_POW3(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW4(unknown_b * unknown_c * unknown_a) +
+            ASIN_NEG_35_OVER_1152 * ASIN_POW4(unknown_b * unknown_c * unknown_a) *
+                ASIN_POW5(unknown_b * unknown_c * unknown_a)) *
+           10430.4f;
 }
+#undef ASIN_NEG_1_OVER_6
+#undef ASIN_NEG_3_OVER_40
+#undef ASIN_NEG_5_OVER_112
+#undef ASIN_NEG_35_OVER_1152
+#undef ASIN_POW2
+#undef ASIN_POW3
+#undef ASIN_POW4
+#undef ASIN_POW5
 
 i32 __cdecl SolveQuadratic(f32 a, f32 b, f32 c, f32 *first, f32 *second) {
     f64 four_ac, b_squared;
