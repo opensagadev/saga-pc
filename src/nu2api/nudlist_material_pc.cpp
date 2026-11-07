@@ -602,6 +602,50 @@ extern "C" void __cdecl PostBlur7x7HighPc(GRAPHICS_RENDER_TEXTURE_PC *source, i3
     }
 }
 
+/* Two-dimensional normal distribution weight at (x, y). */
+extern "C" f32 __cdecl PostGaussianWeightPc(f32 x, f32 y, f32 sigma) {
+    f32 exponent = -(x * x + y * y) / (2.0f * sigma * sigma);
+    f32 numerator = (f32)exp((f64)exponent);
+    f32 variance = 6.2831855f * sigma * sigma;
+    f32 denominator = (f32)sqrt((f64)variance);
+    return numerator / denominator;
+}
+
+/* Fills the 13 diamond taps (|x| + |y| <= 2) of a unit-sigma Gaussian, weights normalised to scale. */
+extern "C" void __cdecl PostGaussianKernelPc(i32 width, i32 height, NUVEC4 *taps, f32 scale) {
+    f32 texel_width = 1.0f / (f32)width;
+    f32 texel_height = 1.0f / (f32)height;
+    f32 total = 0.0f;
+    i32 count = 0;
+    i32 i, j;
+
+    for (i = -2; i <= 2; i++) {
+        f32 x = (f32)i;
+        for (j = -2; j <= 2; j++) {
+            f32 y = (f32)j;
+            if ((f32)fabs((f64)y) + (f32)fabs((f64)x) <= 2.0) {
+                taps[count].x = x * texel_width;
+                taps[count].y = y * texel_height;
+                taps[count].z = PostGaussianWeightPc(y, x, 1.0f);
+                taps[count].w = 0.0f;
+                total += taps[count].z;
+                count++;
+            }
+        }
+    }
+    for (i = 0; i < count; i++) {
+        f32 normalised = taps[i].z / total;
+        taps[i].z = normalised * scale;
+    }
+}
+
+extern "C" void __cdecl PostBlurNoOp0Pc(void) {
+}
+extern "C" void __cdecl PostBlurNoOp1Pc(void) {
+}
+extern "C" void __cdecl PostBlurNoOp2Pc(void) {
+}
+
 #define POST_BLUR_LOW_ATTACH(texture, lod)                                                                             \
     do {                                                                                                               \
         PC_FRAMEBUFFER_PC *framebuffer = PostBlurFramebufferPc;                                                        \

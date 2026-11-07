@@ -6056,6 +6056,11 @@ address,symbol,size,ctype
 0x5c3990,_PCGraphicsCreatePostEffectWorkTexture,33,"void __cdecl(i32,i32)"
 0x5c3bb0,_PostFilterBlitTexturePc,318,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *)"
 0x5c3da0,_PostBlur7x7HighPc,1959,"void __cdecl(GRAPHICS_RENDER_TEXTURE_PC*,i32,GRAPHICS_RENDER_TEXTURE_PC*,i32,i32,i32,bool,f32,POST_SHADER_PROGRAM_PC*)"
+0x5c4aa0,_PostGaussianWeightPc,103,"f32 __cdecl (f32, f32, f32)"
+0x5c4b10,_PostGaussianKernelPc,499,"void __cdecl (i32, i32, NUVEC4 *, f32)"
+0x5c4d10,_PostBlurNoOp0Pc,1,void __cdecl (void)
+0x5c4d20,_PostBlurNoOp1Pc,1,void __cdecl (void)
+0x5c4d30,_PostBlurNoOp2Pc,1,void __cdecl (void)
 0x5c4d40,?initResources@NuPostFilterGen@@UAEXXZ,13,native exactVT binding; unimplemented extent unclaimed
 0x5c4d50,?destroyResources@NuPostFilterGen@@UAEXXZ,24,native exactVT binding; unimplemented extent unclaimed
 0x5c4d70,?initResources@NuCopyFilter@@UAEXXZ,47,native exactVT binding; unimplemented extent unclaimed
