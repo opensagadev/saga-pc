@@ -174,13 +174,10 @@ extern "C" {
 }
 
 extern "C" i32 __cdecl Bolt_HitPart_LSW(BOLT_PC *, PART_PC *part) {
-    if (part->field_206 == 1) {
-        if (part->scale_time < 2.0f)
-            return 1;
-    } else if (part->field_206 == 2) {
-        if (part->scale_time < 1.0f)
-            return 1;
-    }
+    if (part->field_206 == 1 && part->scale_time < 2.0f)
+        return 1;
+    if (part->field_206 == 2 && part->scale_time < 1.0f)
+        return 1;
     return 0;
 }
 
@@ -189,16 +186,16 @@ extern "C" {
         i16 id = object->id;
         if (id == id_XWING || id == id_MINIXWING || id == VehicleBoltId7f1ad8Pc || id == id_MINIATAT ||
             id == id_MINIROYALSTARSHIP || id == VehicleBoltId7f1aecPc) {
-            if (object->bolt_fire_phase == 0) {
-                if (index == 0 || index == 2)
-                    return 0;
-            } else if (object->bolt_fire_phase == 1) {
-                if (index == 1 || index == 3)
-                    return 0;
-            }
-        } else if (id == VehicleBoltId7f19a4Pc || id == VehicleBoltId7f1af0Pc || id == GameObjectRotationAtstId ||
-                   id == VehicleBoltId7f19e8Pc || id == id_JEDISTARFIGHTERYELLOWEP3) {
-            if (object->bolt_fire_phase != index)
+            if (object->bolt_fire_phase == 0 && (index == 0 || index == 2))
+                return 0;
+            if (object->bolt_fire_phase == 1 && (index == 1 || index == 3))
+                return 0;
+        } else if (id == VehicleBoltId7f19a4Pc || id == VehicleBoltId7f1af0Pc) {
+            if (index != object->bolt_fire_phase)
+                return 0;
+        } else if (id == (i16)GameObjectRotationAtstId || id == VehicleBoltId7f19e8Pc ||
+                   id == id_JEDISTARFIGHTERYELLOWEP3) {
+            if (index != object->bolt_fire_phase)
                 return 0;
         }
         return 1;
@@ -329,12 +326,15 @@ extern "C" void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point,
         effect = bolt->hit_debris;
     }
     for (i32 i = 0; i < 3; ++i) {
-        if (((bolt->flags & 0x40000200) == 0 && point == -1) ||
-            ((bolt->flags & 0x40000200) != 0 && point == -1 && i == 1) || point == i) {
-            AddGameDebris(world->game_debris_sys, effect, &points[i]);
-            if (!(bolt->flags & 0x10000000) && Player_HasDoubleBoltDamage_FromBolt(bolt))
-                AddGameDebris(world->game_debris_sys, effect, &points[i]);
+        if ((bolt->flags & 0x40000200) != 0 && point == -1) {
+            if (i != 1)
+                continue;
+        } else if (point != -1 && point != i) {
+            continue;
         }
+        AddGameDebris(world->game_debris_sys, effect, &points[i]);
+        if (!(bolt->flags & 0x10000000) && Player_HasDoubleBoltDamage_FromBolt(bolt))
+            AddGameDebris(world->game_debris_sys, effect, &points[i]);
     }
     if (bolt->hit_part_debris != -1)
         AddPartDebris(world->part_debris_sys, bolt->hit_part_debris, &bolt->position);
@@ -350,8 +350,7 @@ extern "C" void __cdecl Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point,
         NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.3f, 0);
         PlaySfx("exp_thermalDet", points);
         GameCam_HitJudder();
-        f32 radius = (f32)(AreaPickupScale * 0.5);
-        EXPLOSION_PC *explosion = AddExplosion(&bolt->position, radius, 0.25f, NULL, -1, 0xa067);
+        EXPLOSION_PC *explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1, 0xa067);
         GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
         if (explosion != NULL && Arcade != 0 && owner != NULL && (owner == Player[0] || owner == Player[1]) &&
             (owner->flags_1fc_word & 1) != 0 && (owner->flags_1fc_word & 0x1000) != 0 &&
