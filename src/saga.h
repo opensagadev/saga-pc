@@ -29729,6 +29729,8 @@ struct ClassObjectList {
     ClassObjectListEntry *first;
     ClassObjectListEntry *last;
     i32 count;
+
+    void Remove(ClassObjectListEntry *entry);
 };
 
 class EdTool : public CSListLink<EdTool> {
@@ -29821,6 +29823,7 @@ class ClassEditor : public BaseEditor {
     void PostSaveInitialisation();
     void PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
     void PostLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
+    i32 SelectObject(ClassObject &object, i32 mode);
 };
 extern ClassEditor theClassEditor;
 

@@ -9659,6 +9659,7 @@ address,symbol,size,ctype
 0x6c0a10,?LineToPointDistance@@YAMAAUVuVec@@00PAU1@@Z,499,
 0x6c0d20,?LineToPlaneIntersecion@@YAHAAUVuVec@@00PAU1@@Z,281,
 0x6c1260,??0?$CSListLink@VEdTool@@@@QAE@XZ,20,
+0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,
 0x6c1500,??0?$CSListLink@VPropertyMenu@@@@QAE@XZ,20,
 0x6c1540,??0PropertyMenuList@@QAE@XZ,13,
 0x6c1570,?InsertBefore@PropertyMenuList@@QAEXPAVPropertyMenu@@0@Z,96,
@@ -9694,6 +9695,7 @@ address,symbol,size,ctype
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
 0x6c4470,?Flush@LevelEditor@@QAEXXZ,67,
 0x6c44c0,?CreateEditorList@LevelEditor@@QAEXPAUeduimenu_s@@PAUeduiitem_s@@@Z,159,
+0x6c58a0,?SelectAttr@PropertyTool@@QAEXH@Z,76,
 0x6c5920,?AddPropertyMenuItems@PropertyTool@@QAEXPAUeduimenu_s@@PAUEdClass@@PAXPAUeduiitem_s@@@Z,244,
 0x6c5a20,?AutoLocateMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,197,
 0x6c5af0,??0PropertyMenu@@QAE@XZ,86,
@@ -9738,6 +9740,7 @@ address,symbol,size,ctype
 0x6c87f0,?SetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c8aa0,?GetName@ClassEditor@@UAEPBDXZ,6,
 0x6c94a0,?DrawObjectSphere@ClassEditor@@QAEXAAUClassObject@@H@Z,413,
+0x6c9bf0,?SelectObject@ClassEditor@@QAEHAAUClassObject@@H@Z,505,
 0x6cb250,??0LevelEditor@@QAE@XZ,467,
 0x6cb430,?GetName@LevelEditor@@UAEPBDXZ,6,
 0x6cb440,??_ELevelEditor@@UAEPAXI@Z,,COFF weak alias of ??_GLevelEditor@@UAEPAXI@Z; no independent body

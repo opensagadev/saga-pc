@@ -466,6 +466,7 @@ class PropertyTool : public EdTool {
     }
     virtual i32 Process(EdInputContext &input);
     virtual void Render();
+    void SelectAttr(i32 selected);
 
     PropertyMenuList menus;
     i32 show_type_names;
@@ -2081,6 +2082,91 @@ STATIC_ASSERT(sizeof(KnotHelper) == 0x14);
 KnotHelper::KnotHelper() {
 }
 
+void ClassObjectList::Remove(ClassObjectListEntry *entry) {
+    if (entry->next != NULL)
+        entry->next->previous = entry->previous;
+    else
+        last = entry->previous;
+    if (entry->previous != NULL)
+        entry->previous->next = entry->next;
+    else
+        first = entry->next;
+    entry->next = NULL;
+    entry->previous = NULL;
+    count--;
+}
+
+/* mode 1 toggles the object (and its picked member) in the selection, mode 2
+ * replaces every entry for the same object, anything else replaces the whole
+ * selection. Returns whether the object ends up selected. */
+i32 ClassEditor::SelectObject(ClassObject &object, i32 mode) {
+    i32 selected = 0;
+    ClassObjectListEntry *entry;
+    if (mode == 1) {
+        if (object.object == NULL)
+            goto done;
+        for (entry = selected_objects.first; entry != NULL; entry = entry->next) {
+            if (entry->object == object.object && entry->reference == object.reference) {
+                selected_objects.Remove(entry);
+                theMemoryManager.FreePool(entry, sizeof(ClassObjectListEntry));
+                goto done;
+            }
+        }
+        entry = (ClassObjectListEntry *)theMemoryManager.AllocPool(sizeof(ClassObjectListEntry), 1);
+        if (entry != NULL) {
+            memset(entry, 0, sizeof(ClassObjectListEntry));
+            entry->ed_class = object.ed_class;
+            entry->object = object.object;
+            entry->reference = object.reference;
+            entry->next = NULL;
+            entry->previous = selected_objects.last;
+            if (selected_objects.last != NULL)
+                selected_objects.last->next = entry;
+            selected_objects.last = entry;
+            if (selected_objects.first == NULL)
+                selected_objects.first = entry;
+            selected_objects.count++;
+        }
+    } else {
+        if (mode == 2) {
+            ClassObjectListEntry *next;
+            for (entry = selected_objects.first; entry != NULL; entry = next) {
+                next = entry->next;
+                if (entry->object == object.object) {
+                    selected_objects.Remove(entry);
+                    theMemoryManager.FreePool(entry, sizeof(ClassObjectListEntry));
+                }
+            }
+        } else {
+            while ((entry = selected_objects.first) != NULL) {
+                selected_objects.Remove(entry);
+                theMemoryManager.FreePool(entry, sizeof(ClassObjectListEntry));
+            }
+        }
+        if (object.object != NULL) {
+            entry = (ClassObjectListEntry *)theMemoryManager.AllocPool(sizeof(ClassObjectListEntry), 1);
+            if (entry != NULL) {
+                memset(entry, 0, sizeof(ClassObjectListEntry));
+                entry->ed_class = object.ed_class;
+                entry->object = object.object;
+                entry->reference = object.reference;
+                entry->next = NULL;
+                entry->previous = selected_objects.last;
+                if (selected_objects.last != NULL)
+                    selected_objects.last->next = entry;
+                selected_objects.last = entry;
+                if (selected_objects.first == NULL)
+                    selected_objects.first = entry;
+                selected_objects.count++;
+            }
+        }
+    }
+    selected = 1;
+done:
+    thePropertyTool.SelectAttr(manipulator->selected_attribute);
+    return selected;
+}
+
 class SplineObject;
 
 /* One spline control point: its position and the two tangent handles. */
@@ -2129,6 +2215,19 @@ class SplineHelper : public EdClassInterface {
 };
 STATIC_ASSERT(offsetof(SplineHelper, first_object) == 0x8);
 extern SplineHelper theSplineHelper;
+
+/* Picking a knot selects its spline unless the spline is already selected. */
+void KnotHelper::Process(void *object, EdInputContext &) {
+    SplineKnot *knot = (SplineKnot *)object;
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->object == knot->spline)
+            return;
+    }
+    ClassObject spline_object;
+    spline_object.ed_class = theSplineHelper.object_class;
+    spline_object.object = knot->spline;
+    theClassEditor.SelectObject(spline_object, 1);
+}
 
 f32 EdManipulator::Scale = 2.0f;
 f32 KnotHelperRadius = 0.25f;
@@ -2974,6 +3073,11 @@ void PropertyMenu::SelectAttr(i32 selected) {
         if (control != NULL)
             control->SetMenuItemAttr(selected, item, &thePropertyTool.selected_attr, &thePropertyTool.unselected_attr);
     }
+}
+
+void PropertyTool::SelectAttr(i32 selected) {
+    for (PropertyMenu *property_menu = menus.first; property_menu != NULL; property_menu = property_menu->next)
+        property_menu->SelectAttr(selected);
 }
 
 /* Keeps the list ordered by PropertyMenu::order. */
