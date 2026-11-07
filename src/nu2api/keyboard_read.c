@@ -19,47 +19,39 @@ STATIC_ASSERT(offsetof(NuKeyboardDeviceVTable_PC, get_state) == 0x24);
 STATIC_ASSERT(offsetof(NuKeyboardDeviceVTable_PC, poll) == 0x64);
 
 u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
-    NuKeyboardDevice_PC *device;
     u8 *page;
-    u8 page_index;
+    i8 page_index;
     i32 i;
     i32 next_key_index;
     i32 previous_key_index;
 
     owner->poll_status = 0;
     if ((nu_keyboard_device_flags & 2) != 0 || owner->device == 0) {
-        page_index = nu_keyboard_page_index;
-        page = nu_keyboard_pages + (i8)page_index * 0x100;
-        memset(page, 0, nu_keyboard_owner.key_count);
-        return page;
+        goto clear_page;
     }
 
     owner->poll_status = 1;
-    device = owner->device;
-    if (device->vtable->poll(device) < 0) {
-        if (device->vtable->acquire(device) < 0) {
-            page_index = nu_keyboard_page_index;
-            page = nu_keyboard_pages + (i8)page_index * 0x100;
-            memset(page, 0, nu_keyboard_owner.key_count);
-            return page;
+    if (owner->device->vtable->poll(owner->device) < 0) {
+        if (owner->device->vtable->acquire(owner->device) < 0) {
+            goto clear_page;
         }
-        device->vtable->poll(device);
+        owner->device->vtable->poll(owner->device);
     }
 
-    page_index = (u8)(nu_keyboard_page_index ^ 1);
-    nu_keyboard_page_index = page_index;
-    page = nu_keyboard_pages + (i8)page_index * 0x100;
-    if (device->vtable->get_state(device, 0x100, page) != 0) {
-        memset(page, 0, nu_keyboard_owner.key_count);
-        return page;
+    nu_keyboard_page_index ^= 1;
+    page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
+    if (owner->device->vtable->get_state(owner->device, 0x100, page) != 0) {
+        goto clear_page;
     }
 
+    page_index = (i8)nu_keyboard_page_index;
     previous_key_index = nu_keyboard_key_index;
     nu_keyboard_previous_key_index = previous_key_index;
     next_key_index = 0;
     for (i = 0; i < nu_keyboard_owner.key_count; ++i) {
-        if (page[i] != 0 && i != previous_key_index) {
+        if (nu_keyboard_pages[page_index * 0x100 + i] != 0 && i != previous_key_index) {
             next_key_index = i;
+            break;
         }
     }
 
@@ -68,26 +60,24 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
         if (next_key_index != 0) {
             nu_keyboard_repeat_countdown = 6;
         }
-        memset(page, 0, nu_keyboard_owner.key_count);
-        if (previous_key_index != 0 && page[previous_key_index] == 0) {
+        memset(nu_keyboard_pages + page_index * 0x100, 0, nu_keyboard_owner.key_count);
+        if (nu_keyboard_key_index != 0 && nu_keyboard_pages[page_index * 0x100 + nu_keyboard_key_index] == 0) {
             nu_keyboard_key_index = 0;
         }
     } else if (next_key_index != 0) {
         nu_keyboard_key_index = next_key_index;
-    }
-
-    if (nu_keyboard_repeat_countdown == 0 && next_key_index == 0) {
-        /* Preserve the last key while it remains down; otherwise clear it. */
-        if (nu_keyboard_key_index != 0 && page[nu_keyboard_key_index] == 0) {
-            nu_keyboard_key_index = 0;
-        }
-    } else if (nu_keyboard_key_index != 0 && page[nu_keyboard_key_index] == 0) {
+    } else if (nu_keyboard_key_index != 0 && nu_keyboard_pages[page_index * 0x100 + nu_keyboard_key_index] == 0) {
         nu_keyboard_key_index = 0;
     }
 
     if (nu_keyboard_key_index == 0) {
         nu_keyboard_no_key_state = 0;
     }
+    return nu_keyboard_pages + page_index * 0x100;
+
+clear_page:
+    page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
+    memset(page, 0, nu_keyboard_owner.key_count);
     return page;
 }
 
