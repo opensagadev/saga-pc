@@ -17934,7 +17934,21 @@ struct NETMESSAGE_PC {
     MessageData *data;
     u32 read_offset;
     u32 write_offset;
-    NETMESSAGE_PC(u32 offset);
+    NETMESSAGE_PC(u32 offset) {
+        MessageData *entry;
+        for (entry = sm_poolMessageData; entry != sm_poolMessageData + 512; entry++) {
+            if (entry->references <= 0)
+                break;
+        }
+        if (entry != sm_poolMessageData + 512)
+            entry->references = 1;
+        else
+            entry = NULL;
+        data = entry;
+        read_offset = offset;
+        write_offset = offset;
+        swap_endianness = 1;
+    }
     NETMESSAGE_PC(const NETMESSAGE_PC &other) {
         data = other.data;
         read_offset = other.read_offset;
@@ -17966,7 +17980,7 @@ struct NETMESSAGE_PC {
     void MakeUnique();
     void Write16(const i16 *value);
     void Write32(const i32 *value);
-    void Write8(u8 value) {
+    void Write8(const u8 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(data->bytes + write_offset, &value, 1);
             write_offset++;

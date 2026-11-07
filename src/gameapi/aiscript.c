@@ -585,6 +585,7 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
         }                                                                                                              \
     } while (0)
 
+void AINetReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 extern AIACTIONDEF_PC *game_aiactiondefs;
 extern AICONDITIONDEF_PC *game_aiconditiondefs;
 extern AIACTIONDEF_PC api_aiactiondefs[];
@@ -1632,9 +1633,8 @@ void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC
                     }
                     processor->flags &= ~1u;
                     first_time = 1;
-                    if (action->definition->replicate_on_first_action != 0) {
-                        STUBBED_NAMED("AIScriptProcess: PC network first-action notification 0x53db30");
-                    }
+                    if (action->definition->replicate_on_first_action != 0)
+                        AINetReplicateAction(action, packet);
                 }
                 if (action->definition->eval_fn(system, processor, packet, action->params, action->param_count,
                                                 first_time, elapsed) == 0)

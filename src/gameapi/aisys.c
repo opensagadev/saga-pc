@@ -19886,3 +19886,7 @@ void __cdecl aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, 
     aieditorsettings.path_scratch_cursor = *scratch_cursor;
     aieditorsettings.path_scratch_end = *scratch_end;
 }
+
+/* Empty trace hook called from AINet::Receive (message.cpp). */
+void AINetTrace(const char *format, ...) {
+}
