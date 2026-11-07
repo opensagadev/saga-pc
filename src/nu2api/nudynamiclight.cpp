@@ -94,8 +94,8 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadowPc(NUGSCN *scene) {
             for (i32 set = 0; set < render_set_count; ++set) {
                 SHADOW_PRODUCER_BOUNDS_PC *world_bounds =
                     static_cast<SHADOW_PRODUCER_BOUNDS_PC *>(scene->portal_boxes) + instance;
-                NUVEC4 sphere = {world_bounds->center_radius.x, world_bounds->center_radius.y,
-                                 world_bounds->center_radius.z, world_bounds->center_radius.w};
+                __declspec(align(16)) NUVEC4 sphere = {world_bounds->center_radius.x, world_bounds->center_radius.y,
+                                                       world_bounds->center_radius.z, world_bounds->center_radius.w};
                 if (ShadowSegmentClipPc(reinterpret_cast<NUVEC *>(&sphere),
                                         reinterpret_cast<NUVEC *>(&sets[set].endpoint1),
                                         reinterpret_cast<NUVEC *>(&sets[set].endpoint0), sets[set].radius,
