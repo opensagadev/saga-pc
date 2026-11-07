@@ -1243,9 +1243,6 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     camera_delta.x = 0.0f;
     camera_delta.y = 0.0f;
     camera_delta.z = 0.0f;
-    if (first_time == 0 || param_count <= 0)
-        return 1;
-
     range = 1.0f;
     rotation_x = 0;
     rotation_y = 0;
@@ -1260,6 +1257,8 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
     end = 1000000000.0f;
     blend_in = 0.0f;
     blend_out = 0.0f;
+    if (first_time == 0)
+        return 1;
     for (index = 0; index < param_count; ++index) {
         if (NuStrICmp((char *)AITransferLiteral757a68, params[index]) == 0) {
             GameCameraMakeMiniCut2(NULL, NULL, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0, 0, 0);
@@ -1315,6 +1314,7 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
         }
     }
 
+    target = NULL;
     if (target_locator != NULL) {
         locator = AIPathFindLocator(system, target_locator);
         if (locator == NULL)
@@ -1322,10 +1322,17 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
         target = &locator->position;
     } else if (target_character != NULL) {
         if (packet != NULL && packet->owner != NULL &&
-            NuStrICmp(target_character, (char *)AITransferLiteral757f7c) == 0)
+            NuStrICmp(target_character, (char *)AITransferLiteral757f7c) == 0) {
             object = packet->owner->objptr;
-        else
-            object = GetNamedGameObject(system, target_character);
+        } else {
+            APIOBJECT_PC *named;
+            if (GetNamedGameObjectCallback == NULL)
+                return 1;
+            named = GetNamedGameObjectCallback(system, target_character);
+            if (named == NULL)
+                return 1;
+            object = (GAMEOBJECT *)named->owner;
+        }
         if (object == NULL)
             return 1;
         target = &object->collision_position;
@@ -1333,21 +1340,19 @@ i32 Action_CameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_P
         if (NuSpecialFind(WORLD->current_gscn, &special, target_object, 1) == 0)
             return 1;
         target = NuSpecialGetDrawPos(&special);
-        if (target == NULL)
-            return 1;
     } else {
         if (target_position.x == 1000000000.0f || target_position.y == 1000000000.0f ||
             target_position.z == 1000000000.0f)
             return 1;
         target = &target_position;
     }
+    if (target == NULL)
+        return 1;
 
     if (use_current_camera != 0) {
         matrix = NuCameraGetMtx();
         if (matrix != NULL) {
-            camera_position.x = matrix->m30;
-            camera_position.y = matrix->m31;
-            camera_position.z = matrix->m32;
+            camera_position = matrix->translation;
             NuVecAdd(&camera_position, &camera_position, &camera_delta);
             goto camera_ready;
         }
@@ -1418,28 +1423,28 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     camera_offset.x = 0.0f;
     camera_offset.y = 0.0f;
     camera_offset.z = 0.0f;
+    flags = 0;
+    range = 1.0f;
+    rotation_x = 0;
+    rotation_y = 0;
+    rotation_z = 0;
+    start_time = 0.0f;
+    blend_in_time = 0.0f;
+    end_time = 1000000000.0f;
+    blend_out_time = 0.0f;
+    blend_time = 0.0f;
+    hold_time = 0.0f;
+    max_time = 0.0f;
+    borders = 1;
+    use_current_position = 0;
+    mode = -1;
+    interpolation = -1;
+    spline = NULL;
+    target_locator = NULL;
+    target_character = NULL;
+    target_object = NULL;
+    camera_locator = NULL;
     if (first_time != 0) {
-        flags = 0;
-        range = 1.0f;
-        rotation_x = 0;
-        rotation_y = 0;
-        rotation_z = 0;
-        start_time = 0.0f;
-        blend_in_time = 0.0f;
-        end_time = 1000000000.0f;
-        blend_out_time = 0.0f;
-        blend_time = 0.0f;
-        hold_time = 0.0f;
-        max_time = 0.0f;
-        borders = 1;
-        use_current_position = 0;
-        mode = -1;
-        interpolation = -1;
-        spline = NULL;
-        target_locator = NULL;
-        target_character = NULL;
-        target_object = NULL;
-        camera_locator = NULL;
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp((char *)AICameraLiteral758090, params[index]) == 0) {
                 flags |= 0x100;
@@ -1542,8 +1547,11 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
             if (packet != NULL && packet->owner != NULL &&
                 NuStrICmp(target_character, (char *)AITransferLiteral757f7c) == 0)
                 object = packet->owner->objptr;
-            else
-                object = GetNamedGameObject(system, target_character);
+            else {
+                APIOBJECT_PC *named =
+                    GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, target_character) : NULL;
+                object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
+            }
             if (object != NULL)
                 target = &object->collision_position;
         } else if (target_object != NULL) {
@@ -1560,9 +1568,7 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
         if (use_current_position != 0) {
             matrix = NuCameraGetMtx();
             if (matrix != NULL) {
-                camera_position.x = matrix->m30;
-                camera_position.y = matrix->m31;
-                camera_position.z = matrix->m32;
+                camera_position = matrix->translation;
                 have_camera_position = 1;
             }
         } else if (camera_position.x != 1000000000.0f && camera_position.y != 1000000000.0f &&
