@@ -9819,6 +9819,11 @@ address,symbol,size,ctype
 0x6b9870,?Destroy@EdVectorControl@@QAEXXZ,33,
 0x6b98a0,?cbChanged@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,249,
 0x6b99a0,?Refresh@EdVectorControl@@UAEXXZ,196,
+0x6b9a70,??0EdMatrixControl@@QAE@XZ,9,
+0x6b9a80,??3EdMatrixControl@@SAXPAX@Z,18,
+0x6b9aa0,?Destroy@EdMatrixControl@@QAEXXZ,93,
+0x6b9b00,?Refresh@EdMatrixControl@@UAEXXZ,717,
+0x6b9dd0,?SetMenuItemAttr@EdMatrixControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,235,
 0x6b9ec0,?cbChanged@EdEnumControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,277,
 0x6b9fe0,?GetEnumString@EdEnumControl@@QAEPADH@Z,42,
 0x6ba050,?Refresh@EdEnumControl@@UAEXXZ,100,
@@ -9964,6 +9969,7 @@ address,symbol,size,ctype
 0x6c18e0,?InsertAfter@SplineKnotList@@QAEXPAUSplineKnot@@0@Z,94,
 0x6c1940,?Remove@SplineKnotList@@QAEXPAUSplineKnot@@@Z,63,
 0x6c1ca0,?Drag@EdVectorControl@@SAXPAUeduiitem_s@@@Z,173,
+0x6c1d50,?Drag@EdMatrixControl@@SAXPAUeduiitem_s@@@Z,173,
 0x6c1e50,??0EdInputStream@@QAE@PAUMemoryBuffer@@0@Z,40,
 0x6c1e80,??0EdFileInputStream@@QAE@PAUMemoryBuffer@@0@Z,68,
 0x6c1ed0,??_EEdFileInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileInputStream@@UAEPAXI@Z; no independent body
@@ -9975,6 +9981,9 @@ address,symbol,size,ctype
 0x6c1fe0,??1EdVectorControl@@UAE@XZ,45,
 0x6c2010,??_EEdVectorControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdVectorControl@@UAEPAXI@Z; no independent body
 0x6c2010,??_GEdVectorControl@@UAEPAXI@Z,73,
+0x6c2060,??1EdMatrixControl@@UAE@XZ,22,
+0x6c2080,??_EEdMatrixControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdMatrixControl@@UAEPAXI@Z; no independent body
+0x6c2080,??_GEdMatrixControl@@UAEPAXI@Z,46,
 0x6c20b0,??0EdTool@@QAE@XZ,29,
 0x6c20e0,?InsertSorted@PropertyMenuList@@QAEXPAVPropertyMenu@@@Z,77,
 0x6c2130,??0CursorTool@@QAE@XZ,29,
@@ -10016,6 +10025,7 @@ address,symbol,size,ctype
 0x6c3240,?Update@EdInputContext@@QAEXPAUnucamera_s@@PAUFRAME_PAD_PC@@M_N@Z,2104,
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
 0x6c3b00,?cbButton@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,32,
+0x6c3b20,?cbChanged@EdMatrixControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,592,
 0x6c3d70,?cbSelectItem@EdEnumControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,159,
 0x6c3e10,?cbButton@EdEnumControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,167,
 0x6c3ec0,?cbSelectItem@EdBitControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,237,
@@ -10124,6 +10134,9 @@ address,symbol,size,ctype
 0x6caa00,?SelectSubObject@EdControl@@QAEHXZ,182,
 0x6caac0,?cbSelected@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,118,
 0x6cab40,?AddMenuItem@EdVectorControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,403,
+0x6cace0,?cbSelected@EdMatrixControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,212,
+0x6cadc0,?cbButton@EdMatrixControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,32,
+0x6cade0,?AddMenuItem@EdMatrixControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,1131,
 0x6cb250,??0LevelEditor@@QAE@XZ,467,
 0x6cb430,?GetName@LevelEditor@@UAEPBDXZ,6,
 0x6cb440,??_ELevelEditor@@UAEPAXI@Z,,COFF weak alias of ??_GLevelEditor@@UAEPAXI@Z; no independent body
@@ -19672,6 +19685,7 @@ address,symbol,size,ctype
 0x76f744,??_7KnotHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f7c0,??_7EdSubSystem@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f7d8,??_7EdVectorControl@@6B@,,
+0x76f7f4,??_7EdMatrixControl@@6B@,,
 0x76f80c,??_C@_07NBCGADJA@Unknown?$AA@,8,
 0x76f818,??_7EdStringControl@@6B@,,
 0x76f834,??_7EdColourControl@@6B@,,
@@ -19725,6 +19739,15 @@ address,symbol,size,ctype
 0x76fe14,??_C@_02IGJGHHBN@tz?$AA@,3,const char[]
 0x76fe18,??_C@_02KNLLCENO@ty?$AA@,3,const char[]
 0x76fe1c,??_C@_02LEKABFJP@tx?$AA@,3,const char[]
+0x76fe20,??_C@_07HMFDHGID@scale?5z?$AA@,8,const char[]
+0x76fe28,??_C@_07FHHOCFEA@scale?5y?$AA@,8,const char[]
+0x76fe30,??_C@_07EOGFBEAB@scale?5x?$AA@,8,const char[]
+0x76fe38,??_C@_05BKHFPCFN@rot?5z?$AA@,6,const char[]
+0x76fe40,??_C@_05DBFIKBJO@rot?5y?$AA@,6,const char[]
+0x76fe48,??_C@_05CIEDJANP@rot?5x?$AA@,6,const char[]
+0x76fe50,??_C@_05MKGKGLOP@pos?5z?$AA@,6,const char[]
+0x76fe58,??_C@_05OBEHDICM@pos?5y?$AA@,6,const char[]
+0x76fe60,??_C@_05PIFMAJGN@pos?5x?$AA@,6,const char[]
 0x76fe68,??_C@_06LCPJPOPK@SELECT?$AA@,7,char []
 0x76fe70,_PcInputText76fe70,,char[6]
 0x76fe70,??_C@_05JLPDBANI@START?$AA@,6,char []
@@ -22543,6 +22566,10 @@ address,symbol,size,ctype
 0x7eba14,??_R3EdVectorControl@@8,,
 0x7eba24,??_R2EdVectorControl@@8,,
 0x7eba30,??_R1A@?0A@EA@EdVectorControl@@8,,
+0x7eba4c,??_R4EdMatrixControl@@6B@,,
+0x7eba60,??_R3EdMatrixControl@@8,,
+0x7eba70,??_R2EdMatrixControl@@8,,
+0x7eba7c,??_R1A@?0A@EA@EdMatrixControl@@8,,
 0x7eba98,??_R4EdStringControl@@6B@,,
 0x7ebaac,??_R3EdStringControl@@8,,
 0x7ebabc,??_R2EdStringControl@@8,,
