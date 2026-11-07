@@ -2620,7 +2620,7 @@ address,symbol,size,ctype
 0x004f0d50,_NuDatGet,6,NUDATHDR *__cdecl (void)
 0x004f0d60,_NuFileExtGetExt,96,"i32 __cdecl (char *, i32, i32)"
 0x004f0dc0,_GetPakItems,26,PC_FILEPAKITEM *(PC_FILEPAKHDR_V0 *) [private ECX ABI]
-0x004f0de0,@PCFilePakChecksum_candidate@8,33,"u32 __fastcall (i32, const u8 *)"
+0x004f0de0,_CalcChecksum,33,"u32 (void *, i32) [private register ABI]"
 0x004f0e10,_DecryptPakData,54,
 0x004f0e50,_NuFilePakGetLastError,6,i32 __cdecl (void)
 0x004f0e60,_NuFilePakCondense,159,i32 __cdecl (void *)

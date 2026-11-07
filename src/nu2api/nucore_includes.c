@@ -411,7 +411,7 @@ typedef void(__cdecl *NUDEBUGMSGFUNCTION_PC)(char *, ...);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 
-static __declspec(noinline) void DecryptPakData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
+static void DecryptPakData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);
 static PC_FILEPAKITEM *GetPakItems(PC_FILEPAKHDR_V0 *header);
 static NUFILE OpenDatFileBase(NUDATHDR *header, i32 file_index);
@@ -946,7 +946,7 @@ NUFILE __cdecl NuFileOpen(const char *filepath, i32 mode) {
     return NuFileOpenDF(filepath, mode, curr_dat, 0);
 }
 
-static __declspec(noinline) void DecryptPakData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length) {
+static void DecryptPakData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length) {
     u8 *bytes = (u8 *)(header + 1);
     i32 index = 0;
     length -= sizeof(PC_FILEPAKHDR);
@@ -1501,7 +1501,7 @@ i32 __cdecl NuFileCopy(char *destination, char *source) {
     return NuFileCopyEx(destination, source, buffer, sizeof(buffer));
 }
 
-__declspec(noinline) void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count) {
+void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count) {
     u8 *dst = (u8 *)destination;
     const u8 *src = (const u8 *)source;
 
@@ -1524,12 +1524,16 @@ __declspec(noinline) void __cdecl PCByteCopy_candidate(void *destination, const 
     }
 }
 
-u32 __fastcall PCFilePakChecksum_candidate(i32 count, const u8 *data) {
-    u32 sum = 0x12345678;
+static u32 CalcChecksum(void *data, i32 len) {
+    unsigned char *bytes;
+    u32 sum;
 
-    while (count != 0) {
-        --count;
-        sum += *data++;
+    sum = 0x12345678;
+    bytes = (unsigned char *)data;
+
+    while (len != 0) {
+        len--;
+        sum += *(bytes++);
     }
 
     return sum;
@@ -2364,32 +2368,43 @@ void *__cdecl NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32
         return NULL;
     }
     switch (header->type) {
-        case 0x12345678:
-            break;
         case 0x12345679:
-        case 0x1234567a:
             checksum = header->checksum;
             header->checksum = 0;
-            if (PCFilePakChecksum_candidate(length, (const u8 *)header) != checksum) {
+            if (checksum != CalcChecksum(header, length)) {
                 NuFileRetry();
                 fpk_err = 3;
                 return NULL;
             }
-            if (header->type == 0x1234567a && (header->flags & 1) != 0) {
+            break;
+        case 0x1234567a:
+            checksum = header->checksum;
+            header->checksum = 0;
+            if (checksum != CalcChecksum(header, length)) {
+                NuFileRetry();
+                fpk_err = 3;
+                return NULL;
+            }
+
+            if ((header->flags & 1) != 0) {
                 if (key == NULL) {
                     NuFileRetry();
                     fpk_err = 6;
                     return NULL;
                 }
+
                 DecryptPakData(header, length, key, (i32)key_length);
+
                 checksum = header->decrypted_checksum;
                 header->decrypted_checksum = 0;
-                if (PCFilePakChecksum_candidate(length, (const u8 *)header) != checksum) {
+                if (checksum != CalcChecksum(header, length)) {
                     NuFileRetry();
                     fpk_err = 6;
                     return NULL;
                 }
             }
+            break;
+        case 0x12345678:
             break;
         default:
             NuFileRetry();
@@ -6391,11 +6406,11 @@ f32 NuTimeGetFrameTime(void) {
     return nuapi.frame_time;
 }
 
-__declspec(noinline) void __cdecl NuTimeGet(NuTime *time) {
+void __cdecl NuTimeGet(NuTime *time) {
     NuTimeGetTicksPS(&time->low, &time->high);
 }
 
-__declspec(noinline) void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b) {
+void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b) {
     if (a->low >= b->low) {
         time->low = a->low - b->low;
         time->high = a->high - b->high;

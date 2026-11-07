@@ -11289,7 +11289,7 @@ void __cdecl PCStereoUnknownToken(void);
     i8 __cdecl NuFileReadChar(NUFILE file);
     u16 __cdecl NuFileReadWChar(NUFILE file);
     void __cdecl PCByteCopy_candidate(void *destination, const void *source, u32 count);
-    u32 __fastcall PCFilePakChecksum_candidate(i32 count, const u8 *data);
+
     extern DAT_HANDLES_PC NuDatHandles;
     extern const char EpisodeIDat[14];
     extern const char EpisodeIIDat[15];
