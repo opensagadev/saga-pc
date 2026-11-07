@@ -7110,6 +7110,21 @@ address,symbol,size,ctype
 0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,
 0x00610690,_refpack,918,"i32 __cdecl(u8 *,i32,u8 *)"
+0x610a50,??0PackStats@NuNetEmu@@QAE@PBD@Z,25,
+0x610a70,??2EmuPacket@NuNetEmu@@SAPAXI@Z,18,
+0x610a90,??3EmuPacket@NuNetEmu@@SAXPAX@Z,18,
+0x610ab0,?GetFreeBytes@EmuPacket@NuNetEmu@@QAEHXZ,9,
+0x610bf0,??1EmuPacket@NuNetEmu@@QAE@XZ,20,
+0x610c10,?AddPayload@EmuPacket@NuNetEmu@@QAEXPAXH@Z,72,
+0x610c60,?SetConditions@NuNetEmu@@QAEXW4eConditions@1@@Z,169,
+0x610d10,?Draw@PackStats@NuNetEmu@@UAEXMMMMW4eInfo@NetSmallStats@@@Z,759,
+0x611010,??0?$CSListLink@VEmuPacket@NuNetEmu@@@@QAE@XZ,20,
+0x611120,??_GEmuPacket@NuNetEmu@@QAEPAXI@Z,48,
+0x611150,?FindPacket@NuNetEmu@@QAEPAVEmuPacket@1@PAIH@Z,62,
+0x611190,??0EmuPacket@NuNetEmu@@QAE@PAI@Z,69,
+0x6111e0,??0NuNetEmu@@QAE@XZ,165,
+0x611290,?SplitSendPacket@NuNetEmu@@QAEHPAVEmuPacket@1@@Z,488,
+0x611630,?Update@NuNetEmu@@QAEXXZ,601,
 0x611900,??1EdStream@@UAE@XZ,7,
 0x611920,??_EEdStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdStream@@UAEPAXI@Z; no independent body
 0x611920,??_GEdStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -10915,6 +10930,7 @@ address,symbol,size,ctype
 0x750010,??__EPcFramebufferPool@@YAXXZ,58,
 0x750050,??__EPostVertexShaderCachePc@@YAXXZ,12,native atexit initializer
 0x750060,??__EPostPixelShaderCachePc@@YAXXZ,12,native atexit initializer
+0x7500c0,??__EtheNuNetEmu@@YAXXZ,171,
 0x750170,??__EFmvSurfacePc@@YAXXZ,22,
 0x750280,??__EPCDeviceBackend@@YAXXZ,22,void __cdecl(void)
 0x7502a0,??__Enu_keyboard_owner@@YAXXZ,22,void __cdecl (void)
@@ -11152,6 +11168,7 @@ address,symbol,size,ctype
 0x7513b0,_PcFramebufferPool$initializer$,4,constructor initializer pointer
 0x7513b4,_PostVertexShaderCachePc$initializer$,4,native CRT pointer
 0x7513b8,_PostPixelShaderCachePc$initializer$,4,native CRT pointer
+0x7513c4,_theNuNetEmu$initializer$,4,native CRT pointer
 0x7513c8,_FmvSurfacePc$initializer$,4,void (__cdecl *)(void)
 0x7513fc,_PCDeviceBackend$initializer$,4,constructor initializer pointer
 0x00751400,_nu_keyboard_owner$initializer$,4,void (__cdecl *)(void)
@@ -17554,6 +17571,14 @@ address,symbol,size,ctype
 0x76aa48,??_C@_0CK@HPDJNGLO@V2SessionManager?3?3RemoveAllPeers@,42,const char[]
 0x76aa74,??_C@_0L@MDLIAHED@SessionAll?$AA@,11,const char[]
 0x76aa84,??_7V2SessionManager@@6B@,88,
+0x76aae0,??_7PackStats@NuNetEmu@@6B@,8,
+0x76aae8,??_C@_0BA@IJFNNDLJ@Held?5Packets?5?$CFd?$AA@,16,char []
+0x76aaf8,??_C@_0BB@HBFJMLCI@Split?5Packets?5?$CFd?$AA@,17,char []
+0x76ab0c,??_C@_0BA@JNHBKAPO@Ave?5Packet?5?$CF?41f?$AA@,16,char []
+0x76ab1c,??_C@_0BG@LEFDLHFA@Pack?5Time?5?$CF?42f?5?3?5?$CF?42f?$AA@,22,char []
+0x76ab34,??_C@_0BC@PELAOOJK@Pack?5Ratio?5?$CF?43f?$CF?$CF?$AA@,18,char []
+0x76ab48,??_C@_07DNDPMFPA@EmuPack?$AA@,8,char []
+0x76ab50,??_C@_06LJJHIAGL@EmuRaw?$AA@,7,char []
 0x76ab5c,??_7EdStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76acb4,??_C@_0L@CGOOPECH@New?5To?5Old?$AA@,,char []
@@ -21203,6 +21228,10 @@ address,symbol,size,ctype
 0x7eae78,??_R3V2SessionManager@@8,,
 0x7eae88,??_R2V2SessionManager@@8,,
 0x7eae90,??_R1A@?0A@EA@V2SessionManager@@8,,
+0x7eaeac,??_R4PackStats@NuNetEmu@@6B@,,
+0x7eaec0,??_R3PackStats@NuNetEmu@@8,,
+0x7eaed0,??_R2PackStats@NuNetEmu@@8,,
+0x7eaee0,??_R1A@?0A@EA@PackStats@NuNetEmu@@8,,
 0x7eaefc,??_R4EdStream@@6B@,,
 0x7eaf10,??_R3EdStream@@8,,
 0x7eaf20,??_R2EdStream@@8,,
@@ -26977,6 +27006,7 @@ address,symbol,size,ctype
 0x28fec24,?sm_instance@V2SessionManager@@2PAV1@A,4,V2SessionManager *
 0x28fec28,_RefpackLinkArrayPc,,
 0x28fec2c,_RefpackHashTablePc,,
+0x28fec30,?theNuNetEmu@@3UNuNetEmu@@A,7204,NuNetEmu
 0x2900a64,_frameStartTimeMS,4,u32
 0x2900a68,_frameStartTime,8,NuTime
 0x02900a70,_colourmenu,,"eduimenu_s *; minimum4Bworkingview Nativeextentunknown"
