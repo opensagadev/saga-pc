@@ -2,29 +2,6 @@
 
 #include <string.h>
 
-__declspec(noinline) i32 __cdecl NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async) {
-    (void)port;
-    (void)slot;
-    (void)filepath;
-    (void)mode;
-    (void)async;
-    return 0;
-}
-
-__declspec(noinline) i32 __cdecl NuMcRead(i32 file, void *destination, i32 size, i32 async) {
-    (void)file;
-    (void)destination;
-    (void)size;
-    (void)async;
-    return 0;
-}
-
-__declspec(noinline) i32 __cdecl NuMcClose(i32 file, i32 async) {
-    (void)file;
-    (void)async;
-    return 0;
-}
-
 void __cdecl NuFileError(void) {
 }
 
@@ -35,10 +12,6 @@ i32 __cdecl NuFileStatus(NUFILE file) {
     (void)file;
     /* The PC dispatch guards make its archive-status traversal unreachable. */
     return 0;
-}
-
-i32 __cdecl NuFileExists(char *filepath) {
-    return NuFileExistQuiet(filepath);
 }
 
 static void AquireFileBuffer(FILEINFO *info) {
@@ -208,106 +181,4 @@ void __cdecl NuFileClose(NUFILE file) {
     if (info->buf != NULL)
         info->buf->file_info = NULL;
     memset(info, 0, sizeof(FILEINFO));
-}
-
-typedef struct AI_EDITOR_FILE_INFO_PC {
-    u32 flags;
-    u32 size;
-    i8 created_second;
-    i8 created_minute;
-    i8 created_hour;
-    i8 created_day;
-    i8 created_month;
-    u8 unknown_0d;
-    i16 created_year;
-    i8 second;
-    i8 minute;
-    i8 hour;
-    i8 day;
-    i8 month;
-    u8 unknown_15;
-    i16 year;
-    u8 unknown_18;
-    u8 unknown_19[3];
-} AI_EDITOR_FILE_INFO_PC;
-STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x1c);
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
-STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
-
-i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
-    WIN32_FILE_ATTRIBUTE_DATA attributes;
-    SYSTEMTIME time;
-    u32 flags;
-
-    GetFileAttributesExA(path, GetFileExInfoStandard, &attributes);
-    flags = (attributes.dwFileAttributes & 0x4000) | 0x400;
-    flags >>= 9;
-    flags |= attributes.dwFileAttributes & 0x10;
-    flags >>= 1;
-    flags |= ~(attributes.dwFileAttributes << 1) & 2;
-    info->flags = flags;
-    info->unknown_18 = 0;
-    info->size = attributes.nFileSizeLow;
-    FileTimeToSystemTime(&attributes.ftCreationTime, &time);
-    info->created_year = (i16)time.wYear;
-    info->created_month = (i8)time.wMonth;
-    info->created_hour = (i8)time.wHour;
-    info->created_day = (i8)time.wDay;
-    info->created_minute = (i8)time.wMinute;
-    info->created_second = (i8)time.wSecond;
-    FileTimeToSystemTime(&attributes.ftLastWriteTime, &time);
-    info->year = (i16)time.wYear;
-    info->month = (i8)time.wMonth;
-    info->day = (i8)time.wDay;
-    info->hour = (i8)time.wHour;
-    info->minute = (i8)time.wMinute;
-    info->second = (i8)time.wSecond;
-    return 1;
-}
-
-typedef struct FILE_DIRECTORY_TIME_PC {
-    u8 second, minute, hour, day, month, reserved;
-    u16 year;
-} FILE_DIRECTORY_TIME_PC;
-typedef struct FILE_DIRECTORY_ENTRY_PC {
-    u32 flags, size;
-    FILE_DIRECTORY_TIME_PC created, modified;
-    char name[256];
-} FILE_DIRECTORY_ENTRY_PC;
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_ENTRY_PC, name) == 0x18);
-typedef struct FILE_DIRECTORY_RAW_TIME_PC {
-    u8 second, minute, hour, day, month, year_low, year_high;
-} FILE_DIRECTORY_RAW_TIME_PC;
-typedef struct FILE_DIRECTORY_HOST_ENTRY_PC {
-    u32 flags;
-    u8 reserved_04[4];
-    u32 size;
-    u8 reserved_0c;
-    FILE_DIRECTORY_RAW_TIME_PC created;
-    u8 reserved_14;
-    FILE_DIRECTORY_RAW_TIME_PC accessed;
-    u8 reserved_1c;
-    FILE_DIRECTORY_RAW_TIME_PC modified;
-    u32 unused_24;
-    u8 reserved_28[0x18];
-    char name[MAX_PATH];
-} FILE_DIRECTORY_HOST_ENTRY_PC;
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, created) == 0xd);
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, modified) == 0x1d);
-STATIC_ASSERT(offsetof(FILE_DIRECTORY_HOST_ENTRY_PC, name) == 0x40);
-
-i32 __cdecl FileDirectoryMcOpenPc(i32 port, i32 slot, char *path) {
-    (void)port;
-    (void)slot;
-    (void)path;
-    return 0;
-}
-void __cdecl FileDirectoryMcClosePc(i32 file) {
-    (void)file;
-}
-i32 __cdecl FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY_PC *entry) {
-    (void)file;
-    (void)entry;
-    return 0;
 }

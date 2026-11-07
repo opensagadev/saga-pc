@@ -6,9 +6,6 @@ extern i32 numdevices;
 extern NUFILE_DEVICE devices[16];
 extern i32 DontDoFileUpperCaseHack;
 
-extern void __cdecl NuFileCorrectSlashes(NUFILE_DEVICE *device, char *path);
-extern void __cdecl NuFileReldirFix(NUFILE_DEVICE *device, char *path);
-
 NUFILE_DEVICE *__cdecl NuFileGetDeviceFromPath(const char *path) {
     i32 prefix_end;
     i32 device_index;
@@ -30,56 +27,6 @@ NUFILE_DEVICE *__cdecl NuFileGetDeviceFromPath(const char *path) {
     }
 
     return NULL;
-}
-
-i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *path, i32 buf_size) {
-    char buffer[512];
-    i32 device_name_len;
-    char *subpath;
-    i32 path_len;
-    i32 path_pos;
-
-    device_name_len = NuStrLen(device->name);
-
-    /* PC accepts an already-qualified path unchanged. */
-    subpath = path;
-    while (*subpath != '\0' && *subpath != ':') {
-        subpath++;
-    }
-
-    if (*subpath == ':') {
-        NuStrCpy(buffer, path);
-    } else if (NuStrNICmp(path, device->name, device_name_len) == 0) {
-        subpath = path + device_name_len;
-        if (*subpath == '\\' || *subpath == '/') {
-            NuStrCpy(buffer, path);
-        } else {
-            NuStrCpy(buffer, device->root);
-            NuStrCat(buffer, device->cur_dir);
-            NuStrCat(buffer, subpath);
-        }
-    } else {
-        NuStrCpy(buffer, device->root);
-        NuStrCat(buffer, device->cur_dir);
-        NuStrCat(buffer, path);
-    }
-
-    path_pos = NuStrLen(device->root);
-    NuFileCorrectSlashes(device, buffer + path_pos);
-    NuFileReldirFix(device, buffer);
-
-    path_len = NuStrLen(buffer);
-    if (buf_size > path_len) {
-        NuStrCpy(formatted_name, buffer);
-        return 1;
-    }
-
-    return 0;
-}
-
-i32 __cdecl DEVHOST_Interrogate(NUFILE_DEVICE *device) {
-    device->status = 1;
-    return 1;
 }
 
 void __cdecl NuFileCorrectSlashes(NUFILE_DEVICE *device, char *path) {

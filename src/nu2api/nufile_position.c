@@ -1,12 +1,5 @@
 #include "saga.h"
 
-extern i32 __cdecl NuMcSeek(i32 file, i32 offset, i32 origin, i32 async);
-
-__declspec(noinline) i32 __cdecl NuMcFileOpenSize(NUFILE file) {
-    (void)file;
-    return 0;
-}
-
 i64 __cdecl NuMemFilePos(NUFILE file) {
     if (file >= 0x800) {
         PC_NUDATFILEINFO *info = &pc_dat_file_infos[file - 0x800];

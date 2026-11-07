@@ -55,6 +55,129 @@ const char FileDirectoryWildcardPc[4] = "*.*";
 void __cdecl FileDirectoryErrorPc(i32 error) {
     (void)error;
 }
+
+i32 __cdecl NuFileExists(char *filepath) {
+    return NuFileExistQuiet(filepath);
+}
+
+extern void __cdecl NuFileCorrectSlashes(NUFILE_DEVICE *device, char *path);
+extern void __cdecl NuFileReldirFix(NUFILE_DEVICE *device, char *path);
+
+i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *path, i32 buf_size) {
+    char buffer[512];
+    i32 device_name_len;
+    char *subpath;
+    i32 path_len;
+    i32 path_pos;
+
+    device_name_len = NuStrLen(device->name);
+
+    /* PC accepts an already-qualified path unchanged. */
+    subpath = path;
+    while (*subpath != '\0' && *subpath != ':') {
+        subpath++;
+    }
+
+    if (*subpath == ':') {
+        NuStrCpy(buffer, path);
+    } else if (NuStrNICmp(path, device->name, device_name_len) == 0) {
+        subpath = path + device_name_len;
+        if (*subpath == '\\' || *subpath == '/') {
+            NuStrCpy(buffer, path);
+        } else {
+            NuStrCpy(buffer, device->root);
+            NuStrCat(buffer, device->cur_dir);
+            NuStrCat(buffer, subpath);
+        }
+    } else {
+        NuStrCpy(buffer, device->root);
+        NuStrCat(buffer, device->cur_dir);
+        NuStrCat(buffer, path);
+    }
+
+    path_pos = NuStrLen(device->root);
+    NuFileCorrectSlashes(device, buffer + path_pos);
+    NuFileReldirFix(device, buffer);
+
+    path_len = NuStrLen(buffer);
+    if (buf_size > path_len) {
+        NuStrCpy(formatted_name, buffer);
+        return 1;
+    }
+
+    return 0;
+}
+
+i32 __cdecl DEVHOST_Interrogate(NUFILE_DEVICE *device) {
+    device->status = 1;
+    return 1;
+}
+
+extern i32 __cdecl FileDirectoryMcOpenPc(i32 port, i32 slot, char *path);
+extern void __cdecl FileDirectoryMcClosePc(i32 file);
+extern i32 __cdecl FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
+
+NUFILE __cdecl NuFileOpenDir(char *path) {
+    char formatted[256];
+    NUFILE_DEVICE *device = NuFileGetDeviceFromPath(path);
+    i32 result;
+    if (device == NULL)
+        device = FileDirectoryDefaultDevicePc;
+    device->format_name_fn(device, formatted, path, 256);
+    if (device->id == 2)
+        NuStrCat(formatted, nufile_disc_suffix);
+    if (device->id == 1) {
+        result = FileDirectoryMcOpenPc((i32)(i8)formatted[2] - '0', (i32)(i8)formatted[3] - '0',
+                                       formatted + device->name_len);
+        if (result < 0)
+            return 0;
+        return result + 0x1000;
+    }
+    result = FileDirectoryHostOpenPc(formatted);
+    if (result < 0)
+        return 0;
+    return result + 1;
+}
+
+void __cdecl NuFileCloseDir(NUFILE file) {
+    if (file >= 0x1000) {
+        FileDirectoryMcClosePc(file - 0x1000);
+        return;
+    }
+    FileDirectoryHostClosePc(file - 1);
+}
+i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
+    FILE_DIRECTORY_HOST_ENTRY_PC host;
+    i32 result;
+    u32 flags;
+    i32 length = 0;
+    if (file >= 0x1000)
+        return FileDirectoryMcReadPc(file - 0x1000, entry);
+    result = FileDirectoryHostReadPc(file - 1, &host);
+    if (result > 0) {
+        flags = (((host.flags >> 2) & 0x800) | (host.flags & 0x100));
+        flags = ((flags >> 2) | (host.flags & 0x80));
+        entry->flags = (((flags >> 2) | (host.flags & 0x40)) >> 4);
+        entry->size = host.size;
+        entry->created.second = host.created.second;
+        entry->created.hour = host.created.hour;
+        entry->created.minute = host.created.minute;
+        entry->created.day = host.created.day;
+        entry->created.month = host.created.month;
+        entry->modified.second = host.modified.second;
+        entry->created.year = (u16)(((u16)host.created.year_high << 8) + host.created.year_low);
+        entry->modified.hour = host.modified.hour;
+        entry->modified.day = host.modified.day;
+        entry->modified.minute = host.modified.minute;
+        entry->modified.month = host.modified.month;
+        entry->modified.year = (u16)(((u16)host.modified.year_high << 8) + host.modified.year_low);
+        strcpy(entry->name, host.name);
+        length = strlen(entry->name);
+    } else if (result < 0)
+        FileDirectoryErrorPc(result);
+    return length;
+}
+
 extern WIN32_FIND_DATAA FileDirectoryFindDataPc[16];
 extern HANDLE FileDirectoryHostHandlesPc[16];
 i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
@@ -135,10 +258,8 @@ i32 __cdecl FileDirectoryHostClosePc(i32 slot) {
     HANDLE handle;
     NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x22e);
     handle = FileDirectoryHostHandlesPc[slot];
-    if (slot == 0)
-        PCThreadCriticalSectionCount_candidate = 0;
-    else
-        FileDirectoryPathSlotsPc[slot - 1] = NULL;
+    /* Retail clears the slot before this one, as in FileDirectoryHostOpenPc. */
+    FileDirectoryPathSlotsPc[slot - 1] = NULL;
     FindClose(handle);
     --FileDirectoryOpenCountPc;
     return 0;
@@ -157,4 +278,60 @@ i32 __cdecl FileHostMovePathPc(char *destination, char *source) {
     FileDeviceFormatDefaultNamePc(formatted_destination, destination, 256);
     DeleteFileA(formatted_destination);
     return MoveFileA(formatted_source, formatted_destination);
+}
+
+typedef struct AI_EDITOR_FILE_INFO_PC {
+    u32 flags;
+    u32 size;
+    i8 created_second;
+    i8 created_minute;
+    i8 created_hour;
+    i8 created_day;
+    i8 created_month;
+    u8 unknown_0d;
+    i16 created_year;
+    i8 second;
+    i8 minute;
+    i8 hour;
+    i8 day;
+    i8 month;
+    u8 unknown_15;
+    i16 year;
+    u8 unknown_18;
+    u8 unknown_19[3];
+} AI_EDITOR_FILE_INFO_PC;
+STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x1c);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
+STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
+
+i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
+    WIN32_FILE_ATTRIBUTE_DATA attributes;
+    SYSTEMTIME time;
+    u32 flags;
+
+    GetFileAttributesExA(path, GetFileExInfoStandard, &attributes);
+    flags = (attributes.dwFileAttributes & 0x4000) | 0x400;
+    flags >>= 9;
+    flags |= attributes.dwFileAttributes & 0x10;
+    flags >>= 1;
+    flags |= ~(attributes.dwFileAttributes << 1) & 2;
+    info->flags = flags;
+    info->unknown_18 = 0;
+    info->size = attributes.nFileSizeLow;
+    FileTimeToSystemTime(&attributes.ftCreationTime, &time);
+    info->created_year = (i16)time.wYear;
+    info->created_month = (i8)time.wMonth;
+    info->created_hour = (i8)time.wHour;
+    info->created_day = (i8)time.wDay;
+    info->created_minute = (i8)time.wMinute;
+    info->created_second = (i8)time.wSecond;
+    FileTimeToSystemTime(&attributes.ftLastWriteTime, &time);
+    info->year = (i16)time.wYear;
+    info->month = (i8)time.wMonth;
+    info->day = (i8)time.wDay;
+    info->hour = (i8)time.wHour;
+    info->minute = (i8)time.wMinute;
+    info->second = (i8)time.wSecond;
+    return 1;
 }
