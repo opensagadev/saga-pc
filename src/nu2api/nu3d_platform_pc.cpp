@@ -4,7 +4,8 @@
 // one C++ unit; nu3d only ever calls into it, never inlines from it. Definitions follow retail address
 // order. Modules merged so far: nugscn_pc, nuportal_pc, numtl PS/Pc, the nudlist and nupostfilter
 // platform members, the render-state/stream/scene/gobj/particle backends and the geometry backend, plus
-// the platform members of nulgtlaser, nuframe, nuvport, nuprim, nuhgobj and nupostdeferred.
+// the platform members of nulgtlaser, nuframe, nuvport, nuprim, nuhgobj, nupostdeferred, nurndr, nucamera
+// and nuvec.
 
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
@@ -7201,5 +7202,301 @@ extern "C" {
     }
     i32 __cdecl NuRndrSetFxMtx(NUMTX *matrix) {
         return 1;
+    }
+} // extern "C"
+
+/* nucamera's platform members: NuCameraSet, the extents clip test and the projection matrix. */
+extern "C" {
+    void __cdecl NuCameraSet(NUCAMERA *camera) {
+        NuCameraSetEx(camera, 0);
+
+        NuVpSetIdentityPc(&cmtx);
+        NuMtxMulH(&vpc_vport_mtx, &vpmtx, &cmtx);
+        vpc_sci_mtx = vpc_vport_mtx;
+
+        PCDeviceSetTransform(2, &vmtx);
+        PCDeviceSetTransform(3, &pmtx);
+    }
+
+#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                             \
+    {                                                                                                                  \
+        if ((v).z < global_camera.near_clip && (near_enabled))                                                         \
+            (code) |= 0x20;                                                                                            \
+        if ((v).z > far_clip)                                                                                          \
+            (code) |= 0x10;                                                                                            \
+        if ((v).x < -(v).z * (horizontal))                                                                             \
+            (code) |= 1;                                                                                               \
+        if ((v).x > (v).z * (horizontal))                                                                              \
+            (code) |= 2;                                                                                               \
+        if ((v).y < -(v).z * (vertical))                                                                               \
+            (code) |= 8;                                                                                               \
+        if ((v).y > (v).z * (vertical))                                                                                \
+            (code) |= 4;                                                                                               \
+    }
+
+#define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
+
+    i32 __cdecl NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
+        NUVEC corners[8];
+        NUVEC transformed[8];
+        u8 codes[8];
+        i32 i;
+
+        if (PCClipExtentsEnabled == 0)
+            return 1;
+        if (clip_screen != 0) {
+            PCClipScreenUnsupported();
+            for (;;) {
+            }
+        }
+        if (far_clip == 0.0f)
+            far_clip = global_camera.unknown_64 != 0.0f ? global_camera.unknown_64 : global_camera.far_clip;
+        if (world == NULL || world == &NuMtxSetIdentityTemplate)
+            clip_test_mtx = vmtx;
+        else
+            NuMtxMul(&clip_test_mtx, world, &vmtx);
+
+        ClipFarLimits[3] = far_clip;
+        ClipFarLimits[2] = far_clip;
+        ClipFarLimits[1] = far_clip;
+        ClipFarLimits[0] = far_clip;
+        if (PCClipUseSSE == 0) {
+            corners[0].x = min->x;
+            corners[0].y = min->y;
+            corners[0].z = min->z;
+            corners[1].x = max->x;
+            corners[1].y = max->y;
+            corners[1].z = max->z;
+            corners[2].x = min->x;
+            corners[2].y = min->y;
+            corners[2].z = max->z;
+            corners[3].x = max->x;
+            corners[3].y = max->y;
+            corners[3].z = min->z;
+            corners[4].x = min->x;
+            corners[4].y = max->y;
+            corners[4].z = min->z;
+            corners[5].x = min->x;
+            corners[5].y = max->y;
+            corners[5].z = max->z;
+            corners[6].x = max->x;
+            corners[6].y = min->y;
+            corners[6].z = min->z;
+            corners[7].x = max->x;
+            corners[7].y = min->y;
+            corners[7].z = max->z;
+            NuVecMtxTransformBlock(transformed, corners, &clip_test_mtx, 8);
+            memset(codes, 0, sizeof(codes));
+            for (i = 0; i < 8; i += 4) {
+                NUCAMERA_CLIP_CODE(codes[i], transformed[i]);
+                NUCAMERA_CLIP_CODE(codes[i + 1], transformed[i + 1]);
+                NUCAMERA_CLIP_CODE(codes[i + 2], transformed[i + 2]);
+                NUCAMERA_CLIP_CODE(codes[i + 3], transformed[i + 3]);
+            }
+            if ((codes[0] & codes[1] & codes[2] & codes[3] & codes[4] & codes[5] & codes[6] & codes[7]) != 0)
+                return 0;
+            return (codes[0] | codes[1] | codes[2] | codes[3] | codes[4] | codes[5] | codes[6] | codes[7]) != 0 ? 2 : 1;
+        } else {
+            u32 *outcode = clip_outcode_workspace_prefix;
+            ClipCornerBlocks[0].x[0] = min->x;
+            ClipCornerBlocks[0].y[0] = min->y;
+            ClipCornerBlocks[0].z[0] = min->z;
+            ClipCornerBlocks[0].x[1] = max->x;
+            ClipCornerBlocks[0].y[1] = max->y;
+            ClipCornerBlocks[0].z[1] = max->z;
+            ClipCornerBlocks[0].x[2] = min->x;
+            ClipCornerBlocks[0].y[2] = min->y;
+            ClipCornerBlocks[0].z[2] = max->z;
+            ClipCornerBlocks[0].x[3] = max->x;
+            ClipCornerBlocks[0].y[3] = max->y;
+            ClipCornerBlocks[0].z[3] = min->z;
+            ClipCornerBlocks[1].x[0] = min->x;
+            ClipCornerBlocks[1].y[0] = max->y;
+            ClipCornerBlocks[1].z[0] = min->z;
+            ClipCornerBlocks[1].x[1] = min->x;
+            ClipCornerBlocks[1].y[1] = max->y;
+            ClipCornerBlocks[1].z[1] = max->z;
+            ClipCornerBlocks[1].x[2] = max->x;
+            ClipCornerBlocks[1].y[2] = min->y;
+            ClipCornerBlocks[1].z[2] = min->z;
+            ClipCornerBlocks[1].x[3] = max->x;
+            ClipCornerBlocks[1].y[3] = min->y;
+            ClipCornerBlocks[1].z[3] = max->z;
+            PCVecMtxTransformClipBlocks(ClipTransformedBlocks, ClipCornerBlocks, &clip_test_mtx, 8, outcode);
+            if ((clip_outcode_workspace_prefix[7] & clip_outcode_workspace_prefix[6] &
+                 clip_outcode_workspace_prefix[5] & clip_outcode_workspace_prefix[4] &
+                 clip_outcode_workspace_prefix[3] & clip_outcode_workspace_prefix[2] &
+                 clip_outcode_workspace_prefix[1] & clip_outcode_workspace_prefix[0]) != 0)
+                return 0;
+            return (clip_outcode_workspace_prefix[7] | clip_outcode_workspace_prefix[6] |
+                    clip_outcode_workspace_prefix[5] | clip_outcode_workspace_prefix[4] |
+                    clip_outcode_workspace_prefix[3] | clip_outcode_workspace_prefix[2] |
+                    clip_outcode_workspace_prefix[1] | clip_outcode_workspace_prefix[0]) != 0
+                       ? 2
+                       : 1;
+        }
+    }
+
+#undef NUCAMERA_CLIP_CODE
+#undef NUCAMERA_CLIP_CODE_EX
+
+    void __cdecl NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
+        f32 half_fov = (f32)((f64)fov * 0.5);
+        i32 angle = (i32)((f64)half_fov * AIPathAngularScale);
+        f32 cotangent = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] / NuTrigTable[(angle >> 1) & 0x7fff];
+        f32 depth_factor = far_clip / (far_clip - near_clip);
+        memset(out, 0, sizeof(*out));
+        out->m00 = aspect * cotangent;
+        out->m11 = cotangent;
+        out->m22 = depth_factor;
+        out->m23 = 1.0f;
+        out->m32 = -depth_factor * near_clip;
+        pmtx.m00 *= NuCameraProjectionGlobalScaleX;
+        pmtx.m11 *= NuCameraProjectionGlobalScaleY;
+        pmtx.m20 = NuCameraProjectionGlobalOffsetX;
+        pmtx.m21 = NuCameraProjectionGlobalOffsetY;
+    }
+} // extern "C"
+
+/* nuvec's platform members: the block transforms. */
+extern "C" {
+    void __cdecl NuVecMtxTransformBlock(NUVEC *out, NUVEC *vectors, NUMTX *matrix, i32 count) {
+        i32 index;
+
+        for (index = 0; index < count; ++index) {
+            NUVEC *vector = &vectors[index];
+            NUVEC *transformed = &out[index];
+
+            transformed->x = vector->x * matrix->m00 + vector->y * matrix->m10 + vector->z * matrix->m20 + matrix->m30;
+            transformed->y = vector->x * matrix->m01 + vector->y * matrix->m11 + vector->z * matrix->m21 + matrix->m31;
+            transformed->z = vector->x * matrix->m02 + vector->y * matrix->m12 + vector->z * matrix->m22 + matrix->m32;
+        }
+    }
+
+    void __cdecl PCVecMtxTransformClipBlocks(NUVEC4BLOCK_PC *destination, NUVEC4BLOCK_PC *source, NUMTX *matrix,
+                                             i32 count, u32 *outcodes) {
+        count = (count + 3) >> 2;
+        if (count <= 0)
+            return;
+        __asm {
+        push esi
+        push edi
+        push ebx
+        push ecx
+        push edx
+        mov edi, destination
+        mov esi, source
+        mov ebx, outcodes
+        mov ecx, matrix
+        mov edx, count
+        movaps xmm4, [ecx]
+        movaps xmm5, [ecx + 0x10]
+        movaps xmm6, [ecx + 0x20]
+        movaps xmm7, [ecx + 0x30]
+    next_block:
+        movaps xmm0, [esi]
+        movaps xmm1, xmm4
+        shufps xmm1, xmm1, 0x0
+        mulps xmm1, xmm0
+        movaps xmm0, [esi + 0x10]
+        movaps xmm2, xmm5
+        shufps xmm2, xmm2, 0x0
+        mulps xmm2, xmm0
+        movaps xmm0, [esi + 0x20]
+        movaps xmm3, xmm6
+        shufps xmm3, xmm3, 0x0
+        mulps xmm3, xmm0
+        movaps xmm0, xmm7
+        shufps xmm0, xmm0, 0x0
+        addps xmm0, xmm1
+        addps xmm0, xmm2
+        addps xmm0, xmm3
+        movaps [edi], xmm0
+        add edi, 0x10
+        movaps xmm0, [esi]
+        movaps xmm1, xmm4
+        shufps xmm1, xmm1, 0x55
+        mulps xmm1, xmm0
+        movaps xmm0, [esi + 0x10]
+        movaps xmm2, xmm5
+        shufps xmm2, xmm2, 0x55
+        mulps xmm2, xmm0
+        movaps xmm0, [esi + 0x20]
+        movaps xmm3, xmm6
+        shufps xmm3, xmm3, 0x55
+        mulps xmm3, xmm0
+        movaps xmm0, xmm7
+        shufps xmm0, xmm0, 0x55
+        addps xmm0, xmm1
+        addps xmm0, xmm2
+        addps xmm0, xmm3
+        movaps [edi], xmm0
+        add edi, 0x10
+        movaps xmm0, [esi]
+        movaps xmm1, xmm4
+        shufps xmm1, xmm1, 0xaa
+        mulps xmm1, xmm0
+        movaps xmm0, [esi + 0x10]
+        movaps xmm2, xmm5
+        shufps xmm2, xmm2, 0xaa
+        mulps xmm2, xmm0
+        movaps xmm0, [esi + 0x20]
+        movaps xmm3, xmm6
+        shufps xmm3, xmm3, 0xaa
+        mulps xmm3, xmm0
+        movaps xmm0, xmm7
+        shufps xmm0, xmm0, 0xaa
+        addps xmm0, xmm1
+        addps xmm0, xmm2
+        addps xmm0, xmm3
+        movaps [edi], xmm0
+        add edi, 0x10
+        movaps xmm3, xmm0
+        movss xmm1, global_camera.near_clip
+        shufps xmm1, xmm1, 0x0
+        cmpltps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask32
+        movaps xmm2, xmm0
+        movaps xmm0, xmm3
+        cmpnleps xmm0, ClipFarLimits
+        andps xmm0, ClipOutcodeMask16
+        orps xmm2, xmm0
+        movss xmm1, zx
+        shufps xmm1, xmm1, 0x0
+        mulps xmm1, xmm3
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x30]
+        cmpltps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask1
+        orps xmm2, xmm0
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x30]
+        cmpnleps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask2
+        orps xmm2, xmm0
+        movss xmm1, zy
+        shufps xmm1, xmm1, 0x0
+        mulps xmm1, xmm3
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x20]
+        cmpltps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask8
+        orps xmm2, xmm0
+        mulps xmm1, ClipOutcodeMinusOne
+        movaps xmm0, [edi - 0x20]
+        cmpnleps xmm0, xmm1
+        andps xmm0, ClipOutcodeMask4
+        orps xmm2, xmm0
+        movaps [ebx], xmm2
+        add ebx, 0x10
+        add esi, 0x30
+        dec edx
+        jne next_block
+        pop edx
+        pop ecx
+        pop ebx
+        pop edi
+        pop esi
+        }
     }
 } // extern "C"
