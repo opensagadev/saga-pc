@@ -10391,12 +10391,8 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     NUVEC *reference_position;
     NUVEC *second_position;
     GAMEOBJECT *object;
-    if (first_time == 0) {
-        return 1;
-    }
-
-    object = packet != NULL && packet->owner != NULL ? (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner : NULL;
-    locator_set = processor->locator_set;
+    object = NULL;
+    second_position = NULL;
     ignore_assigned = -1;
     next = 0;
     set_name = NULL;
@@ -10410,6 +10406,13 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     furthest = 0;
     max_range = 0.0f;
     off_screen_radius = 0.0f;
+    if (first_time == 0) {
+        return 1;
+    }
+
+    if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL)
+        object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
+    locator_set = processor->locator_set;
 
     for (index = 0; index < param_count; ++index) {
         char *value = NuStrIStr(params[index], (char *)AIGameCharacterName);
@@ -10496,7 +10499,8 @@ i32 __cdecl Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     } else {
         reference_position = &target->position;
     }
-    second_position = use_second_player && player2 != NULL ? &player2->position : NULL;
+    if (use_second_player && player2 != NULL)
+        second_position = &player2->position;
 
     if (first) {
         if (locator_set->locator_count != 0) {
