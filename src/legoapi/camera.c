@@ -11,41 +11,6 @@ i32 __cdecl GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
     return 0;
 }
 
-void ChrisAnakinCUpdate() {
-    anakin_door_s *door = AnakinC;
-    i32 remaining = 12;
-    for (; remaining != 0; --remaining, ++door) {
-        f32 offset;
-        if (door->active == 0)
-            continue;
-
-        {
-            f32 minimum = door->minimum_offset;
-            door->offset -= door->speed * FRAMETIME;
-            if (door->offset <= minimum)
-                door->offset = minimum;
-        }
-        offset = door->offset;
-
-        // The retail transform temporaries require a 16-byte-aligned stack.
-        {
-            __declspec(align(16)) NUVEC translation = {door->direction.x * offset, door->direction.y * offset,
-                                                       door->direction.z * offset};
-            __declspec(align(16)) NUVEC position;
-            NuVecMtxTransform(&position, &translation, &door->original_matrix);
-            memcpy(&door->matrix.m30, &position, sizeof(position));
-            door->matrix.m33 = 1.0f;
-            NuSpecialSetDrawMtx(&door->special, &door->matrix);
-            if (door->has_secondary != 0) {
-                NuVecMtxTransform(&position, &translation, &door->original_secondary_matrix);
-                memcpy(&door->secondary_matrix.m30, &position, sizeof(position));
-                door->secondary_matrix.m33 = 1.0f;
-                NuSpecialSetDrawMtx(&door->secondary_special, &door->secondary_matrix);
-            }
-        }
-    }
-}
-
 GAMEPAD_PC *__cdecl ViewCamGetGamePad(void) {
     return ViewCam.gamepad;
 }
