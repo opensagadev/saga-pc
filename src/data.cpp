@@ -18589,6 +18589,21 @@ extern "C" {
 #pragma bss_seg(".bss$edLevelPinnedMenu")
     struct eduimenu_s *edLevelPinnedMenu = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$edLevelNextMenu")
+    struct eduimenu_s *edLevelNextMenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edLevelDestroyActiveMenu")
+    i32 edLevelDestroyActiveMenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edLevelDestroyThisMenu")
+    struct eduimenu_s *edLevelDestroyThisMenu = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edLevelDestroyThisMenu2")
+    struct eduimenu_s *edLevelDestroyThisMenu2 = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$edlevel_mouseandkeyboard")
+    i32 edlevel_mouseandkeyboard = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$rtl_helper_radius_mode")
     i32 rtl_helper_radius_mode = 0;
 #pragma bss_seg()

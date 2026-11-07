@@ -8,6 +8,18 @@
 extern "C" {
     extern eduimenu_s *edLevelActiveMenu;
     extern eduimenu_s *edLevelPinnedMenu;
+    extern eduimenu_s *edLevelNextMenu;
+    extern i32 edLevelDestroyActiveMenu;
+    extern eduimenu_s *edLevelDestroyThisMenu;
+    extern eduimenu_s *edLevelDestroyThisMenu2;
+    extern i32 edlevel_mouseandkeyboard;
+    void __cdecl eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
+    void __cdecl eduiSetDefaultActiveMenu(eduimenu_s *menu);
+    void __cdecl eduiProcessCursor(f32 delta_time, FRAME_PAD_PC *pad);
+    i32 __cdecl eduiGetCameraEnabled(void);
+    void __cdecl eduiSetFontScale(f32 x, f32 y);
+    void __cdecl edcamMove(FRAME_PAD_PC *pad);
+    void __cdecl edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
     extern struct eduiiattr_s EdLevelAttr;
     extern i32 pad_disabled;
     extern i32 EdLevelFnt;
@@ -277,8 +289,25 @@ STATIC_ASSERT(offsetof(PropertyTool, menus) == 0xc);
 STATIC_ASSERT(offsetof(PropertyTool, selected_attr) == 0x2c);
 STATIC_ASSERT(offsetof(EdManipulator, selected_attribute) == 0x10);
 
+LevelEditor theLevelEditor;
 PropertyTool thePropertyTool;
 PropertyMenuMetrics menu_startmetrics = {20, 5, 200, 400};
+
+void SerialiseChar(EdStream &stream, void *data, i32) {
+    stream.SerialiseBuffer(data, 1, 1);
+}
+
+void SerialiseShort(EdStream &stream, void *data, i32) {
+    stream.SerialiseBuffer(data, 4, 1);
+}
+
+void SerialiseInt(EdStream &stream, void *data, i32) {
+    stream.SerialiseBuffer(data, 4, 1);
+}
+
+void SerialiseFloat(EdStream &stream, void *data, i32) {
+    stream.SerialiseBuffer(data, 4, 1);
+}
 
 void SerialiseVuVec(EdStream &stream, void *data, i32) {
     stream.SerialiseBuffer(data, 4, 3);
@@ -306,6 +335,25 @@ void SerialiseStringAddr(EdStream &stream, void *data, i32 count) {
 
 void SerialiseColour3(EdStream &stream, void *data, i32) {
     stream.SerialiseBuffer(data, 4, 3);
+}
+
+/* Writes a special's name, or reads one back and looks it up in every
+ * loaded scene. */
+void SerialiseNuHSpecial(EdStream &stream, void *data, i32) {
+    NUSPECIALHANDLE *special = static_cast<NUSPECIALHANDLE *>(data);
+    if (stream.mode == 2) {
+        char *name = NuSpecialGetName(special);
+        stream.SerialiseString(name, 0);
+    }
+    if (stream.mode == 1) {
+        char name[128];
+        stream.SerialiseString(name, 128);
+        NuSpecialFind(NULL, special, name, 0);
+        for (i32 index = 0; index < theLevelEditor.reset_pending; index++) {
+            if (NuSpecialFind(theLevelEditor.GetScene(index), special, name, 0))
+                break;
+        }
+    }
 }
 
 void eduiSetPinnedMenu(eduimenu_s *menu) {
@@ -562,6 +610,322 @@ LevelEditorScene *LevelEditor::GetEdScene(i32 index) {
 }
 
 /* Labels every pad button whose bit is set in the mask. */
+LevelEditor::LevelEditor() : first_editor(NULL), last_editor(NULL), editor_count(0), active(0) {
+    reset_pending = 0;
+    background_colour[0] = 0.0f;
+    background_colour[1] = 0.0f;
+    background_colour[2] = 0.0f;
+    background_colour[3] = 1.0f;
+    overlay_alpha = 0.6f;
+    field_0x20 = 0;
+    field_0x24 = 0;
+    field_0x28 = 1;
+    field_0x30 = 1;
+    field_0x38 = 1;
+    info_x = 0;
+    info_y = 0;
+    info_width = 640;
+    info_height = 448;
+    info_colour = 0x80808080;
+    info_background = 0x40000000;
+    pad_x = 0;
+    pad_y = 0;
+    pad_width = 640;
+    pad_height = 448;
+    pad_background = 0x80000000;
+    pad_colour = 0x80808080;
+    SetPadText(0x1000, "D-Up");
+    SetPadText(0x4000, "D-Down");
+    SetPadText(0x8000, "D-Left");
+    SetPadText(0x2000, "D-Right");
+    SetPadText(0x10, "Triangle");
+    SetPadText(0x40, "Cross");
+    SetPadText(0x80, "Square");
+    SetPadText(0x20, "Circle");
+    SetPadText(4, "L1");
+    SetPadText(1, "L2");
+    SetPadText(8, "R1");
+    SetPadText(2, "R2");
+    SetPadText(0x200, "L3");
+    SetPadText(0x400, "R1");
+    SetPadText(0x800, "START");
+    SetPadText(0x100, "SELECT");
+}
+
+/* Editor overlay: the current LED scene name, the camera target cross, the
+ * active editor, the info box at the cursor, the menus and the cursor. */
+void LevelEditor::Display(ThingRenderData *) {
+    f32 cursor_x = 0.1f;
+    f32 cursor_y = 0.9f;
+
+    if (editors_entered) {
+        if (theLevelEditor.current_led_file != 0xff) {
+            LevelEditorScene *scene;
+            i32 id = theLevelEditor.current_led_file;
+            if (id >= 0 && id < 10)
+                scene = &theLevelEditor.scenes[id];
+            else
+                scene = NULL;
+            if (scene != NULL) {
+                char *name = scene->name;
+                DrawInfoText(&name, 1, static_cast<i32>(640.0f * cursor_x), static_cast<i32>(448.0f * cursor_y),
+                             info_width, info_height, info_colour, info_background);
+            }
+        }
+        if (edmainGetCursorEnabled())
+            eduiFlushInteracts();
+        if (field_0x28) {
+            NUCAMERA *camera = edmainGetCameraPc();
+            f32 distance = edcamGetDist();
+            if (global_camera.far_clip < distance + distance)
+                camera->far_clip = distance + distance;
+            edcamSet();
+            EdDrawBegin(0);
+            EdDrawLineCross(reinterpret_cast<NUVEC *>(background_colour), 1.0f, 0xff000000);
+            if (NewPrim != 0) {
+                if (NewPrim == 2 || NewPrim == 3)
+                    NuPrim3DEnd();
+                NewPrim = 0;
+            }
+        }
+        if (active_editor != NULL)
+            active_editor->Render();
+        NuRndrLine3dDbgFlush();
+        eduiGetCursorCoords(&cursor_x, &cursor_y);
+        DrawInfoText(info_text, 32, static_cast<i32>((1.0f + cursor_x) * 640.0),
+                     static_cast<i32>((cursor_y + 1.0f) * 448.0), info_width, info_height, info_colour,
+                     info_background);
+        if (edLevelActiveMenu != NULL) {
+            NuFntSet(EdLevelFnt);
+            NuFntScale(EdLevelFntScale, EdLevelFntScale);
+            eduiMenuRender(edLevelActiveMenu);
+        }
+        if (edLevelPinnedMenu != NULL) {
+            NuFntSet(EdLevelFnt);
+            NuFntScale(EdLevelFntScale, EdLevelFntScale);
+            eduiMenuRender(edLevelPinnedMenu);
+        }
+        eduiSetCursorColour(field_0x2c);
+        if (edmainGetCursorEnabled())
+            eduiRenderCursor();
+    }
+}
+
+/* Per-frame editor update: counts the editable scenes, handles the pending
+ * menu swaps, updates the input context and camera, runs the active menu and
+ * the active editor, and saves on request. */
+void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
+    if (!editors_entered)
+        return;
+    f32 t = data->frame_time;
+    FRAME_PAD_PC *pad = reinterpret_cast<FRAME_PAD_PC *>(data->pads[0]);
+    text_length = 0;
+    memset(info_text, 0, sizeof(info_text));
+    memset(reserved_0xf00, 0, 0x80);
+    memset(reserved_0xf00 + 0x80, 0, 0x80);
+    field_0x2c = -1;
+    editable_scene_count = 0;
+    if (scenes[0].editable)
+        editable_scene_count++;
+    if (scenes[1].editable)
+        editable_scene_count++;
+    if (scenes[2].editable)
+        editable_scene_count++;
+    if (scenes[3].editable)
+        editable_scene_count++;
+    if (scenes[4].editable)
+        editable_scene_count++;
+    if (scenes[5].editable)
+        editable_scene_count++;
+    if (scenes[6].editable)
+        editable_scene_count++;
+    if (scenes[7].editable)
+        editable_scene_count++;
+    if (scenes[8].editable)
+        editable_scene_count++;
+    if (scenes[9].editable)
+        editable_scene_count++;
+    if (edLevelActiveMenu == NULL && field_0x38 != 0 && input.GetPress(4) != 0.0f) {
+        eduiSetCameraEnabled(0);
+        eduiSetDefaultActiveMenu(eduiGetActiveMenu());
+        theLevelEditor.CreateMenu();
+    }
+    if (edLevelDestroyActiveMenu != 0) {
+        eduiMenuDestroy(edLevelActiveMenu);
+        edLevelActiveMenu = NULL;
+        edLevelDestroyActiveMenu = 0;
+    }
+    if (edLevelDestroyThisMenu != NULL) {
+        eduiMenuDestroy(edLevelDestroyThisMenu);
+        edLevelDestroyThisMenu = NULL;
+    }
+    if (edLevelDestroyThisMenu2 != NULL) {
+        eduiMenuDestroy(edLevelDestroyThisMenu2);
+        edLevelDestroyThisMenu2 = NULL;
+    }
+    if (edLevelNextMenu != NULL) {
+        if (edLevelActiveMenu != NULL)
+            eduiMenuDestroy(edLevelActiveMenu);
+        edLevelActiveMenu = edLevelNextMenu;
+        edLevelNextMenu = NULL;
+    }
+    NUCAMERA *camera;
+    if (field_0x28 != 0)
+        camera = edmainGetCameraPc();
+    else
+        camera = &global_camera;
+    input.Update(camera, pad, t, thePropertyTool.menus.first != NULL);
+    if (edmainGetCursorEnabled())
+        eduiProcessCursor(0.0f, pad);
+    if (field_0x28 != 0 && eduiGetCameraEnabled()) {
+        if (edlevel_mouseandkeyboard != 0)
+            edcamMove(NULL);
+        else
+            edcamMove(pad);
+        edcamGetPosAng(reinterpret_cast<NUVEC *>(background_colour), &field_0x20, &field_0x24);
+    }
+    if (input.GetPress(17) != 0.0f) {
+        overlay_alpha += 0.1f;
+        eduiSetFontScale(overlay_alpha, overlay_alpha);
+    }
+    if (input.GetPress(18) != 0.0f && (f32)EdLevelFntScale > 0.1f) {
+        overlay_alpha -= 0.1f;
+        eduiSetFontScale(overlay_alpha, overlay_alpha);
+    }
+    if (edLevelActiveMenu != NULL) {
+        NuFntSet(EdLevelFnt);
+        NuFntScale(EdLevelFntScale, EdLevelFntScale);
+        i32 used = eduiMenuProcess(edLevelActiveMenu, t, pad);
+        if (used != 0)
+            input.Clear(3);
+        if (edLevelActiveMenu != edLevelPinnedMenu && used == 0) {
+            if (input.GetPress(3) != 0.0f) {
+                eduiSetCameraEnabled(1);
+                eduiMenuDestroy(edLevelActiveMenu);
+                edLevelActiveMenu = NULL;
+                eduiSetDefaultActiveMenu(NULL);
+            }
+            if (input.GetPress(4) != 0.0f) {
+                eduiMenuDestroy(edLevelActiveMenu);
+                edLevelActiveMenu = NULL;
+                theLevelEditor.CreateMenu();
+            }
+        }
+    } else if (edLevelPinnedMenu != NULL && !thePropertyTool.menus.first != NULL) {
+        NuFntSet(EdLevelFnt);
+        NuFntScale(EdLevelFntScale, EdLevelFntScale);
+        if (eduiMenuProcess(edLevelPinnedMenu, t, pad) != 0)
+            return;
+    }
+    if (active_editor != NULL)
+        active_editor->Process(input);
+    if (input.GetPress(23) != 0.0f)
+        theLevelEditor.Save();
+}
+
+void cbEdLevelEditorList(eduimenu_s *menu, eduiitem_s *item, u32);
+void cbEdLevelSettingsMenu(eduimenu_s *parent, eduiitem_s *item, u32);
+
+/* Opens the top-level editor menu at the cursor: with Tab held the editor
+ * list and options, otherwise the active editor's own items. */
+void LevelEditor::CreateMenu() {
+    f32 x;
+    f32 y;
+    eduimenu_s *menu;
+    eduiGetCursorCoords(&x, &y);
+    x *= 640.0f;
+    y *= 448.0f;
+    if (NuKeyboard(0x0f) != 0) {
+        menu = eduiMenuCreate((i32)x, (i32)y, 100, 200, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy,
+                              "Level Editor");
+        if (menu != NULL) {
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelEditorList, "Editors..."));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdLevelSettingsMenu, "Options..."));
+            eduiMenuFitWidth(menu, 5);
+            eduiMenuFitOnScreen(menu, 1);
+        }
+    } else {
+        menu = eduiMenuCreate((i32)x, (i32)y, 100, 200, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        if (menu != NULL) {
+            if (active_editor != NULL)
+                active_editor->AddMenuItems(menu);
+            eduiMenuFitWidth(menu, 5);
+            eduiMenuFitOnScreen(menu, 1);
+        }
+    }
+    edLevelActiveMenu = menu;
+}
+
+void cbEdLevelEditorSelect(eduimenu_s *, eduiitem_s *item, u32) {
+    theLevelEditor.active_editor = static_cast<BaseEditor *>(item->data_ptr);
+    edLevelDestroyActiveMenu = 1;
+}
+
+/* Lists every registered editor in a submenu next to the selected item. */
+void LevelEditor::CreateEditorList(eduimenu_s *parent, eduiitem_s *item) {
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, "Editor List");
+    if (menu == NULL)
+        return;
+    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next)
+        eduiMenuAddItem(menu, eduiItemSelCreate((u32)editor, &EdLevelAttr, 0, 0, cbEdLevelEditorSelect,
+                                                const_cast<char *>(editor->GetName())));
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    eduiMenuAttach(parent, menu);
+}
+
+void cbEdLevelEditorList(eduimenu_s *menu, eduiitem_s *item, u32) {
+    theLevelEditor.CreateEditorList(menu, item);
+}
+
+/* Saves every editable scene and reports each result in a submenu. */
+void cbEdLevelSave(eduimenu_s *parent, eduiitem_s *item, u32) {
+    theLevelEditor.Save();
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, "Save File");
+    char message[128];
+    if (theLevelEditor.active) {
+        for (i32 index = 0; index < theLevelEditor.reset_pending; index++) {
+            LevelEditorScene *scene = theLevelEditor.GetEdScene(index);
+            if (scene != NULL && scene->active && scene->editable && scene->saved) {
+                scene->saved = 0;
+                if (menu != NULL) {
+                    sprintf(message, "%s successfully saved", scene->name);
+                    eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, message));
+                    eduiMenuFitWidth(menu, 5);
+                    eduiMenuFitOnScreen(menu, 1);
+                }
+            } else if (menu != NULL && scene != NULL && scene->active && scene->editable) {
+                sprintf(message, "%s : Save Failed, have you got the lock?", scene->name);
+                eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, message));
+                eduiMenuFitWidth(menu, 5);
+                eduiMenuFitOnScreen(menu, 1);
+            }
+        }
+    } else if (menu != NULL) {
+        strcpy(message, "Saving not allowed in Debug Mode - change to Edit Mode");
+        eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, message));
+        eduiMenuFitWidth(menu, 5);
+        eduiMenuFitOnScreen(menu, 1);
+    }
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    eduiMenuAttach(parent, menu);
+}
+
+void cbEdLevelSettingsMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, "Options");
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelSave, "Save Data"));
+    theLevelEditor.settings.AddMenuItems(menu);
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    eduiMenuAttach(parent, menu);
+}
+
 void LevelEditor::SetPadText(i32 buttons, char *text) {
     i32 i;
     for (i = 0; i < 32; i++) {
@@ -613,6 +977,49 @@ void LevelEditor::DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 availa
         }
         NuQFntPopCoordinateSystem();
         NuQFntPopPrintMode();
+    }
+}
+
+char const *ClassEditor::GetName() {
+    return "Class Editor";
+}
+
+i32 ClassEditor::ReadBlock(DATAPTR *) {
+    return 0;
+}
+
+void ClassEditor::WriteBlock(i32) {
+}
+
+void ClassEditor::ClearLevel(i32 level) {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        if (theRegistry.classes[i].object_interface != NULL)
+            theRegistry.classes[i].object_interface->ClearLevel(level);
+    }
+}
+
+void ClassEditor::Flush() {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        if (theRegistry.classes[i].object_interface != NULL)
+            theRegistry.classes[i].object_interface->Flush();
+    }
+}
+
+void ClassEditor::Enter() {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        if (theRegistry.classes[i].object_interface != NULL)
+            theRegistry.classes[i].object_interface->EnterEditor();
+    }
+}
+
+void ClassEditor::Exit() {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        if (theRegistry.classes[i].object_interface != NULL)
+            theRegistry.classes[i].object_interface->ExitEditor();
     }
 }
 
@@ -963,6 +1370,34 @@ i32 EdRegistry::RegisterType(char *name, i32 size, void (*serialise)(EdStream &,
     return index;
 }
 
+i32 EdType_Char = 0;
+i32 EdType_Short;
+i32 EdType_Int = 0;
+i32 EdType_Float;
+i32 EdType_VuVec;
+i32 EdType_VuMtx;
+i32 EdType_Enumeration = 0;
+i32 EdType_String;
+i32 EdType_Colour3 = 0;
+i32 EdType_NuHSpecial = 0;
+i32 EdType_NuVec;
+i32 EdType_NuMtx;
+
+void EdRegistry::RegisterBaseTypes() {
+    EdType_Char = RegisterType("Char", 1, SerialiseChar);
+    EdType_Short = RegisterType("Short", 2, SerialiseShort);
+    EdType_Int = RegisterType("Int", 4, SerialiseInt);
+    EdType_Float = RegisterType("Float", 4, SerialiseFloat);
+    EdType_VuVec = RegisterType("VuVec", 16, SerialiseVuVec);
+    EdType_VuMtx = RegisterType("VuMtx", 64, SerialiseVuMtx);
+    EdType_Enumeration = RegisterType("Enum", 4, SerialiseInt);
+    EdType_String = RegisterType("String", -1, SerialiseString);
+    EdType_Colour3 = RegisterType("Colour3", 12, SerialiseColour3);
+    EdType_NuHSpecial = RegisterType("NuHSpecial", 12, SerialiseNuHSpecial);
+    EdType_NuVec = RegisterType("NuVec", 12, SerialiseNuVec);
+    EdType_NuMtx = RegisterType("NuMtx", 64, SerialiseNuMtx);
+}
+
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
 EdClass *EdRegistry::RegisterClass(char *name, EdClassInterface *object_interface, i32 flags) {
@@ -1103,6 +1538,16 @@ i32 EdClass::SerialiseObjectHeader(EdStream &stream, void *object) {
     return present;
 }
 
+void EdRegistry::DestroyObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags) {
+    theLevelEditor.destroying_objects = 1;
+    if (object != NULL) {
+        if (!(flags & 2))
+            NotifyDestroyObject(object, object_interface->object_class, index, flags);
+        object_interface->DestroyObject(object, flags);
+    }
+    theLevelEditor.destroying_objects = 0;
+}
+
 struct EdDefunctListEntry {
     EdDefunctListEntry *next;
     EdDefunctListEntry *previous;
@@ -1132,13 +1577,6 @@ void EdRegistry::DefunctObject(EdClassInterface *object_interface, void *object,
         defunct_objects.count++;
     }
 }
-i32 EdType_Short;
-i32 EdType_Float;
-i32 EdType_VuVec;
-i32 EdType_VuMtx;
-i32 EdType_NuVec;
-i32 EdType_NuMtx;
-i32 EdType_String;
 
 void *EdRef::GetMemberObject(void *object) {
     void *member = static_cast<u8 *>(object) + member_offset;

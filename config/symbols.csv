@@ -9408,6 +9408,12 @@ address,symbol,size,ctype
 0x6b8ef0,??_EEdSubSystem@@UAEPAXI@Z,,COFF weak alias of ??_GEdSubSystem@@UAEPAXI@Z; no independent body
 0x6b8ef0,??_GEdSubSystem@@UAEPAXI@Z,11,native scalar-deleting dtor exactVTidentity
 0x6b9100,?Initialise@BaseEditor@@UAEXAATvariptr_u@@0H@Z,10,
+0x6b9230,?ReadBlock@ClassEditor@@UAEHPAUDATAPTR@@@Z,5,
+0x6b9240,?WriteBlock@ClassEditor@@UAEXH@Z,3,
+0x6b9250,?ClearLevel@ClassEditor@@UAEXH@Z,68,
+0x6b92a0,?Flush@ClassEditor@@UAEXXZ,59,
+0x6b92e0,?Enter@ClassEditor@@UAEXXZ,59,
+0x6b9320,?Exit@ClassEditor@@UAEXXZ,59,
 0x6b9450,?PreSaveInitialisation@ClassEditor@@QAEXXZ,58,
 0x6b9490,?PostSaveInitialisation@ClassEditor@@QAEXXZ,58,
 0x6b9680,?Set@EdInputContext@@QAEXHMM@Z,167,
@@ -9442,6 +9448,7 @@ address,symbol,size,ctype
 0x6bc3f0,?eduiSetPinnedMenu@@YAXPAUeduimenu_s@@@Z,10,
 0x6bc400,?edSetPadDisabled@@YAXH@Z,10,
 0x6bc410,?edGetPadDisabled@@YAHXZ,6,
+0x6bc420,??1LevelEditor@@UAE@XZ,15,
 0x6bc430,?SetPadText@LevelEditor@@QAEXHPAD@Z,51,
 0x6bc7a0,?GetScene@LevelEditor@@QAEPAUNUGSCN_s@@H@Z,30,
 0x6bc7c0,?GetEdScene@LevelEditor@@QAEPAULevelEditorScene@@H@Z,30,
@@ -9451,7 +9458,9 @@ address,symbol,size,ctype
 0x6bc910,?cbEdLevelSetSliderInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,20,
 0x6bc930,?cbEdLevelSetText@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
 0x6bc950,?cbEdLevelToggleInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,22,
+0x6bc970,?cbEdLevelEditorSelect@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,24,
 0x6bca90,?DrawInfoText@LevelEditor@@QAEXPAPADHHHHHHH@Z,401,
+0x6bcc30,?Display@LevelEditor@@UAEXPAUThingRenderData@@@Z,520,
 0x6bd500,??1EdString@@QAE@XZ,22,
 0x6bd520,?Set@EdString@@QAEXPBD@Z,152,
 0x6bd5c0,?GetInitialPosition@Placeable@@UBEPBUVuVec@@XZ,18,
@@ -9470,7 +9479,7 @@ address,symbol,size,ctype
 0x6be130,?SerialiseString@@YAXAAVEdStream@@PAXH@Z,22,
 0x6be150,?SerialiseStringAddr@@YAXAAVEdStream@@PAXH@Z,22,
 0x6be170,?SerialiseColour3@@YAXAAVEdStream@@PAXH@Z,21,
-0x6be190,_SerialiseNuHSpecial,201,
+0x6be190,?SerialiseNuHSpecial@@YAXAAVEdStream@@PAXH@Z,201,
 0x6be260,?GetNextObject@EdClassInterface@@UAEPAXPAXP6AH0@Z@Z,66,
 0x6be2b0,?GetMemberObject@EdRef@@UAEPAXPAX@Z,28,
 0x6be2d0,?GetAttributeData@EdRef@@QAEHPAXHH0H@Z,166,
@@ -9536,6 +9545,7 @@ address,symbol,size,ctype
 0x6c3240,?Update@EdInputContext@@QAEXPAUnucamera_s@@PAUFRAME_PAD_PC@@M_N@Z,2104,
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
 0x6c4470,?Flush@LevelEditor@@QAEXXZ,67,
+0x6c44c0,?CreateEditorList@LevelEditor@@QAEXPAUeduimenu_s@@PAUeduiitem_s@@@Z,159,
 0x6c5920,?AddPropertyMenuItems@PropertyTool@@QAEXPAUeduimenu_s@@PAUEdClass@@PAXPAUeduiitem_s@@@Z,244,
 0x6c5a20,?AutoLocateMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,197,
 0x6c5af0,??0PropertyMenu@@QAE@XZ,86,
@@ -9543,12 +9553,18 @@ address,symbol,size,ctype
 0x6c5c10,?GetActiveMenu@PropertyTool@@QAEPAVPropertyMenu@@PAV2@@Z,44,
 0x6c5c80,?SetDefaultActiveMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,67,
 0x6c5cd0,?ProcessControls@PropertyTool@@QAEHAAUEdInputContext@@@Z,46,
+0x6c5d20,?SerialiseChar@@YAXAAVEdStream@@PAXH@Z,21,
+0x6c5d40,?SerialiseShort@@YAXAAVEdStream@@PAXH@Z,21,
+0x6c5d60,?SerialiseInt@@YAXAAVEdStream@@PAXH@Z,21,
+0x6c5d80,?SerialiseFloat@@YAXAAVEdStream@@PAXH@Z,21,
 0x6c5da0,??0EdRef@@QAE@PAD0HHHPAVEdControl@@H@Z,258,
 0x6c5f80,?CheckType@EdRef@@QAEXH@Z,129,
 0x6c6010,?GetTypeSize@EdRef@@QAEHHH@Z,122,
 0x6c6090,?GetMemberData@EdRef@@UAEXPAXH0H@Z,63,
 0x6c60d0,?SetMemberData@EdRef@@UAEXPAXH0HPAF@Z,63,
+0x6c6110,?RegisterBaseTypes@EdRegistry@@QAEXXZ,532,
 0x6c6330,?CreateObject@EdRegistry@@QAEPAXPAVEdClassInterface@@PAXHHH@Z,114,
+0x6c63b0,?DestroyObject@EdRegistry@@QAEXPAVEdClassInterface@@PAXHH@Z,71,
 0x6c6400,??0?$CSListLink@VEdRef@@@@QAE@XZ,20,
 0x6c66c0,?SerialiseObjectHeader@EdClass@@QAEHAAVEdStream@@PAX@Z,53,
 0x6c6a10,?FindMember@EdClass@@QAEHPAUEdMember@@PAXHH@Z,136,
@@ -9561,8 +9577,14 @@ address,symbol,size,ctype
 0x6c8480,?BeginBlock@EdFileOutputStream@@UAEPBDPBD@Z,86,
 0x6c84e0,?EndBlock@EdFileOutputStream@@UAEXXZ,109,
 0x6c8760,?GetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
+0x6c8aa0,?GetName@ClassEditor@@UAEPBDXZ,6,
 0x6c94a0,?DrawObjectSphere@ClassEditor@@QAEXAAUClassObject@@H@Z,413,
+0x6cb250,??0LevelEditor@@QAE@XZ,467,
+0x6cb430,?GetName@LevelEditor@@UAEPBDXZ,6,
+0x6cb440,??_ELevelEditor@@UAEPAXI@Z,,COFF weak alias of ??_GLevelEditor@@UAEPAXI@Z; no independent body
+0x6cb440,??_GLevelEditor@@UAEPAXI@Z,40,
 0x6cb820,?WriteStream@LevelEditor@@QAEHAAVEdFileOutputStream@@@Z,243,
+0x6cb920,?cbEdLevelEditorList@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,21,
 0x6cce60,??0PropertyTool@@QAE@XZ,109,
 0x6cced0,?GetName@PropertyTool@@UAEPBDXZ,6,
 0x6ccee0,??_EPropertyTool@@UAEPAXI@Z,,COFF weak alias of ??_GPropertyTool@@UAEPAXI@Z; no independent body
@@ -9579,11 +9601,13 @@ address,symbol,size,ctype
 0x6cf9d0,?AddMenuItem@EdEnumControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,174,
 0x6cfa80,?AddMenuItem@EdBitControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,294,
 0x6d0240,?Save@LevelEditor@@QAEHXZ,411,
-0x6d05e0,_cbEdLevelSave,436,
-0x6d07a0,_cbEdLevelSettingsMenu,137,
+0x6d05e0,?cbEdLevelSave@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,436,
+0x6d07a0,?cbEdLevelSettingsMenu@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,137,
+0x6d0830,?CreateMenu@LevelEditor@@QAEXXZ,305,
 0x6d0a40,?ProcessMenu@PropertyTool@@QAEHAAUEdInputContext@@@Z,913,
 0x6d0de0,?Process@PropertyTool@@UAEHAAUEdInputContext@@@Z,33,
 0x6d0e10,?Render@PropertyTool@@UAEXXZ,91,
+0x6d1ff0,?ProcessEvenWhenPaused@LevelEditor@@UAEXPAUThingProcessData@@@Z,1107,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
 0x6d33d0,_NuKeyboardPlatformStartup_candidate,59,i32 __cdecl(void)
 0x6d3420,_FmvPlatformUpdatePc,1,
@@ -11160,6 +11184,7 @@ address,symbol,size,ctype
 0x750060,??__EPostPixelShaderCachePc@@YAXXZ,12,native atexit initializer
 0x7500c0,??__EtheNuNetEmu@@YAXXZ,171,
 0x750170,??__EFmvSurfacePc@@YAXXZ,22,
+0x750200,??__EtheLevelEditor@@YAXXZ,22,
 0x750220,??__EthePropertyTool@@YAXXZ,12,
 0x750280,??__EPCDeviceBackend@@YAXXZ,22,void __cdecl(void)
 0x7502a0,??__Enu_keyboard_owner@@YAXXZ,22,void __cdecl (void)
@@ -11176,6 +11201,7 @@ address,symbol,size,ctype
 0x7505b0,??__FPostPixelShaderCachePc@@YAXXZ,49,native vector cleanup
 0x750670,??__FFmvSurfacePc@@YAXXZ,10,
 0x7506d0,??__FthePropertyTool@@YAXXZ,11,
+0x750730,??__FtheLevelEditor@@YAXXZ,20,
 0x750750,??__FPCDeviceBackend@@YAXXZ,10,void __cdecl(void)
 0x750760,??__Fnu_keyboard_owner@@YAXXZ,10,void __cdecl (void)
 0x00751000,__imp__RegCloseKey@4,4,LONG (__stdcall *)(HKEY)
@@ -11400,6 +11426,7 @@ address,symbol,size,ctype
 0x7513b8,_PostPixelShaderCachePc$initializer$,4,native CRT pointer
 0x7513c4,_theNuNetEmu$initializer$,4,native CRT pointer
 0x7513c8,_FmvSurfacePc$initializer$,4,void (__cdecl *)(void)
+0x7513e0,_theLevelEditor$initializer$,4,void (__cdecl *)(void)
 0x7513e4,_thePropertyTool$initializer$,4,void (__cdecl *)(void)
 0x7513fc,_PCDeviceBackend$initializer$,4,constructor initializer pointer
 0x00751400,_nu_keyboard_owner$initializer$,4,void (__cdecl *)(void)
@@ -14970,6 +14997,7 @@ address,symbol,size,ctype
 0x75ba90,_PCContextName_Batarang,9,const char [9]
 0x75ba9c,_PCContextName_Signal,7,const char [7]
 0x75baa4,_PCContextName_Float,6,const char [6]
+0x75baa4,??_C@_05KKPNNHNB@Float?$AA@,6,char []
 0x75baac,_PCContextName_PickUpDetonator,16,const char [16]
 0x75babc,_PCContextName_PlaceDetonator,15,const char [15]
 0x75bacc,_PCContextName_Grapple,8,const char [8]
@@ -18054,11 +18082,17 @@ address,symbol,size,ctype
 0x76bd6c,??_C@_07JNDIOAAP@Light?$CFd?$AA@,8,char []
 0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
 0x76bda8,??_C@_07MKNMKJLE@User?5ID?$AA@,,const char [8]
+0x76bddc,??_C@_05HILIGJJL@VuMtx?$AA@,6,char []
 0x76bdf8,??_C@_08NFMAFENF@Low?5Time?$AA@,,const char [9]
 0x76be10,??_C@_09NHDLFPCH@High?5Time?$AA@,,const char [10]
 0x76be1c,??_C@_0L@FHHMINHA@Multiplier?$AA@,,const char [11]
 0x76be28,__real@42fe0000,,f32
+0x76be34,??_C@_07NLJKHPIJ@Colour3?$AA@,8,char []
+0x76be44,??_C@_03DBLNGNIM@Int?$AA@,4,char []
+0x76be48,??_C@_05BCAGPPBA@Short?$AA@,6,char []
+0x76be58,??_C@_06ENNEIMBA@String?$AA@,7,char []
 0x76be68,??_C@_09KLHEJKNK@Modifiers?$AA@,,const char [10]
+0x76be74,??_C@_05ELHCLLNI@VuVec?$AA@,6,char []
 0x76be9c,__real@41a80000,,f32
 0x76bea0,??_C@_0N@OMMEHEHJ@Blur?5Density?$AA@,,const char [13]
 0x76beb0,??_C@_0N@BOLOHNOG@Haze?5Density?$AA@,,const char [13]
@@ -18878,10 +18912,31 @@ address,symbol,size,ctype
 0x76f9a8,??_7EdRef@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9dc,??_7Placeable@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76fa18,??_C@_07OAEEHIKM@No?5Name?$AA@,8,char []
+0x76fa90,??_C@_0M@PPADLALA@Editor?5List?$AA@,12,char []
+0x76fa9c,??_C@_05JHDNOJGN@NuMtx?$AA@,6,char []
+0x76faa4,??_C@_05KEPHDLCO@NuVec?$AA@,6,char []
+0x76faac,??_C@_0L@BCHFBJHG@NuHSpecial?$AA@,11,char []
+0x76fab8,??_C@_04PAFOOALK@Enum?$AA@,5,char []
 0x76fc0c,??_C@_06LHGEHABH@?$CINULL?$CJ?$AA@,7,char []
 0x76fc14,??_C@_0L@HFFGLEHP@StreamInfo?$AA@,11,char []
+0x76fd9c,??_C@_0N@MKEDCNLI@Class?5Editor?$AA@,13,char []
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
+0x76fe68,??_C@_06LCPJPOPK@SELECT?$AA@,7,char []
 0x76fe70,_PcInputText76fe70,,char[6]
+0x76fe70,??_C@_05JLPDBANI@START?$AA@,6,char []
+0x76fe78,??_C@_02INFFDHHJ@L3?$AA@,3,char []
+0x76fe7c,??_C@_02ICPGIIEC@R2?$AA@,3,char []
+0x76fe80,??_C@_02KJNLNLIB@R1?$AA@,3,char []
+0x76fe84,??_C@_02JEEOAGDI@L2?$AA@,3,char []
+0x76fe88,??_C@_02LPGDFFPL@L1?$AA@,3,char []
+0x76fe8c,??_C@_05HFADIOFI@Cross?$AA@,6,char []
+0x76fe94,??_C@_08NMAPBDDP@Triangle?$AA@,9,char []
+0x76fea0,??_C@_07OHGCOBMN@D?9Right?$AA@,8,char []
+0x76fea8,??_C@_06PPBHNOBK@D?9Left?$AA@,7,char []
+0x76feb0,??_C@_06NBDEGCD@D?9Down?$AA@,7,char []
+0x76feb8,??_C@_04IDLOBECF@D?9Up?$AA@,5,char []
+0x76fec4,??_7LevelEditor@@6B@,,
+0x76fef4,??_C@_0M@FBIMNPFH@LevelEditor?$AA@,12,char []
 0x76ff00,??_C@_07JHNCONCK@Editors?$AA@,8,char []
 0x76ff08,??_C@_08EEOHOBEO@Settings?$AA@,9,char []
 0x76ff14,??_C@_08EPNAOIMG@FileInfo?$AA@,9,char []
@@ -18890,6 +18945,14 @@ address,symbol,size,ctype
 0x76ff6c,??_C@_07FCJAGJJB@?$CFs?5?9?5?$CFs?$AA@,8,char []
 0x76ff74,??_C@_07NIPDDFPO@no?5name?$AA@,8,char []
 0x770058,??_C@_09MMGMHBF@?$CFs?1?$CFs?4led?$AA@,10,char []
+0x770064,??_C@_0DH@GMIFDFOB@Saving?5not?5allowed?5in?5Debug?5Mode@,55,char []
+0x77009c,??_C@_0CJ@INEOIBDI@?$CFs?5?3?5Save?5Failed?0?5have?5you?5got?5t@,41,char []
+0x7700c8,??_C@_0BG@JGJDHCMI@?$CFs?5successfully?5saved?$AA@,22,char []
+0x7700e0,??_C@_09HJIJHJIA@Save?5File?$AA@,10,char []
+0x7700ec,??_C@_09LAKEDFMD@Save?5Data?$AA@,10,char []
+0x7700f8,??_C@_0L@MNCBHNBJ@Options?4?4?4?$AA@,11,char []
+0x770104,??_C@_0L@MPOOEHDD@Editors?4?4?4?$AA@,11,char []
+0x770110,??_C@_0N@KOJOGPFL@Level?5Editor?$AA@,13,char []
 0x7701ac,??_C@_06JPHCLLC@Error?$CB?$AA@,7,
 0x770208,??_C@_0IL@DKEGECNI@Sorry?0?5but?5your?5machine?5is?5unabl@,139,
 0x770298,??_C@_0JD@MODJFIG@Helaas?5is?5je?5pc?5niet?5geschikt?5vo@,147,
@@ -21601,6 +21664,10 @@ address,symbol,size,ctype
 0x7ebefc,??_R3Placeable@@8,,
 0x7ebf0c,??_R2Placeable@@8,,
 0x7ebf14,??_R1A@?0A@EA@Placeable@@8,,
+0x7ec400,??_R4LevelEditor@@6B@,,
+0x7ec414,??_R3LevelEditor@@8,,
+0x7ec424,??_R2LevelEditor@@8,,
+0x7ec430,??_R1A@?0A@EA@LevelEditor@@8,,
 0x7ec44c,??_R4PropertyTool@@6B@,,
 0x7ec460,??_R3PropertyTool@@8,,
 0x7ec470,??_R2PropertyTool@@8,,
@@ -28101,16 +28168,27 @@ address,symbol,size,ctype
 0x2973a98,_EdLevelFnt,4,i32
 0x2973a9c,_edLevelActiveMenu,4,struct eduimenu_s *
 0x2973aa0,_edLevelPinnedMenu,4,struct eduimenu_s *
+0x2973aa4,_edLevelNextMenu,4,struct eduimenu_s *
+0x2973aa8,_edLevelDestroyActiveMenu,4,i32
+0x2973aac,_edLevelDestroyThisMenu,4,struct eduimenu_s *
+0x2973ab0,_edLevelDestroyThisMenu2,4,struct eduimenu_s *
 0x2973ab4,_pad_disabled,4,i32
+0x2973ab8,_edlevel_mouseandkeyboard,4,i32
 0x2973ac0,?CurrentLedFile@Placeable@@2FA,,i16
+0x2973ac8,?EdType_Char@@3HA,4,i32
 0x2973acc,?EdType_Short@@3HA,,i32
+0x2973ad0,?EdType_Int@@3HA,4,i32
 0x2973ad4,?EdType_Float@@3HA,,i32
 0x2973ad8,?EdType_VuVec@@3HA,,i32
 0x2973adc,?EdType_VuMtx@@3HA,,i32
+0x2973ae0,?EdType_Enumeration@@3HA,4,i32
 0x2973ae4,?EdType_String@@3HA,4,i32
+0x2973ae8,?EdType_Colour3@@3HA,4,i32
+0x2973aec,?EdType_NuHSpecial@@3HA,4,i32
 0x2973af0,?EdType_NuVec@@3HA,,i32
 0x2973af4,?EdType_NuMtx@@3HA,,i32
 0x2973ba8,?theRegistry@@3UEdRegistry@@A,,EdRegistry
+0x2973c10,?theLevelEditor@@3VLevelEditor@@A,4272,LevelEditor
 0x2974cc4,?EdInputUseMouse@@3EA,1,u8
 0x2974cf4,_PCDevicePrimitiveCallCountPc,,u32
 0x2974cf8,_PCDeviceIndexedPrimitiveCallCountPc,,u32

@@ -29571,6 +29571,7 @@ struct EdRegistry {
     void Initialise(VARIPTR &buffer, VARIPTR &, i32 max_classes, i32 max_types, i32 max_mappings, i32 max_notifiers);
     void Flush();
     i32 RegisterType(char *name, i32 size, void (*serialise)(EdStream &, void *, i32));
+    void RegisterBaseTypes();
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
     EdClass *RegisterClass(char *name, EdClassInterface *object_interface, i32 flags);
@@ -29598,6 +29599,7 @@ struct EdRegistry {
     void NotifyDefunctObject(void *object, EdClass *object_class, i32 flags);
     void NotifyReviveObject(void *object, EdClass *object_class, i32 flags);
     void *CreateObject(EdClassInterface *object_interface, void *source, i32 index, i32 guid, i32 flags);
+    void DestroyObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags);
     void DefunctObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags);
 };
 extern EdRegistry theRegistry;
@@ -29794,8 +29796,7 @@ struct EdInputContext {
  * bytes later. */
 class LevelEditor : public BaseThing {
   public:
-    virtual ~LevelEditor() {
-    }
+    LevelEditor();
     virtual char const *GetName() {
         return "LevelEditor";
     }
@@ -29803,6 +29804,8 @@ class LevelEditor : public BaseThing {
     virtual void Display(ThingRenderData *);
 
     void SetPadText(i32 buttons, char *text);
+    void CreateMenu();
+    void CreateEditorList(eduimenu_s *parent, eduiitem_s *item);
     NUGSCN *GetScene(i32 index);
     LevelEditorScene *GetEdScene(i32 index);
     void Flush();
