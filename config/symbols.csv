@@ -2050,7 +2050,7 @@ address,symbol,size,ctype
 0x004c9e10,_LoadPermLoadSaveIconScene,81,void (void)
 0x4c9e70,_LoadPermProgressDraw,53,
 0x004c9eb0,_LoadPermFadeAlpha,163,"f32 __cdecl (f32, f32)"
-0x004c9f60,_MemoryManagerInit,71,void (void *)
+0x004c9f60,?Init@memorymanager_s@@QAEXPATvariptr_u@@0I@Z,71,
 0x004c9fb0,_LoadPermData,1532,void __cdecl (void *)
 0x004ca5b0,_LoadPerm,2004,void __cdecl (void)
 0x4cadb0,_StarWars_MidSpecialMove_Default,742,
@@ -4373,23 +4373,28 @@ address,symbol,size,ctype
 0x563ec0,_BigJumpCode,1068,void __cdecl (GAMEOBJECT *)
 0x564310,??0FadeBase@@QAE@XZ,16,
 0x564320,??1FadeBase@@UAE@XZ,7,
-0x564330,??_EFadeBase@@UAEPAXI@Z,31,
+0x564330,??_EFadeBase@@UAEPAXI@Z,,COFF weak alias of ??_GFadeBase@@UAEPAXI@Z; no independent body
+0x564330,??_GFadeBase@@UAEPAXI@Z,31,
 0x564350,??0Fade@@QAE@XZ,16,
 0x564360,??1Fade@@UAE@XZ,7,
 0x564370,?GetFadeType@Fade@@UBE?AW4FADETYPE_VALUE@@XZ,3,
-0x564380,??_EFade@@UAEPAXI@Z,31,
+0x564380,??_EFade@@UAEPAXI@Z,,COFF weak alias of ??_GFade@@UAEPAXI@Z; no independent body
+0x564380,??_GFade@@UAEPAXI@Z,31,
 0x5643a0,??0FadeWipe@@QAE@XZ,16,
 0x5643b0,??1FadeWipe@@UAE@XZ,7,
 0x5643c0,?GetFadeType@FadeWipe@@UBE?AW4FADETYPE_VALUE@@XZ,6,
-0x5643d0,??_EFadeWipe@@UAEPAXI@Z,31,
+0x5643d0,??_EFadeWipe@@UAEPAXI@Z,,COFF weak alias of ??_GFadeWipe@@UAEPAXI@Z; no independent body
+0x5643d0,??_GFadeWipe@@UAEPAXI@Z,31,
 0x5643f0,??0FadeStillWipe@@QAE@XZ,16,
 0x564400,??1FadeStillWipe@@UAE@XZ,7,
 0x564410,?GetFadeType@FadeStillWipe@@UBE?AW4FADETYPE_VALUE@@XZ,6,
-0x564420,??_EFadeStillWipe@@UAEPAXI@Z,31,
+0x564420,??_EFadeStillWipe@@UAEPAXI@Z,,COFF weak alias of ??_GFadeStillWipe@@UAEPAXI@Z; no independent body
+0x564420,??_GFadeStillWipe@@UAEPAXI@Z,31,
 0x564440,??0FadeStill@@QAE@XZ,16,
 0x564450,??1FadeStill@@UAE@XZ,7,
 0x564460,?GetFadeType@FadeStill@@UBE?AW4FADETYPE_VALUE@@XZ,6,
-0x564470,??_EFadeStill@@UAEPAXI@Z,31,
+0x564470,??_EFadeStill@@UAEPAXI@Z,,COFF weak alias of ??_GFadeStill@@UAEPAXI@Z; no independent body
+0x564470,??_GFadeStill@@UAEPAXI@Z,31,
 0x5644c0,_FadeLoop_SetObj,44,
 0x564500,_FadeLoop_DrawObj,98,
 0x564570,_CreateFadeMaterials,475,void __cdecl(void)
@@ -27248,7 +27253,7 @@ address,symbol,size,ctype
 0x9562ac,_EpCompleteCount,,i32
 0x009562b0,_EDataList,4,EPISODEDATA_PC *
 0x009562b4,_EPISODECOUNT,4,i32
-0x9562b8,_EpisodeSavePc,,EPISODE_SAVE_READER_PC *
+0x9562b8,_EpisodeSavePc,,EPISODESAVE_s *
 0x9562bc,_CanPushObstaclesFn,,u32 (__cdecl *)(GAMEOBJECT *)
 0x9562c0,_CreditList,,CREDIT_RECORD_PC *
 0x9562c4,_CreditCountPc,,i32

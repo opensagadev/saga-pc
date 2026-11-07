@@ -467,31 +467,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/fade.cpp",
-   "symbol": "??_GFade@@UAEPAXI@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/fade.cpp",
-   "symbol": "??_GFadeWipe@@UAEPAXI@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/fade.cpp",
-   "symbol": "??_GFadeStillWipe@@UAEPAXI@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/fade.cpp",
-   "symbol": "??_GFadeStill@@UAEPAXI@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/legoapi/fade.cpp",
-   "symbol": "??_GFadeBase@@UAEPAXI@Z",
-   "kind": "function"
-  },
-  {
    "unit": "src/legoapi/move.c",
    "symbol": "_MovePlayerFabs",
    "kind": "function"

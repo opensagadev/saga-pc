@@ -2186,6 +2186,16 @@ i32 __cdecl Action_MushroomCollapse(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     return 1;
 }
 
+i32 PodSeekMushCutSound(void) {
+    if (WORLD->current_level == PODRACEB_LDATA && Lap == 2 && PodRacePc->mushroom_timer > 1.0f &&
+        mushroom_collapse != 0) {
+        if (GameCam->sock_position.distance > mushroom0_along - 15.0 &&
+            GameCam->sock_position.distance <= mushroom0_along + 5.0)
+            return 1;
+    }
+    return 0;
+}
+
 void __cdecl PodRace_IncreaseLap(void) {
     Lap = (i32)((u32)Lap + 1u);
 }

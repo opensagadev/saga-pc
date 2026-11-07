@@ -2045,16 +2045,21 @@ STATIC_ASSERT(sizeof(MISSION_SAVE_READER_PC) == 0x64);
 STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, best_times) == 0);
 STATIC_ASSERT(offsetof(MISSION_SAVE_READER_PC, completed) == 0x50);
 
-typedef struct GAME_EPISODE_START_PC {
+struct EPISODESAVE_s {
     f32 superstory_time_limit;
     i32 superstory_score_target;
-    u8 complete;
-    u8 reserved_09[3];
-} GAME_EPISODE_START_PC;
-STATIC_ASSERT(sizeof(GAME_EPISODE_START_PC) == 12);
-STATIC_ASSERT(offsetof(GAME_EPISODE_START_PC, superstory_time_limit) == 0);
-STATIC_ASSERT(offsetof(GAME_EPISODE_START_PC, superstory_score_target) == 4);
-STATIC_ASSERT(offsetof(GAME_EPISODE_START_PC, complete) == 8);
+    union {
+        u32 flags;
+        struct {
+            u8 superstory_complete;
+            u8 reserved_0x9[3];
+        };
+    };
+};
+STATIC_ASSERT(sizeof(struct EPISODESAVE_s) == 12);
+STATIC_ASSERT(offsetof(struct EPISODESAVE_s, superstory_time_limit) == 0);
+STATIC_ASSERT(offsetof(struct EPISODESAVE_s, superstory_score_target) == 4);
+STATIC_ASSERT(offsetof(struct EPISODESAVE_s, superstory_complete) == 8);
 
 typedef struct GAME_CUSTOMISER_START_PC {
     u16 pieces[9];
@@ -2112,7 +2117,7 @@ typedef struct gamesave_s {
             u8 unknown_7c68[0x2c];
         };
         struct {
-            GAME_EPISODE_START_PC episode_start[6];
+            struct EPISODESAVE_s episode_save[6];
             u8 newgame_reserved_7bd4[0x28];
             u32 initial_store_pack_flags;
             u32 newgame_reserved_7c00;
@@ -2144,7 +2149,7 @@ STATIC_ASSERT(offsetof(GAMESAVE, difficulty) == 1);
 STATIC_ASSERT(offsetof(GAMESAVE, save_version) == 1);
 STATIC_ASSERT(offsetof(GAMESAVE, options_save) == 4);
 STATIC_ASSERT(offsetof(GAMESAVE, area_save) == 0x782c);
-STATIC_ASSERT(offsetof(GAMESAVE, episode_start) == 0x7b8c);
+STATIC_ASSERT(offsetof(GAMESAVE, episode_save) == 0x7b8c);
 STATIC_ASSERT(offsetof(GAMESAVE, hint_completion_bits) == 0x7c08);
 STATIC_ASSERT(offsetof(GAMESAVE, coins) == 0x7c14);
 STATIC_ASSERT(offsetof(GAMESAVE, initial_store_pack_flags) == 0x7bfc);
@@ -8168,6 +8173,7 @@ typedef struct memorymanager_s {
     void *AllocPool(u32 size, i32 clear);
     void FreePool(void *memory, u32 size);
     void *AllocLinear(u32 bytes, u32 alignment, i32 clear);
+    void Init(VARIPTR *buffer, VARIPTR *end, u32 bytes);
 #endif
 } MEMORYMANAGER;
 STATIC_ASSERT(sizeof(MEMORYMANAGER) == 0x248);
@@ -20551,7 +20557,6 @@ extern "C" {
 }
 #endif
 
-typedef struct episode_save_reader_pc_s EPISODE_SAVE_READER_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20602,7 +20607,7 @@ extern "C" {
     extern i32 EpGoldBrickCount;
     extern i32 EpGoldBrickTotal;
     extern i32 EpisodeGoldBrickForSuperStoryPc;
-    extern EPISODE_SAVE_READER_PC *EpisodeSavePc;
+    extern struct EPISODESAVE_s *EpisodeSavePc;
     extern i32 EpisodeGoldBrickForSuperBonusPc;
     extern i32 EpisodeGoldBrickForChallengePc;
     extern u16 TextCrawlRotateXPc;
@@ -25161,19 +25166,6 @@ struct RUMBLEPACKET {
     };
 };
 STATIC_ASSERT(sizeof(struct RUMBLEPACKET) == 20);
-
-struct EPISODESAVE_s {
-    f32 superstory_time_limit;
-    i32 superstory_score_target;
-    union {
-        u32 flags;
-        struct {
-            u8 superstory_complete;
-            u8 reserved_0x9[3];
-        };
-    };
-};
-STATIC_ASSERT(sizeof(struct EPISODESAVE_s) == 12);
 
 struct PARTLIGHTSOURCE_s {
     u8 reserved_00[120];

@@ -55,8 +55,8 @@ void __cdecl NewGame(void) {
     for (i = 0; i < AREACOUNT; ++i)
         Game.area_save[i].challenge_trial_time = (f32)ADataList[i].challenge_trial_time;
     for (i = 0; i < 6; ++i) {
-        Game.episode_start[i].superstory_time_limit = 3600.0f;
-        Game.episode_start[i].superstory_score_target = 100000;
+        Game.episode_save[i].superstory_time_limit = 3600.0f;
+        Game.episode_save[i].superstory_score_target = 100000;
     }
     Customiser_CopyDefaultPiecesToSave(CharacterCustomiser, Game.customiser_start);
     if (TTab != NULL) {
@@ -976,7 +976,7 @@ extern "C" void __cdecl InitGameBeforeConfig(void) {
     Game_OptionsSave = &Game.options_save;
     Game_LevelSave = Game.unknown_0011;
     Game_AreaSave = (COLLECTION_AREA_SAVE_PC *)Game.area_save;
-    EpisodeSavePc = (EPISODE_SAVE_READER_PC *)Game.episode_start;
+    EpisodeSavePc = Game.episode_save;
     Game_CharacterSave = Game.character_save;
     CustomiserCompletionSavePc = (CUSTOMISER_COMPLETION_READER_PC *)&Game.save_hash;
     Game_MissionSave = &Game.mission_save;

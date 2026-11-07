@@ -5,7 +5,7 @@
 typedef struct SHOP_COMPLETION_GAME_PC {
     u8 reserved_0000[0x782c];
     AREASAVE_s area_save[72];
-    GAME_EPISODE_START_PC episode_save[6];
+    struct EPISODESAVE_s episode_save[6];
     u32 purchased_hint_bits[9];
     u32 purchased_gold_brick_bits[2];
     u32 purchased_extra_bits[2];
@@ -123,7 +123,7 @@ extern "C" {
         }
         for (i = 0; i < EPISODECOUNT; ++i) {
             CompletionPointInfoRecalculatePc[0] += POINTS_PER_SUPERSTORY;
-            if (save->episode_save[i].complete != 0) {
+            if (save->episode_save[i].superstory_complete != 0) {
                 AddToCompletionPoints(POINTS_PER_SUPERSTORY);
                 if (EpisodeGoldBrickForSuperStoryPc != 0)
                     AddToGoldBricks();

@@ -1625,7 +1625,7 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
         /* Retail tests the current level separately for loaded and unloaded worlds. */
         if (NewLData == STATUS_LDATA || (WORLD->loaded && WORLD->current_level == STATUS_LDATA) ||
             (!WORLD->loaded && WORLD->current_level == STATUS_LDATA)) {
-            GAME_EPISODE_START_PC *save = &Game.episode_start[episode];
+            struct EPISODESAVE_s *save = &Game.episode_save[episode];
             i32 gold = 0;
             p->previous_best_time = save->superstory_time_limit;
             p->previous_best_score = save->superstory_score_target;
@@ -1642,8 +1642,8 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
                     save->superstory_score_target = p->superstory_score;
                 } else
                     p->new_best_score = 0;
-                if (save->complete == 0) {
-                    save->complete = 1;
+                if (save->superstory_complete == 0) {
+                    save->superstory_complete = 1;
                     AddToCompletionPoints(POINTS_PER_SUPERSTORY);
                     if (EpisodeGoldBrickForSuperStoryPc != 0)
                         gold = AddGoldBrickMessage(p, TextIdPc88073c);

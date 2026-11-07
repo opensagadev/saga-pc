@@ -129,6 +129,15 @@ i32 AddToCollection(i32 id) {
     return 0;
 }
 
+void CollectAllCharacters(i32 only_story) {
+    i32 i;
+
+    for (i = 0; i < CollectCount; i++) {
+        if (only_story == 0 || CollectList[i].selection_type == 1)
+            AddToCollection(CollectList[i].id);
+    }
+}
+
 typedef struct collection_buyable_reader_pc_s {
     i16 id;
     u8 unknown_02[6];

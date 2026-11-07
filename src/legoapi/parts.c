@@ -1518,6 +1518,23 @@ void __cdecl Areas_OpenAll(i32 mode) {
     ReCalculateCompletionPoints();
 }
 
+void Episodes_CompleteAllSuperStories(void) {
+    i32 i;
+
+    if (EpisodeSavePc != NULL) {
+        for (i = 0; i < EPISODECOUNT; i++) {
+            EpisodeSavePc[i].superstory_complete = 1;
+            if (EpisodeSavePc[i].superstory_score_target == 0) {
+                EpisodeSavePc[i].superstory_score_target = 1234560;
+            }
+            if (EpisodeSavePc[i].superstory_time_limit <= 0.0f) {
+                EpisodeSavePc[i].superstory_time_limit = 3598.76f;
+            }
+        }
+        ReCalculateCompletionPoints();
+    }
+}
+
 extern void *game_cutscenes_droid_factory_conveyor;
 extern void *game_cutscenes_podrace_avalanche;
 

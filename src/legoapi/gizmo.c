@@ -977,6 +977,19 @@ i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *n
     return 0;
 }
 
+i32 ResetGizmoType(GIZMOSYS_PC *system, i32 type_id, char *name) {
+    GIZMOSET_PC *set;
+    if (type_id == -1 && name != NULL)
+        type_id = GizmoGetTypeIDByName(system, name);
+    if (type_id != -1) {
+        set = &system->sets[type_id];
+        set->count = 0;
+        memset(set->gizmos, 0, set->max_count * sizeof(GIZMO_PC));
+        return 1;
+    }
+    return 0;
+}
+
 void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) {
     GIZMOSYS_PC *system = system_ptr;
     GIZMOTYPE_PC *type;
@@ -986,11 +999,7 @@ void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) 
         type = ((GIZMOTYPES_PC *)gizmotypes)->types;
         set = system->sets;
         for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
-            /* Actual PC parent contains the original ResetGizmoType body inline. */
-            if (index != -1) {
-                system->sets[index].count = 0;
-                memset(system->sets[index].gizmos, 0, system->sets[index].max_count * sizeof(GIZMO_PC));
-            }
+            ResetGizmoType(system, index, NULL);
             if (type->fns.add_gizmos_fn != NULL)
                 ((void(__cdecl *)(void *, i32, void *, void *))type->fns.add_gizmos_fn)(system, index, world,
                                                                                         set->data);

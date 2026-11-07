@@ -116,6 +116,13 @@ extern "C" {
         return 0.0f;
     }
 
+    void __cdecl LoadPermDestroyLegalMtl(void) {
+        if (legal_mtl != NULL) {
+            NuMtlDestroy(legal_mtl);
+            legal_mtl = NULL;
+        }
+    }
+
     void __cdecl LoadPerm(void) {
         WORLDINFO *saved_world;
         f32 language_timer;
@@ -142,10 +149,7 @@ extern "C" {
         if (BGLOAD == 0 || LOADEROFF != 0) {
             LoadPerm_LanguageSelect = 3;
             LoadPermData(NULL);
-            if (legal_mtl != NULL) {
-                NuMtlDestroy(legal_mtl);
-                legal_mtl = NULL;
-            }
+            LoadPermDestroyLegalMtl();
             WORLD = saved_world;
             return;
         }
@@ -312,10 +316,7 @@ extern "C" {
             }
         }
 
-        if (legal_mtl != NULL) {
-            NuMtlDestroy(legal_mtl);
-            legal_mtl = NULL;
-        }
+        LoadPermDestroyLegalMtl();
         WORLD = saved_world;
     }
 
@@ -332,10 +333,22 @@ extern "C" {
         }
     }
 
+    void memorymanager_s::Init(VARIPTR *buffer, VARIPTR *end, u32 bytes) {
+        buffer->addr = (buffer->addr + 15) & ~15;
+        buffer_start = buffer->addr;
+        buffer->addr += bytes;
+        buffer_end = buffer->addr;
+        start_anchor = &buffer_start;
+        end_anchor = &buffer_end;
+        unknown_14 = 0;
+        size = *end_anchor - *start_anchor;
+        unknown_10 = 0;
+        memset(free_lists, 0, sizeof(free_lists));
+    }
+
     void __cdecl LoadPermData(void *process) {
         i16 default_id_a;
         i16 default_id_b;
-        u32 aligned;
         PC_CONTROL_CONFIG_PC control_config;
         char blocked_keys[4];
 
@@ -381,16 +394,7 @@ extern "C" {
         LevelSplines_InitForGame(LevelSplinesTable);
         LoadPermLoadSaveIconScene();
 
-        aligned = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
-        permbuffer_ptr.addr = aligned + 0x200;
-        theMemoryManager.buffer_start = aligned;
-        theMemoryManager.buffer_end = aligned + 0x200;
-        theMemoryManager.start_anchor = &theMemoryManager.buffer_start;
-        theMemoryManager.end_anchor = &theMemoryManager.buffer_end;
-        theMemoryManager.unknown_10 = 0;
-        theMemoryManager.unknown_14 = 0;
-        theMemoryManager.size = 0x200;
-        memset(theMemoryManager.free_lists, 0, sizeof(theMemoryManager.free_lists));
+        theMemoryManager.Init(&permbuffer_ptr, &permbuffer_end, 0x200);
 
         CreateThingManager();
 

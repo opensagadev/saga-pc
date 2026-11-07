@@ -2803,10 +2803,10 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
     switch (mode) {
         case 0:
             x = -0.4f;
-            time = Game.episode_start[episode].superstory_time_limit;
+            time = Game.episode_save[episode].superstory_time_limit;
             SmartTextEx(TTab[TextIdPc880718], 0.4f, (f32)(HubEpisodeTitleYPc + 0.125), 1.0f, HubEpisodeTitleSizePc,
                         HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, 191, 0, 127, 0.7f, 1, NULL, 0, opacity);
-            Text_MakeScore(Game.episode_start[episode].superstory_score_target, text);
+            Text_MakeScore(Game.episode_save[episode].superstory_score_target, text);
             Text3DEx(text, 0.4f, HubEpisodeTitleYPc, 1.0f, HubEpisodeSubtitleSizePc, HubEpisodeSubtitleSizePc,
                      HubEpisodeSubtitleSizePc, 0, 255, 255, 255, opacity);
             break;
@@ -2842,7 +2842,7 @@ static void HubDrawBonusStatsPc(f32 alpha, i32 area, i32 episode, i32 mode) {
         }
         if (EpisodeGoldBrickForSuperStoryPc != 0) {
             total++;
-            if (Game.episode_start[episode].complete != 0)
+            if (Game.episode_save[episode].superstory_complete != 0)
                 count++;
         }
         Hub_DrawImportantBrick(211, 0.0f, HubEpisodeTitleYPc, alpha, count, total);
@@ -4755,17 +4755,17 @@ extern "C" {
         DrawCoinTotalYPc = y;
         if (source == 1) {
             DrawSuperStoryTimePc(-y, SuperStoryTimer.time_elapsed,
-                                 Game.episode_start[SuperStoryEpisode].superstory_time_limit, 0, 1);
+                                 Game.episode_save[SuperStoryEpisode].superstory_time_limit, 0, 1);
             total = SuperStoryScore;
-            if ((u32)Game.episode_start[SuperStoryEpisode].superstory_score_target > 0) {
+            if ((u32)Game.episode_save[SuperStoryEpisode].superstory_score_target > 0) {
                 if (hide_super_story_target == 0) {
-                    Text_MakeScore(Game.episode_start[SuperStoryEpisode].superstory_score_target, auxiliary);
+                    Text_MakeScore(Game.episode_save[SuperStoryEpisode].superstory_score_target, auxiliary);
                     NuStrCpy(text, const_cast<char *>("("));
                     NuStrCat(text, auxiliary);
                     NuStrCat(text, const_cast<char *>(")"));
                     Text3DEx(text, 0.0f, y + CoinTotalTargetOffsetYPc, 1.0f, 0.35f, 0.35f, 0.35f, 0, 255, 255, 255, 48);
                 }
-                if (SuperStoryScore > (u32)Game.episode_start[SuperStoryEpisode].superstory_score_target) {
+                if (SuperStoryScore > (u32)Game.episode_save[SuperStoryEpisode].superstory_score_target) {
                     red = 63;
                     green = 255;
                     blue = 31;

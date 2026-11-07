@@ -83,14 +83,13 @@ static i32 LoopCountLoopingInputsEx(FLOWBOX_PC *loop, FLOWBOX_PC *box, i32 count
     return count;
 }
 
-#define COUNT_LOOPING_INPUTS(loop, checksum, result)                                                                   \
-    do {                                                                                                               \
-        i32 _loop_count = 0;                                                                                           \
-        i32 _loop_index;                                                                                               \
-        for (_loop_index = 0; _loop_index < (loop)->child_count; ++_loop_index)                                        \
-            _loop_count = LoopCountLoopingInputsEx((loop), (loop)->children[_loop_index], _loop_count, (checksum));    \
-        (result) = _loop_count;                                                                                        \
-    } while (0)
+static i32 LoopCountLoopingInputs(FLOWBOX_PC *loop, u8 checksum) {
+    i32 count = 0;
+    i32 i;
+    for (i = 0; i < loop->child_count; ++i)
+        count = LoopCountLoopingInputsEx(loop, loop->children[i], count, checksum);
+    return count;
+}
 
 static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, u8 checksum) {
     FLOWBOXGIZMODATA_PC *data;
@@ -524,7 +523,7 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
         box->last_process_frame = 0;
 
         if (progress != NULL && progress->valid != 0) {
-            i32 word = i >> 5;
+            i32 word = i / 32;
             u32 bit = 1u << (i & 31);
             state->flags.bits.active = (progress->active[word] & bit) != 0;
             state->flags.bits.completed = (progress->completed[word] & bit) != 0;
@@ -532,11 +531,7 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
             state->flags.bits.output_state = (progress->output_state[word] & bit) != 0;
             if (box->type == 1 && ((FLOWBOXCONDITION_PC *)box->data)->operation == 4) {
                 ++gizflow_loop_checksum;
-                {
-                    i32 loop_count;
-                    COUNT_LOOPING_INPUTS(box, gizflow_loop_checksum, loop_count);
-                    box->loop_parent_count = (u8)loop_count;
-                }
+                box->loop_parent_count = (u8)LoopCountLoopingInputs(box, gizflow_loop_checksum);
             }
             continue;
         }
@@ -544,18 +539,16 @@ void __cdecl ResetGizFlow(GIZFLOW_PC *system, GIZFLOWPROGRESS_PC *progress) {
         state->flags.value &= (u16) ~(2 | 0x100);
         if (box->type == 1 && ((FLOWBOXCONDITION_PC *)box->data)->operation == 4) {
             ++gizflow_loop_checksum;
-            {
-                i32 loop_count;
-                COUNT_LOOPING_INPUTS(box, gizflow_loop_checksum, loop_count);
-                box->loop_parent_count = (u8)loop_count;
-            }
+            box->loop_parent_count = (u8)LoopCountLoopingInputs(box, gizflow_loop_checksum);
             state->flags.value |= 0x400;
             if (box->parent_count == box->loop_parent_count)
                 state->flags.value |= 0x801;
             else
                 state->flags.value &= (u16)~1;
+        } else if (box->parent_count != 0) {
+            state->flags.value &= (u16)~1;
         } else {
-            state->flags.bits.active = box->parent_count == 0;
+            state->flags.value |= 1;
         }
 
         if (flowbox_callbacks[box->type].reset != NULL && (state->flags.value & 0x1000) == 0)

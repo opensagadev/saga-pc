@@ -15,13 +15,6 @@ STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, minikit_count) == 5);
 STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, red_brick_complete) == 6);
 STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, challenge_complete) == 7);
 STATIC_ASSERT(offsetof(EPISODE_AREA_SAVE_READER_PC, challenge_time) == 8);
-typedef struct episode_save_reader_pc_s {
-    u8 unknown_00[8];
-    u8 complete;
-    u8 unknown_09[3];
-} EPISODE_SAVE_READER_PC;
-STATIC_ASSERT(sizeof(EPISODE_SAVE_READER_PC) == 12);
-STATIC_ASSERT(offsetof(EPISODE_SAVE_READER_PC, complete) == 8);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_ids) == 4);
 STATIC_ASSERT(offsetof(EPISODEDATA_PC, area_count) == 0x18);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
@@ -34,7 +27,6 @@ extern i32 EpStoryBuildUpTotal, EpStoryBuildUpCount, EpFreePlayBuildUpTotal, EpF
 extern i32 EpRedBrickTotal, EpRedBrickCount, EpGoldBrickTotal, EpGoldBrickCount;
 extern i32 EpisodeGoldBrickForSuperStoryPc, EpisodeGoldBrickForSuperBonusPc, EpisodeGoldBrickForChallengePc;
 extern i32 HubBothTrueJediGoldBricksPc;
-extern EPISODE_SAVE_READER_PC *EpisodeSavePc;
 
 /* 59b700/86. Native early NULL save guard does not initialize output count. */
 extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
@@ -84,7 +76,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         return 0;
     if (EpisodeGoldBrickForSuperStoryPc != 0) {
         EpGoldBrickTotal = 1;
-        if (EpisodeSavePc != NULL && EpisodeSavePc[episode_index].complete != 0)
+        if (EpisodeSavePc != NULL && EpisodeSavePc[episode_index].superstory_complete != 0)
             EpGoldBrickCount = 1;
     }
     i32 open = 0;

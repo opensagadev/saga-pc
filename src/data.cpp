@@ -356,7 +356,7 @@ extern "C" {
     i32 EpGoldBrickCount = 0;
     i32 EpGoldBrickTotal = 0;
     i32 EpisodeGoldBrickForSuperStoryPc = 0;
-    EPISODE_SAVE_READER_PC *EpisodeSavePc = NULL;
+    struct EPISODESAVE_s *EpisodeSavePc = NULL;
     i32 EpisodeGoldBrickForSuperBonusPc = 0;
     i32 EpisodeGoldBrickForChallengePc = 0;
     u16 TextCrawlRotateXPc = 13107;
