@@ -3200,6 +3200,152 @@ void __cdecl cbPtlRotMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) 
     ptlrotmenu->y = parent->y + 40;
 }
 
+extern struct eduimenu_s *ptlsizemenu;
+extern struct eduiitem_s *grad_size_w_item, *grad_size_h_item;
+extern struct edui_slider_s *grad_size_min_item, *grad_size_max_item;
+void __cdecl eduiGradStageDelete(edui_gradient_pick_s *item, struct edui_gradient_node_s *stage);
+
+static void cbPtlCancelSizeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlsizemenu);
+    ptlsizemenu = NULL;
+    grad_size_w_item = NULL;
+    grad_size_h_item = NULL;
+    grad_size_min_item = NULL;
+    grad_size_max_item = NULL;
+}
+
+static void cbPtlApplySize(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    EDUI_GRADIENT_STAGE_PC stages[8];
+    DEBRIS_INFO_PC *effect;
+    i32 count, instance, i;
+    f32 minimum, maximum;
+    if (!grad_size_min_item || !grad_size_max_item || !grad_size_h_item || !grad_size_w_item)
+        return;
+    count = eduiGradPickRead(grad_size_w_item, stages, 8);
+    minimum = grad_size_min_item->value;
+    maximum = grad_size_max_item->value;
+    if (count >= 2 && count <= 8 && edpp_nearest != -1) {
+        instance = edpp_ptls[edpp_nearest].instance_id;
+        if (instance != -1) {
+            effect = debtab[debkeydata[instance].effect_index];
+            for (i = 0; i < count; ++i) {
+                effect->width_keys[i].time = stages[i].time;
+                effect->width_keys[i].value = stages[i].red * (maximum - minimum) + minimum;
+            }
+            effect->min_size = minimum;
+            effect->max_size = maximum;
+            GenericDebinfoDmaTypeUpdate(effect);
+        }
+    }
+    count = eduiGradPickRead(grad_size_h_item, stages, 8);
+    if (count >= 2 && count <= 8 && edpp_nearest != -1) {
+        instance = edpp_ptls[edpp_nearest].instance_id;
+        if (instance != -1) {
+            effect = debtab[debkeydata[instance].effect_index];
+            for (i = 0; i < count; ++i) {
+                effect->height_keys[i].time = stages[i].time;
+                effect->height_keys[i].value = stages[i].red * (maximum - minimum) + minimum;
+            }
+            effect->min_size = minimum;
+            effect->max_size = maximum;
+            GenericDebinfoDmaTypeUpdate(effect);
+        }
+    }
+}
+
+static void cbPtlCopySize(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    edui_gradient_pick_s *gradient;
+    i32 instance, i;
+    f32 grey;
+    if (edpp_nearest == -1)
+        return;
+    instance = edpp_ptls[edpp_nearest].instance_id;
+    if (instance == -1)
+        return;
+    effect = debtab[debkeydata[instance].effect_index];
+    for (i = 0; i < 8; ++i) {
+        if (item->data == 1) {
+            effect->height_keys[i].time = effect->width_keys[i].time;
+            effect->height_keys[i].value = effect->width_keys[i].value;
+        } else {
+            effect->width_keys[i].time = effect->height_keys[i].time;
+            effect->width_keys[i].value = effect->height_keys[i].value;
+        }
+    }
+    if (item->data == 1)
+        gradient = (edui_gradient_pick_s *)grad_size_h_item;
+    else
+        gradient = (edui_gradient_pick_s *)grad_size_w_item;
+    while (gradient->first_stage != NULL)
+        eduiGradStageDelete(gradient, gradient->first_stage);
+    for (i = 0; i < 8; ++i) {
+        if (item->data == 1) {
+            grey = (effect->height_keys[i].value - effect->min_size) / (effect->max_size - effect->min_size);
+            eduiGradStageAddRGB((edui_gradient_pick_s *)grad_size_h_item, effect->height_keys[i].time, grey, grey,
+                                grey);
+            if (effect->height_keys[i].time == 1.0f)
+                break;
+        } else {
+            grey = (effect->width_keys[i].value - effect->min_size) / (effect->max_size - effect->min_size);
+            eduiGradStageAddRGB((edui_gradient_pick_s *)grad_size_w_item, effect->width_keys[i].time, grey, grey, grey);
+            if (effect->width_keys[i].time == 1.0f)
+                break;
+        }
+    }
+    GenericDebinfoDmaTypeUpdate(effect);
+}
+
+void __cdecl cbPtlSizeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    f32 value;
+    i32 i;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlsizemenu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, cbPtlCancelSizeMenu, "Particle Size");
+    if (ptlsizemenu == NULL)
+        return;
+    eduiMenuAddItem(ptlsizemenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplySize, "Width Envelope"));
+    grad_size_w_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        if (effect->min_size == effect->max_size)
+            value = 1.0f;
+        else
+            value = (effect->width_keys[i].value - effect->min_size) / (effect->max_size - effect->min_size);
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_size_w_item, effect->width_keys[i].time, value, value, value);
+        if (effect->width_keys[i].time == 1.0f)
+            break;
+    }
+    eduiMenuAddItem(ptlsizemenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplySize, "Height Envelope"));
+    grad_size_h_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        if (effect->min_size == effect->max_size)
+            value = 1.0f;
+        else
+            value = (effect->height_keys[i].value - effect->min_size) / (effect->max_size - effect->min_size);
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_size_h_item, effect->height_keys[i].time, value, value, value);
+        if (effect->height_keys[i].time == 1.0f)
+            break;
+    }
+    eduiMenuAddItem(ptlsizemenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplySize, 0.0f, 5000.0f * edptl_superscale,
+                                                      effect->min_size, "Min Size"));
+    grad_size_min_item = (edui_slider_s *)edui_last_item;
+    eduiItemSliderSetFmt(grad_size_min_item, "(%1.01f)");
+    eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+    eduiMenuAddItem(ptlsizemenu, eduiItemSliderCreate(0, colours, 0, cbPtlApplySize, 0.0f, 5000.0f * edptl_superscale,
+                                                      effect->max_size, "Max Size"));
+    grad_size_max_item = (edui_slider_s *)edui_last_item;
+    eduiItemSliderSetFmt(grad_size_max_item, "(%1.01f)");
+    eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+    eduiMenuAddItem(ptlsizemenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlCopySize, "Copy Width to Height"));
+    eduiMenuAddItem(ptlsizemenu, eduiItemSelCreate(2, colours, 0, 0, cbPtlCopySize, "Copy Height to Width"));
+    eduiMenuAttach(parent, ptlsizemenu);
+    ptlsizemenu->x = parent->x + 10;
+    ptlsizemenu->y = parent->y + 40;
+}
+
 void __cdecl cbPtlCollMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;

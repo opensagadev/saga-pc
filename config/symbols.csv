@@ -8706,6 +8706,8 @@ address,symbol,size,ctype
 0x6630d0,_cbCancelChangeGenRateMenu,25,
 0x6630f0,_cbCancelChangeETimeMenu,25,
 0x663110,_cbPtlApplyJib,136,
+0x006631a0,_cbPtlCopySize,745,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x00663490,_cbPtlApplySize,703,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x663750,_cbPtlApplyRot,325,
 0x6638a0,_cbPtlSelType,47,
 0x6638d0,_cbPtlSelGSort,282,
@@ -8759,6 +8761,8 @@ address,symbol,size,ctype
 0x6668e0,_cbPtlDamageFlagMenu,259,
 0x6669f0,_cbPtlCancelDamageMenu,25,
 0x666a10,_cbPtlDamageMenu,251,
+0x00666b10,_cbPtlCancelSizeMenu,42,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x00666b40,_cbPtlSizeMenu,882,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x666ec0,_cbPtlCancelRotMenu,37,
 0x666ef0,_cbPtlRotMenu,617,
 0x667160,_cbPtlChangeRepeatFlag,101,
@@ -19150,6 +19154,13 @@ address,symbol,size,ctype
 0x76dd5c,??_C@_0BF@HIBEDCMH@Collision?5Spheres?4?4?4?$AA@,21,char []
 0x76dd74,??_C@_0BA@BNCPEHEG@Damage?5Flags?4?4?4?$AA@,16,char []
 0x76dd84,??_C@_0BA@MNMGILJE@Particle?5Damage?$AA@,16,char []
+0x0076dd94,??_C@_0BF@PDLGBJIA@Copy?5Height?5to?5Width?$AA@,21,char []
+0x0076ddac,??_C@_0BF@NGBMNLHF@Copy?5Width?5to?5Height?$AA@,21,char []
+0x0076ddc4,??_C@_08IKDAELKI@Max?5Size?$AA@,9,char []
+0x0076ddd0,??_C@_08FNNLPJOJ@Min?5Size?$AA@,9,char []
+0x0076dddc,??_C@_0BA@LEHKLHNN@Height?5Envelope?$AA@,16,char []
+0x0076ddec,??_C@_0P@KGGKBMCF@Width?5Envelope?$AA@,15,char []
+0x0076ddfc,??_C@_0O@DFKLEOMJ@Particle?5Size?$AA@,14,char []
 0x76de0c,??_C@_0N@MOAIBPDL@Max?5Rotation?$AA@,13,char []
 0x76de1c,__real@c4340000,4,const f32
 0x76de20,__real@44b40000,4,const f32
@@ -28621,6 +28632,7 @@ address,symbol,size,ctype
 0x2921850,_ptldatamenu,4,struct eduimenu_s *
 0x2921854,_PlatCrush,,i32
 0x2921858,_TerrShape,,TERRAIN_AXIS_FREEDOM_SHAPE_PC *
+0x0292185c,_ptlsizemenu,4,struct eduimenu_s *
 0x2921864,_edgra_page_terrain,,void*[8]
 0x02921884,_GetSurfaceInfoRoofHeightPc,,
 0x2921888,_edbri_cam_ax,4,i32
@@ -28940,6 +28952,10 @@ address,symbol,size,ctype
 0x2962af0,_edpp_facrotx,4,i32
 0x2962af4,_edpp_facroty,4,i32
 0x2962af8,_edptl_count,4,i32
+0x02962b04,_grad_size_w_item,4,struct eduiitem_s *
+0x02962b08,_grad_size_h_item,4,struct eduiitem_s *
+0x02962b0c,_grad_size_min_item,4,struct edui_slider_s *
+0x02962b10,_grad_size_max_item,4,struct edui_slider_s *
 0x2962b14,_grad_rot_item,4,struct eduiitem_s *
 0x2962b18,_grad_rot_min_item,4,struct edui_slider_s *
 0x2962b1c,_grad_rot_max_item,4,struct edui_slider_s *

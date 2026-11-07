@@ -29823,6 +29823,16 @@ extern "C" {
     struct edui_slider_s *grad_rot_min_item = 0;
 #pragma bss_seg(".bss$grad_rot_max_item")
     struct edui_slider_s *grad_rot_max_item = 0;
+#pragma bss_seg(".bss$ptlsizemenu")
+    struct eduimenu_s *ptlsizemenu = 0;
+#pragma bss_seg(".bss$grad_size_w_item")
+    struct eduiitem_s *grad_size_w_item = 0;
+#pragma bss_seg(".bss$grad_size_h_item")
+    struct eduiitem_s *grad_size_h_item = 0;
+#pragma bss_seg(".bss$grad_size_min_item")
+    struct edui_slider_s *grad_size_min_item = 0;
+#pragma bss_seg(".bss$grad_size_max_item")
+    struct edui_slider_s *grad_size_max_item = 0;
 #pragma bss_seg(".bss$coll_env_item")
     struct eduiitem_s *coll_env_item = 0;
 #pragma bss_seg(".bss$torus_env1_item")
