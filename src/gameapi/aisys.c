@@ -400,6 +400,43 @@ void __cdecl AILocatorSet_AssignRandomLocator(AISYS_PC *system, AILOCATORSET_PC 
     }
 }
 
+extern void(__cdecl *GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *);
+extern void(__cdecl *GameAISaveFn)(AIPATHSYS_PC *);
+extern void(__cdecl *AIPathNodeMovedFn)(EDAIPATHNODE_s *node);
+extern void(__cdecl *AIPathDeletedFn)(EDAIPATH_s *path);
+extern void(__cdecl *AiEditorMovePlayersCallbackPc)(NUVEC *);
+extern i32 ai_onlyusepackfile;
+
+static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
+
+u32 __cdecl AISysGetPathColour(i32 index) {
+    return iAISysPathColoursG[index];
+}
+
+i32 __cdecl AISysGetPathColourCount(void) {
+    return 5;
+}
+
+void __cdecl InitFn_GameAISYSRebuildFromEditorData(void(__cdecl *callback)(AISYS_PC *, VARIPTR *, VARIPTR *)) {
+    GameAISYSRebuildFromEditorDataFn = callback;
+}
+
+void __cdecl InitFn_GameAISave(void(__cdecl *callback)(AIPATHSYS_PC *)) {
+    GameAISaveFn = callback;
+}
+
+void __cdecl InitFn_AIPathNodeDeleted(void(__cdecl *callback)(struct EDAIPATHNODE_s *)) {
+    AIPathNodeDeletedFn = callback;
+}
+
+void __cdecl InitFn_AIPathNodeMoved(void(__cdecl *callback)(struct EDAIPATHNODE_s *)) {
+    AIPathNodeMovedFn = callback;
+}
+
+void __cdecl InitFn_AIPathDeleted(void(__cdecl *callback)(struct EDAIPATH_s *)) {
+    AIPathDeletedFn = callback;
+}
+
 void DrawAreaBox(NUVEC *position, NUVEC *size, i32 rotation, i32 colour) {
     i32 i;
     f32 local_x[4] = {-size->x, -size->x, size->x, size->x};
@@ -1975,6 +2012,11 @@ void LocaledbitsDrawSolidCircleXY(NUVEC *centre, f32 radius, f32 lower_y, f32 up
         previous_x = next_x;
         previous_z = next_z;
     }
+}
+
+void __cdecl DrawAreaCylinder(NUVEC *centre, NUVEC *size, i32 colour) {
+    LocaledbitsDrawSolidCircleXY(centre, size->x < size->z ? size->x : size->z, centre->y, centre->y + size->y, colour,
+                                 0, 16);
 }
 
 void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 rotation, f32 lower_y, f32 upper_y,
@@ -4750,8 +4792,24 @@ i32 __cdecl Action_ReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
     return 1;
 }
 
+void __cdecl AiSysUsePackFile(i32 enabled) {
+    ai_usepackfile = enabled;
+}
+
+void __cdecl AiSysOnlyUsePakFile(i32 enabled) {
+    ai_onlyusepackfile = enabled;
+}
+
+void __cdecl AiSysSetStateDebugee(AISCRIPTPROCESS_PC *processor) {
+    AiSysStateDebugee = processor;
+}
+
 void __cdecl InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT_PC callback) {
     GameParamToFloatFn = callback;
+}
+
+void __cdecl InitFn_ScriptProcessFirstTimeAction(AI_SCRIPT_FIRST_ACTION_PC callback) {
+    ScriptProcessFirstTimeActionFn = callback;
 }
 
 i32 __cdecl Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
@@ -10372,6 +10430,10 @@ void __cdecl DestroyAIGroup(AIGROUP_PC *group) {
         memset(group, 0, sizeof(*group));
 }
 
+void __cdecl AIScriptSetLevelPath(char *path) {
+    AiLevelPathName = path;
+}
+
 STATIC_ASSERT(offsetof(AIPACKET_PC, antinode_timer) == 0x18c);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_collision_priority_pc) == 0x292);
 STATIC_ASSERT(offsetof(APIOBJECT_PC, ai_resolved_collision_priority_pc) == 0x294);
@@ -13002,7 +13064,6 @@ STATIC_ASSERT(offsetof(AIEDITORSETTINGS_PC, modes) == 0x7c);
 STATIC_ASSERT(sizeof(AIEDITORSETTINGS_PC) == 0x200);
 #pragma section(".bss$aieditorsettings", read, write)
 __declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS_PC aieditorsettings = {0};
-extern void(__cdecl *GameAISaveFn)(AIPATHSYS_PC *);
 extern const char AiEditorDatedBackupFormatPc[];
 AIPATHSYS_PC *__cdecl pathEditorCreateData(VARIPTR *, VARIPTR *, void **, void **);
 i32 __cdecl NuFileGetInfo(char *, AI_EDITOR_FILE_INFO_PC *);
@@ -13117,7 +13178,6 @@ typedef struct AI_REBUILD_ANTINODE_BASE_PC {
 } AI_REBUILD_ANTINODE_BASE_PC;
 STATIC_ASSERT(offsetof(AI_REBUILD_ANTINODE_BASE_PC, radius) == 0x40);
 STATIC_ASSERT(offsetof(AI_REBUILD_ANTINODE_BASE_PC, height) == 0x44);
-extern void(__cdecl *GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *);
 
 #define REBUILD_STORAGE(system) ((AI_REBUILD_STORAGE_PC *)(system))
 #define REBUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                       \
@@ -13480,6 +13540,20 @@ void __cdecl aieditor_RegisterPathCnxType(const char *name, u32 connection_flag,
         return;
     }
     AIScriptMissingStateDiagnostic();
+}
+
+void __cdecl aieditor_ClearAllPathCnxTypes(void) {
+    AIPathConnectionTypeCountPc = 0;
+    memset(AIPathConnectionTypesPc, 0, sizeof(AIPathConnectionTypesPc));
+}
+
+EDAIPATH_s *__cdecl pathEditorAllocPathPc(void) {
+    EDAIPATH_s *path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->free_paths);
+    if (path != NULL) {
+        NuLinkedListRemove(&aieditor->free_paths, &path->link);
+        NuLinkedListAppend(&aieditor->paths, &path->link);
+    }
+    return path;
 }
 
 void __cdecl pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32 flags, i32 colour) {
@@ -15111,7 +15185,6 @@ void __cdecl routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 
 }
 
 extern i32 AiEditorRouteModeIdPc;
-extern void(__cdecl *AiEditorMovePlayersCallbackPc)(NUVEC *);
 STATIC_ASSERT(offsetof(AISYS_PC, scripts) == 0x1c);
 STATIC_ASSERT(offsetof(AISCRIPT_PC, name) == 8);
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, current_path) == 0x4868);
@@ -15320,6 +15393,10 @@ static void __cdecl AiEditorCameraToPlayerPc(eduimenu_s *menu, eduiitem_s *item,
     if (aieditor->ai_system != NULL && aieditor->ai_system->player_1 != NULL)
         edcamSetPos(&aieditor->ai_system->player_1->position);
     AiEditorClearMainMenuPc();
+}
+
+void __cdecl InitFn_AIEditorMovePlayers(void(__cdecl *callback)(NUVEC *)) {
+    AiEditorMovePlayersCallbackPc = callback;
 }
 static void __cdecl AiEditorMovePlayersPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
@@ -15645,8 +15722,6 @@ static void AiEditorDestroyLocatorPc(EDLOCATOR_s *locator) {
     NuLinkedListAppend(&aieditor->free_locators, &locator->link);
 }
 
-extern void(__cdecl *AIPathDeletedFn)(EDAIPATH_s *path);
-
 static __declspec(noinline) i32 pathEditor_DisconnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *other) {
     i32 index;
     i32 other_index;
@@ -15957,7 +16032,6 @@ static __declspec(noinline) i32 pathEditor_ConnectNodes(EDAIPATHNODE_s *node, ED
     }
     return 0;
 }
-extern void(__cdecl *AIPathNodeMovedFn)(EDAIPATHNODE_s *node);
 extern void __cdecl pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32);
 extern NUVEC edpath_addoffset;
 
@@ -19671,6 +19745,12 @@ void __cdecl locatorEditor_Enter(void) {
         aieditor->current_locator_set = NULL;
 }
 
+void __cdecl aieditor_RegisterDefaultPathCnxTypes(void) {
+    aieditor_RegisterPathCnxType("Permanent Block", 0x40000000, NULL, 0);
+    aieditor_RegisterPathCnxType("Temporary Block", 0x80000000, NULL, 0);
+    aieditor_RegisterPathCnxType("Link Obstacle", 0x20000000, NULL, 1);
+}
+
 void __cdecl locatorEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     EDLOCATOR_s *display;
     NUVEC delta;
@@ -19975,9 +20055,7 @@ void __cdecl aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, 
                          creatureEditor_Render);
     AIEDITOR_REGISTER_PC(AiEditorAntinodeModeIdPc, "AIEDITOR_ANTINODES", antinodeEditor_Enter, antinodeEditor_Process,
                          antinodeEditor_Render);
-    aieditor_RegisterPathCnxType("Permanent Block", 0x40000000, NULL, 0);
-    aieditor_RegisterPathCnxType("Temporary Block", 0x80000000, NULL, 0);
-    aieditor_RegisterPathCnxType("Link Obstacle", 0x20000000, NULL, 1);
+    aieditor_RegisterDefaultPathCnxTypes();
     aieditorsettings.path_scratch_cursor = *scratch_cursor;
     aieditorsettings.path_scratch_end = *scratch_end;
 }

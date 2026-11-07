@@ -1278,6 +1278,14 @@ void __cdecl AIScriptSetState(AISCRIPTPROCESS_PC *processor, AISTATE_PC *state) 
     }
 }
 
+void __cdecl AIScriptForceParamReEval(AISCRIPTPROCESS_PC *processor) {
+    i32 index;
+    if (processor != NULL) {
+        for (index = 0; index < 2; ++index)
+            processor->param_stack[index].is_first_time_state = 1;
+    }
+}
+
 i32 AIScriptSetStateByName(AISCRIPTPROCESS_PC *processor, char *name) {
     AISTATE_PC *state;
 
@@ -1680,6 +1688,17 @@ i32 __cdecl AIScriptSetInterrupt(AISCRIPTPROCESS_PC *processor, u8 priority, u8 
     processor->interrupt_state = state;
     processor->interrupt_timer = time;
     return 1;
+}
+
+void __cdecl AIScriptClearInterrupt(AISCRIPTPROCESS_PC *processor, char *state_name) {
+    if (processor->interrupt_state != NULL) {
+        if (NuStrCmp(state_name, processor->interrupt_state->name) == 0) {
+            processor->interrupt_timer = 0.0f;
+            processor->interrupt_priority = 0;
+            processor->interrupt_id = 0;
+            processor->interrupt_state = NULL;
+        }
+    }
 }
 
 /* Candidate source for src/gameapi/aiscript.c. Readonly access-view bindings

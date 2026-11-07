@@ -3273,6 +3273,7 @@ address,symbol,size,ctype
 0x5143a0,_AIScriptInitConditions,423,
 0x00514550,_AIScriptNextAction,77,
 0x005145a0,_AIScriptSetState,59,"void __cdecl (AISCRIPTPROCESS_PC *, AISTATE_PC *)"
+0x005145e0,_AIScriptForceParamReEval,28,void __cdecl (AISCRIPTPROCESS_PC *)
 0x514600,_AIScriptSetStateByName,59,
 0x00514640,_AIScriptProcessorInit,384,"void __cdecl (AISYS_PC *, AIPACKET_PC *, AISCRIPTPROCESS_PC *, AICREATURE_PC *, char *, char *, i32, AISCRIPT_PC *, AISTATE_PC *)"
 0x005147c0,_AIParamToFloat,142,"f32 __cdecl (AISCRIPTPROCESS_PC *, char *)"
@@ -3357,6 +3358,9 @@ address,symbol,size,ctype
 0x516c70,_Action_SetParam,436,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x516e30,_Action_SetReturnToState,174,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x516ee0,_Action_ReturnToState,37,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x00516f10,_AiSysUsePackFile,10,void __cdecl (i32)
+0x00516f20,_AiSysOnlyUsePakFile,10,void __cdecl (i32)
+0x00516f30,_AiSysSetStateDebugee,10,void __cdecl (AISCRIPTPROCESS_PC *)
 0x516f40,_InitFn_LevelCharacterTypeID,15,
 0x516f50,_InitFn_SpecialRouteCharacterTypeID,10,
 0x516f60,_InitFn_LevelCharacterName,15,
@@ -3372,6 +3376,7 @@ address,symbol,size,ctype
 0x00517000,_InitFn_APIOBJECTFromObjIDFn,10,void __cdecl (APIOBJECT_FROM_ID_PC)
 0x517010,_InitFn_GameAILoad,10,
 0x00517020,_InitFn_GameParamToFloat,10,void __cdecl (AI_GAME_PARAM_TO_FLOAT_PC)
+0x00517030,_InitFn_ScriptProcessFirstTimeAction,10,void __cdecl (AI_SCRIPT_FIRST_ACTION_PC)
 0x517040,_InitFn_AIActionParseSpeed,10,
 0x517050,_InitFn_AIRespawnOnPath,10,
 0x517060,_InitFn_AIBigJumpToDestination,10,void __cdecl (AI_BIG_JUMP_TO_DESTINATION_PC)
@@ -3380,6 +3385,7 @@ address,symbol,size,ctype
 0x517090,_InitFn_GlobalGetMaxViewHeight,10,
 0x5170a0,_InitFn_GlobalGetMinViewHeight,10,
 0x5170c0,_AIScriptSetInterrupt,84,"i32 __cdecl (AISCRIPTPROCESS_PC *, u8, u8, char *, f32)"
+0x00517120,_AIScriptClearInterrupt,64,"void __cdecl (AISCRIPTPROCESS_PC *, char *)"
 0x00517160,_AISysBufferAlloc,74,"void *__cdecl (VARIPTR *, VARIPTR *, u32)"
 0x005171b0,_AISysSetLevelPath,106,"i32 __cdecl (AISYS_PC *, char *)"
 0x517220,_AIPathCalcExtents,393,void __cdecl(AIPATH_PC *)
@@ -3388,6 +3394,7 @@ address,symbol,size,ctype
 0x517fd0,_CreateAIGroup,105,"AIGROUP_PC * __cdecl(AISYS_PC *, i32, f32, f32, f32)"
 0x00518040,_AddToAIGroup,401,"void __cdecl (AIGROUP_PC *, APIOBJECT_PC *)"
 0x5181e0,_DestroyAIGroup,25,void __cdecl(AIGROUP_PC *)
+0x00518200,_AIScriptSetLevelPath,10,void __cdecl (char *)
 0x00518210,_AISysProcess,854,"void __cdecl (AISYS_PC *, APIOBJECT_PC *, APIOBJECT_PC *)"
 0x00518570,_AIAntinodeCreate,103,"AIANTINODE_PC *__cdecl (NUVEC *, f32)"
 0x005185e0,_AIAntinodeCreateSingleFrame,103,"AIANTINODE_PC *__cdecl (NUVEC *, f32)"
@@ -3449,6 +3456,13 @@ address,symbol,size,ctype
 0x0051fef0,_AILocatorSet_AssignNearestLocator,400,"void __cdecl (AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32, i32)"
 0x00520080,_AILocatorSet_AssignFurthestLocator,408,"void __cdecl (AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32, i32)"
 0x00520220,_AILocatorSet_AssignRandomLocator,428,"void __cdecl (AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, f32, i32)"
+0x005203d0,_AISysGetPathColour,12,u32 __cdecl (i32)
+0x005203e0,_AISysGetPathColourCount,6,i32 __cdecl (void)
+0x005203f0,_InitFn_GameAISYSRebuildFromEditorData,10,"void __cdecl (void (__cdecl *)(AISYS_PC *, VARIPTR *, VARIPTR *))"
+0x00520400,_InitFn_GameAISave,10,void __cdecl (void (__cdecl *)(AIPATHSYS_PC *))
+0x00520410,_InitFn_AIPathNodeDeleted,10,void __cdecl (void (__cdecl *)(EDAIPATHNODE_s *))
+0x00520420,_InitFn_AIPathNodeMoved,10,void __cdecl (void (__cdecl *)(EDAIPATHNODE_s *))
+0x00520430,_InitFn_AIPathDeleted,10,void __cdecl (void (__cdecl *)(EDAIPATH_s *))
 0x520440,_InitFn_PreparingForSpecialMove,10,
 0x520450,_InitFn_MidSpecialMove,10,
 0x520460,_InitFn_GetNamedAPIObject,10,
@@ -3466,6 +3480,7 @@ address,symbol,size,ctype
 0x521200,_areaEditor_cbCylinderToggle,40,
 0x521230,_AiEditorRenameAreaCancelPc,12,
 0x521240,_DrawAreaBox,1366,
+0x005217a0,_DrawAreaCylinder,87,"void __cdecl (NUVEC *, NUVEC *, i32)"
 0x521800,_areaEditorDrawAreas,274,
 0x521920,_areaEditor_Enter,165,
 0x005219d0,_AiEditorCreateLocatorPc,95,EDLOCATOR_s * private EDI position / stack i32 direction
@@ -3486,7 +3501,9 @@ address,symbol,size,ctype
 0x005224a0,_AiEditorPrevLocatorInSetPc,84,EDLOCATOR_s * private ESI set / EDX current
 0x522500,_DrawLocator,430,
 0x5226b0,_locatorEditorDrawLocators,428,
+0x00522860,_aieditor_ClearAllPathCnxTypes,31,void __cdecl (void)
 0x522880,_aieditor_RegisterPathCnxType,150,
+0x00522920,_pathEditorAllocPathPc,71,EDAIPATH_s *__cdecl (void)
 0x522970,_pathEditor_CreateNode,140,
 0x522a00,_pathEditor_GetNearestNode,280,
 0x522b60,_pathEditor_GetNearestPathNode,202,
@@ -3550,6 +3567,7 @@ address,symbol,size,ctype
 0x527360,_AiEditorMessageCloseMenuPc,37,
 0x527390,_AiEditorSaveCloseSelectionPc,37,
 0x5273c0,_AiEditorCameraToPlayerPc,72,
+0x00527410,_InitFn_AIEditorMovePlayers,10,void __cdecl (void (__cdecl *)(NUVEC *))
 0x527420,_AiEditorMovePlayersPc,60,
 0x527460,_aieditor_AddMessage,135,
 0x5274f0,_CreateAntinode,240,
@@ -3695,6 +3713,7 @@ address,symbol,size,ctype
 0x531920,_locatorEditor_cbSelectLocatorSet,197,
 0x5319f0,_locatorEditor_Render,1276,
 0x531ef0,_locatorEditor_Enter,745,
+0x005321e0,_aieditor_RegisterDefaultPathCnxTypes,61,void __cdecl (void)
 0x532220,_pathEditor_DestroyNode,162,"void __cdecl (EDAIPATHNODE_s *, EDAIPATH_s *)"
 0x5322d0,_pathEditorCreateData,2941,
 0x532e50,_pathEditor_cbSetCurrentPath,219,
@@ -16937,6 +16956,7 @@ address,symbol,size,ctype
 0x75ff7c,_AiEditorPathPaletteObservedPc,,const u32[9]
 0x0075ff80,??_C@_0L@DEGONPBH@CONDITIONS?$AA@,11,const char[11]
 0x0075ff80,_AIScriptKeywordConditions,11,const char[11]
+0x0075ff8c,_iAISysPathColoursG,20,const u32[5]
 0x0075ffa0,??_C@_03BOPJPIAM@and?$AA@,4,const char[4]
 0x0075ffa4,??_C@_0BE@NEEIGBG@KeepBlockedMessages?$AA@,20,const char[20]
 0x0075ffb8,??_C@_04MABHPDAO@goto?$AA@,5,const char[5]
