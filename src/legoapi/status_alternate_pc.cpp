@@ -42,6 +42,7 @@ extern "C" {
     f32 StatusAlt7f8270Pc = 0.7f;
     f32 StatusAlt7f8274Pc = 1.0f;
     f32 StatusAlt7f8278Pc = 0.7f;
+    f32 StatusAltSuitRadiusPc = 0.75f;
 
     void __cdecl TrueHero_Alt_Draw(STATUS_STAGE_s *, STATUSPACKET_s *, i32);
     void __cdecl TrueHero_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
@@ -116,6 +117,7 @@ extern "C" {
     u32 StatusAltSuitsShownPc;
     i32 StatusAltSuitIndexPc;
     i32 StatusAlt876de4Pc;
+    i32 StatusAlt876de8Pc;
     static struct STATUSPACKET_LSW_s StatusPacketAltPc;
 
     f32 StatusAltTextScalePc = StatusAltScalePc;
@@ -1706,6 +1708,110 @@ extern "C" {
                                    0.5f);
     }
 
+    /* Stage type 5. Draws the suit icons on a ring and brings the newest one to the centre. */
+    void __cdecl Stage5_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        f32 x, y, blend, radius, title_alpha;
+        f64 angle;
+        i32 i;
+        (void)packet;
+        if (current == 0)
+            return;
+        switch (stage->field_0x14) {
+            case -1:
+            case 0:
+                return;
+            case 1:
+                for (i = 0; i <= StatusAltSuitIndexPc; i++) {
+                    i32 shown = StatusAltSuitsShownPc & (1 << i);
+                    if (i == StatusAltSuitIndexPc) {
+                        radius = blend = stage->field_0x18 / stage->field_0x1c;
+                        radius =
+                            (1.0 - (NuTrigTable[((i32)((f64)radius * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5) *
+                            StatusAltSuitRadiusPc;
+                        angle = (f64)i / 10.0 * 65536.0;
+                        x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * radius;
+                        y = radius * NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff];
+                        DrawCharIcon(shown ? i : -1, x, y, 0.0f, (f64)blend * 0.3f, 0xa7, blend, blend, 1, NULL);
+                    } else {
+                        angle = (f64)i / 10.0 * 65536.0;
+                        x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * StatusAltSuitRadiusPc;
+                        y = StatusAltSuitRadiusPc * NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff];
+                        DrawCharIcon(shown ? i : -1, x, y, 0.0f, 0.3f, 0xa7, 1.0f, 1.0f, 1, NULL);
+                    }
+                }
+                break;
+            case 2:
+                radius = StatusAltSuitRadiusPc;
+                for (i = 0; i < 10; i++) {
+                    i32 shown = StatusAltSuitsShownPc & (1 << i);
+                    angle = (f64)i / 10.0 * 65536.0;
+                    x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * radius;
+                    y = NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff] * radius;
+                    if (i != StatusAltSuitIndexPc || stage->field_0x18 < 1.0f)
+                        DrawCharIcon(shown ? i : -1, x, y, 0.0f, 0.3f, 0xa7, 1.0f, 1.0f, 1, NULL);
+                }
+                if (stage->field_0x18 < 0.5f) {
+                    blend = stage->field_0x18 + stage->field_0x18;
+                    y = blend;
+                    blend = NuTrigTable[((i32)((f64)y * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0;
+                    DrawCharIcon(StatusAltSuitIndexPc, 0.0f, 0.0f, 0.0f, (f64)y * 0.3f, 0xa7, blend, blend, 1, NULL);
+                    title_alpha = stage->field_0x18 / (f64)0.833333373f;
+                    title_alpha = 1.0f - title_alpha;
+                    if (title_alpha < 0.0f)
+                        title_alpha = 0.0f;
+                    SmartTextEx(TTab[*SuitRecordInitPc[StatusAltSuitIndexPc].text_id], 0.0f, StatusAlt7f8238Pc, 1.0f,
+                                StatusAlt7f823cPc, StatusAlt7f823cPc, StatusAlt7f823cPc, 0, (u8)StatusRedPc,
+                                (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u16)(title_alpha * 128.0));
+                } else if (stage->field_0x18 < 1.0f) {
+                    y = stage->field_0x18 - 0.5;
+                    y = y + y;
+                    radius = (1.0 - (NuTrigTable[((i32)((f64)y * 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f) * 0.5) *
+                             StatusAltSuitRadiusPc;
+                    angle = (f64)StatusAltSuitIndexPc / 10.0 * 65536.0;
+                    DrawCharIcon(StatusAltSuitIndexPc, radius * NuTrigTable[((i32)angle >> 1) & 0x7fff],
+                                 NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff] * radius, 0.0f, 0.3f, 0xa7, 1.0f,
+                                 1.0f, 1, NULL);
+                    title_alpha = stage->field_0x18 / (f64)0.833333373f;
+                    title_alpha = 1.0f - title_alpha;
+                    if (title_alpha < 0.0f)
+                        title_alpha = 0.0f;
+                    SmartTextEx(TTab[*SuitRecordInitPc[StatusAltSuitIndexPc].text_id], 0.0f, StatusAlt7f8238Pc, 1.0f,
+                                StatusAlt7f823cPc, StatusAlt7f823cPc, StatusAlt7f823cPc, 0, (u8)StatusRedPc,
+                                (u8)StatusGreenPc, (u8)StatusBluePc, 1.7f, 1, NULL, 0, (u16)(title_alpha * 128.0));
+                    if (StatusAlt876de8Pc == 0) {
+                        PlaySfx("Char_Icon_Slide", NULL);
+                        StatusAlt876de8Pc = 1;
+                    }
+                } else {
+                    f32 pulse;
+                    angle = (f64)StatusAltSuitIndexPc / 10.0 * 65536.0;
+                    x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * StatusAltSuitRadiusPc;
+                    y = StatusAltSuitRadiusPc * NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff];
+                    blend = stage->field_0x18 - 1.0f;
+                    blend = blend + blend;
+                    pulse = StatusAltFabsPc(NuTrigTable[((i32)((f64)blend * 32768.0 + 16384.0) >> 1) & 0x7fff]);
+                    blend = 1.0f - pulse;
+                    blend = (f64)blend * 0.1f + 0.3f;
+                    if (StatusAlt876de4Pc == 0) {
+                        PlaySfx("Char_Icon_App", NULL);
+                        StatusAlt876de4Pc = 1;
+                    }
+                    DrawCharIcon(StatusAltSuitIndexPc, x, y, 0.0f, blend, 0xa7, 1.0f, 1.0f, 1, NULL);
+                }
+                break;
+            case 3:
+                for (i = 0; i < 10; i++) {
+                    blend = 1.0f - stage->field_0x18 / stage->field_0x1c;
+                    angle = (f64)i / 10.0 * 65536.0;
+                    x = NuTrigTable[((i32)angle >> 1) & 0x7fff] * StatusAltSuitRadiusPc;
+                    y = StatusAltSuitRadiusPc * NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff];
+                    DrawCharIcon((StatusAltSuitsShownPc & (1 << i)) ? i : -1, x, y, 0.0f, 0.3f, 0xa7, blend, blend, 1,
+                                 NULL);
+                }
+                break;
+        }
+    }
+
     /* Stage type 5. Reveals the suits unlocked in this area one by one. */
     void __cdecl Stage5_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
         f32 previous = stage->field_0x18;
@@ -1762,6 +1868,148 @@ extern "C" {
                 if (stage->field_0x18 > stage->field_0x1c)
                     NextStatusStage(packet);
                 break;
+        }
+    }
+
+    /* Stage types 8, 13, 23 and 26. Draws the level-complete titles, then the score and time bonus. */
+    void __cdecl LevelComplete_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
+        char text[256];
+        if (current == 0)
+            return;
+        if (stage->field_0x14 > 0) {
+            f32 alpha1, scale1, alpha2, scale2;
+            u16 angle1, angle2;
+            if (stage->field_0x18 < StatusAlt7f8220Pc) {
+                scale1 = alpha1 = stage->field_0x18 / StatusAlt7f8220Pc;
+                angle1 = StatusAltSpinPc;
+                angle2 = 0;
+                alpha2 = 0.0f;
+                scale2 = 0.0f;
+            } else if (stage->field_0x18 < StatusAlt7f8220Pc + StatusAlt7f8224Pc) {
+                angle1 = 0;
+                angle2 = 0;
+                alpha1 = 1.0f;
+                scale1 = 1.0f;
+                alpha2 = 0.0f;
+                scale2 = 0.0f;
+            } else if (stage->field_0x18 < StatusAlt7f8220Pc * 2.0f + StatusAlt7f8224Pc) {
+                alpha1 = 1.0f;
+                angle1 = 0;
+                scale1 = 1.0f;
+                angle2 = (u16)-StatusAltSpinPc;
+                scale2 = alpha2 = (stage->field_0x18 - (StatusAlt7f8220Pc + StatusAlt7f8224Pc)) / StatusAlt7f8220Pc;
+            } else if (stage->field_0x18 > stage->field_0x1c - StatusAlt7f8220Pc) {
+                alpha2 = stage->field_0x1c - stage->field_0x18;
+                angle1 = StatusAltSpinPc;
+                angle2 = (u16)-StatusAltSpinPc;
+                alpha2 = alpha2 / StatusAlt7f8220Pc;
+                scale2 = alpha2;
+                alpha1 = alpha2;
+                scale1 = alpha2;
+            } else {
+                angle2 = 0;
+                angle1 = 0;
+                alpha2 = 1.0f;
+                scale2 = 1.0f;
+                alpha1 = 1.0f;
+                scale1 = 1.0f;
+            }
+            if (alpha1 > 0.0f) {
+                i32 a1, a2;
+                scale1 = StatusAltScalePc * scale1;
+                scale2 = StatusAltScalePc * scale2;
+                a1 = alpha1 * 255.0;
+                a2 = alpha2 * 255.0;
+                if (stage->type == 13) {
+                    DrawStatusText(TTab[TextIdPc880728], angle1, 0.0f, scale1 * StatusCoinsTitleYPc, scale1,
+                                   (((((u8)StatusBluePc | (a1 << 8)) << 8) | (u8)StatusGreenPc) << 8) | (u8)StatusRedPc,
+                                   0);
+                    DrawStatusText(TTab[TextIdPc88072c], angle2, 0.0f, -StatusCoinsTitleYPc * scale2, scale2,
+                                   (((((u8)StatusBluePc | (a2 << 8)) << 8) | (u8)StatusGreenPc) << 8) | (u8)StatusRedPc,
+                                   0);
+                } else if (stage->type == 8) {
+                    DrawStatusText(TTab[TextIdPc880864], angle1, 0.0f, scale1 * StatusCoinsTitleYPc, scale1,
+                                   (((((u8)StatusBluePc | (a1 << 8)) << 8) | (u8)StatusGreenPc) << 8) | (u8)StatusRedPc,
+                                   0);
+                    DrawStatusText(TTab[TextIdPc880874], angle2, 0.0f, -StatusCoinsTitleYPc * scale2, scale2,
+                                   (((((u8)StatusBluePc | (a2 << 8)) << 8) | (u8)StatusGreenPc) << 8) | (u8)StatusRedPc,
+                                   0);
+                } else if (stage->type == 23) {
+                    i32 red, green, blue;
+                    if (packet->challenge_state == 2) {
+                        red = green = blue = 0xff;
+                    } else {
+                        red = StatusRedPc;
+                        green = StatusGreenPc;
+                        blue = StatusBluePc;
+                    }
+                    DrawStatusText(TTab[TextIdPc880864], angle2, 0.0f, scale2 * StatusCoinsTitleYPc, scale2,
+                                   (((((u8)blue | (a2 << 8)) << 8) | (u8)green) << 8) | (u8)red, 0);
+                } else if (stage->type == 26) {
+                    i32 red, green, blue;
+                    i16 id;
+                    if (packet->mission_state == 2) {
+                        id = TextIdPc8806e4;
+                        red = green = blue = 0xff;
+                    } else {
+                        red = StatusRedPc;
+                        green = StatusGreenPc;
+                        blue = StatusBluePc;
+                        id = TextIdPc8806f4;
+                    }
+                    DrawStatusText(TTab[id], angle2, 0.0f, 0.0f, StatusAltTextScalePc,
+                                   (((((u8)blue | (a2 << 8)) << 8) | (u8)green) << 8) | (u8)red, 0);
+                }
+            }
+        }
+        if (stage->type == 23 || stage->type == 26) {
+            if ((stage->type == 26 && packet->mission_state == 2) ||
+                (stage->type == 23 && packet->challenge_state == 2)) {
+                f32 progress, slide, coin_slide;
+                u32 score;
+                if (stage->field_0x18 < 0.75f) {
+                    slide = stage->field_0x18 / 0.7f;
+                    progress = 0.0f;
+                } else {
+                    f32 end = stage->field_0x1c - 0.75f;
+                    if (stage->field_0x18 < end) {
+                        slide = 1.0f;
+                        progress = (stage->field_0x18 - 0.75f) / (end - 0.75f);
+                    } else {
+                        slide = 1.0f - (stage->field_0x18 - end) / 0.75f;
+                        progress = 1.0f;
+                    }
+                }
+                coin_slide = slide;
+                if (stage->field_0x18 >= 0.75f)
+                    coin_slide = 1.0f;
+                score = packet->original_score;
+                IncreaseScore(&score, (i64)((u32)(packet->reward_score - packet->original_score) * progress), 0);
+                CoinTotal_Draw((i32)score,
+                               (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(coin_slide * 16384.0f) >> 1) & 0x7fff] +
+                                   STATSPOS2YPc,
+                               CoinTotalScale, 1, 1.0f, 255, 191, 0);
+                if (stage->type == 26) {
+                    f32 remaining = (u16)packet->mission->time - packet->elapsed_time;
+                    if (remaining < 0.0f)
+                        remaining = 0.0f;
+                    Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
+                    Text3D(text, 0.0f,
+                           -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] +
+                             STATSPOS2YPc),
+                           1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+                }
+                if (stage->type == 23) {
+                    f32 remaining = (u16)ADataList[packet->area_id].challenge_trial_time - packet->elapsed_time;
+                    if (remaining < 0.0f)
+                        remaining = 0.0f;
+                    Text_MakeTime((1.0f - progress) * remaining, 0, 1, 1, text);
+                    Text3D(text, 0.0f,
+                           -((STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] +
+                             STATSPOS2YPc),
+                           1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 191, 0);
+                }
+            }
         }
     }
 
