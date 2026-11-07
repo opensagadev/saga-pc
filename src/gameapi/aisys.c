@@ -7785,22 +7785,18 @@ i32 __cdecl Action_UseTimeBasedUpdate(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
                                       i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    i32 disabled;
-    i32 enabled;
+    i32 enabled = 0;
     if (packet != NULL && packet->owner != NULL) {
         object = packet->owner->objptr;
-        disabled = 1;
-        if (first_time != 0 && param_count > 0) {
-            enabled = 0;
-            for (index = 0; index != param_count; ++index) {
+        if (first_time != 0) {
+            for (index = 0; index < param_count; ++index) {
                 if (NuStrICmp(params[index], (char *)AITransferLiteral757ebc) == 0)
                     enabled = 1;
                 else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0)
                     enabled = 0;
             }
-            disabled = (enabled ^ 1) & 1;
         }
-        object->flags_ef4 = (object->flags_ef4 & ~0x20) | (disabled << 5);
+        object->flags_ef4 = (object->flags_ef4 & ~0x20u) | (((enabled == 0) & 1) << 5);
     }
     return 1;
 }
