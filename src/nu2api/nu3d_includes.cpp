@@ -266,14 +266,8 @@ extern "C" {
 
 /* Genuine in-place operations; no reconstruction-only helper symbols. */
 #define PC_LEGACY_CURVE_STORE(destination, channel)                                                                    \
-    do {                                                                                                               \
-        f32 pc_curve_value;                                                                                            \
-        if (formats[(channel)] == 0)                                                                                   \
-            pc_curve_value = curves[(channel)].constant;                                                               \
-        else                                                                                                           \
-            pc_curve_value = NuAnimCurve2CalcValEx(&curves[(channel)], time, (u32)formats[(channel)]);                 \
-        (destination) = pc_curve_value;                                                                                \
-    } while (0)
+    (destination) = formats[(channel)] == 0 ? curves[(channel)].constant                                               \
+                                            : NuAnimCurve2CalcValEx(&curves[(channel)], time, (u32)formats[(channel)])
 
 #define PC_LEGACY_LIMIT_ANGLE(destination, maximum, minimum)                                                           \
     do {                                                                                                               \
@@ -2696,17 +2690,12 @@ extern "C" {
                                             NUVEC *root_translation, NUVEC *locator_translation) {
         NUVEC rotation, translation, reciprocal, negative_pivot;
         NUANGVEC angles;
-        u8 override_flags = override != NULL ? override->flags_pc : 0;
-        if (root_translation != NULL) {
-            root_translation->x = 0.0f;
-            root_translation->y = 0.0f;
-            root_translation->z = 0.0f;
-        }
-        if (locator_translation != NULL) {
-            locator_translation->x = 0.0f;
-            locator_translation->y = 0.0f;
-            locator_translation->z = 0.0f;
-        }
+        u8 override_flags;
+        if (root_translation != NULL)
+            root_translation->x = root_translation->y = root_translation->z = 0.0f;
+        if (locator_translation != NULL)
+            locator_translation->x = locator_translation->y = locator_translation->z = 0.0f;
+        override_flags = override != NULL ? override->flags_pc : 0;
 
         if ((node_flags & 1) == 0 && (override_flags & 1) == 0) {
             NuMtxSetIdentity(matrix);
@@ -2719,19 +2708,23 @@ extern "C" {
                 rotation.x = rotation.y = rotation.z = 0.0f;
             }
             if ((override_flags & 1) != 0) {
-                rotation.x = (f32)((f64)rotation.x + override->rotation.x);
-                rotation.y = (f32)((f64)rotation.y + override->rotation.y);
-                rotation.z = (f32)((f64)rotation.z + override->rotation.z);
+                rotation.x = override->rotation.x + rotation.x;
+                rotation.y = override->rotation.y + rotation.y;
+                rotation.z = override->rotation.z + rotation.z;
+                angles.x = (i32)(rotation.x * AIPathAngularScale);
+                angles.y = (i32)(rotation.y * AIPathAngularScale);
+                angles.z = (i32)(rotation.z * AIPathAngularScale);
+                if ((override_flags & 8) != 0)
+                    PC_LEGACY_LIMIT_ANGLE(angles.x, override->rotation_max_pc[0], override->rotation_min_pc[0]);
+                if ((override_flags & 0x10) != 0)
+                    PC_LEGACY_LIMIT_ANGLE(angles.y, override->rotation_max_pc[1], override->rotation_min_pc[1]);
+                if ((override_flags & 0x20) != 0)
+                    PC_LEGACY_LIMIT_ANGLE(angles.z, override->rotation_max_pc[2], override->rotation_min_pc[2]);
+            } else {
+                angles.x = (i32)(rotation.x * AIPathAngularScale);
+                angles.y = (i32)(rotation.y * AIPathAngularScale);
+                angles.z = (i32)(rotation.z * AIPathAngularScale);
             }
-            angles.x = (i32)((f64)rotation.x * AIPathAngularScale);
-            angles.y = (i32)((f64)rotation.y * AIPathAngularScale);
-            angles.z = (i32)((f64)rotation.z * AIPathAngularScale);
-            if ((override_flags & 8) != 0)
-                PC_LEGACY_LIMIT_ANGLE(angles.x, override->rotation_max_pc[0], override->rotation_min_pc[0]);
-            if ((override_flags & 0x10) != 0)
-                PC_LEGACY_LIMIT_ANGLE(angles.y, override->rotation_max_pc[1], override->rotation_min_pc[1]);
-            if ((override_flags & 0x20) != 0)
-                PC_LEGACY_LIMIT_ANGLE(angles.z, override->rotation_max_pc[2], override->rotation_min_pc[2]);
             NuMtxSetRotateXYZVU0(matrix, &angles);
         }
         if ((node_flags & 0x20) != 0)
@@ -2798,9 +2791,7 @@ extern "C" {
             if (locator_translation != NULL) {
                 NuVecMtxRotate(locator_translation, &joint->pivot_pc, matrix);
                 NuVecSub(locator_translation, locator_translation, &joint->pivot_pc);
-                /* Original FMUL F64(-1), not FCHS: finite values agree; NaN
-                 * payload/exception equivalence remains actual compiler HOLD. */
-                locator_translation->z = -locator_translation->z;
+                locator_translation->z = (f32)(locator_translation->z * -1.0);
             }
         }
         matrix->m02 = -matrix->m02;
