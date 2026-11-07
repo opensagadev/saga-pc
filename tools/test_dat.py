@@ -117,7 +117,7 @@ def write_clock_provider(directory):
     """
     production = (ROOT / "src/nu2api/nutimebar.c").read_text()
     start = production.index("void __cdecl NuTimeGetTicksPS(")
-    end = production.index("void __cdecl NuTimeBarSlotReset(", start)
+    end = production.index("void __cdecl PcInitializeStartupCriticalSection(", start)
     bodies = production[start:end]
     if len(re.findall(r"^.*void __cdecl NuTime\w+\(", bodies, re.MULTILINE)) != 1:
         raise ValueError("DAT clock provider no longer contains exactly the production tick routine")
