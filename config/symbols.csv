@@ -3445,6 +3445,8 @@ address,symbol,size,ctype
 0x520470,_InitFn_GetAICreatureOrigin,10,
 0x5204e0,_AiEditorChangeModePc,102,
 0x520600,_NuSpecialFindByPlatformID,163,
+0x005206b0,_AISysSetPathCylinderCheck,16,void __cdecl (i32)
+0x005206c0,_aieditor_Render,787,"void __cdecl (f32, f32)"
 0x520e10,_areaEditorCreateArea,131,
 0x520ea0,_areaEditorDestroyArea,54,
 0x520ee0,_areaEditorSaveData,256,
@@ -3603,6 +3605,9 @@ address,symbol,size,ctype
 0x52a760,_creatureEditor_RenderAllCreatures,389,
 0x52a8f0,_creatureEditor_Render,1318,
 0x52ae20,_creatureEditor_Enter,1369,
+0x0052b380,_AITerrInit,1,void __cdecl (void)
+0x0052b390,_AITerrShadow,55,"f32 __cdecl (NUVEC *, f32, f32, i32)"
+0x0052b3d0,_AITerrShadowOnPlatform,18,i32 __cdecl (void)
 0x0052b3f0,_xConditions,1476,void __cdecl (NUFPAR_PC *)
 0x0052b9c0,_xActions,749,void __cdecl (NUFPAR_PC *)
 0x52bcb0,_AIScriptOpenPakFileParse,308,"void __cdecl(AISCRIPT_PC **, void *, char *, char *, VARIPTR *, VARIPTR *)"
@@ -3651,7 +3656,7 @@ address,symbol,size,ctype
 0x0052ff40,_AIRetreatFromDestination2,517,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x00530150,_AIRetreatFromDestination,237,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x00530240,_AISysCharacterMovement,433,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
-0x530530,_aieditor_Proc,1060,
+0x530530,_aieditor_Proc,1060,"i32 __cdecl (f32, FRAME_PAD_PC *, f32, u32)"
 0x530960,_areaEditor_cbRenameAreaMenu,192,
 0x530a20,_areaEditor_cbDeleteArea,214,
 0x530b00,_areaEditor_cbCancelDeleteAreaMenu,37,
@@ -17017,6 +17022,7 @@ address,symbol,size,ctype
 0x760474,??_C@_06CFLNOMAI@?$CFs?4ai2?$AA@,7,const char[7]
 0x76047c,??_C@_0BG@BKOEIHKB@?$CFsLevels?2?$CFs?2?$CFs?2?$CFs?4ai2?$AA@,22,const char[22]
 0x760494,??_C@_0BG@IFCCHAGJ@?$CFsLevels?2?$CFs?2?$CFs?2ai?4pak?$AA@,22,const char[22]
+0x007604ac,??_C@_07KGMMFLDN@Warning?$AA@,8,char []
 0x7604b4,??_C@_09DNOCENCD@Area?5Name?$AA@,,char []
 0x7604c0,??_C@_0M@PCEMPPIA@Rename?5Area?$AA@,,char []
 0x7604cc,??_C@_0BA@NFOINGFB@X?5?9?5Create?5area?$AA@,,char []
@@ -23771,6 +23777,7 @@ address,symbol,size,ctype
 0x801ca4,_AiEditorAreasModeIdPc,,i32
 0x801ca8,_AiEditorLocatorsModeIdPc,,i32
 0x801cac,_AiEditorAntinodeModeIdPc,,i32
+0x00801cb0,_AiEditorCursorRayScalePc,4,f32
 0x801cb4,_AiEditorSaveMessageColoursPc,,struct eduiiattr_s
 0x801cc4,_aiEditor_LocatorWidth,4,f32
 0x801cc8,_aiEditor_DrawYOffset,,f32
@@ -23778,6 +23785,7 @@ address,symbol,size,ctype
 0x801cd0,_AiEditorAntinodeTypeNamesPc,,const char *[3]
 0x801cdc,_aisys_maxnumcreaturesets,,i32
 0x00801ce0,_AiEditorPickHeightTolerancePc,,f32
+0x00801d50,_AiEditorNearClipOffsetPc,4,f32
 0x801d54,_AIPathDefaultChecks,4,i32
 0x00801dd0,??_R0?AVNetListenerInterface@@@8,35,
 0x00801df4,??_R0?AVAINet@@@8,20,
@@ -26992,6 +27000,7 @@ address,symbol,size,ctype
 0x00923920,_MidSpecialMoveFn,4,AI_MID_SPECIAL_MOVE_PC
 0x00923924,_GetNamedGameObjectCallback,4,GAMEOBJECT_LOOKUP_CALLBACK_PC
 0x00923928,_GetOriginPositionFn,4,AI_ORIGIN_POSITION_PC
+0x0092392c,_disable_cylinder_check,2,i16
 0x923934,_AIPathConnectionTypeCountPc,,i32
 0x923938,_AIPathConnectionTypesPc,,
 0x9242b8,_AiEditorUpperHeightOverridePc,,f32
@@ -27001,6 +27010,7 @@ address,symbol,size,ctype
 0x9242c8,_edpath_addoffset,,NUVEC
 0x9242d4,_AiEditorMovePlayersCallbackPc,,
 0x9242d8,_creatureEditor_ResetParamsItem,4,eduiitem_s *
+0x009242dc,_geom,4,i32
 0x9242e0,?sm_instance@AINet@@2PAV1@A,4,AINet *
 0x009242e4,_sockpar_buffer_ptr,4,VARIPTR *
 0x9242e8,_SocksOnPreviousStatusPc,,u32[2]

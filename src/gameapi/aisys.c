@@ -13446,6 +13446,62 @@ i32 __cdecl NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result
     return 0;
 }
 
+i16 disable_cylinder_check = 0;
+
+void __cdecl AISysSetPathCylinderCheck(i32 enabled) {
+    disable_cylinder_check = enabled == 0;
+}
+
+NUCAMERA *__cdecl edmainGetCameraPc(void);
+extern i32 near_clip_at_cursor;
+f32 AiEditorNearClipOffsetPc = 5.0f;
+
+void __cdecl aieditor_Render(f32 x_scale, f32 y_scale) {
+    NUCAMERA *camera = edmainGetCameraPc();
+    void(__cdecl * draw)(i32, i32, f32, f32);
+    if (near_clip_at_cursor != 0)
+        camera->near_clip =
+            NuVecDist(&aieditor->cursor_position, &camera->mtx.translation, NULL) - AiEditorNearClipOffsetPc;
+    else
+        camera->near_clip = 0.15f;
+    edcamSet();
+    if (aieditorsettings.display_options & 0x10) {
+        edbitsDrawCross(aieditor->cursor_position.x, aieditor->cursor_position.y, aieditor->cursor_position.z, 0.5f, -1,
+                        (struct PC_SCENE_MTL_VIEW *)aieditorsettings.path_material);
+        edbitsDrawCross(aieditor->camera_position.x, aieditor->camera_position.y, aieditor->camera_position.z, 0.25f,
+                        0xff00ff00, (struct PC_SCENE_MTL_VIEW *)aieditorsettings.path_material);
+    } else {
+        edbitsDrawCross(aieditor->camera_position.x, aieditor->camera_position.y, aieditor->camera_position.z, 0.5f, -1,
+                        (struct PC_SCENE_MTL_VIEW *)aieditorsettings.path_material);
+    }
+    NuRndrRect2di(0x1680, 0x9b0, 0x1180, 0x488, 0x80808080, aieditorsettings.overlay_material);
+    NuRndrRect2di(0x1670, 0x8f0, 0x11a0, 0xc0, 0x80000000, aieditorsettings.overlay_material);
+    NuRndrLine2di(0x1670, 0x9b0, 0x1670, 0xe40, 0x80000000, aieditorsettings.overlay_material);
+    NuRndrLine2di(0x2810, 0x9b0, 0x2810, 0xe40, 0x80000000, aieditorsettings.overlay_material);
+    NuRndrLine2di(0x1670, 0xe40, 0x2810, 0xe40, 0x80000000, aieditorsettings.overlay_material);
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSet(system_qfont);
+    NuQFntSetColour(system_qfont, 0x80808080);
+    NuQFntSetScale(system_qfont, x_scale, y_scale);
+    draw = aieditorsettings.modes.entries[aieditorsettings.modes.current].draw;
+    if (draw != NULL)
+        draw(0x168, 0x136, x_scale, y_scale);
+    NuQFntSet(system_qfont);
+    NuQFntSetColour(system_qfont, 0x80000000);
+    NuQFntSetScale(system_qfont, x_scale, y_scale);
+    NuQFntPrintEx(system_qfont, 0x1720, 0xde8, 0x10, "%5.2f", aieditor->camera_position.x);
+    NuQFntPrintEx(system_qfont, 0x1b80, 0xde8, 0x10, "%5.2f", aieditor->camera_position.y);
+    NuQFntPrintEx(system_qfont, 0x1fe0, 0xde8, 0x10, "%5.2f", aieditor->camera_position.z);
+    if (aieditor->main_menu != NULL) {
+        NuQFntSetColour(system_qfont, 0x80000000);
+        NuQFntSetScale(system_qfont, x_scale, y_scale);
+        eduiMenuRender(aieditor->main_menu);
+    }
+    NuQFntPopPrintMode();
+    NuQFntPopCoordinateSystem();
+}
+
 void __cdecl pathEditorDrawNode(NUVEC *position, f32 radius, f32 lower_height, f32 upper_height, u32 colour,
                                 i32 material, i32 segments, i32 solid) {
     NUVEC centre = {position->x, position->y + aiEditor_DrawYOffset, position->z};
@@ -15504,7 +15560,6 @@ void __cdecl pathEditor_cbDeletePath(eduimenu_s *parent, eduiitem_s *item, u32 e
     }
 }
 
-extern i32 near_clip_at_cursor;
 void __cdecl cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 
 eduimenu_s *__cdecl pathEditor_MainMenu(void) {
@@ -17579,7 +17634,6 @@ void __cdecl creatureEditor_cb_stagger_start(eduimenu_s *menu, eduiitem_s *item,
 /* Native settings names are observed 16-byte views within the initializer's
  * 512-byte zero publication; Native owning allocations remain unknown. */
 
-NUCAMERA *__cdecl edmainGetCameraPc(void);
 STATIC_ASSERT(offsetof(NUCAMERA, near_clip) == 0x48);
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, ai_system) == 0x64);
 STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, selected_creature) == 0x371b0);
@@ -18854,6 +18908,108 @@ void __cdecl creatureEditor_Enter(void) {
             }
         }
     }
+}
+
+void __cdecl AITerrInit(void) {
+}
+
+i32 geom = 0;
+
+f32 __cdecl AITerrShadow(NUVEC *position, f32 height_above, f32 height_below, i32 terrain_mask) {
+    f32 height;
+    if (geom == 0)
+        height = NewShadow(position, height_above, height_below, terrain_mask);
+    return height;
+}
+
+i32 __cdecl AITerrShadowOnPlatform(void) {
+    i32 platform = -1;
+    if (geom == 0)
+        platform = NewShadowOnPlatform();
+    return platform;
+}
+
+void __cdecl edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
+i32 __cdecl NewRayCastScaleY(NUVEC *position, NUVEC *movement, f32 radius, f32 scale_y, i32 scan_flags);
+f32 AiEditorCursorRayScalePc = 1e-17f;
+
+i32 __cdecl aieditor_Proc(f32 menu_delta_time, FRAME_PAD_PC *pad, f32 frame_delta_time, u32 exit_buttons) {
+    NUVEC movement;
+    NUVEC previous_position;
+    f32 terrain_height;
+    i32 platform;
+    f32 ground_height;
+    f32 roof_height;
+    f32 closest;
+    f32 distance;
+    i32 hit;
+    struct nuhspecial_s *platform_handle;
+    eduimenu_s *(__cdecl * process)(FRAME_PAD_PC *);
+    aieditor->pad_buttons = pad->digital_buttons;
+    aieditor->pad_pressed = pad->digital_buttons_pressed;
+    if (aieditor->main_menu != NULL) {
+        eduiMenuProcess(aieditor->main_menu, menu_delta_time, pad);
+        return 0;
+    }
+    if (NuStrLen(aieditor->warning) != 0) {
+        aieditor->main_menu = aieditor_AddMessage("Warning", aieditor->warning);
+        NuStrCpy(aieditor->warning, "");
+        if (aieditor->main_menu != NULL)
+            return 0;
+    }
+    aieditorsettings.elapsed_time = NuFmod(aieditorsettings.elapsed_time + frame_delta_time, 1.0f);
+    if ((pad->digital_buttons & 0x100) == 0 && (aieditor->flags & 4) == 0)
+        edcamMoveEx(pad, frame_delta_time);
+    previous_position = aieditor->cursor_position;
+    edcamGetPosAng(&aieditor->cursor_position, &aieditor->camera_pitch, &aieditor->camera_yaw);
+    NuVecSub(&aieditor->cursor_movement, &aieditor->cursor_position, &previous_position);
+    aieditor->flags &= ~4;
+    platform_handle = &aieditor->cursor_platform;
+    platform_handle->scene = NULL;
+    platform_handle->special = NULL;
+    platform_handle->display_special = NULL;
+    aieditor->camera_position = aieditor->cursor_position;
+    terrain_height = AITerrShadow(&aieditor->cursor_position, 0.0f, 5.0f, -1);
+    platform = AITerrShadowOnPlatform();
+    NuSpecialFindByPlatformID(aieditor->enter_context, &aieditor->cursor_platform, platform);
+    if (aieditorsettings.display_options & 0x10) {
+        ground_height = EShadY;
+        roof_height = GetSurfaceInfoRoofHeightPc;
+        closest = 2000000.0f;
+        if (terrain_height != 2000000.0) {
+            closest = AIPathFabs(aieditor->cursor_position.y - terrain_height);
+            aieditor->camera_position.y = terrain_height;
+        }
+        if (ground_height != 2000000.0) {
+            distance = aieditor->cursor_position.y - ground_height;
+            if (AIPathFabs(distance) < closest) {
+                closest = AIPathFabs(distance);
+                aieditor->camera_position.y = ground_height;
+            }
+        }
+        if (roof_height != 2000000.0 && AIPathFabs(aieditor->cursor_position.y - roof_height) < closest)
+            aieditor->camera_position.y = roof_height;
+        if (disable_cylinder_check == 0 && aieditor->current_path != NULL &&
+            aieditor->current_path->current_node != NULL &&
+            aieditor->current_path->current_node == aieditor->current_path->nearest_node &&
+            aieditor->cursor_position.y > aieditor->camera_position.y &&
+            aieditor->camera_position.y == terrain_height) {
+            NuVecSub(&movement, &aieditor->camera_position, &aieditor->cursor_position);
+            hit = NewRayCastScaleY(&aieditor->cursor_position, &movement, aieditor->current_path->current_node->radius,
+                                   AiEditorCursorRayScalePc, 0);
+            if (hit != 0 && (hit & 0x10) == 0)
+                NuVecAdd(&aieditor->camera_position, &aieditor->cursor_position, &movement);
+        }
+        aieditor->camera_position.y += aieditorsettings.height_offset;
+        if (aieditorsettings.display_options & 0x20)
+            aieditor->cursor_position = aieditor->camera_position;
+    }
+    process = aieditorsettings.modes.entries[aieditorsettings.modes.current].process;
+    if (process != NULL)
+        aieditor->main_menu = process(pad);
+    if (aieditor->main_menu != NULL)
+        return 0;
+    return (pad->digital_buttons_pressed & exit_buttons) != 0;
 }
 
 void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
