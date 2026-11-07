@@ -122,7 +122,12 @@ extern "C" {
             }
         } else if (gizmo->type_id == force_gizmotype_id) {
             AI_TRIGGER_FORCE_PC *force = static_cast<AI_TRIGGER_FORCE_PC *>(gizmo->object);
-            if (CharCategory_IsCategory(object, (force->config_flags & 0x10) != 0 ? 1 : 0) == 0) {
+            i32 is_category;
+            if ((force->config_flags & 0x10) != 0)
+                is_category = CharCategory_IsCategory(object, 1);
+            else
+                is_category = CharCategory_IsCategory(object, 0);
+            if (is_category == 0) {
                 if (FreePlay != 0) {
                     processor->action_timer -= elapsed;
                     if (processor->action_timer < 0.0f) {

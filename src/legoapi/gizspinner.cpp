@@ -523,15 +523,15 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
         if (spinner->room_index != -1) {
             if ((spinner->room_index == 0x1e && (spinner->state_flags & 4) == 0) ||
                 (spinner->room_index != 0x1e && (spinner->state_flags & 4) != 0)) {
-                if (spinner->anim_set->state == 2)
-                    goto stop_animation;
-                play_speed = spinner->animation_speed;
+                play_speed = spinner->anim_set->state == 2 ? 0.0f : spinner->animation_speed;
             } else {
-                if (GameAnimSet_IsAnimationReset(spinner->anim_set) != 0)
-                    goto stop_animation;
-                play_speed = -spinner->animation_speed;
+                play_speed = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0.0f : -spinner->animation_speed;
             }
-            goto play_animation;
+            if (play_speed != 0.0f)
+                GameAnimSet_Play(spinner->anim_set, play_speed, 1);
+            else
+                GameAnimSet_Stop(spinner->anim_set);
+            goto animation_updated;
         }
         if ((spinner->flags & 0x10) == 0 || ((spinner->state_flags & 0x400) != 0 && spinner->anim_set->state == 2) ||
             !(spinner->field_0x090 <= 0.0f)) {
