@@ -9,6 +9,8 @@ extern i32 saveload_autosave;
 extern i32 MenuLoadOccurred;
 extern i32 MenuSaveOccurred;
 extern i32 memcard_slot;
+void __cdecl saveloadASFormat(void);
+void __cdecl saveloadASDelete(i32 slot);
 extern i32 memcard_loadneeded;
 extern i32 memcard_loadstarted;
 extern i32 memcard_loadfailed;
@@ -246,7 +248,7 @@ void UpdateSaveSlots(void) {
 
     if (memcard_deleteneeded != 0) {
         if (saveload_status == 1 && saveload_cardtype == 2 && saveload_cardformatted != 0) {
-            STUBBED_NAMED("0x0050bee7: saveloadASDelete at 0x00543e30 (void, 1 argument)");
+            saveloadASDelete(memcard_slot);
             memcard_deleteneeded = 0;
             memcard_deletemessage_delay = 1.5f;
             memcard_deletestarted = 1;
@@ -258,7 +260,7 @@ void UpdateSaveSlots(void) {
     }
     if (memcard_formatme != 0) {
         if (saveload_status == 1 && saveload_cardtype == 2) {
-            STUBBED_NAMED("0x0050bf8b: saveloadASFormat at 0x00543e20 (void)");
+            saveloadASFormat();
             memcard_formatme = 0;
             memcard_formatmessage_delay = 1.5f;
             memcard_formatting = 1;

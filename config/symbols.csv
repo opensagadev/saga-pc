@@ -2829,6 +2829,7 @@ address,symbol,size,ctype
 0x004f8e90,_NuStringTableGetByName,123,u16 *__cdecl (char *)
 0x004f8f10,_NuStrFixExtPlatform,419,"void __cdecl (char *, char *, char *, i32, char *)"
 0x004f90c0,_NuStrFixExt,45,"void __cdecl (char *, char *, char *, i32)"
+0x4f91f0,_NuErrorSleep,621,void __cdecl(void)
 0x4f9460,_ParseCommandLine,154,
 0x4f9570,_ImplodeReadOffsetLengthsPrivatePc,319,
 0x4f96b0,_ImplodeReadLiteralLengthsPrivatePc,358,
@@ -3864,6 +3865,8 @@ address,symbol,size,ctype
 0x543d40,_saveloadASSave,74,"void __cdecl(i32,void *,i32,u32)"
 0x543d90,_saveloadASLoad,69,"void __cdecl(i32,void *,i32)"
 0x543de0,_saveloadASCallEachFrame,54,
+0x543e20,_saveloadASFormat,1,void __cdecl(void)
+0x543e30,_saveloadASDelete,66,void __cdecl(i32)
 0x543e80,_saveloadInit,26,"void __cdecl (VARIPTR *, VARIPTR, i32, const char *, const char *, const char *, i32)"
 0x00543f30,_NuBridgeInit,149,void __cdecl (void)
 0x00543fd0,_NuBridgeRemove,144,void __cdecl (i32)

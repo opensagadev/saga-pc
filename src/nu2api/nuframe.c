@@ -25,6 +25,7 @@ extern void __cdecl FmvPlatformUpdatePc(void);
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 void __cdecl NuApiPrintLinePc(u32 colour, const char *format, ...) {
     char buffer[256];
@@ -51,6 +52,65 @@ void __cdecl NuApiPrintLinePc(u32 colour, const char *format, ...) {
         (elapsed).low = (now).low - (start).low;                                                                       \
         (elapsed).high -= 1;                                                                                           \
     }
+
+/* Shows the pending error messages for up to five seconds, or until the jump
+ * button is pressed after the first second. */
+void __cdecl NuErrorSleep(void) {
+    f32 milliseconds = 0.0f;
+    i32 waiting = 1;
+    i32 index;
+    f32 y;
+    char *message;
+    FRAME_PAD_PC pad;
+    NuTime start, now, elapsed, rate;
+    memset(&pad, 0, sizeof(pad));
+    NuTimeGetTicksPS(&start.low, &start.high);
+    if ((i32)start.high < 0) {
+        NuFileError();
+    }
+    while (milliseconds < 5000.0f && waiting != 0) {
+        y = 500.0f;
+        index = 0;
+        NuTimeGetTicksPS(&now.low, &now.high);
+        if ((i32)now.high < 0) {
+            NuFileError();
+        }
+        NUFRAME_ELAPSED(elapsed, now, start);
+        NuTimeGetTicksPerSecondPS(&rate.low, &rate.high);
+        milliseconds =
+            (f32)((elapsed.high * NuTime_LowScale + elapsed.low) / (rate.high * NuTime_LowScale + rate.low) * 1000.0);
+        if (nuapi.frame_begin_count != 0) {
+            NuFileError();
+        }
+        if (++nuapi.frame_begin_count < 1) {
+            NuFileError();
+        }
+        NuPortalInit();
+        NuWaterReset();
+        NuMouseRead();
+        NuKeyboardRead();
+        NuOcclusionManagerBeginFrame();
+        NuRndrBeginScene(0);
+        NuRndrClear(0xb00, 0xff00ffff, 1.0f);
+        NuQFntSet(system_qfont);
+        NuQFntPushPrintMode(2);
+        NuQFntPushCoordinateSystem(1);
+        NuQFntSet(system_qfont);
+        while (*(message = NuGetErrN(index++)) != '\0') {
+            NuQFntSetColour(system_qfont, 0xff000000);
+            NuQFntMove(system_qfont, 500.0f, y, 0.0f);
+            NuQFntPrintV(system_qfont, message, NULL);
+            y += 150.0f;
+        }
+        NuQFntPopCoordinateSystem();
+        NuQFntPopPrintMode();
+        NuRndrEndScene();
+        NuPadRead(&pad);
+        if ((pad.digital_buttons & 0x40) != 0 && milliseconds > 1000.0f)
+            waiting = 0;
+        NuFrameEnd();
+    }
+}
 
 f32 __cdecl NuFrameEnd(void) {
     NuTime elapsed;
@@ -149,7 +209,7 @@ f32 __cdecl NuFrameEnd(void) {
 
     if (ShowingError == 0 && had_error != 0) {
         ShowingError = 1;
-        STUBBED_NAMED(0x004f91f0); /* PC error dialog */
+        NuErrorSleep();
         NuClearError();
         ShowingError = 0;
     }

@@ -38,6 +38,7 @@ extern "C" {
     extern u32 SaveloadStartedTickPc;
     extern i32 saveload_slotused[6];
     extern char *__cdecl fullslotname(i32);
+    extern char SaveSlotNamePc[256];
     extern const char SaveSlotCaptionFormatPc[13] = "Save Slot %d";
 
     void __cdecl PcRegisterSaveMetadataPc(const void *metadata) {
@@ -128,5 +129,15 @@ extern "C" {
         saveload_slotid = slot;
         saveload_autosave = slot;
         SaveloadStartedTickPc = tick;
+    }
+    /* PC has no memory card to format. */
+    void __cdecl saveloadASFormat(void) {
+    }
+    void __cdecl saveloadASDelete(i32 slot) {
+        sprintf(SaveSlotNamePc, "SaveGame%d.%s_SavedGame", slot, PcProductName);
+        remove(SaveSlotNamePc);
+        saveload_slotid = slot;
+        if (saveload_autosave == slot)
+            saveload_autosave = -1;
     }
 }
