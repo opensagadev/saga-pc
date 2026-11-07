@@ -1375,6 +1375,11 @@
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "?PostFilterBindProgramPc@@YAXPBUPOST_SHADER_PROGRAM_PC@@@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nupostfilter.cpp",
+   "symbol": "?PostVec4NormalizeDirection@@YAXPAUNUVEC4@@@Z",
+   "kind": "function"
   }
  ]
 }

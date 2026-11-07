@@ -5996,6 +5996,8 @@ address,symbol,size,ctype
 0x5c2850,?initTextureResources@NuMainFilterGen@@UAEXHH@Z,,native exactVT binding; unimplemented extent unclaimed
 0x5c2900,?destroyTextureResources@NuMainFilterGen@@UAEXXZ,26,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c2920,?reset@NuMainFilterGen@@UAEXXZ,25,
+0x5c2940,?preprocessBlurTextures@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@0@Z,417,"void __thiscall (GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *)"
+0x5c2af0,?preprocessDofMotionBlur@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@@Z,737,"void __thiscall (GRAPHICS_RENDER_TEXTURE_PC *)"
 0x5c2e40,??0NuMotionFilterGen@@QAE@XZ,39,native ctor fullvptr/field proof
 0x5c3150,??0NuMotionFilter@@QAE@XZ,39,native ctor fullvptr/field proof
 0x5c3180,??0NuCopyFilter@@QAE@XZ,17,native ctor fullvptr/field proof
@@ -6437,7 +6439,7 @@ address,symbol,size,ctype
 0x5e5d00,??_GNuMainFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e5d20,?initResources@NuMainFilterGen@@UAEXXZ,42,native exactVT binding; unimplemented extent unclaimed
 0x5e5d50,?destroyResources@NuMainFilterGen@@UAEXXZ,40,Native VT cleanup complete CFG bound; working partial where applicable
-0x5e5d80,?render@NuMainFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5e5d80,?render@NuMainFilterGen@@UAEXXZ,1656,native exactVT binding
 0x5e6400,??_ENuMotionFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMotionFilterGen@@UAEPAXI@Z; no independent body
 0x5e6400,??_GNuMotionFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e6420,?render@NuMotionFilterGen@@UAEXXZ,651,native exactVT binding
@@ -17145,11 +17147,13 @@ address,symbol,size,ctype
 0x00764258,_KeyStructSizes,16,const u8[16]
 0x764268,_kPRIM_COORD_LOOKUP,,
 0x76428c,??_7NuPostFilterGen@@6B@,40,native exactVT binding; unimplemented extent unclaimed
+0x7642b4,??_C@_1BE@DINFAMHB@?$AAb?$AAl?$AAo?$AAo?$AAm?$AA?1?$AAd?$AAo?$AAf?$AA?$AA@,20,const wchar_t[10]
 0x7642c8,_PostDeferredLabelPc,34,const WCHAR[17]
 0x7642ec,_PostShadowRenderLabelPc,28,const WCHAR[14]
 0x764308,_PostEffectRenderLabelPc,60,const WCHAR[30]
 0x764344,??_C@_1BE@LKNDAOAB@?$AA3?$AAD?$AA?5?$AAr?$AAe?$AAn?$AAd?$AAe?$AAr?$AA?$AA@,,wchar_t[10]
 0x764364,??_7NuPostFilter@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x764390,__real@c00a934f00000000,8,const f64
 0x76439c,??_7NuMotionFilterGen@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x7643c8,??_7NuMotionFilter@@6B@,40,native exactVT binding; unimplemented extent unclaimed
 0x7643f4,??_7NuCopyFilter@@6B@,44,native exactVT binding; unimplemented extent unclaimed
@@ -23011,6 +23015,8 @@ address,symbol,size,ctype
 0x0080bbe0,_g_OcclusionManager,368,OcclusionManager; same canonical C-visible OCCLUSIONMANAGER layout
 0x80be74,??_R0?AVNuPostFilterGen@@@8,30,native exactVT binding; unimplemented extent unclaimed
 0x80be94,??_R0?AVNuPostFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
+0x80beb0,?scaleBias@?M@??preprocessBlurTextures@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@0@Z@4PAMA,16,f32[4]
+0x80bec0,_NuMainFilterDofBlurScalePc,4,f32
 0x80bec4,??_R0?AVNuMotionFilterGen@@@8,32,native exactVT binding; unimplemented extent unclaimed
 0x80bee4,??_R0?AVNuMotionFilter@@@8,29,native exactVT binding; unimplemented extent unclaimed
 0x80bf04,??_R0?AVNuCopyFilter@@@8,27,native exactVT binding; unimplemented extent unclaimed
@@ -23023,6 +23029,7 @@ address,symbol,size,ctype
 0x80c008,_PCShadowSurfaceSamplingEnabled,,i32
 0x80c050,?first@?1??DrawAlphaGrid@@9@9,,i32
 0x80c054,??_R0?AVNuMainFilterGen@@@8,30,native exactVT binding; unimplemented extent unclaimed
+0x80c074,_NuMainFilterDofWeightPc,4,f32
 0x80c078,_NuMotionFilterCentrePc,4,f32
 0x80c07c,??_R0?AVNuMotionAccumFilter@@@8,34,native exactVT binding; unimplemented extent unclaimed
 0x80c0a0,??_R0?AVNuSpeedBlurFilter@@@8,32,native exactVT binding; unimplemented extent unclaimed

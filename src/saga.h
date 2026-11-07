@@ -22653,6 +22653,8 @@ class NuMainFilterGen : public NuPostFilter {
     virtual void render();
     virtual void reset();
     virtual bool isEnabled();
+    void preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE_PC *color, GRAPHICS_RENDER_TEXTURE_PC *normal);
+    void preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE_PC *depth);
     void *programs[18];
     GRAPHICS_RENDER_TEXTURE_PC *blur_texture;
     PC_FRAMEBUFFER_PC *blur_fbo;

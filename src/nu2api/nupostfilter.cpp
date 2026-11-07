@@ -834,3 +834,255 @@ void NuSpeedBlurFilterGen::render() {
     color->resolved = false;
     PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
 }
+
+extern "C" {
+    extern POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc;
+    void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32,
+                                       bool, f32, POST_SHADER_PROGRAM_PC *);
+    void __cdecl PCGraphicsResolveFramebufferPc(i32);
+    f32 NuMainFilterDofBlurScalePc = 1.5f;
+    f32 NuMainFilterDofWeightPc = 1.0f;
+}
+
+void NuMainFilterGen::preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE_PC *color, GRAPHICS_RENDER_TEXTURE_PC *normal) {
+    (void)normal;
+    i32 width = PCGraphicsEffectTextureWidth(color);
+    i32 height = PCGraphicsEffectTextureHeight(color);
+    if (!dof_enabled && !bloom_enabled)
+        return;
+    i32 levels;
+    if (dof_enabled) {
+        i32 smaller = width < height ? width : height;
+        f32 scaled = RenderPostLogPc((f32)smaller) * -3.321928024291992;
+        levels = -6 - (i32)scaled;
+    } else {
+        levels = downsample_lod;
+    }
+    PostBlur7x7DispatchPc(color, 1, color, 2, 1, levels, true, 1.0f, PostBlur5x5ProgramPc);
+    if (bloom_enabled) {
+        f32 threshold[4];
+        threshold[0] = bloom->threshold < 0.0f ? 0.0f : (bloom->threshold > 1.0f ? 1.0f : bloom->threshold);
+        threshold[1] = 0.0f;
+        threshold[2] = 0.0f;
+        threshold[3] = 0.0f;
+        static f32 scaleBias[4] = {1.0f, 1.0f, 0.0f, 0.0f};
+        PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[17]);
+        PCDeviceSetVertexShaderConstantsF(0xae, threshold, 1);
+        PCDeviceSetVertexShaderConstantsF(0xaf, scaleBias, 1);
+        PostFilterCopyTexturePc(downsample_texture, 0, color, downsample_lod, (POST_SHADER_PROGRAM_PC *)programs[17],
+                                NULL);
+        i32 passes = (i32)bloom->blur_iterations;
+        if (passes >= 1)
+            PostBlur7x7DispatchPc(downsample_texture, 0, downsample_texture, 0, passes, 1, true, 1.0f,
+                                  PostBlur5x5ProgramPc);
+        f32 remainder = bloom->blur_iterations - passes;
+        if (remainder > 0.0f)
+            PostBlur7x7DispatchPc(downsample_texture, 0, downsample_texture, 0, 1, 1, true, remainder,
+                                  PostBlur5x5ProgramPc);
+    }
+}
+
+void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE_PC *depth) {
+    POST_SHADER_PROGRAM_PC *program;
+    if (dof_enabled) {
+        if (dof_bias == 1)
+            program = (POST_SHADER_PROGRAM_PC *)(motion_blur_enabled ? programs[4] : programs[3]);
+        else
+            program = (POST_SHADER_PROGRAM_PC *)(motion_blur_enabled ? programs[2] : programs[0]);
+    } else {
+        program = (POST_SHADER_PROGRAM_PC *)programs[1];
+    }
+    PostShaderProgramBindPc(program);
+    if (dof_enabled) {
+        f32 fov, aspect, near_z, far_z;
+        PcGetGeometryPerspectivePc(&PcGeometryProjectionMatrixPc, &fov, &aspect, &near_z, &far_z);
+        f32 projection_scale = far_z / (far_z - near_z);
+        f32 strength_near = dof_strength * dof_near;
+        f32 product = dof_far * strength_near;
+        f32 denominator = near_z * projection_scale * (dof_far - dof_near);
+        f32 values[4];
+        values[0] = product / denominator;
+        values[1] = strength_near / (dof_far - dof_near) - projection_scale * product / denominator;
+        values[2] = dof_blur;
+        values[3] = 0.0f;
+        PCDeviceSetVertexShaderConstantsF(0x83, values, 1);
+    }
+    if (motion_blur_enabled) {
+        NUMTX bias = {0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.5f, 0.0f, 1.0f};
+        NUMTX inverse_bias, inverse_previous, transform;
+        NuMtxInvH(&inverse_bias, &bias);
+        NuMtxInvH(&inverse_previous, &motion_previous);
+        NuMtxMulH(&transform, &inverse_bias, &inverse_previous);
+        NuMtxMulH(&transform, &transform, &motion_current);
+        NuMtxMulH(&transform, &transform, &bias);
+        NuMtxTranspose(&transform, &transform);
+        PCDeviceSetPixelShaderConstantsF(0x84, (f32 *)&transform, 4);
+    }
+    if (dof_enabled || motion_blur_enabled) {
+        i32 width, height;
+        PCGraphicsEffectTextureDimensions(blur_texture, 0, &width, &height);
+        PCGraphicsEffectTextureSetFilterFields(depth, 2, 2, 0);
+        POST_FILTER_BIND_TEXTURE(2, depth);
+        PCGraphicsAttachFramebuffer(blur_fbo, 0, blur_texture, 0);
+        PCGraphicsBindFramebuffer(blur_fbo);
+        PCGraphicsSubmitViewportPc(0, 0, width, height);
+        PCGraphicsDrawPostEffectQuadPc();
+        PCGraphicsResolveFramebufferPc(1);
+        if (dof_mode > 0)
+            PostBlur7x7DispatchPc(blur_texture, 0, blur_texture, 1, dof_mode, 1, true, NuMainFilterDofBlurScalePc,
+                                  (POST_SHADER_PROGRAM_PC *)programs[15]);
+    }
+}
+
+/* Normalizes the xyz part and makes the result a homogeneous direction (w = 1). */
+static __forceinline void PostVec4NormalizeDirection(NUVEC4 *vector) {
+    NuVecNorm((NUVEC *)vector, (NUVEC *)vector);
+    vector->w = 1.0f;
+}
+
+void NuMainFilterGen::render() {
+    D3DPERF_BeginEvent((D3DCOLOR)-1, L"bloom/dof");
+    PC_FRAMEBUFFER_PC *output =
+        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+    PC_POST_BUFFER_PROXY_PC *color =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+    PC_POST_BUFFER_PROXY_PC *normal =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].data;
+    PC_POST_BUFFER_PROXY_PC *depth =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data;
+    if (!color->resolved) {
+        PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
+        color->resolved = true;
+    }
+    if (normal->texture != NULL && !normal->resolved) {
+        PCGraphicsFramebufferBarrierPc(normal->kind, normal->enabled);
+        normal->resolved = true;
+    }
+    GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *depth_texture = depth->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *normal_texture = normal->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    GRAPHICS_RENDER_TEXTURE_PC *depth_destination = PCGraphicsGetFramebufferAttachmentPc(output, 4, NULL, NULL);
+    if (bloom_enabled || dof_enabled)
+        preprocessBlurTextures(color_texture, normal_texture);
+    if (dof_enabled || motion_blur_enabled)
+        preprocessDofMotionBlur(depth_texture);
+    i32 selection = (bloom_enabled && bloom->directional ? 1 : 0) | (bloom_enabled && !bloom->directional ? 2 : 0) |
+                    (dof_enabled ? 4 : 0);
+    POST_SHADER_PROGRAM_PC *program = NULL;
+    switch (selection) {
+        case 1:
+            program = (POST_SHADER_PROGRAM_PC *)programs[8];
+            break;
+        case 2:
+            program = (POST_SHADER_PROGRAM_PC *)programs[6];
+            break;
+        case 4:
+            program = (POST_SHADER_PROGRAM_PC *)programs[5];
+            break;
+        case 5:
+            program = (POST_SHADER_PROGRAM_PC *)programs[9];
+            break;
+        case 6:
+            program = (POST_SHADER_PROGRAM_PC *)programs[7];
+            break;
+        case 9:
+            program = (POST_SHADER_PROGRAM_PC *)programs[13];
+            break;
+        case 10:
+            program = (POST_SHADER_PROGRAM_PC *)programs[11];
+            break;
+        case 12:
+            program = (POST_SHADER_PROGRAM_PC *)programs[10];
+            break;
+        case 13:
+            program = (POST_SHADER_PROGRAM_PC *)programs[14];
+            break;
+        case 14:
+            program = (POST_SHADER_PROGRAM_PC *)programs[12];
+            break;
+        default:
+            AnimationDiagnosticNoOpPc();
+            break;
+    }
+    PostShaderProgramBindPc(program);
+    if (dof_enabled) {
+        PCGraphicsEffectTextureWidth(color_texture);
+        PCGraphicsEffectTextureHeight(color_texture);
+        __declspec(align(16)) f32 params[4] = {dof_blur, NuMainFilterDofWeightPc, 0.0f, 0.0f};
+        __declspec(align(16)) f32 jitter[4] = {(f32)(rand() / 32767.0), (f32)(rand() / 32767.0), 0.0f, 0.0f};
+        PCDeviceSetVertexShaderConstantsF(0x80, params, 1);
+        PCDeviceSetVertexShaderConstantsF(0x81, jitter, 1);
+        PCGraphicsEffectTextureSetFilterFields(blur_texture, 2, 2, 2);
+        PCGraphicsEffectTextureSetWrapFields(blur_texture, 2, 2);
+        PCGraphicsEffectTextureSetLowNibbles(blur_texture, 0, 13);
+        POST_FILTER_BIND_TEXTURE(1, blur_texture);
+    }
+    if (bloom_enabled) {
+        f32 blend = bloom->blend;
+        __declspec(align(16)) f32 params[4] = {bloom->intensity * blur_gain, blend, 0.0f, 0.0f};
+        PCDeviceSetVertexShaderConstantsF(0x82, params, 1);
+        f32 scale_range = (bloom->far_scale - bloom->near_scale) * bloom->intensity;
+        f32 angle_start = bloom->near_angle / 180.0;
+        f32 angle_range = 180.0 / (bloom->far_angle - bloom->near_angle);
+        __declspec(align(16)) f32 angle[4] = {bloom->near_scale * bloom->intensity, scale_range, angle_start,
+                                              angle_range};
+        PCDeviceSetVertexShaderConstantsF(0x88, angle, 1);
+        if (bloom->directional) {
+            f32 direction_scale_range = (bloom->direction_far_scale - bloom->direction_near_scale) * bloom->intensity;
+            f32 direction_angle_start = bloom->direction_near_angle * 3.1415927410125732 / 180.0;
+            f32 direction_angle_range =
+                180.0 / ((bloom->direction_far_angle - bloom->direction_near_angle) * 3.1415927410125732);
+            __declspec(align(16)) f32 directional[4] = {bloom->direction_near_scale * bloom->intensity,
+                                                        direction_scale_range, direction_angle_start,
+                                                        direction_angle_range};
+            PCDeviceSetVertexShaderConstantsF(0x89, directional, 1);
+            f32 direction_y = bloom->direction.y;
+            f32 direction_z = bloom->direction.z;
+            __declspec(align(16)) NUVEC4 direction = {bloom->direction.x, direction_y, direction_z, 1.0f};
+            PostVec4NormalizeDirection(&direction);
+            direction.w = bloom->direction_bias;
+            PCDeviceSetVertexShaderConstantsF(0x8a, &direction.x, 1);
+        }
+        PCGraphicsEffectTextureSetFilterFields(downsample_texture, 2, 2, 0);
+        PCGraphicsEffectTextureSetWrapFields(downsample_texture, 2, 2);
+        POST_FILTER_BIND_TEXTURE(3, downsample_texture);
+    }
+    PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 2);
+    PCGraphicsEffectTextureSetWrapFields(color_texture, 2, 2);
+    PCGraphicsEffectTextureSetLowNibbles(color_texture, 0, 13);
+    POST_FILTER_BIND_TEXTURE(0, color_texture);
+    if (depth_destination != NULL) {
+        PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 0);
+        POST_FILTER_BIND_TEXTURE(2, depth_texture);
+        PCDeviceSetRenderState(22, 1);
+        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(27, 0);
+        PCDeviceSetRenderState(7, 1);
+        PCDeviceSetRenderState(14, 1);
+        PCDeviceSetRenderState(23, 8);
+    } else {
+        PCDeviceSetRenderState(22, 1);
+        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(27, 0);
+        PCDeviceSetRenderState(7, 0);
+        PCDeviceSetRenderState(168, 15);
+    }
+    PCGraphicsBindFramebuffer(output);
+    PCGraphicsSubmitViewportPc(0, 0, PCGraphicsEffectTextureWidth(destination),
+                               PCGraphicsEffectTextureHeight(destination));
+    PCGraphicsDrawPostEffectIndexedPc();
+    color->texture = destination;
+    color->kind = 0;
+    color->enabled = true;
+    color->resolved = false;
+    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    if (depth_destination != NULL) {
+        depth->texture = depth_destination;
+        depth->kind = 4;
+        depth->enabled = true;
+        depth->resolved = false;
+        PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data = depth;
+    }
+    D3DPERF_EndEvent();
+}
