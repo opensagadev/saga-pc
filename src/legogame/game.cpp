@@ -9,6 +9,7 @@ extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
+extern "C" void __cdecl Grabber_Reset(WORLDINFO *world);
 extern "C" void __cdecl SurfaceMaskOff(u32 *surface_mask);
 extern "C" void __cdecl VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 extern "C" void __cdecl PodRace_IncreaseLap(void);
@@ -639,7 +640,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     alert_timer = 0.0f;
     drop_back_in_timer = 0.0f;
     ResetRippleSet(RippleSetPc);
-    STUBBED_NAMED("CheckResetBits: Grabber_Reset(WORLD) at 0x004710d0");
+    Grabber_Reset(WORLD);
     Faders_Reset(WORLD);
     TerrainChatterWaitPc = 3.0f;
     TerrainLastChatterSfxPc = -1;
@@ -760,7 +761,7 @@ extern "C" void __cdecl CheckResetBits(void) {
     if ((ResetBits & 0x10) != 0) {
         for (player_slot = (GAMEOBJECT **)Player; player_slot < (GAMEOBJECT **)Player + 8; ++player_slot) {
             if (*player_slot != NULL)
-                STUBBED_NAMED("CheckResetBits: ResetPlayer(player, 1, NULL, 0) at 0x0041b420");
+                ResetPlayer(*player_slot, 1, NULL, 0);
         }
         VehicleAreaRememberSpeed = GetVehicleAreaRememberSpeed();
     }
