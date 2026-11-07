@@ -170,7 +170,7 @@
     "src/nu2api/geometry_origin.cpp": "b22429f370488a73f2e6d347b0399215936da96744633f0bc16aa7e551541d3f",
     "src/nu2api/geometry_publish.cpp": "61492e879261c3465e668b555162e26a6f0697bc77db0dc0eead42bb9eddedf1",
     "src/nu2api/hardware_dispatch.cpp": "1c1a600bb442f911f6d2e7b6b7c26d36638880b9c518d9dff46a175904743aa6",
-    "src/nu2api/input_descriptors.cpp": "873e98548b23193619bef0872324ce5425174d612bac3932a2c14aba5bc6d6b6",
+    "src/nu2api/input_descriptors.cpp": "b050322288c794d802cdf7cde89336ec0e4c20889beef187f1c3ee2e5ec7876f",
     "src/nu2api/input_detection.cpp": "958d85117bc5a8f0ff95acabf1f9f2f255b8cba9530954bd79d9d1282ab6aaf7",
     "src/nu2api/input_runtime.cpp": "1b656a8c47bdd3c9c57c026df9fc6771e253d30459af8b7429d30246faef672a",
     "src/nu2api/key_events.cpp": "28b9d56d73c269b27322b99775854a1ee205cea245fbbd67b963de39d9efe860",
@@ -438,7 +438,7 @@
     "src/nu2api/glutils.c": "562d5438332dfb4654aaab1e9dd0a7b017b65a9e9fc8c786e5b1f7e5331af251",
     "src/nu2api/implode.c": "92e8f88b9f90d9a415b41c83b474af0e87303677314e28acc96e7681edbc4b15",
     "src/nu2api/keyboard_init.c": "225c6abc83f0ce0bbee84f8101b401c8727296fdb7236d4824586a579821d22a",
-    "src/nu2api/keyboard_read.c": "073bce473ce790580700ce6a747dbb961415adc42a015e0e911e31bc45308bcf",
+    "src/nu2api/keyboard_read.c": "c094f22be550727dc2e2b574cc0c7b7824e92ed4305e879e297b1a2d38b4ff87",
     "src/nu2api/nualloc.c": "2642ecfe632475ebcff93f593933f042decbbd50c826f35133293cb3581630d3",
     "src/nu2api/nuanim.c": "340f0b9e3ef771d87be3d683e491fde903c98cd7d1fa10ece4544d193dff46e1",
     "src/nu2api/nuanim_procedural_pc.c": "666a9406f5b6c5d21c981bcfa32d8eee69e1aee129507d98db96502e39608ac3",
@@ -898,12 +898,12 @@
     "build/obj/nu2api/glutils.obj": "fcb0cad45fc9f356137c87e9436ce07151926432d990c23298bba8dda2b64593",
     "build/obj/nu2api/hardware_dispatch.obj": "13603b9d254442e2902e7eb6101284e274fdae9879b4f272e37f96b2bcbe9eb8",
     "build/obj/nu2api/implode.obj": "06ebf2ffd609bf72f3b63d1129314668b2c95e8eaf80bb812e2aaa01f12bd26b",
-    "build/obj/nu2api/input_descriptors.obj": "bcdbb9bb3a1e1b263bba57486a762eb1a16b43aecef4717383e93ff9ffa9ea9e",
+    "build/obj/nu2api/input_descriptors.obj": "ae414080dd6f954656171f41ac9dc3b7de80747493d6f8338c4f630446fceac6",
     "build/obj/nu2api/input_detection.obj": "c047bde291d7d6aa4c82a645cdb0ad651e555ad39f1c4add2408daf5f2c3371b",
     "build/obj/nu2api/input_runtime.obj": "4e2d1f4b89251f40b27bb2887055079f7fafa8eaa458e8875042adcb87e15b5e",
     "build/obj/nu2api/key_events.obj": "adafb28f878c4965c64b0150cb24733a135f4e21057dfdf2f38d8089148c4293",
     "build/obj/nu2api/keyboard_init.obj": "d0b995ab98e535593cbc9021ef556ad5ceef0f2b201f0eb0d3223a51b53754d0",
-    "build/obj/nu2api/keyboard_read.obj": "f0eb69bedf9db8266c520cd05e8d3a7112cd636530fa93da44a1f7bc3284ae99",
+    "build/obj/nu2api/keyboard_read.obj": "e6626349028767f109245fe1161f6fa544931ea0ff1138da54c40afa5eb52513",
     "build/obj/nu2api/nualloc.obj": "cd1bcca9c0f14a535e5d1005dbb506608f141d33526d42024654ac8b731eedf2",
     "build/obj/nu2api/nuanim.obj": "b0e06734566ca525924ad1cd73e608ffe5e84bfe9176f413b08ace854692e64f",
     "build/obj/nu2api/nuanim_procedural_pc.obj": "1be03b87e6b55b6d38958066ee00333d26801d891a79aa60e54797085f631fcd",
@@ -237199,17 +237199,17 @@
       "objects": [
         {
           "unit": "src/nu2api/keyboard_read.c",
-          "base_size": 321,
+          "base_size": 375,
           "exact_match": false,
           "target_sha256": "26c8c1f0e8d9bf71f68914e67ae017534c8b305048bde5160ca36e3991668e09",
-          "base_sha256": "d528179c88a060b20840b1244190eb7a2e3235b5d9ebe48ec97b853ebcb42f14",
-          "relocation_count": 20,
+          "base_sha256": "ba2cfa303c1211ef40f13dafb1bb71c28639b596b08383462a30935d38e0c39b",
+          "relocation_count": 25,
           "comparison_unit": "006d5990-ff36e6ae5d8e",
-          "objdiff_percent": 40.763157
+          "objdiff_percent": 65.76316
         }
       ],
       "status": "different",
-      "objdiff_percent": 40.763157
+      "objdiff_percent": 65.76316
     },
     {
       "name": "NuMouseSmoothAxisPc",
@@ -237583,17 +237583,17 @@
       "objects": [
         {
           "unit": "src/nu2api/input_descriptors.cpp",
-          "base_size": 358,
+          "base_size": 230,
           "exact_match": false,
           "target_sha256": "ac47ae4f2fa39099b533c4d282da976cfa62c1fbacff142903eb4e54aa0869df",
-          "base_sha256": "2a02ebb78c94d86123a09bb77be16dc9e87d4a6075eb6396f354f7fc9707ea70",
+          "base_sha256": "ea14407af9e697cdb30faf0b859137aab6129c863af1b6332c737ffdff696570",
           "relocation_count": 3,
           "comparison_unit": "006d61b0-c0dbcbc8c9e8",
-          "objdiff_percent": 30.12
+          "objdiff_percent": 90.30666
         }
       ],
       "status": "different",
-      "objdiff_percent": 30.12
+      "objdiff_percent": 90.30666
     },
     {
       "name": "InitPadDescriptorsPc",
@@ -601053,10 +601053,10 @@
     "mapped_code_bytes": 2832750,
     "matched_code_bytes": 902877,
     "matching_percent": 26.010170411431513,
-    "fuzzy_coverage_percent": 72.64171301222456,
+    "fuzzy_coverage_percent": 72.64833390461996,
     "mapped_functions": 11217,
     "matched_functions": 7271,
-    "objdiff_fuzzy_percent": 89.31959,
+    "objdiff_fuzzy_percent": 89.32773,
     "objdiff_total_code": 2826920,
     "image_bytes": 40067072,
     "mapped_bytes": 4732839,
@@ -602430,7 +602430,7 @@
       "metadata_sha256": "5bc58d595004b96da7fe229a495dc72f3d48ed86510b5ac133fa787480f1fd1b",
       "header_path": "src/saga.h",
       "header_sha256": "ac92ef1e9abd2c52a3a528a88b68b6efd468d0df1449b3400bb8f51154533eb5",
-      "geometry_object_sha256": "104b48923fd4c1c493e5960aaa8d5e76de61f07e75b7590f23ec11072d48cd39",
+      "geometry_object_sha256": "795905d78fd37cf06041c57ceb4891b64c8509dc22c8e7675ea7ff7cd0f60565",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
