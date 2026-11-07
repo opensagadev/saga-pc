@@ -3396,7 +3396,7 @@ void __cdecl InitUI(void) {
 
 /* Native-observed editor camera (0x29139cc). */
 #pragma section(".bss$RtlUsrCamPc", read, write)
-__declspec(allocate(".bss$RtlUsrCamPc")) NUCAMERA *usr_cam = 0;
+__declspec(allocate(".bss$RtlUsrCamPc")) static NUCAMERA *usr_cam = 0;
 
 void __cdecl edrtlInit(void) {
     usr_cam = NuCameraCreate();
@@ -3443,9 +3443,9 @@ void __cdecl edrtlDrawLights(void) {
 
 /* Native editor-owned f32 cells. Observed minimum four bytes each; allocation unknown. */
 #pragma section(".bss$RtlEditorFarClip", read, write)
-__declspec(allocate(".bss$RtlEditorFarClip")) f32 game_farclip = 0.0f;
+__declspec(allocate(".bss$RtlEditorFarClip")) static f32 game_farclip = 0.0f;
 #pragma section(".bss$RtlEditorNearClip", read, write)
-__declspec(allocate(".bss$RtlEditorNearClip")) f32 game_nearclip = 0.0f;
+__declspec(allocate(".bss$RtlEditorNearClip")) static f32 game_nearclip = 0.0f;
 
 void __cdecl eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
 
@@ -4071,7 +4071,7 @@ __declspec(allocate(".data$RtlProc_min_r")) f32 min_r = 1.0f;
 #pragma section(".data$RtlProc_def_fr", read, write)
 __declspec(allocate(".data$RtlProc_def_fr")) f32 def_fr = 2.0f;
 #pragma section(".bss$RtlProc_edrtl_mode", read, write)
-__declspec(allocate(".bss$RtlProc_edrtl_mode")) i32 edrtl_mode = 0;
+__declspec(allocate(".bss$RtlProc_edrtl_mode")) static i32 edrtl_mode = 0;
 #pragma section(".data$RtlProc_ctl", read, write)
 __declspec(allocate(".data$RtlProc_ctl")) u32 ctl[2][8] = {
     {0x80, 0x10, 0x40, 0x1000, 0x100, 0x20, 0x8000, 0x2000},
@@ -4139,7 +4139,11 @@ i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
     f32 dist;
     i16 previous_yaw;
     i16 previous_pitch;
-    f32 distance;
+    union {
+        f32 value;
+        u32 bits;
+    } distance;
+    u32 bits;
     f32 move_scale;
     NUVEC previous_position;
     RTL_LIGHT_PC updated;
@@ -4178,8 +4182,11 @@ i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
         previous_yaw = (i16)(peay);
         previous_pitch = (i16)(peax);
         edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
-        distance = fabsf(edcamGetDist());
-        move_scale = 1.0f > camscale_factor * distance ? 1.0f : camscale_factor * distance;
+        distance.value = edcamGetDist();
+        bits = distance.bits;
+        bits &= 0x7fffffff;
+        distance.bits = bits;
+        move_scale = 1.0f > camscale_factor * distance.value ? 1.0f : camscale_factor * distance.value;
 
         if (menu_cancelled && pad->digital_buttons)
             return 0;
@@ -4312,3 +4319,391 @@ i32 __cdecl edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
     }
     return 0;
 }
+
+// NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
+static i32 curFogLoc = -1;
+// NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
+i32 fog_editor_active = 0;
+// NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
+i32 rtl_near_clip_at_cursor = 0;
+// NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
+i32 RTL_EditorActive = 0;
+
+static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
+    i32 i;
+    i32 nearest = -1;
+    f32 nearest_distance = FLT_MAX;
+    f32 distance;
+    for (i = 0; i < 32; ++i) {
+        if (hide_types[curr_set->lights[i].type])
+            continue;
+        distance =
+            (RTL_FOG_PC(curr_set)[i].position.x - position->x) * (RTL_FOG_PC(curr_set)[i].position.x - position->x) +
+            (RTL_FOG_PC(curr_set)[i].position.y - position->y) * (RTL_FOG_PC(curr_set)[i].position.y - position->y) +
+            (RTL_FOG_PC(curr_set)[i].position.z - position->z) * (RTL_FOG_PC(curr_set)[i].position.z - position->z);
+        if (RTL_FOG_PC(curr_set)[i].radius * RTL_FOG_PC(curr_set)[i].radius > distance && distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = i;
+        }
+    }
+    if (nearest != -1) {
+        curFogLoc = nearest;
+        return &RTL_FOG_PC(curr_set)[nearest];
+    }
+    return NULL;
+}
+
+RTL_FOG_MIGRATION_PC *__cdecl edrtlGetFogSet(void) {
+    if (fogmode == 0)
+        return curr_fog;
+    return FindNearestFog((NUVEC *)&global_camera.mtx.m30);
+}
+
+static RTL_FOG_MIGRATION_PC *SelectPrevFog(void) {
+    i32 index;
+    i32 count = 0;
+    index = curFogLoc - 1;
+    if (index < 0)
+        index = 32;
+    if (curr_set != NULL) {
+        while (index != curFogLoc) {
+            if (RTL_FOG_PC(curr_set)[index].type != 0) {
+                curFogLoc = index;
+                return &RTL_FOG_PC(curr_set)[index];
+            }
+            if (index == 0)
+                index = 32;
+            ++count;
+            if (count >= 32)
+                break;
+            --index;
+        }
+    }
+    return NULL;
+}
+
+static RTL_FOG_MIGRATION_PC *SelectNextFog(void) {
+    i32 index;
+    i32 count = 0;
+    if (curFogLoc == -1 || curFogLoc == 31)
+        index = 0;
+    else
+        index = curFogLoc + 1;
+    if (curr_set != NULL) {
+        while (index != curFogLoc) {
+            if (RTL_FOG_PC(curr_set)[index].type != 0) {
+                curFogLoc = index;
+                return &RTL_FOG_PC(curr_set)[index];
+            }
+            if (index > 31)
+                index = -1;
+            ++count;
+            if (count >= 32)
+                break;
+            ++index;
+        }
+    }
+    return NULL;
+}
+
+static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
+    static i32 dragging;
+    static NUVEC dragoff;
+    static NUVEC dragstart;
+    static RTL_FOG_MIGRATION_PC *drag_fog;
+    union {
+        f32 value;
+        u32 bits;
+    } distance;
+    u32 bits;
+    f32 camera_step;
+
+    fog_editor_active = 1;
+    if (pad->digital_buttons_pressed & ctl[ctl_ix][4]) {
+        rtled_menu_active = 1;
+        RefreshUI();
+    }
+    if (rtled_menu_active) {
+        eduiMenuProcess(fog_main_menu, delta_time, pad);
+        if (!rtled_menu_active) {
+            menu_cancelled = 1;
+            dragging = 0;
+        }
+    } else if (pad->digital_buttons & ctl[ctl_ix][5]) {
+        if (curr_fog != NULL)
+            edcamSetPos(&curr_fog->position);
+        if (pad->digital_buttons_pressed & ctl[ctl_ix][7]) {
+            curr_fog = SelectNextFog();
+            if (curr_fog != NULL)
+                edcamSetPos(&curr_fog->position);
+        } else if (pad->digital_buttons_pressed & ctl[ctl_ix][6]) {
+            curr_fog = SelectPrevFog();
+            if (curr_fog != NULL)
+                edcamSetPos(&curr_fog->position);
+        }
+    } else {
+        edcamMoveEx(pad, delta_time);
+        edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
+        distance.value = edcamGetDist();
+        bits = distance.bits;
+        bits &= 0x7fffffff;
+        distance.bits = bits;
+        camera_step = 1.0f > camscale_factor * distance.value ? 1.0f : camscale_factor * distance.value;
+
+        if (menu_cancelled && pad->digital_buttons)
+            return 0;
+        menu_cancelled = 0;
+        if (ed_just_entered && pad->digital_buttons)
+            return 0;
+        ed_just_entered = 0;
+        if (pad->digital_buttons_pressed & 0x800)
+            return 1;
+
+        if (dragging) {
+            if (!(pad->digital_buttons & ctl[ctl_ix][2])) {
+                dragging = 0;
+            } else {
+                NuVecSub(&dragoff, &burn_editor_position_pc, &dragstart);
+                NuVecAdd(&drag_fog->position, &drag_fog->position, &dragoff);
+                dragstart = burn_editor_position_pc;
+                curr_fog->radius += scale_rate *
+                                    ((i32)(pad->analog_left_pad_right) - (i32)(pad->analog_left_pad_left)) *
+                                    camera_step * delta_time;
+                curr_fog->radius = min_r > curr_fog->radius ? min_r : curr_fog->radius;
+            }
+        } else {
+            curr_fog = FindNearestFog(&burn_editor_position_pc);
+            if (pad->digital_buttons_pressed & ctl[ctl_ix][0]) {
+                curr_fog = fogAlloc();
+                if (curr_fog != NULL) {
+                    curr_fog->type = 1;
+                    curr_fog->position = burn_editor_position_pc;
+                    curr_fog->radius = min_r;
+                    curr_fog->start = 10.0f;
+                    curr_fog->end = 100.0f;
+                    curr_fog->start_psp = 10.0f;
+                    curr_fog->end_psp = 100.0f;
+                    curr_fog->colour = 0x80808080;
+                    curr_fog->low_quality_density = 0;
+                    curr_fog->low_quality_colour = 0;
+                    curr_fog->density = 0.0f;
+                    curr_fog->density_wii = 0.0f;
+                    curr_fog->depth_of_field_fstop = 1;
+                }
+            } else if (curr_fog != NULL) {
+                if (pad->digital_buttons_pressed & ctl[ctl_ix][2]) {
+                    dragging = 1;
+                    dragstart = burn_editor_position_pc;
+                    drag_fog = curr_fog;
+                } else if (pad->digital_buttons_pressed & ctl[ctl_ix][1]) {
+                    fogFree(curr_fog);
+                }
+            }
+            if (pad->digital_buttons_pressed & 0x4000)
+                edrtl_mode = 1;
+            if (pad->digital_buttons_pressed & 0x1000)
+                fogmode = 1 - fogmode;
+        }
+    }
+    return 0;
+}
+
+static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
+    if (edrtl_edit_burnset == NULL) {
+        edrtl_edit_burnset =
+            (BURN_SET_PC *)NuAlloc(sizeof(BURN_SET_PC), "d:\\projects\\game_saga\\gameapi.saga\\rtl\\rtl.c", 5092);
+        edrtlInitBurnset(edrtl_edit_burnset);
+    }
+
+    if (edrtl_active_menu != NULL) {
+        eduiMenuProcess(edrtl_active_menu, delta_time, pad);
+    } else {
+        if (!(pad->digital_buttons & 0x100))
+            edcamMoveEx(pad, delta_time);
+        edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
+
+        if (pad->digital_buttons_pressed & 0x80) {
+            edrtlBurnMainMenu();
+            edrtl_active_menu = edrtl_burn_main_menu;
+        }
+
+        if (pad->digital_buttons & 0x100) {
+            if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
+                if (pad->digital_buttons_pressed & 8) {
+                    do {
+                        edrtl_edit_burnset->selected_index++;
+                        if (edrtl_edit_burnset->selected_index == 32)
+                            edrtl_edit_burnset->selected_index = 0;
+                    } while (!edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].active);
+                }
+                if (pad->digital_buttons_pressed & 2) {
+                    do {
+                        edrtl_edit_burnset->selected_index--;
+                        if (edrtl_edit_burnset->selected_index == -1)
+                            edrtl_edit_burnset->selected_index = 31;
+                    } while (!edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].active);
+                }
+            } else {
+                edrtlDetermineNearestBurn(-1.0f, edrtl_edit_burnset);
+            }
+            if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
+                edcamSetPos(&edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].position);
+                edrtl_edit_burnset->field_558 =
+                    edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_1c;
+                edrtl_edit_burnset->field_55c =
+                    edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].field_20;
+            }
+        }
+
+        edcamGetPosAng(&burn_editor_position_pc, &peax, &peay);
+        if (pad->digital_buttons_pressed & 0x4000)
+            edrtl_mode = 0;
+        if (pad->digital_buttons_pressed & 0x40)
+            edrtlAddBurnout(&burn_editor_position_pc);
+        if ((pad->digital_buttons & 0x20) && edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1)
+            edrtlPlaceBurnout(edrtl_edit_burnset->selected_index, &burn_editor_position_pc);
+        if ((pad->digital_buttons_pressed & 0x10) && edrtl_edit_burnset != NULL &&
+            edrtl_edit_burnset->selected_index != -1)
+            edrtlRemoveBurnout(edrtl_edit_burnset->selected_index);
+    }
+    edrtlDetermineNearestBurn(-1.0f, edrtl_edit_burnset);
+    return (pad->digital_buttons_pressed & 0x800) ? 1 : 0;
+}
+
+static i32 edrtlProc(f32 delta_time, FRAME_PAD_PC *pad) {
+    lockflash -= delta_time;
+    if (lockflash < 0.0f)
+        lockflash += lockflash_rate;
+    if (edrtl_mode == 0)
+        return edrtlProcRTL(delta_time, pad);
+    if (edrtl_mode == 2)
+        return edrtlProcFog(delta_time, pad);
+    if (edrtl_mode == 1)
+        return edrtlProcBurn(delta_time, pad);
+    return 1;
+}
+
+void __cdecl edrtlDrawFog(RTL_FOG_MIGRATION_PC *fog) {
+    if (fog != NULL) {
+        i32 colour = (fog->colour & 0xffffff) | 0x80000000;
+        switch (fog->type) {
+            default:
+                break;
+            case 1:
+                RndrOSphere(&fog->position, fog->radius, colour, numsegs, NULL);
+                break;
+        }
+    }
+}
+
+void __cdecl edrtlDrawFogs(void) {
+    i32 index;
+    for (index = 0; index < 32; ++index)
+        edrtlDrawFog(&RTL_FOG_PC(curr_set)[index]);
+}
+
+void __cdecl edrtlDrawBurnouts(void) {
+    i32 index;
+    if (edrtl_edit_burnset == NULL)
+        return;
+    for (index = 0; index < 32; ++index) {
+        i32 colour;
+        i32 segments;
+        if (edrtl_edit_burnset->selected_index == index) {
+            colour = 0xf0f0f0f0;
+            segments = 48;
+        } else {
+            colour = 0x60606060;
+            segments = 16;
+        }
+        if (edrtl_edit_burnset->burnouts[index].active) {
+            RndrOSphere(&edrtl_edit_burnset->burnouts[index].position, edrtl_edit_burnset->burnouts[index].field_1c,
+                        colour, segments, NULL);
+            if (edrtl_edit_burnset->burnouts[index].field_20 > 0.0f) {
+                RndrOSphere(&edrtl_edit_burnset->burnouts[index].position,
+                            edrtl_edit_burnset->burnouts[index].field_1c + edrtl_edit_burnset->burnouts[index].field_20,
+                            colour, segments, NULL);
+            }
+        }
+    }
+}
+
+static void edrtlRender(void) {
+    NuQFntPushCoordinateSystem(1);
+    NuQFntPushPrintMode(2);
+    if (rtl_near_clip_at_cursor)
+        usr_cam->near_clip = NuVecDist(&burn_editor_position_pc, (NUVEC *)&usr_cam->mtx.m30, NULL) - 1.0f;
+    else
+        usr_cam->near_clip = game_nearclip;
+    usr_cam->far_clip = game_farclip;
+    edcamSet();
+    if (edrtl_mode == 0) {
+        edrtlDrawLights();
+        edrtlDrawCursor();
+        edrtlDrawRTLInfo();
+        if (rtled_menu_active) {
+            NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
+            eduiMenuRender(main_menu);
+        }
+        if (delete_menu_active)
+            eduiMenuRender(delete_menu);
+    } else if (edrtl_mode == 2) {
+        edrtlDrawFogs();
+        edrtlDrawCursor();
+        edrtlDrawFogInfo();
+        if (rtled_menu_active)
+            eduiMenuRender(fog_main_menu);
+    } else if (edrtl_mode == 1) {
+        edrtlDrawCursor();
+        edrtlDrawBurnInfo();
+        edrtlDrawBurnouts();
+        if (edrtl_active_menu)
+            eduiMenuRender(edrtl_active_menu);
+    }
+    NuQFntPopCoordinateSystem();
+    NuQFntPopPrintMode();
+}
+
+static void edrtlClose(void) {
+}
+
+static void edrtlEnter(void) {
+    RTL_EditorActive = 1;
+    ed_just_entered = 1;
+    edmainExtCamera(usr_cam);
+    curr_set = rtlGetEnvSet();
+    RTL_SET_INDEX_PC(curr_set)->enabled = 0;
+    game_nearclip = global_camera.near_clip;
+    game_farclip = global_camera.far_clip;
+    rtl_locked = NULL;
+    rtled_menu_active = 0;
+    delete_menu_active = 0;
+    curr_fog = NULL;
+    curr_rtl = NULL;
+    base_rtl = NULL;
+    if (fogadjfar_item) {
+        ((edui_slider_s *)fogadjfar_item)->range = game_farclip * 2.0f;
+        ((edui_slider_s *)fogadjfar_item)->minimum = game_nearclip;
+        eduiItemSliderSetValEx((edui_slider_s *)fogadjfar_item, game_farclip, 0, 0);
+    }
+    if (fogadjnear_item) {
+        ((edui_slider_s *)fogadjnear_item)->range = game_farclip - ((edui_slider_s *)fogadjnear_item)->minimum;
+        eduiItemSliderSetValEx((edui_slider_s *)fogadjnear_item, game_nearclip, 0, 0);
+    }
+    undo_item->flags |= 2;
+    redo_item->flags |= 2;
+    rtl_undo_cnt = 0;
+    rtl_undo_maxcnt = 0;
+    rtl_undo_ix = 0;
+}
+
+static void edrtlLeave(void) {
+    edmainExtCamera(NULL);
+    RTL_EditorActive = 0;
+}
+
+ed_module_s edrtldesc = {NULL,        NULL,       "Realtime Light Editor",
+                         edrtlInit,   edrtlClose, edrtlEnter,
+                         edrtlLeave,  NULL,       NULL,
+                         NULL,        0x2e6c7472, edrtlProc,
+                         edrtlRender, NULL};
