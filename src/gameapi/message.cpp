@@ -1,22 +1,6 @@
 #include "saga.h"
 
 NETMESSAGE_PC::MessageData NETMESSAGE_PC::sm_poolMessageData[512] = {0};
-void NETMESSAGE_PC::Write16(const i16 *value) {
-    if (data) {
-        PCByteCopy_candidate(data->bytes + write_offset, value, 2);
-        if (swap_endianness)
-            EdFileSwapEndianess16(data->bytes + write_offset);
-        write_offset += 2;
-    }
-}
-void NETMESSAGE_PC::Write32(const i32 *value) {
-    if (data) {
-        PCByteCopy_candidate(data->bytes + write_offset, value, 4);
-        if (swap_endianness)
-            EdFileSwapEndianess32(data->bytes + write_offset);
-        write_offset += 4;
-    }
-}
 
 /* AI script network replication (0x53d140-0x53db50). AINet is abstract: the
  * game derives from it to map AI packets to network ids. No class derives from

@@ -4999,8 +4999,9 @@ address,symbol,size,ctype
 0x00580c00,_Bolt_Debris_Default,149,"void __cdecl (BOLT *, NUVEC *, i32, NUVEC *, i32)"
 0x580ca0,_BoltSys_Init,161,void __cdecl(BOLTSYS_PC*)
 0x580d50,?Write32@NETMESSAGE_PC@@QAEXPBH@Z,59,void __thiscall NETMESSAGE_PC::Write32(const i32 *)
-0x580d90,?Read16@NETMESSAGE_PC@@QAEXAAF@Z,55,identical copy at 0x580e10
+0x580d90,?Read16@NETMESSAGE_PC@@QAEXAAF@Z,55,void __thiscall NETMESSAGE_PC::Read16(i16 &)
 0x580dd0,?Read32@NETMESSAGE_PC@@QAEXAAH@Z,55,
+0x580e10,?Read16@NETMESSAGE_PC@@QAEXAAG@Z,55,void __thiscall NETMESSAGE_PC::Read16(u16 &)
 0x580e50,?Write@NETMESSAGE_PC@@QAEXPBXHH@Z,120,
 0x580ed0,?Read@NETMESSAGE_PC@@QAEXPAXHH@Z,117,
 0x580f50,?Bolt_HitPlatPrivate@@YAHPAUbolt_s@@PAE@Z,445,
@@ -7413,7 +7414,7 @@ address,symbol,size,ctype
 0x612df0,?ReceiveStopMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,69,
 0x612e40,?GetPeerStatus@NetworkObjectManager@@QAEHXZ,177,
 0x612f20,??0?$CSListLink@VNetReplicator@@@@QAE@XZ,20,
-0x613100,?Write16@NETMESSAGE_PC@@QAEXABF@Z,57,
+0x613100,?Write16@NETMESSAGE_PC@@QAEXABF@Z,59,
 0x6131f0,??_EEdInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdInputStream@@UAEPAXI@Z; no independent body
 0x6131f0,??_GEdInputStream@@UAEPAXI@Z,31,
 0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body

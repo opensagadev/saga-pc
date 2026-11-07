@@ -1953,57 +1953,13 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
     u16 bolt_index, object_index;
     NUVEC points[3];
     i32 hit, client;
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&bolt_index, message.data->bytes + message.read_offset, 2);
-        if (message.swap_endianness)
-            EdFileSwapEndianess16(&bolt_index);
-        message.read_offset += 2;
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&object_index, message.data->bytes + message.read_offset, 2);
-        if (message.swap_endianness)
-            EdFileSwapEndianess16(&object_index);
-        message.read_offset += 2;
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&points[0], message.data->bytes + message.read_offset, sizeof(NUVEC));
-        if (message.swap_endianness) {
-            f32 *component = &points[0].x;
-            for (i32 i = 0; i < 3; ++i)
-                EdFileSwapEndianess32(component++);
-        }
-        message.read_offset += sizeof(NUVEC);
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&points[1], message.data->bytes + message.read_offset, sizeof(NUVEC));
-        if (message.swap_endianness) {
-            f32 *component = &points[1].x;
-            for (i32 i = 0; i < 3; ++i)
-                EdFileSwapEndianess32(component++);
-        }
-        message.read_offset += sizeof(NUVEC);
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&points[2], message.data->bytes + message.read_offset, sizeof(NUVEC));
-        if (message.swap_endianness) {
-            f32 *component = &points[2].x;
-            for (i32 i = 0; i < 3; ++i)
-                EdFileSwapEndianess32(component++);
-        }
-        message.read_offset += sizeof(NUVEC);
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&hit, message.data->bytes + message.read_offset, 4);
-        if (message.swap_endianness)
-            EdFileSwapEndianess32(&hit);
-        message.read_offset += 4;
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&client, message.data->bytes + message.read_offset, 4);
-        if (message.swap_endianness)
-            EdFileSwapEndianess32(&client);
-        message.read_offset += 4;
-    }
+    message.Read16(bolt_index);
+    message.Read16(object_index);
+    message.Read(&points[0], 4, 3);
+    message.Read(&points[1], 4, 3);
+    message.Read(&points[2], 4, 3);
+    message.Read32(hit);
+    message.Read32(client);
     BOLT_PC *bolt = &Bolt[bolt_index];
     GAMEOBJECT *object = &Obj[object_index];
     BOLTTYPE_PC *type = bolt->type;
@@ -2276,17 +2232,9 @@ extern "C" i32 __cdecl Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUV
     NETMESSAGE_PC message(0x20);
     message.Write16(&bolt_index);
     message.Write16(&object_index);
-    if (message.data != NULL) {
-        for (i32 i = 0; i < 3; ++i) {
-            PCByteCopy_candidate(message.data->bytes + message.write_offset, &points[i], sizeof(NUVEC));
-            if (message.swap_endianness) {
-                EdFileSwapEndianess32(message.data->bytes + message.write_offset);
-                EdFileSwapEndianess32(message.data->bytes + message.write_offset + 4);
-                EdFileSwapEndianess32(message.data->bytes + message.write_offset + 8);
-            }
-            message.write_offset += sizeof(NUVEC);
-        }
-    }
+    message.Write(&points[0], 4, 3);
+    message.Write(&points[1], 4, 3);
+    message.Write(&points[2], 4, 3);
     message.Write32(&hit);
     message.Write32(&netclient);
     Bolt_HitGameObjectRC(message);
@@ -2340,43 +2288,13 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     BOLT_PC *bolt = static_cast<BOLT_PC *>(storage);
     i16 owner_index;
     NUVEC position;
-    union {
-        NUMTX matrix;
-        u32 words[16];
-    } orientation;
+    NUMTX orientation;
     i32 type_id, hit_flags;
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&owner_index, message.data->bytes + message.read_offset, 2);
-        if (message.swap_endianness)
-            EdFileSwapEndianess16(&owner_index);
-        message.read_offset += 2;
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&position, message.data->bytes + message.read_offset, 12);
-        if (message.swap_endianness)
-            for (i32 i = 0; i < 3; ++i)
-                EdFileSwapEndianess32(&(&position.x)[i]);
-        message.read_offset += 12;
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&orientation, message.data->bytes + message.read_offset, 64);
-        if (message.swap_endianness)
-            for (i32 i = 0; i < 16; ++i)
-                EdFileSwapEndianess32(&orientation.words[i]);
-        message.read_offset += 64;
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&type_id, message.data->bytes + message.read_offset, 4);
-        if (message.swap_endianness)
-            EdFileSwapEndianess32(&type_id);
-        message.read_offset += 4;
-    }
-    if (message.data != NULL) {
-        PCByteCopy_candidate(&hit_flags, message.data->bytes + message.read_offset, 4);
-        if (message.swap_endianness)
-            EdFileSwapEndianess32(&hit_flags);
-        message.read_offset += 4;
-    }
+    message.Read16(owner_index);
+    message.Read(&position, 4, 3);
+    message.Read(&orientation, 4, 16);
+    message.Read32(type_id);
+    message.Read32(hit_flags);
     GAMEOBJECT *owner = owner_index >= 0 ? &Obj[owner_index] : NULL;
     /* BoltType_FindByID(type_id, WORLD), written in place as retail inlines it. */
     BOLTTYPE_PC *type;
@@ -2484,7 +2402,7 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
     bolt->velocity.y = 0.0f;
     bolt->velocity.z = bolt->speed;
     NuMtxSetRotationX(&bolt->effect_orientation, 0x4000);
-    bolt->orientation = orientation.matrix;
+    bolt->orientation = orientation;
     NuVecMtxRotate(&bolt->velocity, &bolt->velocity, &bolt->orientation);
     NuVecAdd(&bolt->velocity, &bolt->velocity, &momentum);
     NuVecNorm(&bolt->direction, &bolt->velocity);
@@ -2577,20 +2495,8 @@ extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *
         i16 owner_index = owner ? (i16)(owner - Obj) : -1;
         NETMESSAGE_PC message(32);
         message.Write16(&owner_index);
-        if (message.data) {
-            u8 *destination = message.data->bytes + message.write_offset;
-            PCByteCopy_candidate(destination, position, 12);
-            if (message.swap_endianness)
-                for (i32 i = 0; i < 3; ++i)
-                    EdFileSwapEndianess32(destination + 4 * i);
-            message.write_offset += 12;
-            destination = message.data->bytes + message.write_offset;
-            PCByteCopy_candidate(destination, matrix, 64);
-            if (message.swap_endianness)
-                for (i32 i = 0; i < 16; ++i)
-                    EdFileSwapEndianess32(destination + 4 * i);
-            message.write_offset += 64;
-        }
+        message.Write(position, 4, 3);
+        message.Write(matrix, 4, 16);
         message.Write32(&type_id);
         message.Write32(&flags);
         Bolt_Init(bolt, message);

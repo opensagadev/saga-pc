@@ -17986,8 +17986,22 @@ struct NETMESSAGE_PC {
         return write_offset - read_offset;
     }
     void MakeUnique();
-    void Write16(const i16 *value);
-    void Write32(const i32 *value);
+    void Write16(const i16 *value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(data->bytes + write_offset, value, 2);
+            if (swap_endianness)
+                EdFileSwapEndianess16(data->bytes + write_offset);
+            write_offset += 2;
+        }
+    }
+    void Write32(const i32 *value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(data->bytes + write_offset, value, 4);
+            if (swap_endianness)
+                EdFileSwapEndianess32(data->bytes + write_offset);
+            write_offset += 4;
+        }
+    }
     void Write8(const u8 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(data->bytes + write_offset, &value, 1);
@@ -18016,8 +18030,49 @@ struct NETMESSAGE_PC {
             write_offset += size;
         }
     }
-    void Write(const void *values, i32 size, i32 count);
-    void Read(void *values, i32 size, i32 count);
+    /* Writes count elements of size bytes, swapping each element's byte order. */
+    void Write(const void *values, i32 size, i32 count) {
+        if (data != NULL) {
+            i32 bytes = size * count;
+            PCByteCopy_candidate(data->bytes + write_offset, values, bytes);
+            if (swap_endianness && size > 1) {
+                u8 *element = data->bytes + write_offset;
+                for (i32 i = 0; i < count; i++) {
+                    switch (size) {
+                        case 2:
+                            EdFileSwapEndianess16(element);
+                            break;
+                        case 4:
+                            EdFileSwapEndianess32(element);
+                            break;
+                    }
+                    element += size;
+                }
+            }
+            write_offset += bytes;
+        }
+    }
+    void Read(void *values, i32 size, i32 count) {
+        if (data != NULL) {
+            i32 bytes = size * count;
+            PCByteCopy_candidate(values, data->bytes + read_offset, bytes);
+            if (swap_endianness && size > 1) {
+                u8 *element = (u8 *)values;
+                for (i32 i = 0; i < count; i++) {
+                    switch (size) {
+                        case 2:
+                            EdFileSwapEndianess16(element);
+                            break;
+                        case 4:
+                            EdFileSwapEndianess32(element);
+                            break;
+                    }
+                    element += size;
+                }
+            }
+            read_offset += bytes;
+        }
+    }
     void Read(void *value, u32 size) {
         if (data != NULL) {
             PCByteCopy_candidate(value, data->bytes + read_offset, size);
@@ -18046,6 +18101,14 @@ struct NETMESSAGE_PC {
         }
     }
     void Read16(i16 &value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(&value, data->bytes + read_offset, 2);
+            if (swap_endianness)
+                EdFileSwapEndianess16(&value);
+            read_offset += 2;
+        }
+    }
+    void Read16(u16 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(&value, data->bytes + read_offset, 2);
             if (swap_endianness)
