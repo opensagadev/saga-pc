@@ -1504,7 +1504,7 @@ extern "C" void __cdecl PanelRender(WORLDINFO *world) {
     DrawPauseFade();
     DrawPanel();
     FadeSys.Update();
-    STUBBED_NAMED("PanelRender: theGameThings->DisplayThings(NULL) (vtable slot 0x28) at 0x0095e438");
+    GameThingManagerPc->DisplayThings(NULL);
     NuRndrEndScene();
     FadeSys.Draw();
     if (WORLD != NULL && WORLD->current_level == TITLES_LDATA) {

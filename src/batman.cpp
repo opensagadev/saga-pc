@@ -163,6 +163,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     FADETYPE fade_type;
     i32 i;
     NUVEC *wind_objects[8];
+    NUPAD_INIT_STATE *pads[2];
+    ThingProcessData packet;
 
     UpdateFrameCounters();
     PortalDoors_Update(world);
@@ -203,7 +205,13 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             }
         }
     }
-    STUBBED_NAMED("NuMainUpdateFrame: theGameThings->ProcessThings(&packet) via 0x0095e438");
+    pads[0] = GamePadStorage[0].pad;
+    pads[1] = GamePadStorage[1].pad;
+    packet.frame_time = FRAMETIME;
+    packet.paused = Paused;
+    packet.pads = pads;
+    packet.pad_count = 2;
+    GameThingManagerPc->ProcessThings(&packet);
     SAGA_SOUND_CHECK("before sound");
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", (void *)WORLD);
     if (NOSOUND == 0) {
@@ -505,7 +513,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         NuWindDraw();
         NuFadeObjDraw();
     }
-    STUBBED_NAMED("NuMainRenderWorld: theGameThings->RenderThings(NULL) via 0x0095e438");
+    GameThingManagerPc->RenderThings(NULL);
     CutScenes_Draw(world);
     NuRndrShadPolys(PermanentShadowMaterialPc);
     NuLgtLaserDraw(paused);

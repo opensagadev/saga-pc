@@ -1553,8 +1553,7 @@ void __cdecl LoadAreaCharacters(void) {
             FadeSys.Draw();
             NuRndrBeginScene(1);
         }
-        STUBBED_NAMED(GameThingsRender); /* Native48bf3a: virtual slot28(this,0),
-                                            genuine global95e438 unresolved. */
+        GameThingManagerPc->DisplayThings(NULL);
         NuRndrEndScene();
         if (AreaDataLoaded != 0 && (f64)LoadWait < (f64)0.1f &&
             (FadeSys.pending_type == FADE_TYPE_NONE || FadeSys.pending_type == FADE_TYPE_STILL)) {

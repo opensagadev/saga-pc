@@ -388,7 +388,7 @@ extern "C" {
         theMemoryManager.size = 0x200;
         memset(theMemoryManager.free_lists, 0, sizeof(theMemoryManager.free_lists));
 
-        STUBBED_NAMED("LoadPermData: CreateThingManager");
+        CreateThingManager();
 
         if (StartupGameFlag0 != 0) {
             STUBBED_NAMED("LoadPermData: startup registration variant (0x46a150)");
@@ -472,7 +472,7 @@ extern "C" {
 
         LoadPerm1();
         LoadPerm2();
-        STUBBED_NAMED("LoadPermData: GameThingManager::AddOnceOnlyThings(0x95e438)");
+        GameThingManagerPc->AddOnceOnlyThings();
         STUBBED_NAMED("LoadPermData: RegisterHelpers");
 
         blocked_keys[0] = 0x3b;
