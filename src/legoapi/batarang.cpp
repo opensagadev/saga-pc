@@ -58,34 +58,32 @@ STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
 
 void __cdecl Batarangs_CheckLostData(void *data) {
     BATARANG_LOST_READER_PC *batarang = (BATARANG_LOST_READER_PC *)BatarangPacketsPc;
-    BATARANG_LOST_READER_PC *end = batarang + 8;
-    do {
+    i32 i, j, k;
+    for (i = 0; i < 8; ++i, ++batarang) {
         if (batarang->owner == data) {
-        reset:
             batarang->in_flight = 0;
             batarang->active = 0;
             batarang->owner = NULL;
             batarang->cooldown = 0x32;
-        } else {
-            BATARANG_LOST_TARGET_PC *target_data = batarang->targets;
-            i32 target;
-            for (target = 0; target < batarang->active; ++target, ++target_data) {
-                i32 move;
-                if (target_data->object != data)
+        } else if (batarang->active > 0) {
+            for (j = 0; j < batarang->active; ++j) {
+                if (batarang->targets[j].object != data)
                     continue;
-                if (batarang->owner == data)
-                    goto reset;
-                if (batarang->in_flight != 0) {
-                    target_data->lost = 1;
-                    continue;
+                if (data == batarang->owner) {
+                    batarang->in_flight = 0;
+                    batarang->active = 0;
+                    batarang->owner = NULL;
+                    batarang->cooldown = 0x32;
+                } else if (batarang->in_flight != 0) {
+                    batarang->targets[j].lost = 1;
+                } else {
+                    for (k = j; k < batarang->active - 1; ++k)
+                        batarang->targets[k] = batarang->targets[k + 1];
+                    --batarang->active;
                 }
-                for (move = target + 1; move < batarang->active; ++move)
-                    batarang->targets[move - 1] = batarang->targets[move];
-                --batarang->active;
             }
         }
-        ++batarang;
-    } while (batarang != end);
+    }
 }
 
 i32 __cdecl BatarangGetObjectFromCharIdPc(i32 character) {

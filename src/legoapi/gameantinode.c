@@ -87,12 +87,14 @@ void *__cdecl GameAntinode_RegisterAntiNode(void *opaque_system, NUVEC *position
                                             f32 extent_z, u16 angle, i32 shape, f32 duration) {
     ANTINODE_SYS_PC *system = (ANTINODE_SYS_PC *)opaque_system;
     ANTINODE_PC *node;
+    f32 size;
     if (system == NULL || system->free == NULL)
         return NULL;
     node = system->free;
-    if (position == NULL)
-        position = &v000;
-    node->position = *position;
+    if (position != NULL)
+        node->position = *position;
+    else
+        node->position = v000;
     node->radius = radius;
     node->extent_x = extent_x;
     node->extent_z = extent_z;
@@ -101,12 +103,19 @@ void *__cdecl GameAntinode_RegisterAntiNode(void *opaque_system, NUVEC *position
     node->shape = (u8)shape;
     node->angle = angle;
     node->remaining_time = duration;
-    if (node->shape == 1)
-        radius = extent_z > extent_x ? extent_z : extent_x;
-    else if (node->shape == 2)
-        radius = NuFsqrt(extent_x * extent_x + extent_z * extent_z);
-    node->radius = radius;
-    GameAntinode_FindGridPosition(system->world, &node->position, radius, radius, &node->grid_min_x, &node->grid_min_z,
+    switch ((u8)shape) {
+        case 1:
+            size = extent_x > extent_z ? extent_x : extent_z;
+            break;
+        case 2:
+            size = NuFsqrt(extent_x * extent_x + extent_z * extent_z);
+            break;
+        default:
+            size = radius;
+            break;
+    }
+    node->radius = size;
+    GameAntinode_FindGridPosition(system->world, &node->position, size, size, &node->grid_min_x, &node->grid_min_z,
                                   &node->grid_max_x, &node->grid_max_z);
     system->free = node->next;
     node->next = system->active;

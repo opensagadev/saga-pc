@@ -10,21 +10,24 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, tag_cooldown) == 0x7c0);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pending_tag_target) == 0x7c8);
 STATIC_ASSERT(sizeof(Player) == 32);
 
+#define TAG_CAN_TARGET(source, target)                                                                                 \
+    ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 &&            \
+     (target) != (source) && (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 &&                          \
+     ((target)->tag_flags & 2) == 0)
+
 i32 __cdecl TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
     i32 index;
     u32 source_active, target_active;
     i32 result;
-    if (target == NULL || (target->flags_1fc_word & 0x1001) != 0x1001 || target == source || target->dead != 0 ||
-        (i8)target->flags_1fc < 0 || (target->tag_flags & 2) != 0) {
+    if (!TAG_CAN_TARGET(source, target)) {
         for (index = 0; index < 8; ++index) {
             target = (GAMEOBJECT *)Player[index];
-            if (target != NULL && (target->flags_1fc_word & 0x1001) == 0x1001 && target != source &&
-                target->dead == 0 && (i8)target->flags_1fc >= 0 && (target->tag_flags & 2) == 0)
-                break;
+            if (TAG_CAN_TARGET(source, target))
+                goto found;
         }
-        if (index == 8)
-            return 0;
+        return 0;
     }
+found:
     source_active = (source->flags_1fc_word >> 7) & 1;
     target_active = (target->flags_1fc_word >> 7) & 1;
     result = TagCode(source, target, 0, 0, mode);

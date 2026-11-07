@@ -300,10 +300,7 @@ void __cdecl SetPanelLights(f32 intensity) {
     f32 scale = (f32)((f64)intensity * 0.5);
     NUVEC colours[3], ambient;
     NUVEC *selected_colours, *selected_ambient;
-    if (scale == 1.0f) {
-        selected_colours = PanelLightingColoursPc;
-        selected_ambient = &PanelLightingAmbientPc;
-    } else {
+    if (scale != 1.0f) {
         colours[0].x = PanelLightingColoursPc[0].x * scale;
         colours[0].y = PanelLightingColoursPc[0].y * scale;
         colours[0].z = PanelLightingColoursPc[0].z * scale;
@@ -318,6 +315,9 @@ void __cdecl SetPanelLights(f32 intensity) {
         ambient.z = PanelLightingAmbientPc.z * scale;
         selected_colours = colours;
         selected_ambient = &ambient;
+    } else {
+        selected_colours = PanelLightingColoursPc;
+        selected_ambient = &PanelLightingAmbientPc;
     }
     ZeroLightSetupPrivatePc(&PanelLightingDirectionsPc[0], &selected_colours[0], &PanelLightingDirectionsPc[1],
                             &selected_colours[1], &PanelLightingDirectionsPc[2], &selected_colours[2]);

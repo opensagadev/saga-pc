@@ -85,19 +85,23 @@ i32 __cdecl FindNextBreak(u8 *text, i32 index) {
         --index;
     return index;
 }
+#define IS_BREAK_POINT(text, index)                                                                                    \
+    (((text)[index] == ' ' && (text)[(index) + 1] != '!' && (text)[(index) + 1] != '?' &&                              \
+      (text)[(index) + 1] != ';' && (text)[(index) + 1] != ':') ||                                                     \
+     ((text)[index] == '.' && (text)[(index) + 1] != '.') || (text)[index] == '-' || (text)[index] == ',')
+
 i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
-    i32 japanese = NuLanguageGet() == 0, ascii_start, length, forward, backward, count = 0, result;
-    u8 ch, next;
-    while ((u8)(text[index] - 0x80) <= 0x3f)
+    i32 japanese = 0, ascii_start, length, forward, backward, count, result;
+    if (NuLanguageGet() == 0)
+        japanese = 1;
+    while (text[index] >= 0x80 && text[index] <= 0xbf)
         --index;
-    ch = text[index];
-    next = text[index + 1];
-    if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
-        ch == '-' || ch == ',')
+    if (IS_BREAK_POINT(text, index))
         return index;
-    ascii_start = ch <= 0x7f;
-    length = NuStrLen((char *)text);
+    ascii_start = text[index] <= 0x7f;
     forward = backward = index;
+    count = 0;
+    length = NuStrLen((char *)text);
     for (;;) {
         ++count;
         if ((japanese && count > 10 && !ascii_start) || count > 20) {
@@ -106,27 +110,21 @@ i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
         }
         if (forward < length - 1)
             ++forward;
-        while ((u8)(text[forward] - 0x80) <= 0x3f)
+        while (text[forward] >= 0x80 && text[forward] <= 0xbf)
             ++forward;
         if (backward > 0)
             --backward;
-        while ((u8)(text[backward] - 0x80) <= 0x3f)
+        while (text[backward] >= 0x80 && text[backward] <= 0xbf)
             --backward;
-        ch = text[forward];
-        next = text[forward + 1];
-        if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
-            ch == '-' || ch == ',')
+        if (IS_BREAK_POINT(text, forward))
             return forward;
-        if (japanese && ((ch <= 0x7f && !ascii_start) || (ch >= 0x80 && ascii_start))) {
+        if (japanese && ((text[forward] <= 0x7f && !ascii_start) || (text[forward] >= 0x80 && ascii_start))) {
             result = forward;
             break;
         }
-        ch = text[backward];
-        next = text[backward + 1];
-        if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
-            ch == '-' || ch == ',')
+        if (IS_BREAK_POINT(text, backward))
             return backward;
-        if (japanese && ((ch <= 0x7f && !ascii_start) || (ch >= 0x80 && ascii_start))) {
+        if (japanese && ((text[backward] <= 0x7f && !ascii_start) || (text[backward] >= 0x80 && ascii_start))) {
             result = backward + 1;
             break;
         }
@@ -134,7 +132,7 @@ i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
     if (text[result] == '~') {
         if (result > 0 && text[result - 1] == '~')
             --result;
-    } else if (result > 1 && text[result - 1] == '~' && text[result - 2] != '~')
+    } else if (result > 0 && text[result - 1] == '~' && result > 1 && text[result - 2] != '~')
         --result;
     return result;
 }

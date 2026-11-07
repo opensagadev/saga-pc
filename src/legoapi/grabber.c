@@ -178,21 +178,20 @@ void __cdecl Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_GRABBER_PC *world = (WORLD_GRABBER_PC *)world_ptr;
     NUSPECIALHANDLE special;
     NUFPAR_PC *parser;
-    GRABBER_PC *grabber;
-    u8 active = 0;
+    u8 active;
     if (VehicleArea != 0 || (world->current_level->flags & 0xe0) != 0 || world->grabber != NULL)
         return;
     if (NuSpecialFind(world->scene, &special, "grabber", 1) == 0)
         return;
-    grabber = (GRABBER_PC *)(((u32)world->giz_buffer + 15) & ~15u);
-    world->grabber = grabber;
-    world->giz_buffer = grabber + 1;
-    GrabCurrentPc = grabber;
-    grabber->special = special;
+    world->grabber = (GRABBER_PC *)(((u32)world->giz_buffer + 15) & ~15u);
+    world->giz_buffer = world->grabber + 1;
+    GrabCurrentPc = world->grabber;
+    GrabCurrentPc->special = special;
     parser = NuFParCreateMem("grabbers", config, 0xffff);
     if (parser == NULL)
         return;
     NuFParPushCom(parser, GrabConfigDataPc.keywords);
+    active = 0;
     while (NuFParGetLine(parser) != 0) {
         if (NuFParGetWord(parser) != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, "grabber_start") == 0) {
