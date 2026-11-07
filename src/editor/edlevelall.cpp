@@ -2878,6 +2878,15 @@ static inline VuVec operator*(const VuVec &a, f32 scale) {
 }
 
 /* VuVec assignment copies the four floats one by one. */
+static inline f32 VuVecLengthSq(const VuVec &v) {
+    return v.x * v.x + v.y * v.y + v.z * v.z;
+}
+
+static inline f32 VuVecLength(const VuVec &v) {
+    f32 length_squared = VuVecLengthSq(v);
+    return NuFsqrt(length_squared);
+}
+
 static inline void VuVecCopy(VuVec &destination, const VuVec &source) {
     destination.x = source.x;
     destination.y = source.y;
@@ -3948,7 +3957,7 @@ void ClassEditor::Serialise(EdStream &stream) {
     if (stream.mode == 1) {
         MemoryBuffer *saved = stream.memory_buffer;
         stream.memory_buffer = stream.secondary_buffer;
-        EdRegistry *source = CreateObject<EdRegistry>(stream.secondary_buffer);
+        EdRegistry *source = ::CreateObject<EdRegistry>(stream.secondary_buffer);
         source->Initialise(*stream.secondary_buffer->position, *stream.secondary_buffer->end, 50, 50, 10, 1);
         source->Serialise(stream);
         stream.memory_buffer = saved;
@@ -4013,6 +4022,282 @@ void ClassEditor::cbEdFilterLED(eduimenu_s *, eduiitem_s *item, u32) {
     theLevelEditor.current_led_file = -1;
     scene->editable = scene->editable + 1;
     item->highlighted = scene->editable;
+}
+
+/* The placeable object types (Android PlaceableHelper): every placeable
+ * helper registers its interface here so tools can walk all placeables. */
+class PlaceableHelper {
+  public:
+    struct ObjectType {
+        char *name;
+        PlaceableInterface *object_interface;
+    };
+
+    i32 object_type_count;
+    i32 iteration_object_type;
+    ObjectType object_types[16];
+
+    __forceinline void *GetNextObject(void *object) {
+        if (object == NULL)
+            iteration_object_type = 0;
+        while (iteration_object_type < object_type_count) {
+            void *next = object_types[iteration_object_type].object_interface->GetNextObject(object);
+            if (next != NULL)
+                return next;
+            iteration_object_type++;
+            object = NULL;
+        }
+        return NULL;
+    }
+};
+STATIC_ASSERT(sizeof(PlaceableHelper) == 0x88);
+
+PlaceableHelper thePlaceableHelper;
+
+void ClassEditor::cbEdClassSetSnap(eduimenu_s *menu, eduiitem_s *item, u32) {
+    theClassEditor.snap_mode = item->data;
+    eduiMenuHighlight(menu, item);
+}
+
+void ClassEditor::SetViewMenuHilight(eduimenu_s *menu) {
+    for (eduiitem_s *item = menu->first; item != NULL; item = item->next) {
+        i32 index = item->data;
+        if ((u32)(index - 3) <= 60)
+            item->highlighted = (theClassEditor.class_filter & 1 << (index - 3)) != 0;
+    }
+}
+
+void ClassEditor::cbEdClassSetView(eduimenu_s *menu, eduiitem_s *item, u32) {
+    i32 index = item->data;
+    switch (index) {
+        case 0:
+            theClassEditor.class_filter = -1;
+            break;
+        case 1:
+            theClassEditor.class_filter = 0;
+            break;
+        case 2:
+            theClassEditor.class_filter = ~theClassEditor.class_filter;
+            break;
+        default:
+            index -= 3;
+            if (index >= 0)
+                theClassEditor.class_filter ^= 1 << index;
+            break;
+    }
+    SetViewMenuHilight(menu);
+}
+
+/* Number keys 1-0 toggle the first ten classes' visibility (with the modifier
+ * held, show only that class); the invert key inverts or resets the filter. */
+void ClassEditor::UpdateClassFilter(EdInputContext &input) {
+    i32 count = theRegistry.class_count;
+    if (count > 10)
+        count = 10;
+    for (i32 index = 0; index < count; index++) {
+        if (input.GetPress(index + 26) != 0.0f) {
+            if (input.GetHold(22) != 0.0f)
+                class_filter = 1 << index;
+            else
+                class_filter ^= 1 << index;
+        }
+    }
+    if (input.GetPress(36) != 0.0f) {
+        if (input.GetHold(22) != 0.0f)
+            class_filter = -1;
+        else
+            class_filter = ~class_filter;
+    }
+}
+
+void ClassEditor::cbDestroyMenu(eduimenu_s *menu, eduimenu_s *) {
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+    if (menu == theClassEditor.menu)
+        theClassEditor.menu = NULL;
+}
+
+/* Removes placeables that share a type, a position within 0.1 and a name
+ * that contains the other's. */
+void ClassEditor::cbEdClassRemoveDuplicates(eduimenu_s *, eduiitem_s *, u32) {
+    Placeable *objects[256];
+    i32 count = 0;
+    for (Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL); object != NULL && count < 256;
+         object = (Placeable *)thePlaceableHelper.GetNextObject(object))
+        objects[count++] = object;
+    for (i32 first = 0; first < count; first++) {
+        Placeable *object = objects[first];
+        if (object == NULL)
+            continue;
+        const char *name = object->GetName();
+        __declspec(align(16)) VuVec first_position;
+        first_position.xyz = object->GetInitialPosition()->xyz;
+        i32 object_type;
+        for (object_type = 0; object_type < thePlaceableHelper.object_type_count; object_type++) {
+            if (thePlaceableHelper.object_types[object_type].object_interface->scene_id == object->scene_id)
+                break;
+        }
+        if (!(VuVecLength(first_position) > 0.1))
+            continue;
+        for (i32 second = first + 1; second < count; second++) {
+            Placeable *other = objects[second];
+            if (other == NULL)
+                continue;
+            const char *other_name = other->GetName();
+            __declspec(align(16)) VuVec second_position;
+            second_position.xyz = other->GetInitialPosition()->xyz;
+            i32 other_type;
+            for (other_type = 0; other_type < thePlaceableHelper.object_type_count; other_type++) {
+                if (thePlaceableHelper.object_types[other_type].object_interface->scene_id == other->scene_id)
+                    break;
+            }
+            if (!(VuVecLength(first_position) > 0.1))
+                continue;
+            if (VuVecLength(first_position - second_position) < 0.1 && object_type == other_type &&
+                (NuStrStr((char *)name, other_name) != NULL || NuStrStr((char *)other_name, name) != NULL)) {
+                thePlaceableHelper.object_types[other_type].object_interface->DestroyObject(other, 0);
+                objects[second] = NULL;
+            }
+        }
+    }
+}
+
+void ClassEditor::cbEdClassToolsMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, NULL);
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdClassRemoveDuplicates, "Remove Duplicates"));
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    eduiMenuAttach(parent, menu);
+}
+
+void ClassEditor::cbEdClassSnapMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, NULL);
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(
+        menu, eduiItemToggleCreate(1, &EdLevelAttr, theClassEditor.snap_mode == 1, 1, cbEdClassSetSnap, "Height"));
+    eduiMenuAddItem(menu,
+                    eduiItemToggleCreate(2, &EdLevelAttr, theClassEditor.snap_mode == 2, 1, cbEdClassSetSnap, "Ray"));
+    eduiMenuAddItem(menu,
+                    eduiItemToggleCreate(0, &EdLevelAttr, theClassEditor.snap_mode == 0, 1, cbEdClassSetSnap, "Off"));
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    eduiMenuAttach(parent, menu);
+}
+
+/* Pinning keeps the menu open when it loses the focus; unpinning closes it. */
+void ClassEditor::cbEdClassSetPinned(eduimenu_s *menu, eduiitem_s *item, u32) {
+    menu->flags ^= 4;
+    item->highlighted = !item->highlighted;
+    if (menu->flags & 4) {
+        eduiMenuDetach(menu);
+        edLevelPinnedMenu = menu;
+    } else {
+        eduiMenuDetach(menu);
+        eduiMenuDestroy(menu);
+        if (menu == edLevelActiveMenu)
+            edLevelActiveMenu = NULL;
+        edLevelPinnedMenu = NULL;
+    }
+}
+
+/* Shows or hides the LED scenes and, per class, the objects in the view. */
+void ClassEditor::cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, NULL);
+    i32 shortcuts[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+    char label[128];
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &EdLevelAttr, 0, 0, cbEdClassSetPinned, "Pinned"));
+    menu->flags &= ~4;
+    for (i32 index = 0; index < 10; index++) {
+        LevelEditorScene *scene = theLevelEditor.GetEdScene(index);
+        if (scene != NULL && scene->active)
+            eduiMenuAddItem(
+                menu, eduiItemToggleCreate(index << 6, &EdLevelAttr, scene->editable, 1, cbEdFilterLED, scene->name));
+    }
+    eduiMenuAddItem(menu, eduiItemSeparatorCreate(0, &EdLevelAttr));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdClassSetView, "All"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdClassSetView, "None"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(2, &EdLevelAttr, 0, 0, cbEdClassSetView, "Invert"));
+    if (theRegistry.class_count > 0) {
+        for (i32 index = 0; index < theRegistry.class_count; index++) {
+            EdClass *ed_class = &theRegistry.classes[index];
+            if (ed_class->flags & 0x20000000)
+                continue;
+            if (index < 10)
+                NuSPrintf(label, "%d %s", shortcuts[index], ed_class->name);
+            else
+                NuSPrintf(label, "   %s", ed_class->name);
+            eduiMenuAddItem(menu, eduiItemCheckCreate(index + 3, &EdLevelAttr,
+                                                      (theClassEditor.class_filter & 1 << index) != 0, 0,
+                                                      cbEdClassSetView, label));
+        }
+    } else {
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "No Registered Classes"));
+    }
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    eduiMenuAttach(parent, menu);
+}
+
+/* Removes the selected objects: each leaves the selection and is destroyed
+ * through the registry. */
+void ClassEditor::DestroySelectedObjectsNow() {
+    ClassObjectListEntry *entry = selected_objects.first;
+    while (entry != NULL) {
+        if (current_object.object == entry->object && current_object.reference == entry->reference) {
+            current_object.ed_class = NULL;
+            current_object.object = NULL;
+        }
+        theRegistry.DestroyObject(entry->ed_class->object_interface, entry->object, 0, 0);
+        selected_objects.Remove(entry);
+        theMemoryManager.FreePool(entry, sizeof(ClassObjectListEntry));
+        entry = selected_objects.first;
+    }
+}
+
+void ClassEditor::cbDestroyObject(eduimenu_s *, eduiitem_s *item, u32) {
+    if (item->data != 0)
+        theClassEditor.DestroySelectedObjectsNow();
+    eduiSetCameraEnabled(1);
+    if (edLevelActiveMenu != NULL) {
+        if (edLevelActiveMenu->parent != NULL)
+            edLevelActiveMenu->parent->child = NULL;
+        if (edLevelActiveMenu->child != NULL)
+            edLevelActiveMenu->child->parent = NULL;
+    }
+    edLevelDestroyActiveMenu = 1;
+}
+
+/* Asks for confirmation in a menu at the cursor before destroying. */
+void ClassEditor::DestroySelectedObjects() {
+    char title[136];
+    f32 x;
+    f32 y;
+    NuStrCpy(title, "Destroy Selected Objects");
+    eduiGetCursorCoords(&x, &y);
+    x *= 640.0;
+    y *= 448.0;
+    eduimenu_s *menu =
+        eduiMenuCreate((i32)x, (i32)y, 300, 50, reinterpret_cast<void *>(EdLevelFnt), cbDestroyMenu, title);
+    if (menu == NULL)
+        return;
+    eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbDestroyObject, "Yes"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbDestroyObject, "No"));
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    edLevelNextMenu = menu;
+}
+
+void ClassEditor::cbEdClassDeleteObject(eduimenu_s *, eduiitem_s *, u32) {
+    theClassEditor.DestroySelectedObjects();
 }
 
 /* Arrow-head shape of the facing arrow DrawObjectSphere draws. */

@@ -9579,6 +9579,8 @@ address,symbol,size,ctype
 0x6b7cf0,??H@YA?AUVuVec@@ABU0@0@Z,29,
 0x6b7d10,??G@YA?AUVuVec@@ABU0@0@Z,29,
 0x6b7d30,??D@YA?AUVuVec@@ABU0@M@Z,29,
+0x6b7d90,?VuVecLengthSq@@YAMABUVuVec@@@Z,33,
+0x6b7dc0,?VuVecLength@@YAMABUVuVec@@@Z,46,
 0x6b8510,_EdDrawSetVertexColour,108,
 0x6b86d0,??1EdFileInputStream@@UAE@XZ,7,
 0x6b86f0,??1EdFileOutputStream@@UAE@XZ,7,
@@ -9634,6 +9636,10 @@ address,symbol,size,ctype
 0x6b9400,?PostLoadInitialisation@ClassEditor@@QAEXPAUMemoryBuffer@@0@Z,80,
 0x6b9450,?PreSaveInitialisation@ClassEditor@@QAEXXZ,58,
 0x6b9490,?PostSaveInitialisation@ClassEditor@@QAEXXZ,58,
+0x6b9520,?cbDestroyMenu@ClassEditor@@SAXPAUeduimenu_s@@0@Z,40,
+0x6b9570,?cbEdClassSetSnap@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,28,
+0x6b9590,?SetViewMenuHilight@ClassEditor@@SAXPAUeduimenu_s@@@Z,62,
+0x6b95d0,?cbEdClassSetView@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,122,
 0x6b9680,?Set@EdInputContext@@QAEXHMM@Z,167,
 0x6b9730,?Clear@EdInputContext@@QAEXH@Z,29,
 0x6b9750,?Get@EdInputContext@@QAEMH@Z,24,
@@ -9792,7 +9798,13 @@ address,symbol,size,ctype
 0x6c24d0,??_GSplineObject@@UAEPAXI@Z,51,
 0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
 0x6c2520,??_GKnotHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c2610,?UpdateClassFilter@ClassEditor@@QAEXAAUEdInputContext@@@Z,222,
+0x6c2930,?cbEdClassRemoveDuplicates@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,760,
+0x6c2c30,?cbEdClassToolsMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,120,
+0x6c2cb0,?cbEdClassSnapMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,225,
 0x6c2da0,?cbEdFilterLED@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,93,
+0x6c2e00,?cbEdClassSetPinned@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,112,
+0x6c2e70,?cbEdClassViewMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,685,
 0x6c3240,?Update@EdInputContext@@QAEXPAUnucamera_s@@PAUFRAME_PAD_PC@@M_N@Z,2104,
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
 0x6c3d70,?cbSelectItem@EdEnumControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,159,
@@ -9871,8 +9883,12 @@ address,symbol,size,ctype
 0x6c94a0,?DrawObjectSphere@ClassEditor@@QAEXAAUClassObject@@H@Z,413,
 0x6c9640,?IsUniqueName@ClassEditor@@QAEHPAD@Z,275,
 0x6c9760,?MakeUniqueName@ClassEditor@@QAEXPBDPADH@Z,215,
+0x6c99a0,?DestroySelectedObjectsNow@ClassEditor@@QAEXXZ,234,
+0x6c9a90,?cbDestroyObject@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,87,
+0x6c9af0,?DestroySelectedObjects@ClassEditor@@QAEXXZ,256,
 0x6c9bf0,?SelectObject@ClassEditor@@QAEHAAUClassObject@@H@Z,505,
 0x6c9df0,?IsSelectedObject@ClassEditor@@QAEHAAUClassObject@@@Z,69,
+0x6ca0a0,?cbEdClassDeleteObject@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,10,
 0x6ca2f0,?GetAveragePosition@ClassObjectList@@QAEHAAUVuVec@@@Z,173,
 0x6caa00,?SelectSubObject@EdControl@@QAEHXZ,182,
 0x6cb250,??0LevelEditor@@QAE@XZ,467,
@@ -18363,6 +18379,7 @@ address,symbol,size,ctype
 0x76b260,??_C@_09NDMGKOLG@No?5Things?$AA@,10,const char[]
 0x76b26c,??_C@_06JIODDOFH@System?$AA@,7,const char[]
 0x76b274,_MenuPcString76b274,4,const char[4]
+0x76b274,??_C@_03GCDBBDDL@Off?$AA@,,const char[4]
 0x0076b290,??_C@_0BB@CBCHIBBA@L1?9PREV?0?5R1?9NEXT?$AA@,,const char[]
 0x0076b2a8,??_C@_0GH@OGBPIOIB@X?$DNADD?0?5TRI?$DNDEL?0L?9UP?$DNLOCK?0O?$DNADJUS@,,const char[]
 0x0076b310,??_C@_0GI@LJIKOPDL@X?$DNADD?0?5TRI?$DNDEL?0L?9UP?$DNLOCK?0O?$DNADJUS@,,const char[]
@@ -19332,6 +19349,13 @@ address,symbol,size,ctype
 0x76f9dc,??_7Placeable@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76fa18,??_C@_07OAEEHIKM@No?5Name?$AA@,8,char []
 0x76fa24,??_7SplineObject@@6B@,,
+0x76fa28,??_C@_03IFHIEGC@Ray?$AA@,4,const char[4]
+0x76fa2c,??_C@_06HCAKHJJK@Height?$AA@,7,const char[7]
+0x76fa34,??_C@_0BG@BMADBJKB@No?5Registered?5Classes?$AA@,22,const char[22]
+0x76fa4c,??_C@_05BCPGHFGO@?5?5?5?$CFs?$AA@,6,const char[6]
+0x76fa54,??_C@_05OPEIBKFE@?$CFd?5?$CFs?$AA@,6,const char[6]
+0x76fa5c,??_C@_06OHLCGMJD@Invert?$AA@,7,const char[7]
+0x76fa64,??_C@_06NMMLHJNA@Pinned?$AA@,7,const char[7]
 0x76fa90,??_C@_0M@PPADLALA@Editor?5List?$AA@,12,char []
 0x76fa9c,??_C@_05JHDNOJGN@NuMtx?$AA@,6,char []
 0x76faa4,??_C@_05KEPHDLCO@NuVec?$AA@,6,char []
@@ -19343,6 +19367,7 @@ address,symbol,size,ctype
 0x76fc54,??_7SplineHelper@@6B@,,
 0x76fd9c,??_C@_0N@MKEDCNLI@Class?5Editor?$AA@,13,char []
 0x76fdac,??_C@_06PCFKBAJ@?$CF?$CF?4?$CFdd?$AA@,7,char []
+0x76fdb4,??_C@_0BJ@BFJEGDMJ@Destroy?5Selected?5Objects?$AA@,25,const char[25]
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x76fe68,??_C@_06LCPJPOPK@SELECT?$AA@,7,char []
 0x76fe70,_PcInputText76fe70,,char[6]
@@ -28754,6 +28779,7 @@ address,symbol,size,ctype
 0x2973af0,?EdType_NuVec@@3HA,,i32
 0x2973af4,?EdType_NuMtx@@3HA,,i32
 0x2973b08,_bezierline_depth,4,i32
+0x2973b20,?thePlaceableHelper@@3VPlaceableHelper@@A,136,PlaceableHelper
 0x2973ba8,?theRegistry@@3UEdRegistry@@A,,EdRegistry
 0x2973c10,?theLevelEditor@@3VLevelEditor@@A,4272,LevelEditor
 0x2974cc0,_bezierdraw_depth,4,i32

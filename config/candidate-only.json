@@ -1460,6 +1460,11 @@
    "unit": "src/gameapi/aiscript.c",
    "symbol": "_AIScriptBufferAllocOrWarn",
    "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "?GetNextObject@PlaceableHelper@@QAEPAXPAX@Z",
+   "kind": "function"
   }
  ]
 }
