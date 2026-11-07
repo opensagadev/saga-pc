@@ -16,6 +16,31 @@ void __cdecl Particles_Stop(WORLDINFO *world) {
     DebFreeAllCreatedEffects();
 }
 
+void __cdecl SetEffectVisibility(char *name, i32 visible) {
+    WORLDINFO *world = WorldInfo_CurrentlyActive();
+    i32 type = LookupDebrisEffectPageOnly(name, (i8)world->page_pp);
+
+    if (type != -1) {
+        if (visible != 0) {
+            DebrisTypeStatusAlwaysOn(type);
+        } else {
+            DebrisTypeStatusAlwaysOff(type);
+        }
+    }
+}
+
+void __cdecl AddCameraRain(WORLDINFO *world, i32 mode) {
+    NUVEC position;
+    if ((world->current_level->flags & 0x4000) != 0) {
+        position = GameCam->position;
+        position.x += GameCam->dir.x * 2.0;
+        position.y += GameCam->dir.y * 2.0;
+        position.z += GameCam->dir.z * 2.0;
+        AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[mode].effect, &position, 0x3c, FRAMETIME, 0,
+                                          0, NULL);
+    }
+}
+
 void __cdecl edppStartPage(i32 page);
 void __cdecl Particles_Start(WORLDINFO *world) {
     if (DEBPAGE_AREA != -1)
