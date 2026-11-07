@@ -51,7 +51,7 @@ static void TrafficAnim_yoffset(NUFPAR_PC *parser) {
     if (parse_trafficanim != NULL)
         parse_trafficanim->y_offset = NuFParGetFloat(parser);
 }
-i32 Traffic_FindVehiclePc(char *name) {
+static i32 Traffic_FindVehiclePc(char *name) {
     i32 i;
     if (name == NULL || parse_worldinfo == NULL || parse_trafficanimsys == NULL)
         return -1;

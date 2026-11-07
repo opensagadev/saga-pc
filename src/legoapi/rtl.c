@@ -111,7 +111,7 @@ static void InsertLight(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, float s
     rtl_error = 1;
 }
 
-f32 ApplyAntilights(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, f32 strength) {
+static f32 ApplyAntilights(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, f32 strength) {
     i32 index;
     f32 anti_strength = 0.0f;
     for (index = 0; index < lighting_data->anti_light_count; ++index) {

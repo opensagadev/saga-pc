@@ -856,7 +856,7 @@ GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
 
 /* Forward declarations for functions used before their retail position. */
 
-i32 __cdecl PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
+static i32 __cdecl PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     NUVEC difference;
     NUVEC direction;
     f32 target_distance;

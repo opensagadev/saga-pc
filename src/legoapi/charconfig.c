@@ -183,10 +183,8 @@ static void CC_layers_special(NUFPAR_PC *parser) {
     u32 *mask = &charconfig.runtime->layer_mask_special;
     i32 count = CC_ReadLayerMask(parser, mask);
     if (count != 0) {
-        charconfig.runtime->layer_mask_dead = *mask;
-        charconfig.runtime->layer_mask_low = *mask;
-        charconfig.runtime->layer_mask_medium = *mask;
-        charconfig.runtime->layer_mask = *mask;
+        charconfig.runtime->layer_mask = charconfig.runtime->layer_mask_medium = charconfig.runtime->layer_mask_low =
+            charconfig.runtime->layer_mask_dead = charconfig.runtime->layer_mask_special;
     }
 }
 
@@ -194,8 +192,7 @@ static void CC_layers_high(NUFPAR_PC *parser) {
     u32 *mask = &charconfig.runtime->layer_mask;
     i32 count = CC_ReadLayerMask(parser, mask);
     if (count != 0) {
-        charconfig.runtime->layer_mask_low = *mask;
-        charconfig.runtime->layer_mask_medium = *mask;
+        charconfig.runtime->layer_mask_medium = charconfig.runtime->layer_mask_low = charconfig.runtime->layer_mask;
     }
 }
 
@@ -203,7 +200,7 @@ static void CC_layers_medium(NUFPAR_PC *parser) {
     u32 *mask = &charconfig.runtime->layer_mask_medium;
     i32 count = CC_ReadLayerMask(parser, mask);
     if (count != 0) {
-        charconfig.runtime->layer_mask_low = *mask;
+        charconfig.runtime->layer_mask_low = charconfig.runtime->layer_mask_medium;
     }
 }
 

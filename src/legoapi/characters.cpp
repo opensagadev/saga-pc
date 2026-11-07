@@ -419,7 +419,7 @@ STATIC_ASSERT(offsetof(NUMTX, translation) == 0x30);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, thingy_locator) == 0x110);
 STATIC_ASSERT(offsetof(GAMEDEBRISENTRY_PC, effect) == 0);
 
-void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
+static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
     CHARACTER_IDLE_STATE_PC *state = (CHARACTER_IDLE_STATE_PC *)object;
     CHARACTERDATA_PC *character = object->character_data;
     i32 alternate = ((CHARACTER_IDLE_POLICY_PC *)character->game_character)->use_standard_idle == 0 &&

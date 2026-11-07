@@ -1839,7 +1839,7 @@ i32 CutSceneUpdateCamerasPc = 1;
 
 extern INSTNUGCUTSCENE *CutSceneLoadingInstancePc;
 
-void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
+static void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {
     i32 i;
     CUT_LOAD_CAMERA_SYSTEM *source_camera = source->camera_system;
     CUT_LOAD_CAMERA_SYSTEM *target_camera = target->camera_system;
