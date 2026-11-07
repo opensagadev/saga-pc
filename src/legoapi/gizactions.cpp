@@ -120,6 +120,57 @@ extern "C" void __cdecl GizActions_EnableSock(GIZFLOW_PC *unused0, FLOWBOX_PC *u
         SockOff(WORLD->sock_sys, index);
 }
 
+extern "C" i32 obstacle_gizmotype_id;
+extern "C" const char GizObstacleActionNamePC[5];
+extern "C" const char GizObstacleActionBackwardPC[9];
+extern "C" const char GizObstacleActionForwardPC[8];
+extern "C" const char GizObstacleActionStayOpenPC[9];
+extern "C" const char GizObstacleActionStayShutPC[9];
+extern "C" const char GizmoSnapOptionNamePc[5];
+
+extern "C" void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i32 count) {
+    char *name = NULL;
+    i32 forwards = 1, snap = 0, stay_open = 0, stay_shut = 0, i;
+    GIZMO_PC *gizmo;
+    GIZOBSTACLE *obstacle;
+    u32 flags;
+    for (i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
+        if (value)
+            name = value + NuStrLen(GizObstacleActionNamePC) + 1;
+        else if (!NuStrICmp(params[i], GizObstacleActionBackwardPC))
+            forwards = 0;
+        else if (!NuStrICmp(params[i], GizObstacleActionForwardPC))
+            forwards = 1;
+        else if (!NuStrICmp(params[i], GizmoSnapOptionNamePc))
+            snap = 1;
+        else if (!NuStrICmp(params[i], GizObstacleActionStayOpenPC))
+            stay_open = 1;
+        else if (!NuStrICmp(params[i], GizObstacleActionStayShutPC))
+            stay_shut = 1;
+    }
+    if (!name)
+        return;
+    gizmo = (GIZMO_PC *)GizmoFindByName(flow->gizmo_sys, obstacle_gizmotype_id, name);
+    obstacle = gizmo ? (GIZOBSTACLE *)gizmo->object : NULL;
+    if (!obstacle)
+        return;
+    if (forwards) {
+        if (snap)
+            GizObstacle_JumpToEnd(obstacle);
+        else
+            GizObstacle_PlayForwards(obstacle);
+    } else if (snap)
+        GizObstacle_JumpToStart(obstacle);
+    else
+        GizObstacle_PlayBackwards(obstacle);
+    flags = obstacle->runtime_flags;
+    flags &= ~0xcu;
+    flags |= (stay_shut & 1) << 3;
+    flags |= (stay_open & 1) << 2;
+    obstacle->runtime_flags = flags;
+}
+
 extern "C" void __cdecl GizActions_PlaySpecialPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
     char *name = NULL;
     i32 forward = 1;

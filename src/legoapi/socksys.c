@@ -693,24 +693,31 @@ SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotatio
 
 f32 SplineLength(NUGSPLINE *spline, i32 closed) {
     i32 segment_count;
+    i32 segment;
+    i32 next;
     f32 length;
+    NUVEC *previous;
+    NUVEC *point;
+    NUVEC difference;
 
-    if (spline == NULL || spline->length < 2) {
+    if (spline == NULL || spline->length < 2)
         return 0.0f;
-    }
-    segment_count = closed == 0 ? spline->length - 1 : spline->length;
+    if (closed != 0)
+        segment_count = spline->length;
+    else
+        segment_count = spline->length - 1;
     length = 0.0f;
-    {
-        i32 segment;
-
-        for (segment = 0; segment < segment_count; ++segment) {
-            i32 next;
-
-            next = segment == spline->length - 1 ? 0 : segment + 1;
-            length += NuVecDist(&spline->pts[segment], &spline->pts[next], NULL);
-        }
+    previous = spline->pts;
+    for (segment = 0; segment < segment_count; ++segment) {
+        if (segment == spline->length - 1)
+            next = 0;
+        else
+            next = segment + 1;
+        point = &spline->pts[next];
+        NuVecSub(&difference, point, previous);
+        length += NuVecMag(&difference);
+        previous = point;
     }
-
     return length;
 }
 

@@ -760,9 +760,9 @@ extern "C" {
         (void)sys;
         (void)packet;
         (void)param_6;
+        i32 sock_index = -1;
+        i32 enabled = 1;
         if (param_5 != 0) {
-            i32 sock_index = -1;
-            i32 enabled = 1;
             for (i32 index = 0; index < param_4; ++index) {
                 char *value = NuStrIStr(params[index], (char *)"ix=");
                 if (value != NULL) {
@@ -776,10 +776,10 @@ extern "C" {
                     enabled = 0;
                 }
             }
-            if (enabled == 0) {
-                SockOff(WORLD->sock_sys, sock_index);
-            } else {
+            if (enabled != 0) {
                 SockOn(WORLD->sock_sys, sock_index);
+            } else {
+                SockOff(WORLD->sock_sys, sock_index);
             }
         }
         return 1;
