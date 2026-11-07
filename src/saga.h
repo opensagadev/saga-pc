@@ -29196,6 +29196,7 @@ struct EdMember;
 class EdRef;
 class EdStream;
 class EdFileOutputStream;
+class EdFileInputStream;
 struct MemoryBuffer;
 
 struct ThingLevelData;
@@ -29815,6 +29816,8 @@ class ClassEditor : public BaseEditor {
     static void cbEdFilterLED(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
     void PreSaveInitialisation();
     void PostSaveInitialisation();
+    void PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
+    void PostLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
 };
 extern ClassEditor theClassEditor;
 
@@ -29877,7 +29880,13 @@ class LevelEditor : public BaseThing {
     LevelEditorScene *GetEdScene(i32 index);
     void Flush();
     i32 WriteStream(EdFileOutputStream &stream);
+    i32 ReadStream(EdFileInputStream &stream);
     i32 Save();
+    void SetSaveFilename(char *name);
+    i32 FindSceneId(char *name);
+    i32 Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, i32 flags);
+    i32 LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *scratch_begin, variptr_u *scratch_end,
+                  variptr_u *file_begin, variptr_u *file_end);
     void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
                       i32 background);
 
@@ -29891,7 +29900,7 @@ class LevelEditor : public BaseThing {
     i32 field_0x38;
     i32 editor_buffer_from_front;
     EdInputContext input;
-    u8 reserved_0x2a0;
+    u8 loading;
     u8 destroying_objects;
     u8 reserved_0x2a2[2];
     i32 editable_scene_count;

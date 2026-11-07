@@ -63,6 +63,17 @@ STATIC_ASSERT(sizeof(EdStream) == 0x20);
 /* A bump allocator over a variptr range; blocks are 16-byte aligned and
  * cleared. */
 struct MemoryBuffer {
+    MemoryBuffer() {
+        position = NULL;
+        end = NULL;
+    }
+    MemoryBuffer(VARIPTR *begin, VARIPTR *finish) {
+        position = begin;
+        end = finish;
+        used = 0;
+        remaining = finish->addr - begin->addr;
+    }
+
     VARIPTR *position;
     VARIPTR *end;
     u32 used;
@@ -131,7 +142,12 @@ class EdFileInputStream : public EdInputStream {
         i32 name_offset;
     };
 
-    EdFileInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary);
+    EdFileInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : EdInputStream(buffer, secondary) {
+        block_count = 0;
+        file = 0;
+        name_length = 0;
+        pending = 0;
+    }
     virtual ~EdFileInputStream() {
     }
     virtual i32 Eat(i32 size, i32 count);
@@ -257,13 +273,6 @@ i32 EdInputStream::SerialiseString(char **text) {
 
 EdInputStream::EdInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : EdStream(buffer, secondary) {
     mode = 1;
-}
-
-EdFileInputStream::EdFileInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : EdInputStream(buffer, secondary) {
-    block_count = 0;
-    file = 0;
-    name_length = 0;
-    pending = 0;
 }
 
 i32 EdFileInputStream::Eat(i32 size, i32 count) {
@@ -784,6 +793,144 @@ i32 LevelEditor::Save() {
     return saved_any;
 }
 
+char *EdLevelFileExtension = ".led";
+
+void LevelEditor::SetSaveFilename(char *name) {
+    if (name != NULL) {
+        NuStrCpy(save_filename, name);
+        NuStrCpy(editor_filename, save_filename);
+        char *extension = NuStrRChr(editor_filename, '.');
+        if (extension != NULL)
+            *extension = 0;
+        NuStrCat(editor_filename, EdLevelFileExtension);
+    } else {
+        save_filename[0] = 0;
+        editor_filename[0] = 0;
+    }
+}
+
+i32 LevelEditor::FindSceneId(char *name) {
+    for (i32 i = 0; i < 10; i++) {
+        if (NuStrICmp(scenes[i].name, name) == 0)
+            return i;
+    }
+    return -1;
+}
+
+/* Reads FileInfo, Settings and every editor block that names a registered
+ * editor; unknown editor blocks are skipped. */
+i32 LevelEditor::ReadStream(EdFileInputStream &stream) {
+    if (stream.BeginBlock("FileInfo")) {
+        stream.SerialiseBuffer(&file_version, sizeof(file_version), 1);
+        stream.EndBlock();
+    }
+    if (stream.BeginBlock("Settings")) {
+        stream.SerialiseBuffer(&settings.cursor_radius, sizeof(settings.cursor_radius), 1);
+        stream.SerialiseBuffer(&settings.snap_terrain, sizeof(settings.snap_terrain), 1);
+        stream.EndBlock();
+    }
+    if (stream.BeginBlock("Editors")) {
+        i32 count;
+        stream.SerialiseBuffer(&count, sizeof(count), 1);
+        for (i32 index = 0; index < count; index++) {
+            char const *name = stream.BeginBlock(NULL);
+            for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next) {
+                if (NuStrICmp(editor->GetName(), name) == 0) {
+                    editor->Serialise(stream);
+                    break;
+                }
+            }
+            stream.EndBlock();
+        }
+        stream.EndBlock();
+    }
+    return 1;
+}
+
+/* Loads <name>.led into the scene of the same name: objects go to buffer,
+ * the file image and scratch data to the editor buffer. Returns the scene
+ * index, or -1. */
+i32 LevelEditor::Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, i32 flags) {
+    MemoryBuffer source(buffer, buffer_end);
+    MemoryBuffer scratch;
+    i32 result = -1;
+    if (editor_buffer_from_front == 0) {
+        editor_buffer_end = *buffer_end;
+        editor_buffer_begin.addr = buffer_end->addr - 0x20000;
+    }
+    char *basename = NuStrRChr(filename, '/') + 1;
+    i32 basename_length = NuStrLen(basename);
+    char scene_name[32];
+    char directory[128];
+    NuStrNCpy(scene_name, basename, basename_length - 3);
+    NuStrNCpy(directory, filename, NuStrLen(filename) - basename_length);
+    Placeable::CurrentLedFile = (i16)FindSceneId(scene_name);
+    if (Placeable::CurrentLedFile != -1)
+        NuStrCpy(scenes[Placeable::CurrentLedFile].directory, directory);
+    current_led_file = Placeable::CurrentLedFile;
+    editor_buffer_cursor = editor_buffer_begin;
+    scratch = MemoryBuffer(&editor_buffer_cursor, &editor_buffer_end);
+    SetSaveFilename(filename);
+    if (!multi_load_active)
+        theClassEditor.PreLoadInitialisation(&source, &scratch);
+    void *file_data = scratch.position->void_ptr;
+    i32 file_size = NuFileLoadBuffer(save_filename, file_data, scratch.remaining);
+    if (file_size > 0) {
+        if ((u32)file_size < scratch.end->addr - scratch.position->addr) {
+            scratch.position->addr += file_size;
+            scratch.used += file_size;
+            scratch.remaining -= file_size;
+        }
+        NUFILE file = NuMemFileOpen(file_data, file_size, 0);
+        if (file) {
+            EdFileInputStream stream(&source, &scratch);
+            if (flags)
+                stream.flags = 0x200000;
+            stream.Open(file, 4);
+            i32 loaded = ReadStream(stream);
+            stream.file = 0;
+            NuFileClose(file);
+            if (loaded) {
+                scenes[Placeable::CurrentLedFile].editable = 1;
+                result = Placeable::CurrentLedFile;
+                Placeable::CurrentLedFile = -1;
+            } else {
+                result = -1;
+            }
+        }
+    } else {
+        EdMessage(save_filename);
+    }
+    if (!multi_load_active)
+        theClassEditor.PostLoadInitialisation(&source, &scratch);
+    return result;
+}
+
+/* Loads a .led image already in memory (file_begin..file_end). */
+i32 LevelEditor::LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *scratch_begin, variptr_u *scratch_end,
+                           variptr_u *file_begin, variptr_u *file_end) {
+    i32 result;
+    loading = 1;
+    MemoryBuffer source;
+    MemoryBuffer scratch(scratch_begin, scratch_end);
+    result = 0;
+    if (!multi_load_active)
+        theClassEditor.PreLoadInitialisation(&source, &scratch);
+    NUFILE file = NuMemFileOpen(file_begin->void_ptr, file_end->addr - file_begin->addr, 0);
+    if (file) {
+        EdFileInputStream stream(&source, &scratch);
+        stream.Open(file, 4);
+        stream.flags = 0x400000;
+        result = ReadStream(stream);
+        stream.file = 0;
+        NuFileClose(file);
+    }
+    if (!multi_load_active)
+        theClassEditor.PostLoadInitialisation(&source, &scratch);
+    loading = 0;
+    return result;
+}
+
 void LevelEditor::Flush() {
     for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next)
         editor->Flush();
@@ -1232,6 +1379,24 @@ void ClassEditor::PostSaveInitialisation() {
         EdClass *object_class = &theRegistry.classes[i];
         if (object_class->object_interface != NULL)
             object_class->object_interface->PostSaveInitialisation();
+    }
+}
+
+void ClassEditor::PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second) {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        EdClass *object_class = &theRegistry.classes[i];
+        if (object_class->object_interface != NULL)
+            object_class->object_interface->PreLoadInitialisation(first, second);
+    }
+}
+
+void ClassEditor::PostLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second) {
+    i32 i;
+    for (i = 0; i < theRegistry.class_count; i++) {
+        EdClass *object_class = &theRegistry.classes[i];
+        if (object_class->object_interface != NULL)
+            object_class->object_interface->PostLoadInitialisation(first, second);
     }
 }
 

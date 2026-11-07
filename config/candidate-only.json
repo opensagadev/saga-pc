@@ -1465,6 +1465,16 @@
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "??0EdStream@@QAE@PAUMemoryBuffer@@0@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??0MemoryBuffer@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??0MemoryBuffer@@QAE@PATvariptr_u@@0@Z",
+   "kind": "function"
   }
  ]
 }

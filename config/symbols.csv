@@ -9506,6 +9506,8 @@ address,symbol,size,ctype
 0x6b92a0,?Flush@ClassEditor@@UAEXXZ,59,
 0x6b92e0,?Enter@ClassEditor@@UAEXXZ,59,
 0x6b9320,?Exit@ClassEditor@@UAEXXZ,59,
+0x6b93b0,?PreLoadInitialisation@ClassEditor@@QAEXPAUMemoryBuffer@@0@Z,80,
+0x6b9400,?PostLoadInitialisation@ClassEditor@@QAEXPAUMemoryBuffer@@0@Z,80,
 0x6b9450,?PreSaveInitialisation@ClassEditor@@QAEXXZ,58,
 0x6b9490,?PostSaveInitialisation@ClassEditor@@QAEXXZ,58,
 0x6b9680,?Set@EdInputContext@@QAEXHMM@Z,167,
@@ -9542,6 +9544,8 @@ address,symbol,size,ctype
 0x6bc410,?edGetPadDisabled@@YAHXZ,6,
 0x6bc420,??1LevelEditor@@UAE@XZ,15,
 0x6bc430,?SetPadText@LevelEditor@@QAEXHPAD@Z,51,
+0x6bc5c0,?SetSaveFilename@LevelEditor@@QAEXPAD@Z,94,
+0x6bc700,?FindSceneId@LevelEditor@@QAEHPAD@Z,61,
 0x6bc7a0,?GetScene@LevelEditor@@QAEPAUNUGSCN_s@@H@Z,30,
 0x6bc7c0,?GetEdScene@LevelEditor@@QAEPAULevelEditorScene@@H@Z,30,
 0x6bc860,?cbEdLevelDestroy@@YAXPAUeduimenu_s@@0@Z,87,
@@ -9695,6 +9699,7 @@ address,symbol,size,ctype
 0x6cb430,?GetName@LevelEditor@@UAEPBDXZ,6,
 0x6cb440,??_ELevelEditor@@UAEPAXI@Z,,COFF weak alias of ??_GLevelEditor@@UAEPAXI@Z; no independent body
 0x6cb440,??_GLevelEditor@@UAEPAXI@Z,40,
+0x6cb6f0,?ReadStream@LevelEditor@@QAEHAAVEdFileInputStream@@@Z,298,
 0x6cb820,?WriteStream@LevelEditor@@QAEHAAVEdFileOutputStream@@@Z,243,
 0x6cb920,?cbEdLevelEditorList@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,21,
 0x6cce60,??0PropertyTool@@QAE@XZ,109,
@@ -9718,6 +9723,8 @@ address,symbol,size,ctype
 0x6cf970,?AddMenuItem@EdControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,90,
 0x6cf9d0,?AddMenuItem@EdEnumControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,174,
 0x6cfa80,?AddMenuItem@EdBitControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,294,
+0x6cfe80,?Load@LevelEditor@@QAEHPADPATvariptr_u@@1H@Z,619,
+0x6d00f0,?LoadState@LevelEditor@@QAEHPATvariptr_u@@00000@Z,333,
 0x6d0240,?Save@LevelEditor@@QAEHXZ,411,
 0x6d05e0,?cbEdLevelSave@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,436,
 0x6d07a0,?cbEdLevelSettingsMenu@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,137,
@@ -19043,6 +19050,7 @@ address,symbol,size,ctype
 0x76f630,__real@beb0c6f7a0b5ed8d,,
 0x76f638,__real@3eb0c6f7a0b5ed8d,,
 0x76f640,__real@3bc79ca10c924223,,
+0x76f648,??_C@_04HJFBHGFE@?4led?$AA@,5,char []
 0x76f660,_MenuPcString76f660,3,const char[3]
 0x76f668,??_7EdTool@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f680,??_7BaseEditor@@6B@,,native exactVT binding; unimplemented extent unclaimed
@@ -24162,6 +24170,7 @@ address,symbol,size,ctype
 0x81f8d0,_FROMdB2_LOOKUP,,
 0x81f99c,_EdLevelFntScale,4,i32
 0x81f9a0,_EdLevelAttr,16,struct eduiiattr_s
+0x81f9b0,?EdLevelFileExtension@@3PADA,4,char *
 0x81f9b4,?Scale@EdManipulator@@2MA,4,f32
 0x81f9e8,?menu_startmetrics@@3UPropertyMenuMetrics@@A,16,PropertyMenuMetrics
 0x81fa04,?KnotHelperRadius@@3MA,4,f32
