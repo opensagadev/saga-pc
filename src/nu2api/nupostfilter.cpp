@@ -664,3 +664,80 @@ void NuMotionFilterGen::render() {
     color->resolved = false;
     PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
 }
+
+extern "C" {
+    extern POST_SHADER_PROGRAM_PC *PostCopyTexProgramPc;
+    extern PC_FRAMEBUFFER_PC *PostCopyFramebufferPc;
+    f32 NuSpeedBlurDepthScalePc = 100000.0f;
+}
+
+extern "C" void __cdecl PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination, i32 destination_level,
+                                                GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_level,
+                                                POST_SHADER_PROGRAM_PC *program, GRAPHICS_RENDER_TEXTURE_PC *extra) {
+    i32 height, width;
+    PCGraphicsEffectTextureDimensions(destination, destination_level, &width, &height);
+    PCGraphicsAttachFramebuffer(PostCopyFramebufferPc, 0, destination, destination_level);
+    PCGraphicsBindFramebuffer(PostCopyFramebufferPc);
+    PCGraphicsSubmitViewportPc(0, 0, width, height);
+    PostShaderProgramBindPc(program);
+    PCGraphicsEffectTextureSetFilterFields(source, 2, 2, 1);
+    PCGraphicsEffectTextureSetLowNibbles(source, source_level, source_level);
+    POST_FILTER_BIND_TEXTURE(0, source);
+    if (extra != NULL)
+        POST_FILTER_BIND_TEXTURE(1, extra);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    PCGraphicsDrawPostEffectQuadPc();
+    PCGraphicsFramebufferBarrierPc(0, 1);
+}
+
+void NuSpeedBlurFilterGen::render() {
+    PC_FRAMEBUFFER_PC *output =
+        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+    PC_POST_BUFFER_PROXY_PC *color =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+    PC_POST_BUFFER_PROXY_PC *depth =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data;
+    if (!color->resolved) {
+        PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
+        color->resolved = true;
+    }
+    if (!depth->resolved) {
+        PCGraphicsFramebufferBarrierPc(depth->kind, depth->enabled);
+        depth->resolved = true;
+    }
+    __declspec(align(16)) f32 values[8];
+    values[0] = 0.0f;
+    values[1] = parameters->scale * NuSpeedBlurDepthScalePc;
+    computeSpeedBlur((NUVEC4 *)(values + 4));
+    GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *depth_texture = depth->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    if (texture != NULL)
+        PostFilterCopyTexturePc(texture, 0, color_texture, 0, PostCopyTexProgramPc, NULL);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[0]);
+    PCDeviceSetVertexShaderConstantsF(0x80, values, 2);
+    PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 1);
+    PCGraphicsEffectTextureSetLowNibbles(color_texture, 0, 2);
+    PCGraphicsEffectTextureSetWrapFields(color_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(0, color_texture);
+    PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 1);
+    PCGraphicsEffectTextureSetWrapFields(depth_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(4, depth_texture);
+    POST_FILTER_BIND_TEXTURE(9, texture != NULL ? texture : color_texture);
+    PCGraphicsBindFramebuffer(output);
+    PCGraphicsDrawPostEffectIndexedPc();
+    color->texture = destination;
+    color->kind = 0;
+    color->enabled = true;
+    color->resolved = false;
+    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+}

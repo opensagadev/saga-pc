@@ -28510,6 +28510,10 @@ extern "C" {
     void __cdecl PCGraphicsDrawPostEffectIndexedPc(void);
     void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *,
                                        i32);
+    void __cdecl PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
+                                         POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
+    void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32,
+                                         POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *);
     void __cdecl PCDevicePostEffectBarrierPc(void);
     void __cdecl NuRndrEndFrameActionPc(void);
     void __cdecl NuPostEffectEnd(void);

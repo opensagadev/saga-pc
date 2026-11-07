@@ -990,6 +990,23 @@ void NuMainFilter::RenderBloomPc() {
     PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
 }
 
+/* Same unit as ??_GNuMainFilter: the atexit thunks for its static surfaces expand the inline destructor. */
+extern "C" void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *destination, i32 destination_level,
+                                                GRAPHICS_RENDER_TEXTURE_PC *source, i32 source_level,
+                                                POST_SHADER_PROGRAM_PC *program, GRAPHICS_RENDER_TEXTURE_PC *extra) {
+    if (program == PostCopyTexProgramPc) {
+        static PC_EFFECT_SURFACE_PC source_surface;
+        static PC_EFFECT_SURFACE_PC destination_surface;
+        source_surface.Attach(source, source_level, false);
+        destination_surface.Attach(destination, destination_level, false);
+        bool scaled =
+            destination_surface.width != source_surface.width || destination_surface.height != source_surface.height;
+        PCDeviceStretchRectPc(source_surface.surface, NULL, destination_surface.surface, NULL, scaled ? 2 : 0);
+        return;
+    }
+    PostFilterBlitTexturePc(destination, destination_level, source, source_level, program, extra);
+}
+
 extern "C" f32 NuSpeedBlurVertexScalePc;
 f32 NuSpeedBlurVertexScalePc = 40000.0f;
 void NuSpeedBlurFilter::render() {
