@@ -2943,6 +2943,7 @@ address,symbol,size,ctype
 0x500210,_instNuGCutSceneIsFinished,17,i32 __cdecl (INSTNUGCUTSCENE *)
 0x500390,_instNuGCutScenePause,31,"void __cdecl (INSTNUGCUTSCENE *, i32)"
 0x5003b0,_instNuGCutSceneEndButNotSystems,77,void __cdecl(INSTNUGCUTSCENE *)
+0x5004e0,_instNuGCutSceneFindActivePc,58,
 0x500570,_CutSceneClipTestPc,142,
 0x500600,_CutSceneSwapStreamAssetPc,549,
 0x500830,_CutSceneCopyStreamAnimationsPc,359,
@@ -3004,7 +3005,7 @@ address,symbol,size,ctype
 0x504100,_CutScriptParseBlockPc,2565,
 0x504b10,_CutScriptReadPc,107,
 0x504b80,_CutScriptLoadPc,149,
-0x504c20,_CutScriptSetAppCommandFnPc,10,
+0x504c20,_CutScriptSetAppCommandsPc,10,
 0x504c30,_CutTriggerClearPendingPc,11,
 0x504c40,_CutTriggerClearListsPc,13,
 0x504c50,_CutTriggerActivatePendingPc,55,
@@ -3018,10 +3019,10 @@ address,symbol,size,ctype
 0x5054a0,_CutTriggerSetTestPc,210,
 0x505580,_CutTriggerSysNullPc,1,
 0x505590,_CutTriggerSetFlagPc,105,
-0x505600,_CutTriggerResetStatePc,77,
+0x505600,_CutTriggerEnablePc,77,
 0x505650,_CutTriggerIsPulledPc,82,
 0x5056b0,_CutTriggerPullPc,81,
-0x505710,_CutTriggerEnablePc,108,
+0x505710,_CutTriggerResetPc,108,
 0x505780,_CutSceneFixPtrsPc,154,
 0x505820,_NuGCutSceneLoad,608,"void *__cdecl(char *,VARIPTR *,VARIPTR *,i32)"
 0x505b20,_NuGCutSceneDestroy,26,void __cdecl(void *)
@@ -3032,6 +3033,7 @@ address,symbol,size,ctype
 0x505e10,_instNuGCutSceneStop,56,void __cdecl (INSTNUGCUTSCENE *)
 0x505e50,_instNuGCutSceneReset,208,void __cdecl instNuGCutSceneReset(INSTNUGCUTSCENE *)
 0x505f20,_instNuGCutSceneStart,270,void __cdecl instNuGCutSceneStart(INSTNUGCUTSCENE *)
+0x506030,_instNuGCutScenePlayPc,175,
 0x5060e0,_instNuGCutSceneEnd,251,void __cdecl(INSTNUGCUTSCENE *)
 0x5061e0,_instNuGCutSceneEndFirstFrame,221,void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *)
 0x005062c0,_CutSceneJumpToEndPc,194,
@@ -3045,6 +3047,12 @@ address,symbol,size,ctype
 0x506710,_CutSceneStreamSkipPc,362,
 0x506880,_CutSceneCameraSysUpdatePc,1463,
 0x506e40,_CutSceneLocatorLookAtUpdatePc,1266,
+0x507340,_RelocateCutScene,67,
+0x507390,_CutScriptExecutePc,956,
+0x507750,_CutScriptRunPc,182,
+0x507810,_CutTriggerFirePc,155,
+0x5078b0,_CutTriggerUpdatePc,420,
+0x507a60,_CutTriggerHitPc,410,
 0x507c00,_instNuGCutSceneDestroy,79,void __cdecl(INSTNUGCUTSCENE *)
 0x507c50,_instNuGCutLocatorUpdate,303,"void __cdecl(INSTNUGCUTSCENE *,CUT_LOAD_LOCATOR_SYSTEM *,CUT_LOAD_LOCATOR_INSTANCE *,CUT_LOAD_LOCATOR *,f32,NUMTX *,i32)"
 0x507d80,_CutSceneRigidSysUpdatePc,404,
@@ -15699,6 +15707,8 @@ address,symbol,size,ctype
 0x75ee68,__real@bfceb851e0000000,8,const f64
 0x75ee70,__real@3e75c28f,4,const f32
 0x75ee78,__real@3fceb851e0000000,8,const f64
+0x75ee80,??_C@_02IPNHJBLG@Fn?$AA@,3,
+0x75ee84,??_C@_08HPLJANEH@reset_?$CFs?$AA@,9,
 0x75ee90,_TextInputGlyphBBPc,3,const char[3]
 0x75ee94,_TextInputGlyphB9Pc,3,const char[3]
 0x75ee98,_TextInputGlyphBAPc,3,const char[3]
@@ -25497,7 +25507,7 @@ address,symbol,size,ctype
 0x9213ec,_CutSceneDebrisAxisSizePc,,f32
 0x9213f0,_CutSceneDebrisProcessModePc,,i32
 0x9213f4,_DefragCutSceneListSize,,i32
-0x9213f8,_CutScriptAppCommandFnPc,,"void (__cdecl *)(char *,char *)"
+0x9213f8,_CutScriptAppCommandsPc,,CUT_APP_COMMAND_PC *
 0x921400,_dme_b,,u8
 0x921401,_dme_r,,u8
 0x921402,_dme_g,,u8

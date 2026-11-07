@@ -2420,3 +2420,51 @@ void __cdecl instNuGCutSceneServiceLoad(void) {
         ((CUT_INSTANCE_LOAD_PC *)CutSceneLoadingInstancePc)->flags_8c & ~0x80U;
     CutSceneLoadingInstancePc = NULL;
 }
+
+INSTNUGCUTSCENE *__cdecl instNuGCutSceneFindActivePc(char *name) {
+    INSTNUGCUTSCENE *instance;
+    for (instance = active_cutscene_instances; instance != NULL; instance = instance->next)
+        if (NuStrICmp(name, instance->name) == 0)
+            return instance;
+    CutSceneMissingObjectDiagnosticPc(name);
+    return NULL;
+}
+
+void __cdecl instNuGCutScenePlayPc(INSTNUGCUTSCENE *owner, i32 forward) {
+    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
+    if ((instance->flags_88 & 2) != 0) {
+        if (forward != 0) {
+            if (instance->rate < 0.0f)
+                instance->rate = -instance->rate;
+        } else if (instance->rate > 0.0f) {
+            instance->rate = -instance->rate;
+        }
+    } else if ((instance->flags_88 & 0x1000) != 0) {
+        if (forward == 0) {
+            instance->flags_88 = (instance->flags_88 & ~0x1000) | 2;
+            instance->current_frame = (f32)(instance->scene->duration - 1.0);
+            if (instance->rate > 0.0f)
+                instance->rate = -instance->rate;
+        }
+    } else if (forward != 0) {
+        if (instance->rate < 0.0f)
+            instance->rate = -instance->rate;
+        instNuGCutSceneStart(owner);
+    }
+}
+
+CUT_SCENE_LOAD_PC *__cdecl RelocateCutScene(CUT_SCENE_LOAD_PC *source, VARIPTR *buffer) {
+    CUT_SCENE_LOAD_PC *scene;
+    i32 delta;
+    buffer->addr = (buffer->addr + 3) & ~3;
+    scene = (CUT_SCENE_LOAD_PC *)buffer->void_ptr;
+    delta = (i32)scene - (i32)source;
+    if (delta != 0) {
+        source->string_delta = delta;
+        source->relocation_delta = delta;
+        PCByteCopy_candidate(scene, source, source->loaded_size);
+        CutSceneFixPtrsPc(scene, delta, 1);
+    }
+    buffer->addr += scene->loaded_size;
+    return scene;
+}

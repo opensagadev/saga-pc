@@ -775,7 +775,7 @@ STATIC_ASSERT(offsetof(CUT_TRIGGER_CYLINDER_PC, radius) == 0x10);
 typedef struct cut_trigger_entry_pc_s {
     char *name;
     i32 kind;
-    u16 unknown_08;
+    i16 threshold;
     u8 initial_state, unknown_0b;
     u8 flags, unknown_0d[3];
     f32 radius;
@@ -793,7 +793,7 @@ typedef struct cut_trigger_file_pc_s {
     CUT_TRIGGER_ENTRY_PC *entries;
 } CUT_TRIGGER_FILE_PC;
 typedef struct cut_trigger_state_pc_s {
-    u16 unknown_00;
+    i16 count;
     u8 state, pulled;
 } CUT_TRIGGER_STATE_PC;
 STATIC_ASSERT(sizeof(CUT_TRIGGER_STATE_PC) == 4);
@@ -811,8 +811,8 @@ struct cut_trigger_set_pc_s {
     CUT_TRIGGER_FILE_PC *file;
     CUT_TRIGGER_STATE_PC *states;
     NUGSCN *scene;
-    void *owner;
-    u8 unknown_18[0x20];
+    CUT_SCRIPT_PC *scripts;
+    i8 params[32];
     u32 flags;
 };
 STATIC_ASSERT(offsetof(CUT_TRIGGER_SET_PC, flags) == 0x38);
@@ -822,11 +822,17 @@ STATIC_ASSERT(sizeof(CUT_TRIGGER_SET_PC) == 0x3c);
 __declspec(allocate(".bss$CutTriggerSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerSetListPc = NULL;
 #pragma section(".bss$CutTriggerPendingSetListPc", read, write)
 __declspec(allocate(".bss$CutTriggerPendingSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerPendingSetListPc = NULL;
-#pragma section(".bss$CutScriptAppCommandFnPc", read, write)
-__declspec(allocate(".bss$CutScriptAppCommandFnPc")) void(__cdecl *CutScriptAppCommandFnPc)(char *, char *) = NULL;
+typedef struct cut_app_command_pc_s {
+    char *name;
+    void(__cdecl *fn)(char *);
+} CUT_APP_COMMAND_PC;
+STATIC_ASSERT(sizeof(CUT_APP_COMMAND_PC) == 8);
 
-void __cdecl CutScriptSetAppCommandFnPc(void(__cdecl *fn)(char *, char *)) {
-    CutScriptAppCommandFnPc = fn;
+#pragma section(".bss$CutScriptAppCommandsPc", read, write)
+__declspec(allocate(".bss$CutScriptAppCommandsPc")) CUT_APP_COMMAND_PC *CutScriptAppCommandsPc = NULL;
+
+void __cdecl CutScriptSetAppCommandsPc(CUT_APP_COMMAND_PC *commands) {
+    CutScriptAppCommandsPc = commands;
 }
 
 void __cdecl CutTriggerClearPendingPc(void) {
@@ -858,13 +864,13 @@ void __cdecl CutTriggerActivatePendingPc(void) {
     }
 }
 
-CUT_TRIGGER_SET_PC *__cdecl CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUGSCN *scene, void *owner,
+CUT_TRIGGER_SET_PC *__cdecl CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUGSCN *scene, CUT_SCRIPT_PC *scripts,
                                                   VARIPTR *buffer, VARIPTR *end, i32 pending) {
     CUT_TRIGGER_SET_PC *set = NULL;
     CUT_TRIGGER_SET_PC *list;
     i32 i;
     (void)end;
-    if (file != NULL && scene != NULL && owner != NULL) {
+    if (file != NULL && scene != NULL && scripts != NULL) {
         buffer->addr = (buffer->addr + 0xf) & ~0xfU;
         set = (CUT_TRIGGER_SET_PC *)buffer->void_ptr;
         buffer->addr += sizeof(CUT_TRIGGER_SET_PC);
@@ -885,7 +891,7 @@ CUT_TRIGGER_SET_PC *__cdecl CutTriggerSetCreatePc(CUT_TRIGGER_FILE_PC *file, NUG
         }
         set->scene = scene;
         set->file = file;
-        set->owner = owner;
+        set->scripts = scripts;
         set->states = (CUT_TRIGGER_STATE_PC *)buffer->void_ptr;
         buffer->addr += file->count * sizeof(CUT_TRIGGER_STATE_PC);
         memset(set->states, 0, file->count * sizeof(CUT_TRIGGER_STATE_PC));
@@ -964,7 +970,7 @@ void __cdecl CutTriggerSetFlagPc(CUT_TRIGGER_SET_PC *set, char *name, i32 flag, 
     }
 }
 
-void __cdecl CutTriggerResetStatePc(CUT_TRIGGER_SET_PC *set, char *name) {
+void __cdecl CutTriggerEnablePc(CUT_TRIGGER_SET_PC *set, char *name) {
     CUT_TRIGGER_FILE_PC *file = set->file;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -996,7 +1002,7 @@ void __cdecl CutTriggerPullPc(CUT_TRIGGER_SET_PC *set, char *name) {
     }
 }
 
-void __cdecl CutTriggerEnablePc(CUT_TRIGGER_SET_PC *set, char *name) {
+void __cdecl CutTriggerResetPc(CUT_TRIGGER_SET_PC *set, char *name) {
     CUT_TRIGGER_FILE_PC *file;
     i32 i;
     if (set == NULL)
@@ -1170,6 +1176,302 @@ i32 __cdecl CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos,
                 }
                 if (hit != 0)
                     return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+#define CUT_SCRIPT_DIAG0() ((void(__cdecl *)(void))CutSceneMissingObjectDiagnosticPc)()
+#define CUT_SCRIPT_DIAG2(a, b) ((void(__cdecl *)(i32, i32))CutSceneMissingObjectDiagnosticPc)((i32)(a), (i32)(b))
+
+void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
+    INSTNUGCUTSCENE *instance;
+    INSTNUGCUTSCENE *chain;
+    NUSPECIALHANDLE special;
+    CUT_APP_COMMAND_PC *command;
+    i32 count;
+    i32 done;
+    for (; node != NULL; node = node->next) {
+        done = 0;
+        switch (node->type) {
+            case 0:
+                instance = instNuGCutSceneFindActivePc(node->a.name);
+                if (instance != NULL) {
+                    instNuGCutSceneStart(instance);
+                    done = 1;
+                }
+                CutSceneMissingObjectDiagnosticPc(node->a.name);
+                break;
+            case 1:
+                instance = instNuGCutSceneFindActivePc(node->a.name);
+                if (instance != NULL) {
+                    instNuGCutScenePlayPc(instance, node->b.value);
+                    done = 1;
+                }
+                if (node->b.value != 0)
+                    CutSceneMissingObjectDiagnosticPc(node->a.name);
+                else
+                    CutSceneMissingObjectDiagnosticPc(node->a.name);
+                break;
+            case 2:
+                instance = instNuGCutSceneFindActivePc(node->a.name);
+                chain = instNuGCutSceneFindActivePc(node->b.name);
+                if (instance != NULL && chain != NULL) {
+                    if (instance->scene == NULL)
+                        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+                    instance->chained_instance = chain;
+                    done = 1;
+                }
+                CUT_SCRIPT_DIAG2(node->a.name, node->b.name);
+                break;
+            case 3:
+                instance = instNuGCutSceneFindActivePc(node->a.name);
+                if (instance != NULL) {
+                    count = node->b.value;
+                    if (count > 31) {
+                        ((void(__cdecl *)(i32))CutSceneMissingObjectDiagnosticPc)(count);
+                        count = 31;
+                    }
+                    instance->flags_88 ^= ((u32)(count << 13) ^ instance->flags_88) & 0x3e000;
+                    done = 1;
+                }
+                CUT_SCRIPT_DIAG2(node->a.name, node->b.value);
+                break;
+            case 4:
+                instance = instNuGCutSceneFindActivePc(node->a.name);
+                if (instance != NULL) {
+                    instNuGCutSceneReset(instance);
+                    done = 1;
+                }
+                CutSceneMissingObjectDiagnosticPc(node->a.name);
+                break;
+            case 5:
+                if (set != NULL) {
+                    CutTriggerSetFlagPc(set, node->b.name, (i8)node->a.bytes[0], (i8)node->a.bytes[1]);
+                    done = 1;
+                }
+                if (node->a.bytes[1] != 0)
+                    CUT_SCRIPT_DIAG2((i8)node->a.bytes[0], node->b.name);
+                else
+                    CUT_SCRIPT_DIAG2((i8)node->a.bytes[0], node->b.name);
+                break;
+            case 6:
+                if (set == NULL) {
+                    CutSceneMissingObjectDiagnosticPc(node->a.name);
+                    break;
+                }
+                CutTriggerResetPc(set, node->a.name);
+                done = 1;
+                CutSceneMissingObjectDiagnosticPc(node->a.name);
+                break;
+            case 7:
+                if (scene != NULL && NuSpecialFind(scene, &special, node->b.name, 1) != 0) {
+                    if (node->a.bytes[0] != 0)
+                        ((NULEGACYSPECIAL *)special.special)->instance->visible |= 1;
+                    else
+                        ((NULEGACYSPECIAL *)special.special)->instance->visible &= ~1;
+                    done = 1;
+                }
+                CutSceneMissingObjectDiagnosticPc(node->b.name);
+                break;
+            case 8:
+                if (node->a.param < 32 && set->params[node->a.param] == node->b.value) {
+                    CUT_SCRIPT_DIAG2(node->a.param, node->b.value);
+                    CutScriptExecutePc(node->c, scene, set);
+                } else {
+                    CUT_SCRIPT_DIAG2(node->a.param, node->b.value);
+                    CutScriptExecutePc(node->d, scene, set);
+                }
+                break;
+            case 9:
+                if (node->a.param < 32) {
+                    set->params[node->a.param] = (i8)node->b.value;
+                    done = 1;
+                }
+                CUT_SCRIPT_DIAG2(node->a.param, node->b.value);
+                break;
+            case 10:
+                if (CutTriggerIsPulledPc(set, node->a.name) != 0) {
+                    CutSceneMissingObjectDiagnosticPc(node->a.name);
+                    CutScriptExecutePc(node->b.block, scene, set);
+                } else {
+                    CutSceneMissingObjectDiagnosticPc(node->a.name);
+                    CutScriptExecutePc(node->c, scene, set);
+                }
+                break;
+            case 11:
+                CutTriggerEnablePc(set, node->a.name);
+                CutSceneMissingObjectDiagnosticPc(node->a.name);
+                continue;
+            case 12:
+                instance = instNuGCutSceneFindActivePc(node->a.name);
+                if (instance != NULL) {
+                    instance->flags_88 |= 4;
+                    done = 1;
+                }
+                CutSceneMissingObjectDiagnosticPc(node->a.name);
+                break;
+            case 13:
+                instance = instNuGCutSceneFindActivePc(node->a.name);
+                if (instance != NULL) {
+                    instance->flags_88 &= ~4;
+                    done = 1;
+                }
+                CutSceneMissingObjectDiagnosticPc(node->a.name);
+                break;
+            case 14:
+                command = CutScriptAppCommandsPc;
+                CutSceneMissingObjectDiagnosticPc(command->name);
+                for (; command != NULL && command->name != NULL; ++command) {
+                    if (NuStrICmp(node->a.name, command->name) == 0) {
+                        if (command->fn != NULL) {
+                            command->fn(node->b.name);
+                            done = 1;
+                        }
+                        break;
+                    }
+                }
+                if (done)
+                    continue;
+                break;
+        }
+        if (done == 0)
+            CUT_SCRIPT_DIAG0();
+    }
+}
+
+i32 __cdecl CutScriptRunPc(CUT_SCRIPT_PC *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
+    CUT_APP_COMMAND_PC *command = CutScriptAppCommandsPc;
+    if (NuStrNICmp(name, "Fn", 2) == 0) {
+        for (; command != NULL && command->name != NULL; ++command) {
+            if (NuStrICmp(name + 2, command->name) == 0) {
+                CutSceneMissingObjectDiagnosticPc(name);
+                if (command->fn != NULL)
+                    command->fn(NULL);
+                return 0;
+            }
+        }
+    } else {
+        for (; scripts != NULL; scripts = scripts->next) {
+            if (NuStrICmp(scripts->name, name) == 0) {
+                CutSceneMissingObjectDiagnosticPc(name);
+                CutScriptExecutePc(scripts->nodes, scene, set);
+                return 0;
+            }
+        }
+        CutSceneMissingObjectDiagnosticPc(name);
+    }
+    return 0;
+}
+
+void __cdecl CutTriggerFirePc(CUT_TRIGGER_SET_PC *set, CUT_TRIGGER_ENTRY_PC *entry, CUT_TRIGGER_STATE_PC *state,
+                              i32 on) {
+    char name[32];
+    if (on != 0) {
+        CUT_SCRIPT_DIAG2(entry->name, entry->name);
+        state->pulled |= 1;
+        CutScriptRunPc(set->scripts, entry->name, set->scene, set);
+    } else {
+        sprintf(name, "reset_%s", entry->name);
+        CUT_SCRIPT_DIAG2(entry->name, name);
+        state->pulled &= ~1;
+        CutScriptRunPc(set->scripts, name, set->scene, set);
+    }
+}
+
+void __cdecl CutTriggerUpdatePc(NUVEC *pos, f32 radius, i32 include_hidden) {
+    CUT_TRIGGER_SET_PC *set;
+    CUT_TRIGGER_FILE_PC *file;
+    NUGSCN *gscene;
+    CUT_TRIGGER_ENTRY_PC *entry;
+    CUT_TRIGGER_STATE_PC *state;
+    CUT_TRIGGER_SCENE_INSTANCE_PC *instance;
+    i32 inside;
+    i32 i;
+    for (set = CutTriggerSetListPc; set != NULL; set = set->next) {
+        file = set->file;
+        gscene = set->scene;
+        if ((set->flags & 1) != 0)
+            continue;
+        for (i = 0; i < file->count; ++i) {
+            entry = &file->entries[i];
+            state = &set->states[i];
+            inside = 0;
+            if (state->state == 0xff && ((state->pulled & 1) == 0 || (entry->flags & 4) != 0)) {
+                switch (entry->kind) {
+                    case 0:
+                        inside = 1;
+                        break;
+                    case 1:
+                        if ((entry->flags & 8) != 0 && include_hidden == 0 && (state->pulled & 1) == 0)
+                            break;
+                        if (entry->scene_instance >= 0) {
+                            instance = &((CUT_TRIGGER_SCENE_INSTANCE_PC *)gscene->instances)[entry->scene_instance];
+                            if ((instance->flags & 1) == 0)
+                                break;
+                            if (instance->animated_matrix != NULL)
+                                inside = CutTriggerEntryTestMtxPc(entry, instance->animated_matrix, pos, radius);
+                            else
+                                inside = CutTriggerEntryTestMtxPc(entry, &instance->matrix, pos, radius);
+                        } else {
+                            inside = CutTriggerEntryTestPc(entry, pos, radius);
+                        }
+                        break;
+                }
+            }
+            if (inside != 0) {
+                if ((state->pulled & 1) == 0)
+                    CutTriggerFirePc(set, entry, state, 1);
+            } else if ((state->pulled & 1) != 0 && (entry->flags & 4) != 0) {
+                CutTriggerFirePc(set, entry, state, 0);
+            }
+        }
+    }
+}
+
+#define CUT_TRIGGER_HIT_PC(set, entry, state, amount)                                                                  \
+    {                                                                                                                  \
+        (state)->count += (amount);                                                                                    \
+        if ((state)->count >= (entry)->threshold)                                                                      \
+            CutTriggerFirePc((set), (entry), (state), 1);                                                              \
+        return 1;                                                                                                      \
+    }
+
+i32 __cdecl CutTriggerHitPc(NUVEC *pos, f32 radius, i16 amount) {
+    CUT_TRIGGER_SET_PC *set;
+    CUT_TRIGGER_FILE_PC *file;
+    NUGSCN *gscene;
+    CUT_TRIGGER_ENTRY_PC *entry;
+    CUT_TRIGGER_STATE_PC *state;
+    CUT_TRIGGER_SCENE_INSTANCE_PC *instance;
+    i32 i;
+    for (set = CutTriggerSetListPc; set != NULL; set = set->next) {
+        file = set->file;
+        gscene = set->scene;
+        if ((set->flags & 1) != 0)
+            continue;
+        for (i = 0; i < file->count; ++i) {
+            entry = &file->entries[i];
+            state = &set->states[i];
+            if ((state->pulled & 1) != 0 || state->state != 0xff)
+                continue;
+            switch (entry->kind) {
+                case 2:
+                    if (entry->scene_instance >= 0) {
+                        instance = &((CUT_TRIGGER_SCENE_INSTANCE_PC *)gscene->instances)[entry->scene_instance];
+                        if ((instance->flags & 1) == 0)
+                            break;
+                        if (instance->animated_matrix != NULL) {
+                            if (CutTriggerEntryTestMtxPc(entry, instance->animated_matrix, pos, radius) != 0)
+                                CUT_TRIGGER_HIT_PC(set, entry, state, amount);
+                        } else if (CutTriggerEntryTestMtxPc(entry, &instance->matrix, pos, radius) != 0) {
+                            CUT_TRIGGER_HIT_PC(set, entry, state, amount);
+                        }
+                    } else if (CutTriggerEntryTestPc(entry, pos, radius) != 0) {
+                        CUT_TRIGGER_HIT_PC(set, entry, state, amount);
+                    }
+                    break;
             }
         }
     }
