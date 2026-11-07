@@ -2222,29 +2222,23 @@ extern "C" i32 __cdecl Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUV
             point.y = 0.0f;
         }
         if (SphereSphereOverlapScaleY(&center, object->bounds_radius, object->bounds_half_height, &point, radius,
-                                      radius))
-            break;
+                                      radius)) {
+            u16 bolt_index = static_cast<u16>(bolt - Bolt);
+            u16 object_index = static_cast<u16>(object - Obj);
+            NETMESSAGE_PC message(0x20);
+            message.Write16(bolt_index);
+            message.Write16(object_index);
+            message.Write(&points[0], 4, 3);
+            message.Write(&points[1], 4, 3);
+            message.Write(&points[2], 4, 3);
+            message.Write32(hit);
+            message.Write32(netclient);
+            Bolt_HitGameObjectRC(message);
+            message.Release();
+            return 1;
+        }
     }
-    if (hit < 0)
-        return 0;
-    u16 bolt_index = static_cast<u16>(bolt - Bolt);
-    u16 object_index = static_cast<u16>(object - Obj);
-    NETMESSAGE_PC message(0x20);
-    message.Write16(bolt_index);
-    message.Write16(object_index);
-    message.Write(&points[0], 4, 3);
-    message.Write(&points[1], 4, 3);
-    message.Write(&points[2], 4, 3);
-    message.Write32(hit);
-    message.Write32(netclient);
-    Bolt_HitGameObjectRC(message);
-    if (message.data != NULL) {
-        if (message.data->references > 1)
-            --message.data->references;
-        else
-            message.data->references = 0;
-    }
-    return 1;
+    return 0;
 }
 
 extern "C" i32 __cdecl Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
@@ -2488,19 +2482,20 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
 
 extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
     BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
-    if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)))
-        return NULL;
-    BOLT_PC *bolt = Bolt_Alloc();
-    if (bolt != NULL) {
-        u16 owner_index = owner ? (u16)(owner - Obj) : 0xffff;
-        NETMESSAGE_PC message(32);
-        message.Write16(owner_index);
-        message.Write(position, 4, 3);
-        message.Write(matrix, 4, 16);
-        message.Write32(type_id);
-        message.Write32(flags);
-        Bolt_Init(bolt, message);
-        message.Release();
+    BOLT_PC *bolt = NULL;
+    if (type != NULL && NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68))) {
+        bolt = Bolt_Alloc();
+        if (bolt != NULL) {
+            u16 owner_index = owner ? (u16)(owner - Obj) : 0xffff;
+            NETMESSAGE_PC message(32);
+            message.Write16(owner_index);
+            message.Write(position, 4, 3);
+            message.Write(matrix, 4, 16);
+            message.Write32(type_id);
+            message.Write32(flags);
+            Bolt_Init(bolt, message);
+            message.Release();
+        }
     }
     return bolt;
 }
