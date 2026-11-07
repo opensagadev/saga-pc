@@ -5083,10 +5083,7 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
         return axis != 0;
     for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
         ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
-        position.x = 0.0f;
-        position.y = 0.0f;
-        position.z = 0.0f;
-        position.w = 1.0f;
+        VuVecSetOrigin(position);
         object->GetAttributeData(8, EdType_VuVec, &position, 0);
         switch (axis) {
             case 1:
@@ -5095,9 +5092,10 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
                 f32 amount = delta.x * first.x + delta.y * first.y + delta.z * first.z;
                 if (amount == 0.0f)
                     continue;
-                position.x += first.x * amount;
-                position.y += first.y * amount;
-                position.z += first.z * amount;
+                __declspec(align(16)) VuVec offset = first * amount;
+                position.x += offset.x;
+                position.y += offset.y;
+                position.z += offset.z;
                 break;
             }
             case 4:
@@ -5106,16 +5104,18 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
                 i32 moved = 0;
                 f32 amount = delta.x * first.x + delta.y * first.y + delta.z * first.z;
                 if (amount != 0.0f) {
-                    position.x += first.x * amount;
-                    position.y += first.y * amount;
-                    position.z += first.z * amount;
+                    __declspec(align(16)) VuVec offset = first * amount;
+                    position.x += offset.x;
+                    position.y += offset.y;
+                    position.z += offset.z;
                     moved = 1;
                 }
                 amount = delta.x * second.x + delta.y * second.y + delta.z * second.z;
                 if (amount != 0.0f) {
-                    position.x += second.x * amount;
-                    position.y += second.y * amount;
-                    position.z += second.z * amount;
+                    __declspec(align(16)) VuVec offset = second * amount;
+                    position.x += offset.x;
+                    position.y += offset.y;
+                    position.z += offset.z;
                 } else if (!moved) {
                     continue;
                 }
