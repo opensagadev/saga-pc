@@ -2392,13 +2392,14 @@ void __cdecl AISysGetCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object, AI
     nearest_distance_squared = 3.402823466e+38f;
 
     previous_flags = packet->path_info.flags_word;
-    packet->path_info.flags_word = (previous_flags & (u8) ~(1 | 2 | 8)) | ((previous_flags & 1) << 1);
+    packet->path_info.flags_word = (previous_flags & ~(1 | 2 | 8)) | ((previous_flags & 1) << 1);
 
     if (system == NULL || system->path_sys == NULL || system->path_sys->path_count == 0) {
+        packet->path_info.on_path = 0;
         AISysCharacterSetPath(packet, NULL);
         packet->path_info.connection = NULL;
-        packet->current_route = 0xff;
         packet->next_route = 0;
+        packet->current_route = 0xff;
         return;
     }
 
@@ -3844,11 +3845,8 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
     AIPATH_PC *path;
     AIPATHCNX_PC *destination_connection;
     f32 parameter;
-    f32 remaining_parameter;
-    f32 destination_parameter;
     f32 destination_a;
     f32 destination_b;
-    f32 length;
     AIPATHNODE_PC *node;
     f32 best_distance;
     i32 direction;
@@ -3856,7 +3854,7 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
     f32 candidate;
     f32 partial_distance_2;
     f32 candidate_2;
-    u8 end_node;
+    i32 end_node;
     AIPATHNODE_PC *node_2;
     i32 start;
     i32 index;
@@ -3877,19 +3875,20 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
     destination_connection = packet->fallback_path_info.connection;
     if (connection == destination_connection) {
         AISysCharacterSetPathCnx(packet, &object->position, connection,
-                                 packet->fallback_path_info.distance > packet->path_info.distance);
+                                 packet->path_info.distance < packet->fallback_path_info.distance);
     } else {
+        best_distance = 0.0f;
+        direction = 0;
         parameter = packet->path_info.distance;
         if (parameter > 1.0f) {
             parameter = 1.0f;
         } else if (parameter < 0.0f) {
             parameter = 0.0f;
         }
-        remaining_parameter = 1.0f - parameter;
-        destination_parameter = packet->fallback_path_info.distance;
-        destination_a = AIPathFabs(destination_parameter * destination_connection->distance);
-        destination_b = AIPathFabs((1.0f - destination_parameter) * destination_connection->distance);
-        length = connection->distance;
+        partial_distance = AIPathFabs(parameter * connection->distance);
+        partial_distance_2 = AIPathFabs((1.0f - parameter) * connection->distance);
+        destination_a = AIPathFabs(destination_connection->distance * packet->fallback_path_info.distance);
+        destination_b = AIPathFabs((1.0f - packet->fallback_path_info.distance) * destination_connection->distance);
         if (packet->current_route != 0xff &&
             (((u64)1 << packet->current_route) & (destination_connection->route_mask)) == 0) {
             node = &path->nodes[destination_connection->node_indices[0]];
@@ -3902,13 +3901,10 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
             }
         }
 
-        best_distance = 0.0f;
-        direction = 0;
-        if ((connection->traversal_flags[1] & 0x40000000u) == 0) {
-            partial_distance = AIPathFabs(parameter * length);
+        if ((packet->path_info.connection->traversal_flags[1] & 0x40000000u) == 0) {
             candidate =
-                AIPathNodeDistanceToPathNode(path, connection->node_indices[0], destination_connection->node_indices[0],
-                                             packet->current_route, 0) +
+                AIPathNodeDistanceToPathNode(path, packet->path_info.connection->node_indices[0],
+                                             destination_connection->node_indices[0], packet->current_route, 0) +
                 partial_distance + destination_a;
             if (candidate > best_distance) {
                 best_distance = candidate;
@@ -3922,13 +3918,11 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
                 best_distance = candidate;
                 direction = 1;
             }
-            connection = packet->path_info.connection;
         }
-        if ((connection->traversal_flags[0] & 0x40000000u) == 0) {
-            partial_distance_2 = AIPathFabs(length * remaining_parameter);
-            candidate_2 = AIPathNodeDistanceToPathNode(packet->path_info.path, connection->node_indices[1],
-                                                       packet->fallback_path_info.connection->node_indices[0],
-                                                       packet->current_route, 0) +
+        if ((packet->path_info.connection->traversal_flags[0] & 0x40000000u) == 0) {
+            candidate_2 = AIPathNodeDistanceToPathNode(
+                              packet->path_info.path, packet->path_info.connection->node_indices[1],
+                              packet->fallback_path_info.connection->node_indices[0], packet->current_route, 0) +
                           partial_distance_2 + destination_a;
             if (candidate_2 > best_distance) {
                 best_distance = candidate_2;
@@ -3941,9 +3935,8 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
             if (candidate_2 > best_distance) {
                 direction = 0;
             }
-            connection = packet->path_info.connection;
         }
-        AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+        AISysCharacterSetPathCnx(packet, &object->position, packet->path_info.connection, direction);
     }
 
     connection = packet->path_info.connection;
@@ -3971,6 +3964,7 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
     }
     if (packet->movement_target == NULL) {
         old_direction = packet->path_info.direction;
+        connection = packet->path_info.connection;
         end_node = connection->node_indices[old_direction];
         node_3 = &path->nodes[end_node];
         for (index_2 = 0; index_2 < node_3->connection_count; ++index_2) {
@@ -3986,47 +3980,47 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET_PC *packet, 
             packet->movement_target = NULL;
         }
     }
-    if (packet->movement_target == NULL) {
-        packet->movement_destination = packet->goal_path_node->position;
-        packet->movement_stopping_distance = 0.0f;
-        return;
-    }
-    if (WithinConnection(system, &packet->terrain_origin, packet->path_info.path, packet->movement_target, checks,
-                         connection, packet->current_route, object->object_id, NULL, object->collision_radius,
-                         0) != 0) {
-        AISysCharacterSetPathCnx(packet, &object->position, packet->movement_target,
-                                 packet->movement_target->node_indices[0] != end_node);
-        packet->goal_path_node =
-            &path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        packet->movement_destination = packet->goal_path_node->position;
-        packet->movement_target = NULL;
-        packet->movement_stopping_distance = 0.0f;
-        return;
-    }
-
-    packet->movement_destination =
-        packet->path_info.path->nodes[packet->movement_target->node_indices[packet->movement_target_direction == 0]]
-            .position;
-    packet->movement_stopping_distance = 0.0f;
-    if (CalculateIntersection(system, packet, object, packet->path_info.connection, packet->movement_target) == 0) {
-        return;
-    }
-    if ((packet->flags & 0x00000040u) != 0) {
-        NuVecSub(&difference, &packet->left_diversion, &object->position);
-        angle = NuAtan2D(difference.x, difference.z);
-        NuVecSub(&difference, &packet->movement_destination, &object->position);
-        if (NuAngSub(NuAtan2D(difference.x, difference.z), angle) < 0) {
-            packet->movement_destination = packet->left_diversion;
+    if (packet->movement_target != NULL) {
+        if (WithinConnection(system, &packet->terrain_origin, packet->path_info.path, packet->movement_target, checks,
+                             connection, packet->current_route, object->object_id, NULL, object->collision_radius,
+                             0) != 0) {
+            AISysCharacterSetPathCnx(packet, &object->position, packet->movement_target,
+                                     packet->movement_target->node_indices[0] != end_node);
+            packet->goal_path_node =
+                &path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            packet->movement_destination = packet->goal_path_node->position;
+            packet->movement_target = NULL;
+            packet->movement_stopping_distance = 0.0f;
             return;
         }
-    }
-    if ((packet->flags & 0x00000020u) != 0) {
-        NuVecSub(&difference, &packet->right_diversion, &object->position);
-        angle_2 = NuAtan2D(difference.x, difference.z);
-        NuVecSub(&difference, &packet->movement_destination, &object->position);
-        if (NuAngSub(NuAtan2D(difference.x, difference.z), angle_2) > 0) {
-            packet->movement_destination = packet->right_diversion;
+
+        packet->movement_destination =
+            packet->path_info.path->nodes[packet->movement_target->node_indices[packet->movement_target_direction == 0]]
+                .position;
+        packet->movement_stopping_distance = 0.0f;
+        if (CalculateIntersection(system, packet, object, packet->path_info.connection, packet->movement_target) == 0) {
+            return;
         }
+        if ((packet->flags & 0x00000040u) != 0) {
+            NuVecSub(&difference, &packet->left_diversion, &object->position);
+            angle = NuAtan2D(difference.x, difference.z);
+            NuVecSub(&difference, &packet->movement_destination, &object->position);
+            if (NuAngSub(NuAtan2D(difference.x, difference.z), angle) < 0) {
+                packet->movement_destination = packet->left_diversion;
+                return;
+            }
+        }
+        if ((packet->flags & 0x00000020u) != 0) {
+            NuVecSub(&difference, &packet->right_diversion, &object->position);
+            angle_2 = NuAtan2D(difference.x, difference.z);
+            NuVecSub(&difference, &packet->movement_destination, &object->position);
+            if (NuAngSub(NuAtan2D(difference.x, difference.z), angle_2) > 0) {
+                packet->movement_destination = packet->right_diversion;
+            }
+        }
+    } else {
+        packet->movement_destination = packet->goal_path_node->position;
+        packet->movement_stopping_distance = 0.0f;
     }
 }
 void AIRetreatFromDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
