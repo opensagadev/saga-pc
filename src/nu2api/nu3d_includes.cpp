@@ -1,11 +1,14 @@
 // nu3d translation unit (retail 0x5c0200-0x608000), being rebuilt one module at a time.
 // Retail compiled nu3d as one C++ unit and emitted it in bottom-up call-graph passes, so module
 // functions interleave in the EXE; definitions here follow retail address order.
-// Modules merged so far: nuanim (with the PC procedural joint overrides).
+// Modules merged so far: nuanim (with the PC procedural joint overrides), nuqfnt, nufont, occlusion.
 
 #include "saga.h"
 
 #include <xmmintrin.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 extern "C" {
@@ -3437,3 +3440,2052 @@ extern "C" {
 #undef PC_RADIAN_PER_NUANG
 
 } // extern "C"
+
+// nuqfnt and nufont (0x5d0880-0x5d1750 and their later passes).
+extern "C" {
+
+    void __cdecl NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, char *platform_string);
+
+    extern i32 nuqfnt_initialised;
+    extern u8 NuQFntSystemFontBlockPc[0x4930];
+
+    extern i32 nuqfnt_cs_mode;
+    extern f32 qfnt_rezscale_w;
+    extern f32 qfnt_rezscale_h;
+    extern f32 qfnt_offscale_x;
+    extern f32 qfnt_offscale_y;
+
+    void __cdecl NuQFntPushPrintMode(u32 mode) {
+        if (NuQFntModeStackIndex < 16) {
+            NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
+        }
+        NuQFntMode = mode;
+    }
+
+    void __cdecl NuQFntPopPrintMode(void) {
+        if (NuQFntModeStackIndex > 0) {
+            NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
+        }
+    }
+
+    void __cdecl NuQFntSet(VUFNT *font) {
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font != NULL) {
+            font->mode = 1;
+            nuqfnt_space_width = font->space_width;
+        }
+    }
+
+    void __cdecl NuQFntSetICGap(VUFNT *font, f32 ic_gap) {
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font != NULL) {
+            font->ic_gap = ic_gap;
+        }
+    }
+
+    void __cdecl NuQFntSetScale(VUFNT *font, f32 x_scale, f32 y_scale) {
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font != NULL) {
+            *font->x_scale = x_scale;
+            if ((NuQFntMode & 4) != 0) {
+                *font->y_scale = y_scale;
+            } else {
+                *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+            }
+        }
+    }
+
+    void __cdecl NuQFntSetColour(VUFNT *font, u32 colour) {
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font != NULL) {
+            font->platform_data->colour = colour;
+        }
+    }
+
+    void __cdecl NuQFntSetUVSizePc(VUFNT *font, f32 x_scale, f32 y_scale) {
+        NuQFntPushPrintMode(2);
+        NuQFntSetScale(font, x_scale, y_scale);
+        NuQFntPopPrintMode();
+    }
+
+    void __cdecl NuQFntSetColour2d(VUFNT *font, u32 colour) {
+        NuQFntPushPrintMode(2);
+        NuQFntSetColour(font, colour);
+        NuQFntPopPrintMode();
+    }
+
+    void __cdecl NuQFntSetRS(void *stream, VUFNT *font) {
+        (void)stream;
+        font->mode = 1;
+    }
+
+    void __cdecl NuQFntSetScaleRS(void *stream, VUFNT *font, f32 x_scale, f32 y_scale) {
+        (void)stream;
+        *font->x_scale = x_scale;
+        if ((NuQFntMode & 4) != 0) {
+            *font->y_scale = y_scale;
+            return;
+        }
+        *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+    }
+
+    void __cdecl NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour) {
+        (void)stream;
+        font->platform_data->colour = colour;
+    }
+
+    u16 UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode) {
+        i32 middle = count / 2;
+        i32 low;
+        i32 high;
+        if (unicode > map[count - 1].unicode) {
+            return 0xffff;
+        }
+        low = 0;
+        high = count - 1;
+        while (map[middle].unicode != unicode) {
+            if (high == low + 1) {
+                if (map[high].unicode == unicode) {
+                    return map[high].index;
+                }
+                if (map[low].unicode == unicode) {
+                    return map[low].index;
+                }
+                return 0xffff;
+            }
+            if (map[middle].unicode > unicode) {
+                high = middle;
+                middle = (low + high) >> 1;
+            } else if (map[middle].unicode < unicode) {
+                low = middle;
+                middle = (low + high) >> 1;
+            } else if (high == low) {
+                return 0xffff;
+            }
+        }
+        return map[middle].index;
+    }
+
+    u16 NuQFntEncodeUnicodeChar(VUFNT *font, u16 character) {
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font == NULL) {
+            return 0xffff;
+        }
+        return UnicodeToIndexFast(font->unicode_map, font->unicode_count, character);
+    }
+
+    void NuQFntEncodeUnicodeString(VUFNT *font, u16 *text) {
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font != NULL) {
+            while (*text != 0) {
+                *text = UnicodeToIndexFast(font->unicode_map, font->unicode_count, *text);
+                if (*text == 0xffff) {
+                    *text = '?';
+                }
+                ++text;
+            }
+        }
+    }
+
+    void NuQFntUTF8toQCode(VUFNT *font, char *text, u16 *encoded) {
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font == NULL) {
+            return;
+        }
+        while (*text != '\0') {
+            u16 character;
+            text = (char *)NuUnicodeCharFromUTF8(&character, (u8 *)text);
+            *encoded = NuQFntEncodeUnicodeChar(font, character);
+            if (*encoded == 0xffff) {
+                *encoded = NuQFntEncodeUnicodeChar(font, '?');
+            }
+            ++encoded;
+        }
+        *encoded = 0;
+    }
+
+    void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z) {
+        (void)stream;
+        if (nuqfnt_cs_mode != 4) {
+            x = x * qfnt_rezscale_w + qfnt_offscale_x;
+            y = y * qfnt_rezscale_h + qfnt_offscale_y - font->baseline * *font->y_scale;
+        }
+        font->platform_data->x = x;
+        font->platform_data->y = y;
+        font->platform_data->z = z;
+    }
+
+    void __cdecl NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix) {
+        (void)stream;
+        font->platform_data->matrix = *matrix;
+    }
+
+    extern i32 NuPrimCoordSystemStack[];
+    typedef struct qfont_prim_vertex_pc_s {
+        f32 x, y, z;
+        u32 colour;
+        f32 u, v;
+    } QFONT_PRIM_VERTEX_PC;
+    STATIC_ASSERT(sizeof(QFONT_PRIM_VERTEX_PC) == 0x18);
+    STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, colour) == 0xc);
+    STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, u) == 0x10);
+    STATIC_ASSERT(offsetof(QFONT_PRIM_VERTEX_PC, v) == 0x14);
+    static __declspec(noinline) void NuRndrPrimSetColourPrivate(i32 colour) {
+        u32 converted;
+        if (NuPrimNeedsOverbrightening != 0)
+            converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
+        else
+            converted =
+                ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+        ((QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    }
+#define QFONT_VERTEX(X, Y, Z, U, V)                                                                                    \
+    do {                                                                                                               \
+        QFONT_PRIM_VERTEX_PC *vertex;                                                                                  \
+        NuRndrPrimSetColourPrivate((i32)colour);                                                                       \
+        vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;                                          \
+        vertex->u = (U);                                                                                               \
+        vertex->v = (V);                                                                                               \
+        vertex->x = (X);                                                                                               \
+        vertex->y = (Y);                                                                                               \
+        vertex->z = (Z);                                                                                               \
+        NuPrimStreamBufferPointer->addr += sizeof(*vertex);                                                            \
+        ++NuPrimVertexCount;                                                                                           \
+    } while (0)
+
+    void __cdecl NuQFntPrintCharW(VUFNT *font, u16 *text, u32 flags) {
+        NUQFNT_RENDER_DATA_PC *render_data = font->platform_data;
+        f32 x = render_data->x;
+        f32 y = render_data->y;
+        f32 z = render_data->z;
+        f32 inverse_texture_width;
+        f32 inverse_texture_height;
+        f32 height;
+        f32 space_width;
+        u32 colour;
+        i32 is_3d;
+
+        if (text == NULL) {
+            return;
+        }
+        if (font->material->texture_id > 0) {
+            NUTEXDIM_PC *texture_dimensions = NuTextureDimensions[font->material->texture_id - 1];
+            inverse_texture_width = 1.0f / (f32)texture_dimensions->width;
+            inverse_texture_height = 1.0f / (f32)texture_dimensions->height;
+        } else {
+            inverse_texture_width = 1.0f;
+            inverse_texture_height = 1.0f;
+        }
+
+        height = font->height * *font->y_scale;
+        if (nuqfnt_space_width == 0.0f) {
+            space_width = font->space_width * *font->x_scale;
+        } else {
+            space_width = nuqfnt_space_width * *font->x_scale;
+        }
+
+        ++NuPrimCSPos;
+        NuPrimSetCoordinateSystem(0);
+        is_3d = flags & 4;
+        if (is_3d) {
+            NuPrim3DBegin(12, 7, font->material, &font->platform_data->matrix);
+        } else {
+            NuPrim2DBegin(16, 7, font->material);
+        }
+
+        colour = render_data->colour;
+        while (*text != 0) {
+            u16 character = *text++;
+            VUFNTCHAR *glyph = &font->glyphs[character];
+            f32 advance;
+            f32 left;
+            f32 right;
+            f32 top;
+            f32 bottom;
+
+            if (character == 0x20) {
+                advance = space_width;
+            } else {
+                advance = glyph->width * *font->x_scale;
+            }
+
+            if (is_3d) {
+                top = y - height;
+                bottom = y;
+            } else {
+                top = y;
+                bottom = y + height;
+            }
+            if ((flags & 1) != 0 && character >= 0x30 && character < 0x3a) {
+                u16 zero_index = NuQFntEncodeUnicodeChar(font, 0x30);
+                VUFNTCHAR *zero = &font->glyphs[(i16)zero_index];
+                f32 digit_width = zero->width * *font->x_scale;
+                f32 adjustment = digit_width - advance;
+                left = adjustment + x;
+                right = left + advance;
+                advance = digit_width;
+            } else {
+                left = x;
+                right = x + advance;
+            }
+            if (character != 0x20) {
+                f32 u0 = glyph->x * inverse_texture_width;
+                f32 v0 = glyph->y * inverse_texture_height;
+                f32 u1 = (glyph->x + glyph->width) * inverse_texture_width;
+                f32 v1 = (glyph->y + font->height) * inverse_texture_height;
+
+                if (is_3d) {
+                    QFONT_VERTEX(left, top, z, u0, v1);
+                    QFONT_VERTEX(right, top, z, u1, v1);
+                    QFONT_VERTEX(right, bottom, z, u1, v0);
+                    QFONT_VERTEX(right, bottom, z, u1, v0);
+                    QFONT_VERTEX(left, bottom, z, u0, v0);
+                    QFONT_VERTEX(left, top, z, u0, v1);
+                } else {
+                    QFONT_PRIM_VERTEX_PC *vertex;
+                    NuRndrPrimSetColourPrivate((i32)colour);
+                    vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                    vertex->u = u0;
+                    vertex->v = v0;
+                    NuPrim2DAddXYZ(left, top, 0.0f);
+                    NuRndrPrimSetColourPrivate((i32)colour);
+                    vertex = (QFONT_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+                    vertex->u = u1;
+                    vertex->v = v1;
+                    NuPrim2DAddXYZ(right, bottom, 0.0f);
+                }
+            }
+            x = (f32)((f64)font->ic_gap * *font->x_scale + advance + x);
+        }
+
+        if (is_3d) {
+            NuPrim3DEnd();
+        } else {
+            NuPrim2DEnd();
+        }
+        --NuPrimCSPos;
+        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    }
+
+#undef QFONT_VERTEX
+
+    void __cdecl NuQFntPrintU(VUFNT *font, char *text) {
+        u16 encoded[1024];
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font != NULL && text != NULL) {
+            NuQFntUTF8toQCode(font, text, encoded);
+            NuQFntPrintCharW(font, encoded, NuQFntMode);
+        }
+    }
+
+    void __cdecl NuQFntPrint2dU(VUFNT *font, char *text) {
+        NuQFntPushPrintMode(2);
+        NuQFntPrintU(font, text);
+        NuQFntPopPrintMode();
+    }
+
+    typedef struct qfont_material_stream_view_pc_s {
+        u8 unknown_0000[4];
+        u8 stream_begin;
+    } QFONT_MATERIAL_STREAM_VIEW_PC;
+    STATIC_ASSERT(offsetof(QFONT_MATERIAL_STREAM_VIEW_PC, stream_begin) == 4);
+
+    void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z) {
+        void *stream;
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font != NULL) {
+            stream =
+                (NuQFntMode & 2) != 0 ? NULL : (void *)&((QFONT_MATERIAL_STREAM_VIEW_PC *)font->material)->stream_begin;
+            NuQFntMoveRS(stream, font, x, y, z);
+        }
+    }
+
+    void __cdecl NuQFntMove2d(VUFNT *font, f32 x, f32 y, f32 z) {
+        NuQFntPushPrintMode(2);
+        NuQFntMove(font, x, y, z);
+        NuQFntPopPrintMode();
+    }
+
+    void __cdecl NuQFntSetMtx(VUFNT *font, NUMTX *matrix) {
+        if (font == NULL)
+            font = system_qfont;
+        if (font != NULL)
+            NuQFntSetMtxRS(NULL, font, matrix);
+    }
+
+    typedef struct font_stream_anchor_pc_s {
+        u8 prefix[4];
+        u8 stream_anchor;
+    } FONT_STREAM_ANCHOR_PC;
+    STATIC_ASSERT(offsetof(FONT_STREAM_ANCHOR_PC, stream_anchor) == 4);
+
+    void __cdecl NuQFntSetSpaceWidth(VUFNT *font, f32 width) {
+        (void)font;
+        nuqfnt_space_width = width;
+    }
+    f32 __cdecl NuQFntPrintJustifiedRSW(void *stream, VUFNT *font, u16 *text, f32 x, f32 y, f32 z, f32 sx, f32 sy,
+                                        f32 width, f32 line_spacing, u32 colour, NUMTX *matrix) {
+        f32 saved_space_width = nuqfnt_space_width;
+        f32 space_width = saved_space_width == 0.0f ? font->space_width : saved_space_width;
+        f32 saved_ic_gap = font->ic_gap, printed_space_width, line_height;
+        u16 encoded_space[2] = {0x20, 0};
+        u16 hyphen;
+        i32 line_number = 0;
+        (void)stream;
+        NuQFntSetColourRS(stream, font, colour);
+        NuQFntSetScaleRS(stream, font, sx, sy);
+        NuQFntSetSpaceWidth(font, space_width);
+        printed_space_width = NuQFntPrintLenW(font, encoded_space);
+        if (matrix != NULL)
+            NuQFntSetMtxRS(stream, font, matrix);
+        line_height = font->height * *font->y_scale * qfnt_height_scale;
+        hyphen = NuLanguageGet() == 0 ? 0xfffe : UnicodeToIndexFast(font->unicode_map, font->unicode_count, '-');
+        do {
+            u16 line[256], *next = text, *copy_cursor;
+            i32 words = 0, punctuation_spaces = 0, length, spaces;
+            f32 words_width = 0.0f, scale, scaled_words_width;
+            font->ic_gap = saved_ic_gap;
+            NuQFntSetScaleRS(stream, font, sx, sy);
+            for (;;) {
+                u16 *word_start = next;
+                i32 extra_spaces = 0;
+                f32 word_width;
+                length = 0;
+                while (*next != 0 && *next != hyphen) {
+                    if (*next == 0x20) {
+                        u16 following = next[1];
+                        if (following != '!' && following != '?' && following != '.' && following != ',')
+                            break;
+                        ++extra_spaces;
+                    } else {
+                        line[length] = *next;
+                        line[length + 1] = 0;
+                        if (NuQFntPrintLenW(font, line) > width) {
+                            line[length] = 0;
+                            break;
+                        }
+                        ++length;
+                    }
+                    ++next;
+                }
+                if (length > 256)
+                    AnimationDiagnosticNoOpPc();
+                if (*next == hyphen)
+                    line[length++] = *next++;
+                while (*next == 0x20)
+                    ++next;
+                line[length] = 0;
+                word_width = NuQFntPrintLenW(font, line);
+                if (words != 0 && !(width * qfnt_justify_squash >=
+                                    (f32)(words + punctuation_spaces + extra_spaces) * printed_space_width +
+                                        (words_width + word_width))) {
+                    next = word_start;
+                    break;
+                }
+                words_width += word_width;
+                ++words;
+                punctuation_spaces += extra_spaces;
+                if (*next == 0)
+                    break;
+            }
+            if ((next - text) > 256)
+                AnimationDiagnosticNoOpPc();
+            length = 0;
+            copy_cursor = text;
+            while (copy_cursor < next) {
+                if (*copy_cursor != 0x20)
+                    line[length++] = *copy_cursor++;
+                else {
+                    line[length++] = 0x20;
+                    do {
+                        ++copy_cursor;
+                    } while (*copy_cursor == 0x20);
+                }
+            }
+            line[length] = 0;
+            spaces = words - 1 + punctuation_spaces;
+            if (*next == 0) {
+                f32 ratio = width / ((f32)spaces * printed_space_width + words_width);
+                scale = 1.0f < ratio ? 1.0f : ratio;
+            } else if (words == 1)
+                scale = width / words_width;
+            else {
+                f32 ratio = width / ((f32)spaces * printed_space_width + words_width);
+                scale = qfnt_justify_stretch < ratio ? qfnt_justify_stretch : ratio;
+            }
+            NuQFntSetScaleRS(stream, font, sx * scale, sy);
+            scaled_words_width = words_width * scale;
+            if (*next == 0)
+                NuQFntSetSpaceWidth(font, space_width * scale);
+            else if (words == 1)
+                NuQFntSetSpaceWidth(font, space_width);
+            else
+                NuQFntSetSpaceWidth(font, (width - scaled_words_width) * space_width /
+                                              (scale * printed_space_width * (spaces < 0 ? 0 : spaces)));
+            NuQFntMoveRS(stream, font, x, (f32)line_number * line_height * line_spacing + y, z);
+            if (matrix != NULL)
+                NuQFntPrintCharW(font, line, 4);
+            else
+                NuQFntPrintCharW(font, line, 0);
+            ++line_number;
+            text = next;
+        } while (*text != 0);
+        NuQFntSetSpaceWidth(font, saved_space_width);
+        font->ic_gap = saved_ic_gap;
+        return (f32)line_number * line_height * line_spacing;
+    }
+    f32 __cdecl NuQFntPrintJustifiedW(VUFNT *font, u16 *text, f32 x, f32 y, f32 z, f32 sx, f32 sy, f32 width,
+                                      f32 line_spacing, u32 colour, NUMTX *matrix) {
+        if (font == NULL)
+            font = system_qfont;
+        if (font == NULL)
+            return 0.0f;
+        return NuQFntPrintJustifiedRSW(&((FONT_STREAM_ANCHOR_PC *)font->material)->stream_anchor, font, text, x, y, z,
+                                       sx, sy, width, line_spacing, colour, matrix);
+    }
+
+    void NuQFntPrintV(VUFNT *font, const char *format, va_list arguments) {
+        char text[1024];
+        vsprintf(text, format, arguments);
+        NuQFntPrintU(font, text);
+    }
+
+    f32 __cdecl NuQFntPrintLenV(VUFNT *font, const char *format, va_list arguments) {
+        char text[1024];
+        vsprintf(text, format, arguments);
+        return NuQFntPrintLenU(font, text);
+    }
+
+    void __cdecl PCSpecialEmptyHandler_candidate(void);
+    struct PC_MATERIAL_CREATE_SHADER {
+        u32 flags;
+        i32 diffuse_map_id;
+        u8 unknown_08[0xc];
+        u32 packed_diffuse_colour;
+        u8 unknown_18[0xc];
+        f32 default_scale;
+        u8 unknown_28[0x80];
+        u8 texture_unit_count;
+        u8 unknown_a9[0x63];
+        i32 animation_ids[4];
+        u8 unknown_11c[0x20];
+        u32 vertex_format;
+        i16 shader_handle, shader_variant_handle;
+        u8 unknown_144[0x74];
+        u32 material_flags;
+        u8 unknown_1bc[0x4c];
+    };
+    STATIC_ASSERT(sizeof(PC_MATERIAL_CREATE_SHADER) == 0x208);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, packed_diffuse_colour) == 0x14);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, default_scale) == 0x24);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, texture_unit_count) == 0xa8);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, animation_ids) == 0x10c);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, vertex_format) == 0x13c);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, shader_handle) == 0x140);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, material_flags) == 0x1b8);
+    typedef struct PC_MATERIAL_CREATE_VIEW PC_MATERIAL_CREATE_VIEW;
+    struct PC_MATERIAL_CREATE_VIEW {
+        u16 flags;
+        u8 unknown_002[0x26];
+        u32 retained_28, retained_2c;
+        NUMTL *next;
+        u8 unknown_034[8];
+        NUDISPLAYLIST_PC *display_list;
+        u32 attributes, attributes_high;
+        u8 unknown_048[0xc];
+        NUVEC diffuse;
+        u8 unknown_060[0x10];
+        f32 opacity;
+        i16 texture_id;
+        i16 sort_priority;
+        u8 unknown_078[0x3c];
+        PC_MATERIAL_CREATE_SHADER shader;
+        PC_TEXTURE_RESOURCE_PC *vertex_declaration;
+        u16 version;
+        u8 unknown_2c2[2];
+    };
+    STATIC_ASSERT(sizeof(PC_MATERIAL_CREATE_VIEW) == 0x2c4);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, retained_28) == 0x28);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, retained_2c) == 0x2c);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, next) == 0x30);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, display_list) == 0x3c);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, attributes) == 0x40);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, attributes_high) == 0x44);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, diffuse) == 0x54);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, opacity) == 0x70);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, texture_id) == 0x74);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, shader) == 0xb4);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, vertex_declaration) == 0x2bc);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, version) == 0x2c0);
+
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_VIEW, sort_priority) == 0x76);
+    typedef struct FONT_LOAD_READER_PC {
+        u8 unknown00[6];
+        u16 flags;
+        i32 size;
+        i32 glyph_count, unicode_count;
+        f32 height, baseline, space_width;
+        i32 mode;
+        f32 ic_gap;
+        void *legacy_font;
+        f32 *x_scale, *y_scale;
+        VUFNTCHAR *glyphs;
+        VUCHARIDX *unicode_map;
+        void *header;
+        NUMTL *material;
+        u32 *colour;
+        NUQFNT_RENDER_DATA_PC *platform_data;
+    } FONT_LOAD_READER_PC;
+    STATIC_ASSERT(sizeof(FONT_LOAD_READER_PC) == 0x4c);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, flags) == 6);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, size) == 8);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, glyphs) == 0x34);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, unicode_map) == 0x38);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, header) == 0x3c);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, material) == 0x40);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, colour) == 0x44);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, platform_data) == 0x48);
+    typedef struct FONT_RENDER_STORAGE_PC {
+        NUQFNT_RENDER_DATA_PC draw;
+        f32 x_scale, y_scale;
+    } FONT_RENDER_STORAGE_PC;
+    STATIC_ASSERT(sizeof(FONT_RENDER_STORAGE_PC) == 0x58);
+    STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, x_scale) == 0x50);
+    STATIC_ASSERT(offsetof(FONT_RENDER_STORAGE_PC, y_scale) == 0x54);
+    typedef struct FONT_PTR_BLOCK_PC {
+        VUFNT *font;
+        void *texture;
+    } FONT_PTR_BLOCK_PC;
+    STATIC_ASSERT(sizeof(FONT_PTR_BLOCK_PC) == 8);
+    void __cdecl NuQFntDestroy(VUFNT *font);
+    i32 __cdecl NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end);
+    VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *font, VARIPTR *buffer, VARIPTR end);
+    VUFNT *__cdecl NuQFntRead(char *path, VARIPTR *buffer, VARIPTR end);
+    VUFNT *__cdecl NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end);
+    VUFNT *__cdecl NuQFntLoadPtr(char *path, char *texture_path, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end);
+
+    void __cdecl NuQFntDestroy(VUFNT *font) {
+        if (font != NULL) {
+            i32 texture_id = font->material->texture_id;
+            NuMtlDestroy(font->material);
+            if ((((FONT_LOAD_READER_PC *)font)->flags & 1) == 0)
+                NuTexDestroy(texture_id);
+        }
+    }
+
+    VUFNT *__cdecl NuQFntReadBuffer(VARIPTR *font, VARIPTR *buffer, VARIPTR end) {
+        FONT_PTR_BLOCK_PC *block;
+        VUFNT *result;
+        NUTEXDIM_PC *texture;
+        void *texture_data;
+        i32 texture_id;
+        if (font->void_ptr == NULL)
+            return NULL;
+        block = (FONT_PTR_BLOCK_PC *)NuPtrBlockFix(font->void_ptr);
+        result = block->font;
+        texture_data = block->texture;
+        texture = (NUTEXDIM_PC *)buffer->void_ptr;
+        buffer->addr += sizeof(*texture);
+        texture->image_data = texture_data;
+        texture->image_size = 0x200000;
+        texture_id = NuTexCreateNative(texture);
+        NuQFntReadPS(result, texture_id, 4, 0, buffer, end);
+        return result;
+    }
+
+    void __cdecl NuQFntInit(VARIPTR *buffer, VARIPTR end) {
+        VARIPTR font;
+        if (nuqfnt_initialised == 0) {
+            nuqfnt_initialised = 1;
+            font.void_ptr = NuQFntSystemFontBlockPc;
+            system_qfont = NuQFntReadBuffer(&font, buffer, end);
+            if (system_qfont != NULL)
+                system_qfont->ic_gap = 1.0f;
+        }
+    }
+
+    void __cdecl NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end) {
+        (void)buffer;
+        (void)end;
+    }
+
+    /* The PS2 font selection calls are no-ops on PC. */
+    void __cdecl NuFntSet(i32 font) {
+        (void)font;
+    }
+
+    void __cdecl NuFntScale(i32 x, i32 y) {
+        (void)x;
+        (void)y;
+    }
+
+    VUFNT *__cdecl NuQFntRead(char *path, VARIPTR *buffer, VARIPTR end) {
+        char fixed_path[1204];
+        VARIPTR aligned;
+        NuStrFixExtPlatform(fixed_path, path, "fnt", 1024, "pc");
+        buffer->addr = (buffer->addr + 31) & ~31U;
+        aligned.addr = buffer->addr;
+        if (NuFileLoadBufferVP(fixed_path, buffer, &end) == 0)
+            return NULL;
+        return NuQFntReadBuffer(&aligned, buffer, end);
+    }
+
+    VUFNT *__cdecl NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end) {
+        FONT_LOAD_READER_PC *reader = (FONT_LOAD_READER_PC *)font;
+        FONT_LOAD_READER_PC *duplicate;
+        PC_MATERIAL_CREATE_VIEW *material, *original;
+        u32 previous_plane;
+        if (font == NULL)
+            AnimationDiagnosticNoOpPc();
+        duplicate = (FONT_LOAD_READER_PC *)((buffer->addr + 15) & ~15U);
+        buffer->void_ptr = duplicate;
+        buffer->addr += reader->size;
+        if (buffer->addr < end->addr) {
+            PCByteCopy_candidate(duplicate, font, reader->size);
+            duplicate->flags |= 1;
+            duplicate->glyphs = (VUFNTCHAR *)((u32)duplicate->glyphs + (u32)duplicate - (u32)font);
+            duplicate->unicode_map = (VUCHARIDX *)((u32)duplicate->unicode_map + (u32)duplicate - (u32)font);
+        }
+        if (plane < 0 || plane >= 24)
+            AnimationDiagnosticNoOpPc();
+        previous_plane = numtl_renderplane;
+        numtl_renderplane = plane;
+        duplicate->material = (flags & 8) ? NuMtlCreate3D(1) : NuMtlCreate(1);
+        material = (PC_MATERIAL_CREATE_VIEW *)duplicate->material;
+        original = (PC_MATERIAL_CREATE_VIEW *)font->material;
+        material->attributes = original->attributes;
+        material->attributes_high = original->attributes_high;
+        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->texture_id =
+            ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id;
+        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->sort_priority =
+            ((PC_MATERIAL_CREATE_VIEW *)font->material)->sort_priority;
+        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes =
+            (((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes & ~0x10000U) | 0x20000U;
+        if (flags & 8)
+            ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes_high &= ~0x800000U;
+        if (flags & 0x40)
+            ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes &= ~0xc000U;
+        NuMtlUpdate(duplicate->material);
+        if (previous_plane >= 24)
+            AnimationDiagnosticNoOpPc();
+        numtl_renderplane = previous_plane;
+        return (VUFNT *)duplicate;
+    }
+
+    VUFNT *__cdecl NuQFntLoadPtr(char *path, char *texture_path, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end) {
+        VUFNT *font = NuQFntRead(path, buffer, *end);
+        VARIPTR saved;
+        char filename[1024];
+        FONT_LOAD_READER_PC *reader;
+        FONT_RENDER_STORAGE_PC *platform;
+        i32 size, texture_id;
+        if (font != NULL)
+            return font;
+        saved = *buffer;
+        buffer->addr = (buffer->addr + 15) & ~15U;
+        sprintf(filename, "%s.qfn", path);
+        size = NuFileLoadBuffer(filename, buffer->void_ptr, end->addr - buffer->addr);
+        if (size != 0) {
+            font = (VUFNT *)buffer->void_ptr;
+            reader = (FONT_LOAD_READER_PC *)font;
+            reader->glyphs = (VUFNTCHAR *)((u32)reader->glyphs + (u32)font);
+            reader->unicode_map = (VUCHARIDX *)((u32)reader->unicode_map + (u32)font);
+            buffer->addr = (buffer->addr + size + 15) & ~15U;
+            platform = (FONT_RENDER_STORAGE_PC *)buffer->void_ptr;
+            reader->platform_data = &platform->draw;
+            buffer->addr += sizeof(*platform);
+            platform = (FONT_RENDER_STORAGE_PC *)reader->platform_data;
+            reader->colour = &platform->draw.colour;
+            reader->x_scale = &platform->x_scale;
+            reader->y_scale = &platform->y_scale;
+            sprintf(filename, "%s", texture_path != NULL ? texture_path : path);
+            texture_id = NuTexReadPc(filename, buffer, *end);
+            if (texture_id != 0) {
+                font->material = NuMtlCreate(1);
+                if (font->material != NULL) {
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.x = 1.0f;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.y = 1.0f;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.z = 1.0f;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+                        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x1000U) | 0x2000U;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0xc000U;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->opacity = 1.0f;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
+                        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~14U) | 1U;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0x40000U;
+                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id = (i16)texture_id;
+                    NuMtlUpdate(font->material);
+                    return font;
+                }
+                NuTexDestroy(texture_id);
+            }
+        }
+        PCSpecialEmptyHandler_candidate();
+        *buffer = saved;
+        return NULL;
+    }
+
+    void __cdecl NuMtlSetRenderPlanePc(NUMTL *material, i32 plane);
+    VUFNT *__cdecl NuQFntCreate(FONT_LEGACY_READER_PC *font, i32 flags, i32 options, VARIPTR *buffer, VARIPTR *end) {
+        f32 width = (f32)NuTextureDimensions[font->material->texture_id - 1]->width;
+        f32 height = (f32)NuTextureDimensions[font->material->texture_id - 1]->height;
+        FONT_LOAD_READER_PC *result = (FONT_LOAD_READER_PC *)((buffer->addr + 15) & ~15U);
+        PC_MATERIAL_CREATE_VIEW *material;
+        i32 i, index;
+        buffer->addr = (u32)result + sizeof(*result) + sizeof(FONT_RENDER_STORAGE_PC);
+        memset(result, 0, sizeof(*result) + sizeof(FONT_RENDER_STORAGE_PC));
+        result->platform_data = (NUQFNT_RENDER_DATA_PC *)(result + 1);
+        result->glyph_count = font->glyph_count;
+        result->legacy_font = font;
+        result->height = font->height;
+        result->baseline = font->baseline;
+        result->ic_gap = font->ic_gap;
+        result->space_width = font->glyphs[0].u1 * width - font->glyphs[0].u0 * width;
+        result->header = buffer->void_ptr;
+        *(f32 *)buffer->void_ptr = result->ic_gap;
+        buffer->addr += 4;
+        *(f32 *)buffer->void_ptr = result->height;
+        buffer->addr += 4;
+        *(f32 *)buffer->void_ptr = 1.0f / width;
+        buffer->addr += 4;
+        *(f32 *)buffer->void_ptr = 1.0f / height;
+        buffer->addr += 4;
+        *(f32 *)buffer->void_ptr = 0.0f;
+        buffer->addr += 4;
+        *(f32 *)buffer->void_ptr = 0.0f;
+        buffer->addr += 4;
+        *(f32 *)buffer->void_ptr = result->space_width;
+        buffer->addr += 4;
+        *(f32 *)buffer->void_ptr = 0.0f;
+        buffer->addr += 4;
+        result->x_scale = (f32 *)buffer->void_ptr;
+        *(f32 *)buffer->void_ptr = 1.0f;
+        buffer->addr += 4;
+        result->y_scale = (f32 *)buffer->void_ptr;
+        *(f32 *)buffer->void_ptr = 0.5f;
+        buffer->addr += 4;
+        result->glyphs = (VUFNTCHAR *)buffer->void_ptr;
+        for (i = 0; i < font->glyph_count && i < 256; ++i) {
+            f32 x = font->glyphs[i].u0 * width;
+            *(f32 *)buffer->void_ptr = x;
+            buffer->addr += 4;
+            *(f32 *)buffer->void_ptr = font->glyphs[i].v0 * height;
+            buffer->addr += 4;
+            *(f32 *)buffer->void_ptr = font->glyphs[i].u1 * width - font->glyphs[i].u0 * width;
+            buffer->addr += 4;
+        }
+        result->unicode_map = (VUCHARIDX *)buffer->void_ptr;
+        for (i = 0; i < 256; ++i) {
+            index = font->character_map[i];
+            if (index == 255)
+                index = 0;
+            if (i == 32)
+                index = font->glyph_count;
+            *buffer->char_ptr++ = (char)index;
+        }
+        result->material = (NUMTL *)((buffer->addr + 15) & ~15U);
+        buffer->addr = (u32)result->material + sizeof(PC_MATERIAL_CREATE_VIEW);
+        memcpy(result->material, font->material, sizeof(PC_MATERIAL_CREATE_VIEW));
+        NuMtlSetRenderPlanePc(result->material, options & 0xffff);
+        material = (PC_MATERIAL_CREATE_VIEW *)result->material;
+        if (flags & 8)
+            material->attributes_high &= ~4U;
+        else
+            material->attributes_high |= 4U;
+        material->attributes = (material->attributes & ~0x10000U) | 0x20000U;
+        material->attributes = (flags & 2) ? material->attributes & ~15U : (material->attributes & ~14U) | 1U;
+        if (flags & 0x40)
+            material->attributes &= ~0xc000U;
+        else if (flags & 0x20)
+            material->attributes = (material->attributes & ~0x8000U) | 0x4000U;
+        else
+            material->attributes |= 0xc000U;
+        if (flags & 4)
+            material->attributes = (material->attributes & ~0x20U) | 0x10U;
+        else if (flags & 0x10)
+            material->attributes = (material->attributes & ~0x10U) | 0x20U;
+        else
+            material->attributes &= ~0x30U;
+        material->sort_priority = (i16)(options >> 16);
+        NuMtlUpdate(result->material);
+        result->platform_data->z = result->platform_data->y = result->platform_data->x = 0.0f;
+        return (VUFNT *)result;
+    }
+    void NuQFntWrite(char *path, VUFNT *font) {
+        char text[256];
+        i32 i;
+        NUFILE file;
+        sprintf(text, "%s.qfn", path);
+        file = NuFileOpen(text, 1);
+        if (file != 0) {
+            font->glyphs = (VUFNTCHAR *)((u32)font->glyphs - (u32)font);
+            font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map - (u32)font);
+            NuFileWrite(file, font, ((FONT_LOAD_READER_PC *)font)->size);
+            font->glyphs = (VUFNTCHAR *)((u32)font->glyphs + (u32)font);
+            font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map + (u32)font);
+            NuFileClose(file);
+        }
+
+        sprintf(text, "%s.htm", path);
+        file = NuFileOpen(text, 1);
+        if (file != 0) {
+            sprintf(text, "<HTML><BODY><font face = courier><H2>Font name: %s</H2>\n", path);
+            NuFileWrite(file, text, strlen(text));
+            sprintf(text, "<P>Internal char list: (%d entries)\n<P>\n", font->glyph_count);
+            NuFileWrite(file, text, strlen(text));
+            for (i = 0; i < font->glyph_count; i++) {
+                sprintf(text, "%.3d ('%c'): u=%.3d v=%.3d w=%.3d<BR>\n", i, i < 32 ? 1 : i & 255,
+                        (i32)(font->glyphs[i].x), (i32)(font->glyphs[i].y), (i32)(font->glyphs[i].width));
+                NuFileWrite(file, text, strlen(text));
+            }
+            sprintf(text, "<P>Lookup table:\n<P>\n");
+            NuFileWrite(file, text, strlen(text));
+            for (i = 0; i < font->unicode_count; i++) {
+                sprintf(text, "%.4d ('%c'): char=%.3d<BR>\n", font->unicode_map[i].unicode,
+                        font->unicode_map[i].unicode & 255, font->unicode_map[i].index);
+                NuFileWrite(file, text, strlen(text));
+            }
+            sprintf(text, "<P></BODY></HTML>");
+            NuFileWrite(file, text, strlen(text));
+            NuFileClose(file);
+        }
+    }
+
+    void NuQFntWriteUniversalFont(char *path, VUFNT *font, char *texture_path) {
+        char filename[256];
+        char buffer[1024];
+        NUFILE file;
+        NUFILE texture_file;
+        i32 remaining;
+        i32 size;
+        sprintf(filename, "%s.ufn", path);
+        file = NuFileOpen(filename, 1);
+        texture_file = NuFileOpen(texture_path, 0);
+        if (file != 0 && texture_file != 0) {
+            font->glyphs = (VUFNTCHAR *)((u32)font->glyphs - (u32)font);
+            font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map - (u32)font);
+            NuFileWrite(file, font, ((FONT_LOAD_READER_PC *)font)->size);
+            font->glyphs = (VUFNTCHAR *)((u32)font->glyphs + (u32)font);
+            font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map + (u32)font);
+            remaining = NuFileOpenSize(texture_file);
+            while (remaining != 0) {
+                size = NuFileRead(texture_file, buffer, remaining > 1024 ? 1024 : remaining);
+                NuFileWrite(file, buffer, size);
+                remaining -= size;
+            }
+            NuFileClose(texture_file);
+            NuFileClose(file);
+        }
+    }
+
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, glyph_count) == 0xc);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, unicode_count) == 0x10);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, height) == 0x14);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, baseline) == 0x18);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, space_width) == 0x1c);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, ic_gap) == 0x24);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, legacy_font) == 0x28);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, x_scale) == 0x2c);
+    STATIC_ASSERT(offsetof(FONT_LOAD_READER_PC, y_scale) == 0x30);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, flags) == 0);
+    STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, diffuse_map_id) == 4);
+
+    extern u32 NuQFntModeStack[16];
+    extern i32 NuQFntModeStackIndex;
+    extern i32 NuQFntCSModeStack[16];
+    extern i32 NuQFntCSModeStackIndex;
+    extern void __cdecl NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z);
+    extern void __cdecl NuQFntPrintU(VUFNT *font, char *text);
+    extern u16 __cdecl UnicodeToIndexFast(VUCHARIDX *map, i32 count, u16 unicode);
+
+    void __cdecl NuQFntSetPointSize(VUFNT *font, f32 width, f32 height) {
+        u16 glyph_index;
+        f32 x_scale;
+        f32 y_scale;
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font == NULL) {
+            return;
+        }
+        glyph_index = UnicodeToIndexFast(font->unicode_map, font->unicode_count, 'M');
+        if (glyph_index == 0xffff) {
+            y_scale = (f32)(height * 18.0 / font->height);
+            x_scale = y_scale / height;
+        } else {
+            x_scale = (f32)(width * 7.0 / font->glyphs[glyph_index].width);
+            y_scale = (f32)(height * 18.0 / font->height);
+        }
+        *font->x_scale = x_scale;
+        if ((NuQFntMode & 4) != 0) {
+            *font->y_scale = y_scale;
+        } else {
+            *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+        }
+        NuQFntSetUVSizePc(font, x_scale, y_scale);
+    }
+
+    i32 __cdecl NuQFntSetCoordinateSystem(i32 mode) {
+        i32 previous = nuqfnt_cs_mode;
+        nuqfnt_cs_mode = mode;
+        switch (mode) {
+            case 2:
+                qfnt_rezscale_w = 1.0f;
+                qfnt_rezscale_h = 0.5f;
+                qfnt_offscale_x = 1.0f;
+                qfnt_offscale_y = 1.0f;
+                qfnt_len_scale = 1.0f;
+                qfnt_height_scale = 1.0f;
+                break;
+            case 3:
+                qfnt_rezscale_w = 320.0f;
+                qfnt_rezscale_h = -112.0f;
+                qfnt_offscale_x = 320.0f;
+                qfnt_offscale_y = 112.0f;
+                qfnt_len_scale = 0.003125f;
+                qfnt_height_scale = -0.008928572f;
+                break;
+            case 4:
+                qfnt_rezscale_w = 1.0f;
+                qfnt_rezscale_h = 1.0f;
+                qfnt_offscale_x = 0.0f;
+                qfnt_offscale_y = 0.0f;
+                qfnt_len_scale = 1.0f;
+                qfnt_height_scale = -1.0f;
+                break;
+            default:
+                qfnt_rezscale_w = 0.0625f;
+                qfnt_rezscale_h = 0.0625f;
+                qfnt_offscale_x = 0.0f;
+                qfnt_offscale_y = 0.0f;
+                qfnt_len_scale = 16.0f;
+                qfnt_height_scale = 16.0f;
+                break;
+        }
+        return previous;
+    }
+
+    void __cdecl NuQFntPushCoordinateSystem(i32 mode) {
+        if (NuQFntCSModeStackIndex < 16) {
+            NuQFntCSModeStack[NuQFntCSModeStackIndex++] = nuqfnt_cs_mode;
+        }
+        NuQFntSetCoordinateSystem(mode);
+    }
+
+    void __cdecl NuQFntPopCoordinateSystem(void) {
+        if (NuQFntCSModeStackIndex > 0) {
+            NuQFntSetCoordinateSystem(NuQFntCSModeStack[--NuQFntCSModeStackIndex]);
+        }
+    }
+
+    i32 __cdecl NuQFntGetCoordinateSystem(void) {
+        return nuqfnt_cs_mode;
+    }
+
+    f32 __cdecl NuQFntPrintLenW(VUFNT *font, u16 *text) {
+        f32 x_scale;
+        f32 length = 0.0f;
+        u16 character;
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font == NULL) {
+            return 0.0f;
+        }
+        x_scale = *font->x_scale;
+        while ((character = *text++) != 0) {
+            f32 width;
+            volatile f32 gap;
+            if (character >= '0' && character <= '9' && (NuQFntMode & 1) != 0) {
+                u16 zero = NuQFntEncodeUnicodeChar(font, '0');
+                width = font->glyphs[zero].width;
+            } else if (character == 0xffff) {
+                width = 0.0f;
+            } else if (character == ' ' && nuqfnt_space_width != 0.0f) {
+                width = nuqfnt_space_width;
+            } else {
+                width = font->glyphs[character].width;
+            }
+            gap = font->ic_gap;
+            length = (gap + width) + length;
+        }
+        return length * qfnt_len_scale * x_scale;
+    }
+
+    f32 __cdecl NuQFntPrintLenU(VUFNT *font, char *text) {
+        u8 *cursor;
+        f32 x_scale;
+        f32 length = 0.0f;
+        if (font == NULL) {
+            font = system_qfont;
+        }
+        if (font == NULL) {
+            return 0.0f;
+        }
+        x_scale = *font->x_scale;
+        cursor = (u8 *)text;
+        while (*cursor != '\0') {
+            u16 character;
+            u16 qcode;
+            f32 width;
+            cursor = NuUnicodeCharFromUTF8(&character, cursor);
+            qcode = NuQFntEncodeUnicodeChar(font, character);
+            if (qcode == 0xffff) {
+                qcode = NuQFntEncodeUnicodeChar(font, '?');
+            }
+            if (character == ' ' && nuqfnt_space_width != 0.0f) {
+                width = nuqfnt_space_width;
+            } else {
+                if (character >= '0' && character <= '9' && (NuQFntMode & 1) != 0) {
+                    qcode = NuQFntEncodeUnicodeChar(font, '0');
+                }
+                width = font->glyphs[qcode].width;
+            }
+            length += width + font->ic_gap;
+        }
+        return length * qfnt_len_scale * x_scale;
+    }
+
+    void __cdecl NuQFntSetJustifiedTolerances(f32 squash, f32 stretch) {
+        qfnt_justify_squash = squash < 1.0f ? 1.0f : squash;
+        qfnt_justify_stretch = stretch < 1.0f ? 1.0f : stretch;
+    }
+
+    void __cdecl NuQFntPrintEx(VUFNT *font, i32 x, i32 y, i32 alignment, const char *format, ...) {
+        char text[1024];
+        va_list arguments;
+        i32 width;
+
+        if (NuQFntModeStackIndex < 16) {
+            NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
+        }
+        NuQFntMode = 2;
+        va_start(arguments, format);
+        vsprintf(text, format, arguments);
+        va_end(arguments);
+        width = (i32)NuQFntPrintLenU(font, text);
+        if (alignment == 0x20) {
+            x -= width;
+        } else if (alignment == 0x40) {
+            x -= width / 2;
+        }
+        NuQFntMoveRS(NULL, font, (f32)x, (f32)y, 0.0f);
+        NuQFntPrintU(font, text);
+        if (NuQFntModeStackIndex > 0) {
+            NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
+        }
+    }
+
+} // extern "C"
+
+// occlusion (OccluderSet/OcclusionManager and the PostShadow helpers).
+extern "C" void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
+
+bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
+    if (!queries_prepared)
+        return false;
+    __declspec(align(16)) NUVEC4 projected;
+    NuVec4MtxTransform(&projected, const_cast<NUVEC *>(center), &projection_matrix);
+    if (projected.w < radius)
+        return false;
+    projected.x /= projected.w;
+    projected.y /= projected.w;
+    projected.z /= projected.w;
+    f32 screen_radius = radius / projected.w;
+    i32 limit = static_cast<i32>(count) > 100 ? 100 : static_cast<i32>(count);
+    for (i32 i = 0; i != limit; ++i) {
+        if (indices[i] == 0xffffffffu)
+            continue;
+        PC_OCCLUDER_RECORD &record = occluders[indices[i]];
+        if (record.depth > projected.w - radius - 2.0)
+            return false;
+        if (projected.x - screen_radius > record.max_x || projected.y - screen_radius > record.max_y ||
+            projected.x + screen_radius < record.min_x || projected.y + screen_radius < record.min_y)
+            continue;
+        NUVEC4 *v = record.transformed;
+        NUVEC edge_a = v[1] - v[0];
+        NUVEC edge_b = v[2] - v[0];
+        NUVEC cross;
+        NuVecCross(&cross, &edge_b, &edge_a);
+        bool clockwise = cross.z > 0.0f;
+        __declspec(align(16)) NUVEC4 normal;
+        normal.z = normal.w = 0.0f;
+        for (i32 edge = 0; edge != 4; ++edge) {
+            i32 start = edge;
+            i32 end = (edge + 1) % 4;
+            if (!clockwise) {
+                end = 3 - end;
+                start = 3 - edge;
+            }
+            normal.x = v[end].y - v[start].y;
+            normal.y = -(v[end].x - v[start].x);
+            NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
+            normal.z = normal.w = 0.0f;
+            NUVEC delta;
+            delta.x = projected.x - v[start].x;
+            delta.y = projected.y - v[start].y;
+            delta.z = 0.0f;
+            f32 distance = normal.x * delta.x + normal.y * delta.y + normal.z * delta.z;
+            if (distance - screen_radius < 0.0)
+                goto next_occluder;
+        }
+        return true;
+    next_occluder:;
+    }
+    return false;
+}
+
+bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMTX const *matrix) {
+    float min_x = 1000000.0f, min_y = 1000000.0f, min_depth = 1000000.0f;
+    float max_x = -1000000.0f, max_y = -1000000.0f;
+    if (!queries_prepared)
+        return false;
+    NUVEC4 corners[8] = {{minimum->x, maximum->y, minimum->z, 1.0f}, {minimum->x, maximum->y, maximum->z, 1.0f},
+                         {maximum->x, maximum->y, maximum->z, 1.0f}, {maximum->x, maximum->y, minimum->z, 1.0f},
+                         {minimum->x, minimum->y, minimum->z, 1.0f}, {minimum->x, minimum->y, maximum->z, 1.0f},
+                         {maximum->x, minimum->y, maximum->z, 1.0f}, {maximum->x, minimum->y, minimum->z, 1.0f}};
+    __declspec(align(16)) NUMTX transform;
+    if (matrix)
+        NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
+    else
+        NuAnimMtxCopyPrivatePc(&transform, &projection_matrix);
+    for (i32 i = 0; i < 8; ++i) {
+        NUVEC4 &v = corners[i];
+        NuVec4MtxTransform(&v, reinterpret_cast<NUVEC *>(&v), &transform);
+        if (!(0.0f < v.w))
+            return false;
+        float x = v.x / v.w;
+        v.x = x;
+        float y = v.y / v.w;
+        v.y = y;
+        v.z /= v.w;
+        if (min_x > x)
+            min_x = x;
+        if (min_y > y)
+            min_y = y;
+        if (max_x < x)
+            max_x = x;
+        if (max_y < y)
+            max_y = y;
+        if (min_depth > v.w)
+            min_depth = v.w;
+    }
+    i32 limit = 100;
+    if (static_cast<i32>(count) <= 100)
+        limit = static_cast<i32>(count);
+    for (i32 i = 0; i != limit; ++i) {
+        if (indices[i] == 0xffffffffu)
+            continue;
+        PC_OCCLUDER_RECORD &record = occluders[indices[i]];
+        if (record.depth > min_depth - 2.0f)
+            return false;
+        if (min_x > record.max_x || min_y > record.max_y || record.min_x > max_x || record.min_y > max_y)
+            continue;
+        NUVEC4 *v = record.transformed;
+        NUVEC edge_a, edge_b, cross;
+        edge_a.x = v[1].x - v[0].x;
+        edge_a.y = v[1].y - v[0].y;
+        edge_a.z = v[1].z - v[0].z;
+        edge_b.x = v[2].x - v[0].x;
+        edge_b.y = v[2].y - v[0].y;
+        edge_b.z = v[2].z - v[0].z;
+        NuVecCross(&cross, &edge_b, &edge_a);
+        bool clockwise = cross.z > 0.0f;
+        for (i32 edge = 0; edge < 4; ++edge) {
+            i32 start = edge;
+            i32 end = (edge + 1) % 4;
+            if (!clockwise) {
+                end = 3 - end;
+                start = 3 - edge;
+            }
+            NUVEC4 normal;
+            normal.x = v[end].y - v[start].y;
+            normal.y = -(v[end].x - v[start].x);
+            NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
+            normal.z = normal.w = 0.0f;
+            for (u32 corner = 0; corner < 8; ++corner) {
+                NUVEC delta;
+                delta.x = corners[corner].x - v[start].x;
+                delta.y = corners[corner].y - v[start].y;
+                delta.z = 0.0f;
+                f32 distance = delta.y * normal.y + normal.x * delta.x + delta.z * normal.z;
+                if (distance < 0.01f)
+                    goto next_occluder;
+            }
+        }
+        return true;
+    next_occluder:;
+    }
+    return false;
+}
+
+void OccluderSet::PrepareForQueries(NUMTX const *query, NUMTX const *projection) {
+    projection_matrix = *projection;
+    query_matrix = *query;
+    for (u32 index = 0; index != count; ++index) {
+        PC_OCCLUDER_RECORD &record = occluders[index];
+        record.min_x = 1000000.0f;
+        record.min_y = 1000000.0f;
+        record.min_depth = 1000000.0f;
+        record.max_x = -1000000.0f;
+        record.max_y = -1000000.0f;
+        record.depth = -1000000.0f;
+        bool valid = true;
+        for (u32 vertex = 0; vertex < 4; ++vertex) {
+            NUVEC4 &v = record.transformed[vertex];
+            NuVec4MtxTransform(&v, reinterpret_cast<NUVEC *>(&record.vertices[vertex]), &projection_matrix);
+            if (!(v.w > 0.0f)) {
+                valid = false;
+                break;
+            }
+            v.x /= v.w;
+            v.y /= v.w;
+            v.z /= v.w;
+            record.min_x = record.min_x > v.x ? v.x : record.min_x;
+            record.min_y = record.min_y > v.y ? v.y : record.min_y;
+            record.max_x = record.max_x < v.x ? v.x : record.max_x;
+            record.max_y = record.max_y < v.y ? v.y : record.max_y;
+            record.min_depth = record.min_depth > v.w ? v.w : record.min_depth;
+            record.depth = record.depth < v.w ? v.w : record.depth;
+        }
+        if (valid && (record.depth < 0.0f || record.min_depth < 0.0f || record.max_x < -1.0f || record.min_x > 1.0f ||
+                      record.max_y < -1.0f || record.min_y > 1.0f)) {
+            valid = false;
+        }
+        indices[index] = valid ? index : 0xffffffffu;
+    }
+    qsort(indices, count, sizeof(*indices), SortByDepth);
+    queries_prepared = true;
+}
+
+i32 OccluderSet::SortByDepth(void const *left, void const *right) {
+    i32 a = *static_cast<const i32 *>(left);
+    i32 b = *static_cast<const i32 *>(right);
+    if (a == -1)
+        return 1;
+    if (b == -1)
+        return -1;
+    PC_OCCLUDER_RECORD *records = reinterpret_cast<OccluderSet *>(g_OcclusionManager.current_set)->occluders;
+    return records[b].depth > records[a].depth ? -1 : 1;
+}
+
+bool OcclusionManager::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMTX const *matrix) {
+    if (!initialized || !enabled)
+        return false;
+    if (!current_set->queries_prepared)
+        current_set->PrepareForQueries(&vmtx, &vpmtx);
+    ++query_count;
+    bool occluded = current_set->IsOccludedOBB(minimum, maximum, matrix);
+    if (occluded)
+        ++occluded_count;
+    return occluded;
+}
+bool OcclusionManager::IsOccludedSphere(NUVEC const *center, f32 radius) {
+    if (!initialized || !enabled)
+        return false;
+    if (!current_set->queries_prepared)
+        current_set->PrepareForQueries(&vmtx, &vpmtx);
+    ++query_count;
+    bool occluded = current_set->IsOccludedSphere(center, radius);
+    if (occluded)
+        ++occluded_count;
+    return occluded;
+}
+
+void OccluderSet::OnCameraSet() {
+    queries_prepared = false;
+}
+
+extern "C" i32 __cdecl NuOcclusionManagerIsInitialised(void) {
+    return g_OcclusionManager.initialized != 0;
+}
+
+extern "C" i32 __cdecl NuOcclusionManagerIsEnabled(void) {
+    return g_OcclusionManager.initialized != 0 && g_OcclusionManager.enabled != 0;
+}
+/* Original legoapi/render/light/occlusion.cpp family; public material APIs
+ * preserve the original inline operations without exposing private ABIs. */
+void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
+    (void)buffer_end;
+    capacity = max_occluders;
+    count = 0;
+    occluders = reinterpret_cast<PC_OCCLUDER_RECORD *>((buffer->addr + 15u) & ~15u);
+    buffer->addr = ((buffer->addr + 15u) & ~15u) + capacity * sizeof(PC_OCCLUDER_RECORD);
+    indices = reinterpret_cast<u32 *>((buffer->addr + 3u) & ~3u);
+    buffer->addr = ((buffer->addr + 3u) & ~3u) + capacity * sizeof(u32);
+    if (ms_pZOnlyMtl3D == NULL) {
+        ms_pZOnlyMtl3D = NuMtlCreate3D(1);
+        ms_pZOnlyMtl2D = NuMtlCreate(1);
+        ms_pAlphaMtl2D = NuMtlCreate(1);
+        PC_MATERIAL_SHADER_DESC_VIEW desc2d;
+        memset(&desc2d, 0, sizeof(desc2d));
+        desc2d.flags = 0x1000;
+        desc2d.diffuse_map_id = 0;
+        desc2d.vertex_format |= 0x40001;
+        NuMtlSetShaderDescPS(ms_pZOnlyMtl2D, &desc2d);
+        ms_pZOnlyMtl2D->attribs.z_mode = 0;
+        ms_pZOnlyMtl2D->attribs.alpha_mode = 13;
+        ms_pZOnlyMtl2D->attribs.unknown_2_8 = 0;
+        ms_pZOnlyMtl2D->attribs.cull_mode = 2;
+        NuMtlUpdate(ms_pZOnlyMtl2D);
+        PC_MATERIAL_SHADER_DESC_VIEW desc3d;
+        memset(&desc3d, 0, sizeof(desc3d));
+        desc3d.flags = 0x1000;
+        desc3d.diffuse_map_id = 0;
+        desc3d.vertex_format |= 1;
+        NuMtlSetShaderDescPS(ms_pZOnlyMtl3D, &desc3d);
+        ms_pZOnlyMtl3D->attribs.z_mode = 0;
+        ms_pZOnlyMtl3D->attribs.alpha_mode = 13;
+        ms_pZOnlyMtl3D->attribs.unknown_2_8 = 0;
+        ms_pZOnlyMtl3D->attribs.cull_mode = 2;
+        NuMtlUpdate(ms_pZOnlyMtl3D);
+        ms_pAlphaMtl2D->attribs.z_mode = 1;
+        ms_pAlphaMtl2D->attribs.alpha_mode = 1;
+        ms_pAlphaMtl2D->attribs.cull_mode = 2;
+        NuMtlUpdate(ms_pAlphaMtl2D);
+    }
+}
+
+void OcclusionManager::Init(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
+    if (capacity != 0) {
+        sets[0].Init(capacity, buffer, buffer_end);
+        sets[1].Init(capacity, buffer, buffer_end);
+        unknown_158 = 0.3f;
+        building_set = &sets[0];
+        current_set = &sets[1];
+        unknown_15c = -1.0f;
+        initialized = true;
+        enabled = true;
+    }
+}
+
+void OccluderSet::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
+    if (count < capacity) {
+        queries_prepared = false;
+        NUVEC4 *vertex = &occluders[count].vertices[0];
+        vertex->x = a->x;
+        vertex->y = a->y;
+        vertex->z = a->z;
+        vertex->w = 1.0f;
+        vertex = &occluders[count].vertices[1];
+        vertex->x = b->x;
+        vertex->y = b->y;
+        vertex->z = b->z;
+        vertex->w = 1.0f;
+        vertex = &occluders[count].vertices[2];
+        vertex->x = c->x;
+        vertex->y = c->y;
+        vertex->z = c->z;
+        vertex->w = 1.0f;
+        vertex = &occluders[count].vertices[3];
+        vertex->x = d->x;
+        vertex->y = d->y;
+        vertex->z = d->z;
+        vertex->w = 1.0f;
+        ++count;
+    }
+}
+
+typedef struct OCCLUDER_PRIM_VERTEX_PC {
+    f32 x, y, z;
+    u32 colour;
+    f32 u, v;
+} OCCLUDER_PRIM_VERTEX_PC;
+STATIC_ASSERT(sizeof(OCCLUDER_PRIM_VERTEX_PC) == 0x18);
+STATIC_ASSERT(offsetof(OCCLUDER_PRIM_VERTEX_PC, colour) == 0xc);
+
+#define OCCLUDER_PRIM_POSITION(source)                                                                                 \
+    do {                                                                                                               \
+        f32 position_x = (source).x, position_y = (source).y, position_z = (source).z;                                 \
+        ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = position_x;                              \
+        ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = position_y;                              \
+        ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = position_z;                              \
+        NuPrimStreamBufferPointer->addr += sizeof(OCCLUDER_PRIM_VERTEX_PC);                                            \
+        ++NuPrimVertexCount;                                                                                           \
+    } while (0)
+
+void OccluderSet::RenderOccluders(bool depth_only) const {
+    i32 colour = 0;
+    NUMTL *material = NULL;
+    if (depth_only)
+        material = queries_prepared ? ms_pZOnlyMtl2D : ms_pZOnlyMtl3D;
+    if (queries_prepared) {
+        ++NuPrimCSPos;
+        NuPrimSetCoordinateSystem(1);
+        NuPrim2DBegin(12, 5, material);
+        for (u32 i = 0; i != count; ++i) {
+            if (indices[i] == 0xffffffffu)
+                continue;
+            const PC_OCCLUDER_RECORD &record = occluders[indices[i]];
+            if (record.min_depth < 0.0f || record.depth < 0.0f)
+                continue;
+            colour = (i32)((u32)(record.vertices[0].z * record.vertices[0].x) | 0xff000000u);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[0].x, (f32)(record.transformed[0].y * -1.0), record.transformed[0].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[1].x, (f32)(record.transformed[1].y * -1.0), record.transformed[1].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[2].x, (f32)(record.transformed[2].y * -1.0), record.transformed[2].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[2].x, (f32)(record.transformed[2].y * -1.0), record.transformed[2].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[3].x, (f32)(record.transformed[3].y * -1.0), record.transformed[3].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[0].x, (f32)(record.transformed[0].y * -1.0), record.transformed[0].z);
+        }
+        NuPrim2DEnd();
+        --NuPrimCSPos;
+        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    } else {
+        NuPrim3DBegin(12, 5, material, NULL);
+        for (u32 i = 0; i != count; ++i) {
+            const PC_OCCLUDER_RECORD &record = occluders[i];
+            colour = (i32)((u32)(record.vertices[0].z * record.vertices[0].x) | 0xff000000u);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[0]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[1]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[2]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[2]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[3]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[0]);
+        }
+        NuPrim3DEnd();
+    }
+}
+#undef OCCLUDER_PRIM_POSITION
+
+void OcclusionManager::EndFrame() {
+}
+
+void OcclusionManager::BeginFrame() {
+    if (initialized && enabled) {
+        OccluderSet *completed = building_set;
+        OccluderSet *building = current_set;
+        current_set = completed;
+        building_set = building;
+        building->count = 0;
+        building->queries_prepared = false;
+        occluded_count = 0;
+        query_count = 0;
+    }
+}
+
+void OcclusionManager::OnCameraSet() {
+    if (initialized && enabled)
+        current_set->OnCameraSet();
+}
+
+void OcclusionManager::RenderZPass() const {
+    if (initialized && enabled)
+        current_set->RenderOccluders(true);
+}
+
+extern "C" {
+    extern i32 NuRndrDoingScreenGrab;
+    void __cdecl NuQFntMove2d(VUFNT *font, f32 x, f32 y, f32 z);
+    void __cdecl NuQFntSetColour2d(VUFNT *font, u32 colour);
+    void __cdecl NuQFntPrint2dU(VUFNT *font, char *text);
+}
+
+i32 OcclusionRenderOccludersPc = 0;
+
+void OcclusionManager::RenderStats() const {
+    if (!initialized || !enabled || NuRndrDoingScreenGrab != 0)
+        return;
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSet(system_qfont);
+    NuQFntSetScale(system_qfont, 0.7f, 0.7f);
+    NuQFntSetPointSize(system_qfont, 0.7f, 0.7f);
+    NuQFntMove2d(system_qfont, 112.0f, 112.0f, 0.0f);
+    NuQFntSetColour2d(system_qfont, 0x80000000);
+    char text[256];
+    sprintf(text, "Occluders : %2d, Queries : %2d, Occluded : %2d, Visible : %2d", current_set->count, query_count,
+            occluded_count, query_count - occluded_count);
+    NuQFntPrint2dU(system_qfont, text);
+    NuQFntMove2d(system_qfont, 112.0 - qfnt_len_scale, 112.0 - qfnt_height_scale, 0.0f);
+    NuQFntSetColour2d(system_qfont, 0xff00ffff);
+    NuQFntPrint2dU(system_qfont, text);
+    NuQFntPopCoordinateSystem();
+    NuQFntPopPrintMode();
+    if (OcclusionRenderOccludersPc != 0)
+        current_set->RenderOccluders(false);
+}
+
+void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
+    if (!initialized || !enabled || building_set->count >= building_set->capacity)
+        return;
+    if (unknown_158 > 0.0f || unknown_15c > 0.0f) {
+        __declspec(align(16)) NUVEC4 projected[4];
+        NuVec4MtxTransform(&projected[0], const_cast<NUVEC *>(a), &vpmtx);
+        NuVec4MtxTransform(&projected[1], const_cast<NUVEC *>(b), &vpmtx);
+        NuVec4MtxTransform(&projected[2], const_cast<NUVEC *>(c), &vpmtx);
+        if (unknown_158 > 0.0f) {
+            NUVEC ab = projected[1] - projected[0];
+            NUVEC ac = projected[2] - projected[0];
+            NUVEC normal;
+            NuVecCross(&normal, &ab, &ac);
+            NuVecNorm(&normal, &normal);
+            f32 z = normal.z;
+            u32 bits = *reinterpret_cast<u32 *>(&z) & 0x7fffffff;
+            if (*reinterpret_cast<f32 *>(&bits) < unknown_158)
+                return;
+        }
+        NuVec4MtxTransform(&projected[3], const_cast<NUVEC *>(d), &vpmtx);
+        f32 min_x = 1000000.0f, min_y = 1000000.0f, min_depth = 1000000.0f;
+        f32 max_x = -1000000.0f, max_y = -1000000.0f;
+        for (u32 i = 0; i < 4; ++i) {
+            NUVEC4 &v = projected[i];
+            if (v.w < 0.001f)
+                return;
+            f32 x = v.x / v.w;
+            v.x = x;
+            f32 y = v.y / v.w;
+            v.y = y;
+            v.z /= v.w;
+            if (min_x > x)
+                min_x = x;
+            if (min_y > y)
+                min_y = y;
+            if (max_x < x)
+                max_x = x;
+            if (max_y < y)
+                max_y = y;
+            if (v.w < min_depth)
+                min_depth = v.w;
+        }
+        if (unknown_15c > 0.0f) {
+            f32 area = (max_y - min_y) * (max_x - min_x);
+            if (area * 0.25 < unknown_15c)
+                return;
+        }
+    }
+    building_set->AddOccluder(a, b, c, d);
+}
+
+void OcclusionManager::AddOccluder(const NUVEC *center, f32 radius) {
+    if (!initialized || !enabled)
+        return;
+    NUMTX view;
+    NuAnimMtxCopyPrivatePc(&view, &vmtx);
+    NUVEC right = {view.m00 * radius, view.m10 * radius, view.m20 * radius};
+    NUVEC up = {view.m01 * radius, view.m11 * radius, view.m21 * radius};
+    NUVEC forward = {view.m02 * radius, view.m12 * radius, view.m22 * radius};
+    NUVEC4 a = {center->x, center->y, center->z, 1.0f};
+    NUVEC4 b = {center->x, center->y, center->z, 1.0f};
+    NUVEC4 c = {center->x, center->y, center->z, 1.0f};
+    NUVEC4 d = {center->x, center->y, center->z, 1.0f};
+    a.x += up.x;
+    a.y += up.y;
+    a.z += up.z;
+    a.x -= right.x;
+    a.y -= right.y;
+    a.z -= right.z;
+    a.x -= forward.x;
+    a.y -= forward.y;
+    a.z -= forward.z;
+    b.x += up.x;
+    b.y += up.y;
+    b.z += up.z;
+    b.x += right.x;
+    b.y += right.y;
+    b.z += right.z;
+    b.x += forward.x;
+    b.y += forward.y;
+    b.z += forward.z;
+    c.x -= up.x;
+    c.y -= up.y;
+    c.z -= up.z;
+    c.x += right.x;
+    c.y += right.y;
+    c.z += right.z;
+    c.x += forward.x;
+    c.y += forward.y;
+    c.z += forward.z;
+    d.x -= up.x;
+    d.y -= up.y;
+    d.z -= up.z;
+    d.x -= right.x;
+    d.y -= right.y;
+    d.z -= right.z;
+    d.x -= forward.x;
+    d.y -= forward.y;
+    d.z -= forward.z;
+    AddOccluder(reinterpret_cast<NUVEC *>(&a), reinterpret_cast<NUVEC *>(&b), reinterpret_cast<NUVEC *>(&c),
+                reinterpret_cast<NUVEC *>(&d));
+}
+
+void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, const NUMTX *matrix) {
+    if (!initialized || !enabled)
+        return;
+    const f32 min_x = minimum->x;
+    const f32 min_y = minimum->y;
+    const f32 min_z = minimum->z;
+    const f32 max_x = maximum->x;
+    const f32 max_y = maximum->y;
+    const f32 max_z = maximum->z;
+    __declspec(align(16)) NUVEC4 corners[8] = {{min_x, max_y, min_z, 1.0f}, {max_x, max_y, max_z, 1.0f},
+                                               {max_x, min_y, max_z, 1.0f}, {min_x, min_y, min_z, 1.0f},
+                                               {min_x, max_y, max_z, 1.0f}, {max_x, max_y, min_z, 1.0f},
+                                               {max_x, min_y, min_z, 1.0f}, {min_x, min_y, max_z, 1.0f}};
+    for (i32 i = 0; i < 8; ++i) {
+        NUVEC *vertex = reinterpret_cast<NUVEC *>(&corners[i]);
+        NuVecMtxTransform(vertex, vertex, const_cast<NUMTX *>(matrix));
+    }
+    AddOccluder(reinterpret_cast<NUVEC *>(&corners[0]), reinterpret_cast<NUVEC *>(&corners[1]),
+                reinterpret_cast<NUVEC *>(&corners[2]), reinterpret_cast<NUVEC *>(&corners[3]));
+    AddOccluder(reinterpret_cast<NUVEC *>(&corners[4]), reinterpret_cast<NUVEC *>(&corners[5]),
+                reinterpret_cast<NUVEC *>(&corners[6]), reinterpret_cast<NUVEC *>(&corners[7]));
+}
+
+extern "C" {
+    void __cdecl NuOcclusionManagerOnCameraSet(void) {
+        g_OcclusionManager.OnCameraSet();
+    }
+
+    void __cdecl NuOcclusionManagerRenderZPass(void) {
+        g_OcclusionManager.RenderZPass();
+    }
+
+    void __cdecl NuOcclusionManagerRenderStats(void) {
+        g_OcclusionManager.RenderStats();
+    }
+
+    void __cdecl NuOcclusionManagerAddOccluderQuad(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
+        g_OcclusionManager.AddOccluder(a, b, c, d);
+    }
+
+    void __cdecl NuOcclusionManagerAddOccluderSphere(const NUVEC *center, f32 radius) {
+        g_OcclusionManager.AddOccluder(center, radius);
+    }
+
+    void __cdecl NuOcclusionManagerAddOccluderOBB(const NUVEC *minimum, const NUVEC *maximum, const NUMTX *matrix) {
+        g_OcclusionManager.AddOccluder(minimum, maximum, matrix);
+    }
+}
+
+/* Genuine original occlusion.cpp static members; outside extern C. */
+NUMTL *OccluderSet::ms_pZOnlyMtl3D = 0;
+NUMTL *OccluderSet::ms_pZOnlyMtl2D = 0;
+NUMTL *OccluderSet::ms_pAlphaMtl2D = 0;
+
+/* NuDynamicLight shadow helpers; unreferenced in retail but kept by the linker. */
+extern "C" i32 __cdecl rawClip(const NUVEC4 *input, NUVEC4 *output, i32, const NUVEC4 *plane) {
+    i32 count = 0;
+    for (i32 edge = 0; edge < 12; ++edge) {
+        const NUVEC4 *a = &input[cubeEdgeIndices[edge][0]];
+        const NUVEC4 *b = &input[cubeEdgeIndices[edge][1]];
+        f32 dot_a = a->x * plane->x + a->y * plane->y + a->z * plane->z;
+        f32 da = dot_a + plane->w;
+        f32 dot_b = plane->x * b->x + plane->y * b->y + b->z * plane->z;
+        f32 db = dot_b + plane->w;
+        if (da > 0.0f) {
+            output[count].x = a->x;
+            output[count].y = a->y;
+            output[count].z = a->z;
+            output[count].w = a->w;
+            ++count;
+            if (db > 0.0f) {
+                output[count].x = b->x;
+                output[count].y = b->y;
+                output[count].z = b->z;
+                output[count].w = b->w;
+                ++count;
+            } else {
+                f32 t = da / (da - db);
+                __declspec(align(16)) NUVEC4 delta;
+                delta.x = b->x - a->x;
+                delta.y = b->y - a->y;
+                delta.z = b->z - a->z;
+                __declspec(align(16)) NUVEC4 scaled;
+                scaled.x = delta.x * t;
+                scaled.y = delta.y * t;
+                scaled.z = delta.z * t;
+                __declspec(align(16)) NUVEC4 point;
+                point.x = a->x + scaled.x;
+                point.y = a->y + scaled.y;
+                point.z = a->z + scaled.z;
+                output[count].x = point.x;
+                output[count].y = point.y;
+                output[count].z = point.z;
+                output[count].w = point.w;
+                ++count;
+            }
+        } else if (db > 0.0f) {
+            output[count].x = b->x;
+            output[count].y = b->y;
+            output[count].z = b->z;
+            output[count].w = b->w;
+            ++count;
+            f32 t = -da / (db - da);
+            __declspec(align(16)) NUVEC4 delta;
+            delta.x = b->x - a->x;
+            delta.y = b->y - a->y;
+            delta.z = b->z - a->z;
+            __declspec(align(16)) NUVEC4 scaled;
+            scaled.x = delta.x * t;
+            scaled.y = delta.y * t;
+            scaled.z = delta.z * t;
+            __declspec(align(16)) NUVEC4 point;
+            point.x = a->x + scaled.x;
+            point.y = a->y + scaled.y;
+            point.z = a->z + scaled.z;
+            output[count].x = point.x;
+            output[count].y = point.y;
+            output[count].z = point.z;
+            output[count].w = point.w;
+            ++count;
+        }
+    }
+    return count;
+}
+extern "C" void __cdecl PostShadowComputeBoundingSpacePc(const NUVEC4 *points, NUMTX *matrix) {
+    f32 min_x = 3.4028234663852886e+38f, max_x = -3.4028234663852886e+38f;
+    f32 min_y = 3.4028234663852886e+38f, max_y = -3.4028234663852886e+38f;
+    f32 min_z = 3.4028234663852886e+38f, max_z = -3.4028234663852886e+38f;
+    for (i32 i = 0; i < 8; i++) {
+        if (min_x > points[i].x)
+            min_x = points[i].x;
+        else if (max_x < points[i].x)
+            max_x = points[i].x;
+        if (min_y > points[i].y)
+            min_y = points[i].y;
+        else if (max_y < points[i].y)
+            max_y = points[i].y;
+        if (min_z > points[i].z)
+            min_z = points[i].z;
+        else if (max_z < points[i].z)
+            max_z = points[i].z;
+    }
+    NuMtxSetOrthoBlend(matrix, min_x, max_x, min_y, max_y, min_z, max_z);
+}
+extern "C" void __cdecl PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero_near, NUVEC4 *left,
+                                                          NUVEC4 *right, NUVEC4 *bottom, NUVEC4 *top,
+                                                          NUVEC4 *near_plane, NUVEC4 *far_plane) {
+    __declspec(align(16)) const NUVEC4 symmetric[8] = {{-1, -1, -1, 1}, {-1, 1, -1, 1}, {1, 1, -1, 1}, {1, -1, -1, 1},
+                                                       {-1, -1, 1, 1},  {-1, 1, 1, 1},  {1, 1, 1, 1},  {1, -1, 1, 1}};
+    __declspec(align(16)) const NUVEC4 positive[8] = {{-1, -1, 0, 1}, {-1, 1, 0, 1}, {1, 1, 0, 1}, {1, -1, 0, 1},
+                                                      {-1, -1, 1, 1}, {-1, 1, 1, 1}, {1, 1, 1, 1}, {1, -1, 1, 1}};
+    const NUVEC4 *source = zero_near ? positive : symmetric;
+    __declspec(align(16)) NUVEC4 corners[8];
+    for (i32 i = 0; i < 8; ++i) {
+        const NUVEC4 *in = &source[i];
+        __declspec(align(16)) NUVEC4 result;
+        f32 inverse;
+        result.x = in->y * matrix->m10 + in->x * matrix->m00 + matrix->m20 * in->z + matrix->m30;
+        result.y = in->y * matrix->m11 + matrix->m01 * in->x + in->z * matrix->m21 + matrix->m31;
+        result.z = in->y * matrix->m12 + matrix->m02 * in->x + in->z * matrix->m22 + matrix->m32;
+        result.w = in->y * matrix->m13 + matrix->m03 * in->x + in->z * matrix->m23 + matrix->m33;
+        inverse = 1.0f / result.w;
+        result.x *= inverse;
+        result.y *= inverse;
+        result.z *= inverse;
+        corners[i] = result;
+    }
+    __declspec(align(16)) NUVEC4 near_up;
+    near_up.x = corners[1].x - corners[0].x;
+    near_up.y = corners[1].y - corners[0].y;
+    near_up.z = corners[1].z - corners[0].z;
+    __declspec(align(16)) NUVEC4 depth_left;
+    depth_left.x = corners[4].x - corners[0].x;
+    depth_left.y = corners[4].y - corners[0].y;
+    depth_left.z = corners[4].z - corners[0].z;
+    __declspec(align(16)) NUVEC4 far_left;
+    far_left.x = corners[5].x - corners[6].x;
+    far_left.y = corners[5].y - corners[6].y;
+    far_left.z = corners[5].z - corners[6].z;
+    __declspec(align(16)) NUVEC4 near_right;
+    near_right.x = corners[3].x - corners[0].x;
+    near_right.y = corners[3].y - corners[0].y;
+    near_right.z = corners[3].z - corners[0].z;
+    __declspec(align(16)) NUVEC4 far_down;
+    far_down.x = corners[7].x - corners[6].x;
+    far_down.y = corners[7].y - corners[6].y;
+    far_down.z = corners[7].z - corners[6].z;
+    __declspec(align(16)) NUVEC4 depth_right;
+    depth_right.x = corners[2].x - corners[6].x;
+    depth_right.y = corners[2].y - corners[6].y;
+    depth_right.z = corners[2].z - corners[6].z;
+    NuVecCross(reinterpret_cast<NUVEC *>(left), reinterpret_cast<NUVEC *>(&near_up),
+               reinterpret_cast<NUVEC *>(&depth_left));
+    NuVecNorm(reinterpret_cast<NUVEC *>(left), reinterpret_cast<NUVEC *>(left));
+    f32 dot = (left->y * corners[0].y + left->x * corners[0].x) + left->z * corners[0].z;
+    left->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(right), reinterpret_cast<NUVEC *>(&depth_right),
+               reinterpret_cast<NUVEC *>(&far_down));
+    NuVecNorm(reinterpret_cast<NUVEC *>(right), reinterpret_cast<NUVEC *>(right));
+    dot = (right->y * corners[6].y + right->x * corners[6].x) + right->z * corners[6].z;
+    right->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(top), reinterpret_cast<NUVEC *>(&far_left),
+               reinterpret_cast<NUVEC *>(&depth_right));
+    NuVecNorm(reinterpret_cast<NUVEC *>(top), reinterpret_cast<NUVEC *>(top));
+    dot = (top->y * corners[6].y + top->x * corners[6].x) + top->z * corners[6].z;
+    top->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(bottom), reinterpret_cast<NUVEC *>(&depth_left),
+               reinterpret_cast<NUVEC *>(&near_right));
+    NuVecNorm(reinterpret_cast<NUVEC *>(bottom), reinterpret_cast<NUVEC *>(bottom));
+    dot = (bottom->y * corners[0].y + bottom->x * corners[0].x) + bottom->z * corners[0].z;
+    bottom->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(far_plane), reinterpret_cast<NUVEC *>(&far_down),
+               reinterpret_cast<NUVEC *>(&far_left));
+    NuVecNorm(reinterpret_cast<NUVEC *>(far_plane), reinterpret_cast<NUVEC *>(far_plane));
+    dot = (far_plane->y * corners[6].y + far_plane->x * corners[6].x) + far_plane->z * corners[6].z;
+    far_plane->w = -dot;
+    NuVecCross(reinterpret_cast<NUVEC *>(near_plane), reinterpret_cast<NUVEC *>(&near_right),
+               reinterpret_cast<NUVEC *>(&near_up));
+    NuVecNorm(reinterpret_cast<NUVEC *>(near_plane), reinterpret_cast<NUVEC *>(near_plane));
+    dot = (near_plane->y * corners[0].y + near_plane->x * corners[0].x) + near_plane->z * corners[0].z;
+    near_plane->w = -dot;
+}
+/* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
+static __declspec(noinline) void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin,
+                                                              const NUVEC4 *point_a, const NUVEC4 *point_b) {
+    NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
+    NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
+    NuVecCross(reinterpret_cast<NUVEC *>(plane), &a, &b);
+    NuVecNorm(reinterpret_cast<NUVEC *>(plane), reinterpret_cast<NUVEC *>(plane));
+    plane->w = 1.0f;
+    f32 dot = (plane->y * origin->y + origin->x * plane->x) + plane->z * origin->z;
+    plane->w = -dot;
+}
+extern "C" void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *camera, NUVEC4 *corners, NUVEC4 *plane) {
+    f32 half_fov = (f32)((f64)camera->fov * 0.5);
+    i32 angle = (i32)((f64)half_fov * 10430.3779296875);
+    f32 height = NuTrigTable[(angle >> 1) & 0x7fff] * camera->near_clip /
+                 NuTrigTable[(((i32)((u32)angle + 0x4000u)) >> 1) & 0x7fff];
+    f32 width = height / camera->aspect;
+    f32 far_scale = camera->far_clip / camera->near_clip;
+    corners[0].x = -width;
+    corners[0].y = -height;
+    corners[0].z = camera->near_clip;
+    corners[0].w = 1.0f;
+    corners[1].x = -width;
+    corners[1].y = height;
+    corners[1].z = camera->near_clip;
+    corners[1].w = 1.0f;
+    corners[2].x = width;
+    corners[2].y = height;
+    corners[2].z = camera->near_clip;
+    corners[2].w = 1.0f;
+    corners[3].x = width;
+    corners[3].y = -height;
+    corners[3].z = camera->near_clip;
+    corners[3].w = 1.0f;
+    __declspec(align(16)) NUVEC4 scaled;
+    for (i32 i = 0; i < 4; ++i) {
+        scaled.x = corners[i].x * far_scale;
+        scaled.y = corners[i].y * far_scale;
+        scaled.z = corners[i].z * far_scale;
+        /* Original copies the unwritten fourth word of this XYZ scratch. */
+        corners[i + 4] = scaled;
+    }
+    NUMTX matrix;
+    NuAnimMtxCopyPrivatePc(&matrix, &camera->mtx);
+    for (i32 i = 0; i < 8; ++i)
+        NuVecMtxTransform(reinterpret_cast<NUVEC *>(&corners[i]), reinterpret_cast<NUVEC *>(&corners[i]), &matrix);
+    PostShadowMakePlanePrivatePc(plane, &corners[4], &corners[5], &corners[6]);
+}
+extern "C" i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *direction, const NUVEC4 *corners, NUVEC4 *planes) {
+    f32 extrusion = -PostShadowPlaneExtrusionPc;
+    NUVEC offset = {direction->x * extrusion, direction->y * extrusion, direction->z * extrusion};
+    u8 positive[6];
+    i32 count = 0;
+    NUVEC4 *output = planes;
+    for (i32 face = 0; face < 6; ++face) {
+        const NUVEC4 *origin = &corners[PostShadowCubeFaceIndicesPc[face][0]];
+        const NUVEC4 *point_a = &corners[PostShadowCubeFaceIndicesPc[face][1]];
+        const NUVEC4 *point_b = &corners[PostShadowCubeFaceIndicesPc[face][2]];
+        NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
+        NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
+        NUVEC normal;
+        NuVecCross(&normal, &a, &b);
+        f32 dot = (normal.y * offset.y + normal.x * offset.x) + normal.z * offset.z;
+        positive[face] = dot >= 0.0f;
+        if (positive[face] == 0) {
+            output->x = -normal.x;
+            output->y = -normal.y;
+            output->z = -normal.z;
+            output->w = 0.0f;
+            NuVecNorm(reinterpret_cast<NUVEC *>(output), reinterpret_cast<NUVEC *>(output));
+            ++count;
+            output->w = 1.0f;
+            f32 plane_dot = (output->y * origin->y + output->x * origin->x) + output->z * origin->z;
+            output->w = -plane_dot;
+            ++output;
+        }
+    }
+    output = planes + count;
+    for (i32 edge = 0; edge < 12 && count < 9; ++edge) {
+        u8 first_positive = positive[cubeEdgeTopologies[edge][0]];
+        if (first_positive != positive[cubeEdgeTopologies[edge][1]]) {
+            const NUVEC4 *origin = &corners[cubeEdgeIndices[edge][0]];
+            const NUVEC4 *other = &corners[cubeEdgeIndices[edge][1]];
+            NUVEC4 extruded;
+            extruded.x = origin->x + offset.x;
+            extruded.y = origin->y + offset.y;
+            extruded.z = origin->z + offset.z;
+            if (first_positive != 0)
+                PostShadowMakePlanePrivatePc(output, origin, other, &extruded);
+            else
+                PostShadowMakePlanePrivatePc(output, &extruded, other, origin);
+            ++count;
+            ++output;
+        }
+    }
+    return count;
+}
+extern "C" void __cdecl PostShadowComputeCapsulePc(const NUVEC4 *direction, const NUVEC4 *corners, NUVEC4 *center,
+                                                   NUVEC4 *endpoint, f32 *radius) {
+    *center = corners[0];
+    for (i32 i = 1; i < 8; ++i) {
+        center->x += corners[i].x;
+        center->y += corners[i].y;
+        center->z += corners[i].z;
+    }
+    center->x = (f32)((f64)center->x * 0.125);
+    center->y = (f32)((f64)center->y * 0.125);
+    center->z = (f32)((f64)center->z * 0.125);
+    *radius = 0.0f;
+    f32 distance;
+    NUVEC4 delta;
+    for (i32 i = 0; i < 8; ++i) {
+        delta.x = center->x - corners[i].x;
+        delta.y = center->y - corners[i].y;
+        delta.z = center->z - corners[i].z;
+        distance = (delta.x * delta.x + delta.y * delta.y) + delta.z * delta.z;
+        if (*radius < distance)
+            *radius = distance;
+    }
+    /* Native passes the final vertex distance, after all maximum stores. */
+    *radius = NuFsqrt(distance);
+    NUVEC scaled = {(f32)((f64)direction->x * 100.0), (f32)((f64)direction->y * 100.0),
+                    (f32)((f64)direction->z * 100.0)};
+    delta.x = center->x - scaled.x;
+    delta.y = center->y - scaled.y;
+    delta.z = center->z - scaled.z;
+    /* As in the retail stack scratch, the fourth component was not assigned. */
+    *endpoint = delta;
+}

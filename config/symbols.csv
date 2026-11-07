@@ -6138,7 +6138,6 @@ address,symbol,size,ctype
 0x5c1600,_VisibilityAbsoluteFourPc,90,
 0x5c1880,@NuQuatMulAlignedPc@12,118,"void private (const NUQUAT *parent ECX, const NUQUAT *rotation EDX, NUQUAT *out stack; caller cleanup)"
 0x5c1950,_NuVec4AbsPrivatePc,90,"void private (NUVEC4 *out, const NUVEC4 *in); native source EAX, destination ECX"
-0x5c19d0,?OcclusionMtxCopyPrivate@@YAXPAUnumtx_s@@PBU1@@Z,95,"void private (NUMTX *destination, const NUMTX *source); original source EAX,destination ECX"
 0x5c19d0,_SceneUpdateMtxCopyPrivatePc,95,
 0x5c19d0,_NuAnimMtxCopyPrivatePc,95,
 0x5c1aa0,_VisibilityTransformFourPc,111,
