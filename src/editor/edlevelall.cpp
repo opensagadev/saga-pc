@@ -1199,6 +1199,109 @@ STATIC_ASSERT(sizeof(KnotHelper) == 0x14);
 KnotHelper::KnotHelper() {
 }
 
+/* Returns the next object after current that the filter accepts. */
+void *EdClassInterface::GetNextObject(void *current, i32 (*filter)(void *)) {
+    void *next = GetNextObject(current);
+    while (next != NULL && filter(next) == 0)
+        next = GetNextObject(next);
+    return next;
+}
+
+/* Distance from point to the segment origin..origin+direction; optionally
+ * returns the closest point on the segment. */
+f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *closest) {
+    f32 length = NuFsqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+    f32 inverse_length = 1.0f / length;
+    VuVec normal;
+    __declspec(align(16)) VuVec offset;
+    VuVec on_segment;
+    VuVec difference;
+    f32 projection;
+    f32 distance;
+    normal.x = direction.x * inverse_length;
+    normal.y = direction.y * inverse_length;
+    normal.z = direction.z * inverse_length;
+    offset.x = point.x - origin.x;
+    offset.y = point.y - origin.y;
+    offset.z = point.z - origin.z;
+    projection = offset.x * normal.x + offset.y * normal.y + offset.z * normal.z;
+    if (projection > 0.0f) {
+        if (projection < length) {
+            normal.x *= projection;
+            normal.y *= projection;
+            normal.z *= projection;
+            offset.x = origin.x + normal.x;
+            offset.y = origin.y + normal.y;
+            offset.z = origin.z + normal.z;
+        } else {
+            offset.x = origin.x + direction.x;
+            offset.y = origin.y + direction.y;
+            offset.z = origin.z + direction.z;
+        }
+        on_segment.x = offset.x;
+        on_segment.y = offset.y;
+        on_segment.z = offset.z;
+        on_segment.w = offset.w;
+    } else {
+        on_segment.x = origin.x;
+        on_segment.y = origin.y;
+        on_segment.z = origin.z;
+        on_segment.w = origin.w;
+    }
+    difference.x = on_segment.x - point.x;
+    difference.y = on_segment.y - point.y;
+    difference.z = on_segment.z - point.z;
+    distance = NuFsqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
+    if (closest != NULL)
+        *closest = on_segment;
+    return distance;
+}
+
+/* Distance from the cursor ray to the object's position sphere (attribute 8
+ * position, attribute 0x40 radius, default radius 1). */
+f32 EdClassInterface::DistanceToObject(VuVec &origin, VuVec &direction, void *object, EdRef **reference) {
+    __declspec(align(16)) VuVec position;
+    f32 radius = 1.0f;
+    EdMember member;
+    f32 distance = 3.402823466e38f;
+    if (object_class->FindMember(&member, object, 8, 1)) {
+        member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
+        if (object_class->FindMember(&member, object, 0x40, 1))
+            member.reference->GetAttributeData(member.object, 0x40, EdType_Float, &radius, 0);
+        f32 line_distance = LineToPointDistance(origin, direction, position, NULL);
+        distance = line_distance - radius;
+        if (distance < 0.0f)
+            distance = 0.0f;
+    }
+    if (reference != NULL)
+        *reference = NULL;
+    return distance;
+}
+
+/* Distance from a point to the object's position sphere (default radius 0). */
+f32 EdClassInterface::DistanceToObject(VuVec &point, void *object, EdRef **reference) {
+    __declspec(align(16)) VuVec position;
+    f32 radius = 0.0f;
+    EdMember member;
+    f32 distance = 3.402823466e38f;
+    if (object_class->FindMember(&member, object, 8, 1)) {
+        VuVec delta;
+        member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
+        if (object_class->FindMember(&member, object, 0x40, 1))
+            member.reference->GetAttributeData(member.object, 0x40, EdType_Float, &radius, 0);
+        delta.x = point.x - position.x;
+        delta.y = point.y - position.y;
+        delta.z = point.z - position.z;
+        f32 length = NuFsqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+        distance = length - radius;
+        if (distance < 0.0f)
+            distance = 0.0f;
+    }
+    if (reference != NULL)
+        *reference = NULL;
+    return distance;
+}
+
 /* Finds the first member carrying any of the attributes, descending into
  * class-typed members when recursive. */
 i32 EdClass::FindMember(EdMember *result, void *object, i32 attributes, i32 recursive) {
