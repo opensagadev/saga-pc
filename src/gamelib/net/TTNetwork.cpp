@@ -103,7 +103,7 @@ void NetTransportList::Remove(NetTransportEntry *entry) {
     count--;
 }
 
-NetTransportEntry::NetTransportEntry(NetTransportClient *entry_client, u8 entry_channel, const char *entry_name)
+NetTransportEntry::NetTransportEntry(NetListenerInterface *entry_client, u8 entry_channel, const char *entry_name)
     : client(entry_client), channel(entry_channel), stats(name) {
     if (entry_name != NULL) {
         NuStrNCpy(name, entry_name, 0x20);
@@ -122,7 +122,7 @@ NetTransportEntry *NetTransportList::Find(const NetTransportEntry &key) {
     return NULL;
 }
 
-void NetTransporter::AddClient(NetTransportClient *client, u8 channel, const char *name) {
+void NetTransporter::AddListener(NetListenerInterface *client, u8 channel, const char *name) {
     NetTransportEntry *entry = new NetTransportEntry(client, channel, name);
     if (clients.Find(*entry) != NULL) {
         delete entry;
@@ -131,7 +131,7 @@ void NetTransporter::AddClient(NetTransportClient *client, u8 channel, const cha
     clients.Insert(entry, NULL);
 }
 
-void NetTransporter::RemoveClient(NetTransportClient *client, u8 channel) {
+void NetTransporter::RemoveListener(NetListenerInterface *client, u8 channel) {
     NetTransportEntry key(client, channel, NULL);
     NetTransportEntry *entry = clients.Find(key);
     if (entry != NULL) {
@@ -144,65 +144,65 @@ void NetTransporter::RemoveClient(NetTransportClient *client, u8 channel) {
     for (NetTransportEntry *entry = (NetTransportEntry *)clients.head; entry != NULL;                                  \
          entry = (NetTransportEntry *)entry->next)
 
-i32 TTNetwork::QueryAll08(i32 value) {
+i32 TTNetwork::PeerRequest(const V2Peer &peer) {
     i32 result = 1;
     TT_FOR_EACH_CLIENT(entry) {
-        if (!entry->client->Query08(value)) {
+        if (!entry->client->PeerRequest(peer)) {
             result = 0;
         }
     }
     return result;
 }
 
-void TTNetwork::NotifyAll0c(i32 value) {
+void TTNetwork::PeerJoined(const V2Peer &peer) {
     TT_FOR_EACH_CLIENT(entry) {
-        entry->client->Notify0c(value);
+        entry->client->PeerJoined(peer);
     }
 }
 
-void TTNetwork::NotifyPeerRemoved(V2Peer *peer, i32 reason) {
+void TTNetwork::PeerLeft(const V2Peer &peer, i32 reason) {
     TT_FOR_EACH_CLIENT(entry) {
-        entry->client->OnPeerRemoved(peer, reason);
+        entry->client->PeerLeft(peer, reason);
     }
 }
 
-void TTNetwork::NotifyAll14(i32 value) {
+void TTNetwork::PeerDead(const V2Peer &peer) {
     TT_FOR_EACH_CLIENT(entry) {
-        entry->client->Notify14(value);
+        entry->client->PeerDead(peer);
     }
 }
 
-void TTNetwork::NotifyAll18(i32 value) {
+void TTNetwork::FtpUpload(FtpFile *file) {
     TT_FOR_EACH_CLIENT(entry) {
-        entry->client->Notify18(value);
+        entry->client->FtpUpload(file);
     }
 }
 
-void TTNetwork::NotifyAll1c(i32 value) {
+void TTNetwork::FtpDownload(FtpFile *file) {
     TT_FOR_EACH_CLIENT(entry) {
-        entry->client->Notify1c(value);
+        entry->client->FtpDownload(file);
     }
 }
 
-void TTNetwork::NotifyAll20(i32 value, i32 extra) {
+void TTNetwork::FtpComplete(FtpFile *file, i32 result) {
     TT_FOR_EACH_CLIENT(entry) {
-        entry->client->Notify20(value, extra);
+        entry->client->FtpComplete(file, result);
     }
 }
 
-i32 TTNetwork::QueryAll24(i32 value, i32 extra) {
+i32 TTNetwork::NosAcquire(NetworkObject *object, const V2Peer &peer) {
     i32 result = 1;
     TT_FOR_EACH_CLIENT(entry) {
-        if (!entry->client->Query24(value, extra)) {
+        if (!entry->client->NosAcquire(object, peer)) {
             result = 0;
         }
     }
     return result;
 }
 
-void TTNetwork::NotifyAll28(i32 value, i32 extra) {
+void TTNetwork::NosAdopted(NetworkObject *object, const V2Peer &peer) {
     TT_FOR_EACH_CLIENT(entry) {
-        entry->client->Notify28(value, extra);
+        entry->client->NosAdopted(object, peer);
     }
 }
 
@@ -212,12 +212,12 @@ void TTNetwork::UpdateClientStats() {
     }
 }
 
-void TTNetwork::DeliverMessage(NETMESSAGE_PC &message, u8 channel, i32 arg) {
+void TTNetwork::DeliverMessage(NETMESSAGE_PC &message, u8 channel, const V2Peer &peer) {
     TT_FOR_EACH_CLIENT(entry) {
         if (entry->channel == channel) {
             entry->stats.totals.values[1] += message.GetSize();
             entry->stats.totals.values[3] += 1;
-            entry->client->OnMessage(message, channel, arg);
+            entry->client->Receive(message, channel, peer);
         }
     }
 }

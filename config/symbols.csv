@@ -3727,10 +3727,24 @@ address,symbol,size,ctype
 0x53c7c0,_routeEditor_Process,1313,
 0x53ccf0,_aieditor_Init,1081,
 0x53d180,?GetSize@NETMESSAGE_PC@@QAEHXZ,16,
+0x53d190,??1NetListenerInterface@@UAE@XZ,7,
+0x53d1a0,??0NetListenerInterface@@QAE@XZ,9,
+0x53d1b0,?PeerRequest@NetListenerInterface@@UAEHABVV2Peer@@@Z,8,
+0x53d1c0,?PeerJoined@NetListenerInterface@@UAEXABVV2Peer@@@Z,3,
+0x53d1d0,?PeerLeft@NetListenerInterface@@UAEXABVV2Peer@@H@Z,3,
+0x53d1e0,?PeerDead@NetListenerInterface@@UAEXABVV2Peer@@@Z,3,
+0x53d1f0,?FtpUpload@NetListenerInterface@@UAEXPAUFtpFile@@@Z,3,
+0x53d200,?FtpDownload@NetListenerInterface@@UAEXPAUFtpFile@@@Z,3,
+0x53d210,?FtpComplete@NetListenerInterface@@UAEXPAUFtpFile@@H@Z,3,
+0x53d220,?NosAcquire@NetListenerInterface@@UAEHPAUNetworkObject@@ABVV2Peer@@@Z,8,
+0x53d230,?NosAdopted@NetListenerInterface@@UAEXPAUNetworkObject@@ABVV2Peer@@@Z,3,
+0x53d240,??_ENetListenerInterface@@UAEPAXI@Z,,COFF weak alias of ??_GNetListenerInterface@@UAEPAXI@Z
+0x53d240,??_GNetListenerInterface@@UAEPAXI@Z,31,
 0x53d3d0,?Write16@NETMESSAGE_PC@@QAEXPBF@Z,59,void __thiscall NETMESSAGE_PC::Write16(const i16 *)
 0x53d460,??0NETMESSAGE_PC@@QAE@ABU0@@Z,60,
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53d640,?Release@NETMESSAGE_PC@@QAEXXZ,39,
+0x53d670,?Receive@NetListenerInterface@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,44,
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x53dc80,_SplineLength,141,"f32 __cdecl (NUGSPLINE *, i32)"
 0x53dd10,_OnOrOutsidePlane,54,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -7032,21 +7046,21 @@ address,symbol,size,ctype
 0x60e070,?GetNext@NetListLink@@QAEPAV1@XZ,3,
 0x60e080,?Insert@NetTransportList@@QAEXPAVNetTransportEntry@@0@Z,94,
 0x60e0e0,?Remove@NetTransportList@@QAEXPAVNetTransportEntry@@@Z,63,
-0x60e120,??0NetTransportEntry@@QAE@PAVNetTransportClient@@EPBD@Z,84,
+0x60e120,??0NetTransportEntry@@QAE@PAVNetListenerInterface@@EPBD@Z,84,
 0x60e180,?Find@NetTransportList@@QAEPAVNetTransportEntry@@ABV2@@Z,41,
-0x60e1b0,?AddClient@NetTransporter@@UAEXPAVNetTransportClient@@EPBD@Z,146,
-0x60e250,?RemoveClient@NetTransporter@@UAEXPAVNetTransportClient@@E@Z,202,
-0x60e320,?QueryAll08@TTNetwork@@QAEHH@Z,50,
-0x60e360,?NotifyAll0c@TTNetwork@@QAEXH@Z,38,
-0x60e390,?NotifyPeerRemoved@TTNetwork@@QAEXPAVV2Peer@@H@Z,42,
-0x60e3c0,?NotifyAll14@TTNetwork@@QAEXH@Z,38,
-0x60e3f0,?NotifyAll18@TTNetwork@@QAEXH@Z,38,
-0x60e420,?NotifyAll1c@TTNetwork@@QAEXH@Z,38,
-0x60e450,?NotifyAll20@TTNetwork@@QAEXHH@Z,42,
-0x60e480,?QueryAll24@TTNetwork@@QAEHHH@Z,57,
-0x60e4c0,?NotifyAll28@TTNetwork@@QAEXHH@Z,42,
+0x60e1b0,?AddListener@NetTransporter@@UAEXPAVNetListenerInterface@@EPBD@Z,146,
+0x60e250,?RemoveListener@NetTransporter@@UAEXPAVNetListenerInterface@@E@Z,202,
+0x60e320,?PeerRequest@TTNetwork@@QAEHABVV2Peer@@@Z,50,
+0x60e360,?PeerJoined@TTNetwork@@QAEXABVV2Peer@@@Z,38,
+0x60e390,?PeerLeft@TTNetwork@@QAEXABVV2Peer@@H@Z,42,
+0x60e3c0,?PeerDead@TTNetwork@@QAEXABVV2Peer@@@Z,38,
+0x60e3f0,?FtpUpload@TTNetwork@@QAEXPAUFtpFile@@@Z,38,
+0x60e420,?FtpDownload@TTNetwork@@QAEXPAUFtpFile@@@Z,38,
+0x60e450,?FtpComplete@TTNetwork@@QAEXPAUFtpFile@@H@Z,42,
+0x60e480,?NosAcquire@TTNetwork@@QAEHPAUNetworkObject@@ABVV2Peer@@@Z,57,
+0x60e4c0,?NosAdopted@TTNetwork@@QAEXPAUNetworkObject@@ABVV2Peer@@@Z,42,
 0x60e4f0,?UpdateClientStats@TTNetwork@@QAEXXZ,26,
-0x60e510,?DeliverMessage@TTNetwork@@QAEXAAUNETMESSAGE_PC@@EH@Z,118,
+0x60e510,?DeliverMessage@TTNetwork@@QAEXAAUNETMESSAGE_PC@@EABVV2Peer@@@Z,118,
 0x60e590,?RecordSent@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
 0x60e5f0,?RecordReceived@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
 0x60e6e0,??0NetAddress@@QAE@XZ,9,
@@ -7147,6 +7161,28 @@ address,symbol,size,ctype
 0x611990,??1EdOutputStream@@UAE@XZ,7,
 0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body
 0x613210,??_GEdOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x617180,?CompareAddress@FtpFile@@QBEHABUNetAddress@@@Z,143,
+0x617270,?Init@NetFtpManager@@QAEXXZ,19,
+0x6172c0,?GetTransfers@NetFtpManager@@QBEPBUFtpFile@@XZ,4,
+0x6172d0,?Update@NetFtpManager@@QAEXXZ,1,
+0x6172e0,?Init@FtpFile@@QAEXHPBDHABUNetAddress@@PAXH@Z,86,
+0x617340,?Term@FtpFile@@QAEXXZ,1,
+0x617350,?Accept@FtpFile@@QAEHHPAX@Z,108,
+0x6173c0,?Accept@FtpFile@@QAEHH@Z,38,
+0x6173f0,?Accept@FtpFile@@QAEHXZ,10,
+0x617430,?InUse@FtpFile@@QBE_NXZ,13,
+0x6174a0,??0FtpFile@@QAE@XZ,13,
+0x6174d0,?FindTransfer@NetFtpManager@@QAEPAUFtpFile@@PBDABUNetAddress@@H@Z,111,
+0x617540,?FindTransfer@NetFtpManager@@QBEPBUFtpFile@@PBDABUNetAddress@@H@Z,111,
+0x617630,?Receive@NetFtpManager@@UAEXUNETMESSAGE_PC@@EABUNetAddress@@@Z,44,
+0x617750,?Close@FtpFile@@QAEXXZ,63,
+0x6177f0,?Reset@NetFtpManager@@QAEXXZ,108,
+0x617860,?PeerLeft@NetFtpManager@@UAEXABUNetAddress@@H@Z,128,
+0x6178f0,??0NetFtpManager@@QAE@XZ,61,
+0x617930,??1NetFtpManager@@UAE@XZ,25,
+0x617950,?Term@NetFtpManager@@QAEXXZ,23,
+0x617970,??_ENetFtpManager@@UAEPAXI@Z,,COFF weak alias of ??_GNetFtpManager@@UAEPAXI@Z
+0x617970,??_GNetFtpManager@@UAEPAXI@Z,45,
 0x6179c0,?UtilGetTime@@YAIXZ,61,u32 __cdecl(void)
 0x617a00,?UtilGetFrameStartTime@@YAIXZ,6,u32 __cdecl(void)
 0x617a10,?UtilFrameStart@@YAXXZ,66,void __cdecl(void)
@@ -16450,6 +16486,7 @@ address,symbol,size,ctype
 0x761018,??_C@_0P@DDJIFOGN@AIEDITOR_AREAS?$AA@,,char []
 0x761028,??_C@_0BA@FEFEPDNH@AIEDITOR_ROUTES?$AA@,,char []
 0x761038,??_C@_0P@DLCGGJHE@AIEDITOR_PATHS?$AA@,,char []
+0x76104c,??_7NetListenerInterface@@6B@,44,
 0x7610bc,??_C@_0BD@HPIJGHPH@TerrainCamInActive?$AA@,19,const char[]
 0x7610d0,??_C@_0N@MPOMBABH@ManCam_MAX_Y?$AA@,13,const char[]
 0x7610e0,??_C@_0N@NGPHCBFG@ManCam_MAX_X?$AA@,13,const char[]
@@ -17645,6 +17682,8 @@ address,symbol,size,ctype
 0x76ab50,??_C@_06LJJHIAGL@EmuRaw?$AA@,7,char []
 0x76ab5c,??_7EdStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76ac78,??_C@_03LBMKPMDK@FTP?$AA@,4,char []
+0x76ac80,??_7NetFtpManager@@6B@,52,
 0x76acb4,??_C@_0L@CGOOPECH@New?5To?5Old?$AA@,,char []
 0x76acc0,??_C@_0L@JHAHFKHN@Old?5to?5New?$AA@,,char []
 0x76accc,??_C@_06FMKCAKLA@Z?5to?5A?$AA@,,char []
@@ -21194,6 +21233,10 @@ address,symbol,size,ctype
 0x7ea3a0,??_C@_06ENONKJGC@ifndef?$AA@,,const char []
 0x7ea3a8,??_C@_05LOELCHJN@ifdef?$AA@,,const char []
 0x7ea3b0,??_C@_06EPMMJFDC@define?$AA@,,const char []
+0x7ea494,??_R4NetListenerInterface@@6B@,,
+0x7ea4a8,??_R3NetListenerInterface@@8,,
+0x7ea4b8,??_R2NetListenerInterface@@8,,
+0x7ea4c0,??_R1A@?0A@EA@NetListenerInterface@@8,,
 0x7ea544,??_R4FadeBase@@6B@,,
 0x7ea558,??_R3FadeBase@@8,,
 0x7ea568,??_R2FadeBase@@8,,
@@ -21308,6 +21351,10 @@ address,symbol,size,ctype
 0x7eafa4,??_R3EdOutputStream@@8,,
 0x7eafb4,??_R2EdOutputStream@@8,,
 0x7eafc0,??_R1A@?0A@EA@EdOutputStream@@8,,
+0x7eb1e0,??_R4NetFtpManager@@6B@,,
+0x7eb1f4,??_R3NetFtpManager@@8,,
+0x7eb204,??_R2NetFtpManager@@8,,
+0x7eb210,??_R1A@?0A@EA@NetFtpManager@@8,,
 0x7eb22c,??_R4BaseThing@@6B@,,
 0x7eb240,??_R4EdClassInterface@@6B@,,
 0x7eb254,??_R3EdClassInterface@@8,,

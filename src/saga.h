@@ -29650,20 +29650,38 @@ class V2ClosingList {
     i32 count;
 };
 
-/* Client callback interface reached through NetTransportEntry::client. */
-class NetTransportClient {
+struct FtpFile;
+struct NetworkObject;
+
+/* Listener interface registered with a NetTransporter (Android names). The
+ * default bodies are emitted at 0x53d1b0-0x53d240 and 0x53d670. */
+class NetListenerInterface {
   public:
-    virtual void Slot00() = 0;
-    virtual void OnMessage(NETMESSAGE_PC message, u8 channel, i32 arg) = 0;
-    virtual i32 Query08(i32 value) = 0;
-    virtual void Notify0c(i32 value) = 0;
-    virtual void OnPeerRemoved(V2Peer *peer, i32 reason) = 0;
-    virtual void Notify14(i32 value) = 0;
-    virtual void Notify18(i32 value) = 0;
-    virtual void Notify1c(i32 value) = 0;
-    virtual void Notify20(i32 value, i32 extra) = 0;
-    virtual i32 Query24(i32 value, i32 extra) = 0;
-    virtual void Notify28(i32 value, i32 extra) = 0;
+    virtual ~NetListenerInterface() {
+    }
+    virtual void Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
+        message.Release();
+    }
+    virtual i32 PeerRequest(const V2Peer &peer) {
+        return 1;
+    }
+    virtual void PeerJoined(const V2Peer &peer) {
+    }
+    virtual void PeerLeft(const V2Peer &peer, i32 reason) {
+    }
+    virtual void PeerDead(const V2Peer &peer) {
+    }
+    virtual void FtpUpload(FtpFile *file) {
+    }
+    virtual void FtpDownload(FtpFile *file) {
+    }
+    virtual void FtpComplete(FtpFile *file, i32 result) {
+    }
+    virtual i32 NosAcquire(NetworkObject *object, const V2Peer &peer) {
+        return 1;
+    }
+    virtual void NosAdopted(NetworkObject *object, const V2Peer &peer) {
+    }
 };
 
 class NetListLink {
@@ -29678,13 +29696,13 @@ class NetListLink {
 /* 0x250-byte pool-allocated entry registered with a NetTransporter. */
 class NetTransportEntry : public NetListLink {
   public:
-    NetTransportEntry(NetTransportClient *client, u8 channel, const char *name);
+    NetTransportEntry(NetListenerInterface *client, u8 channel, const char *name);
     static void *operator new(u32 size);
     static void operator delete(void *memory);
     NetTransportEntry &operator=(const NetTransportEntry &other);
     i32 operator==(const NetTransportEntry &other);
 
-    NetTransportClient *client;
+    NetListenerInterface *client;
     u8 channel;
     char name[0x21];
     NetStats stats;
@@ -29708,16 +29726,16 @@ class NetTransporterInterface {
     virtual void SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1) = 0;
     virtual void Broadcast(NETMESSAGE_PC message, u8 channel) = 0;
     virtual void BroadcastEx(NETMESSAGE_PC message, u8 channel) = 0;
-    virtual void AddClient(NetTransportClient *client, u8 channel, const char *name) = 0;
-    virtual void RemoveClient(NetTransportClient *client, u8 channel) = 0;
+    virtual void AddListener(NetListenerInterface *client, u8 channel, const char *name) = 0;
+    virtual void RemoveListener(NetListenerInterface *client, u8 channel) = 0;
     virtual ~NetTransporterInterface() {
     }
 };
 
 class NetTransporter : public NetTransporterInterface {
   public:
-    virtual void AddClient(NetTransportClient *client, u8 channel, const char *name);
-    virtual void RemoveClient(NetTransportClient *client, u8 channel);
+    virtual void AddListener(NetListenerInterface *client, u8 channel, const char *name);
+    virtual void RemoveListener(NetListenerInterface *client, u8 channel);
 
     NetTransportList clients;
 };
@@ -29727,6 +29745,66 @@ struct NetAddress {
     NetAddress();
 
     u32 address;
+};
+
+/* One file transfer slot of the NetFtpManager (0xb0 bytes). */
+struct FtpFile {
+    FtpFile() {
+        transfer = 0;
+    }
+    bool InUse() const {
+        return transfer > 0;
+    }
+    void Close() {
+        if (InUse() && message_data != NULL) {
+            u32 references = message_data->references;
+            if (references > 1)
+                message_data->references = references - 1;
+            else
+                message_data->references = 0;
+        }
+        transfer = 0;
+    }
+    i32 CompareAddress(const NetAddress &other) const;
+    void Init(i32 new_direction, const char *new_name, i32 new_size, const NetAddress &new_address, void *new_buffer,
+              i32 new_capacity);
+    i32 Accept(i32 new_capacity, void *new_buffer);
+    i32 Accept(i32 new_size);
+    i32 Accept();
+    void Term();
+
+    u32 address;
+    i32 direction;
+    i32 accepted;
+    char name[0x80];
+    i32 size;
+    void *buffer;
+    i32 capacity;
+    i32 transferred;
+    i32 message_swap_endianness;
+    NETMESSAGE_PC::MessageData *message_data;
+    u32 message_read_offset;
+    u32 message_write_offset;
+    u32 transfer;
+};
+
+/* File transfer listener on channel 2 (TTNetwork+0x2178). */
+class NetFtpManager : public NetListenerInterface {
+  public:
+    NetFtpManager();
+    ~NetFtpManager();
+    virtual void Receive(NETMESSAGE_PC message, u8 channel, const NetAddress &address);
+    virtual void PeerLeft(const NetAddress &address, i32 reason);
+    void Init();
+    void Reset();
+    void Term();
+    void Update();
+    FtpFile *FindTransfer(const char *name, const NetAddress &address, i32 direction);
+    const FtpFile *FindTransfer(const char *name, const NetAddress &address, i32 direction) const;
+    const FtpFile *GetTransfers() const;
+
+    FtpFile files[32];
+    i32 field_1604;
 };
 
 /* Buffered append-only log file embedded in TTNetwork at +0x20. */
@@ -29751,17 +29829,17 @@ class TTNetwork : public NetTransporter, public BaseThing {
     virtual void Broadcast(NETMESSAGE_PC message, u8 channel);
     virtual void BroadcastEx(NETMESSAGE_PC message, u8 channel);
     virtual char const *GetName();
-    i32 QueryAll08(i32 value);
-    void NotifyAll0c(i32 value);
-    void NotifyPeerRemoved(V2Peer *peer, i32 reason);
-    void NotifyAll14(i32 value);
-    void NotifyAll18(i32 value);
-    void NotifyAll1c(i32 value);
-    void NotifyAll20(i32 value, i32 extra);
-    i32 QueryAll24(i32 value, i32 extra);
-    void NotifyAll28(i32 value, i32 extra);
+    i32 PeerRequest(const V2Peer &peer);
+    void PeerJoined(const V2Peer &peer);
+    void PeerLeft(const V2Peer &peer, i32 reason);
+    void PeerDead(const V2Peer &peer);
+    void FtpUpload(FtpFile *file);
+    void FtpDownload(FtpFile *file);
+    void FtpComplete(FtpFile *file, i32 result);
+    i32 NosAcquire(NetworkObject *object, const V2Peer &peer);
+    void NosAdopted(NetworkObject *object, const V2Peer &peer);
     void UpdateClientStats();
-    void DeliverMessage(NETMESSAGE_PC &message, u8 channel, i32 arg);
+    void DeliverMessage(NETMESSAGE_PC &message, u8 channel, const V2Peer &peer);
     void RecordSent(NETMESSAGE_PC message, u8 channel);
     void RecordReceived(NETMESSAGE_PC message, u8 channel);
     void Resume();
@@ -29788,6 +29866,7 @@ class TTNetwork : public NetTransporter, public BaseThing {
     NetAddress my_address;
     NetAddress my_host_address;
     i32 has_my_host_address;
+    NetFtpManager ftp;
 };
 extern TTNetwork theTTNetwork;
 

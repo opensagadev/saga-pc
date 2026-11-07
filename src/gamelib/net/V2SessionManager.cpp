@@ -146,7 +146,7 @@ void V2SessionManager::RemoveAllPeers(i32 reason) {
 }
 
 void V2SessionManager::RemovePeer(V2Peer *peer, i32 reason) {
-    theTTNetwork.NotifyPeerRemoved(peer, reason);
+    theTTNetwork.PeerLeft(*peer, reason);
     peer->Disconnect();
     if (peer != local_peer) {
         peer_list.Remove(peer);
