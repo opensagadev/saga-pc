@@ -25319,6 +25319,9 @@ struct VuVec {
         NUVEC xyz;
     };
     f32 w;
+#ifdef __cplusplus
+    f32 Length();
+#endif
 };
 STATIC_ASSERT(sizeof(struct VuVec) == 16);
 

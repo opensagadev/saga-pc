@@ -24,6 +24,7 @@ extern "C" {
 }
 
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
+i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
 
 STATIC_ASSERT(RTL_EDITOR_SET_SIZE_PC == 0x6fac);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, led_file) == 0x80);
@@ -161,6 +162,135 @@ void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32) {
 void RTLHelper::AddMenuItems(eduimenu_s *menu) {
     eduiMenuAddItem(menu, eduiItemSeparatorCreate(0, &EdLevelAttr));
     eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 1, cbRtlHelperModifiers, "Modifiers"));
+}
+
+f32 VuVec::Length() {
+    f32 length_squared = x * x + y * y + z * z;
+    return NuFsqrt(length_squared);
+}
+
+/* Screen-space distance below which a radius ring can be grabbed. */
+static f32 rtl_helper_grab_distance = 0.5f;
+
+/* Drags the light's inner or outer radius ring in the camera-facing plane
+ * through the light; the ring nearest the cursor on screen is grabbed when
+ * the drag starts. */
+void RTLHelper::Process(void *object, EdInputContext &input) {
+    RTL_LIGHT_PC *light = static_cast<RTL_LIGHT_PC *>(object);
+    if (input.GetHold(22) != 0.0f) {
+        __declspec(align(16)) VuVec difference;
+        __declspec(align(16)) VuVec offset;
+        __declspec(align(16)) VuVec position;
+        __declspec(align(16)) VuVec direction;
+        __declspec(align(16)) VuVec plane;
+        __declspec(align(16)) VuVec delta;
+        __declspec(align(16)) VuVec outer_point;
+        __declspec(align(16)) VuVec inner_point;
+        __declspec(align(16)) VuVec intersection;
+        __declspec(align(16)) VuVec screen_cursor;
+        __declspec(align(16)) VuVec screen_inner;
+        __declspec(align(16)) VuVec screen_outer;
+        position.xyz = light->position;
+        plane.xyz = *reinterpret_cast<NUVEC *>(&global_camera.mtx.m20);
+        plane.w = -(plane.x * position.x + plane.y * position.y + plane.z * position.z);
+        if (LineToPlaneIntersecion(input.ray_start, input.ray_direction, plane, &intersection)) {
+            difference.x = intersection.x - position.x;
+            difference.y = intersection.y - position.y;
+            difference.z = intersection.z - position.z;
+            delta.x = difference.x;
+            delta.y = difference.y;
+            delta.z = difference.z;
+            delta.w = difference.w;
+            if (input.GetPress(25) != 0.0f || input.GetHold(25) == 0.0f) {
+                direction.x = difference.x;
+                direction.y = difference.y;
+                direction.z = difference.z;
+                direction.w = difference.w;
+                NuVecNorm(&direction.xyz, &direction.xyz);
+                direction.w = 1.0f;
+                f32 radius = light->inner_radius;
+                offset.x = direction.x * radius;
+                offset.y = direction.y * radius;
+                offset.z = direction.z * radius;
+                difference.x = position.x + offset.x;
+                difference.y = position.y + offset.y;
+                difference.z = position.z + offset.z;
+                inner_point.x = difference.x;
+                inner_point.y = difference.y;
+                inner_point.z = difference.z;
+                inner_point.w = difference.w;
+                radius = light->outer_radius;
+                offset.x = direction.x * radius;
+                offset.y = direction.y * radius;
+                offset.z = direction.z * radius;
+                difference.x = position.x + offset.x;
+                difference.y = position.y + offset.y;
+                difference.z = position.z + offset.z;
+                outer_point.x = difference.x;
+                outer_point.y = difference.y;
+                outer_point.z = difference.z;
+                outer_point.w = difference.w;
+                NuCameraTransformScreenClip(&screen_cursor.xyz, &intersection.xyz, 1, NULL);
+                NuCameraTransformScreenClip(&screen_inner.xyz, &inner_point.xyz, 1, NULL);
+                NuCameraTransformScreenClip(&screen_outer.xyz, &outer_point.xyz, 1, NULL);
+                screen_outer.z = 0.0f;
+                screen_inner.z = 0.0f;
+                screen_cursor.z = 0.0f;
+                offset.x = screen_cursor.x - screen_inner.x;
+                offset.y = screen_cursor.y - screen_inner.y;
+                offset.z = screen_cursor.z - screen_inner.z;
+                f32 inner_distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+                offset.x = screen_cursor.x - screen_outer.x;
+                offset.y = screen_cursor.y - screen_outer.y;
+                offset.z = screen_cursor.z - screen_outer.z;
+                f32 outer_distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+                f32 nearest_distance;
+                i32 nearest_mode;
+                if (outer_distance > inner_distance) {
+                    nearest_distance = inner_distance;
+                    nearest_mode = 1;
+                } else {
+                    nearest_distance = outer_distance;
+                    nearest_mode = 2;
+                }
+                rtl_helper_radius_mode = 0;
+                if (nearest_distance < rtl_helper_grab_distance * rtl_helper_grab_distance)
+                    rtl_helper_radius_mode = nearest_mode;
+                if (input.GetHold(25) != 0.0f) {
+                    if (rtl_helper_radius_mode == 1) {
+                        f32 radius = delta.Length();
+                        light->inner_radius = radius;
+                        if (light->outer_radius < radius)
+                            light->outer_radius = radius;
+                    }
+                    if (rtl_helper_radius_mode == 2) {
+                        f32 radius = delta.Length();
+                        light->outer_radius = radius;
+                        if (light->inner_radius > radius)
+                            light->inner_radius = radius;
+                    }
+                }
+            } else {
+                /* The same drag, kept apart from the grab test as in retail. */
+                if (input.GetHold(25) != 0.0f) {
+                    if (rtl_helper_radius_mode == 1) {
+                        f32 radius = delta.Length();
+                        light->inner_radius = radius;
+                        if (light->outer_radius < radius)
+                            light->outer_radius = radius;
+                    }
+                    if (rtl_helper_radius_mode == 2) {
+                        f32 radius = delta.Length();
+                        light->outer_radius = radius;
+                        if (light->inner_radius > radius)
+                            light->inner_radius = radius;
+                    }
+                }
+            }
+        }
+    } else {
+        rtl_helper_radius_mode = 0;
+    }
 }
 
 void RTLHelper::EnterEditor() {

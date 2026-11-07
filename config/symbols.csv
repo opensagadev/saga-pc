@@ -7890,6 +7890,7 @@ address,symbol,size,ctype
 0x633df0,_RtlUiCreateFailedPc,1,void __cdecl(void)
 0x633e40,_RtlDirectionStatePc,183,
 0x6340e0,?RtlHelperCopyMtx@@YAXPAUnumtx_s@@PBU1@@Z,95,
+0x634170,?Length@VuVec@@QAEMXZ,46,
 0x6341e0,??0EdClassInterface@@QAE@XZ,16,
 0x6341f0,??1EdClassInterface@@UAE@XZ,7,
 0x634200,?ClearLevel@EdClassInterface@@UAEXH@Z,3,
@@ -24253,6 +24254,7 @@ address,symbol,size,ctype
 0x80fc64,_FmvVolumePc,4,f32
 0x80fcd0,_FmvFrequencyPc,8,LARGE_INTEGER
 0x80fce4,_EdAttr,16,u32[4]
+0x80fd94,_rtl_helper_grab_distance,4,f32
 0x80fde0,_rtl_helper_radius,,f32
 0x80fde4,_rtl_dynamic_lights_enabled,,i32
 0x80fde8,_RtlFileVersionPc,,i32
