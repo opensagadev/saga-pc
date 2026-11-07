@@ -307,6 +307,16 @@ void edcamSetAng(i32 pitch, i32 yaw) {
     camera->yaw = yaw;
 }
 
+void edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw) {
+    edcam_s *camera = gp_cam;
+    camera->position = *position;
+    camera->pitch = pitch;
+    camera->yaw = yaw;
+    camera->offset.z = 0.0f;
+    camera->offset.y = 0.0f;
+    camera->offset.x = 0.0f;
+}
+
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw) {
     edcam_s *camera = gp_cam;
     if (position != NULL) {

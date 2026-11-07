@@ -29161,6 +29161,16 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$edptl_star_menu")
     struct eduimenu_s *edptl_star_menu = 0;
+#pragma bss_seg(".bss$edptl_switch_menu")
+    struct eduimenu_s *edptl_switch_menu = 0;
+#pragma bss_seg(".bss$edptl_switchtype_menu")
+    struct eduimenu_s *edptl_switchtype_menu = 0;
+#pragma bss_seg(".bss$edptl_page_menu")
+    struct eduimenu_s *edptl_page_menu = 0;
+#pragma bss_seg(".bss$edpp_first_time_this_level")
+    i32 edpp_first_time_this_level = 0;
+#pragma bss_seg(".bss$entry_position")
+    NUVEC entry_position = {0};
 #pragma bss_seg()
 #pragma data_seg(".data$edptl_superscale")
     i32 edptl_superscale = 1;

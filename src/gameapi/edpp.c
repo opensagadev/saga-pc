@@ -3428,3 +3428,165 @@ void __cdecl cbPtlTorusMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     edptl_torus_menu->x = parent->x + 10;
     edptl_torus_menu->y = parent->y + 40;
 }
+
+extern i32 edpp_first_time_this_level;
+extern NUVEC entry_position;
+extern struct eduimenu_s *edptl_page_menu;
+void __cdecl edcamSetPosAng(NUVEC *position, i32 pitch, i32 yaw);
+
+void cbPtlSelGCode(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    eduiMenuDetach(menu);
+    edpp_active_menu = NULL;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->momentum_adjustment_type =
+        (i8)(item->data - 1);
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].momentum_adjuster = gencodetab[item->data - 1];
+}
+
+void edptlcbCancelPageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_page_menu);
+    edptl_page_menu = NULL;
+}
+
+void edptlcbJumpToGameLocation(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    item->highlighted = 0;
+    edcamSetPosAng(&entry_position, 0, 0);
+}
+
+void cbPtlSnapToggle(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edpp_snap_enabled = item->highlighted;
+}
+
+void cbPtlCancel(eduimenu_s *unused0, eduimenu_s *unused1) {
+    edpp_active_menu = NULL;
+}
+
+void edppEnter(void) {
+    NUVEC origin = {0.0f, 0.0f, 0.0f};
+    if (edmainQueryLocVec() != NULL) {
+        entry_position = *edmainQueryLocVec();
+    } else {
+        entry_position.x = global_camera.mtx.m30;
+        entry_position.y = global_camera.mtx.m31;
+        entry_position.z = global_camera.mtx.m32;
+    }
+    if (edpp_first_time_this_level != 0) {
+        if (edmainQueryLocVec() != NULL)
+            edcamSetPosAng(edmainQueryLocVec(), 0, 0);
+        else
+            edcamSetPosAng(&origin, 0, 0);
+        edpp_first_time_this_level = 0;
+    }
+    edpp_nearest = -1;
+    edpp_create_type = -1;
+}
+
+void edppApply(void) {
+}
+
+void edptlcbResetParticles(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    i32 index;
+    for (index = 0; index < 512; ++index) {
+        if (edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999) {
+            DebFreeInstantly(&edpp_ptls[index].instance_id);
+            edpp_ptls[index].instance_id = 99999;
+        }
+    }
+    edppRestartAllEffectsInLevel();
+}
+
+void edptlcbStartPage(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edppStartPage((u8)item->data);
+}
+
+void edptlcbStopPage(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edppStopPage((i8)item->data);
+}
+
+void edptlcbClearPage(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edppClearPage((i8)item->data);
+}
+
+void edptlcbPageMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edptl_page_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelPageMenu, "Test Page Menu");
+    if (edptl_page_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_page_menu, eduiItemSelCreate(1, colours, 0, 0, edptlcbStartPage, "Start Page 1"));
+    eduiMenuAddItem(edptl_page_menu, eduiItemSelCreate(2, colours, 0, 0, edptlcbStartPage, "Start Page 2"));
+    eduiMenuAddItem(edptl_page_menu, eduiItemSelCreate(1, colours, 0, 0, edptlcbStopPage, "Stop Page 1"));
+    eduiMenuAddItem(edptl_page_menu, eduiItemSelCreate(2, colours, 0, 0, edptlcbStopPage, "Stop Page 2"));
+    eduiMenuAddItem(edptl_page_menu, eduiItemSelCreate(1, colours, 0, 0, edptlcbClearPage, "Clear Page 1"));
+    eduiMenuAddItem(edptl_page_menu, eduiItemSelCreate(2, colours, 0, 0, edptlcbClearPage, "Clear Page 2"));
+    eduiMenuAttach(parent, edptl_page_menu);
+    edptl_page_menu->x = parent->x + 10;
+    edptl_page_menu->y = parent->y + 40;
+}
+
+extern struct eduimenu_s *edptl_switch_menu, *edptl_switchtype_menu;
+
+void edptlcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
+        edpp_ptls[edpp_nearest].switch_type = item->data;
+        debkeydata[edpp_ptls[edpp_nearest].instance_id].trigger_first = item->data;
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+    edptl_switchtype_menu = NULL;
+}
+
+void edptlcbSetSwitchId(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edpp_ptls[edpp_nearest].switch_id = (i32)((edui_slider_s *)item)->value;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].trigger_second = (i32)((edui_slider_s *)item)->value;
+}
+
+void edptlcbSetSwitchVar(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edpp_ptls[edpp_nearest].switch_variable = ((edui_slider_s *)item)->value;
+    debkeydata[edpp_ptls[edpp_nearest].instance_id].switch_variable = ((edui_slider_s *)item)->value;
+}
+
+void edptlcbCancelSwitchTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_switchtype_menu);
+    edptl_switchtype_menu = NULL;
+}
+
+void edptlcbSwitchTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edptl_switchtype_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelSwitchTypeMenu, "Switch Type");
+    if (edptl_switchtype_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_switchtype_menu, eduiItemCheckCreate(0, colours, edpp_ptls[edpp_nearest].switch_type == 0, 1,
+                                                               edptlcbSetSwitchType, "None"));
+    eduiMenuAddItem(edptl_switchtype_menu, eduiItemCheckCreate(1, colours, edpp_ptls[edpp_nearest].switch_type == 1, 1,
+                                                               edptlcbSetSwitchType, "Global Switch"));
+    eduiMenuAttach(parent, edptl_switchtype_menu);
+    edptl_switchtype_menu->x = parent->x + 10;
+    edptl_switchtype_menu->y = parent->y + 40;
+}
+
+void edptlcbCancelSwitchMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_switch_menu);
+    edptl_switch_menu = NULL;
+}
+
+void edptlcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edptl_switch_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelSwitchMenu, "Switch Menu");
+    if (edptl_switch_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_switch_menu, eduiItemSelCreate(1, colours, 0, 0, edptlcbSwitchTypeMenu, "Switch Type..."));
+    eduiMenuAddItem(edptl_switch_menu, eduiItemSliderCreateInt(0, colours, 0, edptlcbSetSwitchId, -1, 129,
+                                                               edpp_ptls[edpp_nearest].switch_id, "Switch ID"));
+    eduiMenuAddItem(edptl_switch_menu, eduiItemSliderCreate(0, colours, 0, edptlcbSetSwitchVar, 0.0f, 20.0f,
+                                                            edpp_ptls[edpp_nearest].switch_variable, "Switch Var"));
+    eduiMenuAttach(parent, edptl_switch_menu);
+    edptl_switch_menu->x = parent->x + 10;
+    edptl_switch_menu->y = parent->y + 40;
+}

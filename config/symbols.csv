@@ -7657,6 +7657,7 @@ address,symbol,size,ctype
 0x620ef0,_edcamMove,23,
 0x620f10,_edcamSetPos,37,
 0x620f40,_edcamSetAng,20,
+0x620f60,_edcamSetPosAng,51,"void __cdecl (NUVEC *, i32, i32)"
 0x620fa0,_edcamGetPosAng,57,
 0x620fe0,_edcamGetPosAngSnap,58,
 0x621040,_edcamSetDist,13,
@@ -8712,11 +8713,19 @@ address,symbol,size,ctype
 0x663750,_cbPtlApplyRot,325,
 0x6638a0,_cbPtlSelType,47,
 0x6638d0,_cbPtlSelGSort,282,
+0x6639f0,_cbPtlSelGCode,136,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x663a80,_cbCancelMessageMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
 0x663aa0,_edppShowMessagePc,179,"void (struct eduimenu_s *parent, char *text, i32 ok); original passes parent in ESI"
 0x663b60,_cbSelEffectList,131,
 0x663bf0,_cbCancelEffectListMenu,25,
 0x663c10,_cbEffectListMenu,290,
+0x663d40,_edptlcbSetSwitchType,95,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x663da0,_edptlcbSetSwitchId,79,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x663df0,_edptlcbSetSwitchVar,64,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x663e30,_edptlcbCancelSwitchTypeMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x663e50,_edptlcbSwitchTypeMenu,261,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x663f60,_edptlcbCancelSwitchMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x663f80,_edptlcbSwitchMenu,346,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6640e0,_edptlcbSetMasterGroup,18,
 0x664100,_edptlcbSetGroup,81,
 0x664160,_edptlcbCancelDrawflagMenu,25,
@@ -8730,9 +8739,11 @@ address,symbol,size,ctype
 0x6643d0,_edptlcbSetDetail,89,
 0x664430,_edptlcbCancelDetailMenu,25,
 0x664450,_edptlcbDetailMenu,450,
+0x664620,_edptlcbCancelPageMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x664640,_edptlcbSetDpadMode,14,
 0x664650,_edptlcbCancelDpadModeMenu,25,
 0x664670,_edptlcbDpadModeMenu,391,
+0x664800,_edptlcbJumpToGameLocation,37,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x664830,_edptlcbCancelOrphanListMenu,25,
 0x664850,_edptlcbOrphanListMenu,166,
 0x664900,_cbPtlCancelTypeMenu,25,
@@ -8807,8 +8818,12 @@ address,symbol,size,ctype
 0x66acb0,_cbPtlCancelEmitMenu,25,"void __cdecl (struct eduimenu_s *, struct eduimenu_s *)"
 0x66acd0,_cbPtlCancelGSortMenu,25,
 0x66acf0,_cbPtlGSortMenu,793,
+0x66b010,_cbPtlSnapToggle,18,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x66b030,_cbPtlCancel,11,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x66b040,_ParticleReset,120,
 0x66b200,_edppClose,27,
+0x66b220,_edppEnter,163,void __cdecl (void)
+0x66b2d0,_edppApply,1,void __cdecl (void)
 0x66b2e0,_TerrainSetImpactData,35,"void __cdecl (void *, i32 *, i32)"
 0x66b310,_TerrainSetPlatConnectTol,11,void __cdecl (f32)
 0x66b320,_TerrainSetWallDeflectYScale,11,void __cdecl TerrainSetWallDeflectYScale(f32 scale)
@@ -9067,6 +9082,7 @@ address,symbol,size,ctype
 0x68e900,_edppStopPage,252,void __cdecl (i8)
 0x68ea00,_edppClearPage,338,void __cdecl (i8)
 0x68eb60,_edptlcbClipboardMenu,431,
+0x68ed10,_edptlcbResetParticles,52,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x68ed90,_TerrainPlatformOldUpdate,162,void __cdecl TerrainPlatformOldUpdate(void)
 0x68ee40,_PlatformChecks,2015,"i32 __cdecl(i32,NUVEC *)"
 0x0068f940,_NewTerrainScaleYMask,1984,"void __cdecl(NUVEC *,NUVEC *,u8 *,i32,f32,f32,f32,i32,i32,i32)"
@@ -9092,6 +9108,10 @@ address,symbol,size,ctype
 0x692310,_edptlcbSetDrawflag,106,
 0x692380,_edptlcbDrawflagMenu,367,
 0x6924f0,_edptlcbGroupMenu,396,
+0x692680,_edptlcbStartPage,16,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x692690,_edptlcbStopPage,16,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6926a0,_edptlcbClearPage,16,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6926b0,_edptlcbPageMenu,382,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x692830,_cbPtlTypeMenu,544,
 0x692a50,_edptlcbGhostMenu,327,
 0x692ba0,_cbFileLoadEffects,777,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
@@ -19399,6 +19419,13 @@ address,symbol,size,ctype
 0x76e96c,??_C@_0BG@JCDJODC@Disable?5in?5Cut?9Scenes?$AA@,22,char []
 0x76e984,??_C@_0N@HAJHCIAD@Draw?5Flag?4?4?4?$AA@,13,char []
 0x76e994,??_C@_0BA@KAPLDBEB@Render?5Settings?$AA@,16,char []
+0x76e9a4,??_C@_0N@PHLLDCBF@Clear?5Page?52?$AA@,13,char []
+0x76e9b4,??_C@_0N@NMJGGBNG@Clear?5Page?51?$AA@,13,char []
+0x76e9c4,??_C@_0M@LKKHOFNG@Stop?5Page?52?$AA@,12,char []
+0x76e9d0,??_C@_0M@JBIKLGBF@Stop?5Page?51?$AA@,12,char []
+0x76e9dc,??_C@_0N@EGPCDPCO@Start?5Page?52?$AA@,13,char []
+0x76e9ec,??_C@_0N@GNNPGMON@Start?5Page?51?$AA@,13,char []
+0x76e9fc,??_C@_0P@MIMDJFDC@Test?5Page?5Menu?$AA@,15,char []
 0x76ea0c,??_C@_0L@HAJNGEAG@Add?5Effect?$AA@,11,char []
 0x76ea18,??_C@_0BE@EFLMAGIA@Particle?5Types?5?$CI?$CFd?$CJ?$AA@,20,char []
 0x76ea2c,??_C@_0BB@JDPEOGJB@Ghost?5Separation?$AA@,17,char []
@@ -28634,6 +28661,7 @@ address,symbol,size,ctype
 0x2920aec,_edgra_page_used,,i32[8]
 0x2920b0c,_edptl_torus_menu,4,struct eduimenu_s *
 0x2920d90,_TerrImpactPos,,NUVEC
+0x2920d9c,_edpp_first_time_this_level,4,i32
 0x2920da0,_edbri_plank_instance_type,4,i32
 0x02920da4,_EShadY,,
 0x02920da8,_NuSound3Groups,1024,SFX_GROUP_PC[128]
@@ -28731,6 +28759,7 @@ address,symbol,size,ctype
 0x292fc8c,_messagemenu,4,struct eduimenu_s *
 0x292fc94,_edptl_quickdel_menu,4,struct eduimenu_s *
 0x292fc98,_PlatImpactTer,,TERRAIN_POLYGON_INFO_PC
+0x292fcfc,_entry_position,12,NUVEC
 0x292fd08,_edgra_page_matrix_stack,,NUMTX*[8]
 0x292fd28,_edanim_nearest_particle,4,i32
 0x292fd2c,_numspherecolldata,,i32
@@ -28964,10 +28993,13 @@ address,symbol,size,ctype
 0x2962a60,_edpp_showAllPlaced,4,i32
 0x2962a64,_edpp_dpad_mode,4,i32
 0x2962a68,_edpp_readout,4,i32
+0x2962a6c,_edptl_switch_menu,4,struct eduimenu_s *
+0x2962a70,_edptl_switchtype_menu,4,struct eduimenu_s *
 0x2962a84,_edptl_bounce_menu,4,struct eduimenu_s *
 0x2962a88,_edptl_group_menu,4,struct eduimenu_s *
 0x2962a8c,_edptl_ghost_menu,4,struct eduimenu_s *
 0x2962a90,_edptl_star_menu,4,struct eduimenu_s *
+0x2962a94,_edptl_page_menu,4,struct eduimenu_s *
 0x2962a98,_edptl_drawflag_menu,4,struct eduimenu_s *
 0x2962a9c,_edptl_scaleeffect_menu,,eduimenu_s *
 0x2962aa0,_edptl_orphanlist_menu,4,struct eduimenu_s *
