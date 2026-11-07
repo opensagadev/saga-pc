@@ -6684,6 +6684,9 @@ address,symbol,size,ctype
 0x5f8d60,_NuTexReadPc,231,"i32 __cdecl(char *,VARIPTR *,VARIPTR)"
 0x005f8e50,_NuTexCreatePS,105,void __cdecl (NUTEXDIM_PC *)
 0x005f8ed0,_NuTexDestroyPS,34,void __cdecl(NUTEXDIM_PC *)
+0x005f8f10,_NuTexGetReqSize,3,"i32 __cdecl(i32, i32)"
+0x005f8f20,_NuTexReserve,4,i32 __cdecl(i32)
+0x005f8f30,_NuTexUnReserve,1,void __cdecl(void)
 0x005f8f50,_PCGraphicsBindTextureDimensionsPc,22,"void __cdecl(NUTEXDIM_PC*,u32)"
 0x5f8f80,_NuTexInitExPS,34,void __cdecl NuTexInitExPS(VARIPTR *buffer_unused)
 0x5f8fd0,_NuTexGetUnresolvedTextureTIDPS,81,i32 __cdecl(void)
@@ -8461,6 +8464,7 @@ address,symbol,size,ctype
 0x685eb0,_DebrisProcessAllocation,55,void __cdecl (void)
 0x685ef0,_DebrisProcessGeneration,2144,void __cdecl (void)
 0x686750,_DebrisPreCheckCollisions,317,"i32 __cdecl(NUVEC *,f32)"
+0x006868f0,_DebrisDrawGlass,87,void __cdecl(void)
 0x686950,_edanimUpdateObjects,1644,void __cdecl(f32)
 0x686fc0,_edanimParamCreate,338,
 0x687120,_edanimSoundCreate,146,
@@ -10875,6 +10879,7 @@ address,symbol,size,ctype
 0x74dcd0,?push_back@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEXABQAUShaderParserIncludePc@@@Z,105,void __thiscall (ShaderParserIncludePc *const &)
 0x74dd40,?LoadInclude@ShaderCompilerParserPc@@QAEPAUShaderCompilerBufferAllocatorPc@@PBD@Z,432,ShaderCompilerBufferAllocatorPc *__thiscall (const char *)
 0x74def0,?ProcessDirective@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@PAH@Z,632,"void __thiscall (ShaderCompilerBufferAllocatorPc *, i32 *)"
+0x0074ea90,_NuRainDraw,1,void __cdecl(i32)
 0x74ee62,??_V@YAXPAX@Z,,void __cdecl (void *)
 0x74f810,__fputwc_nolock,,
 0x74f9ee,_fputwc,120,

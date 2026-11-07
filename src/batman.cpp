@@ -25,6 +25,7 @@ extern "C" {
     void __cdecl SpeedBlur_Update(void);
     void __cdecl DebrisKillPlayers(void);
     void __cdecl AddCameraRain(WORLDINFO *world, i32 mode);
+    void __cdecl DebrisDrawGlass(void);
 #pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
 #pragma data_seg()
@@ -495,7 +496,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     DebrisDraw(paused ^ editor_active, 1);
     DebrisDraw(paused ^ editor_active, 0);
     NuRndrEndSceneEx(0);
-    STUBBED_NAMED("NuMainRenderWorld: DebrisDrawGlass at 0x006868f0");
+    DebrisDrawGlass();
     if (screendump == 0) {
         ViewCamDraw();
     }

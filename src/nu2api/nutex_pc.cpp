@@ -22,6 +22,17 @@ void __cdecl NuTexDestroyPS(NUTEXDIM_PC *texture) {
     }
 }
 
+extern "C" i32 __cdecl NuTexGetReqSize(i32, i32) {
+    return 0;
+}
+
+extern "C" i32 __cdecl NuTexReserve(i32) {
+    return -1;
+}
+
+extern "C" void __cdecl NuTexUnReserve(void) {
+}
+
 void __cdecl NuTexCreatePS(NUTEXDIM_PC *texture) {
     PC_TEXTURE_LEVEL_DESC_PC description;
     if (texture != NULL && texture->image_data != NULL && texture->image_size != 0) {

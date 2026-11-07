@@ -1554,6 +1554,27 @@ void __cdecl DebrisGlassInit(void) {
     }
     DebrisGlassInitialized = 1;
 }
+
+i32 __cdecl NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode);
+i32 __cdecl NuTexGetReqSize(i32 tex_id, i32 level);
+i32 __cdecl NuTexReserve(i32 size);
+void __cdecl NuTexUnReserve(void);
+void __cdecl NuRainDraw(i32 reserved);
+
+void __cdecl DebrisDrawGlass(void) {
+    i32 reserved;
+    if (DebrisGlassInitialized == 0) {
+        return;
+    }
+    reserved = NuTexReserve(NuTexGetReqSize(debris_rt, 0));
+    NuRndrBeginSceneEx(1, 2, 1);
+    if (freedebchkptrg > 0) {
+        DebrisDraw(0, 2);
+    }
+    NuRainDraw(reserved);
+    NuRndrEndScene();
+    NuTexUnReserve();
+}
 extern i32 DebrisProcessingEnabledPc, globalframes;
 extern i32 debris_sort_delay, debris_sort_this_stack, debris_update_delay, debris_update_this_stack;
 extern i32 DebrisDmaCleanupDelayPc, DebrisDmaCleanupIndexPc;
