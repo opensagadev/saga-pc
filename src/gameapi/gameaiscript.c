@@ -693,65 +693,6 @@ extern const char AISetLayerKeywordPc[11];
 
 extern const char AIClearLayerKeywordPc[13];
 
-typedef struct FORCE_RESET_GROUP_PC {
-    union {
-        struct {
-            GIZFORCE_PC *forces[8];
-            f32 combined_height;
-        };
-        u32 slot_words[9];
-    };
-    u16 runtime_flags;
-    u8 member_count;
-    u8 configured_count;
-} FORCE_RESET_GROUP_PC;
-struct gizforce_pc_s {
-    char name[16];
-    NUVEC file_position;
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    NUSPECIALHANDLE along_socket;
-    GAMEOBJECT *using_object;
-    u32 reset_word;
-    FORCE_RESET_GROUP_PC *group;
-    f32 force_strength;
-    f32 field_48;
-    f32 force_range;
-    f32 field_50;
-    f32 interaction_radius;
-    f32 animation_speed;
-    f32 start_frame, end_frame;
-    f32 effect_scale;
-    f32 radius;
-    f32 vertical_range, horizontal_range;
-    u32 config_flags;
-    u8 unknown_078[4];
-    u8 group_index, collision_mask, activation_mode;
-    u8 unknown_07f;
-    i16 room_id;
-    i16 start_sfx_id, loop_sfx_id, stop_sfx_id;
-    i16 blowup_type;
-    i16 pickup_count, pickup_rotation_x, pickup_rotation_y;
-    NUVEC effect_position;
-    f32 activation_radius;
-    union {
-        u32 runtime_flags;
-        struct {
-            u32 enabled : 1;
-            u32 visible : 1;
-            u32 runtime_bits_2_8 : 7;
-            u32 reward_released : 1;
-            u32 runtime_bit_10 : 1;
-            u32 socket_hidden : 1;
-            u32 runtime_bits_12_13 : 2;
-            u32 completion_released : 1;
-            u32 completion_pending : 1;
-            u32 destroyed : 1;
-            u32 runtime_bits_17_31 : 15;
-        };
-    };
-};
-
 typedef struct ai_force_platform_record_pc_s {
     u8 unknown_00[0x40];
     NUMTX *scene_matrix;

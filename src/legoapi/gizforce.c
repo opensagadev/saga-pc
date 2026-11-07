@@ -173,70 +173,12 @@ void __cdecl ResetForceGlow(void *packet) {
     view->recovery = 0.2f;
 }
 
-typedef struct FORCE_RESET_GROUP_PC {
-    union {
-        struct {
-            GIZFORCE_PC *forces[8];
-            f32 combined_height;
-        };
-        u32 slot_words[9];
-    };
-    u16 runtime_flags;
-    u8 member_count;
-    u8 configured_count;
-} FORCE_RESET_GROUP_PC;
 STATIC_ASSERT(sizeof(FORCE_RESET_GROUP_PC) == 0x28);
 STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, slot_words) == 0);
 STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, combined_height) == 0x20);
 STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, member_count) == 0x26);
 STATIC_ASSERT(offsetof(FORCE_RESET_GROUP_PC, configured_count) == 0x27);
 
-struct gizforce_pc_s {
-    char name[16];
-    NUVEC file_position;
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    NUSPECIALHANDLE along_socket;
-    GAMEOBJECT *using_object;
-    u32 reset_word;
-    FORCE_RESET_GROUP_PC *group;
-    f32 force_strength;
-    f32 field_48;
-    f32 force_range;
-    f32 field_50;
-    f32 interaction_radius;
-    f32 animation_speed;
-    f32 start_frame, end_frame;
-    f32 effect_scale;
-    f32 radius;
-    f32 vertical_range, horizontal_range;
-    u32 config_flags;
-    u8 unknown_078[4];
-    u8 group_index, collision_mask, activation_mode;
-    u8 unknown_07f;
-    i16 room_id;
-    i16 start_sfx_id, loop_sfx_id, stop_sfx_id;
-    i16 blowup_type;
-    i16 pickup_count, pickup_rotation_x, pickup_rotation_y;
-    NUVEC effect_position;
-    f32 activation_radius;
-    union {
-        u32 runtime_flags;
-        struct {
-            u32 enabled : 1;
-            u32 visible : 1;
-            u32 runtime_bits_2_8 : 7;
-            u32 reward_released : 1;
-            u32 runtime_bit_10 : 1;
-            u32 socket_hidden : 1;
-            u32 runtime_bits_12_13 : 2;
-            u32 completion_released : 1;
-            u32 completion_pending : 1;
-            u32 destroyed : 1;
-            u32 runtime_bits_17_31 : 15;
-        };
-    };
-};
 STATIC_ASSERT(sizeof(GIZFORCE_PC) == 0xa4);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, reset_word) == 0x3c);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, group) == 0x40);

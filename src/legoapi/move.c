@@ -5866,18 +5866,6 @@ void __cdecl PodCollisionCode(GAMEOBJECT *object) {
     }
 }
 
-struct gizforce_pc_s {
-    u8 unknown_000[0x10];
-    NUVEC file_position;
-    u8 unknown_01c[0xc];
-    GAMEANIMSET *anim_set;
-    u8 unknown_02c[0xc];
-    GAMEOBJECT *using_object;
-    u8 unknown_03c[0x34];
-    f32 horizontal_range;
-    u8 config_flags_byte;
-};
-STATIC_ASSERT(offsetof(GIZFORCE_PC, config_flags_byte) == 0x74);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, file_position) == 0x10);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, anim_set) == 0x28);
 STATIC_ASSERT(offsetof(GIZFORCE_PC, using_object) == 0x38);
@@ -9697,7 +9685,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         return;
     if ((object->flags_1fc_word & 0x80) != 0 && (object->flags_1fc_word & 0x100) == 0)
         GizForce_FindBestForceTarget(((WORLD_FORCE_PC *)WORLD)->force_system, object);
-    if (target->force == NULL || (target->force->config_flags_byte & 0x80) == 0)
+    if (target->force == NULL || (target->force->config_flags & 0x80) == 0)
         return;
     object->character_context = 0x12;
     object->field_7aa = 0x27;
