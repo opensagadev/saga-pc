@@ -1268,9 +1268,9 @@ void __cdecl CutScriptExecutePc(CUT_SCRIPT_NODE_PC *node, NUGSCN *scene, CUT_TRI
             case 7:
                 if (scene != NULL && NuSpecialFind(scene, &special, node->b.name, 1) != 0) {
                     if (node->a.bytes[0] != 0)
-                        ((NULEGACYSPECIAL *)special.special)->instance->visible |= 1;
+                        ((NUSPECIAL_LEGACY_PC *)special.special)->instance->flags |= 1;
                     else
-                        ((NULEGACYSPECIAL *)special.special)->instance->visible &= ~1;
+                        ((NUSPECIAL_LEGACY_PC *)special.special)->instance->flags &= ~1;
                     done = 1;
                 }
                 CutSceneMissingObjectDiagnosticPc(node->b.name);
