@@ -1099,6 +1099,10 @@ i32 edanimFileSave(char *path) {
     return 0;
 }
 
+void __cdecl edanimRegisterBaseScene(NUGSCN *scene) {
+    (void)scene;
+}
+
 extern struct eduimenu_s *edanim_switchtype_menu;
 
 void edanimcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {

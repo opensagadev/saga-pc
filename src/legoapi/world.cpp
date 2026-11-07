@@ -60,18 +60,6 @@ extern "C" {
         return LWORLD;
     }
 
-    void __cdecl edbitsRegisterBaseScene(NUGSCN *scene) {
-        edbits_base_scene = scene;
-    }
-
-    void __cdecl edanimRegisterBaseScene(NUGSCN *scene) {
-        (void)scene;
-    }
-
-    void __cdecl edbitsRegisterBaseTerrain(void *terrain) {
-        edbits_base_terrain = terrain;
-    }
-
     void __cdecl WorldInfo_Register(WORLDINFO *world) {
         edbitsRegisterBaseScene(world->current_gscn);
         edanimRegisterBaseScene(world->current_gscn);
@@ -538,80 +526,6 @@ extern "C" {
     }
 }
 
-extern "C" void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x,
-                                    i32 rotation_y, i32 rotation_z, i32 colour, numtl_s *material) {
-    NUVEC outlines[4][5] = {{{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1}},
-                            {{-1, -1, 1}, {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{1, -1, 1}, {1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}}};
-    NUVEC endpoints[2];
-    NURND_VERTEX3D_PC vertices[2];
-    for (i32 face = 0; face < 4; ++face) {
-        for (i32 edge = 0; edge < 4; ++edge) {
-            endpoints[0].x = half_x * outlines[face][edge].x;
-            endpoints[0].y = half_y * outlines[face][edge].y;
-            endpoints[0].z = half_z * outlines[face][edge].z;
-            endpoints[1].x = half_x * outlines[face][edge + 1].x;
-            endpoints[1].y = half_y * outlines[face][edge + 1].y;
-            endpoints[1].z = half_z * outlines[face][edge + 1].z;
-            NuVecRotateX(&endpoints[0], &endpoints[0], rotation_x);
-            NuVecRotateY(&endpoints[0], &endpoints[0], rotation_y);
-            NuVecRotateZ(&endpoints[0], &endpoints[0], rotation_z);
-            NuVecRotateX(&endpoints[1], &endpoints[1], rotation_x);
-            NuVecRotateY(&endpoints[1], &endpoints[1], rotation_y);
-            NuVecRotateZ(&endpoints[1], &endpoints[1], rotation_z);
-            vertices[0].colour = colour;
-            vertices[1].colour = colour;
-            vertices[0].position.x = x + endpoints[0].x;
-            vertices[0].position.y = y + endpoints[0].y;
-            vertices[0].position.z = z + endpoints[0].z;
-            vertices[1].position.x = x + endpoints[1].x;
-            vertices[1].position.y = y + endpoints[1].y;
-            vertices[1].position.z = z + endpoints[1].z;
-            NuRndrLine3d(vertices, material, NULL);
-        }
-    }
-}
-
-extern "C" void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y,
-                               i32 rotation_x, i32 outer_z, i32 outer_y, i32 colour, numtl_s *material) {
-    NUVEC outlines[4][5] = {{{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1}},
-                            {{-1, -1, 1}, {-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1}},
-                            {{1, -1, 1}, {1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}}};
-    NUVEC endpoints[2];
-    NURND_VERTEX3D_PC vertices[2];
-    for (i32 face = 0; face < 4; ++face) {
-        for (i32 edge = 0; edge < 4; ++edge) {
-            endpoints[0].x = half_x * outlines[face][edge].x;
-            endpoints[0].y = half_y * outlines[face][edge].y;
-            endpoints[0].z = half_z * outlines[face][edge].z;
-            endpoints[1].x = half_x * outlines[face][edge + 1].x;
-            endpoints[1].y = half_y * outlines[face][edge + 1].y;
-            endpoints[1].z = half_z * outlines[face][edge + 1].z;
-            NuVecRotateZ(&endpoints[0], &endpoints[0], rotation_z);
-            NuVecRotateY(&endpoints[0], &endpoints[0], rotation_y);
-            NuVecRotateX(&endpoints[0], &endpoints[0], rotation_x);
-            NuVecRotateZ(&endpoints[0], &endpoints[0], outer_z);
-            NuVecRotateY(&endpoints[0], &endpoints[0], outer_y);
-            NuVecRotateZ(&endpoints[1], &endpoints[1], rotation_z);
-            NuVecRotateY(&endpoints[1], &endpoints[1], rotation_y);
-            NuVecRotateX(&endpoints[1], &endpoints[1], rotation_x);
-            NuVecRotateZ(&endpoints[1], &endpoints[1], outer_z);
-            NuVecRotateY(&endpoints[1], &endpoints[1], outer_y);
-            vertices[0].colour = colour;
-            vertices[1].colour = colour;
-            vertices[0].position.x = x + endpoints[0].x;
-            vertices[0].position.y = y + endpoints[0].y;
-            vertices[0].position.z = z + endpoints[0].z;
-            vertices[1].position.x = x + endpoints[1].x;
-            vertices[1].position.y = y + endpoints[1].y;
-            vertices[1].position.z = z + endpoints[1].z;
-            NuRndrLine3d(vertices, material, NULL);
-        }
-    }
-}
-
 extern "C" void SetTexAnimSignals() {
     NuTexAnimSetSignals(texanimbits);
 }
@@ -631,9 +545,6 @@ extern "C" void WorldInfo_DrawScene(WORLDINFO *world) {
     }
 }
 
-extern "C" void edbitsRegisterThingsScene(NUGSCN *scene) {
-    edbits_things_scene = scene;
-}
 typedef struct world_initial_progress_pc_s {
     SCENEPROGRESS scene;
     u32 initialized_flags;
