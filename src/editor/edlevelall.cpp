@@ -494,6 +494,8 @@ class PropertyMenuList {
     i32 count;
 
     void InsertBefore(PropertyMenu *menu, PropertyMenu *position);
+    void InsertAfter(PropertyMenu *menu, PropertyMenu *position);
+    void Remove(PropertyMenu *menu);
     void InsertSorted(PropertyMenu *menu);
 };
 
@@ -543,7 +545,9 @@ class PropertyTool : public EdTool {
     void AutoLocateMenu(PropertyMenu *property_menu);
     PropertyMenu *CreatePropertyMenu(ClassObject &object);
     PropertyMenu *FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry);
+    void BringToFront(PropertyMenu *menu);
     PropertyMenu *GetActiveMenu(PropertyMenu *menu);
+    PropertyMenu *GetNextActiveMenu();
     eduimenu_s *GetNextDefaultActiveMenu(eduimenu_s *menu);
     i32 ProcessControls(EdInputContext &input);
     i32 ProcessMenu(EdInputContext &input);
@@ -5701,14 +5705,7 @@ void PropertyMenuList::InsertSorted(PropertyMenu *menu) {
             return;
         }
     }
-    menu->next = NULL;
-    menu->previous = last;
-    if (last != NULL)
-        last->next = menu;
-    last = menu;
-    if (first == NULL)
-        first = menu;
-    count++;
+    InsertAfter(menu, NULL);
 }
 
 void PropertyMenuList::InsertBefore(PropertyMenu *menu, PropertyMenu *position) {
@@ -5733,10 +5730,47 @@ void PropertyMenuList::InsertBefore(PropertyMenu *menu, PropertyMenu *position) 
     }
 }
 
+/* A NULL position appends the menu. */
+void PropertyMenuList::InsertAfter(PropertyMenu *menu, PropertyMenu *position) {
+    if (position != NULL) {
+        menu->previous = position;
+        menu->next = position->next;
+        if (position->next != NULL)
+            position->next->previous = menu;
+        else
+            last = menu;
+        position->next = menu;
+        count++;
+    } else {
+        menu->next = NULL;
+        menu->previous = last;
+        if (last != NULL)
+            last->next = menu;
+        last = menu;
+        if (first == NULL)
+            first = menu;
+        count++;
+    }
+}
+
+void PropertyMenuList::Remove(PropertyMenu *menu) {
+    if (menu->next != NULL)
+        menu->next->previous = menu->previous;
+    else
+        last = menu->previous;
+    if (menu->previous != NULL)
+        menu->previous->next = menu->next;
+    else
+        first = menu->next;
+    menu->next = NULL;
+    menu->previous = NULL;
+    count--;
+}
+
 PropertyMenu *PropertyTool::FindItemMenu(PropertyMenu *menu, ClassObjectListEntry *entry) {
     for (; menu != NULL; menu = menu->next) {
         for (i32 i = 0; i < menu->object_count; i++) {
-            if (menu->objects[i].object == entry->object)
+            if (entry->object == menu->objects[i].object)
                 return menu;
         }
     }
@@ -5756,12 +5790,28 @@ void PropertyTool::RefreshMenuControls(PropertyMenu *property_menu) {
     }
 }
 
+/* Moves a menu ahead of every ordered and new (-1) menu. */
+void PropertyTool::BringToFront(PropertyMenu *menu) {
+    menus.Remove(menu);
+    menu->order = -2;
+    menus.InsertSorted(menu);
+}
+
 PropertyMenu *PropertyTool::GetActiveMenu(PropertyMenu *menu) {
     if (menu == NULL)
         return NULL;
     if (menu->menu == eduiGetActiveMenuParent())
         return menu;
-    return GetActiveMenu(menu->next);
+    menu = menu->next;
+    return GetActiveMenu(menu);
+}
+
+PropertyMenu *PropertyTool::GetNextActiveMenu() {
+    PropertyMenu *next = NULL;
+    PropertyMenu *menu = GetActiveMenu(menus.first);
+    if (menu != NULL)
+        next = menu->next;
+    return next;
 }
 
 void PropertyTool::SetDefaultActiveMenu(PropertyMenu *menu) {
@@ -5779,8 +5829,7 @@ void PropertyTool::ToggleActiveMenu() {
     } else if (menu == menus.last) {
         eduiSetActiveMenu(NULL);
     } else {
-        menu = GetActiveMenu(menus.first);
-        SetDefaultActiveMenu(menu != NULL ? menu->next : NULL);
+        SetDefaultActiveMenu(GetNextActiveMenu());
     }
 }
 
@@ -5939,17 +5988,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
         if (menu != NULL) {
             menu->object_count = 0;
             menu->objects[menu->object_count++] = object;
-            if (menu->next != NULL)
-                menu->next->previous = menu->previous;
-            else
-                menus.last = menu->previous;
-            if (menu->previous != NULL)
-                menu->previous->next = menu->next;
-            else
-                menus.first = menu->next;
-            menu->next = NULL;
-            menu->previous = NULL;
-            menus.count--;
+            menus.Remove(menu);
             list.InsertSorted(menu);
         } else {
             menu = FindItemMenu(list.first, entry);
@@ -5976,17 +6015,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
     }
     while (menus.first != NULL) {
         menu = menus.first;
-        if (menu->next != NULL)
-            menu->next->previous = menu->previous;
-        else
-            menus.last = menu->previous;
-        if (menu->previous != NULL)
-            menu->previous->next = menu->next;
-        else
-            menus.first = menu->next;
-        menu->next = NULL;
-        menu->previous = NULL;
-        menus.count--;
+        menus.Remove(menu);
         eduicbMenuCloseAllexpanders(menu->menu);
         if (menu->menu != NULL) {
             for (eduiitem_s *item = menu->menu->first; item != NULL; item = item->next)
