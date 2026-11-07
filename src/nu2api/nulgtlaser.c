@@ -28,16 +28,10 @@ extern i32 NuLgtArcLaserCnt, NuLgtArcLaserOldCnt, NuLgtArcLaserFrame;
 extern u32 NuLgtSeed;
 extern i32 PS2_REZ_W, PS2_REZ_H;
 extern i32 NuPrimCoordSystemStack[];
+void __cdecl NuVec4Scale(NUVEC4 *, NUVEC4 *, f32);
 void __cdecl NuVec4ScaleForwardPc(NUVEC4 *, NUVEC4 *, f32);
 i32 __cdecl NuRndrBeginSceneEx(i32, i32, i32);
 void __cdecl NuRndrEndSceneEx(i32);
-
-__declspec(noinline) void __cdecl NuVec4Scale(NUVEC4 *out, NUVEC4 *input, f32 scale) {
-    out->x = input->x * scale;
-    out->y = input->y * scale;
-    out->z = input->z * scale;
-    out->w = input->w * scale;
-}
 
 __declspec(noinline) void __cdecl NuVec4ScaleForwardPc(NUVEC4 *out, NUVEC4 *input, f32 scale) {
     NuVec4Scale(out, input, scale);

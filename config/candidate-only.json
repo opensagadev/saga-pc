@@ -1337,12 +1337,12 @@
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nubezier.c",
+   "unit": "src/nu2api/numath_includes.c",
    "symbol": "_BezVecScale",
    "kind": "function"
   },
   {
-   "unit": "src/nu2api/nubezier.c",
+   "unit": "src/nu2api/numath_includes.c",
    "symbol": "_BezVecScaleAccum",
    "kind": "function"
   },

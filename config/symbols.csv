@@ -3242,7 +3242,7 @@ address,symbol,size,ctype
 0x512860,_AIScriptMissingStateDiagnosticAlternate,1,void __cdecl ()
 0x00512870,_AIScriptMissingConditionDiagnostic,1,void __cdecl ()
 0x005128a0,_AIPathSafeDivide,54,"f32 __cdecl (f32, f32)"
-0x00512900,_PCPathArcSine,320,i32 __cdecl (f32)
+0x00512900,_PCPathArcSine,320,i16 __cdecl (f32)
 0x512b00,_AiRndrLine3d,434,
 0x512cc0,_AiRndrLine3dDbg,388,
 0x512e50,_SetScriptErrorLevel,15,
@@ -5818,7 +5818,8 @@ address,symbol,size,ctype
 0x5b2510,_Movie_Play,384,
 0x5b26b0,_Whip_MoveCode,1597,
 0x5b2cf0,_Whip_Release,163,void __cdecl(GAMEOBJECT*)
-0x005b2e20,_NuASin,320,i32 __cdecl (f32)
+0x005b2e20,_NuASin,320,i16 __cdecl (f32)
+0x005b2f60,_NuACos,27,i16 __cdecl (f32)
 0x005b30a0,_NuVecMtxTransform,108,"void __cdecl (NUVEC *, NUVEC *, NUMTX *)"
 0x5b3110,_NuVecMtxTransformH,183,"f32 __cdecl(NUVEC*,NUVEC*,NUMTX*)"
 0x5b31d0,_NuVecMtxTranslate,38,"void __cdecl (NUVEC *out, NUVEC *v, NUMTX *m)"

@@ -21,11 +21,6 @@ void __cdecl NuWindAnimate(NUWIND *wind, f32 frame_time) {
     }
 }
 
-u32 NuWindRand(void) {
-    NuWindQS = (NuWindQS * 0x24cd + 1) & 0xffff;
-    return NuWindQS;
-}
-
 i32 __cdecl NuWindCurrent(NUWIND *wind) {
     if (wind == NULL || wind->current < 0)
         return -1;

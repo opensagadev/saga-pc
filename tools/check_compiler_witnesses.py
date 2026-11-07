@@ -14,7 +14,7 @@ from tools.lib import (archive_members, bindings_for, changed_files, changed_tre
                        load_json, load_symbols, localize_statics, project, retail, sha256)
 
 WITNESSES = [
-    ('integer', 'src/nurand.c', '_NuRand'),
+    ('integer', 'src/nu2api/numath_includes.c', '_NuRand'),
     ('x87', 'src/legoapi/ai_global_conditions_pc.c', '_Condition_CurrentLocatorIsPc'),
     ('x87-struct-global', 'src/legoapi/ai_global_conditions_pc.c', '_Condition_PlayerOnGroundPc'),
     ('switch', 'src/legoapi/gameobjects.c', '_GetCharacterGoalSpeed'),

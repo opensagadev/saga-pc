@@ -1118,7 +1118,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
             return 0;
         }
 
-        intersection_angle = (i16)PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
+        intersection_angle = PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
         wall = local;
         if (wall.x < 0.0f) {
             wall.x = -wall.x;
@@ -2238,7 +2238,7 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
         return 0;
     }
 
-    angle = (i16)PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
+    angle = PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
     wall = local;
     if (wall.x < 0.0f) {
         wall.x = -wall.x;
@@ -17699,7 +17699,7 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
         AiRndrLine3d(vertices, NULL, NULL);
     } else {
         NUVEC side;
-        i16 angle = (i16)(0x4000 - PCPathArcSine((second->radius - first->radius) / distance));
+        i16 angle = 0x4000 - PCPathArcSine((second->radius - first->radius) / distance);
         NuVecRotateY(&side, &direction, angle);
         vertices[0].position = first->position;
         vertices[0].colour = colour;
@@ -17769,7 +17769,7 @@ static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, 
         AiRndrLine3d(vertices, NULL, NULL);
     } else {
         distance = (second->radius - first->radius) / distance;
-        angle = (i16)(0x4000u - (u32)PCPathArcSine(distance));
+        angle = 0x4000 - PCPathArcSine(distance);
         NuVecRotateY(&side, &direction, angle);
         vertices[0].position = first->position;
         vertices[0].colour = colour;
