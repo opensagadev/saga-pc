@@ -809,20 +809,22 @@ static void drawInitialFrustum(NUPORTAL_FRUSTUM_PC *frustum) {
     (void)frustum;
     if (NuPortalDebugEnabledPc == 0)
         return;
-    rays[0].x = -zx;
-    rays[0].y = -zy;
+    rays[0].x = zx * -1.0;
+    rays[0].y = zy * -1.0;
     rays[0].z = 1.0f;
-    rays[1].x = -zx;
+    NuVecMtxRotate(&rays[0], &rays[0], &global_camera.mtx);
+    rays[1].x = zx * -1.0;
     rays[1].y = zy;
     rays[1].z = 1.0f;
+    NuVecMtxRotate(&rays[1], &rays[1], &global_camera.mtx);
     rays[2].x = zx;
     rays[2].y = zy;
     rays[2].z = 1.0f;
+    NuVecMtxRotate(&rays[2], &rays[2], &global_camera.mtx);
     rays[3].x = zx;
-    rays[3].y = -zy;
+    rays[3].y = zy * -1.0;
     rays[3].z = 1.0f;
-    for (i = 0; i < 4; ++i)
-        NuVecMtxRotate(&rays[i], &rays[i], &global_camera.mtx);
+    NuVecMtxRotate(&rays[3], &rays[3], &global_camera.mtx);
     for (i = 0; i < 4; ++i) {
         NuVecScale(&corners[i], &rays[i], 0.2f);
         NuVecAdd(&corners[i], &corners[i], &NuPortalWorldCameraPc);
@@ -880,21 +882,23 @@ static void drawPartialPortal(NUVEC *maximum, NUPORTAL *portal, NUGSCNROOM *room
     if (NuPortalDebugEnabledPc == 0)
         return;
     rays[0].x = minimum->x * zx;
-    rays[0].y = minimum->y * zy;
+    rays[0].y = zy * minimum->y;
     rays[0].z = 1.0f;
+    NuVecMtxRotate(&rays[0], &rays[0], &global_camera.mtx);
     rays[1].x = minimum->x * zx;
     rays[1].y = maximum->y * zy;
     rays[1].z = 1.0f;
+    NuVecMtxRotate(&rays[1], &rays[1], &global_camera.mtx);
     rays[2].x = maximum->x * zx;
     rays[2].y = maximum->y * zy;
     rays[2].z = 1.0f;
+    NuVecMtxRotate(&rays[2], &rays[2], &global_camera.mtx);
     rays[3].x = maximum->x * zx;
-    rays[3].y = minimum->y * zy;
+    rays[3].y = zy * minimum->y;
     rays[3].z = 1.0f;
-    for (i = 0; i < 4; ++i) {
-        NuVecMtxRotate(&rays[i], &rays[i], &global_camera.mtx);
+    NuVecMtxRotate(&rays[3], &rays[3], &global_camera.mtx);
+    for (i = 0; i < 4; ++i)
         NuPlnLine3(&portal->plane, &NuPortalWorldCameraPc, &rays[i], &corners[i]);
-    }
     if (NuPortalCameraSelectPc == 1)
         NuCameraSet(&NuPortalDebugCameraPc);
     drawPortalRectangle(maximum, minimum, 0xff00);
