@@ -7121,95 +7121,154 @@ void __cdecl NuPadSetValid(i32 port, i32 valid) {
 
 // Uncompiled nupad.c append; Save133 belongs to peer material_review.
 void NuPadUpdatePads(void) {
-    i32 count = NuPad_Interface_GetMaxDevices();
-    i32 max_pads = FramePadMaxGamePadsPc;
-    i32 i, j, selected = -1;
-    for (i = 0; i < count; ++i) {
-        FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[i];
-        pad->is_valid =
-            (u8)NuPadReadOutputsPc(i, &pad->analog_left_x, &pad->analog_left_y, &pad->analog_right_x,
-                                   &pad->analog_right_y, &pad->analog_l1, &pad->analog_l2, &pad->analog_r1,
-                                   &pad->analog_r2, &pad->digital_buttons, &pad->unknown_7c, &pad->analog_button_flags);
-        NuPadRecordPlay(pad);
-        if (pad->is_valid)
-            pad->deadzone = PcInputDeadzonePc(i);
-        NuPadProcessReadData(pad);
+    i32 max_interface_devices;
+    i32 max_game_pads;
+    i32 i;
+    i32 j;
+    i32 has_active_pad;
+    i32 selected = -1;
+
+    max_interface_devices = NuPad_Interface_GetMaxDevices();
+    max_game_pads = FramePadMaxGamePadsPc;
+
+    for (i = 0; i < max_interface_devices; i++) {
+        g_nupadScannedPads[i].is_valid = (u8)NuPadReadOutputsPc(
+            i, &g_nupadScannedPads[i].analog_left_x, &g_nupadScannedPads[i].analog_left_y,
+            &g_nupadScannedPads[i].analog_right_x, &g_nupadScannedPads[i].analog_right_y,
+            &g_nupadScannedPads[i].analog_l1, &g_nupadScannedPads[i].analog_l2, &g_nupadScannedPads[i].analog_r1,
+            &g_nupadScannedPads[i].analog_r2, &g_nupadScannedPads[i].digital_buttons, &g_nupadScannedPads[i].unknown_7c,
+            &g_nupadScannedPads[i].analog_button_flags);
+
+        NuPadRecordPlay(g_nupadScannedPads + i);
+
+        if (g_nupadScannedPads[i].is_valid) {
+            g_nupadScannedPads[i].deadzone = PcInputDeadzonePc(i);
+        }
+
+        NuPadProcessReadData(g_nupadScannedPads + i);
     }
+
     if (nuapi.pad_record.should_end == 1) {
-        if (nuapi.pad_record.mode == NUPAD_PLAY) {
-            nuapi.pad_record.mode = NUPAD_NORM;
-            nuapi.pad_record.record.u8_ptr = nuapi.pad_record.buf_start;
-        } else if (nuapi.pad_record.mode == NUPAD_RECORD)
-            NuPadRecordSave(nuapi.pad_record.filepath);
+        switch (nuapi.pad_record.mode) {
+            case NUPAD_RECORD:
+                NuPadRecordSave(nuapi.pad_record.filepath);
+                break;
+            case NUPAD_PLAY:
+                nuapi.pad_record.mode = NUPAD_NORM;
+                nuapi.pad_record.record.u8_ptr = nuapi.pad_record.buf_start;
+                break;
+        }
         nuapi.pad_record.should_end = 0;
     }
-    for (i = 0; i < count; ++i) {
-        i32 active = 0;
-        for (j = 0; j < max_pads; ++j)
-            if (TextInputDeviceLinksPc[j].available && TextInputDeviceLinksPc[j].device == i)
-                active = 1;
-        if (!active)
-            g_nupadScannedPads[i].mapped_to_pad = -1;
-    }
-    if (!FramePadActivatedPc) {
-        i32 initial = -1;
-        TextInputDeviceLinksPc[0].device = -1;
-        for (j = 0; j < count; ++j) {
-            FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
-            if (!pad->is_valid)
-                continue;
-            if (initial == -1) {
-                initial = j;
-                pad->mapped_to_pad = 0;
-            }
-            if (pad->digital_buttons || pad->analog_left_x != 128 || pad->analog_left_y != 128 ||
-                pad->analog_right_x != 128 || pad->analog_right_y != 128) {
-                initial = j;
-                pad->mapped_to_pad = 0;
-                if (pad->digital_buttons_pressed & 0x840)
-                    break;
+
+    for (i = 0; i < max_interface_devices; i++) {
+        has_active_pad = 0;
+
+        for (j = 0; j < max_game_pads; j++) {
+            if (TextInputDeviceLinksPc[j].available && i == TextInputDeviceLinksPc[j].device) {
+                has_active_pad = 1;
             }
         }
-        TextInputDeviceLinksPc[0].device = initial;
-        return;
+
+        if (has_active_pad) {
+            continue;
+        }
+
+        g_nupadScannedPads[i].mapped_to_pad = -1;
     }
-    for (i = 0; i < max_pads; ++i) {
-        i32 active = TextInputDeviceLinksPc[i].available;
-        if (active == 1 && !g_nupadScannedPads[TextInputDeviceLinksPc[i].device].is_valid) {
-            for (j = 0; j < count; ++j) {
-                FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
-                if (pad->is_valid && (pad->digital_buttons_pressed & 0x800) &&
-                    (pad->mapped_to_pad == -1 || !TextInputDeviceLinksPc[pad->mapped_to_pad].available)) {
-                    TextInputDeviceLinksPc[i].device = j;
-                    pad->mapped_to_pad = i;
-                    pad->digital_buttons_pressed = 0;
-                    break;
+
+    if (!FramePadActivatedPc) {
+        TextInputDeviceLinksPc[0].device = -1;
+
+        for (j = 0; j < max_interface_devices; j++) {
+            if (g_nupadScannedPads[j].is_valid) {
+                if (TextInputDeviceLinksPc[0].device == -1) {
+                    TextInputDeviceLinksPc[0].device = j;
+                    g_nupadScannedPads[j].mapped_to_pad = 0;
+                }
+
+                if (g_nupadScannedPads[j].digital_buttons != 0 ||
+                    g_nupadScannedPads[j].analog_left_x != ANALOG_CENTER ||
+                    g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER ||
+                    g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
+                    g_nupadScannedPads[j].analog_right_y != ANALOG_CENTER) {
+                    TextInputDeviceLinksPc[0].device = j;
+                    g_nupadScannedPads[j].mapped_to_pad = 0;
+
+                    if ((g_nupadScannedPads[j].digital_buttons_pressed & 0x840) != 0) {
+                        return;
+                    }
                 }
             }
-            if (j < count)
-                continue;
         }
-        if (active)
-            continue;
-        TextInputDeviceLinksPc[i].device = -1;
-        if (TextInputDeviceLinksPc[0].available + TextInputDeviceLinksPc[1].available != 0 || i == 0)
-            for (j = 0; j < count; ++j) {
-                FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
-                if (pad->mapped_to_pad == -1 || TextInputDeviceLinksPc[pad->mapped_to_pad].available != 1)
-                    pad->mapped_to_pad = -1;
+    }
+
+    if (FramePadActivatedPc) {
+        for (i = 0; i < max_game_pads; i++) {
+            if (TextInputDeviceLinksPc[i].available == 1 &&
+                !g_nupadScannedPads[TextInputDeviceLinksPc[i].device].is_valid) {
+                for (j = 0; j < max_interface_devices; j++) {
+                    if (g_nupadScannedPads[j].is_valid &&
+                        (g_nupadScannedPads[j].digital_buttons_pressed & 0x800) != 0 &&
+                        (g_nupadScannedPads[j].mapped_to_pad == -1 ||
+                         !TextInputDeviceLinksPc[g_nupadScannedPads[j].mapped_to_pad].available)) {
+                        TextInputDeviceLinksPc[i].device = j;
+                        g_nupadScannedPads[j].mapped_to_pad = i;
+                        g_nupadScannedPads[j].digital_buttons_pressed = 0;
+
+                        goto next_pad;
+                    }
+                }
             }
-        for (j = 0; j < count; ++j) {
-            FRAME_SCANNED_PAD_PC *pad = &g_nupadScannedPads[j];
-            if (pad->mapped_to_pad != -1 || !pad->is_valid)
-                continue;
-            TextInputDeviceLinksPc[i].device = j;
-            pad->mapped_to_pad = i;
-            if (selected >= 0)
-                g_nupadScannedPads[selected].mapped_to_pad = -1;
-            selected = j;
-            if (pad->digital_buttons || pad->analog_left_x != 128 || pad->analog_left_y != 128 ||
-                pad->analog_right_x != 128 || pad->analog_right_x != 128 || (pad->digital_buttons_pressed & 0x840))
-                break;
+
+            if (!TextInputDeviceLinksPc[i].available) {
+                TextInputDeviceLinksPc[i].device = -1;
+
+                if (TextInputDeviceLinksPc[0].available + TextInputDeviceLinksPc[1].available == 0) {
+                    if (i == 0) {
+                        for (j = 0; j < max_interface_devices; j++) {
+                            if (g_nupadScannedPads[j].mapped_to_pad != -1 &&
+                                TextInputDeviceLinksPc[g_nupadScannedPads[j].mapped_to_pad].available == 1) {
+                                continue;
+                            }
+
+                            g_nupadScannedPads[j].mapped_to_pad = -1;
+                        }
+                    }
+                } else {
+                    for (j = 0; j < max_interface_devices; j++) {
+                        if (g_nupadScannedPads[j].mapped_to_pad != -1 &&
+                            TextInputDeviceLinksPc[g_nupadScannedPads[j].mapped_to_pad].available == 1) {
+                            continue;
+                        }
+
+                        g_nupadScannedPads[j].mapped_to_pad = -1;
+                    }
+                }
+
+                for (j = 0; j < max_interface_devices; j++) {
+                    if (g_nupadScannedPads[j].mapped_to_pad == -1 && g_nupadScannedPads[j].is_valid) {
+                        TextInputDeviceLinksPc[i].device = j;
+                        g_nupadScannedPads[j].mapped_to_pad = i;
+                        /* PC: only the last candidate keeps the player; release the previous one. */
+                        if (selected >= 0) {
+                            g_nupadScannedPads[selected].mapped_to_pad = -1;
+                        }
+                        selected = j;
+
+                        if (g_nupadScannedPads[j].digital_buttons != 0 ||
+                            g_nupadScannedPads[j].analog_left_x != ANALOG_CENTER ||
+                            g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER ||
+                            g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
+                            /* As on every platform, analog_right_x is tested twice. */
+                            g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
+                            (g_nupadScannedPads[j].digital_buttons_pressed & 0x840) != 0) {
+                            break;
+                        }
+                    }
+                }
+            }
+        next_pad:;
         }
     }
 }
