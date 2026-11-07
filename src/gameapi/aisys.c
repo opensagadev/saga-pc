@@ -3388,33 +3388,33 @@ static i32 AIMoveChooseExitNodePath(AISYS_PC *system, AIPACKET_PC *packet) {
 }
 
 static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction) {
-    AIPATH_PC *path;
     i32 node_index;
     AIPATHNODE_PC *node;
     u32 destination;
-    AIPATHCNX_PC *connection;
+    AIPATHCNX_PC *connection = NULL;
     i32 connection_index;
     u8 route_index;
     AIPATHROUTE_PC *route;
-    i32 next_node;
+    i32 next_node = 0;
     f32 nearest;
     i32 index;
     f32 first;
     f32 second;
     f32 distance;
 
-    if (packet->goal_path_node == NULL || packet->path_info.connection == NULL) {
+    if (packet->goal_path_node == NULL) {
         return NULL;
     }
-    path = packet->path_info.path;
+    if (packet->path_info.connection == NULL) {
+        return NULL;
+    }
     node_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
-    node = &path->nodes[node_index];
-    destination = packet->goal_path_node - path->nodes;
+    node = &packet->path_info.path->nodes[node_index];
+    destination = packet->goal_path_node - packet->path_info.path->nodes;
     if (destination > 0xff) {
         return NULL;
     }
-    connection = NULL;
-    connection_index = path->route_matrix[node_index][destination];
+    connection_index = packet->path_info.path->route_matrix[node_index][destination];
     if (connection_index < node->connection_count) {
         connection = node->connections[connection_index];
         *direction = connection->node_indices[0] != node_index;
@@ -3434,17 +3434,22 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
             return connection;
         }
     }
-    route = &path->routes[route_index];
-    next_node = destination;
-    if ((((u64)1 << route_index) & path->nodes[destination].route_membership_mask) == 0) {
+    route = &packet->path_info.path->routes[packet->current_route];
+    connection = NULL;
+    if ((((u64)1 << packet->current_route) & packet->path_info.path->nodes[destination].route_membership_mask) != 0) {
+        connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[destination]];
+    } else {
         nearest = FLT_MAX;
-        next_node = 0;
         for (index = 0; index < route->exit_node_count; ++index) {
             first = AIPathNodeDistanceToPathNode(packet->path_info.path, node_index, route->exit_nodes[index],
                                                  packet->current_route, 0);
             second = AIPathNodeDistanceToPathNode(packet->path_info.path, route->exit_nodes[index], destination, 0xff,
                                                   (u32)((u64)(1) << packet->current_route));
-            distance = first != FLT_MAX && second != FLT_MAX ? first + second : FLT_MAX;
+            if (first != FLT_MAX && second != FLT_MAX) {
+                distance = first + second;
+            } else {
+                distance = FLT_MAX;
+            }
             if (distance < nearest) {
                 nearest = distance;
                 next_node = route->exit_nodes[index];
@@ -3453,13 +3458,12 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
         if (nearest == FLT_MAX) {
             return NULL;
         }
+        connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[next_node]];
     }
-    connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[next_node]];
-    if (connection_index >= node->connection_count) {
-        return NULL;
+    if (connection_index < node->connection_count) {
+        connection = node->connections[connection_index];
+        *direction = connection->node_indices[0] != node_index;
     }
-    connection = node->connections[connection_index];
-    *direction = connection->node_indices[0] != node_index;
     return connection;
 }
 
