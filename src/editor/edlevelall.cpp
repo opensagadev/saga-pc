@@ -2968,19 +2968,21 @@ i32 KnotHelper::GetNumObjects() {
 
 /* Walks the knots of every spline in order. */
 void *KnotHelper::GetNextObject(void *current) {
+    SplineKnot *next = NULL;
     if (current == NULL) {
         for (SplineObject *spline = theSplineHelper.first_object; spline != NULL; spline = spline->next) {
             if (spline->knots.count != 0)
                 return spline->knots.first;
         }
-        return NULL;
-    }
-    SplineKnot *next = static_cast<SplineKnot *>(current)->next;
-    if (next == NULL) {
-        for (SplineObject *spline = static_cast<SplineKnot *>(current)->spline->next; spline != NULL;
-             spline = spline->next) {
-            if (spline->knots.count != 0)
-                return spline->knots.first;
+    } else {
+        next = static_cast<SplineKnot *>(current)->next;
+        if (next == NULL) {
+            for (SplineObject *spline = static_cast<SplineKnot *>(current)->spline->next; spline != NULL;
+                 spline = spline->next) {
+                if (spline->knots.count != 0)
+                    return spline->knots.first;
+            }
+            return NULL;
         }
     }
     return next;
@@ -6205,16 +6207,18 @@ i32 ClassEditor::CreateObject(EdClass *object_class) {
  * a fresh object (singleton classes can only be cloned). */
 i32 ClassEditor::cbEdCreateClassNewObject(i32 class_id) {
     EdClass *object_class = theRegistry.GetClass(class_id);
+    i32 created = 0;
     for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
         if (entry->ed_class == object_class)
             return theClassEditor.CreateObject(*reinterpret_cast<ClassObject *>(&entry->ed_class));
     }
-    if (object_class->flags & 0x4000000)
-        return 0;
-    return theClassEditor.CreateObject(class_id);
+    if (!(object_class->flags & 0x4000000))
+        created = theClassEditor.CreateObject(class_id);
+    return created;
 }
 
-i32 ClassEditor::CreateObject(i32 class_id) {
+/* Retail calls this out of line from both callers (0x6cf88b, 0x6d25fa). */
+__declspec(noinline) i32 ClassEditor::CreateObject(i32 class_id) {
     if (theLevelEditor.current_led_file == -1) {
         SelectLED(class_id);
         return 1;
