@@ -1801,9 +1801,9 @@ void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_ang
 
 void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour,
                                 i32 cap_bottom, i32 cap_top) {
-    __declspec(align(16)) NUVEC4 a;
-    __declspec(align(16)) NUVEC4 b;
-    __declspec(align(16)) NUVEC4 c;
+    __declspec(align(16)) VuVec a;
+    __declspec(align(16)) VuVec b;
+    __declspec(align(16)) VuVec c;
     f32 scale = top_radius / radius;
     i32 dark = EDDRAW_DARKEN(colour);
     i32 tri_colour = 0;
@@ -1815,20 +1815,21 @@ void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 
     s0 = NU_SIN_LUT(0) * radius;
     c0 = NU_COS_LUT(0) * radius;
     for (i = 0; i < segments; i++) {
-        i32 angle = ((i + 1) << 16) / segments;
+        i32 angle;
         tri_colour = (i & 1) ? dark : colour;
+        angle = ((i + 1) << 16) / segments;
         s1 = NU_SIN_LUT(angle) * radius;
         c1 = NU_COS_LUT(angle) * radius;
         top_s = s0 * scale;
         top_c = c0 * scale;
-        EDDRAW_SET_VEC4(&a, top_s, top_c, half_height);
-        EDDRAW_SET_VEC4(&b, s1 * scale, c1 * scale, half_height);
-        EDDRAW_SET_VEC4(&c, s1, c1, -half_height);
-        EdDrawPolyTri((NUVEC *)&a, (NUVEC *)&b, (NUVEC *)&c, tri_colour);
-        EDDRAW_SET_VEC4(&a, top_s, top_c, half_height);
-        EDDRAW_SET_VEC4(&b, s1, c1, -half_height);
-        EDDRAW_SET_VEC4(&c, s0, c0, -half_height);
-        EdDrawPolyTri((NUVEC *)&a, (NUVEC *)&b, (NUVEC *)&c, tri_colour);
+        VuVecCopy(a, VuVecMake(top_s, top_c, half_height, 1.0f));
+        VuVecCopy(b, VuVecMake(s1 * scale, c1 * scale, half_height, 1.0f));
+        VuVecCopy(c, VuVecMake(s1, c1, -half_height, 1.0f));
+        EdDrawPolyTri(&a.xyz, &b.xyz, &c.xyz, tri_colour);
+        VuVecCopy(a, VuVecMake(top_s, top_c, half_height, 1.0f));
+        VuVecCopy(b, VuVecMake(s1, c1, -half_height, 1.0f));
+        VuVecCopy(c, VuVecMake(s0, c0, -half_height, 1.0f));
+        EdDrawPolyTri(&a.xyz, &b.xyz, &c.xyz, tri_colour);
         s0 = s1;
         c0 = c1;
     }
@@ -1843,16 +1844,16 @@ void __cdecl EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 
             s2 = NU_SIN_LUT(angle) * radius;
             c2 = NU_COS_LUT(angle) * radius;
             if (cap_top != 0) {
-                EDDRAW_SET_VEC4(&a, s0 * scale, c0 * scale, half_height);
-                EDDRAW_SET_VEC4(&b, s2 * scale, c2 * scale, half_height);
-                EDDRAW_SET_VEC4(&c, s1 * scale, c1 * scale, half_height);
-                EdDrawPolyTri((NUVEC *)&a, (NUVEC *)&b, (NUVEC *)&c, tri_colour);
+                VuVecCopy(a, VuVecMake(s0 * scale, c0 * scale, half_height, 1.0f));
+                VuVecCopy(b, VuVecMake(s2 * scale, c2 * scale, half_height, 1.0f));
+                VuVecCopy(c, VuVecMake(s1 * scale, c1 * scale, half_height, 1.0f));
+                EdDrawPolyTri(&a.xyz, &b.xyz, &c.xyz, tri_colour);
             }
             if (cap_bottom != 0) {
-                EDDRAW_SET_VEC4(&a, s0, c0, -half_height);
-                EDDRAW_SET_VEC4(&b, s1, c1, -half_height);
-                EDDRAW_SET_VEC4(&c, s2, c2, -half_height);
-                EdDrawPolyTri((NUVEC *)&a, (NUVEC *)&b, (NUVEC *)&c, tri_colour);
+                VuVecCopy(a, VuVecMake(s0, c0, -half_height, 1.0f));
+                VuVecCopy(b, VuVecMake(s1, c1, -half_height, 1.0f));
+                VuVecCopy(c, VuVecMake(s2, c2, -half_height, 1.0f));
+                EdDrawPolyTri(&a.xyz, &b.xyz, &c.xyz, tri_colour);
             }
             s1 = s2;
             c1 = c2;
