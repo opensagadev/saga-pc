@@ -423,59 +423,81 @@ void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *handle, i32 visible) {
     }
 }
 
+/* Shared private helper (native EAX source, ECX destination): component-wise |v|. */
+static __declspec(noinline) void NuVec4AbsPrivatePc(NUVEC4 *out, const NUVEC4 *in) {
+    f32 value;
+    u32 bits;
+    value = in->x;
+    bits = *(u32 *)&value & 0x7fffffff;
+    out->x = *(f32 *)&bits;
+    value = in->y;
+    bits = *(u32 *)&value & 0x7fffffff;
+    out->y = *(f32 *)&bits;
+    value = in->z;
+    bits = *(u32 *)&value & 0x7fffffff;
+    out->z = *(f32 *)&bits;
+    value = in->w;
+    bits = *(u32 *)&value & 0x7fffffff;
+    out->w = *(f32 *)&bits;
+}
+
 void __cdecl NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
-    NUDISPLAY_SPECIAL_PC *display;
-    NUDISPLAY_LIST_PC *display_scene;
-    NUMTX draw_matrix;
-    NUVEC center;
-    NUVEC half_extent;
-    NUVEC world_extent;
-    NUVEC4 *clip_bounds;
-    i32 bounds_index;
-    NUMTX *draw_matrix_ptr;
+    NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+    NUDISPLAY_LIST_PC *display_scene = ((NUGSCN *)special->scene)->display_list;
+    __declspec(align(16)) NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
+    NUVEC4 half_extent;
+    NUVEC4 center;
+    NUVEC4 abs_row[3];
+    NUVEC4 world_extent;
 
-    display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
-    display_scene = ((NUGSCN *)special->scene)->display_list;
-    draw_matrix_ptr = NuSpecialGetDrawMtx(special);
-    draw_matrix = *draw_matrix_ptr;
+    half_extent.x = display->bounds_max.x - display->bounds_min.x;
+    half_extent.y = display->bounds_max.y - display->bounds_min.y;
+    half_extent.z = display->bounds_max.z - display->bounds_min.z;
+    half_extent.x *= 0.5;
+    half_extent.y *= 0.5;
+    half_extent.z *= 0.5;
+    center.x = display->bounds_max.x + display->bounds_min.x;
+    center.y = display->bounds_max.y + display->bounds_min.y;
+    center.z = display->bounds_max.z + display->bounds_min.z;
+    center.x *= 0.5;
+    center.y *= 0.5;
+    center.z *= 0.5;
 
-    half_extent.x = (display->bounds_max.x - display->bounds_min.x) * 0.5f;
-    half_extent.y = (display->bounds_max.y - display->bounds_min.y) * 0.5f;
-    half_extent.z = (display->bounds_max.z - display->bounds_min.z) * 0.5f;
-    center.x = (display->bounds_max.x + display->bounds_min.x) * 0.5f;
-    center.y = (display->bounds_max.y + display->bounds_min.y) * 0.5f;
-    center.z = (display->bounds_max.z + display->bounds_min.z) * 0.5f;
+    {
+        f32 value;
+        u32 bits;
+        value = draw_matrix.m00;
+        bits = *(u32 *)&value & 0x7fffffff;
+        abs_row[0].x = *(f32 *)&bits;
+        value = draw_matrix.m01;
+        bits = *(u32 *)&value & 0x7fffffff;
+        abs_row[0].y = *(f32 *)&bits;
+        value = draw_matrix.m02;
+        bits = *(u32 *)&value & 0x7fffffff;
+        abs_row[0].z = *(f32 *)&bits;
+    }
+    NuVec4AbsPrivatePc(&abs_row[1], (NUVEC4 *)&draw_matrix.m10);
+    NuVec4AbsPrivatePc(&abs_row[2], (NUVEC4 *)&draw_matrix.m20);
+    world_extent.x = abs_row[0].x * half_extent.x + abs_row[1].x * half_extent.y + abs_row[2].x * half_extent.z;
+    world_extent.y = abs_row[0].y * half_extent.x + abs_row[1].y * half_extent.y + abs_row[2].y * half_extent.z;
+    world_extent.z = abs_row[0].z * half_extent.x + abs_row[1].z * half_extent.y + abs_row[2].z * half_extent.z;
 
-#define NUSPECIAL_ABS(value) ((value) < 0.0f ? -(value) : (value))
-    world_extent.x = NUSPECIAL_ABS(draw_matrix.m00) * half_extent.x + NUSPECIAL_ABS(draw_matrix.m10) * half_extent.y +
-                     NUSPECIAL_ABS(draw_matrix.m20) * half_extent.z;
-    world_extent.y = NUSPECIAL_ABS(draw_matrix.m01) * half_extent.x + NUSPECIAL_ABS(draw_matrix.m11) * half_extent.y +
-                     NUSPECIAL_ABS(draw_matrix.m21) * half_extent.z;
-    world_extent.z = NUSPECIAL_ABS(draw_matrix.m02) * half_extent.x + NUSPECIAL_ABS(draw_matrix.m12) * half_extent.y +
-                     NUSPECIAL_ABS(draw_matrix.m22) * half_extent.z;
-#undef NUSPECIAL_ABS
-
-    NuVecMtxTransform(&center, &center, &draw_matrix);
-    clip_bounds = display_scene->clip_bounds;
-    bounds_index = (i32)(display->instance_ix * 2);
+    NuVecMtxTransform((NUVEC *)&center, (NUVEC *)&center, &draw_matrix);
+    center.w = NuFsqrt(world_extent.x + world_extent.y + world_extent.z);
     if ((display_scene->render_flags & 0x4000) != 0) {
-        clip_bounds[bounds_index].x = center.x;
-        clip_bounds[bounds_index].y = center.y;
-        clip_bounds[bounds_index].z = center.z;
-        clip_bounds[bounds_index].w = NuFsqrt(world_extent.x + world_extent.y + world_extent.z);
-        clip_bounds[bounds_index + 1].x = world_extent.x;
-        clip_bounds[bounds_index + 1].y = world_extent.y;
-        clip_bounds[bounds_index + 1].z = world_extent.z;
-        STUBBED_NAMED("NuDisplayListUpdateSpecial: undefined center-extent W store at 0x5df6f1");
+        display_scene->clip_bounds[display->instance_ix * 2] = center;
+        display_scene->clip_bounds[display->instance_ix * 2 + 1] = world_extent;
     } else {
-        clip_bounds[bounds_index].x = center.x - world_extent.x;
-        clip_bounds[bounds_index].y = center.y - world_extent.y;
-        clip_bounds[bounds_index].z = center.z - world_extent.z;
-        STUBBED_NAMED("NuDisplayListUpdateSpecial: undefined axis-bound W store at 0x5df760");
-        clip_bounds[bounds_index + 1].x = center.x + world_extent.x;
-        clip_bounds[bounds_index + 1].y = center.y + world_extent.y;
-        clip_bounds[bounds_index + 1].z = center.z + world_extent.z;
-        STUBBED_NAMED("NuDisplayListUpdateSpecial: undefined axis-bound W store at 0x5df788");
+        NUVEC4 minimum;
+        NUVEC4 maximum;
+        minimum.x = center.x - world_extent.x;
+        minimum.y = center.y - world_extent.y;
+        minimum.z = center.z - world_extent.z;
+        maximum.x = center.x + world_extent.x;
+        maximum.y = center.y + world_extent.y;
+        maximum.z = center.z + world_extent.z;
+        display_scene->clip_bounds[display->instance_ix * 2] = minimum;
+        display_scene->clip_bounds[display->instance_ix * 2 + 1] = maximum;
     }
 
     DisplayListUpdateSpecialTransformPS(special, &draw_matrix);
