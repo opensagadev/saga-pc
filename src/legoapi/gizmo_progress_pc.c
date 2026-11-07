@@ -150,14 +150,10 @@ void __cdecl GizBuildIts_ClearProgress(void *owner, void *progress_ptr) {
     BUILD_PROGRESS_PC *progress = (BUILD_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
         return;
-    progress->built[0] = 0;
-    progress->built[1] = 0;
-    progress->enabled[0] = 0xffffffffu;
-    progress->enabled[1] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-    progress->visible[1] = 0xffffffffu;
-    progress->completed[0] = 0;
-    progress->completed[1] = 0;
+    memset(progress->built, 0, sizeof(progress->built));
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->completed, 0, sizeof(progress->completed));
     memset(progress->object_count, 0, 64);
 }
 
@@ -165,34 +161,13 @@ void __cdecl GizForces_ClearProgress(void *owner, void *progress_ptr) {
     FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
         return;
-    progress->enabled[0] = 0xffffffffu;
-    progress->enabled[1] = 0xffffffffu;
-    progress->enabled[2] = 0xffffffffu;
-    progress->enabled[3] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-    progress->visible[1] = 0xffffffffu;
-    progress->visible[2] = 0xffffffffu;
-    progress->visible[3] = 0xffffffffu;
-    progress->reward[0] = 0;
-    progress->reward[1] = 0;
-    progress->reward[2] = 0;
-    progress->reward[3] = 0;
-    progress->socket[0] = 0;
-    progress->socket[1] = 0;
-    progress->socket[2] = 0;
-    progress->socket[3] = 0;
-    progress->released[0] = 0;
-    progress->released[1] = 0;
-    progress->released[2] = 0;
-    progress->released[3] = 0;
-    progress->pending[0] = 0;
-    progress->pending[1] = 0;
-    progress->pending[2] = 0;
-    progress->pending[3] = 0;
-    progress->destroyed[0] = 0;
-    progress->destroyed[1] = 0;
-    progress->destroyed[2] = 0;
-    progress->destroyed[3] = 0;
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->reward, 0, sizeof(progress->reward));
+    memset(progress->socket, 0, sizeof(progress->socket));
+    memset(progress->released, 0, sizeof(progress->released));
+    memset(progress->pending, 0, sizeof(progress->pending));
+    memset(progress->destroyed, 0, sizeof(progress->destroyed));
     memset(progress->group_members, -1, 64);
 }
 
@@ -220,18 +195,12 @@ void __cdecl GizTurrets_ClearProgress(void *owner, void *progress_ptr) {
     TURRET_PROGRESS_PC *progress = (TURRET_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
         return;
-    progress->enabled[0] = 0xffffffffu;
-    progress->enabled[1] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-    progress->visible[1] = 0xffffffffu;
-    progress->reward[0] = 0;
-    progress->reward[1] = 0;
-    progress->fired[0] = 0;
-    progress->fired[1] = 0;
-    progress->stopped[0] = 0;
-    progress->stopped[1] = 0;
-    progress->completed[0] = 0;
-    progress->completed[1] = 0;
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->reward, 0, sizeof(progress->reward));
+    memset(progress->fired, 0, sizeof(progress->fired));
+    memset(progress->stopped, 0, sizeof(progress->stopped));
+    memset(progress->completed, 0, sizeof(progress->completed));
     memset(progress->timers, 255, 64);
 }
 
@@ -239,12 +208,8 @@ void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
     BOMB_PROGRESS_PC *progress = (BOMB_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
         return;
-    progress->enabled[0] = 0xffffffffu;
-    progress->enabled[1] = 0xffffffffu;
-    progress->enabled[2] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-    progress->visible[1] = 0xffffffffu;
-    progress->visible[2] = 0xffffffffu;
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
 }
 
 void __cdecl GizPanels_ClearProgress(void *owner, void *progress_ptr) {
@@ -276,30 +241,30 @@ void __cdecl GizBuildIts_StoreProgress(void *world_ptr, void *data, void *progre
     BUILD_PROGRESS_SYSTEM_PC *system = (BUILD_PROGRESS_SYSTEM_PC *)data;
     BUILD_PROGRESS_RECORD_PC *record;
     i32 index;
+    i32 word;
     u32 bit;
     if (progress == NULL)
         return;
-    progress->built[0] = 0;
-    progress->built[1] = 0;
-    progress->enabled[0] = 0xffffffffu;
-    progress->enabled[1] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-    progress->visible[1] = 0xffffffffu;
-    progress->completed[0] = 0;
-    progress->completed[1] = 0;
+    memset(progress->built, 0, sizeof(progress->built));
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->completed, 0, sizeof(progress->completed));
     memset(progress->object_count, 0, 64);
 
     record = system->records;
-    for (index = 0; index < system->count && index < 64; ++index, ++record) {
+    for (index = 0; index < system->count; ++index, ++record) {
+        if (index >= 64)
+            break;
+        word = index / 32;
         bit = 1u << (index & 31);
         if (record->build_state != 0)
-            progress->built[index / 32] |= bit;
+            progress->built[word] |= bit;
         if (!(record->flags & 2))
-            progress->visible[index / 32] &= ~bit;
+            progress->visible[word] &= ~bit;
         if (!(record->flags & 1))
-            progress->enabled[index / 32] &= ~bit;
+            progress->enabled[word] &= ~bit;
         if (record->flags & 0x200)
-            progress->completed[index / 32] |= bit;
+            progress->completed[word] |= bit;
         progress->object_count[index] = record->built_object_count;
     }
 }
@@ -308,28 +273,31 @@ void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress
     FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
     FORCE_PROGRESS_SYSTEM_PC *system = (FORCE_PROGRESS_SYSTEM_PC *)data;
     FORCE_PROGRESS_RECORD_PC *record;
-    i32 index, group, slot;
+    i32 index, group, slot, word;
     u32 bit;
     GizForces_ClearProgress(world_ptr, progress);
     if (progress == NULL)
         return;
     record = system->records;
-    for (index = 0; index < system->count && index < 128; ++index, ++record) {
+    for (index = 0; index < system->count; ++index, ++record) {
+        if (index >= 128)
+            break;
+        word = index / 32;
         bit = 1u << (index & 31);
         if (!(record->runtime_flags & 2))
-            progress->visible[index / 32] &= ~bit;
+            progress->visible[word] &= ~bit;
         if (!(record->runtime_flags & 1))
-            progress->enabled[index / 32] &= ~bit;
+            progress->enabled[word] &= ~bit;
         if (record->runtime_flags & 0x200)
-            progress->reward[index / 32] |= bit;
+            progress->reward[word] |= bit;
         if (record->runtime_flags & 0x800)
-            progress->socket[index / 32] |= bit;
+            progress->socket[word] |= bit;
         if (record->runtime_flags & 0x4000)
-            progress->released[index / 32] |= bit;
+            progress->released[word] |= bit;
         if (record->runtime_flags & 0x8000)
-            progress->pending[index / 32] |= bit;
+            progress->pending[word] |= bit;
         if (record->runtime_flags & 0x10000)
-            progress->destroyed[index / 32] |= bit;
+            progress->destroyed[word] |= bit;
     }
     for (group = 0; group < 8; ++group)
         for (slot = 0; slot < 8; ++slot) {
@@ -345,6 +313,7 @@ void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_pt
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     GIZMOBLOWUP_PC *record;
     i32 index;
+    i32 word;
     u32 bit;
     if (progress == NULL)
         return;
@@ -356,16 +325,19 @@ void __cdecl Blowup_StoreProgress(void *world_ptr, void *data, void *progress_pt
     if (world == NULL || world->gizmo_blowups == NULL)
         return;
     record = world->gizmo_blowups;
-    for (index = 0; index < world->gizmo_blowup_count && index < 512; ++index, ++record) {
+    for (index = 0; index < world->gizmo_blowup_count; ++index, ++record) {
+        if (index >= 512)
+            break;
+        word = index / 32;
         bit = 1u << (index & 31);
         if (record->status_flags & 1)
-            progress->triggered[index / 32] |= bit;
+            progress->triggered[word] |= bit;
         if (!(record->status_flags & 0x4000))
-            progress->visible[index / 32] &= ~bit;
+            progress->visible[word] &= ~bit;
         if (!(record->status_flags & 0x800000))
-            progress->enabled[index / 32] &= ~bit;
+            progress->enabled[word] &= ~bit;
         if (record->status_flags & 0x10000000)
-            progress->completed[index / 32] |= bit;
+            progress->completed[word] |= bit;
     }
 }
 
@@ -374,6 +346,7 @@ void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progr
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     GIZMOPICKUP_PC *record;
     i32 index;
+    i32 word;
     u32 bit;
     if (progress == NULL)
         return;
@@ -385,14 +358,17 @@ void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progr
     if (world == NULL || world->pickup_runtime_sys->pickups == NULL)
         return;
     record = world->pickup_runtime_sys->pickups;
-    for (index = 0; index < world->pickup_runtime_sys->pickup_count && index < 512; ++index, ++record) {
+    for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++record) {
+        if (index >= 512)
+            break;
+        word = index / 32;
         bit = 1u << (index & 31);
         if (!(record->flags & 4))
-            progress->visible[index / 32] &= ~bit;
+            progress->visible[word] &= ~bit;
         if (!(record->flags & 2))
-            progress->enabled[index / 32] &= ~bit;
+            progress->enabled[word] &= ~bit;
         if (record->flags & 8)
-            progress->collected[index / 32] |= bit;
+            progress->collected[word] |= bit;
     }
 }
 
@@ -427,38 +403,36 @@ void __cdecl GizTurrets_StoreProgress(void *world_ptr, void *data, void *progres
     TURRET_PROGRESS_SYSTEM_PC *system = (TURRET_PROGRESS_SYSTEM_PC *)data;
     TURRET_PROGRESS_RECORD_PC *record;
     i32 index;
+    i32 word;
     u32 bit;
     if (progress == NULL)
         return;
-    progress->enabled[0] = 0xffffffffu;
-    progress->enabled[1] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-    progress->visible[1] = 0xffffffffu;
-    progress->reward[0] = 0;
-    progress->reward[1] = 0;
-    progress->fired[0] = 0;
-    progress->fired[1] = 0;
-    progress->stopped[0] = 0;
-    progress->stopped[1] = 0;
-    progress->completed[0] = 0;
-    progress->completed[1] = 0;
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
+    memset(progress->reward, 0, sizeof(progress->reward));
+    memset(progress->fired, 0, sizeof(progress->fired));
+    memset(progress->stopped, 0, sizeof(progress->stopped));
+    memset(progress->completed, 0, sizeof(progress->completed));
     memset(progress->timers, 255, 64);
 
     record = system->records;
-    for (index = 0; index < system->count && index < 64; ++index, ++record) {
+    for (index = 0; index < system->count; ++index, ++record) {
+        if (index >= 64)
+            break;
+        word = index / 32;
         bit = 1u << (index & 31);
         if (!(record->flags & 4))
-            progress->visible[index / 32] &= ~bit;
+            progress->visible[word] &= ~bit;
         if (!(record->flags & 2))
-            progress->enabled[index / 32] &= ~bit;
+            progress->enabled[word] &= ~bit;
         if (record->flags & 8)
-            progress->reward[index / 32] |= bit;
+            progress->reward[word] |= bit;
         if (record->flags & 0x10)
-            progress->fired[index / 32] |= bit;
+            progress->fired[word] |= bit;
         if (record->flags & 0x20)
-            progress->stopped[index / 32] |= bit;
+            progress->stopped[word] |= bit;
         if (record->flags & 0x400)
-            progress->completed[index / 32] |= bit;
+            progress->completed[word] |= bit;
         progress->timers[index] = record->timer;
     }
 }
@@ -468,23 +442,23 @@ void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progre
     BOMB_PROGRESS_SYSTEM_PC *system = (BOMB_PROGRESS_SYSTEM_PC *)data;
     BOMB_PROGRESS_RECORD_PC *record;
     i32 index;
+    i32 word;
     u32 bit;
     if (progress == NULL)
         return;
-    progress->enabled[0] = 0xffffffffu;
-    progress->enabled[1] = 0xffffffffu;
-    progress->enabled[2] = 0xffffffffu;
-    progress->visible[0] = 0xffffffffu;
-    progress->visible[1] = 0xffffffffu;
-    progress->visible[2] = 0xffffffffu;
+    memset(progress->enabled, -1, sizeof(progress->enabled));
+    memset(progress->visible, -1, sizeof(progress->visible));
 
     record = system->records;
-    for (index = 0; index < system->count && index < 96; ++index, ++record) {
+    for (index = 0; index < system->count; ++index, ++record) {
+        if (index >= 96)
+            break;
+        word = index / 32;
         bit = 1u << (index & 31);
         if (!(record->flags & 2))
-            progress->visible[index / 32] &= ~bit;
+            progress->visible[word] &= ~bit;
         if (!(record->flags & 1))
-            progress->enabled[index / 32] &= ~bit;
+            progress->enabled[word] &= ~bit;
     }
 }
 

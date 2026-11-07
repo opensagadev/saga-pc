@@ -21675,7 +21675,7 @@ extern "C" {
 extern "C" {
 #endif
     i32 __cdecl Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
-    i16 __cdecl StreamingInsideLineXZPc(f32, f32, f32, f32, f32, f32);
+    i32 __cdecl StreamingInsideLineXZPc(f32, f32, f32, f32, f32, f32);
     BGPROCINFO *__cdecl bgGetProcActive(void);
     void __cdecl LevelStreaming_Update(WORLDINFO *);
     extern i32 LEGOSPL_SPLIT, other_level_override;

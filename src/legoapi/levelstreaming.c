@@ -38,28 +38,28 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 
 extern i32 LEGOSPL_SPLIT, other_level_override;
 i32 __cdecl Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
-i16 __cdecl StreamingInsideLineXZPc(f32, f32, f32, f32, f32, f32);
 BGPROCINFO *__cdecl bgGetProcActive(void);
 
 static i32 LevelStreamingChooseSplitPc(WORLDINFO *world, NUVEC *position, i32 first, i32 second) {
     NUGSPLINE *split;
     NUVEC local;
     NUVEC *points;
-    if (LEGOSPL_SPLIT == -1)
-        return 0;
-    split = world->camera_splines[LEGOSPL_SPLIT];
-    if (split == NULL)
-        return 0;
-    if (position != NULL)
-        local = *position;
-    else if (Players_AveragePos(&local, NULL) == 0)
-        return 0;
-    points = split->pts;
-    if (StreamingInsideLineXZPc(local.x, local.z, points[0].x, points[0].z, points[1].x, points[1].z))
-        other_level = first;
-    else
-        other_level = second;
-    return 1;
+    if (LEGOSPL_SPLIT != -1) {
+        split = world->camera_splines[LEGOSPL_SPLIT];
+        if (split != NULL) {
+            if (position != NULL)
+                local = *position;
+            else if (Players_AveragePos(&local, NULL) == 0)
+                return 0;
+            points = split->pts;
+            if (StreamingInsideLineXZPc(local.x, local.z, points[0].x, points[0].z, points[1].x, points[1].z))
+                other_level = first;
+            else
+                other_level = second;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void __cdecl LevelStreaming_Update(WORLDINFO *world) {
