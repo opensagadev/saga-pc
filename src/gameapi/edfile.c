@@ -2105,6 +2105,23 @@ eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, 
     return eduiItemPropCreateEx(data, colours, selected, changed, button, button_type, text, value, 0);
 }
 
+/* Analog pad rate for the editor: the left stick moves coarsely, the right
+ * stick finely, while the cursor button (bit 6) is held. */
+f32 __cdecl eduiGetAnalougePadValue(FRAME_PAD_PC *pad) {
+    f32 value = 0.0f;
+    if (pad != NULL && (pad->digital_buttons & 0x40)) {
+        if (pad->analog_left_x > 192)
+            value = (pad->analog_left_y - 128.0) * 0.01f;
+        if (pad->analog_left_x < 64)
+            value = (128.0 - pad->analog_left_y) * -0.01f;
+        if (pad->analog_right_x > 192)
+            value = (pad->analog_right_y - 128.0) * 0.001f;
+        if (pad->analog_right_x < 64)
+            value = (128.0 - pad->analog_right_y) * -0.001f;
+    }
+    return value;
+}
+
 void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item) {
     if (menu->first == item)
         menu->first = item->next;

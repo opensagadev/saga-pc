@@ -61,6 +61,12 @@ extern "C" {
     void __cdecl eduiSetActiveMenu(eduimenu_s *menu);
     void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
     void __cdecl EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void __cdecl EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void __cdecl EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments);
+    void __cdecl EdDrawLineCube(NUMTX *transform, f32 size, i32 colour);
+    void __cdecl EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour,
+                                  i32 segments);
+    f32 __cdecl eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
     void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
                                  f32 radius_scale, f32 radius_bias);
 }
@@ -404,13 +410,55 @@ class EdManipulator {
     u32 unknown_04[3];
     i32 selected_attribute;
     i32 attribute_selected;
-    u32 unknown_18[10];
+    i32 selected_axis;
+    u32 unknown_1c;
+    VuVec first_axis;
+    VuVec second_axis;
     VuVec last_point;
     VuVec delta;
     VuVec cursor;
-    u32 unknown_70[4];
+    i32 start_angle;
+    i32 last_angle;
+    i32 angle_delta;
+    u32 unknown_7c;
 
     static f32 Scale;
+    static i32 AxisColour[8];
+
+    void GetAxisLocators(VuVec &origin, VuVec *points, VuMtx *matrix);
+    void DrawAxis(VuVec &origin, VuMtx *matrix);
+    void DrawRotator(VuVec &origin);
+    i32 SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first, VuVec &second, VuMtx *matrix);
+    i32 SelectRotator(EdInputContext &input, VuVec &center, VuVec &plane);
+};
+
+/* The move, rotate and scale gizmos; each edits a different attribute. */
+class EdManMove : public EdManipulator {
+  public:
+    EdManMove() {
+        selected_attribute = 8;
+    }
+    virtual i32 Process(EdInputContext &input, ClassObjectList &objects);
+    virtual void Render(ClassObjectList &objects);
+};
+
+class EdManRotate : public EdManipulator {
+  public:
+    EdManRotate() {
+        selected_attribute = 0x10;
+    }
+    virtual i32 Process(EdInputContext &input, ClassObjectList &objects);
+    virtual void Render(ClassObjectList &objects);
+    i32 RotateItem(EdInputContext &input, ClassObjectList &objects, i32 angle, i32 axis);
+};
+
+class EdManScale : public EdManipulator {
+  public:
+    EdManScale() {
+        selected_attribute = 0x20;
+    }
+    virtual i32 Process(EdInputContext &input, ClassObjectList &objects);
+    virtual void Render(ClassObjectList &objects);
 };
 
 /* Property menu of the objects that share one editor class. */
@@ -509,6 +557,9 @@ STATIC_ASSERT(offsetof(PropertyTool, selected_attr) == 0x2c);
 STATIC_ASSERT(offsetof(EdManipulator, selected_attribute) == 0x10);
 STATIC_ASSERT(offsetof(EdManipulator, last_point) == 0x40);
 STATIC_ASSERT(offsetof(EdManipulator, cursor) == 0x60);
+STATIC_ASSERT(offsetof(EdManipulator, selected_axis) == 0x18);
+STATIC_ASSERT(offsetof(EdManipulator, first_axis) == 0x20);
+STATIC_ASSERT(offsetof(EdManipulator, start_angle) == 0x70);
 STATIC_ASSERT(sizeof(EdManipulator) == 0x80);
 STATIC_ASSERT(sizeof(EdControl) == 0x10);
 STATIC_ASSERT(offsetof(EdControl, item) == 0x4);
@@ -521,6 +572,9 @@ STATIC_ASSERT(offsetof(EdBitControl, bit_mask) == 0x14);
 LevelEditor theLevelEditor;
 PropertyTool thePropertyTool;
 EdManipulator theDefaultManipulator;
+EdManMove theMoveManipulator;
+EdManRotate theRotateManipulator;
+EdManScale theScaleManipulator;
 PropertyMenuMetrics menu_startmetrics = {20, 5, 200, 400};
 
 void SerialiseChar(EdStream &stream, void *data, i32) {
@@ -4472,6 +4526,717 @@ i32 EdManipulator::Process(EdInputContext &input, ClassObjectList &objects) {
 void EdManipulator::Render(ClassObjectList &objects) {
     for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next)
         theClassEditor.DrawObjectSphere(*reinterpret_cast<ClassObject *>(&entry->ed_class), 0xff800000);
+}
+
+/* Gizmo proportions, scaled by EdManipulator::Scale. */
+f32 ManipulatorAxisLength = 1.0f;
+f32 ManipulatorHandleRadius = 0.25f;
+f32 ManipulatorBoxSize = 0.1f;
+f32 ManipulatorRotatorPickDistance = 0.05f;
+
+i32 EdManipulator::AxisColour[8] = {(i32)0xffffffff, (i32)0xff0000ff, (i32)0xff00ff00, (i32)0xffff0000,
+                                    (i32)0xff00ffff, (i32)0xffff00ff, (i32)0xffffff00, (i32)0xffffffff};
+
+/* Where the rotate gizmo's sphere was last hit (debug output). */
+VuVec SpherePos1;
+VuVec SpherePos2;
+
+static i32 rotation_axis = 1;
+
+static inline void VuMtxCopy(VuMtx &destination, const VuMtx &source) {
+    destination.matrix.m00 = source.matrix.m00;
+    destination.matrix.m01 = source.matrix.m01;
+    destination.matrix.m02 = source.matrix.m02;
+    destination.matrix.m03 = source.matrix.m03;
+    destination.matrix.m10 = source.matrix.m10;
+    destination.matrix.m11 = source.matrix.m11;
+    destination.matrix.m12 = source.matrix.m12;
+    destination.matrix.m13 = source.matrix.m13;
+    destination.matrix.m20 = source.matrix.m20;
+    destination.matrix.m21 = source.matrix.m21;
+    destination.matrix.m22 = source.matrix.m22;
+    destination.matrix.m23 = source.matrix.m23;
+    destination.matrix.m30 = source.matrix.m30;
+    destination.matrix.m31 = source.matrix.m31;
+    destination.matrix.m32 = source.matrix.m32;
+    destination.matrix.m33 = source.matrix.m33;
+}
+
+/* Rotates a direction by the matrix's 3x3 part. */
+static inline void VuMtxRotateVec(const VuMtx &matrix, const VuVec &v, VuVec &result) {
+    f32 x = v.x * matrix.matrix.m00 + v.y * matrix.matrix.m10 + v.z * matrix.matrix.m20;
+    f32 y = v.x * matrix.matrix.m01 + v.y * matrix.matrix.m11 + v.z * matrix.matrix.m21;
+    result.z = v.x * matrix.matrix.m02 + v.y * matrix.matrix.m12 + v.z * matrix.matrix.m22;
+    result.x = x;
+    result.y = y;
+}
+
+/* result = a * b over the 3x4 affine part; the result's last column is 0 0 0 1. */
+static inline void VuMtxMul(const VuMtx &a, const VuMtx &b, VuMtx &result) {
+    __declspec(align(16)) VuMtx product;
+    product.matrix.m00 = a.matrix.m00 * b.matrix.m00 + a.matrix.m01 * b.matrix.m10 + a.matrix.m02 * b.matrix.m20 +
+                         a.matrix.m03 * b.matrix.m30;
+    product.matrix.m01 = a.matrix.m00 * b.matrix.m01 + a.matrix.m01 * b.matrix.m11 + a.matrix.m02 * b.matrix.m21 +
+                         a.matrix.m03 * b.matrix.m31;
+    product.matrix.m02 = a.matrix.m00 * b.matrix.m02 + a.matrix.m01 * b.matrix.m12 + a.matrix.m02 * b.matrix.m22 +
+                         a.matrix.m03 * b.matrix.m32;
+    product.matrix.m03 = 0.0f;
+    product.matrix.m10 = a.matrix.m10 * b.matrix.m00 + a.matrix.m11 * b.matrix.m10 + a.matrix.m12 * b.matrix.m20 +
+                         a.matrix.m13 * b.matrix.m30;
+    product.matrix.m11 = a.matrix.m10 * b.matrix.m01 + a.matrix.m11 * b.matrix.m11 + a.matrix.m12 * b.matrix.m21 +
+                         a.matrix.m13 * b.matrix.m31;
+    product.matrix.m12 = a.matrix.m10 * b.matrix.m02 + a.matrix.m11 * b.matrix.m12 + a.matrix.m12 * b.matrix.m22 +
+                         a.matrix.m13 * b.matrix.m32;
+    product.matrix.m13 = 0.0f;
+    product.matrix.m20 = a.matrix.m20 * b.matrix.m00 + a.matrix.m21 * b.matrix.m10 + a.matrix.m22 * b.matrix.m20 +
+                         a.matrix.m23 * b.matrix.m30;
+    product.matrix.m21 = a.matrix.m20 * b.matrix.m01 + a.matrix.m21 * b.matrix.m11 + a.matrix.m22 * b.matrix.m21 +
+                         a.matrix.m23 * b.matrix.m31;
+    product.matrix.m22 = a.matrix.m20 * b.matrix.m02 + a.matrix.m21 * b.matrix.m12 + a.matrix.m22 * b.matrix.m22 +
+                         a.matrix.m23 * b.matrix.m32;
+    product.matrix.m23 = 0.0f;
+    product.matrix.m30 = a.matrix.m30 * b.matrix.m00 + a.matrix.m31 * b.matrix.m10 + a.matrix.m32 * b.matrix.m20 +
+                         a.matrix.m33 * b.matrix.m30;
+    product.matrix.m31 = a.matrix.m30 * b.matrix.m01 + a.matrix.m31 * b.matrix.m11 + a.matrix.m32 * b.matrix.m21 +
+                         a.matrix.m33 * b.matrix.m31;
+    product.matrix.m32 = a.matrix.m30 * b.matrix.m02 + a.matrix.m31 * b.matrix.m12 + a.matrix.m32 * b.matrix.m22 +
+                         a.matrix.m33 * b.matrix.m32;
+    product.matrix.m33 = 1.0f;
+    VuMtxCopy(result, product);
+}
+
+/* A scaling matrix with the vector's components on the diagonal. */
+static inline void VuMtxSetScale(VuMtx &matrix, const VuVec &scale) {
+    matrix.matrix.m00 = scale.x;
+    matrix.matrix.m01 = 0.0f;
+    matrix.matrix.m02 = 0.0f;
+    matrix.matrix.m03 = 0.0f;
+    matrix.matrix.m10 = 0.0f;
+    matrix.matrix.m11 = scale.y;
+    matrix.matrix.m12 = 0.0f;
+    matrix.matrix.m13 = 0.0f;
+    matrix.matrix.m20 = 0.0f;
+    matrix.matrix.m21 = 0.0f;
+    matrix.matrix.m22 = scale.z;
+    matrix.matrix.m23 = 0.0f;
+    matrix.matrix.m30 = 0.0f;
+    matrix.matrix.m31 = 0.0f;
+    matrix.matrix.m32 = 0.0f;
+    matrix.matrix.m33 = scale.w;
+}
+
+/* Rotate every row of the matrix about one axis by a 16-bit angle. */
+static inline void VuMtxRotateX(VuMtx &matrix, i32 angle) {
+    f32 cosine = NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff];
+    f32 sine = NuTrigTable[angle >> 1 & 0x7fff];
+    f32 *row = &matrix.matrix.m00;
+    for (i32 index = 0; index < 4; index++, row += 4) {
+        f32 y = row[1];
+        row[1] = y * cosine - row[2] * sine;
+        row[2] = row[2] * cosine + y * sine;
+    }
+}
+
+static inline void VuMtxRotateY(VuMtx &matrix, i32 angle) {
+    f32 cosine = NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff];
+    f32 sine = NuTrigTable[angle >> 1 & 0x7fff];
+    f32 *row = &matrix.matrix.m00;
+    for (i32 index = 0; index < 4; index++, row += 4) {
+        f32 x = row[0];
+        row[0] = x * cosine + row[2] * sine;
+        row[2] = row[2] * cosine - x * sine;
+    }
+}
+
+static inline void VuMtxRotateZ(VuMtx &matrix, i32 angle) {
+    f32 cosine = NuTrigTable[(angle + 0x4000) >> 1 & 0x7fff];
+    f32 sine = NuTrigTable[angle >> 1 & 0x7fff];
+    f32 *row = &matrix.matrix.m00;
+    for (i32 index = 0; index < 4; index++, row += 4) {
+        f32 x = row[0];
+        row[0] = x * cosine - row[1] * sine;
+        row[1] = x * sine + row[1] * cosine;
+    }
+}
+
+/* Handle positions: 0 origin, 1-3 axis tips, 4-6 plane boxes, 7 centre. */
+void EdManipulator::GetAxisLocators(VuVec &origin, VuVec *points, VuMtx *matrix) {
+    f32 length = Scale * ManipulatorAxisLength;
+    points[3].x = 0.0f;
+    points[3].y = 0.0f;
+    points[3].z = 0.0f;
+    points[3].w = 1.0f;
+    VuVecCopy(points[2], points[3]);
+    VuVecCopy(points[1], points[2]);
+    VuVecCopy(points[7], points[1]);
+    VuVecCopy(points[0], points[7]);
+    points[1].x += length;
+    points[2].y += length;
+    points[3].z += length;
+    VuVecCopy(points[4], (points[1] + points[2]) * 0.5f);
+    VuVecCopy(points[5], (points[3] + points[1]) * 0.5f);
+    VuVecCopy(points[6], (points[2] + points[3]) * 0.5f);
+    if (matrix != NULL) {
+        for (i32 index = 0; index < 8; index++)
+            VuMtxRotateVec(*matrix, points[index], points[index]);
+    }
+    for (i32 index = 0; index < 8; index++) {
+        points[index].x += origin.x;
+        points[index].y += origin.y;
+        points[index].z += origin.z;
+    }
+}
+
+/* The move/scale gizmo: spheres at the axis tips, boxes on the planes and
+ * the centre, and arrows along the axes; grey when nothing editable is
+ * selected. */
+void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
+    __declspec(align(16)) VuVec points[8];
+    __declspec(align(16)) VuMtx box;
+    GetAxisLocators(origin, points, matrix);
+    EdDrawBegin(1);
+    for (i32 index = 1; index <= 3; index++)
+        EdDrawLineSphere(&points[index].xyz, Scale * ManipulatorHandleRadius, 1.0f,
+                         attribute_selected ? AxisColour[index] : 0xff808080);
+    VuMtxCopy(box, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+    for (i32 index = 4; index <= 7; index++) {
+        box.matrix.m30 = points[index].x;
+        box.matrix.m31 = points[index].y;
+        box.matrix.m32 = points[index].z;
+        box.matrix.m33 = 1.0f;
+        EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[index] : 0xff808080);
+    }
+    if (NewPrim != 0) {
+        if (NewPrim == 2 || NewPrim == 3)
+            NuPrim3DEnd();
+        NewPrim = 0;
+    }
+    EdDrawBegin(0);
+    f32 size = Scale * ManipulatorHandleRadius;
+    for (i32 index = 1; index <= 3; index++) {
+        __declspec(align(16)) VuVec offset;
+        __declspec(align(16)) VuVec start;
+        __declspec(align(16)) VuVec end;
+        VuVecCopy(offset, (points[index] - points[7]) * size);
+        VuVecCopy(start, points[index] - offset * 0.5f);
+        VuVecCopy(end, points[index] + offset * 0.5f);
+        f32 radius = size * 0.2f;
+        EdDrawPolyArrow(&start.xyz, &end.xyz, 8, attribute_selected ? AxisColour[index] : 0xff808080, radius, radius,
+                        0.5f, 0.0f);
+    }
+    if (NewPrim != 0) {
+        if (NewPrim == 2 || NewPrim == 3)
+            NuPrim3DEnd();
+        NewPrim = 0;
+    }
+}
+
+/* The rotate gizmo: one circle per axis and the swept sector of a drag. */
+void EdManipulator::DrawRotator(VuVec &origin) {
+    f32 radius = Scale * ManipulatorAxisLength;
+    EdDrawBegin(1);
+    EdDrawLineCircleX(&origin.xyz, radius, attribute_selected ? AxisColour[1] : 0xff808080, 32);
+    EdDrawLineCircleY(&origin.xyz, radius, attribute_selected ? AxisColour[2] : 0xff808080, 32);
+    EdDrawLineCircleZ(&origin.xyz, radius, attribute_selected ? AxisColour[3] : 0xff808080, 32);
+    if (NewPrim != 0) {
+        if (NewPrim == 2 || NewPrim == 3)
+            NuPrim3DEnd();
+        NewPrim = 0;
+    }
+    if (start_angle != last_angle && selected_axis != 0) {
+        EdDrawBegin(1);
+        EdDrawPolySector(&origin.xyz, radius, selected_axis - 1, start_angle, last_angle, 0x80808080, 32);
+        if (NewPrim != 0) {
+            if (NewPrim == 2 || NewPrim == 3)
+                NuPrim3DEnd();
+            NewPrim = 0;
+        }
+    }
+}
+
+/* Picks the handle nearest the cursor ray and returns its index (0 for
+ * none) with the axes it moves along; a drag keeps the pressed handle. */
+i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first, VuVec &second, VuMtx *matrix) {
+    __declspec(align(16)) VuVec points[8];
+    first.x = 0.0f;
+    first.y = 0.0f;
+    first.z = 0.0f;
+    first.w = 1.0f;
+    second.x = 0.0f;
+    second.y = 0.0f;
+    second.z = 0.0f;
+    second.w = 1.0f;
+    i32 nearest = 0;
+    GetAxisLocators(origin, points, matrix);
+    f32 nearest_distance = 3.402823466e38f;
+    for (i32 index = 1; index < 8; index++) {
+        f32 distance = LineToPointDistance(input.ray_start, input.ray_direction, points[index], NULL);
+        f32 radius = index < 4 ? Scale * ManipulatorHandleRadius : ManipulatorBoxSize * Scale;
+        if (distance < radius && distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = index;
+        }
+    }
+    switch (nearest) {
+        case 1:
+            first.x = 1.0f;
+            break;
+        case 2:
+            first.y = 1.0f;
+            break;
+        case 3:
+            first.z = 1.0f;
+            break;
+        case 4:
+            first.x = 1.0f;
+            second.y = 1.0f;
+            break;
+        case 5:
+            first.x = 1.0f;
+            second.z = 1.0f;
+            break;
+        case 6:
+            first.y = 1.0f;
+            second.z = 1.0f;
+            break;
+        case 7:
+            first.x = 1.0f;
+            first.y = 1.0f;
+            first.z = 1.0f;
+            break;
+    }
+    if (matrix != NULL) {
+        VuMtxRotateVec(*matrix, first, first);
+        VuMtxRotateVec(*matrix, second, second);
+        NuVecNorm(&first.xyz, &first.xyz);
+        NuVecNorm(&second.xyz, &second.xyz);
+    }
+    if (input.GetPress(3) != 0.0f) {
+        selected_axis = nearest;
+        VuVecCopy(first_axis, first);
+        VuVecCopy(second_axis, second);
+        return nearest;
+    }
+    if (input.GetHold(3) != 0.0f) {
+        VuVecCopy(first, first_axis);
+        VuVecCopy(second, second_axis);
+        return selected_axis;
+    }
+    selected_axis = 0;
+    return nearest;
+}
+
+/* Intersects the line through origin along direction with a sphere. */
+i32 LineToSphereIntersection(VuVec &origin, VuVec &direction, VuVec &center, f32 radius, VuVec *far_intersection,
+                             VuVec *near_intersection) {
+    f32 qx = origin.x + direction.x - origin.x;
+    f32 qy = origin.y + direction.y - origin.y;
+    f32 qz = origin.z + direction.z - origin.z;
+    f32 a = qx * qx + qy * qy + qz * qz;
+    f32 magnitude = a;
+    *(u32 *)&magnitude &= 0x7fffffff;
+    if (magnitude < 1.1920929e-7f)
+        return 0;
+    f32 projection = (origin.x - center.x) * qx + (origin.y - center.y) * qy + (origin.z - center.z) * qz;
+    f32 b = projection + projection;
+    f32 center_squared = center.x * center.x + center.y * center.y + center.z * center.z;
+    f32 origin_squared = origin.x * origin.x + origin.y * origin.y + origin.z * origin.z;
+    f32 origin_center = origin.x * center.x + origin.y * center.y + origin.z * center.z;
+    f32 c = center_squared + origin_squared - (origin_center + origin_center) - radius * radius;
+    f32 discriminant = b * b - 4.0f * a * c;
+    if (discriminant < 0.0f)
+        return 0;
+    f32 denominator = a + a;
+    f32 far_t = (NuFsqrt(discriminant) - b) / denominator;
+    f32 near_t = (-b - NuFsqrt(discriminant)) / denominator;
+    if (far_intersection != NULL) {
+        far_intersection->x = origin.x + direction.x * far_t;
+        far_intersection->y = origin.y + direction.y * far_t;
+        far_intersection->z = origin.z + direction.z * far_t;
+        far_intersection->w = 0.0f;
+    }
+    if (near_intersection != NULL) {
+        near_intersection->x = origin.x + direction.x * near_t;
+        near_intersection->y = origin.y + direction.y * near_t;
+        near_intersection->z = origin.z + direction.z * near_t;
+        near_intersection->w = 0.0f;
+    }
+    return 1;
+}
+
+/* Picks the rotation circle under the cursor; while dragging, tracks the
+ * angle swept around the picked axis in angle_delta. */
+i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &plane) {
+    __declspec(align(16)) VuVec hits[2];
+    __declspec(align(16)) VuVec normals[3];
+    __declspec(align(16)) VuVec chosen;
+    f32 radius = Scale * ManipulatorAxisLength;
+    if (input.GetPress(3) == 0.0f && input.GetHold(3) != 0.0f) {
+        VuVecCopy(plane, first_axis);
+        i32 axis = selected_axis;
+        if (!LineToPlaneIntersecion(input.ray_start, input.ray_direction, plane, &chosen)) {
+            angle_delta = 0;
+            return axis;
+        }
+        f32 x = chosen.x - center.x;
+        f32 y = chosen.y - center.y;
+        f32 z = chosen.z - center.z;
+        i32 angle = 0;
+        switch (axis) {
+            case 1:
+                angle = NuAtan2DA(y, z);
+                break;
+            case 2:
+                angle = NuAtan2DA(x, -z);
+                break;
+            case 3:
+                angle = NuAtan2DA(x, y);
+                break;
+        }
+        i32 delta = (last_angle - angle) & 0xffff;
+        if (delta >= 0x8000)
+            delta -= 0x10000;
+        angle_delta = delta;
+        last_angle = angle;
+        return axis;
+    }
+    normals[0].x = 1.0f;
+    normals[0].y = 0.0f;
+    normals[0].z = 0.0f;
+    normals[0].w = -center.x;
+    normals[1].x = 0.0f;
+    normals[1].y = 1.0f;
+    normals[1].z = 0.0f;
+    normals[1].w = -center.y;
+    normals[2].x = 0.0f;
+    normals[2].y = 0.0f;
+    normals[2].z = 1.0f;
+    normals[2].w = -center.z;
+    i32 axis = 0;
+    i32 angle = 0;
+    f32 nearest_distance = 3.402823466e38f;
+    if (LineToSphereIntersection(input.ray_start, input.ray_direction, center, radius + 0.01f, &hits[0], &hits[1])) {
+        VuVecCopy(SpherePos1, hits[0]);
+        VuVecCopy(SpherePos2, hits[1]);
+        for (i32 candidate = 0; candidate < 3; candidate++) {
+            for (i32 hit = 0; hit < 2; hit++) {
+                VuVec &point = hits[hit];
+                VuVec &normal = normals[candidate];
+                __declspec(align(16)) VuVec projection;
+                __declspec(align(16)) VuVec screen_point;
+                f32 distance_to_plane = point.x * normal.x + point.y * normal.y + point.z * normal.z + normal.w;
+                projection.x = point.x - normal.x * distance_to_plane;
+                projection.y = point.y - normal.y * distance_to_plane;
+                projection.z = point.z - normal.z * distance_to_plane;
+                NuCameraTransformScreenClip(&projection.xyz, &projection.xyz, 1, NULL);
+                NuCameraTransformScreenClip(&screen_point.xyz, &point.xyz, 1, NULL);
+                f32 distance = VuVecLength(screen_point - projection);
+                if (distance < ManipulatorRotatorPickDistance && distance < nearest_distance) {
+                    nearest_distance = distance;
+                    VuVecCopy(chosen, point);
+                    axis = candidate + 1;
+                }
+            }
+        }
+        if (axis != 0) {
+            plane.x = 0.0f;
+            plane.y = 0.0f;
+            plane.z = 0.0f;
+            plane.w = 1.0f;
+            (&plane.x)[axis - 1] = 1.0f;
+            plane.w = -(&center.x)[axis - 1];
+            f32 x = chosen.x - center.x;
+            f32 y = chosen.y - center.y;
+            f32 z = chosen.z - center.z;
+            switch (axis) {
+                case 1:
+                    angle = NuAtan2DA(y, z);
+                    break;
+                case 2:
+                    angle = NuAtan2DA(x, -z);
+                    break;
+                case 3:
+                    angle = NuAtan2DA(x, y);
+                    break;
+            }
+        }
+    }
+    if (input.GetPress(3) != 0.0f) {
+        selected_axis = axis;
+        VuVecCopy(first_axis, plane);
+        start_angle = angle;
+        last_angle = angle;
+        angle_delta = 0;
+        return axis;
+    }
+    selected_axis = 0;
+    first_axis.x = 0.0f;
+    first_axis.y = 0.0f;
+    first_axis.z = 0.0f;
+    first_axis.w = 1.0f;
+    second_axis.x = 0.0f;
+    second_axis.y = 0.0f;
+    second_axis.z = 0.0f;
+    second_axis.w = 1.0f;
+    start_angle = 0;
+    last_angle = 0;
+    angle_delta = 0;
+    return axis;
+}
+
+/* Moves the selected objects along the picked axis or plane; with the snap
+ * input held, the centre handle drops them at the cursor position. */
+i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
+    EdManipulator::Process(input, objects);
+    __declspec(align(16)) VuVec position;
+    if (!objects.GetAveragePosition(position))
+        return 0;
+    __declspec(align(16)) VuVec first;
+    __declspec(align(16)) VuVec second;
+    i32 axis = SelectAxis(input, position, first, second, NULL);
+    theLevelEditor.field_0x2c = AxisColour[axis];
+    if (input.GetHold(3) == 0.0f && input.GetHold(38) == 0.0f)
+        return axis != 0;
+    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+        ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
+        position.x = 0.0f;
+        position.y = 0.0f;
+        position.z = 0.0f;
+        position.w = 1.0f;
+        object->GetAttributeData(8, EdType_VuVec, &position, 0);
+        switch (axis) {
+            case 1:
+            case 2:
+            case 3: {
+                f32 amount = delta.x * first.x + delta.y * first.y + delta.z * first.z;
+                if (amount == 0.0f)
+                    continue;
+                position.x += first.x * amount;
+                position.y += first.y * amount;
+                position.z += first.z * amount;
+                break;
+            }
+            case 4:
+            case 5:
+            case 6: {
+                i32 moved = 0;
+                f32 amount = delta.x * first.x + delta.y * first.y + delta.z * first.z;
+                if (amount != 0.0f) {
+                    position.x += first.x * amount;
+                    position.y += first.y * amount;
+                    position.z += first.z * amount;
+                    moved = 1;
+                }
+                amount = delta.x * second.x + delta.y * second.y + delta.z * second.z;
+                if (amount != 0.0f) {
+                    position.x += second.x * amount;
+                    position.y += second.y * amount;
+                    position.z += second.z * amount;
+                } else if (!moved) {
+                    continue;
+                }
+                break;
+            }
+            case 7:
+                if (input.GetHold(38) == 0.0f)
+                    continue;
+                position.x = theLevelEditor.background_colour[0];
+                position.y = theLevelEditor.background_colour[1];
+                position.z = theLevelEditor.background_colour[2];
+                position.w = theLevelEditor.background_colour[3];
+                break;
+            default:
+                continue;
+        }
+        if (theClassEditor.snap_mode == 1 || theClassEditor.snap_mode == 2) {
+            /* The terrain snap of the other builds is compiled out; only
+             * the ray normalisation is left. */
+            VuVec ray = theClassEditor.snap_ray;
+            NuVecNorm(&ray.xyz, &ray.xyz);
+        }
+        object->SetAttributeData(8, EdType_VuVec, &position, 0);
+    }
+    return axis != 0;
+}
+
+void EdManMove::Render(ClassObjectList &objects) {
+    __declspec(align(16)) VuVec position;
+    if (objects.count > 2)
+        EdManipulator::Render(objects);
+    if (objects.GetAveragePosition(position))
+        DrawAxis(position, NULL);
+}
+
+/* Turns every selected object's transform about one axis, keeping its
+ * position. */
+i32 EdManRotate::RotateItem(EdInputContext &, ClassObjectList &objects, i32 angle, i32 axis) {
+    ClassObjectListEntry *entry = objects.first;
+    __declspec(align(16)) VuVec position;
+    objects.GetAveragePosition(position);
+    if (angle == 0 || entry == NULL)
+        return axis;
+    for (; entry != NULL; entry = entry->next) {
+        ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
+        __declspec(align(16)) VuMtx matrix;
+        matrix.matrix = ANI3_EVAL_IDENTITY_MATRIX;
+        if (!object->GetAttributeData(0x10, EdType_VuMtx, &matrix, 0))
+            continue;
+        position.x = matrix.matrix.m30;
+        position.y = matrix.matrix.m31;
+        position.z = matrix.matrix.m32;
+        position.w = matrix.matrix.m33;
+        switch (axis) {
+            case 1:
+                VuMtxRotateX(matrix, angle);
+                break;
+            case 2:
+                VuMtxRotateY(matrix, angle);
+                break;
+            case 3:
+                VuMtxRotateZ(matrix, angle);
+                break;
+            default:
+                continue;
+        }
+        matrix.matrix.m30 = position.x;
+        matrix.matrix.m31 = position.y;
+        matrix.matrix.m32 = position.z;
+        matrix.matrix.m33 = position.w;
+        object->SetAttributeData(0x10, EdType_VuMtx, &matrix, 0);
+    }
+    return axis;
+}
+
+/* Drags rotate about the picked circle; the analog pad (with its button
+ * cycling the axis) rotates about rotation_axis. */
+i32 EdManRotate::Process(EdInputContext &input, ClassObjectList &objects) {
+    EdManipulator::Process(input, objects);
+    __declspec(align(16)) VuVec position;
+    if (!objects.GetAveragePosition(position))
+        return 0;
+    eduiSetCameraEnabled(1);
+    if (input.pad->digital_buttons_pressed & 0x10) {
+        if (++rotation_axis == 4)
+            rotation_axis = 1;
+    }
+    if (input.GetHold(38) != 0.0f) {
+        eduiSetCameraEnabled(0);
+        return RotateItem(input, objects, (i32)(eduiGetAnalougePadValue(input.pad) * 400.0), rotation_axis);
+    }
+    if (input.GetHold(3) == 0.0f)
+        return 0;
+    __declspec(align(16)) VuVec plane;
+    i32 axis = SelectRotator(input, position, plane);
+    theLevelEditor.field_0x2c = AxisColour[axis];
+    return RotateItem(input, objects, angle_delta, axis);
+}
+
+void EdManRotate::Render(ClassObjectList &objects) {
+    __declspec(align(16)) VuVec position;
+    if (objects.count > 2)
+        EdManipulator::Render(objects);
+    if (objects.GetAveragePosition(position))
+        DrawRotator(position);
+}
+
+/* Scales the selected objects' scale matrices along the picked axis or
+ * plane, or uniformly with the analog inputs on the centre handle. */
+i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
+    EdManipulator::Process(input, objects);
+    __declspec(align(16)) VuVec position;
+    if (!objects.GetAveragePosition(position))
+        return 0;
+    __declspec(align(16)) VuMtx transform;
+    reinterpret_cast<ClassObject *>(&objects.first->ed_class)->GetAttributeData(0x10, EdType_VuMtx, &transform, 0);
+    __declspec(align(16)) VuVec first;
+    __declspec(align(16)) VuVec second;
+    i32 axis = SelectAxis(input, position, first, second, &transform);
+    theLevelEditor.field_0x2c = AxisColour[axis];
+    if (input.GetHold(3) == 0.0f)
+        return axis != 0;
+    for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
+        ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
+        __declspec(align(16)) VuMtx scaling;
+        __declspec(align(16)) VuMtx result;
+        __declspec(align(16)) VuVec scale;
+        __declspec(align(16)) VuVec projected;
+        object->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
+        switch (axis) {
+            case 1:
+            case 2:
+            case 3: {
+                VuMtxRotateVec(transform, first, projected);
+                f32 length = VuVecLength(projected) * Scale;
+                f32 movement = delta.x * first.x + delta.y * first.y + delta.z * first.z;
+                if (movement == 0.0f)
+                    continue;
+                NuVecInvMtxRotate(&first.xyz, &first.xyz, &transform.matrix);
+                NuVecNorm(&first.xyz, &first.xyz);
+                first.w = 1.0f;
+                f32 change = (movement + length) / length - 1.0f;
+                scale.x = first.x * change + 1.0f;
+                scale.y = first.y * change + 1.0f;
+                scale.z = first.z * change + 1.0f;
+                break;
+            }
+            case 4:
+            case 5:
+            case 6: {
+                VuMtxRotateVec(transform, first, projected);
+                f32 length = Scale * VuVecLength(projected);
+                f32 movement = delta.x * first.x + delta.y * first.y + delta.z * first.z +
+                               (delta.x * second.x + delta.y * second.y + delta.z * second.z);
+                if (movement == 0.0f)
+                    continue;
+                NuVecInvMtxRotate(&first.xyz, &first.xyz, &transform.matrix);
+                NuVecNorm(&first.xyz, &first.xyz);
+                NuVecInvMtxRotate(&second.xyz, &second.xyz, &transform.matrix);
+                NuVecNorm(&second.xyz, &second.xyz);
+                f32 change = (movement + length) / length - 1.0f;
+                scale.x = (first.x + second.x) * change + 1.0f;
+                scale.y = (first.y + second.y) * change + 1.0f;
+                scale.z = (first.z + second.z) * change + 1.0f;
+                break;
+            }
+            case 7: {
+                f32 movement = input.Get(1) - input.Get(0) + input.Get(2);
+                if (movement == 0.0f)
+                    continue;
+                f32 factor = movement * 0.005f + 1.0;
+                scale.x = factor;
+                scale.y = factor;
+                scale.z = factor;
+                break;
+            }
+            default:
+                continue;
+        }
+        scale.w = 1.0f;
+        VuMtxSetScale(scaling, scale);
+        position.x = transform.matrix.m30;
+        position.y = transform.matrix.m31;
+        position.z = transform.matrix.m32;
+        position.w = transform.matrix.m33;
+        VuMtxMul(scaling, transform, result);
+        VuMtxCopy(transform, result);
+        transform.matrix.m30 = position.x;
+        transform.matrix.m31 = position.y;
+        transform.matrix.m32 = position.z;
+        transform.matrix.m33 = position.w;
+        object->SetAttributeData(0x20, EdType_VuMtx, &transform, 0);
+    }
+    return axis != 0;
+}
+
+void EdManScale::Render(ClassObjectList &objects) {
+    __declspec(align(16)) VuVec position;
+    __declspec(align(16)) VuMtx transform;
+    if (objects.count > 2)
+        EdManipulator::Render(objects);
+    if (objects.GetAveragePosition(position)) {
+        reinterpret_cast<ClassObject *>(&objects.first->ed_class)->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
+        DrawAxis(position, &transform);
+    }
 }
 
 void EdControl::cbSelected(eduimenu_s *menu, eduiitem_s *item, u32) {

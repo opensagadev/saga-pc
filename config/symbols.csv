@@ -7477,6 +7477,7 @@ address,symbol,size,ctype
 0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item)"
 0x619060,_eduiMenuSortItemsByTxt,179,
 0x619130,_eduiMenuRemoveItem,93,
+0x619190,_eduiGetAnalougePadValue,182,
 0x619250,_eduiMenuCreate,166,
 0x619300,_eduiMenuSetAttr,64,
 0x6193e0,_eduiMenuHighlight,79,
@@ -9581,6 +9582,13 @@ address,symbol,size,ctype
 0x6b7d30,??D@YA?AUVuVec@@ABU0@M@Z,29,
 0x6b7d90,?VuVecLengthSq@@YAMABUVuVec@@@Z,33,
 0x6b7dc0,?VuVecLength@@YAMABUVuVec@@@Z,46,
+0x6b7df0,?VuMtxCopy@@YAXAAUVuMtx@@ABU1@@Z,95,
+0x6b7e60,?VuMtxRotateVec@@YAXABUVuMtx@@ABUVuVec@@AAU2@@Z,91,
+0x6b7f50,?VuMtxMul@@YAXABUVuMtx@@0AAU1@@Z,444,
+0x6b8110,?VuMtxRotateX@@YAXAAUVuMtx@@H@Z,217,
+0x6b81f0,?VuMtxRotateY@@YAXAAUVuMtx@@H@Z,219,
+0x6b82d0,?VuMtxRotateZ@@YAXAAUVuMtx@@H@Z,215,
+0x6b8470,?VuMtxSetScale@@YAXAAUVuMtx@@ABUVuVec@@@Z,91,
 0x6b8510,_EdDrawSetVertexColour,108,
 0x6b86d0,??1EdFileInputStream@@UAE@XZ,7,
 0x6b86f0,??1EdFileOutputStream@@UAE@XZ,7,
@@ -9692,6 +9700,11 @@ address,symbol,size,ctype
 0x6bca90,?DrawInfoText@LevelEditor@@QAEXPAPADHHHHHHH@Z,401,
 0x6bcc30,?Display@LevelEditor@@UAEXPAUThingRenderData@@@Z,520,
 0x6bce40,??0EdManipulator@@QAE@XZ,9,
+0x6bce50,?GetAxisLocators@EdManipulator@@QAEXAAUVuVec@@PAU2@PAUVuMtx@@@Z,1365,
+0x6bd3b0,?DrawRotator@EdManipulator@@QAEXAAUVuVec@@@Z,280,
+0x6bd4d0,??0EdManMove@@QAE@XZ,16,
+0x6bd4e0,??0EdManRotate@@QAE@XZ,16,
+0x6bd4f0,??0EdManScale@@QAE@XZ,16,
 0x6bd500,??1EdString@@QAE@XZ,22,
 0x6bd520,?Set@EdString@@QAEXPBD@Z,152,
 0x6bd5c0,?GetInitialPosition@Placeable@@UBEPBUVuVec@@XZ,18,
@@ -9758,6 +9771,7 @@ address,symbol,size,ctype
 0x6c0900,?SerialiseBuffer@EdFileOutputStream@@UAEHPAXHH@Z,164,
 0x6c0a10,?LineToPointDistance@@YAMAAUVuVec@@00PAU1@@Z,499,
 0x6c0d20,?LineToPlaneIntersecion@@YAHAAUVuVec@@00PAU1@@Z,281,
+0x6c0e40,?LineToSphereIntersection@@YAHAAUVuVec@@00MPAU1@1@Z,729,
 0x6c1260,??0?$CSListLink@VEdTool@@@@QAE@XZ,20,
 0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,
 0x6c1500,??0?$CSListLink@VPropertyMenu@@@@QAE@XZ,20,
@@ -9813,6 +9827,9 @@ address,symbol,size,ctype
 0x6c3fb0,?cbButton@EdBitControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,173,
 0x6c4470,?Flush@LevelEditor@@QAEXXZ,67,
 0x6c44c0,?CreateEditorList@LevelEditor@@QAEXPAUeduimenu_s@@PAUeduiitem_s@@@Z,159,
+0x6c4600,?SelectAxis@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@11PAUVuMtx@@@Z,908,
+0x6c49b0,?DrawAxis@EdManipulator@@QAEXAAUVuVec@@PAUVuMtx@@@Z,2004,
+0x6c5190,?SelectRotator@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@1@Z,1483,
 0x6c58a0,?SelectAttr@PropertyTool@@QAEXH@Z,76,
 0x6c5920,?AddPropertyMenuItems@PropertyTool@@QAEXPAUeduimenu_s@@PAUEdClass@@PAXPAUeduiitem_s@@@Z,244,
 0x6c5a20,?AutoLocateMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,197,
@@ -9900,6 +9917,13 @@ address,symbol,size,ctype
 0x6cb920,?cbEdLevelEditorList@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,21,
 0x6cb940,?Process@EdManipulator@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,692,
 0x6cbc00,?Render@EdManipulator@@UAEXAAUClassObjectList@@@Z,45,
+0x6cbc30,?Process@EdManMove@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,886,
+0x6cbfd0,?Render@EdManMove@@UAEXAAUClassObjectList@@@Z,66,
+0x6cc020,?RotateItem@EdManRotate@@QAEHAAUEdInputContext@@AAUClassObjectList@@HH@Z,472,
+0x6cc200,?Process@EdManRotate@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,278,
+0x6cc320,?Render@EdManRotate@@UAEXAAUClassObjectList@@@Z,64,
+0x6cc360,?Process@EdManScale@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,1657,
+0x6cca00,?Render@EdManScale@@UAEXAAUClassObjectList@@@Z,95,
 0x6cce60,??0PropertyTool@@QAE@XZ,109,
 0x6cced0,?GetName@PropertyTool@@UAEPBDXZ,6,
 0x6ccee0,??_EPropertyTool@@UAEPAXI@Z,,COFF weak alias of ??_GPropertyTool@@UAEPAXI@Z; no independent body
@@ -18280,6 +18304,8 @@ address,symbol,size,ctype
 0x76ad30,??_C@_0L@NOAPDHAL@QWERTYUIOP?$AA@HMDOKFMK@,11,char []
 0x76ad3c,??_C@_0L@PNLLBLCL@1234567890?$AA@HMDOKFMK@,11,char []
 0x76ad48,__real@43b40000,4,const f32
+0x76ad50,__real@bf50624de0000000,8,const f64
+0x76ad58,__real@bf847ae140000000,8,const f64
 0x76ad60,_EduiSourcePathPc,52,const char[52]
 0x0076ad98,__real@3fc4000000000000,8,const f64
 0x76ada0,??_C@_05DNIIFBMG@?$CFs?5?$CFs?$AA@,6,char[6]
@@ -19340,9 +19366,13 @@ address,symbol,size,ctype
 0x76f80c,??_C@_07NBCGADJA@Unknown?$AA@,8,
 0x76f888,__real@3ff99999a0000000,8,const f64
 0x76f894,??_7EdManipulator@@6B@,,
+0x76f8a0,??_7EdManMove@@6B@,,
+0x76f8ac,??_7EdManRotate@@6B@,,
+0x76f8b8,??_7EdManScale@@6B@,,
 0x76f8dc,??_C@_0N@JCLCLEOM@Snap?5Terrain?$AA@,13,char []
 0x76f8ec,??_C@_0O@BHGPKLAP@Cursor?5Radius?$AA@,14,char []
 0x76f954,??_7SplinePointBlock@@6B@,,
+0x76f958,__real@34000000,4,const f32
 0x76f960,??_7EdFileInputStream@@6B@,,
 0x76f984,??_7EdFileOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9a8,??_7EdRef@@6B@,,native exactVT binding; unimplemented extent unclaimed
@@ -22171,6 +22201,18 @@ address,symbol,size,ctype
 0x7ebb94,??_R3EdManipulator@@8,,
 0x7ebba4,??_R2EdManipulator@@8,,
 0x7ebbac,??_R1A@?0A@EA@EdManipulator@@8,,
+0x7ebbc8,??_R4EdManMove@@6B@,,
+0x7ebbdc,??_R3EdManMove@@8,,
+0x7ebbec,??_R2EdManMove@@8,,
+0x7ebbf8,??_R1A@?0A@EA@EdManMove@@8,,
+0x7ebc14,??_R4EdManRotate@@6B@,,
+0x7ebc28,??_R3EdManRotate@@8,,
+0x7ebc38,??_R2EdManRotate@@8,,
+0x7ebc44,??_R1A@?0A@EA@EdManRotate@@8,,
+0x7ebc60,??_R4EdManScale@@6B@,,
+0x7ebc74,??_R3EdManScale@@8,,
+0x7ebc84,??_R2EdManScale@@8,,
+0x7ebc90,??_R1A@?0A@EA@EdManScale@@8,,
 0x7ebd48,??_R4SplinePointBlock@@6B@,,
 0x7ebd5c,??_R3SplinePointBlock@@8,,
 0x7ebd6c,??_R2SplinePointBlock@@8,,
@@ -24531,6 +24573,11 @@ address,symbol,size,ctype
 0x81f9a0,_EdLevelAttr,16,struct eduiiattr_s
 0x81f9b0,?EdLevelFileExtension@@3PADA,4,char *
 0x81f9b4,?Scale@EdManipulator@@2MA,4,f32
+0x81f9b8,?AxisColour@EdManipulator@@2PAHA,32,i32[8]
+0x81f9d8,?ManipulatorAxisLength@@3MA,4,f32
+0x81f9dc,?ManipulatorHandleRadius@@3MA,4,f32
+0x81f9e0,?ManipulatorBoxSize@@3MA,4,f32
+0x81f9e4,?ManipulatorRotatorPickDistance@@3MA,4,f32
 0x81f9e8,?menu_startmetrics@@3UPropertyMenuMetrics@@A,16,PropertyMenuMetrics
 0x81f9f8,?BezierLineTolerance@@3MA,4,f32
 0x81f9fc,?BezierLineMaxDepth@@3HA,4,i32
@@ -24538,6 +24585,9 @@ address,symbol,size,ctype
 0x81fa04,?KnotHelperRadius@@3MA,4,f32
 0x81fa70,?theClassEditor@@3VClassEditor@@A,,ClassEditor
 0x81faf0,?theDefaultManipulator@@3VEdManipulator@@A,128,EdManipulator
+0x81fb70,?theMoveManipulator@@3VEdManMove@@A,128,EdManMove
+0x81fbf0,?theRotateManipulator@@3VEdManRotate@@A,128,EdManRotate
+0x81fc70,?theScaleManipulator@@3VEdManScale@@A,128,EdManScale
 0x81fcf0,?thePropertyTool@@3VPropertyTool@@A,76,PropertyTool
 0x81fdf0,?theSplineHelper@@3VSplineHelper@@A,,SplineHelper
 0x81fe08,?theKnotHelper@@3VKnotHelper@@A,20,KnotHelper
@@ -24590,6 +24640,7 @@ address,symbol,size,ctype
 0x8203b4,?ClassEditorArrowRadiusScale@@3MA,,f32
 0x8203b8,?ClassEditorArrowRadiusBias@@3MA,,f32
 0x008203bc,??_R0?AVLevelEditor@@@8,26,
+0x8203d8,_rotation_axis,4,i32
 0x008203dc,??_R0?AVPropertyTool@@@8,27,
 0x008203f8,??_R0?AVSplineTool@@@8,25,
 0x820480,?PcInputLabels820480@@3UTEXT_INPUT_LABELS_PC@@A,,TEXT_INPUT_LABELS_PC
@@ -28781,6 +28832,8 @@ address,symbol,size,ctype
 0x2973b08,_bezierline_depth,4,i32
 0x2973b20,?thePlaceableHelper@@3VPlaceableHelper@@A,136,PlaceableHelper
 0x2973ba8,?theRegistry@@3UEdRegistry@@A,,EdRegistry
+0x2973bf0,?SpherePos2@@3UVuVec@@A,16,VuVec
+0x2973c00,?SpherePos1@@3UVuVec@@A,16,VuVec
 0x2973c10,?theLevelEditor@@3VLevelEditor@@A,4272,LevelEditor
 0x2974cc0,_bezierdraw_depth,4,i32
 0x2974cc4,?EdInputUseMouse@@3EA,1,u8
