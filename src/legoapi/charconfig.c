@@ -33,14 +33,9 @@ CHARCONFIG_PC charconfig = {0};
 /* Defined in charconfig_diagnostic_pc.c; retail calls it with and without a path. */
 void __cdecl CharConfigPakDiagnosticPc();
 
-static __declspec(noinline) f32 CharConfigAbsFloat(f32 value) {
-    union {
-        f32 value;
-        u32 bits;
-    } result;
-    result.value = value;
-    result.bits &= 0x7fffffffu;
-    return result.value;
+f32 CharConfigAbsFloat(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffffu;
+    return *(f32 *)&bits;
 }
 
 static __declspec(noinline) i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *mask) {
