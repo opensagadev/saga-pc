@@ -475,26 +475,40 @@ extern "C" void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {
                     ? 118
                     : 25;
     requested = object->anim_packet.requested_animation;
-    if (requested != 1 && requested != alternate) {
+    if (requested != 1 && requested != alternate)
         default_idle = GetDefaultIdle(object);
-        if (default_idle != -1) {
-            ResetCharacterIdle(object, 1, default_idle);
-            return;
-        }
-    } else if ((requested == 1 && object->anim_packet.previous_animation == alternate) ||
-               (requested == alternate && object->anim_packet.previous_animation == 1)) {
-        ResetCharacterIdle(object, 1, requested);
+    else if (requested == 1 && object->anim_packet.previous_animation == alternate)
+        default_idle = 1;
+    else if (requested == alternate && object->anim_packet.previous_animation == 1)
+        default_idle = alternate;
+    else
+        default_idle = -1;
+    if (default_idle != -1) {
+        ResetCharacterIdle(object, 1, default_idle);
         return;
     }
-    if (requested == 1 || requested == alternate) {
+    if (requested == 1) {
         state->idle_total_time += FRAMETIME;
         next_time = state->idle_animation_time + FRAMETIME;
         state->idle_animation_time = next_time;
         if (next_time >= state->idle_animation_limit) {
             if (state->idle_animation == requested)
-                NewCharacterIdle(object, requested);
+                NewCharacterIdle(object, 1);
             else
-                ResetCharacterIdle(object, 1, requested);
+                ResetCharacterIdle(object, 1, 1);
+        }
+        object->anim_packet.requested_animation = state->idle_animation;
+        return;
+    }
+    if (requested == alternate) {
+        state->idle_total_time += FRAMETIME;
+        next_time = state->idle_animation_time + FRAMETIME;
+        state->idle_animation_time = next_time;
+        if (next_time >= state->idle_animation_limit) {
+            if (state->idle_animation == alternate)
+                NewCharacterIdle(object, alternate);
+            else
+                ResetCharacterIdle(object, 1, alternate);
         }
         object->anim_packet.requested_animation = state->idle_animation;
         return;

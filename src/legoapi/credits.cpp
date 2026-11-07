@@ -52,7 +52,7 @@ static CREDIT_TYPE_PC CreditTypePc[5] = {
     {"credit", 0.45f, 1.65f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
 };
 
-static CREDIT_TYPE_PC *CreditsFindTypePc(char *word) {
+static __declspec(noinline) CREDIT_TYPE_PC *CreditsFindTypePc(char *word) {
     i32 index;
     for (index = 0; index < 5; ++index) {
         if (NuStrICmp(CreditTypePc[index].name, word) == 0)
