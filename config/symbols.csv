@@ -6100,7 +6100,11 @@ address,symbol,size,ctype
 0x5c51c0,?Register@PC_POST_DATA_PORT_MANAGER@@QAEHPBDPAX@Z,142,
 0x5c5330,?AddOccluder@OccluderSet@@QAEXPBUnuvec_s@@000@Z,234,"void __thiscall (const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *)"
 0x5c5420,?SortByDepth@OccluderSet@@SAHPBX0@Z,75,"i32 __cdecl (const void *, const void *)"
+0x5c5470,?IsOccludedSphere@OccluderSet@@QAE_NPBUnuvec_s@@M@Z,729,"bool __thiscall (const NUVEC *, f32)"
 0x5c5750,?IsOccludedOBB@OccluderSet@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z,1247,"bool __thiscall (const NUVEC *, const NUVEC *, const NUMTX *)"
+0x5c5c30,?RenderOccluders@OccluderSet@@QBEX_N@Z,1091,void __thiscall (bool) const
+0x5c6080,?OnCameraSet@OccluderSet@@QAEXXZ,5,void __thiscall (void)
+0x5c6090,_NuOcclusionManagerIsInitialised,12,i32 __cdecl (void)
 0x5c60a0,_NuOcclusionManagerIsEnabled,45,i32 __cdecl (void)
 0x005c6100,_NuFrameEndLeafPc,1,void __cdecl(void)
 0x5c6150,_PcRegisterDynamicGeometryPc,522,i32 __cdecl(PC_GEOMETRY_PUBLISH_FORMAT_PC*)
@@ -6533,6 +6537,7 @@ address,symbol,size,ctype
 0x5e7840,?AddOccluder@OcclusionManager@@QAEXPBUnuvec_s@@000@Z,653,"void __thiscall (const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *)"
 0x5e7ad0,?AddOccluder@OcclusionManager@@QAEXPBUnuvec_s@@M@Z,701,"void __thiscall (const NUVEC *, f32)"
 0x5e7d90,?AddOccluder@OcclusionManager@@QAEXPBUnuvec_s@@0PBUnumtx_s@@@Z,399,"void __thiscall (const NUVEC *, const NUVEC *, const NUMTX *)"
+0x5e7f20,?RenderZPass@OcclusionManager@@QBEXXZ,25,void __thiscall (void) const
 0x005e7f40,?Init@OccluderSet@@QAEXIPATvariptr_u@@T2@@Z,585,"void __thiscall OccluderSet::Init(u32,VARIPTR*,VARIPTR)"
 0x5e8190,?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z,668,"void __thiscall (const NUMTX *, const NUMTX *)"
 0x005e8430,_NuOcclusionManagerBeginFrame,59,void __cdecl (void)
@@ -6540,6 +6545,7 @@ address,symbol,size,ctype
 0x5e8490,_NuOcclusionManagerAddOccluderQuad,31,"void __cdecl (const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *)"
 0x5e84b0,_NuOcclusionManagerAddOccluderSphere,24,"void __cdecl (const NUVEC *, f32)"
 0x5e84d0,_NuOcclusionManagerAddOccluderOBB,26,"void __cdecl (const NUVEC *, const NUVEC *, const NUMTX *)"
+0x5e84f0,_NuOcclusionManagerRenderZPass,32,void __cdecl (void)
 0x5e8790,?Normalize@PC_POST_SHADOW_VECTOR@@QBEPAUnuvec_s@@PAU2@@Z,89,"NUVEC *__thiscall(NUVEC *)"
 0x5e8950,?SetupCustomCameraFrustumPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnucamera_s@@PBMH@Z,649,thiscall camera splits count RET12
 0x5e8be0,?resetGeometry@NuDynamicLight@@QAEXXZ,122,void __thiscall NuDynamicLight::resetGeometry(void)
@@ -6629,8 +6635,11 @@ address,symbol,size,ctype
 0x5f22a0,_NuPostEffectInit,727,native function
 0x5f2580,_PostFilterInitSharedResourcesPc,331,void __cdecl(void)
 0x005f26d0,?Init@OcclusionManager@@QAEXIPATvariptr_u@@T2@@Z,109,"void __thiscall OcclusionManager::Init(u32,VARIPTR*,VARIPTR)"
+0x5f2740,?IsOccludedSphere@OcclusionManager@@QAE_NPBUnuvec_s@@M@Z,93,"bool __thiscall (const NUVEC *, f32)"
 0x5f27a0,?IsOccludedOBB@OcclusionManager@@QAE_NPBUnuvec_s@@0PBUnumtx_s@@@Z,95,"bool __thiscall (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x005f2800,_NuOcclusionManagerInit,26,"void __cdecl(u32,VARIPTR*,VARIPTR)"
+0x5f2820,_NuOcclusionManagerIsOccludedSphere,30,"i32 __cdecl (const NUVEC *, f32)"
+0x5f2840,_NuOcclusionManagerIsOccludedOBB,32,"i32 __cdecl (const NUVEC *, const NUVEC *, const NUMTX *)"
 0x5f28d0,?ComputeShadowMatrixPc@PC_SPECIAL_SHADOW_LIGHT@@QAEXPAUnurndrlightrecord_s@@@Z,1862,thiscall
 0x005f3140,_NuAnimData2Fixup,120,"void *__cdecl (i32, void **)"
 0x5f31c0,_NuAnimData2Relocate,176,

@@ -9389,6 +9389,9 @@ struct OccluderSet {
     NUMTX query_matrix;
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
     void AddOccluder(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
+    void RenderOccluders(bool) const;
+    void OnCameraSet();
+    bool IsOccludedSphere(const NUVEC *, f32);
     void PrepareForQueries(const NUMTX *, const NUMTX *);
     static i32 __cdecl SortByDepth(const void *, const void *);
 };
@@ -9413,9 +9416,11 @@ struct OcclusionManager {
     u32 occluded_count, query_count;
     u8 unknown_168[8];
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
+    bool IsOccludedSphere(const NUVEC *, f32);
     void EndFrame();
     void BeginFrame();
     void OnCameraSet();
+    void RenderZPass() const;
     void AddOccluder(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void AddOccluder(const NUVEC *, f32);
     void AddOccluder(const NUVEC *, const NUVEC *, const NUMTX *);

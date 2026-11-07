@@ -67,6 +67,15 @@ extern "C" void __cdecl NuOcclusionManagerInit(u32 capacity, VARIPTR *buffer, VA
     g_OcclusionManager.Init(capacity, buffer, buffer_end);
 }
 
+extern "C" i32 __cdecl NuOcclusionManagerIsOccludedSphere(const NUVEC *center, f32 radius) {
+    return g_OcclusionManager.IsOccludedSphere(center, radius) ? 1 : 0;
+}
+
+extern "C" i32 __cdecl NuOcclusionManagerIsOccludedOBB(const NUVEC *minimum, const NUVEC *maximum,
+                                                       const NUMTX *matrix) {
+    return g_OcclusionManager.IsOccludedOBB(minimum, maximum, matrix) ? 1 : 0;
+}
+
 nurndrlightrecord_s::nurndrlightrecord_s() {
     parameter_100 = 0.01f;
     count = 0;

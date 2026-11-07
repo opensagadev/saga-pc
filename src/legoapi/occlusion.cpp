@@ -21,6 +21,64 @@ static __declspec(noinline) void OcclusionMtxCopyPrivate(NUMTX *destination, con
     destination->m33 = source->m33;
 }
 
+bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
+    if (!queries_prepared)
+        return false;
+    __declspec(align(16)) NUVEC4 projected;
+    NuVec4MtxTransform(&projected, const_cast<NUVEC *>(center), &projection_matrix);
+    if (projected.w < radius)
+        return false;
+    projected.x /= projected.w;
+    i32 limit = static_cast<i32>(count) < 101 ? static_cast<i32>(count) : 100;
+    projected.y /= projected.w;
+    projected.z /= projected.w;
+    f32 screen_radius = radius / projected.w;
+    for (i32 i = 0; i != limit; ++i) {
+        if (indices[i] == 0xffffffffu)
+            continue;
+        PC_OCCLUDER_RECORD &record = occluders[indices[i]];
+        if (record.depth > projected.w - radius - 2.0)
+            return false;
+        if (projected.x - screen_radius > record.max_x || projected.y - screen_radius > record.max_y ||
+            record.min_x > projected.x + screen_radius || record.min_y > projected.y + screen_radius)
+            continue;
+        NUVEC4 *v = record.transformed;
+        NUVEC edge_a, edge_b, cross;
+        edge_a.x = v[1].x - v[0].x;
+        edge_a.y = v[1].y - v[0].y;
+        edge_a.z = v[1].z - v[0].z;
+        edge_b.x = v[2].x - v[0].x;
+        edge_b.y = v[2].y - v[0].y;
+        edge_b.z = v[2].z - v[0].z;
+        NuVecCross(&cross, &edge_b, &edge_a);
+        bool clockwise = cross.z > 0.0f;
+        __declspec(align(16)) NUVEC4 normal;
+        normal.z = normal.w = 0.0f;
+        for (i32 edge = 0; edge < 4; ++edge) {
+            i32 start = edge;
+            i32 end = (edge + 1) % 4;
+            if (!clockwise) {
+                end = 3 - end;
+                start = 3 - edge;
+            }
+            normal.x = v[end].y - v[start].y;
+            normal.y = -(v[end].x - v[start].x);
+            NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
+            normal.z = normal.w = 0.0f;
+            NUVEC delta;
+            delta.x = projected.x - v[start].x;
+            delta.y = projected.y - v[start].y;
+            delta.z = 0.0f;
+            f32 distance = normal.x * delta.x + delta.y * normal.y + delta.z * normal.z;
+            if (distance - screen_radius < 0.0)
+                goto next_occluder;
+        }
+        return true;
+    next_occluder:;
+    }
+    return false;
+}
+
 bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMTX const *matrix) {
     float min_x = 1000000.0f, min_y = 1000000.0f, min_depth = 1000000.0f;
     float max_x = -1000000.0f, max_y = -1000000.0f;
@@ -158,17 +216,34 @@ i32 OccluderSet::SortByDepth(void const *left, void const *right) {
 bool OcclusionManager::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMTX const *matrix) {
     if (!initialized || !enabled)
         return false;
-    if (!current_set->queries_prepared) {
-        NUMTX *projection = NuCameraGetVPMtx();
-        NUMTX *view = NuCameraGetViewMtx();
-        current_set->PrepareForQueries(view, projection);
-    }
+    if (!current_set->queries_prepared)
+        current_set->PrepareForQueries(&vmtx, &vpmtx);
     ++query_count;
     bool occluded = current_set->IsOccludedOBB(minimum, maximum, matrix);
     if (occluded)
         ++occluded_count;
     return occluded;
 }
+bool OcclusionManager::IsOccludedSphere(NUVEC const *center, f32 radius) {
+    if (!initialized || !enabled)
+        return false;
+    if (!current_set->queries_prepared)
+        current_set->PrepareForQueries(&vmtx, &vpmtx);
+    ++query_count;
+    bool occluded = current_set->IsOccludedSphere(center, radius);
+    if (occluded)
+        ++occluded_count;
+    return occluded;
+}
+
+void OccluderSet::OnCameraSet() {
+    queries_prepared = false;
+}
+
+extern "C" i32 __cdecl NuOcclusionManagerIsInitialised(void) {
+    return g_OcclusionManager.initialized != 0;
+}
+
 extern "C" i32 __cdecl NuOcclusionManagerIsEnabled(void) {
     return g_OcclusionManager.initialized != 0 && g_OcclusionManager.enabled != 0;
 }
@@ -255,6 +330,92 @@ void OccluderSet::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, co
     }
 }
 
+typedef struct OCCLUDER_PRIM_VERTEX_PC {
+    f32 x, y, z;
+    u32 colour;
+    f32 u, v;
+} OCCLUDER_PRIM_VERTEX_PC;
+STATIC_ASSERT(sizeof(OCCLUDER_PRIM_VERTEX_PC) == 0x18);
+STATIC_ASSERT(offsetof(OCCLUDER_PRIM_VERTEX_PC, colour) == 0xc);
+
+/* Same-TU copy of the nurndr.c colour helper (native EAX colour). */
+extern "C" {
+    static __declspec(noinline) void NuRndrPrimSetColourPrivate(i32 colour) {
+        u32 converted;
+        if (NuPrimNeedsOverbrightening != 0)
+            converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
+        else
+            converted =
+                ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+        ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    }
+}
+
+#define OCCLUDER_PRIM_POSITION(source)                                                                                 \
+    do {                                                                                                               \
+        f32 position_x = (source).x, position_y = (source).y, position_z = (source).z;                                 \
+        ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = position_x;                              \
+        ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = position_y;                              \
+        ((OCCLUDER_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = position_z;                              \
+        NuPrimStreamBufferPointer->addr += sizeof(OCCLUDER_PRIM_VERTEX_PC);                                            \
+        ++NuPrimVertexCount;                                                                                           \
+    } while (0)
+
+void OccluderSet::RenderOccluders(bool depth_only) const {
+    i32 colour = 0;
+    NUMTL *material = NULL;
+    if (depth_only)
+        material = queries_prepared ? ms_pZOnlyMtl2D : ms_pZOnlyMtl3D;
+    if (queries_prepared) {
+        ++NuPrimCSPos;
+        NuPrimSetCoordinateSystem(1);
+        NuPrim2DBegin(12, 5, material);
+        for (u32 i = 0; i != count; ++i) {
+            if (indices[i] == 0xffffffffu)
+                continue;
+            const PC_OCCLUDER_RECORD &record = occluders[indices[i]];
+            if (record.min_depth < 0.0f || record.depth < 0.0f)
+                continue;
+            colour = (i32)((u32)(record.vertices[0].z * record.vertices[0].x) | 0xff000000u);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[0].x, (f32)(record.transformed[0].y * -1.0), record.transformed[0].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[1].x, (f32)(record.transformed[1].y * -1.0), record.transformed[1].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[2].x, (f32)(record.transformed[2].y * -1.0), record.transformed[2].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[2].x, (f32)(record.transformed[2].y * -1.0), record.transformed[2].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[3].x, (f32)(record.transformed[3].y * -1.0), record.transformed[3].z);
+            NuRndrPrimSetColourPrivate(colour);
+            NuPrim2DAddXYZ(record.transformed[0].x, (f32)(record.transformed[0].y * -1.0), record.transformed[0].z);
+        }
+        NuPrim2DEnd();
+        --NuPrimCSPos;
+        NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+    } else {
+        NuPrim3DBegin(12, 5, material, NULL);
+        for (u32 i = 0; i != count; ++i) {
+            const PC_OCCLUDER_RECORD &record = occluders[i];
+            colour = (i32)((u32)(record.vertices[0].z * record.vertices[0].x) | 0xff000000u);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[0]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[1]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[2]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[2]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[3]);
+            NuRndrPrimSetColourPrivate(colour);
+            OCCLUDER_PRIM_POSITION(record.vertices[0]);
+        }
+        NuPrim3DEnd();
+    }
+}
+#undef OCCLUDER_PRIM_POSITION
+
 void OcclusionManager::EndFrame() {
 }
 
@@ -273,7 +434,12 @@ void OcclusionManager::BeginFrame() {
 
 void OcclusionManager::OnCameraSet() {
     if (initialized && enabled)
-        current_set->queries_prepared = false;
+        current_set->OnCameraSet();
+}
+
+void OcclusionManager::RenderZPass() const {
+    if (initialized && enabled)
+        current_set->RenderOccluders(true);
 }
 
 void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
@@ -407,6 +573,10 @@ void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, c
 extern "C" {
     void __cdecl NuOcclusionManagerOnCameraSet(void) {
         g_OcclusionManager.OnCameraSet();
+    }
+
+    void __cdecl NuOcclusionManagerRenderZPass(void) {
+        g_OcclusionManager.RenderZPass();
     }
 
     void __cdecl NuOcclusionManagerAddOccluderQuad(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
