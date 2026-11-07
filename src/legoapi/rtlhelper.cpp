@@ -12,12 +12,18 @@ extern "C" {
     extern f32 min_r, def_fr;
     extern struct eduiiattr_s EdLevelAttr;
     eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
-    /* 0x63ef30: opens the per-modifier strength sliders (not yet ported). */
-    void __cdecl cbRtlHelperModifiers(eduimenu_s *menu, eduiitem_s *item, u32 data);
+    void __cdecl cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32 data);
+    void __cdecl cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    extern i32 EdLevelFnt;
+    extern i32 modifier_cnt;
+    extern char **modifier_names;
+    void __cdecl eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding);
     extern RTL_LIGHT_PC *rtl_locked;
     void __cdecl rtlFree(RTL_LIGHT_PC *light);
     void __cdecl fogFree(RTL_FOG_MIGRATION_PC *fog);
 }
+
+void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 
 STATIC_ASSERT(RTL_EDITOR_SET_SIZE_PC == 0x6fac);
 STATIC_ASSERT(offsetof(RTL_LIGHT_PC, led_file) == 0x80);
@@ -132,6 +138,24 @@ found:
         light->led_file = Placeable::CurrentLedFile;
     }
     return light;
+}
+
+/* Opens a submenu with one 0..1 strength slider per light modifier. */
+void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32) {
+    eduimenu_s *menu =
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, (void *)EdLevelFnt, cbEdLevelDestroy, NULL);
+    i32 i;
+    if (menu == NULL)
+        return;
+    for (i = 0; i < modifier_cnt; i++) {
+        edui_slider_s *slider =
+            (edui_slider_s *)eduiMenuAddItem(menu, eduiItemSliderCreate(i, item->colours, 0, cbModifierAdjust, 0.0f,
+                                                                        1.0f, modifiers[i], modifier_names[i]));
+        eduiItemSliderSetGranularity(slider, 0.1f);
+    }
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 1);
+    eduiMenuAttach(parent, menu);
 }
 
 void RTLHelper::AddMenuItems(eduimenu_s *menu) {

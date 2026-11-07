@@ -9203,7 +9203,10 @@ address,symbol,size,ctype
 0x6bc400,?edSetPadDisabled@@YAXH@Z,10,
 0x6bc410,?edGetPadDisabled@@YAHXZ,6,
 0x6bc430,?SetPadText@LevelEditor@@QAEXHPAD@Z,51,
+0x6bc7a0,?GetScene@LevelEditor@@QAEPAUNUGSCN_s@@H@Z,30,
+0x6bc7c0,?GetEdScene@LevelEditor@@QAEPAULevelEditorScene@@H@Z,30,
 0x6bc860,?cbEdLevelDestroy@@YAXPAUeduimenu_s@@0@Z,87,
+0x6bc8c0,?cbEdLevelDestroyOnSelect@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,50,
 0x6bc900,?cbEdLevelSetSliderFloat@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,13,
 0x6bc910,?cbEdLevelSetSliderInt@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,20,
 0x6bc930,?cbEdLevelSetText@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
@@ -9240,6 +9243,8 @@ address,symbol,size,ctype
 0x6be710,?GetType@EdRegistry@@QAEPAUEdType@@H@Z,30,
 0x6be730,?GetClassId@EdRegistry@@QAEHPAD@Z,69,
 0x6be780,?GetClassId@EdRegistry@@QAEHPAUEdClass@@@Z,27,
+0x6bea60,??0EditorSettings@@QAE@XZ,21,
+0x6bea80,?AddMenuItems@EditorSettings@@QAEXPAUeduimenu_s@@@Z,130,
 0x6c0690,?Render@KnotHelper@@UAEXPAXH@Z,186,
 0x6c0780,??0EdStream@@QAE@XZ,26,
 0x6c0820,?SerialiseString@EdOutputStream@@UAEHPAPAD@Z,19,
@@ -18549,6 +18554,8 @@ address,symbol,size,ctype
 0x76f744,??_7KnotHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f7c0,??_7EdSubSystem@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f888,__real@3ff99999a0000000,8,const f64
+0x76f8dc,??_C@_0N@JCLCLEOM@Snap?5Terrain?$AA@,13,char []
+0x76f8ec,??_C@_0O@BHGPKLAP@Cursor?5Radius?$AA@,14,char []
 0x76f984,??_7EdFileOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9a8,??_7EdRef@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f9dc,??_7Placeable@@6B@,,native exactVT binding; unimplemented extent unclaimed

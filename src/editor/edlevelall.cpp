@@ -8,6 +8,7 @@
 extern "C" {
     extern eduimenu_s *edLevelActiveMenu;
     extern eduimenu_s *edLevelPinnedMenu;
+    extern struct eduiiattr_s EdLevelAttr;
     extern i32 pad_disabled;
     extern i32 EdLevelFnt;
     extern i32 EdLevelFntScale;
@@ -263,6 +264,16 @@ void cbEdLevelToggleInt(eduimenu_s *, eduiitem_s *item, u32) {
     item->highlighted = *value;
 }
 
+/* Item callback that closes the menu it belongs to. */
+void cbEdLevelDestroyOnSelect(eduimenu_s *menu, eduiitem_s *, u32) {
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+    if (menu == edLevelActiveMenu)
+        edLevelActiveMenu = NULL;
+    if (menu == edLevelPinnedMenu)
+        edLevelPinnedMenu = NULL;
+}
+
 /* Menu close callback for the level editor's menus: tears the menu down,
  * re-enables the camera and falls back to the pinned menu. */
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *) {
@@ -346,13 +357,28 @@ EdSubSystem::~EdSubSystem() {
 
 class EditorSettings {
   public:
+    EditorSettings();
     virtual ~EditorSettings();
+    void AddMenuItems(eduimenu_s *menu);
     f32 cursor_radius;
     i32 snap_terrain;
 };
 STATIC_ASSERT(sizeof(EditorSettings) == 0xc);
 
 EditorSettings::~EditorSettings() {
+}
+
+EditorSettings::EditorSettings() {
+    cursor_radius = 1.0f;
+    snap_terrain = 1;
+}
+
+void EditorSettings::AddMenuItems(eduimenu_s *menu) {
+    eduiMenuAddItem(menu, eduiItemSliderCreate((u32)&cursor_radius, &EdLevelAttr, 0, cbEdLevelSetSliderFloat, 1.0f,
+                                               50.0f, cursor_radius, "Cursor Radius"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)&snap_terrain, &EdLevelAttr, snap_terrain, 0, cbEdLevelToggleInt,
+                                              "Snap Terrain"));
+    edui_last_item->highlighted = snap_terrain & 1;
 }
 
 /* The editor's per-frame input state (Android EdInputContext): the camera
@@ -407,6 +433,8 @@ class LevelEditor : public BaseThing {
     virtual void Display(ThingRenderData *);
 
     void SetPadText(i32 buttons, char *text);
+    NUGSCN *GetScene(i32 index);
+    LevelEditorScene *GetEdScene(i32 index);
     i32 WriteStream(EdFileOutputStream &stream);
     i32 Save();
     void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
@@ -548,6 +576,18 @@ i32 LevelEditor::Save() {
     }
     theClassEditor.PostSaveInitialisation();
     return saved_any;
+}
+
+NUGSCN *LevelEditor::GetScene(i32 index) {
+    if ((u32)index <= 9)
+        return scenes[index].scene;
+    return NULL;
+}
+
+LevelEditorScene *LevelEditor::GetEdScene(i32 index) {
+    if ((u32)index <= 9)
+        return &scenes[index];
+    return NULL;
 }
 
 /* Labels every pad button whose bit is set in the mask. */
