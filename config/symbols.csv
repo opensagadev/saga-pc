@@ -6479,7 +6479,9 @@ address,symbol,size,ctype
 0x5e6910,??_GNuDeferredFilter@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e6930,??_ENuCopyFilter@@UAEPAXI@Z,,COFF weak alias of ??_GNuCopyFilter@@UAEPAXI@Z; no independent body
 0x5e6930,??_GNuCopyFilter@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x5e6950,_NuPostEffectReleasePc,226,void __cdecl (void)
 0x5e6a80,_NuPostEffectRender,774,void __cdecl(PC_FRAMEBUFFER_PC*)
+0x5e6dc0,_NuPostEffectReleasePortsPc,160,void __cdecl (void)
 0x5e7070,?render@NuMotionAccumFilterGen@@UAEXXZ,1146,native exactVT binding
 0x5e74f0,?render@NuSpeedBlurFilterGen@@UAEXXZ,627,native exactVT binding
 0x005e7f40,?Init@OccluderSet@@QAEXIPATvariptr_u@@T2@@Z,585,"void __thiscall OccluderSet::Init(u32,VARIPTR*,VARIPTR)"
@@ -6679,6 +6681,7 @@ address,symbol,size,ctype
 0x5fa330,_PcUpdateGeometryCameraOriginPc,497,"void __cdecl(NUMTX*,NUMTX*)"
 0x5fa540,_PCGraphicsSetSamplerTuplePc,222,
 0x5fb450,_PCGraphicsResizePostEffectTexturesPc,214,"void __cdecl (u32, u32)"
+0x5fb530,_PCGraphicsDestroyPostEffectTexturesPc,18,void __cdecl (void)
 0x5fb550,_PCGraphicsDrawPostEffectQuadPc,10,
 0x5fb560,_PCGraphicsDrawPostEffectIndexedPc,10,void __cdecl (void)
 0x5fb810,?Reset@PC_EFFECT_SURFACE_PC@@QAEXXZ,81,

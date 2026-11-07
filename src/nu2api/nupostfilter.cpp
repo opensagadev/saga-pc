@@ -1104,3 +1104,66 @@ void NuMainFilterGen::render() {
     }
     D3DPERF_EndEvent();
 }
+
+extern "C" {
+    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc;
+}
+
+/* Drops this module's references to the shared post ports and frees the auxiliary and work targets. */
+extern "C" void __cdecl NuPostEffectReleasePortsPc(void) {
+    {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index];
+        entry->references--;
+    }
+    {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index];
+        entry->references--;
+    }
+    {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index];
+        entry->references--;
+    }
+    {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index];
+        entry->references--;
+    }
+    {
+        PC_POST_DATA_PORT_ENTRY *entry = &PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index];
+        entry->references--;
+    }
+    if (PCGraphicsPostEffectAuxTexturePc != NULL) {
+        PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectAuxTexturePc);
+        PCGraphicsPostEffectAuxTexturePc = NULL;
+    }
+    if (PCGraphicsPostEffectWorkTexturePc != NULL) {
+        PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectWorkTexturePc);
+        PCGraphicsPostEffectWorkTexturePc = NULL;
+    }
+}
+
+extern "C" void __cdecl PCGraphicsDestroyPostEffectTexturesPc(void) {
+    NuPostEffectReleasePortsPc();
+    PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectBackBufferTexturePc);
+}
+
+#define POST_FILTER_RELEASE(filter)                                                                                    \
+    do {                                                                                                               \
+        if ((filter) != NULL) {                                                                                        \
+            NuPostFilterGen *released = (NuPostFilterGen *)(filter);                                                   \
+            released->destroyTextureResources();                                                                       \
+            released->destroyResources();                                                                              \
+            (filter) = NULL;                                                                                           \
+        }                                                                                                              \
+    } while (0)
+
+/* Tears every post filter down, frees the shared targets and rewinds the filter arena. */
+extern "C" void __cdecl NuPostEffectReleasePc(void) {
+    POST_FILTER_RELEASE(NuPostMainFilterPc);
+    POST_FILTER_RELEASE(NuPostMotionFilterPc);
+    POST_FILTER_RELEASE(NuPostAccumFilterPc);
+    POST_FILTER_RELEASE(NuPostSpeedFilterPc);
+    POST_FILTER_RELEASE(NuPostDeferredFilterPc);
+    POST_FILTER_RELEASE(NuPostCopyFilterPc);
+    PCGraphicsDestroyPostEffectTexturesPc();
+    NuPostFilterAllocatorPc.cursor = NuPostFilterAllocatorPc.base;
+}
