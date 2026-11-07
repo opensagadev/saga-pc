@@ -10059,70 +10059,65 @@ i32 __cdecl Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
 
     (void)processor;
     (void)param_6;
+    object = NULL;
+    target = NULL;
+    release = 0;
     if (param_5 == 0) {
         return 1;
     }
 
-    object = NULL;
-    if (packet != NULL && packet->owner != NULL) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
         object = packet->owner->objptr;
+        target = object->takeover_target;
     }
-    target = object != NULL ? object->takeover_target : NULL;
-    release = 0;
 
-    if (param_4 > 0) {
-        for (index = 0; index < param_4; ++index) {
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+    for (index = 0; index < param_4; ++index) {
+        value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+        if (value != NULL) {
+            {
+                lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
+                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+            }
+        } else {
+            value = NuStrIStr(params[index], (char *)AITransferLiteral75781c);
             if (value != NULL) {
-                {
-                    lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                    object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                player_index = (i32)(AIParamToFloat(processor, value + 7)) - 1;
+                if (player_index >= 0 && player_index <= 1) {
+                    object = Player[player_index];
                 }
             } else {
-                value = NuStrIStr(params[index], (char *)AITransferLiteral75781c);
+                value = NuStrIStr(params[index], (char *)AITransferLiteral757f28);
                 if (value != NULL) {
-                    player_index = (i32)(AIParamToFloat(processor, value + 7)) - 1;
-                    if ((u32)(player_index) < 2) {
-                        object = Player[player_index];
+                    {
+                        lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 7) : NULL;
+                        target = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
                     }
-                } else {
-                    value = NuStrIStr(params[index], (char *)AITransferLiteral757f28);
-                    if (value != NULL) {
-                        {
-                            lookup =
-                                GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 7) : NULL;
-                            target = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
-                        }
-                    } else if (NuStrIStr(params[index], (char *)AIGameOpponentName) != NULL) {
-                        if (packet->opponent != NULL) {
-                            target = (GAMEOBJECT *)((APIOBJECT_PC *)packet->opponent)->owner;
-                        }
-                    } else if (NuStrIStr(params[index], (char *)AITransferLiteral7583f8) != NULL) {
-                        release = 1;
+                } else if (NuStrIStr(params[index], (char *)AIGameOpponentName) != NULL) {
+                    if (packet->opponent != NULL) {
+                        target = (GAMEOBJECT *)((APIOBJECT_PC *)packet->opponent)->owner;
                     }
+                } else if (NuStrIStr(params[index], (char *)AITransferLiteral7583f8) != NULL) {
+                    release = 1;
                 }
             }
         }
     }
 
-    if (release != 0) {
-        if (object != NULL) {
-            ReleaseTakeOver(object, 0);
+    if (object == NULL) {
+        return 1;
+    }
+    if (target != NULL && release == 0) {
+        if ((target->character_data->model_flags & 0x40000000) != 0 &&
+            (target->character_context == 0x17 || target->character_context == 0x3e)) {
+            return 0;
         }
-        return 1;
-    }
-    if (target == NULL || object == NULL) {
-        return 1;
-    }
-
-    if ((target->character_data->model_flags & 0x40000000) != 0 &&
-        (target->character_context == 0x3e || target->character_context == 0x17)) {
-        return 0;
-    }
-    target_config = target->character_data->game_character;
-    if (target->takeover_source == NULL && (target_config->flags_090 & 0x40) != 0 &&
-        (object->character_data->model_flags & 0x10) == 0) {
-        TakeOverGameObject(object, target, 1, 0);
+        target_config = target->character_data->game_character;
+        if (target->takeover_source == NULL && (target_config->flags_090 & 0x40) != 0 &&
+            (object->character_data->model_flags & 0x10) == 0) {
+            TakeOverGameObject(object, target, 1, 0);
+        }
+    } else if (release != 0) {
+        ReleaseTakeOver(object, 0);
     }
     return 1;
 }
