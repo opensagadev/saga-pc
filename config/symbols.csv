@@ -3398,7 +3398,7 @@ address,symbol,size,ctype
 0x518920,_AISysCheckAntinode_Ellipse,1030,
 0x518d30,_AISysCheckAntinode_Rectangle,1203,
 0x005191f0,_AISysDrawBoxPc,1163,
-0x00519680,_AISysDrawAntinode_Rectangle,110,"void __cdecl(AISYS_RECTANGLE_NODE_PC *,u32)"
+0x00519680,_AISysDrawAntinode_Rectangle,110,"void __cdecl (AIANTINODE_PC *, u32)"
 0x5196f0,_AISysCreatureAntinodeInteraction,608,"void __cdecl(AISYS_PC *, i32, APIOBJECT_PC **, i32 *)"
 0x519e00,_AISysCreatureInteraction2D,1408,"void __cdecl(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32)"
 0x0051a760,_AISysResetPathSearchConnectionChecks,86,
@@ -3410,6 +3410,7 @@ address,symbol,size,ctype
 0x0051ad20,_AISysFindPath,81,"AIPATH_PC *__cdecl (AISYS_PC *, char *)"
 0x0051ad80,_AIPathFindNode,111,"AIPATHNODE_PC *__cdecl (AISYS_PC *, AIPATH_PC *, char *)"
 0x0051adf0,_AIPAthFindPathCnx,194,"void *__cdecl (AISYS_PC *, AIPATH_PC *, char *, char *, i32 *)"
+0x0051aec0,_AIPathFindPathCnxFromIX,115,"AIPATHCNX_PC *__cdecl (AISYS_PC *, AIPATH_PC *, u8, u8)"
 0x0051af40,_AIPathNodeUpdatePos,683,"void __cdecl (void *, AIPATH_PC *, AIPATHNODE_PC *)"
 0x0051b1f0,_WithinConnection,1532,"i32 __cdecl (void *, NUVEC *, AIPATH_PC *, AIPATHCNX_PC *, i32, AIPATHCNX_PC *, i32, i32, AIPATHINFO_PC *, f32, i32)"
 0x0051b7f0,_AISysFindRoute,151,void __cdecl (AIPACKET_PC *)
@@ -3432,6 +3433,7 @@ address,symbol,size,ctype
 0x0051f0a0,_AICircle,263,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x0051f1b0,_AIWander,1104,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x0051f600,_AIMoveDirectlyToDestination,169,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x0051f6b0,_AISysGetCharacterWaypoint,103,"i32 __cdecl (AIPACKET_PC *, NUVEC *)"
 0x51f720,_LocaledbitsDrawSolidCircleXY,409,
 0x51f8c0,_LocaledbitsDrawSolidEllipseXY,484,
 0x51fab0,_LocaledbitsDrawCircleXY,261,
@@ -3452,6 +3454,7 @@ address,symbol,size,ctype
 0x520460,_InitFn_GetNamedAPIObject,10,
 0x520470,_InitFn_GetAICreatureOrigin,10,
 0x5204e0,_AiEditorChangeModePc,102,
+0x00520550,_aieditor_Enter,167,"void __cdecl (AISYS_PC *, NUVEC *, void *, void *, char *, char *, char *)"
 0x520600,_NuSpecialFindByPlatformID,163,
 0x005206b0,_AISysSetPathCylinderCheck,16,void __cdecl (i32)
 0x005206c0,_aieditor_Render,787,"void __cdecl (f32, f32)"
@@ -3656,6 +3659,8 @@ address,symbol,size,ctype
 0x52dc60,_AISysLoadPrivatePc,3001,
 0x52e820,_AISysLoadEx,250,"AISYS_PC*__cdecl(VARIPTR*,VARIPTR*,i32,NUGSCN*,char*,char*,char*,char*)"
 0x52e920,_AISysLoad,45,"AISYS_PC*__cdecl(VARIPTR*,VARIPTR*,i32,NUGSCN*,char*,char*,char*)"
+0x0052e950,_AISysDrawAntinode_Circle,46,"void __cdecl (AIANTINODE_PC *, u32)"
+0x0052e980,_AISysDrawAntinode_Ellipse,59,"void __cdecl (AIANTINODE_PC *, u32)"
 0x0052e9c0,_CharacterTestPathCnx,3645,
 0x0052f800,_AISysGetCharacterPathPos,1147,"void __cdecl (AISYS_PC *, APIOBJECT_PC *, AIPACKET_PC *, i32, i32)"
 0x0052fc80,_AISysGetPathPos,38,"void __cdecl (AISYS_PC *, NUVEC *, AIPATHINFO_PC *, AIPATH_PC *, i32)"

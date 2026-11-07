@@ -152,6 +152,27 @@ __declspec(noinline) void *__cdecl AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC
     return NULL;
 }
 
+AIPATHCNX_PC *__cdecl AIPathFindPathCnxFromIX(AISYS_PC *system, AIPATH_PC *path, u8 from_index, u8 to_index) {
+    AIPATHNODE_PC *node;
+    i32 index;
+    if (path == NULL) {
+        if (system == NULL || system->path_sys == NULL || system->path_sys->path_count == 0)
+            return NULL;
+        path = system->path_sys->active_path;
+    }
+    if (path != NULL && from_index < path->node_count) {
+        node = &path->nodes[from_index];
+        if (from_index != to_index) {
+            for (index = 0; index < node->connection_count; ++index) {
+                if (node->connections[index]->node_indices[0] == to_index ||
+                    node->connections[index]->node_indices[1] == to_index)
+                    return node->connections[index];
+            }
+        }
+    }
+    return NULL;
+}
+
 AIANTINODE_PC *__cdecl AIAntinodeCreate(NUVEC *position, f32 radius) {
     i32 index;
     for (index = 0; index < 64; ++index) {
@@ -3598,6 +3619,20 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
         *direction = connection->node_indices[0] != node_index;
     }
     return connection;
+}
+
+i32 __cdecl AISysGetCharacterWaypoint(AIPACKET_PC *packet, NUVEC *position) {
+    i32 direction;
+    AIPATHCNX_PC *connection;
+    if (packet->path_info.connection != packet->fallback_path_info.connection) {
+        connection = GetNextConnection(packet, &direction);
+        if (connection != NULL) {
+            if (position != NULL)
+                *position = packet->path_info.path->nodes[connection->node_indices[direction == 0]].position;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
@@ -15133,6 +15168,25 @@ void __cdecl AiEditorChangeModePc(i32 mode) {
     }
 }
 
+void __cdecl aieditor_Enter(AISYS_PC *system, NUVEC *camera_position, void *context, void *owner, char *level_directory,
+                            char *level_file, char *level_subdirectory) {
+    i32 index;
+    aieditor->flags |= 2;
+    aieditor->ai_system = system;
+    aieditor->enter_context = context;
+    aieditor->enter_owner = owner;
+    aieditor->level_directory = level_directory;
+    aieditor->level_file = level_file;
+    aieditor->level_subdirectory = level_subdirectory;
+    if (camera_position != NULL)
+        edcamSetPos(camera_position);
+    for (index = 0; index < aieditorsettings.modes.count; ++index) {
+        if (aieditorsettings.modes.entries[index].enter != NULL)
+            aieditorsettings.modes.entries[index].enter();
+    }
+    aieditorsettings.display_options |= 0x10;
+}
+
 static void __cdecl AiEditorDisplayBit4Pc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
@@ -17658,33 +17712,13 @@ static void AISysDrawBoxPc(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 co
 #undef DRAW_BOX_EDGE
 }
 
-typedef struct AISYS_RECTANGLE_NODE_PC {
-    NUVEC position;
-    f32 radius;
-    f32 min_y;
-    f32 min_y_offset;
-    f32 max_y;
-    f32 max_y_offset;
-    NUSPECIALHANDLE special_handle;
-    NUVEC special_position;
-    i32 rotation;
-    i32 rotation_offset;
-    f32 base_radius;
-    f32 base_height;
-    u8 enabled, game_flags, type, has_special;
-    u8 unknown_4c[4];
-    u8 special_type;
-    u8 unknown_51[7];
-} AISYS_RECTANGLE_NODE_PC;
-STATIC_ASSERT(sizeof(AISYS_RECTANGLE_NODE_PC) == sizeof(AIANTINODE_PC));
-STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, position) == 0);
-STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, min_y_offset) == 0x14);
-STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, max_y_offset) == 0x1c);
-STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, rotation) == 0x38);
-STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, base_radius) == 0x40);
-STATIC_ASSERT(offsetof(AISYS_RECTANGLE_NODE_PC, base_height) == 0x44);
+STATIC_ASSERT(offsetof(AIANTINODE_PC, min_y_offset) == 0x14);
+STATIC_ASSERT(offsetof(AIANTINODE_PC, max_y_offset) == 0x1c);
+STATIC_ASSERT(offsetof(AIANTINODE_PC, rotation) == 0x38);
+STATIC_ASSERT(offsetof(AIANTINODE_PC, base_radius) == 0x40);
+STATIC_ASSERT(offsetof(AIANTINODE_PC, base_height) == 0x44);
 
-void __cdecl AISysDrawAntinode_Rectangle(AISYS_RECTANGLE_NODE_PC *node, u32 colour) {
+void __cdecl AISysDrawAntinode_Rectangle(AIANTINODE_PC *node, u32 colour) {
     NUMTX matrix;
     NUVEC minimum;
     NUVEC maximum;
@@ -17697,6 +17731,15 @@ void __cdecl AISysDrawAntinode_Rectangle(AISYS_RECTANGLE_NODE_PC *node, u32 colo
     maximum.y = node->max_y_offset;
     maximum.z = node->base_height;
     AISysDrawBoxPc(&minimum, &maximum, &matrix, colour);
+}
+
+void __cdecl AISysDrawAntinode_Circle(AIANTINODE_PC *node, u32 colour) {
+    LocaledbitsDrawSolidCircleXY(&node->position, node->radius, node->min_y, node->max_y, colour, 0, 16);
+}
+
+void __cdecl AISysDrawAntinode_Ellipse(AIANTINODE_PC *node, u32 colour) {
+    LocaledbitsDrawSolidEllipseXY(&node->position, node->base_radius, node->base_height, node->rotation, node->min_y,
+                                  node->max_y, colour, 0, 16);
 }
 
 /* Prospective src/gameapi/aisys.c append; existing typed state/shape contracts reused. */
