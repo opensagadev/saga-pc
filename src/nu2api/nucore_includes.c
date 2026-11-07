@@ -495,19 +495,6 @@ void __cdecl NuMemSet128(void *destination, u32 value, i32 blocks) {
     memset(destination, (u8)value, (u32)blocks << 4);
 }
 
-static void NuDatFileDecodeInit(void) {
-    unpack_file_info = NULL;
-    unpack_file_odi = NULL;
-    unpack_file_pos = -1;
-}
-
-static void NuDatFileDecodeNewFile(PC_NUDATFILEINFO *file, NUDATOPENFILEINFO *open_file) {
-    unpack_file_info = file;
-    unpack_file_odi = open_file;
-    unpack_file_pos = file->start;
-    decode_buffer_left = 0;
-}
-
 void __cdecl NuDatFileDecodeNext(void) {
     char char_buf[12];
 
@@ -748,7 +735,9 @@ i32 __cdecl NuFileInitEx(i32 device_id, i32 reboot_iop, i32 eject) {
     memset(pc_dat_file_infos, 0, sizeof(pc_dat_file_infos));
     file_criticalsection = PCThreadCriticalSectionCreate_candidate();
     NuFileExtInit(NuFileUseHiresPC() == 0);
-    NuDatFileDecodeInit();
+    unpack_file_info = NULL;
+    unpack_file_odi = NULL;
+    unpack_file_pos = -1;
     return device_id;
 }
 
@@ -1813,23 +1802,16 @@ i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 whence) {
     return info->position;
 }
 
-static u32 NameToHash(char *name) {
-    u32 constant = 0x811c9dc5;
-    u32 prime = 0x199933;
-
-    u32 hash = constant;
-    for (; *name != '\0'; name++) {
-        hash ^= *name;
-        hash *= prime;
-    }
-
-    return hash;
-}
-
 i32 __cdecl NuDatFileFindHash(NUDATHDR *header, char *name) {
-    u32 hash = NameToHash(name);
+    u32 hash = 0x811c9dc5;
     VARIPTR ptr;
     i32 i;
+    char *cursor;
+
+    for (cursor = name; *cursor != '\0'; cursor++) {
+        hash ^= *cursor;
+        hash *= 0x199933;
+    }
 
     for (i = 0; i < header->file_count; i++) {
         if (header->hash_idxs[i] == hash) {
@@ -2002,7 +1984,10 @@ NUFILE __cdecl NuDatFileOpen(NUDATHDR *hdr, char *filepath, i32 mode) {
                     }
 
                     if (pc_dat_file_infos[info_idx].compression_mode == 2) {
-                        NuDatFileDecodeNewFile(&pc_dat_file_infos[info_idx], open_info);
+                        unpack_file_info = &pc_dat_file_infos[info_idx];
+                        unpack_file_odi = open_info;
+                        unpack_file_pos = pc_dat_file_infos[info_idx].start;
+                        decode_buffer_left = 0;
                     }
 
                     return info_idx + 0x800;
