@@ -19,6 +19,12 @@ STATIC_ASSERT(offsetof(TTNetwork, log) == 0x20);
 STATIC_ASSERT(offsetof(NetLogFile, mode) == 0x104);
 STATIC_ASSERT(offsetof(NetLogFile, count) == 0x110);
 STATIC_ASSERT(sizeof(NetLogFile) == 0x2114);
+STATIC_ASSERT(offsetof(TTNetwork, frame_count) == 0x2134);
+STATIC_ASSERT(offsetof(TTNetwork, state) == 0x2140);
+STATIC_ASSERT(offsetof(TTNetwork, display_page) == 0x2150);
+STATIC_ASSERT(offsetof(TTNetwork, display_height) == 0x2160);
+STATIC_ASSERT(offsetof(TTNetwork, my_address) == 0x216c);
+STATIC_ASSERT(offsetof(TTNetwork, has_my_host_address) == 0x2174);
 
 void *NetTransportEntry::operator new(u32 size) {
     return theMemoryManager.AllocPool(size, 1);
@@ -328,4 +334,35 @@ void TTNetwork::BroadcastEx(NETMESSAGE_PC message, u8 channel) {
         }
     }
     message.Release();
+}
+
+NetAddress::NetAddress() {
+    address = 0;
+}
+
+void TTNetwork::Resume() {
+}
+
+i32 TTNetwork::Suspend() {
+    return 1;
+}
+
+NetAddress *TTNetwork::GetMyAddress() {
+    return &my_address;
+}
+
+NetAddress *TTNetwork::GetMyHostAddress() {
+    if (has_my_host_address) {
+        return &my_host_address;
+    }
+    return NULL;
+}
+
+void TTNetwork::SetMyHostAddress(NetAddress *address) {
+    my_host_address = *address;
+    has_my_host_address = 1;
+}
+
+void TTNetwork::ClearMyHostAddress() {
+    has_my_host_address = 0;
 }

@@ -29713,6 +29713,13 @@ class NetTransporter : public NetTransporterInterface {
     NetTransportList clients;
 };
 
+/* Session-level peer address (4 bytes on PC). */
+struct NetAddress {
+    NetAddress();
+
+    u32 address;
+};
+
 /* Buffered append-only log file embedded in TTNetwork at +0x20. */
 class NetLogFile {
   public:
@@ -29748,8 +29755,30 @@ class TTNetwork : public NetTransporter, public BaseThing {
     void DeliverMessage(NETMESSAGE_PC &message, u8 channel, i32 arg);
     void RecordSent(NETMESSAGE_PC message, u8 channel);
     void RecordReceived(NETMESSAGE_PC message, u8 channel);
+    void Resume();
+    i32 Suspend();
+    NetAddress *GetMyAddress();
+    NetAddress *GetMyHostAddress();
+    void SetMyHostAddress(NetAddress *address);
+    void ClearMyHostAddress();
 
     NetLogFile log;
+    u32 frame_count;
+    i32 field_2138;
+    i32 field_213c;
+    i32 state;
+    i32 field_2144;
+    i32 field_2148;
+    i32 field_214c;
+    i32 display_page;
+    f32 display_x;
+    f32 display_y;
+    f32 display_width;
+    f32 display_height;
+    u32 unknown_2164[2];
+    NetAddress my_address;
+    NetAddress my_host_address;
+    i32 has_my_host_address;
 };
 extern TTNetwork theTTNetwork;
 
