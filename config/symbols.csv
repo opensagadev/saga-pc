@@ -8685,6 +8685,9 @@ address,symbol,size,ctype
 0x661f60,_edppDetermineNearest,266,void __cdecl(f32)
 0x662070,_edppHighlightNearest,673,
 0x662320,_edppRender,32,
+0x662340,_cbPtlApplyGrad,580,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x662590,_edptlcbChangeDistortX,66,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6625e0,_edptlcbChangeDistortY,66,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x662630,_cbPtlChangeGrav,116,
 0x6626b0,_cbChangeName,47,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x6626e0,_cbPtlCopyEffect,413,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
@@ -8748,6 +8751,8 @@ address,symbol,size,ctype
 0x664850,_edptlcbOrphanListMenu,166,
 0x664900,_cbPtlCancelTypeMenu,25,
 0x664920,_cbPtlCancelQuickDeleteMenu,25,
+0x664940,_cbPtlCancelColMenu,32,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x664960,_cbPtlColMenu,720,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x664c30,_cbPtlCancelJibMenu,42,
 0x664c60,_cbPtlJibMenu,514,
 0x664e70,_edptlcbCancelBounceMenu,25,
@@ -8758,6 +8763,16 @@ address,symbol,size,ctype
 0x665190,_cbChangeNumCollSpheres,74,
 0x6651e0,_cbPtlDefaultCollEnv,317,
 0x665320,_cbPtlApplyCollEnv,333,
+0x665470,_edptlcbSetSoundID,380,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6655f0,_edptlcbSetSoundControl,531,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x665810,_edptlcbCancelSoundIDMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x665830,_edptlcbSoundIDMenu,384,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x6659b0,_edptlcbCancelSoundControlMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x6659d0,_edptlcbSoundControlMenu,603,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x665c30,_edptlcbCancelSoundXMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x665c50,_edptlcbSoundXMenu,304,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x665d80,_edptlcbCancelSoundsMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x665da0,_edptlcbSoundsMenu,262,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x665eb0,_cbPtlCancelCollMenu,27,
 0x665ed0,_cbPtlCollMenu,485,
 0x6660c0,_cbChangeTorusLife,66,
@@ -8794,6 +8809,9 @@ address,symbol,size,ctype
 0x668860,_edptlcbApplyScaleFactor,106,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x6688d0,_edptlcbCancelScaleEffectMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
 0x6688f0,_edptlcbScaleEffectMenu,244,
+0x6689f0,_cbPtlChangeSScale,18,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
+0x668a10,_cbPtlCancelSScaleMenu,25,"void __cdecl (eduimenu_s *, eduimenu_s *)"
+0x668a30,_cbPtlSScaleMenu,184,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x668af0,_cbPtlChangePriority,117,
 0x668b70,_cbPtlToggleDynamicPriority,55,
 0x668bb0,_cbPtlCancelInstanceSettingsMenu,25,
@@ -19168,6 +19186,12 @@ address,symbol,size,ctype
 0x76db04,??_C@_0P@JCNKIOMJ@Gravity?5Rotate?$AA@,15,char []
 0x76db14,??_C@_0P@JDBJAHPH@Emitter?5Rotate?$AA@,15,char []
 0x76db24,??_C@_0M@HHMMKJJG@Orphan?5List?$AA@,12,char []
+0x76db30,??_C@_0BC@MIGGKFPA@Y?9axis?5Distortion?$AA@,18,char []
+0x76db44,??_C@_0BC@CHDEBDBB@X?9axis?5Distortion?$AA@,18,char []
+0x76db58,??_C@_0L@PCMELFIE@Alpha?5Grad?$AA@,11,char []
+0x76db64,??_C@_0BA@HEGBLFOC@Distortion?5Grad?$AA@,16,char []
+0x76db74,??_C@_0M@LDHACMNP@Colour?5Grad?$AA@,12,char []
+0x76db80,??_C@_0BA@PFPFHJGB@Particle?5Colour?$AA@,16,char []
 0x76db90,??_C@_0N@IOOMOAKB@Jibber?5Y?5Amp?$AA@,13,char []
 0x76dba0,??_C@_0O@DHMMMNGL@Jibber?5Y?5Freq?$AA@,14,char []
 0x76dbb0,??_C@_0N@EFLADDAE@Jibber?5X?5Amp?$AA@,13,char []
@@ -19179,6 +19203,7 @@ address,symbol,size,ctype
 0x76dc10,??_C@_0N@BECJLPFI@Radius?5Ratio?$AA@,13,char []
 0x76dc20,??_C@_0BB@DFFKJGLN@Number?5of?5Points?$AA@,17,char []
 0x76dc34,??_C@_0O@IJGLMPG@Star?5Settings?$AA@,14,char []
+0x76dc44,??_C@_0N@MBECPCAH@Per?5Particle?$AA@,13,char []
 0x76dc54,??_C@_0BB@FEGMCKIL@Default?5Envelope?$AA@,17,char []
 0x76dc68,??_C@_0M@HNGJLEEB@Num?5Spheres?$AA@,12,char []
 0x76dc74,??_C@_0BD@GLIHANJI@Collision?5Envelope?$AA@,19,char []
@@ -28697,6 +28722,7 @@ address,symbol,size,ctype
 0x2921854,_PlatCrush,,i32
 0x2921858,_TerrShape,,TERRAIN_AXIS_FREEDOM_SHAPE_PC *
 0x0292185c,_ptlsizemenu,4,struct eduimenu_s *
+0x2921860,_ptlcolmenu,4,struct eduimenu_s *
 0x2921864,_edgra_page_terrain,,void*[8]
 0x02921884,_GetSurfaceInfoRoofHeightPc,,
 0x2921888,_edbri_cam_ax,4,i32
@@ -28781,6 +28807,7 @@ address,symbol,size,ctype
 0x0292fdec,_TerrainWaterCastIndexPc,,
 0x292fdf0,_tertempmat,,NUMTX
 0x292fe30,_ptlvarstartmenu,4,struct eduimenu_s *
+0x292fe34,_sscalemenu,4,struct eduimenu_s *
 0x0292fe38,_AnimParams,46336,EDANIM_PARAM_PC[64]
 0x293b338,_SfxNameSlotsPc,,char[1601][32]
 0x2947b58,_edSfxAllCount,4,i32
@@ -28995,6 +29022,10 @@ address,symbol,size,ctype
 0x2962a68,_edpp_readout,4,i32
 0x2962a6c,_edptl_switch_menu,4,struct eduimenu_s *
 0x2962a70,_edptl_switchtype_menu,4,struct eduimenu_s *
+0x2962a74,_edptl_sounds_menu,4,struct eduimenu_s *
+0x2962a78,_edptl_soundx_menu,4,struct eduimenu_s *
+0x2962a7c,_edptl_soundid_menu,4,struct eduimenu_s *
+0x2962a80,_edptl_soundcontrol_menu,4,struct eduimenu_s *
 0x2962a84,_edptl_bounce_menu,4,struct eduimenu_s *
 0x2962a88,_edptl_group_menu,4,struct eduimenu_s *
 0x2962a8c,_edptl_ghost_menu,4,struct eduimenu_s *
@@ -29020,6 +29051,8 @@ address,symbol,size,ctype
 0x2962af0,_edpp_facrotx,4,i32
 0x2962af4,_edpp_facroty,4,i32
 0x2962af8,_edptl_count,4,i32
+0x2962afc,_grad_item,4,struct eduiitem_s *
+0x2962b00,_grad_alpha_item,4,struct eduiitem_s *
 0x02962b04,_grad_size_w_item,4,struct eduiitem_s *
 0x02962b08,_grad_size_h_item,4,struct eduiitem_s *
 0x02962b0c,_grad_size_min_item,4,struct edui_slider_s *

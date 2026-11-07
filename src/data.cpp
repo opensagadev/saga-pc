@@ -29165,6 +29165,14 @@ extern "C" {
     struct eduimenu_s *edptl_switch_menu = 0;
 #pragma bss_seg(".bss$edptl_switchtype_menu")
     struct eduimenu_s *edptl_switchtype_menu = 0;
+#pragma bss_seg(".bss$edptl_sounds_menu")
+    struct eduimenu_s *edptl_sounds_menu = 0;
+#pragma bss_seg(".bss$edptl_soundx_menu")
+    struct eduimenu_s *edptl_soundx_menu = 0;
+#pragma bss_seg(".bss$edptl_soundid_menu")
+    struct eduimenu_s *edptl_soundid_menu = 0;
+#pragma bss_seg(".bss$edptl_soundcontrol_menu")
+    struct eduimenu_s *edptl_soundcontrol_menu = 0;
 #pragma bss_seg(".bss$edptl_page_menu")
     struct eduimenu_s *edptl_page_menu = 0;
 #pragma bss_seg(".bss$edpp_first_time_this_level")
@@ -29198,6 +29206,8 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$ptlvarstartmenu")
     struct eduimenu_s *ptlvarstartmenu = 0;
+#pragma bss_seg(".bss$sscalemenu")
+    struct eduimenu_s *sscalemenu = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ptlstartvelmenu")
     struct eduimenu_s *ptlstartvelmenu = 0;
@@ -29833,6 +29843,12 @@ extern "C" {
     struct edui_slider_s *grad_rot_min_item = 0;
 #pragma bss_seg(".bss$grad_rot_max_item")
     struct edui_slider_s *grad_rot_max_item = 0;
+#pragma bss_seg(".bss$ptlcolmenu")
+    struct eduimenu_s *ptlcolmenu = 0;
+#pragma bss_seg(".bss$grad_item")
+    struct eduiitem_s *grad_item = 0;
+#pragma bss_seg(".bss$grad_alpha_item")
+    struct eduiitem_s *grad_alpha_item = 0;
 #pragma bss_seg(".bss$ptlsizemenu")
     struct eduimenu_s *ptlsizemenu = 0;
 #pragma bss_seg(".bss$grad_size_w_item")

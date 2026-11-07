@@ -3590,3 +3590,278 @@ void edptlcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_switch_menu->x = parent->x + 10;
     edptl_switch_menu->y = parent->y + 40;
 }
+
+extern struct eduimenu_s *ptlcolmenu;
+extern struct eduiitem_s *grad_item, *grad_alpha_item;
+
+void cbPtlApplyGrad(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
+    EDUI_GRADIENT_STAGE_PC stages[8];
+    DEBRIS_INFO_PC *effect;
+    i32 count, instance, i;
+    if (grad_item != NULL) {
+        count = eduiGradPickRead(grad_item, stages, 8);
+        if (count >= 2 && count <= 8 && edpp_nearest != -1) {
+            instance = edpp_ptls[edpp_nearest].instance_id;
+            if (instance != -1) {
+                effect = debtab[debkeydata[instance].effect_index];
+                for (i = 0; i < count; ++i) {
+                    effect->colour_keys[i].time = stages[i].time;
+                    effect->colour_keys[i].red = (u8)(stages[i].red * 255.0);
+                    effect->colour_keys[i].green = (u8)(stages[i].green * 255.0);
+                    effect->colour_keys[i].blue = (u8)(stages[i].blue * 255.0);
+                }
+                GenericDebinfoDmaTypeUpdate(effect);
+            }
+        }
+    }
+    if (grad_alpha_item != NULL) {
+        count = eduiGradPickRead(grad_alpha_item, stages, 8);
+        if (count >= 2 && count <= 8 && edpp_nearest != -1) {
+            instance = edpp_ptls[edpp_nearest].instance_id;
+            if (instance != -1) {
+                effect = debtab[debkeydata[instance].effect_index];
+                for (i = 0; i < count; ++i) {
+                    effect->alpha_keys[i].time = stages[i].time;
+                    effect->alpha_keys[i].value = stages[i].red * 255.0;
+                }
+                GenericDebinfoDmaTypeUpdate(effect);
+            }
+        }
+    }
+}
+
+void edptlcbChangeDistortX(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    i32 instance;
+    if (edpp_nearest == -1)
+        return;
+    instance = edpp_ptls[edpp_nearest].instance_id;
+    if (instance == -1)
+        return;
+    debtab[debkeydata[instance].effect_index]->particle_parameter_a = ((edui_slider_s *)item)->value;
+}
+
+void edptlcbChangeDistortY(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    i32 instance;
+    if (edpp_nearest == -1)
+        return;
+    instance = edpp_ptls[edpp_nearest].instance_id;
+    if (instance == -1)
+        return;
+    debtab[debkeydata[instance].effect_index]->particle_parameter_b = ((edui_slider_s *)item)->value;
+}
+
+void cbPtlCancelColMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlcolmenu);
+    ptlcolmenu = NULL;
+    grad_item = NULL;
+    grad_alpha_item = NULL;
+}
+
+void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect;
+    i32 i;
+    f32 alpha;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlcolmenu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, cbPtlCancelColMenu, "Particle Colour");
+    if (ptlcolmenu == NULL)
+        return;
+    eduiMenuAddItem(ptlcolmenu, eduiItemGradPickCreate(0, colours, cbPtlApplyGrad, "Colour Grad"));
+    grad_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_item, effect->colour_keys[i].time,
+                            effect->colour_keys[i].red / 255.0, effect->colour_keys[i].green / 255.0,
+                            effect->colour_keys[i].blue / 255.0);
+        if (effect->colour_keys[i].time == 1.0f)
+            break;
+    }
+    if (effect->particle_type == 7)
+        eduiMenuAddItem(ptlcolmenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyGrad, "Distortion Grad"));
+    else
+        eduiMenuAddItem(ptlcolmenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyGrad, "Alpha Grad"));
+    grad_alpha_item = edui_last_item;
+    for (i = 0; i < 8; ++i) {
+        alpha = effect->alpha_keys[i].value / 255.0;
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_alpha_item, effect->alpha_keys[i].time, alpha, alpha, alpha);
+        if (effect->alpha_keys[i].time == 1.0f)
+            break;
+    }
+    if (effect->particle_type == 7) {
+        eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortX, 0.0f, 1.0f,
+                                                         effect->particle_parameter_a, "X-axis Distortion"));
+        eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortY, 0.0f, 1.0f,
+                                                         effect->particle_parameter_b, "Y-axis Distortion"));
+    }
+    eduiMenuAttach(parent, ptlcolmenu);
+    ptlcolmenu->x = parent->x + 10;
+    ptlcolmenu->y = parent->y + 40;
+}
+
+extern struct eduimenu_s *edptl_sounds_menu, *edptl_soundx_menu, *edptl_soundid_menu, *edptl_soundcontrol_menu;
+
+void edptlcbSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    u32 data, sound_index;
+    i32 sound_id, instance, index, slot;
+    edptl_soundid_menu = NULL;
+    data = item->data;
+    sound_index = data >> 16;
+    sound_id = data - (sound_index << 16);
+    if (sound_id == 9999)
+        sound_id = -1;
+    if (edpp_nearest != -1) {
+        instance = edpp_ptls[edpp_nearest].instance_id;
+        if (instance != -1)
+            debtab[debkeydata[instance].effect_index]->sound_data[sound_index * 3] = sound_id;
+    }
+    for (index = 0; index < 512; ++index) {
+        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == 99999)
+            continue;
+        debkeydata[edpp_ptls[index].instance_id].process_collision_sound = 0;
+        for (slot = 0; slot < 4; ++slot) {
+            if (debtab[debkeydata[edpp_ptls[index].instance_id].effect_index]->sound_data[slot * 3] != -1)
+                debkeydata[edpp_ptls[index].instance_id].process_collision_sound = 1;
+        }
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+void edptlcbSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
+    u32 data, sound_index;
+    i32 index, slot;
+    edptl_soundcontrol_menu = NULL;
+    data = item->data;
+    sound_index = data >> 16;
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1)
+        debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->sound_data[sound_index * 3 + 1] =
+            data - (sound_index << 16);
+    for (index = 0; index < 512; ++index) {
+        if (edpp_ptls[index].instance_id == -1 || edpp_ptls[index].instance_id == 99999)
+            continue;
+        for (slot = 0; slot < 4; ++slot) {
+            debkeydata[edpp_ptls[index].instance_id].collision_timers[slot] = 9999;
+            if (debtab[debkeydata[edpp_ptls[index].instance_id].effect_index]->sound_data[slot * 3 + 1] == 4 ||
+                debtab[debkeydata[edpp_ptls[index].instance_id].effect_index]->sound_data[slot * 3 + 1] == 3)
+                debkeydata[edpp_ptls[index].instance_id].collision_timers[slot] = 1;
+        }
+    }
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+}
+
+void edptlcbCancelSoundIDMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_soundid_menu);
+    edptl_soundid_menu = NULL;
+}
+
+void edptlcbSoundIDMenu(eduimenu_s *parent, eduiitem_s *item, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    i32 sound, selected;
+    edptl_soundid_menu = eduiMenuCreate(70, 70, 180, 200, ed_fnt, edptlcbCancelSoundIDMenu, "Sound ID");
+    if (edptl_soundid_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_soundid_menu,
+                    eduiItemCheckCreate((item->data << 16) + 9999, colours, effect->sound_data[item->data * 3] == -1, 0,
+                                        edptlcbSetSoundID, "NONE"));
+    for (sound = 0; sound < 1600; ++sound) {
+        if (SfxInfo[sound].name == NULL)
+            continue;
+        selected = effect->sound_data[item->data * 3] == sound;
+        eduiMenuAddItem(edptl_soundid_menu, eduiItemCheckCreate((item->data << 16) + sound, colours, selected, 1,
+                                                                edptlcbSetSoundID, SfxInfo[sound].name));
+        if (selected == 1)
+            edptl_soundid_menu->selected = edui_last_item;
+    }
+    eduiMenuAttach(parent, edptl_soundid_menu);
+    edptl_soundid_menu->x = parent->x + 10;
+    edptl_soundid_menu->y = parent->y + 40;
+}
+
+void edptlcbCancelSoundControlMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_soundcontrol_menu);
+    edptl_soundcontrol_menu = NULL;
+}
+
+void edptlcbSoundControlMenu(eduimenu_s *parent, eduiitem_s *item, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    edptl_soundcontrol_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edptlcbCancelSoundControlMenu, "Sound Control");
+    if (edptl_soundcontrol_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_soundcontrol_menu,
+                    eduiItemCheckCreate(item->data << 16, colours, effect->sound_data[item->data * 3 + 1] == 0, 1,
+                                        edptlcbSetSoundControl, "Off"));
+    if (edui_last_item->highlighted)
+        edptl_soundcontrol_menu->selected = edui_last_item;
+    eduiMenuAddItem(edptl_soundcontrol_menu,
+                    eduiItemCheckCreate((item->data << 16) + 1, colours, effect->sound_data[item->data * 3 + 1] == 1, 1,
+                                        edptlcbSetSoundControl, "On Edge"));
+    if (edui_last_item->highlighted)
+        edptl_soundcontrol_menu->selected = edui_last_item;
+    eduiMenuAddItem(edptl_soundcontrol_menu,
+                    eduiItemCheckCreate((item->data << 16) + 2, colours, effect->sound_data[item->data * 3 + 1] == 2, 1,
+                                        edptlcbSetSoundControl, "Off Edge"));
+    if (edui_last_item->highlighted)
+        edptl_soundcontrol_menu->selected = edui_last_item;
+    eduiMenuAddItem(edptl_soundcontrol_menu,
+                    eduiItemCheckCreate((item->data << 16) + 3, colours, effect->sound_data[item->data * 3 + 1] == 3, 1,
+                                        edptlcbSetSoundControl, "Per Particle"));
+    if (edui_last_item->highlighted)
+        edptl_soundcontrol_menu->selected = edui_last_item;
+    eduiMenuAddItem(edptl_soundcontrol_menu,
+                    eduiItemCheckCreate((item->data << 16) + 4, colours, effect->sound_data[item->data * 3 + 1] == 4, 1,
+                                        edptlcbSetSoundControl, "Continuous"));
+    if (edui_last_item->highlighted)
+        edptl_soundcontrol_menu->selected = edui_last_item;
+    eduiMenuAttach(parent, edptl_soundcontrol_menu);
+    edptl_soundcontrol_menu->x = parent->x + 10;
+    edptl_soundcontrol_menu->y = parent->y + 40;
+}
+
+void edptlcbCancelSoundXMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_soundx_menu);
+    edptl_soundx_menu = NULL;
+}
+
+void edptlcbSoundXMenu(eduimenu_s *parent, eduiitem_s *item, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    char title[16];
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    sprintf(title, "Sound %d Menu", item->data + 1);
+    edptl_soundx_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edptlcbCancelSoundXMenu, title);
+    if (edptl_soundx_menu == NULL)
+        return;
+    eduiMenuAddItem(edptl_soundx_menu, eduiItemSelCreate(item->data, colours, 0, 0, edptlcbSoundIDMenu, "Sound ID..."));
+    eduiMenuAddItem(edptl_soundx_menu,
+                    eduiItemSelCreate(item->data, colours, 0, 0, edptlcbSoundControlMenu, "Sound Control..."));
+    eduiMenuAttach(parent, edptl_soundx_menu);
+    edptl_soundx_menu->x = parent->x + 10;
+    edptl_soundx_menu->y = parent->y + 40;
+}
+
+void edptlcbCancelSoundsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(edptl_sounds_menu);
+    edptl_sounds_menu = NULL;
+}
+
+void edptlcbSoundsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    char title[16];
+    i32 i;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    edptl_sounds_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edptlcbCancelSoundsMenu, "Attached Sounds");
+    if (edptl_sounds_menu == NULL)
+        return;
+    for (i = 0; i < 4; ++i) {
+        sprintf(title, "Sound %d...", i + 1);
+        eduiMenuAddItem(edptl_sounds_menu, eduiItemSelCreate(i, colours, 0, 0, edptlcbSoundXMenu, title));
+    }
+    eduiMenuAttach(parent, edptl_sounds_menu);
+    edptl_sounds_menu->x = parent->x + 10;
+    edptl_sounds_menu->y = parent->y + 40;
+}

@@ -851,3 +851,26 @@ void __cdecl edptlcbScaleEffectMenu(eduimenu_s *parent, eduiitem_s *item, u32 bu
     edptl_scaleeffect_menu->x = (i32)((u32)parent->x + 10u);
     edptl_scaleeffect_menu->y = (i32)((u32)parent->y + 40u);
 }
+
+extern struct eduimenu_s *sscalemenu;
+
+void cbPtlChangeSScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    edptl_superscale = (i32)((edui_slider_s *)item)->value;
+}
+
+void cbPtlCancelSScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(sscalemenu);
+    sscalemenu = NULL;
+}
+
+void cbPtlSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    sscalemenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelSScaleMenu, "Super Scale");
+    if (sscalemenu == NULL)
+        return;
+    eduiMenuAddItem(sscalemenu,
+                    eduiItemSliderCreateInt(0, colours, 0, cbPtlChangeSScale, 1, 99, edptl_superscale, "Super Scale"));
+    eduiMenuAttach(parent, sscalemenu);
+    sscalemenu->x = parent->x + 10;
+    sscalemenu->y = parent->y + 40;
+}
