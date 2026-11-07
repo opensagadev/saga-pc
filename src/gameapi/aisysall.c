@@ -1956,7 +1956,7 @@ static i32 AiParseExpressionNameLoopup(char *name, f32 *float_out, i32 *int_out)
     return 0;
 }
 
-f32 AiParseExpression(char *expr) {
+__declspec(noinline) f32 AiParseExpression(char *expr) {
     f32 value;
 
     ExpressionRequiredNameLookup = 0;
@@ -12173,16 +12173,8 @@ void __cdecl xActions(NUFPAR_PC *parser) {
 
                 macro = (AIACTIONMACRO_PC *)NuLinkedListGetNext(&aiscript_load_script->action_macros, &macro->link);
             }
-            if (macro == NULL) {
-                if (AIActionDiagnosticMode == 1) {
-                    AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                            aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                        : (char *)Text_UnknownText);
-                } else {
-                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                   aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                               : (char *)Text_UnknownText);
-                }
+            if (macro != NULL) {
+                continue;
             }
         } else {
             AIACTIONDEF_PC *definition;
@@ -12228,19 +12220,20 @@ void __cdecl xActions(NUFPAR_PC *parser) {
                         }
                     }
                 }
-            } else {
-                if (NuStrChr(parser->word_buffer_ptr, '{') == NULL) {
-                    if (AIActionDiagnosticMode == 1) {
-                        AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                                aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                            : (char *)Text_UnknownText);
-                    } else {
-                        AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                       aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                   : (char *)Text_UnknownText);
-                    }
-                }
+                continue;
             }
+            if (NuStrChr(parser->word_buffer_ptr, '{') != NULL) {
+                continue;
+            }
+        }
+        if (AIActionDiagnosticMode != 1) {
+            AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                           aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                       : (char *)Text_UnknownText);
+        } else {
+            AIScriptMissingStateDiagnosticAlternate(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                    aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                                : (char *)Text_UnknownText);
         }
     }
 }
