@@ -4127,7 +4127,7 @@ void AIMoveToDestinationAvoidingCamera(AISYS_PC *system, AIPACKET_PC *packet, AP
 void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
     NUVEC difference;
     i32 node_index;
-    u8 node_index_2;
+    i32 node_index_2;
     AIPATHNODE_PC *node;
     i32 start;
     i32 index;
@@ -4136,6 +4136,7 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
     f32 distance;
     i32 angle;
     i32 angle_2;
+    i32 destination_angle;
 
     if (packet->movement_target != NULL) {
         node_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
@@ -4154,7 +4155,10 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
             if (target != packet->path_info.connection) {
                 if (packet->current_route == 0xff || (((u64)1 << packet->current_route) & (target->route_mask)) != 0 ||
                     (((u64)1 << packet->current_route) & (node->route_boundary_mask)) != 0) {
-                    packet->movement_target_direction = node_index_2 != target->node_indices[0];
+                    if (target->node_indices[0] == node_index_2)
+                        packet->movement_target_direction = 0;
+                    else
+                        packet->movement_target_direction = 1;
                     if (target->traversal_flags[packet->movement_target_direction] == 0) {
                         break;
                     }
@@ -4167,7 +4171,16 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
         packet->flags |= 0x00080000u;
         if (WithinConnection(system, &packet->terrain_origin, packet->path_info.path, packet->movement_target, checks,
                              packet->path_info.connection, packet->current_route, object->object_id, NULL,
-                             object->collision_radius, 0) == 0) {
+                             object->collision_radius, 0) != 0) {
+            AISysCharacterSetPathCnx(packet, &object->position, packet->movement_target,
+                                     packet->movement_target_direction);
+            packet->goal_path_node =
+                &packet->path_info.path
+                     ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            packet->movement_destination = packet->goal_path_node->position;
+            packet->movement_stopping_distance = 0.0f;
+            packet->movement_target = NULL;
+        } else {
             packet->movement_destination =
                 packet->path_info.path
                     ->nodes[packet->movement_target->node_indices[packet->movement_target_direction == 0]]
@@ -4179,7 +4192,8 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
                     NuVecSub(&difference, &packet->left_diversion, &object->position);
                     angle = NuAtan2D(difference.x, difference.z);
                     NuVecSub(&difference, &packet->movement_destination, &object->position);
-                    if (NuAngSub(NuAtan2D(difference.x, difference.z), angle) < 0) {
+                    destination_angle = NuAtan2D(difference.x, difference.z);
+                    if (NuAngSub(destination_angle, angle) < 0) {
                         packet->movement_destination = packet->left_diversion;
                         return;
                     }
@@ -4188,20 +4202,12 @@ void AIWander(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
                     NuVecSub(&difference, &packet->right_diversion, &object->position);
                     angle_2 = NuAtan2D(difference.x, difference.z);
                     NuVecSub(&difference, &packet->movement_destination, &object->position);
-                    if (NuAngSub(NuAtan2D(difference.x, difference.z), angle_2) > 0) {
+                    destination_angle = NuAtan2D(difference.x, difference.z);
+                    if (NuAngSub(destination_angle, angle_2) > 0) {
                         packet->movement_destination = packet->right_diversion;
                     }
                 }
             }
-        } else {
-            AISysCharacterSetPathCnx(packet, &object->position, packet->movement_target,
-                                     packet->movement_target_direction);
-            packet->goal_path_node =
-                &packet->path_info.path
-                     ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-            packet->movement_destination = packet->goal_path_node->position;
-            packet->movement_stopping_distance = 0.0f;
-            packet->movement_target = NULL;
         }
     } else {
         node_2 = &packet->path_info.path
