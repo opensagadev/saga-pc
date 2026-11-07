@@ -1558,7 +1558,7 @@ STATIC_ASSERT(offsetof(CUT_DRAW_LOCATOR_ENTRY_PC, update) == 0x10);
 extern "C" {
     i32 __cdecl NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *, f32, NUANIM_TIME2_PC *, f32 *, f32 *);
     i32 __cdecl Draw3DObjectMtx(WORLDINFO *, i32, NUMTX *);
-    static void *CutSceneFindModelPc(char *name, i32 model_only, i32 *character_id) {
+    void *CutSceneFindModelPc(char *name, i32 model_only, i32 *character_id) {
         if (character_id != NULL)
             *character_id = -1;
         if (model_only != 0) {
@@ -1763,7 +1763,7 @@ extern "C" {
                             if ((state->flags & 2) != 0)
                                 state->character_model = NULL;
                             else
-                                state->character_model = CutSceneFindModelPc(definition->name, 0, NULL);
+                                state->character_model = CutSceneFindModelPc(definition->name, state->flags & 2, NULL);
                             definition->character_model = state->character_model;
                         }
                     }
