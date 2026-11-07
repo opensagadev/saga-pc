@@ -11199,6 +11199,11 @@ address,symbol,size,ctype
 0x74dcd0,?push_back@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEXABQAUShaderParserIncludePc@@@Z,105,void __thiscall (ShaderParserIncludePc *const &)
 0x74dd40,?LoadInclude@ShaderCompilerParserPc@@QAEPAUShaderCompilerBufferAllocatorPc@@PBD@Z,432,ShaderCompilerBufferAllocatorPc *__thiscall (const char *)
 0x74def0,?ProcessDirective@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@PAH@Z,632,"void __thiscall (ShaderCompilerBufferAllocatorPc *, i32 *)"
+0x74e170,_NuRainFabsPc,18,static f32 __cdecl(f32)
+0x74e190,_NuRainProcess,2126,void __cdecl(i32)
+0x74e9e0,_NuRainSetTexture,131,"void __cdecl(f32,f32,f32,f32)"
+0x74ea70,_NuRainDrawDrop,1,"void __cdecl(i32,i32,f32,f32,i32)"
+0x74ea80,_NuRainDrawShape,1,void __cdecl(f32)
 0x0074ea90,_NuRainDraw,1,void __cdecl(i32)
 0x74ed40,_NuFmvTextureReleasePc,21,void __cdecl(void)
 0x74ed60,_NuFmvTextureRestorePc,21,void __cdecl(void)
@@ -21498,6 +21503,12 @@ address,symbol,size,ctype
 0x7ea3a0,??_C@_06ENONKJGC@ifndef?$AA@,,const char []
 0x7ea3a8,??_C@_05LOELCHJN@ifdef?$AA@,,const char []
 0x7ea3b0,??_C@_06EPMMJFDC@define?$AA@,,const char []
+0x7ea3c0,__real@40ffffe000000000,8,const f64
+0x7ea3c8,__real@42d55555,4,const f32
+0x7ea3cc,??_C@_09EKKFEKJN@DAVE_RAIN?$AA@,10,const char []
+0x7ea3d8,__real@40fe240000000000,8,const f64
+0x7ea3e0,??_C@_03LINHFLNC@cre?$AA@,4,const char []
+0x7ea3e8,__real@3f60000000000000,8,const f64
 0x7ea494,??_R4NetListenerInterface@@6B@,,
 0x7ea4a8,??_R3NetListenerInterface@@8,,
 0x7ea4b8,??_R2NetListenerInterface@@8,,
@@ -24246,6 +24257,10 @@ address,symbol,size,ctype
 0x00854320,??_R0?AV?$ShaderManagerTemplate@VNuShaderObject@@@@@8,56,
 0x00854358,??_R0?AVShaderManagerHLSL@@@8,32,
 0x8543e0,_ShaderCompilerTypeNamesPc,,
+0x8546a0,_NuRainKey,4,i32
+0x8546a4,_testrain,4,i32
+0x8546a8,_NuRainOldCameraMtx,64,NUMTX
+0x8546e8,_NuRainUVs,32,f32[8]
 0x854724,_InitOnceSelector34Pc,,i32
 0x00854728,_InitOnceCurrentDirectory,,char[]
 0x85482c,_InitOnceDvdPc,,i32
@@ -28435,6 +28450,7 @@ address,symbol,size,ctype
 0x297d6b8,_CRC16TablePC,,u32[256]
 0x297dab8,?CRC16InstancePC@@3VCRC16@@A,,CRC16
 0x297dac0,_ShaderLexicalClassesPc,,
+0x297dbc0,_NuRainFall,4,f32
 0x297dbc8,_NuFmvTextureActivePc,4,i32
 0x0297dbe0,_nuapi,144,NUAPI
 0x297dbf0,_MenuAppliedAspectPc,4,i32
@@ -28459,6 +28475,12 @@ address,symbol,size,ctype
 0x2983920,_TempSPosList,224,SOCKPOSITION_PC[4]
 0x2983a38,_TempBestSPos,4,SOCKPOSITION_PC *
 0x2983a40,_TempSLoc,8,u32[2]
+0x2983a48,_NuRainTwist,4,i32
+0x2983a4c,_NuRainYaw,4,i32
+0x2983a50,_NuRainTilt,4,i32
+0x2983a54,_NuRainPitch,4,i32
+0x2983a58,_NuRainInactive,4,i32
+0x2983a5c,_NuRainWob,4,i32
 0x2983a60,_NuWindWave,,i32
 0x2983a64,_NuWindDir,,i32
 0x2983a68,_NuWindDir2,,i32
