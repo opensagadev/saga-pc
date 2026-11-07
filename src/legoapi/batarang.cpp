@@ -28,40 +28,20 @@ i32 __cdecl Batarang_StartTargetting(GAMEOBJECT *object) {
     return 1;
 }
 
-typedef struct BATARANG_LOST_TARGET_PC {
-    void *object;
-    u8 type;
-    u8 lost;
-    u8 opaque_06[14];
-} BATARANG_LOST_TARGET_PC;
-STATIC_ASSERT(sizeof(BATARANG_LOST_TARGET_PC) == 0x14);
-STATIC_ASSERT(offsetof(BATARANG_LOST_TARGET_PC, object) == 0);
-STATIC_ASSERT(offsetof(BATARANG_LOST_TARGET_PC, lost) == 5);
-
-typedef struct BATARANG_LOST_READER_PC {
-    BATARANG_LOST_TARGET_PC targets[5];
-    u8 opaque_64[0x18];
-    u8 active;
-    u8 in_flight;
-    u8 opaque_7e[6];
-    GAMEOBJECT *owner;
-    u8 opaque_88[0x24];
-    i16 cooldown;
-    u8 opaque_ae[6];
-} BATARANG_LOST_READER_PC;
-STATIC_ASSERT(sizeof(BATARANG_LOST_READER_PC) == 0xb4);
-STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, active) == 0x7c);
-STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, in_flight) == 0x7d);
-STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, owner) == 0x84);
-STATIC_ASSERT(offsetof(BATARANG_LOST_READER_PC, cooldown) == 0xac);
+STATIC_ASSERT(sizeof(BATARANG_TARGET_s) == 0x14);
+STATIC_ASSERT(offsetof(BATARANG_TARGET_s, lost) == 5);
+STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, active) == 0x7c);
+STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, flight_state) == 0x7d);
+STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, owner) == 0x84);
+STATIC_ASSERT(offsetof(PLAYER_BATARANG_SLOT_PC, cooldown) == 0xac);
 STATIC_ASSERT(sizeof(PLAYER_BATARANG_SLOT_PC) == 0xb4);
 
 void __cdecl Batarangs_CheckLostData(void *data) {
-    BATARANG_LOST_READER_PC *batarang = (BATARANG_LOST_READER_PC *)BatarangPacketsPc;
+    PLAYER_BATARANG_SLOT_PC *batarang = BatarangPacketsPc;
     i32 i, j, k;
     for (i = 0; i < 8; ++i, ++batarang) {
         if (batarang->owner == data) {
-            batarang->in_flight = 0;
+            batarang->flight_state.in_flight = 0;
             batarang->active = 0;
             batarang->owner = NULL;
             batarang->cooldown = 0x32;
@@ -70,11 +50,11 @@ void __cdecl Batarangs_CheckLostData(void *data) {
                 if (batarang->targets[j].object != data)
                     continue;
                 if (data == batarang->owner) {
-                    batarang->in_flight = 0;
+                    batarang->flight_state.in_flight = 0;
                     batarang->active = 0;
                     batarang->owner = NULL;
                     batarang->cooldown = 0x32;
-                } else if (batarang->in_flight != 0) {
+                } else if (batarang->flight_state.in_flight != 0) {
                     batarang->targets[j].lost = 1;
                 } else {
                     for (k = j; k < batarang->active - 1; ++k)
@@ -106,13 +86,13 @@ extern "C" void Batarang_GetSightInfo(i32 character, i32 *red, i32 *green, i32 *
 }
 
 void __cdecl Batarangs_Reset(void) {
-    BATARANG_LOST_READER_PC *slot = (BATARANG_LOST_READER_PC *)BatarangPacketsPc;
     i32 i;
     for (i = 0; i < 8; ++i) {
-        slot[i].in_flight = 0;
-        slot[i].active = 0;
-        slot[i].owner = NULL;
-        slot[i].cooldown = 50;
+        PLAYER_BATARANG_SLOT_PC *slot = &BatarangPacketsPc[i];
+        slot->flight_state.in_flight = 0;
+        slot->active = 0;
+        slot->owner = NULL;
+        slot->cooldown = 50;
     }
 }
 
