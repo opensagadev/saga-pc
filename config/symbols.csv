@@ -9893,6 +9893,15 @@ address,symbol,size,ctype
 0x6bd5e0,?SetInitialPosition@Placeable@@UAEXPBUVuVec@@@Z,79,
 0x6bd630,?GetCurrentPosition@Placeable@@UBEPBUVuVec@@XZ,18,
 0x6bd650,?SetCurrentPosition@Placeable@@UAEXPBUVuVec@@@Z,79,
+0x6bd980,?IsEditorObject@PlaceableHelper@@QAEHAAUClassObject@@@Z,66,
+0x6bd9d0,??0PlaceableNameControl@@QAE@XZ,16,
+0x6bd9e0,??3PlaceableNameControl@@SAXPAX@Z,18,
+0x6bda00,??1PlaceableNameControl@@UAE@XZ,7,
+0x6bda10,?cbChanged@PlaceableNameControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,227,
+0x6bdb00,?cbSelectObject@PlaceableNameControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,70,
+0x6bdb50,?cbButton@PlaceableNameControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,455,
+0x6bdd20,?Process@PlaceableNameControl@@UAEXAAUEdInputContext@@@Z,194,
+0x6bddf0,?Render@PlaceableNameControl@@UAEXXZ,1,
 0x6bde00,??1PropertyMenu@@QAE@XZ,68,
 0x6bdf00,?SelectAttr@PropertyMenu@@QAEXH@Z,53,
 0x6bdf40,?Initialise@PropertyTool@@UAEXAATvariptr_u@@0H@Z,3,
@@ -10039,6 +10048,8 @@ address,symbol,size,ctype
 0x6c4600,?SelectAxis@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@11PAUVuMtx@@@Z,908,
 0x6c49b0,?DrawAxis@EdManipulator@@QAEXAAUVuVec@@PAUVuMtx@@@Z,2004,
 0x6c5190,?SelectRotator@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@1@Z,1483,
+0x6c5760,??_EPlaceableNameControl@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceableNameControl@@UAEPAXI@Z; no independent body
+0x6c5760,??_GPlaceableNameControl@@UAEPAXI@Z,35,
 0x6c58a0,?SelectAttr@PropertyTool@@QAEXH@Z,76,
 0x6c5920,?AddPropertyMenuItems@PropertyTool@@QAEXPAUeduimenu_s@@PAUEdClass@@PAXPAUeduiitem_s@@@Z,244,
 0x6c5a20,?AutoLocateMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,197,
@@ -10204,6 +10215,7 @@ address,symbol,size,ctype
 0x6d05e0,?cbEdLevelSave@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,436,
 0x6d07a0,?cbEdLevelSettingsMenu@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,137,
 0x6d0830,?CreateMenu@LevelEditor@@QAEXXZ,305,
+0x6d0970,?AddMenuItem@PlaceableNameControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,193,
 0x6d0a40,?ProcessMenu@PropertyTool@@QAEHAAUEdInputContext@@@Z,913,
 0x6d0de0,?Process@PropertyTool@@UAEHAAUEdInputContext@@@Z,33,
 0x6d0e10,?Render@PropertyTool@@UAEXXZ,91,
@@ -19696,6 +19708,7 @@ address,symbol,size,ctype
 0x76f8a0,??_7EdManMove@@6B@,,
 0x76f8ac,??_7EdManRotate@@6B@,,
 0x76f8b8,??_7EdManScale@@6B@,,
+0x76f8c4,??_7PlaceableNameControl@@6B@,,
 0x76f8dc,??_C@_0N@JCLCLEOM@Snap?5Terrain?$AA@,13,char []
 0x76f8ec,??_C@_0O@BHGPKLAP@Cursor?5Radius?$AA@,14,char []
 0x76f954,??_7SplinePointBlock@@6B@,,
@@ -22594,6 +22607,10 @@ address,symbol,size,ctype
 0x7ebc74,??_R3EdManScale@@8,,
 0x7ebc84,??_R2EdManScale@@8,,
 0x7ebc90,??_R1A@?0A@EA@EdManScale@@8,,
+0x7ebcac,??_R4PlaceableNameControl@@6B@,,
+0x7ebcc0,??_R3PlaceableNameControl@@8,,
+0x7ebcd0,??_R2PlaceableNameControl@@8,,
+0x7ebce0,??_R1A@?0A@EA@PlaceableNameControl@@8,,
 0x7ebd48,??_R4SplinePointBlock@@6B@,,
 0x7ebd5c,??_R3SplinePointBlock@@8,,
 0x7ebd6c,??_R2SplinePointBlock@@8,,
@@ -29253,6 +29270,7 @@ address,symbol,size,ctype
 0x2973ab4,_pad_disabled,4,i32
 0x2973ab8,_edlevel_mouseandkeyboard,4,i32
 0x2973ac0,?CurrentLedFile@Placeable@@2FA,,i16
+0x2973ac4,_edObjectNameControl,4,EdStringControl *
 0x2973ac8,?EdType_Char@@3HA,4,i32
 0x2973acc,?EdType_Short@@3HA,,i32
 0x2973ad0,?EdType_Int@@3HA,4,i32

@@ -753,6 +753,25 @@ class EdMatrixControl : public EdControl {
     eduiitem_s *components[9];
 };
 STATIC_ASSERT(sizeof(EdMatrixControl) == 0x34);
+
+/* A string member naming a placeable: the button lists every placeable,
+ * and holding the pick input over an editor object names that object. */
+class PlaceableNameControl : public EdStringControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(PlaceableNameControl));
+    }
+    PlaceableNameControl();
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void Process(EdInputContext &input);
+    virtual void Render();
+    static void cbButton(eduimenu_s *parent, eduiitem_s *item, u32);
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbSelectObject(eduimenu_s *, eduiitem_s *item, u32);
+
+    i32 reserved_10;
+};
+STATIC_ASSERT(sizeof(PlaceableNameControl) == 0x14);
 STATIC_ASSERT(sizeof(EdColourControl) == 0x10);
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
@@ -977,17 +996,20 @@ class PlaceableHelper {
     i32 iteration_object_type;
     ObjectType object_types[16];
 
+    i32 IsEditorObject(ClassObject &object);
+
     __forceinline void *GetNextObject(void *object) {
+        void *next = NULL;
         if (object == NULL)
             iteration_object_type = 0;
         while (iteration_object_type < object_type_count) {
-            void *next = object_types[iteration_object_type].object_interface->GetNextObject(object);
+            next = object_types[iteration_object_type].object_interface->GetNextObject(object);
             if (next != NULL)
-                return next;
+                break;
             iteration_object_type++;
             object = NULL;
         }
-        return NULL;
+        return next;
     }
 };
 STATIC_ASSERT(sizeof(PlaceableHelper) == 0x88);
@@ -1023,6 +1045,7 @@ static edui_prop_s *edBitItem;
 static i32 edBitIndex;
 
 static EdColourControl *edColourControl;
+static EdStringControl *edObjectNameControl;
 
 EdControl::~EdControl() {
 }
@@ -2551,6 +2574,83 @@ void Placeable::SetCurrentPosition(const VuVec *position) {
     } else {
         NuMtxSetTranslation(&matrix, const_cast<NUVEC *>(&position->xyz));
     }
+}
+
+/* True for an object of one of the registered placeable classes. */
+i32 PlaceableHelper::IsEditorObject(ClassObject &object) {
+    if (object.object != NULL) {
+        for (i32 index = 0; index < object_type_count; index++) {
+            if (object_types[index].object_interface->object_class == object.ed_class)
+                return 1;
+        }
+    }
+    return 0;
+}
+
+PlaceableNameControl::PlaceableNameControl() : reserved_10(0) {
+}
+
+/* Accepts a typed name only when a placeable has it. */
+void PlaceableNameControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    EdStringControl *control = static_cast<EdStringControl *>(item->data_ptr);
+    for (Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL); object != NULL;
+         object = (Placeable *)thePlaceableHelper.GetNextObject(object)) {
+        if (NuStrICmp(reinterpret_cast<edui_prop_s *>(item)->property_text, (char *)object->GetName()) == 0) {
+            eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), (char *)object->GetName());
+            control->SetVal(object->GetName());
+            return;
+        }
+    }
+}
+
+void PlaceableNameControl::cbSelectObject(eduimenu_s *, eduiitem_s *item, u32) {
+    if (edObjectNameControl != NULL) {
+        Placeable *object = static_cast<Placeable *>(item->data_ptr);
+        const char *name = object != NULL ? object->GetName() : "None";
+        eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(edObjectNameControl->item), (char *)name);
+        edObjectNameControl->SetVal(name);
+    }
+}
+
+/* Opens a menu of every placeable, with the current name selected. */
+void PlaceableNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
+    edObjectNameControl = static_cast<EdStringControl *>(item->data_ptr);
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, NULL);
+    if (menu == NULL)
+        return;
+    char value[128];
+    edObjectNameControl->GetVal(value, sizeof(value));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, item->colours, 0, 0, cbSelectObject, "None"));
+    for (Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL); object != NULL;
+         object = (Placeable *)thePlaceableHelper.GetNextObject(object)) {
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate((u32)object, item->colours, 0, 0, cbSelectObject, (char *)object->GetName()));
+        if (NuStrICmp(value, (char *)object->GetName()) == 0)
+            menu->selected = edui_last_item;
+    }
+    menu->flags |= 1;
+    eduiMenuAttach(parent, menu);
+    eduiMenuFitWidth(menu, 5);
+    reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
+}
+
+/* While the pick input is held the hovered object is highlighted green when
+ * it is a placeable (red otherwise); pressing select takes its name. */
+void PlaceableNameControl::Process(EdInputContext &input) {
+    if (input.GetHold(22) != 0.0f) {
+        ClassObject object = theClassEditor.current_object;
+        if (thePlaceableHelper.IsEditorObject(object)) {
+            theClassEditor.field_3c = 0xff008000;
+            if (input.GetPress(25) != 0.0f)
+                SetVal(static_cast<Placeable *>(object.object)->GetName());
+        } else {
+            theClassEditor.field_3c = 0xff000080;
+        }
+    }
+}
+
+void PlaceableNameControl::Render() {
 }
 
 /* Deletes the controls of the menu's items with the menu. */
@@ -6787,6 +6887,20 @@ void EdStringControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
             eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbPress, 1, member->name, value);
         eduiMenuAddItem(menu, control->item);
     }
+}
+
+void PlaceableNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    PlaceableNameControl *control =
+        new (theMemoryManager.AllocPool(sizeof(PlaceableNameControl), 1)) PlaceableNameControl;
+    if (control == NULL)
+        return;
+    control->reference = member;
+    control->object = target;
+    char value[128];
+    control->GetVal(value, sizeof(value));
+    control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, EdControl::cbSelected, cbChanged, cbButton, 1,
+                                       member->name, value);
+    eduiMenuAddItem(menu, control->item);
 }
 
 void EdColourControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
