@@ -3141,29 +3141,31 @@ void __cdecl NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *first, NUANI
                                               NUMTX *matrix, NUHGOBJ_JOINT_OVERRIDE_PC *override_anim) {
     f32 inverse_blend = 1.0f - blend;
     u8 flags = override_anim ? override_anim->flags_pc : 0;
-    u8 rotate = flags & 1, rescale = flags & 4, translate = flags & 2;
     NUANGVEC angles;
     f32 r0[3], r1[3], s0[3], s1[3];
     NUVEC translation, temporary;
     i32 component;
-    if ((first->flags & 1) || (second->flags & 1) || rotate) {
+    if ((first->flags & 1) || (second->flags & 1) || (flags & 1)) {
         for (component = 0; component < 3; ++component) {
-            r0[component] = first->curves[component + 3] ? NuAnimCurveCalcVal2(first->curves[component + 3], first_time)
-                                                         : first->constants[component + 3];
-            r1[component] = second->curves[component + 3]
-                                ? NuAnimCurveCalcVal2(second->curves[component + 3], second_time)
-                                : second->constants[component + 3];
+            if (first->curves[component + 3] != NULL)
+                r0[component] = NuAnimCurveCalcVal2(first->curves[component + 3], first_time);
+            else
+                r0[component] = first->constants[component + 3];
+            if (second->curves[component + 3] != NULL)
+                r1[component] = NuAnimCurveCalcVal2(second->curves[component + 3], second_time);
+            else
+                r1[component] = second->constants[component + 3];
         }
-        r0[0] -= (f64)r0[0] - r1[0] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
-        r1[0] -= (f64)r1[0] - r0[0] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
-        r0[1] -= (f64)r0[1] - r1[1] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
-        r1[1] -= (f64)r1[1] - r0[1] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
-        r0[2] -= (f64)r0[2] - r1[2] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
-        r1[2] -= (f64)r1[2] - r0[2] > 3.1415927410125732 ? 6.2831854820251465 : 0.0f;
+        r0[0] -= ((f64)r0[0] - r1[0] > 3.1415927410125732) * 6.2831854820251465;
+        r1[0] -= ((f64)r1[0] - r0[0] > 3.1415927410125732) * 6.2831854820251465;
+        r0[1] -= ((f64)r0[1] - r1[1] > 3.1415927410125732) * 6.2831854820251465;
+        r1[1] -= ((f64)r1[1] - r0[1] > 3.1415927410125732) * 6.2831854820251465;
+        r0[2] -= ((f64)r0[2] - r1[2] > 3.1415927410125732) * 6.2831854820251465;
+        r1[2] -= ((f64)r1[2] - r0[2] > 3.1415927410125732) * 6.2831854820251465;
         r0[0] = r0[0] * inverse_blend + r1[0] * blend;
         r0[1] = r0[1] * inverse_blend + r1[1] * blend;
         r0[2] = r0[2] * inverse_blend + r1[2] * blend;
-        if (rotate) {
+        if (flags & 1) {
             r0[0] += override_anim->rotation.x;
             r0[1] += override_anim->rotation.y;
             r0[2] += override_anim->rotation.z;
@@ -3207,18 +3209,21 @@ void __cdecl NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *first, NUANI
         NuMtxSetIdentity(matrix);
     if ((first->flags & 0x20) || (second->flags & 0x20))
         NuMtxMulRVU0(matrix, matrix, &joint->bind_matrix);
-    if ((first->flags & 8) || (second->flags & 8) || rescale) {
+    if ((first->flags & 8) || (second->flags & 8) || (flags & 4)) {
         for (component = 0; component < 3; ++component) {
-            s0[component] = first->curves[component + 6] ? NuAnimCurveCalcVal2(first->curves[component + 6], first_time)
-                                                         : first->constants[component + 6];
-            s1[component] = second->curves[component + 6]
-                                ? NuAnimCurveCalcVal2(second->curves[component + 6], second_time)
-                                : second->constants[component + 6];
+            if (first->curves[component + 6] != NULL)
+                s0[component] = NuAnimCurveCalcVal2(first->curves[component + 6], first_time);
+            else
+                s0[component] = first->constants[component + 6];
+            if (second->curves[component + 6] != NULL)
+                s1[component] = NuAnimCurveCalcVal2(second->curves[component + 6], second_time);
+            else
+                s1[component] = second->constants[component + 6];
         }
         scale->x = blend * s0[0] + inverse_blend * s1[0];
         scale->y = blend * s0[1] + inverse_blend * s1[1];
         scale->z = blend * s0[2] + inverse_blend * s1[2];
-        if (rescale) {
+        if (flags & 4) {
             scale->x += override_anim->scale_pc.x;
             scale->y += override_anim->scale_pc.y;
             scale->z += override_anim->scale_pc.z;
@@ -3241,19 +3246,17 @@ void __cdecl NuAnimCurveSetApplyBlendToJoint2(NUANIM_LEGACY_SET_PC *first, NUANI
         scale->y *= temporary.y;
         scale->z *= temporary.z;
     }
-    translation.x =
-        (first->curves[0] ? NuAnimCurveCalcVal2(first->curves[0], first_time) : first->constants[0]) * inverse_blend;
-    translation.x +=
-        (second->curves[0] ? NuAnimCurveCalcVal2(second->curves[0], second_time) : second->constants[0]) * blend;
-    translation.y =
-        (first->curves[1] ? NuAnimCurveCalcVal2(first->curves[1], first_time) : first->constants[1]) * inverse_blend;
-    translation.y +=
-        (second->curves[1] ? NuAnimCurveCalcVal2(second->curves[1], second_time) : second->constants[1]) * blend;
-    translation.z =
-        (first->curves[2] ? NuAnimCurveCalcVal2(first->curves[2], first_time) : first->constants[2]) * inverse_blend;
-    translation.z +=
-        (second->curves[2] ? NuAnimCurveCalcVal2(second->curves[2], second_time) : second->constants[2]) * blend;
-    if (translate) {
+    for (component = 0; component < 3; ++component) {
+        (&translation.x)[component] =
+            (first->curves[component] ? NuAnimCurveCalcVal2(first->curves[component], first_time)
+                                      : first->constants[component]) *
+            inverse_blend;
+        (&translation.x)[component] +=
+            (second->curves[component] ? NuAnimCurveCalcVal2(second->curves[component], second_time)
+                                       : second->constants[component]) *
+            blend;
+    }
+    if (flags & 2) {
         translation.x += override_anim->translation.x;
         translation.y += override_anim->translation.y;
         translation.z += override_anim->translation.z;
