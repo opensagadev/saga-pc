@@ -217,3 +217,25 @@ void __cdecl NuVpInit(void) {
     NuVpDirtyPc = 1;
     NuVpUpdate();
 }
+
+typedef struct screengrab_tile_params_pc_s SCREENGRAB_TILE_PARAMS_PC;
+
+void __cdecl NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS_PC *params, i32 tiles, f32 b, f32 a, f32 c) {
+    (void)params;
+    (void)tiles;
+    (void)b;
+    (void)a;
+    (void)c;
+}
+
+void __cdecl NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS_PC *params) {
+    (void)params;
+}
+
+void __cdecl NuRndrScreenGrabTileBegin(void **tile) {
+    *tile = NULL;
+}
+
+void __cdecl NuRndrScreenGrabTileEnd(void **tile) {
+    (void)tile;
+}

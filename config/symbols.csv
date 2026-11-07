@@ -4403,6 +4403,7 @@ address,symbol,size,ctype
 0x565820,_InitStillRender,143,"void __cdecl(VARIPTR *, VARIPTR)"
 0x5658e0,_DrawPauseScreenWipe,681,void __cdecl(void)
 0x00565ba0,_GrabStillScreen,51,void __cdecl (void)
+0x565be0,_NeedScreenGrab,14,
 0x565bf0,_IsGrabbingScreen,6,u8 __cdecl(void)
 0x565c00,_DrawStillScreen,247,
 0x565d00,_DrawPauseFade,114,void __cdecl (void)
@@ -6614,6 +6615,7 @@ address,symbol,size,ctype
 0x5ec590,_WindShear,143,"void __cdecl (NUMTX *, NUMTX *, i32, i32)"
 0x5ec620,_NuLightSpeedBlur,130,
 0x5ec6b0,_NuRndrInitGeneric,162,void __cdecl NuRndrInitGeneric(void)
+0x5ec760,_NuRndrHighResScreenGrab,2639,"i32 __cdecl(char *, f32, f32, f32, f32, i32)"
 0x005ed300,_NuCameraSetVPortClipMtx,282,"void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
 0x005ed420,_NuCameraSetScissorClipMtx,274,"void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
 0x005ed540,_NuCameraSetEx,1105,"void __cdecl (NUCAMERA *, i32)"
@@ -6864,6 +6866,10 @@ address,symbol,size,ctype
 0x5fee80,_NuRndrAddShadow,104,"void __cdecl(NUVEC *,f32,i32,i32,i32,i32)"
 0x005feef0,_NuRndrShadowInit,5,void __cdecl(u8 *)
 0x005fef60,_NuLightSpotFadeSet,1,void __cdecl(u32)
+0x5ff040,_NuRndrScreenGrabTileInit,1,"void __cdecl(SCREENGRAB_TILE_PARAMS_PC *, i32, f32, f32, f32)"
+0x5ff050,_NuRndrScreenGrabTileDeInit,1,"void __cdecl(SCREENGRAB_TILE_PARAMS_PC *)"
+0x5ff060,_NuRndrScreenGrabTileBegin,11,"void __cdecl(void **)"
+0x5ff070,_NuRndrScreenGrabTileEnd,1,"void __cdecl(void **)"
 0x5ff2d0,_NuVpBuildScalingTemplatePc,189,
 0x5ff390,_NuVpUpdate,715,
 0x5ff660,_RenderPostViewportSetPc,227,"void __cdecl(f32,f32,f32,f32,f32,f32,f32,f32)"
@@ -17696,6 +17702,7 @@ address,symbol,size,ctype
 0x7654b0,__real@40119999a0000000,8,const f64
 0x7654b8,__real@4002666660000000,8,const f64
 0x7654c0,__real@400922d0e0000000,8,const f64
+0x7654c8,__real@bfc0000000000000,8,const f64
 0x7654d0,??_C@_0L@LJGGLKGH@?$CFs?$CF03d?4bmp?$AA@,11,char []
 0x7654dc,??_C@_06PCEOMGLN@?$CFs?4bmp?$AA@,7,char []
 0x7654e4,??_C@_08HNEBGONB@?$CFs?$CFd?4bmp?$AA@,9,char []
@@ -23516,6 +23523,7 @@ address,symbol,size,ctype
 0x80b6d8,_global_windscale,,f32
 0x80b6dc,_global_windspeed,,f32
 0x80b6e8,_NuLightSpeedBlurEnabledPc,4,writable i32 native initial1
+0x80b6ec,_dump_state,4,i32
 0x80b6f4,_VisibilityEvaluateEnabledPc,,i32
 0x80b6f8,_VisibilityOcclusionEnabledPc,,i32
 0x0080b6fc,_cam_axes,12,NUVEC
@@ -26457,6 +26465,7 @@ address,symbol,size,ctype
 0x950754,_RenderBackdropBottomGPc,,f32
 0x950758,_RenderBackdropWaitPc,,f32
 0x95075c,_RenderBackdropBlackPc,,i32
+0x950760,_ScreenGrabNeededPc,,u8
 0x00950764,_screendump,4,i32
 0x00950768,_pause_rndr_on,4,i32
 0x95076c,_GrabScreenWhenFadingPc,,i32
@@ -27033,6 +27042,7 @@ address,symbol,size,ctype
 0x973930,_RenderFramePausedPc,,i32
 0x973944,_RendererZClearMaterialPc,,NUMTL *
 0x973948,_RendererAlphaMaskMaterialPc,,NUMTL *
+0x97394c,_NuRndrDoingScreenGrab,4,i32
 0x97395c,_VisibilityLoadedOcclusionPc,,i32
 0x973960,_VisibilityCameraLockPc,,i32
 0x973964,_NuCameraMode,,
@@ -27115,6 +27125,15 @@ address,symbol,size,ctype
 0x0097ae08,_ANI3_EVAL_SCALE_ARRAY,,NUVEC[]
 0x97ba08,_NuLightSpeedBlurViewProjectionPc,64,private NUMTX zero
 0x97ba48,_NuLightSpeedBlurPreviousViewProjectionPc,64,private NUMTX zero
+0x97ba88,?xOffsetHack@?1??NuRndrHighResScreenGrab@@9@9,4,i32
+0x97ba8c,?delay@?1??NuRndrHighResScreenGrab@@9@9,4,i32
+0x97ba90,?header_size@?1??NuRndrHighResScreenGrab@@9@9,4,i32
+0x97ba94,?xPos@?1??NuRndrHighResScreenGrab@@9@9,4,f32
+0x97ba98,?yPos@?1??NuRndrHighResScreenGrab@@9@9,4,f32
+0x97ba9c,?fh@?1??NuRndrHighResScreenGrab@@9@9,4,NUFILE
+0x97baa0,?params@?1??NuRndrHighResScreenGrab@@9@9,6,SCREENGRAB_TILE_PARAMS_PC
+0x97baa8,?xTiles@?1??NuRndrHighResScreenGrab@@9@9,4,f32
+0x97baac,?yTiles@?1??NuRndrHighResScreenGrab@@9@9,4,f32
 0x0097bab0,_NuCameraScissorProjectionScratch,64,NUMTX
 0x97baf0,?col@?1??DrawAlphaImage@@9@9,,i32
 0x97baf4,?row@?1??DrawAlphaImage@@9@9,,i32

@@ -1,5 +1,7 @@
 #include "saga.h"
 
+#include <stdio.h>
+
 typedef struct material_cleanup_flags_pc_s {
     u16 flags;
 } MATERIAL_CLEANUP_FLAGS_PC;
@@ -325,6 +327,201 @@ void __cdecl NuRndrInitGeneric(void) {
         AnimationDiagnosticNoOpPc();
     numtl_renderplane = saved_plane;
     RenderPostViewportResetPc();
+}
+
+typedef struct screengrab_tile_params_pc_s {
+    i8 channels[4];
+    u16 width;
+} SCREENGRAB_TILE_PARAMS_PC;
+STATIC_ASSERT(offsetof(SCREENGRAB_TILE_PARAMS_PC, width) == 4);
+
+void __cdecl NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS_PC *params, i32 tiles, f32 b, f32 a, f32 c);
+void __cdecl NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS_PC *params);
+void __cdecl NuRndrScreenGrabTileBegin(void **tile);
+void __cdecl NuRndrScreenGrabTileEnd(void **tile);
+void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
+                                     f32 dest_y, f32 dest_right, f32 dest_bottom);
+extern i32 NuRndrDoingScreenGrab;
+
+static i32 dump_state = -1;
+
+i32 __cdecl NuRndrHighResScreenGrab(char *prefix, f32 scale, f32 a, f32 b, f32 c, i32 number) {
+    static f32 yTiles, xTiles;
+    static SCREENGRAB_TILE_PARAMS_PC params;
+    static NUFILE fh;
+    static f32 yPos, xPos;
+    static i32 header_size, delay, xOffsetHack;
+    char path[256];
+    BITMAPFILEHEADER file_header;
+    BITMAPINFOHEADER info_header;
+    void *tile = NULL;
+    u8 padding = 0;
+    f32 remainder;
+    f32 tiles;
+    f32 w, h;
+    u8 *pixels;
+    u8 *data;
+    i32 bytes, width, height, y;
+    i64 offset;
+
+    remainder = NuFmod(scale, 0.5f);
+    scale -= remainder;
+    if (remainder > 0.25f)
+        scale += 0.5;
+    if (scale < 0.5f)
+        scale = 0.5f;
+    else if (scale > 4.0f)
+        scale = 4.0f;
+    tiles = (f32)(scale / 0.75);
+    yTiles = (f32)(i32)tiles;
+    if (tiles > yTiles)
+        yTiles += 1.0;
+    xTiles = yTiles;
+    if (dump_state == -1) {
+        NuRndrDoingScreenGrab = 1;
+        NuRndrScreenGrabTileInit(&params, (i32)(yTiles * xTiles), b, a, c);
+        if (number >= 0) {
+            sprintf(path, "%s%d.bmp", prefix, number);
+        } else {
+            i32 index = 0;
+            sprintf(path, "%s.bmp", prefix);
+            while (NuFileSize(path) > 0)
+                sprintf(path, "%s%03d.bmp", prefix, index++);
+        }
+        file_header.bfType = 0x4d42;
+        file_header.bfSize = PS2_REZ_W * PS2_REZ_H * 12 + 0x36;
+        file_header.bfReserved1 = 0;
+        file_header.bfReserved2 = 0;
+        file_header.bfOffBits = 0x36;
+        info_header.biSize = 0x28;
+        info_header.biWidth = (u32)(PS2_REZ_W * scale);
+        info_header.biHeight = (u32)(scale * PS2_REZ_H);
+        info_header.biPlanes = 1;
+        info_header.biBitCount = 0x18;
+        info_header.biCompression = 0;
+        info_header.biSizeImage = info_header.biWidth * info_header.biHeight * 3;
+        info_header.biXPelsPerMeter = 1;
+        info_header.biYPelsPerMeter = 1;
+        info_header.biClrUsed = 0;
+        info_header.biClrImportant = 0;
+        fh = NuFileOpen(path, 1);
+        if (fh == 0) {
+            NuRndrScreenGrabTileDeInit(&params);
+            dump_state = -1;
+            xTiles = yTiles = xPos = yPos = 0.0f;
+            RenderPostViewportResetPc();
+            return 0;
+        }
+        NuFileWrite(fh, &file_header, sizeof(file_header));
+        NuFileWrite(fh, &info_header, sizeof(info_header));
+        NuFileSeek(fh, info_header.biSizeImage - 1, 1);
+        NuFileWrite(fh, &padding, 1);
+        yPos = xPos = 0.0f;
+        header_size = file_header.bfOffBits;
+        dump_state = 0;
+        delay = 3;
+        xOffsetHack = 0;
+        h = (f32)PS2_VREZ_H;
+        w = (f32)PS2_VREZ_W;
+        {
+            f32 sy = h * yPos * 0.75;
+            f32 border_y = -0.125 * h;
+            f32 sx = w * xPos * 0.75;
+            f32 border_x = -0.125 * w;
+            RenderPostViewportSetPc((sx + border_x) / scale, (sy + border_y) / scale, (w + sx + border_x) / scale,
+                                    (h + sy + border_y) / scale, 0.0f, 0.0f, w, h);
+        }
+        return 1;
+    }
+    if (delay != 0) {
+        --delay;
+        return 1;
+    }
+    NuRndrScreenGrabTileBegin(&tile);
+    if (tile == NULL) {
+        NuRndrScreenGrabTileDeInit(&params);
+        dump_state = -1;
+        NuFileClose(fh);
+        xTiles = yTiles = xPos = yPos = 0.0f;
+        RenderPostViewportResetPc();
+        return 0;
+    }
+    pixels = (u8 *)tile;
+    if (params.channels[3] != -1 || params.channels[0] != 0 || params.channels[1] != 1 || params.channels[2] != 2) {
+        u8 *out = pixels;
+        i32 x;
+        bytes = params.channels[3] != -1 ? 4 : 3;
+        for (y = 0; y < PS2_REZ_H; ++y) {
+            for (x = 0; x < bytes * PS2_REZ_W; x += bytes) {
+                u8 rgba[4];
+                u8 *in = (u8 *)tile + params.width * bytes * y + x;
+                rgba[0] = in[0];
+                rgba[1] = in[1];
+                rgba[2] = in[2];
+                rgba[3] = in[3];
+                out[0] = rgba[params.channels[0]];
+                out[1] = rgba[params.channels[1]];
+                out[2] = rgba[params.channels[2]];
+                out += 3;
+            }
+        }
+    }
+    w = (f32)PS2_REZ_W;
+    h = (f32)PS2_REZ_H;
+    width = (i32)(w * 0.75);
+    height = (i32)(h * 0.75);
+    if (xPos == xTiles - 1.0f)
+        width = (i32)(scale * w - (xTiles - 1.0f) * 0.75 * w);
+    if (yPos == yTiles - 1.0f)
+        height = (i32)(scale * h - (yTiles - 1.0f) * 0.75 * h);
+    data = pixels + (u32)(xOffsetHack * 3 * w / PS2_VREZ_W * scale) - (u32)(params.width * -3.0 * 0.125 * h) -
+           (u32)(w * 0.125 * 3.0);
+    if (yPos == yTiles - 1.0f)
+        data += (u32)((h * 0.75 - height) * w * 3.0);
+    offset = (i64)(i32)((scale * h - yPos * 0.75 * h) * w * scale * 3.0) - (i32)(height * PS2_REZ_W * scale * 3.0) +
+             (i32)(xPos * 0.75 * w * 3.0) + header_size;
+    for (y = 0; y < height; ++y) {
+        NuFileSeek(fh, offset, 0);
+        offset += (i32)(PS2_REZ_W * scale * 3.0);
+        NuFileWrite(fh, data, width * 3);
+        data += params.width * 3;
+    }
+    NuRndrScreenGrabTileEnd(&tile);
+    ++dump_state;
+    if (yTiles * xTiles > dump_state) {
+        f32 left, right, x0, y0;
+        xPos += 1.0f;
+        if (xPos >= xTiles) {
+            xPos = 0.0f;
+            yPos += 1.0f;
+        }
+        w = (f32)PS2_VREZ_W;
+        x0 = (f32)(w * xPos * 0.75);
+        left = (f32)((-0.125 * w + x0) / scale);
+        right = (f32)((x0 + w + -0.125 * w) / scale);
+        if (right > w) {
+            xOffsetHack = (i32)(right - w);
+            left -= xOffsetHack;
+            right = w;
+        } else {
+            xOffsetHack = 0;
+        }
+        h = (f32)PS2_VREZ_H;
+        y0 = (f32)(h * yPos * 0.75);
+        RenderPostViewportSetPc(left, (f32)((y0 + -0.125 * h) / scale), right, (f32)((h + y0 + -0.125 * h) / scale),
+                                0.0f, 0.0f, w, h);
+        delay = 3;
+        return 1;
+    }
+    NuRndrScreenGrabTileDeInit(&params);
+    dump_state = -1;
+    NuFileClose(fh);
+    xTiles = yTiles = xPos = yPos = 0.0f;
+    w = (f32)PS2_VREZ_W;
+    h = (f32)PS2_VREZ_H;
+    RenderPostViewportSetPc(0.0f, 0.0f, w, h, 0.0f, 0.0f, w, h);
+    NuRndrDoingScreenGrab = 0;
+    return 0;
 }
 
 STATIC_ASSERT(offsetof(PC_MATERIAL_CREATE_SHADER, flags) == 0);
