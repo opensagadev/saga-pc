@@ -9,6 +9,7 @@
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
 
+#include <float.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -1634,8 +1635,10 @@ extern "C" {
         }
     }
 
-    void __cdecl PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height, i32 levels,
-                                             i32 usage, i32 pool, i32 format) {
+    /* Retail calls this from PCGraphicsCreatePostEffectTextures rather than inlining it. */
+    __declspec(noinline) void __cdecl PCGraphicsInitRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width,
+                                                                  i32 height, i32 levels, i32 usage, i32 pool,
+                                                                  i32 format) {
         u32 d3d_usage;
         i32 memory_delta;
         f32 multiplier;
@@ -6623,3 +6626,580 @@ extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
         PCDeviceSetRenderState(27, 0);
     }
 }
+
+/* nurndr's platform members, in nurndr order. */
+extern "C" {
+    extern i32 DwaWeightCapacityPc, DwaPointerCapacityPc, DwaBlockCapacityPc, DwaEnabledPc, DwaStreamCapacityPc;
+    extern i32 DwaBlockCountPc;
+    extern u8 DwaBlockTablePc[0x400];
+    void __cdecl NuRndrGradClear(i32 clear_flags, i32 top_colour, i32 bottom_colour, f32 alpha) {
+        NuRndrClear(clear_flags, bottom_colour, alpha);
+    }
+    __declspec(noinline) void __cdecl NuDisplayListResetStateCache(NURNDRLIBSTATE *state) {
+        state->mtl = NULL;
+        state->tex_id = -1;
+        state->global_id = -1;
+        state->lights_id = -1;
+        state->camera_id = -1;
+        state->fog_id = -1;
+        state->konst_id = -1;
+    }
+    void __cdecl RndrStateUpdate(NURNDRLIBSTATE *state, NUMTL *material, NUDISPLAYLISTITEM *item) {
+        (void)state;
+        (void)material;
+        (void)item;
+    }
+    void __cdecl RndrStateUpdateFx(NURNDRLIBSTATE *state, NUDISPLAYLISTITEM *item) {
+        (void)state;
+        (void)item;
+    }
+    void __cdecl NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
+        NuRndrStateInit();
+        nudlist_field_9d8 = 0;
+        nudlist_field_e80 = 0;
+        sort_list = NULL;
+        nudlist_field_fc8 = 0;
+        PCDisplayList2dPc.first = &nudlist_2d_static;
+        {
+            VARIPTR end;
+            end.addr = (u32)arg2;
+            NuDisplayListCreateDynMtlList_candidate(cursor, end);
+        }
+        nudlist_flags |= 0x10;
+        nudlist_field_e58 = 0;
+        NuDisplayListStreamAlloc(cursor, arg2, 0x40);
+        NuDisplayListStreamCursor = &nudlist_stream_cursor;
+        nudlist_field_1598 = nuprim_field_ba8;
+        nudlist_field_fc4 = PCThreadCriticalSectionCreate_candidate();
+        NuDisplayListSwapBuffersEndFrame();
+        NuDisplayListBeginFrame();
+    }
+    void __cdecl NuRndrDwaInitPc(void) {
+        DwaWeightCapacityPc = 0x4000;
+        DwaPointerCapacityPc = 0x4000;
+        DwaBlockCapacityPc = 0x2000;
+        DwaEnabledPc = 1;
+        DwaBlockCountPc = 0;
+        DwaWeightCursorPc = 0xef00;
+        DwaPointerCursorPc = 0x800;
+        memset(DwaBlockTablePc, 0, sizeof(DwaBlockTablePc));
+        DwaStreamCapacityPc = 0x2000;
+    }
+    /* Native PC entry 0x005fe450 is RET-only; PcRendererCleanup calls it while the D3D
+     * device is torn down. Its historical name is unknown. */
+    void __cdecl NuRndrDwaReleasePc(void) {
+    }
+    void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c) {
+        (void)a;
+        (void)b;
+        (void)c;
+    }
+    void __cdecl PermanentGraphicsResourceSetup(void) {
+        NuPtlDmaSlotsExhaustedPc();
+    }
+    void __cdecl NuRndrShadowInit(u8 *random) {
+        (void)random;
+        NuPtlDmaSlotsExhaustedPc();
+    }
+    void __cdecl NuLightSpotFadeSet(u32 fade) {
+        (void)fade;
+    }
+    DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
+        i32 clear_bytes = count * 4 + 0x204;
+        DWA_WEIGHT_BLOCK_PC *result;
+        DwaWeightCursorPc -= clear_bytes;
+        if (DwaWeightCursorPc < 0) {
+            PCClipScreenUnsupported();
+            return NULL;
+        }
+        result = &DwaWeightPoolPc[DwaWeightCursorPc];
+        memset(result, 0, clear_bytes);
+        return result;
+    }
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuRndrCreateBlendShapeDWAPointers(i32 count) {
+        DwaPointerCursorPc -= count;
+        if (DwaWeightCursorPc < 0) {
+            PCClipScreenUnsupported();
+            return NULL;
+        }
+        return &DwaPointerPoolPc[DwaPointerCursorPc];
+    }
+    void __cdecl NuRndrShadowDirCol(const NUVEC *direction, u32 colour, f32 near_distance, f32 far_distance) {
+        PCShadowState.direction = *direction;
+        PCShadowNearValue = near_distance;
+        PCShadowFarValue = far_distance;
+        PCShadowState.packed_colour = ((colour >> 1) & 0x007f7f7fu) + (colour & 0xff000000u) * 2u;
+    }
+    void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unused_x, i32 unused_y, i32 unused_z) {
+        if (NuCameraClipTestPoints(position, 1, NULL) == 0 && NuRndrShadowCnt < 128) {
+            NuRndrShadPolDat[NuRndrShadowCnt].position = *position;
+            NuRndrShadPolDat[NuRndrShadowCnt].radius = radius;
+            NuRndrShadPolDat[NuRndrShadowCnt].opacity = (u16)opacity;
+            ++NuRndrShadowCnt;
+        }
+    }
+    /* The debug 3D line batch is not drawn on PC. */
+    void __cdecl NuRndrLine3dDbgFlush(void) {
+    }
+    void __cdecl NuRndrShadPolys(NUMTL *material) {
+        i32 index;
+        PC_SHADOW_QUEUE_RECORD *record;
+        NUVEC position;
+        f32 radius, left, right, front, back;
+        u32 colour;
+        if (NuRndrShadowCnt == 0)
+            return;
+        record = NuRndrShadPolDat;
+        for (index = 0; index < NuRndrShadowCnt; ++index, ++record) {
+            position = record->position;
+            colour = (u32)(i16)record->opacity << 24;
+            radius = record->radius;
+            NuRndrShadowVerticesPc[0].colour = colour;
+            NuRndrShadowVerticesPc[1].colour = colour;
+            NuRndrShadowVerticesPc[2].colour = colour;
+            NuRndrShadowVerticesPc[3].colour = colour;
+            left = position.x - radius;
+            NuRndrShadowVerticesPc[0].position.x = left;
+            NuRndrShadowVerticesPc[0].position.y = position.y;
+            front = position.z - radius;
+            NuRndrShadowVerticesPc[0].position.z = front;
+            NuRndrShadowVerticesPc[0].u = 0.0f;
+            NuRndrShadowVerticesPc[0].v = 0.0f;
+            right = position.x + radius;
+            NuRndrShadowVerticesPc[1].position.x = right;
+            NuRndrShadowVerticesPc[1].position.y = position.y;
+            NuRndrShadowVerticesPc[1].position.z = front;
+            NuRndrShadowVerticesPc[1].u = 1.0f;
+            NuRndrShadowVerticesPc[1].v = 0.0f;
+            NuRndrShadowVerticesPc[2].position.x = left;
+            NuRndrShadowVerticesPc[2].position.y = position.y;
+            back = position.z + radius;
+            NuRndrShadowVerticesPc[2].position.z = back;
+            NuRndrShadowVerticesPc[2].u = 0.0f;
+            NuRndrShadowVerticesPc[2].v = 1.0f;
+            NuRndrShadowVerticesPc[3].position.x = right;
+            NuRndrShadowVerticesPc[3].position.y = position.y;
+            NuRndrShadowVerticesPc[3].position.z = back;
+            NuRndrShadowVerticesPc[3].u = 1.0f;
+            NuRndrShadowVerticesPc[3].v = 1.0f;
+            NuRndrStrip3d(NuRndrShadowVerticesPc, material, NULL, 4);
+        }
+        NuRndrShadowCnt = 0;
+    }
+    void __cdecl NuRndrInitWorld(void) {
+    }
+    /* Direct object rendering is not supported on PC: retail reports it and draws nothing. */
+    i32 __cdecl NuRndrGobj(void *object, NUMTX *matrix) {
+        PCClipScreenUnsupported();
+        return 0;
+    }
+    i32 __cdecl NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip) {
+        return 0;
+    }
+    void __cdecl FaceYDirStream(i32 angle) {
+    }
+    i32 __cdecl NuRndrSetSpecularLightPS(const NUVEC *direction, const NUVEC4 *intensity) {
+        static NUVEC rndrstream_specular_dir = {0.0f, 0.0f, 1.0f};
+        static NUVEC4 rndrstream_specular_intensity = {1.0f, 1.0f, 1.0f, 1.0f};
+        static NUVEC camvec = {0.0f, 0.0f, -1.0f};
+        NUVEC view_direction, half_direction, light_direction, eye_direction, axis;
+        NUMTX matrix;
+        f32 horizontal, facing, weight, remainder;
+        if (direction != NULL)
+            rndrstream_specular_dir = *direction;
+        if (intensity != NULL)
+            rndrstream_specular_intensity = *intensity;
+        NuVecInvMtxRotate(&view_direction, &rndrstream_specular_dir, &global_camera.mtx);
+        NuVecLerp(&half_direction, &view_direction, &camvec, 0.5f);
+        NuVecMtxRotate(&half_direction, &half_direction, &global_camera.mtx);
+        NuVecNorm(&half_direction, &half_direction);
+        NuVecNorm(&light_direction, &rndrstream_specular_dir);
+        eye_direction.x = -global_camera.mtx.m20;
+        eye_direction.y = -global_camera.mtx.m21;
+        eye_direction.z = -global_camera.mtx.m22;
+        facing = NuVecDot(&eye_direction, &light_direction);
+        axis = half_direction;
+        matrix = NuMtxSetIdentityTemplate;
+        horizontal = NuFsqrt(axis.x * axis.x + axis.z * axis.z);
+        if (horizontal > FLT_MIN) {
+            matrix.m00 = axis.z / horizontal;
+            matrix.m10 = (axis.x * axis.y) / horizontal;
+            matrix.m20 = -axis.x;
+            matrix.m01 = 0.0f;
+            matrix.m11 = horizontal;
+            matrix.m21 = axis.y;
+            matrix.m02 = axis.x / horizontal;
+            matrix.m12 = (axis.z * -axis.y) / horizontal;
+            matrix.m22 = axis.z;
+        } else {
+            matrix.m11 = matrix.m22 = 0.0f;
+            matrix.m21 = axis.y;
+            matrix.m12 = -axis.y;
+        }
+        matrix.m31 = matrix.m30 = 0.5f;
+        if (facing < 0.0f) {
+            weight = facing * facing;
+            weight *= weight;
+            weight *= weight;
+            weight *= weight;
+            weight *= weight;
+            remainder = 1.0f - weight;
+            if (matrix.m00 * light_direction.x + matrix.m10 * light_direction.y + matrix.m20 * light_direction.z >=
+                0.0f) {
+                matrix.m00 = matrix.m00 * remainder + light_direction.x * weight;
+                matrix.m10 = matrix.m10 * remainder + light_direction.y * weight;
+                matrix.m20 = matrix.m20 * remainder + light_direction.z * weight;
+            } else {
+                matrix.m00 = matrix.m00 * remainder - light_direction.x * weight;
+                matrix.m10 = matrix.m10 * remainder - light_direction.y * weight;
+                matrix.m20 = matrix.m20 * remainder - light_direction.z * weight;
+            }
+            if (matrix.m01 * light_direction.x + matrix.m11 * light_direction.y + matrix.m21 * light_direction.z >=
+                0.0f) {
+                matrix.m01 = matrix.m01 * remainder + light_direction.x * weight;
+                matrix.m11 = matrix.m11 * remainder + light_direction.y * weight;
+                matrix.m21 = matrix.m21 * remainder + light_direction.z * weight;
+            } else {
+                matrix.m01 = matrix.m01 * remainder - light_direction.x * weight;
+                matrix.m11 = matrix.m11 * remainder - light_direction.y * weight;
+                matrix.m21 = matrix.m21 * remainder - light_direction.z * weight;
+            }
+        }
+        NuVecNeg(&view_direction, &view_direction);
+        NuRndrStateSetSpecularLightEx(&view_direction, &matrix, (const NUVEC *)&rndrstream_specular_intensity);
+        return 1;
+    }
+    extern void NuDisplayListAnimateMtls(f32);
+    static f32 FrameShaderMaterialAnimationTimePc = 0;
+    static i32 FrameShaderMaterialFirstCallPc = 1;
+    extern f32 FrameMaterialAnimationSpeedPc;
+    void NuMtlAnimateShaderMtlTextures(f32 frame_time) {
+        i32 i;
+        FrameShaderMaterialAnimationTimePc += frame_time;
+        if (FrameShaderMaterialFirstCallPc != 0) {
+            for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
+                NUDISPLAY_LIST_PC *scene = PCDisplayScenes[i];
+                if (((FRAME_MTL_SCENE_PC *)scene->gscene)->shader_texture_animation_enabled != 0) {
+                    i32 j;
+                    for (j = 0; j < (i32)scene->material_count; ++j) {
+                        FRAME_MTL_ANIM_PC *material = (FRAME_MTL_ANIM_PC *)scene->display_materials[j];
+                        i32 layer;
+                        for (layer = 0; layer < 4; ++layer) {
+                            material->texture_animation_offsets[layer][0] = 0.0f;
+                            material->texture_animation_offsets[layer][1] = 0.0f;
+                        }
+                    }
+                }
+            }
+            FrameShaderMaterialFirstCallPc = 0;
+        }
+    }
+    void NuMtlAnimate(f32 frame_time) {
+        NuDisplayListAnimateMtls(frame_time * FrameMaterialAnimationSpeedPc);
+        NuMtlAnimateShaderMtlTextures(frame_time);
+    }
+    void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
+        NuRndrStreamInit(size, buffer);
+        NuRndrInitConfigPc(buffer, end);
+    }
+    static i32 RendererConfigEnabledPc = 0, RendererConfigSecondEnabledPc = 0;
+    static NUMTX RendererConfigMatrixPc = {0};
+    static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
+    static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
+    void __cdecl NuRndrGeometryBufferReleasePc(void) {
+        PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
+    }
+    void __cdecl NuRndrGeometryBufferRestorePc(void) {
+        PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
+        PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
+        NuRndrQuadBufferInitPc();
+    }
+    typedef struct RENDERER_CLEAR_RECORD_PC {
+        u8 unknown_00[0x20];
+        u16 active;
+        u8 unknown_22[6];
+    } RENDERER_CLEAR_RECORD_PC;
+    STATIC_ASSERT(sizeof(RENDERER_CLEAR_RECORD_PC) == 0x28);
+    STATIC_ASSERT(offsetof(RENDERER_CLEAR_RECORD_PC, active) == 0x20);
+    static RENDERER_CLEAR_RECORD_PC RendererClearRecordsPc[32] = {0};
+    typedef struct RENDERER_SHADOW_DEFAULTS_PC {
+        f32 state0, state1, state2;
+        u32 packed_colour;
+    } RENDERER_SHADOW_DEFAULTS_PC;
+    STATIC_ASSERT(sizeof(RENDERER_SHADOW_DEFAULTS_PC) == 16);
+    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state0) == 0);
+    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state1) == 4);
+    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, state2) == 8);
+    STATIC_ASSERT(offsetof(RENDERER_SHADOW_DEFAULTS_PC, packed_colour) == 12);
+    typedef struct RENDERER_SCREEN_VERTEX_PC {
+        f32 x, y, z, w;
+        u32 attribute_bits;
+        u8 unknown_14[8];
+    } RENDERER_SCREEN_VERTEX_PC;
+    STATIC_ASSERT(sizeof(RENDERER_SCREEN_VERTEX_PC) == 0x1c);
+    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, x) == 0);
+    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, y) == 4);
+    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, z) == 8);
+    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, w) == 12);
+    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, attribute_bits) == 16);
+    STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, unknown_14) == 20);
+#define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
+    void __cdecl NuRndrQuadBufferInitPc(void) {
+        void *data;
+        if (RendererQuadVertexBufferPc != NULL) {
+            RendererQuadVertexBufferPc->methods->release(RendererQuadVertexBufferPc);
+            RendererQuadVertexBufferPc = NULL;
+        }
+        PCDeviceCreateVertexBuffer(0x70, 0, 0, 1, &RendererQuadVertexBufferPc);
+        if (RendererQuadVertexBufferPc->methods->lock(RendererQuadVertexBufferPc, 0, 0, &data, 0) < 0)
+            return;
+        QUAD_VERTEX[0].x = 0.0f;
+        QUAD_VERTEX[0].y = 0.0f;
+        QUAD_VERTEX[0].z = 0.5f;
+        QUAD_VERTEX[1].x = (f32)PCDeviceBackend.parameters.width;
+        QUAD_VERTEX[1].y = 0.0f;
+        QUAD_VERTEX[1].z = 0.5f;
+        QUAD_VERTEX[2].x = (f32)PCDeviceBackend.parameters.width;
+        QUAD_VERTEX[2].y = (f32)PCDeviceBackend.parameters.height;
+        QUAD_VERTEX[2].z = 0.5f;
+        QUAD_VERTEX[3].x = 0.0f;
+        QUAD_VERTEX[3].y = (f32)PCDeviceBackend.parameters.height;
+        QUAD_VERTEX[3].z = 0.5f;
+        QUAD_VERTEX[3].attribute_bits = 0x4b000000;
+        QUAD_VERTEX[2].attribute_bits = 0x4b000000;
+        QUAD_VERTEX[1].attribute_bits = 0x4b000000;
+        QUAD_VERTEX[0].attribute_bits = 0x4b000000;
+        QUAD_VERTEX[3].w = 1.0f;
+        QUAD_VERTEX[2].w = 1.0f;
+        QUAD_VERTEX[1].w = 1.0f;
+        QUAD_VERTEX[0].w = 1.0f;
+        RendererQuadVertexBufferPc->methods->unlock(RendererQuadVertexBufferPc);
+    }
+#undef QUAD_VERTEX
+    void __cdecl NuRndrGeometryBuffersInitPc(void) {
+        void *data;
+        u16 *indices;
+        i32 remaining;
+        u32 base;
+        if (RendererGeometryVertexBufferPc != NULL) {
+            RendererGeometryVertexBufferPc->methods->release(RendererGeometryVertexBufferPc);
+            RendererGeometryVertexBufferPc = NULL;
+        }
+        if (RendererGeometryIndexBufferPc != NULL) {
+            RendererGeometryIndexBufferPc->methods->release(RendererGeometryIndexBufferPc);
+            RendererGeometryIndexBufferPc = NULL;
+        }
+        PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
+        PCDeviceCreateVertexBuffer(0x40000, 0x208, 0, 0, &RendererGeometryVertexBufferPc);
+        NuRndrQuadBufferInitPc();
+        PCDeviceCreateIndexBuffer(0xc000, 0, 0x65, 1, &RendererGeometryIndexBufferPc, NULL);
+        if (RendererGeometryIndexBufferPc->methods->lock(RendererGeometryIndexBufferPc, 0, 0, &data, 0) < 0)
+            return;
+        indices = (u16 *)data;
+        remaining = 0x1000;
+        base = 0;
+        do {
+            *indices++ = (u16)base;
+            *indices++ = (u16)(base + 1);
+            *indices++ = (u16)(base + 2);
+            *indices++ = (u16)base;
+            *indices++ = (u16)(base + 2);
+            *indices++ = (u16)(base + 3);
+            base += 4;
+        } while (--remaining != 0);
+        RendererGeometryIndexBufferPc->methods->unlock(RendererGeometryIndexBufferPc);
+    }
+    void __cdecl NuRndrBufferDescriptorsInitPc(VARIPTR *buffer, VARIPTR end) {
+        PC_VERTEX_ELEMENT_PC elements[3];
+        elements[0].stream = 0;
+        elements[0].offset = 0;
+        elements[0].type = 2;
+        elements[0].method = 0;
+        elements[0].usage = 0;
+        elements[0].usage_index = 0;
+        elements[1].stream = 0;
+        elements[1].offset = 12;
+        elements[1].type = 4;
+        elements[1].method = 0;
+        elements[1].usage = 10;
+        elements[1].usage_index = 0;
+        elements[2].stream = 0xff;
+        elements[2].offset = 0;
+        elements[2].type = 17;
+        elements[2].method = 0;
+        elements[2].usage = 0;
+        elements[2].usage_index = 0;
+        PCDeviceCreateVertexDeclaration(elements, &RendererVertexDeclarationPc);
+        NuRndrArenaInitPc(buffer, end);
+        NuRndrQuadBufferInitPc();
+        NuRndrGeometryBuffersInitPc();
+    }
+    extern u32 PCGraphicsPostEffectWidthPc;
+    extern u32 PCGraphicsPostEffectHeightPc;
+    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc;
+    void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
+    /* Sizes the post-effect targets (power-of-two when the device needs it) and claims the back-buffer copy. */
+    void __cdecl PCGraphicsCreatePostEffectTextures(u32 width, u32 height) {
+        GRAPHICS_RENDER_TEXTURE_PC *texture;
+        i32 index;
+        PCGraphicsPostEffectWidthPc = width;
+        if (width >= 512)
+            PCGraphicsPostEffectWidthPc = 512;
+        PCGraphicsPostEffectHeightPc = height;
+        if (height >= 512)
+            PCGraphicsPostEffectHeightPc = 512;
+        if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
+            u32 width_power = 1;
+            u32 height_power = 1;
+            while (width_power <= (width < 512 ? width : 512))
+                width_power += width_power;
+            PCGraphicsPostEffectWidthPc = width_power >> 1;
+            while (height_power <= (height < 512 ? height : 512))
+                height_power += height_power;
+            PCGraphicsPostEffectHeightPc = height_power >> 1;
+        }
+        PCGraphicsCreatePostEffectWorkTexture(width, height);
+        for (index = 0; index != 32; ++index) {
+            if (PCGraphicsRenderTextureActive[index] == 0) {
+                PCGraphicsRenderTextureActive[index] = 1;
+                texture = &PCGraphicsRenderTextures[index];
+                goto allocated;
+            }
+        }
+        PCGraphicsRenderTextureAllocationError();
+        texture = NULL;
+    allocated:
+        PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 0, 1, 0, 2);
+        PCGraphicsPostEffectBackBufferTexturePc = texture;
+    }
+    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
+    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc;
+    /* Re-sizes the post-effect targets after a mode change, with the same clamps as PCGraphicsCreatePostEffectTextures.
+     */
+    void __cdecl PCGraphicsResizePostEffectTexturesPc(u32 width, u32 height) {
+        u32 target_width = width < 512 ? width : 512;
+        u32 target_height;
+        PCGraphicsPostEffectWidthPc = target_width;
+        target_height = height < 512 ? height : 512;
+        PCGraphicsPostEffectHeightPc = target_height;
+        if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
+            target_width = 1;
+            target_height = 1;
+            while (target_width <= (width < 512 ? width : 512))
+                target_width += target_width;
+            target_width >>= 1;
+            PCGraphicsPostEffectWidthPc = target_width;
+            while (target_height <= (height < 512 ? height : 512))
+                target_height += target_height;
+            target_height >>= 1;
+            PCGraphicsPostEffectHeightPc = target_height;
+        }
+        PCGraphicsResizeEffectTexture(PCGraphicsPostEffectWorkTexturePc, target_width, target_height, -1);
+        PCGraphicsResizeEffectTexture(PCGraphicsPostEffectBackBufferTexturePc, PCGraphicsPostEffectWidthPc,
+                                      PCGraphicsPostEffectHeightPc, -1);
+        if (PCGraphicsPostEffectAuxTexturePc != NULL)
+            PCGraphicsResizeEffectTexture(PCGraphicsPostEffectAuxTexturePc, -1, -1, -1);
+    }
+    void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
+        RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
+        NUVEC defaults;
+        i32 i;
+        RendererConfigEnabledPc = 1;
+        RendererConfigSecondEnabledPc = 1;
+        NuMtxSetIdentity(&RendererConfigMatrixPc);
+        NuRndrBufferDescriptorsInitPc(buffer, end);
+        defaults.x = 0.0f;
+        defaults.y = -0.75f;
+        defaults.z = -0.75f;
+        *(NUVEC *)&shadow->state0 = defaults;
+        PCShadowNearValue = 4.0f;
+        PCShadowFarValue = 6.0f;
+        shadow->packed_colour = 0x00101010;
+        NuRndrShadowCnt = 0;
+        for (i = 0; i < 32; ++i)
+            RendererClearRecordsPc[i].active = 0;
+        NuRndrInitGeneric();
+    }
+    typedef struct PC_STARTUP_MATERIAL_READER_PC {
+        u8 unknown_00[0x40];
+        u32 render_flags;
+        u32 secondary_flags;
+        u8 unknown_48[0xc];
+        NUVEC diffuse;
+        u8 unknown_60[0x10];
+        f32 opacity;
+        i16 texture_id;
+        i16 sort_priority;
+    } PC_STARTUP_MATERIAL_READER_PC;
+    STATIC_ASSERT(sizeof(PC_STARTUP_MATERIAL_READER_PC) == 0x78);
+    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, render_flags) == 0x40);
+    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, secondary_flags) == 0x44);
+    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, diffuse) == 0x54);
+    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, opacity) == 0x70);
+    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, texture_id) == 0x74);
+    STATIC_ASSERT(offsetof(PC_STARTUP_MATERIAL_READER_PC, sort_priority) == 0x76);
+#define STARTUP_MATERIAL(material) ((PC_STARTUP_MATERIAL_READER_PC *)(material))
+    void __cdecl NuRndrInitStartupMaterialsPc(void) {
+        PCStartupMaterial1Pc = NuMtlCreate(1);
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.y =
+            STARTUP_MATERIAL(PCStartupMaterial1Pc)->diffuse.x = 1.0f;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x1000u) | 0x2000u;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x8000u) | 0x4000u;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->opacity = 0.999f;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & 0xfffffff1u) | 1u;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->secondary_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial1Pc)->secondary_flags & ~2u) | 1u;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x200u) | 0x100u;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x800u) | 0x400u;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial1Pc)->render_flags & ~0x10000u) | 0x20000u;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->texture_id = 0;
+        STARTUP_MATERIAL(PCStartupMaterial1Pc)->sort_priority = 0x100;
+        NuMtlUpdate(PCStartupMaterial1Pc);
+
+        PCStartupMaterial2Pc = NuMtlCreate(1);
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial2Pc)->diffuse.y =
+            STARTUP_MATERIAL(PCStartupMaterial2Pc)->diffuse.x = 1.0f;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x1000u) | 0x2000u;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x8000u) | 0x4000u;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->opacity = 0.999f;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & 0xfffffff2u) | 2u;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->secondary_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial2Pc)->secondary_flags & ~2u) | 1u;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x200u) | 0x100u;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x800u) | 0x400u;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags =
+            (STARTUP_MATERIAL(PCStartupMaterial2Pc)->render_flags & ~0x10000u) | 0x20000u;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->texture_id = 0;
+        STARTUP_MATERIAL(PCStartupMaterial2Pc)->sort_priority = 0x100;
+        NuMtlUpdate(PCStartupMaterial2Pc);
+    }
+#undef STARTUP_MATERIAL
+    void __cdecl NuRndrFx(i32 paused, void *context) {
+        (void)context;
+        NuLgtLaserDraw(paused);
+        NuLgtArcLaserDraw(paused);
+        if (NuRndrFxHeightOverridePc != 0.0f) {
+            NuRndrFxHeightPc = NuRndrFxHeightOverridePc;
+            NuRndrFxColourPc = 0xc04080c0;
+        }
+        if (paused != 0)
+            NuRndrFxHeightPc = NuRndrFxPreviousHeightPc;
+        else
+            NuRndrFxPreviousHeightPc = NuRndrFxHeightPc;
+        currentScene.clear_flags = 1;
+    }
+    i32 __cdecl NuRndrSetFxMtx(NUMTX *matrix) {
+        return 1;
+    }
+} // extern "C"
