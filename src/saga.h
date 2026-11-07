@@ -972,6 +972,12 @@ typedef struct AIPATHINFO_PC {
             u8 flags;
             u8 padding;
         };
+        struct {
+            u16 on_path : 1;
+            u16 was_on_path : 1;
+            u16 route_checked : 1;
+            u16 narrow_path : 1;
+        };
         u16 flags_word;
     };
     f32 distance;

@@ -2090,7 +2090,6 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
     f32 denominator;
     f32 numerator;
     f32 fraction;
-    f32 inverse;
     f32 height;
     f32 minimum;
     f32 maximum;
@@ -2119,13 +2118,13 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
         }
         shared = NULL;
         if (current->node_indices[0] == connection->node_indices[0]) {
-            shared = &path->nodes[connection->node_indices[0]];
+            shared = &path->nodes[current->node_indices[0]];
         } else if (current->node_indices[0] == connection->node_indices[1]) {
             shared = &path->nodes[current->node_indices[0]];
         } else if (current->node_indices[1] == connection->node_indices[0]) {
-            shared = &path->nodes[connection->node_indices[0]];
+            shared = &path->nodes[current->node_indices[1]];
         } else if (current->node_indices[1] == connection->node_indices[1]) {
-            shared = &path->nodes[connection->node_indices[1]];
+            shared = &path->nodes[current->node_indices[1]];
         }
         if (shared == NULL || ((u64)shared->route_boundary_mask & ((u64)1 << packet->current_route)) == 0) {
             return 0;
@@ -2136,25 +2135,25 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
     }
     first = &path->nodes[connection->node_indices[0]];
     second = &path->nodes[connection->node_indices[1]];
-    first_radius = first->radius;
     narrow = 0;
-    if (first_radius > object->collision_radius + AIPathConnectionMargin) {
-        first_radius -= object->collision_radius;
+    if (first->radius > AIPathConnectionMargin + object->collision_radius) {
+        first_radius = first->radius - object->collision_radius;
     } else {
+        first_radius = first->radius;
         narrow = 1;
     }
-    second_radius = second->radius;
-    if (second_radius > object->collision_radius + AIPathConnectionMargin) {
-        second_radius -= object->collision_radius;
+    if (second->radius > AIPathConnectionMargin + object->collision_radius) {
+        second_radius = second->radius - object->collision_radius;
     } else {
+        second_radius = second->radius;
         narrow = 1;
     }
     if (first->has_special != 0 &&
-        (path->updated_node_bits[connection->node_indices[0] >> 3] & (1 << (connection->node_indices[0] & 7))) == 0) {
+        (path->updated_node_bits[connection->node_indices[0] / 8] & (1 << (connection->node_indices[0] % 8))) == 0) {
         AIPathNodeUpdatePos(system, path, first);
     }
     if (second->has_special != 0 &&
-        (path->updated_node_bits[connection->node_indices[1] >> 3] & (1 << (connection->node_indices[1] & 7))) == 0) {
+        (path->updated_node_bits[connection->node_indices[1] / 8] & (1 << (connection->node_indices[1] % 8))) == 0) {
         AIPathNodeUpdatePos(system, path, second);
     }
 
@@ -2163,7 +2162,7 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
 
     NuVecRotateY(&local, &delta, -connection->rotation);
 
-    if (AIPathFabs(second_radius - first_radius) > connection->horizontal_distance) {
+    if (connection->horizontal_distance < AIPathFabs(second_radius - first_radius)) {
         if (second_radius > first_radius) {
             first_radius = second_radius;
             first = second;
@@ -2171,19 +2170,20 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
         height_distance = AIPathFabs(first->position.y - packet->terrain_origin.y);
         distance = NuVecXZDist(&object->position, &first->position, &radial);
 
-        if (first->min_height > packet->terrain_origin.y || packet->terrain_origin.y > first->max_height) {
+        if (packet->terrain_origin.y < first->min_height || packet->terrain_origin.y > first->max_height) {
             clearance = distance - first_radius;
             clearance = height_distance > clearance ? height_distance : clearance;
-        } else if (first_radius >= distance) {
-            packet->path_info.flags_word = (u16)(((packet->path_info.flags_word | 1) & ~8) | (narrow << 3));
+        } else if (distance <= first_radius) {
+            packet->path_info.narrow_path = narrow;
+            packet->path_info.on_path = 1;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->last_path_position = object->position;
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
+            packet->last_path_position = object->position;
             node_index = first - path->nodes;
             path->inside_node_bits[node_index / 8] |= 1 << (node_index % 8);
             packet->inside_path_node = node_index;
-            if (second_radius * second_radius >= NuVecXZDistSqr(&object->position, &second->position, &radial)) {
+            if (NuVecXZDistSqr(&object->position, &second->position, &radial) <= second_radius * second_radius) {
                 node_index = second - path->nodes;
                 path->inside_node_bits[node_index / 8] |= 1 << (node_index % 8);
                 packet->inside_path_node = node_index;
@@ -2192,17 +2192,19 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
         } else {
             clearance = distance - first_radius;
         }
-        if (*nearest_distance > clearance) {
+        if (clearance < *nearest_distance) {
             *nearest_distance = clearance;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
-            if (first_radius < distance) {
-                packet->last_path_position.x = first_radius * radial.x / distance + first->position.x;
-                packet->last_path_position.z = first_radius * radial.z / distance + first->position.z;
-            } else {
+            if (distance <= first_radius) {
                 packet->last_path_position.x = object->position.x;
                 packet->last_path_position.z = object->position.z;
+            } else {
+                packet->last_path_position.x = radial.x * first_radius / distance;
+                packet->last_path_position.x += first->position.x;
+                packet->last_path_position.z = radial.z * first_radius / distance;
+                packet->last_path_position.z += first->position.z;
             }
             packet->last_path_position.y = first->position.y;
             packet->inside_path_node = -1;
@@ -2210,44 +2212,46 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
         return 0;
     }
 
-    angle = PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
+    angle = (i16)PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
     wall = local;
     if (wall.x < 0.0f) {
         wall.x = -wall.x;
     }
     NuVecRotateY(&wall, &wall, -angle);
-    length = NuTrigTable[((u32)(angle + 0x4000) >> 1) & 0x7fff] * connection->horizontal_distance;
+    length = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * connection->horizontal_distance;
     if (wall.z < 0.0f) {
         height_distance = AIPathFabs(first->position.y - packet->terrain_origin.y);
         distance = NuVecXZDist(&object->position, &first->position, &radial);
 
-        if (first->min_height > packet->terrain_origin.y || packet->terrain_origin.y > first->max_height) {
+        if (packet->terrain_origin.y < first->min_height || packet->terrain_origin.y > first->max_height) {
             clearance = distance - first_radius;
             clearance = height_distance > clearance ? height_distance : clearance;
-        } else if (first_radius >= distance) {
-            packet->path_info.flags_word = (u16)(((packet->path_info.flags_word | 1) & ~8) | (narrow << 3));
+        } else if (distance <= first_radius) {
+            packet->path_info.narrow_path = narrow;
+            packet->path_info.on_path = 1;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->last_path_position = object->position;
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
-            node_index = connection->node_indices[0];
-            path->inside_node_bits[node_index >> 3] |= 1 << (node_index & 7);
+            packet->last_path_position = object->position;
+            path->inside_node_bits[connection->node_indices[0] / 8] |= 1 << (connection->node_indices[0] % 8);
             packet->inside_path_node = connection->node_indices[0];
             return 1;
         } else {
             clearance = distance - first_radius;
         }
-        if (*nearest_distance > clearance) {
+        if (clearance < *nearest_distance) {
             *nearest_distance = clearance;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
-            if (first_radius < distance) {
-                packet->last_path_position.x = first_radius * radial.x / distance + first->position.x;
-                packet->last_path_position.z = first_radius * radial.z / distance + first->position.z;
-            } else {
+            if (distance <= first_radius) {
                 packet->last_path_position.x = object->position.x;
                 packet->last_path_position.z = object->position.z;
+            } else {
+                packet->last_path_position.x = radial.x * first_radius / distance;
+                packet->last_path_position.x += first->position.x;
+                packet->last_path_position.z = radial.z * first_radius / distance;
+                packet->last_path_position.z += first->position.z;
             }
             packet->last_path_position.y = first->position.y;
             packet->inside_path_node = -1;
@@ -2257,30 +2261,32 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
         height_distance = AIPathFabs(second->position.y - packet->terrain_origin.y);
         distance = NuVecXZDist(&object->position, &second->position, &radial);
 
-        if (second->min_height > packet->terrain_origin.y || packet->terrain_origin.y > second->max_height) {
+        if (packet->terrain_origin.y < second->min_height || packet->terrain_origin.y > second->max_height) {
             clearance = distance - second_radius;
             clearance = height_distance > clearance ? height_distance : clearance;
-        } else if (second_radius >= distance) {
-            packet->path_info.flags_word = (u16)(((packet->path_info.flags_word | 1) & ~8) | (narrow << 3));
+        } else if (distance <= second_radius) {
+            packet->path_info.narrow_path = narrow;
+            packet->path_info.on_path = 1;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->last_path_position = object->position;
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
-            node_index = connection->node_indices[1];
-            path->inside_node_bits[node_index >> 3] |= 1 << (node_index & 7);
+            packet->last_path_position = object->position;
+            path->inside_node_bits[connection->node_indices[1] / 8] |= 1 << (connection->node_indices[1] % 8);
             packet->inside_path_node = connection->node_indices[1];
             return 1;
         } else {
             clearance = distance - second_radius;
         }
-        if (*nearest_distance > clearance) {
+        if (clearance < *nearest_distance) {
             *nearest_distance = clearance;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
             if (second_radius < distance) {
-                packet->last_path_position.x = second_radius * radial.x / distance + second->position.x;
-                packet->last_path_position.z = second_radius * radial.z / distance + second->position.z;
+                packet->last_path_position.x = radial.x * second_radius / distance;
+                packet->last_path_position.x += second->position.x;
+                packet->last_path_position.z = radial.z * second_radius / distance;
+                packet->last_path_position.z += second->position.z;
             } else {
                 packet->last_path_position.x = object->position.x;
                 packet->last_path_position.z = object->position.z;
@@ -2306,33 +2312,31 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
             denominator = connection->horizontal_distance - (first_radius + second_radius);
             numerator = local.z - first_radius;
             fraction = AIPathSafeDivide(numerator, denominator);
-            inverse = 1.0f - fraction;
-            height = fraction * second->position.y + first->position.y * inverse;
-            minimum = second->min_height * fraction + first->min_height * inverse;
-            maximum = fraction * second->max_height + first->max_height * inverse;
+            height = second->position.y * fraction + first->position.y * (1.0f - fraction);
+            minimum = second->min_height * fraction + first->min_height * (1.0f - fraction);
+            maximum = second->max_height * fraction + first->max_height * (1.0f - fraction);
         }
         height_distance = AIPathFabs(height - packet->terrain_origin.y);
 
-        if (height_distance > 0.0f && (minimum > packet->terrain_origin.y || packet->terrain_origin.y > maximum)) {
+        if (height_distance > 0.0f && (packet->terrain_origin.y < minimum || packet->terrain_origin.y > maximum)) {
             clearance = wall.x - first_radius;
             clearance = height_distance > clearance ? height_distance : clearance;
         } else if (first_radius > wall.x) {
-            packet->path_info.flags_word = (u16)(((packet->path_info.flags_word | 1) & ~8) | (narrow << 3));
+            packet->path_info.narrow_path = narrow;
+            packet->path_info.on_path = 1;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
             packet->last_path_position = object->position;
             packet->inside_path_node = -1;
             if (first_radius > local.z) {
-                if (first_radius * first_radius >= NuVecXZDistSqr(&object->position, &first->position, &radial)) {
-                    node_index = connection->node_indices[0];
-                    path->inside_node_bits[node_index >> 3] |= 1 << (node_index & 7);
+                if (NuVecXZDistSqr(&object->position, &first->position, &radial) <= first_radius * first_radius) {
+                    path->inside_node_bits[connection->node_indices[0] / 8] |= 1 << (connection->node_indices[0] % 8);
                     packet->inside_path_node = connection->node_indices[0];
                 }
             } else if (local.z > length - second_radius) {
-                if (second_radius * second_radius >= NuVecXZDistSqr(&object->position, &second->position, &radial)) {
-                    node_index = connection->node_indices[1];
-                    path->inside_node_bits[node_index >> 3] |= 1 << (node_index & 7);
+                if (NuVecXZDistSqr(&object->position, &second->position, &radial) <= second_radius * second_radius) {
+                    path->inside_node_bits[connection->node_indices[1] / 8] |= 1 << (connection->node_indices[1] % 8);
                     packet->inside_path_node = connection->node_indices[1];
                 }
             }
@@ -2340,12 +2344,12 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
         } else {
             clearance = wall.x - first_radius;
         }
-        if (*nearest_distance > clearance) {
+        if (clearance < *nearest_distance) {
             *nearest_distance = clearance;
             AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
             packet->path_info.distance = local.z / connection->horizontal_distance;
             packet->path_info.width = local.x;
-            if (first_radius > wall.x) {
+            if (wall.x < first_radius) {
                 packet->last_path_position.x = object->position.x;
                 packet->last_path_position.z = object->position.z;
             } else {
@@ -2355,7 +2359,7 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
                     wall.x = -wall.x;
                 }
                 NuVecRotateY(&wall, &wall, connection->rotation);
-                packet->last_path_position.x = first->position.x + wall.x;
+                packet->last_path_position.x = wall.x + first->position.x;
                 packet->last_path_position.z = first->position.z + wall.z;
             }
             packet->last_path_position.y = first->position.y;
