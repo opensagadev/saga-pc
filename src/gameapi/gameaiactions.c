@@ -817,50 +817,51 @@ i32 __cdecl Action_SetOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
     i32 player_index;
     i32 object_index;
     i32 type;
-    u8 local_type;
     char *value;
+    opponent = NULL;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
         return 1;
-    if (first_time == 0)
-        return 1;
     object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
-    opponent = NULL;
-    droid_count = 0;
-    for (index = 0; index < count; index++) {
-        if (NuStrIStr(params[index], (char *)AICombatDroidName) != NULL) {
-            for (player_index = 0; player_index < 8; player_index++) {
-                candidate = (GAMEOBJECT *)Player[player_index];
-                if (candidate != NULL && (candidate->flags_1fc_word & 0x1001u) == 0x1001u &&
-                    (candidate->dead == 0 || candidate->field_1010 > 0.0f) &&
-                    (candidate->flags_ef0 & 0x01000000u) == 0 && (candidate->character_data->model_flags & 0x10u) != 0)
-                    droids[droid_count++] = candidate;
-            }
-            if (droid_count != 0) {
-                prev_droid_ix = (prev_droid_ix + 1) % droid_count;
-                opponent = droids[prev_droid_ix];
-            }
-        } else if (NuStrIStr(params[index], (char *)AICombatNearestEnemyName) != NULL)
-            object->opponent = NULL;
-        else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentName)) != NULL)
-            opponent = GetNamedGameObject(system, value + 9);
-        else if (NuStrICmp(params[index], (char *)AICombatLastAttackerName) == 0)
-            opponent = object->last_attacker;
-        else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentTypeName)) != NULL) {
-            type = 255;
-            if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                local_type = (u8)LevelCharacterTypeIDFn(value + 13);
-                if (local_type != 255)
-                    type = LevelCharacterGlobalIDFn(local_type);
-            }
-            for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
-                if ((i16)Obj[object_index].id == type) {
-                    opponent = &Obj[object_index];
-                    break;
+    if (first_time != 0) {
+        droid_count = 0;
+        for (index = 0; index < count; index++) {
+            if (NuStrIStr(params[index], (char *)AICombatDroidName) != NULL) {
+                for (player_index = 0; player_index < 8; player_index++) {
+                    candidate = (GAMEOBJECT *)Player[player_index];
+                    if (candidate != NULL && (candidate->flags_1fc_word & 1) != 0 &&
+                        (candidate->flags_1fc_word & 0x1000) != 0 &&
+                        (candidate->dead == 0 || candidate->field_1010 > 0.0f) &&
+                        (candidate->flags_ef0 & 0x01000000u) == 0 &&
+                        (candidate->character_data->model_flags & 0x10u) != 0)
+                        droids[droid_count++] = candidate;
+                }
+                if (droid_count != 0) {
+                    prev_droid_ix = (prev_droid_ix + 1) % droid_count;
+                    opponent = droids[prev_droid_ix];
+                }
+            } else if (NuStrIStr(params[index], (char *)AICombatNearestEnemyName) != NULL)
+                object->opponent = NULL;
+            else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentName)) != NULL)
+                opponent = GetNamedGameObject(system, value + 9);
+            else if (NuStrICmp(params[index], (char *)AICombatLastAttackerName) == 0)
+                opponent = object->last_attacker;
+            else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentTypeName)) != NULL) {
+                type = 255;
+                if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                    type = (u8)LevelCharacterTypeIDFn(value + 13);
+                    if (type != 255)
+                        type = LevelCharacterGlobalIDFn(type);
+                }
+                for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
+                    if ((i16)Obj[object_index].id == type) {
+                        opponent = &Obj[object_index];
+                        break;
+                    }
                 }
             }
         }
+        object->opponent = opponent;
     }
-    object->opponent = opponent;
     return 1;
 }
 
