@@ -11439,14 +11439,16 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
         VARIPTR *allocation_cursor = (input_cursor);                                                                   \
         VARIPTR *allocation_end = (input_end);                                                                         \
         void *allocation_result = NULL;                                                                                \
-        if (allocation_cursor == NULL || allocation_end == NULL ||                                                     \
-            allocation_cursor->addr + allocation_size >= allocation_end->addr) {                                       \
-            AIScriptMissingStateDiagnostic();                                                                          \
+        if (allocation_cursor != NULL && allocation_end != NULL) {                                                     \
+            if (allocation_cursor->addr + allocation_size < allocation_end->addr) {                                    \
+                allocation_result = (void *)((allocation_cursor->addr + 15) & ~15u);                                   \
+                allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                   \
+                memset(allocation_result, 0, allocation_size);                                                         \
+            } else {                                                                                                   \
+                AIScriptMissingStateDiagnostic();                                                                      \
+            }                                                                                                          \
         } else {                                                                                                       \
-            u32 allocation_address = (allocation_cursor->addr + 15) & ~15u;                                            \
-            allocation_cursor->addr = allocation_address + allocation_size;                                            \
-            allocation_result = (void *)allocation_address;                                                            \
-            memset(allocation_result, 0, allocation_size);                                                             \
+            AIScriptMissingStateDiagnostic();                                                                          \
         }                                                                                                              \
         destination = (type)allocation_result;                                                                         \
     } while (0)
@@ -13313,74 +13315,50 @@ void __cdecl aieditor_cbSave(eduimenu_s *parent, eduiitem_s *item, u32 value) {
     }
 }
 
-typedef struct AI_REBUILD_STORAGE_PC {
-    void *storage;
-    VARIPTR end;
-    VARIPTR cursor;
-    u32 size;
-} AI_REBUILD_STORAGE_PC;
-STATIC_ASSERT(sizeof(AI_REBUILD_STORAGE_PC) == 0x10);
-STATIC_ASSERT(offsetof(AI_REBUILD_STORAGE_PC, cursor) == 8);
-typedef struct AI_REBUILD_CREATURE_NAMES_PC {
-    char name[16];
-    char script_name[16];
-} AI_REBUILD_CREATURE_NAMES_PC;
-STATIC_ASSERT(sizeof(AI_REBUILD_CREATURE_NAMES_PC) == 0x20);
-typedef struct AI_REBUILD_ANTINODE_BASE_PC {
-    u8 unknown_00[0x40];
-    f32 radius;
-    f32 height;
-} AI_REBUILD_ANTINODE_BASE_PC;
-STATIC_ASSERT(offsetof(AI_REBUILD_ANTINODE_BASE_PC, radius) == 0x40);
-STATIC_ASSERT(offsetof(AI_REBUILD_ANTINODE_BASE_PC, height) == 0x44);
-
-#define REBUILD_STORAGE(system) ((AI_REBUILD_STORAGE_PC *)(system))
 #define REBUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                       \
     do {                                                                                                               \
         u32 allocation_size = (input_size);                                                                            \
         VARIPTR *allocation_cursor = (input_cursor);                                                                   \
         VARIPTR *allocation_end = (input_end);                                                                         \
         void *allocation_result = NULL;                                                                                \
-        if (allocation_cursor == NULL || allocation_end == NULL ||                                                     \
-            allocation_cursor->addr + allocation_size >= allocation_end->addr) {                                       \
-            AIScriptMissingStateDiagnostic();                                                                          \
+        if (allocation_cursor != NULL && allocation_end != NULL) {                                                     \
+            if (allocation_cursor->addr + allocation_size < allocation_end->addr) {                                    \
+                allocation_result = (void *)((allocation_cursor->addr + 15) & ~15u);                                   \
+                allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                   \
+                memset(allocation_result, 0, allocation_size);                                                         \
+            } else {                                                                                                   \
+                AIScriptMissingStateDiagnostic();                                                                      \
+            }                                                                                                          \
         } else {                                                                                                       \
-            u32 allocation_address = (allocation_cursor->addr + 15) & ~15u;                                            \
-            allocation_cursor->addr = allocation_address + allocation_size;                                            \
-            allocation_result = (void *)allocation_address;                                                            \
-            memset(allocation_result, 0, allocation_size);                                                             \
+            AIScriptMissingStateDiagnostic();                                                                          \
         }                                                                                                              \
         destination = (type)allocation_result;                                                                         \
     } while (0)
 
 void __cdecl AISYSRebuildFromEditorData(void) {
-    AISYS_PC *system = aieditor->ai_system;
-    AIPATHSYS_PC *created_path_system;
+    AISYS_PC *system;
     EDAIAREA_s *area;
     EDANTINODE_s *node;
     i32 index;
-    u32 storage_size;
-    if (system == NULL)
+    i32 storage_size;
+    if (aieditor->ai_system == NULL)
         return;
-    storage_size = REBUILD_STORAGE(system)->size;
-    memset(REBUILD_STORAGE(system)->storage, 0, storage_size);
-    system = aieditor->ai_system;
-    REBUILD_STORAGE(system)->cursor.void_ptr = REBUILD_STORAGE(system)->storage;
-    REBUILD_STORAGE(aieditor->ai_system)->size = storage_size;
-    system = aieditor->ai_system;
-    created_path_system =
-        pathEditorCreateData(&REBUILD_STORAGE(system)->cursor, &REBUILD_STORAGE(system)->end,
+    storage_size = aieditor->ai_system->storage_size;
+    memset(aieditor->ai_system->storage, 0, storage_size);
+    aieditor->ai_system->storage_cursor.void_ptr = aieditor->ai_system->storage;
+    aieditor->ai_system->storage_size = storage_size;
+    aieditor->ai_system->path_sys =
+        pathEditorCreateData(&aieditor->ai_system->storage_cursor, &aieditor->ai_system->storage_end,
                              &aieditorsettings.path_scratch_cursor, &aieditorsettings.path_scratch_end);
-    aieditor->ai_system->path_sys = created_path_system;
     memset(aieditor->ai_system->groups, 0, sizeof(aieditor->ai_system->groups));
     area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas);
     aieditor->ai_system->area_count = 0;
     for (; area != NULL; area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link))
         ++aieditor->ai_system->area_count;
     if (aieditor->ai_system->area_count != 0) {
-        system = aieditor->ai_system;
-        aieditor->ai_system->areas = (AIAREA_PC *)AISysBufferAlloc(
-            &REBUILD_STORAGE(system)->cursor, &REBUILD_STORAGE(system)->end, system->area_count * sizeof(AIAREA_PC));
+        aieditor->ai_system->areas =
+            (AIAREA_PC *)AISysBufferAlloc(&aieditor->ai_system->storage_cursor, &aieditor->ai_system->storage_end,
+                                          aieditor->ai_system->area_count * sizeof(AIAREA_PC));
         index = 0;
         for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
              area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
@@ -13400,10 +13378,9 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                 ++aieditor->ai_system->locator_count;
         }
         if (aieditor->ai_system->locator_count != 0) {
-            system = aieditor->ai_system;
-            aieditor->ai_system->locators =
-                (AILOCATOR_PC *)AISysBufferAlloc(&REBUILD_STORAGE(system)->cursor, &REBUILD_STORAGE(system)->end,
-                                                 system->locator_count * sizeof(AILOCATOR_PC));
+            aieditor->ai_system->locators = (AILOCATOR_PC *)AISysBufferAlloc(
+                &aieditor->ai_system->storage_cursor, &aieditor->ai_system->storage_end,
+                aieditor->ai_system->locator_count * sizeof(AILOCATOR_PC));
             index = 0;
             for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
                  locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
@@ -13420,34 +13397,26 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                 runtime->locator_flags = locator->path_check.angle;
                 runtime->position = locator->position;
                 runtime->path_info.path = aieditor->ai_system->path_sys->paths[locator->path_check.path->draw_index];
-                path = runtime->path_info.path;
                 runtime->path_info.distance = locator->path_check.fraction;
                 runtime->path_info.width = locator->path_check.width;
-                if (path == NULL || path->connection_count == 0)
+                if (runtime->path_info.path == NULL)
                     continue;
-                for (connection_index = 0; connection_index < path->connection_count; ++connection_index) {
-                    AIPATHCNX_PC *connection = &path->connections[connection_index];
+                for (connection_index = 0; connection_index < runtime->path_info.path->connection_count;
+                     ++connection_index) {
+                    AIPATHCNX_PC *connection = &runtime->path_info.path->connections[connection_index];
                     i32 first = locator->path_check.first->index;
                     if (connection->node_indices[0] == first &&
                         (u16)connection->node_indices[1] == (u16)locator->path_check.second->index) {
-                        i32 angle;
-                        i32 absolute;
                         runtime->path_info.connection = connection;
-                        angle = locator->path_check.angle;
-                        absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
-                        runtime->path_info.direction = absolute >= 0x4000;
+                        runtime->path_info.direction = abs(locator->path_check.angle) >= 0x4000;
                         break;
                     }
                     if (connection->node_indices[0] == locator->path_check.second->index &&
                         connection->node_indices[1] == first) {
-                        i32 angle;
-                        i32 absolute;
                         runtime->path_info.connection = connection;
                         runtime->path_info.distance = 1.0f - locator->path_check.fraction;
                         runtime->path_info.width = -locator->path_check.width;
-                        angle = locator->path_check.angle;
-                        absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
-                        runtime->path_info.direction = absolute < 0x4000;
+                        runtime->path_info.direction = abs(locator->path_check.angle) < 0x4000;
                         break;
                     }
                 }
@@ -13458,9 +13427,9 @@ void __cdecl AISYSRebuildFromEditorData(void) {
              set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link))
             ++aieditor->ai_system->locator_set_count;
         if (aieditor->ai_system->locator_set_count != 0) {
-            system = aieditor->ai_system;
             aieditor->ai_system->locator_sets = (AILOCATORSET_PC *)AISysBufferAlloc(
-                &REBUILD_STORAGE(system)->cursor, &REBUILD_STORAGE(system)->end, system->locator_set_count * 0x3c);
+                &aieditor->ai_system->storage_cursor, &aieditor->ai_system->storage_end,
+                aieditor->ai_system->locator_set_count * 0x3c);
             if (aieditor->ai_system->locator_sets != NULL) {
                 index = 0;
                 for (set = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); set != NULL;
@@ -13474,16 +13443,14 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                             ++runtime->locator_count;
                     }
                     if (runtime->locator_count != 0) {
-                        system = aieditor->ai_system;
-                        REBUILD_ALLOCATE(u8 *, runtime->locator_entries, &REBUILD_STORAGE(system)->cursor,
-                                         &REBUILD_STORAGE(system)->end, runtime->locator_count);
+                        REBUILD_ALLOCATE(u8 *, runtime->locator_entries, &aieditor->ai_system->storage_cursor,
+                                         &aieditor->ai_system->storage_end, runtime->locator_count);
                         for (member = 0; member < runtime->locator_count; ++member) {
                             if (set->locators[member]->runtime_index != 0xff)
                                 runtime->locator_entries[member] = set->locators[member]->runtime_index;
                         }
-                        system = aieditor->ai_system;
-                        REBUILD_ALLOCATE(u8 *, runtime->assigned, &REBUILD_STORAGE(system)->cursor,
-                                         &REBUILD_STORAGE(system)->end, runtime->locator_count);
+                        REBUILD_ALLOCATE(u8 *, runtime->assigned, &aieditor->ai_system->storage_cursor,
+                                         &aieditor->ai_system->storage_end, runtime->locator_count);
                         memset(runtime->assigned, 0, runtime->locator_count);
                     }
                 }
@@ -13495,9 +13462,9 @@ void __cdecl AISYSRebuildFromEditorData(void) {
              creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link))
             ++aieditor->ai_system->creature_count;
         if (aieditor->ai_system->creature_count != 0) {
-            system = aieditor->ai_system;
-            REBUILD_ALLOCATE(AICREATURE_PC *, aieditor->ai_system->creatures, &REBUILD_STORAGE(system)->cursor,
-                             &REBUILD_STORAGE(system)->end, system->creature_count * sizeof(AICREATURE_PC));
+            REBUILD_ALLOCATE(AICREATURE_PC *, aieditor->ai_system->creatures, &aieditor->ai_system->storage_cursor,
+                             &aieditor->ai_system->storage_end,
+                             aieditor->ai_system->creature_count * sizeof(AICREATURE_PC));
             index = 0;
             for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
                  creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
@@ -13505,8 +13472,8 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                 AIPATH_PC *path;
                 i32 connection_index;
                 i32 item;
-                strcpy(((AI_REBUILD_CREATURE_NAMES_PC *)runtime)->name, creature->name);
-                strcpy(((AI_REBUILD_CREATURE_NAMES_PC *)runtime)->script_name, creature->script_name);
+                strcpy(runtime->name, creature->name);
+                strcpy(runtime->script_name, creature->script_name);
                 runtime->type = creature->character_type;
                 runtime->set = creature->set;
                 runtime->count = creature->group_count;
@@ -13529,24 +13496,16 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                         i32 first = creature->check.first->index;
                         if (connection->node_indices[0] == first &&
                             (u16)connection->node_indices[1] == (u16)creature->check.second->index) {
-                            i32 angle;
-                            i32 absolute;
                             runtime->path_info.connection = connection;
-                            angle = creature->check.angle;
-                            absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
-                            runtime->path_info.direction = absolute >= 0x4000;
+                            runtime->path_info.direction = abs(creature->check.angle) >= 0x4000;
                             break;
                         }
                         if (connection->node_indices[0] == creature->check.second->index &&
                             connection->node_indices[1] == first) {
-                            i32 angle;
-                            i32 absolute;
                             runtime->path_info.connection = connection;
                             runtime->path_info.distance = 1.0f - creature->check.fraction;
                             runtime->path_info.width = -creature->check.width;
-                            angle = creature->check.angle;
-                            absolute = angle < 0 ? (i32)(0u - (u32)angle) : angle;
-                            runtime->path_info.direction = absolute < 0x4000;
+                            runtime->path_info.direction = abs(creature->check.angle) < 0x4000;
                             break;
                         }
                     }
@@ -13606,7 +13565,7 @@ void __cdecl AISYSRebuildFromEditorData(void) {
         }
         if (GameAISYSRebuildFromEditorDataFn != NULL) {
             system = aieditor->ai_system;
-            GameAISYSRebuildFromEditorDataFn(system, &REBUILD_STORAGE(system)->cursor, &REBUILD_STORAGE(system)->end);
+            GameAISYSRebuildFromEditorDataFn(system, &system->storage_cursor, &system->storage_end);
         }
     }
     aieditor->ai_system->antinode_count = 0;
@@ -13614,15 +13573,13 @@ void __cdecl AISYSRebuildFromEditorData(void) {
          node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link))
         ++aieditor->ai_system->antinode_count;
     if (aieditor->ai_system->antinode_count != 0) {
-        system = aieditor->ai_system;
-        REBUILD_ALLOCATE(AIANTINODE_PC *, aieditor->ai_system->antinodes, &REBUILD_STORAGE(system)->cursor,
-                         &REBUILD_STORAGE(system)->end, system->antinode_count * sizeof(AIANTINODE_PC));
+        REBUILD_ALLOCATE(AIANTINODE_PC *, aieditor->ai_system->antinodes, &aieditor->ai_system->storage_cursor,
+                         &aieditor->ai_system->storage_end,
+                         aieditor->ai_system->antinode_count * sizeof(AIANTINODE_PC));
         index = 0;
         for (node = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes); node != NULL;
              node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link)) {
             AIANTINODE_PC *runtime = &aieditor->ai_system->antinodes[index++];
-            AI_REBUILD_ANTINODE_BASE_PC *base = (AI_REBUILD_ANTINODE_BASE_PC *)runtime;
-            const volatile f32 *position_y = &runtime->position.y;
             runtime->enabled = 1;
             runtime->position = node->position;
             runtime->radius = node->radius;
@@ -13632,35 +13589,29 @@ void __cdecl AISYSRebuildFromEditorData(void) {
                 runtime->has_special = 1;
             runtime->special_position = node->special_position;
             runtime->rotation_offset = node->rotation_offset;
-            runtime->min_y = node->lower_height + *position_y;
-            runtime->max_y = node->upper_height + *position_y;
-            runtime->min_y_offset = runtime->min_y - *position_y;
-            runtime->max_y_offset = runtime->max_y - *position_y;
+            runtime->min_y = node->lower_height + runtime->position.y;
+            runtime->max_y = node->upper_height + runtime->position.y;
+            runtime->min_y_offset = runtime->min_y - runtime->position.y;
+            runtime->max_y_offset = runtime->max_y - runtime->position.y;
             runtime->rotation = node->flags;
-            base->radius = node->base_radius;
-            base->height = node->base_height;
+            runtime->base_radius = node->base_radius;
+            runtime->base_height = node->base_height;
             runtime->type = node->type;
             if (runtime->type == 2)
-                runtime->radius = NuFsqrt((f32)(base->radius * base->radius + base->height * base->height));
+                runtime->radius =
+                    NuFsqrt(runtime->base_radius * runtime->base_radius + runtime->base_height * runtime->base_height);
             else if (runtime->type == 1) {
-                if (base->radius > base->height)
-                    runtime->radius = base->radius;
+                if (runtime->base_radius > runtime->base_height)
+                    runtime->radius = runtime->base_radius;
                 else
-                    runtime->radius = base->height;
+                    runtime->radius = runtime->base_height;
             }
         }
     }
-    system = aieditor->ai_system;
-    if (system != NULL && system->path_sys != NULL) {
-        AIPATHSYS_PC *path_system = system->path_sys;
-        AIPATH_PC *path = path_system->paths[0];
-        if (path != NULL && path != path_system->active_path)
-            path_system->active_path = path;
-    }
+    AISysSetLevelPath(aieditor->ai_system, NULL);
 }
 
 #undef REBUILD_ALLOCATE
-#undef REBUILD_STORAGE
 
 /* The Native record has a four-byte mask, a five-word drawing callback,
  * a bounded 64-byte name and a final four-byte options word. */
