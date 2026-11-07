@@ -269,11 +269,13 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
     controller = (struct AIPATHCNXCONTROLLER_s *)NuLinkedListGetHead(&system->active);
     while (controller != NULL) {
         controller->flags_word &= (u16)~0x20u;
-        active = 0;
+        active = 1;
         switch (controller->target_type) {
             case 0:
-                if ((controller->flags_word & 4) != 0 && NuSpecialGetVisibilityFn(&controller->special) == 0)
+                if ((controller->flags_word & 4) != 0 && NuSpecialGetVisibilityFn(&controller->special) == 0) {
+                    active = 0;
                     break;
+                }
                 animation = (NUINSTANIM *)NuSpecialGetInstAnim(&controller->special);
                 if (animation == NULL)
                     goto frame_one;
@@ -291,8 +293,8 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                     frame = end;
                 }
                 --frame;
-                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) != 0)
-                    active = 1;
+                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) == 0)
+                    active = 0;
                 break;
             case 1:
                 cut = (CONTROLLER_CUT_VIEW_PC *)controller->target;
@@ -305,20 +307,20 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                 else if (frame > end)
                     frame = end;
                 --frame;
-                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) != 0)
-                    active = 1;
+                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) == 0)
+                    active = 0;
                 break;
             case 2:
-                if (((GIZBUILDIT_PC *)controller->target)->build_state == 2)
-                    active = 1;
+                if (((GIZBUILDIT_PC *)controller->target)->build_state != 2)
+                    active = 0;
                 break;
             case 3:
-                if (GizmoGetOutput(WORLD->gizmo_sys, controller->target, controller->gizmo_output, 1) != 0)
-                    active = 1;
+                if (GizmoGetOutput(WORLD->gizmo_sys, controller->target, controller->gizmo_output, 1) == 0)
+                    active = 0;
                 break;
             case 4:
-                if ((((GIZMOBLOWUP_PC *)controller->target)->status_flags & 1) == 0)
-                    active = 1;
+                if ((((GIZMOBLOWUP_PC *)controller->target)->status_flags & 1) != 0)
+                    active = 0;
                 break;
             case 5:
                 end = (i32)fakeanimendframe[controller->fake_animation_id];
@@ -330,40 +332,28 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                 else if (frame > end)
                     frame = end;
                 --frame;
-                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) != 0)
-                    active = 1;
+                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) == 0)
+                    active = 0;
                 break;
             case 6:
-                if ((((FLOWBOX_PC *)controller->target)->state_flags_low & 2) != 0)
-                    active = 1;
+                if ((((FLOWBOX_PC *)controller->target)->state_flags_low & 2) == 0)
+                    active = 0;
                 break;
             case 7:
-                if (GizForce_Complete((GIZFORCE_PC *)controller->target) != 0)
-                    active = 1;
+                if (GizForce_Complete((GIZFORCE_PC *)controller->target) == 0)
+                    active = 0;
                 break;
             case 8:
-                if (((GIZOBSTACLE *)controller->target)->anim_set->state == 2)
-                    active = 1;
+                if (((GIZOBSTACLE *)controller->target)->anim_set->state != 2)
+                    active = 0;
                 break;
             case 9:
                 zipup_flags = *(u16 *)&((struct ZIPUP_s *)controller->target)->flags;
-                if ((zipup_flags & 0x40) != 0 && (i8)zipup_flags < 0)
-                    active = 1;
-                break;
-            default:
-                active = 1;
+                if ((zipup_flags & 0x40) == 0 || (i8)zipup_flags >= 0)
+                    active = 0;
                 break;
         }
-        if (active == 0) {
-            controller->connection->open = (u8)((controller->flags_word >> 4) & 1);
-            controller->connection->traversal_flags[controller->flags_word & 1] &= ~controller->on_flags;
-            controller->connection->traversal_flags[controller->flags_word & 1] |= controller->off_flags;
-            flags = controller->flags_word;
-            if ((flags & 2) != 0) {
-                controller->connection->traversal_flags[(u8)~flags & 1] &= ~controller->on_flags;
-                controller->connection->traversal_flags[(u8)~controller->flags_word & 1] |= controller->off_flags;
-            }
-        } else {
+        if (active != 0) {
             controller->flags_word |= 0x20;
             controller->connection->open = (u8)((controller->flags_word >> 3) & 1);
             controller->connection->traversal_flags[controller->flags_word & 1] &= ~controller->off_flags;
@@ -372,6 +362,15 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
             if ((flags & 2) != 0) {
                 controller->connection->traversal_flags[(u8)~flags & 1] &= ~controller->off_flags;
                 controller->connection->traversal_flags[(u8)~controller->flags_word & 1] |= controller->on_flags;
+            }
+        } else {
+            controller->connection->open = (u8)((controller->flags_word >> 4) & 1);
+            controller->connection->traversal_flags[controller->flags_word & 1] &= ~controller->on_flags;
+            controller->connection->traversal_flags[controller->flags_word & 1] |= controller->off_flags;
+            flags = controller->flags_word;
+            if ((flags & 2) != 0) {
+                controller->connection->traversal_flags[(u8)~flags & 1] &= ~controller->on_flags;
+                controller->connection->traversal_flags[(u8)~controller->flags_word & 1] |= controller->off_flags;
             }
         }
         controller = (struct AIPATHCNXCONTROLLER_s *)NuLinkedListGetNext(&system->active, &controller->links);
