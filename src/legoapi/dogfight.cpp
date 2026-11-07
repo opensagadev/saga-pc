@@ -1637,6 +1637,7 @@ extern "C" {
     }
 
     static __declspec(noinline) void DogfightResetSpacePc(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
+        NUVEC4 *direction;
         f32 value;
         i32 i;
         GAMEOBJECT *first, *second;
@@ -1648,12 +1649,13 @@ extern "C" {
         space->origin_start.y = DogfightOriginStartYPc;
         space->origin_start.z = DogfightOriginStartZPc;
         space->origin_start.w = 0.0f;
-        space->direction.x = space->origin_end.x - space->origin_start.x;
-        space->direction.y = space->origin_end.y - space->origin_start.y;
-        space->direction.z = space->origin_end.z - space->origin_start.z;
-        space->direction.x = (f32)((f64)space->direction.x * (f64)1.1f);
-        space->direction.y = (f32)((f64)space->direction.y * (f64)1.1f);
-        space->direction.z = (f32)((f64)space->direction.z * (f64)1.1f);
+        direction = &space->direction;
+        direction->x = space->origin_end.x - space->origin_start.x;
+        direction->y = space->origin_end.y - space->origin_start.y;
+        direction->z = space->origin_end.z - space->origin_start.z;
+        direction->x *= (f64)1.1f;
+        direction->y *= (f64)1.1f;
+        direction->z *= (f64)1.1f;
         space->origin_end.x = space->direction.x + space->origin_start.x;
         space->origin_end.y = space->origin_start.y + space->direction.y;
         space->origin_end.z = space->origin_start.z + space->direction.z;
@@ -1664,7 +1666,7 @@ extern "C" {
         space->inverse_direction_length = (f32)(1.0 / value);
         first = (GAMEOBJECT *)Player[0];
         second = (GAMEOBJECT *)Player[1];
-        for (i = 6; i >= 0; --i) {
+        for (i = 6; i != -1; --i) {
             if (first != NULL && first->sock_position.distance > DogfightDoorsPc[i].distance)
                 break;
             if (second != NULL && second->sock_position.distance > DogfightDoorsPc[i].distance)
@@ -2204,36 +2206,38 @@ extern "C" {
         fighter->fired = 0;
         fighter->delete_when_done = 0;
         model = spline->model_id;
-        switch (model) {
-            case 87:
-                fighter->model_id = -297;
-                break;
-            case 86:
-                fighter->model_id = -299;
-                break;
-            case 54:
-                fighter->model_id = -298;
-                break;
-            case 85:
-            case 84:
-                fighter->model_id = -300;
-                break;
-            default:
-                fighter->model_id = (i16)model;
-                break;
-        }
+        if (model == 87)
+            fighter->model_id = -297;
+        else if (model == 86)
+            fighter->model_id = -299;
+        else if (model == 54)
+            fighter->model_id = -298;
+        else if (model == 85)
+            fighter->model_id = -300;
+        else if (model == 84)
+            fighter->model_id = -300;
+        else
+            fighter->model_id = (i16)model;
         fighter->scale = 1.0f;
         fighter->draw_flags = 1;
+        fighter->speed = 50.0f;
         fighter->object_id = spline->object_id;
         fighter->target_id = (i16)spline->target_id;
         fighter->missile_count = 1;
-        fighter->speed = 50.0f;
-        if (model == 84 || model == 85 || model == 86 || model == 87)
+        model = spline->model_id;
+        if (model == 85 || model == 84 || model == 86) {
+            fighter->scale = 1.0f;
             fighter->speed = 22.5f;
-        else if (model == 54)
+        } else if (model == 54) {
             fighter->scale = 2.0f;
-        else if (model == -307)
+            fighter->speed = 50.0f;
+        } else if (model == 87) {
+            fighter->scale = 1.0f;
+            fighter->speed = 22.5f;
+        } else if (model == -307) {
+            fighter->scale = 1.0f;
             fighter->speed = 33.0f;
+        }
     }
 
     static __declspec(noinline) void ProcessFlightSplinePc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
@@ -2381,7 +2385,7 @@ extern "C" {
         player1 = (GAMEOBJECT *)Player[1];
         player0 = (GAMEOBJECT *)Player[0];
         index = -1;
-        for (i = 6; i >= 0; --i) {
+        for (i = 6; i != -1; --i) {
             if ((player0 != NULL && player0->sock_position.distance > DogfightDoorsPc[i].distance) ||
                 (player1 != NULL && player1->sock_position.distance > DogfightDoorsPc[i].distance)) {
                 index = i;
