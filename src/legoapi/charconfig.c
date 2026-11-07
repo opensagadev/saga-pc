@@ -2384,19 +2384,17 @@ i32 __cdecl MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u3
 
 i32 __cdecl CharCategory_IsCategory(GAMEOBJECT *object, i32 index) {
     CHAR_CATEGORY_RECORD_PC *category;
-    u32 model_flags, game_flags;
     if (index < 0 || index >= CHARCATEGORYCOUNT)
         return 0;
     category = &CharCategory[index];
-    model_flags = category->model_flags;
-    if (model_flags != 0) {
-        if ((model_flags & 8) != 0 && (object->character_data->game_character->flags_094 & 0x8000) != 0)
+    if (category->model_flags != 0) {
+        if ((category->model_flags & 8) != 0 && (object->character_data->game_character->flags_094 & 0x8000) != 0)
             return 0;
-        if ((object->character_data->model_flags & model_flags) != model_flags)
+        if ((object->character_data->model_flags & category->model_flags) != category->model_flags)
             return 0;
     }
-    game_flags = category->game_flags;
-    if (game_flags != 0 && (object->character_data->game_character->flags_090 & game_flags) != game_flags)
+    if (category->game_flags != 0 &&
+        (object->character_data->game_character->flags_090 & category->game_flags) != category->game_flags)
         return 0;
     return 1;
 }

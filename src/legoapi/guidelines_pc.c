@@ -4,12 +4,18 @@ typedef struct guideline_record_pc_s {
     char name[8];
     NUVEC start_position;
     NUVEC end_position;
-    u8 flags;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+        };
+    };
     u8 unknown_21[3];
 } GUIDELINE_RECORD_PC;
 typedef struct guideline_progress_pc_s {
-    u32 active_mask;
-    u32 visible_mask;
+    u32 active_mask[1];
+    u32 visible_mask[1];
 } GUIDELINE_PROGRESS_PC;
 STATIC_ASSERT(sizeof(GUIDELINE_RECORD_PC) == 0x24);
 STATIC_ASSERT(offsetof(GUIDELINE_RECORD_PC, start_position) == 8);
@@ -60,9 +66,8 @@ void __cdecl GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
     for (index = 0; index < world->guideline_count; ++index, ++guide) {
         guide->flags |= 3;
         if (progress != NULL && index < 32) {
-            u32 mask = 1u << index;
-            guide->flags = (u8)((guide->flags & ~2u) | ((progress->visible_mask & mask) != 0 ? 2 : 0));
-            guide->flags = (u8)((guide->flags & ~1u) | ((progress->active_mask & mask) != 0));
+            guide->visible = (progress->visible_mask[index / 32] & (1 << (index & 31))) != 0;
+            guide->active = (progress->active_mask[index / 32] & (1 << (index & 31))) != 0;
         }
     }
 }
@@ -111,8 +116,8 @@ void *__cdecl GuideLines_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 void __cdecl GuideLines_ClearProgress(void *world, GUIDELINE_PROGRESS_PC *progress) {
     if (progress != NULL) {
-        progress->active_mask = 0xffffffffu;
-        progress->visible_mask = 0xffffffffu;
+        progress->active_mask[0] = 0xffffffffu;
+        progress->visible_mask[0] = 0xffffffffu;
     }
 }
 
@@ -121,17 +126,17 @@ void __cdecl GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_
     i32 index;
     if (progress == NULL)
         return;
-    progress->active_mask = 0xffffffffu;
-    progress->visible_mask = 0xffffffffu;
+    progress->active_mask[0] = 0xffffffffu;
+    progress->visible_mask[0] = 0xffffffffu;
     if (world == NULL || world->guidelines == NULL)
         return;
     guide = (GUIDELINE_RECORD_PC *)world->guidelines;
     for (index = 0; index < world->guideline_count && index < 32; ++index, ++guide) {
         u32 mask = 1u << index;
         if ((guide->flags & 2) == 0)
-            progress->visible_mask &= ~mask;
+            progress->visible_mask[0] &= ~mask;
         if ((guide->flags & 1) == 0)
-            progress->active_mask &= ~mask;
+            progress->active_mask[0] &= ~mask;
     }
 }
 
