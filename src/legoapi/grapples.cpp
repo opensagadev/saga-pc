@@ -920,29 +920,30 @@ STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC) == 0x24);
 extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags,
                                        NUMTL *unused_material) {
     NURND_VERTEX3D_PC vertices[2];
+    NUVEC previous;
+    NUVEC middle;
+    i32 index;
     (void)unused_flags;
     (void)unused_material;
     if (count < 3)
         return;
     vertices[0].colour = 0xffffffffu;
     vertices[1].colour = 0xffffffffu;
-    f32 previous_x = ((f64)points[0].x - start->x) * 0.5 + start->x;
-    f32 previous_y = ((f64)points[0].y - start->y) * 0.5 + start->y;
-    f32 previous_z = ((f64)points[0].z - start->z) * 0.5 + start->z;
+    previous.x = ((f64)points[0].x - start->x) * 0.5 + start->x;
+    previous.y = ((f64)points[0].y - start->y) * 0.5 + start->y;
+    previous.z = ((f64)points[0].z - start->z) * 0.5 + start->z;
     vertices[0].position = *start;
-    vertices[1].position.x = previous_x;
-    vertices[1].position.y = previous_y;
-    vertices[1].position.z = previous_z;
+    vertices[1].position = previous;
     NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
     f32 step = 1.0 / RopeCurveSubdivisionsPc;
     f32 first_phase = 1.0f - step;
-    for (i32 index = 0; index < count - 1; ++index) {
-        f32 middle_x = ((f64)points[index + 1].x - points[index].x) * 0.5 + points[index].x;
-        f32 middle_y = ((f64)points[index + 1].y - points[index].y) * 0.5 + points[index].y;
-        f32 middle_z = ((f64)points[index + 1].z - points[index].z) * 0.5 + points[index].z;
-        vertices[0].position.x = previous_x;
-        vertices[0].position.y = previous_y;
-        vertices[0].position.z = previous_z;
+    NUVEC *current = points;
+    NUVEC *next = points + 1;
+    for (index = 0; index < count - 1; ++index) {
+        middle.x = ((f64)next->x - current->x) * 0.5 + current->x;
+        middle.y = ((f64)next->y - current->y) * 0.5 + current->y;
+        middle.z = ((f64)next->z - current->z) * 0.5 + current->z;
+        vertices[0].position = previous;
         f32 phase = first_phase;
         for (i32 sample = 0; sample < RopeCurveSubdivisionsPc; ++sample) {
             f32 complement = 1.0f - phase;
@@ -950,20 +951,20 @@ extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i
             f32 complement_squared = complement * complement;
             f64 mixed = ((f64)phase + phase) * complement;
             vertices[1].position.x =
-                ((f64)phase_squared * previous_x + points[index].x * mixed) + (f64)complement_squared * middle_x;
+                ((f64)phase_squared * previous.x + current->x * mixed) + (f64)complement_squared * middle.x;
             vertices[1].position.y =
-                ((f64)phase_squared * previous_y + points[index].y * mixed) + (f64)complement_squared * middle_y;
+                ((f64)phase_squared * previous.y + current->y * mixed) + (f64)complement_squared * middle.y;
             vertices[1].position.z =
-                ((f64)phase_squared * previous_z + points[index].z * mixed) + (f64)complement_squared * middle_z;
+                ((f64)phase_squared * previous.z + current->z * mixed) + (f64)complement_squared * middle.z;
             NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
             vertices[0] = vertices[1];
             phase -= step;
         }
-        previous_x = middle_x;
-        previous_y = middle_y;
-        previous_z = middle_z;
+        previous = middle;
+        current = next;
+        ++next;
     }
-    vertices[1].position = points[count - 1];
+    vertices[1].position = points[index];
     NuRndrLine3d(vertices, ZipUpLineMaterialPc, NULL);
 }
 
