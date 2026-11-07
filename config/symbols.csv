@@ -5745,6 +5745,18 @@ address,symbol,size,ctype
 0x5b1500,?InitFade@FadeStill@@UAEXXZ,110,
 0x5b1570,?UpdateFade@FadeStill@@UAEXXZ,20,
 0x5b1590,?DrawFade@FadeStill@@UAEXXZ,42,
+0x5b15e0,??1ThingManager@@UAE@XZ,7,
+0x5b15f0,??3ThingManager@@SAXPAX@Z,18,
+0x5b1610,??_EThingManager@@UAEPAXI@Z,,COFF weak alias of ??_GThingManager@@UAEPAXI@Z; no independent body
+0x5b1610,??_GThingManager@@UAEPAXI@Z,35,
+0x5b1640,??2GameThingManager@@SAPAXI@Z,18,
+0x5b1660,??0GameThingManager@@QAE@H@Z,31,
+0x5b1680,??3GameThingManager@@SAXPAX@Z,18,
+0x5b16a0,??1GameThingManager@@UAE@XZ,17,
+0x5b16c0,?AddOnceOnlyThings@GameThingManager@@QAEXXZ,1,
+0x5b16e0,?CreateThingManager@@YAXXZ,56,
+0x5b1720,??_EGameThingManager@@UAEPAXI@Z,,COFF weak alias of ??_GGameThingManager@@UAEPAXI@Z; no independent body
+0x5b1720,??_GGameThingManager@@UAEPAXI@Z,45,
 0x5b1770,_InitSpecialSfx,142,i32 __cdecl (void *)
 0x5b1810,_SpecialSfxLoad,596,"i32 __cdecl (char *, void *)"
 0x5b1a70,_SpecialSfxAdd,150,
@@ -7574,6 +7586,25 @@ address,symbol,size,ctype
 0x633520,?ProcessEvenWhenPaused@BaseThing@@UAEXPAUThingProcessData@@@Z,3,
 0x633530,?Display@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
 0x633540,??1BaseThing@@UAE@XZ,7,
+0x633550,??0ThingManager@@QAE@H@Z,133,
+0x6335e0,?AddThing@ThingManager@@UAEXPAVBaseThing@@@Z,44,
+0x633610,?AddThingAfterThis@ThingManager@@UAEPAVBaseThing@@PAV2@@Z,41,
+0x633640,?EnableActions@ThingManager@@QAEXIIH@Z,84,
+0x6336a0,?RemoveTemporaryThings@ThingManager@@UAEXXZ,70,
+0x6336f0,?RemoveDependanciesThings@ThingManager@@UAEHPAUThingRemoveData@@@Z,79,
+0x633740,?ResetThings@ThingManager@@UAEXPAUThingResetData@@@Z,122,
+0x6337c0,?EnterLevelThings@ThingManager@@UAEXPAUThingLevelData@@@Z,70,
+0x633810,?ExitLevelThings@ThingManager@@UAEXPAUThingLevelData@@@Z,71,
+0x633860,?ProcessThings@ThingManager@@UAEXPAUThingProcessData@@@Z,350,
+0x6339c0,?RenderThings@ThingManager@@UAEXPAUThingRenderData@@@Z,122,
+0x633a40,?DisplayThings@ThingManager@@UAEXPAUThingRenderData@@@Z,122,
+0x633ac0,?EffectsThings@ThingManager@@UAEXPAUThingRenderData@@@Z,122,
+0x633b40,?cbEdTrackCancel@ThingManager@@SAXPAUeduimenu_s@@0@Z,24,
+0x633b60,?cbEdTimingSelect@ThingManager@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,206,
+0x633c30,?edTimingInit@ThingManager@@SAXXZ,13,
+0x633c40,?edTimingEnter@ThingManager@@SAXXZ,306,
+0x633d80,?edTimingProc@ThingManager@@SAHMPAUFRAME_PAD_PC@@@Z,63,
+0x633dc0,?edTimingRender@ThingManager@@SAXXZ,13,
 0x633dd0,??_EBaseThing@@UAEPAXI@Z,,COFF weak alias of ??_GBaseThing@@UAEPAXI@Z; no independent body
 0x633dd0,??_GBaseThing@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x633df0,_rtlSwapSetEndianess,1,void __cdecl rtlSwapSetEndianess(void *)
@@ -17410,6 +17441,8 @@ address,symbol,size,ctype
 0x763ee4,??_C@_0L@DIDLKDDJ@Minicut?5?$CFi?$AA@,,
 0x763ef0,??_C@_07HPGEBA@MiniCut?$AA@,,
 0x763ef8,__real@bfaaaaab,,f32
+0x763f00,??_7ThingManager@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x763f34,??_7GameThingManager@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x763f64,??_C@_06NOGHJDKO@?$CFs?4sfx?$AA@,,const char[]
 0x763f6c,_EditorSplineFileCheckTextPc,13,const char[13]
 0x00763f7c,_MoviesListKeywordPc,6,const char[6]
@@ -17785,7 +17818,16 @@ address,symbol,size,ctype
 0x76b1c0,??_C@_02POGCAHMO@th?$AA@,3,const char[]
 0x76b1c8,__real@4040aaaac0000000,8,const double
 0x76b1d0,??_C@_0BK@POOFCPDO@?4?2pc?2Bink?2dsplay_bink?4cpp?$AA@,26,const char[]
+0x76b200,??_C@_07OHKEKKIE@Timings?$AA@,8,const char[]
 0x76b20c,??_7BaseThing@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b23c,??_C@_03PFLBMEDE@Res?$AA@,4,const char[]
+0x76b240,??_C@_04MAFINGDL@PROC?$AA@,5,const char[]
+0x76b248,??_C@_03PMGHKPED@Rnd?$AA@,4,const char[]
+0x76b24c,??_C@_03IJNJDFBD@Dis?$AA@,4,const char[]
+0x76b250,??_C@_02JDEPCEGB@Fx?$AA@,3,const char[]
+0x76b254,??_C@_0L@DOCIFOCL@All?5Things?$AA@,11,const char[]
+0x76b260,??_C@_09NDMGKOLG@No?5Things?$AA@,10,const char[]
+0x76b26c,??_C@_06JIODDOFH@System?$AA@,7,const char[]
 0x76b274,_MenuPcString76b274,4,const char[4]
 0x0076b290,??_C@_0BB@CBCHIBBA@L1?9PREV?0?5R1?9NEXT?$AA@,,const char[]
 0x0076b2a8,??_C@_0GH@OGBPIOIB@X?$DNADD?0?5TRI?$DNDEL?0L?9UP?$DNLOCK?0O?$DNADJUS@,,const char[]
@@ -21266,6 +21308,14 @@ address,symbol,size,ctype
 0x7ea684,??_R3FadeStill@@8,,
 0x7ea694,??_R2FadeStill@@8,,
 0x7ea6a0,??_R1A@?0A@EA@FadeStill@@8,,
+0x7ea6bc,??_R4ThingManager@@6B@,,
+0x7ea6d0,??_R3ThingManager@@8,,
+0x7ea6e0,??_R2ThingManager@@8,,
+0x7ea6e8,??_R1A@?0A@EA@ThingManager@@8,,
+0x7ea704,??_R4GameThingManager@@6B@,,
+0x7ea718,??_R3GameThingManager@@8,,
+0x7ea728,??_R2GameThingManager@@8,,
+0x7ea734,??_R1A@?0A@EA@GameThingManager@@8,,
 0x7ea750,??_R4NuPostFilterGen@@6B@,20,native complete RTTI data
 0x7ea764,??_R3NuPostFilterGen@@8,16,native complete RTTI data
 0x7ea774,??_R2NuPostFilterGen@@8,5,native complete RTTI data
@@ -23579,6 +23629,7 @@ address,symbol,size,ctype
 0x80fc60,_FmvCopyFlagsPc,4,i32
 0x80fc64,_FmvVolumePc,4,f32
 0x80fcd0,_FmvFrequencyPc,8,LARGE_INTEGER
+0x80fce4,_EdAttr,16,u32[4]
 0x80fde0,_rtl_helper_radius,,f32
 0x80fde4,_rtl_dynamic_lights_enabled,,i32
 0x80fde8,_RtlFileVersionPc,,i32
@@ -26712,7 +26763,7 @@ address,symbol,size,ctype
 0x95e3b8,?MiniCutAddTypePc@?1??MiniCut_RegisterGizmo@@9@9,,
 0x95e430,_wait_till_next_frame,,i32
 0x0095e434,?fade_draw_suppressed@@3HA,4,i32
-0x95e438,_GameThingManagerPc,4,GAME_THING_MANAGER_PC *
+0x95e438,_GameThingManagerPc,4,GameThingManager *
 0x95e43c,_splineStore,,NUGSPLINE *
 0x95e440,_numSplinesLoaded,,i32
 0x95e444,_MoviePlayTime,4,f32
@@ -27276,6 +27327,8 @@ address,symbol,size,ctype
 0x2913240,_FmvSleepErrorPc,4,i32
 0x2913244,_FmvSleepCarryPc,4,i32
 0x2913248,_FmvFrequencyReadyPc,4,i32
+0x2913254,_theThingManager,4,ThingManager *
+0x2913258,_edTimingMenu,4,eduimenu_s *
 0x002913270,_theMemoryManager,584,MEMORYMANAGER
 0x29134b8,_rt_low_item,,eduiitem_s *
 0x29134bc,_modifierid_item,,eduiitem_s *

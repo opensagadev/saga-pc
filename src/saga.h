@@ -29146,6 +29146,70 @@ class BaseThing {
     i32 profiling;
 };
 
+/* The packet ProcessThings hands every thing (NuMainUpdateFrame, Movie_CallBack). */
+struct ThingProcessData {
+    f32 frame_time;
+    i32 paused;
+    NUPAD_INIT_STATE **pads;
+    i32 pad_count;
+};
+
+/* Fixed-capacity list of BaseThings run once per pass (Android ThingManager).
+ * Every pass is virtual; the 0x24-byte object comes from theMemoryManager's
+ * pools and its thing array from the permanent buffer. */
+class ThingManager {
+  public:
+    ThingManager(i32 max_things);
+    virtual ~ThingManager() {
+    }
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(ThingManager));
+    }
+    virtual void AddThing(BaseThing *thing);
+    virtual BaseThing *AddThingAfterThis(BaseThing *thing);
+    virtual void RemoveTemporaryThings();
+    virtual i32 RemoveDependanciesThings(ThingRemoveData *data);
+    virtual void ResetThings(ThingResetData *data);
+    virtual void EnterLevelThings(ThingLevelData *data);
+    virtual void ExitLevelThings(ThingLevelData *data);
+    virtual void ProcessThings(ThingProcessData *data);
+    virtual void RenderThings(ThingRenderData *data);
+    virtual void DisplayThings(ThingRenderData *data);
+    virtual void EffectsThings(ThingRenderData *data);
+    void EnableActions(u32 id, u32 flags, i32 clear);
+    static void cbEdTrackCancel(struct eduimenu_s *menu, struct eduimenu_s *parent);
+    static void cbEdTimingSelect(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    static void edTimingInit();
+    static void edTimingEnter();
+    static i32 edTimingProc(f32 delta_time, struct FRAME_PAD_PC *pad);
+    static void edTimingRender();
+
+    BaseThing **things;
+    i32 max_things;
+    i32 count;
+    i32 permanent_count;
+    i32 pending;
+    i32 timebar;
+    i32 timing_thing;
+    i32 timing_state;
+};
+
+/* The game's ThingManager (GameThingManagerPc); PC registers no things. */
+class GameThingManager : public ThingManager {
+  public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(GameThingManager));
+    }
+    GameThingManager(i32 max_things);
+    virtual ~GameThingManager();
+    void AddOnceOnlyThings();
+};
+extern "C" GameThingManager *GameThingManagerPc;
+void CreateThingManager();
+
 /* Editor object-class interface (Android gameapi_edtools_types.h). MSVC lays
  * overloaded virtuals out in reverse declaration order, so the filtered
  * GetNextObject sits in slot 4 and the two-vector DistanceToObject in slot 27. */
