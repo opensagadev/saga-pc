@@ -18,7 +18,7 @@ extern "C" {
 }
 
 extern "C" void __cdecl InitOnce(i32 argc, char **argv) {
-    STUBBED_NAMED(0x006dc890); /* (configuration-key75152c), 4011fe */
+    PcNativeSelectLanguage(InitOnceEmptyConfigPc);
     original_permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, InitOnceAllocSource, 0x112);
     superbuffer_end.addr = original_permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
     permbuffer_base = original_permbuffer_base;

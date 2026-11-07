@@ -619,18 +619,9 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
     InitShadowLights();
     GamePads_Init();
     bgProcInit();
-    if (nu_input_state != NULL) {
-        FinishLoop(2);
-    } else {
-        STUBBED_NAMED("NuMain: FinishLoop waits for PC input-state setup in InitOnce");
-    }
+    FinishLoop(2);
     Text_InitLanguageList(Game_LanguageList);
     Text_SetLanguage(-1);
-    // LoadPerm calls NuFrameBegin, which needs the still-unreconstructed input owner.
-    if (nu_input_state == NULL) {
-        STUBBED_NAMED("NuMain: PC input-state setup before LoadPerm");
-        return 0;
-    }
     StartPerm();
     LoadPerm();
     EndPerm();
@@ -650,13 +641,6 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
     }
     if (Level == -1) {
         Level = 0;
-    }
-
-    // GAME.DAT contains the level and area lists, but their PC parser path is
-    // still stubbed, so stop before indexing absent table data.
-    if (LDataList == NULL || ADataList == NULL) {
-        STUBBED_NAMED("NuMain: GAME.DAT level and area tables");
-        return 0;
     }
 
     Area = LDataList[Level].area_index;
