@@ -3296,7 +3296,7 @@ extern "C" void __cdecl WipeBackToHub(void);
 static void HubDrawSelectModePc(void);
 static void HubDrawBonusModePc(void);
 static void HubUpdateBonusModePc(void);
-static void HubInitFreePlaySelectPc(i32, i32, i32);
+void HubInitFreePlaySelectPc(i32, i32, i32);
 
 /* 475020/105. */
 static void HubInitSelectModePc(void) {
@@ -3359,10 +3359,11 @@ static void HubUpdateSelectModePc(void) {
                 }
             }
             if (confirm) {
-                GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                if (lost_temple)
+                if (lost_temple) {
+                    GameAudio_PlaySfx(0x30, NULL, 0, 0);
                     selectmodemode = 4;
-                else {
+                } else {
+                    GameAudio_PlaySfx(0x30, NULL, 0, 0);
                     switch (hub_selectmode) {
                         case 0:
                             selectmodemode = 2;
@@ -3804,7 +3805,7 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
 }
 
 /* 47ba10/340. Native copied collection data chooses default model pair. */
-static void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
+void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
     COLLECTION_BUILD_PC *collection;
     if ((ADataList[area].flags & 1) != 0)
         collection = (ADataList[area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc;
