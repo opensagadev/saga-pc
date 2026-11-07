@@ -17,16 +17,14 @@ void NuDynamicLight::resetGeometry() {
     for (i32 i = 0; i < render_set_count_pc; ++i) {
         NURNDRLIGHTRECORD &set = render_sets_pc[i];
         set.count = 0;
-        NuDisplayListResetStateCache(set.shadow_lists_pc[0].state);
-        set.shadow_lists_pc[0].material_last = set.shadow_lists_pc[0].first;
-        set.shadow_lists_pc[0].first->type = 0x8d;
-        set.shadow_lists_pc[0].first->next = NULL;
-        set.shadow_lists_pc[0].first->id = 1;
-        NuDisplayListResetStateCache(set.shadow_lists_pc[1].state);
-        set.shadow_lists_pc[1].material_last = set.shadow_lists_pc[1].first;
-        set.shadow_lists_pc[1].first->type = 0x8d;
-        set.shadow_lists_pc[1].first->next = NULL;
-        set.shadow_lists_pc[1].first->id = 1;
+        for (i32 j = 0; j < 2; ++j) {
+            NuDisplayListResetStateCache(set.shadow_lists_pc[j].state);
+            NUDISPLAYLISTITEM *item = set.shadow_lists_pc[j].first;
+            set.shadow_lists_pc[j].material_last = item;
+            item->type = 0x8d;
+            item->next = NULL;
+            item->id = 1;
+        }
     }
 }
 /* Eight-slot renderer object pools; slot storage keeps the 16-byte stride. */
