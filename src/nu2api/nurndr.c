@@ -1502,6 +1502,94 @@ void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_
     }
 }
 
+/* Third hierarchy shadow shape: an outline of edge groups and their points. */
+typedef struct PC_SHADOW_EDGE_SET_PC {
+    PC_SHADOW_EDGE_PC *groups;
+    PC_SHADOW_EDGE_PC *points;
+} PC_SHADOW_EDGE_SET_PC;
+
+/* Builds the shadow-volume arena from the queued hierarchy shadow packets, one light setup per packet sequence. */
+void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
+    PC_HG_SHADOW_PACKET *packet;
+    NUVEC *direction;
+    NUVEC offset;
+    f32 near_value;
+    f32 far_value;
+    f32 distance;
+    f32 low;
+    f32 high;
+    i32 sequence = -1;
+    i32 visible = 0;
+    i32 mode = 1;
+    i32 i;
+    i32 j;
+
+    RendererArenaIndexCountPc = 0;
+    for (i = 0; i < PCShadowPacketCount; i++) {
+        packet = &PCShadowPackets[i];
+        if (packet->sequence != sequence) {
+            sequence = packet->sequence;
+            low = 10000000.0f;
+            high = -10000000.0f;
+            near_value = packet->near_value;
+            far_value = packet->far_value;
+            distance = (packet->matrix.m30 - global_camera.mtx.m30) * (packet->matrix.m30 - global_camera.mtx.m30) +
+                       (packet->matrix.m31 - global_camera.mtx.m31) * (packet->matrix.m31 - global_camera.mtx.m31) +
+                       (packet->matrix.m32 - global_camera.mtx.m32) * (packet->matrix.m32 - global_camera.mtx.m32);
+            if (distance >= far_value * far_value) {
+                visible = 0;
+                continue;
+            }
+            visible = 1;
+            direction = (NUVEC *)&packet->state0;
+            if (direction->x >= 65536.0f) {
+                offset.x = 0.0f;
+                offset.y = -1.0f;
+                offset.z = 0.0f;
+                NuRndrShadowDirectionsSetupPc(&offset);
+                offset.y = -4.0f;
+                if (mode != 5 && direction->z == 0.0f) {
+                    mode = 5;
+                }
+                low = direction->y;
+                high = direction->z;
+            } else {
+                offset.x = direction->x;
+                offset.y = direction->y;
+                offset.z = direction->z;
+                if (mode != 1) {
+                    mode = 1;
+                }
+                NuRndrShadowDirectionsSetupPc(&offset);
+                offset.x *= 4.0;
+                offset.y *= 4.0;
+                offset.z *= 4.0;
+            }
+            if (distance > near_value * near_value) {
+                distance = NuFsqrt(distance);
+            }
+        } else if (visible == 0) {
+            continue;
+        }
+        if (packet->cylinder != NULL) {
+            for (j = 0; j < packet->cylinder_count; j++) {
+                STUBBED_NAMED("NuRndrArenaAddCylinderVolumePc");
+            }
+        }
+        if (packet->ellipse != NULL) {
+            for (j = 0; j < packet->ellipse_count; j++) {
+                NuRndrArenaAddEllipsoidVolumePc(((NUVEC(*)[4])packet->ellipse)[j], packet, &offset, low, high);
+            }
+        }
+        if (packet->third_shape != NULL) {
+            for (j = 0; j < packet->third_count; j++) {
+                NuRndrArenaAddEdgeVolumesPc(packet, ((PC_SHADOW_EDGE_SET_PC *)packet->third_shape)->groups,
+                                            ((PC_SHADOW_EDGE_SET_PC *)packet->third_shape)->points, &offset);
+            }
+        }
+    }
+}
+
 #define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
 void __cdecl NuRndrQuadBufferInitPc(void) {
     void *data;

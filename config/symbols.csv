@@ -6518,6 +6518,7 @@ address,symbol,size,ctype
 0x5e4600,_AnglesBetweenPoints,107,
 0x5e4670,_NuRndrRotateVecPc,207,"void __cdecl(NUVEC *,f32,f32)"
 0x5e4740,_NuRndrShadowDirectionsSetupPc,252,void __cdecl(NUVEC *)
+0x5e4840,_NuRndrArenaBuildShadowVolumesPc,651,"void __cdecl(i32,i32)"
 0x5e4b00,_NuMtlUpdate,24,void __cdecl(NUMTL *)
 0x5e4b20,_NuMtlCreatePoolPC,347,
 0x5e4d00,_NuMtlCreate,20,NUMTL* __cdecl(i32)
@@ -6798,6 +6799,7 @@ address,symbol,size,ctype
 0x5f99d0,_NuRndrQuadBufferInitPc,328,void __cdecl NuRndrQuadBufferInitPc(void)
 0x5f9b20,_NuRndrShadowVolumeFinishPc,270,void __cdecl(void)
 0x5f9c30,_NuRndrShadowVolumeDrawPc,357,void __cdecl(void)
+0x5f9da0,_NuRndrShadowVolumesPc,167,void __cdecl(void)
 0x5f9e50,_NuRndrGeometryBufferReleasePc,12,void __cdecl(void)
 0x5f9e60,_NuRndrGeometryBufferRestorePc,42,void __cdecl(void)
 0x005f9e90,_NuRndrShadowOnOff_candidate,10,void __cdecl (i32)
@@ -9934,6 +9936,7 @@ address,symbol,size,ctype
 0x006def40,_FileDirectoryMcOpenPc,3,
 0x006def50,_FileDirectoryMcClosePc,1,
 0x006def60,_FileDirectoryMcReadPc,3,
+0x6def90,??0D3DXMATRIX@@QAE@MMMMMMMMMMMMMMMM@Z,116,"D3DXMATRIX *__thiscall(f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32)"
 0x6df080,_NuKeyboardCreateWindowState_candidate,55,"void __cdecl(HWND,HINSTANCE)"
 0x6df0c0,_PcRendererCleanup,20,void __cdecl(void)
 0x6df0e0,_PcRendererShutdown,181,void __cdecl(i32)
@@ -9943,6 +9946,7 @@ address,symbol,size,ctype
 0x006df310,_PCFrameCriticalSectionLeave_candidate,13,void __cdecl (void)
 0x6df320,_PCFrameSetLoadingYieldEnabled,14,void __cdecl (i32)
 0x6df330,_PCFrameLoadingYieldEnabled,9,i32 __cdecl (void)
+0x6df8b0,_PCDeviceSetWorldIdentityPc,138,void __cdecl(void)
 0x6df940,_PCDeviceResetState,220,void __cdecl (void)
 0x6dfa20,_PCDeviceResetSamplerDefaultsPc,72,void __cdecl(void)
 0x6dfd30,_PCFrameBeginScenePc,8,i32 __cdecl(void)
@@ -28402,6 +28406,8 @@ address,symbol,size,ctype
 0x297ae44,_PCFrameLoadingYieldEnabledPC,,u8
 0x297ae48,_PcApiCallBuffer,,void *
 0x297ae4c,_PcApiCallBufferCount,,i32
+0x297ae50,?identity@?1??PCDeviceSetWorldIdentityPc@@9@4UD3DXMATRIX@@A,64,D3DXMATRIX
+0x297ae90,?$S1@?1??PCDeviceSetWorldIdentityPc@@9@4IA,4,u32
 0x297aeb8,_PCNativeDebugOutputBuffer,,char[2048]
 0x297b6b8,_PCNativeDebugFormatBuffer,,char[2048]
 0x297beb8,_PCGraphicsDeviceLostCallback,,void (__cdecl *)(GRAPHICS_PRESENT_PARAMETERS_PC *)

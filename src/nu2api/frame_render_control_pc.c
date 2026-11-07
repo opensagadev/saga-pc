@@ -91,3 +91,29 @@ void __cdecl NuRndrShadowVolumeDrawPc(void) {
                                   0x40);
     }
 }
+
+void __cdecl PCDeviceSetWorldIdentityPc(void);
+void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1);
+
+/* Renders the queued hierarchy shadow packets as stencil shadow volumes; retail never calls it. */
+void __cdecl NuRndrShadowVolumesPc(void) {
+    if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 1 && PCShadowPacketCount != 0) {
+        PCDeviceSetVertexShaderPc(NULL);
+        PCDeviceSetPixelShaderPc(NULL);
+        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(23, 4);
+        PCDeviceSetTexture(0, NULL);
+        PCDeviceSetWorldIdentityPc();
+        NuRndrArenaBuildShadowVolumesPc(0x80, 0);
+        NuRndrShadowVolumeDrawPc();
+        NuRndrShadowVolumeFinishPc();
+        PCDeviceSetRenderState(7, 1);
+        PCDeviceSetRenderState(52, 0);
+        PCDeviceSetRenderState(14, 1);
+        PCDeviceSetRenderState(27, 0);
+        PCDeviceSetRenderState(22, 3);
+        RendererArenaVertexCountPc = 0;
+        RendererArenaCountPc = 0;
+    }
+    PCShadowPacketCount = 0;
+}
