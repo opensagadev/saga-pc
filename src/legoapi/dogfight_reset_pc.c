@@ -1183,6 +1183,46 @@ STATIC_ASSERT(offsetof(WORLDINFO, door_count) == 0x469c);
 STATIC_ASSERT(sizeof(DOOR_s) == 0x128);
 extern void __cdecl SpaceResetAudioPoint(void);
 
+void ChrisAnakinCReset() {
+    struct anakin_door_setup_s *setup;
+    anakin_door_s *door = AnakinC;
+    i32 count = 0;
+    for (setup = DoorSetupList; count < 12; ++setup) {
+        if (setup->name == NULL) {
+            for (; count < 12; ++count, ++door)
+                door->active = 0;
+            return;
+        }
+        if (!NuSpecialFind(WORLD->current_gscn, &door->special, setup->name, 1) || !NuSpecialExistsFn(&door->special))
+            continue;
+
+        if (NuSpecialFind(WORLD->current_gscn, &door->secondary_special, setup->secondary_name, 1))
+            door->has_secondary = ((i16)(NuSpecialExistsFn(&door->secondary_special)));
+
+        CopyFlightMatrixPc(&door->original_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+        door->matrix = door->original_matrix = *NuSpecialGetMtx(&door->special);
+        if (door->has_secondary != 0) {
+            CopyFlightMatrixPc(&door->original_secondary_matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+            door->secondary_matrix = door->original_secondary_matrix = *NuSpecialGetMtx(&door->secondary_special);
+        }
+        door->platform_id = ((i16)(FindPlatInst(NuSpecialGetInstanceix(&door->special))));
+        door->active = 1;
+        door->flags = ((u8)(setup->flags));
+        door->direction = setup->direction;
+        door->offset = setup->initial_offset;
+        door->speed = setup->speed;
+        door->minimum_offset = setup->minimum_offset;
+        door->unknown_134 = setup->unknown_20;
+        ++door;
+        ++count;
+    }
+}
+
+void ChrisAnakinCInit() {
+    NuSpecialList(WORLD->current_gscn);
+    ChrisAnakinCReset();
+}
+
 static __declspec(noinline) void SpawnFlightFighterPc(DOGFIGHT_PLAYBACK_SPLINE_PC *spline,
                                                       DOGFIGHT_FIGHTER_PC *record) {
     starfighter_s *fighter = &record->fields;
