@@ -10571,3 +10571,96 @@ void __cdecl ApplyGravity_Network(GAMEOBJECT *object) {
             ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
     }
 }
+
+void __cdecl TakeHitCode(GAMEOBJECT *object) {
+    i32 active = 0, mode, coins, hearts;
+    i16 animation = object->field_7aa;
+    f32 timer;
+    if (animation != -1) {
+        if (object->character_model->model_data_b[animation] == NULL ||
+            AnimPlaying(&object->anim_packet, animation, 1, 0) != NULL)
+            active = 1;
+    }
+    switch (object->character_context) {
+        case 0x5f:
+            if (!active)
+                return;
+            timer = object->context_timer + FRAMETIME;
+            object->context_timer = timer;
+            if (!(timer >= object->context_duration)) {
+                if (!(timer > 0.5f))
+                    return;
+                if (!(object->reset_velocity.y < 0.0f && object->field_281 != 0)) {
+                    if (object->contact_count == 0)
+                        return;
+                    if (!(object->terrain_impact_speed > timer / object->context_duration * (f64)-0.8f + (f64)0.8f))
+                        return;
+                }
+            }
+            mode = 2;
+            if (Arcade != 0 && (object->hit_variant == 0 || object->hit_variant == 1))
+                Arcade_Kill(object->hit_variant, (i8)object->field_280);
+        kill_object:
+            KillParts(object, -1, -1, 1, 0.0f, mode == 2, NULL);
+            KillGameObject(object, 2, 0);
+            coins = 0;
+            if (object->field_280 != 0xff)
+                return;
+            if (BonusArea != 0)
+                coins = (u16)object->character_data->game_character->coin_value;
+            else if (Cheat_IsOn(0x10) != 0)
+                coins = 350;
+            hearts = ReleaseHearts();
+            if (coins > 0 || hearts != 0)
+                AddPickups(coins, hearts, 0, 0, &object->collision_position, NULL, 2.0f, -1, 1.0f, 2000000.0f, NULL,
+                           BonusArea == 0 && coins < 2500, BonusArea != 0);
+            return;
+        case 0x5a:
+            if (!active)
+                return;
+            timer = object->context_timer - FRAMETIME;
+            object->context_timer = timer;
+            if (timer > 0.0f)
+                return;
+            switch (object->field_7b3) {
+                case 0:
+                    animation = object->field_7aa;
+                    object->flags_e24 |= 0x8000;
+                    if (animation == 0xb9) {
+                        mode = 1;
+                        goto kill_object;
+                    }
+                    if (animation == 0x3d) {
+                        object->character_context = -1;
+                        return;
+                    }
+                    if (animation == 0xa7)
+                        object->field_7aa = 0xaa;
+                    else if (animation == 0xa8)
+                        object->field_7aa = 0xab;
+                    else
+                        object->field_7aa = animation == 0xa9 ? 0xac : 1;
+                    animation = object->field_7aa;
+                    object->field_7b3 = 1;
+                    if (object->character_model->model_data_b[animation] != NULL &&
+                        (object->character_model->animation_configs[animation]->flags & 2) == 0)
+                        object->context_timer = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
+                    else
+                        object->context_timer = object->context_hover_target_y;
+                    return;
+                case 1:
+                    object->character_context = -1;
+                    return;
+            }
+            return;
+        case 0x15:
+            if (!active)
+                return;
+            timer = object->context_timer - FRAMETIME;
+            object->context_timer = timer;
+            if (timer > 0.0f)
+                return;
+            object->character_context = -1;
+            return;
+    }
+}
