@@ -316,36 +316,24 @@ __declspec(noinline) LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *ar
 
 LEVELDATA_PC *__cdecl Area_FindNextPlayLevel(i32 level_index) {
     LEVELDATA_PC *level;
-    LEVELDATA_PC *result;
     i32 area_index;
     i32 area_level_index;
 
     level = &LDataList[level_index];
     area_index = level->area_index;
     area_level_index = level->area_level_index;
-    result = level;
     if (area_index != -1) {
-        AREA_DATA_PC *area;
+        const i32 last = ADataList[area_index].level_count - 1;
 
-        area = &ADataList[area_index];
-        if (area_level_index < area->level_count - 1) {
-            result = &LDataList[area->levels[area_level_index]];
-            if ((result->flags & 0xe0) != 0) {
-                i32 index;
+        for (; area_level_index < last; ++area_level_index) {
+            const i32 next = ADataList[area_index].levels[area_level_index];
 
-                for (index = area_level_index; index != area->level_count - 2; ++index) {
-                    LEVELDATA_PC *candidate;
-
-                    candidate = &LDataList[area->levels[index + 1]];
-                    if ((candidate->flags & 0xe0) == 0) {
-                        return candidate;
-                    }
-                }
-                return level;
+            if ((LDataList[next].flags & 0xe0) == 0) {
+                return &LDataList[next];
             }
         }
     }
-    return result;
+    return level;
 }
 
 void __cdecl SuperCounters_Reset(i32 area_index) {

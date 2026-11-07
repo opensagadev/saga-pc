@@ -7,23 +7,26 @@ GIZMO_PC *__cdecl GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
     GIZMOTYPES_PC *types = (GIZMOTYPES_PC *)gizmotypes;
     GIZMOSYS_PC *system = (GIZMOSYS_PC *)system_ptr;
     GIZMOSET_PC *set;
+    GIZMO_PC *gizmo;
     i32 i, type_index;
     if (types != NULL && system != NULL && data != NULL) {
         if (type_id >= 0 && type_id <= types->count) {
             set = &system->sets[type_id];
             if (types->types[type_id].fns.get_gizmo_name_fn != NULL) {
-                for (i = 0; i < set->count; ++i) {
-                    if (set->gizmos[i].object == data)
-                        return &set->gizmos[i];
+                gizmo = set->gizmos;
+                for (i = 0; i < set->count; ++i, ++gizmo) {
+                    if (gizmo->object == data)
+                        return gizmo;
                 }
             }
         } else {
             for (type_index = 0; type_index < types->count; ++type_index) {
                 set = &system->sets[type_index];
                 if (types->types[type_index].fns.get_gizmo_name_fn != NULL) {
-                    for (i = 0; i < set->count; ++i) {
-                        if (set->gizmos[i].object == data)
-                            return &set->gizmos[i];
+                    gizmo = set->gizmos;
+                    for (i = 0; i < set->count; ++i, ++gizmo) {
+                        if (gizmo->object == data)
+                            return gizmo;
                     }
                 }
             }
@@ -393,13 +396,12 @@ void __cdecl GizmoSysStoreProgress(void *system_ptr, void *world, i32 progress_i
     }
     type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.store_progress_fn != NULL) {
-            void *progress = NULL;
-            if (type->progress != NULL && progress_index >= 0) {
-                progress = type->progress[progress_index];
-            }
-            type->fns.store_progress_fn(world, set->data, progress);
+            if (type->progress != NULL && progress_index >= 0)
+                type->fns.store_progress_fn(world, set->data, type->progress[progress_index]);
+            else
+                type->fns.store_progress_fn(world, set->data, NULL);
         }
     }
 }
