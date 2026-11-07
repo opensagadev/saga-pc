@@ -18565,9 +18565,18 @@ extern "C" {
 #pragma bss_seg(".bss$NewMtx")
     NUMTX *NewMtx = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$edLevel2dMtl")
+    NUMTL *edLevel2dMtl = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$edLevelActiveMenu")
     struct eduimenu_s *edLevelActiveMenu = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$EdLevelFnt")
+    i32 EdLevelFnt = 0;
+#pragma bss_seg()
+#pragma data_seg(".data$EdLevelFntScale")
+    i32 EdLevelFntScale = 24;
+#pragma data_seg()
 #pragma data_seg(".data$EdLevelAttr")
     struct eduiiattr_s EdLevelAttr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 #pragma data_seg()

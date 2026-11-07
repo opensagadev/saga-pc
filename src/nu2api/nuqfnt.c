@@ -660,6 +660,16 @@ void __cdecl NuRndrInitLeafPc(VARIPTR *buffer, VARIPTR end) {
     (void)end;
 }
 
+/* The PS2 font selection calls are no-ops on PC. */
+void __cdecl NuFntSet(i32 font) {
+    (void)font;
+}
+
+void __cdecl NuFntScale(i32 x, i32 y) {
+    (void)x;
+    (void)y;
+}
+
 VUFNT *__cdecl NuQFntRead(char *path, VARIPTR *buffer, VARIPTR end) {
     char fixed_path[1204];
     VARIPTR aligned;

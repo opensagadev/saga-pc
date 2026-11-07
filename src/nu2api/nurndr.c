@@ -382,6 +382,10 @@ void __cdecl NuRndrAddShadow(NUVEC *position, f32 radius, i32 opacity, i32 unuse
     }
 }
 
+/* The debug 3D line batch is not drawn on PC. */
+void __cdecl NuRndrLine3dDbgFlush(void) {
+}
+
 void __cdecl NuRndrShadPolys(NUMTL *material) {
     i32 index;
     PC_SHADOW_QUEUE_RECORD *record;

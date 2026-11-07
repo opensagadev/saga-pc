@@ -8,6 +8,24 @@ extern "C" {
     extern eduimenu_s *edLevelActiveMenu;
     extern eduimenu_s *edLevelPinnedMenu;
     extern i32 pad_disabled;
+    extern i32 EdLevelFnt;
+    extern i32 EdLevelFntScale;
+    extern NUMTL *edLevel2dMtl;
+    i32 __cdecl edmainGetCursorEnabled(void);
+    NUCAMERA *__cdecl edmainGetCameraPc(void);
+    f32 __cdecl edcamGetDist(void);
+    void __cdecl EdDrawLineCross(NUVEC *position, f32 size, i32 colour);
+    void __cdecl eduiFlushInteracts(void);
+    void __cdecl NuRndrLine3dDbgFlush(void);
+    void __cdecl eduiGetCursorCoords(f32 *x, f32 *y);
+    void __cdecl NuFntSet(i32 font);
+    void __cdecl NuFntScale(i32 x, i32 y);
+    void __cdecl eduiSetCursorColour(u32 colour);
+    void __cdecl eduiRenderCursor(void);
+    extern i32 NewPrim;
+    void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
+    void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
+                                 f32 radius_scale, f32 radius_bias);
 }
 
 struct EdStream {
@@ -169,6 +187,147 @@ class EditorSettings {
 STATIC_ASSERT(sizeof(EditorSettings) == 0xc);
 
 EditorSettings::~EditorSettings() {
+}
+
+/* The level editor thing (Android LevelEditor), theLevelEditor. The PC input
+ * context is 8 bytes larger than Android's, so every field after it sits 8
+ * bytes later. */
+class LevelEditor : public BaseThing {
+  public:
+    virtual ~LevelEditor() {
+    }
+    virtual char const *GetName() {
+        return "LevelEditor";
+    }
+    virtual void ProcessEvenWhenPaused(ThingProcessData *);
+    virtual void Display(ThingRenderData *);
+
+    void SetPadText(i32 buttons, char *text);
+    void DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32 available_height, i32 text_colour,
+                      i32 background);
+
+    f32 background_colour[4];
+    i32 field_0x20;
+    i32 field_0x24;
+    i32 field_0x28;
+    i32 field_0x2c;
+    i32 field_0x30;
+    f32 overlay_alpha;
+    i32 field_0x38;
+    i32 editor_buffer_from_front;
+    u8 input[0x260]; /* EdInputContext; its PC layout is not recovered yet */
+    u8 reserved_0x2a0;
+    u8 destroying_objects;
+    u8 reserved_0x2a2[2];
+    i32 editable_scene_count;
+    i32 reset_pending;
+    LevelEditorScene scenes[10];
+    BaseEditor *first_editor;
+    BaseEditor *last_editor;
+    i32 editor_count;
+    BaseEditor *active_editor;
+    char save_filename[0x80];
+    char editor_filename[0x80];
+    i32 file_version;
+    i32 multi_load_active;
+    i16 current_led_file;
+    u8 reserved_0xa56[2];
+    VARIPTR editor_buffer_cursor;
+    VARIPTR editor_buffer_begin;
+    VARIPTR editor_buffer_end;
+    char text_buffer[0x400];
+    i32 text_length;
+    char *info_text[32];
+    i32 info_x;
+    i32 info_y;
+    i32 info_width;
+    i32 info_height;
+    u32 info_colour;
+    u32 info_background;
+    u8 reserved_0xf00[0x100];
+    i32 pad_x;
+    i32 pad_y;
+    i32 pad_width;
+    i32 pad_height;
+    u32 pad_background;
+    u32 pad_colour;
+    u8 reserved_0x1018[4];
+    char *pad_text[32];
+    EditorSettings settings;
+    i32 editors_entered;
+    i32 active;
+};
+STATIC_ASSERT(offsetof(LevelEditor, background_colour) == 0x10);
+STATIC_ASSERT(offsetof(LevelEditor, overlay_alpha) == 0x34);
+STATIC_ASSERT(offsetof(LevelEditor, destroying_objects) == 0x2a1);
+STATIC_ASSERT(offsetof(LevelEditor, reset_pending) == 0x2a8);
+STATIC_ASSERT(offsetof(LevelEditor, scenes) == 0x2ac);
+STATIC_ASSERT(offsetof(LevelEditor, first_editor) == 0x93c);
+STATIC_ASSERT(offsetof(LevelEditor, active_editor) == 0x948);
+STATIC_ASSERT(offsetof(LevelEditor, current_led_file) == 0xa54);
+STATIC_ASSERT(offsetof(LevelEditor, info_x) == 0xee8);
+STATIC_ASSERT(offsetof(LevelEditor, info_background) == 0xefc);
+STATIC_ASSERT(offsetof(LevelEditor, pad_x) == 0x1000);
+STATIC_ASSERT(offsetof(LevelEditor, pad_colour) == 0x1014);
+STATIC_ASSERT(offsetof(LevelEditor, pad_text) == 0x101c);
+STATIC_ASSERT(offsetof(LevelEditor, settings) == 0x109c);
+STATIC_ASSERT(offsetof(LevelEditor, editors_entered) == 0x10a8);
+STATIC_ASSERT(offsetof(LevelEditor, active) == 0x10ac);
+STATIC_ASSERT(sizeof(LevelEditor) == 0x10b0);
+
+/* Labels every pad button whose bit is set in the mask. */
+void LevelEditor::SetPadText(i32 buttons, char *text) {
+    i32 i;
+    for (i = 0; i < 32; i++) {
+        if (buttons & (1 << i))
+            pad_text[i] = text;
+    }
+}
+
+/* Draws the non-NULL lines in a box; a x of -1 right-aligns it and a y
+ * of -1 puts it at the top. */
+void LevelEditor::DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 available_width, i32, i32 text_colour,
+                               i32 background) {
+    i32 height = 0;
+    i32 width = 0;
+    i32 line_height;
+    i32 text_offset;
+    i32 i;
+
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSet(system_qfont);
+    line_height = static_cast<i32>(NuQFntHeight(system_qfont) * 0.15625);
+    text_offset = static_cast<i32>(NuQFntHeight(system_qfont) * 0.125 + NuQFntBaseline(system_qfont));
+    for (i = 0; i < count; i++) {
+        if (lines[i] != NULL) {
+            i32 line_width = static_cast<i32>(NuQFntPrintLenU(system_qfont, lines[i])) >> 4;
+            if (line_width > width)
+                width = line_width;
+            height += line_height;
+        }
+    }
+    NuQFntPopCoordinateSystem();
+    NuQFntPopPrintMode();
+    if (height > 0) {
+        if (x <= -1)
+            x = available_width - width - 5;
+        if (y <= -1)
+            y = 5;
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, background, edLevel2dMtl);
+        NuQFntPushPrintMode(2);
+        NuQFntPushCoordinateSystem(1);
+        NuQFntSet(system_qfont);
+        NuQFntSetColour(system_qfont, text_colour);
+        for (i = 0; i < count; i++) {
+            if (lines[i] != NULL) {
+                NuQFntPrintEx(system_qfont, x << 4, text_offset + y * 8, 0x10, lines[i]);
+                y += line_height;
+            }
+        }
+        NuQFntPopCoordinateSystem();
+        NuQFntPopPrintMode();
+    }
 }
 
 void EdControl::Refresh() {
@@ -540,13 +699,6 @@ i32 ClassObject::GetAttributeData(i32 attribute, i32 requested_type, void *data,
     if (ed_class->FindMember(&member, object, attribute, 1))
         return member.reference->GetAttributeData(member.object, attribute, requested_type, data, data_size);
     return 0;
-}
-
-extern "C" {
-    extern i32 NewPrim;
-    void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour);
-    void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
-                                 f32 radius_scale, f32 radius_bias);
 }
 
 /* Arrow-head shape of the facing arrow DrawObjectSphere draws. */

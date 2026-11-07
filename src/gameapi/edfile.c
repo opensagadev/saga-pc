@@ -1270,6 +1270,72 @@ i32 __cdecl eduicbInteractSlider(edui_interact_s *interact) {
     return (edui_cursor_buttons >> 6) & 1;
 }
 
+void __cdecl eduiFlushInteracts(void) {
+    numInteracts = 0;
+}
+
+extern f32 edui_cursor_y;
+f32 edui_cursor_dx;
+f32 edui_cursor_dy;
+u32 edui_cursor_colour = 0xff000000;
+
+void __cdecl eduiGetCursorCoords(f32 *x, f32 *y) {
+    *x = edui_cursor_x / 640.0;
+    *y = edui_cursor_y / 224.0;
+}
+
+void __cdecl eduiSetCursorCoords(f32 x, f32 y) {
+    edui_cursor_x = x * 640.0;
+    edui_cursor_y = y * 224.0;
+}
+
+void __cdecl eduiGetCursorDelta(f32 *x, f32 *y) {
+    *x = edui_cursor_dx / 640.0;
+    *y = edui_cursor_dy / 224.0;
+}
+
+/* 1 when the left stick is off centre, 2 for the right stick. */
+i32 __cdecl eduiUsedAlgPad(FRAME_PAD_PC *pad) {
+    if (pad != NULL) {
+        if (pad->analog_left_x < 0x40 || pad->analog_left_x > 0xc0 || pad->analog_left_y < 0x40 ||
+            pad->analog_left_y > 0xc0)
+            return 1;
+        if (pad->analog_right_x < 0x40 || pad->analog_right_x > 0xc0 || pad->analog_right_y < 0x40 ||
+            pad->analog_right_y > 0xc0)
+            return 2;
+    }
+    return 0;
+}
+
+/* The PC cursor follows the mouse elsewhere; this only keeps it on screen. */
+void __cdecl EduiClampCursorPc(void) {
+    if (edui_cursor_x < 0.0f)
+        edui_cursor_x = 0.0f;
+    else if (edui_cursor_x > 640.0f)
+        edui_cursor_x = 640.0f;
+    if (edui_cursor_y < 0.0f)
+        edui_cursor_y = 0.0f;
+    if (edui_cursor_y > 224.0)
+        edui_cursor_y = 224.0f;
+}
+
+void __cdecl eduiSetCursorColour(u32 colour) {
+    edui_cursor_colour = colour;
+}
+
+void __cdecl eduiRenderCursor(void) {
+}
+
+void __cdecl eduiInit(void) {
+    eduiInitMaterials();
+    if (edui_filepick_listsize != 0 && dir_list == NULL)
+        dir_list = NuAlloc(edui_filepick_listsize * 0x118, EduiSourcePathPc, 0x821);
+}
+
+void __cdecl eduiSetFont(void *font) {
+    edui_font = font;
+}
+
 extern f32 edui_font_scale_x;
 extern f32 edui_font_scale_y;
 

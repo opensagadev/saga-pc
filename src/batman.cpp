@@ -2,6 +2,7 @@
 #include <string.h>
 
 extern "C" void __cdecl NuMainTrailerLeafPc(void);
+extern "C" void __cdecl NuRndrLine3dDbgFlush(void);
 
 extern "C" {
     extern i32 NuMainRendererControlPc;
@@ -453,7 +454,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     if (MainRenderTime != 1.0f) {
         BackDrop_Draw(1.0f - MainRenderTime, 0);
     }
-    STUBBED_NAMED("NuMainRenderWorld: NuRndrLine3dDbgFlush at 0x005fecb0");
+    NuRndrLine3dDbgFlush();
     DebrisSetCutSceneMode(CUTCAM);
     DebrisDraw(paused ^ editor_active, 1);
     DrawRippleSet(RippleSetPc);
