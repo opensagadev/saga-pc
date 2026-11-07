@@ -18581,6 +18581,9 @@ extern "C" {
 #pragma bss_seg(".bss$edLevel2dMtl")
     NUMTL *edLevel2dMtl = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$edLevel3dMtl")
+    NUMTL *edLevel3dMtl = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$edLevelActiveMenu")
     struct eduimenu_s *edLevelActiveMenu = 0;
 #pragma bss_seg()

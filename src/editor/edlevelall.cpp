@@ -26,6 +26,8 @@ extern "C" {
     extern i32 EdLevelFnt;
     extern i32 EdLevelFntScale;
     extern NUMTL *edLevel2dMtl;
+    extern NUMTL *edLevel3dMtl;
+    eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
     i32 __cdecl edmainGetCursorEnabled(void);
     NUCAMERA *__cdecl edmainGetCameraPc(void);
     f32 __cdecl edcamGetDist(void);
@@ -2405,6 +2407,12 @@ void ClassEditor::MakeUniqueName(char const *name, char *destination, i32 size) 
 
 class SplineObject;
 
+/* Bezier subdivision tolerances and the step below which splines use
+ * straight segments. */
+f32 BezierLineTolerance = 0.01f;
+i32 BezierLineMaxDepth = 2;
+f32 SplineMinStep = 0.1f;
+
 /* One spline control point: its position and the two tangent handles. */
 struct SplineKnot {
     SplineKnot *next;
@@ -2433,8 +2441,22 @@ struct SplineKnotList {
 /* A block of generated spline points. */
 class SplinePointBlock : public CSListLink<SplinePointBlock> {
   public:
-    virtual ~SplinePointBlock();
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(SplinePointBlock));
+    }
+    SplinePointBlock();
+    virtual ~SplinePointBlock() {
+        if (points != NULL)
+            theMemoryManager.FreePool(points, capacity * sizeof(VuVec));
+    }
+
+    i32 capacity;
+    i32 point_count;
+    VuVec *points;
 };
+STATIC_ASSERT(offsetof(SplinePointBlock, capacity) == 0xc);
+STATIC_ASSERT(offsetof(SplinePointBlock, points) == 0x14);
+STATIC_ASSERT(sizeof(SplinePointBlock) == 0x18);
 
 struct SplinePointList {
     SplinePointBlock *first;
@@ -2442,6 +2464,9 @@ struct SplinePointList {
     i32 block_count;
 
     ~SplinePointList();
+    void AddPoint(VuVec &point);
+    void Clear();
+    void Draw();
 };
 
 /* A named editor spline; the knot list is followed by its generated points. */
@@ -2470,6 +2495,28 @@ class SplineObject : public CSListLink<SplineObject> {
     f32 height;
     i32 drop;
     i32 closed;
+
+    /* Retail never casts the terrain ray here; a dropping spline is just
+     * lowered by 10. */
+    void DropPoint(VuVec &point) {
+        if (drop != 0) {
+            __declspec(align(16)) VuVec start;
+            start.x = point.x;
+            start.y = point.y;
+            start.z = point.z;
+            point.y = start.y - 10.0;
+        }
+    }
+    void Draw(i32 selected, i32 straight, i32 show_points, f32);
+    void GenBezierPoints();
+    void GenLinearPoints();
+    void GenPoints() {
+        if (step < SplineMinStep)
+            GenLinearPoints();
+        else
+            GenBezierPoints();
+    }
+    void ReverseKnots();
 };
 STATIC_ASSERT(offsetof(SplineObject, knots) == 0x2c);
 STATIC_ASSERT(offsetof(SplineObject, points) == 0x38);
@@ -2480,18 +2527,43 @@ STATIC_ASSERT(sizeof(SplineObject) == 0x58);
 /* The spline object class (Android SplineHelper), theSplineHelper. */
 class SplineHelper : public EdClassInterface {
   public:
-    virtual void Flush();
-    virtual i32 GetNumObjects();
+    SplineHelper() : first_object(NULL), last_object(NULL), object_count(0), auto_generate_points(1) {
+    }
+    virtual void ClearLevel(i32 level);
+    virtual void Flush() {
+        last_object = NULL;
+        first_object = NULL;
+        object_count = 0;
+    }
+    virtual i32 GetNumObjects() {
+        return object_count;
+    }
     virtual void *GetNextObject(void *object);
     virtual void *CreateObject(void *data, i32 guid, i32 flags);
     virtual void DestroyObject(void *object, i32 flags);
+    virtual void Process(void *object, EdInputContext &input);
+    virtual void Render(void *object, i32 selected);
+    virtual void PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
+    }
+    virtual void PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *);
+    virtual void SerialiseObject(EdStream &stream, void *object);
+    virtual void AddMenuItems(eduimenu_s *menu);
     using EdClassInterface::GetNextObject;
 
     SplineObject *first_object;
     SplineObject *last_object;
     i32 object_count;
+    i32 auto_generate_points;
+
+    static void cbEdSplineAutoGenPoints(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void cbEdSplineReGenPoints(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void cbEdSplineReverseSpline(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void cbEdSplineSmoothKnot(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void cbEdSplineSmoothSpline(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 };
 STATIC_ASSERT(offsetof(SplineHelper, first_object) == 0x8);
+STATIC_ASSERT(offsetof(SplineHelper, auto_generate_points) == 0x14);
+STATIC_ASSERT(sizeof(SplineHelper) == 0x18);
 extern SplineHelper theSplineHelper;
 
 /* Picking a knot selects its spline unless the spline is already selected. */
@@ -2780,6 +2852,485 @@ void KnotHelper::Render(void *object, i32) {
         NewPrim = 0;
     }
 }
+
+static inline VuVec operator+(const VuVec &a, const VuVec &b) {
+    VuVec sum;
+    sum.x = a.x + b.x;
+    sum.y = a.y + b.y;
+    sum.z = a.z + b.z;
+    return sum;
+}
+
+static inline VuVec operator-(const VuVec &a, const VuVec &b) {
+    VuVec difference;
+    difference.x = a.x - b.x;
+    difference.y = a.y - b.y;
+    difference.z = a.z - b.z;
+    return difference;
+}
+
+static inline VuVec operator*(const VuVec &a, f32 scale) {
+    VuVec product;
+    product.x = a.x * scale;
+    product.y = a.y * scale;
+    product.z = a.z * scale;
+    return product;
+}
+
+/* VuVec assignment copies the four floats one by one. */
+static inline void VuVecCopy(VuVec &destination, const VuVec &source) {
+    destination.x = source.x;
+    destination.y = source.y;
+    destination.z = source.z;
+    destination.w = source.w;
+}
+
+static i32 bezierline_depth = 0;
+
+/* Length of a cubic Bezier segment: the chord once the de Casteljau midpoint
+ * lies within BezierLineTolerance of it, otherwise the sum of both halves. */
+f32 BezierLineLength(VuVec &start, VuVec &first_control, VuVec &end, VuVec &second_control) {
+    __declspec(align(16)) VuVec points[6];
+    VuVecCopy(points[0], (first_control + second_control) * 0.5);
+    VuVecCopy(points[1], (start + first_control) * 0.5);
+    VuVecCopy(points[2], (end + second_control) * 0.5);
+    VuVecCopy(points[3], (points[1] + points[0]) * 0.5);
+    VuVecCopy(points[4], (points[0] + points[2]) * 0.5);
+    VuVecCopy(points[5], (points[3] + points[4]) * 0.5);
+    VuVec error = (start + end) * 0.5 - points[5];
+    f32 length;
+    if (!(NuFsqrt(error.x * error.x + error.y * error.y + error.z * error.z) < BezierLineTolerance) &&
+        bezierline_depth < BezierLineMaxDepth) {
+        bezierline_depth++;
+        length = BezierLineLength(start, points[1], points[5], points[3]) +
+                 BezierLineLength(points[5], points[4], end, points[2]);
+        bezierline_depth--;
+        return length;
+    }
+    VuVec chord = start - end;
+    length = NuFsqrt(chord.x * chord.x + chord.y * chord.y + chord.z * chord.z);
+    return length;
+}
+
+/* Binary search along the segment for the point distance along it. */
+i32 BezierLinePos(VuVec &result, VuVec &start, VuVec &first_control, VuVec &end, VuVec &second_control, f32 distance) {
+    f32 t = 0.5f;
+    f32 step = 0.25f;
+    __declspec(align(16)) VuVec points[6];
+    for (i32 count = 0; count < 256; count++) {
+        f32 complement = 1.0f - t;
+        VuVecCopy(points[0], first_control * t + second_control * complement);
+        VuVecCopy(points[1], start * t + first_control * complement);
+        VuVecCopy(points[2], second_control * t + end * complement);
+        VuVecCopy(points[3], points[1] * t + points[0] * complement);
+        VuVecCopy(points[4], points[0] * t + points[2] * complement);
+        VuVecCopy(points[5], points[3] * t + points[4] * complement);
+        points[5].w = 1.0f;
+        f32 length = BezierLineLength(start, points[1], points[5], points[3]);
+        f32 difference = distance - length;
+        if (difference < 0.0f)
+            difference = -difference;
+        if (!(difference > BezierLineTolerance))
+            break;
+        if (distance < length)
+            t += step;
+        else
+            t -= step;
+        step *= 0.5;
+    }
+    result.x = points[5].x;
+    result.y = points[5].y;
+    result.z = points[5].z;
+    result.w = points[5].w;
+    return 1;
+}
+
+f32 BezierDrawTolerance = 0.001f;
+static i32 bezierdraw_depth = 0;
+
+/* Draws a Bezier segment, subdividing until a piece is short relative to
+ * its distance from the camera. */
+void DrawBezierLine(VuVec &start, VuVec &start_control, VuVec &end, VuVec &end_control, NUMTL *material, i32 colour) {
+    VuVec camera;
+    camera.x = global_camera.mtx.m30;
+    camera.y = global_camera.mtx.m31;
+    camera.z = global_camera.mtx.m32;
+    VuVec offset = start - camera;
+    f32 distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+    offset = end - camera;
+    f32 end_distance = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+    if (distance > end_distance)
+        distance = end_distance;
+    if (5.5f > distance)
+        distance = 5.5f;
+    VuVec chord = end - start;
+    if (BezierDrawTolerance * distance < chord.x * chord.x + chord.y * chord.y + chord.z * chord.z &&
+        bezierdraw_depth < 16) {
+        bezierdraw_depth++;
+        __declspec(align(16)) VuVec points[6];
+        VuVecCopy(points[0], (start_control + end_control) * 0.5);
+        VuVecCopy(points[1], (start + start_control) * 0.5);
+        VuVecCopy(points[2], (end + end_control) * 0.5);
+        VuVecCopy(points[3], (points[1] + points[0]) * 0.5);
+        VuVecCopy(points[4], (points[0] + points[2]) * 0.5);
+        VuVecCopy(points[5], (points[3] + points[4]) * 0.5);
+        DrawBezierLine(start, points[1], points[5], points[3], material, colour);
+        DrawBezierLine(points[5], points[4], end, points[2], material, colour);
+        bezierdraw_depth--;
+        return;
+    }
+    EdDrawLineSegment(&start.xyz, &end.xyz, colour);
+}
+
+SplinePointBlock::SplinePointBlock() {
+    capacity = 16;
+    points = (VuVec *)theMemoryManager.AllocPool(capacity * sizeof(VuVec), 1);
+}
+
+/* Appends to the first block with room, or to a new block. */
+void SplinePointList::AddPoint(VuVec &point) {
+    SplinePointBlock *block;
+    VuVec *slot;
+    for (block = first; block != NULL; block = block->next) {
+        if (block->point_count < block->capacity) {
+            slot = &block->points[block->point_count++];
+            slot->x = point.x;
+            slot->y = point.y;
+            slot->z = point.z;
+            slot->w = point.w;
+            return;
+        }
+    }
+    block = new (theMemoryManager.AllocPool(sizeof(SplinePointBlock), 1)) SplinePointBlock;
+    if (block != NULL) {
+        slot = &block->points[block->point_count++];
+        slot->x = point.x;
+        slot->y = point.y;
+        slot->z = point.z;
+        slot->w = point.w;
+        block->next = NULL;
+        block->previous = last;
+        if (last != NULL)
+            last->next = block;
+        last = block;
+        if (first == NULL)
+            first = block;
+        block_count++;
+    }
+}
+
+/* Frees the default-sized blocks and empties the others. */
+void SplinePointList::Clear() {
+    SplinePointBlock *next;
+    for (SplinePointBlock *block = first; block != NULL; block = next) {
+        next = block->next;
+        if (block->capacity == 16) {
+            if (block->next != NULL)
+                block->next->previous = block->previous;
+            else
+                last = block->previous;
+            if (block->previous != NULL)
+                block->previous->next = block->next;
+            else
+                first = block->next;
+            block->next = NULL;
+            block->previous = NULL;
+            block_count--;
+            delete block;
+        } else {
+            block->point_count = 0;
+        }
+    }
+}
+
+void SplinePointList::Draw() {
+    for (SplinePointBlock *block = first; block != NULL; block = block->next) {
+        for (i32 index = 0; index < block->point_count; index++)
+            EdDrawLineCross(&block->points[index].xyz, 0.5f, -1);
+    }
+}
+
+void SplineObject::ReverseKnots() {
+    SplineKnotList reversed = knots;
+    knots.first = NULL;
+    knots.last = NULL;
+    knots.count = 0;
+    SplineKnot *knot;
+    while ((knot = reversed.last) != NULL) {
+        if (knot->next != NULL)
+            knot->next->previous = knot->previous;
+        else
+            reversed.last = knot->previous;
+        if (knot->previous != NULL)
+            knot->previous->next = knot->next;
+        else
+            reversed.first = knot->next;
+        knot->next = NULL;
+        knot->previous = NULL;
+        reversed.count--;
+        knot->previous = knots.last;
+        if (knots.last != NULL)
+            knots.last->next = knot;
+        knots.last = knot;
+        if (knots.first == NULL)
+            knots.first = knot;
+        knots.count++;
+    }
+}
+
+/* One point per knot (and the first again for a closed spline). */
+void SplineObject::GenLinearPoints() {
+    points.Clear();
+    __declspec(align(16)) VuVec point;
+    for (SplineKnot *knot = knots.first; knot != NULL; knot = knot->next) {
+        point.x = knot->position.x;
+        point.y = knot->position.y;
+        point.z = knot->position.z;
+        point.w = knot->position.w;
+        DropPoint(point);
+        point.y += height;
+        points.AddPoint(point);
+    }
+    if (closed != 0 && knots.first != NULL) {
+        point.x = knots.first->position.x;
+        point.y = knots.first->position.y;
+        point.z = knots.first->position.z;
+        point.w = knots.first->position.w;
+        DropPoint(point);
+        point.y += height;
+        points.AddPoint(point);
+    }
+}
+
+/* Points every step along the Bezier segments between the knots. */
+void SplineObject::GenBezierPoints() {
+    i32 closing = 0;
+    points.Clear();
+    f32 distance = 0.0f;
+    SplineKnot *start = knots.first;
+    if (start == NULL)
+        return;
+    SplineKnot *end = start->next;
+    while (end != NULL) {
+        f32 length = BezierLineLength(start->position, start->out_tangent, end->position, end->in_tangent);
+        for (; distance < length; distance += step) {
+            __declspec(align(16)) VuVec point;
+            BezierLinePos(point, start->position, start->out_tangent, end->position, end->in_tangent, distance);
+            DropPoint(point);
+            point.y += height;
+            points.AddPoint(point);
+        }
+        distance -= length;
+        start = end;
+        end = end->next;
+        if (closing)
+            return;
+        if (end == NULL && closed != 0) {
+            end = knots.first;
+            closing = 1;
+        }
+        if (start == NULL)
+            return;
+    }
+}
+
+void SplineObject::Draw(i32 selected, i32 straight, i32 show_points, f32) {
+    i32 colour = selected ? 0x80008080 : 0x80808080;
+    EdDrawBegin(0);
+    for (SplineKnot *knot = knots.first; knot != NULL && knot->next != NULL; knot = knot->next) {
+        SplineKnot *next = knot->next;
+        if (straight != 0 || step < SplineMinStep)
+            EdDrawLineSegment(&knot->position.xyz, &next->position.xyz, colour);
+        else
+            DrawBezierLine(knot->position, knot->out_tangent, next->position, next->in_tangent, edLevel3dMtl, colour);
+    }
+    if (show_points != 0 && step > SplineMinStep)
+        points.Draw();
+    if (NewPrim != 0) {
+        if (NewPrim == 2 || NewPrim == 3)
+            NuPrim3DEnd();
+        NewPrim = 0;
+    }
+}
+
+void SplineHelper::ClearLevel(i32 level) {
+    if (level == -1)
+        return;
+    SplineObject *next;
+    for (SplineObject *spline = (SplineObject *)GetNextObject(NULL); spline != NULL; spline = next) {
+        next = (SplineObject *)GetNextObject(spline);
+        if (spline->led_file == level)
+            DestroyObject(spline, 0);
+    }
+}
+
+void *SplineHelper::GetNextObject(void *object) {
+    if (object == NULL)
+        return first_object;
+    return static_cast<SplineObject *>(object)->next;
+}
+
+void *SplineHelper::CreateObject(void *, i32, i32) {
+    void *memory = theMemoryManager.AllocPool(sizeof(SplineObject), 1);
+    if (memory == NULL)
+        return NULL;
+    SplineObject *spline = new (memory) SplineObject;
+    spline->next = NULL;
+    spline->previous = last_object;
+    if (last_object != NULL)
+        last_object->next = spline;
+    last_object = spline;
+    if (first_object == NULL)
+        first_object = spline;
+    object_count++;
+    return spline;
+}
+
+/* Only a spline whose knots are all gone is destroyed. */
+void SplineHelper::DestroyObject(void *object, i32) {
+    theLevelEditor.destroying_objects = 1;
+    for (SplineObject *spline = first_object; spline != NULL; spline = spline->next) {
+        if (spline == object && spline->knots.count == 0) {
+            if (spline->next != NULL)
+                spline->next->previous = spline->previous;
+            else
+                last_object = spline->previous;
+            if (spline->previous != NULL)
+                spline->previous->next = spline->next;
+            else
+                first_object = spline->next;
+            spline->next = NULL;
+            spline->previous = NULL;
+            object_count--;
+            delete spline;
+            return;
+        }
+    }
+}
+
+/* Regenerates a spline's points once its knots stop being dragged. */
+void SplineHelper::Process(void *object, EdInputContext &input) {
+    SplineObject *spline = static_cast<SplineObject *>(object);
+    if (input.GetHold(3) != 0.0f)
+        return;
+    if (spline->points.block_count != 0)
+        return;
+    spline->GenPoints();
+}
+
+void SplineHelper::Render(void *object, i32 selected) {
+    static_cast<SplineObject *>(object)->Draw(selected, selected == 0, selected, 0.0f);
+}
+
+void SplineHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
+    for (SplineObject *spline = first_object; spline != NULL; spline = spline->next)
+        spline->GenPoints();
+}
+
+/* Writes the knot count and knots; reading recreates the knots. */
+void SplineHelper::SerialiseObject(EdStream &stream, void *object) {
+    SplineObject *spline = static_cast<SplineObject *>(object);
+    i32 knot_count;
+    if (stream.mode == 2) {
+        knot_count = spline->knots.count;
+        stream.SerialiseBuffer(&knot_count, sizeof(knot_count), 1);
+        for (SplineKnot *knot = spline->knots.first; knot != NULL; knot = knot->next)
+            theKnotHelper.object_class->SerialiseObject(stream, knot);
+    }
+    if (stream.mode == 1) {
+        stream.SerialiseBuffer(&knot_count, sizeof(knot_count), 1);
+        for (i32 index = 0; index < knot_count; index++) {
+            SplineKnot *knot = (SplineKnot *)theMemoryManager.AllocPool(sizeof(SplineKnot), 1);
+            if (knot != NULL) {
+                knot->next = NULL;
+                knot->previous = NULL;
+                knot->led_file = Placeable::CurrentLedFile;
+            }
+            theKnotHelper.object_class->SerialiseObject(stream, knot);
+            if (knot != NULL) {
+                knot->spline = spline;
+                knot->next = NULL;
+                knot->previous = spline->knots.last;
+                if (spline->knots.last != NULL)
+                    spline->knots.last->next = knot;
+                spline->knots.last = knot;
+                if (spline->knots.first == NULL)
+                    spline->knots.first = knot;
+                spline->knots.count++;
+            }
+        }
+    }
+}
+
+void SplineHelper::AddMenuItems(eduimenu_s *menu) {
+    eduiMenuAddItem(menu, eduiItemSeparatorCreate(0, &EdLevelAttr));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdSplineSmoothKnot, "Smooth Knot"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdSplineSmoothSpline, "Smooth Spline"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdSplineReverseSpline, "Reverse Spline"));
+    eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdSplineReGenPoints, "Re-Gen Points"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &EdLevelAttr, auto_generate_points, 0, cbEdSplineAutoGenPoints,
+                                              "Auto-Gen Points"));
+}
+
+void SplineHelper::cbEdSplineAutoGenPoints(eduimenu_s *, eduiitem_s *item, u32) {
+    theSplineHelper.auto_generate_points ^= 1;
+    item->highlighted = theSplineHelper.auto_generate_points & 1;
+}
+
+void SplineHelper::cbEdSplineReGenPoints(eduimenu_s *, eduiitem_s *, u32) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->ed_class == theSplineHelper.object_class)
+            static_cast<SplineObject *>(entry->object)->GenPoints();
+    }
+}
+
+void SplineHelper::cbEdSplineReverseSpline(eduimenu_s *, eduiitem_s *, u32) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->ed_class == theSplineHelper.object_class) {
+            SplineObject *spline = static_cast<SplineObject *>(entry->object);
+            spline->ReverseKnots();
+            if (theSplineHelper.auto_generate_points)
+                spline->GenPoints();
+        }
+    }
+}
+
+void SplineHelper::cbEdSplineSmoothSpline(eduimenu_s *, eduiitem_s *, u32) {
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->ed_class == theSplineHelper.object_class) {
+            SplineObject *spline = static_cast<SplineObject *>(entry->object);
+            for (SplineKnot *knot = spline->knots.first; knot != NULL; knot = knot->next)
+                knot->Smooth();
+            if (theSplineHelper.auto_generate_points)
+                spline->GenPoints();
+        }
+    }
+}
+
+/* Smooths the selected knots, then regenerates each touched spline once. */
+void SplineHelper::cbEdSplineSmoothKnot(eduimenu_s *, eduiitem_s *, u32) {
+    SplineObject *changed[64];
+    i32 changed_count = 0;
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->ed_class != theKnotHelper.object_class)
+            continue;
+        SplineKnot *knot = static_cast<SplineKnot *>(entry->object);
+        knot->Smooth();
+        if (!theSplineHelper.auto_generate_points || knot->spline == NULL)
+            continue;
+        i32 index;
+        for (index = 0; index < changed_count; index++) {
+            if (changed[index] == knot->spline)
+                break;
+        }
+        if (index == changed_count)
+            changed[changed_count++] = knot->spline;
+    }
+    for (i32 index = 0; index < changed_count; index++)
+        changed[index]->GenPoints();
+}
+
+SplineHelper theSplineHelper;
 
 /* Returns the next object after current that the filter accepts. */
 void *EdClassInterface::GetNextObject(void *current, i32 (*filter)(void *)) {

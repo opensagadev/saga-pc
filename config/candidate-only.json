@@ -1452,6 +1452,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??0?$CSListLink@VSplinePointBlock@@@@QAE@XZ",
+   "kind": "function"
+  },
+  {
    "unit": "src/gameapi/aiscript.c",
    "symbol": "_AIScriptBufferAllocOrWarn",
    "kind": "function"
