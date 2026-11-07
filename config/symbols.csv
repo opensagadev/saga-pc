@@ -6511,7 +6511,10 @@ address,symbol,size,ctype
 0x5e1070,_RenderPostClearScreenPc,255,void __cdecl(void)
 0x5e1170,_DrawAlphaGrid,5964,"void __cdecl(i32,i32,RENDER_POST_BLOOM_READER_PC*)"
 0x5e28c0,_NuRndrArenaInitPc,91,"void __cdecl NuRndrArenaInitPc(VARIPTR *, VARIPTR)"
+0x5e4280,_NuRndrArenaAddEdgeVolumesPc,887,"void __cdecl(PC_HG_SHADOW_PACKET *,PC_SHADOW_EDGE_PC *,PC_SHADOW_EDGE_PC *,NUVEC *)"
 0x5e4600,_AnglesBetweenPoints,107,
+0x5e4670,_NuRndrRotateVecPc,207,"void __cdecl(NUVEC *,f32,f32)"
+0x5e4740,_NuRndrShadowDirectionsSetupPc,252,void __cdecl(NUVEC *)
 0x5e4b00,_NuMtlUpdate,24,void __cdecl(NUMTL *)
 0x5e4b20,_NuMtlCreatePoolPC,347,
 0x5e4d00,_NuMtlCreate,20,NUMTL* __cdecl(i32)
@@ -17779,6 +17782,7 @@ address,symbol,size,ctype
 0x765354,??_C@_0BJ@KMIDIINF@?$DMfont?5face?$DNcourier?5new?$DO?6?$AA@,25,const char[25]
 0x765370,??_C@_0CD@KJLELBCF@Display?5Scene?5?3?5UNKNOWN?5?$CIsort?3?5?$CF@,35,const char[35]
 0x765394,??_C@_0BO@PGJKDHCO@Display?5Scene?5?3?5?$CFs?5?$CIsort?3?5?$CFd?$CJ?$AA@,30,const char[30]
+0x7653c0,__real@46000000,4,const f32
 0x007653c4,??_C@_0BB@JCEFLFJE@0123456789abcdef?$AA@,,const char[17]
 0x007653d8,??_C@_0BJ@BFAKJOD@c?3?2temp?2stream?2textures?2?$AA@,,const char[25]
 0x7653f8,??_7NuMainFilterGen@@6B@,40,native exactVT binding; unimplemented extent unclaimed
@@ -27089,6 +27093,7 @@ address,symbol,size,ctype
 0x9715b8,_NuPostEffectInitialisedFlagsPc,,u32
 0x9715c0,_PCSpecialShadowClipResultsPresent,,i32
 0x9715c4,_NuRndrDebRange,,NUVEC
+0x9715d0,_NuRndrShadowDirectionsPc,96,NUVEC[8]
 0x971640,_NuCameraScalingTemplate,,
 0x971680,_VisibilityAlternateAbsoluteMatrixPc,,NUMTX
 0x009716c0,_NuTimeBar_SetList,64,void *[16]
@@ -27096,6 +27101,7 @@ address,symbol,size,ctype
 0x971708,_PCGlobalLightingState,,PC_GLOBAL_LIGHTING_STATE
 0x00971780,_NuAnimDataBitCount,256,u8[256]
 0x971880,_NuPortalNearPlanePc,,NUPLANE
+0x971898,_RendererArenaIndexCountPc,4,i32
 0x9718a0,_VisibilityDepthPlanePc,,NUPLANE
 0x009718b0,_nudlist_field_18b0,4,char *
 0x9718b4,_NuPortalWorldCameraPc,,NUVEC
@@ -27245,6 +27251,8 @@ address,symbol,size,ctype
 0x974000,_PCShadowNearValue,,f32
 0x974004,_PCShadowFarValue,,f32
 0x974008,_PCShadowPacketCount,,i32
+0x97400c,_RendererArenaVertexCountPc,4,i32
+0x974010,_RendererArenaCountPc,4,i32
 0x974014,_numtl_renderplane,,u32
 0x974018,_g_overrideList,,NULSTHDR *
 0x974030,_NuPostFilterAllocatorPc,16,native allocator

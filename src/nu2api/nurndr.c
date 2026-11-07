@@ -1212,6 +1212,17 @@ static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
 u8 *RendererArenaDataPc = 0;
 u32 *RendererArenaOffsetsPc = 0;
 i32 *RendererArenaTypesPc = 0;
+i32 RendererArenaCountPc = 0;
+i32 RendererArenaVertexCountPc = 0;
+i32 RendererArenaIndexCountPc = 0;
+
+/* Shadow outline records: a direction or point with a count (or a -1 marker in the arena) in the fourth word. */
+typedef struct pc_shadow_edge_s {
+    NUVEC v;
+    i32 count;
+} PC_SHADOW_EDGE_PC;
+STATIC_ASSERT(sizeof(PC_SHADOW_EDGE_PC) == 16);
+STATIC_ASSERT(offsetof(PC_SHADOW_EDGE_PC, count) == 12);
 
 void __cdecl NuRndrGeometryBufferReleasePc(void) {
     PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
@@ -1269,6 +1280,110 @@ __declspec(noinline) void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end
 void AnglesBetweenPoints(NUVEC *direction, f32 *pitch, f32 *yaw) {
     *yaw = (f32)NuAtan2D(direction->x, direction->z);
     *pitch = (f32)NuAtan2D(-direction->y, NuFsqrt(direction->x * direction->x + direction->z * direction->z));
+}
+
+NUVEC NuRndrShadowDirectionsPc[8] = {0};
+
+void __cdecl NuRndrRotateVecPc(NUVEC *vector, f32 pitch, f32 yaw) {
+    f32 sin_pitch = NuTrigTable[((i32)pitch >> 1) & 0x7fff];
+    f32 cos_pitch = NuTrigTable[((i32)(pitch + 16384.0) >> 1) & 0x7fff];
+    f32 sin_yaw = NuTrigTable[((i32)yaw >> 1) & 0x7fff];
+    f32 cos_yaw = NuTrigTable[((i32)(yaw + 16384.0) >> 1) & 0x7fff];
+    f32 z = vector->y * sin_pitch + cos_pitch * vector->z;
+    vector->y = cos_pitch * vector->y - sin_pitch * vector->z;
+    vector->z = z * cos_yaw - vector->x * sin_yaw;
+    vector->x = cos_yaw * vector->x + z * sin_yaw;
+}
+
+void __cdecl NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
+    f32 pitch;
+    f32 yaw;
+    f32 length;
+    i32 i;
+    AnglesBetweenPoints(direction, &pitch, &yaw);
+    if (pitch < 8192.0f) {
+        pitch = 8192.0f;
+    }
+    length = NuFsqrt(direction->x * direction->x + direction->y * direction->y + direction->z * direction->z);
+    direction->x = 0.0f;
+    direction->y = 0.0f;
+    direction->z = length;
+    NuRndrRotateVecPc(direction, pitch, yaw);
+    for (i = 0; i < 8; i++) {
+        i32 angle = i * 0x10000 / 8;
+        NuRndrShadowDirectionsPc[i].x = NU_COS_LUT(angle);
+        NuRndrShadowDirectionsPc[i].y = -NU_SIN_LUT(angle);
+        NuRndrShadowDirectionsPc[i].z = 0.0f;
+        NuRndrRotateVecPc(&NuRndrShadowDirectionsPc[i], pitch, yaw);
+    }
+}
+
+void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups,
+                                         PC_SHADOW_EDGE_PC *points, NUVEC *offset) {
+    f32 buffer[256];
+    NUMTX *matrix = (NUMTX *)(((u32)buffer + 15) & ~15u);
+    VuVec *v;
+    i32 group_count;
+    *matrix = packet->matrix;
+    v = (VuVec *)(matrix + 1);
+    for (group_count = points->count; group_count > 0; group_count--) {
+        v[0].xyz = groups->v;
+        v[0].w = 1.0f;
+        NuVec4MtxRotateVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], matrix);
+        if (!(v[0].x * offset->x + v[0].y * offset->y + v[0].z * offset->z > 0.0)) {
+            PC_SHADOW_EDGE_PC *point = points;
+            i32 remaining;
+            if ((u32)RendererArenaCountPc < 250) {
+                RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
+                RendererArenaTypesPc[RendererArenaCountPc] = groups->count;
+                RendererArenaCountPc++;
+            }
+            for (remaining = groups->count; remaining > 0; remaining--) {
+                PC_SHADOW_EDGE_PC *arena;
+                RendererArenaIndexCountPc += 6;
+                v[0].xyz = point->v;
+                v[0].w = 1.0f;
+                NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], matrix);
+                if (remaining == 1) {
+                    v[1] = *(VuVec *)points;
+                } else {
+                    v[1] = *(VuVec *)&point[1];
+                }
+                v[1].w = 1.0f;
+                NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], matrix);
+                v[2].x = v[0].x + offset->x;
+                v[2].y = v[0].y + offset->y;
+                v[2].z = v[0].z + offset->z;
+                v[2].w = 1.0f;
+                v[3].x = v[1].x + offset->x;
+                v[3].y = v[1].y + offset->y;
+                v[3].z = v[1].z + offset->z;
+                v[3].w = 1.0f;
+                arena = (PC_SHADOW_EDGE_PC *)RendererArenaDataPc;
+                arena[RendererArenaVertexCountPc].count = -1;
+                arena[RendererArenaVertexCountPc].v.x = v[0].x;
+                arena[RendererArenaVertexCountPc].v.y = v[0].y;
+                arena[RendererArenaVertexCountPc].v.z = v[0].z;
+                arena[RendererArenaVertexCountPc + 1].count = -1;
+                arena[RendererArenaVertexCountPc + 1].v.x = v[2].x;
+                arena[RendererArenaVertexCountPc + 1].v.y = v[2].y;
+                arena[RendererArenaVertexCountPc + 1].v.z = v[2].z;
+                arena[RendererArenaVertexCountPc + 2].count = -1;
+                arena[RendererArenaVertexCountPc + 2].v.x = v[3].x;
+                arena[RendererArenaVertexCountPc + 2].v.y = v[3].y;
+                arena[RendererArenaVertexCountPc + 2].v.z = v[3].z;
+                arena[RendererArenaVertexCountPc + 3].count = -1;
+                arena[RendererArenaVertexCountPc + 3].v.x = v[1].x;
+                arena[RendererArenaVertexCountPc + 3].v.y = v[1].y;
+                arena[RendererArenaVertexCountPc + 3].v.z = v[1].z;
+                RendererArenaVertexCountPc += 4;
+                point++;
+            }
+            v[8] = v[1];
+        }
+        points += groups->count;
+        groups++;
+    }
 }
 
 #define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX_PC *)data)
