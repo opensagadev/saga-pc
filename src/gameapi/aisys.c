@@ -6345,19 +6345,21 @@ i32 __cdecl Action_SetCurrentSpeed(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     i32 speed_mode;
     f32 speed;
     char *value;
+    APIOBJECT_PC *named;
 
+    speed = 0.0f;
+    speed_mode = -1;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
     if (!first_time)
         return 1;
-    speed_mode = -1;
-    speed = 0.0f;
     for (i = 0; i < num_params; i++) {
         value = NuStrIStr(params[i], (char *)AIGameCharacterName);
-        if (value != NULL)
-            object = GetNamedGameObject(sys, value + 10);
-        else if (NuStrICmp((char *)AITransferLiteral757bb4, params[i]) == 0)
+        if (value != NULL) {
+            named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
+            object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
+        } else if (NuStrICmp((char *)AITransferLiteral757bb4, params[i]) == 0)
             speed_mode = 2;
         else if (NuStrICmp((char *)AITransferLiteral757ba8, params[i]) == 0)
             speed_mode = 1;
@@ -6687,31 +6689,37 @@ i32 __cdecl Action_SetPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     GAMEOBJECT *object;
     AIPATH_PC *path;
     char *value;
-    AIPATH_PC *candidate;
+    APIOBJECT_PC *named;
     i32 index, path_index;
+
     (void)param_6;
-    if (param_5 == 0 || sys == NULL || sys->path_sys == NULL) {
+    path = NULL;
+    object = NULL;
+    if (param_5 == 0) {
+        return 1;
+    }
+    if (sys == NULL) {
+        return 1;
+    }
+    if (sys->path_sys == NULL) {
         return 1;
     }
 
     path_system = sys->path_sys;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    path = NULL;
+    if (packet != NULL && packet->owner != NULL) {
+        object = packet->owner->objptr;
+    }
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AIGameCharacterName);
         if (value != NULL) {
-            object = GetNamedGameObject(sys, value + 10);
-            continue;
-        }
-        if (NuStrIStr(params[index], (char *)AITransferLiteral757e70) != NULL) {
+            named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
+            object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
+        } else if (NuStrIStr(params[index], (char *)AITransferLiteral757e70) != NULL) {
             path = sys->path_sys->active_path;
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)AITransferLiteral757e68);
-        if (value != NULL) {
+        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757e68)) != NULL) {
+            value += 5;
             for (path_index = 0; path_index < path_system->path_count; ++path_index) {
-                candidate = path_system->paths[path_index];
-                if (NuStrICmp(candidate->name, value + 5) == 0) {
+                if (NuStrICmp(path_system->paths[path_index]->name, value) == 0) {
                     path = path_system->paths[path_index];
                     break;
                 }
@@ -6815,154 +6823,157 @@ i32 __cdecl Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     f32 range_squared;
     i32 type_ids[10];
     i32 type_count;
-    u8 local_type;
+    i32 local_type;
     i32 global_type;
-    f32 range;
-    u32 old_state;
-    u32 new_state;
-    i32 type;
+    u32 old_side;
     u32 model_flags;
+    AICREATURE_PC *creature;
     f32 distance_squared;
     GAMEOBJECT *candidate;
     i32 type_matches;
     NUVEC offset;
-
     i32 index, type_index;
+
     (void)param_6;
-    if (param_5 == 0) {
-        return 1;
-    }
-
-    object =
-        packet != NULL && packet->owner != NULL && (packet->owner->flags_1fc & 1u) != 0 ? packet->owner->objptr : NULL;
-    side = 0;
     range_squared = 0.0f;
-
-    type_count = 0;
-
-    for (index = 0; index < param_4; ++index) {
-        if (NuStrICmp(params[index], (char *)AITransferLiteral75773c) == 0) {
-            side = 0;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576a8) == 0 ||
-                   NuStrICmp(params[index], (char *)AITransferLiteral7576b0) == 0) {
-            side = -1;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576b8) == 0 ||
-                   NuStrICmp(params[index], (char *)AITransferLiteral7576c0) == 0) {
-            side = 1;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral75768c) == 0 ||
-                   NuStrICmp(params[index], (char *)AITransferLiteral75769c) == 0) {
-            side = 2;
-        } else if (NuStrICmp(params[index], (char *)GizmoDefaultOutputName) == 0) {
-            side = 3;
-        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral75772c)) != NULL) {
-            if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                local_type = (u8)(LevelCharacterTypeIDFn(value + 5));
-                if (local_type != 0xff) {
-                    global_type = LevelCharacterGlobalIDFn(local_type);
-                    if (global_type != -1 && type_count < 10) {
-                        type_ids[type_count++] = global_type;
-                    }
-                }
-            }
-        } else if ((value = NuStrIStr(params[index], (char *)AIGameCharacterName)) != NULL) {
-            object = GetNamedGameObject(sys, value + 10);
-        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757724)) != NULL) {
-            range = AIParamToFloat(processor, value + 6);
-            range_squared = range * range;
-        }
-    }
-
-    if (type_count == 0 && !(range_squared > 0.0f)) {
-        if (object != NULL) {
-
-            old_state = object->flags_1f8;
-            new_state = old_state & 0xfffefffau;
-            if (side == 1) {
-                new_state |= 1;
-            } else if (side == 0) {
-                new_state |= 4;
-            } else if (side == 2) {
-                new_state |= 0x10000;
-            } else if (side == 3 && (old_state & 0x400u) != 0 && object->ai_packet.creature_index != 0xff) {
-                type = sys->creatures[object->ai_packet.creature_index].type;
-                {
-                    model_flags = apicharsys->char_data[type].model_flags;
-                    if ((model_flags & 0x200) != 0) {
-                        new_state |= 4;
-                    } else if ((model_flags & 4) != 0) {
-                        new_state |= 1;
-                    }
-                }
-            }
-            object->flags_1f8 = new_state;
-
-            object->ai_packet.capabilities &= ~((u32)(LEGO_AIPATHCNX_FORGOODIES) | (u32)(LEGO_AIPATHCNX_FORBADDIES));
-            if ((new_state & 1) != 0) {
-                object->ai_packet.capabilities |= LEGO_AIPATHCNX_FORBADDIES;
-            } else if ((new_state & 4) == 0) {
-                object->ai_packet.capabilities |= LEGO_AIPATHCNX_FORGOODIES;
-            }
-
-            if ((old_state & new_state & 0x10005) == 0) {
-                object->ai_packet.flags &= ~0x800u;
-                object->ai_packet.opponent = NULL;
-                object->alert_target = NULL;
-                object->field_ec4 = 0.0f;
-            }
-        }
-        return 1;
-    }
-
     distance_squared = 0.0f;
-    for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-        candidate = &Obj[index];
-        if ((candidate->flags_1fc_word & (1u | 0x1000u)) != (1u | 0x1000u) || (candidate->flags_1f8 & 0x400u) == 0) {
-            continue;
+    side = 0;
+    type_count = 0;
+    object = NULL;
+    if (param_5 != 0) {
+        if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1fc & 1u) != 0 &&
+            packet->owner->objptr != NULL) {
+            object = packet->owner->objptr;
         }
 
-        type_matches = 0;
-        for (type_index = 0; type_index < type_count; ++type_index) {
-            type_matches |= (i16)candidate->id == type_ids[type_index];
-        }
-        if (range_squared > 0.0f && object != NULL) {
-
-            NuVecSub(&offset, &object->position, &candidate->position);
-            distance_squared = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
-        }
-        if ((type_matches && (range_squared == 0.0f || distance_squared < range_squared)) ||
-            (type_count == 0 && distance_squared < range_squared)) {
-            if (candidate != NULL) {
-
-                old_state = candidate->flags_1f8;
-                new_state = old_state & 0xfffefffau;
-                if (side == 1) {
-                    new_state |= 1;
-                } else if (side == 0) {
-                    new_state |= 4;
-                } else if (side == 2) {
-                    new_state |= 0x10000;
-                } else if (side == 3 && (old_state & 0x400u) != 0 && candidate->ai_packet.creature_index != 0xff) {
-                    type = sys->creatures[candidate->ai_packet.creature_index].type;
-                    {
-                        model_flags = apicharsys->char_data[type].model_flags;
-                        if ((model_flags & 0x200) != 0) {
-                            new_state |= 4;
-                        } else if ((model_flags & 4) != 0) {
-                            new_state |= 1;
+        for (index = 0; index < param_4; ++index) {
+            if (NuStrICmp(params[index], (char *)AITransferLiteral75773c) == 0) {
+                side = 0;
+            } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576a8) == 0 ||
+                       NuStrICmp(params[index], (char *)AITransferLiteral7576b0) == 0) {
+                side = -1;
+            } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576b8) == 0 ||
+                       NuStrICmp(params[index], (char *)AITransferLiteral7576c0) == 0) {
+                side = 1;
+            } else if (NuStrICmp(params[index], (char *)AITransferLiteral75768c) == 0 ||
+                       NuStrICmp(params[index], (char *)AITransferLiteral75769c) == 0) {
+                side = 2;
+            } else if (NuStrICmp(params[index], (char *)GizmoDefaultOutputName) == 0) {
+                side = 3;
+            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral75772c)) != NULL) {
+                if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                    local_type = (u8)(LevelCharacterTypeIDFn(value + 5));
+                    if (local_type != 0xff) {
+                        global_type = LevelCharacterGlobalIDFn(local_type);
+                        if (global_type != -1 && type_count < 10) {
+                            type_ids[type_count++] = global_type;
                         }
                     }
                 }
-                candidate->flags_1f8 = new_state;
+            } else if ((value = NuStrIStr(params[index], (char *)AIGameCharacterName)) != NULL) {
+                object = GetNamedGameObject(sys, value + 10);
+            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757724)) != NULL) {
+                range_squared = AIParamToFloat(processor, value + 6);
+                range_squared *= range_squared;
+            }
+        }
 
-                candidate->ai_packet.capabilities &=
-                    ~((u32)(LEGO_AIPATHCNX_FORGOODIES) | (u32)(LEGO_AIPATHCNX_FORBADDIES));
-                if ((new_state & 1) != 0) {
+        if (type_count <= 0 && !(range_squared > 0.0f)) {
+            if (object != NULL) {
+                old_side = object->flags_1f8 & 0x10005;
+                object->flags_1f8 &= 0xfffefffau;
+                switch (side) {
+                    case 0:
+                        object->flags_1f8 |= 4;
+                        break;
+                    case 1:
+                        object->flags_1f8 |= 1;
+                        break;
+                    case 2:
+                        object->flags_1f8 |= 0x10000;
+                        break;
+                    case 3:
+                        if ((object->flags_1f8 & 0x400u) != 0 && object->ai_packet.creature_index != 0xff) {
+                            creature = sys->creatures + object->ai_packet.creature_index;
+                            model_flags = apicharsys->char_data[creature->type].model_flags;
+                            if ((model_flags & 0x200) != 0) {
+                                object->flags_1f8 |= 4;
+                            } else if ((model_flags & 4) != 0) {
+                                object->flags_1f8 |= 1;
+                            }
+                        }
+                        break;
+                }
+
+                object->ai_packet.capabilities &= ~(LEGO_AIPATHCNX_FORBADDIES | LEGO_AIPATHCNX_FORGOODIES);
+                if ((object->flags_1f8 & 1) != 0) {
+                    object->ai_packet.capabilities |= LEGO_AIPATHCNX_FORBADDIES;
+                } else if ((object->flags_1f8 & 4) == 0) {
+                    object->ai_packet.capabilities |= LEGO_AIPATHCNX_FORGOODIES;
+                }
+
+                if ((old_side & object->flags_1f8) == 0) {
+                    object->ai_packet.flags &= ~0x800u;
+                    object->ai_packet.opponent = NULL;
+                    object->alert_target = NULL;
+                    object->field_ec4 = 0.0f;
+                }
+            }
+            return 1;
+        }
+
+        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+            candidate = &Obj[index];
+            type_matches = 0;
+            if ((candidate->flags_1fc_word & 1u) == 0 || (candidate->flags_1fc_word & 0x1000u) == 0 ||
+                (candidate->flags_1f8 & 0x400u) == 0) {
+                continue;
+            }
+
+            for (type_index = 0; type_index < type_count; ++type_index) {
+                if ((i16)candidate->id == type_ids[type_index]) {
+                    type_matches = 1;
+                }
+            }
+            if (range_squared > 0.0f && object != NULL) {
+                NuVecSub(&offset, &object->position, &candidate->position);
+                distance_squared = offset.x * offset.x + offset.y * offset.y + offset.z * offset.z;
+            }
+            if ((type_matches == 1 && (distance_squared < range_squared || range_squared == 0.0f)) ||
+                (type_count == 0 && distance_squared < range_squared)) {
+                old_side = candidate->flags_1f8 & 0x10005;
+                candidate->flags_1f8 &= 0xfffefffau;
+                switch (side) {
+                    case 0:
+                        candidate->flags_1f8 |= 4;
+                        break;
+                    case 1:
+                        candidate->flags_1f8 |= 1;
+                        break;
+                    case 2:
+                        candidate->flags_1f8 |= 0x10000;
+                        break;
+                    case 3:
+                        if ((candidate->flags_1f8 & 0x400u) != 0 && candidate->ai_packet.creature_index != 0xff) {
+                            creature = sys->creatures + candidate->ai_packet.creature_index;
+                            model_flags = apicharsys->char_data[creature->type].model_flags;
+                            if ((model_flags & 0x200) != 0) {
+                                candidate->flags_1f8 |= 4;
+                            } else if ((model_flags & 4) != 0) {
+                                candidate->flags_1f8 |= 1;
+                            }
+                        }
+                        break;
+                }
+
+                candidate->ai_packet.capabilities &= ~(LEGO_AIPATHCNX_FORBADDIES | LEGO_AIPATHCNX_FORGOODIES);
+                if ((candidate->flags_1f8 & 1) != 0) {
                     candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORBADDIES;
-                } else if ((new_state & 4) == 0) {
+                } else if ((candidate->flags_1f8 & 4) == 0) {
                     candidate->ai_packet.capabilities |= LEGO_AIPATHCNX_FORGOODIES;
                 }
 
-                if ((old_state & new_state & 0x10005) == 0) {
+                if ((old_side & candidate->flags_1f8) == 0) {
                     candidate->ai_packet.flags &= ~0x800u;
                     candidate->ai_packet.opponent = NULL;
                     candidate->alert_target = NULL;
