@@ -17,7 +17,7 @@
     "config/library-objects.json": "9727c009368075a0e525a27ae8337b66c444838945fc976fb2676f9f1fe372a9",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "068d1710e075c957ba9b483591969b183cc70ef78d9e6c05e5e96f51c7ace92f",
+    "config/symbols.csv": "417ab798689c4d4bf27e93cba0ad30c5bf870a49f3d43f2f4874a5fedd212d38",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -78,7 +78,7 @@
     "src/debug/crash_diagnostics.cpp": "d6c4c416477a07ecad9d72a9834f6b5180ca36fcab1f60b0a6eba4719e00924a",
     "src/debug/skin_trace.cpp": "0253ca3bb71bc07f0678151f453c21f5cdc3c8a429796f9e8b1420cb247ee6b1",
     "src/debug/skin_trace_windows.cpp": "9c351973a212bee638eb1b7f9896b6a99c617861c9275e191da311d88504f21a",
-    "src/editor/edlevelall.cpp": "cb6bc23db06735ed503e54f3040949648913c12940b17bc3b4befb26627f3dce",
+    "src/editor/edlevelall.cpp": "c71d6512b97a5940831c9a08e7ea41b11a78e2f5e86371ac076301b375e97664",
     "src/gameapi/edtools_outline_pc.cpp": "61e824b76a197436b7d324980f19261c39c1c6369c83289efc9411d325da61cd",
     "src/gameapi/edui_widget_render_pc.cpp": "4af389fb2878ef93e363a9502140e088904591eac0b4896c9303ae03cf06a51b",
     "src/gameapi/message.cpp": "fa98ea7ba2efbd39677b4b3eb236deac1c1211a09c964f0ec13a6d8f6af088f7",
@@ -214,7 +214,7 @@
     "src/editor/edtoolsall.c": "0736787ddcf6101abde749fb9ed2f3e27220b33b89ef16c685b6ef2a924d1d15",
     "src/gameapi/ai_registry_pc.c": "c6fdc3b0273731fedf19c5be8c800f6573c760213effaa55ec46e0d8f5cf55d0",
     "src/gameapi/aiscript_diagnostics.c": "16e689a9fa169e1baed3fc074f164232093b81c0af3c3b5dd4248ab787bc6a20",
-    "src/gameapi/aisysall.c": "87f7168ed9be10309f6c653dbe3a19446370d95a360b940357418d95150f8a85",
+    "src/gameapi/aisysall.c": "c2f64a85c187a7353fc9d9284549ad6dc79ee7310562e493dd7d9c0c31848e7b",
     "src/gameapi/apiobject.c": "783016d4e8a46570614c4e2824295d2b60430b270b35795e6c39025e8011bd85",
     "src/gameapi/apisave.c": "ddc90ef72dbad4a5852d09ab7afb9b279fdf26167e8cf2a712b44a4c6630807b",
     "src/gameapi/edanim_load.c": "34cdf1f4038a945beb20baf128d3e7fdf9d3304d5502671bed570a9ed7fe2dd5",
@@ -531,11 +531,11 @@
     "build/obj/vendored/vorbis_smallft.obj": "9ad9ab5b433b62cafc838a7b75d400189e64190c5f64879a03936a4887f4acb0",
     "build/obj/batman.obj": "407ccaa004fa094bb5947884c0563359e510b9f00e4c7303a6d57cf3d6c73890",
     "build/obj/data.obj": "bd98088e537233ac4c711ad3a0fe90af49eefa6ed179fe8c9c2e952a673ee9f7",
-    "build/obj/editor/edlevelall.obj": "f7c976453ad0c27399e15a7190ad89ce2fb61a28e1c22cf3424cb3f46b36e206",
+    "build/obj/editor/edlevelall.obj": "1a761608cf4904860dabaf6e7b8fb46e96aa8e6d4e40d3df266aabaa7ede6bc5",
     "build/obj/editor/edtoolsall.obj": "b1b5bdb173b78bea3038001cc0301d7cb859c59f65a6b82cf6c78d1d65fc233e",
     "build/obj/gameapi/ai_registry_pc.obj": "64ee13217b5bc349ef6ead271275f942b1e3cae5dc3c0b1d72bd038e64b29791",
     "build/obj/gameapi/aiscript_diagnostics.obj": "91190daf671c04b2515d765e1a6d4d06a0cdea7acf84131859fbf1a28ae140e6",
-    "build/obj/gameapi/aisysall.obj": "33c4a0650f57837236be82c2174f13a5282591f33a0a8d9ca655874d028ae0d8",
+    "build/obj/gameapi/aisysall.obj": "46d41dc2616cef2a6bc716cf1a0670de2f3650218f492227b22c012bed9030e9",
     "build/obj/gameapi/apiobject.obj": "b44fcef74e7d94072c692e2362938996b3018f5d0a77d25e754d6b153758e982",
     "build/obj/gameapi/apisave.obj": "54053552c99b9dd0b053b0f47cd2084acf20ba1ced992c0b6b643f05fff947fb",
     "build/obj/gameapi/edanim_load.obj": "3193fade212d34fef04885e30a4cefb7fa53dfdf6c2371f818120785fc3c0143",
@@ -86287,17 +86287,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisysall.c",
-          "base_size": 2527,
+          "base_size": 2559,
           "exact_match": false,
           "target_sha256": "f80f92d2dbdfa03bfd5ba45e411a37a947e5ba1df5bbd6ae8189bf93180ed4d8",
-          "base_sha256": "1c6bebdbde14deef9a7c1879d6a350b4b5534758cdfa080f3a3f2c23031c3b35",
+          "base_sha256": "30f59244862af6bb8100e6ff6630e8f8d3ec2fea1d600a57c83ad11f249d9c8f",
           "relocation_count": 48,
           "comparison_unit": "00526800-5be93cc42dc9",
-          "objdiff_percent": 71.58086
+          "objdiff_percent": 66.805954
         }
       ],
       "status": "different",
-      "objdiff_percent": 71.58086
+      "objdiff_percent": 66.805954
     },
     {
       "name": "AiEditorClearMainMenuPc",
@@ -88327,17 +88327,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisysall.c",
-          "base_size": 1526,
+          "base_size": 1462,
           "exact_match": false,
           "target_sha256": "758506e312e9f7df38a6e63f7cd964c13d5d4069c6f839290bb7a0470a435862",
-          "base_sha256": "2e1082249ece2ea11a8927eb831772313617ebabe49c4bb6ff0c30fe694743ff",
-          "relocation_count": 111,
+          "base_sha256": "0f7200637b17d954c005c180d79ff7394b64a131f5494638405b246654db2f79",
+          "relocation_count": 104,
           "comparison_unit": "0052b3f0-184a3c4f1a56",
-          "objdiff_percent": 82.639084
+          "objdiff_percent": 94.12184
         }
       ],
       "status": "different",
-      "objdiff_percent": 82.639084
+      "objdiff_percent": 94.12184
     },
     {
       "name": "xActions",
@@ -88351,17 +88351,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisysall.c",
-          "base_size": 822,
+          "base_size": 726,
           "exact_match": false,
           "target_sha256": "f04da9df2587e277e1c173b32583d7480527882a956569cc3896254ff22f9b4c",
-          "base_sha256": "c9e54b31982ca2709345cc61fc341fce5a7e5408e93cb9044ba148cdae7f0552",
-          "relocation_count": 54,
+          "base_sha256": "56ee6d5dc5eb1f070386f073d697bc2f6aa57abdfb32e3ab6bb32cde02bbe443",
+          "relocation_count": 46,
           "comparison_unit": "0052b9c0-6e87aaed6a78",
-          "objdiff_percent": 76.26222
+          "objdiff_percent": 77.00445
         }
       ],
       "status": "different",
-      "objdiff_percent": 76.26222
+      "objdiff_percent": 77.00445
     },
     {
       "name": "AIScriptOpenPakFileParse",
@@ -90199,17 +90199,17 @@
       "objects": [
         {
           "unit": "src/gameapi/aisysall.c",
-          "base_size": 3080,
+          "base_size": 3081,
           "exact_match": false,
           "target_sha256": "3e5d3529b26ff377cdd3cccf7d041ae501f845c60667abd2078da0d83a0256b2",
-          "base_sha256": "7b5e5c009b1a8a7b213edb155c3c17235ceda4cb13f8b6d090682d6cd81bf4d6",
+          "base_sha256": "fefc3a48398ae84e37e5f35148f2d3b51193f935072fcab9a08b6cf03b860686",
           "relocation_count": 75,
           "comparison_unit": "005322d0-10630a3d4a0e",
-          "objdiff_percent": 81.996765
+          "objdiff_percent": 81.58082
         }
       ],
       "status": "different",
-      "objdiff_percent": 81.996765
+      "objdiff_percent": 81.58082
     },
     {
       "name": "pathEditor_cbSetCurrentPath",
@@ -234677,8 +234677,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "?VuVecSet@@YAXAAUVuVec@@MMMM@Z",
-      "symbol": "?VuVecSet@@YAXAAUVuVec@@MMMM@Z",
+      "name": "?VuVecMake@@YA?AUVuVec@@MMMM@Z",
+      "symbol": "?VuVecMake@@YA?AUVuVec@@MMMM@Z",
       "address": "0x006b7cc0",
       "units": [
         "src/editor/edlevelall.cpp"
@@ -234693,7 +234693,7 @@
           "target_sha256": "5a331d5ffa176afac38befadb4de10a01ab45342c3acb1ab7a4ad13bb740612f",
           "base_sha256": "5a331d5ffa176afac38befadb4de10a01ab45342c3acb1ab7a4ad13bb740612f",
           "relocation_count": 0,
-          "comparison_unit": "006b7cc0-f2e91b10a90f",
+          "comparison_unit": "006b7cc0-9aef4eaa470d",
           "objdiff_percent": 100.0
         }
       ],
@@ -237422,21 +237422,21 @@
         "src/editor/edlevelall.cpp"
       ],
       "target_size": 229,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/editor/edlevelall.cpp",
-          "base_size": 224,
-          "exact_match": false,
+          "base_size": 229,
+          "exact_match": true,
           "target_sha256": "7c8b8c61153d4e2d99126856c1629798196a59e34be9227cf8e811cfd5e9d55f",
-          "base_sha256": "19df6d7f7583c9568e0305f68da7e1ba939a423b1a216205d343026bd2ada82e",
+          "base_sha256": "7c8b8c61153d4e2d99126856c1629798196a59e34be9227cf8e811cfd5e9d55f",
           "relocation_count": 6,
           "comparison_unit": "006bacb0-119bf8401ec9",
-          "objdiff_percent": 76.243904
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 76.243904
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "EdDrawLineCube",
@@ -237446,21 +237446,21 @@
         "src/editor/edlevelall.cpp"
       ],
       "target_size": 708,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/editor/edlevelall.cpp",
-          "base_size": 544,
-          "exact_match": false,
+          "base_size": 708,
+          "exact_match": true,
           "target_sha256": "ed200e9fd94ed5eaaa28e7de886cdfe160e18c39c55257f687c2840709e02f7a",
-          "base_sha256": "d470ae29a36ef0c2090cf938952f5bc88fe305e6371732b19c0ca2f8c5961034",
+          "base_sha256": "ed200e9fd94ed5eaaa28e7de886cdfe160e18c39c55257f687c2840709e02f7a",
           "relocation_count": 17,
           "comparison_unit": "006bada0-c8e219895340",
-          "objdiff_percent": 75.118225
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 75.118225
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "EdDrawLineSphere",
@@ -237470,21 +237470,21 @@
         "src/editor/edlevelall.cpp"
       ],
       "target_size": 671,
-      "exact_match": false,
+      "exact_match": true,
       "objects": [
         {
           "unit": "src/editor/edlevelall.cpp",
-          "base_size": 590,
-          "exact_match": false,
+          "base_size": 671,
+          "exact_match": true,
           "target_sha256": "34393fdfc8a4657d00b52ac0e45c3f0a5afbd9c3a30213f64fecaecef4b839f8",
-          "base_sha256": "330cf51f29c08363d30dad643322669d8644aa40aed60ad5d467846aba000f29",
-          "relocation_count": 12,
+          "base_sha256": "34393fdfc8a4657d00b52ac0e45c3f0a5afbd9c3a30213f64fecaecef4b839f8",
+          "relocation_count": 11,
           "comparison_unit": "006bb070-ebf9e3dcf0a8",
-          "objdiff_percent": 70.86702
+          "objdiff_percent": 100.0
         }
       ],
-      "status": "different",
-      "objdiff_percent": 70.86702
+      "status": "exact",
+      "objdiff_percent": 100.0
     },
     {
       "name": "EdDrawPolyTri",
@@ -237546,17 +237546,17 @@
       "objects": [
         {
           "unit": "src/editor/edlevelall.cpp",
-          "base_size": 1129,
+          "base_size": 1358,
           "exact_match": false,
           "target_sha256": "29b3bae8b8e34a03f4a70d36cc60c1438b057cae5165c91a12c5205012fbca74",
-          "base_sha256": "e63cfa166b3d5fb4cfa4dee50b3904c8af30311623cba78ed7f00d3370307dfa",
+          "base_sha256": "d1f6d7209d9bde5bfa6ec316611a9d933f080d1a5bb53dc0adcf97467ebc71bb",
           "relocation_count": 24,
           "comparison_unit": "006bb6b0-e81a1e78a4e4",
-          "objdiff_percent": 67.11024
+          "objdiff_percent": 85.020996
         }
       ],
       "status": "different",
-      "objdiff_percent": 67.11024
+      "objdiff_percent": 85.020996
     },
     {
       "name": "EdDrawPolyCylinderEx",
@@ -241549,17 +241549,17 @@
       "objects": [
         {
           "unit": "src/editor/edlevelall.cpp",
-          "base_size": 1409,
+          "base_size": 1421,
           "exact_match": false,
           "target_sha256": "373d163f2f05f884181e0450456ed6453212a550712ba2754f4e8b8b7810f5e6",
-          "base_sha256": "83502c43b1020b120c5540a92b6a9c960509515d9c94a4fb24d3d62350a62a42",
+          "base_sha256": "ba0c40b66b9fce14641e725113fa99b39ee2188b37d5e30c014cecd6fd252694",
           "relocation_count": 20,
           "comparison_unit": "006c5190-c176ba39d0cd",
-          "objdiff_percent": 91.311905
+          "objdiff_percent": 95.34524
         }
       ],
       "status": "different",
-      "objdiff_percent": 91.311905
+      "objdiff_percent": 95.34524
     },
     {
       "name": "?SelectAttr@PropertyTool@@QAEXH@Z",
@@ -244088,7 +244088,7 @@
           "base_size": 1712,
           "exact_match": false,
           "target_sha256": "eb9d1acf5624b47ebad846f28c0d26bbc58ddfa565735581b289c3903d6deab1",
-          "base_sha256": "a01df546f8838e1e955af06356c16c8380e4b492c6ab49cdfd25df8504316b0e",
+          "base_sha256": "ebc303b5cb2238d65ebf6b165610c408e736fa81932c6a1a2e48c2df85e2260c",
           "relocation_count": 41,
           "comparison_unit": "006cc360-8b75d06a0be2",
           "objdiff_percent": 91.00937
@@ -614462,12 +614462,12 @@
   "progress": {
     "text_bytes": 3471246,
     "mapped_code_bytes": 2898867,
-    "matched_code_bytes": 977294,
-    "matching_percent": 28.153982748557723,
-    "fuzzy_coverage_percent": 75.7687817435471,
+    "matched_code_bytes": 978902,
+    "matching_percent": 28.200306172481007,
+    "fuzzy_coverage_percent": 75.7914106824071,
     "mapped_functions": 11607,
-    "matched_functions": 7825,
-    "objdiff_fuzzy_percent": 90.85017,
+    "matched_functions": 7828,
+    "objdiff_fuzzy_percent": 90.877266,
     "objdiff_total_code": 2899575,
     "image_bytes": 40067072,
     "mapped_bytes": 4802270,
@@ -614526,16 +614526,16 @@
   "text_coverage": {
     "original_text_bytes": 3471246,
     "mapped_reconstruction_bytes": 2898867,
-    "exact_reconstruction_bytes": 977294,
-    "mapped_not_exact_bytes": 1921573,
+    "exact_reconstruction_bytes": 978902,
+    "mapped_not_exact_bytes": 1919965,
     "excluded_import_glue_bytes": 1194,
     "unclassified_text_bytes": 571185,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 28.153982748557723,
+    "strict_original_text_exact_percent": 28.200306172481007,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 28.1636701697842,
+    "reconstruction_scope_exact_percent": 28.210009532998352,
     "mapped_scope_denominator_bytes": 2898867,
-    "mapped_scope_exact_percent": 33.712964409888414,
+    "mapped_scope_exact_percent": 33.7684343572851,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -615841,7 +615841,7 @@
       "metadata_sha256": "f144b2c7d11d07a38dc69fe167bbe9736b0ffaa144e187dbb835337f6b396a09",
       "header_path": "src/saga.h",
       "header_sha256": "c1e8b435b7baa17acc39ecddc6525da639b4614fb62477a53e4b6485c3a4f756",
-      "geometry_object_sha256": "9c12bd4a6123d77ef84e2100427cadd2519ac622ccaeefc0aadad935dcbb16af",
+      "geometry_object_sha256": "8d1a312959a398fa57142fa725c37659e6d4b27965804f0fd2f472ab2f5784d1",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
