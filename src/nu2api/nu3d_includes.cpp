@@ -5,15 +5,18 @@
 // Modules merged so far: nuanim (with the PC procedural joint overrides), nuqfnt, nufont, occlusion, nugscn,
 // nuportal, numtl, nutimebar, nudlist, nupostfilter, nulgtlaser, nutex_pc, nuframe, nuvport, nuprim, nudlist_pc,
 // nutrig, posteffect_ports_pc, nudynamiclight, nuspline, nutex, nuspecial_shadow_pc, nuqfnt_print, nughg,
-// nuocclusion, nuvisibility, nuspecial.
+// nuocclusion, nuvisibility, nuspecial, nucore, nuhgobj, nupostdeferred.
 // The PS/Pc halves live in the platform unit, nu3d_platform_pc.cpp.
 // nufloat, numtx, nuhtml, nustateanim and nufrustum_pc stay separate: merged, their small leaves inline into
 // nu3d callers that retail compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate, TestBox).
-// nutexanim stays separate too: merged, NuTexAnimEnvProc drops from 80.5% to 66.3%.
+// nuvec and nucamera stay separate for the same reason (AnimationDiagnosticNoOpPc and the nucamera
+// getters fold into their callers); nutexanim stays separate too: merged, NuTexAnimEnvProc drops from 80.5%
+// to 66.3%.
 
 #include "saga.h"
 
 #include <xmmintrin.h>
+#include <float.h>
 #include <new>
 #include <math.h>
 #include <stdarg.h>
@@ -13584,3 +13587,1571 @@ extern "C" {
         }
     }
 } // extern "C"
+
+/* nucore */
+bool NuDeferredFilterGen::isEnabled() {
+    return enabled && (dynamic_light_count > 0 || deferred_geometry_count > 0);
+}
+void NuDeferredFilterGen::resetAll() {
+    for (i32 i = 0; i < dynamic_light_count; ++i)
+        dynamic_lights[i]->resetGeometry();
+    deferred_geometry_count = 0;
+    dynamic_light_count = 0;
+}
+/* Original nudynamiclight/nucore helper; proposed named fields are documented
+ * in light-reset-field-contract.json. No byte-cast/unknown-layout bypass. */
+void NuDynamicLight::resetGeometry() {
+    for (i32 i = 0; i < render_set_count_pc; ++i) {
+        NURNDRLIGHTRECORD &set = render_sets_pc[i];
+        set.count = 0;
+        for (i32 j = 0; j < 2; ++j) {
+            NuDisplayListResetStateCache(set.shadow_lists_pc[j].state);
+            NUDISPLAYLISTITEM *item = set.shadow_lists_pc[j].first;
+            set.shadow_lists_pc[j].material_last = item;
+            item->type = 0x8d;
+            item->next = NULL;
+            item->id = 1;
+        }
+    }
+}
+/* Eight-slot renderer object pools; slot storage keeps the 16-byte stride. */
+template <typename T> struct LightObjectPool {
+    struct Slot {
+        u8 storage[(sizeof(T) + 15) & ~15];
+    } slots[8];
+    i8 occupied[1];
+    i32 next;
+    T *allocate();
+};
+template <typename T> T *LightObjectPool<T>::allocate() {
+    i32 i;
+    for (i = next; i < 8; ++i) {
+        if (((occupied[i >> 3] >> (i & 7)) & 1) == 0) {
+            occupied[i >> 3] |= 1 << (i & 7);
+            next = (i + 1) % 8;
+            return reinterpret_cast<T *>(&slots[i]);
+        }
+    }
+    for (i = 0; i < next; ++i) {
+        if (((occupied[i >> 3] >> (i & 7)) & 1) == 0) {
+            occupied[i >> 3] |= 1 << (i & 7);
+            next = (i + 1) % 8;
+            return reinterpret_cast<T *>(&slots[i]);
+        }
+    }
+    return NULL;
+}
+static LightObjectPool<NUDISPLAYLISTITEM> dlistItemPool = {0};
+static LightObjectPool<PC_SPECIAL_SHADOW_LIGHT> dynamicLightPool = {0};
+static LightObjectPool<NURNDRLIBSTATE> rndrStatePool = {0};
+STATIC_ASSERT(sizeof(dlistItemPool) == 0x88);
+STATIC_ASSERT(sizeof(dynamicLightPool) == 0x4188);
+STATIC_ASSERT(sizeof(rndrStatePool) == 0x208);
+
+extern "C" void __cdecl NuOcclusionManagerInit(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
+    g_OcclusionManager.Init(capacity, buffer, buffer_end);
+}
+
+extern "C" i32 __cdecl NuOcclusionManagerIsOccludedSphere(const NUVEC *center, f32 radius) {
+    return g_OcclusionManager.IsOccludedSphere(center, radius) ? 1 : 0;
+}
+
+extern "C" i32 __cdecl NuOcclusionManagerIsOccludedOBB(const NUVEC *minimum, const NUVEC *maximum,
+                                                       const NUMTX *matrix) {
+    return g_OcclusionManager.IsOccludedOBB(minimum, maximum, matrix) ? 1 : 0;
+}
+
+nurndrlightrecord_s::nurndrlightrecord_s() {
+    parameter_100 = 0.01f;
+    count = 0;
+    shadow_plane_count = 0;
+    parameter_104 = 0.001f;
+    parameter_110 = 1.0f;
+    for (i32 i = 0; i < 2; ++i) {
+        list_items[i] = dlistItemPool.allocate();
+        render_states[i] = rndrStatePool.allocate();
+        memset(&shadow_lists_pc[i], 0, sizeof(shadow_lists_pc[i]));
+        NUDISPLAYLISTITEM *item = list_items[i];
+        shadow_lists_pc[i].first = item;
+        item->type = 0x8d;
+        item->next = NULL;
+        item->id = 1;
+        shadow_lists_pc[i].material_last = shadow_lists_pc[i].first;
+        shadow_lists_pc[i].state = render_states[i];
+        NuDisplayListResetStateCache(shadow_lists_pc[i].state);
+        shadow_lists_pc[i].material_last = shadow_lists_pc[i].first;
+    }
+}
+PC_SPECIAL_SHADOW_LIGHT::PC_SPECIAL_SHADOW_LIGHT() {
+    enabled = 0;
+    render_set_count = 2;
+    active_render_set_count = 0;
+    parameter_4 = 0;
+    parameter_5 = 0;
+    used_on_specials = 0;
+    parameter_1 = 4.0f;
+    parameter_2 = 0.25f;
+    parameter_0 = 0.8f;
+    parameter_3 = 0.0f;
+    parameter_19 = 100.0f;
+    parameter_20 = 110.0f;
+}
+extern "C" PC_SPECIAL_SHADOW_LIGHT *__cdecl NuDynamicLightCreate(void) {
+    return new (dynamicLightPool.allocate()) PC_SPECIAL_SHADOW_LIGHT;
+}
+
+/* nuhgobj */
+extern "C" {
+    i32 __cdecl NuHGobjGetLayerIndex(const char *name, NUHGOBJ_EVAL_PC *object) {
+        i32 i;
+        for (i = 0; i < object->render_count; ++i) {
+            if (NuStrICmp(name, object->render_parts[i].name) == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    i32 __cdecl NuHGobjReversibleCharacters(i32 enabled) {
+        i32 previous = nuapi.reversible_characters;
+        nuapi.reversible_characters = enabled;
+        return previous;
+    }
+
+    i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled) {
+        i32 previous = nuapi.force_shadows_on_characters;
+        nuapi.force_shadows_on_characters = enabled;
+        return previous;
+    }
+
+    void __cdecl NuHGobjPOIMtx(NUHGOBJ_EVAL_PC *object, u8 index, NUMTX *world_matrix, NUMTX *joint_matrices,
+                               NUMTX *result) {
+        NUHGOBJ_POI_PC *point = &object->points[object->point_index_map[index]];
+        NuMtxMulVU0(result, &point->matrix, &joint_matrices[point->joint_index]);
+        NuMtxMulVU0(result, result, world_matrix);
+    }
+
+    void __cdecl NuHGobjEval(NUHGOBJ_EVAL_PC *object, i32 override_count, NUHGOBJ_JOINT_OVERRIDE_PC *overrides,
+                             NUMTX *matrices) {
+        NUHGOBJ_JOINT_OVERRIDE_PC *override_by_joint[256];
+        u8 i;
+        if (override_count != 0) {
+            memset(override_by_joint, 0, object->joint_count * sizeof(override_by_joint[0]));
+            for (i = 0; i < override_count; ++i) {
+                u8 index = overrides[i].joint_index;
+                if (index < object->joint_override_map_count) {
+                    u8 joint = object->joint_override_map[index];
+                    if (joint != 0xff)
+                        override_by_joint[joint] = &overrides[i];
+                }
+            }
+        }
+        for (i = 0; i < object->joint_count; ++i) {
+            NUMTX *local;
+            NUMTX transformed, rotation;
+            if (override_count != 0 && override_by_joint[i] != NULL) {
+                NUHGOBJ_JOINT_OVERRIDE_PC *item = override_by_joint[i];
+                NUANGVEC angles;
+                transformed = object->bind_matrices[i];
+                angles.x = (i32)(item->rotation.x * AIPathAngularScale);
+                angles.y = (i32)(item->rotation.y * AIPathAngularScale);
+                angles.z = (i32)(item->rotation.z * AIPathAngularScale);
+                NuMtxSetRotateXYZVU0(&rotation, &angles);
+                NuMtxTranslate(&rotation, &item->translation);
+                NuMtxMulVU0(&transformed, &rotation, &transformed);
+                local = &transformed;
+            } else {
+                local = &object->bind_matrices[i];
+            }
+            if (object->joints[i].parent_index == 0xff)
+                matrices[i] = *local;
+            else
+                NuMtxMulVU0(&matrices[i], local, &matrices[object->joints[i].parent_index]);
+        }
+    }
+
+    STATIC_ASSERT(sizeof(NUJOINTPROCANIMFN_PC) == 4);
+
+    void __cdecl NuHGobjEvalAnim2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time,
+                                        i32 override_count, void *overrides, NUMTX *matrices,
+                                        ANI3_ROOT_CALLBACK_PC root_fn, void *root_data) {
+        ANI3_BUFFER_PC buffer;
+        NUVEC root_translation = {0.0f, 0.0f, 0.0f};
+        f32 adjusted_time;
+        NUJOINTPROCANIMFN_PC callback;
+        buffer.joint_count = 0;
+        buffer.max_joints = globalbuffer->scratch_joint_capacity;
+        buffer.joints = (ANI3_JOINT_PC *)(((u32)NuScratchAlloc32((buffer.max_joints + 1) * 48) + 15u) & ~15u);
+        buffer.joint_flags = (u8 *)NuScratchAlloc32(buffer.max_joints);
+        buffer.joint_count = object->joint_count;
+        adjusted_time = time - 1.0;
+        ANI_SimpleAni3PlayerV4Joint(animation, adjusted_time, &buffer, object->joint_count, 0);
+        callback = JointProcAnimFn;
+        if (override_count != 0 && callback != NULL)
+            callback(&buffer, object, override_count, (NUHGOBJ_JOINT_OVERRIDE_PC *)overrides);
+        NuAnimBuffEvaluate_3(&buffer, object, matrices, animation, root_fn, &root_translation, root_data);
+        NuScratchRelease();
+        NuScratchRelease();
+    }
+
+    void __cdecl NuHGobjEvalAnimBlend2Root_3(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation_a, f32 time_a,
+                                             ANI3_HEADER_PC *animation_b, f32 time_b, f32 blend, i32 override_count,
+                                             void *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn,
+                                             void *root_data) {
+        ANI3_BUFFER_PC buffer;
+        NUVEC root_translation = {0.0f, 0.0f, 0.0f};
+        NUVEC blend_translation;
+        f32 adjusted_time_a, adjusted_time_b;
+        NUJOINTPROCANIMFN_PC callback;
+        u8 quaternion_mode;
+        buffer.joint_count = 0;
+        buffer.max_joints = globalbuffer->scratch_joint_capacity;
+        buffer.joints = (ANI3_JOINT_PC *)(((u32)NuScratchAlloc32((buffer.max_joints + 1) * 48) + 15u) & ~15u);
+        buffer.joint_flags = (u8 *)NuScratchAlloc32(buffer.max_joints);
+        quaternion_mode = ForceEulerToQuat | ((animation_a->format_flags | animation_b->format_flags) & 1);
+        if (AnimQuatDepthPc < 4) {
+            AnimQuatSavedPc[AnimQuatDepthPc++] = ForceEulerToQuat;
+            ForceEulerToQuat = quaternion_mode;
+        } else {
+            AnimationDiagnosticNoOpPc();
+        }
+        buffer.joint_count = object->joint_count;
+        adjusted_time_a = time_a - 1.0;
+        ANI_SimpleAni3PlayerV4Joint(animation_a, adjusted_time_a, &buffer, object->joint_count, 0);
+        buffer.joint_count = object->joint_count;
+        adjusted_time_b = time_b - 1.0;
+        ANI_SimpleAni3PlayerV4Joint_Blend(animation_b, adjusted_time_b, &buffer, blend, object->joint_count, 0,
+                                          &blend_translation);
+        callback = JointProcAnimFn;
+        if (override_count != 0 && callback != NULL)
+            callback(&buffer, object, override_count, (NUHGOBJ_JOINT_OVERRIDE_PC *)overrides);
+        NuAnimBuffEvaluate_3(&buffer, object, matrices, animation_a, root_fn, &root_translation, root_data);
+        NuScratchRelease();
+        NuScratchRelease();
+        if (AnimQuatDepthPc != 0)
+            ForceEulerToQuat = AnimQuatSavedPc[--AnimQuatDepthPc];
+        else
+            AnimationDiagnosticNoOpPc();
+    }
+
+    void __cdecl NuHGobjEvalAnimBlend2(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation_a, f32 time_a,
+                                       ANI3_HEADER_PC *animation_b, f32 time_b, f32 blend, i32 override_count,
+                                       void *overrides, NUMTX *matrices) {
+        if ((i32)animation_a->magic < 0x414e4934 || (i32)animation_a->magic > 0x414e4935) {
+            AnimationDiagnosticNoOpPc();
+            return;
+        }
+        NuHGobjEvalAnimBlend2Root_3(object, animation_a, time_a, animation_b, time_b, blend, override_count, overrides,
+                                    matrices, NULL, NULL);
+    }
+
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa2(i32 count, i16 *indices, NUANIMDATA2_PC *animation, f32 frame) {
+        NUANIM_TIME2_PC time;
+        DWA_WEIGHT_BLOCK_PC **result;
+        i32 render;
+        if (animation == NULL || count == 0)
+            return NULL;
+        NuAnimData2CalcTime(animation, frame, &time);
+        if (indices == NULL)
+            count = 1;
+        result = NuRndrCreateBlendShapeDWAPointers(count);
+        memset(result, 0, ((u32)count * 4 + 15u) >> 4);
+        if (result == NULL)
+            return NULL;
+        for (render = 0; render < count; ++render) {
+            i32 node = indices == NULL ? 0 : indices[render];
+            i32 curve_count, curve;
+            DWA_WEIGHT_BLOCK_PC *weights;
+            DWA_CURVE_CELL_PC *cells;
+            i8 *types;
+            if (node < 0)
+                continue;
+            if (node >= NuAnimNumNodes(animation)) {
+                result[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+                continue;
+            }
+            curve_count = animation->curve_count;
+            weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+            result[render] = weights;
+            cells = &animation->curves[curve_count * node];
+            types = &animation->curve_types[curve_count * node];
+            if (weights == NULL)
+                continue;
+            for (curve = 0; curve < curve_count; ++curve) {
+                f32 value = types[curve] == 0 ? cells[curve].constant
+                                              : NuAnimCurve2CalcValEx(&cells[curve], &time, types[curve]);
+                weights->values[curve] = value;
+            }
+        }
+        return result;
+    }
+
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend2(i32 count, i16 *indices, NUANIMDATA2_PC *animation_a,
+                                                       f32 frame_a, NUANIMDATA2_PC *animation_b, f32 frame_b,
+                                                       f32 blend) {
+        NUANIM_TIME2_PC time_a, time_b;
+        DWA_WEIGHT_BLOCK_PC **result = NULL;
+        DWA_CURVE_CELL_PC *cells_a = NULL, *cells_b = NULL;
+        i8 *types_a = NULL, *types_b = NULL;
+        i32 render;
+        if ((animation_a != NULL || animation_b != NULL) && count != 0) {
+            if (animation_a != NULL)
+                NuAnimData2CalcTime(animation_a, frame_a, &time_a);
+            if (animation_b != NULL)
+                NuAnimData2CalcTime(animation_b, frame_b, &time_b);
+            if (indices == NULL)
+                count = 1;
+            result = NuRndrCreateBlendShapeDWAPointers(count);
+            memset(result, 0, ((u32)count * 4 + 15u) >> 4);
+            if (result != NULL) {
+                for (render = 0; render < count; ++render) {
+                    i32 node;
+                    i32 count_a, count_b, curves, curve;
+                    DWA_WEIGHT_BLOCK_PC *weights;
+                    f64 inverse;
+                    if (indices != NULL) {
+                        node = indices[render];
+                        if (node < 0)
+                            continue;
+                    } else {
+                        node = 0;
+                    }
+                    if (animation_a != NULL && node < NuAnimNumNodes(animation_a)) {
+                        count_a = animation_a->curve_count;
+                        cells_a = &animation_a->curves[count_a * node];
+                        types_a = &animation_a->curve_types[count_a * node];
+                    } else {
+                        count_a = 0;
+                    }
+                    if (animation_b != NULL && node < NuAnimNumNodes(animation_b)) {
+                        count_b = animation_b->curve_count;
+                        cells_b = &animation_b->curves[count_b * node];
+                        types_b = &animation_b->curve_types[count_b * node];
+                    } else {
+                        count_b = 0;
+                    }
+                    curves = count_a > count_b ? count_a : count_b;
+                    weights = NuRndrCreateBlendShapeDeformerWeightsArray(curves);
+                    result[render] = weights;
+                    if (weights == NULL || curves <= 0)
+                        continue;
+                    inverse = 1.0 - (f64)blend;
+                    for (curve = 0; curve < curves; ++curve) {
+                        f32 value_a, value_b;
+                        if (curve < count_a)
+                            value_a = types_a[curve] == 0
+                                          ? cells_a[curve].constant
+                                          : NuAnimCurve2CalcValEx(&cells_a[curve], &time_a, types_a[curve]);
+                        else
+                            value_a = 0.0f;
+                        if (curve < count_b)
+                            value_b = types_b[curve] == 0
+                                          ? cells_b[curve].constant
+                                          : NuAnimCurve2CalcValEx(&cells_b[curve], &time_b, types_b[curve]);
+                        else
+                            value_b = 0.0f;
+                        weights->values[curve] = value_b * blend + value_a * inverse;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    void __cdecl NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation_a, f32 time_a,
+                                           ANI3_HEADER_PC *animation_b, f32 time_b, f32 blend, i32 override_count,
+                                           void *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK_PC root_fn,
+                                           void *root_data) {
+        if ((i32)animation_a->magic < 0x414e4934 || (i32)animation_a->magic > 0x414e4935) {
+            AnimationDiagnosticNoOpPc();
+            return;
+        }
+        NuHGobjEvalAnimBlend2Root_3(object, animation_a, time_a, animation_b, time_b, blend, override_count, overrides,
+                                    matrices, root_fn, root_data);
+    }
+
+    /* Proposal only. Normal finite skeleton/override counts 0..255, readable
+     * indexed payloads and hierarchy, writable outputs; optional installed root
+     * callback obeys the existing six-word normal engine contract. Legacy duration1
+     * leaves time_offset undefined: format4 requires a separately valid offset.
+     * Missing-node scales remain undefined; later scale-dependent children require
+     * a valid prior parent node or the initialized parent255 sentinel. */
+    void __cdecl NuHGobjEvalAnim2Root(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time, i32 override_count,
+                                      NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices,
+                                      ANI3_ROOT_CALLBACK_PC root_fn, void *root_data) {
+        NUANIMDATA2_SKELETAL_PC *legacy;
+        NUANIM_TIME2_PC anim_time;
+        NUVEC scales[256];
+        NUHGOBJ_JOINT_OVERRIDE_PC *joint_overrides[256];
+        NUMTX local_matrix;
+        NUVEC translation, locator_translation;
+        u8 i;
+        if ((i32)animation->magic >= (i32)0x414e4934 && (i32)animation->magic <= (i32)0x414e4935) {
+            NuHGobjEvalAnim2Root_3(object, animation, time, override_count, overrides, matrices, root_fn, root_data);
+            return;
+        }
+        if (object->joint_count > DdMaxJointsPc)
+            DdMaxJointsPc = object->joint_count;
+        legacy = (NUANIMDATA2_SKELETAL_PC *)animation;
+        scales[255].x = 1.0f;
+        scales[255].y = 1.0f;
+        scales[255].z = 1.0f;
+        NuAnimData2CalcTime(&legacy->prefix, time, &anim_time);
+        if (override_count != 0) {
+            memset(joint_overrides, 0, object->joint_count * 4);
+            for (i = 0; (i32)i < override_count; ++i) {
+                if ((i32)overrides[i].joint_index < object->joint_override_map_count) {
+                    u8 index = object->joint_override_map[overrides[i].joint_index];
+                    if (index != 255)
+                        joint_overrides[index] = &overrides[i];
+                }
+            }
+        }
+        for (i = 0; (i32)i < object->joint_count; ++i) {
+            NUMTX *output = &matrices[i];
+            NUHGOBJ_JOINT_OVERRIDE_PC *override_anim;
+            NUHGOBJ_EVAL_JOINT_PC *joint;
+            DWA_CURVE_CELL_PC *curves;
+            i8 *types;
+            i32 flags;
+            if ((i32)i >= legacy->prefix.node_count.legacy) {
+                *output = NuMtxSetIdentityTemplate;
+                continue;
+            }
+            override_anim = override_count != 0 ? joint_overrides[i] : NULL;
+            curves = &legacy->prefix.curves[i * legacy->prefix.curve_count];
+            types = &legacy->prefix.curve_types[i * legacy->prefix.curve_count];
+            flags = legacy->node_flags[i];
+            if (i == 0) {
+                joint = &object->joints[0];
+                PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[0],
+                                           &scales[joint->parent_index], &local_matrix, override_anim, &translation,
+                                           &locator_translation);
+                if (root_fn != NULL)
+                    root_fn(&local_matrix, root_data, &translation, NULL, &locator_translation, 0.0f);
+            } else {
+                joint = &object->joints[i];
+                PCBuildLegacySkeletalJoint(curves, types, flags, &anim_time, joint, &scales[i],
+                                           &scales[joint->parent_index], &local_matrix, override_anim, NULL, NULL);
+            }
+            joint = &object->joints[i];
+            if (joint->parent_index == 255) {
+                if (flags & 0x40) {
+                    scales[i].x = 1.0f;
+                    scales[i].y = 1.0f;
+                    scales[i].z = 1.0f;
+                }
+                *output = local_matrix;
+            } else {
+                NuMtxMulVU0(output, &local_matrix, &matrices[joint->parent_index]);
+            }
+        }
+    }
+
+    void __cdecl NuHGobjEvalAnim2(NUHGOBJ_EVAL_PC *object, ANI3_HEADER_PC *animation, f32 time, i32 override_count,
+                                  NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices) {
+        NuHGobjEvalAnim2Root(object, animation, time, override_count, overrides, matrices, NULL, NULL);
+    }
+
+    typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+    typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
+    typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
+    typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
+    typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
+    typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+    typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
+
+    struct PC_HG_SHADOW_SHAPE48 {
+        union {
+            NUVEC axes[4];
+            struct {
+                f32 center_x;
+                u32 flags;
+                u8 rest[40];
+            } filter;
+        };
+    };
+    struct PC_HG_SHADOW_SHAPE64 {
+        PC_HG_SHADOW_SHAPE48 position;
+        u8 unknown_30[16];
+    };
+    struct PC_HG_SHADOW_GROUP {
+        PC_HG_SHADOW_SHAPE48 *ellipses;
+        PC_HG_SHADOW_SHAPE64 *cylinders;
+        void *third_shape;
+        u8 ellipse_count, cylinder_count, third_count, joint_index;
+    };
+    STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
+    STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
+    STATIC_ASSERT(sizeof(PC_HG_SHADOW_GROUP) == 16);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipses) == 0);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinders) == 4);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_shape) == 8);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
+    STATIC_ASSERT(sizeof(PC_HG_SHADOW_PACKET) == 0x68);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse) == 0x40);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder) == 0x44);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_shape) == 0x48);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state0) == 0x4c);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state1) == 0x50);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state2) == 0x54);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, state_byte) == 0x58);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, near_value) == 0x5c);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, far_value) == 0x60);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, ellipse_count) == 0x64);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, cylinder_count) == 0x65);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, third_count) == 0x66);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_PACKET, sequence) == 0x67);
+    STATIC_ASSERT(sizeof(PC_HG_SHADOW_STATE_VIEW) == 16);
+    STATIC_ASSERT(offsetof(PC_HG_SHADOW_STATE_VIEW, state_byte) == 15);
+
+    i32 NuHGobjRndrRandShadowSurfacePoints(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *joints, i32 count,
+                                           NUVEC *positions, i32 exclusion_mask) {
+        i32 i;
+        NUHGOBJ_EVAL_PC *object;
+        PC_HG_SHADOW_GROUP *groups;
+        i32 total;
+        PC_HG_SHADOW_GROUP *group;
+        i16 counts[256];
+        i32 index;
+        NUMTX combined;
+        NUVEC4 point;
+
+        object = hierarchy;
+        if (PCShadowSurfaceSamplingEnabled == 0 ||
+            NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0) == 0)
+            return 0;
+        groups = object->shadow_groups;
+        if (groups == NULL || object->suppress_shadow_points != 0)
+            return 1;
+        total = 0;
+
+        for (group = groups; group->joint_index != 255; ++group) {
+            i32 i;
+
+            for (i = 0; i < group->ellipse_count; ++i)
+                if ((group->ellipses[i].filter.flags & 1) == 0)
+                    ++total;
+            for (i = 0; i < group->cylinder_count; ++i)
+                if ((group->cylinders[i].position.filter.flags & 1) == 0)
+                    ++total;
+        }
+        if (total == 0)
+            return 1;
+
+        for (i = 0; i < total; ++i)
+            counts[i] = 0;
+        for (i = 0; i < count; ++i)
+            ++counts[((i32)NuWindRand() >> 8) % total];
+        index = 0;
+
+        for (group = groups; group->joint_index != 255; ++group) {
+            i32 i;
+            i32 matrix_ready;
+
+            if (count == 0)
+                continue;
+            matrix_ready = 0;
+            for (i = 0; i < group->ellipse_count; ++i) {
+                i32 n;
+
+                if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
+                    continue;
+                n = counts[index];
+                if (n != 0) {
+                    if (matrix_ready == 0)
+                        NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+                    if (n > 0) {
+                        i32 j;
+
+                        count -= n;
+                        for (j = n - 1; j >= 0; --j) {
+                            NuRndrCalcRandEllipsePos(&point, &combined, group->ellipses[i].axes);
+                            positions[count + j].x = point.x;
+                            positions[count + j].y = point.y;
+                            positions[count + j].z = point.z;
+                        }
+                    }
+                    matrix_ready = 1;
+                }
+                ++index;
+            }
+            for (i = 0; i < group->cylinder_count; ++i) {
+                i32 n;
+
+                if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
+                    continue;
+                n = counts[index];
+                if (n != 0) {
+                    if (matrix_ready == 0)
+                        NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+                    if (n > 0) {
+                        i32 j;
+
+                        count -= n;
+                        for (j = n - 1; j >= 0; --j) {
+                            NuRndrCalcRandCylinderPos(&point, &combined, group->cylinders[i].position.axes);
+                            positions[count + j].x = point.x;
+                            positions[count + j].y = point.y;
+                            positions[count + j].z = point.z;
+                        }
+                    }
+                    matrix_ready = 1;
+                }
+                ++index;
+            }
+        }
+        return 1;
+    }
+
+    i32 NuCameraClipHGobj(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *root) {
+        NUHGOBJ_EVAL_PC *object;
+        NUVEC half;
+        NUVEC min;
+        NUMTX matrix;
+
+        object = hierarchy;
+        if (CutSceneBoundingBoxTrackRoot == 0)
+            return NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0);
+
+        NuVecSub(&half, &object->bounds_max, &object->bounds_min);
+        NuVecScale(&half, &half, 0.5f);
+        NuVecNeg(&min, &half);
+        matrix = *world;
+        NuMtxPreTranslate(&matrix, &root->translation);
+        return NuCameraClipTestExtents(&min, &half, &matrix, 0.0f, 0);
+    }
+
+    __declspec(noinline) void NuMtxMulHArrayPc(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
+        while (count != 0) {
+            D3DXMatrixMultiply(((D3DXMATRIX *)(out)), ((D3DXMATRIX *)(left)), ((D3DXMATRIX *)(right)));
+            ++out;
+            ++left;
+            ++right;
+            --count;
+        }
+    }
+
+    i32 NuHGobjRndrMtxDwa(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, i32 render_count, i16 *render_indices,
+                          NUMTX *joints, DWA_WEIGHT_BLOCK_PC **weights, i32 render_flags) {
+        i32 index;
+        i32 clip;
+        i32 shadow;
+        i32 old_clip;
+        i32 drawn;
+        i32 layer;
+        i32 joint;
+        NUMTX *skin;
+        DWA_WEIGHT_BLOCK_PC *blend;
+        NUSPECIALHANDLE *handle;
+        VARIPTR *cursor;
+        NUMTX matrix;
+        NUVEC min;
+        NUVEC max;
+
+        clip = PCSpecialClipState;
+        if (clip == -1)
+            clip = NuCameraClipHGobj(hierarchy, world, joints);
+        if (PCSpecialActiveShadowLights <= 0) {
+            shadow = 0;
+        } else {
+            NuVecMtxTransform(&min, &hierarchy->bounds_min, world);
+            NuVecMtxTransform(&max, &hierarchy->bounds_max, world);
+            shadow = NuSpecialClipTestShadowLights(&min, &max, 1);
+        }
+        if (clip == 0 && shadow == 0) {
+            PCSpecialShadowClipResultsPresent = 0;
+            return 0;
+        }
+        old_clip = PCSpecialClipState;
+        PCSpecialClipState = clip;
+        NuHGobjSubmitShadowGroupsPc(hierarchy, world, joints);
+        drawn = 0;
+        for (index = 0; index < render_count; ++index) {
+            if (render_indices != NULL) {
+                layer = render_indices[index];
+                if (layer < 0 || layer >= hierarchy->render_count)
+                    continue;
+            } else {
+                render_count = 1;
+                layer = 0;
+            }
+            if (hierarchy->render_parts[layer].smooth != NULL ||
+                hierarchy->render_parts[layer].alternate_smooth != NULL) {
+                NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
+                cursor = NuDisplayListStreamCursor;
+                skin = ((NUMTX *)((cursor->addr + 127) & ~127u));
+                cursor->addr = (cursor->addr + 127) & ~127u;
+                cursor->addr += hierarchy->joint_count * sizeof(NUMTX);
+            }
+            blend = weights != NULL ? weights[index] : NULL;
+            if (hierarchy->render_parts[layer].rigid != NULL) {
+                for (joint = 0; joint < hierarchy->joint_count; ++joint) {
+                    if (hierarchy->render_parts[layer].rigid[joint] != NULL) {
+                        NuMtxMulVU0(&matrix, &joints[joint], world);
+                        handle = hierarchy->render_parts[layer].rigid[joint];
+                        drawn |= handle != NULL && handle->scene != NULL && handle->display_special != NULL
+                                     ? NuDisplayListRndrSpecial(handle, &matrix, 0, NULL, NULL)
+                                     : 0;
+                    }
+                }
+            }
+            if (hierarchy->render_parts[layer].alternate_rigid != NULL) {
+                for (joint = 0; joint < hierarchy->joint_count; ++joint) {
+                    if (hierarchy->render_parts[layer].alternate_rigid[joint] != NULL) {
+                        NuMtxMulVU0(&matrix, &joints[joint], world);
+                        handle = hierarchy->render_parts[layer].alternate_rigid[joint];
+                        drawn |= handle != NULL && handle->scene != NULL && handle->display_special != NULL
+                                     ? NuDisplayListRndrSpecial(handle, &matrix, 0, NULL, NULL)
+                                     : 0;
+                    }
+                }
+            }
+            if (hierarchy->render_parts[layer].smooth != NULL ||
+                hierarchy->render_parts[layer].alternate_smooth != NULL) {
+                NuMtxMulHArrayPc(skin, hierarchy->inverse_bind, joints, hierarchy->joint_count);
+                SAGA_SKIN_CALL(skin_trace_skin, (unsigned)hierarchy, (unsigned)joints, world, (unsigned)skin,
+                               hierarchy->joint_count);
+                handle = hierarchy->render_parts[layer].smooth;
+                if (handle != NULL)
+                    drawn |= handle->scene == NULL ? 0
+                             : handle->display_special == NULL
+                                 ? 0
+                                 : NuDisplayListRndrSpecial(handle, world, 2, skin, blend);
+                handle = hierarchy->render_parts[layer].alternate_smooth;
+                if (handle != NULL)
+                    drawn |= handle->scene == NULL ? 0
+                             : handle->display_special == NULL
+                                 ? 0
+                                 : NuDisplayListRndrSpecial(handle, world, 2, skin, blend);
+            }
+        }
+        PCSpecialClipState = old_clip;
+        PCSpecialShadowClipResultsPresent = 0;
+        (void)render_flags;
+        return drawn;
+    }
+
+    void NuSpecialForceMaterials(i32 count, NUMTL **materials) {
+        if (count == 0) {
+            PCSpecialForcedMaterialTable = NULL;
+            nuspecial_draw_state &= ~4;
+        } else {
+            nuspecial_draw_state |= 4;
+            PCSpecialForcedMaterialTable = materials;
+            PCSpecialForceMaterialCount = count;
+        }
+    }
+
+    void __cdecl NuHGobjEvalAnimBlend(NUHGOBJ_EVAL_PC *object, NUANIM_LEGACY_HEADER_PC *animation_a, f32 frame_a,
+                                      NUANIM_LEGACY_HEADER_PC *animation_b, f32 frame_b, f32 blend, i32 override_count,
+                                      NUHGOBJ_JOINT_OVERRIDE_PC *overrides, NUMTX *matrices) {
+        NUVEC scales[256];
+        NUHGOBJ_JOINT_OVERRIDE_PC *joint_overrides[256];
+        NUMTX local_matrix;
+        NUANIM_TIME2_PC time_a, time_b;
+        NUANIM_LEGACY_CHUNK_PC *chunk_a, *chunk_b;
+        u8 index;
+        if (object->joint_count > DdMaxJointsPc)
+            DdMaxJointsPc = object->joint_count;
+        scales[255].x = scales[255].y = scales[255].z = 1.0f;
+        NuAnimDataCalcTime(animation_a, frame_a, &time_a);
+        chunk_a = (NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk];
+        NuAnimDataCalcTime(animation_b, frame_b, &time_b);
+        chunk_b = (NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk];
+        if (override_count != 0) {
+            memset(joint_overrides, 0, object->joint_count * sizeof(joint_overrides[0]));
+            for (index = 0; index < override_count; ++index) {
+                u8 override_index = overrides[index].joint_index;
+                if (override_index < object->joint_override_map_count) {
+                    u8 joint_index = object->joint_override_map[override_index];
+                    if (joint_index != 0xff)
+                        joint_overrides[joint_index] = &overrides[index];
+                }
+            }
+        }
+        for (index = 0; index < object->joint_count; ++index) {
+            NUMTX *output = &matrices[index];
+            NUHGOBJ_JOINT_OVERRIDE_PC *joint_override = override_count != 0 ? joint_overrides[index] : NULL;
+            NUANIM_LEGACY_SET_PC *first = chunk_a->curve_sets[index];
+            NUANIM_LEGACY_SET_PC *second = chunk_b->curve_sets[index];
+            NUMTX *local = &local_matrix;
+            u8 parent_index;
+            if (first != NULL && second != NULL) {
+                NUHGOBJ_EVAL_JOINT_PC *joint = &object->joints[index];
+                NuAnimCurveSetApplyBlendToJoint2(first, &time_a, second, &time_b, blend, joint, &scales[index],
+                                                 &scales[joint->parent_index], &local_matrix, joint_override);
+            } else {
+                local = &object->bind_matrices[index];
+            }
+            parent_index = object->joints[index].parent_index;
+            if (parent_index == 0xff)
+                *output = *local;
+            else
+                NuMtxMulVU0(output, local, &matrices[parent_index]);
+        }
+    }
+
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa(i32 render_count, i16 *render_indices,
+                                                 NUANIM_LEGACY_HEADER_PC *animation, f32 frame) {
+        NUANIM_TIME2_PC time;
+        DWA_WEIGHT_BLOCK_PC **weights_by_render;
+        i32 render;
+        if (animation == NULL || render_count == 0)
+            return NULL;
+        NuAnimDataCalcTime(animation, frame, &time);
+        if (render_indices == NULL)
+            render_count = 1;
+        weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
+        memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
+        if (weights_by_render == NULL)
+            return NULL;
+        for (render = 0; render < render_count; ++render) {
+            i32 node = render_indices == NULL ? 0 : render_indices[render];
+            NUANIM_LEGACY_CHUNK_PC *chunk;
+            NUANIM_LEGACY_SET_PC *set;
+            DWA_WEIGHT_BLOCK_PC *weights;
+            i32 curve_count, curve;
+            if (node < 0)
+                continue;
+            chunk = (NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk];
+            if (render_indices != NULL && node >= chunk->node_count) {
+                weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+                continue;
+            }
+            set = chunk->curve_sets[node];
+            if (set == NULL) {
+                weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+                continue;
+            }
+            curve_count = set->curve_count;
+            weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+            weights_by_render[render] = weights;
+            if (weights == NULL || curve_count <= 0)
+                continue;
+            for (curve = 0; curve < curve_count; ++curve) {
+                NUANIM_LEGACY_SET_PC *curve_set =
+                    ((NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk])->curve_sets[node];
+                weights->values[curve] = curve_set->curves[curve] != NULL
+                                             ? NuAnimCurveCalcVal2(curve_set->curves[curve], &time)
+                                             : curve_set->constants[curve];
+            }
+        }
+        return weights_by_render;
+    }
+
+    DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwaBlend(i32 render_count, i16 *render_indices,
+                                                      NUANIM_LEGACY_HEADER_PC *animation_a, f32 frame_a,
+                                                      NUANIM_LEGACY_HEADER_PC *animation_b, f32 frame_b, f32 blend) {
+        NUANIM_TIME2_PC time_a, time_b;
+        DWA_WEIGHT_BLOCK_PC **weights_by_render = NULL;
+        i32 render;
+        if ((animation_a != NULL || animation_b != NULL) && render_count != 0) {
+            if (animation_a != NULL)
+                NuAnimDataCalcTime(animation_a, frame_a, &time_a);
+            if (animation_b != NULL)
+                NuAnimDataCalcTime(animation_b, frame_b, &time_b);
+            if (render_indices == NULL)
+                render_count = 1;
+            weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
+            memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
+            if (weights_by_render != NULL) {
+                for (render = 0; render < render_count; ++render) {
+                    i32 node;
+                    i32 count_a, count_b, curve_count, curve;
+                    DWA_WEIGHT_BLOCK_PC *weights;
+                    f64 inverse_blend;
+                    if (render_indices != NULL) {
+                        node = render_indices[render];
+                        if (node < 0)
+                            continue;
+                    } else {
+                        node = 0;
+                    }
+                    if (animation_a != NULL &&
+                        node < ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->node_count &&
+                        ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->curve_sets[node] != NULL) {
+                        count_a = ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])
+                                      ->curve_sets[node]
+                                      ->curve_count;
+                    } else {
+                        count_a = 0;
+                    }
+                    if (animation_b != NULL &&
+                        node < ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->node_count &&
+                        ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->curve_sets[node] != NULL) {
+                        count_b = ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])
+                                      ->curve_sets[node]
+                                      ->curve_count;
+                    } else {
+                        count_b = 0;
+                    }
+                    curve_count = count_a > count_b ? count_a : count_b;
+                    weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+                    weights_by_render[render] = weights;
+                    if (weights == NULL || curve_count <= 0)
+                        continue;
+                    inverse_blend = 1.0 - blend;
+                    for (curve = 0; curve < curve_count; ++curve) {
+                        f32 value_a, value_b;
+                        NUANIM_LEGACY_SET_PC *set;
+                        if (curve < count_a) {
+                            set = ((NUANIM_LEGACY_CHUNK_PC *)animation_a->chunks[time_a.chunk])->curve_sets[node];
+                            value_a = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_a)
+                                                                 : set->constants[curve];
+                        } else {
+                            value_a = 0.0f;
+                        }
+                        if (curve < count_b) {
+                            set = ((NUANIM_LEGACY_CHUNK_PC *)animation_b->chunks[time_b.chunk])->curve_sets[node];
+                            value_b = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_b)
+                                                                 : set->constants[curve];
+                        } else {
+                            value_b = 0.0f;
+                        }
+                        weights->values[curve] = value_b * blend + value_a * inverse_blend;
+                    }
+                }
+            }
+        }
+        return weights_by_render;
+    }
+
+    void __cdecl NuHGobjDestroy(NUHGOBJ_EVAL_PC *object) {
+        NuGScnRemove((NUGSCN *)object);
+    }
+} // extern "C"
+
+/* nupostdeferred */
+/* Native private register parameters are expressed by typed source arguments. */
+extern "C" {
+    extern NUMTX PostShadowViewPc, PostShadowProjectionPc;
+    extern POST_SHADER_PROGRAM_PC *PostBlur5x5ProgramPc;
+    void __cdecl PCGraphicsClearFramebuffer(i32, u32);
+    void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32);
+    void __cdecl PCGraphicsEffectTextureSetLowNibbles(GRAPHICS_RENDER_TEXTURE_PC *, i32, i32);
+    void __cdecl PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32);
+    void __cdecl PostBlur7x7DispatchPc(GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, i32, i32,
+                                       bool, f32, POST_SHADER_PROGRAM_PC *);
+    extern NUVEC4 PostShadowWhitePc;
+    extern const WCHAR PostDeferredLabelPc[17], PostShadowRenderLabelPc[14];
+    extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49];
+    void __cdecl PCGraphicsResolveFramebufferPc(i32);
+    void __cdecl NuDisplayListShadowTransformPc(void *data);
+    void __cdecl NuDisplayListShadowTransformTransposePc(void *data);
+    void __cdecl NuDisplayListShadowMaterialPc(void *data);
+    void __cdecl PCGraphicsRenderTextureAllocationError(void);
+    void __cdecl PostShadowSelectHandlersPc(i32 mode);
+    void __cdecl NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
+    void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
+}
+
+void NuPostFilterGen::reset() {
+    enabled = false;
+}
+extern "C" void __cdecl PostShadowCopyVectorsPc(NUVEC4 *out, const NUVEC4 *in, i32 count) {
+    const NUVEC4 *end = in + count;
+    while (in < end) {
+        out->x = in->x;
+        out->y = in->y;
+        out->z = in->z;
+        out->w = in->w;
+        ++out;
+        ++in;
+    }
+}
+/* ECX=input, stack=output; EAX returns output. */
+struct PC_POST_SHADOW_VECTOR : NUVEC {
+    NUVEC *Normalize(NUVEC *out) const;
+};
+
+NUVEC *PC_POST_SHADOW_VECTOR::Normalize(NUVEC *out) const {
+    f32 squared = y * y + x * x + z * z;
+    f32 length = NuFsqrt(squared);
+    out->x = x / length;
+    out->y = y / length;
+    out->z = z / length;
+    return out;
+}
+extern "C" void __cdecl PostShadowBuildBasisPc(NUVEC *direction, NUVEC *up, NUMTX *basis, NUMTX *inverse) {
+    NUVEC a, b;
+    NUVEC *side, *forward, *upward;
+    NuMtxSetIdentity(inverse);
+    side = reinterpret_cast<NUVEC *>(&inverse->m00);
+    forward = reinterpret_cast<NUVEC *>(&inverse->m10);
+    upward = reinterpret_cast<NUVEC *>(&inverse->m20);
+    a.x = -direction->x;
+    a.y = -direction->y;
+    a.z = -direction->z;
+    *forward = a;
+    a.x = forward->z * up->y - forward->y * up->z;
+    a.y = up->z * forward->x - forward->z * up->x;
+    a.z = forward->y * up->x - forward->x * up->y;
+    b.x = forward->y * a.z - forward->z * a.y;
+    b.y = forward->z * a.x - forward->x * a.z;
+    b.z = forward->x * a.y - forward->y * a.x;
+    *upward = *static_cast<PC_POST_SHADOW_VECTOR *>(&b)->Normalize(&a);
+    a.x = forward->y * upward->z - upward->y * forward->z;
+    a.y = upward->x * forward->z - forward->x * upward->z;
+    a.z = forward->x * upward->y - upward->x * forward->y;
+    *side = a;
+    NuMtxInv(basis, inverse);
+}
+/* Native EAX=count, ECX=vertices, stack offset/scale/four outputs. */
+extern "C" void __cdecl PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertices, NUVEC *offset, f32 scale,
+                                                  f32 *xmin_out, f32 *xmax_out, f32 *ymin_out, f32 *ymax_out) {
+    f32 xmin = 3.4028234663852886e+38f, xmax = -3.4028234663852886e+38f, ymin = 3.4028234663852886e+38f,
+        ymax = -3.4028234663852886e+38f;
+    for (i32 i = 0; i < count; ++i) {
+        NUVEC result;
+        NuVecAdd(&result, (NUVEC *)&vertices[i], offset);
+        f32 x = result.x * scale / result.z;
+        f32 y = result.y * scale / result.z;
+        if (xmin > x)
+            xmin = x;
+        else if (xmax < x)
+            xmax = x;
+        if (ymin > y)
+            ymin = y;
+        else if (ymax < y)
+            ymax = y;
+    }
+    *xmin_out = xmin;
+    *xmax_out = xmax;
+    *ymin_out = ymin;
+    *ymax_out = ymax;
+}
+
+#define SHADOW_COPY_VEC4(dst, src)                                                                                     \
+    do {                                                                                                               \
+        (dst).x = (src).x;                                                                                             \
+        (dst).y = (src).y;                                                                                             \
+        (dst).z = (src).z;                                                                                             \
+        (dst).w = (src).w;                                                                                             \
+    } while (0)
+#define SHADOW_COPY_MTX(dst, src)                                                                                      \
+    do {                                                                                                               \
+        (dst).m00 = (src).m00;                                                                                         \
+        (dst).m01 = (src).m01;                                                                                         \
+        (dst).m02 = (src).m02;                                                                                         \
+        (dst).m03 = (src).m03;                                                                                         \
+        (dst).m10 = (src).m10;                                                                                         \
+        (dst).m11 = (src).m11;                                                                                         \
+        (dst).m12 = (src).m12;                                                                                         \
+        (dst).m13 = (src).m13;                                                                                         \
+        (dst).m20 = (src).m20;                                                                                         \
+        (dst).m21 = (src).m21;                                                                                         \
+        (dst).m22 = (src).m22;                                                                                         \
+        (dst).m23 = (src).m23;                                                                                         \
+        (dst).m30 = (src).m30;                                                                                         \
+        (dst).m31 = (src).m31;                                                                                         \
+        (dst).m32 = (src).m32;                                                                                         \
+        (dst).m33 = (src).m33;                                                                                         \
+    } while (0)
+void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
+    NUMTX original = set->view_pc;
+    NUMTX captured = PostShadowViewPc;
+    NUMTX combined, combined_inverse, original_inverse, captured_inverse;
+    NUMTX basis, basis_inverse, basis_copy;
+    NUMTX translation, frustum, translated_basis, transformed, axis;
+    NUVEC4 corners[10], projected[10];
+    NUVEC light_direction, camera_direction;
+    NUVEC offset, camera_position;
+    NuMtxMulH(&combined, &original, &set->projection_pc);
+    NuMtxInvH(&combined_inverse, &combined);
+    NuMtxInv(&original_inverse, &original);
+    NuMtxInv(&captured_inverse, &captured);
+    light_direction = *(NUVEC *)&original_inverse.m20;
+    camera_direction = *(NUVEC *)&captured_inverse.m20;
+    PostShadowBuildBasisPc(&light_direction, &camera_direction, &basis, &basis_inverse);
+    PostShadowCopyVectorsPc(corners, set->corners_pc, 8);
+    {
+        NUVEC temporary;
+        NUVEC4 sum;
+        temporary.x = shadow_direction_pc.x * 200.0;
+        temporary.y = shadow_direction_pc.y * 200.0;
+        temporary.z = shadow_direction_pc.z * 200.0;
+        sum.x = captured_inverse.m30 + temporary.x;
+        sum.y = captured_inverse.m31 + temporary.y;
+        sum.z = captured_inverse.m32 + temporary.z;
+        SHADOW_COPY_VEC4(corners[8], sum);
+        temporary.x = shadow_direction_pc.x * 200.0;
+        temporary.y = shadow_direction_pc.y * 200.0;
+        temporary.z = shadow_direction_pc.z * 200.0;
+        sum.x = captured_inverse.m30 - temporary.x;
+        sum.y = captured_inverse.m31 - temporary.y;
+        sum.z = captured_inverse.m32 - temporary.z;
+        SHADOW_COPY_VEC4(corners[9], sum);
+    }
+    NUVEC minimum, maximum;
+    minimum.x = 3.4028234663852886e+38f;
+    minimum.y = 3.4028234663852886e+38f;
+    minimum.z = 3.4028234663852886e+38f;
+    maximum.x = -3.4028234663852886e+38f;
+    maximum.y = -3.4028234663852886e+38f;
+    maximum.z = -3.4028234663852886e+38f;
+    for (i32 i = 0; i < 10; ++i) {
+        __declspec(align(16)) NUVEC4 result;
+        NUVEC bound;
+        f32 bound_x, bound_y, bound_z;
+        SHADOW_COPY_MTX(basis_copy, basis);
+        NuVecMtxTransformH((NUVEC *)&result, (NUVEC *)&corners[i], &basis_copy);
+        SHADOW_COPY_VEC4(projected[i], result);
+        bound_z = minimum.z > result.z ? result.z : minimum.z;
+        bound_y = minimum.y > result.y ? result.y : minimum.y;
+        bound_x = minimum.x > result.x ? result.x : minimum.x;
+        bound.x = bound_x;
+        bound.y = bound_y;
+        bound.z = bound_z;
+        minimum = bound;
+        bound_z = maximum.z < result.z ? result.z : maximum.z;
+        bound_y = maximum.y < result.y ? result.y : maximum.y;
+        bound_x = maximum.x < result.x ? result.x : maximum.x;
+        bound.x = bound_x;
+        bound.y = bound_y;
+        bound.z = bound_z;
+        maximum = bound;
+    }
+    f32 fovy, aspect, near_plane, far_plane;
+    NuMtxGetPerspectiveD3D(&PostShadowProjectionPc, &fovy, &aspect, &near_plane, &far_plane);
+    f64 depth = (f64)maximum.z - (f64)minimum.z;
+    volatile f32 depth32 = depth;
+    f32 dot = camera_direction.y * light_direction.y + light_direction.x * camera_direction.x +
+              camera_direction.z * light_direction.z;
+    union {
+        f32 f;
+        u32 u;
+    } absolute;
+    absolute.u = *(u32 *)&dot & 0x7fffffff;
+    f32 product = near_plane * depth32;
+    f32 distance = NuFsqrt(product) + near_plane;
+    distance = set->parameter_110 * distance / (f32)(1.0f - absolute.f);
+    camera_position.x = captured_inverse.m30;
+    camera_position.y = captured_inverse.m31;
+    camera_position.z = captured_inverse.m32;
+    NUVEC transformed_position;
+    NuVecMtxTransformH(&transformed_position, &camera_position, &basis);
+    volatile f32 midpoint_y = (minimum.y + maximum.y) * 0.5;
+    volatile f32 lower_z = minimum.z - distance;
+    offset.x = -transformed_position.x;
+    offset.y = -midpoint_y;
+    offset.z = -lower_z;
+    f32 xmin, xmax, ymin, ymax;
+    PostShadowProjectBoundsPc(10, projected, &offset, distance, &xmin, &xmax, &ymin, &ymax);
+    NuMtxSetTranslation(&translation, &offset);
+    f32 far_distance = depth + distance;
+    NuMtxSetFrustumBlend(&frustum, xmin, xmax, ymin, ymax, distance, far_distance);
+    axis.m00 = 1.0f;
+    axis.m01 = 0.0f;
+    axis.m02 = 0.0f;
+    axis.m03 = 0.0f;
+    axis.m10 = 0.0f;
+    axis.m11 = 0.0f;
+    axis.m12 = -1.0f;
+    axis.m13 = 0.0f;
+    axis.m20 = 0.0f;
+    axis.m21 = 1.0f;
+    axis.m22 = 0.0f;
+    axis.m23 = 0.0f;
+    axis.m30 = 0.0f;
+    axis.m31 = 0.0f;
+    axis.m32 = 0.0f;
+    axis.m33 = 1.0f;
+    NuMtxMulH(&transformed, &basis, &translation);
+    NuMtxMulH(&translated_basis, &transformed, &frustum);
+    NuMtxMulH(&combined_inverse, &translated_basis, &axis);
+    set->shadow_matrix_pc = combined_inverse;
+}
+void PC_SPECIAL_SHADOW_LIGHT::SetupShadowPc(NURNDRLIGHTRECORD *set) {
+    NUMTX inverse, bias;
+    NuMtxInvH(&inverse, &PostShadowViewPc);
+    ComputeShadowMatrixPc(set);
+    bias.m00 = 0.5f;
+    bias.m01 = 0.0f;
+    bias.m02 = 0.0f;
+    bias.m03 = 0.0f;
+    bias.m10 = 0.0f;
+    bias.m11 = -0.5f;
+    bias.m12 = 0.0f;
+    bias.m13 = 0.0f;
+    bias.m20 = 0.0f;
+    bias.m21 = 0.0f;
+    bias.m22 = 0.5f;
+    bias.m23 = 0.0f;
+    bias.m30 = 0.5f;
+    bias.m31 = 0.5f;
+    bias.m32 = 0.5f;
+    bias.m33 = 1.0f;
+    NuMtxMulH(&set->texture_matrix_pc, &inverse, &set->shadow_matrix_pc);
+    NuMtxMulH(&set->texture_matrix_pc, &set->texture_matrix_pc, &bias);
+}
+void PC_SPECIAL_SHADOW_LIGHT::RenderShadowPc(i32 index, PC_FRAMEBUFFER_PC *) {
+    NURNDRLIGHTRECORD &set = render_sets[index];
+    if (set.shadow_lists_pc[0].material_last == set.shadow_lists_pc[0].first &&
+        set.shadow_lists_pc[1].material_last == set.shadow_lists_pc[1].first && set.count == 0)
+        return;
+    SetupShadowPc(&set);
+    PostShadowSelectHandlersPc(1);
+    NUMTX axis, view_projection;
+    axis.m00 = 1.0f;
+    axis.m01 = 0.0f;
+    axis.m02 = 0.0f;
+    axis.m03 = 0.0f;
+    axis.m10 = 0.0f;
+    axis.m11 = 1.0f;
+    axis.m12 = 0.0f;
+    axis.m13 = 0.0f;
+    axis.m20 = 0.0f;
+    axis.m21 = 0.0f;
+    axis.m22 = 0.5f;
+    axis.m23 = 0.0f;
+    axis.m30 = 0.0f;
+    axis.m31 = 0.0f;
+    axis.m32 = 0.5f;
+    axis.m33 = 1.0f;
+    NuMtxMulH(&view_projection, &set.shadow_matrix_pc, &axis);
+    PcUpdateGeometryCameraOriginPc(&view_projection, &NuMtxSetIdentityTemplate);
+    for (i32 i = 0; i < 2; ++i) {
+        NU_LIGHT_SHADOW_LIST_VIEW_PC &list = set.shadow_lists_pc[i];
+        if (list.material_last != list.first) {
+            NUDISPLAYLISTITEM *item = list.material_last;
+            item->type = 0x84;
+            item->next = NULL;
+            item->id = 4;
+            NuDisplayHandlerZModePc = 0;
+            PCDeviceSetRenderState(7, 1);
+            PCDeviceSetRenderState(14, 1);
+            PCDeviceSetRenderState(23, 4);
+            NuDisplayHandlerTintPc = PostShadowWhitePc;
+            NuShaderManagerSetfv(0x38, &PostShadowWhitePc.x);
+            NuDisplayListDrawItemsPc(list.first);
+            list.material_last = list.first;
+        }
+    }
+    for (i32 i = 0; i < set.count; ++i)
+        NuDisplayListDrawRenderScene_candidate(set.pending[i]);
+    PostShadowSelectHandlersPc(0);
+}
+
+void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
+    NUMTX inverse;
+    NuMtxInv(&inverse, &view);
+    f32 vector[4];
+    if (parameter_4 == 0) {
+        vector[1] = vector[0] = 0.0f;
+        vector[2] = -1.0f;
+        NuVecMtxRotate((NUVEC *)vector, (NUVEC *)vector, &inverse);
+        NuVecMtxRotate((NUVEC *)vector, (NUVEC *)vector, &PcGeometryViewMatrixPc);
+        NuVecNorm((NUVEC *)vector, (NUVEC *)vector);
+        PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
+    } else {
+        vector[0] = inverse.m30;
+        vector[1] = inverse.m31;
+        vector[2] = inverse.m32;
+        NuVecMtxTransformH((NUVEC *)vector, (NUVEC *)vector, &PcGeometryViewMatrixPc);
+        PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
+    }
+    f32 parameters[4];
+    parameters[0] = parameter_0;
+    parameters[1] = parameter_1 > 0.0f ? 1.0f / parameter_1 : 0.0f;
+    parameters[2] = 1.0f - parameter_2;
+    parameters[3] = parameter_3;
+    PCDeviceSetPixelShaderConstantsF(0x86, parameters, 1);
+    f32 distance[4] = {active_render_set_count == 1 ? 1000.0f : shadow_distance_pc, 0.0f, 0.0f, 0.0f};
+    PCDeviceSetPixelShaderConstantsF(0x88, distance, 1);
+    NUMTX bias;
+    bias.m00 = 0.5f;
+    bias.m01 = 0.0f;
+    bias.m02 = 0.0f;
+    bias.m03 = 0.0f;
+    bias.m10 = 0.0f;
+    bias.m11 = -0.5f;
+    bias.m12 = 0.0f;
+    bias.m13 = 0.0f;
+    bias.m20 = 0.0f;
+    bias.m21 = 0.0f;
+    bias.m22 = 0.5f;
+    bias.m23 = 0.0f;
+    bias.m30 = 0.5f;
+    bias.m31 = 0.5f;
+    bias.m32 = 0.5f;
+    bias.m33 = 1.0f;
+    for (i32 i = 0, reg = 0x8d; i < active_render_set_count; ++i, reg += 7) {
+        NURNDRLIGHTRECORD &set = render_sets[i];
+        NUMTX transposed, matrix;
+        NuMtxTranspose(&transposed, &set.texture_matrix_pc);
+        PCDeviceSetPixelShaderConstantsF(reg - 4, &transposed.m00, 4);
+        NuMtxMulH(&matrix, &inverse, &set.shadow_matrix_pc);
+        NuMtxMulH(&matrix, &matrix, &bias);
+        NuMtxInvH(&matrix, &matrix);
+        f32 column2[4] = {matrix.m02, matrix.m12, matrix.m22, matrix.m32};
+        f32 column3[4] = {matrix.m03, matrix.m13, matrix.m23, matrix.m33};
+        PCDeviceSetPixelShaderConstantsF(reg, column2, 1);
+        PCDeviceSetPixelShaderConstantsF(reg + 1, column3, 1);
+        f32 shadow[4] = {set.parameter_100, 1.0f - set.parameter_104, parameter_19, parameter_20 - parameter_19};
+        PCDeviceSetPixelShaderConstantsF(reg + 2, shadow, 1);
+    }
+}
+
+void NuDeferredFilterGen::render() {
+    D3DPERF_BeginEvent(0xffffffff, PostDeferredLabelPc);
+    PC_FRAMEBUFFER_PC *output =
+        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+    PC_POST_BUFFER_PROXY_PC *color =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+    PC_POST_BUFFER_PROXY_PC *normal =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[2].manager->entries[PostResourcePortsPc[2].index].data;
+    PC_POST_BUFFER_PROXY_PC *depth_rt =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[4].manager->entries[PostResourcePortsPc[4].index].data;
+    PC_POST_BUFFER_PROXY_PC *depth =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[5].manager->entries[PostResourcePortsPc[5].index].data;
+    PC_POST_BUFFER_PROXY_PC *resolve[4] = {color, normal, depth_rt, depth};
+    for (i32 i = 0; i < 4; ++i) {
+        if (!resolve[i]->resolved) {
+            PCGraphicsFramebufferBarrierPc(resolve[i]->kind, resolve[i]->enabled);
+            resolve[i]->resolved = true;
+        }
+    }
+    GRAPHICS_RENDER_TEXTURE_PC *normal_texture = normal->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *depth_texture = depth_rt->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    f32 last_sample = sample_count - 1.0;
+    bool first = true;
+    for (i32 i = 0; i < dynamic_light_count; ++i) {
+        PC_SPECIAL_SHADOW_LIGHT *light = (PC_SPECIAL_SHADOW_LIGHT *)dynamic_lights[i];
+        if (light->enabled == 0)
+            continue;
+        NUMTX saved_view = PcGeometryViewMatrixPc, saved_projection = PcGeometryProjectionMatrixPc;
+        PCDeviceSetRenderState(22, 1);
+        PCDeviceSetRenderState(15, 1);
+        PCDeviceSetRenderState(27, 1);
+        PCDeviceSetRenderState(7, 1);
+        PCDeviceSetRenderState(23, 4);
+        D3DPERF_BeginEvent(0xffffffff, PostShadowRenderLabelPc);
+        for (i32 shadow = 0; shadow < light->active_render_set_count; ++shadow) {
+            PCGraphicsAttachFramebuffer(shadow_fbos[shadow], 0, textures[4 + shadow], 0);
+            PCGraphicsAttachFramebuffer(shadow_fbos[shadow], 4, textures[2], 0);
+            PCGraphicsBindFramebuffer(shadow_fbos[shadow]);
+            i32 width, height;
+            PCGraphicsEffectTextureDimensions(textures[2], 0, &width, &height);
+            PCGraphicsSubmitViewportPc(0, 0, width, height);
+            PCGraphicsClearFramebuffer(0x300, 0xffffffff);
+            light->RenderShadowPc(shadow, shadow_fbos[shadow]);
+            PCGraphicsResolveFramebufferPc(1);
+        }
+        D3DPERF_EndEvent();
+        PcUpdateGeometryCameraOriginPc(&saved_view, &saved_projection);
+        if (PCGraphicsGetFramebufferAttachmentPc(light_fbo, 0, NULL, NULL) == NULL)
+            PCGraphicsAttachFramebuffer(light_fbo, 0, textures[0], 0);
+        PCGraphicsBindFramebuffer(light_fbo);
+        if (first) {
+            PCGraphicsClearFramebuffer(0x100, 0xff0000ff);
+            PCDeviceSetRenderState(22, 1);
+            PCDeviceSetRenderState(15, 0);
+            PCDeviceSetRenderState(27, 0);
+            PCDeviceSetRenderState(7, 0);
+            PCDeviceSetRenderState(168, 15);
+        }
+        POST_SHADER_PROGRAM_PC *program =
+            (POST_SHADER_PROGRAM_PC *)programs[light->parameter_5 == 0 || light->parameter_5 == 1 ? 0 : 1];
+        if (!first) {
+            NuDisplayHandlerVertexShaderCachePc = NULL;
+            NuDisplayHandlerPixelShaderCachePc = NULL;
+        }
+        PostShaderProgramBindPc(program);
+        light->RenderConstantsPc(program);
+        PCGraphicsEffectTextureSetFilterFields(depth_texture, 2, 2, 0);
+        {
+            const u32 stage_pc = 0;
+            GRAPHICS_RENDER_TEXTURE_PC *texture_pc = depth_texture;
+            if (texture_pc != NULL) {
+                u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
+                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
+                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1])
+                    PCGraphicsSetSamplerTuplePc(stage_pc, PCGraphicsEffectTextureSamplerPc(texture_pc));
+            }
+            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+        }
+        {
+            const u32 stage_pc = 1;
+            GRAPHICS_RENDER_TEXTURE_PC *texture_pc = textures[4];
+            if (texture_pc != NULL) {
+                u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
+                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
+                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1])
+                    PCGraphicsSetSamplerTuplePc(stage_pc, PCGraphicsEffectTextureSamplerPc(texture_pc));
+            }
+            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+        }
+        {
+            const u32 stage_pc = 4;
+            GRAPHICS_RENDER_TEXTURE_PC *texture_pc = textures[5];
+            if (texture_pc != NULL) {
+                u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
+                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
+                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1])
+                    PCGraphicsSetSamplerTuplePc(stage_pc, PCGraphicsEffectTextureSamplerPc(texture_pc));
+            }
+            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+        }
+        if (normal_texture != NULL) {
+            PCGraphicsEffectTextureSetFilterFields(normal_texture, 1, 1, 0);
+            {
+                const u32 stage_pc = 2;
+                GRAPHICS_RENDER_TEXTURE_PC *texture_pc = normal_texture;
+                if (texture_pc != NULL) {
+                    u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
+                    if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
+                        (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1])
+                        PCGraphicsSetSamplerTuplePc(stage_pc, PCGraphicsEffectTextureSamplerPc(texture_pc));
+                }
+                PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+            }
+        }
+        PCDeviceSetRenderState(22, 1);
+        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(27, 0);
+        PCDeviceSetRenderState(7, 0);
+        PCDeviceSetRenderState(168, 15);
+        PCGraphicsDrawPostEffectQuadPc();
+        PCGraphicsFramebufferBarrierPc(0, 0);
+        for (i32 stage = 0; stage < 6; ++stage)
+            PCGraphicsBindEffectTexture(NULL, stage);
+        first = false;
+    }
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    PostBlur7x7DispatchPc(textures[0], 0, textures[0], 1, 1, sample_count - 1, true, 1.0f, PostBlur5x5ProgramPc);
+    PCGraphicsBindFramebuffer(output);
+    i32 width = NuFramebufferGetWidth(output), height = NuFramebufferGetHeight(output);
+    PCGraphicsSubmitViewportPc(0, 0, width, height);
+    bool special = output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL;
+    PostShaderProgramBindPc((POST_SHADER_PROGRAM_PC *)programs[special ? 2 : 3]);
+    f32 parameters_pc[4] = {parameters[1], last_sample, parameters[2], parameters[3]};
+    PCDeviceSetPixelShaderConstantsF(0xa0, parameters_pc, 1);
+    if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL) {
+        PCGraphicsEffectTextureSetFilterFields(color_texture, 2, 2, 0);
+        {
+            const u32 stage_pc = 4;
+            GRAPHICS_RENDER_TEXTURE_PC *texture_pc = color_texture;
+            if (texture_pc != NULL) {
+                u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
+                if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
+                    (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1])
+                    PCGraphicsSetSamplerTuplePc(stage_pc, PCGraphicsEffectTextureSamplerPc(texture_pc));
+            }
+            PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+        }
+        PCDeviceSetRenderState(27, 0);
+        PCDeviceSetRenderState(15, 0);
+    } else {
+        PCDeviceSetRenderState(27, 1);
+        PCDeviceSetRenderState(15, 0);
+        PCDeviceSetRenderState(19, 5);
+        PCDeviceSetRenderState(20, 6);
+        PCGraphicsBindEffectTexture(NULL, 4);
+    }
+    PCDeviceSetRenderState(190, 0);
+    PCDeviceSetRenderState(191, 0);
+    PCDeviceSetRenderState(192, 0);
+    PCGraphicsEffectTextureSetFilterFields(textures[0], 2, 2, 2);
+    PCGraphicsEffectTextureSetLowNibbles(textures[0], 0, (i32)last_sample + 1);
+    {
+        const u32 stage_pc = 5;
+        GRAPHICS_RENDER_TEXTURE_PC *texture_pc = textures[0];
+        if (texture_pc != NULL) {
+            u32 *tuple_pc = PCGraphicsEffectTextureSamplerPc(texture_pc);
+            if ((u32)PCDeviceSamplerInvalidation[stage_pc][0] != tuple_pc[0] ||
+                (u32)PCDeviceSamplerInvalidation[stage_pc][1] != tuple_pc[1])
+                PCGraphicsSetSamplerTuplePc(stage_pc, PCGraphicsEffectTextureSamplerPc(texture_pc));
+        }
+        PCGraphicsBindEffectTexture(texture_pc, stage_pc);
+    }
+    PCGraphicsDrawPostEffectQuadPc();
+    color->texture = destination;
+    color->kind = 0;
+    color->enabled = true;
+    color->resolved = false;
+    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+    PCDeviceSetRenderState(190, 0xffffffff);
+    PCDeviceSetRenderState(191, 0xffffffff);
+    PCDeviceSetRenderState(192, 0xffffffff);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    D3DPERF_EndEvent();
+}
+
+#pragma bss_seg(".bss$PostShadowViewPc")
+extern "C" NUMTX PostShadowViewPc = {0};
+#pragma bss_seg(".bss$PostShadowProjectionPc")
+extern "C" NUMTX PostShadowProjectionPc = {0};
+#pragma bss_seg()
+#pragma data_seg(".data$PostShadowWhitePc")
+extern "C" NUVEC4 PostShadowWhitePc = {1.0f, 1.0f, 1.0f, 1.0f};
+#pragma data_seg()
+extern "C" {
+    extern const WCHAR PostDeferredLabelPc[17] = L"Deferred shading";
+    extern const WCHAR PostShadowRenderLabelPc[14] = L"Shadow render";
+}
+#pragma data_seg(".data$PCDisplayShadowItemHandlersPc")
+extern "C" PC_DISPLAY_ITEM_HANDLER_PC PCDisplayShadowItemHandlersPc[49] = {NuDisplayListShadowMaterialPc,
+                                                                           NULL,
+                                                                           NuDisplayListDrawGeometryPc,
+                                                                           NuDisplayListShadowTransformPc,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NuDisplayListDrawGeometryPc,
+                                                                           NuDisplayListShadowTransformTransposePc,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NuDisplayListDrawGeometryPc,
+                                                                           NuDisplayListSkinPalettePc,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NuDisplayListVertexGroupsPc,
+                                                                           NuDisplayListVertexOffsetsPc,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL,
+                                                                           NULL};
+#pragma data_seg()

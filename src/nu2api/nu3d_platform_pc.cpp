@@ -3,7 +3,8 @@
 // nugobj.c, nutex_pc.cpp and nuqfnt_PC.cpp) together with the PS/Pc halves of the generic modules as
 // one C++ unit; nu3d only ever calls into it, never inlines from it. Definitions follow retail address
 // order. Modules merged so far: nugscn_pc, nuportal_pc, numtl PS/Pc, the nudlist and nupostfilter
-// platform members, the render-state/stream/scene/gobj/particle backends and the geometry backend.
+// platform members, the render-state/stream/scene/gobj/particle backends and the geometry backend, plus
+// the platform members of nulgtlaser, nuframe, nuvport, nuprim, nuhgobj and nupostdeferred.
 
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
@@ -6474,3 +6475,151 @@ extern "C" {
     // @@END
 
 } // extern "C"
+
+/* nuhgobj's platform members: the POI lookup and the hierarchy shadow-group packets. */
+typedef struct PC_HG_SHADOW_SHAPE48 PC_HG_SHADOW_SHAPE48;
+typedef struct PC_HG_SHADOW_SHAPE64 PC_HG_SHADOW_SHAPE64;
+typedef struct PC_HG_SHADOW_GROUP PC_HG_SHADOW_GROUP;
+struct PC_HG_SHADOW_SHAPE48 {
+    union {
+        NUVEC axes[4];
+        struct {
+            f32 center_x;
+            u32 flags;
+            u8 rest[40];
+        } filter;
+    };
+};
+struct PC_HG_SHADOW_SHAPE64 {
+    PC_HG_SHADOW_SHAPE48 position;
+    u8 unknown_30[16];
+};
+struct PC_HG_SHADOW_GROUP {
+    PC_HG_SHADOW_SHAPE48 *ellipses;
+    PC_HG_SHADOW_SHAPE64 *cylinders;
+    void *third_shape;
+    u8 ellipse_count, cylinder_count, third_count, joint_index;
+};
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE48) == 48);
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_SHAPE64) == 64);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_SHAPE48, filter.flags) == 4);
+STATIC_ASSERT(sizeof(PC_HG_SHADOW_GROUP) == 16);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipses) == 0);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinders) == 4);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_shape) == 8);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, ellipse_count) == 12);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, cylinder_count) == 13);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, third_count) == 14);
+STATIC_ASSERT(offsetof(PC_HG_SHADOW_GROUP, joint_index) == 15);
+
+extern "C" {
+    NUHGOBJ_POI_PC *__cdecl NuHGobjGetPOI(NUHGOBJ_EVAL_PC *object, u8 index) {
+        if ((i32)index < object->point_index_count) {
+            index = object->point_index_map[index];
+            if (index != 0xff)
+                return &object->points[index];
+        }
+        return NULL;
+    }
+
+    void PCEnqueueHierarchyShadowGroup(NUMTX *matrix, void *ellipse, i32 ellipse_count, void *cylinder,
+                                       i32 cylinder_count, void *third, i32 third_count) {
+        if (PCShadowPacketCount >= 280)
+            return;
+        PCShadowPackets[PCShadowPacketCount].near_value = PCShadowNearValue;
+        PCShadowPackets[PCShadowPacketCount].far_value = PCShadowFarValue;
+        PCShadowPackets[PCShadowPacketCount].state0 = PCShadowState.state0;
+        PCShadowPackets[PCShadowPacketCount].state1 = PCShadowState.state1;
+        PCShadowPackets[PCShadowPacketCount].state2 = PCShadowState.state2;
+        PCShadowPackets[PCShadowPacketCount].state_byte = PCShadowState.state_byte;
+        PCShadowPackets[PCShadowPacketCount].matrix = *matrix;
+        PCShadowPackets[PCShadowPacketCount].ellipse = ellipse;
+        PCShadowPackets[PCShadowPacketCount].ellipse_count = (u8)ellipse_count;
+        PCShadowPackets[PCShadowPacketCount].cylinder = cylinder;
+        PCShadowPackets[PCShadowPacketCount].cylinder_count = (u8)cylinder_count;
+        PCShadowPackets[PCShadowPacketCount].third_shape = third;
+        PCShadowPackets[PCShadowPacketCount].third_count = (u8)third_count;
+        PCShadowPackets[PCShadowPacketCount].sequence = (u8)PCShadowPacketSequence;
+        ++PCShadowPacketCount;
+        ++PCShadowPacketSequence;
+    }
+
+    void NuHGobjSubmitShadowGroupsPc(NUHGOBJ_EVAL_PC *hierarchy, NUMTX *world, NUMTX *joints) {
+        PC_HG_SHADOW_GROUP *group;
+        NUHGOBJ_EVAL_PC *object;
+
+        object = hierarchy;
+        if (PcWindowOptions.shadowsenabled == 0 || PcWindowOptions.shadowmethod != 1 || object->shadow_groups == NULL ||
+            object->suppress_shadow_points != 0)
+            return;
+        for (group = object->shadow_groups; group->joint_index != 255; ++group) {
+            if (PCShadowPacketCount < 280 && PCShadowSubmissionEnabled != 0) {
+                NUMTX combined;
+
+                NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+                PCEnqueueHierarchyShadowGroup(&combined, group->ellipses, group->ellipse_count, group->cylinders,
+                                              group->cylinder_count, group->third_shape, group->third_count);
+                currentScene.clear_flags = 1;
+            }
+        }
+    }
+} // extern "C"
+
+/* nupostdeferred's platform members: the empty framebuffer resolve and the shadow display-list handlers. */
+extern "C" void __cdecl PCGraphicsResolveFramebufferPc(i32) {
+}
+extern "C" void __cdecl NuDisplayListShadowTransformPc(void *data) {
+    NUMTX *matrix = (NUMTX *)data;
+    f32 saved33 = matrix->m33, saved23 = matrix->m23;
+    matrix->m33 = 1.0f;
+    matrix->m23 = 0.0f;
+    NuShaderManagerSetfv(0x11, &matrix->m00);
+    matrix->m33 = saved33;
+    matrix->m23 = saved23;
+}
+extern "C" void __cdecl NuDisplayListShadowTransformTransposePc(void *data) {
+    NUMTX *matrix = (NUMTX *)data;
+    f32 saved33 = matrix->m33, saved32 = matrix->m32;
+    matrix->m33 = 1.0f;
+    matrix->m32 = 0.0f;
+    NuShaderManagerSetElementsfv_transpose(0x11, 0, 1, &matrix->m00);
+    matrix->m33 = saved33;
+    matrix->m32 = saved32;
+}
+typedef struct PC_SHADOW_MATERIAL_READER_PC {
+    union {
+        NUMTL common;
+        struct {
+            u8 unknown_000[0x40];
+            u32 attributes_word;
+        };
+    };
+    u8 unknown_09c[0x154];
+    u32 vertex_format;
+    i16 shader_id, shadow_shader_id;
+    u8 unknown_1f8[0xc4];
+    PC_TEXTURE_RESOURCE_PC *vertex_declaration;
+} PC_SHADOW_MATERIAL_READER_PC;
+STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, attributes_word) == 0x40);
+STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, vertex_format) == 0x1f0);
+STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, shadow_shader_id) == 0x1f6);
+STATIC_ASSERT(offsetof(PC_SHADOW_MATERIAL_READER_PC, vertex_declaration) == 0x2bc);
+extern "C" void __cdecl NuDisplayListShadowMaterialPc(void *data) {
+    PC_SHADOW_MATERIAL_READER_PC *material = (PC_SHADOW_MATERIAL_READER_PC *)data;
+    PC_SHADER_OBJECT_FULL_VIEW *shader =
+        (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderRecordFromHandle((u32)(i32)material->shadow_shader_id);
+    if (shader != NULL) {
+        NuDisplayHandlerMaterialPc = material;
+        if (!(material->vertex_format & 0x300000) && material->common.display_list != NULL) {
+            PCShaderSetMaterialParametersPc(shader, &material->common);
+            NuShaderManagerBindShaderPc(shader);
+            PCDeviceSetVertexDeclarationPc(material->vertex_declaration);
+        }
+        u32 flags = material->attributes_word;
+        u32 z_mode = flags & 0xc000;
+        if (z_mode == 0x4000)
+            material->attributes_word = (flags & 0xffff7fff) | z_mode;
+        NuMtlSetRenderStatesPS(&material->common);
+        PCDeviceSetRenderState(27, 0);
+    }
+}
