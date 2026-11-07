@@ -49,57 +49,48 @@ i32 __cdecl Action_SetScriptState(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
     i32 creature_set;
     i32 index;
     AISTATE_PC *state;
-    AISCRIPTPROCESS_PC *target_processor;
-    AIPACKET_PC *target_packet;
     GAMEOBJECT *object;
-    if (first_time == 0 || count < 1)
-        return 1;
-    target = packet != NULL && packet->owner != NULL ? (APIOBJECT_PC *)packet->owner : NULL;
+    index = 0;
+    target = NULL;
     state_name = NULL;
     creature_set = 0;
-    for (index = 0; index < count; index++) {
-        value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-        if (value != NULL) {
+    if (first_time == 0)
+        return 1;
+    if (packet != NULL && packet->owner != NULL)
+        target = (APIOBJECT_PC *)packet->owner;
+    for (; index < count; index++) {
+        if ((value = NuStrIStr(params[index], (char *)AIGameCharacterName)) != NULL) {
             if (GetNamedGameObjectCallback != NULL)
                 target = GetNamedGameObjectCallback(system, value + 10);
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)AIGameSetName);
-        if (value != NULL) {
+        } else if ((value = NuStrIStr(params[index], (char *)AIGameSetName)) != NULL) {
             creature_set = (i32)AIParamToFloat(processor, value + 4);
             if (creature_set < 0 || creature_set > 16)
                 creature_set = 0;
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)AIGameStateName);
-        if (value != NULL)
+        } else if ((value = NuStrIStr(params[index], (char *)AIGameStateName)) != NULL)
             state_name = value + 6;
     }
     if (state_name == NULL)
         return 1;
     if (creature_set != 0) {
-        for (index = 0; index < HIGHGAMEOBJECT; index++) {
-            object = &Obj[index];
-            if ((((APIOBJECT_PC *)object)->flags_low & 0x1001u) == 0x1001u &&
+        object = Obj;
+        for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
+            if ((((APIOBJECT_PC *)object)->flags_low & 1) != 0 && (((APIOBJECT_PC *)object)->flags_low & 0x1000) != 0 &&
                 object->ai_packet.creature_set == creature_set) {
-                target_packet = ((APIOBJECT_PC *)object)->ai;
-                target_processor = &target_packet->script_processor;
-                state = AIStateFind(state_name, target_processor->base_script);
+                state = AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.base_script);
                 if (state != NULL) {
-                    target_processor->active_ref_count = 0;
-                    AIScriptProcessorInit(system, target_packet, target_processor, NULL, NULL, NULL, 0,
-                                          target_processor->base_script, state);
+                    ((APIOBJECT_PC *)object)->ai->script_processor.active_ref_count = 0;
+                    AIScriptProcessorInit(system, ((APIOBJECT_PC *)object)->ai,
+                                          &((APIOBJECT_PC *)object)->ai->script_processor, NULL, NULL, NULL, 0,
+                                          ((APIOBJECT_PC *)object)->ai->script_processor.base_script, state);
                 }
             }
         }
     } else if (target != NULL && target->ai != NULL && target->ai->script_processor.base_script != NULL) {
-        target_packet = target->ai;
-        target_processor = &target_packet->script_processor;
-        state = AIStateFind(state_name, target_processor->base_script);
+        state = AIStateFind(state_name, target->ai->script_processor.base_script);
         if (state != NULL) {
-            target_processor->active_ref_count = 0;
-            AIScriptProcessorInit(system, target_packet, target_processor, NULL, NULL, NULL, 0,
-                                  target_processor->base_script, state);
+            target->ai->script_processor.active_ref_count = 0;
+            AIScriptProcessorInit(system, target->ai, &target->ai->script_processor, NULL, NULL, NULL, 0,
+                                  target->ai->script_processor.base_script, state);
         }
     }
     return 1;
@@ -1016,17 +1007,18 @@ i32 __cdecl Action_GoToLevelPath(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
 
 i32 __cdecl Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 count, i32 first_time, f32 elapsed) {
-    f32 range;
-    i32 range_type;
-    i32 all_non_party;
     i32 index;
+    i32 range_type;
+    f32 range;
+    i32 all_non_party;
     GAMEOBJECT *object;
+    range = 0.0f;
+    index = 0;
+    all_non_party = 0;
+    range_type = 1;
     if (first_time == 0)
         return 1;
-    range = 0.0f;
-    range_type = 1;
-    all_non_party = 0;
-    for (index = 0; index < count; index++) {
+    for (; index < count; index++) {
         if (NuStrICmp((char *)AIControlDefaultTitleName, params[index]) == 0)
             range = DEFAULT_MOVE_RANGE;
         else if (NuStrICmp((char *)AIControlAllNonPartyName, params[index]) == 0)
@@ -1037,9 +1029,10 @@ i32 __cdecl Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
             range = AIParamToFloat(processor, params[index]);
     }
     if (all_non_party != 0) {
-        for (index = 0; index < HIGHGAMEOBJECT; index++) {
-            object = &Obj[index];
-            if ((object->flags_1fc_word & 0x1001u) == 0x1001u && (object->flags_1f8 & 0x400u) != 0) {
+        object = Obj;
+        for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
+            if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+                (object->flags_1f8 & 0x400u) != 0) {
                 object->ai_packet.movement_target_radius = range;
                 if (range > 0.0f)
                     object->ai_packet.flags = (object->ai_packet.flags & ~0x08000000u) | 0x04000000u;
@@ -1053,7 +1046,7 @@ i32 __cdecl Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
         object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
         object->ai_packet.movement_target_radius = range;
         if (range > 0.0f)
-            object->ai_packet.flags = (object->ai_packet.flags & ~0x0c000000u) | ((u32)range_type << 26);
+            object->ai_packet.flags ^= (((u32)range_type << 26) ^ object->ai_packet.flags) & 0x0c000000u;
         else
             object->ai_packet.flags &= ~0x0c000000u;
     }
