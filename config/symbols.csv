@@ -9600,7 +9600,11 @@ address,symbol,size,ctype
 0x6b7820,_vorbis_lpc_to_lsp,1044,"int vorbis_lpc_to_lsp(float *lpc,float *lsp,int m);"
 0x6b7c40,?EdTrace@@YAXPBDZZ,1,
 0x6b7c50,?EdMessage@@YAXPBDZZ,1,
+0x6b7c60,?VuFabs@@YAMM@Z,18,
+0x6b7c80,?VuAngleDifference@@YAHHH@Z,22,
 0x6b7ca0,?VuVecCopy@@YAXAAUVuVec@@ABU1@@Z,23,
+0x6b7cc0,?VuVecSet@@YAXAAUVuVec@@MMMM@Z,28,
+0x6b7ce0,?VuVecSetOrigin@@YAXAAUVuVec@@@Z,16,
 0x6b7cf0,??H@YA?AUVuVec@@ABU0@0@Z,29,
 0x6b7d10,??G@YA?AUVuVec@@ABU0@0@Z,29,
 0x6b7d30,??D@YA?AUVuVec@@ABU0@M@Z,29,

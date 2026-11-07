@@ -2955,6 +2955,35 @@ void KnotHelper::Render(void *object, i32) {
     }
 }
 
+/* Absolute value by clearing the sign bit. */
+static inline f32 VuFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
+/* Signed difference of two 16-bit angles, in -0x8000..0x7fff. */
+static inline i32 VuAngleDifference(i32 from, i32 to) {
+    i32 difference = (from - to) & 0xffff;
+    if (difference >= 0x8000)
+        difference -= 0x10000;
+    return difference;
+}
+
+static inline void VuVecSet(VuVec &v, f32 x, f32 y, f32 z, f32 w) {
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+}
+
+/* The origin as a point: 0 0 0 1. */
+static inline void VuVecSetOrigin(VuVec &v) {
+    v.x = 0.0f;
+    v.y = 0.0f;
+    v.z = 0.0f;
+    v.w = 1.0f;
+}
+
 static inline VuVec operator+(const VuVec &a, const VuVec &b) {
     VuVec sum;
     sum.x = a.x + b.x;
@@ -4916,9 +4945,7 @@ i32 LineToSphereIntersection(VuVec &origin, VuVec &direction, VuVec &center, f32
     c -= 2.0 * VuVecDot(center, origin);
     c -= radius * radius;
     f32 discriminant = b * b - 4.0 * a * c;
-    f32 magnitude = a;
-    *(u32 *)&magnitude &= 0x7fffffff;
-    if (magnitude < 1.1920929e-7f || discriminant < 0.0f)
+    if (VuFabs(a) < 1.1920929e-7f || discriminant < 0.0f)
         return 0;
     f32 far_t = (-b + NuFsqrt(discriminant)) / (2.0 * a);
     f32 near_t = (-b - NuFsqrt(discriminant)) / (2.0 * a);
@@ -4935,81 +4962,14 @@ i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &pl
     __declspec(align(16)) VuVec hits[2];
     __declspec(align(16)) VuVec normals[3];
     __declspec(align(16)) VuVec chosen;
-    f32 radius = Scale * ManipulatorAxisLength;
-    if (input.GetPress(3) == 0.0f && input.GetHold(3) != 0.0f) {
-        VuVecCopy(plane, first_axis);
-        i32 axis = selected_axis;
-        if (!LineToPlaneIntersecion(input.ray_start, input.ray_direction, plane, &chosen)) {
-            angle_delta = 0;
-            return axis;
-        }
-        f32 x = chosen.x - center.x;
-        f32 y = chosen.y - center.y;
-        f32 z = chosen.z - center.z;
-        i32 angle = 0;
-        switch (axis) {
-            case 1:
-                angle = NuAtan2DA(y, z);
-                break;
-            case 2:
-                angle = NuAtan2DA(x, -z);
-                break;
-            case 3:
-                angle = NuAtan2DA(x, y);
-                break;
-        }
-        i32 delta = (last_angle - angle) & 0xffff;
-        if (delta >= 0x8000)
-            delta -= 0x10000;
-        angle_delta = delta;
-        last_angle = angle;
-        return axis;
-    }
-    normals[0].x = 1.0f;
-    normals[0].y = 0.0f;
-    normals[0].z = 0.0f;
-    normals[0].w = -center.x;
-    normals[1].x = 0.0f;
-    normals[1].y = 1.0f;
-    normals[1].z = 0.0f;
-    normals[1].w = -center.y;
-    normals[2].x = 0.0f;
-    normals[2].y = 0.0f;
-    normals[2].z = 1.0f;
-    normals[2].w = -center.z;
+    f32 radius = ManipulatorAxisLength * Scale;
+    f32 nearest_distance = 3.402823466e38f;
     i32 axis = 0;
     i32 angle = 0;
-    f32 nearest_distance = 3.402823466e38f;
-    if (LineToSphereIntersection(input.ray_start, input.ray_direction, center, radius + 0.01f, &hits[0], &hits[1])) {
-        VuVecCopy(SpherePos1, hits[0]);
-        VuVecCopy(SpherePos2, hits[1]);
-        for (i32 candidate = 0; candidate < 3; candidate++) {
-            for (i32 hit = 0; hit < 2; hit++) {
-                VuVec &point = hits[hit];
-                VuVec &normal = normals[candidate];
-                __declspec(align(16)) VuVec projection;
-                __declspec(align(16)) VuVec screen_point;
-                f32 distance_to_plane = point.x * normal.x + point.y * normal.y + point.z * normal.z + normal.w;
-                projection.x = point.x - normal.x * distance_to_plane;
-                projection.y = point.y - normal.y * distance_to_plane;
-                projection.z = point.z - normal.z * distance_to_plane;
-                NuCameraTransformScreenClip(&projection.xyz, &projection.xyz, 1, NULL);
-                NuCameraTransformScreenClip(&screen_point.xyz, &point.xyz, 1, NULL);
-                f32 distance = VuVecLength(screen_point - projection);
-                if (distance < ManipulatorRotatorPickDistance && distance < nearest_distance) {
-                    nearest_distance = distance;
-                    VuVecCopy(chosen, point);
-                    axis = candidate + 1;
-                }
-            }
-        }
-        if (axis != 0) {
-            plane.x = 0.0f;
-            plane.y = 0.0f;
-            plane.z = 0.0f;
-            plane.w = 1.0f;
-            (&plane.x)[axis - 1] = 1.0f;
-            plane.w = -(&center.x)[axis - 1];
+    if (input.GetPress(3) == 0.0f && input.GetHold(3) != 0.0f) {
+        VuVecCopy(plane, first_axis);
+        axis = selected_axis;
+        if (LineToPlaneIntersecion(input.ray_start, input.ray_direction, plane, &chosen)) {
             f32 x = chosen.x - center.x;
             f32 y = chosen.y - center.y;
             f32 z = chosen.z - center.z;
@@ -5024,7 +4984,59 @@ i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &pl
                     angle = NuAtan2DA(x, y);
                     break;
             }
+            angle_delta = VuAngleDifference(last_angle, angle);
+            last_angle = angle;
+            return axis;
         }
+        angle_delta = 0;
+        return axis;
+    }
+    VuVecSet(normals[0], 1.0f, 0.0f, 0.0f, -center.x);
+    VuVecSet(normals[1], 0.0f, 1.0f, 0.0f, -center.y);
+    VuVecSet(normals[2], 0.0f, 0.0f, 1.0f, -center.z);
+    if (LineToSphereIntersection(input.ray_start, input.ray_direction, center, radius + 0.01f, &hits[0], &hits[1])) {
+        VuVecCopy(SpherePos1, hits[0]);
+        VuVecCopy(SpherePos2, hits[1]);
+        for (i32 candidate = 0; candidate < 3; candidate++) {
+            for (i32 hit = 0; hit < 2; hit++) {
+                VuVec &point = hits[hit];
+                VuVec &normal = normals[candidate];
+                __declspec(align(16)) VuVec projection;
+                __declspec(align(16)) VuVec screen_point;
+                f32 distance_to_plane = VuVecDot(normal, point) + normal.w;
+                VuVecCopy(projection, point - normal * distance_to_plane);
+                NuCameraTransformScreenClip(&projection.xyz, &projection.xyz, 1, NULL);
+                NuCameraTransformScreenClip(&screen_point.xyz, &point.xyz, 1, NULL);
+                f32 distance = VuVecLength(screen_point - projection);
+                if (distance < ManipulatorRotatorPickDistance && distance < nearest_distance) {
+                    nearest_distance = distance;
+                    chosen.x = point.x;
+                    chosen.y = point.y;
+                    chosen.z = point.z;
+                    axis = candidate + 1;
+                }
+            }
+        }
+    }
+    f32 x = chosen.x - center.x;
+    f32 y = chosen.y - center.y;
+    f32 z = chosen.z - center.z;
+    switch (axis) {
+        case 1:
+            VuVecSet(plane, 1.0f, 0.0f, 0.0f, 1.0f);
+            plane.w = -center.x;
+            angle = NuAtan2DA(y, z);
+            break;
+        case 2:
+            VuVecSet(plane, 0.0f, 1.0f, 0.0f, 1.0f);
+            plane.w = -center.y;
+            angle = NuAtan2DA(x, -z);
+            break;
+        case 3:
+            VuVecSet(plane, 0.0f, 0.0f, 1.0f, 1.0f);
+            plane.w = -center.z;
+            angle = NuAtan2DA(x, y);
+            break;
     }
     if (input.GetPress(3) != 0.0f) {
         selected_axis = axis;
@@ -5035,14 +5047,8 @@ i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &pl
         return axis;
     }
     selected_axis = 0;
-    first_axis.x = 0.0f;
-    first_axis.y = 0.0f;
-    first_axis.z = 0.0f;
-    first_axis.w = 1.0f;
-    second_axis.x = 0.0f;
-    second_axis.y = 0.0f;
-    second_axis.z = 0.0f;
-    second_axis.w = 1.0f;
+    VuVecSetOrigin(first_axis);
+    VuVecSetOrigin(second_axis);
     start_angle = 0;
     last_angle = 0;
     angle_delta = 0;
