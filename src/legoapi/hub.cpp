@@ -1690,9 +1690,14 @@ static void HubRestoreBuildItsPc(void) {
 static void HubSetBuildItPiecesVisiblePc(GIZBUILDIT_PC *buildit, i32 count) {
     if (buildit->linked_buildit != NULL)
         buildit = buildit->linked_buildit;
-    for (i32 i = 0; i < buildit->anim_object_count; ++i)
-        if (buildit->anim_objects[i] != NULL)
-            NuSpecialSetVisibility(&buildit->anim_objects[i]->special, i < count ? 1 : 0);
+    for (i32 i = 0; i < buildit->anim_object_count; ++i) {
+        if (buildit->anim_objects[i] != NULL) {
+            if (i < count)
+                NuSpecialSetVisibility(&buildit->anim_objects[i]->special, 1);
+            else
+                NuSpecialSetVisibility(&buildit->anim_objects[i]->special, 0);
+        }
+    }
 }
 
 /* 474e50/248. No Android autosave addition in the PC original. */
