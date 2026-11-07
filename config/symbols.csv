@@ -2584,11 +2584,14 @@ address,symbol,size,ctype
 0x004ef790,_NuFileError,1,void __cdecl (void)
 0x004ef790,_NuRDPFNumberErrorPc,1,void __cdecl (void)
 0x004ef790,_NuRDPFVariableErrorPc,1,void __cdecl (char *)
+0x004ef790,_NuRDPIVariableErrorPc,1,void __cdecl (char *)
 0x004ef7b0,_NuFileRetry,1,void __cdecl (void)
+0x004ef7b0,_NuDatFileMissingPc,1,void __cdecl (char *)
 0x004ef870,_NuAllocManagerUnlinkPc,27,
 0x004ef8a0,_NuAllocManagerSplitPc,177,
 0x004efa40,_NuAllocManagerAllocatePc,179,
 0x004efb00,_NuAllocManagerFreePc,227,
+0x004efd50,_NuDatFileDecodeNewFile,39,"void (PC_NUDATFILEINFO *, NUDATOPENFILEINFO *) [private EAX/ECX]"
 0x004efdf0,_NuFileUpCase,200,"void __cdecl (NUFILE_DEVICE *, char *)"
 0x004efec0,_NuFileReldirFix,106,"void __cdecl (NUFILE_DEVICE *, char *)"
 0x004eff30,_NuFileGetLastError,6,i32 __cdecl (void)

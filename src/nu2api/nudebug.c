@@ -60,6 +60,16 @@ void __cdecl NuFileError(void) {
 void __cdecl NuFileRetry(void) {
 }
 
+/* Empty release diagnostics with an argument; the linker folds them into
+   NuFileError and NuFileRetry. */
+void __cdecl NuRDPIVariableErrorPc(char *name) {
+    (void)name;
+}
+
+void __cdecl NuDatFileMissingPc(char *filepath) {
+    (void)filepath;
+}
+
 void __cdecl NuAllocBadPointer(void) {
 }
 

@@ -45,6 +45,9 @@ extern i32 numdevices;
 extern NUFILE_DEVICE devices[16];
 extern i32 DontDoFileUpperCaseHack;
 
+void __cdecl NuDatFileMissingPc(char *filepath);
+void __cdecl NuRDPIVariableErrorPc(char *name);
+
 // Fetch one control bit; the marker bit refills the buffer from the next input byte.
 #define NUPP_GETBIT()                                                                                                  \
     bits += bits;                                                                                                      \
@@ -1904,11 +1907,19 @@ static NUFILE OpenDatFileBase(NUDATHDR *header, i32 file_index) {
     return open_file->dat_file;
 }
 
+static void NuDatFileDecodeNewFile(PC_NUDATFILEINFO *file, NUDATOPENFILEINFO *open_file) {
+    unpack_file_info = file;
+    unpack_file_odi = open_file;
+    unpack_file_pos = file->start;
+    decode_buffer_left = 0;
+}
+
 NUFILE __cdecl NuDatFileOpen(NUDATHDR *hdr, char *filepath, i32 mode) {
     i32 node_idx;
     i32 info_idx;
     i32 file_idx;
     NUDATOPENFILEINFO *open_info;
+    i64 seek_pos;
 
     if (mode == 0) {
         node_idx = NuDatFileFindTree(hdr, filepath);
@@ -1933,15 +1944,15 @@ NUFILE __cdecl NuDatFileOpen(NUDATHDR *hdr, char *filepath, i32 mode) {
 
                     open_info->position = pc_dat_file_infos[info_idx].position;
 
-                    while (NuFileSeek(open_info->dat_file, pc_dat_file_infos[info_idx].start, 0) < 0) {
-                        NuFileRetry();
-                    }
+                    do {
+                        seek_pos = NuFileSeek(open_info->dat_file, pc_dat_file_infos[info_idx].start, 0);
+                        if (seek_pos < 0) {
+                            NuFileRetry();
+                        }
+                    } while (seek_pos < 0);
 
                     if (pc_dat_file_infos[info_idx].compression_mode == 2) {
-                        unpack_file_info = &pc_dat_file_infos[info_idx];
-                        unpack_file_odi = open_info;
-                        unpack_file_pos = pc_dat_file_infos[info_idx].start;
-                        decode_buffer_left = 0;
+                        NuDatFileDecodeNewFile(&pc_dat_file_infos[info_idx], open_info);
                     }
 
                     return info_idx + 0x800;
@@ -1952,7 +1963,7 @@ NUFILE __cdecl NuDatFileOpen(NUDATHDR *hdr, char *filepath, i32 mode) {
                 NuFileRetry();
             }
         } else {
-            NuFileRetry();
+            NuDatFileMissingPc(filepath);
         }
     }
 
@@ -3185,7 +3196,7 @@ static void NuRDPIGetToken(NURDPICTX_PC *context) {
             }
             variable[length] = '\0';
             if (context->get_variable == NULL) {
-                NuFileError();
+                NuRDPIVariableErrorPc(variable);
             }
             context->value = 0;
             context->token = RDPI_NUMBER;
