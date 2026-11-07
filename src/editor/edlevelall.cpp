@@ -8,6 +8,7 @@
 
 extern "C" {
     extern eduimenu_s *edLevelActiveMenu;
+    void eduiAddPropTextPickEnt(eduimenu_s *menu, eduiitem_s *item);
     extern eduimenu_s *edLevelPinnedMenu;
     extern eduimenu_s *edLevelNextMenu;
     extern i32 edLevelDestroyActiveMenu;
@@ -1956,6 +1957,111 @@ void EdRegistry::RegisterBaseTypes() {
     EdType_NuHSpecial = RegisterType("NuHSpecial", 12, SerialiseNuHSpecial);
     EdType_NuVec = RegisterType("NuVec", 12, SerialiseNuVec);
     EdType_NuMtx = RegisterType("NuMtx", 64, SerialiseNuMtx);
+}
+
+/* Property control for EdType_String members: the text is edited in place
+ * and the button opens a text picker on it. */
+class EdStringControl : public EdControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdStringControl));
+    }
+    EdStringControl();
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void Refresh();
+    void GetVal(char *value, i32 capacity);
+    void SetVal(char const *value);
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbPress(eduimenu_s *menu, eduiitem_s *item, u32);
+};
+STATIC_ASSERT(sizeof(EdStringControl) == 0x10);
+
+/* Property control for EdType_Colour3 members: "r g b" text, the property
+ * button shows the colour and opens a colour picker. */
+class EdColourControl : public EdControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdColourControl));
+    }
+    EdColourControl();
+    virtual ~EdColourControl();
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void Refresh();
+    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 flags);
+};
+STATIC_ASSERT(sizeof(EdColourControl) == 0x10);
+
+EdStringControl::EdStringControl() {
+}
+
+void EdStringControl::GetVal(char *value, i32 capacity) {
+    if (reference->type_id == EdType_String)
+        reference->GetMemberData(object, EdType_String, value, capacity);
+}
+
+void EdStringControl::SetVal(char const *value) {
+    if (reference->type_id == EdType_String) {
+        char copy[128];
+        NuStrNCpy(copy, value, reference->size);
+        reference->SetMemberData(object, EdType_String, copy, 0, NULL);
+    }
+}
+
+void EdStringControl::Refresh() {
+    char value[128];
+    GetVal(value, sizeof(value));
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), value);
+}
+
+void EdStringControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    static_cast<EdStringControl *>(item->data_ptr)->SetVal(reinterpret_cast<edui_prop_s *>(item)->property_text);
+}
+
+void EdStringControl::cbPress(eduimenu_s *menu, eduiitem_s *item, u32) {
+    eduiAddPropTextPickEnt(menu, item);
+}
+
+EdColourControl::EdColourControl() {
+}
+
+EdColourControl::~EdColourControl() {
+}
+
+void EdColourControl::Refresh() {
+    edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
+    NUVEC colour;
+    reference->GetMemberData(object, EdType_Colour3, &colour, 0);
+    char value[128];
+    NuSPrintf(value, "%.2f %.2f %.2f", colour.x, colour.y, colour.z);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), value);
+    i32 packed = (i32)(colour.z * 255.0);
+    packed |= 0xffffff00;
+    packed <<= 8;
+    packed |= (i32)(colour.y * 255.0) & 0xff;
+    packed <<= 8;
+    packed |= (i32)(colour.x * 255.0) & 0xff;
+    property->button_colour = packed;
+}
+
+void EdColourControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
+    EdColourControl *control = static_cast<EdColourControl *>(item->data_ptr);
+    NUVEC colour;
+    control->reference->GetMemberData(control->object, EdType_Colour3, &colour, 0);
+    sscanf(property->property_text, "%f %f %f", &colour.x, &colour.y, &colour.z);
+    control->reference->SetMemberData(control->object, EdType_Colour3, &colour, 0, NULL);
+    char value[128];
+    NuSPrintf(value, "%.2f %.2f %.2f", colour.x, colour.y, colour.z);
+    eduiItemPropSetText(property, value);
+    i32 packed = (i32)(colour.z * 255.0);
+    packed |= 0xffffff00;
+    packed <<= 8;
+    packed |= (i32)(colour.y * 255.0) & 0xff;
+    packed <<= 8;
+    packed |= (i32)(colour.x * 255.0) & 0xff;
+    property->button_colour = packed;
 }
 
 #pragma push_macro("RegisterClass")
@@ -5404,6 +5510,44 @@ void EdBitControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
     }
 }
 
+void EdStringControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdStringControl *control = new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl;
+    if (control != NULL) {
+        control->reference = member;
+        control->object = target;
+        char value[128];
+        control->GetVal(value, sizeof(value));
+        control->item =
+            eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbPress, 1, member->name, value);
+        eduiMenuAddItem(menu, control->item);
+    }
+}
+
+void EdColourControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdColourControl *control = new (theMemoryManager.AllocPool(sizeof(EdColourControl), 1)) EdColourControl;
+    if (control != NULL) {
+        control->reference = member;
+        control->object = target;
+        NUVEC colour;
+        member->GetMemberData(control->object, EdType_Colour3, &colour, 0);
+        char name[128];
+        NuSPrintf(name, "%s", member->name);
+        char value[128];
+        NuSPrintf(value, "%.2f %.2f %.2f", colour.x, colour.y, colour.z);
+        edui_prop_s *property = reinterpret_cast<edui_prop_s *>(
+            eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 3, name, value));
+        control->item = &property->base;
+        i32 packed = (i32)(colour.z * 255.0);
+        packed |= 0xffffff00;
+        packed <<= 8;
+        packed |= (i32)(colour.y * 255.0) & 0xff;
+        packed <<= 8;
+        packed |= (i32)(colour.x * 255.0) & 0xff;
+        property->button_colour = packed;
+        eduiMenuAddItem(menu, control->item);
+    }
+}
+
 void PropertyTool::Initialise(variptr_u &, variptr_u &, i32) {
 }
 
@@ -5504,6 +5648,44 @@ void EdBitControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     choices->flags |= 1;
     eduiMenuAttach(menu, choices);
     eduiMenuFitWidth(choices, 5);
+    reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
+}
+
+static EdColourControl *edColourControl;
+
+void EdColourControl::cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+    NUVEC colour;
+    edui_colour_pick_s *picker = reinterpret_cast<edui_colour_pick_s *>(item);
+    colour.x = picker->red;
+    edui_prop_s *property = reinterpret_cast<edui_prop_s *>(edColourControl->item);
+    colour.y = picker->green;
+    colour.z = picker->blue;
+    edColourControl->reference->SetMemberData(edColourControl->object, EdType_Colour3, &colour, 0, NULL);
+    char value[128];
+    NuSPrintf(value, "%.2f %.2f %.2f", colour.x, colour.y, colour.z);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(edColourControl->item), value);
+    i32 packed = (i32)(colour.z * 255.0);
+    packed |= 0xffffff00;
+    packed <<= 8;
+    packed |= (i32)(colour.y * 255.0) & 0xff;
+    packed <<= 8;
+    packed |= (i32)(colour.x * 255.0) & 0xff;
+    property->button_colour = packed;
+    cbEdLevelDestroyOnSelect(menu, item, flags);
+}
+
+void EdColourControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
+    edColourControl = static_cast<EdColourControl *>(item->data_ptr);
+    eduimenu_s *picker_menu = eduiMenuCreate(item->x + menu->width, item->y, 180, 250,
+                                             reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+    if (picker_menu == NULL)
+        return;
+    NUVEC colour;
+    edColourControl->reference->GetMemberData(edColourControl->object, EdType_Colour3, &colour, 0);
+    eduiitem_s *picker = eduiItemColourPickCreate(0, item->colours, cbColourSelected, "Colour");
+    eduiItemColourPickSetRGB(reinterpret_cast<edui_colour_pick_s *>(picker), colour.x, colour.y, colour.z);
+    eduiMenuAddItem(picker_menu, picker);
+    eduiMenuAttach(menu, picker_menu);
     reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
 }
 
