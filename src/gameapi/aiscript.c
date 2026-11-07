@@ -846,49 +846,19 @@ void __cdecl xConditions(NUFPAR_PC *parser) {
             NuFParGetWord(parser);
 
             definition = AIConditionFind(parser->word_buffer_ptr);
-            if (definition == NULL) {
-                if (AIActionDiagnosticMode == 1) {
-                    AIScriptMissingConditionDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                       aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                                   : (char *)Text_UnknownText);
-                } else {
-                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
-                                                   aiscript_load_state != NULL ? aiscript_load_state->name
-                                                                               : (char *)Text_UnknownText);
+            if (definition != NULL) {
+
+                cond = (AICONDITION_PC *)AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                                   sizeof(AICONDITION_PC));
+                if (cond == NULL) {
+                    continue;
                 }
-                continue;
-            }
 
-            cond = (AICONDITION_PC *)AIScriptBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                         sizeof(AICONDITION_PC));
-            if (cond == NULL) {
-                AIScriptMissingStateDiagnostic();
-                continue;
-            }
+                memset(cond, 0, sizeof(AICONDITION_PC));
 
-            memset(cond, 0, sizeof(AICONDITION_PC));
+                NuLinkedListAppend(aiscript_load_conditions, &cond->link);
 
-            NuLinkedListAppend(aiscript_load_conditions, &cond->link);
-
-            cond->definition = definition;
-
-            NuFParGetWord(parser);
-
-            if (NuStrICmp(parser->word_buffer_ptr, "=") == 0 || NuStrICmp(parser->word_buffer_ptr, "==") == 0) {
-                cond->comparison = EQ;
-            } else if (NuStrICmp(parser->word_buffer_ptr, "<") == 0) {
-                cond->comparison = LT;
-            } else if (NuStrICmp(parser->word_buffer_ptr, ">") == 0) {
-                cond->comparison = GT;
-            } else if (NuStrICmp(parser->word_buffer_ptr, "<=") == 0) {
-                cond->comparison = LT_EQ;
-            } else if (NuStrICmp(parser->word_buffer_ptr, ">=") == 0) {
-                cond->comparison = GT_EQ;
-            } else if (NuStrICmp(parser->word_buffer_ptr, "!=") == 0) {
-                cond->comparison = NEQ;
-            } else {
-                cond->argument =
-                    AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+                cond->definition = definition;
 
                 NuFParGetWord(parser);
 
@@ -904,61 +874,88 @@ void __cdecl xConditions(NUFPAR_PC *parser) {
                     cond->comparison = GT_EQ;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "!=") == 0) {
                     cond->comparison = NEQ;
-                }
-            }
-
-            NuFParGetWord(parser);
-
-            if (cond->parameter_condition == NULL) {
-                i8 param_index;
-                i32 i;
-                char *param;
-
-                param = NuStrIStr(parser->word_buffer_ptr, "param");
-                if (param == NULL) {
-                    for (i = 0; i < 4; i++) {
-                        char *param_name = aiscript_load_script->params[i].name;
-
-                        if (param_name != NULL && NuStrICmp(param_name, parser->word_buffer_ptr) == 0) {
-                            cond->param_index = i;
-                            cond->flags |= 4;
-
-                            break;
-                        }
-                    }
                 } else {
-                    param_index = NuAToI(param);
-                    cond->param_index = param_index;
+                    cond->argument =
+                        AIScriptCopyStringPc(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
 
-                    if (param_index >= 0 && param_index < 4) {
-                        cond->flags |= 4;
+                    NuFParGetWord(parser);
+
+                    if (NuStrICmp(parser->word_buffer_ptr, "=") == 0 || NuStrICmp(parser->word_buffer_ptr, "==") == 0) {
+                        cond->comparison = EQ;
+                    } else if (NuStrICmp(parser->word_buffer_ptr, "<") == 0) {
+                        cond->comparison = LT;
+                    } else if (NuStrICmp(parser->word_buffer_ptr, ">") == 0) {
+                        cond->comparison = GT;
+                    } else if (NuStrICmp(parser->word_buffer_ptr, "<=") == 0) {
+                        cond->comparison = LT_EQ;
+                    } else if (NuStrICmp(parser->word_buffer_ptr, ">=") == 0) {
+                        cond->comparison = GT_EQ;
+                    } else if (NuStrICmp(parser->word_buffer_ptr, "!=") == 0) {
+                        cond->comparison = NEQ;
                     }
                 }
 
-                if (!(cond->flags & 4)) {
+                NuFParGetWord(parser);
 
-                    for (i = 0; i < AIScriptConstCursorPc; i++) {
-                        if (NuStrICmp(AIScriptConstantRecordsPc[i].name, parser->word_buffer_ptr) == 0) {
-                            cond->param_value = AIScriptConstantRecordsPc[i].default_val;
+                if (cond->parameter_condition == NULL) {
+                    i8 param_index;
+                    i32 i;
+                    char *param;
 
-                            break;
+                    param = NuStrIStr(parser->word_buffer_ptr, "param");
+                    if (param == NULL) {
+                        for (i = 0; i < 4; i++) {
+                            char *param_name = aiscript_load_script->params[i].name;
+
+                            if (param_name != NULL && NuStrICmp(param_name, parser->word_buffer_ptr) == 0) {
+                                cond->param_index = i;
+                                cond->flags |= 4;
+
+                                break;
+                            }
+                        }
+                    } else {
+                        param_index = NuAToI(param);
+                        cond->param_index = param_index;
+
+                        if (param_index >= 0 && param_index < 4) {
+                            cond->flags |= 4;
                         }
                     }
 
-                    if (i == AIScriptConstCursorPc) {
-                        cond->param_value = AiParseExpression(parser->word_buffer_ptr);
+                    if (!(cond->flags & 4)) {
 
-                        if (AiParseExpressionFailed) {
-                            cond->flags |= 8;
-                            cond->param_index = complex_idx++;
-                            cond->complex_expression = AIScriptCopyStringPc(
-                                parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+                        for (i = 0; i < AIScriptConstCursorPc; i++) {
+                            if (NuStrICmp(AIScriptConstantRecordsPc[i].name, parser->word_buffer_ptr) == 0) {
+                                cond->param_value = AIScriptConstantRecordsPc[i].default_val;
+
+                                break;
+                            }
+                        }
+
+                        if (i == AIScriptConstCursorPc) {
+                            cond->param_value = AiParseExpression(parser->word_buffer_ptr);
+
+                            if (AiParseExpressionFailed) {
+                                cond->flags |= 8;
+                                cond->param_index = complex_idx++;
+                                cond->complex_expression = AIScriptCopyStringPc(
+                                    parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
+                            }
                         }
                     }
                 }
+
+                ConditionsParseFinalise(cond, parser);
+            } else if (AIActionDiagnosticMode == 1) {
+                AIScriptMissingConditionDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                                   aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                               : (char *)Text_UnknownText);
+            } else {
+                AIScriptMissingStateDiagnostic(parser->word_buffer_ptr, aiscript_load_script->name,
+                                               aiscript_load_state != NULL ? aiscript_load_state->name
+                                                                           : (char *)Text_UnknownText);
             }
-
-            ConditionsParseFinalise(cond, parser);
         } else if (NuStrICmp(parser->word_buffer_ptr, "OnMacro") == 0) {
             AICONDITIONMACRO_PC *macro;
 
@@ -1923,11 +1920,7 @@ static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end) {
     if (text != NULL) {
         length = NuStrLen(text);
         if (length != 0) {
-            if (buffer != NULL && end != NULL && buffer->addr + length + 1 < end->addr) {
-                copy = (char *)((buffer->addr + 15) & ~15u);
-                buffer->addr = (u32)copy + length + 1;
-                memset(copy, 0, length + 1);
-            }
+            copy = (char *)AIScriptBufferAlloc(buffer, end, length + 1);
             /* Native copies even after failed allocation; the NULL destination hazard is retained. */
             NuStrCpy(copy, text);
         }
