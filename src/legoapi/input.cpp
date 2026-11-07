@@ -1,11 +1,5 @@
 #include "saga.h"
 
-/* Native 0x0057cf70 clears EAX on both paths, including after loading cut. */
-i32 __cdecl CutScene_IsSkippable(CUTINFO *cut) {
-    (void)cut;
-    return 0;
-}
-
 void __cdecl DoInput(WORLDINFO *world) {
     i32 input[2];
     i32 keyboard_mask = 0;

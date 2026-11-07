@@ -84,6 +84,12 @@ void __cdecl CutScenes_Destroy(CUTSYS_PC *system) {
     }
 }
 
+/* Native 0x0057cf70 clears EAX on both paths, including after loading cut. */
+i32 __cdecl CutScene_IsSkippable(CUTINFO *cut) {
+    (void)cut;
+    return 0;
+}
+
 typedef struct CUT_LOAD_STATE_PC {
     NUSPECIALHANDLE special;
     u8 on : 1;

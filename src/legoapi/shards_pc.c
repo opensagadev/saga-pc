@@ -28,9 +28,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_1062) == 0x1062);
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *ShardOutputNamePc;
 
-void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position) {
-    *position = object->collision_position;
-}
+void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
 static void ShardInitRecordPc(WORLDINFO *world, SHARD_s *shard) {
     i32 attempt;
     shard->state_flags = (shard->state_flags & ~0x18u) | 3;

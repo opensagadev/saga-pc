@@ -41,14 +41,8 @@ extern "C" {
         }
         return NULL;
     }
-    void __cdecl SockOn(SOCKSYS_PC *sys, i32 index) {
-        if (sys != NULL && (u32)index < 64 && (sys->socks[index].flags & 0x100) != 0)
-            sys->socks[index].flags &= ~0x100;
-    }
-    void __cdecl SockOff(SOCKSYS_PC *sys, i32 index) {
-        if (sys != NULL && (u32)index < 64 && (sys->socks[index].flags & 0x100) == 0)
-            sys->socks[index].flags |= 0x100;
-    }
+    void __cdecl SockOn(SOCKSYS_PC *sys, i32 index);
+    void __cdecl SockOff(SOCKSYS_PC *sys, i32 index);
 }
 
 GAMEOBJECT *GizTurret_GetTgt(GIZTURRET_s *, NUMTX *matrix) {

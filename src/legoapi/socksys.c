@@ -1603,6 +1603,16 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
     }
 }
 
+void __cdecl SockOn(SOCKSYS_PC *sys, i32 index) {
+    if (sys != NULL && (u32)index < 64 && (sys->socks[index].flags & 0x100) != 0)
+        sys->socks[index].flags &= ~0x100;
+}
+
+void __cdecl SockOff(SOCKSYS_PC *sys, i32 index) {
+    if (sys != NULL && (u32)index < 64 && (sys->socks[index].flags & 0x100) == 0)
+        sys->socks[index].flags |= 0x100;
+}
+
 void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction) {
     SOCK_PC *sock;
     i32 limit;

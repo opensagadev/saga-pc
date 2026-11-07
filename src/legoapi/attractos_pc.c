@@ -504,3 +504,7 @@ ADDGIZMOTYPE_PC *__cdecl Attractos_RegisterGizmo(i32 unused_type_id) {
     AttractoAddTypePc.fns.add_level_sfx_fn = NULL;
     return &AttractoAddTypePc;
 }
+
+void __cdecl Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position) {
+    *position = object->collision_position;
+}
