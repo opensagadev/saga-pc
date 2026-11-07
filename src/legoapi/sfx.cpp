@@ -394,10 +394,13 @@ extern "C" {
     frame = config->event_frames[index];                                                                               \
     if (frame >= 1.0f && valid_interval) {                                                                             \
         if (frame <= current) {                                                                                        \
-            if (previous > current || frame > previous)                                                                \
+            if (previous > current)                                                                                    \
                 crossed = 1;                                                                                           \
-        } else if (previous > current && frame > previous) {                                                           \
-            crossed = 1;                                                                                               \
+            else if (frame > previous)                                                                                 \
+                crossed = 1;                                                                                           \
+        } else if (previous > current) {                                                                               \
+            if (frame > previous)                                                                                      \
+                crossed = 1;                                                                                           \
         }                                                                                                              \
     }
 
@@ -430,8 +433,11 @@ extern "C" {
         } else if (previous < current) {
             valid_interval = 1;
         }
+        /* Retail tests the four-footstep flag again before each of the first two events. */
         if ((config->flags & 0x10000) != 0) {
             FOOTSTEP_CHECK(0)
+        }
+        if ((config->flags & 0x10000) != 0) {
             FOOTSTEP_CHECK(1)
         }
         FOOTSTEP_CHECK(2)
