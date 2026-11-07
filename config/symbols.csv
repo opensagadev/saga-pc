@@ -6342,6 +6342,7 @@ address,symbol,size,ctype
 0x5d5170,_NuRndrSetShadowCoefficientPc,57,"void __cdecl(i32,f32)"
 0x005d51f0,_NuLightSpeedBlurOldCameraPos,39,void __cdecl(NUMTX *)
 0x5d5220,_NuBackbufferCopy,10,void __cdecl (i32)
+0x5d52f0,_BoxTreeSetClipResults,54,"void private(u8 *results, i32 *instances, u8 clip, i32 count); count EDI"
 0x005d5330,_NuCameraCreate,99,NUCAMERA * __cdecl (void)
 0x5d53a0,_NuCameraDestroy,28,
 0x5d53f0,_NuCameraCalcClipMtx,268,"void __cdecl(CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32)"
@@ -6616,6 +6617,8 @@ address,symbol,size,ctype
 0x5ec620,_NuLightSpeedBlur,130,
 0x5ec6b0,_NuRndrInitGeneric,162,void __cdecl NuRndrInitGeneric(void)
 0x5ec760,_NuRndrHighResScreenGrab,2639,"i32 __cdecl(char *, f32, f32, f32, f32, i32)"
+0x5ed1b0,_BoxTreeRndr,262,"void __cdecl(u8 *, NUVISIBOXTREENODE_PC *, i32)"
+0x5ed2c0,_NuVisiBoxTree,51,"void __cdecl(NUBOXTREEVISIBILITY_PC *)"
 0x005ed300,_NuCameraSetVPortClipMtx,282,"void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
 0x005ed420,_NuCameraSetScissorClipMtx,274,"void __cdecl (NUMTX *, NUMTX *, NUCAMERA *, i32)"
 0x005ed540,_NuCameraSetEx,1105,"void __cdecl (NUCAMERA *, i32)"
@@ -23524,6 +23527,7 @@ address,symbol,size,ctype
 0x80b6dc,_global_windspeed,,f32
 0x80b6e8,_NuLightSpeedBlurEnabledPc,4,writable i32 native initial1
 0x80b6ec,_dump_state,4,i32
+0x80b6f0,_BoxTreeDrawBoundsPc,4,i32 native initial 1
 0x80b6f4,_VisibilityEvaluateEnabledPc,,i32
 0x80b6f8,_VisibilityOcclusionEnabledPc,,i32
 0x0080b6fc,_cam_axes,12,NUVEC
@@ -27043,6 +27047,7 @@ address,symbol,size,ctype
 0x973944,_RendererZClearMaterialPc,,NUMTL *
 0x973948,_RendererAlphaMaskMaterialPc,,NUMTL *
 0x97394c,_NuRndrDoingScreenGrab,4,i32
+0x973958,_do_boxtree,4,i32
 0x97395c,_VisibilityLoadedOcclusionPc,,i32
 0x973960,_VisibilityCameraLockPc,,i32
 0x973964,_NuCameraMode,,

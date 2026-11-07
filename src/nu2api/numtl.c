@@ -719,3 +719,102 @@ void __cdecl RndrMaskScreen(i32 texture, f32 clear_x, f32 clear_y, f32 clear_wid
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
     NuRndrEndScene();
 }
+
+typedef struct nuvisiboxtreenode_pc_s {
+    NUVEC minimum;
+    f32 minimum_w;
+    NUVEC maximum;
+    f32 maximum_w;
+    struct nuvisiboxtreenode_pc_s *children[8];
+    i32 child_count;
+    i32 inside_count;
+    i32 *inside_instances;
+    i32 partial_count;
+    i32 *partial_instances;
+    u32 unknown_54;
+    f32 far_clip;
+} NUVISIBOXTREENODE_PC;
+STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, maximum) == 0x10);
+STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, children) == 0x20);
+STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, child_count) == 0x40);
+STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, inside_count) == 0x44);
+STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, partial_instances) == 0x50);
+STATIC_ASSERT(offsetof(NUVISIBOXTREENODE_PC, far_clip) == 0x58);
+
+typedef struct nuvisiboxtree_pc_s {
+    NUVISIBOXTREENODE_PC *root;
+} NUVISIBOXTREE_PC;
+
+typedef struct nuboxtreevisibility_pc_s {
+    i32 instance_count;
+    NUVISIBOXTREE_PC *tree;
+    u32 unknown_08[6];
+    u8 *clip_results;
+    u32 unknown_24;
+    u32 state;
+} NUBOXTREEVISIBILITY_PC;
+STATIC_ASSERT(offsetof(NUBOXTREEVISIBILITY_PC, clip_results) == 0x20);
+STATIC_ASSERT(offsetof(NUBOXTREEVISIBILITY_PC, state) == 0x28);
+
+typedef struct boxtree_stack_entry_pc_s {
+    NUVISIBOXTREENODE_PC *node;
+    i32 next_child;
+} BOXTREE_STACK_ENTRY_PC;
+
+void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
+
+i32 do_boxtree = 0;
+i32 BoxTreeDrawBoundsPc = 1;
+
+static __declspec(noinline) void BoxTreeSetClipResults(u8 *results, i32 *instances, i32 clip, i32 count) {
+    i32 i;
+    for (i = 0; i < count; ++i) {
+        i32 instance = instances[i];
+        results[instance >> 2] |= (u8)(clip << ((instance & 3) * 2));
+    }
+}
+
+void __cdecl BoxTreeRndr(u8 *results, NUVISIBOXTREENODE_PC *root, i32 instance_count) {
+    BOXTREE_STACK_ENTRY_PC stack[128];
+    i32 depth;
+    if (root == NULL || instance_count == 0)
+        return;
+    depth = 0;
+    stack[0].node = root;
+    stack[0].next_child = 0;
+    do {
+        NUVISIBOXTREENODE_PC *node = stack[depth].node;
+        f32 distance;
+        i32 clip = NuCameraClipTestExtentsGeneric(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate,
+                                                  node->far_clip, 1, &distance);
+        if (clip != 0) {
+            if (clip == 1) {
+                if (BoxTreeDrawBoundsPc != 0)
+                    NuRndrBoundingBox(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate, 0xff0000ff);
+                BoxTreeSetClipResults(results, node->inside_instances, 1, node->inside_count);
+            } else {
+                i32 child;
+                BoxTreeSetClipResults(results, node->partial_instances, 2, node->partial_count);
+                if (node->child_count == 0 && BoxTreeDrawBoundsPc != 0)
+                    NuRndrBoundingBox(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate, 0xff00ff00);
+                child = stack[depth].next_child++;
+                if (child != node->child_count) {
+                    ++depth;
+                    stack[depth].next_child = 0;
+                    stack[depth].node = node->children[child];
+                    continue;
+                }
+            }
+        }
+        --depth;
+    } while (depth >= 0);
+}
+
+void __cdecl NuVisiBoxTree(NUBOXTREEVISIBILITY_PC *visibility) {
+    if (visibility->tree != NULL && do_boxtree != 0) {
+        BoxTreeRndr(visibility->clip_results, visibility->tree->root, visibility->instance_count);
+        visibility->state |= 4;
+    } else {
+        visibility->state &= ~4u;
+    }
+}
