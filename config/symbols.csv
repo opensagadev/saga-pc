@@ -3752,6 +3752,7 @@ address,symbol,size,ctype
 0x53d5d0,??0NETMESSAGE_PC@@QAE@I@Z,66,NETMESSAGE_PC::NETMESSAGE_PC(u32)
 0x53d640,?Release@NETMESSAGE_PC@@QAEXXZ,39,
 0x53d670,?Receive@NetListenerInterface@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,44,
+0x53db60,_SockSysMissingCameraDiagnostic,1,void __cdecl(char *)
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x53dc80,_SplineLength,141,"f32 __cdecl (NUGSPLINE *, i32)"
 0x53dd10,_OnOrOutsidePlane,54,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -16771,6 +16772,7 @@ address,symbol,size,ctype
 0x761548,??_C@_02JDPG@rb?$AA@,3,const char[3]
 0x76154c,_SaveSlotCaptionFormatPc,13,const char[13]
 0x76155c,??_C@_02GMLFBBN@wb?$AA@,3,const char[3]
+0x761564,??_C@_0BD@EPAPAOLA@to?5many?5sections?1n?$AA@,19,const char[19]
 0x00761578,__real@3fb47ae140000000,8,const f64
 0x761584,__real@cb189680,4,const f32
 0x761588,__real@4b189680,4,const f32

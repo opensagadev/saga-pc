@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 
 /* Retail performs these absolute-value operations inline with x87 FABS. */
 #define NUBRIDGE_ABS(value) ((value) < 0.0f ? -(value) : (value))
@@ -517,7 +518,7 @@ i32 __cdecl NuBridgeCreate(NUGSCN *scene, NUSPECIALHANDLE *first, NUSPECIALHANDL
     f32 inverse_length;
 
     if (count > 24)
-        STUBBED_NAMED("NuBridgeCreate: retail warning print for count > 24 (0x54407e)");
+        printf("to many sections/n");
 
     NuBridgeProc = 1;
     for (index = 0; index < 8; ++index) {
