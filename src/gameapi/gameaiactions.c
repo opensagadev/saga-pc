@@ -2153,3 +2153,272 @@ i32 __cdecl Action_Launch(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPAC
         StartLaunch(packet->owner->objptr);
     return 1;
 }
+
+typedef struct ai_cable_head_pc_s {
+    GAMEOBJECT *source;
+    GAMEOBJECT *target;
+} AI_CABLE_HEAD_PC;
+typedef struct ai_cable_object_pc_s {
+    u8 unknown000[0x1040];
+    CABLE_RECORD_PC *cable;
+} AI_CABLE_OBJECT_PC;
+STATIC_ASSERT(offsetof(AI_CABLE_HEAD_PC, source) == 0);
+STATIC_ASSERT(offsetof(AI_CABLE_HEAD_PC, target) == 4);
+STATIC_ASSERT(offsetof(AI_CABLE_OBJECT_PC, cable) == 0x1040);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, locator) == 0x36c);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, mover_height) == 0x3e8);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, path_info) == 0x420);
+STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, last_path_position) == 0x438);
+STATIC_ASSERT(offsetof(AILOCATOR_PC, path_info) == 0x20);
+i32 __cdecl Action_EngageOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
+i32 __cdecl Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                              i32 count, i32 first_time, f32 delta) {
+    GAMEOBJECT *object, *towing_player, *bomb;
+    AI_CABLE_OBJECT_PC *view, *player_view;
+    AI_CABLE_HEAD_PC *cable;
+    AILOCATOR_PC *locator;
+    NUVEC difference;
+    f32 distance;
+    char *engage_params[3];
+    (void)params;
+    (void)count;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    bomb = NULL;
+    towing_player = NULL;
+    if (((AI_CABLE_OBJECT_PC *)player)->cable != NULL &&
+        (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player)->cable)->target) != NULL && bomb->id == id_DRAGBOMB)
+        towing_player = player;
+    else if (player2 != NULL && ((AI_CABLE_OBJECT_PC *)player2)->cable != NULL &&
+             (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player2)->cable)->target) != NULL &&
+             bomb->id == id_DRAGBOMB)
+        towing_player = player2;
+    view = (AI_CABLE_OBJECT_PC *)object;
+    if (bomb != NULL && towing_player != NULL) {
+        if (view->cable != NULL && ((AI_CABLE_HEAD_PC *)view->cable)->target != bomb) {
+            ((AI_CABLE_HEAD_PC *)view->cable)->source = NULL;
+            view->cable = NULL;
+        }
+        if (view->cable == NULL) {
+            distance = NuVecXZDistSqr(&object->collision_position, &bomb->collision_position, &difference);
+            if (distance < (f64)max_cable_length * max_cable_length * 0.5)
+                view->cable = CreateCable(object, bomb, 1);
+        }
+        if (view->cable != NULL) {
+            locator = object->ai_packet.locator;
+            if (locator != NULL)
+                AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 1, 0.0f);
+            else
+                AIMoveInstruction(packet, &towing_player->ai_packet.last_path_position,
+                                  towing_player->ai_packet.mover_height, &towing_player->ai_packet.path_info, 2, 99.0f);
+        } else {
+            AIMoveInstruction(packet, &bomb->ai_packet.last_path_position, bomb->ai_packet.mover_height,
+                              &bomb->ai_packet.path_info, 1, 0.0f);
+        }
+    } else {
+        if (view->cable != NULL) {
+            ((AI_CABLE_HEAD_PC *)view->cable)->source = NULL;
+            view->cable = NULL;
+        }
+        AIMoveInstruction(packet, NULL, 0.0f, NULL, 4, packet->movement_instruction_parameter);
+    }
+    engage_params[0] = "goalrange 10";
+    engage_params[1] = "firerange 15";
+    engage_params[2] = "fireinterval 1.5";
+    Action_EngageOpponent(system, processor, packet, engage_params, 3, first_time, delta);
+    return 0;
+}
+
+i32 __cdecl Action_WalkBackwards(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 param_4, i32 param_5, f32 param_6) {
+    i32 index;
+    APIOBJECT_PC *opponent;
+    GAMEOBJECT *owner;
+    (void)sys;
+    (void)param_6;
+    if (packet == NULL) {
+        return 1;
+    }
+    if (param_5 != 0) {
+        packet->movement_instruction_parameter = 1.0f;
+        for (index = 0; index < param_4; ++index) {
+            if (AIActionParseSpeedFn == NULL || AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) == 0) {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+    }
+
+    opponent = (APIOBJECT_PC *)packet->opponent;
+    if (opponent != NULL && opponent->ai != NULL) {
+        owner = packet->owner->objptr;
+        AIMoveInstruction(packet, &opponent->ai->last_path_position, opponent->ai->mover_height,
+                          &opponent->ai->path_info, 2, packet->movement_instruction_parameter);
+        owner->flags_ef0 |= 0x8000u;
+        owner->ai_packet.goal_speed_mode = 1;
+    }
+    return 0;
+}
+
+i32 __cdecl Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                 i32 param_count, i32 first_time, f32 elapsed) {
+    AILOCATOR_PC *locator;
+    i32 index;
+    char *value;
+    (void)elapsed;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->path_info.path == NULL ||
+        packet->path_info.connection == NULL) {
+        return 1;
+    }
+    if (first_time != 0) {
+        processor->action_data_1 = 0;
+        processor->action_data_3 = processor->locator;
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+            if (value == NULL) {
+                value = NuStrIStr(params[index], (char *)AIActionCircleTeleportName);
+            }
+            if (value != NULL) {
+                processor->action_data_3 =
+                    AIPathFindLocator(sys, value + NuStrLen((char *)AIScriptActionNameArgPrefix));
+            } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
+                packet->movement_instruction_parameter =
+                    AIParamToFloatEx(packet, processor, value + NuStrLen((char *)AIPathGoalRangeName) + 1);
+            } else if (NuStrICmp(params[index], (char *)AIActionCircleReverseName) == 0) {
+                packet->flags ^= 0x200;
+            } else if (NuStrICmp(params[index], (char *)AIActionCircleAnticlockwiseName) == 0) {
+                packet->flags &= ~0x200u;
+            } else if (NuStrICmp(params[index], (char *)AIActionCircleClockwiseName) == 0) {
+                packet->flags |= 0x200;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+            }
+        }
+    }
+    locator = (AILOCATOR_PC *)processor->action_data_3;
+    if (locator != NULL) {
+        AIMoveInstruction(packet, &locator->position, packet->movement_instruction_parameter, &locator->path_info, 3,
+                          packet->movement_instruction_parameter);
+    }
+    return locator == NULL;
+}
+
+i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
+                                    i32 param_count, i32 first_time, f32 elapsed) {
+    NUVEC difference;
+    GAMEOBJECT *object;
+    AIPATH_PC *original_path;
+    AIPATH_PC *current_path;
+    AIPATHNODE_PC *node;
+    AIPATHNODE_PC *target_node;
+    AIPATHCNX_PC *connection;
+    AIPATHINFO_PC *move_path;
+    i32 index;
+    i32 node_index;
+    f32 distance;
+    (void)elapsed;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
+        return 1;
+    }
+    object = packet->owner->objptr;
+    if (sys == NULL || sys->path_sys == NULL || (object->flags_1f8 & 0x400) == 0 ||
+        object->ai_packet.creature_index == 0xff) {
+        return 0;
+    }
+    original_path = sys->creatures[packet->creature_index].path_info.path;
+    current_path = packet->path_info.path;
+    if (first_time != 0) {
+        if (current_path == original_path) {
+            return 1;
+        }
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL) {
+                AIActionParseSpeedFn(params[index], &packet->goal_speed_mode);
+            }
+        }
+        current_path = packet->path_info.path;
+        packet->goal_path_node = NULL;
+        if (current_path == NULL) {
+            return 0;
+        }
+        if (sys->path_sys->active_path != current_path || packet->path_info.connection == NULL ||
+            (original_path->flags & 2) == 0) {
+            return 0;
+        }
+        node = original_path->nodes;
+        node_index = 0;
+        while (node_index < original_path->node_count && (node->runtime_flags & 1) == 0) {
+            ++node_index;
+            ++node;
+        }
+        if (node_index >= original_path->node_count) {
+            return 1;
+        }
+        processor->action_data_3 = node;
+        AISysCharacterSetPath(packet, current_path);
+        connection = &sys->path_sys->active_path->connections[(u16)node->path_flags];
+        move_path = &processor->path_info;
+        target_node = &move_path->path->nodes[connection->node_indices[0]];
+        move_path->connection = connection;
+        move_path->direction = 0;
+        move_path->on_path = 1;
+        difference.x = node->position.x - target_node->position.x;
+        difference.z = node->position.z - target_node->position.z;
+        NuVecRotateY(&difference, &difference, -connection->rotation);
+        move_path->distance = difference.z / connection->max_horizontal_distance;
+        move_path->width = difference.x;
+        AIMoveInstruction(packet, &node->position, 0.0f, move_path, 1, packet->movement_instruction_parameter);
+        return 0;
+    }
+    node = (AIPATHNODE_PC *)processor->action_data_3;
+    if (node == NULL) {
+        return 0;
+    }
+    distance = NuVecXZDistSqr(&packet->terrain_origin, &node->position, &difference);
+    if (distance < node->radius_squared) {
+        memset(&packet->path_info, 0, sizeof(packet->path_info));
+        AISysCharacterSetPath(packet, original_path);
+        AISysCharacterSetPathCnx(packet, &packet->owner->position, packet->fallback_path_info.connection, 0);
+        return 1;
+    }
+    AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1, packet->movement_instruction_parameter);
+    return 0;
+}
+
+i32 __cdecl Action_MoveAwayFromLastAttacker(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
+                                            char **params, i32 param_count, i32 first_time, f32 elapsed) {
+    i32 index;
+    GAMEOBJECT *object;
+    GAMEOBJECT *attacker;
+
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
+        return 1;
+    }
+    object = packet->owner->objptr;
+
+    if (first_time != 0) {
+        for (index = 0; index < param_count; ++index) {
+            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                continue;
+            }
+            if (NuStrICmp(params[index], (char *)AIPathFaceName) == 0) {
+                processor->action_data_1 = 1;
+            } else {
+                packet->movement_instruction_parameter = AIParamToFloat(processor, params[index]);
+            }
+        }
+    }
+
+    attacker = object->last_attacker;
+    if (attacker != NULL) {
+        AIMoveInstruction(packet, &attacker->ai_packet.last_path_position, attacker->ai_packet.mover_height,
+                          &attacker->ai_packet.path_info, 2, packet->movement_instruction_parameter);
+        if (processor->action_data_1 != 0) {
+            packet->movement_look_target = &object->last_attacker->position;
+        }
+    }
+    return 0;
+}
