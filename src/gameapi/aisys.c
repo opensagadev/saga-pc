@@ -2614,34 +2614,32 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
     i32 angle;
     i32 difference;
     i32 step;
-    AIPATHCNX_PC *connection;
     AIPATHNODE_PC *node;
     AIPATHCNX_PC *next;
     AIPATHNODE_PC *other;
     AIPATHNODE_PC *nodes;
     APIOBJECT_PC *object;
-    connection = row->path_info.connection;
-    if (connection == NULL)
+    if (row->path_info.connection == NULL)
         return 0;
-    node_index = connection->node_indices[row->path_info.direction == 0];
+    node_index = row->path_info.connection->node_indices[row->path_info.direction == 0];
+    node = &row->path_info.path->nodes[node_index];
     if (row->next_connection == NULL) {
         if (previous != NULL) {
-            row->next_connection = previous->path_info.connection == connection ? previous->next_connection
-                                                                                : previous->path_info.connection;
-            if (row->next_connection == NULL)
-                return 0;
+            if (row->path_info.connection == previous->path_info.connection)
+                row->next_connection = previous->next_connection;
+            else
+                row->next_connection = previous->path_info.connection;
         } else {
-            node = &row->path_info.path->nodes[node_index];
             first = NuRandInt() % node->connection_count;
             for (i = 0; i < node->connection_count; ++i) {
                 row->next_connection = node->connections[(first + i) % node->connection_count];
                 next = row->next_connection;
-                if (next != connection) {
+                if (next != row->path_info.connection) {
                     route = leader->ai->current_route;
                     if (route == 0xff || (((u64)1 << route) & next->route_mask) != 0 ||
                         (((u64)1 << route) & node->route_boundary_mask) != 0) {
-                        direction = node_index != next->node_indices[0];
-                        other = &row->path_info.path->nodes[next->node_indices[direction ^ 1]];
+                        direction = next->node_indices[0] != node_index;
+                        other = &row->path_info.path->nodes[next->node_indices[direction == 0]];
                         if (other->radius > group->radius && next->traversal_flags[direction] == 0)
                             break;
                     }
@@ -2649,67 +2647,74 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
                 row->next_connection = NULL;
             }
             if (row->next_connection == NULL)
-                row->next_connection = connection;
+                row->next_connection = row->path_info.connection;
         }
         next = row->next_connection;
-        if (next->traversal_flags[node_index != next->node_indices[0]] == 0) {
-            current_angle = connection->rotation;
+        if (next != NULL && next->traversal_flags[next->node_indices[0] != node_index] == 0) {
             if (row->path_info.direction != 0)
-                current_angle = NuAngAdd(0x8000, current_angle);
-            if (connection->node_indices[row->path_info.direction == 0] == next->node_indices[0]) {
+                current_angle = NuAngAdd(0x8000, row->path_info.connection->rotation);
+            else
+                current_angle = row->path_info.connection->rotation;
+            if (row->path_info.connection->node_indices[row->path_info.direction == 0] ==
+                row->next_connection->node_indices[0]) {
                 row->next_direction = 0;
-                next_angle = next->rotation;
+                next_angle = row->next_connection->rotation;
             } else {
                 row->next_direction = 1;
-                next_angle = NuAngAdd(0x8000, next->rotation);
+                next_angle = NuAngAdd(0x8000, row->next_connection->rotation);
             }
-            row->flags = (row->flags & ~1u) | (NuAngSub(next_angle, current_angle) < 0);
+            if (NuAngSub(next_angle, current_angle) < 0)
+                row->is_clockwise = 1;
+            else
+                row->is_clockwise = 0;
         }
+        if (row->next_connection == NULL)
+            return 0;
     }
-    offset.x = (row->flags & 1u) ? -group->radius : group->radius;
     offset.y = 0.0f;
     offset.z = 0.0f;
+    offset.x = row->is_clockwise ? -group->radius : group->radius;
     NuVecRotateY(&rotated, &offset, row->rotation);
     NuVecAdd(&centre, &rotated, &row->position);
     if (!(row->flags & 2u)) {
-        if (row->path_info.connection != row->next_connection) {
-            nodes = row->path_info.path->nodes;
-            distance = NuInfiniteLineToPointDistSqr(&nodes[row->next_connection->node_indices[0]].position,
-                                                    &nodes[row->next_connection->node_indices[1]].position, &centre);
-            if (group->radius * group->radius >= distance)
-                row->flags |= 2u;
-        } else {
+        if (row->path_info.connection == row->next_connection) {
             node = &row->path_info.path->nodes[row->path_info.connection->node_indices[row->path_info.direction == 0]];
             distance = NuVecXZDistSqr(&row->position, &node->position, &rotated);
-            if (node->radius_squared > distance) {
+            if (distance < node->radius_squared) {
                 for (i = 0; i < group->row_count; ++i) {
                     group->rows[i].next_connection = NULL;
                     group->rows[i].rotation = NuAngAdd(group->rows[i].rotation, 0x8000);
                     group->rows[i].path_info.direction = group->rows[i].path_info.direction == 0;
                 }
                 group->leader = NULL;
-                group->flags ^= 4u;
-                if ((group->flags & 4u)) {
-                    for (i = group->member_count - 1; i != -1; --i) {
+                group->is_reversed = !group->is_reversed;
+                if (group->is_reversed) {
+                    for (i = group->member_count - 1; i >= 0; --i) {
                         object = group->members[i];
-                        if (object != NULL && (object->flags_low & 0x1001) == 0x1001 &&
+                        if (object != NULL && (object->flags_low & 1) && (object->flags_low & 0x1000) &&
                             object->leader_selection_state == 0) {
-                            group->leader = object;
-                            break;
+                            group->leader = group->members[i];
+                            return 1;
                         }
                     }
                 } else {
                     for (i = 0; i < group->member_count; ++i) {
                         object = group->members[i];
-                        if (object->owner != NULL && (object->flags_low & 0x1001) == 0x1001 &&
+                        if (object->owner != NULL && (object->flags_low & 1) && (object->flags_low & 0x1000) &&
                             object->leader_selection_state == 0) {
-                            group->leader = object;
-                            break;
+                            group->leader = group->members[i];
+                            return 1;
                         }
                     }
                 }
                 return 1;
             }
+        } else {
+            nodes = row->path_info.path->nodes;
+            distance = NuInfiniteLineToPointDistSqr(&nodes[row->next_connection->node_indices[0]].position,
+                                                    &nodes[row->next_connection->node_indices[1]].position, &centre);
+            if (distance <= group->radius * group->radius)
+                row->flags |= 2u;
         }
     }
     if ((row->flags & 2u)) {
@@ -2718,17 +2723,17 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
             angle = NuAngAdd(angle, 0x8000);
         difference = NuAngSub(angle, row->rotation);
         step = group->rotation_speed;
-        if (difference <= step) {
-            step = -step;
-            if (difference >= step) {
-                row->flags &= ~2u;
-                row->path_info.connection = row->next_connection;
-                row->next_connection = NULL;
-                row->path_info.direction = row->next_direction;
-                step = difference;
-            }
+        if (difference > step) {
+            difference = step;
+        } else if (difference < -step) {
+            difference = -step;
+        } else {
+            row->is_turning = 0;
+            row->path_info.connection = row->next_connection;
+            row->next_connection = NULL;
+            row->path_info.direction = row->next_direction;
         }
-        row->rotation = NuAngAdd(step, row->rotation);
+        row->rotation = NuAngAdd(difference, row->rotation);
         NuVecRotateY(&rotated, &offset, row->rotation);
         NuVecSub(&row->position, &centre, &rotated);
         return 0;
@@ -2739,12 +2744,11 @@ static i32 RowMoveWander(AIGROUP_PC *group, AIROW_PC *row, AIROW_PC *previous, A
             angle = NuAngAdd(angle, 0x8000);
         difference = NuAngSub(angle, row->rotation);
         step = group->rotation_speed;
-        if (difference <= step) {
-            step = -step;
-            if (difference >= step)
-                step = difference;
-        }
-        row->rotation = NuAngAdd(step, row->rotation);
+        if (difference > step)
+            difference = step;
+        else if (difference < -step)
+            difference = -step;
+        row->rotation = NuAngAdd(difference, row->rotation);
         rotated.x = rotated.y = rotated.z = 0.0f;
         if (GetCharacterGoalSpeedFn != NULL)
             rotated.z = GetCharacterGoalSpeedFn(leader);
