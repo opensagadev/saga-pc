@@ -5942,8 +5942,10 @@ address,symbol,size,ctype
 0x5b7520,_NuMtxLookAtInverseD3D,334,"void __cdecl (NUMTX *mtx, NUVEC *eye, NUVEC *center, NUVEC *up)"
 0x005b7670,_NuMtxSetPerspectiveD3D,186,"void __cdecl (NUMTX *matrix, f32 fov, f32 aspect, f32 near_plane, f32 far_plane)"
 0x5b7730,_NuMtxSetPerspectiveBlend,192,"void __cdecl (NUMTX *mtx, f32 fovy, f32 aspect, f32 zNear, f32 zFar)"
-0x005b7890,_NuMtxSetFrustumD3D,158,"void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
-0x005b79d0,_NuMtxSetFrustumBlend,160,"void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
+0x005b77f0,_NuMtxSetFrustumD3D,154,"void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
+0x005b7890,_NuMtxSetFrustumBlend,158,"void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
+0x005b7930,_NuMtxSetOrthoD3D,160,"void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
+0x005b79d0,_NuMtxSetOrthoBlend,160,"void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
 0x005b7a70,_NuMtxGetFrustumD3D,172,"void __cdecl (NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane, f32 *far_plane)"
 0x5b7b20,_NuMtxGetFrustumBlend,178,"void __cdecl (NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f)"
 0x005b7c20,_NuFsign,36,f32 __cdecl (f32)

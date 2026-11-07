@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+extern "C" void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
 static __declspec(noinline) void OcclusionMtxCopyPrivate(NUMTX *destination, const NUMTX *source) {
     destination->m00 = source->m00;
     destination->m01 = source->m01;
@@ -716,7 +716,7 @@ extern "C" void __cdecl PostShadowComputeBoundingSpacePc(const NUVEC4 *points, N
         else if (max_z < points[i].z)
             max_z = points[i].z;
     }
-    NuMtxSetFrustumBlend(matrix, min_x, max_x, min_y, max_y, min_z, max_z);
+    NuMtxSetOrthoBlend(matrix, min_x, max_x, min_y, max_y, min_z, max_z);
 }
 extern "C" void __cdecl PostShadowComputeClippingPlanesPc(const NUMTX *matrix, bool zero_near, NUVEC4 *left,
                                                           NUVEC4 *right, NUVEC4 *bottom, NUVEC4 *top,

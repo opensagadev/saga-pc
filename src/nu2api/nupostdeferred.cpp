@@ -216,7 +216,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
     PostShadowProjectBoundsPc(10, projected, &offset, distance, &xmin, &xmax, &ymin, &ymax);
     NuMtxSetTranslation(&translation, &offset);
     f32 far_distance = depth + distance;
-    NuMtxSetFrustumD3D(&frustum, xmin, xmax, ymin, ymax, distance, far_distance);
+    NuMtxSetFrustumBlend(&frustum, xmin, xmax, ymin, ymax, distance, far_distance);
     axis.m00 = 1.0f;
     axis.m01 = 0.0f;
     axis.m02 = 0.0f;

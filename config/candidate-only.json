@@ -1347,6 +1347,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/nu2api/numath_includes.c",
+   "symbol": "_NuFabs",
+   "kind": "function"
+  },
+  {
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "?PostFilterBindProgramPc@@YAXPBUPOST_SHADER_PROGRAM_PC@@@Z",
    "kind": "function"

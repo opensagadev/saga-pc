@@ -1,5 +1,5 @@
 #include "saga.h"
-
+void __cdecl NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
 void __cdecl SetDepthOfField(void) {
 }
 
@@ -20,7 +20,7 @@ void __cdecl InitShadowLights(void) {
     NuDynamicLightSetParameterf(PCShadowCurrentLight, 16, 0.0001f);
     light = PCShadowCurrentLight;
     light->parameter_4 = 0;
-    NuMtxSetFrustumBlend(&light->projection, -60.0f, 60.0f, -60.0f, 60.0f, 0.0f, 300.0f);
+    NuMtxSetOrthoBlend(&light->projection, -60.0f, 60.0f, -60.0f, 60.0f, 0.0f, 300.0f);
 
     PCShadowSecondaryLight = NuDynamicLightCreate();
     NuDynamicLightSetParameteri(PCShadowSecondaryLight, 5, 2);
@@ -32,7 +32,7 @@ void __cdecl InitShadowLights(void) {
     NuDynamicLightSetParameterf(PCShadowSecondaryLight, 11, 0.0001f);
     light = PCShadowSecondaryLight;
     light->parameter_4 = 0;
-    NuMtxSetFrustumBlend(&light->projection, -60.0f, 60.0f, -60.0f, 60.0f, 0.0f, 300.0f);
+    NuMtxSetOrthoBlend(&light->projection, -60.0f, 60.0f, -60.0f, 60.0f, 0.0f, 300.0f);
 
     light = PCShadowSecondaryLight;
     enabled = 1;

@@ -49,6 +49,10 @@ static __forceinline f32 NuFdiv(f32 a, f32 b) {
     }
     return a / b;
 }
+static __forceinline f32 NuFabs(f32 value) {
+    *(u32 *)&value &= 0x7fffffff;
+    return value;
+}
 #define NUMTX_CROSS(out, left, right)                                                                                  \
     {                                                                                                                  \
         NUVEC *cross_out = (out);                                                                                      \
@@ -60,7 +64,6 @@ static __forceinline f32 NuFdiv(f32 a, f32 b) {
         cross_out->y = cross_y;                                                                                        \
         cross_out->z = cross_z;                                                                                        \
     }
-extern const f32 nu_fsign_minus_one;
 f32 __cdecl RenderPostLogPc(f32 value);
 #define QUAT_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
@@ -1409,6 +1412,8 @@ void __cdecl NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
 }
 
 void __cdecl NuMtxInvH(NUMTX *mi, NUMTX *m0) {
+    // there's some weird stack alignment stuff going on here...
+    // also not sure if this semantically matches the original implementation
     i32 p[4];
     i32 j;
     i32 k;
@@ -1419,7 +1424,6 @@ void __cdecl NuMtxInvH(NUMTX *mi, NUMTX *m0) {
     f32 localm20;
     f32 localm28;
     f32 localm30;
-    f32 pivot_magnitude;
 
     n = 4;
 
@@ -1448,11 +1452,10 @@ void __cdecl NuMtxInvH(NUMTX *mi, NUMTX *m0) {
             local_1c = 0.0f;
 
             for (k = i; k < n; k++) {
-                local_1c += fabsf(a[j][k]);
+                local_1c += NuFabs(a[j][k]);
             }
 
-            pivot_magnitude = fabsf(a[j][i]);
-            localm28 = pivot_magnitude == 0.0f || local_1c == 0.0f ? 0.0f : pivot_magnitude / local_1c;
+            localm28 = NuFdiv(NuFabs(a[j][i]), local_1c);
 
             if (localm20 < localm28) {
                 localm20 = localm28;
@@ -1565,38 +1568,37 @@ void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v) {
 }
 
 void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v) {
-    f32 x_squared = m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02;
-    f32 y_squared = m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12;
-    f32 z_squared = m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22;
-    f32 len = NuFsqrt(NuFdiv(z_squared, v->x * v->x + v->y * v->y + v->z * v->z));
-    f32 dot;
+    f32 xLenSq = m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02;
+    f32 yLenSq = m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12;
+    f32 zLenSq = m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22;
+
+    f32 len = NuFsqrt(NuFdiv(zLenSq, v->x * v->x + v->y * v->y + v->z * v->z));
     m->m20 = v->x * len;
     m->m21 = v->y * len;
     m->m22 = v->z * len;
-    dot = m->m11 * m->m21 + m->m10 * m->m20 + m->m12 * m->m22;
-    *(u32 *)&dot &= 0x7fffffff;
-    if (dot > 0.8660254f) {
-        NUMTX_CROSS((NUVEC *)&m->m10, (NUVEC *)&m->m20, (NUVEC *)&m->m00);
-        len = NuFsqrt(NuFdiv(y_squared, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
-        m->m10 *= len;
-        m->m11 *= len;
-        m->m12 *= len;
-        NUMTX_CROSS((NUVEC *)&m->m00, (NUVEC *)&m->m10, (NUVEC *)&m->m20);
-        len = NuFsqrt(NuFdiv(x_squared, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
-        m->m00 *= len;
-        m->m01 *= len;
-        m->m02 *= len;
+
+    if (NuFabs(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) > 0.86602540378f /* cos(30 deg) */) {
+        NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
+        len = NuFsqrt(NuFdiv(yLenSq, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
+        m->m10 = m->m10 * len;
+        m->m11 = m->m11 * len;
+        m->m12 = m->m12 * len;
+        NuVecCross(NUMTX_GET_ROW_VEC(m, 0), NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2));
+        len = NuFsqrt(NuFdiv(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
+        m->m00 = m->m00 * len;
+        m->m01 = m->m01 * len;
+        m->m02 = m->m02 * len;
     } else {
-        NUMTX_CROSS((NUVEC *)&m->m00, (NUVEC *)&m->m10, (NUVEC *)&m->m20);
-        len = NuFsqrt(NuFdiv(x_squared, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
-        m->m00 *= len;
-        m->m01 *= len;
-        m->m02 *= len;
-        NUMTX_CROSS((NUVEC *)&m->m10, (NUVEC *)&m->m20, (NUVEC *)&m->m00);
-        len = NuFsqrt(NuFdiv(y_squared, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
-        m->m10 *= len;
-        m->m11 *= len;
-        m->m12 *= len;
+        NuVecCross(NUMTX_GET_ROW_VEC(m, 0), NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2));
+        len = NuFsqrt(NuFdiv(xLenSq, m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02));
+        m->m00 = m->m00 * len;
+        m->m01 = m->m01 * len;
+        m->m02 = m->m02 * len;
+        NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
+        len = NuFsqrt(NuFdiv(yLenSq, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
+        m->m10 = m->m10 * len;
+        m->m11 = m->m11 * len;
+        m->m12 = m->m12 * len;
     }
 }
 
@@ -1902,26 +1904,24 @@ void __cdecl NuMtxTruncate24Bit(NUMTX *out, NUMTX *input) {
 
 void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
     f32 best_error = 3.4028234663852886e+38f;
-    i32 element, pass;
+    i32 element;
+    i32 pass;
     f32 step = 1.0f;
-    NUMTX truncated, product;
+    NUMTX truncated;
+    NUMTX product;
     NuMtxTruncate24Bit(&truncated, matrix);
     *correction = NuMtxSetIdentityTemplate;
     for (pass = 0; pass < 100; ++pass) {
         for (element = 0; element < 16; ++element) {
-            f32 previous, error;
+            f32 previous;
+            f32 error;
             f32 *value;
-            union {
-                f32 value;
-                u32 bits;
-            } packed;
             if (element % 4 == 3)
                 continue;
             value = &correction->m00 + element;
             previous = *value;
-            packed.value = *value + step;
-            packed.bits &= 0xffffff00u;
-            *value = packed.value;
+            *value += step;
+            ((u8 *)value)[0] = 0;
             NuMtxMulH(&product, correction, &truncated);
             error = NuMtxSSE(&product, matrix);
             if (error >= best_error)
@@ -1929,9 +1929,8 @@ void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
             else
                 best_error = error;
             previous = *value;
-            packed.value = *value - step;
-            packed.bits &= 0xffffff00u;
-            *value = packed.value;
+            *value -= step;
+            ((u8 *)value)[0] = 0;
             NuMtxMulH(&product, correction, &truncated);
             error = NuMtxSSE(&product, matrix);
             if (error >= best_error)
@@ -1939,7 +1938,7 @@ void __cdecl NuMtx24BitCorrection(NUMTX *correction, NUMTX *matrix) {
             else
                 best_error = error;
         }
-        step *= 0.8999999761581421;
+        step *= 0.9f;
     }
 }
 
@@ -2083,6 +2082,44 @@ void __cdecl NuMtxSetFrustumBlend(NUMTX *matrix, f32 left, f32 right, f32 bottom
     matrix->m33 = 0.0f;
 }
 
+void __cdecl NuMtxSetOrthoD3D(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
+    mtx->m00 = 2.0f / (r - l);
+    mtx->m01 = 0.0f;
+    mtx->m02 = 0.0f;
+    mtx->m03 = 0.0f;
+    mtx->m10 = 0.0f;
+    mtx->m11 = 2.0f / (t - b);
+    mtx->m12 = 0.0f;
+    mtx->m13 = 0.0f;
+    mtx->m20 = 0.0f;
+    mtx->m21 = 0.0f;
+    mtx->m22 = 1.0f / (f - n);
+    mtx->m23 = 0.0f;
+    mtx->m30 = (r + l) / (l - r);
+    mtx->m31 = (t + b) / (b - t);
+    mtx->m32 = (f + n) / (n - f);
+    mtx->m33 = 1.0f;
+}
+
+void __cdecl NuMtxSetOrthoBlend(NUMTX *mtx, f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
+    mtx->m00 = 2.0f / (r - l);
+    mtx->m01 = 0.0f;
+    mtx->m02 = 0.0f;
+    mtx->m03 = 0.0f;
+    mtx->m10 = 0.0f;
+    mtx->m11 = 2.0f / (t - b);
+    mtx->m12 = 0.0f;
+    mtx->m13 = 0.0f;
+    mtx->m20 = 0.0f;
+    mtx->m21 = 0.0f;
+    mtx->m22 = 2.0f / (f - n);
+    mtx->m23 = 0.0f;
+    mtx->m30 = (r + l) / (l - r);
+    mtx->m31 = (t + b) / (b - t);
+    mtx->m32 = (f + n) / (n - f);
+    mtx->m33 = 1.0f;
+}
+
 void __cdecl NuMtxGetFrustumD3D(NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *z_near_out,
                                 f32 *z_far_out) {
     f32 q = matrix->m22;
@@ -2133,10 +2170,12 @@ void __cdecl NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f3
 }
 
 f32 NuFsign(f32 value) {
-    if (*(i32 *)&value < 0) {
-        return nu_fsign_minus_one;
+    if (*(u32 *)&value & 0x80000000) {
+        value = -1.0f;
+    } else {
+        value = 1.0f;
     }
-    return 1.0f;
+    return value;
 }
 
 f32 NuFloor(f32 value) {
