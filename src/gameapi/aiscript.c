@@ -1566,28 +1566,30 @@ void __cdecl AIScriptProcess(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET_PC
         if (NuLinkedListGetHead(&reference->conditions) != NULL &&
             AIScriptProcessStateConditions(system, &reference->conditions, packet, processor, 1) == NULL) {
             processor->active_ref_count = index;
-            if (index == 0) {
+            if (index != 0)
+                AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
+                                      processor->active_refs[index - 1]->script, reference->return_state);
+            else {
                 creature = packet->creature_index != 0xff ? &system->creatures[packet->creature_index] : NULL;
                 AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script,
                                       reference->return_state);
-            } else
-                AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
-                                      processor->active_refs[index - 1]->script, reference->return_state);
+            }
             break;
         }
     }
-    if (processor->next_state == NULL && processor->active_ref_count != 0 &&
-        processor->state == processor->script->base_state) {
+    if (processor->active_ref_count != 0 && processor->next_state == NULL &&
+        processor->script->base_state == processor->state) {
         index = processor->active_ref_count - 1;
         reference = processor->active_refs[index];
         processor->active_ref_count = index;
-        if (index == 0) {
+        if (index != 0)
+            AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
+                                  processor->active_refs[index - 1]->script, reference->return_state);
+        else {
             creature = packet->creature_index != 0xff ? &system->creatures[packet->creature_index] : NULL;
             AIScriptProcessorInit(system, packet, processor, creature, NULL, NULL, 0, processor->base_script,
                                   reference->return_state);
-        } else
-            AIScriptProcessorInit(system, packet, processor, NULL, NULL, NULL, 0,
-                                  processor->active_refs[index - 1]->script, reference->return_state);
+        }
     }
     if (processor->next_state != NULL) {
         AIScriptSetState(processor, processor->next_state);
@@ -1756,15 +1758,9 @@ i32 __cdecl Action_SnapToPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
         }
     }
     if (object != NULL) {
-        object->position.x = position.x;
-        object->position.y = position.y;
-        object->initial_position.x = position.x;
-        object->collision_position.x = position.x;
-        object->position.z = position.z;
-        object->initial_position.y = position.y;
-        object->collision_position.y = position.y;
-        object->initial_position.z = position.z;
-        object->collision_position.z = position.z;
+        object->position = position;
+        object->initial_position = position;
+        object->collision_position = position;
         object->field_0x276 = (u16)facing;
         object->facing_angle = (u16)facing;
         object->movement_facing_angle = (u16)facing;

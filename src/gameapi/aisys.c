@@ -969,98 +969,84 @@ __declspec(noinline) void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *packet, 
 
 void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *node) {
     i32 node_index;
-    u8 node_bit;
-    u8 *updated_byte;
     i32 connection_index;
+    AIPATHCNX_PC *connection;
+    AIPATHNODE_PC *other;
+    NUVEC direction;
+    NUVEC previous_position;
+    NUINSTANIM *animation;
 
     if (node->has_special == 0) {
         return;
     }
-
     node_index = (i32)(node - path->nodes);
-    updated_byte = &path->updated_node_bits[node_index >> 3];
-    node_bit = (u8)(1u << (node_index & 7));
-    if ((*updated_byte & node_bit) != 0) {
+    if ((path->updated_node_bits[node_index / 8] & (1 << (node_index % 8))) != 0) {
         return;
     }
-    *updated_byte |= node_bit;
+    path->updated_node_bits[node_index / 8] |= 1 << (node_index % 8);
 
     if ((node->runtime_flags & 0x04) != 0) {
         if (NuSpecialGetVisibilityFn(&node->special_handle) == 0) {
             return;
         }
-
         node->runtime_flags &= (u8)~0x04;
         for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
-            AIPATHCNX_PC *connection = node->connections[connection_index];
-            u8 other_index = connection->node_indices[0];
-            AIPATHNODE_PC *other;
-
-            if (other_index == (u8)node_index) {
-                other_index = connection->node_indices[1];
-            }
-            other = &path->nodes[other_index];
+            connection = node->connections[connection_index];
+            if (connection->node_indices[0] == node_index)
+                other = &path->nodes[connection->node_indices[1]];
+            else
+                other = &path->nodes[connection->node_indices[0]];
             if ((other->runtime_flags & 0x04) == 0) {
                 connection->traversal_flags[0] &= 0xefffffffu;
                 connection->traversal_flags[1] &= 0xefffffffu;
             }
         }
-    } else if (NuSpecialGetVisibilityFn(&node->special_handle) == 0 &&
-               (AISysSpecialNodeCallback == NULL || AISysSpecialNodeCallback(context, &node->special_handle) == 0)) {
-        node->runtime_flags |= 0x04;
-        for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
-            AIPATHCNX_PC *connection = node->connections[connection_index];
-            connection->traversal_flags[0] |= 0x10000000u;
-            connection->traversal_flags[1] |= 0x10000000u;
+    } else if (NuSpecialGetVisibilityFn(&node->special_handle) == 0) {
+        if (AISysSpecialNodeCallback == NULL || AISysSpecialNodeCallback(context, &node->special_handle) == 0) {
+            node->runtime_flags |= 0x04;
+            for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
+                connection = node->connections[connection_index];
+                connection->traversal_flags[0] |= 0x10000000u;
+                connection->traversal_flags[1] |= 0x10000000u;
+            }
+            return;
         }
-        return;
     }
 
-    {
-        NUVEC old_position = node->position;
-        NUMTX *draw_matrix = NuSpecialGetDrawMtx(&node->special_handle);
-        NuVecMtxTransform(&node->position, &node->special_position, draw_matrix);
-        node->min_height = node->position.y + node->min_height_offset;
-        node->max_height = node->position.y + node->max_height_offset;
+    previous_position = node->position;
+    NuVecMtxTransform(&node->position, &node->special_position, NuSpecialGetDrawMtx(&node->special_handle));
+    node->min_height = node->position.y + node->min_height_offset;
+    node->max_height = node->position.y + node->max_height_offset;
 
-        for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
-            AIPATHCNX_PC *connection = node->connections[connection_index];
-            u8 other_index = connection->node_indices[0];
-            AIPATHNODE_PC *other;
-            NUVEC delta;
+    for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
+        connection = node->connections[connection_index];
+        if (connection->node_indices[0] == node_index) {
+            other = &path->nodes[connection->node_indices[1]];
+            connection->horizontal_distance = NuVecXZDist(&other->position, &node->position, &direction);
+        } else {
+            other = &path->nodes[connection->node_indices[0]];
+            connection->horizontal_distance = NuVecXZDist(&node->position, &other->position, &direction);
+        }
+        connection->rotation = (i16)(NuAtan2(direction.x, direction.z) * AIPathAngularScale);
 
-            if (other_index == (u8)node_index) {
-                other_index = connection->node_indices[1];
-            }
-            other = &path->nodes[other_index];
-
-            if (connection->node_indices[0] == (u8)node_index)
-                connection->horizontal_distance = NuVecXZDist(&other->position, &node->position, &delta);
-            else
-                connection->horizontal_distance = NuVecXZDist(&node->position, &other->position, &delta);
-            connection->rotation = (i16)(NuAtan2(delta.x, delta.z) * AIPathAngularScale);
-
-            if (connection->max_horizontal_distance != 0.0f) {
-                if (connection->horizontal_distance >
-                    node->radius + connection->max_horizontal_distance + other->radius) {
-                    connection->traversal_flags[0] |= 0x08000000u;
-                    connection->traversal_flags[1] |= 0x08000000u;
-                } else {
-                    connection->traversal_flags[0] &= 0xf7ffffffu;
-                    connection->traversal_flags[1] &= 0xf7ffffffu;
-                }
+        if (connection->max_horizontal_distance != 0.0f) {
+            if (connection->horizontal_distance > node->radius + connection->max_horizontal_distance + other->radius) {
+                connection->traversal_flags[0] |= 0x08000000u;
+                connection->traversal_flags[1] |= 0x08000000u;
+            } else {
+                connection->traversal_flags[0] &= 0xf7ffffffu;
+                connection->traversal_flags[1] &= 0xf7ffffffu;
             }
         }
+    }
 
-        if (old_position.x == node->position.x && old_position.y == node->position.y &&
-            old_position.z == node->position.z) {
-            NUINSTANIM *animation = (NUINSTANIM *)NuSpecialGetInstAnim(&node->special_handle);
-            if (animation == NULL || (animation->flags & 1) == 0 || animation->tfactor == 0.0f) {
-                node->runtime_flags &= (u8)~0x02;
-                return;
-            }
-        }
+    if (previous_position.x != node->position.x || previous_position.y != node->position.y ||
+        previous_position.z != node->position.z ||
+        ((animation = (NUINSTANIM *)NuSpecialGetInstAnim(&node->special_handle)) != NULL &&
+         (animation->flags & 1) != 0 && animation->tfactor != 0.0f)) {
         node->runtime_flags |= 0x02;
+    } else {
+        node->runtime_flags &= (u8)~0x02;
     }
 }
 
