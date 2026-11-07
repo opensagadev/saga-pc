@@ -12,85 +12,79 @@ STATIC_ASSERT(sizeof(NUHGOBJ_JOINT_OVERRIDE_PC) == 0x34);
 
 static __declspec(noinline) void HeadMovementLegacyPc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
-    f32 first, second, blend, angle, limit;
-    i32 allowed, angle_limit;
+    f32 first, second, blend, angle;
+    i32 allowed;
     i16 animation;
 
-    CHARACTERDATA_PC *character;
     NUVEC direction;
 
-    character = object->character_data;
+    allowed = 1;
 
-    if (joints->count > 2 || character->game_character->head_joint == -1) {
+    if (joints->count >= 3 || object->character_data->game_character->head_joint == -1) {
         return;
     }
 
-    if (!object->anim_packet.blending) {
-        animation = object->anim_packet.animation_index;
-        allowed = 1;
-        if (animation < 0)
-            goto gate_done_old;
-    } else {
-        animation = object->anim_packet.blend_target_animation;
-        if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-            object->character_model->model_data_b[animation] != NULL) {
-            if ((object->character_model->animation_configs[animation])->flags & 0x40) {
-                allowed = 0;
-                goto gate_done_old;
-            }
-        }
-        animation = object->anim_packet.blend_source_animation;
-        allowed = 1;
-        if (animation < 0)
-            goto gate_done_old;
-    }
-
-    if (animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL) {
-        allowed = ((object->character_model->animation_configs[animation])->flags & 0x40) == 0;
-    }
-gate_done_old:;
-
     first = 0.0f;
     second = 0.0f;
+    if (object->anim_packet.blending) {
+        animation = object->anim_packet.blend_target_animation;
+        if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+            object->character_model->model_data_b[animation] != NULL &&
+            (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+            allowed = 0;
+        } else {
+            animation = object->anim_packet.blend_source_animation;
+            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+                object->character_model->model_data_b[animation] != NULL &&
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                allowed = 0;
+        }
+    } else {
+        animation = object->anim_packet.animation_index;
+        if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+            object->character_model->model_data_b[animation] != NULL &&
+            (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+            allowed = 0;
+    }
     if (object->head_target != NULL && object->head_target_timer >= object->head_target_delay &&
-        character->game_character->head_locator != -1 && allowed) {
+        object->character_data->game_character->head_locator != -1 && allowed) {
 
         NuVecInvMtxTransform(&direction, &object->head_target_position,
-                             &object->locator_matrices[character->game_character->head_locator]);
+                             &object->locator_matrices[object->character_data->game_character->head_locator]);
         if (direction.z < 0.0f) {
             angle = NuAtan2(-direction.x, -direction.z);
             first = joints->overrides[joints->count].rotation.x - angle;
-            limit = character->game_character->field_050;
-            if (first >= limit)
-                first = limit;
-            else if (first <= -limit)
-                first = -limit;
+            if (first >= object->character_data->game_character->field_050)
+                first = object->character_data->game_character->field_050;
+            else if (first <= -object->character_data->game_character->field_050)
+                first = -object->character_data->game_character->field_050;
             angle = NuAtan2(-direction.y, -direction.z);
             second = joints->overrides[joints->count].rotation.y - angle;
-            limit = character->game_character->field_054;
-            if (second >= limit)
-                second = limit;
-            else if (second <= -limit)
-                second = -limit;
+            if (second >= object->character_data->game_character->field_054)
+                second = object->character_data->game_character->field_054;
+            else if (second <= -object->character_data->game_character->field_054)
+                second = -object->character_data->game_character->field_054;
         }
     }
-    joints->overrides[joints->count].joint_index = character->game_character->head_joint;
-    joints->overrides[joints->count].flags_pc = (0);
-    blend = character->game_character->field_058 * FRAMETIME;
+    joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
+    joints->overrides[joints->count].flags_pc = 0;
+    blend = object->character_data->game_character->field_058 * FRAMETIME;
     if (blend > 1.0f) {
         blend = 1.0f;
     }
-    joints->overrides[joints->count].rotation.z = 0.0f;
     joints->overrides[joints->count].rotation.x =
-        first * blend + joints->overrides[joints->count].rotation.x * ((f64)1.0f - blend);
+        first * blend + joints->overrides[joints->count].rotation.x * (1.0f - blend);
+    joints->overrides[joints->count].rotation_max_pc[0] =
+        (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+    joints->overrides[joints->count].rotation_min_pc[0] =
+        (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
     joints->overrides[joints->count].rotation.y =
-        second * blend + joints->overrides[joints->count].rotation.y * ((f64)1.0f - blend);
-    angle_limit = (i32)((f64)character->game_character->field_050 * AIPathAngularScale);
-    joints->overrides[joints->count].rotation_max_pc[0] = angle_limit;
-    joints->overrides[joints->count].rotation_min_pc[0] = -angle_limit;
-    angle_limit = (i32)((f64)character->game_character->field_054 * AIPathAngularScale);
-    joints->overrides[joints->count].rotation_max_pc[1] = angle_limit;
-    joints->overrides[joints->count].rotation_min_pc[1] = -angle_limit;
+        second * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
+    joints->overrides[joints->count].rotation_max_pc[1] =
+        (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+    joints->overrides[joints->count].rotation_min_pc[1] =
+        (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
+    joints->overrides[joints->count].rotation.z = 0.0f;
     if (joints->overrides[joints->count].rotation.x > HeadMovementThresholdPc ||
         joints->overrides[joints->count].rotation.x < -HeadMovementThresholdPc ||
         joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
@@ -98,9 +92,9 @@ gate_done_old:;
         joints->overrides[joints->count].flags_pc = 1;
         if (allowed) {
             if (joints->overrides[joints->count].rotation.x != 0.0f)
-                joints->overrides[joints->count].flags_pc = (1 | 8);
+                joints->overrides[joints->count].flags_pc |= 8;
             if (joints->overrides[joints->count].rotation.y != 0.0f)
-                joints->overrides[joints->count].flags_pc = (joints->overrides[joints->count].flags_pc | 16);
+                joints->overrides[joints->count].flags_pc |= 16;
         }
     }
     if (object->head_target != NULL) {
@@ -117,43 +111,39 @@ gate_done_old:;
 
 static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
-    f32 first, second, blend, angle, limit;
-    i32 allowed, angle_limit;
+    f32 first, second, blend, angle;
+    i32 allowed;
     i16 animation;
 
-    CHARACTERDATA_PC *character;
     NUVEC direction;
 
     if (joints->count < 3 && object->character_data->game_character->head_joint != -1) {
         object->flags_ef0 &= ~0x10000u;
 
-        if (!object->anim_packet.blending) {
-            animation = object->anim_packet.animation_index;
-            allowed = 1;
-            if (animation < 0)
-                goto gate_done_alternate;
-        } else {
-            animation = object->anim_packet.blend_target_animation;
-            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-                object->character_model->model_data_b[animation] != NULL) {
-                if ((object->character_model->animation_configs[animation])->flags & 0x40) {
-                    allowed = 0;
-                    goto gate_done_alternate;
-                }
-            }
-            animation = object->anim_packet.blend_source_animation;
-            allowed = 1;
-            if (animation < 0)
-                goto gate_done_alternate;
-        }
-
-        if (animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL) {
-            allowed = ((object->character_model->animation_configs[animation])->flags & 0x40) == 0;
-        }
-    gate_done_alternate:;
-
+        allowed = 1;
         first = 0.0f;
         second = 0.0f;
+        if (object->anim_packet.blending) {
+            animation = object->anim_packet.blend_target_animation;
+            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+                object->character_model->model_data_b[animation] != NULL &&
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                allowed = 0;
+            } else {
+                animation = object->anim_packet.blend_source_animation;
+                if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+                    object->character_model->model_data_b[animation] != NULL &&
+                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                    allowed = 0;
+            }
+        } else {
+            animation = object->anim_packet.animation_index;
+            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+                object->character_model->model_data_b[animation] != NULL &&
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                allowed = 0;
+        }
+
         if (object->head_target != NULL && object->head_target_timer >= object->head_target_delay &&
             object->character_data->game_character->head_locator != -1 && allowed) {
             object->flags_ef0 |= 0x10000u;
@@ -163,40 +153,39 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
             if (direction.z < 0.0f) {
                 angle = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = angle - joints->overrides[joints->count].rotation.y;
-                limit = object->character_data->game_character->field_054;
-                if (first >= limit)
-                    first = limit;
-                else if (first <= -limit)
-                    first = -limit;
-                angle = NuAtan2(-direction.x, -direction.z);
-                second = -angle - joints->overrides[joints->count].rotation.z;
-                limit = object->character_data->game_character->field_050;
-                if (second >= limit)
-                    second = limit;
-                else if (second <= -limit)
-                    second = -limit;
+                if (first >= object->character_data->game_character->field_054)
+                    first = object->character_data->game_character->field_054;
+                else if (first <= -object->character_data->game_character->field_054)
+                    first = -object->character_data->game_character->field_054;
+                angle = -NuAtan2(-direction.x, -direction.z);
+                second = angle - joints->overrides[joints->count].rotation.z;
+                if (second >= object->character_data->game_character->field_050)
+                    second = object->character_data->game_character->field_050;
+                else if (second <= -object->character_data->game_character->field_050)
+                    second = -object->character_data->game_character->field_050;
                 else
                     object->flags_ef0 &= ~0x10000u;
             }
         }
-        character = object->character_data;
-        joints->overrides[joints->count].joint_index = character->game_character->head_joint;
-        joints->overrides[joints->count].flags_pc = (0);
+        joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
+        joints->overrides[joints->count].flags_pc = 0;
         blend = object->character_data->game_character->field_058 * FRAMETIME;
         if (blend > 1.0f) {
             blend = 1.0f;
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
         joints->overrides[joints->count].rotation.y =
-            first * blend + joints->overrides[joints->count].rotation.y * ((f64)1.0f - blend);
+            first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[1] =
+            (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[1] =
+            (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
         joints->overrides[joints->count].rotation.z =
-            second * blend + joints->overrides[joints->count].rotation.z * ((f64)1.0f - blend);
-        angle_limit = (i32)(object->character_data->game_character->field_054 * AIPathAngularScale);
-        joints->overrides[joints->count].rotation_max_pc[1] = angle_limit;
-        joints->overrides[joints->count].rotation_min_pc[1] = -angle_limit;
-        angle_limit = (i32)(object->character_data->game_character->field_050 * AIPathAngularScale);
-        joints->overrides[joints->count].rotation_max_pc[2] = angle_limit;
-        joints->overrides[joints->count].rotation_min_pc[2] = -angle_limit;
+            second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[2] =
+            (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[2] =
+            (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
         if (joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.z > HeadMovementThresholdPc ||
@@ -204,9 +193,9 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
             joints->overrides[joints->count].flags_pc = 1;
             if (allowed) {
                 if (joints->overrides[joints->count].rotation.y != 0.0f)
-                    joints->overrides[joints->count].flags_pc = (1 | 16);
+                    joints->overrides[joints->count].flags_pc |= 16;
                 if (joints->overrides[joints->count].rotation.z != 0.0f)
-                    joints->overrides[joints->count].flags_pc = (joints->overrides[joints->count].flags_pc | 32);
+                    joints->overrides[joints->count].flags_pc |= 32;
             }
         }
         if (object->head_target != NULL) {
@@ -224,88 +213,81 @@ static __declspec(noinline) void HeadMovementAlternatePc(GAMEOBJECT *object) {
 
 static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT_PC *joints = (CHARACTER_JOINT_MOVEMENT_PC *)object;
-    f32 first, second, blend, angle, limit;
-    i32 allowed, angle_limit;
+    f32 first, second, blend, angle;
+    i32 allowed;
     i16 animation;
 
-    CHARACTERDATA_PC *character;
     NUVEC direction;
 
-    character = object->character_data;
-
-    if (joints->count < 3 && character->game_character->head_joint != -1) {
+    if (joints->count < 3 && object->character_data->game_character->head_joint != -1) {
         object->flags_ef0 &= ~0x10000u;
 
-        if (!object->anim_packet.blending) {
-            animation = object->anim_packet.animation_index;
-            allowed = 1;
-            if (animation < 0)
-                goto gate_done_ordinary;
-        } else {
-            animation = object->anim_packet.blend_target_animation;
-            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
-                object->character_model->model_data_b[animation] != NULL) {
-                if ((object->character_model->animation_configs[animation])->flags & 0x40) {
-                    allowed = 0;
-                    goto gate_done_ordinary;
-                }
-            }
-            animation = object->anim_packet.blend_source_animation;
-            allowed = 1;
-            if (animation < 0)
-                goto gate_done_ordinary;
-        }
-
-        if (animation < apicharsys->model_id_capacity && object->character_model->model_data_b[animation] != NULL) {
-            allowed = ((object->character_model->animation_configs[animation])->flags & 0x40) == 0;
-        }
-    gate_done_ordinary:;
-
+        allowed = 1;
         first = 0.0f;
         second = 0.0f;
+        if (object->anim_packet.blending) {
+            animation = object->anim_packet.blend_target_animation;
+            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+                object->character_model->model_data_b[animation] != NULL &&
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0) {
+                allowed = 0;
+            } else {
+                animation = object->anim_packet.blend_source_animation;
+                if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+                    object->character_model->model_data_b[animation] != NULL &&
+                    (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                    allowed = 0;
+            }
+        } else {
+            animation = object->anim_packet.animation_index;
+            if (animation >= 0 && animation < apicharsys->model_id_capacity &&
+                object->character_model->model_data_b[animation] != NULL &&
+                (object->character_model->animation_configs[animation]->flags & 0x40) != 0)
+                allowed = 0;
+        }
+
         if (object->head_target != NULL && object->head_target_timer >= object->head_target_delay &&
-            character->game_character->head_locator != -1 && allowed) {
+            object->character_data->game_character->head_locator != -1 && allowed) {
             object->flags_ef0 |= 0x10000u;
 
             NuVecInvMtxTransform(&direction, &object->head_target_position,
-                                 &object->locator_matrices[character->game_character->head_locator]);
+                                 &object->locator_matrices[object->character_data->game_character->head_locator]);
             if (direction.z < 0.0f) {
                 angle = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
                 first = joints->overrides[joints->count].rotation.y - angle;
-                limit = character->game_character->field_054;
-                if (first >= limit)
-                    first = limit;
-                else if (first <= -limit)
-                    first = -limit;
-                angle = NuAtan2(-direction.x, -direction.z);
-                second = angle + joints->overrides[joints->count].rotation.z;
-                limit = character->game_character->field_050;
-                if (second >= limit)
-                    second = limit;
-                else if (second <= -limit)
-                    second = -limit;
+                if (first >= object->character_data->game_character->field_054)
+                    first = object->character_data->game_character->field_054;
+                else if (first <= -object->character_data->game_character->field_054)
+                    first = -object->character_data->game_character->field_054;
+                angle = -NuAtan2(-direction.x, -direction.z);
+                second = joints->overrides[joints->count].rotation.z - angle;
+                if (second >= object->character_data->game_character->field_050)
+                    second = object->character_data->game_character->field_050;
+                else if (second <= -object->character_data->game_character->field_050)
+                    second = -object->character_data->game_character->field_050;
                 else
                     object->flags_ef0 &= ~0x10000u;
             }
         }
-        joints->overrides[joints->count].joint_index = character->game_character->head_joint;
-        joints->overrides[joints->count].flags_pc = (0);
-        blend = character->game_character->field_058 * FRAMETIME;
-
+        joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
+        joints->overrides[joints->count].flags_pc = 0;
+        blend = object->character_data->game_character->field_058 * FRAMETIME;
         if (blend > 1.0f) {
             blend = 1.0f;
         }
         joints->overrides[joints->count].rotation.x = 0.0f;
         joints->overrides[joints->count].rotation.y =
-            first * blend + joints->overrides[joints->count].rotation.y * ((f64)1.0f - blend);
+            first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[1] =
+            (i32)(object->character_data->game_character->field_054 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[1] =
+            (i32)(object->character_data->game_character->field_054 * -10430.3779296875);
         joints->overrides[joints->count].rotation.z =
-            second * blend + joints->overrides[joints->count].rotation.z * ((f64)1.0f - blend);
-        angle_limit = (i32)((f64)character->game_character->field_054 * AIPathAngularScale);
-        joints->overrides[joints->count].rotation_max_pc[1] = angle_limit;
-        joints->overrides[joints->count].rotation_min_pc[1] = -angle_limit;
-        angle_limit = (i32)((f64)character->game_character->field_050 * AIPathAngularScale);
-        joints->overrides[joints->count].rotation_max_pc[2] = angle_limit;
-        joints->overrides[joints->count].rotation_min_pc[2] = -angle_limit;
+            second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
+        joints->overrides[joints->count].rotation_max_pc[2] =
+            (i32)(object->character_data->game_character->field_050 * 10430.3779296875);
+        joints->overrides[joints->count].rotation_min_pc[2] =
+            (i32)(object->character_data->game_character->field_050 * -10430.3779296875);
         if (joints->overrides[joints->count].rotation.y > HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.y < -HeadMovementThresholdPc ||
             joints->overrides[joints->count].rotation.z > HeadMovementThresholdPc ||
@@ -313,9 +295,9 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
             joints->overrides[joints->count].flags_pc = 1;
             if (allowed) {
                 if (joints->overrides[joints->count].rotation.y != 0.0f)
-                    joints->overrides[joints->count].flags_pc = (1 | 16);
+                    joints->overrides[joints->count].flags_pc |= 16;
                 if (joints->overrides[joints->count].rotation.z != 0.0f)
-                    joints->overrides[joints->count].flags_pc = (joints->overrides[joints->count].flags_pc | 32);
+                    joints->overrides[joints->count].flags_pc |= 32;
             }
         }
         if (object->head_target != NULL) {
@@ -332,7 +314,7 @@ static __declspec(noinline) void HeadMovementOrdinaryPc(GAMEOBJECT *object) {
 }
 
 void __cdecl HeadMovement(GAMEOBJECT *object) {
-    if ((CInfo[object->character_context].flags & 0x200000) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x200000) != 0)
         return;
     if ((object->character_data->game_character->flags_094 & 0x40000000) != 0)
         HeadMovementAlternatePc(object);
@@ -412,8 +394,8 @@ void __cdecl HairMovement(GAMEOBJECT *object) {
         }
     }
     phase *= phase;
-    joints->overrides[joints->count].joint_index = object->character_data->game_character->cloak_joint_2;
     phase = (1.0f - phase) * HairMovementRestAnglePc + phase * HairMovementFallAnglePc;
+    joints->overrides[joints->count].joint_index = object->character_data->game_character->cloak_joint_2;
     joints->overrides[joints->count].rotation.z = phase;
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
         joints->overrides[joints->count].flags_pc = 0x21;
