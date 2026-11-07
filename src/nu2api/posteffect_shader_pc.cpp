@@ -9,11 +9,6 @@ struct POST_PIXEL_SHADER_CACHE_ENTRY_PC {
     PC_TEXTURE_RESOURCE_PC *shader;
     const DWORD *tokens;
 };
-struct POST_SHADER_PROGRAM_PC {
-    PC_TEXTURE_RESOURCE_PC *vertex_shader;
-    PC_TEXTURE_RESOURCE_PC *pixel_shader;
-    u32 unknown_08[2];
-};
 struct POST_SHADER_PROGRAM_POOL_PC {
     POST_SHADER_PROGRAM_PC programs[64];
     u8 occupied[8];

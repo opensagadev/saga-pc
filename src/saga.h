@@ -28496,7 +28496,12 @@ extern "C" {
 
 #ifdef __cplusplus
 
-struct POST_SHADER_PROGRAM_PC;
+struct POST_SHADER_PROGRAM_PC {
+    PC_TEXTURE_RESOURCE_PC *vertex_shader;
+    PC_TEXTURE_RESOURCE_PC *pixel_shader;
+    u32 unknown_08[2];
+};
+STATIC_ASSERT(sizeof(POST_SHADER_PROGRAM_PC) == 0x10);
 extern "C" {
     u32 *__cdecl PCGraphicsEffectTextureSamplerPc(GRAPHICS_RENDER_TEXTURE_PC *);
     GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsGetFramebufferAttachmentPc(PC_FRAMEBUFFER_PC *, i32, i32 *, i32 *);

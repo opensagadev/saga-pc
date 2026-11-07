@@ -694,6 +694,99 @@ extern "C" void __cdecl PostFilterBlitTexturePc(GRAPHICS_RENDER_TEXTURE_PC *dest
     PCGraphicsFramebufferBarrierPc(0, 1);
 }
 
+static __forceinline void PostFilterBindProgramPc(const POST_SHADER_PROGRAM_PC *program) {
+    if (program != NULL) {
+        if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
+            PCDeviceSetVertexShaderPc(program->vertex_shader);
+            NuDisplayHandlerVertexShaderCachePc = program->vertex_shader;
+        }
+        if (NuDisplayHandlerPixelShaderCachePc != program->pixel_shader) {
+            PCDeviceSetPixelShaderPc(program->pixel_shader);
+            NuDisplayHandlerPixelShaderCachePc = program->pixel_shader;
+        }
+    } else {
+        PCDeviceSetVertexShaderPc(NULL);
+        PCDeviceSetPixelShaderPc(NULL);
+        NuDisplayHandlerVertexShaderCachePc = NULL;
+        NuDisplayHandlerPixelShaderCachePc = NULL;
+    }
+}
+
+void NuMotionAccumFilterGen::render() {
+    PC_FRAMEBUFFER_PC *output =
+        (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;
+    PC_POST_BUFFER_PROXY_PC *color =
+        (PC_POST_BUFFER_PROXY_PC *)PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data;
+    if (!color->resolved) {
+        PCGraphicsFramebufferBarrierPc(color->kind, color->enabled);
+        color->resolved = true;
+    }
+    GRAPHICS_RENDER_TEXTURE_PC *color_texture = color->texture;
+    GRAPHICS_RENDER_TEXTURE_PC *destination = PCGraphicsGetFramebufferAttachmentPc(output, 0, NULL, NULL);
+    f32 weights[256];
+    if (frames > 256)
+        AnimationDiagnosticNoOpPc();
+    f32 sum = 0.0f;
+    for (i32 i = 0; i < frames; ++i) {
+        f32 position = (f32)(i + 1) / frames;
+        weights[i] = NuPow(position, mode_pc);
+        sum += weights[i];
+    }
+    for (i32 i = 0; i < frames; ++i)
+        weights[i] *= 1.0f / sum;
+    sum = 0.0f;
+    for (i32 i = 0; i < frames; ++i) {
+        sum += weights[i];
+        weights[i] /= sum;
+    }
+    if (++current_frame == frames)
+        current_frame = 0;
+    PostFilterBindProgramPc((POST_SHADER_PROGRAM_PC *)program);
+    f32 params[4];
+    params[1] = 0.0f;
+    params[2] = 0.0f;
+    params[3] = 0.0f;
+    params[0] = weights[current_frame];
+    PCDeviceSetPixelShaderConstantsF(0x8a, params, 1);
+    PCGraphicsEffectTextureSetFilterFields(color_texture, 1, 1, 0);
+    PCGraphicsEffectTextureSetWrapFields(color_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(0, color_texture);
+    PCGraphicsEffectTextureSetFilterFields(accumulation_texture, 1, 1, 0);
+    PCGraphicsEffectTextureSetWrapFields(accumulation_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(1, accumulation_texture);
+    i32 width, height;
+    PCGraphicsEffectTextureDimensions(accumulation_texture, 0, &width, &height);
+    PCGraphicsBindFramebuffer(accumulation_fbo);
+    PCGraphicsSubmitViewportPc(0, 0, width, height);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    PCGraphicsDrawPostEffectQuadPc();
+    PCGraphicsFramebufferBarrierPc(0, 1);
+    PostFilterBindProgramPc((POST_SHADER_PROGRAM_PC *)program);
+    PCDeviceSetPixelShaderConstantsF(0x8a, params, 1);
+    PCGraphicsEffectTextureSetFilterFields(color_texture, 1, 1, 0);
+    PCGraphicsEffectTextureSetWrapFields(color_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(0, accumulation_texture);
+    PCGraphicsEffectTextureSetFilterFields(accumulation_texture, 1, 1, 0);
+    PCGraphicsEffectTextureSetWrapFields(accumulation_texture, 2, 2);
+    POST_FILTER_BIND_TEXTURE(1, accumulation_texture);
+    PCGraphicsBindFramebuffer(output);
+    PCDeviceSetRenderState(22, 1);
+    PCDeviceSetRenderState(15, 0);
+    PCDeviceSetRenderState(27, 0);
+    PCDeviceSetRenderState(7, 0);
+    PCDeviceSetRenderState(168, 15);
+    PCGraphicsDrawPostEffectQuadPc();
+    color->texture = destination;
+    color->kind = 4;
+    color->enabled = true;
+    color->resolved = false;
+    PostResourcePortsPc[1].manager->entries[PostResourcePortsPc[1].index].data = color;
+}
+
 void NuSpeedBlurFilterGen::render() {
     PC_FRAMEBUFFER_PC *output =
         (PC_FRAMEBUFFER_PC *)PostResourcePortsPc[0].manager->entries[PostResourcePortsPc[0].index].data;

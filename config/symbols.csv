@@ -6456,7 +6456,7 @@ address,symbol,size,ctype
 0x5e6930,??_ENuCopyFilter@@UAEPAXI@Z,,COFF weak alias of ??_GNuCopyFilter@@UAEPAXI@Z; no independent body
 0x5e6930,??_GNuCopyFilter@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5e6a80,_NuPostEffectRender,774,void __cdecl(PC_FRAMEBUFFER_PC*)
-0x5e7070,?render@NuMotionAccumFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5e7070,?render@NuMotionAccumFilterGen@@UAEXXZ,1146,native exactVT binding
 0x5e74f0,?render@NuSpeedBlurFilterGen@@UAEXXZ,627,native exactVT binding
 0x005e7f40,?Init@OccluderSet@@QAEXIPATvariptr_u@@T2@@Z,585,"void __thiscall OccluderSet::Init(u32,VARIPTR*,VARIPTR)"
 0x5e8190,?PrepareForQueries@OccluderSet@@QAEXPBUnumtx_s@@0@Z,668,"void __thiscall (const NUMTX *, const NUMTX *)"

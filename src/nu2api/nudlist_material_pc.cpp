@@ -443,12 +443,6 @@ extern "C" void __cdecl NuMtlSetRenderStatesPS(NUMTL *arg) {
 
 #include <math.h>
 
-struct POST_SHADER_PROGRAM_PC {
-    PC_TEXTURE_RESOURCE_PC *vertex_shader;
-    PC_TEXTURE_RESOURCE_PC *pixel_shader;
-    u32 unknown_08[2];
-};
-
 extern "C" {
     extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
     extern PC_FRAMEBUFFER_PC *PostBlurFramebufferPc;
