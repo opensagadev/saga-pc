@@ -69,24 +69,22 @@ struct MemoryBuffer {
     u32 remaining;
 
     void *Allocate(u32 size) {
-        if (end->addr - position->addr <= size)
-            return NULL;
-        position->addr = (position->addr + 15) & ~15;
-        void *allocation = position->void_ptr;
-        position->addr += size;
-        memset(allocation, 0, size);
-        used += size;
-        remaining -= size;
+        void *allocation = NULL;
+        if (size < end->addr - position->addr) {
+            position->addr = (position->addr + 15) & ~15;
+            allocation = position->void_ptr;
+            position->addr += size;
+            memset(allocation, 0, size);
+            used += size;
+            remaining -= size;
+        }
         return allocation;
     }
 };
 STATIC_ASSERT(sizeof(MemoryBuffer) == 0x10);
 
 template <class T> T *CreateObject(MemoryBuffer *buffer) {
-    void *storage = buffer->Allocate(sizeof(T));
-    if (storage == NULL)
-        return NULL;
-    return new (storage) T();
+    return new (buffer->Allocate(sizeof(T))) T();
 }
 
 /* Writes the editor's block-structured .led format to an open NuFile; each
@@ -186,6 +184,38 @@ i32 EdOutputStream::SerialiseString(char *text, i32) {
     length = NuStrLen(text) + 1;
     written = SerialiseBuffer(&length, sizeof(length), 1);
     return written + SerialiseBuffer(text, 1, length);
+}
+
+void EdMessage(char const *, ...);
+
+i32 EdInputStream::SerialiseString(char **text, i32 count) {
+    if (*text != NULL)
+        return SerialiseString(*text, count);
+    return SerialiseString(text);
+}
+
+/* A string longer than the caller's buffer is read through a scratch buffer,
+ * truncated and reported. */
+i32 EdInputStream::SerialiseString(char *text, i32 count) {
+    i32 length;
+    char buffer[256];
+    SerialiseBuffer(&length, sizeof(length), 1);
+    if (length > count) {
+        SerialiseBuffer(buffer, 1, sizeof(buffer));
+        NuStrNCpy(text, buffer, count);
+        text[count - 1] = 0;
+        EdMessage(buffer, text);
+        return count;
+    }
+    return SerialiseBuffer(text, 1, length);
+}
+
+i32 EdInputStream::SerialiseString(char **text) {
+    i32 length;
+    SerialiseBuffer(&length, sizeof(length), 1);
+    char *allocation = (char *)memory_buffer->Allocate(length);
+    *text = allocation;
+    return SerialiseBuffer(allocation, 1, length);
 }
 
 /* Retail keeps an argument-less EdTrace call on the overflow paths of
@@ -553,8 +583,6 @@ STATIC_ASSERT(offsetof(LevelEditor, settings) == 0x109c);
 STATIC_ASSERT(offsetof(LevelEditor, editors_entered) == 0x10a8);
 STATIC_ASSERT(offsetof(LevelEditor, active) == 0x10ac);
 STATIC_ASSERT(sizeof(LevelEditor) == 0x10b0);
-
-void EdMessage(char const *, ...);
 
 /* Writes the file header, the editor settings and every editor's block. */
 i32 LevelEditor::WriteStream(EdFileOutputStream &stream) {
@@ -2496,6 +2524,24 @@ void EdRegistry::Serialise(EdStream &stream) {
                 classes[index].Serialise(stream, NULL);
         }
         stream.EndBlock();
+    }
+}
+
+/* Saving writes the live registry; loading reads the file's schema into a
+ * scratch registry in the secondary buffer and maps the objects through it. */
+void ClassEditor::Serialise(EdStream &stream) {
+    if (stream.mode == 2) {
+        theRegistry.Serialise(stream);
+        theRegistry.SerialiseObjects(stream, NULL);
+    }
+    if (stream.mode == 1) {
+        MemoryBuffer *saved = stream.memory_buffer;
+        stream.memory_buffer = stream.secondary_buffer;
+        EdRegistry *source = CreateObject<EdRegistry>(stream.secondary_buffer);
+        source->Initialise(*stream.secondary_buffer->position, *stream.secondary_buffer->end, 50, 50, 10, 1);
+        source->Serialise(stream);
+        stream.memory_buffer = saved;
+        theRegistry.SerialiseObjects(stream, source);
     }
 }
 

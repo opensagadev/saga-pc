@@ -29531,6 +29531,18 @@ class EdOutputStream : public EdStream {
     virtual i32 SerialiseString(char **text);
     virtual i32 SerialiseString(char **text, i32 count);
 };
+/* Reads strings back; SerialiseString(char **) allocates from memory_buffer. */
+class EdInputStream : public EdStream {
+  public:
+    EdInputStream() {
+        mode = 1;
+    }
+    virtual ~EdInputStream() {
+    }
+    virtual i32 SerialiseString(char *text, i32 count);
+    virtual i32 SerialiseString(char **text);
+    virtual i32 SerialiseString(char **text, i32 count);
+};
 
 /* A registered editor value type (Android EdType). */
 struct EdType {

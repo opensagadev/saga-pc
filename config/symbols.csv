@@ -7244,6 +7244,8 @@ address,symbol,size,ctype
 0x611900,??1EdStream@@UAE@XZ,7,
 0x611920,??_EEdStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdStream@@UAEPAXI@Z; no independent body
 0x611920,??_GEdStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x611940,??0EdInputStream@@QAE@XZ,25,
+0x611960,??1EdInputStream@@UAE@XZ,7,
 0x611970,??0EdOutputStream@@QAE@XZ,25,
 0x611990,??1EdOutputStream@@UAE@XZ,7,
 0x611ac0,??1NetOutputStream@@UAE@XZ,7,ICF-folded with the NetInputStream destructor
@@ -7287,6 +7289,8 @@ address,symbol,size,ctype
 0x612e40,?GetPeerStatus@NetworkObjectManager@@QAEHXZ,177,
 0x612f20,??0?$CSListLink@VNetReplicator@@@@QAE@XZ,20,
 0x613100,?Write16@NETMESSAGE_PC@@QAEXABF@Z,57,
+0x6131f0,??_EEdInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdInputStream@@UAEPAXI@Z; no independent body
+0x6131f0,??_GEdInputStream@@UAEPAXI@Z,31,
 0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body
 0x613210,??_GEdOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6132a0,??_GNetOutputStream@@UAEPAXI@Z,31,
@@ -9594,6 +9598,7 @@ address,symbol,size,ctype
 0x6bea80,?AddMenuItems@EditorSettings@@QAEXPAUeduimenu_s@@@Z,130,
 0x6c0690,?Render@KnotHelper@@UAEXPAXH@Z,186,
 0x6c0780,??0EdStream@@QAE@XZ,26,
+0x6c07f0,?SerialiseString@EdInputStream@@UAEHPAPADH@Z,39,
 0x6c0820,?SerialiseString@EdOutputStream@@UAEHPAPAD@Z,19,
 0x6c0840,?SerialiseString@EdOutputStream@@UAEHPAPADH@Z,25,
 0x6c08f0,?Eat@EdFileOutputStream@@UAEHHH@Z,5,
@@ -9663,6 +9668,8 @@ address,symbol,size,ctype
 0x6c7eb0,?GetNextObject@KnotHelper@@UAEPAXPAX@Z,88,
 0x6c7f10,?DestroyObject@KnotHelper@@UAEXPAXH@Z,171,
 0x6c7fc0,?DistanceToObject@KnotHelper@@UAEMAAUVuVec@@0PAXPAPAVEdRef@@@Z,214,
+0x6c80a0,?SerialiseString@EdInputStream@@UAEHPADH@Z,160,
+0x6c8140,?SerialiseString@EdInputStream@@UAEHPAPAD@Z,112,
 0x6c81b0,?SerialiseString@EdOutputStream@@UAEHPADH@Z,79,
 0x6c8430,?Open@EdFileOutputStream@@QAEXHH@Z,66,
 0x6c8480,?BeginBlock@EdFileOutputStream@@UAEPBDPBD@Z,86,
@@ -9694,6 +9701,7 @@ address,symbol,size,ctype
 0x6cdc60,?FindObject@EdClass@@QAEPAXPAD@Z,213,
 0x6cf040,?CreateObject@KnotHelper@@UAEPAXPAXHH@Z,320,
 0x6cf180,?Process@KnotHelper@@UAEXPAXAAUEdInputContext@@@Z,77,
+0x6cf1e0,??$CreateObject@UEdRegistry@@@@YAPAUEdRegistry@@PAUMemoryBuffer@@@Z,90,
 0x6cf970,?AddMenuItem@EdControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,90,
 0x6cf9d0,?AddMenuItem@EdEnumControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,174,
 0x6cfa80,?AddMenuItem@EdBitControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,294,
@@ -9706,6 +9714,7 @@ address,symbol,size,ctype
 0x6d0e10,?Render@PropertyTool@@UAEXXZ,91,
 0x6d0e70,?Serialise@EdRegistry@@QAEXAAVEdStream@@@Z,358,
 0x6d0fe0,?SerialiseObjects@EdRegistry@@QAEXAAVEdStream@@PAU1@@Z,2128,
+0x6d18d0,?Serialise@ClassEditor@@UAEXAAVEdStream@@@Z,117,
 0x6d1ff0,?ProcessEvenWhenPaused@LevelEditor@@UAEXPAUThingProcessData@@@Z,1107,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
 0x6d33d0,_NuKeyboardPlatformStartup_candidate,59,i32 __cdecl(void)
@@ -17965,6 +17974,7 @@ address,symbol,size,ctype
 0x76ab48,??_C@_07DNDPMFPA@EmuPack?$AA@,8,char []
 0x76ab50,??_C@_06LJJHIAGL@EmuRaw?$AA@,7,char []
 0x76ab5c,??_7EdStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76ab80,??_7EdInputStream@@6B@,,
 0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76abec,??_7NetOutputStream@@6B@,32,
 0x76ac34,??_C@_03EPCAMLIH@NOS?$AA@,4,char []
@@ -21697,6 +21707,10 @@ address,symbol,size,ctype
 0x7eaf10,??_R3EdStream@@8,,
 0x7eaf20,??_R2EdStream@@8,,
 0x7eaf28,??_R1A@?0A@EA@EdStream@@8,,
+0x7eaf44,??_R4EdInputStream@@6B@,,
+0x7eaf58,??_R3EdInputStream@@8,,
+0x7eaf68,??_R2EdInputStream@@8,,
+0x7eaf74,??_R1A@?0A@EA@EdInputStream@@8,,
 0x7eaf90,??_R4EdOutputStream@@6B@,,
 0x7eafa4,??_R3EdOutputStream@@8,,
 0x7eafb4,??_R2EdOutputStream@@8,,
