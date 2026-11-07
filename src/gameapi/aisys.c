@@ -11693,12 +11693,12 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
 
 static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, VARIPTR *buffer, VARIPTR *buffer_end,
                                     i32 storage_size, char *name, char *parameter, char *load_directory) {
-    char ai2_path[256];
-    char member_path[32];
+    char ai2_path[128];
     char script_path[128];
+    char special_name[256];
+    char member_path[32];
     char character_name[32];
     char reference_name[16];
-    char special_name[256];
     AI_SYSTEM_LOAD_PC *system;
     i32 is_open;
     i32 version;
@@ -11807,7 +11807,10 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
                     EdFileRead(creature->script_name, 16);
                     if (strlen(creature->script_name) == 0)
                         strcpy(creature->script_name, "default");
-                    EdFileRead(character_name, version > 13 ? 32 : 16);
+                    if (version > 13)
+                        EdFileRead(character_name, 32);
+                    else
+                        EdFileRead(character_name, 16);
                     if (GlobalCharacterTypeIDFn != NULL)
                         creature->type = (i16)GlobalCharacterTypeIDFn(character_name);
                     creature->position.x = EdFileReadFloat();
@@ -11826,14 +11829,17 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
                     creature->path_info.direction = (u8)EdFileReadChar();
                     creature->path_info.connection = &creature->path_info.path->connections[(u16)EdFileReadShort()];
                     if (version > 2) {
-                        for (search = 0; search < 4; ++search)
-                            creature->script_params[search] = EdFileReadFloat();
+                        creature->script_params[0] = EdFileReadFloat();
+                        creature->script_params[1] = EdFileReadFloat();
+                        creature->script_params[2] = EdFileReadFloat();
+                        creature->script_params[3] = EdFileReadFloat();
                     }
                     if (version >= 4 && EdFileReadInt() != 0) {
                         EdFileRead(reference_name, 16);
                         for (search = 0; search < system->area_count; ++search) {
-                            if (NuStrICmp(reference_name, system->areas[search].name) == 0) {
-                                creature->area = (AIAREA_PC *)&system->areas[search];
+                            AI_AREA_LOAD_PC *entry = &system->areas[search];
+                            if (NuStrICmp(reference_name, entry->name) == 0) {
+                                creature->area = (AIAREA_PC *)entry;
                                 break;
                             }
                         }
@@ -11841,8 +11847,9 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
                     if (version >= 6 && EdFileReadInt() != 0) {
                         EdFileRead(reference_name, 16);
                         for (search = 0; search < system->locator_count; ++search) {
-                            if (NuStrICmp(reference_name, system->locators[search].name) == 0) {
-                                creature->locator = &system->locators[search];
+                            AILOCATOR_PC *entry = &system->locators[search];
+                            if (NuStrICmp(reference_name, entry->name) == 0) {
+                                creature->locator = entry;
                                 break;
                             }
                         }
@@ -11850,8 +11857,9 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
                     if (version > 16 && EdFileReadInt() != 0) {
                         EdFileRead(reference_name, 16);
                         for (search = 0; search < system->locator_count; ++search) {
-                            if (NuStrICmp(reference_name, system->locators[search].name) == 0) {
-                                creature->respawn_locator = &system->locators[search];
+                            AILOCATOR_PC *entry = &system->locators[search];
+                            if (NuStrICmp(reference_name, entry->name) == 0) {
+                                creature->respawn_locator = entry;
                                 break;
                             }
                         }
@@ -11870,12 +11878,16 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
                         creature->min_respawn_time = AiLoadMinimumRespawnTimePc;
                         creature->max_respawn_time = AiLoadMaximumRespawnTimePc;
                     }
-                    creature->start_stagger = version > 9 ? EdFileReadFloat() : AiLoadStartStaggerPc;
+                    if (version > 9)
+                        creature->start_stagger = EdFileReadFloat();
+                    else
+                        creature->start_stagger = AiLoadStartStaggerPc;
                     if (creature->activation_type == 1) {
                         EdFileRead(reference_name, 16);
                         for (search = 0; search < system->area_count; ++search) {
-                            if (NuStrICmp(reference_name, system->areas[search].name) == 0) {
-                                creature->activate_area = (AIAREA_PC *)&system->areas[search];
+                            AI_AREA_LOAD_PC *entry = &system->areas[search];
+                            if (NuStrICmp(reference_name, entry->name) == 0) {
+                                creature->activate_area = (AIAREA_PC *)entry;
                                 break;
                             }
                         }
@@ -11895,12 +11907,22 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
                         if (GetMinViewHeightFn != NULL && creature->min_view_height == 0.0f)
                             creature->min_view_height = GetMinViewHeightFn(creature->type);
                     } else {
-                        creature->view_distance = GetViewRangeFn != NULL ? GetViewRangeFn(creature->type) : 1.0f;
-                        creature->hear_distance = GetHearDistanceFn != NULL ? GetHearDistanceFn(creature->type) : 1.0f;
-                        creature->max_view_height =
-                            GetMaxViewHeightFn != NULL ? GetMaxViewHeightFn(creature->type) : 1.0f;
-                        creature->min_view_height =
-                            GetMinViewHeightFn != NULL ? GetMinViewHeightFn(creature->type) : 1.0f;
+                        if (GetViewRangeFn != NULL)
+                            creature->view_distance = GetViewRangeFn(creature->type);
+                        else
+                            creature->view_distance = 1.0f;
+                        if (GetHearDistanceFn != NULL)
+                            creature->hear_distance = GetHearDistanceFn(creature->type);
+                        else
+                            creature->hear_distance = 1.0f;
+                        if (GetMaxViewHeightFn != NULL)
+                            creature->max_view_height = GetMaxViewHeightFn(creature->type);
+                        else
+                            creature->max_view_height = 1.0f;
+                        if (GetMinViewHeightFn != NULL)
+                            creature->min_view_height = GetMinViewHeightFn(creature->type);
+                        else
+                            creature->min_view_height = 1.0f;
                     }
                 }
             }
