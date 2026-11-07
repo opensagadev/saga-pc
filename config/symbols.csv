@@ -9594,6 +9594,7 @@ address,symbol,size,ctype
 0x6c1ef0,??0EdFileOutputStream@@QAE@XZ,43,
 0x6c1f20,??_EEdFileOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileOutputStream@@UAEPAXI@Z; no independent body
 0x6c1f20,??_GEdFileOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c1f40,??0EdRef@@QAE@XZ,29,
 0x6c20b0,??0EdTool@@QAE@XZ,29,
 0x6c20e0,?InsertSorted@PropertyMenuList@@QAEXPAVPropertyMenu@@@Z,77,
 0x6c21d0,?Clone@Placeable@@UBEPAV1@H@Z,5,
@@ -9630,6 +9631,7 @@ address,symbol,size,ctype
 0x6c5d60,?SerialiseInt@@YAXAAVEdStream@@PAXH@Z,21,
 0x6c5d80,?SerialiseFloat@@YAXAAVEdStream@@PAXH@Z,21,
 0x6c5da0,??0EdRef@@QAE@PAD0HHHPAVEdControl@@H@Z,258,
+0x6c5eb0,?Serialise@EdRef@@QAEXAAVEdStream@@PAH@Z,206,
 0x6c5f80,?CheckType@EdRef@@QAEXH@Z,129,
 0x6c6010,?GetTypeSize@EdRef@@QAEHHH@Z,122,
 0x6c6090,?GetMemberData@EdRef@@UAEXPAXH0H@Z,63,
@@ -9638,7 +9640,11 @@ address,symbol,size,ctype
 0x6c6330,?CreateObject@EdRegistry@@QAEPAXPAVEdClassInterface@@PAXHHH@Z,114,
 0x6c63b0,?DestroyObject@EdRegistry@@QAEXPAVEdClassInterface@@PAXHH@Z,71,
 0x6c6400,??0?$CSListLink@VEdRef@@@@QAE@XZ,20,
+0x6c6540,?SerialiseObject@EdClass@@QAEXAAVEdStream@@PAX@Z,382,
 0x6c66c0,?SerialiseObjectHeader@EdClass@@QAEHAAVEdStream@@PAX@Z,53,
+0x6c67e0,?AddType@EdClass@@QAEXPAVEdRef@@@Z,130,
+0x6c6870,?GetStreamClasses@EdClass@@QAEHAAVEdStream@@PAHAAHH@Z,165,
+0x6c6920,?FindTypeRef@EdClass@@QAEPAVEdRef@@PADH@Z,123,
 0x6c6a10,?FindMember@EdClass@@QAEHPAUEdMember@@PAXHH@Z,136,
 0x6c7e90,?GetNumObjects@KnotHelper@@UAEHXZ,27,
 0x6c7eb0,?GetNextObject@KnotHelper@@UAEPAXPAX@Z,88,
@@ -9667,7 +9673,12 @@ address,symbol,size,ctype
 0x6cd130,?RenderMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,261,
 0x6cd250,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@0PAXPAPAVEdRef@@@Z,282,
 0x6cd370,?DistanceToObject@EdClassInterface@@UAEMAAUVuVec@@PAXPAPAVEdRef@@@Z,342,
+0x6cd4d0,?GetStreamClassMapping@EdRegistry@@QAEXAAVEdStream@@PAHAAHH@Z,239,
+0x6cd5c0,?IsStreamObject@@YAHAAVEdStream@@PAUEdClass@@PAX@Z,226,"static i32 (EdStream &, EdClass *, void *); retail passes object in EDI"
 0x6cd6b0,?DefunctObject@EdRegistry@@QAEXPAVEdClassInterface@@PAXHH@Z,129,
+0x6cd740,?Serialise@EdClass@@QAEXAAVEdStream@@PAH@Z,671,
+0x6cd9e0,?SerialiseObject@EdClass@@QAEXAAVEdStream@@PAXPAU1@PAUEdRegistry@@@Z,625,
+0x6cdc60,?FindObject@EdClass@@QAEPAXPAD@Z,213,
 0x6cf040,?CreateObject@KnotHelper@@UAEPAXPAXHH@Z,320,
 0x6cf180,?Process@KnotHelper@@UAEXPAXAAUEdInputContext@@@Z,77,
 0x6cf970,?AddMenuItem@EdControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,90,
@@ -9680,6 +9691,8 @@ address,symbol,size,ctype
 0x6d0a40,?ProcessMenu@PropertyTool@@QAEHAAUEdInputContext@@@Z,913,
 0x6d0de0,?Process@PropertyTool@@UAEHAAUEdInputContext@@@Z,33,
 0x6d0e10,?Render@PropertyTool@@UAEXXZ,91,
+0x6d0e70,?Serialise@EdRegistry@@QAEXAAVEdStream@@@Z,358,
+0x6d0fe0,?SerialiseObjects@EdRegistry@@QAEXAAVEdStream@@PAU1@@Z,2128,
 0x6d1ff0,?ProcessEvenWhenPaused@LevelEditor@@UAEXPAUThingProcessData@@@Z,1107,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
 0x6d33d0,_NuKeyboardPlatformStartup_candidate,59,i32 __cdecl(void)
@@ -19005,6 +19018,7 @@ address,symbol,size,ctype
 0x76faa4,??_C@_05KEPHDLCO@NuVec?$AA@,6,char []
 0x76faac,??_C@_0L@BCHFBJHG@NuHSpecial?$AA@,11,char []
 0x76fab8,??_C@_04PAFOOALK@Enum?$AA@,5,char []
+0x76fac0,??_C@_06ELFECKBG@Object?$AA@,7,const char[]
 0x76fc0c,??_C@_06LHGEHABH@?$CINULL?$CJ?$AA@,7,char []
 0x76fc14,??_C@_0L@HFFGLEHP@StreamInfo?$AA@,11,char []
 0x76fd9c,??_C@_0N@MKEDCNLI@Class?5Editor?$AA@,13,char []
@@ -19032,6 +19046,7 @@ address,symbol,size,ctype
 0x76ff5c,??_C@_0O@OMMLCIML@Property?5Tool?$AA@,14,char []
 0x76ff6c,??_C@_07FCJAGJJB@?$CFs?5?9?5?$CFs?$AA@,8,char []
 0x76ff74,??_C@_07NIPDDFPO@no?5name?$AA@,8,char []
+0x76ff7c,??_C@_05EKAMNAII@Class?$AA@,6,const char[]
 0x770058,??_C@_09MMGMHBF@?$CFs?1?$CFs?4led?$AA@,10,char []
 0x770064,??_C@_0DH@GMIFDFOB@Saving?5not?5allowed?5in?5Debug?5Mode@,55,char []
 0x77009c,??_C@_0CJ@INEOIBDI@?$CFs?5?3?5Save?5Failed?0?5have?5you?5got?5t@,41,char []
@@ -19041,6 +19056,9 @@ address,symbol,size,ctype
 0x7700f8,??_C@_0L@MNCBHNBJ@Options?4?4?4?$AA@,11,char []
 0x770104,??_C@_0L@MPOOEHDD@Editors?4?4?4?$AA@,11,char []
 0x770110,??_C@_0N@KOJOGPFL@Level?5Editor?$AA@,13,char []
+0x770120,??_C@_09FJBBCLFM@ClassList?$AA@,10,const char[]
+0x77012c,??_C@_08PHMPFIGI@TypeList?$AA@,9,const char[]
+0x770138,??_C@_0L@LJLIKMAH@ObjectList?$AA@,11,const char[]
 0x7701ac,??_C@_06JPHCLLC@Error?$CB?$AA@,7,
 0x770208,??_C@_0IL@DKEGECNI@Sorry?0?5but?5your?5machine?5is?5unabl@,139,
 0x770298,??_C@_0JD@MODJFIG@Helaas?5is?5je?5pc?5niet?5geschikt?5vo@,147,

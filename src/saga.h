@@ -29512,8 +29512,8 @@ class EdStream {
     i32 mode;
     i32 swap_endianness;
     i32 unknown_10;
-    void *memory_buffer;
-    void *secondary_buffer;
+    MemoryBuffer *memory_buffer;
+    MemoryBuffer *secondary_buffer;
     i32 flags;
 };
 /* Writes strings as a length-prefixed buffer through SerialiseBuffer. */
@@ -29547,6 +29547,13 @@ struct EdClass {
 
     i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);
     i32 SerialiseObjectHeader(EdStream &stream, void *object);
+    void AddType(EdRef *member);
+    EdRef *FindTypeRef(char *member_name, i32 recursive);
+    void *FindObject(char *object_name);
+    i32 GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count, i32 capacity);
+    void Serialise(EdStream &stream, i32 *class_mapping);
+    void SerialiseObject(EdStream &stream, void *object);
+    void SerialiseObject(EdStream &stream, void *object, EdClass *schema, struct EdRegistry *registry);
 };
 
 /* Receives the registry's object create/destroy/defunct/revive events. */
@@ -29562,6 +29569,8 @@ struct EdObjectNotifier {
 };
 struct EdDefunctListEntry;
 struct EdDefunctList {
+    EdDefunctList() : first(NULL), last(NULL), count(0) {
+    }
     EdDefunctListEntry *first;
     EdDefunctListEntry *last;
     i32 count;
@@ -29623,6 +29632,9 @@ struct EdRegistry {
     void *CreateObject(EdClassInterface *object_interface, void *source, i32 index, i32 guid, i32 flags);
     void DestroyObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags);
     void DefunctObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags);
+    void GetStreamClassMapping(EdStream &stream, i32 *mapping, i32 &count, i32 capacity);
+    void Serialise(EdStream &stream);
+    void SerialiseObjects(EdStream &stream, EdRegistry *source_registry);
 };
 extern EdRegistry theRegistry;
 extern i32 EdType_Short, EdType_Float, EdType_VuVec, EdType_VuMtx, EdType_NuVec, EdType_NuMtx;
@@ -29633,6 +29645,8 @@ class EdRef : public CSListLink<EdRef> {
   public:
     EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
           EdControl *member_control, i32 group);
+    EdRef() {
+    }
     virtual void *GetMemberObject(void *object);
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
@@ -29649,6 +29663,7 @@ class EdRef : public CSListLink<EdRef> {
     i32 SetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
     void CheckType(i32 requested_type);
     i32 GetTypeSize(i32 requested_type, i32 data_size);
+    void Serialise(EdStream &stream, i32 *class_mapping);
 };
 
 /* A member reference bound to the object (or sub-object) that holds it. */
