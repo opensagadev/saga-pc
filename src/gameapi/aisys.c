@@ -6305,8 +6305,8 @@ i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
         if (current_path == NULL) {
             return 0;
         }
-        if (sys->path_sys->active_path != current_path || original_path == NULL || (original_path->flags & 2) == 0 ||
-            original_path->node_count == 0) {
+        if (sys->path_sys->active_path != current_path || packet->path_info.connection == NULL ||
+            (original_path->flags & 2) == 0) {
             return 0;
         }
         node = original_path->nodes;
