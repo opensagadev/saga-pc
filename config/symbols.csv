@@ -15697,6 +15697,7 @@ address,symbol,size,ctype
 0x75bfb0,__real@bfd0000000000000,,const f64
 0x75bfb8,??_C@_0BF@DKBBKNFJ@fly_paddle_rotate_lp?$AA@,21,const char[21]
 0x0075bfd0,_PCAtan2RadianScale,8,const f64
+0x0075bfd0,__real@3f1921fb60000000,8,f64
 0x75bfd8,__real@43610000,4,const f32
 0x75bfdc,??_C@_0BA@MLLEBOOA@drd_mousebot_lp?$AA@,,const char[]
 0x75bfec,??_C@_0N@NAMKPPIO@Probot_EngLp?$AA@,,const char[]

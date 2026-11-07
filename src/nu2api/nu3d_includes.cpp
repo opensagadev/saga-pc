@@ -269,6 +269,10 @@ extern "C" {
     (destination) = formats[(channel)] == 0 ? curves[(channel)].constant                                               \
                                             : NuAnimCurve2CalcValEx(&curves[(channel)], time, (u32)formats[(channel)])
 
+/* Radian <-> NUANG (65536 per turn) factors; float-precision double literals in retail. */
+#define PC_NUANG_PER_RADIAN 10430.3779296875
+#define PC_RADIAN_PER_NUANG 9.58738019107841e-05
+
 #define PC_LEGACY_LIMIT_ANGLE(destination, maximum, minimum)                                                           \
     do {                                                                                                               \
         (destination) = (i32)((u32)(destination) & 0xffff);                                                            \
@@ -728,10 +732,9 @@ extern "C" {
         for (i = 0; i < override_count; ++i) {
             NUHGOBJ_JOINT_OVERRIDE_PC *item = &overrides[i];
             ANI3_JOINT_PC *joint;
-            u8 index = item->joint_index;
+            i32 index = item->joint_index;
             u8 flags;
-            i32 x, y, z;
-            u32 wrapped;
+            NUANGVEC angles;
             if (index >= object->joint_override_map_count)
                 continue;
             index = object->joint_override_map[index];
@@ -743,42 +746,18 @@ extern "C" {
                 joint->rotation.x = item->rotation.x + joint->rotation.x;
                 joint->rotation.y = item->rotation.y + joint->rotation.y;
                 joint->rotation.z = item->rotation.z + joint->rotation.z;
-                x = (i32)(joint->rotation.x * AIPathAngularScale);
-                y = (i32)(joint->rotation.y * AIPathAngularScale);
-                z = (i32)(joint->rotation.z * AIPathAngularScale);
-                if ((flags & 8) != 0) {
-                    wrapped = (u32)x & 0xffffu;
-                    x = (i32)wrapped;
-                    if (wrapped >= 0x8000u)
-                        x -= 0x10000;
-                    if (x > item->rotation_max_pc[0])
-                        x = item->rotation_max_pc[0];
-                    else if (x < item->rotation_min_pc[0])
-                        x = item->rotation_min_pc[0];
-                }
-                if ((flags & 0x10) != 0) {
-                    wrapped = (u32)y & 0xffffu;
-                    y = (i32)wrapped;
-                    if (wrapped >= 0x8000u)
-                        y -= 0x10000;
-                    if (y > item->rotation_max_pc[1])
-                        y = item->rotation_max_pc[1];
-                    else if (y < item->rotation_min_pc[1])
-                        y = item->rotation_min_pc[1];
-                }
-                if ((flags & 0x20) != 0) {
-                    wrapped = (u32)z & 0xffffu;
-                    z = (i32)wrapped;
-                    if (wrapped >= 0x8000u)
-                        z -= 0x10000;
-                    if (z > item->rotation_max_pc[2])
-                        z = item->rotation_max_pc[2];
-                    else if (z < item->rotation_min_pc[2])
-                        z = item->rotation_min_pc[2];
-                }
-                joint->rotation.x = (f32)(x * PCAtan2RadianScale);
-                joint->rotation.y = (f32)(y * PCAtan2RadianScale);
-                joint->rotation.z = (f32)(z * PCAtan2RadianScale);
+                angles.x = (i32)(joint->rotation.x * PC_NUANG_PER_RADIAN);
+                angles.y = (i32)(joint->rotation.y * PC_NUANG_PER_RADIAN);
+                angles.z = (i32)(joint->rotation.z * PC_NUANG_PER_RADIAN);
+                if ((flags & 8) != 0)
+                    PC_LEGACY_LIMIT_ANGLE(angles.x, item->rotation_max_pc[0], item->rotation_min_pc[0]);
+                if ((flags & 0x10) != 0)
+                    PC_LEGACY_LIMIT_ANGLE(angles.y, item->rotation_max_pc[1], item->rotation_min_pc[1]);
+                if ((flags & 0x20) != 0)
+                    PC_LEGACY_LIMIT_ANGLE(angles.z, item->rotation_max_pc[2], item->rotation_min_pc[2]);
+                joint->rotation.x = (f32)(angles.x * PC_RADIAN_PER_NUANG);
+                joint->rotation.y = (f32)(angles.y * PC_RADIAN_PER_NUANG);
+                joint->rotation.z = (f32)(angles.z * PC_RADIAN_PER_NUANG);
             }
             if ((flags & 4) != 0) {
                 joint->scale.x = item->scale_pc.x + joint->scale.x;
@@ -2571,9 +2550,9 @@ extern "C" {
                 r0[0] += override_anim->rotation.x;
                 r0[1] += override_anim->rotation.y;
                 r0[2] += override_anim->rotation.z;
-                angles.x = (i32)(r0[0] * 10430.3779296875);
-                angles.y = (i32)(r0[1] * 10430.3779296875);
-                angles.z = (i32)(r0[2] * 10430.3779296875);
+                angles.x = (i32)(r0[0] * PC_NUANG_PER_RADIAN);
+                angles.y = (i32)(r0[1] * PC_NUANG_PER_RADIAN);
+                angles.z = (i32)(r0[2] * PC_NUANG_PER_RADIAN);
                 if (flags & 8) {
                     angles.x &= 0xffff;
                     if (angles.x > 32767)
@@ -2602,9 +2581,9 @@ extern "C" {
                         angles.z = override_anim->rotation_min_pc[2];
                 }
             } else {
-                angles.x = (i32)(r0[0] * 10430.3779296875);
-                angles.y = (i32)(r0[1] * 10430.3779296875);
-                angles.z = (i32)(r0[2] * 10430.3779296875);
+                angles.x = (i32)(r0[0] * PC_NUANG_PER_RADIAN);
+                angles.y = (i32)(r0[1] * PC_NUANG_PER_RADIAN);
+                angles.z = (i32)(r0[2] * PC_NUANG_PER_RADIAN);
             }
             NuMtxSetRotateXYZVU0(matrix, &angles);
         } else
@@ -2711,9 +2690,9 @@ extern "C" {
                 rotation.x = override->rotation.x + rotation.x;
                 rotation.y = override->rotation.y + rotation.y;
                 rotation.z = override->rotation.z + rotation.z;
-                angles.x = (i32)(rotation.x * AIPathAngularScale);
-                angles.y = (i32)(rotation.y * AIPathAngularScale);
-                angles.z = (i32)(rotation.z * AIPathAngularScale);
+                angles.x = (i32)(rotation.x * PC_NUANG_PER_RADIAN);
+                angles.y = (i32)(rotation.y * PC_NUANG_PER_RADIAN);
+                angles.z = (i32)(rotation.z * PC_NUANG_PER_RADIAN);
                 if ((override_flags & 8) != 0)
                     PC_LEGACY_LIMIT_ANGLE(angles.x, override->rotation_max_pc[0], override->rotation_min_pc[0]);
                 if ((override_flags & 0x10) != 0)
@@ -2721,9 +2700,9 @@ extern "C" {
                 if ((override_flags & 0x20) != 0)
                     PC_LEGACY_LIMIT_ANGLE(angles.z, override->rotation_max_pc[2], override->rotation_min_pc[2]);
             } else {
-                angles.x = (i32)(rotation.x * AIPathAngularScale);
-                angles.y = (i32)(rotation.y * AIPathAngularScale);
-                angles.z = (i32)(rotation.z * AIPathAngularScale);
+                angles.x = (i32)(rotation.x * PC_NUANG_PER_RADIAN);
+                angles.y = (i32)(rotation.y * PC_NUANG_PER_RADIAN);
+                angles.z = (i32)(rotation.z * PC_NUANG_PER_RADIAN);
             }
             NuMtxSetRotateXYZVU0(matrix, &angles);
         }
@@ -3455,5 +3434,7 @@ extern "C" {
 
 #undef PC_LEGACY_CURVE_STORE
 #undef PC_LEGACY_LIMIT_ANGLE
+#undef PC_NUANG_PER_RADIAN
+#undef PC_RADIAN_PER_NUANG
 
 } // extern "C"
