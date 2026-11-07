@@ -3435,6 +3435,14 @@ address,symbol,size,ctype
 0x51f720,_LocaledbitsDrawSolidCircleXY,409,
 0x51f8c0,_LocaledbitsDrawSolidEllipseXY,484,
 0x51fab0,_LocaledbitsDrawCircleXY,261,
+0x0051fbc0,_ResetAIMessageSys,94,void __cdecl (AIMESSAGESYS_PC *)
+0x0051fc20,_ClearAIMessageSys,53,void __cdecl (AIMESSAGESYS_PC *)
+0x0051fc60,_CheckAIMessage,152,"AIMESSAGE_PC *__cdecl (AIMESSAGESYS_PC *, char *, AIMESSAGE_PC *)"
+0x0051fd00,_QueryAIMessage,45,"AIMESSAGE_PC *__cdecl (AIMESSAGESYS_PC *, AIMESSAGE_PC *)"
+0x0051fd30,_RemoveAIMessage,130,"void __cdecl (AIMESSAGESYS_PC *, char *, AIMESSAGE_PC *)"
+0x0051fdc0,_FindLocalAIMessage,54,"AILOCALMESSAGE_PC *__cdecl (AISCRIPTPROCESS_PC *, char *)"
+0x0051fe00,_AddLocalAIMessage,60,"void __cdecl (AISCRIPTPROCESS_PC *, AILOCALMESSAGE_PC *, char *)"
+0x0051fe40,_QueryLocalAIMessage,23,"AILOCALMESSAGE_PC *__cdecl (AISCRIPTPROCESS_PC *, AILOCALMESSAGE_PC *)"
 0x0051fe60,_AILocatorSet_CheckLocatorsStillAssigned,137,"void __cdecl (AISYS_PC *, AILOCATORSET_PC *)"
 0x0051fef0,_AILocatorSet_AssignNearestLocator,400,"void __cdecl (AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32, i32)"
 0x00520080,_AILocatorSet_AssignFurthestLocator,408,"void __cdecl (AISYS_PC *, AILOCATORSET_PC *, APIOBJECT_PC *, f32, NUVEC *, NUVEC *, f32, i32)"
@@ -3656,6 +3664,10 @@ address,symbol,size,ctype
 0x0052ff40,_AIRetreatFromDestination2,517,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x00530150,_AIRetreatFromDestination,237,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
 0x00530240,_AISysCharacterMovement,433,"void __cdecl (AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x00530410,_CreateAIMessageSys,142,"AIMESSAGESYS_PC *__cdecl (VARIPTR *, VARIPTR *, i32)"
+0x005304a0,_SetAIMessage,35,"void __cdecl (AIMESSAGESYS_PC *, char *, f32, AIMESSAGE_PC *)"
+0x005304d0,_GetAIMessage,34,"f32 __cdecl (AIMESSAGESYS_PC *, char *, AIMESSAGE_PC *)"
+0x00530500,_aieditor_Reset,42,void __cdecl (void)
 0x530530,_aieditor_Proc,1060,"i32 __cdecl (f32, FRAME_PAD_PC *, f32, u32)"
 0x530960,_areaEditor_cbRenameAreaMenu,192,
 0x530a20,_areaEditor_cbDeleteArea,214,

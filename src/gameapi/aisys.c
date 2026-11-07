@@ -2005,6 +2005,124 @@ void LocaledbitsDrawCircleXY(NUVEC *centre, f32 radius, u32 colour, i32 unused3,
     }
 }
 
+/* Script message pool (AISYS message system). Records are 0x2c bytes; a
+ * process's local messages chain through the word after the record. */
+typedef struct AIMESSAGE_PC {
+    NULISTLNK links;
+    char name[32];
+    f32 value;
+} AIMESSAGE_PC;
+typedef struct AIMESSAGESYS_PC {
+    i32 count;
+    AIMESSAGE_PC *messages;
+    NULISTHDR free_list;
+    NULISTHDR active_list;
+} AIMESSAGESYS_PC;
+typedef struct AILOCALMESSAGE_PC {
+    AIMESSAGE_PC message;
+    struct AILOCALMESSAGE_PC *next;
+} AILOCALMESSAGE_PC;
+STATIC_ASSERT(sizeof(AIMESSAGE_PC) == 0x2c);
+STATIC_ASSERT(offsetof(AIMESSAGE_PC, value) == 0x28);
+STATIC_ASSERT(sizeof(AIMESSAGESYS_PC) == 0x18);
+STATIC_ASSERT(offsetof(AIMESSAGESYS_PC, active_list) == 0x10);
+STATIC_ASSERT(offsetof(AILOCALMESSAGE_PC, next) == 0x2c);
+
+void __cdecl ResetAIMessageSys(AIMESSAGESYS_PC *sys) {
+    i32 index;
+    if (sys != NULL) {
+        memset(&sys->free_list, 0, sizeof(sys->free_list));
+        memset(&sys->active_list, 0, sizeof(sys->active_list));
+        memset(sys->messages, 0, sys->count * sizeof(AIMESSAGE_PC));
+        for (index = 0; index < sys->count; ++index)
+            NuLinkedListAppend(&sys->free_list, &sys->messages[index].links);
+    }
+}
+
+void __cdecl ClearAIMessageSys(AIMESSAGESYS_PC *sys) {
+    NULISTLNK *link;
+    if (sys != NULL) {
+        for (link = NuLinkedListGetHead(&sys->active_list); link != NULL;
+             link = NuLinkedListGetNext(&sys->active_list, link))
+            ((AIMESSAGE_PC *)link)->value = 0.0f;
+    }
+}
+
+AIMESSAGE_PC *__cdecl CheckAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *message) {
+    AIMESSAGE_PC *result = NULL;
+    if (sys != NULL) {
+        if (message == NULL && name != NULL) {
+            for (message = (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->active_list); message != NULL;
+                 message = (AIMESSAGE_PC *)NuLinkedListGetNext(&sys->active_list, &message->links)) {
+                if (NuStrNICmp(name, message->name, 32) == 0)
+                    break;
+            }
+        }
+        result = message;
+        if (message == NULL) {
+            message = (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->free_list);
+            if (message != NULL) {
+                NuLinkedListRemove(&sys->free_list, &message->links);
+                NuLinkedListAppend(&sys->active_list, &message->links);
+                NuStrNCpy(message->name, name, 32);
+            }
+            result = message;
+        }
+    }
+    return result;
+}
+
+AIMESSAGE_PC *__cdecl QueryAIMessage(AIMESSAGESYS_PC *sys, AIMESSAGE_PC *message) {
+    if (message == NULL)
+        return (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->active_list);
+    return (AIMESSAGE_PC *)NuLinkedListGetNext(&sys->active_list, &message->links);
+}
+
+void __cdecl RemoveAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *message) {
+    if (sys != NULL) {
+        if (message == NULL) {
+            if (name == NULL)
+                return;
+            for (message = (AIMESSAGE_PC *)NuLinkedListGetHead(&sys->active_list); message != NULL;
+                 message = (AIMESSAGE_PC *)NuLinkedListGetNext(&sys->active_list, &message->links)) {
+                if (NuStrNICmp(name, message->name, 32) == 0)
+                    break;
+            }
+        }
+        if (message != NULL) {
+            NuLinkedListRemove(&sys->active_list, &message->links);
+            memset(message, 0, sizeof(*message));
+            NuLinkedListAppend(&sys->free_list, &message->links);
+        }
+    }
+}
+
+AILOCALMESSAGE_PC *__cdecl FindLocalAIMessage(AISCRIPTPROCESS_PC *processor, char *name) {
+    AILOCALMESSAGE_PC *message;
+    for (message = (AILOCALMESSAGE_PC *)processor->local_messages; message != NULL; message = message->next) {
+        if (NuStrICmp(message->message.name, name) == 0)
+            return message;
+    }
+    return NULL;
+}
+
+void __cdecl AddLocalAIMessage(AISCRIPTPROCESS_PC *processor, AILOCALMESSAGE_PC *message, char *name) {
+    NuStrNCpy(message->message.name, name, 32);
+    if (processor->local_messages == NULL) {
+        processor->local_messages = message;
+        message->next = NULL;
+    } else {
+        message->next = (AILOCALMESSAGE_PC *)processor->local_messages;
+        processor->local_messages = message;
+    }
+}
+
+AILOCALMESSAGE_PC *__cdecl QueryLocalAIMessage(AISCRIPTPROCESS_PC *processor, AILOCALMESSAGE_PC *message) {
+    if (message == NULL)
+        return (AILOCALMESSAGE_PC *)processor->local_messages;
+    return message->next;
+}
+
 void __cdecl AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player_2) {
     i32 index;
     AILOCATOR_PC *locator;
@@ -11089,6 +11207,33 @@ void __cdecl pathEditorSaveData(AIPATHSYS_PC *path_system) {
         destination = (type)allocation_result;                                                                         \
     } while (0)
 
+AIMESSAGESYS_PC *__cdecl CreateAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count) {
+    AIMESSAGESYS_PC *sys;
+    PATH_LOAD_ALLOCATE(AIMESSAGESYS_PC *, sys, cursor, end, sizeof(AIMESSAGESYS_PC));
+    if (sys != NULL) {
+        memset(sys, 0, sizeof(*sys));
+        sys->messages = (AIMESSAGE_PC *)AISysBufferAlloc(cursor, end, count * sizeof(AIMESSAGE_PC));
+        if (sys->messages != NULL) {
+            sys->count = count;
+            ResetAIMessageSys(sys);
+        }
+    }
+    return sys;
+}
+
+void __cdecl SetAIMessage(AIMESSAGESYS_PC *sys, char *name, f32 value, AIMESSAGE_PC *message) {
+    message = CheckAIMessage(sys, name, message);
+    if (message != NULL)
+        message->value = value;
+}
+
+f32 __cdecl GetAIMessage(AIMESSAGESYS_PC *sys, char *name, AIMESSAGE_PC *message) {
+    message = CheckAIMessage(sys, name, message);
+    if (message != NULL)
+        return message->value;
+    return 0.0f;
+}
+
 static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
     i32 count = EdFileReadInt();
     AI_PATH_SYSTEM_LOAD_PC *system = NULL;
@@ -18142,6 +18287,14 @@ void __cdecl aieditor_SetCurrentScript(char *name, EDAICREATURE_s *creature) {
     aieditorsettings.script_flags = 0;
     aieditorsettings.script_params[3] = aieditorsettings.script_params[2] = aieditorsettings.script_params[1] =
         aieditorsettings.script_params[0] = 0.0f;
+}
+
+void __cdecl aieditor_Reset(void) {
+    aieditorsettings.character_type = -1;
+    aieditorsettings.creature_name[0] = 0;
+    aieditorsettings.path_name[0] = 0;
+    aieditorsettings.locator_set_name[0] = 0;
+    aieditor_SetCurrentScript("default", NULL);
 }
 
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
