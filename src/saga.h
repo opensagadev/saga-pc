@@ -29824,6 +29824,8 @@ class ClassEditor : public BaseEditor {
     void PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
     void PostLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
     i32 SelectObject(ClassObject &object, i32 mode);
+    i32 IsUniqueName(char *name);
+    void MakeUniqueName(char const *name, char *destination, i32 size);
 };
 extern ClassEditor theClassEditor;
 

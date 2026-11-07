@@ -2167,6 +2167,54 @@ done:
     return selected;
 }
 
+/* Whether no named object of any named class uses this name. */
+i32 ClassEditor::IsUniqueName(char *name) {
+    EdMember member;
+    char object_name[128];
+    for (i32 i = 0; i < theRegistry.class_count; i++) {
+        EdClass *object_class = &theRegistry.classes[i];
+        if (object_class->object_interface == NULL || !(object_class->flags & 2))
+            continue;
+        for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
+             object = object_class->object_interface->GetNextObject(object)) {
+            if (object_class->FindMember(&member, object, 2, 1)) {
+                member.reference->GetAttributeData(member.object, 2, EdType_String, object_name, sizeof(object_name));
+                if (NuStrICmp(name, object_name) == 0)
+                    return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+/* Writes name with its trailing number (or "00") bumped until the result is
+ * unique. */
+void ClassEditor::MakeUniqueName(char const *name, char *destination, i32 size) {
+    i32 digits = 0;
+    i32 number = 0;
+    i32 length = NuStrLen((char *)name);
+    char const *cursor = name + length - 1;
+    while (*cursor >= '0' && *cursor <= '9') {
+        cursor--;
+        digits++;
+    }
+    if (digits > 0) {
+        length -= digits;
+        number = NuAToI((char *)name + length);
+    } else {
+        digits = 2;
+    }
+    if (length + digits >= size)
+        length = size - digits - 1;
+    NuStrNCpy(destination, name, length + 1);
+    char format[16];
+    NuSPrintf(format, "%%.%dd", digits);
+    do {
+        number++;
+        NuSPrintf(destination + length, format, number);
+    } while (!IsUniqueName(destination));
+}
+
 class SplineObject;
 
 /* One spline control point: its position and the two tangent handles. */
@@ -2178,6 +2226,8 @@ struct SplineKnot {
     VuVec out_tangent;
     SplineObject *spline;
     i16 led_file;
+
+    void Smooth();
 };
 STATIC_ASSERT(offsetof(SplineKnot, position) == 0x10);
 STATIC_ASSERT(offsetof(SplineKnot, spline) == 0x40);
@@ -2187,17 +2237,57 @@ struct SplineKnotList {
     SplineKnot *first;
     SplineKnot *last;
     i32 count;
+
+    ~SplineKnotList();
+    void InsertAfter(SplineKnot *knot, SplineKnot *after);
+};
+
+/* A block of generated spline points. */
+class SplinePointBlock : public CSListLink<SplinePointBlock> {
+  public:
+    virtual ~SplinePointBlock();
+};
+
+struct SplinePointList {
+    SplinePointBlock *first;
+    SplinePointBlock *last;
+    i32 block_count;
+
+    ~SplinePointList();
 };
 
 /* A named editor spline; the knot list is followed by its generated points. */
 class SplineObject : public CSListLink<SplineObject> {
   public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(SplineObject));
+    }
+    SplineObject() {
+        knots.first = NULL;
+        knots.last = NULL;
+        knots.count = 0;
+        points.first = NULL;
+        points.last = NULL;
+        points.block_count = 0;
+        led_file = Placeable::CurrentLedFile;
+    }
     virtual ~SplineObject();
 
     char name[32];
     SplineKnotList knots;
+    SplinePointList points;
+    i16 led_file;
+    u16 reserved_46;
+    f32 step;
+    f32 height;
+    i32 drop;
+    i32 closed;
 };
 STATIC_ASSERT(offsetof(SplineObject, knots) == 0x2c);
+STATIC_ASSERT(offsetof(SplineObject, points) == 0x38);
+STATIC_ASSERT(offsetof(SplineObject, led_file) == 0x44);
+STATIC_ASSERT(offsetof(SplineObject, drop) == 0x50);
+STATIC_ASSERT(sizeof(SplineObject) == 0x58);
 
 /* The spline object class (Android SplineHelper), theSplineHelper. */
 class SplineHelper : public EdClassInterface {
@@ -2227,6 +2317,174 @@ void KnotHelper::Process(void *object, EdInputContext &) {
     spline_object.ed_class = theSplineHelper.object_class;
     spline_object.object = knot->spline;
     theClassEditor.SelectObject(spline_object, 1);
+}
+
+KnotHelper theKnotHelper;
+
+SplineKnotList::~SplineKnotList() {
+    SplineKnot *knot;
+    while ((knot = first) != NULL) {
+        if (knot->next != NULL)
+            knot->next->previous = knot->previous;
+        else
+            last = knot->previous;
+        if (knot->previous != NULL)
+            knot->previous->next = knot->next;
+        else
+            first = knot->next;
+        knot->next = NULL;
+        knot->previous = NULL;
+        count--;
+        theMemoryManager.FreePool(knot, sizeof(SplineKnot));
+    }
+}
+
+SplinePointList::~SplinePointList() {
+    SplinePointBlock *block;
+    while ((block = first) != NULL) {
+        if (block->next != NULL)
+            block->next->previous = block->previous;
+        else
+            last = block->previous;
+        if (block->previous != NULL)
+            block->previous->next = block->next;
+        else
+            first = block->next;
+        block->next = NULL;
+        block->previous = NULL;
+        block_count--;
+        delete block;
+    }
+}
+
+SplineObject::~SplineObject() {
+}
+
+/* Sets both tangents to a tenth of the neighbour-to-neighbour vector; a
+ * spline that drops onto the terrain lowers them by 10. */
+void SplineKnot::Smooth() {
+    __declspec(align(16)) VuVec before;
+    __declspec(align(16)) VuVec after;
+    __declspec(align(16)) VuVec centre;
+    __declspec(align(16)) VuVec delta;
+    before.x = 0.0f;
+    before.y = 0.0f;
+    before.z = 0.0f;
+    after.x = 0.0f;
+    after.y = 0.0f;
+    after.z = 0.0f;
+    centre.x = position.x;
+    centre.y = position.y;
+    centre.z = position.z;
+    if (previous != NULL && next != NULL) {
+        before.x = next->position.x;
+        before.y = next->position.y;
+        before.z = next->position.z;
+        after.x = previous->position.x;
+        after.y = previous->position.y;
+        after.z = previous->position.z;
+    } else if (next != NULL) {
+        before.x = next->position.x;
+        before.y = next->position.y;
+        before.z = next->position.z;
+        after.x = position.x;
+        after.y = position.y;
+        after.z = position.z;
+    } else if (previous != NULL) {
+        before.x = position.x;
+        before.y = position.y;
+        before.z = position.z;
+        after.x = previous->position.x;
+        after.y = previous->position.y;
+        after.z = previous->position.z;
+    }
+    delta.x = before.x - after.x;
+    delta.y = before.y - after.y;
+    delta.z = before.z - after.z;
+    before.x = delta.x * 0.1;
+    before.y = delta.y * 0.1;
+    before.z = delta.z * 0.1;
+    after.x = before.x + centre.x;
+    after.y = before.y + centre.y;
+    after.z = before.z + centre.z;
+    before.x = centre.x - before.x;
+    before.y = centre.y - before.y;
+    before.z = centre.z - before.z;
+    if (spline != NULL) {
+        if (spline->drop)
+            after.y = after.y - 10.0;
+        if (spline->drop)
+            before.y = before.y - 10.0;
+    }
+    out_tangent.x = after.x;
+    out_tangent.y = after.y;
+    out_tangent.z = after.z;
+    out_tangent.w = after.w;
+    in_tangent.x = before.x;
+    in_tangent.y = before.y;
+    in_tangent.z = before.z;
+    in_tangent.w = before.w;
+}
+
+/* Adds a knot after the selected knot (or at the end) of the selected
+ * spline, creating a new spline when none is selected. */
+void *KnotHelper::CreateObject(void *, i32, i32) {
+    SplineObject *spline = NULL;
+    SplineKnot *selected_knot = NULL;
+    for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
+        if (spline == NULL && entry->ed_class == theSplineHelper.object_class)
+            spline = (SplineObject *)entry->object;
+        if (selected_knot == NULL && entry->ed_class == theKnotHelper.object_class)
+            selected_knot = (SplineKnot *)entry->object;
+        if (selected_knot != NULL && spline != NULL)
+            break;
+    }
+    if (spline == NULL) {
+        void *memory = theMemoryManager.AllocPool(sizeof(SplineObject), 1);
+        if (memory == NULL)
+            return NULL;
+        spline = new (memory) SplineObject;
+        theClassEditor.MakeUniqueName("NewSpline", spline->name, sizeof(spline->name));
+        spline->next = NULL;
+        spline->previous = theSplineHelper.last_object;
+        if (theSplineHelper.last_object != NULL)
+            theSplineHelper.last_object->next = spline;
+        theSplineHelper.last_object = spline;
+        if (theSplineHelper.first_object == NULL)
+            theSplineHelper.first_object = spline;
+        theSplineHelper.object_count++;
+    }
+    SplineKnot *knot = (SplineKnot *)theMemoryManager.AllocPool(sizeof(SplineKnot), 1);
+    if (knot == NULL)
+        return NULL;
+    knot->next = NULL;
+    knot->previous = NULL;
+    knot->led_file = Placeable::CurrentLedFile;
+    knot->spline = spline;
+    spline->knots.InsertAfter(knot, selected_knot);
+    knot->Smooth();
+    return knot;
+}
+
+void SplineKnotList::InsertAfter(SplineKnot *knot, SplineKnot *after) {
+    if (after != NULL) {
+        knot->previous = after;
+        knot->next = after->next;
+        if (after->next != NULL)
+            after->next->previous = knot;
+        else
+            last = knot;
+        after->next = knot;
+    } else {
+        knot->next = NULL;
+        knot->previous = last;
+        if (last != NULL)
+            last->next = knot;
+        last = knot;
+        if (first == NULL)
+            first = knot;
+    }
+    count++;
 }
 
 f32 EdManipulator::Scale = 2.0f;

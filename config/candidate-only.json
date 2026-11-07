@@ -1480,6 +1480,11 @@
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
    "symbol": "??0ReplicatorList@NetworkObjectManager@@QAE@XZ",
    "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??0?$CSListLink@VSplineObject@@@@QAE@XZ",
+   "kind": "function"
   }
  ]
 }
