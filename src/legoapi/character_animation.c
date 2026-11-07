@@ -23,17 +23,17 @@ void __cdecl Animate_DEFAULT(GAMEOBJECT *object) {
 
 void __cdecl Animate_CANNON(GAMEOBJECT *object) {
     object->anim_packet.requested_animation =
-        (CInfo[object->character_context].flags & 0x10) != 0 ? object->field_7aa : 1;
+        (U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0 ? object->field_7aa : 1;
 }
 
 void __cdecl Animate_SPEEDERBIKE(GAMEOBJECT *object) {
     object->anim_packet.requested_animation =
-        (CInfo[object->character_context].flags & 0x10) != 0 ? object->field_7aa : 1;
+        (U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0 ? object->field_7aa : 1;
 }
 
 void __cdecl Animate_WALKER(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
-    if ((CInfo[object->character_context].flags & 0x10) != 0) {
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
         return;
     }
@@ -43,7 +43,7 @@ void __cdecl Animate_WALKER(GAMEOBJECT *object) {
 }
 
 void __cdecl Animate_HOVERDROID(GAMEOBJECT *object) {
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else if (object->character_context == 30 && object->character_model->action_animations[5] != NULL)
         object->anim_packet.requested_animation = 5;
@@ -52,7 +52,7 @@ void __cdecl Animate_HOVERDROID(GAMEOBJECT *object) {
 }
 
 void __cdecl Animate_VEHICLE(GAMEOBJECT *object) {
-    if ((CInfo[object->character_context].flags & 0x10) != 0) {
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
         return;
     }
@@ -70,7 +70,7 @@ void __cdecl Animate_VEHICLE(GAMEOBJECT *object) {
 
 void __cdecl Animate_ATAT(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
-    if ((CInfo[object->character_context].flags & 0x10) != 0) {
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
     } else {
         object->anim_packet.requested_animation = 1;
@@ -255,7 +255,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, weapon_scale) == 0xd3c);
 void __cdecl Animate_ASTROMECH(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else if (object->context_target_position != NULL)
         object->anim_packet.requested_animation = object->character_model->action_animations[43] != NULL  ? 43
@@ -283,7 +283,7 @@ void __cdecl Animate_ASTROMECH(GAMEOBJECT *object) {
 void __cdecl Animate_DROIDEKA(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else {
         SetDefaultCharacterAnimPc(object);
@@ -307,7 +307,7 @@ void __cdecl Animate_DROIDEKA(GAMEOBJECT *object) {
 void __cdecl Animate_GEONOSIAN(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else {
         SetDefaultCharacterAnimPc(object);
@@ -331,7 +331,7 @@ void __cdecl Animate_GEONOSIAN(GAMEOBJECT *object) {
 void __cdecl Animate_BATTLEDROID(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else if (object->context_target_position != NULL)
         object->anim_packet.requested_animation = object->character_model->action_animations[43] != NULL  ? 43
@@ -356,7 +356,7 @@ void __cdecl Animate_BATTLEDROID(GAMEOBJECT *object) {
 void __cdecl Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else if (object->context_target_position != NULL)
         object->anim_packet.requested_animation = object->character_model->action_animations[43] != NULL  ? 43
@@ -438,7 +438,7 @@ void __cdecl Animate_BEAST(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     GAMEPAD_PC *pad = object->pad;
     i16 animation;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else {
         SetDefaultCharacterAnimPc(object);
@@ -463,7 +463,7 @@ void __cdecl Animate_BEAST(GAMEOBJECT *object) {
 }
 
 void __cdecl Animate_CRITTER(GAMEOBJECT *object) {
-    if ((CInfo[object->character_context].flags & 0x10) != 0) {
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0) {
         object->anim_packet.requested_animation = object->field_7aa;
         return;
     }
@@ -485,7 +485,7 @@ void __cdecl Animate_PROTOCOL(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i32 falling = 0;
     i16 animation;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else if (object->context_target_position != NULL) {
         switch (object->saved_hitpoints) {
@@ -590,7 +590,7 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
     i16 weapon;
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else {
         SetDefaultCharacterAnimPc(object);
@@ -646,7 +646,7 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
                                                           object->character_model->action_animations[39] != NULL
                                                       ? 39
                                                       : 11;
-    else if ((CInfo[object->character_context].flags & 0x10) != 0)
+    else if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else {
         SetDefaultCharacterAnimPc(object);
@@ -730,7 +730,7 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
             object->anim_packet.requested_animation = 15;
         return;
     }
-    if ((CInfo[object->character_context].flags & 0x10) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else if (object->context_target_position != NULL) {
         if (object->character_model->model_data_b[43] != NULL)
