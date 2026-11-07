@@ -60,6 +60,8 @@ static i32 AIScriptConstCursorPc = 0;
 static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end);
 static void *AIScriptBufferAlloc(VARIPTR *buf, VARIPTR *buf_end, u32 size);
 static AISCRIPT_PC *AIScriptLoadPakFilePc(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end);
+/* Set by AiSysOnlyUsePakFile; warns when a package lacks a script file. */
+i32 ai_onlyusepackfile = 0;
 void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer,
                                       VARIPTR *end);
 void __cdecl xConst(NUFPAR_PC *parser);
@@ -304,60 +306,60 @@ i32 __cdecl AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VAR
 
     source_is_level = (script->flags_3c >> 2) & 1;
     source_script = AIScriptFind(sys, script->derived_from, 0, source_is_level, !source_is_level);
-    if (source_script == NULL) {
-        STUBBED_NAMED("AIScriptBuildDerivedScript: missing-source diagnostic");
-        script->flags_3c &= ~2u;
-        return 1;
-    }
-    if (source_script == script) {
-        script->flags_3c &= ~2u;
-        return 1;
-    }
-    if ((source_script->flags_3c & 2) != 0) {
-        return 0;
-    }
-
-    source_state = (AISTATE_PC *)NuLinkedListGetHead(&source_script->states);
-    while (source_state != NULL) {
-        i32 should_copy = 1;
-        state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
-        while (state != NULL) {
-            if (NuStrICmp(source_state->name, state->name) == 0) {
-                should_copy = 0;
-                break;
+    if (source_script != NULL) {
+        if (source_script != script) {
+            if ((source_script->flags_3c & 2) != 0) {
+                return 0;
             }
-            state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
-        }
-        if (should_copy) {
-            AISTATE_PC *copy;
-            copy = AIScriptCopyStatePc(source_state, buffer, end_buffer);
-            if (copy != NULL) {
-                NuLinkedListAppend(&script->states, &copy->link);
+            source_state = (AISTATE_PC *)NuLinkedListGetHead(&source_script->states);
+            while (source_state != NULL) {
+                state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+                while (state != NULL) {
+                    if (NuStrICmp(source_state->name, state->name) == 0) {
+                        break;
+                    }
+                    state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+                }
+                if (state == NULL) {
+                    AISTATE_PC *copy;
+                    copy = AIScriptCopyStatePc(source_state, buffer, end_buffer);
+                    if (copy != NULL) {
+                        NuLinkedListAppend(&script->states, &copy->link);
+                    }
+                }
+                source_state = (AISTATE_PC *)NuLinkedListGetNext(&source_script->states, &source_state->link);
+            }
+
+            for (i = 0; i < 4; i++) {
+                if (source_script->params[i].name != NULL && script->params[i].name == NULL) {
+                    script->params[i].name = AIScriptCopyStringPc(source_script->params[i].name, buffer, end_buffer);
+                    script->params[i].default_value = source_script->params[i].default_value;
+                }
+            }
+
+            state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+            while (state != NULL) {
+                condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+                while (condition != NULL) {
+                    condition->next_state = AIStateFind(condition->next_state_name, script);
+                    if (condition->next_state_name != NULL && condition->next_state == NULL) {
+                        if (AIActionDiagnosticMode == 1) {
+                            AIScriptMissingStateDiagnosticAlternate(condition->next_state_name, script->name,
+                                                                    state->name);
+                        } else {
+                            AIScriptMissingStateDiagnostic(condition->next_state_name, script->name, state->name);
+                        }
+                    }
+                    condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
+                }
+                state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
             }
         }
-        source_state = (AISTATE_PC *)NuLinkedListGetNext(&source_script->states, &source_state->link);
+    } else if (AIActionDiagnosticMode == 1) {
+        AIScriptMissingStateDiagnosticAlternate(script->name, script->derived_from);
+    } else {
+        AIScriptMissingStateDiagnostic(script->name, script->derived_from);
     }
-
-    for (i = 0; i < 4; i++) {
-        if (source_script->params[i].name != NULL && script->params[i].name == NULL) {
-            script->params[i].name = AIScriptCopyStringPc(source_script->params[i].name, buffer, end_buffer);
-            script->params[i].default_value = source_script->params[i].default_value;
-        }
-    }
-
-    state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
-    while (state != NULL) {
-        condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
-        while (condition != NULL) {
-            condition->next_state = AIStateFind(condition->next_state_name, script);
-            if (condition->next_state_name != NULL && condition->next_state == NULL) {
-                STUBBED_NAMED("AIScriptBuildDerivedScript: unresolved inherited next-state diagnostic");
-            }
-            condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
-        }
-        state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
-    }
-
     script->flags_3c &= ~2u;
     return 1;
 }
@@ -500,19 +502,25 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
             NuFilePakGetItemInfo(pak, item_index, &memfile, &memfile_size);
             file = NuMemFileOpen(memfile, memfile_size, 0);
             if (file == 0) {
-                STUBBED_NAMED("AIScriptLoadAllPakFile: package script-list open diagnostic");
+                AIScriptMissingConditionDiagnostic();
             }
+        } else if (AIActionDiagnosticMode == 1) {
+            AIScriptMissingConditionDiagnostic();
         } else {
-            STUBBED_NAMED("AIScriptLoadAllPakFile: missing package script-list diagnostic");
+            AIScriptMissingStateDiagnostic();
+        }
+        if (file == 0 && ai_onlyusepackfile == 1) {
+            if (AIActionDiagnosticMode == 1) {
+                AIScriptMissingStateDiagnosticAlternate();
+            } else {
+                AIScriptMissingStateDiagnostic();
+            }
         }
     }
 
     if (file == 0) {
         sprintf(filepath, AIScriptListPathFormat, path);
         file = NuFileOpen(filepath, 0);
-        if (file == 0) {
-            STUBBED_NAMED("AIScriptLoadAllPakFile: script-list file open diagnostic");
-        }
     }
 
     file_count = 0;
@@ -522,7 +530,7 @@ void __cdecl AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARI
             while (NuFParGetLine(parser) != 0) {
                 NuFParGetWord(parser);
                 if (NuStrLen(parser->word_buffer_ptr) > 0x0f) {
-                    STUBBED_NAMED("AIScriptLoadAllPakFile: overlong script filename diagnostic");
+                    AIScriptMissingStateDiagnostic(parser->word_buffer_ptr);
                 }
                 NuStrCpy(script_files[file_count], parser->word_buffer_ptr);
                 NuStrCat(script_files[file_count], AIScriptFileExtension);
@@ -1911,7 +1919,7 @@ static char *AIScriptCopyStringPc(char *text, VARIPTR *buffer, VARIPTR *end) {
 
 void __cdecl xConst(NUFPAR_PC *parser) {
     if (NuStrLen(parser->word_buffer_ptr) >= 31) {
-        STUBBED_NAMED("xConst: native RET-only diagnostic 0x512850");
+        AIScriptMissingStateDiagnostic(parser->word_buffer_ptr);
     }
     NuFParGetWord(parser);
     NuStrNCpy(AIScriptConstantRecordsPc[AIScriptConstCursorPc].name, parser->word_buffer_ptr, 32);
@@ -1942,11 +1950,19 @@ static NUFPAR_PC *AIScriptOpenParserPc(void *pak, char *filename, char *path) {
             if (file != 0) {
                 return NuFParOpen(file);
             }
-            STUBBED_NAMED("AIScriptOpenParser: native RET-only package diagnostic 0x512870");
+            AIScriptMissingConditionDiagnostic(filename);
+        } else if (AIActionDiagnosticMode == 1) {
+            AIScriptMissingConditionDiagnostic(filename);
         } else {
-            STUBBED_NAMED("AIScriptOpenParser: native RET-only missing item diagnostic 0x512850/0x512870");
+            AIScriptMissingStateDiagnostic(filename);
         }
-        /* Native package-only diagnostics at 0x512850/0x512860 are RET-only. */
+        if (ai_onlyusepackfile != 0) {
+            if (AIActionDiagnosticMode == 1) {
+                AIScriptMissingStateDiagnosticAlternate(filename);
+            } else {
+                AIScriptMissingStateDiagnostic(filename);
+            }
+        }
     }
     return NuFParCreate(filepath);
 }
@@ -1977,32 +1993,34 @@ void __cdecl AIScriptOpenPakFileParse(AISCRIPT_PC **script_ref, void *pak, char 
     char script_name[64];
     char *extension;
     AISCRIPT_PC *script;
-    if (parser == NULL) {
-        STUBBED_NAMED("AIScriptOpenPakFileParse: native RET-only parser-open diagnostic 0x512850/0x512860");
-        return;
-    }
-    if (*script_ref == NULL) {
-        script = NULL;
-        if (buffer != NULL && end != NULL && buffer->addr + sizeof(AISCRIPT_PC) < end->addr) {
-            script = (AISCRIPT_PC *)((buffer->addr + 15) & ~15u);
-            buffer->addr = (u32)script + sizeof(AISCRIPT_PC);
-            memset(script, 0, sizeof(AISCRIPT_PC));
-        } else {
-            STUBBED_NAMED("AIScriptOpenPakFileParse: native RET-only allocation diagnostic 0x512850");
-        }
-        *script_ref = script;
-        if (script != NULL) {
-            memset(script, 0, sizeof(AISCRIPT_PC));
-            NuStrCpy(script_name, filename);
-            extension = NuStrIStr(script_name, (char *)AIScriptFileExtension);
-            if (extension != NULL) {
-                *extension = '\0';
+    if (parser != NULL) {
+        if (*script_ref == NULL) {
+            script = NULL;
+            if (buffer != NULL && end != NULL && buffer->addr + sizeof(AISCRIPT_PC) < end->addr) {
+                script = (AISCRIPT_PC *)((buffer->addr + 15) & ~15u);
+                buffer->addr = (u32)script + sizeof(AISCRIPT_PC);
+                memset(script, 0, sizeof(AISCRIPT_PC));
+            } else {
+                AIScriptMissingStateDiagnostic();
             }
-            (*script_ref)->name = AIScriptCopyStringPc(script_name, buffer, end);
+            *script_ref = script;
+            if (script != NULL) {
+                memset(script, 0, sizeof(AISCRIPT_PC));
+                NuStrCpy(script_name, filename);
+                extension = NuStrIStr(script_name, (char *)AIScriptFileExtension);
+                if (extension != NULL) {
+                    *extension = '\0';
+                }
+                (*script_ref)->name = AIScriptCopyStringPc(script_name, buffer, end);
+            }
         }
+        AIScriptParseCommandsPc(parser, buffer, end, *script_ref);
+        NuFParDestroy(parser);
+    } else if (AIActionDiagnosticMode == 1) {
+        AIScriptMissingStateDiagnosticAlternate(filename);
+    } else {
+        AIScriptMissingStateDiagnostic(filename);
     }
-    AIScriptParseCommandsPc(parser, buffer, end, *script_ref);
-    NuFParDestroy(parser);
 }
 
 static AISCRIPT_PC *AIScriptLoadPakFilePc(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
@@ -2022,14 +2040,22 @@ static AISCRIPT_PC *AIScriptLoadPakFilePc(void *pak, char *filename, char *path,
             while (condition != NULL) {
                 condition->next_state = AIStateFind(condition->next_state_name, script);
                 if (condition->next_state_name != NULL && condition->next_state == NULL) {
-                    STUBBED_NAMED("AIScriptLoadPakFile: native RET-only missing state diagnostic 0x512850/0x512860");
+                    if (AIActionDiagnosticMode == 1) {
+                        AIScriptMissingStateDiagnosticAlternate(condition->next_state_name, script->name, state->name);
+                    } else {
+                        AIScriptMissingStateDiagnostic(condition->next_state_name, script->name, state->name);
+                    }
                 }
                 condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
             }
             later = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
             while (later != NULL) {
                 if (NuStrICmp(state->name, later->name) == 0) {
-                    STUBBED_NAMED("AIScriptLoadPakFile: native RET-only duplicate state diagnostic 0x512850/0x512860");
+                    if (AIActionDiagnosticMode == 1) {
+                        AIScriptMissingStateDiagnosticAlternate(state->name, script->name);
+                    } else {
+                        AIScriptMissingStateDiagnostic(state->name, script->name);
+                    }
                 }
                 later = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &later->link);
             }
