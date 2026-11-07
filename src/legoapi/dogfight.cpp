@@ -465,7 +465,7 @@ extern "C" {
 #pragma data_seg()
 
     static __declspec(noinline) void CopyFlightMatrixPc(NUMTX *destination, const NUMTX *source);
-    static __declspec(noinline) void TransformFlightVectorPc(NUMTX *matrix, NUVEC *input, NUVEC *output);
+    static __declspec(noinline) void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix);
     static __declspec(noinline) i32 DrawFlightCharacterPc(NUMTX *matrix, i32 model_id, i32 flags, f32 scale);
     void ChrisAnakinCUpdate();
     static __declspec(noinline) void ProcessQuickBoltsPc(DOGFIGHT_QUICK_BUFFER_PC *buffer);
@@ -546,7 +546,7 @@ extern "C" {
 #undef COPY_ELEMENT
     }
 
-    static __declspec(noinline) void TransformFlightVectorPc(NUMTX *matrix, NUVEC *input, NUVEC *output) {
+    static __declspec(noinline) void TransformFlightVectorPc(NUVEC *output, NUVEC *input, NUMTX *matrix) {
         f32 x = (f64)matrix->m10 * input->y + (f64)input->x * matrix->m00 + (f64)matrix->m20 * input->z;
         f32 y = (f64)matrix->m01 * input->x + (f64)matrix->m11 * input->y + (f64)matrix->m21 * input->z;
         output->z = (f64)matrix->m02 * input->x + (f64)matrix->m12 * input->y + (f64)matrix->m22 * input->z;
@@ -1167,57 +1167,51 @@ extern "C" {
     static __declspec(noinline) i32 StarFighterFirePc(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix,
                                                       f32 shot_speed) {
         __declspec(align(16)) NUVEC offset, local;
-        NUVEC *target_position, *target_velocity, *axis;
+        NUVEC *target_position, *target_velocity, *axis, *front, *right, *up;
         GAMEOBJECT *player;
-        f32 forward, square, ratio, closing_speed, travel_time, least, up_dot, front_dot;
+        f32 forward, square, ratio, closing_speed, travel_time, least, up_dot, front_dot, bias;
         i16 yaw, pitch;
         union {
             f32 value;
             u32 bits;
         } absolute;
-        switch (fighter->target_id) {
-            case -1:
+        if (fighter->target_id == -1)
+            return 1;
+        if (fighter->target_id == -2) {
+            if ((NuRandFloat() < 0.5f && (player = (GAMEOBJECT *)Player[0]) != NULL &&
+                 (player->flags_1fc & 0x80) != 0) ||
+                ((player = (GAMEOBJECT *)Player[1]) != NULL && (player->flags_1fc & 0x80) != 0)) {
+                DogfightCachedPlayerPositionPc = player->collision_position;
+                DogfightCachedPlayerVelocityPc = player->velocity;
+            }
+            target_position = &DogfightCachedPlayerPositionPc;
+            target_velocity = &DogfightCachedPlayerVelocityPc;
+        } else if (fighter->target_id == -3) {
+            *aim_matrix = fighter->matrix;
+            velocity->x = velocity->y = 0.0f;
+            velocity->z = shot_speed;
+            velocity->w = 0.0f;
+            TransformFlightVectorPc((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
+            return 0;
+        } else {
+            if (fighter->target == NULL || fighter->target->active == 0)
                 return 1;
-            case -2:
-                player = NULL;
-                if (NuRandFloat() < 0.5f && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
-                    player = (GAMEOBJECT *)Player[0];
-                else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)
-                    player = (GAMEOBJECT *)Player[1];
-                if (player != NULL) {
-                    DogfightCachedPlayerPositionPc = player->collision_position;
-                    DogfightCachedPlayerVelocityPc = player->velocity;
-                }
-                target_position = &DogfightCachedPlayerPositionPc;
-                target_velocity = &DogfightCachedPlayerVelocityPc;
-                break;
-            case -3:
-                *aim_matrix = fighter->matrix;
-                velocity->x = velocity->y = 0.0f;
-                velocity->z = shot_speed;
-                velocity->w = 0.0f;
-                TransformFlightVectorPc(aim_matrix, (NUVEC *)velocity, (NUVEC *)velocity);
-                return 0;
-            default:
-                if (fighter->target == NULL || fighter->target->active == 0)
-                    return 1;
-                target_position = (NUVEC *)&fighter->target->matrix.m30;
-                target_velocity = (NUVEC *)&fighter->velocity;
-                break;
+            target_position = (NUVEC *)&fighter->target->matrix.m30;
+            target_velocity = (NUVEC *)&fighter->velocity;
         }
+        front = (NUVEC *)&fighter->matrix.m20;
         offset.x = target_position->x - fighter->matrix.m30;
         offset.y = target_position->y - fighter->matrix.m31;
         offset.z = target_position->z - fighter->matrix.m32;
-        forward = (f64)fighter->matrix.m21 * offset.y + (f64)fighter->matrix.m20 * offset.x +
-                  (f64)fighter->matrix.m22 * offset.z;
+        forward = (f64)front->y * offset.y + (f64)front->x * offset.x + (f64)front->z * offset.z;
         if (forward < DogfightFireNearPc || forward > DogfightFireFarPc)
             return 1;
         square = (f64)offset.y * offset.y + (f64)offset.x * offset.x + (f64)offset.z * offset.z;
         ratio = (f64)forward * forward / square;
         if (ratio < (f64)0.969f)
             return 2;
-        closing_speed = (f64)fighter->matrix.m21 * target_velocity->y + (f64)target_velocity->x * fighter->matrix.m20 +
-                        (f64)fighter->matrix.m22 * target_velocity->z;
+        closing_speed = (f64)front->y * target_velocity->y + (f64)target_velocity->x * front->x +
+                        (f64)front->z * target_velocity->z;
         closing_speed = 50.0 - (f64)closing_speed;
         if (closing_speed < 1.0f)
             return 2;
@@ -1225,40 +1219,40 @@ extern "C" {
         local.x = (f64)target_velocity->x * travel_time;
         local.y = (f64)target_velocity->y * travel_time;
         local.z = (f64)target_velocity->z * travel_time;
-        offset.x += local.x;
-        offset.y += local.y;
-        offset.z += local.z;
+        offset.x = offset.x + local.x;
+        offset.y = offset.y + local.y;
+        offset.z = offset.z + local.z;
         if (fighter->fired == 0) {
-            absolute.value = (f64)fighter->matrix.m01 * offset.y + (f64)fighter->matrix.m00 * offset.x +
-                             (f64)fighter->matrix.m02 * offset.z;
+            right = (NUVEC *)&fighter->matrix.m00;
+            up = (NUVEC *)&fighter->matrix.m10;
+            absolute.value = (f64)right->y * offset.y + (f64)right->x * offset.x + (f64)right->z * offset.z;
             absolute.bits &= 0x7fffffff;
             least = absolute.value;
-            absolute.value = (f64)fighter->matrix.m11 * offset.y + (f64)fighter->matrix.m10 * offset.x +
-                             (f64)fighter->matrix.m12 * offset.z;
+            absolute.value = (f64)up->y * offset.y + (f64)up->x * offset.x + (f64)up->z * offset.z;
             absolute.bits &= 0x7fffffff;
             up_dot = absolute.value;
-            absolute.value = (f64)fighter->matrix.m21 * offset.y + (f64)fighter->matrix.m20 * offset.x +
-                             (f64)fighter->matrix.m22 * offset.z;
+            absolute.value = (f64)front->y * offset.y + (f64)front->x * offset.x + (f64)front->z * offset.z;
             absolute.bits &= 0x7fffffff;
             front_dot = absolute.value;
-            axis = (NUVEC *)&fighter->matrix.m20;
+            axis = front;
             if (up_dot > least) {
                 if (front_dot > least)
-                    axis = (NUVEC *)&fighter->matrix.m00;
+                    axis = right;
             } else if (front_dot > up_dot) {
-                axis = (NUVEC *)&fighter->matrix.m10;
+                axis = up;
             }
             NuVecCross((NUVEC *)&fighter->aim_direction, &offset, axis);
             NuVecNorm((NUVEC *)&fighter->aim_direction, (NUVEC *)&fighter->aim_direction);
             fighter->aim_direction.w = 1.0f;
         }
         if (fighter->aim_bias != 0.0f) {
-            local.x = (f64)fighter->aim_direction.x * fighter->aim_bias;
-            local.y = (f64)fighter->aim_direction.y * fighter->aim_bias;
-            local.z = (f64)fighter->aim_direction.z * fighter->aim_bias;
-            offset.x += local.x;
-            offset.y += local.y;
-            offset.z += local.z;
+            bias = fighter->aim_bias;
+            local.x = (f64)fighter->aim_direction.x * bias;
+            local.y = (f64)fighter->aim_direction.y * bias;
+            local.z = (f64)fighter->aim_direction.z * bias;
+            offset.x = offset.x + local.x;
+            offset.y = offset.y + local.y;
+            offset.z = offset.z + local.z;
         }
         *aim_matrix = fighter->matrix;
         NuVecInvMtxRotate(&local, &offset, aim_matrix);
@@ -1270,7 +1264,7 @@ extern "C" {
         velocity->x = velocity->y = 0.0f;
         velocity->z = shot_speed;
         velocity->w = 0.0f;
-        TransformFlightVectorPc(aim_matrix, (NUVEC *)velocity, (NUVEC *)velocity);
+        TransformFlightVectorPc((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
         return 0;
     }
 
