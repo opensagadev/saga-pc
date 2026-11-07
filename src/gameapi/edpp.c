@@ -3865,3 +3865,93 @@ void edptlcbSoundsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_sounds_menu->x = parent->x + 10;
     edptl_sounds_menu->y = parent->y + 40;
 }
+
+extern i32 edpp_curr;
+void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
+void cbPtlInstanceSettingsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
+void cbPtlSScaleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
+
+void edppInit(void) {
+    u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+    edpp_first_time_this_level = 1;
+    edpp_mtl = (PC_SCENE_MTL_VIEW *)NuMtlCreate3D(1);
+    ((NUMTL *)edpp_mtl)->diffuse_r = 0.5f;
+    ((NUMTL *)edpp_mtl)->diffuse_g = 0.5f;
+    ((NUMTL *)edpp_mtl)->diffuse_b = 0.5f;
+    ((NUMTL *)edpp_mtl)->attribs.cull_mode = 2;
+    ((NUMTL *)edpp_mtl)->attribs.z_mode = 0;
+    ((NUMTL *)edpp_mtl)->opacity = 1.0f;
+    ((NUMTL *)edpp_mtl)->attribs.alpha_mode = 0;
+    NuMtlUpdate((NUMTL *)edpp_mtl);
+    edpp_boxmtl = (PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
+    ((NUMTL *)edpp_boxmtl)->diffuse_r = 0.5f;
+    ((NUMTL *)edpp_boxmtl)->diffuse_g = 0.5f;
+    ((NUMTL *)edpp_boxmtl)->diffuse_b = 0.5f;
+    ((NUMTL *)edpp_boxmtl)->attribs.cull_mode = 2;
+    ((NUMTL *)edpp_boxmtl)->attribs.z_mode = 3;
+    ((NUMTL *)edpp_boxmtl)->opacity = 1.0f;
+    ((NUMTL *)edpp_boxmtl)->attribs.alpha_mode = 0;
+    NuMtlUpdate((NUMTL *)edpp_boxmtl);
+    edpp_nearest = -1;
+    edpp_curr = -1;
+    edpp_create_type = -1;
+    edpp_effect_list = 0;
+    edpp_emitrotz = 0;
+    edpp_emitroty = 0;
+    edpp_emitrotx = 0;
+    ptlgcodemenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, NULL, "GenCode Type");
+    if (ptlgcodemenu != NULL) {
+        eduiMenuAddItem(ptlgcodemenu, eduiItemCheckCreate(1, colours, 0, 1, cbPtlSelGCode, "None"));
+        eduiMenuAddItem(ptlgcodemenu, eduiItemCheckCreate(2, colours, 0, 1, cbPtlSelGCode, "Pos"));
+        eduiMenuAddItem(ptlgcodemenu, eduiItemCheckCreate(3, colours, 0, 1, cbPtlSelGCode, "PosRev"));
+        eduiMenuAddItem(ptlgcodemenu, eduiItemCheckCreate(4, colours, 0, 1, cbPtlSelGCode, "Splash"));
+        eduiMenuAddItem(ptlgcodemenu, eduiItemCheckCreate(5, colours, 0, 1, cbPtlSelGCode, "AshRock"));
+        eduiMenuAddItem(ptlgcodemenu, eduiItemCheckCreate(6, colours, 0, 1, cbPtlSelGCode, "PosRevTree"));
+        eduiMenuAddItem(ptlgcodemenu, eduiItemCheckCreate(7, colours, 0, 1, cbPtlSelGCode, "PosAll"));
+    }
+    ptloptmenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancel, "Options");
+    if (ptloptmenu == NULL)
+        return;
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbEffectListMenu, "Effect List..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlTypeMenu, "Particle Type..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlDataMenu, "Data Menu..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlGSortMenu, "GenSort Type..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlColMenu, "Particle Colour..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlTextureMenu, "Particle Texture..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlEmitMenu, "Emitter Settings..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlSizeMenu, "Particle Size..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlRotMenu, "Particle Rotation..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlJibMenu, "Particle Jibber..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbBounceMenu, "Particle Bounces..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbSoundsMenu, "Attached Sounds..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlDamageMenu, "Particle Damage..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlInstanceSettingsMenu, "Instance Settings..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlSScaleMenu, "Super Scale..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbDpadModeMenu, "Dpad Mode..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbSwitchMenu, "Switch Menu..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbGroupMenu, "Render Settings..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbDetailMenu, "Detail Level Settings..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbPageMenu, "Test Page Menu..."));
+    eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbResetParticles, "Reset Particles"));
+    eduiMenuAddItem(ptloptmenu, eduiItemToggleCreate(1, colours, 0, 1, cbPtlSnapToggle, "Snap"));
+    eduiMenuAddItem(ptloptmenu,
+                    eduiItemSelCreate(1, colours, 0, 0, edptlcbJumpToGameLocation, "Jump To Game Location"));
+}
+
+void __cdecl edmainSetLocVec(NUVEC *position);
+
+void edppRegisterPointerToGameCharLocation(NUVEC *position) {
+    edmainSetLocVec(position);
+}
+
+void edppSetSaveName(u32 page, char *name) {
+    if (page <= 5)
+        edpp_save_names[page] = name;
+}
+
+void edppDestroyAllEffects(void) {
+    i32 index;
+    for (index = 1; index < debinf_count; ++index)
+        debtab[index] = NULL;
+    edpp_types_used = 1;
+}

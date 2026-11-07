@@ -13542,6 +13542,15 @@ extern "C" {
 #pragma data_seg(".data$edgra_global_fadeout")
     f32 edgra_global_fadeout = 25.0f;
 #pragma data_seg()
+    void __cdecl edgraInit(void);
+    void __cdecl edgraClose(void);
+    void __cdecl edgraEnter(void);
+    i32 __cdecl edgraProc(f32 delta_time, FRAME_PAD_PC *pad);
+    void __cdecl edgraRender(void);
+#pragma data_seg(".data$edgradesc")
+    ed_module_s edgradesc = {NULL, NULL, "Grass Editor", edgraInit,  edgraClose, edgraEnter,  NULL,
+                             NULL, NULL, NULL,           0x73617267, edgraProc,  edgraRender, NULL};
+#pragma data_seg()
 #pragma data_seg(".data$edgra_clumpthin")
     i32 edgra_clumpthin = 1;
 #pragma data_seg()
@@ -29114,6 +29123,20 @@ extern "C" {
 #pragma bss_seg(".bss$edpp_offset")
     f32 edpp_offset = 0;
 
+    void __cdecl edppInit(void);
+    void __cdecl edppClose(void);
+    void __cdecl edppEnter(void);
+    void __cdecl edppApply(void);
+    i32 __cdecl edppProc(f32 delta_time, FRAME_PAD_PC *pad);
+    void __cdecl edppRender(void);
+#pragma data_seg(".data$edptldesc")
+    ed_module_s edptldesc = {NULL,       NULL,       "Particle Positioner",
+                             edppInit,   edppClose,  edppEnter,
+                             NULL,       edppApply,  NULL,
+                             NULL,       0x706c7470, edppProc,
+                             edppRender, NULL};
+#pragma data_seg()
+
 #pragma data_seg(".data$edpp_create_type")
     i32 edpp_create_type = -1;
 
@@ -29175,6 +29198,12 @@ extern "C" {
     struct eduimenu_s *edptl_soundcontrol_menu = 0;
 #pragma bss_seg(".bss$edptl_page_menu")
     struct eduimenu_s *edptl_page_menu = 0;
+#pragma bss_seg(".bss$gra_ptr")
+    VARIPTR *gra_ptr = 0;
+#pragma bss_seg(".bss$gra_end")
+    VARIPTR *gra_end = 0;
+#pragma bss_seg(".bss$edpp_curr")
+    i32 edpp_curr = 0;
 #pragma bss_seg(".bss$edpp_first_time_this_level")
     i32 edpp_first_time_this_level = 0;
 #pragma bss_seg(".bss$entry_position")

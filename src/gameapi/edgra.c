@@ -338,3 +338,57 @@ void __cdecl edgraRender(void) {
     if (edgra_active_menu)
         eduiMenuRender(edgra_active_menu);
 }
+
+extern VARIPTR *gra_ptr, *gra_end;
+
+void edgraSetMemoryBuffer(VARIPTR *start, VARIPTR *end) {
+    gra_ptr = start;
+    gra_end = end;
+}
+
+void edgraInit(void) {
+    VARIPTR *buffer;
+    i32 index;
+    edgraClumpsReset();
+    edgra_mtl = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate3D(1);
+    ((NUMTL *)edgra_mtl)->diffuse_r = 0.5f;
+    ((NUMTL *)edgra_mtl)->diffuse_g = 0.5f;
+    ((NUMTL *)edgra_mtl)->diffuse_b = 0.5f;
+    ((NUMTL *)edgra_mtl)->attribs.cull_mode = 2;
+    ((NUMTL *)edgra_mtl)->attribs.z_mode = 0;
+    ((NUMTL *)edgra_mtl)->opacity = 1.0f;
+    ((NUMTL *)edgra_mtl)->attribs.alpha_mode = 0;
+    NuMtlUpdate((NUMTL *)edgra_mtl);
+    edgra_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
+    ((NUMTL *)edgra_mtl_zoff)->diffuse_r = 0.5f;
+    ((NUMTL *)edgra_mtl_zoff)->diffuse_g = 0.5f;
+    ((NUMTL *)edgra_mtl_zoff)->diffuse_b = 0.5f;
+    ((NUMTL *)edgra_mtl_zoff)->attribs.cull_mode = 2;
+    ((NUMTL *)edgra_mtl_zoff)->attribs.z_mode = 3;
+    ((NUMTL *)edgra_mtl_zoff)->opacity = 1.0f;
+    ((NUMTL *)edgra_mtl_zoff)->attribs.alpha_mode = 0;
+    NuMtlUpdate((NUMTL *)edgra_mtl_zoff);
+    buffer = gra_ptr;
+    if (buffer == NULL) {
+        edgra_mtxbuffer = (NUMTX *)NuAlloc(0xc0080, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\edgra.c", 0xb0a);
+        edgra_vecbuffer = (NUVEC *)NuAlloc(0x24000, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\edgra.c", 0xb0c);
+    } else {
+        edgra_mtxbuffer = (NUMTX *)((buffer->addr + 15) & ~15u);
+        buffer->addr = ((buffer->addr + 15) & ~15u) + 0xc0080;
+        edgra_vecbuffer = (NUVEC *)((buffer->addr + 15) & ~15u);
+        buffer->addr = ((buffer->addr + 15) & ~15u) + 0x24000;
+    }
+    for (index = 0; index < EDGRA_MAX_CLUMPS; ++index)
+        GrassClumps[index].vector_buffer = NULL;
+    edgra_free_vecbuffer = edgra_vecbuffer;
+    edgra_instance_type = -1;
+}
+
+void edgraSetThinning(i32 clumps, i32 elements) {
+    edgra_clumpthin = clumps;
+    edgra_elementthin = elements;
+    if (edgra_clumpthin < 1)
+        edgra_clumpthin = 1;
+    if (edgra_elementthin < 1)
+        edgra_elementthin = 1;
+}

@@ -8659,6 +8659,8 @@ address,symbol,size,ctype
 0x65ed70,_edgracbCancelDpadModeMenu,25,
 0x65ed90,_edgracbDpadModeMenu,241,
 0x65ee90,_edgraClumpsReset,202,void __cdecl(void)
+0x65ef60,_edgraClose,39,void __cdecl (void)
+0x65ef90,_edgraEnter,43,void __cdecl (void)
 0x65efc0,_edgraDetermineNearestInstance,380,
 0x65f140,_edgraFileSave,912,
 0x0065f4d0,_edGraEnableTerrainSwap,1,void __cdecl (void)
@@ -8678,6 +8680,12 @@ address,symbol,size,ctype
 0x65f8c0,_edgracbCancelOptMenu,39,
 0x65f8f0,_edgraDrawCursor,1606,
 0x65ff40,_edgraRender,536,
+0x660160,_edgraSetMemoryBuffer,20,"void __cdecl (VARIPTR *, VARIPTR *)"
+0x660180,_edgraInit,424,void __cdecl (void)
+0x660330,_edgraSetThinning,45,"void __cdecl (i32, i32)"
+0x660360,_edppRegisterPointerToGameCharLocation,5,void __cdecl (NUVEC *)
+0x660370,_edppSetSaveName,21,"void __cdecl (u32, char *)"
+0x660390,_edppDestroyAllEffects,46,void __cdecl (void)
 0x6603c0,_edppMultipleCopyCopy,285,
 0x6604f0,_edppDrawSpheres,397,
 0x660680,_edppDrawTorus,612,
@@ -9135,6 +9143,7 @@ address,symbol,size,ctype
 0x692ba0,_cbFileLoadEffects,777,"void __cdecl (struct eduimenu_s *, struct eduiitem_s *, u32)"
 0x692eb0,_cbPtlDataMenu,708,
 0x693180,_cbPtlEmitMenu,880,
+0x6934f0,_edppInit,1558,void __cdecl (void)
 0x693b60,_PCStereoUnknownToken,1,void __cdecl(...) [C++ logical prototype; true retail RET no arguments consumed]
 0x00693b70,_PCMusicTrackNotFound,1,void __cdecl(...) [C++ logical prototype; retail passes the track name]
 0x00693bb0,?GetPlayer@NuMusic@@SAPAV1@XZ,6,NuMusic *__cdecl (void)
@@ -19037,6 +19046,8 @@ address,symbol,size,ctype
 0x76d128,__real@40f869fe60000000,8,const f64
 0x76d130,__real@408c200000000000,8,const f64
 0x76d138,__real@40b3880000000000,8,const f64
+0x76d1a0,??_C@_0BE@KCEMHNMA@Particle?5Positioner?$AA@,20,char []
+0x76d1b4,??_C@_0N@OPNDHJMM@Grass?5Editor?$AA@,13,char []
 0x76d1e0,??_C@_05MBDCODDP@Group?$AA@,,const char[6]
 0x76d1e8,??_C@_06OANMLBJC@Sample?$AA@,,const char[7]
 0x76d1f0,??_C@_05KKCMAPLJ@Audio?$AA@,,const char[6]
@@ -19154,6 +19165,7 @@ address,symbol,size,ctype
 0x76d898,??_C@_0O@BOHBEPJP@Curr?5Inst?3?5?$CFs?$AA@,14,char []
 0x76d8a8,??_C@_0BC@NAICPEJJ@Curr?5Inst?3?5?$DMnone?$DO?$AA@,18,char []
 0x76d8bc,??_C@_0BA@MHGGJEED@Copy?5Clump?5Mode?$AA@,16,char []
+0x76d8cc,??_C@_0DD@LKDKJOBG@d?3?2projects?2game_saga?2gameapi?4sa@,51,char []
 0x76d900,??_C@_0BC@POINCPDD@Dpad?5Mode?3?5Facing?$AA@,18,char []
 0x76d914,??_C@_0BH@OGNBFLDA@Dpad?5Mode?3?5Reflections?$AA@,23,char []
 0x76d92c,??_C@_0BK@HNMICBLP@Dpad?5Mode?3?5Offset?5?$CI?$CF0?42f?$CJ?$AA@,26,char []
@@ -19477,7 +19489,28 @@ address,symbol,size,ctype
 0x76ebb4,??_C@_0BH@BAEOJKKK@Emit?5Point?5Velocity?4?4?4?$AA@,23,char []
 0x76ebcc,??_C@_0BC@GPHIJOEF@Start?5Velocity?4?4?4?$AA@,18,char []
 0x76ebe0,??_C@_0BE@NDBCLFI@Base?5Emit?5Vector?4?4?4?$AA@,20,char []
+0x76ebf4,??_C@_0BG@IAOJGJPM@Jump?5To?5Game?5Location?$AA@,22,char []
 0x76ec0c,??_C@_04PLLNOFCI@Snap?$AA@,5,char []
+0x76ec14,??_C@_0BA@MHMPCBHK@Reset?5Particles?$AA@,16,char []
+0x76ec24,??_C@_0BC@FAINGGKI@Test?5Page?5Menu?4?4?4?$AA@,18,char []
+0x76ec38,??_C@_0BJ@BPNDBHK@Detail?5Level?5Settings?4?4?4?$AA@,25,char []
+0x76ec54,??_C@_0BD@OEFDHBLK@Render?5Settings?4?4?4?$AA@,19,char []
+0x76ec68,??_C@_0BD@CJFDIMCP@Particle?5Damage?4?4?4?$AA@,19,char []
+0x76ec7c,??_C@_0BE@KMHHEAKF@Particle?5Bounces?4?4?4?$AA@,20,char []
+0x76ec90,??_C@_0BD@PLICPMCM@Particle?5Jibber?4?4?4?$AA@,19,char []
+0x76eca4,??_C@_0BF@MENKIPH@Particle?5Rotation?4?4?4?$AA@,21,char []
+0x76ecbc,??_C@_0BB@MILJAPNK@Particle?5Size?4?4?4?$AA@,17,char []
+0x76ecd0,??_C@_0BE@BEFPONKF@Particle?5Texture?4?4?4?$AA@,20,char []
+0x76ece4,??_C@_0BD@DAGNPAF@Particle?5Colour?4?4?4?$AA@,19,char []
+0x76ecf8,??_C@_0BA@EIPCFIKC@GenSort?5Type?4?4?4?$AA@,16,char []
+0x76ed08,??_C@_0P@JHAMOJKN@Effect?5List?4?4?4?$AA@,15,char []
+0x76ed18,??_C@_06KNLLMHBB@PosAll?$AA@,7,char []
+0x76ed20,??_C@_0L@EMMBNNMK@PosRevTree?$AA@,11,char []
+0x76ed2c,??_C@_07KLMDBJIP@AshRock?$AA@,8,char []
+0x76ed34,??_C@_06FPEHODOG@Splash?$AA@,7,char []
+0x76ed3c,??_C@_06FAOLPODE@PosRev?$AA@,7,char []
+0x76ed44,??_C@_03FCCPIJGJ@Pos?$AA@,4,char []
+0x76ed48,??_C@_0N@GJCNMDOE@GenCode?5Type?$AA@,13,char []
 0x76ed58,??_C@_06OPHFLJJP@STRICT?$AA@,7,const char[7]
 0x76ed60,??_C@_04HBHDLLBA@PATH?$AA@,5,const char[5]
 0x76ed68,??_C@_0BC@MCGHAOGH@GLOBALATTENUATION?$AA@,18,const char[18]
@@ -24785,12 +24818,14 @@ address,symbol,size,ctype
 0x810a94,_edgra_superscale,4,i32
 0x810a98,_edgra_global_fadein,,f32
 0x810a9c,_edgra_global_fadeout,,f32
+0x810aa0,_edgradesc,56,ed_module_s
 0x810ad8,_edpp_create_type,4,i32
 0x810adc,_edpp_copy_size,4,f32
 0x810ae0,_edpp_scale_factor,,f32
 0x810ae4,_ptlrepeatbox_xz_lock,4,i32
 0x810ae8,_edptl_superscale,4,i32
 0x810aec,_edptl_clipboard_entry,4,i32
+0x810af0,_edptldesc,56,ed_module_s
 0x810b28,_TerrainSkinOriginalGroupCountPc,,i32
 0x810b2c,_TerrPlatDis,,i32
 0x810b30,_TerConTol,,f32
@@ -28778,6 +28813,7 @@ address,symbol,size,ctype
 0x0292fc50,_TerrainRoofNormalPc,,
 0x292fc5c,_edbri_page_scene,,NUGSCN*[8]
 0x292fc7c,_debug_index,,i16
+0x292fc80,_gra_end,4,VARIPTR *
 0x292fc84,_curSphereter,,i32
 0x0292fc88,_CurTerr,4,TERRSET *
 0x0292fc88,_CurrentTerrain,4,void *
@@ -28860,6 +28896,7 @@ address,symbol,size,ctype
 0x2948ef8,_TempStackPtrPc,,u8 *
 0x2948efc,_TerrOverRideScan,,void *
 0x2948f00,_ptlclipmenu,4,struct eduimenu_s *
+0x2948f04,_edpp_curr,4,i32
 0x2948f08,_edgra_size,4,f32
 0x2948f10,_edbri_page_on,,i32[8]
 0x2948f30,_SfxFilenameSlotsPc,,char[1601][64]
@@ -28992,6 +29029,7 @@ address,symbol,size,ctype
 0x29629e4,_fadeoutitem,4,struct edui_colour_slider_s *
 0x29629e8,_globalfadeinitem,4,struct edui_colour_slider_s *
 0x29629ec,_globalfadeoutitem,4,struct edui_colour_slider_s *
+0x29629f0,_gra_ptr,4,VARIPTR *
 0x29629f4,_edgra_filter,4,i32
 0x29629f8,_edgra_units_used,,i32
 0x2962a00,_edgra_clumps_used,,i32

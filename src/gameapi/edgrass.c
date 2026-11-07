@@ -17,6 +17,21 @@ void __cdecl edgraClumpsReset(void) {
     edgra_ind_clumps_used = 0;
 }
 
+void edgraClose(void) {
+    MenuSetPlatformState(1);
+    if (edgra_options_menu != NULL) {
+        eduiMenuDestroy(edgra_options_menu);
+        edgra_options_menu = NULL;
+    }
+}
+
+void edgraEnter(void) {
+    MenuSetPlatformState(0);
+    edgra_size = 0.5f;
+    edgra_nearest = -1;
+    edgra_clump_size = 64;
+}
+
 void __cdecl edgraDetermineNearestInstance(f32 distance) {
     NUVEC delta;
     i32 individual, i;
