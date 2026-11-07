@@ -5700,7 +5700,7 @@ void __cdecl GameAIProcess(void) {
     if (test_new_interaction != 0)
         GameCreatureInteraction2D(WORLD->ai_sys, interactive_count, interactive_objects, NULL, FRAMETIME);
     else
-        AISysCreatureInteraction2D(WORLD->ai_sys, interactive_count, interactive_objects, NULL, FRAMETIME);
+        LEGO_AISysCreatureInteraction2D(WORLD->ai_sys, interactive_count, interactive_objects, NULL, FRAMETIME);
     if (party_under_cover != 0) {
         for (index = 0; index < 8; ++index) {
             if (((GAMEOBJECT **)Player)[index] != NULL)

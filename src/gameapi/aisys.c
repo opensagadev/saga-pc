@@ -10799,6 +10799,87 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
         for (second_index = first_index + 1; second_index < object_count; ++second_index) {
             second = objects[second_index];
             radius = first->ai->mover_height + second->ai->mover_height;
+            if (first->collision_link == second || second->collision_link == first) {
+                first_fixed = second_fixed = 1;
+            } else {
+                first_fixed = immovable[first_index];
+                second_fixed = immovable[second_index];
+            }
+            if (first->flags_low & 0x80)
+                first_fixed = 1;
+            if (second->flags_low & 0x80)
+                second_fixed = 1;
+            if (first_fixed && second_fixed)
+                continue;
+            difference.x = first->ai->movement_position.x - second->ai->movement_position.x;
+            if (difference.x > radius || difference.x < -radius)
+                continue;
+            difference.z = first->ai->movement_position.z - second->ai->movement_position.z;
+            if (difference.z > radius || difference.z < -radius)
+                continue;
+            if (((GAMEOBJECT *)first)->collision_min.y > ((GAMEOBJECT *)second)->collision_max.y ||
+                ((GAMEOBJECT *)second)->collision_min.y > ((GAMEOBJECT *)first)->collision_max.y)
+                continue;
+            distance = NuFsqrt(difference.x * difference.x + difference.z * difference.z);
+            if (!(distance < radius))
+                continue;
+            difference.y = 0.0f;
+            radius -= distance;
+            if (first_fixed) {
+                NuVecScale(&difference, &difference, radius / distance);
+                NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
+            } else if (second_fixed) {
+                NuVecScale(&difference, &difference, radius / distance);
+                NuVecAdd(&first->ai->movement_position, &first->ai->movement_position, &difference);
+            } else {
+                NuVecScale(&difference, &difference, radius / distance);
+                NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
+            }
+            first_packet = first->ai;
+            second_packet = second->ai;
+            if (first_packet->antinode_timer > antinode_time && second_packet->antinode_timer > antinode_time) {
+                if (first_packet->antinode_timer > second_packet->antinode_timer) {
+                    second_packet->antinode_timer = first_packet->antinode_timer;
+                    second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
+                } else {
+                    first_packet->antinode_timer = second_packet->antinode_timer;
+                    first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
+                }
+            } else if (second_packet->antinode_timer > antinode_time) {
+                first_packet->antinode_timer = second_packet->antinode_timer;
+                first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
+            } else if (first_packet->antinode_timer > 0.0f) {
+                second_packet->antinode_timer = first_packet->antinode_timer;
+                second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
+            }
+            if ((first->motion_flags ^ second->motion_flags) & 1) {
+                first->ai->flags |= 0x4000;
+                second->ai->flags |= 0x4000;
+            }
+        }
+    }
+    AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
+}
+
+void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
+                                             f32 delta_time) {
+    i32 index, first_index, second_index, first_fixed, second_fixed;
+    APIOBJECT_PC *first, *second;
+    AIPACKET_PC *first_packet, *second_packet;
+    NUVEC difference;
+    f32 radius, distance;
+
+    for (index = 0; index < object_count; ++index) {
+        first = objects[index];
+        first->ai->antinode_timer -= delta_time;
+        if (first->ai->antinode_timer < 0.0f)
+            first->ai->antinode_timer = 0.0f;
+    }
+    for (first_index = 0; first_index < object_count - 1; ++first_index) {
+        first = objects[first_index];
+        for (second_index = first_index + 1; second_index < object_count; ++second_index) {
+            second = objects[second_index];
+            radius = first->ai->mover_height + second->ai->mover_height;
             difference.x = first->ai->movement_position.x - second->ai->movement_position.x;
             if (difference.x > radius || difference.x < -radius)
                 continue;
@@ -10874,6 +10955,68 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
             } else if (first_packet->antinode_timer > 0.0f) {
                 second_packet->antinode_timer = first_packet->antinode_timer;
                 second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
+            }
+            if ((first->motion_flags ^ second->motion_flags) & 1) {
+                first->ai->flags |= 0x4000;
+                second->ai->flags |= 0x4000;
+            }
+        }
+    }
+    AISysCreatureAntinodeInteraction(system, object_count, objects, immovable);
+}
+
+void __cdecl AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIOBJECT_PC **objects, i32 *immovable,
+                                        f32 delta_time) {
+    i32 index, first_index, second_index, first_fixed, second_fixed;
+    APIOBJECT_PC *first, *second;
+    NUVEC difference;
+    f32 radius, distance;
+
+    for (index = 0; index < object_count; ++index) {
+        first = objects[index];
+        first->ai->antinode_timer -= delta_time;
+        if (first->ai->antinode_timer < 0.0f)
+            first->ai->antinode_timer = 0.0f;
+    }
+    for (first_index = 0; first_index < object_count - 1; ++first_index) {
+        first = objects[first_index];
+        for (second_index = first_index + 1; second_index < object_count; ++second_index) {
+            second = objects[second_index];
+            radius = first->ai->mover_height + second->ai->mover_height;
+            if (first->collision_link == second || second->collision_link == first) {
+                first_fixed = second_fixed = 1;
+            } else {
+                first_fixed = immovable[first_index];
+                second_fixed = immovable[second_index];
+            }
+            if (first->flags_low & 0x80)
+                first_fixed = 1;
+            if (second->flags_low & 0x80)
+                second_fixed = 1;
+            if (first_fixed && second_fixed)
+                continue;
+            difference.x = first->ai->movement_position.x - second->ai->movement_position.x;
+            if (difference.x > radius || difference.x < -radius)
+                continue;
+            difference.z = first->ai->movement_position.z - second->ai->movement_position.z;
+            if (difference.z > radius || difference.z < -radius)
+                continue;
+            difference.y = first->ai->movement_position.y - second->ai->movement_position.y;
+            if (difference.y > radius || difference.y < -radius)
+                continue;
+            distance = NuFsqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
+            if (!(distance < radius))
+                continue;
+            radius -= distance;
+            if (first_fixed) {
+                NuVecScale(&difference, &difference, radius / distance);
+                NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
+            } else if (second_fixed) {
+                NuVecScale(&difference, &difference, radius / distance);
+                NuVecAdd(&first->ai->movement_position, &first->ai->movement_position, &difference);
+            } else {
+                NuVecScale(&difference, &difference, radius / distance);
+                NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
                 first->ai->flags |= 0x4000;

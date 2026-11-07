@@ -17429,7 +17429,7 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern f32 antinode_reverse_time;
 
     void __cdecl GameCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
-    void __cdecl AISysCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
+    void __cdecl LEGO_AISysCreatureInteraction2D(AISYS_PC *, i32, APIOBJECT_PC **, i32 *, f32);
     void __cdecl AISysCreatureAntinodeInteraction(AISYS_PC *, i32, APIOBJECT_PC **, i32 *);
 
     typedef struct render_post_bloom_reader_pc_s {
