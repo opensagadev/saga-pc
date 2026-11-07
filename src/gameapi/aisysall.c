@@ -14036,7 +14036,8 @@ void __cdecl AIMoveInstruction(AIPACKET_PC *packet, NUVEC *destination, f32 stop
 void __cdecl AIFormationFollow(AIPACKET_PC *packet) {
     NUVEC offset;
     u8 column;
-    f32 column_offset;
+    i32 half;
+    i32 mode;
     NUVEC destination;
     AIGROUP_PC *group;
     AIROW_PC *row;
@@ -14044,11 +14045,16 @@ void __cdecl AIFormationFollow(AIPACKET_PC *packet) {
     if (packet->group_row < group->row_count) {
         row = &group->rows[packet->group_row];
         column = packet->group_column;
-        if ((packet->flags & 0x01000000u) != 0) {
-            offset.x = (group->count_across & 1) != 0 ? 0.0f : -(0.5f * group->x_spacing);
+        half = (column + 1) / 2;
+        if ((packet->priority_flags & 1) != 0) {
+            if ((group->count_across & 1) != 0)
+                offset.x = 0.0f;
+            else
+                offset.x = -(group->x_spacing * 0.5);
         } else {
-            column_offset = ((column + 1) / 2) * group->x_spacing;
-            offset.x = (column & 1) != 0 ? -column_offset : column_offset;
+            offset.x = group->x_spacing * half;
+            if ((column & 1) != 0)
+                offset.x = -offset.x;
         }
         if ((group->flags & 4u)) {
             offset.x = -offset.x;
@@ -14058,11 +14064,14 @@ void __cdecl AIFormationFollow(AIPACKET_PC *packet) {
         NuVecRotateY(&offset, &offset, row->rotation);
         NuVecAdd(&destination, &offset, &row->position);
         packet->flags |= 8u;
+        mode = 5;
+        if (packet->group != NULL && (packet->group->flags & 8u))
+            mode = 1;
         packet->fallback_destination = destination;
         packet->fallback_path_info = row->path_info;
         packet->fallback_stopping_distance = 0.0f;
+        packet->flags = (packet->flags & ~7u) | (mode & 7);
         packet->movement_parameter = 0.0f;
-        packet->flags = (packet->flags & ~7u) | ((group != NULL && (group->flags & 8u)) ? 1u : 5u);
         packet->script_action_position.x = 0.0f;
         packet->script_action_position.y = 0.0f;
         packet->script_action_position.z = 100.0f;
