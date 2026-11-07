@@ -67,7 +67,7 @@ i32 PC_INPUT_RUNTIME_PC::SelectConfigurationPc(i32 port, i32 key, i32 auxiliary_
     InstallConfig(config, port, key, auxiliary_index >= 0, auxiliary_index);
     if (auxiliary_index >= 0 && (u32)(port - 10) <= 3) {
         for (i32 device = 0; device < 3; ++device)
-            (void)TextInputLinkedDevicePc(device);
+            (void)NuPadGetPort(device);
         if (ResolveAuxiliaryConflictsPc(auxiliary_index, 4))
             config = NULL;
     }
@@ -78,7 +78,7 @@ u8 PC_INPUT_RUNTIME_PC::InstallDropInConfigurationPc(i32 port, i32 player_index)
     for (i32 bank = 0; bank < 3; ++bank) {
         if (bank == player_index)
             continue;
-        i32 linked_port = TextInputLinkedDevicePc(bank);
+        i32 linked_port = NuPadGetPort(bank);
         if (linked_port < 0)
             continue;
         auxiliary_ports[bank] = linked_port;
@@ -625,7 +625,7 @@ i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, 
         if (keyboard_ui_override && valid) {
             if ((u32)(port - 10) <= 3)
                 sample->buttons = 0;
-            i32 linked = TextInputLinkedDevicePc(TextInputLastDeviceIndexPc);
+            i32 linked = NuPadGetPort(TextInputLastDeviceIndexPc);
             if (linked == port || (linked == -1 && (u32)(port - 10) <= 3))
                 sample->buttons = CombineUiButtonsPc(port, sample->buttons);
         }

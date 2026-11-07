@@ -329,7 +329,7 @@ void __cdecl DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 ena
     f64 row_delta;
     f32 y, scale;
     f64 x;
-    device = TextInputLinkedDevicePc(TextInputLastDevicePc());
+    device = NuPadGetPort(TextInputLastDevicePc());
     if (TextInputIsKeyboardDevicePc(device)) {
         keys = TextInputGetKeyNamesPc();
         accept = keys[28];

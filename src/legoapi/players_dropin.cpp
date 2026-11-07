@@ -100,10 +100,10 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
         if (object == NULL)
             continue;
         i32 input_join = 0;
-        i32 port0 = TextInputLinkedDevicePc(0);
+        i32 port0 = NuPadGetPort(0);
         if (port0 >= 0)
             DropInCapturePortPc[0] = (i16)port0;
-        i32 port = TextInputLinkedDevicePc(1);
+        i32 port = NuPadGetPort(1);
         if (port >= 0)
             DropInCapturePortPc[1] = (i16)port;
         if (GetMenuID() == -1) {
@@ -119,10 +119,10 @@ extern "C" i32 __cdecl PlayersDropInOut(void) {
                 }
             } else if (off == 0) {
                 u32 excluded = 0;
-                port0 = TextInputLinkedDevicePc(0);
+                port0 = NuPadGetPort(0);
                 if (port0 >= 0)
                     excluded = 1u << port0;
-                i32 port1 = TextInputLinkedDevicePc(1);
+                i32 port1 = NuPadGetPort(1);
                 if (port1 >= 0)
                     excluded |= 1u << port1;
                 excluded &= ~(1u << NuKeyboardBasePortPc());

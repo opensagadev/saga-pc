@@ -17360,8 +17360,8 @@ extern "C" {
     i8 TextInputLastDeviceIndexPc = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$TextInputDeviceLinksPc")
-    TEXT_INPUT_DEVICE_LINK_PC TextInputDeviceLinksPc[3] = {0};
+#pragma bss_seg(".bss$g_nupadMapping")
+    NUPADMAPPING g_nupadMapping[3] = {0};
 #pragma bss_seg()
 }
 

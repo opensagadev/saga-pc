@@ -12,9 +12,9 @@ void __cdecl DoInput(WORLDINFO *world) {
         world = WorldInfo_CurrentlyActive();
     for (index = 0; index < 2; ++index)
         input[index] = ReadPad(index);
-    if (TextInputIsKeyboardDevicePc(TextInputLinkedDevicePc(0)))
+    if (TextInputIsKeyboardDevicePc(NuPadGetPort(0)))
         keyboard_mask = 1;
-    if (TextInputIsKeyboardDevicePc(TextInputLinkedDevicePc(1)))
+    if (TextInputIsKeyboardDevicePc(NuPadGetPort(1)))
         keyboard_mask |= 2;
     changed = PlayersDropInOut();
     for (index = 0; index < 2; ++index) {

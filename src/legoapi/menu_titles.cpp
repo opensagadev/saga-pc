@@ -193,7 +193,7 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
                                      GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT | GAMEPAD_DUP | GAMEPAD_DDOWN |
                                      GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0 ||
                    (gamepad->left_held & (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
-            if (TextInputDeviceLinksPc[player].available != 0)
+            if (g_nupadMapping[player].is_active != 0)
                 PlayerProgress[player].active = 1;
         }
     }

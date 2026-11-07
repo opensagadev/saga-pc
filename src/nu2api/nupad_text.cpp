@@ -52,12 +52,8 @@ extern "C" {
     extern i8 TextInputAxisLabelIndexPc[16];
     extern u8 TextInputKeyboardOverridePc[32];
     extern char **TextInputKeyNamesPc;
-    extern TEXT_INPUT_DEVICE_LINK_PC TextInputDeviceLinksPc[3];
     i32 __cdecl TextInputLastDevicePc(void) {
         return TextInputLastDeviceIndexPc;
-    }
-    i32 __cdecl TextInputLinkedDevicePc(i32 index) {
-        return TextInputDeviceLinksPc[index].available != 0 ? TextInputDeviceLinksPc[index].device : -1;
     }
 }
 
@@ -244,7 +240,7 @@ extern "C" i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *desti
     if (device < 0) {
         device = 0;
     }
-    i32 linked_device = TextInputLinkedDevicePc(device);
+    i32 linked_device = NuPadGetPort(device);
     if (button >= 0) {
         return manager->ButtonName(linked_device, button, destination, 0, 0, 1, 1, "()");
     }

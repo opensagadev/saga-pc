@@ -2624,9 +2624,9 @@ address,symbol,size,ctype
 0x004f0d40,_NuDatSet,16,NUDATHDR *__cdecl (NUDATHDR *)
 0x004f0d50,_NuDatGet,6,NUDATHDR *__cdecl (void)
 0x004f0d60,_NuFileExtGetExt,96,"i32 __cdecl (char *, i32, i32)"
-0x004f0dc0,_GetPakItems,26,PC_FILEPAKITEM *(PC_FILEPAKHDR_V0 *) [private ECX ABI]
+0x004f0dc0,_GetItems,26,PC_FILEPAKITEM *(PC_FILEPAKHDR_V0 *) [private ECX ABI]
 0x004f0de0,_CalcChecksum,33,"u32 (void *, i32) [private register ABI]"
-0x004f0e10,_DecryptPakData,54,
+0x004f0e10,_DecryptData,54,
 0x004f0e50,_NuFilePakGetLastError,6,i32 __cdecl (void)
 0x004f0e60,_NuFilePakCondense,159,i32 __cdecl (void *)
 0x004f0f00,_NuFilePakRelocate,33,"void __cdecl (void *, void *)"
@@ -2749,7 +2749,8 @@ address,symbol,size,ctype
 0x4f4370,_NuPadProcessReadData,1038,void __cdecl(FRAME_SCANNED_PAD_PC*)
 0x4f4790,_NuPadSetMaxGamePads,10,void __cdecl(i32)
 0x4f47f0,_NuPadMapPlayerToPort,231,"void __cdecl(i32,i32)"
-0x4f48e0,_TextInputLinkedDevicePc,31,i32 __cdecl(i32)
+0x4f48e0,_NuPadGetPort,31,i32 __cdecl(i32)
+0x4f4900,_NuPadGetPlayer,29,i32 __cdecl(i32)
 0x4f4920,_NuPadInit,122,void __cdecl(void)
 0x4f49b0,_NuPadRead,528,i32 __cdecl(FRAME_PAD_PC*)
 0x4f4c10,_NuPadResetState,95,void __cdecl(i32)
@@ -29041,7 +29042,7 @@ address,symbol,size,ctype
 0x0297dc80,_pc_dat_file_infos,960,PC_NUDATFILEINFO[20]
 0x297e040,_implode_outbuffer,,char *
 0x297e044,_implode_bitbuf,,u32
-0x297e060,_TextInputDeviceLinksPc,,TEXT_INPUT_DEVICE_LINK_PC[3]
+0x297e060,_g_nupadMapping,,NUPADMAPPING[3]
 0x0297e084,_numdevices,4,i32
 0x029803e0,_NuFrameAccumulatedTimePc,4,f32
 0x02980400,_devices,9024,NUFILE_DEVICE[16]

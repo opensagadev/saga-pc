@@ -53,7 +53,7 @@ extern "C" {
         if (MenuKeyboardAlwaysPc != 0 || MenuKeyboardSecondaryPc != 0 || menu_active != 0) {
             if (MenuKeyboardOverrideActivePc == 0) {
                 active_players = 0;
-                device = TextInputLinkedDevicePc(TextInputLastDevicePc());
+                device = NuPadGetPort(TextInputLastDevicePc());
                 if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0)
                     active_players = 1;
                 if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0)

@@ -9794,14 +9794,14 @@ STATIC_ASSERT(sizeof(TEXT_INPUT_LABELS_PC) == 0xc0);
 
 STATIC_ASSERT(offsetof(TEXT_INPUT_LABELS_PC, initializer_names) == 0);
 
-typedef struct TEXT_INPUT_DEVICE_LINK_PC {
-    i32 unknown_0000;
-    i32 device;
-    i32 available;
-} TEXT_INPUT_DEVICE_LINK_PC;
-STATIC_ASSERT(sizeof(TEXT_INPUT_DEVICE_LINK_PC) == 12);
-STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_LINK_PC, device) == 4);
-STATIC_ASSERT(offsetof(TEXT_INPUT_DEVICE_LINK_PC, available) == 8);
+typedef struct NUPADMAPPING {
+    i32 pad;
+    i32 port;
+    i32 is_active;
+} NUPADMAPPING;
+STATIC_ASSERT(sizeof(NUPADMAPPING) == 12);
+STATIC_ASSERT(offsetof(NUPADMAPPING, port) == 4);
+STATIC_ASSERT(offsetof(NUPADMAPPING, is_active) == 8);
 
 typedef struct CABLE_RECORD_PC CABLE_RECORD_PC;
 
@@ -10151,7 +10151,7 @@ extern "C" {
     void __cdecl NuQFntPrintW(VUFNT *font, u16 *text);
     void __cdecl DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
     i32 __cdecl TextInputLastDevicePc(void);
-    i32 __cdecl TextInputLinkedDevicePc(i32 index);
+    i32 __cdecl NuPadGetPort(i32 player);
     i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *destination);
     extern f32 QFONTSCALEY;
     extern u8 text_preset_r[10];
@@ -10172,7 +10172,7 @@ extern "C" {
     extern TEXT_INPUT_LABELS_PC *TextInputDefaultLabelsPc;
     extern void(__cdecl *TextInputNameCallbackPc)(i32, char *);
     extern i8 TextInputLastDeviceIndexPc;
-    extern TEXT_INPUT_DEVICE_LINK_PC TextInputDeviceLinksPc[3];
+    extern NUPADMAPPING g_nupadMapping[3];
 
     i32 __cdecl InStory(void);
 

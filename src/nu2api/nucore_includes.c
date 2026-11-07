@@ -414,9 +414,9 @@ typedef void(__cdecl *NUDEBUGMSGFUNCTION_PC)(char *, ...);
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 
-static void DecryptPakData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
+static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);
-static PC_FILEPAKITEM *GetPakItems(PC_FILEPAKHDR_V0 *header);
+static PC_FILEPAKITEM *GetItems(PC_FILEPAKHDR_V0 *header);
 static NUFILE OpenDatFileBase(NUDATHDR *header, i32 file_index);
 static i32 NuFileMatchExtensionPC(char *extension, char *path_end, i32 path_len);
 static PC_FILEEXTINFO *NuFileExtGetInfoPC(char *path, i32 path_len);
@@ -953,7 +953,7 @@ NUFILE __cdecl NuFileOpen(const char *filepath, i32 mode) {
     return NuFileOpenDF(filepath, mode, curr_dat, 0);
 }
 
-static void DecryptPakData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length) {
+static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length) {
     u8 *bytes = (u8 *)(header + 1);
     i32 index = 0;
     length -= sizeof(PC_FILEPAKHDR);
@@ -1547,7 +1547,7 @@ static u32 CalcChecksum(void *data, i32 len) {
     return sum;
 }
 
-static PC_FILEPAKITEM *GetPakItems(PC_FILEPAKHDR_V0 *header) {
+static PC_FILEPAKITEM *GetItems(PC_FILEPAKHDR_V0 *header) {
     switch (header->type) {
         case 0x12345678:
             return (PC_FILEPAKITEM *)(header + 1);
@@ -2407,7 +2407,7 @@ void *__cdecl NuFilePakLoadKey(char *filepath, VARIPTR *buffer, VARIPTR end, i32
                     return NULL;
                 }
 
-                DecryptPakData(header, length, key, (i32)key_length);
+                DecryptData(header, length, key, (i32)key_length);
 
                 checksum = header->decrypted_checksum;
                 header->decrypted_checksum = 0;
@@ -2439,7 +2439,7 @@ i32 __cdecl NuFilePakCondense(void *pak) {
     u32 index;
 
     fpk_err = 0;
-    items = GetPakItems(header);
+    items = GetItems(header);
     removed_size = 0;
     for (index = 0; index < header->item_count; ++index) {
         PC_FILEPAKITEM *item = &items[index];
@@ -2479,7 +2479,7 @@ i32 __cdecl NuFilePakGetItem(void *pak, char *name) {
     u32 index;
 
     fpk_err = 0;
-    items = GetPakItems(header);
+    items = GetItems(header);
     for (index = 0; index < header->item_count; ++index) {
         if (NuStrICmp((char *)header + items[index].name_offset, name) == 0) {
             if ((items[index].flags & 2) != 0) {
@@ -2498,7 +2498,7 @@ i32 __cdecl NuFilePakGetItemInfo(void *pak, i32 handle, void **address, i32 *siz
     fpk_err = 0;
     --handle;
     if (handle >= 0 && (u32)handle < header->item_count) {
-        item = GetPakItems(header) + handle;
+        item = GetItems(header) + handle;
         if ((item->flags & 2) == 0) {
             if (address != NULL) {
                 *address = (char *)header + item->data_offset;
@@ -2521,7 +2521,7 @@ i32 __cdecl NuFilePakSetItemRequired(void *pak, i32 handle, i32 required) {
     if (handle < 0 || (u32)handle >= header->item_count) {
         return 0;
     }
-    item = GetPakItems(header) + handle;
+    item = GetItems(header) + handle;
     if ((item->flags & 2) == 0) {
         item->flags = (item->flags & ~1u) | (required & 1);
     }
@@ -7022,7 +7022,7 @@ void NuPadUpdatePads(void) {
         has_active_pad = 0;
 
         for (j = 0; j < max_game_pads; j++) {
-            if (TextInputDeviceLinksPc[j].available && i == TextInputDeviceLinksPc[j].device) {
+            if (g_nupadMapping[j].is_active && i == g_nupadMapping[j].port) {
                 has_active_pad = 1;
             }
         }
@@ -7035,12 +7035,12 @@ void NuPadUpdatePads(void) {
     }
 
     if (!FramePadActivatedPc) {
-        TextInputDeviceLinksPc[0].device = -1;
+        g_nupadMapping[0].port = -1;
 
         for (j = 0; j < max_interface_devices; j++) {
             if (g_nupadScannedPads[j].is_valid) {
-                if (TextInputDeviceLinksPc[0].device == -1) {
-                    TextInputDeviceLinksPc[0].device = j;
+                if (g_nupadMapping[0].port == -1) {
+                    g_nupadMapping[0].port = j;
                     g_nupadScannedPads[j].mapped_to_pad = 0;
                 }
 
@@ -7049,7 +7049,7 @@ void NuPadUpdatePads(void) {
                     g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER ||
                     g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
                     g_nupadScannedPads[j].analog_right_y != ANALOG_CENTER) {
-                    TextInputDeviceLinksPc[0].device = j;
+                    g_nupadMapping[0].port = j;
                     g_nupadScannedPads[j].mapped_to_pad = 0;
 
                     if ((g_nupadScannedPads[j].digital_buttons_pressed & 0x840) != 0) {
@@ -7062,14 +7062,13 @@ void NuPadUpdatePads(void) {
 
     if (FramePadActivatedPc) {
         for (i = 0; i < max_game_pads; i++) {
-            if (TextInputDeviceLinksPc[i].available == 1 &&
-                !g_nupadScannedPads[TextInputDeviceLinksPc[i].device].is_valid) {
+            if (g_nupadMapping[i].is_active == 1 && !g_nupadScannedPads[g_nupadMapping[i].port].is_valid) {
                 for (j = 0; j < max_interface_devices; j++) {
                     if (g_nupadScannedPads[j].is_valid &&
                         (g_nupadScannedPads[j].digital_buttons_pressed & 0x800) != 0 &&
                         (g_nupadScannedPads[j].mapped_to_pad == -1 ||
-                         !TextInputDeviceLinksPc[g_nupadScannedPads[j].mapped_to_pad].available)) {
-                        TextInputDeviceLinksPc[i].device = j;
+                         !g_nupadMapping[g_nupadScannedPads[j].mapped_to_pad].is_active)) {
+                        g_nupadMapping[i].port = j;
                         g_nupadScannedPads[j].mapped_to_pad = i;
                         g_nupadScannedPads[j].digital_buttons_pressed = 0;
 
@@ -7078,14 +7077,14 @@ void NuPadUpdatePads(void) {
                 }
             }
 
-            if (!TextInputDeviceLinksPc[i].available) {
-                TextInputDeviceLinksPc[i].device = -1;
+            if (!g_nupadMapping[i].is_active) {
+                g_nupadMapping[i].port = -1;
 
-                if (TextInputDeviceLinksPc[0].available + TextInputDeviceLinksPc[1].available == 0) {
+                if (g_nupadMapping[0].is_active + g_nupadMapping[1].is_active == 0) {
                     if (i == 0) {
                         for (j = 0; j < max_interface_devices; j++) {
                             if (g_nupadScannedPads[j].mapped_to_pad != -1 &&
-                                TextInputDeviceLinksPc[g_nupadScannedPads[j].mapped_to_pad].available == 1) {
+                                g_nupadMapping[g_nupadScannedPads[j].mapped_to_pad].is_active == 1) {
                                 continue;
                             }
 
@@ -7095,7 +7094,7 @@ void NuPadUpdatePads(void) {
                 } else {
                     for (j = 0; j < max_interface_devices; j++) {
                         if (g_nupadScannedPads[j].mapped_to_pad != -1 &&
-                            TextInputDeviceLinksPc[g_nupadScannedPads[j].mapped_to_pad].available == 1) {
+                            g_nupadMapping[g_nupadScannedPads[j].mapped_to_pad].is_active == 1) {
                             continue;
                         }
 
@@ -7105,7 +7104,7 @@ void NuPadUpdatePads(void) {
 
                 for (j = 0; j < max_interface_devices; j++) {
                     if (g_nupadScannedPads[j].mapped_to_pad == -1 && g_nupadScannedPads[j].is_valid) {
-                        TextInputDeviceLinksPc[i].device = j;
+                        g_nupadMapping[i].port = j;
                         g_nupadScannedPads[j].mapped_to_pad = i;
                         /* PC: only the last candidate keeps the player; release the previous one. */
                         if (selected >= 0) {
@@ -7137,12 +7136,12 @@ void __cdecl NuPadMapPlayerToPort(i32 player, i32 port) {
         NuKeyboardClearActiveDevicesPc();
         NuPadSetStatus(player, 0);
 
-        old_port = TextInputDeviceLinksPc[player].device;
+        old_port = g_nupadMapping[player].port;
         if (old_port >= 0) {
             g_nupadScannedPads[old_port].mapped_to_pad = -1;
         }
         g_nupadScannedPads[port].digital_buttons_pressed = 0;
-        TextInputDeviceLinksPc[player].device = port;
+        g_nupadMapping[player].port = port;
         g_nupadScannedPads[port].mapped_to_pad = player;
 
         NuPadSetStatus(player, 1);
@@ -7153,6 +7152,18 @@ void __cdecl NuPadMapPlayerToPort(i32 player, i32 port) {
     }
 }
 
+i32 __cdecl NuPadGetPort(i32 player) {
+    return g_nupadMapping[player].is_active != 0 ? g_nupadMapping[player].port : -1;
+}
+
+i32 __cdecl NuPadGetPlayer(i32 port) {
+    i32 player = -1;
+    if (g_nupadScannedPads[port].is_valid) {
+        player = g_nupadScannedPads[port].mapped_to_pad;
+    }
+    return player;
+}
+
 void NuPadInit(void) {
     i32 i;
     memset(g_nupadScannedPads, 0, sizeof(g_nupadScannedPads));
@@ -7161,9 +7172,9 @@ void NuPadInit(void) {
         NuPadInitPS(&g_nupadScannedPads[i]);
     }
     for (i = 0; i < 3; ++i) {
-        TextInputDeviceLinksPc[i].unknown_0000 = -1;
-        TextInputDeviceLinksPc[i].device = -1;
-        TextInputDeviceLinksPc[i].available = 0;
+        g_nupadMapping[i].pad = -1;
+        g_nupadMapping[i].port = -1;
+        g_nupadMapping[i].is_active = 0;
     }
     FramePadActivatedPc = 0;
 }
@@ -7171,12 +7182,12 @@ void NuPadInit(void) {
 i32 NuPadRead(FRAME_PAD_PC *pad) {
     i32 device;
 
-    if (TextInputDeviceLinksPc[pad->device].device != -1 ||
+    if (g_nupadMapping[pad->device].port != -1 ||
         (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid)) {
         if (FramePadDirectMappingPc != 0) {
             device = pad->device;
         } else {
-            device = TextInputDeviceLinksPc[pad->device].device;
+            device = g_nupadMapping[pad->device].port;
         }
 
         pad->analog_left_x = g_nupadScannedPads[device].analog_left_x;
@@ -7265,8 +7276,8 @@ void NuPadRecordEndFrame() {
 void NuPadResetState(i32 preserve_scanned_state) {
     FramePadActivatedPc = 0;
     FramePadProfilePortPc = -1;
-    TextInputDeviceLinksPc[0].device = -1;
-    TextInputDeviceLinksPc[1].device = -1;
+    g_nupadMapping[0].port = -1;
+    g_nupadMapping[1].port = -1;
 
     if (preserve_scanned_state == 0) {
         i32 i;
@@ -7279,7 +7290,7 @@ void NuPadResetState(i32 preserve_scanned_state) {
 }
 
 void NuPadSetStatus(i32 pad, i32 status) {
-    i32 device = TextInputDeviceLinksPc[pad].device;
+    i32 device = g_nupadMapping[pad].port;
     if (device >= 0) {
         if (status != 0) {
             g_nupadScannedPads[device].mapped_to_pad = pad;
@@ -7292,7 +7303,7 @@ void NuPadSetStatus(i32 pad, i32 status) {
             FramePadProfilePortPc = device;
         FramePadActivatedPc = 1;
     }
-    TextInputDeviceLinksPc[pad].available = status;
+    g_nupadMapping[pad].is_active = status;
 }
 
 void NuPadRecordPlay(NUGENERICPAD *pad) {

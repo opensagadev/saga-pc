@@ -2521,8 +2521,8 @@ extern "C" char *TextInputActionLabelPc(i32 device, i32 action, i32, i32);
 extern "C" char HubButtonStringBufferPc[]; /*8016a8 native scratch owner size TBD, initial"???"*/
 extern "C" char *TextButtonStringPc(i32 action, const char *player0, const char *player1) {
     char first[32] = "", second[32] = "";
-    const i32 device0 = TextInputLinkedDevicePc(0);
-    const i32 device1 = TextInputLinkedDevicePc(1);
+    const i32 device0 = NuPadGetPort(0);
+    const i32 device1 = NuPadGetPort(1);
     if (player0 != NULL && device0 >= 0)
         NuStrCpy(first, TextInputActionLabelPc(device0, action, 0, 0));
     if (player1 != NULL && device1 >= 0)
@@ -2574,7 +2574,7 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
     const f32 spacing = HubPromptSpacingPc;
     const i32 last_device = TextInputLastDevicePc();
     for (i32 player = 0; player < 2; ++player) {
-        TextInputIsPrimaryDevicePc(TextInputLinkedDevicePc(player));
+        TextInputIsPrimaryDevicePc(NuPadGetPort(player));
         TextInputSetLastDevicePc(player);
         i32 count = 0;
         if (select[player] != -1) {

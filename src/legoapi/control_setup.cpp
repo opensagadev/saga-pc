@@ -271,7 +271,7 @@ void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u
         original_ports[i] = -1;
     }
     for (i32 i = 0; i < player_count; ++i) {
-        ports[i] = TextInputLinkedDevicePc(i);
+        ports[i] = NuPadGetPort(i);
         original_ports[i] = ports[i];
         if (ports[i] == -1) {
             ports[i] = saved_ports[i];

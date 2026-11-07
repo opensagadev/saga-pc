@@ -481,7 +481,7 @@ extern "C" void __cdecl NuKeyboardClearActiveDevicesPc(void) {
 void PC_INPUT_RUNTIME_PC::AutoConfigurePadsPc(i32 count) {
     i32 device = 0;
     for (i32 pad = 0; pad < count; ++pad) {
-        i32 linked = TextInputLinkedDevicePc(pad);
+        i32 linked = NuPadGetPort(pad);
         while (device < 14 &&
                (devices[device].kind == 0 || ((u32)(device - 10) <= 3 && !devices[device].action_keys_active)))
             ++device;
