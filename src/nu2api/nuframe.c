@@ -162,6 +162,11 @@ void __cdecl NuWaterSpeed(f32 speed) {
     NuShaderObjectBaseSetWaterSpeedPc(speed);
 }
 
+void __cdecl NuWaterClearPc(void) {
+    nu_water_flow_state = 0;
+    nu_water_reset_status = 0;
+}
+
 __declspec(noinline) void __cdecl NuWaterReset(void) {
     nu_water_reset_state = 1;
     nu_water_reset_status = 0;

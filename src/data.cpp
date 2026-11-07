@@ -9817,6 +9817,9 @@ extern "C" {
 #pragma bss_seg(".bss$NuWaterResetState")
     i32 nu_water_reset_state = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$NuWaterFlowState")
+    i32 nu_water_flow_state = 0;
+#pragma bss_seg()
 #pragma bss_seg(".bss$NuWaterResetStatus")
     i32 nu_water_reset_status = 0;
 #pragma bss_seg()
