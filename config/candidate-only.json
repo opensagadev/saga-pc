@@ -1380,6 +1380,11 @@
    "unit": "src/nu2api/nupostfilter.cpp",
    "symbol": "?PostVec4NormalizeDirection@@YAXPAUNUVEC4@@@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nutex_pc.cpp",
+   "symbol": "?NuQFntColumnOpaque32Inline@@YAHPAUnutexbmp_pc_s@@HHH@Z",
+   "kind": "function"
   }
  ]
 }

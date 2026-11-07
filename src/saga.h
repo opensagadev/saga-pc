@@ -1840,7 +1840,8 @@ STATIC_ASSERT(offsetof(VUFNTCHAR, y) == 4);
 STATIC_ASSERT(offsetof(VUFNTCHAR, width) == 8);
 
 struct vufnt_s {
-    u8 unknown_0000[0x0c];
+    u8 unknown_0000[8];
+    i32 size;
     i32 glyph_count;
     i32 unicode_count;
     f32 height;
@@ -1858,6 +1859,7 @@ struct vufnt_s {
     u32 *color_abgr;
     struct nuqfnt_render_data_pc_s *platform_data;
 };
+STATIC_ASSERT(offsetof(VUFNT, size) == 0x08);
 STATIC_ASSERT(offsetof(VUFNT, glyph_count) == 0x0c);
 STATIC_ASSERT(offsetof(VUFNT, unicode_count) == 0x10);
 STATIC_ASSERT(offsetof(VUFNT, height) == 0x14);
@@ -2250,18 +2252,26 @@ STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, format) == 0);
 STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, width) == 0x18);
 STATIC_ASSERT(offsetof(PC_TEXTURE_LEVEL_DESC_PC, height) == 0x1c);
 typedef struct PC_TEXTURE_RESOURCE_PC PC_TEXTURE_RESOURCE_PC;
+typedef struct PC_LOCKED_RECT_PC {
+    i32 pitch;
+    void *bits;
+} PC_LOCKED_RECT_PC;
+STATIC_ASSERT(sizeof(PC_LOCKED_RECT_PC) == 8);
 typedef struct PC_TEXTURE_RESOURCE_METHODS_PC {
     void *unknown_0000[2];
     ULONG(__stdcall *release)(PC_TEXTURE_RESOURCE_PC *);
     void *unknown_000c[14];
     HRESULT(__stdcall *get_level_desc)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_LEVEL_DESC_PC *);
     HRESULT(__stdcall *get_surface_level)(PC_TEXTURE_RESOURCE_PC *, u32, PC_TEXTURE_RESOURCE_PC **);
+    HRESULT(__stdcall *lock_rect)(PC_TEXTURE_RESOURCE_PC *, u32, PC_LOCKED_RECT_PC *, const void *, u32);
+    HRESULT(__stdcall *unlock_rect)(PC_TEXTURE_RESOURCE_PC *, u32);
 } PC_TEXTURE_RESOURCE_METHODS_PC;
 struct PC_TEXTURE_RESOURCE_PC {
     const PC_TEXTURE_RESOURCE_METHODS_PC *methods;
 };
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, release) == 8);
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, get_level_desc) == 0x44);
+STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_METHODS_PC, lock_rect) == 0x4c);
 STATIC_ASSERT(offsetof(PC_TEXTURE_RESOURCE_PC, methods) == 0);
 
 typedef struct PC_VERTEX_ELEMENT_PC {
@@ -16332,9 +16342,13 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path);
     extern char NuTexBmpErrorTextPc[0x80];
     extern NUTEXBMP_COLOUR_PC NuTexBmpPalettePc[0x100];
+    extern i32 NuQFntScanXPc;
+    extern i32 NuQFntScanYPc;
+    void __cdecl NuQFntAtlasErrorPc(void);
     PC_SHADER_RECORD_VIEW *__cdecl PCShaderRecordFromHandle(u32);
     void __cdecl NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *);
     extern const char NuTextureSourcePathPC[55];
+    extern const char NuQFntSourcePathPC[56];
     extern const char NuTextureAnimationSourcePathPC[50];
 
     extern NUMTL **PCDisplayMaterialDeleteQueue;

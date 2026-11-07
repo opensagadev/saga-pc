@@ -6628,6 +6628,7 @@ address,symbol,size,ctype
 0x005f7490,_PCClipScreenUnsupported,1,void __cdecl (void)
 0x5f7490,_PCGraphicsRenderTextureAllocationError,1,void __cdecl(void)
 0x5f7490,_NuTexBmpUnsupportedDepthPc,1,"void __cdecl (i32, const char *)"
+0x5f7490,_NuQFntAtlasErrorPc,1,void __cdecl (void)
 0x5f74a0,_NuPtlDmaSlotsExhaustedPc,1,void __cdecl(void)
 0x005f75a0,?PcGeometryCopyMatrixPc@@YAXPAUnumtx_s@@PBU1@@Z,95,"void __cdecl(NUMTX *, const NUMTX *)"
 0x5f7610,_PCSpecialTransposeMatrix,133,"void __cdecl(NUMTX *,NUMTX *)"
@@ -6696,6 +6697,21 @@ address,symbol,size,ctype
 0x5fa2f0,_PCGraphicsSubmitViewportPc,59,
 0x5fa330,_PcUpdateGeometryCameraOriginPc,497,"void __cdecl(NUMTX*,NUMTX*)"
 0x5fa540,_PCGraphicsSetSamplerTuplePc,222,
+0x5fa640,_NuQFntAsciiToQCodePc,77,"void __cdecl (VUFNT *, u16 *, const char *)"
+0x5fa690,_NuQFntColumnDiffers8Pc,51,"i32 __cdecl (NUTEXBMP_PC *, i32, i32, i32, i32)"
+0x5fa6d0,_NuQFntColumnOpaque32Pc,74,"i32 __cdecl (NUTEXBMP_PC *, i32, i32, i32)"
+0x5fa720,_NuQFntFindGlyphStart8Pc,107,"i32 __cdecl (NUTEXBMP_PC *, i32, i32 *, i32 *, i32)"
+0x5fa790,_NuQFntFindGlyphEnd8Pc,103,"i32 __cdecl (NUTEXBMP_PC *, i32, i32 *, i32 *, i32)"
+0x5fa800,_NuQFntFindGlyphStart32Pc,125,"i32 __cdecl (NUTEXBMP_PC *, i32, i32 *, i32 *)"
+0x5fa880,_NuQFntFindGlyphEnd32Pc,129,"i32 __cdecl (NUTEXBMP_PC *, i32, i32 *, i32 *)"
+0x5fa910,_NuQFntScanResetPc,13,void __cdecl (void)
+0x5fa920,_NuQFntNextGlyph8Pc,182,"i32 __cdecl (NUTEXBMP_PC *, i32, i32, f32 *, f32 *, f32 *)"
+0x5fa9e0,_NuQFntNextGlyph32Pc,176,"i32 __cdecl (NUTEXBMP_PC *, i32, f32 *, f32 *, f32 *)"
+0x5faa90,_NuQFntMapLookupPc,38,"u16 __cdecl (VUCHARIDX *, i32, u16)"
+0x5faac0,_NuQFntMapAddPc,39,"i32 __cdecl (VUCHARIDX *, i32, u16, u16)"
+0x5faaf0,_NuQFntAtlasReadPSPc,349,"i32 __cdecl (VUFNT *, i32, i32, i32, VARIPTR *, VARIPTR)"
+0x5fac50,_NuQFntMapComparePc,34,"int __cdecl (const void *, const void *)"
+0x5fac80,_NuQFntCreateFromBmpPc,1998,"VUFNT *__cdecl (const char *, i32, i32, i32, u16 *, i32, i32, VARIPTR *, VARIPTR)"
 0x5fb450,_PCGraphicsResizePostEffectTexturesPc,214,"void __cdecl (u32, u32)"
 0x5fb530,_PCGraphicsDestroyPostEffectTexturesPc,18,void __cdecl (void)
 0x5fb550,_PCGraphicsDrawPostEffectQuadPc,10,
@@ -17431,6 +17447,7 @@ address,symbol,size,ctype
 0x76a70c,??_C@_0BF@FEPDHFNJ@Cannot?5open?5file?3?5?$CFs?$AA@,21,char []
 0x76a728,__real@401921cac0000000,,const f64
 0x76a744,??_7bad_alloc@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76a74c,_NuQFntSourcePathPC,56,const char[56]
 0x76a788,__real@3f70101020000000,8,const f64
 0x76a790,??_C@_0DF@OLOGNDAF@d?3?2projects?2game_saga?2nu2api?4sag@,53,const char[53]
 0x76a7c8,_NuVpDepthRangePc,,
@@ -26729,6 +26746,7 @@ address,symbol,size,ctype
 0x986f1c,_NuLgtLaserCnt,4,i32
 0x986f20,_PCGraphicsRenderTextures,,GRAPHICS_RENDER_TEXTURE_PC[32] workingview
 0x987520,_NuRndr_DebrisPlane,,NUVEC4
+0x991dc0,_NuQFntScanYPc,4,i32
 0x991dc4,_NuDisplayMaterialLastPc,,void *
 0x991dd0,_NuLgtStateSlotsPc,,PC_LIGHT_STATE_SLOT_PC[8]
 0x9922b0,_RndrStreamFirstPc,,VARIPTR
@@ -26755,6 +26773,7 @@ address,symbol,size,ctype
 0x28490d0,_PcFramebufferActive,,u8[32]
 0x28490f8,_PCStartupMaterial2Pc,,NUMTL *
 0x28490fc,_RndrStreamMaxUsedPc,,u32
+0x2849108,_NuQFntScanXPc,4,i32
 0x284910c,_RndrStreamSecondPc,,VARIPTR
 0x2849310,_PcBootFramebuffersPc,,PC_BOOT_FRAMEBUFFER_VIEW_PC
 0x2849318,_NuCameraProjectionGlobalScaleX,,

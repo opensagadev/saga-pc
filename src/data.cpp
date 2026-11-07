@@ -13819,6 +13819,9 @@ extern "C" {
 #pragma data_seg(".data$NuUnresolvedTextureIDPC")
     i32 NuUnresolvedTextureIDPC = -1;
 #pragma data_seg()
+#pragma const_seg(".rdata$NuQFntSourcePathPC")
+    extern const char NuQFntSourcePathPC[56] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nuqfnt_PC.cpp";
+#pragma const_seg()
 #pragma const_seg(".rdata$NuTextureSourcePathPC")
     extern const char NuTextureSourcePathPC[55] = "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\pc\\nutex_pc.cpp";
 #pragma const_seg()
@@ -32994,6 +32997,12 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCGraphicsPostEffectBackBufferTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuQFntScanXPc")
+    i32 NuQFntScanXPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuQFntScanYPc")
+    i32 NuQFntScanYPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuTexBmpErrorTextPc")
     char NuTexBmpErrorTextPc[0x80];

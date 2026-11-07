@@ -778,3 +778,484 @@ extern "C" void __cdecl PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER
         PCDeviceSetTexture(stage, NULL);
     }
 }
+
+/* Font atlas builder: scans a BMP glyph strip for glyph cells and builds a font around it. */
+extern "C" i32 NuStrLenW(const NUWCHAR *str);
+
+/* Converts a byte string into glyph indices of the font. */
+extern "C" void __cdecl NuQFntAsciiToQCodePc(VUFNT *font, u16 *encoded, const char *text) {
+    while (*text != '\0') {
+        *encoded = UnicodeToIndexFast(font->unicode_map, font->unicode_count, (u16)(i16)*text);
+        text++;
+        encoded++;
+    }
+    *encoded = 0;
+}
+
+/* Nonzero when any texel of the 8-bit column at (x, y) differs from the key value. */
+extern "C" i32 __cdecl NuQFntColumnDiffers8Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count, i32 value) {
+    i32 width = bitmap->width;
+    u8 *texel = bitmap->data + width * y + x;
+    i32 i;
+
+    for (i = 0; i < count; i++) {
+        if (*texel != value) {
+            return 1;
+        }
+        texel += width;
+    }
+    return 0;
+}
+
+/* Nonzero when any texel of the 32-bit column at (x, y) has a nonzero alpha. */
+static __forceinline i32 NuQFntColumnOpaque32Inline(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
+    i32 width = bitmap->width;
+    u8 *alpha = bitmap->data + (width * y + x) * 4 + 3;
+    i32 i;
+
+    for (i = 0; i < count && y + i < bitmap->height; i++) {
+        if (*alpha != 0) {
+            return 1;
+        }
+        alpha += width * 4;
+    }
+    return 0;
+}
+
+extern "C" i32 __cdecl NuQFntColumnOpaque32Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
+    return NuQFntColumnOpaque32Inline(bitmap, x, y, count);
+}
+
+extern "C" i32 __cdecl NuQFntFindGlyphStart8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+    do {
+        do {
+            if (NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
+                return 1;
+            }
+            (*x)++;
+        } while (*x < bitmap->width);
+        *x = 0;
+        *y += count;
+    } while (*y + count < bitmap->height);
+    return 0;
+}
+
+extern "C" i32 __cdecl NuQFntFindGlyphEnd8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+    do {
+        do {
+            if (!NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
+                return 1;
+            }
+            (*x)++;
+        } while (*x < bitmap->width);
+        *x = 0;
+        *y += count;
+    } while (*y + count < bitmap->height);
+    return 0;
+}
+
+extern "C" i32 __cdecl NuQFntFindGlyphStart32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+    do {
+        do {
+            if (NuQFntColumnOpaque32Inline(bitmap, *x, *y, count)) {
+                return 1;
+            }
+            (*x)++;
+        } while (*x < bitmap->width);
+        *x = 0;
+        *y += count;
+    } while (*y + count < bitmap->height);
+    return 0;
+}
+
+extern "C" i32 __cdecl NuQFntFindGlyphEnd32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+    do {
+        do {
+            if (!NuQFntColumnOpaque32Inline(bitmap, *x, *y, count)) {
+                return 1;
+            }
+            (*x)++;
+        } while (*x < bitmap->width);
+        *x = 0;
+        *y += count;
+    } while (*y + count < bitmap->height);
+    return 0;
+}
+
+extern "C" void __cdecl NuQFntScanResetPc(void) {
+    NuQFntScanYPc = 0;
+    NuQFntScanXPc = 0;
+}
+
+/* Finds the next glyph cell in an 8-bit strip; returns nonzero once the strip is exhausted. */
+extern "C" i32 __cdecl NuQFntNextGlyph8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 value, f32 *x, f32 *y, f32 *width) {
+    i32 exhausted = 0;
+    i32 start;
+
+    if (!NuQFntFindGlyphStart8Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc, value)) {
+        exhausted = 1;
+        NuQFntScanXPc = 0;
+        NuQFntScanYPc = 0;
+    }
+    *x = (f32)NuQFntScanXPc;
+    *y = (f32)NuQFntScanYPc;
+    start = NuQFntScanXPc;
+    if (!NuQFntFindGlyphEnd8Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc, value)) {
+        exhausted = 1;
+        NuQFntScanXPc = bitmap->width;
+        NuQFntScanYPc = bitmap->height;
+    }
+    *width = (f32)(NuQFntScanXPc - start);
+    return exhausted;
+}
+
+/* Finds the next glyph cell in a 32-bit strip; returns nonzero once the strip is exhausted. */
+extern "C" i32 __cdecl NuQFntNextGlyph32Pc(NUTEXBMP_PC *bitmap, i32 count, f32 *x, f32 *y, f32 *width) {
+    i32 exhausted = 0;
+    i32 start;
+
+    if (!NuQFntFindGlyphStart32Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc)) {
+        exhausted = 1;
+        NuQFntScanYPc = 0;
+        NuQFntScanXPc = 0;
+    }
+    *x = (f32)NuQFntScanXPc;
+    *y = (f32)NuQFntScanYPc;
+    start = NuQFntScanXPc;
+    if (!NuQFntFindGlyphEnd32Pc(bitmap, count, &NuQFntScanXPc, &NuQFntScanYPc)) {
+        exhausted = 1;
+        NuQFntScanXPc = bitmap->width;
+        NuQFntScanYPc = bitmap->height;
+    }
+    *width = (f32)(NuQFntScanXPc - start);
+    return exhausted;
+}
+
+extern "C" u16 __cdecl NuQFntMapLookupPc(VUCHARIDX *map, i32 count, u16 unicode) {
+    u16 i;
+
+    for (i = 0; i < count; i++) {
+        if (map[i].unicode == unicode) {
+            return map[i].index;
+        }
+    }
+    return 0xffff;
+}
+
+extern "C" i32 __cdecl NuQFntMapAddPc(VUCHARIDX *map, i32 slot, u16 unicode, u16 index) {
+    if (slot > 808 || slot < 0) {
+        NuQFntAtlasErrorPc();
+    }
+    map[slot].unicode = unicode;
+    map[slot].index = index;
+    return slot + 1;
+}
+
+/* The material fields the atlas font set-up writes. */
+typedef struct nuqfnt_atlas_material_pc_s {
+    u8 unknown_000[0x40];
+    u32 attributes;
+    u32 attributes_high;
+    u8 unknown_048[0xc];
+    NUVEC diffuse;
+    u8 unknown_060[0x10];
+    f32 opacity;
+    i16 texture_id;
+} NUQFNT_ATLAS_MATERIAL_PC;
+STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, attributes) == 0x40);
+STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, diffuse) == 0x54);
+STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, opacity) == 0x70);
+STATIC_ASSERT(offsetof(NUQFNT_ATLAS_MATERIAL_PC, texture_id) == 0x74);
+
+/* Font material set-up used by the atlas builder; mirrors NuQFntReadPS. */
+extern "C" i32 __cdecl NuQFntAtlasReadPSPc(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer,
+                                           VARIPTR end) {
+    NUQFNT_RENDER_DATA_PC *platform;
+    NUQFNT_ATLAS_MATERIAL_PC *material;
+
+    (void)end;
+    NuTexGetWidth(texture_id);
+    NuTexGetHeight(texture_id);
+    buffer->addr = (buffer->addr + 15) & ~15U;
+    font->platform_data = (NUQFNT_RENDER_DATA_PC *)buffer->void_ptr;
+    buffer->addr += 0x58;
+    platform = font->platform_data;
+    font->color_abgr = &platform->colour;
+    font->x_scale = (f32 *)((u8 *)platform + 0x50);
+    font->y_scale = (f32 *)((u8 *)platform + 0x54);
+    font->material = NuMtlCreateEx(1, plane);
+    if (font->material == NULL) {
+        return 0;
+    }
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.x = 1.0f;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.y = 1.0f;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.z = 1.0f;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+        (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x1000U) | 0x2000U;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->opacity = 1.0f;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+        (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~14U) | 1U;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0x40000U;
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->texture_id = (i16)texture_id;
+    material = (NUQFNT_ATLAS_MATERIAL_PC *)font->material;
+    if (flags & 8) {
+        material->attributes_high &= ~4U;
+    } else {
+        material->attributes_high |= 4U;
+    }
+    ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+        (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10000U) | 0x20000U;
+    if (flags & 2) {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~15U;
+    } else {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~14U) | 1U;
+    }
+    if (flags & 0x40) {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0xc000U;
+    } else if (flags & 0x20) {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x8000U) | 0x4000U;
+    } else {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
+    }
+    if (flags & 4) {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x20U) | 0x10U;
+    } else if (flags & 0x10) {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10U) | 0x20U;
+    } else {
+        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0x30U;
+    }
+    NuMtlUpdate(font->material);
+    return 1;
+}
+
+extern "C" int __cdecl NuQFntMapComparePc(const void *a, const void *b) {
+    u16 left = ((const VUCHARIDX *)a)->unicode;
+    u16 right = ((const VUCHARIDX *)b)->unicode;
+
+    if (left < right) {
+        return -1;
+    }
+    return left != right;
+}
+
+#define NUQFNT_ATLAS_MAP_SIZE 808
+#define NUQFNT_ATLAS_GLYPH_SIZE 750
+
+/* Finds the next glyph cell with the scanner that suits the strip's format. */
+#define NUQFNT_ATLAS_NEXT_GLYPH()                                                                                      \
+    if (bitmap->type == 5) {                                                                                           \
+        NuQFntNextGlyph8Pc(bitmap, cell_height, key_colour, &x, &y, &width);                                           \
+    } else {                                                                                                           \
+        NuQFntNextGlyph32Pc(bitmap, cell_height, &x, &y, &width);                                                      \
+    }
+
+/* Builds a font from a BMP glyph strip, one cell per character of text in strip order. */
+extern "C" VUFNT *__cdecl NuQFntCreateFromBmpPc(const char *path, i32 cell_height, i32 baseline, i32 key_colour,
+                                                u16 *text, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
+    f32 width, y, x;
+    i32 max_count;
+    i32 count;
+    NUTEXBMP_PC *bitmap;
+    VUCHARIDX map[NUQFNT_ATLAS_MAP_SIZE];
+    VUFNTCHAR glyphs[NUQFNT_ATLAS_GLYPH_SIZE];
+    PC_LOCKED_RECT_PC locked;
+    PC_TEXTURE_RESOURCE_PC *resource;
+    NUTEXDIM_PC *texture;
+    VUFNT *font;
+    u8 *source, *destination;
+    i32 row_size, row;
+    i32 index, next, c, size;
+    u16 glyph;
+    i32 texture_id;
+
+    NuStrLenW(text);
+    memset(glyphs, 0, sizeof(glyphs));
+    memset(map, 0xff, sizeof(map));
+    bitmap = NuTexCreateBmpPc(path);
+    if (bitmap == NULL) {
+        return NULL;
+    }
+    if (bitmap->type != 5) {
+        if (bitmap->type != 3) {
+            NuQFntAtlasErrorPc();
+        }
+    } else {
+        for (c = 0; c < 256; c++) {
+            if (c == key_colour) {
+                bitmap->palette[c * 4 + 3] = 0;
+            } else {
+                ((u32 *)bitmap->palette)[c] |= 0x7f000000;
+            }
+        }
+    }
+
+    NuQFntScanResetPc();
+    index = 1;
+    max_count = 0;
+    for (; *text != 0; text++) {
+        /* Skip the slots that characters with their own fixed slot occupy. */
+        if (index == ' ') {
+            index = '!';
+        }
+        if (index == '!') {
+            index = '"';
+        }
+        if (index == '%') {
+            index = '&';
+        }
+        if (index == '?') {
+            index = '@';
+        }
+        if (index == '.') {
+            index = '/';
+        }
+        if (index == ',') {
+            index = '-';
+        }
+        if (index == '0') {
+            index = ':';
+        }
+        if (index == 'A') {
+            index = '[';
+        }
+        if (index == 'a') {
+            index = '{';
+        }
+        if (index == '[') {
+            index = '\\';
+        }
+        if (index == ']') {
+            index = '^';
+        }
+        if (*text == ' ') {
+            continue;
+        }
+        if ((*text >= 'a' && *text <= 'z') || (*text >= 'A' && *text <= 'Z') || (*text >= '0' && *text <= '9') ||
+            *text == '!' || *text == '?' || *text == '.' || *text == ',' || *text == '%' || *text == '[' ||
+            *text == ']') {
+            NUQFNT_ATLAS_NEXT_GLYPH();
+            glyphs[*text].x = x;
+            glyphs[*text].y = y;
+            glyphs[*text].width = width;
+            next = NuQFntMapAddPc(map, *text, *text, *text);
+        } else {
+            NUQFNT_ATLAS_NEXT_GLYPH();
+            glyphs[index].x = x;
+            glyphs[index].y = y;
+            glyphs[index].width = width;
+            index = NuQFntMapAddPc(map, index, *text, (u16)index);
+            next = index + 1;
+        }
+        if (max_count <= next) {
+            max_count = next;
+        }
+    }
+
+    glyphs[' '].x = 0.0f;
+    glyphs[' '].y = 0.0f;
+    glyphs[' '].width = (f32)(cell_height >> 2);
+    count = max_count;
+    map[' '].unicode = ' ';
+    map[' '].index = ' ';
+
+    /* Lower case letters without a cell borrow the upper case glyph. */
+    for (c = 'a'; c <= 'z'; c++) {
+        if (map[c].unicode == 0xffff) {
+            glyph = NuQFntMapLookupPc(map, count, NuToUpper((u8)c));
+            if (glyph != 0xffff) {
+                NuQFntMapAddPc(map, c, (u16)c, glyph);
+                if (max_count <= c) {
+                    max_count = c;
+                }
+            }
+        }
+    }
+    /* Accented lower case letters fall back to their upper case forms. */
+    for (c = 0xe0; c <= 0xff; c++) {
+        if (NuQFntMapLookupPc(map, index, (u16)c) == 0xffff) {
+            glyph = NuQFntMapLookupPc(map, count, NuToUpper((u8)c));
+            if (glyph != 0xffff) {
+                index = NuQFntMapAddPc(map, index, (u16)c, glyph);
+            }
+        }
+    }
+    /* Curly quotes reuse the apostrophe. */
+    if (NuQFntMapLookupPc(map, index, 0x91) == 0xffff) {
+        glyph = NuQFntMapLookupPc(map, count, '\'');
+        if (glyph != 0xffff) {
+            index = NuQFntMapAddPc(map, index, 0x91, glyph);
+        }
+    }
+    if (NuQFntMapLookupPc(map, index, 0x92) == 0xffff) {
+        glyph = NuQFntMapLookupPc(map, count, '\'');
+        if (glyph != 0xffff) {
+            index = NuQFntMapAddPc(map, index, 0x92, glyph);
+        }
+    }
+    if (index <= 'z') {
+        index = '{';
+    }
+    qsort(map, index, sizeof(VUCHARIDX), NuQFntMapComparePc);
+
+    texture = (NUTEXDIM_PC *)buffer->void_ptr;
+    buffer->addr += sizeof(NUTEXDIM_PC);
+    memset(texture, 0, sizeof(*texture));
+    texture->width = bitmap->width;
+    texture->height = bitmap->height;
+    PCDeviceCreateTexture(bitmap->width, bitmap->height, bitmap->mips, 0, 0x15, 1, &texture->resource);
+    texture_id = NuTexCreateNative(texture);
+    if (texture_id == 0) {
+        NuQFntAtlasErrorPc();
+    }
+    resource = NuTextureGetDimensions(texture_id)->resource;
+    if (resource->methods->lock_rect(resource, 0, &locked, NULL, 0) >= 0) {
+        source = bitmap->data;
+        row_size = bitmap->width * 4;
+        destination = (u8 *)locked.bits;
+        for (row = 0; row < bitmap->height; row++) {
+            memcpy(destination, source, row_size);
+            destination += locked.pitch;
+            source += row_size;
+        }
+        resource = NuTextureGetDimensions(texture_id)->resource;
+        resource->methods->unlock_rect(resource, 0);
+    }
+    NuFree(bitmap->data, NuQFntSourcePathPC, 0x264);
+    NuFree(bitmap, NuQFntSourcePathPC, 0x265);
+    NuTexGetWidth(texture_id);
+    NuTexGetHeight(texture_id);
+
+    font = (VUFNT *)((buffer->addr + 15) & ~15U);
+    buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(VUFNT);
+    memset(font, 0, sizeof(VUFNT));
+    font->glyph_count = count;
+    font->height = (f32)cell_height;
+    font->unicode_count = index;
+    font->legacy_font = NULL;
+    font->baseline = (f32)baseline;
+    font->ic_gap = 0.0f;
+    font->space_width = glyphs[' '].width;
+
+    buffer->addr = (buffer->addr + 15) & ~15U;
+    font->glyphs = (VUFNTCHAR *)buffer->void_ptr;
+    buffer->addr += font->glyph_count * sizeof(VUFNTCHAR);
+    memcpy(font->glyphs, glyphs, font->glyph_count * sizeof(VUFNTCHAR));
+    for (size = font->glyph_count * sizeof(VUFNTCHAR); size & 15; size += 4) {
+        *(u32 *)buffer->void_ptr = 0;
+        buffer->addr += 4;
+    }
+
+    buffer->addr = (buffer->addr + 15) & ~15U;
+    font->unicode_map = (VUCHARIDX *)buffer->void_ptr;
+    buffer->addr += font->unicode_count * sizeof(VUCHARIDX);
+    memcpy(font->unicode_map, map, font->unicode_count * sizeof(VUCHARIDX));
+    buffer->addr = (buffer->addr + 15) & ~15U;
+    font->size = buffer->addr - (u32)font;
+    NuQFntAtlasReadPSPc(font, texture_id, flags, plane, buffer, end);
+    return font;
+}
