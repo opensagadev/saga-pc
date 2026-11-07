@@ -59,7 +59,7 @@ extern "C" {
         i16 field_38, field_3a;
         u8 field_3c, field_3d;
         u16 field_3e;
-        u32 field_40;
+        i32 field_40;
         void *callbacks[7];
         u32 flags_60;
         i16 shoot_sfx_id, hit_sfx_id;
@@ -1398,18 +1398,18 @@ static void Bolt_OrientationPrivate(BOLT_PC *bolt) {
 
 extern "C" {
     BOLT_PC *__cdecl Bolt_Alloc(void) {
-        i32 index = i_bolt;
+        BOLT_PC *bolt = NULL;
         i32 attempts = 0;
-
-        while (Bolt[index].active != 0 && (Bolt[index].flags & 8) != 0 && attempts < 32) {
-            ++index;
-            if (index == 32)
-                index = 0;
+        while (Bolt[i_bolt].active != 0 && (Bolt[i_bolt].flags & 8) != 0 && attempts < 32) {
+            if (++i_bolt == 32)
+                i_bolt = 0;
             ++attempts;
         }
-
-        i_bolt = (index + 1) % 32;
-        return &Bolt[index];
+        if (attempts <= 32) {
+            bolt = &Bolt[i_bolt];
+            i_bolt = (i_bolt + 1) % 32;
+        }
+        return bolt;
     }
 }
 
@@ -1472,25 +1472,25 @@ extern "C" {
     BOLT_PC *__cdecl FindIncomingBolt(GAMEOBJECT *object, i32 check_owner, i32 mark_hit) {
         f32 radius;
         f32 radius_squared;
-        f32 nearest = 100000000.0f;
-        BOLT_PC *result = NULL;
+        f32 nearest;
+        BOLT_PC *result;
         BOLT_PC *bolt;
         f32 half_speed;
         f32 limit;
         f32 distance;
         i32 index;
-        if (object->bounds_radius < object->bounds_half_height)
-            radius = object->bounds_half_height;
-        else
-            radius = object->bounds_radius;
+        radius =
+            object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
         radius_squared = radius * radius;
-        for (index = 0; index < 32; ++index) {
-            bolt = &Bolt[index];
+        result = NULL;
+        nearest = 100000000.0f;
+        bolt = Bolt;
+        for (index = 0; index < 32; ++index, ++bolt) {
             if (bolt->active == 0)
                 continue;
-            if (check_owner != 0 && bolt->owner != NULL &&
-                (((GAMEOBJECT *)bolt->owner)->flags_1fc_word & 0x1001) == 0x1001 &&
-                ((GAMEOBJECT *)bolt->owner)->dead == 0 && ((GAMEOBJECT *)bolt->owner)->field_280 != 0xff)
+            if (check_owner != 0 && bolt->owner != NULL && (((GAMEOBJECT *)bolt->owner)->flags_1fc_word & 1) != 0 &&
+                (((GAMEOBJECT *)bolt->owner)->flags_1fc_word & 0x1000) != 0 && ((GAMEOBJECT *)bolt->owner)->dead == 0 &&
+                ((GAMEOBJECT *)bolt->owner)->field_280 != 0xff)
                 continue;
             half_speed = (f32)((f64)bolt->speed * 0.5);
             distance = NuVecDistSqr(&bolt->position, &object->collision_position, NULL);
@@ -1514,11 +1514,11 @@ extern "C" {
     }
 
     BOLT_PC *__cdecl Bolt_Find(i32 type_id, NUVEC *position, GAMEOBJECT *owner) {
-        BOLT_PC *nearest = NULL;
         f32 nearest_distance = 1000000.0f;
+        BOLT_PC *nearest = NULL;
+        BOLT_PC *bolt = Bolt;
         i32 index;
-        for (index = 0; index < 32; ++index) {
-            BOLT_PC *bolt = &Bolt[index];
+        for (index = 0; index < 32; ++index, ++bolt) {
             f32 distance;
             if (bolt->active == 0 || (type_id != -1 && bolt->type_id != type_id) ||
                 (owner != NULL && bolt->owner != owner))
@@ -1561,28 +1561,23 @@ extern "C" {
     }
 
     static void BT_speed(NUFPAR_PC *parser) {
-        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-        bolt_type->field_10 = NuFParGetFloat(parser);
+        BT_bolttype->field_10 = NuFParGetFloat(parser);
     }
 
     static void BT_duration(NUFPAR_PC *parser) {
-        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-        bolt_type->field_14 = NuFParGetFloat(parser);
+        BT_bolttype->field_14 = NuFParGetFloat(parser);
     }
 
     static void BT_radius(NUFPAR_PC *parser) {
-        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-        bolt_type->field_1c = NuFParGetFloat(parser);
+        BT_bolttype->field_1c = NuFParGetFloat(parser);
     }
 
     static void BT_scale(NUFPAR_PC *parser) {
-        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-        bolt_type->field_20 = NuFParGetFloat(parser);
+        BT_bolttype->field_20 = NuFParGetFloat(parser);
     }
 
     static void BT_rand_angle(NUFPAR_PC *parser) {
-        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-        bolt_type->field_40 = (i32)((f64)NuFParGetFloat(parser) * (f64)(65536.0f / 360.0f));
+        BT_bolttype->field_40 = (i32)((f64)NuFParGetFloat(parser) * (f64)(65536.0f / 360.0f));
     }
 
     static void BT_sceneconfig(NUFPAR_PC *parser) {
@@ -1636,52 +1631,39 @@ extern "C" {
 
     static void BT_debris(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
-            BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-            bolt_type->debris_id = (i16)(FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr));
+            BT_bolttype->debris_id = (i16)(FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr));
         }
     }
 
     static void BT_debris_moving(NUFPAR_PC *parser) {
-        i32 count;
-        i32 index;
-        if (BT_gdeb_moving_count > 1 || NuFParGetWord(parser) == 0) {
-            return;
+        if (BT_gdeb_moving_count < 2 && NuFParGetWord(parser) != 0) {
+            BT_bolttype->moving_debris[BT_gdeb_moving_count] =
+                (i16)FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr);
+            BT_bolttype->moving_debris_counts[BT_gdeb_moving_count] = (i16)abs((i32)NuFParGetFloat(parser));
+            BT_gdeb_moving_count++;
         }
-
-        BT_bolttype->moving_debris[BT_gdeb_moving_count] =
-            (i16)(FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr));
-        count = (i32)(NuFParGetFloat(parser));
-        index = BT_gdeb_moving_count++;
-        if (count < 0) {
-            count = -count;
-        }
-        BT_bolttype->moving_debris_counts[index] = (i16)(count);
     }
 
     static void BT_part_hit(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
-            BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-            bolt_type->field_38 = (i16)(FindPartDebris(BT_worldinfo->part_debris_sys, parser->word_buffer_ptr));
+            BT_bolttype->field_38 = (i16)(FindPartDebris(BT_worldinfo->part_debris_sys, parser->word_buffer_ptr));
         }
     }
 
     static void BT_sfx_shoot(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
-            BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-            bolt_type->shoot_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
+            BT_bolttype->shoot_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
         }
     }
 
     static void BT_sfx_hit(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
-            BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-            bolt_type->hit_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
+            BT_bolttype->hit_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
         }
     }
 
     static void BT_damage(NUFPAR_PC *parser) {
-        BOLT_CONFIG_PC *bolt_type = BT_bolttype;
-        bolt_type->field_3c = (u8)(NuFParGetInt(parser));
+        BT_bolttype->field_3c = (u8)(NuFParGetInt(parser));
     }
 
     static void BT_nodeflect(NUFPAR_PC *parser) {
@@ -1756,14 +1738,14 @@ extern "C" {
 
     i32 __cdecl BoltType_FindIDByName(const char *name, WORLDINFO *world) {
         i32 index;
-        if (NuStrLen(name) == 0)
-            return -1;
-        for (index = 7; index >= 0; --index)
-            if (NuStrICmp(name, world->bolt_types[index].name) == 0)
-                return BoltSys->count + index;
-        for (index = BoltSys->count + 7; index >= 0; --index)
-            if (NuStrICmp(name, BoltSys->types[index].name) == 0)
-                return index;
+        if (NuStrLen(name) != 0) {
+            for (index = 7; index >= 0; --index)
+                if (NuStrICmp(name, world->bolt_types[index].name) == 0)
+                    return BoltSys->count + index;
+            for (index = BoltSys->count + 7; index >= 0; --index)
+                if (NuStrICmp(name, BoltSys->types[index].name) == 0)
+                    return index;
+        }
         return -1;
     }
 
@@ -1816,18 +1798,18 @@ extern "C" {
     f32 __cdecl Bolt_ObjTargetPosYAdjust(GAMEOBJECT *object) {
         f32 height = object->field_b0;
         i32 random = qrand();
-        f64 height_range = ((f64)height + height) / BoltTargetRandomDenominator;
-
-        return (f32)((f64)random * height_range - height);
+        return (f32)(random * ((height + height) / BoltTargetRandomDenominator) - height);
     }
 
     i32 __cdecl Bolt_HitPartMode(BOLT_PC *bolt) {
         GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
-        if (!owner)
-            return 3;
-        if (owner->field_280 == 0)
-            return 4;
-        return owner->field_280 == 1 ? 5 : 3;
+        if (owner != NULL) {
+            if (owner->field_280 == 0)
+                return 4;
+            if (owner->field_280 == 1)
+                return 5;
+        }
+        return 3;
     }
 
     PART_PC *__cdecl Bolt_HitParts(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
