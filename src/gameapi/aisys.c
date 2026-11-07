@@ -9299,16 +9299,22 @@ i32 __cdecl Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     GAMEOBJECT *object;
     (void)param_6;
     best_distance = 1.0e9f;
-    if (param_5 == 0 || param_4 == 0) {
-        return 1;
-    }
-
-    target = packet != NULL ? (APIOBJECT_PC *)packet->owner : NULL;
+    target = NULL;
     locator_name = NULL;
     personal = 0;
     indexed = 0;
     nearest = 0;
     random_count = 0;
+    locator = NULL;
+    if (param_5 == 0) {
+        return 1;
+    }
+    if (packet != NULL && packet->owner != NULL) {
+        target = (APIOBJECT_PC *)packet->owner;
+    }
+    if (param_4 == 0) {
+        return 1;
+    }
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
         if (value != NULL) {
@@ -9327,22 +9333,19 @@ i32 __cdecl Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         }
     }
 
-    locator = NULL;
     if (locator_name != NULL && nearest) {
         index = 0;
-        for (;;) {
-            sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, index);
-            index++;
+        do {
+            sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, index++);
             candidate = AIPathFindLocator(sys, numbered_name);
-            if (candidate == NULL) {
-                break;
+            if (candidate != NULL) {
+                distance = NuVecDistSqr(&packet->terrain_origin, &candidate->position, &difference);
+                if (distance < best_distance) {
+                    best_distance = distance;
+                    locator = candidate;
+                }
             }
-            distance = NuVecDistSqr(&packet->terrain_origin, &candidate->position, &difference);
-            if (distance < best_distance) {
-                best_distance = distance;
-                locator = candidate;
-            }
-        }
+        } while (candidate != NULL);
     } else if (locator_name != NULL) {
 
         object = packet->owner->objptr;
