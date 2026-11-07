@@ -221,7 +221,8 @@ i32 __cdecl Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     char *value;
     NUVEC destination;
     NUVEC difference;
-    u64 mask;
+    start = NULL;
+    end = NULL;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
         return 1;
     object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
@@ -230,8 +231,6 @@ i32 __cdecl Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *process
         processor->action_pos.y = 0.0f;
         processor->action_pos.z = 1.0f;
         random = NuRandFloat();
-        start = NULL;
-        end = NULL;
         for (index = 0; index < count; index++) {
             value = NuStrIStr(params[index], (char *)AIGameStartName);
             if (value != NULL)
@@ -243,7 +242,7 @@ i32 __cdecl Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *process
             else if ((value = NuStrIStr(params[index], (char *)AIGameFireIntervalName)) != NULL)
                 processor->action_data_5 = AIParamToFloat(processor, value + 13);
         }
-        if (end != NULL && start != NULL) {
+        if (start != NULL && end != NULL) {
             NuVecSub(&processor->action_pos, &end->position, &start->position);
             NuVecNorm(&processor->action_pos, &processor->action_pos);
         }
@@ -255,18 +254,19 @@ i32 __cdecl Action_FollowDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     opponent = (APIOBJECT_PC *)packet->opponent;
     if (processor->action_data_4 > 0.0f && opponent != NULL && opponent->ai != NULL) {
         distance_squared = NuVecDistSqr(&((APIOBJECT_PC *)packet->owner)->position, &opponent->position, &difference);
-        mask = (u64)WORLD->object_sys->hostility_masks[object->hostility_group][0] |
-               ((u64)WORLD->object_sys->hostility_masks[object->hostility_group][1] << 32);
-        if ((mask & (1ULL << opponent->object_id)) != 0 && object->model_draw_result != 0 &&
-            processor->action_data_4 * processor->action_data_4 > distance_squared) {
+        if ((((u64)1 << opponent->object_id) & U64_PAIR(WORLD->object_sys->hostility_masks[object->hostility_group])) !=
+                0 &&
+            object->model_draw_result != 0 && distance_squared < processor->action_data_4 * processor->action_data_4) {
             target = (GAMEOBJECT *)opponent->owner;
-            if (opponent->leader_selection_state == 0 || target->field_1010 > 0.0f)
+            if (opponent->leader_selection_state == 0 || target->field_1010 > 0.0f) {
                 processor->action_timer -= elapsed;
-            if (opponent->leader_selection_state == 0 && processor->action_timer <= 0.0f) {
-                interval = processor->action_data_5;
-                processor->action_timer = (f32)(NuRandFloat() * interval + 0.5 * interval);
-                object->pad->buttons_pressed |= GAMEPAD_ACTION;
-                object->script_fire_target = (GAMEOBJECT *)((APIOBJECT_PC *)packet->opponent)->owner;
+                if (((APIOBJECT_PC *)packet->opponent)->leader_selection_state == 0 &&
+                    processor->action_timer <= 0.0f) {
+                    interval = processor->action_data_5;
+                    processor->action_timer = (f32)(NuRandFloat() * interval + 0.5 * interval);
+                    object->pad->buttons_pressed |= GAMEPAD_ACTION;
+                    object->script_fire_target = (GAMEOBJECT *)((APIOBJECT_PC *)packet->opponent)->owner;
+                }
             }
         }
     }
@@ -609,9 +609,8 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         goal_range = packet->movement_instruction_parameter;
         if (goal_range != 0.0f &&
             (((opponent->flags_1fc_word & 0x80u) != 0 && object->model_draw_result == 0) ||
-             (((u64)WORLD->object_sys->hostility_masks[((APIOBJECT_PC *)packet->owner)->object_id][0] |
-               ((u64)WORLD->object_sys->hostility_masks[((APIOBJECT_PC *)packet->owner)->object_id][1] << 32)) &
-              (1ULL << opponent->hostility_group)) == 0))
+             (((u64)1 << opponent->hostility_group) &
+              U64_PAIR(WORLD->object_sys->hostility_masks[((APIOBJECT_PC *)packet->owner)->object_id])) == 0))
             goal_range = 0.1f;
     }
 
@@ -673,9 +672,8 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         }
     }
 
-    if ((((u64)WORLD->object_sys->hostility_masks[object->hostility_group][0] |
-          ((u64)WORLD->object_sys->hostility_masks[object->hostility_group][1] << 32)) &
-         (1ULL << opponent->hostility_group)) == 0)
+    if ((((u64)1 << opponent->hostility_group) &
+         U64_PAIR(WORLD->object_sys->hostility_masks[object->hostility_group])) == 0)
         return 0;
     character_flags_2 = object->character_data->game_character->flags_090 & 0x100;
     if (character_flags_2 != 0 && (object->flags_ef0 & 0x10000u) != 0)
@@ -775,9 +773,8 @@ i32 __cdecl Action_ShootAtOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
         if (relative.z > 0.0f)
             outside_arc = 0;
     }
-    if ((((u64)WORLD->object_sys->hostility_masks[object->hostility_group][0] |
-          ((u64)WORLD->object_sys->hostility_masks[object->hostility_group][1] << 32)) &
-         (1ULL << opponent->hostility_group)) == 0)
+    if ((((u64)1 << opponent->hostility_group) &
+         U64_PAIR(WORLD->object_sys->hostility_masks[object->hostility_group])) == 0)
         return 0;
     if (object->model_draw_result == 0 && (processor->action_data_1 & 1) == 0)
         return 0;
