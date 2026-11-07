@@ -773,6 +773,19 @@ class PlaceableNameControl : public EdStringControl {
 };
 STATIC_ASSERT(sizeof(PlaceableNameControl) == 0x14);
 
+/* Member references of the "Placeable" base class; member_offset carries a
+ * pseudo id (0x80000001 up) instead of a byte offset. */
+class EdRefPlaceable : public EdRef {
+  public:
+    EdRefPlaceable(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
+                   EdControl *member_control)
+        : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
+    }
+    virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
+    virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
+};
+STATIC_ASSERT(sizeof(EdRefPlaceable) == 0x28);
+
 /* A string member naming an editor object as "Class.Object": the button
  * picks a registered class, then one of its named objects. */
 class EdClassObjectNameControl : public EdStringControl {
@@ -1019,6 +1032,7 @@ class PlaceableHelper {
     ObjectType object_types[16];
 
     i32 IsEditorObject(ClassObject &object);
+    void Initialise();
 
     __forceinline void *GetNextObject(void *object) {
         void *next = NULL;
@@ -6328,6 +6342,101 @@ void EdManScale::Render(ClassObjectList &objects) {
     if (objects.GetAveragePosition(position)) {
         reinterpret_cast<ClassObject *>(&objects.first->ed_class)->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
         DrawAxis(position, &transform);
+    }
+}
+
+/* Registers the "Placeable" base class every placeable object type shares:
+ * LED file, attributes, name, parameters and transform. */
+void PlaceableHelper::Initialise() {
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+    EdClass *object_class = theRegistry.RegisterClass("Placeable", NULL, 0);
+#pragma pop_macro("RegisterClass")
+    EdRefPlaceable *reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+        EdRefPlaceable("Short", "LEDFile", 0x80000001, 0, 0x10000100, NULL);
+    object_class->AddType(reference);
+    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+        EdRefPlaceable("Int", "Attributes", 0x80000002, 0, 1, NULL);
+    object_class->AddType(reference);
+    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+        EdRefPlaceable("String", "Name", 0x80000003, 250, 2,
+                       new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
+    object_class->AddType(reference);
+    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+        EdRefPlaceable("String", "Params", 0x80000005, 250, 0,
+                       new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
+    object_class->AddType(reference);
+    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+        EdRefPlaceable("VuMtx", "Mtx", 0x80000006, 0, 0x38,
+                       new (theMemoryManager.AllocPool(sizeof(EdMatrixControl), 1)) EdMatrixControl);
+    object_class->AddType(reference);
+}
+
+void EdRefPlaceable::GetMemberData(void *object, i32 requested_type, void *data, i32 data_size) {
+    Placeable *placeable = static_cast<Placeable *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000001:
+            *static_cast<i16 *>(data) = placeable->led_file;
+            break;
+        case 0x80000002:
+            *static_cast<i32 *>(data) = placeable->attributes;
+            break;
+        case 0x80000003: {
+            const char *object_name = placeable->GetName();
+            if (object_name != NULL)
+                NuStrNCpy(static_cast<char *>(data), object_name, data_size);
+            else
+                NuStrNCpy(static_cast<char *>(data), "", data_size);
+            break;
+        }
+        case 0x80000005: {
+            /* Retail tests the reference's own name, not the parameter text. */
+            const char *params = placeable->params.data ? placeable->params.data + 1 : NULL;
+            if (name != NULL)
+                NuStrNCpy(static_cast<char *>(data), params, data_size);
+            else
+                NuStrNCpy(static_cast<char *>(data), "", data_size);
+            break;
+        }
+        case 0x80000006: {
+            const VuMtx *matrix = placeable->GetCurrentTransform();
+            if (matrix != NULL)
+                *static_cast<VuMtx *>(data) = *matrix;
+            break;
+        }
+        case 0x80000007:
+            *static_cast<f32 *>(data) = placeable->GetRadius();
+            break;
+    }
+}
+
+void EdRefPlaceable::SetMemberData(void *object, i32 requested_type, void *data, i32, i16 *) {
+    Placeable *placeable = static_cast<Placeable *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000001:
+            placeable->led_file = *static_cast<i16 *>(data);
+            break;
+        case 0x80000002:
+            placeable->attributes = *static_cast<i32 *>(data);
+            break;
+        case 0x80000003:
+            if (NuStrLen(static_cast<char *>(data)) > 0)
+                placeable->SetName(static_cast<char *>(data));
+            else
+                placeable->SetName(NULL);
+            break;
+        case 0x80000005:
+            if (NuStrLen(static_cast<char *>(data)) > 0)
+                placeable->params.Set(static_cast<char *>(data));
+            else
+                placeable->params.Set(NULL);
+            break;
+        case 0x80000006:
+            placeable->SetInitialTransform(static_cast<VuMtx *>(data));
+            placeable->SetCurrentTransform(static_cast<VuMtx *>(data));
+            break;
     }
 }
 

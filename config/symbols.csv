@@ -10121,6 +10121,7 @@ address,symbol,size,ctype
 0x6c84e0,?EndBlock@EdFileOutputStream@@UAEXXZ,109,
 0x6c8760,?GetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c87f0,?SetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
+0x6c8880,??0EdRefPlaceable@@QAE@PAD0HHHPAVEdControl@@@Z,54,
 0x6c8940,??0SplineHelper@@QAE@XZ,30,
 0x6c8970,?Flush@SplineHelper@@UAEXXZ,12,
 0x6c8980,??_ESplineHelper@@UAEPAXI@Z,,COFF weak alias of ??_GSplineHelper@@UAEPAXI@Z; no independent body
@@ -10177,6 +10178,9 @@ address,symbol,size,ctype
 0x6cc320,?Render@EdManRotate@@UAEXAAUClassObjectList@@@Z,64,
 0x6cc360,?Process@EdManScale@@UAEHAAUEdInputContext@@AAUClassObjectList@@@Z,1657,
 0x6cca00,?Render@EdManScale@@UAEXAAUClassObjectList@@@Z,95,
+0x6cca60,?Initialise@PlaceableHelper@@QAEXXZ,493,
+0x6ccc50,?GetMemberData@EdRefPlaceable@@UAEXPAXH0H@Z,268,
+0x6ccd60,?SetMemberData@EdRefPlaceable@@UAEXPAXH0HPAF@Z,244,
 0x6cce60,??0PropertyTool@@QAE@XZ,109,
 0x6cced0,?GetName@PropertyTool@@UAEPBDXZ,6,
 0x6ccee0,??_EPropertyTool@@UAEPAXI@Z,,COFF weak alias of ??_GPropertyTool@@UAEPAXI@Z; no independent body
@@ -18839,6 +18843,7 @@ address,symbol,size,ctype
 0x76be34,??_C@_07NLJKHPIJ@Colour3?$AA@,8,char []
 0x76be44,??_C@_03DBLNGNIM@Int?$AA@,4,char []
 0x76be48,??_C@_05BCAGPPBA@Short?$AA@,6,char []
+0x76be50,??_C@_07KOMPFNFG@LEDFile?$AA@,8,const char[]
 0x76be58,??_C@_06ENNEIMBA@String?$AA@,7,char []
 0x76be68,??_C@_09KLHEJKNK@Modifiers?$AA@,,const char [10]
 0x76be74,??_C@_05ELHCLLNI@VuVec?$AA@,6,char []
@@ -19752,6 +19757,7 @@ address,symbol,size,ctype
 0x76fac0,??_C@_06ELFECKBG@Object?$AA@,7,const char[]
 0x76fc0c,??_C@_06LHGEHABH@?$CINULL?$CJ?$AA@,7,char []
 0x76fc14,??_C@_0L@HFFGLEHP@StreamInfo?$AA@,11,char []
+0x76fc24,??_7EdRefPlaceable@@6B@,,
 0x76fc54,??_7SplineHelper@@6B@,,
 0x76fd68,??_7ClassEditor@@6B@,,
 0x76fd9c,??_C@_0N@MKEDCNLI@Class?5Editor?$AA@,13,char []
@@ -19797,6 +19803,10 @@ address,symbol,size,ctype
 0x76ff00,??_C@_07JHNCONCK@Editors?$AA@,8,char []
 0x76ff08,??_C@_08EEOHOBEO@Settings?$AA@,9,char []
 0x76ff14,??_C@_08EPNAOIMG@FileInfo?$AA@,9,char []
+0x76ff20,??_C@_03DNLJDHB@Mtx?$AA@,4,const char[]
+0x76ff24,??_C@_06MGHLEEEG@Params?$AA@,7,const char[]
+0x76ff2c,??_C@_0L@PLFFHFAH@Attributes?$AA@,11,const char[]
+0x76ff38,??_C@_09INCKMHBG@Placeable?$AA@,10,const char[]
 0x76ff48,??_7PropertyTool@@6B@,,
 0x76ff5c,??_C@_0O@OMMLCIML@Property?5Tool?$AA@,14,char []
 0x76ff6c,??_C@_07FCJAGJJB@?$CFs?5?9?5?$CFs?$AA@,8,char []
@@ -22665,6 +22675,10 @@ address,symbol,size,ctype
 0x7ebfe0,??_R3EdClassObjectNameControl@@8,,
 0x7ebff0,??_R2EdClassObjectNameControl@@8,,
 0x7ec000,??_R1A@?0A@EA@EdClassObjectNameControl@@8,,
+0x7ec1b0,??_R4EdRefPlaceable@@6B@,,
+0x7ec1c4,??_R3EdRefPlaceable@@8,,
+0x7ec1d4,??_R2EdRefPlaceable@@8,,
+0x7ec1e4,??_R1A@?0A@EA@EdRefPlaceable@@8,,
 0x7ec2a0,??_R4SplineHelper@@6B@,,
 0x7ec2b4,??_R3SplineHelper@@8,,
 0x7ec2c4,??_R2SplineHelper@@8,,
