@@ -3,6 +3,7 @@ extern "C" char *lsw_memcard_objname;
 extern "C" void __cdecl TextInputGlyphNamePc(i32, char *);
 extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
 extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
+extern "C" void __cdecl RegisterDefaultGizmoTypesPc(VARIPTR *, VARIPTR *);
 extern "C" void __cdecl Alt_registerStatusScreen(void);
 extern "C" void __cdecl Alt_registerStatusScreenExtraPc(void);
 extern "C" {
@@ -394,7 +395,7 @@ extern "C" {
         CreateThingManager();
 
         if (StartupGameFlag0 != 0) {
-            STUBBED_NAMED("LoadPermData: startup registration variant (0x46a150)");
+            RegisterDefaultGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
         } else if (StartupGameFlag1 != 0) {
             RegisterLswGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
             GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);

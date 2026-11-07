@@ -30,8 +30,39 @@ extern "C" {
     ADDGIZMOTYPE_PC *__cdecl GizAIMessage_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl EdGizShadowMachine_RegisterGizmo(i32);
     ADDGIZMOTYPE_PC *__cdecl Portal_RegisterGizmo(i32);
+    ADDGIZMOTYPE_PC *__cdecl Plugs_RegisterGizmo(i32);
 }
 ADDGIZMOTYPE_PC *__cdecl Push_RegisterGizmo(i32);
+
+/* Gizmo set registered by LoadPermData when StartupGameFlag0 is set. */
+extern "C" void __cdecl RegisterDefaultGizmoTypesPc(VARIPTR *buffer, VARIPTR *end) {
+    REGISTER_GIZMO_CONFIG_TYPE_FN functions[24];
+    functions[0] = GizObstacles_RegisterGizmo;
+    functions[1] = GizBuildIts_RegisterGizmo;
+    functions[2] = NewBlowup_RegisterGizmo;
+    functions[3] = GizmoPickups_RegisterGizmo;
+    functions[4] = Grapples_RegisterGizmo;
+    functions[5] = TightRopes_RegisterGizmo;
+    functions[6] = Levers_RegisterGizmo;
+    functions[7] = Spinner_RegisterGizmo;
+    functions[8] = Technos_RegisterGizmo;
+    functions[9] = MiniCut_RegisterGizmo;
+    functions[10] = Tubes_RegisterGizmo;
+    functions[11] = ZipUps_RegisterGizmo;
+    functions[12] = GizTurrets_RegisterGizmo;
+    functions[13] = AI_RegisterGizmo;
+    functions[14] = GizTimer_RegisterGizmo;
+    functions[15] = GizRandom_RegisterGizmo;
+    functions[16] = GizSpecial_RegisterGizmo;
+    functions[17] = Door_RegisterGizmo;
+    functions[18] = Plugs_RegisterGizmo;
+    functions[19] = GizAIMessage_RegisterGizmo;
+    functions[20] = Push_RegisterGizmo;
+    functions[21] = EdGizShadowMachine_RegisterGizmo;
+    functions[22] = Portal_RegisterGizmo;
+    functions[23] = NULL;
+    RegisterGizmoTypes(buffer, end, functions, 12);
+}
 
 extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *buffer, VARIPTR *end) {
     REGISTER_GIZMO_CONFIG_TYPE_FN functions[29];
