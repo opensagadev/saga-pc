@@ -400,12 +400,16 @@ void PeriscodeCode(GAMEOBJECT *object) {
         i32 locator = object->character_data->game_character->thingy_locator;
         if (locator != -1 && object->character_model->points_of_interest[locator] != NULL &&
             object->water_height > object->locator_matrices[locator].m31) {
-            if (object->roof_height_pc == 2000000.0f) {
-                target = 1.0f;
-            } else {
-                f32 clearance = object->roof_height_pc - object->water_height;
-                if (!(clearance > 0.0f) || !(clearance < 0.26f))
+            f32 clearance = object->roof_height_pc - object->water_height;
+            if (object->roof_height_pc == 2000000.0f || !(clearance > 0.0f) || !(clearance < 0.26f)) {
+                f32 depth;
+                if (object->floor_height == 2000000.0f) {
                     target = 1.0f;
+                } else {
+                    depth = (f32)(object->water_height >= object->floor_height);
+                    if (!(depth > 0.0f) || !(depth < 0.26f))
+                        target = 1.0f;
+                }
             }
         }
     }
@@ -417,12 +421,13 @@ void PeriscodeCode(GAMEOBJECT *object) {
 
     if (object->field_db0 > 0.0f) {
         object->field_db0 -= FRAMETIME;
-        if (!(object->field_db0 <= 0.0f))
-            return;
-        if (object->dead == 0)
-            PlaySfx(((char *)(object->id == (u16)id_R2Q5 ? "R2Q501" : "R2D201")), &object->collision_position);
-    }
-    object->field_db0 = qrand() * 1.5259022e-05f * 10.0f + 20.0f;
+        if (object->field_db0 <= 0.0f) {
+            if (object->dead == 0)
+                PlaySfx(((char *)(object->id == (u16)id_R2Q5 ? "R2Q501" : "R2D201")), &object->collision_position);
+            object->field_db0 = qrand() * 1.5259022e-05f * 10.0f + 20.0f;
+        }
+    } else
+        object->field_db0 = qrand() * 1.5259022e-05f * 10.0f + 20.0f;
 }
 
 i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object);

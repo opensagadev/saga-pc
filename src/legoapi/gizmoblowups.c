@@ -1138,7 +1138,7 @@ i32 __cdecl gizmoblowup_Load(void *world_ptr, void *data) {
         if (version >= 2) {
             if (version < 20)
                 blowup.draw_flags = (u32)(i32)EdFileReadShort();
-            else if (version == 28) {
+            else if (version >= 28 && version < 29) {
                 blowup.draw_flags = (u32)EdFileReadInt();
                 EdFileReadInt();
             } else
