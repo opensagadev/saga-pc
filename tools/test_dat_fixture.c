@@ -74,22 +74,6 @@ void(__cdecl *fnInterpreterError)(NUFPAR_PC *);
 
 extern i32 __cdecl PCThreadCriticalSectionCreate_candidate(void);
 
-/* Fixture-only allocation provider; production keeps its real memory manager. */
-void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
-    (void)file;
-    (void)line;
-    if (size <= 0 || size > 0x10000) {
-        return NULL;
-    }
-    return malloc((size_t)size);
-}
-
-void __cdecl NuFree(void *memory, const char *file, i32 line) {
-    (void)file;
-    (void)line;
-    free(memory);
-}
-
 #define REQUIRE(condition)                                                                                             \
     do {                                                                                                               \
         if (!(condition)) {                                                                                            \

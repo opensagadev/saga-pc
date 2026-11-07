@@ -12533,7 +12533,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     extern i32 DontDoFileUpperCaseHack;
     NUFILE_DEVICE *__cdecl NuFileGetDeviceFromPath(const char *path);
     NUFILE_DEVICE *__cdecl NuFileAddDevice(NUFILE_DEVICE *device);
-    i32 __cdecl NuFileGetCurrentDirectory(char *destination);
+    void __cdecl NuFileGetCurrentDirectory(char *destination);
     void __cdecl NuFileSetCurrentDirectory(const char *path);
     void __cdecl NuFileSetCurrentSysDirectory(char *path);
     void __cdecl NuFileGetCurrentDllPath(char *destination);

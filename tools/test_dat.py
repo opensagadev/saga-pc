@@ -110,16 +110,17 @@ def write_file_constants(directory):
 def write_clock_provider(directory):
     """Use the actual clock bodies needed by the expanded thread owner.
 
-    The DAT fixture does not exercise timebar rendering. Extract its two complete
-    clock routines and the actual tick-base definition, without substituting a
-    clock mock or pulling rendering services into this isolated parser test.
+    The DAT fixture does not exercise timebar rendering. Extract its complete
+    tick routine (NuTimeGet itself lives in the nucore unit) and the actual
+    tick-base definition, without substituting a clock mock or pulling rendering
+    services into this isolated parser test.
     """
     production = (ROOT / "src/nu2api/nutimebar.c").read_text()
     start = production.index("void __cdecl NuTimeGetTicksPS(")
     end = production.index("void __cdecl NuTimeBarSlotReset(", start)
     bodies = production[start:end]
-    if len(re.findall(r"^.*void __cdecl NuTime\w+\(", bodies, re.MULTILINE)) != 2:
-        raise ValueError("DAT clock provider no longer contains exactly the two production routines")
+    if len(re.findall(r"^.*void __cdecl NuTime\w+\(", bodies, re.MULTILINE)) != 1:
+        raise ValueError("DAT clock provider no longer contains exactly the production tick routine")
     data = (ROOT / "src/data.cpp").read_text()
     definitions = []
     for name in ("NuTime_TickBase", "NuTime_PerformanceFrequency"):
@@ -151,6 +152,23 @@ def write_implode_state(directory):
     return source
 
 
+def write_unreached(directory, link_output):
+    """Define each symbol the link reports unresolved as inert zeroed storage.
+
+    Only plain C names are accepted, so a missing parser routine (or any C++ or
+    fastcall name) still fails the link instead of being papered over.
+    """
+    names = sorted(set(re.findall(r"unresolved external symbol _(\w+)\b", link_output)))
+    if not names:
+        raise ValueError("DAT fixture link failed for a reason other than unreached symbols:\n" + link_output)
+    parser = [name for name in names if re.match(r"Nu(Dat|File|Mem|Str|FPar|PP|RDP)|Implode|Explode", name)]
+    if parser:
+        raise ValueError(f"DAT fixture is missing parser routines: {parser}")
+    source = directory / "unreached.c"
+    source.write_text("".join(f"char {name}[16];\n" for name in names))
+    return source
+
+
 class DatParserTests(unittest.TestCase):
     def setUp(self):
         if not (ROOT / "build/tools/msvc8/bin/cl.exe").is_file() or not shutil.which("wine"):
@@ -173,8 +191,7 @@ class DatParserTests(unittest.TestCase):
             write_fixtures(directory)
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
-                       ("nufile", "nufile_pc", "nufile_host", "nufile_device", "nupsfile", "nustring",
-                        "nudatfile", "nudatlookup", "nufile_position", "nufile_mc", "nuthread", "numemfile", "nurdpi", "implode")]
+                       ("nucore_includes", "nudebug", "nufile_pc", "nupsfile", "nufile_mc", "nuthread")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
             sources.append(write_file_constants(directory))
             sources.append(write_clock_provider(directory))
@@ -187,9 +204,19 @@ class DatParserTests(unittest.TestCase):
                     "/Ibuild/tools/msvc8/include", "/Ibuild/tools/msvc8/PlatformSDK/Include"])
                 objects.append(output)
             executable = directory / "dat-test.exe"
-            self.run_command([
-                sys.executable, ROOT / "tools/cc.py", "--link", executable, *objects, "--",
-                "/nologo", "/machine:x86", "/subsystem:console", "/incremental:no", "/manifest:no"])
+            link = [sys.executable, ROOT / "tools/cc.py", "--link", executable, *objects, "--",
+                    "/nologo", "/machine:x86", "/subsystem:console", "/incremental:no", "/manifest:no"]
+            # The nucore unit also holds pad, frame, allocator and timing code that the parser
+            # never reaches; give exactly those unresolved names inert storage of their own.
+            first = subprocess.run([str(arg) for arg in link], cwd=ROOT, capture_output=True, text=True,
+                                   timeout=180)
+            if first.returncode:
+                unreached = write_unreached(directory, first.stdout + first.stderr)
+                output = directory / (unreached.stem + ".obj")
+                self.run_command([sys.executable, ROOT / "tools/cc.py", unreached, output,
+                                  "/nologo", "/c", "/Isrc"])
+                link.insert(link.index("--"), output)
+                self.run_command(link)
             output = self.run_command([self.wine, executable, cc.windows(directory)],
                                       env=self.run_env, timeout=60)
             expected = [f"PASS {name} buffered={buffered} size_out=1"

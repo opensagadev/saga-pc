@@ -60,7 +60,6 @@ i32 __cdecl NuFileExists(char *filepath) {
     return NuFileExistQuiet(filepath);
 }
 
-extern void __cdecl NuFileCorrectSlashes(NUFILE_DEVICE *device, char *path);
 extern void __cdecl NuFileReldirFix(NUFILE_DEVICE *device, char *path);
 
 i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *path, i32 buf_size) {
@@ -96,7 +95,7 @@ i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *pa
     }
 
     path_pos = NuStrLen(device->root);
-    NuFileCorrectSlashes(device, buffer + path_pos);
+    NuFileUpCase(device, buffer + path_pos);
     NuFileReldirFix(device, buffer);
 
     path_len = NuStrLen(buffer);

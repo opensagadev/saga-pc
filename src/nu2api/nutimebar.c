@@ -2,56 +2,6 @@
 
 extern NUMTL *NuTimeBar_FrameOutMtl;
 
-__declspec(noinline) void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b) {
-    if (a->low >= b->low) {
-        time->low = a->low - b->low;
-        time->high = a->high - b->high;
-    } else {
-        time->low = a->low - b->low;
-        time->high = a->high - 1 - b->high;
-    }
-}
-
-f32 __cdecl NuTimeSeconds(NuTime *time) {
-    u32 low;
-    u32 high;
-    f64 ticks;
-    f64 ticks_per_second;
-
-    NuTimeGetTicksPerSecondPS(&low, &high);
-    ticks = time->low + time->high * NuTime_LowScale;
-    ticks_per_second = low + high * NuTime_LowScale;
-    return (f32)(ticks / ticks_per_second);
-}
-
-f32 __cdecl NuTimeMilliSeconds(NuTime *time) {
-    u32 low;
-    u32 high;
-    f64 ticks;
-    f64 ticks_per_second;
-
-    NuTimeGetTicksPerSecondPS(&low, &high);
-    ticks = time->low + time->high * NuTime_LowScale;
-    ticks_per_second = low + high * NuTime_LowScale;
-    return (f32)(ticks / ticks_per_second * NuScale1000);
-}
-
-f32 __cdecl NuTimeMicroSeconds(NuTime *time) {
-    u32 low;
-    u32 high;
-    f64 ticks;
-    f64 ticks_per_second;
-
-    NuTimeGetTicksPerSecondPS(&low, &high);
-    ticks = time->low + time->high * NuTime_LowScale;
-    ticks_per_second = low + high * NuTime_LowScale;
-    return (f32)(ticks / ticks_per_second * NuTime_MicroScale);
-}
-
-f32 __cdecl NuTimeScanlines(NuTime *time) {
-    return (f32)(NuTimeSeconds(time) * NuTime_ScanlineScale * NuTime_RefreshRate);
-}
-
 typedef struct TimeBarSet {
     i32 uses_buffer;
     i32 slot_count;
@@ -87,10 +37,6 @@ void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high) {
     }
     *low = (u32)elapsed;
     *high = (u32)(elapsed >> 32);
-}
-
-__declspec(noinline) void __cdecl NuTimeGet(NuTime *time) {
-    NuTimeGetTicksPS(&time->low, &time->high);
 }
 
 void __cdecl NuTimeBarSlotReset(i32 set, i32 slot) {
@@ -647,10 +593,6 @@ void __cdecl NuTimeBarSetRender(i32 set) {
         NuRndrRect2di(0x2440, 0, 0x3c0, 0xe00, (i32)0x80000064, NuTimeBar_FrameOutMtl);
     }
     NuRndrEndScene();
-}
-
-f32 NuTimeGetFrameTime(void) {
-    return nuapi.frame_time;
 }
 
 void __cdecl PcInitializeStartupCriticalSection(void) {

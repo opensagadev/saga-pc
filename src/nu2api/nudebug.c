@@ -54,6 +54,12 @@ void __cdecl CutSceneStreamDiagnosticPc(char *unused) {
     (void)unused;
 }
 
+void __cdecl NuFileError(void) {
+}
+
+void __cdecl NuFileRetry(void) {
+}
+
 void __cdecl NuAllocBadPointer(void) {
 }
 

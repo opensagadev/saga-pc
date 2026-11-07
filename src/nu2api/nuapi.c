@@ -7,12 +7,6 @@ i32 __cdecl StartupParseArgument(i32 count, char **arguments) {
     return 0;
 }
 
-void __cdecl NuCommandLine(i32 *__restrict count, char ***__restrict arguments) {
-    // NuMain passes separate stack arguments, not these global cursors.
-    argc = *count;
-    argv = *arguments;
-}
-
 void NuVideoSetBrightnessPS(void) {
 }
 
@@ -33,22 +27,4 @@ void __cdecl NuMainTrailerLeafPc(void) {
 
 i32 __cdecl NuKeyboard(i32 key) {
     return (i8)nu_keyboard_pages[(i8)nu_keyboard_page_index * 0x100 + key];
-}
-
-/* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
- * below after clearing the real 0x90-byte API record. */
-static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
-
-void __cdecl NuAPIInit(void) {
-    memset(&nuapi, 0, sizeof(NUAPI));
-    nuapi.fps = 60.0f;
-    nuapi.video_mode = 2;
-    nuapi.video_swap_mode = 5;
-    nuapi.language = 1;
-    nuapi.video_aspect = 0;
-    nuapi.frame_end_state = 0;
-    nuapi.pad_record.buf_size = NUAPI_PADREC_DEFAULT_BUFFERSIZE;
-    nuapi.pad_record.end_record_buttons = 0;
-    nuapi.pad_record.end_play_buttons = 0;
-    NuWindInitialise((NUWIND *)nuapi.wind);
 }
