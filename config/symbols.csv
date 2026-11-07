@@ -7956,13 +7956,17 @@ address,symbol,size,ctype
 0x6521b0,_InitSfx,583,"void __cdecl(VARIPTR *,VARIPTR,const char *)"
 0x652400,_PauseGameAudio,28,void __cdecl(i32)
 0x00652450,_SfxSetFileTable,72,void __cdecl (SFX_FILE_INFO_PC *)
+0x006524a0,_MusicPlayStream,105,"void __cdecl(i32, i32, i32, f32, i32)"
 0x652590,_SetPreSeekStartPoint,11,void __cdecl (f32)
+0x00652660,_MusicPreSeek,399,void __cdecl(i32)
 0x00652a40,_SoundStopMusic,131,void __cdecl (void)
 0x00652ad0,_SoundKillAll,20,void __cdecl (void)
 0x00652b40,_ClearLinkedCutSceneMusic,27,void __cdecl (void *)
 0x652b60,_SetLinkedCutSceneMusic,55,"void __cdecl(void *, i32)"
+0x00652de0,_RestoreGameMusic,122,void __cdecl(void)
 0x652fb0,_PauseGameCut,72,
 0x00653000,_RestoreGameCut,67,void __cdecl (void)
+0x00653460,_SoundUpdate,942,void __cdecl(f32)
 0x00653840,_SolveQuadratic,243,"i32 __cdecl (f32, f32, f32, f32 *, f32 *)"
 0x00653940,_DebrisGetControlStackLock,20,void __cdecl (void)
 0x00653960,_DebrisReleaseControlStackLock,11,void __cdecl (void)
@@ -8726,6 +8730,7 @@ address,symbol,size,ctype
 0x00698440,_NuSound3PauseStereoStream,25,void __cdecl (i32)
 0x00698460,_NuSound3SetStreamVolume,72,"i32 __cdecl (i32, i32)"
 0x006984c0,_NuSound3GetStereoStreamStatus,25,i32 __cdecl (i32)
+0x006984e0,_NuSound3GetMusicStreamStatusPc,59,i32 __cdecl(i32)
 0x698520,_PCStereoStartPacket,181,void __cdecl(PC_STEREO_PLAY_PACKET *)
 0x006986d0,_NuSound3SetDat,10,void __cdecl (NUDATHDR *)
 0x698710,_NuSound3SetRequestTable,100,"void __cdecl(u16 *,i32)"
@@ -23471,6 +23476,7 @@ address,symbol,size,ctype
 0x008102e4,_PARTSCALEUPTIME,4,f32
 0x008102e8,_partseed,4,u32
 0x8102ec,_PartRaycastsEnabledPrivate,,i32
+0x00810358,_MusicVolume,4,f32
 0x810360,_SfxMusicExtensionPc,,const char *
 0x00810364,_nusound_seed,4,u32
 0x810368,_SfxConfigFilenamePc,,char[256]

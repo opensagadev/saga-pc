@@ -26,6 +26,7 @@ extern "C" {
     void __cdecl DebrisKillPlayers(void);
     void __cdecl AddCameraRain(WORLDINFO *world, i32 mode);
     void __cdecl DebrisDrawGlass(void);
+    void __cdecl SoundUpdate(f32 frame_time);
 #pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
 #pragma data_seg()
@@ -181,7 +182,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                                   ? ((GAMEOBJECT *)Player[1])->pad->bound_pad
                                   : NULL);
         NuSound3UpdateRumble(FRAMETIME);
-        STUBBED_NAMED("NuMainUpdateFrame: SoundUpdate(FRAMETIME) at 0x00653460");
+        SoundUpdate(FRAMETIME);
         ProcessMusicChanges(world->current_level, &Game.options_save);
     }
     SAGA_SOUND_CHECK("after sound");

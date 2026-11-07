@@ -239,6 +239,13 @@ extern "C" i32 __cdecl NuSound3GetStereoStreamStatus(i32 index) {
     return NuSound3StereoStreams[index]->GetStatus();
 }
 
+extern "C" i32 __cdecl NuSound3GetMusicStreamStatusPc(i32 stream) {
+    if (stream == 0) {
+        return NuSound3GetStereoStreamStatus(PCStereoChannel0A);
+    }
+    return NuSound3GetStereoStreamStatus(PCStereoChannel1A);
+}
+
 void SoundQueue::CancelPausePc(void) {
     if (this == NULL || unknown_03f4 == 0)
         return;
