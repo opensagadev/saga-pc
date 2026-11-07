@@ -660,8 +660,11 @@ void *__cdecl NuFileLoad(char *path) {
 }
 
 NUFILE_DEVICE *__cdecl NuFileGetDeviceFromPath(const char *path) {
+    NUFILE_DEVICE *device;
     i32 prefix_end;
     i32 device_index;
+
+    device = NULL;
 
     for (prefix_end = 0; prefix_end < 8; prefix_end++) {
         if (path[prefix_end] == ':') {
@@ -669,17 +672,16 @@ NUFILE_DEVICE *__cdecl NuFileGetDeviceFromPath(const char *path) {
         }
     }
 
-    if (prefix_end == 8) {
-        return NULL;
-    }
-
-    for (device_index = 0; device_index < numdevices; device_index++) {
-        if (NuStrNICmp(path, devices[device_index].name, devices[device_index].match_len) == 0) {
-            return &devices[device_index];
+    if (prefix_end < 8) {
+        for (device_index = 0; device_index < numdevices; device_index++) {
+            if (NuStrNICmp(path, devices[device_index].name, devices[device_index].match_len) == 0) {
+                device = &devices[device_index];
+                break;
+            }
         }
     }
 
-    return NULL;
+    return device;
 }
 
 i32 __cdecl NuFileInitEx(i32 device_id, i32 reboot_iop, i32 eject) {
@@ -1215,6 +1217,7 @@ i32 __cdecl NuFileExistQuiet(char *filepath) {
 }
 
 i64 __cdecl NuFileSize(char *filepath) {
+    NUDATHDR *dat = curr_dat;
     i32 file;
     i64 pos;
     i32 buffering;
@@ -1222,18 +1225,18 @@ i64 __cdecl NuFileSize(char *filepath) {
     buffering = nufile_buffering_enabled;
     nufile_buffering_enabled = 0;
 
-    if (curr_dat != NULL) {
-        file = NuDatFileFindTree(curr_dat, filepath);
+    if (dat != NULL) {
+        file = NuDatFileFindTree(dat, filepath);
         if (file >= 0) {
             /* The PC early return leaves file buffering disabled. */
-            return curr_dat->file_info[file].decompressed_len;
+            return dat->file_info[file].decompressed_len;
         }
     }
 
     pos = -1;
 
     if (filepath != NULL && *filepath != '\0') {
-        file = NuFileOpen(filepath, 0);
+        file = NuFileOpenDF(filepath, 0, dat, 0);
         if (file != 0) {
             do {
                 pos = NuFileSeek(file, 0, 2);
