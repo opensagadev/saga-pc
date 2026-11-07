@@ -8131,8 +8131,9 @@ address,symbol,size,ctype
 0x641470,_edrtlBurnMainMenu,347,
 0x6415d0,_edrtlInit,178,
 0x641690,_edrtlProcBurn,591,
+0x641970,_edrtlDrawLight,16,void __cdecl (i32)
 0x641980,_edrtlDrawLights,122,
-0x641a10,_edrtlRender,281,
+0x641a00,_edrtlRender,297,
 0x6423b0,_PartRuntimeDirectionalLightsPrivate,183,
 0x6424c0,_PartRuntimeMatrixCopyPrivate,95,
 0x642530,_PartRayCast,48,"i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags)"

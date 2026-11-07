@@ -3422,6 +3422,25 @@ void __cdecl edrtlInit(void) {
     InitUI();
 }
 
+void __cdecl edrtlDrawLight(i32 index) {
+    edrtlDrawLightEx(index, 0);
+}
+
+void __cdecl edrtlDrawLights(void) {
+    i32 index;
+    if (base_rtl != NULL) {
+        for (index = base_rtl->field_79; index != -1; index = curr_set->lights[index].field_79) {
+            edrtlDrawLight(index);
+        }
+    } else {
+        for (index = 0; index < 128; ++index) {
+            if (hide_types[curr_set->lights[index].type] == 0 && curr_set->lights[index].field_7a == -1) {
+                edrtlDrawLight(index);
+            }
+        }
+    }
+}
+
 /* Native editor-owned f32 cells. Observed minimum four bytes each; allocation unknown. */
 #pragma section(".bss$RtlEditorFarClip", read, write)
 __declspec(allocate(".bss$RtlEditorFarClip")) f32 game_farclip = 0.0f;
