@@ -3426,48 +3426,51 @@ static i32 EduiProcessLockedInteractionPc(eduimenu_s *menu) {
 }
 
 static i32 EduiInteractHelperPc6272a0(eduimenu_s *menu, edui_interact_s *interact) {
+    i32 result = 0;
     u32 pressed;
-    if (interact->menu != menu)
-        return 0;
-    pressed = edui_cursor_buttons_db;
-    if (!(interact->buttons & pressed) || !EduiInteractionContainsCursorPc(interact))
-        return 0;
-    if (menu && interact->item && interact->item->type != 18)
-        menu->selected = interact->item;
-    if (interact->field_20) {
-        if (!(interact->buttons & pressed))
-            return 1;
-    } else {
-        if (!(interact->buttons & edui_cursor_buttons))
-            return 1;
-        if (menu != active_menu)
-            eduiSetActiveMenu(menu);
+    if (interact->menu == menu) {
+        pressed = edui_cursor_buttons_db;
+        if ((interact->buttons & pressed) != 0 && EduiInteractionContainsCursorPc(interact)) {
+            result = 1;
+            if (interact->menu != NULL && interact->item != NULL && interact->item->type != 18)
+                interact->menu->selected = interact->item;
+            if (interact->field_20 != 0) {
+                if ((interact->buttons & pressed) == 0)
+                    return result;
+            } else {
+                if ((interact->buttons & edui_cursor_buttons) == 0)
+                    return result;
+                if (menu != active_menu)
+                    eduiSetActiveMenu(menu);
+            }
+            if (interact->callback != NULL && interact->callback(interact))
+                eduiInteractLocked = interact;
+        }
     }
-    if (interact->callback && interact->callback(interact))
-        eduiInteractLocked = interact;
-    return 1;
+    return result;
 }
 
 i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
+    i32 result = 0;
     i32 index;
     edui_interact_s *interact;
     (void)pad;
-    if (!edmain_cursor_enabled)
-        return 0;
-    if (eduiInteractLocked) {
-        if ((!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->field_20)
+    if (edmain_cursor_enabled) {
+        if (eduiInteractLocked != NULL) {
+            if ((eduiInteractLocked->menu != NULL && eduiInteractLocked->item != NULL) ||
+                !eduiInteractLocked->field_20) {
+                result = EduiProcessLockedInteractionPc(menu);
+                return result;
+            }
             eduiInteractLocked = NULL;
+        }
+        interact = &eduiInteracts[numInteracts - 1];
+        for (index = 0; index < numInteracts; index++, interact--) {
+            if (EduiInteractHelperPc6272a0(menu, interact))
+                return 1;
+        }
     }
-    if (eduiInteractLocked)
-        return EduiProcessLockedInteractionPc(menu);
-    if (numInteracts <= 0)
-        return 0;
-    for (index = 0; index < numInteracts; ++index) {
-        interact = eduiInteracts + numInteracts - 1 - index;
-        if (EduiInteractHelperPc6272a0(menu, interact))
-            return 1;
-    }
-    return 0;
+    return result;
 }
 
 i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {

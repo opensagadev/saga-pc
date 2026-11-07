@@ -786,40 +786,24 @@ void antinodeEditorSaveData(void) {
 }
 
 void __cdecl AISysCharacterSetPath(AIPACKET_PC *packet, AIPATH_PC *path) {
-    AIPACKET_PC *path_packet = packet;
-    u8 route;
+    i32 route;
 
-    if (path_packet->path_info.path == path) {
+    if (packet->path_info.path == path) {
         return;
     }
-
-    path_packet->path_info.connection = NULL;
-    path_packet->path_info.direction = 0;
-    path_packet->path_info.path_index = 0xff;
-    path_packet->path_info.game_flags = 0;
-    path_packet->path_info.next_check = 0;
-    path_packet->path_info.flags = 0;
-    path_packet->path_info.padding = 0;
-    path_packet->path_info.distance = 0.0f;
-    path_packet->path_info.width = 0.0f;
-    path_packet->unknown_124 = 0xffff;
-    path_packet->available_routes = 0;
-    path_packet->current_route = 0xff;
-    path_packet->next_route = 0;
-    path_packet->path_info.path = path;
-    path_packet->current_path_node = NULL;
-
-    if (path == NULL) {
-        return;
-    }
-
-    for (route = 0; route < path->route_count; ++route) {
-        AIPATHROUTE_PC *route_info = &path->routes[route];
-        u64 route_mask = (u64)1 << route;
-
-        if ((route_info->character_mask[0] & path_packet->route_mask_low) != 0 ||
-            (route_info->character_mask[1] & path_packet->route_mask_high) != 0) {
-            path_packet->available_routes = (u16)(path_packet->available_routes | (u16)route_mask);
+    memset(&packet->path_info, 0, sizeof(packet->path_info));
+    packet->path_info.path = path;
+    packet->path_info.path_index = 0xff;
+    packet->available_routes = 0;
+    packet->unknown_124 = 0xffff;
+    packet->current_route = 0xff;
+    packet->next_route = 0;
+    packet->current_path_node = NULL;
+    if (path != NULL) {
+        for (route = 0; route < path->route_count; route++) {
+            if (((path->routes[route].character_mask[0] & packet->route_mask_low) |
+                 (path->routes[route].character_mask[1] & packet->route_mask_high)) != 0)
+                packet->available_routes |= (u16)((u64)1 << route);
         }
     }
 }
