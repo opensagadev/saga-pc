@@ -16,7 +16,7 @@ extern "C" {
     void __cdecl PCGraphicsResolveFramebufferPc(i32);
     void __cdecl PCGraphicsRenderTextureAllocationError(void);
     void __cdecl PostShadowSelectHandlersPc(i32 mode);
-    void __cdecl PcGetGeometryPerspectivePc(NUMTX *, f32 *, f32 *, f32 *, f32 *);
+    void __cdecl NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
     void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *, NUMTX *);
 }
 
@@ -189,7 +189,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrixPc(NURNDRLIGHTRECORD *set) {
         maximum = bound;
     }
     f32 fovy, aspect, near_plane, far_plane;
-    PcGetGeometryPerspectivePc(&PostShadowProjectionPc, &fovy, &aspect, &near_plane, &far_plane);
+    NuMtxGetPerspectiveD3D(&PostShadowProjectionPc, &fovy, &aspect, &near_plane, &far_plane);
     f64 depth = (f64)maximum.z - (f64)minimum.z;
     volatile f32 depth32 = depth;
     f32 dot = camera_direction.y * light_direction.y + light_direction.x * camera_direction.x +

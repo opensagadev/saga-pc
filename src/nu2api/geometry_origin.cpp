@@ -10,7 +10,7 @@ extern "C" {
     extern NUMTX PcGeometryAdjustedProjectionMatrixPc;
     extern NUMTX PcGeometryTranslationMatrixPc;
     extern NUMTX PcGeometryScaleMatrixPc;
-    void __cdecl PcGetGeometryPerspectivePc(NUMTX *, f32 *, f32 *, f32 *, f32 *);
+    void __cdecl NuMtxGetPerspectiveD3D(NUMTX *, f32 *, f32 *, f32 *, f32 *);
 }
 
 /* Native PC entry 0x005fa220 is RET-only; the D3D release paths call it for the
@@ -53,7 +53,7 @@ extern "C" void __cdecl PcUpdateGeometryCameraOriginPc(NUMTX *view, NUMTX *proje
     NuShaderManagerSetfv(0x13, &PcGeometryViewProjectionMatrixPc.m00);
     NuShaderManagerSetfv(0x5a, &PcGeometryDistanceOriginPc.x);
     f32 fovy, aspect, z_near, z_far;
-    PcGetGeometryPerspectivePc(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
+    NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
     NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrixPc.m22};
     NuShaderManagerSetfv(0x46, &depth.x);
     f32 left, right, bottom, top;

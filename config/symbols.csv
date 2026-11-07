@@ -5948,7 +5948,11 @@ address,symbol,size,ctype
 0x005b79d0,_NuMtxSetOrthoBlend,160,"void __cdecl (NUMTX *matrix, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane, f32 far_plane)"
 0x005b7a70,_NuMtxGetFrustumD3D,172,"void __cdecl (NUMTX *matrix, f32 *left, f32 *right, f32 *bottom, f32 *top, f32 *near_plane, f32 *far_plane)"
 0x5b7b20,_NuMtxGetFrustumBlend,178,"void __cdecl (NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f)"
+0x005b7be0,_NuFnabs,18,f32 __cdecl (f32)
+0x005b7c00,_NuFneg,18,f32 __cdecl (f32)
 0x005b7c20,_NuFsign,36,f32 __cdecl (f32)
+0x005b7c50,_NuEquiv,53,"i32 __cdecl (f32, f32)"
+0x005b7c90,_NuEquivTollerance,11,void __cdecl (f32)
 0x005b7cc0,_NuFloor,18,f32 __cdecl (f32)
 0x005b7d30,_NuFmod,36,"f32 __cdecl (f32, f32)"
 0x005b7d60,_NuQuatFromEulerXYZ,314,"void __cdecl (NUQUAT *out, NUANG psi, NUANG theta, NUANG phi)"
@@ -6060,7 +6064,10 @@ address,symbol,size,ctype
 0x005bfc30,_NuInfiniteLineToPointDistSqr,26,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005bfe00,_NuAtan2,50,"f32 __cdecl (f32, f32)"
 0x5bfe40,_RenderPostPowPc,57,"f32 __cdecl(f32,f32)"
-0x5bfe80,_PcGetGeometryPerspectivePc,141,"void __cdecl(NUMTX*,f32*,f32*,f32*,f32*)"
+0x005bfe80,_NuMtxGetPerspectiveD3D,141,"void __cdecl (NUMTX *, f32 *, f32 *, f32 *, f32 *)"
+0x005bff10,_NuMtxGetPerspectivePS3,147,"void __cdecl (NUMTX *, f32 *, f32 *, f32 *, f32 *)"
+0x005bffb0,_NuMtxGetPerspectiveOGL,141,"void __cdecl (NUMTX *, f32 *, f32 *, f32 *, f32 *)"
+0x005c0040,_NuMtxGetPerspectiveBlend,155,"void __cdecl (NUMTX *, f32 *, f32 *, f32 *, f32 *)"
 0x5c00e0,_NuPlnLine2,282,
 0x005c0240,_NuFsqrt,34,f32 __cdecl (f32)
 0x005c0330,_NuMtxSetRotateXYZVU0,5,"void __cdecl (NUMTX *, NUANGVEC *)"
@@ -24275,6 +24282,7 @@ address,symbol,size,ctype
 0x806588,_LightingUnitDirectionPc,,NUVEC
 0x806594,_RtlUnitDirectionYPc,,NUVEC
 0x8065a0,_RtlUnitDirectionZPc,,NUVEC
+0x008065b8,_fetol,4,f32
 0x008065bc,_NuWindQS,4,u32
 0x008065c0,_ANI3_EVAL_IDENTITY_MATRIX,64,const NUMTX
 0x806630,_PostShadowWhitePc,16,NUVEC4 initial four ones

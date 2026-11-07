@@ -5,6 +5,7 @@
 #include <string.h>
 #include <xmmintrin.h>
 
+static f32 fetol = 0.01f;
 static i32 NuExp10FirstTimePc = 1;
 static f32 *NuExp10TablePc = 0;
 static const char NuExp10SourcePathPc[] = "d:\\projects\\game_saga\\nu2api.saga\\numath\\nutrig.c";
@@ -42,41 +43,21 @@ STATIC_ASSERT(sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + sizeof(f32) == of
 STATIC_ASSERT(2 * sizeof(((NuMtxIndexedViewPc *)0)->elements[0]) + 2 * sizeof(f32) == offsetof(NUMTX, m22));
 #define NU_SIN_PC(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define NU_COS_PC(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
-// Retail inlines a guarded divide and the NuVecCross body here.
 static __forceinline f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
     }
     return a / b;
 }
-static __forceinline f32 NuFabs(f32 value) {
-    *(u32 *)&value &= 0x7fffffff;
-    return value;
+static __forceinline f32 NuFabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f & 0x7fffffff;
+    return rv;
 }
-#define NUMTX_CROSS(out, left, right)                                                                                  \
-    {                                                                                                                  \
-        NUVEC *cross_out = (out);                                                                                      \
-        NUVEC *cross_left = (left);                                                                                    \
-        NUVEC *cross_right = (right);                                                                                  \
-        f32 cross_y = cross_left->z * cross_right->x - cross_right->z * cross_left->x;                                 \
-        f32 cross_z = cross_right->y * cross_left->x - cross_left->y * cross_right->x;                                 \
-        cross_out->x = cross_left->y * cross_right->z - cross_left->z * cross_right->y;                                \
-        cross_out->y = cross_y;                                                                                        \
-        cross_out->z = cross_z;                                                                                        \
-    }
 f32 __cdecl RenderPostLogPc(f32 value);
 #define QUAT_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
-static __forceinline void BezVecScale(NUVEC *out, NUVEC *vector, f32 scale) {
-    out->x = vector->x * scale;
-    out->y = vector->y * scale;
-    out->z = vector->z * scale;
-}
-static __forceinline void BezVecScaleAccum(NUVEC *out, NUVEC *vector, f32 scale) {
-    out->x += vector->x * scale;
-    out->y += vector->y * scale;
-    out->z += vector->z * scale;
-}
 static i32 curve_points;
 static NUVEC *curve;
 static NUVEC *control;
@@ -2169,6 +2150,20 @@ void __cdecl NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f3
     }
 }
 
+f32 __cdecl NuFnabs(f32 f) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&f | 0x80000000;
+    return rv;
+}
+
+f32 __cdecl NuFneg(f32 v) {
+    f32 rv;
+
+    *(i32 *)&rv = *(i32 *)&v ^ 0x80000000;
+    return rv;
+}
+
 f32 NuFsign(f32 value) {
     if (*(u32 *)&value & 0x80000000) {
         value = -1.0f;
@@ -2176,6 +2171,14 @@ f32 NuFsign(f32 value) {
         value = 1.0f;
     }
     return value;
+}
+
+i32 __cdecl NuEquiv(f32 a, f32 b) {
+    return NuFabs(a - b) < fetol;
+}
+
+void __cdecl NuEquivTollerance(f32 tolerance) {
+    fetol = tolerance;
 }
 
 f32 NuFloor(f32 value) {
@@ -2773,32 +2776,20 @@ i32 NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
     return 0;
 }
 
-i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction) {
+i32 __cdecl NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction) {
     f32 cross_y = first->c * second->a - first->a * second->c;
     f32 cross_z = first->a * second->b - first->b * second->a;
     NUVEC normal;
-    union {
-        f32 value;
-        u32 bits;
-    } magnitude;
     normal.x = first->b * second->c - first->c * second->b;
     normal.y = cross_y;
     normal.z = cross_z;
     NuVecNorm(&normal, &normal);
     *direction = normal;
-    magnitude.value = normal.x;
-    magnitude.bits &= 0x7fffffff;
-    normal.x = magnitude.value;
-    magnitude.value = normal.y;
-    magnitude.bits &= 0x7fffffff;
-    normal.y = magnitude.value;
-    magnitude.value = normal.z;
-    magnitude.bits &= 0x7fffffff;
-    normal.z = magnitude.value;
+    normal.x = NuFabs(normal.x);
+    normal.y = NuFabs(normal.y);
+    normal.z = NuFabs(normal.z);
     if (normal.z >= normal.x && normal.z >= normal.y) {
-        magnitude.value = second->a;
-        magnitude.bits &= 0x7fffffff;
-        if (magnitude.value < 0.00009999999747378752) {
+        if (NuFabs(second->a) < 0.0001f) {
             point->y = (first->d * second->a / first->a - second->d) / (-second->a * first->b / first->a + second->b);
             point->x = (-first->d - first->b * point->y) / first->a;
             point->z = 0.0f;
@@ -2808,9 +2799,7 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
             point->z = 0.0f;
         }
     } else if (normal.y >= normal.x && normal.y >= normal.z) {
-        magnitude.value = second->a;
-        magnitude.bits &= 0x7fffffff;
-        if (magnitude.value < 0.00009999999747378752) {
+        if (NuFabs(second->a) < 0.0001f) {
             point->z = (first->d * second->a / first->a - second->d) / (-second->a * first->c / first->a + second->c);
             point->x = (-first->d - first->c * point->z) / first->a;
             point->y = 0.0f;
@@ -2820,9 +2809,7 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
             point->y = 0.0f;
         }
     } else {
-        magnitude.value = second->b;
-        magnitude.bits &= 0x7fffffff;
-        if (magnitude.value < 0.00009999999747378752) {
+        if (NuFabs(second->b) < 0.0001f) {
             point->z = (first->d * second->b / first->b - second->d) / (-second->b * first->c / first->b + second->c);
             point->y = (-first->d - first->c * point->z) / first->b;
             point->x = 0.0f;
@@ -2831,6 +2818,10 @@ i32 NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *dire
             point->y = (-second->d - second->c * point->z) / second->b;
             point->x = 0.0f;
         }
+    }
+    // The original evaluates this residual but returns zero on both paths.
+    if (first->a * point->x + first->b * point->y + first->c * point->z + first->d > 0.0001f) {
+        return 0;
     }
     return 0;
 }
@@ -3072,7 +3063,7 @@ NUVEC NuBezierCubicPatchEvaluate(NUVEC *control, f32 u, f32 v) {
     result.z = 0.0f;
     for (i = 0; i < 4; ++i) {
         for (j = 0; j < 4; ++j) {
-            BezVecScaleAccum(&result, control + i + j * 4, weights_u[i] * weights_v[j]);
+            NuVecScaleAccum(&result, control + i + j * 4, weights_u[i] * weights_v[j]);
         }
     }
     return result;
@@ -3141,256 +3132,256 @@ NUVEC NuBezierCubicPatchEvaluatePartials(NUVEC *control, f32 u, f32 v, i32 order
     result.z = 0.0f;
     for (i = 0; i < 4; ++i) {
         for (j = 0; j < 4; ++j) {
-            BezVecScaleAccum(&result, control + i + j * 4, weights_u[i] * weights_v[j]);
+            NuVecScaleAccum(&result, control + i + j * 4, weights_u[i] * weights_v[j]);
         }
     }
     return result;
 }
 
 void NuBezierCubicPatchPartialsU(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], -3.0f);
-    BezVecScaleAccum(out0, &control[1], 3.0f);
-    BezVecScale(out1, &control[12], -3.0f);
-    BezVecScaleAccum(out1, &control[13], 3.0f);
-    BezVecScale(out2, &control[2], -3.0f);
-    BezVecScaleAccum(out2, &control[3], 3.0f);
-    BezVecScale(out3, &control[14], -3.0f);
-    BezVecScaleAccum(out3, &control[15], 3.0f);
+    NuVecScale(out0, &control[0], -3.0f);
+    NuVecScaleAccum(out0, &control[1], 3.0f);
+    NuVecScale(out1, &control[12], -3.0f);
+    NuVecScaleAccum(out1, &control[13], 3.0f);
+    NuVecScale(out2, &control[2], -3.0f);
+    NuVecScaleAccum(out2, &control[3], 3.0f);
+    NuVecScale(out3, &control[14], -3.0f);
+    NuVecScaleAccum(out3, &control[15], 3.0f);
 }
 
 void NuBezierCubicPatchPartialsV(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], -3.0f);
-    BezVecScaleAccum(out0, &control[4], 3.0f);
-    BezVecScale(out1, &control[8], -3.0f);
-    BezVecScaleAccum(out1, &control[12], 3.0f);
-    BezVecScale(out2, &control[3], -3.0f);
-    BezVecScaleAccum(out2, &control[7], 3.0f);
-    BezVecScale(out3, &control[11], -3.0f);
-    BezVecScaleAccum(out3, &control[15], 3.0f);
+    NuVecScale(out0, &control[0], -3.0f);
+    NuVecScaleAccum(out0, &control[4], 3.0f);
+    NuVecScale(out1, &control[8], -3.0f);
+    NuVecScaleAccum(out1, &control[12], 3.0f);
+    NuVecScale(out2, &control[3], -3.0f);
+    NuVecScaleAccum(out2, &control[7], 3.0f);
+    NuVecScale(out3, &control[11], -3.0f);
+    NuVecScaleAccum(out3, &control[15], 3.0f);
 }
 
 void NuBezierCubicPatchPartialsUUVV(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], 36.0f);
-    BezVecScaleAccum(out0, &control[1], -72.0f);
-    BezVecScaleAccum(out0, &control[2], 36.0f);
-    BezVecScaleAccum(out0, &control[4], -72.0f);
-    BezVecScaleAccum(out0, &control[5], 144.0f);
-    BezVecScaleAccum(out0, &control[6], -72.0f);
-    BezVecScaleAccum(out0, &control[8], 36.0f);
-    BezVecScaleAccum(out0, &control[9], -72.0f);
-    BezVecScaleAccum(out0, &control[10], 36.0f);
-    BezVecScale(out1, &control[4], 36.0f);
-    BezVecScaleAccum(out1, &control[5], -72.0f);
-    BezVecScaleAccum(out1, &control[6], 36.0f);
-    BezVecScaleAccum(out1, &control[8], -72.0f);
-    BezVecScaleAccum(out1, &control[9], 144.0f);
-    BezVecScaleAccum(out1, &control[10], -72.0f);
-    BezVecScaleAccum(out1, &control[12], 36.0f);
-    BezVecScaleAccum(out1, &control[13], -72.0f);
-    BezVecScaleAccum(out1, &control[14], 36.0f);
-    BezVecScale(out2, &control[1], 36.0f);
-    BezVecScaleAccum(out2, &control[2], -72.0f);
-    BezVecScaleAccum(out2, &control[3], 36.0f);
-    BezVecScaleAccum(out2, &control[5], -72.0f);
-    BezVecScaleAccum(out2, &control[6], 144.0f);
-    BezVecScaleAccum(out2, &control[7], -72.0f);
-    BezVecScaleAccum(out2, &control[9], 36.0f);
-    BezVecScaleAccum(out2, &control[10], -72.0f);
-    BezVecScaleAccum(out2, &control[11], 36.0f);
-    BezVecScale(out3, &control[5], 36.0f);
-    BezVecScaleAccum(out3, &control[6], -72.0f);
-    BezVecScaleAccum(out3, &control[7], 36.0f);
-    BezVecScaleAccum(out3, &control[9], -72.0f);
-    BezVecScaleAccum(out3, &control[10], 144.0f);
-    BezVecScaleAccum(out3, &control[11], -72.0f);
-    BezVecScaleAccum(out3, &control[13], 36.0f);
-    BezVecScaleAccum(out3, &control[14], -72.0f);
-    BezVecScaleAccum(out3, &control[15], 36.0f);
+    NuVecScale(out0, &control[0], 36.0f);
+    NuVecScaleAccum(out0, &control[1], -72.0f);
+    NuVecScaleAccum(out0, &control[2], 36.0f);
+    NuVecScaleAccum(out0, &control[4], -72.0f);
+    NuVecScaleAccum(out0, &control[5], 144.0f);
+    NuVecScaleAccum(out0, &control[6], -72.0f);
+    NuVecScaleAccum(out0, &control[8], 36.0f);
+    NuVecScaleAccum(out0, &control[9], -72.0f);
+    NuVecScaleAccum(out0, &control[10], 36.0f);
+    NuVecScale(out1, &control[4], 36.0f);
+    NuVecScaleAccum(out1, &control[5], -72.0f);
+    NuVecScaleAccum(out1, &control[6], 36.0f);
+    NuVecScaleAccum(out1, &control[8], -72.0f);
+    NuVecScaleAccum(out1, &control[9], 144.0f);
+    NuVecScaleAccum(out1, &control[10], -72.0f);
+    NuVecScaleAccum(out1, &control[12], 36.0f);
+    NuVecScaleAccum(out1, &control[13], -72.0f);
+    NuVecScaleAccum(out1, &control[14], 36.0f);
+    NuVecScale(out2, &control[1], 36.0f);
+    NuVecScaleAccum(out2, &control[2], -72.0f);
+    NuVecScaleAccum(out2, &control[3], 36.0f);
+    NuVecScaleAccum(out2, &control[5], -72.0f);
+    NuVecScaleAccum(out2, &control[6], 144.0f);
+    NuVecScaleAccum(out2, &control[7], -72.0f);
+    NuVecScaleAccum(out2, &control[9], 36.0f);
+    NuVecScaleAccum(out2, &control[10], -72.0f);
+    NuVecScaleAccum(out2, &control[11], 36.0f);
+    NuVecScale(out3, &control[5], 36.0f);
+    NuVecScaleAccum(out3, &control[6], -72.0f);
+    NuVecScaleAccum(out3, &control[7], 36.0f);
+    NuVecScaleAccum(out3, &control[9], -72.0f);
+    NuVecScaleAccum(out3, &control[10], 144.0f);
+    NuVecScaleAccum(out3, &control[11], -72.0f);
+    NuVecScaleAccum(out3, &control[13], 36.0f);
+    NuVecScaleAccum(out3, &control[14], -72.0f);
+    NuVecScaleAccum(out3, &control[15], 36.0f);
 }
 
 void NuBezierCubicPatchPartialsUUV(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], -18.0f);
-    BezVecScaleAccum(out0, &control[1], 36.0f);
-    BezVecScaleAccum(out0, &control[2], -18.0f);
-    BezVecScaleAccum(out0, &control[4], 18.0f);
-    BezVecScaleAccum(out0, &control[5], -36.0f);
-    BezVecScaleAccum(out0, &control[6], 18.0f);
-    BezVecScale(out1, &control[8], -18.0f);
-    BezVecScaleAccum(out1, &control[9], 36.0f);
-    BezVecScaleAccum(out1, &control[10], -18.0f);
-    BezVecScaleAccum(out1, &control[12], 18.0f);
-    BezVecScaleAccum(out1, &control[13], -36.0f);
-    BezVecScaleAccum(out1, &control[14], 18.0f);
-    BezVecScale(out2, &control[1], -18.0f);
-    BezVecScaleAccum(out2, &control[2], 36.0f);
-    BezVecScaleAccum(out2, &control[3], -18.0f);
-    BezVecScaleAccum(out2, &control[5], 18.0f);
-    BezVecScaleAccum(out2, &control[6], -36.0f);
-    BezVecScaleAccum(out2, &control[7], 18.0f);
-    BezVecScale(out3, &control[9], -18.0f);
-    BezVecScaleAccum(out3, &control[10], 36.0f);
-    BezVecScaleAccum(out3, &control[11], -18.0f);
-    BezVecScaleAccum(out3, &control[13], 18.0f);
-    BezVecScaleAccum(out3, &control[14], -36.0f);
-    BezVecScaleAccum(out3, &control[15], 18.0f);
+    NuVecScale(out0, &control[0], -18.0f);
+    NuVecScaleAccum(out0, &control[1], 36.0f);
+    NuVecScaleAccum(out0, &control[2], -18.0f);
+    NuVecScaleAccum(out0, &control[4], 18.0f);
+    NuVecScaleAccum(out0, &control[5], -36.0f);
+    NuVecScaleAccum(out0, &control[6], 18.0f);
+    NuVecScale(out1, &control[8], -18.0f);
+    NuVecScaleAccum(out1, &control[9], 36.0f);
+    NuVecScaleAccum(out1, &control[10], -18.0f);
+    NuVecScaleAccum(out1, &control[12], 18.0f);
+    NuVecScaleAccum(out1, &control[13], -36.0f);
+    NuVecScaleAccum(out1, &control[14], 18.0f);
+    NuVecScale(out2, &control[1], -18.0f);
+    NuVecScaleAccum(out2, &control[2], 36.0f);
+    NuVecScaleAccum(out2, &control[3], -18.0f);
+    NuVecScaleAccum(out2, &control[5], 18.0f);
+    NuVecScaleAccum(out2, &control[6], -36.0f);
+    NuVecScaleAccum(out2, &control[7], 18.0f);
+    NuVecScale(out3, &control[9], -18.0f);
+    NuVecScaleAccum(out3, &control[10], 36.0f);
+    NuVecScaleAccum(out3, &control[11], -18.0f);
+    NuVecScaleAccum(out3, &control[13], 18.0f);
+    NuVecScaleAccum(out3, &control[14], -36.0f);
+    NuVecScaleAccum(out3, &control[15], 18.0f);
 }
 
 void NuBezierCubicPatchPartialsUVV(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], -18.0f);
-    BezVecScaleAccum(out0, &control[1], 18.0f);
-    BezVecScaleAccum(out0, &control[4], 36.0f);
-    BezVecScaleAccum(out0, &control[5], -36.0f);
-    BezVecScaleAccum(out0, &control[8], -18.0f);
-    BezVecScaleAccum(out0, &control[9], 18.0f);
-    BezVecScale(out1, &control[4], -18.0f);
-    BezVecScaleAccum(out1, &control[5], 18.0f);
-    BezVecScaleAccum(out1, &control[8], 36.0f);
-    BezVecScaleAccum(out1, &control[9], -36.0f);
-    BezVecScaleAccum(out1, &control[12], -18.0f);
-    BezVecScaleAccum(out1, &control[13], 18.0f);
-    BezVecScale(out2, &control[2], -18.0f);
-    BezVecScaleAccum(out2, &control[3], 18.0f);
-    BezVecScaleAccum(out2, &control[6], 36.0f);
-    BezVecScaleAccum(out2, &control[7], -36.0f);
-    BezVecScaleAccum(out2, &control[10], -18.0f);
-    BezVecScaleAccum(out2, &control[11], 18.0f);
-    BezVecScale(out3, &control[6], -18.0f);
-    BezVecScaleAccum(out3, &control[7], 18.0f);
-    BezVecScaleAccum(out3, &control[10], 36.0f);
-    BezVecScaleAccum(out3, &control[11], -36.0f);
-    BezVecScaleAccum(out3, &control[14], -18.0f);
-    BezVecScaleAccum(out3, &control[15], 18.0f);
+    NuVecScale(out0, &control[0], -18.0f);
+    NuVecScaleAccum(out0, &control[1], 18.0f);
+    NuVecScaleAccum(out0, &control[4], 36.0f);
+    NuVecScaleAccum(out0, &control[5], -36.0f);
+    NuVecScaleAccum(out0, &control[8], -18.0f);
+    NuVecScaleAccum(out0, &control[9], 18.0f);
+    NuVecScale(out1, &control[4], -18.0f);
+    NuVecScaleAccum(out1, &control[5], 18.0f);
+    NuVecScaleAccum(out1, &control[8], 36.0f);
+    NuVecScaleAccum(out1, &control[9], -36.0f);
+    NuVecScaleAccum(out1, &control[12], -18.0f);
+    NuVecScaleAccum(out1, &control[13], 18.0f);
+    NuVecScale(out2, &control[2], -18.0f);
+    NuVecScaleAccum(out2, &control[3], 18.0f);
+    NuVecScaleAccum(out2, &control[6], 36.0f);
+    NuVecScaleAccum(out2, &control[7], -36.0f);
+    NuVecScaleAccum(out2, &control[10], -18.0f);
+    NuVecScaleAccum(out2, &control[11], 18.0f);
+    NuVecScale(out3, &control[6], -18.0f);
+    NuVecScaleAccum(out3, &control[7], 18.0f);
+    NuVecScaleAccum(out3, &control[10], 36.0f);
+    NuVecScaleAccum(out3, &control[11], -36.0f);
+    NuVecScaleAccum(out3, &control[14], -18.0f);
+    NuVecScaleAccum(out3, &control[15], 18.0f);
 }
 
 void NuBezierCubicPatchPartialsUUVVV(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], -36.0f);
-    BezVecScaleAccum(out0, &control[1], 72.0f);
-    BezVecScaleAccum(out0, &control[2], -36.0f);
-    BezVecScaleAccum(out0, &control[4], 108.0f);
-    BezVecScaleAccum(out0, &control[5], -216.0f);
-    BezVecScaleAccum(out0, &control[6], 108.0f);
-    BezVecScaleAccum(out0, &control[8], -108.0f);
-    BezVecScaleAccum(out0, &control[9], 216.0f);
-    BezVecScaleAccum(out0, &control[10], -108.0f);
-    BezVecScaleAccum(out0, &control[12], 36.0f);
-    BezVecScaleAccum(out0, &control[13], -72.0f);
-    BezVecScaleAccum(out0, &control[14], 36.0f);
+    NuVecScale(out0, &control[0], -36.0f);
+    NuVecScaleAccum(out0, &control[1], 72.0f);
+    NuVecScaleAccum(out0, &control[2], -36.0f);
+    NuVecScaleAccum(out0, &control[4], 108.0f);
+    NuVecScaleAccum(out0, &control[5], -216.0f);
+    NuVecScaleAccum(out0, &control[6], 108.0f);
+    NuVecScaleAccum(out0, &control[8], -108.0f);
+    NuVecScaleAccum(out0, &control[9], 216.0f);
+    NuVecScaleAccum(out0, &control[10], -108.0f);
+    NuVecScaleAccum(out0, &control[12], 36.0f);
+    NuVecScaleAccum(out0, &control[13], -72.0f);
+    NuVecScaleAccum(out0, &control[14], 36.0f);
     *out1 = *out0;
-    BezVecScale(out3, &control[1], -36.0f);
-    BezVecScaleAccum(out3, &control[2], 72.0f);
-    BezVecScaleAccum(out3, &control[3], -36.0f);
-    BezVecScaleAccum(out3, &control[5], 108.0f);
-    BezVecScaleAccum(out3, &control[6], -216.0f);
-    BezVecScaleAccum(out3, &control[7], 108.0f);
-    BezVecScaleAccum(out3, &control[9], -108.0f);
-    BezVecScaleAccum(out3, &control[10], 216.0f);
-    BezVecScaleAccum(out3, &control[11], -108.0f);
-    BezVecScaleAccum(out3, &control[13], 36.0f);
-    BezVecScaleAccum(out3, &control[14], -72.0f);
-    BezVecScaleAccum(out3, &control[15], 36.0f);
+    NuVecScale(out3, &control[1], -36.0f);
+    NuVecScaleAccum(out3, &control[2], 72.0f);
+    NuVecScaleAccum(out3, &control[3], -36.0f);
+    NuVecScaleAccum(out3, &control[5], 108.0f);
+    NuVecScaleAccum(out3, &control[6], -216.0f);
+    NuVecScaleAccum(out3, &control[7], 108.0f);
+    NuVecScaleAccum(out3, &control[9], -108.0f);
+    NuVecScaleAccum(out3, &control[10], 216.0f);
+    NuVecScaleAccum(out3, &control[11], -108.0f);
+    NuVecScaleAccum(out3, &control[13], 36.0f);
+    NuVecScaleAccum(out3, &control[14], -72.0f);
+    NuVecScaleAccum(out3, &control[15], 36.0f);
     *out2 = *out3;
 }
 
 void NuBezierCubicPatchPartialsVV(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], 6.0f);
-    BezVecScaleAccum(out0, &control[4], -12.0f);
-    BezVecScaleAccum(out0, &control[8], 6.0f);
-    BezVecScale(out1, &control[4], 6.0f);
-    BezVecScaleAccum(out1, &control[8], -12.0f);
-    BezVecScaleAccum(out1, &control[12], 6.0f);
-    BezVecScale(out2, &control[3], 6.0f);
-    BezVecScaleAccum(out2, &control[7], -12.0f);
-    BezVecScaleAccum(out2, &control[11], 6.0f);
-    BezVecScale(out3, &control[7], 6.0f);
-    BezVecScaleAccum(out3, &control[11], -12.0f);
-    BezVecScaleAccum(out3, &control[15], 6.0f);
+    NuVecScale(out0, &control[0], 6.0f);
+    NuVecScaleAccum(out0, &control[4], -12.0f);
+    NuVecScaleAccum(out0, &control[8], 6.0f);
+    NuVecScale(out1, &control[4], 6.0f);
+    NuVecScaleAccum(out1, &control[8], -12.0f);
+    NuVecScaleAccum(out1, &control[12], 6.0f);
+    NuVecScale(out2, &control[3], 6.0f);
+    NuVecScaleAccum(out2, &control[7], -12.0f);
+    NuVecScaleAccum(out2, &control[11], 6.0f);
+    NuVecScale(out3, &control[7], 6.0f);
+    NuVecScaleAccum(out3, &control[11], -12.0f);
+    NuVecScaleAccum(out3, &control[15], 6.0f);
 }
 
 void NuBezierCubicPatchPartialsVVV(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], -6.0f);
-    BezVecScaleAccum(out0, &control[4], 18.0f);
-    BezVecScaleAccum(out0, &control[8], -18.0f);
-    BezVecScaleAccum(out0, &control[12], 6.0f);
+    NuVecScale(out0, &control[0], -6.0f);
+    NuVecScaleAccum(out0, &control[4], 18.0f);
+    NuVecScaleAccum(out0, &control[8], -18.0f);
+    NuVecScaleAccum(out0, &control[12], 6.0f);
     *out1 = *out0;
-    BezVecScale(out3, &control[3], -6.0f);
-    BezVecScaleAccum(out3, &control[7], 18.0f);
-    BezVecScaleAccum(out3, &control[11], -18.0f);
-    BezVecScaleAccum(out3, &control[15], 6.0f);
+    NuVecScale(out3, &control[3], -6.0f);
+    NuVecScaleAccum(out3, &control[7], 18.0f);
+    NuVecScaleAccum(out3, &control[11], -18.0f);
+    NuVecScaleAccum(out3, &control[15], 6.0f);
     *out2 = *out3;
 }
 
 void NuBezierCubicPatchPartialsUU(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], 6.0f);
-    BezVecScaleAccum(out0, &control[1], -12.0f);
-    BezVecScaleAccum(out0, &control[2], 6.0f);
-    BezVecScale(out1, &control[12], 6.0f);
-    BezVecScaleAccum(out1, &control[13], -12.0f);
-    BezVecScaleAccum(out1, &control[14], 6.0f);
-    BezVecScale(out2, &control[1], 6.0f);
-    BezVecScaleAccum(out2, &control[2], -12.0f);
-    BezVecScaleAccum(out2, &control[3], 6.0f);
-    BezVecScale(out3, &control[13], 6.0f);
-    BezVecScaleAccum(out3, &control[14], -12.0f);
-    BezVecScaleAccum(out3, &control[15], 6.0f);
+    NuVecScale(out0, &control[0], 6.0f);
+    NuVecScaleAccum(out0, &control[1], -12.0f);
+    NuVecScaleAccum(out0, &control[2], 6.0f);
+    NuVecScale(out1, &control[12], 6.0f);
+    NuVecScaleAccum(out1, &control[13], -12.0f);
+    NuVecScaleAccum(out1, &control[14], 6.0f);
+    NuVecScale(out2, &control[1], 6.0f);
+    NuVecScaleAccum(out2, &control[2], -12.0f);
+    NuVecScaleAccum(out2, &control[3], 6.0f);
+    NuVecScale(out3, &control[13], 6.0f);
+    NuVecScaleAccum(out3, &control[14], -12.0f);
+    NuVecScaleAccum(out3, &control[15], 6.0f);
 }
 
 void NuBezierCubicPatchPartialsUUU(NUVEC *control, NUVEC *out0, NUVEC *out1, NUVEC *out2, NUVEC *out3) {
-    BezVecScale(out0, &control[0], -6.0f);
-    BezVecScaleAccum(out0, &control[1], 18.0f);
-    BezVecScaleAccum(out0, &control[2], -18.0f);
-    BezVecScaleAccum(out0, &control[3], 6.0f);
+    NuVecScale(out0, &control[0], -6.0f);
+    NuVecScaleAccum(out0, &control[1], 18.0f);
+    NuVecScaleAccum(out0, &control[2], -18.0f);
+    NuVecScaleAccum(out0, &control[3], 6.0f);
     *out2 = *out0;
-    BezVecScale(out3, &control[12], -6.0f);
-    BezVecScaleAccum(out3, &control[13], 18.0f);
-    BezVecScaleAccum(out3, &control[14], -18.0f);
-    BezVecScaleAccum(out3, &control[15], 6.0f);
+    NuVecScale(out3, &control[12], -6.0f);
+    NuVecScaleAccum(out3, &control[13], 18.0f);
+    NuVecScaleAccum(out3, &control[14], -18.0f);
+    NuVecScaleAccum(out3, &control[15], 6.0f);
     *out1 = *out3;
 }
 
 NUVEC NuBezierQuadraticTriangleEvaluateBarycentric(NUVEC *control, f32 u, f32 v, f32 w) {
     NUVEC result;
-    BezVecScale(&result, &control[0], u * u);
-    BezVecScaleAccum(&result, &control[1], 2.0f * u * v);
-    BezVecScaleAccum(&result, &control[2], 2.0f * u * w);
-    BezVecScaleAccum(&result, &control[3], v * v);
-    BezVecScaleAccum(&result, &control[4], 2.0f * v * w);
-    BezVecScaleAccum(&result, &control[5], w * w);
+    NuVecScale(&result, &control[0], u * u);
+    NuVecScaleAccum(&result, &control[1], 2.0f * u * v);
+    NuVecScaleAccum(&result, &control[2], 2.0f * u * w);
+    NuVecScaleAccum(&result, &control[3], v * v);
+    NuVecScaleAccum(&result, &control[4], 2.0f * v * w);
+    NuVecScaleAccum(&result, &control[5], w * w);
     return result;
 }
 
 NUVEC NuBezierQuadraticTriangleEvaluateParametric(NUVEC *control, f32 u, f32 v) {
     f32 w = 1.0f - u - v;
     NUVEC result;
-    BezVecScale(&result, &control[0], v * v);
-    BezVecScaleAccum(&result, &control[1], 2.0f * v * w);
-    BezVecScaleAccum(&result, &control[2], 2.0f * u * v);
-    BezVecScaleAccum(&result, &control[3], w * w);
-    BezVecScaleAccum(&result, &control[4], 2.0f * w * u);
-    BezVecScaleAccum(&result, &control[5], u * u);
+    NuVecScale(&result, &control[0], v * v);
+    NuVecScaleAccum(&result, &control[1], 2.0f * v * w);
+    NuVecScaleAccum(&result, &control[2], 2.0f * u * v);
+    NuVecScaleAccum(&result, &control[3], w * w);
+    NuVecScaleAccum(&result, &control[4], 2.0f * w * u);
+    NuVecScaleAccum(&result, &control[5], u * u);
     return result;
 }
 
 NUVEC NuBezierQuadraticTrianglePartialsUU(NUVEC *control) {
     NUVEC result;
-    BezVecScale(&result, &control[3], 2.0f);
-    BezVecScaleAccum(&result, &control[4], -4.0f);
-    BezVecScaleAccum(&result, &control[5], 2.0f);
+    NuVecScale(&result, &control[3], 2.0f);
+    NuVecScaleAccum(&result, &control[4], -4.0f);
+    NuVecScaleAccum(&result, &control[5], 2.0f);
     return result;
 }
 
 NUVEC NuBezierQuadraticTrianglePartialsVV(NUVEC *control) {
     NUVEC result;
-    BezVecScale(&result, &control[0], 2.0f);
-    BezVecScaleAccum(&result, &control[1], -4.0f);
-    BezVecScaleAccum(&result, &control[3], 2.0f);
+    NuVecScale(&result, &control[0], 2.0f);
+    NuVecScaleAccum(&result, &control[1], -4.0f);
+    NuVecScaleAccum(&result, &control[3], 2.0f);
     return result;
 }
 
 NUVEC NuBezierQuadraticTrianglePartialsUeV(NUVEC *control) {
     NUVEC result;
-    BezVecScale(&result, &control[0], 2.0f);
-    BezVecScaleAccum(&result, &control[2], -4.0f);
-    BezVecScaleAccum(&result, &control[5], 2.0f);
+    NuVecScale(&result, &control[0], 2.0f);
+    NuVecScaleAccum(&result, &control[2], -4.0f);
+    NuVecScaleAccum(&result, &control[5], 2.0f);
     return result;
 }
 
@@ -4100,16 +4091,38 @@ f32 __cdecl RenderPostPowPc(f32 base, f32 exponent) {
     return result;
 }
 
-void __cdecl PcGetGeometryPerspectivePc(NUMTX *matrix, f32 *fovy, f32 *aspect, f32 *z_near, f32 *z_far) {
-    f32 q = matrix->m22;
-    f32 near_value = (f32)(-(f64)matrix->m32 / q);
-    f32 reciprocal_y, radians;
-    *z_near = near_value;
-    *z_far = (f32)(((f64)near_value * q) / ((f64)q - 1.0));
-    *aspect = matrix->m11 / matrix->m00;
-    reciprocal_y = 1.0f / matrix->m11;
-    radians = (f32)((f64)(i32)NuAtan2D(reciprocal_y, 1.0f) * PCAtan2RadianScale);
-    *fovy = (f32)((f64)radians * 360.0 / (f64)3.1415927410125732);
+void __cdecl NuMtxGetPerspectiveD3D(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+    f32 Q = mtx->m22;
+    *zNear = -mtx->m32 / Q;
+    *zFar = (*zNear * Q) / (Q - 1.0f);
+    *aspect = mtx->m11 / mtx->m00;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
+}
+
+void __cdecl NuMtxGetPerspectivePS3(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+    f32 Q = mtx->m22;
+    f32 B = mtx->m32;
+
+    *zNear = -B / (Q + 1.0f);
+    *zFar = (*zNear * B) / ((*zNear + *zNear) + B);
+    *aspect = mtx->m11 / mtx->m00;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
+}
+
+void __cdecl NuMtxGetPerspectiveOGL(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+    f32 depth = mtx->m22;
+    *zNear = (depth + depth) / mtx->m32 - 1.0f;
+    *zFar = (*zNear * depth) / (depth - 1.0f);
+    *aspect = mtx->m11 / mtx->m00;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
+}
+
+void __cdecl NuMtxGetPerspectiveBlend(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
+    f32 Q = (mtx->m22 + 1.0f) * 0.5f;
+    *zNear = -(mtx->m32 * 0.5f) / Q;
+    *zFar = (*zNear * Q) / (Q - 1.0f);
+    *aspect = mtx->m11 / mtx->m00;
+    *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
 }
 
 f32 __cdecl RenderPostLogPc(f32 value) {

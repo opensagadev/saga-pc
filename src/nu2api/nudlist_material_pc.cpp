@@ -1055,7 +1055,7 @@ void NuMainFilter::RenderBloomPc() {
         NuMtxInvH(&inverse_view, &PcGeometryViewMatrixPc);
         PCDeviceSetVertexShaderConstantsF(12, &inverse_view.m00, 4);
         f32 fovy, aspect, z_near, z_far;
-        PcGetGeometryPerspectivePc(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
+        NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrixPc, &fovy, &aspect, &z_near, &z_far);
         NUVEC4 depth = {z_near, z_far, z_far - z_near, 1.0f / PcGeometryProjectionMatrixPc.m22};
         PCDeviceSetVertexShaderConstantsF(49, &depth.x, 1);
         NUVEC4 frustum;
