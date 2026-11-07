@@ -1029,9 +1029,10 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
     AIPATHNODE_PC *second;
     f32 first_radius;
     f32 second_radius;
-    i32 narrow = 0;
+    i32 narrow;
     NUVEC delta;
     NUVEC local;
+    f32 distance_squared;
 
     (void)reserved_ground;
     (void)reserved_check;
@@ -1064,6 +1065,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
 
     first = &path->nodes[connection->node_indices[0]];
     second = &path->nodes[connection->node_indices[1]];
+    narrow = 0;
     if (first->radius > radius + AIPathConnectionMargin) {
         first_radius = first->radius - radius;
     } else {
@@ -1077,17 +1079,13 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
         second_radius = second->radius;
     }
 
-    if (first->has_special != 0) {
-        i32 index = connection->node_indices[0];
-        if ((path->updated_node_bits[index >> 3] & (1 << (index % 8))) == 0) {
-            AIPathNodeUpdatePos(context, path, first);
-        }
+    if (first->has_special != 0 &&
+        (path->updated_node_bits[connection->node_indices[0] / 8] & (1 << (connection->node_indices[0] % 8))) == 0) {
+        AIPathNodeUpdatePos(context, path, first);
     }
-    if (second->has_special != 0) {
-        i32 index = connection->node_indices[1];
-        if ((path->updated_node_bits[index >> 3] & (1 << (index % 8))) == 0) {
-            AIPathNodeUpdatePos(context, path, second);
-        }
+    if (second->has_special != 0 &&
+        (path->updated_node_bits[connection->node_indices[1] / 8] & (1 << (connection->node_indices[1] % 8))) == 0) {
+        AIPathNodeUpdatePos(context, path, second);
     }
 
     delta.x = position->x - first->position.x;
@@ -1104,12 +1102,12 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
         }
         delta.x = position->x - first->position.x;
         delta.z = position->z - first->position.z;
-        if (first_radius * first_radius < delta.x * delta.x + delta.z * delta.z) {
+        distance_squared = delta.x * delta.x + delta.z * delta.z;
+        if (!(first_radius * first_radius >= distance_squared)) {
             return 0;
         }
     } else {
         f32 abs_local_x = local.x < 0.0f ? -local.x : local.x;
-        f32 radius_delta = second_radius - first_radius;
         i32 intersection_angle;
         NUVEC wall;
 
@@ -1120,7 +1118,7 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
             return 0;
         }
 
-        intersection_angle = PCPathArcSine(radius_delta / connection->horizontal_distance);
+        intersection_angle = (i16)PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
         wall = local;
         if (wall.x < 0.0f) {
             wall.x = -wall.x;
@@ -1131,25 +1129,43 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
             if (position->y < first->min_height || position->y > first->max_height) {
                 return 0;
             }
-            if (first_radius * first_radius < NuVecXZDistSqr(position, &first->position, &delta)) {
-                return 0;
+            if (NuVecXZDistSqr(position, &first->position, &delta) <= first_radius * first_radius) {
+                if (path_info != NULL) {
+                    path_info->narrow_path = narrow;
+                    path_info->on_path = 1;
+                    path_info->direction = 0;
+                    path_info->connection = connection;
+                    path_info->distance = local.z / connection->horizontal_distance;
+                    path_info->width = local.x;
+                }
+                return 1;
             }
+            return 0;
         } else {
-            u32 trig_index = (u32)(intersection_angle + 0x4000) >> 1;
-            f32 end_circle = NuTrigTable[trig_index & 0x7fff] * connection->horizontal_distance;
+            f32 end_circle =
+                NuTrigTable[((intersection_angle + 0x4000) >> 1) & 0x7fff] * connection->horizontal_distance;
 
             if (wall.z > end_circle) {
                 if (position->y < second->min_height || position->y > second->max_height) {
                     return 0;
                 }
-                if (second_radius * second_radius < NuVecXZDistSqr(position, &second->position, &delta)) {
-                    return 0;
+                if (NuVecXZDistSqr(position, &second->position, &delta) <= second_radius * second_radius) {
+                    if (path_info != NULL) {
+                        path_info->narrow_path = narrow;
+                        path_info->on_path = 1;
+                        path_info->direction = 0;
+                        path_info->connection = connection;
+                        path_info->distance = local.z / connection->horizontal_distance;
+                        path_info->width = local.x;
+                    }
+                    return 1;
                 }
+                return 0;
             } else {
                 f32 minimum;
                 f32 maximum;
 
-                if (first_radius > local.z) {
+                if (local.z < first_radius) {
                     minimum = first->min_height;
                     maximum = first->max_height;
                 } else if (local.z > connection->horizontal_distance - second_radius) {
@@ -1158,9 +1174,8 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
                 } else {
                     f32 fraction =
                         (local.z - first_radius) / (connection->horizontal_distance - (first_radius + second_radius));
-                    f32 inverse = 1.0f - fraction;
-                    minimum = second->min_height * fraction + first->min_height * inverse;
-                    maximum = second->max_height * fraction + first->max_height * inverse;
+                    minimum = second->min_height * fraction + first->min_height * (1.0f - fraction);
+                    maximum = second->max_height * fraction + first->max_height * (1.0f - fraction);
                 }
                 if (minimum > position->y || position->y > maximum || !(first_radius > wall.x)) {
                     return 0;
@@ -1170,9 +1185,10 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
     }
 
     if (path_info != NULL) {
+        path_info->narrow_path = narrow;
+        path_info->on_path = 1;
         path_info->direction = 0;
         path_info->connection = connection;
-        path_info->flags = (u8)((path_info->flags & (u8)~0x08) | 0x01 | (narrow << 3));
         path_info->distance = local.z / connection->horizontal_distance;
         path_info->width = local.x;
     }
