@@ -8,18 +8,6 @@ u8 __thiscall PC_DEVICE_BACKEND_PC::HasRequestedModeChangedPc() {
            requested_feature != feature634 || requested_multisample != multisample_index ||
            requested_target_count != target_count;
 }
-void __thiscall PC_WINDOW_OPTIONS_PC::SetAspectModePc(i32 value) {
-    aspect_mode = value;
-}
-void __thiscall PC_WINDOW_OPTIONS_PC::SetShadowsEnabledPc(u8 value) {
-    shadowsenabled = value;
-}
-void __thiscall PC_WINDOW_OPTIONS_PC::SetBloomEnabledPc(u8 value) {
-    bloomenabled = value;
-}
-void __thiscall PC_WINDOW_OPTIONS_PC::SetUseHiresPendingPc(u8 value) {
-    usehirespending = value;
-}
 
 u8 __thiscall MENU_VIDEO_OPTIONS_PC::ChangedPc() {
     return aspect_mode != PcWindowOptions.aspect_mode || (shadows_enabled == 1) != PcWindowOptions.shadowsenabled ||
@@ -399,8 +387,8 @@ void __thiscall PC_DEVICE_BACKEND_PC::RestoreSavedModePc() {
     else
         requested_mode = active_mode;
     requested_feature = saved_feature;
-    requested_target_count = saved_target_count;
     requested_multisample = saved_multisample;
+    requested_target_count = saved_target_count;
     PcWindowOptions.SetAspectModePc(saved_aspect);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;

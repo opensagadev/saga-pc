@@ -18,6 +18,9 @@ void __thiscall PC_WINDOW_OPTIONS_PC::SetRefresh(i32 value) {
 void __thiscall PC_WINDOW_OPTIONS_PC::SetMultisample(i32 value) {
     multisample = value;
 }
+void __thiscall PC_WINDOW_OPTIONS_PC::SetAspectModePc(i32 value) {
+    aspect_mode = value;
+}
 void __thiscall PC_WINDOW_OPTIONS_PC::Save() {
     FILE *file = fopen(file_name, "w");
     if (file != NULL) {
@@ -305,14 +308,23 @@ void __thiscall PC_WINDOW_OPTIONS_PC::Load() {
 void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredBloomMethod(i32 value) {
     desiredbloommethod = value;
 }
+void __thiscall PC_WINDOW_OPTIONS_PC::SetBloomEnabledPc(u8 value) {
+    bloomenabled = value;
+}
 void __thiscall PC_WINDOW_OPTIONS_PC::SetDesiredShadowMethod(i32 value) {
     desiredshadowmethod = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetShadowsEnabledPc(u8 value) {
+    shadowsenabled = value;
 }
 void __thiscall PC_WINDOW_OPTIONS_PC::SetSpeedBlurEnabled(u8 value) {
     speedblurenabled = value;
 }
 void __thiscall PC_WINDOW_OPTIONS_PC::SetUseHires(u8 value) {
     usehires = value;
+    usehirespending = value;
+}
+void __thiscall PC_WINDOW_OPTIONS_PC::SetUseHiresPendingPc(u8 value) {
     usehirespending = value;
 }
 void __thiscall PC_WINDOW_OPTIONS_PC::SetOption459(u8 value) {
