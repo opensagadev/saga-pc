@@ -1660,9 +1660,10 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
         i32 connection_index = 0xff;
         if (route != NULL) {
             if (((u64)destination->route_membership_mask & ((u64)1 << route_index)) != 0) {
-                u8 from = route->node_routes[node_index];
-                if (from < route->route_count && route->node_routes[destination_node] < route->route_count) {
-                    connection_index = route->route_nodes[from][route->node_routes[destination_node]];
+                if (route->node_routes[node_index] < route->route_count &&
+                    route->node_routes[destination_node] < route->route_count) {
+                    connection_index =
+                        route->route_nodes[route->node_routes[node_index]][route->node_routes[destination_node]];
                 } else {
                     AIScriptMissingStateDiagnosticAlternate(route->name, node_index, destination_node);
                     return FLT_MAX;
@@ -1679,19 +1680,24 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
                                      ? 0.0f
                                      : AIPathNodeDistanceToPathNode(path, route->exit_nodes[index], destination_node,
                                                                     0xff, (u32)((u64)1 << route_index));
-                    f32 candidate = first != FLT_MAX && second != FLT_MAX ? second + first : FLT_MAX;
+                    f32 candidate;
+                    if (first != FLT_MAX && second != FLT_MAX) {
+                        candidate = second + first;
+                    } else {
+                        candidate = FLT_MAX;
+                    }
                     if (candidate < nearest) {
                         nearest = candidate;
                     }
                 }
-                if (nearest == FLT_MAX) {
-                    if (cached_distance != NULL) {
-                        *cached_distance = FLT_MAX;
-                    }
-                    return FLT_MAX;
+                if (nearest != FLT_MAX) {
+                    distance += nearest;
+                    break;
                 }
-                distance += nearest;
-                break;
+                if (cached_distance != NULL) {
+                    *cached_distance = FLT_MAX;
+                }
+                return FLT_MAX;
             }
         } else {
             connection_index = path->route_matrix[node_index][destination_node];
@@ -1715,11 +1721,11 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
         if (connection == previous_connection) {
             break;
         }
-        node_index =
-            connection->node_indices[0] == node_index ? connection->node_indices[1] : connection->node_indices[0];
-        node = &nodes[node_index];
-        distance += connection->distance;
         previous_connection = connection;
+        node_index =
+            node_index == connection->node_indices[0] ? connection->node_indices[1] : connection->node_indices[0];
+        distance += connection->distance;
+        node = &nodes[node_index];
     }
     if (cached_distance != NULL) {
         *cached_distance = distance;
@@ -3165,52 +3171,53 @@ static u32 CalculateIntersection(AISYS_PC *system, AIPACKET_PC *packet, APIOBJEC
     u32 right;
     u32 left;
 
-    if (packet->intersection_connection != current_connection ||
-        packet->intersection_target_connection != target_connection) {
-        packet->flags &= ~(((0x20u | 0x40u)) << 0);
-        packet->intersection_connection = current_connection;
-        packet->intersection_target_connection = target_connection;
-
-        path = packet->path_info.path;
-
-        if (current_connection->node_indices[0] == target_connection->node_indices[0]) {
-            before = &path->nodes[current_connection->node_indices[1]];
-            shared = &path->nodes[current_connection->node_indices[0]];
-            after = &path->nodes[target_connection->node_indices[1]];
-            first_angle = NuAngAdd(current_connection->rotation, 0x8000);
-            second_angle = NuAngAdd(target_connection->rotation, 0x8000);
-        } else if (current_connection->node_indices[0] == target_connection->node_indices[1]) {
-            before = &path->nodes[current_connection->node_indices[1]];
-            shared = &path->nodes[current_connection->node_indices[0]];
-            after = &path->nodes[target_connection->node_indices[0]];
-            first_angle = NuAngAdd(current_connection->rotation, 0x8000);
-            second_angle = target_connection->rotation;
-        } else if (current_connection->node_indices[1] == target_connection->node_indices[0]) {
-            before = &path->nodes[current_connection->node_indices[0]];
-            shared = &path->nodes[current_connection->node_indices[1]];
-            after = &path->nodes[target_connection->node_indices[1]];
-            first_angle = current_connection->rotation;
-            second_angle = NuAngAdd(target_connection->rotation, 0x8000);
-        } else if (current_connection->node_indices[1] == target_connection->node_indices[1]) {
-            before = &path->nodes[current_connection->node_indices[0]];
-            shared = &path->nodes[current_connection->node_indices[1]];
-            after = &path->nodes[target_connection->node_indices[0]];
-            first_angle = current_connection->rotation;
-            second_angle = target_connection->rotation;
-        } else {
-            return 0;
-        }
-        if (WithinConnection(system, &after->position, path, current_connection, 1, current_connection,
-                             packet->current_route, object->object_id, NULL, 0.0f, 1) != 0) {
-            return 0;
-        }
-        right = CalculateRightIntersection(object, current_connection, target_connection, first_angle, second_angle,
-                                           before, shared, after, &packet->right_diversion);
-        packet->flags = (packet->flags & ~0x20u) | ((right & 1) << 5);
-        left = CalculateRightIntersection(object, target_connection, current_connection, second_angle, first_angle,
-                                          after, shared, before, &packet->left_diversion);
-        packet->flags = (packet->flags & ~0x40u) | ((left & 1) << 6);
+    if (packet->intersection_connection == current_connection &&
+        packet->intersection_target_connection == target_connection) {
+        return ((packet->flags & 0x00000020u) != 0) | ((packet->flags & 0x00000040u) != 0);
     }
+    packet->flags &= ~(((0x20u | 0x40u)) << 0);
+    packet->intersection_connection = current_connection;
+    packet->intersection_target_connection = target_connection;
+
+    path = packet->path_info.path;
+
+    if (current_connection->node_indices[0] == target_connection->node_indices[0]) {
+        before = &path->nodes[current_connection->node_indices[1]];
+        shared = &path->nodes[current_connection->node_indices[0]];
+        after = &path->nodes[target_connection->node_indices[1]];
+        first_angle = NuAngAdd(current_connection->rotation, 0x8000);
+        second_angle = NuAngAdd(target_connection->rotation, 0x8000);
+    } else if (current_connection->node_indices[0] == target_connection->node_indices[1]) {
+        before = &path->nodes[current_connection->node_indices[1]];
+        shared = &path->nodes[current_connection->node_indices[0]];
+        after = &path->nodes[target_connection->node_indices[0]];
+        first_angle = NuAngAdd(current_connection->rotation, 0x8000);
+        second_angle = target_connection->rotation;
+    } else if (current_connection->node_indices[1] == target_connection->node_indices[0]) {
+        before = &path->nodes[current_connection->node_indices[0]];
+        shared = &path->nodes[current_connection->node_indices[1]];
+        after = &path->nodes[target_connection->node_indices[1]];
+        first_angle = current_connection->rotation;
+        second_angle = NuAngAdd(target_connection->rotation, 0x8000);
+    } else if (current_connection->node_indices[1] == target_connection->node_indices[1]) {
+        before = &path->nodes[current_connection->node_indices[0]];
+        shared = &path->nodes[current_connection->node_indices[1]];
+        after = &path->nodes[target_connection->node_indices[0]];
+        first_angle = current_connection->rotation;
+        second_angle = target_connection->rotation;
+    } else {
+        return 0;
+    }
+    if (WithinConnection(system, &after->position, path, current_connection, 1, current_connection,
+                         packet->current_route, object->object_id, NULL, 0.0f, 1) != 0) {
+        return 0;
+    }
+    right = CalculateRightIntersection(object, current_connection, target_connection, first_angle, second_angle, before,
+                                       shared, after, &packet->right_diversion);
+    packet->flags = (packet->flags & ~0x20u) | ((right & 1) << 5);
+    left = CalculateRightIntersection(object, target_connection, current_connection, second_angle, first_angle, after,
+                                      shared, before, &packet->left_diversion);
+    packet->flags = (packet->flags & ~0x40u) | ((left & 1) << 6);
     return ((packet->flags & 0x00000020u) != 0) | ((packet->flags & 0x00000040u) != 0);
 }
 
