@@ -1064,6 +1064,13 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
     }
 }
 
+static __forceinline f32 NuFdiv(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f) {
+        return 0.0f;
+    }
+    return a / b;
+}
+
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
 static __forceinline f32 AIPathFabs(f32 value) {
     union {
@@ -4510,7 +4517,7 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
     if (processor == NULL) {
         processor = primary;
     }
-    if ((packet->flags & 0x00010000u) == 0) {
+    if ((packet->route_flags & 1) == 0) {
         AISTATE_PC *saved_state = primary->state;
         AISTATE_PC *initial_state =
             primary->script == NULL ? NULL : AIStateFind(AICharacterInitialiseName, primary->script);
@@ -4525,10 +4532,10 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
         AISysUpdateCharacterPathPos(system, object, packet, ground, elapsed);
         packet->flags &= 0xfff7fbf7u;
         packet->movement_look_target = NULL;
-        if ((object->flags_low & 0x180u) == 0x80u) {
+        if ((object->flags_low & 0x80u) != 0 && (object->flags_low & 0x100u) == 0) {
             packet->path_update_flag = 0;
-            packet->movement_destination = object->position;
             packet->path_target = NULL;
+            packet->movement_destination = object->position;
             packet->flags &= 0x3f0fffffu;
             packet->navigation_flags &= ~1u;
         } else {
@@ -4545,19 +4552,22 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
             packet->navigation_flags &= ~1u;
             packet->frame_state = 0;
             if ((packet->flags & 0x10000000u) != 0) {
-                source = (packet->flags >> 26) & 3;
-                if (source == 1) {
-                    if (packet->creature_index != 0xff) {
-                        AICREATURE_PC *creature = &system->creatures[packet->creature_index];
-                        AIMoveInstruction(packet, &creature->position, 0.0f, &creature->path_info, 1, 0.0f);
-                    }
-                } else if (source == 2) {
-                    if (packet->locator != NULL) {
-                        AIMoveInstruction(packet, &packet->locator->position, 0.0f, &packet->locator->path_info, 1,
-                                          0.0f);
-                    }
-                } else {
-                    packet->flags &= ~0x10000000u;
+                switch ((packet->flags >> 26) & 3) {
+                    case 1:
+                        if (packet->creature_index != 0xff) {
+                            AICREATURE_PC *creature = &system->creatures[packet->creature_index];
+                            AIMoveInstruction(packet, &creature->position, 0.0f, &creature->path_info, 1, 0.0f);
+                        }
+                        break;
+                    case 2:
+                        if (packet->locator != NULL) {
+                            AIMoveInstruction(packet, &packet->locator->position, 0.0f, &packet->locator->path_info, 1,
+                                              0.0f);
+                        }
+                        break;
+                    default:
+                        packet->flags &= ~0x10000000u;
+                        break;
                 }
             }
             AISysCharacterMovement(system, packet, object, ground);
@@ -4565,29 +4575,35 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
             if (source != 0 && packet->path_target == NULL && packet->movement_target_radius > 0.0f &&
                 (object->motion_flags & 0x400u) != 0) {
                 NUVEC *source_position = NULL;
-                if (source == 1 && packet->creature_index != 0xff) {
-                    source_position = &system->creatures[packet->creature_index].position;
-                } else if (source == 2 && packet->locator != NULL) {
-                    source_position = &packet->locator->position;
+                switch (source) {
+                    case 1:
+                        if (packet->creature_index != 0xff) {
+                            source_position = &system->creatures[packet->creature_index].position;
+                        }
+                        break;
+                    case 2:
+                        if (packet->locator != NULL) {
+                            source_position = &packet->locator->position;
+                        }
+                        break;
                 }
                 if (source_position != NULL) {
-                    NUVEC source_delta;
-                    f32 distance_squared = NuVecXZDistSqr(source_position, &object->position, &source_delta);
+                    f32 distance_squared = NuVecXZDistSqr(source_position, &object->position, &delta);
                     f32 radius = packet->movement_target_radius;
                     if ((packet->flags & 0x10000000u) != 0) {
                         if (distance_squared < radius * radius) {
                             packet->flags &= ~0x10000000u;
                         }
                     } else if (distance_squared > radius * radius) {
-                        f32 release_radius = (f32)(radius + 0.5);
-                        if (distance_squared > release_radius * release_radius) {
+                        if (distance_squared >
+                            (packet->movement_target_radius + 0.5) * (packet->movement_target_radius + 0.5)) {
                             packet->flags |= 0x10000000u;
                         } else {
                             NUVEC movement_delta;
                             movement_delta.x = packet->movement_destination.x - object->position.x;
                             movement_delta.y = 0.0f;
                             movement_delta.z = packet->movement_destination.z - object->position.z;
-                            if (NuVecDot(&movement_delta, &source_delta) < 0.0f) {
+                            if (NuVecDot(&movement_delta, &delta) < 0.0f) {
                                 packet->movement_destination = object->position;
                                 packet->movement_stopping_distance = 0.0f;
                             }
@@ -4601,24 +4617,24 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
     if (use_three_dimensions != 0) {
         distance = NuVecDist(&packet->movement_destination, &object->position, &delta);
         if (distance > packet->mover_height + clearance + packet->movement_stopping_distance) {
-            scale = distance != 0.0f && packet->mover_height != 0.0f ? packet->mover_height / distance : 0.0f;
+            scale = NuFdiv(packet->mover_height, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecAdd(&packet->movement_position, &object->position, &delta);
         } else {
             stopping_clearance = clearance + packet->movement_stopping_distance;
-            scale = distance != 0.0f && stopping_clearance != 0.0f ? stopping_clearance / distance : 0.0f;
+            scale = NuFdiv(stopping_clearance, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecSub(&packet->movement_position, &packet->movement_destination, &delta);
         }
     } else {
         distance = NuVecXZDist(&packet->movement_destination, &object->position, &delta);
         if (distance > packet->mover_height + clearance + packet->movement_stopping_distance) {
-            scale = distance != 0.0f && packet->mover_height != 0.0f ? packet->mover_height / distance : 0.0f;
+            scale = NuFdiv(packet->mover_height, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecAdd(&packet->movement_position, &object->position, &delta);
         } else {
             stopping_clearance = clearance + packet->movement_stopping_distance;
-            scale = distance != 0.0f && stopping_clearance != 0.0f ? stopping_clearance / distance : 0.0f;
+            scale = NuFdiv(stopping_clearance, distance);
             NuVecScale(&delta, &delta, scale);
             NuVecSub(&packet->movement_position, &packet->movement_destination, &delta);
         }
