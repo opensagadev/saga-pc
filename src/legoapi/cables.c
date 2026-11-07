@@ -584,8 +584,8 @@ GAMEOBJECT *__cdecl CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f
         NUVEC delta;
         f32 distance;
         if (candidate == source || !(candidate->flags_1fc_word & 0x1000) || candidate->dead || candidate == Player[0] ||
-            candidate == Player[1] || (CInfo[context].flags & 0x8000) || context == 0x3b || context == 0x17 ||
-            context == 0x41 || context == 0x3d)
+            candidate == Player[1] || (U64_PAIR(&CInfo[context].flags) & 0x8000) || context == 0x3b ||
+            context == 0x17 || context == 0x41 || context == 0x3d)
             continue;
         if (candidate->id != id_DRAGBOMB && candidate->id != (u16)id_ATAT &&
             candidate->id != GameObjectRotationAtstId && candidate->id != (u16)id_ATST_LOWRES)

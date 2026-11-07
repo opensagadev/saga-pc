@@ -2,7 +2,7 @@
 #include "saga.h"
 
 i32 __cdecl CannotKill(GAMEOBJECT *object) {
-    if ((CInfo[object->character_context].flags & 0x02000000) != 0)
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0)
         return 1;
     return (object->character_data->game_character->flags_094 & 0x800) != 0 && object->field_280 == 0xff;
 }
@@ -819,7 +819,8 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
             object->model_draw_result == 0 || object->use_model_origin < 2)
             continue;
         context = object->character_context;
-        if ((CInfo[context].flags & 0x8000) || context == 0x3b || context == 0x3c || context == 0xf || context == 0x39)
+        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == 0x3b || context == 0x3c || context == 0xf ||
+            context == 0x39)
             continue;
         if (context == 0x26 && object->special_move_pc != -1 && (object->context_variant_flags & 0x200))
             continue;

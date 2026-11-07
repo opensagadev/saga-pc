@@ -293,7 +293,7 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
             if ((runtime->flags_090 & 0x40) != 0)
                 continue;
         }
-        if ((CInfo[context].flags & 0x8000) != 0 || context == 0x3b || context == 0x39 || context == 0x3c)
+        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || context == 0x3b || context == 0x39 || context == 0x3c)
             continue;
         if (context == 0 && (target->action_movement_state == 4 || target->action_movement_state == 3))
             continue;

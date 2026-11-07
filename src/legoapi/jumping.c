@@ -288,7 +288,7 @@ void __cdecl SetBallooningHeight(GAMEOBJECT *object, f32 height) {
 }
 
 i32 __cdecl UseFallAnim(GAMEOBJECT *object) {
-    if ((CInfo[object->character_context].flags & 8) != 0 && LEGOACT_FALL != -1 &&
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 8) != 0 && LEGOACT_FALL != -1 &&
         object->character_model->model_data_b[LEGOACT_FALL] != NULL)
         return 1;
     return 0;

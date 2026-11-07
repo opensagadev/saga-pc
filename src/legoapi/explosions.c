@@ -76,7 +76,7 @@ void __cdecl UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             object = target;
             if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
                 continue;
-            if ((CInfo[(i8)target->character_context].flags & 0x20008000) != 0)
+            if ((U64_PAIR(&CInfo[(i8)target->character_context].flags) & 0x20008000) != 0)
                 continue;
             if ((object->character_data->game_character->flags_090 & 0x8000) != 0)
                 continue;

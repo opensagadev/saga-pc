@@ -557,7 +557,8 @@ __declspec(noinline) GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 re
         if (character_id != -1 && (i16)object->id != character_id) {
             continue;
         }
-        if (alive_only != 0 && (object->dead != 0 || (CInfo[object->character_context].flags & 0x8000) != 0)) {
+        if (alive_only != 0 &&
+            (object->dead != 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0)) {
             continue;
         }
         if (non_level_only != 0 && object->level_object_index != -1) {
@@ -1065,7 +1066,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         i32 point;
         if (target == object || (target->flags_1fc_word & 0x1001) != 0x1001 || target->use_model_origin <= 1 ||
             target->dead != 0 || (target->character_context & 0xfd) == 57 || target->character_context == 60 ||
-            (CInfo[target->character_context].flags & 0x8000) != 0)
+            (U64_PAIR(&CInfo[target->character_context].flags) & 0x8000) != 0)
             continue;
         target_data = target->character_data->game_character;
         if ((target_data->flags_090 & 0x8000) != 0 || maximum.x < target->collision_min.x ||
@@ -1110,13 +1111,14 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                 }
                 if (SaberSparksTimer <= 0.0f && object->anim_blending == 0 && object->character_context != 5 &&
                     object->character_context != 16 && object->character_context != 13 &&
-                    object->character_context != 14 && (CInfo[object->character_context].flags & 0x04000000) == 0 &&
-                    ((CInfo[object->character_context].flags & 0x08000000) == 0 ||
+                    object->character_context != 14 &&
+                    (U64_PAIR(&CInfo[object->character_context].flags) & 0x04000000) == 0 &&
+                    ((U64_PAIR(&CInfo[object->character_context].flags) & 0x08000000) == 0 ||
                      (0x20000 & object->context_variant_flags) == 0) &&
                     target->character_context != 5 && target->character_context != 16 &&
                     target->character_context != 13 && target->character_context != 14 &&
-                    (CInfo[target->character_context].flags & 0x04000000) == 0 &&
-                    ((CInfo[target->character_context].flags & 0x08000000) == 0 ||
+                    (U64_PAIR(&CInfo[target->character_context].flags) & 0x04000000) == 0 &&
+                    ((U64_PAIR(&CInfo[target->character_context].flags) & 0x08000000) == 0 ||
                      (target->context_variant_flags & 0x20000) == 0)) {
                     PlaySfx((char *)SaberSparksName, &points[point]);
                     SaberSparksTimer = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.3f + (f64)0.3f);
@@ -1527,8 +1529,8 @@ void __cdecl GameObjectStuffAfterAnimation(void) {
                         if (hit && SaberSparksTimer <= 0.0f && object->anim_blending == 0 &&
                             object->character_context != 5 && object->character_context != 16 &&
                             object->character_context != 13 && object->character_context != 14 &&
-                            (CInfo[object->character_context].flags & 0x04000000) == 0 &&
-                            ((CInfo[object->character_context].flags & 0x08000000) == 0 ||
+                            (U64_PAIR(&CInfo[object->character_context].flags) & 0x04000000) == 0 &&
+                            ((U64_PAIR(&CInfo[object->character_context].flags) & 0x08000000) == 0 ||
                              (object->context_variant_flags & 0x20000) == 0)) {
                             PlaySabreSfx((char *)SaberSparksName, object, &points[blade], 1);
                             SaberSparksTimer = (f32)(((f64)qrand() * PlayerRandomScalePc) * (f64)0.3f + (f64)0.3f);
@@ -4134,7 +4136,7 @@ GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, 
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         f32 x, y, z, distance;
         if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0 || (object->flags_e20 & 0x20) ||
-            (CInfo[object->character_context].flags & 0x8000))
+            (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000))
             continue;
         if (character_id != -1 && object->id != character_id)
             continue;

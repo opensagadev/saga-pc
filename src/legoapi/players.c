@@ -469,7 +469,7 @@ __declspec(noinline) void __cdecl PushAway(NUVEC *position, f32 radius, NUVEC *m
             continue;
         if ((flags & 2) && !object->field_281)
             continue;
-        if (CInfo[object->character_context].flags & 0x40000000)
+        if (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000)
             continue;
         if (object->character_data->game_character->flags_090 & 0x8000)
             continue;

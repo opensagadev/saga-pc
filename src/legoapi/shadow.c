@@ -166,7 +166,7 @@ void __cdecl CharShadows_Update(void) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
             (object->character_data->model_flags & 0x10000) != 0 || object->use_model_origin == 0 ||
             object->character_data->game_character->shadow_locators == 0 || object->model_draw_result == 0 ||
-            (CInfo[(i8)object->character_context].flags & 0x20000) != 0 || 0.0f >= object->shadow_opacity)
+            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0 || 0.0f >= object->shadow_opacity)
             continue;
         config = object->character_data->game_character;
         object->shadow_joint_mask = config->shadow_locators;
@@ -231,11 +231,11 @@ void __cdecl CharShadows_Draw(void) {
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0)
             continue;
-        if ((object->flags_e20 & 0x20) != 0 && (CInfo[(i8)object->character_context].flags & 0x40000) == 0)
+        if ((object->flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x40000) == 0)
             continue;
         if ((object->character_data->model_flags & 0x10000) != 0 || !(object->shadow_opacity > 0.0f) ||
             object->model_draw_result == 0 || object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
-            (CInfo[(i8)object->character_context].flags & 0x20000) != 0)
+            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0)
             continue;
         level_alpha = object->character_data->game_character->blob_shadow_alpha;
         if (level_alpha == 255)

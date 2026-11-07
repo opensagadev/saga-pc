@@ -106,7 +106,7 @@ extern "C" {
                 (target->flags_1f8 & 1) != 0 || target->character_context == 0x39 ||
                 target->character_context == 0x3b || target->character_context == 0x3c ||
                 (target->character_data->game_character->flags_090 & 0x8000) != 0 ||
-                (CInfo[target->character_context].flags & 0x8000) != 0 || target == object->takeover_source)
+                (U64_PAIR(&CInfo[target->character_context].flags) & 0x8000) != 0 || target == object->takeover_source)
                 continue;
             f32 distance = NuVecDistSqr(&target->position, &object->position, &delta);
             if (distance >= range * range ||

@@ -497,7 +497,7 @@ void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
     if (object->field_281 != 0 || object->character_context == 0x1f || object->character_context == 0x2b ||
         object->character_context == 0x4b || (object->flags_1fc_word & 0x80) == 0 ||
-        (CInfo[object->character_context].flags & 0x800) != 0)
+        (U64_PAIR(&CInfo[object->character_context].flags) & 0x800) != 0)
         return;
     {
         f32 distance;

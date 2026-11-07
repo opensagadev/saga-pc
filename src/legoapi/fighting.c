@@ -126,7 +126,7 @@ void __cdecl Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32
                 CannotKill(target)) {
                 NewRumble(attacker->pad->bound_pad, 0.5f, 0);
                 NewRumble(target->pad->bound_pad, 0.5f, 0);
-                if (!(CInfo[target->character_context].flags & 0x80000000))
+                if (!(U64_PAIR(&CInfo[target->character_context].flags) & 0x80000000))
                     target->movement_facing_angle =
                         NuAtan2D(attacker->collision_position.x - target->collision_position.x,
                                  attacker->collision_position.z - target->collision_position.z);

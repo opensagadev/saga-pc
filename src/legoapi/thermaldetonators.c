@@ -82,7 +82,7 @@ i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         (object->field_281 == 0 && object->jump_variant_state != 1))
         return 0;
     if (object->character_context != -1 && object->character_context != 6 && object->character_context != 7 &&
-        (CInfo[object->character_context].flags & 4) == 0)
+        (U64_PAIR(&CInfo[object->character_context].flags) & 4) == 0)
         return 0;
     part = FindPart(NULL, 0, object);
     if (part != NULL) {

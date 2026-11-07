@@ -9028,7 +9028,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
         return;
     }
     if (allow_start == 0 || pressed == 0 || object->field_281 == 0 ||
-        (CInfo[object->character_context].flags & 0x20) != 0 || (object->portal_flags & 2) == 0 ||
+        (U64_PAIR(&CInfo[object->character_context].flags) & 0x20) != 0 || (object->portal_flags & 2) == 0 ||
         (object->incoming_bolt == NULL && object->incoming_melee == NULL && object->incoming_special == NULL &&
          object->incoming_part == NULL))
         return;
@@ -9798,7 +9798,7 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
         return;
     if (object->field_281 == 0)
         return;
-    if (object->character_context != -1 && (CInfo[object->character_context].flags & 4) == 0 &&
+    if (object->character_context != -1 && (U64_PAIR(&CInfo[object->character_context].flags) & 4) == 0 &&
         object->character_context != 6 && object->character_context != 7 && !objInNetWaitContext(object, 0x1d))
         return;
     if (waiting)
@@ -10504,7 +10504,7 @@ void __cdecl MovePlayer_NETWORK(GAMEOBJECT *object) {
                 turn_rate += turn_rate;
         }
     }
-    if ((object->flags_ef0 & 0x8000) != 0 && (CInfo[object->character_context].flags & 1) == 0)
+    if ((object->flags_ef0 & 0x8000) != 0 && (U64_PAIR(&CInfo[object->character_context].flags) & 1) == 0)
         object->movement_facing_angle += 0x8000;
     if ((object->flags_ef0 & 0x400) != 0) {
         object->facing_angle = object->movement_facing_angle;
