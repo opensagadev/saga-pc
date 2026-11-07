@@ -29882,6 +29882,8 @@ struct ClassObject {
     }
     i32 GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
     i32 SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
+    void Set(char *name);
+    void GetName(char *destination, i32 size);
 };
 
 struct ClassObjectListEntry {

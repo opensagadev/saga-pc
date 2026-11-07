@@ -772,6 +772,28 @@ class PlaceableNameControl : public EdStringControl {
     i32 reserved_10;
 };
 STATIC_ASSERT(sizeof(PlaceableNameControl) == 0x14);
+
+/* A string member naming an editor object as "Class.Object": the button
+ * picks a registered class, then one of its named objects. */
+class EdClassObjectNameControl : public EdStringControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdClassObjectNameControl));
+    }
+    EdClassObjectNameControl() {
+    }
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    virtual void Process(EdInputContext &input);
+    virtual void Render();
+    static void cbButton(eduimenu_s *parent, eduiitem_s *item, u32);
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbSelectClass(eduimenu_s *parent, eduiitem_s *item, u32);
+    static void cbSelectObject(eduimenu_s *menu, eduiitem_s *item, u32);
+
+    ClassObject selected;
+};
+STATIC_ASSERT(offsetof(EdClassObjectNameControl, selected) == 0x10);
+STATIC_ASSERT(sizeof(EdClassObjectNameControl) == 0x1c);
 STATIC_ASSERT(sizeof(EdColourControl) == 0x10);
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
@@ -1046,6 +1068,7 @@ static i32 edBitIndex;
 
 static EdColourControl *edColourControl;
 static EdStringControl *edObjectNameControl;
+static EdClassObjectNameControl *edClassObjectNameControl;
 
 EdControl::~EdControl() {
 }
@@ -1486,6 +1509,9 @@ void EdControl::Process(EdInputContext &) {
 }
 
 void EdControl::Render() {
+}
+
+void EdClassObjectNameControl::Render() {
 }
 
 EdVectorControl::EdVectorControl() {
@@ -5480,6 +5506,48 @@ void ClassEditor::cbEdClassDeleteObject(eduimenu_s *, eduiitem_s *, u32) {
 }
 
 /* Average position of the objects that have one; returns how many had. */
+/* Looks up "Class.Object": the class by name, then its first object whose
+ * name member matches. */
+void ClassObject::Set(char *name) {
+    ed_class = NULL;
+    object = NULL;
+    char *separator = NuStrChr(name, '.');
+    if (separator == NULL)
+        return;
+    char class_name[128];
+    char object_name[128];
+    char candidate_name[128];
+    __declspec(align(16)) EdMember member;
+    *separator = '\0';
+    NuStrCpy(class_name, name);
+    *separator = '.';
+    NuStrCpy(object_name, separator + 1);
+    ed_class = theRegistry.GetClass(class_name);
+    if (ed_class == NULL || !(ed_class->flags & 2) || ed_class->object_interface == NULL)
+        return;
+    for (object = ed_class->object_interface->GetNextObject(NULL); object != NULL;
+         object = ed_class->object_interface->GetNextObject(object)) {
+        if (ed_class->FindMember(&member, object, 2, 1)) {
+            if (member.reference->attributes & 2)
+                member.reference->GetMemberData(member.object, EdType_String, candidate_name, sizeof(candidate_name));
+            if (NuStrICmp(object_name, candidate_name) == 0)
+                break;
+        }
+    }
+}
+
+/* Writes "Class.Object" ("None" without an object). */
+void ClassObject::GetName(char *destination, i32 size) {
+    if (object != NULL) {
+        char name[128];
+        if (!GetAttributeData(2, EdType_String, name, sizeof(name)))
+            NuStrCpy(name, "NoName");
+        sprintf(destination, "%s.%s", ed_class->name, name);
+    } else {
+        NuStrNCpy(destination, "None", size);
+    }
+}
+
 i32 ClassObjectList::GetAveragePosition(VuVec &average) {
     average.x = 0.0f;
     average.y = 0.0f;
@@ -5544,6 +5612,98 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average, f32 &radius) {
         }
     }
     return count;
+}
+
+/* Accepts a typed "Class.Object" name, normalised through the lookup. */
+void EdClassObjectNameControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    EdClassObjectNameControl *control = static_cast<EdClassObjectNameControl *>(item->data_ptr);
+    ClassObject selected;
+    selected.Set(reinterpret_cast<edui_prop_s *>(item)->property_text);
+    char name[128];
+    selected.GetName(name, sizeof(name));
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(control->item), name);
+    control->SetVal(name);
+}
+
+void EdClassObjectNameControl::cbSelectObject(eduimenu_s *menu, eduiitem_s *item, u32) {
+    EdClassObjectNameControl *control = edClassObjectNameControl;
+    if (control != NULL) {
+        control->selected.object = item->data_ptr;
+        if (control->selected.object != NULL) {
+            char name[128];
+            control->selected.GetName(name, sizeof(name));
+            eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(edClassObjectNameControl->item), name);
+            edClassObjectNameControl->SetVal(name);
+        } else {
+            eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(edClassObjectNameControl->item), "None");
+            edClassObjectNameControl->SetVal("None");
+        }
+    }
+    edLevelDestroyThisMenu = menu;
+    edLevelDestroyThisMenu2 = menu->parent;
+}
+
+/* Lists the named objects of the picked class. */
+void EdClassObjectNameControl::cbSelectClass(eduimenu_s *parent, eduiitem_s *item, u32) {
+    EdClass *object_class = theRegistry.GetClass(item->data);
+    edClassObjectNameControl->selected.ed_class = object_class;
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, NULL);
+    if (menu == NULL)
+        return;
+    EdRef *name_reference = object_class->FindTypeRef(2, 1);
+    if (name_reference != NULL) {
+        for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
+             object = object_class->object_interface->GetNextObject(object)) {
+            char name[128];
+            if (name_reference->GetAttributeData(object, 2, EdType_String, name, sizeof(name)))
+                eduiMenuAddItem(menu, eduiItemSelCreate((u32)object, &EdLevelAttr, 0, 0, cbSelectObject, name));
+        }
+    }
+    if (menu->first == NULL)
+        eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "No Object"));
+    menu->flags |= 1;
+    eduiMenuAttach(parent, menu);
+    eduiSetActiveMenu(menu);
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 5);
+}
+
+/* Lists every registered class that has objects. */
+void EdClassObjectNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, NULL);
+    edClassObjectNameControl = static_cast<EdClassObjectNameControl *>(item->data_ptr);
+    if (menu == NULL)
+        return;
+    i32 class_count = theRegistry.class_count;
+    for (i32 index = 0; index < class_count; index++) {
+        EdClass *object_class = theRegistry.GetClass(index);
+        if (!(object_class->flags & 0x20000000) && object_class->object_interface != NULL)
+            eduiMenuAddItem(menu, eduiItemSelCreate(index, &EdLevelAttr, 0, 0, cbSelectClass, object_class->name));
+    }
+    if (menu->first == NULL)
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "No Registered Classes"));
+    menu->flags |= 1;
+    eduiMenuAttach(parent, menu);
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 5);
+    reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
+}
+
+/* While the pick input is held, pressing select takes the hovered object's
+ * name. */
+void EdClassObjectNameControl::Process(EdInputContext &input) {
+    if (input.GetHold(22) != 0.0f) {
+        ClassObject hovered = theClassEditor.current_object;
+        theClassEditor.field_3c = 0xff008000;
+        if (input.GetPress(25) != 0.0f) {
+            char name[128];
+            hovered.GetName(name, sizeof(name));
+            SetVal(name);
+        }
+    }
 }
 
 /* Selects the member this control edits as the class editor's sub-object;
@@ -6874,6 +7034,21 @@ void EdBitControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
             }
         }
     }
+}
+
+void EdClassObjectNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdClassObjectNameControl *control =
+        new (theMemoryManager.AllocPool(sizeof(EdClassObjectNameControl), 1)) EdClassObjectNameControl;
+    if (control == NULL)
+        return;
+    control->reference = member;
+    control->object = target;
+    char value[128];
+    control->GetVal(value, sizeof(value));
+    control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, EdControl::cbSelected, cbChanged, cbButton, 1,
+                                       member->name, value);
+    control->item->flags |= 4;
+    eduiMenuAddItem(menu, control->item);
 }
 
 void EdStringControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {

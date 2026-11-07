@@ -9804,6 +9804,8 @@ address,symbol,size,ctype
 0x6b9570,?cbEdClassSetSnap@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,28,
 0x6b9590,?SetViewMenuHilight@ClassEditor@@SAXPAUeduimenu_s@@@Z,62,
 0x6b95d0,?cbEdClassSetView@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,122,
+0x6b9650,??1EdClassObjectNameControl@@UAE@XZ,7,
+0x6b9660,?Render@EdClassObjectNameControl@@UAEXXZ,1,
 0x6b9680,?Set@EdInputContext@@QAEXHMM@Z,167,
 0x6b9730,?Clear@EdInputContext@@QAEXH@Z,29,
 0x6b9750,?Get@EdInputContext@@QAEMH@Z,24,
@@ -10031,6 +10033,10 @@ address,symbol,size,ctype
 0x6c2da0,?cbEdFilterLED@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,93,
 0x6c2e00,?cbEdClassSetPinned@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,112,
 0x6c2e70,?cbEdClassViewMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,685,
+0x6c31c0,??0EdClassObjectNameControl@@QAE@XZ,20,
+0x6c31e0,??3EdClassObjectNameControl@@SAXPAX@Z,18,
+0x6c3210,??_EEdClassObjectNameControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdClassObjectNameControl@@UAEPAXI@Z; no independent body
+0x6c3210,??_GEdClassObjectNameControl@@UAEPAXI@Z,35,
 0x6c3240,?Update@EdInputContext@@QAEXPAUnucamera_s@@PAUFRAME_PAD_PC@@M_N@Z,2104,
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
 0x6c3b00,?cbButton@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,32,
@@ -10140,8 +10146,15 @@ address,symbol,size,ctype
 0x6c9eb0,?cbEdClassSetMode@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,35,
 0x6c9ee0,?cbEdClassModeMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,363,
 0x6ca0a0,?cbEdClassDeleteObject@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,10,
+0x6ca110,?Set@ClassObject@@QAEXPAD@Z,314,
+0x6ca250,?GetName@ClassObject@@QAEXPADH@Z,158,
 0x6ca2f0,?GetAveragePosition@ClassObjectList@@QAEHAAUVuVec@@@Z,173,
 0x6ca3a0,?GetAveragePosition@ClassObjectList@@QAEHAAUVuVec@@AAM@Z,389,
+0x6ca530,?cbChanged@EdClassObjectNameControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,128,
+0x6ca5b0,?cbSelectObject@EdClassObjectNameControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,217,
+0x6ca690,?cbSelectClass@EdClassObjectNameControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,374,
+0x6ca810,?cbButton@EdClassObjectNameControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,258,
+0x6ca920,?Process@EdClassObjectNameControl@@UAEXAAUEdInputContext@@@Z,212,
 0x6caa00,?SelectSubObject@EdControl@@QAEHXZ,182,
 0x6caac0,?cbSelected@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,118,
 0x6cab40,?AddMenuItem@EdVectorControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,403,
@@ -10226,6 +10239,7 @@ address,symbol,size,ctype
 0x6d1b20,?Render@ClassEditor@@UAEXXZ,496,
 0x6d1d10,?SelectLED@ClassEditor@@QAEXH@Z,244,
 0x6d1e10,?cbEdClassFileMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,234,
+0x6d1f00,?AddMenuItem@EdClassObjectNameControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,204,
 0x6d1fd0,?Render@CursorTool@@UAEXXZ,10,
 0x6d1ff0,?ProcessEvenWhenPaused@LevelEditor@@UAEXPAUThingProcessData@@@Z,1107,
 0x6d2450,?CreateObject@ClassEditor@@QAEHAAUClassObject@@@Z,314,
@@ -19728,6 +19742,7 @@ address,symbol,size,ctype
 0x76fa54,??_C@_05OPEIBKFE@?$CFd?5?$CFs?$AA@,6,const char[6]
 0x76fa5c,??_C@_06OHLCGMJD@Invert?$AA@,7,const char[7]
 0x76fa64,??_C@_06NMMLHJNA@Pinned?$AA@,7,const char[7]
+0x76fa70,??_7EdClassObjectNameControl@@6B@,,
 0x76fa88,??_C@_06JOGGDODM@Colour?$AA@,7,
 0x76fa90,??_C@_0M@PPADLALA@Editor?5List?$AA@,12,char []
 0x76fa9c,??_C@_05JHDNOJGN@NuMtx?$AA@,6,char []
@@ -19748,6 +19763,8 @@ address,symbol,size,ctype
 0x76fde8,_TextInputKeyNameTextPc76fde8,,char[7]
 0x76fde8,??_C@_06JBKGCNBB@Delete?$AA@,7,char []
 0x76fdf0,??_C@_06MIKANEJK@Create?$AA@,7,char []
+0x76fdf8,??_C@_05NNFHCGPF@?$CFs?4?$CFs?$AA@,6,const char[]
+0x76fe00,??_C@_06LDNJCCPF@NoName?$AA@,7,const char[]
 0x76fe08,??_C@_09MPGNIGCO@No?5Object?$AA@,10,char []
 0x76fe14,??_C@_02IGJGHHBN@tz?$AA@,3,const char[]
 0x76fe18,??_C@_02KNLLCENO@ty?$AA@,3,const char[]
@@ -22644,6 +22661,10 @@ address,symbol,size,ctype
 0x7ebf98,??_R3?$CSListLink@VSplineObject@@@@8,,
 0x7ebfa8,??_R2?$CSListLink@VSplineObject@@@@8,,
 0x7ebfb0,??_R1A@?0A@EA@?$CSListLink@VSplineObject@@@@8,,
+0x7ebfcc,??_R4EdClassObjectNameControl@@6B@,,
+0x7ebfe0,??_R3EdClassObjectNameControl@@8,,
+0x7ebff0,??_R2EdClassObjectNameControl@@8,,
+0x7ec000,??_R1A@?0A@EA@EdClassObjectNameControl@@8,,
 0x7ec2a0,??_R4SplineHelper@@6B@,,
 0x7ec2b4,??_R3SplineHelper@@8,,
 0x7ec2c4,??_R2SplineHelper@@8,,
@@ -29249,6 +29270,7 @@ address,symbol,size,ctype
 0x2973a28,?seq@?1??floor1_encode@@9@9,,
 0x2973a30,_EdDrawMtl,,NUMTL *[2]
 0x2973a38,_class_editor_create_pending,4,i32
+0x2973a64,_edClassObjectNameControl,4,EdClassObjectNameControl *
 0x2973a68,?Input@EdControl@@2PAUEdInputContext@@A,4,EdInputContext *
 0x2973a6c,_active_enum_control,4,EdEnumControl *
 0x2973a70,_edBitControl,4,EdBitControl *
