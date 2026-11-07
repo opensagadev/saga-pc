@@ -17984,6 +17984,7 @@ struct NETMESSAGE_PC {
             write_offset += size;
         }
     }
+    void Write(const void *values, i32 size, i32 count);
     void Read8(u8 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(&value, data->bytes + read_offset, 1);
@@ -30142,8 +30143,8 @@ struct ReplicatorData {
 class NetReplicator : public CSListLink<NetReplicator> {
   public:
     NetReplicator(i32 group, f32 minimum_seconds, f32 maximum_seconds);
-    virtual bool AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
-                           i32 check_only) = 0;
+    virtual i32 AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
+                          i32 check_only) = 0;
     virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
                                 ReplicatorData &data, i16 *flags);
     virtual i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, i32 check_only);
@@ -30249,9 +30250,12 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void SendAcquireMessage(NetworkObject *object);
     void SendAcquiredMessage(i16 id, const V2Peer &peer);
     void SendAdoptedMessage(i16 id);
+    i32 Push(const NetworkObject *object, NetReplicator *replicator, ReplicatorData &data, NetPeerPush *push);
+    i32 PushObject(NetworkObject *object, NetPeerPush *push, i32 force);
     i32 SendPushMessage(NETMESSAGE_PC *message, const NetPeerPush *push, i32 flags);
     PendingObject *StealPendingObject();
     void Term();
+    void Update();
     void UpdateLocalObjectList();
 
     i32 field_08;
@@ -30484,7 +30488,7 @@ struct NuNetEmu {
     u8 enabled;
     i32 min_latency;
     i32 max_latency;
-    u32 queued_bytes;
+    i32 queued_bytes;
     i32 conditions;
     i32 loss_mode;
     i32 burst_min;

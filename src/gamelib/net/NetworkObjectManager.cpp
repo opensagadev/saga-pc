@@ -31,6 +31,33 @@ STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
 
 void NetTrace(...);
 
+/* Serialises replicated members into a NETMESSAGE_PC (Android NetOutputStream). */
+class NetOutputStream : public EdOutputStream {
+  public:
+    NetOutputStream() {
+    }
+    virtual ~NetOutputStream() {
+    }
+    virtual i32 Eat(i32, i32) {
+        return 0;
+    }
+    virtual i32 SerialiseBuffer(void *data, i32 size, i32 count) {
+        message->Write(data, size, count);
+        return size * count;
+    }
+    virtual char const *BeginBlock(char const *name) {
+        return name;
+    }
+    virtual void EndBlock() {
+    }
+    void SetMessage(NETMESSAGE_PC *new_message) {
+        message = new_message;
+    }
+
+    NETMESSAGE_PC *message;
+};
+STATIC_ASSERT(sizeof(NetOutputStream) == 0x24);
+
 NetworkObjectManager *theNos = NULL;
 
 void NetworkObject::Initialise(i32 guid, void *new_object, EdClass *new_class, const V2Peer &new_owner, i32 new_flags) {
@@ -607,5 +634,145 @@ void NetworkObjectManager::InitClassStats() {
         EdClass *object_class = theRegistry.GetClass(i);
         if (object_class->object_interface != NULL)
             class_stats[i] = new NetStats(object_class->name);
+    }
+}
+
+#pragma push_macro("GetMessage")
+#undef GetMessage
+i32 NetworkObjectManager::Push(const NetworkObject *object, NetReplicator *replicator, ReplicatorData &data,
+                               NetPeerPush *push) {
+    if (push == NULL)
+        push = &default_push;
+    i32 size = replicator->message_size + 10;
+    NETMESSAGE_PC *message;
+    if (replicator->replication_group & 1)
+        message = push->GetMessage(size);
+    else
+        message = push->GetReliableMessage(size);
+    NetOutputStream stream;
+    i16 object_id = object->id;
+    i16 class_id = (i16)theRegistry.GetClassId(object->object_class);
+    i16 flags = object->flags;
+    i16 replicator_id = replicator->id;
+    message->Write8(2);
+    message->Write16(object_id);
+    message->Write16(class_id);
+    message->Write16(replicator_id);
+    message->Write16(flags);
+    i32 initial_size = message->GetSize();
+    stream.SetMessage(message);
+    if (!replicator->SerialiseObject(stream, NULL, object->object_class, object->object, data, &flags) &&
+        message->data != NULL)
+        message->write_offset -= 9;
+    if (class_stats[class_id] != NULL)
+        class_stats[class_id]->totals.values[0] += message->GetSize() - initial_size;
+    return 1;
+}
+
+#pragma pop_macro("GetMessage")
+
+i32 NetworkObjectManager::PushObject(NetworkObject *object, NetPeerPush *push, i32 force) {
+    i32 result = 1;
+    if (push != NULL && push->stage > 0 && push->stage < 3)
+        object->flags |= 4;
+    else
+        object->flags &= ~4u;
+    if (push == NULL)
+        push = &default_push;
+    i32 class_id = theRegistry.GetClassId(object->object_class);
+    i32 allowed = 1;
+    if (filters[class_id] != NULL && !force)
+        allowed = filters[class_id]->AllowPush(object->object_class, object->object);
+    i32 limit;
+    if (theNuNetEmu.packet_stats.pack_ratio > 0.0f)
+        limit = (i32)(theNuNetEmu.packet_stats.pack_ratio * theNuNetEmu.queued_bytes);
+    else
+        limit = theNuNetEmu.queued_bytes;
+    i32 permit = 1;
+    if (allowed || force) {
+        NetReplicator *replicator = replicators[class_id].head;
+        i32 offset = 0;
+        while (replicator != NULL) {
+            if (object->flags & 2)
+                replicator->replication_group |= 8;
+            i32 size = replicator->data_size;
+            ReplicatorData data;
+            data.start = data.cursor = (u8 *)object->replicator_data + offset;
+            data.end = data.start + size;
+            offset += size;
+            if (limit > theNuNetEmu.field_00 && (replicator->replication_group & 0x40) == 0)
+                permit = 0;
+            if ((permit || force) && replicator->AllowPush(object->object_class, object->object, data, force, 0) &&
+                !Push(object, replicator, data, push))
+                result = 0;
+            replicator = replicator->next;
+        }
+    }
+    if (object->flags & 2)
+        object->flags &= ~2u;
+    return result;
+}
+
+void NetworkObjectManager::Update() {
+    for (i32 i = 0; i < 2048; i++) {
+        NetworkObject *object = &objects[i];
+        if (object->id == 0)
+            continue;
+        if (object->owner->local) {
+            PushObject(object, NULL, 0);
+        } else if ((object->flags & 2) == 0) {
+            NetReplicator *replicator = replicators[theRegistry.GetClassId(object->object_class)].head;
+            i32 offset = 0;
+            while (replicator != NULL) {
+                i32 size = replicator->data_size;
+                if (replicator->replication_group & 4) {
+                    ReplicatorData data;
+                    data.start = data.cursor = (u8 *)object->replicator_data + offset;
+                    data.end = data.start + size;
+                    replicator->AllowPush(object->object_class, object->object, data, 0, 0);
+                    replicator->DoPrediction(object->object_class, object->object, data, 0);
+                }
+                replicator = replicator->next;
+                offset += size;
+            }
+        }
+    }
+    for (i32 i = 0; i < 8; i++) {
+        NetPeerPush *push = &peer_push[i];
+        if (push->peer == NULL)
+            continue;
+        if (push->stage > 0 && push->stage < 3) {
+            i32 index = push->next_object;
+            i32 limit;
+            if (theNuNetEmu.packet_stats.pack_ratio > 0.0f)
+                limit = (i32)(theNuNetEmu.packet_stats.pack_ratio * theNuNetEmu.queued_bytes);
+            else
+                limit = theNuNetEmu.queued_bytes;
+            while (index < local_object_count && limit < theNuNetEmu.field_00) {
+                NetworkObject *object = local_objects[index++];
+                if (object == NULL || object->object == NULL)
+                    continue;
+                if (push->stage == 1)
+                    ConstructObject(object, push);
+                if (push->stage == 2)
+                    PushObject(object, push, 1);
+                if (((V2Peer *)push->peer)->GetAvailableMessages() < 16)
+                    break;
+                if (theNuNetEmu.packet_stats.pack_ratio > 0.0f)
+                    limit = (i32)(theNuNetEmu.packet_stats.pack_ratio * theNuNetEmu.queued_bytes);
+                else
+                    limit = theNuNetEmu.queued_bytes;
+            }
+            if (index < local_object_count)
+                push->next_object = index;
+            else
+                push->NextStage();
+        }
+        push->FlushMessages();
+    }
+    default_push.FlushMessages();
+    for (i32 i = 0; i < 32; i++) {
+        if (class_stats[i] != NULL)
+            class_stats[i]->Update();
     }
 }

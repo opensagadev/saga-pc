@@ -4923,6 +4923,7 @@ address,symbol,size,ctype
 0x00580c00,_Bolt_Debris_Default,149,"void __cdecl (BOLT *, NUVEC *, i32, NUVEC *, i32)"
 0x580ca0,_BoltSys_Init,161,void __cdecl(BOLTSYS_PC*)
 0x580d50,?Write32@NETMESSAGE_PC@@QAEXPBH@Z,59,void __thiscall NETMESSAGE_PC::Write32(const i32 *)
+0x580e50,?Write@NETMESSAGE_PC@@QAEXPBXHH@Z,120,
 0x580f50,?Bolt_HitPlatPrivate@@YAHPAUbolt_s@@PAE@Z,445,
 0x581110,?Bolt_HitBlowupPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@11MPAE@Z,223,
 0x5811f0,_Bolt_HitGameObjectRC,2495,void __cdecl(NETMESSAGE_PC&)
@@ -7206,6 +7207,12 @@ address,symbol,size,ctype
 0x611920,??_GEdStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x611970,??0EdOutputStream@@QAE@XZ,25,
 0x611990,??1EdOutputStream@@UAE@XZ,7,
+0x611ac0,??1NetOutputStream@@UAE@XZ,7,ICF-folded with the NetInputStream destructor
+0x611af0,??0NetOutputStream@@QAE@XZ,25,
+0x611b10,?SetMessage@NetOutputStream@@QAEXPAUNETMESSAGE_PC@@@Z,10,
+0x611b20,?Eat@NetOutputStream@@UAEHHH@Z,5,
+0x611b30,?BeginBlock@NetOutputStream@@UAEPBDPBD@Z,7,
+0x611b40,?EndBlock@NetOutputStream@@UAEXXZ,1,
 0x611e00,?Initialise@NetworkObject@@QAEXHPAXPAUEdClass@@ABVV2Peer@@H@Z,81,
 0x611e60,?Destroy@NetworkObject@@QAEXXZ,68,
 0x612750,?Init@NetworkObjectManager@@QAEXXZ,111,
@@ -7238,6 +7245,9 @@ address,symbol,size,ctype
 0x613100,?Write16@NETMESSAGE_PC@@QAEXABF@Z,57,
 0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body
 0x613210,??_GEdOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6132a0,??_GNetOutputStream@@UAEPAXI@Z,31,
+0x6132a0,??_ENetOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GNetOutputStream@@UAEPAXI@Z; no independent body
+0x6132c0,?SerialiseBuffer@NetOutputStream@@UAEHPAXHH@Z,35,
 0x613db0,?NOSGetGuid@@YAHXZ,11,
 0x613dd0,?Term@NetworkObjectManager@@QAEXXZ,14,
 0x615140,?ReleaseObject@NetworkObjectManager@@QAEHPAXPAUEdClass@@H@Z,300,
@@ -7254,8 +7264,11 @@ address,symbol,size,ctype
 0x615f40,?GetReliableMessage@NetPeerPush@NetworkObjectManager@@QAEPAUNETMESSAGE_PC@@H@Z,165,
 0x615ff0,?FlushMessages@NetPeerPush@NetworkObjectManager@@QAEXXZ,185,
 0x6160b0,?ConstructObject@NetworkObjectManager@@QAEXPAUNetworkObject@@PAUNetPeerPush@1@@Z,382,
+0x616230,?Push@NetworkObjectManager@@QAEHPBUNetworkObject@@PAVNetReplicator@@AAUReplicatorData@@PAUNetPeerPush@1@@Z,519,
 0x6168e0,?PeerLeft@NetworkObjectManager@@UAEXABVV2Peer@@H@Z,410,
 0x616a80,?RegisterObject@NetworkObjectManager@@QAEHPAXPAUEdClass@@H@Z,201,
+0x616b50,?PushObject@NetworkObjectManager@@QAEHPAUNetworkObject@@PAUNetPeerPush@1@H@Z,386,
+0x616ce0,?Update@NetworkObjectManager@@QAEXXZ,877,
 0x617050,?NotifyCreateObject@NetworkObjectManager@@UAEXPAXPAUEdClass@@0HHH@Z,31,
 0x617180,?CompareAddress@FtpFile@@QBEHABUNetAddress@@@Z,143,
 0x617270,?Init@NetFtpManager@@QAEXXZ,19,
@@ -17851,6 +17864,7 @@ address,symbol,size,ctype
 0x76ab50,??_C@_06LJJHIAGL@EmuRaw?$AA@,7,char []
 0x76ab5c,??_7EdStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76abec,??_7NetOutputStream@@6B@,32,
 0x76ac34,??_C@_03EPCAMLIH@NOS?$AA@,4,char []
 0x76ac78,??_C@_03LBMKPMDK@FTP?$AA@,4,char []
 0x76ac80,??_7NetFtpManager@@6B@,52,
@@ -21573,6 +21587,10 @@ address,symbol,size,ctype
 0x7eafa4,??_R3EdOutputStream@@8,,
 0x7eafb4,??_R2EdOutputStream@@8,,
 0x7eafc0,??_R1A@?0A@EA@EdOutputStream@@8,,
+0x7eb02c,??_R4NetOutputStream@@6B@,,
+0x7eb040,??_R3NetOutputStream@@8,,
+0x7eb050,??_R2NetOutputStream@@8,,
+0x7eb060,??_R1A@?0A@EA@NetOutputStream@@8,,
 0x7eb1e0,??_R4NetFtpManager@@6B@,,
 0x7eb1f4,??_R3NetFtpManager@@8,,
 0x7eb204,??_R2NetFtpManager@@8,,
