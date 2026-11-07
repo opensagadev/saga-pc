@@ -802,12 +802,13 @@ void NetworkObjectManager::ConstructObject(NetworkObject *object, NetPeerPush *p
 #undef GetMessage
 NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetMessage(i32 size) {
     if (message != NULL) {
-        i32 available = message->data != NULL ? 0x4af - (i32)message->write_offset : 0;
+        i32 available = message->data == NULL ? 0 : 0x4af - (i32)message->write_offset;
         if (available < size) {
             theNos->SendPushMessage(message, this, 1);
-            if (message != NULL) {
-                message->Release();
-                theMemoryManager.FreePool(message, sizeof(NETMESSAGE_PC));
+            NETMESSAGE_PC *sent = message;
+            if (sent != NULL) {
+                sent->Release();
+                theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
             }
             message = NULL;
         }
@@ -820,12 +821,13 @@ NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetMessage(i32 size) {
 
 NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetReliableMessage(i32 size) {
     if (reliable_message != NULL) {
-        i32 available = reliable_message->data != NULL ? 0x4af - (i32)reliable_message->write_offset : 0;
+        i32 available = reliable_message->data == NULL ? 0 : 0x4af - (i32)reliable_message->write_offset;
         if (available < size) {
             theNos->SendPushMessage(reliable_message, this, 0);
-            if (reliable_message != NULL) {
-                reliable_message->Release();
-                theMemoryManager.FreePool(reliable_message, sizeof(NETMESSAGE_PC));
+            NETMESSAGE_PC *sent = reliable_message;
+            if (sent != NULL) {
+                sent->Release();
+                theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
             }
             reliable_message = NULL;
         }
@@ -838,17 +840,19 @@ NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetReliableMessage(i32 size) {
 void NetworkObjectManager::NetPeerPush::FlushMessages() {
     if (message != NULL) {
         theNos->SendPushMessage(message, this, 1);
-        if (message != NULL) {
-            message->Release();
-            theMemoryManager.FreePool(message, sizeof(NETMESSAGE_PC));
+        NETMESSAGE_PC *sent = message;
+        if (sent != NULL) {
+            sent->Release();
+            theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
         }
         message = NULL;
     }
     if (reliable_message != NULL) {
         theNos->SendPushMessage(reliable_message, this, 0);
-        if (reliable_message != NULL) {
-            reliable_message->Release();
-            theMemoryManager.FreePool(reliable_message, sizeof(NETMESSAGE_PC));
+        NETMESSAGE_PC *sent = reliable_message;
+        if (sent != NULL) {
+            sent->Release();
+            theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
         }
         reliable_message = NULL;
     }
