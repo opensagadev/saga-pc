@@ -1038,8 +1038,8 @@ extern "C" {
 
     static __declspec(noinline) void DogfightResetCrossesPc(DOGFIGHT_CROSS_PC *crosses, i32 count) {
         i32 i;
-        for (i = 0; i < count; ++i) {
-            DOGFIGHT_CROSS_PC *cross = &crosses[i];
+        DOGFIGHT_CROSS_PC *cross = crosses;
+        for (i = 0; i < count; ++i, ++cross) {
             cross->enabled = 0;
             cross->matrix.m00 = 80.0f;
             cross->matrix.m01 = 55.0f;
