@@ -6952,6 +6952,14 @@ address,symbol,size,ctype
 0x60e480,?QueryAll24@TTNetwork@@QAEHHH@Z,57,
 0x60e4c0,?NotifyAll28@TTNetwork@@QAEXHH@Z,42,
 0x60e4f0,?UpdateClientStats@TTNetwork@@QAEXXZ,26,
+0x60ed30,?RemoveDependancies@BaseThing@@UAEHPAUThingRemoveData@@@Z,8,
+0x60ed40,?EnterLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
+0x60ed50,?ExitLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
+0x60ed60,?Reset@BaseThing@@UAEXPAUThingResetData@@@Z,3,
+0x60ed70,?Process@BaseThing@@UAEXPAUThingProcessData@@@Z,3,
+0x60ed80,?ProcessOnlyWhenPaused@BaseThing@@UAEXPAUThingProcessData@@@Z,3,
+0x60ed90,?Render@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
+0x60eda0,?Effects@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
 0x60f4b0,?Clear@NetStatCounters@@QAEXXZ,14,
 0x60f4c0,??YNetStatCounters@@QAEAAU0@ABU0@@Z,31,
 0x60f4e0,??ZNetStatCounters@@QAEAAU0@ABU0@@Z,31,
@@ -7340,6 +7348,12 @@ address,symbol,size,ctype
 0x633350,_RadFmvDestroyImagePc,54,
 0x633440,?AllocPool@memorymanager_s@@QAEPAXIH@Z,134,
 0x6334d0,?FreePool@memorymanager_s@@QAEXPAXI@Z,35,
+0x633500,??0BaseThing@@QAE@XZ,20,
+0x633520,?ProcessEvenWhenPaused@BaseThing@@UAEXPAUThingProcessData@@@Z,3,
+0x633530,?Display@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
+0x633540,??1BaseThing@@UAE@XZ,7,
+0x633dd0,??_EBaseThing@@UAEPAXI@Z,,COFF weak alias of ??_GBaseThing@@UAEPAXI@Z; no independent body
+0x633dd0,??_GBaseThing@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x633df0,_rtlSwapSetEndianess,1,void __cdecl rtlSwapSetEndianess(void *)
 0x633df0,_RtlUiCreateFailedPc,1,void __cdecl(void)
 0x633e40,_RtlDirectionStatePc,183,
@@ -17434,6 +17448,7 @@ address,symbol,size,ctype
 0x76b1c0,??_C@_02POGCAHMO@th?$AA@,3,const char[]
 0x76b1c8,__real@4040aaaac0000000,8,const double
 0x76b1d0,??_C@_0BK@POOFCPDO@?4?2pc?2Bink?2dsplay_bink?4cpp?$AA@,26,const char[]
+0x76b20c,??_7BaseThing@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b274,_MenuPcString76b274,4,const char[4]
 0x0076b290,??_C@_0BB@CBCHIBBA@L1?9PREV?0?5R1?9NEXT?$AA@,,const char[]
 0x0076b2a8,??_C@_0GH@OGBPIOIB@X?$DNADD?0?5TRI?$DNDEL?0L?9UP?$DNLOCK?0O?$DNADJUS@,,const char[]
@@ -20972,10 +20987,14 @@ address,symbol,size,ctype
 0x7eace0,??_R3NetStats@@8,,
 0x7eacf0,??_R2NetStats@@8,,
 0x7eacfc,??_R1A@?0A@EA@NetStats@@8,,
+0x7eae1c,??_R3BaseThing@@8,,
+0x7eae2c,??_R2BaseThing@@8,,
+0x7eae34,??_R1A@?0A@EA@BaseThing@@8,,
 0x7eae64,??_R4V2SessionManager@@6B@,,
 0x7eae78,??_R3V2SessionManager@@8,,
 0x7eae88,??_R2V2SessionManager@@8,,
 0x7eae90,??_R1A@?0A@EA@V2SessionManager@@8,,
+0x7eb22c,??_R4BaseThing@@6B@,,
 0x7eb240,??_R4EdClassInterface@@6B@,,
 0x7eb254,??_R3EdClassInterface@@8,,
 0x7eb264,??_R2EdClassInterface@@8,,

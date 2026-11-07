@@ -28972,6 +28972,45 @@ class EdRef;
 struct EdStream;
 struct MemoryBuffer;
 
+struct ThingLevelData;
+struct ThingProcessData;
+struct ThingRemoveData;
+struct ThingRenderData;
+struct ThingResetData;
+
+/* The per-frame object interface ThingManager dispatches (Android BaseThing).
+ * flags holds the THING_FLAG_SKIP_* bits; profiling brackets the call with
+ * the time bar. */
+class BaseThing {
+  public:
+    BaseThing();
+    virtual ~BaseThing();
+    virtual char const *GetName() = 0;
+    virtual i32 RemoveDependancies(ThingRemoveData *) {
+        return 1;
+    }
+    virtual void EnterLevel(ThingLevelData *) {
+    }
+    virtual void ExitLevel(ThingLevelData *) {
+    }
+    virtual void Reset(ThingResetData *) {
+    }
+    virtual void Process(ThingProcessData *) {
+    }
+    virtual void ProcessEvenWhenPaused(ThingProcessData *);
+    virtual void ProcessOnlyWhenPaused(ThingProcessData *) {
+    }
+    virtual void Render(ThingRenderData *) {
+    }
+    virtual void Display(ThingRenderData *);
+    virtual void Effects(ThingRenderData *) {
+    }
+
+    u32 id;
+    u32 flags;
+    i32 profiling;
+};
+
 /* Editor object-class interface (Android gameapi_edtools_types.h). MSVC lays
  * overloaded virtuals out in reverse declaration order, so the filtered
  * GetNextObject sits in slot 4 and the two-vector DistanceToObject in slot 27. */
