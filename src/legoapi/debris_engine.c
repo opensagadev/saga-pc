@@ -1659,6 +1659,77 @@ void __cdecl UpdateDebrisRenderStackPriority(void) {
         }
     }
 }
+void __cdecl DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z);
+void __cdecl DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
+
+void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC *emitter_momentum,
+                                NUVEC *particle_momentum, i32 count) {
+    i32 sound;
+    f32 now;
+    f32 offset;
+    f32 range;
+    f32 volume;
+    if (debris_suspended != 0 || update_debris_enabled == 0)
+        return;
+    AddDebrisEffect(handle, effect, position->x, position->y, position->z);
+    if (*handle == -1)
+        return;
+    debkeydata[*handle].finite_count = count;
+    now = debtab[effect]->time_group == 4 ? panelglobaltime : globaltime;
+    debkeydata[*handle].emission_disabled = 0;
+    offset = debkeydata[*handle].emission_time - now;
+    debkeydata[*handle].emission_time -= offset;
+    debkeydata[*handle].emission_end_time -= offset;
+    debkeydata[*handle].emission_epoch = debkeydata[*handle].last_update_time;
+    debkeydata[*handle].finite = 1;
+    debkeydata[*handle].cutoff_distance =
+        (debris_cutoff_camera_vec != NULL ? NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL) : 0.0f);
+    if (debkeydata[*handle].process_collision_sound != 0) {
+        DEBRIS_INFO_PC **effects = debtab;
+        volume = 0.0f;
+        if (effects[effect]->sound_range_override == 0.0f) {
+            if (effects[effect]->sound_range == 0.0f)
+                range = effects[effect]->clip_extent;
+            else
+                range = effects[effect]->sound_range;
+        } else {
+            range = effects[effect]->sound_range_override;
+        }
+        if (debkeydata[*handle].cutoff_distance < range) {
+            for (sound = 0; sound < 4; ++sound) {
+                if (effects[effect]->sound_data[sound * 3] != -1)
+                    SetSfxBit_On(effects[effect]->sound_data[sound * 3]);
+            }
+            volume = (range - debkeydata[*handle].cutoff_distance) / range;
+        }
+        if (debkeydata[*handle].cutoff_distance < range) {
+            for (sound = 0; sound < 4; ++sound) {
+                if (effects[effect]->sound_data[sound * 3] != -1 && effects[effect]->sound_data[sound * 3 + 1] == 1) {
+                    PlaySfxByIdEx(effects[effect]->sound_data[sound * 3], position, volume, 1.0f);
+                    effects = debtab;
+                }
+            }
+        }
+    }
+    if (emitter_momentum != NULL) {
+        DebrisEmitterMomentum(*handle, emitter_momentum->x, emitter_momentum->y, emitter_momentum->z);
+    }
+    if (particle_momentum != NULL) {
+        DebrisParticleMomentum(*handle, particle_momentum->x, particle_momentum->y, particle_momentum->z);
+    }
+}
+
+void AddFiniteShotDebrisEffect(i32 *handle, i32 effect, NUVEC *position, i32 count) {
+    AddFiniteShotDebrisEffect2(handle, effect, position, NULL, NULL, count);
+}
+
+void __cdecl AddScaledFiniteShotDebrisEffect(i32 *key, i32 effect, NUVEC *position, NUVEC *orientation, NUVEC *momentum,
+                                             i32 count, f32 scale) {
+    i32 scaled = CreateScaledEffect(effect, scale);
+    if (scaled != -1)
+        AddFiniteShotDebrisEffect2(key, scaled, position, orientation, momentum, count);
+}
+
 void __cdecl DebrisCleanUpDmaDebTypeTables(void) {
     if (++DebrisDmaCleanupDelayPc > 5) {
         i32 index = DebrisDmaCleanupIndexPc;
