@@ -443,16 +443,17 @@ extern "C" {
     static void HatMachine_Update(void *world_ptr, void *, f32 elapsed) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         HATMACHINE_SYS_PC *system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
-        if (system == NULL || system->count <= 0)
+        if (system == NULL)
             return;
         for (i32 index = 0; index < system->count; ++index) {
             HATMACHINE_PC *machine = &system->machines[index];
             if (machine->hat_delay > 0.0f) {
                 machine->hat_delay -= FRAMETIME;
                 if (machine->hat_delay <= 0.0f && machine->displayed_hat == 0) {
-                    machine->displayed_hat = machine->configured_hat != 0
-                                                 ? machine->configured_hat
-                                                 : 1 - (i32)(NuFloatRand((NURAND *)&GAMERAND) * -4.0);
+                    if (machine->configured_hat != 0)
+                        machine->displayed_hat = machine->configured_hat;
+                    else
+                        machine->displayed_hat = 1 - (u8)(NuFloatRand((NURAND *)&GAMERAND) * -4.0);
                     machine->hat_delay = 1.0f;
                 }
             }

@@ -219,9 +219,8 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
 }
 
 void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
-    i32 angle = (i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-    message->parameter_e2 = (u16)angle;
-    message->parameter_e0 = (u16)(i32)((f64)NuTrigTable[(u16)angle & 0x7fff] * 1820.0);
+    message->parameter_e2 = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
+    message->parameter_e0 = (u16)((f64)NuTrigTable[message->parameter_e2 & 0x7fff] * 1820.0);
 }
 
 void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
