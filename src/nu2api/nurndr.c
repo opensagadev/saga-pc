@@ -441,6 +441,31 @@ void __cdecl NuRndrShadPolys(NUMTL *material) {
     NuRndrShadowCnt = 0;
 }
 
+void __cdecl NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters) {
+    currentScene.burnout_parameters_pc = *parameters;
+}
+
+void __cdecl NuRndrEnableDeferredPc(void) {
+    currentScene.unknown_48 = 1;
+}
+
+void __cdecl NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
+    switch (index) {
+        case 0:
+            currentScene.shadow_coefficients_pc[0] = value;
+            break;
+        case 1:
+            currentScene.shadow_coefficients_pc[1] = value;
+            break;
+        case 2:
+            currentScene.shadow_coefficients_pc[2] = value;
+            break;
+        default:
+            AnimationDiagnosticNoOpPc();
+            break;
+    }
+}
+
 void __cdecl NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
     NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;
     parameters->current = *camera;

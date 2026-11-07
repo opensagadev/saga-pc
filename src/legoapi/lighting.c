@@ -464,28 +464,6 @@ typedef struct BURNOUT_CUT_PREFIX_PC {
     u32 flags;
 } BURNOUT_CUT_PREFIX_PC;
 STATIC_ASSERT(offsetof(BURNOUT_CUT_PREFIX_PC, flags) == 0x50);
-void __cdecl NuRndrSetBurnoutParametersPc(i32 view, const BURN_PARAMETERS_PC *parameters) {
-    currentScene.burnout_parameters_pc = *parameters;
-}
-void __cdecl NuRndrSetShadowCoefficientPc(i32 index, f32 value) {
-    switch (index) {
-        case 0:
-            currentScene.shadow_coefficients_pc[0] = value;
-            break;
-        case 1:
-            currentScene.shadow_coefficients_pc[1] = value;
-            break;
-        case 2:
-            currentScene.shadow_coefficients_pc[2] = value;
-            break;
-        default:
-            AnimationDiagnosticNoOpPc();
-            break;
-    }
-}
-void __cdecl NuRndrEnableDeferredPc(void) {
-    currentScene.unknown_48 = 1;
-}
 void __cdecl BurnoutApply(i32 view) {
     BURN_PARAMETERS_PC parameters;
     NUVEC average;
