@@ -17985,6 +17985,12 @@ struct NETMESSAGE_PC {
         }
     }
     void Write(const void *values, i32 size, i32 count);
+    void Read(void *value, u32 size) {
+        if (data != NULL) {
+            PCByteCopy_candidate(value, data->bytes + read_offset, size);
+            read_offset += size;
+        }
+    }
     void Read8(u8 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(&value, data->bytes + read_offset, 1);
@@ -30124,7 +30130,13 @@ class NetFtpManager : public NetListenerInterface {
 };
 
 struct NOSContext {
-    u32 words[4];
+    NOSContext() {
+        memset(bytes, 0, sizeof(bytes));
+    }
+    NOSContext &operator=(const NOSContext &other);
+    bool operator==(const NOSContext &other) const;
+
+    u8 bytes[0x10];
 };
 
 class NOSFilter {
@@ -30232,12 +30244,23 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void *GetObject(i32 id);
 #pragma pop_macro("GetObject")
     i32 GetPeerStatus();
+    void FlushObjects(i32 flush_level_editor);
     void Init();
     void InitClassStats();
     i32 IsLocal(i32 id);
     i32 IsPeerReady(const V2Peer &peer) const;
     i32 IsPeerStarted(const V2Peer &peer) const;
     const V2Peer *Owner(i32 id);
+    void ReceiveAcquireMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveAcquiredMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveAdoptedMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveConstructorMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveContinuityBreak(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveObjectCallMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveReleaseMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveRemoteCallMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveStartMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void ReceiveStatusMessage(NETMESSAGE_PC &message, const V2Peer &peer);
     void ReceiveStopMessage(NETMESSAGE_PC &message, const V2Peer &peer);
     void Recover(NetworkObject *object);
     i32 RegisterObject(void *object, EdClass *object_class, i32 guid);

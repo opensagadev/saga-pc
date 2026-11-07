@@ -129,6 +129,21 @@ i32 NetworkObjectManager::IsPeerReady(const V2Peer &peer) const {
     return 0;
 }
 
+void NetworkObjectManager::FlushObjects(i32 flush_level_editor) {
+    NetworkObject *object = objects;
+    for (i32 i = 0; i < 2048; i++, object++) {
+        if (object->id != 0) {
+            object->object_class->object_interface->SetObjectGuid(object->object, 0);
+            object->Destroy();
+        }
+    }
+    memset(local_objects, 0, sizeof(local_objects));
+    local_object_count = 0;
+    memset(objects, 0, sizeof(objects));
+    if (flush_level_editor)
+        theLevelEditor.Flush();
+}
+
 i32 NetworkObjectManager::GetNextGuid() {
     i32 group = guid_group;
     if (group >= 0) {
@@ -774,5 +789,168 @@ void NetworkObjectManager::Update() {
     for (i32 i = 0; i < 32; i++) {
         if (class_stats[i] != NULL)
             class_stats[i]->Update();
+    }
+}
+
+NOSContext &NOSContext::operator=(const NOSContext &other) {
+    PCByteCopy_candidate(this, &other, sizeof(*this));
+    return *this;
+}
+
+bool NOSContext::operator==(const NOSContext &other) const {
+    return memcmp(bytes, other.bytes, sizeof(bytes)) == 0;
+}
+
+void NetworkObjectManager::ReceiveAcquireMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+    i16 id;
+    message.Read16(id);
+    NetworkObject *object = &objects[id];
+    if (object->id == id && object->owner->local && theTTNetwork.NosAcquire(object, peer) == 1) {
+        RemoveFromLocalObjectList(object);
+        objects[id].owner = &peer;
+        objects[id].flags |= 0x20;
+        theTTNetwork.NosAdopted(&objects[id], peer);
+        SendAcquiredMessage(id, peer);
+    }
+}
+
+void NetworkObjectManager::ReceiveAcquiredMessage(NETMESSAGE_PC &message, const V2Peer &) {
+    i16 id;
+    message.Read16(id);
+    objects[id].owner = theNetSessionManager->local_peer;
+    AddToLocalObjectList(&objects[id]);
+    SendAdoptedMessage(id);
+    theTTNetwork.NosAdopted(&objects[id], *objects[id].owner);
+    RemovePendingObject(&objects[id]);
+}
+
+void NetworkObjectManager::ReceiveConstructorMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+    i16 guid;
+    i16 class_id;
+    i16 size;
+    u8 constructor_data[256];
+    message.Read16(guid);
+    message.Read16(class_id);
+    message.Read16(size);
+    if (size > 0)
+        message.Read(constructor_data, size);
+    EdClass *object_class = theRegistry.GetClass(class_id);
+    NetworkObject *network_object = &objects[guid];
+    if (network_object->object == NULL) {
+        void *object = theRegistry.CreateObject(object_class->object_interface, constructor_data, size, guid, 1);
+        network_object->Initialise(guid, object, object_class, peer, 0);
+    }
+}
+
+void NetworkObjectManager::ReceiveAdoptedMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+    i16 id;
+    message.Read16(id);
+    objects[id].flags &= ~0x20u;
+    if (objects[id].owner != &peer) {
+        objects[id].owner = &peer;
+        theTTNetwork.NosAdopted(&objects[id], peer);
+    }
+}
+
+void NetworkObjectManager::ReceiveReleaseMessage(NETMESSAGE_PC &message, const V2Peer &) {
+    i16 id;
+    i16 class_id;
+    message.Read16(id);
+    message.Read16(class_id);
+    NetworkObject *object = &objects[id];
+    if (object->id == id && class_id == theRegistry.GetClassId(object->object_class) && object->object != NULL) {
+        theRegistry.DestroyObject(object->object_class->object_interface, object->object, id, 1);
+        RemoveFromLocalObjectList(object);
+        object->Destroy();
+    }
+}
+
+void NetworkObjectManager::ReceiveRemoteCallMessage(NETMESSAGE_PC &message, const V2Peer &) {
+    i8 call_id;
+    message.Read8((u8 &)call_id);
+    if (call_id > 0) {
+        call_id--;
+        if (registered_calls[call_id].type == 0)
+            ((void (*)(NETMESSAGE_PC &))registered_calls[call_id].callback)(message);
+    }
+}
+
+void NetworkObjectManager::ReceiveObjectCallMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+    i8 call_id;
+    message.Read8((u8 &)call_id);
+    if (call_id > 0) {
+        call_id--;
+        if (registered_calls[call_id].type == 1) {
+            i16 id;
+            i16 class_id;
+            message.Read16(id);
+            message.Read16(class_id);
+            EdClass *object_class = theRegistry.GetClass(class_id);
+            NetworkObject *object = &objects[id];
+            if (object->object == NULL && (registered_calls[call_id].flags & 1))
+                object->Initialise(id, theRegistry.CreateObject(object_class->object_interface, NULL, 0, id, 1),
+                                   object_class, peer, 0);
+            if (object->object != NULL) {
+                if (object->object_class != object_class)
+                    NetTrace(object->object_class->name, object_class->name, id);
+                ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id].callback)(object->object, message);
+            }
+        }
+    }
+}
+
+void NetworkObjectManager::ReceiveContinuityBreak(NETMESSAGE_PC &message, const V2Peer &) {
+    i16 id;
+    i16 class_id;
+    message.Read16(id);
+    message.Read16(class_id);
+    EdClass *object_class = theRegistry.GetClass(class_id);
+    NetworkObject *object = &objects[id];
+    if (object->object_class == object_class)
+        object->flags &= 2;
+}
+
+void NetworkObjectManager::ReceiveStartMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+    NOSContext received_context;
+    message.Read(&received_context, sizeof(received_context));
+    if (!active)
+        return;
+    for (i32 i = 0; i < 8; i++) {
+        if (peer_push[i].peer != NULL && peer_push[i].peer == &peer) {
+            i32 accepted;
+            if (received_context == context) {
+                accepted = 1;
+                peer_push[i].Sync();
+            } else {
+                accepted = 0;
+                peer_push[i].Stop();
+            }
+            NETMESSAGE_PC reply(0x20);
+            reply.Write8(11);
+            reply.Write32(accepted);
+            reply.Write(&context, sizeof(context));
+            theTTNetwork.SendEx(reply, 3, (V2Peer *)&peer, 0, 0);
+            reply.Release();
+            return;
+        }
+    }
+}
+
+void NetworkObjectManager::ReceiveStatusMessage(NETMESSAGE_PC &message, const V2Peer &peer) {
+    NOSContext received_context;
+    i32 accepted;
+    message.Read32(accepted);
+    message.Read(&received_context, sizeof(received_context));
+    i32 matching = accepted && received_context == context;
+    for (i32 i = 0; i < 8; i++) {
+        if (peer_push[i].peer != NULL && peer_push[i].peer == &peer) {
+            if (matching) {
+                if (peer_push[i].stage != 3 && (peer_push[i].stage <= 0 || peer_push[i].stage >= 3))
+                    peer_push[i].Sync();
+            } else {
+                peer_push[i].Stop();
+            }
+            return;
+        }
     }
 }
