@@ -1763,7 +1763,7 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             if ((source->flags_low & 0x200)) {
                 source_visible = 1;
             } else if (((source->flags_low & 0x4000) || (target->flags_low & 0x4000)) &&
-                       (U64_PAIR(system->hostility_masks[source_index]) & ((u64)1 << target->object_id)) != 0 &&
+                       (system->hostility_masks[source_index] & ((u64)1 << target->object_id)) != 0 &&
                        distance_squared < source_range * source_range) {
                 source_visible = 1;
             } else if (distance_squared < source_range * source_range &&
@@ -1776,7 +1776,7 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             if ((target->flags_low & 0x200)) {
                 target_visible = 1;
             } else if (((target->flags_low & 0x4000) || (source->flags_low & 0x4000)) &&
-                       (U64_PAIR(system->hostility_masks[target_index]) & ((u64)1 << source->object_id)) != 0 &&
+                       (system->hostility_masks[target_index] & ((u64)1 << source->object_id)) != 0 &&
                        distance_squared < target_range * target_range) {
                 target_visible = 1;
             } else if (distance_squared < target_range * target_range &&
@@ -1789,35 +1789,35 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             if ((source_visible | target_visible) != 0) {
                 if ((system->flags & 1) || (target->flags_low & 0x400) || (source->flags_low & 0x400)) {
                     if (source_visible != 0)
-                        U64_PAIR(system->hostility_masks[source_index]) |= (u64)1 << target_index;
+                        system->hostility_masks[source_index] |= (u64)1 << target_index;
                     else
-                        U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
+                        system->hostility_masks[source_index] &= ~((u64)1 << target_index);
                     if (target_visible != 0)
-                        U64_PAIR(system->hostility_masks[target_index]) |= (u64)1 << source_index;
+                        system->hostility_masks[target_index] |= (u64)1 << source_index;
                     else
-                        U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
+                        system->hostility_masks[target_index] &= ~((u64)1 << source_index);
                 } else if (QuickNewRayCast(&source->collision_position, &difference, 0.0f, 0, 100.0f, ray_step) == 0) {
                     if (source_visible != 0)
-                        U64_PAIR(system->hostility_masks[source_index]) |= (u64)1 << target_index;
+                        system->hostility_masks[source_index] |= (u64)1 << target_index;
                     else
-                        U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
+                        system->hostility_masks[source_index] &= ~((u64)1 << target_index);
                     if (target_visible != 0)
-                        U64_PAIR(system->hostility_masks[target_index]) |= (u64)1 << source_index;
+                        system->hostility_masks[target_index] |= (u64)1 << source_index;
                     else
-                        U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
+                        system->hostility_masks[target_index] &= ~((u64)1 << source_index);
                 } else {
                     if (source_visible != 0 && (source->flags_low & 0x400))
-                        U64_PAIR(system->hostility_masks[source_index]) |= (u64)1 << target_index;
+                        system->hostility_masks[source_index] |= (u64)1 << target_index;
                     else
-                        U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
+                        system->hostility_masks[source_index] &= ~((u64)1 << target_index);
                     if (target_visible != 0 && (target->flags_low & 0x400))
-                        U64_PAIR(system->hostility_masks[target_index]) |= (u64)1 << source_index;
+                        system->hostility_masks[target_index] |= (u64)1 << source_index;
                     else
-                        U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
+                        system->hostility_masks[target_index] &= ~((u64)1 << source_index);
                 }
             } else {
-                U64_PAIR(system->hostility_masks[target_index]) &= ~((u64)1 << source_index);
-                U64_PAIR(system->hostility_masks[source_index]) &= ~((u64)1 << target_index);
+                system->hostility_masks[target_index] &= ~((u64)1 << source_index);
+                system->hostility_masks[source_index] &= ~((u64)1 << target_index);
             }
             ++system->los_cursor_208;
             --checks;
@@ -2610,9 +2610,9 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
 void __cdecl APIObjectRemoveFromLOSTable(APIOBJECTSYS_PC *system, GAMEOBJECT *source, GAMEOBJECT *target) {
     if (source != NULL) {
-        U64_PAIR(system->hostility_masks[source->hostility_group]) &= ~((u64)1 << target->hostility_group);
+        system->hostility_masks[source->hostility_group] &= ~((u64)1 << target->hostility_group);
     } else {
-        U64_PAIR(system->hostility_masks[target->hostility_group]) = 0;
+        system->hostility_masks[target->hostility_group] = 0;
     }
 }
 void __cdecl APIObjectDestroy(APIOBJECTSYS_PC *system, GAMEOBJECT *object) {

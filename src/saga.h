@@ -3520,7 +3520,7 @@ STATIC_ASSERT(offsetof(BOLT_PC, hit_normal) == 0x120);
 typedef struct APIOBJECTSYS_PC {
     u32 object_size;
     struct gameobject_s *objects;
-    u32 hostility_masks[64][2];
+    u64 hostility_masks[64];
     i32 los_cursor_208;
     i32 los_cursor_20c;
     union {

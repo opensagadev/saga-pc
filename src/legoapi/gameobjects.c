@@ -594,7 +594,7 @@ void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
         for (i = 0; i < baddie_count; ++i) {
             for (j = 0; j < party_count; ++j) {
                 if ((U64_PAIR(party[j]->hostility_mask) & ((u64)1 << baddies[i]->hostility_group)) != 0 &&
-                    (U64_PAIR(WORLD->object_sys->hostility_masks[party[j]->hostility_group]) &
+                    (WORLD->object_sys->hostility_masks[party[j]->hostility_group] &
                      ((u64)1 << baddies[i]->hostility_group)) != 0)
                     return;
             }
@@ -785,8 +785,8 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
             continue;
         }
         if (arcade == 0 && (object->flags_1fc & 0x80) != 0 && (target->flags_ef4 & 0x800000) == 0) {
-            if ((((u64)1 << target->hostility_group) &
-                 U64_PAIR(WORLD->object_sys->hostility_masks[object->hostility_group])) == 0) {
+            if ((((u64)1 << target->hostility_group) & WORLD->object_sys->hostility_masks[object->hostility_group]) ==
+                0) {
                 continue;
             }
         }
@@ -4672,31 +4672,6 @@ STATIC_ASSERT(offsetof(OPPONENT_LOS_PC, line_of_sight) == 8);
 #define OPPONENT_GAME(p) ((OPPONENT_GAME_PC *)(p))
 #define OPPONENT_SYS(p) ((OPPONENT_SYS_PC *)(p))
 #define OPPONENT_LOS(p) ((OPPONENT_LOS_PC *)(p))
-f32 __cdecl Condition_CollidingWithOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                              char *name, void *argument) {
-    GAMEOBJECT *opponent, *owner;
-    if (packet != NULL && (opponent = packet->opponent) != NULL && (owner = packet->owner) != NULL &&
-        (U64_PAIR(opponent->collision_identity_mask) & U64_PAIR(owner->collision_contact_mask)) != 0)
-        return 1.0f;
-    return 0.0f;
-}
-
-f32 __cdecl Condition_GotOpponentLOSPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
-    GAMEOBJECT *object, *opponent;
-    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
-        return 0.0f;
-    object = packet->owner->objptr;
-    if (object->character_context == 0x1b)
-        opponent = object->force_target;
-    else
-        opponent = packet->opponent;
-    /* hostility_group is below 64 for every live object; __allshl yields 0 otherwise, as in retail. */
-    if (opponent != NULL && (OPPONENT_LOS(WORLD->object_sys)->line_of_sight[packet->owner->hostility_group] &
-                             ((u64)1 << opponent->hostility_group)) != 0)
-        return 1.0f;
-    return 0.0f;
-}
 
 extern i16 id_UGNAUGHT;
 extern i32 nbaddies_can_see_players;

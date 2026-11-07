@@ -10252,7 +10252,7 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
                 }
                 if ((candidate->flags_1f8 & 5) != 0 &&
                     (((u64)1 << candidate->hostility_group) &
-                     U64_PAIR(WORLD->object_sys->hostility_masks[object->hostility_group])) == 0) {
+                     WORLD->object_sys->hostility_masks[object->hostility_group]) == 0) {
                     continue;
                 }
             } else if (target_filter == 2 && candidate->field_280 == 0xff) {
