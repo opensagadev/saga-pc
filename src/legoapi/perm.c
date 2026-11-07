@@ -1,22 +1,14 @@
 #include "saga.h"
 
-void __cdecl LoadPermBuildLegalTextureName(char *name) {
-    i32 region;
-
-    /* Retail receives this output pointer in EDI; this C wrapper is structural. */
-    region = NuRegionGet();
+static void LoadPermBuildLegalTextureName(char *name) {
+    i32 pal = NuRegionGet() != 2;
     NuStrCpy(name, PermLegalBase);
-    if (region == 2) {
-        if (Text_Language == 1 || Text_Language == 0x12) {
-            NuStrCat(name, PermLegalUS);
-        } else if (Text_Language == 2) {
-            NuStrCat(name, PermLegalFrench);
-        } else if (Text_Language == 3) {
-            NuStrCat(name, PermLegalSpanish);
-        } else {
-            NuStrCat(name, PermLegalSeparator);
-            NuStrCat(name, Text_GetLanguagePath(Text_Language));
-        }
+    if (!pal && (Text_Language == 1 || Text_Language == 0x12)) {
+        NuStrCat(name, PermLegalUS);
+    } else if (!pal && Text_Language == 2) {
+        NuStrCat(name, PermLegalFrench);
+    } else if (!pal && Text_Language == 3) {
+        NuStrCat(name, PermLegalSpanish);
     } else {
         NuStrCat(name, PermLegalSeparator);
         NuStrCat(name, Text_GetLanguagePath(Text_Language));
@@ -43,11 +35,12 @@ void __cdecl LoadPermLoadLegalTexture(void) {
     texture_end = superbuffer_end;
     texture_base.addr = texture_end.addr - 0x400000;
     Text_Language = NuLanguageGet();
-    NuStrCpy(path, PermLegalDirectoryPc);
     if (StartupGameFlag1 != 0) {
+        NuStrCpy(path, PermLegalDirectoryPc);
         LoadPermBuildLegalTextureName(name);
         NuStrCat(path, name);
     } else {
+        NuStrCpy(path, PermLegalDirectoryPc);
         NuStrCat(path, PermLegalPcPrefixPc);
         NuStrCat(path, PermLegalBase);
         if (PAL != 0 || (Text_Language != 1 && Text_Language != 0x12)) {
