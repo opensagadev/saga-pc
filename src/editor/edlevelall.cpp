@@ -86,6 +86,86 @@ void EdTrace(const char *, ...) {
 void EdMessage(char const *, ...) {
 }
 
+/* Absolute value by clearing the sign bit. */
+static inline f32 VuFabs(f32 value) {
+    u32 bits = *(u32 *)&value & 0x7fffffff;
+    return *(f32 *)&bits;
+}
+
+/* Signed difference of two 16-bit angles, in -0x8000..0x7fff. */
+static inline i32 VuAngleDifference(i32 from, i32 to) {
+    i32 difference = (from - to) & 0xffff;
+    if (difference >= 0x8000)
+        difference -= 0x10000;
+    return difference;
+}
+
+static inline void VuVecSet(VuVec &v, f32 x, f32 y, f32 z, f32 w) {
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+}
+
+/* The origin as a point: 0 0 0 1. */
+static inline void VuVecSetOrigin(VuVec &v) {
+    v.x = 0.0f;
+    v.y = 0.0f;
+    v.z = 0.0f;
+    v.w = 1.0f;
+}
+
+static inline VuVec operator+(const VuVec &a, const VuVec &b) {
+    VuVec sum;
+    sum.x = a.x + b.x;
+    sum.y = a.y + b.y;
+    sum.z = a.z + b.z;
+    return sum;
+}
+
+static inline VuVec operator-(const VuVec &a, const VuVec &b) {
+    VuVec difference;
+    difference.x = a.x - b.x;
+    difference.y = a.y - b.y;
+    difference.z = a.z - b.z;
+    return difference;
+}
+
+static inline VuVec operator*(const VuVec &a, f32 scale) {
+    VuVec product;
+    product.x = a.x * scale;
+    product.y = a.y * scale;
+    product.z = a.z * scale;
+    return product;
+}
+
+/* Unit-length copy of a direction, as a point (w = 1). */
+static inline void VuVecNormalise(VuVec &destination, VuVec &source) {
+    NuVecNorm(&destination.xyz, &source.xyz);
+    destination.w = 1.0f;
+}
+
+static inline f32 VuVecDot(const VuVec &a, const VuVec &b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+/* VuVec assignment copies the four floats one by one. */
+static inline f32 VuVecLengthSq(const VuVec &v) {
+    return v.x * v.x + v.y * v.y + v.z * v.z;
+}
+
+static inline f32 VuVecLength(const VuVec &v) {
+    f32 length_squared = VuVecLengthSq(v);
+    return NuFsqrt(length_squared);
+}
+
+static inline void VuVecCopy(VuVec &destination, const VuVec &source) {
+    destination.x = source.x;
+    destination.y = source.y;
+    destination.z = source.z;
+    destination.w = source.w;
+}
+
 /* A bump allocator over a variptr range; blocks are 16-byte aligned and
  * cleared. */
 struct MemoryBuffer {
@@ -807,28 +887,20 @@ extern "C" {
 
 #define EDDRAW_LINE_CIRCLE(rotate, base_y, base_z)                                                                     \
     do {                                                                                                               \
-        __declspec(align(16)) NUVEC4 base;                                                                             \
-        __declspec(align(16)) NUVEC4 point;                                                                            \
-        __declspec(align(16)) NUVEC4 previous;                                                                         \
+        VuVec &origin = *(VuVec *)centre;                                                                              \
+        __declspec(align(16)) VuVec base;                                                                              \
+        __declspec(align(16)) VuVec point;                                                                             \
+        __declspec(align(16)) VuVec previous;                                                                          \
         i32 i;                                                                                                         \
         base.x = 0.0f;                                                                                                 \
         base.y = (base_y);                                                                                             \
         base.z = (base_z);                                                                                             \
-        point.x = base.x + centre->x;                                                                                  \
-        point.y = base.y + centre->y;                                                                                  \
-        point.z = base.z + centre->z;                                                                                  \
-        point.w = 0.0f;                                                                                                \
+        VuVecCopy(point, base + origin);                                                                               \
         for (i = 1; i <= segments; i++) {                                                                              \
-            previous.x = point.x;                                                                                      \
-            previous.y = point.y;                                                                                      \
-            previous.z = point.z;                                                                                      \
-            previous.w = point.w;                                                                                      \
-            rotate((NUVEC *)&point, (NUVEC *)&base, i * (0x10000 / segments));                                         \
-            point.x = point.x + centre->x;                                                                             \
-            point.y = point.y + centre->y;                                                                             \
-            point.z = point.z + centre->z;                                                                             \
-            point.w = 0.0f;                                                                                            \
-            EdDrawLineSegment((NUVEC *)&previous, (NUVEC *)&point, colour);                                            \
+            VuVecCopy(previous, point);                                                                                \
+            rotate(&point.xyz, &base.xyz, i * (0x10000 / segments));                                                   \
+            VuVecCopy(point, point + origin);                                                                          \
+            EdDrawLineSegment(&previous.xyz, &point.xyz, colour);                                                      \
         }                                                                                                              \
     } while (0)
 
@@ -3617,86 +3689,6 @@ void KnotHelper::Render(void *object, i32) {
             NuPrim3DEnd();
         NewPrim = 0;
     }
-}
-
-/* Absolute value by clearing the sign bit. */
-static inline f32 VuFabs(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
-}
-
-/* Signed difference of two 16-bit angles, in -0x8000..0x7fff. */
-static inline i32 VuAngleDifference(i32 from, i32 to) {
-    i32 difference = (from - to) & 0xffff;
-    if (difference >= 0x8000)
-        difference -= 0x10000;
-    return difference;
-}
-
-static inline void VuVecSet(VuVec &v, f32 x, f32 y, f32 z, f32 w) {
-    v.x = x;
-    v.y = y;
-    v.z = z;
-    v.w = w;
-}
-
-/* The origin as a point: 0 0 0 1. */
-static inline void VuVecSetOrigin(VuVec &v) {
-    v.x = 0.0f;
-    v.y = 0.0f;
-    v.z = 0.0f;
-    v.w = 1.0f;
-}
-
-static inline VuVec operator+(const VuVec &a, const VuVec &b) {
-    VuVec sum;
-    sum.x = a.x + b.x;
-    sum.y = a.y + b.y;
-    sum.z = a.z + b.z;
-    return sum;
-}
-
-static inline VuVec operator-(const VuVec &a, const VuVec &b) {
-    VuVec difference;
-    difference.x = a.x - b.x;
-    difference.y = a.y - b.y;
-    difference.z = a.z - b.z;
-    return difference;
-}
-
-static inline VuVec operator*(const VuVec &a, f32 scale) {
-    VuVec product;
-    product.x = a.x * scale;
-    product.y = a.y * scale;
-    product.z = a.z * scale;
-    return product;
-}
-
-/* Unit-length copy of a direction, as a point (w = 1). */
-static inline void VuVecNormalise(VuVec &destination, VuVec &source) {
-    NuVecNorm(&destination.xyz, &source.xyz);
-    destination.w = 1.0f;
-}
-
-static inline f32 VuVecDot(const VuVec &a, const VuVec &b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-/* VuVec assignment copies the four floats one by one. */
-static inline f32 VuVecLengthSq(const VuVec &v) {
-    return v.x * v.x + v.y * v.y + v.z * v.z;
-}
-
-static inline f32 VuVecLength(const VuVec &v) {
-    f32 length_squared = VuVecLengthSq(v);
-    return NuFsqrt(length_squared);
-}
-
-static inline void VuVecCopy(VuVec &destination, const VuVec &source) {
-    destination.x = source.x;
-    destination.y = source.y;
-    destination.z = source.z;
-    destination.w = source.w;
 }
 
 static i32 bezierline_depth = 0;
