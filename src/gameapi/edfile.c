@@ -11,6 +11,9 @@ char edfile_buffer[0x1000] = {0};
 i32 edfile_buffer_pointer = 0;
 i32 edfile_lock[2] = {0};
 i32 edfile_readwrongendianess = 0;
+i32 EduiUsingMenuFocusPc = 0;
+
+static eduimenu_s *EduiDeepestChildPc(eduimenu_s *menu);
 
 extern i32 __cdecl NuFileWrite(NUFILE file, const void *data, i32 size);
 
@@ -404,9 +407,21 @@ void __cdecl edmainSetCamera(NUMTX *matrix) {
     NuCameraSet(camera);
 }
 
+NUCAMERA *__cdecl edmainGetCameraPc(void) {
+    return EdMainCurrentCameraPc;
+}
+
+void __cdecl edmainExtCamera(NUCAMERA *camera) {
+    EdMainCurrentCameraPc = camera != NULL ? camera : edinternalcam;
+}
+
 void __cdecl edmainSetCursorEnabled(i32 enabled) {
     edmain_cursor_enabled = enabled;
     PcEditorCursorEnablePc(enabled);
+}
+
+i32 __cdecl edmainGetCursorEnabled(void) {
+    return edmain_cursor_enabled;
 }
 
 void __cdecl edmainReadConfig(void) {
@@ -458,6 +473,12 @@ eduimenu_s *__cdecl edGetMainMenu(void) {
 
 void __cdecl edmainSetLocVec(NUVEC *location) {
     EdMainLocationVectorPc = location;
+}
+
+/* Native 617f80/6. The pointer is zero-initialized engine/editor storage.
+ * The neighboring native setter 617f70 has no verified direct caller. */
+NUVEC *__cdecl edmainQueryLocVec(void) {
+    return EdMainLocationVectorPc;
 }
 
 eduiitem_s *__cdecl eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
@@ -644,6 +665,12 @@ void eduicbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edui_messagemenu = NULL;
 }
 
+/* Retail keeps every call to this out of line (eduiMenuAttach, cbMMEditorConfig, tpentPropOnEnter). */
+__declspec(noinline) void eduiSetActiveMenu(eduimenu_s *menu) {
+    if (EduiUsingMenuFocusPc != 0)
+        active_menu = EduiDeepestChildPc(menu != NULL ? menu : default_active_menu);
+}
+
 __declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
     u32 modifiers;
     char text[2];
@@ -681,6 +708,20 @@ i32 eduiMenuAttach(eduimenu_s *menu, eduimenu_s *child) {
     menu->child = child;
     eduiSetActiveMenu(child);
     return 1;
+}
+
+i32 __cdecl eduiMenuDetach(eduimenu_s *menu) {
+    if (menu->parent != NULL) {
+        if (menu->child != NULL)
+            eduiMenuDetach(menu->child);
+        if (active_menu == menu)
+            active_menu = menu->parent;
+        menu->parent->child = NULL;
+        menu->parent = NULL;
+        return 1;
+    }
+    eduiSetActiveMenu(NULL);
+    return 0;
 }
 
 eduiitem_s *eduiItemCheckCreate(size_t data, const void *colours, i32 selected, i32 group, EdUiItemCallback callback,
@@ -817,6 +858,21 @@ void eduiCreate3LineMessageMenu(eduimenu_s *parent, char *first, char *second, c
         edui_messagemenu->x = parent->x + 10;
         edui_messagemenu->y = parent->y + 40;
     }
+}
+
+i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
+    struct eduimenu_s *parent;
+    if (!pad || !(pad->digital_buttons_pressed & 0x10))
+        return 0;
+
+    parent = NULL;
+    if (menu->parent != NULL)
+        parent = menu->parent;
+    if (EduiUsingMenuFocusPc == 0 && parent)
+        eduiMenuDetach(menu);
+    if (menu->callback)
+        menu->callback(menu, parent);
+    return 1;
 }
 
 i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i32 item_result) {
@@ -1577,6 +1633,15 @@ static eduimenu_s *EduiMenuChainActivePc(eduimenu_s *menu) {
     if (menu == active_menu)
         return menu;
     return EduiMenuChainActivePc(menu->child);
+}
+
+static eduimenu_s *EduiDeepestChildPc(eduimenu_s *menu) {
+    if (menu != NULL) {
+        if (menu->child != NULL)
+            return EduiDeepestChildPc(menu->child);
+        return menu;
+    }
+    return NULL;
 }
 
 /* Screen-space helpers in 640x448 units; EduiScaleXPc/EduiScaleYPc convert to
@@ -3557,7 +3622,6 @@ void __cdecl FS_GetDirList(char *path, char *filter, char *filter_out) {
     FS_FileListEnd = next;
 }
 
-extern i32 EduiUsingMenuFocusPc;
 extern i32 edmain_cursor_enabled;
 f32 edui_cursor_y = 50.0f;
 
