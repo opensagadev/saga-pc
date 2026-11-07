@@ -102,10 +102,14 @@ extern "C" void __cdecl MenuDrawPauseMain(MENU *menu) {
         DrawMenuEntryEx(menu, TTab[TextIdPc88090c], (u8)(i32)(MenuA * 0.5));
     if (both)
         GameDrawMenuEntry(menu, TTab[TextIdPc88089c]);
-    if (WORLD->current_level != HUB_LDATA)
-        GameDrawMenuEntry(menu, TTab[GAMEDEMO ? TextIdPc8808ec : TextIdPc8806f8]);
-    else
+    if (WORLD->current_level != HUB_LDATA) {
+        if (GAMEDEMO)
+            GameDrawMenuEntry(menu, TTab[TextIdPc8808ec]);
+        else
+            GameDrawMenuEntry(menu, TTab[TextIdPc8806f8]);
+    } else {
         GameDrawMenuEntry(menu, TTab[TextIdPc880860]);
+    }
 }
 
 extern "C" void __cdecl MenuUpdatePauseExit(MENU *menu) {
