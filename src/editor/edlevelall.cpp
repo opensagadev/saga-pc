@@ -5252,23 +5252,31 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
         __declspec(align(16)) VuMtx result;
         __declspec(align(16)) VuVec scale;
         __declspec(align(16)) VuVec projected;
+        __declspec(align(16)) VuVec unit;
+        VuVecSet(unit, 1.0f, 1.0f, 1.0f, 1.0f);
         object->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
         switch (axis) {
             case 1:
             case 2:
             case 3: {
                 VuMtxRotateVec(transform, first, projected);
-                f32 length = VuVecLength(projected) * Scale;
-                f32 movement = delta.x * first.x + delta.y * first.y + delta.z * first.z;
+                f32 length = VuVecLength(projected);
+                length = Scale * length;
+                f32 movement = VuVecDot(delta, first);
                 if (movement == 0.0f)
                     continue;
                 NuVecInvMtxRotate(&first.xyz, &first.xyz, &transform.matrix);
-                NuVecNorm(&first.xyz, &first.xyz);
-                first.w = 1.0f;
-                f32 change = (movement + length) / length - 1.0f;
-                scale.x = first.x * change + 1.0f;
-                scale.y = first.y * change + 1.0f;
-                scale.z = first.z * change + 1.0f;
+                VuVecNormalise(first, first);
+                f32 change = (movement + length) / length;
+                change -= 1.0f;
+                VuVecCopy(scale, first * change + unit);
+                VuMtxSetScale(scaling, scale);
+                scaling.matrix.m33 = 1.0f;
+                position.x = transform.matrix.m30;
+                position.y = transform.matrix.m31;
+                position.z = transform.matrix.m32;
+                position.w = transform.matrix.m33;
+                VuMtxMul(scaling, transform, result);
                 break;
             }
             case 4:
@@ -5276,40 +5284,42 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
             case 6: {
                 VuMtxRotateVec(transform, first, projected);
                 f32 length = Scale * VuVecLength(projected);
-                f32 movement = delta.x * first.x + delta.y * first.y + delta.z * first.z +
-                               (delta.x * second.x + delta.y * second.y + delta.z * second.z);
+                f32 movement = VuVecDot(delta, second) + VuVecDot(delta, first);
                 if (movement == 0.0f)
                     continue;
                 NuVecInvMtxRotate(&first.xyz, &first.xyz, &transform.matrix);
-                NuVecNorm(&first.xyz, &first.xyz);
-                NuVecInvMtxRotate(&second.xyz, &second.xyz, &transform.matrix);
-                NuVecNorm(&second.xyz, &second.xyz);
-                f32 change = (movement + length) / length - 1.0f;
-                scale.x = (first.x + second.x) * change + 1.0f;
-                scale.y = (first.y + second.y) * change + 1.0f;
-                scale.z = (first.z + second.z) * change + 1.0f;
+                VuVecNormalise(first, first);
+                f32 change = (movement + length) / length;
+                change -= 1.0f;
+                VuVecCopy(scale, second * change + first * change + unit);
+                VuMtxSetScale(scaling, scale);
+                scaling.matrix.m33 = 1.0f;
+                position.x = transform.matrix.m30;
+                position.y = transform.matrix.m31;
+                position.z = transform.matrix.m32;
+                position.w = transform.matrix.m33;
+                VuMtxMul(scaling, transform, result);
                 break;
             }
             case 7: {
                 f32 movement = input.Get(1) - input.Get(0) + input.Get(2);
                 if (movement == 0.0f)
                     continue;
-                f32 factor = movement * 0.005f + 1.0;
-                scale.x = factor;
-                scale.y = factor;
-                scale.z = factor;
+                movement = movement * 0.005;
+                f32 factor = movement + 1.0;
+                VuVecCopy(scale, unit * factor);
+                VuMtxSetScale(scaling, scale);
+                scaling.matrix.m33 = 1.0f;
+                position.x = transform.matrix.m30;
+                position.y = transform.matrix.m31;
+                position.z = transform.matrix.m32;
+                position.w = transform.matrix.m33;
+                VuMtxMul(scaling, transform, result);
                 break;
             }
             default:
                 continue;
         }
-        scale.w = 1.0f;
-        VuMtxSetScale(scaling, scale);
-        position.x = transform.matrix.m30;
-        position.y = transform.matrix.m31;
-        position.z = transform.matrix.m32;
-        position.w = transform.matrix.m33;
-        VuMtxMul(scaling, transform, result);
         VuMtxCopy(transform, result);
         transform.matrix.m30 = position.x;
         transform.matrix.m31 = position.y;
