@@ -2007,6 +2007,8 @@ void LocaledbitsDrawCircleXY(NUVEC *centre, f32 radius, u32 colour, i32 unused3,
 
 void __cdecl AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC *player_2) {
     i32 index;
+    AILOCATOR_PC *locator;
+    NUVEC forward = {0.0f, 0.0f, 1.0f};
     if (system == NULL) {
         return;
     }
@@ -2016,68 +2018,70 @@ void __cdecl AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC
         i32 antinode_count = system->antinode_count;
         AIANTINODE_PC *antinode =
             index < antinode_count ? &system->antinodes[index] : &dynamic_antinodes[index - antinode_count];
-        NUSPECIALHANDLE *special;
         NUMTX *draw_matrix;
         if (antinode->has_special == 0) {
             continue;
         }
-        special = &antinode->special_handle;
-        if (AISysSpecialNodeCallback != NULL && NuSpecialGetVisibilityFn(special) == 0) {
-            AISysSpecialNodeCallback(system, special);
+        if (AISysSpecialNodeCallback != NULL && NuSpecialGetVisibilityFn(&antinode->special_handle) == 0) {
+            AISysSpecialNodeCallback(system, &antinode->special_handle);
         }
-        if (NuSpecialGetVisibilityFn(special) == 0) {
+        if (NuSpecialGetVisibilityFn(&antinode->special_handle) == 0) {
             continue;
         }
-        draw_matrix = NuSpecialGetDrawMtx(special);
+        draw_matrix = NuSpecialGetDrawMtx(&antinode->special_handle);
         NuVecMtxTransform(&antinode->position, &antinode->special_position, draw_matrix);
         antinode->min_y = antinode->min_y_offset + antinode->position.y;
-        antinode->max_y = antinode->position.y + antinode->max_y_offset;
+        antinode->max_y = antinode->max_y_offset + antinode->position.y;
         if (antinode->type != 0) {
-            NUVEC forward = {0.0f, 0.0f, 1.0f};
             NUVEC rotated;
             NuVecMtxRotate(&rotated, &forward, draw_matrix);
-            antinode->rotation = NuAngAdd(NuAtan2D(rotated.x, rotated.z), antinode->rotation_offset);
+            antinode->rotation = NuAtan2D(rotated.x, rotated.z);
+            antinode->rotation = NuAngAdd(antinode->rotation, antinode->rotation_offset);
         }
     }
-    for (index = 0; index < system->locator_count; ++index) {
-        AILOCATOR_PC *locator = &system->locators[index];
-        AIPATHNODE_PC *start = &locator->path_info.path->nodes[locator->path_info.connection->node_indices[0]];
-        AIPATHNODE_PC *end = &locator->path_info.path->nodes[locator->path_info.connection->node_indices[1]];
-        NUVEC delta;
-        NUVEC direction;
-        NUVEC offset;
-        f32 position_on_connection;
-        f32 radius;
-        f32 direction_x;
-        i32 path_angle;
-        if ((start->runtime_flags & 0x02) == 0 && (end->runtime_flags & 0x02) == 0) {
-            continue;
+    locator = system->locators;
+    for (index = 0; index < system->locator_count; ++index, ++locator) {
+        AIPATH_PC *path = locator->path_info.path;
+        AIPATHCNX_PC *connection = locator->path_info.connection;
+        if ((path->nodes[connection->node_indices[0]].runtime_flags & 0x02) != 0 ||
+            (path->nodes[connection->node_indices[1]].runtime_flags & 0x02) != 0) {
+            AIPATHNODE_PC *start = &path->nodes[connection->node_indices[0]];
+            AIPATHNODE_PC *end = &path->nodes[connection->node_indices[1]];
+            NUVEC delta;
+            NUVEC direction;
+            NUVEC offset;
+            f32 radius;
+            f32 direction_x;
+            i32 path_angle;
+            NuVecSub(&delta, &end->position, &start->position);
+            NuVecNorm(&direction, &delta);
+            if (locator->path_info.distance > 1.0f) {
+                radius = end->radius;
+            } else if (locator->path_info.distance < 0.0f) {
+                radius = start->radius;
+            } else {
+                radius =
+                    (1.0f - locator->path_info.distance) * start->radius + end->radius * locator->path_info.distance;
+            }
+            direction_x = direction.x;
+            direction.x = direction.z * radius;
+            direction.z = -direction_x * radius;
+            locator->position = start->position;
+            NuVecScale(&offset, &delta, locator->path_info.distance);
+            NuVecAdd(&locator->position, &locator->position, &offset);
+            NuVecScale(&offset, &direction, locator->path_info.width);
+            NuVecAdd(&locator->position, &locator->position, &offset);
+            path_angle = (i32)(NuAtan2(delta.x, delta.z) * AIPathAngularScale);
+            locator->rotation = NuAngAdd(path_angle, locator->rotation_offset);
         }
-        NuVecSub(&delta, &end->position, &start->position);
-        NuVecNorm(&direction, &delta);
-        position_on_connection = locator->path_info.distance;
-        if (position_on_connection > 1.0f) {
-            radius = end->radius;
-        } else if (position_on_connection < 0.0f) {
-            radius = start->radius;
-        } else {
-            radius = end->radius * position_on_connection + (1.0f - position_on_connection) * start->radius;
-        }
-        direction_x = direction.x;
-        direction.x = direction.z * radius;
-        direction.z = -direction_x * radius;
-        locator->position = start->position;
-        NuVecScale(&offset, &delta, position_on_connection);
-        NuVecAdd(&locator->position, &locator->position, &offset);
-        NuVecScale(&offset, &direction, locator->path_info.width);
-        NuVecAdd(&locator->position, &locator->position, &offset);
-        path_angle = (i32)(NuAtan2(delta.x, delta.z) * AIPathAngularScale);
-        locator->rotation = NuAngAdd(path_angle, locator->rotation_offset);
     }
     for (index = 0; index < 16; ++index) {
         AIGROUP_PC *group = &system->groups[index];
         if ((group->flags & 1) != 0) {
-            group->flags = (group->flags & ~2u) | ((group->member_is_alive == 0) << 1);
+            if (group->member_is_alive != 0)
+                group->flags &= ~2u;
+            else
+                group->flags |= 2;
         }
     }
 }
