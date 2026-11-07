@@ -691,45 +691,45 @@ extern "C" {
                                  i32 param_4, i32 param_5, f32 param_6) {
         (void)packet;
         (void)param_6;
-        if (param_5 == 0 || param_4 <= 0) {
-            return 1;
-        }
-
+        f32 jump_off_dy = 0.0f;
         AIPATH_PC *path = NULL;
         char *from = NULL;
         char *to = NULL;
         void *grapple = NULL;
-        f32 jump_off_dy = 0.0f;
-        bool both_ways = false;
+        i32 both_ways = 0;
+        if (param_5 == 0 || param_4 <= 0) {
+            return 1;
+        }
+
         for (i32 index = 0; index < param_4; ++index) {
             char *value = NuStrIStr(params[index], (char *)"pathname=");
             if (value != NULL) {
-                path = AISysFindPath(sys, value + NuStrLen("pathname="));
+                path = AISysFindPath(sys, value + strlen("pathname="));
                 continue;
             }
             if (NuStrIStr(params[index], (char *)"bothways") != NULL) {
-                both_ways = true;
+                both_ways = 1;
                 continue;
             }
             value = NuStrIStr(params[index], (char *)"from=");
             if (value != NULL) {
-                from = value + NuStrLen("from=");
+                from = value + strlen("from=");
                 continue;
             }
             value = NuStrIStr(params[index], (char *)"to=");
             if (value != NULL) {
-                to = value + NuStrLen("to=");
+                to = value + strlen("to=");
                 continue;
             }
             value = NuStrIStr(params[index], (char *)"jump_off_dy=");
             if (value != NULL) {
-                jump_off_dy = AIParamToFloat(processor, value + NuStrLen("jump_off_dy="));
+                jump_off_dy = AIParamToFloat(processor, value + strlen("jump_off_dy="));
                 continue;
             }
             value = NuStrIStr(params[index], (char *)"grapple=");
             if (value != NULL) {
                 GIZMO_PC *gizmo =
-                    (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, grapple_gizmotype_id, value + NuStrLen("grapple="));
+                    (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, grapple_gizmotype_id, value + strlen("grapple="));
                 if (gizmo != NULL) {
                     grapple = gizmo->object;
                 }
