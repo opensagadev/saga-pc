@@ -23,9 +23,14 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
         config->unknown_axes[index][2] = 0;
     }
     for (i32 index = 0; index < 16; ++index) {
-        u16 key = *descriptor++;
-        config->buttons[index][0] = key == 0xffff ? 0 : 7;
-        config->buttons[index][1] = key == 0xffff ? 0 : (u8)key;
+        if (*descriptor != 0xffff) {
+            config->buttons[index][0] = 7;
+            config->buttons[index][1] = (u8)*descriptor;
+        } else {
+            config->buttons[index][0] = 0;
+            config->buttons[index][1] = 0;
+        }
+        ++descriptor;
     }
     while (*descriptor != 0xffff) {
         i16 index = (i16)descriptor[0];
