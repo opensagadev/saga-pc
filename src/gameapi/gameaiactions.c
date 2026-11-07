@@ -158,7 +158,6 @@ i32 __cdecl Action_MoveForward(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
 i32 __cdecl Action_GameFollowPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                     i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object;
-    APIOBJECT_PC *owner;
     i32 index;
     f32 first_distance;
     f64 first_saved;
@@ -167,8 +166,7 @@ i32 __cdecl Action_GameFollowPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL || system == NULL ||
         system->player_1 == NULL)
         return 1;
-    owner = (APIOBJECT_PC *)packet->owner;
-    object = (GAMEOBJECT *)owner->owner;
+    object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
     if (first_time != 0) {
         for (index = 0; index < count; index++) {
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0)
@@ -181,10 +179,13 @@ i32 __cdecl Action_GameFollowPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
                 processor->action_data_2 = 1;
             else if (NuStrICmp(params[index], (char *)AIGameNearestName) == 0) {
                 if (player != NULL && player2 != NULL) {
-                    first_distance = NuVecDist(&owner->position, &player->position, NULL);
+                    first_distance = NuVecDist(&((APIOBJECT_PC *)packet->owner)->position, &player->position, NULL);
                     first_saved = first_distance;
-                    second_distance = NuVecDist(&owner->position, &player2->position, NULL);
-                    processor->action_data_3 = second_distance < first_saved ? player2 : player;
+                    second_distance = NuVecDist(&((APIOBJECT_PC *)packet->owner)->position, &player2->position, NULL);
+                    if (second_distance < first_saved)
+                        processor->action_data_3 = player2;
+                    else
+                        processor->action_data_3 = player;
                 } else
                     processor->action_data_3 = player;
             } else if (packet->movement_instruction_parameter == 0.0f)
@@ -193,13 +194,15 @@ i32 __cdecl Action_GameFollowPlayer(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
     }
     if (processor->action_data_3 == NULL && player == NULL)
         return 0;
-    if (owner->locator_name_index != -1)
-        distance = drop_back_in_timer > 0.0f
-                       ? 0.01f
-                       : packet->movement_instruction_parameter + party_follow_offsets[owner->locator_name_index];
-    else
-        distance = packet->movement_instruction_parameter;
-    FollowAPIObject(owner, (APIOBJECT_PC *)player, processor->action_data_1, distance);
+    if (((APIOBJECT_PC *)packet->owner)->locator_name_index != -1 && drop_back_in_timer > 0.0f)
+        FollowAPIObject((APIOBJECT_PC *)packet->owner, (APIOBJECT_PC *)player, processor->action_data_1, 0.01f);
+    else if (((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
+        distance = packet->movement_instruction_parameter +
+                   party_follow_offsets[((APIOBJECT_PC *)packet->owner)->locator_name_index];
+        FollowAPIObject((APIOBJECT_PC *)packet->owner, (APIOBJECT_PC *)player, processor->action_data_1, distance);
+    } else
+        FollowAPIObject((APIOBJECT_PC *)packet->owner, (APIOBJECT_PC *)player, processor->action_data_1,
+                        packet->movement_instruction_parameter);
     if (processor->action_data_2 != 0) {
         object->pad->buttons_pressed |= GAMEPAD_SPECIAL;
         object->pad->buttons_held |= GAMEPAD_SPECIAL;
