@@ -6631,6 +6631,7 @@ address,symbol,size,ctype
 0x5fa330,_PcUpdateGeometryCameraOriginPc,497,"void __cdecl(NUMTX*,NUMTX*)"
 0x5fa540,_PCGraphicsSetSamplerTuplePc,222,
 0x5fb550,_PCGraphicsDrawPostEffectQuadPc,10,
+0x5fb560,_PCGraphicsDrawPostEffectIndexedPc,10,void __cdecl (void)
 0x5fb810,?Reset@PC_EFFECT_SURFACE_PC@@QAEXXZ,81,
 0x5fb870,?Attach@PC_EFFECT_SURFACE_PC@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@H_N@Z,170,
 0x5fb960,?ReleaseResources@PC_EFFECT_SURFACE_PC@@SAXXZ,64,
@@ -9461,6 +9462,7 @@ address,symbol,size,ctype
 0x6e5750,_PCDeviceSetVertexShaderConstantsF,37,"void __cdecl(UINT,const f32*,UINT)"
 0x6e57b0,_NuVpSubmitPc,20,
 0x006e57d0,_PCDeviceShowCursorPc,45,i32 __cdecl(i32)
+0x6e5820,_PCDeviceStretchRectPc,47,"void __cdecl (PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32)"
 0x6e5850,_PCDeviceTestCooperativeLevel,14,HRESULT __cdecl(void)
 0x006e59f0,_PCDeviceCreateTextureFromMemory,32,"void __cdecl (const void *, u32, PC_TEXTURE_RESOURCE_PC **)"
 0x6e5a30,_PCDeviceCreateTextureFromMemoryEx,88,"void __cdecl (const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32, D3DXIMAGE_INFO *, PALETTEENTRY *, PC_TEXTURE_RESOURCE_PC **)"

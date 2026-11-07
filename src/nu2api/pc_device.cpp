@@ -1559,6 +1559,9 @@ void __thiscall PC_DEVICE_BACKEND_PC::PostEffectBarrierPc() {
 extern "C" void __cdecl PCGraphicsDrawPostEffectQuadPc(void) {
     PCDeviceBackend.DrawPostEffectQuadPc();
 }
+extern "C" void __cdecl PCGraphicsDrawPostEffectIndexedPc(void) {
+    PCDeviceBackend.DrawPostEffectIndexedPc();
+}
 extern "C" void __cdecl PCDevicePostEffectBarrierPc(void) {
     PCDeviceBackend.PostEffectBarrierPc();
 }
@@ -1572,6 +1575,12 @@ extern "C" i32 __cdecl PCDeviceShowCursorPc(i32 show) {
         PCFrameCriticalSectionLeave_candidate();
     }
     return 0;
+}
+extern "C" void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *source, const RECT *source_rect,
+                                              PC_TEXTURE_RESOURCE_PC *destination, const RECT *destination_rect,
+                                              i32 filter) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->stretch_rect(PCDeviceBackend.device, source, source_rect,
+                                                                       destination, destination_rect, filter);
 }
 
 extern "C" u32 __cdecl PcGetRefreshRatePc(void) {

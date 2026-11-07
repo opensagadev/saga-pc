@@ -8496,7 +8496,10 @@ typedef struct PC_D3D9_METHODS_PC {
     (PC_D3D9_DEVICE_PC *, u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
     HRESULT(__stdcall *create_index_buffer)
     (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
-    void *unknown_0070[16];
+    void *unknown_0070[6];
+    HRESULT(__stdcall *stretch_rect)
+    (PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32);
+    void *unknown_008c[9];
     HRESULT(__stdcall *set_transform)(PC_D3D9_DEVICE_PC *, i32, const NUMTX *);
     void *unknown_00b4;
     void *unknown_00b8;
@@ -9016,6 +9019,7 @@ STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_transform) == 0xb0);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_viewport) == 0xbc);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_render_state) == 0xe4);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_texture) == 0x104);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, stretch_rect) == 0x88);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_texture_stage_state) == 0x10c);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_sampler_state) == 0x114);
 STATIC_ASSERT(offsetof(PC_D3D9_DEVICE_PC, methods) == 0);
@@ -28503,6 +28507,9 @@ extern "C" {
     void __cdecl PCGraphicsBindEffectTexturePc(u32, GRAPHICS_RENDER_TEXTURE_PC *);
     void __cdecl PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *);
     void __cdecl PCGraphicsDrawPostEffectQuadPc(void);
+    void __cdecl PCGraphicsDrawPostEffectIndexedPc(void);
+    void __cdecl PCDeviceStretchRectPc(PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *,
+                                       i32);
     void __cdecl PCDevicePostEffectBarrierPc(void);
     void __cdecl NuRndrEndFrameActionPc(void);
     void __cdecl NuPostEffectEnd(void);
