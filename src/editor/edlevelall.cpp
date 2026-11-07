@@ -2908,10 +2908,9 @@ void *KnotHelper::CreateObject(void *, i32, i32) {
             break;
     }
     if (spline == NULL) {
-        void *memory = theMemoryManager.AllocPool(sizeof(SplineObject), 1);
-        if (memory == NULL)
+        spline = new (theMemoryManager.AllocPool(sizeof(SplineObject), 1)) SplineObject;
+        if (spline == NULL)
             return NULL;
-        spline = new (memory) SplineObject;
         theClassEditor.MakeUniqueName("NewSpline", spline->name, sizeof(spline->name));
         spline->next = NULL;
         spline->previous = theSplineHelper.last_object;
@@ -2934,7 +2933,8 @@ void *KnotHelper::CreateObject(void *, i32, i32) {
     return knot;
 }
 
-void SplineKnotList::InsertAfter(SplineKnot *knot, SplineKnot *after) {
+/* Retail keeps this out of line: KnotHelper::CreateObject calls it (0x6cf159). */
+__declspec(noinline) void SplineKnotList::InsertAfter(SplineKnot *knot, SplineKnot *after) {
     if (after != NULL) {
         knot->previous = after;
         knot->next = after->next;
@@ -3834,7 +3834,8 @@ EdRef *EdClass::FindTypeRef(i32 attributes, i32 recursive) {
     return NULL;
 }
 
-EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
+/* Retail keeps this out of line: SerialiseObject calls it (0x6cda5e). */
+__declspec(noinline) EdRef *EdClass::FindTypeRef(char *member_name, i32 recursive) {
     for (EdRef *member = members; member != NULL; member = member->next) {
         if (member->attributes & 0x80000000) {
             if (recursive) {
@@ -3961,11 +3962,7 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
                         continue;
                     }
                 }
-                if (member->attributes & 0x80000000) {
-                    EdClass *source_class = registry->GetClass(source->type_id);
-                    EdClass *member_class = theRegistry.GetClass(member->type_id);
-                    member_class->SerialiseObject(stream, member->GetMemberObject(object), source_class, registry);
-                } else {
+                if (!(member->attributes & 0x80000000)) {
                     EdType *type = theRegistry.GetType(member->type_id);
                     i32 type_size = member->size > 0 ? member->size : type->size;
                     if (stream.mode == 2)
@@ -3973,6 +3970,10 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
                     type->serialise(stream, data, type_size);
                     if (stream.mode == 1)
                         member->SetMemberData(object, member->type_id, data, sizeof(data), NULL);
+                } else {
+                    EdClass *source_class = registry->GetClass(source->type_id);
+                    EdClass *member_class = theRegistry.GetClass(member->type_id);
+                    member_class->SerialiseObject(stream, member->GetMemberObject(object), source_class, registry);
                 }
             } else {
                 EdType *type = registry->GetType(source->type_id);
