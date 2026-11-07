@@ -6376,28 +6376,32 @@ i32 __cdecl Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     i32 slam;
     char *value;
     AICREATURE_PC *creature;
-    NUVEC *jump_destination;
+    APIOBJECT_PC *lookup;
 
     (void)param_6;
+    jump_factor = 1.0f;
     destination.x = 1.0e9f;
     destination.y = 1.0e9f;
     destination.z = 1.0e9f;
+    target = NULL;
+    to_origin = 0;
+    check_terrain = 0;
+    slam = 0;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
     }
 
     object = packet->owner->objptr;
     if (param_5 != 0) {
-        target = NULL;
-        to_origin = 0;
-        check_terrain = 0;
-        jump_factor = 1.0f;
-        slam = 0;
 
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AITransferLiteral757874);
             if (value != NULL) {
-                target = GetNamedGameObject(sys, value + 14);
+                if (GetNamedGameObjectCallback != NULL &&
+                    (lookup = GetNamedGameObjectCallback(sys, value + 14)) != NULL)
+                    target = (GAMEOBJECT *)lookup->owner;
+                else
+                    target = NULL;
             } else if (NuStrICmp(params[index], (char *)AITransferLiteral75786c) == 0) {
                 slam = 1;
             } else if (NuStrICmp(params[index], (char *)AITransferLiteral757860) == 0) {
@@ -6428,11 +6432,10 @@ i32 __cdecl Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
             object->ai_packet.path_info = target->ai_packet.path_info;
             object->ai_packet.last_path_position = target->ai_packet.last_path_position;
         } else {
-            jump_destination = &destination;
-            if (destination.x == 1.0e9 && destination.y == 1.0e9 && destination.z == 1.0e9) {
-                jump_destination = &object->collision_position;
-            }
-            StartBigJump(object, jump_destination, slam, jump_factor, 1.0f, check_terrain);
+            if (destination.x != 1.0e9 || destination.y != 1.0e9 || destination.z != 1.0e9)
+                StartBigJump(object, &destination, slam, jump_factor, 1.0f, check_terrain);
+            else
+                StartBigJump(object, &object->collision_position, slam, jump_factor, 1.0f, check_terrain);
         }
     }
     return object->character_context != 0x1f;
@@ -9463,20 +9466,16 @@ i32 __cdecl Action_BigJumpToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
     AILOCATOR_PC *locator;
     (void)param_6;
 
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object == NULL)
+    jump_factor = 1.0f;
+    personal = 0;
+    indexed = 0;
+    random_count = 0;
+    name = NULL;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
+    object = packet->owner->objptr;
     if (param_5 != 0) {
-        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
-            object = packet->owner->objptr;
-        }
         processor->action_data_3 = processor->locator;
-
-        personal = 0;
-        indexed = 0;
-        random_count = 0;
-        name = NULL;
-        jump_factor = 1.0f;
 
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)((char *)AITransferLiteral75782c));
@@ -9494,10 +9493,6 @@ i32 __cdecl Action_BigJumpToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
                     jump_factor = 0.0f;
                 }
             }
-        }
-
-        if (object == NULL) {
-            return 1;
         }
 
         if (name != NULL) {
