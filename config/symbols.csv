@@ -280,6 +280,7 @@ address,symbol,size,ctype
 0x424350,_Customiser_Reset,96,
 0x4243b0,_Customiser_TransformToPanel,42,
 0x4243e0,_CustomiserPreviewLayerMaskPc,273,
+0x424500,_Customiser_SetUpCharacterData,491,void __cdecl (CUSTOMISER_LAYERS_PC *)
 0x4246f0,_Customiser_GetActiveWeirdoIndex,90,"void __cdecl (i32 *, i32 *)"
 0x424750,_Customiser_MenuAvailable,92,
 0x004247d0,_Customise_GetToggleString,55,code

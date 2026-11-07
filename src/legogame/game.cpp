@@ -10,6 +10,7 @@ extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
 extern "C" void __cdecl Grabber_Reset(WORLDINFO *world);
+extern "C" void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *customiser);
 extern "C" u32 __cdecl TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces,
                                            u32 *obstacles, u32 *turrets, u32 *characters);
 extern "C" void __cdecl SurfaceMaskOff(u32 *surface_mask);
@@ -610,7 +611,7 @@ extern "C" void __cdecl CheckResetBits(void) {
         InitGameMode();
     if (NOSOUND == 0)
         NuSound3Update();
-    STUBBED_NAMED("CheckResetBits: Customiser_SetUpCharacterData(CharacterCustomiser) at 0x00424500");
+    Customiser_SetUpCharacterData(CharacterCustomiser);
     Surfaces_Reset();
     ResetStreaks();
     Bolts_Reset();

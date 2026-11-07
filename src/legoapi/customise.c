@@ -1266,6 +1266,43 @@ static u32 CustomiserPreviewLayerMaskPc(CUSTOMISER_CONFIG_PC *customiser, const 
     return mask;
 }
 
+/* 00424500 / 491: applies both saved customisations to their characters'
+ * layer masks, model and gameplay flags, weapon and blade colour. */
+void __cdecl Customiser_SetUpCharacterData(CUSTOMISER_LAYERS_PC *input) {
+    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    i32 side, category;
+    if (customiser == NULL)
+        return;
+    for (side = 0; side < 2; ++side) {
+        const u16 *selection = Game.customiser_start[side].pieces;
+        CHARACTERDATA_PC *character = &CDataList[customiser->character_ids[side]];
+        PLAYERCHARACTERCONFIG_PC *config = character->game_character;
+        u32 mask;
+        config->flags_090 = 0;
+        mask = CustomiserPreviewLayerMaskPc(customiser, selection, -1, config);
+        config->layer_mask_special = mask;
+        config->layer_mask = mask;
+        config->layer_mask_medium = mask;
+        config->layer_mask_low = mask;
+        config->layer_mask_dead = mask;
+        character->model_flags &= 3;
+        for (category = 0; category < 9; ++category) {
+            if (customiser->piece_counts[category] > 0) {
+                if (category != 0 || (customiser->piece_sets[1][selection[1]].availability_flags & 1) == 0)
+                    character->model_flags |= customiser->piece_sets[category][selection[category]].model_flags;
+                if ((character->model_flags & 0x80) != 0)
+                    character->model_flags |= 0x10000000;
+                config->flags_090 |= customiser->piece_sets[category][selection[category]].gameplay_flags;
+            }
+        }
+        if ((customiser->piece_sets[1][selection[1]].availability_flags & 1) != 0)
+            config->flags_090 |= 0x10;
+        config->weapon_model = customiser->piece_sets[2][selection[2]].weapon_model;
+        config->blade_colour = (i8)LightSabre_ColourFromObj(config->weapon_model, NULL);
+    }
+    Customiser_SetNameAndIcon(input, -1);
+}
+
 i32 __cdecl GameDrawCharacterModel(CHARACTER_MODEL_LAYERS_PC *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *,
                                    GAMEOBJECT *, u32);
 /* 00425fa0 / 1087 */
