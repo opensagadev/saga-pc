@@ -1363,16 +1363,6 @@
   },
   {
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-   "symbol": "??2@YAPAXIPAX@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-   "symbol": "__bad_alloc_Message",
-   "kind": "data"
-  },
-  {
-   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
    "symbol": "?Write@NETMESSAGE_PC@@QAEXPBXI@Z",
    "kind": "function"
   },

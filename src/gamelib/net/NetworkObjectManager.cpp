@@ -1,5 +1,4 @@
 #include "saga.h"
-#include <new>
 
 /* Network object system (retail [0x6118f0,0x617180)): replicates editor
  * objects between peers on listener channel 3. Names follow the Android
@@ -808,13 +807,13 @@ NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetMessage(i32 size) {
             NETMESSAGE_PC *sent = message;
             if (sent != NULL) {
                 sent->Release();
-                theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
+                delete sent;
             }
             message = NULL;
         }
     }
     if (message == NULL)
-        message = new (theMemoryManager.AllocPool(sizeof(NETMESSAGE_PC), 1)) NETMESSAGE_PC(0x20);
+        message = new NETMESSAGE_PC(0x20);
     return message;
 }
 #pragma pop_macro("GetMessage")
@@ -827,13 +826,13 @@ NETMESSAGE_PC *NetworkObjectManager::NetPeerPush::GetReliableMessage(i32 size) {
             NETMESSAGE_PC *sent = reliable_message;
             if (sent != NULL) {
                 sent->Release();
-                theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
+                delete sent;
             }
             reliable_message = NULL;
         }
     }
     if (reliable_message == NULL)
-        reliable_message = new (theMemoryManager.AllocPool(sizeof(NETMESSAGE_PC), 1)) NETMESSAGE_PC(0x20);
+        reliable_message = new NETMESSAGE_PC(0x20);
     return reliable_message;
 }
 
@@ -843,7 +842,7 @@ void NetworkObjectManager::NetPeerPush::FlushMessages() {
         NETMESSAGE_PC *sent = message;
         if (sent != NULL) {
             sent->Release();
-            theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
+            delete sent;
         }
         message = NULL;
     }
@@ -852,7 +851,7 @@ void NetworkObjectManager::NetPeerPush::FlushMessages() {
         NETMESSAGE_PC *sent = reliable_message;
         if (sent != NULL) {
             sent->Release();
-            theMemoryManager.FreePool(sent, sizeof(NETMESSAGE_PC));
+            delete sent;
         }
         reliable_message = NULL;
     }

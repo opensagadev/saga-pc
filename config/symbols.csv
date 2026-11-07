@@ -7348,6 +7348,8 @@ address,symbol,size,ctype
 0x611960,??1EdInputStream@@UAE@XZ,7,
 0x611970,??0EdOutputStream@@QAE@XZ,25,
 0x611990,??1EdOutputStream@@UAE@XZ,7,
+0x6119c0,??2NETMESSAGE_PC@@SAPAXI@Z,18,
+0x6119e0,??3NETMESSAGE_PC@@SAXPAX@Z,18,
 0x611a70,??0NetInputStream@@QAE@XZ,32,
 0x611a90,?SetMessage@NetInputStream@@QAEXPAUNETMESSAGE_PC@@@Z,10,
 0x611aa0,?BeginBlock@NetInputStream@@UAEPBDPBD@Z,7,

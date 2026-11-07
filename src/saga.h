@@ -17986,6 +17986,13 @@ struct NETMESSAGE_PC {
             data->references++;
         return *this;
     }
+    /* Push messages come from theMemoryManager's pools. */
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(NETMESSAGE_PC));
+    }
     /* Standalone copy at 0x53d640 (likely the destructor in retail). */
     void Release() {
         if (data != NULL) {
