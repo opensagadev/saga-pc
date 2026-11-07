@@ -24,7 +24,7 @@ void NetFtpManager::Init() {
 }
 
 const FtpFile *NetFtpManager::GetTransfers() const {
-    return files;
+    return files.items;
 }
 
 void NetFtpManager::Update() {
@@ -79,7 +79,7 @@ i32 FtpFile::Accept() {
 }
 
 FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &address, i32 direction) {
-    for (FtpFile *file = files; file != files + 32; ++file) {
+    for (FtpFile *file = files.items; file != files.items + 32; ++file) {
         if (file->InUse() && file->CompareAddress(address) == 0 && NuStrICmp(file->name, name) == 0 &&
             (direction == 0 || file->direction == direction))
             return file;
@@ -88,7 +88,7 @@ FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &address
 }
 
 const FtpFile *NetFtpManager::FindTransfer(const char *name, const NetAddress &address, i32 direction) const {
-    for (const FtpFile *file = files; file != files + 32; ++file) {
+    for (const FtpFile *file = files.items; file != files.items + 32; ++file) {
         if (file->InUse() && file->CompareAddress(address) == 0 && NuStrICmp(file->name, name) == 0 &&
             (direction == 0 || file->direction == direction))
             return file;
@@ -101,14 +101,10 @@ void NetFtpManager::Receive(NETMESSAGE_PC message, u8 channel, const NetAddress 
 }
 
 NetFtpManager::~NetFtpManager() {
-    for (FtpFile *file = files; file != files + 32; ++file) {
-        if (file->InUse())
-            file->Close();
-    }
 }
 
 void NetFtpManager::Reset() {
-    for (FtpFile *file = files; file != files + 32; ++file) {
+    for (FtpFile *file = files.items; file != files.items + 32; ++file) {
         if (file->InUse()) {
             theTTNetwork.FtpComplete(file, (i32)0xa0200001);
             file->Term();
@@ -118,7 +114,7 @@ void NetFtpManager::Reset() {
 }
 
 void NetFtpManager::PeerLeft(const NetAddress &address, i32 reason) {
-    for (FtpFile *file = files; file != files + 32; ++file) {
+    for (FtpFile *file = files.items; file != files.items + 32; ++file) {
         if (file->InUse() && file->CompareAddress(address) == 0) {
             theTTNetwork.FtpComplete(file, (i32)0xa0200001);
             file->Term();

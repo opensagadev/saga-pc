@@ -7495,8 +7495,10 @@ address,symbol,size,ctype
 0x6174a0,??0FtpFile@@QAE@XZ,13,
 0x6174d0,?FindTransfer@NetFtpManager@@QAEPAUFtpFile@@PBDABUNetAddress@@H@Z,111,
 0x617540,?FindTransfer@NetFtpManager@@QBEPBUFtpFile@@PBDABUNetAddress@@H@Z,111,
+0x6175b0,??0FtpFileArray@@QAE@XZ,35,FtpFileArray::FtpFileArray(void)
 0x617630,?Receive@NetFtpManager@@UAEXUNETMESSAGE_PC@@EABUNetAddress@@@Z,44,
 0x617750,?Close@FtpFile@@QAEXXZ,63,
+0x617790,??1FtpFileArray@@QAE@XZ,85,FtpFileArray::~FtpFileArray(void)
 0x6177f0,?Reset@NetFtpManager@@QAEXXZ,108,
 0x617860,?PeerLeft@NetFtpManager@@UAEXABUNetAddress@@H@Z,128,
 0x6178f0,??0NetFtpManager@@QAE@XZ,61,

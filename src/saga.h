@@ -30311,6 +30311,19 @@ struct FtpFile {
     u32 transfer;
 };
 
+/* The manager's 32 transfer slots. Retail destroys them through a separate
+ * destructor (0x617790) that closes every slot still in use. */
+struct FtpFileArray {
+    ~FtpFileArray() {
+        for (FtpFile *file = items; file != items + 32; ++file) {
+            if (file->InUse())
+                file->Close();
+        }
+    }
+
+    FtpFile items[32];
+};
+
 /* File transfer listener on channel 2 (TTNetwork+0x2178). */
 class NetFtpManager : public NetListenerInterface {
   public:
@@ -30326,7 +30339,7 @@ class NetFtpManager : public NetListenerInterface {
     const FtpFile *FindTransfer(const char *name, const NetAddress &address, i32 direction) const;
     const FtpFile *GetTransfers() const;
 
-    FtpFile files[32];
+    FtpFileArray files;
     i32 field_1604;
 };
 
