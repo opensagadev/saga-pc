@@ -29826,6 +29826,8 @@ class ClassEditor : public BaseEditor {
     i32 SelectObject(ClassObject &object, i32 mode);
     i32 IsUniqueName(char *name);
     void MakeUniqueName(char const *name, char *destination, i32 size);
+    i32 IsSelectedObject(ClassObject &object);
+    i32 Editable(void *object, EdClass *object_class, i32 index);
 };
 extern ClassEditor theClassEditor;
 
@@ -29892,6 +29894,7 @@ class LevelEditor : public BaseThing {
     i32 Save();
     void SetSaveFilename(char *name);
     i32 FindSceneId(char *name);
+    i32 IsEditable(i32 index);
     i32 Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, i32 flags);
     i32 LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *scratch_begin, variptr_u *scratch_end,
                   variptr_u *file_begin, variptr_u *file_end);

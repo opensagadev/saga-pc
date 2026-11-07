@@ -9594,6 +9594,7 @@ address,symbol,size,ctype
 0x6bc700,?FindSceneId@LevelEditor@@QAEHPAD@Z,61,
 0x6bc7a0,?GetScene@LevelEditor@@QAEPAUNUGSCN_s@@H@Z,30,
 0x6bc7c0,?GetEdScene@LevelEditor@@QAEPAULevelEditorScene@@H@Z,30,
+0x6bc830,?IsEditable@LevelEditor@@QAEHH@Z,48,
 0x6bc860,?cbEdLevelDestroy@@YAXPAUeduimenu_s@@0@Z,87,
 0x6bc8c0,?cbEdLevelDestroyOnSelect@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,50,
 0x6bc900,?cbEdLevelSetSliderFloat@@YAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,13,
@@ -9750,10 +9751,12 @@ address,symbol,size,ctype
 0x6c8760,?GetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c87f0,?SetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c8aa0,?GetName@ClassEditor@@UAEPBDXZ,6,
+0x6c8b60,?Editable@ClassEditor@@QAEHPAXPAUEdClass@@H@Z,182,
 0x6c94a0,?DrawObjectSphere@ClassEditor@@QAEXAAUClassObject@@H@Z,413,
 0x6c9640,?IsUniqueName@ClassEditor@@QAEHPAD@Z,275,
 0x6c9760,?MakeUniqueName@ClassEditor@@QAEXPBDPADH@Z,215,
 0x6c9bf0,?SelectObject@ClassEditor@@QAEHAAUClassObject@@H@Z,505,
+0x6c9df0,?IsSelectedObject@ClassEditor@@QAEHAAUClassObject@@@Z,69,
 0x6cb250,??0LevelEditor@@QAE@XZ,467,
 0x6cb430,?GetName@LevelEditor@@UAEPBDXZ,6,
 0x6cb440,??_ELevelEditor@@UAEPAXI@Z,,COFF weak alias of ??_GLevelEditor@@UAEPAXI@Z; no independent body
@@ -9795,6 +9798,7 @@ address,symbol,size,ctype
 0x6d0e70,?Serialise@EdRegistry@@QAEXAAVEdStream@@@Z,358,
 0x6d0fe0,?SerialiseObjects@EdRegistry@@QAEXAAVEdStream@@PAU1@@Z,2128,
 0x6d18d0,?Serialise@ClassEditor@@UAEXAAVEdStream@@@Z,117,
+0x6d1b20,?Render@ClassEditor@@UAEXXZ,496,
 0x6d1ff0,?ProcessEvenWhenPaused@LevelEditor@@UAEXPAUThingProcessData@@@Z,1107,
 0x6d3150,_PcConfigureInputGraphicsCaps,632,i32 __cdecl(void)
 0x6d33d0,_NuKeyboardPlatformStartup_candidate,59,i32 __cdecl(void)

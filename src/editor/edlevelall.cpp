@@ -810,6 +810,15 @@ void LevelEditor::SetSaveFilename(char *name) {
     }
 }
 
+/* Scene -1 (no scene) is always editable; an inactive scene is too. */
+i32 LevelEditor::IsEditable(i32 index) {
+    if (index == -1)
+        return 1;
+    if ((u32)index <= 9 && (scenes[index].editable || !scenes[index].active))
+        return 1;
+    return 0;
+}
+
 i32 LevelEditor::FindSceneId(char *name) {
     for (i32 i = 0; i < 10; i++) {
         if (NuStrICmp(scenes[i].name, name) == 0)
@@ -2165,6 +2174,73 @@ i32 ClassEditor::SelectObject(ClassObject &object, i32 mode) {
 done:
     thePropertyTool.SelectAttr(manipulator->selected_attribute);
     return selected;
+}
+
+i32 ClassEditor::IsSelectedObject(ClassObject &object) {
+    ClassObject selected = object;
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->object == selected.object && entry->reference == selected.reference)
+            return 1;
+    }
+    return 0;
+}
+
+/* A class is editable when its filter bit is set; an object when it belongs
+ * to no scene or to an editable (or inactive) scene. */
+i32 ClassEditor::Editable(void *object, EdClass *object_class, i32 index) {
+    i16 scene = 0;
+    if (object == NULL) {
+        if (class_filter & (1 << index))
+            return 1;
+        return 0;
+    }
+    EdMember member;
+    if (object_class->FindMember(&member, object, 0x100, 1))
+        member.reference->GetAttributeData(member.object, 0x100, EdType_Short, &scene, 0);
+    return theLevelEditor.IsEditable(scene);
+}
+
+/* Draws the tools, the selection (through the manipulator when there is one)
+ * and every editable object of the classes that render or show spheres. */
+void ClassEditor::Render() {
+    ClassObject selected;
+    thePropertyTool.Render();
+    if (active_tool != NULL)
+        active_tool->Render();
+    if (current_object.object != NULL && !IsSelectedObject(current_object))
+        DrawObjectSphere(current_object, field_3c);
+    if (selected_objects.count > 0) {
+        ClassObjectListEntry *entry;
+        if (manipulator != NULL) {
+            manipulator->Render(selected_objects);
+        } else {
+            for (entry = selected_objects.first; entry != NULL; entry = entry->next)
+                DrawObjectSphere(*(ClassObject *)&entry->ed_class, 0xff800000);
+        }
+        for (entry = selected_objects.first; entry != NULL; entry = entry->next)
+            theRegistry.ClassIFaceRender(entry->ed_class, entry->object, 1);
+    }
+    for (i32 index = 0; index < theRegistry.class_count; index++) {
+        selected.ed_class = theRegistry.GetClass(index);
+        if (!Editable(NULL, selected.ed_class, index))
+            continue;
+        if (selected.ed_class->object_interface == NULL)
+            continue;
+        if (!(selected.ed_class->flags & 0x8000080))
+            continue;
+        for (selected.object = selected.ed_class->object_interface->GetNextObject(NULL); selected.object != NULL;
+             selected.object = selected.ed_class->object_interface->GetNextObject(selected.object)) {
+            if (!Editable(selected.object, selected.ed_class, -1))
+                continue;
+            if ((selected.ed_class->flags & 0x8000000) && !IsSelectedObject(selected))
+                theRegistry.ClassIFaceRender(selected.ed_class, selected.object, 0);
+            if ((selected.ed_class->flags & 0x80) && IsSelectedObject(selected) &&
+                selected.object != current_object.object)
+                DrawObjectSphere(selected, 0xff000080);
+        }
+    }
+    if (menu != NULL)
+        eduiMenuRender(menu);
 }
 
 /* Whether no named object of any named class uses this name. */
