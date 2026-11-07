@@ -5,10 +5,11 @@
 // Modules merged so far: nuanim (with the PC procedural joint overrides), nuqfnt, nufont, occlusion, nugscn,
 // nuportal, numtl, nutimebar, nudlist, nupostfilter, nulgtlaser, nutex_pc, nuframe, nuvport, nuprim, nudlist_pc,
 // nutrig, posteffect_ports_pc, nudynamiclight, nuspline, nutex, nuspecial_shadow_pc, nuqfnt_print, nughg,
-// nuocclusion.
+// nuocclusion, nuvisibility, nuspecial.
 // The PS/Pc halves live in the platform unit, nu3d_platform_pc.cpp.
 // nufloat, numtx, nuhtml, nustateanim and nufrustum_pc stay separate: merged, their small leaves inline into
 // nu3d callers that retail compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlushPc, StateAnimEvaluate, TestBox).
+// nutexanim stays separate too: merged, NuTexAnimEnvProc drops from 80.5% to 66.3%.
 
 #include "saga.h"
 
@@ -188,7 +189,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(NuAnimData2FileHeader_PC, animation) == 8);
     STATIC_ASSERT(sizeof(NuAnimData2FileHeader_PC) == 12);
 
-    extern void __cdecl PCSpecialEmptyHandler_candidate(void);
+    extern void __cdecl PCSpecialEmptyHandler_candidate(...);
 
     typedef struct ANIMATION_PACK_HEADER_PC {
         u32 first_word;
@@ -3983,7 +3984,7 @@ extern "C" {
         return NuQFntPrintLenU(font, text);
     }
 
-    void __cdecl PCSpecialEmptyHandler_candidate(void);
+    void __cdecl PCSpecialEmptyHandler_candidate(...);
     struct PC_MATERIAL_CREATE_SHADER {
         u32 flags;
         i32 diffuse_map_id;
@@ -12222,6 +12223,1364 @@ extern "C" {
         }
         if (font != NULL) {
             NuQFntPrintCharW(font, text, NuQFntMode);
+        }
+    }
+} // extern "C"
+
+/* nuvisibility */
+extern "C" {
+    i32 __cdecl NuFileCopy(char *destination, char *source);
+
+    typedef struct visibility_scene_reader_pc_s {
+        u8 unknown_00[0x1c];
+        i32 instance_count;
+        u8 unknown_20[0x100];
+        VISIBILITY_RESULT_READER_PC result;
+    } VISIBILITY_SCENE_READER_PC;
+    typedef struct visibility_occlusion_grid_pc_s {
+        u32 unknown_00;
+        i32 width;
+        f32 min_x, max_x, min_z, max_z;
+        f32 scale_x, scale_z;
+        i32 mode;
+        u32 output_size;
+        u32 unknown_28;
+        u8 **cells;
+    } VISIBILITY_OCCLUSION_GRID_PC;
+    STATIC_ASSERT(offsetof(VISIBILITY_SCENE_READER_PC, instance_count) == 0x1c);
+    STATIC_ASSERT(offsetof(VISIBILITY_SCENE_READER_PC, result) == 0x120);
+    STATIC_ASSERT(sizeof(VISIBILITY_OCCLUSION_GRID_PC) == 0x30);
+    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, min_x) == 8);
+    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, scale_x) == 0x18);
+    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, mode) == 0x20);
+    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, output_size) == 0x24);
+    STATIC_ASSERT(offsetof(VISIBILITY_OCCLUSION_GRID_PC, cells) == 0x2c);
+    extern i32 VisibilityEvaluateEnabledPc;
+    extern i32 VisibilityOcclusionEnabledPc;
+    extern i32 VisibilityInstanceTreeEnabledPc;
+    extern i32 VisibilityCameraLockPc;
+    extern i32 VisibilityLoadedOcclusionPc;
+    extern i32 VisibilityUsingOcclusionPc;
+    extern i32 VisibilityCurrentViewBoxPc;
+    /* Unsized reference only: no inferred allocation or emitted backing. */
+
+    typedef union visibility_tree_flag_word_pc_u {
+        u32 word;
+        struct {
+            u32 : 4;
+            u32 instance_tree : 1;
+            u32 : 27;
+        } bits;
+    } VISIBILITY_TREE_FLAG_WORD_PC;
+    STATIC_ASSERT(sizeof(VISIBILITY_TREE_FLAG_WORD_PC) == sizeof(u32));
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_FLAG_WORD_PC, word) == 0);
+
+    void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *, NUGSCN *);
+
+    void __cdecl NuCameraLock(i32 lock) {
+        if (lock != NuPortalCameraSelectPc && NuPortalCameraSelectPc == 0)
+            NuPortalRestoreCameraPc = global_camera;
+        if (lock != 0) {
+            NuPortalDebugCameraPc = global_camera;
+            NuCameraSet(&NuPortalRestoreCameraPc);
+        }
+        NuPortalCameraSelectPc = lock;
+    }
+
+    static i32 VisibilityFloorPc(f32 value) {
+        i32 integer = (i32)value;
+        return (f32)integer > value ? integer - 1 : integer;
+    }
+
+    void __cdecl NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *result) {
+        VISIBILITY_OCCLUSION_GRID_PC *grid = (VISIBILITY_OCCLUSION_GRID_PC *)result->occlusion_data;
+        f32 grid_x, grid_z;
+        i32 column, row, cell_index;
+        u8 *cell, *output, *end, *input;
+        if (global_camera.mtx.m30 < grid->min_x || global_camera.mtx.m30 > grid->max_x)
+            return;
+        if (global_camera.mtx.m32 < grid->min_z || global_camera.mtx.m32 > grid->max_z)
+            return;
+        grid_z = (global_camera.mtx.m32 - grid->min_z) * grid->scale_z;
+        row = VisibilityFloorPc(grid_z);
+        grid_x = (global_camera.mtx.m30 - grid->min_x) * grid->scale_x;
+        column = VisibilityFloorPc(grid_x);
+        cell_index = row * grid->width + column;
+        cell = grid->cells[cell_index];
+        result->instance_tree_bits = cell;
+        VisibilityUsingOcclusionPc = cell != NULL;
+        if (grid->mode != 1 || result->instance_tree_bits == NULL)
+            return;
+        output = VISIBILITY_OCCLUSION_OUTPUT_PC;
+        result->instance_tree_bits = output;
+        if (cell_index == VisibilityCurrentViewBoxPc)
+            return;
+        VisibilityCurrentViewBoxPc = cell_index;
+        input = grid->cells[cell_index];
+        end = output + grid->output_size;
+        while (output < end) {
+            u8 command = *input++;
+            u8 length = command >> 2;
+            u8 kind = command & 3;
+            if (kind <= 1) {
+                memset(output, (u8)-kind, length);
+            } else {
+                PCByteCopy_candidate(output, input, length);
+                input += length;
+            }
+            output += length;
+        }
+    }
+
+    void NuHtmlBitmap(char *filename, i32 width, i32 height, char *caption, char *source) {
+        char tag[256];
+        NuHtmlWrite("<P>");
+        if (height != 0 && width != 0) {
+            sprintf(tag, "<IMG ALIGN=\"left\" HEIGHT=\"%d\" WIDTH=\"%d\" SRC=\"%s\">", height, width, filename);
+        } else {
+            sprintf(tag, "<IMG ALIGN=\"left\" SRC=\"%s\">", filename);
+        }
+        NuHtmlWrite(tag);
+        if (caption != NULL) {
+            NuHtmlWrite(caption);
+        }
+        NuHtmlWrite("<BR CLEAR=\"all\"> <P>&nbsp;<P>");
+        if (!(source != NULL && NuStrCmp(filename, source) != 0)) {
+            return;
+        }
+        NuFileCopy(filename, source);
+    }
+
+    void NuHtmlTitle(char *title) {
+        NuHtmlWrite("<HR><Center><B>");
+        NuHtmlWrite(title);
+        NuHtmlWrite("</B></Center><HR>");
+        NuHtmlWrite("<P><P>");
+    }
+
+    VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *scene, void *context) {
+        VISIBILITY_SCENE_READER_PC *view = (VISIBILITY_SCENE_READER_PC *)scene;
+        VISIBILITY_RESULT_READER_PC *result;
+        if (context == NULL || VisibilityEvaluateEnabledPc == 0)
+            return NULL;
+        NuCameraLock(VisibilityCameraLockPc);
+        result = &view->result;
+        result->context = NULL;
+        result->instance_tree_bits = NULL;
+        if (result->source_scene != NULL)
+            result->instance_count = ((VISIBILITY_SCENE_READER_PC *)result->source_scene)->instance_count;
+        else
+            result->instance_count = view->instance_count;
+        result->flags &= ~0x15u;
+        VisibilityLoadedOcclusionPc = 1;
+        if (VisibilityOcclusionEnabledPc != 0 && result->occlusion_data != NULL)
+            NuVisiOcclusion(result);
+        if (result->portal_marker != NULL && PCPortalsEnabled != 0) {
+            NuPortalVisibility(scene);
+        } else if (result->instance_tree != NULL && VisibilityInstanceTreeEnabledPc != 0) {
+            result->context = context;
+            NuVisiInstTree(result, scene);
+            result->flags |= 1;
+        }
+        if (NuPortalCameraSelectPc == 1)
+            NuCameraSet(&NuPortalDebugCameraPc);
+        return result;
+    }
+
+    typedef struct visibility_tree_node_pc_s {
+        u16 bounds_index;
+        u16 subtree_instance_count;
+        u16 child_count;
+        u16 child_first;
+        u16 instance_count;
+        u16 instance_first;
+    } VISIBILITY_TREE_NODE_PC;
+    typedef struct visibility_tree_bounds_pc_s {
+        NUVEC center;
+        u8 unknown_0c[4];
+        NUVEC extent;
+        u8 unknown_1c[4];
+    } VISIBILITY_TREE_BOUNDS_PC;
+    typedef struct visibility_tree_reader_pc_s {
+        u8 unknown_00[8];
+        u16 *instance_ids;
+        VISIBILITY_TREE_BOUNDS_PC *instance_bounds;
+        u8 unknown_10[4];
+        VISIBILITY_TREE_NODE_PC *nodes;
+        VISIBILITY_TREE_BOUNDS_PC *node_bounds;
+        u16 root_count;
+        u8 unknown_1e[2];
+        u16 *root_indices;
+        f32 *root_far_distance;
+    } VISIBILITY_TREE_READER_PC;
+    typedef struct visibility_extent_scratch_pc_s {
+        NUVEC xyz;
+        f32 unknown_w;
+    } VISIBILITY_EXTENT_SCRATCH_PC;
+    STATIC_ASSERT(sizeof(VISIBILITY_TREE_NODE_PC) == 12);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, subtree_instance_count) == 2);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, child_count) == 4);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, child_first) == 6);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, instance_count) == 8);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_NODE_PC, instance_first) == 10);
+    STATIC_ASSERT(sizeof(VISIBILITY_TREE_BOUNDS_PC) == 32);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_BOUNDS_PC, extent) == 16);
+    STATIC_ASSERT(sizeof(VISIBILITY_TREE_READER_PC) == 40);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, instance_ids) == 8);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, instance_bounds) == 12);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, nodes) == 20);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, node_bounds) == 24);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, root_count) == 28);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, root_indices) == 32);
+    STATIC_ASSERT(offsetof(VISIBILITY_TREE_READER_PC, root_far_distance) == 36);
+    STATIC_ASSERT(sizeof(VISIBILITY_EXTENT_SCRATCH_PC) == 16);
+    STATIC_ASSERT(offsetof(VISIBILITY_EXTENT_SCRATCH_PC, unknown_w) == 12);
+    extern i32 VisibilityTreeInitialisedPc;
+    extern VISIBILITY_RESULT_READER_PC *VisibilityCurrentResultPc;
+    extern NUMTX VisibilityZeroMatrixTemplatePc;
+    extern NUMTX VisibilityPrimaryPlaneMatrixPc;
+    extern NUMTX VisibilityAlternatePlaneMatrixPc;
+    extern NUMTX VisibilityPrimaryWorldMatrixPc;
+    extern NUMTX VisibilityAlternateWorldMatrixPc;
+    extern NUMTX VisibilityPrimaryAbsoluteMatrixPc;
+    extern NUMTX VisibilityAlternateAbsoluteMatrixPc;
+    extern NUPLANE VisibilityDepthPlanePc;
+    extern NUPLANE VisibilityAbsoluteDepthPlanePc;
+
+    extern f32 VisibilityAlternateHeightPc;
+
+/* Preserve the native f32 load/store before clearing the sign, including NaNs. */
+#define VISIBILITY_ABSOLUTE_COMPONENT_PC(destination, source)                                                          \
+    do {                                                                                                               \
+        union {                                                                                                        \
+            f32 value;                                                                                                 \
+            u32 bits;                                                                                                  \
+        } storage;                                                                                                     \
+        u32 bits;                                                                                                      \
+        storage.value = (source);                                                                                      \
+        bits = storage.bits;                                                                                           \
+        bits &= 0x7fffffff;                                                                                            \
+        storage.bits = bits;                                                                                           \
+        (destination) = storage.value;                                                                                 \
+    } while (0)
+
+    static __declspec(noinline) void VisibilityAbsoluteFourPc(NUVEC4 *destination, NUVEC4 *source) {
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->x, source->x);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->y, source->y);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->z, source->z);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(destination->w, source->w);
+    }
+
+    static void VisibilityTransformFourPc(NUVEC4 *out, NUVEC *point, NUMTX *matrix) {
+        out->x = matrix->m10 * point->y + point->x * matrix->m00 + matrix->m20 * point->z + matrix->m30;
+        out->y = matrix->m01 * point->x + matrix->m11 * point->y + matrix->m21 * point->z + matrix->m31;
+        out->z = matrix->m02 * point->x + matrix->m12 * point->y + matrix->m22 * point->z + matrix->m32;
+        out->w = matrix->m03 * point->x + matrix->m13 * point->y + matrix->m23 * point->z + matrix->m33;
+    }
+
+    static void VisibilityTreeInitialisePc(void) {
+        f32 near_distance = global_camera.near_clip;
+        f32 near_squared;
+        VisibilityTreeInitialisedPc = 1;
+        near_squared = near_distance * near_distance;
+        {
+            f32 horizontal, vertical, squared, inverse_horizontal, inverse_vertical;
+            horizontal = zx * near_distance;
+            vertical = near_distance * zy;
+            squared = horizontal * horizontal + near_squared;
+            inverse_horizontal = 1.0f / NuFsqrt(squared);
+            squared = vertical * vertical + near_squared;
+            inverse_vertical = 1.0f / NuFsqrt(squared);
+            VisibilityZeroMatrixPc(&VisibilityPrimaryPlaneMatrixPc);
+            VisibilityPrimaryPlaneMatrixPc.m00 = -near_distance * inverse_horizontal;
+            VisibilityPrimaryPlaneMatrixPc.m20 = -horizontal * inverse_horizontal;
+            VisibilityPrimaryPlaneMatrixPc.m01 = -VisibilityPrimaryPlaneMatrixPc.m00;
+            VisibilityPrimaryPlaneMatrixPc.m21 = VisibilityPrimaryPlaneMatrixPc.m20;
+            VisibilityPrimaryPlaneMatrixPc.m12 = near_distance * inverse_vertical;
+            VisibilityPrimaryPlaneMatrixPc.m22 = -vertical * inverse_vertical;
+            VisibilityPrimaryPlaneMatrixPc.m13 = -VisibilityPrimaryPlaneMatrixPc.m12;
+            VisibilityPrimaryPlaneMatrixPc.m23 = VisibilityPrimaryPlaneMatrixPc.m22;
+        }
+        {
+            f32 horizontal, vertical, squared, inverse_horizontal, inverse_vertical;
+            horizontal = VISIBILITY_ALTERNATE_WIDTH_PC * near_distance;
+            vertical = near_distance * VisibilityAlternateHeightPc;
+            squared = horizontal * horizontal + near_squared;
+            inverse_horizontal = 1.0f / NuFsqrt(squared);
+            squared = vertical * vertical + near_squared;
+            inverse_vertical = 1.0f / NuFsqrt(squared);
+            VisibilityZeroMatrixPc(&VisibilityAlternatePlaneMatrixPc);
+            VisibilityAlternatePlaneMatrixPc.m00 = -near_distance * inverse_horizontal;
+            VisibilityAlternatePlaneMatrixPc.m20 = -horizontal * inverse_horizontal;
+            VisibilityAlternatePlaneMatrixPc.m01 = -VisibilityAlternatePlaneMatrixPc.m00;
+            VisibilityAlternatePlaneMatrixPc.m21 = VisibilityAlternatePlaneMatrixPc.m20;
+            VisibilityAlternatePlaneMatrixPc.m12 = near_distance * inverse_vertical;
+            VisibilityAlternatePlaneMatrixPc.m22 = -vertical * inverse_vertical;
+            VisibilityAlternatePlaneMatrixPc.m13 = -VisibilityAlternatePlaneMatrixPc.m12;
+            VisibilityAlternatePlaneMatrixPc.m23 = VisibilityAlternatePlaneMatrixPc.m22;
+        }
+    }
+
+    static void VisibilityTreePreparePc(void) {
+        f32 distance;
+        NuMtxMulH(&VisibilityPrimaryWorldMatrixPc, &vmtx, &VisibilityPrimaryPlaneMatrixPc);
+        NuMtxMulH(&VisibilityAlternateWorldMatrixPc, &vmtx, &VisibilityAlternatePlaneMatrixPc);
+        memcpy(&VisibilityDepthPlanePc, &global_camera.mtx.m20, sizeof(NUVEC));
+        distance = global_camera.mtx.m21 * global_camera.mtx.m31 + global_camera.mtx.m20 * global_camera.mtx.m30 +
+                   global_camera.mtx.m22 * global_camera.mtx.m32;
+        VisibilityDepthPlanePc.d = -distance;
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.a, VisibilityDepthPlanePc.a);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.b, VisibilityDepthPlanePc.b);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.c, VisibilityDepthPlanePc.c);
+        VisibilityAbsoluteDepthPlanePc.d = 0.0f;
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m00, VisibilityPrimaryWorldMatrixPc.m00);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m01, VisibilityPrimaryWorldMatrixPc.m01);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m02, VisibilityPrimaryWorldMatrixPc.m02);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityPrimaryAbsoluteMatrixPc.m03, VisibilityPrimaryWorldMatrixPc.m03);
+        VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityPrimaryAbsoluteMatrixPc.m10,
+                                 (NUVEC4 *)&VisibilityPrimaryWorldMatrixPc.m10);
+        VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityPrimaryAbsoluteMatrixPc.m20,
+                                 (NUVEC4 *)&VisibilityPrimaryWorldMatrixPc.m20);
+        VisibilityPrimaryAbsoluteMatrixPc.m30 = 0.0f;
+        VisibilityPrimaryAbsoluteMatrixPc.m31 = 0.0f;
+        VisibilityPrimaryAbsoluteMatrixPc.m32 = 0.0f;
+        VisibilityPrimaryAbsoluteMatrixPc.m33 = 0.0f;
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m00, VisibilityAlternateWorldMatrixPc.m00);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m01, VisibilityAlternateWorldMatrixPc.m01);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m02, VisibilityAlternateWorldMatrixPc.m02);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAlternateAbsoluteMatrixPc.m03, VisibilityAlternateWorldMatrixPc.m03);
+        VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityAlternateAbsoluteMatrixPc.m10,
+                                 (NUVEC4 *)&VisibilityAlternateWorldMatrixPc.m10);
+        VisibilityAbsoluteFourPc((NUVEC4 *)&VisibilityAlternateAbsoluteMatrixPc.m20,
+                                 (NUVEC4 *)&VisibilityAlternateWorldMatrixPc.m20);
+        VisibilityAlternateAbsoluteMatrixPc.m30 = 0.0f;
+        VisibilityAlternateAbsoluteMatrixPc.m31 = 0.0f;
+        VisibilityAlternateAbsoluteMatrixPc.m32 = 0.0f;
+        VisibilityAlternateAbsoluteMatrixPc.m33 = 0.0f;
+    }
+
+    void __cdecl NuCameraBuildClipPlanes(void) {
+        f32 near_dist;
+        f32 near_dist_sq;
+
+        f32 left_right;
+        f32 top_bottom;
+
+        f32 left_right_inv;
+        f32 top_bottom_inv;
+
+        __declspec(align(16)) NUMTX frustum_planes;
+        __declspec(align(16)) NUMTX scissor_planes;
+
+        f32 dot;
+
+        near_dist = global_camera.near_clip;
+        near_dist_sq = near_dist * near_dist;
+
+        // Build the frustum planes.
+        left_right = zx * near_dist;
+        top_bottom = zy * near_dist;
+
+        left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
+        top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
+
+        VisibilityZeroMatrixPc(&frustum_planes);
+
+        frustum_planes.m00 = -near_dist * left_right_inv;
+        frustum_planes.m20 = left_right * left_right_inv;
+
+        frustum_planes.m01 = -frustum_planes.m00;
+        frustum_planes.m21 = frustum_planes.m20;
+
+        frustum_planes.m12 = -near_dist * top_bottom_inv;
+        frustum_planes.m22 = top_bottom * top_bottom_inv;
+
+        frustum_planes.m13 = -frustum_planes.m12;
+        frustum_planes.m23 = frustum_planes.m22;
+
+        // Build the scissor planes.
+        left_right = VISIBILITY_ALTERNATE_WIDTH_PC * near_dist;
+        top_bottom = VisibilityAlternateHeightPc * near_dist;
+
+        left_right_inv = 1.0f / NuFsqrt(left_right * left_right + near_dist_sq);
+        top_bottom_inv = 1.0f / NuFsqrt(top_bottom * top_bottom + near_dist_sq);
+
+        VisibilityZeroMatrixPc(&scissor_planes);
+
+        scissor_planes.m00 = -near_dist * left_right_inv;
+        scissor_planes.m20 = left_right * left_right_inv;
+
+        scissor_planes.m01 = -scissor_planes.m00;
+        scissor_planes.m21 = scissor_planes.m20;
+
+        scissor_planes.m12 = -near_dist * top_bottom_inv;
+        scissor_planes.m22 = top_bottom * top_bottom_inv;
+
+        scissor_planes.m13 = -scissor_planes.m12;
+        scissor_planes.m23 = scissor_planes.m22;
+
+        NuMtxMulH(&AxisClipFrustumPlanesPc, &vmtx, &frustum_planes);
+        NuMtxMulH(&AxisClipScissorPlanesPc, &vmtx, &scissor_planes);
+
+        dot = global_camera.mtx.m20 * global_camera.mtx.m30 + global_camera.mtx.m21 * global_camera.mtx.m31 +
+              global_camera.mtx.m22 * global_camera.mtx.m32;
+
+        memcpy(&CameraNearClipPlanePc, &global_camera.mtx.m20, sizeof(NUVEC));
+        CameraNearClipPlanePc.w = -dot - global_camera.near_clip;
+
+        AxisClipNearFarPlanesPc.m00 = -global_camera.mtx.m20;
+        AxisClipNearFarPlanesPc.m10 = -global_camera.mtx.m21;
+        AxisClipNearFarPlanesPc.m20 = -global_camera.mtx.m22;
+        AxisClipNearFarPlanesPc.m30 = dot + global_camera.far_clip;
+
+        AxisClipNearFarPlanesPc.m01 = CameraNearClipPlanePc.x;
+        AxisClipNearFarPlanesPc.m11 = CameraNearClipPlanePc.y;
+        AxisClipNearFarPlanesPc.m21 = CameraNearClipPlanePc.z;
+        AxisClipNearFarPlanesPc.m31 = CameraNearClipPlanePc.w;
+
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m02, AxisClipNearFarPlanesPc.m00);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m12, AxisClipNearFarPlanesPc.m10);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m22, AxisClipNearFarPlanesPc.m20);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m32, AxisClipNearFarPlanesPc.m30);
+
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m03, AxisClipNearFarPlanesPc.m01);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m13, AxisClipNearFarPlanesPc.m11);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m23, AxisClipNearFarPlanesPc.m21);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m33, AxisClipNearFarPlanesPc.m31);
+
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m00, AxisClipFrustumPlanesPc.m00);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m01, AxisClipFrustumPlanesPc.m01);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m02, AxisClipFrustumPlanesPc.m02);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsFrustumPlanesPc.m03, AxisClipFrustumPlanesPc.m03);
+
+        VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsFrustumPlanesPc.m10, (NUVEC4 *)&AxisClipFrustumPlanesPc.m10);
+
+        VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsFrustumPlanesPc.m20, (NUVEC4 *)&AxisClipFrustumPlanesPc.m20);
+
+        AxisClipAbsFrustumPlanesPc.m30 = 0.0f;
+        AxisClipAbsFrustumPlanesPc.m31 = 0.0f;
+        AxisClipAbsFrustumPlanesPc.m32 = 0.0f;
+        AxisClipAbsFrustumPlanesPc.m33 = 0.0f;
+
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m00, AxisClipScissorPlanesPc.m00);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m01, AxisClipScissorPlanesPc.m01);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m02, AxisClipScissorPlanesPc.m02);
+        VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipAbsScissorPlanesPc.m03, AxisClipScissorPlanesPc.m03);
+
+        VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsScissorPlanesPc.m10, (NUVEC4 *)&AxisClipScissorPlanesPc.m10);
+
+        VisibilityAbsoluteFourPc((NUVEC4 *)&AxisClipAbsScissorPlanesPc.m20, (NUVEC4 *)&AxisClipScissorPlanesPc.m20);
+
+        AxisClipAbsScissorPlanesPc.m30 = 0.0f;
+        AxisClipAbsScissorPlanesPc.m31 = 0.0f;
+        AxisClipAbsScissorPlanesPc.m32 = 0.0f;
+        AxisClipAbsScissorPlanesPc.m33 = 0.0f;
+    }
+
+#undef VISIBILITY_ABSOLUTE_COMPONENT_PC
+
+    /* Held original defect: native three-component extent writer leaves the fourth
+     * local component untouched before the four-column clipping comparisons.
+     * No zero initialization or substitute four-component provider is invented. */
+    i32 VisibilityTreeClipNodePc(NUVEC *center, NUVEC *extent, f32 far_distance, i32 instance) {
+        __declspec(align(16)) NUVEC4 projected;
+        VISIBILITY_EXTENT_SCRATCH_PC projected_extent;
+        f32 radius, distance, far_side, near_side;
+        radius = extent->y * VisibilityAbsoluteDepthPlanePc.b + extent->x * VisibilityAbsoluteDepthPlanePc.a +
+                 extent->z * VisibilityAbsoluteDepthPlanePc.c;
+        distance = center->y * VisibilityDepthPlanePc.b + center->x * VisibilityDepthPlanePc.a +
+                   center->z * VisibilityDepthPlanePc.c;
+        distance += VisibilityDepthPlanePc.d;
+        far_side = distance - far_distance;
+        near_side = distance - global_camera.near_clip;
+        if (far_side > radius || near_side < -radius)
+            return 0;
+        VisibilityTransformFourPc(&projected, center, &VisibilityPrimaryWorldMatrixPc);
+        NuVecMtxTransform(&projected_extent.xyz, extent, &VisibilityPrimaryAbsoluteMatrixPc);
+        if (projected.x > projected_extent.xyz.x || projected.y > projected_extent.xyz.y ||
+            projected.z > projected_extent.xyz.z || projected.w > projected_extent.unknown_w)
+            return 0;
+        if (projected.x > -projected_extent.xyz.x || projected.y > -projected_extent.xyz.y ||
+            projected.z > -projected_extent.xyz.z || projected.w > -projected_extent.unknown_w) {
+            if (instance == 0)
+                return 2;
+            VisibilityTransformFourPc(&projected, center, &VisibilityAlternateWorldMatrixPc);
+            NuVecMtxTransform(&projected_extent.xyz, extent, &VisibilityAlternateAbsoluteMatrixPc);
+            if (projected.x > projected_extent.xyz.x || projected.y > projected_extent.xyz.y ||
+                projected.z > projected_extent.xyz.z || projected.w > projected_extent.unknown_w)
+                return 0;
+            if (projected.x > -projected_extent.xyz.x || projected.y > -projected_extent.xyz.y ||
+                projected.z > -projected_extent.xyz.z || projected.w > -projected_extent.unknown_w)
+                return 2;
+            return 1;
+        }
+        if (instance != 0)
+            return 1;
+        if (far_side > -radius)
+            return 2;
+        if (near_side < radius)
+            return 2;
+        return 1;
+    }
+
+    static void VisibilityTreeWalkPc(i32 root_index, VISIBILITY_TREE_READER_PC *tree) {
+        VISIBILITY_TREE_NODE_PC *work[96];
+        VISIBILITY_TREE_NODE_PC **cursor = work + 1;
+        f32 far_distance;
+        work[0] = &tree->nodes[tree->root_indices[root_index]];
+        far_distance = tree->root_far_distance[root_index];
+        if (far_distance == 0.0f)
+            far_distance = global_camera.far_clip;
+        do {
+            VISIBILITY_TREE_NODE_PC *node = *--cursor;
+            VISIBILITY_TREE_BOUNDS_PC *bounds = &tree->node_bounds[node->bounds_index];
+            i32 clip = VisibilityTreeClipNodePc(&bounds->center, &bounds->extent, far_distance, 0);
+            if (clip == 0)
+                continue;
+            if (clip == 1) {
+                u16 *id = tree->instance_ids + node->instance_first;
+                u16 *end = id + node->subtree_instance_count;
+                while (id != end) {
+                    u16 index = *id++;
+                    ((u8 *)VisibilityCurrentResultPc->context)[index >> 2] |= (u8)(1 << ((index & 3) * 2));
+                }
+            } else {
+                VISIBILITY_TREE_NODE_PC *child;
+                VISIBILITY_TREE_NODE_PC *child_end;
+                u16 *id;
+                u16 *end;
+                VISIBILITY_TREE_BOUNDS_PC *instance_bounds;
+                if (node->child_count > 0) {
+                    child = tree->nodes + node->child_first;
+                    child_end = child + node->child_count;
+                    while (child != child_end)
+                        *cursor++ = child++;
+                }
+                if (node->instance_count > 0) {
+                    id = tree->instance_ids + node->instance_first;
+                    end = id + node->instance_count;
+                    instance_bounds = tree->instance_bounds + node->instance_first;
+                    while (id != end) {
+                        u16 index = *id++;
+                        i32 instance_clip = VisibilityTreeClipNodePc(&instance_bounds->center, &instance_bounds->extent,
+                                                                     far_distance, 1);
+                        ((u8 *)VisibilityCurrentResultPc->context)[index >> 2] |=
+                            (u8)(instance_clip << ((index & 3) * 2));
+                        ++instance_bounds;
+                    }
+                }
+            }
+        } while (cursor != work);
+    }
+
+    void __cdecl NuVisiInstTree(VISIBILITY_RESULT_READER_PC *result, NUGSCN *scene) {
+        i32 enabled = result->instance_tree != NULL && VisibilityInstanceTreeEnabledPc != 0;
+        i32 root;
+        VISIBILITY_TREE_READER_PC *tree;
+        (void)scene;
+        ((VISIBILITY_TREE_FLAG_WORD_PC *)&result->flags)->bits.instance_tree = enabled;
+        if ((result->flags & 0x10u) == 0)
+            return;
+        VisibilityCurrentResultPc = result;
+        if (VisibilityTreeInitialisedPc == 0)
+            VisibilityTreeInitialisePc();
+        VisibilityTreePreparePc();
+        tree = (VISIBILITY_TREE_READER_PC *)result->instance_tree;
+        for (root = (i32)tree->root_count - 1; root >= 0; --root)
+            VisibilityTreeWalkPc(root, (VISIBILITY_TREE_READER_PC *)result->instance_tree);
+    }
+} // extern "C"
+
+/* nuspecial */
+extern "C" {
+    extern f32 __cdecl NuAnimEndFrameOld(void *animation_data);
+
+    extern i32 nuspecial_draw_state;
+    extern i32 nuspecial_const_alpha_enabled;
+    extern i32 nuspecial_const_tint_enabled;
+    extern f32 nuspecial_const_alpha;
+    extern NUVEC nuspecial_const_tint;
+
+    STATIC_ASSERT(sizeof(NUINSTANCE) == 0x50);
+    STATIC_ASSERT(offsetof(NUINSTANCE, object_index) == 0x40);
+    STATIC_ASSERT(offsetof(NUINSTANCE, flags) == 0x44);
+    STATIC_ASSERT(offsetof(NUINSTANCE, animation) == 0x48);
+    STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, instance) == 0x40);
+    STATIC_ASSERT(offsetof(NUSPECIAL_LEGACY_PC, flags) == 0x48);
+    STATIC_ASSERT(offsetof(NUINSTANIM, flags) == 0x50);
+    STATIC_ASSERT(offsetof(NUINSTANIM, animation_index) == 0x5c);
+    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, draw_matrix) == 0x40);
+    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, center) == 0xa0);
+    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, radius) == 0xac);
+    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, clip_objects) == 0xb0);
+    STATIC_ASSERT(offsetof(NUDISPLAY_SPECIAL_PC, instance_animation) == 0xc4);
+    STATIC_ASSERT(sizeof(NUGOBJ) == 0x50);
+    STATIC_ASSERT(offsetof(NUGOBJ, origin_radius) == 0x14);
+    STATIC_ASSERT(offsetof(NUGOBJ, bounds_min) == 0x1c);
+    STATIC_ASSERT(offsetof(NUGOBJ, center) == 0x34);
+    STATIC_ASSERT(offsetof(NUGOBJ, radius) == 0x40);
+    STATIC_ASSERT(offsetof(NUGOBJ, next) == 0x4c);
+    STATIC_ASSERT(offsetof(NUGSCN, num_objects) == 0x14);
+    STATIC_ASSERT(offsetof(NUGSCN, objects) == 0x18);
+    STATIC_ASSERT(offsetof(NUGSCN, num_instances) == 0x1c);
+    STATIC_ASSERT(offsetof(NUGSCN, display_list) == 0x110);
+    STATIC_ASSERT(offsetof(NUGSCN, end_frame_lookup) == 0x1e0);
+
+#define SPECIAL_LEGACY(handle) ((NUSPECIAL_LEGACY_PC *)(handle)->special)
+#define SPECIAL_DISPLAY(handle) ((NUDISPLAY_SPECIAL_PC *)(handle)->display_special)
+#define SPECIAL_GOBJ(handle) (((NUGSCN *)(handle)->scene)->objects[SPECIAL_LEGACY(handle)->instance->object_index])
+
+    enum {
+        NUSPECIAL_COLLISION_FLAG = 1 << 9,
+        NUSPECIAL_NO_VISIBILITY_TEST_FLAG = 1 << 7,
+        NUINSTANCE_NO_VISIBILITY_TEST_FLAG = 1 << 3
+    };
+
+    f32 __cdecl NuSpecialGetAnimEndFrame(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy;
+        NUINSTANCE *legacy_instance;
+        NUDISPLAY_SPECIAL_PC *display;
+        NUINSTANIM *animation_instance;
+        NUGSCN *fallback_table;
+        void *animation;
+        void *animation_data;
+        u32 animation_index;
+
+        if (special == NULL || special->scene == NULL) {
+            return 0.0f;
+        }
+        legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        if (legacy != NULL) {
+            legacy_instance = (NUINSTANCE *)legacy->instance;
+            animation = legacy_instance->animation;
+        } else {
+            display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+            if (display == NULL || display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
+                return 0.0f;
+            }
+            animation = display->instance_animation;
+        }
+        if (animation == NULL) {
+            return 0.0f;
+        }
+
+        animation_instance = (NUINSTANIM *)animation;
+        animation_data = ((NUGSCN *)special->scene)->instance_animation_data[animation_instance->animation_index];
+        if (animation_data != NULL) {
+            return NuAnimEndFrameOld(animation_data);
+        }
+
+        animation_index = animation_instance->flags >> 22;
+        if (animation_index == 0) {
+            return 0.0f;
+        }
+        fallback_table = (NUGSCN *)special->scene;
+        if (fallback_table->end_frame_lookup == NULL) {
+            return 0.0f;
+        }
+        return (f32)fallback_table->end_frame_lookup[animation_index - 1].end_frame;
+    }
+
+    void __cdecl NuSpecialGetRadius(NUSPECIALHANDLE *special, NUVEC *position, f32 *radius) {
+        if (special->special != NULL) {
+            *radius = SPECIAL_GOBJ(special)->radius;
+            *position = SPECIAL_GOBJ(special)->center;
+        } else {
+            *position = SPECIAL_DISPLAY(special)->center;
+            *radius = SPECIAL_DISPLAY(special)->radius;
+        }
+    }
+
+    f32 __cdecl NuSpecialGetOriginRadius(NUSPECIALHANDLE *special) {
+        if (special->special != NULL)
+            return SPECIAL_GOBJ(special)->origin_radius;
+        return NuVecMag(&SPECIAL_DISPLAY(special)->center) + SPECIAL_DISPLAY(special)->radius;
+    }
+
+    NUMTX *__cdecl NuSpecialGetMtx(NUSPECIALHANDLE *special) {
+        if (special->display_special != NULL) {
+            return special->display_special;
+        }
+        return special->special;
+    }
+
+    void __cdecl NuSpecialSetMtx(NUSPECIALHANDLE *special, const NUMTX *matrix) {
+        if (special->display_special != NULL) {
+            *special->display_special = *matrix;
+        } else {
+            *special->special = *matrix;
+        }
+    }
+
+    i32 __cdecl NuSpecialExistsFn(NUSPECIALHANDLE *special) {
+        if (special != NULL) {
+            if (special->special != NULL || special->display_special != NULL) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    char *__cdecl NuSpecialGetName(NUSPECIALHANDLE *special) {
+        NUDISPLAY_SPECIAL_PC *display;
+        NUSPECIAL_LEGACY_PC *legacy;
+        if (special == NULL) {
+            return NULL;
+        }
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        if (display != NULL) {
+            return display->name;
+        }
+        legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        return legacy != NULL ? legacy->name : NULL;
+    }
+
+    i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special) {
+        if (special->display_special != NULL) {
+            if (SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 &&
+                SPECIAL_DISPLAY(special)->instance_animation != NULL)
+                return 1;
+        } else if (special->special != NULL && SPECIAL_LEGACY(special)->instance->animation != NULL) {
+            return 1;
+        }
+        return 0;
+    }
+
+    NUVEC *__cdecl NuSpecialGetPos(NUSPECIALHANDLE *special) {
+        if (special->display_special != NULL)
+            return (NUVEC *)&special->display_special->m30;
+        if (special->special != NULL)
+            return (NUVEC *)&special->special->m30;
+        return NULL;
+    }
+
+    NUVEC *__cdecl NuSpecialGetDrawPos(NUSPECIALHANDLE *special) {
+        if (special->display_special != NULL) {
+            if (SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 &&
+                SPECIAL_DISPLAY(special)->instance_animation != NULL)
+                return (NUVEC *)&SPECIAL_DISPLAY(special)->instance_animation->matrix.m30;
+            return (NUVEC *)&SPECIAL_DISPLAY(special)->draw_matrix.m30;
+        }
+        if (special->special != NULL) {
+            if (SPECIAL_LEGACY(special)->instance->animation != NULL)
+                return (NUVEC *)&SPECIAL_LEGACY(special)->instance->animation->matrix.m30;
+            return (NUVEC *)&SPECIAL_LEGACY(special)->instance->matrix.m30;
+        }
+        return NULL;
+    }
+
+    NUMTX *__cdecl NuSpecialGetDrawMtx(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        NUINSTANCE *instance_view;
+        NUDISPLAY_SPECIAL_PC *display;
+        NUMTX *instance;
+        NUMTX *draw_matrix;
+        if (legacy != NULL) {
+            instance = (NUMTX *)legacy->instance;
+            instance_view = (NUINSTANCE *)legacy->instance;
+            draw_matrix = &instance_view->animation->matrix;
+            return draw_matrix != NULL ? draw_matrix : instance;
+        }
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        if (display != NULL) {
+            if (display->instance_animation == (void *)-1 || display->instance_animation == NULL) {
+                return &display->draw_matrix;
+            }
+            return (NUMTX *)display->instance_animation;
+        }
+        return NULL;
+    }
+
+    NUMTX *__cdecl NuSpecialGetInstanceMtx(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        NUDISPLAY_SPECIAL_PC *display;
+        if (legacy != NULL) {
+            return (NUMTX *)legacy->instance;
+        }
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        return display != NULL ? &display->draw_matrix : NULL;
+    }
+
+    i32 __cdecl NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix) {
+        if (special->special != NULL)
+            return NuCameraClipTestExtents(&SPECIAL_GOBJ(special)->bounds_min, &SPECIAL_GOBJ(special)->bounds_max,
+                                           matrix, 0.0f, 0);
+        return NuCameraClipTestExtents((NUVEC *)&SPECIAL_DISPLAY(special)->bounds_min,
+                                       (NUVEC *)&SPECIAL_DISPLAY(special)->bounds_max, matrix, 0.0f, 0);
+    }
+
+    void *__cdecl NuSpecialGetInstAnim(NUSPECIALHANDLE *special) {
+        if (special->special != NULL)
+            return SPECIAL_LEGACY(special)->instance->animation;
+        if (special->display_special != NULL && SPECIAL_DISPLAY(special)->instance_animation != (NUINSTANIM *)-1 &&
+            SPECIAL_DISPLAY(special)->instance_animation != NULL)
+            return SPECIAL_DISPLAY(special)->instance_animation;
+        return NULL;
+    }
+
+    void __cdecl NuSpecialSetCollision(NUSPECIALHANDLE *special, i32 enabled) {
+        if (special == NULL || special->scene == NULL)
+            return;
+        if (special->special != NULL) {
+            if (enabled != 0)
+                SPECIAL_LEGACY(special)->flags |= NUSPECIAL_COLLISION_FLAG;
+            else
+                SPECIAL_LEGACY(special)->flags &= ~NUSPECIAL_COLLISION_FLAG;
+        } else if (special->display_special != NULL) {
+            if (enabled != 0)
+                SPECIAL_DISPLAY(special)->flags |= NUSPECIAL_COLLISION_FLAG;
+            else
+                SPECIAL_DISPLAY(special)->flags &= ~NUSPECIAL_COLLISION_FLAG;
+        }
+    }
+
+    i32 __cdecl NuSpecialGetCollision(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy;
+        NUDISPLAY_SPECIAL_PC *display;
+        if (special == NULL || special->scene == NULL) {
+            return 0;
+        }
+        legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        if (legacy != NULL) {
+            return legacy->flags & NUSPECIAL_COLLISION_FLAG;
+        }
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        return display != NULL ? display->flags & NUSPECIAL_COLLISION_FLAG : 0;
+    }
+
+    void __cdecl NuSpecialSetNoVisiTest(NUSPECIALHANDLE *special, i32 enabled) {
+        if (special->scene == NULL)
+            return;
+        if (special->special != NULL) {
+            SPECIAL_LEGACY(special)->instance->no_visibility_test = enabled;
+        } else if (special->display_special != NULL) {
+            if (enabled != 0)
+                SPECIAL_DISPLAY(special)->flags |= NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
+            else
+                SPECIAL_DISPLAY(special)->flags &= ~NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
+        }
+    }
+
+    i32 __cdecl NuSpecialGetNoVisiTestFn(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy;
+        NUINSTANCE *instance;
+        NUDISPLAY_SPECIAL_PC *display;
+        if (special->scene == NULL) {
+            return 0;
+        }
+        legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        if (legacy != NULL) {
+            instance = (NUINSTANCE *)legacy->instance;
+            return (instance->flags >> 3) & 1;
+        }
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        return display != NULL ? display->flags & NUSPECIAL_NO_VISIBILITY_TEST_FLAG : 0;
+    }
+
+    void __cdecl NuSpecialConstAlpha(i32 enabled, f32 alpha) {
+        if (enabled != 0) {
+            nuspecial_draw_state |= 1;
+            nuspecial_const_alpha = alpha;
+            nuspecial_const_alpha_enabled = enabled;
+        } else {
+            nuspecial_draw_state &= ~1;
+            nuspecial_const_alpha_enabled = 0;
+        }
+    }
+
+    void __cdecl NuSpecialConstTint(i32 enabled, const NUVEC *tint) {
+        if (enabled != 0) {
+            nuspecial_const_tint_enabled = enabled;
+            nuspecial_const_tint = *tint;
+            nuspecial_draw_state |= 2;
+        } else {
+            nuspecial_draw_state &= ~2;
+            nuspecial_const_tint_enabled = 0;
+        }
+    }
+
+    void __cdecl NuSpecialGetNext(NUSPECIALHANDLE *special) {
+        if (special->special != NULL) {
+            special->special = (NUMTX *)((NUSPECIAL_LEGACY_PC *)special->special + 1);
+        } else if (special->display_special != NULL) {
+            special->display_special = (NUMTX *)((NUDISPLAY_SPECIAL_PC *)special->display_special + 1);
+        }
+    }
+
+    /* Retail's debug print, compiled empty; varargs keeps the calls out-of-line. Callers pass anything from
+     * nothing to a format and its arguments. */
+    void __cdecl PCSpecialEmptyHandler_candidate(...) {
+    }
+
+    i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags) {
+        if (scene->specials != NULL) {
+            special->scene = scene;
+            special->special = (NUMTX *)scene->specials;
+            special->display_special = NULL;
+            return 1;
+        }
+        if (scene->display_list->special_count != 0) {
+            special->scene = scene;
+            special->special = NULL;
+            special->display_special = (NUMTX *)scene->display_list->specials;
+            return 1;
+        }
+        special->scene = NULL;
+        special->special = NULL;
+        special->display_special = NULL;
+        if (flags != 0) {
+            PCSpecialEmptyHandler_candidate();
+        }
+        return 0;
+    }
+
+    i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene) {
+        if (scene->special_count != 0)
+            return scene->special_count;
+        if (scene->display_list != NULL && scene->display_list->special_count != 0)
+            return scene->display_list->special_count;
+        return 0;
+    }
+
+    i32 __cdecl NuSpecialGetOnScreenFn(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy;
+        NUINSTANCE *instance;
+        if (special->scene != NULL && special->special != NULL) {
+            legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+            instance = (NUINSTANCE *)legacy->instance;
+            return (instance->flags >> 1) & 1;
+        }
+        return 1;
+    }
+
+    i32 __cdecl NuSpecialGetVisibilityFn(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy;
+        NUINSTANCE *instance;
+        NUDISPLAY_SPECIAL_PC *display;
+        if (special->scene == NULL) {
+            return 0;
+        }
+        legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        if (legacy != NULL) {
+            instance = (NUINSTANCE *)legacy->instance;
+            return instance->flags & 1;
+        }
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        return display != NULL ? (display->flags >> 1) & 1 : 0;
+    }
+
+    i32 __cdecl NuSpecialCompare(NUSPECIALHANDLE *first, NUSPECIALHANDLE *second) {
+        if (first->special != NULL && first->special == second->special) {
+            return 1;
+        }
+        if (first->display_special != NULL && first->display_special == second->display_special) {
+            return 1;
+        }
+        return 0;
+    }
+
+    void __cdecl NuSpecialClear(NUSPECIALHANDLE *special) {
+        special->scene = NULL;
+        special->special = NULL;
+        special->display_special = NULL;
+    }
+
+    i32 __cdecl ShadowSetClipStatePc(i32 enabled, i32 state) {
+        i32 previous = PCSpecialClipState;
+        PCSpecialClipState = enabled == 0 ? -1 : state;
+        return previous;
+    }
+
+    void __cdecl ShadowMapEnablePc(struct PC_SPECIAL_SHADOW_LIGHT *light) {
+        if (PCSpecialActiveShadowLights < 4 && light->enabled != 0 && light->used_on_specials == 0) {
+            light->used_on_specials = 1;
+            PCSpecialShadowLights[PCSpecialActiveShadowLights] = light;
+            PCSpecialShadowClipResultsPresent = 0;
+            ++PCSpecialActiveShadowLights;
+        }
+    }
+
+    void __cdecl ShadowMapResetPc(void) {
+        i32 i = 0;
+        while (i != PCSpecialActiveShadowLights) {
+            PCSpecialShadowLights[i]->used_on_specials = 0;
+            ++i;
+        }
+        PCSpecialShadowClipResultsPresent = 0;
+        PCSpecialActiveShadowLights = 0;
+    }
+
+    void __cdecl ShadowResetClipResultsPc(void) {
+        PCSpecialShadowClipResultsPresent = 0;
+    }
+
+    void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *handle, i32 visible) {
+        NUDISPLAY_SPECIAL_PC *display;
+        NUDISPLAY_LIST_PC *display_list;
+
+        if (handle == NULL || handle->scene == NULL)
+            return;
+        if (handle->special != NULL) {
+            if (SPECIAL_LEGACY(handle)->instance != NULL)
+                SPECIAL_LEGACY(handle)->instance->visible = visible;
+            if (visible != 0)
+                SPECIAL_LEGACY(handle)->flags |= 0x200;
+            else
+                SPECIAL_LEGACY(handle)->flags &= ~0x200;
+            return;
+        }
+        display = SPECIAL_DISPLAY(handle);
+        if (display == NULL)
+            return;
+        if (visible != 0) {
+            display->flags |= 0x202;
+            display_list = ((NUGSCN *)handle->scene)->display_list;
+            if ((display_list->instance_visibility_enabled & 1) != 0)
+                display_list->visibility_flags[display->instance_ix] |= 1;
+        } else {
+            display->flags &= ~0x2;
+            SPECIAL_DISPLAY(handle)->flags &= ~0x200;
+            display_list = ((NUGSCN *)handle->scene)->display_list;
+            if ((display_list->instance_visibility_enabled & 1) != 0)
+                display_list->visibility_flags[display->instance_ix] &= ~1;
+        }
+    }
+
+    /* Shared private helper (native EAX source, ECX destination): component-wise |v|. */
+    static __declspec(noinline) void NuVec4AbsPrivatePc(NUVEC4 *out, const NUVEC4 *in) {
+        f32 value;
+        u32 bits;
+        value = in->x;
+        bits = *(u32 *)&value & 0x7fffffff;
+        out->x = *(f32 *)&bits;
+        value = in->y;
+        bits = *(u32 *)&value & 0x7fffffff;
+        out->y = *(f32 *)&bits;
+        value = in->z;
+        bits = *(u32 *)&value & 0x7fffffff;
+        out->z = *(f32 *)&bits;
+        value = in->w;
+        bits = *(u32 *)&value & 0x7fffffff;
+        out->w = *(f32 *)&bits;
+    }
+
+    void __cdecl NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
+        NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        NUDISPLAY_LIST_PC *display_scene = ((NUGSCN *)special->scene)->display_list;
+        __declspec(align(16)) NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
+        NUVEC4 half_extent;
+        NUVEC4 center;
+        NUVEC4 abs_row[3];
+        NUVEC4 world_extent;
+
+        half_extent.x = display->bounds_max.x - display->bounds_min.x;
+        half_extent.y = display->bounds_max.y - display->bounds_min.y;
+        half_extent.z = display->bounds_max.z - display->bounds_min.z;
+        half_extent.x *= 0.5;
+        half_extent.y *= 0.5;
+        half_extent.z *= 0.5;
+        center.x = display->bounds_max.x + display->bounds_min.x;
+        center.y = display->bounds_max.y + display->bounds_min.y;
+        center.z = display->bounds_max.z + display->bounds_min.z;
+        center.x *= 0.5;
+        center.y *= 0.5;
+        center.z *= 0.5;
+
+        {
+            f32 value;
+            u32 bits;
+            value = draw_matrix.m00;
+            bits = *(u32 *)&value & 0x7fffffff;
+            abs_row[0].x = *(f32 *)&bits;
+            value = draw_matrix.m01;
+            bits = *(u32 *)&value & 0x7fffffff;
+            abs_row[0].y = *(f32 *)&bits;
+            value = draw_matrix.m02;
+            bits = *(u32 *)&value & 0x7fffffff;
+            abs_row[0].z = *(f32 *)&bits;
+        }
+        NuVec4AbsPrivatePc(&abs_row[1], (NUVEC4 *)&draw_matrix.m10);
+        NuVec4AbsPrivatePc(&abs_row[2], (NUVEC4 *)&draw_matrix.m20);
+        world_extent.x = abs_row[0].x * half_extent.x + abs_row[1].x * half_extent.y + abs_row[2].x * half_extent.z;
+        world_extent.y = abs_row[0].y * half_extent.x + abs_row[1].y * half_extent.y + abs_row[2].y * half_extent.z;
+        world_extent.z = abs_row[0].z * half_extent.x + abs_row[1].z * half_extent.y + abs_row[2].z * half_extent.z;
+
+        NuVecMtxTransform((NUVEC *)&center, (NUVEC *)&center, &draw_matrix);
+        center.w = NuFsqrt(world_extent.x + world_extent.y + world_extent.z);
+        if ((display_scene->render_flags & 0x4000) != 0) {
+            display_scene->clip_bounds[display->instance_ix * 2] = center;
+            display_scene->clip_bounds[display->instance_ix * 2 + 1] = world_extent;
+        } else {
+            NUVEC4 minimum;
+            NUVEC4 maximum;
+            minimum.x = center.x - world_extent.x;
+            minimum.y = center.y - world_extent.y;
+            minimum.z = center.z - world_extent.z;
+            maximum.x = center.x + world_extent.x;
+            maximum.y = center.y + world_extent.y;
+            maximum.z = center.z + world_extent.z;
+            display_scene->clip_bounds[display->instance_ix * 2] = minimum;
+            display_scene->clip_bounds[display->instance_ix * 2 + 1] = maximum;
+        }
+
+        DisplayListUpdateSpecialTransformPS(special, &draw_matrix);
+    }
+
+    void __cdecl xxxNuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
+        NUDISPLAY_LIST_PC *scene = ((NUGSCN *)special->scene)->display_list;
+        NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        __declspec(align(16)) NUMTX matrix = *NuSpecialGetDrawMtx(special);
+        __declspec(align(16)) NUVEC4 corners[8];
+        __declspec(align(16)) NUVEC4 maximum;
+        __declspec(align(16)) NUVEC4 minimum;
+
+        corners[0].x = display->bounds_min.x;
+        corners[0].y = display->bounds_min.y;
+        corners[0].z = display->bounds_min.z;
+        corners[1].x = display->bounds_max.x;
+        corners[1].y = display->bounds_max.y;
+        corners[1].z = display->bounds_max.z;
+        corners[2].x = display->bounds_min.x;
+        corners[2].y = display->bounds_min.y;
+        corners[2].z = display->bounds_max.z;
+        corners[3].x = display->bounds_max.x;
+        corners[3].y = display->bounds_max.y;
+        corners[3].z = display->bounds_min.z;
+        corners[4].x = display->bounds_min.x;
+        corners[4].y = display->bounds_max.y;
+        corners[4].z = display->bounds_min.z;
+        corners[5].x = display->bounds_min.x;
+        corners[5].y = display->bounds_max.y;
+        corners[5].z = display->bounds_max.z;
+        corners[6].x = display->bounds_max.x;
+        corners[6].y = display->bounds_min.y;
+        corners[6].z = display->bounds_min.z;
+        corners[7].x = display->bounds_max.x;
+        corners[7].y = display->bounds_min.y;
+        corners[7].z = display->bounds_max.z;
+        NuVecMtxTransform((NUVEC *)&corners[0], (NUVEC *)&corners[0], &matrix);
+        NuVecMtxTransform((NUVEC *)&corners[1], (NUVEC *)&corners[1], &matrix);
+        NuVecMtxTransform((NUVEC *)&corners[2], (NUVEC *)&corners[2], &matrix);
+        NuVecMtxTransform((NUVEC *)&corners[3], (NUVEC *)&corners[3], &matrix);
+        NuVecMtxTransform((NUVEC *)&corners[4], (NUVEC *)&corners[4], &matrix);
+        NuVecMtxTransform((NUVEC *)&corners[5], (NUVEC *)&corners[5], &matrix);
+        NuVecMtxTransform((NUVEC *)&corners[6], (NUVEC *)&corners[6], &matrix);
+        NuVecMtxTransform((NUVEC *)&corners[7], (NUVEC *)&corners[7], &matrix);
+        NuVecMin((NUVEC *)&minimum, (NUVEC *)&corners[0], (NUVEC *)&corners[1]);
+        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[2]);
+        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[3]);
+        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[4]);
+        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[5]);
+        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[6]);
+        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[7]);
+        NuVecMax((NUVEC *)&maximum, (NUVEC *)&corners[0], (NUVEC *)&corners[1]);
+        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[2]);
+        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[3]);
+        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[4]);
+        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[5]);
+        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[6]);
+        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[7]);
+        if ((scene->render_flags & 0x4000) != 0) {
+            __declspec(align(16)) NUVEC4 center;
+            __declspec(align(16)) NUVEC4 extent;
+            center.x = minimum.x + maximum.x;
+            center.y = minimum.y + maximum.y;
+            center.z = minimum.z + maximum.z;
+            center.x *= 0.5f;
+            center.y *= 0.5f;
+            center.z *= 0.5f;
+            extent.x = maximum.x - minimum.x;
+            extent.y = maximum.y - minimum.y;
+            extent.z = maximum.z - minimum.z;
+            extent.x *= 0.5f;
+            extent.y *= 0.5f;
+            extent.z *= 0.5f;
+            center.w = NuFsqrt(extent.y + extent.x + extent.z);
+            scene->clip_bounds[display->instance_ix * 2] = center;
+            scene->clip_bounds[display->instance_ix * 2 + 1] = extent;
+        } else {
+            scene->clip_bounds[display->instance_ix * 2] = minimum;
+            scene->clip_bounds[display->instance_ix * 2 + 1] = maximum;
+        }
+        DisplayListUpdateSpecialTransformPS(special, &matrix);
+    }
+
+    void __cdecl NuSpecialUpdate(NUSPECIALHANDLE *special) {
+        if (special == NULL || special->display_special == NULL || special->scene == NULL)
+            return;
+        if (((NUGSCN *)special->scene)->display_list == NULL ||
+            (((NUGSCN *)special->scene)->display_list->instance_visibility_enabled & 1) == 0)
+            return;
+        SPECIAL_DISPLAY(special)->flags |= 0x400;
+        NuDisplayListUpdateSpecial(special);
+    }
+
+    i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
+        NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)handle->special;
+        i32 i;
+        if (legacy != NULL) {
+            NUGSCN *scene = (NUGSCN *)handle->scene;
+            for (i = 0; i < scene->num_instances; ++i) {
+                if (&scene->instances[i] == legacy->instance)
+                    return i;
+            }
+            return -1;
+        }
+        if (handle->display_special != NULL)
+            return ((NUDISPLAY_SPECIAL_PC *)handle->display_special)->instance_ix;
+        return -1;
+    }
+
+    i32 special_debug = 0;
+
+    /* Debug listing of a scene's specials; the retail print call is the empty handler. */
+    void __cdecl NuSpecialList(NUGSCN *scene) {
+        NUSPECIAL_LEGACY_PC *special;
+        NUDISPLAY_SPECIAL_PC *display_special;
+        i32 index;
+
+        if (scene == NULL)
+            return;
+        special = scene->specials;
+        for (index = 0; index < scene->special_count; ++index, ++special)
+            PCSpecialEmptyHandler_candidate((const char *)index, special->name);
+        if (scene->display_list != NULL) {
+            display_special = scene->display_list->specials;
+            for (index = 0; index < scene->display_list->special_count; ++index, ++display_special)
+                PCSpecialEmptyHandler_candidate((const char *)index, display_special->name);
+        }
+    }
+
+    i32 __cdecl NuSpecialFindDisplay(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
+        NUDISPLAY_SPECIAL_PC *special;
+        i32 index;
+        if (scene == NULL)
+            return 0;
+        special = scene->display_list->specials;
+        for (index = 0; index < scene->display_list->special_count; ++index, ++special) {
+            if (NuStrICmp(name, special->name) == 0) {
+                handle->scene = scene;
+                handle->display_special = (NUMTX *)special;
+                handle->special = NULL;
+                return 1;
+            }
+        }
+        if (flags != 0 && special_debug != 0) {
+            PCSpecialEmptyHandler_candidate(name);
+        }
+        handle->scene = NULL;
+        handle->special = NULL;
+        handle->display_special = NULL;
+        return 0;
+    }
+
+    i32 __cdecl NuSpecialFind(NUGSCN *scene, NUSPECIALHANDLE *handle, char *name, i32 flags) {
+        NUSPECIAL_LEGACY_PC *special;
+        i32 index;
+        (void)flags;
+        if (scene == NULL || name == NULL) {
+            handle->scene = NULL;
+            handle->special = NULL;
+            handle->display_special = NULL;
+            return 0;
+        }
+        if (scene->display_list != NULL)
+            return NuSpecialFindDisplay(scene, handle, name, 1);
+        special = scene->specials;
+        for (index = 0; index < scene->special_count; ++index, ++special) {
+            if (NuStrICmp(name, special->name) == 0) {
+                handle->scene = scene;
+                handle->special = (NUMTX *)special;
+                handle->display_special = NULL;
+                return 1;
+            }
+        }
+        handle->scene = NULL;
+        handle->special = NULL;
+        handle->display_special = NULL;
+        return 0;
+    }
+
+    i32 __cdecl NuGScnNumSpecials(NUGSCN *scene) {
+        if (scene->display_list != NULL)
+            return scene->display_list->special_count;
+        return scene->special_count;
+    }
+
+    void __cdecl NuGScnGetSpecial(NUSPECIALHANDLE *special, NUGSCN *scene, i32 index) {
+        if (scene != NULL && special != NULL) {
+            if (scene->display_list != NULL && index < scene->display_list->special_count) {
+                special->scene = scene;
+                special->special = NULL;
+                special->display_special = (NUMTX *)&scene->display_list->specials[index];
+                return;
+            }
+            if (index < scene->special_count) {
+                special->scene = scene;
+                special->special = (NUMTX *)&scene->specials[index];
+                special->display_special = NULL;
+                return;
+            }
+        }
+        special->scene = NULL;
+        special->special = NULL;
+        special->display_special = NULL;
+    }
+
+    void __cdecl NuSpecialSetDrawMtx(NUSPECIALHANDLE *special, NUMTX *matrix) {
+        NUSPECIAL_LEGACY_PC *legacy;
+        NUDISPLAY_SPECIAL_PC *display;
+        NUDISPLAY_LIST_PC *display_list;
+
+        if (special == NULL || special->scene == NULL) {
+            return;
+        }
+        legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        if (legacy != NULL) {
+            ((NUINSTANCE *)legacy->instance)->matrix = *matrix;
+            return;
+        }
+        display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+        display->draw_matrix = *matrix;
+        display_list = ((NUGSCN *)special->scene)->display_list;
+        if ((display_list->instance_visibility_enabled & 1) != 0) {
+            NuDisplayListUpdateSpecial(special);
+            ((NUDISPLAY_SPECIAL_PC *)special->display_special)->flags |= 0x400;
+        }
+    }
+
+    void __cdecl NuSpecialGetBounds(NUSPECIALHANDLE *special, NUVEC *minimum, NUVEC *maximum) {
+        NUGOBJ *object;
+        if (special->special != NULL) {
+            object = SPECIAL_GOBJ(special);
+            while (object->next != NULL)
+                object = object->next;
+            *minimum = object->bounds_min;
+            *maximum = object->bounds_max;
+        } else if (special->display_special != NULL) {
+            *minimum = *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_min;
+            *maximum = *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_max;
+        }
+    }
+
+    void __cdecl NuSpecialSetDrawPos(nuhspecial_s *special_pointer, NUVEC *position) {
+        NUSPECIALHANDLE *special = (NUSPECIALHANDLE *)special_pointer;
+        NUDISPLAY_LIST_PC *display_list;
+        if (special == NULL || special->scene == NULL)
+            return;
+        if (special->special != NULL) {
+            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m30 = position->x;
+            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m31 = position->y;
+            ((NUINSTANCE *)((NUSPECIAL_LEGACY_PC *)special->special)->instance)->matrix.m32 = position->z;
+        } else {
+            ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m30 = position->x;
+            ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m31 = position->y;
+            ((NUDISPLAY_SPECIAL_PC *)special->display_special)->draw_matrix.m32 = position->z;
+            display_list = ((NUGSCN *)special->scene)->display_list;
+            if ((display_list->instance_visibility_enabled & 1) != 0) {
+                NuDisplayListUpdateSpecial(special);
+                ((NUDISPLAY_SPECIAL_PC *)special->display_special)->flags |= 0x400;
+            }
         }
     }
 } // extern "C"
