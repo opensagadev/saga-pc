@@ -1,43 +1,6 @@
 #include "saga.h"
 #include <float.h>
 
-void __cdecl AIPathCalcExtents(AIPATH_PC *path) {
-    NUVEC delta;
-    NUVEC corner;
-    i32 index;
-    path->bounds_min.x = FLT_MAX;
-    path->bounds_min.y = FLT_MAX;
-    path->bounds_min.z = FLT_MAX;
-    path->bounds_max.x = -FLT_MAX;
-    path->bounds_max.y = -FLT_MAX;
-    path->bounds_max.z = -FLT_MAX;
-    for (index = 0; index < path->node_count; ++index) {
-        AIPATHNODE_PC *node = &path->nodes[index];
-        corner.x = node->position.x - node->radius;
-        corner.y = node->min_height;
-        corner.z = node->position.z - node->radius;
-        if (path->bounds_min.x > corner.x)
-            path->bounds_min.x = corner.x;
-        if (path->bounds_min.y > corner.y)
-            path->bounds_min.y = corner.y;
-        if (path->bounds_min.z > corner.z)
-            path->bounds_min.z = corner.z;
-        corner.x = node->radius + node->position.x;
-        corner.y = node->max_height;
-        corner.z = node->radius + node->position.z;
-        if (path->bounds_max.x < corner.x)
-            path->bounds_max.x = corner.x;
-        if (path->bounds_max.y < corner.y)
-            path->bounds_max.y = corner.y;
-        if (path->bounds_max.z < corner.z)
-            path->bounds_max.z = corner.z;
-    }
-    NuVecSub(&delta, &path->bounds_max, &path->bounds_min);
-    NuVecScale(&delta, &delta, 0.5f);
-    NuVecSub(&path->bounds_min, &path->bounds_min, &delta);
-    NuVecAdd(&path->bounds_max, &path->bounds_max, &delta);
-}
-
 typedef struct ai_control_slot_pc_s {
     NULISTLNK links;
     u8 unknown_08[0xa0];

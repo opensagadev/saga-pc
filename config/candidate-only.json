@@ -1287,7 +1287,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/aisys.c",
+   "unit": "src/gameapi/aisysall.c",
    "symbol": "_AIPathFabs",
    "kind": "function"
   },
@@ -1437,7 +1437,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/gameapi/aiscript.c",
+   "unit": "src/gameapi/aisysall.c",
    "symbol": "_AIScriptBufferAllocOrWarn",
    "kind": "function"
   },

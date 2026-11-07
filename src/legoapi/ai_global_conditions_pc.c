@@ -46,23 +46,6 @@ f32 __cdecl Condition_CurrentHintIdPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     return (f32)Hint_CurrentId();
 }
 
-f32 __cdecl Condition_NearestPlayerRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
-    NUVEC difference;
-    f32 distance = FLT_MAX;
-    if (packet != NULL && packet->owner != NULL && system != NULL) {
-        if (system->player_1 != NULL)
-            distance = NuVecDistSqr(&system->player_1->position, &packet->owner->position, &difference);
-        if (system->player_2 != NULL) {
-            f32 second = NuVecDistSqr(&system->player_2->position, &packet->owner->position, &difference);
-            distance = second < distance ? second : distance;
-        }
-        if ((f64)distance != (f64)FLT_MAX)
-            distance = NuFsqrt(distance);
-    }
-    return distance;
-}
-
 f32 __cdecl Condition_OffScreenTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                        void *argument) {
     GAMEOBJECT *object = (GAMEOBJECT *)argument;
@@ -75,13 +58,6 @@ f32 __cdecl Condition_OffScreenTimerPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
 
 f32 __cdecl Condition_CannotReachDestinationPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                                char *name, void *argument) {
-    if (packet != NULL && (packet->flags & 0x400000) != 0)
-        return 1.0f;
-    return 0.0f;
-}
-
-f32 __cdecl Condition_PathBlockedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
     if (packet != NULL && (packet->flags & 0x400000) != 0)
         return 1.0f;
     return 0.0f;
@@ -132,37 +108,6 @@ typedef struct condition_trigger_player_reader_pc_s {
     u64 membership;
 } CONDITION_TRIGGER_PLAYER_READER_PC;
 STATIC_ASSERT(offsetof(CONDITION_TRIGGER_PLAYER_READER_PC, membership) == 0x2b0);
-
-f32 __cdecl Condition_EitherPlayerInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                  char *name, void *argument) {
-    AIAREA_PC *area;
-    GAMEOBJECT *object;
-    i32 index;
-    i64 mask;
-    if (system != NULL) {
-        area = (AIAREA_PC *)argument;
-        if (area == NULL)
-            area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
-        if (area != NULL) {
-            if (system->player_1 != NULL && area->system != NULL) {
-                object = (GAMEOBJECT *)system->player_1;
-                index = (i32)(area - area->system->areas);
-                /* Retail sign-extends a 32-bit shift into the 64-bit mask. */
-                mask = (i32)(1u << index);
-                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0)
-                    return 1.0f;
-            }
-            if (system->player_2 != NULL && area->system != NULL) {
-                object = (GAMEOBJECT *)system->player_2;
-                index = (i32)(area - area->system->areas);
-                mask = (i32)(1u << index);
-                if ((((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership & mask) != 0)
-                    return 1.0f;
-            }
-        }
-    }
-    return 0.0f;
-}
 
 void *__cdecl Condition_EitherPlayerIsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL && GetNamedGameObjectCallback != NULL)
@@ -284,15 +229,6 @@ f32 __cdecl Condition_InSwampPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
         return 1.0f;
     return 0.0f;
 }
-void *__cdecl Condition_CurrentLocatorIsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    return name != NULL ? AIPathFindLocator(system, name) : NULL;
-}
-void *__cdecl Condition_PlayerInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    return name != NULL ? AISysFindArea(system, name) : NULL;
-}
-void *__cdecl Condition_OpponentInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    return name != NULL ? AISysFindArea(system, name) : NULL;
-}
 
 f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                         void *argument) {
@@ -303,22 +239,6 @@ f32 __cdecl Condition_PartyUnderCoverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     (void)argument;
     if (party_under_cover != 0)
         return 1.0f;
-    return 0.0f;
-}
-
-f32 __cdecl Condition_OriginRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
-    NUVEC *origin;
-    (void)process;
-    (void)name;
-    (void)argument;
-    if (packet != NULL) {
-        origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(system, packet) : NULL;
-        if (origin != NULL)
-            return NuVecDist(&packet->terrain_origin, origin, NULL);
-        if (system != NULL && packet->creature_index != 0xff)
-            return NuVecDist(&packet->terrain_origin, &system->creatures[packet->creature_index].position, NULL);
-    }
     return 0.0f;
 }
 
@@ -454,52 +374,6 @@ f32 __cdecl Condition_LastAttackerIsActivePlayerPc(AISYS_PC *system, AISCRIPTPRO
     object = packet->owner->objptr;
     attacker = object->last_attacker;
     if (attacker != NULL && (attacker->flags_1fc & 0x80) != 0)
-        return 1.0f;
-    return 0.0f;
-}
-
-f32 __cdecl Condition_NearestOpponentRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
-    if (packet != NULL && packet->nearest_opponent != NULL)
-        return packet->nearest_opponent_metric;
-    return FLT_MAX;
-}
-
-f32 __cdecl Condition_OpponentBelowPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
-    if (packet != NULL && packet->opponent != NULL &&
-        (f64)packet->opponent->position.y < (f64)packet->owner->position.y - (f64)0.1f)
-        return 1.0f;
-    return 0.0f;
-}
-
-f32 __cdecl Condition_OpponentOnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                       void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
-    if (packet != NULL && packet->opponent != NULL &&
-        ((((APIOBJECT_PC *)packet->opponent)->ai->path_info.flags & 1) != 0))
-        return 1.0f;
-    return 0.0f;
-}
-
-f32 __cdecl Condition_OpponentIsAThreatPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                          char *name, void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
-    if (packet != NULL && packet->opponent != NULL && (packet->flags & 0x800u) != 0)
         return 1.0f;
     return 0.0f;
 }
@@ -856,13 +730,6 @@ f32 __cdecl Condition_NearestPartyXZRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC
     return nearest;
 }
 
-f32 __cdecl Condition_CurrentLocatorIsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                         void *argument) {
-    if (argument != NULL && process->locator == argument)
-        return 1.0f;
-    return 0.0f;
-}
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
 f32 __cdecl Condition_MaulShouldRunAway(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -955,20 +822,6 @@ f32 __cdecl Condition_ObstacleOpenedByPlayerPc(AISYS_PC *system, AISCRIPTPROCESS
 
 STATIC_ASSERT(offsetof(AISCRIPTPROCESS_PC, unknown_a0) == 0xa0);
 STATIC_ASSERT(offsetof(AIAREA_PC, runtime_flags) == 0x2a);
-
-void *__cdecl Condition_BaddyInTriggerAreaInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    return name != NULL ? AISysFindArea(system, name) : NULL;
-}
-
-f32 __cdecl Condition_BaddyInTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                           char *name, void *argument) {
-    AIAREA_PC *area = (AIAREA_PC *)argument;
-    if (area == NULL)
-        area = (AIAREA_PC *)process->unknown_a0;
-    if (area != NULL && (area->runtime_flags & 4) != 0)
-        return 1.0f;
-    return 0.0f;
-}
 
 STATIC_ASSERT(offsetof(GIZOBSTACLE, runtime_flags) == 0x9c);
 
@@ -1226,23 +1079,6 @@ f32 __cdecl Condition_Player2IsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
     return 0.0f;
 }
 
-f32 __cdecl Condition_NearestPlayerXZRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
-    NUVEC difference;
-    f32 distance = FLT_MAX;
-    if (packet != NULL && packet->owner != NULL && system != NULL) {
-        if (system->player_1 != NULL)
-            distance = NuVecXZDistSqr(&system->player_1->position, &packet->owner->position, &difference);
-        if (system->player_2 != NULL) {
-            f32 second = NuVecXZDistSqr(&system->player_2->position, &packet->owner->position, &difference);
-            distance = second < distance ? second : distance;
-        }
-        if ((f64)distance != (f64)FLT_MAX)
-            distance = NuFsqrt(distance);
-    }
-    return distance;
-}
-
 STATIC_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
 STATIC_ASSERT(offsetof(GAMECAMERA, dir) == 0x110);
 STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
@@ -1274,121 +1110,6 @@ f32 __cdecl Condition_OnSameObjectAsPlayerPc(AISYS_PC *system, AISCRIPTPROCESS_P
 }
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
-
-f32 __cdecl Condition_YawToOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                      void *argument) {
-    if (packet != NULL && packet->opponent != NULL) {
-        NUVEC difference;
-        difference.x = packet->opponent->position.x - packet->owner->position.x;
-        difference.z = packet->opponent->position.z - packet->owner->position.z;
-        /* Retail leaves difference.y unwritten before this in-place rotation. */
-        NuVecRotateY(&difference, &difference, -packet->owner->field_0x276);
-        return (f32)((f64)NuAtan2D(difference.x, difference.z) * (360.0 / 65536.0));
-    }
-    return -180.0f;
-}
-
-void *__cdecl Condition_InLevelNodeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0)
-        return AIPathFindNode(system, system->path_sys->active_path, name);
-    return NULL;
-}
-
-void *__cdecl Condition_PlayerInLevelNodeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0)
-        return AIPathFindNode(system, system->path_sys->active_path, name);
-    return NULL;
-}
-
-f32 __cdecl Condition_InLevelNodePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                    void *argument) {
-    if (packet != NULL && argument != NULL && system != NULL) {
-        if (packet->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
-            return 1.0f;
-    }
-    return 0.0f;
-}
-
-f32 __cdecl Condition_PlayerInLevelNodePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                          char *name, void *argument) {
-    if (system != NULL && system->player_1 != NULL && argument != NULL) {
-        if (system->player_1->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
-            return 1.0f;
-    }
-    return 0.0f;
-}
-
-f32 __cdecl Condition_EitherPlayerInLevelNodePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                                char *name, void *argument) {
-    if (system != NULL && argument != NULL) {
-        if (system->player_1 != NULL &&
-            system->player_1->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
-            return 1.0f;
-        if (system->player_2 != NULL &&
-            system->player_2->ai->inside_path_node == (AIPATHNODE_PC *)argument - system->path_sys->active_path->nodes)
-            return 1.0f;
-    }
-    return 0.0f;
-}
-
-f32 __cdecl Condition_OpponentToOriginPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                         void *argument) {
-    if (packet != NULL && packet->opponent != NULL) {
-        if (GetOriginPositionFn != NULL) {
-            NUVEC *origin = GetOriginPositionFn(system, packet);
-            if (origin != NULL)
-                return NuVecDist(&packet->opponent->position, origin, NULL);
-        }
-        if (system != NULL && packet->creature_index != 0xff)
-            return NuVecDist(&packet->opponent->position, &system->creatures[packet->creature_index].position, NULL);
-    }
-    return FLT_MAX;
-}
-
-f32 __cdecl Condition_Player2InTriggerAreaPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
-                                             char *name, void *argument) {
-    if (system != NULL) {
-        GAMEOBJECT *object = (GAMEOBJECT *)system->player_2;
-        if (object != NULL) {
-            AIAREA_PC *area = (AIAREA_PC *)argument;
-            if (area == NULL)
-                area = ((CONDITION_TRIGGER_PROCESS_READER_PC *)process)->trigger_area;
-            if (area != NULL && area->system != NULL) {
-                i32 index = (i32)(area - area->system->areas);
-                i64 mask = (i32)(1u << index);
-                u64 membership = ((CONDITION_TRIGGER_PLAYER_READER_PC *)object)->membership;
-                if ((membership & mask) != 0)
-                    return 1.0f;
-            }
-        }
-    }
-    return 0.0f;
-}
-
-f32 __cdecl Condition_OnPathPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                               void *argument) {
-    if (packet != NULL && (packet->path_info.flags & 1) != 0)
-        return 1.0f;
-    return 0.0f;
-}
-
-void *__cdecl Condition_IAmInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (name != NULL && GetNamedGameObjectCallback != NULL)
-        return GetNamedGameObjectCallback(system, name);
-    return NULL;
-}
-
-f32 __cdecl Condition_IAmPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                            void *argument) {
-    if (packet != NULL && packet->owner != NULL) {
-        if (packet->owner == argument)
-            return 1.0f;
-        if (packet->owner->character_data != NULL && packet->owner->character_data->name != NULL &&
-            NuStrICmp(packet->owner->character_data->name, name) == 0)
-            return 1.0f;
-    }
-    return 0.0f;
-}
 
 void *__cdecl Condition_CharacterExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
     if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
@@ -1463,22 +1184,6 @@ f32 __cdecl Condition_CharacterRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
         return NuVecDist(&object->position, &packet->owner->position, &difference);
     }
     return 1000000000.0f;
-}
-
-void *__cdecl Condition_NodeRangeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (system != NULL && system->path_sys != NULL && system->path_sys->path_count != 0)
-        return AIPathFindNode(system, system->path_sys->active_path, name);
-    return NULL;
-}
-
-f32 __cdecl Condition_NodeRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
-                                  void *argument) {
-    AIPATHNODE_PC *node = (AIPATHNODE_PC *)argument;
-    if (packet != NULL && packet->owner != NULL && node != NULL) {
-        NUVEC difference;
-        return NuVecDist(&node->position, &packet->owner->position, &difference);
-    }
-    return FLT_MAX;
 }
 
 f32 __cdecl Condition_OpponentPathPosRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
