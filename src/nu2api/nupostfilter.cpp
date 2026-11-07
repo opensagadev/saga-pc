@@ -316,10 +316,6 @@ __declspec(noinline) void NuMotionAccumFilterGen::initResources() {
     accumulation_fbo = PCGraphicsCreateFramebuffer();
     PCGraphicsAttachFramebuffer(accumulation_fbo, 0, accumulation_texture, 0);
 }
-void NuMotionAccumFilter::initResources() {
-    NuMotionAccumFilterGen::initResources();
-    program = NULL;
-}
 void NuMotionAccumFilterGen::initTextureResources(i32 width, i32 height) {
     accumulation_texture = PCGraphicsCreateEffectTexture(width, height, 1, 1, 2);
 }
@@ -327,9 +323,6 @@ void NuSpeedBlurFilterGen::initTextureResources(i32 width, i32 height) {
     texture = PCGraphicsCreateEffectTexture(width / 2, height / 2, 1, 1, 2);
     PCGraphicsEffectTextureSetFilterFields(texture, 2, 2, 0);
     PCGraphicsEffectTextureSetWrapFields(texture, 2, 2);
-}
-void NuSpeedBlurFilter::initTextureResources(i32, i32) {
-    texture_surface.Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
 }
 void NuDeferredFilterGen::initResources() {
     input_fbo = PCGraphicsCreateFramebuffer();
@@ -444,63 +437,10 @@ extern "C" void __cdecl NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end
     NuPostLastFrameEffectPc = 0;
 }
 
-void NuMainFilter::initResources() {
-    NuMainFilterGen::initResources();
-    void *last_program;
-    if (PCDeviceHardwareVertexProcessingPC > 1) {
-        programs[6] = PostShaderProgramCreatePc(2, PostShaderTokens7662d8, PostShaderTokens766578);
-        programs[8] = PostShaderProgramCreatePc(2, PostShaderTokens766820, PostShaderTokens766578);
-        platform_programs[0] = PostShaderProgramCreatePc(2, PostShaderTokens7662d8, PostShaderTokens7666f0);
-        last_program = PostShaderProgramCreatePc(2, PostShaderTokens766820, PostShaderTokens7666f0);
-        platform_uniforms[0] = 0x82;
-        platform_uniforms[1] = 0x88;
-        platform_uniforms[2] = 0x89;
-        platform_uniforms[3] = 0x8a;
-    } else {
-        programs[6] = PostShaderProgramCreatePc(2, PostShaderTokens766c38, PostShaderTokens766ed8);
-        programs[8] = PostShaderProgramCreatePc(2, PostShaderTokens767180, PostShaderTokens766ed8);
-        platform_programs[0] = PostShaderProgramCreatePc(2, PostShaderTokens766c38, PostShaderTokens767050);
-        last_program = PostShaderProgramCreatePc(2, PostShaderTokens767180, PostShaderTokens767050);
-        platform_uniforms[0] = 0;
-        platform_uniforms[1] = 1;
-        platform_uniforms[2] = 2;
-        platform_uniforms[3] = 3;
-    }
-    platform_programs[1] = last_program;
-    platform_fbo = PCGraphicsCreateFramebuffer();
-}
-void NuDeferredFilter::initResources() {
-    NuDeferredFilterGen::initResources();
-    programs[0] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens7676f0);
-    programs[1] = PostShaderProgramCreatePc(2, PostShaderTokens767598, PostShaderTokens767fc8);
-    programs[2] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768870);
-    programs[3] = PostShaderProgramCreatePc(2, PostShaderTokens768d20, PostShaderTokens768ae0);
-}
-void NuSpeedBlurFilter::initResources() {
-    NuPostFilterGen::initResources();
-    void *program;
-    if (PCDeviceHardwareVertexProcessingPC > 1) {
-        program = PostShaderProgramCreatePc(2, PostShaderTokens768de0, PostShaderTokens7690b0);
-        platform_uniform = 0x80;
-    } else {
-        program = PostShaderProgramCreatePc(2, PostShaderTokens7692c0, PostShaderTokens769580);
-        platform_uniform = 0;
-    }
-    programs[0] = program;
-}
-
-void NuDeferredFilter::initTextureResources(i32 width, i32 height) {
-    NuDeferredFilterGen::initTextureResources(width, height);
-}
-
 void NuMainFilterGen::reset() {
     enabled = false;
     memset(&dof_enabled, 0, sizeof(dof_enabled) + sizeof(bloom_enabled) + sizeof(motion_blur_enabled));
     active_filter_count = 0;
-}
-void NuMainFilter::render() {
-    if (bloom_enabled)
-        RenderBloomPc();
 }
 extern "C" void __cdecl NuPostEffectEnd(void) {
     if (NuPostDeferredFilterPc != NULL)
@@ -555,9 +495,6 @@ void NuSpeedBlurFilterGen::computeSpeedBlur(NUVEC4 *result) {
                                                 : (motion.y > motionFactorPanClamp ? motionFactorPanClamp : motion.y);
     *result = motion;
     result->w = 0.0f;
-}
-void NuSpeedBlurFilter::destroyTextureResources() {
-    texture_surface.Reset();
 }
 
 extern "C" void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *);
@@ -1218,10 +1155,7 @@ extern "C" void __cdecl PostBlurGaussianChainPc(GRAPHICS_RENDER_TEXTURE_PC *sour
     }
 }
 
-extern "C" void __cdecl PCGraphicsDestroyPostEffectTexturesPc(void) {
-    NuPostEffectReleasePortsPc();
-    PCGraphicsDestroyRenderTexture(PCGraphicsPostEffectBackBufferTexturePc);
-}
+extern "C" void __cdecl PCGraphicsDestroyPostEffectTexturesPc(void);
 
 #define POST_FILTER_RELEASE(filter)                                                                                    \
     do {                                                                                                               \

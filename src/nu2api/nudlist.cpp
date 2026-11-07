@@ -1281,19 +1281,6 @@ extern "C" {
     }
 }
 
-extern "C" i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
-    i32 result;
-    if (handle->scene == NULL || alpha <= 0.0f)
-        return 0;
-    if (alpha < 1.0f) {
-        NuSpecialConstAlpha(1, alpha);
-        result = NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
-        NuSpecialConstAlpha(0, 0.0f);
-        return result;
-    }
-    return NuDisplayListRndrSpecial(handle, matrix, 0, NULL, NULL);
-}
-
 typedef struct display_list_allocation_pc_s {
     NUDISPLAYLIST base;
     u8 unknown_0038[0xc];
@@ -1831,10 +1818,6 @@ extern "C" {
                                          i32 file_handle);
 }
 
-extern "C" __declspec(noinline) void __cdecl NuDisplayListDrawItemsPc(NUDISPLAYLISTITEM *items) {
-    NuDisplayListExecute(items, PCDisplayItemHandlersPc);
-}
-
 extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
     PCThreadCriticalSectionEnter_candidate(nudlist_field_fc4);
     i32 count = PCSafeRenderScenes[scene_id]->nsort_pris;
@@ -1965,15 +1948,4 @@ extern "C" void __cdecl NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 
             }
         }
     }
-}
-
-extern "C" i32 __cdecl DisplayListDebugPS(NUDISPLAYLISTITEM *item, char *text) {
-    (void)item;
-    (void)text;
-    return 0;
-}
-
-extern "C" void __cdecl DisplayListPrintItemPS(NUDISPLAYLISTITEM *item, i32 file_handle) {
-    (void)item;
-    (void)file_handle;
 }
