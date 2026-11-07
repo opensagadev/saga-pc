@@ -799,7 +799,7 @@ static void drawPortalRectangle(NUVEC *maximum, NUVEC *minimum, i32 colour) {
     vertices[7].x = min_x;
     vertices[7].y = min_y;
     vertices[7].z = 1.0f;
-    /* Native line-strip consumer reads only x/y/z/colour; the padding words are not written. */
+    /* Native line-strip consumer reads only x/y/z/colour; rhw and uv are not written. */
     NuRndrLineStrip2d(vertices, NULL, 8);
 }
 

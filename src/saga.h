@@ -137,9 +137,9 @@ typedef struct nurnd_vertex2d_pc_s {
     f32 x;
     f32 y;
     f32 z;
-    u8 unknown_0c[4];
+    f32 rhw;
     u32 colour;
-    u8 unknown_14[8];
+    f32 uv[2];
 } NURND_VERTEX2D_PC;
 STATIC_ASSERT(sizeof(NURND_VERTEX2D_PC) == 0x1c);
 STATIC_ASSERT(offsetof(NURND_VERTEX2D_PC, x) == 0);
