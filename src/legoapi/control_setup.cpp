@@ -301,9 +301,7 @@ extern "C" {
     extern i16 *PcControlTextIdsPc[45];
     extern char *PcControlTextPc[45];
     extern const char PcControlMissingTextPc[];
-    extern i8 DropInPendingPlayerPc, DropInConfigurationPlayerPc;
     extern NUMTL *FadeMtl;
-    void __cdecl ResumeGame(i32);
 
     void __cdecl PcControlRegisterPc(PC_CONTROL_CONFIG_PC *config, VARIPTR *buffer, VARIPTR *end) {
         if (!config->rows)
@@ -326,46 +324,6 @@ extern "C" {
 
     void __cdecl PcControlDrawPc(void) {
         PcControlScreenPc.Draw();
-    }
-
-    void __cdecl MenuEnterControlSetupPc(MENU *) {
-        PcControlInitializePc(2, -1, -1, 0);
-    }
-
-    void __cdecl MenuDrawControlSetupPc(MENU *) {
-        PcControlDrawPc();
-    }
-
-    void __cdecl MenuUpdateControlSetupPc(MENU *) {
-        i32 result = PcControlUpdatePc((FRAME_PAD_PC *)Game_NuPad[0], (FRAME_PAD_PC *)Game_NuPad[1], FRAMETIME);
-        if (DropInConfigurationPlayerPc >= 0) {
-            if (result == 3) {
-                DropInPendingPlayerPc = DropInConfigurationPlayerPc;
-                DropInConfigurationPlayerPc = -1;
-                ResumeGame(0);
-            } else if (result == 2) {
-                NuPadMapPlayerToPort(DropInConfigurationPlayerPc, -1);
-                DropInConfigurationPlayerPc = -1;
-                ResumeGame(0);
-            }
-        } else if (!result) {
-            BackupMenu();
-        }
-    }
-
-    void __cdecl MenuEnterSelectControlsPc(MENU *) {
-        GameAudio_PlaySfx(0x30, NULL, 0, 0);
-        PcControlInitializePc(1, -1, -1, 0);
-    }
-
-    void __cdecl MenuUpdateSelectControlsPc(MENU *) {
-        i32 result = PcControlUpdatePc((FRAME_PAD_PC *)Game_NuPad[0], (FRAME_PAD_PC *)Game_NuPad[1], FRAMETIME);
-        if (result == 2) {
-            BackupMenu();
-        } else if (result == 3) {
-            BackupMenu();
-            NewMenu(1, saveload_savepresent != 0, -1);
-        }
     }
 
     void __cdecl PcControlPlaySoundPc(i32 sound) {
@@ -391,9 +349,6 @@ extern "C" {
     void __cdecl LoadPermProgressDraw(f32, f32, f32 fade) {
         NuRndrRect2di(0, 0, 0x2800, 0xe20, ((i32)(fade * 255.0) << 24) | 0xffffff, FadeMtl);
     }
-}
-
-extern "C" void __cdecl MenuExitSelectControlsPc(MENU *) {
 }
 
 /* Native421720; append to ControlSetup source after API declarations. */

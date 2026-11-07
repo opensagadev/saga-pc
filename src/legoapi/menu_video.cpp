@@ -32,7 +32,7 @@ void __thiscall MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
     if (aspect == 3)
-        aspect = PCDeviceBackend.aspect_mode;
+        aspect = PCDeviceBackend.active_aspect_mode;
     MenuAppliedAspectPc = aspect;
     PcWindowOptions.SetShadowsEnabledPc(shadows_enabled == 1);
     PcWindowOptions.SetBloomEnabledPc(bloom_enabled == 1);
