@@ -584,7 +584,7 @@ extern "C" {
     void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER_PC *animation, f32 frame, NUANIM_TIME2_PC *time) {
         i32 chunk_frame;
         u32 shift;
-        if (animation->duration <= frame) {
+        if (frame >= animation->duration) {
             if (animation->duration == 1.0f) {
                 time->time = 1.0f;
                 time->chunk = 0;
@@ -605,8 +605,8 @@ extern "C" {
         chunk_frame = (i32)NuFloor(time->time_offset) - 1;
         time->chunk_frame = chunk_frame;
         time->time_byte = (u8)(chunk_frame / 8);
-        shift = (u32)(chunk_frame % 8 + 1) & 31;
-        time->time_mask = (u8)((shift < 8 ? (1u << shift) : 0) - 1);
+        shift = (u32)(chunk_frame % 8 + 1);
+        time->time_mask = (u8)((1 << shift) - 1);
     }
 
     void __cdecl NuAnimData2CalcTime(NUANIMDATA2_PC *animation, f32 frame, NUANIM_TIME2_PC *time) {
@@ -621,7 +621,7 @@ extern "C" {
                 time->time = frame;
             return;
         }
-        if (animation->header.duration <= frame) {
+        if (frame >= animation->header.duration) {
             if (animation->header.duration == 1.0f) {
                 time->time = 1.0f;
                 time->chunk = 0;
@@ -637,16 +637,16 @@ extern "C" {
         time->chunk = ((i32)time->time - 1) >> 5;
         if (time->chunk >= animation->chunk_count)
             time->chunk = animation->chunk_count - 1;
-        time->time_offset = (f32)((f64)time->time - (i32)((u32)time->chunk << 5));
+        time->time_offset = time->time - (i32)((u32)time->chunk << 5);
         chunk_frame = (i32)NuFloor(time->time_offset) - 1;
         time->chunk_frame = chunk_frame;
         time->time_byte = (u8)(chunk_frame / 8);
         shift = chunk_frame % 8 + 1;
-        time->time_mask = (u8)((1u << ((u32)shift & 31)) - 1);
+        time->time_mask = (u8)((1 << shift) - 1);
     }
 
     i32 __cdecl NuAnimDataFindVersion(char *path) {
-        u32 header[3] = {0, 0, 0};
+        u32 header[3] = {0};
         NUFILE file = NuFileOpen(path, NUFILE_READ);
         if (file != 0) {
             NuFileRead(file, header, sizeof(header));
@@ -678,23 +678,21 @@ extern "C" {
     }
 
     void *__cdecl NuAnimCurveSetCreate(i32 curve_count) {
-        NuAnimReadCurveSet *curve_set;
+        NuAnimReadCurveSet *curve_set = NULL;
         u32 array_size;
 
-        if (curve_count == 0) {
-            return NULL;
+        if (curve_count != 0) {
+            curve_set = (NuAnimReadCurveSet *)NuAlloc(0x10, NuAnimSourceFileName, 0x4ec);
+            memset(curve_set, 0, 0x10);
+            curve_set->curve_count = (i8)curve_count;
+
+            array_size = (u32)curve_count * sizeof(void *);
+            curve_set->curves = (void **)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f3);
+            memset(curve_set->curves, 0, array_size);
+
+            curve_set->constants = (f32 *)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f8);
+            memset(curve_set->constants, 0, array_size);
         }
-
-        curve_set = (NuAnimReadCurveSet *)NuAlloc(0x10, NuAnimSourceFileName, 0x4ec);
-        memset(curve_set, 0, 0x10);
-        curve_set->curve_count = (i8)curve_count;
-
-        array_size = (u32)curve_count * sizeof(void *);
-        curve_set->curves = (void **)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f3);
-        memset(curve_set->curves, 0, array_size);
-
-        curve_set->constants = (f32 *)NuAlloc((i32)array_size, NuAnimSourceFileName, 0x4f8);
-        memset(curve_set->constants, 0, array_size);
         return curve_set;
     }
 
@@ -2791,7 +2789,7 @@ extern "C" {
         MaxAnimJoints = max_joints;
 
         header = (ANI3_GLOBALBUFFER_PC *)((buffer->addr + 15u) & ~15u);
-        buffer->addr = (u32)header + sizeof(ANI3_GLOBALBUFFER_PC);
+        buffer->addr = ((buffer->addr + 15u) & ~15u) + sizeof(ANI3_GLOBALBUFFER_PC);
         header->joints = (ANI3_JOINT_PC *)((buffer->addr + 15u) & ~15u);
         buffer->addr = ((buffer->addr + 15u) & ~15u) + (u32)max_joints * sizeof(ANI3_JOINT_PC);
         header->joint_flags = (u8 *)buffer->void_ptr;
