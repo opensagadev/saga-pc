@@ -417,6 +417,8 @@ static PC_FILEPAKITEM *GetPakItems(PC_FILEPAKHDR_V0 *header);
 static NUFILE OpenDatFileBase(NUDATHDR *header, i32 file_index);
 static i32 NuFileMatchExtensionPC(char *extension, char *path_end, i32 path_len);
 static PC_FILEEXTINFO *NuFileExtGetInfoPC(char *path, i32 path_len);
+static i32 ishexnum(char value);
+static i32 hexcodetoint(char value);
 static void NuRDPIGetToken(NURDPICTX_PC *context);
 static i32 NuRDPIPrimary(NURDPICTX_PC *context);
 static i32 NuRDPITerm(NURDPICTX_PC *context);
@@ -1977,7 +1979,6 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
     NUFILE file = NuFileOpenDF(filepath, mode, NULL, 0);
     i32 locator[2];
     i64 metadata_pos;
-    i32 metadata_len;
     char formatted_name[256];
     i32 name_len;
     i32 name_storage;
@@ -2011,7 +2012,6 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         if (metadata_pos < 0)
             metadata_pos *= -256;
         metadata_pos += datsys_offset;
-        metadata_len = locator[1];
         while (NuFileSeek(file, metadata_pos, 0) < 0) {
             NuFileRetry();
         }
@@ -2023,7 +2023,7 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         default_device->format_name_fn(default_device, formatted_name, (char *)filepath, sizeof(formatted_name));
         name_len = NuStrLen(formatted_name);
         name_storage = (name_len + 16) & ~15;
-        allocation_size = sizeof(NUDATHDR) + name_storage + metadata_len;
+        allocation_size = sizeof(NUDATHDR) + name_storage + locator[1];
 
         if (arena == NULL) {
             NuFileError();
@@ -2037,9 +2037,9 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
             *size_out = allocation_size;
         header->unknown_b0 = 0;
         header->name = (char *)(header + 1);
+        metadata = (u8 *)(header + 1) + name_storage;
         NuStrCpy(header->name, formatted_name);
-        metadata = (u8 *)header->name + name_storage;
-        while (NuFileRead(file, metadata, metadata_len) < 0) {
+        while (NuFileRead(file, metadata, locator[1]) < 0) {
             do {
                 NuFileRetry();
             } while (NuFileSeek(file, metadata_pos, 0) < 0);
@@ -2978,6 +2978,24 @@ f32 __cdecl NuFParGetFloatRDP(NUFPAR_PC *parser) {
     }
 }
 
+static i32 isnum(char c) {
+    switch (c) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
 static void NuRDPIGetToken(NURDPICTX_PC *context) {
     char variable[256];
     i32 length;
@@ -3086,7 +3104,7 @@ static void NuRDPIGetToken(NURDPICTX_PC *context) {
             context->token = RDPI_NUMBER;
             context->value = 0;
             while (ishexnum(context->input[context->position])) {
-                context->value <<= 4;
+                context->value *= 16;
                 context->value += hexcodetoint(context->input[context->position]);
                 context->position++;
             }
@@ -3103,7 +3121,7 @@ static void NuRDPIGetToken(NURDPICTX_PC *context) {
         case '9':
             context->token = RDPI_NUMBER;
             context->value = 0;
-            while ((u8)(context->input[context->position] - '0') <= 9) {
+            while (isnum(context->input[context->position])) {
                 context->value *= 10;
                 context->value += context->input[context->position] - '0';
                 context->position++;
@@ -3443,21 +3461,34 @@ i32 __cdecl NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context) {
     return 0;
 }
 
+/* Empty release diagnostics; the linker folds them into NuFileError. */
+void __cdecl NuRDPFNumberErrorPc(void) {
+}
+
+void __cdecl NuRDPFVariableErrorPc(char *name) {
+    (void)name;
+}
+
 static void NuRDPFGetToken(NURDPFCTX_PC *context) {
     char variable[256];
     i32 length;
     f32 multiplier;
 
+    /* Increments the whitespace byte, not the input position. */
     for (;;) {
         if (context->input[context->position] == '\0') {
             context->token = RDPF_END;
             return;
         }
-        if (context->input[context->position] != ' ' && context->input[context->position] != '\t') {
-            break;
+        if (context->input[context->position] == ' ') {
+            context->input[context->position]++;
+            continue;
         }
-        /* The PC increments the whitespace byte, not the input position. */
-        context->input[context->position]++;
+        if (context->input[context->position] == '\t') {
+            context->input[context->position]++;
+            continue;
+        }
+        break;
     }
 
     switch (context->input[context->position]) {
@@ -3506,7 +3537,7 @@ static void NuRDPFGetToken(NURDPFCTX_PC *context) {
                    context->input[context->position] == '.') {
                 if (context->input[context->position] == '.') {
                     if (multiplier != 0.0f) {
-                        NuFileError();
+                        NuRDPFNumberErrorPc();
                     }
                     multiplier = 0.1f;
                 } else if (multiplier != 0.0f) {
@@ -3578,7 +3609,7 @@ static void NuRDPFGetToken(NURDPFCTX_PC *context) {
             }
             variable[length] = '\0';
             if (context->get_variable == NULL) {
-                NuFileError();
+                NuRDPFVariableErrorPc(variable);
             }
             context->value = 0.0f;
             context->token = RDPF_NUMBER;
@@ -5624,11 +5655,11 @@ i32 __cdecl NuStringTableGetFormat(void) {
 }
 
 i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *label, char *language) {
-    i32 parse_buf_size = 0x8000;
-    NUSTRINGBANK *bank = &StringBank[CurrentStringBank];
+    i32 parse_buf_size;
+    NUSTRINGBANK *bank;
     u16 label_utf16[0x40];
     u16 lang_utf16[0x40];
-    void *mem_buf = (void *)(buf_end.addr - 0x100000);
+    void *mem_buf;
     i32 bytes_read;
     char *word_buf;
     char *line_buf;
@@ -5637,12 +5668,19 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
     NUFPAR_PC *parser;
     NUSTRING *strings;
     i32 column;
-    i32 label_column = -1;
-    i32 lang_column = -1;
+    i32 label_column;
+    i32 lang_column;
     i32 len;
-    i32 i = 0;
-    i32 max_strings = 0;
+    i32 i;
+    i32 max_strings;
     i32 file_index;
+
+    label_column = -1;
+    lang_column = -1;
+    i = 0;
+    max_strings = 0;
+    parse_buf_size = 0x8000;
+    bank = &StringBank[CurrentStringBank];
 
     NuAsciiToUnicode(label_utf16, label);
     NuAsciiToUnicode(lang_utf16, language);
@@ -5657,13 +5695,14 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
         NuFileError();
     }
 
+    mem_buf = (void *)(buf_end.addr - 0x100000);
     bytes_read = NuFileLoadBuffer(filepath, mem_buf, 0x100000);
     if ((i32)(0x100000 - bytes_read) < 0x18000) {
         NuFileError();
     }
     word_buf = (char *)((u32)mem_buf + bytes_read);
-    line_buf = word_buf + parse_buf_size;
-    tmp_buf = line_buf + parse_buf_size;
+    line_buf = (char *)((u32)mem_buf + bytes_read + parse_buf_size);
+    tmp_buf = (char *)((u32)mem_buf + bytes_read + parse_buf_size + parse_buf_size);
 
     mem_file = 0;
     if (bytes_read > 0) {
@@ -5682,8 +5721,8 @@ i32 __cdecl NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, 
     if (mem_file != 0) {
         parser = NuFParOpen(mem_file);
         if (parser != NULL) {
-            parser->line_buffer_ptr = line_buf;
             parser->word_buffer_ptr = word_buf;
+            parser->line_buffer_ptr = line_buf;
             parser->line_buffer_size = parse_buf_size;
             parser->word_buffer_size = parse_buf_size;
             while (NuFParGetLine(parser) != 0) {
@@ -7431,7 +7470,7 @@ void NuRegionSet(i32 region) {
     nuapi.region = region;
 }
 
-i32 ishexnum(char value) {
+static i32 ishexnum(char value) {
     switch (value) {
         case '0':
         case '1':
@@ -7461,7 +7500,7 @@ i32 ishexnum(char value) {
     }
 }
 
-i32 hexcodetoint(char value) {
+static i32 hexcodetoint(char value) {
     switch (value) {
         case '0':
         case '1':

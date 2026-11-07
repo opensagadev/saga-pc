@@ -14672,8 +14672,6 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     i32 __cdecl NuHexStringToI(char *string);
     u8 *__cdecl NuUnicodeCharFromUTF8(u16 *out, u8 *text);
     u8 *__cdecl NuUTF8CharFromUnicode(u8 *out, u16 codepoint);
-    i32 __cdecl ishexnum(char value);
-    i32 __cdecl hexcodetoint(char value);
     void __cdecl NuStrCat(char *str, const char *ext);
     i32 __cdecl NuStrNCat(char *str, const char *ext, i32 n);
     i32 __cdecl NuStrCpy(char *dst, const char *src);

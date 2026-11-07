@@ -2582,6 +2582,8 @@ address,symbol,size,ctype
 0x004ef660,_PCByteCopy_candidate,84,"void __cdecl (void *, const void *, u32)"
 0x4ef6e0,_NuMemSet128,25,"void __cdecl(void *,u32,i32)"
 0x004ef790,_NuFileError,1,void __cdecl (void)
+0x004ef790,_NuRDPFNumberErrorPc,1,void __cdecl (void)
+0x004ef790,_NuRDPFVariableErrorPc,1,void __cdecl (char *)
 0x004ef7b0,_NuFileRetry,1,void __cdecl (void)
 0x004ef870,_NuAllocManagerUnlinkPc,27,
 0x004ef8a0,_NuAllocManagerSplitPc,177,
@@ -2763,8 +2765,9 @@ address,symbol,size,ctype
 0x004f5250,_NuLanguageSet,10,void __cdecl (i32)
 0x004f5260,_NuRegionGet,6,i32 __cdecl (void)
 0x004f5270,_NuRegionSet,10,void __cdecl (i32)
-0x004f52a0,_ishexnum,99,i32 __cdecl (char)
-0x004f5310,_hexcodetoint,107,i32 __cdecl (char)
+0x004f5280,_isnum,17,i32 (char) [private AL]
+0x004f52a0,_ishexnum,99,i32 (char) [private AL]
+0x004f5310,_hexcodetoint,107,i32 (char) [private CL]
 0x004f5380,_NuRDPIGetToken,1278,void (NURDPICTX_PC *) [private ESI]
 0x004f5880,_NuRDPIPrimary,195,i32 __cdecl (NURDPICTX_PC *)
 0x004f5950,_NuRDPITerm,348,i32 (NURDPICTX_PC *) [private EAX]
