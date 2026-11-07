@@ -569,12 +569,6 @@ void __cdecl CompleteLevel(WORLDINFO *world) {
         waiting_for_new_level = 1;
 }
 
-typedef struct level_progress_flags_pc_s {
-    SCENEPROGRESS scene_progress;
-    u32 flags;
-} LEVEL_PROGRESS_FLAGS_PC;
-STATIC_ASSERT(offsetof(LEVEL_PROGRESS_FLAGS_PC, flags) == 0x2800);
-
 typedef struct player_progress_hp_pc_s {
     u8 unknown_0000[8];
     u8 hitpoints;
@@ -590,48 +584,44 @@ void __cdecl ClearTakeOverObjectSys(void);
 void __cdecl Door_Reset(void);
 
 void __cdecl NewArea_ResetGlobalsPC(void) {
-    i32 phase = Area == -1 ? 0 : Game.area_save[Area].minikit_count;
+    i32 phase;
 
     AreaGlobals_PC.new_minikit_count = 0;
+    phase = Area != -1 ? Game.area_save[Area].minikit_count : 0;
     AreaGlobals_PC.area_phase = phase;
     AreaGlobals_PC.progress_flags = phase;
-    Door_UseCutCam = 0;
-    AreaGlobals_PC.field_00 = 0;
     AreaGlobals_PC.field_1c = 0;
-    AreaGlobals_PC.field_08 = 0;
-    AreaGlobals_PC.field_18 = 0;
-    AreaGlobals_PC.arcade_player_kills[0] = 0;
-    AreaGlobals_PC.arcade_player_kills[1] = 0;
-    AreaGlobals_PC.arcade_ai_kills[0] = 0;
-    AreaGlobals_PC.arcade_ai_kills[1] = 0;
-    BuildUpTotal = 0;
+    Door_UseCutCam = 0;
     BuildUpDone = 0;
+    BuildUpTotal = 0;
+    AreaGlobals_PC.field_00 = 0;
+    AreaGlobals_PC.field_08 = 0;
+    AreaGlobals_PC.arcade_player_kills[0] = 0;
+    AreaGlobals_PC.arcade_ai_kills[0] = 0;
+    AreaGlobals_PC.arcade_player_kills[1] = 0;
+    AreaGlobals_PC.arcade_ai_kills[1] = 0;
+    AreaGlobals_PC.field_18 = 0;
     if (WORLD->area == HOTHBATTLE_ADATA) {
         ResetMinikitCounter();
     }
 }
 
 void __cdecl NewArea(void) {
-    LEVEL_PROGRESS_FLAGS_PC *progress;
     i32 i;
 
     LSW1 = 0;
     LSW2 = 0;
     if (StartupGameFlag1 != 0 && WORLD != NULL && WORLD->area != NULL && WORLD->area->episode_index >= 0) {
-        if (WORLD->area->episode_index < 3) {
+        if (WORLD->area->episode_index < 3)
             LSW1 = 1;
-            HIGHJUMPHEIGHT = 1.14f;
-            goto have_jump;
-        }
-        LSW2 = 1;
+        else
+            LSW2 = 1;
     }
-    HIGHJUMPHEIGHT = Arcade != 0 ? 1.14f : 0.75f;
-have_jump:
+    HIGHJUMPHEIGHT = LSW1 != 0 || Arcade != 0 ? 1.14f : 0.75f;
     ClearAreaProgress(Area, 0);
-    progress = (LEVEL_PROGRESS_FLAGS_PC *)WORLD->level_progress;
-    if (progress != NULL && (progress->flags & 1) == 0) {
-        memcpy(&progress->scene_progress, &WORLD->scene_progress, sizeof(progress->scene_progress));
-        progress->flags |= 1;
+    if (WORLD->level_progress != NULL && (WORLD->level_progress->flags & 1) == 0) {
+        memcpy(&WORLD->level_progress->scene_progress, &WORLD->scene_progress, sizeof(SCENEPROGRESS));
+        WORLD->level_progress->flags |= 1;
     }
     SuperCounters_Reset(Area);
     NewArea_ResetGlobalsPC();
