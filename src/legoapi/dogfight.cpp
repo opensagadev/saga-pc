@@ -1277,6 +1277,7 @@ extern "C" {
     static __declspec(noinline) void StarFighterTargetPc(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
         DOGFIGHT_TARGET_SPLINE_PC *spline = (DOGFIGHT_TARGET_SPLINE_PC *)fighter->spline;
+        DOGFIGHT_FIGHTER_PC *record;
         i32 target_id, i;
         if (spline == NULL)
             return;
@@ -1287,7 +1288,13 @@ extern "C" {
             fighter->target = NULL;
             return;
         }
-        if (target_id == -2 || target_id == -3) {
+        if (target_id == -2) {
+            fighter->target_id = (i16)target_id;
+            fighter->target = NULL;
+            fighter->target_ready = 1;
+            return;
+        }
+        if (target_id == -3) {
             fighter->target_id = (i16)target_id;
             fighter->target = NULL;
             fighter->target_ready = 1;
@@ -1295,11 +1302,11 @@ extern "C" {
         }
         fighter->target_ready = 0;
         fighter->target_id = -1;
-        for (i = 0; i < 96; ++i) {
-            starfighter_s *target = &space->queued_fighters[i].fields;
-            if (target->active != 0 && target->object_id == target_id) {
+        record = space->queued_fighters;
+        for (i = 0; i < 96; ++i, ++record) {
+            if (record->fields.active != 0 && record->fields.object_id == target_id) {
                 fighter->target_id = (i16)target_id;
-                fighter->target = target;
+                fighter->target = &record->fields;
                 fighter->target_ready = 1;
                 return;
             }
@@ -1858,32 +1865,24 @@ extern "C" {
     }
 
     void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP_PC *entry) {
-        f32 distance = entry->distance;
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
-        f32 target;
-        f32 vehicle_speed;
-        while (distance != 0.0f) {
-            if (distance > space->door_elapsed && distance <= space->door_countdown)
+        while (entry->distance != 0.0f) {
+            if (space->door_elapsed < entry->distance && space->door_countdown >= entry->distance)
                 space->value_one_a = entry->speed;
             ++entry;
-            distance = entry->distance;
         }
-        target = space->value_one_a;
-        if (target > space->value_one_b) {
-            f32 updated = (f32)((f64)DogfightSpeedRatePc * FRAMETIME + space->value_one_b);
-            space->value_one_b = updated;
-            if (updated > target)
-                space->value_one_b = target;
-        } else if (space->value_one_b > target) {
-            f32 updated = (f32)((f64)space->value_one_b - (f64)DogfightSpeedRatePc * FRAMETIME);
-            space->value_one_b = updated;
-            if (updated < target)
-                space->value_one_b = target;
+        if (space->value_one_a > space->value_one_b) {
+            space->value_one_b += FRAMETIME * DogfightSpeedRatePc;
+            if (space->value_one_b > space->value_one_a)
+                space->value_one_b = space->value_one_a;
+        } else if (space->value_one_a < space->value_one_b) {
+            space->value_one_b -= FRAMETIME * DogfightSpeedRatePc;
+            if (space->value_one_b < space->value_one_a)
+                space->value_one_b = space->value_one_a;
         }
-        vehicle_speed = (f32)((f64)space->value_one_b * GrappleMomentumNearScalePc);
-        world->sock_sys->socks[0].current_speed = vehicle_speed;
+        world->sock_sys->socks[0].current_speed = space->value_one_b * GrappleMomentumNearScalePc;
         if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f)
-            space->normalized_speed = (f32)((f64)world->sock_sys->socks[0].current_speed / 11.0);
+            space->normalized_speed = world->sock_sys->socks[0].current_speed / 11.0;
     }
 
     /* Original source name unknown: one of four identical native WORLD adapters.
