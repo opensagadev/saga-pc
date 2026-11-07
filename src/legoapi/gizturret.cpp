@@ -82,7 +82,10 @@ extern "C" {
         turret->muzzle_count = 1;
         turret->blowup_type = -1;
         turret->bolt_type_id = -1;
-        turret->pickup_radius = WORLD->area != NULL && (WORLD->area->flags & 1) ? 12.0f : 1.75f;
+        if (WORLD->area != NULL && (WORLD->area->flags & 1))
+            turret->pickup_radius = 12.0f;
+        else
+            turret->pickup_radius = 1.75f;
     }
 
     static void __cdecl GizTurretReadAnimSetDataPc(GAMEANIMOBJ *object, u8 version) {
@@ -144,8 +147,10 @@ extern "C" {
             EdFileReadNuVec(&turret->pickup_offset);
             if (version >= 6)
                 turret->pickup_radius = EdFileReadFloat();
+            else if (world->area != NULL && (world->area->flags & 1))
+                turret->pickup_radius = 12.0f;
             else
-                turret->pickup_radius = world->area != NULL && (world->area->flags & 1) ? 12.0f : 1.75f;
+                turret->pickup_radius = 1.75f;
             turret->initial_state = (u8)EdFileReadChar();
             if (version > 3) {
                 turret->shots_required = (u8)EdFileReadChar();
@@ -349,34 +354,35 @@ extern "C" {
     }
 
     GAMEOBJECT *GizTurret_GetTgt(GIZTURRET_s *, NUMTX *matrix) {
+        f32 best_distance = 1000000000.0f;
         NUVEC forward = {0.0f, 0.0f, -1.0f};
+        GAMEOBJECT *best = NULL;
 
         NuVecMtxRotate(&forward, &forward, matrix);
-        GAMEOBJECT *best = NULL;
-        f32 best_distance = 1000000000.0f;
         GAMEOBJECT *object = Obj;
         for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-            if ((object->flags_1fc_half & 0x1001) != 0x1001 || object->dead != 0 || (object->flags_1f8 & 1) == 0 ||
-                object->model_draw_result == 0) {
-                continue;
+            if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
+                (object->flags_1f8 & 1) && object->model_draw_result != 0) {
+                NUVEC direction;
+                f32 distance =
+                    NuVecDistSqr(&object->collision_position, reinterpret_cast<NUVEC *>(&matrix->m30), &direction);
+                if (distance < best_distance) {
+                    f32 length = NuFsqrt(distance);
+                    f32 scale;
+                    if (length > 0.0f)
+                        scale = 1.0f / length;
+                    else
+                        scale = 0.0f;
+                    direction.x *= scale;
+                    direction.y *= scale;
+                    direction.z *= scale;
+                    f32 dot = NuVecDot(&direction, &forward);
+                    if (dot > NU_COS_LUT(gizturret_test_ang)) {
+                        best = object;
+                        best_distance = distance;
+                    }
+                }
             }
-
-            NUVEC direction;
-            const f32 distance =
-                NuVecDistSqr(&object->collision_position, reinterpret_cast<NUVEC *>(&matrix->m30), &direction);
-            if (!(best_distance > distance)) {
-                continue;
-            }
-            const f32 length = NuFsqrt(distance);
-            const f32 scale = length > 0.0f ? 1.0f / length : 0.0f;
-            direction.x *= scale;
-            direction.y *= scale;
-            direction.z *= scale;
-            if (!(NuVecDot(&direction, &forward) > NU_COS_LUT(gizturret_test_ang))) {
-                continue;
-            }
-            best = object;
-            best_distance = distance;
         }
         return best;
     }
@@ -391,14 +397,19 @@ extern "C" {
         CalculateInterceptVector(origin, target, velocity, speed, &intercept, &intercept_velocity);
 
         NUVEC direction;
-        const f32 distance = NuVecDistSqr(&intercept, origin, &direction);
-        const f32 length = NuFsqrt(distance);
-        const f32 scale = length > 0.0f ? 1.0f / length : 0.0f;
+        f32 distance = NuVecDistSqr(&intercept, origin, &direction);
+        f32 length = NuFsqrt(distance);
+        f32 scale;
+        if (length > 0.0f)
+            scale = 1.0f / length;
+        else
+            scale = 0.0f;
         direction.x *= scale;
         direction.y *= scale;
         direction.z *= scale;
 
-        if (NuVecDot(&direction, &forward) > NU_COS_LUT(gizturret_test_ang) || fallback == 0) {
+        f32 dot = NuVecDot(&direction, &forward);
+        if (dot > NU_COS_LUT(gizturret_test_ang) || fallback == 0) {
             if (intercept_out != NULL) {
                 *intercept_out = intercept;
             }
