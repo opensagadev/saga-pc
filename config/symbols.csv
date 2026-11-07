@@ -8641,6 +8641,7 @@ address,symbol,size,ctype
 0x65d950,_edbriBridgeDestroy,56,
 0x65d990,_edbriDrawCursor,1319,
 0x65dec0,_edbriRender,111,
+0x65e020,_GetIndGrassClump,24,"PC_EDGRAINDIVIDUAL *__cdecl (i32, i32)"
 0x65e040,_edgraSetup,155,"void __cdecl(VARIPTR *, VARIPTR, i32, i32, i32)"
 0x65e0e0,_edgraCalculatePage,2340,"void __cdecl(i8, i32)"
 0x65ea10,_edgracbSetInstanceType,14,
@@ -8666,6 +8667,7 @@ address,symbol,size,ctype
 0x0065f4d0,_edGraEnableTerrainSwap,1,void __cdecl (void)
 0x0065f4e0,_edGraDisableTerrainSwap,1,void __cdecl (void)
 0x0065f4f0,_edGraInitTerrainSwapProtection,1,void __cdecl (void)
+0x65f500,_edgraBufferUsage,48,i32 __cdecl (void)
 0x65f530,_edgracbFileSave,302,
 0x65f660,_edgracbCopyClump,53,
 0x65f6a0,_edgracbDiscardCopy,53,
@@ -8687,6 +8689,7 @@ address,symbol,size,ctype
 0x660370,_edppSetSaveName,21,"void __cdecl (u32, char *)"
 0x660390,_edppDestroyAllEffects,46,void __cdecl (void)
 0x6603c0,_edppMultipleCopyCopy,285,
+0x6604e0,_edppMultipleCopyClear,13,void __cdecl (void)
 0x6604f0,_edppDrawSpheres,397,
 0x660680,_edppDrawTorus,612,
 0x6608f0,_edppDrawCursor,5742,
@@ -9076,6 +9079,8 @@ address,symbol,size,ctype
 0x68bc60,_edppPtlCreate,851,
 0x68bfc0,_edppPtlCreateCopy,718,
 0x68c290,_edppPtlPlace,425,
+0x68c440,_edppPtlChangeType,152,"i32 __cdecl (i32, i32)"
+0x68c4e0,_edppDestroyAllParticles,55,void __cdecl (void)
 0x68c520,_edppMultipleCopyPaste,205,
 0x68c5f0,_edppDoInput,1383,
 0x68cb60,_edppProc,121,
@@ -9129,6 +9134,7 @@ address,symbol,size,ctype
 0x691730,_edgraCreateOptionsMenu,779,
 0x691a40,_edgraDoInput,1649,
 0x6920c0,_edgraProc,101,
+0x692130,_edppDestroyAllPages,32,void __cdecl (void)
 0x692150,_cbPtlAddEffect,358,
 0x6922c0,_edptlcbApplyNumGhosts,78,
 0x692310,_edptlcbSetDrawflag,106,

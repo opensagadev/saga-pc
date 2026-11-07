@@ -62,6 +62,10 @@ void __cdecl edgraDetermineNearestInstance(f32 distance) {
     }
 }
 
+PC_EDGRAINDIVIDUAL *GetIndGrassClump(i32 clump, i32 element) {
+    return &IndGrassClumps[clump * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element];
+}
+
 void __cdecl edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual_clumps, i32 units_per_clump) {
     EDGRA_MAX_CLUMPS = clumps;
     EDGRA_MAX_INDIVIDUAL_CLUMPS = individual_clumps;

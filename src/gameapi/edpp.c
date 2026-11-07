@@ -3955,3 +3955,45 @@ void edppDestroyAllEffects(void) {
         debtab[index] = NULL;
     edpp_types_used = 1;
 }
+
+void edppMultipleCopyClear(void) {
+    edpp_copy_source_count = 0;
+    edpp_copyroty = 0;
+}
+
+i32 edppPtlChangeType(i32 index, i32 effect_index) {
+    if (edpp_ptls[index].effect_index != effect_index) {
+        if (edpp_ptls[index].instance_id != -1) {
+            if (edpp_ptls[index].instance_id != 99999)
+                DebFreeInstantly(&edpp_ptls[index].instance_id);
+            --edpp_instances_used;
+            edpp_ptls[index].instance_id = -1;
+        }
+        AddDebrisEffect(&edpp_ptls[index].instance_id, effect_index, edpp_ptls[index].position.x,
+                        edpp_ptls[index].position.y, edpp_ptls[index].position.z);
+        if (edpp_ptls[index].instance_id != -1)
+            debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+        edpp_ptls[index].effect_index = effect_index;
+    }
+    return index;
+}
+
+void edppDestroyAllParticles(void) {
+    i32 index;
+    for (index = 0; index < 512; ++index) {
+        if (edpp_ptls[index].instance_id != -1) {
+            if (edpp_ptls[index].instance_id != 99999)
+                DebFreeInstantly(&edpp_ptls[index].instance_id);
+            --edpp_instances_used;
+            edpp_ptls[index].instance_id = -1;
+        }
+    }
+}
+
+void edppDestroyAllPages(void) {
+    i32 page;
+    for (page = 0; page < 8; ++page) {
+        if (edpp_page_used[page])
+            edppClearPage(page);
+    }
+}

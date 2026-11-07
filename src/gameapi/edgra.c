@@ -89,6 +89,16 @@ void edGraDisableTerrainSwap(void) {
 void edGraInitTerrainSwapProtection(void) {
 }
 
+i32 edgraBufferUsage(void) {
+    i32 count = 0;
+    i32 i;
+    for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
+        if (GrassClumps[i].element_count != 0)
+            count += GrassClumps[i].element_count;
+    }
+    return count * 0x4c + 0x10;
+}
+
 static __inline void edgraSliderSetValue(edui_slider_s *slider, f32 value) {
     slider->value = value;
     slider->normalized_value = (value - slider->minimum) / slider->range;
