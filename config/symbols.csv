@@ -6677,6 +6677,7 @@ address,symbol,size,ctype
 0x5fa2f0,_PCGraphicsSubmitViewportPc,59,
 0x5fa330,_PcUpdateGeometryCameraOriginPc,497,"void __cdecl(NUMTX*,NUMTX*)"
 0x5fa540,_PCGraphicsSetSamplerTuplePc,222,
+0x5fb450,_PCGraphicsResizePostEffectTexturesPc,214,"void __cdecl (u32, u32)"
 0x5fb550,_PCGraphicsDrawPostEffectQuadPc,10,
 0x5fb560,_PCGraphicsDrawPostEffectIndexedPc,10,void __cdecl (void)
 0x5fb810,?Reset@PC_EFFECT_SURFACE_PC@@QAEXXZ,81,
@@ -26486,6 +26487,7 @@ address,symbol,size,ctype
 0x973830,_PostBlendTexProgramPc,4,POST_SHADER_PROGRAM_PC*
 0x973834,_PostBlur5x5ProgramPc,4,POST_SHADER_PROGRAM_PC*
 0x973838,_PostBlur7x7ProgramPc,4,POST_SHADER_PROGRAM_PC*
+0x973848,_PCGraphicsPostEffectAuxTexturePc,4,GRAPHICS_RENDER_TEXTURE_PC *
 0x97384c,_PCGraphicsPostEffectWorkTexturePc,4,GRAPHICS_RENDER_TEXTURE_PC *
 0x973850,_PostBlurFramebufferPc,4,PC_FRAMEBUFFER_PC*
 0x973854,_PostCopyFramebufferPc,4,PC_FRAMEBUFFER_PC*

@@ -32976,6 +32976,9 @@ extern "C" {
 #pragma bss_seg(".bss$PCGraphicsPostEffectBackBufferTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$PCGraphicsPostEffectAuxTexturePc")
+    GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc = 0;
+#pragma bss_seg()
 }
 
 extern "C" {

@@ -1390,6 +1390,35 @@ allocated:
     PCGraphicsPostEffectBackBufferTexturePc = texture;
 }
 
+extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
+extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc;
+
+/* Re-sizes the post-effect targets after a mode change, with the same clamps as PCGraphicsCreatePostEffectTextures. */
+void __cdecl PCGraphicsResizePostEffectTexturesPc(u32 width, u32 height) {
+    u32 target_width = width < 512 ? width : 512;
+    u32 target_height;
+    PCGraphicsPostEffectWidthPc = target_width;
+    target_height = height < 512 ? height : 512;
+    PCGraphicsPostEffectHeightPc = target_height;
+    if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
+        target_width = 1;
+        target_height = 1;
+        while (target_width <= (width < 512 ? width : 512))
+            target_width += target_width;
+        target_width >>= 1;
+        PCGraphicsPostEffectWidthPc = target_width;
+        while (target_height <= (height < 512 ? height : 512))
+            target_height += target_height;
+        target_height >>= 1;
+        PCGraphicsPostEffectHeightPc = target_height;
+    }
+    PCGraphicsResizeEffectTexture(PCGraphicsPostEffectWorkTexturePc, target_width, target_height, -1);
+    PCGraphicsResizeEffectTexture(PCGraphicsPostEffectBackBufferTexturePc, PCGraphicsPostEffectWidthPc,
+                                  PCGraphicsPostEffectHeightPc, -1);
+    if (PCGraphicsPostEffectAuxTexturePc != NULL)
+        PCGraphicsResizeEffectTexture(PCGraphicsPostEffectAuxTexturePc, -1, -1, -1);
+}
+
 void __cdecl NuRndrInitConfigPc(VARIPTR *buffer, VARIPTR end) {
     RENDERER_SHADOW_DEFAULTS_PC *shadow = (RENDERER_SHADOW_DEFAULTS_PC *)&PCShadowState;
     NUVEC defaults;
