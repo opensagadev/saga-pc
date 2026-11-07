@@ -194,8 +194,9 @@ void __cdecl NuKeyboardApplyActionKeys_candidate(const i16 *keys, i32 count) {
     }
 }
 
-void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state, i32 unused_edx, i32 index,
-                                                      i32 field_00, i32 field_01, i32 field_02, u16 field_04) {
+__declspec(noinline) void __fastcall NuKeyboardInsertInputRecord_candidate(NuKeyboardState_PC *state, i32 unused_edx,
+                                                                           i32 index, i32 field_00, i32 field_01,
+                                                                           i32 field_02, u16 field_04) {
     NuKeyboardInitLayout_PC *layout;
     NuKeyboardInitKeyRecord_PC *record;
     i32 i;
