@@ -7071,9 +7071,9 @@ address,symbol,size,ctype
 0x60f550,?Update@NetStats@@UAEXXZ,134,
 0x60f5e0,?Draw@NetSmallStats@@UAEXMMMMW4eInfo@1@@Z,610,
 0x60f850,?Draw@NetStats@@UAEXMMMMW4eInfo@NetSmallStats@@@Z,1880,
-0x60ffd0,?SetPlayerSlots@V2SessionManager@@QAEXPBHH@Z,52,
-0x610010,?V2SessionPrintf@@YAXPBDZZ,107,
-0x610080,?FilterNames@V2SessionManager@@UAEHPAPAE0HPAE@Z,71,
+0x60ffd0,?SetHostGameData@V2SessionManager@@QAEXPBHH@Z,52,
+0x610010,?Log@V2SessionManager@@SAXPBDZZ,107,
+0x610080,?VerifyStrings@V2SessionManager@@UAEHPAPAE0HPAE@Z,71,
 0x6100d0,??0V2HostList@@QAE@XZ,13,
 0x6100e0,?GetCount@V2HostList@@QAEHXZ,4,
 0x6100f0,??0V2PeerList@@QAE@XZ,13,
@@ -7082,29 +7082,29 @@ address,symbol,size,ctype
 0x610160,??0V2PendingList@@QAE@XZ,13,
 0x610170,??0V2ClosingList@@QAE@XZ,13,
 0x610180,?Reset@V2SessionManager@@QAEXXZ,104,
-0x6101f0,?UpdateStats@V2SessionManager@@UAEXXZ,69,
+0x6101f0,?Update@V2SessionManager@@UAEXXZ,69,
 0x610240,?RemoveAllPeers@V2SessionManager@@QAEXH@Z,79,
 0x610290,?RemovePeer@V2SessionManager@@UAEXPAVV2Peer@@H@Z,119,
 0x610310,??0V2SessionManager@@QAE@PBD@Z,110,
-0x610380,?Shutdown@V2SessionManager@@UAEXH@Z,3,
-0x610390,?Update@V2SessionManager@@UAEXXZ,1,
-0x6103a0,?StartHost@V2SessionManager@@UAEXXZ,1,
-0x6103b0,?StopHost@V2SessionManager@@UAEXXZ,1,
-0x6103c0,?GetHostCount@V2SessionManager@@UAEHXZ,3,
-0x6103d0,?Poll@V2SessionManager@@UAEXXZ,1,
-0x6103e0,?IsHost@V2SessionManager@@UAE_NXZ,3,
-0x6103f0,?IsConnected@V2SessionManager@@UAE_NXZ,3,
-0x610400,?SetLocalPlayer@V2SessionManager@@UAEXH@Z,3,
-0x610410,?IsSearching@V2SessionManager@@UAE_NXZ,3,
-0x610420,?SetSearchMode@V2SessionManager@@UAEXH@Z,3,
-0x610430,?SetGameMode@V2SessionManager@@UAEXH@Z,3,
-0x610440,?SetSessionData@V2SessionManager@@UAEXPAXH@Z,3,
-0x610450,?SetMaxPlayers@V2SessionManager@@UAEXH@Z,10,
-0x610460,?SetPrivateSlots@V2SessionManager@@UAEXH@Z,10,
-0x610470,?SetJoinable@V2SessionManager@@UAEXH@Z,3,
-0x610480,?CancelSearch@V2SessionManager@@UAEXXZ,1,
-0x610490,?SetPresence@V2SessionManager@@UAEXH@Z,3,
-0x6104a0,?ClearPresence@V2SessionManager@@UAEXXZ,1,
+0x610380,?Init@V2SessionManager@@UAEXPAD@Z,3,
+0x610390,?Start@V2SessionManager@@UAEXXZ,1,
+0x6103a0,?Leave@V2SessionManager@@UAEXXZ,1,
+0x6103b0,?Close@V2SessionManager@@UAEXXZ,1,
+0x6103c0,?SignIn@V2SessionManager@@UAEHXZ,3,
+0x6103d0,?Render@V2SessionManager@@UAEXXZ,1,
+0x6103e0,?IsChatRestricted@V2SessionManager@@UAE_NXZ,3,
+0x6103f0,?IsAgeRestricted@V2SessionManager@@UAE_NXZ,3,
+0x610400,?GetLocalAddress@V2SessionManager@@UAEXPAUNetAddress@@@Z,3,
+0x610410,?IsSearchingForHosts@V2SessionManager@@UAE_NXZ,3,
+0x610420,?Join@V2SessionManager@@UAEXPAVNetHost@@@Z,3,
+0x610430,?Host@V2SessionManager@@UAEXW4eHostVisibility@@@Z,3,
+0x610440,?SearchForHosts@V2SessionManager@@UAEXHPAH@Z,3,
+0x610450,?SetHostVisibility@V2SessionManager@@UAEXW4eHostVisibility@@@Z,10,
+0x610460,?SetNumLocalPlayers@V2SessionManager@@UAEXH@Z,10,
+0x610470,?RemoveRemotePlayer@V2SessionManager@@UAEXAAVV2Peer@@@Z,3,
+0x610480,?AcceptInvitation@V2SessionManager@@UAEXXZ,1,
+0x610490,?SendInvitation@V2SessionManager@@UAEXPAD@Z,3,
+0x6104a0,?ViewInvitations@V2SessionManager@@UAEXXZ,1,
 0x6104e0,?AllocLinear@memorymanager_s@@QAEPAXIIH@Z,92,"void *__thiscall(u32,u32,i32)"
 0x00610540,_RefpackGetMatchLengthPc,46,"u32 __cdecl(u8 *,u8 *,u32)"
 0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
@@ -7114,6 +7114,8 @@ address,symbol,size,ctype
 0x610a70,??2EmuPacket@NuNetEmu@@SAPAXI@Z,18,
 0x610a90,??3EmuPacket@NuNetEmu@@SAXPAX@Z,18,
 0x610ab0,?GetFreeBytes@EmuPacket@NuNetEmu@@QAEHXZ,9,
+0x610ac0,?cbSortSeg@@YAHPBX0@Z,30,
+0x610ae0,?RecvFrom@NuNetEmu@@QAEHPAXHAAI@Z,264,
 0x610bf0,??1EmuPacket@NuNetEmu@@QAE@XZ,20,
 0x610c10,?AddPayload@EmuPacket@NuNetEmu@@QAEXPAXH@Z,72,
 0x610c60,?SetConditions@NuNetEmu@@QAEXW4eConditions@1@@Z,169,
@@ -7124,6 +7126,7 @@ address,symbol,size,ctype
 0x611190,??0EmuPacket@NuNetEmu@@QAE@PAI@Z,69,
 0x6111e0,??0NuNetEmu@@QAE@XZ,165,
 0x611290,?SplitSendPacket@NuNetEmu@@QAEHPAVEmuPacket@1@@Z,488,
+0x611480,?SendTo@NuNetEmu@@QAEHPAXHPAIH@Z,432,
 0x611630,?Update@NuNetEmu@@QAEXXZ,601,
 0x611900,??1EdStream@@UAE@XZ,7,
 0x611920,??_EEdStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdStream@@UAEPAXI@Z; no independent body
@@ -7135,6 +7138,7 @@ address,symbol,size,ctype
 0x6179c0,?UtilGetTime@@YAIXZ,61,u32 __cdecl(void)
 0x617a00,?UtilGetFrameStartTime@@YAIXZ,6,u32 __cdecl(void)
 0x617a10,?UtilFrameStart@@YAXXZ,66,void __cdecl(void)
+0x617a60,?unref@@YAHPAE0@Z,426,"i32 __cdecl(u8 *,u8 *)"
 0x617d50,_edmainSetReturn,10,
 0x617d60,_edmainCurrent,21,
 0x617d80,_edmainActivate,114,
@@ -27060,10 +27064,10 @@ address,symbol,size,ctype
 0x28572c4,?destination_surface@?4??PostFilterCopyTexturePc@@9@4UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
 0x28572e0,?source_surface@?4??PostFilterCopyTexturePc@@9@4UPC_EFFECT_SURFACE_PC@@A,28,PC_EFFECT_SURFACE_PC
 0x28572fc,?$S1@?4??PostFilterCopyTexturePc@@9@4IA,4,u32
-0x2857300,?theNetSessionManager@@3PAVV2SessionManager@@A,4,
+0x2857300,?theNetSessionManager@@3PAVNetSessionManager@@A,4,
 0x2857308,?theTTNetwork@@3VTTNetwork@@A,,
 0x02868400,?sm_poolMessageData@NETMESSAGE_PC@@2PAUMessageData@1@A,616448,NETMESSAGE_PC::MessageData[512]
-0x28fec24,?sm_instance@V2SessionManager@@2PAV1@A,4,V2SessionManager *
+0x28fec24,?mpSessionManager@V2SessionManager@@2PAV1@A,4,V2SessionManager *
 0x28fec28,_RefpackLinkArrayPc,,
 0x28fec2c,_RefpackHashTablePc,,
 0x28fec30,?theNuNetEmu@@3UNuNetEmu@@A,7204,NuNetEmu

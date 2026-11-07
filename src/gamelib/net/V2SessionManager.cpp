@@ -14,9 +14,9 @@ STATIC_ASSERT(offsetof(V2Peer, prev) == 8);
 STATIC_ASSERT(offsetof(V2Peer, counters) == 0x18);
 STATIC_ASSERT(offsetof(V2SessionManager, state) == 4);
 STATIC_ASSERT(offsetof(V2SessionManager, name) == 0x14);
-STATIC_ASSERT(offsetof(V2SessionManager, field_34) == 0x34);
-STATIC_ASSERT(offsetof(V2SessionManager, max_players) == 0x38);
-STATIC_ASSERT(offsetof(V2SessionManager, private_slots) == 0x3c);
+STATIC_ASSERT(offsetof(V2SessionManager, error) == 0x34);
+STATIC_ASSERT(offsetof(V2SessionManager, host_visibility) == 0x38);
+STATIC_ASSERT(offsetof(V2SessionManager, num_local_players) == 0x3c);
 STATIC_ASSERT(offsetof(V2SessionManager, slot_mode) == 0x40);
 STATIC_ASSERT(offsetof(V2SessionManager, local_slot) == 0x44);
 STATIC_ASSERT(offsetof(V2SessionManager, player_slots) == 0x48);
@@ -34,17 +34,17 @@ extern "C" {
     void __cdecl PcDebugPrintUnlock(void);
 }
 
-V2SessionManager *V2SessionManager::sm_instance = 0;
+V2SessionManager *V2SessionManager::mpSessionManager = 0;
 
-void V2SessionManager::SetPlayerSlots(const i32 *slots, i32 count) {
+void V2SessionManager::SetHostGameData(const i32 *data, i32 count) {
     i32 i;
     if (count >= 8)
         count = 8;
     for (i = 0; i < count; ++i)
-        player_slots[i] = slots[i];
+        player_slots[i] = data[i];
 }
 
-static void V2SessionPrintf(const char *format, ...) {
+void V2SessionManager::Log(const char *format, ...) {
     char buffer[128];
     va_list args;
     va_start(args, format);
@@ -55,7 +55,7 @@ static void V2SessionPrintf(const char *format, ...) {
     printf(buffer);
 }
 
-i32 V2SessionManager::FilterNames(u8 **source, u8 **destination, i32 count, u8 *replacement) {
+i32 V2SessionManager::VerifyStrings(u8 **source, u8 **destination, i32 count, u8 *replacement) {
     i32 result = 0;
     i32 i;
     for (i = 0; i < count; ++i)
@@ -118,14 +118,14 @@ void V2SessionManager::Reset() {
     timer_6c = 0.0f;
     state = 0;
     timer_68 = 0.0f;
-    field_34 = 0;
+    error = 0;
     timer_74 = 0.0f;
     local_slot = -1;
     for (i = 0; i < 8; ++i)
         player_slots[i] = -1;
 }
 
-void V2SessionManager::UpdateStats() {
+void V2SessionManager::Update() {
     V2Peer *peer;
     stats.totals.Clear();
     for (peer = peer_list.head; peer != NULL; peer = peer->next)
@@ -136,7 +136,7 @@ void V2SessionManager::UpdateStats() {
 void V2SessionManager::RemoveAllPeers(i32 reason) {
     V2Peer *peer;
     V2Peer *next;
-    V2SessionPrintf("V2SessionManager::RemoveAllPeers() called");
+    Log("V2SessionManager::RemoveAllPeers() called");
     for (peer = peer_list.head; peer != NULL; peer = next) {
         next = peer->next;
         RemovePeer(peer, reason);
@@ -157,8 +157,8 @@ void V2SessionManager::RemovePeer(V2Peer *peer, i32 reason) {
 V2SessionManager::V2SessionManager(const char *session_name) : stats("SessionAll") {
     field_7c = 0;
     slot_mode = 2;
-    private_slots = 0;
-    sm_instance = this;
+    num_local_players = 0;
+    mpSessionManager = this;
     NuStrCpy(name, session_name);
     field_78 = 0;
 }

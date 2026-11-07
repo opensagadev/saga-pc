@@ -29784,67 +29784,73 @@ class TTNetwork : public NetTransporter, public BaseThing {
 };
 extern TTNetwork theTTNetwork;
 
+class NetHost;
+enum eHostVisibility { HOST_VISIBILITY_PUBLIC, HOST_VISIBILITY_PRIVATE };
+
+/* Session base class (names from the Android symbols). Retail never constructs
+ * it: the vtable is referenced only by the constructor. */
 class V2SessionManager {
   public:
     V2SessionManager(const char *name);
-    virtual void Shutdown(i32 reason) {
+    virtual void Init(char *address) {
     }
-    virtual void Update() {
+    virtual void Start() {
     }
-    virtual void UpdateStats();
-    virtual void StartHost() {
+    virtual void Update();
+    virtual void Leave() {
     }
-    virtual void StopHost() {
+    virtual void Close() {
     }
-    virtual i32 GetHostCount() {
+    virtual i32 SignIn() {
         return 0;
     }
     virtual void RemovePeer(V2Peer *peer, i32 reason);
-    virtual void Poll() {
+    virtual void Render() {
     }
-    virtual bool IsHost() {
+    virtual bool IsChatRestricted() {
         return false;
     }
-    virtual bool IsConnected() {
+    virtual bool IsAgeRestricted() {
         return false;
     }
-    virtual void SetLocalPlayer(i32 player) {
+    virtual void GetLocalAddress(NetAddress *address) {
     }
-    virtual bool IsSearching() {
+    virtual bool IsSearchingForHosts() {
         return false;
     }
-    virtual void SetSearchMode(i32 mode) {
+    virtual void Join(NetHost *host) {
     }
-    virtual void SetGameMode(i32 mode) {
+    virtual void Host(eHostVisibility visibility) {
     }
-    virtual void SetSessionData(void *data, i32 size) {
+    virtual void SearchForHosts(i32 count, i32 *data) {
     }
-    virtual void SetMaxPlayers(i32 count) {
-        max_players = count;
+    virtual void SetHostVisibility(eHostVisibility visibility) {
+        host_visibility = visibility;
     }
-    virtual void SetPrivateSlots(i32 count) {
-        private_slots = count;
+    virtual void SetNumLocalPlayers(i32 count) {
+        num_local_players = count;
     }
-    virtual void SetJoinable(i32 joinable) {
+    virtual void RemoveRemotePlayer(V2Peer &peer) {
     }
-    virtual void CancelSearch() {
+    virtual void AcceptInvitation() {
     }
-    virtual void SetPresence(i32 presence) {
+    virtual void SendInvitation(char *name) {
     }
-    virtual void ClearPresence() {
+    virtual void ViewInvitations() {
     }
-    virtual i32 FilterNames(u8 **source, u8 **destination, i32 count, u8 *replacement);
+    virtual i32 VerifyStrings(u8 **source, u8 **destination, i32 count, u8 *replacement);
 
-    void SetPlayerSlots(const i32 *slots, i32 count);
+    static void Log(const char *format, ...);
+    void SetHostGameData(const i32 *data, i32 count);
     void Reset();
     void RemoveAllPeers(i32 reason);
 
     i32 state;
     u32 unknown_08[3];
     char name[0x20];
-    i32 field_34;
-    i32 max_players;
-    i32 private_slots;
+    i32 error;
+    i32 host_visibility;
+    i32 num_local_players;
     i32 slot_mode;
     i32 local_slot;
     i32 player_slots[8];
@@ -29861,9 +29867,18 @@ class V2SessionManager {
     V2PeerList peer_list;
     NetStats stats;
 
-    static V2SessionManager *sm_instance;
+    static V2SessionManager *mpSessionManager;
 };
-extern V2SessionManager *theNetSessionManager;
+
+/* Platform session layer behind theNetSessionManager. It adds the raw datagram
+ * slots 22/23 that nunetemu calls; retail links no implementation, so neither
+ * its vtable nor its RTTI is emitted. */
+class NetSessionManager : public V2SessionManager {
+  public:
+    virtual i32 SendTo(void *data, i32 size, u32 *address) = 0;
+    virtual i32 RecvFrom(void *data, i32 size, u32 *address) = 0;
+};
+extern NetSessionManager *theNetSessionManager;
 
 /* Network condition emulator (nunetemu, 0x610a50-0x611889): batches outgoing
  * payloads into packets, applies latency/loss and keeps statistics. */
@@ -29900,6 +29915,8 @@ struct NuNetEmu {
 
     NuNetEmu();
     EmuPacket *FindPacket(u32 *net_address, i32 size);
+    i32 RecvFrom(void *data, i32 size, u32 &address);
+    i32 SendTo(void *data, i32 size, u32 *address, i32 flags);
     i32 SplitSendPacket(EmuPacket *packet);
     void SetConditions(eConditions new_conditions);
     void Update();

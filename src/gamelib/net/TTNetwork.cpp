@@ -1,6 +1,6 @@
 #include "saga.h"
 
-V2SessionManager *theNetSessionManager;
+NetSessionManager *theNetSessionManager;
 
 /* TTNetwork object (0x60dee0-0x60ffcb): network statistics and the TTNetwork
  * singleton. Only the statistics helpers are ported so far. */
@@ -316,7 +316,7 @@ void TTNetwork::Broadcast(NETMESSAGE_PC message, u8 channel) {
     if (message.GetSize() > 0) {
         PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
-        for (V2Peer *peer = V2SessionManager::sm_instance->peer_list.head; peer != NULL; peer = peer->next) {
+        for (V2Peer *peer = V2SessionManager::mpSessionManager->peer_list.head; peer != NULL; peer = peer->next) {
             message.MakeUnique();
             peer->Send(message);
         }
@@ -328,7 +328,7 @@ void TTNetwork::BroadcastEx(NETMESSAGE_PC message, u8 channel) {
     if (message.GetSize() > 0) {
         PCByteCopy_candidate(message.data->bytes + --message.read_offset, &channel, 1);
         RecordSent(message, channel);
-        for (V2Peer *peer = V2SessionManager::sm_instance->peer_list.head; peer != NULL; peer = peer->next) {
+        for (V2Peer *peer = V2SessionManager::mpSessionManager->peer_list.head; peer != NULL; peer = peer->next) {
             message.MakeUnique();
             peer->SendEx(message, 0, 0);
         }

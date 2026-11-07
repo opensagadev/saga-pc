@@ -18,6 +18,9 @@ STATIC_ASSERT(offsetof(NuNetEmu, raw_stats) == 0x17cc);
 STATIC_ASSERT(offsetof(NuNetEmu, packet_stats) == 0x19ec);
 STATIC_ASSERT(sizeof(NuNetEmu) == 0x1c24);
 
+extern "C" i32 __cdecl refpack(u8 *source, i32 source_size, u8 *destination);
+i32 unref(u8 *source, u8 *destination);
+
 NuNetEmu theNuNetEmu;
 
 NuNetEmu::PackStats::PackStats(const char *name) : NetStats(name) {
@@ -33,6 +36,53 @@ void NuNetEmu::EmuPacket::operator delete(void *memory) {
 
 i32 NuNetEmu::EmuPacket::GetFreeBytes() {
     return 0xbb8 - payload_size;
+}
+
+/* Payloads larger than one packet are split by size: each 16-bit length
+ * prefixed payload becomes one segment, largest first. */
+struct NuNetEmuSegment {
+    u16 offset;
+    u16 size;
+};
+
+static i32 cbSortSeg(const void *left, const void *right) {
+    u16 left_size = ((const NuNetEmuSegment *)left)->size;
+    u16 right_size = ((const NuNetEmuSegment *)right)->size;
+    if (left_size > right_size)
+        return -1;
+    return left_size < right_size;
+}
+
+i32 NuNetEmu::RecvFrom(void *data, i32 size, u32 &address) {
+    i32 received = 0;
+    if (enabled) {
+        if (read_offset >= unpacked_size) {
+            received = theNetSessionManager->RecvFrom(packed_buffer, 0xbb8, &address);
+            if (received > 0) {
+                packet_stats.totals.values[1] += received;
+                packet_stats.totals.values[3]++;
+                read_offset = 0;
+                packed_size = received;
+                u32 start_time = UtilGetTime();
+                unpacked_size = unref(packed_buffer, unpacked_buffer);
+                u32 end_time = UtilGetTime();
+                raw_stats.totals.values[1] += unpacked_size;
+                packet_stats.pack_time[1] += end_time - start_time;
+                raw_stats.totals.values[3]++;
+            }
+        }
+
+        if (read_offset < unpacked_size && received >= 0) {
+            i32 payload_size = unpacked_buffer[read_offset] | (unpacked_buffer[read_offset + 1] << 8);
+            i32 copy_size = payload_size < size ? payload_size : size;
+            PCByteCopy_candidate(data, &unpacked_buffer[read_offset + 2], copy_size);
+            read_offset += payload_size + 2;
+            return copy_size;
+        }
+    } else {
+        return theNetSessionManager->RecvFrom(data, size, &address);
+    }
+    return received;
 }
 
 NuNetEmu::EmuPacket::~EmuPacket() {
@@ -173,6 +223,97 @@ NuNetEmu::NuNetEmu()
     packed_size = 0;
     SetConditions(CONDITIONS_NORMAL);
     field_00 = 0x200;
+}
+
+i32 NuNetEmu::SplitSendPacket(EmuPacket *packet) {
+    u32 start_time = UtilGetTime();
+    packed_size = refpack(packet->payload, packet->payload_size, packed_buffer);
+    packet_stats.pack_time[0] += UtilGetTime() - start_time;
+
+    i32 size = packed_size;
+    if (size <= 0x4f0) {
+        packet_stats.totals.values[0] += size;
+        packet_stats.totals.values[2]++;
+        theNetSessionManager->SendTo(packed_buffer, size, &packet->address);
+        return size;
+    }
+
+    packet_stats.split_packets++;
+    NuNetEmuSegment segments[256];
+    u32 segment_count = 0;
+    u32 offset = 0;
+    while (offset < packet->payload_size && segment_count < 256) {
+        i32 payload_size = packet->payload[offset] | (packet->payload[offset + 1] << 8);
+        segments[segment_count].offset = (u16)offset;
+        segments[segment_count].size = (u16)(payload_size + 2);
+        segment_count++;
+        offset += payload_size + 2;
+    }
+    qsort(segments, segment_count, sizeof(NuNetEmuSegment), cbSortSeg);
+
+    EmuPacket *halves[2];
+    halves[0] = new EmuPacket(&packet->address);
+    halves[1] = new EmuPacket(&packet->address);
+    for (u32 i = 0; i < segment_count; i++) {
+        EmuPacket *half = halves[halves[1]->payload_size < halves[0]->payload_size];
+        PCByteCopy_candidate(&half->payload[half->payload_size], &packet->payload[segments[i].offset],
+                             segments[i].size);
+        half->payload_size += segments[i].size;
+    }
+
+    i32 sent = SplitSendPacket(halves[0]);
+    sent += SplitSendPacket(halves[1]);
+    delete halves[0];
+    delete halves[1];
+    return sent;
+}
+
+i32 NuNetEmu::SendTo(void *data, i32 size, u32 *address, i32 flags) {
+    if (enabled) {
+        i32 sent = size;
+        switch (loss_mode) {
+            case 1:
+                if (NuRandFloat() < loss_chance)
+                    return sent;
+                break;
+            case 2:
+                if (burst_remaining == 0 && NuRandFloat() < loss_chance)
+                    burst_remaining = (i32)(NuRandFloat() * (burst_max - burst_min)) + burst_min;
+                if (burst_remaining > 0) {
+                    burst_remaining--;
+                    return sent;
+                }
+                break;
+        }
+
+        if (packet_count < max_packets) {
+            EmuPacket *packet = FindPacket(address, size);
+            if (packet == NULL) {
+                packet = new EmuPacket(address);
+                u32 now = UtilGetFrameStartTime();
+                if (max_latency > 0)
+                    packet->send_time = (u32)(NuRandFloat() * (max_latency - min_latency)) + min_latency + now;
+                else
+                    packet->send_time = 0;
+                packet->creation_time = now;
+                packet->flush_time = now + flush_delay;
+                packet->next = NULL;
+                packet->previous = last_packet;
+                if (last_packet != NULL)
+                    last_packet->next = packet;
+                last_packet = packet;
+                if (first_packet == NULL)
+                    first_packet = packet;
+                packet_count++;
+            }
+            packet->AddPayload(data, size);
+            queued_bytes += size;
+        } else {
+            sent = 0;
+        }
+        return sent;
+    }
+    return theNetSessionManager->SendTo(data, size, address);
 }
 
 void NuNetEmu::Update() {
