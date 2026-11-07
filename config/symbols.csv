@@ -7193,6 +7193,8 @@ address,symbol,size,ctype
 0x611990,??1EdOutputStream@@UAE@XZ,7,
 0x611e00,?Initialise@NetworkObject@@QAEXHPAXPAUEdClass@@ABVV2Peer@@H@Z,81,
 0x611e60,?Destroy@NetworkObject@@QAEXXZ,68,
+0x612750,?Init@NetworkObjectManager@@QAEXXZ,111,
+0x6127c0,?InitClassStats@NetworkObjectManager@@QAEXXZ,89,
 0x612820,?Reset@NetworkObjectManager@@QAEXXZ,1,
 0x612830,?BindFilter@NetworkObjectManager@@QAEXPAVNOSFilter@@PBUEdClass@@@Z,31,
 0x612860,?RegisterRemoteCall@NetworkObjectManager@@QAEHP6AXAAUNETMESSAGE_PC@@@ZH@Z,80,
@@ -17801,6 +17803,7 @@ address,symbol,size,ctype
 0x76ab50,??_C@_06LJJHIAGL@EmuRaw?$AA@,7,char []
 0x76ab5c,??_7EdStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76ac34,??_C@_03EPCAMLIH@NOS?$AA@,4,char []
 0x76ac78,??_C@_03LBMKPMDK@FTP?$AA@,4,char []
 0x76ac80,??_7NetFtpManager@@6B@,52,
 0x76acb4,??_C@_0L@CGOOPECH@New?5To?5Old?$AA@,,char []

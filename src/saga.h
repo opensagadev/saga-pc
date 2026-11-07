@@ -30102,6 +30102,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
 #pragma pop_macro("GetObject")
     i32 GetPeerStatus();
     void Init();
+    void InitClassStats();
     i32 IsLocal(i32 id);
     i32 IsPeerReady(const V2Peer &peer) const;
     i32 IsPeerStarted(const V2Peer &peer) const;

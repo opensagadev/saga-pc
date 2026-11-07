@@ -589,3 +589,23 @@ void NetworkObjectManager::NotifyCreateObject(void *object, EdClass *object_clas
     if ((flags & 1) == 0)
         RegisterObject(object, object_class, guid);
 }
+
+void NetworkObjectManager::Init() {
+    guid_peers[0] = NULL;
+    guid_peers[1] = NULL;
+    memset(objects, 0, sizeof(objects));
+    memset(local_objects, 0, sizeof(local_objects));
+    theTTNetwork.AddListener(this, 3, "NOS");
+    theRegistry.AddObjectNotifier(this);
+    guid_group = 0;
+    guid_peers[0] = (const V2Peer *)-1;
+    allow_duplicates = 1;
+}
+
+void NetworkObjectManager::InitClassStats() {
+    for (i32 i = 0; i < theRegistry.class_count; i++) {
+        EdClass *object_class = theRegistry.GetClass(i);
+        if (object_class->object_interface != NULL)
+            class_stats[i] = new NetStats(object_class->name);
+    }
+}
