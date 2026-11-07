@@ -5338,6 +5338,7 @@ address,symbol,size,ctype
 0x592150,_GizBuildIts_RegisterGizmo,298,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x592280,_BuildIt_MoveCode,825,
 0x5925c0,_Customiser_Dump,1,void __cdecl(void)
+0x5925c0,_CustomiserLoadTracePc,1,void __cdecl (char *)
 0x592660,_CustomiserPieceAvailableDefaultPrivatePc,28,i32 __cdecl(CUSTOMPIECE_LAYERS_PC *)
 0x592680,_CustomiserFindSetFromNamePrivatePc,212,
 0x592760,_Customiser_SetAnimsToLoad,178,"void __cdecl (CUSTOMISER_LAYERS_PC *, i32)"

@@ -169,8 +169,7 @@ static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivatePc[9] = {
     {"leg", 0, 5, {2, 0}, NULL}};
 i32 __cdecl CharVariant_Find(char *name);
 i32 __cdecl Game_100PercentComplete(void);
-void __cdecl Customiser_Dump(void) {
-}
+void __cdecl CustomiserLoadTracePc(char *path);
 static i32 CustomiserFindSetFromNamePrivatePc(char *name) {
     if (NuStrICmp(name, "hathair") == 0)
         return 0;
@@ -1204,7 +1203,7 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
             customiser->categories[category]->scene_file != NULL) {
             world->customiser_shared_scenes[category] =
                 NuGScnRead(&world->giz_buffer, world->buffer_end, customiser->categories[category]->scene_file);
-            ((void(__cdecl *)(char *))Customiser_Dump)(customiser->categories[category]->scene_file);
+            CustomiserLoadTracePc(customiser->categories[category]->scene_file);
         }
         for (piece = 0; piece < customiser->piece_counts[category]; ++piece) {
             CUSTOM_ACCESSORY_RESOURCE_PC *resource = &resources[piece];
@@ -1220,7 +1219,7 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                     NuStrCat(path, ".gsc");
                     world->giz_buffer.addr = (world->giz_buffer.addr + 0x3f) & ~0x3fu;
                     resource->scene = NuGScnRead(&world->giz_buffer, world->buffer_end, path);
-                    ((void(__cdecl *)(char *))Customiser_Dump)(path);
+                    CustomiserLoadTracePc(path);
                 }
                 if (resource->scene != NULL)
                     NuSpecialFind(resource->scene, &resource->special, piece_name, 1);
@@ -1234,12 +1233,12 @@ void __cdecl Customiser_LoadAll(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
                     if (item != -1 && NuFilePakGetItemInfo(texture_pack, item, &data, &size) != 0) {
                         data = NuPtrBlockFix(data);
                         resource->texture_id = NuTexCreateNative((NUTEXDIM_PC *)data);
-                        ((void(__cdecl *)(char *))Customiser_Dump)(path);
+                        CustomiserLoadTracePc(path);
                     }
                 }
                 if (resource->texture_id == 0) {
                     resource->texture_id = NuTexReadPc(path, &world->giz_buffer, world->buffer_end);
-                    ((void(__cdecl *)(char *))Customiser_Dump)(path);
+                    CustomiserLoadTracePc(path);
                 }
             }
         }
