@@ -427,10 +427,11 @@ AILOCATOR_PC *LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip
     i32 selected;
     struct AILOCATOR_PC *result;
     i32 candidates[64];
+    candidate_count = 0;
+    result = NULL;
     if (count > 64) {
         count = 64;
     }
-    candidate_count = 0;
     for (i = 0; i < count; ++i) {
         u8 valid;
         if (locators[i] == NULL) {
@@ -438,13 +439,13 @@ AILOCATOR_PC *LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip
         }
         valid = 0;
         if (outside_camera != 0) {
-            if (NuCameraClipTestSphere(&locators[i]->position, 0.0f, &numtx_identity) == 0) {
+            if (NuCameraClipTestSphere(&locators[i]->position, 0.0f, &NuMtxSetIdentityTemplate) == 0) {
                 valid = 1;
             }
         } else {
             valid = 1;
             if (clip_radius > 0.0f) {
-                if (NuCameraClipTestSphere(&locators[i]->position, clip_radius, &numtx_identity) == 0) {
+                if (NuCameraClipTestSphere(&locators[i]->position, clip_radius, &NuMtxSetIdentityTemplate) == 0) {
                     const i16 room = (i16)(NuPortalWhichRoom(WORLD->current_gscn, &locators[i]->position));
                     valid = 0;
                     if (room >= 0 && WORLD->rooms_visible_ptr[room] == 0) {
@@ -459,24 +460,23 @@ AILOCATOR_PC *LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip
             } else {
                 NUVEC delta;
                 const f32 distance = NuVecDistSqr(position, &locators[i]->position, &delta);
-                if (min_delta_y != 1000000000.0f && min_delta_y > delta.y) {
+                if (min_delta_y != 1000000000.0f && delta.y < min_delta_y) {
                     continue;
                 }
-                if (max_delta_y != 1000000000.0f && delta.y > max_delta_y) {
+                if (max_delta_y != 1000000000.0f && max_delta_y < delta.y) {
                     continue;
                 }
-                if (max_distance * max_distance > distance) {
+                if (distance < max_distance * max_distance) {
                     candidates[candidate_count++] = i;
                 }
             }
         }
     }
-    if (candidate_count == 0) {
-        return NULL;
+    if (candidate_count != 0) {
+        selected = candidates[qrand() / (65535 / candidate_count + 1)];
+        result = locators[selected];
+        locators[selected] = NULL;
     }
-    selected = qrand() / (65535 / candidate_count + 1);
-    result = locators[candidates[selected]];
-    locators[candidates[selected]] = NULL;
     return result;
 }
 
