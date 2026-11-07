@@ -238,7 +238,7 @@ void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
         }
     }
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
-    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0.0f);
+    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 

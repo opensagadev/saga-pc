@@ -68,7 +68,7 @@ void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         GameCam_HitRoll();
     } else {
-        NewRumbleAllPlayers(0.7f, 0.0f, 0, 0.0f);
+        NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
         Cheat_PowerUpTime = CHEAT_POWERUPTIME;
     }
     display = AddGameMessage(TTab[POWERUP_TEXTID], position, 0.5f, position, 0.75f, 255, 255, 255, 0x4023, 1.0f);

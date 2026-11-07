@@ -2515,7 +2515,7 @@ static void __cdecl EndRedBrickMessage(GAME_MESSAGE_PC *message) {
         AreaGlobals_PC.field_08 = 2;
     RedBrickScale = 2.0f;
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
-    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0.0f);
+    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 

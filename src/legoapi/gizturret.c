@@ -483,7 +483,7 @@ i32 __cdecl GizTurrets_Hit(WORLDINFO *world, AI_TURRET_RECORD_PC *turret, NUVEC 
         turret->state = 0;
         judder = qrand() < 0x8000 ? 0.4f : -0.4f;
         GameCam_Judder(GameCam, judder, 2, NULL);
-        NewRumbleAllPlayers(1.0f, 0.0f, 0, 0.0f);
+        NewRumbleAllPlayers(1.0f, 0.0f, 0, 0);
         if (turret->behavior_flags & 0x2000) {
             turret->flags |= 0x10;
         } else {

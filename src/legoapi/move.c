@@ -5692,7 +5692,7 @@ static __declspec(noinline) void SmartBombCode(GAMEOBJECT *object) {
     if (state->smartbomb_timer >= 2.0f) {
         state->smartbomb_timer = 0.0f;
         AddExplosion(&object->collision_position, (f32)((f64)AreaPickupScale * 7.5), 1.0f, NULL, -1, 0x4021);
-        NewRumbleAllPlayers(1.0f, 0.1f, 0, 0.0f);
+        NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
         sign = qrand() < 0x8000 ? -1.0f : 1.0f;
         GameCam_Judder(GameCam, (f32)((f64)sign * 1.5), 2, NULL);
         GameCam_NewShake(GameCam, 2.0f, 1.0f, 1.0f);

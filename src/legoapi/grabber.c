@@ -245,10 +245,6 @@ STATIC_ASSERT(offsetof(GRABBER_ANTINODE_VIEW_PC, object_mask) == 0x50);
 GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
 void __cdecl PartKill_Grabber(PART_PC *part, i32 unused1);
 
-/* Retail passes the last NewRumbleAllPlayers argument as an integer. */
-#define GRABBER_RUMBLE(strength, duration, frames)                                                                     \
-    ((void(__cdecl *)(f32, f32, i32, i32))NewRumbleAllPlayers)(strength, duration, frames, 0)
-
 static void GrabberMtxSetRotationZ(NUMTX *m, NUANG a) {
     f32 cosz;
     f32 sinz;
@@ -329,7 +325,7 @@ static void GrabberGrabVictim(GAMEOBJECT *victim) {
     victim->field_7aa = 0x68;
     if (victim->character_model->model_data_b[104] == NULL)
         victim->field_7aa = 5;
-    GRABBER_RUMBLE(0.0f, 0.1f, 0);
+    NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
     victim->context_timer = 0.0f;
     victim->context_duration = 0.75f;
     victim->external_force = victim->start_position;
@@ -779,7 +775,7 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
                 grabber->carried_height_offset =
                     grabber->carried_blowup->transform.m31 - grabber->carried_blowup->mid_position.y;
             }
-            GRABBER_RUMBLE(0.0f, 0.1f, 0);
+            NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
             Hint_SetComplete(0x28b);
         grabbed:
             PlaySfx("env_grabber_down", position);
@@ -842,7 +838,7 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
                 grabber->flags &= ~2;
                 if (control == NULL)
                     grabber->flags |= 4;
-                GRABBER_RUMBLE(0.0f, 0.0f, 2);
+                NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
             } else {
                 Grabber_Drop(grabber, &previous);
                 if (control == NULL)
@@ -871,7 +867,7 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
                 grabber->flags &= ~2;
                 if (control == NULL)
                     grabber->flags |= 4;
-                GRABBER_RUMBLE(0.0f, 0.0f, 2);
+                NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
             } else if (grabber->character_id == GrabMagnetIdPc) {
                 grabber->victim = FindNearestGameObject(Grabber_GetGrabPos(grabber, NULL), NULL, 0x10, 0.5f, 0.0f, -1,
                                                         -1, -1, NULL, 1, IsGrabbable);

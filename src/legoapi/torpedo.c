@@ -743,7 +743,7 @@ void __cdecl Torpedo_EndBolt(BOLT_PC *bolt) {
     TorpedoHitTarget(bolt);
     judder = qrand() < 0x8000 ? 0.4f : -0.4f;
     GameCam_Judder(GameCam, judder, 2, NULL);
-    NewRumbleAllPlayers(0.7f, 0.0f, 0, 0.0f);
+    NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
 }
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, torpedo) == 0xcc4);

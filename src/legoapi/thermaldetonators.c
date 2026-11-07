@@ -6,7 +6,7 @@ EXPLOSION_PC *__cdecl Detonate(NUVEC *position, u16 flags) {
     AddGameDebris(WORLD->game_debris_sys, 0x4a, position);
     AddGameDebris(WORLD->game_debris_sys, 0x4b, position);
     AddPartDebris(WORLD->part_debris_sys, 2, position);
-    NewRumbleAllPlayers(1.0f, 0.1f, 0, 0.0f);
+    NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
     PlaySfx("exp_thermalDet", position);
     if ((flags & 0x1000) != 0) {
         f32 amount = qrand() < 0x8000 ? -1.0f : 1.0f;

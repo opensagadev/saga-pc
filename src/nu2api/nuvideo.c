@@ -71,10 +71,10 @@ i32 part_debris_count = 0;
 STATIC_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
 STATIC_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
 
-void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 priority) {
+void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index) {
     i32 index;
     GAMEOBJECT *object;
-    (void)priority;
+    (void)player_index;
 
     if (frames > 0) {
         f32 rounded_duration = (f64)frames / DEFAULTFPS;

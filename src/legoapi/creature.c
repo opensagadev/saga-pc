@@ -274,7 +274,7 @@ static void __cdecl CreatureCrate_StopPc(PART_PC *part) {
     object->ai_packet.reset_mode = 2;
     PlaySfx("Explode1", &part->position);
     GameCam_Judder(GameCam, 0.1f, 0, NULL);
-    NewRumbleAllPlayers(0.0f, 0.0f, 2, 0.0f);
+    NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
 }
 
 static void __cdecl CreatureCrate_MovePc(PART_PC *part, f32 elapsed) {

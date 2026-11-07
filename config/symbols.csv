@@ -3995,7 +3995,7 @@ address,symbol,size,ctype
 0x0054a850,_NewRumble,66,"void __cdecl(void *, f32, i32)"
 0x0054a8a0,_NewBuzz,40,"void __cdecl(void *, f32, i32)"
 0x54a8d0,_NewBuzzFrames,54,"void __cdecl (void *, i32, i32)"
-0x0054a910,_NewRumbleAllPlayers,146,"void __cdecl (f32, f32, i32, f32)"
+0x0054a910,_NewRumbleAllPlayers,146,"void __cdecl (f32, f32, i32, i32)"
 0x0054a9b0,_DieRumble,90,
 0x54aa10,_KillRumble,94,void __cdecl (GAMEOBJECT *)
 0x54aa70,_HitRumble,108,void __cdecl (GAMEOBJECT *)

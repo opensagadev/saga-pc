@@ -381,10 +381,10 @@ extern "C" {
             if (config != NULL) {
                 if ((config->flags & 0x20000) != 0) {
                     GameCam_Judder(GameCam, -0.25f, 0, &object->collision_position);
-                    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0.0f);
+                    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
                 } else if ((config->flags & 0x40000) != 0 && VehicleArea == 0) {
                     GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
-                    NewRumbleAllPlayers(0.5f, 0.0f, 0, 0.0f);
+                    NewRumbleAllPlayers(0.5f, 0.0f, 0, 0);
                 }
             }
         }

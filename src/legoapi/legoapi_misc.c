@@ -29,5 +29,5 @@ void __cdecl ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
         if (object->flags_1fc_word & 0x80)
             NewRumble(object->pad->bound_pad, strength, 0);
     } else
-        NewRumbleAllPlayers(strength, 0.0f, 0, 0.0f);
+        NewRumbleAllPlayers(strength, 0.0f, 0, 0);
 }

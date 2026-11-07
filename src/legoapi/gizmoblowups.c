@@ -413,7 +413,7 @@ void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32
     }
     if (flags & 0x10) {
         GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
-        NewRumbleAllPlayers(1.0f, 0.1f, 0, 0.0f);
+        NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
     }
     if (((blowup->draw_flags & 0x80000000) != 0 && (i8)blowup->remaining_health > 0) ||
         (i8)blowup->remaining_health <= 0)

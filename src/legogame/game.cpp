@@ -439,7 +439,7 @@ static void Punch_HitHold(GAMEOBJECT *attacker, GAMEOBJECT *target) {
 static void Punch_HitExtraCode_LSW(GAMEOBJECT *object, NUVEC *position) {
     if (object->id == (u16)id_GAMORREANGUARD &&
         ((object->character_context == 0x26 && object->field_7aa == 0x56) || object->character_context == 0x0d)) {
-        NewRumbleAllPlayers(0.4f, 0.0f, 1, 0.0f);
+        NewRumbleAllPlayers(0.4f, 0.0f, 1, 0);
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         GameCam_Judder(GameCam, 0.25f, 0, &object->collision_position);
         PlaySfx("fs_gamorr_land", &object->lower_position);

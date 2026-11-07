@@ -340,7 +340,7 @@ void __cdecl AddFancyMessageRGB(char *text, f32 x, f32 y, f32 scale, f32 duratio
     if (message_id != 0) {
         GameAudio_PlaySfx(0x2c, NULL, 0, 0);
         GameAudio_PlaySfx(0x26, NULL, 0, 0);
-        NewRumbleAllPlayers(0.7f, 0.0f, 0, 0.0f);
+        NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
         GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
     }
     doubled_scale = (f64)scale + (f64)scale;

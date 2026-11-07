@@ -15045,7 +15045,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern GAMECAMERA *GameCam;
     extern void *Player[8];
     extern f32 DEFAULTFPS;
-    extern void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, f32 priority);
+    extern void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index);
     extern i32 part_debris_count;
     extern WORLDINFO *LWORLD;
     extern u16 ang[513];

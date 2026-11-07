@@ -40,12 +40,7 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
     char text[16];
     i32 earned, goal, icon, character_id;
     LEVEL_OBJECT_RUNTIME_PC *special;
-    union {
-        u32 bits;
-        f32 value;
-    } priority;
     (void)unused;
-    priority.bits = 1;
     if (reset_score != 0) {
         Arcade_Score[player_index] = 0;
         earned = 1;
@@ -64,13 +59,13 @@ void __cdecl Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
             earned = 1;
         } else {
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
-            NewRumbleAllPlayers(0.0f, 0.2f, 0, priority.value);
+            NewRumbleAllPlayers(0.0f, 0.2f, 0, 1);
             earned = 0;
         }
     }
     if (earned != 0) {
         GameCam_Judder(NULL, qrand() < 0x8000 ? -0.6f : 0.6f, 2, 0);
-        NewRumbleAllPlayers(1.0f, 0.1f, 0, priority.value);
+        NewRumbleAllPlayers(1.0f, 0.1f, 0, 1);
         GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
         GameAudio_PlaySfx(0x2c, NULL, 0, 0);
         GameAudio_PlaySfx(0x26, NULL, 0, 0);

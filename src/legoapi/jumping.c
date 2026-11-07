@@ -172,7 +172,7 @@ void __cdecl BigJumpCode(GAMEOBJECT *object) {
             if ((object->portal_flags & 0x8000000) != 0 || (object->flags_ef0 & 0x2000) != 0) {
                 GameCam_Judder(GameCam, -0.3f, 0, &object->collision_position);
                 PlayLandSfx(object, 3, 0);
-                NewRumbleAllPlayers(0.6f, 0.0f, 0, 0.0f);
+                NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
             } else if ((object->flags_1fc_word & 0x80) != 0) {
                 GameCam_Judder(GameCam, -0.2f, 0, &object->collision_position);
                 PlayLandSfx(object, 3, 0);

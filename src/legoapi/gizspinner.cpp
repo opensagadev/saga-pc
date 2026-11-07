@@ -570,7 +570,7 @@ extern "C" void __cdecl GizSpinner_Update(GIZSPINNER_s *spinner) {
         NuMtxTranslate(&matrix, &spinner->position);
         spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == 2) + 1;
         if (initial_no_judder == 0 && previous_state == 1 && spinner->state != 1) {
-            NewRumbleAllPlayers(0.0f, 0.1f, 0, 0.0f);
+            NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
             GameCam_Judder(GameCam, -0.2f, 0, NULL);
             GameAudio_PlaySfx(0x39, &spinner->position, 0, 0);
             spinner->state_flags |= 0x2000;

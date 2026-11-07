@@ -32,7 +32,7 @@ void __cdecl DrawExplosions(void) {
 
 static __declspec(noinline) void ExplosionFeedbackPc(EXPLOSION_PC *explosion) {
     if ((explosion->flags & 0x40) != 0) {
-        NewRumbleAllPlayers(0.5f, 0.1f, 0, 0.0f);
+        NewRumbleAllPlayers(0.5f, 0.1f, 0, 0);
         GameCam_HitJudder();
     } else if (explosion->owner != NULL) {
         NewBuzz(explosion->owner->pad->bound_pad, 0.1f, 0);

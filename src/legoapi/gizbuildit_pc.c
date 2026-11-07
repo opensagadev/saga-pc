@@ -736,7 +736,7 @@ void __cdecl GizBuildIts_LateUpdate(void *world_pointer, void *system_pointer, f
                 GizBuildIt_Finish((GIZBUILDIT_s *)buildit);
                 NuVecAdd(&finish_position, &buildit->position, &buildit->effect_position);
                 GameAudio_PlaySfx(0x3a, &finish_position, 0, 0);
-                ((void(__cdecl *)(f32, f32, i32, i32))NewRumbleAllPlayers)(0.75f, 0.1f, 0, 0);
+                NewRumbleAllPlayers(0.75f, 0.1f, 0, 0);
                 GameCam_Judder(GameCam, -0.4f, 0, NULL);
                 if ((buildit->availability_flags & 0x200) == 0) {
                     buildit->availability_flags |= 0x200;
