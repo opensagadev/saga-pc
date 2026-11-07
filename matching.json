@@ -17,7 +17,7 @@
     "config/library-objects.json": "9727c009368075a0e525a27ae8337b66c444838945fc976fb2676f9f1fe372a9",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "417ab798689c4d4bf27e93cba0ad30c5bf870a49f3d43f2f4874a5fedd212d38",
+    "config/symbols.csv": "8433d3b3cf0b5236a6cafca8207b20ee73c8480102d99b67c166354a8b58530e",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "50199f6b132a7abfabf251e98a75be0a957abfe50f1ff776188fba21e4c4436f",
@@ -78,7 +78,7 @@
     "src/debug/crash_diagnostics.cpp": "d6c4c416477a07ecad9d72a9834f6b5180ca36fcab1f60b0a6eba4719e00924a",
     "src/debug/skin_trace.cpp": "0253ca3bb71bc07f0678151f453c21f5cdc3c8a429796f9e8b1420cb247ee6b1",
     "src/debug/skin_trace_windows.cpp": "9c351973a212bee638eb1b7f9896b6a99c617861c9275e191da311d88504f21a",
-    "src/editor/edlevelall.cpp": "c71d6512b97a5940831c9a08e7ea41b11a78e2f5e86371ac076301b375e97664",
+    "src/editor/edlevelall.cpp": "32fb51cf5d02828b0b8511fa44d04b266940d8e7d4f9ffa5cf308de07052d3c2",
     "src/gameapi/edtools_outline_pc.cpp": "61e824b76a197436b7d324980f19261c39c1c6369c83289efc9411d325da61cd",
     "src/gameapi/edui_widget_render_pc.cpp": "4af389fb2878ef93e363a9502140e088904591eac0b4896c9303ae03cf06a51b",
     "src/gameapi/message.cpp": "fa98ea7ba2efbd39677b4b3eb236deac1c1211a09c964f0ec13a6d8f6af088f7",
@@ -531,7 +531,7 @@
     "build/obj/vendored/vorbis_smallft.obj": "9ad9ab5b433b62cafc838a7b75d400189e64190c5f64879a03936a4887f4acb0",
     "build/obj/batman.obj": "407ccaa004fa094bb5947884c0563359e510b9f00e4c7303a6d57cf3d6c73890",
     "build/obj/data.obj": "bd98088e537233ac4c711ad3a0fe90af49eefa6ed179fe8c9c2e952a673ee9f7",
-    "build/obj/editor/edlevelall.obj": "1a761608cf4904860dabaf6e7b8fb46e96aa8e6d4e40d3df266aabaa7ede6bc5",
+    "build/obj/editor/edlevelall.obj": "be1b158a052590871f95e3b0c3990dc44d0d7b30caaeb61da08fd76316db6021",
     "build/obj/editor/edtoolsall.obj": "b1b5bdb173b78bea3038001cc0301d7cb859c59f65a6b82cf6c78d1d65fc233e",
     "build/obj/gameapi/ai_registry_pc.obj": "64ee13217b5bc349ef6ead271275f942b1e3cae5dc3c0b1d72bd038e64b29791",
     "build/obj/gameapi/aiscript_diagnostics.obj": "91190daf671c04b2515d765e1a6d4d06a0cdea7acf84131859fbf1a28ae140e6",
@@ -236757,6 +236757,126 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "??0EdVectorControl@@QAE@XZ",
+      "symbol": "??0EdVectorControl@@QAE@XZ",
+      "address": "0x006b9840",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 9,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 9,
+          "exact_match": true,
+          "target_sha256": "f4a2635a33dfe2f5d1588b3898786bad3a15b83719c7bc6724c69f76ec0f42de",
+          "base_sha256": "f4a2635a33dfe2f5d1588b3898786bad3a15b83719c7bc6724c69f76ec0f42de",
+          "relocation_count": 1,
+          "comparison_unit": "006b9840-1d9b442116ac",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??3EdVectorControl@@SAXPAX@Z",
+      "symbol": "??3EdVectorControl@@SAXPAX@Z",
+      "address": "0x006b9850",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 18,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 18,
+          "exact_match": true,
+          "target_sha256": "5c562724e428c994d6aeb07b5c9dea38bbc1a788528dffaf7ac7195e4790417f",
+          "base_sha256": "5c562724e428c994d6aeb07b5c9dea38bbc1a788528dffaf7ac7195e4790417f",
+          "relocation_count": 2,
+          "comparison_unit": "006b9850-106dbf1576e5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?Destroy@EdVectorControl@@QAEXXZ",
+      "symbol": "?Destroy@EdVectorControl@@QAEXXZ",
+      "address": "0x006b9870",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 33,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 33,
+          "exact_match": true,
+          "target_sha256": "58b64999e3c4fed9a040af83ef6496559cb89bcd901230281c83fb4ecc413305",
+          "base_sha256": "58b64999e3c4fed9a040af83ef6496559cb89bcd901230281c83fb4ecc413305",
+          "relocation_count": 0,
+          "comparison_unit": "006b9870-1a960fd0b585",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?cbChanged@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
+      "symbol": "?cbChanged@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
+      "address": "0x006b98a0",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 249,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 249,
+          "exact_match": true,
+          "target_sha256": "912f5e9528b00d19c6020ab739fef9515621e716f295928adbfdbb5f17b646d9",
+          "base_sha256": "912f5e9528b00d19c6020ab739fef9515621e716f295928adbfdbb5f17b646d9",
+          "relocation_count": 10,
+          "comparison_unit": "006b98a0-c84b6e2be2ae",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?Refresh@EdVectorControl@@UAEXXZ",
+      "symbol": "?Refresh@EdVectorControl@@UAEXXZ",
+      "address": "0x006b99a0",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 196,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 196,
+          "exact_match": true,
+          "target_sha256": "354f9d338932e0048889ad27fbb40476a8d2cf2c1c2ec10baf5cba9517fc07a0",
+          "base_sha256": "354f9d338932e0048889ad27fbb40476a8d2cf2c1c2ec10baf5cba9517fc07a0",
+          "relocation_count": 12,
+          "comparison_unit": "006b99a0-8d2859fbd8a7",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "?cbChanged@EdEnumControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
       "symbol": "?cbChanged@EdEnumControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
       "address": "0x006b9ec0",
@@ -240210,6 +240330,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "?Drag@EdVectorControl@@SAXPAUeduiitem_s@@@Z",
+      "symbol": "?Drag@EdVectorControl@@SAXPAUeduiitem_s@@@Z",
+      "address": "0x006c1ca0",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 173,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 173,
+          "exact_match": true,
+          "target_sha256": "7bacb77d0cdf02154f5d40304705e0510655414b72db5c8aada88edbb8ef42c8",
+          "base_sha256": "7bacb77d0cdf02154f5d40304705e0510655414b72db5c8aada88edbb8ef42c8",
+          "relocation_count": 10,
+          "comparison_unit": "006c1ca0-79b008b5e77b",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "??0EdInputStream@@QAE@PAUMemoryBuffer@@0@Z",
       "symbol": "??0EdInputStream@@QAE@PAUMemoryBuffer@@0@Z",
       "address": "0x006c1e50",
@@ -240367,6 +240511,64 @@
           "base_sha256": "7e3e8254229d3b7dae4371709deff0c18d1d47021188397d266db239eee037ef",
           "relocation_count": 1,
           "comparison_unit": "006c1f40-dabe3ebde240",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??1EdVectorControl@@UAE@XZ",
+      "symbol": "??1EdVectorControl@@UAE@XZ",
+      "address": "0x006c1fe0",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 45,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 45,
+          "exact_match": true,
+          "target_sha256": "5029c194b9061b0d34ec8310790bfd717d9a435a5d2d37920030cf7099b0d0f1",
+          "base_sha256": "5029c194b9061b0d34ec8310790bfd717d9a435a5d2d37920030cf7099b0d0f1",
+          "relocation_count": 2,
+          "comparison_unit": "006c1fe0-e3da1e4ac336",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??_EEdVectorControl@@UAEPAXI@Z",
+      "symbol": "??_EEdVectorControl@@UAEPAXI@Z",
+      "address": "0x006c2010",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_GEdVectorControl@@UAEPAXI@Z",
+      "symbol": "??_GEdVectorControl@@UAEPAXI@Z",
+      "address": "0x006c2010",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 73,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 73,
+          "exact_match": true,
+          "target_sha256": "47b98d35df09952e4cc090672cf636c4b56657baa468271bb0d9b2e6a2d0ba9d",
+          "base_sha256": "47b98d35df09952e4cc090672cf636c4b56657baa468271bb0d9b2e6a2d0ba9d",
+          "relocation_count": 4,
+          "comparison_unit": "006c2010-7e73d409fbea",
           "objdiff_percent": 100.0
         }
       ],
@@ -241257,6 +241459,30 @@
           "base_sha256": "e0448aa3d2edb59e4e1af493e5a2514a950aa918c86a8a36717879e5101e2737",
           "relocation_count": 1,
           "comparison_unit": "006c3a80-01acce130ebc",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?cbButton@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
+      "symbol": "?cbButton@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
+      "address": "0x006c3b00",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 32,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 32,
+          "exact_match": true,
+          "target_sha256": "b3e38fead2efea4e80e9ac0b2af03a029ca2d86d411928db6501ab787ad5a5ee",
+          "base_sha256": "b3e38fead2efea4e80e9ac0b2af03a029ca2d86d411928db6501ab787ad5a5ee",
+          "relocation_count": 2,
+          "comparison_unit": "006c3b00-e598a020709c",
           "objdiff_percent": 100.0
         }
       ],
@@ -243745,6 +243971,54 @@
           "base_sha256": "8d82a8d596da3274471883ad3b8de9d6176e0aeec3228e313d4af458037ac6a8",
           "relocation_count": 8,
           "comparison_unit": "006caa00-027dde878bad",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?cbSelected@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
+      "symbol": "?cbSelected@EdVectorControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z",
+      "address": "0x006caac0",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 118,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 118,
+          "exact_match": true,
+          "target_sha256": "1615bd4b6510e9826884fa449239836abd1601d3a8938cd21bd05746445a1119",
+          "base_sha256": "1615bd4b6510e9826884fa449239836abd1601d3a8938cd21bd05746445a1119",
+          "relocation_count": 12,
+          "comparison_unit": "006caac0-123570d84408",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "?AddMenuItem@EdVectorControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z",
+      "symbol": "?AddMenuItem@EdVectorControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z",
+      "address": "0x006cab40",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 403,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "base_size": 403,
+          "exact_match": true,
+          "target_sha256": "20b5247854e484dd3675c9487f1722ad4714e4af93158ea0317922aecc6912b9",
+          "base_sha256": "20b5247854e484dd3675c9487f1722ad4714e4af93158ea0317922aecc6912b9",
+          "relocation_count": 37,
+          "comparison_unit": "006cab40-258b89dac9bd",
           "objdiff_percent": 100.0
         }
       ],
@@ -302172,6 +302446,7 @@
       "units": [
         "lib/ogg-vorbis/vorbis/psy.c",
         "lib/ogg-vorbis/vorbis/res0.c",
+        "src/editor/edlevelall.cpp",
         "src/gameapi/edui_widget_render_pc.cpp",
         "src/legoapi/camera.c",
         "src/legoapi/control_setup.cpp",
@@ -302203,6 +302478,14 @@
         },
         {
           "unit": "lib/ogg-vorbis/vorbis/res0.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "00754a39f7de30495780d4c6242f680316f56bf4bf735c3681b3ac1d14f1512e",
+          "base_sha256": "00754a39f7de30495780d4c6242f680316f56bf4bf735c3681b3ac1d14f1512e"
+        },
+        {
+          "unit": "src/editor/edlevelall.cpp",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -441092,6 +441375,27 @@
       "status": "unknown size"
     },
     {
+      "name": "??_C@_04GEFJINEE@?$CF?42f?$AA@",
+      "symbol": "??_C@_04GEFJINEE@?$CF?42f?$AA@",
+      "address": "0x0076bd48",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 5,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "exact_match": true,
+          "target_size": 5,
+          "base_size": 5,
+          "target_sha256": "bba564d8153a92a0333d7a3f994f428d7ef7c7f3983630d888c8a9f94247e9c3",
+          "base_sha256": "bba564d8153a92a0333d7a3f994f428d7ef7c7f3983630d888c8a9f94247e9c3"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "??_C@_07JNDIOAAP@Light?$CFd?$AA@",
       "symbol": "??_C@_07JNDIOAAP@Light?$CFd?$AA@",
       "address": "0x0076bd6c",
@@ -459172,6 +459476,18 @@
       "status": "unknown size"
     },
     {
+      "name": "??_7EdVectorControl@@6B@",
+      "symbol": "??_7EdVectorControl@@6B@",
+      "address": "0x0076f7d8",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "??_C@_07NBCGADJA@Unknown?$AA@",
       "symbol": "??_C@_07NBCGADJA@Unknown?$AA@",
       "address": "0x0076f80c",
@@ -460082,6 +460398,69 @@
           "base_size": 10,
           "target_sha256": "25027d6eacab50fa342f96b7591ddc807caebb10e4b1dddecb858aaa2ae0dcc1",
           "base_sha256": "25027d6eacab50fa342f96b7591ddc807caebb10e4b1dddecb858aaa2ae0dcc1"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "??_C@_02IGJGHHBN@tz?$AA@",
+      "symbol": "??_C@_02IGJGHHBN@tz?$AA@",
+      "address": "0x0076fe14",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "4dbefad1675394b429d85605663287623fede066a6ca15d0c03eb19201faac11",
+          "base_sha256": "4dbefad1675394b429d85605663287623fede066a6ca15d0c03eb19201faac11"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "??_C@_02KNLLCENO@ty?$AA@",
+      "symbol": "??_C@_02KNLLCENO@ty?$AA@",
+      "address": "0x0076fe18",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "f04c7c667403baea2a72634b7d57b4c9b202db98f06beb74e49bbb5f7a0dad6c",
+          "base_sha256": "f04c7c667403baea2a72634b7d57b4c9b202db98f06beb74e49bbb5f7a0dad6c"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "??_C@_02LEKABFJP@tx?$AA@",
+      "symbol": "??_C@_02LEKABFJP@tx?$AA@",
+      "address": "0x0076fe1c",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": 3,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "exact_match": true,
+          "target_size": 3,
+          "base_size": 3,
+          "target_sha256": "d6c1656ddd028ecad602277efdd8a4548d51a07e0b292bd8933a3903b838e73d",
+          "base_sha256": "d6c1656ddd028ecad602277efdd8a4548d51a07e0b292bd8933a3903b838e73d"
         }
       ],
       "status": "exact"
@@ -497858,6 +498237,54 @@
       "name": "??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8",
       "symbol": "??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8",
       "address": "0x007eb9e4",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_R4EdVectorControl@@6B@",
+      "symbol": "??_R4EdVectorControl@@6B@",
+      "address": "0x007eba00",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_R3EdVectorControl@@8",
+      "symbol": "??_R3EdVectorControl@@8",
+      "address": "0x007eba14",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_R2EdVectorControl@@8",
+      "symbol": "??_R2EdVectorControl@@8",
+      "address": "0x007eba24",
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_R1A@?0A@EA@EdVectorControl@@8",
+      "symbol": "??_R1A@?0A@EA@EdVectorControl@@8",
+      "address": "0x007eba30",
       "units": [
         "src/editor/edlevelall.cpp"
       ],
@@ -538296,11 +538723,22 @@
       "name": "??_R0?AVEdVectorControl@@@8",
       "symbol": "??_R0?AVEdVectorControl@@@8",
       "address": "0x0081ffc0",
-      "units": [],
+      "units": [
+        "src/editor/edlevelall.cpp"
+      ],
       "target_size": 30,
-      "exact_match": false,
-      "objects": [],
-      "status": "not implemented"
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/editor/edlevelall.cpp",
+          "exact_match": true,
+          "target_size": 30,
+          "base_size": 30,
+          "target_sha256": "6362c6e8af0a7b977e1adac1cb06f80ff300a3d09b5cee7097af6f3721ebda2b",
+          "base_sha256": "6362c6e8af0a7b977e1adac1cb06f80ff300a3d09b5cee7097af6f3721ebda2b"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "??_R0?AVEdMatrixControl@@@8",
@@ -614461,17 +614899,17 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 2898867,
-    "matched_code_bytes": 978902,
-    "matching_percent": 28.200306172481007,
-    "fuzzy_coverage_percent": 75.7914106824071,
-    "mapped_functions": 11607,
-    "matched_functions": 7828,
-    "objdiff_fuzzy_percent": 90.877266,
-    "objdiff_total_code": 2899575,
+    "mapped_code_bytes": 2900216,
+    "matched_code_bytes": 980251,
+    "matching_percent": 28.239168298645502,
+    "fuzzy_coverage_percent": 75.83027280857159,
+    "mapped_functions": 11619,
+    "matched_functions": 7839,
+    "objdiff_fuzzy_percent": 90.8815,
+    "objdiff_total_code": 2900924,
     "image_bytes": 40067072,
-    "mapped_bytes": 4802270,
-    "mapping_percent": 11.985577583507974,
+    "mapped_bytes": 4803633,
+    "mapping_percent": 11.98897937937666,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -614479,16 +614917,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 2900061
+        "mapped_bytes": 2901410
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 97182,
+        "mapped_bytes": 97196,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 97182,
+        "mapped_file_backed_data_bytes": 97196,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -614504,38 +614942,38 @@
         "mapped_zero_fill_data_bytes": 1504456
       }
     ],
-    "mapping_known_size_symbols": 21224,
-    "mapping_unknown_size_symbols": 8255,
-    "mapping_code_bytes": 2900061,
+    "mapping_known_size_symbols": 21239,
+    "mapping_unknown_size_symbols": 8261,
+    "mapping_code_bytes": 2901410,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 83.54524571292268,
-    "mapping_data_bytes": 1902209,
+    "mapping_code_percent": 83.58410783908718,
+    "mapping_data_bytes": 1902223,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.281131612717589,
-    "mapping_code_data_bytes": 4802270,
+    "mapping_data_percent": 5.281170481129303,
+    "mapping_code_data_bytes": 4803633,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 12.160658950121615,
-    "mapping_file_backed_data_bytes": 397753,
+    "mapping_code_data_percent": 12.164110438303041,
+    "mapping_file_backed_data_bytes": 397767,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 37.36320613813432,
+    "mapping_file_backed_data_percent": 37.36452123792222,
     "mapping_zero_fill_data_bytes": 1504456,
     "mapping_zero_fill_data_total_bytes": 34954408,
     "mapping_zero_fill_data_percent": 4.304052295779119,
-    "matched_data_region_bytes": 1890105
+    "matched_data_region_bytes": 1890149
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 2898867,
-    "exact_reconstruction_bytes": 978902,
+    "mapped_reconstruction_bytes": 2900216,
+    "exact_reconstruction_bytes": 980251,
     "mapped_not_exact_bytes": 1919965,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 571185,
+    "unclassified_text_bytes": 569836,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 28.200306172481007,
+    "strict_original_text_exact_percent": 28.239168298645502,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 28.210009532998352,
-    "mapped_scope_denominator_bytes": 2898867,
-    "mapped_scope_exact_percent": 33.7684343572851,
+    "reconstruction_scope_exact_percent": 28.248885031117688,
+    "mapped_scope_denominator_bytes": 2900216,
+    "mapped_scope_exact_percent": 33.79924115996877,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
   },
   "data_members": [
@@ -615841,7 +616279,7 @@
       "metadata_sha256": "f144b2c7d11d07a38dc69fe167bbe9736b0ffaa144e187dbb835337f6b396a09",
       "header_path": "src/saga.h",
       "header_sha256": "c1e8b435b7baa17acc39ecddc6525da639b4614fb62477a53e4b6485c3a4f756",
-      "geometry_object_sha256": "8d1a312959a398fa57142fa725c37659e6d4b27965804f0fd2f472ab2f5784d1",
+      "geometry_object_sha256": "a4f3ce2b5aa6fb1fef832b69292f53917ec2788668d87ef7fb6bd420cccdeb51",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
