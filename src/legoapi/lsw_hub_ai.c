@@ -116,7 +116,7 @@ i32 __cdecl Hub_GetRandomCharType(void) {
     return HubChooseRandomCharacterPc(characters);
 }
 /* 0x491840/595 */
-static void HubGoneThroughDoorPc(WORLDINFO *world) {
+void HubGoneThroughDoorPc(WORLDINFO *world) {
     i32 new_area, index;
     i16 characters[340];
     GAMEOBJECT *object;
