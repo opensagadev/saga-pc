@@ -17991,6 +17991,21 @@ struct NETMESSAGE_PC {
             read_offset += size;
         }
     }
+    /* Prepend writes go in front of the unread data (used to add headers). */
+    void Prepend8(u8 value) {
+        if (data != NULL) {
+            read_offset--;
+            PCByteCopy_candidate(data->bytes + read_offset, &value, 1);
+        }
+    }
+    void Prepend16(const i16 &value) {
+        if (data != NULL) {
+            read_offset -= 2;
+            PCByteCopy_candidate(data->bytes + read_offset, &value, 2);
+            if (swap_endianness)
+                EdFileSwapEndianess16(data->bytes + read_offset);
+        }
+    }
     void Read8(u8 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(&value, data->bytes + read_offset, 1);
@@ -30231,6 +30246,9 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     i32 Acquire(i32 id);
     void AddToLocalObjectList(NetworkObject *object);
     void BindFilter(NOSFilter *filter, const EdClass *object_class);
+    void BindReplicator(NetReplicator *replicator, const EdClass *object_class);
+    void CalcReplicatorDataSize(NetReplicator *replicator, const EdClass *object_class, i32 &data_size,
+                                i32 &message_size);
     void ChangeContext(NOSContext &new_context);
     void ConstructObject(NetworkObject *object, NetPeerPush *push);
     void ContinuityBreak(i32 id, f32 time);
@@ -30273,10 +30291,15 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void SendAcquireMessage(NetworkObject *object);
     void SendAcquiredMessage(i16 id, const V2Peer &peer);
     void SendAdoptedMessage(i16 id);
+    i32 ObjectCall(void *instance, i32 call_id, NETMESSAGE_PC message, const V2Peer *peer);
+    i32 ObjectOtherCall(void *instance, i32 call_id, NETMESSAGE_PC message);
+    i32 ObjectOwnerCall(void *instance, i32 call_id, NETMESSAGE_PC message);
     i32 Push(const NetworkObject *object, NetReplicator *replicator, ReplicatorData &data, NetPeerPush *push);
     i32 PushObject(NetworkObject *object, NetPeerPush *push, i32 force);
     i32 SendPushMessage(NETMESSAGE_PC *message, const NetPeerPush *push, i32 flags);
+    void Start(const NOSContext &new_context);
     PendingObject *StealPendingObject();
+    void Stop();
     void Term();
     void Update();
     void UpdateLocalObjectList();

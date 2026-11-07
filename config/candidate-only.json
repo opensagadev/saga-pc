@@ -1425,6 +1425,16 @@
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
    "symbol": "?Read@NETMESSAGE_PC@@QAEXPAXI@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "?Prepend16@NETMESSAGE_PC@@QAEXABF@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "?Prepend8@NETMESSAGE_PC@@QAEXE@Z",
+   "kind": "function"
   }
  ]
 }

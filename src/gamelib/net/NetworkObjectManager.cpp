@@ -58,6 +58,7 @@ class NetOutputStream : public EdOutputStream {
 };
 STATIC_ASSERT(sizeof(NetOutputStream) == 0x24);
 
+i32 ForceDummySerialise = 0;
 NetworkObjectManager *theNos = NULL;
 
 void NetworkObject::Initialise(i32 guid, void *new_object, EdClass *new_class, const V2Peer &new_owner, i32 new_flags) {
@@ -953,4 +954,144 @@ void NetworkObjectManager::ReceiveStatusMessage(NETMESSAGE_PC &message, const V2
             return;
         }
     }
+}
+
+void NetworkObjectManager::CalcReplicatorDataSize(NetReplicator *replicator, const EdClass *object_class,
+                                                  i32 &data_size, i32 &message_size) {
+    u8 data_memory[0x1400];
+    u8 object_memory[0x1400];
+    memset(data_memory, 0, sizeof(data_memory));
+    memset(object_memory, 0, sizeof(object_memory));
+    ReplicatorData data;
+    data.start = data_memory;
+    data.end = data_memory + 0x100;
+    data.cursor = data_memory;
+    replicator->AllowPush(object_class, object_memory, data, 1, 1);
+    NetOutputStream stream;
+    NETMESSAGE_PC message(0x20);
+    i16 flags = 0x10;
+    ForceDummySerialise = 1;
+    stream.SetMessage(&message);
+    replicator->SerialiseObject(stream, NULL, object_class, object_memory, data, &flags);
+    data_size = data.cursor - data.start;
+    ForceDummySerialise = 0;
+    message_size = message.GetSize();
+    message.Release();
+}
+
+void NetworkObjectManager::BindReplicator(NetReplicator *replicator, const EdClass *object_class) {
+    i32 class_id = theRegistry.GetClassId((EdClass *)object_class);
+    ReplicatorList &list = replicators[class_id];
+    replicator->next = NULL;
+    replicator->previous = list.tail;
+    if (list.tail != NULL)
+        list.tail->next = replicator;
+    list.tail = replicator;
+    if (list.head == NULL)
+        list.head = replicator;
+    list.count++;
+    i32 data_size;
+    i32 message_size;
+    CalcReplicatorDataSize(replicator, object_class, data_size, message_size);
+    replicator_data_sizes[class_id] += data_size;
+    replicator->data_size = data_size;
+    replicator->message_size = message_size;
+}
+
+void NetworkObjectManager::Start(const NOSContext &new_context) {
+    if (!active) {
+        active = 1;
+        PCByteCopy_candidate(&context, &new_context, sizeof(context));
+        NETMESSAGE_PC message(0x20);
+        message.Write8(9);
+        message.Write(&context, sizeof(context));
+        theTTNetwork.BroadcastEx(message, 3);
+        message.Release();
+    }
+}
+
+void NetworkObjectManager::Stop() {
+    if (active) {
+        active = 0;
+        NETMESSAGE_PC message(0x20);
+        message.Write8(10);
+        theTTNetwork.BroadcastEx(message, 3);
+        for (NetPeerPush *push = peer_push; push != peer_push + 8; push++) {
+            if (push->peer != NULL)
+                push->Stop();
+        }
+        message.Release();
+    }
+}
+
+i32 NetworkObjectManager::ObjectCall(void *instance, i32 call_id, NETMESSAGE_PC message, const V2Peer *peer) {
+    i32 result = 0;
+    NetworkObject *object = FindNetworkObject(instance);
+    if (object != NULL) {
+        i16 class_id = theRegistry.GetClassId(object->object_class);
+        i16 object_id = object->id;
+        NETMESSAGE_PC outgoing(message);
+        outgoing.Prepend16(class_id);
+        outgoing.Prepend16(object_id);
+        outgoing.Prepend8(call_id);
+        outgoing.Prepend8(8);
+        if (peer != NULL) {
+            if (peer->local)
+                ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(instance, message);
+            else
+                theTTNetwork.SendEx(outgoing, 3, (V2Peer *)peer, 0, 0);
+        } else {
+            theTTNetwork.BroadcastEx(outgoing, 3);
+            ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(instance, message);
+        }
+        result = 1;
+        outgoing.Release();
+    }
+    message.Release();
+    return result;
+}
+
+i32 NetworkObjectManager::ObjectOwnerCall(void *instance, i32 call_id, NETMESSAGE_PC message) {
+    i32 result = 0;
+    NetworkObject *object = FindNetworkObject(instance);
+    if (object != NULL) {
+        if (object->owner->local) {
+            ((void (*)(void *, NETMESSAGE_PC &))registered_calls[call_id - 1].callback)(instance, message);
+        } else {
+            i16 class_id = theRegistry.GetClassId(object->object_class);
+            i16 object_id = object->id;
+            NETMESSAGE_PC outgoing(message);
+            outgoing.Prepend16(class_id);
+            outgoing.Prepend16(object_id);
+            outgoing.Prepend8(call_id);
+            outgoing.Prepend8(8);
+            /* Retail passes the address of the owner field, not the owner. */
+            theTTNetwork.SendEx(outgoing, 3, (V2Peer *)&object->owner, 0, 0);
+            outgoing.Release();
+        }
+        result = 1;
+    }
+    message.Release();
+    return result;
+}
+
+i32 NetworkObjectManager::ObjectOtherCall(void *instance, i32 call_id, NETMESSAGE_PC message) {
+    i32 result = 0;
+    NetworkObject *object = FindNetworkObject(instance);
+    if (object != NULL) {
+        if (object->owner->local) {
+            i16 class_id = theRegistry.GetClassId(object->object_class);
+            i16 object_id = object->id;
+            NETMESSAGE_PC outgoing(message);
+            outgoing.Prepend16(class_id);
+            outgoing.Prepend16(object_id);
+            outgoing.Prepend8(call_id);
+            outgoing.Prepend8(8);
+            theTTNetwork.BroadcastEx(outgoing, 3);
+            outgoing.Release();
+        }
+        result = 1;
+    }
+    message.Release();
+    return result;
 }
