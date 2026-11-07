@@ -507,6 +507,92 @@ void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
         debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->use_explicit_clip_box = 0;
 }
 
+/* PC 0x02947b78, 0x02962b40/0x02962b44, 0x00810ae4: the repeat-box submenu, its X and Z sliders and the
+   XZ lock that keeps the box square. */
+static eduimenu_s *ptlrepeatboxmenu = NULL;
+static edui_slider_s *ptlrepeatbox_x_slider = NULL;
+static edui_slider_s *ptlrepeatbox_z_slider = NULL;
+static i32 ptlrepeatbox_xz_lock = 1;
+
+static void cbPtlChangeRepeatXZLock(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    f32 value;
+    i32 was_locked = ptlrepeatbox_xz_lock;
+    ptlrepeatbox_xz_lock = item->highlighted;
+    if (was_locked == 0 && ptlrepeatbox_xz_lock == 1) {
+        effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        value = effect->particle_box.x;
+        effect->particle_box.z = value;
+        ptlrepeatbox_z_slider->value = value;
+        ptlrepeatbox_z_slider->normalized_value =
+            (value - ptlrepeatbox_z_slider->minimum) / ptlrepeatbox_z_slider->range;
+    }
+}
+
+static void cbPtlChangeRepeatBox(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
+    f32 value;
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1)
+        return;
+    if (edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    if (item->data == 0) {
+        value = ((edui_slider_s *)item)->value;
+        effect->particle_box.x = value;
+        if (ptlrepeatbox_xz_lock != 0 && ptlrepeatbox_z_slider != NULL) {
+            effect->particle_box.z = value;
+            ptlrepeatbox_z_slider->value = value;
+            ptlrepeatbox_z_slider->normalized_value =
+                (value - ptlrepeatbox_z_slider->minimum) / ptlrepeatbox_z_slider->range;
+        }
+    } else if (item->data == 1) {
+        effect->particle_box.y = ((edui_slider_s *)item)->value;
+    } else if (item->data == 2) {
+        value = ((edui_slider_s *)item)->value;
+        effect->particle_box.z = value;
+        if (ptlrepeatbox_xz_lock != 0 && ptlrepeatbox_x_slider != NULL) {
+            effect->particle_box.x = value;
+            ptlrepeatbox_x_slider->value = value;
+            ptlrepeatbox_x_slider->normalized_value =
+                (value - ptlrepeatbox_x_slider->minimum) / ptlrepeatbox_x_slider->range;
+        }
+    }
+}
+
+static void cbPtlCancelRepeatBoxMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
+    eduiMenuDestroy(ptlrepeatboxmenu);
+    ptlrepeatboxmenu = NULL;
+    ptlrepeatbox_x_slider = NULL;
+    ptlrepeatbox_z_slider = NULL;
+}
+
+void cbPtlRepeatBoxMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
+    DEBRIS_INFO_PC *effect;
+    if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
+        return;
+    effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+    ptlrepeatboxmenu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, cbPtlCancelRepeatBoxMenu, "Repeat Box");
+    if (ptlrepeatboxmenu == NULL)
+        return;
+    eduiMenuAddItem(ptlrepeatboxmenu,
+                    eduiItemToggleCreate(0, edblack, ptlrepeatbox_xz_lock, 1, cbPtlChangeRepeatXZLock, "XZ Lock"));
+    eduiMenuAddItem(ptlrepeatboxmenu,
+                    eduiItemSliderCreate(0, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
+                                         effect->particle_box.x, "Repeat Box X"));
+    ptlrepeatbox_x_slider = (edui_slider_s *)edui_last_item;
+    eduiMenuAddItem(ptlrepeatboxmenu,
+                    eduiItemSliderCreate(1, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
+                                         effect->particle_box.y, "Repeat Box Y"));
+    eduiMenuAddItem(ptlrepeatboxmenu,
+                    eduiItemSliderCreate(2, edblack, 0, cbPtlChangeRepeatBox, 0.1f, 5.0 * edptl_superscale,
+                                         effect->particle_box.z, "Repeat Box Z"));
+    ptlrepeatbox_z_slider = (edui_slider_s *)edui_last_item;
+    eduiMenuAttach(parent, ptlrepeatboxmenu);
+    ptlrepeatboxmenu->x = parent->x + 10;
+    ptlrepeatboxmenu->y = parent->y + 40;
+}
+
 static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     struct debris_info_pc_s *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)

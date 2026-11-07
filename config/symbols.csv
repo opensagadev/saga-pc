@@ -8613,7 +8613,10 @@ address,symbol,size,ctype
 0x666ec0,_cbPtlCancelRotMenu,37,
 0x666ef0,_cbPtlRotMenu,617,
 0x667160,_cbPtlChangeRepeatFlag,101,
-0x667330,_cbPtlRepeatBoxMenu,490,
+0x6671d0,_cbPtlChangeRepeatXZLock,111,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x667240,_cbPtlChangeRepeatBox,203,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x667310,_cbPtlCancelRepeatBoxMenu,32,"void __cdecl(eduimenu_s *, eduimenu_s *)"
+0x667330,_cbPtlRepeatBoxMenu,490,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x667520,_cbPtlCancelCutOffMenu,25,
 0x667540,_cbPtlCutOffMenu,646,
 0x6677d0,_cbPtlCancelVarEmitMenu,25,
@@ -18792,6 +18795,11 @@ address,symbol,size,ctype
 0x76de24,??_C@_0N@IOEHGHEN@Min?5Rotation?$AA@,13,char []
 0x76de34,??_C@_0BC@NEGONGOK@Rotation?5Envelope?$AA@,18,char []
 0x76de48,??_C@_0BC@ICDCLAHK@Particle?5Rotation?$AA@,18,char []
+0x76de5c,??_C@_0N@MDJPLODP@Repeat?5Box?5Z?$AA@,13,char []
+0x76de6c,??_C@_0N@OILCONPM@Repeat?5Box?5Y?$AA@,13,char []
+0x76de7c,??_C@_0N@PBKJNMLN@Repeat?5Box?5X?$AA@,13,char []
+0x76de8c,??_C@_07KOMJOOCC@XZ?5Lock?$AA@,8,char []
+0x76de94,??_C@_0L@CAPEABP@Repeat?5Box?$AA@,11,char []
 0x76dea0,??_C@_0BB@KMEGBCIM@CameraCutOff?5Rad?$AA@,17,char []
 0x76deb4,??_C@_0BA@IJFMBDFI@SoundCutOff?5Rad?$AA@,16,char []
 0x76dec4,??_C@_0P@DMKPPPOF@DrawCutOff?5Rad?$AA@,15,char []
@@ -24195,6 +24203,7 @@ address,symbol,size,ctype
 0x810ad8,_edpp_create_type,4,i32
 0x810adc,_edpp_copy_size,4,f32
 0x810ae0,_edpp_scale_factor,,f32
+0x810ae4,_ptlrepeatbox_xz_lock,4,i32
 0x810ae8,_edptl_superscale,4,i32
 0x810aec,_edptl_clipboard_entry,4,i32
 0x810b28,_TerrainSkinOriginalGroupCountPc,,i32
@@ -28181,6 +28190,7 @@ address,symbol,size,ctype
 0x2947b5c,_edpp_copy_source_vec,12,NUVEC
 0x2947b68,_debris_collide_pt,,NUVEC
 0x2947b74,_TerrainSkinArenaEndPc,,u8 *
+0x2947b78,_ptlrepeatboxmenu,4,eduimenu_s *
 0x2947b7c,_TerrLastImpact,,TERRAIN_LAST_IMPACT_PC
 0x2947b90,_freechunkcontrolsptr,4,i32
 0x02947b94,_SfxInfo,4,SFX_RECORD_PC *
@@ -28421,6 +28431,8 @@ address,symbol,size,ctype
 0x2962b34,_torus_env1_item,4,struct eduiitem_s *
 0x2962b38,_torus_env2_item,4,struct eduiitem_s *
 0x2962b3c,_torus_env3_item,4,struct eduiitem_s *
+0x2962b40,_ptlrepeatbox_x_slider,4,edui_slider_s *
+0x2962b44,_ptlrepeatbox_z_slider,4,edui_slider_s *
 0x2962b48,_IgnoreWallSplines,,i32
 0x2962b4c,_WallSplinesOnly,,i32
 0x02962b50,_TerrainScaleWorkBasePc,,
