@@ -70,6 +70,12 @@ void __cdecl NuQFntSetUVSizePc(VUFNT *font, f32 x_scale, f32 y_scale) {
     NuQFntPopPrintMode();
 }
 
+void __cdecl NuQFntSetColour2d(VUFNT *font, u32 colour) {
+    NuQFntPushPrintMode(2);
+    NuQFntSetColour(font, colour);
+    NuQFntPopPrintMode();
+}
+
 void __cdecl NuQFntSetRS(void *stream, VUFNT *font) {
     (void)stream;
     font->mode = 1;
@@ -337,6 +343,12 @@ void __cdecl NuQFntPrintU(VUFNT *font, char *text) {
     }
 }
 
+void __cdecl NuQFntPrint2dU(VUFNT *font, char *text) {
+    NuQFntPushPrintMode(2);
+    NuQFntPrintU(font, text);
+    NuQFntPopPrintMode();
+}
+
 typedef struct qfont_material_stream_view_pc_s {
     u8 unknown_0000[4];
     u8 stream_begin;
@@ -353,6 +365,12 @@ void __cdecl NuQFntMove(VUFNT *font, f32 x, f32 y, f32 z) {
             (NuQFntMode & 2) != 0 ? NULL : (void *)&((QFONT_MATERIAL_STREAM_VIEW_PC *)font->material)->stream_begin;
         NuQFntMoveRS(stream, font, x, y, z);
     }
+}
+
+void __cdecl NuQFntMove2d(VUFNT *font, f32 x, f32 y, f32 z) {
+    NuQFntPushPrintMode(2);
+    NuQFntMove(font, x, y, z);
+    NuQFntPopPrintMode();
 }
 
 void __cdecl NuQFntSetMtx(VUFNT *font, NUMTX *matrix) {

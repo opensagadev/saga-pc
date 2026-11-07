@@ -85,6 +85,15 @@ STATIC_ASSERT(offsetof(NUANGVEC, y) == 4);
 STATIC_ASSERT(offsetof(NUANGVEC, z) == 8);
 typedef struct NUVEC4 {
     f32 x, y, z, w;
+#ifdef __cplusplus
+    NUVEC operator-(const NUVEC4 &other) const {
+        __declspec(align(16)) NUVEC result;
+        result.x = x - other.x;
+        result.y = y - other.y;
+        result.z = z - other.z;
+        return result;
+    }
+#endif
 } NUVEC4;
 STATIC_ASSERT(sizeof(NUVEC4) == 16);
 STATIC_ASSERT(offsetof(NUVEC4, w) == 12);
@@ -9421,6 +9430,7 @@ struct OcclusionManager {
     void BeginFrame();
     void OnCameraSet();
     void RenderZPass() const;
+    void RenderStats() const;
     void AddOccluder(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void AddOccluder(const NUVEC *, f32);
     void AddOccluder(const NUVEC *, const NUVEC *, const NUMTX *);

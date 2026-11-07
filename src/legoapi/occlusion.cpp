@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -29,10 +30,10 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
     if (projected.w < radius)
         return false;
     projected.x /= projected.w;
-    i32 limit = static_cast<i32>(count) < 101 ? static_cast<i32>(count) : 100;
     projected.y /= projected.w;
     projected.z /= projected.w;
     f32 screen_radius = radius / projected.w;
+    i32 limit = static_cast<i32>(count) > 100 ? 100 : static_cast<i32>(count);
     for (i32 i = 0; i != limit; ++i) {
         if (indices[i] == 0xffffffffu)
             continue;
@@ -40,21 +41,17 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
         if (record.depth > projected.w - radius - 2.0)
             return false;
         if (projected.x - screen_radius > record.max_x || projected.y - screen_radius > record.max_y ||
-            record.min_x > projected.x + screen_radius || record.min_y > projected.y + screen_radius)
+            projected.x + screen_radius < record.min_x || projected.y + screen_radius < record.min_y)
             continue;
         NUVEC4 *v = record.transformed;
-        NUVEC edge_a, edge_b, cross;
-        edge_a.x = v[1].x - v[0].x;
-        edge_a.y = v[1].y - v[0].y;
-        edge_a.z = v[1].z - v[0].z;
-        edge_b.x = v[2].x - v[0].x;
-        edge_b.y = v[2].y - v[0].y;
-        edge_b.z = v[2].z - v[0].z;
+        NUVEC edge_a = v[1] - v[0];
+        NUVEC edge_b = v[2] - v[0];
+        NUVEC cross;
         NuVecCross(&cross, &edge_b, &edge_a);
         bool clockwise = cross.z > 0.0f;
         __declspec(align(16)) NUVEC4 normal;
         normal.z = normal.w = 0.0f;
-        for (i32 edge = 0; edge < 4; ++edge) {
+        for (i32 edge = 0; edge != 4; ++edge) {
             i32 start = edge;
             i32 end = (edge + 1) % 4;
             if (!clockwise) {
@@ -69,7 +66,7 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
             delta.x = projected.x - v[start].x;
             delta.y = projected.y - v[start].y;
             delta.z = 0.0f;
-            f32 distance = normal.x * delta.x + delta.y * normal.y + delta.z * normal.z;
+            f32 distance = normal.x * delta.x + normal.y * delta.y + normal.z * delta.z;
             if (distance - screen_radius < 0.0)
                 goto next_occluder;
         }
@@ -442,6 +439,38 @@ void OcclusionManager::RenderZPass() const {
         current_set->RenderOccluders(true);
 }
 
+extern "C" {
+    extern i32 NuRndrDoingScreenGrab;
+    void __cdecl NuQFntMove2d(VUFNT *font, f32 x, f32 y, f32 z);
+    void __cdecl NuQFntSetColour2d(VUFNT *font, u32 colour);
+    void __cdecl NuQFntPrint2dU(VUFNT *font, char *text);
+}
+
+i32 OcclusionRenderOccludersPc = 0;
+
+void OcclusionManager::RenderStats() const {
+    if (!initialized || !enabled || NuRndrDoingScreenGrab != 0)
+        return;
+    NuQFntPushPrintMode(2);
+    NuQFntPushCoordinateSystem(1);
+    NuQFntSet(system_qfont);
+    NuQFntSetScale(system_qfont, 0.7f, 0.7f);
+    NuQFntSetPointSize(system_qfont, 0.7f, 0.7f);
+    NuQFntMove2d(system_qfont, 112.0f, 112.0f, 0.0f);
+    NuQFntSetColour2d(system_qfont, 0x80000000);
+    char text[256];
+    sprintf(text, "Occluders : %2d, Queries : %2d, Occluded : %2d, Visible : %2d", current_set->count, query_count,
+            occluded_count, query_count - occluded_count);
+    NuQFntPrint2dU(system_qfont, text);
+    NuQFntMove2d(system_qfont, 112.0 - qfnt_len_scale, 112.0 - qfnt_height_scale, 0.0f);
+    NuQFntSetColour2d(system_qfont, 0xff00ffff);
+    NuQFntPrint2dU(system_qfont, text);
+    NuQFntPopCoordinateSystem();
+    NuQFntPopPrintMode();
+    if (OcclusionRenderOccludersPc != 0)
+        current_set->RenderOccluders(false);
+}
+
 void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
     if (!initialized || !enabled || building_set->count >= building_set->capacity)
         return;
@@ -451,10 +480,8 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
         NuVec4MtxTransform(&projected[1], const_cast<NUVEC *>(b), &vpmtx);
         NuVec4MtxTransform(&projected[2], const_cast<NUVEC *>(c), &vpmtx);
         if (unknown_158 > 0.0f) {
-            NUVEC ac = {projected[2].x - projected[0].x, projected[2].y - projected[0].y,
-                        projected[2].z - projected[0].z};
-            NUVEC ab = {projected[1].x - projected[0].x, projected[1].y - projected[0].y,
-                        projected[1].z - projected[0].z};
+            NUVEC ab = projected[1] - projected[0];
+            NUVEC ac = projected[2] - projected[0];
             NUVEC normal;
             NuVecCross(&normal, &ab, &ac);
             NuVecNorm(&normal, &normal);
@@ -577,6 +604,10 @@ extern "C" {
 
     void __cdecl NuOcclusionManagerRenderZPass(void) {
         g_OcclusionManager.RenderZPass();
+    }
+
+    void __cdecl NuOcclusionManagerRenderStats(void) {
+        g_OcclusionManager.RenderStats();
     }
 
     void __cdecl NuOcclusionManagerAddOccluderQuad(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
