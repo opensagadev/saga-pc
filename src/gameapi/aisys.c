@@ -2705,11 +2705,13 @@ void __cdecl AISysUpdateCharacterPathPos(AISYS_PC *system, APIOBJECT_PC *object,
         (packet->flags & 0x02000000) == 0 &&
         (((object->flags_low & 4) == 0 || (packet->path_info.flags & 1) == 0) || object->supporting_platform_id != -1);
     if (should_find_path) {
-        if (packet->path_info.path == NULL) {
-            packet->last_path_position = object->position;
+        if (packet->path_info.path != NULL) {
+            if (object->flags_low & 0x80000)
+                AISysGetCharacterPathPos(system, object, packet, 0, ground);
+            else
+                AISysGetCharacterPathPos(system, object, packet, AIPathDefaultChecks, ground);
         } else {
-            AISysGetCharacterPathPos(system, object, packet,
-                                     (object->flags_low & 0x80000) == 0 ? AIPathDefaultChecks : 0, ground);
+            packet->last_path_position = object->position;
         }
         packet->flags &= ~0x02000000u;
         if ((packet->path_info.flags & 1) == 0) {
