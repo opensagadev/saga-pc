@@ -1736,8 +1736,18 @@ STATIC_ASSERT(offsetof(AICREATURE_PC, max_respawn_count) == 0x86);
 STATIC_ASSERT(offsetof(AICREATURE_PC, min_respawn_time) == 0x88);
 STATIC_ASSERT(offsetof(AICREATURE_PC, max_respawn_time) == 0x8c);
 
+typedef union variptr_u {
+    void *void_ptr;
+    char *char_ptr;
+    u32 addr;
+} VARIPTR;
+STATIC_ASSERT(sizeof(VARIPTR) == 4);
+
 struct AISYS_PC {
-    u8 unknown_00[0x10];
+    void *storage;
+    VARIPTR storage_end;
+    VARIPTR storage_cursor;
+    i32 storage_size;
     AIPATHSYS_PC *path_sys;
     union {
         u8 unknown_14[4];
@@ -1764,6 +1774,7 @@ struct AISYS_PC {
     APIOBJECT_PC *player_1;
     APIOBJECT_PC *player_2;
 };
+STATIC_ASSERT(offsetof(AISYS_PC, storage_end) == 4);
 STATIC_ASSERT(offsetof(AISYS_PC, creatures) == 0x18);
 STATIC_ASSERT(offsetof(AISYS_PC, path_sys) == 0x10);
 STATIC_ASSERT(offsetof(AISYS_PC, scripts) == 0x1c);
@@ -2092,7 +2103,7 @@ typedef struct gamesave_s {
         };
     };
     OPTIONSSAVE options_save;
-    u8 unknown_0011[0x781b];
+    u8 level_save[0x781b];
     AREA_SAVE_PICKUP_PC area_save[72];
     union {
         struct {
@@ -2530,13 +2541,6 @@ typedef struct nualloc_pool_s NUALLOC_POOL;
 typedef struct nualloc_arena_s NUALLOC_ARENA;
 
 typedef struct bgprocinfo_s BGPROCINFO;
-
-typedef union variptr_u {
-    void *void_ptr;
-    char *char_ptr;
-    u32 addr;
-} VARIPTR;
-STATIC_ASSERT(sizeof(VARIPTR) == 4);
 
 typedef i32 NUFILE;
 

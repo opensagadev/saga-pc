@@ -1837,7 +1837,7 @@ void __cdecl InitStatusScreen(WORLDINFO *world) {
     StatusDrawPlayerIconsPc = 0;
     if (area != -1) {
         for (i = 0; i < AreaGlobals_PC.new_minikit_count; ++i) {
-            LEVELSAVE_s *save = &((LEVELSAVE_s *)Game.unknown_0011)[NewMiniPiece[i].level];
+            LEVELSAVE_s *save = &((LEVELSAVE_s *)Game.level_save)[NewMiniPiece[i].level];
             if (Game.area_save[area].minikit_count < 10)
                 ++Game.area_save[area].minikit_count;
             if (save->minikit_count < 10) {

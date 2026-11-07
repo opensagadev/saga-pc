@@ -974,7 +974,7 @@ extern "C" void __cdecl InitGameBeforeConfig(void) {
     MAXFRAMETIME = 0.1f;
     SaveSystemInitialise(6, MakeSaveHash, &Game, sizeof(Game), 1, DrawAutoSaveIcon);
     Game_OptionsSave = &Game.options_save;
-    Game_LevelSave = Game.unknown_0011;
+    Game_LevelSave = Game.level_save;
     Game_AreaSave = (COLLECTION_AREA_SAVE_PC *)Game.area_save;
     EpisodeSavePc = Game.episode_save;
     Game_CharacterSave = Game.character_save;

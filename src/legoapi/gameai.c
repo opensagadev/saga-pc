@@ -561,32 +561,33 @@ NUVEC *__cdecl GetAICreatureOrigin(AISYS_PC *system, AIPACKET_PC *packet) {
 }
 
 void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer, VARIPTR *buffer_end) {
+    /* Retail allocates through this uninitialised cursor against the system's storage end, not the caller's
+       buffer. */
+    VARIPTR cursor;
+    char tag[8];
     i32 tag_length;
-    if (version < 12 && system->path_sys != NULL && system->path_sys->path_count != 0) {
+    if (version <= 11 && system->path_sys != NULL) {
         i32 path_index;
-        AIPATHSYS_PC *path_system = system->path_sys;
-        AIPATH_PC **paths = path_system->paths;
-        for (path_index = 0; path_index < path_system->path_count; ++path_index) {
+        for (path_index = 0; path_index < system->path_sys->path_count; ++path_index) {
             i32 connection;
-            AIPATH_PC *path = paths[path_index];
-            const i32 connection_count = path->connection_count;
-            AIPATHCNX_PC *entry = path->connections;
-            for (connection = 0; connection < connection_count; ++connection, ++entry) {
-                entry->traversal_flags[0] = 0;
-                entry->traversal_flags[1] = 0;
-                entry->original_traversal_flags[0] = 0;
-                entry->original_traversal_flags[1] = 0;
+            AIPATH_PC *path = system->path_sys->paths[path_index];
+            for (connection = 0; connection < path->connection_count; ++connection) {
+                AIPATHCNX_PC *entry = &path->connections[connection];
+                i32 side;
+                for (side = 0; side < 2; ++side) {
+                    entry->traversal_flags[side] = 0;
+                    entry->original_traversal_flags[side] = 0;
+                }
             }
         }
     }
 
-    tag_length = ((i8)(EdFileReadChar()));
-    if (tag_length > 0 && tag_length < 9) {
-        char tag[12] = {0};
+    tag_length = (i8)EdFileReadChar();
+    if (tag_length != 0 && tag_length <= 8) {
         EdFileRead(tag, tag_length);
         if (NuStrICmp(tag, "LEGO") == 0) {
             EdFileReadInt();
-            system->game_sys = AISysBufferAlloc(buffer, buffer_end, 4);
+            system->game_sys = AISysBufferAlloc(&cursor, &system->storage_end, 4);
         }
     }
 }

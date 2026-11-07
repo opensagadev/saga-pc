@@ -219,14 +219,12 @@ extern "C" {
     }
 
     void __cdecl ClearLevelProgress(i32 index, WORLDINFO *world) {
-        LEVEL_PROGRESS *progress;
-
         if (index >= 0) {
-            progress = LevelProgressData + index;
-            memset(progress, 0, sizeof(*progress));
-            progress->minimum_tfactor = 2000000.0f;
+            memset(&LevelProgressData[index], 0, sizeof(LEVEL_PROGRESS));
+            LevelProgressData[index].progress_state = 0;
+            LevelProgressData[index].minimum_tfactor = 2000000.0f;
             if (world != NULL) {
-                memcpy(&progress->scene_progress, &world->scene_progress, sizeof(progress->scene_progress));
+                memcpy(&LevelProgressData[index].scene_progress, &world->scene_progress, sizeof(SCENEPROGRESS));
             }
         }
         GizmoSysClearLevelProgress(NULL, index);
@@ -441,6 +439,26 @@ extern "C" {
         i32 index;
         for (index = 0; index < world->script_processor_count; ++index) {
             WorldStoreScriptProgressPC(world, &world->script_processors[index], progress);
+        }
+    }
+
+    void __cdecl ClearAreaProgress(i32 area_index, i32 restore) {
+        AREA_DATA_PC *area;
+        i32 index;
+
+        for (index = 0; index < 12; ++index) {
+            ClearLevelProgress(index, NULL);
+        }
+        areaSuitBits = Game.initial_store_pack_flags;
+        if (restore != 0 && area_index != -1) {
+            Game.area_save[area_index] = BackupGame.area_save[area_index];
+            area = &ADataList[area_index];
+            AREA_GLOBALS_PROGRESS_FLAGS_PC = 0;
+            for (index = 0; index < area->level_count; ++index) {
+                i32 level = area->levels[index];
+                memcpy(&Game.level_save[level * sizeof(struct LEVELSAVE_s)],
+                       &BackupGame.level_save[level * sizeof(struct LEVELSAVE_s)], sizeof(struct LEVELSAVE_s));
+            }
         }
     }
 

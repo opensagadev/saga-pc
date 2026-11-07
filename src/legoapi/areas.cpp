@@ -18,55 +18,6 @@ extern "C" {
 #include "saga.h"
 #include <string.h>
 
-typedef struct area_save_restore_pc_s {
-    union {
-        u32 values[3];
-        struct {
-            u8 unknown_0000[5];
-            u8 phase;
-            u8 unknown_0006[6];
-        };
-    };
-} AREA_SAVE_RESTORE_PC;
-STATIC_ASSERT(sizeof(AREA_SAVE_RESTORE_PC) == 0x0c);
-STATIC_ASSERT(offsetof(AREA_SAVE_RESTORE_PC, phase) == 5);
-
-typedef struct game_save_restore_pc_s {
-    u8 unknown_0000[0x11];
-    u8 level_save[0x781b];
-    AREA_SAVE_RESTORE_PC area_save[72];
-    u8 unknown_7b8c[0x70];
-    u32 initial_store_pack_flags;
-} GAME_SAVE_RESTORE_PC;
-STATIC_ASSERT(offsetof(GAME_SAVE_RESTORE_PC, level_save) == 0x11);
-STATIC_ASSERT(offsetof(GAME_SAVE_RESTORE_PC, area_save) == 0x782c);
-STATIC_ASSERT(offsetof(GAME_SAVE_RESTORE_PC, initial_store_pack_flags) == 0x7bfc);
-
-extern GAMESAVE BackupGame;
-extern u32 areaSuitBits;
-
-void __cdecl ClearAreaProgress(i32 area_index, i32 restore) {
-    GAME_SAVE_RESTORE_PC *game = (GAME_SAVE_RESTORE_PC *)&Game;
-    GAME_SAVE_RESTORE_PC *backup = (GAME_SAVE_RESTORE_PC *)&BackupGame;
-    AREA_DATA_PC *area;
-    i32 index;
-
-    for (index = 0; index < 12; ++index) {
-        ClearLevelProgress(index, NULL);
-    }
-    areaSuitBits = game->initial_store_pack_flags;
-    if (restore == 0 || area_index == -1) {
-        return;
-    }
-    AREA_GLOBALS_PROGRESS_FLAGS_PC = 0;
-    game->area_save[area_index] = backup->area_save[area_index];
-    area = &ADataList[area_index];
-    for (index = 0; index < area->level_count; ++index) {
-        i32 level_index = area->levels[index];
-        memcpy(&game->level_save[level_index * 0x54], &backup->level_save[level_index * 0x54], 0x54);
-    }
-}
-
 typedef struct area_gizmotype_pc_s {
     u8 unknown_0000[0x44];
     char *(__cdecl *get_gizmo_name)(void *gizmo);
@@ -639,8 +590,7 @@ void __cdecl ClearTakeOverObjectSys(void);
 void __cdecl Door_Reset(void);
 
 void __cdecl NewArea_ResetGlobalsPC(void) {
-    GAME_SAVE_RESTORE_PC *game = (GAME_SAVE_RESTORE_PC *)&Game;
-    i32 phase = Area == -1 ? 0 : game->area_save[Area].phase;
+    i32 phase = Area == -1 ? 0 : Game.area_save[Area].minikit_count;
 
     AreaGlobals_PC.new_minikit_count = 0;
     AreaGlobals_PC.area_phase = phase;
