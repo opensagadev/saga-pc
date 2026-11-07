@@ -8,6 +8,25 @@ extern "C" {
     void __cdecl NuRndrGeometryBufferRestorePc(void);
     void __cdecl NuDebrisReleaseVertexBuffersPc(void);
     void __cdecl NuDebrisCreateVertexBuffersPc(void);
+    void __cdecl NuRndrDwaReleasePc(void);
+    void __cdecl PcGeometryOriginReleasePc(void);
+    void __cdecl NuPrimReleaseResourcesPc(void);
+    void __cdecl NuKeyboardWindowStateLeafPc(void);
+    i32 __cdecl GameReleaseResourcesPc(void);
+    i32 __cdecl GameRestoreResourcesPc(void);
+    void __cdecl DebrisReleaseResourcesPc(void);
+    void __cdecl DebrisRestoreResourcesPc(void);
+    void __cdecl NuWaterReleaseVertexBufferPc(void);
+    void __cdecl NuGScnReleaseDynamicBuffersPc(void);
+    void __cdecl NuGScnRestoreDynamicBuffersPc(void);
+    void __cdecl NuTexReleaseResourcesPc(void);
+    void __cdecl NuTexRestoreResourcesPc(void);
+    void __cdecl FmvReleasePc(void);
+    void __cdecl FmvRestorePc(void);
+    void __cdecl NuFmvTextureReleasePc(void);
+    void __cdecl NuFmvTextureRestorePc(void);
+    void __cdecl ResizeStillRenderPc(i32, i32);
+    void __cdecl PCGraphicsClearFrameTexturesPc(void);
 }
 
 extern "C" void __cdecl PcFreeApiCallBuffer(void) {
@@ -18,9 +37,9 @@ extern "C" void __cdecl PcFreeApiCallBuffer(void) {
 }
 
 extern "C" void __cdecl PcRendererCleanup(void) {
-    STUBBED_NAMED("void action5fe450 at6df0c0");
-    STUBBED_NAMED("void action5fa220 at6df0c5");
-    STUBBED_NAMED("void action600bb0 at6df0ca");
+    NuRndrDwaReleasePc();
+    PcGeometryOriginReleasePc();
+    NuPrimReleaseResourcesPc();
     NuDebrisReleaseVertexBuffersPc();
 }
 
@@ -39,39 +58,39 @@ extern "C" void __cdecl PcRendererShutdown(i32 unused) {
     PCDeviceBackend.ReleaseDefaultPoolResources();
     PC_EFFECT_SURFACE_PC::ReleaseResources();
     PCGraphicsReleaseEffectTextures();
-    STUBBED_NAMED("void action401860 at6df15e");
-    STUBBED_NAMED("void action5fa220 at6df163");
-    STUBBED_NAMED("void action600bb0 at6df168");
+    GameReleaseResourcesPc();
+    PcGeometryOriginReleasePc();
+    NuPrimReleaseResourcesPc();
     NuRndrGeometryBufferReleasePc();
-    STUBBED_NAMED("void action659140 at6df172");
+    DebrisReleaseResourcesPc();
     NuDebrisReleaseVertexBuffersPc();
-    STUBBED_NAMED("void action5f9720 at6df17c");
-    STUBBED_NAMED("void action602840 at6df181");
-    STUBBED_NAMED("void action5f8fb0 at6df186");
-    STUBBED_NAMED("void action631230 at6df18b");
-    STUBBED_NAMED("void tail action74ed40 at6df190");
+    NuWaterReleaseVertexBufferPc();
+    NuGScnReleaseDynamicBuffersPc();
+    NuTexReleaseResourcesPc();
+    FmvReleasePc();
+    NuFmvTextureReleasePc();
 }
 
 extern "C" void __cdecl PCGraphicsRecreateResources(i32 reset_available) {
     PCDeviceBackend.RestoreDefaultPoolResources();
     if (reset_available != 0) {
         STUBBED_NAMED("void action5c3900 at6dfe33");
-        STUBBED_NAMED("void action5658b0(PS2_REZ_W,PS2_REZ_H) at6dfe45");
+        ResizeStillRenderPc(PS2_REZ_W, PS2_REZ_H);
     }
     PCGraphicsRestoreEffectTextures(reset_available == 1);
     PC_EFFECT_SURFACE_PC::RestoreResources();
     PCGraphicsRestoreFramebuffers();
-    STUBBED_NAMED("void action600bc0 at6dfe68");
+    NuKeyboardWindowStateLeafPc();
     NuRndrGeometryBufferRestorePc();
     NuDebrisCreateVertexBuffersPc();
-    STUBBED_NAMED("void action659150 at6dfe77");
-    STUBBED_NAMED("void action401850 at6dfe7c");
-    STUBBED_NAMED("void action5f8fc0 at6dfe81");
-    STUBBED_NAMED("void action6028b0 at6dfe86");
+    DebrisRestoreResourcesPc();
+    GameRestoreResourcesPc();
+    NuTexRestoreResourcesPc();
+    NuGScnRestoreDynamicBuffersPc();
     PCDeviceResetState();
-    STUBBED_NAMED("void action631250 at6dfe90");
-    STUBBED_NAMED("void action74ed60 at6dfe95");
-    STUBBED_NAMED("void tail action60a410 at6dfe9b");
+    FmvRestorePc();
+    NuFmvTextureRestorePc();
+    PCGraphicsClearFrameTexturesPc();
 }
 
 extern "C" void __cdecl PcDestroyPlatform(void) {

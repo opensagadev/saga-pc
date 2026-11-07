@@ -27,6 +27,14 @@ extern "C" i32 __cdecl FmvStepPc(void) {
     FmvFramePc(&FmvMoviePc);
     return FmvMoviePc.playing;
 }
+extern "C" void __cdecl FmvReleasePc(void) {
+    if (FmvInitializedPc != 0)
+        FmvReleaseImagePc(&FmvMoviePc);
+}
+extern "C" void __cdecl FmvRestorePc(void) {
+    if (FmvInitializedPc != 0)
+        FmvRestoreImagePc(&FmvMoviePc);
+}
 extern "C" void __cdecl FmvSkipPc(void) {
     FmvFadePc(&FmvMoviePc, 1000.0f);
 }

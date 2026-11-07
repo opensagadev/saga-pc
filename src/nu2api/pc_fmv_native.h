@@ -97,6 +97,10 @@ extern "C" {
     void __cdecl FmvFramePc(PC_FMV_MOVIE_PC *);
     void __cdecl FmvClosePc(PC_FMV_MOVIE_PC *);
     void __cdecl FmvFadePc(PC_FMV_MOVIE_PC *, f32);
+    void __cdecl FmvReleaseImagePc(PC_FMV_MOVIE_PC *);
+    void __cdecl FmvRestoreImagePc(PC_FMV_MOVIE_PC *);
+    void __cdecl FmvReleasePc(void);
+    void __cdecl FmvRestorePc(void);
     void __cdecl FmvOptionErrorPc(i32, const char *, i32);
     void __cdecl FmvPlatformUpdatePc(void);
     void __cdecl FmvPlatformFinishPc(void);

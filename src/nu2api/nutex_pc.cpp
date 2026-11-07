@@ -87,6 +87,14 @@ void __cdecl NuTexInitExPS(VARIPTR *buffer) {
     PCDeviceCreateCubeTextureFromFile((char *)NuTexturePhongCubePathPc, &NuTexturePhongCubePc);
 }
 
+/* Native PC entries 0x005f8fb0 and 0x005f8fc0 are RET-only; the D3D release and
+ * restore paths call them for textures. Their historical names are unknown. */
+extern "C" void __cdecl NuTexReleaseResourcesPc(void) {
+}
+
+extern "C" void __cdecl NuTexRestoreResourcesPc(void) {
+}
+
 /* Creates, once, the placeholder texture used for references that fail to resolve. */
 extern "C" i32 NuTexGetUnresolvedTextureTIDPS() {
     if (NuUnresolvedTextureIDPC == -1) {
@@ -482,6 +490,14 @@ extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsCreateEffectTexture(i32
     }
     PCGraphicsInitRenderTexture(texture, width, height, levels, usage, 0, format);
     return texture;
+}
+/* Returns the render texture behind a frame-copy texture id, or NULL for other textures. */
+extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32 texture_id) {
+    FRAME_NATIVE_TEXTURE_PC *texture = (FRAME_NATIVE_TEXTURE_PC *)NuTextureGetDimensions(texture_id);
+    u32 index = (u32)(texture - FrameNativeTexturePoolPc.records);
+    if (index > 15)
+        return NULL;
+    return texture->render_texture;
 }
 extern "C" void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width, i32 height,
                                                       i32 levels) {

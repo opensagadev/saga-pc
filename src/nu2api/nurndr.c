@@ -273,6 +273,11 @@ void __cdecl NuRndrDwaInitPc(void) {
     DwaStreamCapacityPc = 0x2000;
 }
 
+/* Native PC entry 0x005fe450 is RET-only; PcRendererCleanup calls it while the D3D
+ * device is torn down. Its historical name is unknown. */
+void __cdecl NuRndrDwaReleasePc(void) {
+}
+
 void __cdecl NuRndrConfigureLeafPc(f32 a, f32 b, i32 c) {
     (void)a;
     (void)b;

@@ -105,6 +105,20 @@ void PC_EFFECT_SURFACE_PC::RestoreResources() {
         }
     }
 }
+/* After a D3D reset, rebinds each live frame texture's resource and clears it to opaque black. */
+extern "C" void __cdecl PCGraphicsClearFrameTexturesPc(void) {
+    PC_EFFECT_SURFACE_PC surface;
+    for (i32 i = 0; i < 16; ++i) {
+        FRAME_NATIVE_TEXTURE_PC *record = &FrameNativeTexturePoolPc.records[i];
+        if (record->texture_id != 0 && record->render_texture != NULL) {
+            record->dimensions.resource = record->render_texture->resource;
+            surface.Attach(record->render_texture, 0, false);
+            PCDeviceBackend.SetSurfaceRenderTarget(&surface, 0);
+            PCDeviceBackend.ClearDepthStencilSurface();
+            PCDeviceClear(0, NULL, 1, 0xff000000, 1.0f, 0);
+        }
+    }
+}
 PC_FRAMEBUFFER_PC::PC_FRAMEBUFFER_PC() {
 }
 PC_FRAMEBUFFER_PC::~PC_FRAMEBUFFER_PC() {

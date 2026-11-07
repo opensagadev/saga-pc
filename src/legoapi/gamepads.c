@@ -137,6 +137,16 @@ void __cdecl GamePad_InitButtons(void) {
 void __cdecl GameFog_Set(void) {
 }
 
+/* Native PC entries 0x00401850 and 0x00401860 only return 0; the D3D restore and
+ * release paths call them for the game layer. Their historical names are unknown. */
+i32 __cdecl GameRestoreResourcesPc(void) {
+    return 0;
+}
+
+i32 __cdecl GameReleaseResourcesPc(void) {
+    return 0;
+}
+
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);

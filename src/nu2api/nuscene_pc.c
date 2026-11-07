@@ -247,6 +247,47 @@ void __cdecl NuGScnFixupPS(NUGSCN *scene) {
     NuPortalMaxDepth(scene, scene->max_portals);
 }
 
+/* Releases the dynamic vertex buffers of every registered scene before a D3D reset. */
+void __cdecl NuGScnReleaseDynamicBuffersPc(void) {
+    i32 i;
+    u32 j;
+    for (i = 0; i != 100; ++i) {
+        NUGSCN *scene = PCRegisteredNativeScenes[i];
+        if (scene != NULL) {
+            SCENE_FIXUP_NATIVE_PC *native = scene->native_scene;
+            for (j = 0; j != native->geometry_count; ++j) {
+                SCENE_FIXUP_GEOMETRY_PC *geometry = native->geometries[j];
+                if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
+                    PCFrameCriticalSectionEnter_candidate();
+                    geometry->dynamic_vertex_buffer->methods->release(geometry->dynamic_vertex_buffer);
+                    PCFrameCriticalSectionLeave_candidate();
+                }
+            }
+        }
+    }
+}
+
+/* Recreates the dynamic vertex buffers released by NuGScnReleaseDynamicBuffersPc. */
+void __cdecl NuGScnRestoreDynamicBuffersPc(void) {
+    i32 i;
+    u32 j;
+    for (i = 0; i != 100; ++i) {
+        NUGSCN *scene = PCRegisteredNativeScenes[i];
+        if (scene != NULL) {
+            SCENE_FIXUP_NATIVE_PC *native = scene->native_scene;
+            for (j = 0; j != native->geometry_count; ++j) {
+                SCENE_FIXUP_GEOMETRY_PC *geometry = native->geometries[j];
+                if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
+                    PCFrameCriticalSectionEnter_candidate();
+                    PCDeviceCreateVertexBuffer(geometry->vertex_stride * geometry->vertex_count, 0x208, 0, 0,
+                                               &geometry->dynamic_vertex_buffer);
+                    PCFrameCriticalSectionLeave_candidate();
+                }
+            }
+        }
+    }
+}
+
 STATIC_ASSERT(offsetof(NUDISPLAY_LIST_PC, native_word) == 0x7c);
 void __cdecl NuDisplaySceneClonePS(NUDISPLAY_LIST_PC *source_scene, NUDISPLAY_LIST_PC *clone_scene, VARIPTR *buffer) {
     u32 *word;

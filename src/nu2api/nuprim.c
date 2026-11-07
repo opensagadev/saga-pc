@@ -685,5 +685,10 @@ void __cdecl NuPrim2DSetUV(f32 u, f32 v) {
     vertex->v = v;
 }
 
+/* Native PC entry 0x00600bb0 is RET-only; the D3D release path calls it before
+ * releasing the geometry buffers (0x00600bc0 is its restore counterpart). */
+void __cdecl NuPrimReleaseResourcesPc(void) {
+}
+
 void __cdecl NuKeyboardWindowStateLeafPc(void) {
 }

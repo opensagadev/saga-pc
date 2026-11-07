@@ -34,6 +34,14 @@ extern "C" void __cdecl InitStillRender(VARIPTR *buffer, VARIPTR end) {
     pause_rndr_on = 0;
 }
 
+extern "C" GRAPHICS_RENDER_TEXTURE_PC *__cdecl PCGraphicsFrameRenderTexturePc(i32);
+
+/* Resizes the pause-screen still to a new backbuffer size after a D3D reset. */
+extern "C" void __cdecl ResizeStillRenderPc(i32 width, i32 height) {
+    GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsFrameRenderTexturePc(pause_rt);
+    PCGraphicsResizeEffectTexture(texture, width, height, -1);
+}
+
 typedef struct CUT_DISPLAY_VIEW_PC {
     u8 unknown_00[0x6c];
     f32 camera_near_clip;

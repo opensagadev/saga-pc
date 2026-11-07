@@ -266,6 +266,30 @@ extern "C" void __cdecl FmvClosePc(PC_FMV_MOVIE_PC *movie) {
     }
 }
 
+/* Drops the movie image before a D3D reset and remembers to recreate it. */
+extern "C" void __cdecl FmvReleaseImagePc(PC_FMV_MOVIE_PC *movie) {
+    movie->restore_image = 0;
+    if (movie->bink != NULL && movie->image != NULL) {
+        if (FmvContextPc != NULL) {
+            PC_D3D9_DEVICE_PC *device = FmvContextPc->device;
+            if (device != NULL)
+                device->methods->set_texture(device, 0, NULL);
+        }
+        RadFmvDestroyImagePc(movie->image);
+        movie->image = NULL;
+        movie->restore_image = 1;
+    }
+}
+
+/* Recreates the movie image released by FmvReleaseImagePc. */
+extern "C" void __cdecl FmvRestoreImagePc(PC_FMV_MOVIE_PC *movie) {
+    if (movie->bink != NULL && FmvContextPc != NULL && movie->restore_image != 0) {
+        if (movie->restore_image & 1)
+            movie->image = RadFmvCreateImagePc(FmvContextPc, movie->bink->width, movie->bink->height, 0, 256);
+        movie->restore_image = 0;
+    }
+}
+
 extern "C" void __cdecl FmvFadePc(PC_FMV_MOVIE_PC *movie, f32 duration) {
     if (movie->fading == 0) {
         movie->fading = 1;

@@ -13,6 +13,11 @@ extern "C" {
     void __cdecl PcGetGeometryPerspectivePc(NUMTX *, f32 *, f32 *, f32 *, f32 *);
 }
 
+/* Native PC entry 0x005fa220 is RET-only; the D3D release paths call it for the
+ * geometry origin state. Its historical name is unknown. */
+extern "C" void __cdecl PcGeometryOriginReleasePc(void) {
+}
+
 extern "C" void __cdecl PcResetGeometryOriginStatePc(void) {
     PcGeometryViewMatrixPc = NuMtxSetIdentityTemplate;
     PcGeometryProjectionMatrixPc = NuMtxSetIdentityTemplate;

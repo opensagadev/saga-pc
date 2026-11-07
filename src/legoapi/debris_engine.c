@@ -1517,6 +1517,14 @@ i32 __cdecl DebrisAllCollisionCheckScaleYFlag(NUVEC *p, f32 r, f32 y, u8 f) {
     return result;
 }
 
+/* Native PC entries 0x00659140 and 0x00659150 are RET-only; the D3D release and
+ * restore paths call them for debris. Their historical names are unknown. */
+void __cdecl DebrisReleaseResourcesPc(void) {
+}
+
+void __cdecl DebrisRestoreResourcesPc(void) {
+}
+
 extern i32 DebrisGlassInitialized;
 extern void *DebrisGlassCopyMaterial;
 extern f32 DebrisGlassU1;
