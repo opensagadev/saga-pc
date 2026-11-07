@@ -2342,11 +2342,11 @@ static void __cdecl PartStolen_Coin(PART_PC *part) {
 
 static void __cdecl PartStop_Coin(PART_PC *part) {
     if (netclient == 0) {
-        PICKUP_RUNTIME_SYS_PC *system = WORLD->pickup_runtime_sys;
-        GIZMOPICKUP_PC *pickup = &system->pickups[system->cursor];
-        ++system->cursor;
-        if (WORLD->pickup_runtime_sys->cursor >= 64)
-            WORLD->pickup_runtime_sys->cursor = 0;
+        GIZMOPICKUPRUNTIMESYS_s *system = WORLD->pickup_runtime_sys;
+        GIZMOPICKUP_PC *pickup = &system->temporary_pickups[system->temporary_cursor];
+        ++system->temporary_cursor;
+        if (WORLD->pickup_runtime_sys->temporary_cursor >= 64)
+            WORLD->pickup_runtime_sys->temporary_cursor = 0;
         if ((pickup->flags & 1) != 0)
             GizmoPickup_CollectCoin(WORLD, &pickup->position, pickup->type_index, pickup->model_variant, NULL, 1);
         SetCoinType(part->part_id, pickup);

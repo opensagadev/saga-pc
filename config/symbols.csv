@@ -1070,7 +1070,7 @@ address,symbol,size,ctype
 0x464400,_GizAction_ActivatePartEffect,125,
 0x464480,_GizActions_SetVisibilityPc,172,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464530,_GizActions_SetGizmoVisibilityPc,192,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
-0x4645f0,_GizActions_SetPickupVisibilityPc,,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
+0x4645f0,_GizActions_SetPickupVisibilityPc,355,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464760,_GizActions_TurnOnFlowBoxPc,182,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x464820,_GizActions_ActivateGizmoPc,192,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
 0x4648e0,_GizActions_ActivateCharPc,498,"void __cdecl(GIZFLOW_PC *, FLOWBOX_PC *, char **, i32)"
@@ -14062,6 +14062,7 @@ address,symbol,size,ctype
 0x758960,_GizActionNameSetGizmoVisibilityPc,19,const char[19]
 0x758974,??_C@_06HOPIODND@effect?$AA@,7,char []
 0x0075897c,_GizActionPartEffectPrefixPc,12,const char[12]
+0x758988,??_C@_03LNKDLDCI@id?$DN?$AA@,4,const char[4]
 0x75898c,??_C@_08DEMFFOIB@PUSHONLY?$AA@,9,const char[9]
 0x758998,??_C@_05LJBAGOMH@INBOX?$AA@,6,const char[6]
 0x7589a0,??_C@_0P@IBKIICKP@INBOXANDGROUND?$AA@,15,const char[15]
@@ -16145,6 +16146,10 @@ address,symbol,size,ctype
 0x75e900,??_C@_0M@LJHPCGJG@explode_SDG?$AA@,,const char[12]
 0x75e910,__real@3fee666660000000,8,const f64
 0x75e918,??_C@_0M@DDJOAKIE@Split_Party?$AA@,12,char []
+0x75e924,__real@c0870a3d,4,const f32
+0x75e928,__real@c0a66666,4,const f32
+0x75e92c,__real@c23c0000,4,const f32
+0x75e930,__real@c04c800000000000,8,const f64
 0x0075e948,??_C@_02LHFGBEJL@PC?$AA@,3,const char[3]
 0x75e94c,_NuFileIopImageNamePc,13,const char[13]
 0x0075e978,_NuFileSourcePathPC,50,const char[50]

@@ -235,6 +235,42 @@ extern "C" void __cdecl GizActions_SetGizmoVisibilityPc(GIZFLOW_PC *flow, FLOWBO
     }
 }
 
+extern "C" GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *, char *);
+
+extern "C" void __cdecl GizActions_SetPickupVisibilityPc(GIZFLOW_PC *, FLOWBOX_PC *, char **params, i32 count) {
+    i32 id = -1;
+    i32 visible = 1;
+    GIZMOPICKUP_PC *pickup = NULL;
+    for (i32 i = 0; i < count; ++i) {
+        char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
+        if (value != NULL) {
+            value += NuStrLen(AIScriptActionNameArgPrefix);
+            pickup = GizmoPickup_FindByName(WORLD, value);
+        } else if ((value = NuStrIStr(params[i], "id=")) != NULL) {
+            value += NuStrLen(AIActionIDName) + 1;
+            id = NuAToI(value);
+        } else if (NuStrIStr(params[i], (char *)AIActionFalseName) != NULL) {
+            visible = 0;
+        }
+    }
+    if (pickup != NULL) {
+        pickup->state_enabled = visible;
+        pickup->state_visible = visible;
+        pickup->state_activated = visible;
+        return;
+    }
+    if (id < 0)
+        return;
+    pickup = WORLD->pickup_runtime_sys->pickups;
+    for (i32 i = 0; pickup != NULL && i < WORLD->pickup_runtime_sys->pickup_count; ++i, ++pickup) {
+        if (pickup->state_collected == 0 && pickup->activation_group == id) {
+            pickup->state_enabled = visible;
+            pickup->state_visible = visible;
+            pickup->state_activated = visible;
+        }
+    }
+}
+
 struct GIZACTION_FLOWBOX_FLAGS_PC {
     u8 unknown_00[0xa];
     u16 flags;

@@ -382,11 +382,10 @@ void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progr
     memset(progress->collected, 0, 64);
     memset(progress->reserved, 0, 64);
 
-    if (world == NULL || ((GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups == NULL)
+    if (world == NULL || world->pickup_runtime_sys->pickups == NULL)
         return;
-    record = ((GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups;
-    for (index = 0; index < ((GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count && index < 512;
-         ++index, ++record) {
+    record = world->pickup_runtime_sys->pickups;
+    for (index = 0; index < world->pickup_runtime_sys->pickup_count && index < 512; ++index, ++record) {
         bit = 1u << (index & 31);
         if (!(record->flags & 4))
             progress->visible[index / 32] &= ~bit;

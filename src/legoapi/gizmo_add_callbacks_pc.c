@@ -122,9 +122,9 @@ void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr,
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     i32 i;
     (void)data;
-    for (i = 0; i < ((struct GIZMOPICKUPRUNTIMESYS_s *)w->pickup_runtime_sys)->pickup_count; ++i)
-        if (((struct GIZMOPICKUPRUNTIMESYS_s *)w->pickup_runtime_sys)->pickups[i].unknown_14[1] & 2)
-            AddGizmo(giz, type, NULL, &((struct GIZMOPICKUPRUNTIMESYS_s *)w->pickup_runtime_sys)->pickups[i]);
+    for (i = 0; i < w->pickup_runtime_sys->pickup_count; ++i)
+        if (w->pickup_runtime_sys->pickups[i].unknown_14[1] & 2)
+            AddGizmo(giz, type, NULL, &w->pickup_runtime_sys->pickups[i]);
 }
 void __cdecl GizSpinner_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;

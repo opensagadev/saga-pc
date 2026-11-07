@@ -411,6 +411,40 @@ void __cdecl FairgroundbadA_Init(WORLDINFO *world) {
     FairgroundSplitPartyLocatorPc = AIPathFindLocator(world->ai_sys, "Split_Party");
 }
 
+/* Moves the split-party locator onto the one player standing in the split area; two or more players there
+   leave it alone. */
+void __cdecl FairgroundbadA_Update(WORLDINFO *world) {
+    i32 count = 0;
+    GAMEOBJECT *found = NULL;
+    NUVEC *position = NULL;
+    GAMEOBJECT *object;
+    i32 index;
+    if (FairgroundSplitPartyLocatorPc == NULL)
+        return;
+    for (index = 0; index < 8; ++index) {
+        object = (GAMEOBJECT *)Player[index];
+        if (object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
+            (object->flags_1fc_word & 0x80) != 0) {
+            position = &object->collision_position;
+            if (!(position->x < -57.0 || position->x > -47.0f || position->z < -5.2f || position->z > -4.22f)) {
+                if (++count >= 2)
+                    return;
+                found = object;
+            }
+        }
+    }
+    if (found == NULL)
+        return;
+    FairgroundSplitPartyLocatorPc->position = *position;
+    if (found->collision_position.y < 1.1f)
+        FairgroundSplitPartyLocatorPc->position.y = 1.5f;
+    else
+        FairgroundSplitPartyLocatorPc->position.y = 0.0f;
+    FairgroundSplitPartyLocatorPc->position.y = GameShadow(NULL, &FairgroundSplitPartyLocatorPc->position, 0.2f, -1);
+    AISysGetPathPos2(world->ai_sys, &FairgroundSplitPartyLocatorPc->position, &FairgroundSplitPartyLocatorPc->path_info,
+                     &FairgroundSplitPartyLocatorPc->position, NULL, 0xff);
+}
+
 void __cdecl FairgroundbadA_Draw(WORLDINFO *world) {
 }
 
@@ -449,24 +483,6 @@ void __cdecl SarlaccPitA_Reset(WORLDINFO *world) {
         LevSafePlatID[0] = FindPlatInst(NuSpecialGetInstanceix(&LevHSpecial[0]));
 }
 
-typedef struct LEGOCITY_PICKUP_PC {
-    u8 unknown_00[8];
-    NUVEC position;
-    u8 unknown_14[3];
-    u8 flags;
-    u8 type_id;
-    u8 unknown_19[0x24 - 0x19];
-    u8 collected;
-    u8 unknown_25[0x2c - 0x25];
-} LEGOCITY_PICKUP_PC;
-STATIC_ASSERT(sizeof(LEGOCITY_PICKUP_PC) == 0x2c);
-
-typedef struct LEGOCITY_PICKUPSYS_PC {
-    LEGOCITY_PICKUP_PC *pickups;
-    u8 unknown_04[4];
-    i32 count;
-} LEGOCITY_PICKUPSYS_PC;
-
 /* PC 0x0088a58c..0x0088a58f and 0x0088a6ec/0x0088a6ed: bonus level vehicle ride flags. */
 static u8 prevOnFireTruck = 0;
 static u8 prevOnLifeBoat = 0;
@@ -479,15 +495,15 @@ extern i16 CharacterFixupIdPc007f1a7c;
 extern i16 CharacterFixupIdPc007f1a88;
 
 void LegoCity_Update(WORLDINFO *world) {
-    LEGOCITY_PICKUPSYS_PC *pickup_system;
-    LEGOCITY_PICKUP_PC *pickup;
+    GIZMOPICKUPRUNTIMESYS_s *pickup_system;
+    GIZMOPICKUP_PC *pickup;
     GAMEOBJECT *object;
     i32 index;
     u8 onTractor, onTaunTaun, onMoonCar, onTownCar;
     u8 changedTractor, changedTaunTaun, changedMoonCar, changedTownCar;
     if (world == NULL)
         return;
-    pickup_system = (LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys;
+    pickup_system = world->pickup_runtime_sys;
     if (pickup_system == NULL)
         return;
     onTractor = 0;
@@ -534,10 +550,9 @@ void LegoCity_Update(WORLDINFO *world) {
         return;
     }
     pickup = pickup_system->pickups;
-    for (index = 0; pickup != NULL && index < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count;
-         ++index, ++pickup) {
+    for (index = 0; pickup != NULL && index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
         if ((pickup->flags & 8) == 0) {
-            switch (pickup->type_id) {
+            switch (pickup->activation_group) {
                 case 3:
                     pickup->collected = onTractor;
                     break;
@@ -556,15 +571,15 @@ void LegoCity_Update(WORLDINFO *world) {
 }
 
 void NewTown_Update(WORLDINFO *world) {
-    LEGOCITY_PICKUPSYS_PC *pickup_system;
-    LEGOCITY_PICKUP_PC *pickup;
+    GIZMOPICKUPRUNTIMESYS_s *pickup_system;
+    GIZMOPICKUP_PC *pickup;
     GAMEOBJECT *object;
     i32 index;
     u8 onTaunTaun, onFireTruck, onLifeBoat;
     u8 changedTaunTaun, changedFireTruck, changedLifeBoat;
     if (world == NULL)
         return;
-    pickup_system = (LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys;
+    pickup_system = world->pickup_runtime_sys;
     if (pickup_system == NULL)
         return;
     onTaunTaun = 0;
@@ -603,10 +618,9 @@ void NewTown_Update(WORLDINFO *world) {
         return;
     }
     pickup = pickup_system->pickups;
-    for (index = 0; pickup != NULL && index < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count;
-         ++index, ++pickup) {
+    for (index = 0; pickup != NULL && index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
         if ((pickup->flags & 8) == 0) {
-            switch (pickup->type_id) {
+            switch (pickup->activation_group) {
                 case 2:
                     pickup->collected = onTaunTaun;
                     break;
@@ -622,16 +636,16 @@ void NewTown_Update(WORLDINFO *world) {
 }
 
 void __cdecl LegoCity_Reset(WORLDINFO *world) {
-    LEGOCITY_PICKUP_PC *pickup;
+    GIZMOPICKUP_PC *pickup;
     i32 i;
     prevOnTaunTaun = 0;
     prevOnTractor = 0;
     prevOnMoonCar = 0;
     prevOnTownCar = 0;
-    pickup = ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->pickups;
-    for (i = 0; pickup != NULL && i < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count; i++, pickup++) {
+    pickup = world->pickup_runtime_sys->pickups;
+    for (i = 0; pickup != NULL && i < world->pickup_runtime_sys->pickup_count; i++, pickup++) {
         if ((pickup->flags & 8) == 0) {
-            switch (pickup->type_id) {
+            switch (pickup->activation_group) {
                 case 3:
                 case 4:
                 case 5:
@@ -645,17 +659,17 @@ void __cdecl LegoCity_Reset(WORLDINFO *world) {
 
 void __cdecl NewTown_Reset(WORLDINFO *world) {
     u32 seed = 17;
-    LEGOCITY_PICKUP_PC *pickup;
+    GIZMOPICKUP_PC *pickup;
     i32 i;
     f32 x;
     f32 z;
     prevOnTaunTaun = 0;
     prevOnFireTruck = 0;
     prevOnLifeBoat = 0;
-    pickup = ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->pickups;
-    for (i = 0; pickup != NULL && i < ((LEGOCITY_PICKUPSYS_PC *)world->pickup_runtime_sys)->count; i++, pickup++) {
+    pickup = world->pickup_runtime_sys->pickups;
+    for (i = 0; pickup != NULL && i < world->pickup_runtime_sys->pickup_count; i++, pickup++) {
         if ((pickup->flags & 8) == 0) {
-            switch (pickup->type_id) {
+            switch (pickup->activation_group) {
                 case 2:
                 case 3:
                 case 4:
@@ -663,7 +677,7 @@ void __cdecl NewTown_Reset(WORLDINFO *world) {
                     break;
             }
         }
-        if (pickup->type_id == 4) {
+        if (pickup->activation_group == 4) {
             x = (f32)(NuRandFloatSeeded(&seed) * 4.0 - 7.656 - 1.5);
             z = (f32)(NuRandFloatSeeded(&seed) * 4.0 - 5.871 - 1.5);
             pickup->position.x = x;

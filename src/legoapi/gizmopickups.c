@@ -359,13 +359,6 @@ void __cdecl SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(*system) + 3U) & ~3U;
 }
 
-typedef struct PICKUP_COLLISION_RUNTIME_PC {
-    GIZMOPICKUP_PC *pickups, *temporary_pickups;
-    i32 pickup_count;
-} PICKUP_COLLISION_RUNTIME_PC;
-STATIC_ASSERT(offsetof(PICKUP_COLLISION_RUNTIME_PC, pickups) == 0);
-STATIC_ASSERT(offsetof(PICKUP_COLLISION_RUNTIME_PC, temporary_pickups) == 4);
-STATIC_ASSERT(offsetof(PICKUP_COLLISION_RUNTIME_PC, pickup_count) == 8);
 typedef struct PICKUP_COLLISION_FLAGS_PC {
     u8 unknown_00[0x15];
     u8 config_flags;
@@ -375,7 +368,7 @@ STATIC_ASSERT(offsetof(AREA_GLOBALS_PC, field_18) == 0x18);
 static PICKUP_TYPE_SYSTEM_PC *GizmoPickupSys = &GizmoPickupSys_Game;
 
 GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum) {
-    PICKUP_COLLISION_RUNTIME_PC *runtime = (PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys;
+    GIZMOPICKUPRUNTIMESYS_s *runtime = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = runtime->pickups;
     GIZMO_PICKUP_TYPE_PC *type;
     f32 radius;
@@ -563,12 +556,11 @@ GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *objec
     (void)unused;
     if (world == NULL || (object->flags_1f8 & 0x40000) != 0)
         return NULL;
-    pickup = GizmoPickups_CollideListPc(
-        object, ((PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys)->temporary_pickups, 64);
+    pickup = GizmoPickups_CollideListPc(object, world->pickup_runtime_sys->temporary_pickups, 64);
     temporary = pickup != NULL;
     if (pickup == NULL)
-        pickup = GizmoPickups_CollideListPc(object, ((PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys)->pickups,
-                                            ((PICKUP_COLLISION_RUNTIME_PC *)world->pickup_runtime_sys)->pickup_count);
+        pickup = GizmoPickups_CollideListPc(object, world->pickup_runtime_sys->pickups,
+                                            world->pickup_runtime_sys->pickup_count);
     if (pickup == NULL)
         return NULL;
     pickup->flags |= 8;
@@ -679,7 +671,7 @@ STATIC_ASSERT(offsetof(WORLDINFO, area_index) == 0x120);
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 STATIC_ASSERT(offsetof(AREA_DATA_PC, flags) == 0x7a);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, unknown_14) == 0x14);
-STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, unknown_18) == 0x18);
+STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, activation_group) == 0x18);
 
 static __declspec(noinline) void SetAreaPickupScalePc(i32 area) {
     u16 flags;
@@ -708,23 +700,21 @@ void *__cdecl GizmoPickups_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-    world->pickup_runtime_sys = (PICKUP_RUNTIME_SYS_PC *)world->giz_buffer.addr;
+    world->pickup_runtime_sys = (struct GIZMOPICKUPRUNTIMESYS_s *)world->giz_buffer.addr;
     world->giz_buffer.addr += sizeof(*system);
-    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    system = world->pickup_runtime_sys;
     memset(system, 0, sizeof(*system));
     system->draw_distance = 10.0f;
     SetAreaPickupScalePc(world->area_index);
-    ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_scale = AreaPickupScale;
+    world->pickup_runtime_sys->pickup_scale = AreaPickupScale;
     SetAreaPickupGravity(world->area_index, world->level_idx);
     if ((u16)world->current_level->max_pickups > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups =
-            (GIZMOPICKUP_PC *)world->giz_buffer.addr;
+        world->pickup_runtime_sys->pickups = (GIZMOPICKUP_PC *)world->giz_buffer.addr;
         world->giz_buffer.addr += (u16)world->current_level->max_pickups * sizeof(GIZMOPICKUP_PC);
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-    ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->temporary_pickups =
-        (GIZMOPICKUP_PC *)world->giz_buffer.addr;
+    world->pickup_runtime_sys->temporary_pickups = (GIZMOPICKUP_PC *)world->giz_buffer.addr;
     world->giz_buffer.addr += 64 * sizeof(GIZMOPICKUP_PC);
     return world->pickup_runtime_sys;
 }
@@ -736,44 +726,42 @@ i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
     i32 version, value, index;
     f32 number;
     (void)unused;
-    if (((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count != 0)
+    if (world->pickup_runtime_sys->pickup_count != 0)
         return 0;
     version = EdFileReadInt();
     value = EdFileReadInt();
-    ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count = value;
+    world->pickup_runtime_sys->pickup_count = value;
     if (version >= 3) {
         value = EdFileReadInt();
-        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->total_score = value;
+        world->pickup_runtime_sys->total_score = value;
     }
     if (version >= 5) {
         number = EdFileReadFloat();
-        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->draw_distance = number;
+        world->pickup_runtime_sys->draw_distance = number;
         number = EdFileReadFloat();
-        system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+        system = world->pickup_runtime_sys;
         system->pickup_scale = number;
         if (version > 5) {
             AreaPickupScale = system->pickup_scale;
         } else {
             SetAreaPickupScalePc(world->area_index);
-            ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_scale = AreaPickupScale;
+            world->pickup_runtime_sys->pickup_scale = AreaPickupScale;
         }
     } else {
         AreaPickupScale = 1.0f;
-        ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_scale = 1.0f;
+        world->pickup_runtime_sys->pickup_scale = 1.0f;
     }
-    AdjustPickupDrawDistancePc(world->area_index,
-                               &((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->draw_distance, version);
+    AdjustPickupDrawDistancePc(world->area_index, &world->pickup_runtime_sys->draw_distance, version);
     SetAreaPickupGravity(world->area_index, world->level_idx);
-    pickup = ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups;
-    for (index = 0; index < ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
-         ++index, ++pickup) {
+    pickup = world->pickup_runtime_sys->pickups;
+    for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
         EdFileRead(pickup->name, sizeof(pickup->name));
         EdFileReadNuVec(&pickup->position);
         pickup->unknown_14[0] = (u8)EdFileReadChar();
         if (version >= 2)
             pickup->unknown_14[1] = (u8)EdFileReadChar();
         if (version >= 4)
-            pickup->unknown_18[0] = (u8)EdFileReadChar();
+            pickup->activation_group = (u8)EdFileReadChar();
     }
     return 1;
 }
@@ -869,11 +857,10 @@ void __cdecl GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_
     }
     if (world == NULL)
         return;
-    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    system = world->pickup_runtime_sys;
     pickup = (PICKUP_RESET_RECORD_PC *)system->pickups;
     if (pickup != NULL) {
-        for (index = 0; index < ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
-             ++index, ++pickup) {
+        for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
             GizmoPickups_Reset(world, pickup);
             if (progress != NULL && index < 512) {
                 i32 word = index >> 5;
@@ -906,7 +893,7 @@ void __cdecl GizmoPickups_ResetPc(void *world_ptr, void *unused, void *progress_
             }
         }
     }
-    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    system = world->pickup_runtime_sys;
     if (system->temporary_pickups != NULL)
         memset(system->temporary_pickups, 0, 0xb00);
 }
@@ -1089,9 +1076,9 @@ void __cdecl GizmoPickups_Update(void *world_pointer, void *unused_system, f32 u
     (void)unused_time;
     if (world == NULL)
         return;
-    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    system = world->pickup_runtime_sys;
     GizmoPickups_UpdateListPc(world, system->pickups, system->pickup_count, 1);
-    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    system = world->pickup_runtime_sys;
     GizmoPickups_UpdateListPc(world, system->temporary_pickups, 64, 0);
 }
 
@@ -1106,7 +1093,7 @@ static __declspec(noinline) void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPI
     if (pickup == NULL || Missions_PickupsOff(MissionSys))
         return;
     NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f);
-    draw_distance = ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->draw_distance;
+    draw_distance = world->pickup_runtime_sys->draw_distance;
     maximum_distance_squared = draw_distance * draw_distance;
     half_distance = (f64)draw_distance * 0.5;
     shadow_distance_squared = (f32)(half_distance * half_distance);
@@ -1175,9 +1162,9 @@ void __cdecl GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unu
     if (world == NULL)
         return;
     EnableShadowMapRendering(0);
-    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    system = world->pickup_runtime_sys;
     GizmoPickups_DrawList(world, system->pickups, system->pickup_count);
-    system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    system = world->pickup_runtime_sys;
     GizmoPickups_DrawList(world, system->temporary_pickups, 64);
     ResetShadowMapRendering();
 }
@@ -1252,9 +1239,8 @@ void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
     }
     group = ((PICKUP_ACTIVATION_PC *)pickup)->activation_group;
     if (group != 0) {
-        group_pickup = ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups;
-        for (index = 0; index < ((struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
-             ++index, ++group_pickup) {
+        group_pickup = world->pickup_runtime_sys->pickups;
+        for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++group_pickup) {
             if (((PICKUP_ACTIVATION_PC *)group_pickup)->activation_group ==
                 ((PICKUP_ACTIVATION_PC *)pickup)->activation_group)
                 group_pickup->flags = (group_pickup->flags & (u8)~6) | ((active & 1) << 1) | ((active & 1) << 2);
@@ -1292,25 +1278,16 @@ void __cdecl GizmoPickups_SetOnOff(void) {
     }
 }
 
-/* Read-only PC prefix. WORLD50b8 points to pickups0/count8, unlike the
-   legacy PICKUP_RUNTIME_SYS_PC overlay used by other incomplete routines. */
-typedef struct HudPickupRuntimePc {
-    GIZMOPICKUP_PC *pickups;
-    void *temporary_pickups;
-    i32 count;
-} HudPickupRuntimePc;
-STATIC_ASSERT(offsetof(HudPickupRuntimePc, pickups) == 0);
-STATIC_ASSERT(offsetof(HudPickupRuntimePc, count) == 8);
 STATIC_ASSERT(offsetof(GIZMOPICKUP_PC, filter_byte) == 0x14);
 /* Complete native00570030..00570082. */
 i32 __cdecl GizmoPickup_NumberOfTypePc(WORLDINFO *world, i32 type, u8 filter) {
-    HudPickupRuntimePc *system = (HudPickupRuntimePc *)world->pickup_runtime_sys;
+    GIZMOPICKUPRUNTIMESYS_s *system = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = system->pickups;
     i32 count = 0;
     i32 i;
     if (filter == 0 && type == -1)
         return 0;
-    i = system->count;
+    i = system->pickup_count;
     if (i > 0) {
         do {
             if (filter != 0) {
@@ -1329,10 +1306,9 @@ GIZMOPICKUP_PC *__cdecl GizmoPickup_FindByName(WORLDINFO *world, char *name) {
     GIZMOPICKUP_PC *pickup;
     i32 index;
     if (world != NULL && name != NULL) {
-        pickup = ((GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickups;
+        pickup = world->pickup_runtime_sys->pickups;
         if (pickup != NULL) {
-            for (index = 0; index < ((GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys)->pickup_count;
-                 ++index, ++pickup) {
+            for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
                 if (NuStrICmp(pickup->name, name) == 0)
                     return pickup;
             }
@@ -1352,7 +1328,7 @@ i32 __cdecl GizmoPickup_BeenTurnedOn(GIZMOPICKUP_PC *pickup) {
 
 /* Studs the level's placed pickups are worth (TotalLevelCoinTally). */
 u32 __cdecl GizmoPickups_TotalScore(WORLDINFO *world) {
-    struct GIZMOPICKUPRUNTIMESYS_s *system = (struct GIZMOPICKUPRUNTIMESYS_s *)world->pickup_runtime_sys;
+    struct GIZMOPICKUPRUNTIMESYS_s *system = world->pickup_runtime_sys;
     GIZMOPICKUP_PC *pickup = system->pickups;
     u32 score = 0;
     i32 i;

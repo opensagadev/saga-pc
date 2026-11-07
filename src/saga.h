@@ -4203,7 +4203,7 @@ typedef struct WORLDINFO_s {
     i32 ledge_count;
     struct SECURITYDOOR_s *security_doors;
     i32 security_door_count;
-    struct PICKUP_RUNTIME_SYS_PC *pickup_runtime_sys;
+    struct GIZMOPICKUPRUNTIMESYS_s *pickup_runtime_sys;
     i32 gizmo_blowup_type_count;
     i32 gizmo_blowup_count;
     GIZMOBLOWUPTYPE_PC *gizmo_blowup_types;
@@ -9459,11 +9459,21 @@ typedef struct GIZMOPICKUP_PC {
             u8 filter_byte, filter_reserved;
         };
     };
-    u8 model_variant, flags;
-    u8 unknown_18[4];
+    u8 model_variant;
+    union {
+        u8 flags;
+        struct {
+            u8 state_active : 1, state_enabled : 1, state_visible : 1, state_collected : 1, state_drawn : 1,
+                state_draw_visible : 1, state_alternate_type : 1, state_activated : 1;
+        };
+    };
+    u8 activation_group, unknown_19[3];
     f32 floor;
     u16 shadow_x, shadow_z;
-    i8 room;
+    union {
+        i8 room;
+        u8 collected;
+    };
     u8 type_index;
     u16 rotation;
     f32 timer;
@@ -9513,19 +9523,10 @@ STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, debris_id) == 0x2c);
 STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, overlay_model_id) == 0x2e);
 STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_extent_x) == 0x30);
 STATIC_ASSERT(offsetof(GIZMO_PICKUP_TYPE_PC, shadow_extent_z) == 0x34);
-typedef struct PICKUP_RUNTIME_SYS_PC {
-    u8 unknown0[4];
-    GIZMOPICKUP_PC *pickups;
-    u8 unknown8[4];
-    i32 cursor;
-} PICKUP_RUNTIME_SYS_PC;
 typedef struct TORPEDO_MACHINE_SYS_PC {
     u8 unknown0[8];
     f32 scale;
 } TORPEDO_MACHINE_SYS_PC;
-STATIC_ASSERT(sizeof(PICKUP_RUNTIME_SYS_PC) == 0x10);
-STATIC_ASSERT(offsetof(PICKUP_RUNTIME_SYS_PC, pickups) == 4);
-STATIC_ASSERT(offsetof(PICKUP_RUNTIME_SYS_PC, cursor) == 0xc);
 STATIC_ASSERT(sizeof(TORPEDO_MACHINE_SYS_PC) == 0xc);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_SYS_PC, scale) == 8);
 typedef struct NEW_MINI_PIECE_PC {
@@ -25997,7 +25998,7 @@ struct GIZMOPICKUPRUNTIMESYS_s {
     struct GIZMOPICKUP_PC *pickups;
     struct GIZMOPICKUP_PC *temporary_pickups;
     i32 pickup_count;
-    i32 field_0x0c;
+    i32 temporary_cursor;
     i32 total_score;
     f32 draw_distance;
     f32 pickup_scale;
