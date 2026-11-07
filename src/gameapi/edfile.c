@@ -2105,6 +2105,129 @@ eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, 
     return eduiItemPropCreateEx(data, colours, selected, changed, button, button_type, text, value, 0);
 }
 
+/* A filter item: typing into its value hides every menu item whose text
+ * does not contain it; hidden items wait on the filter's own child list. */
+typedef struct edui_filter_s {
+    edui_prop_s prop;
+    eduiitem_s *first_child;
+    i32 reserved_84;
+    u32 sorted;
+} edui_filter_s;
+STATIC_ASSERT(sizeof(edui_filter_s) == 0x8c);
+
+void __cdecl eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
+STATIC_ASSERT(offsetof(edui_filter_s, first_child) == 0x80);
+STATIC_ASSERT(offsetof(edui_filter_s, sorted) == 0x88);
+
+static i32 __cdecl eduicbInteractFilter(edui_interact_s *interact) {
+    return eduicbInteractProp(interact);
+}
+
+static void __cdecl eduicbItemDestroyFilter(eduimenu_s *menu, eduiitem_s *item) {
+    edui_filter_s *filter = (edui_filter_s *)item;
+    eduiitem_s *child;
+    eduiitem_s *next;
+    if (filter->first_child != NULL) {
+        do {
+            child = filter->first_child;
+            next = child->next;
+            child->destroy(menu, child);
+            filter->first_child = next;
+        } while (next != NULL);
+    }
+    eduicbItemDestroyProp(menu, item);
+}
+
+static i32 __cdecl eduicbProcessFilter(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    edui_filter_s *filter = (edui_filter_s *)item;
+    i32 changed = 0;
+    char *query;
+    eduiitem_s *candidate;
+    eduiitem_s *next;
+    (void)delta_time;
+    EduiPropDragLabelPc(&filter->prop, menu);
+    EduiPropKeyboardPc(&filter->prop, menu);
+    EduiPropButtonPc(&filter->prop, menu, pad);
+    if (filter->prop.editing)
+        query = eduiPropTextEdit;
+    else
+        query = filter->prop.property_text;
+    if (*query) {
+        for (candidate = menu->first; candidate != NULL; candidate = next) {
+            next = candidate->next;
+            if (candidate->type != 20 && candidate->type != 18 && !NuStrIStr(candidate->text, query)) {
+                eduiMenuRemoveItem(menu, candidate);
+                candidate->previous = NULL;
+                candidate->next = filter->first_child;
+                if (filter->first_child != NULL)
+                    filter->first_child->previous = candidate;
+                filter->first_child = candidate;
+                changed = 1;
+            }
+        }
+        for (candidate = filter->first_child; candidate != NULL; candidate = next) {
+            next = candidate->next;
+            if (NuStrIStr(candidate->text, query)) {
+                if (filter->first_child == candidate)
+                    filter->first_child = candidate->next;
+                if (candidate->next != NULL)
+                    candidate->next->previous = candidate->previous;
+                if (candidate->previous != NULL)
+                    candidate->previous->next = candidate->next;
+                candidate->next = NULL;
+                candidate->previous = NULL;
+                eduiMenuAddItem(menu, candidate);
+                changed = 1;
+            }
+        }
+    } else {
+        for (candidate = filter->first_child; candidate != NULL; candidate = next) {
+            next = candidate->next;
+            if (filter->first_child == candidate)
+                filter->first_child = candidate->next;
+            if (candidate->next != NULL)
+                candidate->next->previous = candidate->previous;
+            if (candidate->previous != NULL)
+                candidate->previous->next = candidate->next;
+            candidate->next = NULL;
+            candidate->previous = NULL;
+            eduiMenuAddItem(menu, candidate);
+            changed = 1;
+        }
+    }
+    if (changed || !(filter->sorted & 1)) {
+        eduiMenuSortItemsByTxt(menu);
+        filter->sorted |= 1;
+    }
+    return 0;
+}
+
+static i32 __cdecl eduicbRenderFilter(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
+    return eduicbRenderProp(menu, item, x, y, width, height);
+}
+
+eduiitem_s *__cdecl eduiItemFilterCreate(u32 data, void *colours, char *text, char *value) {
+    edui_filter_s *item = (edui_filter_s *)NuAlloc(sizeof(edui_filter_s), EduiSourcePathPc, 0x151a);
+    if (item) {
+        memset(item, 0, sizeof(edui_filter_s));
+        item->prop.base.data = data;
+        item->prop.base.type = 20;
+        memcpy(item->prop.base.colours, colours, sizeof(item->prop.base.colours));
+        item->prop.base.highlighted = 0;
+        item->prop.base.text_alignment = 0x40;
+        item->prop.base.selection_group = 0;
+        item->prop.base.process = eduicbProcessFilter;
+        item->prop.base.render = eduicbRenderFilter;
+        item->prop.base.destroy = eduicbItemDestroyFilter;
+        item->prop.interact = eduicbInteractFilter;
+        eduiItemSetText(&item->prop.base, text);
+        eduiItemPropSetText(&item->prop, value);
+        item->prop.label_width = EduiPropLabelWidthPc;
+        return &item->prop.base;
+    }
+    return NULL;
+}
+
 /* Analog pad rate for the editor: the left stick moves coarsely, the right
  * stick finely, while the cursor button (bit 6) is held. */
 f32 __cdecl eduiGetAnalougePadValue(FRAME_PAD_PC *pad) {

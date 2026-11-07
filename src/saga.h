@@ -29599,6 +29599,7 @@ struct EdClass {
 
     i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);
     i32 SerialiseObjectHeader(EdStream &stream, void *object);
+    void CopyObject(void *destination, void *source);
     void AddType(EdRef *member);
     EdRef *FindTypeRef(char *member_name, i32 recursive);
     EdRef *FindTypeRef(i32 attributes, i32 recursive);
@@ -29754,6 +29755,7 @@ struct ClassObjectList {
 
     void Remove(ClassObjectListEntry *entry);
     i32 GetAveragePosition(VuVec &average);
+    i32 GetAveragePosition(VuVec &average, f32 &radius);
 };
 
 class EdTool : public CSListLink<EdTool> {
@@ -29810,6 +29812,7 @@ struct EdManipulator;
 /* The class/object editor (Android ClassEditor), theClassEditor. */
 class ClassEditor : public BaseEditor {
   public:
+    ClassEditor();
     virtual ~ClassEditor();
     virtual void Initialise(variptr_u &, variptr_u &, i32);
     virtual char const *GetName();
@@ -29865,7 +29868,8 @@ class ClassEditor : public BaseEditor {
     i32 CreateObject(i32 class_id);
     i32 FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, i32 filter);
     i32 FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, ClassObject &after, i32 filter);
-    i32 cbEdCopySelectedObject(EdInputContext &input);
+    static i32 cbEdCreateClassNewObject(i32 class_id);
+    static i32 cbEdCopySelectedObject(EdInputContext &input);
     static void SetViewMenuHilight(eduimenu_s *menu);
     static void cbDestroyMenu(eduimenu_s *menu, eduimenu_s *);
     static void cbDestroyObject(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
@@ -29942,6 +29946,8 @@ class LevelEditor : public BaseThing {
     virtual void Display(ThingRenderData *);
 
     void SetPadText(i32 buttons, char *text);
+    void AddInfoText(char *text);
+    void SetCameraPosition(VuVec &position);
     void CreateMenu();
     void CreateEditorList(eduimenu_s *parent, eduiitem_s *item);
     NUGSCN *GetScene(i32 index);
