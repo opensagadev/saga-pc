@@ -24069,9 +24069,12 @@ address,symbol,size,ctype
 0x81f8d0,_FROMdB2_LOOKUP,,
 0x81f99c,_EdLevelFntScale,4,i32
 0x81f9a0,_EdLevelAttr,16,struct eduiiattr_s
+0x81f9b4,?Scale@EdManipulator@@2MA,4,f32
 0x81f9e8,?menu_startmetrics@@3UPropertyMenuMetrics@@A,16,PropertyMenuMetrics
+0x81fa04,?KnotHelperRadius@@3MA,4,f32
 0x81fa70,?theClassEditor@@3VClassEditor@@A,,ClassEditor
 0x81fcf0,?thePropertyTool@@3VPropertyTool@@A,76,PropertyTool
+0x81fdf0,?theSplineHelper@@3VSplineHelper@@A,,SplineHelper
 0x0081fe6c,??_R0?AVEdTool@@@8,21,
 0x0081fe84,??_R0?AV?$CSListLink@VEdTool@@@@@8,37,
 0x0081feac,??_R0?AVBaseEditor@@@8,25,

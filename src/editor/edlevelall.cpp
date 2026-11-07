@@ -52,6 +52,7 @@ extern "C" {
     eduimenu_s *__cdecl eduiGetActiveMenuParent(void);
     void __cdecl eduiSetActiveMenu(eduimenu_s *menu);
     void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour);
+    void __cdecl EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments);
     void __cdecl EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_radius, f32 max_radius,
                                  f32 radius_scale, f32 radius_bias);
 }
@@ -193,6 +194,8 @@ class EdManipulator {
 
     u32 unknown_04[3];
     i32 selected_attribute;
+
+    static f32 Scale;
 };
 
 /* Property menu of the objects that share one editor class. */
@@ -1720,6 +1723,161 @@ class KnotHelper : public EdClassInterface {
 STATIC_ASSERT(sizeof(KnotHelper) == 0x14);
 
 KnotHelper::KnotHelper() {
+}
+
+class SplineObject;
+
+/* One spline control point: its position and the two tangent handles. */
+struct SplineKnot {
+    SplineKnot *next;
+    SplineKnot *previous;
+    __declspec(align(16)) VuVec position;
+    VuVec in_tangent;
+    VuVec out_tangent;
+    SplineObject *spline;
+    i16 led_file;
+};
+STATIC_ASSERT(offsetof(SplineKnot, position) == 0x10);
+STATIC_ASSERT(offsetof(SplineKnot, spline) == 0x40);
+STATIC_ASSERT(sizeof(SplineKnot) == 0x50);
+
+struct SplineKnotList {
+    SplineKnot *first;
+    SplineKnot *last;
+    i32 count;
+};
+
+/* A named editor spline; the knot list is followed by its generated points. */
+class SplineObject : public CSListLink<SplineObject> {
+  public:
+    virtual ~SplineObject();
+
+    char name[32];
+    SplineKnotList knots;
+};
+STATIC_ASSERT(offsetof(SplineObject, knots) == 0x2c);
+
+/* The spline object class (Android SplineHelper), theSplineHelper. */
+class SplineHelper : public EdClassInterface {
+  public:
+    virtual void Flush();
+    virtual i32 GetNumObjects();
+    virtual void *GetNextObject(void *object);
+    virtual void *CreateObject(void *data, i32 guid, i32 flags);
+    virtual void DestroyObject(void *object, i32 flags);
+    using EdClassInterface::GetNextObject;
+
+    SplineObject *first_object;
+    SplineObject *last_object;
+    i32 object_count;
+};
+STATIC_ASSERT(offsetof(SplineHelper, first_object) == 0x8);
+extern SplineHelper theSplineHelper;
+
+f32 EdManipulator::Scale = 2.0f;
+f32 KnotHelperRadius = 0.25f;
+f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *closest);
+
+i32 KnotHelper::GetNumObjects() {
+    i32 count = 0;
+    for (SplineObject *spline = theSplineHelper.first_object; spline != NULL; spline = spline->next)
+        count += spline->knots.count;
+    return count;
+}
+
+/* Walks the knots of every spline in order. */
+void *KnotHelper::GetNextObject(void *current) {
+    if (current == NULL) {
+        for (SplineObject *spline = theSplineHelper.first_object; spline != NULL; spline = spline->next) {
+            if (spline->knots.count != 0)
+                return spline->knots.first;
+        }
+        return NULL;
+    }
+    SplineKnot *next = static_cast<SplineKnot *>(current)->next;
+    if (next == NULL) {
+        for (SplineObject *spline = static_cast<SplineKnot *>(current)->spline->next; spline != NULL;
+             spline = spline->next) {
+            if (spline->knots.count != 0)
+                return spline->knots.first;
+        }
+    }
+    return next;
+}
+
+/* Unlinks and frees a knot; a spline left without knots is destroyed too. */
+void KnotHelper::DestroyObject(void *object, i32) {
+    SplineKnot *knot = static_cast<SplineKnot *>(object);
+    theLevelEditor.destroying_objects = 1;
+    SplineObject *spline = knot->spline;
+    if (knot->next != NULL)
+        knot->next->previous = knot->previous;
+    else
+        spline->knots.last = knot->previous;
+    if (knot->previous != NULL)
+        knot->previous->next = knot->next;
+    else
+        spline->knots.first = knot->next;
+    knot->next = NULL;
+    knot->previous = NULL;
+    spline->knots.count--;
+    theMemoryManager.FreePool(knot, sizeof(SplineKnot));
+    if (spline->knots.count == 0) {
+        if (spline->next != NULL)
+            spline->next->previous = spline->previous;
+        else
+            theSplineHelper.last_object = spline->previous;
+        if (spline->previous != NULL)
+            spline->previous->next = spline->next;
+        else
+            theSplineHelper.first_object = spline->next;
+        spline->next = NULL;
+        spline->previous = NULL;
+        theSplineHelper.object_count--;
+        delete spline;
+    }
+}
+
+/* Nearest of the knot's three handles to the ray, less the handle radius. */
+f32 KnotHelper::DistanceToObject(VuVec &start, VuVec &end, void *object, EdRef **reference) {
+    SplineKnot *knot = static_cast<SplineKnot *>(object);
+    f32 distance = LineToPointDistance(start, end, knot->position, NULL);
+    EdRef *nearest = position_ref;
+    f32 in_distance = LineToPointDistance(start, end, knot->in_tangent, NULL);
+    if (in_distance < distance) {
+        distance = in_distance;
+        nearest = in_tangent_ref;
+    }
+    f32 out_distance = LineToPointDistance(start, end, knot->out_tangent, NULL);
+    if (out_distance < distance) {
+        distance = out_distance;
+        nearest = out_tangent_ref;
+    }
+    distance -= KnotHelperRadius * EdManipulator::Scale;
+    distance = distance < 0.0f ? 0.0f : distance;
+    if (reference != NULL)
+        *reference = nearest;
+    return distance;
+}
+
+/* Draws the knot's three handles and the tangent lines. */
+void KnotHelper::Render(void *object, i32) {
+    SplineKnot *knot = static_cast<SplineKnot *>(object);
+    i32 colours[3];
+    colours[0] = 0x80808080;
+    colours[1] = 0x80800000;
+    colours[2] = 0x80000080;
+    EdDrawBegin(0);
+    VuVec *handles = &knot->position;
+    for (i32 index = 0; index < 3; index++)
+        EdDrawLineCircleY(&handles[index].xyz, KnotHelperRadius * EdManipulator::Scale, colours[index], 8);
+    EdDrawLineSegment(&knot->position.xyz, &knot->in_tangent.xyz, -1);
+    EdDrawLineSegment(&knot->position.xyz, &knot->out_tangent.xyz, -1);
+    if (NewPrim != 0) {
+        if (NewPrim == 2 || NewPrim == 3)
+            NuPrim3DEnd();
+        NewPrim = 0;
+    }
 }
 
 /* Returns the next object after current that the filter accepts. */
