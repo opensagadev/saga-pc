@@ -1,6 +1,10 @@
 #include "saga.h"
 #include <string.h>
 
+/* PC registers no editor helpers. */
+void __cdecl RegisterHelpers(void) {
+}
+
 void *__cdecl SetLevelHack(i32 size) {
     memset(OldLevelHackData, 0, 0x80);
     memset(LevelHackData, 0, 0x80);

@@ -4697,6 +4697,7 @@ address,symbol,size,ctype
 0x577880,_GameCameraMakeMiniCut2,196,"void __cdecl(NUVEC *,NUVEC *,i32,f32,f32,f32,f32,i32,i32,i32)"
 0x577950,_Minicam_Update,2020,void __cdecl(void)
 0x578140,_GameCameraMakeMiniCut3,1496,"void __cdecl(u32,f32,i32,i32,i32,void *,i32,NUVEC *,f32,f32,f32,f32,f32,f32,f32,i32,NUGSPLINE *,i8,i8)"
+0x578740,_RegisterHelpers,1,void __cdecl (void)
 0x00578750,_SetLevelHack,64,void *__cdecl (i32)
 0x578790,_objInNetWaitContext,52,"i32 __cdecl(GAMEOBJECT *,i32)"
 0x578890,_LevelsConfigDiagnosticPc,1,void __cdecl (char *)
@@ -11313,6 +11314,7 @@ address,symbol,size,ctype
 0x7513fc,_PCDeviceBackend$initializer$,4,constructor initializer pointer
 0x00751400,_nu_keyboard_owner$initializer$,4,void (__cdecl *)(void)
 0x75140c,_CRC16InstancePC$initializer$,4,void (__cdecl *)(void)
+0x75146c,??_C@_0BC@MDMGKAHA@stuff?2pc_bits?4gsc?$AA@,18,const char[]
 0x751490,??_C@_0P@GHFPNOJB@bad?5allocation?$AA@,,
 0x007514c0,_InitOnceAllocSource,15,const char[15]
 0x007514d0,_InitOnceWindowTitle,36,const char[36]
@@ -14568,6 +14570,7 @@ address,symbol,size,ctype
 0x75ad38,_HubAITableAreaFormatPc,11,const char[11]
 0x75ad44,??_C@_04MHCFDMKN@indy?$AA@,,const char[5]
 0x75ad4c,??_C@_09LMCJBFCN@demointro?$AA@,,const char[10]
+0x75ad58,??_C@_08DAIEDLBM@mem_card?$AA@,9,const char[]
 0x75ad64,_SaveIconFilenamePc,9,const char[9]
 0x75ad70,__real@3f91111120000000,8,const f64
 0x75ad78,??_C@_06BEOGDCKE@frmtmr?$AA@,,const char[7]
@@ -15334,6 +15337,7 @@ address,symbol,size,ctype
 0x75d04c,??_C@_0BJ@EEJPJHNF@stuff?2text?2starwars_font?$AA@,,const char[]
 0x75d068,??_C@_0BL@GKNGJJIC@stuff?2text?2starwars_font_j?$AA@,,const char[]
 0x75d084,??_C@_0BD@NJDNDEOK@stuff?2text?2pc_font?$AA@,,const char[]
+0x75d098,??_C@_0BE@JPFLEGJF@stuff?2save_icon?4gsc?$AA@,20,const char[]
 0x75d0ac,??_C@_0BC@OEADKIKD@cut?2cutscenes?4txt?$AA@,18,
 0x0075d0c0,_LoadPermEpisodesPath,20,const char[20]
 0x0075d0d4,_LoadPermAreasPath,17,const char[17]
@@ -21998,7 +22002,6 @@ address,symbol,size,ctype
 0x7f41a0,_DroidCheat32EnabledPc,,u8
 0x007f4358,_LevelSplinesTable,416,LEVELSPLINE_PC[26]
 0x7f44f8,_ObjTab,6000,LEVEL_OBJECT_CONFIG_PC[750]
-0x007f44fc,_LoadPermSaveIconSpecialPc,4,char *
 0x007f5c68,_TexAnimScriptNamesTitlePc,12,char *[3]
 0x007f5c74,__real@42de0000,4,const f32
 0x007f5c78,_TexAnimScriptNamesGamePc,128,char *[32]
@@ -22255,6 +22258,7 @@ address,symbol,size,ctype
 0x7fab24,_HubAreaNamesPc,40,const char *[10]
 0x7fabb4,_SaveIconNamePc,,const char *
 0x7fabb8,_SaveUnicodeNamePc,,char[20]
+0x7fabf8,_lsw_memcard_objname,4,char *
 0x007fac04,_BGLOAD,4,i32
 0x7fac08,_Trailer,,char *[6]
 0x007fac0c,_HubLostTempleStoryTextPc,4,i16 *

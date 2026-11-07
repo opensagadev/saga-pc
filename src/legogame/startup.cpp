@@ -1,5 +1,5 @@
 #include "saga.h"
-extern "C" char *LoadPermSaveIconSpecialPc;
+extern "C" char *lsw_memcard_objname;
 extern "C" void __cdecl TextInputGlyphNamePc(i32, char *);
 extern "C" void __cdecl RegisterLswGizmoTypesPc(VARIPTR *, VARIPTR *);
 extern "C" void __cdecl RegisterAlternateGizmoTypesPc(VARIPTR *, VARIPTR *);
@@ -36,6 +36,9 @@ extern "C" {
 extern "C" {
 
     void __cdecl LoadPermLoadFonts(void);
+    void __cdecl LoadPermLoadSaveIconScene(void);
+    void __cdecl RegisterHelpers(void);
+    void __cdecl LSW_registerStatusScreen(void);
     void __cdecl Text_LoadFont(char *, VARIPTR *, VARIPTR *);
 
     extern LEVELDATA_PC *__cdecl Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
@@ -179,7 +182,7 @@ extern "C" {
 
             if (language_timer < 3.3f && save_icon_scene != NULL) {
                 if (language_timer == 0.0f && NuSpecialExistsFn(&special) == 0) {
-                    if (NuSpecialFind(save_icon_scene, &special, LoadPermSaveIconSpecialPc, 1) == 0) {
+                    if (NuSpecialFind(save_icon_scene, &special, ObjTab[0].name, 1) == 0) {
                         language_timer = 3.3f;
                     }
                 } else {
@@ -375,7 +378,7 @@ extern "C" {
         FadeSys.AddFade((FadeBase *)&fadeStill);
         LevelObjects_InitForGame(ObjTab, &permbuffer_ptr, &permbuffer_end, 0x2ee, 0x1f40);
         LevelSplines_InitForGame(LevelSplinesTable);
-        STUBBED_NAMED("LoadPermData: LoadPermLoadSaveIconScene");
+        LoadPermLoadSaveIconScene();
 
         aligned = (permbuffer_ptr.addr + 0xfU) & ~0xfU;
         permbuffer_ptr.addr = aligned + 0x200;
@@ -395,7 +398,7 @@ extern "C" {
         } else if (StartupGameFlag1 != 0) {
             RegisterLswGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
             GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
-            STUBBED_NAMED("LoadPermData: LSW_registerStatusScreen at 0x004642e0");
+            LSW_registerStatusScreen();
             initGameHintSys_LSW();
             CutScene_StartFn = CutScene_StartFn_LSW;
             CutScene_PreUpdateFn = CutScene_PreUpdateFn_LSW;
@@ -473,7 +476,7 @@ extern "C" {
         LoadPerm1();
         LoadPerm2();
         GameThingManagerPc->AddOnceOnlyThings();
-        STUBBED_NAMED("LoadPermData: RegisterHelpers");
+        RegisterHelpers();
 
         blocked_keys[0] = 0x3b;
         blocked_keys[1] = 0x3c;
@@ -651,6 +654,16 @@ extern "C" {
                 Text_LoadFont("stuff\\text\\starwars_font", &permbuffer_ptr, &permbuffer_end);
         } else {
             Text_LoadFont("stuff\\text\\batman_font", &permbuffer_ptr, &permbuffer_end);
+        }
+    }
+
+    /* LSW draws the save icon from pc_bits' "mem_card" special. */
+    void __cdecl LoadPermLoadSaveIconScene(void) {
+        if (StartupGameFlag1 != 0) {
+            ObjTab[0].name = lsw_memcard_objname;
+            save_icon_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\pc_bits.gsc");
+        } else {
+            save_icon_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\save_icon.gsc");
         }
     }
 }
