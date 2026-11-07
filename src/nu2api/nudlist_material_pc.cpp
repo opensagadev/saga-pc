@@ -1151,6 +1151,18 @@ extern "C" void __cdecl PostFilterCopyTexturePc(GRAPHICS_RENDER_TEXTURE_PC *dest
     PostFilterBlitTexturePc(destination, destination_level, source, source_level, program, extra);
 }
 
+extern "C" void __cdecl PCGraphicsDestroyFramebuffer(PC_FRAMEBUFFER_PC *);
+void NuMainFilter::destroyResources() {
+    NuMainFilterGen::destroyResources();
+    PCGraphicsDestroyFramebuffer(platform_fbo);
+}
+void NuMainFilter::initTextureResources(i32, i32) {
+    texture_surface.Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
+}
+void NuMainFilter::destroyTextureResources() {
+    texture_surface.Reset();
+}
+
 extern "C" f32 NuSpeedBlurVertexScalePc;
 f32 NuSpeedBlurVertexScalePc = 40000.0f;
 void NuSpeedBlurFilter::render() {

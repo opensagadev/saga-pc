@@ -311,9 +311,6 @@ void NuMainFilterGen::initTextureResources(i32 width, i32 height) {
         blur_gain -= 0.5;
     }
 }
-void NuMainFilter::initTextureResources(i32, i32) {
-    texture_surface.Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
-}
 __declspec(noinline) void NuMotionAccumFilterGen::initResources() {
     input_fbo = PCGraphicsCreateFramebuffer();
     accumulation_fbo = PCGraphicsCreateFramebuffer();
@@ -641,13 +638,6 @@ void NuMainFilterGen::destroyResources() {
     PCGraphicsDestroyFramebuffer(blur_fbo);
     blur_fbo = NULL;
     NuPostFilterGen::destroyResources();
-}
-void NuMainFilter::destroyResources() {
-    NuMainFilterGen::destroyResources();
-    PCGraphicsDestroyFramebuffer(platform_fbo);
-}
-void NuMainFilter::destroyTextureResources() {
-    texture_surface.Reset();
 }
 
 #define POST_FILTER_BIND_TEXTURE(stage, texture)                                                                       \
