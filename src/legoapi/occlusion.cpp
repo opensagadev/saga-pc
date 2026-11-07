@@ -228,6 +228,200 @@ void OcclusionManager::Init(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
     }
 }
 
+void OccluderSet::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
+    if (count < capacity) {
+        queries_prepared = false;
+        NUVEC4 *vertex = &occluders[count].vertices[0];
+        vertex->x = a->x;
+        vertex->y = a->y;
+        vertex->z = a->z;
+        vertex->w = 1.0f;
+        vertex = &occluders[count].vertices[1];
+        vertex->x = b->x;
+        vertex->y = b->y;
+        vertex->z = b->z;
+        vertex->w = 1.0f;
+        vertex = &occluders[count].vertices[2];
+        vertex->x = c->x;
+        vertex->y = c->y;
+        vertex->z = c->z;
+        vertex->w = 1.0f;
+        vertex = &occluders[count].vertices[3];
+        vertex->x = d->x;
+        vertex->y = d->y;
+        vertex->z = d->z;
+        vertex->w = 1.0f;
+        ++count;
+    }
+}
+
+void OcclusionManager::EndFrame() {
+}
+
+void OcclusionManager::BeginFrame() {
+    if (initialized && enabled) {
+        OccluderSet *completed = building_set;
+        OccluderSet *building = current_set;
+        current_set = completed;
+        building_set = building;
+        building->count = 0;
+        building->queries_prepared = false;
+        occluded_count = 0;
+        query_count = 0;
+    }
+}
+
+void OcclusionManager::OnCameraSet() {
+    if (initialized && enabled)
+        current_set->queries_prepared = false;
+}
+
+void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
+    if (!initialized || !enabled || building_set->count >= building_set->capacity)
+        return;
+    if (unknown_158 > 0.0f || unknown_15c > 0.0f) {
+        __declspec(align(16)) NUVEC4 projected[4];
+        NuVec4MtxTransform(&projected[0], const_cast<NUVEC *>(a), &vpmtx);
+        NuVec4MtxTransform(&projected[1], const_cast<NUVEC *>(b), &vpmtx);
+        NuVec4MtxTransform(&projected[2], const_cast<NUVEC *>(c), &vpmtx);
+        if (unknown_158 > 0.0f) {
+            NUVEC ac = {projected[2].x - projected[0].x, projected[2].y - projected[0].y,
+                        projected[2].z - projected[0].z};
+            NUVEC ab = {projected[1].x - projected[0].x, projected[1].y - projected[0].y,
+                        projected[1].z - projected[0].z};
+            NUVEC normal;
+            NuVecCross(&normal, &ab, &ac);
+            NuVecNorm(&normal, &normal);
+            f32 z = normal.z;
+            u32 bits = *reinterpret_cast<u32 *>(&z) & 0x7fffffff;
+            if (*reinterpret_cast<f32 *>(&bits) < unknown_158)
+                return;
+        }
+        NuVec4MtxTransform(&projected[3], const_cast<NUVEC *>(d), &vpmtx);
+        f32 min_x = 1000000.0f, min_y = 1000000.0f, min_depth = 1000000.0f;
+        f32 max_x = -1000000.0f, max_y = -1000000.0f;
+        for (u32 i = 0; i < 4; ++i) {
+            NUVEC4 &v = projected[i];
+            if (v.w < 0.001f)
+                return;
+            f32 x = v.x / v.w;
+            v.x = x;
+            f32 y = v.y / v.w;
+            v.y = y;
+            v.z /= v.w;
+            if (min_x > x)
+                min_x = x;
+            if (min_y > y)
+                min_y = y;
+            if (max_x < x)
+                max_x = x;
+            if (max_y < y)
+                max_y = y;
+            if (v.w < min_depth)
+                min_depth = v.w;
+        }
+        if (unknown_15c > 0.0f) {
+            f32 area = (max_y - min_y) * (max_x - min_x);
+            if (area * 0.25 < unknown_15c)
+                return;
+        }
+    }
+    building_set->AddOccluder(a, b, c, d);
+}
+
+void OcclusionManager::AddOccluder(const NUVEC *center, f32 radius) {
+    if (!initialized || !enabled)
+        return;
+    NUMTX view;
+    OcclusionMtxCopyPrivate(&view, &vmtx);
+    NUVEC right = {view.m00 * radius, view.m10 * radius, view.m20 * radius};
+    NUVEC up = {view.m01 * radius, view.m11 * radius, view.m21 * radius};
+    NUVEC forward = {view.m02 * radius, view.m12 * radius, view.m22 * radius};
+    NUVEC4 a = {center->x, center->y, center->z, 1.0f};
+    NUVEC4 b = {center->x, center->y, center->z, 1.0f};
+    NUVEC4 c = {center->x, center->y, center->z, 1.0f};
+    NUVEC4 d = {center->x, center->y, center->z, 1.0f};
+    a.x += up.x;
+    a.y += up.y;
+    a.z += up.z;
+    a.x -= right.x;
+    a.y -= right.y;
+    a.z -= right.z;
+    a.x -= forward.x;
+    a.y -= forward.y;
+    a.z -= forward.z;
+    b.x += up.x;
+    b.y += up.y;
+    b.z += up.z;
+    b.x += right.x;
+    b.y += right.y;
+    b.z += right.z;
+    b.x += forward.x;
+    b.y += forward.y;
+    b.z += forward.z;
+    c.x -= up.x;
+    c.y -= up.y;
+    c.z -= up.z;
+    c.x += right.x;
+    c.y += right.y;
+    c.z += right.z;
+    c.x += forward.x;
+    c.y += forward.y;
+    c.z += forward.z;
+    d.x -= up.x;
+    d.y -= up.y;
+    d.z -= up.z;
+    d.x -= right.x;
+    d.y -= right.y;
+    d.z -= right.z;
+    d.x -= forward.x;
+    d.y -= forward.y;
+    d.z -= forward.z;
+    AddOccluder(reinterpret_cast<NUVEC *>(&a), reinterpret_cast<NUVEC *>(&b), reinterpret_cast<NUVEC *>(&c),
+                reinterpret_cast<NUVEC *>(&d));
+}
+
+void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, const NUMTX *matrix) {
+    if (!initialized || !enabled)
+        return;
+    const f32 min_x = minimum->x;
+    const f32 min_y = minimum->y;
+    const f32 min_z = minimum->z;
+    const f32 max_x = maximum->x;
+    const f32 max_y = maximum->y;
+    const f32 max_z = maximum->z;
+    __declspec(align(16)) NUVEC4 corners[8] = {{min_x, max_y, min_z, 1.0f}, {max_x, max_y, max_z, 1.0f},
+                                               {max_x, min_y, max_z, 1.0f}, {min_x, min_y, min_z, 1.0f},
+                                               {min_x, max_y, max_z, 1.0f}, {max_x, max_y, min_z, 1.0f},
+                                               {max_x, min_y, min_z, 1.0f}, {min_x, min_y, max_z, 1.0f}};
+    for (i32 i = 0; i < 8; ++i) {
+        NUVEC *vertex = reinterpret_cast<NUVEC *>(&corners[i]);
+        NuVecMtxTransform(vertex, vertex, const_cast<NUMTX *>(matrix));
+    }
+    AddOccluder(reinterpret_cast<NUVEC *>(&corners[0]), reinterpret_cast<NUVEC *>(&corners[1]),
+                reinterpret_cast<NUVEC *>(&corners[2]), reinterpret_cast<NUVEC *>(&corners[3]));
+    AddOccluder(reinterpret_cast<NUVEC *>(&corners[4]), reinterpret_cast<NUVEC *>(&corners[5]),
+                reinterpret_cast<NUVEC *>(&corners[6]), reinterpret_cast<NUVEC *>(&corners[7]));
+}
+
+extern "C" {
+    void __cdecl NuOcclusionManagerOnCameraSet(void) {
+        g_OcclusionManager.OnCameraSet();
+    }
+
+    void __cdecl NuOcclusionManagerAddOccluderQuad(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
+        g_OcclusionManager.AddOccluder(a, b, c, d);
+    }
+
+    void __cdecl NuOcclusionManagerAddOccluderSphere(const NUVEC *center, f32 radius) {
+        g_OcclusionManager.AddOccluder(center, radius);
+    }
+
+    void __cdecl NuOcclusionManagerAddOccluderOBB(const NUVEC *minimum, const NUVEC *maximum, const NUMTX *matrix) {
+        g_OcclusionManager.AddOccluder(minimum, maximum, matrix);
+    }
+}
+
 /* Genuine original occlusion.cpp static members; outside extern C. */
 NUMTL *OccluderSet::ms_pZOnlyMtl3D = 0;
 NUMTL *OccluderSet::ms_pZOnlyMtl2D = 0;
