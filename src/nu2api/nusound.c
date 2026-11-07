@@ -453,6 +453,10 @@ static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, 
     }
 }
 
+void SetPreSeekStartPoint(f32 offset) {
+    Music.seek_offset = offset;
+}
+
 void __cdecl MusicPreSeek(i32 track) {
     if (NOSOUND != 0 || NOMUSIC != 0 || track < 0) {
         return;

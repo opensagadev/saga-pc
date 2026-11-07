@@ -19,13 +19,10 @@ STATIC_ASSERT(offsetof(MUSICPLAYBACK_PC, seek_offset) == 0x14);
 extern "C" {
     extern DOGFIGHT_AUDIO_DOOR_PC DogfightDoorsPc[7];
     void ResetSpaceFromWorldPc(WORLDINFO *world);
+    void SetPreSeekStartPoint(f32 offset);
 #pragma data_seg(".data$DogfightDebrisKeysPc")
     i32 DogfightDebrisKeysPc[4] = {-1, -1, -1, -1};
 #pragma data_seg()
-
-    void SetPreSeekStartPoint(f32 offset) {
-        Music.seek_offset = offset;
-    }
 
     void SpaceAudioPoint(void) {
         music_man.SetTrackEntryTimeByClass(2, ((DOGFIGHT_AUDIO_SPACE_PC *)WORLD->level_specific_data)->door_time);
@@ -33,17 +30,19 @@ extern "C" {
     }
 
     void SpaceResetAudioPoint(void) {
-        GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
         GAMEOBJECT *second = (GAMEOBJECT *)Player[1];
-        for (i32 i = 6; i >= 0; --i) {
-            if (!(first != NULL && first->sock_position.distance > DogfightDoorsPc[i].distance) &&
-                !(second != NULL && second->sock_position.distance > DogfightDoorsPc[i].distance))
-                continue;
-            music_man.SetTrackEntryTimeByClass(2, DogfightDoorsPc[i].timer);
-            music_man.SetTrackEntryTimeByClass(0x20, DogfightDoorsPc[i].timer);
-            return;
+        GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
+        i32 i;
+        for (i = 6; i != -1; --i) {
+            if ((first != NULL && first->sock_position.distance > DogfightDoorsPc[i].distance) ||
+                (second != NULL && second->sock_position.distance > DogfightDoorsPc[i].distance)) {
+                music_man.SetTrackEntryTimeByClass(2, DogfightDoorsPc[i].timer);
+                music_man.SetTrackEntryTimeByClass(0x20, DogfightDoorsPc[i].timer);
+                break;
+            }
         }
-        SetPreSeekStartPoint(0.0f);
+        if (i == -1)
+            SetPreSeekStartPoint(0.0f);
     }
 
     void ChrisDogFightAReset(WORLDINFO *world) {
