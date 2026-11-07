@@ -17986,22 +17986,6 @@ struct NETMESSAGE_PC {
         return write_offset - read_offset;
     }
     void MakeUnique();
-    void Write16(const i16 *value) {
-        if (data != NULL) {
-            PCByteCopy_candidate(data->bytes + write_offset, value, 2);
-            if (swap_endianness)
-                EdFileSwapEndianess16(data->bytes + write_offset);
-            write_offset += 2;
-        }
-    }
-    void Write32(const i32 *value) {
-        if (data != NULL) {
-            PCByteCopy_candidate(data->bytes + write_offset, value, 4);
-            if (swap_endianness)
-                EdFileSwapEndianess32(data->bytes + write_offset);
-            write_offset += 4;
-        }
-    }
     void Write8(const u8 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(data->bytes + write_offset, &value, 1);
@@ -18009,6 +17993,14 @@ struct NETMESSAGE_PC {
         }
     }
     void Write16(const i16 &value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(data->bytes + write_offset, &value, 2);
+            if (swap_endianness)
+                EdFileSwapEndianess16(data->bytes + write_offset);
+            write_offset += 2;
+        }
+    }
+    void Write16(const u16 &value) {
         if (data != NULL) {
             PCByteCopy_candidate(data->bytes + write_offset, &value, 2);
             if (swap_endianness)

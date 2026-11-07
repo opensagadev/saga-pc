@@ -751,8 +751,8 @@ i32 NetworkObjectManager::ReleaseObject(void *object, EdClass *, i32 guid) {
         i16 class_id = theRegistry.GetClassId(network_object->object_class);
         NETMESSAGE_PC message(0x20);
         message.Write8(6);
-        message.Write16(&id);
-        message.Write16(&class_id);
+        message.Write16(id);
+        message.Write16(class_id);
         theTTNetwork.BroadcastEx(message, 3);
         message.Release();
     }
@@ -772,8 +772,8 @@ void NetworkObjectManager::ContinuityBreak(i32 id, f32) {
         i16 object_id = object->id;
         i16 class_id = theRegistry.GetClassId(object->object_class);
         message.Write8(12);
-        message.Write16(&object_id);
-        message.Write16(&class_id);
+        message.Write16(object_id);
+        message.Write16(class_id);
         theTTNetwork.BroadcastEx(message, 3);
         message.Release();
     }

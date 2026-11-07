@@ -2227,16 +2227,16 @@ extern "C" i32 __cdecl Bolt_HitGameObject(BOLT_PC *bolt, GAMEOBJECT *object, NUV
     }
     if (hit < 0)
         return 0;
-    i16 bolt_index = static_cast<i16>(bolt - Bolt);
-    i16 object_index = static_cast<i16>(object - Obj);
+    u16 bolt_index = static_cast<u16>(bolt - Bolt);
+    u16 object_index = static_cast<u16>(object - Obj);
     NETMESSAGE_PC message(0x20);
-    message.Write16(&bolt_index);
-    message.Write16(&object_index);
+    message.Write16(bolt_index);
+    message.Write16(object_index);
     message.Write(&points[0], 4, 3);
     message.Write(&points[1], 4, 3);
     message.Write(&points[2], 4, 3);
-    message.Write32(&hit);
-    message.Write32(&netclient);
+    message.Write32(hit);
+    message.Write32(netclient);
     Bolt_HitGameObjectRC(message);
     if (message.data != NULL) {
         if (message.data->references > 1)
@@ -2492,13 +2492,13 @@ extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *
         return NULL;
     BOLT_PC *bolt = Bolt_Alloc();
     if (bolt != NULL) {
-        i16 owner_index = owner ? (i16)(owner - Obj) : -1;
+        u16 owner_index = owner ? (u16)(owner - Obj) : 0xffff;
         NETMESSAGE_PC message(32);
-        message.Write16(&owner_index);
+        message.Write16(owner_index);
         message.Write(position, 4, 3);
         message.Write(matrix, 4, 16);
-        message.Write32(&type_id);
-        message.Write32(&flags);
+        message.Write32(type_id);
+        message.Write32(flags);
         Bolt_Init(bolt, message);
         message.Release();
     }

@@ -1373,11 +1373,6 @@
   },
   {
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
-   "symbol": "?Write32@NETMESSAGE_PC@@QAEXABH@Z",
-   "kind": "function"
-  },
-  {
-   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
    "symbol": "?Write@NETMESSAGE_PC@@QAEXPBXI@Z",
    "kind": "function"
   },
