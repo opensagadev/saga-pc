@@ -388,7 +388,7 @@ i32 __cdecl Action_AttackOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
 static i32 prev_droid_ix = 0;
 #pragma bss_seg()
 
-static __declspec(noinline) i32 __cdecl PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
+i32 __cdecl PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     NUVEC difference;
     NUVEC direction;
     f32 target_distance;
@@ -483,22 +483,18 @@ AILOCATOR_PC *LocalGetRandomLocator(AILOCATOR_PC **locators, i32 count, f32 clip
 i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                   i32 param_4, i32 param_5, f32 param_6) {
     GAMEOBJECT *object;
-    f32 initial_fire_fraction = 0.0f;
+    f32 initial_fire_fraction;
     i32 explicit_fire_range = 0;
     i32 index;
     char *value;
-    GAMEOBJECT *opponent;
+    GAMEOBJECT *opponent = NULL;
     APIOBJECT_PC *api_opponent;
     NUVEC difference;
     f32 distance_squared;
     f32 goal_range;
     f32 stopping_distance;
-    u32 character_flags;
     f32 retreat_parameter;
     u32 character_flags_2;
-    f32 interval;
-    f32 interval_2;
-    f32 random;
 
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL) {
         return 1;
@@ -577,8 +573,8 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         }
     }
 
-    opponent = (GAMEOBJECT *)(processor->action_data_3);
-    if (opponent != NULL) {
+    if (processor->action_data_3 != NULL) {
+        opponent = (GAMEOBJECT *)(processor->action_data_3);
         if (!(opponent->flags_1fc_word & 1) || !(opponent->flags_1fc_word & 0x1000) ||
             (opponent->dead != 0 && !(opponent->field_1010 > 0.0f)))
             opponent = NULL;
@@ -588,14 +584,13 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     }
     if (opponent == NULL) {
         api_opponent = (APIOBJECT_PC *)(packet->opponent);
-        if (api_opponent == NULL || api_opponent->ai == NULL || (GAMEOBJECT *)api_opponent->owner == NULL)
+        if (api_opponent == NULL || api_opponent->ai == NULL || (opponent = api_opponent->owner) == NULL)
             return 0;
-        opponent = (GAMEOBJECT *)api_opponent->owner;
     }
     object->portal_flags |= 0x20;
     if (!(opponent->flags_1fc_word & 1) || !(opponent->flags_1fc_word & 0x1000) || opponent->dead != 0 ||
         opponent->character_context == 0x2b ||
-        ((opponent->flags_1fc_word & 0x80u) != 0 && !(opponent->spawn_protection_timer > 1.5f)))
+        ((opponent->flags_1fc_word & 0x80u) != 0 && opponent->spawn_protection_timer > 1.5f))
         return 0;
 
     distance_squared = NuVecDistSqr(&opponent->position, &packet->owner->position, &difference);
@@ -608,13 +603,13 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
             goal_range = oneAtOnce_GetHoldRange(object);
             processor->action_data_1 |= 2;
         }
+    } else if (packet->movement_instruction_parameter != 0.0f &&
+               (((opponent->flags_1fc_word & 0x80u) != 0 && object->model_draw_result == 0) ||
+                (((u64)1 << opponent->hostility_group) &
+                 U64_PAIR(WORLD->object_sys->hostility_masks[((APIOBJECT_PC *)packet->owner)->object_id])) == 0)) {
+        goal_range = 0.1f;
     } else {
         goal_range = packet->movement_instruction_parameter;
-        if (goal_range != 0.0f &&
-            (((opponent->flags_1fc_word & 0x80u) != 0 && object->model_draw_result == 0) ||
-             (((u64)1 << opponent->hostility_group) &
-              U64_PAIR(WORLD->object_sys->hostility_masks[((APIOBJECT_PC *)packet->owner)->object_id])) == 0))
-            goal_range = 0.1f;
     }
 
     if (goal_range == 0.0f) {
@@ -623,10 +618,9 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     } else {
         stopping_distance =
             (goal_range < opponent->ai_packet.mover_height ? goal_range : opponent->ai_packet.mover_height);
-        if ((object->flags_ef0 & 0x10000u) == 0)
+        if ((object->field_ef2 & 1) == 0)
             processor->action_data_1 &= (u8)(~0x10u);
-        character_flags = object->character_data->game_character->flags_090 & 0x100;
-        if ((object->flags_ef0 & 0x10000u) != 0 && character_flags != 0) {
+        if ((object->field_ef2 & 1) != 0 && (object->character_data->game_character->flags_090 & 0x100) != 0) {
             if ((processor->action_data_1 & 0x10) != 0) {
                 if (distance_squared > (goal_range + aitol) * (goal_range + aitol))
                     processor->action_data_1 &= (u8)(~0x10u);
@@ -643,7 +637,8 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
                                   1, 0.01f);
                 packet->goal_speed_mode = 0;
             }
-        } else if (character_flags != 0 && distance_squared < (goal_range - aitol) * (goal_range - aitol)) {
+        } else if ((object->character_data->game_character->flags_090 & 0x100) != 0 &&
+                   distance_squared < (goal_range - aitol) * (goal_range - aitol)) {
             AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance,
                               &opponent->ai_packet.path_info, 2, goal_range);
             packet->goal_speed_mode = 1;
@@ -670,7 +665,7 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
             AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance,
                               &opponent->ai_packet.path_info, 3, goal_range);
             packet->goal_speed_mode = 0;
-        } else if (character_flags == 0) {
+        } else if ((object->character_data->game_character->flags_090 & 0x100) == 0) {
             packet->movement_look_target = &opponent->position;
         }
     }
@@ -679,7 +674,7 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
          U64_PAIR(WORLD->object_sys->hostility_masks[object->hostility_group])) == 0)
         return 0;
     character_flags_2 = object->character_data->game_character->flags_090 & 0x100;
-    if (character_flags_2 != 0 && (object->flags_ef0 & 0x10000u) != 0)
+    if (character_flags_2 != 0 && (object->field_ef2 & 1) != 0)
         return 0;
     if (object->model_draw_result == 0 && (processor->action_data_1 & 1) == 0)
         return 0;
@@ -688,17 +683,14 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     if (character_flags_2 == 0)
         packet->movement_look_target = &opponent->position;
     if (MiniCutCam != 0 && (processor->action_data_1 & 4) != 0) {
-        interval = processor->action_data_5;
-        processor->action_timer = (f32)(NuRandFloat() * interval + 2.0);
+        processor->action_timer = (f32)(NuRandFloat() * processor->action_data_5 + 2.0);
     } else {
         processor->action_timer -= param_6;
     }
     if (opponent->dead == 0) {
         object->script_fire_target = opponent;
         if (processor->action_timer <= 0.0f) {
-            interval_2 = processor->action_data_5;
-            random = NuRandFloat();
-            processor->action_timer = (f32)(random * interval_2 + 0.5 * interval_2);
+            processor->action_timer = (f32)(NuRandFloat() * processor->action_data_5 + processor->action_data_5 * 0.5);
             if (PartyMemberInWay(object, opponent) == 0) {
                 if (oneAtOnce_CanAttack(object, opponent))
                     object->pad->buttons_pressed |= GAMEPAD_ACTION;
@@ -873,43 +865,40 @@ i32 __cdecl Action_SetRunSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
     } absolute;
 
     GAMEOBJECT *object;
-    f32 speed;
-    f32 minimum;
-    f32 maximum;
-    f32 multiplier;
-    i32 multiply;
     i32 i;
     char *value;
+    f32 speed = 1000000000.0f;
+    f32 minimum = 0.0f;
+    f32 maximum = 1000000000.0f;
+    f32 multiplier = 1.0f;
+    i32 multiply = 0;
 
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
         return 1;
     object = ((APIOBJECT_PC *)packet->owner)->owner;
     if (first_time) {
-        speed = 1000000000.0f;
-        minimum = 0.0f;
-        maximum = 1000000000.0f;
-        multiplier = 1.0f;
-        multiply = 0;
-        for (i = 0; i < num_params; i++) {
-            value = NuStrIStr(params[i], (char *)AIControlMultiplyName);
-            if (value != NULL) {
-                multiplier = AIParamToFloat(processor, value + 9);
-                multiply = 1;
-            } else if (NuStrICmp(params[i], (char *)AIControlMaximumDefaultName) == 0)
-                maximum = object->character_data->game_character->run_speed;
-            else if (NuStrICmp(params[i], (char *)GizmoDefaultOutputName) == 0)
-                speed = object->character_data->game_character->run_speed;
-            else if (NuStrICmp(params[i], (char *)AIControlClearName) == 0) {
-            } else if ((value = NuStrIStr(params[i], (char *)AIControlMaximumName)) != NULL)
-                maximum = AIParamToFloat(processor, value + 4);
-            else if ((value = NuStrIStr(params[i], (char *)AIControlMinimumName)) != NULL)
-                minimum = AIParamToFloat(processor, value + 4);
-            else if ((value = NuStrIStr(params[i], (char *)AIControlSeekName)) != NULL)
-                processor->action_data_4 = AIParamToFloat(processor, value + 5);
-            else if (NuStrIStr(params[i], (char *)AIControlPlayerRunSpeedName) != NULL)
-                speed = player->character_data->game_character->run_speed;
-            else
-                speed = AIParamToFloat(processor, params[i]);
+        if (num_params != 0) {
+            for (i = 0; i < num_params; i++) {
+                value = NuStrIStr(params[i], (char *)AIControlMultiplyName);
+                if (value != NULL) {
+                    multiplier = AIParamToFloat(processor, value + 9);
+                    multiply = 1;
+                } else if (NuStrICmp(params[i], (char *)AIControlMaximumDefaultName) == 0)
+                    maximum = object->character_data->game_character->run_speed;
+                else if (NuStrICmp(params[i], (char *)GizmoDefaultOutputName) == 0)
+                    speed = object->character_data->game_character->run_speed;
+                else if (NuStrICmp(params[i], (char *)AIControlClearName) == 0) {
+                } else if ((value = NuStrIStr(params[i], (char *)AIControlMaximumName)) != NULL)
+                    maximum = AIParamToFloat(processor, value + 4);
+                else if ((value = NuStrIStr(params[i], (char *)AIControlMinimumName)) != NULL)
+                    minimum = AIParamToFloat(processor, value + 4);
+                else if ((value = NuStrIStr(params[i], (char *)AIControlSeekName)) != NULL)
+                    processor->action_data_4 = AIParamToFloat(processor, value + 5);
+                else if (NuStrIStr(params[i], (char *)AIControlPlayerRunSpeedName) != NULL)
+                    speed = player->character_data->game_character->run_speed;
+                else
+                    speed = AIParamToFloat(processor, params[i]);
+            }
         }
         absolute.value = minimum;
         absolute.bits &= 0x7fffffffu;
@@ -918,29 +907,26 @@ i32 __cdecl Action_SetRunSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
         absolute.bits &= 0x7fffffffu;
         maximum = absolute.value;
         if (processor->action_data_4 == 0.0f) {
-            if (!multiply) {
+            if (multiply) {
+                if (object->run_speed_override == MoveSplineRunSpeedSentinel)
+                    object->run_speed_override = object->character_data->game_character->run_speed;
+                object->run_speed_override = multiplier * object->run_speed_override;
+                if (object->run_speed_override < 0.0f) {
+                    if (object->run_speed_override < -maximum)
+                        object->run_speed_override = -maximum;
+                    else if (maximum > minimum && object->run_speed_override > -minimum)
+                        object->run_speed_override = -minimum;
+                } else {
+                    if (object->run_speed_override > maximum)
+                        object->run_speed_override = maximum;
+                    else if (maximum > minimum && object->run_speed_override < minimum)
+                        object->run_speed_override = minimum;
+                }
+            } else
                 object->run_speed_override = speed;
-                return 1;
-            }
-            if (object->run_speed_override == MoveSplineRunSpeedSentinel)
-                object->run_speed_override = object->character_data->game_character->run_speed;
-            object->run_speed_override *= multiplier;
-            if (object->run_speed_override < 0.0f) {
-                if (object->run_speed_override < -maximum)
-                    object->run_speed_override = -maximum;
-                else if (maximum > minimum && object->run_speed_override > -minimum)
-                    object->run_speed_override = -minimum;
-            } else {
-                if (object->run_speed_override > maximum)
-                    object->run_speed_override = maximum;
-                else if (maximum > minimum && object->run_speed_override < minimum)
-                    object->run_speed_override = minimum;
-            }
             return 1;
         }
-        if (!multiply)
-            processor->action_data_5 = speed;
-        else {
+        if (multiply) {
             if (object->run_speed_override == MoveSplineRunSpeedSentinel)
                 processor->action_data_5 = object->character_data->game_character->run_speed;
             processor->action_data_5 *= multiplier;
@@ -955,7 +941,8 @@ i32 __cdecl Action_SetRunSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
                 else if (maximum > minimum && processor->action_data_5 < minimum)
                     processor->action_data_5 = minimum;
             }
-        }
+        } else
+            processor->action_data_5 = speed;
     }
     if (processor->action_data_4 > 0.0f && object->run_speed_override < MoveSplineRunSpeedSentinel) {
         object->run_speed_override =
