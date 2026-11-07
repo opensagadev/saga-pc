@@ -30,6 +30,7 @@ STATIC_ASSERT(sizeof(NetworkObjectManager) == 0xd970);
 STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
 
 void NetTrace(...);
+void NOSTrace(...);
 
 /* Serialises replicated members into a NETMESSAGE_PC (Android NetOutputStream). */
 class NetOutputStream : public EdOutputStream {
@@ -1094,4 +1095,77 @@ i32 NetworkObjectManager::ObjectOtherCall(void *instance, i32 call_id, NETMESSAG
     }
     message.Release();
     return result;
+}
+
+i32 NetReplicator::smNextId = 1;
+
+NetReplicator::NetReplicator(i32 group, f32 minimum_seconds, f32 maximum_seconds) {
+    if (minimum_seconds < 0.1f)
+        minimum_seconds = 0.1f;
+    if (maximum_seconds > 0.0f && maximum_seconds < 0.1f)
+        maximum_seconds = 0.1f;
+    id = smNextId++;
+    replication_group = group;
+    data_size = 0;
+    message_size = 0;
+    minimum_interval = (u16)(minimum_seconds * 1000.0);
+    maximum_interval = (u16)(maximum_seconds * 1000.0);
+}
+
+i32 NetReplicator::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
+                                   ReplicatorData &data, i16 *class_mapping) {
+    u8 member_data[256];
+    memset(member_data, 0, sizeof(member_data));
+    for (EdRef *member = object_class->members; member != NULL; member = member->next) {
+        if (member->attributes & 0x80000000) {
+            EdClass *member_class = theRegistry.GetClass(member->type_id);
+            void *member_object = member->GetMemberObject(object);
+            if (ForceDummySerialise && member_object == NULL)
+                member_object = object;
+            if (member_class->SerialiseObjectHeader(stream, member_object))
+                SerialiseObject(stream, peer, member_class, member_object, data, NULL);
+        } else if (member->replication_group == id) {
+            EdType *type = theRegistry.GetType(member->type_id);
+            i32 size = member->size;
+            if (size <= 0)
+                size = type->size;
+            if (object != NULL) {
+                if (stream.mode == 2)
+                    member->GetMemberData(object, member->type_id, member_data, sizeof(member_data));
+                type->serialise(stream, member_data, size);
+                if (stream.mode == 1)
+                    member->SetMemberData(object, member->type_id, member_data, sizeof(member_data), class_mapping);
+            } else {
+                stream.Eat(size, 1);
+            }
+        }
+    }
+    return 1;
+}
+
+i32 NetReplicator::DoPrediction(const EdClass *, void *, ReplicatorData &, i32) {
+    return 0;
+}
+
+void NetworkObjectManager::ImportObjects() {
+    i32 class_count = theRegistry.class_count;
+    for (i32 i = 0; i < class_count; i++) {
+        EdClass *object_class = theRegistry.GetClass(i);
+        if (object_class == NULL || object_class->object_interface == NULL)
+            continue;
+        NOSTrace(object_class->name);
+        i32 count = 0;
+        void *object = object_class->object_interface->GetNextObject(NULL);
+        while (object != NULL) {
+            i32 guid = object_class->object_interface->GetObjectGuid(object);
+            if (guid == 0) {
+                guid = GetNextGuid();
+                object_class->object_interface->SetObjectGuid(object, guid);
+            }
+            RegisterObject(object, object_class, guid);
+            object = object_class->object_interface->GetNextObject(object);
+            count++;
+        }
+        NOSTrace(count, object_class->name);
+    }
 }

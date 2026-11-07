@@ -29,3 +29,8 @@ void NETMESSAGE_PC::Write(const void *values, i32 size, i32 count) {
         write_offset += bytes;
     }
 }
+
+/* Empty varargs trace used by NetworkObjectManager::ImportObjects (0x6118f0);
+ * kept out of line so its callers keep the call. */
+void NOSTrace(...) {
+}

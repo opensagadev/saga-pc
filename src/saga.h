@@ -30197,6 +30197,7 @@ class NetReplicator : public CSListLink<NetReplicator> {
     u16 maximum_interval;
     u16 data_size;
     u16 message_size;
+    static i32 smNextId;
 };
 
 /* One replicated object slot, indexed by guid. */
@@ -30278,6 +30279,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
 #pragma pop_macro("GetObject")
     i32 GetPeerStatus();
     void FlushObjects(i32 flush_level_editor);
+    void ImportObjects();
     void Init();
     void InitClassStats();
     i32 IsLocal(i32 id);

@@ -7235,6 +7235,7 @@ address,symbol,size,ctype
 0x611480,?SendTo@NuNetEmu@@QAEHPAXHPAIH@Z,432,
 0x611630,?Update@NuNetEmu@@QAEXXZ,601,
 0x611890,?NetTrace@@YAXZZ,1,
+0x6118f0,?NOSTrace@@YAXZZ,1,
 0x611900,??1EdStream@@UAE@XZ,7,
 0x611920,??_EEdStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdStream@@UAEPAXI@Z; no independent body
 0x611920,??_GEdStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -7279,12 +7280,16 @@ address,symbol,size,ctype
 0x612dd0,?ChangeContext@NetworkObjectManager@@QAEXAAUNOSContext@@@Z,20,
 0x612df0,?ReceiveStopMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,69,
 0x612e40,?GetPeerStatus@NetworkObjectManager@@QAEHXZ,177,
+0x612f20,??0?$CSListLink@VNetReplicator@@@@QAE@XZ,20,
 0x613100,?Write16@NETMESSAGE_PC@@QAEXABF@Z,57,
 0x613210,??_EEdOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdOutputStream@@UAEPAXI@Z; no independent body
 0x613210,??_GEdOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6132a0,??_GNetOutputStream@@UAEPAXI@Z,31,
 0x6132a0,??_ENetOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GNetOutputStream@@UAEPAXI@Z; no independent body
 0x6132c0,?SerialiseBuffer@NetOutputStream@@UAEHPAXHH@Z,35,
+0x6132f0,??0NetReplicator@@QAE@HMM@Z,229,
+0x6133e0,?DoPrediction@NetReplicator@@UAEHPBUEdClass@@PAXAAUReplicatorData@@H@Z,5,
+0x6133f0,?SerialiseObject@NetReplicator@@UAEHAAVEdStream@@PAVV2Peer@@PBUEdClass@@PAXAAUReplicatorData@@PAF@Z,408,
 0x613db0,?NOSGetGuid@@YAHXZ,11,
 0x613dd0,?Term@NetworkObjectManager@@QAEXXZ,14,
 0x613de0,?ReceiveConstructorMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,340,
@@ -7324,6 +7329,7 @@ address,symbol,size,ctype
 0x616b50,?PushObject@NetworkObjectManager@@QAEHPAUNetworkObject@@PAUNetPeerPush@1@H@Z,386,
 0x616ce0,?Update@NetworkObjectManager@@QAEXXZ,877,
 0x617050,?NotifyCreateObject@NetworkObjectManager@@UAEXPAXPAUEdClass@@0HHH@Z,31,
+0x617080,?ImportObjects@NetworkObjectManager@@QAEXXZ,218,
 0x617180,?CompareAddress@FtpFile@@QBEHABUNetAddress@@@Z,143,
 0x617270,?Init@NetFtpManager@@QAEXXZ,19,
 0x6172c0,?GetTransfers@NetFtpManager@@QBEPBUFtpFile@@XZ,4,
@@ -17955,6 +17961,7 @@ address,symbol,size,ctype
 0x76aba4,??_7EdOutputStream@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76abec,??_7NetOutputStream@@6B@,32,
 0x76ac34,??_C@_03EPCAMLIH@NOS?$AA@,4,char []
+0x76ac3c,??_7NetReplicator@@6B@,12,
 0x76ac78,??_C@_03LBMKPMDK@FTP?$AA@,4,char []
 0x76ac80,??_7NetFtpManager@@6B@,52,
 0x76acb4,??_C@_0L@CGOOPECH@New?5To?5Old?$AA@,,char []
@@ -21691,6 +21698,14 @@ address,symbol,size,ctype
 0x7eb040,??_R3NetOutputStream@@8,,
 0x7eb050,??_R2NetOutputStream@@8,,
 0x7eb060,??_R1A@?0A@EA@NetOutputStream@@8,,
+0x7eb130,??_R4NetReplicator@@6B@,,
+0x7eb144,??_R3NetReplicator@@8,,
+0x7eb154,??_R2NetReplicator@@8,,
+0x7eb160,??_R1A@?0A@EA@NetReplicator@@8,,
+0x7eb17c,??_R13?0A@EA@?$CSListLink@VNetReplicator@@@@8,,
+0x7eb198,??_R3?$CSListLink@VNetReplicator@@@@8,,
+0x7eb1a8,??_R2?$CSListLink@VNetReplicator@@@@8,,
+0x7eb1b0,??_R1A@?0A@EA@?$CSListLink@VNetReplicator@@@@8,,
 0x7eb1e0,??_R4NetFtpManager@@6B@,,
 0x7eb1f4,??_R3NetFtpManager@@8,,
 0x7eb204,??_R2NetFtpManager@@8,,
@@ -23850,6 +23865,7 @@ address,symbol,size,ctype
 0x0080ed50,??_R0?AVV2SessionManager@@@8,31,
 0x0080ed78,_crctab,1024,u32[256]
 0x0080f250,??_R0?AVPackStats@NuNetEmu@@@8,33,
+0x80f284,?smNextId@NetReplicator@@2HA,4,i32
 0x0080f2f0,??_R0?AVEdStream@@@8,23,
 0x0080f308,??_R0?AVEdInputStream@@@8,28,
 0x0080f324,??_R0?AVEdOutputStream@@@8,29,
