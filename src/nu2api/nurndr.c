@@ -1205,11 +1205,16 @@ void __cdecl NuRndrInitEx(i32 size, VARIPTR *buffer, VARIPTR end) {
 
 static i32 RendererConfigEnabledPc = 0, RendererConfigSecondEnabledPc = 0;
 static NUMTX RendererConfigMatrixPc = {0};
-static PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
-static PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
+PC_TEXTURE_RESOURCE_PC *RendererVertexDeclarationPc = 0;
+PC_BUFFER_RESOURCE_PC *RendererQuadVertexBufferPc = 0;
 static PC_BUFFER_RESOURCE_PC *RendererGeometryVertexBufferPc = 0;
 static PC_BUFFER_RESOURCE_PC *RendererGeometryIndexBufferPc = 0;
-u8 *RendererArenaDataPc = 0;
+/* Stencil shadow-volume arena vertex: D3DDECLTYPE_FLOAT3 position and D3DCOLOR. */
+typedef struct RENDERER_ARENA_VERTEX_PC {
+    NUVEC position;
+    u32 colour;
+} RENDERER_ARENA_VERTEX_PC;
+RENDERER_ARENA_VERTEX_PC *RendererArenaDataPc = 0;
 u32 *RendererArenaOffsetsPc = 0;
 i32 *RendererArenaTypesPc = 0;
 i32 RendererArenaCountPc = 0;
@@ -1223,6 +1228,8 @@ typedef struct pc_shadow_edge_s {
 } PC_SHADOW_EDGE_PC;
 STATIC_ASSERT(sizeof(PC_SHADOW_EDGE_PC) == 16);
 STATIC_ASSERT(offsetof(PC_SHADOW_EDGE_PC, count) == 12);
+STATIC_ASSERT(sizeof(RENDERER_ARENA_VERTEX_PC) == 16);
+STATIC_ASSERT(offsetof(RENDERER_ARENA_VERTEX_PC, colour) == 12);
 
 void __cdecl NuRndrGeometryBufferReleasePc(void) {
     PCDeviceReleaseTexture((PC_TEXTURE_RESOURCE_PC **)&RendererGeometryVertexBufferPc);
@@ -1269,7 +1276,7 @@ STATIC_ASSERT(offsetof(RENDERER_SCREEN_VERTEX_PC, unknown_14) == 20);
 void __cdecl NuRndrInitGeneric(void);
 
 __declspec(noinline) void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end) {
-    RendererArenaDataPc = (u8 *)((buffer->addr + 3) & ~3u);
+    RendererArenaDataPc = (RENDERER_ARENA_VERTEX_PC *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x36b00;
     RendererArenaOffsetsPc = (u32 *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x7d0;
@@ -1318,6 +1325,115 @@ void __cdecl NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
     }
 }
 
+/* Extrudes the eight-direction silhouette of a queued ellipsoid (centre and three axes) along the light offset into
+ * arena quads. */
+void __cdecl NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value,
+                                             f32 far_value) {
+    VuVec v[32];
+    NUVEC4 centre;
+    NUVEC axis[3];
+    NUVEC local;
+    f32 scale[3];
+    i32 i;
+
+    v[4].x = axes[0].x;
+    v[4].y = axes[0].y;
+    v[4].z = axes[0].z;
+    v[4].w = 1.0f;
+    NuVec4MtxTransformVU0(&centre, (NUVEC4 *)&v[4], &packet->matrix);
+    v[0].x = axes[2].x + axes[0].x;
+    v[0].y = axes[2].y + axes[0].y;
+    v[0].z = axes[2].z + axes[0].z;
+    v[0].w = 1.0f;
+    NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], &packet->matrix);
+    axis[0].x = v[0].x - centre.x;
+    axis[0].y = v[0].y - centre.y;
+    axis[0].z = v[0].z - centre.z;
+    v[1].x = axes[1].x + axes[0].x;
+    v[1].y = axes[1].y + axes[0].y;
+    v[1].z = axes[1].z + axes[0].z;
+    v[1].w = 1.0f;
+    NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], &packet->matrix);
+    axis[1].x = v[1].x - centre.x;
+    axis[1].y = v[1].y - centre.y;
+    axis[1].z = v[1].z - centre.z;
+    v[2].x = axes[3].x + axes[0].x;
+    v[2].y = axes[3].y + axes[0].y;
+    v[2].z = axes[3].z + axes[0].z;
+    v[2].w = 1.0f;
+    NuVec4MtxTransformVU0((NUVEC4 *)&v[2], (NUVEC4 *)&v[2], &packet->matrix);
+    axis[2].x = v[2].x - centre.x;
+    axis[2].y = v[2].y - centre.y;
+    axis[2].z = v[2].z - centre.z;
+    scale[0] = NuFdiv(1.0f, NuFsqrt(axis[0].x * axis[0].x + axis[0].y * axis[0].y + axis[0].z * axis[0].z));
+    scale[1] = NuFdiv(1.0f, NuFsqrt(axis[1].x * axis[1].x + axis[1].y * axis[1].y + axis[1].z * axis[1].z));
+    scale[2] = NuFdiv(1.0f, NuFsqrt(axis[2].x * axis[2].x + axis[2].y * axis[2].y + axis[2].z * axis[2].z));
+    if ((u32)RendererArenaCountPc < 250) {
+        RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
+        RendererArenaTypesPc[RendererArenaCountPc] = 8;
+        RendererArenaCountPc++;
+    }
+    for (i = 0; i < 8; i++) {
+        RendererArenaIndexCountPc += 2;
+        local.x = (NuRndrShadowDirectionsPc[i].x * axis[0].x + NuRndrShadowDirectionsPc[i].y * axis[0].y +
+                   NuRndrShadowDirectionsPc[i].z * axis[0].z) *
+                  scale[0];
+        local.y = (NuRndrShadowDirectionsPc[i].x * axis[1].x + NuRndrShadowDirectionsPc[i].y * axis[1].y +
+                   NuRndrShadowDirectionsPc[i].z * axis[1].z) *
+                  scale[1];
+        local.z = (NuRndrShadowDirectionsPc[i].x * axis[2].x + NuRndrShadowDirectionsPc[i].y * axis[2].y +
+                   NuRndrShadowDirectionsPc[i].z * axis[2].z) *
+                  scale[2];
+        v[0].x = axis[0].x * local.x + axis[1].x * local.y + axis[2].x * local.z;
+        v[0].y = axis[0].y * local.x + axis[1].y * local.y + axis[2].y * local.z;
+        v[0].z = axis[0].z * local.x + axis[1].z * local.y + axis[2].z * local.z;
+        local.x =
+            (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[0].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[0].y +
+             NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[0].z) *
+            scale[0];
+        local.y =
+            (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[1].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[1].y +
+             NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[1].z) *
+            scale[1];
+        local.z =
+            (NuRndrShadowDirectionsPc[(i + 1) & 7].x * axis[2].x + NuRndrShadowDirectionsPc[(i + 1) & 7].y * axis[2].y +
+             NuRndrShadowDirectionsPc[(i + 1) & 7].z * axis[2].z) *
+            scale[2];
+        v[1].x = axis[0].x * local.x + axis[1].x * local.y + axis[2].x * local.z;
+        v[1].y = axis[0].y * local.x + axis[1].y * local.y + axis[2].y * local.z;
+        v[1].z = axis[0].z * local.x + axis[1].z * local.y + axis[2].z * local.z;
+        v[0].x += centre.x;
+        v[0].y += centre.y;
+        v[0].z += centre.z;
+        v[1].x += centre.x;
+        v[1].y += centre.y;
+        v[1].z += centre.z;
+        v[2].x = v[0].x + offset->x * 5.0;
+        v[2].y = v[0].y + offset->y * 5.0;
+        v[2].z = v[0].z + offset->z * 5.0;
+        v[3].x = v[1].x + offset->x * 5.0;
+        v[3].y = v[1].y + offset->y * 5.0;
+        v[3].z = v[1].z + offset->z * 5.0;
+        RendererArenaDataPc[RendererArenaVertexCountPc].colour = PCShadowState.packed_colour;
+        RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
+        RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
+        RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = PCShadowState.packed_colour;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = PCShadowState.packed_colour;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = PCShadowState.packed_colour;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
+        RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
+        RendererArenaVertexCountPc += 4;
+    }
+}
+
 void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups,
                                          PC_SHADOW_EDGE_PC *points, NUVEC *offset) {
     f32 buffer[256];
@@ -1339,7 +1455,7 @@ void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_
                 RendererArenaCountPc++;
             }
             for (remaining = groups->count; remaining > 0; remaining--) {
-                PC_SHADOW_EDGE_PC *arena;
+                RENDERER_ARENA_VERTEX_PC *arena;
                 RendererArenaIndexCountPc += 6;
                 v[0].xyz = point->v;
                 v[0].w = 1.0f;
@@ -1359,23 +1475,23 @@ void __cdecl NuRndrArenaAddEdgeVolumesPc(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_
                 v[3].y = v[1].y + offset->y;
                 v[3].z = v[1].z + offset->z;
                 v[3].w = 1.0f;
-                arena = (PC_SHADOW_EDGE_PC *)RendererArenaDataPc;
-                arena[RendererArenaVertexCountPc].count = -1;
-                arena[RendererArenaVertexCountPc].v.x = v[0].x;
-                arena[RendererArenaVertexCountPc].v.y = v[0].y;
-                arena[RendererArenaVertexCountPc].v.z = v[0].z;
-                arena[RendererArenaVertexCountPc + 1].count = -1;
-                arena[RendererArenaVertexCountPc + 1].v.x = v[2].x;
-                arena[RendererArenaVertexCountPc + 1].v.y = v[2].y;
-                arena[RendererArenaVertexCountPc + 1].v.z = v[2].z;
-                arena[RendererArenaVertexCountPc + 2].count = -1;
-                arena[RendererArenaVertexCountPc + 2].v.x = v[3].x;
-                arena[RendererArenaVertexCountPc + 2].v.y = v[3].y;
-                arena[RendererArenaVertexCountPc + 2].v.z = v[3].z;
-                arena[RendererArenaVertexCountPc + 3].count = -1;
-                arena[RendererArenaVertexCountPc + 3].v.x = v[1].x;
-                arena[RendererArenaVertexCountPc + 3].v.y = v[1].y;
-                arena[RendererArenaVertexCountPc + 3].v.z = v[1].z;
+                arena = RendererArenaDataPc;
+                arena[RendererArenaVertexCountPc].colour = 0xffffffff;
+                arena[RendererArenaVertexCountPc].position.x = v[0].x;
+                arena[RendererArenaVertexCountPc].position.y = v[0].y;
+                arena[RendererArenaVertexCountPc].position.z = v[0].z;
+                arena[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
+                arena[RendererArenaVertexCountPc + 1].position.x = v[2].x;
+                arena[RendererArenaVertexCountPc + 1].position.y = v[2].y;
+                arena[RendererArenaVertexCountPc + 1].position.z = v[2].z;
+                arena[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
+                arena[RendererArenaVertexCountPc + 2].position.x = v[3].x;
+                arena[RendererArenaVertexCountPc + 2].position.y = v[3].y;
+                arena[RendererArenaVertexCountPc + 2].position.z = v[3].z;
+                arena[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
+                arena[RendererArenaVertexCountPc + 3].position.x = v[1].x;
+                arena[RendererArenaVertexCountPc + 3].position.y = v[1].y;
+                arena[RendererArenaVertexCountPc + 3].position.z = v[1].z;
                 RendererArenaVertexCountPc += 4;
                 point++;
             }

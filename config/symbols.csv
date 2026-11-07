@@ -6513,6 +6513,7 @@ address,symbol,size,ctype
 0x5e1070,_RenderPostClearScreenPc,255,void __cdecl(void)
 0x5e1170,_DrawAlphaGrid,5964,"void __cdecl(i32,i32,RENDER_POST_BLOOM_READER_PC*)"
 0x5e28c0,_NuRndrArenaInitPc,91,"void __cdecl NuRndrArenaInitPc(VARIPTR *, VARIPTR)"
+0x5e3b50,_NuRndrArenaAddEllipsoidVolumePc,1837,"void __cdecl(NUVEC *,PC_HG_SHADOW_PACKET *,NUVEC *,f32,f32)"
 0x5e4280,_NuRndrArenaAddEdgeVolumesPc,887,"void __cdecl(PC_HG_SHADOW_PACKET *,PC_SHADOW_EDGE_PC *,PC_SHADOW_EDGE_PC *,NUVEC *)"
 0x5e4600,_AnglesBetweenPoints,107,
 0x5e4670,_NuRndrRotateVecPc,207,"void __cdecl(NUVEC *,f32,f32)"
@@ -6795,6 +6796,8 @@ address,symbol,size,ctype
 0x005f9960,_PermanentGraphicsResourceSetup,5,void __cdecl(void)
 0x5f9980,_NuRndrShadowDirCol,78,"void __cdecl(const NUVEC *,u32,f32,f32)"
 0x5f99d0,_NuRndrQuadBufferInitPc,328,void __cdecl NuRndrQuadBufferInitPc(void)
+0x5f9b20,_NuRndrShadowVolumeFinishPc,270,void __cdecl(void)
+0x5f9c30,_NuRndrShadowVolumeDrawPc,357,void __cdecl(void)
 0x5f9e50,_NuRndrGeometryBufferReleasePc,12,void __cdecl(void)
 0x5f9e60,_NuRndrGeometryBufferRestorePc,42,void __cdecl(void)
 0x005f9e90,_NuRndrShadowOnOff_candidate,10,void __cdecl (i32)
@@ -23752,6 +23755,9 @@ address,symbol,size,ctype
 0x0080c0e8,_NuTimeBarRenderPeakReset,4,i32
 0x0080c0ec,_NuTimeBarHorizontalPeakReset,4,i32
 0x0080c0f0,_NuUnresolvedTextureDdsPc,8320,u8[8320]
+0x80e178,_RendererStencilFuncPc,4,u32
+0x80e17c,_RendererStencilPassPc,4,u32
+0x80e180,_RendererStencilRefPc,4,u32
 0x80e188,_PCGraphicsPostEffectWidthPc,4,u32
 0x80e18c,_PCGraphicsPostEffectHeightPc,4,u32
 0x80e190,_RndrStateTransformScalePc,,f32
