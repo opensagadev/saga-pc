@@ -29069,7 +29069,7 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$FadeLoop_ObjHSpecial")
-    nuhspecial_s FadeLoop_ObjHSpecial = {0};
+    NUSPECIALHANDLE FadeLoop_ObjHSpecial = {0};
 }
 
 extern "C" {

@@ -2,6 +2,23 @@
 
 extern "C" {
 
+    void FadeLoop_SetObj(NUGSCN *scene, char *name) {
+        FadeLoop_ObjScene = scene;
+        if (scene != NULL && NuSpecialFind(scene, &FadeLoop_ObjHSpecial, name, 1) == 0) {
+            FadeLoop_ObjScene = NULL;
+        }
+    }
+
+    void FadeLoop_DrawObj(float alpha) {
+        if (FadeLoop_ObjScene != NULL && NuSpecialExistsFn(&FadeLoop_ObjHSpecial)) {
+            NUVEC scale = {0.125f, 0.125f, 0.125f};
+            NUMTX matrix;
+            NuMtxSetScale(&matrix, &scale);
+            matrix.m32 = 1.0f;
+            NuSpecialDrawAtAlpha(&FadeLoop_ObjHSpecial, &matrix, alpha);
+        }
+    }
+
     void __cdecl FinishLoop(i32 frames) {
         if (FinishLoop_On == 0) {
             return;
@@ -48,21 +65,24 @@ extern "C" {
 
     void FadeLoop(char *text, i32 direction, float duration, void (*draw)(float)) {
         f32 rate;
-        f32 alpha = 0.0f;
-        f32 target = 1.0f;
-        if (direction != 0) {
+        f32 alpha;
+        f32 target;
+        if (direction == 0) {
+            alpha = 0.0f;
+            target = 1.0f;
+        } else {
             alpha = 1.0f;
             target = 0.0f;
         }
-        rate = 10.0f;
-        if (duration != 0.0f) {
-            rate = 1.0f / duration;
+        if (duration == 0.0f) {
+            duration = 0.1f;
         }
+        rate = 1.0f / duration;
         FRAMETIME = DEFAULTFRAMETIME;
         while (alpha != target) {
             NuFrameBegin();
             alpha = SeekLinearF(alpha, target, rate * FRAMETIME);
-            NuRndrBeginScene(-1);
+            NuRndrBeginScene(1);
             NuRndrClear(0xb00, 0, 1.0f);
             if (FadeLoop_ObjScene != NULL) {
                 FadeLoop_DrawObj(alpha);

@@ -27204,7 +27204,7 @@ extern "C" {
     extern f32 PANEL_MINIKITCOUNTSCALE;
     extern f32 PANEL_MINIKITCOUNTY;
     extern f32 stats_xscale;
-    extern nuhspecial_s FadeLoop_ObjHSpecial;
+    extern NUSPECIALHANDLE FadeLoop_ObjHSpecial;
     struct level_data_pc_s *__cdecl CanSaveAndExit(struct WORLDINFO_s *world);
     extern u8 MENUEXITB;
     extern u8 MENUEXITG;
