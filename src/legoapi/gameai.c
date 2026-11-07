@@ -105,7 +105,7 @@ static __declspec(noinline) i32 __cdecl IsSpecialRouteCharacterSkippedPc(char *n
     return 0;
 }
 u8 __cdecl SpecialRouteCharacterTypeID(char *name) {
-    i32 route, skipped = 0, suit;
+    i32 route, skipped = 0, suit, index;
     if (NuStrICmp(name, (char *)GameAIEveryonePc) == 0)
         return 0x40;
     for (suit = 0; suit < 10; ++suit)
@@ -114,10 +114,17 @@ u8 __cdecl SpecialRouteCharacterTypeID(char *name) {
     if (CurrentStoryCList != NULL) {
         for (route = 0; CurrentStoryCList[route].model_id != -1 && route < 64;) {
             char *candidate = apicharsys->char_data[CurrentStoryCList[route + skipped].model_id].name;
-            if (IsSpecialRouteCharacterSkippedPc(candidate))
+            i32 skip = 0;
+            for (index = 0; GameAISkipCharactersPc[index] != NULL; ++index) {
+                if (NuStrICmp(candidate, (char *)GameAISkipCharactersPc[index]) == 0) {
+                    skip = 1;
+                    break;
+                }
+            }
+            if (skip)
                 ++skipped;
             else {
-                if (NuStrICmp(name, candidate) == 0)
+                if (NuStrICmp(name, apicharsys->char_data[CurrentStoryCList[route + skipped].model_id].name) == 0)
                     return route + 10;
                 ++route;
             }

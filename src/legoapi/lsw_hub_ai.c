@@ -207,5 +207,7 @@ void *__cdecl Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT_PC 
 /* 0x491b70/19 */
 f32 __cdecl Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                 void *area) {
-    return HubAiMusicStatePc.area == (i32)area ? 1.0f : 0.0f;
+    if (HubAiMusicStatePc.area == (i32)area)
+        return 1.0f;
+    return 0.0f;
 }

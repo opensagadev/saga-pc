@@ -365,7 +365,9 @@ f32 __cdecl Condition_IsAlivePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, A
         return 0.0f;
     }
     member = (GAMEOBJECT *)object;
-    return (member->flags_1fc_word & 0x1000u) != 0 && member->dead == 0 ? 1.0f : 0.0f;
+    if ((member->flags_1fc_word & 0x1000u) != 0 && member->dead == 0)
+        return 1.0f;
+    return 0.0f;
 }
 
 void *__cdecl Condition_HitPointsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {

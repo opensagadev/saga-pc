@@ -2054,7 +2054,9 @@ f32 __cdecl getFinishedStatusAlpha(STATUSPACKET_s *packet) {
             return 0.0f;
         }
     }
-    return stage == NULL ? 0.0f : 1.0f;
+    if (stage == NULL)
+        return 0.0f;
+    return 1.0f;
 }
 
 void __cdecl DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {

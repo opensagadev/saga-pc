@@ -497,9 +497,9 @@ static void GizActionNextLocator(AISYS_PC *sys, AILOCATORSET_PC *set, i32 loopin
 extern "C" {
     extern "C" f32 Condition_PlayerCategoryIs(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *, void *argument) {
         const i32 category = reinterpret_cast<i32>(argument);
-        return category != -1 && player != NULL && CharCategory_IsCategory(player, static_cast<i32>(category)) != 0
-                   ? 1.0f
-                   : 0.0f;
+        if (category != -1 && player != NULL && CharCategory_IsCategory(player, static_cast<i32>(category)) != 0)
+            return 1.0f;
+        return 0.0f;
     }
 }
 
@@ -624,8 +624,11 @@ extern "C" {
     f32 __cdecl Condition_EitherPlayerUsingForce(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char *,
                                                  void *argument) {
         GIZFORCE_PC *force = static_cast<GIZFORCE_PC *>(argument);
-        return GizForce_GameObjUsingForce(player, force) != 0 || GizForce_GameObjUsingForce(player2, force) != 0 ? 1.0f
-                                                                                                                 : 0.0f;
+        if (GizForce_GameObjUsingForce(player, force) != 0)
+            return 1.0f;
+        if (GizForce_GameObjUsingForce(player2, force) != 0)
+            return 1.0f;
+        return 0.0f;
     }
 
     f32 __cdecl Condition_TakenOver(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char *name, void *argument) {
@@ -644,7 +647,9 @@ extern "C" {
             } else if (packet != NULL && packet->owner != NULL)
                 object = packet->owner->objptr;
         }
-        return object != NULL && object->takeover_source != NULL && object->character_context != 0x3b ? 1.0f : 0.0f;
+        if (object != NULL && object->takeover_source != NULL && object->character_context != 0x3b)
+            return 1.0f;
+        return 0.0f;
     }
 
     f32 __cdecl Condition_InSameTriggerAreaAsNearestPlayer(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet,
