@@ -1179,23 +1179,24 @@ i32 __cdecl Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor,
 void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
     i32 index;
     i32 object_index;
+    f32 range_squared = 0.0f;
+    i32 type_count = 0;
+    i32 matching_type = 0;
     NUVEC origin = v000;
     GAMEOBJECT *named_object = NULL;
     char *state_name = NULL;
     i32 types[10];
-    i32 type_count = 0;
-    f32 range_squared = 0.0f;
     for (index = 0; index < count; ++index) {
         char *value = NuStrIStr(params[index], "Character");
         if (value != NULL) {
             named_object = GetNamedGameObject(WORLD->ai_sys, value + 10);
         }
         if ((value = NuStrIStr(params[index], "range")) != NULL) {
-            f32 range = NuAToF(value + 6);
-            range_squared = range * range;
+            range_squared = NuAToF(value + 6);
+            range_squared *= range_squared;
         } else if ((value = NuStrIStr(params[index], "type")) != NULL) {
             if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                u8 local_type = LevelCharacterTypeIDFn(value + 5);
+                i32 local_type = (u8)LevelCharacterTypeIDFn(value + 5);
                 if (local_type != 0xff) {
                     i32 global_type = LevelCharacterGlobalIDFn(local_type);
                     if (global_type != 0xff && type_count < 10) {
@@ -1208,7 +1209,7 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
         }
     }
 
-    if (state_name == NULL || (type_count == 0 && !(range_squared > 0.0f))) {
+    if (state_name == NULL || (type_count <= 0 && !(range_squared > 0.0f))) {
         if (named_object != NULL) {
             named_object->ai_packet.script_processor.next_state =
                 AIStateFind(state_name, named_object->ai_packet.script_processor.script);
@@ -1221,23 +1222,25 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
     for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index) {
         NUVEC difference;
         f32 distance_squared;
-        i32 matching_type;
         i32 type_index;
         GAMEOBJECT *object = &Obj[object_index];
-        if ((object->flags_1fc_half & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) !=
-                (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) ||
-            (object->flags_1f8 & 0x400) == 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || (object->flags_1f8 & 0x400) == 0) {
             continue;
         }
         NuVecSub(&difference, &origin, &object->position);
         distance_squared = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
-        matching_type = type_count == 0;
-        for (type_index = 0; type_index < type_count; ++type_index) {
-            if (object->id == types[type_index]) {
-                matching_type = 1;
+        if (type_count != 0) {
+            for (type_index = 0; type_index < type_count; ++type_index) {
+                if ((i16)object->id == types[type_index]) {
+                    matching_type = 1;
+                }
             }
-        }
-        if (matching_type != 0 && range_squared > distance_squared) {
+            if (matching_type != 0 && range_squared > distance_squared) {
+                object->ai_packet.script_processor.next_state =
+                    AIStateFind(state_name, ((APIOBJECT_PC *)object)->ai->script_processor.script);
+            }
+        } else if (range_squared > distance_squared) {
             object->ai_packet.script_processor.next_state =
                 AIStateFind(state_name, object->ai_packet.script_processor.script);
         }
