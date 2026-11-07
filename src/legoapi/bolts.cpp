@@ -1910,24 +1910,30 @@ extern "C" {
 }
 
 static i32 Bolt_HitPlatPrivate(BOLT_PC *bolt, u8 *hit_flags) {
+    i32 blowup_hit = 0;
     u32 exclude = GetLevelExBlowupFlags();
     Bolt_PlayHitSfx(bolt);
     if ((bolt->hit_flags & 0x800) != 0 && GizmoSys_BoltHitPlat(WORLD->gizmo_sys, WORLD, bolt, hit_flags))
         return 1;
     GIZMOBLOWUP_PC *blowup = GizmoBlowUp_FindFromPlatID(WORLD, bolt->hit_platform);
-    if (blowup != NULL && (blowup->draw_flags & 0x8000) != 0) {
-        GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
-        if (owner != NULL && (blowup->draw_flags & 0x80000) != 0) {
-            if ((exclude & 1) != 0 && owner->character_data->game_character->field_028 > 0.0f)
+    if (blowup != NULL) {
+        if ((blowup->draw_flags & 0x8000) != 0) {
+            if ((exclude & 1) != 0 && bolt->owner != NULL) {
+                i32 field_028_positive =
+                    static_cast<GAMEOBJECT *>(bolt->owner)->character_data->game_character->field_028 > 0.0f;
+                if ((blowup->draw_flags & 0x80000) != 0 && field_028_positive)
+                    return 0;
+            }
+            if (bolt->owner != NULL && (blowup->draw_flags & 0x80000) != 0 &&
+                static_cast<GAMEOBJECT *>(bolt->owner)->rider == NULL)
                 return 0;
-            if (owner->rider == NULL)
-                return 0;
+            if (GizmoBlowupBlowup(blowup, 1, 3, bolt->type->field_3c, NULL, 1) != 0 && bolt->owner != NULL)
+                NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.4f, 0);
+            return 1;
         }
-        if (GizmoBlowupBlowup(blowup, 1, 3, bolt->type->field_3c, NULL, 1) != 0 && bolt->owner != NULL)
-            NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.4f, 0);
-        return 1;
+        blowup_hit = 1;
     }
-    if (bolt->field_104 != -1 && ((TerSurface[bolt->field_104].flags & 0x1800) != 0 || blowup != NULL)) {
+    if (bolt->field_104 != -1 && ((TerSurface[bolt->field_104].flags & 0x1800) != 0 || blowup_hit)) {
         GameAudio_PlaySfx(41, &bolt->position, 0, 0);
         Bolt_AddDeflectedBolt(bolt, &bolt->direction, &bolt->hit_normal, hit_flags);
         if (bolt->owner != NULL && (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 0x80) != 0) {
@@ -1940,18 +1946,25 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *bolt, u8 *hit_flags) {
 
 static i32 Bolt_HitBlowupPrivate(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
                                  u8 *hit_flags) {
-    i32 single = (bolt->flags & 0x200) != 0;
-    if (!GizmoBlowUp_Hit(static_cast<GAMEOBJECT *>(bolt->owner), single ? &points[1] : points, single ? 1 : 3, radius,
-                         minimum, maximum, bolt, 1, hit_flags))
-        return 0;
-    BoltSys->debris(bolt, points, -1, NULL, 0);
-    if (bolt->owner)
-        NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, .6f, 0);
-    bolt->active = 0;
-    if (bolt->type && bolt->type->end_callback)
-        bolt->type->end_callback(bolt);
-    Bolt_PlayHitSfx(bolt);
-    return 1;
+    NUVEC *hit_points;
+    i32 count;
+    if (bolt->flags & 0x200) {
+        hit_points = &points[1];
+        count = 1;
+    } else {
+        hit_points = points;
+        count = 3;
+    }
+    if (GizmoBlowUp_Hit(static_cast<GAMEOBJECT *>(bolt->owner), hit_points, count, radius, minimum, maximum, bolt, 1,
+                        hit_flags)) {
+        BoltSys->debris(bolt, points, -1, NULL, 0);
+        if (bolt->owner)
+            NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, .6f, 0);
+        Bolt_End(bolt, 1);
+        Bolt_PlayHitSfx(bolt);
+        return 1;
+    }
+    return 0;
 }
 
 extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
@@ -2575,38 +2588,31 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
 
 extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
     BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
-    if (!type || !NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)))
+    if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)))
         return NULL;
     BOLT_PC *bolt = Bolt_Alloc();
-    if (!bolt)
-        return NULL;
-    i16 owner_index = owner ? (i16)(owner - Obj) : -1;
-    NETMESSAGE_PC message(32);
-    message.Write16(&owner_index);
-    if (message.data) {
-        u8 *destination = message.data->bytes + message.write_offset;
-        PCByteCopy_candidate(destination, position, 12);
-        if (message.swap_endianness) {
-            EdFileSwapEndianess32(destination);
-            EdFileSwapEndianess32(destination + 4);
-            EdFileSwapEndianess32(destination + 8);
+    if (bolt != NULL) {
+        i16 owner_index = owner ? (i16)(owner - Obj) : -1;
+        NETMESSAGE_PC message(32);
+        message.Write16(&owner_index);
+        if (message.data) {
+            u8 *destination = message.data->bytes + message.write_offset;
+            PCByteCopy_candidate(destination, position, 12);
+            if (message.swap_endianness)
+                for (i32 i = 0; i < 3; ++i)
+                    EdFileSwapEndianess32(destination + 4 * i);
+            message.write_offset += 12;
+            destination = message.data->bytes + message.write_offset;
+            PCByteCopy_candidate(destination, matrix, 64);
+            if (message.swap_endianness)
+                for (i32 i = 0; i < 16; ++i)
+                    EdFileSwapEndianess32(destination + 4 * i);
+            message.write_offset += 64;
         }
-        message.write_offset += 12;
-        destination = message.data->bytes + message.write_offset;
-        PCByteCopy_candidate(destination, matrix, 64);
-        if (message.swap_endianness)
-            for (i32 i = 0; i < 16; ++i)
-                EdFileSwapEndianess32(destination + 4 * i);
-        message.write_offset += 64;
-    }
-    message.Write32(&type_id);
-    message.Write32(&flags);
-    Bolt_Init(bolt, message);
-    if (message.data) {
-        if (message.data->references > 1)
-            --message.data->references;
-        else
-            message.data->references = 0;
+        message.Write32(&type_id);
+        message.Write32(&flags);
+        Bolt_Init(bolt, message);
+        message.Release();
     }
     return bolt;
 }
