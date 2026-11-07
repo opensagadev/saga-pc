@@ -25,6 +25,11 @@ STATIC_ASSERT(offsetof(TTNetwork, display_page) == 0x2150);
 STATIC_ASSERT(offsetof(TTNetwork, display_height) == 0x2160);
 STATIC_ASSERT(offsetof(TTNetwork, my_address) == 0x216c);
 STATIC_ASSERT(offsetof(TTNetwork, has_my_host_address) == 0x2174);
+STATIC_ASSERT(offsetof(TTNetwork, ftp) == 0x2178);
+STATIC_ASSERT(offsetof(TTNetwork, nos) == 0x3780);
+STATIC_ASSERT(offsetof(TTNetwork, session_manager) == 0x110f0);
+STATIC_ASSERT(offsetof(V2SessionManager, peer_list) == 0x94);
+STATIC_ASSERT(offsetof(V2SessionManager, stats) == 0xa0);
 
 void *NetTransportEntry::operator new(u32 size) {
     return theMemoryManager.AllocPool(size, 1);
@@ -206,7 +211,7 @@ void TTNetwork::NosAdopted(NetworkObject *object, const V2Peer &peer) {
     }
 }
 
-void TTNetwork::UpdateClientStats() {
+__declspec(noinline) void TTNetwork::UpdateClientStats() {
     TT_FOR_EACH_CLIENT(entry) {
         entry->stats.Update();
     }
@@ -366,3 +371,132 @@ void TTNetwork::SetMyHostAddress(NetAddress *address) {
 void TTNetwork::ClearMyHostAddress() {
     has_my_host_address = 0;
 }
+
+void TTNetwork::Start() {
+    if (state != 0) {
+        return;
+    }
+    field_2148 = -1;
+    ftp.field_1604 = -1;
+    nos.field_08 = -1;
+    theNetSessionManager = (NetSessionManager *)V2SessionManager::mpSessionManager;
+    session_manager = theNetSessionManager;
+    frame_count = 0;
+    field_2138 = 0;
+    ftp.Init();
+    nos.Init();
+    session_manager->Init(NULL);
+    theNetSessionManager->GetLocalAddress(&my_address);
+    state = 1;
+    field_2144 = 0;
+    theNuNetEmu.enabled = 1;
+    theNuNetEmu.SetConditions(NuNetEmu::CONDITIONS_NORMAL);
+    refpack_init();
+}
+
+void TTNetwork::Update() {
+    if (state != 0) {
+        frame_count++;
+        UtilFrameStart();
+        session_manager->Update();
+        ftp.Update();
+        nos.Update();
+        theNuNetEmu.Update();
+        UpdateClientStats();
+    }
+}
+
+#define TT_PAD(data, index) reinterpret_cast<FRAME_PAD_PC *>((data)->pads[index])
+
+void TTNetwork::ProcessEvenWhenPaused(ThingProcessData *data) {
+    if (state != 0) {
+        Update();
+        if (display_page != 0) {
+            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & 4)) {
+                display_page++;
+            }
+            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & 4)) {
+                display_page++;
+            }
+            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & 8)) {
+                display_page--;
+            }
+            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & 8)) {
+                display_page--;
+            }
+            if (display_page < 1) {
+                display_page = 1;
+            }
+        }
+    }
+}
+
+void TTNetwork::Shutdown() {
+    if (state != 0) {
+        nos.Term();
+        ftp.Term();
+        session_manager->Close();
+        state = 0;
+    }
+}
+
+void TTNetwork::Display(ThingRenderData *data) {
+    if (display_page == 0) {
+        return;
+    }
+    NetSmallStats *stats = NULL;
+    if (display_page == 1) {
+        stats = &theNuNetEmu.packet_stats;
+    }
+    if (display_page == 2) {
+        stats = &theNuNetEmu.raw_stats;
+    }
+    i32 page = 4;
+    if (display_page == 3) {
+        stats = &session_manager->stats;
+    }
+    if (stats == NULL) {
+        for (V2Peer *peer = session_manager->peer_list.head; peer != NULL; peer = peer->next) {
+            if (display_page == page++) {
+                stats = &peer->stats;
+                break;
+            }
+        }
+    }
+    if (stats == NULL) {
+        for (i32 i = 0; i < theRegistry.class_count; i++) {
+            if (theRegistry.GetClass(i)->object_interface != NULL && display_page == page++) {
+                stats = nos.class_stats[i];
+                break;
+            }
+        }
+    }
+    if (stats == NULL) {
+        TT_FOR_EACH_CLIENT(entry) {
+            if (display_page == page++) {
+                stats = &entry->stats;
+                break;
+            }
+        }
+    }
+    if (stats != NULL) {
+        stats->Draw(display_x, display_y, display_width, display_height, NetSmallStats::INFO_BYTES);
+    } else {
+        display_page = 1;
+    }
+}
+
+TTNetwork::TTNetwork() : state(0) {
+    display_x = 0.3f;
+    display_y = -0.3f;
+    has_my_host_address = 0;
+    field_213c = 0;
+    display_page = 0;
+    display_width = 0.5f;
+    display_height = 0.3f;
+}
+
+TTNetwork::~TTNetwork() {
+}
+
+TTNetwork theTTNetwork;

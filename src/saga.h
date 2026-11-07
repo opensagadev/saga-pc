@@ -29993,6 +29993,7 @@ class NetStats : public NetSmallStats {
 u32 UtilGetTime(void);
 u32 UtilGetFrameStartTime(void);
 void UtilFrameStart(void);
+extern "C" void __cdecl refpack_init(void);
 
 class V2Peer {
   public:
@@ -30007,9 +30008,8 @@ class V2Peer {
     V2Peer *prev;
     u8 local;
     u8 unknown_0d[3];
-    u32 unknown_10[2];
-    NetStatCounters counters;
-    u32 unknown_28[157];
+    NetStats stats;
+    u32 unknown_230[27];
     i32 time_offset;
 };
 
@@ -30112,6 +30112,8 @@ class NetTransportEntry : public NetListLink {
 
 class NetTransportList {
   public:
+    NetTransportList() : head(NULL), tail(NULL), count(0) {
+    }
     NetListLink *GetHead();
     void Insert(NetTransportEntry *entry, NetTransportEntry *after);
     void Remove(NetTransportEntry *entry);
@@ -30416,8 +30418,16 @@ class NetLogFile {
     u8 buffer[0x2000];
 };
 
+class V2SessionManager;
 class TTNetwork : public NetTransporter, public BaseThing {
   public:
+    TTNetwork();
+    ~TTNetwork();
+    virtual void ProcessEvenWhenPaused(ThingProcessData *data);
+    virtual void Display(ThingRenderData *data);
+    void Start();
+    void Update();
+    void Shutdown();
     virtual void Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer);
     virtual void SendEx(NETMESSAGE_PC message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1);
     virtual void Broadcast(NETMESSAGE_PC message, u8 channel);
@@ -30462,6 +30472,7 @@ class TTNetwork : public NetTransporter, public BaseThing {
     i32 has_my_host_address;
     NetFtpManager ftp;
     NetworkObjectManager nos;
+    V2SessionManager *session_manager;
 };
 extern TTNetwork theTTNetwork;
 

@@ -11,7 +11,7 @@ STATIC_ASSERT(offsetof(NetStats, totals) == 8);
 STATIC_ASSERT(offsetof(NetStats, history) == 0x40);
 STATIC_ASSERT(offsetof(V2Peer, next) == 4);
 STATIC_ASSERT(offsetof(V2Peer, prev) == 8);
-STATIC_ASSERT(offsetof(V2Peer, counters) == 0x18);
+STATIC_ASSERT(offsetof(V2Peer, stats) == 0x10);
 STATIC_ASSERT(offsetof(V2SessionManager, state) == 4);
 STATIC_ASSERT(offsetof(V2SessionManager, name) == 0x14);
 STATIC_ASSERT(offsetof(V2SessionManager, error) == 0x34);
@@ -129,7 +129,7 @@ void V2SessionManager::Update() {
     V2Peer *peer;
     stats.totals.Clear();
     for (peer = peer_list.head; peer != NULL; peer = peer->next)
-        stats.totals += peer->counters;
+        stats.totals += peer->stats.totals;
     stats.Update();
 }
 

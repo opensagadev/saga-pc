@@ -7152,16 +7152,31 @@ address,symbol,size,ctype
 0x60e510,?DeliverMessage@TTNetwork@@QAEXAAUNETMESSAGE_PC@@EABVV2Peer@@@Z,118,
 0x60e590,?RecordSent@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
 0x60e5f0,?RecordReceived@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
+0x60e6a0,??0NetTransporterInterface@@QAE@XZ,9,
+0x60e6b0,??1NetTransporterInterface@@UAE@XZ,7,
+0x60e6d0,??1NetTransporter@@UAE@XZ,7,
 0x60e6e0,??0NetAddress@@QAE@XZ,9,
+0x60e780,?Start@TTNetwork@@QAEXXZ,175,
 0x60e830,?Resume@TTNetwork@@QAEXXZ,1,
 0x60e840,?Suspend@TTNetwork@@QAEHXZ,6,
 0x60e850,?GetMyAddress@TTNetwork@@QAEPAUNetAddress@@XZ,7,
 0x60e860,?GetMyHostAddress@TTNetwork@@QAEPAUNetAddress@@XZ,19,
 0x60e880,?SetMyHostAddress@TTNetwork@@QAEXPAUNetAddress@@@Z,25,
 0x60e8a0,?ClearMyHostAddress@TTNetwork@@QAEXXZ,11,
+0x60e8b0,?Update@TTNetwork@@QAEXXZ,79,
+0x60e900,?ProcessEvenWhenPaused@TTNetwork@@UAEXPAUThingProcessData@@@Z,159,
+0x60e9a0,??0NetTransportList@@QAE@XZ,13,
 0x60e9d0,??0NetLogFile@@QAE@XZ,13,
 0x60e9e0,?Flush@NetLogFile@@QAEHXZ,124,
+0x60ea90,??_GNetTransporterInterface@@UAEPAXI@Z,31,
+0x60ea90,??_ENetTransporterInterface@@UAEPAXI@Z,,COFF weak alias of ??_GNetTransporterInterface@@UAEPAXI@Z
+0x60ead0,?Shutdown@TTNetwork@@QAEXXZ,59,
+0x60eb10,?Display@TTNetwork@@UAEXPAUThingRenderData@@@Z,290,
 0x60ec40,??1NetLogFile@@QAE@XZ,5,
+0x60ec50,??0NetTransporter@@QAE@XZ,20,
+0x60ec70,??_GNetTransporter@@UAEPAXI@Z,31,
+0x60ec70,??_ENetTransporter@@UAEPAXI@Z,,COFF weak alias of ??_GNetTransporter@@UAEPAXI@Z
+0x60ec90,??0TTNetwork@@QAE@XZ,156,
 0x60ed30,?RemoveDependancies@BaseThing@@UAEHPAUThingRemoveData@@@Z,8,
 0x60ed40,?EnterLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
 0x60ed50,?ExitLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
@@ -7171,6 +7186,10 @@ address,symbol,size,ctype
 0x60ed90,?Render@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
 0x60eda0,?Effects@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
 0x60edb0,?GetName@TTNetwork@@UAEPBDXZ,6,
+0x60edc0,??_ETTNetwork@@WBA@AEPAXI@Z,8,
+0x60edd0,??1TTNetwork@@UAE@XZ,65,
+0x60ee20,??_GTTNetwork@@UAEPAXI@Z,85,
+0x60ee20,??_ETTNetwork@@UAEPAXI@Z,,COFF weak alias of ??_GTTNetwork@@UAEPAXI@Z
 0x60ee80,?MakeUnique@NETMESSAGE_PC@@QAEXXZ,144,
 0x60ef10,?Send@TTNetwork@@UAEXUNETMESSAGE_PC@@EPAVV2Peer@@@Z,180,
 0x60efd0,?SendEx@TTNetwork@@UAEXUNETMESSAGE_PC@@EPAVV2Peer@@HH@Z,190,
@@ -11384,6 +11403,7 @@ address,symbol,size,ctype
 0x750010,??__EPcFramebufferPool@@YAXXZ,58,
 0x750050,??__EPostVertexShaderCachePc@@YAXXZ,12,native atexit initializer
 0x750060,??__EPostPixelShaderCachePc@@YAXXZ,12,native atexit initializer
+0x750070,??__EtheTTNetwork@@YAXXZ,22,
 0x7500c0,??__EtheNuNetEmu@@YAXXZ,171,
 0x750170,??__EFmvSurfacePc@@YAXXZ,22,
 0x750200,??__EtheLevelEditor@@YAXXZ,22,
@@ -11403,6 +11423,7 @@ address,symbol,size,ctype
 0x750540,??__FPcFramebufferPool@@YAXXZ,37,
 0x750570,??__FPostVertexShaderCachePc@@YAXXZ,49,native vector cleanup
 0x7505b0,??__FPostPixelShaderCachePc@@YAXXZ,49,native vector cleanup
+0x7505f0,??__FtheTTNetwork@@YAXXZ,71,
 0x750670,??__FFmvSurfacePc@@YAXXZ,10,
 0x7506d0,??__FthePropertyTool@@YAXXZ,11,
 0x750710,??__FtheKnotHelper@@YAXXZ,11,
@@ -11629,6 +11650,7 @@ address,symbol,size,ctype
 0x7513b0,_PcFramebufferPool$initializer$,4,constructor initializer pointer
 0x7513b4,_PostVertexShaderCachePc$initializer$,4,native CRT pointer
 0x7513b8,_PostPixelShaderCachePc$initializer$,4,native CRT pointer
+0x7513bc,_theTTNetwork$initializer$,4,native CRT pointer
 0x7513c4,_theNuNetEmu$initializer$,4,native CRT pointer
 0x7513c8,_FmvSurfacePc$initializer$,4,void (__cdecl *)(void)
 0x7513e0,_theLevelEditor$initializer$,4,void (__cdecl *)(void)
@@ -18074,6 +18096,10 @@ address,symbol,size,ctype
 0x76a8dc,_NuMaterialSourcePathPc,56,const char[56]
 0x76a918,??_7NetSmallStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a924,??_7NetStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76a930,??_7NetTransporterInterface@@6B@,28,
+0x76a950,??_7NetTransporter@@6B@,28,
+0x76a970,??_7TTNetwork@@6BBaseThing@@@,48,
+0x76a9a4,??_7TTNetwork@@6BNetTransporter@@@,28,
 0x76a9c0,??_C@_07BGDMAJAE@Network?$AA@,8,
 0x76a9c8,??_C@_0P@OPLIKOME@total?5p?$CFd?5?3?5?$CFd?$AA@,15,char []
 0x76a9d8,??_C@_0BA@GPFDCODM@total?5b?5?$CFd?5?3?5?$CFd?$AA@,16,char []
@@ -21830,9 +21856,23 @@ address,symbol,size,ctype
 0x7eace0,??_R3NetStats@@8,,
 0x7eacf0,??_R2NetStats@@8,,
 0x7eacfc,??_R1A@?0A@EA@NetStats@@8,,
+0x7ead18,??_R4NetTransporterInterface@@6B@,,
+0x7ead2c,??_R3NetTransporterInterface@@8,,
+0x7ead3c,??_R2NetTransporterInterface@@8,,
+0x7ead44,??_R1A@?0A@EA@NetTransporterInterface@@8,,
+0x7ead60,??_R4NetTransporter@@6B@,,
+0x7ead74,??_R3NetTransporter@@8,,
+0x7ead84,??_R2NetTransporter@@8,,
+0x7ead90,??_R1A@?0A@EA@NetTransporter@@8,,
+0x7eadac,??_R4TTNetwork@@6BNetTransporter@@@,,
+0x7eadc0,??_R3TTNetwork@@8,,
+0x7eadd0,??_R2TTNetwork@@8,,
+0x7eade4,??_R1A@?0A@EA@TTNetwork@@8,,
+0x7eae00,??_R1BA@?0A@EA@BaseThing@@8,,
 0x7eae1c,??_R3BaseThing@@8,,
 0x7eae2c,??_R2BaseThing@@8,,
 0x7eae34,??_R1A@?0A@EA@BaseThing@@8,,
+0x7eae50,??_R4TTNetwork@@6BBaseThing@@@,,
 0x7eae64,??_R4V2SessionManager@@6B@,,
 0x7eae78,??_R3V2SessionManager@@8,,
 0x7eae88,??_R2V2SessionManager@@8,,
