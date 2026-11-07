@@ -596,18 +596,18 @@ i32 NetworkObjectManager::SendPushMessage(NETMESSAGE_PC *message, const NetPeerP
             theTTNetwork.Send(*message, 3, peer);
         if (peer->GetAvailableMessages() < 16)
             return 0;
-        return 1;
-    }
-    for (NetPeerPush *entry = peer_push; entry != peer_push + 8; entry++) {
-        peer = (V2Peer *)entry->peer;
-        if (peer == NULL || !entry->IsReady())
-            continue;
-        if (flags & 1)
-            theTTNetwork.Send(*message, 3, peer);
-        else
-            theTTNetwork.SendEx(*message, 3, peer, 0, 0);
-        if (peer->GetAvailableMessages() < 16)
-            available = 0;
+    } else {
+        for (i32 i = 0; i < 8; i++) {
+            peer = (V2Peer *)peer_push[i].peer;
+            if (peer == NULL || !peer_push[i].IsReady())
+                continue;
+            if (flags & 1)
+                theTTNetwork.Send(*message, 3, peer);
+            else
+                theTTNetwork.SendEx(*message, 3, peer, 0, 0);
+            if (peer->GetAvailableMessages() < 16)
+                available = 0;
+        }
     }
     return available;
 }
