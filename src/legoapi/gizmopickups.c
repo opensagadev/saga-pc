@@ -687,7 +687,7 @@ static __declspec(noinline) void SetAreaPickupScalePc(i32 area) {
         AreaPickupScale = BonusArea != 0 ? 3.0f : 5.0f;
 }
 
-static __declspec(noinline) void AdjustPickupDrawDistancePc(i32 area, f32 *distance, i32 version) {
+static __declspec(noinline) void AdjustPickupDrawDistancePc(i32 version, i32 area, f32 *distance) {
     if (version > 6)
         return;
     if (version <= 5 && *distance < 10.0f)
@@ -751,7 +751,7 @@ i32 __cdecl GizmoPickups_Load(void *world_ptr, void *unused) {
         AreaPickupScale = 1.0f;
         world->pickup_runtime_sys->pickup_scale = 1.0f;
     }
-    AdjustPickupDrawDistancePc(world->area_index, &world->pickup_runtime_sys->draw_distance, version);
+    AdjustPickupDrawDistancePc(version, world->area_index, &world->pickup_runtime_sys->draw_distance);
     SetAreaPickupGravity(world->area_index, world->level_idx);
     pickup = world->pickup_runtime_sys->pickups;
     for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {

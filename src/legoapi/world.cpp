@@ -383,17 +383,16 @@ extern "C" {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            WORLD_SCRIPT_PROGRESS_PC *script = &saved->scripts[index];
-            if (NuStrLen(script->name) == 0) {
+            if (NuStrLen(saved->scripts[index].name) == 0) {
                 LEVEL_PROGRESS_TRANSFER_PC *active = (LEVEL_PROGRESS_TRANSFER_PC *)world->level_progress;
                 NuStrCpy(active->scripts[index].name, processor->name);
-            } else if (NuStrICmp(script->name, processor->name) != 0) {
+            } else if (NuStrICmp(saved->scripts[index].name, processor->name) != 0) {
                 continue;
             }
-            script->params[0] = processor->processor.params[0];
-            script->params[1] = processor->processor.params[1];
-            script->params[2] = processor->processor.params[2];
-            script->params[3] = processor->processor.params[3];
+            saved->scripts[index].params[0] = processor->processor.params[0];
+            saved->scripts[index].params[1] = processor->processor.params[1];
+            saved->scripts[index].params[2] = processor->processor.params[2];
+            saved->scripts[index].params[3] = processor->processor.params[3];
             break;
         }
     }
