@@ -9252,6 +9252,7 @@ address,symbol,size,ctype
 0x6c08f0,?Eat@EdFileOutputStream@@UAEHHH@Z,5,
 0x6c0900,?SerialiseBuffer@EdFileOutputStream@@UAEHPAXHH@Z,164,
 0x6c0a10,?LineToPointDistance@@YAMAAUVuVec@@00PAU1@@Z,499,
+0x6c0d20,?LineToPlaneIntersecion@@YAHAAUVuVec@@00PAU1@@Z,281,
 0x6c1ef0,??0EdFileOutputStream@@QAE@XZ,43,
 0x6c1f20,??_EEdFileOutputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdFileOutputStream@@UAEPAXI@Z; no independent body
 0x6c1f20,??_GEdFileOutputStream@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity

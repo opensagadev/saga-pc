@@ -1257,6 +1257,39 @@ f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *cl
     return distance;
 }
 
+/* Intersects the segment origin..origin+direction with plane (xyz normal,
+ * w offset); returns 0 when both ends lie on the same side. */
+i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection) {
+    __declspec(align(16)) VuVec end;
+    f32 dot;
+    f32 start_distance;
+    f32 end_distance;
+    end.x = origin.x + direction.x;
+    end.y = origin.y + direction.y;
+    end.z = origin.z + direction.z;
+    dot = origin.x * plane.x + origin.y * plane.y + origin.z * plane.z;
+    start_distance = dot + plane.w;
+    dot = plane.x * end.x + end.y * plane.y + plane.z * end.z;
+    end_distance = dot + plane.w;
+    if (start_distance * end_distance < 0.0) {
+        if (intersection != NULL) {
+            f32 t = -start_distance / (end_distance - start_distance);
+            end.x = direction.x * t;
+            end.y = direction.y * t;
+            end.z = direction.z * t;
+            intersection->x = end.x;
+            intersection->y = end.y;
+            intersection->z = end.z;
+            intersection->w = end.w;
+            intersection->x += origin.x;
+            intersection->y += origin.y;
+            intersection->z += origin.z;
+        }
+        return 1;
+    }
+    return 0;
+}
+
 /* Distance from the cursor ray to the object's position sphere (attribute 8
  * position, attribute 0x40 radius, default radius 1). */
 f32 EdClassInterface::DistanceToObject(VuVec &origin, VuVec &direction, void *object, EdRef **reference) {
