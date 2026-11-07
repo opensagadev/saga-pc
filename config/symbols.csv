@@ -7725,6 +7725,7 @@ address,symbol,size,ctype
 0x627d40,_tpentPropOnEnter,85,
 0x627da0,_eduiAddTextPickEntEx,183,
 0x627e60,_eduiAddTextPickEnt,123,
+0x627ee0,_eduiAddPropTextPickEnt,93,
 0x627f40,_EduiTextPickPadPc,337,
 0x6280a0,_eduicbProcessTextPick,41,
 0x6280d0,_eduicbDestroyDirectoryList,20,
@@ -13155,6 +13156,7 @@ address,symbol,size,ctype
 0x754f9c,??_C@_02BHLPILOJ@?B?$KD?$AA@,,const char[3]
 0x754fa0,??_C@_02JACHJHCG@?B?$KM?$AA@,,const char[3]
 0x00754fa4,_ApplyGravityMinimumFrameTime,4,const f32
+0x754fa4,__real@3c888889,4,const f32
 0x754fa8,??_C@_0N@COBFKCAF@BASLUS?921409?$AA@,,const char[13]
 0x754fb8,__real@3ca3d70a,4,const f32
 0x754fbc,??_C@_0N@LKAAGFHJ@BESLES?954221?$AA@,,const char[13]

@@ -2598,6 +2598,30 @@ void eduiAddTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
     }
 }
 
+static void tpentPropOnEnter(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
+    edui_prop_s *property = (edui_prop_s *)item->data_ptr;
+    eduimenu_s *parent;
+    NuStrCpy(property->property_text, ((edui_textpicker_s *)item)->value);
+    if (property->changed)
+        property->changed(menu->parent, &property->base, buttons);
+    parent = menu->parent;
+    eduiMenuDetach(menu);
+    eduiMenuDestroy(menu);
+    if (parent)
+        eduiSetActiveMenu(parent);
+}
+
+/* Opens an entry menu that edits a copy of the property's text. */
+void eduiAddPropTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
+    edui_prop_s *source = (edui_prop_s *)item;
+    edui_textpicker_s *picker = eduiAddTextPickEntEx(menu, item, tpentPropOnEnter);
+    if (picker) {
+        NuStrCpy(picker->value, source->property_text);
+        picker->cursor = NuStrLen(picker->value);
+        memcpy(picker->base.colours, item->colours, sizeof(picker->base.colours));
+    }
+}
+
 static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD_PC *pad) {
     if (picker == NULL || !picker->editing) {
         if (pad->digital_buttons_pressed & 0x40)
@@ -4096,4 +4120,9 @@ void CreateTestMenu(void *font) {
 
         eduiMenuAddItem(testmenu0, eduiItemSelCreate(2, colours, 0, 1, (void *)cbSel, ("Sel")));
     }
+}
+
+void TestMenu(FRAME_PAD_PC *pad) {
+    eduiMenuProcess(testmenu0, 0.016666668f, pad);
+    eduiMenuRender(testmenu0);
 }
