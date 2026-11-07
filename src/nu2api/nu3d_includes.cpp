@@ -3262,9 +3262,10 @@ extern "C" {
         }
         buffer->joint_count = object->joint_count;
 
-        end_joint = object->joint_count;
         if (first_joint != 0) {
             end_joint = findrange(((NUGSCN *)(object)), first_joint) + 1;
+        } else {
+            end_joint = object->joint_count;
         }
         if (overwrite != 0) {
             ANI_SimpleAni3PlayerV4Joint(animation, time - 1.0f, buffer, end_joint - first_joint, first_joint);
