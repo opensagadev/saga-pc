@@ -1120,23 +1120,21 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
 
 #undef AISCRIPT_COPY_ARENA_STRING
 
-#define AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, mask, initially_set, set_on_false)                  \
+#define AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, field, mask, initially_set, set_on_false)           \
     do {                                                                                                               \
-        u32 *flags;                                                                                                    \
         i32 i;                                                                                                         \
         if ((packet) != NULL && (packet)->owner != NULL && (first_time) != 0) {                                        \
-            flags = ((mask) == 0x2000u) ? &(packet)->owner->flags_1f8 : &(packet)->owner->flags_1fc;                   \
             if (initially_set) {                                                                                       \
-                *flags |= (mask);                                                                                      \
+                (packet)->owner->field |= (mask);                                                                      \
             } else {                                                                                                   \
-                *flags &= ~(mask);                                                                                     \
+                (packet)->owner->field &= ~(mask);                                                                     \
             }                                                                                                          \
             for (i = 0; i < (count); i++) {                                                                            \
                 if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                      \
                     if (set_on_false) {                                                                                \
-                        *flags |= (mask);                                                                              \
+                        (packet)->owner->field |= (mask);                                                              \
                     } else {                                                                                           \
-                        *flags &= ~(mask);                                                                             \
+                        (packet)->owner->field &= ~(mask);                                                             \
                     }                                                                                                  \
                 }                                                                                                      \
             }                                                                                                          \
@@ -1161,7 +1159,7 @@ i32 __cdecl Action_NoTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x20u, 1, 0);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x20u, 1, 0);
     return 1;
 }
 
@@ -1170,7 +1168,7 @@ i32 __cdecl Action_NoLosCheck(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x400u, 1, 0);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x400u, 1, 0);
     return 1;
 }
 
@@ -1179,7 +1177,7 @@ i32 __cdecl Action_FlatTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x10u, 1, 0);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x10u, 1, 0);
     return 1;
 }
 
@@ -1188,7 +1186,7 @@ i32 __cdecl Action_DontUseShadowTerrain(AISYS_PC *sys, AISCRIPTPROCESS_PC *proce
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x40u, 1, 0);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x40u, 1, 0);
     return 1;
 }
 
@@ -1197,7 +1195,7 @@ i32 __cdecl Action_DontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x2u, 1, 0);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x2u, 1, 0);
     return 1;
 }
 
@@ -1206,7 +1204,7 @@ i32 __cdecl Action_CanSeeBehind(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x800u, 1, 0);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x800u, 1, 0);
     return 1;
 }
 
@@ -1224,7 +1222,7 @@ i32 __cdecl Action_SetFullPathSearch(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x8u, 0, 1);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x8u, 0, 1);
     return 1;
 }
 
@@ -1233,7 +1231,7 @@ i32 __cdecl Action_NoShadows(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, 0x2000u, 1, 0);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1f8, 0x2000u, 1, 0);
     return 1;
 }
 
