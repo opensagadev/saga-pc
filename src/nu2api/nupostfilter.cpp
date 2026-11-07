@@ -276,6 +276,24 @@ __declspec(noinline) void NuMainFilterGen::initResources() {
     memset(&dof_enabled, 0, sizeof(dof_enabled) + sizeof(bloom_enabled) + sizeof(motion_blur_enabled));
     active_filter_count = 0;
 }
+void NuMainFilterGen::initTextureResources(i32 width, i32 height) {
+    blur_texture = PCGraphicsCreateEffectTexture(width / 2, height / 2, 2, 1, 2);
+    i32 w = width, h = height;
+    downsample_lod = 0;
+    for (i32 i = 0; i < 3; ++i) {
+        if (w < 128 || h < 128)
+            break;
+        ++downsample_lod;
+        w /= 2;
+        h /= 2;
+    }
+    downsample_texture = PCGraphicsCreateEffectTexture(w, h, 1, 1, 2);
+    if (height < 704) {
+        dof_blur -= 1.0;
+        blur_radius -= 0.85000002384185791;
+        blur_gain -= 0.5;
+    }
+}
 void NuMainFilter::initTextureResources(i32, i32) {
     texture_surface.Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
 }

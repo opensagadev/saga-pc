@@ -6012,7 +6012,7 @@ address,symbol,size,ctype
 0x5c2800,??0NuPostFilter@@QAE@XZ,17,native ctor fullvptr/field proof
 0x5c2830,??_ENuPostFilter@@UAEPAXI@Z,,COFF weak alias of ??_GNuPostFilter@@UAEPAXI@Z; no independent body
 0x5c2830,??_GNuPostFilter@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
-0x5c2850,?initTextureResources@NuMainFilterGen@@UAEXHH@Z,,native exactVT binding; unimplemented extent unclaimed
+0x5c2850,?initTextureResources@NuMainFilterGen@@UAEXHH@Z,172,native exactVT binding
 0x5c2900,?destroyTextureResources@NuMainFilterGen@@UAEXXZ,26,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c2920,?reset@NuMainFilterGen@@UAEXXZ,25,
 0x5c2940,?preprocessBlurTextures@NuMainFilterGen@@QAEXPAUGRAPHICS_RENDER_TEXTURE_PC@@0@Z,417,"void __thiscall (GRAPHICS_RENDER_TEXTURE_PC *, GRAPHICS_RENDER_TEXTURE_PC *)"
