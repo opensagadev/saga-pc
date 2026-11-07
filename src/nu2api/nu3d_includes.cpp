@@ -5092,7 +5092,7 @@ void OcclusionManager::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *
 void OcclusionManager::AddOccluder(const NUVEC *center, f32 radius) {
     if (!initialized || !enabled)
         return;
-    NUMTX view;
+    __declspec(align(16)) NUMTX view;
     NuAnimMtxCopyPrivatePc(&view, &vmtx);
     NUVEC right = {view.m00 * radius, view.m10 * radius, view.m20 * radius};
     NUVEC up = {view.m01 * radius, view.m11 * radius, view.m21 * radius};
