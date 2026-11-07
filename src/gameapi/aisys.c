@@ -7769,35 +7769,32 @@ i32 __cdecl Action_KeepWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
                                  i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
     APIOBJECT_PC *lookup;
-    GAMEOBJECT *object;
-    i32 keep_out;
+    GAMEOBJECT *object = NULL;
+    i32 keep_out = 1;
     char *value;
 
     (void)processor;
     (void)param_6;
-    if (param_5 == 0) {
-        return 1;
-    }
-
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    keep_out = 1;
-    for (index = 0; index < param_4; ++index) {
-        if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-            keep_out = 0;
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-        if (value != NULL) {
-            {
-                lookup = GetNamedGameObjectCallback != NULL
-                             ? GetNamedGameObjectCallback(sys, value + NuStrLen((char *)AIGameCharacterName))
-                             : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+    if (param_5 != 0) {
+        if (packet != NULL && packet->owner != NULL)
+            object = packet->owner->objptr;
+        if (param_4 != 0) {
+            for (index = 0; index < param_4; ++index) {
+                if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                    keep_out = 0;
+                } else {
+                    value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+                    if (value != NULL) {
+                        lookup =
+                            GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
+                        object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                    }
+                }
             }
         }
-    }
-    if (object != NULL) {
-        object->portal_flags = (object->portal_flags & (u32)(~0x10u)) | (u32)(keep_out ? 0x10u : 0);
+        if (object != NULL) {
+            object->portal_flags = (object->portal_flags & ~0x10u) | ((keep_out & 1) << 4);
+        }
     }
     return 1;
 }
