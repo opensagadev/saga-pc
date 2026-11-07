@@ -543,25 +543,22 @@ __declspec(noinline) void NuMtxMulHArrayPc(NUMTX *out, NUMTX *left, NUMTX *right
 
 void PCEnqueueHierarchyShadowGroup(NUMTX *matrix, void *ellipse, i32 ellipse_count, void *cylinder, i32 cylinder_count,
                                    void *third, i32 third_count) {
-    PC_HG_SHADOW_PACKET *packet;
-
     if (PCShadowPacketCount >= 280)
         return;
-    packet = &PCShadowPackets[PCShadowPacketCount];
-    packet->near_value = PCShadowNearValue;
-    packet->far_value = PCShadowFarValue;
-    packet->state0 = PCShadowState.state0;
-    packet->state1 = PCShadowState.state1;
-    packet->state2 = PCShadowState.state2;
-    packet->state_byte = PCShadowState.state_byte;
-    packet->matrix = *matrix;
-    packet->ellipse = ellipse;
-    packet->ellipse_count = (u8)ellipse_count;
-    packet->cylinder = cylinder;
-    packet->cylinder_count = (u8)cylinder_count;
-    packet->third_shape = third;
-    packet->third_count = (u8)third_count;
-    packet->sequence = (u8)PCShadowPacketSequence;
+    PCShadowPackets[PCShadowPacketCount].near_value = PCShadowNearValue;
+    PCShadowPackets[PCShadowPacketCount].far_value = PCShadowFarValue;
+    PCShadowPackets[PCShadowPacketCount].state0 = PCShadowState.state0;
+    PCShadowPackets[PCShadowPacketCount].state1 = PCShadowState.state1;
+    PCShadowPackets[PCShadowPacketCount].state2 = PCShadowState.state2;
+    PCShadowPackets[PCShadowPacketCount].state_byte = PCShadowState.state_byte;
+    PCShadowPackets[PCShadowPacketCount].matrix = *matrix;
+    PCShadowPackets[PCShadowPacketCount].ellipse = ellipse;
+    PCShadowPackets[PCShadowPacketCount].ellipse_count = (u8)ellipse_count;
+    PCShadowPackets[PCShadowPacketCount].cylinder = cylinder;
+    PCShadowPackets[PCShadowPacketCount].cylinder_count = (u8)cylinder_count;
+    PCShadowPackets[PCShadowPacketCount].third_shape = third;
+    PCShadowPackets[PCShadowPacketCount].third_count = (u8)third_count;
+    PCShadowPackets[PCShadowPacketCount].sequence = (u8)PCShadowPacketSequence;
     ++PCShadowPacketCount;
     ++PCShadowPacketSequence;
 }
