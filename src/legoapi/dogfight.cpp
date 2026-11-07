@@ -1964,7 +1964,7 @@ extern "C" {
         f32 a, dot, b, c, root, enter, leave, time;
         f64 denominator;
         f64 dx, dy, dz;
-        i32 coins, player_index, hearts;
+        i32 coins, player_index;
         relative_position.x = position->x - ship_position->x;
         relative_position.y = position->y - ship_position->y;
         relative_position.z = position->z - ship_position->z;
@@ -1988,15 +1988,15 @@ extern "C" {
             enter = (-(f64)b - root) / denominator;
             time = -FRAMETIME;
             leave = ((f64)root - b) / denominator;
-            if (!(time <= leave))
+            if (!(leave >= time))
                 return 0;
             if (!(enter <= 0.0f))
                 return 0;
-            if (time <= enter)
-                time = enter;
-            step.x = (f64)relative_velocity.x * time;
-            step.y = (f64)relative_velocity.y * time;
-            step.z = (f64)relative_velocity.z * time;
+            if (enter < time)
+                enter = time;
+            step.x = (f64)relative_velocity.x * enter;
+            step.y = (f64)relative_velocity.y * enter;
+            step.z = (f64)relative_velocity.z * enter;
             position->x += step.x;
             position->y += step.y;
             position->z += step.z;
@@ -2005,23 +2005,31 @@ extern "C" {
         if (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84)) {
             BoltSys->debris(bolt, position, 0, (NUVEC *)&fighter->velocity, 0);
             bolt->active = 0;
-            coins = 0;
             if (ShipDropCoins(fighter) != 0)
                 coins = fighter->model_id == -299 ? 500 : 1000;
-            player_index = bolt->owner == NULL ? -1 : (i8)((GAMEOBJECT *)bolt->owner)->field_280;
-            hearts = ReleaseHearts();
-            AddPickups(coins, hearts, 0, 0, ship_position, NULL, 2.0f, player_index, 1.0f, 2000000.0f, NULL, 1, 1);
+            else
+                coins = 0;
+            player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
+            AddPickups(coins, ReleaseHearts(), 0, 0, ship_position, NULL, 2.0f, player_index, 1.0f, 2000000.0f, NULL, 1,
+                       1);
             AddFiniteShotPART(PARTLookupType((char *)DogfightPartTypeNamePc), ship_position, 1);
             dy = (f64)fighter->matrix.m31 - global_camera.mtx.m31;
             dx = (f64)fighter->matrix.m30 - global_camera.mtx.m30;
             dz = (f64)fighter->matrix.m32 - global_camera.mtx.m32;
             if (dy * dy + dx * dx + dz * dz < 40000.0) {
-                if (fighter->health <= 0)
+                if (fighter->health > 0) {
+                    switch (fighter->model_id) {
+                        case -299:
+                            PlaySfx("Dog_TriFighterHit", ship_position);
+                            break;
+                        case -298:
+                        case -297:
+                            PlaySfx("Dog_DroidFighterHit", ship_position);
+                            break;
+                    }
+                } else {
                     PlaySfx("Ep3_1_ExplosionXXL", ship_position);
-                else if (fighter->model_id == -299)
-                    PlaySfx("Dog_TriFighterHit", ship_position);
-                else if (fighter->model_id == -298 || fighter->model_id == -297)
-                    PlaySfx("Dog_DroidFighterHit", ship_position);
+                }
             }
         }
         ++fighter->hit_count;
