@@ -1562,27 +1562,29 @@ i32 __cdecl Action_IgnoreSlideTerrainPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
     i32 enabled = 1;
     i32 index;
     char *value;
-    if (first_time == 0)
-        return 1;
-    if (packet != NULL && packet->owner != NULL)
-        object = packet->owner->objptr;
-    for (index = 0; index < count; ++index) {
-        if (NuStrICmp(params[index], AIActionFalseName) == 0) {
-            enabled = 0;
-        } else {
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-            if (value != NULL) {
-                if (GetNamedGameObjectCallback != NULL) {
-                    named = GetNamedGameObjectCallback(system, value + 10);
-                    object = named != NULL ? named->owner : NULL;
+    if (first_time != 0) {
+        if (packet != NULL && packet->owner != NULL)
+            object = packet->owner->objptr;
+        if (count != 0) {
+            for (index = 0; index < count; ++index) {
+                if (NuStrICmp(params[index], AIActionFalseName) == 0) {
+                    enabled = 0;
                 } else {
-                    object = NULL;
+                    value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+                    if (value != NULL) {
+                        if (GetNamedGameObjectCallback != NULL) {
+                            named = GetNamedGameObjectCallback(system, value + 10);
+                            object = named != NULL ? named->owner : NULL;
+                        } else {
+                            object = NULL;
+                        }
+                    }
                 }
             }
         }
-    }
-    if (object != NULL) {
-        object->flags_ef4 = (object->flags_ef4 & ~0x400u) | ((u32)enabled << 10);
+        if (object != NULL) {
+            object->flags_ef4 ^= (((u32)enabled << 10) ^ object->flags_ef4) & 0x400u;
+        }
     }
     return 1;
 }
@@ -1594,27 +1596,29 @@ i32 __cdecl Action_SplineFollowTerrainPc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
     i32 enabled = 1;
     i32 index;
     char *value;
-    if (first_time == 0)
-        return 1;
-    if (packet != NULL && packet->owner != NULL)
-        object = packet->owner->objptr;
-    for (index = 0; index < count; ++index) {
-        if (NuStrICmp(params[index], AIActionFalseName) == 0) {
-            enabled = 0;
-        } else {
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-            if (value != NULL) {
-                if (GetNamedGameObjectCallback != NULL) {
-                    named = GetNamedGameObjectCallback(system, value + 10);
-                    object = named != NULL ? named->owner : NULL;
+    if (first_time != 0) {
+        if (packet != NULL && packet->owner != NULL)
+            object = packet->owner->objptr;
+        if (count != 0) {
+            for (index = 0; index < count; ++index) {
+                if (NuStrICmp(params[index], AIActionFalseName) == 0) {
+                    enabled = 0;
                 } else {
-                    object = NULL;
+                    value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+                    if (value != NULL) {
+                        if (GetNamedGameObjectCallback != NULL) {
+                            named = GetNamedGameObjectCallback(system, value + 10);
+                            object = named != NULL ? named->owner : NULL;
+                        } else {
+                            object = NULL;
+                        }
+                    }
                 }
             }
         }
-    }
-    if (object != NULL) {
-        object->flags_ef4 = (object->flags_ef4 & ~0x1000u) | ((u32)enabled << 12);
+        if (object != NULL) {
+            object->flags_ef4 ^= (((u32)enabled << 12) ^ object->flags_ef4) & 0x1000u;
+        }
     }
     return 1;
 }
