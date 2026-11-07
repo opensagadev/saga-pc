@@ -4248,3 +4248,19 @@ static void ParaphernaliaHandPc(GAMEOBJECT *object, i32 reflection) {
         NuRndrEndReflectionRender();
     }
 }
+
+void __cdecl ConfigureComplexShadow(GAMEOBJECT *object) {
+    NUVEC direction;
+    f32 distance;
+    if (object != NULL) {
+        direction.x = 65536.0f;
+        direction.y = object->collision_position.y;
+        direction.z = (f32)((f64)object->floor_height - (f64)0.1f);
+    } else {
+        direction.x = 0.0f;
+        direction.y = (f32)(-(f64)ComplexShadowBasePc * 0.25);
+        direction.z = 0.0f;
+    }
+    distance = VehicleArea != 0 ? 150.0f : 30.0f;
+    NuRndrShadowDirCol(&direction, 0x17000000u, distance, distance);
+}

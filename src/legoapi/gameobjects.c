@@ -568,17 +568,6 @@ __declspec(noinline) GAMEOBJECT *__cdecl FindGameObject(i32 character_id, u32 re
     return NULL;
 }
 
-__declspec(noinline) GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
-    APIOBJECT_PC *result;
-    if (GetNamedGameObjectCallback != NULL) {
-        result = GetNamedGameObjectCallback(sys, name);
-        if (result != NULL) {
-            return (GAMEOBJECT *)result->owner;
-        }
-    }
-    return NULL;
-}
-
 void __cdecl MakeBaddiesForgetAboutParty(i32 check_hostility) {
     GAMEOBJECT *baddies[64];
     GAMEOBJECT *party[64];

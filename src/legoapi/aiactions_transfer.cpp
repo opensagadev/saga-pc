@@ -1320,11 +1320,14 @@ extern "C" {
 
 extern "C" i32 Action_ReleaseLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *, AIPACKET_PC *packet, char **params,
                                      i32 param_count, i32 first_time, float) {
+    GAMEOBJECT *object = NULL;
     if (first_time == 0) {
         return 1;
     }
 
-    GAMEOBJECT *object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
+        object = packet->owner->objptr;
+    }
     for (i32 index = 0; index < param_count; ++index) {
         char *value = NuStrIStr(params[index], "character=");
         if (value != NULL) {
@@ -1376,6 +1379,17 @@ extern "C" {
             return NULL;
         return &sys->locators[set->locator_entries[0]];
     }
+}
+
+extern "C" GAMEOBJECT *__cdecl GetNamedGameObject(void *sys, char *name) {
+    APIOBJECT_PC *result;
+    if (GetNamedGameObjectCallback != NULL) {
+        result = GetNamedGameObjectCallback(sys, name);
+        if (result != NULL) {
+            return (GAMEOBJECT *)result->owner;
+        }
+    }
+    return NULL;
 }
 
 extern "C" AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *locator_array, i32 count, f32 clip_radius,
