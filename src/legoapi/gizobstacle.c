@@ -1502,6 +1502,16 @@ i32 __cdecl GizmoBombGen_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return ((GIZBOMBGEN_s *)gizmo->object)->flags & 1;
 }
 
+extern char AIRegistryTextPc007575bc[7];
+
+char *__cdecl GizmoBombGen_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    return AIRegistryTextPc007575bc;
+}
+
+i32 __cdecl GizmoBombGen_GetNumOutputs(GIZMO_PC *gizmo) {
+    return 1;
+}
+
 /* Studs the level's obstacles release (TotalLevelCoinTally). */
 u32 __cdecl GizObstacles_TotalScore(WORLDINFO *world) {
     GIZOBSTACLESYS_s *system = (GIZOBSTACLESYS_s *)world->giz_obstacle_sys;

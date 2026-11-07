@@ -82,7 +82,7 @@ void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 
     return nearest;
 }
 
-static char *GizTorp_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
+char *__cdecl GizTorp_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
     return output_index == 0 ? ((char *)("Ready")) : NULL;
 }
 
@@ -185,4 +185,8 @@ i32 __cdecl GizTorp_GetOutput(void *input, i32 output, i32 mode) {
     (void)output;
     (void)mode;
     return 0;
+}
+
+i32 __cdecl GizTorp_GetNumOutputs(void *unused) {
+    return 1;
 }

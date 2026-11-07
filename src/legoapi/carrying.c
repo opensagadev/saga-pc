@@ -295,6 +295,16 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_107c) == 0x107c);
 extern i32 SuperCarry_PutDownDrop;
 extern f32 SUPERCARRY_JUMPSPEED;
 extern u8 SuperCarryPlayerRgbPc[2][3];
+i32 __cdecl SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
+    if (CanSuperCarryFn == NULL || CanSuperCarryFn(object) == 0)
+        return 0;
+    if ((object->flags_1fc & 0x80) == 0)
+        return 0;
+    if (require_grounded != 0 && (object->field_281 == 0 || ObjLandReady(object) == 0))
+        return 0;
+    return 1;
+}
+
 void __cdecl SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32);
 void __cdecl SuperCarry_DrawObject(struct gameobject_s *object) {
     NUMTX matrix;

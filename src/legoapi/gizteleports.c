@@ -272,6 +272,16 @@ i32 __cdecl Teleport_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return 0;
 }
 
+extern const char GrappleOccupiedOutputTextPc[9];
+
+char *__cdecl Teleport_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    return (char *)GrappleOccupiedOutputTextPc;
+}
+
+i32 __cdecl Teleport_GetNumOutputs(GIZMO_PC *gizmo) {
+    return 1;
+}
+
 i32 __cdecl Teleport_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
     TELEPORT_CONFIG_PC *teleport;
     if (gizmo == NULL || gizmo->object == NULL)

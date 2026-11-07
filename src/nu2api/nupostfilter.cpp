@@ -262,6 +262,8 @@ __declspec(noinline) void NuPostFilterGen::initResources() {
 }
 void NuPostFilterGen::initTextureResources(i32, i32) {
 }
+void NuPostFilterGen::render() {
+}
 NuMainFilterGen::NuMainFilterGen() {
     dof_strength = 1.0f;
     dof_near = 1.0f;
@@ -323,6 +325,11 @@ void NuMotionAccumFilter::initResources() {
 }
 void NuMotionAccumFilterGen::initTextureResources(i32 width, i32 height) {
     accumulation_texture = PCGraphicsCreateEffectTexture(width, height, 1, 1, 2);
+}
+void NuSpeedBlurFilterGen::initTextureResources(i32 width, i32 height) {
+    texture = PCGraphicsCreateEffectTexture(width / 2, height / 2, 1, 1, 2);
+    PCGraphicsEffectTextureSetFilterFields(texture, 2, 2, 0);
+    PCGraphicsEffectTextureSetWrapFields(texture, 2, 2);
 }
 void NuSpeedBlurFilter::initTextureResources(i32, i32) {
     texture_surface.Attach(PCGraphicsPostEffectBackBufferTexturePc, 0, false);
@@ -579,6 +586,10 @@ void NuPostFilterGen::destroyTextureResources() {
 void NuMainFilterGen::destroyTextureResources() {
     PCGraphicsDestroyRenderTexture(blur_texture);
     PCGraphicsDestroyRenderTexture(downsample_texture);
+}
+void NuCopyFilter::reset() {
+    input_fbo = copy_fbo;
+    copy_texture = NULL;
 }
 void NuCopyFilter::destroyResources() {
     PCGraphicsDestroyFramebuffer(copy_fbo);

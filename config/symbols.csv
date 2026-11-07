@@ -1102,8 +1102,8 @@ address,symbol,size,ctype
 0x466520,_GizBombGens_AddGizmos,89,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x466580,_GizmoBombGen_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
 0x466590,_GizmoBombGen_GetOutput,14,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4665a0,_GizmoBombGen_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
-0x4665b0,_GizmoBombGen_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x4665a0,_GizmoBombGen_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
+0x4665b0,_GizmoBombGen_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x4665c0,_GizBombGens_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x4665e0,_GizBombGens_ClearProgress,31,"void __cdecl(void *, void *)"
 0x466650,_GizBombGens_StoreProgress,122,"void __cdecl(void *, void *, void *)"
@@ -1233,7 +1233,7 @@ address,symbol,size,ctype
 0x46eac0,_GizPanel_AddGizmos,106,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x46eb30,_GizPanel_GetGizmoName,21,char * __cdecl(GIZMO_PC *)
 0x46eb60,_GizPanel_GetOutput,27,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x46eb80,_GizPanel_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
+0x46eb80,_GizPanel_GetOutputName,16,"char * __cdecl(GIZMO_PC *, i32)"
 0x46eb90,_GizPanel_GetNumOutputs,6,i32 __cdecl(void *)
 0x46eba0,_GizPanels_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x46ebc0,_GizPanels_ClearProgress,24,"void __cdecl(void *, void *)"
@@ -1258,7 +1258,7 @@ address,symbol,size,ctype
 0x46fec0,_GizTorp_GetGizmoName,17,char * __cdecl(GIZMO_PC *)
 0x46fee0,_GizTorp_GetOutput,3,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x46fef0,_GizTorp_GetOutputName,16,
-0x46ff00,_GizTorp_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x46ff00,_GizTorp_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x46ff10,_GizTorpMachine_RegisterGizmo,254,
 0x470050,_GrabberMtxSetRotationZ,160,"static void (NUMTX *, NUANG)"
 0x4700f0,_GrabberMtxRotateX,217,"static void (NUMTX *, NUANG)"
@@ -2131,8 +2131,8 @@ address,symbol,size,ctype
 0x4cf0f0,_Teleport_AddGizmos,95,"void __cdecl(GIZMOSYS_PC *, i32, void *, void *)"
 0x4cf150,_Teleport_GetGizmoName,17,char * __cdecl(GIZMO_PC *)
 0x4cf170,_Teleport_GetOutput,22,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4cf190,_Teleport_GetOutputName,,"char * __cdecl(GIZMO_PC *, i32)"
-0x4cf1a0,_Teleport_GetNumOutputs,,i32 __cdecl(GIZMO_PC *)
+0x4cf190,_Teleport_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
+0x4cf1a0,_Teleport_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
 0x4cf1b0,_Teleport_RegisterGizmo,225,ADDGIZMOTYPE_PC * __cdecl(i32)
 0x004cf2d0,_Text_SetLanguage_Game,228,void __cdecl (i32)
 0x004cf3c0,_Text_InitDefaultStrings,177,void __cdecl (void)
@@ -6069,7 +6069,7 @@ address,symbol,size,ctype
 0x5c2220,??1NuPostFilterGen@@UAE@XZ,7,native exactVT binding; unimplemented extent unclaimed
 0x5c2230,?initTextureResources@NuPostFilterGen@@UAEXHH@Z,3,native exactVT binding; unimplemented extent unclaimed
 0x5c2240,?destroyTextureResources@NuPostFilterGen@@UAEXXZ,1,Native VT cleanup complete CFG bound; working partial where applicable
-0x5c2250,?render@NuPostFilterGen@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c2250,?render@NuPostFilterGen@@UAEXXZ,1,native exactVT binding; unimplemented extent unclaimed
 0x5c2260,??_ENuPostFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuPostFilterGen@@UAEPAXI@Z; no independent body
 0x5c2260,??_GNuPostFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x5c2290,??0NuPostFilterGen@@QAE@XZ,17,native ctor fullvptr/field proof
@@ -6119,7 +6119,7 @@ address,symbol,size,ctype
 0x5c4d70,?initResources@NuCopyFilter@@UAEXXZ,47,native exactVT binding; unimplemented extent unclaimed
 0x5c4da0,?destroyResources@NuCopyFilter@@UAEXXZ,33,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c4dd0,?render@NuCopyFilter@@UAEXPAUPC_FRAMEBUFFER_PC@@@Z,,native exactVT binding; unimplemented extent unclaimed
-0x5c4e20,?reset@NuCopyFilter@@UAEXXZ,,native exactVT binding; unimplemented extent unclaimed
+0x5c4e20,?reset@NuCopyFilter@@UAEXXZ,14,native exactVT binding; unimplemented extent unclaimed
 0x5c4e30,??0NuMotionAccumFilterGen@@QAE@XZ,30,native ctor fullvptr/field proof
 0x5c4e50,??_ENuMotionAccumFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuMotionAccumFilterGen@@UAEPAXI@Z; no independent body
 0x5c4e50,??_GNuMotionAccumFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
@@ -6130,7 +6130,7 @@ address,symbol,size,ctype
 0x5c4f80,??0NuSpeedBlurFilterGen@@QAE@XZ,17,native ctor fullvptr/field proof
 0x5c4fa0,??_ENuSpeedBlurFilterGen@@UAEPAXI@Z,,COFF weak alias of ??_GNuSpeedBlurFilterGen@@UAEPAXI@Z; no independent body
 0x5c4fa0,??_GNuSpeedBlurFilterGen@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
-0x5c4fc0,?initTextureResources@NuSpeedBlurFilterGen@@UAEXHH@Z,,native exactVT binding; unimplemented extent unclaimed
+0x5c4fc0,?initTextureResources@NuSpeedBlurFilterGen@@UAEXHH@Z,69,native exactVT binding; unimplemented extent unclaimed
 0x5c5010,?destroyTextureResources@NuSpeedBlurFilterGen@@UAEXXZ,11,Native VT cleanup complete CFG bound; working partial where applicable
 0x5c5020,?computeSpeedBlur@NuSpeedBlurFilterGen@@QAEXPAUNUVEC4@@@Z,379,void __thiscall(NUVEC4*)
 0x5c51a0,_NuSpeedBlurSetMotionFactors,31,
@@ -14116,6 +14116,7 @@ address,symbol,size,ctype
 0x758d90,??_C@_0BA@BOHHIAMK@Trooper_Granted?$AA@,,const char[]
 0x758da0,??_C@_0P@PIMKJEFB@Hunter_Granted?$AA@,,const char[]
 0x758db0,_GizmoRegistryGizPanelNamePc,6,const char[6]
+0x758db8,??_C@_05GMBADOLI@Ready?$AA@,6,char[6]
 0x758dc0,_GizmoRegistryGizTorpMachineNamePc,13,const char[13]
 0x758dd0,??_C@_06GIFHDKIF@shadow?$AA@,7,
 0x758dd8,??_C@_08BMJPALMI@invert_x?$AA@,9,

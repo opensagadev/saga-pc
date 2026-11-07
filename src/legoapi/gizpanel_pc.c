@@ -610,6 +610,10 @@ i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
     return 0;
 }
 
+char *__cdecl GizPanel_GetOutputName(void *unused, i32 output_index) {
+    return output_index == 0 ? (char *)"Finished" : NULL;
+}
+
 extern u8 PanelStormActivePc, PanelDroidActivePc, PanelBountyHunterActivePc;
 i32 __cdecl GizPanel_CanUsePanel(GAMEOBJECT *, void *);
 
