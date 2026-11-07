@@ -110,36 +110,6 @@ STATIC_ASSERT(offsetof(PC_NUDATFILEINFO, header) == 0);
 
 extern const char NuFileSourcePathPC[50];
 
-/* Retail expands the NuStr* helpers in place inside NuDatOpenEx. */
-#define NUDAT_STRLEN(length, text)                                                                                     \
-    do {                                                                                                               \
-        for ((length) = 0; (text)[length] != '\0'; ++(length)) {                                                       \
-        }                                                                                                              \
-    } while (0)
-#define NUDAT_STRCPY(dst_arg, src_arg)                                                                                 \
-    do {                                                                                                               \
-        char *nudat_dst = (dst_arg);                                                                                   \
-        const char *nudat_src = (src_arg);                                                                             \
-        while (*nudat_src != '\0') {                                                                                   \
-            *nudat_dst++ = *nudat_src++;                                                                               \
-        }                                                                                                              \
-        *nudat_dst = '\0';                                                                                             \
-    } while (0)
-#define NUDAT_STRCAT(str_arg, ext_arg)                                                                                 \
-    do {                                                                                                               \
-        char *nudat_str = (str_arg);                                                                                   \
-        const char *nudat_ext = (ext_arg);                                                                             \
-        while (*nudat_str != '\0') {                                                                                   \
-            nudat_str++;                                                                                               \
-        }                                                                                                              \
-        if (nudat_ext != NULL) {                                                                                       \
-            do {                                                                                                       \
-                *nudat_str = *nudat_ext;                                                                               \
-                nudat_str++;                                                                                           \
-            } while (*(nudat_ext++) != '\0');                                                                          \
-        }                                                                                                              \
-    } while (0)
-
 /* Append to nufile.c: real existing NuFileWrite is intentionally in this TU. */
 typedef union PC_FILE_WRITE_WORD32 {
     u32 value;
@@ -525,21 +495,30 @@ void __cdecl NuMemSet128(void *destination, u32 value, i32 blocks) {
     memset(destination, (u8)value, (u32)blocks << 4);
 }
 
+static void NuDatFileDecodeInit(void) {
+    unpack_file_info = NULL;
+    unpack_file_odi = NULL;
+    unpack_file_pos = -1;
+}
+
+static void NuDatFileDecodeNewFile(PC_NUDATFILEINFO *file, NUDATOPENFILEINFO *open_file) {
+    unpack_file_info = file;
+    unpack_file_odi = open_file;
+    unpack_file_pos = file->start;
+    decode_buffer_left = 0;
+}
+
 void __cdecl NuDatFileDecodeNext(void) {
-    char block_header[12];
-    i32 file;
-    i64 position;
+    char char_buf[12];
 
-    file = unpack_file_odi->dat_file;
-    NuFileRead(file, block_header, 12);
+    NuFileRead(unpack_file_odi->dat_file, char_buf, 0xc);
 
-    read_buffer_decoded_size = ExplodeBufferSize(block_header);
-    read_buffer_size = ExplodeCompressedSize(block_header) - 12;
-    NuFileRead(file, read_buffer, read_buffer_size);
+    read_buffer_decoded_size = ExplodeBufferSize(char_buf);
+    read_buffer_size = ExplodeCompressedSize(char_buf) - 0xc;
+    NuFileRead(unpack_file_odi->dat_file, read_buffer, read_buffer_size);
 
-    position = unpack_file_info->position + read_buffer_size + 12;
-    unpack_file_info->position = position;
-    unpack_file_odi->position = position;
+    unpack_file_info->position += read_buffer_size + 0xc;
+    unpack_file_odi->position = unpack_file_info->position;
 }
 
 void __cdecl NuFileUpCase(NUFILE_DEVICE *device, char *filepath) {
@@ -626,39 +605,16 @@ void __cdecl NuFileReldirFix(NUFILE_DEVICE *device, char *path) {
 }
 
 NUFILE_DEVICE *__cdecl NuFileAddDevice(NUFILE_DEVICE *device) {
-    i32 device_index;
-    NUFILE_DEVICE *registered_device;
-    char *destination;
-    const char *source;
-
-    device_index = numdevices;
-    if (device_index >= 16) {
+    if (numdevices >= 16) {
         NuFileError();
     }
 
-    registered_device = &devices[device_index];
-    *registered_device = *device;
-
-    destination = registered_device->cur_dir;
-    source = default_device->cur_dir;
-    do {
-        *destination++ = *source;
-    } while (*source++ != '\0');
-
-    destination = registered_device->sys_dir;
-    source = default_device->sys_dir;
-    do {
-        *destination++ = *source;
-    } while (*source++ != '\0');
-
-    destination = registered_device->dll_dir;
-    source = default_device->dll_dir;
-    do {
-        *destination++ = *source;
-    } while (*source++ != '\0');
-
-    numdevices = device_index + 1;
-    return registered_device;
+    devices[numdevices] = *device;
+    NuStrCpy(devices[numdevices].cur_dir, default_device->cur_dir);
+    NuStrCpy(devices[numdevices].sys_dir, default_device->sys_dir);
+    NuStrCpy(devices[numdevices].dll_dir, default_device->dll_dir);
+    ++numdevices;
+    return &devices[numdevices - 1];
 }
 
 void __cdecl NuFileGetCurrentDirectory(char *destination) {
@@ -792,9 +748,7 @@ i32 __cdecl NuFileInitEx(i32 device_id, i32 reboot_iop, i32 eject) {
     memset(pc_dat_file_infos, 0, sizeof(pc_dat_file_infos));
     file_criticalsection = PCThreadCriticalSectionCreate_candidate();
     NuFileExtInit(NuFileUseHiresPC() == 0);
-    unpack_file_info = NULL;
-    unpack_file_odi = NULL;
-    unpack_file_pos = -1;
+    NuDatFileDecodeInit();
     return device_id;
 }
 
@@ -1319,32 +1273,38 @@ i32 __cdecl NuFileExistQuiet(char *filepath) {
 }
 
 i64 __cdecl NuFileSize(char *filepath) {
-    i32 saved_buffering = nufile_buffering_enabled;
-    i64 position = -1;
+    i32 file;
+    i64 pos;
+    i32 buffering;
 
+    buffering = nufile_buffering_enabled;
     nufile_buffering_enabled = 0;
+
     if (curr_dat != NULL) {
-        i32 index = NuDatFileFindTree(curr_dat, filepath);
-        if (index >= 0) {
+        file = NuDatFileFindTree(curr_dat, filepath);
+        if (file >= 0) {
             /* The PC early return leaves file buffering disabled. */
-            return curr_dat->file_info[index].decompressed_len;
+            return curr_dat->file_info[file].decompressed_len;
         }
     }
 
+    pos = -1;
+
     if (filepath != NULL && *filepath != '\0') {
-        NUFILE file = NuFileOpenDF(filepath, 0, curr_dat, 0);
+        file = NuFileOpen(filepath, 0);
         if (file != 0) {
             do {
-                position = NuFileSeek(file, 0, 2);
-            } while (position < 0);
+                pos = NuFileSeek(file, 0, 2);
+            } while (pos < 0);
 
-            position = NuFilePos(file);
+            pos = NuFilePos(file);
             NuFileClose(file);
         }
     }
 
-    nufile_buffering_enabled = saved_buffering;
-    return position;
+    nufile_buffering_enabled = buffering;
+
+    return pos;
 }
 
 i32 __cdecl NuFileBeginBlkRead(NUFILE file, i32 expected_tag) {
@@ -1853,49 +1813,48 @@ i64 __cdecl NuDatFileSeek(NUFILE file, i64 offset, i32 whence) {
     return info->position;
 }
 
-i32 __cdecl NuDatFileFindHash(NUDATHDR *header, char *name) {
-    u32 hash = 0x811c9dc5;
-    const char *cursor = name;
-    i32 index;
+static u32 NameToHash(char *name) {
+    u32 constant = 0x811c9dc5;
+    u32 prime = 0x199933;
 
-    while (*cursor != '\0') {
-        hash = ((hash ^ (u32)(i32)(i8)*cursor) * 0x00199933);
-        cursor++;
+    u32 hash = constant;
+    for (; *name != '\0'; name++) {
+        hash ^= *name;
+        hash *= prime;
     }
 
-    for (index = 0; index < header->file_count; index++) {
-        if (header->hash_idxs[index] == hash) {
-            return index;
+    return hash;
+}
+
+i32 __cdecl NuDatFileFindHash(NUDATHDR *header, char *name) {
+    u32 hash = NameToHash(name);
+    VARIPTR ptr;
+    i32 i;
+
+    for (i = 0; i < header->file_count; i++) {
+        if (header->hash_idxs[i] == hash) {
+            return i;
         }
     }
 
-    {
-        const char *entry = header->hashes;
-        for (index = 0; index < header->hash_count; index++) {
-            const char *entry_cursor = entry;
-            const char *name_cursor = name;
+    if (header->hash_count != 0) {
+        ptr.char_ptr = header->hashes;
 
-            while (*entry_cursor == *name_cursor && *entry_cursor != '\0') {
-                entry_cursor++;
-                name_cursor++;
-            }
-            if (*entry_cursor == *name_cursor) {
-                while (*entry != '\0') {
-                    entry++;
+        for (i = 0; i < header->hash_count; i++) {
+            if (NuStrCmp(ptr.char_ptr, name) == 0) {
+                ptr.addr += NuStrLen(ptr.char_ptr) + 1;
+
+                if ((ptr.addr & 1) != 0) {
+                    ptr.addr++;
                 }
-                entry++;
-                if (((u32)entry & 1) != 0) {
-                    entry++;
-                }
-                return *(const i16 *)entry;
+
+                return *(i16 *)ptr.void_ptr;
             }
 
-            while (*entry != '\0') {
-                entry++;
-            }
-            entry += 3;
-            if (((u32)entry & 1) != 0) {
-                entry++;
+            ptr.addr += NuStrLen(ptr.char_ptr) + 3;
+
+            if ((ptr.addr & 1) != 0) {
+                ptr.addr++;
             }
         }
     }
@@ -2009,59 +1968,56 @@ static NUFILE OpenDatFileBase(NUDATHDR *header, i32 file_index) {
     return open_file->dat_file;
 }
 
-NUFILE __cdecl NuDatFileOpen(NUDATHDR *header, char *filepath, i32 mode) {
-    i32 node_index;
-    i32 info_index;
-    i32 file_index;
-    NUDATOPENFILEINFO *open_file;
-    PC_NUDATFILEINFO *info;
+NUFILE __cdecl NuDatFileOpen(NUDATHDR *hdr, char *filepath, i32 mode) {
+    i32 node_idx;
+    i32 info_idx;
+    i32 file_idx;
+    NUDATOPENFILEINFO *open_info;
 
-    if (mode != 0) {
-        return 0;
+    if (mode == 0) {
+        node_idx = NuDatFileFindTree(hdr, filepath);
+        if (node_idx >= 0 && hdr->file_info[node_idx].file_len != 0) {
+            info_idx = NuDatFileGetFreeInfo();
+            if (info_idx != -1) {
+                file_idx = NuDatFileGetFreeHandleIX(hdr, info_idx);
+                if (file_idx != -1) {
+                    open_info = &hdr->open_files[file_idx];
+
+                    OpenDatFileBase(hdr, file_idx);
+
+                    pc_dat_file_infos[info_idx].header = hdr;
+                    pc_dat_file_infos[info_idx].start = NuDatCalcPos(hdr, hdr->file_info[node_idx].file_offset);
+                    pc_dat_file_infos[info_idx].position = pc_dat_file_infos[info_idx].start;
+
+                    pc_dat_file_infos[info_idx].file_length = hdr->file_info[node_idx].file_len;
+                    pc_dat_file_infos[info_idx].decompressed_length = hdr->file_info[node_idx].decompressed_len;
+                    pc_dat_file_infos[info_idx].compression_mode = hdr->file_info[node_idx].compression_mode;
+
+                    pc_dat_file_infos[info_idx].open_file_index = file_idx;
+
+                    open_info->position = pc_dat_file_infos[info_idx].position;
+
+                    while (NuFileSeek(open_info->dat_file, pc_dat_file_infos[info_idx].start, 0) < 0) {
+                        NuFileRetry();
+                    }
+
+                    if (pc_dat_file_infos[info_idx].compression_mode == 2) {
+                        NuDatFileDecodeNewFile(&pc_dat_file_infos[info_idx], open_info);
+                    }
+
+                    return info_idx + 0x800;
+                }
+
+                pc_dat_file_infos[info_idx].is_used = 0;
+            } else {
+                NuFileRetry();
+            }
+        } else {
+            NuFileRetry();
+        }
     }
 
-    node_index = NuDatFileFindTree(header, filepath);
-    if (node_index < 0 || header->file_info[node_index].file_len == 0) {
-        NuFileRetry();
-        return 0;
-    }
-
-    info_index = NuDatFileGetFreeInfo();
-    if (info_index == -1) {
-        NuFileRetry();
-        return 0;
-    }
-
-    file_index = NuDatFileGetFreeHandleIX(header, info_index);
-    if (file_index == -1) {
-        pc_dat_file_infos[info_index].is_used = 0;
-        return 0;
-    }
-
-    open_file = &header->open_files[file_index];
-    OpenDatFileBase(header, file_index);
-
-    info = &pc_dat_file_infos[info_index];
-    info->header = header;
-    info->start = NuDatCalcPos(header, header->file_info[node_index].file_offset);
-    info->position = info->start;
-    info->file_length = header->file_info[node_index].file_len;
-    info->decompressed_length = header->file_info[node_index].decompressed_len;
-    info->compression_mode = header->file_info[node_index].compression_mode;
-    info->open_file_index = file_index;
-    open_file->position = info->position;
-
-    while (NuFileSeek(open_file->dat_file, info->start, 0) < 0) {
-        NuFileRetry();
-    }
-
-    if (info->compression_mode == 2) {
-        unpack_file_info = info;
-        unpack_file_odi = open_file;
-        unpack_file_pos = info->start;
-        decode_buffer_left = 0;
-    }
-    return info_index + 0x800;
+    return 0;
 }
 
 i32 __cdecl NuDatFileOpenSize(NUFILE file) {
@@ -2128,7 +2084,7 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         }
 
         default_device->format_name_fn(default_device, formatted_name, (char *)filepath, sizeof(formatted_name));
-        NUDAT_STRLEN(name_len, formatted_name);
+        name_len = NuStrLen(formatted_name);
         name_storage = (name_len + 16) & ~15;
         allocation_size = sizeof(NUDATHDR) + name_storage + metadata_len;
 
@@ -2144,7 +2100,7 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
             *size_out = allocation_size;
         header->unknown_b0 = 0;
         header->name = (char *)(header + 1);
-        NUDAT_STRCPY(header->name, formatted_name);
+        NuStrCpy(header->name, formatted_name);
         metadata = (u8 *)header->name + name_storage;
         while (NuFileRead(file, metadata, metadata_len) < 0) {
             do {
@@ -2188,7 +2144,7 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
             /* Android endian-swaps each hash entry here; on PC the walk is left without a swap. */
             hash = header->hashes;
             for (index = 0; index < header->hash_count; ++index) {
-                NUDAT_STRLEN(name_len, hash);
+                name_len = NuStrLen(hash);
                 hash += name_len + 1;
                 if (((u32)hash & 1) != 0) {
                     hash++;
@@ -2221,10 +2177,10 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         header->mode = mode;
         if (nufile_lsn_allowed != 0 && default_device->id == 2) {
             /* Disc path for the console LSN lookup; the PC build never resolves it. */
-            NUDAT_STRCPY(formatted_name, WorldPathSeparator);
-            NUDAT_STRCAT(formatted_name, default_device->cur_dir);
-            NUDAT_STRCAT(formatted_name, filepath);
-            NUDAT_STRCAT(formatted_name, nufile_disc_suffix);
+            NuStrCpy(formatted_name, WorldPathSeparator);
+            NuStrCat(formatted_name, default_device->cur_dir);
+            NuStrCat(formatted_name, filepath);
+            NuStrCat(formatted_name, nufile_disc_suffix);
         }
         header->unknown_b4 = 0;
         nufile_buffering_enabled = saved_buffering;
@@ -3066,7 +3022,12 @@ f32 __cdecl NuFParGetFloatRDP(NUFPAR_PC *parser) {
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
-    return buffer[0] != '\0' ? NuRDPFVar(buffer, NULL) : 0.0f;
+
+    if (buffer[0] != '\0') {
+        return NuRDPF(buffer);
+    } else {
+        return 0.0f;
+    }
 }
 
 static void NuRDPIGetToken(NURDPICTX_PC *context) {
@@ -7954,7 +7915,6 @@ static void ImplodeReadLiteralLengthsPrivatePc() {
 
 i32 __cdecl NuDatGetFileInfo(NUDATHDR *header, char *name, i64 *position, i32 *length) {
     i32 index;
-    const NUDATFINFO *file;
     i64 file_position;
 
     if (header == NULL) {
@@ -7962,27 +7922,26 @@ i32 __cdecl NuDatGetFileInfo(NUDATHDR *header, char *name, i64 *position, i32 *l
     }
 
     index = NuDatFileFindTree(header, name);
-    if (index < 0) {
-        return -1;
-    }
-
-    file = &header->file_info[index];
-    file_position = file->file_offset;
-    if (header->version <= -2) {
-        file_position = (i64)((u64)file_position << 8);
-    }
-    file_position += datsys_offset;
-    if (position != NULL) {
+    if (index >= 0) {
+        file_position = NuDatCalcPos(header, header->file_info[index].file_offset);
         if (nufile_lsn_allowed != 0 && header->unknown_b4 != 0) {
-            *position = (i64)(i32)((u32)header->unknown_b4 + (u32)(file_position / 0x800));
-        } else {
+            if (position != NULL) {
+                *position = header->unknown_b4 + (i32)(file_position / 0x800);
+            }
+            if (length != NULL) {
+                *length = header->file_info[index].file_len;
+            }
+            return index;
+        }
+        if (position != NULL) {
             *position = file_position;
         }
+        if (length != NULL) {
+            *length = header->file_info[index].file_len;
+        }
+        return index;
     }
-    if (length != NULL) {
-        *length = header->file_info[index].file_len;
-    }
-    return index;
+    return -1;
 }
 
 i32 __cdecl ExplodeBufferSize(char *header) {
