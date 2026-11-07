@@ -5670,8 +5670,8 @@ i32 __cdecl Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     NUVEC difference;
     AICREATURE_PC *creature;
     NUVEC *origin;
-    f32 min_time;
-    f32 max_time;
+    f32 min_time = 0.0f;
+    f32 max_time = 0.0f;
     i32 index;
     char *value;
     f32 distance_squared;
@@ -5691,26 +5691,28 @@ i32 __cdecl Action_GoToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
 
     if (first_time != 0) {
         packet->movement_instruction_parameter = 0.2f;
-        min_time = 0.0f;
-        max_time = 0.0f;
-        for (index = 0; index < param_count; ++index) {
-            if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
-                continue;
-            }
-            value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
-            if (value != NULL) {
-                processor->action_timer = AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionMinTimeName)) != NULL) {
-                min_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
-            } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
-                max_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
-            } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
-                processor->action_data_2 = 1;
-            } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
-                packet->movement_instruction_parameter =
-                    AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
-            } else {
-                packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+        if (param_count != 0) {
+            for (index = 0; index < param_count; ++index) {
+                if (AIActionParseSpeedFn != NULL &&
+                    AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
+                    continue;
+                }
+                value = NuStrIStr(params[index], (char *)AIPathWaitTimeName);
+                if (value != NULL) {
+                    processor->action_timer =
+                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathWaitTimeName) + 1);
+                } else if ((value = NuStrIStr(params[index], (char *)AIActionMinTimeName)) != NULL) {
+                    min_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMinTimeName) + 1);
+                } else if ((value = NuStrIStr(params[index], (char *)AIActionMaxTimeName)) != NULL) {
+                    max_time = AIParamToFloatEx(packet, processor, value + NuStrLen(AIActionMaxTimeName) + 1);
+                } else if (NuStrICmp(params[index], AIPathXZRangeCheckName) == 0) {
+                    processor->action_data_2 = 1;
+                } else if ((value = NuStrIStr(params[index], (char *)AIPathGoalRangeName)) != NULL) {
+                    packet->movement_instruction_parameter =
+                        AIParamToFloatEx(packet, processor, value + NuStrLen(AIPathGoalRangeName) + 1);
+                } else {
+                    packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
+                }
             }
         }
         if (processor->action_timer == 0.0f) {
