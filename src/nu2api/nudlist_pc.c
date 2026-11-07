@@ -1005,3 +1005,23 @@ void __cdecl DisplayListPrintItem(NUDISPLAYLISTITEM *item, i32 index, i32 type_c
     if (file_handle != 0)
         DisplayListPrintItemPS(item, file_handle);
 }
+
+/* Writes every item of a display list to the HTML capture. Bit 0 of flags follows
+ * jump items (id 1); bit 1 selects the 0x84 terminator instead of 0x8e. Retail passes
+ * items in EAX (a whole-program-optimised private ABI); this port uses cdecl. */
+void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types, i32 file_handle) {
+    i32 index = 0;
+    u32 end;
+    if (item == NULL)
+        return;
+    end = (flags & 2) ? 0x84 : 0x8e;
+    do {
+        DisplayListPrintItem(item, index, type_count, types, file_handle);
+        if ((flags & 1) && item->id == 1)
+            item = (NUDISPLAYLISTITEM *)item->next;
+        else
+            ++item;
+        ++index;
+    } while (item->type != end);
+    DisplayListPrintItem(item, index, type_count, types, file_handle);
+}

@@ -1826,9 +1826,12 @@ STATIC_ASSERT(offsetof(NUSORTPRI, sort_pri) == 0);
 
 extern "C" {
     extern void(__cdecl **PCDisplayItemHandlersPc)(void *);
+    void __cdecl NuHtmlHeading(char *text, ...);
+    void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
+                                         i32 file_handle);
 }
 
-extern "C" void __cdecl NuDisplayListDrawItemsPc(NUDISPLAYLISTITEM *items) {
+extern "C" __declspec(noinline) void __cdecl NuDisplayListDrawItemsPc(NUDISPLAYLISTITEM *items) {
     NuDisplayListExecute(items, PCDisplayItemHandlersPc);
 }
 
@@ -1840,14 +1843,12 @@ extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
         if (nudlist_field_fe4 != 0) {
             PC_DISPLAY_DEBUG_NAME_READER *debug_scene =
                 reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene);
-            if (debug_scene != NULL && debug_scene->name != NULL) {
-                STUBBED_NAMED(0x005d72b0); /* native5f033d: heading(name,sort_pri), ignored VOID */
-            } else {
-                STUBBED_NAMED(0x005d72b0); /* native5f034f: UNKNOWN heading(sort_pri), ignored VOID */
-            }
-            STUBBED_NAMED(0x005d7230); /* native5f035c: font HTML, ignored VOID */
-            STUBBED_NAMED(0x005e09a0); /* native5f0371: EAX=sort->items; stack(3,0,NULL,nudlist_field_958).
-                                       Genuine original private register ABI is held, no public wrapper. */
+            if (debug_scene != NULL && debug_scene->name != NULL)
+                NuHtmlHeading("Display Scene : %s (sort: %d)", debug_scene->name, sort->sort_pri);
+            else
+                NuHtmlHeading("Display Scene : UNKNOWN (sort: %d)", sort->sort_pri);
+            NuHtmlWrite("<font face=courier new>\n");
+            DisplayListPrintItemsPc(sort->items, 3, 0, NULL, nudlist_field_958);
         }
         NuDisplayListDrawItemsPc(sort->items);
     }

@@ -29,3 +29,16 @@ void __cdecl NuHtmlFlushPc(void) {
     }
     nudlist_field_988 = 0;
 }
+
+/* Writes a banner row whose caption is formatted like printf. */
+void __cdecl NuHtmlHeading(char *text, ...) {
+    va_list args;
+    if (text == NULL || *text == '\0') {
+        text = NuHtmlUnknownTextPc;
+    }
+    NuHtmlWrite("<table width=100%c bgcolor=#CFCFE5><tr><td><font face=arial size=+3> ", 0x25);
+    va_start(args, text);
+    vsprintf(PCDisplayCaptureCursorPc, text, args);
+    PCDisplayCaptureCursorPc += NuStrLen(PCDisplayCaptureCursorPc);
+    NuHtmlWrite("</font></table>\n");
+}

@@ -6387,6 +6387,7 @@ address,symbol,size,ctype
 0x5d6f00,_VisibilityFloorPc,36,i32 __cdecl(f32)
 0x5d6f30,_NuVisiOcclusion,293,void __cdecl(VISIBILITY_RESULT_READER_PC*)
 0x5d7230,_NuHtmlWrite,117,
+0x5d72b0,_NuHtmlHeading,86,"void __cdecl(char *,...)"
 0x005d73e0,_NuHtmlFlushPc,71,void __cdecl(void)
 0x5d7430,_NuHtmlBitmap,210,
 0x5d7510,_NuHtmlTitle,46,
@@ -6497,6 +6498,7 @@ address,symbol,size,ctype
 0x5e0490,_DisplayListProcessFaceonPC,151,"void __cdecl(NUDISPLAYLIST_PC *,NUDISPLAYLISTITEM *,NUDISPLAYLISTITEM **,NUMTX *,f32)"
 0x5e0530,_DisplayListProcessSpecialItemPC,168,"void __cdecl(PC_SPECIAL_RENDER_MATERIAL *,NUDISPLAYLIST_PC *,NUDISPLAYLISTITEM *,i32,NUDISPLAYLISTITEM **,NUMTX *,void **,NUMTX *,void *,f32,i32)"
 0x5e05e0,_DisplayListPrintItem,957,
+0x5e09a0,_DisplayListPrintItemsPc,129,"void __cdecl(NUDISPLAYLISTITEM *,u32,i32,i32 *,i32)"
 0x5e0bd0,_UpdateMaterialClipBitsPC,299,void __cdecl(NUDISPLAY_LIST_PC *)
 0x5e0d00,_DisplayProcessMaterialRenderStatesPC,586,void __cdecl(void)
 0x5e0f90,_NuDisplayListExecute,92,"void __cdecl(NUDISPLAYLISTITEM *,void (__cdecl **)(void *))"
@@ -17711,6 +17713,8 @@ address,symbol,size,ctype
 0x764680,_NuTextureAnimationSlotsWarning,31,const char[31]
 0x7646a0,__real@43340000,,
 0x007646a4,_NuCameraAllocSource,54,const char[54]
+0x7646dc,??_C@_0BB@PLKHJDKB@?$DM?1font?$DO?$DM?1table?$DO?6?$AA@,17,const char[17]
+0x7646f0,??_C@_0EG@HEMFNHOH@?$DMtable?5width?$DN100?$CFc?5bgcolor?$DN?$CDCFCF@,70,const char[70]
 0x007647c8,??_C@_0GA@NFHLHHNJ@?$DMtable?5?5?5width?$DN100?$CFc?5height?$DN20?5b@,,const char[96]
 0x764828,??_C@_0BO@OIIBHDMB@?$DMBR?5CLEAR?$DN?$CCall?$CC?$DO?5?$DMP?$DO?$CGnbsp?$DL?$DMP?$DO?$AA@,30,char []
 0x764848,??_C@_0BM@LLFDNOND@?$DMIMG?5ALIGN?$DN?$CCleft?$CC?5SRC?$DN?$CC?$CFs?$CC?$DO?$AA@,28,char []
@@ -17761,6 +17765,9 @@ address,symbol,size,ctype
 0x765314,??_C@_04DIMAIMCG@?$CFd?3?5?$AA@,,const char[5]
 0x76531c,??_C@_0BJ@HJOEEKPJ@?$DMfont?5color?5?$DN?5?$CC?$CD0000a0?$CC?$DO?$AA@,,const char[25]
 0x765338,??_C@_0BJ@PJDFEOIB@?$DMfont?5color?5?$DN?5?$CC?$CD00a000?$CC?$DO?$AA@,,const char[25]
+0x765354,??_C@_0BJ@KMIDIINF@?$DMfont?5face?$DNcourier?5new?$DO?6?$AA@,25,const char[25]
+0x765370,??_C@_0CD@KJLELBCF@Display?5Scene?5?3?5UNKNOWN?5?$CIsort?3?5?$CF@,35,const char[35]
+0x765394,??_C@_0BO@PGJKDHCO@Display?5Scene?5?3?5?$CFs?5?$CIsort?3?5?$CFd?$CJ?$AA@,30,const char[30]
 0x007653c4,??_C@_0BB@JCEFLFJE@0123456789abcdef?$AA@,,const char[17]
 0x007653d8,??_C@_0BJ@BFAKJOD@c?3?2temp?2stream?2textures?2?$AA@,,const char[25]
 0x7653f8,??_7NuMainFilterGen@@6B@,40,native exactVT binding; unimplemented extent unclaimed
