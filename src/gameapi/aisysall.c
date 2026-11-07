@@ -18081,7 +18081,7 @@ eduimenu_s *__cdecl locatorEditor_MainMenu(void) {
 }
 
 eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
-    char base[32];
+    char base[16];
     i32 angle;
     EDAICREATURE_s *hover_creature;
     EDLOCATOR_s *hover_locator;
@@ -18113,13 +18113,15 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                 aieditor->current_path = aieditor->current_locator->path_check.path;
                 aieditorsettings.locator_rotation = aieditor->current_locator->direction;
                 edcamSetPos(&aieditor->current_locator->position);
-            } else if (aieditor->current_locator != NULL && aieditor->cursor_check.on_path != 0) {
-                aieditor->current_locator->position = aieditor->camera_position;
-                aieditor->current_locator->path_check = aieditor->cursor_check;
-                angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
-                aieditor->current_locator->path_check.angle = angle;
             } else if (aieditor->current_locator != NULL) {
-                edcamSetPos(&aieditor->current_locator->position);
+                if (aieditor->cursor_check.on_path != 0) {
+                    aieditor->current_locator->position = aieditor->camera_position;
+                    aieditor->current_locator->path_check = aieditor->cursor_check;
+                    angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
+                    aieditor->current_locator->path_check.angle = angle;
+                } else {
+                    edcamSetPos(&aieditor->current_locator->position);
+                }
             }
         } else if ((pad->digital_buttons_pressed & 0x40) != 0 && aieditor->cursor_check.on_path != 0) {
             EDLOCATOR_s *previous;
@@ -18127,16 +18129,17 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
             char *suffix;
             if (aieditor->current_locator_set != NULL && NuStrLen(aieditor->current_locator_set->name) != 0) {
                 NuStrCpy(base, aieditor->current_locator_set->name);
+                suffix = strrchr(base, '_');
+                if (suffix != NULL)
+                    *suffix = 0;
             } else if (aieditor->current_locator != NULL) {
                 NuStrCpy(base, aieditor->current_locator->name);
+                suffix = strrchr(base, '_');
+                if (suffix != NULL)
+                    *suffix = 0;
             } else {
                 NuStrCpy(base, "Locator");
-                goto create_locator;
             }
-            suffix = strrchr(base, '_');
-            if (suffix != NULL)
-                *suffix = 0;
-        create_locator:
             previous = aieditor->current_locator;
             created = AiEditorCreateLocatorPc(&aieditor->camera_position, aieditorsettings.locator_rotation);
             aieditor->current_locator = created;
@@ -18155,8 +18158,10 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                 aieditor->current_locator->path_check = aieditor->cursor_check;
                 angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
                 aieditor->current_locator->path_check.angle = angle;
-                AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->current_locator,
-                                          previous != aieditor->current_locator ? previous : NULL);
+                if (previous != NULL && previous != aieditor->current_locator)
+                    AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->current_locator, previous);
+                else
+                    AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->current_locator, NULL);
             }
         }
     } else if ((pad->digital_buttons_pressed & 0x10) != 0) {
@@ -18164,6 +18169,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
             return locatorEditor_DeleteLocatorMenu();
     } else if ((pad->digital_buttons & 0x100) != 0) {
         EDLOCATOR_s *next;
+        i32 moved = 0;
         if ((pad->digital_buttons_pressed & 8) != 0) {
             if (aieditor->current_locator_set != NULL) {
                 next = AiEditorNextLocatorInSetPc(aieditor->current_locator_set, aieditor->current_locator);
@@ -18178,6 +18184,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                     aieditor->current_locator = next;
                 }
             }
+            moved = 1;
         } else if ((pad->digital_buttons_pressed & 2) != 0) {
             if (aieditor->current_locator_set != NULL) {
                 next = AiEditorPrevLocatorInSetPc(aieditor->current_locator_set, aieditor->current_locator);
@@ -18192,15 +18199,16 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                     aieditor->current_locator = next;
                 }
             }
+            moved = 1;
         } else if ((pad->digital_buttons_pressed & 0x100) != 0) {
             next = locatorEditor_GetNearest(0);
             aieditor->current_locator = next;
-        } else {
-            goto refresh_hover;
+            moved = 1;
         }
-        if (aieditor->current_locator != NULL) {
+        if (aieditor->current_locator != NULL && moved) {
             aieditor->current_path = aieditor->current_locator->path_check.path;
-            edcamSetPos(&aieditor->current_locator->position);
+            if (aieditor->current_locator != NULL)
+                edcamSetPos(&aieditor->current_locator->position);
         }
     } else if ((pad->digital_buttons & 0x2000) != 0) {
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator)
@@ -18236,7 +18244,7 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
         }
     } else if ((pad->digital_buttons & 0x4000) != 0) {
         i32 difference = NuAngSub(aieditorsettings.locator_rotation, aieditor->cursor_check.angle);
-        i32 quadrant = difference < 0 ? (difference + 0x3fff) >> 14 : difference >> 14;
+        i32 quadrant = difference / 0x4000;
         i32 remainder = difference % 0x4000;
         if (remainder > 0x2000)
             ++quadrant;
@@ -18252,23 +18260,33 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                (pad->digital_buttons_pressed & 0x20) != 0 && aieditor->nearest_locator != NULL) {
         EDLOCATORSET_s *set = aieditor->current_locator_set;
         EDLOCATOR_s *nearest = aieditor->nearest_locator;
-        EDLOCATOR_s *before;
+        i32 in_set = 0;
+        i32 added;
         i32 index;
-        for (index = 0; index < 64; ++index) {
-            if (set->locators[index] == nearest) {
-                AiEditorRemoveLocatorFromSetPc(set, nearest);
-                if (aieditor->current_locator == NULL || aieditor->current_locator == aieditor->nearest_locator)
-                    goto refresh_hover;
-                goto add_nearest;
+        if (set != NULL && nearest != NULL) {
+            for (index = 0; index < 64; ++index) {
+                if (set->locators[index] == nearest) {
+                    in_set = 1;
+                    break;
+                }
+                if (set->locators[index] == NULL)
+                    break;
             }
-            if (set->locators[index] == NULL)
-                break;
         }
-    add_nearest:
-        before = aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator
-                     ? aieditor->current_locator
-                     : NULL;
-        if (AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->nearest_locator, before) != 0) {
+        if (!in_set) {
+            EDLOCATOR_s *before =
+                aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator
+                    ? aieditor->current_locator
+                    : NULL;
+            added = AiEditorAddLocatorToSetPc(set, nearest, before);
+        } else {
+            AiEditorRemoveLocatorFromSetPc(set, nearest);
+            if (aieditor->current_locator == NULL || aieditor->current_locator == aieditor->nearest_locator)
+                goto refresh_hover;
+            added = AiEditorAddLocatorToSetPc(aieditor->current_locator_set, aieditor->nearest_locator,
+                                              aieditor->current_locator);
+        }
+        if (added != 0) {
             aieditor->current_locator = aieditor->nearest_locator;
             aieditor->current_path = aieditor->current_locator->path_check.path;
             aieditorsettings.locator_rotation = aieditor->current_locator->direction;
