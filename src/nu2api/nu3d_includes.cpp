@@ -1,8 +1,10 @@
-// nu3d translation unit (retail 0x5c0200-0x608000), being rebuilt one module at a time.
+// nu3d translation unit (retail 0x5c0200-0x5f7490), being rebuilt one module at a time; the PC
+// platform unit that follows it (0x5f7490-0x60df00) is nu3d_platform_pc.cpp.
 // Retail compiled nu3d as one C++ unit and emitted it in bottom-up call-graph passes, so module
 // functions interleave in the EXE; definitions here follow retail address order.
 // Modules merged so far: nuanim (with the PC procedural joint overrides), nuqfnt, nufont, occlusion, nugscn,
-// nuportal, numtl, nutimebar, nudlist, nupostfilter. The PS/Pc halves live in the platform unit, nu3d_platform_pc.cpp.
+// nuportal, numtl, nutimebar, nudlist, nupostfilter, nulgtlaser, nutex_pc, nuframe, nuvport, nuprim, nudlist_pc.
+// The PS/Pc halves live in the platform unit, nu3d_platform_pc.cpp.
 
 #include "saga.h"
 
@@ -10878,3 +10880,362 @@ extern "C" void __cdecl NuPostEffectReleasePc(void) {
     PCGraphicsDestroyPostEffectTexturesPc();
     NuPostFilterAllocatorPc.cursor = NuPostFilterAllocatorPc.base;
 }
+
+/* nulgtlaser's nu3d forwarders; the laser renderer itself is in nu3d_platform_pc.cpp. */
+extern "C" {
+    void __cdecl NuVec4ScaleForwardPc(NUVEC4 *, NUVEC4 *, f32);
+    i32 __cdecl NuRndrBeginSceneEx(i32, i32, i32);
+
+    __declspec(noinline) void __cdecl NuVec4ScaleForwardPc(NUVEC4 *out, NUVEC4 *input, f32 scale) {
+        NuVec4Scale(out, input, scale);
+    }
+
+    __declspec(noinline) i32 __cdecl NuRndrBeginSceneEx(i32 flags, i32 layer, i32 mode) {
+        return NuRndrBeginScene(flags);
+    }
+
+    __declspec(noinline) void __cdecl NuRndrEndSceneEx(i32 flags) {
+        NuRndrEndScene();
+    }
+} // extern "C"
+
+/* nutex_pc's two nu3d texture helpers; the rest of nutex_pc is in nu3d_platform_pc.cpp. */
+
+extern "C" {
+    extern u32 PCGraphicsPostEffectWidthPc;
+    extern u32 PCGraphicsPostEffectHeightPc;
+    extern GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectWorkTexturePc;
+}
+
+extern "C" void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height) {
+    (void)width;
+    (void)height;
+    PCGraphicsPostEffectWorkTexturePc =
+        PCGraphicsCreateEffectTexture(PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 1, 0x11, 2);
+}
+
+extern "C" i32 __cdecl NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end) {
+    NuEffectTexLockVP(buffer, end);
+    PC_FRAMEBUFFER_PC *framebuffer = NuFramebufferGetObject(1);
+    i32 width = NuFramebufferGetWidth(framebuffer);
+    i32 height = NuFramebufferGetHeight(framebuffer);
+    GRAPHICS_RENDER_TEXTURE_PC *texture = PCGraphicsCreateEffectTexture(width, height, 1, 1, 1);
+    NuEffectTexUnlockVP();
+    return NuTexRegisterRenderTargetPc(texture);
+}
+
+/* nuframe's nu3d members. */
+extern "C" {
+    void __cdecl SetProceduralAnimationFn(NUJOINTPROCANIMFN_PC callback) {
+        JointProcAnimFn = callback;
+    }
+
+    static f32 nu2api_paused = 0;
+
+    void __cdecl NuPause(i32 paused) {
+        nu2api_paused = (f32)paused;
+    }
+} // extern "C"
+
+/* nuvport's nu3d half; the grab tiles, scaling template and NuVpInit/NuVpUpdate are in
+ * nu3d_platform_pc.cpp. */
+extern "C" {
+    void __cdecl NuVpSetIdentityPc(NUMTX *matrix) {
+        if (matrix != NULL)
+            *matrix = NuVpIdentityMatrixPc;
+    }
+
+    NUVPCURRENT *NuVpGetCurrentViewport(void) {
+        return &vpCurrent;
+    }
+
+    STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_x) == 0);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_y) == 4);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_right) == 8);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, source_bottom) == 0xc);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_x) == 0x10);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_y) == 0x14);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_right) == 0x18);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, dest_bottom) == 0x1c);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, width_scale) == 0x20);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, height_scale) == 0x24);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, x_offset) == 0x28);
+    STATIC_ASSERT(offsetof(RENDER_POST_VIEWPORT_PREFIX_PC, y_offset) == 0x2c);
+    extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
+    void __cdecl RenderPostViewportSetPc(f32 source_x, f32 source_y, f32 source_right, f32 source_bottom, f32 dest_x,
+                                         f32 dest_y, f32 dest_right, f32 dest_bottom);
+    void __cdecl RenderPostViewportResetPc(void);
+
+    void __cdecl RenderPostViewportResetPc(void) {
+        f32 width = (f32)PS2_VREZ_W;
+        f32 height = (f32)PS2_VREZ_H;
+        RenderPostViewportSetPc(0.0f, 0.0f, width, height, 0.0f, 0.0f, width, height);
+    }
+
+    void __cdecl NuVpGetSize2(f32 *width, f32 *height) {
+        *width = (f32)((vpCurrent.width * 0.0625) / ((f64)PS2_REZ_W / PS2_VREZ_W));
+        *height = (f32)((vpCurrent.height * 0.0625) / ((f64)PS2_REZ_H / PS2_VREZ_H));
+    }
+
+    STATIC_ASSERT(offsetof(NUVPCURRENT, x) == 0);
+    STATIC_ASSERT(offsetof(NUVPCURRENT, y) == 4);
+    STATIC_ASSERT(offsetof(NUVPCURRENT, width) == 8);
+    STATIC_ASSERT(offsetof(NUVPCURRENT, height) == 0xc);
+    void __cdecl NuVpSetZRange(f32 minimum, f32 maximum) {
+        NuVpDirtyPc = 1;
+        vpCurrent.min_z = minimum;
+        vpCurrent.max_z = maximum;
+    }
+    void __cdecl NuVpSetPosition2(f32 x, f32 y) {
+        x += RenderPostViewportPrefixPc.x_offset;
+        y += RenderPostViewportPrefixPc.y_offset;
+        vpCurrent.x = (i32)(((f64)PS2_REZ_W * x / PS2_VREZ_W + ((f64)PS2_VCNTR_X - (PS2_REZ_W >> 1))) * 16.0);
+        vpCurrent.y = (i32)(((f64)PS2_REZ_H * y / PS2_VREZ_H + ((f64)PS2_VCNTR_Y - (PS2_REZ_H >> 1))) * 16.0);
+        NuVpDirtyPc = 1;
+    }
+    void __cdecl NuVpSetPosition(f32 x, f32 y) {
+        f32 pixel_height = (f32)PS2_REZ_H;
+        f32 virtual_height = (f32)PS2_VREZ_H;
+        f32 y_ratio = pixel_height != 0.0f && virtual_height != 0.0f ? (f32)((f64)pixel_height / virtual_height) : 0.0f;
+        f32 y_offset = (f32)((f64)y * 0.0625 - ((f64)PS2_VCNTR_Y - (PS2_REZ_H >> 1)));
+        f32 new_y = y_offset != 0.0f && y_ratio != 0.0f ? (f32)((f64)y_offset / y_ratio) : 0.0f;
+        f32 pixel_width = (f32)PS2_REZ_W;
+        f32 virtual_width = (f32)PS2_VREZ_W;
+        f32 x_ratio = pixel_width != 0.0f && virtual_width != 0.0f ? (f32)((f64)pixel_width / virtual_width) : 0.0f;
+        f32 x_offset = (f32)((f64)x * 0.0625 - ((f64)PS2_VCNTR_X - (PS2_REZ_W >> 1)));
+        f32 new_x = x_offset != 0.0f && x_ratio != 0.0f ? (f32)((f64)x_offset / x_ratio) : 0.0f;
+        NuVpSetPosition2(new_x, new_y);
+    }
+    void __cdecl NuVpSetSize2(f32 width, f32 height) {
+        width *= RenderPostViewportPrefixPc.width_scale;
+        height *= RenderPostViewportPrefixPc.height_scale;
+        vpCurrent.width = (i32)((f64)PS2_REZ_W * width / PS2_VREZ_W * 16.0);
+        vpCurrent.height = (i32)((f64)PS2_REZ_H * height / PS2_VREZ_H * 16.0);
+        NuVpDirtyPc = 1;
+    }
+} // extern "C"
+
+/* nuprim's nu3d material linker; the packet builders are in nu3d_platform_pc.cpp. */
+typedef struct nuprim_command_pc_s {
+    u8 type;
+    u8 id;
+    u16 unknown_0002;
+    void *target;
+    u32 unknown_0008[2];
+} NUPRIM_COMMAND_PC;
+STATIC_ASSERT(sizeof(NUPRIM_COMMAND_PC) == 0x10);
+STATIC_ASSERT(offsetof(NUPRIM_COMMAND_PC, target) == 4);
+
+typedef struct nuprim_material_state_pc_s {
+    u32 unknown_0000[2];
+    NUMTL *material;
+    u32 unknown_000c;
+    u32 unknown_0010;
+    i32 texture_id;
+} NUPRIM_MATERIAL_STATE_PC;
+STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, material) == 0x08);
+STATIC_ASSERT(offsetof(NUPRIM_MATERIAL_STATE_PC, texture_id) == 0x14);
+
+void __cdecl NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
+#define LINK_MTL_STATE ((NUPRIM_MATERIAL_STATE_PC *)list->render_state)
+    NUPRIM_COMMAND_PC *command;
+    VARIPTR *cursor;
+
+    if (material == LINK_MTL_STATE->material) {
+        return;
+    }
+
+    NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
+    cursor = NuDisplayListStreamCursor;
+    ((NUPRIM_COMMAND_PC *)list->material_last)->target = cursor->void_ptr;
+
+    if (material->texture_id > 0 && material->texture_id != LINK_MTL_STATE->texture_id) {
+        command = (NUPRIM_COMMAND_PC *)cursor->void_ptr;
+        cursor->void_ptr = command + 6;
+        command->type = 0x87;
+        command->target = NULL;
+        command->id = 0;
+        command++;
+        command->type = 0x87;
+        command->target = NULL;
+        command->id = 0;
+        command++;
+        LINK_MTL_STATE->texture_id = material->texture_id;
+    } else {
+        command = (NUPRIM_COMMAND_PC *)cursor->void_ptr;
+        cursor->void_ptr = command + 4;
+    }
+
+    command->type = 0x80;
+    command->target = material;
+    command->id = 3;
+    command++;
+    command->type = 0x87;
+    command->target = NULL;
+    command->id = 0;
+    command++;
+    command->type = 0x87;
+    command->target = NULL;
+    command->id = 0;
+    command++;
+    command->target = NULL;
+    command->type = 0x8d;
+    command->id = 1;
+
+    list->material_last = command;
+    LINK_MTL_STATE->material = material;
+}
+#undef LINK_MTL_STATE
+
+/* nudlist_pc's display-list debug printers. */
+extern "C" {
+    void __cdecl DisplayListPrintItem(NUDISPLAYLISTITEM *item, i32 index, i32 type_count, i32 *types, i32 file_handle) {
+        char text[256];
+        char detail[256];
+        i32 selected;
+        i32 type_index;
+        text[0] = '\0';
+        if (file_handle != 0) {
+            if (item->id == 0)
+                sprintf(text, "<font color = \"#00a000\">");
+            else
+                sprintf(text, "<font color = \"#0000a0\">");
+        }
+        sprintf(detail, "%d: ", index);
+        NuStrCat(text, detail);
+        switch (item->type) {
+            case 0x80:
+                sprintf(detail, "MTL              ");
+                break;
+            case 0x81:
+                sprintf(detail, "TXTRLOAD         ");
+                break;
+            case 0x82:
+                sprintf(detail, "GEOMCALL         ");
+                break;
+            case 0x83:
+                sprintf(detail, "MTXLOAD          ");
+                break;
+            case 0x84:
+                sprintf(detail, "TERMINATE        ");
+                break;
+            case 0x85:
+                sprintf(detail, "MTL_CLIP         ");
+                break;
+            case 0x86:
+                sprintf(detail, "CLUT             ");
+                break;
+            case 0x87:
+                sprintf(detail, "DUMMY            ");
+                break;
+            case 0x88:
+                sprintf(detail, "DLIST            ");
+                break;
+            case 0x8b:
+                sprintf(detail, "DYNAMIC GEOMETRY ");
+                break;
+            case 0x8c:
+                sprintf(detail, "TRANSFORM_REF    ");
+                break;
+            case 0x8d:
+                sprintf(detail, "NEXT             ");
+                break;
+            case 0x8e:
+                sprintf(detail, "END ITEM         ");
+                break;
+            case 0x8f:
+                sprintf(detail, "FACEON           ");
+                break;
+            case 0x90:
+                sprintf(detail, "FACEON_TRANSFORM ");
+                break;
+            case 0x93:
+                sprintf(detail, "GEOMCALL2D       ");
+                break;
+            case 0x94:
+                sprintf(detail, "LIGHTS           ");
+                break;
+            case 0x95:
+                sprintf(detail, "DEBUG GEOMCALL   ");
+                break;
+            case 0x97:
+                sprintf(detail, "LINECALL2D       ");
+                break;
+            case 0x9a:
+                sprintf(detail, "CAMERA           ");
+                break;
+            case 0x9b:
+                sprintf(detail, "FX SCREEN COPY   ");
+                break;
+            case 0x9c:
+                sprintf(detail, "FX SUN FLARE     ");
+                break;
+            case 0x9d:
+                sprintf(detail, "FX SCREEN FILTER ");
+                break;
+            case 0x9e:
+                sprintf(detail, "FX SPEED BLUR    ");
+                break;
+            case 0x9f:
+                sprintf(detail, "LINEBUFFER       ");
+                break;
+            case 0xa0:
+                sprintf(detail, "GEOM CLIPPED     ");
+                break;
+            case 0xad:
+                sprintf(detail, "INST_SURF_GEOM ITEM ");
+                break;
+            case 0xb0:
+                sprintf(detail, "LIGHTMAP ITEM    ");
+                break;
+            default:
+                if (DisplayListDebugPS(item, detail) != 0)
+                    sprintf(detail, "ERROR: Unknown item.");
+                break;
+        }
+        NuStrCat(text, detail);
+        sprintf(detail, "(%x)", (u32)item->next);
+        NuStrCat(text, detail);
+        selected = type_count == 0;
+        for (type_index = 0; type_index < type_count; ++type_index) {
+            if (types[type_index] == item->type) {
+                selected = 1;
+                break;
+            }
+        }
+        if (nudlist_frame_active >= 1 && selected) {
+            if (file_handle == 0) {
+                PCSpecialEmptyHandler_candidate();
+                return;
+            }
+            NuHtmlWrite(text);
+            NuHtmlWrite("</br>\n");
+            if (item->id == 0)
+                NuHtmlWrite("<font color = \"#000000\">");
+        }
+        if (file_handle != 0)
+            DisplayListPrintItemPS(item, file_handle);
+    }
+
+    /* Writes every item of a display list to the HTML capture. Bit 0 of flags follows
+     * jump items (id 1); bit 1 selects the 0x84 terminator instead of 0x8e. Retail passes
+     * items in EAX (a whole-program-optimised private ABI); this port uses cdecl. */
+    void __cdecl DisplayListPrintItemsPc(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types,
+                                         i32 file_handle) {
+        i32 index = 0;
+        u32 end;
+        if (item == NULL)
+            return;
+        end = (flags & 2) ? 0x84 : 0x8e;
+        do {
+            DisplayListPrintItem(item, index, type_count, types, file_handle);
+            if ((flags & 1) && item->id == 1)
+                item = (NUDISPLAYLISTITEM *)item->next;
+            else
+                ++item;
+            ++index;
+        } while (item->type != end);
+        DisplayListPrintItem(item, index, type_count, types, file_handle);
+    }
+} // extern "C"
