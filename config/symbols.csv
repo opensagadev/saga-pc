@@ -6618,6 +6618,7 @@ address,symbol,size,ctype
 0x005f7490,_DisplayListUpdateSpecialTransformPS,1,"void __cdecl (NUSPECIALHANDLE *, NUMTX *)"
 0x005f7490,_PCClipScreenUnsupported,1,void __cdecl (void)
 0x5f7490,_PCGraphicsRenderTextureAllocationError,1,void __cdecl(void)
+0x5f7490,_NuTexBmpUnsupportedDepthPc,1,"void __cdecl (i32, const char *)"
 0x5f74a0,_NuPtlDmaSlotsExhaustedPc,1,void __cdecl(void)
 0x005f75a0,?PcGeometryCopyMatrixPc@@YAXPAUnumtx_s@@PBU1@@Z,95,"void __cdecl(NUMTX *, const NUMTX *)"
 0x5f7610,_PCSpecialTransposeMatrix,133,"void __cdecl(NUMTX *,NUMTX *)"
@@ -6662,6 +6663,11 @@ address,symbol,size,ctype
 0x005f8f50,_PCGraphicsBindTextureDimensionsPc,22,"void __cdecl(NUTEXDIM_PC*,u32)"
 0x5f8f80,_NuTexInitExPS,34,void __cdecl NuTexInitExPS(VARIPTR *buffer_unused)
 0x5f8fd0,_NuTexGetUnresolvedTextureTIDPS,81,i32 __cdecl(void)
+0x5f9030,_NuTexPixelBitsPc,101,i32 __cdecl (i32)
+0x5f90a0,_NuTexImageSizePc,33,"i32 __cdecl (i32, i32, i32)"
+0x5f90d0,_NuTexImageSizeMipsPc,81,"i32 __cdecl (i32, i32, i32, i32)"
+0x5f9130,_NuTexLoadBmpPc,917,"i32 __cdecl (const char *, i32, NUTEXBMP_PC *)"
+0x5f94d0,_NuTexCreateBmpPc,67,NUTEXBMP_PC *__cdecl (const char *)
 0x005f9530,_NuWaterReset,21,void __cdecl (void)
 0x5f9940,_NuWaterSpeed,15,void __cdecl(f32)
 0x005f9960,_PermanentGraphicsResourceSetup,5,void __cdecl(void)
@@ -17387,6 +17393,7 @@ address,symbol,size,ctype
 0x76a6d0,_NuTextureDdsExtensionPc,,const char[4]
 0x76a6d4,_NuTexturePhongCubePathPc,,const char[25]
 0x76a6f0,_NuTextureEnvironmentCubePathPc,,const char[28]
+0x76a70c,??_C@_0BF@FEPDHFNJ@Cannot?5open?5file?3?5?$CFs?$AA@,21,char []
 0x76a728,__real@401921cac0000000,,const f64
 0x76a744,??_7bad_alloc@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a788,__real@3f70101020000000,8,const f64
@@ -26778,6 +26785,8 @@ address,symbol,size,ctype
 0x28567f8,_PostShaderProgramPoolPc,1036,POST_SHADER_PROGRAM_POOL_PC
 0x2856c04,_PostVertexShaderCachePc,16,std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>
 0x2856c14,_PostPixelShaderCachePc,16,std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC>
+0x2856c28,_NuTexBmpErrorTextPc,128,char[128]
+0x2856ca8,_NuTexBmpPalettePc,1024,NUTEXBMP_COLOUR_PC[256]
 0x28570a8,_PcGeometryAdjustedProjectionMatrixPc,,NUMTX
 0x28570e8,_PcGeometryTranslationMatrixPc,,NUMTX
 0x2857128,_PcGeometryScaleMatrixPc,,NUMTX

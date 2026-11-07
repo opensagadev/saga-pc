@@ -13,6 +13,11 @@ void __cdecl NuPtlDmaSlotsExhaustedPc(void) {
 void __cdecl PCClipScreenUnsupported(void) {
 }
 
+void __cdecl NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path) {
+    (void)bit_count;
+    (void)path;
+}
+
 void __cdecl NuFrameEndLeafPc(void) {
 }
 

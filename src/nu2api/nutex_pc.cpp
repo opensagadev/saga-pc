@@ -1,4 +1,6 @@
+#define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
+#include <stdio.h>
 
 extern "C" i32 __cdecl NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end) {
     NuEffectTexLockVP(buffer, end);
@@ -84,6 +86,176 @@ extern "C" i32 NuTexGetUnresolvedTextureTIDPS() {
         NuUnresolvedTextureIDPC = NuTexCreateNative(texture);
     }
     return NuUnresolvedTextureIDPC;
+}
+
+/* Bits per texel of a source image type. */
+extern "C" i32 __cdecl NuTexPixelBitsPc(i32 type) {
+    switch (type) {
+        case 0:
+        case 1:
+            return 16;
+        case 2:
+            return 24;
+        case 3:
+            return 32;
+        case 5:
+        case 20:
+            return 8;
+        case 4:
+            return 4;
+        default:
+            return 0;
+    }
+}
+
+extern "C" i32 __cdecl NuTexImageSizePc(i32 type, i32 width, i32 height) {
+    return NuTexPixelBitsPc(type) * width * height / 8;
+}
+
+extern "C" i32 __cdecl NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips) {
+    i32 bits = NuTexPixelBitsPc(type);
+    i32 size = (bits * width * height) >> 3;
+    i32 level;
+
+    for (level = 0; level < mips;) {
+        level++;
+        size += ((width >> level) * (height >> level) * bits) >> 3;
+    }
+    return size;
+}
+
+/* The leading pad keeps the 14-byte file header's 32-bit fields naturally aligned. */
+typedef struct nutexbmp_file_header_pc_s {
+    u16 pad_00;
+    u16 type;
+    u32 size;
+    u16 reserved_08;
+    u16 reserved_0a;
+    u32 data_offset;
+} NUTEXBMP_FILE_HEADER_PC;
+
+typedef struct nutexbmp_info_header_pc_s {
+    u32 size;
+    i32 width;
+    i32 height;
+    u16 planes;
+    u16 bit_count;
+    u32 compression;
+    u32 image_size;
+    i32 x_resolution;
+    i32 y_resolution;
+    u32 colours_used;
+    u32 colours_important;
+} NUTEXBMP_INFO_HEADER_PC;
+
+/* Loads an uncompressed BMP into a bitmap record, flipping it top to bottom. */
+extern "C" i32 __cdecl NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap) {
+    NUFILE file;
+    NUTEXBMP_FILE_HEADER_PC file_header;
+    NUTEXBMP_INFO_HEADER_PC info_header;
+    i32 palette_size;
+    i32 width, height, levels;
+    i32 row_size, size;
+    u8 *row;
+    u8 *top;
+    u8 *bottom;
+    NUTEXBMP_COLOUR_PC swapped;
+    u8 blue;
+    i32 i;
+
+    file = NuFileOpen(path, 0);
+    if (file != 0) {
+        if (bitmap != NULL) {
+            memset(bitmap, 0, sizeof(*bitmap));
+            NuFilePos(file);
+            NuFileRead(file, &file_header.type, 14);
+            NuFileRead(file, &info_header, sizeof(info_header));
+            switch (info_header.bit_count) {
+                case 32:
+                    bitmap->type = 3;
+                    palette_size = 0;
+                    break;
+                case 24:
+                    bitmap->type = 2;
+                    palette_size = 0;
+                    break;
+                case 4:
+                    bitmap->type = 4;
+                    palette_size = 0x40;
+                    NuFileRead(file, NuTexBmpPalettePc, 0x40);
+                    for (i = 0; i < 0x10; i++) {
+                        swapped = NuTexBmpPalettePc[i];
+                        blue = swapped.blue;
+                        swapped.blue = swapped.red;
+                        swapped.red = blue;
+                        NuTexBmpPalettePc[i] = swapped;
+                    }
+                    break;
+                case 8:
+                    bitmap->type = 5;
+                    palette_size = 0x400;
+                    NuFileRead(file, NuTexBmpPalettePc, 0x400);
+                    for (i = 0; i < 0x100; i++) {
+                        swapped = NuTexBmpPalettePc[i];
+                        blue = swapped.blue;
+                        swapped.blue = swapped.red;
+                        swapped.red = blue;
+                        NuTexBmpPalettePc[i] = swapped;
+                    }
+                    break;
+                default:
+                    NuTexBmpUnsupportedDepthPc(info_header.bit_count, path);
+                    break;
+            }
+            bitmap->width = width = info_header.width;
+            bitmap->height = height = info_header.height;
+            bitmap->mips = mips;
+            row_size = (NuTexPixelBitsPc(bitmap->type) * width + 7) / 8;
+            size = 0;
+            levels = mips + 1;
+            do {
+                size += NuTexPixelBitsPc(bitmap->type) * height * width / 8;
+                width >>= 1;
+                height >>= 1;
+            } while (--levels > 0);
+            bitmap->data = (u8 *)NuAlloc(size, NuTextureSourcePathPC, 0x195);
+            if (palette_size != 0) {
+                bitmap->palette = (u8 *)NuAlloc(palette_size, NuTextureSourcePathPC, 0x198);
+            } else {
+                bitmap->palette = NULL;
+            }
+            _flushall();
+            NuFileSeek(file, file_header.data_offset, 0);
+            NuFileRead(file, bitmap->data, NuTexImageSizePc(bitmap->type, bitmap->height, bitmap->width));
+            row = (u8 *)NuAlloc(row_size, NuTextureSourcePathPC, 0x1a0);
+            top = bitmap->data;
+            bottom = top + NuTexImageSizePc(bitmap->type, bitmap->height, bitmap->width) - row_size;
+            while (bottom > top) {
+                memcpy(row, top, row_size);
+                memcpy(top, bottom, row_size);
+                memcpy(bottom, row, row_size);
+                top += row_size;
+                bottom -= row_size;
+            }
+            NuFree(row, NuTextureSourcePathPC, 0x1af);
+            if (palette_size != 0) {
+                memcpy(bitmap->palette, NuTexBmpPalettePc, palette_size);
+            }
+        }
+        NuFileClose(file);
+        return 1;
+    }
+    sprintf(NuTexBmpErrorTextPc, "Cannot open file: %s", path);
+    return 0;
+}
+
+extern "C" NUTEXBMP_PC *__cdecl NuTexCreateBmpPc(const char *path) {
+    NUTEXBMP_PC *bitmap = (NUTEXBMP_PC *)NuAlloc(sizeof(NUTEXBMP_PC), NuTextureSourcePathPC, 0x1e1);
+    if (!NuTexLoadBmpPc(path, 0, bitmap)) {
+        NuFree(bitmap, NuTextureSourcePathPC, 0x1e5);
+        return NULL;
+    }
+    return bitmap;
 }
 
 void __cdecl PCGraphicsDestroyRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {

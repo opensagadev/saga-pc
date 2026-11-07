@@ -2295,6 +2295,26 @@ STATIC_ASSERT(offsetof(NUTEXDIM_PC, image_data) == 0x1c);
 STATIC_ASSERT(offsetof(NUTEXDIM_PC, image_size) == 0x20);
 STATIC_ASSERT(sizeof(NUTEXDIM_PC) == 0x28);
 
+typedef struct nutexbmp_colour_pc_s {
+    u8 blue;
+    u8 green;
+    u8 red;
+    u8 alpha;
+} NUTEXBMP_COLOUR_PC;
+
+typedef struct nutexbmp_pc_s {
+    i32 type;
+    i32 width;
+    i32 height;
+    i32 mips;
+    u8 *data;
+    u8 *palette;
+    u32 unknown_18[3];
+} NUTEXBMP_PC;
+STATIC_ASSERT(offsetof(NUTEXBMP_PC, data) == 0x10);
+STATIC_ASSERT(offsetof(NUTEXBMP_PC, palette) == 0x14);
+STATIC_ASSERT(sizeof(NUTEXBMP_PC) == 0x24);
+
 typedef struct parttype_lookup_pc_s {
     char name[16];
     char object_names[16][8];
@@ -16287,6 +16307,14 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     void __cdecl NuTexAnimRemoveList(void *);
     PC_TEXTURE_ANIM_ENV *__cdecl NuTexAnimEnvCreate(VARIPTR *, NUMTL *, u16 *, void *);
     i32 __cdecl NuTexGetUnresolvedTextureTIDPS(void);
+    i32 __cdecl NuTexPixelBitsPc(i32 type);
+    i32 __cdecl NuTexImageSizePc(i32 type, i32 width, i32 height);
+    i32 __cdecl NuTexImageSizeMipsPc(i32 type, i32 width, i32 height, i32 mips);
+    i32 __cdecl NuTexLoadBmpPc(const char *path, i32 mips, NUTEXBMP_PC *bitmap);
+    NUTEXBMP_PC *__cdecl NuTexCreateBmpPc(const char *path);
+    void __cdecl NuTexBmpUnsupportedDepthPc(i32 bit_count, const char *path);
+    extern char NuTexBmpErrorTextPc[0x80];
+    extern NUTEXBMP_COLOUR_PC NuTexBmpPalettePc[0x100];
     PC_SHADER_RECORD_VIEW *__cdecl PCShaderRecordFromHandle(u32);
     void __cdecl NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *);
     extern const char NuTextureSourcePathPC[55];

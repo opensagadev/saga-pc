@@ -32979,6 +32979,12 @@ extern "C" {
 #pragma bss_seg(".bss$PCGraphicsPostEffectBackBufferTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectBackBufferTexturePc = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$NuTexBmpErrorTextPc")
+    char NuTexBmpErrorTextPc[0x80];
+#pragma bss_seg()
+#pragma bss_seg(".bss$NuTexBmpPalettePc")
+    NUTEXBMP_COLOUR_PC NuTexBmpPalettePc[0x100];
+#pragma bss_seg()
 #pragma bss_seg(".bss$PCGraphicsPostEffectAuxTexturePc")
     GRAPHICS_RENDER_TEXTURE_PC *PCGraphicsPostEffectAuxTexturePc = 0;
 #pragma bss_seg()
