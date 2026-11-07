@@ -107,12 +107,24 @@ void __cdecl NuMtxLookAtD3D(NUMTX *matrix, NUVEC *eye, NUVEC *center, NUVEC *up)
     NUVEC x_axis;
     NUVEC y_axis;
     NUVEC z_axis;
+    f32 cross_y, cross_z;
 
-    NuVecSub(&z_axis, center, eye);
+    /* Retail expands NuVecSub and NuVecCross in place. */
+    z_axis.x = center->x - eye->x;
+    z_axis.y = center->y - eye->y;
+    z_axis.z = center->z - eye->z;
     NuVecNorm(&z_axis, &z_axis);
-    NuVecCross(&x_axis, up, &z_axis);
+    cross_y = up->z * z_axis.x - up->x * z_axis.z;
+    cross_z = up->x * z_axis.y - up->y * z_axis.x;
+    x_axis.x = up->y * z_axis.z - up->z * z_axis.y;
+    x_axis.y = cross_y;
+    x_axis.z = cross_z;
     NuVecNorm(&x_axis, &x_axis);
-    NuVecCross(&y_axis, &z_axis, &x_axis);
+    cross_y = z_axis.z * x_axis.x - z_axis.x * x_axis.z;
+    cross_z = z_axis.x * x_axis.y - z_axis.y * x_axis.x;
+    y_axis.x = z_axis.y * x_axis.z - z_axis.z * x_axis.y;
+    y_axis.y = cross_y;
+    y_axis.z = cross_z;
     NuVecNorm(&y_axis, &y_axis);
 
     matrix->m00 = x_axis.x;
