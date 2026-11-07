@@ -198,12 +198,14 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
 #define AISCRIPT_COPY_NATIVE_STRING(source, destination, buffer, end)                                                  \
     do {                                                                                                               \
         char *text = (source);                                                                                         \
+        VARIPTR *text_buffer = (buffer);                                                                               \
+        VARIPTR *text_end = (end);                                                                                     \
         u32 length;                                                                                                    \
         (destination) = NULL;                                                                                          \
         if (text != NULL) {                                                                                            \
             length = NuStrLen(text);                                                                                   \
             if (length != 0) {                                                                                         \
-                (destination) = (char *)AIScriptBufferAllocOrWarn((buffer), (end), length + 1);                        \
+                (destination) = (char *)AIScriptBufferAllocOrWarn(text_buffer, text_end, length + 1);                  \
                 NuStrCpy((destination), text);                                                                         \
             }                                                                                                          \
         }                                                                                                              \
@@ -1029,14 +1031,15 @@ void __cdecl xActionMacro(NUFPAR_PC *parser) {
 void __cdecl xRefScript(NUFPAR_PC *parser) {
     AIREFSCRIPT_PC *reference;
     VARIPTR saved_buffer;
+    char *copy;
     i32 done;
 
     if (aiscript_load_refs == NULL) {
         return;
     }
     saved_buffer = *aiscript_load_buffer;
-    reference =
-        (AIREFSCRIPT_PC *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer, sizeof(AIREFSCRIPT_PC));
+    reference = (AIREFSCRIPT_PC *)AIScriptBufferAllocOrWarn(aiscript_load_buffer, aiscript_load_end_buffer,
+                                                            sizeof(AIREFSCRIPT_PC));
     if (reference == NULL) {
         return;
     }
@@ -1048,29 +1051,13 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
             if (NuStrICmp(parser->word_buffer_ptr, "}") == 0) {
                 done = 1;
             } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "Script")) != NULL) {
-                const char *copy_source = cursor + sizeof("Script");
-                char *copy_destination = NULL;
-                if (copy_source != NULL) {
-                    i32 copy_length = NuStrLen(copy_source);
-                    if (copy_length != 0) {
-                        copy_destination = (char *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                                    (u32)(copy_length + 1));
-                        NuStrCpy(copy_destination, copy_source);
-                    }
-                }
-                reference->name = copy_destination;
+                AISCRIPT_COPY_NATIVE_STRING(cursor + sizeof("Script"), copy, aiscript_load_buffer,
+                                            aiscript_load_end_buffer);
+                reference->name = copy;
             } else if ((cursor = NuStrIStr(parser->word_buffer_ptr, "ReturnState")) != NULL) {
-                const char *copy_source = cursor + sizeof("ReturnState");
-                char *copy_destination = NULL;
-                if (copy_source != NULL) {
-                    i32 copy_length = NuStrLen(copy_source);
-                    if (copy_length != 0) {
-                        copy_destination = (char *)AISysBufferAlloc(aiscript_load_buffer, aiscript_load_end_buffer,
-                                                                    (u32)(copy_length + 1));
-                        NuStrCpy(copy_destination, copy_source);
-                    }
-                }
-                reference->return_state_name = copy_destination;
+                AISCRIPT_COPY_NATIVE_STRING(cursor + sizeof("ReturnState"), copy, aiscript_load_buffer,
+                                            aiscript_load_end_buffer);
+                reference->return_state_name = copy;
             } else if (NuStrICmp(parser->word_buffer_ptr, "CONDITIONS") == 0) {
                 aiscript_load_conditions = &reference->conditions;
                 condition_has_no_goto = 1;
@@ -1093,6 +1080,7 @@ void __cdecl xRefScript(NUFPAR_PC *parser) {
         }
         NuLinkedListAppend(aiscript_load_refs, &reference->link);
     } else {
+        AIScriptMissingStateDiagnosticAlternate();
         *aiscript_load_buffer = saved_buffer;
     }
 }
