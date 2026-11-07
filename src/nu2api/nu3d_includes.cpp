@@ -5366,8 +5366,8 @@ extern "C" void __cdecl PostShadowComputeClippingPlanesPc(const NUMTX *matrix, b
 /* Original same-TU register helper: EDI plane, ESI origin, ECX point_a, EAX point_b. */
 static __declspec(noinline) void PostShadowMakePlanePrivatePc(NUVEC4 *plane, const NUVEC4 *origin,
                                                               const NUVEC4 *point_a, const NUVEC4 *point_b) {
-    NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
-    NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
+    __declspec(align(16)) NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
+    __declspec(align(16)) NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
     NuVecCross(reinterpret_cast<NUVEC *>(plane), &a, &b);
     NuVecNorm(reinterpret_cast<NUVEC *>(plane), reinterpret_cast<NUVEC *>(plane));
     plane->w = 1.0f;
@@ -5413,7 +5413,7 @@ extern "C" void __cdecl PostShadowComputeFrustumCubePc(const NUCAMERA *camera, N
 }
 extern "C" i32 __cdecl PostShadowComputePlanesPc(const NUVEC4 *direction, const NUVEC4 *corners, NUVEC4 *planes) {
     f32 extrusion = -PostShadowPlaneExtrusionPc;
-    NUVEC offset = {direction->x * extrusion, direction->y * extrusion, direction->z * extrusion};
+    __declspec(align(16)) NUVEC offset = {direction->x * extrusion, direction->y * extrusion, direction->z * extrusion};
     u8 positive[6];
     i32 count = 0;
     NUVEC4 *output = planes;
