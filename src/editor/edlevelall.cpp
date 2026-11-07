@@ -1896,6 +1896,27 @@ i32 ClassObject::GetAttributeData(i32 attribute, i32 requested_type, void *data,
     return 0;
 }
 
+i32 ClassObject::SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    EdMember member;
+    if (reference != NULL && reference->SetAttributeData(object, attribute, requested_type, data, data_size))
+        return 1;
+    if (ed_class->FindMember(&member, object, attribute, 1))
+        return member.reference->SetAttributeData(member.object, attribute, requested_type, data, data_size);
+    return 0;
+}
+
+/* Toggles whether the LED scene behind a filter menu item is editable. */
+void ClassEditor::cbEdFilterLED(eduimenu_s *, eduiitem_s *item, u32) {
+    if (item == NULL)
+        return;
+    LevelEditorScene *scene = theLevelEditor.GetEdScene((u32)item->data >> 6);
+    if (scene == NULL)
+        return;
+    theLevelEditor.current_led_file = -1;
+    scene->editable = scene->editable + 1;
+    item->highlighted = scene->editable;
+}
+
 /* Arrow-head shape of the facing arrow DrawObjectSphere draws. */
 f32 ClassEditorArrowMinRadius = 0.1f;
 f32 ClassEditorArrowMaxRadius = 0.1f;

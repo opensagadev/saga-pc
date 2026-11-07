@@ -9542,6 +9542,7 @@ address,symbol,size,ctype
 0x6c2320,??_GPlaceableInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
 0x6c2520,??_GKnotHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c2da0,?cbEdFilterLED@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,93,
 0x6c3240,?Update@EdInputContext@@QAEXPAUnucamera_s@@PAUFRAME_PAD_PC@@M_N@Z,2104,
 0x6c3a80,?SetMenuItemAttr@EdControl@@UAEXHPAUeduiitem_s@@PAUeduiiattr_s@@1@Z,117,
 0x6c4470,?Flush@LevelEditor@@QAEXXZ,67,
@@ -9577,6 +9578,7 @@ address,symbol,size,ctype
 0x6c8480,?BeginBlock@EdFileOutputStream@@UAEPBDPBD@Z,86,
 0x6c84e0,?EndBlock@EdFileOutputStream@@UAEXXZ,109,
 0x6c8760,?GetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
+0x6c87f0,?SetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c8aa0,?GetName@ClassEditor@@UAEPBDXZ,6,
 0x6c94a0,?DrawObjectSphere@ClassEditor@@QAEXAAUClassObject@@H@Z,413,
 0x6cb250,??0LevelEditor@@QAE@XZ,467,

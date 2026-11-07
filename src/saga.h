@@ -29645,6 +29645,7 @@ struct ClassObject {
         : ed_class(object_class), object(object_data), reference(NULL) {
     }
     i32 GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
+    i32 SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
 };
 
 struct ClassObjectListEntry {
@@ -29746,6 +29747,7 @@ class ClassEditor : public BaseEditor {
     i32 class_filter;
 
     void DrawObjectSphere(ClassObject &selected, i32 colour);
+    static void cbEdFilterLED(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
     void PreSaveInitialisation();
     void PostSaveInitialisation();
 };
