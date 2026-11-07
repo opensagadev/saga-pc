@@ -28167,15 +28167,15 @@ address,symbol,size,ctype
 0x0097ae08,_ANI3_EVAL_SCALE_ARRAY,,NUVEC[]
 0x97ba08,_NuLightSpeedBlurViewProjectionPc,64,private NUMTX zero
 0x97ba48,_NuLightSpeedBlurPreviousViewProjectionPc,64,private NUMTX zero
-0x97ba88,?xOffsetHack@?1??NuRndrHighResScreenGrab@@9@9,4,i32
-0x97ba8c,?delay@?1??NuRndrHighResScreenGrab@@9@9,4,i32
-0x97ba90,?header_size@?1??NuRndrHighResScreenGrab@@9@9,4,i32
-0x97ba94,?xPos@?1??NuRndrHighResScreenGrab@@9@9,4,f32
-0x97ba98,?yPos@?1??NuRndrHighResScreenGrab@@9@9,4,f32
-0x97ba9c,?fh@?1??NuRndrHighResScreenGrab@@9@9,4,NUFILE
-0x97baa0,?params@?1??NuRndrHighResScreenGrab@@9@9,6,SCREENGRAB_TILE_PARAMS_PC
-0x97baa8,?xTiles@?1??NuRndrHighResScreenGrab@@9@9,4,f32
-0x97baac,?yTiles@?1??NuRndrHighResScreenGrab@@9@9,4,f32
+0x97ba88,?xOffsetHack@?1??NuRndrHighResScreenGrab@@9@4HA,4,i32
+0x97ba8c,?delay@?1??NuRndrHighResScreenGrab@@9@4HA,4,i32
+0x97ba90,?header_size@?1??NuRndrHighResScreenGrab@@9@4HA,4,i32
+0x97ba94,?xPos@?1??NuRndrHighResScreenGrab@@9@4MA,4,f32
+0x97ba98,?yPos@?1??NuRndrHighResScreenGrab@@9@4MA,4,f32
+0x97ba9c,?fh@?1??NuRndrHighResScreenGrab@@9@4HA,4,NUFILE
+0x97baa0,?params@?1??NuRndrHighResScreenGrab@@9@4Uscreengrab_tile_params_pc_s@@A,6,SCREENGRAB_TILE_PARAMS_PC
+0x97baa8,?xTiles@?1??NuRndrHighResScreenGrab@@9@4MA,4,f32
+0x97baac,?yTiles@?1??NuRndrHighResScreenGrab@@9@4MA,4,f32
 0x0097bab0,_NuCameraScissorProjectionScratch,64,NUMTX
 0x97baf0,?col@?1??DrawAlphaImage@@9@9,,i32
 0x97baf4,?row@?1??DrawAlphaImage@@9@9,,i32
