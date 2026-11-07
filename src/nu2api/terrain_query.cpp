@@ -2051,12 +2051,9 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
         scan->min_z = (f32)(position->z + movement->z - 0.02f - radius);
         scan->max_z = (f32)(position->z + 0.02f + radius);
     }
-    {
-        const f32 dy = scan->min_y - scan->max_y;
-        const f32 dx = scan->min_x - scan->max_x;
-        const f32 dz = scan->min_z - scan->max_z;
-        extent_sq = dx * dx + dy * dy + dz * dz;
-    }
+    extent_sq = (scan->min_x - scan->max_x) * (scan->min_x - scan->max_x) +
+                (scan->min_y - scan->max_y) * (scan->min_y - scan->max_y) +
+                (scan->min_z - scan->max_z) * (scan->min_z - scan->max_z);
     scan_radius = NuFsqrt((f32)(extent_sq + 0.05f));
     for (i32 cell_index = 0; cell_index < TERRAIN_NSF_SET->used_cell_count; ++cell_index) {
         TERRAIN_CELL_PC *cell = &TERRAIN_NSF_SET->cells[cell_index];
@@ -2081,16 +2078,17 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
                 }
                 TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                 while (batch->marker >= 0) {
-                    const i32 count = batch->shape_count;
+                    i32 count = batch->shape_count;
                     TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
                     if (local_max_x >= batch->min_x && batch->max_x > local_min_x && local_max_z >= batch->min_z &&
                         batch->max_z > local_min_z) {
-                        for (i32 remaining = count; remaining > 0; --remaining, ++source) {
+                        while (count-- > 0) {
                             if (TERRAIN_NSF_SHAPE_OVERLAP(source) && cursor < limit &&
                                 TERRAIN_NSF_MATERIAL_OK(source)) {
                                 (cursor++)->shape = source;
                                 ++shape_count;
                             }
+                            ++source;
                         }
                     } else {
                         source += count;
@@ -2114,7 +2112,8 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
             TERRAIN_GROUP_PC *group = &TERRAIN_NSF_SET->groups[*indices];
             TERRAIN_PLATFORM_PC *platform = &TERRAIN_NSF_PLATFORM(group);
             u32 *scene_state = platform->instance_flags;
-            if (scene_state == NULL || ((platform->flags & 4) != 0 ? (*scene_state & 2) : (*scene_state & 1)) != 0) {
+            if (scene_state == NULL ||
+                ((platform->flags & 4) != 0 ? (*scene_state & 2) != 0 : (*scene_state & 1) != 0)) {
                 f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
                 if (platform->scene_object != NULL) {
                     if (TERRAIN_NSF_MATRIX(group)->m30 > TERRAIN_NSF_PLATFORM(group).previous_matrix.m30) {
@@ -2171,19 +2170,19 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
                         group->chunk_type != -1) {
                         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                         while (batch->marker >= 0) {
-                            const i32 count = batch->shape_count;
+                            i32 count = batch->shape_count;
                             TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
                             if (local_max_x >= batch->min_x && batch->max_x > local_min_x &&
                                 local_max_z >= batch->min_z && batch->max_z > local_min_z) {
-                                for (i32 remaining = count; remaining > 0; --remaining, ++source) {
-                                    if (!TERRAIN_NSF_SHAPE_OVERLAP(source)) {
-                                        continue;
+                                while (count-- > 0) {
+                                    if (TERRAIN_NSF_SHAPE_OVERLAP(source)) {
+                                        platinrange = 1;
+                                        if (cursor < limit && TERRAIN_NSF_MATERIAL_OK(source)) {
+                                            (cursor++)->shape = source;
+                                            ++shape_count;
+                                        }
                                     }
-                                    platinrange = 1;
-                                    if (cursor < limit && TERRAIN_NSF_MATERIAL_OK(source)) {
-                                        (cursor++)->shape = source;
-                                        ++shape_count;
-                                    }
+                                    ++source;
                                 }
                             } else {
                                 source += count;
