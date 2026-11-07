@@ -1390,6 +1390,31 @@
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "??_FClassObject@@QAEXXZ",
    "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "?Write32@NETMESSAGE_PC@@QAEXABH@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "?Write8@NETMESSAGE_PC@@QAEXE@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/gamelib/net/NetworkObjectManager.cpp",
+   "symbol": "?Write@NETMESSAGE_PC@@QAEXPBXI@Z",
+   "kind": "function"
   }
  ]
 }

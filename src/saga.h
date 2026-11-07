@@ -17946,6 +17946,56 @@ struct NETMESSAGE_PC {
     void MakeUnique();
     void Write16(const i16 *value);
     void Write32(const i32 *value);
+    void Write8(u8 value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(data->bytes + write_offset, &value, 1);
+            write_offset++;
+        }
+    }
+    void Write16(const i16 &value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(data->bytes + write_offset, &value, 2);
+            if (swap_endianness)
+                EdFileSwapEndianess16(data->bytes + write_offset);
+            write_offset += 2;
+        }
+    }
+    void Write32(const i32 &value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(data->bytes + write_offset, &value, 4);
+            if (swap_endianness)
+                EdFileSwapEndianess32(data->bytes + write_offset);
+            write_offset += 4;
+        }
+    }
+    void Write(const void *value, u32 size) {
+        if (data != NULL) {
+            PCByteCopy_candidate(data->bytes + write_offset, value, size);
+            write_offset += size;
+        }
+    }
+    void Read8(u8 &value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(&value, data->bytes + read_offset, 1);
+            read_offset++;
+        }
+    }
+    void Read16(i16 &value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(&value, data->bytes + read_offset, 2);
+            if (swap_endianness)
+                EdFileSwapEndianess16(&value);
+            read_offset += 2;
+        }
+    }
+    void Read32(i32 &value) {
+        if (data != NULL) {
+            PCByteCopy_candidate(&value, data->bytes + read_offset, 4);
+            if (swap_endianness)
+                EdFileSwapEndianess32(&value);
+            read_offset += 4;
+        }
+    }
 };
 STATIC_ASSERT(sizeof(NETMESSAGE_PC) == 0x10);
 STATIC_ASSERT(offsetof(NETMESSAGE_PC, swap_endianness) == 0);
@@ -29734,10 +29784,14 @@ class V2Peer {
     virtual void Disconnect();
     virtual void Send(NETMESSAGE_PC message);
     virtual void SendEx(NETMESSAGE_PC message, i32 arg0, i32 arg1);
+    virtual void unknown_slot_10();
+    virtual i32 GetAvailableMessages();
 
     V2Peer *next;
     V2Peer *prev;
-    u32 unknown_0c[3];
+    u8 local;
+    u8 unknown_0d[3];
+    u32 unknown_10[2];
     NetStatCounters counters;
 };
 
@@ -29937,6 +29991,160 @@ class NetFtpManager : public NetListenerInterface {
     i32 field_1604;
 };
 
+
+struct NOSContext {
+    u32 words[4];
+};
+
+class NOSFilter {
+  public:
+    virtual i32 AllowPush(const EdClass *object_class, void *object) = 0;
+};
+
+struct ReplicatorData {
+    u8 *start;
+    u8 *end;
+    u8 *cursor;
+    u32 unknown_0c;
+};
+
+/* Replicates one group of an object's members (Android NetReplicator). */
+class NetReplicator : public CSListLink<NetReplicator> {
+  public:
+    NetReplicator(i32 group, f32 minimum_seconds, f32 maximum_seconds);
+    virtual bool AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force,
+                           i32 check_only) = 0;
+    virtual i32 SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object,
+                                ReplicatorData &data, i16 *flags);
+    virtual i32 DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, i32 check_only);
+
+    u16 id;
+    u16 replication_group;
+    u16 minimum_interval;
+    u16 maximum_interval;
+    u16 data_size;
+    u16 message_size;
+};
+
+/* One replicated object slot, indexed by guid. */
+struct NetworkObject {
+    void Initialise(i32 guid, void *new_object, EdClass *new_class, const V2Peer &new_owner, i32 new_flags);
+    void Destroy();
+
+    u16 flags;
+    i16 id;
+    u32 unknown_04;
+    const V2Peer *owner;
+    void *object;
+    EdClass *object_class;
+    void *replicator_data;
+};
+
+/* Network object system (Android NetworkObjectManager, listener channel 3,
+ * TTNetwork+0x3780). */
+class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifier {
+  public:
+    struct NetPeerPush {
+        void FlushMessages();
+#pragma push_macro("GetMessage")
+#undef GetMessage
+        NETMESSAGE_PC *GetMessage(i32 size);
+#pragma pop_macro("GetMessage")
+        NETMESSAGE_PC *GetReliableMessage(i32 size);
+        void NextStage();
+        void Stop();
+        void Sync();
+
+        const V2Peer *peer;
+        NETMESSAGE_PC *message;
+        NETMESSAGE_PC *reliable_message;
+        i32 stage;
+        i32 next_object;
+    };
+    struct PendingObject {
+        i32 requested;
+        u32 request_time;
+        NetworkObject *object;
+    };
+    struct ReplicatorList {
+        NetReplicator *head;
+        NetReplicator *tail;
+        i32 count;
+    };
+    struct RegisteredCall {
+        i32 type;
+        i32 flags;
+        void *callback;
+    };
+
+    NetworkObjectManager();
+    ~NetworkObjectManager();
+    virtual void Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer);
+    virtual void PeerJoined(const V2Peer &peer);
+    virtual void PeerLeft(const V2Peer &peer, i32 reason);
+    virtual void NotifyCreateObject(void *object, EdClass *object_class, void *data, i32 size, i32 guid, i32 flags);
+    virtual void NotifyDestroyObject(void *object, EdClass *object_class, i32 guid, i32 flags);
+
+    i32 Acquire(i32 id);
+    void AddToLocalObjectList(NetworkObject *object);
+    void BindFilter(NOSFilter *filter, const EdClass *object_class);
+    void ChangeContext(NOSContext &new_context);
+    void ConstructObject(NetworkObject *object, NetPeerPush *push);
+    void ContinuityBreak(i32 id, f32 time);
+    NetworkObject *FindNetworkObject(i32 id);
+    NetworkObject *FindNetworkObject(void *object);
+    PendingObject *FindPendingObject(NetworkObject *object);
+    i32 GetGuid(void *object);
+    i32 GetNextGuid();
+#pragma push_macro("GetObject")
+#undef GetObject
+    void *GetObject(i32 id);
+#pragma pop_macro("GetObject")
+    i32 GetPeerStatus();
+    void Init();
+    i32 IsLocal(i32 id);
+    i32 IsPeerReady(const V2Peer &peer) const;
+    i32 IsPeerStarted(const V2Peer &peer) const;
+    const V2Peer *Owner(i32 id);
+    void ReceiveStopMessage(NETMESSAGE_PC &message, const V2Peer &peer);
+    void Recover(NetworkObject *object);
+    i32 RegisterObject(void *object, EdClass *object_class, i32 guid);
+    i32 RegisterObjectCall(void (*callback)(void *, NETMESSAGE_PC &), i32 flags);
+    i32 RegisterRemoteCall(void (*callback)(NETMESSAGE_PC &), i32 flags);
+    i32 ReleaseObject(void *object, EdClass *object_class, i32 guid);
+    void RemoveFromLocalObjectList(NetworkObject *object);
+    void RemovePendingObject(NetworkObject *object);
+    void Reset();
+    void SendAcquireMessage(NetworkObject *object);
+    void SendAcquiredMessage(i16 id, const V2Peer &peer);
+    void SendAdoptedMessage(i16 id);
+    i32 SendPushMessage(NETMESSAGE_PC *message, const NetPeerPush *push, i32 flags);
+    PendingObject *StealPendingObject();
+    void Term();
+    void UpdateLocalObjectList();
+
+    i32 field_08;
+    i32 active;
+    NOSContext context;
+    const V2Peer *guid_peers[2];
+    i32 guid_group;
+    i32 next_guid;
+    NetworkObject objects[2048];
+    i32 local_object_count;
+    NetworkObject *local_objects[1024];
+    PendingObject pending_objects[32];
+    ReplicatorList replicators[64];
+    i32 replicator_data_sizes[64];
+    NOSFilter *filters[64];
+    RegisteredCall registered_calls[32];
+    i32 registered_call_count;
+    NetPeerPush peer_push[8];
+    NetPeerPush default_push;
+    NetStats *class_stats[32];
+    u8 allow_duplicates;
+};
+extern NetworkObjectManager *theNos;
+
 /* Buffered append-only log file embedded in TTNetwork at +0x20. */
 class NetLogFile {
   public:
@@ -29997,6 +30205,7 @@ class TTNetwork : public NetTransporter, public BaseThing {
     NetAddress my_host_address;
     i32 has_my_host_address;
     NetFtpManager ftp;
+    NetworkObjectManager nos;
 };
 extern TTNetwork theTTNetwork;
 
