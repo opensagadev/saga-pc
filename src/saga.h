@@ -14,6 +14,12 @@
 #include <shlobj.h>
 #include <objbase.h>
 #include <oleauto.h>
+// The engine's SSE vector header (retail keeps its VuVec SSE helper copies in nu2api units) brought <xmmintrin.h>
+// into every engine unit. VC8 compiles that header's __inline __m128 wrappers, whose aligned frames keep EBX out of the
+// register arguments of every static function in the unit. The bundled Ogg Vorbis sources never included it.
+#ifndef SAGA_VENDORED_LIBRARY
+#include <xmmintrin.h>
+#endif
 
 #include "externals.h"
 

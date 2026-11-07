@@ -39,6 +39,8 @@ endif
 # Retail libvorbis was built without /GS: none of its functions carry a security
 # cookie. vorbisfile keeps them, so it was built with the game's flags.
 $(filter-out $(OBJ_DIR)/vendored/vorbis/vorbisfile.obj,$(filter $(OBJ_DIR)/vendored/vorbis/% $(OBJ_DIR)/vendored/vorbis_%,$(OBJECTS))): CXXFLAGS += /GS-
+# The bundled Ogg Vorbis sources were built without the engine's SSE vector header (see saga.h).
+$(filter $(OBJ_DIR)/vendored/%,$(OBJECTS)): CXXFLAGS += /DSAGA_VENDORED_LIBRARY
 $(filter $(OBJ_DIR)/nu2api/oggreader.obj $(OBJ_DIR)/nu2api/nustream.obj,$(OBJECTS)): $(VORBIS_HEADERS)
 D3DX_LIB := build/lib/imports/d3dx9_35.lib
 DSOUND_LIB := build/lib/imports/dsound.lib
