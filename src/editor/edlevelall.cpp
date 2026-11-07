@@ -3008,6 +3008,12 @@ static inline VuVec operator*(const VuVec &a, f32 scale) {
     return product;
 }
 
+/* Unit-length copy of a direction, as a point (w = 1). */
+static inline void VuVecNormalise(VuVec &destination, VuVec &source) {
+    NuVecNorm(&destination.xyz, &source.xyz);
+    destination.w = 1.0f;
+}
+
 static inline f32 VuVecDot(const VuVec &a, const VuVec &b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
@@ -4743,11 +4749,8 @@ static inline void VuMtxRotateZ(VuMtx &matrix, i32 angle) {
 
 /* Handle positions: 0 origin, 1-3 axis tips, 4-6 plane boxes, 7 centre. */
 void EdManipulator::GetAxisLocators(VuVec &origin, VuVec *points, VuMtx *matrix) {
-    f32 length = Scale * ManipulatorAxisLength;
-    points[3].x = 0.0f;
-    points[3].y = 0.0f;
-    points[3].z = 0.0f;
-    points[3].w = 1.0f;
+    f32 length = ManipulatorAxisLength * Scale;
+    VuVecSetOrigin(points[3]);
     VuVecCopy(points[2], points[3]);
     VuVecCopy(points[1], points[2]);
     VuVecCopy(points[7], points[1]);
@@ -4864,20 +4867,14 @@ void EdManipulator::DrawRotator(VuVec &origin) {
  * none) with the axes it moves along; a drag keeps the pressed handle. */
 i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first, VuVec &second, VuMtx *matrix) {
     __declspec(align(16)) VuVec points[8];
-    first.x = 0.0f;
-    first.y = 0.0f;
-    first.z = 0.0f;
-    first.w = 1.0f;
-    second.x = 0.0f;
-    second.y = 0.0f;
-    second.z = 0.0f;
-    second.w = 1.0f;
+    VuVecSetOrigin(first);
+    VuVecSetOrigin(second);
     i32 nearest = 0;
     GetAxisLocators(origin, points, matrix);
     f32 nearest_distance = 3.402823466e38f;
     for (i32 index = 1; index < 8; index++) {
         f32 distance = LineToPointDistance(input.ray_start, input.ray_direction, points[index], NULL);
-        f32 radius = index < 4 ? Scale * ManipulatorHandleRadius : ManipulatorBoxSize * Scale;
+        f32 radius = index < 4 ? ManipulatorHandleRadius * Scale : ManipulatorBoxSize * Scale;
         if (distance < radius && distance < nearest_distance) {
             nearest_distance = distance;
             nearest = index;
@@ -4885,37 +4882,33 @@ i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first
     }
     switch (nearest) {
         case 1:
-            first.x = 1.0f;
+            VuVecSet(first, 1.0f, 0.0f, 0.0f, 1.0f);
             break;
         case 2:
-            first.y = 1.0f;
+            VuVecSet(first, 0.0f, 1.0f, 0.0f, 1.0f);
             break;
         case 3:
-            first.z = 1.0f;
+            VuVecSet(first, 0.0f, 0.0f, 1.0f, 1.0f);
             break;
         case 4:
-            first.x = 1.0f;
-            second.y = 1.0f;
+            VuVecSet(first, 1.0f, 0.0f, 0.0f, 1.0f);
+            VuVecSet(second, 0.0f, 1.0f, 0.0f, 1.0f);
             break;
         case 5:
-            first.x = 1.0f;
-            second.z = 1.0f;
+            VuVecSet(first, 1.0f, 0.0f, 0.0f, 1.0f);
+            VuVecSet(second, 0.0f, 0.0f, 1.0f, 1.0f);
             break;
         case 6:
-            first.y = 1.0f;
-            second.z = 1.0f;
-            break;
         case 7:
-            first.x = 1.0f;
-            first.y = 1.0f;
-            first.z = 1.0f;
+            VuVecSet(first, 0.0f, 1.0f, 0.0f, 1.0f);
+            VuVecSet(second, 0.0f, 0.0f, 1.0f, 1.0f);
             break;
     }
     if (matrix != NULL) {
         VuMtxRotateVec(*matrix, first, first);
         VuMtxRotateVec(*matrix, second, second);
-        NuVecNorm(&first.xyz, &first.xyz);
-        NuVecNorm(&second.xyz, &second.xyz);
+        VuVecNormalise(first, first);
+        VuVecNormalise(second, second);
     }
     if (input.GetPress(3) != 0.0f) {
         selected_axis = nearest;
@@ -4929,6 +4922,8 @@ i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first
         return selected_axis;
     }
     selected_axis = 0;
+    VuVecSetOrigin(first_axis);
+    VuVecSetOrigin(second_axis);
     return nearest;
 }
 
