@@ -1325,6 +1325,333 @@ void __cdecl NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
     }
 }
 
+/* Shadow cylinder records: a centre, the axis and two side vectors in object space. Bit 0 of the first word selects a
+ * rounded (capsule) outline instead of a box. */
+typedef struct PC_SHADOW_CYLINDER_PC {
+    union {
+        NUVEC centre;
+        u32 flags;
+    };
+    NUVEC axis;
+    NUVEC side;
+    f32 unknown_24;
+    NUVEC up;
+    f32 unknown_34[3];
+} PC_SHADOW_CYLINDER_PC;
+STATIC_ASSERT(sizeof(PC_SHADOW_CYLINDER_PC) == 64);
+STATIC_ASSERT(offsetof(PC_SHADOW_CYLINDER_PC, up) == 0x28);
+
+/* Extrudes the silhouette of a queued cylinder along the light offset into arena quads: ten edges of a capsule outline
+ * when bit 0 of the record is set, otherwise the four edges of a box. */
+void __cdecl NuRndrArenaAddCylinderVolumePc(PC_SHADOW_CYLINDER_PC *cylinder, PC_HG_SHADOW_PACKET *packet,
+                                            NUVEC *offset) {
+    NUVEC axis[3];
+    VuVec v[32];
+    NUVEC4 centre;
+    NUVEC length;
+    NUVEC perp;
+    f32 scale;
+    f32 inv_length;
+    f32 dot2;
+    i32 i;
+
+    if (cylinder->flags & 1) {
+        if ((u32)RendererArenaCountPc < 250) {
+            RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
+            RendererArenaTypesPc[RendererArenaCountPc] = 10;
+            RendererArenaCountPc++;
+        }
+        v[4].x = cylinder->centre.x;
+        v[4].y = cylinder->centre.y;
+        v[4].z = cylinder->centre.z;
+        v[4].w = 1.0f;
+        NuVec4MtxTransformVU0(&centre, (NUVEC4 *)&v[4], &packet->matrix);
+        v[0].x = cylinder->axis.x + cylinder->centre.x;
+        v[0].y = cylinder->axis.y + cylinder->centre.y;
+        v[0].z = cylinder->axis.z + cylinder->centre.z;
+        v[0].w = 1.0f;
+        NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], &packet->matrix);
+        axis[0].x = v[0].x - centre.x;
+        axis[0].y = v[0].y - centre.y;
+        axis[0].z = v[0].z - centre.z;
+        v[1].x = cylinder->side.x + cylinder->centre.x;
+        v[1].y = cylinder->side.y + cylinder->centre.y;
+        v[1].z = cylinder->side.z + cylinder->centre.z;
+        v[1].w = 1.0f;
+        NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], &packet->matrix);
+        axis[1].x = v[1].x - centre.x;
+        axis[1].y = v[1].y - centre.y;
+        axis[1].z = v[1].z - centre.z;
+        v[2].x = cylinder->up.x + cylinder->centre.x;
+        v[2].y = cylinder->up.y + cylinder->centre.y;
+        v[2].z = cylinder->up.z + cylinder->centre.z;
+        v[2].w = 1.0f;
+        NuVec4MtxTransformVU0((NUVEC4 *)&v[2], (NUVEC4 *)&v[2], &packet->matrix);
+        axis[2].x = v[2].x - centre.x;
+        axis[2].y = v[2].y - centre.y;
+        axis[2].z = v[2].z - centre.z;
+        length.x = axis[0].x;
+        length.y = axis[0].y;
+        length.z = axis[0].z;
+        NuVecCross(&perp, &axis[0], offset);
+        scale = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
+        if (scale > 0.0f) {
+            scale = NuFdiv(1.0f, NuFsqrt(scale));
+        }
+        perp.x *= scale;
+        perp.y *= scale;
+        perp.z *= scale;
+        inv_length = length.x * length.x + length.y * length.y + length.z * length.z;
+        if (inv_length > 0.0f) {
+            inv_length = NuFdiv(1.0f, NuFsqrt(inv_length));
+        } else {
+            inv_length = 0.0f;
+        }
+        scale = perp.x * axis[1].x + perp.y * axis[1].y + perp.z * axis[1].z;
+        dot2 = perp.x * axis[2].x + perp.y * axis[2].y + perp.z * axis[2].z;
+        dot2 = dot2 * dot2 + scale * scale;
+        scale = NuFsqrt(dot2);
+        for (i = 0; i < 10; i++) {
+            RendererArenaIndexCountPc += 2;
+            switch (i) {
+                case 0:
+                    v[0].x = perp.x * scale + length.x;
+                    v[0].y = perp.y * scale + length.y;
+                    v[0].z = perp.z * scale + length.z;
+                    v[1].x = perp.x * scale - length.x;
+                    v[1].y = perp.y * scale - length.y;
+                    v[1].z = perp.z * scale - length.z;
+                    break;
+                case 1:
+                    v[0].x = perp.x * scale - length.x;
+                    v[0].y = perp.y * scale - length.y;
+                    v[0].z = perp.z * scale - length.z;
+                    v[1].x = perp.x * scale * 0.707f - length.x - inv_length * length.x * scale * 0.707f;
+                    v[1].y = perp.y * scale * 0.707f - length.y - inv_length * length.y * scale * 0.707f;
+                    v[1].z = perp.z * scale * 0.707f - length.z - inv_length * length.z * scale * 0.707f;
+                    break;
+                case 2:
+                    v[0].x = perp.x * scale * 0.707f - length.x - inv_length * length.x * scale * 0.707f;
+                    v[0].y = perp.y * scale * 0.707f - length.y - inv_length * length.y * scale * 0.707f;
+                    v[0].z = perp.z * scale * 0.707f - length.z - inv_length * length.z * scale * 0.707f;
+                    v[1].x = -length.x - scale * length.x * inv_length;
+                    v[1].y = -length.y - scale * length.y * inv_length;
+                    v[1].z = -length.z - scale * length.z * inv_length;
+                    break;
+                case 3:
+                    v[0].x = -length.x - scale * length.x * inv_length;
+                    v[0].y = -length.y - scale * length.y * inv_length;
+                    v[0].z = -length.z - scale * length.z * inv_length;
+                    v[1].x = -length.x - perp.x * scale * 0.707f - inv_length * length.x * scale * 0.707f;
+                    v[1].y = -length.y - perp.y * scale * 0.707f - inv_length * length.y * scale * 0.707f;
+                    v[1].z = -length.z - perp.z * scale * 0.707f - inv_length * length.z * scale * 0.707f;
+                    break;
+                case 4:
+                    v[0].x = -length.x - perp.x * scale * 0.707f - inv_length * length.x * scale * 0.707f;
+                    v[0].y = -length.y - perp.y * scale * 0.707f - inv_length * length.y * scale * 0.707f;
+                    v[0].z = -length.z - perp.z * scale * 0.707f - inv_length * length.z * scale * 0.707f;
+                    v[1].x = -length.x - perp.x * scale;
+                    v[1].y = -length.y - perp.y * scale;
+                    v[1].z = -length.z - perp.z * scale;
+                    break;
+                case 5:
+                    v[0].x = -length.x - perp.x * scale;
+                    v[0].y = -length.y - perp.y * scale;
+                    v[0].z = -length.z - perp.z * scale;
+                    v[1].x = length.x - perp.x * scale;
+                    v[1].y = length.y - perp.y * scale;
+                    v[1].z = length.z - perp.z * scale;
+                    break;
+                case 6:
+                    v[0].x = length.x - perp.x * scale;
+                    v[0].y = length.y - perp.y * scale;
+                    v[0].z = length.z - perp.z * scale;
+                    v[1].x = length.x - perp.x * scale * 0.707f + scale * length.x * inv_length * 0.707f;
+                    v[1].y = length.y - perp.y * scale * 0.707f + scale * length.y * inv_length * 0.707f;
+                    v[1].z = length.z - perp.z * scale * 0.707f + scale * length.z * inv_length * 0.707f;
+                    break;
+                case 7:
+                    v[0].x = length.x - perp.x * scale * 0.707f + scale * length.x * inv_length * 0.707f;
+                    v[0].y = length.y - perp.y * scale * 0.707f + scale * length.y * inv_length * 0.707f;
+                    v[0].z = length.z - perp.z * scale * 0.707f + scale * length.z * inv_length * 0.707f;
+                    v[1].x = length.x + scale * length.x * inv_length;
+                    v[1].y = length.y + scale * length.y * inv_length;
+                    v[1].z = length.z + scale * length.z * inv_length;
+                    break;
+                case 8:
+                    v[0].x = length.x + scale * length.x * inv_length;
+                    v[0].y = length.y + scale * length.y * inv_length;
+                    v[0].z = length.z + scale * length.z * inv_length;
+                    v[1].x = perp.x * scale * 0.707f + length.x + scale * length.x * inv_length * 0.707f;
+                    v[1].y = perp.y * scale * 0.707f + length.y + scale * length.y * inv_length * 0.707f;
+                    v[1].z = perp.z * scale * 0.707f + length.z + scale * length.z * inv_length * 0.707f;
+                    break;
+                case 9:
+                    v[0].x = perp.x * scale * 0.707f + length.x + scale * length.x * inv_length * 0.707f;
+                    v[0].y = perp.y * scale * 0.707f + length.y + scale * length.y * inv_length * 0.707f;
+                    v[0].z = perp.z * scale * 0.707f + length.z + scale * length.z * inv_length * 0.707f;
+                    v[1].x = length.x + perp.x * scale;
+                    v[1].y = length.y + perp.y * scale;
+                    v[1].z = length.z + perp.z * scale;
+                    break;
+            }
+            v[0].x += centre.x;
+            v[0].y += centre.y;
+            v[0].z += centre.z;
+            v[1].x += centre.x;
+            v[1].y += centre.y;
+            v[1].z += centre.z;
+            v[2].x = v[0].x + offset->x * 5.0;
+            v[2].y = v[0].y + offset->y * 5.0;
+            v[2].z = v[0].z + offset->z * 5.0;
+            v[3].x = v[1].x + offset->x * 5.0;
+            v[3].y = v[1].y + offset->y * 5.0;
+            v[3].z = v[1].z + offset->z * 5.0;
+            RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc].colour = 0xffffffff;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
+            RendererArenaVertexCountPc += 4;
+        }
+    } else {
+        if ((u32)RendererArenaCountPc < 250) {
+            RendererArenaOffsetsPc[RendererArenaCountPc] = RendererArenaVertexCountPc;
+            RendererArenaTypesPc[RendererArenaCountPc] = 4;
+            RendererArenaCountPc++;
+        }
+        v[4].x = cylinder->centre.x;
+        v[4].y = cylinder->centre.y;
+        v[4].z = cylinder->centre.z;
+        v[4].w = 1.0f;
+        NuVec4MtxTransformVU0(&centre, (NUVEC4 *)&v[4], &packet->matrix);
+        v[0].x = cylinder->axis.x + cylinder->centre.x;
+        v[0].y = cylinder->axis.y + cylinder->centre.y;
+        v[0].z = cylinder->axis.z + cylinder->centre.z;
+        v[0].w = 1.0f;
+        NuVec4MtxTransformVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], &packet->matrix);
+        axis[0].x = v[0].x - centre.x;
+        axis[0].y = v[0].y - centre.y;
+        axis[0].z = v[0].z - centre.z;
+        v[1].x = cylinder->side.x + cylinder->centre.x;
+        v[1].y = cylinder->side.y + cylinder->centre.y;
+        v[1].z = cylinder->side.z + cylinder->centre.z;
+        v[1].w = 1.0f;
+        NuVec4MtxTransformVU0((NUVEC4 *)&v[1], (NUVEC4 *)&v[1], &packet->matrix);
+        axis[1].x = v[1].x - centre.x;
+        axis[1].y = v[1].y - centre.y;
+        axis[1].z = v[1].z - centre.z;
+        v[2].x = cylinder->up.x + cylinder->centre.x;
+        v[2].y = cylinder->up.y + cylinder->centre.y;
+        v[2].z = cylinder->up.z + cylinder->centre.z;
+        v[2].w = 1.0f;
+        NuVec4MtxTransformVU0((NUVEC4 *)&v[2], (NUVEC4 *)&v[2], &packet->matrix);
+        axis[2].x = v[2].x - centre.x;
+        axis[2].y = v[2].y - centre.y;
+        axis[2].z = v[2].z - centre.z;
+        length.x = axis[0].x;
+        length.y = axis[0].y;
+        length.z = axis[0].z;
+        NuVecCross(&perp, &axis[0], offset);
+        scale = perp.x * perp.x + perp.y * perp.y + perp.z * perp.z;
+        if (scale > 0.0f) {
+            scale = NuFdiv(1.0f, NuFsqrt(scale));
+        }
+        perp.x *= scale;
+        perp.y *= scale;
+        perp.z *= scale;
+        inv_length = length.x * length.x + length.y * length.y + length.z * length.z;
+        if (inv_length > 0.0f) {
+            inv_length = NuFdiv(1.0f, NuFsqrt(inv_length));
+        } else {
+            inv_length = 0.0f;
+        }
+        scale = perp.x * axis[1].x + perp.y * axis[1].y + perp.z * axis[1].z;
+        dot2 = perp.x * axis[2].x + perp.y * axis[2].y + perp.z * axis[2].z;
+        dot2 = dot2 * dot2 + scale * scale;
+        scale = NuFsqrt(dot2);
+        perp.x *= scale;
+        perp.y *= scale;
+        perp.z *= scale;
+        for (i = 0; i < 4; i++) {
+            switch (i) {
+                case 0:
+                    v[0].x = perp.x + length.x;
+                    v[0].y = perp.y + length.y;
+                    v[0].z = perp.z + length.z;
+                    v[1].x = perp.x - length.x;
+                    v[1].y = perp.y - length.y;
+                    v[1].z = perp.z - length.z;
+                    break;
+                case 1:
+                    v[0].x = perp.x - length.x;
+                    v[0].y = perp.y - length.y;
+                    v[0].z = perp.z - length.z;
+                    v[1].x = -length.x - perp.x;
+                    v[1].y = -length.y - perp.y;
+                    v[1].z = -length.z - perp.z;
+                    break;
+                case 2:
+                    v[0].x = -length.x - perp.x;
+                    v[0].y = -length.y - perp.y;
+                    v[0].z = -length.z - perp.z;
+                    v[1].x = length.x - perp.x;
+                    v[1].y = length.y - perp.y;
+                    v[1].z = length.z - perp.z;
+                    break;
+                case 3:
+                    v[0].x = length.x - perp.x;
+                    v[0].y = length.y - perp.y;
+                    v[0].z = length.z - perp.z;
+                    v[1].x = perp.x + length.x;
+                    v[1].y = perp.y + length.y;
+                    v[1].z = perp.z + length.z;
+                    break;
+            }
+            v[0].x += centre.x;
+            v[0].y += centre.y;
+            v[0].z += centre.z;
+            v[1].x += centre.x;
+            v[1].y += centre.y;
+            v[1].z += centre.z;
+            v[2].x = v[0].x + offset->x * 5.0;
+            v[2].y = v[0].y + offset->y * 5.0;
+            v[2].z = v[0].z + offset->z * 5.0;
+            v[3].x = v[1].x + offset->x * 5.0;
+            v[3].y = v[1].y + offset->y * 5.0;
+            v[3].z = v[1].z + offset->z * 5.0;
+            RendererArenaDataPc[RendererArenaVertexCountPc].position.x = v[0].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc].position.y = v[0].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc].position.z = v[0].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.x = v[2].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.y = v[2].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].position.z = v[2].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.x = v[3].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.y = v[3].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].position.z = v[3].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.x = v[1].x;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.y = v[1].y;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].position.z = v[1].z;
+            RendererArenaDataPc[RendererArenaVertexCountPc].colour = 0xffffffff;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 1].colour = 0xffffffff;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 2].colour = 0xffffffff;
+            RendererArenaDataPc[RendererArenaVertexCountPc + 3].colour = 0xffffffff;
+            RendererArenaVertexCountPc += 4;
+        }
+    }
+}
+
 /* Extrudes the eight-direction silhouette of a queued ellipsoid (centre and three axes) along the light offset into
  * arena quads. */
 void __cdecl NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUVEC *offset, f32 near_value,
@@ -1573,7 +1900,7 @@ void __cdecl NuRndrArenaBuildShadowVolumesPc(i32 unused0, i32 unused1) {
         }
         if (packet->cylinder != NULL) {
             for (j = 0; j < packet->cylinder_count; j++) {
-                STUBBED_NAMED("NuRndrArenaAddCylinderVolumePc");
+                NuRndrArenaAddCylinderVolumePc((PC_SHADOW_CYLINDER_PC *)packet->cylinder + j, packet, &offset);
             }
         }
         if (packet->ellipse != NULL) {
