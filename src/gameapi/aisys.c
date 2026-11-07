@@ -3416,9 +3416,6 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
     route = &path->routes[route_index];
     next_node = destination;
     if ((((u64)1 << route_index) & path->nodes[destination].route_membership_mask) == 0) {
-        if (route->exit_node_count == 0) {
-            return NULL;
-        }
         nearest = FLT_MAX;
         next_node = 0;
         for (index = 0; index < route->exit_node_count; ++index) {
@@ -12360,7 +12357,7 @@ STATIC_ASSERT(offsetof(AILOCATOR_PC, path_info) == 0x20);
 i32 __cdecl Action_EngageOpponent(AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32);
 i32 __cdecl Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *towing_player = NULL, *bomb = NULL;
+    GAMEOBJECT *object, *towing_player, *bomb;
     AI_CABLE_OBJECT_PC *view, *player_view;
     AI_CABLE_HEAD_PC *cable;
     AILOCATOR_PC *locator;
@@ -12372,24 +12369,15 @@ i32 __cdecl Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    player_view = (AI_CABLE_OBJECT_PC *)player;
-    if (player_view->cable != NULL) {
-        cable = (AI_CABLE_HEAD_PC *)player_view->cable;
-        if (cable->target != NULL && cable->target->id == id_DRAGBOMB) {
-            bomb = cable->target;
-            towing_player = player;
-        }
-    }
-    if (bomb == NULL && player2 != NULL) {
-        player_view = (AI_CABLE_OBJECT_PC *)player2;
-        if (player_view->cable != NULL) {
-            cable = (AI_CABLE_HEAD_PC *)player_view->cable;
-            if (cable->target != NULL && cable->target->id == id_DRAGBOMB) {
-                bomb = cable->target;
-                towing_player = player2;
-            }
-        }
-    }
+    bomb = NULL;
+    towing_player = NULL;
+    if (((AI_CABLE_OBJECT_PC *)player)->cable != NULL &&
+        (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player)->cable)->target) != NULL && bomb->id == id_DRAGBOMB)
+        towing_player = player;
+    else if (player2 != NULL && ((AI_CABLE_OBJECT_PC *)player2)->cable != NULL &&
+             (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player2)->cable)->target) != NULL &&
+             bomb->id == id_DRAGBOMB)
+        towing_player = player2;
     view = (AI_CABLE_OBJECT_PC *)object;
     if (bomb != NULL && towing_player != NULL) {
         if (view->cable != NULL && ((AI_CABLE_HEAD_PC *)view->cable)->target != bomb) {
@@ -12398,7 +12386,7 @@ i32 __cdecl Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
         }
         if (view->cable == NULL) {
             distance = NuVecXZDistSqr(&object->collision_position, &bomb->collision_position, &difference);
-            if ((f64)max_cable_length * max_cable_length * 0.5 > distance)
+            if (distance < (f64)max_cable_length * max_cable_length * 0.5)
                 view->cable = CreateCable(object, bomb, 1);
         }
         if (view->cable != NULL) {
