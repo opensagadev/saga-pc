@@ -39,28 +39,38 @@ extern "C" {
     f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *spinner, NUVEC *origin, NUVEC *position, NUVEC *direction,
                                          i32 check_direction) {
         NUVEC positions[8], directions[8];
-        i32 count = GizSpinner_GetTargetPoints(spinner, positions, directions);
-        if (count == 0 || origin == NULL)
-            return -1.0f;
         f32 nearest_distance = 1000000000.0f;
         NUVEC *nearest_position = NULL;
         NUVEC *nearest_direction = NULL;
+        i32 count = GizSpinner_GetTargetPoints(spinner, positions, directions);
+        if (count == 0 || origin == NULL)
+            return -1.0f;
         for (i32 i = 0; i < count; ++i) {
             f32 distance = NuVecDistSqr(origin, &positions[i], NULL);
+            i32 in_front;
             if (check_direction != 0) {
-                u16 angle = spinner->field_0x08c + 0x4000 - spinner->rotation - spinner->initial_rotation +
-                            (-65536 / spinner->type) * i;
+                u16 angle = spinner->field_0x08c - (0x10000 / spinner->type) * i - spinner->rotation -
+                            spinner->initial_rotation + 0x4000;
                 NUVEC offset;
+                in_front = 0;
                 NuVecSub(&offset, origin, &spinner->position);
                 NuVecRotateY(&offset, &offset, angle);
-                if (!(distance < nearest_distance && offset.z >= 0.0f))
-                    continue;
-            } else if (!(distance < nearest_distance)) {
-                continue;
+                if (offset.z >= 0.0f)
+                    in_front = 1;
             }
-            nearest_distance = distance;
-            nearest_position = &positions[i];
-            nearest_direction = &directions[i];
+            if (distance < nearest_distance) {
+                if (check_direction != 0) {
+                    if (in_front != 0) {
+                        nearest_distance = distance;
+                        nearest_position = &positions[i];
+                        nearest_direction = &directions[i];
+                    }
+                } else {
+                    nearest_distance = distance;
+                    nearest_position = &positions[i];
+                    nearest_direction = &directions[i];
+                }
+            }
         }
         if (nearest_position == NULL)
             return -1.0f;
