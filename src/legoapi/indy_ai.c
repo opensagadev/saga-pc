@@ -1,17 +1,5 @@
 #include "saga.h"
 void __cdecl ClearSpecialMove(GAMEOBJECT *);
-typedef struct ai_special_terrain_platform_pc_s {
-    u8 unknown_00[0x4a];
-    i16 scene_object_index;
-    u8 unknown_4c[0x20];
-} AI_SPECIAL_TERRAIN_PLATFORM_PC;
-typedef struct ai_special_terrain_view_pc_s {
-    u8 unknown_00[0x68];
-    AI_SPECIAL_TERRAIN_PLATFORM_PC *platforms;
-} AI_SPECIAL_TERRAIN_VIEW_PC;
-STATIC_ASSERT(sizeof(AI_SPECIAL_TERRAIN_PLATFORM_PC) == 0x6c);
-STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
-STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_VIEW_PC, platforms) == 0x68);
 STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_look_position_pc) == 0x1098);
 i32 __cdecl Indy_MidSpecialMove_DefaultPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;

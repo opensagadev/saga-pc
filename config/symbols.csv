@@ -61,7 +61,23 @@ address,symbol,size,ctype
 0x4050c0,_Batarang_MoveCode,2006,
 0x4058a0,_Batarang_SeekToTarget,530,
 0x405ac0,_Batarangs_Update,651,
+0x405d70,_Batman_MidSpecialMove_DefaultPc,700,
 0x406030,_Batman_PrepareJumpPc,1856,"i32 __cdecl(AIPACKET_PC *, APIOBJECT_PC *, i32)"
+0x406770,_Batman_PrepareSpecialUsePc,347,
+0x4068d0,_Batman_MidSpecialMove_SpecialUsePc,240,
+0x4069c0,_Batman_PrepareBigJumpPc,216,
+0x406aa0,_Batman_MidSpecialMove_BigJumpPc,75,
+0x406af0,_Batman_PrepareGlidePc,125,
+0x406b70,_Batman_MidSpecialMove_GlidePc,171,
+0x406c20,_Batman_PrepareClimbPc,238,
+0x406d10,_Batman_MidSpecialMove_ClimbUpPc,589,
+0x406f60,_Batman_MidSpecialMove_ClimbDownPc,609,
+0x4071d0,_Batman_PrepareGrapplePc,267,
+0x4072e0,_Batman_MidSpecialMove_GrapplePc,330,
+0x407430,_Batman_MidSpecialMove_StartJumpPc,118,
+0x4074b0,_Batman_PrepareObstaclePc,477,
+0x407690,_Batman_PrepareHoverTubePc,425,
+0x407840,_Batman_PrepareTakeOverJumpPc,139,
 0x4078d0,_Batman_PreparingForSpecialMove,389,
 0x407a60,_Batman_MidSpecialMove,112,
 0x407ad0,_Batman_GameAISysInit,144,
@@ -21221,6 +21237,8 @@ address,symbol,size,ctype
 0x7ef210,_AttractoRegistryNamePc,4,char *
 0x7ef224,_BatarangCatwomanStunTimePc,4,f32
 0x7ef294,_BatmanJumpDistancePc,,f32[3]
+0x7ef2a0,_batman_midspecialmovefns,32,AI_MID_SPECIAL_MOVE_PC[8]
+0x7ef2c0,_batman_prepareforspecialmove,88,BATMAN_PREPARE_PC[11]
 0x007ef388,_GlobalBoltType,7216,BOLTTYPE_PC[44]
 0x7f1024,_atat_locators,16,i32[4]
 0x7f1034,_cable_speed,4,f32

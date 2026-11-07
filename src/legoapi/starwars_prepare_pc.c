@@ -18,18 +18,6 @@ typedef struct STARWARS_PREPARE_PC {
     AI_PREPARING_SPECIAL_MOVE_PC prepare;
 } STARWARS_PREPARE_PC;
 STATIC_ASSERT(sizeof(STARWARS_PREPARE_PC) == 8);
-typedef struct ai_special_terrain_platform_pc_s {
-    u8 unknown_00[0x4a];
-    i16 scene_object_index;
-    u8 unknown_4c[0x20];
-} AI_SPECIAL_TERRAIN_PLATFORM_PC;
-typedef struct ai_special_terrain_view_pc_s {
-    u8 unknown_00[0x68];
-    AI_SPECIAL_TERRAIN_PLATFORM_PC *platforms;
-} AI_SPECIAL_TERRAIN_VIEW_PC;
-STATIC_ASSERT(sizeof(AI_SPECIAL_TERRAIN_PLATFORM_PC) == 0x6c);
-STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_PLATFORM_PC, scene_object_index) == 0x4a);
-STATIC_ASSERT(offsetof(AI_SPECIAL_TERRAIN_VIEW_PC, platforms) == 0x68);
 extern STARWARS_PREPARE_PC starwars_prepareforspecialmove[8];
 extern AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4];
 extern const char StarWarsTakeOverJumpPc[13];
