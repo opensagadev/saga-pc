@@ -11,6 +11,7 @@ void __cdecl NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
 }
 
 #include <windows.h>
+#include <string.h>
 typedef struct FILE_DIRECTORY_TIME_PC {
     u8 second, minute, hour, day, month, reserved;
     u16 year;
@@ -112,21 +113,19 @@ i32 __cdecl FileDirectoryHostOpenPc(char *path) {
             break;
     if (slot == 16)
         return 0;
-    NuStrCpy(search, path);
-    if (search[NuStrLen(search) - 1] != '\\')
-        NuStrCat(search, WorldPathSeparator);
-    NuStrCat(search, FileDirectoryWildcardPc);
-    FileDirectoryPathSlotsPc[slot] = (char *)NuAlloc(NuStrLen(search) + 4, FileDirectorySourceNamePc, 0x21a);
-    NuStrCpy(FileDirectoryPathSlotsPc[slot], search);
+    strcpy(search, path);
+    if (search[strlen(search) - 1] != '\\')
+        strcat(search, WorldPathSeparator);
+    strcat(search, FileDirectoryWildcardPc);
+    FileDirectoryPathSlotsPc[slot] = (char *)NuAlloc(strlen(search) + 4, FileDirectorySourceNamePc, 0x21a);
+    strcpy(FileDirectoryPathSlotsPc[slot], search);
     ++FileDirectoryOpenCountPc;
     FileDirectoryHostHandlesPc[slot] = FindFirstFileA(FileDirectoryPathSlotsPc[slot], &FileDirectoryFindDataPc[slot]);
     if (FileDirectoryHostHandlesPc[slot] == INVALID_HANDLE_VALUE) {
         NuFree(FileDirectoryPathSlotsPc[slot], FileDirectorySourceNamePc, 0x222);
         --FileDirectoryOpenCountPc;
-        if (slot == 0)
-            PCThreadCriticalSectionCount_candidate = 0;
-        else
-            FileDirectoryPathSlotsPc[slot - 1] = NULL;
+        /* Retail clears the slot before this one (slot 0 hits the word in front of the table). */
+        FileDirectoryPathSlotsPc[slot - 1] = NULL;
         return -1;
     }
     return slot;
