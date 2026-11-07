@@ -461,38 +461,41 @@ COLLECTID *__cdecl CollectIDUnlocked(i32 id) {
     COLLECTID *entry;
     COLLECTID_PC *list = CollectList;
     i32 index = InCollectList_Index(id, list, CollectCount);
-    if (index == -1)
-        return NULL;
-    if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 2) != 0)
-        return (COLLECTID *)&CollectList[index];
-    entry = (COLLECTID *)&list[index];
-    switch (entry->type) {
-        case 0:
+    i32 unlocked = 0;
+    i32 area;
+    if (index != -1) {
+        if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 2) != 0) {
+            unlocked = 1;
+        } else {
+            entry = (COLLECTID *)&list[index];
+            switch (entry->type) {
+                case 0:
+                    unlocked = 1;
+                    break;
+                case 2:
+                    area = (i8)entry->field2_0x3;
+                    if (area != -1 && ((SHOP_UNLOCK_AREA_PC *)Game_AreaSave)[area].area_complete != 0)
+                        unlocked = 1;
+                    break;
+                case 3:
+                    if (Episodes_Completed() == EPISODECOUNT)
+                        unlocked = 1;
+                    break;
+                case 6:
+                    if (CustomiserCompletionSavePc != NULL &&
+                        ((SHOP_UNLOCK_COMPLETION_PC *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa)
+                        unlocked = 1;
+                    break;
+                case 7:
+                    unlocked = Game_100PercentComplete();
+                    break;
+                case 4:
+                    unlocked = AllMiniKitsDone((AREASAVE_s *)Game_AreaSave);
+                    break;
+            }
+        }
+        if (unlocked != 0)
             return (COLLECTID *)&CollectList[index];
-        case 2:
-            if ((i8)entry->field2_0x3 != -1 &&
-                ((SHOP_UNLOCK_AREA_PC *)Game_AreaSave)[(i8)entry->field2_0x3].area_complete != 0)
-                return (COLLECTID *)&CollectList[index];
-            break;
-        case 3:
-            if (Episodes_Completed() == EPISODECOUNT)
-                return (COLLECTID *)&CollectList[index];
-            break;
-        case 4:
-            if (AllMiniKitsDone((AREASAVE_s *)Game_AreaSave) != 0)
-                return (COLLECTID *)&CollectList[index];
-            break;
-        case 6:
-            if (CustomiserCompletionSavePc != NULL &&
-                ((SHOP_UNLOCK_COMPLETION_PC *)CustomiserCompletionSavePc)->gold_bricks >= entry->field6_0xa)
-                return (COLLECTID *)&CollectList[index];
-            break;
-        case 7:
-            if (Game_100PercentComplete() != 0)
-                return (COLLECTID *)&CollectList[index];
-            break;
-        default:
-            break;
     }
     return NULL;
 }

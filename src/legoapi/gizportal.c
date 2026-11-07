@@ -56,37 +56,31 @@ void __cdecl PortalDoors_Configure(WORLDINFO *world, char *config) {
 void PortalDoors_Update(WORLDINFO *world) {
     i32 index;
     PORTALDOOR_s *door = world->portal_doors;
-    if (door == NULL || world->portal_door_count <= 0) {
+    if (door == NULL) {
         return;
     }
-
-    index = 0;
-    do {
+    for (index = 0; index < world->portal_door_count; ++index, ++door) {
         NUINSTANIM *animation = NuSpecialGetInstAnim(&door->special);
         if (animation != NULL) {
             const f32 end_frame =
                 NuAnimEndFrameOld(door->special.scene->instance_animation_data[animation->animation_index]);
             const u16 flags = door->flags;
-            i32 closed = 0;
-            if ((flags & PORTALDOOR_TRIGGER_AT_END) != 0) {
+            i32 closed;
+            if ((flags & PORTALDOOR_TRIGGER_AT_END) != 0)
                 closed = !(animation->ltime >= end_frame);
-            } else {
+            else
                 closed = !(animation->ltime > 1.0f);
-            }
-
-            if (closed) {
-                if ((flags & (PORTALDOOR_OPENED | PORTALDOOR_CLOSED)) != PORTALDOOR_CLOSED) {
-                    NuPortalSetActive(world->current_gscn, door->portal_id, 0);
-                    door->flags = ((u16)((door->flags & ~PORTALDOOR_OPENED) | PORTALDOOR_CLOSED));
+            if (!closed) {
+                if ((flags & PORTALDOOR_OPENED) == 0) {
+                    NuPortalSetActive(world->current_gscn, door->portal_id, 1);
+                    door->flags = ((u16)((door->flags & ~PORTALDOOR_CLOSED) | PORTALDOOR_OPENED));
                 }
-            } else if ((flags & PORTALDOOR_OPENED) == 0) {
-                NuPortalSetActive(world->current_gscn, door->portal_id, 1);
-                door->flags = ((u16)((door->flags & ~PORTALDOOR_CLOSED) | PORTALDOOR_OPENED));
+            } else if ((flags & PORTALDOOR_OPENED) != 0 || (flags & PORTALDOOR_CLOSED) == 0) {
+                NuPortalSetActive(world->current_gscn, door->portal_id, 0);
+                door->flags = ((u16)((door->flags & ~PORTALDOOR_OPENED) | PORTALDOOR_CLOSED));
             }
         }
-        ++index;
-        ++door;
-    } while (index < world->portal_door_count);
+    }
 }
 
 #include <stdio.h>
