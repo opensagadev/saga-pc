@@ -436,6 +436,12 @@ void __cdecl NuRndrShadPolys(NUMTL *material) {
     NuRndrShadowCnt = 0;
 }
 
+void __cdecl NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
+    NU_POST_SPEED_PARAMETERS_PC *parameters = (NU_POST_SPEED_PARAMETERS_PC *)&currentScene.unknown_188;
+    parameters->current = *camera;
+    NuMtxInv(&parameters->current, &parameters->current);
+}
+
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, unknown_214) == 0x214);
 void __cdecl NuBackbufferCopy(i32 texture_id) {
     currentScene.unknown_214 = (u32)texture_id;

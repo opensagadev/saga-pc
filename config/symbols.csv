@@ -396,10 +396,12 @@ address,symbol,size,ctype
 0x0042dd80,_Bolt_HitCustomFn_LSW,27,"i32 __cdecl (BOLT *, NUVEC *)"
 0x0042dda0,_GameBlowUpBlownUpFn_LSW,398,void __cdecl (GIZMOBLOWUP *)
 0x0042df30,_GizObstacle_SetDefaultSFXFn_LSW,52,"void __cdecl (void *, GIZOBSTACLE *)"
+0x0042df70,_SpeedBlur_Update,124,void __cdecl(void)
 0x42dff0,_SpeedBlur_Apply,195,
 0x0042e0c0,?GizBuildIt_FinishFn_Game@@YAXPAUGIZBUILDIT_PC@@@Z,158,
 0x0042e160,_InitGameAfterConfig,4659,void __cdecl(void)
 0x42f3a0,_EndChallenge,193,"void __cdecl (i32,i32)"
+0x0042f4a0,_DebrisKillPlayers,319,void __cdecl(void)
 0x42f5e0,_AddSurfaceDebris,869,void __cdecl(GAMEOBJECT *)
 0x42f950,_AddWaterSplash,122,"void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x42f9d0,_AddSlamDebris,156,
@@ -5532,6 +5534,7 @@ address,symbol,size,ctype
 0x005a81b0,_Particles_Start,80,void __cdecl (WORLDINFO *)
 0x005a8200,_Particles_Stop,113,void __cdecl (WORLDINFO *)
 0x005a8280,_SetEffectVisibility,55,"void __cdecl (char *, i32)"
+0x005a82c0,_AddCameraRain,171,"void __cdecl(WORLDINFO *, i32)"
 0x005a8390,_CharPivot_Init,45,void __cdecl (struct CHARPIVOT_PC *)
 0x005a83c0,_CharPivot_Check,419,"void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x5a8590,_PlayerItemTypes_Init,64,void __cdecl(PLAYER_ITEM_TYPE_RESET_PC*)
@@ -6286,6 +6289,7 @@ address,symbol,size,ctype
 0x5d4e70,_NuRndrSetBurnoutParametersPc,21,"void __cdecl(i32,const BURN_PARAMETERS_PC *)"
 0x5d5160,_NuRndrEnableDeferredPc,11,void __cdecl(void)
 0x5d5170,_NuRndrSetShadowCoefficientPc,57,"void __cdecl(i32,f32)"
+0x005d51f0,_NuLightSpeedBlurOldCameraPos,39,void __cdecl(NUMTX *)
 0x5d5220,_NuBackbufferCopy,10,void __cdecl (i32)
 0x005d5330,_NuCameraCreate,99,NUCAMERA * __cdecl (void)
 0x5d53a0,_NuCameraDestroy,28,
@@ -21776,6 +21780,7 @@ address,symbol,size,ctype
 0x007f5d40,_GunshipBDiePos,12,NUVEC
 0x7f5db0,_AdaptiveDifficultyRecoveryTimePc,4,f32
 0x7f5db4,_AdaptiveDifficultyRecoveryThresholdPc,4,f32
+0x007f5db8,?lastCameraMtx@?1??SpeedBlur_Update@@9@9,4,i32
 0x7f5dc4,_FalconDebKey,8,i32[2]
 0x7f5dcc,_GunshipDustEmissionRatePc,,f32
 0x7f5dd0,_debris_name,,char *[147]
@@ -23895,6 +23900,7 @@ address,symbol,size,ctype
 0x0087661c,_podrace_die_angle_b,2,u16
 0x00876620,_podrace_die_angle_c,2,u16
 0x876624,_deathstar_hold_count,,i32
+0x00876628,?cameraMtxs@?1??SpeedBlur_Update@@9@9,128,NUMTX[2]
 0x8766a8,_RippleSetPc,,RIPPLE_SET_PC *
 0x8766b0,_KillPartsBikesPc,,KILLPARTS_BIKE_PC[4]
 0x00876850,_tieonsfxwait,4,f32

@@ -81,6 +81,18 @@ extern "C" {
         }
     }
 
+    void __cdecl AddCameraRain(WORLDINFO *world, i32 mode) {
+        NUVEC position;
+        if ((world->current_level->flags & 0x4000) != 0) {
+            position = GameCam->position;
+            position.x += GameCam->dir.x * 2.0;
+            position.y += GameCam->dir.y * 2.0;
+            position.z += GameCam->dir.z * 2.0;
+            AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[mode].effect, &position, 0x3c, FRAMETIME,
+                                              0, 0, NULL);
+        }
+    }
+
     void __cdecl edbitsRegisterBaseTerrain(void *terrain) {
         edbits_base_terrain = terrain;
     }

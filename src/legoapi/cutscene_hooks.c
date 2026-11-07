@@ -252,6 +252,20 @@ void __cdecl GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle)
     }
 }
 
+void __cdecl NuLightSpeedBlurOldCameraPos(NUMTX *camera);
+
+void __cdecl SpeedBlur_Update(void) {
+    static NUMTX cameraMtxs[2];
+    static i32 lastCameraMtx = -1;
+    if (lastCameraMtx < 0) {
+        cameraMtxs[0] = cameraMtxs[1] = GameCam->render_mtx;
+        lastCameraMtx = 0;
+    }
+    NuLightSpeedBlurOldCameraPos(&cameraMtxs[lastCameraMtx]);
+    lastCameraMtx = 1 - lastCameraMtx;
+    cameraMtxs[lastCameraMtx] = GameCam->render_mtx;
+}
+
 void SpeedBlur_Apply(WORLDINFO *world) {
     struct level_data_pc_s *level;
     if (editor_active != 0 || CUTSTOPGAME != 0 || MiniCutCam != 0) {

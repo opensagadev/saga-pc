@@ -45,6 +45,28 @@ i32 __cdecl SuperWeirdo(GAMEOBJECT *object) {
     return 0;
 }
 
+void __cdecl DebrisKillPlayers(void) {
+    i32 i;
+    GAMEOBJECT *player;
+    DebrisPreCheckCollisions(&GameCam->position, 50.0f);
+    for (i = 0; i < 8; i++) {
+        player = (GAMEOBJECT *)Player[i];
+        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 &&
+            player->vehicle_hit_timer <= 0.0f && !(player->spawn_protection_timer > 0.0f) &&
+            (player->flags_ef0 & 0x400000) == 0 && CannotKill(player) == 0 && Player_HasInvincibility(player) == 0 &&
+            (player->character_data->game_character->flags_090 & 0x4008000) == 0) {
+            if (DebrisCollisionCheckScaleY(&player->collision_position, player->collision_radius,
+                                           player->collision_y_scale) != -1) {
+                ObjHitObj(NULL, player, 1, 0, 0, 1);
+            }
+            if (DebrisTorusCollisionCheckScaleY(&player->collision_position, player->collision_radius,
+                                                player->collision_y_scale) != -1) {
+                ObjHitObj(NULL, player, 1, 0, 0, 1);
+            }
+        }
+    }
+}
+
 extern f32 GunshipDustEmissionRatePc;
 void __cdecl PodDust(WORLDINFO *, GAMEOBJECT *);
 void __cdecl AddSurfaceDebris(GAMEOBJECT *object) {

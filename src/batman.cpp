@@ -22,6 +22,9 @@ extern "C" {
     void __cdecl SetDepthOfField(void);
     void __cdecl NuMainRenderLeafPc(void);
     void __cdecl ViewCamDraw(void);
+    void __cdecl SpeedBlur_Update(void);
+    void __cdecl DebrisKillPlayers(void);
+    void __cdecl AddCameraRain(WORLDINFO *world, i32 mode);
 #pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
 #pragma data_seg()
@@ -314,10 +317,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
         Debris(0);
         if (CUTSTOPGAME == 0) {
-            STUBBED_NAMED("NuMainUpdateFrame: DebrisKillPlayers at 0x0042f4a0");
+            DebrisKillPlayers();
         }
         UpdateRippleSet(RippleSetPc);
-        STUBBED_NAMED("NuMainUpdateFrame: AddCameraRain(world, 0x7a) at 0x005a82c0");
+        AddCameraRain(world, 0x7a);
         NuMtlAnimateSetSpeedScale(1.0f);
         NuMtlAnimateSetMask(0xffff);
         SAGA_SOUND_CHECK("before MoveGameCamera");
@@ -409,7 +412,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     }
     SetShadowLight();
     NuRndrBeginScene(1);
-    STUBBED_NAMED("NuMainRenderWorld: SpeedBlur_Update at 0x0042df70");
+    SpeedBlur_Update();
     if (back_rgba[0] == back_rgba[1]) {
         NuRndrClear(0x1f00, back_rgba[0], 1.0f);
     } else {
