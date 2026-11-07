@@ -12232,36 +12232,44 @@ i32 __cdecl Action_Kill(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
     if (all_ai) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || !(candidate->flags_1f8 & 0x400) ||
-                candidate == excluded)
-                continue;
-            if (check_dead && (candidate->dead != 0 || !(candidate->field_1010 <= 0.0f)))
-                continue;
-            candidate->portal_flags =
-                (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
-            if (parts)
-                KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
-            KillGameObject(candidate, debris ? 2 : 4, 0);
+            if ((candidate->flags_1fc_word & 1) && (candidate->flags_1fc_word & 0x1000) &&
+                (candidate->flags_1f8 & 0x400) && candidate != excluded &&
+                (!check_dead || (candidate->dead == 0 && candidate->field_1010 <= 0.0f))) {
+                candidate->portal_flags =
+                    (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
+                if (parts)
+                    KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
+                if (debris)
+                    KillGameObject(candidate, 2, 0);
+                else
+                    KillGameObject(candidate, 4, 0);
+            }
         }
     } else if (creature_set != 0) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || candidate->ai_packet.creature_set != creature_set)
-                continue;
-            if (check_dead && (candidate->dead != 0 || !(candidate->field_1010 <= 0.0f)))
-                continue;
-            candidate->portal_flags =
-                (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
-            if (parts)
-                KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
-            KillGameObject(candidate, debris ? 2 : 4, 0);
+            if ((candidate->flags_1fc_word & 1) && (candidate->flags_1fc_word & 0x1000) &&
+                candidate->ai_packet.creature_set == creature_set &&
+                (!check_dead || (candidate->dead == 0 && candidate->field_1010 <= 0.0f))) {
+                candidate->portal_flags =
+                    (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
+                if (parts)
+                    KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
+                if (debris)
+                    KillGameObject(candidate, 2, 0);
+                else
+                    KillGameObject(candidate, 4, 0);
+            }
         }
     } else if (object != NULL && (!check_dead || (object->dead == 0 && object->field_1010 <= 0.0f))) {
         object->portal_flags =
             (object->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
         if (parts)
             KillParts(object, -1, -1, 1, 0.0f, 0, NULL);
-        KillGameObject(object, debris ? 2 : 4, 0);
+        if (debris)
+            KillGameObject(object, 2, 0);
+        else
+            KillGameObject(object, 4, 0);
     }
     return 1;
 }
