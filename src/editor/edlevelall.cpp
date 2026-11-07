@@ -2511,15 +2511,15 @@ i32 ClassEditor::IsSelectedObject(ClassObject &object) {
  * to no scene or to an editable (or inactive) scene. */
 i32 ClassEditor::Editable(void *object, EdClass *object_class, i32 index) {
     i16 scene = 0;
-    if (object == NULL) {
-        if (class_filter & (1 << index))
-            return 1;
-        return 0;
+    if (object != NULL) {
+        EdMember member;
+        if (object_class->FindMember(&member, object, 0x100, 1))
+            member.reference->GetAttributeData(member.object, 0x100, EdType_Short, &scene, 0);
+        return theLevelEditor.IsEditable(scene);
     }
-    EdMember member;
-    if (object_class->FindMember(&member, object, 0x100, 1))
-        member.reference->GetAttributeData(member.object, 0x100, EdType_Short, &scene, 0);
-    return theLevelEditor.IsEditable(scene);
+    if (class_filter & (1 << index))
+        return 1;
+    return 0;
 }
 
 /* Draws the tools, the selection (through the manipulator when there is one)
