@@ -61,13 +61,11 @@ STATIC_ASSERT(offsetof(AREA_GIZMOSYS_PREFIX_PC, sets) == 0x00);
 
 void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
     AREA_GIZMOTYPES_PC *types = (AREA_GIZMOTYPES_PC *)gizmotypes;
-    AREA_GIZMOSET_PC *sets;
 
-    if (types == NULL || name == NULL || gizmo_sys == NULL) {
+    if (types == NULL || gizmo_sys == NULL || name == NULL) {
         return NULL;
     }
 
-    sets = ((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets;
     if (type_id >= 0 && type_id <= types->count) {
         AREA_GIZMOTYPE_PC *type;
         AREA_GIZMOSET_PC *set;
@@ -75,13 +73,14 @@ void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
         i32 index;
 
         type = &types->types[type_id];
-        set = &sets[type_id];
+        set = &((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets[type_id];
         if (type->get_gizmo_name == NULL) {
             return NULL;
         }
         gizmo = (AREA_GIZMO_PC *)set->gizmos;
         for (index = 0; index < set->count; ++index, ++gizmo) {
-            if (NuStrICmp(type->get_gizmo_name(gizmo), name) == 0) {
+            char *gizmo_name = type->get_gizmo_name(gizmo);
+            if (NuStrICmp(gizmo_name, name) == 0) {
                 return gizmo;
             }
         }
@@ -94,7 +93,7 @@ void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
         i32 type_index;
 
         type = types->types;
-        set = sets;
+        set = ((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets;
         for (type_index = 0; type_index < ((AREA_GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
             AREA_GIZMO_PC *gizmo;
             i32 gizmo_index;
@@ -104,7 +103,8 @@ void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
             }
             gizmo = (AREA_GIZMO_PC *)set->gizmos;
             for (gizmo_index = 0; gizmo_index < set->count; ++gizmo_index, ++gizmo) {
-                if (NuStrICmp(type->get_gizmo_name(gizmo), name) == 0) {
+                char *gizmo_name = type->get_gizmo_name(gizmo);
+                if (NuStrICmp(gizmo_name, name) == 0) {
                     return gizmo;
                 }
             }
