@@ -345,17 +345,6 @@ void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world) {
     }
 }
 
-void __cdecl Cheat_SetArea(i32 cheat, i32 area_index) {
-    CHEAT_PC *cheats;
-
-    if (cheat < 0 || cheat >= CheatSystemPtr->count || area_index < 0 || area_index >= AREACOUNT) {
-        return;
-    }
-
-    cheats = CheatSystemPtr->cheats;
-    cheats[cheat].area_index = (i8)area_index;
-}
-
 AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                           i32 *count_out) {
     NUFPAR_PC *parser;

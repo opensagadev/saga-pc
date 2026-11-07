@@ -59,6 +59,17 @@ void __cdecl Cheats_FrameUpdate(void) {
     Cheats_SetFlags();
 }
 
+void __cdecl Cheat_SetArea(i32 cheat, i32 area_index) {
+    CHEAT_PC *cheats;
+
+    if (cheat < 0 || cheat >= CheatSystemPtr->count || area_index < 0 || area_index >= AREACOUNT) {
+        return;
+    }
+
+    cheats = CheatSystemPtr->cheats;
+    cheats[cheat].area_index = (i8)area_index;
+}
+
 void __cdecl Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
     GAME_MESSAGE_PC *display;
     if (ONEPLAYERPOWERUPS != 0) {

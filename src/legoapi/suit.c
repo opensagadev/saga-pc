@@ -15,6 +15,15 @@ i32 __cdecl Suit_GetIndex(SUIT_LAYERS_PC *suit) {
     return -1;
 }
 
+SUIT_INITIALIZER_RECORD_PC *__cdecl Suit_FindFromLetter(char letter) {
+    i32 index;
+    for (index = 0; index < 10; ++index) {
+        if (SuitRecordInitPc[index].letter == letter)
+            return &SuitRecordInitPc[index];
+    }
+    return NULL;
+}
+
 void __cdecl Suits_Init(void) {
     i32 i;
     for (i = 0; i < 10; ++i) {

@@ -19,24 +19,15 @@ STATIC_ASSERT(sizeof(SIGNALPROGRESS_s) == 0x28);
 STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, active_mask) == 0x20);
 STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, visible_mask) == 0x24);
 
-SUIT_INITIALIZER_RECORD_PC *__cdecl Suit_FindFromLetter(char letter) {
-    i32 index;
-    for (index = 0; index < 10; ++index) {
-        if (SuitRecordInitPc[index].letter == letter)
-            return &SuitRecordInitPc[index];
-    }
-    return NULL;
-}
-
 static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
-    u8 was_visible = signal->flags & 1;
-    signal->flags = (signal->flags & ~1) | (visible != 0);
-    if (visible != 0) {
-        if (was_visible == 0)
-            signal->platform_id = NewPlatPickupInst(&signal->matrix, 2);
-    } else if (was_visible != 0) {
+    u8 was_visible = signal->visible;
+    u8 is_visible;
+    signal->visible = visible != 0;
+    is_visible = signal->visible;
+    if (is_visible && !was_visible)
+        signal->platform_id = NewPlatPickupInst(&signal->matrix, 2);
+    else if (!is_visible && was_visible)
         DeletePlatinst(signal->platform_id);
-    }
 }
 
 void __cdecl Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
