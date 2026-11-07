@@ -29628,6 +29628,21 @@ class NetTransporter : public NetTransporterInterface {
     NetTransportList clients;
 };
 
+/* Buffered append-only log file embedded in TTNetwork at +0x20. */
+class NetLogFile {
+  public:
+    NetLogFile();
+    ~NetLogFile();
+    i32 Flush();
+
+    i32 state;
+    char name[0x100];
+    i32 mode;
+    u32 unknown_108[2];
+    i32 count;
+    u8 buffer[0x2000];
+};
+
 class TTNetwork : public NetTransporter, public BaseThing {
   public:
     virtual void Send(NETMESSAGE_PC message, u8 channel, V2Peer *peer);
@@ -29648,6 +29663,8 @@ class TTNetwork : public NetTransporter, public BaseThing {
     void DeliverMessage(NETMESSAGE_PC &message, u8 channel, i32 arg);
     void RecordSent(NETMESSAGE_PC message, u8 channel);
     void RecordReceived(NETMESSAGE_PC message, u8 channel);
+
+    NetLogFile log;
 };
 extern TTNetwork theTTNetwork;
 

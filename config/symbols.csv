@@ -6978,6 +6978,9 @@ address,symbol,size,ctype
 0x60e510,?DeliverMessage@TTNetwork@@QAEXAAUNETMESSAGE_PC@@EH@Z,118,
 0x60e590,?RecordSent@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
 0x60e5f0,?RecordReceived@TTNetwork@@QAEXUNETMESSAGE_PC@@E@Z,92,
+0x60e9d0,??0NetLogFile@@QAE@XZ,13,
+0x60e9e0,?Flush@NetLogFile@@QAEHXZ,124,
+0x60ec40,??1NetLogFile@@QAE@XZ,5,
 0x60ed30,?RemoveDependancies@BaseThing@@UAEHPAUThingRemoveData@@@Z,8,
 0x60ed40,?EnterLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
 0x60ed50,?ExitLevel@BaseThing@@UAEXPAUThingLevelData@@@Z,3,
@@ -6986,6 +6989,7 @@ address,symbol,size,ctype
 0x60ed80,?ProcessOnlyWhenPaused@BaseThing@@UAEXPAUThingProcessData@@@Z,3,
 0x60ed90,?Render@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
 0x60eda0,?Effects@BaseThing@@UAEXPAUThingRenderData@@@Z,3,
+0x60edb0,?GetName@TTNetwork@@UAEPBDXZ,6,
 0x60ee80,?MakeUnique@NETMESSAGE_PC@@QAEXXZ,144,
 0x60ef10,?Send@TTNetwork@@UAEXUNETMESSAGE_PC@@EPAVV2Peer@@@Z,180,
 0x60efd0,?SendEx@TTNetwork@@UAEXUNETMESSAGE_PC@@EPAVV2Peer@@HH@Z,190,
@@ -17394,6 +17398,7 @@ address,symbol,size,ctype
 0x76a8dc,_NuMaterialSourcePathPc,56,const char[56]
 0x76a918,??_7NetSmallStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a924,??_7NetStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76a9c0,??_C@_07BGDMAJAE@Network?$AA@,8,
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
 0x76aa30,??_C@_0L@HPABEAAN@mPeerList?6?$AA@,11,const char[]
 0x76aa3c,??_C@_0L@HFCAGBJ@mHostList?6?$AA@,11,const char[]

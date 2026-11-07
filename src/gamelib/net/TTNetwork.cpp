@@ -15,6 +15,10 @@ STATIC_ASSERT(offsetof(NetTransportEntry, stats) == 0x30);
 STATIC_ASSERT(sizeof(NetTransportEntry) == 0x250);
 STATIC_ASSERT(offsetof(TTNetwork, clients) == 0x4);
 STATIC_ASSERT(sizeof(NetTransporter) == 0x10);
+STATIC_ASSERT(offsetof(TTNetwork, log) == 0x20);
+STATIC_ASSERT(offsetof(NetLogFile, mode) == 0x104);
+STATIC_ASSERT(offsetof(NetLogFile, count) == 0x110);
+STATIC_ASSERT(sizeof(NetLogFile) == 0x2114);
 
 NetStatCounters::NetStatCounters() {
     values[0] = 0;
@@ -248,6 +252,37 @@ void TTNetwork::RecordReceived(NETMESSAGE_PC message, u8 channel) {
         }
     }
     message.Release();
+}
+
+NetLogFile::NetLogFile() {
+    state = 0;
+    name[0] = 0;
+}
+
+i32 NetLogFile::Flush() {
+    if (state != 2) {
+        return (i32)0xa1000003;
+    }
+    if (count > 0) {
+        NUFILE file = NuFileOpen(name, mode);
+        if (file == 0) {
+            return (i32)0xa1000001;
+        }
+        NuFileSeek(file, 0, 2);
+        NuFileWrite(file, buffer, count);
+        NuFileClose(file);
+        count = 0;
+        mode = 2;
+    }
+    return 0;
+}
+
+NetLogFile::~NetLogFile() {
+    Flush();
+}
+
+char const *TTNetwork::GetName() {
+    return "Network";
 }
 
 void NETMESSAGE_PC::MakeUnique() {
