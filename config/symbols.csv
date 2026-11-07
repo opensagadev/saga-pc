@@ -9604,6 +9604,7 @@ address,symbol,size,ctype
 0x6b7cf0,??H@YA?AUVuVec@@ABU0@0@Z,29,
 0x6b7d10,??G@YA?AUVuVec@@ABU0@0@Z,29,
 0x6b7d30,??D@YA?AUVuVec@@ABU0@M@Z,29,
+0x6b7d70,?VuVecDot@@YAMABUVuVec@@0@Z,29,
 0x6b7d90,?VuVecLengthSq@@YAMABUVuVec@@@Z,33,
 0x6b7dc0,?VuVecLength@@YAMABUVuVec@@@Z,46,
 0x6b7df0,?VuMtxCopy@@YAXAAUVuMtx@@ABU1@@Z,95,

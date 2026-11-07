@@ -2979,6 +2979,10 @@ static inline VuVec operator*(const VuVec &a, f32 scale) {
     return product;
 }
 
+static inline f32 VuVecDot(const VuVec &a, const VuVec &b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
 /* VuVec assignment copies the four floats one by one. */
 static inline f32 VuVecLengthSq(const VuVec &v) {
     return v.x * v.x + v.y * v.y + v.z * v.z;
@@ -4744,35 +4748,59 @@ void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
     __declspec(align(16)) VuMtx box;
     GetAxisLocators(origin, points, matrix);
     EdDrawBegin(1);
-    for (i32 index = 1; index <= 3; index++)
-        EdDrawLineSphere(&points[index].xyz, Scale * ManipulatorHandleRadius, 1.0f,
-                         attribute_selected ? AxisColour[index] : 0xff808080);
+    EdDrawLineSphere(&points[1].xyz, ManipulatorHandleRadius * Scale, 1.0f,
+                     attribute_selected ? AxisColour[1] : 0xff808080);
+    EdDrawLineSphere(&points[2].xyz, ManipulatorHandleRadius * Scale, 1.0f,
+                     attribute_selected ? AxisColour[2] : 0xff808080);
+    EdDrawLineSphere(&points[3].xyz, ManipulatorHandleRadius * Scale, 1.0f,
+                     attribute_selected ? AxisColour[3] : 0xff808080);
     VuMtxCopy(box, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
-    for (i32 index = 4; index <= 7; index++) {
-        box.matrix.m30 = points[index].x;
-        box.matrix.m31 = points[index].y;
-        box.matrix.m32 = points[index].z;
-        box.matrix.m33 = 1.0f;
-        EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[index] : 0xff808080);
-    }
+    box.matrix.m30 = points[4].x;
+    box.matrix.m31 = points[4].y;
+    box.matrix.m32 = points[4].z;
+    box.matrix.m33 = 1.0f;
+    EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[4] : 0xff808080);
+    box.matrix.m30 = points[5].x;
+    box.matrix.m31 = points[5].y;
+    box.matrix.m32 = points[5].z;
+    box.matrix.m33 = 1.0f;
+    EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[5] : 0xff808080);
+    box.matrix.m30 = points[6].x;
+    box.matrix.m31 = points[6].y;
+    box.matrix.m32 = points[6].z;
+    box.matrix.m33 = 1.0f;
+    EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[6] : 0xff808080);
+    box.matrix.m30 = points[7].x;
+    box.matrix.m31 = points[7].y;
+    box.matrix.m32 = points[7].z;
+    box.matrix.m33 = 1.0f;
+    EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[7] : 0xff808080);
     if (NewPrim != 0) {
         if (NewPrim == 2 || NewPrim == 3)
             NuPrim3DEnd();
         NewPrim = 0;
     }
     EdDrawBegin(0);
-    f32 size = Scale * ManipulatorHandleRadius;
-    for (i32 index = 1; index <= 3; index++) {
-        __declspec(align(16)) VuVec offset;
-        __declspec(align(16)) VuVec start;
-        __declspec(align(16)) VuVec end;
-        VuVecCopy(offset, (points[index] - points[7]) * size);
-        VuVecCopy(start, points[index] - offset * 0.5f);
-        VuVecCopy(end, points[index] + offset * 0.5f);
-        f32 radius = size * 0.2f;
-        EdDrawPolyArrow(&start.xyz, &end.xyz, 8, attribute_selected ? AxisColour[index] : 0xff808080, radius, radius,
-                        0.5f, 0.0f);
-    }
+    f32 size = ManipulatorHandleRadius * Scale;
+    __declspec(align(16)) VuVec offset;
+    __declspec(align(16)) VuVec start;
+    __declspec(align(16)) VuVec end;
+    VuVecCopy(offset, (points[1] - points[7]) * size);
+    VuVecCopy(start, points[1] - offset * 0.5f);
+    VuVecCopy(end, points[1] + offset * 0.5f);
+    f32 radius = size * 0.2f;
+    EdDrawPolyArrow(&start.xyz, &end.xyz, 8, attribute_selected ? AxisColour[1] : 0xff808080, radius, radius, 0.5f,
+                    0.0f);
+    VuVecCopy(offset, (points[2] - points[7]) * size);
+    VuVecCopy(start, points[2] - offset * 0.5f);
+    VuVecCopy(end, points[2] + offset * 0.5f);
+    EdDrawPolyArrow(&start.xyz, &end.xyz, 8, attribute_selected ? AxisColour[2] : 0xff808080, radius, radius, 0.2f,
+                    0.0f);
+    VuVecCopy(offset, (points[3] - points[7]) * size);
+    VuVecCopy(start, points[3] - offset * 0.5f);
+    VuVecCopy(end, points[3] + offset * 0.5f);
+    EdDrawPolyArrow(&start.xyz, &end.xyz, 8, attribute_selected ? AxisColour[3] : 0xff808080, radius, radius, 0.2f,
+                    0.0f);
     if (NewPrim != 0) {
         if (NewPrim == 2 || NewPrim == 3)
             NuPrim3DEnd();
@@ -4878,38 +4906,26 @@ i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first
 /* Intersects the line through origin along direction with a sphere. */
 i32 LineToSphereIntersection(VuVec &origin, VuVec &direction, VuVec &center, f32 radius, VuVec *far_intersection,
                              VuVec *near_intersection) {
-    f32 qx = origin.x + direction.x - origin.x;
-    f32 qy = origin.y + direction.y - origin.y;
-    f32 qz = origin.z + direction.z - origin.z;
-    f32 a = qx * qx + qy * qy + qz * qz;
+    __declspec(align(16)) VuVec end = origin + direction;
+    __declspec(align(16)) VuVec delta = end - origin;
+    f32 a = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+    __declspec(align(16)) VuVec offset = origin - center;
+    f32 b = 2 * VuVecDot(delta, offset);
+    f32 c = VuVecLengthSq(center);
+    c += VuVecLengthSq(origin);
+    c -= 2.0 * VuVecDot(center, origin);
+    c -= radius * radius;
+    f32 discriminant = b * b - 4.0 * a * c;
     f32 magnitude = a;
     *(u32 *)&magnitude &= 0x7fffffff;
-    if (magnitude < 1.1920929e-7f)
+    if (magnitude < 1.1920929e-7f || discriminant < 0.0f)
         return 0;
-    f32 projection = (origin.x - center.x) * qx + (origin.y - center.y) * qy + (origin.z - center.z) * qz;
-    f32 b = projection + projection;
-    f32 center_squared = center.x * center.x + center.y * center.y + center.z * center.z;
-    f32 origin_squared = origin.x * origin.x + origin.y * origin.y + origin.z * origin.z;
-    f32 origin_center = origin.x * center.x + origin.y * center.y + origin.z * center.z;
-    f32 c = center_squared + origin_squared - (origin_center + origin_center) - radius * radius;
-    f32 discriminant = b * b - 4.0f * a * c;
-    if (discriminant < 0.0f)
-        return 0;
-    f32 denominator = a + a;
-    f32 far_t = (NuFsqrt(discriminant) - b) / denominator;
-    f32 near_t = (-b - NuFsqrt(discriminant)) / denominator;
-    if (far_intersection != NULL) {
-        far_intersection->x = origin.x + direction.x * far_t;
-        far_intersection->y = origin.y + direction.y * far_t;
-        far_intersection->z = origin.z + direction.z * far_t;
-        far_intersection->w = 0.0f;
-    }
-    if (near_intersection != NULL) {
-        near_intersection->x = origin.x + direction.x * near_t;
-        near_intersection->y = origin.y + direction.y * near_t;
-        near_intersection->z = origin.z + direction.z * near_t;
-        near_intersection->w = 0.0f;
-    }
+    f32 far_t = (-b + NuFsqrt(discriminant)) / (2.0 * a);
+    f32 near_t = (-b - NuFsqrt(discriminant)) / (2.0 * a);
+    if (far_intersection != NULL)
+        VuVecCopy(*far_intersection, origin + direction * far_t);
+    if (near_intersection != NULL)
+        VuVecCopy(*near_intersection, origin + direction * near_t);
     return 1;
 }
 
