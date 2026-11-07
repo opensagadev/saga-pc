@@ -24,6 +24,10 @@ void __cdecl EnableShadowMapRendering(i32 unused) {
 void __cdecl ResetShadowMapRendering(void) {
     ShadowMapResetPc();
 }
+extern "C" void __cdecl NuLightSpotFadeSet(u32 fade);
+extern "C" void __cdecl SetSpotLightMode(void) {
+    NuLightSpotFadeSet(0x80808080);
+}
 
 void PC_SPECIAL_SHADOW_LIGHT::SetEnabledPc(i32 enabled) {
     if (enabled != 0 && this->enabled == 0) {

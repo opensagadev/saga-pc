@@ -12,6 +12,16 @@ extern "C" {
     void __cdecl UpdateCables(void);
     void __cdecl UpdateRadios(void);
     void __cdecl Hint_Process(f32 elapsed);
+    void __cdecl NuSound3SetDPL(i32 mode, i32 unused);
+    void __cdecl NuSound3UpdateRumble(f32 frame_time);
+    void __cdecl GameFog_Set(void);
+    void __cdecl SetSpotLightMode(void);
+    void __cdecl Grabber_Draw(WORLDINFO *world);
+    void __cdecl DrawCables(void);
+    void __cdecl Detonators_Draw(void);
+    void __cdecl SetDepthOfField(void);
+    void __cdecl NuMainRenderLeafPc(void);
+    void __cdecl ViewCamDraw(void);
 #pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
 #pragma data_seg()
@@ -151,7 +161,11 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     SAGA_SOUND_CHECK("before sound");
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", (void *)WORLD);
     if (NOSOUND == 0) {
-        STUBBED_NAMED("NuMainUpdateFrame: NuSound3SetDPL(options, 0) at 0x00698820");
+        if (Paused != 0 && GameMenu[GameMenuLevel].menu == 4) {
+            NuSound3SetDPL(TempOptions.option_0002, 0);
+        } else {
+            NuSound3SetDPL(Game.options_save.option_0002, 0);
+        }
         NuSound3Update();
         UpdateLevelSfx(world, Paused);
         NuSound3SetRumblePads(Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL &&
@@ -162,7 +176,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                                       (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0
                                   ? ((GAMEOBJECT *)Player[1])->pad->bound_pad
                                   : NULL);
-        STUBBED_NAMED("NuMainUpdateFrame: NuSound3UpdateRumble at 0x00698920, SoundUpdate at 0x00653460");
+        NuSound3UpdateRumble(FRAMETIME);
+        STUBBED_NAMED("NuMainUpdateFrame: SoundUpdate(FRAMETIME) at 0x00653460");
         ProcessMusicChanges(world->current_level, &Game.options_save);
     }
     SAGA_SOUND_CHECK("after sound");
@@ -385,9 +400,10 @@ set_stage:
 static void NuMainRenderWorld(WORLDINFO *world) {
     i32 paused;
 
-    STUBBED_NAMED("NuMainRenderWorld: GameFog_Update(world) at 0x00564cd0, GameFog_Set at 0x00401820");
+    GameFog_Update(world);
+    GameFog_Set();
     SetLevelLights(world->rtl_set, 1.0f);
-    STUBBED_NAMED("NuMainRenderWorld: SetSpotLightMode at 0x00596960");
+    SetSpotLightMode();
     if (CUTSTOPGAME == 0) {
         DrawGameObjectsProcess();
     }
@@ -407,7 +423,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
             DrawGameObjects();
         }
     }
-    STUBBED_NAMED("NuMainRenderWorld: Grabber_Draw(world) at 0x00470940");
+    Grabber_Draw(world);
     SetLevelLights(world->rtl_set, 1.0f);
     if (editor_active == 0 && Paused == 0 && CUTSTOPGAME == 0) {
         CharShadows_Update();
@@ -431,7 +447,8 @@ static void NuMainRenderWorld(WORLDINFO *world) {
         Bolts_Draw(world);
         DrawExplosions();
         ZipUps_DrawLines();
-        STUBBED_NAMED("NuMainRenderWorld: DrawCables at 0x00409980, Detonators_Draw at 0x00427070");
+        DrawCables();
+        Detonators_Draw();
         Batarangs_Draw();
         TrafficAnimSys_Draw(world->trafficanim_sys);
         GizmoSysDraw(world->gizmo_sys, world, FRAMETIME);
@@ -462,7 +479,8 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuRndrEndScene();
     RenderShadowLights(Paused);
     NuRndrBeginScene(1);
-    STUBBED_NAMED("NuMainRenderWorld: 0x00596520, SetDepthOfField at 0x004017b0");
+    SetDepthOfField();
+    NuMainRenderLeafPc();
     if (BURNOUTON != 0)
         BurnoutApply(paused);
     STUBBED_NAMED("NuMainRenderWorld: 0x00491bd0(world->current_gscn) when 0x0087b580 is set");
@@ -476,7 +494,7 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     NuRndrEndSceneEx(0);
     STUBBED_NAMED("NuMainRenderWorld: DebrisDrawGlass at 0x006868f0");
     if (screendump == 0) {
-        STUBBED_NAMED("NuMainRenderWorld: ViewCamDraw at 0x0040aa80");
+        ViewCamDraw();
     }
 }
 

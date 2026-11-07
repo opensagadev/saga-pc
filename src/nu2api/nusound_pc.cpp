@@ -12,6 +12,11 @@ extern "C" void __cdecl PCSoundAlreadyPlayingHook(...) {
 extern "C" void __cdecl NuSound3FlushLoops(void) {
 }
 
+extern "C" void __cdecl NuSound3SetDPL(i32 mode, i32 unused) {
+    (void)mode;
+    (void)unused;
+}
+
 extern "C" void __cdecl PCSoundFailure(...) {
 }
 

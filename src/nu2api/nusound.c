@@ -563,6 +563,10 @@ void NuSound3SetLoopHoldTime(f32 time) {
 void __cdecl NuSound3StopRumble(void) {
 }
 
+void __cdecl NuSound3UpdateRumble(f32 frame_time) {
+    (void)frame_time;
+}
+
 f32 __cdecl PCSoundVolumeLookup(i32 index) {
     /* Retail checks only the upper bound; preserve its negative-index behavior. */
     if (index > 0x3fff) {

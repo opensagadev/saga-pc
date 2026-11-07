@@ -288,6 +288,10 @@ void __cdecl NuRndrShadowInit(u8 *random) {
     NuPtlDmaSlotsExhaustedPc();
 }
 
+void __cdecl NuLightSpotFadeSet(u32 fade) {
+    (void)fade;
+}
+
 DWA_WEIGHT_BLOCK_PC *__cdecl NuRndrCreateBlendShapeDeformerWeightsArray(i32 count) {
     i32 clear_bytes = count * 4 + 0x204;
     DWA_WEIGHT_BLOCK_PC *result;

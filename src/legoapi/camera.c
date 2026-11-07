@@ -385,6 +385,9 @@ NUVEC *__cdecl ViewCamGetTgt(void) {
     return &ViewCam.target;
 }
 
+void __cdecl ViewCamDraw(void) {
+}
+
 void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, f32 blend_out, i32 borders,
                            i32 hold_until_players_move) {
     if (spline == NULL)

@@ -1,5 +1,8 @@
 #include "saga.h"
 
+void __cdecl SetDepthOfField(void) {
+}
+
 void __cdecl InitShadowLights(void) {
     struct PC_SPECIAL_SHADOW_LIGHT *light;
     i32 enabled;

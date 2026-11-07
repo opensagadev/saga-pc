@@ -118,6 +118,11 @@ void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
         --packet->active;
 }
 
+/* Genuine native PC entry 0x004017b0 is RET-only; NuMainRenderWorld calls it after
+ * SetDepthOfField. Its historical name is unknown. */
+void __cdecl NuMainRenderLeafPc(void) {
+}
+
 void __cdecl GamePad_InitButtons(void) {
     GAMEPAD_JUMP = 0x40;
     GAMEPAD_ACTION = 0x80;
@@ -126,6 +131,10 @@ void __cdecl GamePad_InitButtons(void) {
     GAMEPAD_SKIP = 0x840;
     GAMEPAD_MENUSELECT = 0x40;
     GAMEPAD_MENUCANCEL = 0x120;
+}
+
+/* PC sets no fog here; GameFog_Update programs it directly. */
+void __cdecl GameFog_Set(void) {
 }
 
 STATIC_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);

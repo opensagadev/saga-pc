@@ -5,7 +5,9 @@ address,symbol,size,ctype
 0x4011b0,?PcInputCommandAllowedPc@@YAHHH@Z,48,
 0x4011e0,_InitOnce,1019,"void __cdecl(i32,char**)"
 0x004015e0,_Text_ExpandButtonString,462,
+0x004017b0,_NuMainRenderLeafPc,1,void __cdecl(void)
 0x4017c0,_GamePad_InitButtons,66,void __cdecl(void)
+0x00401820,_GameFog_Set,1,void __cdecl(void)
 0x00401870,_NuMainTrailerLeafPc,1,void __cdecl(void)
 0x4018a0,_AITriggerSetSysReset,81,void __cdecl (TRIGGER_SYSTEM_PC *)
 0x401900,_AITriggerSetCreate,62,"AITRIGGERSET_s *__cdecl(AITRIGGERSETSYS_s *,FLOWBOX_PC *)"
@@ -103,6 +105,7 @@ address,symbol,size,ctype
 0x40aa50,_ViewCamGetMode,6,i32 __cdecl (void)
 0x0040aa60,_ViewCamGetGamePad,6,GAMEPAD_PC *__cdecl (void)
 0x40aa70,_ViewCamGetTgt,6,NUVEC *__cdecl (void)
+0x0040aa80,_ViewCamDraw,1,void __cdecl(void)
 0x40aa90,_PlayersCamLookPos,133,"void __cdecl (NUVEC *, NUVEC *)"
 0x40ab20,_UpdatePlayerCameraOcclusionPc,693,void __cdecl (void)
 0x40ade0,_MoveGameCamera,14452,
@@ -5281,11 +5284,13 @@ address,symbol,size,ctype
 0x595a90,_FreeGameObjectLights,91,void __cdecl(void)
 0x595af0,_LightGameObject,769,"void __cdecl(GAMEOBJECT *,void *)"
 0x595e00,_SetCreatureLights,1812,void __cdecl(APIOBJECT_PC *)
+0x00596520,_SetDepthOfField,1,void __cdecl(void)
 0x00596530,_InitShadowLights,632,void __cdecl (void)
 0x5967b0,_ShadowAveragePlayerBoundsPc,179,normalized native privateEDI output stackradius
 0x596870,_RenderShadowLights,172,void __cdecl(i32)
 0x596920,_EnableShadowMapRendering,33,void __cdecl(i32)
 0x596950,_ResetShadowMapRendering,5,void __cdecl(void)
+0x00596960,_SetSpotLightMode,12,void __cdecl(void)
 0x00596970,_ResetShadowMapRenderingFn,5,void __cdecl(void)
 0x00596980,_EnableShadowMapRenderingFn,31,void __cdecl(void)
 0x596a30,_SetShadowLight,1656,full native scene shadow-light setup
@@ -6779,6 +6784,7 @@ address,symbol,size,ctype
 0x5fed10,_NuRndrShadPolys,353,void __cdecl(NUMTL *)
 0x5fee80,_NuRndrAddShadow,104,"void __cdecl(NUVEC *,f32,i32,i32,i32,i32)"
 0x005feef0,_NuRndrShadowInit,5,void __cdecl(u8 *)
+0x005fef60,_NuLightSpotFadeSet,1,void __cdecl(u32)
 0x5ff2d0,_NuVpBuildScalingTemplatePc,189,
 0x5ff390,_NuVpUpdate,715,
 0x5ff660,_RenderPostViewportSetPc,227,"void __cdecl(f32,f32,f32,f32,f32,f32,f32,f32)"
@@ -8705,8 +8711,10 @@ address,symbol,size,ctype
 0x698710,_NuSound3SetRequestTable,100,"void __cdecl(u16 *,i32)"
 0x698790,_NuSound3SetSFXPitch,1,void __cdecl(i32)
 0x006987a0,_NuSound3FlushLoops,1,void __cdecl (void)
+0x00698820,_NuSound3SetDPL,1,"void __cdecl(i32, i32)"
 0x00698900,_NuSound3AddRumble,1,"void __cdecl (void *, f32, i32, i32, f32)"
 0x00698910,_NuSound3StopRumble,1,void __cdecl (void)
+0x00698920,_NuSound3UpdateRumble,1,void __cdecl(f32)
 0x00698930,_NuSound3SetRumblePads,1,"void __cdecl (void *, void *)"
 0x698990,_NuSound3LoadingSfx,12,i32 __cdecl(void)
 0x6989a0,_NuSound3CancelCheckStereo,1,
