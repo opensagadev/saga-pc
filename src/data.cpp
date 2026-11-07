@@ -28734,6 +28734,18 @@ extern "C" {
 
 #pragma bss_seg(".bss$GameFogTime")
     f32 GameFogTime = 0;
+
+#pragma bss_seg(".bss$GameFogOld")
+    GAMEFOG_STATE_PC GameFogOld = {{0}};
+
+#pragma bss_seg(".bss$dof_fstop")
+    f32 dof_fstop = 0;
+
+#pragma bss_seg(".bss$GameFogNew")
+    GAMEFOG_STATE_PC GameFogNew = {{0}};
+
+#pragma bss_seg(".bss$GameFog")
+    GAMEFOG_STATE_PC GameFog = {{0}};
 }
 
 extern "C" {
@@ -28751,6 +28763,7 @@ extern "C" {
     NUMTL *FadeMtl2 = 0;
 #pragma bss_seg()
 
+    f32 GameFogDefaultFStopPc = 22.0f;
     f32 ScreenPauseFadeSpeedPc = 2.0f;
     u64 CharacterMaskAllPc = ~(u64)0;
     i32 FalconDebKey[2] = {-1, -1};

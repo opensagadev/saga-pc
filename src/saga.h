@@ -5479,9 +5479,12 @@ typedef struct cutinfo_s {
     u8 opaque_00_04[0x4];
     void *instance;
     char name[0x40];
-    u8 unknown_48[0xa4];
+    u8 unknown_48[0x8];
+    u32 flags;
+    u8 unknown_54[0x98];
     i16 skip_level;
 } CUTINFO;
+STATIC_ASSERT(offsetof(CUTINFO, flags) == 0x50);
 STATIC_ASSERT(offsetof(CUTINFO, instance) == 4);
 STATIC_ASSERT(offsetof(CUTINFO, name) == 8);
 
@@ -10614,6 +10617,7 @@ extern "C" {
     STATIC_ASSERT(offsetof(RTL_SET_PC, header) == 0);
     STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
     STATIC_ASSERT(offsetof(RTL_SET_PC, fog) == 0x4604);
+    RTL_FOG_MIGRATION_PC *__cdecl rtlGetFogSet(RTL_SET_PC *set, NUVEC *position);
     typedef struct RTL_INDEX_PC {
         i32 enabled;
         u8 unknown_04[8];
@@ -26485,6 +26489,20 @@ extern "C" {
     extern void *GameFogSet;
     extern i32 GameFogSnap;
     extern f32 GameFogTime;
+    typedef struct gamefog_state_pc_s {
+        f32 colour_channels[4];
+        f32 start, end, density;
+        u32 colour;
+        f32 low_quality_density;
+        f32 low_quality_colour_channels[4];
+        u32 low_quality_colour;
+    } GAMEFOG_STATE_PC;
+    STATIC_ASSERT(offsetof(GAMEFOG_STATE_PC, colour) == 0x1c);
+    STATIC_ASSERT(sizeof(GAMEFOG_STATE_PC) == 0x38);
+    extern GAMEFOG_STATE_PC GameFog, GameFogOld, GameFogNew;
+    extern f32 dof_fstop;
+    extern f32 GameFogDefaultFStopPc;
+    void __cdecl GameFog_Update(WORLDINFO *world);
     extern i32 back_rgba[2];
     extern i32 old_pause_state;
     extern i32 pause_rt;

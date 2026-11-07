@@ -315,6 +315,107 @@ void GameFog_Reset() {
     GameFogTime = 0.0f;
 }
 
+void __cdecl GameFog_Update(WORLDINFO *world) {
+    RTL_FOG_MIGRATION_PC *previous = (RTL_FOG_MIGRATION_PC *)GameFogSet;
+    RTL_FOG_MIGRATION_PC *fog;
+    f32 blend;
+    if (world->rtl_set != NULL &&
+        !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0))
+        fog = rtlGetFogSet((RTL_SET_PC *)world->rtl_set, &pNuCam->mtx.translation);
+    else
+        fog = NULL;
+    GameFogSet = fog;
+    if (GameFogSnap == 0 && fog != previous) {
+        GameFogTime = 0.0f;
+        GameFogDuration = 3.0f;
+        GameFogOld = GameFog;
+    }
+    if (GameFogSnap != 0 || fog != previous) {
+        if (fog != NULL) {
+            GameFogNew.colour_channels[0] = (f32)(fog->colour >> 24);
+            GameFogNew.colour_channels[1] = (f32)(fog->colour >> 16 & 0xff);
+            GameFogNew.colour_channels[2] = (f32)(fog->colour >> 8 & 0xff);
+            GameFogNew.colour_channels[3] = (f32)(fog->colour & 0xff);
+            GameFogNew.start = fog->start;
+            GameFogNew.end = fog->end;
+            GameFogNew.density = fog->density;
+            GameFogNew.low_quality_density = (f32)fog->low_quality_density;
+            GameFogNew.low_quality_colour_channels[0] = (f32)(fog->low_quality_colour >> 24);
+            GameFogNew.low_quality_colour_channels[1] = (f32)(fog->low_quality_colour >> 16 & 0xff);
+            GameFogNew.low_quality_colour_channels[2] = (f32)(fog->low_quality_colour >> 8 & 0xff);
+            GameFogNew.low_quality_colour_channels[3] = (f32)(fog->low_quality_colour & 0xff);
+        } else {
+            GameFogNew.colour_channels[0] = GameFogNew.colour_channels[1] = GameFogNew.colour_channels[2] =
+                GameFogNew.colour_channels[3] = 0.0f;
+            GameFogNew.start = 5.0f;
+            GameFogNew.end = 20.0f;
+            GameFogNew.density = 0.0f;
+            GameFogNew.low_quality_density = 0.0f;
+            GameFogNew.low_quality_colour_channels[0] = GameFogNew.low_quality_colour_channels[1] =
+                GameFogNew.low_quality_colour_channels[2] = GameFogNew.low_quality_colour_channels[3] = 0.0f;
+        }
+    }
+    if (fog != NULL) {
+        dof_fstop = (f32)((f64)fog->depth_of_field_fstop / 10.0);
+        if (dof_fstop == 0.0f)
+            dof_fstop = GameFogDefaultFStopPc;
+    } else {
+        dof_fstop = GameFogDefaultFStopPc;
+    }
+    if (GameFogSnap != 0) {
+        GameFog = GameFogNew;
+        GameFogDuration = 0.0f;
+        GameFogTime = 0.0f;
+    } else {
+        if (GameFogTime < GameFogDuration) {
+            GameFogTime += FRAMETIME;
+            if (GameFogTime > GameFogDuration)
+                GameFogTime = GameFogDuration;
+        }
+        if (GameFogTime >= GameFogDuration) {
+            GameFog = GameFogNew;
+        } else {
+            blend =
+                (f32)(1.0 - ((f64)NU_SIN_LUT((f64)(GameFogTime / GameFogDuration) * 32768.0 + 16384.0) + 1.0) * 0.5);
+            GameFog.colour_channels[0] =
+                GameFogOld.colour_channels[0] + (GameFogNew.colour_channels[0] - GameFogOld.colour_channels[0]) * blend;
+            GameFog.colour_channels[1] =
+                GameFogOld.colour_channels[1] + (GameFogNew.colour_channels[1] - GameFogOld.colour_channels[1]) * blend;
+            GameFog.colour_channels[2] =
+                GameFogOld.colour_channels[2] + (GameFogNew.colour_channels[2] - GameFogOld.colour_channels[2]) * blend;
+            GameFog.colour_channels[3] =
+                GameFogOld.colour_channels[3] + (GameFogNew.colour_channels[3] - GameFogOld.colour_channels[3]) * blend;
+            GameFog.start = GameFogOld.start + (GameFogNew.start - GameFogOld.start) * blend;
+            GameFog.end = GameFogOld.end + (GameFogNew.end - GameFogOld.end) * blend;
+            GameFog.density = GameFogOld.density + (GameFogNew.density - GameFogOld.density) * blend;
+            GameFog.low_quality_density = GameFogOld.low_quality_density +
+                                          (GameFogNew.low_quality_density - GameFogOld.low_quality_density) * blend;
+            GameFog.low_quality_colour_channels[0] =
+                GameFogOld.low_quality_colour_channels[0] +
+                (GameFogNew.low_quality_colour_channels[0] - GameFogOld.low_quality_colour_channels[0]) * blend;
+            GameFog.low_quality_colour_channels[1] =
+                GameFogOld.low_quality_colour_channels[1] +
+                (GameFogNew.low_quality_colour_channels[1] - GameFogOld.low_quality_colour_channels[1]) * blend;
+            GameFog.low_quality_colour_channels[2] =
+                GameFogOld.low_quality_colour_channels[2] +
+                (GameFogNew.low_quality_colour_channels[2] - GameFogOld.low_quality_colour_channels[2]) * blend;
+            GameFog.low_quality_colour_channels[3] =
+                GameFogOld.low_quality_colour_channels[3] +
+                (GameFogNew.low_quality_colour_channels[3] - GameFogOld.low_quality_colour_channels[3]) * blend;
+        }
+    }
+    GameFogSnap = 0;
+    GameFog.colour = ((((u32)GameFog.colour_channels[0] << 8) + (u32)GameFog.colour_channels[1] << 8) +
+                          (u32)GameFog.colour_channels[2]
+                      << 8) +
+                     (u32)GameFog.colour_channels[3];
+    GameFog.low_quality_colour =
+        ((((u32)GameFog.low_quality_colour_channels[0] << 8) + (u32)GameFog.low_quality_colour_channels[1] << 8) +
+             (u32)GameFog.low_quality_colour_channels[2]
+         << 8) +
+        (u32)GameFog.low_quality_colour_channels[3];
+}
+
 STATIC_ASSERT(sizeof(CUT_DRAW_SETTINGS_PC) == 8);
 extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
 extern i32 dco_id, dco_wearinghat, dco_reflectaxis;
