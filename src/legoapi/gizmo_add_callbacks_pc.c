@@ -118,16 +118,6 @@ void __cdecl GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr,
         if (w->pickup_runtime_sys->pickups[i].unknown_14[1] & 2)
             AddGizmo(giz, type, NULL, &w->pickup_runtime_sys->pickups[i]);
 }
-void __cdecl GizSpinner_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    i32 i;
-    (void)data;
-    if (w->spinners == NULL)
-        return;
-    for (i = 0; i < w->current_level->max_spinners; ++i)
-        if ((w->spinners[i].flags & 1) && NuStrLen(w->spinners[i].name) != 0)
-            AddGizmo(giz, type, NULL, &w->spinners[i]);
-}
 void __cdecl GizBombGens_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
     GIZBOMBGENSYS_s *s = (GIZBOMBGENSYS_s *)data;
     i32 i;
@@ -242,10 +232,6 @@ char *__cdecl GizmoBuildit_GetGizmoName(GIZMO_PC *gizmo) {
 char *__cdecl GizmoPickup_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? (char *)gizmo->object : NULL;
 }
-char *__cdecl GizSpinner_GetGizmoName(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
-    return gizmo != NULL ? ((GIZSPINNER_s *)gizmo->object)->name : NULL;
-}
 char *__cdecl Blowup_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((GIZMOBLOWUP_PC *)gizmo->object)->name : NULL;
 }
@@ -272,12 +258,6 @@ NUVEC *__cdecl GizmoForce_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL)
         return NULL;
     return &((FLOW_FORCE_POSITION_PC *)gizmo->object)->position;
-}
-NUVEC *__cdecl GizSpinner_GetPos(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
-    if (gizmo == NULL || gizmo->object == NULL)
-        return NULL;
-    return &((GIZSPINNER_s *)gizmo->object)->position;
 }
 NUVEC *__cdecl GizmoBlowup_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL)

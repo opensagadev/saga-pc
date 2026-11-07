@@ -21686,13 +21686,12 @@ struct PC_GEOMETRY_MESH_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef struct PUSH_SPINNER_PC PUSH_SPINNER_PC;
     typedef struct pushblock_s PUSH_BLOCK_PC;
     typedef struct TELEPORT_MOTION_PC TELEPORT_MOTION_PC;
     void __cdecl PushCode(GAMEOBJECT *, i32);
-    PUSH_SPINNER_PC *__cdecl GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
-    i32 __cdecl GizSpinner_Push(PUSH_SPINNER_PC *, i32);
-    void __cdecl GizSpinner_PushFail(GAMEOBJECT *, PUSH_SPINNER_PC *);
+    struct GIZSPINNER_s *__cdecl GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
+    i32 __cdecl GizSpinner_Push(struct GIZSPINNER_s *, i32);
+    void __cdecl GizSpinner_PushFail(GAMEOBJECT *, struct GIZSPINNER_s *);
     PUSH_BLOCK_PC *__cdecl NearestFacingPushBlock(WORLDINFO *, GAMEOBJECT *, f32);
     i32 __cdecl PushBlock(GAMEOBJECT *);
     void __cdecl Ledge_MoveCode(WORLDINFO *, GAMEOBJECT *);
@@ -23820,7 +23819,7 @@ struct GIZSPINNER_s {
     u8 type;
     u16 field_0x08c;
     u8 field_0x08e[2];
-    f32 field_0x090;
+    f32 spin_timer;
     f32 field_0x094;
     f32 field_0x098;
     f32 field_0x09c;

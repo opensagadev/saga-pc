@@ -121,41 +121,8 @@ void __cdecl ReleasePush(GAMEOBJECT *object) {
     }
 }
 
-typedef struct PUSH_SPINNER_PC {
-    u8 unknown_000[0x5c];
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    u8 unknown_06c[0x7c - 0x6c];
-    u16 rotation, target_rotation, previous_rotation, initial_rotation;
-    u32 state_flags;
-    u8 unknown_088;
-    i8 room_index;
-    u8 unknown_08a[6];
-    f32 spin_timer;
-    u8 unknown_094[0xac - 0x94];
-    u8 flags;
-    u8 unknown_0ad[0x304 - 0xad];
-} PUSH_SPINNER_PC;
-typedef struct PUSH_SPINNER_WORLD_PC {
-    u8 unknown_000[0x46e0];
-    PUSH_SPINNER_PC *spinners;
-} PUSH_SPINNER_WORLD_PC;
-typedef struct PUSH_SPINNER_LEVEL_PC {
-    u8 unknown_000[0xf2];
-    u8 count;
-} PUSH_SPINNER_LEVEL_PC;
-STATIC_ASSERT(sizeof(PUSH_SPINNER_PC) == 0x304);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, position) == 0x5c);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, anim_set) == 0x68);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, rotation) == 0x7c);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, target_rotation) == 0x7e);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, previous_rotation) == 0x80);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, state_flags) == 0x84);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, room_index) == 0x89);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, spin_timer) == 0x90);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_PC, flags) == 0xac);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_WORLD_PC, spinners) == 0x46e0);
-STATIC_ASSERT(offsetof(PUSH_SPINNER_LEVEL_PC, count) == 0xf2);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, state_flags) == 0x84);
+STATIC_ASSERT(offsetof(GIZSPINNER_s, spin_timer) == 0x90);
 
 typedef struct PUSH_OBJECT_LOCAL_PC {
     u8 unknown_000[0x768];
@@ -171,9 +138,6 @@ extern "C" {
     extern i16 LEGOACT_PUSH, LEGOACT_SUPERPUSH_IDLE, LEGOACT_SUPERPUSH_PUSH, LEGOACT_SUPERPUSH_PULL,
         LEGOACT_WALLJUMP_WAIT;
     extern u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *);
-    PUSH_SPINNER_PC *__cdecl GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
-    i32 __cdecl GizSpinner_Push(PUSH_SPINNER_PC *, i32);
-    void __cdecl GizSpinner_PushFail(GAMEOBJECT *, PUSH_SPINNER_PC *);
     i32 __cdecl PushBlock(GAMEOBJECT *);
 }
 typedef struct PUSH_OBSTACLE_WORLD_PC {
@@ -269,7 +233,7 @@ extern "C" void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
         if (((PART_RELEASE_PUSH_PC *)object)->push_timer >= 0.25f) {
             i32 push_surface = surface;
             if (push_surface == 30 || push_surface == 31 || (object->flags_ef4 & 0x20000) != 0) {
-                PUSH_SPINNER_PC *spinner = NULL;
+                GIZSPINNER_s *spinner = NULL;
                 if (LEGOCONTEXT_PUSHSPINNER != -1)
                     spinner = GizSpinner_Find(WORLD, &object->collision_position, 1);
                 if (spinner != NULL) {
@@ -409,14 +373,14 @@ extern "C" void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
             object->flags_e24 |= 0x1000;
             return;
         }
-        if (GizSpinner_Push((PUSH_SPINNER_PC *)object->grapple, (i8)object->context_variant) != 0) {
+        if (GizSpinner_Push((GIZSPINNER_s *)object->grapple, (i8)object->context_variant) != 0) {
             if ((object->flags_1fc & 0x80) != 0)
                 NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
             GameAudio_PlaySfx(0x38, &object->collision_position, 0, 0);
         } else if (qrand() < 0x800) {
-            GizSpinner_PushFail(object, (PUSH_SPINNER_PC *)object->grapple);
+            GizSpinner_PushFail(object, (GIZSPINNER_s *)object->grapple);
         } else {
-            ((PUSH_SPINNER_PC *)object->grapple)->state_flags &= ~0x300u;
+            ((GIZSPINNER_s *)object->grapple)->state_flags &= ~0x300u;
         }
     } else if (LEGOCONTEXT_PUSH != -1 && object->character_context == LEGOCONTEXT_PUSH) {
         if (PushBlock(object) == 0) {

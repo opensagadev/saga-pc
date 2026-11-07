@@ -50,64 +50,6 @@ char *__cdecl Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
         return (char *)GrappleOccupiedByTwoOutputTextPc;
     return AIRegistryTextPc007575bc;
 }
-char *__cdecl GizSpinner_GetOutputName(void *gizmo, i32 output) {
-    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo)->object;
-    if (output < 0)
-        return NULL;
-    if (output > spinner->output_count)
-        return NULL;
-    if (spinner->output_count >= 2) {
-        f32 fraction = (f32)output / (spinner->output_count - 1);
-        f32 percentage = (f64)fraction * 100.0;
-        NuIToA((i32)percentage, SpinnerOutputBufferPc, 10);
-        NuStrCat(SpinnerOutputBufferPc, (char *)SpinnerCompleteSuffixPc);
-    } else {
-        char *name = (char *)SpinnerAllCompletePc;
-        if (spinner->output_count == 0)
-            name = TextInputKeyNameTextPc7516c0;
-        NuStrCpy(SpinnerOutputBufferPc, name);
-    }
-    return SpinnerOutputBufferPc;
-}
-i32 __cdecl GizSpinner_GetNumOutputs(void *gizmo) {
-    return ((GIZSPINNER_s *)((GIZMO_PC *)gizmo)->object)->output_count;
-}
-i32 __cdecl GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 capacity, char *name) {
-    GIZMO_PC **results = (GIZMO_PC **)results_ptr;
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    i32 count = 0;
-    i32 type_id = -1;
-    i32 index;
-    NUSPECIALHANDLE special;
-    GIZSPINNER_s *cached_spinner;
-    if (results == NULL || world == NULL || world->spinners == NULL)
-        return 0;
-    NuSpecialFind(world->current_gscn, &special, name, 0);
-    if (NuSpecialExistsFn(&special) == 0)
-        return 0;
-    cached_spinner = world->spinners;
-    for (index = 0; index < world->current_level->max_spinners; ++index, ++cached_spinner) {
-        GAMEANIMOBJ *object;
-        i32 searching;
-        if (count >= capacity)
-            break;
-        if ((world->spinners[index].flags & 1) == 0)
-            continue;
-        object = cached_spinner->anim_set->objects;
-        searching = 1;
-        for (; object != NULL && searching != 0; object = object->next) {
-            if (NuSpecialCompare(&special, &object->special) != 0) {
-                GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, type_id, name);
-                if (gizmo != NULL) {
-                    type_id = (u8)gizmo->type_id;
-                    results[count++] = gizmo;
-                    searching = 0;
-                }
-            }
-        }
-    }
-    return count;
-}
 char *__cdecl AI_GetOutputName(void *gizmo, i32 output) {
     return AIProcessingOutputTextPc;
 }

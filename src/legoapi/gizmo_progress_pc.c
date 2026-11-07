@@ -15,11 +15,6 @@ typedef struct {
     u32 collected[16], enabled[16], visible[16], reserved[16];
 } PICKUP_PROGRESS_PC;
 typedef struct {
-    f32 animation_position;
-    u16 rotation;
-    u8 flags, unused;
-} SPINNER_PROGRESS_PC;
-typedef struct {
     u32 enabled[3], visible[3];
 } BOMB_PROGRESS_PC;
 typedef struct {
@@ -34,9 +29,6 @@ STATIC_ASSERT(sizeof(FORCE_PROGRESS_PC) == 0xb0);
 STATIC_ASSERT(offsetof(FORCE_PROGRESS_PC, group_members) == 0x70);
 STATIC_ASSERT(sizeof(BLOWUP_PROGRESS_PC) == 0x100);
 STATIC_ASSERT(sizeof(PICKUP_PROGRESS_PC) == 0x100);
-STATIC_ASSERT(sizeof(SPINNER_PROGRESS_PC) == 8);
-STATIC_ASSERT(offsetof(SPINNER_PROGRESS_PC, rotation) == 4);
-STATIC_ASSERT(offsetof(SPINNER_PROGRESS_PC, flags) == 6);
 STATIC_ASSERT(sizeof(BOMB_PROGRESS_PC) == 0x18);
 STATIC_ASSERT(sizeof(PANEL_PROGRESS_PC) == 0xc);
 STATIC_ASSERT(sizeof(GRAPPLE_PROGRESS_PC) == 8);
@@ -195,13 +187,6 @@ void __cdecl Grapples_ClearProgress(void *owner, void *progress_ptr) {
     progress->visible = 0xffffffffu;
 }
 
-void __cdecl GizSpinner_ClearProgress(void *owner, void *progress_ptr) {
-    void *progress = (void *)progress_ptr;
-    if (progress == NULL)
-        return;
-    memset(progress, 0, 0x40);
-}
-
 void __cdecl GizBuildIts_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     BUILD_PROGRESS_PC *progress = (BUILD_PROGRESS_PC *)progress_ptr;
     BUILD_PROGRESS_SYSTEM_PC *system = (BUILD_PROGRESS_SYSTEM_PC *)data;
@@ -335,32 +320,6 @@ void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progr
             progress->enabled[word] &= ~bit;
         if (record->flags & 8)
             progress->collected[word] |= bit;
-    }
-}
-
-void __cdecl GizSpinner_StoreProgressData(void *world_ptr, void *data, void *progress_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    SPINNER_PROGRESS_PC *progress = (SPINNER_PROGRESS_PC *)progress_ptr;
-    GIZSPINNER_s *spinner;
-    i32 index;
-    if (progress == NULL)
-        return;
-    if (world->spinners == NULL)
-        return;
-    for (index = 0; index < world->current_level->max_spinners; ++index, ++progress) {
-        spinner = &world->spinners[index];
-        if (spinner->flags & 1) {
-            progress->flags |= 1;
-            progress->rotation = spinner->target_rotation;
-            progress->flags = (u8)((progress->flags & ~4u) | ((~(spinner->flags >> 1) & 1u) << 2));
-            progress->flags = (u8)((progress->flags & ~2u) | ((~(spinner->flags >> 2) & 1u) << 1));
-            if (GameAnimSet_IsAnimationReset(spinner->anim_set))
-                progress->animation_position = 0.0f;
-            if (spinner->anim_set->state == 2)
-                progress->animation_position = 1.0f;
-            else if (spinner->anim_set != NULL)
-                progress->animation_position = GameAnimSet_GetAnimPos(spinner->primary_anim_obj);
-        }
     }
 }
 

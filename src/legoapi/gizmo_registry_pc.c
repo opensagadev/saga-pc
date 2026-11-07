@@ -1,9 +1,5 @@
 #include "saga.h"
 
-void __cdecl GizSpinner_ResetAllPc(void *, void *, void *);
-
-i32 __cdecl GizSpinner_BoltHitPlatPc(WORLDINFO *, void *, BOLT_PC *, u8 *);
-
 i32 __cdecl GizBuildIts_GetMaxGizmos(void *);
 void __cdecl GizBuildIts_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
 void __cdecl GizBuildIts_EarlyUpdate(void *, void *, f32);
@@ -137,7 +133,6 @@ const char GizmoRegistryGizmoPickupsNamePc[] = "GizmoPickup";
 #pragma const_seg()
 char *GizmoRegistryGizmoPickupsNamePtrPc = (char *)GizmoRegistryGizmoPickupsNamePc;
 static ADDGIZMOTYPE_PC GizmoRegistryGizmoPickupsAddTypePc = {0};
-static ADDGIZMOTYPE_PC GizmoRegistrySpinnerAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistrySpinnerNamePc")
 const char GizmoRegistrySpinnerNamePc[] = "Spinner";
 #pragma const_seg()
@@ -313,45 +308,6 @@ ADDGIZMOTYPE_PC *__cdecl GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizmoPickups_Load;
     addtype->fns.post_load_fn = (void(__cdecl *)(void *, void *))GizmoPickups_PostLoad;
     gizmopickup_typeid = type_id;
-    return addtype;
-}
-
-ADDGIZMOTYPE_PC *__cdecl Spinner_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistrySpinnerAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->fns.late_update_fn = NULL;
-    addtype->fns.activate_rev_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.post_load_fn = NULL;
-    addtype->fns.add_level_sfx_fn = NULL;
-    spinner_gizmotype_id = type_id;
-    addtype->name = (char *)GizmoRegistrySpinnerNamePc;
-    addtype->prefix = "";
-    addtype->fns.options = 0x40;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizSpinner_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)GizSpinner_AddGizmos;
-    addtype->fns.early_update_fn = (void(__cdecl *)(void *, void *, f32))GizSpinners_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizSpinner_Draw;
-    addtype->fns.panel_draw_fn = (void(__cdecl *)(void *, void *, f32))GizSpinner_PanelDraw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizSpinner_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizSpinner_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizSpinner_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)GizSpinner_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizSpinner_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizSpinner_SetVisibility;
-    addtype->fns.get_pos_fn = (void *)GizSpinner_GetPos;
-    addtype->fns.using_special_fn = (void *)GizSpinner_UsingSpecial;
-    addtype->fns.bolt_hit_plat_fn = (void *)GizSpinner_BoltHitPlatPc;
-    addtype->fns.get_best_bolt_target_fn =
-        (GIZMO_PC * (__cdecl *)(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32,
-                                i32)) GizSpinner_GetBestBoltTarget;
-    addtype->fns.bolt_hit_fn = (void *)GizSpinner_HasBoltHit;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizSpinner_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizSpinner_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizSpinner_StoreProgressData;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizSpinner_ResetAllPc;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizSpinner_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizSpinner_Load;
     return addtype;
 }
 
@@ -565,11 +521,6 @@ i32 __cdecl GizmoPickups_GetMaxGizmos(void *world_ptr) {
     return (u16)world->current_level->max_pickups;
 }
 
-i32 __cdecl GizSpinner_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    return world->current_level->max_spinners;
-}
-
 i32 __cdecl GizBombGens_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world == NULL)
@@ -624,10 +575,6 @@ void *__cdecl Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 void *__cdecl GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x100);
-}
-
-void *__cdecl GizSpinner_AllocateProgressData(void *buffer, void *end) {
-    return GizmoBufferAlloc((VARIPTR *)buffer, (VARIPTR *)end, 0x40);
 }
 
 void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

@@ -4178,6 +4178,7 @@ address,symbol,size,ctype
 0x00553570,_InitSplinePosition,156,"void __cdecl (SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i32 looping)"
 0x553610,_SetAnimFrame,238,
 0x553710,_SpinnerMissingSpecialPc,1,"void __cdecl(char *,char *)"
+0x00553720,?SpinnerFabsPc@@YAMM@Z,18,static f32 __cdecl(f32)
 0x00553780,?SpinnerMatrixSetRotationYPc@@YAXPAUnumtx_s@@H@Z,162,
 0x00553830,?SpinnerMatrixRotateYPc@@YAXPAUnumtx_s@@H@Z,219,
 0x00553910,?SpinnerOwnerPc@@YAPAUgameobject_s@@PAUGIZSPINNER_s@@@Z,75,
@@ -4195,8 +4196,8 @@ address,symbol,size,ctype
 0x5549d0,_GizSpinner_GetNumOutputs,14,i32 __cdecl(GIZMO_PC *)
 0x005549e0,?SpinnerCurrentOutputPc@@YAHPAUGIZSPINNER_s@@@Z,216,
 0x00554ac0,?SpinnerSeekOutputPc@@YAXPAUGIZSPINNER_s@@H@Z,640,
-0x554d70,_GizSpinner_PushFail,178,"void __cdecl(GAMEOBJECT *, PUSH_SPINNER_PC *)"
-0x554e30,_GizSpinner_Push,441,"i32 __cdecl(PUSH_SPINNER_PC *, i32)"
+0x554d70,_GizSpinner_PushFail,178,"void __cdecl(GAMEOBJECT *, GIZSPINNER_s *)"
+0x554e30,_GizSpinner_Push,441,"i32 __cdecl(GIZSPINNER_s *, i32)"
 0x554ff0,_GizSpinner_Spin,344,
 0x555150,_GizSpinner_GetTargetPoints,342,"i32 __cdecl(GIZSPINNER_s *,NUVEC *,NUVEC *)"
 0x5552b0,_GizSpinner_StoreProgressData,237,
@@ -4210,7 +4211,7 @@ address,symbol,size,ctype
 0x555930,_GizSpinner_BoltHitPlat,138,void private ABI: EAX spinner; ESI bolt; stack flags pointer
 0x5559c0,_GizSpinner_BoltHitPlatPc,174,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
 0x555a70,_GizSpinner_GetBestBoltTarget,1332,
-0x555fb0,_GizSpinner_Find,215,"PUSH_SPINNER_PC * __cdecl(WORLDINFO *, NUVEC *, i32)"
+0x555fb0,_GizSpinner_Find,215,"GIZSPINNER_s * __cdecl(WORLDINFO *, NUVEC *, i32)"
 0x556170,_GizSpinner_GetOutput,30,"i32 __cdecl(GIZMO_PC *, i32, i32)"
 0x556190,_GizSpinner_Update,1865,void __cdecl(GIZSPINNER_s *)
 0x5568e0,_GizSpinners_Update,998,
