@@ -1172,9 +1172,7 @@ extern "C" {
         }
         return 0;
     }
-    i32 __cdecl GizTechno_CanUseTechno(GAMEOBJECT *, BULK_AI_TECHNO_PC *) {
-        return 1;
-    }
+    i32 __cdecl GizTechno_CanUseTechno(GAMEOBJECT *object, BULK_AI_TECHNO_PC *techno);
     i32 __cdecl Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                  i32 param_count, i32 first_time, f32 elapsed) {
         i32 instant = 0;

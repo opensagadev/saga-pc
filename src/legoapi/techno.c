@@ -238,6 +238,11 @@ static void __cdecl Technos_Reset(void *world_ptr, void *data, void *progress_pt
         }
     }
 }
+i32 __cdecl GizTechno_CanUseTechno(GAMEOBJECT *object, TECHNO_s *techno) {
+    (void)object;
+    (void)techno;
+    return 1;
+}
 static void __cdecl Technos_EarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     TECHNO_CALLBACK_PC *techno;
