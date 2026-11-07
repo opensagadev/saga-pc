@@ -508,3 +508,25 @@ u16 __cdecl TurnRot(u16 current, u16 target, i32 speed, i32 *difference_out) {
         return target;
     return (u16)(current - step);
 }
+
+i32 __cdecl Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u16 x_rotation, u16 y_rotation,
+                         u16 z_rotation, float scale_x, float scale_y, float scale_z, i32 rotate_order) {
+    if (object_index == -1) {
+        return 1;
+    }
+    if (world == NULL) {
+        world = WorldInfo_CurrentlyActive();
+    }
+    if (world == NULL) {
+        return 1;
+    }
+    if (world->level_objects[object_index].active != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
+        NUVEC scale = {scale_x, scale_y, scale_z};
+        NUMTX matrix;
+        NuMtxSetScale(&matrix, &scale);
+        RotateGameMatrix(&matrix, rotate_order, x_rotation, y_rotation, z_rotation);
+        NuMtxTranslate(&matrix, position);
+        return NuSpecialDrawAt(&world->level_objects[object_index].special, &matrix);
+    }
+    return 0;
+}

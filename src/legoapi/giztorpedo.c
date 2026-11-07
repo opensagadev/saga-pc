@@ -86,7 +86,7 @@ char *__cdecl GizTorp_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
     return output_index == 0 ? ((char *)("Ready")) : NULL;
 }
 
-void __cdecl Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
+i32 __cdecl Draw3DObject(WORLDINFO *, i32, NUVEC *, u16, u16, u16, f32, f32, f32, i32);
 
 void __cdecl GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;

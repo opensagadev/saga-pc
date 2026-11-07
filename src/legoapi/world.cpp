@@ -616,26 +616,6 @@ extern "C" void SetTexAnimSignals() {
     NuTexAnimSetSignals(texanimbits);
 }
 
-extern "C" void Draw3DObject(WORLDINFO *world, i32 object_index, NUVEC *position, u16 x_rotation, u16 y_rotation,
-                             u16 z_rotation, float scale_x, float scale_y, float scale_z, i32 rotate_order) {
-    if (object_index == -1) {
-        return;
-    }
-    if (world == NULL) {
-        world = WorldInfo_CurrentlyActive();
-    }
-    if (world != NULL) {
-        if (world->level_objects[object_index].active != 0 && (scale_x != 0.0f || scale_y != 0.0f || scale_z != 0.0f)) {
-            NUVEC scale = {scale_x, scale_y, scale_z};
-            NUMTX matrix;
-            NuMtxSetScale(&matrix, &scale);
-            RotateGameMatrix(&matrix, rotate_order, x_rotation, y_rotation, z_rotation);
-            NuMtxTranslate(&matrix, position);
-            NuSpecialDrawAt(&world->level_objects[object_index].special, &matrix);
-        }
-    }
-}
-
 extern "C" void WorldInfo_DrawScene(WORLDINFO *world) {
     if (world->current_gscn == NULL) {
         return;
