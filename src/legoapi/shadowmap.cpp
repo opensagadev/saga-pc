@@ -1,22 +1,5 @@
 #include "saga.h"
 
-void __cdecl ShadowMapEnablePc(struct PC_SPECIAL_SHADOW_LIGHT *light) {
-    if (PCSpecialActiveShadowLights < 4 && light->enabled != 0 && light->used_on_specials == 0) {
-        light->used_on_specials = 1;
-        PCSpecialShadowLights[PCSpecialActiveShadowLights] = light;
-        ++PCSpecialActiveShadowLights;
-        PCSpecialShadowClipResultsPresent = 0;
-    }
-}
-void __cdecl ShadowMapResetPc(void) {
-    i32 i = 0;
-    while (i != PCSpecialActiveShadowLights) {
-        PCSpecialShadowLights[i]->used_on_specials = 0;
-        ++i;
-    }
-    PCSpecialActiveShadowLights = 0;
-    PCSpecialShadowClipResultsPresent = 0;
-}
 void __cdecl EnableShadowMapRendering(i32 unused) {
     if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2)
         ShadowMapEnablePc(PCShadowCurrentLight);
@@ -95,14 +78,6 @@ void __cdecl EnableShadowMapRenderingFn(void) {
     EnableShadowMapRendering(0);
 }
 
-extern "C" i32 __cdecl ShadowSetClipStatePc(i32 enabled, i32 state) {
-    i32 previous = PCSpecialClipState;
-    PCSpecialClipState = enabled == 0 ? -1 : state;
-    return previous;
-}
-extern "C" void __cdecl ShadowResetClipResultsPc(void) {
-    PCSpecialShadowClipResultsPresent = 0;
-}
 extern "C" void __cdecl RenderShadowLights(i32 paused) {
     if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod == 2 && PCShadowCurrentLight != NULL &&
         PCShadowCurrentLight->enabled != 0) {
