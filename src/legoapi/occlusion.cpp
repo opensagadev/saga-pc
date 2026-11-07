@@ -729,15 +729,17 @@ extern "C" void __cdecl PostShadowComputeClippingPlanesPc(const NUMTX *matrix, b
     __declspec(align(16)) NUVEC4 corners[8];
     for (i32 i = 0; i < 8; ++i) {
         const NUVEC4 *in = &source[i];
-        NUVEC4 *out = &corners[i];
-        out->x = in->y * matrix->m10 + in->x * matrix->m00 + matrix->m20 * in->z + matrix->m30;
-        out->y = in->y * matrix->m11 + matrix->m01 * in->x + in->z * matrix->m21 + matrix->m31;
-        out->z = in->y * matrix->m12 + matrix->m02 * in->x + in->z * matrix->m22 + matrix->m32;
-        out->w = in->y * matrix->m13 + matrix->m03 * in->x + in->z * matrix->m23 + matrix->m33;
-        f32 inverse = 1.0f / out->w;
-        out->x *= inverse;
-        out->y *= inverse;
-        out->z *= inverse;
+        __declspec(align(16)) NUVEC4 result;
+        f32 inverse;
+        result.x = in->y * matrix->m10 + in->x * matrix->m00 + matrix->m20 * in->z + matrix->m30;
+        result.y = in->y * matrix->m11 + matrix->m01 * in->x + in->z * matrix->m21 + matrix->m31;
+        result.z = in->y * matrix->m12 + matrix->m02 * in->x + in->z * matrix->m22 + matrix->m32;
+        result.w = in->y * matrix->m13 + matrix->m03 * in->x + in->z * matrix->m23 + matrix->m33;
+        inverse = 1.0f / result.w;
+        result.x *= inverse;
+        result.y *= inverse;
+        result.z *= inverse;
+        corners[i] = result;
     }
     __declspec(align(16)) NUVEC4 near_up;
     near_up.x = corners[1].x - corners[0].x;
