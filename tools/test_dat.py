@@ -161,7 +161,8 @@ def write_unreached(directory, link_output):
     names = sorted(set(re.findall(r"unresolved external symbol _(\w+)\b", link_output)))
     if not names:
         raise ValueError("DAT fixture link failed for a reason other than unreached symbols:\n" + link_output)
-    parser = [name for name in names if re.match(r"Nu(Dat|File|Mem|Str|FPar|PP|RDP)|Implode|Explode", name)]
+    parser = [name for name in names
+              if re.match(r"Nu(Dat|File|Mem|Str|FPar|PP|RDP)|Implode|Explode|(NuAlloc|NuFree)$", name)]
     if parser:
         raise ValueError(f"DAT fixture is missing parser routines: {parser}")
     source = directory / "unreached.c"
@@ -191,7 +192,7 @@ class DatParserTests(unittest.TestCase):
             write_fixtures(directory)
             objects = []
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
-                       ("nucore_includes", "nudebug", "nufile_pc", "nupsfile", "nufile_mc", "nuthread")]
+                       ("nucore_includes", "nualloc", "nudebug", "nufile_pc", "nupsfile", "nufile_mc", "nuthread")]
             sources.append(ROOT / "tools/test_dat_fixture.c")
             sources.append(write_file_constants(directory))
             sources.append(write_clock_provider(directory))
