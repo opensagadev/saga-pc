@@ -20,22 +20,6 @@ STATIC_ASSERT(offsetof(NetLogFile, mode) == 0x104);
 STATIC_ASSERT(offsetof(NetLogFile, count) == 0x110);
 STATIC_ASSERT(sizeof(NetLogFile) == 0x2114);
 
-NetStatCounters::NetStatCounters() {
-    values[0] = 0;
-    values[1] = 0;
-    values[2] = 0;
-    values[3] = 0;
-}
-
-NetSmallStats::NetSmallStats(const char *stats_name) : name(stats_name) {
-}
-
-void NetSmallStats::Update() {
-}
-
-NetStats::NetStats(const char *stats_name) : NetSmallStats(stats_name), history_index(0), last_time(0) {
-}
-
 void *NetTransportEntry::operator new(u32 size) {
     return theMemoryManager.AllocPool(size, 1);
 }
@@ -344,50 +328,4 @@ void TTNetwork::BroadcastEx(NETMESSAGE_PC message, u8 channel) {
         }
     }
     message.Release();
-}
-
-void NetStatCounters::Clear() {
-    values[0] = 0;
-    values[1] = 0;
-    values[2] = 0;
-    values[3] = 0;
-}
-
-NetStatCounters &NetStatCounters::operator+=(const NetStatCounters &other) {
-    values[0] += other.values[0];
-    values[1] += other.values[1];
-    values[2] += other.values[2];
-    values[3] += other.values[3];
-    return *this;
-}
-
-NetStatCounters &NetStatCounters::operator-=(const NetStatCounters &other) {
-    values[0] -= other.values[0];
-    values[1] -= other.values[1];
-    values[2] -= other.values[2];
-    values[3] -= other.values[3];
-    return *this;
-}
-
-NetStatCounters &NetStatCounters::KeepMax(const NetStatCounters &other) {
-    values[0] = values[0] > other.values[0] ? values[0] : other.values[0];
-    values[1] = values[1] > other.values[1] ? values[1] : other.values[1];
-    values[2] = values[2] > other.values[2] ? values[2] : other.values[2];
-    values[3] = values[3] > other.values[3] ? values[3] : other.values[3];
-    return *this;
-}
-
-void NetStats::Update() {
-    i32 index;
-    if (NetTimeGetMs() - last_time > 1000) {
-        index = history_index + 1;
-        if (index >= 30)
-            index = 0;
-        history[index] = totals;
-        history[index] -= previous;
-        peak.KeepMax(history[index]);
-        previous = totals;
-        history_index = index;
-        last_time = NetTimeGetMs();
-    }
 }

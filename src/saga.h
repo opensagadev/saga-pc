@@ -29549,9 +29549,10 @@ struct NetStatCounters {
 
 class NetSmallStats {
   public:
+    enum eInfo { INFO_BYTES, INFO_PACKETS };
     NetSmallStats(const char *name);
     virtual void Update();
-    virtual void Draw(i32 x, i32 y);
+    virtual void Draw(f32 x, f32 y, f32 width, f32 height, eInfo info);
 
     const char *name;
     NetStatCounters totals;
@@ -29561,7 +29562,7 @@ class NetStats : public NetSmallStats {
   public:
     NetStats(const char *name);
     virtual void Update();
-    virtual void Draw(i32 x, i32 y);
+    virtual void Draw(f32 x, f32 y, f32 width, f32 height, eInfo info);
 
     i32 history_index;
     u32 last_time;
@@ -29569,7 +29570,9 @@ class NetStats : public NetSmallStats {
     NetStatCounters previous;
     NetStatCounters history[30];
 };
-extern "C" u32 __cdecl NetTimeGetMs(void);
+u32 UtilGetTime(void);
+u32 UtilGetFrameStartTime(void);
+void UtilFrameStart(void);
 
 class V2Peer {
   public:

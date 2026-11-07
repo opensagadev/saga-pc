@@ -7017,13 +7017,15 @@ address,symbol,size,ctype
 0x60f090,?Broadcast@TTNetwork@@UAEXUNETMESSAGE_PC@@E@Z,256,
 0x60f190,?BroadcastEx@TTNetwork@@UAEXUNETMESSAGE_PC@@E@Z,260,
 0x60f2d0,?NetMessagePoolError@@YAXXZ,13,
+0x60f3d0,?NetPrimSetColour@@YAXH@Z,108,
+0x60f440,?NetPrimPosition@@YAXMMM@Z,51,
 0x60f4b0,?Clear@NetStatCounters@@QAEXXZ,14,
 0x60f4c0,??YNetStatCounters@@QAEAAU0@ABU0@@Z,31,
 0x60f4e0,??ZNetStatCounters@@QAEAAU0@ABU0@@Z,31,
 0x60f500,?KeepMax@NetStatCounters@@QAEAAU1@ABU1@@Z,72,
 0x60f550,?Update@NetStats@@UAEXXZ,134,
-0x60f5e0,?Draw@NetSmallStats@@UAEXHH@Z,610,
-0x60f850,?Draw@NetStats@@UAEXHH@Z,1880,
+0x60f5e0,?Draw@NetSmallStats@@UAEXMMMMW4eInfo@1@@Z,610,
+0x60f850,?Draw@NetStats@@UAEXMMMMW4eInfo@NetSmallStats@@@Z,1880,
 0x60ffd0,?SetPlayerSlots@V2SessionManager@@QAEXPBHH@Z,52,
 0x610010,?V2SessionPrintf@@YAXPBDZZ,107,
 0x610080,?FilterNames@V2SessionManager@@UAEHPAPAE0HPAE@Z,71,
@@ -7062,7 +7064,9 @@ address,symbol,size,ctype
 0x00610570,_RefpackHashStringPc,55,"u32 __cdecl(u8 *)"
 0x6105b0,_refpack_init,211,
 0x00610690,_refpack,918,"i32 __cdecl(u8 *,i32,u8 *)"
-0x617a00,_NetTimeGetMs,6,u32 __cdecl(void)
+0x6179c0,?UtilGetTime@@YAIXZ,61,u32 __cdecl(void)
+0x617a00,?UtilGetFrameStartTime@@YAIXZ,6,u32 __cdecl(void)
+0x617a10,?UtilFrameStart@@YAXXZ,66,void __cdecl(void)
 0x617d50,_edmainSetReturn,10,
 0x617d60,_edmainCurrent,21,
 0x617d80,_edmainActivate,114,
@@ -17449,6 +17453,14 @@ address,symbol,size,ctype
 0x76a918,??_7NetSmallStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a924,??_7NetStats@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76a9c0,??_C@_07BGDMAJAE@Network?$AA@,8,
+0x76a9c8,??_C@_0P@OPLIKOME@total?5p?$CFd?5?3?5?$CFd?$AA@,15,char []
+0x76a9d8,??_C@_0BA@GPFDCODM@total?5b?5?$CFd?5?3?5?$CFd?$AA@,16,char []
+0x76a9e8,??_C@_0BA@EKFCEIIF@max?5pps?5?$CFd?5?3?5?$CFd?$AA@,16,char []
+0x76a9f8,??_C@_0BA@KKHBDLOG@max?5bps?5?$CFd?5?3?5?$CFd?$AA@,16,char []
+0x76aa08,??_C@_0M@HMLKHCOM@pps?5?$CFd?5?3?5?$CFd?$AA@,12,char []
+0x76aa14,??_C@_0M@JMJJABIP@bps?5?$CFd?5?3?5?$CFd?$AA@,12,char []
+0x76aa20,__real@40b1000000000000,8,const f64
+0x76aa28,__real@45880000,4,const f32
 0x76aa2c,??_C@_02PCIJFNDE@?$AN?6?$AA@,3,
 0x76aa30,??_C@_0L@HPABEAAN@mPeerList?6?$AA@,11,const char[]
 0x76aa3c,??_C@_0L@HFCAGBJ@mHostList?6?$AA@,11,const char[]
@@ -26847,6 +26859,8 @@ address,symbol,size,ctype
 0x28fec24,?sm_instance@V2SessionManager@@2PAV1@A,4,V2SessionManager *
 0x28fec28,_RefpackLinkArrayPc,,
 0x28fec2c,_RefpackHashTablePc,,
+0x2900a64,_frameStartTimeMS,4,u32
+0x2900a68,_frameStartTime,8,NuTime
 0x02900a70,_colourmenu,,"eduimenu_s *; minimum4Bworkingview Nativeextentunknown"
 0x2900a74,_edui_messagemenu,4,struct eduimenu_s *
 0x02900a78,_cp_process,,"typed cdecl colour process callback; minimum4Bworkingview Nativeextentunknown"
