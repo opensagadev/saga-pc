@@ -1628,19 +1628,26 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                 if (shape->max_z > max_z)
                     max_z = shape->max_z;
 
-                for (vector_index = 0; vector_index < 4; ++vector_index) {
-                    if (terrain->minimum_height > shape->vertices[vector_index].y + group->origin.y) {
-                        terrain->minimum_height = (i32)(shape->vertices[vector_index].y + group->origin.y);
-                    }
-                }
-                for (vector_index = 0; vector_index < 4; ++vector_index) {
-                    length_squared = shape->vertices[vector_index].x * shape->vertices[vector_index].x +
-                                     shape->vertices[vector_index].y * shape->vertices[vector_index].y +
-                                     shape->vertices[vector_index].z * shape->vertices[vector_index].z;
-                    if (length_squared > radius_squared) {
-                        radius_squared = length_squared;
-                    }
-                }
+#define TERRAIN_INIT_MIN_HEIGHT(v)                                                                                     \
+    if (terrain->minimum_height > shape->vertices[v].y + group->origin.y) {                                            \
+        terrain->minimum_height = (i32)(shape->vertices[v].y + group->origin.y);                                       \
+    }
+#define TERRAIN_INIT_RADIUS(v)                                                                                         \
+    length_squared = shape->vertices[v].x * shape->vertices[v].x + shape->vertices[v].y * shape->vertices[v].y +       \
+                     shape->vertices[v].z * shape->vertices[v].z;                                                      \
+    if (length_squared > radius_squared) {                                                                             \
+        radius_squared = length_squared;                                                                               \
+    }
+                TERRAIN_INIT_MIN_HEIGHT(0);
+                TERRAIN_INIT_MIN_HEIGHT(1);
+                TERRAIN_INIT_MIN_HEIGHT(2);
+                TERRAIN_INIT_MIN_HEIGHT(3);
+                TERRAIN_INIT_RADIUS(0);
+                TERRAIN_INIT_RADIUS(1);
+                TERRAIN_INIT_RADIUS(2);
+                TERRAIN_INIT_RADIUS(3);
+#undef TERRAIN_INIT_MIN_HEIGHT
+#undef TERRAIN_INIT_RADIUS
             }
 
             batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_SHAPE *)(batch + 1)) + batch->shape_count));
@@ -1779,43 +1786,31 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             continue;
         }
         if (platform_count >= terrain->max_platforms) {
-            group->chunk_type = -1;
-            TerrainDiagnosticNoOpPC(path);
-            continue;
+            goto bad_platform;
         }
 
-        scene_object_index = group->scene_index;
-        debug_index = ((i16)(scene_object_index));
-        if (scene == NULL) {
-            group->chunk_type = -1;
-            TerrainDiagnosticNoOpPC(path);
-            group->scene_index = ((u16)(platform_count));
-            continue;
+        debug_index = (i16)group->scene_index;
+        if (scene != NULL && scene->object_map_present != NULL) {
+            debug_index = scene->object_map[(u16)debug_index];
         }
-
-        if (scene->object_map_present != NULL) {
-            scene_object_index = scene->object_map[scene_object_index];
-            debug_index = ((i16)(scene_object_index));
-        }
-
+        scene_object_index = (u16)debug_index;
         group->scene_index = ((u16)(platform_count));
-        display_scene = scene->display_scene;
-        if (display_scene == NULL && scene_object_index >= scene->object_count) {
-            group->chunk_type = -1;
-            TerrainDiagnosticNoOpPC(path);
-            continue;
+        if (scene == NULL) {
+            goto bad_platform;
         }
 
-        terrain->group_indices[terrain->group_index_count] = ((i16)(group_index));
-        ++terrain->group_index_count;
-        ++platform_cell->group_count;
-
-        platform = &(terrain->platforms[((i16)(group->scene_index))]);
-        platform->flags = (platform->flags & ~5u) | (1 & group->platform_flags);
-        platform->scene_object_index = scene_object_index;
-        platform->terrain_group_index = ((i16)(group_index));
-
+        display_scene = scene->display_scene;
         if (display_scene != NULL) {
+            terrain->group_indices[terrain->group_index_count] = ((i16)(group_index));
+            ++terrain->group_index_count;
+            ++platform_cell->group_count;
+
+            platform = &(terrain->platforms[((i16)(group->scene_index))]);
+            platform->flags = (platform->flags & ~1u) | (group->platform_flags & 1);
+            platform->scene_object_index = scene_object_index;
+            platform->terrain_group_index = ((i16)(group_index));
+            platform->flags &= ~TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
+
             display_object = NULL;
             for (object_index = 0; object_index < display_scene->object_count; ++object_index) {
                 candidate = &(display_scene->objects[object_index]);
@@ -1824,11 +1819,8 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                     break;
                 }
             }
-
             if (display_object == NULL) {
-                group->chunk_type = -1;
-                TerrainDiagnosticNoOpPC(path);
-                continue;
+                goto bad_platform;
             }
 
             if (display_object->object == NULL || display_object->object == ((void *)(-1))) {
@@ -1839,12 +1831,29 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
             platform->instance_flags = &display_object->flags;
             platform->flags |= TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
         } else {
+            if (scene_object_index >= scene->object_count) {
+                goto bad_platform;
+            }
+            terrain->group_indices[terrain->group_index_count] = ((i16)(group_index));
+            ++terrain->group_index_count;
+            ++platform_cell->group_count;
+
+            platform = &(terrain->platforms[((i16)(group->scene_index))]);
+            platform->flags = (platform->flags & ~1u) | (group->platform_flags & 1);
+            platform->scene_object_index = scene_object_index;
+            platform->terrain_group_index = ((i16)(group_index));
+            platform->flags &= ~TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED;
+
             scene_object = &(scene->objects[scene_object_index]);
             platform->scene_object = scene_object->object != NULL ? scene_object->object : scene_object;
             platform->instance_flags = &scene_object->flags;
         }
-
         ++platform_count;
+        continue;
+
+    bad_platform:
+        group->chunk_type = -1;
+        TerrainDiagnosticNoOpPC(path);
     }
 
     TerrShapeAdjCnt = 0;
