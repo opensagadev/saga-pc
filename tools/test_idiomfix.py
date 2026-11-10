@@ -43,6 +43,17 @@ class RuleTests(unittest.TestCase):
         self.assertIn("{ if (w != 0) return 0; return *w; }".replace("return 0; return *w", "return *w; return 0"),
                       self.texts(self.fix.rule_wrap_to_guard, text)[0])
 
+    def test_or_guard_splits_into_two_guards(self):
+        texts = self.texts(self.fix.rule_guard_split, "int f(int *p) { if (p == 0 || *p == 0) return 0; return *p; }")
+        self.assertIn("if (p == 0) return 0; if (*p == 0) return 0; return *p;", texts[0])
+
+    def test_two_guards_merge_into_an_or_guard(self):
+        texts = self.texts(self.fix.rule_guard_merge,
+                           "int f(int *p) { if (p == 0) return 0; if (*p == 0) { return 0; } return *p; }")
+        self.assertIn("if (p == 0 || *p == 0) return 0; return *p;", texts[0])
+        self.assertFalse(self.texts(self.fix.rule_guard_merge,
+                                    "int f(int *p) { if (p == 0) return 0; if (*p == 0) return 1; return *p; }"))
+
     def test_guard_return_and_final_return_swap(self):
         texts = self.texts(self.fix.rule_invert_return, "int f(int *p) { if (p == 0) return 0; return *p; }")
         self.assertIn("if (p != 0) return *p; return 0;", texts[0])

@@ -23,6 +23,15 @@ blocks) gets the tags whose shape it shows:
   I25  `fld a; fadd b` vs `fld b; fadd a` (float operand order follows source)
   I26  field width: retail `xor; and; xor` bitfield store, or a byte access where
        we use a dword (or the reverse): the field or bitfield has another type
+  I27  a moved store that retail does before the post-loop `cmp` and we do after it
+       (the result stored inside the search loop before `break`)
+  I28  runs of same-register stores to absolute addresses (or `rep stosd`) on
+       one side only: one loop clearing two arrays vs two `memset`s
+  I29  a conditional jump to an inline `return constant` on one side, the inverted
+       jump on the other (two guards vs one `||` guard)
+  I30  a `sub r, N`/`dec r` + jcc decrement chain or a jump table on one side
+       only (a small `switch` vs an if chain)
+  I31  the same x87 memory operands loaded in another order (parenthesised terms)
   U1   `[a+b]` vs `[b+a]` with the same registers
   U3   register choice only, or a spill / an extra saved register
   U7   stack slot only
@@ -219,6 +228,108 @@ def _commutative_swapped(left, right):
     return found
 
 
+STORE = re.compile(r"^(byte|word|dword) ptr \[[^\]]+\], \w+$")
+ABSOLUTE_STORE = re.compile(r"^dword ptr \[0x[0-9a-f]+\], (e[a-ds][xip]|e[sd]i|0)$")
+RETURN_CONSTANT = re.compile(r"^(xor eax, eax|mov eax, (0x[0-9a-f]+|\d+)|or eax, 0xffffffff|mov al, \w+|xor al, al)$")
+
+
+def _is_store(instruction):
+    return instruction[0] == "mov" and bool(STORE.match(instruction[1]))
+
+
+def _loop_result_store(spot, target, base, full_t, full_b):
+    """I27: a moved single store that retail does right before a `cmp` and we do after that `cmp`."""
+    tag, i1, i2, j1, j2 = spot
+    if tag == "delete" and i2 - i1 == 1 and _is_store(target[i1]) and i2 < len(target) and target[i2][0] == "cmp":
+        return any(text == full_t[i1] and full_t[i2] in full_b[max(0, k - 4):k] for k, text in enumerate(full_b))
+    if tag == "insert" and j2 - j1 == 1 and _is_store(base[j1]):
+        before = full_b[max(0, j1 - 4):j1]
+        return any(text == full_b[j1] and target[k + 1][0] == "cmp" and full_t[k + 1] in before
+                   for k, text in enumerate(full_t[:-1]))
+    return False
+
+
+def _window(one, i, j, width):
+    return one[max(0, i - width):j + width]
+
+
+def _run(one, i, j, keep):
+    """The spot `one[i:j]` widened to the run of neighbouring instructions that satisfy `keep`."""
+    while i > 0 and keep(one[i - 1]):
+        i -= 1
+    while j < len(one) and keep(one[j]):
+        j += 1
+    return one[i:j]
+
+
+def _absolute_store(instruction):
+    return instruction[0] == "mov" and bool(ABSOLUTE_STORE.match(instruction[1]))
+
+
+def _x87(instruction):
+    return instruction[0].startswith("f")
+
+
+def _two_array_clear(left, right):
+    """I28: stores of one register to absolute addresses, or `rep stosd`, on one side only."""
+    def stores(one):
+        return [o for m, o in one if m == "mov" and ABSOLUTE_STORE.match(o)]
+    def stosd(one):
+        return any("rep stosd" in _text(i) for i in one)
+    if stosd(left) != stosd(right):
+        return True
+    both = left + right
+    return (len(both) >= 3 and all(m == "mov" and ABSOLUTE_STORE.match(o) for m, o in both)
+            and len({o.rsplit(", ", 1)[1] for _, o in both}) == 1 and stores(left) != stores(right))
+
+
+def _inline_return(one):
+    """Index of a jcc followed by a `return constant` and `ret`, or None."""
+    for k in range(len(one) - 2):
+        if (one[k][0] in INVERSE and RETURN_CONSTANT.match(_text(one[k + 1]))
+                and one[k + 2][0] == "ret"):
+            return k
+    return None
+
+
+def _guard_split(left, right):
+    """I29: one side returns a constant inline after a jcc; the other has the inverted jcc."""
+    for one, other in ((left, right), (right, left)):
+        k = _inline_return(one)
+        if k is not None and _inline_return(other) is None and \
+                any(m == INVERSE[one[k][0]] for m, _ in other):
+            return True
+    return False
+
+
+def _switch_shape(one):
+    """Decrement-chain steps and jump-table jumps of a switch."""
+    steps = sum(1 for (m, o), (n, _) in zip(one, one[1:])
+                if (m == "sub" and re.fullmatch(r"\w+, (0x[0-9a-f]+|\d+)", o) or m == "dec") and n in INVERSE)
+    tables = sum(1 for m, o in one if m == "jmp" and re.search(r"\*4 \+ 0x[0-9a-f]+\]", o))
+    return steps, tables
+
+
+def _switch_chain(left, right):
+    """I30: a switch lowering on one side, compares on the other."""
+    sl, sr = _switch_shape(left), _switch_shape(right)
+    if sl == sr:
+        return False
+    other = right if sum(sl) > sum(sr) else left
+    return any(m in ("cmp", "test") for m, _ in other) or sum(sl) and sum(sr)
+
+
+def _x87_reordered(left, right):
+    """I31: the same x87 memory operands in another order (three or more x87 instructions)."""
+    if len(left) < 3 or len(right) < 3 or [_text(i) for i in left] == [_text(i) for i in right]:
+        return False
+    if not all(m.startswith("f") for m, _ in left + right):
+        return False
+    memory = [collections.Counter(o for _, o in one if "ptr" in o) for one in (left, right)]
+    return bool(memory[0]) and memory[0] == memory[1] and \
+        [o for _, o in left if "ptr" in o] != [o for _, o in right if "ptr" in o]
+
+
 def spot_tags(target, base):
     """[(spot, tags)] for two [(mnemonic, operands)] lists; tags is a sorted list."""
     found = whyline.spots(target, base, registers=True)
@@ -291,6 +402,17 @@ def spot_tags(target, base):
             tags.add("U16")
         if _bitfield(left, right) or _width(left, right):
             tags.add("I26")
+        if _loop_result_store(spot, target, base, full_t, full_b):
+            tags.add("I27")
+        wide_l, wide_r = _window(target, i1, i2, 3), _window(base, j1, j2, 3)
+        if _two_array_clear(_run(target, i1, i2, _absolute_store), _run(base, j1, j2, _absolute_store)):
+            tags.add("I28")
+        if _guard_split(wide_l, wide_r):
+            tags.add("I29")
+        if any(m in ("sub", "dec", "cmp", "test", "jmp") for m, _ in left + right) and _switch_chain(wide_l, wide_r):
+            tags.add("I30")
+        if _x87_reordered(_run(target, i1, i2, _x87), _run(base, j1, j2, _x87)):
+            tags.add("I31")
         if _known_register(left, right):
             tags.add("U8")
         if _spill(left, right):

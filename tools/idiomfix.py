@@ -28,6 +28,9 @@ Rules per idiom (docs/vc8-idioms.md):
   I23  `x <= N` <-> `x < N + 1` where exact, unsigned `x != 0` <-> `x > 0`
        (lines behind I23 spots)
   I25  swap the operands of a commutative operator (lines behind I25 spots)
+  I29  `if (a || b) S`  <->  `if (a) S if (b) S` for a return (or one-statement) S
+       without `else`
+  I31  parenthesise the product terms of a float sum
 
 Every kept rewrite is printed and appended to build/tools-local/idiomfix.log.
 The driver does not commit; review the diff for natural source before
@@ -452,8 +455,83 @@ def _sum_terms(source, node):
     return terms
 
 
-# Idioms without a scanner tag of their own run on the functions tagged with these.
-SELECT = {"I31": ("I25", "U9", "I10")}
+def _single(source, stmt):
+    """The one statement of a then-branch (unwrapping braces), or None."""
+    rw = _rewrite()
+    if stmt.kind == rw.K.COMPOUND_STMT:
+        inner = source.children(stmt)
+        return inner[0] if len(inner) == 1 else None
+    return stmt
+
+
+def _flat(source, stmt):
+    text = source.src(stmt).strip()
+    return re.sub(r"\s+", " ", text if text.endswith(";") else text + ";")
+
+
+def _or_operand(source, cursor):
+    rw = _rewrite()
+    inner = rw.strip(cursor)
+    text = source.src(cursor)
+    if inner.kind in (rw.K.CONDITIONAL_OPERATOR, rw.K.COMPOUND_ASSIGNMENT_OPERATOR) or (
+            inner.kind == rw.K.BINARY_OPERATOR and source.operator(inner) in ("=", ",")):
+        return text if cursor.kind == rw.K.PAREN_EXPR else f"({text})"
+    return text
+
+
+def rule_guard_split(source):
+    """if (a || b) S  ->  if (a) S if (b) S  (S one return or simple statement, no else)."""
+    rw = _rewrite()
+    for stmt in source.walk():
+        if stmt.kind != rw.K.IF_STMT:
+            continue
+        parts = source.children(stmt)
+        if len(parts) != 2:
+            continue
+        cond = rw.strip(parts[0])
+        then = _single(source, parts[1])
+        if cond.kind != rw.K.BINARY_OPERATOR or source.operator(cond) != "||" or then is None:
+            continue
+        if then.kind not in (rw.K.RETURN_STMT, rw.K.BREAK_STMT, rw.K.CONTINUE_STMT):
+            continue
+        left, right = list(cond.get_children())
+        body = _flat(source, then)
+        a, b = source.span(stmt)
+        if source.data[b:b + 1] == b";":
+            b += 1
+        replacement = f"if ({source.src(left)})\n{body}\nif ({source.src(right)})\n{body}"
+        yield rw.Candidate(source.edit([(a, b, replacement)]), "guard_split", f"line {stmt.location.line}", True)
+
+
+def rule_guard_merge(source):
+    """if (a) S if (b) S  ->  if (a || b) S  (the same return or simple statement, no else)."""
+    rw = _rewrite()
+    for compound in [source.body, *source.walk()]:
+        if compound.kind != rw.K.COMPOUND_STMT:
+            continue
+        stmts = source.children(compound)
+        for first, second in zip(stmts, stmts[1:]):
+            if first.kind != rw.K.IF_STMT or second.kind != rw.K.IF_STMT:
+                continue
+            p1, p2 = source.children(first), source.children(second)
+            if len(p1) != 2 or len(p2) != 2:
+                continue
+            t1, t2 = _single(source, p1[1]), _single(source, p2[1])
+            if t1 is None or t2 is None or t1.kind not in (rw.K.RETURN_STMT, rw.K.BREAK_STMT, rw.K.CONTINUE_STMT):
+                continue
+            if _flat(source, t1) != _flat(source, t2):
+                continue
+            a = source.span(first)[0]
+            b = source.span(second)[1]
+            if source.data[b:b + 1] == b";":
+                b += 1
+            replacement = f"if ({_or_operand(source, p1[0])} || {_or_operand(source, p2[0])})\n{_flat(source, t1)}"
+            yield rw.Candidate(source.edit([(a, b, replacement)]), "guard_merge", f"line {first.location.line}",
+                               True)
+
+
+# Idioms without a scanner tag of their own (or a narrow one) run on the functions tagged with these.
+SELECT = {"I31": ("I25", "U9", "I10", "I31"), "I29": ("I29", "I17", "I22")}
 
 
 def _rewrite_rules(names):
@@ -466,6 +544,7 @@ RULES = {
     "I23": (lambda: [rule_bound], True),
     "I25": (lambda: [rule_float_commute], True),
     "I31": (lambda: [rule_paren_terms], False),
+    "I29": (lambda: [rule_guard_split, rule_guard_merge], False),
     "I10": (lambda: [rule_double], True),
     "I17": (lambda: [rule_wrap_to_guard, rule_guard_to_wrap, rule_ternary_return, rule_invert_return,
                      *_rewrite_rules(["rule_result_variable", "rule_guard_to_else"])], False),
