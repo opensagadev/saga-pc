@@ -3,7 +3,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x401810,0x401863,src/legoapi/androidbatman.c,legoapi,marker,high,ret ret 28,3,7,7,7,0,0,legoapi/gamepads.c:7
 0x401870,0x4028b4,src/legoapi/aitrigger.c,legoapi,marker,high,ret 28,9,4064,4064,152,305,37,legoapi/aitrigger.c:3764 legoapi/ai_trigger_setup_pc.c:299 nu2api/nuapi.c:1
 0x4028c0,0x403c83,src/legoapi/attracto.c,legoapi,marker,high,ret fabs 28,26,4786,4786,873,565,12,legoapi/attractos_pc.c:4572 legoapi/attracto.c:214
-0x403c90,0x407e1d,src/legoapi/batarang.cpp,legoapi,marker,high,fabs 54,42,16380,16380,3062,1537,1060,legoapi/batarang.cpp:8071 legoapi/batman_prepare_pc.c:7423 legoapi/aicapabilities_pc.c:403 legoapi/aiactions_transfer.cpp:285 legoapi/gameai.c:144 gameapi/aisysall.c:54
+0x403c90,0x407e1d,src/legoapi/batarang.cpp,legoapi,marker,high,fabs 54,42,16380,16380,3062,1537,0,legoapi/batarang.cpp:16326 gameapi/aisysall.c:54
 0x407e40,0x4087d6,src/legoapi/bolt.c,legoapi,file,medium,,7,2354,2354,387,133,0,legoapi/bolt_foundation_callbacks.cpp:2300 legoapi/cables.c:54
 0x408800,0x40a4a5,src/legoapi/cable.c,legoapi,android,low,,7,7230,7230,340,636,0,legoapi/cables.c:7230
 0x40a4b0,0x40e6fa,src/legoapi/camera.c,legoapi,marker,high,fabs 22 28,11,16626,16626,162,3187,0,legoapi/camera.c:16626
@@ -20,32 +20,32 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x427ec0,0x428930,src/legoapi/startup.c,legoapi,file,medium,,1,2672,2672,0,387,0,legoapi/players_dropin.cpp:2672
 0x428930,0x42f461,src/legogame/game.cpp,legogame,marker,high,fabs 28,95,26621,26621,5965,2513,727,legogame/game.cpp:16885 legoapi/parts.c:3826 legoapi/cutscene_hooks.c:2366 legoapi/shop_completion.cpp:1078 legoapi/fighting.c:569 legoapi/characters.cpp:489 legoapi/menu.c:410 legoapi/gameai.c:375 legoapi/gamestatus.c:248 legoapi/gameobjects.c:191 legoapi/shard.c:137 legoapi/hub.cpp:47
 0x42f4a0,0x430117,src/legoapi/game_deb.c,legoapi,file,medium,,8,3165,3165,1077,434,216,legoapi/ripples.c:1721 legoapi/supportall.c:1188 legoapi/lighting.c:256
-0x430120,0x4398b4,src/legoapi/game_obj.c,legoapi,marker,high,ret fabs 54 28,41,38274,38274,3695,3049,1446,legoapi/gameobjects.c:17942 legoapi/hits.c:9095 legoapi/parts_breakup.cpp:7709 legoapi/panel.c:1595 legoapi/creature.c:620 legoapi/players.c:611 legoapi/playeritems.c:306 legoapi/collection_render.cpp:227 legoapi/legoapi_misc.c:100 legoapi/parts.c:69
+0x430120,0x4398b4,src/legoapi/game_obj.c,legoapi,marker,high,ret fabs 54 28,41,38274,38274,3695,3046,1446,legoapi/gameobjects.c:17942 legoapi/hits.c:9095 legoapi/parts_breakup.cpp:7709 legoapi/panel.c:1595 legoapi/creature.c:620 legoapi/players.c:611 legoapi/playeritems.c:306 legoapi/collection_render.cpp:227 legoapi/legoapi_misc.c:100 legoapi/parts.c:69
 0x4398c0,0x43ff91,src/legoapi/gameai.c,legoapi,marker,high,ret 28,65,25683,25683,7430,3425,1133,legoapi/gameobjects.c:17493 legoapi/gameai.c:3953 legoapi/aipathcnxhelper.c:1921 legoapi/simpletons.c:1125 legoapi/gizmo_add_callbacks_pc.c:429 legoapi/aiactions_transfer.cpp:321 legoapi/gizmo_registry_pc.c:231 legoapi/creature.c:101 legoapi/ai_sys.c:97 legoapi/gizmo_output_callbacks_pc.c:12
 0x43ffa0,0x457e93,src/gameapi/gameaiscript.c,gameapi,marker,high,ret fabs 54 28,442,94194,94194,19334,9660,0,gameapi/gameaiscript.c:93968 legoapi/ai_sys.c:226
 0x457ec0,0x458461,src/legoapi/gamehint.c,legoapi,file,medium,,4,1396,1396,179,142,0,legoapi/render.c:1250 legoapi/hint.c:145 legoapi/status_alternate_pc.cpp:1
 0x458470,0x45e345,src/legoapi/status_alternate_pc.cpp,legoapi,marker,high,fabs 54 28,43,23933,23933,6870,979,0,legoapi/status_alternate_pc.cpp:23933
-0x45e350,0x46433e,src/legoapi/gamestatus_lsw.cpp,legoapi,marker,high,fabs 54 28,58,24019,24019,4720,1196,389,legoapi/screen.cpp:15599 legoapi/render.c:7295 legoapi/status_lsw_updates_pc.c:825 legoapi/status_prompt_render_pc.c:206 legoapi/status_lsw_registration_pc.c:94
+0x45e350,0x46433e,src/legoapi/gamestatus_lsw.cpp,legoapi,marker,high,fabs 54 28,58,24019,24019,5237,1155,349,legoapi/screen.cpp:15599 legoapi/render.c:7295 legoapi/status_lsw_updates_pc.c:825 legoapi/status_prompt_render_pc.c:206 legoapi/status_lsw_registration_pc.c:94
 0x464360,0x465dcc,src/legoapi/gizactions.c,legoapi,file,medium,,24,6601,6601,4048,170,95,legoapi/gizactions.cpp:3935 gameapi/gameaiactions.c:1867 legoapi/gizobstacle.c:799
 0x465dd0,0x4667eb,src/legoapi/gizbombgen.c,legoapi,marker,high,ret 28,18,2194,2194,1171,167,44,legoapi/gizobstacle.c:1371 legoapi/gizmo_registry_pc.c:329 legoapi/gizmo_lifecycle_pc.c:183 legoapi/gizmo_add_callbacks_pc.c:158 legoapi/gizmo_progress_pc.c:153
 0x4667f0,0x46a44b,src/legoapi/gizforce.c,legoapi,marker,high,ret 28,58,14883,14883,5160,1613,97,legoapi/gizforce.c:12803 legoapi/gizmo_alternate_registration_pc.cpp:488 legoapi/gizmo_progress_pc.c:409 legoapi/gizmo_registry_pc.c:367 legoapi/gizmo_lifecycle_pc.c:320 legoapi/gizmo_lsw_registration_pc.cpp:267 legoapi/gizmo_add_callbacks_pc.c:127 legoapi/hint.c:102
 0x46a450,0x46a868,src/legoapi/gizgame.c,legoapi,file,medium,,4,1026,1026,40,98,0,legoapi/gizmo.c:1026
-0x46a8d0,0x46d7e2,src/legoapi/gizmopickup.c,legoapi,file,medium,,47,11658,11658,2747,1401,569,legoapi/parts.c:6943 legoapi/gizmopickups.c:3147 legoapi/gamemessages.c:704 legoapi/minikits.c:436 legoapi/playeritems.c:288 legoapi/gameobjects.c:140
-0x46d7f0,0x46f88a,src/legoapi/gizpanel.c,legoapi,marker,high,ret 28,28,7987,7987,1316,797,149,legoapi/gizpanel_pc.c:6483 legoapi/hint.c:436 legoapi/gizmo_registry_pc.c:328 legoapi/aiactions_transfer.cpp:264 legoapi/gizmo_progress_pc.c:206 legoapi/gizmo_lifecycle_pc.c:164 legoapi/gizmo_add_callbacks_pc.c:106
+0x46a8d0,0x46d7e2,src/legoapi/gizmopickup.c,legoapi,file,medium,,47,11658,11658,2747,1319,0,legoapi/gizmopickup.c:11658
+0x46d7f0,0x46f88a,src/legoapi/gizpanel.c,legoapi,marker,high,ret 28,28,7987,7987,1316,797,0,legoapi/gizpanel.c:7987
 0x46f890,0x4701c9,src/legoapi/giztorpedo.c,legoapi,marker,high,ret 28,17,2126,2126,868,199,71,legoapi/giztorpedo.c:1140 legoapi/grabber.c:377 legoapi/gizmo_registry_pc.c:279 legoapi/gizmo_lifecycle_pc.c:174 legoapi/gizmo_add_callbacks_pc.c:156
 0x4701d0,0x47276c,src/legoapi/grabber.c,legoapi,android,low,,20,9499,9499,5079,92,0,legoapi/grabber.c:9224 legoapi/grabber_pc.c:275
 0x472770,0x47482a,src/legoapi/hatmachine.cpp,legoapi,marker,high,ret fabs 54 28,24,8086,8086,826,707,0,legoapi/hatmachine.cpp:8086
 0x474830,0x481a6f,src/legoapi/hub.cpp,legoapi,marker,high,ret fabs 23 28,104,52523,52523,7018,6680,1496,legoapi/hub.cpp:40660 legoapi/indy_special.c:5299 legoapi/indy_ai.c:2840 legoapi/arcade.c:1926 legoapi/level_fixup.cpp:331 legoapi/aiactions_transfer.cpp:310 legoapi/gizmo.c:269 legoapi/hint.c:245 legoapi/aicapabilities_pc.c:152 legoapi/hub_model.c:151 legoapi/doors.c:147 legoapi/gameai.c:144 legoapi/menu.c:49
 0x481a70,0x482bf1,src/legoapi/ledge.cpp,legoapi,marker,high,ret fabs 28,20,4075,4075,889,258,0,legoapi/ledges.cpp:4075
-0x482c00,0x486f1a,src/legoapi/legoapi_status.cpp,legoapi,marker,high,ret 54 28,29,16831,16831,852,2001,977,legoapi/render.c:9880 legoapi/screen.cpp:5769 legoapi/status_prompt_render_pc.c:1124 legoapi/status_icons_pc.c:58
+0x482c00,0x486f1a,src/legoapi/legoapi_status.cpp,legoapi,marker,high,ret 54 28,29,16831,16831,852,2001,0,legoapi/legoapi_status.cpp:16831
 0x486f20,0x488e82,src/legoapi/legoapi_tag.c,legoapi,marker,high,ret 28,17,7858,7858,3092,271,52,legoapi/gameobjects.c:7579 legoapi/tagging.c:278 legoapi/render.c:1
-0x488e90,0x48c806,src/legoapi/levels.cpp,legoapi,marker,high,ret 28,32,14370,14370,4568,1429,1144,legoapi/world.cpp:6188 legoapi/areas.cpp:4999 legoapi/characters.cpp:2186 legoapi/leveldata.c:482 legoapi/boss.c:272 legoapi/level_lifecycle.c:217 legoapi/level_area_load.c:26
-0x48c810,0x48cdfa,src/legoapi/game.c,legoapi,file,medium,,44,1267,1267,1267,0,0,legoapi/level_area_load.c:1267
-0x48ce00,0x48fc27,src/legoapi/levels.c,legoapi,file,medium,,13,11764,11764,858,736,336,legoapi/level_fixup.cpp:6860 legoapi/world.cpp:3751 legoapi/areas.cpp:631 legogame/startup.cpp:402 legogame/game.cpp:120
+0x488e90,0x48c806,src/legoapi/levels.cpp,legoapi,marker,high,ret 28,32,14370,14370,4568,1429,0,legoapi/levels.cpp:14370
+0x48c810,0x48cdfa,src/legoapi/game.c,legoapi,android,low,,44,1267,1267,1267,0,0,legoapi/levels.cpp:1267
+0x48ce00,0x48fc27,src/legoapi/levels.c,legoapi,android,low,,13,11764,11764,858,736,0,legoapi/levels.cpp:11764
 0x48fc30,0x491360,src/legoapi/lever.c,legoapi,marker,high,ret fabs 28,27,5644,5644,994,741,0,legoapi/lever.c:5644
 0x491380,0x491b83,src/legoapi/lsw_hub_ai.c,legoapi,file,medium,,10,1882,1882,611,268,0,legoapi/lsw_hub_ai.c:1882
 0x491b90,0x493c2c,src/batman.cpp,src,marker,high,ret ret 28,4,8219,8219,1172,945,0,batman.cpp:8219
-0x493c30,0x496e11,src/legoapi/menu.cpp,legoapi,marker,high,fabs 28,42,12172,12172,2187,1379,889,legoapi/menu_titles.cpp:3576 legoapi/menu.c:2759 legoapi/menu_pause.cpp:2711 legoapi/menus.cpp:1440 legoapi/menu_extras.cpp:1068 legoapi/shop_exit.cpp:529 legoapi/doors.c:89
+0x493c30,0x496e11,src/legoapi/menu.cpp,legoapi,marker,high,fabs 28,42,12172,12172,2187,1379,0,legoapi/menu_frontend.cpp:12172
 0x496e20,0x497c05,src/legoapi/missions.cpp,legoapi,marker,high,fabs 28,10,3415,3415,438,349,127,legoapi/menus.cpp:2425 legoapi/missions.c:990
 0x497c10,0x4ab892,src/legoapi/move.c,legoapi,marker,high,ret fabs,178,79074,79074,19132,5621,3524,legoapi/move.c:49388 legoapi/character_animation.c:7068 legoapi/gameobjects.c:5646 legoapi/playercombat.cpp:3134 legoapi/players.c:2348 legoapi/speederchase.c:1959 legoapi/gameai.c:1300 legoapi/episodeV.c:1142 legoapi/pushing.cpp:1057 legoapi/characters.cpp:1007 legoapi/specialsfx.c:895 legoapi/bolt_foundation_callbacks.cpp:780 legoapi/tubes.c:733 legoapi/gizforce.c:593 legoapi/carrying.c:373 legoapi/supportall.c:350 legoapi/parts.c:348 legoapi/utilities.c:329 legoapi/jumping.c:194 legoapi/hint.c:111 legoapi/gizmoblowups.c:107 legoapi/collection.c:87 legoapi/gizpanel_pc.c:52 legoapi/fighting.c:49 legoapi/gizmo.c:24
 0x4ab8a0,0x4ab908,src/legoapi/episodeI.c,legoapi,file,medium,,1,104,104,104,0,0,legoapi/episodeI.c:104
@@ -63,14 +63,14 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x4c11c0,0x4c7879,src/legoapi/shop.c,legoapi,android,low,,32,25792,25792,2875,2216,0,legoapi/shard.c:25792
 0x4c7880,0x4c8bad,src/legoapi/signal.c,legoapi,marker,high,ret 28,25,4660,4660,864,388,1,legoapi/signal_reset_pc.c:3911 legoapi/move.c:749
 0x4c8bd0,0x4c9fa7,src/legoapi/speederchase.cpp,legoapi,file,medium,,20,4669,4669,1236,349,109,legoapi/speederchase.c:1977 legoapi/speederchase_pc.c:1231 legoapi/perm.c:575 legogame/startup.cpp:437 legoapi/shard.c:266 nu2api/nuprim.c:130 legoapi/control_setup.cpp:53
-0x4c9fb0,0x4cad84,src/legogame/startup.c,legogame,android,low,,2,3536,3536,0,523,0,legogame/startup.cpp:3536
+0x4c9fb0,0x4cad84,src/legogame/startup.c,legogame,android,low,,2,3536,3536,0,447,0,legogame/startup.cpp:3536
 0x4cadb0,0x4cc8bc,src/legoapi/starwars_gameai.c,legoapi,file,medium,,16,6822,6822,1967,844,78,legoapi/starwars_prepare_pc.c:6054 legoapi/aiactions_transfer.cpp:485 legoapi/aicapabilities_pc.c:283
 0x4cc8e0,0x4cca34,src/legoapi/suit.c,legoapi,file,medium,,5,279,279,279,0,0,legoapi/suit.c:279
 0x4cca50,0x4cdd0c,src/legoapi/techno.c,legoapi,marker,high,ret ret 28,30,4485,4485,2558,207,0,legoapi/techno.c:4484 legoapi/techno_diagnostic_pc.c:1
-0x4cdd10,0x4cf291,src/legoapi/teleport.cpp,legoapi,marker,high,ret fabs 28,29,5222,5222,1291,564,146,legoapi/teleport_motion.cpp:3449 legoapi/gizteleports.c:1489 legoapi/hint.c:147 legoapi/gizmo_add_callbacks_pc.c:112 legoapi/gizmo_registry_pc.c:25
+0x4cdd10,0x4cf291,src/legoapi/teleport.cpp,legoapi,marker,high,ret fabs 28,29,5222,5222,1291,564,0,legoapi/teleport.cpp:5222
 0x4cf2a0,0x4cf653,src/legoapi/text.c,legoapi,marker,high,ret 28,5,850,850,850,0,0,legoapi/text.c:850
-0x4cf680,0x4d0646,src/legoapi/thermaldetonators.c,legoapi,file,medium,,8,3979,3979,1861,433,236,legoapi/thermaldetonators_pc.c:2914 legoapi/thermaldetonators.c:727 legoapi/hint.c:214 legoapi/text.c:124
-0x4d0650,0x4d1e70,src/legoapi/tightrope.cpp,legoapi,marker,high,ret fabs 28,24,5731,5731,1727,792,313,legoapi/tightrope.cpp:3072 legoapi/tightropes_pc.c:2275 legoapi/players.c:384
+0x4cf680,0x4d0646,src/legoapi/thermaldetonators.c,legoapi,file,medium,,8,3979,3979,1861,433,0,legoapi/thermaldetonators.c:3979
+0x4d0650,0x4d1e70,src/legoapi/tightrope.cpp,legoapi,marker,high,ret fabs 28,24,5731,5731,1727,792,0,legoapi/tightrope.cpp:5731
 0x4d1e70,0x4d41b7,src/legoapi/torpedo.c,legoapi,marker,high,ret fabs 54,25,8491,8491,2219,384,0,legoapi/torpedo.c:8230 legoapi/giztorpedo.c:133 legoapi/bolt_foundation_callbacks.cpp:128
 0x4d41c0,0x4d4cb2,src/legoapi/traffic.c,legoapi,marker,high,ret 28,11,2452,2452,169,463,0,legoapi/traffic.c:2452
 0x4d4ce0,0x4d5593,src/legoapi/transform.cpp,legoapi,file,medium,,5,2209,2209,752,103,0,legoapi/transform.c:2142 legogame/game.cpp:67
@@ -78,8 +78,8 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x4d8190,0x4ddc7f,src/legoapi/episodeI.c,legoapi,marker,high,ret 28,75,22023,22023,9976,1023,188,legoapi/episodeI.c:20969 legoapi/speederchase.c:1054
 0x4ddc80,0x4e2cce,src/legoapi/episodeII.c,legoapi,marker,high,ret 28,54,20035,20035,7693,334,26,legoapi/episodeII.c:19580 legoapi/cutscene_hooks.c:228 legoapi/episodeI.c:227
 0x4e2cf0,0x4e4a14,src/legoapi/episodeIII.c,legoapi,file,medium,,42,7066,7066,6520,103,103,legoapi/episodeIII.c:6258 legoapi/episodeII.c:808
-0x4e4a40,0x4e5ea1,src/legoapi/episodeIV.c,legoapi,file,medium,,35,4970,4970,3152,135,0,legoapi/episodeIV.c:4970
-0x4e5f10,0x4e9f0c,src/legoapi/episodeV.c,legoapi,file,medium,,76,15729,15729,9262,1079,1074,legoapi/episodeIV.c:6981 legoapi/minikits.c:6142 legoapi/episodeV.c:1260 legoapi/trooper_cannons_pc.c:1069 legoapi/characters.cpp:277
+0x4e4a40,0x4e5ea1,src/legoapi/episodeIV.c,legoapi,file,medium,,35,4970,4970,3617,93,0,legoapi/episodeIV.c:4970
+0x4e5f10,0x4e9f0c,src/legoapi/episodeV.c,legoapi,file,medium,,76,15729,15729,9262,1079,0,legoapi/episodeV.c:15729
 0x4e9f30,0x4eead7,src/legoapi/episodeVI.c,legoapi,file,medium,,45,19061,19061,7251,1217,229,legoapi/episodeVI.c:15292 legoapi/episode_vi.c:2876 legoapi/minikits.c:893
 0x4eeae0,0x4ef6b4,src/nu2api/rope.c,nu2api,marker,high,ret 28,9,1753,1747,87,443,114,nu2api/nualloc.c:1019 legoapi/grapples.cpp:641 nu2api/nucore_includes.c:84 nu2api/nudebug.c:2 legoapi/episodeVI.c:1
 0x4ef6e0,0x4fe623,src/nu2api/nucore_includes.c,nu2api,android,low,,317,47168,47168,23731,2545,0,nu2api/nucore_includes.c:47166 nu2api/nudebug.c:2
@@ -111,8 +111,8 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x5494d0,0x54a54c,src/legoapi/camera.c,legoapi,marker,high,fabs,18,3888,3888,2249,199,72,legoapi/camera.c:3558 legoapi/simpletons.c:286 nu2api/nuvideo.c:44
 0x54a550,0x54b50c,src/legoapi/gamepads.c,legoapi,marker,high,ret fabs 28,22,3637,3637,215,557,148,legoapi/gamepads.c:1761 legoapi/input.cpp:786 legoapi/hits.c:384 legoapi/menu_pause.cpp:249 nu2api/nuvideo.c:236 legoapi/legoapi_misc.c:221
 0x54b510,0x54cd2d,src/legoapi/text.c,legoapi,marker,high,ret 28,21,5990,5990,2100,262,0,legoapi/text.c:5990
-0x54cd30,0x54f957,src/legoapi/grapples.cpp,legoapi,marker,high,ret fabs 28,39,10952,10952,1329,1548,214,legoapi/grapples.cpp:9688 legoapi/gizmo_registry_pc.c:329 legoapi/players.c:300 legoapi/indy_support.c:251 legoapi/gizmo_progress_pc.c:151 legoapi/gizmo_add_callbacks_pc.c:100 legoapi/gizmo_lifecycle_pc.c:80 legoapi/gizmo_output_callbacks_pc.c:32 legoapi/move.c:21
-0x54f960,0x5536fe,src/legoapi/utilities.c,legoapi,marker,high,ret ret fabs 54 28 95,59,13763,13763,6926,1031,740,legoapi/utilities.c:5097 legoapi/edsplines.c:4228 legoapi/render.c:1954 legoapi/gameanim.c:543 legoapi/gameobjects.c:531 legoapi/panel.c:348 legoapi/game_score.c:242 legoapi/texanim_scripts.c:203 legoapi/shadow.c:181 legoapi/screen.cpp:107 legoapi/transform.c:81 legoapi/players.c:75 legoapi/world.cpp:73 legoapi/hits.c:68 qrand.c:31 nu2api/nudebug.c:1
+0x54cd30,0x54f957,src/legoapi/grapples.cpp,legoapi,marker,high,ret fabs 28,39,10952,10952,1329,1548,0,legoapi/grapples.cpp:10952
+0x54f960,0x5536fe,src/legoapi/utilities.c,legoapi,marker,high,ret ret fabs 54 28 95,59,13763,13763,6926,941,0,legoapi/utilities.c:13762 legoapi/texanim_scripts.c:1
 0x553700,0x557088,src/legoapi/gizspinner.cpp,legoapi,marker,high,ret ret fabs 23 28 162,42,13924,13924,2072,1853,0,legoapi/gizspinner.cpp:13924
 0x557090,0x55956e,src/legoapi/gizobstacle.c,legoapi,marker,high,ret 28,46,9007,9007,2331,1291,0,legoapi/gizobstacle.c:9007
 0x559570,0x55b172,src/legoapi/gizmo.c,legoapi,marker,high,ret ret 28,42,6404,6404,1790,643,68,legoapi/gizmo.c:5959 legoapi/areas.cpp:244 legoapi/sfx.cpp:105 legoapi/world.cpp:94 legoapi/render.c:2
@@ -125,7 +125,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x55f960,0x55ffad,src/legoapi/levels.c,legoapi,file,medium,,8,1538,1538,1538,0,0,legoapi/gizportal.c:619 legoapi/world.cpp:393 legoapi/objectsall.c:321 legoapi/gameai.c:205
 0x55ffb0,0x560ab2,src/legoapi/worldinfo.c,legoapi,android,low,,6,2781,2781,133,200,42,legoapi/world.cpp:1794 legoapi/levelstreaming.c:987
 0x560ac0,0x561b7e,src/legoapi/gamemessages.c,legoapi,marker,high,fabs 54 28,10,4108,4108,716,535,142,legoapi/gamemessages.c:2873 legoapi/render.c:1235
-0x561ba0,0x56448f,src/legoapi/jumping.cpp,legoapi,file,medium,,34,10232,10232,1114,1522,305,legoapi/move.c:7049 legoapi/jumping.c:2586 legoapi/fade.cpp:291 legoapi/specialmoves.c:220 legoapi/carrying.c:86
+0x561ba0,0x56448f,src/legoapi/jumping.cpp,legoapi,file,medium,,34,10232,10232,1114,1522,30,legoapi/jumping.c:9941 legoapi/fade.cpp:291
 0x5644c0,0x5665f9,src/legoapi/screen.c,legoapi,file,medium,,31,8226,8226,3505,214,130,legoapi/screen.cpp:3874 legoapi/render.c:2709 legoapi/finish_loop.cpp:1014 legoapi/characters.cpp:475 legoapi/camera.c:154
 0x566600,0x56b6ea,src/legoapi/gizmoblowups.c,legoapi,marker,high,ret 28,60,19839,19839,4698,1501,11,legoapi/gizmoblowups.c:18986 legoapi/gizmo_registry_pc.c:347 legoapi/gizmo_progress_pc.c:292 legoapi/gizmo_add_callbacks_pc.c:139 legoapi/gizmo_output_callbacks_pc.c:51 legoapi/finish_loop.cpp:24
 0x56b6f0,0x56cd82,src/legoapi/climbing.c,legoapi,marker,high,fabs 28,15,5608,5608,1422,271,141,legoapi/move.c:4399 legoapi/indy_support.c:704 legoapi/players.c:435 legoapi/ai_sys.c:70
@@ -142,7 +142,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x576340,0x576bb3,src/legoapi/hint.c,legoapi,android,low,,19,1805,1805,676,132,6,legoapi/hint.c:1526 legoapi/doors.c:279
 0x576bc0,0x578718,src/legoapi/minicamcut.c,legoapi,marker,high,ret ret 54 28,11,6750,6750,1886,675,213,legoapi/minicamcut.c:4828 legoapi/camera.c:1922
 0x578740,0x5787c4,src/legoapi/things.c,legoapi,file,medium,,3,117,117,65,5,5,legoapi/leveldata.c:65 legoapi/simpletons.c:52
-0x578890,0x57a80c,src/legoapi/levels.c,legoapi,marker,high,ret ret 28,78,7335,7335,4179,707,402,legoapi/level_area_load.c:4111 legoapi/levelobjects.c:1269 legoapi/edsplines.c:519 legoapi/level_lifecycle.c:497 legoapi/newlevels.c:316 legoapi/sfx.cpp:306 legoapi/leveldata.c:176 legoapi/areas.cpp:140 legoapi/levels_diagnostic_pc.c:1
+0x578890,0x57a80c,src/legoapi/levels.c,legoapi,marker,high,ret ret 28,78,7335,7335,4179,707,0,legoapi/level_area_load.cpp:7334 legoapi/levels_diagnostic_pc.c:1
 0x57a810,0x57f647,src/legoapi/cutscenes.c,legoapi,marker,high,ret ret fabs 28,85,19184,19184,2559,3243,136,legoapi/cutscene_runtime.cpp:17323 legoapi/gcutscn.c:1678 legoapi/doors.c:102 legoapi/aiactions_transfer.cpp:80 nu2api/nudebug.c:1
 0x57f650,0x580e47,src/legoapi/bolts.cpp,legoapi,marker,high,ret 54,54,5533,5533,3190,192,0,legoapi/bolts.cpp:5364 gamelib/net/NetworkObjectManager.cpp:114 gameapi/message.cpp:55
 0x580e50,0x580ec8,src/gamelib/net/nufile_android.cpp,gamelib,file,medium,,1,120,120,120,0,0,gamelib/net/NetworkObjectManager.cpp:120
@@ -158,17 +158,17 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x58bc60,0x58bed4,src/legoapi/sfx.c,legoapi,file,medium,,1,628,628,628,0,0,legoapi/sfx.cpp:628
 0x58bee0,0x58ceeb,src/legoapi/move.c,legoapi,file,medium,,5,4076,4076,290,123,0,legoapi/character_joints_pc.c:3786 legoapi/move.c:290
 0x58cef0,0x58d311,src/legoapi/characters.c,legoapi,android,low,,3,1034,1034,84,141,0,legoapi/character_joints_pc.c:1034
-0x58d340,0x58e35e,src/legoapi/climbing.c,legoapi,file,medium,,17,3999,3999,523,582,273,legoapi/playeritems.c:2836 legoapi/players.c:661 legoapi/speederchase.c:229 legoapi/playeractions.c:154 legoapi/sfx.cpp:119
+0x58d340,0x58e35e,src/legoapi/climbing.c,legoapi,file,medium,,17,3999,3999,523,582,0,legoapi/climbing.c:3999
 0x58e360,0x58e8e2,src/legoapi/fighting.c,legoapi,file,medium,,4,1290,1290,160,182,8,legoapi/fighting.c:1102 legoapi/move.c:188
-0x58e8f0,0x5925b9,src/legoapi/gizbuildit.c,legoapi,marker,high,ret fabs 54 28,45,15059,15059,2320,1595,322,legoapi/gizbuildit_pc.c:12009 legoapi/gizbuildit.cpp:1259 legoapi/hub.cpp:647 legoapi/gizmo_registry_pc.c:344 legoapi/gizmo_lifecycle_pc.c:294 legoapi/gizmo_progress_pc.c:239 legoapi/hint.c:131 legoapi/gizmo_add_callbacks_pc.c:124 legoapi/gizmo_output_callbacks_pc.c:12
+0x58e8f0,0x5925b9,src/legoapi/gizbuildit.c,legoapi,marker,high,ret fabs 54 28,45,15059,15059,2320,1595,0,legoapi/gizbuildit.cpp:15059
 0x5925c0,0x59420b,src/legoapi/customiser.c,legoapi,marker,high,ret 28,20,6897,6897,2639,308,24,legoapi/customise.c:6414 legoapi/parts_breakup.cpp:482 legoapi/customise_diagnostic_pc.c:1
-0x594210,0x5954b1,src/legoapi/collection.cpp,legoapi,marker,high,ret ret 28,16,4231,4231,1204,730,458,legoapi/collection.c:2445 legoapi/collection_render.cpp:1198 legoapi/shadowmap.cpp:257 legoapi/lighting.c:183 legoapi/shadow_light_setup.cpp:148
-0x5954f0,0x5970a8,src/legoapi/lighting.c,legoapi,file,medium,,25,6761,6761,1225,1015,257,legoapi/lighting.c:4035 legoapi/shadow_light_setup.cpp:1835 legoapi/shadow.c:633 legoapi/shadowmap.cpp:258
+0x594210,0x5954b1,src/legoapi/collection.cpp,legoapi,marker,high,ret ret 28,16,4231,4231,1204,730,458,legoapi/collection.c:2445 legoapi/collection_render.cpp:1198 legoapi/lighting_unit.cpp:588
+0x5954f0,0x5970a8,src/legoapi/lighting.c,legoapi,android,low,,25,6761,6761,1225,1015,0,legoapi/lighting_unit.cpp:6760 legoapi/shadow.c:1
 0x5970b0,0x597bf5,src/legoapi/snake.c,legoapi,marker,high,fabs,8,2737,2737,146,362,0,legoapi/snakes.c:2737
 0x597c20,0x5999e0,src/legoapi/carrying.c,legoapi,file,medium,,13,7511,7511,675,542,69,legoapi/carrying.c:6940 legoapi/players.c:571
 0x5999e0,0x59a595,src/legoapi/minikits.c,legoapi,marker,high,ret 28,10,2808,2808,543,333,62,legoapi/minikits.c:1548 legoapi/gizmo.c:662 legoapi/hub.cpp:564 legoapi/minikit_init_pc.c:34
 0x59a5a0,0x59b32d,src/legoapi/gameantinode.c,legoapi,marker,high,fabs 54 28,9,2843,2843,415,541,0,legoapi/gameantinode.c:2428 legoapi/gameobjects.c:415
-0x59b330,0x59baf0,src/legoapi/episodes.cpp,legoapi,marker,high,ret 28,6,1792,1792,197,399,325,legoapi/episode.cpp:1007 legogame/startup.cpp:702 legoapi/episode_helpers.c:83
+0x59b330,0x59baf0,src/legoapi/episodes.cpp,legoapi,marker,high,ret 28,6,1792,1792,197,399,0,legoapi/episodes.cpp:1792
 0x59baf0,0x59cd41,src/legoapi/pushing.cpp,legoapi,marker,high,fabs 28,8,4468,4468,478,399,98,legoapi/pushing.cpp:3225 legoapi/players.c:891 legoapi/credits.cpp:352
 0x59cd50,0x59d741,src/legoapi/credits.cpp,legoapi,android,low,,6,2504,2504,123,116,0,legoapi/credits.cpp:2504
 0x59d750,0x59f942,src/legoapi/gizflow.c,legoapi,marker,high,ret ret ret 28,56,7875,7875,1324,999,0,legoapi/gizflow.c:7873 legoapi/gizflow_diagnostic.c:2
@@ -179,7 +179,7 @@ start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact
 0x5a1ee0,0x5a2a5b,src/legoapi/ripples.c,legoapi,marker,high,ret 28,19,2629,2629,339,600,0,legoapi/ripples.c:2629
 0x5a2a60,0x5a3726,src/legoapi/pulses.c,legoapi,marker,high,fabs 28,5,2940,2940,468,403,0,legoapi/pulses.c:2630 legoapi/streaks.cpp:310
 0x5a3730,0x5a438e,src/legoapi/streaks.c,legoapi,android,low,,5,3152,3152,0,638,0,legoapi/streaks.cpp:3152
-0x5a4390,0x5a8062,src/legoapi/pushblocks.cpp,legoapi,marker,high,28 ret fabs 28,33,15179,15179,864,1630,917,legoapi/gizpushblocks.cpp:6918 legoapi/pushblocks.cpp:5259 legoapi/move.c:1425 legoapi/objectsall.c:823 legoapi/terrain_player_pc.c:615 legoapi/hint.c:139
+0x5a4390,0x5a8062,src/legoapi/pushblocks.cpp,legoapi,marker,high,28 ret fabs 28,33,15179,15179,864,1630,0,legoapi/pushblocks.cpp:15179
 0x5a8090,0x5a836b,src/legoapi/particles.c,legoapi,file,medium,,7,698,698,510,16,0,legoapi/particles.c:698
 0x5a8390,0x5a8563,src/legoapi/charpivot.c,legoapi,file,medium,,2,464,464,45,73,0,legoapi/charpivot.c:464
 0x5a8590,0x5a86c4,src/legoapi/playeritems.c,legoapi,file,medium,,4,239,239,110,32,0,legoapi/players.c:239
