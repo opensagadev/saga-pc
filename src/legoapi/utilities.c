@@ -3,6 +3,7 @@
 /* Retail unit 0x54f960-0x553700 (legoapi/utilities.c): definitions in retail address order. */
 #include <stdlib.h>
 
+extern char **TexAnimScriptTablePc;
 void __cdecl NuTexAnimScriptMissingPc(char *path);
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;
@@ -39,10 +40,6 @@ extern NUMTL *SolidMtl;
 extern i32(__cdecl *MatrixReflection_CanOverrideFn)(void);
 
 static __inline f32 UtilitiesFabsPc(f32 value);
-
-void __cdecl NuTexAnimScriptMissingPc(char *path) {
-    (void)path;
-}
 
 static __declspec(noinline) void ReflectionCopyMatrixPc(NUMTX *result, NUMTX *source) {
     result->m00 = source->m00;
@@ -1142,6 +1139,25 @@ __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
         }
         --count;
     } while (count != 0);
+}
+
+void __cdecl InitTexAnimScripts(char **table) {
+    char path[0x40];
+    char **entry;
+    TexAnimScriptTablePc = table;
+    if (table == NULL) {
+        return;
+    }
+    for (entry = table; *entry != NULL; ++entry) {
+        permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
+        NuStrCpy(path, "stuff\\ats\\");
+        NuStrCat(path, *entry);
+        NuStrCat(path, ".ats");
+        if (NuTexAnimProgReadScript(path, &permbuffer_ptr, permbuffer_end, (i32)DEFAULTFPS) == NULL) {
+            NuTexAnimScriptMissingPc(path);
+        }
+    }
+    permbuffer_ptr.addr = (permbuffer_ptr.addr + 15) & ~15u;
 }
 
 void SetTexAnimSignals() {
