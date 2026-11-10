@@ -171,7 +171,7 @@ def parse(source):
                 continue
             if kind in ("NAMESPACE",):
                 raise ValueError(f"{source.path}: namespaces are not supported")
-            if kind in ("MACRO_INSTANTIATION", "INCLUSION_DIRECTIVE"):
+            if kind in ("MACRO_INSTANTIATION", "MACRO_DEFINITION", "INCLUSION_DIRECTIVE"):
                 continue
             raw.append((cursor.extent.start.offset, cursor.extent.end.offset, cursor, in_block))
 
@@ -200,7 +200,7 @@ def parse(source):
         if not (kind in FUNCTION_KINDS and cursor.is_definition()):
             end = statement_end(source.text, start, end)
         start, end = source.expand(start, end)
-        if items and start < items[-1].end and not isinstance(items[-1].cursor, str):
+        if items and start < items[-1].end and items[-1].cursor is not None:
             # Overlapping extents (struct inside typedef, multi-declarators): one item.
             last = items[-1]
             last.end = max(last.end, end)
