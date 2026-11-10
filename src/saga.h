@@ -8025,7 +8025,7 @@ struct nulsthdr_s {
     u16 element_count;
     u16 element_size;
     u16 element_size_total;
-    u16 used_count;
+    i16 used_count;
     u32 safe_thread;
     u16 padding[2];
 };
