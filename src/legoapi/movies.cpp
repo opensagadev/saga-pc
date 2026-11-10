@@ -7,6 +7,11 @@ extern "C" {
     extern i32(__cdecl *MovieInputFn)(void);
 }
 
+/* Empty in retail. It lives outside movies_config_pc.c so Movies_ConfigureList keeps its two calls. */
+extern "C" void __cdecl MoviesListNoOpPc(char *path) {
+    (void)path;
+}
+
 extern "C" i32 __cdecl Movie_CallBack(void) {
     NUPAD_INIT_STATE *pads[2];
     i32 skipped = 0;

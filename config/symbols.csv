@@ -16968,6 +16968,7 @@ address,symbol,size,ctype
 0x75ebbc,??_C@_07EKLOMMED@PADPLAY?$AA@,8,char []
 0x75ebc4,??_C@_09NIJLDPO@PADRECORD?$AA@,10,char []
 0x0075ebd0,_nufile_disc_suffix,3,const char[3]
+0x0075ebd0,??_C@_02OONNCLCO@?$DL1?$AA@,3,const char[3]
 0x75ec24,__real@42aa0000,4,const f32
 0x0075ec28,__real@4055400000000000,8,const f64
 0x75ec30,??_C@_05EILEDKCG@LABEL?$AA@,6,const char[6]

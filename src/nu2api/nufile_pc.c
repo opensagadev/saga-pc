@@ -52,9 +52,7 @@ i32 FileDirectoryOpenCountPc = 0;
 NUFILE_DEVICE *FileDirectoryDefaultDevicePc = &host_device;
 const char FileDirectorySourceNamePc[56] = "d:\\projects\\game_saga\\nu2api.saga\\nucore\\pc\\nufile_pc.c";
 const char FileDirectoryWildcardPc[4] = "*.*";
-void __cdecl FileDirectoryErrorPc(i32 error) {
-    (void)error;
-}
+void __cdecl FileDirectoryErrorPc(i32 error);
 
 i32 __cdecl NuFileExists(char *filepath) {
     return NuFileExistQuiet(filepath);
@@ -72,15 +70,10 @@ i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *pa
     device_name_len = NuStrLen(device->name);
 
     /* PC accepts an already-qualified path unchanged. */
-    subpath = path;
-    while (*subpath != '\0' && *subpath != ':') {
-        subpath++;
-    }
-
-    if (*subpath == ':') {
+    if (NuStrStr(path, ":") != NULL) {
         NuStrCpy(buffer, path);
     } else if (NuStrNICmp(path, device->name, device_name_len) == 0) {
-        subpath = path + device_name_len;
+        subpath = path + NuStrLen(device->name);
         if (*subpath == '\\' || *subpath == '/') {
             NuStrCpy(buffer, path);
         } else {
@@ -99,7 +92,7 @@ i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *pa
     NuFileReldirFix(device, buffer);
 
     path_len = NuStrLen(buffer);
-    if (buf_size > path_len) {
+    if (path_len < buf_size) {
         NuStrCpy(formatted_name, buffer);
         return 1;
     }
@@ -124,13 +117,12 @@ NUFILE __cdecl NuFileOpenDir(char *path) {
         device = FileDirectoryDefaultDevicePc;
     device->format_name_fn(device, formatted, path, 256);
     if (device->id == 2)
-        NuStrCat(formatted, nufile_disc_suffix);
+        strcat(formatted, ";1");
     if (device->id == 1) {
-        result = FileDirectoryMcOpenPc((i32)(i8)formatted[2] - '0', (i32)(i8)formatted[3] - '0',
-                                       formatted + device->name_len);
-        if (result < 0)
-            return 0;
-        return result + 0x1000;
+        result = FileDirectoryMcOpenPc(formatted[2] - '0', formatted[3] - '0', formatted + device->name_len);
+        if (result >= 0)
+            return result + 0x1000;
+        return 0;
     }
     result = FileDirectoryHostOpenPc(formatted);
     if (result < 0)
@@ -303,6 +295,14 @@ STATIC_ASSERT(sizeof(AI_EDITOR_FILE_INFO_PC) == 0x1c);
 STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, second) == 0x10);
 STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, year) == 0x16);
 STATIC_ASSERT(offsetof(AI_EDITOR_FILE_INFO_PC, unknown_18) == 0x18);
+
+i32 __cdecl SaveCreateDirectoryPc(char *path) {
+    SECURITY_ATTRIBUTES security;
+    security.bInheritHandle = 1;
+    security.nLength = sizeof(security);
+    security.lpSecurityDescriptor = NULL;
+    return CreateDirectoryA(path, &security);
+}
 
 i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
     WIN32_FILE_ATTRIBUTE_DATA attributes;

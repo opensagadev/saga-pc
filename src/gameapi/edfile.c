@@ -699,8 +699,7 @@ void eduicbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edui_messagemenu = NULL;
 }
 
-/* Retail keeps every call to this out of line (eduiMenuAttach, cbMMEditorConfig, tpentPropOnEnter). */
-__declspec(noinline) void eduiSetActiveMenu(eduimenu_s *menu) {
+void eduiSetActiveMenu(eduimenu_s *menu) {
     if (EduiUsingMenuFocusPc != 0) {
         if (menu == NULL)
             active_menu = EduiDeepestChildPc(default_active_menu);

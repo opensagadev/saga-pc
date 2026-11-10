@@ -53,13 +53,7 @@ extern "C" {
     void *__cdecl PcApiGetCallBuffer(void) {
         return PcApiCallBuffer;
     }
-    i32 __cdecl SaveCreateDirectoryPc(char *path) {
-        SECURITY_ATTRIBUTES security;
-        security.bInheritHandle = 1;
-        security.nLength = sizeof(security);
-        security.lpSecurityDescriptor = NULL;
-        return CreateDirectoryA(path, &security);
-    }
+    i32 __cdecl SaveCreateDirectoryPc(char *path);
     void __cdecl createslotfolder(i32) {
 #ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);

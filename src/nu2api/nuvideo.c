@@ -32,6 +32,11 @@ void __cdecl PCDeviceResetState(void) {
 void __cdecl bgProcDataOversize(i32 size) {
 }
 
+/* Empty in retail, next to the other empty error hooks; NuFileReadDir in nufile_pc.c keeps its call. */
+void __cdecl FileDirectoryErrorPc(i32 error) {
+    (void)error;
+}
+
 void NuErrorSetFilter(char *filter) {
     if (filter == NULL) {
         NuStrCpy(err_msg_filter, "");

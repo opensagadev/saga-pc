@@ -14,9 +14,7 @@ const char MoviesListKeywordPc[6] = "movie";
 const char MoviesListPathPc[18] = "movies\\movies.txt";
 #pragma const_seg()
 
-void __cdecl MoviesListNoOpPc(char *path) {
-    (void)path;
-}
+void __cdecl MoviesListNoOpPc(char *path);
 
 void __cdecl Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
     NUFPAR_PC *parser;

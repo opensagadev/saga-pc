@@ -1138,6 +1138,7 @@ i64 __cdecl NuMemFileSeek(NUFILE file, i64 offset, i32 origin) {
 
 i64 __cdecl NuFilePos(NUFILE file) {
     i64 position;
+    FILEINFO *info;
 
     if (file >= 0x1000) {
         return NuMcSeek(file - 0x1000, 0, 2, 0);
@@ -1148,13 +1149,15 @@ i64 __cdecl NuFilePos(NUFILE file) {
     }
 
     file--;
-    if (file_info[file].use_buf != 0) {
-        return file_info[file].read_pos;
+    info = &file_info[file];
+    if (info->use_buf != 0) {
+        return info->read_pos;
     }
 
-    do {
+    position = NuPSFileLSeek(file, 0, 1);
+    while (position < 0) {
         position = NuPSFileLSeek(file, 0, 1);
-    } while (position < 0);
+    }
 
     return position;
 }
