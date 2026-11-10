@@ -180,7 +180,8 @@ def parse(source):
     for match in re.finditer(r"^[ \t]*#[^\n]*(?:\\\n[^\n]*)*\n?", source.text, re.M):
         line = match.group(0)
         directive = re.match(r"\s*#\s*(\w+)\s*(\w*)", line)
-        kind = {"include": "include", "define": "macro", "pragma": "pragma"}.get(directive.group(1), "pp")
+        kind = {"include": "include", "define": "macro", "pragma": "pragma",
+                "undef": "undef"}.get(directive.group(1), "pp")
         names = [directive.group(2)] if kind == "macro" else []
         if any(s <= match.start() < e for s, e, _, _ in raw if s != e):
             continue
@@ -350,12 +351,25 @@ def build_plan(lo, hi, target):
         source = plan.sources[path]
         for r in records:
             matches = [i for i in source.items if i.function and r["symbol"] in i.mangled]
+            if not matches:
+                # Internal-linkage functions in extern "C" blocks: clang mangles them as C++.
+                from tools.unitmap import source_name
+                name, _ = source_name(r["symbol"])
+                matches = [i for i in source.items if i.function and i.static and name in i.names]
             if len(matches) != 1:
                 plan.todo.append(f"{r['symbol']} (0x{r['address']:x}): definition not located in {path}")
                 continue
             plan.moved.append((r["address"], matches[0]))
             moved_ids.add(id(matches[0]))
     plan.moved.sort(key=lambda m: m[0])
+    stem = str(Path(target).with_suffix(""))
+    for other in (stem + ".c", stem + ".cpp"):
+        if other != target and (ROOT / other).is_file():
+            left = [i for i in plan.sources[other].items if i.function and id(i) not in moved_ids] \
+                if other in plan.sources else [True]
+            if left:
+                raise SystemExit(f"{other} keeps definitions outside the range and would share the object "
+                                 f"name with {target}; move them first or pick another target name")
     if (ROOT / target).is_file():
         tsrc = plan.sources[target]
         plan.target_rest = [i for i in tsrc.items if i.function and id(i) not in moved_ids]
@@ -365,7 +379,10 @@ def build_plan(lo, hi, target):
             for item in tsrc.items:
                 if item.function or not first <= item.start < last or item.kind in ("include",):
                     continue
-                if item.definition:
+                if item.kind == "undef":
+                    # Function-scoped macros stay defined once the functions are reordered.
+                    plan.copied.append(Copy(item, "", remove=True))
+                elif item.definition:
                     plan.moved_data.append(item)
                 else:
                     plan.copied.append(Copy(item, item.text, remove=True))
@@ -387,7 +404,7 @@ def build_plan(lo, hi, target):
             # The whole file merges into the target.
             plan.deleted.append(path)
             for item in source.items:
-                if id(item) in take or item.kind == "include":
+                if id(item) in take or item.kind in ("include", "undef"):
                     continue
                 if item.kind == "pragma":
                     plan.todo.append(f"{path}: check #pragma moved with the file: {item.text.strip()}")
@@ -529,6 +546,18 @@ def apply_plan(plan, android=None, write=True):
             if decl not in [d for d, _ in forward]:
                 forward.append((decl, wrap_c(item, target_cxx)))
         early_users = []
+    # The target's own remaining functions that now sit below code using them.
+    if target in plan.sources and plan.target_rest:
+        tsrc = plan.sources[target]
+        first = min((i.start for _, i in plan.moved if i.source is tsrc), default=None)
+        users = set()
+        for _, fn in plan.moved:
+            users |= fn.refs()
+        for item in plan.target_rest:
+            if (first is None or item.start > first) and item.names & users and item.definition:
+                decl = prototype(item)
+                if decl not in [d for d, _ in forward]:
+                    forward.append((decl, item.c_block or (wrap_c(item, target_cxx) and not item.source.cxx)))
     leftover = [(item.text, wrap_c(item, target_cxx)) for item in data_left]
     # Static helpers: one copy per distinct body; equivalent helpers are renamed.
     helper_entries, kept = [], {}
@@ -565,7 +594,7 @@ def apply_plan(plan, android=None, write=True):
         if copy.item.kind == "function" and not copy.item.definition and copy.item.names & moved_names:
             continue  # the definition is in the unit now; forward declarations are generated from it
         key = re.sub(r"\s+", " ", copy.text.strip())
-        if key in seen or key in re.sub(r"\s+", " ", existing):
+        if not key or key in seen or key in re.sub(r"\s+", " ", existing):
             continue
         seen.add(key)
         copies.append((copy.text, wrap_c(copy.item, target_cxx) or (copy.item.c_block and target_cxx)))
@@ -636,9 +665,8 @@ def apply_plan(plan, android=None, write=True):
         for inc in other:
             if inc not in new_texts[target]:
                 new_texts[target] = inc + "\n" + new_texts[target]
-    for fn in plan.target_rest:
-        if not (plan.lo <= 0 < plan.hi):
-            plan.notes.append(f"{target} keeps {sorted(fn.names)[0]} outside the unit range")
+    if plan.target_rest:
+        plan.notes.append(f"{target} keeps {len(plan.target_rest)} functions outside the unit range")
     if write:
         for path, text in new_texts.items():
             (ROOT / path).parent.mkdir(parents=True, exist_ok=True)
