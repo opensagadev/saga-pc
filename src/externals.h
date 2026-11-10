@@ -163,11 +163,11 @@ extern "C" {
     HRESULT __stdcall D3DXSaveSurfaceToFileInMemory(ID3DXBuffer **, D3DXIMAGE_FILEFORMAT, IDirect3DSurface9 *,
                                                     const PALETTEENTRY *, const RECT *);
     IDirect3D9 *__stdcall Direct3DCreate9(UINT);
-    __declspec(dllimport) HRESULT __stdcall DirectInput8Create(HINSTANCE, DWORD, REFIID, void **, IUnknown *);
-    __declspec(dllimport) HRESULT __stdcall DirectSoundCreate8(LPCGUID, LPDIRECTSOUND8 *, LPUNKNOWN);
-    __declspec(dllimport) DWORD __stdcall XInputGetCapabilities(DWORD, DWORD, XINPUT_CAPABILITIES *);
-    __declspec(dllimport) DWORD __stdcall XInputGetState(DWORD, XINPUT_STATE *);
-    __declspec(dllimport) DWORD __stdcall XInputSetState(DWORD, XINPUT_VIBRATION *);
+    HRESULT __stdcall DirectInput8Create(HINSTANCE, DWORD, REFIID, void **, IUnknown *);
+    HRESULT __stdcall DirectSoundCreate8(LPCGUID, LPDIRECTSOUND8 *, LPUNKNOWN);
+    DWORD __stdcall XInputGetCapabilities(DWORD, DWORD, XINPUT_CAPABILITIES *);
+    DWORD __stdcall XInputGetState(DWORD, XINPUT_STATE *);
+    DWORD __stdcall XInputSetState(DWORD, XINPUT_VIBRATION *);
 
     // The old SDK winternl.h omits the calling convention on RtlUnwind.
     // The imported x86 entry uses stdcall; do not use its cdecl declaration.

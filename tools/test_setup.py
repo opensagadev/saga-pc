@@ -329,9 +329,11 @@ class CompilerHeadersTests(unittest.TestCase):
                                        ("/O2", "/Gy", "/GS-", "/WX"))
                     undefined = {s["name"] for s in obj.symbols
                                  if s["section"] == 0 and s["storage_class"] == 2}
-                    # Native callers use linked thunks for the D3D9/D3DX APIs rather than
-                    # IAT loads: their SDK headers declare them without dllimport.
-                    thunked = ("__imp__D3DX", "__imp__D3DPERF_", "__imp__Direct3DCreate9@")
+                    # Native callers use linked thunks for the D3D9/D3DX, DirectInput,
+                    # DirectSound and XInput APIs rather than IAT loads: their SDK headers
+                    # declare them without dllimport.
+                    thunked = ("__imp__D3DX", "__imp__D3DPERF_", "__imp__Direct3DCreate9@",
+                               "__imp__DirectInput8Create@", "__imp__DirectSoundCreate8@", "__imp__XInput")
                     expected = {r["symbol"].removeprefix("__imp_") if r["symbol"].startswith(thunked)
                                 else r["symbol"] for r in imports}
                     self.assertEqual(undefined, expected)
