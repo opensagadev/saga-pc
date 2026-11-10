@@ -210,8 +210,41 @@ def parse(source):
         item.c_block = extra
         merge_flags(item, cursor, kind)
         items.append(item)
-    source.items = items
+    source.items = group_segments(items)
     return source
+
+
+SEGMENT_OPEN = re.compile(r'#\s*pragma\s+(\w+_seg)\s*\(\s*"')
+SEGMENT_CLOSE = re.compile(r'#\s*pragma\s+(\w+_seg)\s*\(\s*\)')
+
+
+def group_segments(items):
+    """`#pragma data_seg("x")` ... `#pragma data_seg()` regions travel as one item."""
+    out, i = [], 0
+    while i < len(items):
+        item = items[i]
+        opening = SEGMENT_OPEN.search(item.text) if item.kind == "pragma" else None
+        if opening:
+            j = i + 1
+            while j < len(items) and not (items[j].kind == "pragma" and SEGMENT_CLOSE.search(items[j].text)
+                                          and SEGMENT_CLOSE.search(items[j].text).group(1) == opening.group(1)):
+                j += 1
+            if j < len(items):
+                inner = items[i + 1:j]
+                group = Item(item.source, item.start, items[j].end,
+                             "variable" if any(x.kind == "variable" for x in inner) else "pp",
+                             set().union(*[x.names for x in inner]) if inner else set())
+                group.definition = any(x.definition for x in inner)
+                group.static = any(x.static for x in inner)
+                group.c_block = item.c_block or any(x.c_block for x in inner)
+                for x in inner:
+                    group.mangled |= x.mangled
+                out.append(group)
+                i = j + 1
+                continue
+        out.append(item)
+        i += 1
+    return out
 
 
 def classify(kind):
@@ -357,7 +390,7 @@ def build_plan(lo, hi, target):
                 if id(item) in take or item.kind == "include":
                     continue
                 if item.kind == "pragma":
-                    plan.todo.append(f"{path}: #pragma moved with the file: {item.text.strip()}")
+                    plan.todo.append(f"{path}: check #pragma moved with the file: {item.text.strip()}")
                 plan.moved_data.append(item)
                 take.add(id(item))
             continue
