@@ -5675,7 +5675,10 @@ extern "C" {
                 break;
             }
         }
-        return distance <= 0.0f;
+        if (distance <= 0.0f) {
+            return 1;
+        }
+        return 0;
     }
 
     i16 __cdecl NuPortalWhichRoom(NUGSCN *scene, NUVEC *position) {

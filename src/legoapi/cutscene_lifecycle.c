@@ -626,9 +626,9 @@ STATIC_ASSERT(sizeof(CUT_LOCATOR_FUNCTION_ENTRY_PC) == 20);
 
 static __declspec(noinline) void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
                                                     i32 mode) {
-    CUT_LOAD_CAMERA_SYSTEM *system = scene->camera_system;
-    if (system != NULL) {
-        system = (CUT_LOAD_CAMERA_SYSTEM *)((u32)system + string_delta);
+    CUT_LOAD_CAMERA_SYSTEM *system;
+    if (scene->camera_system != NULL) {
+        system = (CUT_LOAD_CAMERA_SYSTEM *)((u32)scene->camera_system + string_delta);
         scene->camera_system = system;
         system->cameras = system->cameras ? (void *)((u32)system->cameras + string_delta) : NULL;
         if (relocation_delta != 0) {
@@ -646,17 +646,18 @@ static __declspec(noinline) void CutCameraFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i3
 
 static __declspec(noinline) void CutLocatorFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
                                                      i32 mode) {
-    CUT_LOAD_LOCATOR_SYSTEM *system = scene->locator_system;
+    CUT_LOAD_LOCATOR_SYSTEM *system;
     i32 i;
-    if (system != NULL) {
-        system = (CUT_LOAD_LOCATOR_SYSTEM *)((u32)system + string_delta);
+    if (scene->locator_system != NULL) {
+        system = (CUT_LOAD_LOCATOR_SYSTEM *)((u32)scene->locator_system + string_delta);
         scene->locator_system = system;
         system->locators = system->locators ? (CUT_LOAD_LOCATOR *)((u32)system->locators + string_delta) : NULL;
         if (system->locators != NULL && relocation_delta != 0)
-            for (i = 0; i < system->count; ++i)
-                if (system->locators[i].animation != NULL)
-                    system->locators[i].animation =
-                        NuAnimData2FixPtrs(system->locators[i].animation, relocation_delta, mode, 0);
+            for (i = 0; i < system->count; ++i) {
+                CUT_LOAD_LOCATOR *locator = &system->locators[i];
+                if (locator->animation != NULL)
+                    locator->animation = NuAnimData2FixPtrs(locator->animation, relocation_delta, mode, 0);
+            }
         system->types = system->types ? (CUT_LOAD_LOCATOR_TYPE *)((u32)system->types + string_delta) : NULL;
         if (system->types != NULL)
             for (i = 0; i < system->type_count; ++i) {
@@ -670,10 +671,10 @@ static __declspec(noinline) void CutLocatorFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i
 
 static __declspec(noinline) void CutRigidFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
                                                    i32 mode) {
-    CUT_LOAD_RIGID_SYSTEM *system = scene->rigid_system;
+    CUT_LOAD_RIGID_SYSTEM *system;
     i32 i;
-    if (system != NULL) {
-        system = (CUT_LOAD_RIGID_SYSTEM *)((u32)system + string_delta);
+    if (scene->rigid_system != NULL) {
+        system = (CUT_LOAD_RIGID_SYSTEM *)((u32)scene->rigid_system + string_delta);
         scene->rigid_system = system;
         system->rigids = system->rigids ? (CUT_LOAD_RIGID *)((u32)system->rigids + string_delta) : NULL;
         if (system->rigids != NULL)
@@ -693,10 +694,10 @@ static __declspec(noinline) void CutRigidFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32
 
 static __declspec(noinline) void CutCharacterFixPtrsPc(CUT_SCENE_LOAD_PC *scene, i32 string_delta, i32 relocation_delta,
                                                        i32 mode) {
-    CUT_LOAD_CHARACTER_SYSTEM *system = scene->character_system;
+    CUT_LOAD_CHARACTER_SYSTEM *system;
     i32 i;
-    if (system != NULL) {
-        system = (CUT_LOAD_CHARACTER_SYSTEM *)((u32)system + string_delta);
+    if (scene->character_system != NULL) {
+        system = (CUT_LOAD_CHARACTER_SYSTEM *)((u32)scene->character_system + string_delta);
         scene->character_system = system;
         system->characters = system->characters ? (CUT_LOAD_CHARACTER *)((u32)system->characters + string_delta) : NULL;
         if (system->characters != NULL)

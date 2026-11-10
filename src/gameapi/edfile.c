@@ -496,10 +496,12 @@ eduiitem_s *__cdecl eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
 }
 
 eduimenu_s *__cdecl eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback, char *title) {
-    u32 bytes = sizeof(eduimenu_s) + 1;
+    u32 bytes;
     eduimenu_s *menu;
     if (title != NULL)
-        bytes += NuStrLen(title);
+        bytes = NuStrLen(title) + sizeof(eduimenu_s) + 1;
+    else
+        bytes = sizeof(eduimenu_s) + 1;
     menu = (eduimenu_s *)NuAlloc(bytes, EduiSourcePathPc, 0x3dd);
     if (menu != NULL) {
         memset(menu, 0, bytes);
