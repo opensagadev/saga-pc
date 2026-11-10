@@ -1,0 +1,330 @@
+start,end,unit,area,evidence,confidence,marker,functions,bytes,implemented,exact_bytes,lost,foreign,our_files
+0x401000,0x401802,src/legoapi/androidbatman.cpp,legoapi,marker,high,ret 28,8,1817,1817,224,123,123,legoapi/init_once.cpp:1078 legoapi/hub.cpp:462 legoapi/control_setup.cpp:112 legoapi/gamepads.c:67 editor/edlevelall.cpp:50 legogame/startup.cpp:48
+0x401810,0x401863,src/legoapi/androidbatman.c,legoapi,marker,high,ret ret 28,3,7,7,7,0,0,legoapi/gamepads.c:7
+0x401870,0x4028b4,src/legoapi/aitrigger.c,legoapi,marker,high,ret 28,9,4064,4064,152,305,37,legoapi/aitrigger.c:3764 legoapi/ai_trigger_setup_pc.c:299 nu2api/nuapi.c:1
+0x4028c0,0x403c83,src/legoapi/attracto.c,legoapi,marker,high,ret fabs 28,26,4786,4786,873,565,12,legoapi/attractos_pc.c:4572 legoapi/attracto.c:214
+0x403c90,0x407e1d,src/legoapi/batarang.cpp,legoapi,marker,high,fabs 54,42,16380,16380,3062,1537,1060,legoapi/batarang.cpp:8071 legoapi/batman_prepare_pc.c:7423 legoapi/aicapabilities_pc.c:403 legoapi/aiactions_transfer.cpp:285 legoapi/gameai.c:144 gameapi/aisysall.c:54
+0x407e40,0x4087d6,src/legoapi/bolt.c,legoapi,file,medium,,7,2354,2354,387,133,0,legoapi/bolt_foundation_callbacks.cpp:2300 legoapi/cables.c:54
+0x408800,0x40a4a5,src/legoapi/cable.c,legoapi,android,low,,7,7230,7230,340,636,0,legoapi/cables.c:7230
+0x40a4b0,0x40e6fa,src/legoapi/camera.c,legoapi,marker,high,fabs 22 28,11,16626,16626,162,3187,0,legoapi/camera.c:16626
+0x40e700,0x413b50,src/legoapi/chris.c,legoapi,marker,high,ret fabs 28,53,19457,19457,1937,1963,0,legoapi/dogfight.cpp:19456 legoapi/flightspline_diagnostic_pc.c:1
+0x413b70,0x413efe,src/legoapi/config.c,legoapi,file,medium,,1,910,910,910,0,0,legoapi/charconfig.c:910
+0x413f00,0x420d29,src/legoapi/creature.cpp,legoapi,marker,high,fabs,88,51342,51342,7194,5759,3036,legoapi/players.c:26854 legoapi/terrain_player_pc.c:8287 legoapi/move.c:4040 legoapi/control_setup.cpp:2772 legoapi/characters.cpp:2097 legoapi/creature.c:1879 legoapi/camera.c:1850 legoapi/charconfig.c:1174 legoapi/gameanim.c:772 legoapi/gameobjects.c:765 legoapi/netplay.c:523 legoapi/hint.c:118 legoapi/episodeIII.c:70 legoapi/supportall.c:60 legogame/game.cpp:42 legoapi/player_set_hp_pc.c:39
+0x421050,0x4234aa,src/legoapi/Refpack.cpp,legoapi,android,low,,12,9166,9166,487,1321,0,legoapi/control_setup.cpp:9146 legoapi/player_device_port_pc.c:20
+0x4234b0,0x4238cb,src/legoapi/NuRenderDevice_gles2.cpp,legoapi,android,low,,5,976,976,627,20,20,legoapi/customise.c:596 legoapi/control_setup.cpp:380
+0x4238d0,0x426b06,src/legoapi/customise.c,legoapi,android,low,,22,12610,12610,1532,753,2,legoapi/customise.c:12372 legoapi/characters.cpp:146 legoapi/hub.cpp:92
+0x426b30,0x426f56,src/legoapi/zipup.c,legoapi,android,low,,5,1019,1019,499,73,70,legoapi/batarang.cpp:624 legoapi/thermaldetonators.c:374 legoapi/customise.c:21
+0x426f60,0x4277a2,src/legoapi/detonator.c,legoapi,file,medium,,4,2096,2096,372,24,0,legoapi/batarang.cpp:2096
+0x4277d0,0x427ac9,src/legoapi/startup.c,legoapi,file,medium,,2,685,685,164,29,0,legoapi/players_dropin.cpp:685
+0x427ad0,0x427ebf,src/legoapi/dropinout.c,legoapi,file,medium,,5,980,980,0,191,103,legoapi/menu_pause.cpp:495 legoapi/dropinout.c:382 legoapi/thermaldetonators.c:103
+0x427ec0,0x428930,src/legoapi/startup.c,legoapi,file,medium,,1,2672,2672,0,387,0,legoapi/players_dropin.cpp:2672
+0x428930,0x42f461,src/legogame/game.cpp,legogame,marker,high,fabs 28,95,26621,26621,5965,2513,727,legogame/game.cpp:16885 legoapi/parts.c:3826 legoapi/cutscene_hooks.c:2366 legoapi/shop_completion.cpp:1078 legoapi/fighting.c:569 legoapi/characters.cpp:489 legoapi/menu.c:410 legoapi/gameai.c:375 legoapi/gamestatus.c:248 legoapi/gameobjects.c:191 legoapi/shard.c:137 legoapi/hub.cpp:47
+0x42f4a0,0x430117,src/legoapi/game_deb.c,legoapi,file,medium,,8,3165,3165,1077,434,216,legoapi/ripples.c:1721 legoapi/supportall.c:1188 legoapi/lighting.c:256
+0x430120,0x4398b4,src/legoapi/game_obj.c,legoapi,marker,high,ret fabs 54 28,41,38274,38274,3695,3049,1446,legoapi/gameobjects.c:17942 legoapi/hits.c:9095 legoapi/parts_breakup.cpp:7709 legoapi/panel.c:1595 legoapi/creature.c:620 legoapi/players.c:611 legoapi/playeritems.c:306 legoapi/collection_render.cpp:227 legoapi/legoapi_misc.c:100 legoapi/parts.c:69
+0x4398c0,0x43ff91,src/legoapi/gameai.c,legoapi,marker,high,ret 28,65,25683,25683,7430,3425,1133,legoapi/gameobjects.c:17493 legoapi/gameai.c:3953 legoapi/aipathcnxhelper.c:1921 legoapi/simpletons.c:1125 legoapi/gizmo_add_callbacks_pc.c:429 legoapi/aiactions_transfer.cpp:321 legoapi/gizmo_registry_pc.c:231 legoapi/creature.c:101 legoapi/ai_sys.c:97 legoapi/gizmo_output_callbacks_pc.c:12
+0x43ffa0,0x457e93,src/gameapi/gameaiscript.c,gameapi,marker,high,ret fabs 54 28,442,94194,94194,19334,9660,0,gameapi/gameaiscript.c:93968 legoapi/ai_sys.c:226
+0x457ec0,0x458461,src/legoapi/gamehint.c,legoapi,file,medium,,4,1396,1396,179,142,0,legoapi/render.c:1250 legoapi/hint.c:145 legoapi/status_alternate_pc.cpp:1
+0x458470,0x45e345,src/legoapi/status_alternate_pc.cpp,legoapi,marker,high,fabs 54 28,43,23933,23933,6870,979,0,legoapi/status_alternate_pc.cpp:23933
+0x45e350,0x46433e,src/legoapi/gamestatus_lsw.cpp,legoapi,marker,high,fabs 54 28,58,24019,24019,4720,1196,389,legoapi/screen.cpp:15599 legoapi/render.c:7295 legoapi/status_lsw_updates_pc.c:825 legoapi/status_prompt_render_pc.c:206 legoapi/status_lsw_registration_pc.c:94
+0x464360,0x465dcc,src/legoapi/gizactions.c,legoapi,file,medium,,24,6601,6601,4048,170,95,legoapi/gizactions.cpp:3935 gameapi/gameaiactions.c:1867 legoapi/gizobstacle.c:799
+0x465dd0,0x4667eb,src/legoapi/gizbombgen.c,legoapi,marker,high,ret 28,18,2194,2194,1171,167,44,legoapi/gizobstacle.c:1371 legoapi/gizmo_registry_pc.c:329 legoapi/gizmo_lifecycle_pc.c:183 legoapi/gizmo_add_callbacks_pc.c:158 legoapi/gizmo_progress_pc.c:153
+0x4667f0,0x46a44b,src/legoapi/gizforce.c,legoapi,marker,high,ret 28,58,14883,14883,5160,1613,97,legoapi/gizforce.c:12803 legoapi/gizmo_alternate_registration_pc.cpp:488 legoapi/gizmo_progress_pc.c:409 legoapi/gizmo_registry_pc.c:367 legoapi/gizmo_lifecycle_pc.c:320 legoapi/gizmo_lsw_registration_pc.cpp:267 legoapi/gizmo_add_callbacks_pc.c:127 legoapi/hint.c:102
+0x46a450,0x46a868,src/legoapi/gizgame.c,legoapi,file,medium,,4,1026,1026,40,98,0,legoapi/gizmo.c:1026
+0x46a8d0,0x46d7e2,src/legoapi/gizmopickup.c,legoapi,file,medium,,47,11658,11658,2747,1401,569,legoapi/parts.c:6943 legoapi/gizmopickups.c:3147 legoapi/gamemessages.c:704 legoapi/minikits.c:436 legoapi/playeritems.c:288 legoapi/gameobjects.c:140
+0x46d7f0,0x46f88a,src/legoapi/gizpanel.c,legoapi,marker,high,ret 28,28,7987,7987,1316,797,149,legoapi/gizpanel_pc.c:6483 legoapi/hint.c:436 legoapi/gizmo_registry_pc.c:328 legoapi/aiactions_transfer.cpp:264 legoapi/gizmo_progress_pc.c:206 legoapi/gizmo_lifecycle_pc.c:164 legoapi/gizmo_add_callbacks_pc.c:106
+0x46f890,0x4701c9,src/legoapi/giztorpedo.c,legoapi,marker,high,ret 28,17,2126,2126,868,199,71,legoapi/giztorpedo.c:1140 legoapi/grabber.c:377 legoapi/gizmo_registry_pc.c:279 legoapi/gizmo_lifecycle_pc.c:174 legoapi/gizmo_add_callbacks_pc.c:156
+0x4701d0,0x47276c,src/legoapi/grabber.c,legoapi,android,low,,20,9499,9499,5079,92,0,legoapi/grabber.c:9224 legoapi/grabber_pc.c:275
+0x472770,0x47482a,src/legoapi/hatmachine.cpp,legoapi,marker,high,ret fabs 54 28,24,8086,8086,826,707,0,legoapi/hatmachine.cpp:8086
+0x474830,0x481a6f,src/legoapi/hub.cpp,legoapi,marker,high,ret fabs 23 28,104,52523,52523,7018,6680,1496,legoapi/hub.cpp:40660 legoapi/indy_special.c:5299 legoapi/indy_ai.c:2840 legoapi/arcade.c:1926 legoapi/level_fixup.cpp:331 legoapi/aiactions_transfer.cpp:310 legoapi/gizmo.c:269 legoapi/hint.c:245 legoapi/aicapabilities_pc.c:152 legoapi/hub_model.c:151 legoapi/doors.c:147 legoapi/gameai.c:144 legoapi/menu.c:49
+0x481a70,0x482bf1,src/legoapi/ledge.cpp,legoapi,marker,high,ret fabs 28,20,4075,4075,889,258,0,legoapi/ledges.cpp:4075
+0x482c00,0x486f1a,src/legoapi/legoapi_status.cpp,legoapi,marker,high,ret 54 28,29,16831,16831,852,2001,977,legoapi/render.c:9880 legoapi/screen.cpp:5769 legoapi/status_prompt_render_pc.c:1124 legoapi/status_icons_pc.c:58
+0x486f20,0x488e82,src/legoapi/legoapi_tag.c,legoapi,marker,high,ret 28,17,7858,7858,3092,271,52,legoapi/gameobjects.c:7579 legoapi/tagging.c:278 legoapi/render.c:1
+0x488e90,0x48c806,src/legoapi/levels.cpp,legoapi,marker,high,ret 28,32,14370,14370,4568,1429,1144,legoapi/world.cpp:6188 legoapi/areas.cpp:4999 legoapi/characters.cpp:2186 legoapi/leveldata.c:482 legoapi/boss.c:272 legoapi/level_lifecycle.c:217 legoapi/level_area_load.c:26
+0x48c810,0x48cdfa,src/legoapi/game.c,legoapi,file,medium,,44,1267,1267,1267,0,0,legoapi/level_area_load.c:1267
+0x48ce00,0x48fc27,src/legoapi/levels.c,legoapi,file,medium,,13,11764,11764,858,736,336,legoapi/level_fixup.cpp:6860 legoapi/world.cpp:3751 legoapi/areas.cpp:631 legogame/startup.cpp:402 legogame/game.cpp:120
+0x48fc30,0x491360,src/legoapi/lever.c,legoapi,marker,high,ret fabs 28,27,5644,5644,994,741,0,legoapi/lever.c:5644
+0x491380,0x491b83,src/legoapi/lsw_hub_ai.c,legoapi,file,medium,,10,1882,1882,611,268,0,legoapi/lsw_hub_ai.c:1882
+0x491b90,0x493c2c,src/batman.cpp,src,marker,high,ret ret 28,4,8219,8219,1172,945,0,batman.cpp:8219
+0x493c30,0x496e11,src/legoapi/menu.cpp,legoapi,marker,high,fabs 28,42,12172,12172,2187,1379,889,legoapi/menu_titles.cpp:3576 legoapi/menu.c:2759 legoapi/menu_pause.cpp:2711 legoapi/menus.cpp:1440 legoapi/menu_extras.cpp:1068 legoapi/shop_exit.cpp:529 legoapi/doors.c:89
+0x496e20,0x497c05,src/legoapi/missions.cpp,legoapi,marker,high,fabs 28,10,3415,3415,438,349,127,legoapi/menus.cpp:2425 legoapi/missions.c:990
+0x497c10,0x4ab892,src/legoapi/move.c,legoapi,marker,high,ret fabs,178,79074,79074,19132,5621,3524,legoapi/move.c:49388 legoapi/character_animation.c:7068 legoapi/gameobjects.c:5646 legoapi/playercombat.cpp:3134 legoapi/players.c:2348 legoapi/speederchase.c:1959 legoapi/gameai.c:1300 legoapi/episodeV.c:1142 legoapi/pushing.cpp:1057 legoapi/characters.cpp:1007 legoapi/specialsfx.c:895 legoapi/bolt_foundation_callbacks.cpp:780 legoapi/tubes.c:733 legoapi/gizforce.c:593 legoapi/carrying.c:373 legoapi/supportall.c:350 legoapi/parts.c:348 legoapi/utilities.c:329 legoapi/jumping.c:194 legoapi/hint.c:111 legoapi/gizmoblowups.c:107 legoapi/collection.c:87 legoapi/gizpanel_pc.c:52 legoapi/fighting.c:49 legoapi/gizmo.c:24
+0x4ab8a0,0x4ab908,src/legoapi/episodeI.c,legoapi,file,medium,,1,104,104,104,0,0,legoapi/episodeI.c:104
+0x4ab910,0x4aba92,src/legoapi/gameanim.c,legoapi,file,medium,,1,386,386,0,41,0,legoapi/character_animation.c:386
+0x4abaa0,0x4abaac,src/legoapi/speederchase.c,legoapi,android,low,,1,12,12,12,0,0,legoapi/character_animation.c:12
+0x4abab0,0x4abab3,src/legoapi/shop.c,legoapi,file,medium,,1,3,3,3,0,0,legoapi/hint.c:3
+0x4abac0,0x4b70ec,src/legoapi/move.c,legoapi,file,medium,,37,46375,46375,4464,3035,420,legoapi/move.c:42252 legoapi/gameobjects.c:3904 legoapi/players.c:111 legogame/game.cpp:108
+0x4b7120,0x4bc29b,src/legoapi/panel.cpp,legoapi,file,medium,,27,20613,20613,1395,2081,516,legoapi/hub.cpp:15697 legoapi/panel.c:2385 legogame/game.cpp:1704 legoapi/minikits.c:816 legoapi/gameobjects.c:11
+0x4bc2f0,0x4bcac6,src/legoapi/pursuit.c,legoapi,file,medium,,13,1893,1893,1893,0,0,legoapi/pursuit.c:1893
+0x4bcaf0,0x4bce21,src/legoapi/radio.c,legoapi,file,medium,,3,805,805,31,29,0,legoapi/radio.cpp:805
+0x4bce30,0x4bdca4,src/legoapi/securitydoor.c,legoapi,marker,high,ret 28,24,3444,3444,1207,131,0,legoapi/securitydoors_pc.c:3444
+0x4bdcd0,0x4c009d,src/legoapi/sfx.c,legoapi,file,medium,,3,9143,9143,298,343,0,legoapi/sfx_level.c:8845 legogame/game.cpp:298
+0x4c00c0,0x4c00fc,src/legoapi/shadow.c,legoapi,file,medium,,1,60,60,60,0,0,legoapi/shadow.c:60
+0x4c0100,0x4c11ba,src/legoapi/shard.c,legoapi,marker,high,ret 28,26,3654,3654,1387,213,16,legoapi/shards_pc.c:2445 legoapi/shard.c:1086 legoapi/shadow.c:123
+0x4c11c0,0x4c7879,src/legoapi/shop.c,legoapi,android,low,,32,25792,25792,2875,2216,0,legoapi/shard.c:25792
+0x4c7880,0x4c8bad,src/legoapi/signal.c,legoapi,marker,high,ret 28,25,4660,4660,864,388,1,legoapi/signal_reset_pc.c:3911 legoapi/move.c:749
+0x4c8bd0,0x4c9fa7,src/legoapi/speederchase.cpp,legoapi,file,medium,,20,4669,4669,1236,349,109,legoapi/speederchase.c:1977 legoapi/speederchase_pc.c:1231 legoapi/perm.c:575 legogame/startup.cpp:437 legoapi/shard.c:266 nu2api/nuprim.c:130 legoapi/control_setup.cpp:53
+0x4c9fb0,0x4cad84,src/legogame/startup.c,legogame,android,low,,2,3536,3536,0,523,0,legogame/startup.cpp:3536
+0x4cadb0,0x4cc8bc,src/legoapi/starwars_gameai.c,legoapi,file,medium,,16,6822,6822,1967,844,78,legoapi/starwars_prepare_pc.c:6054 legoapi/aiactions_transfer.cpp:485 legoapi/aicapabilities_pc.c:283
+0x4cc8e0,0x4cca34,src/legoapi/suit.c,legoapi,file,medium,,5,279,279,279,0,0,legoapi/suit.c:279
+0x4cca50,0x4cdd0c,src/legoapi/techno.c,legoapi,marker,high,ret ret 28,30,4485,4485,2558,207,0,legoapi/techno.c:4484 legoapi/techno_diagnostic_pc.c:1
+0x4cdd10,0x4cf291,src/legoapi/teleport.cpp,legoapi,marker,high,ret fabs 28,29,5222,5222,1291,564,146,legoapi/teleport_motion.cpp:3449 legoapi/gizteleports.c:1489 legoapi/hint.c:147 legoapi/gizmo_add_callbacks_pc.c:112 legoapi/gizmo_registry_pc.c:25
+0x4cf2a0,0x4cf653,src/legoapi/text.c,legoapi,marker,high,ret 28,5,850,850,850,0,0,legoapi/text.c:850
+0x4cf680,0x4d0646,src/legoapi/thermaldetonators.c,legoapi,file,medium,,8,3979,3979,1861,433,236,legoapi/thermaldetonators_pc.c:2914 legoapi/thermaldetonators.c:727 legoapi/hint.c:214 legoapi/text.c:124
+0x4d0650,0x4d1e70,src/legoapi/tightrope.cpp,legoapi,marker,high,ret fabs 28,24,5731,5731,1727,792,313,legoapi/tightrope.cpp:3072 legoapi/tightropes_pc.c:2275 legoapi/players.c:384
+0x4d1e70,0x4d41b7,src/legoapi/torpedo.c,legoapi,marker,high,ret fabs 54,25,8491,8491,2219,384,0,legoapi/torpedo.c:8230 legoapi/giztorpedo.c:133 legoapi/bolt_foundation_callbacks.cpp:128
+0x4d41c0,0x4d4cb2,src/legoapi/traffic.c,legoapi,marker,high,ret 28,11,2452,2452,169,463,0,legoapi/traffic.c:2452
+0x4d4ce0,0x4d5593,src/legoapi/transform.cpp,legoapi,file,medium,,5,2209,2209,752,103,0,legoapi/transform.c:2142 legogame/game.cpp:67
+0x4d55a0,0x4d8185,src/legoapi/zipup.c,legoapi,marker,high,ret fabs,32,10866,10866,3436,758,0,legoapi/zipup.c:10725 legoapi/hint.c:141
+0x4d8190,0x4ddc7f,src/legoapi/episodeI.c,legoapi,marker,high,ret 28,75,22023,22023,9976,1023,188,legoapi/episodeI.c:20969 legoapi/speederchase.c:1054
+0x4ddc80,0x4e2cce,src/legoapi/episodeII.c,legoapi,marker,high,ret 28,54,20035,20035,7693,334,26,legoapi/episodeII.c:19580 legoapi/cutscene_hooks.c:228 legoapi/episodeI.c:227
+0x4e2cf0,0x4e4a14,src/legoapi/episodeIII.c,legoapi,file,medium,,42,7066,7066,6520,103,103,legoapi/episodeIII.c:6258 legoapi/episodeII.c:808
+0x4e4a40,0x4e5ea1,src/legoapi/episodeIV.c,legoapi,file,medium,,35,4970,4970,3152,135,0,legoapi/episodeIV.c:4970
+0x4e5f10,0x4e9f0c,src/legoapi/episodeV.c,legoapi,file,medium,,76,15729,15729,9262,1079,1074,legoapi/episodeIV.c:6981 legoapi/minikits.c:6142 legoapi/episodeV.c:1260 legoapi/trooper_cannons_pc.c:1069 legoapi/characters.cpp:277
+0x4e9f30,0x4eead7,src/legoapi/episodeVI.c,legoapi,file,medium,,45,19061,19061,7251,1217,229,legoapi/episodeVI.c:15292 legoapi/episode_vi.c:2876 legoapi/minikits.c:893
+0x4eeae0,0x4ef6b4,src/nu2api/rope.c,nu2api,marker,high,ret 28,9,1753,1747,87,443,114,nu2api/nualloc.c:1019 legoapi/grapples.cpp:641 nu2api/nucore_includes.c:84 nu2api/nudebug.c:2 legoapi/episodeVI.c:1
+0x4ef6e0,0x4fe623,src/nu2api/nucore_includes.c,nu2api,android,low,,317,47168,47168,23731,2545,0,nu2api/nucore_includes.c:47166 nu2api/nudebug.c:2
+0x4fe640,0x4feb81,src/nu2api/nuvideo_android.c,nu2api,marker,high,ret ret 28,13,790,533,361,33,33,nu2api/nuvideo.c:288 nu2api/nuerror.c:242 nu2api/nuapi.c:2 nu2api/nufile_pc.c:1
+0x4feb90,0x4ff11f,src/nu2api/bgproc_android.c,nu2api,file,medium,,12,1195,1195,322,182,0,nu2api/bgproc.c:1164 nu2api/nutimebar.c:31
+0x4ff120,0x4ff29d,src/nu2api/nufile.c,nu2api,file,medium,,3,353,353,18,69,0,nu2api/nufile_pc.c:353
+0x4ff2f0,0x4ff95e,src/nu2api/nufile_android.c,nu2api,file,medium,,11,1472,1472,295,303,89,nu2api/nufile_pc.c:1055 nu2api/nupsfile.c:371 gameapi/shop_persistence.cpp:46
+0x4ff970,0x4ffb13,src/nu2api/nufile.c,nu2api,file,medium,,7,390,390,73,11,11,nu2api/nufile_pc.c:230 nu2api/nuthread.c:160
+0x4ffb20,0x4ffc15,src/nu2api/nutime_android.c,nu2api,file,medium,,3,241,241,130,11,0,nu2api/nutimebar.c:212 nu2api/nuthread.c:29
+0x4ffc20,0x4ffef4,src/nu2api/nufile.c,nu2api,file,medium,,3,715,715,90,128,0,nu2api/nufile_pc.c:715
+0x4fff00,0x508f2e,src/legoapi/gcutscn.c,legoapi,marker,high,ret ret ret fabs 54 28 95,131,32979,32979,8196,3522,1654,legoapi/cutscene_lifecycle.c:15890 legoapi/gcutscn.c:9781 legoapi/cutscene_hooks.c:4080 legoapi/gcutscn_locators.c:3225 nu2api/nudebug.c:3
+0x508f30,0x512845,src/gameapi/gamemenuall.cpp,gameapi,marker,high,ret ret 28,154,34860,34860,16639,3398,2600,gameapi/apisave.c:11456 legoapi/text.c:9553 legoapi/menu.c:7127 legoapi/menu_video.cpp:4385 legoapi/objectsall.c:1065 legoapi/control_setup.cpp:468 legoapi/hub.cpp:388 legoapi/menu_pause.cpp:234 legoapi/menus.cpp:110 nu2api/textinput_labels_pc.c:69 lib/libcmt.lib/00832:cvt.obj:5
+0x512850,0x53d129,src/gameapi/aisysall.c,gameapi,marker,high,ret ret ret fabs 54 22,547,168210,168210,34365,15662,0,gameapi/aisysall.c:168207 gameapi/aiscript_diagnostics.c:3
+0x53d130,0x53d1a9,src/gameapi/nufilebase.cpp,gameapi,marker,high,ret ret 28,4,33,33,33,0,0,gameapi/message.cpp:32 gameapi/aisysall.c:1
+0x53d1b0,0x53d612,src/gameapi/Transporter.cpp,gameapi,android,low,,20,444,444,378,8,0,gameapi/message.cpp:385 legoapi/bolts.cpp:59
+0x53d640,0x53d667,src/gameapi/nusound_memorymanager.cpp,gameapi,android,low,,1,39,39,39,0,0,gameapi/message.cpp:39
+0x53d670,0x53db4a,src/gameapi/Ftp.cpp,gameapi,android,low,,4,1221,1221,559,15,0,gameapi/message.cpp:1221
+0x53db50,0x543e9a,src/legoapi/socksysall.c,legoapi,marker,high,ret ret fabs 54,117,23447,23447,5514,2587,210,legoapi/socksys.c:21685 gameapi/shop_persistence.cpp:1154 gameapi/saveload.cpp:482 legoapi/aiactions_transfer.cpp:71 legoapi/menu_pause.cpp:54 legoapi/socksys_diagnostic_pc.c:1
+0x543ed0,0x545529,src/nu2api/nubridge_android.c,nu2api,marker,high,ret ret fabs,7,5555,5555,777,709,0,nu2api/nubridge.c:5555
+0x545540,0x546fbc,src/gamelib/nuobject_android.c,gamelib,file,medium,,16,6493,6493,1633,958,116,gamelib/nuwind_groups.c:4471 nu2api/nufadeobj.c:2022
+0x546fd0,0x54705e,src/nu2api/glutils.c,nu2api,file,medium,,1,142,142,0,39,0,nu2api/glutils.c:142
+0x547060,0x5476b5,src/nu2api/listman.c,nu2api,file,medium,,8,750,750,76,115,0,nu2api/nulst.c:750
+0x5476e0,0x54777c,src/legogame/startup.c,legogame,file,medium,,2,147,147,147,0,0,legogame/startup.cpp:147
+0x547780,0x5477d7,src/legogame/characters.c,legogame,android,low,,1,87,87,87,0,0,legogame/startup.cpp:87
+0x5477e0,0x547896,src/legoapi/collection.c,legoapi,marker,high,fabs 28,2,104,104,0,43,0,legoapi/gameaudio.c:104
+0x5478a0,0x548f85,src/legoapi/audio.cpp,legoapi,android,low,,43,5400,5400,1405,811,389,legoapi/sfx.cpp:2480 legogame/game.cpp:1091 legoapi/gameaudio.c:680 nu2api/nusound.c:532 legoapi/specialsfx.c:354 legoapi/players.c:183 legoapi/sfx_level.c:79 legoapi/perm.c:1
+0x548fb0,0x549041,src/legoapi/hub.c,legoapi,file,medium,,2,143,143,143,0,0,legoapi/timing.c:143
+0x549050,0x5494c7,src/legoapi/timing.c,legoapi,android,low,,3,1136,1136,0,154,0,legoapi/timing.c:1136
+0x5494d0,0x54a54c,src/legoapi/camera.c,legoapi,marker,high,fabs,18,3888,3888,2249,199,72,legoapi/camera.c:3558 legoapi/simpletons.c:286 nu2api/nuvideo.c:44
+0x54a550,0x54b50c,src/legoapi/gamepads.c,legoapi,marker,high,ret fabs 28,22,3637,3637,215,557,148,legoapi/gamepads.c:1761 legoapi/input.cpp:786 legoapi/hits.c:384 legoapi/menu_pause.cpp:249 nu2api/nuvideo.c:236 legoapi/legoapi_misc.c:221
+0x54b510,0x54cd2d,src/legoapi/text.c,legoapi,marker,high,ret 28,21,5990,5990,2100,262,0,legoapi/text.c:5990
+0x54cd30,0x54f957,src/legoapi/grapples.cpp,legoapi,marker,high,ret fabs 28,39,10952,10952,1329,1548,214,legoapi/grapples.cpp:9688 legoapi/gizmo_registry_pc.c:329 legoapi/players.c:300 legoapi/indy_support.c:251 legoapi/gizmo_progress_pc.c:151 legoapi/gizmo_add_callbacks_pc.c:100 legoapi/gizmo_lifecycle_pc.c:80 legoapi/gizmo_output_callbacks_pc.c:32 legoapi/move.c:21
+0x54f960,0x5536fe,src/legoapi/utilities.c,legoapi,marker,high,ret ret fabs 54 28 95,59,13763,13763,6926,1031,740,legoapi/utilities.c:5097 legoapi/edsplines.c:4228 legoapi/render.c:1954 legoapi/gameanim.c:543 legoapi/gameobjects.c:531 legoapi/panel.c:348 legoapi/game_score.c:242 legoapi/texanim_scripts.c:203 legoapi/shadow.c:181 legoapi/screen.cpp:107 legoapi/transform.c:81 legoapi/players.c:75 legoapi/world.cpp:73 legoapi/hits.c:68 qrand.c:31 nu2api/nudebug.c:1
+0x553700,0x557088,src/legoapi/gizspinner.cpp,legoapi,marker,high,ret ret fabs 23 28 162,42,13924,13924,2072,1853,0,legoapi/gizspinner.cpp:13924
+0x557090,0x55956e,src/legoapi/gizobstacle.c,legoapi,marker,high,ret 28,46,9007,9007,2331,1291,0,legoapi/gizobstacle.c:9007
+0x559570,0x55b172,src/legoapi/gizmo.c,legoapi,marker,high,ret ret 28,42,6404,6404,1790,643,68,legoapi/gizmo.c:5959 legoapi/areas.cpp:244 legoapi/sfx.cpp:105 legoapi/world.cpp:94 legoapi/render.c:2
+0x55b1c0,0x55bab1,src/legoapi/characters.cpp,legoapi,file,medium,,15,2102,2102,648,242,67,legoapi/characters.cpp:880 legoapi/render.c:641 legoapi/menu.c:432 legoapi/parts_breakup.cpp:80 legoapi/areas.cpp:69
+0x55bac0,0x55c0ec,src/legoapi/charconfig.c,legoapi,file,medium,,11,1491,1491,954,98,37,legoapi/charconfig.c:900 editor/edtoolsall.c:193 legoapi/move.c:187 legoapi/gameobjects.c:82 legoapi/aiactions_transfer.cpp:81 legoapi/charcategory_init_pc.c:48
+0x55c0f0,0x55c8e6,src/legoapi/gamestructure.cpp,legoapi,marker,high,ret 28,13,1922,1403,672,110,71,legoapi/gamestructure.cpp:584 legoapi/menu_pause.cpp:550 legoapi/menu.c:143 legoapi/menus.cpp:126
+0x55c950,0x55dd9f,src/legoapi/gameobjects.c,legoapi,file,medium,,18,5076,5076,1683,160,10,legoapi/gameobjects.c:3733 legoapi/move.c:1198 legoapi/players.c:145
+0x55ddc0,0x55f3a7,src/legoapi/players.c,legoapi,file,medium,,19,5186,5186,719,675,46,legoapi/players.c:4982 legoapi/move.c:85 legoapi/charconfig.c:71 legoapi/aicapabilities_pc.c:48
+0x55f3b0,0x55f95a,src/legoapi/worldinfo.cpp,legoapi,marker,high,ret 28,12,1310,1310,1178,4,0,legoapi/world.cpp:1051 legoapi/levelstreaming.c:186 legoapi/shadowmap.cpp:73
+0x55f960,0x55ffad,src/legoapi/levels.c,legoapi,file,medium,,8,1538,1538,1538,0,0,legoapi/gizportal.c:619 legoapi/world.cpp:393 legoapi/objectsall.c:321 legoapi/gameai.c:205
+0x55ffb0,0x560ab2,src/legoapi/worldinfo.c,legoapi,android,low,,6,2781,2781,133,200,42,legoapi/world.cpp:1794 legoapi/levelstreaming.c:987
+0x560ac0,0x561b7e,src/legoapi/gamemessages.c,legoapi,marker,high,fabs 54 28,10,4108,4108,716,535,142,legoapi/gamemessages.c:2873 legoapi/render.c:1235
+0x561ba0,0x56448f,src/legoapi/jumping.cpp,legoapi,file,medium,,34,10232,10232,1114,1522,305,legoapi/move.c:7049 legoapi/jumping.c:2586 legoapi/fade.cpp:291 legoapi/specialmoves.c:220 legoapi/carrying.c:86
+0x5644c0,0x5665f9,src/legoapi/screen.c,legoapi,file,medium,,31,8226,8226,3505,214,130,legoapi/screen.cpp:3874 legoapi/render.c:2709 legoapi/finish_loop.cpp:1014 legoapi/characters.cpp:475 legoapi/camera.c:154
+0x566600,0x56b6ea,src/legoapi/gizmoblowups.c,legoapi,marker,high,ret 28,60,19839,19839,4698,1501,11,legoapi/gizmoblowups.c:18986 legoapi/gizmo_registry_pc.c:347 legoapi/gizmo_progress_pc.c:292 legoapi/gizmo_add_callbacks_pc.c:139 legoapi/gizmo_output_callbacks_pc.c:51 legoapi/finish_loop.cpp:24
+0x56b6f0,0x56cd82,src/legoapi/climbing.c,legoapi,marker,high,fabs 28,15,5608,5608,1422,271,141,legoapi/move.c:4399 legoapi/indy_support.c:704 legoapi/players.c:435 legoapi/ai_sys.c:70
+0x56cdb0,0x56d2ec,src/legoapi/guidelines.c,legoapi,file,medium,,17,1196,1196,665,127,0,legoapi/guidelines_pc.c:1017 legoapi/indy_support.c:179
+0x56d2f0,0x56dfbb,src/legoapi/tubes.c,legoapi,marker,high,ret fabs 28,25,3004,3004,2115,47,0,legoapi/tubes.c:3004
+0x56e000,0x56e5ad,src/legoapi/cheats.c,legoapi,file,medium,,15,1162,1162,716,109,8,legoapi/cheats.c:988 legoapi/areas.cpp:114 legoapi/hub.cpp:60
+0x56e5d0,0x56eef2,src/legoapi/explosions.c,legoapi,file,medium,,6,2300,2300,396,252,0,legoapi/explosions.c:2300
+0x56ef00,0x571825,src/legoapi/gizmopickups.c,legoapi,marker,high,ret 23 28,46,9957,9957,2382,1082,46,legoapi/gizmopickups.c:8603 legoapi/gizmo_registry_pc.c:342 legoapi/collection.c:321 legoapi/gizmo_progress_pc.c:263 legoapi/parts.c:129 legoapi/gizmo_add_callbacks_pc.c:110 legoapi/world.cpp:104 legoapi/panel.c:78 legoapi/gizmo_output_callbacks_pc.c:6 legoapi/gizmo_lifecycle_pc.c:1
+0x571850,0x57233a,src/legoapi/parts.c,legoapi,file,medium,,14,2705,2705,814,251,63,legoapi/parts.c:1927 legoapi/game_deb.c:401 legoapi/parts_load.c:204 legoapi/parts_breakup.cpp:173
+0x572360,0x572aba,src/legoapi/surfaces.c,legoapi,file,medium,,10,1822,1822,314,200,91,legoapi/gameobjects.c:1307 legoapi/surfaces_pc.c:456 legoapi/players.c:59
+0x572ac0,0x574dbb,src/legoapi/areas.cpp,legoapi,marker,high,ret ret 28,19,8679,8679,1711,1170,0,legoapi/areas.cpp:8678 legoapi/areas_diagnostic_pc.c:1
+0x574de0,0x574e88,src/legoapi/text.c,legoapi,file,medium,,3,164,164,108,4,0,legoapi/text.c:104 legoapi/menu_titles.cpp:60
+0x574e90,0x57631e,src/legoapi/doors.c,legoapi,marker,high,ret fabs 28,32,4967,4967,1531,225,0,legoapi/doors.c:4967
+0x576340,0x576bb3,src/legoapi/hint.c,legoapi,android,low,,19,1805,1805,676,132,6,legoapi/hint.c:1526 legoapi/doors.c:279
+0x576bc0,0x578718,src/legoapi/minicamcut.c,legoapi,marker,high,ret ret 54 28,11,6750,6750,1886,675,213,legoapi/minicamcut.c:4828 legoapi/camera.c:1922
+0x578740,0x5787c4,src/legoapi/things.c,legoapi,file,medium,,3,117,117,65,5,5,legoapi/leveldata.c:65 legoapi/simpletons.c:52
+0x578890,0x57a80c,src/legoapi/levels.c,legoapi,marker,high,ret ret 28,78,7335,7335,4179,707,402,legoapi/level_area_load.c:4111 legoapi/levelobjects.c:1269 legoapi/edsplines.c:519 legoapi/level_lifecycle.c:497 legoapi/newlevels.c:316 legoapi/sfx.cpp:306 legoapi/leveldata.c:176 legoapi/areas.cpp:140 legoapi/levels_diagnostic_pc.c:1
+0x57a810,0x57f647,src/legoapi/cutscenes.c,legoapi,marker,high,ret ret fabs 28,85,19184,19184,2559,3243,136,legoapi/cutscene_runtime.cpp:17323 legoapi/gcutscn.c:1678 legoapi/doors.c:102 legoapi/aiactions_transfer.cpp:80 nu2api/nudebug.c:1
+0x57f650,0x580e47,src/legoapi/bolts.cpp,legoapi,marker,high,ret 54,54,5533,5533,3190,192,0,legoapi/bolts.cpp:5364 gamelib/net/NetworkObjectManager.cpp:114 gameapi/message.cpp:55
+0x580e50,0x580ec8,src/gamelib/net/nufile_android.cpp,gamelib,file,medium,,1,120,120,120,0,0,gamelib/net/NetworkObjectManager.cpp:120
+0x580ed0,0x5811ef,src/legoapi/NuFileDeviceAndroidAPK.cpp,legoapi,android,low,,3,785,785,785,0,0,legoapi/bolts.cpp:668 gamelib/net/NetworkObjectManager.cpp:117
+0x5811f0,0x584592,src/legoapi/bolts.c,legoapi,android,low,,9,13141,13141,433,920,0,legoapi/bolts.cpp:13141
+0x5845a0,0x589f33,src/legoapi/charconfig.c,legoapi,marker,high,ret ret fabs 54 28,215,20882,20882,6858,3282,0,legoapi/charconfig.c:20881 legoapi/charconfig_diagnostic_pc.c:1
+0x589f60,0x58a504,src/legoapi/charshadows.c,legoapi,file,medium,,3,1428,1428,26,169,0,legoapi/shadow.c:1428
+0x58a510,0x58aadc,src/legoapi/missions.c,legoapi,marker,high,ret 28,8,1391,1391,81,193,103,legoapi/mission.c:955 legoapi/missions.c:436
+0x58aae0,0x58b34c,src/legoapi/specialmoves.c,legoapi,marker,high,ret 28,12,1990,1990,968,134,28,legoapi/specialmoves.c:1817 legoapi/players.c:172 legoapi/specialmoves_diagnostic_pc.c:1
+0x58b350,0x58b6fa,src/legoapi/shovesys.c,legoapi,marker,high,ret fabs 28,3,844,844,11,207,0,legoapi/shovesys.c:844
+0x58b720,0x58b8aa,src/legoapi/hits.c,legoapi,file,medium,,5,357,357,290,2,0,legoapi/hits.c:138 legoapi/playeritems.c:121 legoapi/episode_helpers.c:58 legoapi/gameobjects.c:40
+0x58b8d0,0x58bc38,src/legoapi/charplatforms.c,legoapi,file,medium,,4,849,849,174,88,0,legoapi/charplatforms_pc.c:849
+0x58bc60,0x58bed4,src/legoapi/sfx.c,legoapi,file,medium,,1,628,628,628,0,0,legoapi/sfx.cpp:628
+0x58bee0,0x58ceeb,src/legoapi/move.c,legoapi,file,medium,,5,4076,4076,290,123,0,legoapi/character_joints_pc.c:3786 legoapi/move.c:290
+0x58cef0,0x58d311,src/legoapi/characters.c,legoapi,android,low,,3,1034,1034,84,141,0,legoapi/character_joints_pc.c:1034
+0x58d340,0x58e35e,src/legoapi/climbing.c,legoapi,file,medium,,17,3999,3999,523,582,273,legoapi/playeritems.c:2836 legoapi/players.c:661 legoapi/speederchase.c:229 legoapi/playeractions.c:154 legoapi/sfx.cpp:119
+0x58e360,0x58e8e2,src/legoapi/fighting.c,legoapi,file,medium,,4,1290,1290,160,182,8,legoapi/fighting.c:1102 legoapi/move.c:188
+0x58e8f0,0x5925b9,src/legoapi/gizbuildit.c,legoapi,marker,high,ret fabs 54 28,45,15059,15059,2320,1595,322,legoapi/gizbuildit_pc.c:12009 legoapi/gizbuildit.cpp:1259 legoapi/hub.cpp:647 legoapi/gizmo_registry_pc.c:344 legoapi/gizmo_lifecycle_pc.c:294 legoapi/gizmo_progress_pc.c:239 legoapi/hint.c:131 legoapi/gizmo_add_callbacks_pc.c:124 legoapi/gizmo_output_callbacks_pc.c:12
+0x5925c0,0x59420b,src/legoapi/customiser.c,legoapi,marker,high,ret 28,20,6897,6897,2639,308,24,legoapi/customise.c:6414 legoapi/parts_breakup.cpp:482 legoapi/customise_diagnostic_pc.c:1
+0x594210,0x5954b1,src/legoapi/collection.cpp,legoapi,marker,high,ret ret 28,16,4231,4231,1204,730,458,legoapi/collection.c:2445 legoapi/collection_render.cpp:1198 legoapi/shadowmap.cpp:257 legoapi/lighting.c:183 legoapi/shadow_light_setup.cpp:148
+0x5954f0,0x5970a8,src/legoapi/lighting.c,legoapi,file,medium,,25,6761,6761,1225,1015,257,legoapi/lighting.c:4035 legoapi/shadow_light_setup.cpp:1835 legoapi/shadow.c:633 legoapi/shadowmap.cpp:258
+0x5970b0,0x597bf5,src/legoapi/snake.c,legoapi,marker,high,fabs,8,2737,2737,146,362,0,legoapi/snakes.c:2737
+0x597c20,0x5999e0,src/legoapi/carrying.c,legoapi,file,medium,,13,7511,7511,675,542,69,legoapi/carrying.c:6940 legoapi/players.c:571
+0x5999e0,0x59a595,src/legoapi/minikits.c,legoapi,marker,high,ret 28,10,2808,2808,543,333,62,legoapi/minikits.c:1548 legoapi/gizmo.c:662 legoapi/hub.cpp:564 legoapi/minikit_init_pc.c:34
+0x59a5a0,0x59b32d,src/legoapi/gameantinode.c,legoapi,marker,high,fabs 54 28,9,2843,2843,415,541,0,legoapi/gameantinode.c:2428 legoapi/gameobjects.c:415
+0x59b330,0x59baf0,src/legoapi/episodes.cpp,legoapi,marker,high,ret 28,6,1792,1792,197,399,325,legoapi/episode.cpp:1007 legogame/startup.cpp:702 legoapi/episode_helpers.c:83
+0x59baf0,0x59cd41,src/legoapi/pushing.cpp,legoapi,marker,high,fabs 28,8,4468,4468,478,399,98,legoapi/pushing.cpp:3225 legoapi/players.c:891 legoapi/credits.cpp:352
+0x59cd50,0x59d741,src/legoapi/credits.cpp,legoapi,android,low,,6,2504,2504,123,116,0,legoapi/credits.cpp:2504
+0x59d750,0x59f942,src/legoapi/gizflow.c,legoapi,marker,high,ret ret ret 28,56,7875,7875,1324,999,0,legoapi/gizflow.c:7873 legoapi/gizflow_diagnostic.c:2
+0x59f970,0x59fdc3,src/legoapi/carrying.c,legoapi,file,medium,,4,1081,1081,31,144,0,legoapi/takeoverobjects.c:1081
+0x59fe10,0x5a043e,src/legoapi/tagging.c,legoapi,file,medium,,6,1530,1530,129,178,30,legoapi/gameobjects.c:958 legoapi/objectsall.c:572
+0x5a0440,0x5a1bcd,src/legoapi/gameanim.c,legoapi,marker,high,ret ret 28,41,5671,5671,1916,628,0,legoapi/gameanim.c:5670 legoapi/render.c:1
+0x5a1bd0,0x5a1eda,src/legoapi/faders.c,legoapi,marker,high,ret 28,3,711,711,266,69,0,legoapi/faders.c:711
+0x5a1ee0,0x5a2a5b,src/legoapi/ripples.c,legoapi,marker,high,ret 28,19,2629,2629,339,600,0,legoapi/ripples.c:2629
+0x5a2a60,0x5a3726,src/legoapi/pulses.c,legoapi,marker,high,fabs 28,5,2940,2940,468,403,0,legoapi/pulses.c:2630 legoapi/streaks.cpp:310
+0x5a3730,0x5a438e,src/legoapi/streaks.c,legoapi,android,low,,5,3152,3152,0,638,0,legoapi/streaks.cpp:3152
+0x5a4390,0x5a8062,src/legoapi/pushblocks.cpp,legoapi,marker,high,28 ret fabs 28,33,15179,15179,864,1630,917,legoapi/gizpushblocks.cpp:6918 legoapi/pushblocks.cpp:5259 legoapi/move.c:1425 legoapi/objectsall.c:823 legoapi/terrain_player_pc.c:615 legoapi/hint.c:139
+0x5a8090,0x5a836b,src/legoapi/particles.c,legoapi,file,medium,,7,698,698,510,16,0,legoapi/particles.c:698
+0x5a8390,0x5a8563,src/legoapi/charpivot.c,legoapi,file,medium,,2,464,464,45,73,0,legoapi/charpivot.c:464
+0x5a8590,0x5a86c4,src/legoapi/playeritems.c,legoapi,file,medium,,4,239,239,110,32,0,legoapi/players.c:239
+0x5a86d0,0x5aab25,src/legoapi/simpletons.c,legoapi,marker,high,fabs 23 28,15,9109,9109,933,1394,0,legoapi/simpletons_pc.cpp:9109
+0x5aab50,0x5ab073,src/legoapi/gizmessage.c,legoapi,file,medium,,15,1190,1190,688,201,0,legoapi/gizmessage.c:1100 legoapi/gizmo_add_callbacks_pc.c:90
+0x5ab0a0,0x5ab0e9,src/legoapi/plugs.c,legoapi,file,medium,,1,73,73,0,12,0,legoapi/ai_sys.c:73
+0x5ab0f0,0x5ab3ce,src/legoapi/aipathcnxhelper.c,legoapi,file,medium,,5,614,614,313,79,79,legoapi/gizturret.cpp:247 legoapi/aiactions_transfer.cpp:153 legoapi/indy_support.c:148 legoapi/aipathcnxhelper.c:66
+0x5ab3d0,0x5ae0fe,src/legoapi/gizturret.c,legoapi,android,low,,32,11018,11018,3673,1228,0,legoapi/gizturret.cpp:11018
+0x5ae100,0x5ae9f7,src/legoapi/gizspecial.c,legoapi,marker,high,ret 28,18,2010,2010,541,283,0,legoapi/gizspecial.c:2010
+0x5aea20,0x5aea58,src/legoapi/cheats.c,legoapi,android,low,,1,56,56,0,29,0,legoapi/gizspecial.c:56
+0x5aee80,0x5af0ad,src/legoapi/edbobs.c,legoapi,android,low,,2,553,553,140,31,0,legoapi/gizspecial.c:553
+0x5af0b0,0x5af850,src/legoapi/gizportal.c,legoapi,marker,high,ret 28,22,1688,1688,896,137,18,legoapi/gizportal.c:898 legoapi/edgizshadowmachine.c:790
+0x5af850,0x5af935,src/legoapi/edgizshadow.c,legoapi,android,low,,1,229,229,229,0,0,legoapi/edgizshadowmachine.c:229
+0x5af940,0x5affa0,src/legoapi/plugs.c,legoapi,marker,high,ret 28,20,1431,1431,597,213,0,legoapi/plugs.c:1431
+0x5affa0,0x5b0335,src/legoapi/gizrandom.c,legoapi,marker,high,ret 28,10,809,809,386,64,0,legoapi/gizrandom.c:774 legoapi/plugs.c:35
+0x5b0340,0x5b0769,src/legoapi/giztimers.c,legoapi,marker,high,ret 28,12,927,927,834,2,0,legoapi/giztimers.c:886 legoapi/gizrandom.c:41
+0x5b0770,0x5b0fea,src/legoapi/gizminicut.c,legoapi,marker,high,ret 28,14,1997,1997,525,288,0,legoapi/gizminicut.c:1997
+0x5b1080,0x5b16b1,src/legoapi/fade.cpp,legoapi,file,medium,,29,1318,1318,749,74,0,legoapi/fade.cpp:1174 legoapi/gamethings.cpp:144
+0x5b16c0,0x5b174d,src/legoapi/things.cpp,legoapi,android,low,,3,102,102,102,0,0,legoapi/gamethings.cpp:102
+0x5b1770,0x5b17fe,src/legoapi/shovesys.c,legoapi,file,medium,,1,142,142,142,0,0,legoapi/sfx.cpp:142
+0x5b1810,0x5b1e97,src/legoapi/specialsfx.c,legoapi,file,medium,,5,1635,1635,344,71,0,legoapi/specialsfx.c:1532 legoapi/sfx.cpp:103
+0x5b1ea0,0x5b2176,src/gameapi/edsplines.c,gameapi,marker,high,ret ret 28,2,652,652,102,173,0,gameapi/edspline_load.c:652
+0x5b2350,0x5b2690,src/gameapi/movies.c,gameapi,marker,high,ret 28,4,771,771,538,57,57,gameapi/edspline_load.c:384 legoapi/movies_config_pc.c:234 legoapi/movies.cpp:153
+0x5b26b0,0x5b2d93,src/legoapi/whip.c,legoapi,file,medium,,2,1760,1760,163,46,0,legoapi/whip.c:1760
+0x5b2da0,0x5c1301,src/nu2api/numath_includes.c,nu2api,marker,high,ret ret fabs 54,272,50157,49875,35754,1945,6,nu2api/numath_includes.c:48506 nu2api/numtx.c:594 nu2api/nuvec.c:470 legoapi/debris_callbacks.c:108 nu2api/nu3d_includes.cpp:81 legoapi/dogfight.cpp:81 nu2api/nufloat.c:34 nu2api/nudebug.c:1
+0x5c1360,0x5e45f7,src/nu2api/nu3d_includes.cpp,nu2api,marker,high,fabs 54,456,112915,112724,28631,14649,1959,nu2api/nu3d_includes.cpp:76625 nu2api/nurndr.c:14458 nu2api/nutexanim.c:7273 legoapi/render.c:5964 nu2api/nucamera.c:4862 nu2api/nuparticle_state.c:773 nu2api/nufrustum_pc.cpp:711 nu2api/geometry_publish.cpp:522 nu2api/nustateanim.c:422 legoapi/aiactions_transfer.cpp:354 nu2api/nuhtml.c:274 gamelib/nuwind.c:192 nu2api/nuvec.c:118 nu2api/posteffect_shader_pc.cpp:98 nu2api/nu3d_platform_pc.cpp:50 nu2api/nuthread.c:26 nu2api/nudebug.c:1 nu2api/pc_device.cpp:1
+0x5e4600,0x5e4acb,src/nu2api/utilities.c,nu2api,android,low,,4,1217,1217,314,65,0,nu2api/nurndr.c:1217
+0x5e4b00,0x5f7438,src/nu2api/nu3d_includes.cpp,nu2api,file,medium,,205,67412,66993,12606,8577,640,nu2api/nu3d_includes.cpp:58470 nu2api/nurndr.c:4768 nu2api/nucamera.c:2520 legoapi/shadow_light_setup.cpp:649 gameapi/apiobject.c:586
+0x5f7490,0x5f8e47,src/nu2api/nudlist_android.cpp,nu2api,marker,high,ret ret ret 28,40,3491,3491,1207,580,0,nu2api/nu3d_platform_pc.cpp:3350 nu2api/nudlist_material_pc.cpp:140 nu2api/nudebug.c:1
+0x5f8e50,0x5f8fc1,src/nu2api/nutex_android.c,nu2api,android,low,,9,205,205,205,0,0,nu2api/nu3d_platform_pc.cpp:205
+0x5f8fd0,0x5f952d,src/nu2api/nu3d_includes.c,nu2api,android,low,,7,1293,1293,376,15,0,nu2api/nu3d_platform_pc.cpp:1293
+0x5f9530,0x5f973c,src/nu2api/stubs_android.c,nu2api,android,low,,2,49,49,49,0,0,nu2api/nu3d_platform_pc.cpp:49
+0x5f9940,0x5f9965,src/nu2api/nuwater.c,nu2api,android,low,,2,20,20,20,0,0,nu2api/nu3d_platform_pc.cpp:20
+0x5f9980,0x5fb7c2,src/nu2api/nurndr_android.cpp,nu2api,android,low,,38,7088,7088,2026,872,33,nu2api/nu3d_platform_pc.cpp:6329 nu2api/pc_device.cpp:614 nu2api/nudlist_material_pc.cpp:98 nu2api/posteffect_shader_pc.cpp:47
+0x5fb7d0,0x5fe3ca,src/nu2api/nu3d_includes.cpp,nu2api,file,medium,,55,9294,9294,4967,1043,12,nu2api/nu3d_platform_pc.cpp:8319 nu2api/nudlist_material_pc.cpp:962 nu2api/geometry_publish.cpp:13
+0x5fe3d0,0x5fe607,src/nu2api/nurndr_android.c,nu2api,android,low,,5,205,205,205,0,0,nu2api/nu3d_platform_pc.cpp:205
+0x5fe610,0x5fef61,src/nu2api/stubs_android.c,nu2api,android,low,,8,500,500,500,0,0,nu2api/nu3d_platform_pc.cpp:500
+0x5ff040,0x5ff38d,src/nu2api/nurndr_android.c,nu2api,android,low,,5,203,203,14,23,0,nu2api/nu3d_platform_pc.cpp:203
+0x5ff390,0x5ff743,src/nu2api/nuvport.c,nu2api,android,low,,2,942,942,0,137,0,nu2api/nu3d_platform_pc.cpp:942
+0x5ff7a0,0x5ff81a,src/nu2api/nuspecial_android.c,nu2api,android,low,,1,122,122,0,22,0,nu2api/nu3d_platform_pc.cpp:122
+0x5ff820,0x5ffc2c,src/nu2api/nurndr.c,nu2api,android,low,,5,1001,1001,1001,0,0,nu2api/nu3d_platform_pc.cpp:1001
+0x5ffc30,0x60099f,src/nu2api/nuptl_android.c,nu2api,android,low,,10,2717,2717,668,327,0,nu2api/nu3d_platform_pc.cpp:2707 nu2api/nuparticle_state.c:10
+0x6009a0,0x600f12,src/nu2api/nuprim_android.c,nu2api,android,low,,12,1296,1296,766,33,0,nu2api/nu3d_platform_pc.cpp:1296
+0x600f20,0x601c05,src/nu2api/numtl_android.c,nu2api,android,low,,11,2510,2510,1382,190,0,nu2api/nu3d_platform_pc.cpp:1876 nu2api/nudlist_material_pc.cpp:634
+0x601c10,0x601dde,src/nu2api/nu3d_includes.c,nu2api,android,low,,2,449,449,0,127,0,nu2api/nu3d_platform_pc.cpp:449
+0x601df0,0x602931,src/nu2api/nugscn_android.c,nu2api,android,low,,10,2740,2740,633,337,0,nu2api/nu3d_platform_pc.cpp:2740
+0x603350,0x603d1b,src/nu2api/nudlist_android.c,nu2api,android,low,,28,1912,1912,1294,26,0,nu2api/nu3d_platform_pc.cpp:1912
+0x603f10,0x604b48,src/nu2api/nucamera.c,nu2api,android,low,,4,2761,2761,656,117,0,nu2api/nu3d_platform_pc.cpp:2761
+0x604c00,0x60694d,src/nu2api/nuhgo_android.cpp,nu2api,file,medium,,22,4797,4797,696,814,274,nu2api/nudlist_material_pc.cpp:2397 nu2api/nu3d_platform_pc.cpp:2039 nu2api/posteffect_shader_pc.cpp:291 legoapi/gameai.c:70
+0x606950,0x607c57,src/nu2api/nu3d_includes.cpp,nu2api,android,low,,14,4697,4697,586,453,103,nu2api/nu3d_platform_pc.cpp:3914 nu2api/nudlist_material_pc.cpp:783
+0x607c60,0x607d62,src/nu2api/nuptl_android.c,nu2api,android,low,,2,248,248,178,27,0,nu2api/nu3d_platform_pc.cpp:248
+0x607d70,0x609162,src/nu2api/nuprim_android.c,nu2api,android,low,,7,4763,4763,369,227,7,nu2api/nu3d_platform_pc.cpp:3802 nu2api/nudlist_material_pc.cpp:961
+0x6091c0,0x60a002,src/nu2api/nu3d_includes.cpp,nu2api,android,low,,3,2620,2620,114,77,0,nu2api/nu3d_platform_pc.cpp:2602 nu2api/posteffect_shader_pc.cpp:18
+0x60a0b0,0x60af7d,src/nu2api/nusound_buffer.cpp,nu2api,file,medium,,14,3353,3353,862,257,75,nu2api/nudlist_material_pc.cpp:1942 nu2api/nu3d_platform_pc.cpp:950 nu2api/posteffect_shader_pc.cpp:461
+0x60af80,0x60b5c8,src/nu2api/nurndr.c,nu2api,file,medium,,3,1589,1589,124,267,0,nu2api/nurndr_swap.cpp:1489 nu2api/nu3d_platform_pc.cpp:100
+0x60b5d0,0x60c253,src/nu2api/nuptl_android.cpp,nu2api,file,medium,,8,2303,2303,943,105,0,nu2api/nu3d_platform_pc.cpp:1507 nu2api/posteffect_shader_pc.cpp:796
+0x60c260,0x60c40f,src/nu2api/nu3d_includes.cpp,nu2api,file,medium,,4,421,421,421,0,0,nu2api/nudlist_material_pc.cpp:406 nu2api/nu3d_platform_pc.cpp:15
+0x60c410,0x60dbd2,src/nu2api/nuptl_android.cpp,nu2api,android,low,,31,4577,4577,3201,169,85,nu2api/posteffect_shader_pc.cpp:3720 nu2api/nu3d_platform_pc.cpp:857
+0x60dbe0,0x60dcf9,src/nu2api/numainfilter.cpp,nu2api,file,medium,,1,281,281,281,0,0,nu2api/nu3d_platform_pc.cpp:281
+0x60dd00,0x60dd5d,src/nu2api/nudeferredfilter.cpp,nu2api,android,low,,1,93,93,93,0,0,nu2api/nu3d_platform_pc.cpp:93
+0x60dd60,0x60dec9,src/nu2api/nuspeedblurfilter.cpp,nu2api,android,low,,2,346,346,346,0,0,nu2api/nu3d_platform_pc.cpp:346
+0x60ded0,0x60ded5,src/nu2api/numtl_android.c,nu2api,android,low,,1,5,5,5,0,0,nu2api/nu3d_platform_pc.cpp:5
+0x60dee0,0x60e174,src/gamelib/net/nusound_memorymanager.cpp,gamelib,marker,high,ret 28,14,498,498,409,8,8,gamelib/net/TTNetwork.cpp:360 gamelib/net/NetStats.cpp:138
+0x60e180,0x60e1a9,src/gamelib/net/edlevelall.cpp,gamelib,android,low,,1,41,41,41,0,0,gamelib/net/TTNetwork.cpp:41
+0x60e1b0,0x60e64c,src/gamelib/net/Transporter.cpp,gamelib,android,low,,15,1061,1061,1061,0,0,gamelib/net/TTNetwork.cpp:1061
+0x60e650,0x60e82f,src/gamelib/net/Network.cpp,gamelib,marker,high,ret 28 ret,5,207,207,207,0,0,gamelib/net/TTNetwork.cpp:207
+0x60e830,0x60ed2c,src/gamelib/net/network.cpp,gamelib,android,low,,18,1049,1049,759,3,0,gamelib/net/TTNetwork.cpp:1049
+0x60ed30,0x60eda3,src/editor/gameobjects.cpp,editor,file,medium,,8,29,29,29,0,0,editor/edlevelall.cpp:29
+0x60edb0,0x60f473,src/gamelib/net/network.cpp,gamelib,file,medium,,12,1366,1366,1114,27,19,gamelib/net/TTNetwork.cpp:1194 gamelib/net/NetStats.cpp:159 gamelib/net/NetMessagePc.cpp:13
+0x60f4b0,0x60f548,src/gamelib/net/edlevelall.cpp,gamelib,android,low,,4,148,148,148,0,0,gamelib/net/NetStats.cpp:148
+0x60f550,0x60ffa8,src/gamelib/net/Stats.cpp,gamelib,android,low,,3,2624,2624,134,495,0,gamelib/net/NetStats.cpp:2624
+0x60ffd0,0x610383,src/gamelib/net/V2SessionManager.cpp,gamelib,file,medium,,16,842,842,842,0,0,gamelib/net/V2SessionManager.cpp:842
+0x610390,0x610493,src/gamelib/net/Network.cpp,gamelib,android,low,,17,55,55,55,0,0,gamelib/net/V2SessionManager.cpp:55
+0x6104a0,0x610aa2,src/gamelib/util/Refpack.cpp,gamelib,marker,high,ret ret 28,9,1384,1384,209,278,0,gamelib/util/Refpack.cpp:1322 nu2api/nunetemu.cpp:61 gamelib/net/V2SessionManager.cpp:1
+0x610ab0,0x610ab9,src/nu2api/NuMemoryManager.cpp,nu2api,android,low,,1,9,9,9,0,0,nu2api/nunetemu.cpp:9
+0x610ac0,0x611889,src/nu2api/nunetemu.cpp,nu2api,android,low,,14,3201,3201,1846,119,0,nu2api/nunetemu.cpp:3201
+0x611890,0x611b41,src/gamelib/net/edlevelall.cpp,gamelib,marker,high,ret ret 22 28 ret,21,269,269,220,26,22,gamelib/net/NetworkObjectManager.cpp:190 editor/edlevelall.cpp:77 nu2api/nunetemu.cpp:1 gamelib/net/NetMessagePc.cpp:1
+0x611c60,0x612703,src/gamelib/net/Network.cpp,gamelib,android,low,,21,2511,2511,1334,99,0,gamelib/net/NetworkObjectManager.cpp:2511
+0x612710,0x612748,src/gamelib/net/edlevelall.cpp,gamelib,android,low,,3,30,30,30,0,0,gamelib/net/NetworkObjectManager.cpp:30
+0x612750,0x61326f,src/gamelib/net/Network.cpp,gamelib,android,low,,33,1899,1899,1415,65,0,gamelib/net/NetworkObjectManager.cpp:1778 editor/edlevelall.cpp:62 gameapi/message.cpp:59
+0x613270,0x6133d5,src/gamelib/net/edlevelall.cpp,gamelib,android,low,,4,330,330,101,7,0,gamelib/net/NetworkObjectManager.cpp:330
+0x6133e0,0x61720f,src/gamelib/net/Network.cpp,gamelib,android,low,,56,14974,14974,5544,1252,0,gamelib/net/NetworkObjectManager.cpp:14831 gamelib/net/Ftp.cpp:143
+0x617270,0x61799d,src/gamelib/net/Ftp.cpp,gamelib,android,low,,24,1320,1320,1019,108,0,gamelib/net/Ftp.cpp:1320
+0x6179c0,0x617a52,src/gamelib/util/Utilities.cpp,gamelib,file,medium,,3,133,133,133,0,0,gamelib/util/Utilities.cpp:133
+0x617a60,0x617c0a,src/nu2api/unref.cpp,nu2api,file,medium,,1,426,426,426,0,0,nu2api/unref.cpp:426
+0x617c10,0x62a4ad,src/gameapi/edtoolsall.cpp,gameapi,marker,high,ret fabs 22 11 28,300,65172,65172,16813,8649,4893,gameapi/edfile.c:35413 gameapi/edui_widget_render_pc.cpp:24700 nu2api/keyboard_read.c:4347 gameapi/edtools_outline_pc.cpp:627 editor/edtoolsall.c:85
+0x62a5e0,0x630d61,src/gameapi/apiobject.c,gameapi,marker,high,ret ret fabs 54 11,74,25351,25351,7295,1919,95,gameapi/apiobject.c:23415 legoapi/model_animation.c:1094 nu2api/transparent.c:325 legoapi/players.c:285 legoapi/move.c:169 legoapi/characters.cpp:60 nu2api/nudebug.c:2 nu2api/pc_fmv_leaves.cpp:1
+0x630e00,0x631064,src/nu2api/nufmv_android.c,nu2api,file,medium,,1,612,612,0,135,0,nu2api/pc_fmv.cpp:612
+0x6310c0,0x633386,src/nu2api/pc_fmv_rad3d.cpp,nu2api,marker,high,ret 28,44,7847,7847,1015,1448,360,nu2api/pc_fmv_rad3d.cpp:4789 nu2api/pc_fmv_player.cpp:2802 nu2api/pc_fmv_control.cpp:256
+0x633390,0x633514,src/legoapi/supportall.cpp,legoapi,marker,high,ret ret 28,4,205,205,205,0,0,legoapi/memorymanager.cpp:169 legoapi/thingmanager.cpp:20 editor/edlevelall.cpp:16
+0x633520,0x6335d5,src/legoapi/gameobjects.cpp,legoapi,android,low,,4,146,146,146,0,0,legoapi/thingmanager.cpp:146
+0x6335e0,0x633def,src/legoapi/supportall.cpp,legoapi,android,low,,19,1953,1953,1397,26,0,legoapi/thingmanager.cpp:1953
+0x633df0,0x6341f7,src/legoapi/rtl.cpp,legoapi,marker,high,ret ret fabs 11,6,348,348,348,0,0,legoapi/rtl.c:183 legoapi/rtlhelper.cpp:141 editor/edlevelall.cpp:23 legoapi/rtl_empty_pc.c:1
+0x634200,0x63549e,src/legoapi/edlevelall.cpp,legoapi,android,low,,54,3759,3759,1892,109,0,legoapi/rtlhelper.cpp:3481 editor/edlevelall.cpp:278
+0x6354a0,0x63e0ff,src/legoapi/rtl.cpp,legoapi,file,medium,,167,32982,32982,12224,2189,0,legoapi/rtl.c:32850 editor/edlevelall.cpp:70 legoapi/rtlhelper.cpp:62
+0x63e100,0x63f69e,src/legoapi/edlevelall.cpp,legoapi,android,low,,9,1845,1845,1679,0,0,legoapi/rtlhelper.cpp:1845
+0x63f6a0,0x641b29,src/legoapi/rtl.c,legoapi,file,medium,,15,9244,9244,1758,598,0,legoapi/rtl.c:9244
+0x642340,0x64fd8c,src/legoapi/objectsall.c,legoapi,marker,high,ret fabs 54,192,53011,53011,32737,3727,99,legoapi/parts.c:32970 gameapi/edpart.c:19264 legoapi/game_deb.c:777
+0x64fd90,0x693b06,src/gameapi/gameliball.cpp,gameapi,marker,high,ret ret ret fabs 54,751,260627,260297,109407,27196,26687,gameapi/edpp.c:51948 nu2api/nuterrain.c:33140 nu2api/terrain_query.cpp:26621 nu2api/terrain_collision.cpp:24103 legoapi/debris_engine.c:21850 gameapi/edgrass.c:13658 legoapi/parts.c:12050 gameapi/edanim_load.c:10555 nu2api/terrain_scan.cpp:9297 gameapi/edbri.c:8874 nu2api/nusound.c:8644 gameapi/edbits.c:7795 gameapi/edpp_load.c:7456 legoapi/gameanim.c:6604 legoapi/debris_generators.cpp:6182 gameapi/edgra.c:4444 legoapi/specialsfx.c:2856 gameapi/edanim_update.c:1816 legoapi/game_deb.c:1403 legoapi/debris_callbacks.c:836 legoapi/sfx.cpp:123 legoapi/shadow.c:41 nu2api/terrain_diagnostic.c:1
+0x693b60,0x696a3f,src/nu2api/nusound3_include.cpp,nu2api,marker,high,ret ret 28,89,10778,10521,4154,854,0,nu2api/nusound_music.cpp:10521
+0x696a90,0x697578,src/nu2api/nusound.cpp,nu2api,marker,high,ret ret ret 28,16,2244,2244,385,427,0,nu2api/nusound_pc.cpp:2090 nu2api/nusound.c:122 nu2api/nustream.cpp:32
+0x697580,0x697a46,src/nu2api/nusound_handle.cpp,nu2api,android,low,,9,1080,1080,276,266,0,nu2api/nusound_pc.cpp:1052 nu2api/nusound.c:22 nu2api/nustream.cpp:6
+0x697a50,0x698fca,src/nu2api/nusound3_include.cpp,nu2api,file,medium,,37,3380,3380,1436,305,0,nu2api/nusound_pc.cpp:2829 nu2api/nustream.cpp:503 nu2api/nusound.c:48
+0x698fe0,0x6996c6,src/nu2api/Network.cpp,nu2api,marker,high,ret ret 28,7,1480,1480,224,339,0,nu2api/nustream.cpp:1480
+0x6996d0,0x699795,src/nu2api/nusound_handle.cpp,nu2api,android,low,,4,163,163,44,52,0,nu2api/nustream.cpp:163
+0x6997a0,0x69a178,src/nu2api/NuApplicationState.cpp,nu2api,android,low,,9,2485,2485,313,277,0,nu2api/nustream.cpp:2485
+0x69a180,0x69a273,src/nu2api/nufilebase.cpp,nu2api,marker,high,ret 28,8,145,145,89,29,0,nu2api/wavreader.cpp:144 nu2api/decoder_diagnostic.cpp:1
+0x69a280,0x69a452,src/nu2api/nusound_loader_ogg.cpp,nu2api,android,low,,4,382,382,98,30,0,nu2api/wavreader.cpp:382
+0x69a460,0x69a67a,src/nu2api/edlevelall.cpp,nu2api,android,low,,1,538,538,0,60,0,nu2api/wavreader.cpp:538
+0x69a680,0x69a7e4,src/nu2api/NuFileDeviceAndroidAPK.cpp,nu2api,android,low,,2,343,343,52,46,0,nu2api/wavreader.cpp:343
+0x69a7f0,0x69a97d,src/nu2api/nufilebase.cpp,nu2api,marker,high,ret ret 28,5,278,278,8,36,0,nu2api/oggreader.cpp:278
+0x69a980,0x69ab44,src/nu2api/NuFileDeviceAndroidAPK.cpp,nu2api,android,low,,2,449,449,0,20,0,nu2api/oggreader.cpp:449
+0x69ab50,0x69adc7,src/nu2api/nusound_loader_ogg.cpp,nu2api,android,low,,6,596,596,493,30,0,nu2api/oggreader.cpp:596
+0x6b7c40,0x6d306f,src/editor/edlevelall.cpp,editor,marker,high,ret ret fabs 22 23 28,511,82678,82678,38524,5531,0,editor/edlevelall.cpp:82678
+0x6d3070,0x6d34e7,src/nu2api/input_runtime.cpp,nu2api,marker,high,ret ret ret 28,6,850,850,218,77,0,nu2api/input_runtime.cpp:632 legoapi/startup_dats.c:155 nu2api/keyboard_read.c:59 nu2api/nuapi.c:3 nu2api/pc_fmv_leaves.cpp:1
+0x6d3560,0x6d602e,src/nu2api/nucore_includes.cpp,nu2api,marker,high,ret ret fabs 28,42,7233,7233,1116,1297,562,nu2api/input_runtime.cpp:3552 nu2api/pc_input.cpp:2034 nu2api/input_detection.cpp:773 nu2api/keyboard_read.c:614 nu2api/keyboard_init.c:218 nu2api/pc_window.cpp:19 nu2api/textinput_labels_pc.c:10 nu2api/numouse.c:7 legoapi/keyboard_base_port_pc.c:6
+0x6d60a0,0x6d60a6,src/nu2api/nupad_interface.c,nu2api,file,medium,,1,6,6,6,0,0,nu2api/nupad_pc.c:6
+0x6d60b0,0x6d693b,src/nu2api/nupad_android.cpp,nu2api,android,low,,26,1507,1507,341,151,30,nu2api/input_runtime.cpp:1045 nu2api/input_descriptors.cpp:316 nu2api/nupad_text.cpp:103 nu2api/pc_input.cpp:30 nu2api/nupad_pc.c:13
+0x6d6940,0x6d9035,src/nu2api/nucore_includes.cpp,nu2api,file,medium,,27,8823,8823,463,2149,421,nu2api/input_runtime.cpp:6945 nu2api/nupad_text.cpp:1334 nu2api/key_events.cpp:465 nu2api/keyboard_read.c:53 nu2api/nuapi.c:25 nu2api/pc_fmv_leaves.cpp:1
+0x6d9040,0x6d9244,src/nu2api/network.cpp,nu2api,file,medium,,3,512,512,52,80,31,nu2api/input_runtime.cpp:288 nu2api/pc_input.cpp:224
+0x6d9340,0x6daf9d,src/nu2api/nucore_includes.cpp,nu2api,file,medium,,39,6296,6296,589,848,446,nu2api/pc_input.cpp:2554 nu2api/input_runtime.cpp:2492 nu2api/keyboard_init.c:914 nu2api/nupad_text.cpp:177 nu2api/pc_options.cpp:117 nu2api/keyboard_read.c:42
+0x6dafa0,0x6db1b3,src/nu2api/nusound3_include.cpp,nu2api,android,low,,14,418,418,175,52,0,nu2api/pc_options.cpp:418
+0x6db1c0,0x6db793,src/nu2api/edlevelall.cpp,nu2api,android,low,,28,1157,1157,1157,0,0,nu2api/pc_options.cpp:1157
+0x6db7a0,0x6dbaad,src/nu2api/NuMemoryManager.cpp,nu2api,android,low,,4,708,708,708,0,0,nu2api/pc_options.cpp:700 nu2api/nufile_pc.c:8
+0x6dbab0,0x6de96f,src/nu2api/nucore_includes.c,nu2api,marker,high,ret 28,39,9070,9070,1012,1591,748,nu2api/hardware_dispatch.cpp:4508 nu2api/pc_window.cpp:2344 nu2api/platform_files.cpp:897 nu2api/platform_policy.cpp:321 nu2api/pc_options.cpp:284 nu2api/pc_cursor_pc.cpp:217 nu2api/numouse.c:154 nu2api/nuscratch.c:137 nu2api/nuwin.c:109 nu2api/save_folder.cpp:69 gameapi/shop_persistence.cpp:25 nu2api/bgproc.c:4 nu2api/nupad_pc.c:1
+0x6de9a0,0x6dea61,src/nu2api/screengrab_android.c,nu2api,file,medium,,2,2,2,2,0,0,nu2api/nudebug.c:2
+0x6dec10,0x6dedd1,src/legoapi/nuapi_android.c,legoapi,file,medium,,2,241,241,0,12,1,legoapi/menu_titles.cpp:177 nu2api/nupad_pc.c:64
+0x6dee30,0x6df004,src/nu2api/numc.cpp,nu2api,file,medium,,10,141,141,141,0,0,nu2api/d3d_api_lifetime.cpp:116 nu2api/nufile_mc.c:25
+0x6df010,0x6dfea0,src/nu2api/d3d_api_lifetime.cpp,nu2api,marker,high,ret ret 28,22,1132,1132,976,45,45,nu2api/d3d_api_lifetime.cpp:580 nu2api/nuvideo.c:220 nu2api/hardware_dispatch.cpp:127 nu2api/pc_device.cpp:108 nu2api/nurndr_swap.cpp:36 nu2api/nuthread.c:35 nu2api/nuframe.c:14 gameapi/shop_persistence.cpp:12
+0x6dff30,0x6e1703,src/nu2api/network.cpp,nu2api,marker,high,ret ret 28,5,5390,5390,207,1267,0,nu2api/nudebug_pc.cpp:5390
+0x6e1750,0x6e17fc,src/nu2api/NuRenderDevice_gles2.cpp,nu2api,android,low,,1,172,172,172,0,0,nu2api/nudebug_pc.cpp:172
+0x6e1820,0x6e4a53,src/nu2api/network.cpp,nu2api,marker,high,ret 28,61,10681,10681,3444,836,0,nu2api/pc_device.cpp:10445 legoapi/menu_video.cpp:236
+0x6e4ff0,0x6e69ef,src/nu2api/nuvport.c,nu2api,android,low,,38,2957,2957,2559,24,0,nu2api/pc_device.cpp:1774 nu2api/cpu_features.cpp:873 lib/libcmt.lib/00833:fpinit.obj:142 lib/libcmt.lib/00598:memset.obj:122 lib/libcmt.lib/00180:llshl.obj:31 lib/libcmt.lib/00323:secchk.obj:15
+0x740b4a,0x740f54,src/gamelib/util/NuThreadManager.cpp,gamelib,android,low,,155,986,74,74,0,0,gamelib/util/VirtualStackAllocator.cpp:74
+0x740f60,0x741057,src/gamelib/util/VirtualStackAllocator.cpp,gamelib,android,low,,3,164,164,164,0,0,gamelib/util/VirtualStackAllocator.cpp:164
+0x7412e0,0x741962,src/nu2api/nushadermanager_gen.cpp,nu2api,file,medium,,14,802,802,342,51,0,nu2api/nushadermanager.cpp:680 nu2api/nuvertexdecl.c:82 nu2api/nushader.c:40
+0x741970,0x7422f3,src/nu2api/nuvertexformat_android.cpp,nu2api,android,low,,8,2269,2269,408,468,50,nu2api/nuvertexdecl.c:1684 nu2api/nushaderobject_pc.cpp:585
+0x742330,0x742385,src/nu2api/nushaderobject.c,nu2api,file,medium,,3,62,62,62,0,0,nu2api/nushaderobject.c:62
+0x742390,0x743958,src/nu2api/nushaderobject.cpp,nu2api,marker,high,ret 28,9,5368,5368,331,338,81,nu2api/nushaderobject_pc.cpp:4781 nu2api/nushaderobject.c:587
+0x743990,0x743d50,src/nu2api/nushaderobjectbase.cpp,nu2api,file,medium,,10,834,834,233,0,0,nu2api/nushaderobject_pc.cpp:769 nu2api/nushaderobjectbase.c:65
+0x743de0,0x744210,src/nu2api/nushaderobject.c,nu2api,marker,high,ret 28,4,940,940,940,0,0,nu2api/nushaderobject_pc.cpp:940
+0x744210,0x74431f,src/nu2api/shaderSemantics.cpp,nu2api,file,medium,,3,216,216,216,0,0,nu2api/nurndr.c:154 nu2api/nushadermanager.cpp:62
+0x7443d0,0x745919,src/nu2api/NuRenderDevice_gles2.cpp,nu2api,android,low,,16,3374,3374,478,475,252,nu2api/nushadermanager.cpp:1987 nu2api/nushaderkey.cpp:1093 nu2api/shader_compiler.cpp:294
+0x745920,0x74635f,src/nu2api/nushadermanagerios.cpp,nu2api,marker,high,ret 28,13,1860,1860,112,244,6,nu2api/nushadermanager.cpp:1531 nu2api/crc16.cpp:255 nu2api/shader_compiler.cpp:74
+0x746360,0x748ef4,src/nu2api/CRC16.cpp,nu2api,android,low,,41,8796,8796,2293,646,192,nu2api/shader_dictionary.cpp:7430 nu2api/shader_compiler.cpp:680 nu2api/shader_buffer_allocator.cpp:445 nu2api/crc16.cpp:125 nu2api/shader_lexical.cpp:68 nu2api/nushadermanager.cpp:48
+0x7493e0,0x74b98b,src/nu2api/shader_compiler.cpp,nu2api,marker,high,ret 28,19,7320,7320,1558,1572,235,nu2api/shader_compiler.cpp:4839 nu2api/shader_lexical.cpp:2272 nu2api/shader_parser.cpp:209
+0x74bae0,0x74e168,src/nu2api/shader_parser.cpp,nu2api,marker,high,ret 28,28,7953,7953,1423,1248,297,nu2api/shader_parser.cpp:7248 nu2api/shader_lexical.cpp:705
+0x74e170,0x75076a,src/nu2api/nurain_android.cpp,nu2api,marker,high,fabs,69,4055,4037,1877,166,24,nu2api/nurain.c:2278 nu2api/posteffect_shader_pc.cpp:311 lib/libcmt.lib/00554:vsnwprnt.obj:237 data.cpp:180 editor/edlevelall.cpp:180 nu2api/nunetemu.cpp:171 lib/libcmt.lib/00486:fputwc.obj:125 nu2api/nu3d_platform_pc.cpp:95 gamelib/net/TTNetwork.cpp:93 legoapi/fade.cpp:92 nu2api/nudlist_material_pc.cpp:87 nu2api/pc_fmv_texture.cpp:42 nu2api/nu3d_includes.cpp:42 nu2api/pc_fmv_player.cpp:32 nu2api/pc_device.cpp:32 nu2api/shader_parser.cpp:27 legoapi/status_alternate_pc.cpp:13
