@@ -40,6 +40,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 IDENT = re.compile(r"[A-Za-z_]\w*")
+# A preprocessor line with its backslash continuations.
+PREPROCESSOR = re.compile(r"^[ \t]*#(?:\\\n|[^\n])*\n?", re.M)
 FUNCTION_KINDS = {"FUNCTION_DECL", "CXX_METHOD", "CONSTRUCTOR", "DESTRUCTOR", "FUNCTION_TEMPLATE"}
 TYPE_KINDS = {"TYPEDEF_DECL", "STRUCT_DECL", "UNION_DECL", "ENUM_DECL", "CLASS_DECL"}
 PATH_FILES = ("config/*.json", "tools/*.py", "Makefile")
@@ -177,7 +179,7 @@ def parse(source):
 
     visit(tu.cursor, False)
     # Preprocessor lines: includes, defines, pragmas.
-    for match in re.finditer(r"^[ \t]*#[^\n]*(?:\\\n[^\n]*)*\n?", source.text, re.M):
+    for match in PREPROCESSOR.finditer(source.text):
         line = match.group(0)
         directive = re.match(r"\s*#\s*(\w+)\s*(\w*)", line)
         kind = {"include": "include", "define": "macro", "pragma": "pragma",
@@ -507,6 +509,8 @@ def render_items(entries, target_cxx):
     for text, needs_c in entries:
         if not text.endswith("\n"):
             text += "\n"
+        if not target_cxx:
+            text = re.sub(r'^(\s*)extern\s+"C"\s+(?!\{)', r"\1", text, flags=re.M)
         if needs_c and target_cxx:
             block.append(text)
         else:

@@ -102,6 +102,11 @@ class UnitizeTextTests(unittest.TestCase):
         self.assertEqual(text, 'extern "C" {\nint a;\nint b;\n}\nstruct S;\n')
         self.assertEqual(unitize.render_items([("int a;", True)], False), "int a;\n")
 
+    def test_preprocessor_lines_keep_continuations(self):
+        text = "#define A(x) \\\n  do { x; } \\\n  while (0)\nint y;\n#pragma pack()\n"
+        self.assertEqual([m.group(0) for m in unitize.PREPROCESSOR.finditer(text)],
+                         ["#define A(x) \\\n  do { x; } \\\n  while (0)\n", "#pragma pack()\n"])
+
     def test_cut_and_offsets(self):
         text = "0123456789"
         self.assertEqual(unitize.cut(text, [(2, 4), (6, 7)]), "0145789")
