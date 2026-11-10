@@ -463,6 +463,8 @@ def build_plan(lo, hi, target):
                                    if other is not item and id(other) not in take)
                 if item.function:
                     decl = prototype(item)
+                    if "::" in strip_comments(decl).split("(")[0]:
+                        continue  # a member function: its class declares it
                     if item.static and not (item.mangled & mapped):
                         # Unmapped static helper (header-static style): the unit gets its own copy.
                         plan.helpers.append(item)
