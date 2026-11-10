@@ -37,7 +37,7 @@
     "tools/globals.py": "6065e90b69abd8f88e8d6f75f7009d293efeb781f2ae76475b0b47958b8c761a",
     "tools/lib.py": "4b9dc3ba6832ff4e57bf081a50d5db241ea91f99bdf6371a0c0fd781d4707c6a",
     "tools/libmatch.py": "6415528346e215a912ea30942a641c6ad34b797e971d864f067edfe2532febdb",
-    "tools/match.py": "6fdeb632a8b93304dcff2e37fba8f4c17bab6910666b1b44180edf164215e97f",
+    "tools/match.py": "952dc1b4c6b34c2bb2bad73718a26613deb2038014fa54d4cd868233e5639355",
     "tools/permute.py": "526ba8af9bb89f7ddd85aae9e5d40abe52637b83f51aa428dad765eb9a20b6ee",
     "tools/port.py": "e915839beabea6d8b4ac5dc0a4db409c06848e171635825c5099ca7c92883046",
     "tools/relocmap.py": "4e132c5b3be30404c58d3bbe7ca4cd636eb81590f26dbf458194069277b8b815",
@@ -60,7 +60,7 @@
     "tools/test_dependencies.py": "dd3e43484346aa43d6f484aa53e9df60d3b3dc8f91ddc071638ce82cf5bef0f1",
     "tools/test_discover_missing.py": "cc17ba008ee97221690751adeb74a8eb1fd383dfaad62e958b77d7b6543a1813",
     "tools/test_lib.py": "5b937951f2c678a480dfcca832d27b9d994029aef12928fbab092293737fd8ac",
-    "tools/test_match.py": "5604613f9dec760b59f050f7db2b03d7e2edb5c2fcb4cd78a92e0850f210ce4c",
+    "tools/test_match.py": "2686c1061a55850eaf6134b097c4223b10aecbf78ad85be2ab040dc484b0437b",
     "tools/test_object_analysis.py": "bd0e99266de800c5f04054be1be1f56e51f78b3700c4bf544b8ec88325172f56",
     "tools/test_primitive.py": "fe607ad934e97265769c68dbd2711c8a64ad3aea094398b04018b2a63ed38127",
     "tools/test_rewrite.py": "4d254d14c49225064b770fe17862eba99a5d123e9ef5612084be2a84baf21be5",
@@ -707956,6 +707956,10 @@
     "mapped_code_bytes": 3104680,
     "matched_code_bytes": 1195088,
     "matching_percent": 34.428213961211625,
+    "padding_bytes": 71756,
+    "matched_padding_bytes": 49494,
+    "matched_code_with_padding_bytes": 1244582,
+    "matching_with_padding_percent": 35.8540420356264,
     "fuzzy_coverage_percent": 81.86621468950628,
     "mapped_functions": 11843,
     "matched_functions": 8145,
@@ -708028,7 +708032,13 @@
     "reconstruction_scope_exact_percent": 34.44006026422659,
     "mapped_scope_denominator_bytes": 3104680,
     "mapped_scope_exact_percent": 38.4931136220158,
-    "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image."
+    "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
+    "alignment_padding_bytes": 71756,
+    "exact_alignment_padding_bytes": 49494,
+    "unclassified_non_padding_text_bytes": 293616,
+    "exact_with_padding_bytes": 1244582,
+    "exact_with_padding_percent": 35.8540420356264,
+    "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, ending on an aligned extent start; it is exact only after an exact function."
   },
   "data_members": [
     {
@@ -709333,7 +709343,7 @@
       "metadata_sha256": "f144b2c7d11d07a38dc69fe167bbe9736b0ffaa144e187dbb835337f6b396a09",
       "header_path": "src/saga.h",
       "header_sha256": "69ad20a707cfdfd6eb45eabff7c048ce8f488ce90478ad03b22907ef90c5e3ac",
-      "geometry_object_sha256": "157c3a36a1f872b4102e2ebd942b6a4ee5344c77d9bae5133140d96b1f6db905",
+      "geometry_object_sha256": "7dd1ea2576a08f917c14e1b5a5d397d4bb81cbffb48cdc91bd5275487ca91cec",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

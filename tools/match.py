@@ -37,7 +37,58 @@ def objdiff():
     return path, pin
 
 
-def text_coverage(functions, target, externals=()):
+# Alignment fillers the linker or assembler puts between functions: int3, nop and
+# the multi-byte no-op forms of the VC8 runtime's alignment directives.
+PADDING_FILLERS = (b"\x8d\xa4\x24\x00\x00\x00\x00", b"\x8d\x9b\x00\x00\x00\x00",
+                   b"\x8d\x64\x24\x00", b"\x8d\x49\x00", b"\x8d\x40\x00",
+                   b"\x8b\xff", b"\x8b\xc0", b"\x90", b"\xcc")
+PADDING_ALIGNMENT = 16
+
+
+def is_padding(data):
+    """True when `data` is a sequence of whole alignment fillers."""
+    offset = 0
+    while offset < len(data):
+        for filler in PADDING_FILLERS:
+            if data.startswith(filler, offset):
+                offset += len(filler)
+                break
+        else:
+            return False
+    return bool(data)
+
+
+def padding_runs(functions, target, read, externals=()):
+    """Alignment padding between two mapped extents of the original .text.
+
+    A run qualifies when it is shorter than the alignment, ends on an aligned
+    address where the next mapped extent starts, and holds only fillers. It is
+    exact when every function ending where it starts is exact: the compiler and
+    linker emit this fill deterministically after that function. Padding after
+    import glue is classified but never exact.
+    """
+    start, total = number(target["text_va"]), number(target["text_size"])
+    extents = []
+    for row in functions:
+        if row.get("target_size"):
+            extents.append((number(row["address"]), row["target_size"], bool(row["exact_match"])))
+    for row in externals:
+        if row["kind"] == "import thunk":
+            extents.append((number(row["address"]), row["size"], False))
+    runs, end, before = [], None, []
+    for address, size, exact in sorted(extents):
+        gap = address - end if end is not None else 0
+        if 0 < gap < PADDING_ALIGNMENT and address % PADDING_ALIGNMENT == 0 \
+                and start <= end and address <= start + total and is_padding(read(end, gap)):
+            runs.append({"address": end, "size": gap, "exact": bool(before) and all(before)})
+        if end is None or address + size > end:
+            end, before = address + size, [exact]
+        elif address + size == end:
+            before.append(exact)
+    return runs
+
+
+def text_coverage(functions, target, externals=(), padding=()):
     """Describe original text categories without changing exact-match credit."""
     start, total = number(target["text_va"]), number(target["text_size"])
     end = start + total
@@ -62,6 +113,8 @@ def text_coverage(functions, target, externals=()):
     if covered_bytes(mapped_ranges + glue_ranges) != mapped + glue:
         raise ValueError("Reconstruction and excluded import glue overlap")
     reconstruction_total = total - glue
+    padding_bytes = sum(run["size"] for run in padding)
+    exact_padding = sum(run["size"] for run in padding if run["exact"])
     return {
         "original_text_bytes": total,
         "mapped_reconstruction_bytes": mapped,
@@ -77,10 +130,18 @@ def text_coverage(functions, target, externals=()):
         "mapped_scope_exact_percent": 100 * exact / mapped if mapped else 0.0,
         "qualification": "Unclassified text includes undiscovered code and unproven padding; "
                          "these percentages compare relocated objects, not the linked image.",
+        "alignment_padding_bytes": padding_bytes,
+        "exact_alignment_padding_bytes": exact_padding,
+        "unclassified_non_padding_text_bytes": total - mapped - glue - padding_bytes,
+        "exact_with_padding_bytes": exact + exact_padding,
+        "exact_with_padding_percent": 100 * (exact + exact_padding) / total if total else 0.0,
+        "padding_qualification": f"Padding is int3/nop alignment fill shorter than {PADDING_ALIGNMENT} bytes "
+                                 "between mapped extents, ending on an aligned extent start; it is exact "
+                                 "only after an exact function.",
     }
 
 
-def progress(functions, target):
+def progress(functions, target, padding=()):
     total = number(target["text_size"])
     start = number(target["text_va"])
     for row in functions:
@@ -116,8 +177,13 @@ def progress(functions, target):
         else:
             active[index] = score
         previous = address
+    matched_padding = sum(run["size"] for run in padding if run["exact"])
     return {"text_bytes": total, "mapped_code_bytes": mapped,
             "matched_code_bytes": matched, "matching_percent": 100 * matched / total,
+            "padding_bytes": sum(run["size"] for run in padding),
+            "matched_padding_bytes": matched_padding,
+            "matched_code_with_padding_bytes": matched + matched_padding,
+            "matching_with_padding_percent": 100 * (matched + matched_padding) / total,
             "fuzzy_coverage_percent": 100 * fuzzy_bytes / total,
             "mapped_functions": len(functions),
             "matched_functions": sum(r["exact_match"] for r in functions)}
@@ -176,7 +242,13 @@ def update_badge(stats):
     badge = ("<!-- matching-badge -->\n"
              + image("fuzzy%20code%20match", "fuzzy_coverage_percent", "fuzzy code match")
              + "<!-- /matching-badge -->")
-    rows = [("exact%20code%20match", "matching_percent", "exact code match", "Byte-identical code."),
+    # The exact badge counts alignment padding after exact functions when the report has it;
+    # matching_percent stays the strict function-only number.
+    exact = ("exact%20code%20match", "matching_with_padding_percent", "exact code match",
+             "Byte-identical code and the alignment padding after it.") \
+        if "matching_with_padding_percent" in stats else \
+        ("exact%20code%20match", "matching_percent", "exact code match", "Byte-identical code.")
+    rows = [exact,
             ("mapped%20code", "mapping_code_percent", "mapped code", "Known code extents."),
             ("mapped%20file--backed%20data", "mapping_file_backed_data_percent", "mapped file-backed data",
              "Known data stored in the executable."),
@@ -389,8 +461,9 @@ def main():
     if code_components:
         result["code_components"] = code_components
     if not args.function:
-        result["progress"] = progress(functions, target)
-        result["text_coverage"] = text_coverage(functions, target, externals.values())
+        padding = padding_runs(functions, target, pe.read_va, externals.values())
+        result["progress"] = progress(functions, target, padding)
+        result["text_coverage"] = text_coverage(functions, target, externals.values(), padding)
         result["progress"].update(objdiff_progress(report, functions))
         member_ranges = [(number(r["address"]), r["target_size"]) for r in members
                          if r["target_size"] is not None]
@@ -414,6 +487,9 @@ def main():
         print(f"Fuzzy code coverage: {stats['fuzzy_coverage_percent']:.3f}% of original .text")
         print(f"Exact code: {stats['matched_code_bytes']}/{stats['text_bytes']} bytes "
               f"({stats['matching_percent']:.3f}% of original .text)")
+        print(f"Exact code with padding: {stats['matched_code_with_padding_bytes']}/{stats['text_bytes']} bytes "
+              f"({stats['matching_with_padding_percent']:.3f}%; {stats['matched_padding_bytes']} of "
+              f"{stats['padding_bytes']} alignment padding bytes follow exact functions)")
         for kind, label in (("code", "code"), ("file_backed_data", "file-backed data"),
                             ("zero_fill_data", "zero-fill/BSS")):
             print(f"Mapped {label}: {stats[f'mapping_{kind}_bytes']}/"

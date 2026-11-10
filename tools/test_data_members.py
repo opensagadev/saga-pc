@@ -350,7 +350,7 @@ class FullMatchMemberRegressionTests(unittest.TestCase):
                 stack.enter_context(patch.object(match,name,value))
             for name,value in (("project",config),("load_symbols",[]),
                                 ("retail",SimpleNamespace(
-                                    imports=lambda:[], import_thunk=lambda _:None,
+                                    imports=lambda:[], import_thunk=lambda _:None, read_va=lambda va, size: b"\xcc" * size,
                                     sections=[
                                         dict(name=".text", virtual_address=0x8000,
                                              virtual_size=0x1000, raw_size=0x1000, characteristics=0x60000020),

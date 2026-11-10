@@ -470,7 +470,13 @@ left to you.
 `matching.json` records, per function, exact equality and objdiff similarity.
 The fuzzy badge is objdiff-weighted coverage of the whole original `.text`
 (3,471,246 bytes); unimplemented code counts as zero. Exact coverage counts
-byte-identical functions. Mapped code/data badges count known symbol extents
+byte-identical functions. Alignment padding between two mapped extents (only
+int3/nop fillers, shorter than 16 bytes, ending where the next extent starts on a
+16-byte boundary) is classified separately; a run counts as exact only after an
+exact function, because the compiler and linker emit it deterministically there.
+The exact badge shows `matching_with_padding_percent`; the strict function-only
+`matching_percent` and the text categories (`alignment_padding_bytes`,
+`unclassified_non_padding_text_bytes`) remain in `matching.json`. Mapped code/data badges count known symbol extents
 against the code (3,471,246) and data (36,018,966) section sizes. None of these
 measure playability.
 

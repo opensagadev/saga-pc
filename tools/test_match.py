@@ -168,6 +168,78 @@ class TextCoverageTests(unittest.TestCase):
                          result["progress"]["matching_percent"])
 
 
+class PaddingTests(unittest.TestCase):
+    target = {"text_va": "0x401000", "text_size": "0x1000"}
+
+    def row(self, address, size, exact=True):
+        return {"name": "f", "address": hex(address), "target_size": size, "exact_match": exact}
+
+    def reader(self, image):
+        return lambda va, size: bytes(image[va - 0x401000:va - 0x401000 + size])
+
+    def test_int3_and_nop_fill_between_functions_is_padding_exact_after_exact_function(self):
+        image = bytearray(b"\xc3" * 0x1000)
+        image[0x0c:0x10] = b"\xcc" * 4
+        image[0x1d:0x20] = b"\x8d\x49\x00"
+        rows = [self.row(0x401000, 12), self.row(0x401010, 13, exact=False), self.row(0x401020, 16)]
+        runs = match.padding_runs(rows, self.target, self.reader(image))
+        self.assertEqual(runs, [{"address": 0x40100c, "size": 4, "exact": True},
+                                {"address": 0x40101d, "size": 3, "exact": False}])
+        stats = match.progress(rows, self.target, runs)
+        self.assertEqual(stats["matched_code_bytes"], 28)
+        self.assertEqual(stats["matched_padding_bytes"], 4)
+        self.assertEqual(stats["matched_code_with_padding_bytes"], 32)
+        self.assertEqual(stats["padding_bytes"], 7)
+        self.assertEqual(stats["matching_percent"], 100 * 28 / 4096)
+        self.assertEqual(stats["matching_with_padding_percent"], 100 * 32 / 4096)
+        coverage = match.text_coverage(rows, self.target, (), runs)
+        self.assertEqual(coverage["alignment_padding_bytes"], 7)
+        self.assertEqual(coverage["exact_alignment_padding_bytes"], 4)
+        self.assertEqual(coverage["unclassified_text_bytes"], 4096 - 41)
+        self.assertEqual(coverage["unclassified_non_padding_text_bytes"], 4096 - 48)
+        self.assertEqual(coverage["strict_original_text_exact_percent"], stats["matching_percent"])
+
+    def test_code_long_unaligned_or_unbounded_gaps_are_not_padding(self):
+        image = bytearray(b"\xcc" * 0x1000)
+        image[0x0d] = 0xc3  # a byte of code in the gap
+        cases = [
+            [self.row(0x401000, 12), self.row(0x401010, 16)],         # code inside the fill
+            [self.row(0x401020, 4), self.row(0x401040, 16)],          # 28 bytes: longer than alignment
+            [self.row(0x401050, 4), self.row(0x401058, 16)],          # next start not aligned
+            [self.row(0x401070, 4)],                                  # no following extent
+        ]
+        for rows in cases:
+            with self.subTest(rows=rows):
+                self.assertEqual(match.padding_runs(rows, self.target, self.reader(image)), [])
+
+    def test_padding_after_import_glue_or_mixed_aliases_is_not_exact(self):
+        image = bytearray(b"\xcc" * 0x1000)
+        thunk = {"kind": "import thunk", "address": "0x401000", "size": 6}
+        runs = match.padding_runs([self.row(0x401010, 16)], self.target, self.reader(image), [thunk])
+        self.assertEqual(runs, [{"address": 0x401006, "size": 10, "exact": False}])
+        rows = [self.row(0x401000, 12), self.row(0x401004, 8, exact=False), self.row(0x401010, 4)]
+        self.assertEqual(match.padding_runs(rows, self.target, self.reader(image)),
+                         [{"address": 0x40100c, "size": 4, "exact": False}])
+
+    def test_fillers_must_be_whole(self):
+        self.assertTrue(match.is_padding(b"\xcc\x8b\xff\x8d\xa4\x24\x00\x00\x00\x00"))
+        self.assertFalse(match.is_padding(b"\x8d\x49"))
+        self.assertFalse(match.is_padding(b""))
+
+    def test_badge_uses_padding_inclusive_exact_when_reported(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(match, "ROOT", Path(temp)):
+            path = Path(temp) / "README.md"
+            path.write_text("<!-- matching-badge -->old<!-- /matching-badge -->\n\n"
+                            "<!-- mapping-badge -->old<!-- /mapping-badge -->\n")
+            match.update_badge({"fuzzy_coverage_percent": 80, "matching_percent": 30,
+                                "matching_with_padding_percent": 31.5, "mapping_code_percent": 90,
+                                "mapping_file_backed_data_percent": 40, "mapping_zero_fill_data_percent": 5})
+            text = path.read_text()
+            self.assertIn("exact%20code%20match-31.500%25-orange) | Byte-identical code and the alignment "
+                          "padding after it. |", text)
+            self.assertNotIn("30.000", text)
+
+
 class ObjdiffProgressTests(unittest.TestCase):
     def functions(self, copies=1):
         return [{"target_size": 16, "objects": [{} for _ in range(copies)]},
@@ -307,7 +379,8 @@ class InlinedInventoryTests(unittest.TestCase):
             (root / "tools").mkdir()
             for name, text in (import_definitions or {}).items():
                 (root / "tools" / name).write_text(text)
-            pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None, sections=[
+            pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None,
+                                 read_va=lambda va, size: b"\xcc" * size, sections=[
                 {"name": ".text", "virtual_address": 0x1000, "virtual_size": 0x1000,
                  "raw_size": 0x1000, "characteristics": 0x20},
                 {"name": ".data", "virtual_address": 0x3000, "virtual_size": 0x1000,

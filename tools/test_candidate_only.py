@@ -113,7 +113,8 @@ class CandidateConstantTests(unittest.TestCase):
         (self.root / 'src/saga.h').write_text('// fixture\n')
         (self.root / 'Makefile').write_text('# fixture\n')
         (self.root / 'config/toolchain.json').write_text('{"version":"fixture"}')
-        pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None, sections=[
+        pe = SimpleNamespace(imports=lambda: [], import_thunk=lambda _: None,
+                             read_va=lambda va, size: b"\xcc" * size, sections=[
             {'name': '.text', 'virtual_address': 0x1000, 'virtual_size': 0x1000,
              'raw_size': 0x1000, 'characteristics': 0x20},
             {'name': '.data', 'virtual_address': 0x3000, 'virtual_size': 0x1000,
