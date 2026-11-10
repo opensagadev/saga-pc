@@ -415,6 +415,47 @@ def _commute_operand(source, cursor, op, on_right):
     return f"({text})"
 
 
+def rule_paren_terms(source):
+    """a * b - c * d  ->  (a * b) - (c * d) on floats: VC8 evaluates a parenthesised term as written."""
+    rw = _rewrite()
+    sums = [node for node in source.walk() if _is_sum(source, node) and rw.is_float(node)]
+    inner = {source.span(term) for node in sums for term in _operands(node) if _is_sum(source, term)}
+    for node in sums:
+        if source.span(node) in inner:
+            continue
+        edits = [(*source.span(term), f"({source.src(term)})") for term in _sum_terms(source, node)
+                 if term.kind == rw.K.BINARY_OPERATOR and source.operator(term) in ("*", "/")]
+        if edits:
+            yield rw.Candidate(source.edit(edits), "paren_terms", f"line {node.location.line}", True)
+
+
+def _is_sum(source, cursor):
+    rw = _rewrite()
+    return cursor.kind == rw.K.BINARY_OPERATOR and source.operator(cursor) in ("+", "-")
+
+
+def _operands(node):
+    rw = _rewrite()
+    out = []
+    for child in node.get_children():
+        while child.kind == rw.K.UNEXPOSED_EXPR and len(list(child.get_children())) == 1:
+            child = next(child.get_children())
+        out.append(child)
+    return out
+
+
+def _sum_terms(source, node):
+    """Terms of an unparenthesised +/- chain."""
+    terms = []
+    for child in _operands(node):
+        terms.extend(_sum_terms(source, child) if _is_sum(source, child) else [child])
+    return terms
+
+
+# Idioms without a scanner tag of their own run on the functions tagged with these.
+SELECT = {"I31": ("I25", "U9", "I10")}
+
+
 def _rewrite_rules(names):
     rw = _rewrite()
     return [getattr(rw, name) for name in names]
@@ -424,6 +465,7 @@ RULES = {
     "I3": (lambda: [rule_mirror_equality], True),
     "I23": (lambda: [rule_bound], True),
     "I25": (lambda: [rule_float_commute], True),
+    "I31": (lambda: [rule_paren_terms], False),
     "I10": (lambda: [rule_double], True),
     "I17": (lambda: [rule_wrap_to_guard, rule_guard_to_wrap, rule_ternary_return, rule_invert_return,
                      *_rewrite_rules(["rule_result_variable", "rule_guard_to_else"])], False),
@@ -598,7 +640,7 @@ def main(argv=None):
     if args.rules:
         rules = [rule for rule in rules if rule.__name__ in args.rules]
     rows = [r for r in json.loads(args.report.read_text())["functions"]
-            if r.get("status") == "different" and args.idiom in r.get("idioms", [])
+            if r.get("status") == "different" and set(SELECT.get(args.idiom, (args.idiom,))) & set(r.get("idioms", []))
             and len(r.get("units", [])) == 1 and r["units"][0].endswith((".c", ".cpp"))]
     if args.only:
         rows = [r for r in rows if r["name"] in args.only]

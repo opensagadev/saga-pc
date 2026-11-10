@@ -89,6 +89,13 @@ class RuleTests(unittest.TestCase):
         self.assertEqual(len(texts), 2)
         self.assertTrue(all("i + j" in t for t in texts))
 
+    def test_float_sum_terms_are_parenthesised_as_written(self):
+        texts = self.texts(self.fix.rule_paren_terms,
+                           "float f(float a, float b, float c, float d) { return a * b - c * d + a; }")
+        self.assertEqual(len(texts), 1)
+        self.assertIn("return (a * b) - (c * d) + a;", texts[0])
+        self.assertEqual(self.texts(self.fix.rule_paren_terms, "int f(int a, int b) { return a * b + a; }"), [])
+
     def test_commuted_operands_get_parentheses_only_when_grouping_needs_them(self):
         texts = self.texts(self.fix.rule_float_commute, "float f(float a, float b, float c) { return a * b + c; }")
         self.assertIn("return c + a * b;", texts[0])
