@@ -807,22 +807,6 @@ i32 __cdecl CutScene_HasPlayed(CUTINFO *cutscene) {
     return 0;
 }
 
-void __cdecl MakeMenuPacket(void) {
-    i32 player;
-    for (player = 0; player < 2; ++player) {
-        GAMEOBJECT *object = Player[player];
-        if (object != NULL) {
-            MissionMenuPacketPc.player_model[player] = object->id;
-            MissionMenuPacketPc.active_player[player] = (u8)((object->flags_1fc >> 7) & 1);
-        } else {
-            MissionMenuPacketPc.player_model[player] = -1;
-            MissionMenuPacketPc.active_player[player] = 0;
-        }
-        MissionMenuPacketPc.customise_other_player[player] = 0;
-        MissionMenuPacketPc.selected[player] = 0;
-    }
-}
-
 void __cdecl Hub_ActivateDoorMenu(void *argument) {
     LEVELDATA_PC **level = (LEVELDATA_PC **)argument;
     i32 area = (*level)->area_index;

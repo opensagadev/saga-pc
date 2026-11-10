@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-void __cdecl GameDrawMenuEntry(MENU *, char *);
-
 void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count,
                       void (*draw_save_slots_info_fn)(f32, f32, i32, i32), i32 is_fade_enabled, i32 is_shadow_enabled) {
     char menus_used_str[64];
@@ -56,69 +54,6 @@ void MenuReset(void) {
     MenuSetPlatformState(-1);
 }
 
-extern f32 MenuTitlesPromptYPc, MenuTitlesWidePromptYPc;
-
-void __cdecl MenuDrawTitles(MENU *menu) {
-    f32 y;
-    (void)menu;
-    if (GameTimer.time_elapsed >= 3.0f && GameTimer.time_elapsed_mod_seconds < 0.666f) {
-        if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
-            y = MenuTitlesWidePromptYPc;
-        } else {
-            y = MenuTitlesPromptYPc;
-        }
-        SmartTextEx(apitxt_PCPRESSSTARTFE, 0.0f, y, 1.0f, MenuTextScalePc, MenuTextScalePc, MenuTextScalePc, 0, 255,
-                    255, 255, 1.7f, 1, NULL, 0, (u32)(i32)((f32)MenuA * newgamealpha));
-    }
-}
-
-void MenuEnterNewGame(MENU *menu) {
-    (void)menu;
-    if (MenuLoadOccurred == 0 && startnewgame_initiated == 0 && startnewgame == 0) {
-        saveload_autosave = -1;
-    }
-}
-
-void MenuEnterOptions(MENU *menu) {
-    i32 parent_menu;
-    (void)menu;
-    parent_menu = GetParentMenuID();
-    if (parent_menu == 2 || parent_menu == 1) {
-        TempOptions = Game.options_save;
-    }
-}
-
-void MenuDrawOptions(MENU *menu) {
-    char text[256];
-    i32 changed;
-    menu->item_scale = 1.0f;
-
-    sprintf(text, Menu_OptionsVolumeFormat, TTab[tAUDIOVOLUME], TempOptions.master_volume, 10);
-    dme_sy = menu->item_scale;
-    GameDrawMenuEntry(menu, text);
-
-    NuStrCpy(text, TTab[tMUSIC]);
-    NuStrCat(text, Menu_ColonSeparator);
-    NuStrCat(text, TempOptions.music_enabled != 0 ? TTab[tON] : TTab[tOFF]);
-    dme_sy = menu->item_scale;
-    GameDrawMenuEntry(menu, text);
-
-    changed = memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) != 0;
-    if (menu->selected_row != menu->draw_item && changed && menu_flash != 0)
-        text[0] = '\0';
-    else if (changed)
-        NuStrCpy(text, TTab[tACCEPT]);
-    else
-        NuStrCpy(text, TTab[tBACK]);
-    dme_sy = menu->item_scale;
-    GameDrawMenuEntry(menu, text);
-}
-
-void MenuExitOptions(MENU *menu) {
-    (void)menu;
-    RestoreOptions();
-}
-
 void RestoreOptions(void) {
     GameSetSoundVolume(Game_OptionsSave);
     GameSetMusicVolume(Game_OptionsSave);
@@ -135,50 +70,6 @@ void InitSuperStory(i32 episode) {
     NextArea_FreePlay = 0;
     FreePlay = 0;
     Cheats_TurnOff(0);
-}
-
-void MenuEnterTitles(MENU *menu) {
-    i32 i;
-    (void)menu;
-    NuPadResetState(1);
-    for (i = 0; i < 8; ++i) {
-        PlayerProgress[i].active = 0;
-    }
-    NuPadInit();
-}
-
-void MenuUpdatePauseRestart(MENU_s *menu) {
-    if (menu->confirm_pressed != 0) {
-        if (menu->selected_item == 0) {
-            Door_Reset();
-            Players_InitPositions(WORLD);
-            NewGameMode();
-            ResetBits |= 0x21;
-            reset_restart = 1;
-            MenuSFX = GameAudio_GetSfxId(0x30);
-            return;
-        }
-    } else if (menu->cancel_pressed == 0) {
-        return;
-    }
-    BackupMenu();
-    MenuSFX = GameAudio_GetSfxId(0x31);
-}
-
-void MenuDrawBonusWin(MENU_s *unused0) {
-    if (MenuStopDraw == 0) {
-        i32 green;
-        i32 red;
-        char text[256];
-        Text_MakeScore(1000000, text);
-        red = 255;
-        green = 191;
-        if (menu_flash != 0) {
-            red = 191;
-            green = 143;
-        }
-        Text3D(text, 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0);
-    }
 }
 
 i32 __cdecl Hub_InMenu(void) {
@@ -1154,22 +1045,6 @@ void __cdecl IconScenes_Dump(void) {
     }
 }
 
-/* 00496650..00496738. Callback remains unwired until the full native shop
- * interaction/drawing/exit dependency chain is available. */
-void __cdecl MenuDrawShop(MENU *menu) {
-    f32 alpha;
-    (void)menu;
-    if (MenuStopDraw == 0 && shop_quit == 0) {
-        alpha = MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc;
-        DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, alpha,
-                     alpha, 1, NULL);
-        alpha = MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc;
-        DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, alpha,
-                     alpha, 1, NULL);
-        DrawShopPrompts();
-    }
-}
-
 extern i32 AreaGlobalsChallengeCountPc;
 
 void __cdecl MenuDrawEndChallenge(MENU *menu) {
@@ -1223,100 +1098,3 @@ void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u
 STATIC_ASSERT(offsetof(TIMER, time_elapsed_mod_seconds) == 8);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, player_model) == 0);
 STATIC_ASSERT(offsetof(MISSION_MENU_PACKET_PC, active_player) == 4);
-
-#pragma data_seg(".data$MenuMiniKitUpperArrowYPc")
-f32 MenuMiniKitUpperArrowYPc = -0.175f;
-#pragma data_seg(".data$MenuMiniKitLowerArrowYPc")
-f32 MenuMiniKitLowerArrowYPc = -0.275f;
-#pragma data_seg(".data$MenuMiniKitInstructionYPc")
-f32 MenuMiniKitInstructionYPc = -0.375f;
-#pragma data_seg()
-
-void __cdecl Hub_UpdateKit(void);
-
-void __cdecl MenuUpdateMiniKit(MENU *menu) {
-    (void)menu;
-    Hub_UpdateKit();
-}
-
-void __cdecl MenuDrawMiniKit(MENU *menu) {
-    f32 alpha;
-    f32 pulse;
-    f32 scale;
-    u16 phase;
-    i32 colour;
-    i32 opacity;
-    (void)menu;
-    if (MenuStopDraw != 0)
-        return;
-    alpha = MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc;
-    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, alpha,
-                 alpha, 1, NULL);
-    alpha = MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc;
-    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, alpha,
-                 alpha, 1, NULL);
-    DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac,
-                          MissionMenuPacketPc.active_player[1], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac);
-    NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f);
-    phase = (u16)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
-    colour = menu_flash == 0 ? 255 : 191;
-    pulse = (f32)((f64)NuTrigTable[phase >> 1] * (f64)0.05f);
-    opacity = (i32)(MenuAlpha * 128.0);
-    if (HubMiniKitViewerMoveWaitPc > 0.0f) {
-        opacity = (i32)((1.0 - NuTrigTable[((i32)(HubMiniKitViewerMoveWaitPc * 32768.0) >> 1) & 0x7fff]) * opacity);
-    }
-    if (MissionMenuPacketPc.active_player[0] != 0) {
-        scale = (f32)(0.5 - pulse);
-        Text3DEx("[[lb]]", -ICONX, MenuMiniKitUpperArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
-                 (u8)opacity);
-        scale = (f32)(pulse + 0.5);
-        Text3DEx("[[rb]]", -ICONX, MenuMiniKitLowerArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
-                 (u8)opacity);
-        SmartTextEx(TTab[TextIdPc880888], -ICONX, MenuMiniKitInstructionYPc + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0,
-                    colour, colour, colour, 0.15f, 1, NULL, 0, opacity);
-    }
-    if (MissionMenuPacketPc.active_player[1] != 0) {
-        scale = (f32)(0.5 - pulse);
-        Text3DEx("[[lb]]", ICONX, MenuMiniKitUpperArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
-                 (u8)opacity);
-        scale = (f32)(pulse + 0.5);
-        Text3DEx("[[rb]]", ICONX, MenuMiniKitLowerArrowYPc + STATSPOSY, 1.0f, scale, scale, scale, 0, 255, 255, 255,
-                 (u8)opacity);
-        SmartTextEx(TTab[TextIdPc880888], ICONX, MenuMiniKitInstructionYPc + STATSPOSY, 1.0f, 0.3f, 0.3f, 0.3f, 0,
-                    colour, colour, colour, 0.15f, 1, NULL, 0, opacity);
-    }
-}
-
-extern i16 TextIdPc880fc4;
-
-void __cdecl MenuUpdateBonusWin(MENU *menu) {
-    if (menu->menu_time >= 5.0f) {
-        CompleteLevel(WORLD);
-    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
-        PlaySfx("Victory", NULL);
-        BonusWinFlag = 1;
-    }
-}
-
-void __cdecl MenuUpdateBonusComplete(MENU *menu) {
-    if (menu->menu_time >= 5.0f) {
-        CompleteLevel(WORLD);
-    } else if (menu->menu_time >= 1.5f && BonusWinFlag == 0) {
-        PlaySfx("Victory", NULL);
-        BonusWinFlag = 1;
-    }
-}
-
-void __cdecl MenuDrawBonusComplete(MENU *menu) {
-    i32 red, green;
-    (void)menu;
-    if (MenuStopDraw != 0)
-        return;
-    red = 255;
-    green = 191;
-    if (menu_flash != 0) {
-        red = 191;
-        green = 143;
-    }
-    SmartTextPc(TTab[TextIdPc880fc4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
-}
