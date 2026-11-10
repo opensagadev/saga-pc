@@ -112,8 +112,8 @@ PC_NUFADEGROUP *__cdecl NuFadeObjCreateMtx(NUSPECIALHANDLE *source, NUMTX *matri
 }
 
 void __cdecl NuFadeObjAngleTerrain(NUMTX *matrix) {
-    NUVEC position;
-    NUVEC angles;
+    NUVEC4 position;
+    NUVEC4 angles;
     matrix->m31 = NewShadow(&matrix->translation, 0.0f, 5.0f, 0);
     angles.x = (f32)NuAtan2D(ShadNorm.z, ShadNorm.y);
     angles.z = (f32)-NuAtan2D(ShadNorm.x, NuFsqrt(ShadNorm.y * ShadNorm.y + ShadNorm.z * ShadNorm.z));

@@ -34,7 +34,8 @@ void __cdecl NuTexAnimRemoveList(void *animation) {
             node->next = ntal_free;
             ntal_free = node;
             NuThreadEnableThreadSwap();
-            break;
+            PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);
+            return;
         }
     }
     PCThreadCriticalSectionLeave_candidate(g_texAnimCriticalSection);

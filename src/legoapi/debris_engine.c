@@ -348,10 +348,9 @@ void __cdecl DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
 
 void __cdecl RemoveDebrisEffectFromStack(DEBRISKEY_PC *key) {
     if (key->next == NULL) {
-        DEBRISKEY_PC *previous = key->previous;
-        debris_keystack = previous;
-        if (previous != NULL) {
-            previous->next = NULL;
+        debris_keystack = key->previous;
+        if (debris_keystack != NULL) {
+            debris_keystack->next = NULL;
         }
     } else {
         key->next->previous = key->previous;

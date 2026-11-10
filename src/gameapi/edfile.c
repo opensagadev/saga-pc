@@ -1012,8 +1012,9 @@ void cbmcfgCameraSpeed(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 }
 
 void __cdecl cbSetAutoSpeed(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    edcam_s *cam = gp_cam;
+    edcam_s *cam;
     edmain_auto_speed = item->highlighted;
+    cam = gp_cam;
     if (edmain_auto_speed != 0) {
         cam->auto_move_base = 0.15f;
         cam->auto_move_dist_scale = 0.2f;

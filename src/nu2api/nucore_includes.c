@@ -517,8 +517,8 @@ void __cdecl NuFileUpCase(NUFILE_DEVICE *device, char *filepath) {
 }
 
 void __cdecl NuFileReldirFix(NUFILE_DEVICE *device, char *path) {
-    char *source = path;
     char *destination = path;
+    char *source = path;
     char separator;
     char previous;
 

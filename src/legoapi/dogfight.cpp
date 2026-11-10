@@ -874,8 +874,7 @@ extern "C" {
     static __declspec(noinline) f32 FlightSplineLegacyLengthPc(FLIGHT_SPLINE_RESOURCE_PC *spline) {
         f32 distance = 0.0f;
         f32 along = 1.0f;
-        __declspec(align(16)) NUVEC4 current, previous;
-        NUVEC difference;
+        __declspec(align(16)) NUVEC4 current, previous, difference;
         f32 squared;
         if (spline->point_count != 0) {
             CalcSplinePoint(spline, &current, along);

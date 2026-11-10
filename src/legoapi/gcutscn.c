@@ -350,10 +350,10 @@ void __cdecl instNuGCutSceneCalculateAverageCentre(INSTNUGCUTSCENE *owner, NUMTX
         }
     }
     if (count > 0.0f) {
-        f32 inverse = 1.0f / count;
-        out->x *= inverse;
-        out->y *= inverse;
-        out->z *= inverse;
+        count = 1.0f / count;
+        out->x *= count;
+        out->y *= count;
+        out->z *= count;
     }
     if (matrix != NULL)
         NuVecMtxTransform(&instance->center, &instance->center, matrix);
