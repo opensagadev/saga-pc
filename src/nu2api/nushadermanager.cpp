@@ -65,9 +65,9 @@ bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32 which) const {
     }
 }
 bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
-    if (variant == 0)
-        return UnfilteredHasLayer(which);
-    return UnfilteredHasLayer(which) && which == 0 && (descriptor->override_mode & 1) != 0;
+    if (variant != 0)
+        return UnfilteredHasLayer(which) && which == 0 && (descriptor->override_mode & 1) != 0;
+    return UnfilteredHasLayer(which);
 }
 #define SHADER_VERTEX_FORMAT_HAS_UV_SETS(format, count) ((i8)(((format) >> 9) & 3) >= (count))
 

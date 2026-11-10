@@ -123,10 +123,9 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
                 return -1;
             }
         }
-        if (vehicle->id == id_ANAKINSPODGREEN) {
-            return id_ANAKINSPODGREEN;
-        }
-        return -1;
+        if (vehicle->id != id_ANAKINSPODGREEN)
+            return -1;
+        return id_ANAKINSPODGREEN;
     }
     if (WORLD->current_level == PODSPRINTA_LDATA) {
         if (cut != game_cutscenes_podsprint_out_of_time && cut != game_cutscenes_podsprint_sebulba) {

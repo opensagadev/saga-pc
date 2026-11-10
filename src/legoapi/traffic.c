@@ -53,17 +53,17 @@ static void TrafficAnim_yoffset(NUFPAR_PC *parser) {
 }
 static i32 Traffic_FindVehiclePc(char *name) {
     i32 i;
-    if (name == NULL || parse_worldinfo == NULL || parse_trafficanimsys == NULL)
-        return -1;
-    for (i = 0; i < parse_trafficanimsys->vehicle_count; ++i)
-        if (NuStrICmp(name, NuSpecialGetName(&parse_trafficanimsys->vehicles[i])) == 0)
-            return i;
-    if (parse_trafficanimsys->vehicle_count >= 16)
-        return -1;
-    if (NuSpecialFind(parse_worldinfo->current_gscn,
-                      &parse_trafficanimsys->vehicles[parse_trafficanimsys->vehicle_count], name, 1) == 0)
-        return -1;
-    return parse_trafficanimsys->vehicle_count++;
+    if (name != NULL && parse_worldinfo != NULL && parse_trafficanimsys != NULL) {
+        for (i = 0; i < parse_trafficanimsys->vehicle_count; ++i)
+            if (NuStrICmp(name, NuSpecialGetName(&parse_trafficanimsys->vehicles[i])) == 0)
+                return i;
+        if (parse_trafficanimsys->vehicle_count >= 16)
+            return -1;
+        if (NuSpecialFind(parse_worldinfo->current_gscn,
+                          &parse_trafficanimsys->vehicles[parse_trafficanimsys->vehicle_count], name, 1) != 0)
+            return parse_trafficanimsys->vehicle_count++;
+    }
+    return -1;
 }
 static void Traffic_vehicle(NUFPAR_PC *parser) {
     i32 index;

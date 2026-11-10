@@ -1118,7 +1118,9 @@ f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
     if (position < 0.0f) {
         return 0.0f;
     }
-    return position > 1.0f ? 1.0f : position;
+    if (position > 1.0f)
+        return 1.0f;
+    return position;
 }
 
 __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {

@@ -6687,10 +6687,9 @@ static i32 AIMoveAdjustDestinationPath(AISYS_PC *system, AIPACKET_PC *packet) {
         return 0;
     }
     AIMoveFindDivertNode(system, packet->path_info.path, packet, &packet->fallback_destination);
-    if (packet->divert_node_index >= packet->path_info.path->node_count) {
-        return -1;
-    }
-    return AIMoveApplyDivertNode(packet) != 0 ? 1 : -1;
+    if (packet->divert_node_index < packet->path_info.path->node_count)
+        return AIMoveApplyDivertNode(packet) != 0 ? 1 : -1;
+    return -1;
 }
 
 void AIMoveToDestination(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {

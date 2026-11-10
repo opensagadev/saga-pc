@@ -861,12 +861,15 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
         return (u16)hint->id == 0x269;
     }
     if (bountyhunter != 0 && ((u16)hint->id == 0x261 || (u16)hint->id == 0x26a)) {
-        if (AvailableToPlayer(0x1000000, -1, 6, 0) != 0)
-            return (u16)hint->id == 0x261;
-        return (u16)hint->id == 0x26a;
+        if (AvailableToPlayer(0x1000000, -1, 6, 0) == 0)
+            return (u16)hint->id == 0x26a;
+        return (u16)hint->id == 0x261;
     }
-    if (droid != 0 && (u16)hint->id == 0x25f)
-        return (LswForceUsedHintFlagsPc & 2) == 2;
+    if (droid != 0 && (u16)hint->id == 0x25f) {
+        if ((LswForceUsedHintFlagsPc & 2) == 2)
+            return 1;
+        return 0;
+    }
     return 0;
 }
 

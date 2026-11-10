@@ -5359,7 +5359,9 @@ i32 __cdecl NuAToIW(const NUWCHAR *str) {
         value = (i32)((u32)value * 10u + (u32)c - (u32)'0');
         c = *str++;
     }
-    return sign != 0 ? (i32)((u32)value * (u32)sign) : value;
+    if (sign != 0)
+        return (i32)((u32)value * (u32)sign);
+    return value;
 }
 
 i32 __cdecl NuStrToLW(NUWCHAR *str, NUWCHAR **end, i32 radix) {
@@ -5397,7 +5399,9 @@ i32 __cdecl NuStrToLW(NUWCHAR *str, NUWCHAR **end, i32 radix) {
     }
     if (end != NULL)
         *end = str - 1;
-    return sign != 0 ? (i32)((u32)value * (u32)sign) : value;
+    if (sign != 0)
+        return (i32)((u32)value * (u32)sign);
+    return value;
 }
 
 void __cdecl NuStrToLower(char *text) {

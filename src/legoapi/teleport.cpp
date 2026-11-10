@@ -353,7 +353,9 @@ extern "C" TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *object, f32 ran
             nearest_distance = distance;
         }
     }
-    return nearest == -1 ? NULL : &((TELEPORT_WORLD_PC *)WORLD)->teleports[nearest];
+    if (nearest != -1)
+        return &((TELEPORT_WORLD_PC *)WORLD)->teleports[nearest];
+    return NULL;
 }
 
 static void TeleportGetSegmentPc(i32 *start, i32 *end, GAMEOBJECT *object) {

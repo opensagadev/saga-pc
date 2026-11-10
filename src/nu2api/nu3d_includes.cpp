@@ -5746,7 +5746,9 @@ extern "C" {
                         NUPORTAL *portal = &scene->portals[portal_index];
                         f32 side = portal->plane.a * position->x + portal->plane.b * position->y +
                                    portal->plane.c * position->z + portal->plane.d;
-                        return side < 0.0f ? portal->front_room : portal->back_room;
+                        if (side < 0.0f)
+                            return portal->front_room;
+                        return portal->back_room;
                     }
                 }
             }
