@@ -15,7 +15,7 @@ sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get install --no-install-recommends \
     ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18
-python3 -m pip install capstone==5.0.9  # required by discovery tooling and tests
+python3 -m pip install capstone==5.0.9  # discovery tooling, tests and diff classes in matching.json
 python3 -m pip install libclang        # only for tools/permute.py
 make setup                             # pinned MSVC 2005, objdiff-cli and DirectX SDK libs into build/tools/
 make check
@@ -479,6 +479,21 @@ The exact badge shows `matching_with_padding_percent`; the strict function-only
 `unclassified_non_padding_text_bytes`) remain in `matching.json`. Mapped code/data badges count known symbol extents
 against the code (3,471,246) and data (36,018,966) section sizes. None of these
 measure playability.
+
+### Diff classes
+
+With capstone installed, `match.py` also records for every non-exact function a
+`diff_class` and `diff_hunks` (from `tools/diffclass.py`). The class is the first
+normalisation level at which retail and rebuilt instructions agree: `operands`
+(only branch displacements/encodings), `registers`, `stack` (esp/ebp offsets and
+frame size), `registers+stack`, `operand-shape` (same mnemonics), `reordered` or
+`structural`. `diff_hunks` is the number of differing spots in a difflib alignment
+of the register- and stack-normalised instructions. Without capstone both fields
+are omitted; nothing else changes. `python3 tools/diffclass.py` summarises them.
+
+`python3 tools/altbuild.py UNIT [FLAGS] [-/FLAG]` compiles one unit with other
+compiler flags (`-/GS` drops `/GS`; `--cxx` compiles a C unit as C++) and compares
+each mapped function with the current object, without touching `build/obj`.
 
 ## Compiler and layout
 
