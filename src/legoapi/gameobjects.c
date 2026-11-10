@@ -5679,19 +5679,6 @@ void __cdecl GameAIProcess(void) {
     oneAtOnce_MaintainArray();
 }
 
-void __cdecl ConstantRumble(GAMEOBJECT *, f32, f32);
-void __cdecl PowerUp_Update(GAMEOBJECT *object) {
-    if (object->powerup_time > 0.0f) {
-        object->powerup_time -= FRAMETIME;
-        if (object->powerup_time <= 0.0f)
-            GameAudio_PlaySfx(0x52, NULL, 0, 0);
-        else {
-            GameAudio_PlaySfx(0x51, NULL, 0, 0);
-            ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * .5), 0.0f);
-        }
-    }
-}
-
 void *__cdecl CutScenePlayer_Active(void);
 void __cdecl GameLoadCharacterModels(APICHARACTERMODELLIST *list, i32 append_models, VARIPTR *buffer, VARIPTR *end,
                                      i32 area_models, i32 area) {
