@@ -5781,13 +5781,15 @@ i32 __cdecl Action_SetControlSystem(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
     (void)sys;
     (void)processor;
     (void)param_6;
-    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || param_5 == 0)
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    object->ai_packet.movement_stopped = 0;
-    for (index = 0; index < param_4; ++index) {
-        if (NuStrICmp(params[index], (char *)AITransferLiteral757a70) == 0) {
-            object->ai_packet.movement_stopped = 1;
+    if (param_5 != 0) {
+        object->ai_packet.movement_stopped = 0;
+        for (index = 0; index < param_4; ++index) {
+            if (NuStrICmp(params[index], (char *)AITransferLiteral757a70) == 0) {
+                object->ai_packet.movement_stopped = 1;
+            }
         }
     }
     return 1;
@@ -5805,13 +5807,13 @@ i32 __cdecl Action_SetSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     (void)sys;
     (void)processor;
     (void)param_6;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    if (object == NULL || param_5 == 0) {
-        return 1;
-    }
-
     spline = NULL;
     looping = 0;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (param_5 == 0)
+        return 1;
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AITransferLiteral757a84);
         if (value != NULL) {

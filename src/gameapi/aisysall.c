@@ -10460,12 +10460,11 @@ static void __cdecl AiEditorAntinodeTypeCancelPc(eduimenu_s *menu, eduimenu_s *c
 }
 
 static void __cdecl AiEditorAntinodeTypeSetterPc(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    EDANTINODE_s *antinode = aieditor->selected_antinode;
-    i32 previous_type = antinode->type;
+    i32 previous_type = aieditor->selected_antinode->type;
     (void)menu;
     (void)event;
-    if (antinode != NULL && item != NULL)
-        antinode->type = (u8)item->data;
+    if (aieditor->selected_antinode != NULL && item != NULL)
+        aieditor->selected_antinode->type = (u8)item->data;
     if (aieditor->selected_antinode->type == 0) {
         if (previous_type != 0) {
             if (aieditor->selected_antinode->base_radius > aieditor->selected_antinode->base_height)

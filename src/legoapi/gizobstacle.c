@@ -959,8 +959,8 @@ void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *obstacle, GAMEOBJECT *ob
     if (!obstacle->playback_state && obstacle->anim_set->state == 2 && !(obstacle->config_flags & 0x100))
         return;
     obstacle->progress_flags |= 8;
-    obstacle->triggering_object = object;
     obstacle->animation_speed = speed;
+    obstacle->triggering_object = object;
 }
 GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared,
                                              i32 mode) {
