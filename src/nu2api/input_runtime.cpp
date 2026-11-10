@@ -586,10 +586,10 @@ extern "C" i32 __cdecl PcInputDeadzonePc(i32 port) {
 
 extern "C" i32 __cdecl NuPadReadOutputsPc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2,
                                           u32 *buttons, u8 *unknown, i32 *flags) {
-    if (nu_input_state == NULL)
-        return 0;
-    return ((PC_INPUT_RUNTIME_PC *)nu_input_state)
-        ->ReadSamplePc(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
+    if (nu_input_state != NULL)
+        return ((PC_INPUT_RUNTIME_PC *)nu_input_state)
+            ->ReadSamplePc(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
+    return 0;
 }
 
 i32 PC_INPUT_RUNTIME_PC::ReadSamplePc(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2,
@@ -1275,7 +1275,9 @@ extern "C" i32 __cdecl PcInputIsJoystickDevicePc(i32 port) {
     return (u32)port <= 9;
 }
 extern "C" i32 __cdecl PcInputMixConfigurationHashPc(i32 previous, i32 value) {
-    return (i32)(((u32)previous * 2 + (previous < 0)) ^ (u32)value ^ 0x12345678);
+    if (previous & 0x80000000)
+        return (previous * 2 + 1) ^ value ^ 0x12345678;
+    return (previous * 2) ^ value ^ 0x12345678;
 }
 i32 PC_INPUT_RUNTIME_PC::HashAuxiliaryBindingsPc() {
     i32 hash = 0;

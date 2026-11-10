@@ -345,18 +345,18 @@ extern "C" void *__cdecl GizSpinner_ReserveBufferSpace(void *pointer) {
     i32 i;
     world->spinners = NULL;
     world->spinner_count = 0;
-    if (world->current_level->max_spinners == 0)
-        return NULL;
-    world->spinner_anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0,
-                                                            world->current_level->max_spinneranim_objs);
-    world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-    world->spinners = (GIZSPINNER_s *)world->giz_buffer.void_ptr;
-    world->giz_buffer.addr += world->current_level->max_spinners * sizeof(*world->spinners);
-    memset(world->spinners, 0, world->current_level->max_spinners * sizeof(*world->spinners));
-    for (i = 0; i < world->current_level->max_spinners; ++i)
-        world->spinners[i].anim_set =
-            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, world->spinner_anim_pool, world->game_anim_sys);
-    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+    if (world->current_level->max_spinners != 0) {
+        world->spinner_anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0,
+                                                                world->current_level->max_spinneranim_objs);
+        world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
+        world->spinners = (GIZSPINNER_s *)world->giz_buffer.void_ptr;
+        world->giz_buffer.addr += world->current_level->max_spinners * sizeof(*world->spinners);
+        memset(world->spinners, 0, world->current_level->max_spinners * sizeof(*world->spinners));
+        for (i = 0; i < world->current_level->max_spinners; ++i)
+            world->spinners[i].anim_set = GameAnimSet_Create(&world->giz_buffer, &world->buffer_end,
+                                                             world->spinner_anim_pool, world->game_anim_sys);
+        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+    }
     return world->spinners;
 }
 

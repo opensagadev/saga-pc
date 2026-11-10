@@ -1276,7 +1276,7 @@ extern "C" {
             if (destination->position.y > source->position.y)
                 SetSpecialMove(owner, destination, source, 5);
             else {
-                if (owner->field_281 && source->min_height > owner->position.y)
+                if (owner->field_281 && owner->position.y < source->min_height)
                     return 0;
                 SetSpecialMove(owner, destination, source, 6);
             }
@@ -1586,24 +1586,23 @@ extern "C" {
 
     i32 __cdecl Batman_PrepareTakeOverJumpPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         GAMEOBJECT *owner;
-        i32 result;
         GAMEOBJECT *participant;
         AIPATHNODE_PC *destination;
 
         owner = (GAMEOBJECT *)object->owner;
-        result = 0;
-        if ((owner->character_data->game_character->flags_090 & 0x40) == 0)
-            return result;
-        result = 1;
-        participant = owner->takeover_source;
-        if (participant != NULL) {
-            destination = &packet->path_info.path
-                               ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-            ReleaseTakeOver(participant, 1);
-            StartBigJump(participant, &destination->position, 0, 0.5f, 1.0f, 0);
-            SetSpecialMove(participant, destination, NULL, 3);
+        if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
+            participant = owner->takeover_source;
+            if (participant != NULL) {
+                destination =
+                    &packet->path_info.path
+                         ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+                ReleaseTakeOver(participant, 1);
+                StartBigJump(participant, &destination->position, 0, 0.5f, 1.0f, 0);
+                SetSpecialMove(participant, destination, NULL, 3);
+            }
+            return 1;
         }
-        return result;
+        return 0;
     }
 #pragma data_seg(".data$batman_prepareforspecialmove")
     BATMAN_PREPARE_PC batman_prepareforspecialmove[11] = {

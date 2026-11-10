@@ -1533,6 +1533,9 @@ extern "C" void __cdecl NuPs2GetViewport(NUVPCURRENT *viewport) {
 extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
     f32 value;
     switch (PcWindowOptions.aspect_mode) {
+        case 0:
+            value = 1.3333333730697632f;
+            break;
         case 1:
             value = 1.7777777910232544f;
             break;

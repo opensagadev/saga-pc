@@ -489,9 +489,9 @@ static void __cdecl D_vehicle(NUFPAR_PC *parser) {
             D_door->vehicle_mask_low = 0xffff;
             D_door->vehicle_mask_high = 0;
         } else {
-            u32 type = (u8)LevelCharacterTypeIDFn(parser->word_buffer_ptr);
+            i32 type = (u8)LevelCharacterTypeIDFn(parser->word_buffer_ptr);
             if (type < 64)
-                D_door->vehicle_mask_low |= 1u << (type & 31);
+                D_door->vehicle_mask_low |= 1 << type;
         }
     }
 }
@@ -825,7 +825,7 @@ void __cdecl Hub_ActivateDoorMenu(void *argument) {
     MainRenderTargetTime = 0.0f;
     NeedScreenGrab(1);
     BackDrop_ResetColours();
-    menu = ((ADataList[area].flags & 4) != 0) + 15;
+    menu = (ADataList[area].flags & 4) ? 16 : 15;
     Hint_CancelCurrent();
     NewMenu(menu, -1, -1);
 }

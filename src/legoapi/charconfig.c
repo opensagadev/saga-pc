@@ -1658,7 +1658,7 @@ static void CC_oldheadmovement(NUFPAR_PC *parser) {
 }
 
 static void CC_atatheadmovement(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_094_bytes[3] |= 0x40;
+    charconfig.runtime->flags_094 |= 0x40000000;
 }
 
 static void CC_cannotbigjump(NUFPAR_PC *parser) {
@@ -2535,7 +2535,11 @@ i32 __cdecl CanWearHatsInFreePlay(i32 id) {
     if ((GCDataList[id].flags_090 & 0x10) != 0)
         return 0;
     flags = CDataList[id].model_flags;
-    return (flags & 0x1000010) != 0x1000010 && (flags & 0x40088) != 0;
+    if ((flags & 0x1000010) == 0x1000010)
+        return 0;
+    if ((flags & 0x40088) == 0)
+        return 0;
+    return 1;
 }
 
 i32 __cdecl RandomIDFromFlags(u32 model_flags, u32 game_flags, i32 require_hat, APICHARACTERMODELLIST *excluded,

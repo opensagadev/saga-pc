@@ -851,7 +851,7 @@ GIZMOBLOWUP_PC *__cdecl DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
         f32 distance;
         if (gizmo == NULL || gizmo->object == NULL)
             continue;
-        blowup = (GIZMOBLOWUP_PC *)gizmo->object;
+        blowup = (GIZMOBLOWUP_PC *)LevGizmo[i]->object;
         if ((blowup->status_flags & 0x800000) && !(blowup->status_flags & 1) && LevGizObst[i] != NULL &&
             LevGizObst[i]->anim_set->state != 0) {
             distance = NuVecDistSqr(&object->collision_position, &blowup->mid_position, NULL);

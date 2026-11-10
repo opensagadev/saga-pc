@@ -321,17 +321,17 @@ extern "C" {
     static void *HatMachines_ReserveBufferSpace(void *world_ptr) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys = NULL;
-        if (world->current_level->max_levers == 0)
-            return NULL;
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys = (HATMACHINE_SYS_PC *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += sizeof(HATMACHINE_SYS_PC);
-        memset(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys, 0, sizeof(HATMACHINE_SYS_PC));
-        world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines = (HATMACHINE_PC *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_hatmachines * sizeof(HATMACHINE_PC);
-        memset(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines, 0,
-               world->current_level->max_hatmachines * sizeof(HATMACHINE_PC));
+        if (world->current_level->max_levers > 0) {
+            world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys = (HATMACHINE_SYS_PC *)world->giz_buffer.void_ptr;
+            world->giz_buffer.addr += sizeof(HATMACHINE_SYS_PC);
+            memset(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys, 0, sizeof(HATMACHINE_SYS_PC));
+            world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
+            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines = (HATMACHINE_PC *)world->giz_buffer.void_ptr;
+            world->giz_buffer.addr += world->current_level->max_hatmachines * sizeof(HATMACHINE_PC);
+            memset(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines, 0,
+                   world->current_level->max_hatmachines * sizeof(HATMACHINE_PC));
+        }
         return ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
     }
     static void HatMachines_ClearProgress(void *, void *progress_ptr) {

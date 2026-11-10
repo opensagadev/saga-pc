@@ -148,7 +148,9 @@ GIZMO_PC *__cdecl createGizRandom(void *unused, i32 output_count, i32 *weights, 
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)WorldInfo_CurrentlyLoading();
     GIZFLOW_RANDOM_PC *random;
     i32 i;
-    if (world == NULL || world->randoms->count == world->level->max_randoms)
+    if (world == NULL)
+        return NULL;
+    if (world->randoms->count == world->level->max_randoms)
         return NULL;
     random = &world->randoms->randoms[world->randoms->count];
     random->output_count = output_count;

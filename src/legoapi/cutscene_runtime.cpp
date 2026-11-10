@@ -26,11 +26,12 @@ CUTINFO *__cdecl NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i
             return NULL;
     }
     count = NewCutInfoCount;
-    if (count >= 8)
-        return NULL;
-    NewCutInfo[count] = cutscene;
-    NewCutInfoCount = count + 1;
-    return cutscene;
+    if (count < 8) {
+        NewCutInfo[count] = cutscene;
+        NewCutInfoCount = count + 1;
+        return cutscene;
+    }
+    return NULL;
 }
 
 void __cdecl CutScene_SnapToEnd(void *cut) {
@@ -49,9 +50,7 @@ extern "C" i32 CutScene_PlayingOrRequested(CUTINFO *cut) {
             if (cut == NewCutInfo[i])
                 return 1;
         }
-        return 0;
-    }
-    if (CutStopInfo != NULL || NewCutInfoCount != 0)
+    } else if (CutStopInfo != NULL || NewCutInfoCount != 0)
         return 1;
     return 0;
 }

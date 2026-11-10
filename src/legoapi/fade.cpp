@@ -82,8 +82,8 @@ void Fade::UpdateFade() {
 void Fade::DrawFade() {
     i32 index;
 
-    if (info->fade != 0.0f && FadeMtl != NULL) {
-        index = (i32)(((f64)info->fade - 0.0) * 16384.0 + 49152.0) >> 1 & 0x7fff;
+    if (info->fade > 0.0f && FadeMtl != NULL) {
+        index = (i32)(((f64)info->fade - 0.0) * 16384.0 + 49152.0 + 16384.0) >> 1 & 0x7fff;
         NuRndrRect2di(0, 0, 0x2800, 0xe00, (i32)(NuTrigTable[index] * 128.0) << 24, ScreenFadeMtl);
     }
 }

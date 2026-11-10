@@ -658,10 +658,14 @@ void __cdecl MenuUpdateLoading(MENU *menu) {
 
 void __cdecl MenuUpdateSaveCancel(MENU *menu) {
     if (menu->confirm_pressed != 0) {
-        if (menu->selected_row == 0)
+        if (menu->selected_row == 0) {
             BackupMenuNoFn();
-        BackupMenu();
-        MenuSFX = MENUSFX_MENUSELECT;
+            BackupMenu();
+            MenuSFX = MENUSFX_MENUSELECT;
+        } else {
+            BackupMenu();
+            MenuSFX = MENUSFX_MENUSELECT;
+        }
     } else if (menu->cancel_pressed != 0) {
         BackupMenu();
         MenuSFX = MENUSFX_MENUSELECT;
@@ -670,10 +674,14 @@ void __cdecl MenuUpdateSaveCancel(MENU *menu) {
 
 void __cdecl MenuUpdateLoadCancel(MENU *menu) {
     if (menu->confirm_pressed != 0) {
-        if (menu->selected_row == 0)
+        if (menu->selected_row == 0) {
             BackupMenuNoFn();
-        BackupMenu();
-        MenuSFX = MENUSFX_MENUSELECT;
+            BackupMenu();
+            MenuSFX = MENUSFX_MENUSELECT;
+        } else {
+            BackupMenu();
+            MenuSFX = MENUSFX_MENUSELECT;
+        }
     } else if (menu->cancel_pressed != 0) {
         BackupMenu();
         MenuSFX = MENUSFX_MENUSELECT;

@@ -424,11 +424,12 @@ f32 __cdecl BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 al
         return 0.0f;
     NuVecSub(&delta, position, (NUVEC *)&pNuCam->mtx.m30);
     distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-    if (!(distance_squared < fade_end * fade_end))
-        return 0.0f;
-    if (!(distance_squared > fade_start * fade_start))
+    if (distance_squared < fade_end * fade_end) {
+        if (distance_squared > fade_start * fade_start)
+            return (1.0f - (NuFsqrt(distance_squared) - fade_start) / (fade_end - fade_start)) * alpha;
         return alpha;
-    return (1.0f - (NuFsqrt(distance_squared) - fade_start) / (fade_end - fade_start)) * alpha;
+    }
+    return 0.0f;
 }
 
 static void SplinePointAngles(NUGSPLINE *spline, i32 index, i32 looping, u16 *pitch, u16 *angle) {

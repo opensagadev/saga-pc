@@ -58,7 +58,7 @@ OggReader::OggReader(void) {
         PCOggCriticalSectionPc = PCThreadCriticalSectionCreate_candidate();
         PCOggCachePoolPc = (PC_OGG_CACHE_RECORD_PC *)NuAlloc(0x564, ".\\pc\\oggreader.cpp", 36);
     }
-    for (i32 i = 0; i < 5; ++i)
+    for (i32 i = 0; i != 5; ++i)
         memset(&PCOggCachePoolPc[i], 0, sizeof(PC_OGG_CACHE_RECORD_PC));
 }
 OggReader::~OggReader(void) {

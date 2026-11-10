@@ -226,10 +226,14 @@ static void Lever_Reset(GIZMO_LEVER_PC *lever) {
 }
 static i32 Levers_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    return world == NULL ? 0 : world->current_level->max_levers;
+    if (world != NULL)
+        return world->current_level->max_levers;
+    return 0;
 }
 static char *Lever_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo == NULL ? NULL : ((GIZMO_LEVER_PC *)gizmo->object)->name;
+    if (gizmo != NULL)
+        return ((GIZMO_LEVER_PC *)gizmo->object)->name;
+    return NULL;
 }
 static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     GIZMO_LEVER_PC *lever;
@@ -280,7 +284,7 @@ static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
         return 1;
     lever = (GIZMO_LEVER_PC *)gizmo->object;
     if ((query & 1) != 0)
-        return (lever->flags & 0x80) == 0 ? value == 0 : value;
+        return (lever->flags & 0x80) != 0 ? value : value == 0;
     lever->flags = (lever->flags & ~0x80) | ((value == 0) << 7);
     return 1;
 }
