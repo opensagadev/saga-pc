@@ -169,10 +169,12 @@ static i32 __cdecl GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include
     return 0;
 }
 static char *__cdecl GizSpecial_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    if (output == 0)
-        return "AtEnd";
-    if (output == 1)
-        return "NotAtStart";
+    switch (output) {
+        case 0:
+            return "AtEnd";
+        case 1:
+            return "NotAtStart";
+    }
     return NULL;
 }
 static i32 __cdecl GizSpecial_GetNumOutputs(GIZMO_PC *gizmo) {

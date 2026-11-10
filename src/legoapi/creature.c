@@ -288,7 +288,9 @@ static void __cdecl CreatureCrate_MovePc(PART_PC *part, f32 elapsed) {
 }
 
 static i32 __cdecl CreatureCrate_DrawPc(PART_PC *part) {
-    return !(((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay > 0.0f);
+    if (((CREATURE_CRATE_PART_VIEW_PC *)part)->spawn_delay > 0.0f)
+        return 0;
+    return 1;
 }
 
 void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {

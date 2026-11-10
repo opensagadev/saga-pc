@@ -647,22 +647,24 @@ extern "C" void __cdecl Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediat
 extern "C" {
 
     i32 __cdecl Teleport_UpdateHints(HINT_PC *hint) {
-        GAMEOBJECT *object;
         (void)hint;
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
             return 0;
         if (((HINT_WORLD_TELEPORT_PC *)WORLD)->teleport_count <= 0 || AvailableToPlayer(0x40000, -1, -1, 0) == 0)
             return 0;
-        object = (GAMEOBJECT *)Player[0];
-        if (object != NULL && ((object->flags_e24 & 0x20) != 0 || Teleport_Find(object, 1.5625f) != NULL))
+        if ((Player[0] != NULL && ((((GAMEOBJECT *)Player[0])->flags_e24 & 0x20) != 0 ||
+                                   Teleport_Find((GAMEOBJECT *)Player[0], 1.5625f) != NULL)) ||
+            (Player[1] != NULL && ((((GAMEOBJECT *)Player[1])->flags_e24 & 0x20) != 0 ||
+                                   Teleport_Find((GAMEOBJECT *)Player[1], 1.5625f) != NULL)))
             return 1;
-        object = (GAMEOBJECT *)Player[1];
-        return object != NULL && ((object->flags_e24 & 0x20) != 0 || Teleport_Find(object, 1.5625f) != NULL);
+        return 0;
     }
 
     i32 __cdecl Teleport_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
         TELEPORT_CONFIG_PC *teleport;
-        if (gizmo == NULL || gizmo->object == NULL)
+        if (gizmo == NULL)
+            return 0;
+        if (gizmo->object == NULL)
             return 0;
         teleport = (TELEPORT_CONFIG_PC *)gizmo->object;
         if ((mode & 1) != 0 && teleport->enabled != reverse)

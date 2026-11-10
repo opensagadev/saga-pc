@@ -360,13 +360,12 @@ i32 __cdecl GameAnimSet_Stop(GAMEANIMSET *set) {
 
 i32 __cdecl GameAnimSet_SetRepeating(GAMEANIMSET *set, i32 repeating) {
     GAMEANIMOBJ *object;
-    NUINSTANIM *animation;
 
     if (set != NULL) {
         for (object = set->objects; object != NULL; object = object->next) {
-            animation = object->instance_animation;
-            if (animation != NULL) {
-                animation->flags = (animation->flags & ~8u) | (((u32)repeating & 1) << 3);
+            if (object->instance_animation != NULL) {
+                object->instance_animation->flags =
+                    (object->instance_animation->flags & ~8u) | (((u32)repeating & 1) << 3);
             }
         }
     }

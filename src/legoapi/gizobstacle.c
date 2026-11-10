@@ -943,13 +943,13 @@ void __cdecl GizObstacles_AddTrigger(NUVEC *position) {
     NUVEC message_position;
     if (!position)
         return;
-    if (GizObstacleTriggerCountPc >= 16) {
+    if (GizObstacleTriggerCountPc < 16) {
+        GizObstacleTriggersPc[GizObstacleTriggerCountPc++] = position;
+    } else {
         message_position = v001;
         AddGameMessage((char *)GizObstacleTriggerLimitMessagePc, &message_position, 0.4f, NULL, 0.4f, 200, 200, 200,
                        0x2080, 0.0f);
-        return;
     }
-    GizObstacleTriggersPc[GizObstacleTriggerCountPc++] = position;
 }
 void __cdecl GizObstacle_SetTechnoControlled(GIZOBSTACLE *obstacle, f32 speed) {
     obstacle->progress_flags |= 4;

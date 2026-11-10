@@ -80,7 +80,7 @@ void __cdecl Animate_ATAT(GAMEOBJECT *object) {
             object->anim_packet.requested_animation = 0;
     }
     if (object->anim_packet.requested_animation == 1) {
-        i32 turn = RotDiff(object->previous_movement_angle, object->supporting_platform_id);
+        i32 turn = RotDiff(object->previous_movement_angle, object->field_0x276);
         if (turn < 0 && object->character_model->action_animations[38] != NULL) {
             object->anim_packet.requested_animation = 38;
             return;
@@ -474,11 +474,10 @@ void __cdecl Animate_CRITTER(GAMEOBJECT *object) {
     SetDefaultCharacterAnimPc(object);
     if (UseFallAnim(object)) {
         object->anim_packet.requested_animation = 5;
-        return;
-    }
-    if (object->anim_packet.requested_animation != 5 && (object->pad->runtime_flags & 2) == 0 &&
-        object->pad->input_magnitude > 0.0f)
+    } else if (object->anim_packet.requested_animation != 5 && (object->pad->runtime_flags & 2) == 0 &&
+               object->pad->input_magnitude > 0.0f) {
         MoveAnim_Check(object);
+    }
 }
 
 void __cdecl Animate_PROTOCOL(GAMEOBJECT *object) {

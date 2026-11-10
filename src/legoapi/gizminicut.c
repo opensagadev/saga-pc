@@ -75,7 +75,13 @@ static i32 __cdecl GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 static const char *__cdecl GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
-    return output == 0 ? "Played" : output == 1 ? "Playing" : "Unknown!";
+    switch (output) {
+        case 0:
+            return "Played";
+        case 1:
+            return "Playing";
+    }
+    return "Unknown!";
 }
 static i32 __cdecl GizMiniCut_GetNumOutputs(GIZMO_PC *gizmo) {
     (void)gizmo;

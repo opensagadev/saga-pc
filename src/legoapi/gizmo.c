@@ -617,10 +617,11 @@ i32 __cdecl Gizmo_FindNuSpecial(NUGSCN *scene, NUSPECIALHANDLE *special, char *n
 }
 i32 __cdecl GizmoFileReadName(char *name) {
     i32 length = EdFileReadChar();
-    if (!length)
-        return 0;
-    EdFileRead(name, length);
-    return 1;
+    if (length) {
+        EdFileRead(name, length);
+        return 1;
+    }
+    return 0;
 }
 
 GIZMO_PC *__cdecl AddGizmo(void *system_ptr, i32 type_id, char *name, void *object) {

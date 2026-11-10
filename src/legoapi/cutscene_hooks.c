@@ -370,12 +370,11 @@ i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {
     } while (0)
 
 i32 __cdecl PCCutAni3CurveInteger(ANI3_HEADER_PC *animation, f32 *values, i32 index) {
-    if (animation->curve_types[index] == 10) {
-        i32 raw;
-        memcpy(&raw, &values[index], sizeof(raw));
-        return raw;
-    }
-    return (i32)(values[index] < 0.0f ? values[index] - NuQFntHalfScale : values[index] + NuQFntHalfScale);
+    i32 raw;
+    if (animation->curve_types[index] != 10)
+        return (i32)(values[index] < 0.0f ? values[index] - NuQFntHalfScale : values[index] + NuQFntHalfScale);
+    memcpy(&raw, &values[index], sizeof(raw));
+    return raw;
 }
 
 f32 *__cdecl PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *locator, NUMTX *matrix, f32 frame) {

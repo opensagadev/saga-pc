@@ -685,7 +685,7 @@ void NetworkObjectManager::PeerJoined(const V2Peer &peer) {
 void NetworkObjectManager::PeerLeft(const V2Peer &peer, i32 reason) {
     if (!peer.local && (theNetSessionManager->state == 4 || theNetSessionManager->state == 3)) {
         for (i32 i = 0; i < 2; i++) {
-            if (guid_peers[i] == &peer)
+            if (&peer == guid_peers[i])
                 guid_peers[i] = NULL;
         }
         for (i32 i = 0; i < 2048; i++) {
@@ -1144,7 +1144,7 @@ void NetworkObjectManager::ReceiveReleaseMessage(NETMESSAGE_PC &message, const V
     message.Read16(id);
     message.Read16(class_id);
     NetworkObject *object = &objects[id];
-    if (object->id == id && class_id == theRegistry.GetClassId(object->object_class) && object->object != NULL) {
+    if (id == object->id && class_id == theRegistry.GetClassId(object->object_class) && object->object != NULL) {
         theRegistry.DestroyObject(object->object_class->object_interface, object->object, id, 1);
         RemoveFromLocalObjectList(object);
         object->Destroy();
@@ -1488,7 +1488,7 @@ i32 NetChangedReplicator::AllowPush(const EdClass *object_class, const void *obj
         push = 1;
     } else if (elapsed > minimum_interval && skip_checksum == 0) {
         CheckSumObject(object_class, object, checksum);
-        if (*last_checksum != checksum) {
+        if (checksum != *last_checksum) {
             *last_checksum = checksum;
             push = 1;
         }

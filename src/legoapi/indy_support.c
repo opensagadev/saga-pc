@@ -78,7 +78,7 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, 
         helper = system->helpers;
         for (index = 0; index < system->count; ++index, ++helper) {
             if (helper->connection == connection && (helper->direction == 0xff || helper->direction == direction) &&
-                helper->type == type && (filter == NULL || filter(helper, object, connection, direction, type) == 0))
+                type == helper->type && (filter == NULL || filter(helper, object, connection, direction, type) == 0))
                 return helper;
         }
     }

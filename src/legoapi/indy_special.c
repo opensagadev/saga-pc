@@ -14,7 +14,7 @@ i32 __cdecl Indy_PrepareClimbPc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 c
         if (destination->position.y > source->position.y)
             SetSpecialMove(owner, destination, source, 3);
         else {
-            if (owner->field_281 && source->min_height > owner->position.y)
+            if (owner->field_281 && owner->position.y < source->min_height)
                 return 0;
             SetSpecialMove(owner, destination, source, 4);
         }

@@ -383,7 +383,6 @@ i32 __cdecl ThermalDetonator_MoveCode(GAMEOBJECT *object) {
 }
 
 i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *hint) {
-    GAMEOBJECT *object;
     (void)hint;
     if (JABBASPALACE_ADATA == NULL || WORLD->current_level != JABBASPALACEB_LDATA ||
         Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL)
@@ -392,11 +391,10 @@ i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *hint) {
         return 0;
     if (LevBlowUp[0] == NULL || (LevBlowUp[0]->status_flags & 1) != 0)
         return 0;
-    object = player;
-    if (object != NULL && (f64)NuVecDistSqr(&object->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0)
+    if ((player != NULL && (f64)NuVecDistSqr(&player->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0) ||
+        (player2 != NULL && (f64)NuVecDistSqr(&player2->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0))
         return 1;
-    object = player2;
-    return object != NULL && (f64)NuVecDistSqr(&object->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0;
+    return 0;
 }
 
 static i32 TightRopes_Load(void *world_info, void *unused1) {

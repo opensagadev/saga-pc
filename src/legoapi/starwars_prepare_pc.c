@@ -334,24 +334,22 @@ i32 __cdecl StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET_PC *packe
 
 i32 __cdecl StarWars_PrepareTakeOverJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
     GAMEOBJECT *owner;
-    i32 result;
     GAMEOBJECT *participant;
     AIPATHNODE_PC *destination;
 
     owner = (GAMEOBJECT *)object->owner;
-    result = 0;
-    if ((owner->character_data->game_character->flags_090 & 0x40) == 0)
-        return result;
-    result = 1;
-    participant = owner->takeover_source;
-    if (participant != NULL) {
-        destination = &packet->path_info.path
-                           ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        ReleaseTakeOver(participant, 1);
-        StartBigJump(participant, &destination->position, 0, 0.5f, 1.0f, 0);
-        SetSpecialMove(participant, destination, NULL, 3);
+    if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
+        participant = owner->takeover_source;
+        if (participant != NULL) {
+            destination = &packet->path_info.path
+                               ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            ReleaseTakeOver(participant, 1);
+            StartBigJump(participant, &destination->position, 0, 0.5f, 1.0f, 0);
+            SetSpecialMove(participant, destination, NULL, 3);
+        }
+        return 1;
     }
-    return result;
+    return 0;
 }
 
 i32 __cdecl StarWars_PrepareObstacle(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {

@@ -25,17 +25,19 @@ i32 WavReader::GetSize(void) {
     return 0;
 }
 HRESULT WavReader::Reset(void) {
-    if (file == NULL)
-        return E_FAIL;
-    current_sample = first_sample;
-    return S_OK;
+    if (file != NULL) {
+        current_sample = first_sample;
+        return S_OK;
+    }
+    return E_FAIL;
 }
 HRESULT WavReader::Close(void) {
-    if (file == NULL)
-        return E_FAIL;
-    CloseHandle(file);
-    file = NULL;
-    return S_OK;
+    if (file != NULL) {
+        CloseHandle(file);
+        file = NULL;
+        return S_OK;
+    }
+    return E_FAIL;
 }
 i32 WavReader::SeekTime(f32 time) {
     i32 sample = (i32)((f32)(format.nAvgBytesPerSec / format.nBlockAlign) * time);

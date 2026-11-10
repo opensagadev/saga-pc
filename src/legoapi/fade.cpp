@@ -204,14 +204,14 @@ void FadeStill::UpdateFade() {
 }
 
 void FadeStill::DrawFade() {
-    if (wait_till_next_frame != 0) {
-        wait_till_next_frame--;
-        return;
-    }
-    if ((info->stage & 2) != 0) {
-        DrawStillScreen(1);
+    if (wait_till_next_frame == 0) {
+        if ((info->stage & 2) != 0) {
+            DrawStillScreen(1);
+        } else {
+            DrawPauseScreenWipe();
+        }
     } else {
-        DrawPauseScreenWipe();
+        wait_till_next_frame--;
     }
 }
 

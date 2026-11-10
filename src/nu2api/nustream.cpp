@@ -182,7 +182,10 @@ void SoundQueue::StopTimer() {
 }
 
 i32 SoundQueue::SetStreamFile(const char *path, f32 offset) {
-    if (this == NULL || active == 0) {
+    if (this == NULL) {
+        return 0;
+    }
+    if (active == 0) {
         return 0;
     }
     NuStrNCpy(stream_path, path, sizeof(stream_path));
@@ -191,7 +194,10 @@ i32 SoundQueue::SetStreamFile(const char *path, f32 offset) {
 }
 
 i32 SoundQueue::SetStreamFlags(i32 flags) {
-    if (this == NULL || active == 0) {
+    if (this == NULL) {
+        return 0;
+    }
+    if (active == 0) {
         return 0;
     }
     return SendCommand(2, flags);

@@ -6,7 +6,7 @@ MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *system) {
         if (system == NULL)
             return NULL;
     }
-    if (system->state != 0)
+    if (system->state != 0 && system->active_mission != NULL)
         return system->active_mission;
     return NULL;
 }
