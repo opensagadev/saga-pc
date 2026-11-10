@@ -82,13 +82,13 @@ i32 __cdecl Shards_Load(WORLDINFO *world, void *unused) {
 void __cdecl Shard_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         SHARD_s *shard = (SHARD_s *)gizmo->object;
-        shard->state_flags = (shard->state_flags & ~1u) | (active != 0);
+        shard->active = active != 0;
     }
 }
 void __cdecl Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SHARD_s *shard = (SHARD_s *)gizmo->object;
-        shard->state_flags = (shard->state_flags & ~2u) | ((visible != 0) << 1);
+        shard->visible = visible != 0;
     }
 }
 void __cdecl Shards_UpdateBeforeCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
@@ -194,7 +194,7 @@ char *__cdecl Shard_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((SHARD_s *)gizmo->object)->name : NULL;
 }
 i32 __cdecl Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    return (((SHARD_s *)gizmo->object)->state_flags >> 3) & 1;
+    return ((SHARD_s *)gizmo->object)->collected;
 }
 char *__cdecl Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return ShardOutputNamePc;
@@ -231,11 +231,11 @@ void __cdecl Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS
     for (index = 0; index < world->shard_count && index < 128; ++index, ++shard) {
         i32 word = index >> 5;
         u32 mask = 1u << (index & 31);
-        if ((shard->state_flags & 8) != 0)
+        if (shard->collected)
             progress->collected[word] |= mask;
-        if ((shard->state_flags & 2) == 0)
+        if (!shard->visible)
             progress->visible[word] &= ~mask;
-        if ((shard->state_flags & 1) == 0)
+        if (!shard->active)
             progress->active[word] &= ~mask;
     }
 }
@@ -250,12 +250,9 @@ void __cdecl Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS_PC *pro
         if (progress != NULL && index < 128) {
             i32 word = index >> 5;
             u32 mask = 1u << (index & 31);
-            progress_record->state_flags =
-                (progress_record->state_flags & ~8u) | (((progress->collected[word] & mask) != 0) << 3);
-            progress_record->state_flags =
-                (progress_record->state_flags & ~2u) | (((progress->visible[word] & mask) != 0) << 1);
-            progress_record->state_flags =
-                (progress_record->state_flags & ~1u) | ((progress->active[word] & mask) != 0);
+            progress_record->collected = (progress->collected[word] & mask) != 0;
+            progress_record->visible = (progress->visible[word] & mask) != 0;
+            progress_record->active = (progress->active[word] & mask) != 0;
         }
     }
 }

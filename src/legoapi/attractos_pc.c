@@ -8,7 +8,11 @@ typedef struct attracto_record_recovered_pc_s {
     u8 capacity;
     u8 collected_count;
     i16 platform_id;
-    u8 flags;
+    u8 active : 1;
+    u8 visible : 1;
+    u8 filled : 1;
+    u8 drawn : 1;
+    u8 unknown_62 : 4;
     u8 unknown_63;
     NUVEC active_position;
     u16 ground_angle_z;
@@ -41,7 +45,7 @@ STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, angle) == 0x5c);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, capacity) == 0x5e);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, collected_count) == 0x5f);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, platform_id) == 0x60);
-STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, flags) == 0x62);
+STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, unknown_63) == 0x63);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, active_position) == 0x64);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, ground_angle_z) == 0x70);
 STATIC_ASSERT(offsetof(ATTRACTO_RECORD_PC, ground_angle_x) == 0x72);
@@ -75,7 +79,10 @@ static void AttractoInitRecordPc(ATTRACTO_RECORD_PC *attracto) {
         attracto->active_position.y = (f64)height + (f64)0.005f;
         FindAnglesZX(&ShadNorm, &attracto->ground_angle_z, &attracto->ground_angle_x);
     }
-    attracto->flags = (attracto->flags & ~12u) | 3;
+    attracto->active = 1;
+    attracto->visible = 1;
+    attracto->filled = 0;
+    attracto->drawn = 0;
     NuMtxSetRotationY(&attracto->transform, attracto->angle);
     NuMtxTranslate(&attracto->transform, &attracto->position);
 }
@@ -101,7 +108,7 @@ void __cdecl Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
         NUVEC position;
         GAME_MESSAGE_PC *message;
-        if ((attracto->flags & 7) != 3)
+        if (!attracto->visible || !attracto->active || attracto->filled)
             continue;
         sprintf(text, "%i/%i", attracto->collected_count, attracto->capacity);
         position.x = attracto->position.x;
@@ -128,13 +135,13 @@ void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
         NUMTX matrix;
         i32 drawn;
         f32 distance;
-        attracto->flags &= ~8u;
-        if ((attracto->flags & 2) == 0)
+        attracto->drawn = 0;
+        if (!attracto->visible)
             continue;
         matrix = attracto->transform;
         drawn = NuSpecialDrawAt(&world->level_objects[72].special, &matrix);
-        attracto->flags = (attracto->flags & ~8u) | ((drawn << 3) & 8);
-        if ((attracto->flags & 5) != 1 || world->level_objects[85].active == 0)
+        attracto->drawn = drawn;
+        if (!attracto->active || attracto->filled || world->level_objects[85].active == 0)
             continue;
         NuMtxSetRotationY(&matrix, spin);
         if (attracto->ground_angle_x != 0)
@@ -157,7 +164,7 @@ char *__cdecl Attracto_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((ATTRACTO_RECORD_PC *)gizmo->object)->name : NULL;
 }
 i32 __cdecl Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    return (((ATTRACTO_RECORD_PC *)gizmo->object)->flags >> 2) & 1;
+    return ((ATTRACTO_RECORD_PC *)gizmo->object)->filled;
 }
 char *__cdecl Attracto_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return AttractoOutputNamePc;
@@ -168,7 +175,7 @@ i32 __cdecl Attracto_GetNumOutputs(GIZMO_PC *gizmo) {
 void __cdecl Attracto_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         ATTRACTO_RECORD_PC *attracto = (ATTRACTO_RECORD_PC *)gizmo->object;
-        attracto->flags = (attracto->flags & ~1u) | (active != 0);
+        attracto->active = active != 0;
     }
 }
 void __cdecl Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
@@ -176,8 +183,8 @@ void __cdecl Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo == NULL || gizmo->object == NULL)
         return;
     attracto = (ATTRACTO_RECORD_PC *)gizmo->object;
-    attracto->flags = (attracto->flags & ~2u) | ((visible != 0) << 1);
-    if ((attracto->flags & 2) != 0 && attracto->platform_id == -1) {
+    attracto->visible = visible != 0;
+    if (attracto->visible && attracto->platform_id == -1) {
         NUMTX matrix;
         FindPlatInst(NuSpecialGetInstanceix(&WORLD->level_objects[72].special));
         NuMtxSetIdentity(&matrix);
@@ -186,7 +193,7 @@ void __cdecl Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         NuMtxTranslate(&matrix, &attracto->position);
         attracto->transform = matrix;
         attracto->platform_id = NewPlatPickupInst(&attracto->transform, 4);
-    } else if ((attracto->flags & 2) == 0 && attracto->platform_id != -1) {
+    } else if (!attracto->visible && attracto->platform_id != -1) {
         DeletePlatinst(attracto->platform_id);
         attracto->platform_id = -1;
     }
@@ -219,11 +226,11 @@ void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PR
     for (index = 0; index < world->attracto_count && index < 32; ++index, ++attracto) {
         u32 mask = 1u << index;
         progress->counts[index] = attracto->collected_count;
-        if ((attracto->flags & 2) == 0)
+        if (!attracto->visible)
             progress->visible &= ~mask;
-        if ((attracto->flags & 1) == 0)
+        if (!attracto->active)
             progress->active &= ~mask;
-        if ((attracto->flags & 4) != 0)
+        if (attracto->filled)
             progress->filled |= mask;
     }
 }
@@ -238,9 +245,9 @@ void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_P
         if (progress != NULL && index < 32) {
             u32 mask = 1u << index;
             attracto->collected_count = progress->counts[index];
-            attracto->flags = (attracto->flags & ~2u) | (((progress->visible & mask) != 0) << 1);
-            attracto->flags = (attracto->flags & ~1u) | ((progress->active & mask) != 0);
-            attracto->flags = (attracto->flags & ~4u) | (((progress->filled & mask) != 0) << 2);
+            attracto->visible = (progress->visible & mask) != 0;
+            attracto->active = (progress->active & mask) != 0;
+            attracto->filled = (progress->filled & mask) != 0;
         }
     }
 }
@@ -372,7 +379,7 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                     object->context_duration = 0.2f;
                     attracto = (ATTRACTO_RECORD_PC *)object->grapple;
                     if (attracto->collected_count == attracto->capacity)
-                        attracto->flags |= 4;
+                        attracto->filled = 1;
                     else if (object->field_1062 != 0)
                         goto check_context;
                 }

@@ -3,7 +3,11 @@ typedef struct carry_plug_pc_s {
     char name[16];
     NUVEC position;
     u16 rotation_x, rotation_y, rotation_z;
-    u8 enabled, flags;
+    u8 enabled;
+    u8 active : 1;
+    u8 visible : 1;
+    u8 plugged : 1;
+    u8 unknown_23 : 5;
     u8 unknown_24[0x10];
 } CARRY_PLUG_PC;
 typedef struct carry_plug_sys_pc_s {
@@ -15,7 +19,7 @@ STATIC_ASSERT(offsetof(CARRY_PLUG_PC, position) == 0x10);
 STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_x) == 0x1c);
 STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_y) == 0x1e);
 STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_z) == 0x20);
-STATIC_ASSERT(offsetof(CARRY_PLUG_PC, flags) == 0x23);
+STATIC_ASSERT(offsetof(CARRY_PLUG_PC, unknown_24) == 0x24);
 STATIC_ASSERT(sizeof(CARRY_PLUG_SYS_PC) == 8);
 STATIC_ASSERT(offsetof(CARRY_PLUG_SYS_PC, count) == 4);
 
@@ -65,7 +69,7 @@ i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position,
     plug = Plug_FindNearest(((CARRY_WORLD_PC *)WORLD)->plug_sys, position, &distance, 1);
     if (plug != NULL && distance < 0.5625f) {
         Plug_MakeDrawMtx(plug, &view->transform);
-        plug->flags |= 4;
+        plug->plugged = 1;
         blowup->status_flags = (blowup->status_flags & ~0x800000) | 0x10000000;
         return 1;
     }

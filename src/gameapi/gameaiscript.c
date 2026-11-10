@@ -10620,7 +10620,7 @@ i32 __cdecl Action_SetLastAttacker(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AITransferLiteral757a20);
         if (value != NULL) {
-            victim = GetNamedGameObject(sys, value + NuStrLen((char *)AITransferLiteral757a20));
+            victim = GetNamedGameObject(sys, value + 7);
             continue;
         }
         if (NuStrICmp(params[index], (char *)AITransferLiteral7583d0) == 0) {

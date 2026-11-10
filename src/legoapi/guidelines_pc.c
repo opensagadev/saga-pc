@@ -78,14 +78,14 @@ void __cdecl GuideLines_Draw(void *world, void *unused, f32 delta_time) {
 void __cdecl GuideLine_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         GUIDELINE_RECORD_PC *guide = (GUIDELINE_RECORD_PC *)gizmo->object;
-        guide->flags = (u8)((guide->flags & ~1u) | (active != 0));
+        guide->active = active != 0;
     }
 }
 
 void __cdecl GuideLine_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         GUIDELINE_RECORD_PC *guide = (GUIDELINE_RECORD_PC *)gizmo->object;
-        guide->flags = (u8)((guide->flags & ~2u) | (visible != 0 ? 2 : 0));
+        guide->visible = visible != 0;
     }
 }
 
@@ -99,7 +99,7 @@ char *__cdecl GuideLine_GetGizmoName(GIZMO_PC *gizmo) {
 
 i32 __cdecl GuideLine_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     GUIDELINE_RECORD_PC *guide = (GUIDELINE_RECORD_PC *)gizmo->object;
-    return (guide->flags & 2) != 0 && (guide->flags & 1) != 0;
+    return guide->visible && guide->active;
 }
 
 char *__cdecl GuideLine_GetOutputName(GIZMO_PC *gizmo, i32 output) {
@@ -133,9 +133,9 @@ void __cdecl GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_
     guide = (GUIDELINE_RECORD_PC *)world->guidelines;
     for (index = 0; index < world->guideline_count && index < 32; ++index, ++guide) {
         u32 mask = 1u << index;
-        if ((guide->flags & 2) == 0)
+        if (!guide->visible)
             progress->visible_mask[0] &= ~mask;
-        if ((guide->flags & 1) == 0)
+        if (!guide->active)
             progress->active_mask[0] &= ~mask;
     }
 }

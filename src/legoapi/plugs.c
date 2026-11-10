@@ -3,7 +3,11 @@ typedef struct carry_plug_pc_s {
     char name[16];
     NUVEC position;
     u16 rotation_x, rotation_y, rotation_z;
-    u8 enabled, flags;
+    u8 enabled;
+    u8 active : 1;
+    u8 visible : 1;
+    u8 plugged : 1;
+    u8 unknown_23 : 5;
     u8 unknown_24[0x10];
 } CARRY_PLUG_PC;
 typedef struct carry_plug_sys_pc_s {
@@ -15,7 +19,7 @@ STATIC_ASSERT(offsetof(CARRY_PLUG_PC, position) == 0x10);
 STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_x) == 0x1c);
 STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_y) == 0x1e);
 STATIC_ASSERT(offsetof(CARRY_PLUG_PC, rotation_z) == 0x20);
-STATIC_ASSERT(offsetof(CARRY_PLUG_PC, flags) == 0x23);
+STATIC_ASSERT(offsetof(CARRY_PLUG_PC, unknown_24) == 0x24);
 STATIC_ASSERT(sizeof(CARRY_PLUG_SYS_PC) == 8);
 STATIC_ASSERT(offsetof(CARRY_PLUG_SYS_PC, count) == 4);
 
@@ -27,7 +31,7 @@ CARRY_PLUG_PC *__cdecl Plug_FindNearest(CARRY_PLUG_SYS_PC *system, NUVEC *positi
     if (system != NULL) {
         plug = system->plugs;
         for (i = 0; i < system->count; ++i, ++plug) {
-            if (only_unplugged != 0 && (plug->flags & 4))
+            if (only_unplugged != 0 && plug->plugged)
                 continue;
             distance = NuVecDistSqr(position, &plug->position, NULL);
             if (distance < best) {
@@ -56,7 +60,9 @@ STATIC_ASSERT(offsetof(CARRY_PLUG_PC, name) == 0);
 STATIC_ASSERT(offsetof(CARRY_PLUG_PC, enabled) == 0x22);
 STATIC_ASSERT(offsetof(CARRY_PLUG_SYS_PC, plugs) == 0);
 typedef struct plug_progress_pc_s {
-    u32 visible_mask, active_mask, plugged_mask;
+    u32 visible_mask[1];
+    u32 active_mask[1];
+    u32 plugged_mask[1];
 } PLUG_PROGRESS_PC;
 STATIC_ASSERT(sizeof(PLUG_PROGRESS_PC) == 12);
 STATIC_ASSERT(offsetof(PLUG_PROGRESS_PC, visible_mask) == 0);
@@ -105,13 +111,13 @@ static i32 __cdecl Plugs_Load(void *world_ptr, void *data) {
 static void __cdecl Plug_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         CARRY_PLUG_PC *plug = (CARRY_PLUG_PC *)gizmo->object;
-        plug->flags = (u8)((plug->flags & ~1) | (active != 0));
+        plug->active = active != 0;
     }
 }
 static void __cdecl Plug_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
         CARRY_PLUG_PC *plug = (CARRY_PLUG_PC *)gizmo->object;
-        plug->flags = (u8)((plug->flags & ~2) | ((visible != 0) << 1));
+        plug->visible = visible != 0;
     }
 }
 static void __cdecl Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
@@ -124,12 +130,13 @@ static void __cdecl Plugs_Reset(void *world_ptr, void *data, void *progress_ptr)
         return;
     plug = world->plug_system->plugs;
     for (i = 0; i < world->plug_system->count; ++i, ++plug) {
-        plug->flags = (u8)((plug->flags & ~4) | 3);
+        plug->active = 1;
+        plug->visible = 1;
+        plug->plugged = 0;
         if (progress != NULL && i < 32) {
-            u32 bit = 1u << i;
-            plug->flags = (u8)((plug->flags & ~2) | ((progress->visible_mask & bit) != 0) * 2);
-            plug->flags = (u8)((plug->flags & ~1) | ((progress->active_mask & bit) != 0));
-            plug->flags = (u8)((plug->flags & ~4) | ((progress->plugged_mask & bit) != 0) * 4);
+            plug->visible = (progress->visible_mask[i / 32] & (1 << (i & 31))) != 0;
+            plug->active = (progress->active_mask[i / 32] & (1 << (i & 31))) != 0;
+            plug->plugged = (progress->plugged_mask[i / 32] & (1 << (i & 31))) != 0;
         }
     }
 }
@@ -161,9 +168,10 @@ static char *__cdecl Plug_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((CARRY_PLUG_PC *)gizmo->object)->name : NULL;
 }
 static i32 __cdecl Plug_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    CARRY_PLUG_PC *plug = (CARRY_PLUG_PC *)gizmo->object;
     (void)output;
     (void)mode;
-    return (((CARRY_PLUG_PC *)gizmo->object)->flags & 7) == 7;
+    return plug->visible && plug->active && plug->plugged;
 }
 static const char *__cdecl Plug_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
@@ -186,9 +194,9 @@ static void __cdecl Plugs_ClearProgress(void *world, void *progress_ptr) {
     PLUG_PROGRESS_PC *progress = (PLUG_PROGRESS_PC *)progress_ptr;
     (void)world;
     if (progress != NULL) {
-        progress->visible_mask = 0xffffffff;
-        progress->active_mask = 0xffffffff;
-        progress->plugged_mask = 0;
+        progress->visible_mask[0] = 0xffffffff;
+        progress->active_mask[0] = 0xffffffff;
+        progress->plugged_mask[0] = 0;
     }
 }
 static void __cdecl Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -199,20 +207,21 @@ static void __cdecl Plugs_StoreProgress(void *world_ptr, void *data, void *progr
     (void)data;
     if (progress == NULL)
         return;
-    progress->visible_mask = 0xffffffff;
-    progress->active_mask = 0xffffffff;
-    progress->plugged_mask = 0;
+    progress->visible_mask[0] = 0xffffffff;
+    progress->active_mask[0] = 0xffffffff;
+    progress->plugged_mask[0] = 0;
     if (world == NULL || world->plug_system == NULL || world->plug_system->plugs == NULL)
         return;
     plug = world->plug_system->plugs;
     for (i = 0; i < world->plug_system->count && i < 32; ++i, ++plug) {
         u32 bit = 1u << i;
-        if (!(plug->flags & 2))
-            progress->visible_mask &= ~bit;
-        if (!(plug->flags & 1))
-            progress->active_mask &= ~bit;
-        if (plug->flags & 4)
-            progress->active_mask |= bit;
+        if (!plug->visible)
+            progress->visible_mask[0] &= ~bit;
+        if (!plug->active)
+            progress->active_mask[0] &= ~bit;
+        /* Retail sets the plugged bit in the active mask. */
+        if (plug->plugged)
+            progress->active_mask[0] |= bit;
     }
 }
 
