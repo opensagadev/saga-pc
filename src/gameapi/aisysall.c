@@ -2739,9 +2739,10 @@ f32 __cdecl Condition_AlwaysTrue(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
 
 f32 __cdecl Condition_LocatorRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                    void *argument) {
-    AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+    AILOCATOR_PC *locator;
     NUVEC delta;
     if (packet != NULL && packet->owner != NULL) {
+        locator = (AILOCATOR_PC *)argument;
         if (locator == NULL)
             locator = process->locator;
         if (locator != NULL)
@@ -2752,9 +2753,10 @@ f32 __cdecl Condition_LocatorRange(AISYS_PC *system, AISCRIPTPROCESS_PC *process
 
 f32 __cdecl Condition_LocatorRangeXZPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                        void *argument) {
-    AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+    AILOCATOR_PC *locator;
     NUVEC delta;
     if (packet != NULL && packet->owner != NULL) {
+        locator = (AILOCATOR_PC *)argument;
         if (locator == NULL)
             locator = process->locator;
         if (locator != NULL)
@@ -2765,8 +2767,9 @@ f32 __cdecl Condition_LocatorRangeXZPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
 
 f32 __cdecl Condition_LocatorRangeYPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                       void *argument) {
-    AILOCATOR_PC *locator = (AILOCATOR_PC *)argument;
+    AILOCATOR_PC *locator;
     if (packet != NULL && packet->owner != NULL) {
+        locator = (AILOCATOR_PC *)argument;
         if (locator == NULL)
             locator = process->locator;
         if (locator != NULL) {
@@ -2774,7 +2777,6 @@ f32 __cdecl Condition_LocatorRangeYPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
             return (f32)difference;
         }
     }
-    return 0.0f;
 }
 
 f32 __cdecl Condition_GotLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
