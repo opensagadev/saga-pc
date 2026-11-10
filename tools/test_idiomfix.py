@@ -43,6 +43,10 @@ class RuleTests(unittest.TestCase):
         self.assertIn("{ if (w != 0) return 0; return *w; }".replace("return 0; return *w", "return *w; return 0"),
                       self.texts(self.fix.rule_wrap_to_guard, text)[0])
 
+    def test_guard_return_and_final_return_swap(self):
+        texts = self.texts(self.fix.rule_invert_return, "int f(int *p) { if (p == 0) return 0; return *p; }")
+        self.assertIn("if (p != 0) return *p; return 0;", texts[0])
+
     def test_negation_keeps_parentheses_of_mixed_operators(self):
         text = "int f(int a, int b, int c) { if (a || (b && c)) { a = 2; } return 0; }"
         self.assertIn("if (!a && (!b || !c)) return 0; a = 2; return 0;",

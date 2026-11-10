@@ -20,7 +20,9 @@ Rules per idiom (docs/vc8-idioms.md):
        (only on source lines behind the function's I3 spots)
   I10  `x + x` <-> `x * 2.0f` on floats (lines behind I10 spots)
   I17  `if (c) { body } return v;`  <->  `if (!c) return v; body return v;`,
-       and the result-variable / guard-to-else rewrites of rewrite.py
+       `return c ? a : b;` -> if/return, `if (c) return a; return b;` ->
+       `if (!c) return b; return a;`, and the result-variable /
+       guard-to-else rewrites of rewrite.py
   I20  `return c ? a : b;` / `return a < b;` -> `if (c) return a; return b;`,
        and `x = c ? a : b;` -> if/else
   I23  `x <= N` <-> `x < N + 1` where exact, unsigned `x != 0` <-> `x > 0`
@@ -240,6 +242,38 @@ def rule_ternary_return(source):
                                f"line {stmt.location.line}{note}", True)
 
 
+def rule_invert_return(source):
+    """if (c) return a; return b;  ->  if (!c) return b; return a;  (VC8 falls through into the if body)."""
+    rw = _rewrite()
+    for compound in [source.body, *source.walk()]:
+        if compound.kind != rw.K.COMPOUND_STMT:
+            continue
+        stmts = source.children(compound)
+        for first, second in zip(stmts, stmts[1:]):
+            if first.kind != rw.K.IF_STMT or second.kind != rw.K.RETURN_STMT:
+                continue
+            parts = source.children(first)
+            if len(parts) != 2:
+                continue
+            then = parts[1]
+            if then.kind == rw.K.COMPOUND_STMT:
+                inner = source.children(then)
+                if len(inner) != 1:
+                    continue
+                then = inner[0]
+            if then.kind != rw.K.RETURN_STMT:
+                continue
+            text, _ = _negate(source, parts[0])
+            a = source.span(first)[0]
+            b = source.span(second)[1]
+            if source.data[b:b + 1] == b";":
+                b += 1
+            ret_a = source.src(then).strip().rstrip(";") + ";"
+            ret_b = source.src(second).strip().rstrip(";") + ";"
+            yield rw.Candidate(source.edit([(a, b, f"if ({text})\n{ret_b}\n{ret_a}")]), "invert_return",
+                               f"line {first.location.line}", True)
+
+
 def _ends_block(source, stmt):
     """The statement is the last one of a compound statement (a following return is reachable)."""
     rw = _rewrite()
@@ -359,7 +393,7 @@ RULES = {
     "I23": (lambda: [rule_bound], True),
     "I25": (lambda: [rule_float_commute], True),
     "I10": (lambda: [rule_double], True),
-    "I17": (lambda: [rule_wrap_to_guard, rule_guard_to_wrap,
+    "I17": (lambda: [rule_wrap_to_guard, rule_guard_to_wrap, rule_ternary_return, rule_invert_return,
                      *_rewrite_rules(["rule_result_variable", "rule_guard_to_else"])], False),
     "I20": (lambda: [rule_ternary_return, *_rewrite_rules(["rule_ternary"])], False),
 }
@@ -520,6 +554,7 @@ def main(argv=None):
     parser.add_argument("--only", nargs="+", help="function names")
     parser.add_argument("--skip", nargs="+", default=[], help="function names to leave alone")
     parser.add_argument("--units", nargs="+", help="only functions of these units")
+    parser.add_argument("--rules", nargs="+", help="only these rule functions (e.g. rule_ternary_return)")
     parser.add_argument("--shard", help="I/N: only every N-th unit starting at I (parallel runs)")
     parser.add_argument("--skip-done", action="store_true",
                         help="skip functions that already have a RESULT line in the log")
@@ -528,6 +563,8 @@ def main(argv=None):
     signal.signal(signal.SIGINT, _interrupted)
     make_rules, by_lines = RULES[args.idiom]
     rules = make_rules()
+    if args.rules:
+        rules = [rule for rule in rules if rule.__name__ in args.rules]
     rows = [r for r in json.loads(args.report.read_text())["functions"]
             if r.get("status") == "different" and args.idiom in r.get("idioms", [])
             and len(r.get("units", [])) == 1 and r["units"][0].endswith((".c", ".cpp"))]
