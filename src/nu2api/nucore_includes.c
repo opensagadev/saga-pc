@@ -5999,13 +5999,9 @@ u16 *__cdecl NuStringTableGetById(i32 id) {
         bank = (u32)id >> 24;
         id &= 0xffffff;
     }
-    if (bank > 2) {
-        return NULL;
-    }
-    if (id < 0 || id >= StringBank[bank].string_count) {
-        return NULL;
-    }
-    return StringBank[bank].strings[id].str_utf16;
+    if (bank < 3 && id >= 0 && id < StringBank[bank].string_count)
+        return StringBank[bank].strings[id].str_utf16;
+    return NULL;
 }
 
 u16 *__cdecl NuStringTableGetByName(char *name) {

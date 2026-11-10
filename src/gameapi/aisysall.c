@@ -2516,16 +2516,20 @@ void __cdecl AIScriptInitConditions(AISYS_PC *sys) {
 
 static __declspec(noinline) i32 AIScriptNextAction(AISCRIPTPROCESS_PC *processor) {
     AIACTION_PC *action;
-    if (processor == NULL)
-        return 0;
-    if (processor->action_node != NULL)
-        action = (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &processor->action_node->link);
-    else
-        action = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
-    if (action != NULL)
-        processor->flags |= 1;
-    processor->action_node = action;
-    return 1;
+    if (processor != NULL) {
+        if (processor->action_node != NULL)
+            action = (AIACTION_PC *)NuLinkedListGetNext(&processor->state->actions, &processor->action_node->link);
+        else
+            action = (AIACTION_PC *)NuLinkedListGetHead(&processor->state->actions);
+        if (action != NULL) {
+            processor->flags |= 1;
+            processor->action_node = action;
+        } else {
+            processor->action_node = NULL;
+        }
+        return 1;
+    }
+    return 0;
 }
 
 void __cdecl AIScriptSetState(AISCRIPTPROCESS_PC *processor, AISTATE_PC *state) {
@@ -8399,15 +8403,16 @@ void __cdecl locatorEditor_cbCancelSelectLocatorSet(eduimenu_s *menu, eduimenu_s
 
 static EDLOCATOR_s *AiEditorNextLocatorInSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *current) {
     i32 index;
-    if (set == NULL)
-        return NULL;
-    if (current != NULL) {
-        for (index = 0; index < 64; ++index) {
-            if (set->locators[index] == current && index + 1 < 64 && set->locators[index + 1] != NULL)
-                return set->locators[index + 1];
+    if (set != NULL) {
+        if (current != NULL) {
+            for (index = 0; index < 64; ++index) {
+                if (set->locators[index] == current && index + 1 < 64 && set->locators[index + 1] != NULL)
+                    return set->locators[index + 1];
+            }
         }
+        return set->locators[0];
     }
-    return set->locators[0];
+    return NULL;
 }
 
 static EDLOCATOR_s *AiEditorPrevLocatorInSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *current) {
