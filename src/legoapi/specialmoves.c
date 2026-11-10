@@ -170,26 +170,6 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
         PlayerSpecialMoveDataPc = NULL;
 }
 
-void __cdecl BackFlipCode(GAMEOBJECT *object) {
-    if (JumpBackFlipContextPc == -1 || object->character_context != JumpBackFlipContextPc)
-        return;
-    if ((object->flags_e20 & 0x100000) != 0 && (object->pad->buttons_held & GAMEPAD_JUMP) == 0)
-        object->flags_e20 &= ~0x100000;
-    if (object->character_model->model_data_b[object->field_7aa] != NULL &&
-        CurrentAnim(&object->anim_packet) != object->field_7aa)
-        return;
-    object->context_timer -= FRAMETIME;
-    if (!(object->context_timer <= 0.0f))
-        return;
-    object->character_context = -1;
-    if ((object->pad->buttons_held & GAMEPAD_JUMP) != 0 && (object->flags_e20 & 0x100000) == 0)
-        StartBackFlip(object);
-    else {
-        object->velocity.x = 0.0f;
-        object->velocity.z = 0.0f;
-    }
-}
-
 void __cdecl SpecialMove_VictimCode(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SPECIALMOVE_VICTIM != -1 && object->character_context == LEGOCONTEXT_SPECIALMOVE_VICTIM) {
         if (object->force_target == NULL) {
