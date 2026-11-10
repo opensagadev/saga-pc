@@ -19,9 +19,9 @@ extern "C" {
 
 extern "C" void __cdecl InitOnce(i32 argc, char **argv) {
     PcNativeSelectLanguage(InitOnceEmptyConfigPc);
-    original_permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, InitOnceAllocSource, 0x112);
-    superbuffer_end.addr = original_permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
-    permbuffer_base = original_permbuffer_base;
+    permbuffer_base.void_ptr = NuAlloc(SUPERBUFFERSIZE, InitOnceAllocSource, 0x112);
+    superbuffer_end.addr = permbuffer_base.addr + (u32)SUPERBUFFERSIZE;
+    original_permbuffer_base = permbuffer_base;
     /* Native uses the permanent arena without an allocation-failure branch here. */
     InitGameBeforeConfig();
     StartupParseArguments(argc - 1, argv + 1);

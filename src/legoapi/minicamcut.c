@@ -246,11 +246,11 @@ void Minicam_AddDeltas(float duration) {
 }
 
 void Minicam_ClearDeltas(void) {
-    MiniCam.target_distance = MiniCam.start_distance = MiniCam.distance;
-    MiniCam.target_pitch = MiniCam.start_pitch = MiniCam.pitch;
-    MiniCam.target_yaw = MiniCam.start_yaw = MiniCam.yaw;
-    MiniCam.target_roll = MiniCam.start_roll = MiniCam.roll;
-    MiniCam.focus_velocity = MiniCam.focus_offset = v000;
+    MiniCam.start_distance = MiniCam.target_distance = MiniCam.distance;
+    MiniCam.start_pitch = MiniCam.target_pitch = MiniCam.pitch;
+    MiniCam.start_yaw = MiniCam.target_yaw = MiniCam.yaw;
+    MiniCam.start_roll = MiniCam.target_roll = MiniCam.roll;
+    MiniCam.focus_offset = MiniCam.focus_velocity = v000;
 }
 
 void Minicam_ResetForNextCommand(void) {

@@ -321,8 +321,8 @@ i32 __cdecl NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO_PC *info) {
     FileTimeToSystemTime(&attributes.ftCreationTime, &time);
     info->created_year = (i16)time.wYear;
     info->created_month = (i8)time.wMonth;
-    info->created_hour = (i8)time.wHour;
     info->created_day = (i8)time.wDay;
+    info->created_hour = (i8)time.wHour;
     info->created_minute = (i8)time.wMinute;
     info->created_second = (i8)time.wSecond;
     FileTimeToSystemTime(&attributes.ftLastWriteTime, &time);

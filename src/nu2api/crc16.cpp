@@ -2,7 +2,7 @@
 
 CRC16::CRC16() {
     for (i32 i = 0; i < 256; ++i) {
-        u32 value = 0;
+        i32 value = 0;
         u32 input = i << 8;
         for (i32 bit = 0; bit < 8; ++bit) {
             if ((value ^ input) & 0x8000) {
@@ -10,8 +10,8 @@ CRC16::CRC16() {
             } else {
                 value <<= 1;
             }
-            value &= 0xffff;
             input <<= 1;
+            value &= 0xffff;
         }
         CRC16TablePC[i] = value;
     }

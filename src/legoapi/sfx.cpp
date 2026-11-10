@@ -280,9 +280,9 @@ extern "C" {
         i32 i;
         if (gizmotypes == NULL || system == NULL)
             return;
-        set = system->sets;
         type = (LEVEL_SFX_GIZMOTYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set)
+        set = system->sets;
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type)
             if (type->add_level_sfx != NULL)
                 type->add_level_sfx(world, set->data, ids, count, capacity);
     }

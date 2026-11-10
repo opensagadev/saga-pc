@@ -49,7 +49,8 @@ extern "C" {
     i32 __cdecl saveloadCheckSlotsUsed(void) {
         i32 used = 0;
         for (i32 slot = 0; slot < 6; ++slot) {
-            FILE *file = fopen(fullslotname(slot), "rb");
+            char *name = fullslotname(slot);
+            FILE *file = fopen(name, "rb");
             if (file != NULL) {
                 ++used;
                 fclose(file);

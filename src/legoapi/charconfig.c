@@ -44,8 +44,8 @@ static __declspec(noinline) i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *
     while (NuFParGetWord(parser) != 0) {
         u32 layer = (u32)NuAToI(parser->word_buffer_ptr);
         if (layer <= 31) {
-            ++count;
             *mask |= 1u << layer;
+            ++count;
         }
     }
     return count;
@@ -57,8 +57,8 @@ static __declspec(noinline) i32 CC_ReadNamedLayerMask(NUFPAR_PC *parser, u32 *ma
     while (NuFParGetWord(parser) != 0) {
         i32 layer = LayerFromName(charconfig.runtime, parser->word_buffer_ptr);
         if (layer != -1) {
-            ++count;
             *mask |= 1u << layer;
+            ++count;
         }
     }
     return count;
@@ -1810,10 +1810,10 @@ static void CC_headrotrate(NUFPAR_PC *parser) {
 
 static void CC_coin_value(NUFPAR_PC *parser) {
     i32 value = NuFParGetInt(parser);
-    if (value < 0)
-        value = 0;
     if (value > 10000)
         value = 10000;
+    else if (value < 0)
+        value = 0;
     charconfig.runtime->coin_value = (i16)(value / 10) * 10;
 }
 

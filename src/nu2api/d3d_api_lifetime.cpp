@@ -32,8 +32,8 @@ extern "C" {
 extern "C" void __cdecl PcFreeApiCallBuffer(void) {
     if (PcApiCallBuffer != NULL)
         NuFree(PcApiCallBuffer, ".\\d3dApiCalls.cpp", 0x451);
-    PcApiCallBufferCount = 0;
     PcApiCallBuffer = NULL;
+    PcApiCallBufferCount = 0;
 }
 
 extern "C" void __cdecl PcRendererCleanup(void) {
