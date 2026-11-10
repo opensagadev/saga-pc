@@ -373,7 +373,7 @@ void __cdecl NuVecInvScale(NUVEC *out, NUVEC *vector, f32 scale) {
 void __cdecl NuVecCross(NUVEC *out, NUVEC *left, NUVEC *right) {
     f32 y, z;
 
-    y = left->z * right->x - left->x * right->z;
+    y = (left->z * right->x) - (left->x * right->z);
     z = left->x * right->y - left->y * right->x;
     out->x = left->y * right->z - left->z * right->y;
     out->y = y;
@@ -1048,9 +1048,9 @@ void __cdecl NuMtxPreRotateY180X(NUMTX *m, NUANG a) {
     m->m00 = -m->m00;
     m->m01 = -m->m01;
     m->m02 = -m->m02;
-    m->m10 = cosx * m10 - m->m20 * sinx;
-    m->m11 = cosx * m11 - m->m21 * sinx;
-    m->m12 = cosx * m12 - m->m22 * sinx;
+    m->m10 = (cosx * m10) - (m->m20 * sinx);
+    m->m11 = (cosx * m11) - (m->m21 * sinx);
+    m->m12 = (cosx * m12) - (m->m22 * sinx);
     m->m20 = -(m->m20 * cosx) - sinx * m10;
     m->m21 = -(m->m21 * cosx) - sinx * m11;
     m->m22 = -(m->m22 * cosx) - sinx * m12;
@@ -1081,9 +1081,9 @@ void __cdecl NuMtxPreRotateY(NUMTX *m, NUANG angle) {
     f32 m01 = m->m01;
     f32 m02 = m->m02;
 
-    m->m00 = cos_y * m00 - m->m20 * sin_y;
-    m->m01 = cos_y * m01 - m->m21 * sin_y;
-    m->m02 = cos_y * m02 - m->m22 * sin_y;
+    m->m00 = (cos_y * m00) - (m->m20 * sin_y);
+    m->m01 = (cos_y * m01) - (m->m21 * sin_y);
+    m->m02 = (cos_y * m02) - (m->m22 * sin_y);
     m->m20 = sin_y * m00 + m->m20 * cos_y;
     m->m21 = sin_y * m01 + m->m21 * cos_y;
     m->m22 = sin_y * m02 + m->m22 * cos_y;
@@ -1123,7 +1123,7 @@ void __cdecl NuMtxPreRotateZ(NUMTX *m, NUANG angle) {
     f32 m01 = m->m01;
     f32 m02 = m->m02;
 
-    m->m00 = cos_z * m00 + m->m10 * sin_z;
+    m->m00 = (cos_z * m00) + (m->m10 * sin_z);
     m->m01 = cos_z * m01 + m->m11 * sin_z;
     m->m02 = cos_z * m02 + m->m12 * sin_z;
     m->m10 = m->m10 * cos_z - sin_z * m00;
@@ -1218,7 +1218,7 @@ void __cdecl NuMtxMulR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
         gm.m33 = 1.0;
         *m = gm;
     } else {
-        m->m00 = m0->m00 * m1->m00 + m0->m01 * m1->m10 + m0->m02 * m1->m20;
+        m->m00 = (m0->m00 * m1->m00) + (m0->m01 * m1->m10) + (m0->m02 * m1->m20);
         m->m01 = (m0->m02 * m1->m21) + (m0->m00 * m1->m01 + m0->m01 * m1->m11);
         m->m02 = m0->m00 * m1->m02 + m0->m01 * m1->m12 + m0->m02 * m1->m22;
         m->m03 = 0.0;
@@ -1549,9 +1549,9 @@ void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v) {
 }
 
 void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v) {
-    f32 xLenSq = m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02;
-    f32 yLenSq = m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12;
-    f32 zLenSq = m->m20 * m->m20 + m->m21 * m->m21 + m->m22 * m->m22;
+    f32 xLenSq = (m->m00 * m->m00) + (m->m01 * m->m01) + (m->m02 * m->m02);
+    f32 yLenSq = (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12);
+    f32 zLenSq = (m->m20 * m->m20) + (m->m21 * m->m21) + (m->m22 * m->m22);
 
     f32 len = NuFsqrt(NuFdiv(zLenSq, v->x * v->x + v->y * v->y + v->z * v->z));
     m->m20 = v->x * len;
@@ -1560,7 +1560,7 @@ void __cdecl NuMtxAlignZ(NUMTX *m, NUVEC *v) {
 
     if (NuFabs(NuVecDot(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2))) > 0.86602540378f /* cos(30 deg) */) {
         NuVecCross(NUMTX_GET_ROW_VEC(m, 1), NUMTX_GET_ROW_VEC(m, 2), NUMTX_GET_ROW_VEC(m, 0));
-        len = NuFsqrt(NuFdiv(yLenSq, m->m10 * m->m10 + m->m11 * m->m11 + m->m12 * m->m12));
+        len = NuFsqrt(NuFdiv(yLenSq, (m->m10 * m->m10) + (m->m11 * m->m11) + (m->m12 * m->m12)));
         m->m10 = m->m10 * len;
         m->m11 = m->m11 * len;
         m->m12 = m->m12 * len;
@@ -1717,7 +1717,7 @@ void __cdecl NuMtxOrth(NUMTX *m) {
 
     m->m20 = m->m01 * m->m12 - m->m02 * m->m11;
     m->m21 = m->m02 * m->m10 - m->m00 * m->m12;
-    m->m22 = m->m00 * m->m11 - m->m01 * m->m10;
+    m->m22 = (m->m00 * m->m11) - (m->m01 * m->m10);
     m->m10 = m->m21 * m->m02 - m->m22 * m->m01;
     m->m11 = m->m22 * m->m00 - m->m20 * m->m02;
     m->m12 = m->m20 * m->m01 - m->m21 * m->m00;
@@ -2336,7 +2336,7 @@ void NuQuatToMtx(NUQUAT *quat, NUMTX *out) {
 
 void NuQuatMul(NUQUAT *out, NUQUAT *q0, NUQUAT *q1) {
     NUQUAT result;
-    result.w = q1->w * q0->w - q1->x * q0->x - q1->y * q0->y - q1->z * q0->z;
+    result.w = (q1->w * q0->w) - (q1->x * q0->x) - (q1->y * q0->y) - (q1->z * q0->z);
     result.x = q1->w * q0->x + q1->x * q0->w + q1->y * q0->z - q1->z * q0->y;
     result.y = q1->w * q0->y + q1->y * q0->w + q1->z * q0->x - q1->x * q0->z;
     out->z = q1->w * q0->z + q1->z * q0->w + q1->x * q0->y - q1->y * q0->x;
@@ -2424,7 +2424,7 @@ f32 NuHermiteInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t) {
 
     h0 = (t_cb + t_cb - t_sq * 3.0) + 1.0;
     h1 = t_cb - (t_sq + t_sq) + t;
-    h2 = t_cb * -2.0 + t_sq * 3.0;
+    h2 = (t_cb * -2.0) + (t_sq * 3.0);
     h3 = t_cb - t_sq;
 
     return h0 * y0 + h1 * m0 + h2 * y1 + h3 * m1;
@@ -2777,7 +2777,7 @@ i32 NuPtInPolyZY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
 }
 
 i32 __cdecl NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUVEC *direction) {
-    f32 cross_y = first->c * second->a - first->a * second->c;
+    f32 cross_y = (first->c * second->a) - (first->a * second->c);
     f32 cross_z = first->a * second->b - first->b * second->a;
     NUVEC normal;
     normal.x = first->b * second->c - first->c * second->b;

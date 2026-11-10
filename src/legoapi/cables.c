@@ -339,7 +339,7 @@ void __cdecl UpdateCables(void) {
                                     closest.y > object->collision_position.y - object->bounds_half_height) {
                                     f32 dx = object->collision_position.x - closest.x;
                                     f32 dz = object->collision_position.z - closest.z;
-                                    if (object->bounds_radius * object->bounds_radius > dx * dx + dz * dz) {
+                                    if (object->bounds_radius * object->bounds_radius > (dx * dx) + (dz * dz)) {
                                         obstruction = 1;
                                         break;
                                     }
@@ -490,7 +490,7 @@ void __cdecl DrawCables(void) {
                 f32 start_fraction = CableFdiv(distance_along, cable->total_length);
                 f32 end_fraction;
                 vertices[0].position = cable->points[segment];
-                vertices[0].position.y = start_fraction * y_span + cable->points[0].y;
+                vertices[0].position.y = (start_fraction * y_span) + cable->points[0].y;
                 distance_along += cable->segment_lengths[segment];
                 end_fraction = CableFdiv(distance_along, cable->total_length);
                 vertices[1].position = cable->points[segment + 1];

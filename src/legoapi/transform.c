@@ -130,13 +130,13 @@ static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
     f32 x1 = matrix->m10;
     f32 x2 = matrix->m20;
     f32 x3 = matrix->m30;
-    matrix->m00 = x0 * cosine - sine * matrix->m01;
-    matrix->m01 = x0 * sine + cosine * matrix->m01;
+    matrix->m00 = (x0 * cosine) - (sine * matrix->m01);
+    matrix->m01 = (x0 * sine) + (cosine * matrix->m01);
     matrix->m10 = x1 * cosine - sine * matrix->m11;
     matrix->m11 = x1 * sine + cosine * matrix->m11;
     matrix->m20 = x2 * cosine - sine * matrix->m21;
     matrix->m21 = x2 * sine + cosine * matrix->m21;
-    matrix->m30 = x3 * cosine - sine * matrix->m31;
+    matrix->m30 = (x3 * cosine) - (sine * matrix->m31);
     matrix->m31 = x3 * sine + cosine * matrix->m31;
 }
 

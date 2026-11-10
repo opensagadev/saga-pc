@@ -401,7 +401,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                         offset.x = NuTrigTable[(angle >> 1) & 0x7fff] * radius;
                         offset.y = 0.0f;
                         offset.z = NuTrigTable[((0x4000 + angle) >> 1) & 0x7fff] * radius;
-                        distance = NuFsqrt(offset.x * offset.x + offset.z * offset.z);
+                        distance = NuFsqrt((offset.x * offset.x) + (offset.z * offset.z));
                         sample->scale = distance;
                         offset.x *= distance + 1.5;
                         offset.z *= distance + 1.5;

@@ -247,7 +247,7 @@ void __cdecl BlowUpSnakeBody(GAMEOBJECT *object) {
         }
         body = reader->snake_body;
         matrix.m30 += body->segments[index].position.x;
-        matrix.m31 = (body->scale * SnakeSegmentHeightPc + body->segments[index].position.y) + matrix.m31;
+        matrix.m31 = ((body->scale * SnakeSegmentHeightPc) + body->segments[index].position.y) + matrix.m31;
         matrix.m32 = body->segments[index].position.z + matrix.m32;
         special_index = index == body->segment_count - 1 ? 2 : index % 2;
         special = &snake_hspecials[special_index];

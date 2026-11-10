@@ -1313,7 +1313,7 @@ extern "C" {
         f32 m21 = m->m21;
         f32 m31 = m->m31;
 
-        m->m01 = m01 * cos_x - m->m02 * sin_x;
+        m->m01 = (m01 * cos_x) - (m->m02 * sin_x);
         m->m02 = m01 * sin_x + m->m02 * cos_x;
         m->m11 = m11 * cos_x - m->m12 * sin_x;
         m->m12 = m11 * sin_x + m->m12 * cos_x;
@@ -1332,13 +1332,13 @@ extern "C" {
         f32 m20 = m->m20;
         f32 m30 = m->m30;
 
-        m->m00 = m00 * cos_z - m->m01 * sin_z;
-        m->m01 = m00 * sin_z + m->m01 * cos_z;
+        m->m00 = (m00 * cos_z) - (m->m01 * sin_z);
+        m->m01 = (m00 * sin_z) + (m->m01 * cos_z);
         m->m10 = m10 * cos_z - m->m11 * sin_z;
         m->m11 = m10 * sin_z + m->m11 * cos_z;
         m->m20 = m20 * cos_z - m->m21 * sin_z;
         m->m21 = m20 * sin_z + m->m21 * cos_z;
-        m->m30 = m30 * cos_z - m->m31 * sin_z;
+        m->m30 = (m30 * cos_z) - (m->m31 * sin_z);
         m->m31 = m30 * sin_z + m->m31 * cos_z;
         return m;
     }
@@ -2351,7 +2351,8 @@ extern "C" void __cdecl Bolt_Init(void *storage, NETMESSAGE_PC &message) {
                 (model_flags & 0x4000000) != 0 || ((owner->flags_1fc & 0x80) != 0 && (model_flags & 0x2000) != 0);
         }
         if (add_speed && !no_momentum) {
-            f32 speed = owner->facing_direction.x * owner->velocity.x + owner->facing_direction.z * owner->velocity.z;
+            f32 speed =
+                (owner->facing_direction.x * owner->velocity.x) + (owner->facing_direction.z * owner->velocity.z);
             if (speed < 0.0f)
                 speed = 0.0f;
             bolt->speed += speed;

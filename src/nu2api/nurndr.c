@@ -1335,7 +1335,7 @@ void __cdecl NuRndrArenaAddEllipsoidVolumePc(NUVEC *axes, PC_HG_SHADOW_PACKET *p
     axis[2].x = v[2].x - centre.x;
     axis[2].y = v[2].y - centre.y;
     axis[2].z = v[2].z - centre.z;
-    scale[0] = NuFdiv(1.0f, NuFsqrt(axis[0].x * axis[0].x + axis[0].y * axis[0].y + axis[0].z * axis[0].z));
+    scale[0] = NuFdiv(1.0f, NuFsqrt((axis[0].x * axis[0].x) + (axis[0].y * axis[0].y) + (axis[0].z * axis[0].z)));
     scale[1] = NuFdiv(1.0f, NuFsqrt(axis[1].x * axis[1].x + axis[1].y * axis[1].y + axis[1].z * axis[1].z));
     scale[2] = NuFdiv(1.0f, NuFsqrt(axis[2].x * axis[2].x + axis[2].y * axis[2].y + axis[2].z * axis[2].z));
     if ((u32)RendererArenaCountPc < 250) {

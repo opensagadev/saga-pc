@@ -1199,7 +1199,7 @@ mode_selected:
                             landspeeder_yaw = ((u16)(object->field_0x276));
                         } else {
                             landspeeder_lookahead =
-                                (landspeeder_lookahead + object->horizontal_velocity_magnitude * 0.6f) * 0.5f;
+                                (landspeeder_lookahead + (object->horizontal_velocity_magnitude * 0.6f)) * 0.5f;
                             landspeeder_yaw = (landspeeder_yaw + ((u16)(object->field_0x276))) * 0.5f;
                             landspeeder_speed = (landspeeder_speed + object->horizontal_velocity_magnitude) * 0.5f;
                         }
