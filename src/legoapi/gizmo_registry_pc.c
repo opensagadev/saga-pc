@@ -149,9 +149,7 @@ const char GizmoRegistryAINamePc[] = "AIProcessor";
 #pragma const_seg(".rdata$GizmoRegistryAIPrefixPc")
 const char GizmoRegistryAIPrefixPc[] = "ai_";
 #pragma const_seg()
-static ADDGIZMOTYPE_PC GizmoRegistryGizPanelAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryGizPanelNamePc")
-const char GizmoRegistryGizPanelNamePc[] = "Panel";
 #pragma const_seg()
 static ADDGIZMOTYPE_PC GizmoRegistryGizTorpMachineAddTypePc = {0};
 i32 giztorpmachine_gizmotype_id = 0;
@@ -384,43 +382,6 @@ ADDGIZMOTYPE_PC *__cdecl AI_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-ADDGIZMOTYPE_PC *__cdecl GizPanel_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizPanelAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->fns.early_update_fn = NULL;
-    addtype->fns.panel_draw_fn = NULL;
-    addtype->fns.activate_rev_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.get_pos_fn = NULL;
-    addtype->fns.using_special_fn = NULL;
-    addtype->fns.bolt_hit_plat_fn = NULL;
-    addtype->fns.get_best_bolt_target_fn = NULL;
-    addtype->fns.bolt_hit_fn = NULL;
-    addtype->fns.post_load_fn = NULL;
-    addtype->fns.add_level_sfx_fn = NULL;
-    gizpanel_gizmotype_id = type_id;
-    addtype->name = (char *)GizmoRegistryGizPanelNamePc;
-    addtype->prefix = "";
-    addtype->fns.options = 0xc;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizPanel_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)GizPanel_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizPanel_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizPanel_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizPanel_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizPanel_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)GizPanel_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizPanel_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizPanel_SetVisibility;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizPanels_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizPanels_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizPanels_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizPanels_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizPanels_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizPanel_Load;
-    return addtype;
-}
-
 ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizTorpMachineAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
@@ -533,13 +494,6 @@ i32 __cdecl AI_GetMaxGizmos(void *world_ptr) {
     return 32;
 }
 
-i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world == NULL)
-        return 0;
-    return world->current_level->max_gizpanels;
-}
-
 i32 __cdecl Teleport_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world == NULL)
@@ -579,10 +533,6 @@ void *__cdecl GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x18);
-}
-
-void *__cdecl GizPanels_AllocateProgressData(void *buffer, void *end) {
-    return GizmoBufferAlloc((VARIPTR *)buffer, (VARIPTR *)end, 0xc);
 }
 
 void *__cdecl Grapples_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

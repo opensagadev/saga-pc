@@ -153,16 +153,6 @@ void __cdecl GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, voi
         message = (GIZAIMESSAGE *)NuLinkedListGetNext(&gizaimessagesys->active_list, &message->links);
     }
 }
-void __cdecl GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    i32 i;
-    (void)data;
-    if (w == NULL || w->giz_panel_sys == NULL)
-        return;
-    for (i = 0; i < w->giz_panel_sys->count; ++i)
-        if (NuStrLen(((ADD_PANEL_PC *)w->giz_panel_sys->panels)[i].name) != 0)
-            AddGizmo(giz, type, NULL, &((ADD_PANEL_PC *)w->giz_panel_sys->panels)[i]);
-}
 void __cdecl Teleport_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     ADD_TELEPORT_WORLD_PC *w = (ADD_TELEPORT_WORLD_PC *)world_ptr;
     i32 i;

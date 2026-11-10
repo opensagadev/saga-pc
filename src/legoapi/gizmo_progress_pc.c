@@ -170,15 +170,6 @@ void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->visible, -1, sizeof(progress->visible));
 }
 
-void __cdecl GizPanels_ClearProgress(void *owner, void *progress_ptr) {
-    PANEL_PROGRESS_PC *progress = (PANEL_PROGRESS_PC *)progress_ptr;
-    if (progress == NULL)
-        return;
-    progress->triggered = 0;
-    progress->enabled = 0xffffffffu;
-    progress->visible = 0xffffffffu;
-}
-
 void __cdecl Grapples_ClearProgress(void *owner, void *progress_ptr) {
     GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
@@ -345,35 +336,6 @@ void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progre
             progress->visible[word] &= ~bit;
         if (!(record->flags & 1))
             progress->enabled[word] &= ~bit;
-    }
-}
-
-void __cdecl GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    PANEL_PROGRESS_PC *progress = (PANEL_PROGRESS_PC *)progress_ptr;
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    PANEL_PROGRESS_SYSTEM_PC *system;
-    PANEL_PROGRESS_RECORD_PC *record;
-    i32 index;
-    u32 bit;
-    if (progress == NULL)
-        return;
-    progress->triggered = 0;
-    progress->enabled = 0xffffffffu;
-    progress->visible = 0xffffffffu;
-
-    if (world == NULL || world->giz_panel_sys == NULL ||
-        ((PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys)->records == NULL)
-        return;
-    for (index = 0; index < ((PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys)->count && index < 32; ++index) {
-        system = (PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys;
-        record = &system->records[index];
-        bit = 1u << (index & 31);
-        if (record->flags & 2)
-            progress->triggered |= bit;
-        if (!(record->flags & 4))
-            progress->visible &= ~bit;
-        if (!(record->flags & 8))
-            progress->enabled &= ~bit;
     }
 }
 

@@ -169,26 +169,6 @@ void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
     return system;
 }
 
-void *__cdecl GizPanels_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
-    REGISTRY_PANEL_SYSTEM_PC *system;
-    world->giz_panel_sys = NULL;
-    if (world->current_level->max_levers > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        world->giz_panel_sys = (GIZPANELSYS_s *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += sizeof(REGISTRY_PANEL_SYSTEM_PC);
-        system = (REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys;
-        system->count = 0;
-        system->panels = NULL;
-        world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        system = (REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys;
-        system->panels = (REGISTRY_PANEL_RECORD_PC *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(*system->panels);
-        memset(system->panels, 0, world->current_level->max_gizpanels * sizeof(*system->panels));
-    }
-    return world->giz_panel_sys;
-}
-
 void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = (WORLDINFO *)pointer;
     GIZTORPMACHINESYS_s *system;

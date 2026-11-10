@@ -234,7 +234,6 @@ STATIC_ASSERT(offsetof(HINT_PANEL_PC, model_variant) == 0x61);
 STATIC_ASSERT(offsetof(HINT_PANEL_PC, flags) == 0x62);
 STATIC_ASSERT(offsetof(HINT_PANEL_PC, target_scale) == 0x8c);
 struct panel_movement_pc_s;
-struct panel_movement_pc_s *__cdecl GizPanel_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *, i32);
 
 typedef struct HINT_ZIPUP_PC {
     u8 name[16];
@@ -300,53 +299,6 @@ i32 __cdecl GizForce_UpdateHint(HINT_PC *hint) {
             object->transform_target != NULL && object->unknown_0e28[4] == 0)
             return 1;
     }
-    return 0;
-}
-
-i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
-    u8 storm = 0, bountyhunter = 0, droid = 0;
-    i32 index;
-    if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
-        return 0;
-    for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-        if (object != NULL) {
-            f32 distance;
-            HINT_PANEL_PC *panel =
-                (HINT_PANEL_PC *)GizPanel_FindNearest(WORLD, &object->position, object, &distance, 0);
-            if (panel != NULL && (panel->flags & 8) != 0 && (panel->flags & 3) == 0) {
-                volatile f32 radius =
-                    (f32)(((f64)((GAMEOBJECT *)Player[index])->bounds_radius + 1.0) * panel->target_scale);
-                volatile f32 radius_squared = radius * radius;
-                if (radius_squared > distance) {
-                    switch (panel->model_variant) {
-                        case 0:
-                        case 1:
-                            droid = 1;
-                            break;
-                        case 2:
-                            bountyhunter = 1;
-                            break;
-                        case 3:
-                            storm = 1;
-                            break;
-                    }
-                }
-            }
-        }
-    }
-    if (storm != 0 && ((u16)hint->id == 0x260 || (u16)hint->id == 0x269)) {
-        if (AvailableToPlayer(0, 1, 5, 0) != 0)
-            return (u16)hint->id == 0x260;
-        return (u16)hint->id == 0x269;
-    }
-    if (bountyhunter != 0 && ((u16)hint->id == 0x261 || (u16)hint->id == 0x26a)) {
-        if (AvailableToPlayer(0x1000000, -1, 6, 0) != 0)
-            return (u16)hint->id == 0x261;
-        return (u16)hint->id == 0x26a;
-    }
-    if (droid != 0 && (u16)hint->id == 0x25f)
-        return (LswForceUsedHintFlagsPc & 2) == 2;
     return 0;
 }
 

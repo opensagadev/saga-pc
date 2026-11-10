@@ -86,12 +86,6 @@ extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, 
     return count;
 }
 
-extern "C" {}
-
-extern "C" {}
-
-extern "C" {}
-
 extern "C" {
     u32 __cdecl AIPathParseBatmanFlagPc(char *name) {
         if (NuStrICmp(name, "JUMP") == 0)
@@ -218,8 +212,6 @@ extern "C" {
     }
 }
 
-extern "C" {}
-
 extern "C" {
     void *__cdecl CutScene_FindInst(CUTSYS_PC *system, char *name) {
         if (system != NULL) {
@@ -272,39 +264,6 @@ extern "C" {
                 *path_position = packet.last_path_position;
         }
     }
-    i32 __cdecl GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL_PC *panel) {
-        if (panel == NULL || object == NULL)
-            return 0;
-        if (SuperWeirdo(object) != 0)
-            return 1;
-        switch (panel->model_variant) {
-            case 0:
-                if ((object->character_data->model_flags & 0x40) != 0 ||
-                    (object->character_data->model_flags & 0x1000010) == 0x1000010)
-                    return 1;
-                break;
-            case 1:
-                if ((object->character_data->model_flags & 0x20) != 0 ||
-                    (object->character_data->model_flags & 0x1000010) == 0x1000010)
-                    return 1;
-                break;
-            case 3:
-                if (object->helmet == 5 || (object->character_data->game_character->flags_090 & 0x40000) != 0)
-                    return 1;
-                if (GCDataList[(i16)object->id].weapon_action == 1 || GCDataList[(i16)object->id].weapon_action == 8)
-                    return 1;
-                if ((i16)object->id == FreePlayId007f199cPc || (i16)object->id == id_THEEMPEROR ||
-                    (i16)object->id == FreePlayId007f1a4cPc || (i16)object->id == FreePlayId007f1a48Pc ||
-                    (i16)object->id == FreePlayId007f1a44Pc)
-                    return 1;
-                break;
-            case 2:
-                if ((object->character_data->model_flags & 0x1000000) != 0 || object->helmet == 6)
-                    return 1;
-                break;
-        }
-        return 0;
-    }
 }
 
 STATIC_ASSERT(offsetof(ZIPUP_s, flags) == 0x68);
@@ -314,8 +273,6 @@ STATIC_ASSERT(offsetof(ZIPUP_s, hook_origin) == 0x1c);
 STATIC_ASSERT(offsetof(ZIPUP_s, upper_position) == 0x28);
 STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, run_speed) == 0x1c);
 extern "C" void __cdecl StartBallooning(GAMEOBJECT *, i32);
-
-extern "C" {}
 
 extern "C" struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *,
                                                                            AIPATH_PC *, char *, char *, i32, char *,
