@@ -1,4 +1,10 @@
 #include "saga.h"
+#pragma bss_seg(".bss$CutSceneBackgroundInstancesPc")
+static INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$active_cutscene_instances")
+static INSTNUGCUTSCENE *active_cutscene_instances = 0;
+#pragma bss_seg()
 
 struct state_anim_pc_s;
 

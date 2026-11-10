@@ -1,4 +1,7 @@
 #include "saga.h"
+#pragma bss_seg(".bss$IconScenePc")
+static NUGSCN **IconScenePc = 0;
+#pragma bss_seg()
 
 #include <stdio.h>
 #include <string.h>

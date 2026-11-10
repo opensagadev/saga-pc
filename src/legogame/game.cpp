@@ -1,4 +1,10 @@
 #include "saga.h"
+static NUVEC BuckSnowmobForwardPc = {0.0f, 0.0f, 1.0f};
+static f32 BuckSnowmobJumpDurationPc = 1.0f;
+static f32 BuckSnowmobJumpHeightPc = 1.0f;
+static f32 BuckSnowmobMaxYPc = 0.1f;
+static f32 BuckSnowmobMinYPc = -0.01f;
+static f32 BuckSnowmobRadiusPc = 0.2f;
 
 extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world);
 extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);

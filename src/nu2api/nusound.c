@@ -1,4 +1,5 @@
 #include "saga.h"
+static i32 NumSfxInst = 0;
 
 extern NUVEC nusound_special_positions[5];
 extern f32 nusound_fade_start;

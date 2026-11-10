@@ -3,6 +3,19 @@
 #include <math.h>
 #include <float.h>
 #include <stdarg.h>
+#pragma bss_seg(".bss$PCSoundLoopVoiceCount")
+static i32 PCSoundLoopVoiceCount = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundOneShotVoiceCount")
+static i32 PCSoundOneShotVoiceCount = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCSoundUpdateClock")
+static i32 PCSoundUpdateClock = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$PCStereoSampleMetadata")
+static PC_STEREO_SAMPLE_METADATA *PCStereoSampleMetadata = 0;
+#pragma bss_seg()
+static i32 SoundSampleCountPc = 0;
 
 #include <string.h>
 
@@ -536,7 +549,6 @@ STATIC_ASSERT(sizeof(PC_STEREO_SAMPLE_METADATA) == 28);
 STATIC_ASSERT(offsetof(PC_STEREO_SAMPLE_METADATA, flags) == 8);
 extern "C" {
     extern i32 PCStereoChannel0A, PCStereoChannel0B, PCStereoChannel1A, PCStereoChannel1B;
-    extern PC_STEREO_SAMPLE_METADATA *PCStereoSampleMetadata;
 }
 extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
     i32 channel_a;

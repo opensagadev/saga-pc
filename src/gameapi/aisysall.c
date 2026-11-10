@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_DEPRECATE // NOLINT(readability-identifier-naming): VC8 CRT selector.
 #include "saga.h"
+static VARIPTR *aiscript_load_end_buffer = 0;
 
 #include <float.h>
 #include <math.h>
@@ -1330,8 +1331,6 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad);
 extern const char Text_UnknownText[2];
 
 extern VARIPTR *aiscript_load_buffer;
-
-extern VARIPTR *aiscript_load_end_buffer;
 
 extern AISCRIPT_PC *aiscript_load_script;
 

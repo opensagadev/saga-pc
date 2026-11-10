@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include "saga.h"
+#pragma data_seg(".data$rocket_lock_distance")
+static f32 rocket_lock_distance = 1.0f;
+#pragma data_seg()
 
 /* Retail unit 0x4e5f10-0x4e9f30 (legoapi/world/levels/episodeV.cpp): definitions in retail address order. */
 #include <string.h>

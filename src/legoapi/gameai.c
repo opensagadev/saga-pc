@@ -1,4 +1,7 @@
 #include "saga.h"
+#pragma data_seg(".data$AdaptiveDifficultyRecoveryThresholdPc")
+static f32 AdaptiveDifficultyRecoveryThresholdPc = 0.1f;
+#pragma data_seg()
 
 STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS_PC, processor) + offsetof(AISCRIPTPROCESS_PC, flags) == 0x60);
 STATIC_ASSERT(offsetof(GIZMO_PC, object) == 0);

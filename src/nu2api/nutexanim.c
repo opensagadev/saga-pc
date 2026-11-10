@@ -1,4 +1,10 @@
 #include "saga.h"
+#pragma data_seg(".data$g_texAnimCriticalSection")
+static i32 g_texAnimCriticalSection = -1;
+#pragma data_seg()
+#pragma bss_seg(".bss$ntal_free")
+static PC_TEXTURE_ANIM_LIST *ntal_free = 0;
+#pragma bss_seg()
 
 void __cdecl NuTexAnimAddList(void *animation) {
     PC_TEXTURE_ANIM_LIST *node;

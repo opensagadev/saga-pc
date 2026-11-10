@@ -1,4 +1,22 @@
 #include "saga.h"
+#pragma data_seg(".data$GrapSwing_text")
+static char GrapSwing_text[10] = "GrapSwing";
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpRiderHeightPc")
+static f32 ZipUpRiderHeightPc = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpRiderOffsetScalePc")
+static f32 ZipUpRiderOffsetScalePc = 0.8999999761581421f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingDurationPc")
+static f32 ZipUpSwingDurationPc = 1.5f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingOffsetHeightPc")
+static f32 ZipUpSwingOffsetHeightPc = 0.25150299072265625f;
+#pragma data_seg()
+#pragma data_seg(".data$ZipUpSwingOffsetLengthPc")
+static f32 ZipUpSwingOffsetLengthPc = 1.9236159324645996f;
+#pragma data_seg()
 
 struct zipup_pc_s {
     char name[16];
@@ -176,11 +194,9 @@ STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, start) == 0x754);
 STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, swing) == 0x760);
 STATIC_ASSERT(offsetof(ZIPUP_TRANSPORT_VIEW_PC, landing) == 0x76c);
 
-extern f32 ZipUpSwingOffsetLengthPc, ZipUpSwingOffsetHeightPc;
-extern f32 ZipUpRiderOffsetScalePc, ZipUpRiderHeightPc, ZipUpSwingDurationPc;
 extern u16 ZipUpSwingStartAnimationPc, ZipUpSwingSwingAnimationPc, ZipUpSwingJumpAnimationPc;
 extern i16 BigJumpLandFallbackPc;
-extern char GrapDetach_text[11], GrapAttach_text[11], GrapSwing_text[10];
+extern char GrapDetach_text[11], GrapAttach_text[11];
 extern i32 __cdecl ObjLandReady(GAMEOBJECT *);
 
 static __inline f32 ZipUpFabsPc(f32 value) {

@@ -1,5 +1,9 @@
 #include "saga.h"
 #include <stdio.h>
+#pragma bss_seg(".bss$pause_rndr_mtl")
+static void *pause_rndr_mtl = 0;
+#pragma bss_seg(".bss$pause_rt")
+static i32 pause_rt = 0;
 
 typedef struct STILL_RENDER_MATERIAL_PC {
     u8 unknown_00[0x40];
@@ -1131,7 +1135,7 @@ extern "C" {
 extern "C" {
     f32 StatusMiniKitEntranceHeightPc = 1.4f;
     f32 StatusMiniKitScalePc = 0.333f;
-    f32 StatusMiniKitPieceDurationPc = 0.4f;
+    static f32 StatusMiniKitPieceDurationPc = 0.4f;
     f32 StatusMiniKitXPc = 0.0f;
     f32 StatusMiniKitYPc = 0.0f;
 }

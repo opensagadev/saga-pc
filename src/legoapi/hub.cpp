@@ -1,5 +1,47 @@
 #include "saga.h"
 #include <stdio.h>
+#pragma bss_seg(".bss$BigIconAlpha")
+static f32 BigIconAlpha[2] = {0};
+#pragma bss_seg()
+#pragma data_seg(".data$COLLECTION_Y_HUB")
+static f32 COLLECTION_Y_HUB = -0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayBigSizePc")
+static f32 HubFreePlayBigSizePc = 0.3499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayBigYPc")
+static f32 HubFreePlayBigYPc = 0.3499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayCursorSizePc")
+static f32 HubFreePlayCursorSizePc = 0.1599999964237213f;
+#pragma data_seg()
+#pragma bss_seg(".bss$HubFreePlayDrawListPc")
+static APICHARACTERMODELLIST HubFreePlayDrawListPc[341] = {0};
+#pragma bss_seg()
+#pragma data_seg(".data$HubFreePlayFinalSizePc")
+static f32 HubFreePlayFinalSizePc = 0.3499999940395355f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlayNameYPc")
+static f32 HubFreePlayNameYPc = 0.125f;
+#pragma data_seg()
+#pragma data_seg(".data$HubFreePlaySelectionWaitPc")
+static f32 HubFreePlaySelectionWaitPc = 0.75f;
+#pragma data_seg()
+#pragma bss_seg(".bss$HubIconWibbleAnglePc")
+static u16 HubIconWibbleAnglePc[4] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeplay_time")
+static f32 freeplay_time[2] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeplayduration")
+static f32 freeplayduration = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$freeplaytime")
+static f32 freeplaytime = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$hub_freeplay_area")
+static i32 hub_freeplay_area = 0;
+#pragma bss_seg()
 /* Existing compiled native owners; declarations only, no replacement bodies/data. */
 #ifdef __cplusplus
 extern "C" {
@@ -2900,7 +2942,6 @@ static void HubDrawBonusModePc(void) {
 }
 
 /* PC477630668bytes, fullstackargs(collection,active_cursors,alpha,scale). */
-extern "C" f32 HubFreePlayCursorSizePc, HubFreePlaySelectionWaitPc;
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cursors, f32 alpha, f32 scale) {
     if (alpha <= 0.0f || scale < 0.0f)
         return;
@@ -2945,10 +2986,7 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
 }
 
 /* PC47bb70 3904bytes, complete private noargument body. No Android radar/hint/menugeometry paths. */
-extern "C" i32 hub_freeplay_area, freeplaymode, freeplay_selected[2], fpcount;
-extern "C" f32 freeplaytime, freeplayduration, freeplay_time[2], BigIconAlpha[2];
-extern "C" f32 HubFreePlayBigSizePc, HubFreePlayBigYPc, HubFreePlayNameYPc, HubFreePlayFinalSizePc, COLLECTION_Y_HUB;
-extern "C" APICHARACTERMODELLIST HubFreePlayDrawListPc[341];
+extern "C" i32 freeplaymode, freeplay_selected[2], fpcount;
 static __forceinline f32 HubFabsPc(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
     return *(f32 *)&bits;
@@ -3678,10 +3716,7 @@ static void HubUpdateBonusModePc(void) {
 }
 
 /* Full two native Hub freeplay initialization helpers, no menu17 activation. */
-extern f32 freeplaytime, freeplayduration;
 extern f32 uprepeattime[2], downrepeattime[2], leftrepeattime[2], rightrepeattime[2];
-extern i32 hub_freeplay_area;
-extern u16 HubIconWibbleAnglePc[4];
 extern f32 HubIconWibbleTimePc[4];
 
 /* 476840/526; source-private ABI second_model in EDX, first on stack.
@@ -3775,7 +3810,6 @@ void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
 /* Native full menu17 control owner, private sourcefragment. */
 extern i32 HubIconWibbleRatePc[4];
 extern i32 freeplay_i[2];
-extern f32 freeplay_time[2], BigIconAlpha[2];
 extern u8 uprepeatcount[2], downrepeatcount[2], leftrepeatcount[2], rightrepeatcount[2];
 extern APICHARACTERMODELLIST NetFreePlayModelList[49];
 extern i8 net_FreePlayModelCount;

@@ -1,4 +1,10 @@
 #include "saga.h"
+#pragma bss_seg(".bss$TerrainCrashDataPc")
+static u8 *TerrainCrashDataPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$debug_index")
+static i16 debug_index = 0;
+#pragma bss_seg()
 
 void __cdecl TerrainSetCur(void *terrain) {
     CurrentTerrain = terrain;
@@ -1299,7 +1305,6 @@ void NewTerrPlatformsOff(void) {
 }
 
 void TerrainDiagnosticNoOpPC(const void *, ...);
-extern u8 *TerrainCrashDataPc;
 i32 ReadTerrain(unsigned char *base_path, i32 first_group, i16 **buffer, TERRSET *terrain) {
     char path[100];
     TERRAIN_FILE_CHUNK *chunk;
@@ -1399,7 +1404,6 @@ extern void *ScaleTerrainT2, *TempScanStack, *WallSplList;
 extern i32 terraincnt, curSphereter, platinrange, PlatImpactId, TerrShapeAdjCnt;
 extern TERRAIN_SHAPE *ShadPoly, *TerrPoly;
 extern u8 TerrWallInfo;
-extern i16 debug_index;
 /* Normals exported as NaN (0xffc00000) are replaced by straight up. */
 #define TERRAIN_FIX_NORMAL(normal)                                                                                     \
     if (*(u32 *)&(normal).x == 0xffc00000 || *(u32 *)&(normal).y == 0xffc00000 || *(u32 *)&(normal).z == 0xffc00000) { \

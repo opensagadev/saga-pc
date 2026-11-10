@@ -1,4 +1,13 @@
 #include "saga.h"
+#pragma data_seg(".data$RtlFileVersionPc")
+static i32 RtlFileVersionPc = 5;
+#pragma data_seg()
+#pragma data_seg(".data$RtlUidCounterPc")
+static u16 RtlUidCounterPc = 1;
+#pragma data_seg()
+#pragma bss_seg(".bss$rtl_dynamic_cnt")
+static i32 rtl_dynamic_cnt = 0;
+#pragma bss_seg()
 
 typedef union RTL_FRAME_TIMER_VIEW_PC {
     i32 value;
@@ -495,7 +504,6 @@ void rtlApplySetScale(void *set, RTL_DATA_PC *data, NUVEC *position, NUMTX *rota
     rtlCalcShadow(lighting_data);
     _NuTimeBarSlotEnd(0, 6);
 }
-extern u16 RtlUidCounterPc;
 i32 __cdecl rtlDynamicAlloc(void) {
     RTL_LIGHT_PC *light;
     if (rtl_dynamic_pool == NULL)
@@ -857,7 +865,6 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
     return 0;
 }
 
-extern i32 RtlFileVersionPc;
 // Version 2/3 sets kept their fog table in the light slots from 64 onwards.
 #define RTL_OLD_FOG_PC(set) ((RTL_FOG_MIGRATION_PC *)&(set)->lights[64])
 #define RTL_FOG_PC(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)

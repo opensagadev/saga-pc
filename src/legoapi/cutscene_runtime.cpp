@@ -1,4 +1,16 @@
 #include "saga.h"
+#pragma bss_seg(".bss$CutBlobShadowAlpha")
+static u8 CutBlobShadowAlpha = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CutBlobShadowFadeFar")
+static f32 CutBlobShadowFadeFar = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CutBlobShadowFadeNear")
+static f32 CutBlobShadowFadeNear = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$CutReflectRange2")
+static f32 CutReflectRange2 = 0;
+#pragma bss_seg()
 extern "C" void __cdecl GameFog_Reset(void);
 extern "C" void __cdecl Panel_Clear(void);
 extern "C" void __cdecl PauseGameCut(void);
@@ -1091,10 +1103,6 @@ extern "C" {
     extern CUT_DRAW_SETTINGS_PC *CutSceneSys;
     extern void *CutStopInfo;
     extern i32 CutSceneWaiting;
-    extern u8 CutBlobShadowAlpha;
-    extern f32 CutBlobShadowFadeNear;
-    extern f32 CutBlobShadowFadeFar;
-    extern f32 CutReflectRange2;
     extern i32 dco_id;
     extern PLAYERCHARACTERCONFIG_PC *dco_gcdata;
     extern CHARACTER_MODEL_LAYERS_PC *dco_cmodel;

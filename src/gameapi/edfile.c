@@ -1,4 +1,36 @@
 #include "saga.h"
+#pragma data_seg(".data$ed_attr")
+static eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+#pragma bss_seg(".bss$ed_cfg_menu")
+static struct eduimenu_s *ed_cfg_menu = 0;
+#pragma bss_seg(".bss$ed_curr")
+static struct ed_module_s *ed_curr = 0;
+#pragma bss_seg(".bss$ed_list")
+static struct ed_module_s *ed_list = 0;
+#pragma bss_seg(".bss$ed_main_menu")
+static struct eduimenu_s *ed_main_menu = 0;
+#pragma data_seg(".data$ed_main_menu_h")
+static i32 ed_main_menu_h = 320;
+#pragma data_seg(".data$ed_main_menu_w")
+static i32 ed_main_menu_w = 180;
+#pragma data_seg(".data$ed_main_menu_x")
+static i32 ed_main_menu_x = 220;
+#pragma data_seg(".data$ed_main_menu_y")
+static i32 ed_main_menu_y = 50;
+#pragma bss_seg(".bss$ed_module_active")
+static i32 ed_module_active = 0;
+#pragma data_seg(".data$edmain_auto_speed")
+static i32 edmain_auto_speed = 1;
+#pragma data_seg(".data$edmain_default_camera_speed")
+static f32 edmain_default_camera_speed = 1.0f;
+#pragma data_seg(".data$edmain_menu_scale")
+static f32 edmain_menu_scale = 1.0f;
+#pragma bss_seg(".bss$processing_menu")
+static struct eduimenu_s *processing_menu = 0;
+#pragma bss_seg(".bss$submenu1")
+static struct eduimenu_s *submenu1 = 0;
+#pragma bss_seg(".bss$testmenu0")
+static struct eduimenu_s *testmenu0 = 0;
 
 #define EDUI_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define EDUI_MAX(a, b) ((a) > (b) ? (a) : (b))

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "saga.h"
+#pragma bss_seg(".bss$goldbrickmsgcount")
+static i32 goldbrickmsgcount = 0;
 
 /* Retail unit 0x482c00-0x486f20 (legoapi/misc/legoapi_status.cpp): definitions in retail address order. */
 

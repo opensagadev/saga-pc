@@ -1,4 +1,7 @@
 #include "saga.h"
+#pragma data_seg(".data$Arcade_NeedTwoPlayers_Scale")
+static f32 Arcade_NeedTwoPlayers_Scale = 1.0f;
+#pragma data_seg()
 
 i32 __cdecl Arcade_GetMode(u32 *flags) {
     if (Arcade == 0) {

@@ -1,4 +1,91 @@
 #include "saga.h"
+#pragma data_seg(".data$ApplyGravityContext22HoverHeight")
+static f32 ApplyGravityContext22HoverHeight = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$ApplyGravityContext42HoverHeight")
+static f32 ApplyGravityContext42HoverHeight = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$ApplyGravityContextHoverHeight")
+static f32 ApplyGravityContextHoverHeight = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$ApplyGravityWallRunAcceleration")
+static f32 ApplyGravityWallRunAcceleration = -0.25f;
+#pragma data_seg()
+static f32 DefaultMotionSpiderFarSpeedPc = -2.0f;
+static f32 DefaultMotionSpiderNearSpeedPc = -0.4f;
+static f32 DefaultMotionSpiderRangePc = 1.0f;
+#pragma bss_seg(".bss$ForceBackObjPc")
+static GAMEOBJECT *ForceBackObjPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackPosPc")
+static NUVEC *ForceBackPosPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackRadiusPc")
+static f32 ForceBackRadiusPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$ForceBackTypePc")
+static i32 ForceBackTypePc = 0;
+#pragma bss_seg()
+#pragma data_seg(".data$PODSPRINT_ACCELTIME")
+static f32 PODSPRINT_ACCELTIME = 0.5f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_CRUISESPEED")
+static f32 PODSPRINT_CRUISESPEED = 25.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_DECELTIME")
+static f32 PODSPRINT_DECELTIME = 0.25f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_GRAVITY")
+static f32 PODSPRINT_GRAVITY = -35.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_HIGH_TURNRATE")
+static f32 PODSPRINT_HIGH_TURNRATE = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_RUNSPEED")
+static f32 PODSPRINT_RUNSPEED = 35.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_SLOWSPEED")
+static f32 PODSPRINT_SLOWSPEED = 15.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_TURNRATE")
+static f32 PODSPRINT_TURNRATE = 1.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PODSPRINT_VELOCITYSEEK")
+static f32 PODSPRINT_VELOCITYSEEK = 8.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PlayerBackwardMomentumScalePc")
+static f32 PlayerBackwardMomentumScalePc = 1.2000000476837158f;
+#pragma data_seg()
+#pragma data_seg(".data$PlayerFloatHeightFractionPc")
+static f32 PlayerFloatHeightFractionPc = 0.625f;
+#pragma data_seg()
+#pragma data_seg(".data$PlayerSecondBackwardMomentumScalePc")
+static f32 PlayerSecondBackwardMomentumScalePc = 1.2000000476837158f;
+#pragma data_seg()
+#pragma data_seg(".data$PodFacingSeekRate")
+static f32 PodFacingSeekRate = 2.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PodRollInputRate")
+static f32 PodRollInputRate = 6.0f;
+#pragma data_seg()
+#pragma data_seg(".data$PodRollReleaseRate")
+static f32 PodRollReleaseRate = 3.0f;
+#pragma data_seg()
+#pragma data_seg(".data$SLAMGRAVITY")
+static f32 SLAMGRAVITY = -15.0f;
+#pragma data_seg()
+#pragma data_seg(".data$VEHICLE_SUBMARINE_DEPTH")
+static f32 VEHICLE_SUBMARINE_DEPTH = 0.20000000298023224f;
+#pragma data_seg()
+#pragma data_seg(".data$VEHICLE_TUBE_UPSPEED")
+static f32 VEHICLE_TUBE_UPSPEED = 5.0f;
+#pragma data_seg()
+#pragma data_seg(".data$VEHICLE_WATER_SPEED_MUL")
+static f32 VEHICLE_WATER_SPEED_MUL = 0.699999988079071f;
+#pragma data_seg()
+#pragma bss_seg(".bss$applygravity_extrahoveroffset")
+static f32 applygravity_extrahoveroffset = 0;
+#pragma bss_seg()
 void __cdecl SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void __cdecl Signal_MoveCode(WORLDINFO *, GAMEOBJECT *);
@@ -38,11 +125,7 @@ extern const f64 VehicleTurnPhaseScale;
 extern const f64 VehicleTurnPhaseOffset;
 extern const f64 MoveSplineRunSpeedSentinel;
 extern const f32 MoveSplineTurnRate;
-extern f32 ForceBackRadiusPc;
 extern f32 ForceBackRadius2Pc;
-extern GAMEOBJECT *ForceBackObjPc;
-extern NUVEC *ForceBackPosPc;
-extern i32 ForceBackTypePc;
 
 void __cdecl ResetForceBack(void) {
     ForceBackObjPc = NULL;
@@ -2349,7 +2432,6 @@ STATIC_ASSERT(offsetof(DIRECTIONAL_WORLD_PC, grabber) == 0x46ec);
 extern i16 id_GRABCONTROL, id_GRABR2CONTROL, id_MINIATST, id_ATST_LOWRES, id_MINIATAT, id_MINIATTE, id_RANCOR, id_YODA,
     id_YODAGHOST, id_C3PO, id_TC14, id_DROIDEKA;
 extern LEVELDATA_PC *CRUISERD_LDATA, *VADERA_LDATA;
-extern f32 PlayerFloatHeightFractionPc, PlayerBackwardMomentumScalePc, PlayerSecondBackwardMomentumScalePc;
 /* Retain with MovePlayer_DIRECTIONAL; retail physical ABI is ECX object plus caller-clean stack float. */
 static __declspec(noinline) f32 MovementWalkingSpeedPC(GAMEOBJECT *object, f32 scale) {
     f32 speed = (object->character_data->game_character->run_speed * scale) / NuTimeBarColumnStep;
@@ -6516,7 +6598,6 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, jump_variant_state) == 0xe32);
 STATIC_ASSERT(offsetof(GAMEOBJECT, portal_flags) == 0xeec);
 STATIC_ASSERT(offsetof(TORPEDOPACKET_PC, count) == 0);
 extern i16 DefaultMotionSkeletonIdPc, DefaultMotionIndySnakeIdPc;
-extern f32 DefaultMotionSpiderFarSpeedPc, DefaultMotionSpiderNearSpeedPc, DefaultMotionSpiderRangePc;
 extern i32 DefaultMotionLedgeTerrainEnabledPc;
 
 void __cdecl SuitBlowupCodePc(WORLDINFO *, GAMEOBJECT *);

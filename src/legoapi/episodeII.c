@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include "saga.h"
+static f32 jedib_create_step_Normal = 2.0f;
+static f32 jedib_inner = 3.0f;
+static i32 jedib_max_baddies_per_goody = 3;
+static i32 jedib_min_baddies_per_goody = 1;
+static f32 jedib_offset = 0.5f;
+static f32 jedib_outer_r = 8.0f;
+static f32 jedib_proximity = 0.5f;
+static i32 jedib_seed = 17;
 
 STATIC_ASSERT(offsetof(VADERA_PC, in_control_room_message) == 0x00);
 

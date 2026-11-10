@@ -7614,10 +7614,6 @@ extern "C" {
 #pragma bss_seg(".bss$LastDoorPointerPc")
     void *LastDoorPointerPc = 0;
 #pragma bss_seg()
-
-#pragma data_seg(".data$RtlUidCounterPc")
-    u16 RtlUidCounterPc = 1;
-#pragma data_seg()
 }
 extern "C" {
 #pragma const_seg(".rdata$GizmoSpecialErrorTabPc")
@@ -8458,8 +8454,6 @@ extern "C" {
 #pragma const_seg()
     NUFPAR_PC NuFParRecords[4] = {0};
     char NuFParBuffers[4][0x1000] = {0};
-    NUFPAR_PC *NuFParRecordBase = 0;
-    char *NuFParBufferBase = 0;
     i32 file_criticalsection = 0;
     PC_NUDATFILEINFO *unpack_file_info = 0;
     NUDATOPENFILEINFO *unpack_file_odi = 0;
@@ -8659,16 +8653,6 @@ extern "C" {
     LEVELDATA_PC *SPEEDERCHASEA_LDATA = 0;
     LEVELDATA_PC *DEATHSTARBATTLED_LDATA = 0;
     i16 id_SPEEDERBIKE = -1;
-    KAMINOEPLATE *kamino_plate_1 = 0;
-    KAMINOEPLATE *kamino_plate_2 = 0;
-    KAMINOEPLATE *kamino_plate_3 = 0;
-    KAMINOEPLATE *kamino_plate_4 = 0;
-    i32 kamino_plate_1_active = 0;
-    i32 kamino_plate_2_active = 0;
-    i32 kamino_plate_3_active = 0;
-    i32 kamino_plate_4_active = 0;
-    KAMINOEPLATE *kamino_plate_hit = 0;
-    u16 kamino_plate_id = 0;
     i16 id_ANAKINSPOD = -1;
     i16 id_ANAKINSPODGREEN = -1;
     i16 id_ANAKINSNEWPOD = -1;
@@ -8786,14 +8770,11 @@ extern "C" {
     i32 PCFrameCriticalSectionIndex_candidate = 0;
     NUALLOC_RECORD *NuAllocRecordHead = 0;
     u32 NuAllocTrackedBytes = 0;
-    NUALLOC_POOL *NuAllocPool = 0;
-    u32 NuAllocRecordSerial = 0;
     NUALLOC_ARENA *NuAllocArena = 0;
 #pragma bss_seg(".bss$NuAllocManager")
     void *NuAllocManager = 0;
 #pragma bss_seg()
     void *NuAllocPeakEnd0 = 0;
-    void *NuAllocPeakEnd1 = 0;
     u32 NuAllocHeaderMetadata[3] = {0x424d454d, 0x45484b4c, 0x52454441};
     u32 NuAllocTailMetadata[3] = {0x424d454d, 0x41544b4c, 0x31304c49};
 #pragma const_seg(".rdata$NuFileDiscSuffix")
@@ -9715,10 +9696,7 @@ extern "C" {
     i32 Text_Language = 1;
     i32 INTROTEXT_ID = -1;
     void *Text_AppFont = 0;
-    char **TTab_Original = 0;
     char **TTab = 0;
-    i32 Text_MaxStrings_Overall = 0;
-    u32 *Text_StringBits = 0;
 #pragma const_seg(".rdata$Text_ErrorText")
     extern const char Text_ErrorText[7] = "Err...";
 #pragma const_seg()
@@ -9774,7 +9752,6 @@ extern "C" {
 #pragma const_seg(".rdata$Text_DanishName")
     extern const char Text_DanishName[6] = "Dansk";
 #pragma const_seg()
-    char *Text_ErrorString = const_cast<char *>(Text_ErrorText);
     char *txt_NULL = const_cast<char *>(Text_UnknownText);
     char *txt_UNKNOWN = const_cast<char *>(Text_UnknownText);
     char *Text_PathEnglish = const_cast<char *>(Text_PathEnglishText);
@@ -10680,8 +10657,6 @@ i32 cubeEdgeTopologies[12][2] = {{3, 0}, {4, 0}, {1, 0}, {5, 0}, {2, 3}, {2, 4},
 
 VARIPTR *aiscript_load_buffer = 0;
 
-VARIPTR *aiscript_load_end_buffer = 0;
-
 AISCRIPT_PC *aiscript_load_script = 0;
 
 AISTATE_PC *aiscript_load_state = 0;
@@ -11169,12 +11144,6 @@ extern "C" {
 #pragma bss_seg(".bss$DEATHSTARRESCUEA_LDATA")
     LEVELDATA_PC *DEATHSTARRESCUEA_LDATA = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$applygravity_extrahoveroffset")
-    f32 applygravity_extrahoveroffset = 0;
-#pragma bss_seg()
-#pragma data_seg(".data$ApplyGravityContextHoverHeight")
-    f32 ApplyGravityContextHoverHeight = 0.20000000298023224f;
-#pragma data_seg()
 #pragma const_seg(".rdata$ForcePushSeekRate")
     extern const f32 ForcePushSeekRate = 20.0f;
 #pragma const_seg()
@@ -11263,21 +11232,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_TAG")
     u32 GAMEPAD_TAG = 16;
-#pragma data_seg()
-#pragma data_seg(".data$ApplyGravityContext22HoverHeight")
-    f32 ApplyGravityContext22HoverHeight = 0.20000000298023224f;
-#pragma data_seg()
-#pragma data_seg(".data$ApplyGravityContext42HoverHeight")
-    f32 ApplyGravityContext42HoverHeight = 0.20000000298023224f;
-#pragma data_seg()
-#pragma data_seg(".data$ApplyGravityWallRunAcceleration")
-    f32 ApplyGravityWallRunAcceleration = -0.25f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_GRAVITY")
-    f32 PODSPRINT_GRAVITY = -35.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SLAMGRAVITY")
-    f32 SLAMGRAVITY = -15.0f;
 #pragma data_seg()
 #pragma data_seg(".data$id_DRAGBOMB")
     u16 id_DRAGBOMB = 0xffff;
@@ -11444,39 +11398,6 @@ extern "C" {
 #pragma data_seg(".data$VehicleCollisionRearAngle")
     i32 VehicleCollisionRearAngle = 10;
 #pragma data_seg()
-#pragma data_seg(".data$VEHICLE_WATER_SPEED_MUL")
-    f32 VEHICLE_WATER_SPEED_MUL = 0.699999988079071f;
-#pragma data_seg()
-#pragma data_seg(".data$VEHICLE_SUBMARINE_DEPTH")
-    f32 VEHICLE_SUBMARINE_DEPTH = 0.20000000298023224f;
-#pragma data_seg()
-#pragma data_seg(".data$VEHICLE_TUBE_UPSPEED")
-    f32 VEHICLE_TUBE_UPSPEED = 5.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_SLOWSPEED")
-    f32 PODSPRINT_SLOWSPEED = 15.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_CRUISESPEED")
-    f32 PODSPRINT_CRUISESPEED = 25.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_RUNSPEED")
-    f32 PODSPRINT_RUNSPEED = 35.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_ACCELTIME")
-    f32 PODSPRINT_ACCELTIME = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_DECELTIME")
-    f32 PODSPRINT_DECELTIME = 0.25f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_VELOCITYSEEK")
-    f32 PODSPRINT_VELOCITYSEEK = 8.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_TURNRATE")
-    f32 PODSPRINT_TURNRATE = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_HIGH_TURNRATE")
-    f32 PODSPRINT_HIGH_TURNRATE = 1.0f;
-#pragma data_seg()
 #pragma bss_seg(".bss$MOSEISLEYB_LDATA")
     LEVELDATA_PC *MOSEISLEYB_LDATA = 0;
 #pragma bss_seg()
@@ -11591,9 +11512,6 @@ extern "C" {
 #pragma const_seg()
 #pragma data_seg(".data$rocket_speed")
     f32 rocket_speed = 1.2000000476837158f;
-#pragma data_seg()
-#pragma data_seg(".data$rocket_lock_distance")
-    f32 rocket_lock_distance = 1.0f;
 #pragma data_seg()
 #pragma bss_seg(".bss$GUNSHIPA_LDATA")
     LEVELDATA_PC *GUNSHIPA_LDATA = 0;
@@ -11771,20 +11689,8 @@ extern "C" {
 #pragma bss_seg(".bss$AIActionDiagnosticMode")
     i32 AIActionDiagnosticMode = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackRadiusPc")
-    f32 ForceBackRadiusPc = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$ForceBackRadius2Pc")
     f32 ForceBackRadius2Pc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackObjPc")
-    GAMEOBJECT *ForceBackObjPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackPosPc")
-    NUVEC *ForceBackPosPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackTypePc")
-    i32 ForceBackTypePc = 0;
 #pragma bss_seg()
 
 #pragma data_seg(".data$Tag_Mode")
@@ -11792,9 +11698,6 @@ extern "C" {
 #pragma data_seg()
 #pragma bss_seg(".bss$player_tag_to")
     GAMEOBJECT *player_tag_to = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$player_tag_from")
-    GAMEOBJECT *player_tag_from = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$player_tag_timer")
     f32 player_tag_timer = 0;
@@ -12180,15 +12083,6 @@ extern "C" {
 #pragma data_seg(".data$CircleLeanDegrees")
     i32 CircleLeanDegrees = 30;
 #pragma data_seg()
-#pragma data_seg(".data$PodRollInputRate")
-    f32 PodRollInputRate = 6.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PodRollReleaseRate")
-    f32 PodRollReleaseRate = 3.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PodFacingSeekRate")
-    f32 PodFacingSeekRate = 2.0f;
-#pragma data_seg()
 #pragma data_seg(".data$GUNSHIPAHACK")
     i32 GUNSHIPAHACK = 2;
 #pragma data_seg()
@@ -12391,9 +12285,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma data_seg(".data$AdaptiveDifficultyRecoveryTimePc")
     f32 AdaptiveDifficultyRecoveryTimePc = 30.0f;
-#pragma data_seg()
-#pragma data_seg(".data$AdaptiveDifficultyRecoveryThresholdPc")
-    f32 AdaptiveDifficultyRecoveryThresholdPc = 0.1f;
 #pragma data_seg()
 #pragma const_seg(".rdata$AIControlPlayerRunSpeedName")
     const char AIControlPlayerRunSpeedName[17] = "player_run_speed";
@@ -12823,15 +12714,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCSoundMixDestination")
     void *PCSoundMixDestination = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundUpdateClock")
-    i32 PCSoundUpdateClock = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundLoopVoiceCount")
-    i32 PCSoundLoopVoiceCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundOneShotVoiceCount")
-    i32 PCSoundOneShotVoiceCount = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCSoundStartedOneShotCountPc")
     i32 PCSoundStartedOneShotCountPc = 0;
@@ -13567,9 +13449,6 @@ extern "C" {
 #pragma bss_seg(".bss$rtl_dynamic_max")
     i32 rtl_dynamic_max = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$rtl_dynamic_cnt")
-    i32 rtl_dynamic_cnt = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$debris_suspended")
     i32 debris_suspended = 0;
 #pragma bss_seg()
@@ -13815,14 +13694,8 @@ extern "C" {
 #pragma data_seg(".data$nutexanim_usepakfile")
     i32 nutexanim_usepakfile = 1;
 #pragma data_seg()
-#pragma data_seg(".data$g_texAnimCriticalSection")
-    i32 g_texAnimCriticalSection = -1;
-#pragma data_seg()
 #pragma bss_seg(".bss$ntal_first")
     PC_TEXTURE_ANIM_LIST *ntal_first = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ntal_free")
-    PC_TEXTURE_ANIM_LIST *ntal_free = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCShaderSlots")
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
@@ -13892,9 +13765,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$ReleaseLocatorVfxFn")
     void(__cdecl *ReleaseLocatorVfxFn)(i32) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$active_cutscene_instances")
-    INSTNUGCUTSCENE *active_cutscene_instances = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$CutSceneCameraCTRL")
     u8 CutSceneCameraCTRL = 0;
@@ -14006,12 +13876,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrShapeAdjCnt")
     i32 TerrShapeAdjCnt = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debug_index")
-    i16 debug_index = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$TerrainCrashDataPc")
-    u8 *TerrainCrashDataPc = 0;
 #pragma bss_seg()
 #pragma const_seg(".rdata$TerrainUnusedSpatialBlockPc")
     extern const f32 TerrainUnusedSpatialBlockPc = 2147483648.0f;
@@ -14259,26 +14123,14 @@ extern "C" {
 #pragma bss_seg(".bss$hspecial_efloor")
     NUSPECIALHANDLE *hspecial_efloor = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccBlowUpTargetCountPc")
-    i32 SarlaccBlowUpTargetCountPc = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccTakenOverPc")
-    i32 SarlaccTakenOverPc = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$SarlaccPowerPc")
     i32 SarlaccPowerPc = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$SarlaccRechargingPc")
     i32 SarlaccRechargingPc = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccRechargeTimerPc")
-    f32 SarlaccRechargeTimerPc = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$SarlaccTargetShieldPc")
     i32 SarlaccTargetShieldPc[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccBlowUpTargetsPc")
-    GIZMOBLOWUP_PC *SarlaccBlowUpTargetsPc[4] = {0};
 #pragma bss_seg()
 #pragma const_seg(".rdata$EpisodeVI_magnet_drop")
     extern const char EpisodeVI_magnet_drop[21] = "imp_c3po_magnet_drop";
@@ -15208,20 +15060,11 @@ extern "C" {
 #pragma bss_seg(".bss$NuDebrisCurrentBufferIndex")
     u32 NuDebrisCurrentBufferIndex = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisCurrentVertexCount")
-    u32 NuDebrisCurrentVertexCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisVertexBufferSize")
-    u32 NuDebrisVertexBufferSize = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$NuDebrisMaxVertexCount")
     u32 NuDebrisMaxVertexCount = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuDebrisVertexData")
     void *NuDebrisVertexData = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisCurrentPacket")
-    NATIVE_PARTICLE_PACKET_PC *NuDebrisCurrentPacket = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$NuDebrisLastHeader")
     DEBRIS_PART_HEADER_PC *NuDebrisLastHeader = 0;
@@ -15241,15 +15084,6 @@ extern "C" {
 #pragma bss_seg(".bss$PCDisplayClipGroupIndex")
     i32 PCDisplayClipGroupIndex = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$PlayerFloatHeightFractionPc")
-    f32 PlayerFloatHeightFractionPc = 0.625f;
-#pragma data_seg()
-#pragma data_seg(".data$PlayerBackwardMomentumScalePc")
-    f32 PlayerBackwardMomentumScalePc = 1.2000000476837158f;
-#pragma data_seg()
-#pragma data_seg(".data$PlayerSecondBackwardMomentumScalePc")
-    f32 PlayerSecondBackwardMomentumScalePc = 1.2000000476837158f;
-#pragma data_seg()
 #pragma data_seg(".data$PlayerGrappleSwingModePc")
     i32 PlayerGrappleSwingModePc = 1;
 #pragma data_seg()
@@ -15489,9 +15323,6 @@ extern "C" {
 #pragma data_seg(".data$PCPortalsEnabled")
     i32 PCPortalsEnabled = 1;
 #pragma data_seg()
-#pragma data_seg(".data$PartVectorSpreadDegrees_PC")
-    i32 PartVectorSpreadDegrees_PC = 30;
-#pragma data_seg()
 #pragma bss_seg(".bss$AreaPickupGravity")
     f32 AreaPickupGravity = 0;
 #pragma bss_seg()
@@ -15527,9 +15358,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$PCArcadePointGoals")
     i32 PCArcadePointGoals[5] = {5, 10, 25, 50, 0};
-#pragma data_seg()
-#pragma data_seg(".data$Arcade_NeedTwoPlayers_Scale")
-    f32 Arcade_NeedTwoPlayers_Scale = 1.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PCArcadeIconMessageY")
     f32 PCArcadeIconMessageY = -0.550000011920929f;
@@ -16122,10 +15950,6 @@ extern "C" {
     u8 objhit_damage_joints[3] = {6, 8, 7};
 #pragma data_seg()
 
-#pragma data_seg(".data$SHIELDFLICKERTIME")
-    f32 SHIELDFLICKERTIME = 0.10000000149011612f;
-#pragma data_seg()
-
 #pragma data_seg(".data$CombatReactionHorizontalScalePc")
     f32 CombatReactionHorizontalScalePc = 1.5f;
 #pragma data_seg()
@@ -16293,10 +16117,6 @@ extern "C" {
 #pragma data_seg(".data$PCStereoChannel1B")
     i32 PCStereoChannel1B = 3;
 #pragma data_seg()
-
-#pragma bss_seg(".bss$PCStereoSampleMetadata")
-    PC_STEREO_SAMPLE_METADATA *PCStereoSampleMetadata = 0;
-#pragma bss_seg()
 
 #pragma bss_seg(".bss$PCStereoChannel0A")
     i32 PCStereoChannel0A = 0;
@@ -17713,10 +17533,6 @@ extern "C" {
     i32 CutSceneSingleStreamBufferPc = 2;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$CutSceneBackgroundInstancesPc")
-    INSTNUGCUTSCENE *CutSceneBackgroundInstancesPc = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$LookupLocatorVfxFn")
     i32(__cdecl *LookupLocatorVfxFn)(char *) = 0;
 #pragma bss_seg()
@@ -17977,10 +17793,6 @@ extern "C" {
 
 #pragma bss_seg(".bss$RenderHubFromCutscenePlayerPc")
     i32 RenderHubFromCutscenePlayerPc = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$IconScenePc")
-    NUGSCN **IconScenePc = 0;
 #pragma bss_seg()
 }
 
@@ -18258,24 +18070,8 @@ extern "C" {
     void(__cdecl *DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *) = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$CutBlobShadowAlpha")
-    u8 CutBlobShadowAlpha = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutReflectRange2")
-    f32 CutReflectRange2 = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutBlobShadowFadeNear")
-    f32 CutBlobShadowFadeNear = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$CutSceneWaiting")
     i32 CutSceneWaiting = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutBlobShadowFadeFar")
-    f32 CutBlobShadowFadeFar = 0;
 #pragma bss_seg()
 }
 
@@ -18472,10 +18268,6 @@ extern "C" {
     f32 ShoveMaximumPenetrationPc = 0.10000000149011612f;
 #pragma data_seg()
 
-#pragma data_seg(".data$ShoveCollisionExpansionPc")
-    f32 ShoveCollisionExpansionPc = 0.10000000149011612f;
-#pragma data_seg()
-
 #pragma bss_seg(".bss$ObstacleReturnLevelPc")
     LEVELDATA_PC *ObstacleReturnLevelPc = 0;
 #pragma bss_seg()
@@ -18648,21 +18440,6 @@ extern "C" {
 #pragma const_seg(".rdata$ZipUpHookOffsetPc")
     extern const NUVEC ZipUpHookOffsetPc = {0.0f, -0.11429999768733978f, -0.08590000122785568f};
 #pragma const_seg()
-#pragma data_seg(".data$ZipUpSwingOffsetLengthPc")
-    f32 ZipUpSwingOffsetLengthPc = 1.9236159324645996f;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpSwingOffsetHeightPc")
-    f32 ZipUpSwingOffsetHeightPc = 0.25150299072265625f;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpRiderOffsetScalePc")
-    f32 ZipUpRiderOffsetScalePc = 0.8999999761581421f;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpRiderHeightPc")
-    f32 ZipUpRiderHeightPc = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$ZipUpSwingDurationPc")
-    f32 ZipUpSwingDurationPc = 1.5f;
-#pragma data_seg()
 #pragma data_seg(".data$ZipUpSwingStartAnimationPc")
     u16 ZipUpSwingStartAnimationPc = 0xffff;
 #pragma data_seg()
@@ -18716,9 +18493,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$GrapDetach_text")
     char GrapDetach_text[11] = "GrapDetach";
-#pragma data_seg()
-#pragma data_seg(".data$GrapSwing_text")
-    char GrapSwing_text[10] = "GrapSwing";
 #pragma data_seg()
 }
 
@@ -19258,9 +19032,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$RtlFileVersionPc")
-    i32 RtlFileVersionPc = 5;
-#pragma data_seg()
 #pragma data_seg(".data$giztimer_gizmotype_id")
     i32 giztimer_gizmotype_id = -1;
 #pragma data_seg()
@@ -19453,9 +19224,6 @@ extern "C" {
 extern "C" {
     i16 DefaultMotionSkeletonIdPc = -1;
     i16 DefaultMotionIndySnakeIdPc = -1;
-    f32 DefaultMotionSpiderFarSpeedPc = -2.0f;
-    f32 DefaultMotionSpiderNearSpeedPc = -0.4f;
-    f32 DefaultMotionSpiderRangePc = 1.0f;
     i32 DefaultMotionLedgeTerrainEnabledPc = 0;
 }
 
@@ -19464,7 +19232,6 @@ extern "C" {
     i16 DefaultAnimationLeiaSlaveIdPc = -1;
     i16 DefaultAnimationLamaSuIdPc = -1;
     i16 DefaultAnimationTaunWeIdPc = -1;
-    f32 JumpAnimHoldTimePc = 0.100000001f;
     i32 JumpBackFlipContextPc = -1;
     i16 JumpBackFlipActionPc = -1;
     i16 JumpSlamActionPc = -1;
@@ -19626,7 +19393,6 @@ extern "C" {
     i16 LEGOACT_WALLJUMP_WAIT = -1;
     i16 GizSpinnerGDeb_Fail[3] = {-1, -1, -1};
     u32(__cdecl *CanPushObstaclesFn)(GAMEOBJECT *) = NULL;
-    f32 PushBlockGapEpsilonPc = 0.00999999978f;
     u16 PushBlockFacingTolerancePc = 910;
     NUMTX LevMtx = {0};
     f32 LevAlpha = 0.0f;
@@ -19871,12 +19637,6 @@ extern "C" {
 }
 
 extern "C" {
-    f32 BuckSnowmobRadiusPc = 0.2f;
-    f32 BuckSnowmobMaxYPc = 0.1f;
-    f32 BuckSnowmobMinYPc = -0.01f;
-    NUVEC BuckSnowmobForwardPc = {0.0f, 0.0f, 1.0f};
-    f32 BuckSnowmobJumpHeightPc = 1.0f;
-    f32 BuckSnowmobJumpDurationPc = 1.0f;
     u8 CheatC3poBitsEnabledPc = 0;
     i32 deathstar_hold_count = 0;
     i32 selectmodemode = 0;
@@ -28620,14 +28380,12 @@ extern "C" {
     SFX_RECORD_PC *SfxRevertInfoPc = 0;
     i32 NumSfx = 0;
     i32 NumSfxNames = 0;
-    i32 NumSfxInst = 0;
     char SfxNameSlotsPc[1601][32] = {0};
     char SfxFilenameSlotsPc[1601][64] = {0};
     i32 SfxRefCountsPc[1601] = {0};
     char SfxConfigFilenamePc[256] = "Audio/audio.cfg";
     const char *SfxMusicExtensionPc = NuFileExt_vag_PC;
     f32 SfxAudioVersionPc = 0;
-    i32 SoundSampleCountPc = 0;
     CRITICAL_SECTION SoundSampleCriticalSectionPc = {0};
     HANDLE PCSoundSampleWorkerHandlePc = 0;
     volatile u8 PCSoundSampleWorkerStopPc = 0;
@@ -28648,7 +28406,6 @@ extern "C" {
     u8 PcMouseAxisModesPc[3] = {0};
     u32 PcMouseButtonsMaskPc = 0;
     PC_DI_MOUSE_STATE_PC PcMouseSamplesPc[2] = {0};
-    u32 PcMousePressedMaskPc = 0;
     f32 PcMouseAxisIdlePc[3] = {0};
     i32 PcMouseCurrentAnglePc = 0;
     i32 PcMouseTargetAnglePc = 0;
@@ -28772,26 +28529,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$GameFogSnap")
-    i32 GameFogSnap = 0;
-
-#pragma bss_seg(".bss$GameFogDuration")
-    f32 GameFogDuration = 0;
-
-#pragma bss_seg(".bss$GameFogSet")
-    void *GameFogSet = 0;
-
-#pragma bss_seg(".bss$GameFogTime")
-    f32 GameFogTime = 0;
 
 #pragma bss_seg(".bss$GameFogOld")
     GAMEFOG_STATE_PC GameFogOld = {{0}};
-
-#pragma bss_seg(".bss$dof_fstop")
-    f32 dof_fstop = 0;
-
-#pragma bss_seg(".bss$GameFogNew")
-    GAMEFOG_STATE_PC GameFogNew = {{0}};
 
 #pragma bss_seg(".bss$GameFog")
     GAMEFOG_STATE_PC GameFog = {{0}};
@@ -28802,9 +28542,6 @@ extern "C" {
 #pragma bss_seg(".bss$back_rgba")
     i32 back_rgba[2] = {0};
 
-#pragma bss_seg(".bss$pause_rt")
-    i32 pause_rt = 0;
-
 #pragma bss_seg(".bss$old_pause_state")
     i32 old_pause_state = 0;
 
@@ -28812,7 +28549,6 @@ extern "C" {
     NUMTL *FadeMtl2 = 0;
 #pragma bss_seg()
 
-    f32 GameFogDefaultFStopPc = 22.0f;
     f32 ScreenPauseFadeSpeedPc = 2.0f;
     u64 CharacterMaskAllPc = ~(u64)0;
     i32 FalconDebKey[2] = {-1, -1};
@@ -28911,10 +28647,7 @@ extern "C" {
 #pragma bss_seg()
 }
 
-extern "C" {
-#pragma data_seg(".data$id_ROBIN")
-    i16 id_ROBIN = -1;
-}
+extern "C" {}
 
 extern "C" {
 #pragma data_seg(".data$id_PENGUIN_GOON_GUN")
@@ -29162,21 +28895,6 @@ extern "C" {
 #pragma bss_seg(".bss$ptlcutoffmenu")
     struct eduimenu_s *ptlcutoffmenu = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$ptljibmenu")
-    struct eduimenu_s *ptljibmenu = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_x_freq_item")
-    struct edui_slider_s *grad_jib_x_freq_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_x_amp_item")
-    struct edui_slider_s *grad_jib_x_amp_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_y_freq_item")
-    struct edui_slider_s *grad_jib_y_freq_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_y_amp_item")
-    struct edui_slider_s *grad_jib_y_amp_item = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$edptl_bounce_menu")
     struct eduimenu_s *edptl_bounce_menu = 0;
 #pragma bss_seg()
@@ -29320,9 +29038,6 @@ extern "C" {
 
 #pragma bss_seg(".bss$Maul_obj")
     struct gameobject_s *Maul_obj = 0;
-
-#pragma bss_seg(".bss$MaulA_ai_message")
-    struct gizaimessage_s *MaulA_ai_message = 0;
 
 #pragma bss_seg(".bss$kaminoe_netpacket")
     void *kaminoe_netpacket = 0;
@@ -29478,17 +29193,11 @@ extern "C" {
 #pragma bss_seg(".bss$edpart_instancesettings_menu")
     struct eduimenu_s *edpart_instancesettings_menu = 0;
 
-#pragma bss_seg(".bss$edpart_instance_menu")
-    struct eduimenu_s *edpart_instance_menu = 0;
-
 #pragma bss_seg(".bss$edpart_worldinstance_menu")
     struct eduimenu_s *edpart_worldinstance_menu = 0;
 
 #pragma bss_seg(".bss$edpart_instanceorphans_menu")
     struct eduimenu_s *edpart_instanceorphans_menu = 0;
-
-#pragma bss_seg(".bss$edpart_nullobject_highlight")
-    struct eduiitem_s *edpart_nullobject_highlight = 0;
 
 #pragma bss_seg(".bss$edpart_set_debris")
     i32 edpart_set_debris = 0;
@@ -29874,8 +29583,6 @@ extern "C" {
     struct eduimenu_s *edptl_group_menu = 0;
 #pragma bss_seg(".bss$edptl_drawflag_menu")
     struct eduimenu_s *edptl_drawflag_menu = 0;
-#pragma bss_seg(".bss$edptl_detail_menu")
-    struct eduimenu_s *edptl_detail_menu = 0;
 #pragma bss_seg(".bss$grad_rot_item")
     struct eduiitem_s *grad_rot_item = 0;
 #pragma bss_seg(".bss$grad_rot_min_item")
@@ -30086,9 +29793,6 @@ extern "C" {
 #pragma bss_seg(".bss$uimtls")
     struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
 
-#pragma bss_seg(".bss$processing_menu")
-    struct eduimenu_s *processing_menu = 0;
-
 #pragma bss_seg(".bss$edui_messagemenu")
     struct eduimenu_s *edui_messagemenu = 0;
 #pragma bss_seg(".bss$messagemenu")
@@ -30128,10 +29832,7 @@ extern "C" {}
 
 extern "C" {}
 
-extern "C" {
-#pragma bss_seg(".bss$goldbrickmsgcount")
-    i32 goldbrickmsgcount = 0;
-}
+extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$edanim_bouncy_menu")
@@ -30439,13 +30140,7 @@ extern "C" {
     f32 edgra_size = 0;
 }
 
-extern "C" {
-#pragma bss_seg(".bss$RadialMoveCentre")
-    NUVEC4 RadialMoveCentre = {0};
-
-#pragma bss_seg(".bss$MaxRadialCamY")
-    f32 MaxRadialCamY = 0;
-}
+extern "C" {}
 
 extern "C" {}
 
@@ -30458,23 +30153,8 @@ extern "C" {
 #pragma bss_seg(".bss$default_active_menu")
     struct eduimenu_s *default_active_menu = 0;
 
-#pragma data_seg(".data$edmain_menu_scale")
-    f32 edmain_menu_scale = 1.0f;
-
-#pragma data_seg(".data$ed_attr")
-    eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-
-#pragma data_seg(".data$edmain_default_camera_speed")
-    f32 edmain_default_camera_speed = 1.0f;
-
-#pragma bss_seg(".bss$ed_cfg_menu")
-    struct eduimenu_s *ed_cfg_menu = 0;
-
 #pragma bss_seg(".bss$ed_init")
     i32 ed_init = 0;
-
-#pragma bss_seg(".bss$ed_module_active")
-    i32 ed_module_active = 0;
 
 #pragma bss_seg(".bss$editor_return")
     i32 editor_return = 0;
@@ -30487,36 +30167,6 @@ extern "C" {
 
 #pragma data_seg(".data$edui_filepick_listsize")
     i32 edui_filepick_listsize = 8;
-
-#pragma data_seg(".data$ed_main_menu_x")
-    i32 ed_main_menu_x = 220;
-
-#pragma data_seg(".data$ed_main_menu_y")
-    i32 ed_main_menu_y = 50;
-
-#pragma data_seg(".data$ed_main_menu_w")
-    i32 ed_main_menu_w = 180;
-
-#pragma data_seg(".data$ed_main_menu_h")
-    i32 ed_main_menu_h = 320;
-
-#pragma data_seg(".data$edmain_auto_speed")
-    i32 edmain_auto_speed = 1;
-
-#pragma bss_seg(".bss$ed_main_menu")
-    struct eduimenu_s *ed_main_menu = 0;
-
-#pragma bss_seg(".bss$ed_list")
-    struct ed_module_s *ed_list = 0;
-
-#pragma bss_seg(".bss$ed_curr")
-    struct ed_module_s *ed_curr = 0;
-
-#pragma bss_seg(".bss$submenu1")
-    struct eduimenu_s *submenu1 = 0;
-
-#pragma bss_seg(".bss$testmenu0")
-    struct eduimenu_s *testmenu0 = 0;
 }
 
 extern "C" {
@@ -30542,10 +30192,7 @@ extern "C" {}
 
 extern "C" {}
 
-extern "C" {
-#pragma bss_seg(".bss$pause_rndr_mtl")
-    void *pause_rndr_mtl = 0;
-}
+extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$factoryb_netpacket")
@@ -30582,17 +30229,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$splshelf")
-    struct nugspline_s *splshelf = 0;
-
-#pragma bss_seg(".bss$splcodes")
-    struct nugspline_s *splcodes = 0;
-
-#pragma bss_seg(".bss$ShelfPos")
-    NUVEC ShelfPos[6] = {0};
-
-#pragma bss_seg(".bss$CodePos")
-    NUVEC CodePos[6] = {0};
 
 #pragma bss_seg(".bss$shelfang")
     u16 shelfang = 0;
@@ -34108,24 +33744,6 @@ extern "C" {
 #pragma data_seg(".data$COLLECTION_ICONSIZE")
     f32 COLLECTION_ICONSIZE = 0.1599999964237213f;
 #pragma data_seg()
-#pragma data_seg(".data$COLLECTION_Y_HUB")
-    f32 COLLECTION_Y_HUB = -0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayFinalSizePc")
-    f32 HubFreePlayFinalSizePc = 0.3499999940395355f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayBigYPc")
-    f32 HubFreePlayBigYPc = 0.3499999940395355f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayBigSizePc")
-    f32 HubFreePlayBigSizePc = 0.3499999940395355f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayNameYPc")
-    f32 HubFreePlayNameYPc = 0.125f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayCursorSizePc")
-    f32 HubFreePlayCursorSizePc = 0.1599999964237213f;
-#pragma data_seg()
 #pragma data_seg(".data$HubEpisodeRedPc")
     u8 HubEpisodeRedPc = 255;
 #pragma data_seg()
@@ -34168,9 +33786,6 @@ extern "C" {
 #pragma bss_seg(".bss$TextInputActionLabelBufferPc")
     char TextInputActionLabelBufferPc[128] = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$HubFreePlayDrawListPc")
-    APICHARACTERMODELLIST HubFreePlayDrawListPc[341] = {0};
-#pragma bss_seg()
 /* Exact address-backed native span [8016a8,8016f0), not a claim about original logical array capacity. Reader remains
  * unsized. */
 #pragma data_seg(".data$HubButtonStringBufferPc")
@@ -34190,17 +33805,11 @@ extern "C" {
 #pragma bss_seg(".bss$selectmodeduration")
     f32 selectmodeduration = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$freeplayduration")
-    f32 freeplayduration = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$bonusmodetime")
     f32 bonusmodetime = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$hub_selectmode")
     i32 hub_selectmode = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freeplaytime")
-    f32 freeplaytime = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$hub_bonusarea")
     i32 hub_bonusarea = 0;
@@ -34217,17 +33826,11 @@ extern "C" {
 #pragma bss_seg(".bss$fplist")
     APICHARACTERMODELLIST fplist[341] = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$hub_freeplay_area")
-    i32 hub_freeplay_area = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$bonusmodemode")
     i32 bonusmodemode = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$bonusmodeduration")
     f32 bonusmodeduration = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$HubIconWibbleAnglePc")
-    u16 HubIconWibbleAnglePc[4] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$HubIconWibbleTimePc")
     f32 HubIconWibbleTimePc[4] = {0};
@@ -34271,14 +33874,8 @@ extern "C" {
 #pragma bss_seg(".bss$HubIconWibbleRatePc")
     i32 HubIconWibbleRatePc[4] = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$BigIconAlpha")
-    f32 BigIconAlpha[2] = {0};
-#pragma bss_seg()
 #pragma bss_seg(".bss$freeplay_i")
     i32 freeplay_i[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$freeplay_time")
-    f32 freeplay_time[2] = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$NetFreePlayModelList")
     APICHARACTERMODELLIST NetFreePlayModelList[49] = {0};
@@ -34289,9 +33886,6 @@ extern "C" {
 #pragma bss_seg(".bss$net_FreePlayModelCount")
     i8 net_FreePlayModelCount = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$HubFreePlaySelectionWaitPc")
-    f32 HubFreePlaySelectionWaitPc = 0.75f;
-#pragma data_seg()
 #pragma data_seg(".data$ArcadeLevelPc")
     AREA_DATA_PC **ArcadeLevelPc[12] = {&SENATE_ADATA,       &UTAPAU_ADATA,      &HOTH_ADATA,
                                         &BONUSDAGOBAH_ADATA, &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA,
@@ -34504,11 +34098,7 @@ extern "C" {
 #pragma data_seg()
 }
 
-extern "C" {
-#pragma bss_seg(".bss$splcharshelf")
-    struct nugspline_s *splcharshelf = NULL;
-#pragma bss_seg()
-}
+extern "C" {}
 
 extern "C" {
 #pragma bss_seg(".bss$AIPathCnxHelperSysInitFn")
@@ -35086,8 +34676,6 @@ extern "C" {
     STREAK_NODE_PC *StreakNodesFreePc = 0;
 #pragma bss_seg(".bss$StreakHeadersFreePc")
     STREAK_HEADER_PC *StreakHeadersFreePc = 0;
-#pragma bss_seg(".bss$StreakHeadersUsedPc")
-    STREAK_HEADER_PC *StreakHeadersUsedPc = 0;
 #pragma bss_seg(".bss$StreakMaterialPc")
     NUMTL *StreakMaterialPc = 0;
 #pragma bss_seg(".bss$StreakHeadersPc")
@@ -35254,15 +34842,7 @@ extern "C" {
 
 extern "C" {
 #pragma data_seg(".data$JediBArenaTuningPc")
-    i32 jedib_seed = 17;
-    i32 jedib_min_baddies_per_goody = 1;
-    i32 jedib_max_baddies_per_goody = 3;
-    f32 jedib_outer_r = 8.0f;
     f32 jedib_safe_r = 9.0f;
-    f32 jedib_inner = 3.0f;
-    f32 jedib_offset = 0.5f;
-    f32 jedib_proximity = 0.5f;
-    f32 jedib_create_step_Normal = 2.0f;
     NUVEC jedib_offsets[3] = {{0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, 0.1f}};
     i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
     i16 *JediB_playerids[3] = {&CharacterFixupIdPc007f19c8, &id_ANAKINPADAWAN, &CharacterFixupIdPc007f19d0};
@@ -35308,9 +34888,6 @@ extern "C" {
     f32 HeadMovementThresholdPc = 0.0017453293548896909f;
     f32 CloakMovementRecoverRatePc = 2.0f;
     f32 CloakMovementFallRatePc = 2.0f;
-    f32 HairMovementRecoverRatePc = 2.0f;
-    f32 HairMovementFallRatePc = 2.0f;
-    f32 HairMovementFallAnglePc = -1.8325958251953125f;
 #pragma data_seg()
 #pragma section(".bss$HeadCloakHairTuningPc", read, write)
     __declspec(allocate(".bss$HeadCloakHairTuningPc")) f32 HairMovementRestAnglePc = 0.0f;

@@ -1,5 +1,8 @@
 #include <stdlib.h>
 #include "saga.h"
+#pragma data_seg(".data$SHIELDFLICKERTIME")
+static f32 SHIELDFLICKERTIME = 0.10000000149011612f;
+#pragma data_seg()
 
 i32 __cdecl CannotKill(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0)
@@ -62,7 +65,6 @@ void __cdecl TakeHitRumble(GAMEOBJECT *, f32);
 i32 __cdecl Player_HasInvincibility(GAMEOBJECT *);
 i32 __cdecl GameAudio_GetPlrSfxBits(void *);
 extern const char ShieldHitSfxPc[9], ShieldFlickerSfxPc[13];
-extern f32 SHIELDFLICKERTIME;
 void __cdecl ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
     SHIELD_STATE_PC *shield = (SHIELD_STATE_PC *)target;
     i32 health;

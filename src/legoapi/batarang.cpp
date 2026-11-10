@@ -1,4 +1,6 @@
 #include "saga.h"
+#pragma data_seg(".data$id_ROBIN")
+static i16 id_ROBIN = -1;
 
 /* Retail unit 0x403c90-0x407e40 (legoapi/items/collect/batarang.cpp): definitions in retail address order. */
 

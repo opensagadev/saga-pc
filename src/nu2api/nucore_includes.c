@@ -1,4 +1,6 @@
 #include "saga.h"
+static char *NuFParBufferBase = 0;
+static NUFPAR_PC *NuFParRecordBase = 0;
 
 #include <stdarg.h>
 #include <stdio.h>

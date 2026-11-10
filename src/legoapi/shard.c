@@ -1,4 +1,15 @@
 #include "saga.h"
+#pragma bss_seg(".bss$CodePos")
+static NUVEC CodePos[6] = {0};
+#pragma bss_seg(".bss$ShelfPos")
+static NUVEC ShelfPos[6] = {0};
+#pragma bss_seg(".bss$splcharshelf")
+static struct nugspline_s *splcharshelf = NULL;
+#pragma bss_seg()
+#pragma bss_seg(".bss$splcodes")
+static struct nugspline_s *splcodes = 0;
+#pragma bss_seg(".bss$splshelf")
+static struct nugspline_s *splshelf = 0;
 extern CHEAT_PC ExtrasCheatsPc[46];
 /* Integrate these declarations once. Keep all existing canonical data owners. */
 typedef struct SHOP_SAVE_VIEW_PC {

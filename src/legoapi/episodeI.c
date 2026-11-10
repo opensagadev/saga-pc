@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "saga.h"
+#pragma bss_seg(".bss$MaulA_ai_message")
+static struct gizaimessage_s *MaulA_ai_message = 0;
 
 f32 __cdecl PodSprint_InStartCountdown(WORLDINFO *world) {
     if (world->current_level == PODSPRINTA_LDATA)

@@ -1,5 +1,18 @@
 #include <stdio.h>
 #include "saga.h"
+static f32 GameFogDefaultFStopPc = 22.0f;
+#pragma bss_seg(".bss$GameFogDuration")
+static f32 GameFogDuration = 0;
+#pragma bss_seg(".bss$GameFogNew")
+static GAMEFOG_STATE_PC GameFogNew = {{0}};
+#pragma bss_seg(".bss$GameFogSet")
+static void *GameFogSet = 0;
+#pragma bss_seg(".bss$GameFogSnap")
+static i32 GameFogSnap = 0;
+#pragma bss_seg(".bss$GameFogTime")
+static f32 GameFogTime = 0;
+#pragma bss_seg(".bss$dof_fstop")
+static f32 dof_fstop = 0;
 #undef DrawStatusText
 
 i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *, NUMTX *, f32);

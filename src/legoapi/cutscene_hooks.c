@@ -1,4 +1,14 @@
 #include "saga.h"
+static KAMINOEPLATE *kamino_plate_1 = 0;
+static i32 kamino_plate_1_active = 0;
+static KAMINOEPLATE *kamino_plate_2 = 0;
+static i32 kamino_plate_2_active = 0;
+static KAMINOEPLATE *kamino_plate_3 = 0;
+static i32 kamino_plate_3_active = 0;
+static KAMINOEPLATE *kamino_plate_4 = 0;
+static i32 kamino_plate_4_active = 0;
+static KAMINOEPLATE *kamino_plate_hit = 0;
+static u16 kamino_plate_id = 0;
 
 #include <string.h>
 

@@ -1,4 +1,6 @@
 #include "saga.h"
+#pragma bss_seg(".bss$StreakHeadersUsedPc")
+static STREAK_HEADER_PC *StreakHeadersUsedPc = 0;
 
 // Retail uses EDI/ESI for the endpoint pointers and six stack arguments.
 // Keep the complete helper beside its sole caller for VC8's internal ABI.

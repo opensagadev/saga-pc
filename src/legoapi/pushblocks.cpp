@@ -1,4 +1,5 @@
 #include "saga.h"
+static f32 PushBlockGapEpsilonPc = 0.00999999978f;
 
 /* Retail unit 0x5a4390-0x5a8070 (legoapi/actions/movement/pushblocks.cpp): definitions in retail address order. */
 
@@ -32,7 +33,6 @@ STATIC_ASSERT(offsetof(PUSHPROGRESS, end_positions) == 0xcc);
 extern "C" {
     extern i32 LEGOCONTEXT_PUSH;
     extern u16 PushBlockFacingTolerancePc;
-    extern f32 PushBlockGapEpsilonPc;
 }
 typedef union PUSH_FABS_BITS_PC {
     f32 value;

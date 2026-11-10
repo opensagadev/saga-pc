@@ -1,4 +1,7 @@
 #include "saga.h"
+#pragma bss_seg(".bss$player_tag_from")
+static GAMEOBJECT *player_tag_from = 0;
+#pragma bss_seg()
 void __cdecl SpawnCreatureFromCrate(GAMEOBJECT *, f32, f32);
 void __cdecl DestroyAIGroup(AIGROUP_PC *);
 void __cdecl FreeTorpedoPacket(TORPEDOPACKET_PC **);

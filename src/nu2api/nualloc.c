@@ -1,4 +1,7 @@
 #include "saga.h"
+static void *NuAllocPeakEnd1 = 0;
+static NUALLOC_POOL *NuAllocPool = 0;
+static u32 NuAllocRecordSerial = 0;
 
 #include <stdlib.h>
 #include <string.h>
@@ -41,12 +44,9 @@ STATIC_ASSERT(offsetof(NUALLOC_POOL, cursor) == 0x08);
 /* PC state at 0x88ab38..0x88ab54. */
 extern NUALLOC_RECORD *NuAllocRecordHead;
 extern u32 NuAllocTrackedBytes;
-extern NUALLOC_POOL *NuAllocPool;
-extern u32 NuAllocRecordSerial;
 extern NUALLOC_ARENA *NuAllocArena;
 extern void *NuAllocManager;
 extern void *NuAllocPeakEnd0;
-extern void *NuAllocPeakEnd1;
 
 /* The PC copies these three dwords before the returned storage and after it. */
 extern u32 NuAllocHeaderMetadata[3];

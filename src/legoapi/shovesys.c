@@ -1,4 +1,7 @@
 #include "saga.h"
+#pragma data_seg(".data$ShoveCollisionExpansionPc")
+static f32 ShoveCollisionExpansionPc = 0.10000000149011612f;
+#pragma data_seg()
 typedef struct shove_object_pc_s {
     NUSPECIALHANDLE *special;
     NUVEC position;
@@ -32,7 +35,7 @@ void __cdecl AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
 void __cdecl ShoveObjectSysReset(void) {
     ShoveSystemPc.count = 0;
 }
-extern f32 ShoveMaximumSpeedPc, ShoveMaximumPenetrationPc, ShoveCollisionExpansionPc;
+extern f32 ShoveMaximumSpeedPc, ShoveMaximumPenetrationPc;
 i32 __cdecl BoundingBoxToLine(NUVEC *, NUVEC *, NUMTX *, NUVEC *, NUVEC *, f32, NUVEC *);
 void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *object) {
     f32 best_penetration = 0.0f;

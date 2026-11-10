@@ -1,4 +1,5 @@
 #include "saga.h"
+static u32 PcMousePressedMaskPc = 0;
 
 i32 PC_INPUT_RUNTIME_PC::ResolveAuxiliaryConflictsPc(i32 auxiliary_index, i32 bank_count) {
     if ((u32)(auxiliary_ports[auxiliary_index] - 10) > 3)
@@ -784,7 +785,7 @@ i32 PC_INPUT_RUNTIME_PC::SampleDevicePc(i32 port, PC_INPUT_RAW_SAMPLE_PC *sample
 }
 
 // Uncompiled drafts retaining native mouse accumulation and cursor behavior.
-extern u32 PcMouseButtonsMaskPc, PcMousePressedMaskPc;
+extern u32 PcMouseButtonsMaskPc;
 extern i32 PcMouseCurrentAnglePc, PcMouseTargetAnglePc;
 extern f32 PcMouseRadiusPc, PcMouseInterpolationPc;
 extern "C" f32 __cdecl NuPow(f32, f32);

@@ -1,5 +1,17 @@
 #include <stdio.h>
 #include "saga.h"
+#pragma bss_seg(".bss$SarlaccBlowUpTargetCountPc")
+static i32 SarlaccBlowUpTargetCountPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccBlowUpTargetsPc")
+static GIZMOBLOWUP_PC *SarlaccBlowUpTargetsPc[4] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccRechargeTimerPc")
+static f32 SarlaccRechargeTimerPc = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$SarlaccTakenOverPc")
+static i32 SarlaccTakenOverPc = 0;
+#pragma bss_seg()
 
 typedef struct emperor_fight_packet_pc_s {
     i32 state;

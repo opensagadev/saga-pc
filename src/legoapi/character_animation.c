@@ -1,4 +1,5 @@
 #include "saga.h"
+static f32 JumpAnimHoldTimePc = 0.100000001f;
 
 extern i16 id_JUMBOHOMINGDROID;
 void __cdecl UpdateCharacterIdle(GAMEOBJECT *);
@@ -118,7 +119,6 @@ STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_TIMERS_PC, ground_contact_grace) == 0xd
 STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_TIMERS_PC, nearby_floor_distance) == 0xda0);
 STATIC_ASSERT(offsetof(DEFAULT_ANIMATION_TIMERS_PC, fall_animation_timer) == 0xdac);
 STATIC_ASSERT(sizeof(DEFAULT_ANIMATION_TIMERS_PC) == 0xdb0);
-extern f32 JumpAnimHoldTimePc;
 i32 __cdecl UseFallAnim(GAMEOBJECT *);
 
 static void SetDefaultCharacterAnimPc(GAMEOBJECT *object) {

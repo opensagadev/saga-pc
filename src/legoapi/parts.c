@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include "saga.h"
+#pragma data_seg(".data$PartVectorSpreadDegrees_PC")
+static i32 PartVectorSpreadDegrees_PC = 30;
+#pragma data_seg()
 
 void __cdecl InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     i32 i, j;
