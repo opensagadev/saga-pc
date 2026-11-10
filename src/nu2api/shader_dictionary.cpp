@@ -683,6 +683,11 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
     }
 }
 
+ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(const char *source) {
+    AppendText(source);
+    return *this;
+}
+
 __declspec(noinline) char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena) {
     i32 length = (i32)strlen(source);
     char *result = reinterpret_cast<char *>(arena->cursor);

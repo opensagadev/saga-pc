@@ -41,10 +41,6 @@ void ShaderCompilerBufferAllocatorPc::AppendText(const char *source) {
     AppendBytes(source, (i32)strlen(source));
 }
 
-ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(const char *source) {
-    AppendText(source);
-    return *this;
-}
 void ShaderCompilerBufferAllocatorPc::AppendInt(i32 value) {
     char text[64];
     sprintf(text, "%d", value);

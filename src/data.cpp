@@ -8770,6 +8770,7 @@ extern "C" {
     NuKeyboardState_PC *nu_input_state = 0;
     HINSTANCE PCInputWindow_candidate = 0;
     HWND PCInputInstance_candidate = 0;
+    PC_DEVICE_BACKEND_PC PCDeviceBackend;
     NuKeyboardOwner_PC nu_keyboard_owner;
     u8 nu_keyboard_pages[0x200] = {0};
 #pragma bss_seg(".bss$nu_keyboard_page_index")

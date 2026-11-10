@@ -416,8 +416,6 @@ PC_DEVICE_BACKEND_PC::~PC_DEVICE_BACKEND_PC() {
     Shutdown();
 }
 
-extern "C" PC_DEVICE_BACKEND_PC PCDeviceBackend;
-PC_DEVICE_BACKEND_PC PCDeviceBackend;
 struct GRAPHICS_DEVICE_PC;
 struct GRAPHICS_DEVICE_METHODS_PC {
     void *unknown_0000[3];
@@ -1607,9 +1605,6 @@ extern "C" void __cdecl PCGraphicsDrawPostEffectQuadPc(void) {
 }
 extern "C" void __cdecl PCGraphicsDrawPostEffectIndexedPc(void) {
     PCDeviceBackend.DrawPostEffectIndexedPc();
-}
-extern "C" void __cdecl PCDevicePostEffectBarrierPc(void) {
-    PCDeviceBackend.PostEffectBarrierPc();
 }
 extern "C" void __cdecl NuRndrEndFrameActionPc(void) {
 }

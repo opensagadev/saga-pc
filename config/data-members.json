@@ -76,7 +76,7 @@
       "kind": "data_member",
       "owner_symbol": "_PCDeviceBackend",
       "owner_identifier": "PCDeviceBackend",
-      "owner_unit": "src/nu2api/pc_device.cpp",
+      "owner_unit": "src/data.cpp",
       "owner_type": "PC_DEVICE_BACKEND_PC",
       "member_path": "active_aspect",
       "original_address": "0x02976c18",
