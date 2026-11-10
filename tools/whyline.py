@@ -21,6 +21,7 @@ the source lines that produced our side.
 import argparse
 import bisect
 import difflib
+import json
 from pathlib import Path
 import re
 import subprocess
@@ -30,13 +31,15 @@ if __package__:
     from . import diffclass
     from .binary import COFF, relocate_function
     from .cc import environment, windows
-    from .lib import ROOT, DefinitionIndex, bindings_for, compiled_objects, load_symbols, project, retail
+    from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, load_symbols, object_path, project,
+                      retail)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools import diffclass
     from tools.binary import COFF, relocate_function
     from tools.cc import environment, windows
-    from tools.lib import ROOT, DefinitionIndex, bindings_for, compiled_objects, load_symbols, project, retail
+    from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, load_symbols, object_path, project,
+                           retail)
 
 FLAGS = ["/nologo", "/c", "/O2", "/Gy", "/GS", "/MT"]
 INCLUDES = ["src", "lib/ogg-vorbis/vorbis", "build/tools/msvc8/include", "build/tools/msvc8/PlatformSDK/Include"]
@@ -202,7 +205,14 @@ def main():
         parser.error(f"Expected one mapped function for {args.function!r}; found {len(records)}")
     record = records[0]
     symbol, va, size = record["symbol"], record["address"], record["size"]
-    definitions = DefinitionIndex(compiled_objects()).definitions_for(symbol)
+    report_path = ROOT / "matching.json"
+    known = [row["units"] for row in (json.loads(report_path.read_text())["functions"] if report_path.is_file() else [])
+             if row["symbol"] == symbol and row.get("units")]
+    if known and len(known[0]) == 1 and object_path(known[0][0]).is_file():
+        # One object is enough, and other objects may be rebuilding meanwhile.
+        definitions = [(known[0][0], COFF(object_path(known[0][0])))]
+    else:
+        definitions = DefinitionIndex(compiled_objects()).definitions_for(symbol)
     if len(definitions) != 1:
         parser.error(f"{symbol}: expected one compiled definition, found {len(definitions)}")
     unit, current = definitions[0]

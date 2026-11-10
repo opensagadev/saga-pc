@@ -36,7 +36,12 @@ def display(symbol):
     return symbol.lstrip("_").split("@")[0]
 
 
-def snapshot(units, out_path):
+def snapshot(units, out_path, symbols=None, out_dir=None, quiet=False):
+    """Score the mapped functions defined in `units` (only `symbols` when given).
+
+    `out_dir` replaces build/unitscore for the objdiff scratch files, so that two
+    scorings can run at the same time.
+    """
     from tools.binary import COFF, relocate_function, write_function
     from tools.lib import (DefinitionIndex, bindings_for, digest, load_code_groups, load_symbols,
                            number, object_path, prepare_code_group_objects, project, retail)
@@ -56,10 +61,13 @@ def snapshot(units, out_path):
     index = DefinitionIndex(objects)
     text_va, text_size = number(target["text_va"]), number(target["text_size"])
     rows, comparisons = {}, []
-    OUT.mkdir(parents=True, exist_ok=True)
+    out = Path(out_dir) if out_dir else OUT
+    out.mkdir(parents=True, exist_ok=True)
     for record in records:
         symbol, va, size = record["symbol"], record["address"], record["size"]
         if va is None or not size or not text_va <= va < text_va + text_size:
+            continue
+        if symbols is not None and symbol not in symbols:
             continue
         definitions = index.definitions_for(symbol)
         if not definitions:
@@ -75,18 +83,18 @@ def snapshot(units, out_path):
             continue
         original = pe.read_va(va, size)
         stem = f"{va:08x}-" + digest((unit + symbol).encode())[:12]
-        write_function(OUT / (stem + ".target.obj"), symbol, va, original)
-        write_function(OUT / (stem + ".base.obj"), symbol, va, base)
+        write_function(out / (stem + ".target.obj"), symbol, va, original)
+        write_function(out / (stem + ".base.obj"), symbol, va, base)
         comparisons.append({"name": stem, "target_path": stem + ".target.obj", "base_path": stem + ".base.obj"})
         rows[symbol] = {"va": va, "size": size, "unit": unit, "exact": original == base,
                         "percent": 100.0 if original == base else None, "stem": stem}
     pending = [c for c in comparisons if rows_by_stem(rows).get(c["name"], {}).get("percent") is None]
     if pending:
         cli = ROOT / "build/tools/bin/objdiff-cli"
-        (OUT / "objdiff.json").write_text(json.dumps({"build_target": False, "build_base": False,
+        (out / "objdiff.json").write_text(json.dumps({"build_target": False, "build_base": False,
                                                      "units": pending}, indent=1))
-        report_path = OUT / "report.json"
-        subprocess.run([str(cli), "report", "generate", "-p", str(OUT), "-o", str(report_path)],
+        report_path = out / "report.json"
+        subprocess.run([str(cli), "report", "generate", "-p", str(out), "-o", str(report_path)],
                        check=True, capture_output=True, timeout=600)
         report = json.loads(report_path.read_text())
         by_stem = rows_by_stem(rows)
@@ -99,7 +107,10 @@ def snapshot(units, out_path):
         row.pop("stem", None)
         if row["percent"] is None:
             row["percent"] = 0.0
-    Path(out_path).write_text(json.dumps(rows, indent=0, sort_keys=True))
+    if out_path:
+        Path(out_path).write_text(json.dumps(rows, indent=0, sort_keys=True))
+    if quiet:
+        return rows
     exact = sum(r["size"] for r in rows.values() if r["exact"])
     fuzzy = sum(r["size"] * r["percent"] / 100 for r in rows.values())
     print(f"{out_path}: {len(rows)} functions, exact {exact} bytes, fuzzy {fuzzy:.1f} bytes")

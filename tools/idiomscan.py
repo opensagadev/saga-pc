@@ -29,6 +29,7 @@ blocks) gets the tags whose shape it shows:
   U8   an immediate where retail uses a register known to hold it
        (`or r, -1` vs `or r, r`, `mov r, 1` vs `lea r, [r + 1]`, `push 0` vs `push r`)
   U9   commutative x87 operands swapped
+  U16  only x87 stack positions differ (`fstp st(0)` vs `fstp st(1)` for dead values)
   ?    nothing recognised
 
 Spots made only of alignment filler (`lea r, [r]`, `nop`, `mov edi, edi`) are
@@ -67,7 +68,8 @@ FRAME = re.compile(r"^esp, (0x[0-9a-f]+|\d+)$")
 MEMORY = re.compile(r"\[([^\]]+)\]")
 COMMUTATIVE = {"fadd", "fmul", "faddp", "fmulp"}
 FILLER = re.compile(r"^(nop|int3|mov edi, edi|lea (\w+), \[\2\]|lea (\w+), \[\3 \+ 0\])$")
-NUMBER = re.compile(r"\b(0x[0-9a-f]+|\d+)\b")
+NUMBER = re.compile(r"(?<!st\()\b(0x[0-9a-f]+|\d+)\b")
+X87 = re.compile(r"st\(\d\)")
 PAIRS = {("ja", "jae"), ("jbe", "jb"), ("jg", "jge"), ("jle", "jl")}
 
 
@@ -257,8 +259,6 @@ def spot_tags(target, base):
             tags.add("I3")
         if sum(m == "ret" for m, _ in right) != sum(m == "ret" for m, _ in left):
             tags.add("I17")
-        if _constant_only(left, right):
-            tags.add("C")
         if _off_by_one_compare(left, right) or _jump_condition(left, right) and not _inverted_branch(left, right):
             tags.add("I23")
         if _float_compare(left, right):
@@ -286,6 +286,9 @@ def spot_tags(target, base):
             tags.add("I25")
         elif _commutative_swapped(left, right):
             tags.add("U9")
+        if (len(left) == len(right) and [m for m, _ in left] == [m for m, _ in right]
+                and [X87.sub("st", o) for _, o in left] == [X87.sub("st", o) for _, o in right]):
+            tags.add("U16")
         if _bitfield(left, right) or _width(left, right):
             tags.add("I26")
         if _known_register(left, right):
@@ -296,6 +299,8 @@ def spot_tags(target, base):
             tags.add("I4")
         if tag == "insert" and not (collections.Counter(full_b[j1:j2]) - deleted):
             tags.add("I4")
+        if not tags and _constant_only(left, right):
+            tags.add("C")
         result.append((spot, sorted(tags) or [UNKNOWN]))
     return result
 
@@ -370,18 +375,25 @@ def scan(rows):
 
 
 def explain(name):
-    from tools.binary import relocate_function
-    from tools.lib import DefinitionIndex, bindings_for, compiled_objects, load_symbols, project, retail
+    from tools.binary import COFF, relocate_function
+    from tools.lib import (DefinitionIndex, bindings_for, compiled_objects, load_symbols, object_path, project,
+                           retail)
     records = [r for r in load_symbols() if r["address"] and name in
                (whyline.display_name(r["symbol"]), r["symbol"], f"0x{r['address']:08x}")]
     if len(records) != 1:
         raise SystemExit(f"Expected one mapped function for {name!r}; found {len(records)}")
     record = records[0]
-    definitions = DefinitionIndex(compiled_objects()).definitions_for(record["symbol"])
-    if not definitions:
-        raise SystemExit(f"{name}: not implemented")
+    known = [r for r in json.loads((ROOT / "matching.json").read_text())["functions"]
+             if r["symbol"] == record["symbol"] and r.get("units")]
+    if known:  # one object is enough (and other objects may be rebuilding)
+        obj = COFF(object_path(known[0]["units"][0]))
+    else:
+        definitions = DefinitionIndex(compiled_objects()).definitions_for(record["symbol"])
+        if not definitions:
+            raise SystemExit(f"{name}: not implemented")
+        obj = definitions[0][1]
     va = record["address"]
-    base, _ = relocate_function(definitions[0][1], record["symbol"], va, bindings_for(load_symbols()))
+    base, _ = relocate_function(obj, record["symbol"], va, bindings_for(load_symbols()))
     original = retail(project()["target"]).read_va(va, record["size"])
     target, ours = diffclass.disassemble(original, va), diffclass.disassemble(base, va)
     tagged = spot_tags(target, ours)
