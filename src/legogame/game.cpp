@@ -1390,8 +1390,8 @@ extern "C" void __cdecl BuyAllShopExtras(void);
 extern "C" i16 TextIdPc880ff0;
 
 static void __cdecl GizBuildIt_FinishFn_Game(GIZBUILDIT_PC *input) {
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && HubBuildItPc == input &&
-        (Game.purchased_extra_bits_high & 0x80) == 0) {
+    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildItPc &&
+        (Game.hub_buildit_completed & 0x80) == 0) {
         AddFancyMessageRGB(TTab[TextIdPc880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
         BuyAllShopExtras();
         ReCalculateCompletionPoints();

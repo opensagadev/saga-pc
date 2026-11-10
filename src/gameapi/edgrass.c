@@ -399,13 +399,13 @@ static void edgracbClumpFadeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 un
         edgra_clumpfade_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edgracbCancelClumpFadeMenu, "Clump Fading");
         if (edgra_clumpfade_menu) {
             eduiMenuAddItem(edgra_clumpfade_menu,
-                            eduiItemSliderCreate(0, edblack, 0, edgracbSetClumpFadeIn, 0.0f, edgra_superscale * 2.0f,
+                            eduiItemSliderCreate(0, edblack, 0, edgracbSetClumpFadeIn, 0.0f, edgra_superscale * 100.0,
                                                  GrassClumps[edgra_nearest].near_distance, "Start of Fade"));
             fadeinitem = (edui_slider_s *)(edui_last_item);
             eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
             eduiItemSliderSetGranularity((edui_slider_s *)(edui_last_item), 0.1f);
             eduiMenuAddItem(edgra_clumpfade_menu,
-                            eduiItemSliderCreate(0, edblack, 0, edgracbSetClumpFadeOut, 0.0f, edgra_superscale * 2.0f,
+                            eduiItemSliderCreate(0, edblack, 0, edgracbSetClumpFadeOut, 0.0f, edgra_superscale * 100.0,
                                                  GrassClumps[edgra_nearest].far_distance, "End of Fade"));
             fadeoutitem = (edui_slider_s *)(edui_last_item);
             eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
@@ -481,13 +481,13 @@ static void edgracbGlobalsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     if (!edgra_globals_menu)
         return;
     eduiMenuAddItem(edgra_globals_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edgracbSetGlobalFadeIn, 0.0f, edgra_superscale * 2.0f,
+                    eduiItemSliderCreate(0, edblack, 0, edgracbSetGlobalFadeIn, 0.0f, edgra_superscale * 100.0,
                                          edgra_global_fadein, "Global Start of Fade"));
     globalfadeinitem = (edui_slider_s *)(edui_last_item);
     eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
     eduiItemSliderSetGranularity((edui_slider_s *)(edui_last_item), 0.1f);
     eduiMenuAddItem(edgra_globals_menu,
-                    eduiItemSliderCreate(0, edblack, 0, edgracbSetGlobalFadeOut, 0.0f, edgra_superscale * 2.0f,
+                    eduiItemSliderCreate(0, edblack, 0, edgracbSetGlobalFadeOut, 0.0f, edgra_superscale * 100.0,
                                          edgra_global_fadeout, "Global End of Fade"));
     globalfadeoutitem = (edui_slider_s *)(edui_last_item);
     eduiItemSliderSetFmt((edui_slider_s *)(edui_last_item), "(%1.01f)");
@@ -558,10 +558,12 @@ void __cdecl edgraSortVectorBuffer(i32 index) {
 
 void __cdecl edgraDetermineNearestClump(f32 distance) {
     NUVEC delta;
+    f32 magnitude_sq;
     i32 i;
     if (edgra_nearest != -1) {
         NuVecSub(&delta, &edgra_cam_pos, &GrassClumps[edgra_nearest].position);
-        if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z == 0.0f)
+        magnitude_sq = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (magnitude_sq == 0.0f)
             return;
     }
     edgra_nearest = -1;
