@@ -704,7 +704,7 @@ f32 GetSoundVolume(void) {
     return MASTERVOLUME;
 }
 
-void __cdecl NuSound3AddRumble(void *pad, f32 strength, i32 duration, i32 priority, f32 buzz) {
+void __cdecl NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 buzz) {
     (void)pad;
     (void)strength;
     (void)duration;

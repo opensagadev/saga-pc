@@ -169,14 +169,14 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkin() const {
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkinAlt() const {
     return (descriptor->vertex_format & 0x30000) != 0 && (descriptor->vertex_format & 0x400000) != 0;
 }
-bool PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const {
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const {
     if (variant != 0)
-        return false;
+        return 0;
     return (descriptor->layer_flags & 0x2000000) != 0;
 }
-bool PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const {
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const {
     if (variant != 0)
-        return false;
+        return 0;
     return (descriptor->layer_flags & 8) != 0;
 }
 

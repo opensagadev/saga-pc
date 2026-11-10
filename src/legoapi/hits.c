@@ -34,7 +34,7 @@ void __cdecl KillRumble(GAMEOBJECT *object) {
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         pad = object->pad->bound_pad;
         if (pad != NULL)
-            NuSound3AddRumble(pad, 0.1f, 0, 0, 0.0f);
+            NuSound3AddRumble(pad, 0.1f, 0, 0.0f, 0.0f);
     }
 }
 void __cdecl HitRumble(GAMEOBJECT *object) {
@@ -43,7 +43,7 @@ void __cdecl HitRumble(GAMEOBJECT *object) {
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         pad = object->pad->bound_pad;
         if (pad != NULL)
-            NuSound3AddRumble(pad, 2.0f / DEFAULTFPS, 0, 0, 0.0f);
+            NuSound3AddRumble(pad, 2.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
     }
 }
 
@@ -687,7 +687,7 @@ void __cdecl FloatRumble(GAMEOBJECT *object) {
         NewRumble(object->pad->bound_pad, strength, 0);
         pad = object->pad->bound_pad;
         if (pad != NULL)
-            NuSound3AddRumble(pad, 1.0f / DEFAULTFPS, 0, 0, 0.0f);
+            NuSound3AddRumble(pad, 1.0f / DEFAULTFPS, 0, 0.0f, 0.0f);
     }
 }
 

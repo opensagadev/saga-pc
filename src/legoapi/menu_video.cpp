@@ -28,14 +28,17 @@ void __thiscall MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.SetUseHiresPendingPc(hires_enabled == 1);
     PcWindowOptions.Save();
 }
-extern "C" u8 __cdecl MenuCanChangeMultisamplePc(void) {
+extern "C" bool __cdecl MenuCanChangeMultisamplePc(void) {
     for (i32 i = 0; i != 5; ++i) {
-        if (i != 0 && PCDeviceBackend.multisample_tested != 0 && PCDeviceBackend.quality[i] != -1)
-            return PCDeviceBackend.multisample_index != 6;
+        if (i != 0 && PCDeviceBackend.multisample_tested != 0 && PCDeviceBackend.quality[i] != -1) {
+            if (PCDeviceBackend.multisample_index == 6)
+                break;
+            return true;
+        }
     }
-    return 0;
+    return false;
 }
-extern "C" u8 __cdecl MenuCanChangeShadowsPc(void) {
+extern "C" bool __cdecl MenuCanChangeShadowsPc(void) {
     return PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1;
 }
 extern "C" void __cdecl MenuEnterVideoPc(MENU *) {

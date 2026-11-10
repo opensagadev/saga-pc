@@ -7674,7 +7674,7 @@ STATIC_ASSERT(offsetof(NUKEYCHAR, shifted) == 5);
 
 typedef struct NuTime_s {
     u32 low;
-    u32 high;
+    i32 high;
 } NuTime;
 STATIC_ASSERT(sizeof(NuTime) == 8);
 
@@ -11412,7 +11412,7 @@ extern OCCLUSIONMANAGER g_OcclusionManager;
     extern i32 PS2_VCNTR_Y;
     extern i32 PS2_VREZ_H;
     extern i64 NuTime_TickBase;
-    void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high);
+    void __cdecl NuTimeGetTicksPS(u32 *low, i32 *high);
     void __cdecl NuTimeGet(NuTime *time);
     void __cdecl NuTimeSub(NuTime *time, NuTime *a, NuTime *b);
     void __cdecl NuTimeGetTicksPerSecondPS(u32 *low, u32 *high);
@@ -12246,7 +12246,7 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
 
     void __cdecl NewRumble(void *, f32, i32);
     void __cdecl NewBuzz(void *, f32, i32);
-    void __cdecl NuSound3AddRumble(void *, f32, i32, i32, f32);
+    void __cdecl NuSound3AddRumble(void *, f32, i32, f32, f32);
     i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *);
     i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *);
     i32 __cdecl LedgeTerrain_SetTargetMom(GAMEOBJECT *);
@@ -15041,7 +15041,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl NuAnimBuffProceduralAnimation(ANI3_BUFFER_PC *, NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *);
     void __cdecl NuMouseRead(void);
     void __cdecl NuPause(i32 paused);
-    i32 __cdecl NuKeyToAscii(u32 key, i32 shifted);
+    char __cdecl NuKeyToAscii(u32 key, i32 shifted);
     extern WORLDINFO WorldInfo[2];
     extern WORLDINFO *WORLD;
     extern GAMECAMERA *GameCam;
@@ -20258,8 +20258,8 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     u32 __thiscall GetVertexFlags() const;
     bool HasVertexSkin() const;
     bool HasVertexSkinAlt() const;
-    bool HasAnisoFlip() const;
-    bool HasPhongLighting() const;
+    i32 HasAnisoFlip() const;
+    i32 HasPhongLighting() const;
 };
 STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_FILTER_VIEW) == 0x24);
 STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, parameter) == 0x20);
@@ -28317,8 +28317,10 @@ extern "C" {
     extern const char MenuEffects8xFormatPc[7];
     extern const char MenuEffects4xFormatPc[7];
     extern const char MenuEffects2xFormatPc[7];
-    u8 __cdecl MenuCanChangeMultisamplePc(void);
-    u8 __cdecl MenuCanChangeShadowsPc(void);
+#ifdef __cplusplus
+    bool __cdecl MenuCanChangeMultisamplePc(void);
+    bool __cdecl MenuCanChangeShadowsPc(void);
+#endif
     void __cdecl MenuEnterVideoPc(MENU *);
     void __cdecl MenuDrawVideoPc(MENU *);
     void __cdecl MenuUpdateVideoPc(MENU *);

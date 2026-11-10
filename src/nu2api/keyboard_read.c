@@ -134,12 +134,14 @@ void __cdecl NuKeyboardRead(void) {
     }
 }
 
-i32 NuKeyToAscii(u32 key, i32 shifted) {
+char NuKeyToAscii(u32 key, i32 shifted) {
     NUKEYCHAR *entry;
 
     for (entry = NuKeyChar; entry->key != 0; ++entry) {
         if (entry->key == key) {
-            return shifted ? entry->shifted : entry->normal;
+            if (shifted)
+                return entry->shifted;
+            return entry->normal;
         }
     }
     return 0;

@@ -6577,14 +6577,14 @@ void __cdecl NuErrorSleep(void) {
     NuTime start, now, elapsed, rate;
     memset(&pad, 0, sizeof(pad));
     NuTimeGetTicksPS(&start.low, &start.high);
-    if ((i32)start.high < 0) {
+    if (start.high < 0) {
         NuFileError();
     }
     while (milliseconds < 5000.0f && waiting != 0) {
         y = 500.0f;
         index = 0;
         NuTimeGetTicksPS(&now.low, &now.high);
-        if ((i32)now.high < 0) {
+        if (now.high < 0) {
             NuFileError();
         }
         NUFRAME_ELAPSED(elapsed, now, start);
@@ -6663,7 +6663,7 @@ f32 __cdecl NuFrameEnd(void) {
             }
             FmvPlatformUpdatePc();
             NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
-            if ((i32)nuapi.time.high < 0) {
+            if (nuapi.time.high < 0) {
                 NuFileError();
             }
             NuSound3ResumeAfterFocusPc();
@@ -6679,7 +6679,7 @@ f32 __cdecl NuFrameEnd(void) {
     PCFrameCriticalSectionLeave_candidate();
 
     NuTimeGetTicksPS(&now.low, &now.high);
-    if ((i32)now.high < 0) {
+    if (now.high < 0) {
         NuFileError();
     }
     NUFRAME_ELAPSED(elapsed, now, nuapi.time);
@@ -6697,14 +6697,14 @@ f32 __cdecl NuFrameEnd(void) {
     if (target_interval > nuapi.frame_time) {
         Sleep((DWORD)((target_interval - nuapi.frame_time) * 1000.0));
         NuTimeGetTicksPS(&now.low, &now.high);
-        if ((i32)now.high < 0) {
+        if (now.high < 0) {
             NuFileError();
         }
         NUFRAME_ELAPSED(elapsed, now, nuapi.time);
         nuapi.frame_time = NuTimeSeconds(&elapsed);
     }
     NuTimeGetTicksPS(&nuapi.time.low, &nuapi.time.high);
-    if ((i32)nuapi.time.high < 0) {
+    if (nuapi.time.high < 0) {
         NuFileError();
     }
     NuTimeGetTicksPS(&nuapi.time2.low, &nuapi.time2.high);

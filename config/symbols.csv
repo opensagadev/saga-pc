@@ -11948,8 +11948,8 @@ address,symbol,size,ctype
 0x7485e0,?AppendBytes@ShaderCompilerBufferAllocatorPc@@QAEXPBDH@Z,114,
 0x748760,?AppendText@ShaderCompilerBufferAllocatorPc@@QAEXPBD@Z,39,
 0x748790,?AppendInt@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,90,
-0x748890,?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const
-0x748980,?HasPhongLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,24,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const
+0x748890,?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,i32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const
+0x748980,?HasPhongLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,i32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const
 0x748c40,??0ShaderBuilderGen@@QAE@AAUVirtualStackAllocator@@H@Z,96,
 0x748ca0,?ParseSource@ShaderBuilderGen@@QAEPAXPBDHPAUShaderCompilerBufferAllocatorPc@@HPAUVirtualStackAllocator@@@Z,260,"void * __thiscall (const char *,i32,ShaderCompilerBufferAllocatorPc *,i32,VirtualStackAllocator *)"
 0x748db0,?Generate@ShaderBuilderGen@@QAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerBufferAllocatorPc@@1@Z,324,"void __thiscall (PC_SHADER_MATERIAL_FILTER_VIEW *,ShaderCompilerBufferAllocatorPc *,ShaderCompilerBufferAllocatorPc *)"

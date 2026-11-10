@@ -90,7 +90,7 @@ void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 pla
     for (index = 0; index < 8; index++) {
         object = (GAMEOBJECT *)Player[index];
         if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
-            NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0, strength);
+            NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0.0f, strength);
         }
     }
 }

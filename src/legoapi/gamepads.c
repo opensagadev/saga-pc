@@ -69,20 +69,20 @@ void __cdecl NewRumble(void *pad, f32 strength, i32 ignored) {
         amount = (i32)(strength * 255.0);
         if (amount > 255)
             amount = 255;
-        NuSound3AddRumble(pad, 0.0f, amount, 0, strength);
+        NuSound3AddRumble(pad, 0.0f, amount, 0.0f, strength);
     }
 }
 
 void __cdecl NewBuzz(void *pad, f32 duration, i32 ignored) {
     (void)ignored;
     if (pad != NULL)
-        NuSound3AddRumble(pad, duration, 0, 0, 0.0f);
+        NuSound3AddRumble(pad, duration, 0, 0.0f, 0.0f);
 }
 
 void __cdecl NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
     (void)ignored;
     if (pad != NULL)
-        NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0, 0.0f);
+        NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0.0f, 0.0f);
 }
 
 void __cdecl TakeHitRumble(GAMEOBJECT *object, f32 strength) {

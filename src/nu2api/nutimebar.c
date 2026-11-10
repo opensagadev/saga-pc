@@ -3,7 +3,7 @@
 /* PC timing leaves of nutimebar outside nu3d (0x4ff100-0x4ffbb0); the time bars
  * themselves live in nu3d_includes.cpp. */
 
-void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high) {
+void __cdecl NuTimeGetTicksPS(u32 *low, i32 *high) {
     LARGE_INTEGER counter;
     i64 elapsed;
     QueryPerformanceCounter(&counter);
@@ -13,7 +13,7 @@ void __cdecl NuTimeGetTicksPS(u32 *low, u32 *high) {
         elapsed = (counter.QuadPart - NuTime_TickBase) + 0x7fffffffffffffffLL;
     }
     *low = (u32)elapsed;
-    *high = (u32)(elapsed >> 32);
+    *high = (i32)(elapsed >> 32);
 }
 
 void __cdecl PcInitializeStartupCriticalSection(void) {
