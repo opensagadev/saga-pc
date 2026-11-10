@@ -264,8 +264,6 @@ i32 __cdecl Indy_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
 i32 __cdecl Indy_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
 i32 __cdecl StarWars_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
 i32 __cdecl StarWars_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
-i32 __cdecl Batman_PreparingForSpecialMove(AIPACKET_PC *, APIOBJECT_PC *, i32);
-i32 __cdecl Batman_MidSpecialMove(AISYS_PC *, AIPACKET_PC *, APIOBJECT_PC *);
 void __cdecl Indy_AIPathCnxHelperSysInit(WORLDINFO *);
 void __cdecl StarWars_GameAISysInit(void);
 void __cdecl Indy_GameAISysInit(void) {
@@ -283,22 +281,6 @@ void __cdecl Indy_GameAISysInit(void) {
     HubResetAIFnPc = LSW_Hub_ResetAI;
     HubUpdateAIFnPc = LSW_Hub_UpdateAI;
     AIPathCnxHelperSysInitFn = Indy_AIPathCnxHelperSysInit;
-}
-void __cdecl Batman_GameAISysInit(void) {
-    LEGO_AIPATHCNX_BLOCKAGE = 0x4000;
-    LEGO_AIPATHCNX_WALLSHUFFLE = 0x400000;
-    LEGO_AIPATHCNX_VARIANT_FLAG0_PC = 0x100000;
-    LEGO_AIPATHCNX_VARIANT_FLAG1_PC = 0x200000;
-    LEGO_AIPATHCNX_JUMP = 0x1;
-    LEGO_AIPATHCNX_FORGOODIES = 0x80;
-    LEGO_AIPATHCNX_FORBADDIES = 0x100;
-    LEGO_AIPATHCNX_BIGJUMP = 0x1000;
-    LEGO_AIPATHCNX_REQUIRESPERMISSION = 0x2000;
-    LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0x200;
-    LEGO_AIPATHCNX_JUMP_NOW = 0x400;
-    LEGO_AIPATHCNX_DONT_JUMP_NOW = 0x800;
-    InitFn_PreparingForSpecialMove(Batman_PreparingForSpecialMove);
-    InitFn_MidSpecialMove(Batman_MidSpecialMove);
 }
 void GameAISysSetGame(void) {
     AIPathCnxHelperSysInitFn = NULL;

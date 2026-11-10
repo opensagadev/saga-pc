@@ -87,31 +87,6 @@ extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, 
 }
 
 extern "C" {
-    u32 __cdecl AIPathParseBatmanFlagPc(char *name) {
-        if (NuStrICmp(name, "JUMP") == 0)
-            return 1;
-        if (NuStrICmp(name, "COMBATROLL") == 0)
-            return 2;
-        if (NuStrICmp(name, "BATGLIDE") == 0)
-            return 4;
-        if (NuStrICmp(name, "GRAPPLE") == 0)
-            return 8;
-        if (NuStrICmp(name, "USEHATCH") == 0)
-            return 0x10;
-        if (NuStrICmp(name, "HOVERTUBE") == 0)
-            return 0x40;
-        if (NuStrICmp(name, "FORGOODIES") == 0)
-            return 0x80;
-        if (NuStrICmp(name, "FORBADDIES") == 0)
-            return 0x100;
-        if (NuStrICmp(name, "OBSTACLE") == 0)
-            return 0x20000000;
-        if (NuStrICmp(name, "JUMP_NOW") == 0)
-            return 0x400;
-        if (NuStrICmp(name, "DONT_JUMP_NOW") == 0)
-            return 0x800;
-        return 0;
-    }
     u32 __cdecl AIPathParseIndyFlagPc(char *name) {
         if (NuStrICmp(name, "DBLJUMP") == 0)
             return 2;
