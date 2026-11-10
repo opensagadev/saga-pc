@@ -4955,14 +4955,14 @@ f32 KnotHelper::DistanceToObject(VuVec &start, VuVec &end, void *object, EdRef *
     SplineKnot *knot = static_cast<SplineKnot *>(object);
     f32 distance = LineToPointDistance(start, end, knot->position, NULL);
     EdRef *nearest = position_ref;
-    f32 in_distance = LineToPointDistance(start, end, knot->in_tangent, NULL);
-    if (in_distance < distance) {
-        distance = in_distance;
+    f32 handle = LineToPointDistance(start, end, knot->in_tangent, NULL);
+    if (handle < distance) {
+        distance = handle;
         nearest = in_tangent_ref;
     }
-    f32 out_distance = LineToPointDistance(start, end, knot->out_tangent, NULL);
-    if (out_distance < distance) {
-        distance = out_distance;
+    handle = LineToPointDistance(start, end, knot->out_tangent, NULL);
+    if (handle < distance) {
+        distance = handle;
         nearest = out_tangent_ref;
     }
     distance -= KnotHelperRadius * EdManipulator::Scale;

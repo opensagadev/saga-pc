@@ -5499,8 +5499,8 @@ void __cdecl StartHold(GAMEOBJECT *object) {
         return;
     }
     if (LEGOCONTEXT_HOLD != -1 && NewBlockAction(object)) {
-        object->context_timer = 0.3f;
         object->character_context = (i8)LEGOCONTEXT_HOLD;
+        object->context_timer = 0.3f;
         PlaySabreSfx(NULL, object, NULL, 1);
         return;
     }

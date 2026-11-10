@@ -2080,7 +2080,7 @@ void CharConfig_CalculateJumpStats(float jump_speed, float gravity, float *durat
     else
         ascent_time = downward_speed / gravity;
     if (duration != NULL) {
-        *duration = ascent_time + ascent_time;
+        *duration = ascent_time * 2.0f;
     }
     if (height != NULL) {
         *height = jump_speed * ascent_time + gravity * 0.5 * ascent_time * ascent_time;

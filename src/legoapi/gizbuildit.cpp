@@ -280,17 +280,14 @@ extern "C" {
 
     static f32 BuildItAxisWobbleFactorPc(NUVEC *axis) {
         NUVEC normal;
-        union {
-            f32 value;
-            u32 bits;
-        } vertical;
+        f32 dot, vertical;
         f32 product, factor;
         f32 sine;
         NuVecNorm(&normal, axis);
-        vertical.value = NuVecDot(&normal, &v010);
-        vertical.bits &= 0x7fffffffu;
-        sine = NU_SIN_LUT((f64)vertical.value * 16384.0 + 16384.0);
-        product = (1.0f - sine) * vertical.value;
+        dot = NuVecDot(&normal, &v010);
+        *(i32 *)&vertical = *(i32 *)&dot & 0x7fffffff; /* NuFabs */
+        sine = NU_SIN_LUT((f64)vertical * 16384.0 + 16384.0);
+        product = (1.0f - sine) * vertical;
         factor = 1.0f - product;
         return factor;
     }

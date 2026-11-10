@@ -195,14 +195,13 @@ void __cdecl Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     if (system == NULL)
         return;
     for (i = 0; i < system->pulse_count; ++i) {
-        PULSE_PC *pulse;
         NuSpecialSetVisibility(&system->pulses[i].special, 0);
         system->pulses[i].disabled = 0;
         system->pulses[i].active = 0;
         system->pulses[i].timer = system->pulses[i].start_wait;
-        pulse = &system->pulses[i];
-        if (pulse->gizmo_name[0] != '\0')
-            system->pulses[i].gizmo = GizmoFindByName(WorldInfo_CurrentlyActive()->gizmo_sys, -1, pulse->gizmo_name);
+        if (system->pulses[i].gizmo_name[0] != '\0')
+            system->pulses[i].gizmo =
+                GizmoFindByName(WorldInfo_CurrentlyActive()->gizmo_sys, -1, system->pulses[i].gizmo_name);
     }
 }
 

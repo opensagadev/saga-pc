@@ -4140,7 +4140,7 @@ void __cdecl ConfigureComplexShadow(GAMEOBJECT *object) {
         direction.z = (f32)((f64)object->floor_height - (f64)0.1f);
     } else {
         direction.x = 0.0f;
-        direction.y = (f32)(-(f64)ComplexShadowBasePc * 0.25);
+        direction.y = -ComplexShadowBasePc * 0.25;
         direction.z = 0.0f;
     }
     distance = VehicleArea != 0 ? 150.0f : 30.0f;

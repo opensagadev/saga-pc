@@ -4609,7 +4609,7 @@ void __cdecl edrtlDrawBurnouts(void) {
     for (index = 0; index < 32; ++index) {
         i32 colour;
         i32 segments;
-        if (edrtl_edit_burnset->selected_index == index) {
+        if (index == edrtl_edit_burnset->selected_index) {
             colour = 0xf0f0f0f0;
             segments = 48;
         } else {

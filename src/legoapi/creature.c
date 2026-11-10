@@ -9,12 +9,13 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, reset_mode
 
 void __cdecl StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
     LEVEL_AI_PROGRESS_PC *saved = (LEVEL_AI_PROGRESS_PC *)progress;
-    GAMEOBJECT *object = Obj;
+    GAMEOBJECT *object;
     i32 index;
 
     if (saved == NULL) {
         return;
     }
+    object = Obj;
     saved->disabled_ai_object_mask[0] = 0;
     saved->disabled_ai_object_mask[1] = 0;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {

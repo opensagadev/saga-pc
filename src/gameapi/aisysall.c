@@ -1907,8 +1907,8 @@ char *__cdecl AIScriptNameFromIx(AISYS_PC *system, i32 index) {
         while (script != NULL) {
             if (current == index)
                 return script->name;
-            script = (AISCRIPT_PC *)NuLinkedListGetNext(&system->scripts, &script->link);
             ++current;
+            script = (AISCRIPT_PC *)NuLinkedListGetNext(&system->scripts, &script->link);
         }
     }
     script = (AISCRIPT_PC *)NuLinkedListGetHead(&global_aiscripts);

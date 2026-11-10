@@ -151,7 +151,7 @@ static void __cdecl Plugs_AddGizmos(void *system, i32 type_id, void *world_ptr, 
     PLUG_WORLD_CALLBACKS_PC *world = (PLUG_WORLD_CALLBACKS_PC *)world_ptr;
     i32 i;
     (void)data;
-    if (world == NULL || world->plug_system == NULL || world->plug_system->plugs == NULL)
+    if (world == NULL || world->plug_system == NULL)
         return;
     for (i = 0; i < world->plug_system->count; ++i)
         if (NuStrLen(world->plug_system->plugs[i].name) != 0)

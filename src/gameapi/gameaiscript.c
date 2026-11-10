@@ -2931,27 +2931,20 @@ f32 __cdecl Condition_EmptyTakeOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                                       void *argument) {
     i32 character = -1;
     i32 index;
-    i32 object_count;
     GAMEOBJECT *object;
     if (name != NULL && system != NULL) {
         for (index = 0; index < CHARCOUNT && character == -1; ++index) {
             if (NuStrICmp(CDataList[index].name, name) == 0)
                 character = index;
         }
-        object_count = HIGHGAMEOBJECT;
-        if (object_count > 0) {
-            object = Obj;
-            index = 0;
-            do {
-                if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-                    (object->flags_1f8 & 0x400) != 0 && (i16)object->id == character) {
-                    if (object->takeover_target == NULL || object->takeover_source == NULL ||
-                        object->takeover_source->character_context != 0x3b)
-                        return 1.0f;
-                }
-                ++index;
-                ++object;
-            } while (index < object_count);
+        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+            object = &Obj[index];
+            if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
+                (object->flags_1f8 & 0x400) != 0 && (i16)object->id == character) {
+                if (object->takeover_target == NULL || object->takeover_source == NULL ||
+                    object->takeover_source->character_context != 0x3b)
+                    return 1.0f;
+            }
         }
     }
     return 0.0f;
