@@ -160,7 +160,6 @@ extern i16 LEGOACT_SUPERCARRY_WALK;
 extern i32 LEGOCONTEXT_COMBO;
 extern const f64 PlayerStepInnerActionPc, PlayerStepOuterActionPc, PlayerStepInnerPc, PlayerStepOuterPc;
 extern const f64 TerrainSkinSampleCountPc;
-extern const f64 PlayerTightRopePhasePc, PlayerRandomScalePc;
 extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
 
 __declspec(noinline) void __cdecl SpecialMove_Attacker_SetTargetMom(GAMEOBJECT *object) {
@@ -329,30 +328,6 @@ __declspec(noinline) i32 __cdecl Slide_SetTargetMom(GAMEOBJECT *object, u16 inpu
         object->target_velocity.z += lateral.z;
     }
     return 0;
-}
-
-__declspec(noinline) i32 __cdecl TightRope_SetTargetMom(GAMEOBJECT *object) {
-    NUVEC *anchor;
-    TIGHTROPE_MOVEMENT_PC *rope;
-    u16 rotation;
-    f32 fraction, amplitude;
-    anchor = (object->character_data->game_character->flags_090 & 0x80000) ? &object->lower_position
-                                                                           : &object->upper_position;
-    object->target_velocity.x = (object->launch_origin.x - anchor->x) * NuTimeBarColumnStep;
-    object->target_velocity.y = (object->launch_origin.y - anchor->y) * NuTimeBarColumnStep;
-    object->target_velocity.z = (object->launch_origin.z - anchor->z) * NuTimeBarColumnStep;
-    rope = (TIGHTROPE_MOVEMENT_PC *)object->grapple;
-    rotation = rope->rotation + 0x4000;
-    fraction = object->context_hover_target_y / rope->horizontal_length;
-    if (fraction > 1.0f)
-        fraction = 1.0f;
-    amplitude = NuQFntHalfScale * NuTrigTable[(((i32)(fraction * PlayerTightRopePhasePc)) >> 1) & 0x7fff];
-    object->target_velocity.x +=
-        (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude * NuTrigTable[rotation >> 1];
-    object->target_velocity.y -= qrand() * PlayerRandomScalePc * amplitude;
-    object->target_velocity.z += (qrand() * PlayerRandomScalePc - NuQFntHalfScale) * amplitude *
-                                 NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
-    return object->field_7aa != 6 && object->field_7aa != 5;
 }
 
 i32 __cdecl CanClimbSurface(GAMEOBJECT *, i32);
