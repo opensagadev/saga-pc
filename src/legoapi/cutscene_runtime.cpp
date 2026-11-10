@@ -1806,9 +1806,7 @@ extern "C" {
         PCFrameSetLoadingYieldEnabled(1);
     }
     static i32 CutSceneStartPrivatePc(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
-        if (cut == NULL || cut->instance == NULL)
-            return 0;
-        if (CutScenePlayOncePrivatePc(world, cut) != 0)
+        if (cut == NULL || cut->instance == NULL || CutScenePlayOncePrivatePc(world, cut) != 0)
             return 0;
         instNuGCutSceneReset(cut->instance);
         if (CutScene_StartFn != NULL)

@@ -751,7 +751,9 @@ extern "C" i32 GizSpinner_Spin(GIZSPINNER_s *spinner, i32 context) {
 }
 
 extern "C" i32 GizSpinner_GetTargetPoints(GIZSPINNER_s *spinner, NUVEC *positions, NUVEC *directions) {
-    if (spinner == NULL || spinner->type == 0)
+    if (spinner == NULL)
+        return 0;
+    if (spinner->type == 0)
         return 0;
     u32 flags = spinner->state_flags & 6;
     u16 step = static_cast<u16>(65536 / spinner->type);

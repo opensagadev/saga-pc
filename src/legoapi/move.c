@@ -1990,7 +1990,9 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     i32 index;
     if (object->field_280 == 0xff)
         return 0;
-    if (PODRACE_ADATA == NULL || world->area != PODRACE_ADATA)
+    if (PODRACE_ADATA == NULL)
+        return 0;
+    if (world->area != PODRACE_ADATA)
         return 0;
     if (object->current_speed_mul == 0.0f)
         return 1;
@@ -9465,9 +9467,8 @@ void __cdecl FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_fi
                     candidate->character_model->model_data_b[0x41] != NULL) {
                     candidate_direct = 1;
                 } else if (candidate->character_model->model_data_b[0x2b] == NULL) {
-                    if ((candidate->character_data->model_flags & 0x10) == 0)
-                        continue;
-                    if (candidate->character_model->model_data_b[5] == NULL)
+                    if ((candidate->character_data->model_flags & 0x10) == 0 ||
+                        candidate->character_model->model_data_b[5] == NULL)
                         continue;
                 }
             } else if (super_weirdo != 0 && qrand() < 0x8000 && (candidate->character_data->model_flags & 0x10) == 0 &&

@@ -846,7 +846,9 @@ extern "C" {
 
     i32 __cdecl LevelObject_FindIndexFromName(char *name) {
         i32 i;
-        if (ObjTabList == NULL || LEVELOBJECTCOUNT <= 0)
+        if (ObjTabList == NULL)
+            return -1;
+        if (LEVELOBJECTCOUNT <= 0)
             return -1;
         for (i = 0; i < LEVELOBJECTCOUNT; ++i) {
             if (NuStrICmp(ObjTabList[i].name, name) == 0) {
@@ -884,7 +886,9 @@ extern "C" {
 
     i32 __cdecl LevelObject_FindIndexFromName_RefOnly(char *name) {
         i32 end, i;
-        if (ObjTabList == NULL || LEVOBJREF_FIRSTOBJ == -1)
+        if (ObjTabList == NULL)
+            return -1;
+        if (LEVOBJREF_FIRSTOBJ == -1)
             return -1;
         end = LEVOBJREF_LASTOBJ - LEVOBJREF_FIRSTOBJ + 1;
         for (i = LEVOBJREF_FIRSTOBJ; i < end; ++i)

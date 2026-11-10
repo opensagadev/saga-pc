@@ -5,7 +5,9 @@ i32 __cdecl UnderWater(GAMEOBJECT *object) {
 i32 __cdecl IntersectWater(GAMEOBJECT *object) {
     if (object->field_283 != 1 && object->field_283 != 9)
         return 0;
-    if (object->collision_max.y < object->water_height || object->collision_min.y > object->water_height)
+    if (object->collision_max.y < object->water_height)
+        return 0;
+    if (object->collision_min.y > object->water_height)
         return 0;
     return 1;
 }

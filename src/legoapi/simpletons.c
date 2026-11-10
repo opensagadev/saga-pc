@@ -22,7 +22,9 @@ i32 __cdecl ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_in
     GAMEOBJECT *other = NULL;
     if ((WORLD->current_level->flags & 0x200000) == 0 && VehicleArea == 0)
         return 0;
-    if (disable_narrow_socks != 0 || object->field_280 == 0xff)
+    if (disable_narrow_socks != 0)
+        return 0;
+    if (object->field_280 == 0xff)
         return 0;
     if ((object->flags_1fc_word & 0x80) != 0) {
         if (object == Player[0])

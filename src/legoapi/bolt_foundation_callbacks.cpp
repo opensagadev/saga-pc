@@ -131,7 +131,9 @@ extern "C" {
         if (object->character_data->move_fn == Move_CANNON)
             return 20;
         config = &GCDataList[id];
-        if (config->weapon_action == 8 || config->weapon_model == 22)
+        if (config->weapon_action == 8)
+            return 2;
+        if (config->weapon_model == 22)
             return 2;
         if (id == (i16)id_BIGGUN)
             return 20;
@@ -167,7 +169,9 @@ extern "C" {
                 return 38;
             return fallback;
         }
-        if (id == (i16)id_SENTRYDROID || id == (i16)VehicleBoltId7f1a38Pc)
+        if (id == (i16)id_SENTRYDROID)
+            return 0;
+        if (id == (i16)VehicleBoltId7f1a38Pc)
             return 0;
         return fallback;
     }

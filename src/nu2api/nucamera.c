@@ -578,9 +578,8 @@ i32 __cdecl NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_
         NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH_PC,
                               VisibilityAlternateHeightPc);
     }
-    if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0)
-        return 1;
-    if ((results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0)
+    if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0 ||
+        (results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0)
         return 1;
     return 2;
 }

@@ -5784,7 +5784,9 @@ extern "C" {
 
     i32 __cdecl NuPortalClipTest(NUGSCN *scene, NUVEC *position, f32 radius, i16 room_id) {
         i32 i;
-        if (scene->max_portals == 0 || room_id == scene->camera_room)
+        if (scene->max_portals == 0)
+            return 1;
+        if (room_id == scene->camera_room)
             return 1;
         for (i = 0; i < scene->num_portal_frusta; ++i) {
             NUPORTAL_FRUSTUM_PC *frustum = scene->portal_frusta[i];
@@ -13855,7 +13857,9 @@ extern "C" {
         NUANIM_TIME2_PC time;
         DWA_WEIGHT_BLOCK_PC **result;
         i32 render;
-        if (animation == NULL || count == 0)
+        if (animation == NULL)
+            return NULL;
+        if (count == 0)
             return NULL;
         NuAnimData2CalcTime(animation, frame, &time);
         if (indices == NULL)
@@ -14128,8 +14132,9 @@ extern "C" {
         NUVEC4 point;
 
         object = hierarchy;
-        if (PCShadowSurfaceSamplingEnabled == 0 ||
-            NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0) == 0)
+        if (PCShadowSurfaceSamplingEnabled == 0)
+            return 0;
+        if (NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0) == 0)
             return 0;
         groups = object->shadow_groups;
         if (groups != NULL && object->suppress_shadow_points == 0) {

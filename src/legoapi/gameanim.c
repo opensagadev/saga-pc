@@ -252,9 +252,10 @@ i32 __cdecl GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
     i32 repeating_count = 0;
     f32 direction;
 
-    if (set == NULL || set->objects == NULL) {
+    if (set == NULL)
         return 1;
-    }
+    if (set->objects == NULL)
+        return 1;
     for (object = set->objects; object != NULL; object = object->next) {
         animation = object->instance_animation;
         if (animation == NULL) {

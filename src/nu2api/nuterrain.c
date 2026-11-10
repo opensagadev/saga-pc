@@ -2063,7 +2063,9 @@ void __cdecl TerrainPlatformNewUpdate(void) {
         TERRAIN_TPNU_PLATFORM(index).motion_status = 0;
         if ((TERRAIN_TPNU_PLATFORM(index).flags & 1) != 0) {
             if (group->origin.x - group->radius > max_x || group->radius + group->origin.x < min_x ||
-                group->origin.z - group->radius > max_z || group->origin.z + group->radius < min_z)
+                group->origin.z - group->radius > max_z)
+                continue;
+            if (group->origin.z + group->radius < min_z)
                 continue;
         } else {
             if (group->bounds_min.x + group->origin.x > max_x || group->bounds_max.x + group->origin.x < min_x ||

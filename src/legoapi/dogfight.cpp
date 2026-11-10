@@ -1987,9 +1987,7 @@ extern "C" {
             enter = (-(f64)b - root) / denominator;
             time = -FRAMETIME;
             leave = ((f64)root - b) / denominator;
-            if (!(leave >= time))
-                return 0;
-            if (!(enter <= 0.0f))
+            if (!(leave >= time) || !(enter <= 0.0f))
                 return 0;
             if (enter < time)
                 enter = time;

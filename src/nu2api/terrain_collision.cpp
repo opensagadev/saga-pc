@@ -311,21 +311,18 @@ extern "C" {
         // No forward-time hit was found. Test whether the sphere already overlaps
         // the finite edge at the start of the sweep.
         const f32 negative_start_radius = -query->collision_radius;
-        if ((TERRAIN_CC_FIRST.z < negative_start_radius && TERRAIN_CC_SECOND.z < negative_start_radius) ||
-            (TERRAIN_CC_FIRST.z > query->collision_radius && TERRAIN_CC_SECOND.z > query->collision_radius)) {
+        if (TERRAIN_CC_FIRST.z < negative_start_radius && TERRAIN_CC_SECOND.z < negative_start_radius)
             return 0;
-        }
+        if (TERRAIN_CC_FIRST.z > query->collision_radius && TERRAIN_CC_SECOND.z > query->collision_radius)
+            return 0;
 
         const f32 closest_parameter = -edge_direction.x * TERRAIN_CC_FIRST.x - TERRAIN_CC_FIRST.y * edge_direction.y -
                                       TERRAIN_CC_FIRST.z * edge_direction.z;
-        if (closest_parameter < 0.0f) {
-            return 0;
-        }
-        if (closest_parameter > (TERRAIN_CC_SECOND.x - TERRAIN_CC_FIRST.x) * edge_direction.x +
+        if (closest_parameter < 0.0f ||
+            closest_parameter > (TERRAIN_CC_SECOND.x - TERRAIN_CC_FIRST.x) * edge_direction.x +
                                     (TERRAIN_CC_SECOND.y - TERRAIN_CC_FIRST.y) * edge_direction.y +
-                                    (TERRAIN_CC_SECOND.z - TERRAIN_CC_FIRST.z) * edge_direction.z) {
+                                    (TERRAIN_CC_SECOND.z - TERRAIN_CC_FIRST.z) * edge_direction.z)
             return 0;
-        }
 
         // The normalized direction is no longer needed after the closest
         // parameter has been bounded, so reuse it for the closest point itself.

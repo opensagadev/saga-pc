@@ -5,7 +5,9 @@ extern "C" void __cdecl PCSpecialEmptyHandler_candidate(void);
 extern "C" {
     AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
                                                             u8 direction, void *target, u8 type) {
-        if (system == NULL || system->count >= system->capacity || connection == NULL || target == NULL)
+        if (system == NULL || system->count >= system->capacity || connection == NULL)
+            return NULL;
+        if (target == NULL)
             return NULL;
         i32 count = system->count;
         AI_HELPER_SLOT_PC *helper = system->helpers;

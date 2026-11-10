@@ -3408,9 +3408,10 @@ i32 __cdecl NuFParInterpretWord(NUFPAR_PC *parser) {
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
-    if (buffer[0] == '\0' || buffer[0] == ';') {
+    if (buffer[0] == '\0')
         return 0;
-    }
+    if (buffer[0] == ';')
+        return 0;
 
     if (parser->command_position >= 0) {
         commands = parser->command_stack[parser->command_position];

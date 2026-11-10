@@ -135,12 +135,9 @@ i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object,
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
         return 1;
     }
-    if (!(packet->terrain_origin.y >= destination->min_height)) {
+    if (!(packet->terrain_origin.y >= destination->min_height) ||
+        !(NuVecXZDistSqr(&object->position, &destination->position, &offset) >= destination->radius_squared))
         return 0;
-    }
-    if (!(NuVecXZDistSqr(&object->position, &destination->position, &offset) >= destination->radius_squared)) {
-        return 0;
-    }
     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
         return 0;
     }

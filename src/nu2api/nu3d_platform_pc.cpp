@@ -3693,7 +3693,9 @@ extern "C" {
 
     i32 __cdecl NuSpecialDrawAtAlpha(NUSPECIALHANDLE *handle, NUMTX *matrix, f32 alpha) {
         i32 result;
-        if (handle->scene == NULL || alpha <= 0.0f)
+        if (handle->scene == NULL)
+            return 0;
+        if (alpha <= 0.0f)
             return 0;
         if (alpha < 1.0f) {
             NuSpecialConstAlpha(1, alpha);

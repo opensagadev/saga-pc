@@ -2005,7 +2005,9 @@ extern "C" void __cdecl Detonator_MoveCode(GAMEOBJECT *object) {
         if (object->character_model->model_data_b[object->field_7aa] != NULL) {
             f32 marker =
                 AnimListFrame(object->character_model, object->field_7aa, object->character_context == 0x49 ? 0 : 2);
-            if (frame == NULL || !(*frame > 0.0f) || *frame < marker)
+            if (frame == NULL || !(*frame > 0.0f))
+                return;
+            if (*frame < marker)
                 return;
         } else if (!(object->context_timer < 0.5f)) {
             return;

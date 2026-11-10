@@ -483,7 +483,9 @@ GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, 
     f32 min_x, max_x, min_z, max_z, nearest_distance = 100000000.0f, distance, dot;
     NUVEC aim, delta;
     i32 count, i;
-    if (blowup == NULL || (GizmoBlowUp_NoTargetFn != NULL && GizmoBlowUp_NoTargetFn(world, object) != 0))
+    if (blowup == NULL)
+        return NULL;
+    if (GizmoBlowUp_NoTargetFn != NULL && GizmoBlowUp_NoTargetFn(world, object) != 0)
         return NULL;
     aim = *direction;
     min_x = position->x - radius;

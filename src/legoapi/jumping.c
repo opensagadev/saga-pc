@@ -209,7 +209,9 @@ i32(__cdecl *BigJump_JumpActionFn)(GAMEOBJECT *) = BigJump_JumpAction_Default;
 i32 __cdecl StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f32 duration_scale,
                          i32 animation) {
     u16 angle;
-    if (LEGOCONTEXT_BIGJUMP == -1 || (object->character_data->model_flags & 0x200000) != 0)
+    if (LEGOCONTEXT_BIGJUMP == -1)
+        return 0;
+    if ((object->character_data->model_flags & 0x200000) != 0)
         return 0;
     Player_ClearContext(object, 0);
     Player_ResetContexts(object->ai_player_packet_pc);

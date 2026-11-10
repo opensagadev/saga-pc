@@ -196,7 +196,9 @@ static void __cdecl GizSpecial_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 static i32 __cdecl GizSpecial_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check) {
     GIZSPECIAL_CALLBACK_PC *special;
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL)
+        return 0;
+    if (gizmo->object == NULL)
         return 0;
     special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
     if ((check & 1) != 0)
@@ -216,7 +218,9 @@ static void __cdecl GizSpecial_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 }
 static NUVEC *__cdecl GizSpecial_GetPos(GIZMO_PC *gizmo) {
     GIZSPECIAL_CALLBACK_PC *special;
-    if (gizmo == NULL || gizmo->object == NULL)
+    if (gizmo == NULL)
+        return NULL;
+    if (gizmo->object == NULL)
         return NULL;
     special = (GIZSPECIAL_CALLBACK_PC *)gizmo->object;
     if (special->anim_set->object_count == 0 || !NuSpecialExistsFn(&special->anim_set->objects->special))
@@ -351,9 +355,10 @@ ADDGIZMOTYPE_PC *__cdecl GizSpecial_RegisterGizmo(i32 type_id) {
 }
 
 i32 GetAnimDirection(NUINSTANIM *animation) {
-    if (animation == NULL || animation->tfactor == 0.0f) {
+    if (animation == NULL)
         return -1;
-    }
+    if (animation->tfactor == 0.0f)
+        return -1;
     return animation->tfactor < 0.0f ? 1 : 0;
 }
 

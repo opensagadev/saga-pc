@@ -5679,9 +5679,10 @@ __declspec(noinline) i32 __cdecl WithinConnection(void *context, NUVEC *position
                     minimum = second->min_height * fraction + first->min_height * (1.0f - fraction);
                     maximum = second->max_height * fraction + first->max_height * (1.0f - fraction);
                 }
-                if (minimum > position->y || position->y > maximum || !(first_radius > wall.x)) {
+                if (minimum > position->y || position->y > maximum)
                     return 0;
-                }
+                if (!(first_radius > wall.x))
+                    return 0;
             }
         }
     }
