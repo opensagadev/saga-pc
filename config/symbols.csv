@@ -10623,6 +10623,7 @@ address,symbol,size,ctype
 0x6e67be,?_Xlen@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
 0x6e67fd,?_Xran@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
 0x6e68ac,__cfltcvt_init,96,
+0x6e690c,___setfflag,16,
 0x6e691c,__fpmath,30,
 0x006e693a,@__security_check_cookie@4,15,void __fastcall (u32)
 0x006e6950,_memset,122,"void *__cdecl (void *, int, size_t)"
@@ -10682,6 +10683,7 @@ address,symbol,size,ctype
 0x6e8505,??1type_info@@UAE@XZ,14,
 0x6e8513,??_Gtype_info@@UAEPAXI@Z,28,
 0x6e852f,?_name_internal_method@type_info@@QBEPBDPAU__type_info_node@@@Z,15,
+0x6e853e,?_type_info_dtor_internal_method@type_info@@QAEXXZ,8,
 0x6e8546,??8type_info@@QBE_NABV0@@Z,27,
 0x6e8561,??9type_info@@QBE_NABV0@@Z,28,
 0x6e857d,?before@type_info@@QBEHABV1@@Z,31,
@@ -10726,6 +10728,18 @@ address,symbol,size,ctype
 0x6e9d2c,??1exception@std@@UAE@XZ,22,static CRT method selector; no engine source credit
 0x6e9d42,?what@exception@std@@UBEPBDXZ,13,
 0x6e9d4f,??0bad_cast@std@@QAE@PBD@Z,25,
+0x6e9d68,??0bad_cast@std@@QAE@ABV01@@Z,24,
+0x6e9d80,??1bad_cast@std@@UAE@XZ,11,
+0x6e9d8b,??0bad_typeid@std@@QAE@PBD@Z,25,
+0x6e9da4,??0bad_typeid@std@@QAE@ABV01@@Z,24,
+0x6e9dbc,??1bad_typeid@std@@UAE@XZ,11,
+0x6e9dc7,??0__non_rtti_object@std@@QAE@PBD@Z,24,
+0x6e9ddf,??0__non_rtti_object@std@@QAE@ABV01@@Z,24,
+0x6e9df7,??1__non_rtti_object@std@@UAE@XZ,11,
+0x6e9e02,??_Gexception@std@@UAEPAXI@Z,28,
+0x6e9e1e,??_Gbad_cast@std@@UAEPAXI@Z,34,
+0x6e9e40,??_Gbad_typeid@std@@UAEPAXI@Z,34,
+0x6e9e62,??_G__non_rtti_object@std@@UAEPAXI@Z,34,
 0x6e9e84,__initp_misc_invarg,10,
 0x6e9e8e,__invoke_watson,252,
 0x6e9f8a,__set_invalid_parameter_handler,34,
@@ -10930,6 +10944,7 @@ address,symbol,size,ctype
 0x006f05b4,_saga_thunk_KERNEL32_dll_GetCurrentThread_006f05b4@0,6,HANDLE __stdcall (void)
 0x6f05ba,__mtinit,388,
 0x6f073e,_wait_a_bit,33,
+0x6f075f,__set_malloc_crt_max_wait,16,
 0x6f076f,__malloc_crt,64,
 0x6f07af,__calloc_crt,72,
 0x6f07f7,__realloc_crt,75,
@@ -11024,6 +11039,8 @@ address,symbol,size,ctype
 0x6f84a2,__commit,,
 0x6f8583,_strcpy_s,101,
 0x6f85e8,__crt_debugger_hook,8,
+0x6f85f0,??0bad_exception@std@@QAE@PBD@Z,25,
+0x6f8609,??1bad_exception@std@@UAE@XZ,11,
 0x6f8614,??_Gbad_exception@std@@UAEPAXI@Z,34,
 0x6f8636,___TypeMatch,92,
 0x6f8692,___FrameUnwindFilter,68,
@@ -11049,6 +11066,7 @@ address,symbol,size,ctype
 0x6f91f9,libcmt#00085:?CatchIt@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@PBU_s_HandlerType@@PBU_s_CatchableType@@PBU_s_TryBlockMapEntry@@H1E@Z,108,
 0x6f9265,libcmt#00085:?FindHandlerForForeignException@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@HH1@Z,242,
 0x6f9357,libcmt#00085:?FindHandler@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@EH1@Z,854,
+0x6f96ad,??0bad_exception@std@@QAE@ABV01@@Z,24,
 0x6f96c5,___InternalCxxFrameHandler,228,
 0x6f97a9,?terminate@@YAXXZ,57,
 0x6f97e2,?unexpected@@YAXXZ,19,
@@ -21851,6 +21869,8 @@ address,symbol,size,ctype
 0x777d24,??_7exception@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x777d2c,??_C@_0BC@EOODALEL@Unknown?5exception?$AA@,,const char[18]
 0x777d44,??_7bad_cast@std@@6B@,,
+0x777d50,??_7bad_typeid@std@@6B@,,
+0x777d5c,??_7__non_rtti_object@std@@6B@,,
 0x00777d78,libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B,,const u8[32]
 0x777df0,??_C@_0P@MIGLKIOC@CorExitProcess?$AA@,,
 0x777e00,??_C@_0M@MBOPBNBK@mscoree?4dll?$AA@,,
@@ -38286,6 +38306,7 @@ address,symbol,size,ctype
 0x297c190,_CpuInitializedPc,,u32
 0x297c198,_PCGraphicsGpuSelectionEnabled,,i32
 0x297c19c,_PCGraphicsSelectedGpuRecord,,PC_GRAPHICS_GPU_RECORD_PC*
+0x297c1a0,___fastflag,,
 0x297c1a4,__adjust_fdiv,,
 0x297c1a8,__aenvptr,,
 0x297c1b0,___error_mode,,

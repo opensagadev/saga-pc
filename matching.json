@@ -14,10 +14,10 @@
     "config/candidate-only.json": "a4b09bc40bc67ec0223ac807bafc57a47cd3b13739f6b1ea0dcc50b623062c50",
     "config/code-groups.json": "0c7700323db8a7240f98cd4ab349200bbf0a8f580d3ca93167477e00c7db77cc",
     "config/data-members.json": "f144b2c7d11d07a38dc69fe167bbe9736b0ffaa144e187dbb835337f6b396a09",
-    "config/library-objects.json": "7bd9ae6cc91b60b850a7e669c0f44b08b03d62fb3b35280c31c95ac16e12b502",
+    "config/library-objects.json": "8dcbb8cbb59f5507a4a718b94bd029a0cbd5ea3979b1376c93fc6c54d1ba1ba1",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "df745c81f3f3222af908bc285445927905f29f6c529e4b207f6126b542d58208",
+    "config/symbols.csv": "4ebd95ccd543e21495eb5fe6d4e194b55cc0a8deaab5a7b8bffda9c94d186bca",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
@@ -38,7 +38,7 @@
     "tools/discover_missing.py": "a2dd038404ef0113c3c8ffdc2fd870c26cdf26b788670822c55f137c689bd9ba",
     "tools/globals.py": "6065e90b69abd8f88e8d6f75f7009d293efeb781f2ae76475b0b47958b8c761a",
     "tools/lib.py": "4b9dc3ba6832ff4e57bf081a50d5db241ea91f99bdf6371a0c0fd781d4707c6a",
-    "tools/libmatch.py": "6415528346e215a912ea30942a641c6ad34b797e971d864f067edfe2532febdb",
+    "tools/libmatch.py": "f0051522c8b92a591e4c08ff0901c01c23382e49bd239688309a706f099fb1d6",
     "tools/match.py": "71a9874261b61c1c0f8fa938331d51a4319d013ea03227d0f1918f1af95059e2",
     "tools/permute.py": "526ba8af9bb89f7ddd85aae9e5d40abe52637b83f51aa428dad765eb9a20b6ee",
     "tools/port.py": "e915839beabea6d8b4ac5dc0a4db409c06848e171635825c5099ca7c92883046",
@@ -262719,6 +262719,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "___setfflag",
+      "symbol": "___setfflag",
+      "address": "0x006e690c",
+      "units": [
+        "lib/libcmt.lib/00833:fpinit.obj"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00833:fpinit.obj",
+          "base_size": 16,
+          "exact_match": true,
+          "target_sha256": "94c82940ade887739986c5c90bf3f1b383c277d224480ecc862d0c49a7724d37",
+          "base_sha256": "94c82940ade887739986c5c90bf3f1b383c277d224480ecc862d0c49a7724d37",
+          "relocation_count": 2,
+          "comparison_unit": "006e690c-11176d2cd17c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__fpmath",
       "symbol": "__fpmath",
       "address": "0x006e691c",
@@ -263897,6 +263921,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "?_type_info_dtor_internal_method@type_info@@QAEXXZ",
+      "symbol": "?_type_info_dtor_internal_method@type_info@@QAEXXZ",
+      "address": "0x006e853e",
+      "units": [
+        "lib/libcmt.lib/00090:typinfo.obj"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00090:typinfo.obj",
+          "base_size": 8,
+          "exact_match": true,
+          "target_sha256": "f7e21511e04e572023ea1886d5a425feca04fe925f694a165cc0b9359c41a06c",
+          "base_sha256": "f7e21511e04e572023ea1886d5a425feca04fe925f694a165cc0b9359c41a06c",
+          "relocation_count": 1,
+          "comparison_unit": "006e853e-c4c1abee6a07",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "??8type_info@@QBE_NABV0@@Z",
       "symbol": "??8type_info@@QBE_NABV0@@Z",
       "address": "0x006e8546",
@@ -264792,6 +264840,294 @@
           "base_sha256": "0ed843fac37594b0ec4cd3724e2aba09b7fbeb6e694c7687bb91300242c852fa",
           "relocation_count": 2,
           "comparison_unit": "006e9d4f-62a79a13eab6",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??0bad_cast@std@@QAE@ABV01@@Z",
+      "symbol": "??0bad_cast@std@@QAE@ABV01@@Z",
+      "address": "0x006e9d68",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 24,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 24,
+          "exact_match": true,
+          "target_sha256": "e7530d11558c10c576952f1487a53f0b9b9fbad7210a1971222026225e2292b0",
+          "base_sha256": "e7530d11558c10c576952f1487a53f0b9b9fbad7210a1971222026225e2292b0",
+          "relocation_count": 2,
+          "comparison_unit": "006e9d68-93801e6bcada",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??1bad_cast@std@@UAE@XZ",
+      "symbol": "??1bad_cast@std@@UAE@XZ",
+      "address": "0x006e9d80",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 11,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 11,
+          "exact_match": true,
+          "target_sha256": "5fd5235d06929bc98e850d1cfc7b4f347c0e8da39d88b38ba044bcf8b7c17b27",
+          "base_sha256": "5fd5235d06929bc98e850d1cfc7b4f347c0e8da39d88b38ba044bcf8b7c17b27",
+          "relocation_count": 2,
+          "comparison_unit": "006e9d80-89a4a691b4f1",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??0bad_typeid@std@@QAE@PBD@Z",
+      "symbol": "??0bad_typeid@std@@QAE@PBD@Z",
+      "address": "0x006e9d8b",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 25,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "8c58b0c5796eee489df744c25ffbd7e4ec8f6ede6f697eeae590cb929890a65d",
+          "base_sha256": "8c58b0c5796eee489df744c25ffbd7e4ec8f6ede6f697eeae590cb929890a65d",
+          "relocation_count": 2,
+          "comparison_unit": "006e9d8b-a221be65e1e5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??0bad_typeid@std@@QAE@ABV01@@Z",
+      "symbol": "??0bad_typeid@std@@QAE@ABV01@@Z",
+      "address": "0x006e9da4",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 24,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 24,
+          "exact_match": true,
+          "target_sha256": "d362e53ed190630cf993ab1474fc4956dc88496e61e77212ab99e768540715fa",
+          "base_sha256": "d362e53ed190630cf993ab1474fc4956dc88496e61e77212ab99e768540715fa",
+          "relocation_count": 2,
+          "comparison_unit": "006e9da4-35b2ba053464",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??1bad_typeid@std@@UAE@XZ",
+      "symbol": "??1bad_typeid@std@@UAE@XZ",
+      "address": "0x006e9dbc",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 11,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 11,
+          "exact_match": true,
+          "target_sha256": "72029d64fe732ac26218aa5c471a505fb8f8bf4d0ee6cf4cceb41baf9f6f5e41",
+          "base_sha256": "72029d64fe732ac26218aa5c471a505fb8f8bf4d0ee6cf4cceb41baf9f6f5e41",
+          "relocation_count": 2,
+          "comparison_unit": "006e9dbc-2b1cd696420d",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??0__non_rtti_object@std@@QAE@PBD@Z",
+      "symbol": "??0__non_rtti_object@std@@QAE@PBD@Z",
+      "address": "0x006e9dc7",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 24,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 24,
+          "exact_match": true,
+          "target_sha256": "84702660001a9b71a4ea12435c9b357c555fa28acb04844c43235c4c9f7246b0",
+          "base_sha256": "84702660001a9b71a4ea12435c9b357c555fa28acb04844c43235c4c9f7246b0",
+          "relocation_count": 2,
+          "comparison_unit": "006e9dc7-49733ba34894",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??0__non_rtti_object@std@@QAE@ABV01@@Z",
+      "symbol": "??0__non_rtti_object@std@@QAE@ABV01@@Z",
+      "address": "0x006e9ddf",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 24,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 24,
+          "exact_match": true,
+          "target_sha256": "343593317ebfd6e8343dd503dc02d65523f0a7b0f775571273f05be10ecb176a",
+          "base_sha256": "343593317ebfd6e8343dd503dc02d65523f0a7b0f775571273f05be10ecb176a",
+          "relocation_count": 2,
+          "comparison_unit": "006e9ddf-c04e4689605a",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??1__non_rtti_object@std@@UAE@XZ",
+      "symbol": "??1__non_rtti_object@std@@UAE@XZ",
+      "address": "0x006e9df7",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 11,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 11,
+          "exact_match": true,
+          "target_sha256": "de9315e1ae7265a36099650d53d8ece9ab4da6dee5ad84f4503d9edd8cd819ab",
+          "base_sha256": "de9315e1ae7265a36099650d53d8ece9ab4da6dee5ad84f4503d9edd8cd819ab",
+          "relocation_count": 2,
+          "comparison_unit": "006e9df7-bcffc9aa2b67",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??_Gexception@std@@UAEPAXI@Z",
+      "symbol": "??_Gexception@std@@UAEPAXI@Z",
+      "address": "0x006e9e02",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 28,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 28,
+          "exact_match": true,
+          "target_sha256": "cdb219a1df17b65c3996c7cfd980a2347a71a38f9902790739115a5ecdb80e6b",
+          "base_sha256": "cdb219a1df17b65c3996c7cfd980a2347a71a38f9902790739115a5ecdb80e6b",
+          "relocation_count": 2,
+          "comparison_unit": "006e9e02-1d9faafa1175",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??_Gbad_cast@std@@UAEPAXI@Z",
+      "symbol": "??_Gbad_cast@std@@UAEPAXI@Z",
+      "address": "0x006e9e1e",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 34,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 34,
+          "exact_match": true,
+          "target_sha256": "0edae955c1bf851d6a2ce4e6bd05e210b27b37039286c30d857e8f9323ad2619",
+          "base_sha256": "0edae955c1bf851d6a2ce4e6bd05e210b27b37039286c30d857e8f9323ad2619",
+          "relocation_count": 3,
+          "comparison_unit": "006e9e1e-52ab53113fb5",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??_Gbad_typeid@std@@UAEPAXI@Z",
+      "symbol": "??_Gbad_typeid@std@@UAEPAXI@Z",
+      "address": "0x006e9e40",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 34,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 34,
+          "exact_match": true,
+          "target_sha256": "bee7a1a02a1164c2620be02ad1f74e1654469fc8da7b779646b8a767df572413",
+          "base_sha256": "bee7a1a02a1164c2620be02ad1f74e1654469fc8da7b779646b8a767df572413",
+          "relocation_count": 3,
+          "comparison_unit": "006e9e40-9aee9a43c64d",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??_G__non_rtti_object@std@@UAEPAXI@Z",
+      "symbol": "??_G__non_rtti_object@std@@UAEPAXI@Z",
+      "address": "0x006e9e62",
+      "units": [
+        "lib/libcmt.lib/00089:stdexcpt.obj"
+      ],
+      "target_size": 34,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00089:stdexcpt.obj",
+          "base_size": 34,
+          "exact_match": true,
+          "target_sha256": "840247dbfa660f971e30a19fd454a37fbb94f2cb56aeaaca21c269eede63d310",
+          "base_sha256": "840247dbfa660f971e30a19fd454a37fbb94f2cb56aeaaca21c269eede63d310",
+          "relocation_count": 3,
+          "comparison_unit": "006e9e62-a6bee05091f0",
           "objdiff_percent": 100.0
         }
       ],
@@ -269339,6 +269675,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "__set_malloc_crt_max_wait",
+      "symbol": "__set_malloc_crt_max_wait",
+      "address": "0x006f075f",
+      "units": [
+        "lib/libcmt.lib/00147:crtheap.obj"
+      ],
+      "target_size": 16,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00147:crtheap.obj",
+          "base_size": 16,
+          "exact_match": true,
+          "target_sha256": "990449988d02bea0fc65c8d7aee27038921b62e4cd96c84f34e6b3f65b701f1e",
+          "base_sha256": "990449988d02bea0fc65c8d7aee27038921b62e4cd96c84f34e6b3f65b701f1e",
+          "relocation_count": 2,
+          "comparison_unit": "006f075f-989d771422b0",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "__malloc_crt",
       "symbol": "__malloc_crt",
       "address": "0x006f076f",
@@ -271343,6 +271703,54 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "??0bad_exception@std@@QAE@PBD@Z",
+      "symbol": "??0bad_exception@std@@QAE@PBD@Z",
+      "address": "0x006f85f0",
+      "units": [
+        "lib/libcmt.lib/00085:frame.obj"
+      ],
+      "target_size": 25,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00085:frame.obj",
+          "base_size": 25,
+          "exact_match": true,
+          "target_sha256": "8941eeec022ace56c049d230542c5b2faf5b193ed081de98905805df3e5cc18c",
+          "base_sha256": "8941eeec022ace56c049d230542c5b2faf5b193ed081de98905805df3e5cc18c",
+          "relocation_count": 2,
+          "comparison_unit": "006f85f0-3b528d32bab9",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??1bad_exception@std@@UAE@XZ",
+      "symbol": "??1bad_exception@std@@UAE@XZ",
+      "address": "0x006f8609",
+      "units": [
+        "lib/libcmt.lib/00085:frame.obj"
+      ],
+      "target_size": 11,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00085:frame.obj",
+          "base_size": 11,
+          "exact_match": true,
+          "target_sha256": "721bf65fb79357cb91120e2d8787b9790204da61b16d070c18625034994b15ea",
+          "base_sha256": "721bf65fb79357cb91120e2d8787b9790204da61b16d070c18625034994b15ea",
+          "relocation_count": 2,
+          "comparison_unit": "006f8609-f359463f850c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "??_Gbad_exception@std@@UAEPAXI@Z",
       "symbol": "??_Gbad_exception@std@@UAEPAXI@Z",
       "address": "0x006f8614",
@@ -271922,6 +272330,30 @@
           "base_sha256": "dbee54e9d87fbc533bdb28bce970043435496090b0c380d8149dfbf5ea0aa14f",
           "relocation_count": 35,
           "comparison_unit": "006f9357-e10422be1bb1",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "??0bad_exception@std@@QAE@ABV01@@Z",
+      "symbol": "??0bad_exception@std@@QAE@ABV01@@Z",
+      "address": "0x006f96ad",
+      "units": [
+        "lib/libcmt.lib/00085:frame.obj"
+      ],
+      "target_size": 24,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "lib/libcmt.lib/00085:frame.obj",
+          "base_size": 24,
+          "exact_match": true,
+          "target_sha256": "0936a4a5069c0afb5169a473952ffaf6be63847117f8f2734efa3e29b392a4f4",
+          "base_sha256": "0936a4a5069c0afb5169a473952ffaf6be63847117f8f2734efa3e29b392a4f4",
+          "relocation_count": 2,
+          "comparison_unit": "006f96ad-fb0e780ee52a",
           "objdiff_percent": 100.0
         }
       ],
@@ -499726,6 +500158,26 @@
       "status": "unknown size"
     },
     {
+      "name": "??_7bad_typeid@std@@6B@",
+      "symbol": "??_7bad_typeid@std@@6B@",
+      "address": "0x00777d50",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
+      "name": "??_7__non_rtti_object@std@@6B@",
+      "symbol": "??_7__non_rtti_object@std@@6B@",
+      "address": "0x00777d5c",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B",
       "symbol": "libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B",
       "address": "0x00777d78",
@@ -707268,6 +707720,16 @@
       "status": "unknown size"
     },
     {
+      "name": "___fastflag",
+      "symbol": "___fastflag",
+      "address": "0x0297c1a0",
+      "units": [],
+      "target_size": null,
+      "exact_match": false,
+      "objects": [],
+      "status": "unknown size"
+    },
+    {
       "name": "__adjust_fdiv",
       "symbol": "__adjust_fdiv",
       "address": "0x0297c1a4",
@@ -714958,21 +715420,21 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 3104680,
-    "matched_code_bytes": 1195088,
-    "matching_percent": 34.428213961211625,
+    "mapped_code_bytes": 3105064,
+    "matched_code_bytes": 1195472,
+    "matching_percent": 34.43927627140226,
     "padding_bytes": 71756,
     "matched_padding_bytes": 49494,
-    "matched_code_with_padding_bytes": 1244582,
-    "matching_with_padding_percent": 35.8540420356264,
-    "fuzzy_coverage_percent": 81.86621468950628,
-    "mapped_functions": 11843,
-    "matched_functions": 8145,
-    "objdiff_fuzzy_percent": 91.64473,
-    "objdiff_total_code": 3105388,
+    "matched_code_with_padding_bytes": 1244966,
+    "matching_with_padding_percent": 35.86510434581704,
+    "fuzzy_coverage_percent": 81.87727699969692,
+    "mapped_functions": 11861,
+    "matched_functions": 8163,
+    "objdiff_fuzzy_percent": 91.64577,
+    "objdiff_total_code": 3105772,
     "image_bytes": 40067072,
-    "mapped_bytes": 5008218,
-    "mapping_percent": 12.499585694707115,
+    "mapped_bytes": 5008602,
+    "mapping_percent": 12.500544087673788,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -714980,7 +715442,7 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 3105874
+        "mapped_bytes": 3106258
       },
       {
         "name": ".rdata",
@@ -715005,17 +715467,17 @@
         "mapped_zero_fill_data_bytes": 1504464
       }
     ],
-    "mapping_known_size_symbols": 21500,
-    "mapping_unknown_size_symbols": 16943,
-    "mapping_code_bytes": 3105874,
+    "mapping_known_size_symbols": 21518,
+    "mapping_unknown_size_symbols": 16946,
+    "mapping_code_bytes": 3106258,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 89.47432708600888,
+    "mapping_code_percent": 89.48538939619952,
     "mapping_data_bytes": 1902344,
     "mapping_data_total_bytes": 36018966,
     "mapping_data_percent": 5.281506415259116,
-    "mapping_code_data_bytes": 5008218,
+    "mapping_code_data_bytes": 5008602,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 12.682175522380078,
+    "mapping_code_data_percent": 12.683147915235299,
     "mapping_file_backed_data_bytes": 397880,
     "mapping_file_backed_data_total_bytes": 1064558,
     "mapping_file_backed_data_percent": 37.3751359719245,
@@ -715026,23 +715488,23 @@
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 3104680,
-    "exact_reconstruction_bytes": 1195088,
+    "mapped_reconstruction_bytes": 3105064,
+    "exact_reconstruction_bytes": 1195472,
     "mapped_not_exact_bytes": 1909592,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 365372,
+    "unclassified_text_bytes": 364988,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 34.428213961211625,
+    "strict_original_text_exact_percent": 34.43927627140226,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 34.44006026422659,
-    "mapped_scope_denominator_bytes": 3104680,
-    "mapped_scope_exact_percent": 38.4931136220158,
+    "reconstruction_scope_exact_percent": 34.45112638081504,
+    "mapped_scope_denominator_bytes": 3105064,
+    "mapped_scope_exact_percent": 38.50072011398155,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
     "alignment_padding_bytes": 71756,
     "exact_alignment_padding_bytes": 49494,
-    "unclassified_non_padding_text_bytes": 293616,
-    "exact_with_padding_bytes": 1244582,
-    "exact_with_padding_percent": 35.8540420356264,
+    "unclassified_non_padding_text_bytes": 293232,
+    "exact_with_padding_bytes": 1244966,
+    "exact_with_padding_percent": 35.86510434581704,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, ending on an aligned extent start; it is exact only after an exact function."
   },
   "data_members": [
@@ -716348,7 +716810,7 @@
       "metadata_sha256": "f144b2c7d11d07a38dc69fe167bbe9736b0ffaa144e187dbb835337f6b396a09",
       "header_path": "src/saga.h",
       "header_sha256": "69ad20a707cfdfd6eb45eabff7c048ce8f488ce90478ad03b22907ef90c5e3ac",
-      "geometry_object_sha256": "0b97ecefae270133d31dd070e304a5c9fcbf31b765fff231175c1fae393b81a8",
+      "geometry_object_sha256": "f3db8c2a78b6c601528c1c984824f6ae1b2b7b42665fefae5f4e39be2eec7e1c",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {

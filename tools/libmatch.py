@@ -33,7 +33,7 @@ else:
                            library_member_path, load_symbols, localize_statics, project, retail)
 
 ARCHIVES = ("libcmt.lib", "libcpmt.lib", "dxsdk/DxErr9.lib")
-MAX_HITS = 8  # masked occurrences kept per function for object-order placement
+MAX_HITS = 32  # masked occurrences kept per function for object-order placement
 CONFIG = ROOT / "config/library-objects.json"
 
 

@@ -285,7 +285,10 @@
     "libcmt#00085:?FindHandlerForForeignException@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@HH1@Z",
     "libcmt#00085:?FindHandler@@YAXPAUEHExceptionRecord@@PAUEHRegistrationNode@@PAU_CONTEXT@@PAXPBU_s_FuncInfo@@EH1@Z",
     "___InternalCxxFrameHandler",
-    "??_Gbad_exception@std@@UAEPAXI@Z"
+    "??_Gbad_exception@std@@UAEPAXI@Z",
+    "??0bad_exception@std@@QAE@PBD@Z",
+    "??1bad_exception@std@@UAE@XZ",
+    "??0bad_exception@std@@QAE@ABV01@@Z"
    ]
   },
   {
@@ -321,7 +324,19 @@
     "??0exception@std@@QAE@XZ",
     "??0exception@std@@QAE@ABQBD@Z",
     "??0exception@std@@QAE@ABV01@@Z",
-    "??1exception@std@@UAE@XZ"
+    "??1exception@std@@UAE@XZ",
+    "??0bad_cast@std@@QAE@ABV01@@Z",
+    "??1bad_cast@std@@UAE@XZ",
+    "??0bad_typeid@std@@QAE@PBD@Z",
+    "??0bad_typeid@std@@QAE@ABV01@@Z",
+    "??1bad_typeid@std@@UAE@XZ",
+    "??0__non_rtti_object@std@@QAE@PBD@Z",
+    "??0__non_rtti_object@std@@QAE@ABV01@@Z",
+    "??1__non_rtti_object@std@@UAE@XZ",
+    "??_Gexception@std@@UAEPAXI@Z",
+    "??_Gbad_cast@std@@UAEPAXI@Z",
+    "??_Gbad_typeid@std@@UAEPAXI@Z",
+    "??_G__non_rtti_object@std@@UAEPAXI@Z"
    ]
   },
   {
@@ -336,7 +351,8 @@
     "?name@type_info@@QBEPBDPAU__type_info_node@@@Z",
     "?_name_internal_method@type_info@@QBEPBDPAU__type_info_node@@@Z",
     "??1type_info@@UAE@XZ",
-    "??_Gtype_info@@UAEPAXI@Z"
+    "??_Gtype_info@@UAEPAXI@Z",
+    "?_type_info_dtor_internal_method@type_info@@QAEXXZ"
    ]
   },
   {
@@ -587,7 +603,8 @@
     "__recalloc_crt",
     "@_calloc_crt_fastcall@8",
     "@_realloc_crt_fastcall@8",
-    "@_malloc_crt_fastcall@4"
+    "@_malloc_crt_fastcall@4",
+    "__set_malloc_crt_max_wait"
    ]
   },
   {
@@ -2006,7 +2023,8 @@
    "member": "..\\build\\intel\\mt_obj\\fpinit.obj",
    "symbols": [
     "__cfltcvt_init",
-    "__fpmath"
+    "__fpmath",
+    "___setfflag"
    ]
   },
   {
