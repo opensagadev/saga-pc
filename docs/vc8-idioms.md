@@ -349,6 +349,62 @@ parenthesised determinant. Redundant parentheses around a cast
 (`((f64)x) * ((f64)y)`) also move code, which suggests macros in the original;
 those were not kept because nothing in the source would explain them.
 
+### I32: a file-static global lets VC8 move loads above its store
+
+```
+retail                                   ours
+  mov  eax, [eax+0xc]                      mov  eax, [eax+0xc]
+  cmp  dword ptr [eax+0x34], 0             mov  [ed_curr], eax
+  mov  [ed_curr], eax                      cmp  dword ptr [eax+0x34], 0
+  jne  ...                                 jne  ...
+```
+
+`ed_curr = module; if (module->reserved == NULL)`: VC8 schedules the load
+through `module` above the store to `ed_curr` only when it can prove the two
+do not alias, which it does for a `static` global whose address is never
+taken. This port defined most globals in `data.cpp` and declared them in
+`saga.h`, so every such store stayed in source order. The same holds for
+globals kept in registers across stores through pointers. A search over every
+`saga.h` global referenced by one unit only (make the unit's candidates
+static, keep a set when functions improve and none gets worse) moved 175
+globals into 44 units as `static`: 19 functions became exact
+(`cbMMRegSel`, `IconScenes_Dump`, the U3 example above, `MiniKit_LSW_Update`,
+`Move_CRITTER`, ...) and 54 improved. Scanner: the `I4` moves of a single
+store to an absolute address. Globals a `data.cpp` table takes the address of
+(character fixup ids) cannot be static.
+
+### I33: a function compiled in another unit is called, not inlined
+
+```
+retail                                   ours
+  mov  ecx, offset PCDeviceBackend         ret        ; empty body inlined
+  jmp  PostEffectBarrierPc
+```
+
+A call to a small function (even an empty one) that retail keeps, where ours
+inlines it, means the caller's unit only had a declaration: the caller lives
+in another unit than the callee. The neighbours of the caller in retail
+address order name that unit. Examples: `PCDevicePostEffectBarrierPc` (to
+`d3d_api_lifetime.cpp`), `ShaderCompilerBufferAllocatorPc::operator<<` (to
+`shader_dictionary.cpp`), and the atexit entry `??__FPCDeviceBackend`, which
+calls the destructor because the global itself was defined next to
+`nu_keyboard_owner` in `data.cpp`. `tools/callset.py` lists these as call-set
+mismatches.
+
+### I34: indexed loop instead of a pointer walk
+
+`for (record = Records; record->id != -1; ++record)` loads the start address
+before the first test; `for (i = 0; Records[i].id != -1; ++i)` (or
+`techno = &WORLD->technos[i]` inside the loop) lets VC8 test first and
+materialise the pointer in the loop preheader. Examples:
+`PCGraphicsPrepareVendor`, `Technos_FindControllingTechno` (both exact).
+`while (count-- != 0)` instead of a trailing `--count` likewise moved the
+decrement before the call in `NuMtxMulHArrayPc`.
+
+A switch case that returns (`case 0: return;`) where the others break gives
+the `sub eax, 0; je` step of I30 even without other code in the case
+(`EdFileFillBuffer`).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
