@@ -583,6 +583,14 @@ def apply_plan(plan, android=None, write=True):
                 decl = prototype(item)
                 if decl not in [d for d, _ in forward]:
                     forward.append((decl, item.c_block or (wrap_c(item, target_cxx) and not item.source.cxx)))
+    # C code called functions without prototypes (implicit int declarations);
+    # C++ needs them, so prototypes are made from the definitions elsewhere.
+    if target_cxx:
+        implicit = implicit_calls(plan, forward, copies_text=[c.text for c in plan.copied])
+        for decl in implicit:
+            forward.append((decl, True))
+        if implicit:
+            plan.notes.append(f"added {len(implicit)} prototypes for calls C compiled without one")
     leftover = [(item.text, wrap_c(item, target_cxx)) for item in data_left]
     # Static helpers: one copy per distinct body; equivalent helpers are renamed.
     helper_entries, kept = [], {}
@@ -714,6 +722,8 @@ def apply_plan(plan, android=None, write=True):
             insert_at = offset_after_cut(source.text, [(i.start, i.end) for i in drop], first) \
                 if first is not None else len(text)
             text = text[:insert_at] + rename(section, plan.renames) + text[insert_at:]
+        if path != target:
+            text = declare_moved_calls(plan, source, drop, text)
         new_texts[path] = tidy(text)
     if target not in new_texts:
         body = "\n".join(includes or ['#include "saga.h"']) + "\n\n" + header + "\n" + rename(section, plan.renames)
@@ -739,6 +749,83 @@ def apply_plan(plan, android=None, write=True):
         rewrite_paths(plan.deleted, target, plan)
         format_files([p for p in new_texts])
     return new_texts
+
+
+CALL = re.compile(r"\b([A-Za-z_]\w*)\s*\(")
+DEFINITION_AT = r"^[A-Za-z_][^;{{}}()]*?\b{name}\s*\([^;{{}}]*\)\s*\{{"
+
+
+def declare_moved_calls(plan, source, drop, text):
+    """Prototype moved functions that code left in a source still calls.
+
+    Without one, C would call the function implicitly (int return, f32 promoted
+    to f64) and C++ would not compile.
+    """
+    saga = (ROOT / "src/saga.h").read_text(encoding="latin-1")
+    stay = [i for i in source.items if i not in drop]
+    refs = set()
+    for item in stay:
+        if item.function and item.definition:
+            refs |= item.refs()
+    declared = "\n".join(i.text[:brace_index(i.text)] if i.function and i.definition else i.text for i in stay)
+    lines = []
+    for _, fn in plan.moved:
+        if "static" in fn.text[:brace_index(fn.text)].split():
+            continue
+        for name in sorted(fn.names & refs):
+            pattern = re.compile(rf"\b{re.escape(name)}\s*\(")
+            if pattern.search(saga) or pattern.search(declared):
+                continue
+            proto = re.sub(r"\s+", " ", strip_comments(prototype(fn)).strip())
+            proto = re.sub(r"^extern\s+\"[C ]\"\s*", "", proto)
+            linkage_c = source.cxx and (not fn.source.cxx or fn.c_block)
+            lines.append(('extern "C" ' if linkage_c else "") + proto + "\n")
+    if not lines:
+        return text
+    lines = sorted(set(lines))
+    plan.notes.append(f"declared {len(lines)} moved function(s) still called in {source.path}")
+    at = text.find('#include "saga.h"')
+    at = text.find("\n", at) + 1 if at >= 0 else 0
+    return text[:at] + "\n" + "".join(lines) + text[at:]
+
+
+def implicit_calls(plan, forward, copies_text):
+    """Prototypes for functions moved C code calls with no declaration in view."""
+    saga = (ROOT / "src/saga.h").read_text(encoding="latin-1")
+    known = "\n".join(copies_text + [d for d, _ in forward])
+    for source in plan.sources.values():
+        known += "\n" + "\n".join(i.text[:brace_index(i.text)] if i.function and i.definition else i.text
+                                   for i in source.items)
+    defined = set()
+    for _, fn in plan.moved:
+        defined |= fn.names
+    for item in plan.helpers:
+        defined |= item.names
+    names = set()
+    for _, fn in plan.moved:
+        if fn.source.cxx:
+            continue
+        body = strip_comments(fn.text)
+        head = body[:brace_index(fn.text)]
+        names |= {m for m in CALL.findall(body[brace_index(fn.text):]) if not re.search(rf"\b{m}\b", head)}
+    out = []
+    keywords = {"if", "while", "for", "switch", "return", "sizeof", "defined"}
+    for name in sorted(names - defined - keywords):
+        pattern = re.compile(rf"\b{re.escape(name)}\s*\(")
+        if pattern.search(saga) or pattern.search(known) or re.search(rf"#\s*define\s+{re.escape(name)}\b", saga):
+            continue
+        definition = re.compile(DEFINITION_AT.format(name=re.escape(name)), re.M)
+        for path in sorted((ROOT / "src").rglob("*.c*")):
+            text = path.read_text(encoding="latin-1")
+            match = definition.search(text)
+            if match:
+                head = strip_comments(match.group(0))[:-1].strip()
+                head = re.sub(r"^(static\s+|extern\s+\"[C ]\"\s*)", "", head)
+                out.append(re.sub(r"\s+", " ", head) + ";\n")
+                break
+        else:
+            plan.todo.append(f"{name} is called without a declaration in view (system header or missing prototype?)")
+    return out
 
 
 def named_fields(item):
