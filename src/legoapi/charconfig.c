@@ -788,18 +788,14 @@ static void CC_thrust_locators(NUFPAR_PC *parser) {
 }
 
 static void CC_hand_locators(NUFPAR_PC *parser) {
-    charconfig.runtime->hand_locators[0] = -1;
-    if (NuFParGetWord(parser) != 0) {
-        const i32 locator = NuAToI(parser->word_buffer_ptr);
-        if ((u32)(locator) <= 15) {
-            charconfig.runtime->hand_locators[0] = (i8)(locator);
-        }
-    }
-    charconfig.runtime->hand_locators[1] = -1;
-    if (NuFParGetWord(parser) != 0) {
-        const i32 locator = NuAToI(parser->word_buffer_ptr);
-        if ((u32)(locator) < 16) {
-            charconfig.runtime->hand_locators[1] = (i8)(locator);
+    i32 i;
+    for (i = 0; i < 2; ++i) {
+        charconfig.runtime->hand_locators[i] = -1;
+        if (NuFParGetWord(parser) != 0) {
+            u32 locator = (u32)NuAToI(parser->word_buffer_ptr);
+            if (locator <= 15) {
+                charconfig.runtime->hand_locators[i] = (i8)locator;
+            }
         }
     }
 }

@@ -1082,3 +1082,9 @@ void __cdecl SetLinkedCutSceneMusic(void *context, i32 state) {
 /* Retail 0x00698a20 is a one-byte RET and reads neither argument. */
 void __cdecl NuSound3ClearLoopHold(NUVEC *position, i32 mode) {
 }
+
+/* Retail's sound error report, compiled empty. It lives outside the sound voice code so its callers keep their
+ * failure tests and calls; they pass a path, an index, an HRESULT or nothing. */
+void __cdecl PCSoundFailure(const char *format, ...) {
+    (void)format;
+}

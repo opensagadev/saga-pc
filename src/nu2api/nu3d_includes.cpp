@@ -13118,11 +13118,6 @@ extern "C" {
         }
     }
 
-    /* Retail's debug print, compiled empty; varargs keeps the calls out-of-line. Callers pass anything from
-     * nothing to a format and its arguments. */
-    void __cdecl PCSpecialEmptyHandler_candidate(...) {
-    }
-
     i32 __cdecl NuSpecialGetFirst(NUGSCN *scene, NUSPECIALHANDLE *special, i32 flags) {
         if (scene->specials != NULL) {
             special->scene = scene;
@@ -13143,6 +13138,11 @@ extern "C" {
             PCSpecialEmptyHandler_candidate();
         }
         return 0;
+    }
+
+    /* Retail's debug print, compiled empty; varargs keeps the calls out-of-line. Callers pass anything from
+     * nothing to a format and its arguments. */
+    void __cdecl PCSpecialEmptyHandler_candidate(...) {
     }
 
     i32 __cdecl NuSpecialGetNumSpecials(NUGSCN *scene) {

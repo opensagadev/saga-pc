@@ -91,7 +91,7 @@ void __cdecl NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 pla
 }
 
 void DieRumble(GAMEOBJECT *object) {
-    if (object != NULL && object->flags_1fc) {
+    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
         NewRumble(object->pad->bound_pad, 1.0f, 0);
         NewBuzz(object->pad->bound_pad, 0.3f, 0);
     }

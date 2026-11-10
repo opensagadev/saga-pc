@@ -30,9 +30,6 @@ extern "C" void __cdecl NuSound3SetDPL(i32 mode, i32 unused) {
     (void)unused;
 }
 
-extern "C" void __cdecl PCSoundFailure(...) {
-}
-
 extern "C" void __cdecl PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg3, i32 arg4, f32 arg5, i32 arg6,
                                                 f32 arg7, f32 arg8, i32 arg9) {
     SoundSamplePC *sample;
@@ -231,44 +228,49 @@ i32 __thiscall SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
     i32 first_voice;
     i32 last_voice;
     i32 voice_id;
-    SoundSamplePC *sample;
-    SoundVoiceSlotPC *slot;
     HRESULT result;
 
-    if (factory == NULL || SoundVoiceEnabledGate == 0 || samples == NULL) {
+    if (factory == NULL) {
+        return -1;
+    }
+    if (SoundVoiceEnabledGate == 0) {
+        return -1;
+    }
+    if (samples == NULL) {
+        return -1;
+    }
+    if (samples[sample_id].valid_byte == 0) {
         return -1;
     }
 
-    sample = &samples[sample_id];
-    if (sample->valid_byte == 0) {
-        return -1;
+    if (bank) {
+        first_voice = 32;
+        last_voice = 64;
+    } else {
+        first_voice = 0;
+        last_voice = 32;
     }
-
-    first_voice = bank ? 32 : 0;
-    last_voice = first_voice + 32;
     for (voice_id = first_voice; voice_id < last_voice; ++voice_id) {
-        slot = &voices[voice_id];
-        if (slot->voice == NULL) {
-            break;
+        if (voices[voice_id].voice == NULL) {
+            result = E_FAIL;
+            EnterCriticalSection(&SoundVoiceCriticalSection);
+            if (samples[sample_id].buffer != NULL) {
+                result = factory->vtable->duplicate_sound_buffer(factory, samples[sample_id].buffer,
+                                                                 &voices[voice_id].voice);
+            }
+            LeaveCriticalSection(&SoundVoiceCriticalSection);
+            if (result >= 0) {
+                /* PC stores the sample-table index here; the second argument selects a voice bank. */
+                voices[voice_id].sample_id = sample_id;
+                voices[voice_id].sample = &samples[sample_id];
+                ++active_count;
+                return voice_id;
+            }
+            PCSoundFailure();
+            return -1;
         }
     }
-    if (voice_id == last_voice) {
-        return -1;
-    }
-
-    EnterCriticalSection(&SoundVoiceCriticalSection);
-    result = factory->vtable->duplicate_sound_buffer(factory, sample->buffer, &slot->voice);
-    LeaveCriticalSection(&SoundVoiceCriticalSection);
-    if (result < 0) {
-        PCSoundFailure();
-        return -1;
-    }
-
-    /* PC stores the sample-table index here; the second argument selects a voice bank. */
-    slot->sample_id = sample_id;
-    slot->sample = sample;
-    ++active_count;
-    return voice_id;
+    return -1;
 }
 
 void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 parameter) {
@@ -277,9 +279,6 @@ void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 vol
     i32 volume_level;
     i32 status;
     i32 sample_frequency;
-    i32 absolute_parameter;
-    i32 pitch_product;
-    i32 frequency_divisor;
     i32 frequency;
     HRESULT result;
 
@@ -287,13 +286,13 @@ void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 vol
         return;
     }
 
-    slot->is_spatial = (u8)spatial != 0;
-    slot->parameter = parameter;
+    slot->is_spatial = 0;
+    if ((u8)spatial != 0) {
+        slot->is_spatial = 1;
+    }
 
     volume_level = (i32)volume + SoundVoiceVolumeOffset;
-    if (volume_level > 0) {
-        volume_level = 0;
-    }
+    volume_level = volume_level > 0 ? 0 : volume_level;
     if (volume_level < -10000) {
         volume_level = -10000;
     }
@@ -302,37 +301,26 @@ void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 vol
         PCSoundFailure(result);
     }
 
+    slot->parameter = parameter;
     sample_frequency = samples[slot->sample_id].frequency;
-    absolute_parameter = parameter;
-    if (absolute_parameter < 0) {
-        absolute_parameter = -absolute_parameter;
-    }
-    pitch_product = absolute_parameter * sample_frequency;
-    if (pitch_product < 0) {
-        pitch_product += 0xfff;
-    }
-    pitch_product >>= 12;
-    pitch_product *= 48;
-    frequency_divisor = sample_frequency / 1000;
-    frequency = pitch_product / frequency_divisor;
-    voice->vtable->set_frequency(voice, (DWORD)frequency);
+    frequency = abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+    slot->voice->vtable->set_frequency(slot->voice, (DWORD)frequency);
 
-    voice->vtable->get_status(voice, (DWORD *)&status);
+    slot->voice->vtable->get_status(slot->voice, (DWORD *)&status);
     if ((status & 1) == 0) {
-        voice->vtable->play(voice, 0, 0, slot->is_spatial);
+        slot->voice->vtable->play(slot->voice, 0, 0, slot->is_spatial);
     } else {
         PCSoundAlreadyPlayingHook();
     }
 }
 
 void __thiscall SoundVoiceManagerPC::SetVolumeTableIndex(i32 voice_id, i32 volume_index) {
-    SoundVoiceSlotPC *slot = &voices[voice_id];
-    IDirectSoundBuffer *voice = slot->voice;
+    IDirectSoundBuffer *voice = voices[voice_id].voice;
     i32 table_index;
     i32 volume_level;
     HRESULT result;
 
-    slot->volume_index = volume_index;
+    voices[voice_id].volume_index = volume_index;
     if (voice == NULL) {
         return;
     }
@@ -341,9 +329,7 @@ void __thiscall SoundVoiceManagerPC::SetVolumeTableIndex(i32 voice_id, i32 volum
         table_index = 0;
     }
     volume_level = (i32)NuSound3VolumeTable[table_index] + SoundVoiceVolumeOffset;
-    if (volume_level > 0) {
-        volume_level = 0;
-    }
+    volume_level = volume_level > 0 ? 0 : volume_level;
     if (volume_level < -10000) {
         volume_level = -10000;
     }
@@ -355,39 +341,23 @@ void __thiscall SoundVoiceManagerPC::SetVolumeTableIndex(i32 voice_id, i32 volum
 }
 
 void __thiscall SoundVoiceManagerPC::SetFrequencyParameter(i32 voice_id, i32 parameter) {
-    SoundVoiceSlotPC *slot = &voices[voice_id];
-    IDirectSoundBuffer *voice = slot->voice;
     i32 sample_frequency;
-    i32 absolute_parameter;
-    i32 frequency_product;
-    i32 frequency_divisor;
     i32 frequency;
 
-    if (voice == NULL) {
+    if (voices[voice_id].voice == NULL) {
         return;
     }
-    if (parameter < 0 && slot->parameter < 0) {
+    if (parameter < 0 && voices[voice_id].parameter < 0) {
         return;
     }
-    if (slot->parameter == parameter) {
+    if (voices[voice_id].parameter == parameter) {
         return;
     }
 
-    slot->parameter = parameter;
-    sample_frequency = samples[slot->sample_id].frequency;
-    absolute_parameter = parameter;
-    if (absolute_parameter < 0) {
-        absolute_parameter = -absolute_parameter;
-    }
-    frequency_product = absolute_parameter * sample_frequency;
-    if (frequency_product < 0) {
-        frequency_product += 0xfff;
-    }
-    frequency_product >>= 12;
-    frequency_product *= 48;
-    frequency_divisor = sample_frequency / 1000;
-    frequency = frequency_product / frequency_divisor;
-    voice->vtable->set_frequency(voice, (DWORD)frequency);
+    voices[voice_id].parameter = parameter;
+    sample_frequency = samples[voices[voice_id].sample_id].frequency;
+    frequency = abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
+    voices[voice_id].voice->vtable->set_frequency(voices[voice_id].voice, (DWORD)frequency);
 }
 
 void __thiscall SoundVoiceManagerPC::StopVoice(i32 voice_id) {
@@ -745,7 +715,6 @@ void __thiscall SoundVoiceManagerPC::ClearSamplesPc(void) {
 void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VARIPTR end) {
     char directory[0x800];
     char filename[0x800];
-    i32 count = 0;
     i32 i;
     f32 value;
     if (PCStereoSampleMetadata == NULL)
@@ -753,16 +722,12 @@ void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VAR
     else
         SoundVoiceManager.ClearSamplesPc();
     PCStereoSampleMetadata = (PC_STEREO_SAMPLE_METADATA *)info;
-    SoundSampleCountPc = 0;
-    while (info[count].index != -1) {
-        if (count >= PCSoundSampleLimitPc) {
-            SoundSampleCountPc = count;
+    for (SoundSampleCountPc = 0; info[SoundSampleCountPc].index != -1; ++SoundSampleCountPc) {
+        if (SoundSampleCountPc >= PCSoundSampleLimitPc) {
             PCSoundFailure();
             break;
         }
-        ++count;
     }
-    SoundSampleCountPc = count;
     for (i = 0; i <= 0x3fff; ++i) {
         if (i == 0)
             NuSound3VolumeTable[i] = -10000.0f;
