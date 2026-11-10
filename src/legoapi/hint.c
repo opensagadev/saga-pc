@@ -460,23 +460,6 @@ i32 __cdecl GizBuildIts_UpdateHint(HINT_PC *hint) {
     return GizBuildIt_AnyReacting(WorldInfo_CurrentlyActive()) != NULL;
 }
 
-i32 __cdecl Push_UpdateHints(HINT_PC *hint) {
-    i32 index;
-    (void)hint;
-    if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
-        return 0;
-    if (LEGOACT_PUSH == -1)
-        return 0;
-    for (index = 0; index < 8; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0 &&
-            object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
-            NearestPushBlock(WORLD, &object->collision_position, 2.0f) != NULL)
-            return 1;
-    }
-    return 0;
-}
-
 i32 __cdecl Hint_isAvailable(i32 hint_id) {
     HINT_PC *active_hint = hintsys.active_hint;
     HINT_PC *hint;

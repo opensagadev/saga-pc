@@ -196,7 +196,6 @@ extern f32 PushCornerInsetPc;
 extern f32 PushGroundOffsetPc;
 extern f32 PushRumblePeriodPc;
 extern f32 PushRumbleWindowPc;
-extern f32 PushBlockOverlapShrinkPc;
 extern i32 PushBlockHintIdPc;
 void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
 PUSH_BLOCK_PC *__cdecl NearestPushBlock(WORLDINFO *, NUVEC *, f32);
@@ -205,72 +204,3 @@ extern char *PushBlocksNamePc;
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
-
-PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded,
-                                    PUSH_BLOCK_PC **support) {
-    WORLDINFO *world = (WORLDINFO *)opaque_world;
-    PUSH_BLOCK_PC *block = (PUSH_BLOCK_PC *)opaque_block;
-    NUVEC *position = block->position;
-    i32 i;
-    if (support != NULL)
-        *support = NULL;
-    for (i = 0; i < world->push_block_count; ++i) {
-        PUSH_BLOCK_PC *other;
-        f32 x, y, z;
-        NUVEC minimum, maximum;
-        i32 overlap_x, overlap_y, overlap_z;
-        f32 shrink, epsilon;
-        if (i == excluded)
-            continue;
-        other = &world->push_blocks[i];
-        if ((other->packed_state_flags & 0x02000000u) != 0)
-            continue;
-        if (NuSpecialGetVisibilityFn(&other->special) == 0)
-            continue;
-        x = position->x - other->position->x;
-        y = position->y - other->position->y;
-        z = position->z - other->position->z;
-        minimum.x = other->bounds_min.x - block->bounds_max.x;
-        minimum.y = other->bounds_min.y - block->bounds_max.y;
-        minimum.z = other->bounds_min.z - block->bounds_max.z;
-        maximum.x = other->bounds_max.x - block->bounds_min.x;
-        maximum.y = other->bounds_max.y - block->bounds_min.y;
-        maximum.z = other->bounds_max.z - block->bounds_min.z;
-        shrink = PushBlockOverlapShrinkPc;
-        if (shrink > 0.0f) {
-            minimum.x += shrink;
-            minimum.y += shrink;
-            minimum.z += shrink;
-            maximum.x -= shrink;
-            maximum.y -= shrink;
-            maximum.z -= shrink;
-        }
-        epsilon = PushBlockGapEpsilonPc;
-        overlap_x = x > minimum.x + epsilon && x < maximum.x - epsilon;
-        overlap_y = y > minimum.y && y < maximum.y;
-        overlap_z = z > minimum.z + epsilon && z < maximum.z - epsilon;
-        if (support != NULL && overlap_x && overlap_z) {
-            f32 gap = y - maximum.y;
-            if (gap > 0.0f) {
-                if (*support == NULL) {
-                    *support = (PUSH_BLOCK_PC *)other;
-                } else {
-                    PUSH_BLOCK_PC *previous = (PUSH_BLOCK_PC *)*support;
-                    f32 previous_y = position->y - previous->position->y;
-                    f32 previous_maximum = previous->bounds_max.y - block->bounds_min.y;
-                    f32 previous_gap;
-                    if (shrink > 0.0f)
-                        previous_maximum -= shrink;
-                    previous_gap = previous_y - previous_maximum;
-                    if (previous_gap > gap) {
-                        other->supporting_block = (PUSH_BLOCK_PC *)previous;
-                        *support = (PUSH_BLOCK_PC *)other;
-                    }
-                }
-            }
-        }
-        if (overlap_x && overlap_y && overlap_z)
-            return (PUSH_BLOCK_PC *)other;
-    }
-    return NULL;
-}

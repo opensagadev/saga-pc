@@ -477,11 +477,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/terrain_player_pc.c",
-   "symbol": "_TerrainBlockFabs",
-   "kind": "function"
-  },
-  {
    "unit": "src/legoapi/grapples.cpp",
    "symbol": "?GrappleFabsPc@@YAMM@Z",
    "kind": "function"
@@ -1322,7 +1317,7 @@
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/gizpushblocks.cpp",
+   "unit": "src/legoapi/pushblocks.cpp",
    "symbol": "?GizPushFabsPc@@YAMM@Z",
    "kind": "function"
   },

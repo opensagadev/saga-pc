@@ -8337,37 +8337,12 @@ STATIC_ASSERT(offsetof(PUSH_SUPPORT_BLOCK_VIEW_PC, output_count) == 0xd2);
 STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, blocks) == 0x46bc);
 STATIC_ASSERT(offsetof(PUSH_SUPPORT_WORLD_VIEW_PC, count) == 0x46c0);
 
-i32 __cdecl SnapPosTaken(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *position, i32 excluded) {
-    PUSH_SUPPORT_WORLD_VIEW_PC *world = (PUSH_SUPPORT_WORLD_VIEW_PC *)opaque_world;
-    i32 count = world->count;
-    i32 i;
-    for (i = 0; i < count; ++i) {
-        PUSH_SUPPORT_BLOCK_VIEW_PC *other;
-        f32 x, y, z;
-        if (i == excluded)
-            continue;
-        other = &world->blocks[i];
-        if ((other->packed_state_flags & 0x02000300u) == 0)
-            continue;
-        x = other->position->x - position->x;
-        y = other->position->y - position->y;
-        z = other->position->z - position->z;
-        if (x * x + y * y + z * z <= (f64)0.002500000176951289f)
-            return 1;
-    }
-    return 0;
-}
-
-PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
-void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
 void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
 void __cdecl UpdatePushBlocks(void *, void *, f32);
 extern f32 PushVelocitySeekRatePc;
 extern f32 PushFallingSpeedPc;
 extern f32 PushCornerInsetPc;
 extern f32 PushGroundOffsetPc;
-extern f32 PushRumblePeriodPc;
-extern f32 PushRumbleWindowPc;
 extern f32 PushBlockOverlapShrinkPc;
 extern i32 PushBlockHintIdPc;
 void __cdecl KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
@@ -8461,108 +8436,6 @@ STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, end_position_count) == 0xd1);
 STATIC_ASSERT(offsetof(PUSH_RUNTIME_BLOCK_VIEW_PC, output_count) == 0xd2);
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
-
-void __cdecl MoveBlocksOverBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded, NUVEC *delta) {
-    PUSH_RUNTIME_WORLD_VIEW_PC *world = (PUSH_RUNTIME_WORLD_VIEW_PC *)opaque_world;
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = (PUSH_RUNTIME_BLOCK_VIEW_PC *)opaque_block;
-    NUVEC *position;
-    PUSH_RUNTIME_BOUNDS_PC box;
-    i32 index;
-    if ((block->packed_state_flags & 0x400u) != 0)
-        return;
-    position = block->position;
-    box = block->bounds;
-    box.min.x = position->x + box.min.x;
-    box.min.y += position->y;
-    box.min.z = position->z + box.min.z;
-    box.max.x = position->x + box.max.x;
-    box.max.y += position->y;
-    box.max.z = position->z + box.max.z;
-    for (index = 0; index < world->count; ++index) {
-        PUSH_RUNTIME_BLOCK_VIEW_PC *other;
-        NUVEC *other_position;
-        PUSH_RUNTIME_BOUNDS_PC other_box, test;
-        if (index == excluded)
-            continue;
-        other = &world->blocks[index];
-        if ((other->packed_state_flags & 0x04000000u) != 0 || (other->packed_state_flags & 0x00040000u) == 0)
-            continue;
-        other_position = other->position;
-        if (other_position->y <= position->y)
-            continue;
-        other_box = other->bounds;
-        test = box;
-        test.min.x -= other_box.max.x;
-        test.min.z -= other_box.max.z;
-        test.max.x -= other_box.min.x;
-        test.max.z -= other_box.min.z;
-        if (PushBlockGapEpsilonPc > 0.0f) {
-            test.min.x = PushBlockGapEpsilonPc + test.min.x;
-            test.min.z += PushBlockGapEpsilonPc;
-            test.max.x = test.max.x - PushBlockGapEpsilonPc;
-            test.max.z = test.max.z - PushBlockGapEpsilonPc;
-        }
-        if (!(other_position->x >= test.min.x) || !(other_position->x <= test.max.x) ||
-            !(other_position->z >= test.min.z) || !(other_position->z <= test.max.z))
-            continue;
-        other->snap_origin = *other_position;
-        other_position->x += delta->x;
-        other_position->y -= delta->y;
-        other->ground_offset -= delta->y;
-        other_position->z = delta->z + other_position->z;
-        other->packed_state_flags |= 4u;
-        if (BlockInBlock(opaque_world, (PUSH_BLOCK_PC *)other, index, &other->supporting_block) != NULL)
-            other->packed_state_flags |= 0x400u;
-        NuSpecialUpdate(&other->special);
-    }
-}
-
-void __cdecl MoveBlocks(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 index, NUVEC *velocity) {
-    PUSH_RUNTIME_BLOCK_VIEW_PC *block = (PUSH_RUNTIME_BLOCK_VIEW_PC *)opaque_block;
-    NUVEC delta;
-    PUSH_BLOCK_PC *hit;
-    i32 j;
-    delta.x = velocity->x;
-    delta.y = 0.0f;
-    delta.z = velocity->z;
-    block->position->x += delta.x;
-    block->position->z += delta.z;
-    NuSpecialUpdate(&block->special);
-    for (j = 0; j < block->end_position_count; ++j) {
-        NUMTX *matrix = NuSpecialGetInstanceMtx(&block->end_position_specials[j]);
-        NUVEC position = *block->position;
-        matrix->m30 = position.x;
-        matrix->m32 = position.z;
-        NuSpecialUpdate(&block->end_position_specials[j]);
-    }
-    if (BlockInBlock(opaque_world, opaque_block, index, &block->supporting_block) != NULL) {
-        block->packed_state_flags |= 0x400u;
-    } else {
-        MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
-        if (block->pushing_object != NULL && (MovePlayerFabs(delta.x) > 0.001f || MovePlayerFabs(delta.z) > 0.001f) &&
-            NuFmod(GameTimer.time_elapsed, PushRumblePeriodPc) < PushRumbleWindowPc) {
-            NewRumble(block->pushing_object->pad->bound_pad, (f32)((f64)qrand() * 0.000015259021893143654 * (f64)0.05f),
-                      0);
-        }
-    }
-    if ((block->packed_state_flags & 8u) != 0) {
-        delta.x = 0.0f;
-        delta.y = velocity->y;
-        delta.z = 0.0f;
-        block->position->y -= delta.y;
-        block->ground_offset -= delta.y;
-        hit = BlockInBlock(opaque_world, opaque_block, index, &block->supporting_block);
-        if (hit != NULL) {
-            PUSH_RUNTIME_BLOCK_VIEW_PC *other = (PUSH_RUNTIME_BLOCK_VIEW_PC *)hit;
-            block->settled_height = other->position->y + other->bounds_max.y;
-            block->packed_state_flags |= 0x800u;
-            NuSpecialUpdate(&block->special);
-            return;
-        }
-        MoveBlocksOverBlock(opaque_world, opaque_block, index, &delta);
-        NuSpecialUpdate(&block->special);
-    }
-}
 
 extern i16 id_WATTO;
 STATIC_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
