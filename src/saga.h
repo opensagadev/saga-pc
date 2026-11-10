@@ -8064,6 +8064,8 @@ struct FADEINFO_s;
 class FadeBase {
   public:
     FADEINFO_s *info;
+    FadeBase() : info(NULL) {
+    }
     virtual ~FadeBase();
     virtual void Init(FADEINFO_s *info) = 0;
     virtual void InitFade() = 0;
@@ -15446,7 +15448,7 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     extern const char LevelConfigKeyword_xspeed[7];
     extern LEVELDATA_PC *levelconfig_ldata;
     extern struct nusound_filename_info_s *MusicInfo;
-    i16 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback);
+    i32 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback);
     i32 __cdecl GetSfxId(char *name);
     u32 __cdecl SfxNameHash(const char *name);
     extern i16 *SfxHashHeads;

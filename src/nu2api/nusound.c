@@ -685,7 +685,7 @@ void __cdecl ResetSounds(void) {
     PCByteCopy_candidate(SfxBits, GlobalSfxBits, 0xc8);
 }
 
-i16 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback) {
+i32 __cdecl GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback) {
     (void)name;
     (void)table;
     (void)fallback;
