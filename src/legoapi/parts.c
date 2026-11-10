@@ -1802,7 +1802,7 @@ void __cdecl AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position
 
 void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentum, i32 count,
                                              NUMTX *emitter_orientation, NUMTX *particle_orientation) {
-    u16 priority = 20000;
+    u16 priority;
     if (effect < 0 || debtab[effect] == NULL)
         return;
     switch (debtab[effect]->particle_type) {
@@ -1814,6 +1814,9 @@ void __cdecl AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC 
             break;
         case 7:
             priority = 10000;
+            break;
+        default:
+            priority = 20000;
             break;
     }
     AddVariableShotDebrisEffectTimed5(effect, position, momentum, NULL, count * 30, debris_time_increment,

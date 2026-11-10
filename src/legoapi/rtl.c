@@ -3975,25 +3975,12 @@ void __cdecl cbSave(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent) {
-    RTL_LIGHT_PC *original = curr_rtl;
     RTL_LIGHT_PC saved;
-    u32 word;
-    i32 index;
-    if (rtlCmp(original, &menu_undo) != 0) {
-        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
-            memcpy(&word, (u8 *)original + index * sizeof(u32), sizeof(word));
-            memcpy((u8 *)&saved + index * sizeof(u32), &word, sizeof(word));
-        }
-        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
-            memcpy(&word, (u8 *)&menu_undo + index * sizeof(u32), sizeof(word));
-            memcpy((u8 *)original + index * sizeof(u32), &word, sizeof(word));
-        }
+    if (rtlCmp(curr_rtl, &menu_undo) != 0) {
+        saved = *curr_rtl;
+        *curr_rtl = menu_undo;
         edrtlSaveUndo();
-        original = curr_rtl;
-        for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
-            memcpy(&word, (u8 *)&saved + index * sizeof(u32), sizeof(word));
-            memcpy((u8 *)original + index * sizeof(u32), &word, sizeof(word));
-        }
+        *curr_rtl = saved;
     }
     eduiMenuDetach(menu);
 }

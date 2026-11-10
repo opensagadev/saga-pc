@@ -48,9 +48,9 @@ i32 __cdecl Collection_Got(i32 id) {
         return 0;
     area = AreaFromMiniKitID(id);
     if (area != -1) {
-        if (Game_AreaSave == NULL)
-            return 0;
-        return Game_AreaSave[area].minikit_complete != 0 ? 2 : 0;
+        if (Game_AreaSave != NULL && Game_AreaSave[area].minikit_complete != 0)
+            return 2;
+        return 0;
     }
     if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 1) == 0)
         return 0;

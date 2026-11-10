@@ -5243,7 +5243,9 @@ i32 __cdecl NuStrToL(char *str, char **end, i32 radix) {
     }
     if (end != NULL)
         *end = str - 1;
-    return sign != 0 ? (i32)((u32)value * (u32)sign) : value;
+    if (sign != 0)
+        return (i32)((u32)value * (u32)sign);
+    return value;
 }
 
 i32 __cdecl NuIsAlW(NUWCHAR c) {
