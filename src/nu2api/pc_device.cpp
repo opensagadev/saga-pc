@@ -1226,11 +1226,11 @@ extern "C" i32 __cdecl PCGraphicsPrepareVendor() {
     PCGraphicsQueriedGpu.vendor_id = vendor;
     PCGraphicsQueriedGpu.device_id = device_id;
     if (vendor == 0x10de && device_id != 0xffffffffu) {
-        for (PC_GRAPHICS_GPU_RECORD_PC *record = PCGraphicsGpuRecords; record->device_id != 0xffffffffu; ++record) {
+        for (i32 i = 0; PCGraphicsGpuRecords[i].device_id != 0xffffffffu; ++i) {
             if (selected != NULL)
                 break;
-            if (record->device_id == device_id)
-                selected = record;
+            if (PCGraphicsGpuRecords[i].device_id == device_id)
+                selected = &PCGraphicsGpuRecords[i];
         }
         if (selected == NULL)
             selected = &PCGraphicsGpuFallback;

@@ -1370,10 +1370,12 @@ extern "C" i32 __cdecl Hub_BonusBuildIt(GIZBUILDIT_PC *buildit);
 static i32 __cdecl GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT_PC *input, GAMEOBJECT *object) {
     GAME_BUILDIT_READER_PC *buildit = (GAME_BUILDIT_READER_PC *)input;
     if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0) {
-        if (input == HubBuildItPc)
-            return Game.gold_bricks >= 2 * buildit->anim_object_count;
-        if (Game.gold_bricks < buildit->anim_object_count && Hub_BonusBuildIt(input) != 0)
+        if (input == HubBuildItPc) {
+            if (Game.gold_bricks < 2 * buildit->anim_object_count)
+                return 0;
+        } else if (Game.gold_bricks < buildit->anim_object_count && Hub_BonusBuildIt(input) != 0) {
             return 0;
+        }
     }
     return 1;
 }

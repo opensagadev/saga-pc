@@ -1492,8 +1492,8 @@ extern "C" {
 
     void __cdecl PCGraphicsEffectTextureDimensions(GRAPHICS_RENDER_TEXTURE_PC *texture, u16 level, i32 *width,
                                                    i32 *height) {
-        *width = (texture->width >> (u8)level) & ~1;
-        *height = (texture->height >> (u8)level) & ~1;
+        *width = (texture->width >> level) & ~1;
+        *height = (texture->height >> level) & ~1;
     }
 
     i32 __cdecl PCGraphicsEffectTextureMipCount(GRAPHICS_RENDER_TEXTURE_PC *texture) {

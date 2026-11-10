@@ -3993,16 +3993,17 @@ void __cdecl InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC function) {
 
 i32 __cdecl AIScriptSetInterrupt(AISCRIPTPROCESS_PC *processor, u8 priority, u8 id, char *state_name, f32 time) {
     AISTATE_PC *state;
-    if (processor->interrupt_priority > priority)
-        return 0;
-    state = AIStateFind(state_name, processor->script);
-    if (state == NULL)
-        return 0;
-    processor->interrupt_priority = priority;
-    processor->interrupt_id = id;
-    processor->interrupt_state = state;
-    processor->interrupt_timer = time;
-    return 1;
+    if (priority >= processor->interrupt_priority) {
+        state = AIStateFind(state_name, processor->script);
+        if (state != NULL) {
+            processor->interrupt_priority = priority;
+            processor->interrupt_id = id;
+            processor->interrupt_state = state;
+            processor->interrupt_timer = time;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void __cdecl AIScriptClearInterrupt(AISCRIPTPROCESS_PC *processor, char *state_name) {
@@ -8418,22 +8419,23 @@ static EDLOCATOR_s *AiEditorNextLocatorInSetPc(EDLOCATORSET_s *set, EDLOCATOR_s 
 
 static EDLOCATOR_s *AiEditorPrevLocatorInSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *current) {
     i32 index;
-    if (set == NULL)
-        return NULL;
-    if (current != NULL) {
-        for (index = 0; index < 64; ++index) {
-            if (set->locators[index] == current) {
-                if (index != 0)
-                    return set->locators[index - 1];
-                break;
+    if (set != NULL) {
+        if (current != NULL) {
+            for (index = 0; index < 64; ++index) {
+                if (set->locators[index] == current) {
+                    if (index != 0)
+                        return set->locators[index - 1];
+                    break;
+                }
+            }
+            for (index = 63; index >= 0; --index) {
+                if (set->locators[index] != NULL)
+                    return set->locators[index];
             }
         }
-        for (index = 63; index >= 0; --index) {
-            if (set->locators[index] != NULL)
-                return set->locators[index];
-        }
+        return set->locators[0];
     }
-    return set->locators[0];
+    return NULL;
 }
 
 void __cdecl DrawLocator(NUVEC *position, f32 width, i32 direction, i32 colour) {

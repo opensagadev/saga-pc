@@ -30,10 +30,10 @@ STATIC_ASSERT(offsetof(CUT_INSTANCE_PRE_END_PC, camera_instance) == 0x9c);
 
 void __cdecl instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_PRE_END_PC *instance = (CUT_INSTANCE_PRE_END_PC *)owner;
-    instance->flags_88 = (instance->flags_88 & ~2U) | 0x1000;
     instance->current_frame = instance->scene->duration;
     instance->render_frame = instance->scene->duration;
     instance->flags_8c &= ~0x40U;
+    instance->flags_88 = (instance->flags_88 & ~2U) | 0x1000;
     if (instance->camera_instance != NULL && instance->camera_instance->camera_index >= 0) {
         CutSceneCameraCTRL = 0;
     }

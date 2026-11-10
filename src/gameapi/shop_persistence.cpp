@@ -55,9 +55,9 @@ extern "C" {
     }
     i32 __cdecl SaveCreateDirectoryPc(char *path) {
         SECURITY_ATTRIBUTES security;
+        security.bInheritHandle = 1;
         security.nLength = sizeof(security);
         security.lpSecurityDescriptor = NULL;
-        security.bInheritHandle = 1;
         return CreateDirectoryA(path, &security);
     }
     void __cdecl createslotfolder(i32) {

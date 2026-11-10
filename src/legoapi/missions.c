@@ -189,9 +189,9 @@ i32 __cdecl Missions_PickupsOff(MISSIONSYS_PC *system) {
     if (system == NULL)
         return 0;
     reader = (MISSION_SYSTEM_READER_PC *)system;
-    if (reader->state == 0 || reader->active_mission == NULL)
+    if (reader->state == 0 || reader->active_mission == NULL || (reader->flags & 1) != 0)
         return 0;
-    return (reader->flags ^ 1) & 1;
+    return 1;
 }
 
 void __cdecl InitMission(MISSIONSYS_PC *system, i32 index) {

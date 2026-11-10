@@ -852,8 +852,8 @@ extern "C" {
     i32 __cdecl GizBuildIts_UpdateHint(HINT_PC *hint) {
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
             return 0;
-        if (hint->completed == 0)
-            return GizBuildIt_AnyReacting(WorldInfo_CurrentlyActive()) != NULL;
+        if (hint->completed == 0 && GizBuildIt_AnyReacting(WorldInfo_CurrentlyActive()) != NULL)
+            return 1;
         return 0;
     }
 

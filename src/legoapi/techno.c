@@ -29,8 +29,8 @@ TECHNO_PC *__cdecl Technos_FindControllingTechno(GAMEOBJECT *object) {
     if (object == NULL)
         return NULL;
     count = WORLD->techno_count;
-    techno = WORLD->technos;
-    for (i = 0; i < count; ++i, ++techno) {
+    for (i = 0; i < count; ++i) {
+        techno = &WORLD->technos[i];
         if (techno->target_mode == 1 && techno->controlled_object == object)
             return techno;
     }

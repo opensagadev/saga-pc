@@ -27,7 +27,7 @@ f32 __cdecl SpeederChaseATATInOutMul(NUVEC *start, NUVEC *end) {
     f32 multiplier = (f32)((f64)NuVecXZDist(start, end, NULL) * 0.125);
     if (multiplier > 1.0f)
         multiplier = 1.0f;
-    if (multiplier < (f64)0.1f)
+    else if (multiplier < (f64)0.1f)
         multiplier = 0.1f;
     return multiplier;
 }

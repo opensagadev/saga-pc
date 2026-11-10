@@ -4833,7 +4833,7 @@ extern "C" i32 __cdecl NuOcclusionManagerIsInitialised(void) {
 }
 
 extern "C" i32 __cdecl NuOcclusionManagerIsEnabled(void) {
-    return g_OcclusionManager.initialized != 0 && g_OcclusionManager.enabled != 0;
+    return (g_OcclusionManager.initialized && g_OcclusionManager.enabled) != 0;
 }
 /* Original legoapi/render/light/occlusion.cpp family; public material APIs
  * preserve the original inline operations without exposing private ABIs. */
@@ -6549,11 +6549,11 @@ extern "C" {
         memset(desc, 0, sizeof(*desc));
         desc->default_scale = 1.0f;
         desc->material_flags |= 0x1000;
+        desc->vertex_format |= 0x101;
         desc->flags = 0x1000;
         desc->packed_diffuse_colour = 0xff8080ff;
         for (i = 0; i < 4; ++i)
             desc->animation_ids[i] = -1;
-        desc->vertex_format |= 0x101;
     }
 
     static NUMTL *__cdecl NuMtlCreatePoolPC(i32 count, u32 render_plane, i32 is_3d) {
@@ -13603,8 +13603,8 @@ bool NuDeferredFilterGen::isEnabled() {
 void NuDeferredFilterGen::resetAll() {
     for (i32 i = 0; i < dynamic_light_count; ++i)
         dynamic_lights[i]->resetGeometry();
-    deferred_geometry_count = 0;
     dynamic_light_count = 0;
+    deferred_geometry_count = 0;
 }
 /* Original nudynamiclight/nucore helper; proposed named fields are documented
  * in light-reset-field-contract.json. No byte-cast/unknown-layout bypass. */
@@ -14238,12 +14238,11 @@ extern "C" {
     }
 
     __declspec(noinline) void NuMtxMulHArrayPc(NUMTX *out, NUMTX *left, NUMTX *right, i32 count) {
-        while (count != 0) {
+        while (count-- != 0) {
             D3DXMatrixMultiply(((D3DXMATRIX *)(out)), ((D3DXMATRIX *)(left)), ((D3DXMATRIX *)(right)));
             ++out;
             ++left;
             ++right;
-            --count;
         }
     }
 

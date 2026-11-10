@@ -176,8 +176,8 @@ void __cdecl StartEndOfJump(GAMEOBJECT *object) {
         object->character_context = (i8)LEGOCONTEXT_JUMP;
         object->action_movement_state = 0;
         object->field_7aa = LEGOACT_FALL;
-        object->context_variant_flags = (object->context_variant_flags & 0xfffeafff) | 0x8000;
         object->jump_sequence = 2;
+        object->context_variant_flags = (object->context_variant_flags & 0xfffeafff) | 0x8000;
     }
     object->airborne_collision_target = NULL;
 }

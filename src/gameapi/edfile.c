@@ -40,11 +40,11 @@ __declspec(noinline) void __cdecl EdFileFillBuffer(void) {
     if (edfile_handle != -1) {
         memset(edfile_buffer, 0, sizeof(edfile_buffer));
         switch (edfile_media) {
+            case 0:
+                return;
             case 1:
                 NuFileRead(edfile_handle, edfile_buffer, sizeof(edfile_buffer));
                 edfile_buffer_pointer = 0;
-                break;
-            default:
                 break;
         }
     }

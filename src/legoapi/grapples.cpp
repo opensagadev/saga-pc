@@ -1208,7 +1208,7 @@ extern "C" {
 
     i32 __cdecl IndyGrappleCanJumpPc(GAMEOBJECT *object) {
         if (LEGOCONTEXT_GRAPPLE != -1 && object->character_context == LEGOCONTEXT_GRAPPLE &&
-            (object->field_7b3 == 1 || (object->field_7b3 == 0 && object->context_duration < 0.5f)))
+            (object->field_7b3 == 1 || (object->field_7b3 == 0 && object->context_duration >= 0.5f)))
             return 1;
         return 0;
     }

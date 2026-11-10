@@ -2903,7 +2903,7 @@ f32 __cdecl Condition_GotLocatorInSetPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
             i32 count = set->locator_count;
             i32 index;
             for (index = 0; index < count; ++index)
-                if (set->locator_entries[index] == locator_index)
+                if (locator_index == set->locator_entries[index])
                     return 1.0f;
         }
     }
