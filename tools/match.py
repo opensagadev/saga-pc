@@ -9,13 +9,13 @@ import subprocess
 import sys
 
 if __package__:
-    from . import diffclass
+    from . import diffclass, idiomscan
     from .binary import compare_data, relocate_function, write_function
     from .lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, dependency_files, covered_bytes,
                       digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from tools import diffclass
+    from tools import diffclass, idiomscan
     from tools.binary import compare_data, relocate_function, write_function
     from tools.lib import (ROOT, DefinitionIndex, bindings_for, compiled_objects, dependency_files, covered_bytes,
                      digest, external_symbols, load_code_groups, prepare_code_group_objects, library_objects, load_json, load_symbols, mapping_progress, number, object_path, project, retail, section_mapping_progress, sha256)
@@ -415,6 +415,7 @@ def main():
                 if original != base and "diff_class" not in row and diffclass.available():
                     # Optional (capstone): why the first differing copy differs.
                     row.update(diffclass.describe(original, base, va))
+                    row["idioms"] = idiomscan.signatures(original, base, va)
             row["objects"].append(result)
         row["exact_match"] = all(result["exact_match"] for result in row["objects"])
         row["status"] = "exact" if row["exact_match"] else "different"

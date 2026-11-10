@@ -491,6 +491,14 @@ frame size), `registers+stack`, `operand-shape` (same mnemonics), `reordered` or
 of the register- and stack-normalised instructions. Without capstone both fields
 are omitted; nothing else changes. `python3 tools/diffclass.py` summarises them.
 
+`idioms` (also capstone only) lists the signatures of the source idioms in
+[docs/vc8-idioms.md](docs/vc8-idioms.md) that the differing spots show (`I`
+numbers have a known source fix, `U` numbers are unexplained, `C` is a constant,
+address or callee that differs, `?` a spot nothing recognised).
+`python3 tools/idiomscan.py --list` prints the near-exact work queue (spots all
+explained by `I` idioms first, then mixed, unexplained and `U`-only), and
+`python3 tools/idiomscan.py Function` shows the tagged spots of one function.
+
 `python3 tools/altbuild.py UNIT [FLAGS] [-/FLAG]` compiles one unit with other
 compiler flags (`-/GS` drops `/GS`; `--cxx` compiles a C unit as C++) and compares
 each mapped function with the current object, without touching `build/obj`.
