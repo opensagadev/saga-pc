@@ -903,9 +903,9 @@ static __declspec(noinline) void CutSceneRigidFixUpPc(CUT_SCENE_LOAD_PC *scene, 
 }
 
 static __declspec(noinline) i32 CutFindLocatorFunctionPc(char *name) {
-    i32 i;
+    i32 i = 0;
     if (CutSceneLocatorFunctionsPc != NULL)
-        for (i = 0; CutSceneLocatorFunctionsPc[i].name != NULL; ++i)
+        for (; CutSceneLocatorFunctionsPc[i].name != NULL; ++i)
             if (NuStrICmp(name, CutSceneLocatorFunctionsPc[i].name) == 0)
                 return i;
     return -1;

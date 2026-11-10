@@ -4653,35 +4653,35 @@ extern "C" {
     void __cdecl NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
         (void)texture_id;
         item->type = 0x87;
-        item->id = 0;
         item->next = NULL;
+        item->id = 0;
     }
 
     void __cdecl NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
         (void)texture_id;
         item->type = 0x87;
-        item->id = 0;
         item->next = NULL;
+        item->id = 0;
     }
 
     void __cdecl NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         item->type = 0x80;
-        item->id = 3;
         item->next = material;
+        item->id = 3;
     }
 
     void __cdecl NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
         item->type = 0x87;
-        item->id = 0;
         item->next = NULL;
+        item->id = 0;
     }
 
     void __cdecl NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
         item->type = 0x87;
-        item->id = 0;
         item->next = NULL;
+        item->id = 0;
     }
 
     void __cdecl DisplayListCreatePS(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, VARIPTR end) {
@@ -6422,8 +6422,8 @@ extern "C" {
     void __cdecl NuGobjRegistryInitPc(void) {
         if (NuGobjRegistryInitializedPc != 0)
             NuGobjRegistryCleanupPc();
-        NuGobjRegistryInitializedPc = 1;
         NuGobjRegistryFirstPc = NULL;
+        NuGobjRegistryInitializedPc = 1;
     }
 
     void NuMainFilter::initResources() {

@@ -259,11 +259,15 @@ static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 }
 static char *Lever_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
-    if (output == 1)
-        return "Down(Goodie)";
-    if (output == 2)
-        return "Down(Baddie)";
-    return output == 0 ? LeverOutputDownNamePtrPc : NULL;
+    switch (output) {
+        case 0:
+            return LeverOutputDownNamePtrPc;
+        case 1:
+            return "Down(Goodie)";
+        case 2:
+            return "Down(Baddie)";
+    }
+    return NULL;
 }
 static i32 Lever_GetNumOutputs(GIZMO_PC *gizmo) {
     (void)gizmo;

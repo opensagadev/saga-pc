@@ -1117,10 +1117,8 @@ static i32 __cdecl GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
 static char outputName[13] = "Any Complete";
 
 static char *__cdecl GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
-    if (output_index < 0)
-        return NULL;
     PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
-    if (output_index > block->output_count)
+    if (output_index < 0 || output_index > block->output_count)
         return NULL;
     if (output_index == 0)
         return const_cast<char *>("Any Complete");

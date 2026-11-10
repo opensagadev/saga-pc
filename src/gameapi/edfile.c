@@ -669,8 +669,12 @@ void eduicbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 /* Retail keeps every call to this out of line (eduiMenuAttach, cbMMEditorConfig, tpentPropOnEnter). */
 __declspec(noinline) void eduiSetActiveMenu(eduimenu_s *menu) {
-    if (EduiUsingMenuFocusPc != 0)
-        active_menu = EduiDeepestChildPc(menu != NULL ? menu : default_active_menu);
+    if (EduiUsingMenuFocusPc != 0) {
+        if (menu == NULL)
+            active_menu = EduiDeepestChildPc(default_active_menu);
+        else
+            active_menu = EduiDeepestChildPc(menu);
+    }
 }
 
 __declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
@@ -2808,18 +2812,18 @@ eduiitem_s *__cdecl eduiItemFilePickCreate(u32 data, void *colours, void *callba
 }
 
 i32 eduiMenuProcess(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
+    i32 result;
     processing_menu = menu;
-    if (menu->child) {
-        i32 result = eduiMenuProcess(menu->child, delta_time, pad);
-        if (processing_menu) {
-            if (result)
-                eduiSetActiveMenu(menu->child ? menu->child : menu);
-            else
-                result = eduiProcessInteracts(menu, pad);
-        }
-        return result;
+    if (menu->child == NULL)
+        return eduiMenuProcessAux(menu, delta_time, pad);
+    result = eduiMenuProcess(menu->child, delta_time, pad);
+    if (processing_menu) {
+        if (result)
+            eduiSetActiveMenu(menu->child ? menu->child : menu);
+        else
+            result = eduiProcessInteracts(menu, pad);
     }
-    return eduiMenuProcessAux(menu, delta_time, pad);
+    return result;
 }
 
 char __cdecl EdFileReadChar(void) {
@@ -3636,17 +3640,15 @@ STATIC_ASSERT(offsetof(edui_interact_s, field_20) == 0x20);
 
 static i32 EduiInteractionContainsCursorPc(edui_interact_s *interact) {
     f32 edge;
-    if (!(edui_cursor_x >= interact->x))
-        return 0;
-    if (!(edui_cursor_y >= interact->y))
-        return 0;
-    edge = interact->width + interact->x;
-    if (!(edui_cursor_x < edge))
-        return 0;
-    edge = interact->height + interact->y;
-    if (!(edui_cursor_y < edge))
-        return 0;
-    return 1;
+    if (edui_cursor_x >= interact->x && edui_cursor_y >= interact->y) {
+        edge = interact->width + interact->x;
+        if (edui_cursor_x < edge) {
+            edge = interact->height + interact->y;
+            if (edui_cursor_y < edge)
+                return 1;
+        }
+    }
+    return 0;
 }
 
 static i32 EduiProcessLockedInteractionPc(eduimenu_s *menu) {

@@ -235,7 +235,8 @@ static void SockParMoveAngle(NUFPAR_PC *parser, void *context) {
     i32 angle;
     sockpar_sock->flags |= 0x40;
     angle = NuFParGetInt(parser) % 360;
-    sockpar_sock->input_yaw = (u16)((angle << 16) / 360);
+    angle <<= 16;
+    sockpar_sock->input_yaw = (u16)(angle / 360);
 }
 
 static void SockParCamBehind(NUFPAR_PC *parser, void *context) {

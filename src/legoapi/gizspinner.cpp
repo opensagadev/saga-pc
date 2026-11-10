@@ -500,21 +500,20 @@ extern "C" char *__cdecl GizSpinner_GetGizmoName(void *gizmo_pointer) {
 
 extern "C" char *__cdecl GizSpinner_GetOutputName(void *gizmo, i32 output) {
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo)->object;
-    if (output < 0)
-        return NULL;
-    if (output > spinner->output_count)
+    if (output < 0 || output > spinner->output_count)
         return NULL;
     if (spinner->output_count >= 2) {
         f32 fraction = (f32)output / (spinner->output_count - 1);
         f32 percentage = (f64)fraction * 100.0;
         NuIToA((i32)percentage, SpinnerOutputBufferPc, 10);
         NuStrCat(SpinnerOutputBufferPc, (char *)SpinnerCompleteSuffixPc);
-    } else {
-        char *name = (char *)SpinnerAllCompletePc;
-        if (spinner->output_count == 0)
-            name = TextInputKeyNameTextPc7516c0;
-        NuStrCpy(SpinnerOutputBufferPc, name);
+        return SpinnerOutputBufferPc;
     }
+    if (spinner->output_count != 0) {
+        NuStrCpy(SpinnerOutputBufferPc, (char *)SpinnerAllCompletePc);
+        return SpinnerOutputBufferPc;
+    }
+    NuStrCpy(SpinnerOutputBufferPc, TextInputKeyNameTextPc7516c0);
     return SpinnerOutputBufferPc;
 }
 

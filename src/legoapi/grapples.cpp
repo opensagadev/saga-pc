@@ -654,10 +654,12 @@ extern "C" {
 #pragma const_seg()
 
     char *__cdecl Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-        if (output == 1)
-            return (char *)GrappleOccupiedOutputTextPc;
-        if (output == 2)
-            return (char *)GrappleOccupiedByTwoOutputTextPc;
+        switch (output) {
+            case 1:
+                return (char *)GrappleOccupiedOutputTextPc;
+            case 2:
+                return (char *)GrappleOccupiedByTwoOutputTextPc;
+        }
         return AIRegistryTextPc007575bc;
     }
 }

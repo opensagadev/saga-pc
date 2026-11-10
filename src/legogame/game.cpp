@@ -296,7 +296,9 @@ static u32 CanSuperCarry_Game(GAMEOBJECT *object) {
 }
 
 static u32 CanPushBlocks_Game(GAMEOBJECT *object) {
-    if (StartupGameFlag0 != 0 || StartupGameFlag1 != 0)
+    if (StartupGameFlag0 != 0)
+        return 1;
+    if (StartupGameFlag1 != 0)
         return 1;
     return (object->character_data->game_character->flags_090 & 0x00800000) != 0;
 }
@@ -1284,8 +1286,8 @@ static f32 __cdecl Hint_AlphaTarget(void) {
 }
 
 static i32 __cdecl GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
-    if (world->current_level == DEATHSTARRESCUEA_LDATA)
-        return GameCam->sock_position.sock_index == 2;
+    if (world->current_level == DEATHSTARRESCUEA_LDATA && GameCam->sock_position.sock_index == 2)
+        return 1;
     return 0;
 }
 
@@ -1697,14 +1699,14 @@ static i32 __cdecl GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, 
         world = WorldInfo_CurrentlyActive();
     }
     attracto = Attracto_FindNearest(world, position, NULL, NULL);
-    if (attracto == NULL) {
-        return 0;
+    if (attracto != NULL) {
+        Attracto_GetPos_Top(attracto, result);
+        if (angle != NULL) {
+            *angle = ((ATTRACTO_READER_PC *)attracto)->angle;
+        }
+        return 1;
     }
-    Attracto_GetPos_Top(attracto, result);
-    if (angle != NULL) {
-        *angle = ((ATTRACTO_READER_PC *)attracto)->angle;
-    }
-    return 1;
+    return 0;
 }
 
 typedef struct GAME_CUSTOMISER_REWARD_READER_PC {

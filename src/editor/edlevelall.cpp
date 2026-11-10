@@ -4858,18 +4858,19 @@ void *SplineHelper::GetNextObject(void *object) {
 
 void *SplineHelper::CreateObject(void *, i32, i32) {
     void *memory = theMemoryManager.AllocPool(sizeof(SplineObject), 1);
-    if (memory == NULL)
-        return NULL;
-    SplineObject *spline = new (memory) SplineObject;
-    spline->next = NULL;
-    spline->previous = last_object;
-    if (last_object != NULL)
-        last_object->next = spline;
-    last_object = spline;
-    if (first_object == NULL)
-        first_object = spline;
-    object_count++;
-    return spline;
+    if (memory != NULL) {
+        SplineObject *spline = new (memory) SplineObject;
+        spline->next = NULL;
+        spline->previous = last_object;
+        if (last_object != NULL)
+            last_object->next = spline;
+        last_object = spline;
+        if (first_object == NULL)
+            first_object = spline;
+        object_count++;
+        return spline;
+    }
+    return NULL;
 }
 
 /* Only a spline whose knots are all gone is destroyed. */
