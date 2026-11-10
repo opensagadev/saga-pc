@@ -1499,22 +1499,23 @@ i32 AiParseExpressionFailed = 0;
 
 enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
 
+/* Early-out guards: retail returns 1 through one shared epilogue. */
 #define AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, field, mask, initially_set, set_on_false)           \
     do {                                                                                                               \
         i32 i;                                                                                                         \
-        if ((packet) != NULL && (packet)->owner != NULL && (first_time) != 0) {                                        \
-            if (initially_set) {                                                                                       \
-                (packet)->owner->field |= (mask);                                                                      \
-            } else {                                                                                                   \
-                (packet)->owner->field &= ~(mask);                                                                     \
-            }                                                                                                          \
-            for (i = 0; i < (count); i++) {                                                                            \
-                if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                      \
-                    if (set_on_false) {                                                                                \
-                        (packet)->owner->field |= (mask);                                                              \
-                    } else {                                                                                           \
-                        (packet)->owner->field &= ~(mask);                                                             \
-                    }                                                                                                  \
+        if ((packet) == NULL || (packet)->owner == NULL || (first_time) == 0)                                          \
+            return 1;                                                                                                  \
+        if (initially_set) {                                                                                           \
+            (packet)->owner->field |= (mask);                                                                          \
+        } else {                                                                                                       \
+            (packet)->owner->field &= ~(mask);                                                                         \
+        }                                                                                                              \
+        for (i = 0; i < (count); i++) {                                                                                \
+            if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                          \
+                if (set_on_false) {                                                                                    \
+                    (packet)->owner->field |= (mask);                                                                  \
+                } else {                                                                                               \
+                    (packet)->owner->field &= ~(mask);                                                                 \
                 }                                                                                                      \
             }                                                                                                          \
         }                                                                                                              \
@@ -1523,12 +1524,12 @@ enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
 #define AISCRIPT_SET_PACKET_FLAG(packet, params, count, first_time, mask)                                              \
     do {                                                                                                               \
         i32 i;                                                                                                         \
-        if ((packet) != NULL && (first_time) != 0) {                                                                   \
-            (packet)->flags |= (mask);                                                                                 \
-            for (i = 0; i < (count); i++) {                                                                            \
-                if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                      \
-                    (packet)->flags &= ~(mask);                                                                        \
-                }                                                                                                      \
+        if ((packet) == NULL || (first_time) == 0)                                                                     \
+            return 1;                                                                                                  \
+        (packet)->flags |= (mask);                                                                                     \
+        for (i = 0; i < (count); i++) {                                                                                \
+            if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                          \
+                (packet)->flags &= ~(mask);                                                                            \
             }                                                                                                          \
         }                                                                                                              \
     } while (0)
@@ -3612,7 +3613,7 @@ i32 __cdecl Action_SetFullPathSearch(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x8u, 0, 1);
+    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x80000u, 0, 1);
     return 1;
 }
 
@@ -3792,10 +3793,17 @@ i32 __cdecl Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
 
 i32 __cdecl Action_NoShadows(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                              i32 count, i32 first_time, f32 delta_time) {
+    i32 i;
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1f8, 0x2000u, 1, 0);
+    if (packet == NULL || first_time == 0 || packet->owner == NULL)
+        return 1;
+    packet->owner->flags_1f8 |= 0x2000u;
+    for (i = 0; i < count; i++) {
+        if (NuStrICmp(params[i], AIScriptFalse) == 0)
+            packet->owner->flags_1f8 &= ~0x2000u;
+    }
     return 1;
 }
 
