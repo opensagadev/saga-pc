@@ -581,6 +581,8 @@ def apply_plan(plan, android=None, write=True):
         for name in sorted(need):
             item = order[position[name]]
             decl = prototype(item)
+            if "::" in strip_comments(decl):
+                continue  # member functions are declared by their class
             if decl not in [d for d, _ in forward]:
                 forward.append((decl, wrap_c(item, target_cxx)))
         early_users = []
@@ -596,6 +598,8 @@ def apply_plan(plan, android=None, write=True):
                 decl = prototype(item)
                 if decl not in [d for d, _ in forward]:
                     forward.append((decl, item.c_block or (wrap_c(item, target_cxx) and not item.source.cxx)))
+    # Member functions are declared by their class; redeclaring them is an error.
+    forward = [(d, c) for d, c in forward if "::" not in strip_comments(d).split("(")[0]]
     # C code called functions without prototypes (implicit int declarations);
     # C++ needs them, so prototypes are made from the definitions elsewhere.
     if target_cxx:
