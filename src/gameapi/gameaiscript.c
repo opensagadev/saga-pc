@@ -2337,7 +2337,7 @@ void *__cdecl Condition_PlayerInSockInitPc(AISYS_PC *system, char *name, AISCRIP
 
 f32 __cdecl Condition_PlayerInSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                      void *argument) {
-    if (argument != NULL && WORLD->sock_sys != NULL && argument == &WORLD->sock_sys->socks[(i8)player->sock_index])
+    if (argument != NULL && WORLD->sock_sys != NULL && &WORLD->sock_sys->socks[(i8)player->sock_index] == argument)
         return 1.0f;
     return 0.0f;
 }

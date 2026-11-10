@@ -1,5 +1,6 @@
 #include "saga.h"
 extern void *__cdecl NuFilePakLoad(char *, VARIPTR *, VARIPTR, i32);
+extern i32 configureallcharacters_perm;
 typedef struct CHARCONFIG_PC {
     CHARACTERDATA_PC *character;
     PLAYERCHARACTERCONFIG_PC *runtime;
@@ -1108,7 +1109,7 @@ static void CC_is_a_boy(NUFPAR_PC *parser) {
 static void CC_icon(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) != 0) {
         charconfig.character->icon_model = (i16)(LevelObject_FindIndexFromName(parser->word_buffer_ptr));
-        if (charconfig.character->icon_model == -1 && (charconfig.flags & 0x40) != 0) {
+        if (charconfig.character->icon_model == -1 && configureallcharacters_perm != 0) {
             if (LevelObject_AddExtra(parser->word_buffer_ptr, 3) != 0) {
                 charconfig.character->icon_model = (i16)(LevelObject_FindIndexFromName(parser->word_buffer_ptr));
                 NuStrCat(parser->word_buffer_ptr, "1");

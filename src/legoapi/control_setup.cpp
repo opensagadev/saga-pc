@@ -347,7 +347,7 @@ extern "C" {
     }
 
     void __cdecl LoadPermProgressDraw(f32, f32, f32 fade) {
-        NuRndrRect2di(0, 0, 0x2800, 0xe20, ((i32)(fade * 255.0) << 24) | 0xffffff, FadeMtl);
+        NuRndrRect2di(0, 0, 0x2800, 0xe20, ((i32)(fade * 100.0) << 24) | 0xffffff, FadeMtl);
     }
 }
 

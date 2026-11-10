@@ -114,7 +114,7 @@ STATIC_ASSERT(offsetof(PART_RELEASE_PUSH_PC, push_timer) == 0xdc4);
 void __cdecl ReleasePush(GAMEOBJECT *object) {
     i32 context = object->character_context;
     if ((((PUSH_CONTEXT_INFO_PC *)CInfo)[context].flags & 0x2000) != 0) {
-        if (LEGOCONTEXT_PUSHOBSTACLE != -1 && LEGOCONTEXT_PUSHOBSTACLE == context)
+        if (LEGOCONTEXT_PUSHOBSTACLE != -1 && context == LEGOCONTEXT_PUSHOBSTACLE)
             GameCam_Blend(NULL, 0.5f, 0.0f, 1);
         ((PART_RELEASE_PUSH_PC *)object)->push_timer = 0.0f;
         object->character_context = -1;

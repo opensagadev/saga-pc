@@ -338,7 +338,7 @@ extern "C" {
     }
 
     void __cdecl buildBitCountTable(void) {
-        u32 value;
+        i32 value;
         for (value = 0; value < 256; ++value) {
             u32 bit;
             NuAnimDataBitCount[value] = 0;
@@ -7321,7 +7321,7 @@ extern "C" {
 
     i32 __cdecl NuTimeBarSlotLastValue(i32 set, i32 slot) {
         u32 elapsed = (u32)NuTimeBarSlotLastValueMicroseconds(set, slot);
-        f32 frames = (f32)((f64)elapsed * NuTime_RefreshRate / NuTime_MicroScale);
+        f32 frames = (f32)elapsed * NuTime_RefreshRate / NuTime_MicroScale;
         return (i32)((f64)frames * NuTimeBarScanlinesPerFrame);
     }
 
