@@ -253,9 +253,10 @@ static char *__cdecl Tube_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? ((TUBE_CALLBACKS_PC *)gizmo->object)->name : NULL;
 }
 static i32 __cdecl Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    TUBE_CALLBACKS_PC *tube = (TUBE_CALLBACKS_PC *)gizmo->object;
     (void)output;
     (void)mode;
-    return ((TUBE_CALLBACKS_PC *)gizmo->object)->bits.visible && ((TUBE_CALLBACKS_PC *)gizmo->object)->bits.active;
+    return tube->bits.visible && tube->bits.active;
 }
 static const char *__cdecl Tube_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;

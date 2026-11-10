@@ -619,11 +619,11 @@ char *__cdecl GizPanel_GetGizmoName(void *input) {
 
 i32 __cdecl GizPanel_GetOutput(void *input, i32 output, i32 mode) {
     GIZMO_PC *gizmo = (GIZMO_PC *)input;
-    u32 flags = ((PANEL_MOVEMENT_PC *)gizmo->object)->flags;
+    PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)gizmo->object;
     (void)output;
     (void)mode;
-    if ((flags & 8) != 0 && (flags & 4) != 0)
-        return (flags >> 1) & 1;
+    if ((panel->flags & 8) != 0 && (panel->flags & 4) != 0)
+        return (panel->flags >> 1) & 1;
     return 0;
 }
 

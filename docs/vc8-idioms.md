@@ -405,6 +405,50 @@ A switch case that returns (`case 0: return;`) where the others break gives
 the `sub eax, 0; je` step of I30 even without other code in the case
 (`EdFileFillBuffer`).
 
+### I35: empty hooks defined in the caller's unit lose their calls
+
+```
+retail                                   ours (hook defined in the same file)
+  test eax, eax                            test eax, eax
+  jge  .ok                                 ; test and call removed
+  push eax
+  call PCSoundFailure
+```
+
+VC8 sees an empty function defined anywhere in the same translation unit
+(before or after the caller, C and C++ alike) and drops calls to it, often
+together with the test that guarded the call. Retail keeps the calls, so the
+hook lived in another unit: move the definition to the file of the unit
+retail placed it in (the unit's first or last function in address order).
+Examples: `PCSoundFailure` (to `nusound.c`), `MoviesListNoOpPc` (to
+`movies.cpp`), `FileDirectoryErrorPc` (next to `bgProcDataOversize` in
+`nuvideo.c`), `SaveCreateDirectoryPc` (to `nufile_pc.c`). A C++ varargs hook
+(`PCSpecialEmptyHandler_candidate(...)`) only loses argument-less calls that
+come before its definition; defining it after the last such caller kept
+`NuSpecialGetFirst`'s call and `NuSpecialList`'s register use (retail knew
+the hook preserves `eax`/`ecx`/`edx`, so it lives in the same unit).
+
+### I36: a local object pointer instead of repeated casts
+
+`return ((TUBE *)gizmo->object)->bits.visible && ((TUBE *)gizmo->object)->bits.active;`
+loads the object into a fresh register (`mov ecx, [eax]`); with
+`TUBE *tube = (TUBE *)gizmo->object;` VC8 reuses it (`mov eax, [eax]`). The
+same holds when the source copies a field into a local first
+(`u32 flags = panel->flags;`). Examples: `Tube_GetOutput`,
+`GizPanel_GetOutput`, `Plug_GetOutput`.
+
+### I37: return width
+
+`xor eax, eax`/`mov eax, 1` in the callee with `test al, al` in a caller of
+the same unit is a `bool` return in C++ (`MenuCanChangeShadowsPc`); `xor al, al`
+where retail has `xor eax, eax` and no caller narrows the value is an `int`
+return (`HasAnisoFlip`, `HasPhongLighting`, which also changes the mangled
+name). A `char` return of a `u8` field needs `if`/`return` rather than a
+ternary, or the ternary promotes and gives `movzx` (`NuKeyToAscii`). Float
+pushes of `fldz; fst [esp+4]; fstp [esp]` mean both arguments are `f32`:
+`NuSound3AddRumble`'s fourth parameter was `f32`, which made the seven rumble
+helpers exact.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
