@@ -46,8 +46,8 @@ extern "C" void __cdecl HatMachines_InitTerrain(WORLDINFO *world) {
     if (((HATMACHINE_WORLD_PC *)world)->hat_machine_sys != NULL) {
         for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count; ++index) {
             HATMACHINE_PC *machine = &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index];
-            i16 platform = NewPlatPickupInst(machine, 2);
-            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index].platform_id = platform;
+            ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index].platform_id =
+                NewPlatPickupInst(machine, 2);
             PlatInstRotate(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index].platform_id, 1);
         }
     }

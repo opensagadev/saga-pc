@@ -95,10 +95,10 @@ i32 __cdecl SecurityDoors_Load(WORLDINFO *world, void *unused) {
 void __cdecl SecurityDoors_InitTerrain(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < world->security_door_count; ++index) {
-        i16 platform = NewPlatPickupInst(&((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].leaf_matrix[0], 5);
-        ((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].platform_id[0] = platform;
-        platform = NewPlatPickupInst(&((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].leaf_matrix[1], 6);
-        ((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].platform_id[1] = platform;
+        ((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].platform_id[0] =
+            NewPlatPickupInst(&((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].leaf_matrix[0], 5);
+        ((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].platform_id[1] =
+            NewPlatPickupInst(&((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].leaf_matrix[1], 6);
     }
 }
 

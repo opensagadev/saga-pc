@@ -254,8 +254,8 @@ void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_P
 void __cdecl Attractos_InitTerrain(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < world->attracto_count; ++index) {
-        i16 platform = NewPlatPickupInst(&((ATTRACTO_RECORD_PC *)world->attractos)[index].transform, 4);
-        ((ATTRACTO_RECORD_PC *)world->attractos)[index].platform_id = platform;
+        ((ATTRACTO_RECORD_PC *)world->attractos)[index].platform_id =
+            NewPlatPickupInst(&((ATTRACTO_RECORD_PC *)world->attractos)[index].transform, 4);
     }
 }
 void *__cdecl Attractos_ReserveBufferSpace(WORLDINFO *world) {

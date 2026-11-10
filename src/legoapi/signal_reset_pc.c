@@ -166,8 +166,7 @@ void __cdecl Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRES
 void __cdecl Signals_InitTerrain(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < world->signal_count; ++index) {
-        i16 platform_id = NewPlatPickupInst(&world->signals[index].matrix, 2);
-        world->signals[index].platform_id = platform_id;
+        world->signals[index].platform_id = NewPlatPickupInst(&world->signals[index].matrix, 2);
     }
 }
 

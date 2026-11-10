@@ -55,8 +55,8 @@ void __cdecl Levers_InitTerrain(WORLDINFO *world) {
     if (((LEVER_WORLD_PC *)world)->levers != NULL) {
         i32 i;
         for (i = 0; i < ((LEVER_WORLD_PC *)world)->lever_count; ++i) {
-            i16 platform = NewPlatPickupInst(&((LEVER_WORLD_PC *)world)->levers[i], 3);
-            ((LEVER_WORLD_PC *)world)->levers[i].platform_id = platform;
+            ((LEVER_WORLD_PC *)world)->levers[i].platform_id =
+                NewPlatPickupInst(&((LEVER_WORLD_PC *)world)->levers[i], 3);
             PlatInstRotate(((LEVER_WORLD_PC *)world)->levers[i].platform_id, 1);
         }
     }
