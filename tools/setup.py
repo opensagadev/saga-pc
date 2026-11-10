@@ -108,12 +108,40 @@ def install_objdiff():
     print(f'Installed objdiff-cli {pin["version"]} in {dest}')
 
 
+def install_dxsdk():
+    """Fetch the pinned DirectX SDK libraries that the original links statically."""
+    pin = load_json(ROOT / "config/tools.json").get("dxsdk")
+    if not pin:
+        return
+    files = pin["files"]
+    if any(name in (".", "..") or Path(name).name != name or "\\" in name or ":" in name for name in files):
+        raise ValueError("DirectX SDK library must be a plain file name")
+    dest = ROOT / "build/tools/dxsdk/Lib/x86"
+    checksums = {name: item["sha256"] for name, item in files.items()}
+    if not changed_files(dest, checksums):
+        print(f'{pin["name"]}: verified, already installed')
+        return
+    dest.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="dxsdk-", dir=dest.parent) as temp:
+        staged = {}
+        for name in changed_files(dest, checksums):
+            path = Path(temp) / name
+            download(files[name]["url"], path)
+            if sha256(path) != files[name]["sha256"]:
+                raise ValueError(f"DirectX SDK library SHA-256 mismatch: {name}")
+            staged[name] = path
+        # Replace only after every changed library verified.
+        for name, path in staged.items():
+            path.replace(dest / name)
+    print(f'Installed {pin["name"]} in {dest}')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path,
                         help="Use an already downloaded pinned compiler ZIP")
     parser.add_argument("--compiler-only", action="store_true",
-                        help="Skip objdiff-cli for compilation-only local work")
+                        help="Skip objdiff-cli and the DirectX SDK libraries for compilation-only local work")
     args = parser.parse_args()
     if sys.version_info < (3, 11):
         parser.error("Python 3.11 or newer is required")
@@ -123,6 +151,7 @@ def main():
         install_compiler(args.archive)
         if not args.compiler_only:
             install_objdiff()
+            install_dxsdk()
     except (OSError, ValueError, KeyError, zipfile.BadZipFile, urllib.error.URLError) as error:
         raise SystemExit(f"Setup failed: {error}") from error
 

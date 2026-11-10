@@ -3,5 +3,44 @@
     "version": "3.8.1",
     "url": "https://github.com/encounter/objdiff/releases/download/v3.8.1/objdiff-cli-linux-x86_64",
     "sha256": "c8290281e82114bcc1a06ff73061110d3902a177822e750337de2537188e358f"
+  },
+  "dxsdk": {
+    "name": "DirectX SDK (August 2007) x86 libraries",
+    "release": "August 2007",
+    "source": "https://github.com/NovaRain/DXSDK_Collection (unmodified library files of the August 2007 release)",
+    "release_installer": {
+      "file": "dxsdk_aug2007.exe",
+      "sha1": "c812c18e2972bdb1d9cbb544be9ced9370a4656f"
+    },
+    "files": {
+      "DxErr9.lib": {
+        "url": "https://raw.githubusercontent.com/NovaRain/DXSDK_Collection/61827822ad945fac5acb3123ab00c378654bfcd7/DXSDK_Aug2007/Lib/x86/DxErr9.lib",
+        "sha256": "fd641d5a9430244bfc1538fa0f9883404880f26ecb14867f61a4b4d858ddcad8"
+      },
+      "dinput8.lib": {
+        "url": "https://raw.githubusercontent.com/NovaRain/DXSDK_Collection/61827822ad945fac5acb3123ab00c378654bfcd7/DXSDK_Aug2007/Lib/x86/dinput8.lib",
+        "sha256": "07ddfe33d0c254ce17b56a996b81d29b52e89463dfad9c8b05c53bcc2abd7385"
+      },
+      "dxguid.lib": {
+        "url": "https://raw.githubusercontent.com/NovaRain/DXSDK_Collection/61827822ad945fac5acb3123ab00c378654bfcd7/DXSDK_Aug2007/Lib/x86/dxguid.lib",
+        "sha256": "12aefc222bfc243bdea6ce21035c5bf83fcbc4e7efd7acc9c708ff96100be46d"
+      },
+      "d3dx9.lib": {
+        "url": "https://raw.githubusercontent.com/NovaRain/DXSDK_Collection/61827822ad945fac5acb3123ab00c378654bfcd7/DXSDK_Aug2007/Lib/x86/d3dx9.lib",
+        "sha256": "d656e690f07fdf00a4e912f1a8a1587363703d180337b44f2cf00ec8bd1cbed5"
+      },
+      "d3d9.lib": {
+        "url": "https://raw.githubusercontent.com/NovaRain/DXSDK_Collection/61827822ad945fac5acb3123ab00c378654bfcd7/DXSDK_Aug2007/Lib/x86/d3d9.lib",
+        "sha256": "d56bc70d6e8ae71594262434a3c1dee2c6dfacbfea11bc43568b8ac4e1631fc1"
+      },
+      "dsound.lib": {
+        "url": "https://raw.githubusercontent.com/NovaRain/DXSDK_Collection/61827822ad945fac5acb3123ab00c378654bfcd7/DXSDK_Aug2007/Lib/x86/dsound.lib",
+        "sha256": "336756940ac86cb2819f41196cd144b14ea68929617dcb4a558fa760790daba0"
+      },
+      "XInput.lib": {
+        "url": "https://raw.githubusercontent.com/NovaRain/DXSDK_Collection/61827822ad945fac5acb3123ab00c378654bfcd7/DXSDK_Aug2007/Lib/x86/XInput.lib",
+        "sha256": "cd754f032fb3fd6e2afe8598c9db7b42978f32444b0e02b89733944712be850d"
+      }
+    }
   }
 }

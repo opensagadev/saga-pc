@@ -17,7 +17,7 @@ sudo apt-get install --no-install-recommends \
     ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18
 python3 -m pip install capstone==5.0.9  # required by discovery tooling and tests
 python3 -m pip install libclang        # only for tools/permute.py
-make setup                             # pinned MSVC 2005 + objdiff-cli into build/tools/
+make setup                             # pinned MSVC 2005, objdiff-cli and DirectX SDK libs into build/tools/
 make check
 make -j"$(nproc)" build check-objects
 ```
@@ -381,6 +381,31 @@ relocation targets from the retail bytes, and keeps only functions that then
 compare byte-exact. It adds them and their references to `config/symbols.csv`
 and records the members in `config/library-objects.json`; `match.py` compares
 those members like compiled sources. Rerun it after mapping changes.
+
+### DirectX SDK (August 2007)
+
+The original also links code and data from the DirectX SDK statically:
+`dxerr9.lib` (`DXGetErrorString9A/W`, `DXGetErrorDescription9A/W`, `DXTraceA/W` and
+their strsafe workers, 0x71581c-0x73efb4) and the DirectInput data formats of
+`dinput8.lib`. The release is the **August 2007** SDK:
+
+- it is the only release whose `d3dx9.lib` imports `d3dx9_35.dll`, the D3DX DLL in
+  the import table;
+- the Rich header counts are consistent with its libraries: `Implib800` 50727 x4 are the
+  import descriptors of its `d3dx9.lib` and `d3d9.lib` (built with VC8), `Implib710`
+  4035 x23 are the 2003 SP1 Platform SDK libraries of VC8 plus this SDK's `dinput8.lib`,
+  `dsound.lib` and `XInput.lib`, `Utc1310_C` 4035 x4 are its `dilib2/4/5.obj` and the
+  Platform SDK `shguid.obj`, `Utc1310_CPP` 4035 x2 are its `dxerr9.obj` and `dxguid.obj` (its GUIDs such as
+  `IID_IDirectInput8A` and `GUID_SysKeyboard` are in `.rdata` at 0x784xxx);
+- all 18 functions of its `dxerr9.obj` relocate to the retail bytes (169,880 bytes).
+
+`make setup` fetches the unmodified x86 libraries of that release (from a public
+mirror pinned by commit, since Microsoft no longer hosts `dxsdk_aug2007.exe`) into
+`build/tools/dxsdk/Lib/x86` and verifies each SHA-256 pinned in
+`config/tools.json`. Neighbouring releases (June and November 2007) were not
+available for comparison. `tools/libmatch.py` scans these archives together with
+the VC8 runtime; their members appear as `dxsdk/<archive>` in
+`config/library-objects.json`. Never commit SDK files.
 
 ## Mapping with call-site alignment
 

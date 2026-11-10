@@ -222,13 +222,49 @@ class SetupTests(unittest.TestCase):
         download.assert_not_called()
         self.assertEqual(self.objdiff.stat().st_mode & 0o777, 0o755)
 
+    def write_dxsdk_pin(self, files):
+        tools = json.loads((self.root / "config/tools.json").read_text())
+        tools["dxsdk"] = {"name": "Synthetic SDK", "files": {
+            name: {"url": "https://invalid.example/" + name, "sha256": digest(data)}
+            for name, data in files.items()}}
+        (self.root / "config/tools.json").write_text(json.dumps(tools))
+
+    def test_dxsdk_libraries_are_verified_and_warm_cache_needs_no_network(self):
+        files = {"DxErr9.lib": b"synthetic error library", "dinput8.lib": b"synthetic input library"}
+        self.write_dxsdk_pin(files)
+        with patch.object(setup, "download",
+                          side_effect=lambda url, dest: dest.write_bytes(files[url.rsplit("/", 1)[1]])):
+            setup.install_dxsdk()
+        dest = self.root / "build/tools/dxsdk/Lib/x86"
+        self.assertEqual({p.name: p.read_bytes() for p in dest.iterdir()}, files)
+        with patch.object(setup, "download") as download:
+            setup.install_dxsdk()
+        download.assert_not_called()
+
+    def test_bad_dxsdk_download_installs_nothing(self):
+        files = {"DxErr9.lib": b"good", "dinput8.lib": b"expected"}
+        self.write_dxsdk_pin(files)
+        def fetch(url, dest):
+            dest.write_bytes(b"tampered" if url.endswith("dinput8.lib") else files["DxErr9.lib"])
+        with patch.object(setup, "download", side_effect=fetch):
+            with self.assertRaisesRegex(ValueError, "DirectX SDK library SHA-256 mismatch: dinput8.lib"):
+                setup.install_dxsdk()
+        self.assertEqual(list((self.root / "build/tools/dxsdk/Lib/x86").iterdir()), [])
+
+    def test_dxsdk_library_names_cannot_escape_the_cache(self):
+        self.write_dxsdk_pin({"../escape.lib": b"x"})
+        with self.assertRaisesRegex(ValueError, "plain file name"):
+            setup.install_dxsdk()
+
     def test_compiler_only_skips_objdiff_installation(self):
         with patch("sys.argv", ["setup.py", "--compiler-only", "--archive", str(self.archive)]), \
                 patch.object(setup.platform, "system", return_value="Linux"), \
                 patch.object(setup.platform, "machine", return_value="x86_64"), \
-                patch.object(setup, "install_objdiff") as objdiff:
+                patch.object(setup, "install_objdiff") as objdiff, \
+                patch.object(setup, "install_dxsdk") as dxsdk:
             setup.main()
         objdiff.assert_not_called()
+        dxsdk.assert_not_called()
         self.assertTrue(self.compiler.is_file())
 
 
