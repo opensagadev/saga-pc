@@ -3658,10 +3658,10 @@ void __cdecl UpdateGameObjects(WORLDINFO *world) {
         GameObjectToCameraCode(object);
     }
 
-    if ((i8)MainFrameCounters.third_frame == -1)
+    if (MainFrameCounters.third_frame == -1)
         lighting_start = 0;
     else
-        lighting_start = ((i8)MainFrameCounters.third_frame * HIGHGAMEOBJECT) / 3;
+        lighting_start = (MainFrameCounters.third_frame * HIGHGAMEOBJECT) / 3;
     dagobah_luke = FindGameObject(id_LUKESKYWALKERDAGOBAH, 0, 1, 1, 0);
     for (i = 0; i < HIGHGAMEOBJECT; ++i) {
         object = &Obj[i];

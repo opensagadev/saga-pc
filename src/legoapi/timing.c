@@ -24,7 +24,7 @@ void ResetFrameCounters(void) {
 
 void UpdateFrameCounters(void) {
     if (do_multiframe_update != 0) {
-        if ((i8)MainFrameCounters.warmup_frame > 0) {
+        if (MainFrameCounters.warmup_frame > 0) {
             MainFrameCounters.every_frame = 1;
             MainFrameCounters.alternate_frame = (MainFrameCounters.alternate_frame + 1) & 1;
             if (++MainFrameCounters.third_frame == 3) {

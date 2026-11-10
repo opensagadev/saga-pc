@@ -5513,11 +5513,11 @@ STATIC_ASSERT(sizeof(DAT_HANDLES_PC) == 0x1c);
 STATIC_ASSERT(offsetof(DAT_HANDLES_PC, episode) == 4);
 
 typedef struct main_frame_counters_s {
-    u8 warmup_frame;
-    u8 every_frame;
-    u8 alternate_frame;
-    u8 third_frame;
-    u8 fourth_frame;
+    i8 warmup_frame;
+    i8 every_frame;
+    i8 alternate_frame;
+    i8 third_frame;
+    i8 fourth_frame;
 } MAINFRAMECOUNTERS;
 STATIC_ASSERT(sizeof(MAINFRAMECOUNTERS) == 5);
 
