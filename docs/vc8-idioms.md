@@ -119,7 +119,11 @@ retail                                   ours
 
 `--` on a `u16` field is emitted with a 16-bit immediate; on an `i16` field
 with a sign-extended imm8. The original field was signed. Example:
-`NuLstFree` (`NULSTHDR.used_count` u16 -> i16). Sample: 1.
+`NuLstFree` (`NULSTHDR.used_count` u16 -> i16). The same holds for byte
+stores of `-1`: retail `or al, -1` (or `mov byte [m], 0xff` through a signed
+register) means a signed `char` field; `MAINFRAMECOUNTERS` u8 -> i8 closed
+`ResetFrameCounters` and `UpdateFrameCounters`. A signed `i32` local instead
+of `u32` closed `CRC16::CRC16`.
 
 ### I12: natural `for` loop with `&array[index]` instead of a hand-rotated do-while
 
@@ -231,6 +235,120 @@ retail                                   ours
 `u32 n = K; if (s) n += strlen(s);` vs the original
 `if (s) n = strlen(s) + K; else n = K;`. Example: `eduiMenuCreate`. Sample: 1.
 
+### I22: one conditional jump with the opposite sense
+
+```
+retail                                   ours
+  test eax, eax                            test eax, eax
+  je   .else                               jne  .then
+```
+
+VC8 lays out the `if` body as the fall-through. An inverted jump with the
+same blocks swapped means the original wrote the branches the other way round
+(`if (!c) B else A`). Signature only (`idiomscan.py`); no sample closed yet.
+
+### I23: comparison spelling (`> 0` vs `!= 0`, `<= N` vs `< N + 1`)
+
+```
+retail                                   ours
+  cmp  byte ptr [edx+0xf9], cl  ; cl = 0   cmp  byte ptr [edx+0xf9], cl
+  jbe  .skip                               je   .skip
+```
+
+On an unsigned operand `x > 0` and `x != 0` are the same test, but VC8 keeps
+the spelling: `jbe` for `> 0`, `je` for `!= 0`. Likewise `cmp x, 0x10; ja`
+is `x > 16`, `cmp x, 0x11; jae` is `x >= 17`. Example:
+`Ledges_ReserveBufferSpace` (`level->max_ledges > 0`). Mechanical rule in
+`tools/idiomfix.py I23`.
+
+### I24: x87 comparison flags (`test ah, 0x41` vs `test ah, 5`)
+
+The flag mask after `fnstsw ax` encodes which of `<`, `<=`, `>`, `>=` the
+source wrote and which operand was loaded first. Signature only.
+
+### I25: float operand order follows the source
+
+```
+retail                                   ours
+  fld   dword ptr [esi+0x1dc]              fld   dword ptr [esi+0x88]
+  fadd  dword ptr [esi+0x88]               fadd  dword ptr [esi+0x1dc]
+```
+
+Unlike integer code, VC8 loads the left operand of a float `+`/`*` first and
+uses the right one as the memory operand. Swap the operands (`b + a`); IEEE
+addition and multiplication are commutative, so behaviour does not change.
+Mechanical rule in `tools/idiomfix.py I25`.
+
+### I26: field width (byte vs dword access, bitfield store)
+
+Retail `xor r8, [m]; and r8, 1; xor [m], r8` is a 1-bit bitfield store; a
+`mov byte`/`or byte [m+1], 4` where we use `or dword [m], 0x400` means the
+original field was a byte or a bitfield of a smaller unit. Signature only.
+
+### I27: store the result inside the search loop before `break`
+
+```
+retail                                   ours
+  je   .found                              je   .found
+  ...                                      ...
+.found: mov [esi+0x18], cl                 cmp  ecx, 6
+  cmp  ecx, 6                              jne  .else
+                                           ...
+                                         .else: mov [esi+0x18], cl
+```
+
+`for (...) { if (match) break; } if (i == N) {...} else x = i;` vs the
+original `for (...) { if (match) { x = i; break; } } if (i == N) {...}`.
+Example: `LedgeInitRecordPc` (96.85 -> exact).
+
+### I28: one loop clearing two arrays instead of two `memset`s
+
+Two small `memset`s expand to two runs of `mov [g+4k], eax`; retail interleaves
+the stores of both arrays, which is one unrolled loop
+`for (i = 0; i < 8; ++i) { a[i] = 0; b[i] = 0; }`. Example: `ParticleReset`
+(99.48 -> exact).
+
+### I29: two guards instead of one `||` guard
+
+```
+retail                                   ours
+  test ecx, ecx                            test ecx, ecx
+  jne  .next                               je   .ret0
+  xor  eax, eax                            cmp  [ecx], 0
+  ret  4                                   je   .ret0
+.next: cmp [ecx], 0                        ...
+  je   .ret0_above                       .ret0: xor eax, eax; ret 4
+```
+
+`if (a == NULL || a->x == 0) return 0;` jumps both tests to one shared
+return at the end. Two separate guards (`if (a == NULL) return 0;
+if (a->x == 0) return 0;`) keep the first return inline and send the second
+test back to it. The same holds for a chain of `return 1` tests
+(`CoinsGoToMainTotal`), and the other way round: retail sometimes has one
+long `||` where we wrote two `if`s (`Teleport_UpdateHints`,
+`ShinyMetal_UpdateHint`). Examples: `SoundQueue::SetStreamFlags`,
+`SoundQueue::SetStreamFile`, `Teleport_ActivateRev`, `createGizRandom`.
+
+### I30: `switch` instead of an if chain
+
+Retail `sub eax, 0; je; sub eax, 1; je` is a small `switch` lowered as a
+decrement chain; an if chain compiles to `test`/`cmp` pairs. A jump table over
+`0..3` whose entry 0 is the `default` block means the source listed
+`case 0:` with its own (identical) statements as well as `default:`; a
+`case 0: default:` label pair or no `case 0` gives a decrement chain.
+Examples: `GizSpecial_GetOutputName`, `GizMiniCut_GetOutputName`,
+`PcInputAspectRatioPc`.
+
+### I31: parentheses steer x87 operand order
+
+VC8 reorders the operands of an unparenthesised float `+`/`-`/`*` term
+(Sethi-Ullman style), but evaluates a parenthesised sub-expression as written.
+`det = (a * A) - (b * B) + (c * C);` and `det = a * A - b * B + c * C;` give
+different load orders. `NuMtxInvRSSH` became exact only with the
+parenthesised determinant. Redundant parentheses around a cast
+(`((f64)x) * ((f64)y)`) also move code, which suggests macros in the original;
+those were not kept because nothing in the source would explain them.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
@@ -260,7 +378,8 @@ as recorded differences.
   `DrawShopPrompts`, `LoadAnimFromPAK`, `Ledges_StoreProgress`,
   `RecomputeHighGameObject`.
 - U9 operand order of a commutative `fadd`/`fmul` not controlled by source
-  order. `EduiExpanderOverButtonPc`, `NuMtxOrth`, `MiniTrooperMovePc`.
+  order. `EduiExpanderOverButtonPc`, `MiniTrooperMovePc` (`NuMtxOrth`, once
+  listed here, closed with I31 parentheses).
 - U10 argument evaluation order. `GizObstacle_PlayForwards`.
 - U11 scheduling of a global store. `InitStillRender`.
 - U12 a call to an empty function in another unit kept although the caller
@@ -273,35 +392,111 @@ as recorded differences.
 - U15 placement of a tail-merged `return 5` block shared by two switch cases;
   no case order or switch/if form reproduced retail's block order.
   `TextureAnimationReadComparisonPrivatePc`.
+- U16 x87 stack position of a dead value: retail pops with `fstp st(0)`, ours
+  with `fstp st(1)` (or the reverse). `LevelComplete_LSW_Update`.
+- U17 a loop over a known-range `u32` compiled to a signed compare (`jl`) in
+  ours and `jb` in retail; signedness of the counter and the bound did not
+  move it. `SfxBuildCRCTable`.
+- U18 the last `if (c) return 1; return 0;` pair: ours is if-converted to
+  `neg/sbb/neg` (or `sbb/and`), retail branches to an earlier shared
+  `return 1`. Separate guards, `||`, `!=`/`==` spellings and a result variable
+  did not change it. `Text_IsOtherPlatformWord`, `CanWearHatsInFreePlay`,
+  `PcInputSetDeadzonePc`.
+- U19 the `else` block of a float `||` test placed before the `then` block
+  (or the reverse); every if/else/return arrangement compiled the same.
+  `MenuUpdateLoading`, `MenuUpdateSaving`, `MenuUpdateExtras`.
+
+### U3 investigation (register choice)
+
+Micro-tests compiled with the project flags (scratch C, `/O2 /Gy /GS`) and the
+real `IconScenes_Dump` (97.50, an `ecx`/`eax` swap) were used to find which
+source changes move VC8's register assignment.
+
+No effect: declaration order, block scope of a local, a dead initialiser,
+operand order of a commutative integer operator, `for`/`while`/`do` loop form,
+reusing one variable across disjoint live ranges, signedness, no-op casts.
+
+Effect: using a parameter directly vs copying it into a local (even a cast
+copy such as `S *s = (S *)v;`); the order of uses inside a loop (but that also
+reorders instructions); equivalent statement pairs such as `G[i] = 0; s = G;`
+vs `s = G; s[i] = 0;`, which changed the interference graph in a micro-test.
+
+On `IconScenes_Dump` the best of these rewrites scored 84.50, so the function
+stays at 97.50. Conclusion: U3 is reachable only when the register difference
+comes from a copied parameter or from statement order; a pure colouring swap
+with identical code has no natural source lever.
 
 ## Repository-wide estimates
 
-Signature counts over every `different` function with one definition
-(`build/tools-local/idiomscan.py`: retail vs relocated rebuilt bytes,
-disassembled with the diffclass machinery). A signature says the idiom *may* be
-present; it does not prove the cause.
+`tools/idiomscan.py` tags every differing function with the signatures above
+(retail vs relocated rebuilt bytes, split into spots by `whyline`) and writes
+the tags into `matching.json` as `idioms`. A tag says the idiom *may* be
+present; it does not prove the cause. `--list` prints the work queue by tier:
+`I` (only idiom tags), `mixed`, `unexplained` (`?` spots left), `U` (only
+unexplained-pattern tags). `--summary` gives these counts.
 
-| signature | idiom | functions | bytes | structural, <= 3 hunks |
+Functions per tag after the mechanical passes and the manual sweep (one
+function can carry several tags):
+
+| tag | functions | | tag | functions |
+|---|---:|---|---|---:|
+| I4 | 2251 | | U3 | 2369 |
+| I8 | 515 | | U7 | 1454 |
+| I17 | 453 | | U8 | 352 |
+| C | 300 | | U9 | 251 |
+| I20 | 168 | | U16 | 158 |
+| I26 | 130 | | U1 | 59 |
+| I25 | 102 | | ? | 2654 |
+| I24 | 100 | | | |
+| I23 | 86 | | | |
+| I5 | 70 | | | |
+| I22 | 42 | | | |
+| I10 | 26 | | | |
+| I18 | 25 | | | |
+| I3 | 18 | | | |
+| I16 | 12 | | | |
+| I11 | 2 | | | |
+
+Near-exact functions (>= 90%) by tier: I 135, mixed 440, unexplained 368,
+U 197.
+
+### Mechanical passes
+
+`tools/idiomfix.py IDIOM` rewrites each candidate with libclang, rebuilds the
+unit and keeps a rewrite only when the function improves and no function in
+the unit gets worse. Its rules produce ordinary source; results that read
+unnaturally were dropped by hand before committing.
+
+| idiom | rule | candidates | kept | exact |
 |---|---|---:|---:|---:|
-| more `ret` on our side than retail | I17 | 171 | 83993 | 32 |
-| `sbb` on our side not in retail (branchless) | I20 | 69 | 85509 | 10 |
-| one-instruction `cmp` spot with memory operand moved | I3 | 53 | 58354 | 1 |
-| `or r, -1` vs retail `or r, r` | U8 | 16 | 7898 | 1 |
-| `fadd st(0), ...` present on one side only | I10 | 14 | 13802 | 2 |
-| `and dword [m], 0x7fffffff` in place | I16 | 12 | 10896 | 2 |
-| retail `rep movsd` missing on our side | I18 | 8 | 1072 | 3 |
-| `add word [m], 0xffff` vs retail `-1` | I11 | 2 | 3112 | 0 |
+| I3 | swap `==`/`!=` operands | 53 | 41 functions | 2 |
+| I17 | guard <-> wrapped body, swap guard and final return | 593 | 99 | 28 |
+| I17 (second pass) | same, after I23/I25 | | 11 | 2 |
+| I20 | ternary/boolean return -> if/return | 177 | 1 | 0 |
+| I23 | `> 0` vs `!= 0`, `<= N` vs `< N + 1` | 159 | 79 | 28 |
+| I25 | commute float operands | 122 | 13 | 1 |
+| I31 | parenthesise float product terms | 68 | 21 | 7 |
 
-I17 and I20 need a control-flow rewrite of each function. They are recognised
-mechanically but not fixed mechanically. I3 was applied mechanically
-(`build/tools-local/fix_i3.py`): for each hit, the operands of `==`/`!=` on the
-source line behind the `cmp` spot are swapped one comparison at a time. A swap
-is kept only when the function improves and no function in the unit gets worse.
+I10, I16 and I18 were not run: each has fewer than 30 functions and the
+rewrites need type information the rule set does not model (a second
+variable for I16, a struct type for I18), so they were left to the manual
+sweep. I3 is the earlier pass described here before: for each hit the
+operands of `==`/`!=` on the source line behind the `cmp` spot are swapped one
+comparison at a time (two functions became exact: `CalculateIntersection`,
+`NuMusic::Voice::Load`).
 
-Result of the mechanical I3 pass: 53 candidates, 52 swaps kept in 41
-functions (the commit message for this pass says 37 and "26 more"; the right
-numbers are 41 and 30). Two became exact (`CalculateIntersection`
-99.84 -> exact, `NuMusic::Voice::Load` 99.09 -> exact). The rest improved by
-0.01 to 0.7 points, and no function got worse. Because an I3 spot is rarely the only
-difference, the pass mostly helps later work on these functions rather than
-closing them.
+### Manual sweep
+
+Short functions from the `I` and `unexplained` queues were fixed by hand,
+one unit at a time, about three tries each. What closed them, most often:
+statement and store order (I4), guard versus wrapped body (I17), separate
+guards versus one `||` (I29), small `switch`es (I30), field or local
+signedness (I11), and comparison operand order (I25). Several "unexplained"
+functions were port bugs (wrong field, missing term, a stub returning 0); see
+the commit bodies marked `Runtime-relevant`.
+
+Symbol extents: some functions scored low only because `config/symbols.csv`
+gave them the wrong size, checked against the retail bytes and the next
+symbol. Fourteen were corrected (for example `InitPartTable` 49 -> 50 bytes,
+which then matched exactly, and `Levels_FixUp`, which overlapped its
+neighbour).
