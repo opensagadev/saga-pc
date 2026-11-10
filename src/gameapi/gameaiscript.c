@@ -7913,7 +7913,7 @@ i32 __cdecl Action_GoToOriginalPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
         if (current_path == NULL) {
             return 0;
         }
-        if (sys->path_sys->active_path != current_path || packet->path_info.connection == NULL ||
+        if (current_path != sys->path_sys->active_path || packet->path_info.connection == NULL ||
             (original_path->flags & 2) == 0) {
             return 0;
         }

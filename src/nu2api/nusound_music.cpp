@@ -1134,7 +1134,7 @@ NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {{"IDENT", xsIdent},
                                             {NULL, NULL}};
 
 i32 NuMusic::Voice::Load(Track *track, i32 subtrack) {
-    if (tracks[track_index] == track)
+    if (track == tracks[track_index])
         return 0;
     track_index = track->clazz == 8;
     NuSound3StopStereoStream(stream_index * 2);

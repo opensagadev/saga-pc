@@ -134,7 +134,7 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC
     filter.Initialize(desc, material, variant, flags);
     NuShaderObjectKeyGenerate3(&key, &filter, pixel_stage != 0);
     for (i32 i = 0; i < 400; ++i) {
-        if (slots[i].key == key) {
+        if (key == slots[i].key) {
             shader = &slots[i];
             if (shader != NULL) {
                 ++shader->ref_count;

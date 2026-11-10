@@ -577,16 +577,16 @@ void __cdecl eduiMenuDestroy(eduimenu_s *menu) {
     if (menu != NULL) {
         if (eduiInteractLocked != NULL && eduiInteractLocked->menu == menu)
             eduiInteractLocked = NULL;
-        if (processing_menu == menu)
+        if (menu == processing_menu)
             processing_menu = NULL;
         if (menu->parent != NULL) {
-            if (active_menu == menu)
+            if (menu == active_menu)
                 active_menu = menu->parent;
             menu->parent->child = NULL;
         }
-        if (default_active_menu == menu)
+        if (menu == default_active_menu)
             default_active_menu = NULL;
-        if (active_menu == menu)
+        if (menu == active_menu)
             active_menu = NULL;
         if (menu->child != NULL)
             menu->child->parent = NULL;
@@ -716,7 +716,7 @@ i32 __cdecl eduiMenuDetach(eduimenu_s *menu) {
     if (menu->parent != NULL) {
         if (menu->child != NULL)
             eduiMenuDetach(menu->child);
-        if (active_menu == menu)
+        if (menu == active_menu)
             active_menu = menu->parent;
         menu->parent->child = NULL;
         menu->parent = NULL;

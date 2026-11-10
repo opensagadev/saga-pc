@@ -772,7 +772,7 @@ static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 GAMEANIMOBJ *anim_object = obstacle->anim_set ? obstacle->anim_set->objects : NULL;
                 while (anim_object) {
                     i16 platform = ((GIZOBSTACLE_OBJECT_DATA_PC *)anim_object->object_data)->platform_id;
-                    if (platform != -1 && platform == object->supporting_platform_id)
+                    if (platform != -1 && object->supporting_platform_id == platform)
                         break;
                     anim_object = anim_object->next;
                 }
@@ -804,7 +804,7 @@ static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
     }
     state = obstacle->anim_set->state;
     if (state != 0 && state != 2 &&
-        !(WORLD->current_level == ObstacleReturnLevelPc && LevGizObst[0] == obstacle && state == 4))
+        !(WORLD->current_level == ObstacleReturnLevelPc && obstacle == LevGizObst[0] && state == 4))
         return;
     if (state == 2 && !obstacle->playback_state)
         return;
@@ -1077,7 +1077,7 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
             angle = far_angle;
         if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
             continue;
-        if (object && (void *)object->collision_target == gizmo) {
+        if (object && (void *)gizmo == object->collision_target) {
             previous = gizmo;
             previous_position = target;
         } else {

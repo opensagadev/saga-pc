@@ -1281,7 +1281,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
             object->target_velocity.x = object->movement_direction_x;
             object->target_velocity.z = object->movement_direction_z;
             object->movement_direction_x = object->movement_direction_z = 0.0f;
-        } else if (CarWashHack == object) {
+        } else if (object == CarWashHack) {
             object->target_velocity.x = carwash_delta.x * 3.0f;
             object->target_velocity.z = carwash_delta.z * 3.0f;
             seek_rate = 5.0f;

@@ -335,7 +335,7 @@ i32 __cdecl eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 
             i32 marker_height = ((height >> 1) << 3) + 16;
             if (edui_donotdraw == 0)
                 NuRndrRect2di(marker_x, marker_y, 80, marker_height, stage->colour, (NUMTL *)uimtls[0]);
-            if (gradient->selected_stage == stage) {
+            if (stage == gradient->selected_stage) {
                 if (edui_donotdraw == 0)
                     NuRndrLineRect2di(marker_x, marker_y, 80, marker_height, 0x80ffffff,
                                       (NUMTL *)uimtls[EduiSelectionMaterialPc]);

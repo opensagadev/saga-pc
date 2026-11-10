@@ -15,7 +15,7 @@ void __cdecl CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode)
     looping = WORLD->sock_sys->socks[socket_index].looping != 0;
     if (Player[0] == object)
         other = Player[1];
-    else if (Player[1] == object)
+    else if (object == Player[1])
         other = Player[0];
     else
         return;

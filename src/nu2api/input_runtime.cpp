@@ -1588,7 +1588,7 @@ void PC_INPUT_RUNTIME_PC::ExportConfigPc(i32 port, PC_INPUT_CONFIG_PC *config, i
 void PC_INPUT_RUNTIME_PC::PromoteConfigPc(PC_INPUT_CONFIG_PC *records, i32 count, PC_INPUT_CONFIG_PC *config) {
     i32 index = 0;
     for (; index < count; ++index)
-        if (records[index].product_id == config->product_id && records[index].key == config->key)
+        if (config->product_id == records[index].product_id && records[index].key == config->key)
             break;
     if (index == count)
         index = count - 1;

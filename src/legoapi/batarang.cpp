@@ -1304,7 +1304,7 @@ extern "C" {
             guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
             if (guide != NULL && (f64)distance <= (f64)0.2f &&
                 !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
-                if (owner->indy_guideline_state.guideline != guide) {
+                if (guide != owner->indy_guideline_state.guideline) {
                     owner->indy_guideline_state.endpoint = 0;
                     owner->indy_guideline_state.guideline = guide;
                 }
@@ -1355,7 +1355,7 @@ extern "C" {
             guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
             if (guide != NULL && (f64)distance <= (f64)0.2f &&
                 !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
-                if (owner->indy_guideline_state.guideline != guide) {
+                if (guide != owner->indy_guideline_state.guideline) {
                     owner->indy_guideline_state.endpoint = 1;
                     owner->indy_guideline_state.guideline = guide;
                 }

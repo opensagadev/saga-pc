@@ -798,7 +798,7 @@ GAMEOBJECT *__cdecl TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC 
             angle = near_distance > distance && directional != 0 ? near_angle
                                                                  : (mid_distance > distance ? mid_angle : far_angle);
             if (dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) {
-                if (object->collision_target == target) {
+                if (target == object->collision_target) {
                     previous = target;
                 } else {
                     range_squared = distance;

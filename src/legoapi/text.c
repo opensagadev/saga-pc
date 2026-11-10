@@ -1567,7 +1567,7 @@ void __cdecl MenuDrawViewTextStrings(MENU *menu) {
         if (!(y >= -1.25f && y < 1.25f))
             continue;
         if ((Text_StringBits[i / 32] & (1U << (i & 31))) != 0) {
-            if (menu->selected_item == i) {
+            if (i == menu->selected_item) {
                 if (menu_flash != 0) {
                     red = MENUFLASH0R;
                     green = MENUFLASH0G;
@@ -1589,7 +1589,7 @@ void __cdecl MenuDrawViewTextStrings(MENU *menu) {
             }
         } else {
             red = 255;
-            if (menu->selected_item == i) {
+            if (i == menu->selected_item) {
                 if (menu_flash != 0) {
                     green = 255;
                     blue = 255;

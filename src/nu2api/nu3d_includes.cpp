@@ -5782,7 +5782,7 @@ extern "C" {
 
     i32 __cdecl NuPortalClipTest(NUGSCN *scene, NUVEC *position, f32 radius, i16 room_id) {
         i32 i;
-        if (scene->max_portals == 0 || scene->camera_room == room_id)
+        if (scene->max_portals == 0 || room_id == scene->camera_room)
             return 1;
         for (i = 0; i < scene->num_portal_frusta; ++i) {
             NUPORTAL_FRUSTUM_PC *frustum = scene->portal_frusta[i];

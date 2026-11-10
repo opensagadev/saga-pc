@@ -4047,7 +4047,7 @@ i32 __cdecl AISysSetLevelPath(AISYS_PC *system, char *name) {
             }
         }
     }
-    if (path == NULL || system->path_sys->active_path == path) {
+    if (path == NULL || path == system->path_sys->active_path) {
         return 0;
     }
     system->path_sys->active_path = path;
@@ -5298,7 +5298,7 @@ f32 __cdecl AIPathNodeDistanceToPathNode(AIPATH_PC *path, i32 start_node, i32 de
             }
             return FLT_MAX;
         }
-        if (connection == previous_connection) {
+        if (previous_connection == connection) {
             break;
         }
         previous_connection = connection;
@@ -6094,8 +6094,8 @@ static u32 CalculateIntersection(AISYS_PC *system, AIPACKET_PC *packet, APIOBJEC
     u32 right;
     u32 left;
 
-    if (packet->intersection_connection == current_connection &&
-        packet->intersection_target_connection == target_connection) {
+    if (current_connection == packet->intersection_connection &&
+        target_connection == packet->intersection_target_connection) {
         return ((packet->flags & 0x00000020u) != 0) | ((packet->flags & 0x00000040u) != 0);
     }
     packet->flags &= ~(((0x20u | 0x40u)) << 0);
@@ -8075,7 +8075,7 @@ void __cdecl areaEditorDrawAreas(void) {
             if (area != aieditor->hovered_area)
                 colour = 0x800000ff;
         } else {
-            colour = area == aieditor->hovered_area ? 0xffffffff : 0;
+            colour = aieditor->hovered_area == area ? 0xffffffff : 0;
         }
         if ((area->flags & 1) != 0) {
             f32 radius = area->size.x < area->size.z ? area->size.x : area->size.z;
@@ -8165,7 +8165,7 @@ static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, 
     for (index = 0; index < 64; ++index) {
         if (set->locators[index] == NULL)
             break;
-        if (set->locators[index] == locator) {
+        if (locator == set->locators[index]) {
             AiEditorRemoveLocatorFromSetPc(set, locator);
             break;
         }
@@ -8998,7 +8998,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                 node->lower_height = override_height;
             first_index = node->index;
             if (path == aieditor->current_path) {
-                if (node == path->current_node) {
+                if (path->current_node == node) {
                     node_colour = 0xff0000ff;
                     segments = 32;
                 } else if (node == path->other_node) {
@@ -9019,10 +9019,10 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                 ((AI_PATH_DRAW_FLAGS_PC *)node->shared_node)->flags |= 1;
             }
             if (node->route_mask & active_route) {
-                if (path == aieditor->current_path && node == path->current_node) {
+                if (path == aieditor->current_path && path->current_node == node) {
                     pathEditorDrawNode(&node->position, node->radius * (f64)0.9f, node->lower_height + node->position.y,
                                        node->upper_height + node->position.y, 0xff0000ff, 0, 32, solid);
-                } else if (path == aieditor->current_path && node == path->other_node) {
+                } else if (path == aieditor->current_path && path->other_node == node) {
                     pathEditorDrawNode(&node->position, node->radius * (f64)0.9f, node->lower_height + node->position.y,
                                        node->upper_height + node->position.y, 0xff00ffff, 0, 32, solid);
                 } else {
@@ -9107,7 +9107,7 @@ void pathEditorDrawPaths(void) {
         }
         path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
         while (path != NULL) {
-            if (path != aieditor->current_path) {
+            if (aieditor->current_path != path) {
                 pathEditorDrawPath(path, path->draw_index);
             }
             path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link);
@@ -10693,7 +10693,7 @@ void __cdecl antinodeEditorDrawAntinodes(void) {
                     colour = NuSpecialExistsFn(&node->special) ? 0xffff0064 : 0xffff0000;
                 else
                     colour = NuSpecialExistsFn(&node->special) ? 0x80800064 : 0x80800000;
-            } else if (node == aieditor->nearest_antinode) {
+            } else if (aieditor->nearest_antinode == node) {
                 colour = 0xffffffff;
                 segments = 32;
             } else {
@@ -11780,7 +11780,7 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         i32 group;
         i32 colour = creature == aieditor->selected_creature
                          ? (creature == aieditor->nearest_creature ? 0xff0000ff : 0x800000ff)
-                         : (creature == aieditor->nearest_creature ? -1 : 0);
+                         : (aieditor->nearest_creature == creature ? -1 : 0);
         for (group = 0; group < creature->group_count; ++group, colour = 0) {
             NUVEC position;
             NURND_VERTEX3D_PC line[2];
@@ -14684,7 +14684,7 @@ void __cdecl locatorEditor_cbSetLocatorSet(eduimenu_s *menu, eduiitem_s *item, u
                     break;
                 set = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &set->link);
             }
-            if (set != NULL && set != aieditor->current_locator_set) {
+            if (set != NULL && aieditor->current_locator_set != set) {
                 aieditor->current_locator_set = set;
                 if (aieditor->current_locator_set != NULL) {
                     aieditor->current_locator = aieditor->current_locator_set->locators[0];
@@ -15652,7 +15652,7 @@ void __cdecl antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     if (display != NULL)
         NuVecXZDist(&display->position, &aieditor->camera_position, &displacement);
     nearest = aieditor->nearest_antinode;
-    if (nearest != NULL && nearest == aieditor->selected_antinode) {
+    if (nearest != NULL && aieditor->selected_antinode == nearest) {
         char *platform_name = NuSpecialGetName(&display->special);
         if (platform_name != NULL)
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 120, 16, AiAntinodeRenderPlatformPc, platform_name);

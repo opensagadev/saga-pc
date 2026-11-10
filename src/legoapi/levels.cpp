@@ -3544,10 +3544,10 @@ extern "C" {
         i32 index;
 
         if (area_progress == 0) {
-            if (VADER_ADATA != NULL && VADER_ADATA == WORLD->area) {
+            if (VADER_ADATA != NULL && WORLD->area == VADER_ADATA) {
                 return;
             }
-            if (BONUS_GUNSHIP_ADATA != NULL && BONUS_GUNSHIP_ADATA == WORLD->area &&
+            if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA &&
                 bonus_gunship_store_progress_flag == 0) {
                 return;
             }

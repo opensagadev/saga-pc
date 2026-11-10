@@ -2110,7 +2110,7 @@ extern "C" {
         GameFog_Reset();
         if (instNuGCutSceneIsFinished(stop_cut->instance) == 0)
             return;
-        if (NewLData == NULL || NewLData == WORLD->current_level || NewLData != HUB_LDATA) {
+        if (NewLData == NULL || WORLD->current_level == NewLData || NewLData != HUB_LDATA) {
             FADETYPE type = {FADE_TYPE_STILL_WIPE};
             FadeSys.SetFade(type, 0);
         }

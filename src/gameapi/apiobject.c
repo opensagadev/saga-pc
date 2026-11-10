@@ -459,7 +459,7 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
     }
 
     for (; effects->character_id != -1; ++effects) {
-        if (model->model_id != effects->character_id || effects->action_id != animation_id) {
+        if (model->model_id != effects->character_id || animation_id != effects->action_id) {
             continue;
         }
 
@@ -1823,14 +1823,14 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             --checks;
             if (checks == 0)
                 goto done;
-            if (system->los_cursor_208 == initial_source && system->los_cursor_20c == initial_target)
+            if (initial_source == system->los_cursor_208 && system->los_cursor_20c == initial_target)
                 goto done;
         } while (system->los_cursor_208 < source_count);
         system->los_cursor_208 = 0;
         ++system->los_cursor_20c;
         if (system->los_cursor_20c >= target_count)
             system->los_cursor_20c = 0;
-        if (system->los_cursor_208 == initial_source && system->los_cursor_20c == initial_target)
+        if (system->los_cursor_208 == initial_source && initial_target == system->los_cursor_20c)
             goto done;
     } while (checks != 0);
 done:;

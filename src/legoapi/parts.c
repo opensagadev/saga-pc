@@ -2130,7 +2130,7 @@ PART_PC *__cdecl TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *directio
             angle = TargetDeg_Far;
         if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
             continue;
-        if ((PART_PC *)object->collision_target == part)
+        if ((PART_PC *)part == object->collision_target)
             previous = part;
         else {
             nearest_distance = distance;

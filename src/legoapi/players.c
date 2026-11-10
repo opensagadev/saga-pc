@@ -2198,7 +2198,7 @@ void __cdecl RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     ids[1] = second_id;
     for (index = 0; index < 2; ++index) {
         i32 id = ids[index];
-        if (id != -1 && (CDataList[id].model_flags & 0x2000) == 0 && PlayerID[index] != id && Collection_Got(id) == 1 &&
+        if (id != -1 && (CDataList[id].model_flags & 0x2000) == 0 && id != PlayerID[index] && Collection_Got(id) == 1 &&
             GCDataList[id].hover_fall_mode != 0 && PlayerID[(index - 1) & 1] != id)
             PlayerID[index] = id;
     }
@@ -2219,7 +2219,7 @@ void __cdecl Players_Init(void) {
         return;
     PLAYERCOUNT = 0;
     if ((WORLD->current_level->flags & 2) != 0) {
-        if (FreePlay == 0 && (Hub_UsePlayerList == 0 || HUB_ADATA == NULL || HUB_ADATA != WORLD->area) &&
+        if (FreePlay == 0 && (Hub_UsePlayerList == 0 || HUB_ADATA == NULL || WORLD->area != HUB_ADATA) &&
             (UsePlayerList != 1 ||
              (PlayerList[0] != -1 && (apicharsys->playermodelids[PlayerList[0]] == -1 ||
                                       (PlayerList[1] != -1 && apicharsys->playermodelids[PlayerList[1]] == -1)))))
@@ -2409,7 +2409,7 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
                          spline->pts[start + 3].z - PlayerStartRecordInitPc[1].position->z);
         }
     }
-    if (HUB_ADATA != NULL && HUB_ADATA == world->area && last_area != world->area_index &&
+    if (HUB_ADATA != NULL && world->area == HUB_ADATA && last_area != world->area_index &&
         RenderHubFromCutscenePlayerPc == 0) {
         void *door = NULL;
         if (hub_from_superstory != -1) {
@@ -2453,7 +2453,7 @@ void __cdecl Players_InitPositions(WORLDINFO *world) {
         PlayerStartRecordInitPc[index].sock_location = position.start.location;
         PlayerStartRecordInitPc[index].sock_ratio = position.start.ratio;
     }
-    if (HUB_ADATA != NULL && HUB_ADATA == world->area) {
+    if (HUB_ADATA != NULL && world->area == HUB_ADATA) {
         hub_from_superstory = -1;
         hub_from_mission = -1;
         hub_from_arcade = -1;
@@ -2517,7 +2517,7 @@ void __cdecl Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound
     i32 old_id, left, right, index, attempts, id, collected, area, allowed;
     u32 left_mask, right_mask;
     FULLDEBUGTOGGLE = 0;
-    if ((HUB_ADATA != NULL && HUB_ADATA == world->area) || FadeSys.fade != 0.0f ||
+    if ((HUB_ADATA != NULL && world->area == HUB_ADATA) || FadeSys.fade != 0.0f ||
         (CInfo[(i8)object->character_context].flags & 0x100) != 0 || object->takeover_source != NULL || FreePlay == 0)
         return;
     if ((MiniCutCam != 0 && (object->flags_1fc_word & 0x180) == 0x80) || object->dead != 0 ||
