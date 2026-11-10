@@ -453,14 +453,26 @@ def apply_plan(plan, android=None, write=True):
                                                  for _, i in plan.moved):
             plan.todo.append(f"C++ definitions from {path} moved into C target {target}")
     # Order the moved definitions: data before the first function that uses it.
-    data_left = list(plan.moved_data)
+    # Declarations, types, macros and asserts open the unit in source order;
+    # variable definitions go before the first function that uses them.
+    # C tentative definitions (`static T x;` before `static T x = {...};`) are
+    # redefinitions in C++ and unnecessary once the definition precedes its users.
+    initialized = {name for item in plan.moved_data if item.kind == "variable"
+                   and "=" in strip_comments(item.text) for name in item.names}
+    tentative = [item for item in plan.moved_data if item.kind == "variable" and item.names & initialized
+                 and "=" not in strip_comments(item.text) and "extern" not in strip_comments(item.text)]
+    if tentative:
+        plan.notes.append("dropped tentative definitions: " + ", ".join(sorted(n for i in tentative for n in i.names)))
+    kept = [item for item in plan.moved_data if item not in tentative]
+    preamble = [(item.text, wrap_c(item, target_cxx)) for item in kept if not item.definition]
+    data_left = [item for item in kept if item.definition]
     entries = []
     defined = set()
     forward = []
     for _, fn in plan.moved:
         refs = fn.refs()
         for item in list(data_left):
-            if item.names & refs or item.kind in ("assert",):
+            if item.names & refs:
                 entries.append((item.text, wrap_c(item, target_cxx)))
                 defined |= item.names
                 data_left.remove(item)
@@ -549,7 +561,7 @@ def apply_plan(plan, android=None, write=True):
                     includes.append(item.text.strip())
     header = f"/* Retail unit 0x{plan.lo:06x}-0x{plan.hi:06x}" + (f" ({android})" if android else "") + \
         ": definitions in retail address order. */\n"
-    section = (render_items(copies, target_cxx) + ("\n" if copies else "")
+    section = (render_items(preamble, target_cxx) + render_items(copies, target_cxx) + ("\n" if copies else "")
                + render_items(helper_entries, target_cxx)
                + render_items(forward, target_cxx)
                + render_items(leftover, target_cxx)
