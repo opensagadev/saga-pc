@@ -74,7 +74,7 @@ void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
     NuVecRotateZ(&shard->collection_velocity, &shard->collection_velocity, shard->angle_x);
     NuVecScale(&shard->collection_velocity, &shard->collection_velocity, 3.0f);
     NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
-    shard->tumble_x = qrand() <= 0x7fff;
+    shard->tumble_x = qrand() < 0x8000;
 }
 
 void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {

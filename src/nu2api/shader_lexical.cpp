@@ -109,7 +109,7 @@ bool ShaderLexicalSlicePc::Equals(const char *text) {
 bool ShaderLexicalSlicePc::StartsWith(const char *text) {
     const char *source = begin;
     while (*text != 0)
-        if (*source++ != *text++)
+        if (*text++ != *source++)
             return false;
     return true;
 }

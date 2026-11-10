@@ -583,18 +583,18 @@ void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
     factory->vtable->get_speaker_config(factory, &speaker_config);
     memset(&primary_desc, 0, sizeof(primary_desc));
     primary_desc.size = sizeof(primary_desc);
-    primary_desc.flags = 0x11;
     primary_desc.bytes = 0;
     primary_desc.format = NULL;
+    primary_desc.flags = 0x11;
     factory->vtable->create_sound_buffer(factory, &primary_desc, &primary_buffer, NULL);
     if (primary_buffer != NULL) {
         WAVEFORMATEX format;
         format.wFormatTag = 1;
         format.nChannels = 2;
-        format.nSamplesPerSec = 44100;
-        format.nAvgBytesPerSec = 176400;
-        format.nBlockAlign = 4;
         format.wBitsPerSample = 16;
+        format.nSamplesPerSec = 44100;
+        format.nBlockAlign = 4;
+        format.nAvgBytesPerSec = 176400;
         format.cbSize = 0;
         primary_buffer->vtable->set_format(primary_buffer, &format);
     }
