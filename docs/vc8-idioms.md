@@ -465,6 +465,18 @@ thunks, not `call [__imp_]`: the SDK headers of that era declare them without
 `dllimport`. Our declarations in `externals.h` must match, or every caller is
 one instruction off (`PCDeviceCreateTextureFromMemory` and three siblings).
 
+### I40: AI action prologues
+
+The AI script actions share a prologue shape that the register allocator
+exposes. Retail clears the object before the `first_time` guard
+(`object = NULL; if (!first_time) return 1;`: `xor edi, edi` ahead of the
+guard), tests the argument count before a parameter loop
+(`if (count != 0) for (...)`: a `test eax, eax; je` ahead of the usual
+`jle`), and reads `param_5` only after the object guard when the object is
+loaded first. Exact by these: `Action_ResetContext`, `Action_CanBeCarried`,
+`Action_AlertCreatures`, `Action_TagCharacter`,
+`Action_RegisterTakeOverObject`, `Action_SetControlSystem`.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
