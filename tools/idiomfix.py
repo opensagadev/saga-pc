@@ -379,8 +379,40 @@ def rule_float_commute(source):
             continue
         a, b = source.span(node)
         op = source.operator(node)
-        yield rw.Candidate(source.edit([(a, b, f"{rw.paren(source.src(right))} {op} {rw.paren(source.src(left))}")]),
-                           "commute", f"line {node.location.line}", True)
+        text = f"{_commute_operand(source, right, op, False)} {op} {_commute_operand(source, left, op, True)}"
+        yield rw.Candidate(source.edit([(a, b, text)]), "commute", f"line {node.location.line}", True)
+
+
+def _wrapped(text):
+    """True when the whole text is one parenthesised group."""
+    if not (text.startswith("(") and text.endswith(")")):
+        return False
+    depth = 0
+    for i, ch in enumerate(text):
+        depth += {"(": 1, ")": -1}.get(ch, 0)
+        if depth == 0 and i < len(text) - 1:
+            return False
+    return True
+
+
+def _commute_operand(source, cursor, op, on_right):
+    """Operand text after `a op b -> b op a`, parenthesised only when the grouping needs it."""
+    rw = _rewrite()
+    text = source.src(cursor)
+    if _wrapped(text):
+        return text
+    cursor = rw.strip(cursor)
+    if cursor.kind == rw.K.PAREN_EXPR or cursor.kind in (rw.K.CALL_EXPR, rw.K.DECL_REF_EXPR, rw.K.MEMBER_REF_EXPR,
+                                                          rw.K.ARRAY_SUBSCRIPT_EXPR, rw.K.FLOATING_LITERAL,
+                                                          rw.K.INTEGER_LITERAL, rw.K.CSTYLE_CAST_EXPR,
+                                                          rw.K.UNARY_OPERATOR):
+        return text
+    if cursor.kind == rw.K.BINARY_OPERATOR:
+        inner = source.operator(cursor)
+        tighter = ("*", "/", "%") if op == "+" else ()
+        if inner in tighter or (inner == op and not on_right):
+            return text
+    return f"({text})"
 
 
 def _rewrite_rules(names):

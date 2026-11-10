@@ -89,6 +89,12 @@ class RuleTests(unittest.TestCase):
         self.assertEqual(len(texts), 2)
         self.assertTrue(all("i + j" in t for t in texts))
 
+    def test_commuted_operands_get_parentheses_only_when_grouping_needs_them(self):
+        texts = self.texts(self.fix.rule_float_commute, "float f(float a, float b, float c) { return a * b + c; }")
+        self.assertIn("return c + a * b;", texts[0])
+        texts = self.texts(self.fix.rule_float_commute, "float f(float a, float b, float c) { return a + b + c; }")
+        self.assertIn("return c + (a + b);", texts[0])
+
 
 if __name__ == "__main__":
     unittest.main()
