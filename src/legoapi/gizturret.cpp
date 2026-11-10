@@ -1281,10 +1281,11 @@ extern "C" {
     }
 
     u32 __cdecl GizTurrets_TotalScore(WORLDINFO *world) {
-        GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)world->giz_turret_sys;
+        GIZTURRETSYS_s *system;
         GIZTURRET_s *turret;
         u32 total = 0;
         i32 i;
+        system = (GIZTURRETSYS_s *)world->giz_turret_sys;
         if (system != NULL) {
             turret = system->turrets;
             if (turret != NULL) {

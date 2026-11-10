@@ -1474,10 +1474,11 @@ i32 __cdecl GizmoBombGen_GetNumOutputs(GIZMO_PC *gizmo) {
 
 /* Studs the level's obstacles release (TotalLevelCoinTally). */
 u32 __cdecl GizObstacles_TotalScore(WORLDINFO *world) {
-    GIZOBSTACLESYS_s *system = (GIZOBSTACLESYS_s *)world->giz_obstacle_sys;
+    GIZOBSTACLESYS_s *system;
     GIZOBSTACLE *obstacle;
     u32 total = 0;
     i32 i;
+    system = (GIZOBSTACLESYS_s *)world->giz_obstacle_sys;
     if (system != NULL) {
         obstacle = system->obstacles;
         if (obstacle != NULL) {

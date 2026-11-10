@@ -449,6 +449,22 @@ pushes of `fldz; fst [esp+4]; fstp [esp]` mean both arguments are `f32`:
 `NuSound3AddRumble`'s fourth parameter was `f32`, which made the seven rumble
 helpers exact.
 
+### I38: initialised declaration versus a later assignment
+
+Retail `mov ecx, [esp+4]; mov ecx, [ecx+X]; xor eax, eax` where ours has
+`mov eax, [esp+4]; mov ecx, [eax+X]; xor eax, eax`: the source declares the
+pointer first and assigns it after the other initialisers
+(`u32 total = 0; ... system = world->giz_force_sys;`), not as an initialised
+declaration ahead of `total = 0`. Examples: the four `*_TotalScore` gizmo
+helpers (`GizForce`, `GizObstacles`, `GizTurrets`, `GizBuildIts`).
+
+### I39: D3D, DirectInput, DirectSound and XInput calls go through thunks
+
+Retail calls these APIs with `call rel32` into the linker's `jmp [__imp_]`
+thunks, not `call [__imp_]`: the SDK headers of that era declare them without
+`dllimport`. Our declarations in `externals.h` must match, or every caller is
+one instruction off (`PCDeviceCreateTextureFromMemory` and three siblings).
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated

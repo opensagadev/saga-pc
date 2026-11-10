@@ -1024,10 +1024,11 @@ extern "C" {
 
     /* Studs the level's build-its release (TotalLevelCoinTally). */
     u32 __cdecl GizBuildIts_TotalScore(WORLDINFO *world) {
-        BUILDIT_RESET_SYSTEM_PC *system = (BUILDIT_RESET_SYSTEM_PC *)world->giz_buildit_sys;
+        BUILDIT_RESET_SYSTEM_PC *system;
         BUILDIT_RESET_PC *buildit;
         u32 total = 0;
         i32 i;
+        system = (BUILDIT_RESET_SYSTEM_PC *)world->giz_buildit_sys;
         if (system != NULL) {
             buildit = system->buildits;
             if (buildit != NULL) {

@@ -1749,10 +1749,11 @@ PART_PC *__cdecl GizForce_Throw(GAMEOBJECT *object, GIZFORCE_PC *force, f32 spee
 
 /* Studs the level's force objects release (TotalLevelCoinTally). */
 u32 __cdecl GizForce_TotalScore(WORLDINFO *world) {
-    GIZFORCESYS_s *system = world->giz_force_sys;
+    GIZFORCESYS_s *system;
     GIZFORCE_PC *force;
     u32 total = 0;
     i32 i;
+    system = world->giz_force_sys;
     if (system != NULL) {
         force = (GIZFORCE_PC *)system->forces;
         if (force != NULL) {
