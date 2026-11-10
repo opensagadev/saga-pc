@@ -1,11 +1,13 @@
 #include "saga.h"
 
+extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world);
+extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
+
 extern "C" void __cdecl MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b,
                                        u8 header_r, u8 header_g, u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b,
                                        u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b);
 #include <string.h>
 #include <stdio.h>
-extern "C" void __cdecl Attractos_InitTerrain(WORLDINFO *);
 extern "C" void __cdecl NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLswPc[4];
 extern "C" void __cdecl SurfaceMaskOn(u32 *surface_mask);
@@ -1413,30 +1415,6 @@ static void __cdecl Collection_GetSelectingPlayerIDs(i16 *ids) {
 // Source lease:
 // build/analysis/next-world-loading-wave/game-init-after-MM/publisher-source-v1/world-and-hub-corrected.cppfrag
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-
-extern "C" void __cdecl Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y) {
-    if (world->current_level == TITLES_LDATA)
-        *menu_id = 0;
-    else if (world->current_level == CREDITS_LDATA)
-        *menu_id = 18;
-}
-extern "C" void __cdecl SecurityDoors_InitTerrain(WORLDINFO *);
-extern "C" void __cdecl GizSpinners_InitTerrain(WORLDINFO *world);
-extern "C" void __cdecl InitClimbObjectSys(WORLDINFO *world);
-extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *, void *);
-extern "C" void __cdecl Signals_InitTerrain(WORLDINFO *);
-extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
-    GizSpinners_InitTerrain(world);
-    Signals_InitTerrain(world);
-    Attractos_InitTerrain(world);
-    SecurityDoors_InitTerrain(world);
-    Levers_InitTerrain(world);
-    GizPanel_InitTerrain(world);
-    HatMachines_InitTerrain(world);
-    GizmoBlowupsFinalSetup(world);
-    InitClimbObjectSys(world);
-    GizmoPushBlockInitAndReset(world, NULL);
-}
 
 // These two genuine Hub functions belong in the Hub owner, not game.cpp.
 

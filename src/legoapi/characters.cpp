@@ -2,19 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-extern "C" {
-    void __cdecl NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1);
-    void __cdecl PermanentGraphicsResourceSetup(void);
-    void __cdecl NuRndrShadowInit(u8 *random);
-    void __cdecl InitTexAnimScripts(char **table);
-    extern char *TexAnimScriptNamesTitlePc[3];
-    extern char *TexAnimScriptNamesGamePc[32];
-}
-extern "C" void __cdecl CreateUsefulMaterials(void);
-extern "C" void __cdecl edbitsRegisterThingsScene(NUGSCN *scene);
-extern "C" i32 __cdecl NuMtlSetCurrentRenderPlane(i32 render_plane);
-extern "C" void __cdecl ParticleReset(void);
-extern "C" APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 #include "saga.h"
 
 void __cdecl CharScene_Draw(WORLDINFO *world, i32 character_id, NUMTX *matrix, NUMTX *reflection_matrix) {
@@ -64,14 +51,7 @@ STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, diffuse) == 0x54);
 STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, opacity) == 0x70);
 STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, texture_id) == 0x74);
 STATIC_ASSERT(offsetof(PERMANENT_MATERIAL_READER_PC, sort_priority) == 0x76);
-extern NUMTL *PermanentEffectsMaterialPc, *PermanentShadowMaterialPc, *PermanentGradientMaterialPc;
-extern void *things_scene_terrain;
-extern i32 PARTPAGE_GENERAL;
-extern char *debris_name[147];
-APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *, VARIPTR, i32, i32, char **, i8);
 NUGSCN *__cdecl NuGScnRead(VARIPTR *, VARIPTR, char *);
-
-extern "C" void __cdecl DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 
 extern "C" NUMTL *FadeMtl, *FadeMtl2, *ScreenFadeMtl;
 
@@ -123,105 +103,6 @@ extern "C" void __cdecl CreateFadeMaterials(void) {
     ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->texture_id = 0;
     ((PERMANENT_MATERIAL_READER_PC *)ScreenFadeMtl)->sort_priority = 0x7ffe;
     NuMtlUpdate(ScreenFadeMtl);
-}
-
-void __cdecl LoadPerm1(void) {
-    char path[256];
-    u8 shadow_random[0x800];
-    i32 index;
-    i32 texture_id;
-    PERMANENT_MATERIAL_READER_PC *material;
-    NUGSCN *terrain_scene;
-    VARIPTR native_end_address;
-    rtlInitDynamic(&permbuffer_ptr, superbuffer_end, 0x40);
-    permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
-    DebrisSetup(&permbuffer_ptr, permbuffer_end, (char *)"stuff\\particle", 0x100, 0x200, 0x200);
-    DebrisRegisterCutoffCameraVec(&global_camera.mtx.m30);
-    if (Grass_Available != 0)
-        edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);
-    PermanentEffectsMaterialPc = NuMtlCreateEx(1, 10);
-    material = (PERMANENT_MATERIAL_READER_PC *)PermanentEffectsMaterialPc;
-    material->diffuse[2] = 1.0f;
-    material->diffuse[1] = 1.0f;
-    material->diffuse[0] = 1.0f;
-    material->attributes = (material->attributes & ~0x1000u) | 0x2000u;
-    material->attributes = (material->attributes & ~0x8000u) | 0x4000u;
-    material->attributes = (material->attributes & ~0x20u) | 0x10u;
-    material->opacity = 0.999f;
-    material->attributes = (material->attributes & ~0xdu) | 2u;
-    material->attributes = (material->attributes & ~0x200u) | 0x100u;
-    material->attributes = (material->attributes & ~0x800u) | 0x400u;
-    material->texture_id = ((PERMANENT_MATERIAL_READER_PC *)DebMat[5])->texture_id;
-    material->shader_flags = (material->shader_flags & ~2u) | 1u;
-    NuMtlUpdate(PermanentEffectsMaterialPc);
-    NuLgtSetArcMat(PermanentEffectsMaterialPc, 0.0f, 0.50390625f, 0.25f, 0.5625f);
-    PermanentGraphicsResourceSetup();
-    NuBridgeInit();
-    native_end_address.void_ptr = &permbuffer_end;
-    InitParts(0x40, &permbuffer_ptr, native_end_address);
-    ParticleReset();
-    NuStrCpy(path, "stuff\\general.ptl");
-    if (NuFileExists(path) != 0)
-        DEBPAGE_GENERAL = edppLoadPage(path, 0, 0);
-    NuStrCpy(path, "stuff\\char.ptl");
-    if (NuFileExists(path) != 0)
-        DEBPAGE_CHARACTER = edppLoadPage(path, 5, 0);
-    perm_debrissys = InitGameDebris(&permbuffer_ptr, native_end_address, 0x190, 0x93, debris_name, 0);
-    permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
-    InitStreaks(&permbuffer_ptr, permbuffer_end, (char *)StreakTextureNamePc);
-    permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
-    InitRopeMtl("rope", &permbuffer_ptr, &permbuffer_end);
-    InitRipples(&RippleSetPc, &permbuffer_ptr, &permbuffer_end, 0x40);
-    permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
-    PermanentShadowMaterialPc = NuMtlCreate3D(1);
-    material = (PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc;
-    material->diffuse[0] = 1.0f;
-    material->diffuse[1] = 1.0f;
-    material->diffuse[2] = 1.0f;
-    material->attributes = (material->attributes & ~0x1000u) | 0x2000u;
-    material->attributes = (material->attributes & ~0x8000u) | 0x4000u;
-    material->opacity = 0.999f;
-    material->attributes = (material->attributes & ~0xeu) | 1u;
-    material->attributes = (material->attributes & ~0x600000u) | 0x100000u;
-    material->sort_priority = 0xff;
-    material->attributes = (material->attributes & ~0x10000u) | 0x20000u;
-    texture_id = NuTexReadPc("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
-    ((PERMANENT_MATERIAL_READER_PC *)PermanentShadowMaterialPc)->texture_id = (i16)texture_id;
-    NuMtlUpdate(PermanentShadowMaterialPc);
-    for (index = 0; index < 0x800; ++index)
-        shadow_random[index] = (u8)(qrand() >> 8);
-    NuRndrShadowInit(shadow_random);
-    CreateFadeMaterials();   /* Native 48aa7a. */
-    CreateUsefulMaterials(); /* Native 48aa7f. */
-    edgraClumpsReset();
-    edanimParamReset();
-    NuTexAnimProgSysInit(); /* Native 48aa8e. */
-    if (StartupGameFlag1 != 0) {
-        InitTexAnimScripts(TexAnimScriptNamesGamePc);
-    } else {
-        InitTexAnimScripts(TexAnimScriptNamesTitlePc);
-    }
-    permbuffer_ptr.addr = (permbuffer_ptr.addr + 3) & ~3u;
-    things_scene = NuGScnRead(&permbuffer_ptr, permbuffer_end, "stuff\\things.gsc");
-    if (things_scene != NULL) {
-        edbitsRegisterThingsScene(things_scene);
-        if (things_scene->display_list != NULL)
-            things_scene->display_list->render_flags |= 0x10;
-    }
-    terrain_scene = things_scene;
-    things_scene_terrain = TerrainInitEx(-1, &permbuffer_ptr, permbuffer_end.void_ptr, 0, "stuff\\things",
-                                         terrain_scene, 0, 0x14, 0x14, 0x14);
-    terrainpickupinit("stuff\\things", &things_scene_terrain);
-    if (StartupGameFlag1 != 0) {
-        BackDrop_Init("stuff\\starfield.gsc", &permbuffer_ptr, &permbuffer_end);
-    }
-    NuMtlSetCurrentRenderPlane(15);
-    edpartSetParticlePage(DEBPAGE_GENERAL);
-    NuStrCpy(path, "stuff\\general.par");
-    if (NuFileExists(path) != 0)
-        PARTPAGE_GENERAL = edpartLoadPage(path, 0, things_scene);
-    NuMtlSetCurrentRenderPlane(0);
-    AIScriptLoadAll("scripts", &permbuffer_ptr, &permbuffer_end, NULL);
 }
 
 typedef struct CHARACTER_SCENE_WORLD_PC {
@@ -301,58 +182,8 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, music_index) == 0x94);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, music_tracks) == 0x118);
 STATIC_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
 extern "C" {
-    extern NUFPCOMJMP ConfigChar_GameKeywords[2];
     void __cdecl LoadPerm2(void);
-    extern APICHARACTERMODELLIST PermModelListPc[1];
-    extern COLLECTION_BUILD_PC MasterCollectionPc, CharacterCollectionPc, VehicleCollectionPc;
-    extern COLLECTION_BUILD_PC ShopCollectionPc, JediCollectionPc, BlasterCollectionPc, BountyHunterCollectionPc;
-    extern i16 PermanentAllTitleIdPc, PermanentJediTitleIdPc, PermanentBlasterTitleIdPc, PermanentBountyTitleIdPc;
     extern i16 PermanentWeirdo1IdPc, PermanentWeirdo2IdPc;
-    extern i16 PermanentCustomiserActionsPc[5];
-    extern f32 PermCollectionScalePc;
-
-    void __cdecl LoadPerm2(void) {
-        CharConfig_ConfigureAll(1, ConfigChar_GameKeywords);
-        ExtraCharacterFixUpAfterConfig();
-        nopakfile = CHARPAK == 0;
-        APILoadCharacterModels(PermModelListPc, 1, &permbuffer_ptr, permbuffer_end, 1);
-        Collection_CreateMaster("All", NULL, &MasterCollectionPc, 15, PermCollectionScalePc);
-        Collection_CreateCustom("Characters", &PermanentAllTitleIdPc, &CharacterCollectionPc, 0, 0x04002000, 0, 0, 22,
-                                &permbuffer_ptr, &permbuffer_end, 0, 0.515f);
-        Collection_CreateCustom("Vehicles", NULL, &VehicleCollectionPc, 0x2000, 0x04000000, 0, 0, 7, &permbuffer_ptr,
-                                &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("Minikits", NULL, &MiniKitCollection, 0x04000000, 0, 0, 0, 12, &permbuffer_ptr,
-                                &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("Shop", NULL, &ShopCollectionPc, 0, 0, 0, 1, 10, &permbuffer_ptr, &permbuffer_end, 0,
-                                PermCollectionScalePc);
-        Collection_CreateCustom("Jedi", &PermanentJediTitleIdPc, &JediCollectionPc, 8, 0, 0, 0, 7, &permbuffer_ptr,
-                                &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("BlasterZipUps", &PermanentBlasterTitleIdPc, &BlasterCollectionPc, 0x100080, 0x01000000,
-                                0, 0, 11, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
-        Collection_CreateCustom("BountyHunters", &PermanentBountyTitleIdPc, &BountyHunterCollectionPc, 0x01000000, 0, 0,
-                                0, 4, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScalePc);
-        Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
-        CharacterCustomiser =
-            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, (i32)PermanentWeirdo1IdPc,
-                                 (i32)PermanentWeirdo2IdPc, PermanentCustomPieceAvailablePc,
-                                 PermanentCustomPieceConfigPc, LevelObject_FindIndexFromName,
-                                 &((PERMANENT_CUSTOMISER_GAME_PC *)&Game)->customiser, PermanentCustomiserActionsPc);
-        SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
-        for (i32 index = 0; index < LEVELCOUNT; ++index) {
-            if ((LDataList[index].flags & 0x400) != 0) {
-                LDataList[index].music_index = (i16)GetMusicIndex("statusscreen", MusicInfo, -1);
-                i32 handle = music_man.GetTrackHandle(1, "statusscreen");
-                LDataList[index].music_tracks[1] = handle;
-                LDataList[index].music_tracks[0] = LDataList[index].music_tracks[1];
-                handle = music_man.GetTrackHandle(2, "statusscreen");
-                LDataList[index].music_tracks[3] = handle;
-                LDataList[index].music_tracks[2] = LDataList[index].music_tracks[3];
-                handle = music_man.GetTrackHandle(0x20, "statusscreen");
-                LDataList[index].music_tracks[5] = handle;
-                LDataList[index].music_tracks[4] = LDataList[index].music_tracks[5];
-            }
-        }
-    }
 }
 
 typedef struct CHARACTER_IDLE_STATE_PC {

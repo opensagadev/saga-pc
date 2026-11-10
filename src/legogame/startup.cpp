@@ -47,55 +47,6 @@ extern "C" {
     extern AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                                      i32 *count_out);
 
-    void __cdecl Level_SetDefaults(LEVELDATA_PC *level) {
-        level->max_gameantinodes = 0x100;
-        level->max_gizmoblowups = 0x40;
-        level->max_gizmoblowuptypes = 0x40;
-        level->max_pickups = 0x100;
-        level->max_obstacle_objects = 0x80;
-        level->max_buildit_objects = 0x80;
-        level->max_force_objects = 0x80;
-        level->max_bombgen_objects = 0x10;
-
-        level->max_tightropes = 10;
-        level->max_timers = 8;
-        level->max_signals = 10;
-        level->max_levers = 10;
-        level->max_technos = 10;
-        level->max_zipups = 10;
-        level->max_grapples = 10;
-        level->max_obstacles = 0x20;
-        level->max_buildits = 0x10;
-        level->max_shards = 0x40;
-        level->max_spinners = 4;
-        level->max_minicuts = 8;
-        level->max_minicut_stages = 2;
-        level->max_gizspecials = 0x20;
-        level->max_attractos = 5;
-        level->max_climb_objects = 10;
-        level->max_guidelines = 0x20;
-        level->max_ledges = 0x60;
-        level->max_securitydoors = 5;
-        level->max_tubes = 5;
-        level->max_gizpanels = 8;
-        level->max_hatmachines = 2;
-        level->max_force = 0x20;
-        level->max_pushblocks = 0x10;
-        level->max_pushblock_endpos = 8;
-        level->max_doors = 0x10;
-        level->max_teleports = 4;
-        level->max_gizrandoms = 8;
-        level->max_torpmachines = 2;
-        level->max_spinneranim_objs = 0x28;
-        level->max_turrets = 0x20;
-        level->max_bombgens = 8;
-        level->max_bridges = 5;
-        level->max_plugs = 10;
-
-        level->wind_speed = 3.0f;
-        level->wind_size = 512.0f;
-    }
-
     f32 __cdecl LoadPermFadeAlpha(f32 t, f32 duration) {
         f32 end;
         f32 total;
@@ -318,19 +269,6 @@ extern "C" {
 
         LoadPermDestroyLegalMtl();
         WORLD = saved_world;
-    }
-
-    void __cdecl FixUpAreas(void) {
-        if (StartupGameFlag1 != 0) {
-            Areas_FixUp(AreaFixUpLSW);
-            if (LOSTTEMPLE_ADATA != NULL) {
-                LOSTTEMPLE_ADATA->flags |= 0x2000;
-            }
-        } else if (StartupGameFlag0 != 0) {
-            Areas_FixUp(AreaFixUpLostTemple);
-        } else {
-            Areas_FixUp(AreaFixUpGotham);
-        }
     }
 
     void memorymanager_s::Init(VARIPTR *buffer, VARIPTR *end, u32 bytes) {
