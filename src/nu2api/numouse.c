@@ -6,7 +6,7 @@ void __cdecl NuMouseRead(void) {
 }
 
 u32 NuMouseReadButtons(void) {
-    return 0;
+    return PcMouseButtonsMaskPc;
 }
 
 f32 __cdecl NuMouseReadX(void) {

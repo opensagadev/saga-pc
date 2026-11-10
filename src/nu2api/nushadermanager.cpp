@@ -170,10 +170,14 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::HasVertexSkinAlt() const {
     return (descriptor->vertex_format & 0x30000) != 0 && (descriptor->vertex_format & 0x400000) != 0;
 }
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const {
-    return variant == 0 && (descriptor->layer_flags & 0x2000000) != 0;
+    if (variant != 0)
+        return false;
+    return (descriptor->layer_flags & 0x2000000) != 0;
 }
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const {
-    return variant == 0 && (descriptor->layer_flags & 8) != 0;
+    if (variant != 0)
+        return false;
+    return (descriptor->layer_flags & 8) != 0;
 }
 
 void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *input,

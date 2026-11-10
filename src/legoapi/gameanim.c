@@ -943,9 +943,7 @@ void __cdecl edanimStartAllPages(void) {
     i32 page;
 
     for (page = 0; page < 8; ++page) {
-        if (edanim_page_used[page] != 0 && edanim_page_scene[page] != NULL && edanim_page_on[page] == 0) {
-            edanim_page_on[page] = page * 4 + 1;
-        }
+        edanimStartPage(page);
     }
 }
 

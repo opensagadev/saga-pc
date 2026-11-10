@@ -46,9 +46,9 @@ extern "C" i32 __cdecl InStory(void) {
 extern "C" {
     extern CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSavePc;
     i32 __cdecl Game_100PercentComplete(void) {
-        if (CustomiserCompletionSavePc == NULL)
-            return 0;
-        return (CustomiserCompletionSavePc->flags & 1) != 0;
+        if (CustomiserCompletionSavePc != NULL && (CustomiserCompletionSavePc->flags & 1) != 0)
+            return 1;
+        return 0;
     }
 }
 

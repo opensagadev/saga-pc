@@ -131,7 +131,9 @@ void __cdecl GizRandom_AddGizmos(struct gizmosys_pc_s *gizmo_sys, i32 type_id, v
 
 i32 __cdecl GizRandom_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused) {
     GIZFLOW_RANDOM_PC *random = (GIZFLOW_RANDOM_PC *)gizmo->object;
-    return (random->flags & 1) != 0 && random->selected_output == output_index;
+    if ((random->flags & 1) == 0)
+        return 0;
+    return output_index == random->selected_output;
 }
 
 char *__cdecl GizRandom_GetGizmoName(GIZMO_PC *gizmo) {

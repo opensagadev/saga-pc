@@ -1312,7 +1312,9 @@ i32 __cdecl rtlGetDirection(RTL_SET_PC *set, i32 index, NUVEC **out) {
 }
 
 f32 __cdecl rtlSpecularValue(RTL_DATA_PC *data) {
-    return data != NULL ? data->specular_value : 0.0f;
+    if (data != NULL)
+        return data->specular_value;
+    return 0.0f;
 }
 void __cdecl rtlSetSpecularValue(RTL_DATA_PC *data, f32 value) {
     if (data != NULL)

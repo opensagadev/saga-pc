@@ -3393,7 +3393,7 @@ i32 __cdecl NuFParPushComCTX2(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands, NUFPCO
 }
 
 void __cdecl NuFParPopCom(NUFPAR_PC *parser) {
-    if (parser->command_position > -1) {
+    if (parser->command_position >= 0) {
         parser->command_position--;
     }
 }

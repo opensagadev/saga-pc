@@ -133,9 +133,9 @@ static char *__cdecl Portal_GetGizmoName(GIZMO_PC *gizmo) {
     return portal_gizmo_name_pc;
 }
 static i32 __cdecl Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
-    if (gizmo == NULL || gizmo->object == NULL)
-        return 0;
-    return ((PORTAL_CALLBACK_PC *)gizmo->object)->flags & 1;
+    if (gizmo != NULL && gizmo->object != NULL && (((PORTAL_CALLBACK_PC *)gizmo->object)->flags & 1) != 0)
+        return 1;
+    return 0;
 }
 static char *__cdecl Portal_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return portal_output_name_pc;

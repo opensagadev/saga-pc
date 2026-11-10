@@ -1,6 +1,6 @@
 #include "saga.h"
 i32 __cdecl UnderWater(GAMEOBJECT *object) {
-    return (object->field_283 == 1 || object->field_283 == 9) && object->water_height >= object->collision_position.y;
+    return (object->field_283 == 1 || object->field_283 == 9) && object->collision_position.y <= object->water_height;
 }
 i32 __cdecl IntersectWater(GAMEOBJECT *object) {
     return (object->field_283 == 1 || object->field_283 == 9) && !(object->water_height > object->collision_max.y) &&

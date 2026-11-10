@@ -899,7 +899,9 @@ static f32 Grapple_MaximumLengthPc(GAMEOBJECT *object) {
 
 static u16 Grapple_QuantizeAnglePc(GRAPPLE_MOTION_PC *grapple, u16 angle) {
     i32 difference = RotDiff(angle, (u16)(grapple->y_rotation + 0x4000));
-    return (u16)(grapple->y_rotation + (abs(difference) <= 0x4000 ? 0x4000 : 0xc000));
+    if (abs(difference) <= 0x4000)
+        return grapple->y_rotation + 0x4000;
+    return grapple->y_rotation - 0x4000;
 }
 
 static void Grapple_InitializeSwingAnglePc(GAMEOBJECT *object) {

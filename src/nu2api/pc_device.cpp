@@ -164,10 +164,16 @@ struct PC_MATERIAL_DEVICE_CAPS_VIEW {
 };
 STATIC_ASSERT(offsetof(PC_MATERIAL_DEVICE_CAPS_VIEW, shader_caps) == 0x654);
 i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16() {
-    return (shader_caps & 0x20) ? 16 : 0;
+    i32 variant = 0;
+    if (shader_caps & 0x20)
+        variant = 16;
+    return variant;
 }
 i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1() {
-    return (shader_caps & 0x20) ? 1 : 0;
+    i32 variant = 0;
+    if (shader_caps & 0x20)
+        variant = 1;
+    return variant;
 }
 extern "C" void __cdecl PCDeviceCreateVertexDeclaration(const PC_VERTEX_ELEMENT_PC *elements,
                                                         PC_TEXTURE_RESOURCE_PC **out) {
