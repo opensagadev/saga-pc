@@ -513,7 +513,12 @@ def apply_plan(plan, android=None, write=True):
         existing = cut(tsrc.text, gone)
     order = {path: n for n, path in enumerate([target, *sorted(plan.sources)])}
     plan.copied.sort(key=lambda c: (order.get(c.item.source.path, 99), c.item.start))
+    moved_names = set()
+    for _, fn in plan.moved:
+        moved_names |= fn.names
     for copy in plan.copied:
+        if copy.item.kind == "function" and not copy.item.definition and copy.item.names & moved_names:
+            continue  # the definition is in the unit now; forward declarations are generated from it
         key = re.sub(r"\s+", " ", copy.text.strip())
         if key in seen or key in re.sub(r"\s+", " ", existing):
             continue

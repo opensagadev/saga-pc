@@ -69,7 +69,6 @@ typedef struct PanelDrawModelsPc {
     f32 arm_y, arm_z;
 } PanelDrawModelsPc;
 extern u8 PanelStormActivePc, PanelDroidActivePc, PanelBountyHunterActivePc;
-i32 __cdecl GizPanel_CanUsePanel(GAMEOBJECT *, void *);
 void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 /* Native PC hint updater records retain their original packed field offsets. */
 typedef struct HINT_PANEL_PC {
