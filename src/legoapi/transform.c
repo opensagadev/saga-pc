@@ -1,11 +1,4 @@
 #include "saga.h"
-void __cdecl QuatInterpolateRotationMatrix(NUMTX *out, NUMTX *left, NUMTX *right, f32 fraction) {
-    NUQUAT a, b, value;
-    NuMtxToQuat(right, &b);
-    NuMtxToQuat(left, &a);
-    NuQuatSlerp(&value, &a, &b, fraction);
-    NuQuatToMtx(&value, out);
-}
 
 STATIC_ASSERT(sizeof(GAMEOBJECT) == 0x10d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);

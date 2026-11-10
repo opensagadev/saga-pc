@@ -23,55 +23,6 @@ STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) == 0xb8);
 STATIC_ASSERT(offsetof(NUCAMERA, mtx) == 0);
 STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, active) == 0xe);
 
-void __cdecl RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z) {
-    switch (order) {
-        case 0:
-            if (x != 0) {
-                NuMtxRotateX(matrix, x);
-            }
-            if (y != 0) {
-                NuMtxRotateY(matrix, y);
-            }
-            if (z != 0) {
-                NuMtxRotateZ(matrix, z);
-            }
-            break;
-        case 1:
-            if (y != 0) {
-                NuMtxRotateY(matrix, y);
-            }
-            if (x != 0) {
-                NuMtxRotateX(matrix, x);
-            }
-            if (z != 0) {
-                NuMtxRotateZ(matrix, z);
-            }
-            break;
-        case 2:
-            if (y != 0) {
-                NuMtxRotateY(matrix, y);
-            }
-            if (z != 0) {
-                NuMtxRotateZ(matrix, z);
-            }
-            if (x != 0) {
-                NuMtxRotateX(matrix, x);
-            }
-            break;
-        case 3:
-            if (z != 0) {
-                NuMtxRotateZ(matrix, z);
-            }
-            if (x != 0) {
-                NuMtxRotateX(matrix, x);
-            }
-            if (y != 0) {
-                NuMtxRotateY(matrix, y);
-            }
-            break;
-    }
-}
-
 i32 __cdecl InDoubleScoreZone(GAMEOBJECT *object) {
     i32 i;
     if ((WORLD->current_level->flags & 0x800) != 0)

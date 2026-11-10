@@ -148,27 +148,6 @@ extern "C" {
         }
     }
 
-    __declspec(noinline) void __cdecl SaveSceneObjectAnimTFactors(NUGSCN *scene) {
-        NUINSTANCE *instance;
-        i32 count;
-
-        if (scene == NULL || scene->display_list != NULL) {
-            return;
-        }
-        count = scene->num_instances;
-        instance = scene->instances + count;
-        if (count == 0) {
-            return;
-        }
-        do {
-            --instance;
-            if (instance->animation != NULL) {
-                instance->animation->fparam1 = instance->animation->tfactor;
-            }
-            --count;
-        } while (count != 0);
-    }
-
     typedef struct world_script_progress_pc_s {
         char name[16];
         f32 params[4];
@@ -245,10 +224,6 @@ extern "C" {
                                            (u32)(u16)level->max_ter_groups, (u32)(u16)level->max_ter_platforms);
         }
     }
-}
-
-extern "C" void SetTexAnimSignals() {
-    NuTexAnimSetSignals(texanimbits);
 }
 
 extern "C" void WorldInfo_DrawScene(WORLDINFO *world) {

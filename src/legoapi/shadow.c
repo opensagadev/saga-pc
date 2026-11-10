@@ -120,20 +120,6 @@ void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
     shard->tumble_x = qrand() <= 0x7fff;
 }
 
-f32 __cdecl BlobShadowFade(NUVEC *position, f32 fade_start, f32 fade_end, f32 alpha) {
-    NUVEC delta;
-    f32 distance_squared;
-    if (alpha <= 0.0f)
-        return 0.0f;
-    NuVecSub(&delta, position, (NUVEC *)&pNuCam->mtx.m30);
-    distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-    if (!(distance_squared < fade_end * fade_end))
-        return 0.0f;
-    if (!(distance_squared > fade_start * fade_start))
-        return alpha;
-    return (1.0f - (NuFsqrt(distance_squared) - fade_start) / (fade_end - fade_start)) * alpha;
-}
-
 void __cdecl CharShadows_Reset(CHARACTER_SHADOW_PACKET_PC *packet) {
     packet->shadows[0].position.y = 2000000.0f;
     packet->shadows[1].position.y = 2000000.0f;

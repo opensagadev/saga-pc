@@ -177,23 +177,6 @@ f32 __cdecl GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
 
 u16 __cdecl SeekRot(u16 current, u16 target, f32 speed);
 
-__declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
-    u16 x_angle = (u16)NuAtan2D(normal->z, normal->y);
-    NUVEC rotated;
-    u16 z_angle;
-
-    if (x_rotation != NULL) {
-        *x_rotation = x_angle;
-    }
-    temp_zrot = x_angle;
-    NuVecRotateX(&rotated, normal, (NUANG)(0 - x_angle));
-    z_angle = (u16)NuAtan2D(rotated.x, rotated.y);
-    if (z_rotation != NULL) {
-        *z_rotation = (u16)-z_angle;
-    }
-    temp_xrot = (u16)-z_angle;
-}
-
 void __cdecl GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     PLAYERCHARACTERCONFIG_PC *game;
     u16 x;
@@ -4023,51 +4006,6 @@ STATIC_ASSERT(offsetof(struct shadow_platform_list_pc_s, entries) == 0x18);
  * character_data pointer54 -> game_character pointer24 -> field_028 f32.
  * No new aggregate/type claim in this private source access view.
  */
-
-__declspec(noinline) f32 __cdecl GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
-    i32 handles[16];
-    i32 handle_count = 0;
-    i32 i;
-    f32 height;
-
-    if (object != NULL) {
-        WORLDINFO *world = WorldInfo_CurrentlyActive();
-        if (object->level_object_index != -1)
-            handles[handle_count++] = object->level_object_index;
-        if (world != NULL && world->shadow_platform_list_pc != NULL && VehicleArea == 0 &&
-            (object->flags_1fc & 0x80u) == 0) {
-            struct shadow_platform_list_pc_s *list = world->shadow_platform_list_pc;
-            for (i = 0; i < list->count; ++i) {
-                if (list->entries[i].object != NULL)
-                    handles[handle_count++] = list->entries[i].object->level_object_index;
-            }
-        }
-        for (i = 0; i < handle_count; ++i)
-            PlatOnOff(handles[i], 0);
-        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->field_028 == 0.0f)
-            mask &= (i32)~LAYER_HOVERIGNORE;
-    }
-
-    height = NewShadowEx(position, 0.0f, probe, probe, mask);
-    if (object != NULL && object->level_object_index != -1)
-        PlatOnOff(object->level_object_index, 1);
-    for (i = 0; i < handle_count; ++i)
-        PlatOnOff(handles[i], 1);
-    return height;
-}
-
-f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
-    f32 height;
-    i32 material;
-    NewTerrPlatformsOff();
-    height = NewShadowEx(position, 0.0f, 5.0f, 5.0f, -1);
-    if (height != GameObjectNearFloorNoFloorHeight) {
-        material = ShadowInfo();
-        if ((u32)material <= 31u && (TerSurface[material].flags & 2u) != 0)
-            return height;
-    }
-    return LevelConfigFarDistance;
-}
 
 void __cdecl InitSurfaceInfo(GAMEOBJECT *object) {
     void(__cdecl * extra_reflect)(GAMEOBJECT *);

@@ -5,21 +5,6 @@
 extern void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *special, i32 visible);
 void __cdecl GameAnimMissingAnimDiagnosticPc(char *name);
 
-/* PC animation constructors call the shared game allocator out of line. */
-__declspec(noinline) void *__cdecl GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
-    void *ptr = NULL;
-
-    if (buf != NULL && end != NULL && buf->addr + (u32)size < end->addr) {
-        buf->addr = (buf->addr + 3) & ~3u;
-        ptr = buf->void_ptr;
-        buf->addr += (u32)size;
-    }
-    if (ptr != NULL) {
-        memset(ptr, 0, (u32)size);
-    }
-    return ptr;
-}
-
 void __cdecl GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count) {
     i32 i;
 
@@ -690,81 +675,6 @@ void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
     for (object = set->objects; object != NULL; object = object->next) {
         NuSpecialSetVisibility(&object->special, visibility);
     }
-}
-
-void __cdecl EvalAnim(NUSPECIALHANDLE *special, f32 frame, NUMTX *matrix, i32 update) {
-    NUINSTANIM *instance_animation;
-    ANI3_HEADER_PC *animation;
-    NUGSCN *scene;
-    NUMTX *instance_matrix;
-
-    if (special == NULL || matrix == NULL) {
-        return;
-    }
-    instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(special);
-    if (instance_animation != NULL) {
-        scene = (NUGSCN *)special->scene;
-        animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
-        if (animation == NULL) {
-            return;
-        }
-        NuAnimData2CalcMatrix(animation, 0, frame, matrix);
-        if (update != 0) {
-            instance_matrix = NuSpecialGetInstanceMtx(special);
-            if (instance_matrix != NULL) {
-                matrix->m30 += instance_matrix->m30;
-                matrix->m31 += instance_matrix->m31;
-                matrix->m32 += instance_matrix->m32;
-            }
-        }
-    } else if (update != 0) {
-        instance_matrix = NuSpecialGetInstanceMtx(special);
-        if (instance_matrix != NULL) {
-            *matrix = *instance_matrix;
-        }
-    }
-}
-
-void __cdecl EvalAnim2(NUSPECIALHANDLE *special, f32 frame) {
-    NUINSTANIM *instance_animation;
-    ANI3_HEADER_PC *animation;
-    NUGSCN *scene;
-    NUMTX *instance_matrix;
-    i32 animation_index;
-
-    instance_animation = (NUINSTANIM *)NuSpecialGetInstAnim(special);
-    if (instance_animation == NULL) {
-        return;
-    }
-    scene = (NUGSCN *)special->scene;
-    animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance_animation->animation_index];
-    if (animation == NULL || instance_animation->prev_eval_time == frame) {
-        return;
-    }
-    instance_matrix = NuSpecialGetInstanceMtx(special);
-    NuAnimData2CalcMatrix(animation, 0, frame, &instance_animation->matrix);
-    instance_animation->prev_eval_time = frame;
-    animation_index = (i32)(instance_animation - scene->instance_animations);
-    scene->instance_animation_matrices[animation_index] = instance_animation->matrix;
-    instance_animation->matrix.m30 += instance_matrix->m30;
-    instance_animation->matrix.m31 += instance_matrix->m31;
-    instance_animation->matrix.m32 += instance_matrix->m32;
-    NuSpecialUpdate(special);
-}
-
-f32 NuSpecialGetAnimPos(nuhspecial_s *special) {
-    f32 end_frame;
-    f32 position;
-    NUINSTANIM *animation = NuSpecialGetInstAnim(special);
-    if (animation == NULL || special->scene->instance_animation_data[animation->animation_index] == NULL) {
-        return 0.0f;
-    }
-    end_frame = NuSpecialGetAnimEndFrame(special);
-    position = (animation->ltime - 1.0f) / (end_frame - 1.0f);
-    if (position < 0.0f) {
-        return 0.0f;
-    }
-    return position > 1.0f ? 1.0f : position;
 }
 
 void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {

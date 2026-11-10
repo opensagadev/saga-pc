@@ -58,13 +58,6 @@ typedef struct grapple_movement_pc_s {
 STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, shadow_probe_position) == 0x3c);
 STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, swing_scale) == 0x4c);
 
-__declspec(noinline) f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
-    NUVEC input, target;
-    NuVecRotateY(&input, &v001, input_angle);
-    NuVecRotateY(&target, &v001, direction);
-    return input.x * target.x + input.z * target.z;
-}
-
 i32 __cdecl WallShuffle_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
     CHARACTER_MODEL_LAYERS_PC *model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
     u16 sideways_angle;

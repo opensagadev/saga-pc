@@ -173,19 +173,6 @@ extern "C" {
     void __cdecl NuRndrGradRect2di(i32, i32, i32, i32, u32 *, NUMTL *);
 }
 
-extern "C" void __cdecl CreateUsefulMaterials(void) {
-    SolidMtl = NuMtlCreate(1);
-    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL_PC *)SolidMtl)->attributes |= 0x40000u;
-    NuMtlUpdate(SolidMtl);
-    ZipUpLineMaterialPc = NuMtlCreate3D(1);
-    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL_PC *)ZipUpLineMaterialPc)->attributes |= 0x40000u;
-    NuMtlUpdate((NUMTL *)ZipUpLineMaterialPc);
-}
-
 extern "C" void __cdecl DrawFadeScreenWipe(void) {
     i32 x = 0;
     i32 y = 0;
