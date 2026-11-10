@@ -175,7 +175,9 @@ static i32 __cdecl Plug_GetNumOutputs(GIZMO_PC *gizmo) {
     return 1;
 }
 static NUVEC *__cdecl Plug_GetPos(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? &((CARRY_PLUG_PC *)gizmo->object)->position : NULL;
+    if (gizmo == NULL)
+        return NULL;
+    return &((CARRY_PLUG_PC *)gizmo->object)->position;
 }
 static void *__cdecl Plugs_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 12);

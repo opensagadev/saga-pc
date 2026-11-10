@@ -83,16 +83,16 @@ WAVEFORMATEX *OggReader::GetFormat(void) {
 i32 OggReader::GetSize(void) {
     if (!compressed)
         return WavReader::GetSize();
-    if (cache == NULL)
-        return 0;
-    return (i32)ov_pcm_total(&vorbis_state, -1) * compressed_format.nBlockAlign;
+    if (cache != NULL)
+        return (i32)ov_pcm_total(&vorbis_state, -1) * compressed_format.nBlockAlign;
+    return 0;
 }
 HRESULT OggReader::Reset(void) {
     if (!compressed)
         return WavReader::Reset();
-    if (cache == NULL)
-        return E_FAIL;
-    return ov_raw_seek(&vorbis_state, 0) >= 0 ? S_OK : E_FAIL;
+    if (cache != NULL)
+        return ov_raw_seek(&vorbis_state, 0) >= 0 ? S_OK : E_FAIL;
+    return E_FAIL;
 }
 HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
     if (!compressed)
@@ -214,7 +214,9 @@ i32 __cdecl OggReader::CloseCallbackPc(void *source) {
 // NOLINTNEXTLINE(google-runtime-int): Original upstream long type preserves the native C ABI.
 long __cdecl OggReader::TellCallbackPc(void *source) {
     OggReader *reader = (OggReader *)source;
-    return reader->cache != NULL ? reader->position : 0;
+    if (reader->cache == NULL)
+        return 0;
+    return reader->position;
 }
 HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     PCThreadMillisecondsPc();

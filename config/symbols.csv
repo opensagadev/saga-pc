@@ -314,7 +314,7 @@ address,symbol,size,ctype
 0x428930,_CutSceneFabsPc,18,static f32 __cdecl(f32)
 0x4289a0,_AdaptiveDifficultyAdjustPc,156,"f32 __cdecl(ADAPTIVEDIFFICULTY_PC*,f32)"
 0x428a40,_AdaptiveDifficultyUpdatePc,219,f32 __cdecl(ADAPTIVEDIFFICULTY_PC *)
-0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,85,
+0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,81,
 0x428b80,?MakeSaveHash@@YAHXZ,8,
 0x428b90,_InitGameBeforeConfig,466,
 0x00428d70,?GoThroughDoor_ExtraCode@@YAXPAUWORLDINFO_s@@PAUgame_door_callback_pc_s@@@Z,176,
@@ -3961,7 +3961,7 @@ address,symbol,size,ctype
 0x00547060,_NuLstCreate,136,"NULSTHDR *__cdecl (i32, i32)"
 0x5470f0,_NuLstCreateBuff,173,"NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32)"
 0x5471c0,_NuLstAllocHead,118,NULNKHDR* __cdecl(NULSTHDR*)
-0x00547240,_NuLstAllocTail,117,NULNKHDR *__cdecl (NULSTHDR *)
+0x00547240,_NuLstAllocTail,118,NULNKHDR *__cdecl (NULSTHDR *)
 0x005474d0,_NuLstFree,130,void __cdecl(NULNKHDR *)
 0x547560,_NuLstGetByIdx,31,"NULNKHDR * __cdecl (NULSTHDR *, i32)"
 0x00547580,_NuLstGetNext,40,"NULNKHDR *__cdecl(NULSTHDR *, NULNKHDR *)"
@@ -3970,7 +3970,7 @@ address,symbol,size,ctype
 0x00547700,_EndPerm,124,void __cdecl (void)
 0x00547780,_ResetCharacterBuffer,87,void __cdecl (i32)
 0x00547820,_GameAudio_GetPlrSfxBits,34,i32 __cdecl (void *)
-0x547850,_GameAudio_Reset,70,
+0x547850,_GameAudio_Reset,73,
 0x005478a0,_GameAudio_PlaySfxById,141,
 0x00547930,_GameAudio_PlaySfx,33,
 0x547960,_GameAudio_PlaySfxAndSetVolume,46,"void __cdecl(i32,NUVEC *,f32)"
@@ -4674,7 +4674,7 @@ address,symbol,size,ctype
 0x00571330,_GizmoPickups_UpdateListPc,903,
 0x5716c0,_GizmoPickups_Update,55,"void __cdecl(void *, void *, f32)"
 0x571700,_GizmoPickups_RegisterGizmo,293,ADDGIZMOTYPE_PC * __cdecl(i32)
-0x571850,_InitPartTable,49,
+0x571850,_InitPartTable,50,
 0x571890,_InitPartDebris,352,"PARTDEBRISSYS * __cdecl (VARIPTR *, VARIPTR *, i32, i32, char **, i32)"
 0x5719f0,_FindPartDebris,86,"i32 __cdecl(PARTDEBRISSYS *,char *)"
 0x571a50,_LoadPartFile,204,void __cdecl(WORLDINFO *)
@@ -4790,7 +4790,7 @@ address,symbol,size,ctype
 0x005788d0,_Level_RegisterGameConfigKeywords,20,"void __cdecl (NUFPCOMJMP *, NUFPCOMJMP *)"
 0x005788f0,_Levels_ConfigureList,1196,"LEVELDATA_PC *__cdecl (char *, VARIPTR *, VARIPTR *, i32, i32 *, void *)"
 0x00578da0,_Level_FindByName,107,"LEVELDATA_PC * __cdecl (char *, i32 *)"
-0x00578e10,_Levels_FixUp,227,void __cdecl (struct level_fixup_pc_s *)
+0x00578e10,_Levels_FixUp,211,void __cdecl (struct level_fixup_pc_s *)
 0x00578ef0,_LC_BL_mipmapmode,26,void __cdecl (NUFPAR_PC *)
 0x00578f10,_LC_BL_fix_strobing_anims,13,void __cdecl (NUFPAR_PC *)
 0x00578f20,_LC_BL_max_ter_groups,27,void __cdecl (NUFPAR_PC *)
@@ -7331,7 +7331,7 @@ address,symbol,size,ctype
 0x610ae0,?RecvFrom@NuNetEmu@@QAEHPAXHAAI@Z,264,
 0x610bf0,??1EmuPacket@NuNetEmu@@QAE@XZ,20,
 0x610c10,?AddPayload@EmuPacket@NuNetEmu@@QAEXPAXH@Z,72,
-0x610c60,?SetConditions@NuNetEmu@@QAEXW4eConditions@1@@Z,169,
+0x610c60,?SetConditions@NuNetEmu@@QAEXW4eConditions@1@@Z,168,
 0x610d10,?Draw@PackStats@NuNetEmu@@UAEXMMMMW4eInfo@NetSmallStats@@@Z,759,
 0x611010,??0?$CSListLink@VEmuPacket@NuNetEmu@@@@QAE@XZ,20,
 0x611120,??_GEmuPacket@NuNetEmu@@QAEPAXI@Z,48,
@@ -8817,7 +8817,7 @@ address,symbol,size,ctype
 0x666ec0,_cbPtlCancelRotMenu,37,
 0x666ef0,_cbPtlRotMenu,617,
 0x667160,_cbPtlChangeRepeatFlag,101,
-0x6671d0,_cbPtlChangeRepeatXZLock,111,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
+0x6671d0,_cbPtlChangeRepeatXZLock,112,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x667240,_cbPtlChangeRepeatBox,203,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x667310,_cbPtlCancelRepeatBoxMenu,32,"void __cdecl(eduimenu_s *, eduimenu_s *)"
 0x667330,_cbPtlRepeatBoxMenu,490,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
@@ -9173,7 +9173,7 @@ address,symbol,size,ctype
 0x00693c90,?FindVoiceByTrack@NuMusic@@QAEPAVVoice@1@PAVTrack@1@@Z,72,"NuMusic::Voice *__thiscall (NuMusic *, NuMusic::Track *)"
 0x00693ce0,?FindVoiceByClass@NuMusic@@QAEPAVVoice@1@I@Z,75,"NuMusic::Voice *__thiscall (NuMusic *, u32)"
 0x00693d30,?FindVoiceByClassAndStatus@NuMusic@@QAEPAVVoice@1@II@Z,97,"NuMusic::Voice *__thiscall (NuMusic *, u32, u32)"
-0x00693da0,?FindIdleVoice@NuMusic@@QAEPAVVoice@1@XZ,63,NuMusic::Voice *__thiscall (NuMusic *)
+0x00693da0,?FindIdleVoice@NuMusic@@QAEPAVVoice@1@XZ,66,NuMusic::Voice *__thiscall (NuMusic *)
 0x00693e10,?ManageEntryTime@Track@NuMusic@@QAEXXZ,38,void __thiscall (NuMusic::Track *)
 0x00693e50,?ClassToIX@NuMusic@@SAHI@Z,33,i32 __cdecl (u32)
 0x00693e80,?GetTrack@Album@NuMusic@@QAEPAVTrack@2@I@Z,54,"NuMusic::Track *__thiscall (NuMusic::Album *, u32)"
@@ -9185,7 +9185,7 @@ address,symbol,size,ctype
 0x006941a0,?ResumeTrack@NuMusic@@QAEHI@Z,147,"i32 __thiscall (NuMusic *, u32)"
 0x00694240,?SelectTrackByHandle@NuMusic@@QAEHIH@Z,212,"i32 __thiscall (NuMusic *, u32, i32)"
 0x00694320,?GetTrackHandle@NuMusic@@QAEHIPBD@Z,358,"i32 __thiscall (NuMusic *, u32, const char *)"
-0x00694490,?GetStatus@NuMusic@@QAEHIPAH@Z,191,"i32 __thiscall (NuMusic *, u32, i32 *)"
+0x00694490,?GetStatus@NuMusic@@QAEHIPAH@Z,224,"i32 __thiscall (NuMusic *, u32, i32 *)"
 0x694570,?GlobalParseErrorFn@NuMusic@@SAXPAUnufpar_pc_s@@@Z,31,static void  __cdecl NuMusic::GlobalParseErrorFn(NUFPAR_PC *)
 0x694590,?TrackParseErrorFn@NuMusic@@SAXPAUnufpar_pc_s@@@Z,31,static void  __cdecl NuMusic::TrackParseErrorFn(NUFPAR_PC *)
 0x6945b0,?xIndex@NuMusic@@QAEXPAUnufpar_pc_s@@@Z,57,void  __thiscall NuMusic::xIndex(NUFPAR_PC *)
@@ -10134,7 +10134,7 @@ address,symbol,size,ctype
 0x6c8ab0,??_GClassEditor@@UAEPAXI@Z,31,
 0x6c8ad0,?Initialise@ClassEditor@@UAEXAATvariptr_u@@0H@Z,141,
 0x6c8b60,?Editable@ClassEditor@@QAEHPAXPAUEdClass@@H@Z,182,
-0x6c8c20,?SetMode@ClassEditor@@QAEXH@Z,127,
+0x6c8c20,?SetMode@ClassEditor@@QAEXH@Z,152,
 0x6c9180,?FindNearestObject@ClassEditor@@QAEHAAUVuVec@@0AAUClassObject@@H@Z,327,
 0x6c92d0,?FindNearestObject@ClassEditor@@QAEHAAUVuVec@@0AAUClassObject@@1H@Z,464,
 0x6c94a0,?DrawObjectSphere@ClassEditor@@QAEXAAUClassObject@@H@Z,413,
@@ -10472,7 +10472,7 @@ address,symbol,size,ctype
 0x006de050,_PcFrameDelayMessagePc,3,const char *__cdecl(void)
 0x6de060,_PcShutdown,122,void __cdecl(void)
 0x6de0e0,_WinMain@16,200,"i32 __stdcall(HINSTANCE,HINSTANCE,LPSTR,i32)"
-0x6de1b0,_PcQuitToWindows,12,void __cdecl(void)
+0x6de1b0,_PcQuitToWindows,13,void __cdecl(void)
 0x6de1c0,_WindowProcPc@16,751,"LRESULT __stdcall(HWND,UINT,WPARAM,LPARAM)"
 0x6de4b0,_CreateWindowPc,420,"i32 __cdecl(HINSTANCE,i32,u16)"
 0x006de6d0,_NuPadSetMotorsPc,1,"void __cdecl(NUPAD_INIT_STATE *, i32, i32)"
@@ -10524,7 +10524,7 @@ address,symbol,size,ctype
 0x6dff80,?Shutdown@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,31,void __thiscall(void)
 0x6dffc0,?InitializeHeader@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,104,void __thiscall(void)
 0x006e0030,_PCNativeDebugPrint,72,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, const char *, ...)"
-0x6e0080,_PCGraphicsFatalDiagnostic,92,"void __cdecl(PC_NATIVE_DEBUG_STATE_PC*,const char*,...)"
+0x6e0080,_PCGraphicsFatalDiagnostic,93,"void __cdecl(PC_NATIVE_DEBUG_STATE_PC*,const char*,...)"
 0x6e0320,?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,5091,void __thiscall(void)
 0x6e1750,?Initialize@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,172,void __thiscall(void)
 0x6e1930,??0PC_DEVICE_BACKEND_PC@@QAE@XZ,472,PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC(void)
@@ -11886,8 +11886,8 @@ address,symbol,size,ctype
 0x744c20,_NuShaderObjectKeyGenerate3,1093,"void __cdecl(u32*,const PC_SHADER_MATERIAL_FILTER_VIEW*,i32)"
 0x7451d0,??_EShaderBuilderGen@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
 0x7451d0,??_GShaderBuilderGen@@UAEPAXI@Z,74,
-0x745220,?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z,32,void __thiscall ShaderBuilderGen::SetIncludeDirectories(const char*)
-0x745240,?SetSaveDirectory@ShaderBuilderGen@@UAEXPBD@Z,32,void __thiscall ShaderBuilderGen::SetSaveDirectory(const char*)
+0x745220,?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z,31,void __thiscall ShaderBuilderGen::SetIncludeDirectories(const char*)
+0x745240,?SetSaveDirectory@ShaderBuilderGen@@UAEXPBD@Z,31,void __thiscall ShaderBuilderGen::SetSaveDirectory(const char*)
 0x745260,?SetProfile@ShaderBuilderGen@@UAEXHHH@Z,11,"void __thiscall ShaderBuilderGen::SetProfile(i32,i32,i32)"
 0x745280,?SetForceMode@ShaderBuilderGen@@UAEX_N@Z,13,void __thiscall ShaderBuilderGen::SetForceMode(bool)
 0x7452b0,?Prepare@ShaderBuilderGen@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall ShaderBuilderGen::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"

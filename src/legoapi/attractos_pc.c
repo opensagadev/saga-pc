@@ -192,7 +192,9 @@ void __cdecl Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     }
 }
 NUVEC *__cdecl Attracto_GetPos(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? &((ATTRACTO_RECORD_PC *)gizmo->object)->position : NULL;
+    if (gizmo == NULL)
+        return NULL;
+    return &((ATTRACTO_RECORD_PC *)gizmo->object)->position;
 }
 void *__cdecl Attractos_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
     return GizmoBufferAlloc(start, end, sizeof(ATTRACTO_PROGRESS_PC));

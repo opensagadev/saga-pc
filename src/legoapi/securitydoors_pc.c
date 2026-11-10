@@ -345,7 +345,9 @@ void __cdecl SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURIT
 }
 
 NUVEC *__cdecl SecurityDoor_GetPos(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? &((SECURITY_DOOR_RECORD_PC *)gizmo->object)->position : NULL;
+    if (gizmo == NULL)
+        return NULL;
+    return &((SECURITY_DOOR_RECORD_PC *)gizmo->object)->position;
 }
 
 #pragma const_seg(".rdata$PCSecurityDoorOutputTextPc")
