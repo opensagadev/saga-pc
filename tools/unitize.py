@@ -347,7 +347,9 @@ def build_plan(lo, hi, target):
         moved_here = [i for _, i in plan.moved if i.source is source]
         if not moved_here:
             continue
-        remaining_functions = [i for i in source.items if i.function and id(i) not in take]
+        # Unmapped static helpers do not keep a file alive: the target gets its own copy.
+        remaining_functions = [i for i in source.items if i.function and id(i) not in take
+                               and not (i.static and not (i.mangled & mapped))]
         if not remaining_functions:
             # The whole file merges into the target.
             plan.deleted.append(path)

@@ -136,6 +136,8 @@ extern "C" {
 }
 STATIC_ASSERT(offsetof(GAMEOBJECT, target_velocity) == 0xf18);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
+STATIC_ASSERT(offsetof(BOLT_PC, owner) == 4);
+STATIC_ASSERT(offsetof(BOLT_PC, hit_platform) == 0xfa);
 extern "C" {
     extern NUVEC PushBlockMissingSpecialPositionPc;
     extern i32 RunOutOfPosTabSpacePc;
