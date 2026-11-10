@@ -2277,67 +2277,66 @@ i32 __cdecl AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VAR
     i32 source_is_level;
     i32 i;
 
-    if (script == NULL || script->derived_from == NULL || (script->flags_3c & 2) == 0) {
-        return 1;
-    }
+    if (script != NULL && script->derived_from != NULL && (script->flags_3c & 2) != 0) {
+        source_is_level = (script->flags_3c >> 2) & 1;
+        source_script = AIScriptFind(sys, script->derived_from, 0, source_is_level, !source_is_level);
+        if (source_script != NULL) {
+            if (source_script != script) {
+                if ((source_script->flags_3c & 2) != 0) {
+                    return 0;
+                }
+                source_state = (AISTATE_PC *)NuLinkedListGetHead(&source_script->states);
+                while (source_state != NULL) {
+                    state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
+                    while (state != NULL) {
+                        if (NuStrICmp(source_state->name, state->name) == 0) {
+                            break;
+                        }
+                        state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
+                    }
+                    if (state == NULL) {
+                        AISTATE_PC *copy;
+                        copy = AIScriptCopyStatePc(source_state, buffer, end_buffer);
+                        if (copy != NULL) {
+                            NuLinkedListAppend(&script->states, &copy->link);
+                        }
+                    }
+                    source_state = (AISTATE_PC *)NuLinkedListGetNext(&source_script->states, &source_state->link);
+                }
 
-    source_is_level = (script->flags_3c >> 2) & 1;
-    source_script = AIScriptFind(sys, script->derived_from, 0, source_is_level, !source_is_level);
-    if (source_script != NULL) {
-        if (source_script != script) {
-            if ((source_script->flags_3c & 2) != 0) {
-                return 0;
-            }
-            source_state = (AISTATE_PC *)NuLinkedListGetHead(&source_script->states);
-            while (source_state != NULL) {
+                for (i = 0; i < 4; i++) {
+                    if (source_script->params[i].name != NULL && script->params[i].name == NULL) {
+                        script->params[i].name =
+                            AIScriptCopyStringPc(source_script->params[i].name, buffer, end_buffer);
+                        script->params[i].default_value = source_script->params[i].default_value;
+                    }
+                }
+
                 state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
                 while (state != NULL) {
-                    if (NuStrICmp(source_state->name, state->name) == 0) {
-                        break;
+                    condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
+                    while (condition != NULL) {
+                        condition->next_state = AIStateFind(condition->next_state_name, script);
+                        if (condition->next_state_name != NULL && condition->next_state == NULL) {
+                            if (AIActionDiagnosticMode == 1) {
+                                AIScriptMissingStateDiagnosticAlternate(condition->next_state_name, script->name,
+                                                                        state->name);
+                            } else {
+                                AIScriptMissingStateDiagnostic(condition->next_state_name, script->name, state->name);
+                            }
+                        }
+                        condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
                     }
                     state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
                 }
-                if (state == NULL) {
-                    AISTATE_PC *copy;
-                    copy = AIScriptCopyStatePc(source_state, buffer, end_buffer);
-                    if (copy != NULL) {
-                        NuLinkedListAppend(&script->states, &copy->link);
-                    }
-                }
-                source_state = (AISTATE_PC *)NuLinkedListGetNext(&source_script->states, &source_state->link);
             }
-
-            for (i = 0; i < 4; i++) {
-                if (source_script->params[i].name != NULL && script->params[i].name == NULL) {
-                    script->params[i].name = AIScriptCopyStringPc(source_script->params[i].name, buffer, end_buffer);
-                    script->params[i].default_value = source_script->params[i].default_value;
-                }
-            }
-
-            state = (AISTATE_PC *)NuLinkedListGetHead(&script->states);
-            while (state != NULL) {
-                condition = (AICONDITION_PC *)NuLinkedListGetHead(&state->conditions);
-                while (condition != NULL) {
-                    condition->next_state = AIStateFind(condition->next_state_name, script);
-                    if (condition->next_state_name != NULL && condition->next_state == NULL) {
-                        if (AIActionDiagnosticMode == 1) {
-                            AIScriptMissingStateDiagnosticAlternate(condition->next_state_name, script->name,
-                                                                    state->name);
-                        } else {
-                            AIScriptMissingStateDiagnostic(condition->next_state_name, script->name, state->name);
-                        }
-                    }
-                    condition = (AICONDITION_PC *)NuLinkedListGetNext(&state->conditions, &condition->link);
-                }
-                state = (AISTATE_PC *)NuLinkedListGetNext(&script->states, &state->link);
-            }
+        } else if (AIActionDiagnosticMode == 1) {
+            AIScriptMissingStateDiagnosticAlternate(script->name, script->derived_from);
+        } else {
+            AIScriptMissingStateDiagnostic(script->name, script->derived_from);
         }
-    } else if (AIActionDiagnosticMode == 1) {
-        AIScriptMissingStateDiagnosticAlternate(script->name, script->derived_from);
-    } else {
-        AIScriptMissingStateDiagnostic(script->name, script->derived_from);
+        script->flags_3c &= ~2u;
     }
-    script->flags_3c &= ~2u;
     return 1;
 }
 
@@ -3373,20 +3372,20 @@ i32 __cdecl Action_SetCircleDirection(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                                       char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 i;
 
-    if (packet != NULL && packet->owner != NULL && first_time != 0 && param_count != 0) {
-        for (i = 0; i < param_count; i++) {
-            if (NuStrICmp(params[i], AIActionClockwiseName) == 0) {
+    if (packet == NULL || packet->owner == NULL || first_time == 0 || param_count == 0)
+        return 1;
+    for (i = 0; i < param_count; i++) {
+        if (NuStrICmp(params[i], AIActionClockwiseName) == 0) {
+            packet->flags |= 0x200u;
+        } else if (NuStrICmp(params[i], AIActionAnticlockwiseName) == 0) {
+            packet->flags &= ~0x200u;
+        } else if (NuStrICmp(params[i], AIActionReverseName) == 0) {
+            packet->flags ^= 0x200u;
+        } else if (NuStrICmp(params[i], AIActionRandomName) == 0) {
+            if (NuRandFloat() > 0.5f) {
                 packet->flags |= 0x200u;
-            } else if (NuStrICmp(params[i], AIActionAnticlockwiseName) == 0) {
+            } else {
                 packet->flags &= ~0x200u;
-            } else if (NuStrICmp(params[i], AIActionReverseName) == 0) {
-                packet->flags ^= 0x200u;
-            } else if (NuStrICmp(params[i], AIActionRandomName) == 0) {
-                if (NuRandFloat() > 0.5f) {
-                    packet->flags |= 0x200u;
-                } else {
-                    packet->flags &= ~0x200u;
-                }
             }
         }
     }
@@ -3504,12 +3503,12 @@ i32 __cdecl Action_IgnoreWallSplines(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
                                      char **params, i32 count, i32 first_time, f32 elapsed) {
     i32 i;
 
-    if (packet != NULL && first_time != 0) {
-        packet->flags |= 0x80u;
-        for (i = 0; i < count; i++) {
-            if (NuStrICmp(params[i], AIScriptFalse) == 0)
-                packet->flags &= ~0x80u;
-        }
+    if (packet == NULL || first_time == 0)
+        return 1;
+    packet->flags |= 0x80u;
+    for (i = 0; i < count; i++) {
+        if (NuStrICmp(params[i], AIScriptFalse) == 0)
+            packet->flags &= ~0x80u;
     }
     return 1;
 }
@@ -3561,12 +3560,12 @@ i32 __cdecl Action_ShadowTerrain(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
                                  i32 param_count, i32 first_time, f32 elapsed) {
     i32 i;
 
-    if (packet != NULL && packet->owner != NULL && first_time != 0) {
-        packet->owner->flags_1fc |= 8;
-        for (i = 0; i < param_count; i++) {
-            if (NuStrICmp(params[i], AIScriptFalse) == 0) {
-                packet->owner->flags_1fc &= ~8;
-            }
+    if (packet == NULL || packet->owner == NULL || first_time == 0)
+        return 1;
+    packet->owner->flags_1fc |= 8;
+    for (i = 0; i < param_count; i++) {
+        if (NuStrICmp(params[i], AIScriptFalse) == 0) {
+            packet->owner->flags_1fc &= ~8;
         }
     }
     return 1;
@@ -3621,17 +3620,17 @@ i32 __cdecl Action_SetViewDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *process
                                    i32 count, i32 first_time, f32 elapsed) {
     APIOBJECT_PC *object;
 
-    if (packet != NULL && packet->owner != NULL && first_time != 0) {
-        object = (APIOBJECT_PC *)packet->owner;
-        if (packet->creature_index != 0xff)
-            object->view_distance = system->creatures[packet->creature_index].view_distance;
-        else if (GetViewRangeFn != NULL)
-            object->view_distance = GetViewRangeFn(object->character_model->model_id);
-        else
-            object->view_distance = 1.0f;
-        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-            object->view_distance = AIParamToFloatEx(packet, processor, params[0]);
-    }
+    if (packet == NULL || packet->owner == NULL || first_time == 0)
+        return 1;
+    object = (APIOBJECT_PC *)packet->owner;
+    if (packet->creature_index != 0xff)
+        object->view_distance = system->creatures[packet->creature_index].view_distance;
+    else if (GetViewRangeFn != NULL)
+        object->view_distance = GetViewRangeFn(object->character_model->model_id);
+    else
+        object->view_distance = 1.0f;
+    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+        object->view_distance = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
@@ -3639,17 +3638,17 @@ i32 __cdecl Action_SetMinViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
                                     i32 count, i32 first_time, f32 elapsed) {
     APIOBJECT_PC *object;
 
-    if (packet != NULL && packet->owner != NULL && first_time != 0) {
-        object = (APIOBJECT_PC *)packet->owner;
-        if (packet->creature_index != 0xff)
-            object->min_view_height = system->creatures[packet->creature_index].min_view_height;
-        else if (GetMinViewHeightFn != NULL)
-            object->min_view_height = GetMinViewHeightFn(object->character_model->model_id);
-        else
-            object->min_view_height = 1.0f;
-        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-            object->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
-    }
+    if (packet == NULL || packet->owner == NULL || first_time == 0)
+        return 1;
+    object = (APIOBJECT_PC *)packet->owner;
+    if (packet->creature_index != 0xff)
+        object->min_view_height = system->creatures[packet->creature_index].min_view_height;
+    else if (GetMinViewHeightFn != NULL)
+        object->min_view_height = GetMinViewHeightFn(object->character_model->model_id);
+    else
+        object->min_view_height = 1.0f;
+    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+        object->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
@@ -3657,17 +3656,17 @@ i32 __cdecl Action_SetMaxViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
                                     i32 count, i32 first_time, f32 elapsed) {
     APIOBJECT_PC *object;
 
-    if (packet != NULL && packet->owner != NULL && first_time != 0) {
-        object = (APIOBJECT_PC *)packet->owner;
-        if (packet->creature_index != 0xff)
-            object->max_view_height = system->creatures[packet->creature_index].max_view_height;
-        else if (GetMaxViewHeightFn != NULL)
-            object->max_view_height = GetMaxViewHeightFn(object->character_model->model_id);
-        else
-            object->max_view_height = 1.0f;
-        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-            object->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
-    }
+    if (packet == NULL || packet->owner == NULL || first_time == 0)
+        return 1;
+    object = (APIOBJECT_PC *)packet->owner;
+    if (packet->creature_index != 0xff)
+        object->max_view_height = system->creatures[packet->creature_index].max_view_height;
+    else if (GetMaxViewHeightFn != NULL)
+        object->max_view_height = GetMaxViewHeightFn(object->character_model->model_id);
+    else
+        object->max_view_height = 1.0f;
+    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+        object->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
@@ -3675,17 +3674,17 @@ i32 __cdecl Action_SetHearDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *process
                                    i32 count, i32 first_time, f32 elapsed) {
     APIOBJECT_PC *object;
 
-    if (packet != NULL && packet->owner != NULL && first_time != 0) {
-        object = (APIOBJECT_PC *)packet->owner;
-        if (packet->creature_index != 0xff)
-            object->hear_distance = system->creatures[packet->creature_index].hear_distance;
-        else if (GetHearDistanceFn != NULL)
-            object->hear_distance = GetHearDistanceFn(object->character_model->model_id);
-        else
-            object->hear_distance = 1.0f;
-        if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-            object->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
-    }
+    if (packet == NULL || packet->owner == NULL || first_time == 0)
+        return 1;
+    object = (APIOBJECT_PC *)packet->owner;
+    if (packet->creature_index != 0xff)
+        object->hear_distance = system->creatures[packet->creature_index].hear_distance;
+    else if (GetHearDistanceFn != NULL)
+        object->hear_distance = GetHearDistanceFn(object->character_model->model_id);
+    else
+        object->hear_distance = 1.0f;
+    if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
+        object->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
@@ -3699,12 +3698,12 @@ i32 __cdecl Action_SetMoveRadius(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     (void)param_4;
     (void)param_5;
     (void)param_6;
-    if (packet != NULL && packet->owner != NULL && param_5 != 0) {
-        packet->mover_height =
-            ((APIOBJECT_PC *)packet->owner)->collision_radius + ((APIOBJECT_PC *)packet->owner)->collision_radius;
-        if (param_4 != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
-            packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
-        }
+    if (packet == NULL || packet->owner == NULL || param_5 == 0)
+        return 1;
+    packet->mover_height =
+        ((APIOBJECT_PC *)packet->owner)->collision_radius + ((APIOBJECT_PC *)packet->owner)->collision_radius;
+    if (param_4 != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0) {
+        packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -5393,24 +5392,23 @@ __declspec(noinline) void *__cdecl AIPAthFindPathCnx(AISYS_PC *system, AIPATH_PC
         }
         path = system->path_sys->active_path;
     }
-    if (path == NULL) {
-        return NULL;
-    }
-    from = AIPathFindNode(system, path, from_name);
-    to = AIPathFindNode(system, path, to_name);
-    if (to == NULL || from == NULL || from == to) {
-        return NULL;
-    }
-    to_index = (i32)(to - path->nodes);
-    for (index = 0; index < from->connection_count; ++index) {
-        AIPATHCNX_PC *connection = from->connections[index];
-        if (connection->node_indices[0] == to_index) {
-            *direction = 1;
-            return connection;
+    if (path != NULL) {
+        from = AIPathFindNode(system, path, from_name);
+        to = AIPathFindNode(system, path, to_name);
+        if (to == NULL || from == NULL || from == to) {
+            return NULL;
         }
-        if (connection->node_indices[1] == to_index) {
-            *direction = 0;
-            return connection;
+        to_index = (i32)(to - path->nodes);
+        for (index = 0; index < from->connection_count; ++index) {
+            AIPATHCNX_PC *connection = from->connections[index];
+            if (connection->node_indices[0] == to_index) {
+                *direction = 1;
+                return connection;
+            }
+            if (connection->node_indices[1] == to_index) {
+                *direction = 0;
+                return connection;
+            }
         }
     }
     return NULL;
@@ -5959,49 +5957,49 @@ static AIPATHCNX_PC *GetNextConnection(const AIPACKET_PC *packet, i32 *direction
         *direction = connection->node_indices[0] != node_index;
     }
     route_index = packet->current_route;
-    if (route_index == 0xff) {
-        return connection;
-    }
-    if ((((u64)1 << route_index) & node->route_membership_mask) == 0) {
-        return NULL;
-    }
-    if ((((u64)1 << route_index) & node->route_boundary_mask) != 0) {
-        if (connection == NULL) {
+    if (route_index != 0xff) {
+        if ((((u64)1 << route_index) & node->route_membership_mask) == 0) {
             return NULL;
         }
-        if ((((u64)1 << route_index) & connection->route_mask) == 0) {
-            return connection;
-        }
-    }
-    route = &packet->path_info.path->routes[packet->current_route];
-    connection = NULL;
-    if ((((u64)1 << packet->current_route) & packet->path_info.path->nodes[destination].route_membership_mask) != 0) {
-        connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[destination]];
-    } else {
-        nearest = FLT_MAX;
-        for (index = 0; index < route->exit_node_count; ++index) {
-            first = AIPathNodeDistanceToPathNode(packet->path_info.path, node_index, route->exit_nodes[index],
-                                                 packet->current_route, 0);
-            second = AIPathNodeDistanceToPathNode(packet->path_info.path, route->exit_nodes[index], destination, 0xff,
-                                                  (u32)((u64)(1) << packet->current_route));
-            if (first != FLT_MAX && second != FLT_MAX) {
-                distance = first + second;
-            } else {
-                distance = FLT_MAX;
+        if ((((u64)1 << route_index) & node->route_boundary_mask) != 0) {
+            if (connection == NULL) {
+                return NULL;
             }
-            if (distance < nearest) {
-                nearest = distance;
-                next_node = route->exit_nodes[index];
+            if ((((u64)1 << route_index) & connection->route_mask) == 0) {
+                return connection;
             }
         }
-        if (nearest == FLT_MAX) {
-            return NULL;
+        route = &packet->path_info.path->routes[packet->current_route];
+        connection = NULL;
+        if ((((u64)1 << packet->current_route) & packet->path_info.path->nodes[destination].route_membership_mask) !=
+            0) {
+            connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[destination]];
+        } else {
+            nearest = FLT_MAX;
+            for (index = 0; index < route->exit_node_count; ++index) {
+                first = AIPathNodeDistanceToPathNode(packet->path_info.path, node_index, route->exit_nodes[index],
+                                                     packet->current_route, 0);
+                second = AIPathNodeDistanceToPathNode(packet->path_info.path, route->exit_nodes[index], destination,
+                                                      0xff, (u32)((u64)(1) << packet->current_route));
+                if (first != FLT_MAX && second != FLT_MAX) {
+                    distance = first + second;
+                } else {
+                    distance = FLT_MAX;
+                }
+                if (distance < nearest) {
+                    nearest = distance;
+                    next_node = route->exit_nodes[index];
+                }
+            }
+            if (nearest == FLT_MAX) {
+                return NULL;
+            }
+            connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[next_node]];
         }
-        connection_index = route->route_nodes[route->node_routes[node_index]][route->node_routes[next_node]];
-    }
-    if (connection_index < node->connection_count) {
-        connection = node->connections[connection_index];
-        *direction = connection->node_indices[0] != node_index;
+        if (connection_index < node->connection_count) {
+            connection = node->connections[connection_index];
+            *direction = connection->node_indices[0] != node_index;
+        }
     }
     return connection;
 }
@@ -7846,17 +7844,17 @@ i32 __cdecl NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result
     result->scene = NULL;
     result->special = NULL;
     result->display_special = NULL;
-    if (scene == NULL || CurrentTerrain == NULL || platform_id == -1)
-        return 0;
-    count = NuGScnNumSpecials(scene);
-    instance_index = ((AI_EDITOR_SPECIAL_TERRAIN_PC *)CurrentTerrain)->platforms[platform_id].instance_index;
-    for (index = 0; index < count; ++index) {
-        NuGScnGetSpecial(&candidate, scene, index);
-        if (NuSpecialGetInstanceix(&candidate) == instance_index) {
-            result->scene = (NUGSCN *)candidate.scene;
-            result->special = candidate.special;
-            result->display_special = (struct nudisplay_special_pc_s *)candidate.display_special;
-            return 1;
+    if (scene != NULL && CurrentTerrain != NULL && platform_id != -1) {
+        count = NuGScnNumSpecials(scene);
+        instance_index = ((AI_EDITOR_SPECIAL_TERRAIN_PC *)CurrentTerrain)->platforms[platform_id].instance_index;
+        for (index = 0; index < count; ++index) {
+            NuGScnGetSpecial(&candidate, scene, index);
+            if (NuSpecialGetInstanceix(&candidate) == instance_index) {
+                result->scene = (NUGSCN *)candidate.scene;
+                result->special = candidate.special;
+                result->display_special = (struct nudisplay_special_pc_s *)candidate.display_special;
+                return 1;
+            }
         }
     }
     return 0;
@@ -8158,34 +8156,34 @@ static i32 AiEditorRemoveLocatorFromSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *loca
 static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, EDLOCATOR_s *before) {
     i32 index;
     i32 move;
-    if (set == NULL || locator == NULL || set->locators[63] != NULL)
-        return 0;
-    if (set->locators[0] != NULL && set->locators[0]->path_check.path != locator->path_check.path)
-        return 0;
-    for (index = 0; index < 64; ++index) {
-        if (set->locators[index] == NULL)
-            break;
-        if (locator == set->locators[index]) {
-            AiEditorRemoveLocatorFromSetPc(set, locator);
-            break;
-        }
-    }
-    if (before != NULL) {
+    if (set != NULL && locator != NULL && set->locators[63] == NULL) {
+        if (set->locators[0] != NULL && set->locators[0]->path_check.path != locator->path_check.path)
+            return 0;
         for (index = 0; index < 64; ++index) {
-            if (set->locators[index] == before) {
-                for (move = 62; move >= index; --move)
-                    set->locators[move + 1] = set->locators[move];
-                set->locators[index + 1] = locator;
-                return 1;
+            if (set->locators[index] == NULL)
+                break;
+            if (locator == set->locators[index]) {
+                AiEditorRemoveLocatorFromSetPc(set, locator);
+                break;
             }
         }
-    }
-    for (index = 0; index < 64; ++index) {
-        if (set->locators[index] == NULL) {
-            set->locators[index] = locator;
-            if (index + 1 < 64)
-                set->locators[index + 1] = NULL;
-            return 1;
+        if (before != NULL) {
+            for (index = 0; index < 64; ++index) {
+                if (set->locators[index] == before) {
+                    for (move = 62; move >= index; --move)
+                        set->locators[move + 1] = set->locators[move];
+                    set->locators[index + 1] = locator;
+                    return 1;
+                }
+            }
+        }
+        for (index = 0; index < 64; ++index) {
+            if (set->locators[index] == NULL) {
+                set->locators[index] = locator;
+                if (index + 1 < 64)
+                    set->locators[index + 1] = NULL;
+                return 1;
+            }
         }
     }
     return 0;
@@ -12579,79 +12577,81 @@ static __declspec(noinline) AICONDITION_PC *AIScriptProcessStateConditions(AISYS
     f32 comparison_value;
     AICONDITION_EVAL_PC comparison_fn;
     i32 comparison_passed;
-    if (processor == NULL || conditions == NULL)
-        return NULL;
-    condition = (AICONDITION_PC *)NuLinkedListGetHead(conditions);
-    while (condition != NULL) {
-        comparison_passed = 0;
-        if (condition->definition != NULL) {
-            if (condition->definition->eval_fn != NULL) {
-                LOG_INFO_IF((u32)condition->definition->eval_fn == 0x00400000,
-                            "Story condition eval: name=%s def=%p fn=%p sys=%p process=%p condition=%p",
-                            condition->definition->name, (void *)condition->definition,
-                            (void *)condition->definition->eval_fn, (void *)system, (void *)processor,
-                            (void *)condition);
-                condition_value = condition->definition->eval_fn(system, processor, packet, condition->argument,
-                                                                 condition->initialized_argument);
-            }
-            if (condition->parameter_condition != NULL && condition->parameter_condition->definition != NULL) {
-                comparison_fn = condition->parameter_condition->definition->eval_fn;
-                comparison_value = comparison_fn != NULL ? comparison_fn(system, processor, packet, condition->argument,
-                                                                         condition->initialized_argument)
-                                                         : condition_value;
-            } else if ((condition->flags & 8) != 0) {
-                if (processor->param_stack[stack_index].is_first_time_state != 0)
-                    processor->param_stack[stack_index].complex_params[condition->param_index] =
-                        AIParamToFloatEx(packet, processor, condition->complex_expression);
-                comparison_value = processor->param_stack[stack_index].complex_params[condition->param_index];
-            } else if ((condition->flags & 4) != 0)
-                comparison_value = processor->params[condition->param_index];
-            else
-                comparison_value = condition->param_value;
-            switch (condition->comparison) {
-                case 0:
-                    comparison_passed = condition_value == comparison_value;
-                    break;
-                case 1:
-                    comparison_passed = condition_value < comparison_value;
-                    break;
-                case 2:
-                    comparison_passed = condition_value > comparison_value;
-                    break;
-                case 3:
-                    comparison_passed = condition_value <= comparison_value;
-                    break;
-                case 4:
-                    comparison_passed = condition_value >= comparison_value;
-                    break;
-                case 5:
-                    comparison_passed = condition_value != comparison_value;
-                    break;
-            }
-        }
-        if (comparison_passed) {
-            if ((condition->flags & 1) == 0) {
-                AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
-                processor->param_stack[stack_index].is_first_time_state = 0;
-                return condition;
-            }
-        } else {
-            while ((condition->flags & 1) != 0) {
-                condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
-                if (condition == NULL)
-                    break;
-                if (processor->param_stack[stack_index].is_first_time_state != 0 && (condition->flags & 8) != 0) {
-                    processor->param_stack[stack_index].complex_params[condition->param_index] =
-                        AIParamToFloatEx(packet, processor, condition->complex_expression);
-                    condition->param_value = processor->param_stack[stack_index].complex_params[condition->param_index];
+    if (processor != NULL && conditions != NULL) {
+        condition = (AICONDITION_PC *)NuLinkedListGetHead(conditions);
+        while (condition != NULL) {
+            comparison_passed = 0;
+            if (condition->definition != NULL) {
+                if (condition->definition->eval_fn != NULL) {
+                    LOG_INFO_IF((u32)condition->definition->eval_fn == 0x00400000,
+                                "Story condition eval: name=%s def=%p fn=%p sys=%p process=%p condition=%p",
+                                condition->definition->name, (void *)condition->definition,
+                                (void *)condition->definition->eval_fn, (void *)system, (void *)processor,
+                                (void *)condition);
+                    condition_value = condition->definition->eval_fn(system, processor, packet, condition->argument,
+                                                                     condition->initialized_argument);
+                }
+                if (condition->parameter_condition != NULL && condition->parameter_condition->definition != NULL) {
+                    comparison_fn = condition->parameter_condition->definition->eval_fn;
+                    comparison_value = comparison_fn != NULL
+                                           ? comparison_fn(system, processor, packet, condition->argument,
+                                                           condition->initialized_argument)
+                                           : condition_value;
+                } else if ((condition->flags & 8) != 0) {
+                    if (processor->param_stack[stack_index].is_first_time_state != 0)
+                        processor->param_stack[stack_index].complex_params[condition->param_index] =
+                            AIParamToFloatEx(packet, processor, condition->complex_expression);
+                    comparison_value = processor->param_stack[stack_index].complex_params[condition->param_index];
+                } else if ((condition->flags & 4) != 0)
+                    comparison_value = processor->params[condition->param_index];
+                else
+                    comparison_value = condition->param_value;
+                switch (condition->comparison) {
+                    case 0:
+                        comparison_passed = condition_value == comparison_value;
+                        break;
+                    case 1:
+                        comparison_passed = condition_value < comparison_value;
+                        break;
+                    case 2:
+                        comparison_passed = condition_value > comparison_value;
+                        break;
+                    case 3:
+                        comparison_passed = condition_value <= comparison_value;
+                        break;
+                    case 4:
+                        comparison_passed = condition_value >= comparison_value;
+                        break;
+                    case 5:
+                        comparison_passed = condition_value != comparison_value;
+                        break;
                 }
             }
+            if (comparison_passed) {
+                if ((condition->flags & 1) == 0) {
+                    AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
+                    processor->param_stack[stack_index].is_first_time_state = 0;
+                    return condition;
+                }
+            } else {
+                while ((condition->flags & 1) != 0) {
+                    condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
+                    if (condition == NULL)
+                        break;
+                    if (processor->param_stack[stack_index].is_first_time_state != 0 && (condition->flags & 8) != 0) {
+                        processor->param_stack[stack_index].complex_params[condition->param_index] =
+                            AIParamToFloatEx(packet, processor, condition->complex_expression);
+                        condition->param_value =
+                            processor->param_stack[stack_index].complex_params[condition->param_index];
+                    }
+                }
+            }
+            if (condition != NULL)
+                condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
         }
-        if (condition != NULL)
-            condition = (AICONDITION_PC *)NuLinkedListGetNext(conditions, &condition->link);
+        AIScriptFillRemainingComplexOperands(conditions, packet, processor, NULL, stack_index);
+        processor->param_stack[stack_index].is_first_time_state = 0;
     }
-    AIScriptFillRemainingComplexOperands(conditions, packet, processor, NULL, stack_index);
-    processor->param_stack[stack_index].is_first_time_state = 0;
     return NULL;
 }
 
@@ -13568,275 +13568,277 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT_PC *object, AIPACKET
     f32 maximum;
 
     path = packet->path_info.path;
-    if (connection->last_search_checksum == path->search_checksum || path->nodes == NULL) {
-        return 0;
-    }
-    connection->last_search_checksum = path->search_checksum;
-    if (object->character_data != NULL) {
-        flags = connection->traversal_flags[0] | connection->traversal_flags[1];
-        if (flags != 0) {
-            if (direction != -1) {
-                flags = connection->traversal_flags[direction];
+    if (connection->last_search_checksum != path->search_checksum && path->nodes != NULL) {
+        connection->last_search_checksum = path->search_checksum;
+        if (object->character_data != NULL) {
+            flags = connection->traversal_flags[0] | connection->traversal_flags[1];
+            if (flags != 0) {
+                if (direction != -1) {
+                    flags = connection->traversal_flags[direction];
+                }
+                if (flags != 0 && ((packet->capabilities & flags) == 0 || (flags & 0x98000000) != 0)) {
+                    return 0;
+                }
             }
-            if (flags != 0 && ((packet->capabilities & flags) == 0 || (flags & 0x98000000) != 0)) {
+        }
+        if ((object->flags_low & 0x80) == 0 && packet->current_route != 0xff &&
+            ((u64)connection->route_mask & ((u64)1 << packet->current_route)) == 0) {
+            current = packet->path_info.connection;
+            if (current == NULL || current == connection) {
+                return 0;
+            }
+            shared = NULL;
+            if (current->node_indices[0] == connection->node_indices[0]) {
+                shared = &path->nodes[current->node_indices[0]];
+            } else if (current->node_indices[0] == connection->node_indices[1]) {
+                shared = &path->nodes[current->node_indices[0]];
+            } else if (current->node_indices[1] == connection->node_indices[0]) {
+                shared = &path->nodes[current->node_indices[1]];
+            } else if (current->node_indices[1] == connection->node_indices[1]) {
+                shared = &path->nodes[current->node_indices[1]];
+            }
+            if (shared == NULL || ((u64)shared->route_boundary_mask & ((u64)1 << packet->current_route)) == 0) {
                 return 0;
             }
         }
-    }
-    if ((object->flags_low & 0x80) == 0 && packet->current_route != 0xff &&
-        ((u64)connection->route_mask & ((u64)1 << packet->current_route)) == 0) {
-        current = packet->path_info.connection;
-        if (current == NULL || current == connection) {
-            return 0;
+        if (direction == -1) {
+            direction = 0;
         }
-        shared = NULL;
-        if (current->node_indices[0] == connection->node_indices[0]) {
-            shared = &path->nodes[current->node_indices[0]];
-        } else if (current->node_indices[0] == connection->node_indices[1]) {
-            shared = &path->nodes[current->node_indices[0]];
-        } else if (current->node_indices[1] == connection->node_indices[0]) {
-            shared = &path->nodes[current->node_indices[1]];
-        } else if (current->node_indices[1] == connection->node_indices[1]) {
-            shared = &path->nodes[current->node_indices[1]];
+        first = &path->nodes[connection->node_indices[0]];
+        second = &path->nodes[connection->node_indices[1]];
+        narrow = 0;
+        if (first->radius > AIPathConnectionMargin + object->collision_radius) {
+            first_radius = first->radius - object->collision_radius;
+        } else {
+            first_radius = first->radius;
+            narrow = 1;
         }
-        if (shared == NULL || ((u64)shared->route_boundary_mask & ((u64)1 << packet->current_route)) == 0) {
-            return 0;
+        if (second->radius > AIPathConnectionMargin + object->collision_radius) {
+            second_radius = second->radius - object->collision_radius;
+        } else {
+            second_radius = second->radius;
+            narrow = 1;
         }
-    }
-    if (direction == -1) {
-        direction = 0;
-    }
-    first = &path->nodes[connection->node_indices[0]];
-    second = &path->nodes[connection->node_indices[1]];
-    narrow = 0;
-    if (first->radius > AIPathConnectionMargin + object->collision_radius) {
-        first_radius = first->radius - object->collision_radius;
-    } else {
-        first_radius = first->radius;
-        narrow = 1;
-    }
-    if (second->radius > AIPathConnectionMargin + object->collision_radius) {
-        second_radius = second->radius - object->collision_radius;
-    } else {
-        second_radius = second->radius;
-        narrow = 1;
-    }
-    if (first->has_special != 0 &&
-        (path->updated_node_bits[connection->node_indices[0] / 8] & (1 << (connection->node_indices[0] % 8))) == 0) {
-        AIPathNodeUpdatePos(system, path, first);
-    }
-    if (second->has_special != 0 &&
-        (path->updated_node_bits[connection->node_indices[1] / 8] & (1 << (connection->node_indices[1] % 8))) == 0) {
-        AIPathNodeUpdatePos(system, path, second);
-    }
-
-    delta.x = object->position.x - first->position.x;
-    delta.z = object->position.z - first->position.z;
-
-    NuVecRotateY(&local, &delta, -connection->rotation);
-
-    if (connection->horizontal_distance < AIPathFabs(second_radius - first_radius)) {
-        if (second_radius > first_radius) {
-            first_radius = second_radius;
-            first = second;
+        if (first->has_special != 0 && (path->updated_node_bits[connection->node_indices[0] / 8] &
+                                        (1 << (connection->node_indices[0] % 8))) == 0) {
+            AIPathNodeUpdatePos(system, path, first);
         }
-        height_distance = AIPathFabs(first->position.y - packet->terrain_origin.y);
-        distance = NuVecXZDist(&object->position, &first->position, &radial);
+        if (second->has_special != 0 && (path->updated_node_bits[connection->node_indices[1] / 8] &
+                                         (1 << (connection->node_indices[1] % 8))) == 0) {
+            AIPathNodeUpdatePos(system, path, second);
+        }
 
-        if (packet->terrain_origin.y < first->min_height || packet->terrain_origin.y > first->max_height) {
-            clearance = distance - first_radius;
-            clearance = height_distance > clearance ? height_distance : clearance;
-        } else if (distance <= first_radius) {
-            packet->path_info.narrow_path = narrow;
-            packet->path_info.on_path = 1;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            packet->last_path_position = object->position;
-            node_index = first - path->nodes;
-            path->inside_node_bits[node_index / 8] |= 1 << (node_index % 8);
-            packet->inside_path_node = node_index;
-            if (NuVecXZDistSqr(&object->position, &second->position, &radial) <= second_radius * second_radius) {
-                node_index = second - path->nodes;
+        delta.x = object->position.x - first->position.x;
+        delta.z = object->position.z - first->position.z;
+
+        NuVecRotateY(&local, &delta, -connection->rotation);
+
+        if (connection->horizontal_distance < AIPathFabs(second_radius - first_radius)) {
+            if (second_radius > first_radius) {
+                first_radius = second_radius;
+                first = second;
+            }
+            height_distance = AIPathFabs(first->position.y - packet->terrain_origin.y);
+            distance = NuVecXZDist(&object->position, &first->position, &radial);
+
+            if (packet->terrain_origin.y < first->min_height || packet->terrain_origin.y > first->max_height) {
+                clearance = distance - first_radius;
+                clearance = height_distance > clearance ? height_distance : clearance;
+            } else if (distance <= first_radius) {
+                packet->path_info.narrow_path = narrow;
+                packet->path_info.on_path = 1;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                packet->last_path_position = object->position;
+                node_index = first - path->nodes;
                 path->inside_node_bits[node_index / 8] |= 1 << (node_index % 8);
                 packet->inside_path_node = node_index;
-            }
-            return 1;
-        } else {
-            clearance = distance - first_radius;
-        }
-        if (clearance < *nearest_distance) {
-            *nearest_distance = clearance;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            if (distance <= first_radius) {
-                packet->last_path_position.x = object->position.x;
-                packet->last_path_position.z = object->position.z;
-            } else {
-                packet->last_path_position.x = radial.x * first_radius / distance;
-                packet->last_path_position.x += first->position.x;
-                packet->last_path_position.z = radial.z * first_radius / distance;
-                packet->last_path_position.z += first->position.z;
-            }
-            packet->last_path_position.y = first->position.y;
-            packet->inside_path_node = -1;
-        }
-        return 0;
-    }
-
-    angle = PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
-    wall = local;
-    if (wall.x < 0.0f) {
-        wall.x = -wall.x;
-    }
-    NuVecRotateY(&wall, &wall, -angle);
-    length = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * connection->horizontal_distance;
-    if (wall.z < 0.0f) {
-        height_distance = AIPathFabs(first->position.y - packet->terrain_origin.y);
-        distance = NuVecXZDist(&object->position, &first->position, &radial);
-
-        if (packet->terrain_origin.y < first->min_height || packet->terrain_origin.y > first->max_height) {
-            clearance = distance - first_radius;
-            clearance = height_distance > clearance ? height_distance : clearance;
-        } else if (distance <= first_radius) {
-            packet->path_info.narrow_path = narrow;
-            packet->path_info.on_path = 1;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            packet->last_path_position = object->position;
-            path->inside_node_bits[connection->node_indices[0] / 8] |= 1 << (connection->node_indices[0] % 8);
-            packet->inside_path_node = connection->node_indices[0];
-            return 1;
-        } else {
-            clearance = distance - first_radius;
-        }
-        if (clearance < *nearest_distance) {
-            *nearest_distance = clearance;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            if (distance <= first_radius) {
-                packet->last_path_position.x = object->position.x;
-                packet->last_path_position.z = object->position.z;
-            } else {
-                packet->last_path_position.x = radial.x * first_radius / distance;
-                packet->last_path_position.x += first->position.x;
-                packet->last_path_position.z = radial.z * first_radius / distance;
-                packet->last_path_position.z += first->position.z;
-            }
-            packet->last_path_position.y = first->position.y;
-            packet->inside_path_node = -1;
-        }
-    }
-    if (wall.z > length) {
-        height_distance = AIPathFabs(second->position.y - packet->terrain_origin.y);
-        distance = NuVecXZDist(&object->position, &second->position, &radial);
-
-        if (packet->terrain_origin.y < second->min_height || packet->terrain_origin.y > second->max_height) {
-            clearance = distance - second_radius;
-            clearance = height_distance > clearance ? height_distance : clearance;
-        } else if (distance <= second_radius) {
-            packet->path_info.narrow_path = narrow;
-            packet->path_info.on_path = 1;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            packet->last_path_position = object->position;
-            path->inside_node_bits[connection->node_indices[1] / 8] |= 1 << (connection->node_indices[1] % 8);
-            packet->inside_path_node = connection->node_indices[1];
-            return 1;
-        } else {
-            clearance = distance - second_radius;
-        }
-        if (clearance < *nearest_distance) {
-            *nearest_distance = clearance;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            if (second_radius < distance) {
-                packet->last_path_position.x = radial.x * second_radius / distance;
-                packet->last_path_position.x += second->position.x;
-                packet->last_path_position.z = radial.z * second_radius / distance;
-                packet->last_path_position.z += second->position.z;
-            } else {
-                packet->last_path_position.x = object->position.x;
-                packet->last_path_position.z = object->position.z;
-            }
-            packet->last_path_position.y = second->position.y;
-            packet->inside_path_node = -1;
-        }
-    } else if (!(wall.z < 0.0f)) {
-
-        if (first_radius > local.z) {
-            height = first->position.y;
-            minimum = first->min_height;
-            maximum = first->max_height;
-            if (local.z > connection->horizontal_distance - second_radius) {
-                minimum = second->min_height < minimum ? second->min_height : minimum;
-                maximum = second->max_height > maximum ? second->max_height : maximum;
-            }
-        } else if (local.z > connection->horizontal_distance - second_radius) {
-            height = second->position.y;
-            minimum = second->min_height;
-            maximum = second->max_height;
-        } else {
-            denominator = connection->horizontal_distance - (first_radius + second_radius);
-            numerator = local.z - first_radius;
-            fraction = AIPathSafeDivide(numerator, denominator);
-            height = second->position.y * fraction + first->position.y * (1.0f - fraction);
-            minimum = second->min_height * fraction + first->min_height * (1.0f - fraction);
-            maximum = second->max_height * fraction + first->max_height * (1.0f - fraction);
-        }
-        height_distance = AIPathFabs(height - packet->terrain_origin.y);
-
-        if (height_distance > 0.0f && (packet->terrain_origin.y < minimum || packet->terrain_origin.y > maximum)) {
-            clearance = wall.x - first_radius;
-            clearance = height_distance > clearance ? height_distance : clearance;
-        } else if (first_radius > wall.x) {
-            packet->path_info.narrow_path = narrow;
-            packet->path_info.on_path = 1;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            packet->last_path_position = object->position;
-            packet->inside_path_node = -1;
-            if (first_radius > local.z) {
-                if (NuVecXZDistSqr(&object->position, &first->position, &radial) <= first_radius * first_radius) {
-                    path->inside_node_bits[connection->node_indices[0] / 8] |= 1 << (connection->node_indices[0] % 8);
-                    packet->inside_path_node = connection->node_indices[0];
-                }
-            } else if (local.z > length - second_radius) {
                 if (NuVecXZDistSqr(&object->position, &second->position, &radial) <= second_radius * second_radius) {
-                    path->inside_node_bits[connection->node_indices[1] / 8] |= 1 << (connection->node_indices[1] % 8);
-                    packet->inside_path_node = connection->node_indices[1];
+                    node_index = second - path->nodes;
+                    path->inside_node_bits[node_index / 8] |= 1 << (node_index % 8);
+                    packet->inside_path_node = node_index;
                 }
-            }
-            return 1;
-        } else {
-            clearance = wall.x - first_radius;
-        }
-        if (clearance < *nearest_distance) {
-            *nearest_distance = clearance;
-            AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
-            packet->path_info.distance = local.z / connection->horizontal_distance;
-            packet->path_info.width = local.x;
-            if (wall.x < first_radius) {
-                packet->last_path_position.x = object->position.x;
-                packet->last_path_position.z = object->position.z;
+                return 1;
             } else {
-                wall.x = first_radius;
-                NuVecRotateY(&wall, &wall, angle);
-                if (local.x < 0.0f) {
-                    wall.x = -wall.x;
-                }
-                NuVecRotateY(&wall, &wall, connection->rotation);
-                packet->last_path_position.x = wall.x + first->position.x;
-                packet->last_path_position.z = first->position.z + wall.z;
+                clearance = distance - first_radius;
             }
-            packet->last_path_position.y = first->position.y;
-            packet->inside_path_node = -1;
+            if (clearance < *nearest_distance) {
+                *nearest_distance = clearance;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                if (distance <= first_radius) {
+                    packet->last_path_position.x = object->position.x;
+                    packet->last_path_position.z = object->position.z;
+                } else {
+                    packet->last_path_position.x = radial.x * first_radius / distance;
+                    packet->last_path_position.x += first->position.x;
+                    packet->last_path_position.z = radial.z * first_radius / distance;
+                    packet->last_path_position.z += first->position.z;
+                }
+                packet->last_path_position.y = first->position.y;
+                packet->inside_path_node = -1;
+            }
+            return 0;
+        }
+
+        angle = PCPathArcSine((second_radius - first_radius) / connection->horizontal_distance);
+        wall = local;
+        if (wall.x < 0.0f) {
+            wall.x = -wall.x;
+        }
+        NuVecRotateY(&wall, &wall, -angle);
+        length = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * connection->horizontal_distance;
+        if (wall.z < 0.0f) {
+            height_distance = AIPathFabs(first->position.y - packet->terrain_origin.y);
+            distance = NuVecXZDist(&object->position, &first->position, &radial);
+
+            if (packet->terrain_origin.y < first->min_height || packet->terrain_origin.y > first->max_height) {
+                clearance = distance - first_radius;
+                clearance = height_distance > clearance ? height_distance : clearance;
+            } else if (distance <= first_radius) {
+                packet->path_info.narrow_path = narrow;
+                packet->path_info.on_path = 1;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                packet->last_path_position = object->position;
+                path->inside_node_bits[connection->node_indices[0] / 8] |= 1 << (connection->node_indices[0] % 8);
+                packet->inside_path_node = connection->node_indices[0];
+                return 1;
+            } else {
+                clearance = distance - first_radius;
+            }
+            if (clearance < *nearest_distance) {
+                *nearest_distance = clearance;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                if (distance <= first_radius) {
+                    packet->last_path_position.x = object->position.x;
+                    packet->last_path_position.z = object->position.z;
+                } else {
+                    packet->last_path_position.x = radial.x * first_radius / distance;
+                    packet->last_path_position.x += first->position.x;
+                    packet->last_path_position.z = radial.z * first_radius / distance;
+                    packet->last_path_position.z += first->position.z;
+                }
+                packet->last_path_position.y = first->position.y;
+                packet->inside_path_node = -1;
+            }
+        }
+        if (wall.z > length) {
+            height_distance = AIPathFabs(second->position.y - packet->terrain_origin.y);
+            distance = NuVecXZDist(&object->position, &second->position, &radial);
+
+            if (packet->terrain_origin.y < second->min_height || packet->terrain_origin.y > second->max_height) {
+                clearance = distance - second_radius;
+                clearance = height_distance > clearance ? height_distance : clearance;
+            } else if (distance <= second_radius) {
+                packet->path_info.narrow_path = narrow;
+                packet->path_info.on_path = 1;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                packet->last_path_position = object->position;
+                path->inside_node_bits[connection->node_indices[1] / 8] |= 1 << (connection->node_indices[1] % 8);
+                packet->inside_path_node = connection->node_indices[1];
+                return 1;
+            } else {
+                clearance = distance - second_radius;
+            }
+            if (clearance < *nearest_distance) {
+                *nearest_distance = clearance;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                if (second_radius < distance) {
+                    packet->last_path_position.x = radial.x * second_radius / distance;
+                    packet->last_path_position.x += second->position.x;
+                    packet->last_path_position.z = radial.z * second_radius / distance;
+                    packet->last_path_position.z += second->position.z;
+                } else {
+                    packet->last_path_position.x = object->position.x;
+                    packet->last_path_position.z = object->position.z;
+                }
+                packet->last_path_position.y = second->position.y;
+                packet->inside_path_node = -1;
+            }
+        } else if (!(wall.z < 0.0f)) {
+
+            if (first_radius > local.z) {
+                height = first->position.y;
+                minimum = first->min_height;
+                maximum = first->max_height;
+                if (local.z > connection->horizontal_distance - second_radius) {
+                    minimum = second->min_height < minimum ? second->min_height : minimum;
+                    maximum = second->max_height > maximum ? second->max_height : maximum;
+                }
+            } else if (local.z > connection->horizontal_distance - second_radius) {
+                height = second->position.y;
+                minimum = second->min_height;
+                maximum = second->max_height;
+            } else {
+                denominator = connection->horizontal_distance - (first_radius + second_radius);
+                numerator = local.z - first_radius;
+                fraction = AIPathSafeDivide(numerator, denominator);
+                height = second->position.y * fraction + first->position.y * (1.0f - fraction);
+                minimum = second->min_height * fraction + first->min_height * (1.0f - fraction);
+                maximum = second->max_height * fraction + first->max_height * (1.0f - fraction);
+            }
+            height_distance = AIPathFabs(height - packet->terrain_origin.y);
+
+            if (height_distance > 0.0f && (packet->terrain_origin.y < minimum || packet->terrain_origin.y > maximum)) {
+                clearance = wall.x - first_radius;
+                clearance = height_distance > clearance ? height_distance : clearance;
+            } else if (first_radius > wall.x) {
+                packet->path_info.narrow_path = narrow;
+                packet->path_info.on_path = 1;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                packet->last_path_position = object->position;
+                packet->inside_path_node = -1;
+                if (first_radius > local.z) {
+                    if (NuVecXZDistSqr(&object->position, &first->position, &radial) <= first_radius * first_radius) {
+                        path->inside_node_bits[connection->node_indices[0] / 8] |= 1
+                                                                                   << (connection->node_indices[0] % 8);
+                        packet->inside_path_node = connection->node_indices[0];
+                    }
+                } else if (local.z > length - second_radius) {
+                    if (NuVecXZDistSqr(&object->position, &second->position, &radial) <=
+                        second_radius * second_radius) {
+                        path->inside_node_bits[connection->node_indices[1] / 8] |= 1
+                                                                                   << (connection->node_indices[1] % 8);
+                        packet->inside_path_node = connection->node_indices[1];
+                    }
+                }
+                return 1;
+            } else {
+                clearance = wall.x - first_radius;
+            }
+            if (clearance < *nearest_distance) {
+                *nearest_distance = clearance;
+                AISysCharacterSetPathCnx(packet, &object->position, connection, direction);
+                packet->path_info.distance = local.z / connection->horizontal_distance;
+                packet->path_info.width = local.x;
+                if (wall.x < first_radius) {
+                    packet->last_path_position.x = object->position.x;
+                    packet->last_path_position.z = object->position.z;
+                } else {
+                    wall.x = first_radius;
+                    NuVecRotateY(&wall, &wall, angle);
+                    if (local.x < 0.0f) {
+                        wall.x = -wall.x;
+                    }
+                    NuVecRotateY(&wall, &wall, connection->rotation);
+                    packet->last_path_position.x = wall.x + first->position.x;
+                    packet->last_path_position.z = first->position.z + wall.z;
+                }
+                packet->last_path_position.y = first->position.y;
+                packet->inside_path_node = -1;
+            }
         }
     }
     return 0;
@@ -18429,223 +18431,226 @@ eduimenu_s *__cdecl pathEditor_Process(FRAME_PAD_PC *pad) {
     i32 named;
     if (pad->digital_buttons_pressed & 0x80)
         return pathEditor_MainMenu();
-    if (aieditor->current_path == NULL)
-        return NULL;
-    previous = aieditor->current_path->current_node;
-    if (!(aieditor->current_path->flags & 1))
-        aieditorsettings.display_options &= ~1;
-    if (aieditorsettings.display_options & 1) {
-        aieditor->current_path->runtime_nearest = (i16)pathEditor_GetNearestRuntimeNode(aieditor->runtime_path);
-        if ((pad->digital_buttons_pressed & 0x40) && aieditor->current_path->runtime_nearest >= 0)
-            aieditor->current_path->runtime_start = aieditor->current_path->runtime_nearest;
-        if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->runtime_nearest >= 0)
-            aieditor->current_path->runtime_end = aieditor->current_path->runtime_nearest;
-        if (pad->digital_buttons_pressed & 0x100) {
-            if (aieditor->current_path->runtime_nearest >= 0) {
+    if (aieditor->current_path != NULL) {
+        previous = aieditor->current_path->current_node;
+        if (!(aieditor->current_path->flags & 1))
+            aieditorsettings.display_options &= ~1;
+        if (aieditorsettings.display_options & 1) {
+            aieditor->current_path->runtime_nearest = (i16)pathEditor_GetNearestRuntimeNode(aieditor->runtime_path);
+            if ((pad->digital_buttons_pressed & 0x40) && aieditor->current_path->runtime_nearest >= 0)
                 aieditor->current_path->runtime_start = aieditor->current_path->runtime_nearest;
-                edcamSetPos(&aieditor->runtime_path->nodes[aieditor->current_path->runtime_nearest].position);
+            if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->runtime_nearest >= 0)
+                aieditor->current_path->runtime_end = aieditor->current_path->runtime_nearest;
+            if (pad->digital_buttons_pressed & 0x100) {
+                if (aieditor->current_path->runtime_nearest >= 0) {
+                    aieditor->current_path->runtime_start = aieditor->current_path->runtime_nearest;
+                    edcamSetPos(&aieditor->runtime_path->nodes[aieditor->current_path->runtime_nearest].position);
+                }
+                aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
+                if (aieditor->current_path->current_node != NULL)
+                    edcamSetPos(&aieditor->current_path->current_node->position);
             }
-            aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
-            if (aieditor->current_path->current_node != NULL)
-                edcamSetPos(&aieditor->current_path->current_node->position);
+            return NULL;
         }
-        return NULL;
-    }
-    if (pad->digital_buttons & 0x40) {
-        nearest = aieditor->current_path->nearest_node;
-        if (nearest != NULL) {
-            if (pad->digital_buttons_pressed & 0x40) {
-                aieditor->current_path->current_node = nearest;
-                node = aieditor->current_path->current_node;
-                if (node != NULL) {
-                    position.x = node->position.x;
+        if (pad->digital_buttons & 0x40) {
+            nearest = aieditor->current_path->nearest_node;
+            if (nearest != NULL) {
+                if (pad->digital_buttons_pressed & 0x40) {
+                    aieditor->current_path->current_node = nearest;
+                    node = aieditor->current_path->current_node;
+                    if (node != NULL) {
+                        position.x = node->position.x;
+                        position.y = aieditor->cursor_position.y;
+                        position.z = node->position.z;
+                        edcamSetPos(&position);
+                    }
+                } else if (aieditor->current_path->current_node != NULL &&
+                           nearest == aieditor->current_path->current_node) {
+                    position = nearest->position;
+                    nearest->position = aieditor->camera_position;
+                    pathEditor_PathNodeMoved(aieditor->current_path->current_node);
+                    locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
+                    if (AIPathNodeDeletedFn != NULL)
+                        AIPathNodeDeletedFn(aieditor->current_path->current_node);
+                    if (pad->digital_buttons & 0x200) {
+                        path = aieditor->current_path;
+                        start = path->current_node;
+                        position.x = start->position.x - position.x;
+                        position.z = start->position.z - position.z;
+                        for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+                             node =
+                                 (EDAIPATHNODE_s *)NuLinkedListGetNext(&aieditor->current_path->nodes, &node->link)) {
+                            if (node != aieditor->current_path->current_node) {
+                                node->position.x += position.x;
+                                node->position.z = position.z + node->position.z;
+                                locatorEditor_PathNodeMoved(node);
+                                if (AIPathNodeDeletedFn != NULL)
+                                    AIPathNodeDeletedFn(node);
+                            }
+                        }
+                    }
+                }
+            } else if (pad->digital_buttons_pressed & 0x40) {
+                aieditor->current_path->current_node = pathEditor_CreateNode(aieditor->current_path);
+                if (previous != NULL) {
+                    if (aieditor->current_path->current_node != NULL) {
+                        aieditor->current_path->current_node->radius = previous->radius;
+                        aieditor->current_path->current_node->upper_height = previous->upper_height;
+                        aieditor->current_path->current_node->lower_height = previous->lower_height;
+                    }
+                    if (!pathEditor_ConnectNodes(aieditor->current_path->current_node, previous)) {
+                        pathEditor_DestroyNode(aieditor->current_path->current_node, aieditor->current_path);
+                        aieditor->current_path->current_node = previous;
+                    }
+                }
+            }
+        }
+        if (pad->digital_buttons_pressed & 0x20) {
+            node = aieditor->current_path->current_node;
+            if (node != NULL) {
+                nearest = aieditor->current_path->nearest_node;
+                if (nearest != NULL && nearest != node) {
+                    if (pathEditor_FindConnection(node, nearest) != NULL)
+                        return pathEditor_DisconnectNodeMenu();
+                    pathEditor_ConnectNodes(node, nearest);
+                    position.x = nearest->position.x;
                     position.y = aieditor->cursor_position.y;
-                    position.z = node->position.z;
+                    position.z = nearest->position.z;
                     edcamSetPos(&position);
                 }
-            } else if (aieditor->current_path->current_node != NULL &&
-                       nearest == aieditor->current_path->current_node) {
-                position = nearest->position;
-                nearest->position = aieditor->camera_position;
+            }
+        }
+        if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->current_node != NULL &&
+            aieditor->current_path->current_node == aieditor->current_path->nearest_node)
+            return pathEditor_DeleteNodeMenu();
+        if (pad->digital_buttons_pressed & 0x100) {
+            if (aieditorsettings.display_options & 2) {
+                pathEditor_SelectNearestPath();
+            } else {
+                aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
+                if (aieditor->current_path->current_node != NULL) {
+                    if (edpath_addoffset.x != 0.0f || edpath_addoffset.y != 0.0f || edpath_addoffset.z != 0.0f) {
+                        NuVecAdd(&aieditor->current_path->current_node->position,
+                                 &aieditor->current_path->current_node->position, &edpath_addoffset);
+                        pathEditor_PathNodeMoved(aieditor->current_path->current_node);
+                        locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
+                    }
+                    edcamSetPos(&aieditor->current_path->current_node->position);
+                }
+            }
+        }
+        aieditor->flags &= ~1;
+        if (aieditor->current_path->current_node != NULL &&
+            aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
+            if (pad->digital_buttons & 0x8000 || pad->digital_buttons & 0x2000) {
+                if (pad->digital_buttons & 0x8000)
+                    aieditor->current_path->current_node->radius =
+                        aieditor->current_path->current_node->radius * (f64)0.99f;
+                else
+                    aieditor->current_path->current_node->radius =
+                        aieditor->current_path->current_node->radius * (f64)1.01f;
+                if (aieditor->current_path->current_node->radius < 0.01f)
+                    aieditor->current_path->current_node->radius = 0.01f;
                 pathEditor_PathNodeMoved(aieditor->current_path->current_node);
                 locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
                 if (AIPathNodeDeletedFn != NULL)
                     AIPathNodeDeletedFn(aieditor->current_path->current_node);
-                if (pad->digital_buttons & 0x200) {
-                    path = aieditor->current_path;
-                    start = path->current_node;
-                    position.x = start->position.x - position.x;
-                    position.z = start->position.z - position.z;
-                    for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
-                         node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&aieditor->current_path->nodes, &node->link)) {
-                        if (node != aieditor->current_path->current_node) {
-                            node->position.x += position.x;
-                            node->position.z = position.z + node->position.z;
-                            locatorEditor_PathNodeMoved(node);
-                            if (AIPathNodeDeletedFn != NULL)
-                                AIPathNodeDeletedFn(node);
-                        }
-                    }
+            }
+            if (aieditorsettings.display_options & 0x80) {
+                if (pad->digital_buttons & 0x1000) {
+                    aieditor->flags |= 4;
+                    step = aieditor->current_path->current_node->upper_height * (f64)0.05f;
+                    if (pad->digital_buttons & 4)
+                        aieditor->current_path->current_node->upper_height += step;
+                    else if (pad->digital_buttons & 1)
+                        aieditor->current_path->current_node->upper_height -= step;
+                    if (aieditor->current_path->current_node->upper_height < 0.01f)
+                        aieditor->current_path->current_node->upper_height = 0.01f;
+                } else if (pad->digital_buttons & 0x4000) {
+                    aieditor->flags |= 4;
+                    step = -aieditor->current_path->current_node->lower_height * (f64)0.05f;
+                    if (pad->digital_buttons & 4)
+                        aieditor->current_path->current_node->lower_height += step;
+                    else if (pad->digital_buttons & 1)
+                        aieditor->current_path->current_node->lower_height -= step;
+                    if (aieditor->current_path->current_node->lower_height > -0.01f)
+                        aieditor->current_path->current_node->lower_height = -0.01f;
                 }
             }
-        } else if (pad->digital_buttons_pressed & 0x40) {
-            aieditor->current_path->current_node = pathEditor_CreateNode(aieditor->current_path);
-            if (previous != NULL) {
-                if (aieditor->current_path->current_node != NULL) {
-                    aieditor->current_path->current_node->radius = previous->radius;
-                    aieditor->current_path->current_node->upper_height = previous->upper_height;
-                    aieditor->current_path->current_node->lower_height = previous->lower_height;
-                }
-                if (!pathEditor_ConnectNodes(aieditor->current_path->current_node, previous)) {
-                    pathEditor_DestroyNode(aieditor->current_path->current_node, aieditor->current_path);
-                    aieditor->current_path->current_node = previous;
-                }
-            }
+            aieditor->flags |= 1;
         }
-    }
-    if (pad->digital_buttons_pressed & 0x20) {
-        node = aieditor->current_path->current_node;
-        if (node != NULL) {
-            nearest = aieditor->current_path->nearest_node;
-            if (nearest != NULL && nearest != node) {
-                if (pathEditor_FindConnection(node, nearest) != NULL)
-                    return pathEditor_DisconnectNodeMenu();
-                pathEditor_ConnectNodes(node, nearest);
-                position.x = nearest->position.x;
-                position.y = aieditor->cursor_position.y;
-                position.z = nearest->position.z;
-                edcamSetPos(&position);
-            }
+        named = 0;
+        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8))
+            goto next_node;
+        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2))
+            goto previous_node;
+        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 4)) {
+            named = 1;
+            goto next_node;
         }
-    }
-    if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->current_node != NULL &&
-        aieditor->current_path->current_node == aieditor->current_path->nearest_node)
-        return pathEditor_DeleteNodeMenu();
-    if (pad->digital_buttons_pressed & 0x100) {
-        if (aieditorsettings.display_options & 2) {
-            pathEditor_SelectNearestPath();
-        } else {
-            aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
-            if (aieditor->current_path->current_node != NULL) {
-                if (edpath_addoffset.x != 0.0f || edpath_addoffset.y != 0.0f || edpath_addoffset.z != 0.0f) {
-                    NuVecAdd(&aieditor->current_path->current_node->position,
-                             &aieditor->current_path->current_node->position, &edpath_addoffset);
-                    pathEditor_PathNodeMoved(aieditor->current_path->current_node);
-                    locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
-                }
-                edcamSetPos(&aieditor->current_path->current_node->position);
-            }
+        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 1)) {
+            named = 1;
+            goto previous_node;
         }
-    }
-    aieditor->flags &= ~1;
-    if (aieditor->current_path->current_node != NULL &&
-        aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
-        if (pad->digital_buttons & 0x8000 || pad->digital_buttons & 0x2000) {
-            if (pad->digital_buttons & 0x8000)
-                aieditor->current_path->current_node->radius =
-                    aieditor->current_path->current_node->radius * (f64)0.99f;
-            else
-                aieditor->current_path->current_node->radius =
-                    aieditor->current_path->current_node->radius * (f64)1.01f;
-            if (aieditor->current_path->current_node->radius < 0.01f)
-                aieditor->current_path->current_node->radius = 0.01f;
-            pathEditor_PathNodeMoved(aieditor->current_path->current_node);
-            locatorEditor_PathNodeMoved(aieditor->current_path->current_node);
-            if (AIPathNodeDeletedFn != NULL)
-                AIPathNodeDeletedFn(aieditor->current_path->current_node);
-        }
-        if (aieditorsettings.display_options & 0x80) {
-            if (pad->digital_buttons & 0x1000) {
-                aieditor->flags |= 4;
-                step = aieditor->current_path->current_node->upper_height * (f64)0.05f;
-                if (pad->digital_buttons & 4)
-                    aieditor->current_path->current_node->upper_height += step;
-                else if (pad->digital_buttons & 1)
-                    aieditor->current_path->current_node->upper_height -= step;
-                if (aieditor->current_path->current_node->upper_height < 0.01f)
-                    aieditor->current_path->current_node->upper_height = 0.01f;
-            } else if (pad->digital_buttons & 0x4000) {
-                aieditor->flags |= 4;
-                step = -aieditor->current_path->current_node->lower_height * (f64)0.05f;
-                if (pad->digital_buttons & 4)
-                    aieditor->current_path->current_node->lower_height += step;
-                else if (pad->digital_buttons & 1)
-                    aieditor->current_path->current_node->lower_height -= step;
-                if (aieditor->current_path->current_node->lower_height > -0.01f)
-                    aieditor->current_path->current_node->lower_height = -0.01f;
-            }
-        }
-        aieditor->flags |= 1;
-    }
-    named = 0;
-    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8))
-        goto next_node;
-    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2))
-        goto previous_node;
-    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 4)) {
-        named = 1;
-        goto next_node;
-    }
-    if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 1)) {
-        named = 1;
-        goto previous_node;
-    }
-    if (aieditorsettings.display_options & 0x80)
-        goto done;
-    if (pad->digital_buttons_pressed & 0x1000)
-        goto next_node;
-    if (!(pad->digital_buttons_pressed & 0x4000))
-        goto done;
-previous_node:
-    if (aieditor->current_path->current_node != NULL)
-        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
-            &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-    if (aieditor->current_path->current_node == NULL)
-        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
-    if (named && aieditor->current_path->current_node != NULL &&
-        NuStrLen(aieditor->current_path->current_node->name) == 0) {
-        start = aieditor->current_path->current_node;
-        do {
+        if (aieditorsettings.display_options & 0x80)
+            goto done;
+        if (pad->digital_buttons_pressed & 0x1000)
+            goto next_node;
+        if (!(pad->digital_buttons_pressed & 0x4000))
+            goto done;
+    previous_node:
+        if (aieditor->current_path->current_node != NULL)
             aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
                 &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-            if (aieditor->current_path->current_node == NULL) {
-                aieditor->current_path->current_node =
-                    (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
-                if (aieditor->current_path->current_node == NULL)
+        if (aieditor->current_path->current_node == NULL)
+            aieditor->current_path->current_node =
+                (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
+        if (named && aieditor->current_path->current_node != NULL &&
+            NuStrLen(aieditor->current_path->current_node->name) == 0) {
+            start = aieditor->current_path->current_node;
+            do {
+                aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetPrev(
+                    &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+                if (aieditor->current_path->current_node == NULL) {
+                    aieditor->current_path->current_node =
+                        (EDAIPATHNODE_s *)NuLinkedListGetTail(&aieditor->current_path->nodes);
+                    if (aieditor->current_path->current_node == NULL)
+                        break;
+                }
+                if (aieditor->current_path->current_node == start)
                     break;
-            }
-            if (aieditor->current_path->current_node == start)
-                break;
-        } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
-    }
-    goto set_camera;
-next_node:
-    if (aieditor->current_path->current_node != NULL)
-        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
-            &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-    if (aieditor->current_path->current_node == NULL)
-        aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
-    if (named && aieditor->current_path->current_node != NULL &&
-        NuStrLen(aieditor->current_path->current_node->name) == 0) {
-        start = aieditor->current_path->current_node;
-        do {
+            } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+        }
+        goto set_camera;
+    next_node:
+        if (aieditor->current_path->current_node != NULL)
             aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
                 &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
-            if (aieditor->current_path->current_node == NULL) {
-                aieditor->current_path->current_node =
-                    (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
-                if (aieditor->current_path->current_node == NULL)
+        if (aieditor->current_path->current_node == NULL)
+            aieditor->current_path->current_node =
+                (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
+        if (named && aieditor->current_path->current_node != NULL &&
+            NuStrLen(aieditor->current_path->current_node->name) == 0) {
+            start = aieditor->current_path->current_node;
+            do {
+                aieditor->current_path->current_node = (EDAIPATHNODE_s *)NuLinkedListGetNext(
+                    &aieditor->current_path->nodes, &aieditor->current_path->current_node->link);
+                if (aieditor->current_path->current_node == NULL) {
+                    aieditor->current_path->current_node =
+                        (EDAIPATHNODE_s *)NuLinkedListGetHead(&aieditor->current_path->nodes);
+                    if (aieditor->current_path->current_node == NULL)
+                        break;
+                }
+                if (aieditor->current_path->current_node == start)
                     break;
-            }
-            if (aieditor->current_path->current_node == start)
-                break;
-        } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+            } while (NuStrLen(aieditor->current_path->current_node->name) == 0);
+        }
+    set_camera:
+        if (aieditor->current_path->current_node != NULL)
+            edcamSetPos(&aieditor->current_path->current_node->position);
+    done:
+        aieditor->current_path->nearest_node = pathEditor_GetNearestNode(aieditor->current_path, 1);
     }
-set_camera:
-    if (aieditor->current_path->current_node != NULL)
-        edcamSetPos(&aieditor->current_path->current_node->position);
-done:
-    aieditor->current_path->nearest_node = pathEditor_GetNearestNode(aieditor->current_path, 1);
     return NULL;
 }
 

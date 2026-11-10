@@ -1469,58 +1469,58 @@ extern "C" {
             }
         }
         fighter->matrix.m33 = 1.0f;
-        if (fighter->delete_when_done != 0)
-            return 1;
-        if (fighter->initial_delay != 0.0f) {
-            fighter->initial_delay -= FRAMETIME;
-            if (fighter->initial_delay <= 0.0f) {
-                fighter->initial_delay = 0.0f;
-                fighter->aim_bias = DogfightAimResetPc;
-            }
-            return 1;
-        }
-        if (fighter->target_ready == 0) {
-            StarFighterTargetPc(fighter);
-            if (fighter->target_ready == 0)
+        if (fighter->delete_when_done == 0) {
+            if (fighter->initial_delay != 0.0f) {
+                fighter->initial_delay -= FRAMETIME;
+                if (fighter->initial_delay <= 0.0f) {
+                    fighter->initial_delay = 0.0f;
+                    fighter->aim_bias = DogfightAimResetPc;
+                }
                 return 1;
-        }
-        if (fighter->model_id == -307)
-            return 1;
-        if (fighter->fired != 0 && fighter->aim_bias > 0.0f)
-            fighter->aim_bias -= (f64)DogfightAimDecayPc * FRAMETIME;
-        if (fighter->shoot_timer > 0.0f) {
-            fighter->shoot_timer -= FRAMETIME;
-            return 1;
-        }
-        fighter->shoot_timer = NuRandFloat() * (f64)0.2f + (f64)0.2f;
-        if (info == NULL)
-            return 1;
-        fire_result = StarFighterFirePc(fighter, &shot_velocity, &aim_matrix, 75.0f);
-        if (fire_result != 0) {
-            if (fire_result == 1 && fighter->fired != 0)
-                fighter->delete_when_done = 1;
-            return 1;
-        }
-        if (fighter->missile_count != 0 && fighter->spline->id != 85 && fighter->spline->id != 84 &&
-            NuRandFloat() < (f64)0.2f) {
-            missile = QueuedFighterSelectorPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
-            if (missile != NULL) {
-                --fighter->missile_count;
-                *missile = *record;
-                missile->fields.speed += 10.0;
-                missile->fields.model_id = -307;
-                missile->fields.matrix.m30 += (f64)missile->fields.matrix.m10 * MissileDist;
-                missile->fields.matrix.m31 += (f64)missile->fields.matrix.m11 * MissileDist;
-                missile->fields.matrix.m32 += (f64)missile->fields.matrix.m12 * MissileDist;
-                dx = (f64)missile->fields.matrix.m30 - global_camera.mtx.m30;
-                dy = (f64)missile->fields.matrix.m31 - global_camera.mtx.m31;
-                dz = (f64)missile->fields.matrix.m32 - global_camera.mtx.m32;
-                if (dy * dy + dx * dx + dz * dz < 40000.0)
-                    PlaySfx("Ep3_1_ProtoXWingMissile", (NUVEC *)&missile->fields.matrix.m30);
             }
+            if (fighter->target_ready == 0) {
+                StarFighterTargetPc(fighter);
+                if (fighter->target_ready == 0)
+                    return 1;
+            }
+            if (fighter->model_id == -307)
+                return 1;
+            if (fighter->fired != 0 && fighter->aim_bias > 0.0f)
+                fighter->aim_bias -= (f64)DogfightAimDecayPc * FRAMETIME;
+            if (fighter->shoot_timer > 0.0f) {
+                fighter->shoot_timer -= FRAMETIME;
+                return 1;
+            }
+            fighter->shoot_timer = NuRandFloat() * (f64)0.2f + (f64)0.2f;
+            if (info == NULL)
+                return 1;
+            fire_result = StarFighterFirePc(fighter, &shot_velocity, &aim_matrix, 75.0f);
+            if (fire_result != 0) {
+                if (fire_result == 1 && fighter->fired != 0)
+                    fighter->delete_when_done = 1;
+                return 1;
+            }
+            if (fighter->missile_count != 0 && fighter->spline->id != 85 && fighter->spline->id != 84 &&
+                NuRandFloat() < (f64)0.2f) {
+                missile = QueuedFighterSelectorPc((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+                if (missile != NULL) {
+                    --fighter->missile_count;
+                    *missile = *record;
+                    missile->fields.speed += 10.0;
+                    missile->fields.model_id = -307;
+                    missile->fields.matrix.m30 += (f64)missile->fields.matrix.m10 * MissileDist;
+                    missile->fields.matrix.m31 += (f64)missile->fields.matrix.m11 * MissileDist;
+                    missile->fields.matrix.m32 += (f64)missile->fields.matrix.m12 * MissileDist;
+                    dx = (f64)missile->fields.matrix.m30 - global_camera.mtx.m30;
+                    dy = (f64)missile->fields.matrix.m31 - global_camera.mtx.m31;
+                    dz = (f64)missile->fields.matrix.m32 - global_camera.mtx.m32;
+                    if (dy * dy + dx * dx + dz * dz < 40000.0)
+                        PlaySfx("Ep3_1_ProtoXWingMissile", (NUVEC *)&missile->fields.matrix.m30);
+                }
+            }
+            QuickBoltCreatePc(info, &aim_matrix, &shot_velocity, 2.5f, fighter->model_id == -300, fighter->model_id);
+            fighter->fired = 1;
         }
-        QuickBoltCreatePc(info, &aim_matrix, &shot_velocity, 2.5f, fighter->model_id == -300, fighter->model_id);
-        fighter->fired = 1;
         return 1;
     }
 

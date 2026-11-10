@@ -60,20 +60,20 @@ extern "C" {
 
 i32 __cdecl InModelListDataFlags(APICHARACTERMODELLIST *list, u32 model_flags, u32 game_flags, i32 require_hats,
                                  i32 reject_hidden) {
-    if (list == NULL)
-        return 0;
-    for (; list->model_id != -1; ++list) {
-        i32 id;
-        if (Collection_Got(list->model_id) == 0)
-            continue;
-        id = list->model_id;
-        if ((GCDataList[id].flags_090 & game_flags) != game_flags ||
-            (CDataList[id].model_flags & model_flags) != model_flags ||
-            (reject_hidden != 0 && (GCDataList[id].flags_094 & 0x4000) != 0) ||
-            ((model_flags & 8) != 0 && (GCDataList[id].flags_094 & 0x8000) != 0))
-            continue;
-        if (require_hats == 0 || CanWearHatsInFreePlay(id) != 0)
-            return 1;
+    if (list != NULL) {
+        for (; list->model_id != -1; ++list) {
+            i32 id;
+            if (Collection_Got(list->model_id) == 0)
+                continue;
+            id = list->model_id;
+            if ((GCDataList[id].flags_090 & game_flags) != game_flags ||
+                (CDataList[id].model_flags & model_flags) != model_flags ||
+                (reject_hidden != 0 && (GCDataList[id].flags_094 & 0x4000) != 0) ||
+                ((model_flags & 8) != 0 && (GCDataList[id].flags_094 & 0x8000) != 0))
+                continue;
+            if (require_hats == 0 || CanWearHatsInFreePlay(id) != 0)
+                return 1;
+        }
     }
     return 0;
 }

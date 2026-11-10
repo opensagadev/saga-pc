@@ -28,20 +28,20 @@ void __cdecl ClimbObject_FindNormalPc(CLIMB_SLOT_PC *object) {
 CLIMB_SLOT_PC *__cdecl FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX_PC *connection) {
     i32 index;
     CLIMB_SLOT_PC *object;
-    if (system == NULL)
-        return NULL;
-    object = system->objects;
-    for (index = 0; index < system->count; ++index, ++object) {
-        if (object->connection != connection)
-            continue;
-        if (object->flags & 2)
-            return NULL;
-        if (object->flags & 1)
-            return object;
-        ClimbObject_FindNormalPc(object);
-        if (object->flags & 1)
-            return object;
-        object->flags |= 2;
+    if (system != NULL) {
+        object = system->objects;
+        for (index = 0; index < system->count; ++index, ++object) {
+            if (object->connection != connection)
+                continue;
+            if (object->flags & 2)
+                return NULL;
+            if (object->flags & 1)
+                return object;
+            ClimbObject_FindNormalPc(object);
+            if (object->flags & 1)
+                return object;
+            object->flags |= 2;
+        }
     }
     return NULL;
 }
@@ -74,13 +74,13 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, 
         connection = object->ai_packet.path_info.connection;
         direction = object->ai_packet.path_info.direction;
     }
-    if (system == NULL || connection == NULL)
-        return NULL;
-    helper = system->helpers;
-    for (index = 0; index < system->count; ++index, ++helper) {
-        if (helper->connection == connection && (helper->direction == 0xff || helper->direction == direction) &&
-            helper->type == type && (filter == NULL || filter(helper, object, connection, direction, type) == 0))
-            return helper;
+    if (system != NULL && connection != NULL) {
+        helper = system->helpers;
+        for (index = 0; index < system->count; ++index, ++helper) {
+            if (helper->connection == connection && (helper->direction == 0xff || helper->direction == direction) &&
+                helper->type == type && (filter == NULL || filter(helper, object, connection, direction, type) == 0))
+                return helper;
+        }
     }
     return NULL;
 }

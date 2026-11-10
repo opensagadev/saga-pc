@@ -6,9 +6,9 @@ MISSIONDATA_PC *__cdecl Mission_Active(MISSIONSYS_PC *system) {
         if (system == NULL)
             return NULL;
     }
-    if (system->state == 0)
-        return NULL;
-    return system->active_mission;
+    if (system->state != 0)
+        return system->active_mission;
+    return NULL;
 }
 
 void __cdecl EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
@@ -131,12 +131,12 @@ i32 __cdecl Missions_PartyAvailable(MISSIONSYS_PC *system) {
     i32 index;
     if (system == NULL)
         system = MissionSys;
-    if (system == NULL)
-        return 1;
-    reader = (MISSION_SYSTEM_READER_PC *)system;
-    for (index = 0; index < reader->character_count; ++index) {
-        if (Collection_Got(reader->character_ids[index]) == 0)
-            return 0;
+    if (system != NULL) {
+        reader = (MISSION_SYSTEM_READER_PC *)system;
+        for (index = 0; index < reader->character_count; ++index) {
+            if (Collection_Got(reader->character_ids[index]) == 0)
+                return 0;
+        }
     }
     return 1;
 }

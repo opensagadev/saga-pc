@@ -51,50 +51,48 @@ STATIC_ASSERT(offsetof(AREA_GIZMOSYS_PREFIX_PC, sets) == 0x00);
 void *__cdecl GizmoFindByName(void *gizmo_sys, i32 type_id, char *name) {
     AREA_GIZMOTYPES_PC *types = (AREA_GIZMOTYPES_PC *)gizmotypes;
 
-    if (types == NULL || gizmo_sys == NULL || name == NULL) {
-        return NULL;
-    }
-
-    if (type_id >= 0 && type_id <= types->count) {
-        AREA_GIZMOTYPE_PC *type;
-        AREA_GIZMOSET_PC *set;
-        AREA_GIZMO_PC *gizmo;
-        i32 index;
-
-        type = &types->types[type_id];
-        set = &((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets[type_id];
-        if (type->get_gizmo_name == NULL) {
-            return NULL;
-        }
-        gizmo = (AREA_GIZMO_PC *)set->gizmos;
-        for (index = 0; index < set->count; ++index, ++gizmo) {
-            char *gizmo_name = type->get_gizmo_name(gizmo);
-            if (NuStrICmp(gizmo_name, name) == 0) {
-                return gizmo;
-            }
-        }
-        return NULL;
-    }
-
-    {
-        AREA_GIZMOTYPE_PC *type;
-        AREA_GIZMOSET_PC *set;
-        i32 type_index;
-
-        type = types->types;
-        set = ((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets;
-        for (type_index = 0; type_index < ((AREA_GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
+    if (types != NULL && gizmo_sys != NULL && name != NULL) {
+        if (type_id >= 0 && type_id <= types->count) {
+            AREA_GIZMOTYPE_PC *type;
+            AREA_GIZMOSET_PC *set;
             AREA_GIZMO_PC *gizmo;
-            i32 gizmo_index;
+            i32 index;
 
+            type = &types->types[type_id];
+            set = &((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets[type_id];
             if (type->get_gizmo_name == NULL) {
-                continue;
+                return NULL;
             }
             gizmo = (AREA_GIZMO_PC *)set->gizmos;
-            for (gizmo_index = 0; gizmo_index < set->count; ++gizmo_index, ++gizmo) {
+            for (index = 0; index < set->count; ++index, ++gizmo) {
                 char *gizmo_name = type->get_gizmo_name(gizmo);
                 if (NuStrICmp(gizmo_name, name) == 0) {
                     return gizmo;
+                }
+            }
+            return NULL;
+        }
+
+        {
+            AREA_GIZMOTYPE_PC *type;
+            AREA_GIZMOSET_PC *set;
+            i32 type_index;
+
+            type = types->types;
+            set = ((AREA_GIZMOSYS_PREFIX_PC *)gizmo_sys)->sets;
+            for (type_index = 0; type_index < ((AREA_GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
+                AREA_GIZMO_PC *gizmo;
+                i32 gizmo_index;
+
+                if (type->get_gizmo_name == NULL) {
+                    continue;
+                }
+                gizmo = (AREA_GIZMO_PC *)set->gizmos;
+                for (gizmo_index = 0; gizmo_index < set->count; ++gizmo_index, ++gizmo) {
+                    char *gizmo_name = type->get_gizmo_name(gizmo);
+                    if (NuStrICmp(gizmo_name, name) == 0) {
+                        return gizmo;
+                    }
                 }
             }
         }

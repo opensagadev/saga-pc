@@ -434,17 +434,17 @@ extern "C" {
         f32 nearest_distance = 1000000000.0f, distance;
         NUVEC midpoint;
         i32 index;
-        if (world->grapples != NULL) {
-            grapple = world->grapples;
-            for (index = 0; index < world->grapple_count; ++index, ++grapple) {
-                midpoint.x = (f32)((grapple->ground_position.x + grapple->hook_position.x) * 0.5);
-                midpoint.y = (f32)((grapple->ground_position.y + grapple->hook_position.y) * 0.5);
-                midpoint.z = (f32)((grapple->ground_position.z + grapple->hook_position.z) * 0.5);
-                distance = NuVecDistSqr(&midpoint, position, NULL);
-                if (distance < nearest_distance) {
-                    nearest_distance = distance;
-                    nearest = grapple;
-                }
+        if (world->grapples == NULL)
+            return nearest;
+        grapple = world->grapples;
+        for (index = 0; index < world->grapple_count; ++index, ++grapple) {
+            midpoint.x = (f32)((grapple->ground_position.x + grapple->hook_position.x) * 0.5);
+            midpoint.y = (f32)((grapple->ground_position.y + grapple->hook_position.y) * 0.5);
+            midpoint.z = (f32)((grapple->ground_position.z + grapple->hook_position.z) * 0.5);
+            distance = NuVecDistSqr(&midpoint, position, NULL);
+            if (distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = grapple;
             }
         }
         return nearest;
@@ -604,9 +604,9 @@ extern "C" {
 
     i32 __cdecl Grapples_GetMaxGizmos(void *world_ptr) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        if (world == NULL)
-            return 0;
-        return world->current_level->max_grapples;
+        if (world != NULL)
+            return world->current_level->max_grapples;
+        return 0;
     }
 
     void __cdecl Grapples_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
@@ -626,6 +626,7 @@ extern "C" char *__cdecl Grapple_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 extern "C" i32 __cdecl Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    i32 result = 1;
     GRAPPLE_MOTION_PC *grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
     (void)mode;
     if ((grapple->flags & 2) == 0 || (grapple->flags & 1) == 0)
@@ -633,16 +634,16 @@ extern "C" i32 __cdecl Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) 
     switch (output) {
         case 1:
             if (Grapple_Occupied(grapple, NULL, NULL) == NULL)
-                return 0;
+                result = 0;
             break;
         case 2:
             if (Grapple_Occupied(grapple, NULL, NULL) == NULL)
-                return 0;
+                result = 0;
             break;
         default:
             break;
     }
-    return 1;
+    return result;
 }
 extern "C" {
 #pragma const_seg(".rdata$GrappleOccupiedOutputTextPc")

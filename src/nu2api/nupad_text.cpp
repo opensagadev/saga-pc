@@ -60,6 +60,7 @@ extern "C" {
 i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *destination, i32 custom,
                                                  i32 custom_index, i32 use_callback, i32 alternate_labels,
                                                  char *delimiters) {
+    i32 result = 0;
     i32 open = 0;
     i32 close = 0;
     if (button >= 256) {
@@ -109,7 +110,8 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
                             --destination;
                         }
                         NuStrCpy(destination, text);
-                        return 1;
+                        result = 1;
+                        break;
                     }
                 }
                 if (value <= 10) {
@@ -149,7 +151,8 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
                             --destination;
                         }
                         NuStrCpy(destination, text);
-                        return 1;
+                        result = 1;
+                        break;
                     }
                 }
                 NuStrCpy(destination, labels->indexed_names[TextInputAxisLabelIndexPc[value]]);
@@ -232,7 +235,7 @@ i32 __thiscall TEXT_INPUT_MANAGER_PC::ButtonName(i32 device, i32 button, char *d
         destination[length] = (char)close;
         destination[length + 1] = 0;
     }
-    return 0;
+    return result;
 }
 
 extern "C" i32 __cdecl TextInputButtonNamePc(i32 device, i32 button, char *destination) {

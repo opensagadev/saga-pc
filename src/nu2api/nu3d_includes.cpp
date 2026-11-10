@@ -14130,83 +14130,83 @@ extern "C" {
             NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0) == 0)
             return 0;
         groups = object->shadow_groups;
-        if (groups == NULL || object->suppress_shadow_points != 0)
-            return 1;
-        total = 0;
+        if (groups != NULL && object->suppress_shadow_points == 0) {
+            total = 0;
 
-        for (group = groups; group->joint_index != 255; ++group) {
-            i32 i;
+            for (group = groups; group->joint_index != 255; ++group) {
+                i32 i;
 
-            for (i = 0; i < group->ellipse_count; ++i)
-                if ((group->ellipses[i].filter.flags & 1) == 0)
-                    ++total;
-            for (i = 0; i < group->cylinder_count; ++i)
-                if ((group->cylinders[i].position.filter.flags & 1) == 0)
-                    ++total;
-        }
-        if (total == 0)
-            return 1;
-
-        for (i = 0; i < total; ++i)
-            counts[i] = 0;
-        for (i = 0; i < count; ++i)
-            ++counts[((i32)NuWindRand() >> 8) % total];
-        index = 0;
-
-        for (group = groups; group->joint_index != 255; ++group) {
-            i32 i;
-            i32 matrix_ready;
-
-            if (count == 0)
-                continue;
-            matrix_ready = 0;
-            for (i = 0; i < group->ellipse_count; ++i) {
-                i32 n;
-
-                if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
-                    continue;
-                n = counts[index];
-                if (n != 0) {
-                    if (matrix_ready == 0)
-                        NuMtxMulVU0(&combined, &joints[group->joint_index], world);
-                    if (n > 0) {
-                        i32 j;
-
-                        count -= n;
-                        for (j = n - 1; j >= 0; --j) {
-                            NuRndrCalcRandEllipsePos(&point, &combined, group->ellipses[i].axes);
-                            positions[count + j].x = point.x;
-                            positions[count + j].y = point.y;
-                            positions[count + j].z = point.z;
-                        }
-                    }
-                    matrix_ready = 1;
-                }
-                ++index;
+                for (i = 0; i < group->ellipse_count; ++i)
+                    if ((group->ellipses[i].filter.flags & 1) == 0)
+                        ++total;
+                for (i = 0; i < group->cylinder_count; ++i)
+                    if ((group->cylinders[i].position.filter.flags & 1) == 0)
+                        ++total;
             }
-            for (i = 0; i < group->cylinder_count; ++i) {
-                i32 n;
+            if (total == 0)
+                return 1;
 
-                if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
+            for (i = 0; i < total; ++i)
+                counts[i] = 0;
+            for (i = 0; i < count; ++i)
+                ++counts[((i32)NuWindRand() >> 8) % total];
+            index = 0;
+
+            for (group = groups; group->joint_index != 255; ++group) {
+                i32 i;
+                i32 matrix_ready;
+
+                if (count == 0)
                     continue;
-                n = counts[index];
-                if (n != 0) {
-                    if (matrix_ready == 0)
-                        NuMtxMulVU0(&combined, &joints[group->joint_index], world);
-                    if (n > 0) {
-                        i32 j;
+                matrix_ready = 0;
+                for (i = 0; i < group->ellipse_count; ++i) {
+                    i32 n;
 
-                        count -= n;
-                        for (j = n - 1; j >= 0; --j) {
-                            NuRndrCalcRandCylinderPos(&point, &combined, group->cylinders[i].position.axes);
-                            positions[count + j].x = point.x;
-                            positions[count + j].y = point.y;
-                            positions[count + j].z = point.z;
+                    if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
+                        continue;
+                    n = counts[index];
+                    if (n != 0) {
+                        if (matrix_ready == 0)
+                            NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+                        if (n > 0) {
+                            i32 j;
+
+                            count -= n;
+                            for (j = n - 1; j >= 0; --j) {
+                                NuRndrCalcRandEllipsePos(&point, &combined, group->ellipses[i].axes);
+                                positions[count + j].x = point.x;
+                                positions[count + j].y = point.y;
+                                positions[count + j].z = point.z;
+                            }
                         }
+                        matrix_ready = 1;
                     }
-                    matrix_ready = 1;
+                    ++index;
                 }
-                ++index;
+                for (i = 0; i < group->cylinder_count; ++i) {
+                    i32 n;
+
+                    if (exclusion_mask != 0 && (group->ellipses[i].filter.flags & exclusion_mask) != 0)
+                        continue;
+                    n = counts[index];
+                    if (n != 0) {
+                        if (matrix_ready == 0)
+                            NuMtxMulVU0(&combined, &joints[group->joint_index], world);
+                        if (n > 0) {
+                            i32 j;
+
+                            count -= n;
+                            for (j = n - 1; j >= 0; --j) {
+                                NuRndrCalcRandCylinderPos(&point, &combined, group->cylinders[i].position.axes);
+                                positions[count + j].x = point.x;
+                                positions[count + j].y = point.y;
+                                positions[count + j].z = point.z;
+                            }
+                        }
+                        matrix_ready = 1;
+                    }
+                    ++index;
+                }
             }
         }
         return 1;

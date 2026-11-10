@@ -415,13 +415,13 @@ extern "C" void GizSpinners_InitTerrain(WORLDINFO *world) {
 
 extern "C" GIZSPINNER_s *__cdecl GizSpinner_FindBySpecialName(void *world_ptr, char *name) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world != NULL && name != NULL) {
-        for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
-            GIZSPINNER_s *spinner = &world->spinners[index];
-            if (spinner != NULL && (spinner->flags & 1) != 0 &&
-                NuStrCmp(NuSpecialGetName((NUSPECIALHANDLE *)&spinner->special), name) == 0)
-                return spinner;
-        }
+    if (world == NULL || name == NULL)
+        return NULL;
+    for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
+        GIZSPINNER_s *spinner = &world->spinners[index];
+        if (spinner != NULL && (spinner->flags & 1) != 0 &&
+            NuStrCmp(NuSpecialGetName((NUSPECIALHANDLE *)&spinner->special), name) == 0)
+            return spinner;
     }
     return NULL;
 }

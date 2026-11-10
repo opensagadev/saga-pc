@@ -129,18 +129,18 @@ char *__cdecl LevelCharacterName(u8 index) {
 }
 char *__cdecl SpecialRouteCharacterName(u8 id) {
     i32 route = 0, skipped = 0;
-    if (id == 0xff)
-        return NULL;
-    if (id < 10)
-        return (char *)SuitRecordInitPc[id].suit_character_name;
-    while (CurrentStoryCList[route + skipped].model_id != -1 && route + skipped < 64) {
-        char *name = apicharsys->char_data[CurrentStoryCList[route + skipped].model_id].name;
-        if (IsSpecialRouteCharacterSkippedPc(name))
-            ++skipped;
-        else {
-            if (route + 10 == id)
-                return name;
-            ++route;
+    if (id != 0xff) {
+        if (id < 10)
+            return (char *)SuitRecordInitPc[id].suit_character_name;
+        while (CurrentStoryCList[route + skipped].model_id != -1 && route + skipped < 64) {
+            char *name = apicharsys->char_data[CurrentStoryCList[route + skipped].model_id].name;
+            if (IsSpecialRouteCharacterSkippedPc(name))
+                ++skipped;
+            else {
+                if (route + 10 == id)
+                    return name;
+                ++route;
+            }
         }
     }
     return NULL;
@@ -193,9 +193,9 @@ void *__cdecl GlobalCharacterHGobj(i32 id) {
     if (id == -1)
         return NULL;
     model = apicharsys->playermodelids[id];
-    if (model == -1)
-        return NULL;
-    return apicharsys->models[model].hierarchy;
+    if (model != -1)
+        return apicharsys->models[model].hierarchy;
+    return NULL;
 }
 f32 __cdecl GetViewRange(i32 id) {
     if (id == -1)
@@ -388,39 +388,39 @@ i32 __cdecl TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 i32 __cdecl TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE_PC *node, i32 tightrope) {
     NUVEC position;
     i32 result = 0;
-    if ((object->flags_1f8 & 0x400) == 0 && (object->ai_packet.path_info.flags & 1) != 0 &&
-        (object->field_f10 >= OFFSCREEN_CATCHUP_TIME ||
-         (object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f))) {
-        position = node->position;
-        position.y = object->bounds_half_height + position.y;
-        if (NuCameraClipTestSphere(&position, object->bounds_half_height, &NuMtxSetIdentityTemplate) != 0) {
-            if (tightrope != 0) {
-                if (TightRope_SnapTo(object, &node->position) != 0) {
-                    object->field_1086 = 0;
-                    object->field_1087 = 0;
-                    object->special_move_timer_pc = 0.0f;
-                    object->ai_packet.path_update_flag = 0;
-                    result = 1;
-                }
-            } else {
-                object->ai_packet.owner->position = node->position;
-                object->initial_position = object->ai_packet.owner->position;
-                object->collision_position = object->ai_packet.owner->position;
-                plr_lastpos = object->collision_position;
-                object->start_position = object->collision_position;
-                object->velocity = v000;
-                InitSurfaceInfo(object);
-                SetObjOnSurface(object, 0);
-                object->special_move_timer_pc = 0.0f;
+    if ((object->flags_1f8 & 0x400) != 0 || (object->ai_packet.path_info.flags & 1) == 0 ||
+        (!(object->field_f10 >= OFFSCREEN_CATCHUP_TIME) &&
+         (object->model_draw_result != 0 || (object->tag_flags & 2) != 0 || !(drop_back_in_timer > 0.0f))))
+        return result;
+    position = node->position;
+    position.y = object->bounds_half_height + position.y;
+    if (NuCameraClipTestSphere(&position, object->bounds_half_height, &NuMtxSetIdentityTemplate) != 0) {
+        if (tightrope != 0) {
+            if (TightRope_SnapTo(object, &node->position) != 0) {
                 object->field_1086 = 0;
                 object->field_1087 = 0;
+                object->special_move_timer_pc = 0.0f;
                 object->ai_packet.path_update_flag = 0;
-                if (object->takeover_source == NULL) {
-                    Player_ClearContext(object, 0);
-                    Player_ResetContexts(&object->ai_player_packet_pc);
-                }
                 result = 1;
             }
+        } else {
+            object->ai_packet.owner->position = node->position;
+            object->initial_position = object->ai_packet.owner->position;
+            object->collision_position = object->ai_packet.owner->position;
+            plr_lastpos = object->collision_position;
+            object->start_position = object->collision_position;
+            object->velocity = v000;
+            InitSurfaceInfo(object);
+            SetObjOnSurface(object, 0);
+            object->special_move_timer_pc = 0.0f;
+            object->field_1086 = 0;
+            object->field_1087 = 0;
+            object->ai_packet.path_update_flag = 0;
+            if (object->takeover_source == NULL) {
+                Player_ClearContext(object, 0);
+                Player_ResetContexts(&object->ai_player_packet_pc);
+            }
+            result = 1;
         }
     }
     return result;

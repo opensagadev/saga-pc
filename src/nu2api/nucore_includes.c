@@ -1649,41 +1649,39 @@ i32 __cdecl NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destinat
 
     nufile_lasterror = 0;
     file = NuDatFileOpen(header, filepath, 0);
-    if (file == 0) {
-        return 0;
-    }
-
-    if (header->mode == 3) {
-        while (NuFileStatus(file) != 0) {
-        }
-    }
-
-    info = &pc_dat_file_infos[file - 0x800];
-    if (info->compression_mode != 0) {
-        size = info->decompressed_length;
-    } else {
-        size = info->file_length;
-    }
-
-    if (size <= capacity && size != 0) {
-        while (NuDatFileRead(file, destination, size) < 0) {
-            do {
-                NuFileRetry();
-            } while (NuDatFileSeek(file, 0, 0) < 0);
-        }
-
+    if (file != 0) {
         if (header->mode == 3) {
             while (NuFileStatus(file) != 0) {
             }
         }
-        NuFileClose(file);
-        return size;
-    }
 
-    if (size != 0) {
-        nufile_lasterror = -1;
+        info = &pc_dat_file_infos[file - 0x800];
+        if (info->compression_mode != 0) {
+            size = info->decompressed_length;
+        } else {
+            size = info->file_length;
+        }
+
+        if (size <= capacity && size != 0) {
+            while (NuDatFileRead(file, destination, size) < 0) {
+                do {
+                    NuFileRetry();
+                } while (NuDatFileSeek(file, 0, 0) < 0);
+            }
+
+            if (header->mode == 3) {
+                while (NuFileStatus(file) != 0) {
+                }
+            }
+            NuFileClose(file);
+            return size;
+        }
+
+        if (size != 0) {
+            nufile_lasterror = -1;
+        }
+        NuFileClose(file);
     }
-    NuFileClose(file);
     return 0;
 }
 
@@ -2294,22 +2292,21 @@ i32 __cdecl NuFileExtConvert(char *dest, char *path) {
     *out = '\0';
     path_len = (i32)(out - dest);
     source = NuFileExtGetInfoPC(path, path_len);
-    if (source == NULL) {
-        return 0;
-    }
-    if (source->platform == 4) {
-        return 1;
-    }
-    /* Retail uses the same pointer termination here. */
-    for (target = extensions; target != NULL; ++target) {
-        if (target->platform == 4 && target->type == source->type) {
-            char *extension;
-            out = dest + path_len - source->len + target->len;
-            *out = '\0';
-            for (extension = target->extension; *extension != '\0'; ++extension) {
-                *--out = *extension;
-            }
+    if (source != NULL) {
+        if (source->platform == 4) {
             return 1;
+        }
+        /* Retail uses the same pointer termination here. */
+        for (target = extensions; target != NULL; ++target) {
+            if (target->platform == 4 && target->type == source->type) {
+                char *extension;
+                out = dest + path_len - source->len + target->len;
+                *out = '\0';
+                for (extension = target->extension; *extension != '\0'; ++extension) {
+                    *--out = *extension;
+                }
+                return 1;
+            }
         }
     }
     return 0;
@@ -3450,31 +3447,29 @@ i32 __cdecl NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context) {
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
-    if (buffer[0] == '\0' || buffer[0] == ';') {
-        return 0;
-    }
-
-    if (parser->command_position > -1) {
-        commands = parser->command_stack_ctx[parser->command_position];
-        for (index = 0; commands[index].keyword != NULL; index++) {
-            if (NuStrICmp(commands[index].keyword, buffer) == 0) {
-                commands[index].callback(parser, context);
-                return 1;
-            }
-        }
-        commands = parser->command_stack2_ctx[parser->command_position];
-        if (commands != NULL) {
+    if (buffer[0] != '\0' && buffer[0] != ';') {
+        if (parser->command_position > -1) {
+            commands = parser->command_stack_ctx[parser->command_position];
             for (index = 0; commands[index].keyword != NULL; index++) {
                 if (NuStrICmp(commands[index].keyword, buffer) == 0) {
                     commands[index].callback(parser, context);
                     return 1;
                 }
             }
+            commands = parser->command_stack2_ctx[parser->command_position];
+            if (commands != NULL) {
+                for (index = 0; commands[index].keyword != NULL; index++) {
+                    if (NuStrICmp(commands[index].keyword, buffer) == 0) {
+                        commands[index].callback(parser, context);
+                        return 1;
+                    }
+                }
+            }
         }
-    }
 
-    if (fnInterpreterError != NULL) {
-        fnInterpreterError(parser);
+        if (fnInterpreterError != NULL) {
+            fnInterpreterError(parser);
+        }
     }
     return 0;
 }

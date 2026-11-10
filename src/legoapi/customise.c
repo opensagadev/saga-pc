@@ -1077,30 +1077,30 @@ i32 __cdecl Customiser_NextPieceRight(CUSTOMISER_LAYERS_PC *input, i32 index, i3
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 attempts;
     (void)unused;
-    if (customiser != NULL) {
-        for (attempts = 0; attempts < count; ++attempts) {
-            ++index;
-            if (index >= count)
-                index -= count;
-            if (category != 2) {
-                WORLDINFO *world = WorldInfo_CurrentlyActive();
-                if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
-                    CUSTOM_ACCESSORY_RESOURCE_PC *resources =
-                        (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
-                    if (resources == NULL)
+    if (customiser == NULL)
+        return index;
+    for (attempts = 0; attempts < count; ++attempts) {
+        ++index;
+        if (index >= count)
+            index -= count;
+        if (category != 2) {
+            WORLDINFO *world = WorldInfo_CurrentlyActive();
+            if (world != NULL && HUB_ADATA != NULL && world->area == HUB_ADATA) {
+                CUSTOM_ACCESSORY_RESOURCE_PC *resources =
+                    (CUSTOM_ACCESSORY_RESOURCE_PC *)world->customiser_resources[category];
+                if (resources == NULL)
+                    continue;
+                if (customiser->categories[category]->uses_special != 0) {
+                    if (NuSpecialExistsFn(&resources[index].special) == 0)
                         continue;
-                    if (customiser->categories[category]->uses_special != 0) {
-                        if (NuSpecialExistsFn(&resources[index].special) == 0)
-                            continue;
-                    } else if (resources[index].texture_id == 0)
-                        continue;
-                }
+                } else if (resources[index].texture_id == 0)
+                    continue;
             }
-            if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
-                 Game_100PercentComplete() != 0) &&
-                customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0)
-                break;
         }
+        if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 ||
+             Game_100PercentComplete() != 0) &&
+            customiser->piece_available((CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category][index]) != 0)
+            break;
     }
     return index;
 }

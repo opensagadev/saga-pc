@@ -306,12 +306,11 @@ void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
 
 i32 __cdecl GizmoGetTypeIDByName(void *system, char *name) {
     i32 index;
-    if (gizmotypes == NULL || system == NULL || name == NULL) {
-        return -1;
-    }
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index) {
-        if (NuStrCmp(((GIZMOTYPES_PC *)gizmotypes)->types[index].name, name) == 0) {
-            return index;
+    if (gizmotypes != NULL && system != NULL && name != NULL) {
+        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index) {
+            if (NuStrCmp(((GIZMOTYPES_PC *)gizmotypes)->types[index].name, name) == 0) {
+                return index;
+            }
         }
     }
     return -1;
@@ -547,42 +546,43 @@ i32 __cdecl GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJEC
     NUVEC best_position, best_velocity, previous_position, previous_velocity, target_position, target_velocity;
     i32 i;
     (void)world;
-    if (registry == NULL || system == NULL || object == NULL || (ObjHitObj_Flags(object) & 0x800) == 0)
-        return 0;
-    registry = (GIZMOTYPES_PC *)gizmotypes;
-    type = (GIZMOTYPE_PC *)registry->types;
-    set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-    for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
-        if (type->fns.get_best_bolt_target_fn == NULL)
-            continue;
-        target = type->fns.get_best_bolt_target_fn(set, &distance, &target_position, &target_velocity, object, position,
-                                                   direction, radius, range_squared, directional, planar, bolt_id);
-        if (target == NULL)
-            continue;
-        if (target == object->collision_target) {
-            previous = target;
-            previous_position = target_position;
-            previous_velocity = target_velocity;
-        } else if (distance < best_distance) {
-            best = target;
-            best_position = target_position;
-            best_velocity = target_velocity;
-            best_distance = distance;
+    if (registry != NULL && system != NULL && object != NULL && (ObjHitObj_Flags(object) & 0x800) != 0) {
+        registry = (GIZMOTYPES_PC *)gizmotypes;
+        type = (GIZMOTYPE_PC *)registry->types;
+        set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+            if (type->fns.get_best_bolt_target_fn == NULL)
+                continue;
+            target =
+                type->fns.get_best_bolt_target_fn(set, &distance, &target_position, &target_velocity, object, position,
+                                                  direction, radius, range_squared, directional, planar, bolt_id);
+            if (target == NULL)
+                continue;
+            if (target == object->collision_target) {
+                previous = target;
+                previous_position = target_position;
+                previous_velocity = target_velocity;
+            } else if (distance < best_distance) {
+                best = target;
+                best_position = target_position;
+                best_velocity = target_velocity;
+                best_distance = distance;
+            }
         }
-    }
-    if (best != NULL) {
-        object->attack_target_position = best_position;
-        object->attack_target_velocity = best_velocity;
-        object->flags_e20 |= 0x800;
-        object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)best;
-        return 1;
-    }
-    if (previous != NULL) {
-        object->attack_target_position = previous_position;
-        object->attack_target_velocity = previous_velocity;
-        object->flags_e20 |= 0x800;
-        object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)previous;
-        return 1;
+        if (best != NULL) {
+            object->attack_target_position = best_position;
+            object->attack_target_velocity = best_velocity;
+            object->flags_e20 |= 0x800;
+            object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)best;
+            return 1;
+        }
+        if (previous != NULL) {
+            object->attack_target_position = previous_position;
+            object->attack_target_velocity = previous_velocity;
+            object->flags_e20 |= 0x800;
+            object->collision_target = VehicleArea != 0 ? NULL : (GAMEOBJECT *)previous;
+            return 1;
+        }
     }
     return 0;
 }
@@ -688,13 +688,13 @@ i32 __cdecl GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT_PC *bolt, 
     BOLT_GIZMO_TYPE_PC *type;
     GIZMOSET_PC *set;
     i32 i;
-    if (gizmotypes == NULL || system == NULL || bolt == NULL)
-        return 0;
-    type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
-    set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-    for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
-        if (type->hit_platform != NULL && type->hit_platform(world, set->data, bolt, hit_flags) != 0)
-            return 1;
+    if (gizmotypes != NULL && system != NULL && bolt != NULL) {
+        type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+            if (type->hit_platform != NULL && type->hit_platform(world, set->data, bolt, hit_flags) != 0)
+                return 1;
+        }
     }
     return 0;
 }
@@ -711,19 +711,19 @@ i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVE
         hit_points = points;
         mode = 3;
     }
-    if (gizmotypes == NULL || system == NULL || (bolt->hit_flags & 0x800) == 0)
-        return 0;
-    type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
-    set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-    for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
-        if (type->hit_bolt != NULL && type->hit_bolt(world, set->data, (GAMEOBJECT *)bolt->owner, hit_points, mode,
-                                                     radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
-            BoltSys->debris(bolt, points, -1, NULL, 0);
-            if (bolt->owner != NULL)
-                NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .6f, 0);
-            Bolt_End(bolt, 1);
-            Bolt_PlayHitSfx(bolt);
-            return 1;
+    if (gizmotypes != NULL && system != NULL && (bolt->hit_flags & 0x800) != 0) {
+        type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+            if (type->hit_bolt != NULL && type->hit_bolt(world, set->data, (GAMEOBJECT *)bolt->owner, hit_points, mode,
+                                                         radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
+                BoltSys->debris(bolt, points, -1, NULL, 0);
+                if (bolt->owner != NULL)
+                    NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .6f, 0);
+                Bolt_End(bolt, 1);
+                Bolt_PlayHitSfx(bolt);
+                return 1;
+            }
         }
     }
     return 0;
@@ -917,19 +917,19 @@ i32 __cdecl GizmoIsNameUnique(GIZMOSYS_PREFIX_PC *system, char *name) {
     GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     i32 type_index;
-    if (system == NULL || name == NULL)
-        return 1;
-    type = (GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
-    set = system->sets;
-    for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
-        GIZMO_PC *gizmo;
-        i32 index;
-        if (type->fns.get_gizmo_name_fn == NULL)
-            continue;
-        gizmo = set->gizmos;
-        for (index = 0; index < set->count; ++index, ++gizmo) {
-            if (NuStrICmp(name, type->fns.get_gizmo_name_fn(gizmo)) == 0)
-                return 0;
+    if (system != NULL && name != NULL) {
+        type = (GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
+        set = system->sets;
+        for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index, ++type, ++set) {
+            GIZMO_PC *gizmo;
+            i32 index;
+            if (type->fns.get_gizmo_name_fn == NULL)
+                continue;
+            gizmo = set->gizmos;
+            for (index = 0; index < set->count; ++index, ++gizmo) {
+                if (NuStrICmp(name, type->fns.get_gizmo_name_fn(gizmo)) == 0)
+                    return 0;
+            }
         }
     }
     return 1;
@@ -953,28 +953,28 @@ i32 __cdecl GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *system, char *prefix, char *n
     i32 type_index;
     i32 suffix_number;
     i32 name_length;
-    if (system == NULL || name == NULL || result == NULL)
-        return 0;
-    for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index) {
-        GIZMOTYPE_PC *type = &((GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types)[type_index];
-        if (NuStrICmp(prefix, type->prefix) != 0 && GizmoNameUsesPrefix(name, type->prefix))
-            return 0;
-    }
-    name_length = NuStrLen(name);
-    for (suffix_number = 1; suffix_number < 999; ++suffix_number) {
-        i32 suffix_length;
-        sprintf(suffix, "%d", suffix_number);
-        suffix_length = NuStrLen(suffix);
-        if (name_length + suffix_length >= result_size) {
-            name_length = result_size - suffix_length;
-            if (name_length <= 0)
+    if (system != NULL && name != NULL && result != NULL) {
+        for (type_index = 0; type_index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++type_index) {
+            GIZMOTYPE_PC *type = &((GIZMO_NAME_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types)[type_index];
+            if (NuStrICmp(prefix, type->prefix) != 0 && GizmoNameUsesPrefix(name, type->prefix))
                 return 0;
-            NuStrNCpy(shortened_name, name, name_length);
-            name = shortened_name;
         }
-        sprintf(result, "%s%s", name, suffix);
-        if (GizmoIsNameUnique(system, result))
-            return 1;
+        name_length = NuStrLen(name);
+        for (suffix_number = 1; suffix_number < 999; ++suffix_number) {
+            i32 suffix_length;
+            sprintf(suffix, "%d", suffix_number);
+            suffix_length = NuStrLen(suffix);
+            if (name_length + suffix_length >= result_size) {
+                name_length = result_size - suffix_length;
+                if (name_length <= 0)
+                    return 0;
+                NuStrNCpy(shortened_name, name, name_length);
+                name = shortened_name;
+            }
+            sprintf(result, "%s%s", name, suffix);
+            if (GizmoIsNameUnique(system, result))
+                return 1;
+        }
     }
     return 0;
 }

@@ -1159,29 +1159,29 @@ static i32 __cdecl GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bo
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
     i32 i, count;
     (void)hit_flags;
-    if (!system)
-        return 0;
-    count = system->active_gizmo_count;
-    for (i = 0; i < count; ++i) {
-        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
-        GAMEANIMOBJ *object;
-        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || !(obstacle->runtime_flags & 0x10) ||
-            (obstacle->runtime_flags & 0x80))
-            continue;
-        for (object = obstacle->anim_set->objects; object; object = object->next) {
-            typedef struct obstacle_anim_object_data_pc_s {
-                u16 flags;
-                i16 platform;
-            } OBSTACLE_ANIM_OBJECT_DATA_PC;
-            OBSTACLE_ANIM_OBJECT_DATA_PC *object_data = (OBSTACLE_ANIM_OBJECT_DATA_PC *)object->object_data;
-            STATIC_ASSERT(sizeof(OBSTACLE_ANIM_OBJECT_DATA_PC) == 4);
-            STATIC_ASSERT(offsetof(OBSTACLE_ANIM_OBJECT_DATA_PC, platform) == 2);
-            if (object_data->platform == bolt->hit_platform) {
-                BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
-                GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
-                i32 player = owner ? (i8)owner->field_280 : -1;
-                GizObstacles_Hit(world, obstacle, &bolt->position, player, type->field_3c);
-                return 1;
+    if (system) {
+        count = system->active_gizmo_count;
+        for (i = 0; i < count; ++i) {
+            GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
+            GAMEANIMOBJ *object;
+            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) ||
+                !(obstacle->runtime_flags & 0x10) || (obstacle->runtime_flags & 0x80))
+                continue;
+            for (object = obstacle->anim_set->objects; object; object = object->next) {
+                typedef struct obstacle_anim_object_data_pc_s {
+                    u16 flags;
+                    i16 platform;
+                } OBSTACLE_ANIM_OBJECT_DATA_PC;
+                OBSTACLE_ANIM_OBJECT_DATA_PC *object_data = (OBSTACLE_ANIM_OBJECT_DATA_PC *)object->object_data;
+                STATIC_ASSERT(sizeof(OBSTACLE_ANIM_OBJECT_DATA_PC) == 4);
+                STATIC_ASSERT(offsetof(OBSTACLE_ANIM_OBJECT_DATA_PC, platform) == 2);
+                if (object_data->platform == bolt->hit_platform) {
+                    BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
+                    GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
+                    i32 player = owner ? (i8)owner->field_280 : -1;
+                    GizObstacles_Hit(world, obstacle, &bolt->position, player, type->field_3c);
+                    return 1;
+                }
             }
         }
     }

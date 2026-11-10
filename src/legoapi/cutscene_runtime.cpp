@@ -6,11 +6,11 @@ extern "C" void __cdecl PauseGameCut(void);
 CUTINFO *__cdecl CutScene_Find(CUTSYS_PC *system, char *name) {
     i32 index;
 
-    if (system == NULL || name == NULL)
-        return NULL;
-    for (index = 0; index < system->count; ++index) {
-        if (NuStrICmp(system->records[index]->name, name) == 0)
-            return system->records[index];
+    if (system != NULL && name != NULL) {
+        for (index = 0; index < system->count; ++index) {
+            if (NuStrICmp(system->records[index]->name, name) == 0)
+                return system->records[index];
+        }
     }
     return NULL;
 }

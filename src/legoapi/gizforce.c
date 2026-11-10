@@ -288,19 +288,19 @@ u16 __cdecl GizForces_AngleToForce(NUVEC *position, GIZFORCE_PC *force) {
     return NuAtan2D(force->position.x - position->x, dz);
 }
 i32 __cdecl GizForce_Complete(GIZFORCE_PC *force) {
-    if ((force->config_flags & 2) || (force->force_range > 0.0f && !(force->runtime_flags & 0x2000)))
-        return 0;
-    if ((force->config_flags & 0x40) && !(force->runtime_flags & 0x800))
-        return 0;
-    if (force->anim_set == NULL)
-        return 1;
-    if (force->runtime_flags & 0x40) {
-        if (force->anim_set->state == 0)
+    if (!(force->config_flags & 2) && (!(force->force_range > 0.0f) || (force->runtime_flags & 0x2000))) {
+        if ((force->config_flags & 0x40) && !(force->runtime_flags & 0x800))
+            return 0;
+        if (force->anim_set == NULL)
             return 1;
-        return 0;
+        if (force->runtime_flags & 0x40) {
+            if (force->anim_set->state == 0)
+                return 1;
+            return 0;
+        }
+        if (force->anim_set->state == 2)
+            return 1;
     }
-    if (force->anim_set->state == 2)
-        return 1;
     return 0;
 }
 
@@ -538,17 +538,17 @@ static FORCE_SFX_CONFIG_PC *FindForceForSfxPc(WORLD_FORCE_SFX_PC *world, char *n
     FORCE_SFX_SYSTEM_PC *system = world->force_system;
     FORCE_SFX_CONFIG_PC *force;
     i32 i;
-    if (system == NULL)
-        return NULL;
-    force = system->forces;
-    for (i = 0; i < system->count; ++i, ++force) {
-        GAMEANIMOBJ *object;
-        if (force->anim_set == NULL)
-            continue;
-        for (object = force->anim_set->objects; object != NULL; object = object->next) {
-            char *special_name = NuSpecialGetName(&object->special);
-            if (special_name != NULL && NuStrICmp(name, special_name) == 0)
-                return force;
+    if (system != NULL) {
+        force = system->forces;
+        for (i = 0; i < system->count; ++i, ++force) {
+            GAMEANIMOBJ *object;
+            if (force->anim_set == NULL)
+                continue;
+            for (object = force->anim_set->objects; object != NULL; object = object->next) {
+                char *special_name = NuSpecialGetName(&object->special);
+                if (special_name != NULL && NuStrICmp(name, special_name) == 0)
+                    return force;
+            }
         }
     }
     return NULL;
@@ -1502,26 +1502,26 @@ i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT
     GIZMO_PC **gizmos;
     i32 count;
     i32 index;
-    if (system == NULL)
-        return 0;
-    count = system->hit_test_gizmo_count;
-    gizmos = system->hit_test_gizmos;
-    for (index = 0; index < count; ++index, ++gizmos) {
-        force = (GIZFORCE_PC *)(*gizmos)->object;
-        if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 || (force->runtime_flags & 0x100) == 0 ||
-            (force->runtime_flags & 0x10000) != 0)
-            continue;
-        animation = force->anim_set->objects;
-        while (animation != NULL) {
-            if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == bolt->hit_platform) {
-                (void)BoltType_FindByID((u8)bolt->type_id, world);
-                if (bolt->owner != NULL)
-                    GizForces_BoltHitPlat(force, world, (i8)((GAMEOBJECT *)bolt->owner)->field_280);
-                else
-                    GizForces_BoltHitPlat(force, world, -1);
-                return 1;
+    if (system != NULL) {
+        count = system->hit_test_gizmo_count;
+        gizmos = system->hit_test_gizmos;
+        for (index = 0; index < count; ++index, ++gizmos) {
+            force = (GIZFORCE_PC *)(*gizmos)->object;
+            if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 ||
+                (force->runtime_flags & 0x100) == 0 || (force->runtime_flags & 0x10000) != 0)
+                continue;
+            animation = force->anim_set->objects;
+            while (animation != NULL) {
+                if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == bolt->hit_platform) {
+                    (void)BoltType_FindByID((u8)bolt->type_id, world);
+                    if (bolt->owner != NULL)
+                        GizForces_BoltHitPlat(force, world, (i8)((GAMEOBJECT *)bolt->owner)->field_280);
+                    else
+                        GizForces_BoltHitPlat(force, world, -1);
+                    return 1;
+                }
+                animation = animation->next;
             }
-            animation = animation->next;
         }
     }
     return 0;

@@ -194,24 +194,23 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
 i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) {
     f32 scale;
 
-    if (object == NULL) {
-        return 0;
-    }
-    if (LSW1 != 0 && momentum != NULL) {
-        if (WORLD->current_level == BONUS_GUNSHIPB_LDATA) {
-            scale = 0.25f;
-        } else {
-            scale = 0.5f;
+    if (object != NULL) {
+        if (LSW1 != 0 && momentum != NULL) {
+            if (WORLD->current_level == BONUS_GUNSHIPB_LDATA) {
+                scale = 0.25f;
+            } else {
+                scale = 0.5f;
+            }
+            NuVecScale(momentum, &object->target_velocity, scale);
+            bolt->speed += NuVecMag(momentum);
+            return 0;
         }
-        NuVecScale(momentum, &object->target_velocity, scale);
-        bolt->speed += NuVecMag(momentum);
-        return 0;
-    }
-    if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->id == id_SPEEDERBIKE) {
-        return 1;
-    }
-    if (WORLD->current_level == DEATHSTARBATTLED_LDATA) {
-        return 1;
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->id == id_SPEEDERBIKE) {
+            return 1;
+        }
+        if (WORLD->current_level == DEATHSTARBATTLED_LDATA) {
+            return 1;
+        }
     }
     return 0;
 }
@@ -731,9 +730,9 @@ i32 __cdecl NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NU
     }
     evaluated = types[7] == 0 ? curves[7].constant : NuAnimCurve2CalcValEx(&curves[7], time, types[7]);
     visible = (i32)evaluated;
-    if (visible != 0 && scale != NULL) {
-        evaluated = types[6] == 0 ? curves[6].constant : NuAnimCurve2CalcValEx(&curves[6], time, types[6]);
-        *scale = evaluated;
-    }
+    if (visible == 0 || scale == NULL)
+        return visible;
+    evaluated = types[6] == 0 ? curves[6].constant : NuAnimCurve2CalcValEx(&curves[6], time, types[6]);
+    *scale = evaluated;
     return visible;
 }

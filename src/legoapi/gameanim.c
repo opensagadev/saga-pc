@@ -720,83 +720,82 @@ i32 __cdecl GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 
     NUMTX matrix;
     f32 frame;
 
-    if (set == NULL || centre == NULL || set->object_count == 0) {
-        return 0;
-    }
-    minimum.x = 1.0e9f;
-    minimum.y = 1.0e9f;
-    minimum.z = 1.0e9f;
-    maximum.x = -1.0e9f;
-    maximum.y = -1.0e9f;
-    maximum.z = -1.0e9f;
-    for (object = set->objects; object != NULL; object = object->next) {
-        if ((object->flags & 1) != 0) {
-            continue;
-        }
-        if (object->instance_animation != NULL) {
-            if (include_animated == 0) {
+    if (set != NULL && centre != NULL && set->object_count != 0) {
+        minimum.x = 1.0e9f;
+        minimum.y = 1.0e9f;
+        minimum.z = 1.0e9f;
+        maximum.x = -1.0e9f;
+        maximum.y = -1.0e9f;
+        maximum.z = -1.0e9f;
+        for (object = set->objects; object != NULL; object = object->next) {
+            if ((object->flags & 1) != 0) {
                 continue;
             }
-            switch (frame_selection) {
-                case 0:
-                    frame = object->start_frame;
-                    break;
-                case 1:
-                    frame = object->end_frame;
-                    break;
-                default:
-                    frame = object->instance_animation->ltime;
-                    break;
+            if (object->instance_animation != NULL) {
+                if (include_animated == 0) {
+                    continue;
+                }
+                switch (frame_selection) {
+                    case 0:
+                        frame = object->start_frame;
+                        break;
+                    case 1:
+                        frame = object->end_frame;
+                        break;
+                    default:
+                        frame = object->instance_animation->ltime;
+                        break;
+                }
+                EvalAnim(&object->special, frame, &matrix, 1);
+            } else {
+                if (include_static == 0) {
+                    continue;
+                }
+                matrix = *NuSpecialGetDrawMtx(&object->special);
             }
-            EvalAnim(&object->special, frame, &matrix, 1);
-        } else {
-            if (include_static == 0) {
-                continue;
+            NuSpecialGetRadius(&object->special, (NUVEC *)&object_centre, &object_radius);
+            object_radius *= 0.75f;
+            object_centre.w = 1.0f;
+            NuVec4MtxTransformVU0(&object_centre, &object_centre, &matrix);
+            low.x = object_centre.x - object_radius;
+            low.y = object_centre.y - object_radius;
+            low.z = object_centre.z - object_radius;
+            if (low.x < minimum.x) {
+                minimum.x = low.x;
             }
-            matrix = *NuSpecialGetDrawMtx(&object->special);
+            if (low.y < minimum.y) {
+                minimum.y = low.y;
+            }
+            if (low.z < minimum.z) {
+                minimum.z = low.z;
+            }
+            high.x = object_centre.x + object_radius;
+            high.y = object_centre.y + object_radius;
+            high.z = object_centre.z + object_radius;
+            if (high.x > maximum.x) {
+                maximum.x = high.x;
+            }
+            if (high.y > maximum.y) {
+                maximum.y = high.y;
+            }
+            if (high.z > maximum.z) {
+                maximum.z = high.z;
+            }
+            found_object = 1;
         }
-        NuSpecialGetRadius(&object->special, (NUVEC *)&object_centre, &object_radius);
-        object_radius *= 0.75f;
-        object_centre.w = 1.0f;
-        NuVec4MtxTransformVU0(&object_centre, &object_centre, &matrix);
-        low.x = object_centre.x - object_radius;
-        low.y = object_centre.y - object_radius;
-        low.z = object_centre.z - object_radius;
-        if (low.x < minimum.x) {
-            minimum.x = low.x;
+        if (found_object != 0) {
+            centre->x = (minimum.x + maximum.x) * 0.5f;
+            centre->y = (minimum.y + maximum.y) * 0.5f;
+            centre->z = (minimum.z + maximum.z) * 0.5f;
+            if (radius != NULL) {
+                half_size.x = (maximum.x - minimum.x) * 0.5f;
+                half_size.y = (maximum.y - minimum.y) * 0.5f;
+                half_size.z = (maximum.z - minimum.z) * 0.5f;
+                *radius = half_size.x * half_size.x + half_size.y * half_size.y + half_size.z * half_size.z;
+                *radius = NuFsqrt(*radius);
+            }
+            return 1;
         }
-        if (low.y < minimum.y) {
-            minimum.y = low.y;
-        }
-        if (low.z < minimum.z) {
-            minimum.z = low.z;
-        }
-        high.x = object_centre.x + object_radius;
-        high.y = object_centre.y + object_radius;
-        high.z = object_centre.z + object_radius;
-        if (high.x > maximum.x) {
-            maximum.x = high.x;
-        }
-        if (high.y > maximum.y) {
-            maximum.y = high.y;
-        }
-        if (high.z > maximum.z) {
-            maximum.z = high.z;
-        }
-        found_object = 1;
-    }
-    if (found_object != 0) {
-        centre->x = (minimum.x + maximum.x) * 0.5f;
-        centre->y = (minimum.y + maximum.y) * 0.5f;
-        centre->z = (minimum.z + maximum.z) * 0.5f;
-        if (radius != NULL) {
-            half_size.x = (maximum.x - minimum.x) * 0.5f;
-            half_size.y = (maximum.y - minimum.y) * 0.5f;
-            half_size.z = (maximum.z - minimum.z) * 0.5f;
-            *radius = half_size.x * half_size.x + half_size.y * half_size.y + half_size.z * half_size.z;
-            *radius = NuFsqrt(*radius);
-        }
-        return 1;
     }
     return 0;
 }

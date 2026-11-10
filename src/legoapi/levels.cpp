@@ -1899,18 +1899,18 @@ extern "C" SCENESPECIALPROGRESS_PC *__cdecl FindSceneStateObj(NUGSCN *scene, SCE
                                                               NUSPECIALHANDLE *target) {
     i32 count, i;
     NUSPECIALHANDLE special;
-    if (scene == NULL || progress == NULL || target == NULL)
-        return NULL;
-    count = NuSpecialGetNumSpecials(scene);
-    if (count == 0)
-        return NULL;
-    for (i = 0; i < count; ++i) {
-        if (i != 0)
-            NuSpecialGetNext(&special);
-        else
-            NuSpecialGetFirst(scene, &special, 1);
-        if (NuSpecialCompare(&special, target))
-            return &progress->specials[i];
+    if (scene != NULL && progress != NULL && target != NULL) {
+        count = NuSpecialGetNumSpecials(scene);
+        if (count == 0)
+            return NULL;
+        for (i = 0; i < count; ++i) {
+            if (i != 0)
+                NuSpecialGetNext(&special);
+            else
+                NuSpecialGetFirst(scene, &special, 1);
+            if (NuSpecialCompare(&special, target))
+                return &progress->specials[i];
+        }
     }
     return NULL;
 }

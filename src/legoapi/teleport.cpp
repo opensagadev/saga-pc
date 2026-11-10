@@ -686,9 +686,9 @@ extern "C" {
 
     i32 __cdecl Teleport_GetMaxGizmos(void *world_ptr) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        if (world == NULL)
-            return 0;
-        return world->current_level->max_teleports;
+        if (world != NULL)
+            return world->current_level->max_teleports;
+        return 0;
     }
 
     void __cdecl Teleport_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {

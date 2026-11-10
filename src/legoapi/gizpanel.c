@@ -594,9 +594,9 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
 
 i32 __cdecl GizPanel_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world == NULL)
-        return 0;
-    return world->current_level->max_gizpanels;
+    if (world != NULL)
+        return world->current_level->max_gizpanels;
+    return 0;
 }
 
 void __cdecl GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {

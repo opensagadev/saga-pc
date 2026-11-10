@@ -846,11 +846,11 @@ extern "C" {
 
     i32 __cdecl LevelObject_FindIndexFromName(char *name) {
         i32 i;
-        if (ObjTabList != NULL && LEVELOBJECTCOUNT > 0) {
-            for (i = 0; i < LEVELOBJECTCOUNT; ++i) {
-                if (NuStrICmp(ObjTabList[i].name, name) == 0) {
-                    return i;
-                }
+        if (ObjTabList == NULL || LEVELOBJECTCOUNT <= 0)
+            return -1;
+        for (i = 0; i < LEVELOBJECTCOUNT; ++i) {
+            if (NuStrICmp(ObjTabList[i].name, name) == 0) {
+                return i;
             }
         }
         return -1;
@@ -870,8 +870,9 @@ extern "C" {
 
     char *__cdecl LevelObject_FindNameFromIndex(i32 index) {
         char *name = "";
-        if (ObjTabList != NULL && index >= 0 && index < LEVELOBJECTCOUNT)
-            name = ObjTabList[index].name;
+        if (ObjTabList == NULL || index < 0 || index >= LEVELOBJECTCOUNT)
+            return name;
+        name = ObjTabList[index].name;
         return name;
     }
 

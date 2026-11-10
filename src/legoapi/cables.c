@@ -70,19 +70,19 @@ static f32 CableFdiv(f32 a, f32 b) {
 CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
     i32 i;
     CABLE_RECORD_PC *cable;
-    if (target == NULL || source == NULL)
-        return NULL;
-    for (i = 0; i < 8; ++i) {
-        cable = ((CABLE_RECORD_PC *)cables) + i;
-        if ((cable->flags & 1) == 0) {
-            cable->flags |= 1;
-            cable->source = source;
-            cable->target = target;
-            if (source == player || source == player2)
-                GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
-            if (sound)
-                PlaySfx("TowCable_Fire", &source->collision_position);
-            return cable;
+    if (target != NULL && source != NULL) {
+        for (i = 0; i < 8; ++i) {
+            cable = ((CABLE_RECORD_PC *)cables) + i;
+            if ((cable->flags & 1) == 0) {
+                cable->flags |= 1;
+                cable->source = source;
+                cable->target = target;
+                if (source == player || source == player2)
+                    GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
+                if (sound)
+                    PlaySfx("TowCable_Fire", &source->collision_position);
+                return cable;
+            }
         }
     }
     return NULL;

@@ -25,11 +25,11 @@ extern "C" {
         return helper;
     }
     i32 __cdecl CharCategory_FindByName(char *name) {
-        if (CharCategory != NULL) {
-            for (i32 index = 0; index < CHARCATEGORYCOUNT; ++index)
-                if (NuStrICmp(CharCategory[index].name, name) == 0)
-                    return index;
-        }
+        if (CharCategory == NULL)
+            return -1;
+        for (i32 index = 0; index < CHARCATEGORYCOUNT; ++index)
+            if (NuStrICmp(CharCategory[index].name, name) == 0)
+                return index;
         return -1;
     }
     SOCK_PC *__cdecl FindSock(SOCKSYS_PC *sys, char *name) {
@@ -189,11 +189,11 @@ extern "C" {
 
 extern "C" {
     void *__cdecl CutScene_FindInst(CUTSYS_PC *system, char *name) {
-        if (system != NULL) {
-            for (i32 index = 0; index < system->count; ++index)
-                if (NuStrICmp(system->records[index]->name, name) == 0)
-                    return system->records[index]->instance;
-        }
+        if (system == NULL)
+            return NULL;
+        for (i32 index = 0; index < system->count; ++index)
+            if (NuStrICmp(system->records[index]->name, name) == 0)
+                return system->records[index]->instance;
         return NULL;
     }
 }

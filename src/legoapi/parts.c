@@ -2809,13 +2809,13 @@ i32 __cdecl edpartLookupObjectInScene(char *name, NUGSCN *scene) {
         return -1;
     if (NuStrNCmp(name, PartNullInstanceNamePc, 16) == 0)
         return 9999;
-    if (scene != NULL) {
-        count = NuGScnNumSpecials(scene);
-        for (i = 0; i < count; ++i) {
-            NuGScnGetSpecial(&special, scene, i);
-            if (NuSpecialExistsFn(&special) && NuStrNCmp(name, NuSpecialGetName(&special), 16) == 0)
-                return i;
-        }
+    if (scene == NULL)
+        return -1;
+    count = NuGScnNumSpecials(scene);
+    for (i = 0; i < count; ++i) {
+        NuGScnGetSpecial(&special, scene, i);
+        if (NuSpecialExistsFn(&special) && NuStrNCmp(name, NuSpecialGetName(&special), 16) == 0)
+            return i;
     }
     return -1;
 }

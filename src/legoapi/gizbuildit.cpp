@@ -939,9 +939,9 @@ extern "C" {
 
     i32 __cdecl GizBuildIts_GetMaxGizmos(void *world_ptr) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        if (world == NULL)
-            return 0;
-        return world->current_level->max_buildits;
+        if (world != NULL)
+            return world->current_level->max_buildits;
+        return 0;
     }
 
     void __cdecl GizBuildIts_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
@@ -1148,78 +1148,78 @@ extern "C" {
         char blowup_name[32];
         version = (u8)EdFileReadChar();
         system->count = (u16)EdFileReadShort();
-        if (system->count == 0)
-            return 1;
-        buildit = (BUILDIT_RESET_PC *)system->buildits;
-        for (index = 0; index < system->count; ++index, ++buildit) {
-            EdFileRead(buildit->name, 16);
-            EdFileReadNuVec(&buildit->file_position);
-            GizmoFileReadGameAnimSet(buildit->anim_set, world, NULL, version, (char *)GizmoRegistryGizBuildItsNamePc,
-                                     buildit->name);
-            buildit->interaction_radius = EdFileReadFloat();
-            if (version <= 6)
-                EdFileReadFloat();
-            buildit->completion_score = EdFileReadShort();
-            buildit->wobble_parameter = EdFileReadShort();
-            buildit->batch_size = (u8)EdFileReadChar();
-            buildit->progress = (u8)EdFileReadChar();
-            if (version >= 6)
-                buildit->field_50 = EdFileReadFloat();
-            buildit->blowup_type = -1;
-            if (version >= 7) {
-                if (version == 7) {
-                    buildit->blowup_type = EdFileReadShort();
-                } else {
-                    length = (i8)EdFileReadChar();
-                    if (length != 0) {
-                        EdFileRead(blowup_name, length);
-                        buildit->blowup_type = (i16)GizmoBlowupGetNameTableId(blowup_name);
-                        if (buildit->blowup_type != -1)
-                            buildit->availability_flags |= 0x80;
+        if (system->count != 0) {
+            buildit = (BUILDIT_RESET_PC *)system->buildits;
+            for (index = 0; index < system->count; ++index, ++buildit) {
+                EdFileRead(buildit->name, 16);
+                EdFileReadNuVec(&buildit->file_position);
+                GizmoFileReadGameAnimSet(buildit->anim_set, world, NULL, version,
+                                         (char *)GizmoRegistryGizBuildItsNamePc, buildit->name);
+                buildit->interaction_radius = EdFileReadFloat();
+                if (version <= 6)
+                    EdFileReadFloat();
+                buildit->completion_score = EdFileReadShort();
+                buildit->wobble_parameter = EdFileReadShort();
+                buildit->batch_size = (u8)EdFileReadChar();
+                buildit->progress = (u8)EdFileReadChar();
+                if (version >= 6)
+                    buildit->field_50 = EdFileReadFloat();
+                buildit->blowup_type = -1;
+                if (version >= 7) {
+                    if (version == 7) {
+                        buildit->blowup_type = EdFileReadShort();
+                    } else {
+                        length = (i8)EdFileReadChar();
+                        if (length != 0) {
+                            EdFileRead(blowup_name, length);
+                            buildit->blowup_type = (i16)GizmoBlowupGetNameTableId(blowup_name);
+                            if (buildit->blowup_type != -1)
+                                buildit->availability_flags |= 0x80;
+                        }
                     }
+                    buildit->field_58 = EdFileReadShort();
+                    buildit->field_5a = EdFileReadShort();
+                    EdFileReadNuVec(&buildit->effect_position);
                 }
-                buildit->field_58 = EdFileReadShort();
-                buildit->field_5a = EdFileReadShort();
-                EdFileReadNuVec(&buildit->effect_position);
-            }
-            if (version >= 9)
-                buildit->activation_radius = EdFileReadFloat();
-            else
-                buildit->activation_radius = world->area != NULL && (world->area->flags & 1) ? 12.0f : 1.75f;
-            if (version < 4) {
-                buildit->state_flags = (i16)(i8)EdFileReadChar();
-                if (version >= 2 && EdFileReadChar() != 0)
-                    buildit->state_flags |= 0x40;
-                if (version >= 3 && EdFileReadChar() != 0)
-                    buildit->state_flags |= 0x80;
-            } else {
-                buildit->state_flags = (u16)EdFileReadShort();
-            }
-            if (version > 4) {
-                buildit->linked_rotation = (u16)EdFileReadShort();
-                if (EdFileReadChar() != 0) {
-                    EdFileRead(linked_name, 16);
-                    for (linked_index = 0; linked_index < system->count; ++linked_index) {
-                        BUILDIT_RESET_PC *linked = &((BUILDIT_RESET_PC *)system->buildits)[linked_index];
-                        if (NuStrICmp(linked->name, linked_name) == 0) {
-                            buildit->availability_flags |= 3;
-                            buildit->linked_buildit = &((BUILDIT_RESET_PC *)system->buildits)[linked_index];
-                            break;
+                if (version >= 9)
+                    buildit->activation_radius = EdFileReadFloat();
+                else
+                    buildit->activation_radius = world->area != NULL && (world->area->flags & 1) ? 12.0f : 1.75f;
+                if (version < 4) {
+                    buildit->state_flags = (i16)(i8)EdFileReadChar();
+                    if (version >= 2 && EdFileReadChar() != 0)
+                        buildit->state_flags |= 0x40;
+                    if (version >= 3 && EdFileReadChar() != 0)
+                        buildit->state_flags |= 0x80;
+                } else {
+                    buildit->state_flags = (u16)EdFileReadShort();
+                }
+                if (version > 4) {
+                    buildit->linked_rotation = (u16)EdFileReadShort();
+                    if (EdFileReadChar() != 0) {
+                        EdFileRead(linked_name, 16);
+                        for (linked_index = 0; linked_index < system->count; ++linked_index) {
+                            BUILDIT_RESET_PC *linked = &((BUILDIT_RESET_PC *)system->buildits)[linked_index];
+                            if (NuStrICmp(linked->name, linked_name) == 0) {
+                                buildit->availability_flags |= 3;
+                                buildit->linked_buildit = &((BUILDIT_RESET_PC *)system->buildits)[linked_index];
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            buildit->anim_object_count = 0;
-            buildit->anim_objects = (GAMEANIMOBJ **)&system->anim_objects[animation_index];
-            for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
-                if ((object->animation != NULL && object->instance_animation != NULL) ||
-                    (buildit->state_flags & 0x40)) {
-                    buildit->anim_objects[buildit->anim_object_count] = object;
-                    ++buildit->anim_object_count;
-                    ++animation_index;
+                buildit->anim_object_count = 0;
+                buildit->anim_objects = (GAMEANIMOBJ **)&system->anim_objects[animation_index];
+                for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
+                    if ((object->animation != NULL && object->instance_animation != NULL) ||
+                        (buildit->state_flags & 0x40)) {
+                        buildit->anim_objects[buildit->anim_object_count] = object;
+                        ++buildit->anim_object_count;
+                        ++animation_index;
+                    }
                 }
+                GizBuildit_Reset((GIZBUILDIT_s *)buildit, world);
             }
-            GizBuildit_Reset((GIZBUILDIT_s *)buildit, world);
         }
         return 1;
     }

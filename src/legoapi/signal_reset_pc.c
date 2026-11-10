@@ -207,11 +207,10 @@ i32 __cdecl Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
     signal = (SIGNAL_s *)gizmo->object;
     if (signal == NULL)
         return 0;
-    if ((reverse & 1) == 0) {
-        signal->flags = (signal->flags & ~2) | ((active == 0) << 1);
-        return 1;
-    }
-    return ((signal->flags & 2) != 0) == active;
+    if ((reverse & 1) != 0)
+        return ((signal->flags & 2) != 0) == active;
+    signal->flags = (signal->flags & ~2) | ((active == 0) << 1);
+    return 1;
 }
 
 i32 __cdecl Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {

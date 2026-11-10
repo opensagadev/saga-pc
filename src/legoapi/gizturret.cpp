@@ -1066,31 +1066,31 @@ extern "C" {
         BOLTTYPE_PC *type;
         GAMEOBJECT *owner;
         i32 count, index, damage, player;
-        if (system == NULL)
-            return 0;
-        count = system->count;
-        turret = system->turrets;
-        for (index = 0; index < count; ++index, ++turret) {
-            if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
-                (turret->flags & 0x200) == 0)
-                continue;
-            animation = turret->anim_set->objects;
-            while (animation != NULL) {
-                if (((TURRET_ANIM_DATA_PC *)animation->object_data)->platform_id == bolt->hit_platform) {
-                    type = BoltType_FindByID((u8)bolt->type_id, world);
-                    owner = (GAMEOBJECT *)bolt->owner;
-                    if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL)
-                        damage = 0;
-                    else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 &&
-                             (owner->flags_1fc_word & 0x80) == 0)
-                        damage = 0;
-                    else
-                        damage = (u8)type->field_3c;
-                    player = owner != NULL ? (i8)owner->field_280 : -1;
-                    GizTurrets_Hit(world, turret, &bolt->position, player, damage);
-                    return 1;
+        if (system != NULL) {
+            count = system->count;
+            turret = system->turrets;
+            for (index = 0; index < count; ++index, ++turret) {
+                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
+                    (turret->flags & 0x200) == 0)
+                    continue;
+                animation = turret->anim_set->objects;
+                while (animation != NULL) {
+                    if (((TURRET_ANIM_DATA_PC *)animation->object_data)->platform_id == bolt->hit_platform) {
+                        type = BoltType_FindByID((u8)bolt->type_id, world);
+                        owner = (GAMEOBJECT *)bolt->owner;
+                        if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL)
+                            damage = 0;
+                        else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 &&
+                                 (owner->flags_1fc_word & 0x80) == 0)
+                            damage = 0;
+                        else
+                            damage = (u8)type->field_3c;
+                        player = owner != NULL ? (i8)owner->field_280 : -1;
+                        GizTurrets_Hit(world, turret, &bolt->position, player, damage);
+                        return 1;
+                    }
+                    animation = animation->next;
                 }
-                animation = animation->next;
             }
         }
         return 0;
@@ -1122,81 +1122,81 @@ extern "C" {
         u16 target_angle;
         NUANG angle;
         i32 index;
-        if (set == NULL || type == NULL)
-            return NULL;
-        direction_copy = *direction;
-        minimum_x = (f64)origin->x - (f64)radius;
-        minimum_z = (f64)origin->z - (f64)radius;
-        maximum_x = (f64)origin->x + (f64)radius;
-        maximum_z = (f64)radius + (f64)origin->z;
-        if (directional != 0 && (type->flags_60 & 0x20000) != 0) {
-            direction_copy.y = 0.0f;
-            NuVecNorm(&direction_copy, &direction_copy);
-        }
-        gizmo = set->gizmos;
-        for (index = 0; index < set->count; ++index, ++gizmo) {
-            turret = (GIZTURRET_s *)gizmo->object;
-            if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
-                turret->primary_anim_obj == NULL)
-                continue;
-            position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
-            if (position == NULL)
-                continue;
-            if (minimum_x > position->x || maximum_x < position->x || minimum_z > position->z ||
-                maximum_z < position->z)
-                continue;
-            if (planar == 0)
-                distance_spill = NuVecDistSqr(position, origin, &delta);
-            else
-                distance_spill = NuVecXZDistSqr(position, origin, &delta);
-            distance = distance_spill;
-            if (!(range_squared > distance))
-                continue;
-            if (directional == 0) {
-                dz_spill = (f64)position->z - (f64)origin->z;
-                dx_spill = (f64)position->x - (f64)origin->x;
-                angle = NuAtan2D(dx_spill, dz_spill);
-                NuVecRotateY(&delta, &v001, angle);
+        if (set != NULL && type != NULL) {
+            direction_copy = *direction;
+            minimum_x = (f64)origin->x - (f64)radius;
+            minimum_z = (f64)origin->z - (f64)radius;
+            maximum_x = (f64)origin->x + (f64)radius;
+            maximum_z = (f64)radius + (f64)origin->z;
+            if (directional != 0 && (type->flags_60 & 0x20000) != 0) {
+                direction_copy.y = 0.0f;
+                NuVecNorm(&direction_copy, &direction_copy);
             }
-            if ((type->flags_60 & 0x20000) != 0)
-                delta.y = 0.0f;
-            NuVecNorm(&delta, &delta);
-            dot_spill = NuVecDot(&delta, &direction_copy);
-            dot = dot_spill;
-            if (near_distance > distance && directional != 0)
-                target_angle = near_angle;
-            else if (mid_distance > distance)
-                target_angle = mid_angle;
-            else
-                target_angle = far_angle;
-            if (!(NuTrigTable[(((i32)target_angle + 0x4000) >> 1) & 0x7fff] < dot))
-                continue;
-            if (!(best_distance > distance))
-                continue;
-            if (object != NULL && (void *)gizmo == (void *)object->collision_target) {
-                previous = gizmo;
-                previous_position = position;
-            } else {
-                best_distance = distance;
-                best = gizmo;
-                best_position = position;
+            gizmo = set->gizmos;
+            for (index = 0; index < set->count; ++index, ++gizmo) {
+                turret = (GIZTURRET_s *)gizmo->object;
+                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
+                    turret->primary_anim_obj == NULL)
+                    continue;
+                position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
+                if (position == NULL)
+                    continue;
+                if (minimum_x > position->x || maximum_x < position->x || minimum_z > position->z ||
+                    maximum_z < position->z)
+                    continue;
+                if (planar == 0)
+                    distance_spill = NuVecDistSqr(position, origin, &delta);
+                else
+                    distance_spill = NuVecXZDistSqr(position, origin, &delta);
+                distance = distance_spill;
+                if (!(range_squared > distance))
+                    continue;
+                if (directional == 0) {
+                    dz_spill = (f64)position->z - (f64)origin->z;
+                    dx_spill = (f64)position->x - (f64)origin->x;
+                    angle = NuAtan2D(dx_spill, dz_spill);
+                    NuVecRotateY(&delta, &v001, angle);
+                }
+                if ((type->flags_60 & 0x20000) != 0)
+                    delta.y = 0.0f;
+                NuVecNorm(&delta, &delta);
+                dot_spill = NuVecDot(&delta, &direction_copy);
+                dot = dot_spill;
+                if (near_distance > distance && directional != 0)
+                    target_angle = near_angle;
+                else if (mid_distance > distance)
+                    target_angle = mid_angle;
+                else
+                    target_angle = far_angle;
+                if (!(NuTrigTable[(((i32)target_angle + 0x4000) >> 1) & 0x7fff] < dot))
+                    continue;
+                if (!(best_distance > distance))
+                    continue;
+                if (object != NULL && (void *)gizmo == (void *)object->collision_target) {
+                    previous = gizmo;
+                    previous_position = position;
+                } else {
+                    best_distance = distance;
+                    best = gizmo;
+                    best_position = position;
+                }
             }
-        }
-        if (best != NULL) {
-            *output_position = *best_position;
-            *output_distance = best_distance;
-            output_velocity->x = 0.0f;
-            output_velocity->y = 0.0f;
-            output_velocity->z = 0.0f;
-            return best;
-        }
-        if (previous != NULL) {
-            *output_position = *previous_position;
-            *output_distance = 1000000000.0f;
-            output_velocity->x = 0.0f;
-            output_velocity->y = 0.0f;
-            output_velocity->z = 0.0f;
-            return previous;
+            if (best != NULL) {
+                *output_position = *best_position;
+                *output_distance = best_distance;
+                output_velocity->x = 0.0f;
+                output_velocity->y = 0.0f;
+                output_velocity->z = 0.0f;
+                return best;
+            }
+            if (previous != NULL) {
+                *output_position = *previous_position;
+                *output_distance = 1000000000.0f;
+                output_velocity->x = 0.0f;
+                output_velocity->y = 0.0f;
+                output_velocity->z = 0.0f;
+                return previous;
+            }
         }
         return NULL;
     }

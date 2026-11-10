@@ -1122,8 +1122,9 @@ f32 __cdecl GetHoverPosY(GAMEOBJECT *object) {
     if (object->water_height != 0.0f && object->water_height > height)
         height = object->water_height;
     hover = WORLD->current_level->hover_height;
-    if (hover == 0.0f)
-        hover = object->character_data->game_character->field_028;
+    if (hover != 0.0f)
+        return (f32)(height + hover + offset);
+    hover = object->character_data->game_character->field_028;
     return (f32)(height + hover + offset);
 }
 
@@ -2494,11 +2495,11 @@ void __cdecl PlayerItemTypes_Reset(WORLDINFO *world) {
 }
 PLAYER_ITEM_TYPE_RESET_PC *__cdecl PlayerItemType_Find(i32 id) {
     i32 index;
-    if (PlayerItemTypePc != NULL && PlayerItemTypeCountPc > 0) {
-        for (index = 0; index < PlayerItemTypeCountPc; ++index)
-            if (PlayerItemTypePc[index].id == id)
-                return &PlayerItemTypePc[index];
-    }
+    if (PlayerItemTypePc == NULL || PlayerItemTypeCountPc <= 0)
+        return NULL;
+    for (index = 0; index < PlayerItemTypeCountPc; ++index)
+        if (PlayerItemTypePc[index].id == id)
+            return &PlayerItemTypePc[index];
     return NULL;
 }
 
