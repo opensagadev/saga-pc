@@ -77,7 +77,7 @@ i32 __cdecl SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position,
         if (SuperCarry_AlignObject)
             NuMtxSetRotationY(&view->transform, angle);
         else
-            view->transform = numtx_identity;
+            view->transform = NuMtxSetIdentityTemplate;
         NuMtxTranslate(&view->transform, position);
     }
     return 0;

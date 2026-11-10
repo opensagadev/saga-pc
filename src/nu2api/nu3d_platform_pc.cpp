@@ -2200,8 +2200,8 @@ extern "C" {
         PcGeometryResetMatrixPc = NuMtxSetIdentityTemplate;
         PcGeometryDistanceOriginPc = PcGeometryDefaultOriginPc;
         for (i32 i = 0; i < 16; ++i) {
-            PCDeviceSamplerInvalidation[i][0] = 0x012449d0;
             PCDeviceSamplerInvalidation[i][1] = 0;
+            PCDeviceSamplerInvalidation[i][0] = 0x012449d0;
         }
     }
 
