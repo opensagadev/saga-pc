@@ -197,6 +197,8 @@ def parse(source):
         names = [cursor.spelling] if cursor.spelling else []
         if kind == "ENUM_DECL":
             names += [c.spelling for c in cursor.get_children() if c.kind.name == "ENUM_CONSTANT_DECL"]
+        if not (kind in FUNCTION_KINDS and cursor.is_definition()):
+            end = statement_end(source.text, start, end)
         start, end = source.expand(start, end)
         if items and start < items[-1].end and not isinstance(items[-1].cursor, str):
             # Overlapping extents (struct inside typedef, multi-declarators): one item.
@@ -246,6 +248,25 @@ def group_segments(items):
         out.append(item)
         i += 1
     return out
+
+
+def statement_end(text, start, end):
+    """End of a declaration: libclang stops some declarator extents early
+    (`void (__cdecl *name)(args)` ends at the name). Extend to the ';' that
+    closes the declaration at bracket depth zero."""
+    clean = strip_comments(text)
+    depth = 0
+    for i in range(start, len(clean)):
+        ch = clean[i]
+        if ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+            if depth < 0:
+                return end
+        elif ch == ";" and depth == 0:
+            return max(end, i)
+    return end
 
 
 def classify(kind):
@@ -514,7 +535,7 @@ def apply_plan(plan, android=None, write=True):
     if tentative:
         plan.notes.append("dropped tentative definitions: " + ", ".join(sorted(n for i in tentative for n in i.names)))
     kept = [item for item in plan.moved_data if item not in tentative]
-    preamble = [(item.text, wrap_c(item, target_cxx)) for item in kept if not item.definition]
+    preamble_items = [item for item in kept if not item.definition]
     data_left = [item for item in kept if item.definition]
     entries = []
     defined = set()
@@ -590,14 +611,51 @@ def apply_plan(plan, android=None, write=True):
     moved_names = set()
     for _, fn in plan.moved:
         moved_names |= fn.names
+    existing_key = re.sub(r"\s+", " ", existing)
+    type_texts = {}
+    preamble = []
+
+    type_slots = {}   # type name -> (list, index, fields)
+
+    def admit(item, text, out):
+        key = re.sub(r"\s+", " ", text.strip())
+        if not key or key in seen or key in existing_key:
+            return
+        entry = (text, wrap_c(item, target_cxx) or (item.c_block and target_cxx))
+        if item.kind == "type":
+            body = re.sub(r"\s+", " ", strip_comments(text)).strip()
+            if any(type_texts.get(name) == body for name in item.names):
+                return
+            clash = [name for name in item.names if name in type_texts]
+            if clash:
+                # Divergent copies of one struct: keep the one whose named fields
+                # include the other's at the same offsets.
+                where, index, fields = type_slots[clash[0]]
+                mine = named_fields(item)
+                if fields is not None and mine is not None and mine >= fields:
+                    where[index] = entry
+                    for name in item.names:
+                        type_texts[name], type_slots[name] = body, (where, index, mine)
+                    plan.notes.append(f"kept the more complete definition of {clash[0]}")
+                elif fields is not None and mine is not None and fields >= mine:
+                    plan.notes.append(f"kept the more complete definition of {clash[0]}")
+                else:
+                    plan.todo.append(f"type {clash[0]} has incompatible definitions in the merged files")
+                    seen.add(key)
+                    out.append(entry)
+                return
+            for name in item.names:
+                type_texts[name] = body
+                type_slots[name] = (out, len(out), named_fields(item))
+        seen.add(key)
+        out.append(entry)
+
+    for item in preamble_items:
+        admit(item, item.text, preamble)
     for copy in plan.copied:
         if copy.item.kind == "function" and not copy.item.definition and copy.item.names & moved_names:
             continue  # the definition is in the unit now; forward declarations are generated from it
-        key = re.sub(r"\s+", " ", copy.text.strip())
-        if not key or key in seen or key in re.sub(r"\s+", " ", existing):
-            continue
-        seen.add(key)
-        copies.append((copy.text, wrap_c(copy.item, target_cxx) or (copy.item.c_block and target_cxx)))
+        admit(copy.item, copy.text, copies)
     variants = collections.defaultdict(set)
     for copy in plan.copied:
         if copy.item.kind in ("function", "variable"):
@@ -677,6 +735,24 @@ def apply_plan(plan, android=None, write=True):
         rewrite_paths(plan.deleted, target, plan)
         format_files([p for p in new_texts])
     return new_texts
+
+
+def named_fields(item):
+    """{(field, byte offset)} of a struct item's non-padding fields, or None."""
+    cursor = item.cursor
+    if cursor is None:
+        return None
+    records = [cursor] if cursor.kind.name in ("STRUCT_DECL", "UNION_DECL", "CLASS_DECL") else \
+        [c for c in cursor.get_children() if c.kind.name in ("STRUCT_DECL", "UNION_DECL", "CLASS_DECL")]
+    if not records:
+        return None
+    record = records[0]
+    fields = set()
+    for child in record.get_children():
+        if child.kind.name == "FIELD_DECL" and not child.spelling.startswith(("unknown", "pad", "field_")):
+            offset = record.type.get_offset(child.spelling)
+            fields.add((child.spelling, offset // 8 if offset >= 0 else None))
+    return frozenset(fields)
 
 
 def helper_key(item):
