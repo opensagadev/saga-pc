@@ -447,12 +447,12 @@
    "kind": "data"
   },
   {
-   "unit": "src/legoapi/episodeIV.c",
+   "unit": "src/legoapi/episodeV.c",
    "symbol": "_AsteroidChaseD_SetTurretTarget",
    "kind": "function"
   },
   {
-   "unit": "src/legoapi/episodeIV.c",
+   "unit": "src/legoapi/episodeV.c",
    "symbol": "_AsteroidSetAngVec",
    "kind": "function"
   },
