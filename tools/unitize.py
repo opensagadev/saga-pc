@@ -370,6 +370,12 @@ def build_plan(lo, hi, target):
             continue
         if not found[0].startswith("src/"):
             continue
+        if r["size"] == 1:
+            # A bare-RET stub: VC8 drops calls to an empty body it can see, so
+            # retail callers that still call it were compiled in another unit
+            # (the linker folded the stub into this unit's copy).
+            plan.notes.append(f"left bare-ret stub {r['symbol']} in {found[0]}")
+            continue
         by_source[found[0]].append(r)
     if not by_source:
         raise SystemExit("no implemented functions in range")
