@@ -153,15 +153,6 @@ void __cdecl GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, voi
         message = (GIZAIMESSAGE *)NuLinkedListGetNext(&gizaimessagesys->active_list, &message->links);
     }
 }
-void __cdecl Teleport_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    ADD_TELEPORT_WORLD_PC *w = (ADD_TELEPORT_WORLD_PC *)world_ptr;
-    i32 i;
-    (void)data;
-    if (w == NULL || w->items == NULL)
-        return;
-    for (i = 0; i < w->count; ++i)
-        AddGizmo(giz, type, NULL, &w->items[i]);
-}
 void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     ADD_TORP_SYS_PC *s;
@@ -263,13 +254,6 @@ NUVEC *__cdecl GizmoBuildit_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL)
         return NULL;
     return &((FLOW_BUILDIT_POSITION_PC *)gizmo->object)->position;
-}
-
-/* Append gizmo_add_callbacks_pc.c. Native4cf150..4cf16017B. */
-char *__cdecl Teleport_GetGizmoName(GIZMO_PC *gizmo) {
-    if (gizmo == NULL || gizmo->object == NULL)
-        return NULL;
-    return (char *)gizmo->object;
 }
 
 extern char AIGizmoNameBufferPc[16];

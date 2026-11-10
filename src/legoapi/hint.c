@@ -356,20 +356,6 @@ i32 __cdecl Shop_UpdateHint(HINT_PC *hint) {
     return 0;
 }
 
-i32 __cdecl Teleport_UpdateHints(HINT_PC *hint) {
-    GAMEOBJECT *object;
-    (void)hint;
-    if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
-        return 0;
-    if (((HINT_WORLD_TELEPORT_PC *)WORLD)->teleport_count <= 0 || AvailableToPlayer(0x40000, -1, -1, 0) == 0)
-        return 0;
-    object = (GAMEOBJECT *)Player[0];
-    if (object != NULL && ((object->flags_e24 & 0x20) != 0 || Teleport_Find(object, 1.5625f) != NULL))
-        return 1;
-    object = (GAMEOBJECT *)Player[1];
-    return object != NULL && ((object->flags_e24 & 0x20) != 0 || Teleport_Find(object, 1.5625f) != NULL);
-}
-
 i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *hint) {
     GAMEOBJECT *object;
     (void)hint;

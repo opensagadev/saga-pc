@@ -494,13 +494,6 @@ i32 __cdecl AI_GetMaxGizmos(void *world_ptr) {
     return 32;
 }
 
-i32 __cdecl Teleport_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world == NULL)
-        return 0;
-    return world->current_level->max_teleports;
-}
-
 i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world == NULL)
