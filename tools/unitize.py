@@ -326,6 +326,13 @@ def brace_index(text):
     return clean.index("{")
 
 
+def head_text(item):
+    """A function definition's text up to its body; other items whole."""
+    if item.function and item.definition and "{" in strip_comments(item.text):
+        return item.text[:brace_index(item.text)]
+    return item.text
+
+
 def extern_declaration(item):
     """extern declaration for a variable definition (single declarator)."""
     text = strip_comments(item.text).strip()
@@ -781,18 +788,19 @@ def declare_moved_calls(plan, source, drop, text):
     for item in stay:
         if item.function and item.definition:
             refs |= item.refs()
-    declared = "\n".join(i.text[:brace_index(i.text)] if i.function and i.definition else i.text for i in stay)
+    declared = "\n".join(head_text(i) for i in stay)
     lines = []
     for _, fn in plan.moved:
-        if "static" in fn.text[:brace_index(fn.text)].split():
+        if "static" in head_text(fn).split():
             continue
         for name in sorted(fn.names & refs):
             pattern = re.compile(rf"\b{re.escape(name)}\s*\(")
             if pattern.search(saga) or pattern.search(declared):
                 continue
             proto = re.sub(r"\s+", " ", strip_comments(prototype(fn)).strip())
-            proto = re.sub(r"^extern\s+\"[C ]\"\s*", "", proto)
-            linkage_c = source.cxx and (not fn.source.cxx or fn.c_block)
+            c_prefix = re.match(r"^extern\s+\"[C ]\"\s*", proto)
+            proto = proto[c_prefix.end():] if c_prefix else proto
+            linkage_c = source.cxx and (not fn.source.cxx or fn.c_block or bool(c_prefix))
             lines.append(('extern "C" ' if linkage_c else "") + proto + "\n")
     if not lines:
         return text
@@ -808,8 +816,7 @@ def implicit_calls(plan, forward, copies_text):
     saga = (ROOT / "src/saga.h").read_text(encoding="latin-1")
     known = "\n".join(copies_text + [d for d, _ in forward])
     for source in plan.sources.values():
-        known += "\n" + "\n".join(i.text[:brace_index(i.text)] if i.function and i.definition else i.text
-                                   for i in source.items)
+        known += "\n" + "\n".join(head_text(i) for i in source.items)
     defined = set()
     for _, fn in plan.moved:
         defined |= fn.names
@@ -820,8 +827,8 @@ def implicit_calls(plan, forward, copies_text):
         if fn.source.cxx:
             continue
         body = strip_comments(fn.text)
-        head = body[:brace_index(fn.text)]
-        names |= {m for m in CALL.findall(body[brace_index(fn.text):]) if not re.search(rf"\b{m}\b", head)}
+        head = strip_comments(head_text(fn))
+        names |= {m for m in CALL.findall(body[len(head):]) if not re.search(rf"\b{m}\b", head)}
     out = []
     keywords = {"if", "while", "for", "switch", "return", "sizeof", "defined"}
     for name in sorted(names - defined - keywords):
@@ -990,6 +997,32 @@ def report(plan):
             print("  -", line)
 
 
+VOID_CONVERSION = re.compile(r"([^\s(]+)\((\d+)\) : error C2440: '(?:=|initializing)' : "
+                             r"cannot convert from 'void \*' to '([A-Za-z_][\w ]*\*)'")
+
+
+def cast_void_conversions(log):
+    """Insert the casts C++ needs for C's implicit void* conversions.
+
+    log: MSVC output. Handles `x = expr;` and `T *x = expr;` on the reported
+    line; returns the number of casts made.
+    """
+    edits = collections.defaultdict(list)
+    for match in VOID_CONVERSION.finditer(log):
+        path = Path(match.group(1).replace("\\", "/").removeprefix("Z:"))
+        edits[path].append((int(match.group(2)), match.group(3).strip()))
+    count = 0
+    for path, items in edits.items():
+        lines = path.read_text(encoding="latin-1").split("\n")
+        for number, cast in items:
+            line = lines[number - 1]
+            fixed = re.sub(r"(?<![=!<>])=\s*(?!=)", lambda m: f"= ({cast})", line, count=1)
+            if fixed != line:
+                lines[number - 1], count = fixed, count + 1
+        path.write_text("\n".join(lines), encoding="latin-1")
+    return count
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -1000,7 +1033,11 @@ def main(argv=None):
         p.add_argument("--android", help="Android file name for the unit comment")
         p.add_argument("--sources", action="store_true", help="only print the source files involved")
     sub.add_parser("fixconfig")
+    sub.add_parser("casts", help="read MSVC output on stdin and add C++ casts for void* conversions")
     args = parser.parse_args(argv)
+    if args.command == "casts":
+        print(f"added {cast_void_conversions(sys.stdin.read())} casts")
+        return 0
     if args.command == "fixconfig":
         fix_config()
         return 0
