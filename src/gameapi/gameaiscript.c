@@ -11610,7 +11610,9 @@ i32 __cdecl Action_CircleLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
         AIMoveInstruction(packet, &locator->position, packet->movement_instruction_parameter, &locator->path_info, 3,
                           packet->movement_instruction_parameter);
     }
-    return locator == NULL;
+    if (locator == NULL)
+        return 1;
+    return 0;
 }
 
 i32 __cdecl Action_GizmoActivate(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char **params,
