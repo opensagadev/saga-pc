@@ -167,14 +167,6 @@ void __cdecl GizTorp_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void
         s = (ADD_TORP_SYS_PC *)w->torpedo_machine_sys;
     }
 }
-void __cdecl Grapples_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    i32 i;
-    (void)data;
-    for (i = 0; i < w->grapple_count; ++i)
-        if (NuStrLen(((ADD_GRAPPLE_PC *)w->grapples)[i].name) != 0)
-            AddGizmo(giz, type, NULL, &((ADD_GRAPPLE_PC *)w->grapples)[i]);
-}
 void __cdecl GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     ADD_BOMB_RESET_SYS_PC *s = (ADD_BOMB_RESET_SYS_PC *)data;

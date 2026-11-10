@@ -84,32 +84,6 @@ AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, 
     }
     return NULL;
 }
-GRAPPLE_DYNAMIC_PC *__cdecl Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position) {
-    GRAPPLE_DYNAMIC_PC *nearest = NULL, *grapple;
-    f32 nearest_distance = 1000000000.0f, distance;
-    NUVEC midpoint;
-    i32 index;
-    if (world->grapples != NULL) {
-        grapple = world->grapples;
-        for (index = 0; index < world->grapple_count; ++index, ++grapple) {
-            midpoint.x = (f32)((grapple->ground_position.x + grapple->hook_position.x) * 0.5);
-            midpoint.y = (f32)((grapple->ground_position.y + grapple->hook_position.y) * 0.5);
-            midpoint.z = (f32)((grapple->ground_position.z + grapple->hook_position.z) * 0.5);
-            distance = NuVecDistSqr(&midpoint, position, NULL);
-            if (distance < nearest_distance) {
-                nearest_distance = distance;
-                nearest = grapple;
-            }
-        }
-    }
-    return nearest;
-}
-i32 __cdecl IndyGrappleCanJumpPc(GAMEOBJECT *object) {
-    if (LEGOCONTEXT_GRAPPLE != -1 && object->character_context == LEGOCONTEXT_GRAPPLE &&
-        (object->field_7b3 == 1 || (object->field_7b3 == 0 && object->context_duration < 0.5f)))
-        return 1;
-    return 0;
-}
 
 STATIC_ASSERT(offsetof(AIPATH_PC, connection_count) == 0x12);
 STATIC_ASSERT(offsetof(AIPATH_PC, connections) == 0x80);

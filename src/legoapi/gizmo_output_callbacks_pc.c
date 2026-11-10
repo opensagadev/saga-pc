@@ -15,14 +15,11 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinners) == 0xf2);
 STATIC_ASSERT(offsetof(GAMEANIMSET, objects) == 0x18);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, next) == 0);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, special) == 4);
-extern char AIRegistryTextPc007575bc[7];
 extern char TextInputKeyNameTextPc7516c0[1];
 extern char *BlowupOutputNamesPc[3];
 extern char *PickupOutputNamePc;
 extern char SpinnerOutputBufferPc[14];
 extern char AIProcessingOutputTextPc[11];
-extern const char GrappleOccupiedOutputTextPc[9];
-extern const char GrappleOccupiedByTwoOutputTextPc[14];
 extern const char SpinnerCompleteSuffixPc[12];
 extern const char SpinnerAllCompletePc[15];
 
@@ -42,13 +39,6 @@ i32 __cdecl Blowup_GetVisibility(GIZMO_PC *gizmo) {
 }
 char *__cdecl GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return PickupOutputNamePc;
-}
-char *__cdecl Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    if (output == 1)
-        return (char *)GrappleOccupiedOutputTextPc;
-    if (output == 2)
-        return (char *)GrappleOccupiedByTwoOutputTextPc;
-    return AIRegistryTextPc007575bc;
 }
 char *__cdecl AI_GetOutputName(void *gizmo, i32 output) {
     return AIProcessingOutputTextPc;
@@ -71,14 +61,6 @@ const char BlowupPluggingOutputTextPc[9] = "Plugging";
 
 #pragma const_seg(".rdata$PickupCollectedOutputTextPc")
 const char PickupCollectedOutputTextPc[10] = "Collected";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$GrappleOccupiedOutputTextPc")
-const char GrappleOccupiedOutputTextPc[9] = "Occupied";
-#pragma const_seg()
-
-#pragma const_seg(".rdata$GrappleOccupiedByTwoOutputTextPc")
-const char GrappleOccupiedByTwoOutputTextPc[14] = "Occupied By 2";
 #pragma const_seg()
 
 #pragma const_seg(".rdata$SpinnerCompleteSuffixPc")

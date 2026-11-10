@@ -191,20 +191,6 @@ void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
     return world->torpedo_machine_sys;
 }
 
-void *__cdecl Grapples_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
-    GRAPPLE_DYNAMIC_PC *grapples = NULL;
-    world->grapples = NULL;
-    world->grapple_count = 0;
-    if (world->current_level->max_grapples > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        grapples = (GRAPPLE_DYNAMIC_PC *)world->giz_buffer.void_ptr;
-        world->grapples = grapples;
-        world->giz_buffer.addr += world->current_level->max_grapples * sizeof(*grapples);
-    }
-    return grapples;
-}
-
 void __cdecl GizBuildIts_PostLoad(void *world, void *pointer) {
     REGISTRY_BUILDIT_SYSTEM_PC *system = (REGISTRY_BUILDIT_SYSTEM_PC *)pointer;
     REGISTRY_BUILDIT_RECORD_PC *buildit;

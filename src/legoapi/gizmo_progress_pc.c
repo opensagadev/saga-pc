@@ -170,14 +170,6 @@ void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
     memset(progress->visible, -1, sizeof(progress->visible));
 }
 
-void __cdecl Grapples_ClearProgress(void *owner, void *progress_ptr) {
-    GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
-    if (progress == NULL)
-        return;
-    progress->enabled = 0xffffffffu;
-    progress->visible = 0xffffffffu;
-}
-
 void __cdecl GizBuildIts_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     BUILD_PROGRESS_PC *progress = (BUILD_PROGRESS_PC *)progress_ptr;
     BUILD_PROGRESS_SYSTEM_PC *system = (BUILD_PROGRESS_SYSTEM_PC *)data;
@@ -336,28 +328,5 @@ void __cdecl GizBombGens_StoreProgress(void *world_ptr, void *data, void *progre
             progress->visible[word] &= ~bit;
         if (!(record->flags & 1))
             progress->enabled[word] &= ~bit;
-    }
-}
-
-void __cdecl Grapples_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    GRAPPLE_DYNAMIC_PC *record;
-    i32 index;
-    u32 bit;
-    if (progress == NULL)
-        return;
-    progress->enabled = 0xffffffffu;
-    progress->visible = 0xffffffffu;
-
-    if (world == NULL || world->grapples == NULL)
-        return;
-    record = world->grapples;
-    for (index = 0; index < world->grapple_count && index < 32; ++index, ++record) {
-        bit = 1u << (index & 31);
-        if (!(record->flags & 2))
-            progress->visible &= ~bit;
-        if (!(record->flags & 1))
-            progress->enabled &= ~bit;
     }
 }

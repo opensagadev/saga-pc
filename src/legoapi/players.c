@@ -48,7 +48,6 @@ i32 __cdecl MakePlayerList(i32 count) {
 extern i16 LEGOACT_CLIMB_UP, LEGOACT_CLIMB_DOWN, LEGOACT_CLIMB_LEFT, LEGOACT_CLIMB_RIGHT;
 extern i16 LEGOACT_WALLSHUFFLE_IDLE, LEGOACT_WALLSHUFFLE_LEFT, LEGOACT_WALLSHUFFLE_RIGHT;
 extern i16 LEGOACT_MAGNET_WALK_METAL;
-extern const f64 GrappleMomentumNearScalePc;
 
 typedef struct grapple_movement_pc_s {
     u8 unknown_00[0x3c];
@@ -58,34 +57,6 @@ typedef struct grapple_movement_pc_s {
 } GRAPPLE_MOVEMENT_PC;
 STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, shadow_probe_position) == 0x3c);
 STATIC_ASSERT(offsetof(GRAPPLE_MOVEMENT_PC, swing_scale) == 0x4c);
-
-__declspec(noinline) void __cdecl Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target) {
-    GRAPPLE_MOVEMENT_PC *grapple = (GRAPPLE_MOVEMENT_PC *)object->grapple;
-    i32 amplitude, angle;
-    target->x = 0.0f;
-    target->z = 0.0f;
-    target->y = -object->context_hover_target_y;
-    amplitude = ((i32)object->big_jump_animation << 16) / 360;
-    angle = (i32)((f32)amplitude * NuTrigTable[object->field_7a8 >> 1] * grapple->swing_scale);
-    NuVecRotateX(target, target, angle);
-    NuVecRotateY(target, target, object->takeover_start_angle);
-    NuVecAdd(target, target, &grapple->shadow_probe_position);
-}
-
-i32 __cdecl Grapple_SetTargetMom(GAMEOBJECT *object) {
-    NUVEC point;
-    if (object->field_7b3 == 1) {
-        object->target_velocity.x = (object->external_force.x - object->upper_position.x) * GrappleMomentumNearScalePc;
-        object->target_velocity.y = (object->external_force.y - object->upper_position.y) * GrappleMomentumNearScalePc;
-        object->target_velocity.z = (object->external_force.z - object->upper_position.z) * GrappleMomentumNearScalePc;
-    } else {
-        Grapple_SetPlayerTargetPoint(object, &point);
-        object->target_velocity.x = (point.x - object->upper_position.x) * nu_wind_scaled_time_multiplier;
-        object->target_velocity.y = (point.y - object->upper_position.y) * nu_wind_scaled_time_multiplier;
-        object->target_velocity.z = (point.z - object->upper_position.z) * nu_wind_scaled_time_multiplier;
-    }
-    return 1;
-}
 
 __declspec(noinline) f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direction) {
     NUVEC input, target;

@@ -95,23 +95,6 @@ void __cdecl GizBombGens_SetResetFlag(void *, void *, void *);
 void *__cdecl GizBombGens_ReserveBufferSpace(void *);
 i32 __cdecl GizBombGens_Load(void *, void *);
 i32 __cdecl GizTorp_Load(void *, void *);
-i32 __cdecl Grapples_GetMaxGizmos(void *);
-void __cdecl Grapples_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
-void __cdecl Grapples_Update(void *, void *, f32);
-void __cdecl Grapples_Draw(void *, void *, f32);
-char *__cdecl Grapple_GetGizmoName(GIZMO_PC *);
-i32 __cdecl Grapple_GetOutput(GIZMO_PC *, i32, i32);
-char *__cdecl Grapple_GetOutputName(GIZMO_PC *, i32);
-i32 __cdecl Grapple_GetNumOutputs(GIZMO_PC *);
-void __cdecl Grapple_Activate(GIZMO_PC *, i32);
-void __cdecl Grapple_SetVisibility(GIZMO_PC *, i32);
-void *__cdecl Grapples_AllocateProgressData(VARIPTR *, VARIPTR *);
-void __cdecl Grapples_ClearProgress(void *, void *);
-void __cdecl Grapples_StoreProgress(void *, void *, void *);
-void __cdecl Grapples_Reset(void *, void *, void *);
-void *__cdecl Grapples_ReserveBufferSpace(void *);
-i32 __cdecl Grapples_Load(void *, void *);
-extern const char PCContextName_Grapple[8];
 
 #pragma const_seg(".rdata$GizmoRegistryGizBuildItsNamePc")
 const char GizmoRegistryGizBuildItsNamePc[] = "GizBuildit";
@@ -156,8 +139,6 @@ i32 giztorpmachine_gizmotype_id = 0;
 #pragma const_seg(".rdata$GizmoRegistryGizTorpMachineNamePc")
 const char GizmoRegistryGizTorpMachineNamePc[] = "Torp Machine";
 #pragma const_seg()
-char *GizmoRegistryGrapplesNamePtrPc = (char *)PCContextName_Grapple;
-static ADDGIZMOTYPE_PC GizmoRegistryGrapplesAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *__cdecl GizBuildIts_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizBuildItsAddTypePc;
@@ -417,43 +398,6 @@ ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-ADDGIZMOTYPE_PC *__cdecl Grapples_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGrapplesAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGrapplesNamePtrPc;
-    addtype->fns.early_update_fn = NULL;
-    addtype->fns.panel_draw_fn = NULL;
-    addtype->fns.activate_rev_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.get_pos_fn = NULL;
-    addtype->fns.using_special_fn = NULL;
-    addtype->fns.bolt_hit_plat_fn = NULL;
-    addtype->fns.get_best_bolt_target_fn = NULL;
-    addtype->fns.bolt_hit_fn = NULL;
-    addtype->fns.post_load_fn = NULL;
-    addtype->fns.add_level_sfx_fn = NULL;
-    addtype->prefix = "";
-    addtype->fns.options = 0x8;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Grapples_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)Grapples_AddGizmos;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))Grapples_Update;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Grapples_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))Grapple_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))Grapple_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)Grapple_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))Grapple_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))Grapple_SetVisibility;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))Grapples_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))Grapples_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))Grapples_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))Grapples_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))Grapples_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))Grapples_Load;
-    grapple_gizmotype_id = type_id;
-    return addtype;
-}
-
 i32 __cdecl GizBuildIts_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world == NULL)
@@ -501,13 +445,6 @@ i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
     return world->current_level->max_torpmachines;
 }
 
-i32 __cdecl Grapples_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world == NULL)
-        return 0;
-    return world->current_level->max_grapples;
-}
-
 void *__cdecl GizBuildIts_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x60);
 }
@@ -526,8 +463,4 @@ void *__cdecl GizmoPickups_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 void *__cdecl GizBombGens_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
     return GizmoBufferAlloc(buffer, end, 0x18);
-}
-
-void *__cdecl Grapples_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, 0x8);
 }

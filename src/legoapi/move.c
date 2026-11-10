@@ -139,11 +139,6 @@ i32 __cdecl Hang_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
-void __cdecl Grapple_SetRotOrder(GAMEOBJECT *object) {
-    if (object->field_7b3 != 1)
-        object->movement_mode = 2;
-}
-
 i32 __cdecl Glide_SetTargetMom(GAMEOBJECT *object) {
     f32 speed;
     if (((MOVEMENT_MODEL_PC *)object->character_model)->model_data_b[object->field_7aa] != NULL)
