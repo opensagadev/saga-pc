@@ -698,6 +698,20 @@ def apply_plan(plan, android=None, write=True):
                + render_items(forward, target_cxx)
                + render_items(leftover, target_cxx)
                + render_items(entries, target_cxx))
+    # __declspec(allocate("X")) needs the #pragma section("X") of its old file.
+    pragmas = []
+    for name in dict.fromkeys(re.findall(r'allocate\s*\(\s*"([^"]+)"', section)):
+        if re.search(rf'#\s*pragma\s+section\s*\(\s*"{re.escape(name)}"', section):
+            continue
+        for source in plan.sources.values():
+            found = [i.text for i in source.items if i.kind == "pragma" and f'"{name}"' in i.text]
+            if found:
+                pragmas.append(found[0].strip() + "\n")
+                break
+        else:
+            plan.todo.append(f"no #pragma section found for allocate(\"{name}\")")
+    if pragmas:
+        section = "".join(pragmas) + "\n" + section
     # Remove moved/merged items from their sources.
     removals = collections.defaultdict(list)
     for _, fn in plan.moved:
