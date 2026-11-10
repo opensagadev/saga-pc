@@ -559,9 +559,10 @@ extern "C" {
 
 /* Retail keeps an out-of-line copy at 0x45e350; every caller inlines it. */
 static inline f32 StatusFabsPc(f32 value) {
-    i32 bits = *(i32 *)&value;
-    bits &= 0x7fffffff;
-    return *(f32 *)&bits;
+    f32 result;
+
+    *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
+    return result;
 }
 
 void __cdecl AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {

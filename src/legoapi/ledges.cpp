@@ -292,14 +292,14 @@ extern "C" {
     static void LedgeInitRecordPc(LEDGE_MOTION_PC *ledge) {
         i32 type;
         for (type = 0; type < 6; ++type) {
-            if (ledge->type_code == LedgePiece[type].type_code)
+            if (ledge->type_code == LedgePiece[type].type_code) {
+                ledge->type_index = (u8)type;
                 break;
+            }
         }
         if (type == 6) {
             ledge->type_index = 2;
             ledge->type_code = LedgePiece[2].type_code;
-        } else {
-            ledge->type_index = (u8)type;
         }
         ledge->bounds_min.x = ledge->bounds_min.y = ledge->bounds_min.z = 999.0f;
         ledge->bounds_max.x = ledge->bounds_max.y = ledge->bounds_max.z = -999.0f;
@@ -360,7 +360,7 @@ extern "C" {
         LEVELDATA_PC *level = world->current_level;
         world->ledges = NULL;
         world->ledge_count = 0;
-        if (level->max_ledges != 0) {
+        if (level->max_ledges > 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
             world->ledges = world->giz_buffer.void_ptr;
             world->giz_buffer.addr += level->max_ledges * sizeof(LEDGE_MOTION_PC);

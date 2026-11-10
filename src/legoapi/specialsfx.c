@@ -564,8 +564,10 @@ void ParticleReset(void) {
     for (i = 0; i < 512; ++i) {
         edpp_ptls[i].instance_id = -1;
     }
-    memset(edpp_page_used, 0, sizeof(edpp_page_used));
-    memset(edpp_page_on, 0, sizeof(edpp_page_on));
+    for (i = 0; i < 8; ++i) {
+        edpp_page_used[i] = 0;
+        edpp_page_on[i] = 0;
+    }
     edpp_instances_used = 0;
 }
 
