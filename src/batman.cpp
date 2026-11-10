@@ -646,7 +646,7 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
     Area = LDataList[Level].area_index;
     last_area = -1;
     LastAData = NULL;
-    if (Area >= 0 && (ADataList[Area].flags & 4) != 0) {
+    if (Area > -1 && (ADataList[Area].flags & 4) != 0) {
         NextArea_FreePlay = 1;
         FreePlay = 1;
     } else if (GAMEDEMO > 1 || (GAMEDEMO != 0 && FreePlay != 0)) {

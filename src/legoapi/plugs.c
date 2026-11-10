@@ -70,7 +70,7 @@ static void *__cdecl Plugs_ReserveBufferSpace(void *world_ptr) {
     PLUG_WORLD_CALLBACKS_PC *view = (PLUG_WORLD_CALLBACKS_PC *)world;
     CARRY_PLUG_PC *plugs;
     view->plug_system = NULL;
-    if (world->current_level->max_plugs != 0) {
+    if (world->current_level->max_plugs > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         plugs = (CARRY_PLUG_PC *)world->giz_buffer.addr;
         world->giz_buffer.addr += world->current_level->max_plugs * sizeof(CARRY_PLUG_PC);

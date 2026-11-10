@@ -114,7 +114,7 @@ void __cdecl UpdateRumble(RUMBLE_PACKET_RESOURCE_PC *packet) {
         packet->duration -= FRAMETIME;
     if (packet->amount > 0.0f)
         packet->amount -= FRAMETIME;
-    if (packet->active != 0)
+    if (packet->active > 0)
         --packet->active;
 }
 

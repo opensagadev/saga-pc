@@ -1404,7 +1404,7 @@ void __cdecl InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 dist
         return;
     }
     memset(position, 0, sizeof(*position));
-    if (spline == NULL || spline->length < 2) {
+    if (spline == NULL || spline->length <= 1) {
         return;
     }
     position->spline = spline;

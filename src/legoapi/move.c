@@ -6382,7 +6382,7 @@ gravity_done:
     AwkwardShapeCode(object, 0);
     EngineNoiseCode(object, object->character_context == 0x17);
     if ((((object->flags_1fc & 0x80) && object->current_hp == 1) ||
-         ((object->flags_1fc & 0x80) == 0 && object->current_hp <= 1)) &&
+         ((object->flags_1fc & 0x80) == 0 && object->current_hp < 2)) &&
         object->character_data->game_character->weapon_action == 10 &&
         (object->character_data->model_flags & 0x4000000) == 0) {
         effect = WORLD->game_debris_sys->entries[96].effect;

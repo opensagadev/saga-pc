@@ -83,7 +83,7 @@ void *__cdecl GizTimer_ReserveBufferSpace(void *world_info) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_info;
     world->timers = NULL;
     world->timer_count = 0;
-    if (world->level->max_timers != 0) {
+    if (world->level->max_timers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->timers = (GIZFLOW_TIMER_PC *)world->giz_buffer.addr;
         world->giz_buffer.addr += world->level->max_timers * sizeof(GIZFLOW_TIMER_PC);

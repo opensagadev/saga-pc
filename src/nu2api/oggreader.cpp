@@ -227,7 +227,7 @@ HRESULT OggReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
     PCThreadCriticalSectionEnter_candidate(PCOggCriticalSectionPc);
     compressed = 1;
     cache = NULL;
-    for (i32 i = 0; i < 5; ++i) {
+    for (i32 i = 0; i <= 4; ++i) {
         if (NuStrICmp(PCOggCachePoolPc[i].path, path) == 0 && PCOggCachePoolPc[i].references <= 0) {
             cache = &PCOggCachePoolPc[i];
             break;

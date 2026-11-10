@@ -1129,7 +1129,7 @@ i32 edrtlBurnoutLoadSet(char *filename, BURN_SET_PC *set) {
                 set->active_count = set->active_count + 1;
             }
         }
-        if (version > 4) {
+        if (version >= 5) {
             set->parameters.field_04 = EdFileReadFloat();
             set->parameters.field_08 = EdFileReadFloat();
             set->parameters.field_0c = EdFileReadFloat();
@@ -4382,7 +4382,7 @@ static RTL_FOG_MIGRATION_PC *SelectNextFog(void) {
                 curFogLoc = index;
                 return &RTL_FOG_PC(curr_set)[index];
             }
-            if (index > 31)
+            if (index >= 32)
                 index = -1;
             ++count;
             if (count >= 32)

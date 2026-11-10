@@ -106,7 +106,7 @@ void *__cdecl SecurityDoors_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->security_doors = NULL;
     world->security_door_count = 0;
-    if (level->max_securitydoors != 0) {
+    if (level->max_securitydoors > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->security_doors = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += level->max_securitydoors * sizeof(SECURITY_DOOR_RECORD_PC);

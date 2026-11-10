@@ -255,7 +255,7 @@ void *__cdecl Attractos_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->attractos = NULL;
     world->attracto_count = 0;
-    if (level->max_attractos != 0) {
+    if (level->max_attractos > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->attractos = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += level->max_attractos * sizeof(ATTRACTO_RECORD_PC);
@@ -364,7 +364,7 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->context_duration = (f64)object->context_duration - (f64)FRAMETIME;
             if (!(object->context_duration <= 0.0f))
                 return;
-            if (object->field_1062 != 0) {
+            if (object->field_1062 > 0) {
                 ATTRACTO_RECORD_PC *attracto = (ATTRACTO_RECORD_PC *)object->grapple;
                 if (attracto->collected_count < attracto->capacity) {
                     --object->field_1062;
@@ -437,7 +437,7 @@ void __cdecl Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             (ATTRACTO_RECORD_PC *)Attracto_FindNearest(world, &object->lower_position, object, &distance);
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
-            if (radius > distance && object->field_1062 != 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
+            if (radius > distance && object->field_1062 > 0 && (object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
                 object->character_context = 0x53;
                 object->context_timer = 0.0f;
                 object->grapple = attracto;

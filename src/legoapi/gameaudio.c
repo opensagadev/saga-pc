@@ -63,7 +63,7 @@ void __cdecl GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 v
 }
 
 void __cdecl GameAudio_PlaySfx(i32 sfx, NUVEC *position, i32 flags, i32 volume) {
-    if ((u32)sfx < 0x54) {
+    if ((u32)sfx <= 83) {
         GameAudio_PlaySfxById(GameAudio->sfx_ids[sfx], position, flags, volume);
     }
 }
@@ -83,7 +83,7 @@ void __cdecl GameAudio_AddSfx(i32 code, i32 *ids, i32 *count, i32 capacity) {
     i32 id, i;
     if (ids == NULL || count == NULL || *count >= capacity)
         return;
-    if ((u32)code >= 0x54)
+    if ((u32)code > 83)
         return;
     id = GameAudio->sfx_ids[code];
     if (id == -1)

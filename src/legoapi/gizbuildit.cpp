@@ -1519,7 +1519,7 @@ extern "C" {
                         f32 wobble_time = data->wobble_time - FRAMETIME;
                         data->wobble_time = wobble_time;
                         if (wobble_time <= 0.0f && BuilditHopSfxWaitPc <= 0.0f &&
-                            ((buildit->availability_flags & 4) != 0 || qrand() <= 0x7fff)) {
+                            ((buildit->availability_flags & 4) != 0 || qrand() < 32768)) {
                             GameAudio_PlaySfx(0x3c, &buildit->start_position, 0, 0);
                             BuilditHopSfxWaitPc = (f64)qrand() * 1.5259021893143654e-05 * (f64)0.2f + (f64)0.1f;
                         }

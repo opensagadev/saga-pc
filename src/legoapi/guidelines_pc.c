@@ -35,7 +35,7 @@ void *__cdecl GuideLines_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->guidelines = NULL;
     world->guideline_count = 0;
-    if (level->max_guidelines != 0) {
+    if (level->max_guidelines > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->guidelines = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += level->max_guidelines * sizeof(GUIDELINE_RECORD_PC);

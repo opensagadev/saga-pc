@@ -157,7 +157,7 @@ i32 __cdecl edbriLoadPage(char *path, void *scene) {
     if (!EdFileOpen(path, 0))
         return -1;
     version = EdFileReadInt();
-    if (version >= 2) {
+    if (version > 1) {
         EdFileClose();
         return -1;
     }

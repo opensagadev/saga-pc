@@ -83,7 +83,7 @@ void __cdecl ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, 
         TakeHitRumble(target, 0.6f);
     if (MiniCutCam != 0 && (target->flags_1fc_word & 0x80))
         damage = 0;
-    if (target->shield_hitpoints != 0 && damage > 0) {
+    if (target->shield_hitpoints > 0 && damage > 0) {
         if ((target->flags_1fc_word & 0x80) && Player_HasInvincibility(target))
             damage = 0;
         health = target->shield_hitpoints - damage;

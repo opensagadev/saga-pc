@@ -132,7 +132,7 @@ extern "C" {
         LEVELDATA_PC *level = world->current_level;
         world->tightropes = NULL;
         world->tightrope_count = 0;
-        if (level->max_tightropes != 0) {
+        if (level->max_tightropes > 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
             world->tightropes = (TIGHTROPE_s *)world->giz_buffer.void_ptr;
             world->giz_buffer.addr += level->max_tightropes * sizeof(TIGHTROPE_s);

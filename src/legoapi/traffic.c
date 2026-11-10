@@ -288,7 +288,7 @@ void TrafficAnimSys_Draw(TRAFFICANIMSYS_s *system) {
         while (instance != NULL) {
             TRAFFICANIM_s *animation = instance->animation;
             i32 frame_index = (i32)((instance->frame - 1.0f) / animation->room_frame_interval);
-            if (frame_index <= 255) {
+            if (frame_index < 256) {
                 u32 animation_rooms = 0xffffffff;
                 u8 room = animation->rooms[frame_index];
                 if (room != 0xff) {

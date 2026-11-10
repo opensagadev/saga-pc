@@ -5330,7 +5330,7 @@ i32 __cdecl Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             if (nearest != 0) {
                 NUSPECIALHANDLE specials[50];
                 const i32 special_count = NuSpecialFindMulti(WORLD->current_gscn, specials, name, 50, 0);
-                if (special_count > 0) {
+                if (special_count >= 1) {
                     i32 index;
                     f32 nearest_distance = 1.0e9f;
                     NUVEC difference;
@@ -5766,7 +5766,7 @@ i32 __cdecl Action_AddToSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
             continue;
         }
         creature_set = (i32)(AIParamToFloat(processor, params[index]));
-        if ((u32)(creature_set - 1) < 16) {
+        if ((u32)(creature_set - 1) <= 15) {
             object->ai_packet.creature_set = (u8)(creature_set);
             ++aicreature_sets_alive[creature_set - 1];
         }

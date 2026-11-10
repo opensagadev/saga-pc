@@ -3780,7 +3780,7 @@ f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations) {
                     current_y = p1.y + (p2.y - p1.y) * current_x;
                     return current_y;
                 case 1:
-                    if (segment > 1) {
+                    if (segment >= 2) {
                         p0.x = graph->x[segment - 2];
                         p0.y = graph->y[segment - 2];
                     } else {

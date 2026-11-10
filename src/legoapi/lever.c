@@ -357,7 +357,7 @@ static void *Levers_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     ((LEVER_WORLD_PC *)world)->levers = NULL;
     ((LEVER_WORLD_PC *)world)->lever_count = 0;
-    if (world->current_level->max_levers != 0) {
+    if (world->current_level->max_levers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         ((LEVER_WORLD_PC *)world)->levers = (GIZMO_LEVER_PC *)world->giz_buffer.void_ptr;
         world->giz_buffer.addr += world->current_level->max_levers * sizeof(GIZMO_LEVER_PC);

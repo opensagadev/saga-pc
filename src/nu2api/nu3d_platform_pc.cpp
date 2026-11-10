@@ -4264,7 +4264,7 @@ extern "C" {
     }
 
     void __cdecl NuLgtSetArcMatEx(i32 type, NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1) {
-        if (type > 3)
+        if (type >= 4)
             return;
         NuLgtArcMtl[type].material = material;
         NuLgtArcMtl[type].u0 = u0;

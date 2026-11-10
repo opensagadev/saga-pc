@@ -51,7 +51,7 @@ void *__cdecl Shards_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->shards = NULL;
     world->shard_count = 0;
-    if (level->max_shards != 0) {
+    if (level->max_shards > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->shards = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += level->max_shards * sizeof(SHARD_s);

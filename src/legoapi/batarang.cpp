@@ -361,7 +361,7 @@ extern "C" void __cdecl Batarang_Release(GAMEOBJECT *object, i32 mode) {
 extern "C" {
 
     static u32 Batarang_GetTargetPos(BATARANG_NATIVE_PC *batarang, int index, NUVEC *position) {
-        if (batarang->flight_state.in_flight != 0 && batarang->active != 0 && batarang->active == index) {
+        if (batarang->flight_state.in_flight != 0 && batarang->active > 0 && batarang->active == index) {
             GAMEOBJECT *owner = batarang->owner;
             *position = owner->collision_position;
             if ((owner->flags_e24 & 8) != 0) {

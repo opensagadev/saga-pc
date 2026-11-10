@@ -104,7 +104,7 @@ void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
     LEVELDATA_PC *level = world->current_level;
     world->signals = NULL;
     world->signal_count = 0;
-    if (level->max_signals != 0) {
+    if (level->max_signals > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->signals = (SIGNAL_s *)world->giz_buffer.void_ptr;
         world->giz_buffer.addr += level->max_signals * sizeof(SIGNAL_s);
@@ -123,7 +123,7 @@ i32 __cdecl Signals_Load(WORLDINFO *world, void *unused) {
         EdFileRead(world->signals[index].name, 16);
         EdFileReadNuVec(&world->signals[index].position);
         world->signals[index].character_letter = EdFileReadChar();
-        if (version > 1) {
+        if (version >= 2) {
             world->signals[index].suit_letter = EdFileReadChar();
             world->signals[index].yaw = EdFileReadShort();
         } else {

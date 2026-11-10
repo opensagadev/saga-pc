@@ -2830,7 +2830,7 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         for (i = 0; i < 8; ++i)
             type->effect_pages[i] = EdFileReadChar();
     } else {
-        type->effect_pages[0] = version > 1 ? EdFileReadChar() : 0;
+        type->effect_pages[0] = version >= 2 ? EdFileReadChar() : 0;
         for (i = 1; i < 8; ++i)
             type->effect_pages[i] = -1;
     }
@@ -2890,11 +2890,11 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         if (type->effect_ids[i] != 9999 && type->effect_ids[i] != -1)
             ++type->variant_count;
     }
-    if (version > 5)
+    if (version >= 6)
         type->variant_mode = EdFileReadChar();
     else
         type->variant_mode = 0;
-    if (version > 15) {
+    if (version >= 16) {
         type->particle_scale = EdFileReadFloat();
         type->effect_scale = EdFileReadFloat();
     } else {
@@ -2902,7 +2902,7 @@ void __cdecl edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 p
         type->effect_scale = 1.0f;
     }
     type->lifetime = EdFileReadFloat();
-    if (version > 13)
+    if (version >= 14)
         type->lifetime_random = EdFileReadFloat();
     else
         type->lifetime_random = 0.0f;
@@ -3411,7 +3411,7 @@ i32 __cdecl edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_cou
                 emitter->rotation_30 = EdFileReadShort();
                 emitter->rotation_2e = EdFileReadShort();
                 emitter->rotation_2c = EdFileReadShort();
-                if (version > 10) {
+                if (version >= 11) {
                     emitter->field_44 = EdFileReadShort();
                     emitter->field_46 = EdFileReadShort();
                 } else {

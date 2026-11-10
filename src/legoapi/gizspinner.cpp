@@ -442,7 +442,7 @@ extern "C" void __cdecl GizSpinner_Draw(void *world_pointer, void *data, f32 fra
             continue;
         if (NuSpecialExistsFn((NUSPECIALHANDLE *)&spinner->special)) {
             NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &spinner->matrix);
-            if (spinner->type != 0 &&
+            if (spinner->type > 0 &&
                 NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
                 NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
                 arm = spinner->arms;
@@ -460,7 +460,7 @@ extern "C" void __cdecl GizSpinner_Draw(void *world_pointer, void *data, f32 fra
             continue;
         NuRndrStartReflectionRender(0);
         NuSpecialDrawAt((NUSPECIALHANDLE *)&spinner->special, &reflection);
-        if (spinner->type != 0 &&
+        if (spinner->type > 0 &&
             NuSpecialCompare((NUSPECIALHANDLE *)&spinner->special, (NUSPECIALHANDLE *)&thingsSceneBase) != 0 &&
             NuSpecialExistsFn((NUSPECIALHANDLE *)&thingsSceneArm) != 0) {
             arm = spinner->arms;

@@ -783,7 +783,7 @@ void __cdecl JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 a
                     }
                 }
                 can_start_second_jump = jump_pressed != 0 && (animation_set & 8) != 0 &&
-                                        object->action_movement_state == 0 && object->jump_sequence <= 1 &&
+                                        object->action_movement_state == 0 && object->jump_sequence < 2 &&
                                         object->velocity.y > -1.25f;
                 if (can_start_second_jump) {
                     if (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED)

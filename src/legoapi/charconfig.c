@@ -43,7 +43,7 @@ static __declspec(noinline) i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *
     *mask = 0;
     while (NuFParGetWord(parser) != 0) {
         u32 layer = (u32)NuAToI(parser->word_buffer_ptr);
-        if (layer < 32) {
+        if (layer <= 31) {
             ++count;
             *mask |= 1u << layer;
         }
@@ -77,7 +77,7 @@ static __declspec(noinline) void CC_ReadStreakLocators(NUFPAR_PC *parser, i8 *lo
         locators[i] = -1;
         if (NuFParGetWord(parser) != 0) {
             u32 locator = (u32)NuAToI(parser->word_buffer_ptr);
-            if (locator < 16) {
+            if (locator <= 15) {
                 locators[i] = (i8)locator;
             }
         }
@@ -328,7 +328,7 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
         } else if (NuStrICmp(parser->word_buffer_ptr, "locators") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 locator = NuAToI(parser->word_buffer_ptr);
-                if (locator < 16)
+                if (locator <= 15)
                     effect->locators |= 1u << locator;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "sfx") == 0) {
@@ -379,13 +379,13 @@ static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERA
         else if (NuStrICmp(parser->word_buffer_ptr, "bits_on") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 bit = NuAToI(parser->word_buffer_ptr);
-                if (bit < 8)
+                if (bit <= 7)
                     effect->bits_on |= 1u << bit;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "bits_off") == 0) {
             while (NuFParGetWord(parser) != 0) {
                 const u32 bit = NuAToI(parser->word_buffer_ptr);
-                if (bit < 8)
+                if (bit <= 7)
                     effect->bits_off |= 1u << bit;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "effect_end") == 0) {
@@ -517,7 +517,7 @@ static void CC_anim_start(NUFPAR_PC *parser) {
         } else if (NuStrICmp(parser->word_buffer_ptr, "locator") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 const u32 locator = NuAToI(parser->word_buffer_ptr);
-                if (locator < 16)
+                if (locator <= 15)
                     animation.locator = (u8)(locator);
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "is_punch") == 0) {
@@ -771,7 +771,7 @@ static void CC_shadow_locators(NUFPAR_PC *parser) {
     charconfig.runtime->shadow_locators = 0;
     while (NuFParGetWord(parser) != 0) {
         const u32 locator = NuAToI(parser->word_buffer_ptr);
-        if (locator < 16) {
+        if (locator <= 15) {
             charconfig.runtime->shadow_locators |= 1u << locator;
         }
     }
@@ -781,7 +781,7 @@ static void CC_thrust_locators(NUFPAR_PC *parser) {
     charconfig.runtime->thrust_locators = 0;
     while (NuFParGetWord(parser) != 0) {
         const u32 locator = NuAToI(parser->word_buffer_ptr);
-        if (locator < 16) {
+        if (locator <= 15) {
             charconfig.runtime->thrust_locators |= 1u << locator;
         }
     }
@@ -791,7 +791,7 @@ static void CC_hand_locators(NUFPAR_PC *parser) {
     charconfig.runtime->hand_locators[0] = -1;
     if (NuFParGetWord(parser) != 0) {
         const i32 locator = NuAToI(parser->word_buffer_ptr);
-        if ((u32)(locator) < 16) {
+        if ((u32)(locator) <= 15) {
             charconfig.runtime->hand_locators[0] = (i8)(locator);
         }
     }

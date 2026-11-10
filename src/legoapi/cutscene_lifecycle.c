@@ -255,7 +255,7 @@ static void CutSceneEndLocatorsPC(CUT_LOCATOR_INSTANCE_SYSTEM_PC *instance, CUT_
                 }
             }
         } else if ((type->flags & 1) != 0) {
-            if ((locator->flags & 0x20) != 0 && state->effect_handle >= 0) {
+            if ((locator->flags & 0x20) != 0 && state->effect_handle > -1) {
                 DebFreeInstantly(&state->effect_handle);
             }
         } else if ((type->flags & 0x10) != 0) {

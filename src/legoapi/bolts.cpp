@@ -2619,7 +2619,7 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 Bolt_AddDeflectedBolt(bolt, &bolt->direction, &bolt->hit_normal, processed);
             }
-            if (surface_hit && bolt->field_104 >= 0 && bolt->field_104 <= 31 &&
+            if (surface_hit && bolt->field_104 >= 0 && bolt->field_104 < 32 &&
                 (TerSurface[bolt->field_104].flags & 0x800) != 0 && (bolt->flags & 0x8000) == 0) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, processed);

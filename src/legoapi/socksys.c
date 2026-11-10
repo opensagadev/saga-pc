@@ -294,7 +294,7 @@ static void SockParObj(NUFPAR_PC *parser, void *context) {
                           1) != 0)
             ++sockpar_sock->object_count;
     }
-    if (sockpar_sock->object_count != 0)
+    if (sockpar_sock->object_count > 0)
         sockpar_buffer_ptr->addr += sockpar_sock->object_count * sizeof(NUSPECIALHANDLE);
     else
         sockpar_sock->objects = NULL;
@@ -1608,12 +1608,12 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
 }
 
 void __cdecl SockOn(SOCKSYS_PC *sys, i32 index) {
-    if (sys != NULL && (u32)index < 64 && (sys->socks[index].flags & 0x100) != 0)
+    if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & 0x100) != 0)
         sys->socks[index].flags &= ~0x100;
 }
 
 void __cdecl SockOff(SOCKSYS_PC *sys, i32 index) {
-    if (sys != NULL && (u32)index < 64 && (sys->socks[index].flags & 0x100) == 0)
+    if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & 0x100) == 0)
         sys->socks[index].flags |= 0x100;
 }
 

@@ -289,7 +289,7 @@ extern "C" {
     }
 
     static void CS_go_through_door(NUFPAR_PC *fp) {
-        if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) <= 0xf) {
+        if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 16) {
             NuStrCpy(CS_CutInfo->door_name, fp->word_buffer_ptr);
         }
     }
@@ -365,7 +365,7 @@ extern "C" {
     }
 
     static void CS_next_cut_scene(NUFPAR_PC *fp) {
-        if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) <= 0x3f) {
+        if (NuFParGetWord(fp) != 0 && NuStrLen(fp->word_buffer_ptr) < 64) {
             NuStrCpy(CS_CutInfo->next_cutscene, fp->word_buffer_ptr);
             CS_CutInfo->linked_audio = 1;
         }
@@ -791,7 +791,7 @@ extern "C" {
             current->blob_shadow_fade_near = current->blob_shadow_fade_far;
         if (current->subtitle_data != NULL && current->subtitle_count == 0)
             current->subtitle_data = NULL;
-        if (current->state_count != 0) {
+        if (current->state_count > 0) {
             buf->addr = (buf->addr + 3) & ~3U;
             current->state_entries = reinterpret_cast<CUT_LOAD_STATE_PC *>(buf->void_ptr);
             u32 bytes = current->state_count * sizeof(CUT_LOAD_STATE_PC);
@@ -892,7 +892,7 @@ extern "C" {
         buf->addr = (reinterpret_cast<u32>(sys->character_bits) + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
 
         while (NuFParGetLine(fp) != 0) {
-            if (NuFParGetWord(fp) == 0 || NuStrICmp(fp->word_buffer_ptr, "cutscene") != 0 || sys->count > 0x1f ||
+            if (NuFParGetWord(fp) == 0 || NuStrICmp(fp->word_buffer_ptr, "cutscene") != 0 || sys->count >= 32 ||
                 NuFParGetWord(fp) == 0) {
                 continue;
             }
@@ -1373,7 +1373,7 @@ extern "C" {
         i32 platform = -1;
         i32 surface = -1;
         bool shadow_sampled = false;
-        if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha != 0 && (character_data->model_flags & 0x10000) == 0 &&
+        if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha > 0 && (character_data->model_flags & 0x10000) == 0 &&
             PcWindowOptions.shadowmethod == 1 && PcWindowOptions.shadowsenabled != 0) {
             i32 shadow_alpha = CutBlobShadowAlpha;
             if (game_data->blob_shadow_alpha != 0xff) {

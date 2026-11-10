@@ -267,7 +267,7 @@ extern "C" void __cdecl MenuUpdateOptions(MENU *menu) {
     accept_row = 1;
     if (menu->selected_item == 0) {
         menu->selected_item_column = TempOptions.master_volume;
-        if (menu->left_pressed != 0 && TempOptions.master_volume != 0) {
+        if (menu->left_pressed != 0 && TempOptions.master_volume > 0) {
             --TempOptions.master_volume;
         } else if (menu->right_pressed != 0 && TempOptions.master_volume < 10) {
             ++TempOptions.master_volume;

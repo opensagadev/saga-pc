@@ -170,7 +170,7 @@ extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *op
     if (NuSpecialExistsFn(&block->special) != 0) {
         NuSpecialGetBounds(&block->special, &block->bounds_min, &block->bounds_max);
         block->position = reinterpret_cast<NUVEC *>(&NuSpecialGetInstanceMtx(&block->special)->m30);
-        if (block->animation_positions != 0 && RunOutOfPosTabSpacePc == 0)
+        if (block->animation_positions > 0 && RunOutOfPosTabSpacePc == 0)
             *block->position = block->snap_positions[0];
     } else {
         // Retail uses this distinct mutable vector, not the canonical v000.
@@ -1042,7 +1042,7 @@ static void *__cdecl PushBlocks_ReserveBufferSpace(void *world_ptr) {
     LEVELDATA_PC *level = world->current_level;
     world->push_blocks = NULL;
     world->push_block_count = 0;
-    if (level->max_pushblocks != 0) {
+    if (level->max_pushblocks > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
         world->push_blocks = static_cast<PUSH_BLOCK_PC *>(world->giz_buffer.void_ptr);
         world->giz_buffer.addr += level->max_pushblocks * sizeof(PUSH_BLOCK_PC);
@@ -1376,7 +1376,7 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
                     pushposincrease += required - world->current_level->max_pushblock_endpos;
                 }
             }
-            if (block->animation_positions != 0 && RunOutOfPosTabSpacePc == 0) {
+            if (block->animation_positions > 0 && RunOutOfPosTabSpacePc == 0) {
                 block->snap_positions = &world->push_block_positions[world->push_block_position_count];
                 f32 frame = 1.0f;
                 for (i32 position = 0; position < static_cast<i32>(block->animation_positions);

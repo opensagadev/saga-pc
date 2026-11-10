@@ -1123,7 +1123,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         AddGameDebris(WORLD->game_debris_sys, effect, &points[nearest_point]);
         if (!CannotKill(nearest)) {
             i32 damage = object->sabre_damage;
-            if (damage != 0 && (nearest->flags_1fc_word & 0x80) != 0) {
+            if (damage != 0 && (nearest->flags_1fc_word & 0x80) > 0) {
                 damage = (object->flags_1fc_word & 0x80) != 0 && Player_HasDoubleWeaponDamage(object) ? 2 : 1;
             }
             ObjHitObj(object, nearest, damage, (u16)(ObjHitObj_Flags(object) | 0x100), 0, 1);
@@ -4079,7 +4079,7 @@ GAMEOBJECT *__cdecl FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, 
         if (character_id != -1 && object->id != character_id)
             continue;
         if (player_index >= 0) {
-            if (player_index <= 1) {
+            if (player_index < 2) {
                 if (((i8)object->field_280) != player_index)
                     continue;
             } else if (player_index == 99) {

@@ -187,7 +187,7 @@ static void *__cdecl Tubes_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     world->tubes = NULL;
     world->tube_count = 0;
-    if (world->current_level->max_tubes != 0) {
+    if (world->current_level->max_tubes > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->tubes = (TUBE_PC *)world->giz_buffer.addr;
         world->giz_buffer.addr += world->current_level->max_tubes * sizeof(TUBE_CALLBACKS_PC);

@@ -2570,7 +2570,7 @@ extern "C" {
                 angles.z = (i32)(r0[2] * PC_NUANG_PER_RADIAN);
                 if (flags & 8) {
                     angles.x &= 0xffff;
-                    if (angles.x > 32767)
+                    if (angles.x >= 32768)
                         angles.x -= 65536;
                     if (angles.x > override_anim->rotation_max_pc[0])
                         angles.x = override_anim->rotation_max_pc[0];
@@ -9014,8 +9014,8 @@ extern "C" {
                         for (i32 set = 0; set < light->render_set_count; ++set) {
                             if (((visible >> (set & 31)) & 1) == 0)
                                 continue;
-                            NUDISPLAYLIST_PC *list = material->shadow_set != 0 ? &light->render_sets[set].variant
-                                                                               : &light->render_sets[set].regular;
+                            NUDISPLAYLIST_PC *list = material->shadow_set > 0 ? &light->render_sets[set].variant
+                                                                              : &light->render_sets[set].regular;
                             list->scene = reinterpret_cast<NUDISPLAYSCENE_PC *>(scene);
                             NuDisplayListLinkItems(list, 1);
                             NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);

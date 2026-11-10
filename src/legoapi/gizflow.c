@@ -843,7 +843,7 @@ static void GizFlowConfigChildCollapsePc(NUFPAR_PC *parser) {
     i32 index;
     i32 value;
 
-    if (load_nchildren <= 31) {
+    if (load_nchildren < 32) {
         value = NuFParGetInt(parser);
         entry = &remap[numRemaps];
         index = load_nchildren;
@@ -857,7 +857,7 @@ static void GizFlowConfigParentCollapsePc(NUFPAR_PC *parser) {
     i32 index;
     i32 value;
 
-    if (load_nparents <= 15) {
+    if (load_nparents < 16) {
         value = NuFParGetInt(parser);
         entry = &remap[numRemaps];
         index = load_nparents;

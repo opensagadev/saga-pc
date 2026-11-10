@@ -241,7 +241,7 @@ extern "C" const char PCDeviceTextureCubeSourcePathPc[];
 
 extern "C" void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource) {
     u32 size = static_cast<u32>(NuFileSize(path));
-    if (size != 0) {
+    if (size > 0) {
         void *data = NuFileLoad(path);
         if (data != NULL) {
             PCDeviceLastResult =

@@ -1930,7 +1930,7 @@ extern "C" {
             NUVEC box_minimum;
             NUVEC box_maximum;
 
-            if (scene->display_list != NULL && (scene->display_list->render_flags & 0x4000) != 0) {
+            if (scene->display_list != NULL && (scene->display_list->render_flags & 0x4000) > 0) {
                 box_minimum.x = WORLD_PORTAL_BOUNDS_PC(scene)[index].x - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].x;
                 box_minimum.y = WORLD_PORTAL_BOUNDS_PC(scene)[index].y - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].y;
                 box_minimum.z = WORLD_PORTAL_BOUNDS_PC(scene)[index].z - WORLD_PORTAL_BOUNDS_PC(scene)[index + 1].z;

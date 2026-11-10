@@ -109,7 +109,7 @@ void __cdecl GizRandom_Activate(GIZMO_PC *gizmo, i32 active) {
 void *__cdecl GizRandom_ReserveBufferSpace(void *world_ptr) {
     GIZFLOW_LOAD_WORLD_PC *world = (GIZFLOW_LOAD_WORLD_PC *)world_ptr;
     world->randoms = NULL;
-    if (world->level->max_randoms != 0) {
+    if (world->level->max_randoms > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->randoms = (GIZFLOW_RANDOM_SYSTEM_PC *)world->giz_buffer.addr;
         world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(GIZFLOW_RANDOM_SYSTEM_PC) + 3) & ~3u;

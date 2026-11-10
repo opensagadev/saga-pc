@@ -373,8 +373,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
 
                 object->contact_material_word = 0;
 
-                if (object->use_model_origin != 0 && api->field_281 != 0 &&
-                    (0.0f != movement.x || movement.z != 0.0f) &&
+                if (object->use_model_origin > 0 && api->field_281 != 0 && (0.0f != movement.x || movement.z != 0.0f) &&
                     !(ENDORBATTLEC_LDATA == WORLD->current_level && object->id == GameObjectRotationAtstId)) {
                     i32 deflection_mode;
 

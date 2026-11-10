@@ -2086,7 +2086,7 @@ NUDATHDR *__cdecl NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_ou
         header->hash_count = 0;
         header->hashes_len = 0;
         header->hashes = NULL;
-        if (header->version < -1) {
+        if (header->version <= -2) {
             header->hash_idxs = (u32 *)cursor;
             cursor += header->file_count * sizeof(u32);
             header->hash_count = *(i32 *)cursor;
@@ -3412,7 +3412,7 @@ i32 __cdecl NuFParInterpretWord(NUFPAR_PC *parser) {
         return 0;
     }
 
-    if (parser->command_position > -1) {
+    if (parser->command_position >= 0) {
         commands = parser->command_stack[parser->command_position];
         for (index = 0; commands[index].keyword != NULL; index++) {
             if (NuStrICmp(commands[index].keyword, buffer) == 0) {
@@ -5991,7 +5991,7 @@ i32 __cdecl NuStringTableGetIdByName(char *name) {
 u16 *__cdecl NuStringTableGetById(i32 id) {
     u32 bank = 0;
 
-    if ((u32)id > 0xffffff && id != -1) {
+    if ((u32)id >= 0x1000000 && id != -1) {
         bank = (u32)id >> 24;
         id &= 0xffffff;
     }
@@ -7664,7 +7664,7 @@ static void ImplodeDecodeRingPrivatePc(u32 size, unsigned char *buf) {
     while (1) {
         c = ImplodeDecodeC();
 
-        if (c < 0x100) {
+        if (c <= 255) {
             buf[n] = c;
 
             if (++n == size) {
@@ -7794,7 +7794,7 @@ static void ImplodeReadLiteralLengthsPrivatePc() {
     while (i < n) {
         SELECT(value, ImplodeOffsetTablePc, 0x18, 0x12, 0x800000, ImplodeOffsetLengthsPc);
 
-        if (value < 3) {
+        if (value <= 2) {
             if (value == 0) {
                 value = 1;
             } else if (value == 1) {
@@ -7959,7 +7959,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
         masks[i] = 1 << (unknown - i);
     }
 
-    for (; i < 0x11; i++) {
+    for (; i <= 16; i++) {
         masks[i] = 1 << (0x10 - i);
     }
 

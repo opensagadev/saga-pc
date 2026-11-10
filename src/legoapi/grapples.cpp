@@ -1188,7 +1188,7 @@ extern "C" void __cdecl Grapple_MoveCode(GAMEOBJECT *object) {
         if (object->pad->input_magnitude > 0.0f && (object->flags_1fc & 0x80) != 0) {
             object->big_jump_animation = static_cast<u8>(static_cast<i32>(
                 (object->pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));
-            if (object->big_jump_animation != 0) {
+            if (object->big_jump_animation > 0) {
                 if (object->big_jump_animation > 60)
                     object->big_jump_animation = 60;
                 const u16 angle = object->takeover_start_angle;

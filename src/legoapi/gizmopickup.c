@@ -218,13 +218,13 @@ void __cdecl EndScoreMessage(GAME_MESSAGE_PC *message) {
     if (CoinsGoToMainTotal()) {
         icon = (i16)message->icon;
         if (message->icon != 0xffff) {
-            if ((u32)(icon - 0xb7) < 4)
+            if ((u32)(icon - 0xb7) <= 3)
                 icon -= 4;
-            else if ((u32)(icon - 0xbf) < 4)
+            else if ((u32)(icon - 0xbf) <= 3)
                 icon -= 4;
-            else if ((u32)(icon - 0xc7) < 4)
+            else if ((u32)(icon - 0xc7) <= 3)
                 icon -= 4;
-            else if ((u32)(icon - 0xd5) < 4)
+            else if ((u32)(icon - 0xd5) <= 3)
                 icon += 4;
             cointotal_i_obj[message->player_index] = icon;
         }

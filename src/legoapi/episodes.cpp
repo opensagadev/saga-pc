@@ -71,7 +71,7 @@ extern "C" {
 
             if (NuStrICmp(word, EpisodeConfigKeyword_episode_end) == 0) {
                 in_episode = 0;
-                if (episode->area_count != 0) {
+                if (episode->area_count > 0) {
                     episode_count++;
                     episode++;
                 }
@@ -79,7 +79,7 @@ extern "C" {
             }
 
             if (NuStrICmp(word, EpisodeConfigKeyword_area) == 0) {
-                if (episode->area_count <= 9 && NuFParGetWord(parser) != 0) {
+                if (episode->area_count < 10 && NuFParGetWord(parser) != 0) {
                     AREA_DATA_PC *area;
                     i32 area_index;
                     i32 prior_episode_index;

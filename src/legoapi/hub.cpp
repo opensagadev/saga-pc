@@ -1338,7 +1338,7 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
                 PlaySfx((char *)GameAudioName00758be8Pc, &kit->position);
             NewRumbleAllPlayers(0.0f, 0.0f, 1, 0);
         }
-        if (count[i] > 0 && kit->displayed_piece_count != 0) {
+        if (count[i] > 0 && kit->displayed_piece_count > 0) {
             PushAway(&kit->collision_center, kit->radius, &kit->bounds_min, &kit->bounds_max, NULL, NULL, 2.5f, 5);
             AIAntinodeCreateSingleFrame(&kit->collision_center, kit->radius);
         }
@@ -2121,7 +2121,7 @@ extern "C" void Hub_DrawImportantBrick(i32 object, f32 x, f32 y, f32 alpha, i32 
     const u16 tilt = (u16)(-910 - (i32)(-1820.0 * NuTrigTable[rotation & 0x7fff]));
     DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 1.0f, scale, scale, scale, tilt, rotation, 0,
                              &WORLD->level_objects[object].special, 2);
-    if (count >= 0 && total >= 0) {
+    if (count > -1 && total > -1) {
         if (total == 1)
             NuStrCpy(text, count == 1 ? "$" : "X");
         else
@@ -4455,7 +4455,7 @@ extern "C" {
                                Game.area_save[WORLD->area_index].true_hero_complete[1] != 0)
                         goto buildup_finished;
                     maximum = WORLD->area->true_hero_targets[freeplay];
-                    if (maximum != 0) {
+                    if (maximum > 0) {
                         /* Existing canonical names are swapped: 87b9a0 is done;87b9b4 is amount. */
                         if (BuildUpTotal == 0) {
                             BuildUpDone = 0;
@@ -5165,7 +5165,7 @@ extern "C" {
                          : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
                                Game.area_save[WORLD->area_index].true_hero_complete[1] == 0)) {
                     u32 maximum = WORLD->area->true_hero_targets[freeplay];
-                    if (maximum != 0) {
+                    if (maximum > 0) {
                         status_y = (STATSPOSY - STATSPOS2YPc) *
                                        NuTrigTable[((i32)((f64)builduptime * 16384.0) >> 1) & 0x7fff] +
                                    STATSPOS2YPc;

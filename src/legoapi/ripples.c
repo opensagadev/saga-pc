@@ -471,7 +471,7 @@ void __cdecl ResetRippleSet(RIPPLE_SET_PC *set) {
 
 static void RippleFreeNodePc(RIPPLE_SET_PC *set, RIPPLE_NODE_PC *node) {
     RIPPLE_NODE_PC *free_head = set->free_head, *newest = set->newest;
-    if (set->active_count != 0) {
+    if (set->active_count > 0) {
         if (node->previous != NULL)
             node->previous->next = node->next;
         else

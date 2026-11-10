@@ -814,7 +814,7 @@ extern "C" {
         }
         if (p->collected_score > 0.0f)
             AddStatusStage(p, 3, 0);
-        if (p->minikit_max != 0 && (p->area->flags & 0x36) == 0x10 && Game.area_save[area].minikit_complete == 0 &&
+        if (p->minikit_max > 0 && (p->area->flags & 0x36) == 0x10 && Game.area_save[area].minikit_complete == 0 &&
             AreaGlobals_PC.new_minikit_count > 0) {
             i32 gold = 0;
             p->new_minikits = AreaGlobals_PC.new_minikit_count;
