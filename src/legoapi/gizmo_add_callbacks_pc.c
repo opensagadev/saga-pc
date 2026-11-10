@@ -82,16 +82,6 @@ STATIC_ASSERT(offsetof(struct GIZFORCESYS_s, count) == 0xe);
 STATIC_ASSERT(offsetof(struct GIZBOMBGENSYS_s, count) == 4);
 STATIC_ASSERT(offsetof(struct GIZPANELSYS_s, panels) == 4);
 
-void __cdecl GizBuildIts_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
-    GIZBUILDITSYS_s *s = (GIZBUILDITSYS_s *)data;
-    i32 i;
-    (void)world;
-    if (s == NULL)
-        return;
-    for (i = 0; i < s->count; ++i)
-        if (NuStrLen(((ADD_BUILDIT_PC *)s->buildits)[i].name) != 0)
-            AddGizmo(giz, type, NULL, &((ADD_BUILDIT_PC *)s->buildits)[i]);
-}
 void __cdecl GizForces_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
     GIZFORCESYS_s *s = (GIZFORCESYS_s *)data;
     i32 i;
@@ -199,9 +189,6 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, name) == 0xf2);
 char *__cdecl GizmoForce_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? (char *)gizmo->object : NULL;
 }
-char *__cdecl GizmoBuildit_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? (char *)gizmo->object : NULL;
-}
 char *__cdecl GizmoPickup_GetGizmoName(GIZMO_PC *gizmo) {
     return gizmo != NULL ? (char *)gizmo->object : NULL;
 }
@@ -241,11 +228,6 @@ NUVEC *__cdecl GizmoPickup_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL)
         return NULL;
     return &((GIZMOPICKUP_PC *)gizmo->object)->position;
-}
-NUVEC *__cdecl GizmoBuildit_GetPos(GIZMO_PC *gizmo) {
-    if (gizmo == NULL || gizmo->object == NULL)
-        return NULL;
-    return &((FLOW_BUILDIT_POSITION_PC *)gizmo->object)->position;
 }
 
 extern char AIGizmoNameBufferPc[16];

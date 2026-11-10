@@ -1,25 +1,5 @@
 #include "saga.h"
 
-i32 __cdecl GizBuildIts_GetMaxGizmos(void *);
-void __cdecl GizBuildIts_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
-void __cdecl GizBuildIts_EarlyUpdate(void *, void *, f32);
-void __cdecl GizBuildIts_LateUpdate(void *, void *, f32);
-void __cdecl GizBuildIts_Draw(void *, void *, f32);
-char *__cdecl GizmoBuildit_GetGizmoName(GIZMO_PC *);
-i32 __cdecl GizmoBuildit_GetOutput(GIZMO_PC *, i32, i32);
-char *__cdecl GizmoBuildit_GetOutputName(GIZMO_PC *, i32);
-i32 __cdecl GizmoBuildit_GetNumOutputs(GIZMO_PC *);
-void __cdecl GizmoBuildit_Activate(GIZMO_PC *, i32);
-void __cdecl GizmoBuildit_SetVisibility(GIZMO_PC *, i32);
-NUVEC *__cdecl GizmoBuildit_GetPos(GIZMO_PC *);
-void *__cdecl GizBuildIts_AllocateProgressData(VARIPTR *, VARIPTR *);
-void __cdecl GizBuildIts_ClearProgress(void *, void *);
-void __cdecl GizBuildIts_StoreProgress(void *, void *, void *);
-void __cdecl GizBuildIts_Reset(void *, void *, void *);
-void *__cdecl GizBuildIts_ReserveBufferSpace(void *);
-i32 __cdecl GizBuildIts_Load(void *, void *);
-void __cdecl GizBuildIts_PostLoad(void *, void *);
-extern i32 gizbuildit_gizmotype_id;
 i32 __cdecl GizForces_GetMaxGizmos(void *);
 void __cdecl GizForces_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
 void __cdecl GizForces_Update(void *, void *, f32);
@@ -96,11 +76,6 @@ void *__cdecl GizBombGens_ReserveBufferSpace(void *);
 i32 __cdecl GizBombGens_Load(void *, void *);
 i32 __cdecl GizTorp_Load(void *, void *);
 
-#pragma const_seg(".rdata$GizmoRegistryGizBuildItsNamePc")
-const char GizmoRegistryGizBuildItsNamePc[] = "GizBuildit";
-#pragma const_seg()
-char *GizmoRegistryGizBuildItsNamePtrPc = (char *)GizmoRegistryGizBuildItsNamePc;
-static ADDGIZMOTYPE_PC GizmoRegistryGizBuildItsAddTypePc = {0};
 #pragma const_seg(".rdata$GizmoRegistryGizForceNamePc")
 const char GizmoRegistryGizForceNamePc[] = "GizForce";
 #pragma const_seg()
@@ -139,43 +114,6 @@ i32 giztorpmachine_gizmotype_id = 0;
 #pragma const_seg(".rdata$GizmoRegistryGizTorpMachineNamePc")
 const char GizmoRegistryGizTorpMachineNamePc[] = "Torp Machine";
 #pragma const_seg()
-
-ADDGIZMOTYPE_PC *__cdecl GizBuildIts_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizBuildItsAddTypePc;
-    *addtype = Default_ADDGIZMOTYPE;
-    addtype->name = GizmoRegistryGizBuildItsNamePtrPc;
-    addtype->fns.panel_draw_fn = NULL;
-    addtype->fns.activate_rev_fn = NULL;
-    addtype->fns.get_visibility_fn = NULL;
-    addtype->fns.using_special_fn = NULL;
-    addtype->fns.bolt_hit_plat_fn = NULL;
-    addtype->fns.get_best_bolt_target_fn = NULL;
-    addtype->fns.bolt_hit_fn = NULL;
-    addtype->fns.add_level_sfx_fn = NULL;
-    addtype->prefix = "";
-    addtype->fns.options = 0x60;
-    addtype->fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))GizBuildIts_GetMaxGizmos;
-    addtype->fns.add_gizmos_fn = (void *)GizBuildIts_AddGizmos;
-    addtype->fns.early_update_fn = (void(__cdecl *)(void *, void *, f32))GizBuildIts_EarlyUpdate;
-    addtype->fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))GizBuildIts_LateUpdate;
-    addtype->fns.draw_fn = (void(__cdecl *)(void *, void *, f32))GizBuildIts_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(__cdecl *)(GIZMO_PC *))GizmoBuildit_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(__cdecl *)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(__cdecl *)(GIZMO_PC *, i32))GizmoBuildit_GetOutputName;
-    addtype->fns.get_num_outputs_fn = (void *)GizmoBuildit_GetNumOutputs;
-    addtype->fns.activate_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBuildit_Activate;
-    addtype->fns.set_visibility_fn = (void(__cdecl *)(GIZMO_PC *, i32))GizmoBuildit_SetVisibility;
-    addtype->fns.get_pos_fn = (void *)GizmoBuildit_GetPos;
-    addtype->fns.allocate_progress_data_fn = (void *(__cdecl *)(VARIPTR *, VARIPTR *))GizBuildIts_AllocateProgressData;
-    addtype->fns.clear_progress_fn = (void(__cdecl *)(void *, void *))GizBuildIts_ClearProgress;
-    addtype->fns.store_progress_fn = (void(__cdecl *)(void *, void *, void *))GizBuildIts_StoreProgress;
-    addtype->fns.reset_fn = (void(__cdecl *)(void *, void *, void *))GizBuildIts_Reset;
-    addtype->fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizBuildIts_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(__cdecl *)(void *, void *))GizBuildIts_Load;
-    addtype->fns.post_load_fn = (void(__cdecl *)(void *, void *))GizBuildIts_PostLoad;
-    gizbuildit_gizmotype_id = type_id;
-    return addtype;
-}
 
 ADDGIZMOTYPE_PC *__cdecl GizForce_RegisterGizmo(i32 type_id) {
     ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizForceAddTypePc;
@@ -398,13 +336,6 @@ ADDGIZMOTYPE_PC *__cdecl GizTorpMachine_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-i32 __cdecl GizBuildIts_GetMaxGizmos(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
-    if (world == NULL)
-        return 0;
-    return world->current_level->max_buildits;
-}
-
 i32 __cdecl GizForces_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     if (world == NULL)
@@ -443,10 +374,6 @@ i32 __cdecl GizTorp_GetMaxGizmos(void *world_ptr) {
     if (world == NULL)
         return 0;
     return world->current_level->max_torpmachines;
-}
-
-void *__cdecl GizBuildIts_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, 0x60);
 }
 
 void *__cdecl GizForces_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

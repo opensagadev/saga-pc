@@ -273,21 +273,6 @@ i32 __cdecl ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distanc
     return 0;
 }
 
-GIZBUILDIT_PC *__cdecl GizBuildIt_AnyReacting(WORLDINFO *world) {
-    struct GIZBUILDITSYS_s *system = world->giz_buildit_sys;
-    if (system != NULL) {
-        GIZBUILDIT_PC *buildit = (GIZBUILDIT_PC *)system->buildits;
-        i32 count = system->count;
-        i32 index;
-        for (index = 0; index < count; ++index, ++buildit) {
-            u16 flags = buildit->availability_flags;
-            if ((flags & 2) != 0 && (flags & 4) != 0 && buildit->builders_active == 0 && (flags & 1) != 0)
-                return buildit;
-        }
-    }
-    return NULL;
-}
-
 i32 __cdecl GizForce_UpdateHint(HINT_PC *hint) {
     i32 index;
     (void)hint;
@@ -388,14 +373,6 @@ i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
             return 1;
     }
     return 0;
-}
-
-i32 __cdecl GizBuildIts_UpdateHint(HINT_PC *hint) {
-    if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
-        return 0;
-    if (hint->completed != 0)
-        return 0;
-    return GizBuildIt_AnyReacting(WorldInfo_CurrentlyActive()) != NULL;
 }
 
 i32 __cdecl Hint_isAvailable(i32 hint_id) {

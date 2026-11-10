@@ -111,26 +111,6 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, max_spinneranim_objs) == 0x105);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_turrets) == 0x106);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_bombgens) == 0x107);
 
-void *__cdecl GizBuildIts_ReserveBufferSpace(void *pointer) {
-    WORLDINFO *world = (WORLDINFO *)pointer;
-    REGISTRY_BUILDIT_SYSTEM_PC *system;
-    i32 i;
-    system = (REGISTRY_BUILDIT_SYSTEM_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
-    system->capacity = world->current_level->max_buildits;
-    system->max_animation_objects = (u16)world->current_level->max_buildit_objects;
-    system->buildits = (REGISTRY_BUILDIT_RECORD_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                     system->capacity * sizeof(*system->buildits));
-    system->anim_pool =
-        GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 200, system->max_animation_objects);
-    system->anim_objects = (GAMEANIMOBJ **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                           system->max_animation_objects * sizeof(void *));
-    for (i = 0; i < system->capacity; ++i)
-        system->buildits[i].anim_set =
-            GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);
-    world->giz_buildit_sys = (GIZBUILDITSYS_s *)system;
-    return system;
-}
-
 void *__cdecl GizForces_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = (WORLDINFO *)pointer;
     REGISTRY_FORCE_SYSTEM_PC *system;
@@ -189,22 +169,6 @@ void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
         ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->scale = 1.0f;
     }
     return world->torpedo_machine_sys;
-}
-
-void __cdecl GizBuildIts_PostLoad(void *world, void *pointer) {
-    REGISTRY_BUILDIT_SYSTEM_PC *system = (REGISTRY_BUILDIT_SYSTEM_PC *)pointer;
-    REGISTRY_BUILDIT_RECORD_PC *buildit;
-    i32 i;
-    if (system == NULL)
-        return;
-    buildit = system->buildits;
-    for (i = 0; i < system->count; ++i, ++buildit) {
-        if (buildit->flags & 0x80) {
-            i32 type_id = GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, buildit->blowup_type);
-            buildit->flags &= ~0x80;
-            buildit->blowup_type = (i16)type_id;
-        }
-    }
 }
 
 void __cdecl GizForces_PostLoad(void *world, void *pointer) {

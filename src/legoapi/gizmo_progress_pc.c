@@ -117,17 +117,6 @@ STATIC_ASSERT(offsetof(GIZSPINNER_s, anim_set) == 0x68);
 STATIC_ASSERT(offsetof(GIZSPINNER_s, primary_anim_obj) == 0x6c);
 STATIC_ASSERT(offsetof(GAMEANIMSET, state) == 0xc);
 
-void __cdecl GizBuildIts_ClearProgress(void *owner, void *progress_ptr) {
-    BUILD_PROGRESS_PC *progress = (BUILD_PROGRESS_PC *)progress_ptr;
-    if (progress == NULL)
-        return;
-    memset(progress->built, 0, sizeof(progress->built));
-    memset(progress->enabled, -1, sizeof(progress->enabled));
-    memset(progress->visible, -1, sizeof(progress->visible));
-    memset(progress->completed, 0, sizeof(progress->completed));
-    memset(progress->object_count, 0, 64);
-}
-
 void __cdecl GizForces_ClearProgress(void *owner, void *progress_ptr) {
     FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
@@ -168,39 +157,6 @@ void __cdecl GizBombGens_ClearProgress(void *owner, void *progress_ptr) {
         return;
     memset(progress->enabled, -1, sizeof(progress->enabled));
     memset(progress->visible, -1, sizeof(progress->visible));
-}
-
-void __cdecl GizBuildIts_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    BUILD_PROGRESS_PC *progress = (BUILD_PROGRESS_PC *)progress_ptr;
-    BUILD_PROGRESS_SYSTEM_PC *system = (BUILD_PROGRESS_SYSTEM_PC *)data;
-    BUILD_PROGRESS_RECORD_PC *record;
-    i32 index;
-    i32 word;
-    u32 bit;
-    if (progress == NULL)
-        return;
-    memset(progress->built, 0, sizeof(progress->built));
-    memset(progress->enabled, -1, sizeof(progress->enabled));
-    memset(progress->visible, -1, sizeof(progress->visible));
-    memset(progress->completed, 0, sizeof(progress->completed));
-    memset(progress->object_count, 0, 64);
-
-    record = system->records;
-    for (index = 0; index < system->count; ++index, ++record) {
-        if (index >= 64)
-            break;
-        word = index / 32;
-        bit = 1u << (index & 31);
-        if (record->build_state != 0)
-            progress->built[word] |= bit;
-        if (!(record->flags & 2))
-            progress->visible[word] &= ~bit;
-        if (!(record->flags & 1))
-            progress->enabled[word] &= ~bit;
-        if (record->flags & 0x200)
-            progress->completed[word] |= bit;
-        progress->object_count[index] = record->built_object_count;
-    }
 }
 
 void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {

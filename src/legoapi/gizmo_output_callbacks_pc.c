@@ -23,12 +23,6 @@ extern char AIProcessingOutputTextPc[11];
 extern const char SpinnerCompleteSuffixPc[12];
 extern const char SpinnerAllCompletePc[15];
 
-char *__cdecl GizmoBuildit_GetOutputName(GIZMO_PC *gizmo, i32 output) {
-    return "Finished";
-}
-i32 __cdecl GizmoBuildit_GetNumOutputs(GIZMO_PC *gizmo) {
-    return 1;
-}
 char *__cdecl Blowup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     if ((u32)output <= 2)
         return BlowupOutputNamesPc[output];

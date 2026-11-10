@@ -1747,37 +1747,6 @@ extern "C" i32 __cdecl Customiser_MenuAvailable(CUSTOMISER_LAYERS_PC *customiser
     return c->second_animation == 190 || c->second_animation == 99;
 }
 
-/* 590da0/182. Add to the native buildit owner with the shared PC type. */
-extern "C" void __cdecl GizBuildIt_SetToEnd(GIZBUILDIT_PC *buildit) {
-    if (buildit == NULL)
-        return;
-    buildit->availability_flags |= 2;
-    if (buildit->linked_buildit != NULL) {
-        for (i32 i = 0; i < buildit->anim_object_count; ++i) {
-            GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)buildit->anim_objects[i]->object_data;
-            data->draw_mtx = data->start_mtx;
-        }
-    } else {
-        GameAnimSet_SetVisibility(buildit->anim_set, 1);
-        GameAnimSet_JumpToEnd(buildit->anim_set);
-        buildit->step_duration = 0.3f;
-        buildit->step_timer = 0.3f;
-    }
-    buildit->built_object_count = 0;
-    if (buildit->anim_set != NULL)
-        buildit->built_object_count = buildit->anim_object_count;
-    buildit->availability_flags &= ~4U;
-    buildit->builders_active = 0;
-    buildit->build_state = 2;
-    if ((buildit->state_flags & 2) != 0) {
-        if (buildit->linked_buildit == NULL)
-            GameAnimSet_SetVisibility(buildit->anim_set, 0);
-        buildit->availability_flags &= ~2U;
-    }
-    if (GizBuildIt_FinishFn != NULL)
-        GizBuildIt_FinishFn(buildit);
-}
-
 /* 58eaa0/465. WORLDINFO currently carries Android buildit pointee types;
  * cast the pointee to the asserted PC array owner, never index Android84.
  */
@@ -1786,48 +1755,6 @@ typedef struct hub_buildit_sys_pc_s {
     u16 count;
 } HUB_BUILDIT_SYS_PC;
 STATIC_ASSERT(offsetof(HUB_BUILDIT_SYS_PC, count) == 4);
-extern "C" GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *player, i32 mode, i32 shadow) {
-    if (world->giz_buildit_sys == NULL || player == NULL)
-        return NULL;
-    NUVEC position = player->collision_position;
-    f32 lower_y = player->lower_position.y;
-    f32 upper_y = player->upper_position.y;
-    f32 nearest_distance = 1000000.0f;
-    GIZBUILDIT_PC *nearest = NULL;
-    GIZBUILDIT_PC *buildit = ((HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys)->buildits;
-    for (i32 i = 0; i < ((HUB_BUILDIT_SYS_PC *)world->giz_buildit_sys)->count; i++, buildit++) {
-        if (mode != 2) {
-            if ((buildit->availability_flags & 2) == 0 || (buildit->availability_flags & 1) == 0)
-                continue;
-            if ((buildit->state_flags & 0x80) != 0 && shadow == 0)
-                continue;
-            if (mode == 1) {
-                if (buildit->build_state != 0 || LEGOCONTEXT_BUILDIT == -1)
-                    continue;
-                i32 p;
-                for (p = 0; p < 8; p++) {
-                    GAMEOBJECT *object = (GAMEOBJECT *)Player[p];
-                    if (object != NULL && object->character_context == LEGOCONTEXT_BUILDIT &&
-                        object->grapple == (void *)buildit)
-                        break;
-                }
-                if (p < 8)
-                    continue;
-            }
-        }
-        f32 height = buildit->progress / 100.0 * buildit->bounds_radius;
-        if (buildit->start_position.y - height > upper_y || lower_y > buildit->start_position.y + height)
-            continue;
-        f32 radius = buildit->bounds_radius + 0.30000001192092896;
-        f32 distance = NuVecXZDistSqr(&buildit->start_position, &position, NULL);
-        radius = radius * radius;
-        if (radius > distance && nearest_distance > distance) {
-            nearest_distance = distance;
-            nearest = buildit;
-        }
-    }
-    return nearest;
-}
 
 STATIC_ASSERT(offsetof(WORLDINFO, giz_buildit_sys) == 0x46a8);
 STATIC_ASSERT(offsetof(GAMEANIMOBJ, object_data) == 0x24);
