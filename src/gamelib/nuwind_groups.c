@@ -236,8 +236,9 @@ void __cdecl NuWindUpdateArray(NUVEC **positions) {
                                 matrix->m12 += contact_z;
                                 target_x =
                                     matrix->m33 * wind.x *
-                                    (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) * 0.5f +
-                                     1.0f);
+                                    (1.0f +
+                                     (NU_SIN_LUT((i32)((f32)NuWindWave + (matrix->m30 + matrix->m32) * 8192.0f)) *
+                                      0.5f));
                                 target_z = matrix->m33 * wind.z *
                                            (NU_SIN_LUT((i32)(16384.0f + ((f32)NuWindWave +
                                                                          (matrix->m30 + matrix->m32) * 8192.0f))) *

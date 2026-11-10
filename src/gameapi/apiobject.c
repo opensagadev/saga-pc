@@ -1917,8 +1917,8 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         first_component.x = first->velocity.x * value;
         first_component.y = first->velocity.y * value;
         first_component.z = first->velocity.z * value;
-        second_speed = NuFsqrt(second->velocity.x * second->velocity.x + second->velocity.y * second->velocity.y +
-                               second->velocity.z * second->velocity.z);
+        second_speed = NuFsqrt((second->velocity.z * second->velocity.z) +
+                               (second->velocity.x * second->velocity.x + second->velocity.y * second->velocity.y));
         value = second_speed == 0.0f ? 0.0f : 1.0f / second_speed;
         second_component.x = second->velocity.x * value;
         second_component.y = second->velocity.y * value;

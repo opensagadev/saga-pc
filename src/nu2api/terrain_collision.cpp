@@ -597,8 +597,8 @@ extern "C" {
             NUVEC normal = {TERRAIN_HWS_B.z - TERRAIN_HWS_A.z, 0.0f, TERRAIN_HWS_A.x - TERRAIN_HWS_B.x};
             NuVecNorm(&normal, &normal);
             query = (TerrainQuery_s *)TerI;
-            const f32 end_distance = ((query->movement.x + query->position.x) - TERRAIN_HWS_A.x) * normal.x +
-                                     ((query->movement.z + query->position.z) - TERRAIN_HWS_A.z) * normal.z -
+            const f32 end_distance = (((query->movement.z + query->position.z) - TERRAIN_HWS_A.z) * normal.z) +
+                                     (((query->movement.x + query->position.x) - TERRAIN_HWS_A.x) * normal.x) -
                                      query->collision_radius;
             const f32 start_distance = (query->position.x - TERRAIN_HWS_A.x) * normal.x +
                                        (query->position.z - TERRAIN_HWS_A.z) * normal.z - query->collision_radius;
@@ -1657,9 +1657,9 @@ extern "C" {
                         TERRAIN_TPE_STORE_SCALED(surface->vertices[3], vertices[3]);
                         TERRAIN_TPE_EDGES(3, 1, 2);
                         TERRAIN_TPE_CROSS(surface->normals[1], TERRAIN_TPE_SECOND_CROSS_X);
-                        f32 length = NuFsqrt(surface->normals[1].x * surface->normals[1].x +
-                                             surface->normals[1].y * surface->normals[1].y +
-                                             surface->normals[1].z * surface->normals[1].z);
+                        f32 length = NuFsqrt((surface->normals[1].z * surface->normals[1].z) +
+                                             (surface->normals[1].x * surface->normals[1].x +
+                                              surface->normals[1].y * surface->normals[1].y));
                         f32 inverse = length != 0.0f ? 1.0f / length : 0.0f;
                         surface = TERRAIN_TPE_SURFACE;
                         surface->normals[1].x *= inverse;

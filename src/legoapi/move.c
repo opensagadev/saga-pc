@@ -2000,7 +2000,7 @@ i32 __cdecl MovePlayer_POD(GAMEOBJECT *object) {
     index = (i8)object->field_280;
     if (index < 2) {
         pod_roll_target[index] =
-            SeekLinearF(pod_roll_target[index], input, PodRollInputRate * FRAMETIME * MovePlayerFabs(input));
+            SeekLinearF(pod_roll_target[index], input, FRAMETIME * PodRollInputRate * MovePlayerFabs(input));
         pod_roll_target[index] = SeekLinearF(pod_roll_target[index], 0.0f, PodRollReleaseRate * FRAMETIME);
         pod_roll[index] = SeekValF(pod_roll[index], pod_roll_target[index], 8.0f);
     }

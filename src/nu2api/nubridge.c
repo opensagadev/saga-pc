@@ -194,7 +194,7 @@ void NuBridgeUpdate(NUVEC *position) {
                                     bridge->edge_motion[n][0].y =
                                         bridge->edge_motion[n][0].y + (left * bridge->load_multiplier);
                                     bridge->edge_motion[n][1].y =
-                                        bridge->edge_motion[n][1].y + (right * bridge->load_multiplier);
+                                        right * bridge->load_multiplier + bridge->edge_motion[n][1].y;
                                 }
                             } else {
                                 if (n > 0 && n < bridge->platform_count - 1) {

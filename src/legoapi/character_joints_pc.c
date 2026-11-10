@@ -337,7 +337,7 @@ void __cdecl CloakMovement(GAMEOBJECT *object) {
     if (LEGOACT_FALL != -1 &&
         ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
          (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
-        phase += CloakMovementFallRatePc * FRAMETIME;
+        phase += FRAMETIME * CloakMovementFallRatePc;
         if (phase > 1.0f) {
             phase = 1.0f;
         }
@@ -383,7 +383,7 @@ void __cdecl HairMovement(GAMEOBJECT *object) {
     if (LEGOACT_FALL != -1 &&
         ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
          (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
-        phase += HairMovementFallRatePc * FRAMETIME;
+        phase += FRAMETIME * HairMovementFallRatePc;
         if (phase > 1.0f) {
             phase = 1.0f;
         }

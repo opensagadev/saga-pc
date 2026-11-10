@@ -1219,7 +1219,7 @@ void __cdecl NuMtxMulR(NUMTX *m, NUMTX *m0, NUMTX *m1) {
         *m = gm;
     } else {
         m->m00 = m0->m00 * m1->m00 + m0->m01 * m1->m10 + m0->m02 * m1->m20;
-        m->m01 = m0->m00 * m1->m01 + m0->m01 * m1->m11 + m0->m02 * m1->m21;
+        m->m01 = (m0->m02 * m1->m21) + (m0->m00 * m1->m01 + m0->m01 * m1->m11);
         m->m02 = m0->m00 * m1->m02 + m0->m01 * m1->m12 + m0->m02 * m1->m22;
         m->m03 = 0.0;
         m->m10 = m0->m10 * m1->m00 + m0->m11 * m1->m10 + m0->m12 * m1->m20;
@@ -1339,9 +1339,9 @@ void __cdecl NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix) {
     f32 determinant;
     f32 inverse_determinant;
 
-    determinant = matrix->m00 * (matrix->m11 * matrix->m22 - matrix->m12 * matrix->m21) -
-                  matrix->m01 * (matrix->m10 * matrix->m22 - matrix->m12 * matrix->m20) +
-                  matrix->m02 * (matrix->m10 * matrix->m21 - matrix->m11 * matrix->m20);
+    determinant = (matrix->m00 * (matrix->m11 * matrix->m22 - matrix->m12 * matrix->m21)) -
+                  (matrix->m01 * (matrix->m10 * matrix->m22 - matrix->m12 * matrix->m20)) +
+                  (matrix->m02 * (matrix->m10 * matrix->m21 - matrix->m11 * matrix->m20));
     inverse_determinant = determinant == 0.0f ? 0.0f : 1.0f / determinant;
 
     result.m00 = (matrix->m11 * matrix->m22 - matrix->m12 * matrix->m21) * inverse_determinant;
@@ -1369,8 +1369,8 @@ void __cdecl NuMtxInvRSSH(NUMTX *inv, NUMTX *T) {
     f32 tx = -T->m30;
     f32 ty = -T->m31;
     f32 tz = -T->m32;
-    f32 det = T->m00 * (T->m11 * T->m22 - T->m12 * T->m21) - T->m01 * (T->m22 * T->m10 - T->m12 * T->m20) +
-              T->m02 * (T->m10 * T->m21 - T->m11 * T->m20);
+    f32 det = (T->m00 * (T->m11 * T->m22 - T->m12 * T->m21)) - (T->m01 * (T->m22 * T->m10 - T->m12 * T->m20)) +
+              (T->m02 * (T->m10 * T->m21 - T->m11 * T->m20));
     f32 invdet = 1.0f / det;
 
     gm.m00 = (T->m11 * T->m22 - T->m12 * T->m21) * invdet;

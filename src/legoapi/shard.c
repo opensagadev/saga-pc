@@ -691,11 +691,11 @@ static void Shop_DrawBrickPc(shopitem_s *item, NUVEC *position, f32 scale_value,
 }
 
 void DrawTopShelf(i32 unused) {
-    Shop_DrawItemPc(&TopShelf[0], &ShelfPos[0], topscale[0], 1.0f, 1, ShopTopHintOffsetPc + toppush[0], 0, shelfang, 0);
+    Shop_DrawItemPc(&TopShelf[0], &ShelfPos[0], topscale[0], 1.0f, 1, toppush[0] + ShopTopHintOffsetPc, 0, shelfang, 0);
     Shop_DrawCharacter(&TopShelf[1], &ShelfPos[1], topscale[1], toppush[1] + ShopCharTopOffsetPc, 0, shelfang, 0);
-    Shop_DrawItemPc(&TopShelf[2], &ShelfPos[2], topscale[2], 1.0f, 1, ShopTopExtraOffsetPc + toppush[2], 0, shelfang,
+    Shop_DrawItemPc(&TopShelf[2], &ShelfPos[2], topscale[2], 1.0f, 1, toppush[2] + ShopTopExtraOffsetPc, 0, shelfang,
                     0);
-    DrawItem(&codeblank, &ShelfPos[3], topscale[3], 1.0f, ShopTopCodeOffsetPc + toppush[3], 0, shelfang, 0);
+    DrawItem(&codeblank, &ShelfPos[3], topscale[3], 1.0f, toppush[3] + ShopTopCodeOffsetPc, 0, shelfang, 0);
     Shop_DrawItemPc(&TopShelf[3], &ShelfPos[3], topscale[3], 1.0f, 0, ShopTopCodeOffsetPc + toppush[3], 0, shelfang, 0);
     Shop_DrawBrickPc(&TopShelf[4], &ShelfPos[4], topscale[4], toppush[4] + ShopTopBrickOffsetPc, 0,
                      (u16)(shelfang + 0x2000), 0);
@@ -2113,7 +2113,7 @@ void __cdecl DrawSubItemMenu2D(void) {
             buyable = show_name = 1;
         else {
             scale = (f32)((f64)ShopLockedScalePc * (f64)0.7f);
-            SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)(((f64)HubEpisodeSubtitleYPc + HubEpisodeTitleYPc) * 0.5),
+            SmartTextEx(TTab[TextIdPc880708], 0.0f, (f32)((HubEpisodeTitleYPc + (f64)HubEpisodeSubtitleYPc) * 0.5),
                         1.0f, scale, scale, scale, 0, 255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
     } else if (item->type == 0) {
