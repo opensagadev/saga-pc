@@ -135,6 +135,20 @@ def library_entries():
     return json.loads(path.read_text())["entries"] if path.is_file() else []
 
 
+DXSDK_LIBRARIES = ROOT / "build/tools/dxsdk/Lib/x86"
+
+
+def archive_path(archive):
+    """Pinned archive file: `dxsdk/NAME` is a DirectX SDK library, anything else a VC8 one."""
+    if archive.startswith("dxsdk/"):
+        path = DXSDK_LIBRARIES / archive.removeprefix("dxsdk/")
+    else:
+        path = ROOT / "build/tools/msvc8/lib" / archive
+    if not path.is_file():
+        raise ValueError(f"Missing pinned library {archive}; run make setup")
+    return path
+
+
 def library_member_path(archive, index, body=None):
     """Extract one pinned archive member under build/lib/ (once) and return its path."""
     path = ROOT / "build/lib" / archive / f"{index:05d}.obj"
@@ -144,7 +158,7 @@ def library_member_path(archive, index, body=None):
             path.write_bytes(body)
         return path
     if not path.is_file():
-        for member_index, _, member in archive_members(ROOT / "build/tools/msvc8/lib" / archive):
+        for member_index, _, member in archive_members(archive_path(archive)):
             library_member_path(archive, member_index, member)
     return path
 

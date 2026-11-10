@@ -378,7 +378,12 @@ The original links the VC8 runtime statically (`/MT`), and the pinned toolchain
 ships the same `libcmt.lib`/`libcpmt.lib`. `python3 tools/libmatch.py --write`
 finds archive functions that occur once in unmapped retail code, derives their
 relocation targets from the retail bytes, and keeps only functions that then
-compare byte-exact. It adds them and their references to `config/symbols.csv`
+compare byte-exact. A function with several masked occurrences is placed at the
+one that directly follows (or precedes) its placed neighbour from the same member,
+since the linker keeps a member's functions in object order. When several twins
+(A/W variants) claim one address, the one the map or an unambiguous candidate
+refers to there is kept; a candidate whose references contradict the map is
+dropped. An existing map row without a size is completed in place. It adds them and their references to `config/symbols.csv`
 and records the members in `config/library-objects.json`; `match.py` compares
 those members like compiled sources. Rerun it after mapping changes.
 

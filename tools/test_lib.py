@@ -514,5 +514,50 @@ class ExternalInventoryTests(unittest.TestCase):
                 self.assertEqual(outcomes[0], outcomes[1])
 
 
+class LibraryArchiveTests(unittest.TestCase):
+    def test_sdk_archives_resolve_separately_and_missing_ones_require_setup(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            sdk = root / "dxsdk"
+            sdk.mkdir()
+            (sdk / "DxErr9.lib").write_bytes(b"!<arch>\n")
+            vc = root / "build/tools/msvc8/lib"
+            vc.mkdir(parents=True)
+            (vc / "libcmt.lib").write_bytes(b"!<arch>\n")
+            with patch.object(lib, "ROOT", root), patch.object(lib, "DXSDK_LIBRARIES", sdk):
+                self.assertEqual(lib.archive_path("dxsdk/DxErr9.lib"), sdk / "DxErr9.lib")
+                self.assertEqual(lib.archive_path("libcmt.lib"), vc / "libcmt.lib")
+                with self.assertRaisesRegex(ValueError, "make setup"):
+                    lib.archive_path("dxsdk/dinput8.lib")
+
+
+class ObjectOrderPlacementTests(unittest.TestCase):
+    TEXT = 0x1000
+
+    def place(self, code, *sizes_hits):
+        from tools.libmatch import place_by_order
+        sequence = [{"size": size, "hits": hits} for size, hits in sizes_hits]
+        placed = place_by_order([sequence], code, self.TEXT)
+        return [placed.get(id(item)) for item in sequence]
+
+    def test_twin_functions_are_placed_after_their_unique_neighbour(self):
+        code = bytes(64)
+        # A unique 16-byte function, then two 8-byte twins matching at both places.
+        self.assertEqual(self.place(code, (16, [0x1000]), (8, [0x1010, 0x1018]), (8, [0x1010, 0x1018])),
+                         [0x1000, 0x1010, 0x1018])
+
+    def test_int3_alignment_gap_is_adjacent_but_other_bytes_are_not(self):
+        code = bytearray(64)
+        code[0x0c:0x10] = b"\xcc" * 4
+        self.assertEqual(self.place(bytes(code), (12, [0x1000]), (8, [0x1010, 0x1030])), [0x1000, 0x1010])
+        code[0x0c] = 0x90
+        self.assertEqual(self.place(bytes(code), (12, [0x1000]), (8, [0x1010, 0x1030])), [0x1000, None])
+
+    def test_backward_placement_and_unresolvable_runs(self):
+        code = bytes(64)
+        self.assertEqual(self.place(code, (8, [0x1000, 0x1020]), (8, [0x1008])), [0x1000, 0x1008])
+        self.assertEqual(self.place(code, (8, [0x1000, 0x1020]), (8, [0x1008, 0x1028])), [None, None])
+
+
 if __name__ == "__main__":
     unittest.main()
