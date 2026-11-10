@@ -311,29 +311,6 @@ void __cdecl Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     MenuLoadTechnicalStrings((char *)TextLoadPermTRCPath, language, buffer, *buffer_end);
 }
 
-void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
-    u16 flags;
-    struct EXPLOSION *explosion;
-    if (part == NULL) {
-        return;
-    }
-
-    if (part->owner != NULL) {
-        AlertSurroundingCreatures(part->owner, &part->position);
-    }
-
-    flags = 0x200;
-    if (part->owner != NULL && (part->owner->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x17) != 0) {
-        flags = 0x1200;
-    }
-
-    explosion = Detonate(&part->position, flags);
-    if (explosion != NULL && part->owner != NULL &&
-        ((u8)part->owner->field_280 == 0 || (u8)part->owner->field_280 == 1)) {
-        explosion->field_0x33 = (u8)part->owner->field_280;
-    }
-}
-
 void Text_DecodeButtons(char *source, char *destination) {
     if (NuStrICmp(source, Text_WibbleCodeword) == 0) {
         NuStrCpy(destination, Text_CrossCodeword);

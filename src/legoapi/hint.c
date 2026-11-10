@@ -341,23 +341,6 @@ i32 __cdecl Shop_UpdateHint(HINT_PC *hint) {
     return 0;
 }
 
-i32 __cdecl ShinyMetal_UpdateHint(HINT_PC *hint) {
-    GAMEOBJECT *object;
-    (void)hint;
-    if (JABBASPALACE_ADATA == NULL || WORLD->current_level != JABBASPALACEB_LDATA ||
-        Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL)
-        return 0;
-    if (LevGizObst[0] != NULL && LevGizObst[0]->anim_set->state == 0)
-        return 0;
-    if (LevBlowUp[0] == NULL || (LevBlowUp[0]->status_flags & 1) != 0)
-        return 0;
-    object = player;
-    if (object != NULL && (f64)NuVecDistSqr(&object->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0)
-        return 1;
-    object = player2;
-    return object != NULL && (f64)NuVecDistSqr(&object->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0;
-}
-
 i32 __cdecl ZipUps_UpdateHint(HINT_PC *hint) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     HINT_ZIPUP_PC *zipups;
