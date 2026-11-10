@@ -121,8 +121,6 @@ i32 __cdecl Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
 }
 
 extern i16 LEGOACT_SUPERCARRY_WALK;
-extern i32 LEGOCONTEXT_COMBO;
-extern const f64 PlayerStepInnerActionPc, PlayerStepOuterActionPc, PlayerStepInnerPc, PlayerStepOuterPc;
 extern const f64 TerrainSkinSampleCountPc;
 extern const f32 PlayerPanelVariantZeroX, PlayerPanelVariantZeroZ, PlayerPanelVariantOneX, PlayerPanelVariantOneZ;
 
@@ -146,60 +144,6 @@ typedef struct blowup_movement_pc_s {
 } BLOWUP_MOVEMENT_PC;
 STATIC_ASSERT(offsetof(BLOWUP_MOVEMENT_PC, mid_position) == 0x4c);
 STATIC_ASSERT(offsetof(BLOWUP_MOVEMENT_PC, target_radius) == 0xa8);
-
-__declspec(noinline) i32 __cdecl CanStepBack(GAMEOBJECT *object) {
-    i8 context = object->character_context;
-    if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0)
-        return 1;
-    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == 3)
-        return 1;
-    if ((object->character_data->game_character->flags_090 & 0x8000) && LEGOCONTEXT_COMBO != 0 &&
-        context == LEGOCONTEXT_COMBO)
-        return 1;
-    return 0;
-}
-
-__declspec(noinline) i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
-    NUVEC *target_position;
-    BLOWUP_MOVEMENT_PC *blowup = (BLOWUP_MOVEMENT_PC *)object->blowup_target;
-    f32 inner_distance, outer_distance, speed, distance_squared, blend;
-    if (blowup != NULL) {
-        target_position = &blowup->mid_position;
-        if ((LEGOCONTEXT_COMBO != -1 && LEGOCONTEXT_COMBO == object->character_context) ||
-            (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == object->character_context &&
-             object->action_movement_state == 3)) {
-            inner_distance = object->collision_radius * PlayerStepInnerActionPc + blowup->target_radius;
-            outer_distance = object->collision_radius * PlayerStepOuterActionPc + blowup->target_radius;
-        } else {
-            inner_distance = object->collision_radius * PlayerStepInnerPc + blowup->target_radius;
-            outer_distance = object->collision_radius * PlayerStepOuterPc + blowup->target_radius;
-        }
-    } else {
-        if (!(object->character_data->game_character->flags_090 & 0x8000) || object->force_target == NULL)
-            return 0;
-        if ((LEGOCONTEXT_COMBO == -1 || LEGOCONTEXT_COMBO != object->character_context) &&
-            (LEGOCONTEXT_JUMP == -1 || LEGOCONTEXT_JUMP != object->character_context ||
-             object->action_movement_state != 3))
-            return 0;
-        target_position = &object->force_target->collision_position;
-        inner_distance = object->bounds_radius * PlayerStepInnerActionPc + object->force_target->bounds_radius;
-        outer_distance = object->bounds_radius * PlayerStepOuterActionPc + object->force_target->bounds_radius;
-    }
-    speed = AnimSpeed(object->character_model, object->field_7aa);
-    if (speed != 0.0f) {
-        distance_squared = NuVecXZDistSqr(&object->collision_position, target_position, NULL);
-        if (!(distance_squared >= outer_distance * outer_distance)) {
-            blend = 1.0f;
-            if (!(inner_distance * inner_distance >= distance_squared))
-                blend = 1.0f - (NuFsqrt(distance_squared) - inner_distance) / (outer_distance - inner_distance);
-            speed = (-speed - speed) * blend + speed;
-            object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
-            object->target_velocity.z = speed * NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
-            return 1;
-        }
-    }
-    return 0;
-}
 
 typedef struct tightrope_movement_pc_s {
     u8 unknown_00[0x40];

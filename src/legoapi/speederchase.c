@@ -361,24 +361,6 @@ GAMEOBJECT *__cdecl ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius,
     return nearest;
 }
 
-i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
-    i32 result = 0;
-    if (object->force_target != NULL) {
-        NUVEC forward, difference;
-        f32 distance, dot, radius, radius_squared;
-        NuVecRotateY(&forward, &v001, object->field_0x276);
-        distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
-        dot = forward.x * difference.x + forward.z * difference.z;
-        if ((object->context_variant_flags & 0x80) ? dot <= 0.0f : dot >= 0.0f) {
-            radius = object->bounds_radius + opponent->bounds_radius;
-            radius += gap;
-            radius_squared = radius * radius;
-            result = distance < radius_squared;
-        }
-    }
-    return result;
-}
-
 extern NUVEC PodSprintLiftPositionsPc[3];
 f32 __cdecl FindPodHoverHeight(GAMEOBJECT *object) {
     f32 height = 0.15f;
