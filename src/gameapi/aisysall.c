@@ -1072,7 +1072,7 @@ STATIC_ASSERT(offsetof(AIEDITOR_RENDER_STATE, ai_system) == 0x64);
 typedef struct AI_PATH_DRAW_FLAGS_PC {
     NULISTLNK link;
     u8 unknown_08[2];
-    u16 flags;
+    i16 flags;
 } AI_PATH_DRAW_FLAGS_PC;
 
 STATIC_ASSERT(offsetof(AI_PATH_DRAW_FLAGS_PC, flags) == 0x0a);
@@ -9159,7 +9159,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
 void pathEditorDrawPaths(void) {
     EDAIPATHWALL_s *wall = (EDAIPATHWALL_s *)NuLinkedListGetHead(&aieditor->path_walls);
     while (wall != NULL) {
-        ((AI_PATH_DRAW_FLAGS_PC *)wall)->flags &= 0xfffe;
+        ((AI_PATH_DRAW_FLAGS_PC *)wall)->flags &= ~1;
         wall = (EDAIPATHWALL_s *)NuLinkedListGetNext(&aieditor->path_walls, &wall->link);
     }
 
