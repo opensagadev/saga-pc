@@ -10522,10 +10522,9 @@ static void __cdecl AiEditorAntinodeGameFlagsPc(eduimenu_s *menu, eduiitem_s *it
 
 void antinodeEditor_UpdateAntiNodesOnPlatforms(void) {
     struct EDANTINODE_s *node;
-    NULISTHDR *list = &aieditor->antinodes;
     NUVEC rotated;
     NUVEC forward = {0.0f, 0.0f, 1.0f};
-    for (node = ((EDANTINODE_s *)(NuLinkedListGetHead(list))); node != NULL;
+    for (node = ((EDANTINODE_s *)(NuLinkedListGetHead(&aieditor->antinodes))); node != NULL;
          node = ((EDANTINODE_s *)(NuLinkedListGetNext(&aieditor->antinodes, &node->link)))) {
         struct numtx_s *matrix;
         if (!NuSpecialExistsFn(&node->special))
