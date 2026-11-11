@@ -4033,9 +4033,18 @@ address,symbol,size,ctype
 0x5470f0,_NuLstCreateBuff,173,"NULSTHDR *__cdecl NuLstCreateBuff(i32, i32, VARIPTR *, VARIPTR, i32)"
 0x5471c0,_NuLstAllocHead,118,NULNKHDR* __cdecl(NULSTHDR*)
 0x00547240,_NuLstAllocTail,118,NULNKHDR *__cdecl (NULSTHDR *)
+0x5472c0,_NuLstAllocFree,94,"NULNKHDR *__cdecl (NULSTHDR *)"
+0x547320,_NuLstAtachHead,72,"void __cdecl (NULSTHDR *, NULNKHDR *)"
+0x547370,_NuLstAttachTail,72,"void __cdecl (NULSTHDR *, NULNKHDR *)"
+0x5473c0,_NuLstAllocBefore,132,"NULNKHDR *__cdecl (NULNKHDR *)"
+0x547450,_NuLstAllocAfter,126,"NULNKHDR *__cdecl (NULNKHDR *)"
 0x005474d0,_NuLstFree,130,void __cdecl(NULNKHDR *)
 0x547560,_NuLstGetByIdx,31,"NULNKHDR * __cdecl (NULSTHDR *, i32)"
 0x00547580,_NuLstGetNext,40,"NULNKHDR *__cdecl(NULSTHDR *, NULNKHDR *)"
+0x5475b0,_NuLstGetPrev,40,"NULNKHDR *__cdecl (NULSTHDR *, NULNKHDR *)"
+0x5475e0,_NuLstMoveNext,86,"i32 __cdecl (NULSTHDR *, NULNKHDR *)"
+0x547640,_NuLstMovePrev,86,"i32 __cdecl (NULSTHDR *, NULNKHDR *)"
+0x5476a0,_NuLstGetFree,10,"NULNKHDR *__cdecl (NULSTHDR *)"
 0x5476b0,_NuLstAlloc,5,NULNKHDR* __cdecl(NULSTHDR*)
 0x005476e0,_StartPerm,23,void __cdecl (void)
 0x00547700,_EndPerm,124,void __cdecl (void)
@@ -5815,6 +5824,8 @@ address,symbol,size,ctype
 0x5ae7d0,_GizSpecial_ReserveBuffer,261,
 0x5ae8e0,_GizSpecial_RegisterGizmo,279,
 0x5aea20,_GetAnimDirection,56,i32 __cdecl(NUINSTANIM_TIME_VIEW *)
+0x5aea60,_edbobsDrawCrossPc,401,"void __cdecl (NUVEC *, f32, NUMTL *, i32)"
+0x5aec00,_edbobsDrawBox,631,"void __cdecl (NUVEC *, NUVEC *, i32)"
 0x5aee80,_edbobs_DrawCoordinateInfo,140,
 0x5aef10,_GizmoFileReadGameAnimSet,413,"i32 __cdecl (GAMEANIMSET *, void *, void (__cdecl *)(GAMEANIMOBJ *, u8), u8, char *, char *)"
 0x5af0e0,_Portal_GetMaxGizmos,25,
