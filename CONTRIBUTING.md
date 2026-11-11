@@ -246,6 +246,23 @@ Wine prefix. `permute_loop.sh` pulls `main` each round, searches the
 next functions, commits and pushes improved sources (the journal stays in `build/permute/`),
 and after a full pass re-measures with `make match` and starts a new pass.
 
+`tools/permute2.py` is a randomised search over source mutations
+(`tools/mutate.py`: temporaries, declaration and statement order, loop forms,
+compare spellings, parameter copies and more, each flagged natural or not).
+Candidates compile as a reduced unit (`tools/reduced.py`: the target and the
+functions it can inline, other bodies cut to prototypes, headers from a
+precompiled header), which is used only after it reproduces the full unit's
+bytes; an exact find is re-verified in the full unit and minimised. It never
+changes `src/`: review each patch by eye and apply only natural source.
+
+```sh
+python3 tools/permute2.py ResetStreaks --minutes 3                    # one function
+python3 tools/permute2.py --batch 100 --minutes 3 --workers 4         # near-exact queue
+```
+
+Patches go to `build/permute2/<name>.patch` and one line per function to
+`build/permute2/journal.jsonl`; functions already in the journal are skipped.
+
 ### Representative compiler witnesses
 
 `tools/check_compiler_witnesses.py` compares ten selected existing native function

@@ -601,6 +601,21 @@ comes from a copied parameter or from statement order; a pure colouring swap
 with identical code has no natural source lever. The permuter trial below
 adds named locals for loaded values (I41) and compare operand order (I42).
 
+### Permuter trial (tools/permute2.py)
+
+60 U-tagged or untagged near-exact functions (80-756 B, 90-99.98%) were
+searched for 10 minutes each with random stacks of the AST mutations in
+`tools/mutate.py` (natural mutations only), compiled as verified reduced
+units. 16 became exact (27%); 8 of them have a natural form, found by
+re-minimising the patch and trying the obvious spellings by hand (I41-I44).
+The other 8 need a parameter copy, a repeated cast or a duplicated store
+(U20). By difference type: register choice 5 of 24 exact (3 natural), stack
+slot 3 of 10 (1), x87 order 2 of 4 (1), SIB order 3 of 3 (0), untagged 3 of
+9 (3), immediate replaced by a known register (U8) 0 of 10. Every exact find
+came within 153 CPU seconds (median 19), so a 2-3 minute budget per function
+loses nothing. U8, U14-U19 (block placement, x87 pops, if-conversion) and
+`ResetStreaks` (U2) did not move at all.
+
 ## Repository-wide estimates
 
 `tools/idiomscan.py` tags every differing function with the signatures above
