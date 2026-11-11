@@ -2965,6 +2965,8 @@ address,symbol,size,ctype
 0x004fc9c0,_GetLineW,480,"i32 __cdecl (u16 *, NUFILE)"
 0x004fcc60,_NuPPLoadBuffer,1003,"i32 __cdecl(NUFILE, void *, i32)"
 0x004fd050,_NuFrameEnd,987,f32 __cdecl (void)
+0x4fd430,_NuPadRecordLoad,158,"void __cdecl(char *, VARIPTR *, VARIPTR)"
+0x4fd4d0,_NuPadRecordInit,128,"void __cdecl(i32, char *, VARIPTR *, VARIPTR, i32)"
 0x004fd550,_NuFileLoad,118,void *__cdecl (char *)
 0x004fd5d0,_NuFileLoadBuffer,344,"i32 __cdecl (char *, void *, i32)"
 0x004fd730,_NuFileLoadBufferVP,34,"i32 __cdecl (char *, VARIPTR *, VARIPTR *)"

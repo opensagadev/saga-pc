@@ -7493,6 +7493,55 @@ f32 __cdecl NuFrameEnd(void) {
     return nuapi.frame_time;
 }
 
+void __cdecl NuPadRecordLoad(char *filepath, VARIPTR *buffer, VARIPTR end) {
+    FRAME_PAD_RECORD_PC *record = &nuapi.pad_record;
+    NUFILE file;
+    i32 size;
+    (void)buffer;
+    (void)end;
+    record->mode = NUPAD_NORM;
+    if (filepath != NULL) {
+        file = NuFileOpenDF(filepath, 0, curr_dat, 0);
+        if (file != 0) {
+            size = NuFileReadInt(file);
+            record->record.u8_ptr =
+                (u8 *)(((u32)NuAlloc(size + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 0x44b) + 3) &
+                       ~3u);
+            if (record->record.u8_ptr == NULL) {
+                NuFileError();
+                return;
+            }
+            record->buf_start = record->record.u8_ptr;
+            NuFileRead(file, record->record.u8_ptr, size);
+            NuFileClose(file);
+            record->buf_end = record->record.u8_ptr + size;
+            record->mode = NUPAD_PLAY;
+        }
+    }
+}
+
+void __cdecl NuPadRecordInit(i32 mode, char *filepath, VARIPTR *buffer, VARIPTR end, i32 size) {
+    FRAME_PAD_RECORD_PC *record = &nuapi.pad_record;
+    switch (mode) {
+        case NUPAD_RECORD:
+            record->mode = NUPAD_RECORD;
+            record->record.u8_ptr =
+                (u8 *)(((u32)NuAlloc(size + 4, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 0x47a) + 3) &
+                       ~3u);
+            record->buf_start = record->record.u8_ptr;
+            record->buf_end = record->record.u8_ptr + size;
+            record->filepath = filepath;
+            break;
+        case NUPAD_PLAY:
+            NuPadRecordLoad(filepath, buffer, end);
+            record->filepath = filepath;
+            break;
+        default:
+            record->mode = NUPAD_NORM;
+            break;
+    }
+}
+
 void __cdecl NuApiSetEndFrameCallbackPc(void(__cdecl *callback)(void)) {
     NuApiEndFrameCallbackPc = callback;
 }
