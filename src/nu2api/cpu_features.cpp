@@ -206,3 +206,244 @@ extern "C" void __cdecl CpuDetectFeaturesPc(void) {
     }
     CpuInitializedPc = 1;
 }
+
+/* Native 0x6e62d0-0x6e668d: lazy accessors for the detected CPU fields. None has a caller in retail. */
+extern "C" u32 __cdecl CpuGetHasCpuidPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasCpuidPc;
+}
+
+extern "C" u32 __cdecl CpuGetFamilyPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuFamilyPc;
+}
+
+extern "C" u32 __cdecl CpuGetProcessorTypePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuProcessorTypePc;
+}
+
+extern "C" u32 __cdecl CpuGetModelPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuModelPc;
+}
+
+extern "C" u32 __cdecl CpuGetSteppingPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuSteppingPc;
+}
+
+extern "C" u32 __cdecl CpuGetUnsetValue0Pc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuUnsetValue0Pc;
+}
+
+extern "C" u32 __cdecl CpuGetBasicLeafMaxPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuBasicLeafMaxPc;
+}
+
+extern "C" u32 __cdecl CpuGetUnsetValue1Pc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuUnsetValue1Pc;
+}
+
+extern "C" u32 __cdecl CpuGetHasFpuPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasFpuPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasMmxPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasMmxPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasTscPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasTscPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasDePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasDePc;
+}
+
+extern "C" u32 __cdecl CpuGetHasApicPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasApicPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasPatPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasPatPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasVmePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasVmePc;
+}
+
+extern "C" u32 __cdecl CpuGetHasPsePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasPsePc;
+}
+
+extern "C" u32 __cdecl CpuGetHasMsrPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasMsrPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasPaePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasPaePc;
+}
+
+extern "C" u32 __cdecl CpuGetHasMcePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasMcePc;
+}
+
+extern "C" u32 __cdecl CpuGetHasCmpxchg8bPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasCmpxchg8bPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasPgePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasPgePc;
+}
+
+extern "C" u32 __cdecl CpuGetHasMcaPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasMcaPc;
+}
+
+extern "C" u32 __cdecl CpuGetHasCmovPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasCmovPc;
+}
+
+extern "C" u32 __cdecl CpuGetUnsetFeature0Pc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuUnsetFeature0Pc;
+}
+
+extern "C" u32 __cdecl CpuGetUnsetFeature1Pc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuUnsetFeature1Pc;
+}
+
+extern "C" u32 __cdecl CpuGetUnsetFeature2Pc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuUnsetFeature2Pc;
+}
+
+extern "C" u32 __cdecl CpuGetUnsetFeature3Pc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuUnsetFeature3Pc;
+}
+
+extern "C" u32 __cdecl CpuGetHas3dnowPc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHas3dnowPc;
+}
+
+extern "C" i32 __cdecl CpuGetHasSsePc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return PCClipUseSSE;
+}
+
+extern "C" u32 __cdecl CpuGetHasSse2Pc(void) {
+    if (CpuInitializedPc == 0) {
+        CpuDetectFeaturesPc();
+        CpuInitializedPc = 1;
+    }
+    return CpuHasSse2Pc;
+}

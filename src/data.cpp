@@ -920,6 +920,7 @@ extern "C" {
     u32 CpuHasSse2Pc = 0;
     u32 CpuExtendedLeafMaxPc = 0;
     u32 CpuExtendedFeaturesPc = 0;
+    u32 CpuUnsetValue0Pc = 0;
     u32 CpuHasCpuidPc = 0;
     u32 CpuBasicLeafMaxPc = 0;
     u32 CpuProcessorTypePc = 0;
@@ -927,6 +928,7 @@ extern "C" {
     u32 CpuModelPc = 0;
     u32 CpuSteppingPc = 0;
     u8 CpuBrandIndexPc = 0;
+    u32 CpuUnsetValue1Pc = 0;
     u32 CpuHasFpuPc = 0;
     u32 CpuHasVmePc = 0;
     u32 CpuHasDePc = 0;
@@ -942,6 +944,10 @@ extern "C" {
     u32 CpuHasCmovPc = 0;
     u32 CpuHasPatPc = 0;
     u32 CpuHasMmxPc = 0;
+    u32 CpuUnsetFeature0Pc = 0;
+    u32 CpuUnsetFeature1Pc = 0;
+    u32 CpuUnsetFeature2Pc = 0;
+    u32 CpuUnsetFeature3Pc = 0;
     u32 CpuInitializedPc = 0;
     char PcExecutableFilename[260] = {0};
     i8 PcInputActionOrder[20] = {0};

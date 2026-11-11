@@ -100,6 +100,81 @@ u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
         result |= 0x1000;
     return result;
 }
+const PC_SHADER_FILTER_DESC_VIEW *PC_SHADER_MATERIAL_FILTER_VIEW::GetDescriptor() const {
+    return descriptor;
+}
+const PC_SHADER_FILTER_MATERIAL_VIEW *PC_SHADER_MATERIAL_FILTER_VIEW::GetMaterial() const {
+    return material;
+}
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasBaseLayer() const {
+    return true;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSpecular() const {
+    if (variant != 0)
+        return 0;
+    return descriptor->specular_threshold > parameter;
+}
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasBaseLighting() const {
+    return true;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasFirstPath() const {
+    return first_path != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasDeferredPath() const {
+    return deferred_path != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag20() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x100000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag1() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 2) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasNormalLayer1() const {
+    return variant == 0 && (descriptor->layer_flags & 2) != 0 && descriptor->normal_threshold > parameter;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag0() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 1) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasNormalLayer0() const {
+    return variant == 0 && (descriptor->layer_flags & 1) != 0 && descriptor->normal_threshold > parameter;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag14() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x4000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag13() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x2000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasFlag31With23() const {
+    return variant == 0 && (descriptor->flags & 0x80000000) != 0 && (descriptor->flags & 0x800000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasFlag31Without23() const {
+    return variant == 0 && (descriptor->flags & 0x80000000) != 0 && (descriptor->flags & 0x800000) == 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSecondPath() const {
+    return second_path != 0;
+}
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasExtraTexture() const {
+    return descriptor->extra_texture > 0;
+}
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasEnvironmentTexture() const {
+    return descriptor->environment_texture > 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAbove() const {
+    return variant == 0 && (descriptor->layer_flags & 0x100000) != 0 && descriptor->surface_threshold > parameter;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAtOrBelow() const {
+    return variant == 0 && (descriptor->layer_flags & 0x100000) != 0 && descriptor->surface_threshold <= parameter;
+}
 
 #undef SHADER_VERTEX_FORMAT_HAS_UV_SETS
 
@@ -178,6 +253,97 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const {
     if (variant != 0)
         return 0;
     return (descriptor->layer_flags & 8) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag2() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x4) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag5() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x20) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlags5And15() const {
+    return variant == 0 && (descriptor->layer_flags & 0x20) != 0 && (descriptor->layer_flags & 0x8000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag15() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x8000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag10() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x400) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag21() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x200000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag4() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x10) != 0;
+}
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasNoExtraLayer() const {
+    return false;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag17() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x20000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag19() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x80000) != 0;
+}
+bool PC_SHADER_MATERIAL_FILTER_VIEW::HasNoExtraLighting() const {
+    return false;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag18() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x40000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag30() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x40000000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag9() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x200) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag29() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x20000000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasUnfilteredLayerFlag22() const {
+    return (descriptor->layer_flags & 0x400000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::IsVariantOrLayerFlag12() const {
+    return variant != 0 || (descriptor->layer_flags & 0x1000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag28() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x10000000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag27() const {
+    if (variant != 0)
+        return 0;
+    return (descriptor->layer_flags & 0x8000000) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSelector0() const {
+    return (descriptor->selectors & 1) != 0;
+}
+i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSelector1() const {
+    return (descriptor->selectors & 2) != 0;
 }
 
 void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *input,

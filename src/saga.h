@@ -8592,62 +8592,66 @@ typedef struct PC_D3D9_METHODS_PC {
     HRESULT(__stdcall *get_device_caps)(PC_D3D9_DEVICE_PC *, struct GRAPHICS_CAPS_PC *);
     HRESULT(__stdcall *get_display_mode)(PC_D3D9_DEVICE_PC *, u32, void *);
     HRESULT(__stdcall *get_creation_parameters)(PC_D3D9_DEVICE_PC *, void *);
-    void *set_cursor_properties;
+    HRESULT(__stdcall *set_cursor_properties)(PC_D3D9_DEVICE_PC *, u32, u32, PC_TEXTURE_RESOURCE_PC *);
     void(__stdcall *set_cursor_position)(PC_D3D9_DEVICE_PC *, i32, i32, DWORD);
     HRESULT(__stdcall *show_cursor)(PC_D3D9_DEVICE_PC *, BOOL);
-    void *create_additional_swap_chain;
+    HRESULT(__stdcall *create_additional_swap_chain)(PC_D3D9_DEVICE_PC *, void *, void **);
     HRESULT(__stdcall *get_swap_chain)(PC_D3D9_DEVICE_PC *, u32, void **);
     u32(__stdcall *get_number_of_swap_chains)(PC_D3D9_DEVICE_PC *);
     void *reset;
     void *present;
     void *get_back_buffer;
     HRESULT(__stdcall *get_raster_status)(PC_D3D9_DEVICE_PC *, u32, void *);
-    void *set_dialog_box_mode;
-    void *set_gamma_ramp;
-    void *get_gamma_ramp;
+    HRESULT(__stdcall *set_dialog_box_mode)(PC_D3D9_DEVICE_PC *, BOOL);
+    void(__stdcall *set_gamma_ramp)(PC_D3D9_DEVICE_PC *, u32, u32, const void *);
+    void(__stdcall *get_gamma_ramp)(PC_D3D9_DEVICE_PC *, u32, void *);
     void *create_texture;
-    void *create_volume_texture;
-    void *create_cube_texture;
+    HRESULT(__stdcall *create_volume_texture)
+    (PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    HRESULT(__stdcall *create_cube_texture)
+    (PC_D3D9_DEVICE_PC *, u32, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
     HRESULT(__stdcall *create_vertex_buffer)
     (PC_D3D9_DEVICE_PC *, u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
     HRESULT(__stdcall *create_index_buffer)
     (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
     void *create_render_target;
     void *create_depth_stencil_surface;
-    void *update_surface;
-    void *update_texture;
+    HRESULT(__stdcall *update_surface)
+    (PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const POINT *);
+    HRESULT(__stdcall *update_texture)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, PC_TEXTURE_RESOURCE_PC *);
     HRESULT(__stdcall *get_render_target_data)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, PC_TEXTURE_RESOURCE_PC *);
     HRESULT(__stdcall *get_front_buffer_data)(PC_D3D9_DEVICE_PC *, u32, PC_TEXTURE_RESOURCE_PC *);
     HRESULT(__stdcall *stretch_rect)
     (PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32);
-    void *color_fill;
-    void *create_offscreen_plain_surface;
+    HRESULT(__stdcall *color_fill)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, u32);
+    HRESULT(__stdcall *create_offscreen_plain_surface)
+    (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
     void *set_render_target;
     HRESULT(__stdcall *get_render_target)(PC_D3D9_DEVICE_PC *, u32, PC_TEXTURE_RESOURCE_PC **);
-    void *set_depth_stencil_surface;
+    HRESULT(__stdcall *set_depth_stencil_surface)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);
     void *get_depth_stencil_surface;
     void *begin_scene;
     HRESULT(__stdcall *end_scene)(PC_D3D9_DEVICE_PC *);
     void *clear;
     HRESULT(__stdcall *set_transform)(PC_D3D9_DEVICE_PC *, i32, const NUMTX *);
     HRESULT(__stdcall *get_transform)(PC_D3D9_DEVICE_PC *, i32, NUMTX *);
-    void *multiply_transform;
+    HRESULT(__stdcall *multiply_transform)(PC_D3D9_DEVICE_PC *, i32, const NUMTX *);
     HRESULT(__stdcall *set_viewport)(PC_D3D9_DEVICE_PC *, const PC_VIEWPORT_PC *);
     void *get_viewport;
-    void *set_material;
+    HRESULT(__stdcall *set_material)(PC_D3D9_DEVICE_PC *, const void *);
     HRESULT(__stdcall *get_material)(PC_D3D9_DEVICE_PC *, void *);
-    void *set_light;
+    HRESULT(__stdcall *set_light)(PC_D3D9_DEVICE_PC *, u32, const void *);
     HRESULT(__stdcall *get_light)(PC_D3D9_DEVICE_PC *, u32, void *);
-    void *light_enable;
+    HRESULT(__stdcall *light_enable)(PC_D3D9_DEVICE_PC *, u32, BOOL);
     HRESULT(__stdcall *get_light_enable)(PC_D3D9_DEVICE_PC *, u32, BOOL *);
-    void *set_clip_plane;
+    HRESULT(__stdcall *set_clip_plane)(PC_D3D9_DEVICE_PC *, u32, const f32 *);
     HRESULT(__stdcall *get_clip_plane)(PC_D3D9_DEVICE_PC *, u32, f32 *);
     HRESULT(__stdcall *set_render_state)(PC_D3D9_DEVICE_PC *, i32, u32);
     HRESULT(__stdcall *get_render_state)(PC_D3D9_DEVICE_PC *, i32, u32 *);
-    void *create_state_block;
+    HRESULT(__stdcall *create_state_block)(PC_D3D9_DEVICE_PC *, i32, void **);
     void *begin_state_block;
-    void *end_state_block;
-    void *set_clip_status;
+    HRESULT(__stdcall *end_state_block)(PC_D3D9_DEVICE_PC *, void **);
+    HRESULT(__stdcall *set_clip_status)(PC_D3D9_DEVICE_PC *, const void *);
     HRESULT(__stdcall *get_clip_status)(PC_D3D9_DEVICE_PC *, void *);
     HRESULT(__stdcall *get_texture)(PC_D3D9_DEVICE_PC *, u32, void **);
     HRESULT(__stdcall *set_texture)(PC_D3D9_DEVICE_PC *, u32, void *);
@@ -8655,22 +8659,23 @@ typedef struct PC_D3D9_METHODS_PC {
     HRESULT(__stdcall *set_texture_stage_state)(PC_D3D9_DEVICE_PC *, u32, i32, u32);
     HRESULT(__stdcall *get_sampler_state)(PC_D3D9_DEVICE_PC *, u32, i32, u32 *);
     HRESULT(__stdcall *set_sampler_state)(PC_D3D9_DEVICE_PC *, u32, i32, u32);
-    void *validate_device;
-    void *set_palette_entries;
+    HRESULT(__stdcall *validate_device)(PC_D3D9_DEVICE_PC *, u32 *);
+    HRESULT(__stdcall *set_palette_entries)(PC_D3D9_DEVICE_PC *, u32, const PALETTEENTRY *);
     HRESULT(__stdcall *get_palette_entries)(PC_D3D9_DEVICE_PC *, u32, PALETTEENTRY *);
-    void *set_current_texture_palette;
+    HRESULT(__stdcall *set_current_texture_palette)(PC_D3D9_DEVICE_PC *, u32);
     HRESULT(__stdcall *get_current_texture_palette)(PC_D3D9_DEVICE_PC *, u32 *);
-    void *set_scissor_rect;
+    HRESULT(__stdcall *set_scissor_rect)(PC_D3D9_DEVICE_PC *, const RECT *);
     HRESULT(__stdcall *get_scissor_rect)(PC_D3D9_DEVICE_PC *, RECT *);
     void *set_software_vertex_processing;
     BOOL(__stdcall *get_software_vertex_processing)(PC_D3D9_DEVICE_PC *);
-    void *set_n_patch_mode;
+    HRESULT(__stdcall *set_n_patch_mode)(PC_D3D9_DEVICE_PC *, f32);
     void *get_n_patch_mode;
     HRESULT(__stdcall *draw_primitive)(PC_D3D9_DEVICE_PC *, i32, u32, u32);
     HRESULT(__stdcall *draw_indexed_primitive)(PC_D3D9_DEVICE_PC *, i32, i32, u32, u32, u32, u32);
     void *draw_primitive_up;
     void *draw_indexed_primitive_up;
-    void *process_vertices;
+    HRESULT(__stdcall *process_vertices)
+    (PC_D3D9_DEVICE_PC *, u32, u32, u32, PC_BUFFER_RESOURCE_PC *, PC_TEXTURE_RESOURCE_PC *, u32);
     HRESULT(__stdcall *create_vertex_declaration)
     (PC_D3D9_DEVICE_PC *, const PC_VERTEX_ELEMENT_PC *, PC_TEXTURE_RESOURCE_PC **);
     HRESULT(__stdcall *set_vertex_declaration)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *);
@@ -8682,9 +8687,9 @@ typedef struct PC_D3D9_METHODS_PC {
     HRESULT(__stdcall *get_vertex_shader)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC **);
     HRESULT(__stdcall *set_vertex_shader_constant_f)(PC_D3D9_DEVICE_PC *, UINT, const f32 *, UINT);
     HRESULT(__stdcall *get_vertex_shader_constant_f)(PC_D3D9_DEVICE_PC *, u32, f32 *, u32);
-    void *set_vertex_shader_constant_i;
+    HRESULT(__stdcall *set_vertex_shader_constant_i)(PC_D3D9_DEVICE_PC *, u32, const i32 *, u32);
     HRESULT(__stdcall *get_vertex_shader_constant_i)(PC_D3D9_DEVICE_PC *, u32, i32 *, u32);
-    void *set_vertex_shader_constant_b;
+    HRESULT(__stdcall *set_vertex_shader_constant_b)(PC_D3D9_DEVICE_PC *, u32, const BOOL *, u32);
     HRESULT(__stdcall *get_vertex_shader_constant_b)(PC_D3D9_DEVICE_PC *, u32, BOOL *, u32);
     HRESULT(__stdcall *set_stream_source)(PC_D3D9_DEVICE_PC *, u32, PC_BUFFER_RESOURCE_PC *, u32, u32);
     HRESULT(__stdcall *get_stream_source)(PC_D3D9_DEVICE_PC *, u32, PC_BUFFER_RESOURCE_PC **, u32 *, u32 *);
@@ -8697,10 +8702,14 @@ typedef struct PC_D3D9_METHODS_PC {
     HRESULT(__stdcall *get_pixel_shader)(PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC **);
     HRESULT(__stdcall *set_pixel_shader_constant_f)(PC_D3D9_DEVICE_PC *, UINT, const f32 *, UINT);
     HRESULT(__stdcall *get_pixel_shader_constant_f)(PC_D3D9_DEVICE_PC *, u32, f32 *, u32);
-    void *set_pixel_shader_constant_i;
+    HRESULT(__stdcall *set_pixel_shader_constant_i)(PC_D3D9_DEVICE_PC *, u32, const i32 *, u32);
     HRESULT(__stdcall *get_pixel_shader_constant_i)(PC_D3D9_DEVICE_PC *, u32, i32 *, u32);
-    void *set_pixel_shader_constant_b;
+    HRESULT(__stdcall *set_pixel_shader_constant_b)(PC_D3D9_DEVICE_PC *, u32, const BOOL *, u32);
     HRESULT(__stdcall *get_pixel_shader_constant_b)(PC_D3D9_DEVICE_PC *, u32, BOOL *, u32);
+    void *draw_rect_patch;
+    void *draw_tri_patch;
+    void *delete_patch;
+    HRESULT(__stdcall *create_query)(PC_D3D9_DEVICE_PC *, i32, void **);
 } PC_D3D9_METHODS_PC;
 struct PC_D3D9_DEVICE_PC {
     const PC_D3D9_METHODS_PC *methods;
@@ -19704,6 +19713,13 @@ extern "C" {
     extern u32 CpuHasPatPc;
     extern u32 CpuHasMmxPc;
     extern u32 CpuInitializedPc;
+    /* Retail CPU fields with accessors that CpuDetectFeaturesPc never writes. */
+    extern u32 CpuUnsetValue0Pc;
+    extern u32 CpuUnsetValue1Pc;
+    extern u32 CpuUnsetFeature0Pc;
+    extern u32 CpuUnsetFeature1Pc;
+    extern u32 CpuUnsetFeature2Pc;
+    extern u32 CpuUnsetFeature3Pc;
     extern char PcExecutableFilename[260];
 #ifdef __cplusplus
 }
@@ -20351,6 +20367,48 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     bool HasVertexSkinAlt() const;
     i32 HasAnisoFlip() const;
     i32 HasPhongLighting() const;
+    i32 HasLayerFlag2() const;
+    i32 HasLayerFlag5() const;
+    i32 HasLayerFlags5And15() const;
+    i32 HasLayerFlag15() const;
+    i32 HasLayerFlag10() const;
+    i32 HasLayerFlag21() const;
+    i32 HasLayerFlag4() const;
+    bool HasNoExtraLayer() const;
+    i32 HasLayerFlag17() const;
+    i32 HasLayerFlag19() const;
+    bool HasNoExtraLighting() const;
+    i32 HasLayerFlag18() const;
+    i32 HasLayerFlag30() const;
+    i32 HasLayerFlag9() const;
+    i32 HasLayerFlag29() const;
+    i32 HasUnfilteredLayerFlag22() const;
+    i32 IsVariantOrLayerFlag12() const;
+    i32 HasLayerFlag28() const;
+    i32 HasLayerFlag27() const;
+    i32 HasSelector0() const;
+    i32 HasSelector1() const;
+    const PC_SHADER_FILTER_DESC_VIEW *GetDescriptor() const;
+    const PC_SHADER_FILTER_MATERIAL_VIEW *GetMaterial() const;
+    bool HasBaseLayer() const;
+    i32 HasSpecular() const;
+    bool HasBaseLighting() const;
+    i32 HasFirstPath() const;
+    i32 HasDeferredPath() const;
+    i32 HasLayerFlag20() const;
+    i32 HasLayerFlag1() const;
+    i32 HasNormalLayer1() const;
+    i32 HasLayerFlag0() const;
+    i32 HasNormalLayer0() const;
+    i32 HasLayerFlag14() const;
+    i32 HasLayerFlag13() const;
+    i32 HasFlag31With23() const;
+    i32 HasFlag31Without23() const;
+    i32 HasSecondPath() const;
+    bool HasExtraTexture() const;
+    bool HasEnvironmentTexture() const;
+    i32 HasSurfaceLayerAbove() const;
+    i32 HasSurfaceLayerAtOrBelow() const;
 };
 STATIC_ASSERT(sizeof(PC_SHADER_MATERIAL_FILTER_VIEW) == 0x24);
 STATIC_ASSERT(offsetof(PC_SHADER_MATERIAL_FILTER_VIEW, parameter) == 0x20);
@@ -22702,6 +22760,7 @@ STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_indices) == 0x1a0);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_vertex_declaration) == 0x15c);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_vertex_shader) == 0x170);
 STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, set_pixel_shader) == 0x1ac);
+STATIC_ASSERT(offsetof(PC_D3D9_METHODS_PC, create_query) == 0x1d8);
 #ifdef __cplusplus
 extern "C" {
 #endif

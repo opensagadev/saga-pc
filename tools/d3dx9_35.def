@@ -7,3 +7,7 @@ EXPORTS
     D3DXMatrixMultiply@12
     D3DXCompileShader@40
     D3DXMatrixOrthoLH@20
+    D3DXCreateRenderToSurface@28
+    D3DXCreateFontA@48
+    D3DXCreateEffectFromFileA@32
+    D3DXCreateEffect@36
