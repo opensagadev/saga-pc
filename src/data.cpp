@@ -13838,6 +13838,12 @@ extern "C" {
 #pragma bss_seg(".bss$PCWarningHandler")
     void(__cdecl *PCWarningHandler)(char *) = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$nuerror_handler")
+    void(__cdecl *nuerror_handler)(char *) = 0;
+#pragma bss_seg()
+#pragma bss_seg(".bss$nuwarning_handler")
+    void(__cdecl *nuwarning_handler)(char *) = 0;
+#pragma bss_seg()
 #pragma const_seg(".rdata$PCNativeDebugPrefix")
     extern const char PCNativeDebugPrefix[12] = "NUDEBUG: %s";
 #pragma const_seg()

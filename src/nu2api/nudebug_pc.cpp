@@ -2,6 +2,15 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+extern "C" void __cdecl NuFileWriteString(NUFILE file, const char *text);
+
+/* Native 0x6dff40: empty hook that receives each runtime error report. Retail
+ * still calls it from PCNativeErrorPrint, which suggests it was compiled in
+ * another unit; here the compiler drops the call to the empty body. */
+extern "C" void __cdecl PCNativeErrorHookPc(char *text) {
+    (void)text;
+}
+
 void __cdecl PCNativeDebugPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
     va_list args;
     if (format != NULL) {
@@ -29,6 +38,81 @@ void __cdecl PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE_PC *state, const ch
     MessageBoxA((HWND)PCInputInstance_candidate, PCNativeDebugOutputBuffer, "Fatal Error!", 0x10);
     raise(22);
     _exit(3);
+}
+
+extern "C" void __cdecl PCNativeMessagePrintPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+    va_list arguments;
+    (void)state;
+    if (format != NULL) {
+        va_start(arguments, format);
+        vsprintf(PCNativeDebugFormatBuffer, format, arguments);
+        va_end(arguments);
+    }
+    sprintf(PCNativeDebugOutputBuffer, "\n%s\n", PCNativeDebugFormatBuffer);
+    MessageBoxA((HWND)PCInputInstance_candidate, PCNativeDebugOutputBuffer, "", 0x30);
+}
+
+extern "C" void __cdecl PCNativeErrorPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+    va_list arguments;
+    if (format != NULL) {
+        va_start(arguments, format);
+        vsprintf(PCNativeDebugFormatBuffer, format, arguments);
+        va_end(arguments);
+    }
+    sprintf(PCNativeDebugOutputBuffer,
+            "Important. Do not ignore!\n\n%s\n\n(Your application has generated an error message)\n\n",
+            PCNativeDebugFormatBuffer);
+    PCNativeErrorHookPc(PCNativeDebugOutputBuffer);
+    switch (MessageBoxA((HWND)PCInputInstance_candidate, PCNativeDebugOutputBuffer, "Nu2Api Runtime Error!", 0x12)) {
+        case IDABORT:
+            raise(22);
+            _exit(3);
+        case IDRETRY:
+            DebugBreak();
+            break;
+    }
+    sprintf(PCNativeDebugOutputBuffer, "NUERROR: %s\r\n", PCNativeDebugFormatBuffer);
+    OutputDebugStringA(PCNativeDebugOutputBuffer);
+    if (state->write_log && state->log_file != 0)
+        NuFileWriteString(state->log_file, PCNativeDebugOutputBuffer);
+}
+
+extern "C" void __cdecl PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+    va_list arguments;
+    if (format != NULL) {
+        va_start(arguments, format);
+        vsprintf(PCNativeDebugFormatBuffer, format, arguments);
+        va_end(arguments);
+    }
+    sprintf(PCNativeDebugOutputBuffer, "NUWARNING: %s\r\n", PCNativeDebugFormatBuffer);
+    OutputDebugStringA(PCNativeDebugOutputBuffer);
+    if (state->write_log && state->log_file != 0)
+        NuFileWriteString(state->log_file, PCNativeDebugOutputBuffer);
+}
+
+/* Native 0x6e0260 and 0x6e0280: only format the text; the PC build draws nothing. */
+extern "C" void __cdecl PCNativeDebugPrintAtPc(PC_NATIVE_DEBUG_STATE_PC *state, i32 x, i32 y, u32 colour,
+                                               const char *format, ...) {
+    va_list arguments;
+    (void)state;
+    (void)x;
+    (void)y;
+    (void)colour;
+    if (format != NULL) {
+        va_start(arguments, format);
+        vsprintf(PCNativeDebugFormatBuffer, format, arguments);
+        va_end(arguments);
+    }
+}
+
+extern "C" void __cdecl PCNativeDebugFormatPc(PC_NATIVE_DEBUG_STATE_PC *state, const char *format, ...) {
+    va_list arguments;
+    (void)state;
+    if (format != NULL) {
+        va_start(arguments, format);
+        vsprintf(PCNativeDebugFormatBuffer, format, arguments);
+        va_end(arguments);
+    }
 }
 
 #include "saga.h"

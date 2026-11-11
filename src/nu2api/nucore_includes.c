@@ -8050,6 +8050,71 @@ void NuVideoSetBrightness(f32 brightness) {
     NuVideoSetBrightnessPS();
 }
 
+typedef void(__cdecl *NUONLINEACHIEVEMENTCALLBACK_PC)(i32, i32);
+
+i32 __cdecl NuOnlineAchievementAchievedPS(i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback);
+i32 __cdecl NuOnlineAchievementAchievedExPS(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback);
+void __cdecl NuOnlineInitPS(void);
+i32 __cdecl NuOnlineHasPlayerSignedInPS(void);
+i32 __cdecl NuOnlineHasPlayerDownloadedPS(u32 argument);
+
+i32 __cdecl NuOnlineAchievementAchieved(i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback) {
+    return NuOnlineAchievementAchievedPS(achievement, callback);
+}
+
+i32 __cdecl NuOnlineAchievementAchievedEx(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK_PC callback) {
+    return NuOnlineAchievementAchievedExPS(player, achievement, callback);
+}
+
+void __cdecl NuOnlineSignInPlayer(void) {
+}
+
+i32 __cdecl NuOnlineHasPlayerDownloaded(u32 argument) {
+    return NuOnlineHasPlayerDownloadedPS(argument);
+}
+
+i32 __cdecl NuOnlineHasPlayerSignedIn(void) {
+    return NuOnlineHasPlayerSignedInPS();
+}
+
+i32 __cdecl NuOnlineHasPlayerSignedInEx(void) {
+    return 0;
+}
+
+void __cdecl NuOnlineInit(void) {
+    NuOnlineInitPS();
+}
+
+void __cdecl NuOnlineSetPresenceMode(void) {
+}
+
+void __cdecl NuOnlineSetDefaultPresenceMode(void) {
+}
+
+void __cdecl NuOnlineSetContext(void) {
+}
+
+void __cdecl NuOnlineSetDefaultContext(void) {
+}
+
+void __cdecl NuOnlineSetProperty(void) {
+}
+
+void __cdecl NuOnlineSetPresenceModeEx(void) {
+}
+
+void __cdecl NuOnlineSetDefaultPresenceModeEx(void) {
+}
+
+void __cdecl NuOnlineSetContextEx(void) {
+}
+
+void __cdecl NuOnlineSetDefaultContextEx(void) {
+}
+
+void __cdecl NuOnlineSetPropertyEx(void) {
+}
+
 i32 NuLanguageGet(void) {
     return nuapi.language;
 }
