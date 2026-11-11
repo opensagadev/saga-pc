@@ -4578,6 +4578,72 @@ i32 __cdecl NuQTWrite(char *path, NUQTHDR_PC *header) {
     return 0;
 }
 
+void __cdecl NuStringTableSaveCharacterList(char *filepath, char *scratch, i32 report_missing) {
+    i32 i;
+    i32 j;
+    i32 count = 0;
+    i32 overflow = 0;
+    i32 missing_count = 0;
+    char *used;
+    NUWCHAR character = 0;
+    i32 bank;
+    NUFILE file;
+    NUWCHAR characters[512];
+    NUWCHAR missing[512];
+    char message[512];
+
+    used = scratch;
+    memset(used, 0, 0x1fff);
+    memset(characters, 0, 0x400);
+    memset(message, 0, 0x200);
+    bank = CurrentStringBank;
+    for (i = 0; i < StringBank[bank].string_count; i++) {
+        if (StringBank[bank].strings[i].str_utf16 != NULL) {
+            for (j = 0; StringBank[bank].strings[i].str_utf16[j] != 0; j++) {
+                character = StringBank[bank].strings[i].str_utf16[j];
+                used[character >> 3] |= 1 << (character & 7);
+            }
+        }
+    }
+    for (character = 0; character < 0xffff; character++) {
+        if (used[character >> 3] & (1 << (character & 7))) {
+            characters[count] = character;
+            count++;
+            if (count >= 512) {
+                NuFileRetry();
+                overflow = 1;
+                break;
+            }
+        }
+    }
+    file = NuFileOpen(filepath, 1);
+    if (file != 0) {
+        i32 bom = 0xfeff;
+
+        NuFileWrite(file, &bom, 2);
+        NuFileWrite(file, characters, NuStrLenW(characters) * 2);
+        if (overflow) {
+            NuAsciiToUnicode(characters, " [over 512 unique chars - too many!]");
+            NuFileWrite(file, characters, count * 2);
+        } else {
+            sprintf(message, " [%d unique chars] ", count);
+            NuAsciiToUnicode(characters, message);
+            NuFileWrite(file, characters, NuStrLen(message) * 2);
+        }
+        if (report_missing) {
+            if (missing_count == 0) {
+                NuStrCpy(message, " [no missing chars]");
+            } else {
+                NuFileWrite(file, missing, missing_count * 2);
+                sprintf(message, " [%d missing chars]", missing_count);
+            }
+            NuAsciiToUnicode(characters, message);
+            NuFileWrite(file, characters, NuStrLen(message) * 2);
+        }
+        NuFileClose(file);
+    }
+}
+
 static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block) {
     if (block->previous != NULL)
         block->previous->next = block->next;
@@ -4679,6 +4745,14 @@ void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payl
                                         sizeof(NUALLOC_MANAGER_BLOCK_PC)))
             ->previous_block = previous;
     }
+}
+
+void *__cdecl NuAllocManagerAllocateDefaultPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size) {
+    return NuAllocManagerAllocatePc(manager, size, 4, 0);
+}
+
+void *__cdecl NuAllocManagerAllocateFlagsPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 flags) {
+    return NuAllocManagerAllocatePc(manager, size, 4, flags);
 }
 
 void *__cdecl NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment) {
@@ -8506,4 +8580,125 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
 
         offsets[length] = unknown4;
     }
+}
+
+static i32 implode_n;
+static u16 *implode_freq;
+static u8 *implode_len;
+static u16 *implode_sortptr;
+static i32 implode_heapsize;
+static i16 implode_heap[0x200];
+static u16 implode_len_cnt[17];
+static i32 implode_depth;
+
+static void count_len(i32 node) {
+    if (node < implode_n) {
+        ++implode_len_cnt[implode_depth < 16 ? implode_depth : 16];
+    } else {
+        ++implode_depth;
+        count_len(implode_left[node]);
+        count_len(implode_right[node]);
+        --implode_depth;
+    }
+}
+
+static void make_len(i32 root) {
+    i32 i;
+    u32 count;
+    u32 total;
+
+    for (i = 0; i <= 16; ++i)
+        implode_len_cnt[i] = 0;
+    count_len(root);
+    total = 0;
+    for (i = 0; i < 16; ++i)
+        total += (u32)implode_len_cnt[16 - i] << i;
+    while (total != 65536) {
+        --implode_len_cnt[16];
+        for (i = 15; i > 0; --i) {
+            if (implode_len_cnt[i] != 0) {
+                --implode_len_cnt[i];
+                implode_len_cnt[i + 1] += 2;
+                break;
+            }
+        }
+        --total;
+    }
+    for (i = 16; i > 0; --i) {
+        count = implode_len_cnt[i];
+        while ((i32)--count >= 0)
+            implode_len[*implode_sortptr++] = (u8)i;
+    }
+}
+
+static void downheap(i32 parent) {
+    i32 child;
+    i32 node = implode_heap[parent];
+
+    while ((child = parent * 2) <= implode_heapsize) {
+        if (child < implode_heapsize && implode_freq[implode_heap[child]] > implode_freq[implode_heap[child + 1]])
+            ++child;
+        if (implode_freq[node] <= implode_freq[implode_heap[child]])
+            break;
+        implode_heap[parent] = implode_heap[child];
+        parent = child;
+    }
+    implode_heap[parent] = (i16)node;
+}
+
+static void make_code(i32 symbols, u8 *lengths, u16 *codes) {
+    u16 start[18];
+    i32 i;
+
+    start[1] = 0;
+    for (i = 1; i <= 16; ++i)
+        start[i + 1] = (start[i] + implode_len_cnt[i]) << 1;
+    for (i = 0; i < symbols; ++i)
+        codes[i] = start[lengths[i]]++;
+}
+
+i32 __cdecl ImplodeMakeTree(i32 symbols, u16 *frequencies, u8 *lengths, u16 *codes) {
+    i32 i;
+    i32 next_node;
+    i32 j;
+    i32 root;
+
+    implode_n = symbols;
+    implode_freq = frequencies;
+    implode_len = lengths;
+    next_node = implode_n;
+    implode_heapsize = 0;
+    implode_heap[1] = 0;
+    for (i = 0; i < implode_n; ++i) {
+        implode_len[i] = 0;
+        if (implode_freq[i] != 0)
+            implode_heap[++implode_heapsize] = (i16)i;
+    }
+    if (implode_heapsize < 2) {
+        codes[implode_heap[1]] = 0;
+        return implode_heap[1];
+    }
+    for (i = implode_heapsize / 2; i >= 1; --i)
+        downheap(i);
+    implode_sortptr = codes;
+    do {
+        i = implode_heap[1];
+        if (i < implode_n)
+            *implode_sortptr++ = (u16)i;
+        implode_heap[1] = implode_heap[implode_heapsize--];
+        downheap(1);
+        j = implode_heap[1];
+        if (j < implode_n)
+            *implode_sortptr++ = (u16)j;
+        root = next_node++;
+        implode_freq[root] = implode_freq[i] + implode_freq[j];
+        implode_heap[1] = (i16)root;
+        downheap(1);
+        implode_left[root] = (u16)i;
+        implode_right[root] = (u16)j;
+    } while (implode_heapsize > 1);
+    implode_sortptr = codes;
+    make_len(root);
+    make_code(symbols, lengths, codes);
+    return root;
 }
