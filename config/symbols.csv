@@ -6456,11 +6456,38 @@ address,symbol,size,ctype
 0x005d10e0,_NuQFntMoveRS,94,"void __cdecl (void *, VUFNT *, f32, f32, f32)"
 0x5d1150,_NuQFntWrite,637,"void __cdecl(char *,VUFNT *)"
 0x5d13d0,_NuQFntWriteUniversalFont,228,"void __cdecl(char *,VUFNT *,char *)"
+0x5d14c0,_NuQFntSet2d,108,void __cdecl(VUFNT *)
 0x5d1530,_NuQFntSetUVSizePc,144,"void __cdecl(VUFNT *, f32, f32)"
 0x5d15c0,_NuQFntSetColour2d,99,"void __cdecl(VUFNT *, u32)"
+0x5d1630,_NuQFntSetMtx2d,111,"void __cdecl(VUFNT *,NUMTX *)"
 0x005d16a0,_NuRndrInitLeafPc,1,"void __cdecl(VARIPTR *, VARIPTR)"
+0x5d16b0,_NuFntSetFixedWidthNumerals,1,void __cdecl(void)
+0x5d16c0,_NuFntToUpper,3,char __cdecl(void)
+0x5d16d0,_NuFntToLower,3,char __cdecl(void)
+0x5d16e0,_NuFntSetPen,1,void __cdecl(i32)
+0x5d16f0,_NuFntSave,1,"void __cdecl(void *,i32,char *)"
+0x5d1700,_NuFntDumpReadable,1,"void __cdecl(void *,char *)"
+0x5d1710,_CheckCol,6,"i32 __cdecl(nutex_s *,i32,i32,i32,i32)"
+0x5d1720,_NuFntFindStart,6,"i32 __cdecl(nutex_s *,i32 *,i32 *,i32,i32)"
+0x5d1730,_NuFntFindEnd,6,"i32 __cdecl(nutex_s *,i32 *,i32 *,i32,i32)"
 0x5d1740,_NuFntSet,1,
 0x5d1750,_NuFntScale,1,
+0x5d1760,_NuFntGetScreenHeight,6,i32 __cdecl(void)
+0x5d1770,_NuFntPointSize,1,void __cdecl(void)
+0x5d1780,_NuFntMoveAbs,1,void __cdecl(void)
+0x5d1790,_NuFntMoveRel,1,void __cdecl(void)
+0x5d17a0,_NuFntPos,1,void __cdecl(void)
+0x5d17b0,_NuFntPrintLenV,6,i32 __cdecl(void)
+0x5d17c0,_NuFntPrintLen,6,i32 __cdecl(void)
+0x5d17d0,_NuFntPrintChar,6,i32 __cdecl(char)
+0x5d17e0,_NuFntPrintV,6,i32 __cdecl(void)
+0x5d17f0,_NuFntPrint,6,i32 __cdecl(void)
+0x5d1800,_NuFntClose,1,void __cdecl(void)
+0x5d1810,_NuFntPrintEx,1,void __cdecl(void)
+0x5d1820,_NuFntCreate,3,void *__cdecl(void)
+0x5d1830,_NuFntDestroy,1,void __cdecl(void)
+0x5d1840,_NuFntWrite,1,void __cdecl(void)
+0x5d1850,_NuFntLoadPtr,3,void *__cdecl(void)
 0x5d1860,_NuTexAnimProgSysInit,84,void __cdecl (void)
 0x5d18c0,_NuTexAnimProgRelease,11,void __cdecl NuTexAnimProgRelease(void)
 0x5d18d0,_NuTexAnimProgFind,48,TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgFind(const char *name)

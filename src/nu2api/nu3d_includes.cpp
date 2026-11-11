@@ -3528,6 +3528,12 @@ extern "C" {
         }
     }
 
+    void __cdecl NuQFntSet2d(VUFNT *font) {
+        NuQFntPushPrintMode(2);
+        NuQFntSet(font);
+        NuQFntPopPrintMode();
+    }
+
     void __cdecl NuQFntSetUVSizePc(VUFNT *font, f32 x_scale, f32 y_scale) {
         NuQFntPushPrintMode(2);
         NuQFntSetScale(font, x_scale, y_scale);
@@ -3537,6 +3543,12 @@ extern "C" {
     void __cdecl NuQFntSetColour2d(VUFNT *font, u32 colour) {
         NuQFntPushPrintMode(2);
         NuQFntSetColour(font, colour);
+        NuQFntPopPrintMode();
+    }
+
+    void __cdecl NuQFntSetMtx2d(VUFNT *font, NUMTX *matrix) {
+        NuQFntPushPrintMode(2);
+        NuQFntSetMtx(font, matrix);
         NuQFntPopPrintMode();
     }
 
@@ -4145,6 +4157,60 @@ extern "C" {
         (void)end;
     }
 
+    /* The PS2 bitmap-font tools are compiled empty on PC. */
+    void __cdecl NuFntSetFixedWidthNumerals(void) {
+    }
+
+    char __cdecl NuFntToUpper(void) {
+        return ' ';
+    }
+
+    char __cdecl NuFntToLower(void) {
+        return ' ';
+    }
+
+    void __cdecl NuFntSetPen(i32 pen) {
+        (void)pen;
+    }
+
+    void __cdecl NuFntSave(void *font, i32 flags, char *path) {
+        (void)font;
+        (void)flags;
+        (void)path;
+    }
+
+    void __cdecl NuFntDumpReadable(void *font, char *path) {
+        (void)font;
+        (void)path;
+    }
+
+    i32 __cdecl CheckCol(nutex_s *texture, i32 x, i32 y0, i32 y1, i32 colour) {
+        (void)texture;
+        (void)x;
+        (void)y0;
+        (void)y1;
+        (void)colour;
+        return 1;
+    }
+
+    i32 __cdecl NuFntFindStart(nutex_s *texture, i32 *x, i32 *y, i32 width, i32 height) {
+        (void)texture;
+        (void)x;
+        (void)y;
+        (void)width;
+        (void)height;
+        return 1;
+    }
+
+    i32 __cdecl NuFntFindEnd(nutex_s *texture, i32 *x, i32 *y, i32 width, i32 height) {
+        (void)texture;
+        (void)x;
+        (void)y;
+        (void)width;
+        (void)height;
+        return 1;
+    }
+
     /* The PS2 font selection calls are no-ops on PC. */
     void __cdecl NuFntSet(i32 font) {
         (void)font;
@@ -4153,6 +4219,63 @@ extern "C" {
     void __cdecl NuFntScale(i32 x, i32 y) {
         (void)x;
         (void)y;
+    }
+
+    i32 __cdecl NuFntGetScreenHeight(void) {
+        return 1;
+    }
+
+    void __cdecl NuFntPointSize(void) {
+    }
+
+    void __cdecl NuFntMoveAbs(void) {
+    }
+
+    void __cdecl NuFntMoveRel(void) {
+    }
+
+    void __cdecl NuFntPos(void) {
+    }
+
+    i32 __cdecl NuFntPrintLenV(void) {
+        return 1;
+    }
+
+    i32 __cdecl NuFntPrintLen(void) {
+        return 1;
+    }
+
+    i32 __cdecl NuFntPrintChar(char character) {
+        (void)character;
+        return 1;
+    }
+
+    i32 __cdecl NuFntPrintV(void) {
+        return 1;
+    }
+
+    i32 __cdecl NuFntPrint(void) {
+        return 1;
+    }
+
+    void __cdecl NuFntClose(void) {
+    }
+
+    void __cdecl NuFntPrintEx(void) {
+    }
+
+    void *__cdecl NuFntCreate(void) {
+        return NULL;
+    }
+
+    void __cdecl NuFntDestroy(void) {
+    }
+
+    void __cdecl NuFntWrite(void) {
+    }
+
+    void *__cdecl NuFntLoadPtr(void) {
+        return NULL;
     }
 
     VUFNT *__cdecl NuQFntRead(char *path, VARIPTR *buffer, VARIPTR end) {
