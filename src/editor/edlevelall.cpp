@@ -840,6 +840,45 @@ class EdStringControl : public EdControl {
 };
 STATIC_ASSERT(sizeof(EdStringControl) == 0x10);
 
+/* Numeric property controls of the light editor unit (rtlhelper.cpp, where
+ * their members are defined); the spline registration creates float rows. */
+template <class T> class EdValueControl : public EdControl {
+  public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdValueControl));
+    }
+    EdValueControl(T minimum, T maximum) : minimum(minimum), maximum(maximum) {
+    }
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *member, void *target);
+    virtual void Refresh();
+
+    i32 value_type;
+    char *format;
+    T minimum;
+    T maximum;
+};
+STATIC_ASSERT(offsetof(EdValueControl<f32>, value_type) == 0x10);
+STATIC_ASSERT(offsetof(EdValueControl<f32>, minimum) == 0x18);
+STATIC_ASSERT(sizeof(EdValueControl<f32>) == 0x20);
+
+class EdFloatControl : public EdValueControl<f32> {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdFloatControl));
+    }
+    EdFloatControl() : EdValueControl<f32>(-1000000000.0f, 1000000000.0f) {
+        value_type = EdType_Float;
+        format = "%.2f";
+    }
+    EdFloatControl(f32 minimum, f32 maximum) : EdValueControl<f32>(minimum, maximum) {
+        value_type = EdType_Float;
+        format = "%.2f";
+    }
+};
+
 /* Property control for EdType_Colour3 members: "r g b" text, the property
  * button shows the colour and opens a colour picker. */
 class EdColourControl : public EdControl {
@@ -1030,15 +1069,16 @@ i32 BezierLineMaxDepth = 2;
 f32 SplineMinStep = 0.1f;
 
 /* One spline control point: its position and the two tangent handles. */
-struct SplineKnot {
-    SplineKnot *next;
-    SplineKnot *previous;
+struct SplineKnot : public CSListLink<SplineKnot> {
     __declspec(align(16)) VuVec position;
     VuVec in_tangent;
     VuVec out_tangent;
     SplineObject *spline;
     i16 led_file;
 
+    SplineKnot() {
+        led_file = Placeable::CurrentLedFile;
+    }
     void Smooth();
 };
 STATIC_ASSERT(offsetof(SplineKnot, position) == 0x10);
@@ -1134,6 +1174,7 @@ class SplineObject : public CSListLink<SplineObject> {
             GenBezierPoints();
     }
     void ReverseKnots();
+    SplineObject *Clone();
 };
 STATIC_ASSERT(offsetof(SplineObject, knots) == 0x2c);
 STATIC_ASSERT(offsetof(SplineObject, points) == 0x38);
@@ -1166,6 +1207,7 @@ class SplineHelper : public EdClassInterface {
     virtual void SerialiseObject(EdStream &stream, void *object);
     virtual void AddMenuItems(eduimenu_s *menu);
     using EdClassInterface::GetNextObject;
+    void Initialise();
 
     SplineObject *first_object;
     SplineObject *last_object;
@@ -1182,6 +1224,32 @@ STATIC_ASSERT(offsetof(SplineHelper, first_object) == 0x8);
 STATIC_ASSERT(offsetof(SplineHelper, auto_generate_points) == 0x14);
 STATIC_ASSERT(sizeof(SplineHelper) == 0x18);
 extern SplineHelper theSplineHelper;
+
+/* Member references of the "Spline" class; member_offset carries a pseudo
+ * id: 0x80000001 step, 2 height, 3 drop, 4 closed. */
+class EdRefSpline : public EdRef {
+  public:
+    EdRefSpline(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
+                EdControl *member_control)
+        : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
+    }
+    virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
+    virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
+};
+STATIC_ASSERT(sizeof(EdRefSpline) == 0x28);
+
+/* Member references of the "Knot" class: 0x80000001 spline name, 2 pick
+ * radius, 3 position, 4 in tangent, 5 out tangent. */
+class EdRefKnot : public EdRef {
+  public:
+    EdRefKnot(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
+              EdControl *member_control)
+        : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
+    }
+    virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
+    virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
+};
+STATIC_ASSERT(sizeof(EdRefKnot) == 0x28);
 
 KnotHelper theKnotHelper;
 
@@ -4243,6 +4311,15 @@ SplineKnotList::~SplineKnotList() {
 SplineObject::~SplineObject() {
 }
 
+/* Snapping onto the terrain along snap_ray: retail keeps only the ray
+ * normalisation; the terrain test and the point update are compiled out. */
+void ClassEditor::SnapPoint(VuVec &) {
+    if (snap_mode == 1 || snap_mode == 2) {
+        __declspec(align(16)) VuVec ray = snap_ray;
+        NuVecNorm(&ray.xyz, &ray.xyz);
+    }
+}
+
 /* Number keys 1-0 toggle the first ten classes' visibility (with the modifier
  * held, show only that class); the invert key inverts or resets the filter. */
 void ClassEditor::UpdateClassFilter(EdInputContext &input) {
@@ -5561,6 +5638,99 @@ void SplineObject::Draw(i32 selected, i32 straight, i32 show_points, f32) {
     }
 }
 
+void EdRefSpline::GetMemberData(void *object, i32 requested_type, void *data, i32 data_size) {
+    SplineObject *spline = static_cast<SplineObject *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000001:
+            *static_cast<f32 *>(data) = spline->step;
+            break;
+        case 0x80000002:
+            *static_cast<f32 *>(data) = spline->height;
+            break;
+        case 0x80000003:
+            *static_cast<i32 *>(data) = spline->drop != 0;
+            break;
+        case 0x80000004:
+            *static_cast<i32 *>(data) = spline->closed;
+            break;
+        default:
+            EdRef::GetMemberData(object, requested_type, data, data_size);
+            break;
+    }
+}
+
+/* Each change drops the generated points when they regenerate
+ * automatically; other members are read back, as in retail. */
+void EdRefSpline::SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *) {
+    SplineObject *spline = static_cast<SplineObject *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000001:
+            spline->step = *static_cast<f32 *>(data);
+            if (theSplineHelper.auto_generate_points)
+                spline->points.Clear();
+            break;
+        case 0x80000002:
+            spline->height = *static_cast<f32 *>(data);
+            if (theSplineHelper.auto_generate_points)
+                spline->points.Clear();
+            break;
+        case 0x80000003:
+            spline->drop = *static_cast<i32 *>(data) != 0;
+            if (theSplineHelper.auto_generate_points)
+                spline->points.Clear();
+            break;
+        case 0x80000004:
+            spline->closed = *static_cast<i32 *>(data);
+            if (theSplineHelper.auto_generate_points)
+                spline->points.Clear();
+            break;
+        default:
+            EdRef::GetMemberData(object, requested_type, data, data_size);
+            break;
+    }
+}
+
+/* The knot references copy vectors one float at a time. */
+static inline void CopyKnotVector(VuVec *destination, const VuVec &source) {
+    destination->x = source.x;
+    destination->y = source.y;
+    destination->z = source.z;
+    destination->w = source.w;
+}
+
+static inline void AddKnotVector(VuVec &vector, const VuVec &delta) {
+    vector.x += delta.x;
+    vector.y += delta.y;
+    vector.z += delta.z;
+}
+
+void EdRefKnot::GetMemberData(void *object, i32 requested_type, void *data, i32 data_size) {
+    SplineKnot *knot = static_cast<SplineKnot *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000001:
+            NuStrNCpy(static_cast<char *>(data), knot->spline->name, data_size);
+            break;
+        case 0x80000002:
+            *static_cast<f32 *>(data) = KnotHelperRadius * EdManipulator::Scale;
+            break;
+        case 0x80000003:
+            CopyKnotVector(static_cast<VuVec *>(data), knot->position);
+            break;
+        case 0x80000004:
+            CopyKnotVector(static_cast<VuVec *>(data), knot->in_tangent);
+            break;
+        case 0x80000005:
+            CopyKnotVector(static_cast<VuVec *>(data), knot->out_tangent);
+            break;
+        default:
+            EdRef::GetMemberData(object, requested_type, data, data_size);
+            break;
+    }
+}
+
 /* Writes the knot count and knots; reading recreates the knots. */
 void SplineHelper::SerialiseObject(EdStream &stream, void *object) {
     SplineObject *spline = static_cast<SplineObject *>(object);
@@ -6231,6 +6401,23 @@ i32 ClassEditor::IsSelectedObject(ClassObject &object) {
     ClassObject selected = object;
     for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
         if (entry->object == selected.object && entry->reference == selected.reference)
+            return 1;
+    }
+    return 0;
+}
+
+/* A NULL reference matches the object picked by any member. */
+i32 ClassEditor::IsSelectedObject(void *object, EdRef *reference) {
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->object == object && (reference == NULL || entry->reference == reference))
+            return 1;
+    }
+    return 0;
+}
+
+i32 ClassEditor::IsSelectedClass(EdClass *object_class) {
+    for (ClassObjectListEntry *entry = selected_objects.first; entry != NULL; entry = entry->next) {
+        if (entry->ed_class == object_class)
             return 1;
     }
     return 0;
@@ -7623,6 +7810,127 @@ void SplineKnot::Smooth() {
     in_tangent.y = before.y;
     in_tangent.z = before.z;
     in_tangent.w = before.w;
+}
+
+/* Copies the spline with its knots; the points are regenerated on this
+ * spline, not on the copy, as in retail. */
+SplineObject *SplineObject::Clone() {
+    SplineObject *clone = new (theMemoryManager.AllocPool(sizeof(SplineObject), 1)) SplineObject;
+    NuStrCpy(clone->name, name);
+    SplineKnot *source = knots.first;
+    for (i32 index = 0; index < knots.count; index++) {
+        SplineKnot *knot = new (theMemoryManager.AllocPool(sizeof(SplineKnot), 1)) SplineKnot;
+        knot->spline = clone;
+        knot->next = NULL;
+        knot->previous = clone->knots.last;
+        if (clone->knots.last != NULL)
+            clone->knots.last->next = knot;
+        clone->knots.last = knot;
+        if (clone->knots.first == NULL)
+            clone->knots.first = knot;
+        clone->knots.count++;
+        CopyKnotVector(&knot->position, source->position);
+        CopyKnotVector(&knot->in_tangent, source->in_tangent);
+        CopyKnotVector(&knot->out_tangent, source->out_tangent);
+        source = source->next;
+    }
+    clone->step = step;
+    clone->height = height;
+    clone->drop = drop;
+    clone->closed = closed;
+    GenPoints();
+    return clone;
+}
+
+/* Moving a knot carries its unselected tangents along (snapped); the spline
+ * name and pick radius are read-only. */
+void EdRefKnot::SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *) {
+    SplineKnot *knot = static_cast<SplineKnot *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000001:
+        case 0x80000002:
+            return;
+        case 0x80000003: {
+            VuVec *position = static_cast<VuVec *>(data);
+            __declspec(align(16)) VuVec delta;
+            delta.x = position->x - knot->position.x;
+            delta.y = position->y - knot->position.y;
+            delta.z = position->z - knot->position.z;
+            VuVec &moved = knot->position;
+            moved.x += delta.x;
+            moved.y += delta.y;
+            moved.z += delta.z;
+            knot->position.w = 1.0f;
+            if (!theClassEditor.IsSelectedObject(knot, theKnotHelper.in_tangent_ref)) {
+                AddKnotVector(knot->in_tangent, delta);
+                theClassEditor.SnapPoint(knot->in_tangent);
+            }
+            if (!theClassEditor.IsSelectedObject(knot, theKnotHelper.out_tangent_ref)) {
+                AddKnotVector(knot->out_tangent, delta);
+                theClassEditor.SnapPoint(knot->out_tangent);
+            }
+            if (theSplineHelper.auto_generate_points && knot->spline != NULL)
+                knot->spline->points.Clear();
+            break;
+        }
+        case 0x80000004:
+            CopyKnotVector(&knot->in_tangent, *static_cast<VuVec *>(data));
+            if (theSplineHelper.auto_generate_points && knot->spline != NULL)
+                knot->spline->points.Clear();
+            break;
+        case 0x80000005:
+            CopyKnotVector(&knot->out_tangent, *static_cast<VuVec *>(data));
+            if (theSplineHelper.auto_generate_points && knot->spline != NULL)
+                knot->spline->points.Clear();
+            break;
+        default:
+            EdRef::GetMemberData(object, requested_type, data, data_size);
+            break;
+    }
+}
+
+void SplineHelper::Initialise() {
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+    EdClass *spline_class = theRegistry.RegisterClass("Spline", this, 0x8400100);
+#pragma pop_macro("RegisterClass")
+    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("String", "Spline", 0xc, 0x20, 2,
+                                    new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl, 0));
+    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Short", "LEDFile", 0x44, 0, 0x10000100, NULL, 0));
+    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
+                              EdRefSpline("Float", "Height", 0x80000002, 0, 0, new EdFloatControl));
+    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
+                              EdRefSpline("Float", "Step", 0x80000001, 0, 0, new EdFloatControl(0.0f, 1000.0f)));
+    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1)) EdRefSpline(
+        "Int", "Drop", 0x80000003, 0, 0,
+        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
+    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1)) EdRefSpline(
+        "Int", "Closed", 0x80000004, 0, 0,
+        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
+
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+    EdClass *knot_class = theRegistry.RegisterClass("Knot", &theKnotHelper, 0x18400000);
+#pragma pop_macro("RegisterClass")
+    theKnotHelper.position_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1)) EdRefKnot(
+        "VuVec", "Pos", 0x80000003, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+    theKnotHelper.in_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1)) EdRefKnot(
+        "VuVec", "In", 0x80000004, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+    theKnotHelper.out_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1)) EdRefKnot(
+        "VuVec", "Out", 0x80000005, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
+                            EdRefKnot("String", "Spline", 0x80000001, 0x20, 0x10000002,
+                                      new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl));
+    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                            EdRef("Short", "LEDFile", 0x44, 0, 0x10000100, NULL, 0));
+    knot_class->AddType(theKnotHelper.position_ref);
+    knot_class->AddType(theKnotHelper.in_tangent_ref);
+    knot_class->AddType(theKnotHelper.out_tangent_ref);
+    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
+                            EdRefKnot("Float", "Radius", 0x80000002, 0, 0x10000040, NULL));
 }
 
 void SplineHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {

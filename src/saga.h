@@ -29855,6 +29855,9 @@ class ClassEditor : public BaseEditor {
     i32 IsUniqueName(char *name);
     void MakeUniqueName(char const *name, char *destination, i32 size);
     i32 IsSelectedObject(ClassObject &object);
+    i32 IsSelectedObject(void *object, EdRef *reference);
+    i32 IsSelectedClass(EdClass *object_class);
+    void SnapPoint(VuVec &point);
     i32 Editable(void *object, EdClass *object_class, i32 index);
     void SetMode(i32 new_mode);
     void UpdateClassFilter(EdInputContext &input);
