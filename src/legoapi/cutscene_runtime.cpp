@@ -1764,8 +1764,8 @@ extern "C" {
                     reinterpret_cast<CUT_DRAW_REGISTRATION_INSTANCE_PC *>(cut->instance)->characters;
                 if (definitions != NULL && states != NULL) {
                     for (i32 j = 0; j < definitions->count; ++j) {
-                        CUT_DRAW_CHAR_INSTANCE_PC *state = &states->characters[j];
                         CUT_DRAW_CHARACTER_PC *definition = &definitions->characters[j];
+                        CUT_DRAW_CHAR_INSTANCE_PC *state = &states->characters[j];
                         if (state->character_model == reinterpret_cast<void *>(1)) {
                             if ((state->flags & 2) != 0)
                                 state->character_model = NULL;
