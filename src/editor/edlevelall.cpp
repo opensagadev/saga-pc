@@ -28,6 +28,8 @@ extern "C" {
     extern i32 EdLevelFntScale;
     extern NUMTL *edLevel2dMtl;
     extern NUMTL *edLevel3dMtl;
+    extern NUMTL *edLevelTexMtl;
+    char *__cdecl GetSfxName(i32 sound_id);
     eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
     i32 __cdecl edmainGetCursorEnabled(void);
     NUCAMERA *__cdecl edmainGetCameraPc(void);
@@ -759,6 +761,10 @@ STATIC_ASSERT(sizeof(EdSpecialObjectControl) == 0x14);
  * with the level editor. */
 class EdSystem {
   public:
+    void Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front) {
+        for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+            subsystem->SubInitialise(buffer, buffer_end, from_front);
+    }
     void RegisterSubSystem(EdSubSystem *subsystem) {
         subsystem->next = NULL;
         subsystem->previous = last_subsystem;
@@ -894,6 +900,22 @@ class EdColourControl : public EdControl {
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 flags);
 };
+
+/* Property control for a sound effect name: the button lists every sound
+ * effect, and picking one plays it and stores its name. */
+class EdSfxNameControl : public EdStringControl {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdSfxNameControl));
+    }
+    EdSfxNameControl();
+    virtual ~EdSfxNameControl();
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    static void cbChanged(eduimenu_s *, eduiitem_s *, u32);
+    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
+    static void cbSelectSfx(eduimenu_s *menu, eduiitem_s *item, u32);
+};
+STATIC_ASSERT(sizeof(EdSfxNameControl) == 0x10);
 
 /* Three "%.2f" rows (x, y, z) under an expander for a VuVec member. */
 class EdVectorControl : public EdControl {
@@ -1334,6 +1356,7 @@ static edui_prop_s *edBitItem;
 static i32 edBitIndex;
 
 static EdColourControl *edColourControl;
+static EdSfxNameControl *sfxNameControl;
 static EdStringControl *edObjectNameControl;
 static EdClassObjectNameControl *edClassObjectNameControl;
 
@@ -2062,6 +2085,29 @@ void EdColourControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
     packed <<= 8;
     packed |= (i32)(colour.x * 255.0) & 0xff;
     property->button_colour = packed;
+}
+
+EdSfxNameControl::EdSfxNameControl() {
+}
+
+EdSfxNameControl::~EdSfxNameControl() {
+}
+
+/* The name is only set through the sound effect list. */
+void EdSfxNameControl::cbChanged(eduimenu_s *, eduiitem_s *, u32) {
+}
+
+void EdSfxNameControl::cbSelectSfx(eduimenu_s *menu, eduiitem_s *item, u32) {
+    if (sfxNameControl != NULL) {
+        PlaySfxById(item->data, NULL);
+        char *name = GetSfxName(item->data);
+        if (name == NULL)
+            name = "None";
+        eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(sfxNameControl->item), name);
+        sfxNameControl->SetVal(name);
+        eduiMenuDetach(menu);
+        eduiMenuDestroy(menu);
+    }
 }
 
 void __cdecl EdDrawBegin(i32 index) {
@@ -3937,6 +3983,23 @@ i32 BezierLinePos(VuVec &result, VuVec &start, VuVec &first_control, VuVec &end,
     return 1;
 }
 
+/* Point at parameter along on the segment, from the Bernstein weights. */
+void BezierLineEval(VuVec &result, VuVec &start, VuVec &first_control, VuVec &end, VuVec &second_control, f32 along) {
+    f32 squared = along * along;
+    f32 complement = 1.0f - along;
+    f32 complement_squared = complement * complement;
+    f32 start_weight = complement_squared * complement;
+    f32 first_weight = (along * 3.0) * complement_squared;
+    f32 second_weight = (3.0 * squared) * complement;
+    f32 end_weight = squared * along;
+    __declspec(align(16)) VuVec point =
+        start * start_weight + first_control * first_weight + second_control * second_weight + end * end_weight;
+    result.x = point.x;
+    result.y = point.y;
+    result.z = point.z;
+    result.w = point.w;
+}
+
 /* Draws a Bezier segment, subdividing until a piece is short relative to
  * its distance from the camera. */
 void DrawBezierLine(VuVec &start, VuVec &start_control, VuVec &end, VuVec &end_control, NUMTL *material, i32 colour) {
@@ -4386,6 +4449,30 @@ void ClassEditor::UpdateClassFilter(EdInputContext &input) {
             class_filter = -1;
         else
             class_filter = ~class_filter;
+    }
+}
+
+/* The scene toggles sit just above the clicked item, one per active scene
+ * from the last scene back. */
+void ClassEditor::cbEdLevelSelectAll(eduimenu_s *, eduiitem_s *item, u32) {
+    for (i32 index = 0; index < 10; index++) {
+        LevelEditorScene *scene = (index >= 0 && index < 10) ? &theLevelEditor.scenes[index] : NULL;
+        if (scene != NULL && scene->active) {
+            item = item->previous;
+            scene->editable = 1;
+            item->highlighted = 1;
+        }
+    }
+}
+
+void ClassEditor::cbEdLevelDeselectAll(eduimenu_s *, eduiitem_s *item, u32) {
+    for (i32 index = 0; index < 10; index++) {
+        LevelEditorScene *scene = (index >= 0 && index < 10) ? &theLevelEditor.scenes[index] : NULL;
+        if (scene != NULL && scene->active) {
+            item = item->previous;
+            scene->editable = 0;
+            item->highlighted = 0;
+        }
     }
 }
 
@@ -4849,6 +4936,45 @@ void EdColourControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     eduiMenuAddItem(picker_menu, picker);
     eduiMenuAttach(menu, picker_menu);
     reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
+}
+
+void EdSfxNameControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
+    sfxNameControl = static_cast<EdSfxNameControl *>(item->data_ptr);
+    eduimenu_s *choices = eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                         cbEdLevelDestroy, NULL);
+    if (choices != NULL) {
+        char value[128];
+        sfxNameControl->GetVal(value, sizeof(value));
+        eduiMenuAddItem(choices, eduiItemSelCreate((u32)-1, item->colours, 0, 0, cbSelectSfx, "None"));
+        for (i32 id = 0;; id++) {
+            char *name = GetSfxName(id);
+            if (name == NULL)
+                break;
+            eduiMenuAddItem(choices, eduiItemSelCreate(id, item->colours, 0, 0, cbSelectSfx, name));
+        }
+        choices->flags |= 1;
+        eduiMenuAttach(menu, choices);
+        eduiMenuFitWidth(choices, 5);
+        reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
+    }
+}
+
+void LevelEditor::RegisterEditor(BaseEditor &editor) {
+    editor.next = NULL;
+    editor.previous = last_editor;
+    if (last_editor != NULL)
+        last_editor->next = &editor;
+    last_editor = &editor;
+    if (first_editor == NULL)
+        first_editor = &editor;
+    editor_count++;
+}
+
+void LevelEditor::ClearLevel(i32 index) {
+    scenes[index].active = 0;
+    scenes[index].scene = NULL;
+    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next)
+        editor->ClearLevel(index);
 }
 
 void LevelEditor::Flush() {
@@ -7000,6 +7126,60 @@ LevelEditor::LevelEditor() : first_editor(NULL), last_editor(NULL), editor_count
     SetPadText(0x100, "SELECT");
 }
 
+/* Carves the editor's 128 KB work buffer from the front of the level buffer
+ * when asked, initialises every editor and subsystem, then builds the
+ * overlay, line and textured materials. */
+void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front) {
+    editor_buffer_from_front = from_front;
+    if (from_front != 0) {
+        editor_buffer_begin.addr = (buffer.addr + 0xf) & ~0xf;
+        buffer.addr = ((buffer.addr + 0xf) & ~0xf) + 0x20000;
+        editor_buffer_end = buffer;
+    }
+    RegisterEditor(theClassEditor);
+    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next)
+        editor->Initialise(buffer, buffer_end, from_front);
+    active_editor = &theClassEditor;
+    theEdSystem.Initalise(buffer, buffer_end, from_front);
+
+    edLevel2dMtl = NuMtlCreate(1);
+    edLevel2dMtl->diffuse_r = 0.5f;
+    edLevel2dMtl->diffuse_g = 0.5f;
+    edLevel2dMtl->diffuse_b = 0.5f;
+    edLevel2dMtl->attribs.cull_mode = 2;
+    edLevel2dMtl->attribs.z_mode = 3;
+    edLevel2dMtl->opacity = 1.0f;
+    edLevel2dMtl->attribs.alpha_mode = 1;
+    edLevel2dMtl->attribs.unknown_2_4 = 1;
+    NuMtlUpdate(edLevel2dMtl);
+
+    edLevel3dMtl = NuMtlCreate(1);
+    edLevel3dMtl->diffuse_r = 0.5f;
+    edLevel3dMtl->diffuse_g = 0.5f;
+    edLevel3dMtl->diffuse_b = 0.5f;
+    edLevel3dMtl->opacity = 1.0f;
+    edLevel3dMtl->attribs.alpha_mode = 0;
+    edLevel3dMtl->attribs.unknown_2_1_2 = 2;
+    edLevel3dMtl->attribs.unknown_2_4 = 1;
+    NuMtlUpdate(edLevel3dMtl);
+
+    edLevelTexMtl = NuMtlCreate(1);
+    edLevelTexMtl->diffuse_r = 0.5f;
+    edLevelTexMtl->diffuse_g = 0.5f;
+    edLevelTexMtl->diffuse_b = 0.5f;
+    edLevelTexMtl->attribs.cull_mode = 2;
+    edLevelTexMtl->attribs.z_mode = 3;
+    edLevelTexMtl->opacity = 1.0f;
+    edLevelTexMtl->attribs.alpha_mode = 0;
+    edLevelTexMtl->attribs.unknown_2_4 = 1;
+    NuMtlUpdate(edLevelTexMtl);
+
+    NuFntSet(EdLevelFnt);
+    NuFntScale(EdLevelFntScale, EdLevelFntScale);
+    EdDrawBegin(0);
+    EdDrawEnd();
+}
+
 /* Reads FileInfo, Settings and every editor block that names a registered
  * editor; unknown editor blocks are skipped. */
 i32 LevelEditor::ReadStream(EdFileInputStream &stream) {
@@ -8465,6 +8645,19 @@ void EdColourControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
         packed <<= 8;
         packed |= (i32)(colour.x * 255.0) & 0xff;
         property->button_colour = packed;
+        eduiMenuAddItem(menu, control->item);
+    }
+}
+
+void EdSfxNameControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdSfxNameControl *control = new (theMemoryManager.AllocPool(sizeof(EdSfxNameControl), 1)) EdSfxNameControl;
+    if (control != NULL) {
+        control->reference = member;
+        control->object = target;
+        char value[128];
+        control->GetVal(value, sizeof(value));
+        control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, EdControl::cbSelected, cbChanged, cbButton, 1,
+                                           member->name, value);
         eduiMenuAddItem(menu, control->item);
     }
 }

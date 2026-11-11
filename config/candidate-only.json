@@ -1500,6 +1500,11 @@
    "unit": "src/editor/edlevelall.cpp",
    "symbol": "?AddKnotVector@@YAXAAUVuVec@@ABU1@@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "?Initalise@EdSystem@@QAEXAATvariptr_u@@0H@Z",
+   "kind": "function"
   }
  ]
 }

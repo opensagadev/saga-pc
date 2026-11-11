@@ -29847,6 +29847,8 @@ class ClassEditor : public BaseEditor {
 
     void DrawObjectSphere(ClassObject &selected, i32 colour);
     static void cbEdFilterLED(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void cbEdLevelSelectAll(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
+    static void cbEdLevelDeselectAll(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
     void PreSaveInitialisation();
     void PostSaveInitialisation();
     void PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
@@ -29954,6 +29956,9 @@ class LevelEditor : public BaseThing {
     virtual void Display(ThingRenderData *);
 
     void SetPadText(i32 buttons, char *text);
+    void RegisterEditor(BaseEditor &editor);
+    void ClearLevel(i32 index);
+    void Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front);
     void AddInfoText(char *text);
     void SetCameraPosition(VuVec &position);
     void CreateMenu();
