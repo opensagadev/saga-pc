@@ -575,6 +575,10 @@ def main(argv=None):
         return 0
     if args.structs:
         ours = our_structs()
+        for name in list(reference.structs):  # PC-only layouts carry a _PC suffix
+            for alias in (name + "_PC", name.upper() + "_PC", name.upper()):
+                if name not in ours and alias in ours:
+                    ours[name] = ours[alias]
         names = args.names or sorted(set(reference.structs) & set(ours))
         flagged = 0
         for name in names:
