@@ -29987,6 +29987,8 @@ class LevelEditor : public BaseThing {
     i32 SaveState(i32 scene_index, variptr_u *buffer, variptr_u *buffer_end);
     i32 SaveState(variptr_u *buffer, variptr_u *buffer_end);
     void SetSaveFilename(char *name);
+    void Reset();
+    i32 AddScene(char *name, NUGSCN *scene, i32 active);
     i32 FindSceneId(char *name);
     i32 IsEditable(i32 index);
     i32 Load(char *filename, variptr_u *buffer, variptr_u *buffer_end, i32 flags);

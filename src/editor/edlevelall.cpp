@@ -326,6 +326,11 @@ class PropertyTool : public EdTool {
     virtual i32 Process(EdInputContext &input);
     virtual void Render();
     void SelectAttr(i32 selected);
+    void GetTypeName(EdRef *reference, char *name);
+#pragma push_macro("GetClassName")
+#undef GetClassName
+    void GetClassName(EdRef *reference, char *name);
+#pragma pop_macro("GetClassName")
 
     PropertyMenuList menus;
     i32 show_type_names;
@@ -2675,6 +2680,30 @@ void LevelEditor::SetSaveFilename(char *name) {
         save_filename[0] = 0;
         editor_filename[0] = 0;
     }
+}
+
+void LevelEditor::Reset() {
+    reset_pending = 0;
+}
+
+/* Registers a loaded scene by name (reusing its slot when the name is
+ * known) and returns its index; 0 once all ten slots are taken. */
+i32 LevelEditor::AddScene(char *name, NUGSCN *scene, i32 active) {
+    i32 result = 0;
+    for (i32 index = 0; index < reset_pending; index++) {
+        if (NuStrICmp(scenes[index].name, name) == 0) {
+            scenes[index].scene = scene;
+            scenes[index].active = active;
+            return index;
+        }
+    }
+    if (reset_pending < 10) {
+        result = reset_pending++;
+        NuStrNCpy(scenes[result].name, name, 32);
+        scenes[result].active = active;
+        scenes[result].scene = scene;
+    }
+    return result;
 }
 
 i32 LevelEditor::FindSceneId(char *name) {
@@ -5278,6 +5307,34 @@ i32 EdManipulator::SelectRotator(EdInputContext &input, VuVec &center, VuVec &pl
     angle_delta = 0;
     return axis;
 }
+
+/* Property labels: "<type> <member>" when type names are shown. */
+void PropertyTool::GetTypeName(EdRef *reference, char *name) {
+    if (show_type_names != 0) {
+        EdType *type = theRegistry.GetType(reference->type_id);
+        if (type != NULL)
+            NuSPrintf(name, "%s %s", type->name, reference->name);
+        else
+            NuStrCpy(name, reference->name);
+    } else {
+        NuStrCpy(name, reference->name);
+    }
+}
+
+#pragma push_macro("GetClassName")
+#undef GetClassName
+void PropertyTool::GetClassName(EdRef *reference, char *name) {
+    if (show_type_names != 0) {
+        EdClass *ed_class = theRegistry.GetClass(reference->type_id);
+        if (ed_class != NULL)
+            NuSPrintf(name, "%s %s", ed_class->name, reference->name);
+        else
+            NuStrCpy(name, reference->name);
+    } else {
+        NuStrCpy(name, reference->name);
+    }
+}
+#pragma pop_macro("GetClassName")
 
 void PropertyTool::SelectAttr(i32 selected) {
     for (PropertyMenu *property_menu = menus.first; property_menu != NULL; property_menu = property_menu->next)
