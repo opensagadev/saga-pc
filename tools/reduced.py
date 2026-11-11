@@ -68,7 +68,9 @@ class Compiler:
 
     def __init__(self):
         self.bin, self.wine, self.env = environment()
-        subprocess.run(["wineserver", "-p"], env=self.env, capture_output=True)
+        # The server daemonises: it must not inherit pipes the caller waits on.
+        subprocess.run(["wineserver", "-p"], env=self.env, stdin=subprocess.DEVNULL,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 
     def run(self, args, timeout=300):
         return subprocess.run([self.wine, str(self.bin / "cl.exe"), *args], cwd=ROOT, env=self.env,
