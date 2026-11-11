@@ -3708,25 +3708,21 @@ void __cdecl cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 void __cdecl cbAssocID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_LIGHT_PC *light = curr_rtl;
-    if (light != NULL) {
-        light->field_5e &= (i16) ~(1u << ((u32)item->data & 31u));
+    if (curr_rtl != NULL) {
+        curr_rtl->field_5e &= (i16) ~(1 << (i32)item->data);
         if (item->highlighted)
-            curr_rtl->field_5e |= (i16)(1u << ((u32)item->data & 31u));
-        light = curr_rtl;
-        light->field_60 &= (i16) ~(u16)light->field_5e;
+            curr_rtl->field_5e |= (i16)(1 << (i32)item->data);
+        curr_rtl->field_60 &= (i16) ~(u16)curr_rtl->field_5e;
         RefreshUI();
     }
 }
 
 void __cdecl cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_LIGHT_PC *light = curr_rtl;
-    if (light != NULL) {
-        light->field_60 &= (i16) ~(1u << ((u32)item->data & 31u));
+    if (curr_rtl != NULL) {
+        curr_rtl->field_60 &= (i16) ~(1 << (i32)item->data);
         if (item->highlighted)
-            curr_rtl->field_60 |= (i16)(1u << ((u32)item->data & 31u));
-        light = curr_rtl;
-        light->field_5e &= (i16) ~(u16)light->field_60;
+            curr_rtl->field_60 |= (i16)(1 << (i32)item->data);
+        curr_rtl->field_5e &= (i16) ~(u16)curr_rtl->field_60;
         RefreshUI();
     }
 }
