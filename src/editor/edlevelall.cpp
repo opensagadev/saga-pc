@@ -30,6 +30,7 @@ extern "C" {
     extern NUMTL *edLevel3dMtl;
     extern NUMTL *edLevelTexMtl;
     char *__cdecl GetSfxName(i32 sound_id);
+    i32 __cdecl NuFileAlign(NUFILE file, i32 mask);
     eduiitem_s *__cdecl eduiItemSeparatorCreate(u32 data, const void *colours);
     i32 __cdecl edmainGetCursorEnabled(void);
     NUCAMERA *__cdecl edmainGetCameraPc(void);
@@ -407,6 +408,8 @@ extern EdManipulator theDefaultManipulator;
 ClassEditor theClassEditor;
 CursorTool theCursorTool;
 static i32 class_editor_create_pending = 0;
+i32 BaseEditor::blockStart[8];
+i32 BaseEditor::blockDepth;
 LevelEditor theLevelEditor;
 PropertyTool thePropertyTool;
 EdManipulator theDefaultManipulator;
@@ -761,20 +764,11 @@ STATIC_ASSERT(sizeof(EdSpecialObjectControl) == 0x14);
  * with the level editor. */
 class EdSystem {
   public:
-    void Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front) {
-        for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
-            subsystem->SubInitialise(buffer, buffer_end, from_front);
-    }
-    void RegisterSubSystem(EdSubSystem *subsystem) {
-        subsystem->next = NULL;
-        subsystem->previous = last_subsystem;
-        if (last_subsystem != NULL)
-            last_subsystem->next = subsystem;
-        last_subsystem = subsystem;
-        if (first_subsystem == NULL)
-            first_subsystem = subsystem;
-        subsystem_count++;
-    }
+    void RegisterSubSystem(EdSubSystem *subsystem);
+    void Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front);
+    void Reset();
+    void Process(f32 delta_time);
+    void Render();
 
     EdSubSystem *first_subsystem;
     EdSubSystem *last_subsystem;
@@ -1616,6 +1610,41 @@ void LevelEditor::SetCameraPosition(VuVec &position) {
     background_colour[2] = position.z;
     background_colour[3] = position.w;
     edcamSetPos(reinterpret_cast<NUVEC *>(background_colour));
+}
+
+/* Editor file blocks: a 16-byte header (type, size, two spare words) whose
+ * size is patched in when the block ends, padded to 16 bytes. */
+void BaseEditor::WriteBeginBlock(NUFILE file, i32 type) {
+    blockStart[blockDepth++] = NuFilePos(file);
+    NuFileWriteInt(file, type);
+    NuFileWriteInt(file, 0);
+    NuFileWriteInt(file, 0);
+    NuFileWriteInt(file, 0);
+}
+
+void BaseEditor::WriteEndBlock(NUFILE file) {
+    blockDepth--;
+    NuFileAlign(file, 15);
+    i32 end = NuFilePos(file);
+    NuFileSeek(file, blockStart[blockDepth] + 4, 0);
+    NuFileWriteInt(file, end - blockStart[blockDepth]);
+    NuFileSeek(file, end, 0);
+}
+
+void BaseEditor::WriteMetaData(NUFILE file, i32 type, i32 version, i32 count) {
+    NuFileWriteInt(file, 1);
+    NuFileWriteInt(file, type);
+    NuFileWriteInt(file, version);
+    NuFileWriteInt(file, count);
+}
+
+/* Data read from a loaded block is copied out when the editor owns its
+ * buffer, otherwise referenced in place. */
+void BaseEditor::ReadBuffer(void **destination, void *source, i32 size) {
+    if (id != 0)
+        memcpy(*destination, source, size);
+    else
+        *destination = source;
 }
 
 i32 ClassEditor::ReadBlock(DATAPTR *) {
@@ -4208,6 +4237,27 @@ f32 LineToPointDistance(VuVec &origin, VuVec &direction, VuVec &point, VuVec *cl
     return distance;
 }
 
+/* Signed distance from plane (xyz normal, w offset) to the segment
+ * origin..origin+direction: the nearer end's, or 0 when it crosses. */
+f32 LineToPlaneDistance(VuVec &origin, VuVec &direction, VuVec &plane) {
+    __declspec(align(16)) VuVec end;
+    f32 dot;
+    f32 start_distance;
+    f32 end_distance;
+    end.x = origin.x + direction.x;
+    end.y = direction.y + origin.y;
+    end.z = direction.z + origin.z;
+    dot = origin.x * plane.x + origin.y * plane.y + origin.z * plane.z;
+    start_distance = dot + plane.w;
+    dot = plane.x * end.x + end.y * plane.y + plane.z * end.z;
+    end_distance = dot + plane.w;
+    if (start_distance < 0.0f && end_distance < 0.0f)
+        return start_distance > end_distance ? start_distance : end_distance;
+    if (start_distance > 0.0f && end_distance > 0.0f)
+        return start_distance < end_distance ? start_distance : end_distance;
+    return 0.0f;
+}
+
 /* Intersects the segment origin..origin+direction with plane (xyz normal,
  * w offset); returns 0 when both ends lie on the same side. */
 i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection) {
@@ -5484,6 +5534,35 @@ void EdRegistry::DestroyObject(EdClassInterface *object_interface, void *object,
     theLevelEditor.destroying_objects = 0;
 }
 
+/* Revives every defunct object, oldest first, and empties the list. */
+void EdDefunctList::ReviveAll(i32 flags) {
+    for (EdDefunctListEntry *entry = first; entry != NULL; entry = first) {
+        entry->object_class->object_interface->ReviveObject(entry->object);
+        if (!(flags & 2))
+            theRegistry.NotifyReviveObject(entry->object, entry->object_class, flags);
+        if (entry->next != NULL)
+            entry->next->previous = entry->previous;
+        else
+            last = entry->previous;
+        if (entry->previous != NULL)
+            entry->previous->next = entry->next;
+        else
+            first = entry->next;
+        entry->next = NULL;
+        entry->previous = NULL;
+        count--;
+        delete entry;
+    }
+}
+
+void EdType::Serialise(EdStream &stream) {
+    if (stream.BeginBlock("Type")) {
+        stream.SerialiseString(&name);
+        stream.SerialiseBuffer(&size, sizeof(size), 1);
+        stream.EndBlock();
+    }
+}
+
 /* Serialises one object's members as described by its own class. */
 void EdClass::SerialiseObject(EdStream &stream, void *object) {
     if (stream.BeginBlock("Object") == NULL)
@@ -6173,6 +6252,61 @@ void EdFileOutputStream::EndBlock() {
     NuFileSeek(file, position, 0);
     SerialiseBuffer(&size, sizeof(size), 1);
     NuFileSeek(file, end, 0);
+}
+
+void EdSystem::RegisterSubSystem(EdSubSystem *subsystem) {
+    subsystem->next = NULL;
+    subsystem->previous = last_subsystem;
+    if (last_subsystem != NULL)
+        last_subsystem->next = subsystem;
+    last_subsystem = subsystem;
+    if (first_subsystem == NULL)
+        first_subsystem = subsystem;
+    subsystem_count++;
+}
+
+void EdSystem::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front) {
+    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+        subsystem->SubInitialise(buffer, buffer_end, from_front);
+}
+
+void EdSystem::Reset() {
+    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+        subsystem->SubReset();
+}
+
+void EdSystem::Process(f32 delta_time) {
+    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+        subsystem->SubProcess(delta_time);
+}
+
+void EdSystem::Render() {
+    for (EdSubSystem *subsystem = first_subsystem; subsystem != NULL; subsystem = subsystem->next)
+        subsystem->SubRender();
+}
+
+/* Attribute access through the first member of the class that carries it. */
+i32 EdClass::GetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    EdMember member;
+    if (FindMember(&member, object, attribute, 1))
+        return member.reference->GetAttributeData(member.object, attribute, requested_type, data, data_size);
+    return 0;
+}
+
+i32 EdClass::SetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size) {
+    EdMember member;
+    if (FindMember(&member, object, attribute, 1))
+        return member.reference->SetAttributeData(member.object, attribute, requested_type, data, data_size);
+    return 0;
+}
+
+/* Creates an object with a fresh guid (index 4). */
+void *EdRegistry::CreateObject(EdClassInterface *object_interface, void *source, i32 flags) {
+    return CreateObject(object_interface, source, 4, 0, flags);
+}
+
+void ClassObject::CopyObject(ClassObject &source) {
+    ed_class->CopyObject(object, source.object);
 }
 
 /* Reads an attribute through the picked member first, then through the

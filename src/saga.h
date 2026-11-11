@@ -29586,6 +29586,8 @@ struct EdType {
     char *name;
     i32 size;
     void (*serialise)(EdStream &, void *, i32);
+
+    void Serialise(EdStream &stream);
 };
 
 /* A registered editor class: its member list and object interface. */
@@ -29598,6 +29600,8 @@ struct EdClass {
     EdClassInterface *object_interface; /* Android "interface" (an objbase.h macro) */
 
     i32 FindMember(EdMember *result, void *object, i32 attributes, i32 recursive);
+    i32 GetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
+    i32 SetAttributeData(void *object, i32 attribute, i32 requested_type, void *data, i32 data_size);
     i32 SerialiseObjectHeader(EdStream &stream, void *object);
     void CopyObject(void *destination, void *source);
     void AddType(EdRef *member);
@@ -29626,6 +29630,7 @@ struct EdDefunctListEntry;
 struct EdDefunctList {
     EdDefunctList() : first(NULL), last(NULL), count(0) {
     }
+    void ReviveAll(i32 flags);
     EdDefunctListEntry *first;
     EdDefunctListEntry *last;
     i32 count;
@@ -29685,6 +29690,7 @@ struct EdRegistry {
     void NotifyDefunctObject(void *object, EdClass *object_class, i32 flags);
     void NotifyReviveObject(void *object, EdClass *object_class, i32 flags);
     void *CreateObject(EdClassInterface *object_interface, void *source, i32 index, i32 guid, i32 flags);
+    void *CreateObject(EdClassInterface *object_interface, void *source, i32 flags);
     void DestroyObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags);
     void DefunctObject(EdClassInterface *object_interface, void *object, i32 index, i32 flags);
     void GetStreamClassMapping(EdStream &stream, i32 *mapping, i32 &count, i32 capacity);
@@ -29738,6 +29744,7 @@ struct ClassObject {
     }
     i32 GetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
     i32 SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
+    void CopyObject(ClassObject &source);
     void Set(char *name);
     void GetName(char *destination, i32 size);
 };
@@ -29805,8 +29812,14 @@ class BaseEditor : public CSListLink<BaseEditor> {
     }
     virtual void AddMenuItems(eduimenu_s *) {
     }
+    static void WriteBeginBlock(NUFILE file, i32 type);
+    static void WriteEndBlock(NUFILE file);
+    static void WriteMetaData(NUFILE file, i32 type, i32 version, i32 count);
+    void ReadBuffer(void **destination, void *source, i32 size);
 
     i32 id;
+    static i32 blockStart[8];
+    static i32 blockDepth;
 };
 
 struct EdManipulator;
