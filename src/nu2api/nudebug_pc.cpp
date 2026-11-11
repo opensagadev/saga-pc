@@ -115,6 +115,25 @@ extern "C" void __cdecl PCNativeDebugFormatPc(PC_NATIVE_DEBUG_STATE_PC *state, c
     }
 }
 
+/* DirectX SDK DxErr9.lib (dxerr9.h). */
+extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
+extern "C" const char *WINAPI DXGetErrorDescription9A(HRESULT result);
+
+extern "C" void __cdecl PCNativeD3DWarningPrint(PC_NATIVE_DEBUG_STATE_PC *state, HRESULT result, const char *format,
+                                                ...) {
+    va_list arguments;
+    if (format != NULL) {
+        va_start(arguments, format);
+        vsprintf(PCNativeDebugFormatBuffer, format, arguments);
+        va_end(arguments);
+    }
+    sprintf(PCNativeDebugOutputBuffer, "NUD3DWARNING: %s, DirectDescription: %s, %s\r\n", PCNativeDebugFormatBuffer,
+            DXGetErrorString9A(result), DXGetErrorDescription9A(result));
+    OutputDebugStringA(PCNativeDebugOutputBuffer);
+    if (state->write_log && state->log_file != 0)
+        NuFileWriteString(state->log_file, PCNativeDebugOutputBuffer);
+}
+
 #include "saga.h"
 #include <string.h>
 #include <stdio.h>

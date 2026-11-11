@@ -48,6 +48,8 @@ D3D9_LIB := build/lib/imports/d3d9.lib
 DINPUT8_LIB := build/lib/imports/dinput8.lib
 XINPUT_LIB := build/lib/imports/xinput1_3.lib
 BINK_LIB := build/lib/imports/binkw32.lib
+# DirectX SDK static library (DXGetErrorString9A/DXGetErrorDescription9A), fetched with the toolchain.
+DXERR_LIB := build/tools/dxsdk/Lib/x86/DxErr9.lib
 CPPFLAGS := /Isrc /Ilib/ogg-vorbis/vorbis /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
 CXXFLAGS := /nologo /c /O2 /Gy /GS /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
@@ -68,9 +70,7 @@ LDFLAGS += /DEBUG
 LINK_OPTIONS := --optional-pdb
 map_flag = /MAP:$(patsubst %.exe,%.map,$(1))
 endif
-# Each executable gets its own adjacent PDB, including link-strict.
-pdb_flag = /PDB:$(patsubst %.exe,%.pdb,$(1))
-LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib advapi32.lib $(abspath $(D3D9_LIB)) $(abspath $(D3DX_LIB)) $(abspath $(DSOUND_LIB)) $(abspath $(DINPUT8_LIB)) $(abspath $(XINPUT_LIB)) $(abspath $(BINK_LIB))
+LDLIBS := user32.lib gdi32.lib winmm.lib ole32.lib oleaut32.lib shell32.lib advapi32.lib $(abspath $(D3D9_LIB)) $(abspath $(D3DX_LIB)) $(abspath $(DSOUND_LIB)) $(abspath $(DINPUT8_LIB)) $(abspath $(XINPUT_LIB)) $(abspath $(BINK_LIB)) $(abspath $(DXERR_LIB))
 
 .DEFAULT_GOAL := build
 .DELETE_ON_ERROR:
@@ -89,12 +89,12 @@ run: $(EXE)
 	cd res && WINEPREFIX="$(CURDIR)/build/tools/wine" WINEDEBUG=-all WINEDLLOVERRIDES="winemenubuilder.exe=d" wine ../$(EXE)
 
 # Directory dependencies also relink when a source is removed from the input list.
-$(EXE): $(DEBUG_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(SOURCE_DIRS) config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py
-	$(PYTHON) tools/cc.py $(LINK_OPTIONS) --link --allow-unresolved $@ $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call map_flag,$@) $(call pdb_flag,$@) $(LDLIBS)
+$(EXE): $(DEBUG_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(DXERR_LIB) $(SOURCE_DIRS) config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py
+	$(PYTHON) tools/cc.py --link --allow-unresolved $@ $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call pdb_flag,$@) $(LDLIBS)
 
 # The complete link: every referenced function must be implemented.
-link-strict: $(DEBUG_STRICT_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB)
-	$(PYTHON) tools/cc.py $(LINK_OPTIONS) --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call map_flag,$(STRICT_EXE)) $(call pdb_flag,$(STRICT_EXE)) $(LDLIBS)
+link-strict: $(DEBUG_STRICT_CAPTURE_HELPER) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) $(D3DX_LIB) $(DSOUND_LIB) $(D3D9_LIB) $(DINPUT8_LIB) $(XINPUT_LIB) $(BINK_LIB) $(DXERR_LIB)
+	$(PYTHON) tools/cc.py --link $(STRICT_EXE) $(OBJECTS) $(DIAGNOSTIC_OBJECTS) -- $(LDFLAGS) $(call pdb_flag,$(STRICT_EXE)) $(LDLIBS)
 
 # Debug support contains diagnostics only and never enters Matching objects.
 # Recompile this small Debug-only object so its identity tracks source edits and commits.
