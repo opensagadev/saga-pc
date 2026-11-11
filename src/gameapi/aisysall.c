@@ -6051,7 +6051,6 @@ static u32 CalculateRightIntersection(APIOBJECT_PC *object, AIPATHCNX_PC *first_
                                       AIPATHCNX_PC *second_connection, i32 first_angle, i32 second_angle,
                                       AIPATHNODE_PC *before, AIPATHNODE_PC *shared, AIPATHNODE_PC *after,
                                       NUVEC *result) {
-    f32 clearance;
     f32 before_radius;
     f32 shared_radius;
     f32 after_radius;
@@ -6067,16 +6066,15 @@ static u32 CalculateRightIntersection(APIOBJECT_PC *object, AIPATHCNX_PC *first_
     f32 first_parameter;
     f32 second_parameter;
 
-    clearance = object->collision_radius + AIPathConnectionMargin;
-    before_radius = before->radius - clearance;
+    before_radius = before->radius - (object->collision_radius + AIPathConnectionMargin);
     if (before_radius < 0.0f) {
         before_radius = 0.0f;
     }
-    shared_radius = shared->radius - clearance;
+    shared_radius = shared->radius - (object->collision_radius + AIPathConnectionMargin);
     if (shared_radius < 0.0f) {
         shared_radius = 0.0f;
     }
-    after_radius = after->radius - clearance;
+    after_radius = after->radius - (object->collision_radius + AIPathConnectionMargin);
     if (after_radius < 0.0f) {
         after_radius = 0.0f;
     }
@@ -6086,8 +6084,8 @@ static u32 CalculateRightIntersection(APIOBJECT_PC *object, AIPATHCNX_PC *first_
     first_end.x = before_radius;
     first_end.y = 0.0f;
     first_end.z = first_connection->horizontal_distance;
-    angle =
-        NuAngAdd(first_angle, PCPathArcSine((shared_radius - before_radius) / first_connection->horizontal_distance));
+    angle = PCPathArcSine((shared_radius - before_radius) / first_connection->horizontal_distance);
+    angle = NuAngAdd(first_angle, angle);
     NuVecRotateY(&first_start, &first_start, angle);
     NuVecRotateY(&first_end, &first_end, angle);
     NuVecAdd(&first_start, &first_start, &before->position);
@@ -6099,8 +6097,8 @@ static u32 CalculateRightIntersection(APIOBJECT_PC *object, AIPATHCNX_PC *first_
     second_end.x = -after_radius;
     second_end.y = 0.0f;
     second_end.z = second_connection->horizontal_distance;
-    angle =
-        NuAngSub(second_angle, PCPathArcSine((shared_radius - after_radius) / second_connection->horizontal_distance));
+    angle = PCPathArcSine((shared_radius - after_radius) / second_connection->horizontal_distance);
+    angle = NuAngSub(second_angle, angle);
     NuVecRotateY(&second_start, &second_start, angle);
     NuVecRotateY(&second_end, &second_end, angle);
     NuVecAdd(&second_start, &second_start, &after->position);
