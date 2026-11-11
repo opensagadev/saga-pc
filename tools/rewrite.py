@@ -234,7 +234,8 @@ def rule_invert_if(source):
             continue
         cond, then, other = parts
         a, b = source.span(node)
-        replacement = f"if ({negate(source, cond)}) {braced(source.src(other))} else {braced(source.src(then))}"
+        branches = [_with_semicolon(source, part) or source.src(part) for part in (other, then)]
+        replacement = f"if ({negate(source, cond)}) {braced(branches[0])} else {braced(branches[1])}"
         yield Candidate(source.edit([(a, b, replacement)]), "invert_if",
                         f"line {node.location.line}", True)
 
