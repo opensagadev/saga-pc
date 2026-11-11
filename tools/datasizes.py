@@ -4,8 +4,10 @@
 For every mapped data symbol with a blank size and a compiled definition:
 
   1. the COFF definition gives an upper bound: a common symbol's Value is its
-     exact size, otherwise the extent runs to the next data symbol of its
-     section and so includes alignment padding before that symbol;
+     exact size, and so is the extent of the last symbol of a COMDAT section
+     (string literals, floating-point constants, vftables, RTTI); otherwise the
+     extent runs to the next data symbol of its section and so includes
+     alignment padding before that symbol;
   2. the declared C/C++ type gives the exact size (libclang, with the same
      Windows x86 analysis flags as clang-tidy).  The two must agree: the
      declared size never exceeds the COFF extent, and any difference must be
@@ -40,7 +42,10 @@ def coff_extent(obj, symbol):
     region = obj.extract_data(symbol)
     if region["section"] is None:  # common symbol: Value is the allocation size
         return region["size"], True, 0, region["size"]
-    return region["size"], False, region["offset"], region["section"]["raw_size"]
+    section = region["section"]
+    end = region["offset"] + region["size"]
+    exact = bool(section["characteristics"] & 0x1000) and end == section["raw_size"]
+    return region["size"], exact, region["offset"], section["raw_size"]
 
 
 def padding_fits(size, extent, exact, start, section_size):
