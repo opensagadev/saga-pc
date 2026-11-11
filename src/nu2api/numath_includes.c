@@ -2334,6 +2334,20 @@ void NuQuatToMtx(NUQUAT *quat, NUMTX *out) {
     out->m33 = 1.0;
 }
 
+void NuQuatAdd(NUQUAT *out, NUQUAT *q0, NUQUAT *q1) {
+    out->w = q0->w + q1->w;
+    out->x = q0->x + q1->x;
+    out->y = q0->y + q1->y;
+    out->z = q0->z + q1->z;
+}
+
+void NuQuatSub(NUQUAT *out, NUQUAT *q0, NUQUAT *q1) {
+    out->w = q0->w - q1->w;
+    out->x = q0->x - q1->x;
+    out->y = q0->y - q1->y;
+    out->z = q0->z - q1->z;
+}
+
 void NuQuatMul(NUQUAT *out, NUQUAT *q0, NUQUAT *q1) {
     NUQUAT result;
     result.w = (q1->w * q0->w) - (q1->x * q0->x) - (q1->y * q0->y) - (q1->z * q0->z);
@@ -2343,6 +2357,17 @@ void NuQuatMul(NUQUAT *out, NUQUAT *q0, NUQUAT *q1) {
     out->x = result.x;
     out->y = result.y;
     out->w = result.w;
+}
+
+void NuQuatInv(NUQUAT *out, NUQUAT *quat) {
+    f32 recip_sq;
+
+    recip_sq = 1.0f / (quat->w * quat->w + quat->x * quat->x + quat->y * quat->y + quat->z * quat->z);
+
+    out->w = quat->w * recip_sq;
+    out->x = -quat->x * recip_sq;
+    out->y = -quat->y * recip_sq;
+    out->z = -quat->z * recip_sq;
 }
 
 void NuQuatNormalise(NUQUAT *out, NUQUAT *q) {
@@ -2356,6 +2381,10 @@ void NuQuatNormalise(NUQUAT *out, NUQUAT *q) {
     } else {
         *out = *q;
     }
+}
+
+f32 NuQuatMagnitude(NUQUAT *q) {
+    return q->w * q->w + q->x * q->x + q->y * q->y + q->z * q->z;
 }
 
 void NuQuatHarmonize(NUQUAT *a, NUQUAT *b) {
@@ -2487,6 +2516,13 @@ void __cdecl NuQuatSlerp(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
     out->w = from->w * from_factor + to_prime.w * to_factor;
 }
 
+void NuQuatBlend(NUQUAT *out, NUQUAT *q0, NUQUAT *q1, f32 blendA, f32 blendB) {
+    out->x = q0->x * blendA + q1->x * blendB;
+    out->y = q0->y * blendA + q1->y * blendB;
+    out->z = q0->z * blendA + q1->z * blendB;
+    out->w = q0->w * blendA + q1->w * blendB;
+}
+
 void NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
     f32 dot = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
     NUQUAT negative;
@@ -2534,6 +2570,17 @@ void NuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
         out->z = from->z * from_factor + target->z * to_factor;
         out->w = from->w * from_factor + target->w * to_factor;
     }
+}
+
+f32 NuQuatDot(NUQUAT *q0, NUQUAT *q1) {
+    return q0->x * q1->x + q0->y * q1->y + q0->z * q1->z + q0->w * q1->w;
+}
+
+void NuQuatNeg2(NUQUAT *out, NUQUAT *in) {
+    out->x = -in->x;
+    out->y = -in->y;
+    out->z = -in->z;
+    out->w = -in->w;
 }
 
 void __cdecl VuQuatSlerpFast(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
@@ -2616,6 +2663,30 @@ void NuPlnEqn(NUPLANE *out, NUVEC *pnt0, NUVEC *pnt1, NUVEC *pnt2) {
     NuVecNorm(pln, &normal);
 
     out->d = -(out->a * pnt0->x + out->b * pnt0->y + out->c * pnt0->z);
+}
+
+void NuPlnEqnPn(NUPLANE *out, NUVEC *point, NUVEC *normal) {
+    out->a = normal->x;
+    out->b = normal->y;
+    out->c = normal->z;
+    out->d = -(out->a * point->x + out->b * point->y + out->c * point->z);
+}
+
+f32 NuPlnDist(NUPLANE *plane, NUVEC *point) {
+    f32 distance = NuVecDot(point, &plane->normal) + plane->d;
+    return distance;
+}
+
+f32 NuPlnDist2(NUPLANE *plane, NUVEC *a, NUVEC *b) {
+    f32 da = NuVecDot(a, &plane->normal) + plane->d;
+    f32 db = NuVecDot(b, &plane->normal) + plane->d;
+    if (da < 0.0f && db < 0.0f) {
+        return da > db ? da : db;
+    }
+    if (da > 0.0f && db > 0.0f) {
+        return da < db ? da : db;
+    }
+    return 0.0f;
 }
 
 i32 __cdecl NuPlnLine(NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out) {
@@ -2861,6 +2932,10 @@ f32 __cdecl NuLineToPointDistSqrEx(NUVEC *s, NUVEC *e, NUVEC *pnt, NUVEC *out) {
     return dist;
 }
 
+f32 NuLineToPointDistSqr(NUVEC *start, NUVEC *end, NUVEC *point) {
+    return NuLineToPointDistSqrEx(start, end, point, NULL);
+}
+
 f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *point, NUVEC *closest) {
     f32 length;
     f32 projection;
@@ -2884,6 +2959,23 @@ f32 __cdecl NuInfiniteLineToPointDistSqrEx(NUVEC *start, NUVEC *end, NUVEC *poin
 
 f32 __cdecl NuInfiniteLineToPointDistSqr(NUVEC *start, NUVEC *end, NUVEC *point) {
     return NuInfiniteLineToPointDistSqrEx(start, end, point, NULL);
+}
+
+f32 NuLineToLineDist(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d) {
+    f32 distance;
+    NUVEC offset;
+    NUVEC first;
+    NUVEC second;
+    NUVEC between;
+    NUVEC normal;
+    NuVecSub(&offset, c, a);
+    NuVecSub(&first, b, a);
+    NuVecSub(&second, d, c);
+    NuVecSub(&between, b, c);
+    NuVecCross(&normal, &first, &second);
+    distance = NuVecDot(&offset, &normal);
+    distance /= NuVecMag(&normal);
+    return distance;
 }
 
 i32 __cdecl NuPointRelToBoundingBox(NUVEC *point, NUVEC *maximum, NUVEC *minimum) {
@@ -3844,6 +3936,169 @@ f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations) {
     return 0.0f;
 }
 
+f32 nugraphGetYatXScaled(nugraph_s *graph, f32 x, i32 iterations) {
+    return graph->y_extent * graph->y_scale * nugraphGetYatX(graph, x, iterations);
+}
+
+i32 nugraphGenerateLookupTable(nugraph_s *graph, f32 *table, i32 table_count) {
+    i32 i;
+    f32 x;
+    f32 x0;
+    f32 x1;
+    f32 y0;
+    f32 y1;
+    f32 fraction;
+    f32 parameter = 0.0f;
+    f32 table_step = 1.0f / (f32)(table_count - 1);
+    f32 curve_step = 1.0f / 99.0f;
+
+    nugraphCalcCurve(graph, 100);
+    for (i = 0; i < table_count; ++i) {
+        x = (f32)i * table_step;
+        x0 = nugraphGetXatT(graph, parameter);
+        x1 = nugraphGetXatT(graph, parameter + curve_step);
+        while (x >= x1) {
+            parameter += curve_step;
+            x0 = x1;
+            x1 = nugraphGetXatT(graph, parameter + curve_step);
+        }
+        if (x0 == x1) {
+            fraction = 0.0f;
+        } else {
+            fraction = (x - x0) / (x1 - x0);
+        }
+        y0 = nugraphGetYatT(graph, parameter);
+        y1 = nugraphGetYatT(graph, parameter + curve_step);
+        table[i] = y0 + (y1 - y0) * fraction;
+        if (table[i] > 1.0f) {
+            table[i] = 1.0f;
+        }
+        table[i] = graph->y_extent * table[i];
+    }
+    return 0;
+}
+
+i32 nugraphFileSave(nugraph_s *graph, char *filename) {
+    i32 version = 1;
+    f32 table[100];
+    NUFILE file;
+
+    nugraphGenerateLookupTable(graph, table, 100);
+    file = NuFileOpen(filename, 1);
+    if (file != 0) {
+        NuFileWrite(file, &version, sizeof(version));
+        NuFileWrite(file, graph, sizeof(*graph));
+        NuFileWrite(file, table, sizeof(table));
+        NuFileClose(file);
+        return 1;
+    }
+    return 0;
+}
+
+i32 nugraphFileSaveGraphOnlyToFile(nugraph_s *graph, NUFILE file) {
+    i32 version = 2;
+    if (file != 0) {
+        NuFileWrite(file, &version, sizeof(version));
+        NuFileWrite(file, graph, sizeof(*graph));
+        return 1;
+    }
+    return 0;
+}
+
+/* Graphs saved before version 2 held 32 points. */
+struct legacy_nugraph_s {
+    u8 pad_00[0x38];
+    i8 interpolation;
+    i8 point_count;
+    u8 pad_3a[2];
+    f32 x[32];
+    f32 y[32];
+    f32 x_scale;
+    f32 y_scale;
+    f32 x_extent;
+    f32 y_extent;
+    f32 x_offset;
+    f32 y_offset;
+};
+STATIC_ASSERT(sizeof(struct legacy_nugraph_s) == 0x154);
+
+i32 nugraphFileLoadGraphOnlyToFile(nugraph_s *graph, NUFILE file) {
+    i32 version = 0;
+    i32 i;
+    struct legacy_nugraph_s legacy;
+
+    if (file != 0) {
+        NuFileRead(file, &version, sizeof(version));
+        if (version < 2) {
+            NuFileRead(file, &legacy, sizeof(legacy));
+            graph->x_extent = legacy.x_extent;
+            graph->y_extent = legacy.y_extent;
+            graph->x_offset = legacy.x_offset;
+            graph->y_offset = legacy.y_offset;
+            graph->x_scale = legacy.x_scale;
+            graph->y_scale = legacy.y_scale;
+            graph->interpolation = legacy.interpolation;
+            graph->point_count = legacy.point_count;
+            for (i = 0; i < 8; ++i) {
+                graph->x[i] = legacy.x[i];
+                graph->y[i] = legacy.y[i];
+            }
+        } else {
+            NuFileRead(file, graph, sizeof(*graph));
+        }
+        return 1;
+    }
+    return 0;
+}
+
+i32 nugraphFileLoadGraph(char *filename, VARIPTR *buffer, VARIPTR *buffer_end) {
+    i32 version = 0;
+    VARIPTR start = *buffer;
+
+    if (NuFileLoadBuffer(filename, start.void_ptr, buffer_end->addr - start.addr) != 0) {
+        PCByteCopy_candidate(&version, buffer->void_ptr, sizeof(version));
+        buffer->addr += sizeof(version);
+        PCByteCopy_candidate(start.void_ptr, buffer->void_ptr, sizeof(nugraph_s));
+        buffer->addr += sizeof(nugraph_s) - sizeof(version);
+        return 1;
+    }
+    return 0;
+}
+
+i32 nugraphFileLoadTable(char *filename, VARIPTR *buffer, VARIPTR *buffer_end) {
+    i32 version = 0;
+    VARIPTR start = *buffer;
+
+    if (NuFileLoadBuffer(filename, start.void_ptr, buffer_end->addr - start.addr) != 0) {
+        PCByteCopy_candidate(&version, buffer->void_ptr, sizeof(version));
+        buffer->addr += sizeof(version) + sizeof(nugraph_s);
+        PCByteCopy_candidate(start.void_ptr, buffer->void_ptr, 100 * sizeof(f32));
+        buffer->addr = start.addr + 100 * sizeof(f32);
+        return 1;
+    }
+    return 0;
+}
+
+i32 nugraphFileSaveGraphOnly(nugraph_s *graph, char *filename) {
+    i32 result = 0;
+    NUFILE file = NuFileOpen(filename, 1);
+    if (file != 0) {
+        result = nugraphFileSaveGraphOnlyToFile(graph, file);
+        NuFileClose(file);
+    }
+    return result;
+}
+
+i32 nugraphFileLoadGraphOnly(nugraph_s *graph, char *filename) {
+    i32 result = 0;
+    NUFILE file = NuFileOpen(filename, 0);
+    if (file != 0) {
+        result = nugraphFileLoadGraphOnlyToFile(graph, file);
+        NuFileClose(file);
+    }
+    return result;
+}
+
 void __cdecl NuTrigInit(void) {
     const f32 interval = (f32)(2.0 * 3.14159265358979323846 / 32768);
     i32 i;
@@ -3851,6 +4106,45 @@ void __cdecl NuTrigInit(void) {
     for (i = 0; i < 32768; ++i) {
         NuTrigTable[i] = (f32)sin(i * interval);
     }
+}
+
+static f32 NuSinApprox3(i32 angle) {
+    f32 x;
+    f64 x2;
+    f64 x3;
+    f64 x5;
+    f64 x7;
+    f64 term3;
+    f64 term5;
+    f64 term7;
+    f64 term9;
+    angle &= 0xffff;
+    if (angle > 0xc000) {
+        angle -= 0xc000;
+    } else if (angle > 0x4000) {
+        angle = 0xc000 - angle;
+    } else {
+        angle += 0x4000;
+    }
+    x = angle * 9.58738019107841e-05;
+    x -= 1.5707963705062866;
+    x2 = x * x;
+    x3 = x * x2;
+    x5 = x3 * x2;
+    x7 = x5 * x2;
+    term3 = x3 * -0.16666656732559204;
+    term5 = x5 * 0.008333025500178337;
+    term7 = -0.00019807413627859205 * x7;
+    term9 = x7 * x2 * 2.601886990305502e-06;
+    return x + term3 + term5 + term7 + term9;
+}
+
+f32 NuSinApprox2(i32 angle) {
+    return NuSinApprox3(angle);
+}
+
+f32 NuCosApprox2(i32 angle) {
+    return NuSinApprox3(angle + 0x4000);
 }
 
 static u16 NuAngAtanQuadrantI(u32 dx, u32 dy) {

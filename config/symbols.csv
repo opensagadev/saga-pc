@@ -6005,8 +6005,12 @@ address,symbol,size,ctype
 0x005b7d60,_NuQuatFromEulerXYZ,314,"void __cdecl (NUQUAT *out, NUANG psi, NUANG theta, NUANG phi)"
 0x005b7ea0,_NuMtxToQuat,410,"void __cdecl (NUMTX *, NUQUAT *)"
 0x005b8040,_NuQuatToMtx,285,"void __cdecl (NUQUAT *quat, NUMTX *out)"
+0x5b8160,_NuQuatAdd,46,"void __cdecl (NUQUAT *, NUQUAT *, NUQUAT *)"
+0x5b8190,_NuQuatSub,46,"void __cdecl (NUQUAT *, NUQUAT *, NUQUAT *)"
 0x005b81c0,_NuQuatMul,164,"void __cdecl (NUQUAT *out, NUQUAT *q0, NUQUAT *q1)"
+0x5b8270,_NuQuatInv,88,"void __cdecl (NUQUAT *, NUQUAT *)"
 0x005b82d0,_NuQuatNormalise,174,"void __cdecl (NUQUAT *out, NUQUAT *q)"
+0x5b8380,_NuQuatMagnitude,44,f32 __cdecl (NUQUAT *)
 0x005b83b0,_NuQuatHarmonize,88,"void __cdecl (NUQUAT *a, NUQUAT *b)"
 0x005b8410,_NuQuatLerp,75,"void __cdecl (NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t)"
 0x005b8460,_NuCubicInterpolation,188,"f32 __cdecl (f32 m, f32 y0, f32 y1, f32 y2, f32 t)"
@@ -6014,9 +6018,15 @@ address,symbol,size,ctype
 0x005b8600,_NuHermiteInterpolation,191,"f32 __cdecl (f32 m, f32 y0, f32 y1, f32 y2, f32 t)"
 0x005b86c0,_NuQuatHermiteInt,221,"void __cdecl (NUQUAT *out, NUQUAT *m, NUQUAT *q0, NUQUAT *q1, NUQUAT *q2, f32 t)"
 0x005b87a0,_NuQuatSlerp,488,"void __cdecl (NUQUAT *, NUQUAT *, NUQUAT *, f32)"
+0x5b8990,_NuQuatBlend,82,"void __cdecl (NUQUAT *, NUQUAT *, NUQUAT *, f32, f32)"
 0x005b89f0,_NuQuatSlerpFast,669,"void __cdecl (NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t)"
+0x5b8c90,_NuQuatDot,45,"f32 __cdecl (NUQUAT *, NUQUAT *)"
+0x5b8cc0,_NuQuatNeg2,39,"void __cdecl (NUQUAT *, NUQUAT *)"
 0x005b8cf0,_VuQuatSlerpFast,587,"void __cdecl (NUQUAT *, NUQUAT *, NUQUAT *, f32)"
 0x005b8f40,_NuPlnEqn,196,"void __cdecl (NUPLANE *out, NUVEC *pnt0, NUVEC *pnt1, NUVEC *pnt2)"
+0x5b9010,_NuPlnEqnPn,61,"void __cdecl (NUPLANE *, NUVEC *, NUVEC *)"
+0x5b9050,_NuPlnDist,48,"f32 __cdecl (NUPLANE *, NUVEC *)"
+0x5b9080,_NuPlnDist2,208,"f32 __cdecl (NUPLANE *, NUVEC *, NUVEC *)"
 0x005b9150,_NuPlnLine,320,"i32 __cdecl (NUPLANE *plane, NUVEC *s, NUVEC *e, NUVEC *out)"
 0x005b9290,_NuPlnLine3,154,"f32 __cdecl (NUPLANE *plane, NUVEC *pnt, NUVEC *v, NUVEC *out)"
 0x005b9330,_NuPtInPolyXY,230,"i32 __cdecl (NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2)"
@@ -6079,7 +6089,17 @@ address,symbol,size,ctype
 0x5bd080,_nugraphGetXatT,62,"f32 __cdecl (nugraph_s *, f32)"
 0x5bd0c0,_nugraphGetYatT,63,"f32 __cdecl (nugraph_s *, f32)"
 0x5bd100,_nugraphGetYatX,1634,"f32 __cdecl (nugraph_s *, f32, i32)"
+0x5bd770,_nugraphGetYatXScaled,45,"f32 __cdecl (nugraph_s *, f32, i32)"
+0x5bd7a0,_nugraphGenerateLookupTable,631,"i32 __cdecl (nugraph_s *, f32 *, i32)"
+0x5bda20,_nugraphFileSave,132,"i32 __cdecl (nugraph_s *, char *)"
+0x5bdab0,_nugraphFileSaveGraphOnlyToFile,60,"i32 __cdecl (nugraph_s *, NUFILE)"
+0x5bdaf0,_nugraphFileLoadGraphOnlyToFile,400,"i32 __cdecl (nugraph_s *, NUFILE)"
+0x5bdc80,_nugraphFileLoadGraph,94,"i32 __cdecl (char *, VARIPTR *, VARIPTR *)"
+0x5bdce0,_nugraphFileLoadTable,102,"i32 __cdecl (char *, VARIPTR *, VARIPTR *)"
 0x005bdd50,_NuTrigInit,56,void __cdecl (void)
+0x5bdd90,_NuSinApprox3,147,f32 __cdecl (i32)
+0x5bde30,_NuSinApprox2,5,f32 __cdecl (i32)
+0x5bde40,_NuCosApprox2,18,f32 __cdecl (i32)
 0x5bde60,_NuAngAtanQuadrantI,45,
 0x5bde90,_NuAtani,130,"i32 __cdecl (i32, i32)"
 0x5bdf20,_NuAngAtanQuadrantRadI,84,
@@ -6107,8 +6127,12 @@ address,symbol,size,ctype
 0x5bf640,_NuEulerXYZFromQuat,304,
 0x5bf770,_NuPtInPoly,415,"i32 __cdecl(NUVEC*,NUVEC*,NUVEC*,NUVEC*,NUPLANE*)"
 0x005bf910,_NuLineToPointDistSqrEx,431,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bfac0,_NuLineToPointDistSqr,26,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x005bfae0,_NuInfiniteLineToPointDistSqrEx,330,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x005bfc30,_NuInfiniteLineToPointDistSqr,26,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
+0x5bfc50,_NuLineToLineDist,274,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
+0x5bfd70,_nugraphFileSaveGraphOnly,80,"i32 __cdecl (nugraph_s *, char *)"
+0x5bfdc0,_nugraphFileLoadGraphOnly,51,"i32 __cdecl (nugraph_s *, char *)"
 0x005bfe00,_NuAtan2,50,"f32 __cdecl (f32, f32)"
 0x5bfe40,_RenderPostPowPc,57,"f32 __cdecl(f32,f32)"
 0x005bfe80,_NuMtxGetPerspectiveD3D,141,"void __cdecl (NUMTX *, f32 *, f32 *, f32 *, f32 *)"
@@ -18521,7 +18545,12 @@ address,symbol,size,ctype
 0x764040,__real@c042000000000000,8,const f64
 0x764048,__real@c018000000000000,8,const f64
 0x764050,_NugraphSourcePathPc,52,const char[52]
+0x764088,__real@3f84afd6a0000000,8,const f64
 0x00764090,__real@3f2921fb60000000,8,const f64
+0x764098,__real@3ec5d38280000000,8,const f64
+0x7640a0,__real@bf29f643e0000000,8,const f64
+0x7640a8,__real@3f8110e7c0000000,8,const f64
+0x7640b0,__real@bfc5555480000000,8,const f64
 0x7640b8,__real@3fc90fdb,,const f32
 0x7640bc,__real@4096cbe4,,const f32
 0x7640c0,__real@40490fdb,,const f32
