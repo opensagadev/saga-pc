@@ -102,11 +102,11 @@ void __cdecl SetSaveSuccessFn(SAVE_VOID_FN_PC callback) {
 }
 
 i32 __cdecl ChecksumSaveData(void *buffer, i32 size) {
-    i32 count = size / 4;
-    i32 index;
-    u32 sum = 0x5c0999;
-    for (index = 0; index < count; ++index)
-        sum += ((u32 *)buffer)[index];
+    u32 sum;
+    i32 i;
+    sum = 0x5c0999;
+    for (i = 0; i < size / 4; i++)
+        sum += ((u32 *)buffer)[i];
     return (i32)sum;
 }
 
