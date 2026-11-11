@@ -538,11 +538,11 @@ void __cdecl edgraClearPage(i8 page) {
 void __cdecl edgraSortVectorBuffer(i32 index) {
     NUVEC temporary[256];
     if (index != -1 && index != edgra_last_clump_in_buffer && GrassClumps[index].vector_buffer != NULL) {
-        u8 *buffer = (u8 *)GrassClumps[index].vector_buffer;
         u32 bytes = GrassClumps[index].element_count * sizeof(NUVEC);
         i32 i;
-        PCByteCopy_candidate(temporary, buffer, bytes);
-        PCByteCopy_candidate(buffer, buffer + bytes, (u32)((u8 *)edgra_free_vecbuffer - (buffer + bytes)));
+        PCByteCopy_candidate(temporary, GrassClumps[index].vector_buffer, bytes);
+        PCByteCopy_candidate(GrassClumps[index].vector_buffer, (u8 *)GrassClumps[index].vector_buffer + bytes,
+                             (u32)((u8 *)edgra_free_vecbuffer - ((u8 *)GrassClumps[index].vector_buffer + bytes)));
         PCByteCopy_candidate((u8 *)edgra_free_vecbuffer - bytes, temporary, bytes);
         edgra_last_clump_in_buffer = index;
         for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
