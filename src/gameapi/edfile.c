@@ -399,6 +399,24 @@ extern NUVEC *EdMainLocationVectorPc;
 extern i32 edmain_cursor_enabled;
 void __cdecl PcEditorCursorEnablePc(i32 enabled);
 
+typedef struct EDUI_PRIM_VERTEX_PC {
+    f32 x;
+    f32 y;
+    f32 z;
+    u32 colour;
+} EDUI_PRIM_VERTEX_PC;
+STATIC_ASSERT(offsetof(EDUI_PRIM_VERTEX_PC, colour) == 0xc);
+
+static void EduiPrimSetColourPc(i32 colour) {
+    u32 converted;
+    if (NuPrimNeedsOverbrightening != 0)
+        converted = ((colour & 0xff) << 16) + ((colour >> 16) & 0xff) + (colour & 0xff00) + (colour & 0xff000000);
+    else
+        converted =
+            ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
+    ((EDUI_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+}
+
 void __cdecl edmainSetReturn(i32 result) {
     editor_return = result;
 }
@@ -1372,6 +1390,76 @@ void __cdecl eduiFlushInteracts(void) {
 }
 
 extern f32 edui_cursor_y;
+extern struct PC_SCENE_MTL_VIEW *uimtls[5];
+
+void __cdecl eduiRenderInteracts(void) {
+    edui_interact_s *hovered;
+    edui_interact_s *interact;
+    i32 count;
+    i32 i;
+    u32 colour;
+    f32 edge;
+
+    if (numInteracts <= 0)
+        return;
+
+    hovered = NULL;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(14, 5, (NUMTL *)uimtls[0]);
+    interact = eduiInteractLocked;
+    if (interact != NULL) {
+        count = 1;
+    } else {
+        count = numInteracts;
+        interact = eduiInteracts;
+    }
+    for (i = 0; i < count; ++i, ++interact) {
+        colour = NuRandInt();
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x, interact->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x + interact->width, interact->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x + interact->width, interact->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x + interact->width, interact->height + interact->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x + interact->width, interact->height + interact->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x, interact->height + interact->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x, interact->height + interact->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(interact->x, interact->y, 0.0f);
+        if (edui_cursor_x >= interact->x && edui_cursor_y >= interact->y) {
+            edge = interact->x + interact->width;
+            if (edge > edui_cursor_x) {
+                edge = interact->height + interact->y;
+                if (edge > edui_cursor_y)
+                    hovered = interact;
+            }
+        }
+    }
+    NuPrim2DEnd();
+    if (hovered != NULL) {
+        NuPrim2DBegin(16, 5, (NUMTL *)uimtls[3]);
+        colour = (NuRandInt() & 0x00ffffff) | 0x40000000;
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(hovered->x, hovered->y, 0.0f);
+        EduiPrimSetColourPc(colour);
+        NuPrim2DAddXYZ(hovered->width + hovered->x, hovered->height + hovered->y, 0.0f);
+        NuPrim2DEnd();
+    }
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
+}
+
+static i32 bShowCursor = 1;
+
+void __cdecl eduiShowCursor(i32 show) {
+    bShowCursor = show;
+}
+
 f32 edui_cursor_dx;
 f32 edui_cursor_dy;
 u32 edui_cursor_colour = 0xff000000;
