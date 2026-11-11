@@ -4792,7 +4792,6 @@ extern "C" {
     void *__cdecl DisplayListCreateSkinTransformPS(VARIPTR *buffer, NUMTX *skin, void *weights, void *geometry_ptr,
                                                    void **render_geometry, void *unused) {
         PC_SPECIAL_GEOMETRY *geometry = (PC_SPECIAL_GEOMETRY *)geometry_ptr;
-        PC_SPECIAL_DEFORMER_WEIGHTS *weight_view = (PC_SPECIAL_DEFORMER_WEIGHTS *)weights;
         i32 *matrix_count;
         u32 vertex, morph;
         u8 *destination;
@@ -4816,7 +4815,7 @@ extern "C" {
             PCByteCopy_candidate(destination, locked, geometry->vertex_count * geometry->vertex_stride);
             for (vertex = 0; vertex != geometry->vertex_count; ++vertex) {
                 for (morph = 0; morph != geometry->morph_count; ++morph) {
-                    f32 weight = weight_view->weights[morph];
+                    f32 weight = ((PC_SPECIAL_DEFORMER_WEIGHTS *)weights)->weights[morph];
                     if (geometry->morph_deltas[morph] != NULL && weight != 0.0f) {
                         ((NUVEC *)destination)->x += geometry->morph_deltas[morph][vertex].x * weight;
                         ((NUVEC *)destination)->y += geometry->morph_deltas[morph][vertex].y * weight;
