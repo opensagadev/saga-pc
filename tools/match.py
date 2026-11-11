@@ -90,8 +90,13 @@ def padding_runs(functions, target, read, externals=()):
     return runs
 
 
-def text_coverage(functions, target, externals=(), padding=()):
-    """Describe original text categories without changing exact-match credit."""
+def text_coverage(functions, target, externals=(), padding=(), data=()):
+    """Describe original text categories without changing exact-match credit.
+
+    `data` rows inside .text (the DirectInput object-format tables the SDK's
+    dilib objects place in their code section) are classified as text data:
+    neither unclassified nor function credit.
+    """
     start, total = number(target["text_va"]), number(target["text_size"])
     end = start + total
 
@@ -114,6 +119,13 @@ def text_coverage(functions, target, externals=(), padding=()):
     glue = covered_bytes(glue_ranges)
     if covered_bytes(mapped_ranges + glue_ranges) != mapped + glue:
         raise ValueError("Reconstruction and excluded import glue overlap")
+    in_text = [row for row in data if row.get("target_size")
+               and start <= number(row["address"]) < end]
+    data_ranges = ranges(in_text)
+    text_data = covered_bytes(data_ranges)
+    exact_text_data = covered_bytes(ranges(row for row in in_text if row["exact_match"]))
+    if covered_bytes(mapped_ranges + glue_ranges + data_ranges) != mapped + glue + text_data:
+        raise ValueError("Text data overlaps functions or import glue")
     reconstruction_total = total - glue
     padding_bytes = sum(run["size"] for run in padding)
     exact_padding = sum(run["size"] for run in padding if run["exact"])
@@ -123,7 +135,9 @@ def text_coverage(functions, target, externals=(), padding=()):
         "exact_reconstruction_bytes": exact,
         "mapped_not_exact_bytes": mapped - exact,
         "excluded_import_glue_bytes": glue,
-        "unclassified_text_bytes": total - mapped - glue,
+        "text_data_bytes": text_data,
+        "exact_text_data_bytes": exact_text_data,
+        "unclassified_text_bytes": total - mapped - glue - text_data,
         "strict_original_text_denominator_bytes": total,
         "strict_original_text_exact_percent": 100 * exact / total if total else 0.0,
         "reconstruction_scope_denominator_bytes": reconstruction_total,
@@ -134,7 +148,7 @@ def text_coverage(functions, target, externals=(), padding=()):
                          "these percentages compare relocated objects, not the linked image.",
         "alignment_padding_bytes": padding_bytes,
         "exact_alignment_padding_bytes": exact_padding,
-        "unclassified_non_padding_text_bytes": total - mapped - glue - padding_bytes,
+        "unclassified_non_padding_text_bytes": total - mapped - glue - text_data - padding_bytes,
         "exact_with_padding_bytes": exact + exact_padding,
         "exact_with_padding_percent": 100 * (exact + exact_padding) / total if total else 0.0,
         "padding_qualification": f"Padding is int3/nop alignment fill shorter than {PADDING_ALIGNMENT} bytes "
@@ -469,7 +483,7 @@ def main():
     if not args.function:
         padding = padding_runs(functions, target, pe.read_va, externals.values())
         result["progress"] = progress(functions, target, padding)
-        result["text_coverage"] = text_coverage(functions, target, externals.values(), padding)
+        result["text_coverage"] = text_coverage(functions, target, externals.values(), padding, data)
         result["progress"].update(objdiff_progress(report, functions))
         member_ranges = [(number(r["address"]), r["target_size"]) for r in members
                          if r["target_size"] is not None]

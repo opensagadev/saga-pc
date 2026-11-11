@@ -400,7 +400,12 @@ one that directly follows (or precedes) its placed neighbour from the same membe
 since the linker keeps a member's functions in object order. When several twins
 (A/W variants) claim one address, the one the map or an unambiguous candidate
 refers to there is kept; a candidate whose references contradict the map is
-dropped. An existing map row without a size is completed in place. It adds them and their references to `config/symbols.csv`
+dropped. An existing map row without a size is completed in place. A function the map
+already binds to one of its masked occurrences is placed there; functions shorter
+than eight bytes are placed only this way. Hand-written assembler members (x87
+transcendental wrappers, `_ftol2`, SEH prolog/epilog, `exsup*`, `adj_fdiv`) carry
+no COFF function sizes: each procedure or public label of such a section extends
+to the next one, as the linker lays the section out. It adds them and their references to `config/symbols.csv`
 and records the members in `config/library-objects.json`; `match.py` compares
 those members like compiled sources. Rerun it after mapping changes.
 
@@ -493,7 +498,10 @@ int3/nop fillers, shorter than 16 bytes, ending where the next extent starts on 
 exact function, because the compiler and linker emit it deterministically there.
 The exact badge shows `matching_with_padding_percent`; the strict function-only
 `matching_percent` and the text categories (`alignment_padding_bytes`,
-`unclassified_non_padding_text_bytes`) remain in `matching.json`. Mapped code/data badges count known symbol extents
+`unclassified_non_padding_text_bytes`) remain in `matching.json`. Data that sits in
+`.text` (the DirectInput object-format tables, byte-identical to the `.text`
+sections of the SDK's `dilib2/4/5.obj`) is reported as `text_data_bytes` and
+`exact_text_data_bytes`: classified, but not function credit. Mapped code/data badges count known symbol extents
 against the code (3,471,246) and data (36,018,966) section sizes. None of these
 measure playability.
 

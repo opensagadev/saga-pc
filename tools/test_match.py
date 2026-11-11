@@ -151,6 +151,17 @@ class TextCoverageTests(unittest.TestCase):
         self.assertEqual(stats["mapped_scope_exact_percent"], 0)
         self.assertIn("unproven padding", stats["qualification"])
 
+    def test_data_inside_text_is_classified_without_function_credit(self):
+        rows = [self.row()]
+        tables = [self.row(0x401100, 64), self.row(0x401200, 32, exact=False), self.row(0x405000, 8)]
+        stats = match.text_coverage(rows, self.target, (), (), tables)
+        self.assertEqual(stats["text_data_bytes"], 96)
+        self.assertEqual(stats["exact_text_data_bytes"], 64)
+        self.assertEqual(stats["unclassified_text_bytes"], 4096 - 16 - 96)
+        self.assertEqual(stats["exact_reconstruction_bytes"], 16)
+        with self.assertRaisesRegex(ValueError, "overlaps"):
+            match.text_coverage(rows, self.target, (), (), [self.row(0x401008, 16)])
+
     def test_invalid_or_overlapping_categories_are_rejected(self):
         for address in (0x400fff, 0x401fff, 0x402000):
             with self.subTest(address=address), self.assertRaisesRegex(ValueError, "outside original"):
