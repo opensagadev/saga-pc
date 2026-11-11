@@ -25,15 +25,16 @@ import sys
 if __package__:
     from .binary import COFF, BinaryError, relocate_function
     from .lib import (ROOT, archive_members, archive_path, bindings_for, compiled_objects, library_entries,
-                      library_member_path, load_symbols, localize_statics, project, retail)
+                      library_member_path, load_symbols, prepare_member, project, retail)
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from tools.binary import COFF, BinaryError, relocate_function
     from tools.lib import (ROOT, archive_members, archive_path, bindings_for, compiled_objects, library_entries,
-                           library_member_path, load_symbols, localize_statics, project, retail)
+                           library_member_path, load_symbols, prepare_member, project, retail)
 
 ARCHIVES = ("libcmt.lib", "libcpmt.lib", "dxsdk/DxErr9.lib")
 MAX_HITS = 32  # masked occurrences kept per function for object-order placement
+MIN_UNANCHORED = 8  # shorter functions are placed only where the map already binds their name
 CONFIG = ROOT / "config/library-objects.json"
 
 
@@ -82,23 +83,32 @@ def adjacent(code, text_va, end, start):
     return 0 <= gap < 16 and code[end - text_va:start - text_va] == b"\xcc" * gap
 
 
-def place_by_order(sequences, code, text_va):
+def place_by_order(sequences, code, text_va, anchors=None):
     """Resolve functions with several masked hits by their neighbours in the same member.
 
     `sequences` holds, per archive member, its functions in COFF section order as
     dicts with `hits` (candidate VAs) and `size`. A function with several hits is
     placed at the one hit that directly follows the placed previous function, or
     directly precedes the placed next one; the linker keeps a member's COMDAT
-    functions in object order. Returns {id(item): va}.
+    functions in object order. A function whose name `anchors` (the symbol map)
+    already binds to one of its hits is placed there. Functions shorter than
+    MIN_UNANCHORED bytes are placed only by an anchor. Returns {id(item): va}.
     """
-    placed = {id(item): item["hits"][0] for sequence in sequences for item in sequence
-              if len(item["hits"]) == 1}
+    anchors = anchors or {}
+    placed = {}
+    for sequence in sequences:
+        for item in sequence:
+            anchor = anchors.get(item.get("symbol"))
+            if anchor in item["hits"]:
+                placed[id(item)] = anchor
+            elif len(item["hits"]) == 1 and item["size"] >= MIN_UNANCHORED:
+                placed[id(item)] = item["hits"][0]
     changed = True
     while changed:
         changed = False
         for sequence in sequences:
             for i, item in enumerate(sequence):
-                if id(item) in placed:
+                if id(item) in placed or item["size"] < MIN_UNANCHORED:
                     continue
                 fits = set()
                 if i and id(sequence[i - 1]) in placed:
@@ -130,6 +140,21 @@ def references(c, code, text_va):
         else:
             address = (value - addend) & 0xffffffff
         yield name, address
+
+
+def linked_owners(names, defined, linked):
+    """Names several alternative members define whose one linked member is known.
+
+    `defined` maps a name to its (archive, index, comdat) definitions and `linked`
+    holds the members known to be in the image. The startup variants each define
+    ___app_type; only one of them is linked, so the name binds to its copy.
+    """
+    result = set()
+    for name in names:
+        members = {(a, i) for a, i, comdat in defined.get(name, ()) if not comdat}
+        if len(members) > 1 and len(members & linked) == 1:
+            result.add(name)
+    return result
 
 
 def resolve_claims(candidates, bindings, code, text_va):
@@ -187,7 +212,7 @@ def main():
         for index, member, body in archive_members(path):
             file = library_member_path(archive, index, body)
             try:
-                obj = localize_statics(COFF(file), archive, index)
+                obj = prepare_member(COFF(file), archive, index)
                 symbols = obj.defined_symbols()
             except BinaryError:
                 continue
@@ -205,8 +230,6 @@ def main():
                 except BinaryError:
                     continue
                 raw = region["bytes"]
-                if len(raw) < 8:
-                    continue
                 masked = set()
                 for relocation in region["relocations"]:
                     masked.update(range(relocation["offset"], relocation["offset"] + 4))
@@ -216,6 +239,10 @@ def main():
                     hits.append(text_va + match.start())
                     if len(hits) > MAX_HITS:
                         break
+                anchor = bindings.get(symbol["name"])
+                if len(hits) > MAX_HITS and anchor is not None and 0 <= anchor - text_va <= len(code) - len(raw) \
+                        and re.compile(pattern, re.S).match(code, anchor - text_va):
+                    hits = [anchor]  # too common to place by order, but the map binds the name here
                 if not hits or len(hits) > MAX_HITS:
                     sequence.append(None)  # breaks adjacency: an unplaceable neighbour
                     continue
@@ -231,7 +258,7 @@ def main():
                     run = []
                 else:
                     run.append(item)
-    placed = place_by_order(sequences, code, text_va)
+    placed = place_by_order(sequences, code, text_va, bindings)
     for sequence in sequences:
         for item in sequence:
             va = placed.get(id(item))
@@ -271,6 +298,11 @@ def main():
             derived.setdefault(name, set()).add(address)
             if (c["archive"], c["index"]) in {(a, i) for a, i, _ in defined.get(name, ())}:
                 own.add(name)  # alternative startup members each define it; this one is linked
+    # A name several alternative members define (the startup variants' ___app_type)
+    # belongs to the one member that is linked: already recorded or placed now.
+    linked = {(e["archive"], e["index"]) for e in library_entries()}
+    linked.update((c["archive"], c["index"]) for c in candidates)
+    own.update(linked_owners(derived, defined, linked))
     imports = {item["address"]: item for item in pe.imports()}
     owners = {}
     for name, addresses in derived.items():

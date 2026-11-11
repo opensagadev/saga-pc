@@ -531,6 +531,66 @@ class LibraryArchiveTests(unittest.TestCase):
                     lib.archive_path("dxsdk/dinput8.lib")
 
 
+def assembler_coff(code, labels):
+    """One code section; `labels` are (name, value, type, storage class) without auxiliaries."""
+    symptr = 60 + len(code)
+    strings = bytearray(b"\0\0\0\0")
+    result = bytearray(struct.pack("<HHIIIHH", 0x14c, 1, 0, symptr, 1 + len(labels), 0, 0))
+    result += struct.pack("<8sIIIIIIHHI", b".text", 0, 0, len(code), 60, 0, 0, 0, 0, 0x60500020)
+    result += code
+    result += struct.pack("<8sIhHBB", b".text", 0, 1, 0, 3, 0)
+    for name, value, typ, storage in labels:
+        raw = name.encode()
+        if len(raw) > 8:
+            field = struct.pack("<II", 0, len(strings))
+            strings += raw + b"\0"
+        else:
+            field = raw.ljust(8, b"\0")
+        result += field + struct.pack("<IhHBB", value, 1, typ, storage, 0)
+    struct.pack_into("<I", strings, 0, len(strings))
+    return bytes(result + strings)
+
+
+class AssemblerExtentTests(unittest.TestCase):
+    def load(self, code, labels):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        path = Path(temporary.name) / "member.obj"
+        path.write_bytes(assembler_coff(code, labels))
+        from tools.binary import COFF
+        return lib.prepare_member(COFF(path), "libtest.lib", 7)
+
+    def test_procedures_and_public_labels_extend_to_the_next_one(self):
+        code = bytes(range(1, 13))
+        obj = self.load(code, [("_a", 0, 0x20, 2), ("inner", 3, 0, 3), ("_b", 6, 0, 2), ("_c", 9, 0x20, 2)])
+        self.assertEqual(obj.extract_function("_a")["bytes"], code[:6])
+        self.assertEqual(obj.extract_function("_b")["bytes"], code[6:9])
+        self.assertEqual(obj.extract_function("_c")["bytes"], code[9:])
+        # A static non-procedure label stays a label inside its procedure.
+        self.assertFalse(any(s["name"] == "libtest#00007:inner" and s["type"] & 0x20 for s in obj.symbols))
+
+    def test_static_procedures_split_and_aliases_share_an_extent(self):
+        code = bytes(12)
+        obj = self.load(code, [("_a", 0, 0x20, 2), ("_alias", 0, 0, 2), ("helper", 8, 0x20, 3)])
+        self.assertEqual(obj.extract_function("_a")["size"], 8)
+        self.assertEqual(obj.extract_function("_alias")["size"], 8)
+        self.assertEqual(obj.extract_function("libtest#00007:helper")["size"], 4)
+
+    def test_sole_procedure_keeps_its_section_end_extent(self):
+        code = bytes(range(1, 11))
+        obj = self.load(code, [("_a", 0, 0x20, 2), ("_entry", 6, 0, 2)])
+        self.assertEqual(obj.extract_function("_a")["bytes"], code)
+        # Labels alone (no procedure) are split at each public label.
+        obj = self.load(code, [("_x", 0, 0, 2), ("_y", 4, 0, 2)])
+        self.assertEqual(obj.extract_function("_y")["bytes"], code[4:])
+
+    def test_eh_funclet_sections_are_not_split(self):
+        obj = self.load(bytes(12), [("_f", 0, 0x20, 2), ("__catch$_f$0", 8, 0x20, 2)])
+        from tools.binary import BinaryError
+        with self.assertRaisesRegex(BinaryError, "TotalSize"):
+            obj.extract_function("_f")
+
+
 class ObjectOrderPlacementTests(unittest.TestCase):
     TEXT = 0x1000
 
@@ -552,6 +612,28 @@ class ObjectOrderPlacementTests(unittest.TestCase):
         self.assertEqual(self.place(bytes(code), (12, [0x1000]), (8, [0x1010, 0x1030])), [0x1000, 0x1010])
         code[0x0c] = 0x90
         self.assertEqual(self.place(bytes(code), (12, [0x1000]), (8, [0x1010, 0x1030])), [0x1000, None])
+
+    def test_map_anchor_places_twins_and_short_functions_need_one(self):
+        from tools.libmatch import place_by_order
+        code = bytes(64)
+        twin, other = {"symbol": "_memcpy", "size": 8, "hits": [0x1000, 0x1020]}, \
+            {"symbol": "_memmove", "size": 8, "hits": [0x1000, 0x1020]}
+        tiny = {"symbol": "_tiny", "size": 4, "hits": [0x1030]}
+        placed = place_by_order([[twin], [other], [tiny]], code, self.TEXT, {"_memmove": 0x1020})
+        self.assertEqual((placed.get(id(twin)), placed.get(id(other)), placed.get(id(tiny))),
+                         (None, 0x1020, None))
+        placed = place_by_order([[tiny]], code, self.TEXT, {"_tiny": 0x1030})
+        self.assertEqual(placed.get(id(tiny)), 0x1030)
+        # An anchor that is not one of the masked hits proves nothing.
+        self.assertEqual(place_by_order([[tiny]], code, self.TEXT, {"_tiny": 0x1000}), {})
+
+    def test_alternative_definitions_bind_only_through_one_linked_member(self):
+        from tools.libmatch import linked_owners
+        defined = {"___app_type": {("libcmt.lib", 448, False), ("libcmt.lib", 467, False)},
+                   "_folded": {("libcmt.lib", 1, True), ("libcmt.lib", 2, True)}}
+        self.assertEqual(linked_owners(defined, defined, {("libcmt.lib", 467)}), {"___app_type"})
+        self.assertEqual(linked_owners(defined, defined, set()), set())
+        self.assertEqual(linked_owners(defined, defined, {("libcmt.lib", 448), ("libcmt.lib", 467)}), set())
 
     def test_backward_placement_and_unresolvable_runs(self):
         code = bytes(64)

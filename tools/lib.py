@@ -2,6 +2,7 @@
 import csv
 import hashlib
 import json
+import struct
 from pathlib import Path
 
 if __package__:
@@ -177,13 +178,53 @@ def localize_statics(obj, archive, index):
     return obj
 
 
+EH_FUNCLET_PREFIXES = ("__catch$", "__unwindfunclet$", "__ehhandler$", "__tryend$")
+
+
+def assembler_extents(obj):
+    """Give the procedures of hand-written assembler sections their COFF extent.
+
+    MASM emits no function TotalSize, and one section holds several procedures
+    (memcpy's helpers, `_CIsin`/`_sin`, `_ftol2`/`_ftol2_sse`). Each function-typed
+    or public label extends to the next such label or the section end, which is
+    exactly how the linker lays the section out. A sole procedure keeps its
+    section-end extent, public labels inside it included. Sections that hold C++ EH
+    funclets (compiler output) are left alone; any compiler TotalSize disables this.
+    """
+    for number, section in enumerate(obj.sections, 1):
+        if not section["characteristics"] & 0x20 or not section["raw_size"] or not section["raw_offset"]:
+            continue
+        labels = [s for s in obj.symbols
+                  if s["section"] == number and s["name"] and s["storage_class"] in (2, 3)
+                  and (s["type"] & 0x20 or s["storage_class"] == 2)]
+        if not labels or any(s["aux"] for s in labels) \
+                or any(s.get("local_name", s["name"]).startswith(EH_FUNCLET_PREFIXES) for s in labels):
+            continue
+        procedures = [s for s in labels if s["type"] & 0x20]
+        if len(procedures) == 1:
+            continue  # a sole procedure already extends to the section end, public labels included
+        starts = sorted({s["value"] for s in labels})
+        for symbol in labels:
+            position = starts.index(symbol["value"])
+            end = starts[position + 1] if position + 1 < len(starts) else section["raw_size"]
+            symbol["type"] |= 0x20
+            symbol["aux"] = [struct.pack("<IIIIH", 0, end - symbol["value"], 0, 0, 0)]
+            symbol["assembler_extent"] = True
+    return obj
+
+
+def prepare_member(obj, archive, index):
+    """Localized statics and assembler procedure extents of one archive member."""
+    return assembler_extents(localize_statics(obj, archive, index))
+
+
 def library_objects():
     """Accepted runtime functions: {unit: (COFF, [symbol names])} for comparison only."""
     result = {}
     for entry in library_entries():
         unit = f"lib/{entry['archive']}/{entry['index']:05d}:{Path(entry['member'].replace(chr(92), '/')).name}"
-        obj = localize_statics(COFF(library_member_path(entry["archive"], entry["index"])),
-                               entry["archive"], entry["index"])
+        obj = prepare_member(COFF(library_member_path(entry["archive"], entry["index"])),
+                             entry["archive"], entry["index"])
         result[unit] = (obj, entry["symbols"])
     return result
 
