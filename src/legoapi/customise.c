@@ -662,6 +662,7 @@ CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *
                                                           i32 *index) {
     CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
     i32 category_index, piece_index;
+    i32 *index_local = index; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice (U20)
     if (customiser == NULL)
         return NULL;
     for (category_index = 0; category_index < 9; ++category_index) {
@@ -669,8 +670,8 @@ CUSTOMPIECE_LAYERS_PC *__cdecl Customiser_FindPieceByName(CUSTOMISER_LAYERS_PC *
             if (NuStrICmp(name, customiser->piece_sets[category_index][piece_index].name) == 0) {
                 if (category != NULL)
                     *category = category_index;
-                if (index != NULL)
-                    *index = piece_index;
+                if (index_local != NULL)
+                    *index_local = piece_index;
                 return (CUSTOMPIECE_LAYERS_PC *)&customiser->piece_sets[category_index][piece_index];
             }
         }
