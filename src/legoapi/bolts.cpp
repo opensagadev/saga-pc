@@ -1481,8 +1481,8 @@ extern "C" {
         i32 index;
         radius =
             object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
-        radius_squared = radius * radius;
         result = NULL;
+        radius_squared = radius * radius;
         nearest = 100000000.0f;
         bolt = Bolt;
         for (index = 0; index < 32; ++index, ++bolt) {
