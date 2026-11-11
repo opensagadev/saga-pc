@@ -3827,7 +3827,7 @@ i32 __cdecl Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
             }
         }
         if (object != NULL) {
-            object->ignore_antinodes = ignore;
+            object->flags_low = (object->flags_low & ~0x20000u) | (ignore != 0 ? 0x20000u : 0);
         }
     }
     return 1;
