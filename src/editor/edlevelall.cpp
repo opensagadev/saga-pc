@@ -2554,6 +2554,40 @@ void LevelEditor::SetPadText(i32 buttons, char *text) {
     }
 }
 
+/* Several scenes load between these two calls: the class editor's load
+ * initialisation runs once around the whole batch. */
+void LevelEditor::BeginMultiLoad(variptr_u *buffer, variptr_u *buffer_end) {
+    MemoryBuffer source(buffer, buffer_end);
+    MemoryBuffer scratch;
+    if (editor_buffer_from_front == 0) {
+        editor_buffer_end = *buffer_end;
+        editor_buffer_begin.addr = buffer_end->addr - 0x20000;
+    }
+    editor_buffer_cursor = editor_buffer_begin;
+    scratch = MemoryBuffer(&editor_buffer_cursor, &editor_buffer_end);
+    multi_load_active = 1;
+    theClassEditor.PreLoadInitialisation(&source, &scratch);
+}
+
+void LevelEditor::EndMultiLoad(variptr_u *buffer, variptr_u *buffer_end) {
+    MemoryBuffer source(buffer, buffer_end);
+    MemoryBuffer scratch;
+    if (editor_buffer_from_front == 0) {
+        editor_buffer_end = *buffer_end;
+        editor_buffer_begin.addr = buffer_end->addr - 0x20000;
+    }
+    editor_buffer_cursor = editor_buffer_begin;
+    scratch = MemoryBuffer(&editor_buffer_cursor, &editor_buffer_end);
+    theClassEditor.PostLoadInitialisation(&source, &scratch);
+    multi_load_active = 0;
+    current_led_file = -1;
+}
+
+/* The per-scene state load is not supported here. */
+i32 LoadState(i32, variptr_u *, variptr_u *, variptr_u *, variptr_u *, variptr_u *, variptr_u *) {
+    return 0;
+}
+
 void LevelEditor::SetSaveFilename(char *name) {
     if (name != NULL) {
         NuStrCpy(save_filename, name);
@@ -3855,6 +3889,19 @@ f32 BezierLineLength(VuVec &start, VuVec &first_control, VuVec &end, VuVec &seco
     VuVec chord = start - end;
     length = NuFsqrt(chord.x * chord.x + chord.y * chord.y + chord.z * chord.z);
     return length;
+}
+
+/* Length of the segment from its start to parameter t. */
+f32 BezierLineLength(VuVec &start, VuVec &first_control, VuVec &end, VuVec &second_control, f32 t) {
+    f32 complement = 1.0f - t;
+    __declspec(align(16)) VuVec points[6];
+    VuVecCopy(points[0], first_control * t + second_control * complement);
+    VuVecCopy(points[1], start * t + first_control * complement);
+    VuVecCopy(points[2], second_control * t + end * complement);
+    VuVecCopy(points[3], points[1] * t + points[0] * complement);
+    VuVecCopy(points[4], points[0] * t + points[2] * complement);
+    VuVecCopy(points[5], points[3] * t + points[4] * complement);
+    return BezierLineLength(start, points[1], points[5], points[3]);
 }
 
 /* Binary search along the segment for the point distance along it. */
@@ -5692,14 +5739,6 @@ void EdRefSpline::SetMemberData(void *object, i32 requested_type, void *data, i3
     }
 }
 
-/* The knot references copy vectors one float at a time. */
-static inline void CopyKnotVector(VuVec *destination, const VuVec &source) {
-    destination->x = source.x;
-    destination->y = source.y;
-    destination->z = source.z;
-    destination->w = source.w;
-}
-
 static inline void AddKnotVector(VuVec &vector, const VuVec &delta) {
     vector.x += delta.x;
     vector.y += delta.y;
@@ -5717,13 +5756,13 @@ void EdRefKnot::GetMemberData(void *object, i32 requested_type, void *data, i32 
             *static_cast<f32 *>(data) = KnotHelperRadius * EdManipulator::Scale;
             break;
         case 0x80000003:
-            CopyKnotVector(static_cast<VuVec *>(data), knot->position);
+            VuVecCopy(*static_cast<VuVec *>(data), knot->position);
             break;
         case 0x80000004:
-            CopyKnotVector(static_cast<VuVec *>(data), knot->in_tangent);
+            VuVecCopy(*static_cast<VuVec *>(data), knot->in_tangent);
             break;
         case 0x80000005:
-            CopyKnotVector(static_cast<VuVec *>(data), knot->out_tangent);
+            VuVecCopy(*static_cast<VuVec *>(data), knot->out_tangent);
             break;
         default:
             EdRef::GetMemberData(object, requested_type, data, data_size);
@@ -6096,6 +6135,105 @@ void ClassEditor::SetMode(i32 new_mode) {
             break;
     }
     thePropertyTool.SelectAttr(manipulator->selected_attribute);
+}
+
+/* The object of a filtered class whose position is nearest the point; with
+ * filter set, only one within its radius attribute (1 by default). */
+i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, i32 filter) {
+    f32 best_distance = 3.402823466e38f;
+    EdClass *best_class = NULL;
+    void *best_object = NULL;
+    EdMember member;
+    f32 distance;
+    for (i32 class_index = 0; class_index < theRegistry.class_count; class_index++) {
+        EdClass *object_class = &theRegistry.classes[class_index];
+        if (!(class_filter & 1 << class_index) || !(object_class->flags & 8))
+            continue;
+        for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
+             object = object_class->object_interface->GetNextObject(object)) {
+            if (!object_class->FindMember(&member, object, 8, 1))
+                continue;
+            __declspec(align(16)) VuVec position;
+            member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
+            __declspec(align(16)) VuVec delta;
+            delta.x = position.x - point.x;
+            delta.y = position.y - point.y;
+            delta.z = position.z - point.z;
+            distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            if (distance < best_distance) {
+                best_distance = distance;
+                best_object = object;
+                best_class = object_class;
+            }
+        }
+    }
+    if (best_object != NULL) {
+        if (filter != 0) {
+            distance = NuFsqrt(best_distance);
+            f32 radius = 1.0f;
+            if ((best_class->flags & 0x40) && best_class->FindMember(&member, best_object, 0x40, 1) &&
+                (member.reference->attributes & 0x40))
+                member.reference->GetMemberData(member.object, EdType_Float, &radius, 0);
+            if (distance > radius)
+                goto not_found;
+        }
+        nearest.ed_class = best_class;
+        nearest.object = best_object;
+        return 1;
+    }
+not_found:
+    nearest.ed_class = NULL;
+    nearest.object = NULL;
+    return 0;
+}
+
+/* Cycles through the editable objects whose radius (1 by default) holds the
+ * point: returns the one after `after`, or the first. */
+i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, ClassObject &after, i32) {
+    EdClass *candidate_classes[16] = {NULL};
+    void *candidate_objects[16] = {NULL};
+    i32 count = 0;
+    for (i32 class_index = 0; class_index < theRegistry.class_count; class_index++) {
+        EdClass *object_class = &theRegistry.classes[class_index];
+        if (!(class_filter & 1 << class_index) || !(object_class->flags & 8))
+            continue;
+        for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
+             object = object_class->object_interface->GetNextObject(object)) {
+            EdMember member;
+            if (!Editable(object, object_class, -1) || !object_class->FindMember(&member, object, 8, 1))
+                continue;
+            __declspec(align(16)) VuVec position;
+            member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
+            VuVec delta;
+            delta.x = position.x - point.x;
+            delta.y = position.y - point.y;
+            delta.z = position.z - point.z;
+            f32 distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            f32 radius = 1.0f;
+            if (object_class->FindMember(&member, object, 0x40, 1))
+                member.reference->GetAttributeData(member.object, 0x40, EdType_Float, &radius, 0);
+            if (distance < radius * radius && count < 16) {
+                candidate_objects[count] = object;
+                candidate_classes[count] = object_class;
+                count++;
+            }
+        }
+    }
+    if (candidate_objects[0] == NULL)
+        return 0;
+    for (i32 i = 0; i <= count; i++) {
+        if (candidate_objects[i] == after.object) {
+            if (i < count - 1) {
+                nearest.ed_class = candidate_classes[i + 1];
+                nearest.object = candidate_objects[i + 1];
+                return 1;
+            }
+            break;
+        }
+    }
+    nearest.object = candidate_objects[0];
+    nearest.ed_class = candidate_classes[0];
+    return 1;
 }
 
 /* The editable object nearest along the ray; with filter set, only one the
@@ -7829,9 +7967,9 @@ SplineObject *SplineObject::Clone() {
         if (clone->knots.first == NULL)
             clone->knots.first = knot;
         clone->knots.count++;
-        CopyKnotVector(&knot->position, source->position);
-        CopyKnotVector(&knot->in_tangent, source->in_tangent);
-        CopyKnotVector(&knot->out_tangent, source->out_tangent);
+        VuVecCopy(knot->position, source->position);
+        VuVecCopy(knot->in_tangent, source->in_tangent);
+        VuVecCopy(knot->out_tangent, source->out_tangent);
         source = source->next;
     }
     clone->step = step;
@@ -7875,12 +8013,12 @@ void EdRefKnot::SetMemberData(void *object, i32 requested_type, void *data, i32 
             break;
         }
         case 0x80000004:
-            CopyKnotVector(&knot->in_tangent, *static_cast<VuVec *>(data));
+            VuVecCopy(knot->in_tangent, *static_cast<VuVec *>(data));
             if (theSplineHelper.auto_generate_points && knot->spline != NULL)
                 knot->spline->points.Clear();
             break;
         case 0x80000005:
-            CopyKnotVector(&knot->out_tangent, *static_cast<VuVec *>(data));
+            VuVecCopy(knot->out_tangent, *static_cast<VuVec *>(data));
             if (theSplineHelper.auto_generate_points && knot->spline != NULL)
                 knot->spline->points.Clear();
             break;
@@ -8456,6 +8594,48 @@ i32 LevelEditor::Save() {
     }
     theClassEditor.PostSaveInitialisation();
     return saved_any;
+}
+
+/* Writes one scene into the memory buffer; returns the bytes written. */
+i32 LevelEditor::SaveState(i32 scene_index, variptr_u *buffer, variptr_u *buffer_end) {
+    i32 size = buffer_end->addr - buffer->addr;
+    NUFILE file = NuMemFileOpen(buffer->void_ptr, size, 1);
+    if (file) {
+        loading = 1;
+        EdFileOutputStream stream;
+        stream.Open(file, 4);
+        stream.flags = 0x400000;
+        stream.unknown_10 = scene_index;
+        WriteStream(stream);
+        size = (i32)NuFilePos(file);
+        stream.file = 0;
+        NuFileClose(file);
+    } else {
+        EdMessage(editor_filename);
+    }
+    loading = 0;
+    return size;
+}
+
+/* Writes every scene into the memory buffer; returns WriteStream's result. */
+i32 LevelEditor::SaveState(variptr_u *buffer, variptr_u *buffer_end) {
+    i32 result = 0;
+    i32 size = buffer_end->addr - buffer->addr;
+    NUFILE file = NuMemFileOpen(buffer->void_ptr, size, 1);
+    if (file) {
+        loading = 1;
+        EdFileOutputStream stream;
+        stream.Open(file, 4);
+        stream.flags = 0x400000;
+        result = WriteStream(stream);
+        NuFilePos(file);
+        stream.file = 0;
+        NuFileClose(file);
+    } else {
+        EdMessage(editor_filename);
+    }
+    loading = 0;
+    return result;
 }
 
 /* Saves every editable scene and reports each result in a submenu. */
