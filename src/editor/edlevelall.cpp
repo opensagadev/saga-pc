@@ -69,6 +69,8 @@ extern "C" {
                                   i32 segments);
     f32 __cdecl eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
     void __cdecl eduiGetCursorDelta(f32 *x, f32 *y);
+    i32 __cdecl NuSpecialNumMtls(NUSPECIALHANDLE *special);
+    NUMTL *__cdecl NuSpecialGetMtl(NUSPECIALHANDLE *special, i32 index);
     eduiitem_s *__cdecl eduiItemFilterCreate(u32 data, void *colours, char *text, char *value);
     void __cdecl eduiMenuSortItemsByTxt(eduimenu_s *menu);
     void __cdecl edcamSetDist(f32 distance);
@@ -601,6 +603,117 @@ class PlaceableInterface : public EdClassInterface {
 };
 STATIC_ASSERT(sizeof(PlaceableInterface) == 0xc);
 STATIC_ASSERT(offsetof(PlaceableInterface, scene_id) == 0x8);
+
+/* A special object of a loaded scene, edited through its handle. */
+class SpecialObject : public Placeable {
+  public:
+    virtual const char *GetName() const;
+    virtual f32 GetRadius() const;
+    virtual const VuMtx *GetInitialTransform() const;
+    virtual void SetInitialTransform(const VuMtx *matrix);
+    virtual const VuMtx *GetCurrentTransform() const;
+    virtual void SetCurrentTransform(const VuMtx *matrix);
+    virtual const VuVec *GetInitialPosition() const;
+    virtual void SetInitialPosition(const VuVec *position);
+    virtual const VuVec *GetCurrentPosition() const;
+    virtual void SetCurrentPosition(const VuVec *position);
+    virtual void Render(const VuMtx *matrix) const;
+    virtual NUSPECIALHANDLE *GetNuHSpecial();
+    virtual i32 Exists() const;
+    virtual i32 GetNumMtls() const;
+    virtual NUMTL *GetMtl(i32 index) const;
+    virtual i32 GetVisibility() const;
+    virtual void SetVisibility(i32 visible);
+    virtual i32 GetCollision() const;
+    virtual void SetCollision(i32 enabled);
+
+    NUSPECIALHANDLE special;
+};
+STATIC_ASSERT(sizeof(SpecialObject) == 0x24);
+STATIC_ASSERT(offsetof(SpecialObject, special) == 0x18);
+
+/* One special of a level scene; editor_owned marks the editor-created
+ * SceneInstance copies, hidden ones are skipped by iteration and drawing. */
+class SceneObject : public SpecialObject {
+  public:
+    i32 editor_owned;
+    i32 hidden;
+};
+STATIC_ASSERT(sizeof(SceneObject) == 0x2c);
+
+/* Editor-created copy of a scene object with its own transforms. */
+class SceneInstance : public SceneObject {
+  public:
+    virtual const char *GetName() const;
+    virtual void SetName(const char *value);
+    virtual const VuMtx *GetInitialTransform() const;
+    virtual void SetInitialTransform(const VuMtx *matrix);
+    virtual const VuMtx *GetCurrentTransform() const;
+    virtual void SetCurrentTransform(const VuMtx *matrix);
+    virtual const VuVec *GetInitialPosition() const;
+    virtual void SetInitialPosition(const VuVec *position);
+    virtual const VuVec *GetCurrentPosition() const;
+    virtual void SetCurrentPosition(const VuVec *position);
+    virtual void Render(const VuMtx *matrix) const;
+    virtual i32 GetVisibility() const;
+    virtual void SetVisibility(i32 visible);
+
+    SceneInstance *next;
+    SceneInstance *previous;
+    __declspec(align(16)) VuMtx initial_transform;
+    VuMtx current_transform;
+    i32 visibility;
+};
+STATIC_ASSERT(offsetof(SceneInstance, next) == 0x2c);
+STATIC_ASSERT(offsetof(SceneInstance, initial_transform) == 0x40);
+STATIC_ASSERT(offsetof(SceneInstance, current_transform) == 0x80);
+STATIC_ASSERT(offsetof(SceneInstance, visibility) == 0xc0);
+STATIC_ASSERT(sizeof(SceneInstance) == 0xd0);
+
+/* Editor class for the specials of the loaded scenes plus the instances the
+ * editor creates from them. */
+class SceneObjectHelper : public PlaceableInterface, public EdSubSystem {
+  public:
+    virtual void ClearLevel(i32 level);
+    virtual void Flush();
+    virtual i32 GetNumObjects();
+    virtual void *GetNextObject(void *object);
+    virtual void *CreateObject(void *data, i32 guid, i32 flags);
+    virtual void DestroyObject(void *object, i32 flags);
+    virtual void UpdateLists(MemoryBuffer *first, MemoryBuffer *second);
+    virtual void PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
+    virtual void PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *);
+    virtual void AddMenuItems(eduimenu_s *menu);
+    virtual void SubRender();
+    void SetSceneFilter(char *filter);
+
+    u32 reserved_18;
+    SceneObject *scenes[10];
+    i32 scene_counts[10];
+    i32 scene_object_count;
+    i32 iteration_object_index;
+    i32 iteration_scene_index;
+    char scene_filter[32];
+    SceneInstance *owned_first;
+    SceneInstance *owned_last;
+    i32 owned_object_count;
+    i32 show_hidden_solid;
+    i32 show_hidden_wire;
+    i32 show_owned_objects;
+};
+STATIC_ASSERT(offsetof(SceneObjectHelper, scenes) == 0x1c);
+STATIC_ASSERT(offsetof(SceneObjectHelper, scene_counts) == 0x44);
+STATIC_ASSERT(offsetof(SceneObjectHelper, iteration_object_index) == 0x70);
+STATIC_ASSERT(offsetof(SceneObjectHelper, scene_filter) == 0x78);
+STATIC_ASSERT(offsetof(SceneObjectHelper, owned_first) == 0x98);
+STATIC_ASSERT(sizeof(SceneObjectHelper) == 0xb0);
+
+/* Member references into a special object: handle, visibility, collision. */
+class EdRefSpecialObject : public EdRef {
+  public:
+    virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
+    virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
+};
 
 i16 Placeable::CurrentLedFile;
 
@@ -3020,6 +3133,267 @@ void EditorSettings::AddMenuItems(eduimenu_s *menu) {
     eduiMenuAddItem(menu, eduiItemCheckCreate((size_t)&snap_terrain, &EdLevelAttr, snap_terrain, 0, cbEdLevelToggleInt,
                                               "Snap Terrain"));
     edui_last_item->highlighted = snap_terrain & 1;
+}
+
+i32 SpecialObject::Exists() const {
+    return NuSpecialExistsFn(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+const char *SpecialObject::GetName() const {
+    return NuSpecialGetName(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+i32 SpecialObject::GetNumMtls() const {
+    return NuSpecialNumMtls(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+NUMTL *SpecialObject::GetMtl(i32 index) const {
+    return NuSpecialGetMtl(const_cast<NUSPECIALHANDLE *>(&special), index);
+}
+
+i32 SpecialObject::GetVisibility() const {
+    return NuSpecialGetVisibilityFn(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+void SpecialObject::SetVisibility(i32 visible) {
+    NuSpecialSetVisibility(&special, visible);
+}
+
+i32 SpecialObject::GetCollision() const {
+    return NuSpecialGetCollision(const_cast<NUSPECIALHANDLE *>(&special)) != 0;
+}
+
+void SpecialObject::SetCollision(i32 enabled) {
+    NuSpecialSetCollision(&special, enabled);
+}
+
+f32 SpecialObject::GetRadius() const {
+    f32 radius = 1.0f;
+    NUVEC centre;
+    if (NuSpecialExistsFn(const_cast<NUSPECIALHANDLE *>(&special)))
+        NuSpecialGetRadius(const_cast<NUSPECIALHANDLE *>(&special), &centre, &radius);
+    return radius;
+}
+
+const VuMtx *SpecialObject::GetInitialTransform() const {
+    return (const VuMtx *)NuSpecialGetMtx(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+void SpecialObject::SetInitialTransform(const VuMtx *matrix) {
+    NuSpecialSetMtx(&special, &matrix->matrix);
+}
+
+const VuMtx *SpecialObject::GetCurrentTransform() const {
+    return (const VuMtx *)NuSpecialGetDrawMtx(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+void SpecialObject::SetCurrentTransform(const VuMtx *matrix) {
+    NuSpecialSetDrawMtx(&special, const_cast<NUMTX *>(&matrix->matrix));
+}
+
+const VuVec *SpecialObject::GetInitialPosition() const {
+    return (const VuVec *)NuSpecialGetPos(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+void SpecialObject::SetInitialPosition(const VuVec *) {
+}
+
+const VuVec *SpecialObject::GetCurrentPosition() const {
+    return (const VuVec *)NuSpecialGetDrawPos(const_cast<NUSPECIALHANDLE *>(&special));
+}
+
+void SpecialObject::SetCurrentPosition(const VuVec *position) {
+    NuSpecialSetDrawPos((nuhspecial_s *)&special, const_cast<NUVEC *>(&position->xyz));
+}
+
+void SpecialObject::Render(const VuMtx *matrix) const {
+    if (matrix != NULL)
+        NuSpecialDrawAt(const_cast<NUSPECIALHANDLE *>(&special), const_cast<NUMTX *>(&matrix->matrix));
+    else
+        NuSpecialDrawAt(const_cast<NUSPECIALHANDLE *>(&special),
+                        NuSpecialGetDrawMtx(const_cast<NUSPECIALHANDLE *>(&special)));
+}
+
+i32 SceneInstance::GetVisibility() const {
+    return visibility;
+}
+
+void SceneInstance::SetVisibility(i32 visible) {
+    visibility = visible;
+}
+
+const VuMtx *SceneInstance::GetInitialTransform() const {
+    return &initial_transform;
+}
+
+void SceneInstance::SetInitialTransform(const VuMtx *matrix) {
+    VuMtxCopy(initial_transform, *matrix);
+}
+
+const VuMtx *SceneInstance::GetCurrentTransform() const {
+    return &current_transform;
+}
+
+void SceneInstance::SetCurrentTransform(const VuMtx *matrix) {
+    VuMtxCopy(current_transform, *matrix);
+}
+
+const VuVec *SceneInstance::GetInitialPosition() const {
+    return (const VuVec *)&initial_transform.matrix.m30;
+}
+
+/* Retail writes the current translation here too. */
+void SceneInstance::SetInitialPosition(const VuVec *position) {
+    current_transform.matrix.m30 = position->x;
+    current_transform.matrix.m31 = position->y;
+    current_transform.matrix.m32 = position->z;
+    current_transform.matrix.m33 = position->w;
+}
+
+const VuVec *SceneInstance::GetCurrentPosition() const {
+    return (const VuVec *)&current_transform.matrix.m30;
+}
+
+void SceneInstance::SetCurrentPosition(const VuVec *position) {
+    current_transform.matrix.m30 = position->x;
+    current_transform.matrix.m31 = position->y;
+    current_transform.matrix.m32 = position->z;
+    current_transform.matrix.m33 = position->w;
+}
+
+void SceneInstance::Render(const VuMtx *) const {
+    NuSpecialDrawAt(const_cast<NUSPECIALHANDLE *>(&special), const_cast<NUMTX *>(&current_transform.matrix));
+}
+
+void SceneObjectHelper::ClearLevel(i32 level) {
+    SceneObject *object = static_cast<SceneObject *>(GetNextObject(NULL));
+    while (object != NULL) {
+        SceneObject *next_object = static_cast<SceneObject *>(GetNextObject(object));
+        if (object->led_file == level)
+            DestroyObject(object, 0);
+        object = next_object;
+    }
+    for (i32 i = 0; i < 10; i++) {
+        if (level == i) {
+            scenes[i] = NULL;
+            scene_counts[i] = 0;
+            return;
+        }
+    }
+}
+
+void SceneObjectHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
+}
+
+NUSPECIALHANDLE *SpecialObject::GetNuHSpecial() {
+    return &special;
+}
+
+void EdRefSpecialObject::GetMemberData(void *object, i32 requested_type, void *data, i32) {
+    SpecialObject *special_object = static_cast<SpecialObject *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000008:
+            *static_cast<NUSPECIALHANDLE *>(data) = special_object->special;
+            break;
+        case 0x80000009:
+            *static_cast<i32 *>(data) = NuSpecialGetVisibilityFn(&special_object->special);
+            break;
+        case 0x8000000a:
+            *static_cast<i32 *>(data) = NuSpecialGetCollision(&special_object->special);
+            break;
+    }
+}
+
+void EdRefSpecialObject::SetMemberData(void *object, i32 requested_type, void *data, i32, i16 *) {
+    SpecialObject *special_object = static_cast<SpecialObject *>(object);
+    CheckType(requested_type);
+    switch (member_offset) {
+        case 0x80000008:
+            special_object->special = *static_cast<NUSPECIALHANDLE *>(data);
+            break;
+        case 0x80000009:
+            NuSpecialSetVisibility(&special_object->special, *static_cast<i32 *>(data));
+            break;
+        case 0x8000000a:
+            NuSpecialSetCollision(&special_object->special, *static_cast<i32 *>(data));
+            break;
+    }
+}
+
+const char *SceneInstance::GetName() const {
+    return name.data != NULL ? name.data + 1 : NULL;
+}
+
+void SceneInstance::SetName(const char *value) {
+    name.Set(value);
+}
+
+void SceneObjectHelper::Flush() {
+    for (i32 i = 0; i < 10; i++) {
+        scenes[i] = NULL;
+        scene_counts[i] = 0;
+    }
+    owned_last = NULL;
+    owned_first = NULL;
+    owned_object_count = 0;
+}
+
+i32 SceneObjectHelper::GetNumObjects() {
+    return owned_object_count + scene_object_count;
+}
+
+/* Scene objects of every loaded scene that pass the name filter, then the
+ * editor-owned instances. */
+void *SceneObjectHelper::GetNextObject(void *object) {
+    if (object == NULL) {
+        iteration_object_index = 0;
+        iteration_scene_index = 0;
+    } else {
+        iteration_object_index++;
+    }
+    while (iteration_scene_index < 10) {
+        while (iteration_object_index < scene_counts[iteration_scene_index]) {
+            if (scenes[iteration_scene_index][iteration_object_index].hidden == 0) {
+                if (scene_filter[0] == 0 ||
+                    NuStrIStr((char *)scenes[iteration_scene_index][iteration_object_index].GetName(), scene_filter) ==
+                        NULL)
+                    return &scenes[iteration_scene_index][iteration_object_index];
+            }
+            iteration_object_index++;
+        }
+        iteration_scene_index++;
+        iteration_object_index = 0;
+    }
+    if (object != NULL) {
+        if (static_cast<SceneObject *>(object)->editor_owned == 0)
+            return owned_first;
+        return static_cast<SceneInstance *>(object)->next;
+    }
+    return NULL;
+}
+
+void SceneObjectHelper::DestroyObject(void *object, i32) {
+    SceneInstance *instance = static_cast<SceneInstance *>(object);
+    theLevelEditor.destroying_objects = 1;
+    if (instance->editor_owned == 0)
+        return;
+    if (instance->next != NULL)
+        instance->next->previous = instance->previous;
+    else
+        owned_last = instance->previous;
+    if (instance->previous != NULL)
+        instance->previous->next = instance->next;
+    else
+        owned_first = instance->next;
+    instance->next = NULL;
+    instance->previous = NULL;
+    owned_object_count--;
+    delete instance;
+}
+
+void SceneObjectHelper::UpdateLists(MemoryBuffer *first, MemoryBuffer *second) {
+    PreLoadInitialisation(first, second);
 }
 
 /* Length of a cubic Bezier segment: the chord once the de Casteljau midpoint
