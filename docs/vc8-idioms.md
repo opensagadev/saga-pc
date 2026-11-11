@@ -504,12 +504,28 @@ Unlike plain declarations (no effect, see the U3 investigation), initialised
 declarations are statements and their order sets the load order:
 `Lever_FindNearest` initialises `lever = world->levers` before
 `nearest_distance = 1.0e9f`, which moves the stack-slot packing (U7).
+More: `RenderPostViewportResetPc` (`height` before `width`: the `fild` order),
+`CutSceneRebindPlayerCharactersPrivatePc` and `CutSceneEndCharactersPC`
+(two element pointers `&a[j]`, `&b[j]`: their order picks the registers of
+the strength-reduced pointers).
 
 ### I44: post-increment index store
 
 `token[n++] = ']'; token[n] = '\0';` is not the same code as
 `token[n] = ']'; token[n + 1] = '\0';`: the second form keeps `n` and
 addresses `[n+1]` (an extra `lea`). `Hint_ExpandButtons`.
+
+### I45: a cast local of a parameter versus the cast at each use
+
+The reverse of I36 for parameters: `T *view = (T *)param;` and
+`((T *)param)->field` at each use give different register choice (U3) or SIB
+base/index order (U1), even when the local is never reassigned. A cast used
+once reads naturally inline (`DisplayListCreateSkinTransformPS`:
+`((PC_SPECIAL_DEFORMER_WEIGHTS *)weights)->weights[morph]`); a cast repeated
+at several uses is committed as a `MATCH-EXCEPTION` (`DestroyRippleMtls`,
+`Customiser_Set100PercentPieces`, `Animate_BEAST`). A scripted pass over the
+63 near-exact functions with such a local made 3 exact; `tools/mutate.py`
+has it as the `inline_cast` rule.
 
 ## Unexplained (no natural source change found)
 

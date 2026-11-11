@@ -31,6 +31,8 @@ Rules per idiom (docs/vc8-idioms.md):
   I29  `if (a || b) S`  <->  `if (a) S if (b) S` for a return (or one-statement) S
        without `else`
   I31  parenthesise the product terms of a float sum
+  I43  swap two adjacent initialised declarations (not when the second reads the
+       first, or both call functions); every differing function is a candidate
 
 Every kept rewrite is printed and appended to build/tools-local/idiomfix.log.
 The driver does not commit; review the diff for natural source before
@@ -532,6 +534,51 @@ def rule_guard_merge(source):
 
 # Idioms without a scanner tag of their own (or a narrow one) run on the functions tagged with these.
 SELECT = {"I31": ("I25", "U9", "I10", "I31"), "I29": ("I29", "I17", "I22")}
+# Idioms with no spot signature: every differing function is a candidate.
+ANY_TAG = {"I43"}
+
+
+def rule_init_decl_order(source):
+    """Swap two adjacent initialised declarations (I43) unless the second reads the first or both
+    initialisers call functions (that would reorder the calls)."""
+    rw = _rewrite()
+    K = rw.K
+
+    def initialised(stmt):
+        decls = [d for d in stmt.get_children() if d.kind == K.VAR_DECL]
+        if len(decls) != 1 or not [c for c in decls[0].get_children() if c.kind != K.TYPE_REF]:
+            return None
+        return decls[0]
+
+    def effects(decl):
+        calls = any(n.kind == K.CALL_EXPR for n in source.walk(decl))
+        writes = any(n.kind in (K.BINARY_OPERATOR, K.UNARY_OPERATOR, K.COMPOUND_ASSIGNMENT_OPERATOR)
+                     and source.operator(n) in ("=", "++", "--", "+=", "-=", "*=", "/=", "|=", "&=", "^=")
+                     for n in source.walk(decl))
+        return calls, writes
+
+    for compound in [source.body, *source.walk()]:
+        if compound.kind != K.COMPOUND_STMT:
+            continue
+        stmts = list(compound.get_children())
+        for first, second in zip(stmts, stmts[1:]):
+            if first.kind != K.DECL_STMT or second.kind != K.DECL_STMT:
+                continue
+            a_decl, b_decl = initialised(first), initialised(second)
+            if a_decl is None or b_decl is None:
+                continue
+            if a_decl in rw._initializer_refs(source, b_decl):
+                continue
+            (a_calls, a_writes), (b_calls, b_writes) = effects(a_decl), effects(b_decl)
+            if (a_calls and b_calls) or a_writes or b_writes:
+                continue
+            first_text, second_text = rw._with_semicolon(source, first), rw._with_semicolon(source, second)
+            if first_text is None or second_text is None:
+                continue
+            a = source.span(first)[0]
+            b = source.span(second)[1] + (0 if source.src(second).rstrip().endswith(";") else 1)
+            yield rw.Candidate(source.edit([(a, b, second_text + "\n" + first_text)]), "init_decl_order",
+                               f"line {first.location.line} {a_decl.spelling}/{b_decl.spelling}", True)
 
 
 def _rewrite_rules(names):
@@ -549,6 +596,7 @@ RULES = {
     "I17": (lambda: [rule_wrap_to_guard, rule_guard_to_wrap, rule_ternary_return, rule_invert_return,
                      *_rewrite_rules(["rule_result_variable", "rule_guard_to_else"])], False),
     "I20": (lambda: [rule_ternary_return, *_rewrite_rules(["rule_ternary"])], False),
+    "I43": (lambda: [rule_init_decl_order], False),
 }
 
 
@@ -719,7 +767,8 @@ def main(argv=None):
     if args.rules:
         rules = [rule for rule in rules if rule.__name__ in args.rules]
     rows = [r for r in json.loads(args.report.read_text())["functions"]
-            if r.get("status") == "different" and set(SELECT.get(args.idiom, (args.idiom,))) & set(r.get("idioms", []))
+            if r.get("status") == "different" and (args.idiom in ANY_TAG or
+                                                   set(SELECT.get(args.idiom, (args.idiom,))) & set(r.get("idioms", [])))
             and len(r.get("units", [])) == 1 and r["units"][0].endswith((".c", ".cpp"))]
     if args.only:
         rows = [r for r in rows if r["name"] in args.only]

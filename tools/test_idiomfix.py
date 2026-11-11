@@ -32,6 +32,13 @@ class RuleTests(unittest.TestCase):
             source = rewrite.Source(text, "src/idiomfix_fixture.c", "f")
         return [re.sub(r"\s+", " ", c.text) for c in rule(source)]
 
+    def test_initialised_declarations_swap_unless_dependent_or_both_calls(self):
+        text = ("int g(void);\nint *G;\nint f(int *p) { int *a = G; int *b = 0; int c = g(); int d = g(); "
+                "int e = d; return *a + *b + c + d + e; }")
+        self.assertEqual(self.texts(self.fix.rule_init_decl_order, text),
+                         [re.sub(r"\s+", " ", text.replace("int *a = G; int *b = 0;", "int *b = 0; int *a = G;")),
+                          re.sub(r"\s+", " ", text.replace("int *b = 0; int c = g();", "int c = g(); int *b = 0;"))])
+
     def test_wrapped_body_becomes_an_early_return_guard(self):
         text = "struct s { int *p; int n; };\nint f(struct s *a, int b) { if (a != 0 && a->p != 0 && !b) { a->n = 1; } return 1; }"
         self.assertEqual(self.texts(self.fix.rule_wrap_to_guard, text),
