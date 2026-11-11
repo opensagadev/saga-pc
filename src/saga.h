@@ -29871,6 +29871,8 @@ class ClassEditor : public BaseEditor {
     i32 CreateObject(ClassObject &object);
     i32 CreateObject(EdClass *object_class);
     i32 CreateObject(i32 class_id);
+    i32 FindNearestObject(VuVec &point, ClassObject &nearest, i32 filter);
+    i32 FindNearestObject(VuVec &point, ClassObject &nearest, ClassObject &after, i32 filter);
     i32 FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, i32 filter);
     i32 FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, ClassObject &after, i32 filter);
     static i32 cbEdCreateClassNewObject(i32 class_id);
@@ -29962,6 +29964,10 @@ class LevelEditor : public BaseThing {
     i32 WriteStream(EdFileOutputStream &stream);
     i32 ReadStream(EdFileInputStream &stream);
     i32 Save();
+    void BeginMultiLoad(variptr_u *buffer, variptr_u *buffer_end);
+    void EndMultiLoad(variptr_u *buffer, variptr_u *buffer_end);
+    i32 SaveState(i32 scene_index, variptr_u *buffer, variptr_u *buffer_end);
+    i32 SaveState(variptr_u *buffer, variptr_u *buffer_end);
     void SetSaveFilename(char *name);
     i32 FindSceneId(char *name);
     i32 IsEditable(i32 index);
