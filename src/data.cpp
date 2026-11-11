@@ -8860,10 +8860,7 @@ extern "C" {
     f32 NuTrigTable[32768] = {0};
 #pragma bss_seg()
 
-// PC NuSound3 state and loop-hold conversion constants.
-#pragma bss_seg(".bss$NuSound3Reverb")
-    u8 NuSound3Reverb = 0;
-#pragma bss_seg()
+    // PC NuSound3 state and loop-hold conversion constants.
     extern const f64 NuScale1000 = 1000.0;
     i32 NuSound3LoopHoldTime = 133;
     i32 NuSound3VolumeOffset = -300;

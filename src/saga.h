@@ -12747,7 +12747,6 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl FixUpButtonsInFont(VUFNT *game_font, VUFNT *button_font);
     i32 __cdecl NuHGobjReversibleCharacters(i32 enabled);
     i32 __cdecl NuHGobjForceShadowsOnCharacters(i32 enabled);
-    extern u8 NuSound3Reverb;
     extern i32 NuSound3LoopHoldTime;
     extern NUDATHDR *NuSoundDat;
     void __cdecl NuSound3SetDat(NUDATHDR *header);

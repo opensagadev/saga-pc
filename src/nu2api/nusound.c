@@ -958,8 +958,8 @@ void __cdecl NuSound3SetDat(NUDATHDR *header) {
 }
 
 __declspec(noinline) i32 __cdecl NuSound3SetReverb(i32 enable) {
-    i32 previous = NuSound3Reverb;
-    NuSound3Reverb = enable != 0;
+    i32 previous = SoundVoiceManager.option_d14;
+    SoundVoiceManager.option_d14 = enable != 0;
     return previous;
 }
 
