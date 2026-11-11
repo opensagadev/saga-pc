@@ -18747,6 +18747,12 @@ extern "C" {
 #pragma bss_seg(".bss$VisibilityAlternateWidthPc")
     f32 VisibilityAlternateWidthPc = 0;
 #pragma bss_seg()
+#pragma bss_seg(".bss$cacheValues")
+    u8 cacheValues[256] = {0};
+#pragma bss_seg()
+#pragma bss_seg(".bss$OcclusionBitArray")
+    u8 OcclusionBitArray[0x320] = {0};
+#pragma bss_seg()
 #pragma bss_seg(".bss$VisibilityAlternateHeightPc")
     f32 VisibilityAlternateHeightPc = 0;
 #pragma bss_seg()

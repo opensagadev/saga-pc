@@ -7898,18 +7898,10 @@ STATIC_ASSERT(sizeof(BURN_PARAMETERS_PC) == 0x54);
 STATIC_ASSERT(offsetof(BURN_PARAMETERS_PC, field_14) == 0x14);
 
 typedef struct nurndrlibscene_s {
-    union {
-        i32 scene_id;
-        f32 visibility_alternate_width;
-    };
+    i32 scene_id;
     u32 clear_flags;
-    union {
-        struct {
-            u32 clear_flags_08;
-            i32 bg_colour;
-        };
-        u8 render_post_alpha_cache[8];
-    };
+    u32 clear_flags_08;
+    i32 bg_colour;
     f32 clear_alpha;
     f32 unknown_14;
     f32 unknown_18;
@@ -7943,14 +7935,7 @@ typedef struct nurndrlibscene_s {
     u8 opaque_c8_e0[0x18];
     u32 unknown_e0;
     u32 unknown_e4;
-    union {
-        u8 opaque_e8_174[0x8c];
-        struct {
-            u8 visibility_unknown_e8_120[0x38];
-            u8 visibility_occlusion_output;
-            u8 visibility_unknown_121_174[0x53];
-        };
-    };
+    u8 opaque_e8_174[0x8c];
     u32 unknown_174;
     u32 unknown_178;
     u8 opaque_17c_188[0xc];
@@ -7960,13 +7945,9 @@ typedef struct nurndrlibscene_s {
 } NURNDRLIBSCENE;
 STATIC_ASSERT(sizeof(NURNDRLIBSCENE) == 0x218);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, scene_id) == 0x00);
-STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_alternate_width) == 0);
-STATIC_ASSERT(offsetof(NURNDRLIBSCENE, visibility_occlusion_output) == 0x120);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_flags) == 0x04);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_flags_08) == 0x08);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, bg_colour) == 0x0c);
-STATIC_ASSERT(offsetof(NURNDRLIBSCENE, render_post_alpha_cache) == 0x08);
-STATIC_ASSERT(sizeof(((NURNDRLIBSCENE *)0)->render_post_alpha_cache) == 8);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, clear_alpha) == 0x10);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, calc_1c) == 0x1c);
 STATIC_ASSERT(offsetof(NURNDRLIBSCENE, calc_20) == 0x20);
@@ -17437,12 +17418,13 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
     extern NUMTX VisibilityAlternateAbsoluteMatrixPc;
     extern NUPLANE VisibilityDepthPlanePc;
     extern NUPLANE VisibilityAbsoluteDepthPlanePc;
-    extern NURNDRLIBSCENE sceneParameters[32];
-/* Same-size existing sceneParameters[16] union fields; no new physical backing. */
-#define VISIBILITY_ALTERNATE_WIDTH_PC (sceneParameters[16].visibility_alternate_width)
+    extern NURNDRLIBSCENE sceneParameters[16];
+    extern f32 VisibilityAlternateWidthPc;
+    extern u8 cacheValues[256];
+    extern u8 OcclusionBitArray[0x320];
+#define VISIBILITY_ALTERNATE_WIDTH_PC VisibilityAlternateWidthPc
     extern f32 VisibilityAlternateHeightPc;
-/* One existing byte only; selected well-formed RLE output_size <= 1. */
-#define VISIBILITY_OCCLUSION_OUTPUT_PC (&sceneParameters[16].visibility_occlusion_output)
+#define VISIBILITY_OCCLUSION_OUTPUT_PC OcclusionBitArray
     void __cdecl NuCameraLock(i32);
     void __cdecl NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *);
     VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *, void *);
@@ -17685,13 +17667,12 @@ void __cdecl PCSoundAlreadyPlayingHook(void);
                                          f32 dest_y, f32 dest_right, f32 dest_bottom);
     void __cdecl RenderPostViewportResetPc(void);
 
-    /* Existing same-size scene owner union alias is required, not new backing. */
     void __cdecl DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets,
                                 RENDER_POST_BLOOM_READER_PC *parameters);
     void __cdecl RenderPostClearScreenPc(void);
     u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value);
 
-#define RENDER_POST_ALPHA_CACHE_PC (sceneParameters[16].render_post_alpha_cache)
+#define RENDER_POST_ALPHA_CACHE_PC cacheValues
     i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
     void __cdecl CastPart(PART_PC *part, f32 time);
 

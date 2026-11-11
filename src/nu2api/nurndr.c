@@ -9,7 +9,7 @@ NUDISPLAYLIST PCDisplayList2dPc = {0};
 i32 nused_sort_pris = 0;
 NUSORTPRI *sort_list = 0;
 i32 render_scene_index = 0;
-NURNDRLIBSCENE sceneParameters[32] = {0};
+NURNDRLIBSCENE sceneParameters[16] = {0};
 NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24] = {0};
 extern i32 nudlist_alloc_count;
 extern u32 nudlist_alloc_base;
@@ -945,10 +945,8 @@ STATIC_ASSERT(sizeof(RENDER_POST_VIEWPORT_PREFIX_PC) == 0x30);
 extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefixPc;
 void __cdecl RenderPostViewportResetPc(void);
 u8 __cdecl RenderPostClampBytePc(i32 minimum_unused, i32 maximum_unused, f32 value);
-STATIC_ASSERT(offsetof(NURNDRLIBSCENE, render_post_alpha_cache) == 8);
-STATIC_ASSERT(sizeof(((NURNDRLIBSCENE *)0)->render_post_alpha_cache) == 8);
 #ifndef RENDER_POST_ALPHA_CACHE_PC
-#define RENDER_POST_ALPHA_CACHE_PC (sceneParameters[16].render_post_alpha_cache)
+#define RENDER_POST_ALPHA_CACHE_PC cacheValues
 #endif
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))

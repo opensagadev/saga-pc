@@ -37986,13 +37986,15 @@ address,symbol,size,ctype
 0x963fb4,_RendererArenaDataPc,4,u8 *
 0x963fb8,_NuPortalFrustumCountPc,4,i32 *
 0x963fc0,_CameraClipPlanesPc,336,CAMERA_CLIP_PLANES_PC
-0x00964110,_sceneParameters,,NURNDRLIBSCENE[32]
+0x00964110,_sceneParameters,8576,NURNDRLIBSCENE[16]
 0x966290,_VisibilityAlternateWidthPc,4,f32
+0x966298,_cacheValues,256,u8[256]
 0x00966398,_zx,4,f32
 0x96639c,_dx,4,f32
 0x009663a0,_NuTextureLoadCountPC,4,i32
 0x9663a4,_PCSpecialActiveShadowLights,4,i32
 0x009663a8,_fstack_limit,4,VARIPTR
+0x9663b0,_OcclusionBitArray,800,u8[800]
 0x9666d0,_PCShadowPackets,29120,PC_HG_SHADOW_PACKET[280]
 0x0096d890,_NuQFntModeStack,64,u32[16]
 0x96d8d0,_VisibilityPrimaryPlaneMatrixPc,64,NUMTX
