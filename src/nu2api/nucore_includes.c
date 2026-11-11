@@ -1331,22 +1331,20 @@ i64 __cdecl NuFileSize(char *filepath) {
 i32 __cdecl NuFileBeginBlkRead(NUFILE file, i32 expected_tag) {
     i32 index = nufile_blkcnt++;
     i64 position = NuFilePos(file);
-    PC_NUFILE_READBLOCK *block;
 
-    if (index > 1 && nufile_blkinfo[index - 1].position + nufile_blkinfo[index - 1].size <= position) {
+    if (index > 1 && position >= nufile_blkinfo[index - 1].position + nufile_blkinfo[index - 1].size) {
         --nufile_blkcnt;
         return 0;
     }
-    block = &nufile_blkinfo[index];
-    block->position = NuFilePos(file);
-    NuFileRead(file, block, 8);
-    if (block->size < 0) {
-        block->size = -block->size;
+    nufile_blkinfo[index].position = NuFilePos(file);
+    NuFileRead(file, &nufile_blkinfo[index], 8);
+    if (nufile_blkinfo[index].size < 0) {
+        nufile_blkinfo[index].size = -nufile_blkinfo[index].size;
     }
-    if (expected_tag != 0 && expected_tag != block->tag) {
+    if (expected_tag != 0 && expected_tag != nufile_blkinfo[index].tag) {
         NuFileError();
     }
-    return block->tag;
+    return nufile_blkinfo[index].tag;
 }
 
 i32 __cdecl NuFileAlignRead(NUFILE file, i32 mask) {
