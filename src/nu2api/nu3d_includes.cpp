@@ -9688,7 +9688,7 @@ extern "C" void __cdecl NuDisplayListPurge_candidate(void) {
         nudlist_field_958 = file;
         nudlist_field_988 = file;
         PCDisplayCaptureCursorPc = PCDisplayCaptureBufferPc;
-        nudlist_field_18b0 = PCDisplayCaptureFlushPointPc;
+        nudlist_field_18b0 = PCDisplayCaptureBufferPc + 0xc00;
         NuHtmlWrite("<body bgcolor=#C0C0C0>");
     }
 }

@@ -22625,8 +22625,7 @@ extern "C" {
     extern NUFILE nudlist_field_988;
     extern char *PCDisplayCaptureCursorPc;
     extern char *nudlist_field_18b0;
-    extern char PCDisplayCaptureBufferPc[0xc00];
-    extern char PCDisplayCaptureFlushPointPc[0x404];
+    extern char PCDisplayCaptureBufferPc[0x1000];
 #ifdef __cplusplus
 }
 #endif

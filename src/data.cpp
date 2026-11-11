@@ -28135,8 +28135,7 @@ extern "C" {
     NUFILE nudlist_field_988 = 0;
     char *PCDisplayCaptureCursorPc = NULL;
     char *nudlist_field_18b0 = NULL;
-    char PCDisplayCaptureBufferPc[0xc00] = {0};
-    char PCDisplayCaptureFlushPointPc[0x404] = {0};
+    char PCDisplayCaptureBufferPc[0x1000] = {0};
 }
 #pragma bss_seg()
 #pragma data_seg()

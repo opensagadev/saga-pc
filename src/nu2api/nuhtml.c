@@ -17,7 +17,7 @@ void __cdecl NuHtmlWrite(char *text, ...) {
     if (PCDisplayCaptureCursorPc > nudlist_field_18b0) {
         NuFileWriteString(nudlist_field_988, PCDisplayCaptureBufferPc);
         PCDisplayCaptureCursorPc = PCDisplayCaptureBufferPc;
-        nudlist_field_18b0 = PCDisplayCaptureFlushPointPc;
+        nudlist_field_18b0 = PCDisplayCaptureBufferPc + 0xc00;
     }
 }
 
@@ -25,7 +25,7 @@ void __cdecl NuHtmlFlushPc(void) {
     if (nudlist_field_18b0 != PCDisplayCaptureCursorPc) {
         NuFileWriteString(nudlist_field_988, PCDisplayCaptureBufferPc);
         PCDisplayCaptureCursorPc = PCDisplayCaptureBufferPc;
-        nudlist_field_18b0 = PCDisplayCaptureFlushPointPc;
+        nudlist_field_18b0 = PCDisplayCaptureBufferPc + 0xc00;
     }
     nudlist_field_988 = 0;
 }

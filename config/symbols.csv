@@ -38055,8 +38055,7 @@ address,symbol,size,ctype
 0x971ae0,_VisibilityPrimaryAbsoluteMatrixPc,64,NUMTX
 0x971b20,_NuPortalRestoreCameraPc,120,NUCAMERA
 0x971b98,_TextureAnimationLabelsPrivatePc,1344,char[64][21]
-0x009720d8,_PCDisplayCaptureBufferPc,3072,char[1]
-0x00972cd8,_PCDisplayCaptureFlushPointPc,,char[1]
+0x009720d8,_PCDisplayCaptureBufferPc,4096,char[4096]
 0x9730d8,_global_reflect,132,NUCAMERAREFLECT
 0x0097315c,_zy,4,f32
 0x00973700,_NuDisplayListStreamCursor,4,VARIPTR *
