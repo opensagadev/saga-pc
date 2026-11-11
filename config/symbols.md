@@ -32,7 +32,10 @@ compared independently, and all must match for that entry to count. A linker nam
 mapped to multiple original addresses produces an ambiguous relocation binding;
 comparison rejects a reference that needs it instead of choosing an address.
 Compiled data may retain a blank original size while its complete PC extent is
-being recovered. The object check still requires its address binding and checks
+being recovered. `python3 tools/datasizes.py --write` fills such sizes from the
+declared C/C++ size when it agrees with the compiled COFF extent (which may only
+add alignment padding) and fits before the next known original address; larger
+declarations are reported as conflicts and stay blank. The object check still requires its address binding and checks
 all relocations, but matching gives it no byte coverage or exact-match credit.
 Compiled functions require complete PC extents.
 
