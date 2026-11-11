@@ -3089,8 +3089,7 @@ typedef struct nuinstance_s {
         u32 flags;
         struct {
             u32 visible : 1;
-            u32 on_screen : 1;
-            u32 flag_2 : 1;
+            u32 flags_low : 2;
             u32 no_visibility_test : 1;
             u32 flags_high : 28;
         };
@@ -7162,7 +7161,7 @@ typedef struct CUT_RIGID_GENERIC_PC {
 } CUT_RIGID_GENERIC_PC;
 typedef struct CUT_CHARACTER_GENERIC_PC {
     NUMTX base_matrix;
-    u8 unknown_40[4];
+    char *name;
     CUT_ANIMATION_PC *animation;
     struct NUANIMDATA2_PC *face_animation;
     struct NUANIMDATA2_PC *extra_animation;

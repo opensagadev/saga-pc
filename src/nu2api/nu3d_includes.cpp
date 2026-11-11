@@ -13549,7 +13549,8 @@ extern "C" {
         if (special->scene == NULL)
             return;
         if (special->special != NULL) {
-            SPECIAL_LEGACY(special)->instance->on_screen = enabled;
+            SPECIAL_LEGACY(special)->instance->flags ^=
+                (((u32)enabled << 1) ^ SPECIAL_LEGACY(special)->instance->flags) & 2;
         } else if (special->display_special != NULL) {
             if (enabled != 0)
                 SPECIAL_DISPLAY(special)->flags |= NUSPECIAL_ON_SCREEN_FLAG;
