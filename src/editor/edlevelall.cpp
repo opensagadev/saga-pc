@@ -2929,7 +2929,7 @@ void EdManipulator::GetAxisLocators(VuVec &origin, VuVec *points, VuMtx *matrix)
 
 /* The rotate gizmo: one circle per axis and the swept sector of a drag. */
 void EdManipulator::DrawRotator(VuVec &origin) {
-    f32 radius = Scale * ManipulatorAxisLength;
+    f32 radius = ManipulatorAxisLength * Scale;
     EdDrawBegin(1);
     EdDrawLineCircleX(&origin.xyz, radius, attribute_selected ? AxisColour[1] : 0xff808080, 32);
     EdDrawLineCircleY(&origin.xyz, radius, attribute_selected ? AxisColour[2] : 0xff808080, 32);
@@ -5856,8 +5856,8 @@ void SplinePointList::Draw() {
 
 void SplineObject::ReverseKnots() {
     SplineKnotList reversed = knots;
-    knots.first = NULL;
     knots.last = NULL;
+    knots.first = NULL;
     knots.count = 0;
     SplineKnot *knot;
     while ((knot = reversed.last) != NULL) {
