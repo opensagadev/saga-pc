@@ -2817,6 +2817,15 @@ address,symbol,size,ctype
 0x4f6da0,_NuFileEOF,51,
 0x004f6de0,_NuFileSeek,190,"i64 __cdecl (NUFILE, i64, i32)"
 0x004f6ea0,_NuFileEndBlkRead,82,void __cdecl (NUFILE)
+0x004f6f00,_NuFileBeginBlkWrite,94,"void __cdecl (NUFILE, i32, i32)"
+0x004f6f60,_NuFileEndBlkWrite,329,void __cdecl (NUFILE)
+0x004f70b0,_NuFileAppendPath,129,"i32 __cdecl (char *, char *, char *)"
+0x004f7140,_NuFileExtractFilename,81,"i32 __cdecl (char *, char *)"
+0x004f71a0,_NuFileExtractExt,81,"i32 __cdecl (char *, char *)"
+0x004f7200,_NuFileWriteAddress,164,"void __cdecl (NUFILE, void *)"
+0x004f72b0,_NuFileSetAddress,111,"void __cdecl (NUFILE, void *)"
+0x004f7320,_NuFilePatchAddress,709,void __cdecl (NUFILE)
+0x004f75f0,_NuFileAlign,251,"i32 __cdecl (NUFILE, i32)"
 0x004f76f0,_NuDatFileFindHash,214,"i32 __cdecl (NUDATHDR *, char *)"
 0x004f77d0,_NuFileMatchExtensionPC,81,
 0x004f7830,_NuFileAddExtensionPC,113,
@@ -32873,6 +32882,8 @@ address,symbol,size,ctype
 0x00800444,_NuAllocHeaderMetadata,12,u32[3]
 0x00800454,_NuAllocTailMetadata,12,u32[3]
 0x00800464,_nufile_blkcnt,4,i32
+0x00800468,_nufile_wblkcnt,4,i32
+0x0080046c,_iff_padsize,4,i32
 0x800470,_iop_image_name,4,char *
 0x00800474,_nufile_lsn_allowed,4,i32
 0x00800478,_default_device,4,NUFILE_DEVICE *
@@ -35982,9 +35993,12 @@ address,symbol,size,ctype
 0x00917868,_NuApiTextLinePc,4,i32
 0x0091786c,_read_buffer_decoded_size,4,i32
 0x00917870,_NuFParRecords,5648,NUFPAR_PC[4]
+0x00918e80,_nufile_wblkinfo,16384,NUFILE_WRITEBLOCK_PC[1024]
 0x0091ce80,_unpack_file_info,4,PC_NUDATFILEINFO *
+0x0091ce84,_pos_count,4,i32
 0x91ce88,_ImplodeOffsetLengthsPc,,u8[19]
 0x91cea0,_ImplodeRingBufferPc,,u8[8192]
+0x0091eea0,_ref_count,4,i32
 0x0091eea4,_DontDoFileUpperCaseHack,4,i32
 0x0091eea8,_curr_dat,4,NUDATHDR *
 0x0091eeac,_file_time_count,4,i32
@@ -35993,6 +36007,10 @@ address,symbol,size,ctype
 0x0091eebc,_datsys_offset,4,i32
 0x0091eec0,_NuFile_SwapEndianOnWrite,4,i32
 0x0091eec4,_nufile_lasterror,4,i32
+0x0091eec8,_MAX_FILE_ADDRESS,4,i32
+0x0091eecc,_addr_ref,4,NUFILE_ADDRESS_PC *
+0x0091eed0,_addr_pos,4,NUFILE_ADDRESS_PC *
+0x0091eed4,_addr_pad,4,i32
 0x0091eed8,_fpk_err,4,i32
 0x0091eedc,_NuFParRecordBase,4,NUFPAR_PC *
 0x0091eee0,_NuFParBufferBase,4,char *

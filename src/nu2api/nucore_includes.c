@@ -1638,6 +1638,166 @@ i32 __cdecl NuFileWriteUnsignedChar(NUFILE file, u8 value) {
     return NuFileWrite(file, &value, 1);
 }
 
+typedef struct NUFILE_WRITEBLOCK_PC {
+    i32 tag;
+    i32 size_sign;
+    i64 position;
+} NUFILE_WRITEBLOCK_PC;
+STATIC_ASSERT(sizeof(NUFILE_WRITEBLOCK_PC) == 0x10);
+STATIC_ASSERT(offsetof(NUFILE_WRITEBLOCK_PC, position) == 8);
+
+typedef struct NUFILE_ADDRESS_PC {
+    void *address;
+    i32 reserved;
+    i64 position;
+} NUFILE_ADDRESS_PC;
+STATIC_ASSERT(sizeof(NUFILE_ADDRESS_PC) == 0x10);
+STATIC_ASSERT(offsetof(NUFILE_ADDRESS_PC, position) == 8);
+
+static i32 nufile_wblkcnt = 1;
+static i32 iff_padsize = 16;
+static NUFILE_WRITEBLOCK_PC nufile_wblkinfo[1024];
+static i32 ref_count;
+static i32 pos_count;
+static i32 MAX_FILE_ADDRESS;
+static NUFILE_ADDRESS_PC *addr_ref;
+static NUFILE_ADDRESS_PC *addr_pos;
+static i32 addr_pad;
+
+void __cdecl NuFileBeginBlkWrite(NUFILE file, i32 tag, i32 negative_size) {
+    i32 index = nufile_wblkcnt++;
+
+    nufile_wblkinfo[index].position = NuFilePos(file);
+    nufile_wblkinfo[index].tag = tag;
+    if (negative_size == 1) {
+        nufile_wblkinfo[index].size_sign = -1;
+    } else {
+        nufile_wblkinfo[index].size_sign = 1;
+    }
+    NuFileWriteInt(file, tag);
+    NuFileWriteInt(file, tag);
+}
+
+void __cdecl NuFileEndBlkWrite(NUFILE file) {
+    i64 position;
+    i32 index;
+    i32 padding;
+    i32 size;
+    i32 zero = 0;
+
+    index = --nufile_wblkcnt;
+    position = NuFilePos(file);
+    size = (i32)(position - nufile_wblkinfo[index].position);
+    padding = iff_padsize - size % iff_padsize;
+    if (padding != iff_padsize) {
+        position += padding;
+        size = size + padding;
+        NuFileWrite(file, &zero, padding);
+    }
+    if (nufile_wblkinfo[index].size_sign < 0) {
+        size = -size;
+    }
+    NuFileSeek(file, nufile_wblkinfo[index].position + 4, 0);
+    NuFileWrite(file, &size, 4);
+    NuFileSeek(file, position, 0);
+}
+
+i32 __cdecl NuFileAppendPath(char *dest, char *path, char *name) {
+    char *end;
+
+    NuStrCpy(dest, path);
+    end = dest + strlen(dest);
+    if (*end++ != '\\') {
+        *end++ = '\\';
+    }
+    NuStrCpy(end, name);
+    return NuStrLen(dest);
+}
+
+i32 __cdecl NuFileExtractFilename(char *dest, char *path) {
+    char *start = strrchr(path, '\\');
+
+    if (start != NULL) {
+        ++start;
+    } else {
+        start = path;
+    }
+    NuStrCpy(dest, start);
+    return NuStrLen(dest);
+}
+
+i32 __cdecl NuFileExtractExt(char *dest, char *path) {
+    char *start = strrchr(path, '.');
+
+    if (start != NULL) {
+        ++start;
+    } else {
+        start = path;
+    }
+    NuStrCpy(dest, start);
+    return NuStrLen(dest);
+}
+
+void __cdecl NuFileWriteAddress(NUFILE file, void *address) {
+    if (address != NULL) {
+        if (ref_count >= MAX_FILE_ADDRESS) {
+            NuFileError();
+        }
+        addr_ref[ref_count].address = address;
+        addr_ref[ref_count].position = NuFilePos(file);
+        ++ref_count;
+    }
+    NuFileWrite(file, &addr_pad, 4);
+}
+
+void __cdecl NuFileSetAddress(NUFILE file, void *address) {
+    i32 index;
+
+    if (address != NULL) {
+        for (index = 0; index < pos_count; ++index) {
+            if (addr_pos[index].address == address)
+                break;
+        }
+        if (index >= MAX_FILE_ADDRESS) {
+            NuFileError();
+        }
+        if (index == pos_count)
+            ++pos_count;
+        addr_pos[index].address = address;
+        addr_pos[index].position = NuFilePos(file);
+    }
+}
+
+void __cdecl NuFilePatchAddress(NUFILE file) {
+    i32 ref;
+    i32 pos;
+    i64 offset;
+
+    for (ref = 0; ref < ref_count; ++ref) {
+        for (pos = 0; pos < pos_count; ++pos) {
+            if (addr_ref[ref].address == addr_pos[pos].address) {
+                offset = addr_pos[pos].position - addr_ref[ref].position;
+                NuFileSeek(file, addr_ref[ref].position, 0);
+                NuFileWrite(file, &offset, 4);
+            }
+        }
+    }
+    NuFileSeek(file, 0, 2);
+}
+
+i32 __cdecl NuFileAlign(NUFILE file, i32 mask) {
+    u8 padding = 0xfe;
+    i32 count = 0;
+    i64 position = NuFilePos(file);
+
+    while ((position & mask) != 0) {
+        ++position;
+        ++count;
+        NuFileWrite(file, &padding, 1);
+    }
+    return count;
+}
+
 i64 __cdecl NuDatCalcPos(NUDATHDR *header, i32 offset) {
     i64 position = offset;
 
