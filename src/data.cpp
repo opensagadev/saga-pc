@@ -19813,6 +19813,8 @@ extern "C" {
     i32 LEGOHINT_BUILD = -1;
     f32 REDBRICKPOS2X = 1.27499998f;
     f32 REDBRICKPOS2Y = -1.255f;
+    /* The Android build names these bytes MENUEXITR, MENUEXITG and the MENULOST* blend
+       endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
     u8 AlternateHudColourBytesPc[8] = {255, 191, 191, 95, 128, 255, 31, 128};
     u8 AlternateHudRgbPc[3] = {0, 0, 0};
     i32 LEGOTHINGSSCENE_TER_SPINBASE = -1;
@@ -29700,20 +29702,11 @@ extern "C" {}
 extern "C" {}
 
 extern "C" {
-#pragma data_seg(".data$MENUEXITG")
-    u8 MENUEXITG = 191;
-
 #pragma bss_seg(".bss$PauseMenus_Align")
     i32 PauseMenus_Align = 0;
 
 #pragma bss_seg(".bss$PauseMenus_X")
     f32 PauseMenus_X = 0;
-
-#pragma data_seg(".data$MENULOSTR1")
-    u8 MENULOSTR1 = 191;
-
-#pragma data_seg(".data$MENULOSTB1")
-    u8 MENULOSTB1 = 128;
 }
 
 extern "C" {

@@ -33322,10 +33322,7 @@ address,symbol,size,ctype
 0x007fac20,_PlayTrailer,4,i32
 0x007fac24,_NuMainRendererControlPc,4,i32
 0x7facb8,_MenuNewGameYPc,4,f32
-0x7facbc,_AlternateHudColourBytesPc,,u8[8]
-0x7facbd,_MENUEXITG,1,u8
-0x7facbe,_MENULOSTR1,1,u8
-0x7facc0,_MENULOSTB1,1,u8
+0x7facbc,_AlternateHudColourBytesPc,8,u8[8]
 0x7facc4,_MenuSaveSlotsWidthPc,4,f32
 0x007faccc,_opts_sfx_wait,4,f32
 0x7facd0,_ExtrasFadeStartPc,4,f32
