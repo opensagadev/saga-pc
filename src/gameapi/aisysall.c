@@ -9218,6 +9218,7 @@ static void TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE
     f32 radius;
     NUVEC radial;
     f32 distance_squared;
+    f32 beyond;
     NuVecSub(&direction, &second->position, &first->position);
     distance = NuVecMag(&direction);
     NuVecScale(&direction, &direction, 1.0f / distance);
@@ -9240,11 +9241,11 @@ static void TestPointPathCheck(NUVEC *point, EDAIPATHNODE_s *first, EDAIPATHNODE
     *angle = (i32)(NuAtan2(direction.x, direction.z) * AIPathAngularScale);
     NuVecRotateY(&relative, &relative, (i32)(0u - (u32)*angle));
     if (*fraction <= 0.0f) {
-        f32 beyond = -*fraction * distance;
+        beyond = -*fraction * distance;
         *width = distance_squared - beyond * beyond;
         *width = NuFsqrt(*width) / radius;
     } else if (*fraction >= 1.0f) {
-        f32 beyond = (*fraction - 1.0) * distance;
+        beyond = (*fraction - 1.0) * distance;
         *width = distance_squared - beyond * beyond;
         *width = NuFsqrt(*width) / radius;
     } else {
