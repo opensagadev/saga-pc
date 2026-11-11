@@ -150,11 +150,6 @@ extern char *NuBlankString;
         }                                                                                                              \
     } while (0)
 
-#define NU_UTF16_UPPER(character)                                                                                      \
-    (((character) >= 0x0061 && (character) <= 0x007a) || ((character) >= 0x00e0 && (character) <= 0x00ff)              \
-         ? (u16)((character) - 0x20)                                                                                   \
-         : (u16)(character))
-
 PUSH_BLOCK_PC *__cdecl BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
 void __cdecl MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
 void __cdecl MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
@@ -5403,11 +5398,17 @@ i32 __cdecl NuHexStringToI(char *string) {
  * return value; incidental high EAX bits are not a 32-bit integer contract.
  */
 NUWCHAR __cdecl NuToUpperW(NUWCHAR character) {
-    return NU_UTF16_UPPER(character);
+    if (character >= 0x61 && character <= 0x7a)
+        character -= 0x20;
+    else if (character >= 0xe0 && character <= 0xff)
+        character -= 0x20;
+    return character;
 }
 
 NUWCHAR __cdecl NuToLowerW(NUWCHAR character) {
-    if ((character >= 0x41 && character <= 0x5a) || (character >= 0xc0 && character <= 0xdf))
+    if (character >= 0x41 && character <= 0x5a)
+        character += 0x20;
+    else if (character >= 0xc0 && character <= 0xdf)
         character += 0x20;
     return character;
 }
@@ -5538,10 +5539,8 @@ NUWCHAR *__cdecl NuStrIStrW(NUWCHAR *str, const NUWCHAR *sub) {
             NUWCHAR cb;
             if (*cursor == 0)
                 break;
-            ca = *cursor;
-            ca = NU_UTF16_UPPER(ca);
-            cb = *match;
-            cb = NU_UTF16_UPPER(cb);
+            ca = NuToUpperW(*cursor);
+            cb = NuToUpperW(*match);
             if (ca != cb)
                 break;
             ++cursor;
@@ -5639,10 +5638,8 @@ i32 __cdecl NuStrNICmpW(const NUWCHAR *a, const NUWCHAR *b, i32 n) {
     else if (n == -2)
         n = NuStrLenW(b);
     do {
-        ca = *a;
-        ca = NU_UTF16_UPPER(ca);
-        cb = *b;
-        cb = NU_UTF16_UPPER(cb);
+        ca = NuToUpperW(*a);
+        cb = NuToUpperW(*b);
         if (ca > cb)
             return 1;
         if (ca < cb)
@@ -5656,8 +5653,7 @@ i32 __cdecl NuStrNICmpW(const NUWCHAR *a, const NUWCHAR *b, i32 n) {
 
 void __cdecl NuStrUprW(NUWCHAR *dst, const NUWCHAR *src) {
     while (*src != 0) {
-        NUWCHAR character = *src;
-        *dst = NU_UTF16_UPPER(character);
+        *dst = NuToUpperW(*src);
         ++dst;
         ++src;
     }
