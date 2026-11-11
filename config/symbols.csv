@@ -10450,6 +10450,7 @@ address,symbol,size,ctype
 0x6c2320,??_EPlaceableInterface@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceableInterface@@UAEPAXI@Z; no independent body
 0x6c2320,??_GPlaceableInterface@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c2350,??1SplinePointList@@QAE@XZ,84,
+0x6c23b0,??0SplineKnot@@QAE@XZ,43,
 0x6c23f0,??1SplineKnotList@@QAE@XZ,91,
 0x6c2450,??0SplineObject@@QAE@XZ,52,
 0x6c2490,??3SplineObject@@SAXPAX@Z,18,
@@ -10459,6 +10460,7 @@ address,symbol,size,ctype
 0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
 0x6c2520,??_GKnotHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x6c2540,??0EdSubSystem@@QAE@XZ,29,
+0x6c25c0,?SnapPoint@ClassEditor@@QAEXAAUVuVec@@@Z,72,
 0x6c2610,?UpdateClassFilter@ClassEditor@@QAEXAAUEdInputContext@@@Z,222,
 0x6c2930,?cbEdClassRemoveDuplicates@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,760,
 0x6c2c30,?cbEdClassToolsMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,120,
@@ -10556,6 +10558,9 @@ address,symbol,size,ctype
 0x6c7660,?GenLinearPoints@SplineObject@@QAEXXZ,199,
 0x6c7730,?GenBezierPoints@SplineObject@@QAEXXZ,272,
 0x6c7840,?Draw@SplineObject@@QAEXHHHM@Z,207,
+0x6c7910,?GetMemberData@EdRefSpline@@UAEXPAXH0H@Z,188,
+0x6c79d0,?SetMemberData@EdRefSpline@@UAEXPAXH0HPAF@Z,196,
+0x6c7aa0,?GetMemberData@EdRefKnot@@UAEXPAXH0H@Z,284,
 0x6c7bc0,?SerialiseObject@SplineHelper@@UAEXAAVEdStream@@PAX@Z,240,
 0x6c7cb0,?GetNumObjects@SplineHelper@@UAEHXZ,4,
 0x6c7cc0,?GetNextObject@SplineHelper@@UAEPAXPAX@Z,20,
@@ -10578,6 +10583,8 @@ address,symbol,size,ctype
 0x6c8760,?GetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c87f0,?SetAttributeData@ClassObject@@QAEHHHPAXH@Z,131,
 0x6c8880,??0EdRefPlaceable@@QAE@PAD0HHHPAVEdControl@@@Z,54,
+0x6c88c0,??0EdRefSpline@@QAE@PAD0HHHPAVEdControl@@@Z,54,
+0x6c8900,??0EdRefKnot@@QAE@PAD0HHHPAVEdControl@@@Z,54,
 0x6c8940,??0SplineHelper@@QAE@XZ,30,
 0x6c8970,?Flush@SplineHelper@@UAEXXZ,12,
 0x6c8980,??_ESplineHelper@@UAEPAXI@Z,,COFF weak alias of ??_GSplineHelper@@UAEPAXI@Z; no independent body
@@ -10604,6 +10611,8 @@ address,symbol,size,ctype
 0x6c9af0,?DestroySelectedObjects@ClassEditor@@QAEXXZ,256,
 0x6c9bf0,?SelectObject@ClassEditor@@QAEHAAUClassObject@@H@Z,505,
 0x6c9df0,?IsSelectedObject@ClassEditor@@QAEHAAUClassObject@@@Z,69,
+0x6c9e40,?IsSelectedObject@ClassEditor@@QAEHPAXPAVEdRef@@@Z,49,
+0x6c9e80,?IsSelectedClass@ClassEditor@@QAEHPAUEdClass@@@Z,40,
 0x6c9eb0,?cbEdClassSetMode@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,35,
 0x6c9ee0,?cbEdClassModeMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,363,
 0x6ca0a0,?cbEdClassDeleteObject@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,10,
@@ -10667,6 +10676,9 @@ address,symbol,size,ctype
 0x6ce200,?SubRender@SceneObjectHelper@@UAEXXZ,173,
 0x6ce2b0,?Smooth@SplineKnot@@QAEXXZ,455,
 0x6ce4a0,?GenPoints@SplineObject@@QAEXXZ,28,
+0x6ce4c0,?Clone@SplineObject@@QAEPAV1@XZ,351,
+0x6ce620,?SetMemberData@EdRefKnot@@UAEXPAXH0HPAF@Z,480,
+0x6ce800,?Initialise@SplineHelper@@QAEXXZ,1294,
 0x6ced10,?PostLoadInitialisation@SplineHelper@@UAEXPAUMemoryBuffer@@0@Z,59,
 0x6ced50,?Process@SplineHelper@@UAEXPAXAAUEdInputContext@@@Z,77,
 0x6ceda0,?cbEdSplineReGenPoints@SplineHelper@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,68,
@@ -20477,6 +20489,7 @@ address,symbol,size,ctype
 0x76f638,__real@3eb0c6f7a0b5ed8d,,
 0x76f640,__real@3bc79ca10c924223,,
 0x76f648,??_C@_04HJFBHGFE@?4led?$AA@,5,char []
+0x76f650,??_C@_06EFCDMIMC@Closed?$AA@,7,const char[7]
 0x76f660,_MenuPcString76f660,3,const char[3]
 0x76f668,??_7EdTool@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76f680,??_7BaseEditor@@6B@,,native exactVT binding; unimplemented extent unclaimed
@@ -20537,6 +20550,8 @@ address,symbol,size,ctype
 0x76fc0c,??_C@_06LHGEHABH@?$CINULL?$CJ?$AA@,7,char []
 0x76fc14,??_C@_0L@HFFGLEHP@StreamInfo?$AA@,11,char []
 0x76fc24,??_7EdRefPlaceable@@6B@,,
+0x76fc34,??_7EdRefSpline@@6B@,12,
+0x76fc44,??_7EdRefKnot@@6B@,12,
 0x76fc54,??_7SplineHelper@@6B@,,
 0x76fcd0,??_7SceneObjectHelper@@6BEdSubSystem@@@,,
 0x76fcec,??_7SceneObjectHelper@@6BPlaceableInterface@@@,,
@@ -20597,6 +20612,11 @@ address,symbol,size,ctype
 0x76ff94,??_C@_09EOCCEAAK@Collision?$AA@,10,char []
 0x76ffa0,??_C@_07MGEGCLJM@Visible?$AA@,8,char []
 0x76ffa8,??_C@_0M@BEFKHABP@SceneObject?$AA@,12,char []
+0x76ffb4,??_C@_03EKFHOMB@Out?$AA@,4,const char[4]
+0x76ffb8,??_C@_02IEILNGIL@In?$AA@,3,const char[3]
+0x76ffbc,??_C@_04MFNPNBGF@Knot?$AA@,5,const char[5]
+0x76ffc4,??_C@_04DJCMGLJH@Drop?$AA@,5,const char[5]
+0x76ffcc,??_C@_06DLKDIFGH@Spline?$AA@,7,const char[7]
 0x76ffd4,??_C@_0BA@JNHLIOHA@Auto?9Gen?5Points?$AA@,16,char []
 0x76ffe4,??_C@_0O@BKEPOKOG@Re?9Gen?5Points?$AA@,14,char []
 0x76fff4,??_C@_0P@KBCPCGEM@Reverse?5Spline?$AA@,15,char []
@@ -32151,6 +32171,14 @@ address,symbol,size,ctype
 0x7ec1c4,??_R3EdRefPlaceable@@8,,
 0x7ec1d4,??_R2EdRefPlaceable@@8,,
 0x7ec1e4,??_R1A@?0A@EA@EdRefPlaceable@@8,,
+0x7ec200,??_R4EdRefSpline@@6B@,,
+0x7ec214,??_R3EdRefSpline@@8,,
+0x7ec224,??_R2EdRefSpline@@8,,
+0x7ec234,??_R1A@?0A@EA@EdRefSpline@@8,,
+0x7ec250,??_R4EdRefKnot@@6B@,,
+0x7ec264,??_R3EdRefKnot@@8,,
+0x7ec274,??_R2EdRefKnot@@8,,
+0x7ec284,??_R1A@?0A@EA@EdRefKnot@@8,,
 0x7ec2a0,??_R4SplineHelper@@6B@,,
 0x7ec2b4,??_R3SplineHelper@@8,,
 0x7ec2c4,??_R2SplineHelper@@8,,
