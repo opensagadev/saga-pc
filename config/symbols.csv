@@ -20706,7 +20706,7 @@ address,symbol,size,ctype
 0x76f834,??_7EdColourControl@@6B@,24,
 0x76f84c,??_C@_0P@CFKGHDOE@?$CF?42f?5?$CF?42f?5?$CF?42f?$AA@,15,
 0x76f85c,??_C@_08OEKJENGB@?$CFf?5?$CFf?5?$CFf?$AA@,9,
-0x76f86c,??_7EdSfxNameControl@@6B@,,
+0x76f86c,??_7EdSfxNameControl@@6B@,24,
 0x76f888,__real@3ff99999a0000000,8,const f64
 0x76f894,??_7EdManipulator@@6B@,8,
 0x76f8a0,??_7EdManMove@@6B@,8,
@@ -20718,8 +20718,8 @@ address,symbol,size,ctype
 0x76f8fc,??_C@_0P@FFIPJODB@Show?5Owned?5Obj?$AA@,15,char []
 0x76f90c,??_C@_0BB@EMBMGGEH@Show?5Hidden?5Wire?$AA@,17,char []
 0x76f920,??_C@_0BC@EEGIAIII@Show?5Hidden?5Solid?$AA@,18,char []
-0x76f938,??_7EdSpecialObjectControl@@6B@,,
-0x76f954,??_7SplinePointBlock@@6B@,,
+0x76f938,??_7EdSpecialObjectControl@@6B@,24,
+0x76f954,??_7SplinePointBlock@@6B@,4,
 0x76f958,__real@34000000,4,const f32
 0x76f960,??_7EdFileInputStream@@6B@,32,
 0x76f984,??_7EdFileOutputStream@@6B@,32,native exactVT binding; unimplemented extent unclaimed
@@ -20744,21 +20744,21 @@ address,symbol,size,ctype
 0x76faac,??_C@_0L@BCHFBJHG@NuHSpecial?$AA@,11,char []
 0x76fab8,??_C@_04PAFOOALK@Enum?$AA@,5,char []
 0x76fac0,??_C@_06ELFECKBG@Object?$AA@,7,const char[]
-0x76facc,??_7SpecialObject@@6B@,,
-0x76fb2c,??_7EdRefSpecialObject@@6B@,,
-0x76fb3c,??_7SceneObject@@6B@,,
-0x76fb9c,??_7SceneInstance@@6B@,,
+0x76facc,??_7SpecialObject@@6B@,92,
+0x76fb2c,??_7EdRefSpecialObject@@6B@,12,
+0x76fb3c,??_7SceneObject@@6B@,92,
+0x76fb9c,??_7SceneInstance@@6B@,92,
 0x76fbf8,??_C@_0M@DPCBKKCA@reflectport?$AA@,12,char []
 0x76fc04,??_C@_06IEOJBDIK@object?$AA@,7,char []
 0x76fc0c,??_C@_06LHGEHABH@?$CINULL?$CJ?$AA@,7,char []
 0x76fc14,??_C@_0L@HFFGLEHP@StreamInfo?$AA@,11,char []
-0x76fc24,??_7EdRefPlaceable@@6B@,,
+0x76fc24,??_7EdRefPlaceable@@6B@,12,
 0x76fc34,??_7EdRefSpline@@6B@,12,
 0x76fc44,??_7EdRefKnot@@6B@,12,
-0x76fc54,??_7SplineHelper@@6B@,,
-0x76fcd0,??_7SceneObjectHelper@@6BEdSubSystem@@@,,
-0x76fcec,??_7SceneObjectHelper@@6BPlaceableInterface@@@,,
-0x76fd68,??_7ClassEditor@@6B@,,
+0x76fc54,??_7SplineHelper@@6B@,120,
+0x76fcd0,??_7SceneObjectHelper@@6BEdSubSystem@@@,20,
+0x76fcec,??_7SceneObjectHelper@@6BPlaceableInterface@@@,120,
+0x76fd68,??_7ClassEditor@@6B@,52,
 0x76fd9c,??_C@_0N@MKEDCNLI@Class?5Editor?$AA@,13,char []
 0x76fdac,??_C@_06PCFKBAJ@?$CF?$CF?4?$CFdd?$AA@,7,char []
 0x76fdb4,??_C@_0BJ@BFJEGDMJ@Destroy?5Selected?5Objects?$AA@,25,const char[25]
@@ -32087,354 +32087,354 @@ address,symbol,size,ctype
 0x7eaba8,??_R3NuMainFilter@@8,16,native complete RTTI data
 0x7eabb8,??_R2NuMainFilter@@8,17,native complete RTTI data
 0x7eabcc,??_R1A@?0A@EA@NuMainFilter@@8,28,native complete RTTI data
-0x7eabe8,??_R4logic_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
-0x7eabfc,??_R3logic_error@std@@8,,Natural owning C++ RTTI/throw metadata
-0x7eac0c,??_R2logic_error@std@@8,,Natural owning C++ RTTI/throw metadata
-0x7eac18,??_R1A@?0A@EA@logic_error@std@@8,,Natural owning C++ RTTI/throw metadata
-0x7eac34,??_R4length_error@std@@6B@,,Natural owning C++ RTTI/throw metadata
-0x7eac48,??_R3length_error@std@@8,,Natural owning C++ RTTI/throw metadata
-0x7eac58,??_R2length_error@std@@8,,Natural owning C++ RTTI/throw metadata
-0x7eac68,??_R1A@?0A@EA@length_error@std@@8,,Natural owning C++ RTTI/throw metadata
-0x7eac84,??_R4NetSmallStats@@6B@,,
-0x7eac98,??_R3NetSmallStats@@8,,
-0x7eaca8,??_R2NetSmallStats@@8,,
-0x7eacb0,??_R1A@?0A@EA@NetSmallStats@@8,,
-0x7eaccc,??_R4NetStats@@6B@,,
-0x7eace0,??_R3NetStats@@8,,
-0x7eacf0,??_R2NetStats@@8,,
-0x7eacfc,??_R1A@?0A@EA@NetStats@@8,,
-0x7ead18,??_R4NetTransporterInterface@@6B@,,
-0x7ead2c,??_R3NetTransporterInterface@@8,,
-0x7ead3c,??_R2NetTransporterInterface@@8,,
-0x7ead44,??_R1A@?0A@EA@NetTransporterInterface@@8,,
-0x7ead60,??_R4NetTransporter@@6B@,,
-0x7ead74,??_R3NetTransporter@@8,,
-0x7ead84,??_R2NetTransporter@@8,,
-0x7ead90,??_R1A@?0A@EA@NetTransporter@@8,,
-0x7eadac,??_R4TTNetwork@@6BNetTransporter@@@,,
-0x7eadc0,??_R3TTNetwork@@8,,
-0x7eadd0,??_R2TTNetwork@@8,,
-0x7eade4,??_R1A@?0A@EA@TTNetwork@@8,,
-0x7eae00,??_R1BA@?0A@EA@BaseThing@@8,,
-0x7eae1c,??_R3BaseThing@@8,,
-0x7eae2c,??_R2BaseThing@@8,,
-0x7eae34,??_R1A@?0A@EA@BaseThing@@8,,
-0x7eae50,??_R4TTNetwork@@6BBaseThing@@@,,
-0x7eae64,??_R4V2SessionManager@@6B@,,
-0x7eae78,??_R3V2SessionManager@@8,,
-0x7eae88,??_R2V2SessionManager@@8,,
-0x7eae90,??_R1A@?0A@EA@V2SessionManager@@8,,
-0x7eaeac,??_R4PackStats@NuNetEmu@@6B@,,
-0x7eaec0,??_R3PackStats@NuNetEmu@@8,,
-0x7eaed0,??_R2PackStats@NuNetEmu@@8,,
-0x7eaee0,??_R1A@?0A@EA@PackStats@NuNetEmu@@8,,
-0x7eaefc,??_R4EdStream@@6B@,,
-0x7eaf10,??_R3EdStream@@8,,
-0x7eaf20,??_R2EdStream@@8,,
-0x7eaf28,??_R1A@?0A@EA@EdStream@@8,,
-0x7eaf44,??_R4EdInputStream@@6B@,,
-0x7eaf58,??_R3EdInputStream@@8,,
-0x7eaf68,??_R2EdInputStream@@8,,
-0x7eaf74,??_R1A@?0A@EA@EdInputStream@@8,,
-0x7eaf90,??_R4EdOutputStream@@6B@,,
-0x7eafa4,??_R3EdOutputStream@@8,,
-0x7eafb4,??_R2EdOutputStream@@8,,
-0x7eafc0,??_R1A@?0A@EA@EdOutputStream@@8,,
-0x7eafdc,??_R4NetInputStream@@6B@,,
-0x7eaff0,??_R3NetInputStream@@8,,
-0x7eb000,??_R2NetInputStream@@8,,
-0x7eb010,??_R1A@?0A@EA@NetInputStream@@8,,
-0x7eb02c,??_R4NetOutputStream@@6B@,,
-0x7eb040,??_R3NetOutputStream@@8,,
-0x7eb050,??_R2NetOutputStream@@8,,
-0x7eb060,??_R1A@?0A@EA@NetOutputStream@@8,,
-0x7eb07c,??_R4EdObjectNotifier@@6B@,,
-0x7eb090,??_R3EdObjectNotifier@@8,,
-0x7eb0a0,??_R2EdObjectNotifier@@8,,
-0x7eb0a8,??_R1A@?0A@EA@EdObjectNotifier@@8,,
-0x7eb0c4,??_R4NetworkObjectManager@@6BEdObjectNotifier@@@,,
-0x7eb0d8,??_R3NetworkObjectManager@@8,,
-0x7eb0e8,??_R2NetworkObjectManager@@8,,
-0x7eb0f8,??_R1A@?0A@EA@NetworkObjectManager@@8,,
-0x7eb114,??_R13?0A@EA@EdObjectNotifier@@8,,
-0x7eb130,??_R4NetReplicator@@6B@,,
-0x7eb144,??_R3NetReplicator@@8,,
-0x7eb154,??_R2NetReplicator@@8,,
-0x7eb160,??_R1A@?0A@EA@NetReplicator@@8,,
-0x7eb17c,??_R13?0A@EA@?$CSListLink@VNetReplicator@@@@8,,
-0x7eb198,??_R3?$CSListLink@VNetReplicator@@@@8,,
-0x7eb1a8,??_R2?$CSListLink@VNetReplicator@@@@8,,
-0x7eb1b0,??_R1A@?0A@EA@?$CSListLink@VNetReplicator@@@@8,,
-0x7eb1cc,??_R4NetworkObjectManager@@6BNetListenerInterface@@@,,
-0x7eb1e0,??_R4NetFtpManager@@6B@,,
-0x7eb1f4,??_R3NetFtpManager@@8,,
-0x7eb204,??_R2NetFtpManager@@8,,
-0x7eb210,??_R1A@?0A@EA@NetFtpManager@@8,,
-0x7eb22c,??_R4BaseThing@@6B@,,
-0x7eb240,??_R4EdClassInterface@@6B@,,
-0x7eb254,??_R3EdClassInterface@@8,,
-0x7eb264,??_R2EdClassInterface@@8,,
-0x7eb26c,??_R1A@?0A@EA@EdClassInterface@@8,,
-0x7eb288,??_R4EdControl@@6B@,,
-0x7eb29c,??_R3EdControl@@8,,
-0x7eb2ac,??_R2EdControl@@8,,
-0x7eb2b4,??_R1A@?0A@EA@EdControl@@8,,
-0x7eb2d0,??_R4EdEnumControl@@6B@,,
-0x7eb2e4,??_R3EdEnumControl@@8,,
-0x7eb2f4,??_R2EdEnumControl@@8,,
-0x7eb300,??_R1A@?0A@EA@EdEnumControl@@8,,
-0x7eb31c,??_R4EdBitControl@@6B@,,
-0x7eb330,??_R3EdBitControl@@8,,
-0x7eb340,??_R2EdBitControl@@8,,
-0x7eb350,??_R1A@?0A@EA@EdBitControl@@8,,
-0x7eb36c,??_R4RTLHelper@@6B@,,
-0x7eb380,??_R3RTLHelper@@8,,
-0x7eb390,??_R2RTLHelper@@8,,
-0x7eb39c,??_R1A@?0A@EA@RTLHelper@@8,,
-0x7eb3b8,??_R4FogHelper@@6B@,,
-0x7eb3cc,??_R3FogHelper@@8,,
-0x7eb3dc,??_R2FogHelper@@8,,
-0x7eb3e8,??_R1A@?0A@EA@FogHelper@@8,,
-0x7eb404,??_R4EdRefRTL@@6B@,,
-0x7eb418,??_R3EdRefRTL@@8,,
-0x7eb428,??_R2EdRefRTL@@8,,
-0x7eb438,??_R1A@?0A@EA@EdRefRTL@@8,,
-0x7eb454,??_R1A@?0A@EA@EdRef@@8,,
-0x7eb470,??_R3EdRef@@8,,
-0x7eb480,??_R2EdRef@@8,,
-0x7eb48c,??_R13?0A@EA@?$CSListLink@VEdRef@@@@8,,
-0x7eb4a8,??_R3?$CSListLink@VEdRef@@@@8,,
-0x7eb4b8,??_R2?$CSListLink@VEdRef@@@@8,,
-0x7eb4c0,??_R1A@?0A@EA@?$CSListLink@VEdRef@@@@8,,
-0x7eb4dc,??_R4EdRefFog@@6B@,,
-0x7eb4f0,??_R3EdRefFog@@8,,
-0x7eb500,??_R2EdRefFog@@8,,
-0x7eb510,??_R1A@?0A@EA@EdRefFog@@8,,
-0x7eb52c,??_R4?$EdValueControl@H@@6B@,,
-0x7eb540,??_R3?$EdValueControl@H@@8,,
-0x7eb550,??_R2?$EdValueControl@H@@8,,
-0x7eb55c,??_R1A@?0A@EA@?$EdValueControl@H@@8,,
-0x7eb578,??_R4?$EdValueControl@M@@6B@,,
-0x7eb58c,??_R3?$EdValueControl@M@@8,,
-0x7eb59c,??_R2?$EdValueControl@M@@8,,
-0x7eb5a8,??_R1A@?0A@EA@?$EdValueControl@M@@8,,
-0x7eb5c4,??_R4EdIntControl@@6B@,,
-0x7eb5d8,??_R3EdIntControl@@8,,
-0x7eb5e8,??_R2EdIntControl@@8,,
-0x7eb5f8,??_R1A@?0A@EA@EdIntControl@@8,,
-0x7eb614,??_R4EdFloatControl@@6B@,,
-0x7eb628,??_R3EdFloatControl@@8,,
-0x7eb638,??_R2EdFloatControl@@8,,
-0x7eb648,??_R1A@?0A@EA@EdFloatControl@@8,,
-0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb690,??_R1A@?0A@EA@WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb6ac,??_R4OggReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb6c0,??_R3OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb6d0,??_R2OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb6dc,??_R1A@?0A@EA@OggReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
-0x7eb6f8,??_R4EdTool@@6B@,,
-0x7eb70c,??_R3EdTool@@8,,
-0x7eb71c,??_R2EdTool@@8,,
-0x7eb728,??_R1A@?0A@EA@EdTool@@8,,
-0x7eb744,??_R13?0A@EA@?$CSListLink@VEdTool@@@@8,,
-0x7eb760,??_R3?$CSListLink@VEdTool@@@@8,,
-0x7eb770,??_R2?$CSListLink@VEdTool@@@@8,,
-0x7eb778,??_R1A@?0A@EA@?$CSListLink@VEdTool@@@@8,,
-0x7eb794,??_R4BaseEditor@@6B@,,
-0x7eb7a8,??_R3BaseEditor@@8,,
-0x7eb7b8,??_R2BaseEditor@@8,,
-0x7eb7c4,??_R1A@?0A@EA@BaseEditor@@8,,
-0x7eb7e0,??_R13?0A@EA@?$CSListLink@VBaseEditor@@@@8,,
-0x7eb7fc,??_R3?$CSListLink@VBaseEditor@@@@8,,
-0x7eb80c,??_R2?$CSListLink@VBaseEditor@@@@8,,
-0x7eb814,??_R1A@?0A@EA@?$CSListLink@VBaseEditor@@@@8,,
-0x7eb830,??_R4EditorSettings@@6B@,,
-0x7eb844,??_R3EditorSettings@@8,,
-0x7eb854,??_R2EditorSettings@@8,,
-0x7eb85c,??_R1A@?0A@EA@EditorSettings@@8,,
-0x7eb878,??_R4PlaceableInterface@@6B@,,
-0x7eb88c,??_R3PlaceableInterface@@8,,
-0x7eb89c,??_R2PlaceableInterface@@8,,
-0x7eb8a8,??_R1A@?0A@EA@PlaceableInterface@@8,,
-0x7eb8c4,??_R4KnotHelper@@6B@,,
-0x7eb8d8,??_R3KnotHelper@@8,,
-0x7eb8e8,??_R2KnotHelper@@8,,
-0x7eb8f4,??_R1A@?0A@EA@KnotHelper@@8,,
-0x7eb910,??_R4EdSubSystem@@6B@,,
-0x7eb924,??_R3EdSubSystem@@8,,
-0x7eb934,??_R2EdSubSystem@@8,,
-0x7eb944,??_R1A@?0A@EA@EdSubSystem@@8,,
-0x7eb960,??_R13?0A@EA@MemBufferAllocator@@8,,
-0x7eb97c,??_R3MemBufferAllocator@@8,,
-0x7eb98c,??_R2MemBufferAllocator@@8,,
-0x7eb994,??_R1A@?0A@EA@MemBufferAllocator@@8,,
-0x7eb9b0,??_R13?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
-0x7eb9cc,??_R3?$CSListLink@VEdSubSystem@@@@8,,
-0x7eb9dc,??_R2?$CSListLink@VEdSubSystem@@@@8,,
-0x7eb9e4,??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
-0x7eba00,??_R4EdVectorControl@@6B@,,
-0x7eba14,??_R3EdVectorControl@@8,,
-0x7eba24,??_R2EdVectorControl@@8,,
-0x7eba30,??_R1A@?0A@EA@EdVectorControl@@8,,
-0x7eba4c,??_R4EdMatrixControl@@6B@,,
-0x7eba60,??_R3EdMatrixControl@@8,,
-0x7eba70,??_R2EdMatrixControl@@8,,
-0x7eba7c,??_R1A@?0A@EA@EdMatrixControl@@8,,
-0x7eba98,??_R4EdStringControl@@6B@,,
-0x7ebaac,??_R3EdStringControl@@8,,
-0x7ebabc,??_R2EdStringControl@@8,,
-0x7ebac8,??_R1A@?0A@EA@EdStringControl@@8,,
-0x7ebae4,??_R4EdColourControl@@6B@,,
-0x7ebaf8,??_R3EdColourControl@@8,,
-0x7ebb08,??_R2EdColourControl@@8,,
-0x7ebb14,??_R1A@?0A@EA@EdColourControl@@8,,
-0x7ebb30,??_R4EdSfxNameControl@@6B@,,
-0x7ebb44,??_R3EdSfxNameControl@@8,,
-0x7ebb54,??_R2EdSfxNameControl@@8,,
-0x7ebb64,??_R1A@?0A@EA@EdSfxNameControl@@8,,
-0x7ebb80,??_R4EdManipulator@@6B@,,
-0x7ebb94,??_R3EdManipulator@@8,,
-0x7ebba4,??_R2EdManipulator@@8,,
-0x7ebbac,??_R1A@?0A@EA@EdManipulator@@8,,
-0x7ebbc8,??_R4EdManMove@@6B@,,
-0x7ebbdc,??_R3EdManMove@@8,,
-0x7ebbec,??_R2EdManMove@@8,,
-0x7ebbf8,??_R1A@?0A@EA@EdManMove@@8,,
-0x7ebc14,??_R4EdManRotate@@6B@,,
-0x7ebc28,??_R3EdManRotate@@8,,
-0x7ebc38,??_R2EdManRotate@@8,,
-0x7ebc44,??_R1A@?0A@EA@EdManRotate@@8,,
-0x7ebc60,??_R4EdManScale@@6B@,,
-0x7ebc74,??_R3EdManScale@@8,,
-0x7ebc84,??_R2EdManScale@@8,,
-0x7ebc90,??_R1A@?0A@EA@EdManScale@@8,,
-0x7ebcac,??_R4PlaceableNameControl@@6B@,,
-0x7ebcc0,??_R3PlaceableNameControl@@8,,
-0x7ebcd0,??_R2PlaceableNameControl@@8,,
-0x7ebce0,??_R1A@?0A@EA@PlaceableNameControl@@8,,
-0x7ebcfc,??_R4EdSpecialObjectControl@@6B@,,
-0x7ebd10,??_R3EdSpecialObjectControl@@8,,
-0x7ebd20,??_R2EdSpecialObjectControl@@8,,
-0x7ebd2c,??_R1A@?0A@EA@EdSpecialObjectControl@@8,,
-0x7ebd48,??_R4SplinePointBlock@@6B@,,
-0x7ebd5c,??_R3SplinePointBlock@@8,,
-0x7ebd6c,??_R2SplinePointBlock@@8,,
-0x7ebd78,??_R1A@?0A@EA@SplinePointBlock@@8,,
-0x7ebd94,??_R13?0A@EA@?$CSListLink@VSplinePointBlock@@@@8,,
-0x7ebdb0,??_R3?$CSListLink@VSplinePointBlock@@@@8,,
-0x7ebdc0,??_R2?$CSListLink@VSplinePointBlock@@@@8,,
-0x7ebdc8,??_R1A@?0A@EA@?$CSListLink@VSplinePointBlock@@@@8,,
-0x7ebde4,??_R4EdFileInputStream@@6B@,,
-0x7ebdf8,??_R3EdFileInputStream@@8,,
-0x7ebe08,??_R2EdFileInputStream@@8,,
-0x7ebe18,??_R1A@?0A@EA@EdFileInputStream@@8,,
-0x7ebe34,??_R4EdFileOutputStream@@6B@,,
-0x7ebe48,??_R3EdFileOutputStream@@8,,
-0x7ebe58,??_R2EdFileOutputStream@@8,,
-0x7ebe68,??_R1A@?0A@EA@EdFileOutputStream@@8,,
-0x7ebe84,??_R4EdRef@@6B@,,
-0x7ebe98,??_R4CursorTool@@6B@,,
-0x7ebeac,??_R3CursorTool@@8,,
-0x7ebebc,??_R2CursorTool@@8,,
-0x7ebecc,??_R1A@?0A@EA@CursorTool@@8,,
-0x7ebee8,??_R4Placeable@@6B@,,
-0x7ebefc,??_R3Placeable@@8,,
-0x7ebf0c,??_R2Placeable@@8,,
-0x7ebf14,??_R1A@?0A@EA@Placeable@@8,,
-0x7ebf30,??_R4SplineObject@@6B@,,
-0x7ebf44,??_R3SplineObject@@8,,
-0x7ebf54,??_R2SplineObject@@8,,
-0x7ebf60,??_R1A@?0A@EA@SplineObject@@8,,
-0x7ebf7c,??_R13?0A@EA@?$CSListLink@VSplineObject@@@@8,,
-0x7ebf98,??_R3?$CSListLink@VSplineObject@@@@8,,
-0x7ebfa8,??_R2?$CSListLink@VSplineObject@@@@8,,
-0x7ebfb0,??_R1A@?0A@EA@?$CSListLink@VSplineObject@@@@8,,
-0x7ebfcc,??_R4EdClassObjectNameControl@@6B@,,
-0x7ebfe0,??_R3EdClassObjectNameControl@@8,,
-0x7ebff0,??_R2EdClassObjectNameControl@@8,,
-0x7ec000,??_R1A@?0A@EA@EdClassObjectNameControl@@8,,
-0x7ec01c,??_R4SpecialObject@@6B@,,
-0x7ec030,??_R3SpecialObject@@8,,
-0x7ec040,??_R2SpecialObject@@8,,
-0x7ec04c,??_R1A@?0A@EA@SpecialObject@@8,,
-0x7ec068,??_R4EdRefSpecialObject@@6B@,,
-0x7ec07c,??_R3EdRefSpecialObject@@8,,
-0x7ec08c,??_R2EdRefSpecialObject@@8,,
-0x7ec09c,??_R1A@?0A@EA@EdRefSpecialObject@@8,,
-0x7ec0b8,??_R4SceneObject@@6B@,,
-0x7ec0cc,??_R3SceneObject@@8,,
-0x7ec0dc,??_R2SceneObject@@8,,
-0x7ec0ec,??_R1A@?0A@EA@SceneObject@@8,,
-0x7ec108,??_R4SceneInstance@@6B@,,
-0x7ec11c,??_R3SceneInstance@@8,,
-0x7ec12c,??_R2SceneInstance@@8,,
-0x7ec144,??_R1A@?0A@EA@SceneInstance@@8,,
-0x7ec160,??_R1CM@?0A@EA@?$CSListLink@VSceneInstance@@@@8,,
-0x7ec17c,??_R3?$CSListLink@VSceneInstance@@@@8,,
-0x7ec18c,??_R2?$CSListLink@VSceneInstance@@@@8,,
-0x7ec194,??_R1A@?0A@EA@?$CSListLink@VSceneInstance@@@@8,,
-0x7ec1b0,??_R4EdRefPlaceable@@6B@,,
-0x7ec1c4,??_R3EdRefPlaceable@@8,,
-0x7ec1d4,??_R2EdRefPlaceable@@8,,
-0x7ec1e4,??_R1A@?0A@EA@EdRefPlaceable@@8,,
-0x7ec200,??_R4EdRefSpline@@6B@,,
-0x7ec214,??_R3EdRefSpline@@8,,
-0x7ec224,??_R2EdRefSpline@@8,,
-0x7ec234,??_R1A@?0A@EA@EdRefSpline@@8,,
-0x7ec250,??_R4EdRefKnot@@6B@,,
-0x7ec264,??_R3EdRefKnot@@8,,
-0x7ec274,??_R2EdRefKnot@@8,,
-0x7ec284,??_R1A@?0A@EA@EdRefKnot@@8,,
-0x7ec2a0,??_R4SplineHelper@@6B@,,
-0x7ec2b4,??_R3SplineHelper@@8,,
-0x7ec2c4,??_R2SplineHelper@@8,,
-0x7ec2d0,??_R1A@?0A@EA@SplineHelper@@8,,
-0x7ec2ec,??_R4SceneObjectHelper@@6BPlaceableInterface@@@,,
-0x7ec300,??_R3SceneObjectHelper@@8,,
-0x7ec310,??_R2SceneObjectHelper@@8,,
-0x7ec32c,??_R1A@?0A@EA@SceneObjectHelper@@8,,
-0x7ec348,??_R1M@?0A@EA@EdSubSystem@@8,,
-0x7ec364,??_R1BA@?0A@EA@MemBufferAllocator@@8,,
-0x7ec380,??_R1BA@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
-0x7ec39c,??_R4SceneObjectHelper@@6BEdSubSystem@@@,,
-0x7ec3b0,??_R4ClassEditor@@6B@,,
-0x7ec3c4,??_R3ClassEditor@@8,,
-0x7ec3d4,??_R2ClassEditor@@8,,
-0x7ec3e4,??_R1A@?0A@EA@ClassEditor@@8,,
-0x7ec400,??_R4LevelEditor@@6B@,,
-0x7ec414,??_R3LevelEditor@@8,,
-0x7ec424,??_R2LevelEditor@@8,,
-0x7ec430,??_R1A@?0A@EA@LevelEditor@@8,,
-0x7ec44c,??_R4PropertyTool@@6B@,,
-0x7ec460,??_R3PropertyTool@@8,,
-0x7ec470,??_R2PropertyTool@@8,,
-0x7ec480,??_R1A@?0A@EA@PropertyTool@@8,,
-0x7ec49c,??_R4SplineTool@@6B@,,
-0x7ec4b0,??_R3SplineTool@@8,,
-0x7ec4c0,??_R2SplineTool@@8,,
-0x7ec4d4,??_R1A@?0A@EA@SplineTool@@8,,
-0x7ec898,??_R4ShaderBuilderGen@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec8ac,??_R3ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec8bc,??_R2ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec8c4,??_R1A@?0A@EA@ShaderBuilderGen@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec8e0,??_R4HLSLShaderBuilder@@6B@,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec8f4,??_R3HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec904,??_R2HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec910,??_R1A@?0A@EA@HLSLShaderBuilder@@8,,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
-0x7ec92c,??_R4?$ShaderManagerTemplate@VNuShaderObject@@@@6B@,,
-0x7ec940,??_R3?$ShaderManagerTemplate@VNuShaderObject@@@@8,,
-0x7ec950,??_R2?$ShaderManagerTemplate@VNuShaderObject@@@@8,,
-0x7ec958,??_R1A@?0A@EA@?$ShaderManagerTemplate@VNuShaderObject@@@@8,,
-0x7ec974,??_R4ShaderManagerHLSL@@6B@,,
-0x7ec988,??_R3ShaderManagerHLSL@@8,,
-0x7ec998,??_R2ShaderManagerHLSL@@8,,
-0x7ec9a4,??_R1A@?0A@EA@ShaderManagerHLSL@@8,,
-0x7eca18,__TI2?AVbad_alloc@std@@,,Natural owning C++ RTTI/throw metadata
-0x7eca28,__CTA2?AVbad_alloc@std@@,,Natural owning C++ RTTI/throw metadata
-0x7eca34,__CT??_R0?AVbad_alloc@std@@@8??0bad_alloc@std@@QAE@ABV01@@Z12,,Natural owning C++ RTTI/throw metadata
-0x7eca50,__CT??_R0?AVexception@std@@@8??0exception@std@@QAE@ABV01@@Z12,,Natural owning C++ RTTI/throw metadata
+0x7eabe8,??_R4logic_error@std@@6B@,20,Natural owning C++ RTTI/throw metadata
+0x7eabfc,??_R3logic_error@std@@8,16,Natural owning C++ RTTI/throw metadata
+0x7eac0c,??_R2logic_error@std@@8,9,Natural owning C++ RTTI/throw metadata
+0x7eac18,??_R1A@?0A@EA@logic_error@std@@8,28,Natural owning C++ RTTI/throw metadata
+0x7eac34,??_R4length_error@std@@6B@,20,Natural owning C++ RTTI/throw metadata
+0x7eac48,??_R3length_error@std@@8,16,Natural owning C++ RTTI/throw metadata
+0x7eac58,??_R2length_error@std@@8,13,Natural owning C++ RTTI/throw metadata
+0x7eac68,??_R1A@?0A@EA@length_error@std@@8,28,Natural owning C++ RTTI/throw metadata
+0x7eac84,??_R4NetSmallStats@@6B@,20,
+0x7eac98,??_R3NetSmallStats@@8,16,
+0x7eaca8,??_R2NetSmallStats@@8,5,
+0x7eacb0,??_R1A@?0A@EA@NetSmallStats@@8,28,
+0x7eaccc,??_R4NetStats@@6B@,20,
+0x7eace0,??_R3NetStats@@8,16,
+0x7eacf0,??_R2NetStats@@8,9,
+0x7eacfc,??_R1A@?0A@EA@NetStats@@8,28,
+0x7ead18,??_R4NetTransporterInterface@@6B@,20,
+0x7ead2c,??_R3NetTransporterInterface@@8,16,
+0x7ead3c,??_R2NetTransporterInterface@@8,5,
+0x7ead44,??_R1A@?0A@EA@NetTransporterInterface@@8,28,
+0x7ead60,??_R4NetTransporter@@6B@,20,
+0x7ead74,??_R3NetTransporter@@8,16,
+0x7ead84,??_R2NetTransporter@@8,9,
+0x7ead90,??_R1A@?0A@EA@NetTransporter@@8,28,
+0x7eadac,??_R4TTNetwork@@6BNetTransporter@@@,20,
+0x7eadc0,??_R3TTNetwork@@8,16,
+0x7eadd0,??_R2TTNetwork@@8,17,
+0x7eade4,??_R1A@?0A@EA@TTNetwork@@8,28,
+0x7eae00,??_R1BA@?0A@EA@BaseThing@@8,28,
+0x7eae1c,??_R3BaseThing@@8,16,
+0x7eae2c,??_R2BaseThing@@8,5,
+0x7eae34,??_R1A@?0A@EA@BaseThing@@8,28,
+0x7eae50,??_R4TTNetwork@@6BBaseThing@@@,20,
+0x7eae64,??_R4V2SessionManager@@6B@,20,
+0x7eae78,??_R3V2SessionManager@@8,16,
+0x7eae88,??_R2V2SessionManager@@8,5,
+0x7eae90,??_R1A@?0A@EA@V2SessionManager@@8,28,
+0x7eaeac,??_R4PackStats@NuNetEmu@@6B@,20,
+0x7eaec0,??_R3PackStats@NuNetEmu@@8,16,
+0x7eaed0,??_R2PackStats@NuNetEmu@@8,13,
+0x7eaee0,??_R1A@?0A@EA@PackStats@NuNetEmu@@8,28,
+0x7eaefc,??_R4EdStream@@6B@,20,
+0x7eaf10,??_R3EdStream@@8,16,
+0x7eaf20,??_R2EdStream@@8,5,
+0x7eaf28,??_R1A@?0A@EA@EdStream@@8,28,
+0x7eaf44,??_R4EdInputStream@@6B@,20,
+0x7eaf58,??_R3EdInputStream@@8,16,
+0x7eaf68,??_R2EdInputStream@@8,9,
+0x7eaf74,??_R1A@?0A@EA@EdInputStream@@8,28,
+0x7eaf90,??_R4EdOutputStream@@6B@,20,
+0x7eafa4,??_R3EdOutputStream@@8,16,
+0x7eafb4,??_R2EdOutputStream@@8,9,
+0x7eafc0,??_R1A@?0A@EA@EdOutputStream@@8,28,
+0x7eafdc,??_R4NetInputStream@@6B@,20,
+0x7eaff0,??_R3NetInputStream@@8,16,
+0x7eb000,??_R2NetInputStream@@8,13,
+0x7eb010,??_R1A@?0A@EA@NetInputStream@@8,28,
+0x7eb02c,??_R4NetOutputStream@@6B@,20,
+0x7eb040,??_R3NetOutputStream@@8,16,
+0x7eb050,??_R2NetOutputStream@@8,13,
+0x7eb060,??_R1A@?0A@EA@NetOutputStream@@8,28,
+0x7eb07c,??_R4EdObjectNotifier@@6B@,20,
+0x7eb090,??_R3EdObjectNotifier@@8,16,
+0x7eb0a0,??_R2EdObjectNotifier@@8,5,
+0x7eb0a8,??_R1A@?0A@EA@EdObjectNotifier@@8,28,
+0x7eb0c4,??_R4NetworkObjectManager@@6BEdObjectNotifier@@@,20,
+0x7eb0d8,??_R3NetworkObjectManager@@8,16,
+0x7eb0e8,??_R2NetworkObjectManager@@8,13,
+0x7eb0f8,??_R1A@?0A@EA@NetworkObjectManager@@8,28,
+0x7eb114,??_R13?0A@EA@EdObjectNotifier@@8,28,
+0x7eb130,??_R4NetReplicator@@6B@,20,
+0x7eb144,??_R3NetReplicator@@8,16,
+0x7eb154,??_R2NetReplicator@@8,9,
+0x7eb160,??_R1A@?0A@EA@NetReplicator@@8,28,
+0x7eb17c,??_R13?0A@EA@?$CSListLink@VNetReplicator@@@@8,28,
+0x7eb198,??_R3?$CSListLink@VNetReplicator@@@@8,16,
+0x7eb1a8,??_R2?$CSListLink@VNetReplicator@@@@8,5,
+0x7eb1b0,??_R1A@?0A@EA@?$CSListLink@VNetReplicator@@@@8,28,
+0x7eb1cc,??_R4NetworkObjectManager@@6BNetListenerInterface@@@,20,
+0x7eb1e0,??_R4NetFtpManager@@6B@,20,
+0x7eb1f4,??_R3NetFtpManager@@8,16,
+0x7eb204,??_R2NetFtpManager@@8,9,
+0x7eb210,??_R1A@?0A@EA@NetFtpManager@@8,28,
+0x7eb22c,??_R4BaseThing@@6B@,20,
+0x7eb240,??_R4EdClassInterface@@6B@,20,
+0x7eb254,??_R3EdClassInterface@@8,16,
+0x7eb264,??_R2EdClassInterface@@8,5,
+0x7eb26c,??_R1A@?0A@EA@EdClassInterface@@8,28,
+0x7eb288,??_R4EdControl@@6B@,20,
+0x7eb29c,??_R3EdControl@@8,16,
+0x7eb2ac,??_R2EdControl@@8,5,
+0x7eb2b4,??_R1A@?0A@EA@EdControl@@8,28,
+0x7eb2d0,??_R4EdEnumControl@@6B@,20,
+0x7eb2e4,??_R3EdEnumControl@@8,16,
+0x7eb2f4,??_R2EdEnumControl@@8,9,
+0x7eb300,??_R1A@?0A@EA@EdEnumControl@@8,28,
+0x7eb31c,??_R4EdBitControl@@6B@,20,
+0x7eb330,??_R3EdBitControl@@8,16,
+0x7eb340,??_R2EdBitControl@@8,13,
+0x7eb350,??_R1A@?0A@EA@EdBitControl@@8,28,
+0x7eb36c,??_R4RTLHelper@@6B@,20,
+0x7eb380,??_R3RTLHelper@@8,16,
+0x7eb390,??_R2RTLHelper@@8,9,
+0x7eb39c,??_R1A@?0A@EA@RTLHelper@@8,28,
+0x7eb3b8,??_R4FogHelper@@6B@,20,
+0x7eb3cc,??_R3FogHelper@@8,16,
+0x7eb3dc,??_R2FogHelper@@8,9,
+0x7eb3e8,??_R1A@?0A@EA@FogHelper@@8,28,
+0x7eb404,??_R4EdRefRTL@@6B@,20,
+0x7eb418,??_R3EdRefRTL@@8,16,
+0x7eb428,??_R2EdRefRTL@@8,13,
+0x7eb438,??_R1A@?0A@EA@EdRefRTL@@8,28,
+0x7eb454,??_R1A@?0A@EA@EdRef@@8,28,
+0x7eb470,??_R3EdRef@@8,16,
+0x7eb480,??_R2EdRef@@8,9,
+0x7eb48c,??_R13?0A@EA@?$CSListLink@VEdRef@@@@8,28,
+0x7eb4a8,??_R3?$CSListLink@VEdRef@@@@8,16,
+0x7eb4b8,??_R2?$CSListLink@VEdRef@@@@8,5,
+0x7eb4c0,??_R1A@?0A@EA@?$CSListLink@VEdRef@@@@8,28,
+0x7eb4dc,??_R4EdRefFog@@6B@,20,
+0x7eb4f0,??_R3EdRefFog@@8,16,
+0x7eb500,??_R2EdRefFog@@8,13,
+0x7eb510,??_R1A@?0A@EA@EdRefFog@@8,28,
+0x7eb52c,??_R4?$EdValueControl@H@@6B@,20,
+0x7eb540,??_R3?$EdValueControl@H@@8,16,
+0x7eb550,??_R2?$EdValueControl@H@@8,9,
+0x7eb55c,??_R1A@?0A@EA@?$EdValueControl@H@@8,28,
+0x7eb578,??_R4?$EdValueControl@M@@6B@,20,
+0x7eb58c,??_R3?$EdValueControl@M@@8,16,
+0x7eb59c,??_R2?$EdValueControl@M@@8,9,
+0x7eb5a8,??_R1A@?0A@EA@?$EdValueControl@M@@8,28,
+0x7eb5c4,??_R4EdIntControl@@6B@,20,
+0x7eb5d8,??_R3EdIntControl@@8,16,
+0x7eb5e8,??_R2EdIntControl@@8,13,
+0x7eb5f8,??_R1A@?0A@EA@EdIntControl@@8,28,
+0x7eb614,??_R4EdFloatControl@@6B@,20,
+0x7eb628,??_R3EdFloatControl@@8,16,
+0x7eb638,??_R2EdFloatControl@@8,13,
+0x7eb648,??_R1A@?0A@EA@EdFloatControl@@8,28,
+0x7eb664,??_R4WavReader@@6B@,20,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb678,??_R3WavReader@@8,16,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb688,??_R2WavReader@@8,5,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb690,??_R1A@?0A@EA@WavReader@@8,28,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6ac,??_R4OggReader@@6B@,20,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6c0,??_R3OggReader@@8,16,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6d0,??_R2OggReader@@8,9,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6dc,??_R1A@?0A@EA@OggReader@@8,28,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
+0x7eb6f8,??_R4EdTool@@6B@,20,
+0x7eb70c,??_R3EdTool@@8,16,
+0x7eb71c,??_R2EdTool@@8,9,
+0x7eb728,??_R1A@?0A@EA@EdTool@@8,28,
+0x7eb744,??_R13?0A@EA@?$CSListLink@VEdTool@@@@8,28,
+0x7eb760,??_R3?$CSListLink@VEdTool@@@@8,16,
+0x7eb770,??_R2?$CSListLink@VEdTool@@@@8,5,
+0x7eb778,??_R1A@?0A@EA@?$CSListLink@VEdTool@@@@8,28,
+0x7eb794,??_R4BaseEditor@@6B@,20,
+0x7eb7a8,??_R3BaseEditor@@8,16,
+0x7eb7b8,??_R2BaseEditor@@8,9,
+0x7eb7c4,??_R1A@?0A@EA@BaseEditor@@8,28,
+0x7eb7e0,??_R13?0A@EA@?$CSListLink@VBaseEditor@@@@8,28,
+0x7eb7fc,??_R3?$CSListLink@VBaseEditor@@@@8,16,
+0x7eb80c,??_R2?$CSListLink@VBaseEditor@@@@8,5,
+0x7eb814,??_R1A@?0A@EA@?$CSListLink@VBaseEditor@@@@8,28,
+0x7eb830,??_R4EditorSettings@@6B@,20,
+0x7eb844,??_R3EditorSettings@@8,16,
+0x7eb854,??_R2EditorSettings@@8,5,
+0x7eb85c,??_R1A@?0A@EA@EditorSettings@@8,28,
+0x7eb878,??_R4PlaceableInterface@@6B@,20,
+0x7eb88c,??_R3PlaceableInterface@@8,16,
+0x7eb89c,??_R2PlaceableInterface@@8,9,
+0x7eb8a8,??_R1A@?0A@EA@PlaceableInterface@@8,28,
+0x7eb8c4,??_R4KnotHelper@@6B@,20,
+0x7eb8d8,??_R3KnotHelper@@8,16,
+0x7eb8e8,??_R2KnotHelper@@8,9,
+0x7eb8f4,??_R1A@?0A@EA@KnotHelper@@8,28,
+0x7eb910,??_R4EdSubSystem@@6B@,20,
+0x7eb924,??_R3EdSubSystem@@8,16,
+0x7eb934,??_R2EdSubSystem@@8,13,
+0x7eb944,??_R1A@?0A@EA@EdSubSystem@@8,28,
+0x7eb960,??_R13?0A@EA@MemBufferAllocator@@8,28,
+0x7eb97c,??_R3MemBufferAllocator@@8,16,
+0x7eb98c,??_R2MemBufferAllocator@@8,5,
+0x7eb994,??_R1A@?0A@EA@MemBufferAllocator@@8,28,
+0x7eb9b0,??_R13?0A@EA@?$CSListLink@VEdSubSystem@@@@8,28,
+0x7eb9cc,??_R3?$CSListLink@VEdSubSystem@@@@8,16,
+0x7eb9dc,??_R2?$CSListLink@VEdSubSystem@@@@8,5,
+0x7eb9e4,??_R1A@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,28,
+0x7eba00,??_R4EdVectorControl@@6B@,20,
+0x7eba14,??_R3EdVectorControl@@8,16,
+0x7eba24,??_R2EdVectorControl@@8,9,
+0x7eba30,??_R1A@?0A@EA@EdVectorControl@@8,28,
+0x7eba4c,??_R4EdMatrixControl@@6B@,20,
+0x7eba60,??_R3EdMatrixControl@@8,16,
+0x7eba70,??_R2EdMatrixControl@@8,9,
+0x7eba7c,??_R1A@?0A@EA@EdMatrixControl@@8,28,
+0x7eba98,??_R4EdStringControl@@6B@,20,
+0x7ebaac,??_R3EdStringControl@@8,16,
+0x7ebabc,??_R2EdStringControl@@8,9,
+0x7ebac8,??_R1A@?0A@EA@EdStringControl@@8,28,
+0x7ebae4,??_R4EdColourControl@@6B@,20,
+0x7ebaf8,??_R3EdColourControl@@8,16,
+0x7ebb08,??_R2EdColourControl@@8,9,
+0x7ebb14,??_R1A@?0A@EA@EdColourControl@@8,28,
+0x7ebb30,??_R4EdSfxNameControl@@6B@,20,
+0x7ebb44,??_R3EdSfxNameControl@@8,16,
+0x7ebb54,??_R2EdSfxNameControl@@8,13,
+0x7ebb64,??_R1A@?0A@EA@EdSfxNameControl@@8,28,
+0x7ebb80,??_R4EdManipulator@@6B@,20,
+0x7ebb94,??_R3EdManipulator@@8,16,
+0x7ebba4,??_R2EdManipulator@@8,5,
+0x7ebbac,??_R1A@?0A@EA@EdManipulator@@8,28,
+0x7ebbc8,??_R4EdManMove@@6B@,20,
+0x7ebbdc,??_R3EdManMove@@8,16,
+0x7ebbec,??_R2EdManMove@@8,9,
+0x7ebbf8,??_R1A@?0A@EA@EdManMove@@8,28,
+0x7ebc14,??_R4EdManRotate@@6B@,20,
+0x7ebc28,??_R3EdManRotate@@8,16,
+0x7ebc38,??_R2EdManRotate@@8,9,
+0x7ebc44,??_R1A@?0A@EA@EdManRotate@@8,28,
+0x7ebc60,??_R4EdManScale@@6B@,20,
+0x7ebc74,??_R3EdManScale@@8,16,
+0x7ebc84,??_R2EdManScale@@8,9,
+0x7ebc90,??_R1A@?0A@EA@EdManScale@@8,28,
+0x7ebcac,??_R4PlaceableNameControl@@6B@,20,
+0x7ebcc0,??_R3PlaceableNameControl@@8,16,
+0x7ebcd0,??_R2PlaceableNameControl@@8,13,
+0x7ebce0,??_R1A@?0A@EA@PlaceableNameControl@@8,28,
+0x7ebcfc,??_R4EdSpecialObjectControl@@6B@,20,
+0x7ebd10,??_R3EdSpecialObjectControl@@8,16,
+0x7ebd20,??_R2EdSpecialObjectControl@@8,9,
+0x7ebd2c,??_R1A@?0A@EA@EdSpecialObjectControl@@8,28,
+0x7ebd48,??_R4SplinePointBlock@@6B@,20,
+0x7ebd5c,??_R3SplinePointBlock@@8,16,
+0x7ebd6c,??_R2SplinePointBlock@@8,9,
+0x7ebd78,??_R1A@?0A@EA@SplinePointBlock@@8,28,
+0x7ebd94,??_R13?0A@EA@?$CSListLink@VSplinePointBlock@@@@8,28,
+0x7ebdb0,??_R3?$CSListLink@VSplinePointBlock@@@@8,16,
+0x7ebdc0,??_R2?$CSListLink@VSplinePointBlock@@@@8,5,
+0x7ebdc8,??_R1A@?0A@EA@?$CSListLink@VSplinePointBlock@@@@8,28,
+0x7ebde4,??_R4EdFileInputStream@@6B@,20,
+0x7ebdf8,??_R3EdFileInputStream@@8,16,
+0x7ebe08,??_R2EdFileInputStream@@8,13,
+0x7ebe18,??_R1A@?0A@EA@EdFileInputStream@@8,28,
+0x7ebe34,??_R4EdFileOutputStream@@6B@,20,
+0x7ebe48,??_R3EdFileOutputStream@@8,16,
+0x7ebe58,??_R2EdFileOutputStream@@8,13,
+0x7ebe68,??_R1A@?0A@EA@EdFileOutputStream@@8,28,
+0x7ebe84,??_R4EdRef@@6B@,20,
+0x7ebe98,??_R4CursorTool@@6B@,20,
+0x7ebeac,??_R3CursorTool@@8,16,
+0x7ebebc,??_R2CursorTool@@8,13,
+0x7ebecc,??_R1A@?0A@EA@CursorTool@@8,28,
+0x7ebee8,??_R4Placeable@@6B@,20,
+0x7ebefc,??_R3Placeable@@8,16,
+0x7ebf0c,??_R2Placeable@@8,5,
+0x7ebf14,??_R1A@?0A@EA@Placeable@@8,28,
+0x7ebf30,??_R4SplineObject@@6B@,20,
+0x7ebf44,??_R3SplineObject@@8,16,
+0x7ebf54,??_R2SplineObject@@8,9,
+0x7ebf60,??_R1A@?0A@EA@SplineObject@@8,28,
+0x7ebf7c,??_R13?0A@EA@?$CSListLink@VSplineObject@@@@8,28,
+0x7ebf98,??_R3?$CSListLink@VSplineObject@@@@8,16,
+0x7ebfa8,??_R2?$CSListLink@VSplineObject@@@@8,5,
+0x7ebfb0,??_R1A@?0A@EA@?$CSListLink@VSplineObject@@@@8,28,
+0x7ebfcc,??_R4EdClassObjectNameControl@@6B@,20,
+0x7ebfe0,??_R3EdClassObjectNameControl@@8,16,
+0x7ebff0,??_R2EdClassObjectNameControl@@8,13,
+0x7ec000,??_R1A@?0A@EA@EdClassObjectNameControl@@8,28,
+0x7ec01c,??_R4SpecialObject@@6B@,20,
+0x7ec030,??_R3SpecialObject@@8,16,
+0x7ec040,??_R2SpecialObject@@8,9,
+0x7ec04c,??_R1A@?0A@EA@SpecialObject@@8,28,
+0x7ec068,??_R4EdRefSpecialObject@@6B@,20,
+0x7ec07c,??_R3EdRefSpecialObject@@8,16,
+0x7ec08c,??_R2EdRefSpecialObject@@8,13,
+0x7ec09c,??_R1A@?0A@EA@EdRefSpecialObject@@8,28,
+0x7ec0b8,??_R4SceneObject@@6B@,20,
+0x7ec0cc,??_R3SceneObject@@8,16,
+0x7ec0dc,??_R2SceneObject@@8,13,
+0x7ec0ec,??_R1A@?0A@EA@SceneObject@@8,28,
+0x7ec108,??_R4SceneInstance@@6B@,20,
+0x7ec11c,??_R3SceneInstance@@8,16,
+0x7ec12c,??_R2SceneInstance@@8,21,
+0x7ec144,??_R1A@?0A@EA@SceneInstance@@8,28,
+0x7ec160,??_R1CM@?0A@EA@?$CSListLink@VSceneInstance@@@@8,28,
+0x7ec17c,??_R3?$CSListLink@VSceneInstance@@@@8,16,
+0x7ec18c,??_R2?$CSListLink@VSceneInstance@@@@8,5,
+0x7ec194,??_R1A@?0A@EA@?$CSListLink@VSceneInstance@@@@8,28,
+0x7ec1b0,??_R4EdRefPlaceable@@6B@,20,
+0x7ec1c4,??_R3EdRefPlaceable@@8,16,
+0x7ec1d4,??_R2EdRefPlaceable@@8,13,
+0x7ec1e4,??_R1A@?0A@EA@EdRefPlaceable@@8,28,
+0x7ec200,??_R4EdRefSpline@@6B@,20,
+0x7ec214,??_R3EdRefSpline@@8,16,
+0x7ec224,??_R2EdRefSpline@@8,13,
+0x7ec234,??_R1A@?0A@EA@EdRefSpline@@8,28,
+0x7ec250,??_R4EdRefKnot@@6B@,20,
+0x7ec264,??_R3EdRefKnot@@8,16,
+0x7ec274,??_R2EdRefKnot@@8,13,
+0x7ec284,??_R1A@?0A@EA@EdRefKnot@@8,28,
+0x7ec2a0,??_R4SplineHelper@@6B@,20,
+0x7ec2b4,??_R3SplineHelper@@8,16,
+0x7ec2c4,??_R2SplineHelper@@8,9,
+0x7ec2d0,??_R1A@?0A@EA@SplineHelper@@8,28,
+0x7ec2ec,??_R4SceneObjectHelper@@6BPlaceableInterface@@@,20,
+0x7ec300,??_R3SceneObjectHelper@@8,16,
+0x7ec310,??_R2SceneObjectHelper@@8,25,
+0x7ec32c,??_R1A@?0A@EA@SceneObjectHelper@@8,28,
+0x7ec348,??_R1M@?0A@EA@EdSubSystem@@8,28,
+0x7ec364,??_R1BA@?0A@EA@MemBufferAllocator@@8,28,
+0x7ec380,??_R1BA@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,28,
+0x7ec39c,??_R4SceneObjectHelper@@6BEdSubSystem@@@,20,
+0x7ec3b0,??_R4ClassEditor@@6B@,20,
+0x7ec3c4,??_R3ClassEditor@@8,16,
+0x7ec3d4,??_R2ClassEditor@@8,13,
+0x7ec3e4,??_R1A@?0A@EA@ClassEditor@@8,28,
+0x7ec400,??_R4LevelEditor@@6B@,20,
+0x7ec414,??_R3LevelEditor@@8,16,
+0x7ec424,??_R2LevelEditor@@8,9,
+0x7ec430,??_R1A@?0A@EA@LevelEditor@@8,28,
+0x7ec44c,??_R4PropertyTool@@6B@,20,
+0x7ec460,??_R3PropertyTool@@8,16,
+0x7ec470,??_R2PropertyTool@@8,13,
+0x7ec480,??_R1A@?0A@EA@PropertyTool@@8,28,
+0x7ec49c,??_R4SplineTool@@6B@,20,
+0x7ec4b0,??_R3SplineTool@@8,16,
+0x7ec4c0,??_R2SplineTool@@8,17,
+0x7ec4d4,??_R1A@?0A@EA@SplineTool@@8,28,
+0x7ec898,??_R4ShaderBuilderGen@@6B@,20,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8ac,??_R3ShaderBuilderGen@@8,16,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8bc,??_R2ShaderBuilderGen@@8,5,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8c4,??_R1A@?0A@EA@ShaderBuilderGen@@8,28,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8e0,??_R4HLSLShaderBuilder@@6B@,20,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec8f4,??_R3HLSLShaderBuilder@@8,16,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec904,??_R2HLSLShaderBuilder@@8,9,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec910,??_R1A@?0A@EA@HLSLShaderBuilder@@8,28,Natural compiler RTTI/virtual metadata; original allocation extent unclaimed
+0x7ec92c,??_R4?$ShaderManagerTemplate@VNuShaderObject@@@@6B@,20,
+0x7ec940,??_R3?$ShaderManagerTemplate@VNuShaderObject@@@@8,16,
+0x7ec950,??_R2?$ShaderManagerTemplate@VNuShaderObject@@@@8,5,
+0x7ec958,??_R1A@?0A@EA@?$ShaderManagerTemplate@VNuShaderObject@@@@8,28,
+0x7ec974,??_R4ShaderManagerHLSL@@6B@,20,
+0x7ec988,??_R3ShaderManagerHLSL@@8,16,
+0x7ec998,??_R2ShaderManagerHLSL@@8,9,
+0x7ec9a4,??_R1A@?0A@EA@ShaderManagerHLSL@@8,28,
+0x7eca18,__TI2?AVbad_alloc@std@@,16,Natural owning C++ RTTI/throw metadata
+0x7eca28,__CTA2?AVbad_alloc@std@@,12,Natural owning C++ RTTI/throw metadata
+0x7eca34,__CT??_R0?AVbad_alloc@std@@@8??0bad_alloc@std@@QAE@ABV01@@Z12,28,Natural owning C++ RTTI/throw metadata
+0x7eca50,__CT??_R0?AVexception@std@@@8??0exception@std@@QAE@ABV01@@Z12,28,Natural owning C++ RTTI/throw metadata
 0x7eca6c,__catchsym$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$2,16,native EH catchrecord
 0x7eca7c,__unwindtable$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,16,native EH unwindtable
 0x7eca8c,__tryblocktable$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,20,native EH trytable
@@ -34785,7 +34785,7 @@ address,symbol,size,ctype
 0x81fc70,?theScaleManipulator@@3VEdManScale@@A,128,EdManScale
 0x81fcf0,?thePropertyTool@@3VPropertyTool@@A,76,PropertyTool
 0x81fd40,?theSceneObjectHelper@@3VSceneObjectHelper@@A,176,SceneObjectHelper
-0x81fdf0,?theSplineHelper@@3VSplineHelper@@A,,SplineHelper
+0x81fdf0,?theSplineHelper@@3VSplineHelper@@A,24,SplineHelper
 0x81fe08,?theKnotHelper@@3VKnotHelper@@A,20,KnotHelper
 0x81fe20,?theSplineTool@@3VSplineTool@@A,76,SplineTool
 0x0081fe6c,??_R0?AVEdTool@@@8,21,
@@ -39100,8 +39100,8 @@ address,symbol,size,ctype
 0x2973ae4,?EdType_String@@3HA,4,i32
 0x2973ae8,?EdType_Colour3@@3HA,4,i32
 0x2973aec,?EdType_NuHSpecial@@3HA,4,i32
-0x2973af0,?EdType_NuVec@@3HA,,i32
-0x2973af4,?EdType_NuMtx@@3HA,,i32
+0x2973af0,?EdType_NuVec@@3HA,4,i32
+0x2973af4,?EdType_NuMtx@@3HA,4,i32
 0x2973b04,_active_special_object_control,4,EdSpecialObjectControl *
 0x2973b08,_bezierline_depth,4,i32
 0x2973b14,?theEdSystem@@3VEdSystem@@A,12,EdSystem
@@ -39201,40 +39201,40 @@ address,symbol,size,ctype
 0x297c0e8,_CpuVendorPc,4,u32
 0x297c0ec,_CpuHas3dnowPc,4,u32
 0x0297c0f0,_PCClipUseSSE,4,i32
-0x297c0f4,_CpuHasSse2Pc,,u32
-0x297c0f8,_CpuExtendedLeafMaxPc,,u32
-0x297c0fc,_CpuExtendedFeaturesPc,,u32
-0x297c100,_CpuUnsetValue0Pc,,u32
-0x297c104,_CpuHasCpuidPc,,u32
-0x297c108,_CpuBasicLeafMaxPc,,u32
-0x297c10c,_CpuProcessorTypePc,,u32
-0x297c110,_CpuFamilyPc,,u32
-0x297c114,_CpuModelPc,,u32
-0x297c118,_CpuSteppingPc,,u32
-0x297c11c,_CpuBrandIndexPc,,u8
-0x297c120,_CpuUnsetValue1Pc,,u32
-0x297c124,_CpuHasFpuPc,,u32
-0x297c128,_CpuHasVmePc,,u32
-0x297c12c,_CpuHasDePc,,u32
-0x297c130,_CpuHasPsePc,,u32
-0x297c134,_CpuHasTscPc,,u32
-0x297c138,_CpuHasMsrPc,,u32
-0x297c13c,_CpuHasPaePc,,u32
-0x297c140,_CpuHasMcePc,,u32
-0x297c144,_CpuHasCmpxchg8bPc,,u32
-0x297c148,_CpuHasApicPc,,u32
-0x297c14c,_CpuHasPgePc,,u32
-0x297c150,_CpuHasMcaPc,,u32
-0x297c154,_CpuHasCmovPc,,u32
-0x297c158,_CpuHasPatPc,,u32
-0x297c15c,_CpuHasMmxPc,,u32
-0x297c160,_CpuUnsetFeature0Pc,,u32
-0x297c164,_CpuUnsetFeature1Pc,,u32
-0x297c168,_CpuUnsetFeature2Pc,,u32
-0x297c16c,_CpuUnsetFeature3Pc,,u32
-0x297c190,_CpuInitializedPc,,u32
-0x297c198,_PCGraphicsGpuSelectionEnabled,,i32
-0x297c19c,_PCGraphicsSelectedGpuRecord,,PC_GRAPHICS_GPU_RECORD_PC*
+0x297c0f4,_CpuHasSse2Pc,4,u32
+0x297c0f8,_CpuExtendedLeafMaxPc,4,u32
+0x297c0fc,_CpuExtendedFeaturesPc,4,u32
+0x297c100,_CpuUnsetValue0Pc,4,u32
+0x297c104,_CpuHasCpuidPc,4,u32
+0x297c108,_CpuBasicLeafMaxPc,4,u32
+0x297c10c,_CpuProcessorTypePc,4,u32
+0x297c110,_CpuFamilyPc,4,u32
+0x297c114,_CpuModelPc,4,u32
+0x297c118,_CpuSteppingPc,4,u32
+0x297c11c,_CpuBrandIndexPc,1,u8
+0x297c120,_CpuUnsetValue1Pc,4,u32
+0x297c124,_CpuHasFpuPc,4,u32
+0x297c128,_CpuHasVmePc,4,u32
+0x297c12c,_CpuHasDePc,4,u32
+0x297c130,_CpuHasPsePc,4,u32
+0x297c134,_CpuHasTscPc,4,u32
+0x297c138,_CpuHasMsrPc,4,u32
+0x297c13c,_CpuHasPaePc,4,u32
+0x297c140,_CpuHasMcePc,4,u32
+0x297c144,_CpuHasCmpxchg8bPc,4,u32
+0x297c148,_CpuHasApicPc,4,u32
+0x297c14c,_CpuHasPgePc,4,u32
+0x297c150,_CpuHasMcaPc,4,u32
+0x297c154,_CpuHasCmovPc,4,u32
+0x297c158,_CpuHasPatPc,4,u32
+0x297c15c,_CpuHasMmxPc,4,u32
+0x297c160,_CpuUnsetFeature0Pc,4,u32
+0x297c164,_CpuUnsetFeature1Pc,4,u32
+0x297c168,_CpuUnsetFeature2Pc,4,u32
+0x297c16c,_CpuUnsetFeature3Pc,4,u32
+0x297c190,_CpuInitializedPc,4,u32
+0x297c198,_PCGraphicsGpuSelectionEnabled,4,i32
+0x297c19c,_PCGraphicsSelectedGpuRecord,4,PC_GRAPHICS_GPU_RECORD_PC*
 0x297c1a0,___fastflag,,
 0x297c1a4,__adjust_fdiv,,
 0x297c1a8,__aenvptr,,
