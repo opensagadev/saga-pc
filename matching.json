@@ -18,7 +18,7 @@
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
     "config/symbols.csv": "888ba7f3d6a63676a31261b0d419d416e530cdbbfb300e582c6313b33754e4e3",
-    "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
+    "config/symbols.md": "cae8e2022d6035471e3993603b5912cc08c5f9bf7f43b28f41a2e7f0e7e35736",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
     "config/units.csv": "a82e106652734ceeced0c2da6a043300d088d3fedb6486d4bfe56ce8d0bed009",
@@ -821950,7 +821950,7 @@
       "metadata_sha256": "fcb835c08f7939f5b245571679b635a5149dfac7335466bdf085687db7382abe",
       "header_path": "src/saga.h",
       "header_sha256": "88555b65a3477fff93fdc4a3bb8e926216bed483a867155bdf7b830f5cb6a5d2",
-      "geometry_object_sha256": "a3a49aa0eddd517acea9e86d989c86493552c80e68cf4dd1bfc79b91ec26ec94",
+      "geometry_object_sha256": "cf4675b6256e3687c781f8660a8b2c3b7488adba595fbf780110a6ab91b90cd6",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
