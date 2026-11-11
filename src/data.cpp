@@ -12562,8 +12562,8 @@ extern "C" {
     i32 NuCameraMode = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$NuCameraReflection")
-    NUMTX NuCameraReflection = {0};
+#pragma bss_seg(".bss$global_reflect")
+    NUCAMERAREFLECT global_reflect = {0};
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$NuCameraClipScissorToViewport")

@@ -15074,7 +15074,14 @@ void __cdecl AIScriptMissingConditionDiagnostic();
     void __cdecl NuHGobjEval(NUHGOBJ_EVAL_PC *, i32, NUHGOBJ_JOINT_OVERRIDE_PC *, NUMTX *);
     extern NUCAMERA global_camera;
     extern i32 NuCameraMode;
-    extern NUMTX NuCameraReflection;
+    typedef struct nucamerareflect_s {
+        u32 unknown_00;
+        NUMTX mtx;
+        u32 unknown_44[16];
+    } NUCAMERAREFLECT;
+    STATIC_ASSERT(offsetof(NUCAMERAREFLECT, mtx) == 0x04);
+    STATIC_ASSERT(sizeof(NUCAMERAREFLECT) == 0x84);
+    extern NUCAMERAREFLECT global_reflect;
     extern i32 NuCameraClipScissorToViewport;
     extern i32 NuCameraPreviousClipScissorToViewport;
     extern i32 NuCameraOrthographic;

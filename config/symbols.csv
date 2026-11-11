@@ -6184,6 +6184,9 @@ address,symbol,size,ctype
 0x5c0270,_NuFrsqrt,46,f32 __cdecl (f32)
 0x5c02a0,_NuFmax,39,"f32 __cdecl (f32, f32)"
 0x5c02d0,_NuFmin,39,"f32 __cdecl (f32, f32)"
+0x5c0300,_NuVecConvertToIntVU0,1,void __cdecl (void)
+0x5c0310,_NuPlnLineVU0,5,"i32 __cdecl (NUPLANE *, NUVEC *, NUVEC *, NUVEC *)"
+0x5c0320,_NuVecClipTestPointVU0,3,"i32 __cdecl (NUVEC *, NUMTX *)"
 0x005c0330,_NuMtxSetRotateXYZVU0,5,"void __cdecl (NUMTX *, NUANGVEC *)"
 0x005c0340,_NuMtxScaleVU0,5,"void __cdecl (NUMTX *, NUVEC *)"
 0x5c0350,_NuMtxMulHArrayPc,53,"void __cdecl(NUMTX *,NUMTX *,NUMTX *,i32)"
@@ -6574,10 +6577,13 @@ address,symbol,size,ctype
 0x5d52f0,_BoxTreeSetClipResults,54,"void private(u8 *results, i32 *instances, u8 clip, i32 count); count EDI"
 0x005d5330,_NuCameraCreate,99,NUCAMERA * __cdecl (void)
 0x5d53a0,_NuCameraDestroy,28,
+0x5d53c0,_NuCameraSetOrthoMtx,39,"void (NUMTX *, f32) [private ESI]"
 0x5d53f0,_NuCameraCalcClipMtx,268,"void __cdecl(CAMERA_CLIP_PACKET_PC *, NUCAMERA *, i32)"
 0x5d5500,_NuCameraBuildClipPlanes,1198,void __cdecl(void)
 0x5d59b0,_NuCameraClipTestExtentsGeneric,1786,"i32 __cdecl(NUVEC *, NUVEC *, NUMTX *, f32, i32, f32 *)"
+0x5d60b0,_NuCameraForceFarclip,10,void __cdecl (i32)
 0x005d60c0,_NuCameraGet,21,void __cdecl (NUCAMERA *)
+0x5d60e0,_NuCameraSetReflect,52,"void __cdecl (NUCAMERA *, NUCAMERAREFLECT *)"
 0x005d6120,_NuCameraSetAxes,30,void __cdecl (NUVEC *)
 0x005d6140,_NuCameraGetAxes,31,void __cdecl (NUVEC *)
 0x005d6160,_NuCameraGetCam,6,NUCAMERA * __cdecl (void)
@@ -6592,6 +6598,7 @@ address,symbol,size,ctype
 0x005d61f0,_NuCameraGetPCMtx,6,NUMTX * __cdecl (void)
 0x005d6200,_NuCameraGetClipMtx,45,"void __cdecl (NUMTX *, NUMTX *)"
 0x005d6230,_NuCameraGetClipPlanes,6,NUMTX * __cdecl (void)
+0x5d6240,_NuCameraRayCast,55,"void __cdecl (NUVEC *, f32, f32)"
 0x5d6280,_NuCameraClearStateBuffer,11,void __cdecl(void)
 0x5d6290,_NuCameraSaveState,303,i32 __cdecl(void)
 0x5d63c0,_NuCameraTransformView,112,"void __cdecl(NUVEC *, NUVEC *, i32, NUMTX *)"
@@ -6601,10 +6608,21 @@ address,symbol,size,ctype
 0x5d65b0,_NuCameraTransformScreenVU0,112,
 0x005d6620,_NuCameraClipTestSphere,237,"i32 __cdecl (NUVEC *, f32, NUMTX *)"
 0x5d6710,_NuCameraClipTestPoints,268,"i32 __cdecl(NUVEC *,i32,NUMTX *)"
+0x5d6820,_NuCameraClipTestPointVport,26,i32 __cdecl (NUVEC *)
+0x5d6840,_NuCameraClipTestPointScissor,26,i32 __cdecl (NUVEC *)
 0x5d6860,_NuCameraDistSqr,21,f32 __cdecl NuCameraDistSqr(NUVEC *)
+0x5d6880,_NuCameraDist,21,f32 __cdecl (NUVEC *)
+0x5d68a0,_NuCameraGetTrans,31,void __cdecl (NUVEC *)
+0x5d68c0,_NuCameraGetPosition,31,void __cdecl (NUVEC *)
+0x5d68e0,_NuCameraGetClippingRatios,25,"void __cdecl (f32 *, f32 *)"
 0x5d6900,_NuCameraLock,81,void __cdecl(i32)
+0x5d6960,_NuCameraUnlock,21,void __cdecl (void)
+0x5d6980,_NuCameraRelock,21,void __cdecl (void)
 0x5d69a0,_NuCameraClipTestExtentsAxisAligned,787,"i32 __cdecl (NUVEC *, NUVEC *, f32)"
 0x5d6cc0,_NuCameraFocalLenToFOV,55,f32 __cdecl (f32)
+0x5d6d00,_NuCameraFOVToFocalLen,95,f32 __cdecl (f32)
+0x5d6d60,_NuCameraCalcAperture,72,"f32 __cdecl (f32, f32)"
+0x5d6db0,_NuCameraCalcRootFStop,86,"f32 __cdecl (f32, f32)"
 0x5d6e10,_NuCameraCalcRay,240,
 0x5d6f00,_VisibilityFloorPc,36,i32 __cdecl(f32)
 0x5d6f30,_NuVisiOcclusion,293,void __cdecl(VISIBILITY_RESULT_READER_PC*)
@@ -6884,6 +6902,7 @@ address,symbol,size,ctype
 0x5ed9a0,_NuMtxCalcFaceY,235,"void __cdecl(NUMTX *, NUVEC *)"
 0x5eda90,_NuMtxCalcFaceOn,283,"void __cdecl(NUMTX *, NUVEC *)"
 0x005edbb0,_NuMtxCalcCheapFaceOn,134,"void __cdecl (NUMTX *, NUVEC *)"
+0x5edc40,_NuMtxCalcCheapFaceY,194,"void __cdecl (NUMTX *, NUVEC *)"
 0x5edd10,_NuMtxCalcCheapFaceY_v2,94,"void __cdecl(NUMTX *,NUVEC *)"
 0x005edd70,_NuMtxCalcDebrisFaceOn,113,void __cdecl (NUMTX *)
 0x005eddf0,_NuTimeBarInitEx,111,"void __cdecl (VARIPTR *, VARIPTR)"
@@ -37251,7 +37270,7 @@ address,symbol,size,ctype
 0x971b98,_TextureAnimationLabelsPrivatePc,,char[64][21]
 0x009720d8,_PCDisplayCaptureBufferPc,,char[1]
 0x00972cd8,_PCDisplayCaptureFlushPointPc,,char[1]
-0x9730dc,_NuCameraReflection,,
+0x9730d8,_global_reflect,132,NUCAMERAREFLECT
 0x0097315c,_zy,4,f32
 0x00973700,_NuDisplayListStreamCursor,4,VARIPTR *
 0x973704,_TextureAnimationActiveMaskPc,,u16
@@ -37339,6 +37358,7 @@ address,symbol,size,ctype
 0x973970,_NuCameraClipScissorToViewport,,
 0x973974,_NuCameraPreviousClipScissorToViewport,,
 0x973978,_NuCameraOrthographic,,
+0x97397c,_force_camera_farclip,4,i32
 0x973980,_VisibilityUsingOcclusionPc,,i32
 0x00973988,_nudlist_field_988,4,NUFILE
 0x0097398c,_NuTimeBar_Initialised,4,i32

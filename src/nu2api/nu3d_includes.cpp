@@ -12474,6 +12474,16 @@ extern "C" {
         NuPortalCameraSelectPc = lock;
     }
 
+    void __cdecl NuCameraUnlock(void) {
+        if (NuPortalCameraSelectPc == 1)
+            NuCameraSet(&NuPortalDebugCameraPc);
+    }
+
+    void __cdecl NuCameraRelock(void) {
+        if (NuPortalCameraSelectPc == 1)
+            NuCameraSet(&NuPortalRestoreCameraPc);
+    }
+
     static i32 VisibilityFloorPc(f32 value) {
         i32 integer = (i32)value;
         return (f32)integer > value ? integer - 1 : integer;

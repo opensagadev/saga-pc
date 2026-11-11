@@ -27,6 +27,20 @@ void __cdecl NuMtxMulVU0(NUMTX *result, NUMTX *left, NUMTX *right) {
     D3DXMatrixMultiply((D3DXMATRIX *)result, (D3DXMATRIX *)left, (D3DXMATRIX *)right);
 }
 
+void __cdecl NuVecConvertToIntVU0(void) {
+}
+
+i32 __cdecl NuPlnLineVU0(NUPLANE *plane, NUVEC *start, NUVEC *end, NUVEC *out) {
+    return NuPlnLine(plane, start, end, out);
+}
+
+/* The PS2 VU0 clip test has no PC body; every point reports as unclipped. */
+i32 __cdecl NuVecClipTestPointVU0(NUVEC *point, NUMTX *matrix) {
+    (void)point;
+    (void)matrix;
+    return 0;
+}
+
 void __cdecl NuMtxSetRotateXYZVU0(NUMTX *matrix, NUANGVEC *angles) {
     NuMtxSetRotateXYZ(matrix, angles);
 }
