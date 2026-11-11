@@ -17,7 +17,7 @@
     "config/library-objects.json": "8dcbb8cbb59f5507a4a718b94bd029a0cbd5ea3979b1376c93fc6c54d1ba1ba1",
     "config/ogg-vorbis.json": "7f98d40938e6bd6060c6bdfc2ce39d9cfb1c822243693eeb1d85d46b43dcad24",
     "config/project.json": "9a3650958be769951860d2c457f8573049ecae76e48ce8f3d7383e4ca2b761a6",
-    "config/symbols.csv": "d9b2b79b229a31543bf5c4ac84a9d7b5e9911b87304ab0694d5ed064e163461e",
+    "config/symbols.csv": "285272b59bd329ec01e7c6394a47e943a60c2142ababd47b9974bc9937041198",
     "config/symbols.md": "dffbdaac86011e3aee74b404063c15bda97f88af3db337ffef9f1bad1785d212",
     "config/toolchain.json": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
     "config/tools.json": "8e9a5f8077abc1bd9cce37004a47ea493e67a75ba964d8df3f13223958e6f4c8",
@@ -243,7 +243,7 @@
     "src/gameapi/edanim_update.c": "538c6c14dfdd636823911d6abd6d9ed8a2c598eff557381d2a625192aeef649c",
     "src/gameapi/edbits.c": "212cf5a889177c70f8089cf5cc3b08bacacb540df31c263043918325adaeb575",
     "src/gameapi/edbri.c": "1c383c12b36b3e13d6af78534a22c413981b7d8da76f7691b83235afe68cc88a",
-    "src/gameapi/edfile.c": "e9cf824c74aea7fc1008c1068e0dd97f56c99ef4659e617dff7d8f3fe65eb552",
+    "src/gameapi/edfile.c": "ea4bfd21f4f6b4f5129250e61985ef1a768823a4591bc3e22b176f9e75a3b56b",
     "src/gameapi/edgra.c": "a5076ac1a388b2a2597577df4f2e4073ca92135a21a54f6b317dabd88bb13ff7",
     "src/gameapi/edgrass.c": "8ed3d82dddca59c61a7a9246c30e70cc7d973f597849807fa8a7b2ffc5f522f5",
     "src/gameapi/edpart.c": "afaf7c913d840dda9fff034c4a74ccf4798c96193279ea315bcf30d899173161",
@@ -426,7 +426,7 @@
     "src/nu2api/nuapi.c": "0c00561378dde9724b28aee93591f863540b1b64914afcb69e0551401c29e208",
     "src/nu2api/nubridge.c": "3d1064d034cc6918b76e68fff48668e6e1e7e87fa78fbdfd518df481f3978d86",
     "src/nu2api/nucamera.c": "e13b1a652b30d2a5d72d9edff8c9f0e803be7b87b138ae04ce631c91c949a502",
-    "src/nu2api/nucore_includes.c": "0a48cbb4bb55219912e4a80f6303e8b5bbfc125749f93da0839053d5f8babd34",
+    "src/nu2api/nucore_includes.c": "317f46ca4764a04d06bfa6c56b10fa5cc5d54fd1d144c13b0b8096cd1f5fe8cb",
     "src/nu2api/nudebug.c": "790a8305ff03df81f92653f59df00b233e3f3a91fd98797c50898f328e7db89d",
     "src/nu2api/nuerror.c": "60fd4e34157246a3a21cc289f7bd80e8f4279b50a55c00adb4c5667aeb13f2da",
     "src/nu2api/nufadeobj.c": "21b37518ec0caa7d378b52af9d74376945d236b02ffac1627fe23e21eff9efc0",
@@ -445,7 +445,7 @@
     "src/nu2api/nupsfile.c": "4fcb207887cfe5c70599f8b95f3d52d5c26e2af3198a039317fa35ee22d32427",
     "src/nu2api/nuqfnt_system_font_pc.c": "ca239c12c1e635e2b3bda76f605c64767ee9b8f886cc33ce8e35eab6af16c2d2",
     "src/nu2api/nurain.c": "6ae77e38ba94743898596660eb72f80d041687bb29f260091c12737133af01c0",
-    "src/nu2api/nurndr.c": "fa193c412f731c6736bc561efa9868b62fb58d8e9cf90bb6fd7e2757c3174423",
+    "src/nu2api/nurndr.c": "a80a890ff9ec7e32e968315f261a43099884c41570be11418bdc2e73942401ec",
     "src/nu2api/nuscratch.c": "cd04bb5783e844c3b03501d016a58c0f4a733f457100e338183745c1b52a9c50",
     "src/nu2api/nushader.c": "3c13c5770f83a13ba399b87e431fffc8826524d5250e40589dc6c3ae5fcf070b",
     "src/nu2api/nushaderobject.c": "cb1036442192ea69215a2114f79dbc4272b4d3e4c0187241bba7ce222e9eb170",
@@ -548,7 +548,7 @@
     "build/obj/gameapi/edanim_update.obj": "9bab6af1debcbff6f87cf575bd5e5112c475fc2515f63e59f79c7be4d1fb0b6f",
     "build/obj/gameapi/edbits.obj": "5c87fc886ee0af4a9dd76e0dee357a9314c4f43998a0afcb89db59df1328d445",
     "build/obj/gameapi/edbri.obj": "fc61d4017ee4d994cce76d2a64207a5a929326de3a1a4c7957b87ac0bf18c88f",
-    "build/obj/gameapi/edfile.obj": "e5491f0b04f3a15bf5c6031f78d016d2f9f0872e6210361c93a266d6c8f8cbd8",
+    "build/obj/gameapi/edfile.obj": "7d91a78c0e7b85e5cb68c0b261f66cdf899cda36072300e4e0ef8283c129a256",
     "build/obj/gameapi/edgra.obj": "edf778c094902b8b470e95b7f84cad63486463ad565f7aabef1193e83aa350a4",
     "build/obj/gameapi/edgrass.obj": "9a61d6fc65c737258cbdfe482ba4aafadcea94a8be7ea233ae58a7ca5b62a8b9",
     "build/obj/gameapi/edpart.obj": "413d53484e7104e7663c4d48ad1c8bcad4cec8a4c4c924df578959a0ee8cdb57",
@@ -821,7 +821,7 @@
     "build/obj/nu2api/nuapi.obj": "9df8a3d1d56466e183dcb4639c069f8fa160b40818e0d4d449d1c989be2209a6",
     "build/obj/nu2api/nubridge.obj": "4e4041c9ee75fbb8efec2bc26872400d745f1fc54431d342419c1e7c54e62ba8",
     "build/obj/nu2api/nucamera.obj": "fd26e215dc58e79f17e0f32efa9f3c63cdac9923b8c0fb3507f4aa35e97d4516",
-    "build/obj/nu2api/nucore_includes.obj": "f99196dcd9a793221a7d96e90142d88a05bd375a3d9dbf0e3106f82cd167bdac",
+    "build/obj/nu2api/nucore_includes.obj": "41f401b51a434570be6670212497453522283f30aa4463533603d6431d075809",
     "build/obj/nu2api/nudebug.obj": "dba7d718d7ad64747ec535aa6ddb8d6225323e381954872fc0425500079d3dcf",
     "build/obj/nu2api/nudebug_pc.obj": "d1446f9b72ed0ef9c0f9cb6dab9b03ae6e88d9b34cf00597928034f12a42d82a",
     "build/obj/nu2api/nudlist_material_pc.obj": "8dab8615805885debe910f3804e74a4f7a522faba1146abdcf877c59cf72c315",
@@ -845,7 +845,7 @@
     "build/obj/nu2api/nupsfile.obj": "a62b016667e615aedf8f47013a92df9540cda05a24781d092500d03c84ca3ad3",
     "build/obj/nu2api/nuqfnt_system_font_pc.obj": "302ceab03803345169b001d882f5e1e9ff87c7f602590f799cf457b297a8a339",
     "build/obj/nu2api/nurain.obj": "35c217f1ff673a3400fc1f1613c62369f6d47d4a6459233f0550de58e76e04c7",
-    "build/obj/nu2api/nurndr.obj": "2e6eabeffc73858fe5ad78e4a8b842090e0812c1de837961c19635aa0f83ca43",
+    "build/obj/nu2api/nurndr.obj": "7d3374181f4afd2ed43c31c512fecd1897f4c2eaf3307dd4808c911efc9cbec0",
     "build/obj/nu2api/nurndr_swap.obj": "8182c32834325510aa51c547b789554b4d0b0dd55e4a8afdd3e674d20f12c713",
     "build/obj/nu2api/nuscratch.obj": "5fd236411e30a822e47cd6a4b029791a5d34a467662c2525e865e7737f1f372a",
     "build/obj/nu2api/nushader.obj": "32cfa9292e5e368a7a638cae5f066ed2bd4b7117c5714ee96772f650d4d4fa70",
@@ -72493,6 +72493,312 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuAllocHighInit",
+      "symbol": "_NuAllocHighInit",
+      "address": "0x004f1630",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 43,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 43,
+          "exact_match": true,
+          "target_sha256": "031ce4ae87be0f6e3debfae51d6c174590507bcaf4dbc28b643cda860d30fe2e",
+          "base_sha256": "031ce4ae87be0f6e3debfae51d6c174590507bcaf4dbc28b643cda860d30fe2e",
+          "relocation_count": 1,
+          "comparison_unit": "004f1630-122d5272386e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuAllocHigh",
+      "symbol": "_NuAllocHigh",
+      "address": "0x004f1660",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 91,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 95,
+          "exact_match": false,
+          "target_sha256": "6a08269d719f6dfd7c31ca873eca012aa9c6cffddac15db884424fd8d38e1200",
+          "base_sha256": "e8bee0b8df5bfddbf590bcbd9390c758e84504815af9043b61c90e48dce1cd8f",
+          "relocation_count": 3,
+          "comparison_unit": "004f1660-85cb44f0c3d5",
+          "objdiff_percent": 63.555557
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 5,
+      "idioms": [
+        "I4",
+        "U3",
+        "?"
+      ],
+      "status": "different",
+      "objdiff_percent": 63.555557
+    },
+    {
+      "name": "NuFreeHigh",
+      "symbol": "_NuFreeHigh",
+      "address": "0x004f16c0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 108,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 108,
+          "exact_match": true,
+          "target_sha256": "f459c8174c43101f83a03e00443c07f7e241b6d2c5b4b12b9ecc6331d84f8108",
+          "base_sha256": "f459c8174c43101f83a03e00443c07f7e241b6d2c5b4b12b9ecc6331d84f8108",
+          "relocation_count": 2,
+          "comparison_unit": "004f16c0-954bd4fa7383",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "ElOverlaps",
+      "symbol": "_ElOverlaps",
+      "address": "0x004f1730",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 67,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 67,
+          "exact_match": true,
+          "target_sha256": "61123a044418824b0f350c5b4b253908281e4ead18449b3d66a2a399ddb87b3a",
+          "base_sha256": "61123a044418824b0f350c5b4b253908281e4ead18449b3d66a2a399ddb87b3a",
+          "relocation_count": 0,
+          "comparison_unit": "004f1730-ec72396aa389",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "InsertData",
+      "symbol": "_InsertData",
+      "address": "0x004f1780",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 178,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 180,
+          "exact_match": false,
+          "target_sha256": "a7fe9a722114d5b3bf618851480dd732b2d02b56cf919ebcb23816554529e7b5",
+          "base_sha256": "7a6a24e192fb1dfd9f475bbc20aa1292c25d5fad6d1787d3bc34a698a209ab1e",
+          "relocation_count": 2,
+          "comparison_unit": "004f1780-bd5280b05d6f",
+          "objdiff_percent": 99.189186
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 1,
+      "idioms": [
+        "U8"
+      ],
+      "status": "different",
+      "objdiff_percent": 99.189186
+    },
+    {
+      "name": "RemoveData",
+      "symbol": "_RemoveData",
+      "address": "0x004f1840",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 39,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 39,
+          "exact_match": true,
+          "target_sha256": "02a22b5d55d656014c6f4f767f60d5dfe652cff1cdb86e6d1016df3da14c3ae8",
+          "base_sha256": "02a22b5d55d656014c6f4f767f60d5dfe652cff1cdb86e6d1016df3da14c3ae8",
+          "relocation_count": 0,
+          "comparison_unit": "004f1840-a81bc49525e9",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "AddNode",
+      "symbol": "_AddNode",
+      "address": "0x004f1870",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 66,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 66,
+          "exact_match": true,
+          "target_sha256": "1125dc38e50137d66db44a5be0b21676ab6514ba698fdd70c3e9bb869ea3f14f",
+          "base_sha256": "1125dc38e50137d66db44a5be0b21676ab6514ba698fdd70c3e9bb869ea3f14f",
+          "relocation_count": 0,
+          "comparison_unit": "004f1870-d98924b85657",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "AddElementR",
+      "symbol": "_AddElementR",
+      "address": "0x004f18c0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 965,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 965,
+          "exact_match": false,
+          "target_sha256": "f4d9d64f3017f62117e35f886dd241bbb97040cf809fc22def9397259bac9b6c",
+          "base_sha256": "7ae022719e170cc5d7b4cce0b266eeadbbe7fb3fe73f2b7b2a61a1ff0e597982",
+          "relocation_count": 23,
+          "comparison_unit": "004f18c0-e3db145d68a3",
+          "objdiff_percent": 99.99383
+        }
+      ],
+      "diff_class": "operand-shape",
+      "diff_hunks": 1,
+      "idioms": [
+        "I25",
+        "I31"
+      ],
+      "status": "different",
+      "objdiff_percent": 99.99383
+    },
+    {
+      "name": "NuQTAddElement",
+      "symbol": "_NuQTAddElement",
+      "address": "0x004f1c90",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 98,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 98,
+          "exact_match": true,
+          "target_sha256": "ec4a61491e30e826d72ce8f84c3f12ccfd48285ed88d4f6833a61dd79c01deb4",
+          "base_sha256": "ec4a61491e30e826d72ce8f84c3f12ccfd48285ed88d4f6833a61dd79c01deb4",
+          "relocation_count": 1,
+          "comparison_unit": "004f1c90-32519497a632",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuQTCreate",
+      "symbol": "_NuQTCreate",
+      "address": "0x004f1d00",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 142,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 142,
+          "exact_match": true,
+          "target_sha256": "1718218b6fd7c9f27e6bafebbb8c17e063a67bbb0c5f60d64d3d66e0e1a0086c",
+          "base_sha256": "1718218b6fd7c9f27e6bafebbb8c17e063a67bbb0c5f60d64d3d66e0e1a0086c",
+          "relocation_count": 0,
+          "comparison_unit": "004f1d00-f9853dd21398",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuQTUnfixAddress",
+      "symbol": "_NuQTUnfixAddress",
+      "address": "0x004f1d90",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 50,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 50,
+          "exact_match": true,
+          "target_sha256": "c1fb569cd707c59a7142b39d9f7ff42511e540ceb7a57d21e6ec282c87e36cb5",
+          "base_sha256": "c1fb569cd707c59a7142b39d9f7ff42511e540ceb7a57d21e6ec282c87e36cb5",
+          "relocation_count": 0,
+          "comparison_unit": "004f1d90-df5959ad4e76",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuQTFixAddress",
+      "symbol": "_NuQTFixAddress",
+      "address": "0x004f1dd0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 43,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 43,
+          "exact_match": true,
+          "target_sha256": "b13d96c1380fc1ace4737aaa9a1acaf2b2b543aded7fc5566cb9b95f12709d33",
+          "base_sha256": "b13d96c1380fc1ace4737aaa9a1acaf2b2b543aded7fc5566cb9b95f12709d33",
+          "relocation_count": 0,
+          "comparison_unit": "004f1dd0-3e01266254b4",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuStrCpyWC",
       "symbol": "_NuStrCpyWC",
       "address": "0x004f1e20",
@@ -75623,6 +75929,174 @@
       "objdiff_percent": 99.33839
     },
     {
+      "name": "count_len",
+      "symbol": "_count_len",
+      "address": "0x004f6290",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 86,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 86,
+          "exact_match": true,
+          "target_sha256": "521b269a302466bc039e47ff94517f89310254e5c86cdefa8672d402e6fdad6a",
+          "base_sha256": "521b269a302466bc039e47ff94517f89310254e5c86cdefa8672d402e6fdad6a",
+          "relocation_count": 9,
+          "comparison_unit": "004f6290-88c3c2803fc8",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "make_len",
+      "symbol": "_make_len",
+      "address": "0x004f62f0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 318,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 318,
+          "exact_match": true,
+          "target_sha256": "c25a68274d086aa07f0bf17b02da65c08bc7fbde60c0a6225e6b617205716199",
+          "base_sha256": "c25a68274d086aa07f0bf17b02da65c08bc7fbde60c0a6225e6b617205716199",
+          "relocation_count": 29,
+          "comparison_unit": "004f62f0-05636f22e492",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "downheap",
+      "symbol": "_downheap",
+      "address": "0x004f6430",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 127,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 127,
+          "exact_match": true,
+          "target_sha256": "7640a821319110285d7fa02992dd13f14f79ae7afa47f8d18ca0ced91e7877f4",
+          "base_sha256": "7640a821319110285d7fa02992dd13f14f79ae7afa47f8d18ca0ced91e7877f4",
+          "relocation_count": 10,
+          "comparison_unit": "004f6430-51a0636e0f6c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "make_code",
+      "symbol": "_make_code",
+      "address": "0x004f64b0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 178,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 178,
+          "exact_match": true,
+          "target_sha256": "6509ebdc555848c36843126412855fdfde4a2c9c368de9da6a7fbad33d603e6b",
+          "base_sha256": "6509ebdc555848c36843126412855fdfde4a2c9c368de9da6a7fbad33d603e6b",
+          "relocation_count": 6,
+          "comparison_unit": "004f64b0-aee3fec33ea2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "ImplodeMakeTree",
+      "symbol": "_ImplodeMakeTree",
+      "address": "0x004f6570",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 397,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 397,
+          "exact_match": true,
+          "target_sha256": "b9df393c226c7d10367f4d0d5b9cbad5b29d03014f9c8335e8f689486010d3de",
+          "base_sha256": "b9df393c226c7d10367f4d0d5b9cbad5b29d03014f9c8335e8f689486010d3de",
+          "relocation_count": 29,
+          "comparison_unit": "004f6570-9f6cd0b496e7",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuAllocManagerAllocateDefaultPc",
+      "symbol": "_NuAllocManagerAllocateDefaultPc",
+      "address": "0x004f6700",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 23,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 23,
+          "exact_match": true,
+          "target_sha256": "90f37e8361acee3d195578ae78c5b21713bf23804c201b2a53e0881f70124a01",
+          "base_sha256": "90f37e8361acee3d195578ae78c5b21713bf23804c201b2a53e0881f70124a01",
+          "relocation_count": 1,
+          "comparison_unit": "004f6700-5f27f49bf13e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuAllocManagerAllocateFlagsPc",
+      "symbol": "_NuAllocManagerAllocateFlagsPc",
+      "address": "0x004f6720",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 26,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 26,
+          "exact_match": true,
+          "target_sha256": "a30fdd805095575b96772e241056d9c6e3c0adaf517e365fcd6fef604f2b1523",
+          "base_sha256": "a30fdd805095575b96772e241056d9c6e3c0adaf517e365fcd6fef604f2b1523",
+          "relocation_count": 1,
+          "comparison_unit": "004f6720-4adda2c11c3c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuAllocManagerAllocateAlignedPc",
       "symbol": "_NuAllocManagerAllocateAlignedPc",
       "address": "0x004f6740",
@@ -76023,6 +76497,247 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuFileBeginBlkWrite",
+      "symbol": "_NuFileBeginBlkWrite",
+      "address": "0x004f6f00",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 94,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 94,
+          "exact_match": true,
+          "target_sha256": "8b6c7a1b722c8f5776743704b4011211f8e5d2288d5676124ff01bbd9f1a6a9f",
+          "base_sha256": "8b6c7a1b722c8f5776743704b4011211f8e5d2288d5676124ff01bbd9f1a6a9f",
+          "relocation_count": 9,
+          "comparison_unit": "004f6f00-7faf2516c67c",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuFileEndBlkWrite",
+      "symbol": "_NuFileEndBlkWrite",
+      "address": "0x004f6f60",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 329,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 329,
+          "exact_match": true,
+          "target_sha256": "728ceb8b65e8d19ad5c1520b7b99fae4595c168b4da4445aa88f31c34cba8b48",
+          "base_sha256": "728ceb8b65e8d19ad5c1520b7b99fae4595c168b4da4445aa88f31c34cba8b48",
+          "relocation_count": 16,
+          "comparison_unit": "004f6f60-6925600dbc67",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuFileAppendPath",
+      "symbol": "_NuFileAppendPath",
+      "address": "0x004f70b0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 129,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 129,
+          "exact_match": true,
+          "target_sha256": "1d87afb6911302d7bc4241245673e7ed52a74f1aade5739e259c66a2b2228c48",
+          "base_sha256": "1d87afb6911302d7bc4241245673e7ed52a74f1aade5739e259c66a2b2228c48",
+          "relocation_count": 0,
+          "comparison_unit": "004f70b0-3b6522e231bf",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuFileExtractFilename",
+      "symbol": "_NuFileExtractFilename",
+      "address": "0x004f7140",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 81,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 81,
+          "exact_match": true,
+          "target_sha256": "d2e46f505a32ad559c8dc74f7310148fccce938a7786951b9730c2d54ecb1f2e",
+          "base_sha256": "d2e46f505a32ad559c8dc74f7310148fccce938a7786951b9730c2d54ecb1f2e",
+          "relocation_count": 1,
+          "comparison_unit": "004f7140-c2b4b1cfc312",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuFileExtractExt",
+      "symbol": "_NuFileExtractExt",
+      "address": "0x004f71a0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 81,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 81,
+          "exact_match": true,
+          "target_sha256": "b4628387cd9d0eadab0ab7fd280457a1b3b01c084fe9171b1e42ec137983165e",
+          "base_sha256": "b4628387cd9d0eadab0ab7fd280457a1b3b01c084fe9171b1e42ec137983165e",
+          "relocation_count": 1,
+          "comparison_unit": "004f71a0-b4bee3f48712",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuFileWriteAddress",
+      "symbol": "_NuFileWriteAddress",
+      "address": "0x004f7200",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 164,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 171,
+          "exact_match": false,
+          "target_sha256": "6f8d975061f0ab09d7791466ff48fe08dd0cd5a70b046b759e5ac42098adc326",
+          "base_sha256": "69216f0cd0fe03c728396f56e18aa0d9575d7e9655c2e2ce5da9dd49a85ea63e",
+          "relocation_count": 14,
+          "comparison_unit": "004f7200-8f3f4c6ef0fd",
+          "objdiff_percent": 80.81132
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 8,
+      "idioms": [
+        "I4",
+        "U3",
+        "U7",
+        "?"
+      ],
+      "status": "different",
+      "objdiff_percent": 80.81132
+    },
+    {
+      "name": "NuFileSetAddress",
+      "symbol": "_NuFileSetAddress",
+      "address": "0x004f72b0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 111,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 119,
+          "exact_match": false,
+          "target_sha256": "1679d54ef4ee19e716ddf89a48ee23617f7faf6180b8b3f47f4a3de12e301861",
+          "base_sha256": "f3c2ce38b51bfae1c00e119d7924664dfaaba761add8ff7dba31b0fed68da028",
+          "relocation_count": 9,
+          "comparison_unit": "004f72b0-adae7b6b78a7",
+          "objdiff_percent": 73.25
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 7,
+      "idioms": [
+        "I4",
+        "U3",
+        "?"
+      ],
+      "status": "different",
+      "objdiff_percent": 73.25
+    },
+    {
+      "name": "NuFilePatchAddress",
+      "symbol": "_NuFilePatchAddress",
+      "address": "0x004f7320",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 709,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 709,
+          "exact_match": false,
+          "target_sha256": "1b2a5feeae74c5ff7c85460f97ad0a330ba8df354116f22cf1a3316d52ff23a8",
+          "base_sha256": "df2e2c63c6aca18deee29e4ea6f627318130abbc25edbe2865246b5396d8ffcb",
+          "relocation_count": 26,
+          "comparison_unit": "004f7320-ebf7339c2481",
+          "objdiff_percent": 99.09091
+        }
+      ],
+      "diff_class": "reordered",
+      "diff_hunks": 2,
+      "idioms": [
+        "I4"
+      ],
+      "status": "different",
+      "objdiff_percent": 99.09091
+    },
+    {
+      "name": "NuFileAlign",
+      "symbol": "_NuFileAlign",
+      "address": "0x004f75f0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 251,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 251,
+          "exact_match": false,
+          "target_sha256": "c54ceee7c3e0078dcb3ac98727540461d08125c641e537b71224cbeef13f3389",
+          "base_sha256": "dbb08352a3d70b34a08b56bfcf78e309ddc530f2ad86da3b8fc59a27d0a5a070",
+          "relocation_count": 7,
+          "comparison_unit": "004f75f0-34c65d1d4257",
+          "objdiff_percent": 97.666664
+        }
+      ],
+      "diff_class": "reordered",
+      "diff_hunks": 2,
+      "idioms": [
+        "I4"
+      ],
+      "status": "different",
+      "objdiff_percent": 97.666664
     },
     {
       "name": "NuDatFileFindHash",
@@ -77614,6 +78329,63 @@
       ],
       "status": "different",
       "objdiff_percent": 92.5
+    },
+    {
+      "name": "NuQTWrite",
+      "symbol": "_NuQTWrite",
+      "address": "0x004fa880",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 176,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 176,
+          "exact_match": true,
+          "target_sha256": "d9801e8935c31a0db6077888f8d2d6c745347b107f2c0422f3fce9eb65275486",
+          "base_sha256": "d9801e8935c31a0db6077888f8d2d6c745347b107f2c0422f3fce9eb65275486",
+          "relocation_count": 7,
+          "comparison_unit": "004fa880-bf3875724d4e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuStringTableSaveCharacterList",
+      "symbol": "_NuStringTableSaveCharacterList",
+      "address": "0x004fa930",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 1182,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "base_size": 1199,
+          "exact_match": false,
+          "target_sha256": "b2cb6f3f1ade1bfb74cd9f104869346af8391b822d54af1af014b72b8e2b1903",
+          "base_sha256": "f2ed58fd5793a868f384b56f77080e61722416edb1f532de59265ef29a0a217a",
+          "relocation_count": 42,
+          "comparison_unit": "004fa930-1dda1a7c4334",
+          "objdiff_percent": 95.47684
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 15,
+      "idioms": [
+        "I4",
+        "I23",
+        "U1",
+        "U3",
+        "?"
+      ],
+      "status": "different",
+      "objdiff_percent": 95.47684
     },
     {
       "name": "NuPadRecordSave",
@@ -176266,6 +177038,54 @@
       "objdiff_percent": 99.870964
     },
     {
+      "name": "NuRndrLine2d",
+      "symbol": "_NuRndrLine2d",
+      "address": "0x005db690",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 153,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 153,
+          "exact_match": true,
+          "target_sha256": "d435322656276f2808df3576a2a5dd99c1eb6a3bc996ccb3527c4ed048623062",
+          "base_sha256": "d435322656276f2808df3576a2a5dd99c1eb6a3bc996ccb3527c4ed048623062",
+          "relocation_count": 8,
+          "comparison_unit": "005db690-b6da608cafe2",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrRect",
+      "symbol": "_NuRndrRect",
+      "address": "0x005db730",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 166,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 166,
+          "exact_match": true,
+          "target_sha256": "fc89da07664e3d5bf527399e220ff1ef0db3dd048b86774d53fdca52699ccdf6",
+          "base_sha256": "fc89da07664e3d5bf527399e220ff1ef0db3dd048b86774d53fdca52699ccdf6",
+          "relocation_count": 8,
+          "comparison_unit": "005db730-a703f5d1a87d",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuRndrRect2d",
       "symbol": "_NuRndrRect2d",
       "address": "0x005db7e0",
@@ -176313,6 +177133,30 @@
           "base_sha256": "b0a3464f92dab9be200325d966a4fc5f4c4ab8f6b12fd65601cf880e27c8559f",
           "relocation_count": 16,
           "comparison_unit": "005db880-b2781f0ae878",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrRectUV2dNoScale",
+      "symbol": "_NuRndrRectUV2dNoScale",
+      "address": "0x005db980",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 162,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 162,
+          "exact_match": true,
+          "target_sha256": "c221ca7ef9fc82a13b5ef048311c19f44c45dd19c07293aa3c962f97e2f2a95f",
+          "base_sha256": "c221ca7ef9fc82a13b5ef048311c19f44c45dd19c07293aa3c962f97e2f2a95f",
+          "relocation_count": 8,
+          "comparison_unit": "005db980-94e881447ce7",
           "objdiff_percent": 100.0
         }
       ],
@@ -176446,6 +177290,30 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuRndr3dLine",
+      "symbol": "_NuRndr3dLine",
+      "address": "0x005dbfb0",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 160,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 160,
+          "exact_match": true,
+          "target_sha256": "eaf01f1311e206a4d1019af68b018654eaa981b717c6ee210f9efb309660469d",
+          "base_sha256": "eaf01f1311e206a4d1019af68b018654eaa981b717c6ee210f9efb309660469d",
+          "relocation_count": 13,
+          "comparison_unit": "005dbfb0-7edb17b3c715",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuRndrLine3dDbg",
       "symbol": "_NuRndrLine3dDbg",
       "address": "0x005dc050",
@@ -176463,6 +177331,30 @@
           "base_sha256": "616f8697c57143e905066b52f5022125ffcd6a82b478b0b2d7f7da1a1fc24e85",
           "relocation_count": 13,
           "comparison_unit": "005dc050-c6a885d77d7e",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrRectUV2diZ",
+      "symbol": "_NuRndrRectUV2diZ",
+      "address": "0x005dc0e0",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 278,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 278,
+          "exact_match": true,
+          "target_sha256": "bdaefe2c6e9baa90d6b94601d67bd0810fa046a5d0c84875e4b66d7e28e7765b",
+          "base_sha256": "bdaefe2c6e9baa90d6b94601d67bd0810fa046a5d0c84875e4b66d7e28e7765b",
+          "relocation_count": 17,
+          "comparison_unit": "005dc0e0-4fdafdd64ca4",
           "objdiff_percent": 100.0
         }
       ],
@@ -176554,6 +177446,62 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "NuRndrGradRect2diZ",
+      "symbol": "_NuRndrGradRect2diZ",
+      "address": "0x005dc560",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 301,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 301,
+          "exact_match": true,
+          "target_sha256": "1ddf1f45d39edbe0a328a76eacc93a873f2baae092ae2ae75a40d16b8d102128",
+          "base_sha256": "1ddf1f45d39edbe0a328a76eacc93a873f2baae092ae2ae75a40d16b8d102128",
+          "relocation_count": 18,
+          "comparison_unit": "005dc560-a5c07501ed75",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrSphereMtx",
+      "symbol": "_NuRndrSphereMtx",
+      "address": "0x005dc690",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 852,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 810,
+          "exact_match": false,
+          "target_sha256": "f87f9365ecc52c7e1b2d3c5ae1bc8f7f28958be20970c0b0b0f8528f9f645e72",
+          "base_sha256": "bf2357ee0263b67eaf737b7cb76579e9ddd188ab274913b9b0af720a7f23413f",
+          "relocation_count": 36,
+          "comparison_unit": "005dc690-ed0127936219",
+          "objdiff_percent": 82.90204
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 26,
+      "idioms": [
+        "I4",
+        "U3",
+        "U7",
+        "?"
+      ],
+      "status": "different",
+      "objdiff_percent": 82.90204
+    },
+    {
       "name": "NuRndrBoundingBox",
       "symbol": "_NuRndrBoundingBox",
       "address": "0x005dc9f0",
@@ -176585,6 +177533,54 @@
       "objdiff_percent": 99.15758
     },
     {
+      "name": "NuRndrAxisBright",
+      "symbol": "_NuRndrAxisBright",
+      "address": "0x005dce80",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 906,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 906,
+          "exact_match": true,
+          "target_sha256": "0a5519d65e16bfb2e205036b65ecce0fd5937ce8d6ba3586b338986107440d42",
+          "base_sha256": "0a5519d65e16bfb2e205036b65ecce0fd5937ce8d6ba3586b338986107440d42",
+          "relocation_count": 85,
+          "comparison_unit": "005dce80-f4289669ab78",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrAxes",
+      "symbol": "_NuRndrAxes",
+      "address": "0x005dd210",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 27,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 27,
+          "exact_match": true,
+          "target_sha256": "19f8bb50dbdb07aee3552113f70c809b4d74c3fd83dec5a6a48041b1ce0aca59",
+          "base_sha256": "19f8bb50dbdb07aee3552113f70c809b4d74c3fd83dec5a6a48041b1ce0aca59",
+          "relocation_count": 1,
+          "comparison_unit": "005dd210-dc555ad5e378",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
       "name": "NuRndrAxisArrowsMtx",
       "symbol": "_NuRndrAxisArrowsMtx",
       "address": "0x005dd230",
@@ -176607,6 +177603,38 @@
       ],
       "status": "exact",
       "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrGrid",
+      "symbol": "_NuRndrGrid",
+      "address": "0x005dd5c0",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 1132,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 1142,
+          "exact_match": false,
+          "target_sha256": "ccac80c0456f40cf92e841f19aa5eb1cee58dcaeb7a223c2c2c38e0acc91d190",
+          "base_sha256": "99ec77bcded0062d1d9a8412e888252d65040d71bd6a0f01850275339c59322c",
+          "relocation_count": 77,
+          "comparison_unit": "005dd5c0-2bfa4ecbf8c2",
+          "objdiff_percent": 96.64306
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 18,
+      "idioms": [
+        "I4",
+        "U9",
+        "U16",
+        "?"
+      ],
+      "status": "different",
+      "objdiff_percent": 96.64306
     },
     {
       "name": "NuRndrStrip3d",
@@ -176650,6 +177678,30 @@
           "base_sha256": "eb8aa9763236bfb68ebcc9257500642ce781f2723e89229a1a69e49976ce64db",
           "relocation_count": 1,
           "comparison_unit": "005ddad0-50b910a896cb",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "NuRndrTri3dClip",
+      "symbol": "_NuRndrTri3dClip",
+      "address": "0x005ddaf0",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 160,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "base_size": 160,
+          "exact_match": true,
+          "target_sha256": "41acc26b1919fec6cbc48ff1251137fe64c5b2ff780d3cf76b49c1af925098ba",
+          "base_sha256": "41acc26b1919fec6cbc48ff1251137fe64c5b2ff780d3cf76b49c1af925098ba",
+          "relocation_count": 7,
+          "comparison_unit": "005ddaf0-9cba6f623daf",
           "objdiff_percent": 100.0
         }
       ],
@@ -201605,6 +202657,37 @@
       "objdiff_percent": 100.0
     },
     {
+      "name": "EduiPrimSetColourPc",
+      "symbol": "_EduiPrimSetColourPc",
+      "address": "0x00617cb0",
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
+      "target_size": 108,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 105,
+          "exact_match": false,
+          "target_sha256": "2e404b6685c22c7db833ac0aba379bce4a742043d7df48a1223a8c72ef33e871",
+          "base_sha256": "7bd5d17deeaa25a71748ba7c8d87a0427680857e26592775de5a6dc5f971a8ae",
+          "relocation_count": 3,
+          "comparison_unit": "00617cb0-d0bf6118182d",
+          "objdiff_percent": 82.21212
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 5,
+      "idioms": [
+        "I4",
+        "U3",
+        "?"
+      ],
+      "status": "different",
+      "objdiff_percent": 82.21212
+    },
+    {
       "name": "edmainSetReturn",
       "symbol": "_edmainSetReturn",
       "address": "0x00617d50",
@@ -205024,6 +206107,59 @@
           "base_sha256": "d43c48cf7515e735f7bcb76e5765803d75c11fb7a3f60c5199e1cdf0641f95ad",
           "relocation_count": 2,
           "comparison_unit": "0061f4b0-c5679a6dd719",
+          "objdiff_percent": 100.0
+        }
+      ],
+      "status": "exact",
+      "objdiff_percent": 100.0
+    },
+    {
+      "name": "eduiRenderInteracts",
+      "symbol": "_eduiRenderInteracts",
+      "address": "0x0061f510",
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
+      "target_size": 696,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 698,
+          "exact_match": false,
+          "target_sha256": "bd007d2a521b0f000e157f136d5db79e49bd521f24f2598d5374e6f080a03b7d",
+          "base_sha256": "c59e6226fea32170504fd6079d16999b051cd568f7c4897a30ab1eec5888b3d1",
+          "relocation_count": 40,
+          "comparison_unit": "0061f510-37b0654f0052",
+          "objdiff_percent": 99.71831
+        }
+      ],
+      "diff_class": "structural",
+      "diff_hunks": 1,
+      "idioms": [
+        "U8"
+      ],
+      "status": "different",
+      "objdiff_percent": 99.71831
+    },
+    {
+      "name": "eduiShowCursor",
+      "symbol": "_eduiShowCursor",
+      "address": "0x0061f7d0",
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
+      "target_size": 10,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "base_size": 10,
+          "exact_match": true,
+          "target_sha256": "a20e0f90373feb43e5e864287b9693082a2480ecdd17ef2addfd772f25e1e830",
+          "base_sha256": "a20e0f90373feb43e5e864287b9693082a2480ecdd17ef2addfd772f25e1e830",
+          "relocation_count": 1,
+          "comparison_unit": "0061f7d0-bc3973337c98",
           "objdiff_percent": 100.0
         }
       ],
@@ -321908,7 +323044,8 @@
         "src/legoapi/zipup.c",
         "src/nu2api/input_runtime.cpp",
         "src/nu2api/nu3d_includes.cpp",
-        "src/nu2api/nu3d_platform_pc.cpp"
+        "src/nu2api/nu3d_platform_pc.cpp",
+        "src/nu2api/nurndr.c"
       ],
       "target_size": 8,
       "exact_match": true,
@@ -322251,6 +323388,14 @@
         },
         {
           "unit": "src/nu2api/nu3d_platform_pc.cpp",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "962b9b484dbe0e4b254d53508edb68b1a3561d3d71ccaa9e9a84070897a6e1f4",
+          "base_sha256": "962b9b484dbe0e4b254d53508edb68b1a3561d3d71ccaa9e9a84070897a6e1f4"
+        },
+        {
+          "unit": "src/nu2api/nurndr.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -323190,6 +324335,7 @@
         "src/nu2api/nu3d_platform_pc.cpp",
         "src/nu2api/nubridge.c",
         "src/nu2api/nucamera.c",
+        "src/nu2api/nucore_includes.c",
         "src/nu2api/nudlist_material_pc.cpp",
         "src/nu2api/nufadeobj.c",
         "src/nu2api/numath_includes.c",
@@ -324096,6 +325242,14 @@
         },
         {
           "unit": "src/nu2api/nucamera.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed",
+          "base_sha256": "4cfa5b42ca669328764e67cd9a34bb8f90b16ed7ca8d85e8443783d7ccce15ed"
+        },
+        {
+          "unit": "src/nu2api/nucore_includes.c",
           "exact_match": true,
           "target_size": 8,
           "base_size": 8,
@@ -435314,6 +436468,69 @@
       "status": "exact"
     },
     {
+      "name": "??_C@_0BE@MNHILDDA@?5?$FLno?5missing?5chars?$FN?$AA@",
+      "symbol": "??_C@_0BE@MNHILDDA@?5?$FLno?5missing?5chars?$FN?$AA@",
+      "address": "0x0075ebd4",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 20,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 20,
+          "base_size": 20,
+          "target_sha256": "4f9b805031fed78eb17f282064f0697a91490770a924eec28ee157d515eda0ba",
+          "base_sha256": "4f9b805031fed78eb17f282064f0697a91490770a924eec28ee157d515eda0ba"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "??_C@_0BE@OALGOGCA@?5?$FL?$CFd?5unique?5chars?$FN?5?$AA@",
+      "symbol": "??_C@_0BE@OALGOGCA@?5?$FL?$CFd?5unique?5chars?$FN?5?$AA@",
+      "address": "0x0075ebe8",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 20,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 20,
+          "base_size": 20,
+          "target_sha256": "dcbfb1841a5fea9e22679dd493e9fbe036878e1c56be632c6e399d4d0b6d393a",
+          "base_sha256": "dcbfb1841a5fea9e22679dd493e9fbe036878e1c56be632c6e399d4d0b6d393a"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "??_C@_0CF@DHPPFKGK@?5?$FLover?5512?5unique?5chars?5?9?5too?5ma@",
+      "symbol": "??_C@_0CF@DHPPFKGK@?5?$FLover?5512?5unique?5chars?5?9?5too?5ma@",
+      "address": "0x0075ebfc",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 37,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 37,
+          "base_size": 37,
+          "target_sha256": "d2855ffb6ac40d23e5281602bc04ec3e0406bb1e9e2bf172c3100eb7a5350a4f",
+          "base_sha256": "d2855ffb6ac40d23e5281602bc04ec3e0406bb1e9e2bf172c3100eb7a5350a4f"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "__real@42aa0000",
       "symbol": "__real@42aa0000",
       "address": "0x0075ec24",
@@ -467075,6 +468292,27 @@
           "base_size": 8,
           "target_sha256": "6942942d18e09b3794984e5d1633fbaed38da13893ae518bbc348befe1d9fbf3",
           "base_sha256": "6942942d18e09b3794984e5d1633fbaed38da13893ae518bbc348befe1d9fbf3"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "__real@3e70000020000000",
+      "symbol": "__real@3e70000020000000",
+      "address": "0x00765070",
+      "units": [
+        "src/nu2api/nurndr.c"
+      ],
+      "target_size": 8,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nurndr.c",
+          "exact_match": true,
+          "target_size": 8,
+          "base_size": 8,
+          "target_sha256": "15a4b6a28e5e8209324e320ad17a990f2d97fb5a865d7f8d13a48cbf72e09d8b",
+          "base_sha256": "15a4b6a28e5e8209324e320ad17a990f2d97fb5a865d7f8d13a48cbf72e09d8b"
         }
       ],
       "status": "exact"
@@ -639869,6 +641107,48 @@
       "status": "exact"
     },
     {
+      "name": "nufile_wblkcnt",
+      "symbol": "_nufile_wblkcnt",
+      "address": "0x00800468",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "iff_padsize",
+      "symbol": "_iff_padsize",
+      "address": "0x0080046c",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "097328e8c957de2428283954f6a1ee8ff7ad7def12e100a600178407f5decf24",
+          "base_sha256": "097328e8c957de2428283954f6a1ee8ff7ad7def12e100a600178407f5decf24"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "iop_image_name",
       "symbol": "_iop_image_name",
       "address": "0x00800470",
@@ -654605,6 +655885,27 @@
           "base_size": 4,
           "target_sha256": "0c05e73c2748cbfd2e38c0afaf9cb594f78e14fefa3c24190ebc121d45dbee4f",
           "base_sha256": "0c05e73c2748cbfd2e38c0afaf9cb594f78e14fefa3c24190ebc121d45dbee4f"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "bShowCursor",
+      "symbol": "_bShowCursor",
+      "address": "0x0080f7ac",
+      "units": [
+        "src/gameapi/edfile.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/gameapi/edfile.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450",
+          "base_sha256": "67abdd721024f0ff4e0b3f4c2fc13bc5bad42d0b7851d456d88d203d15aaa450"
         }
       ],
       "status": "exact"
@@ -688550,6 +689851,27 @@
       "status": "unknown size"
     },
     {
+      "name": "implode_heapsize",
+      "symbol": "_implode_heapsize",
+      "address": "0x0090f7b8",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "ImplodeAvailableBitsPc",
       "symbol": "_ImplodeAvailableBitsPc",
       "address": "0x0090f7bc",
@@ -688560,6 +689882,48 @@
       "exact_match": false,
       "objects": [],
       "status": "unknown size"
+    },
+    {
+      "name": "implode_heap",
+      "symbol": "_implode_heap",
+      "address": "0x0090f7c0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 1024,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 1024,
+          "base_size": 1024,
+          "target_sha256": "5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "base_sha256": "5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "implode_sortptr",
+      "symbol": "_implode_sortptr",
+      "address": "0x0090fbc0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "decode_buffer_left",
@@ -688628,6 +689992,27 @@
       "status": "unknown size"
     },
     {
+      "name": "implode_n",
+      "symbol": "_implode_n",
+      "address": "0x00915fc8",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "ImplodeBlockRemainingPc",
       "symbol": "_ImplodeBlockRemainingPc",
       "address": "0x00915fcc",
@@ -688659,6 +690044,70 @@
         }
       ],
       "status": "exact"
+    },
+    {
+      "name": "implode_len",
+      "symbol": "_implode_len",
+      "address": "0x00916ff4",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "implode_freq",
+      "symbol": "_implode_freq",
+      "address": "0x00916ff8",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "implode_len_cnt",
+      "symbol": "_implode_len_cnt",
+      "address": "0x00916ffc",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 34,
+      "exact_match": false,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": false,
+          "target_size": 34,
+          "base_size": 40,
+          "target_sha256": "eb142b0cae0baa72a767ebc0823d1be94e14c5bfc52d8e417fc4302fceb6240c",
+          "base_sha256": "2c34ce1df23b838c5abf2a7f6437cca3d3067ed509ff25f11df6b11b582b51eb",
+          "reason": "Data extents differ; refusing partial/truncated comparison"
+        }
+      ],
+      "status": "different"
     },
     {
       "name": "g_nupadScannedPads",
@@ -688778,6 +690227,27 @@
       "status": "exact"
     },
     {
+      "name": "nufile_wblkinfo",
+      "symbol": "_nufile_wblkinfo",
+      "address": "0x00918e80",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 16384,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 16384,
+          "base_size": 16384,
+          "target_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+          "base_sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "unpack_file_info",
       "symbol": "_unpack_file_info",
       "address": "0x0091ce80",
@@ -688789,6 +690259,27 @@
       "objects": [
         {
           "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "pos_count",
+      "symbol": "_pos_count",
+      "address": "0x0091ce84",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -688821,6 +690312,27 @@
       "exact_match": false,
       "objects": [],
       "status": "unknown size"
+    },
+    {
+      "name": "ref_count",
+      "symbol": "_ref_count",
+      "address": "0x0091eea0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "DontDoFileUpperCaseHack",
@@ -688991,6 +690503,90 @@
       "status": "exact"
     },
     {
+      "name": "MAX_FILE_ADDRESS",
+      "symbol": "_MAX_FILE_ADDRESS",
+      "address": "0x0091eec8",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "addr_ref",
+      "symbol": "_addr_ref",
+      "address": "0x0091eecc",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "addr_pos",
+      "symbol": "_addr_pos",
+      "address": "0x0091eed0",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "addr_pad",
+      "symbol": "_addr_pad",
+      "address": "0x0091eed4",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
       "name": "fpk_err",
       "symbol": "_fpk_err",
       "address": "0x0091eed8",
@@ -689065,6 +690661,27 @@
       "objects": [
         {
           "unit": "src/data.cpp",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
+    },
+    {
+      "name": "freep",
+      "symbol": "_freep",
+      "address": "0x0091eee8",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
           "exact_match": true,
           "target_size": 4,
           "base_size": 4,
@@ -689280,6 +690897,27 @@
       "exact_match": false,
       "objects": [],
       "status": "unknown size"
+    },
+    {
+      "name": "implode_depth",
+      "symbol": "_implode_depth",
+      "address": "0x0091ef58",
+      "units": [
+        "src/nu2api/nucore_includes.c"
+      ],
+      "target_size": 4,
+      "exact_match": true,
+      "objects": [
+        {
+          "unit": "src/nu2api/nucore_includes.c",
+          "exact_match": true,
+          "target_size": 4,
+          "base_size": 4,
+          "target_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+          "base_sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+        }
+      ],
+      "status": "exact"
     },
     {
       "name": "FileDirectoryHostHandlesPc",
@@ -735395,21 +737033,21 @@
   ],
   "progress": {
     "text_bytes": 3471246,
-    "mapped_code_bytes": 3114802,
-    "matched_code_bytes": 1244745,
-    "matching_percent": 35.85873775583753,
-    "padding_bytes": 72683,
-    "matched_padding_bytes": 52407,
-    "matched_code_with_padding_bytes": 1297152,
-    "matching_with_padding_percent": 37.36848382396408,
-    "fuzzy_coverage_percent": 82.44129333864008,
-    "mapped_functions": 11951,
-    "matched_functions": 8592,
-    "objdiff_fuzzy_percent": 91.97942,
-    "objdiff_total_code": 3115789,
+    "mapped_code_bytes": 3126265,
+    "matched_code_bytes": 1249769,
+    "matching_percent": 36.003469647498335,
+    "padding_bytes": 73069,
+    "matched_padding_bytes": 52693,
+    "matched_code_with_padding_bytes": 1302462,
+    "matching_with_padding_percent": 37.52145483206895,
+    "fuzzy_coverage_percent": 82.76096409394783,
+    "mapped_functions": 11995,
+    "matched_functions": 8624,
+    "objdiff_fuzzy_percent": 91.997055,
+    "objdiff_total_code": 3127252,
     "image_bytes": 40067072,
-    "mapped_bytes": 5018464,
-    "mapping_percent": 12.525157815375179,
+    "mapped_bytes": 5047518,
+    "mapping_percent": 12.597671224890105,
     "mapping_denominator": "code_and_data_section_virtual_sizes",
     "mapping_sections": [
       {
@@ -735417,16 +737055,16 @@
         "kind": "code",
         "address": "0x401000",
         "size": 3471246,
-        "mapped_bytes": 3115996
+        "mapped_bytes": 3127459
       },
       {
         "name": ".rdata",
         "kind": "data",
         "address": "0x751000",
         "size": 646766,
-        "mapped_bytes": 97401,
+        "mapped_bytes": 97486,
         "file_backed_data_bytes": 646766,
-        "mapped_file_backed_data_bytes": 97401,
+        "mapped_file_backed_data_bytes": 97486,
         "zero_fill_data_bytes": 0,
         "mapped_zero_fill_data_bytes": 0
       },
@@ -735435,51 +737073,51 @@
         "kind": "data",
         "address": "0x7ef000",
         "size": 35372200,
-        "mapped_bytes": 1805067,
+        "mapped_bytes": 1822573,
         "file_backed_data_bytes": 417792,
-        "mapped_file_backed_data_bytes": 300575,
+        "mapped_file_backed_data_bytes": 300587,
         "zero_fill_data_bytes": 34954408,
-        "mapped_zero_fill_data_bytes": 1504492
+        "mapped_zero_fill_data_bytes": 1521986
       }
     ],
-    "mapping_known_size_symbols": 21624,
+    "mapping_known_size_symbols": 21691,
     "mapping_unknown_size_symbols": 16946,
-    "mapping_code_bytes": 3115996,
+    "mapping_code_bytes": 3127459,
     "mapping_code_total_bytes": 3471246,
-    "mapping_code_percent": 89.76592266869015,
-    "mapping_data_bytes": 1902468,
+    "mapping_code_percent": 90.09614991274027,
+    "mapping_data_bytes": 1920059,
     "mapping_data_total_bytes": 36018966,
-    "mapping_data_percent": 5.2818506783342976,
-    "mapping_code_data_bytes": 5018464,
+    "mapping_data_percent": 5.330688837652919,
+    "mapping_code_data_bytes": 5047518,
     "mapping_code_data_total_bytes": 39490212,
-    "mapping_code_data_percent": 12.708121192157693,
-    "mapping_file_backed_data_bytes": 397976,
+    "mapping_code_data_percent": 12.781693853656698,
+    "mapping_file_backed_data_bytes": 398073,
     "mapping_file_backed_data_total_bytes": 1064558,
-    "mapping_file_backed_data_percent": 37.38415379904148,
-    "mapping_zero_fill_data_bytes": 1504492,
+    "mapping_file_backed_data_percent": 37.393265561857596,
+    "mapping_zero_fill_data_bytes": 1521986,
     "mapping_zero_fill_data_total_bytes": 34954408,
-    "mapping_zero_fill_data_percent": 4.304155287081389,
-    "matched_data_region_bytes": 1890504
+    "mapping_zero_fill_data_percent": 4.354203338245637,
+    "matched_data_region_bytes": 1908061
   },
   "text_coverage": {
     "original_text_bytes": 3471246,
-    "mapped_reconstruction_bytes": 3114802,
-    "exact_reconstruction_bytes": 1244745,
-    "mapped_not_exact_bytes": 1870057,
+    "mapped_reconstruction_bytes": 3126265,
+    "exact_reconstruction_bytes": 1249769,
+    "mapped_not_exact_bytes": 1876496,
     "excluded_import_glue_bytes": 1194,
-    "unclassified_text_bytes": 355250,
+    "unclassified_text_bytes": 343787,
     "strict_original_text_denominator_bytes": 3471246,
-    "strict_original_text_exact_percent": 35.85873775583753,
+    "strict_original_text_exact_percent": 36.003469647498335,
     "reconstruction_scope_denominator_bytes": 3470052,
-    "reconstruction_scope_exact_percent": 35.87107628358307,
-    "mapped_scope_denominator_bytes": 3114802,
-    "mapped_scope_exact_percent": 39.96225121211557,
+    "reconstruction_scope_exact_percent": 36.015857975615354,
+    "mapped_scope_denominator_bytes": 3126265,
+    "mapped_scope_exact_percent": 39.97642554294022,
     "qualification": "Unclassified text includes undiscovered code and unproven padding; these percentages compare relocated objects, not the linked image.",
-    "alignment_padding_bytes": 72683,
-    "exact_alignment_padding_bytes": 52407,
-    "unclassified_non_padding_text_bytes": 282567,
-    "exact_with_padding_bytes": 1297152,
-    "exact_with_padding_percent": 37.36848382396408,
+    "alignment_padding_bytes": 73069,
+    "exact_alignment_padding_bytes": 52693,
+    "unclassified_non_padding_text_bytes": 270718,
+    "exact_with_padding_bytes": 1302462,
+    "exact_with_padding_percent": 37.52145483206895,
     "padding_qualification": "Padding is int3/nop alignment fill shorter than 16 bytes between mapped extents, ending on an aligned extent start; it is exact only after an exact function."
   },
   "data_members": [
@@ -736785,7 +738423,7 @@
       "metadata_sha256": "fcb835c08f7939f5b245571679b635a5149dfac7335466bdf085687db7382abe",
       "header_path": "src/saga.h",
       "header_sha256": "955a45a7500fcc89089b444cb8926acae77661e19b510685897f276f692530d9",
-      "geometry_object_sha256": "ca99533ad48585102fe4c7f2ce284b55e55fc60b23db90d12ab1555d5a154c52",
+      "geometry_object_sha256": "c98567eb8d74e1b20101a8ca262e748f8b75616a10cd335c7c88ba32714f10b4",
       "toolchain_sha256": "b8808088bb2c7eb239785f69c9e464ae8545216d5705fb37216bc0cf926732f3",
       "implementation_sha256": "d6a33be911d095a6d07dccd4443ccbfd6b514fd89fd7e200d9caa1827944e218",
       "headers": {
@@ -736802,8 +738440,8 @@
           "object_sha256": "112b3239a5465290f4ae1c4195dffa15b236177c43f156108467e39d21c245a4"
         },
         "src/nu2api/nurndr.c": {
-          "source_sha256": "fa193c412f731c6736bc561efa9868b62fb58d8e9cf90bb6fd7e2757c3174423",
-          "object_sha256": "2e6eabeffc73858fe5ad78e4a8b842090e0812c1de837961c19635aa0f83ca43"
+          "source_sha256": "a80a890ff9ec7e32e968315f261a43099884c41570be11418bdc2e73942401ec",
+          "object_sha256": "7d3374181f4afd2ed43c31c512fecd1897f4c2eaf3307dd4808c911efc9cbec0"
         },
         "src/nu2api/nu3d_platform_pc.cpp": {
           "source_sha256": "da0522755dfa8a427cac83f1d3cef4da10641b766ab5e9ea12fce804d9090163",
