@@ -3892,11 +3892,12 @@ i32 __cdecl Action_SetParam(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
 
 i32 __cdecl Action_SetReturnToState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                     i32 count, i32 first_time, f32 elapsed) {
-    AISTATE_PC *state;
     i32 i;
+    AISTATE_PC *state = NULL;
     char *value;
     if (first_time != 0 && processor != NULL) {
-        state = processor->state;
+        if (processor->state != NULL)
+            state = processor->state;
         for (i = 0; i < count; i++) {
             value = NuStrIStr(params[i], (char *)AIActionStateName);
             if (value != NULL) {
