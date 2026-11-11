@@ -1149,32 +1149,25 @@ void *__cdecl NuMemFileAddr(NUFILE file) {
 }
 
 i32 __cdecl NuMemFileRead(NUFILE file, void *destination, i32 size) {
-    PC_NUMEMFILE *memory;
-    i32 available;
-
     if (file >= 0x800) {
         return NuDatFileRead(file, destination, size);
     }
 
-    memory = &pc_memfiles[file - 0x400];
-    available = (i32)(memory->end - memory->position) + 1;
-    if (size > available) {
-        size = available;
+    file -= 0x400;
+    if (pc_memfiles[file].end - pc_memfiles[file].position + 1 < size) {
+        size = pc_memfiles[file].end - pc_memfiles[file].position + 1;
     }
     if (size != 0) {
-        memcpy(destination, memory->position, size);
-        memory->position += size;
+        memcpy(destination, pc_memfiles[file].position, size);
+        pc_memfiles[file].position += size;
     }
     return size;
 }
 
 i32 __cdecl NuMemFileWrite(NUFILE file, const void *data, i32 size) {
-    i32 remaining;
-
     file -= 0x400;
-    remaining = pc_memfiles[file].end - pc_memfiles[file].position + 1;
-    if (size > remaining) {
-        size = remaining;
+    if (pc_memfiles[file].end - pc_memfiles[file].position + 1 < size) {
+        size = pc_memfiles[file].end - pc_memfiles[file].position + 1;
     }
     if (size != 0) {
         memcpy(pc_memfiles[file].position, data, size);
