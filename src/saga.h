@@ -8614,7 +8614,8 @@ typedef struct PC_D3D9_METHODS_PC {
     (PC_D3D9_DEVICE_PC *, u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
     HRESULT(__stdcall *create_index_buffer)
     (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
-    void *create_render_target;
+    HRESULT(__stdcall *create_render_target)
+    (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
     void *create_depth_stencil_surface;
     HRESULT(__stdcall *update_surface)
     (PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const POINT *);
@@ -9046,6 +9047,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void __thiscall ConfigureTargetKinds();
     void __thiscall ResetTargets();
     void __thiscall SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE_PC *surface);
+    u32 __thiscall CaptureScreenshotPc(u32 width, u32 height, void **data);
     void __thiscall ResetViewport();
     void __thiscall ConfigureCurrentTargets();
     void __thiscall BeginDefaultTargets();
@@ -9055,6 +9057,7 @@ typedef struct PC_DEVICE_BACKEND_PC {
     void __thiscall NextRefresh();
     void __thiscall PreviousRefresh();
     void __thiscall ResetRequestedMode();
+    PC_VIEWPORT_PC *__thiscall GetRequestedViewportPc();
     void SetSurfaceRenderTarget(PC_EFFECT_SURFACE_PC *, u32);
     void SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *);
     void ClearDepthStencilSurface();

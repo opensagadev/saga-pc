@@ -11,3 +11,4 @@ EXPORTS
     D3DXCreateFontA@48
     D3DXCreateEffectFromFileA@32
     D3DXCreateEffect@36
+    D3DXSaveSurfaceToFileInMemory@20

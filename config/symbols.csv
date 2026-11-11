@@ -11088,6 +11088,7 @@ address,symbol,size,ctype
 0x6e27f0,?ShaderVariant1@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1(void)
 0x006e2810,?SetColorWriteMaskPc@PC_DEVICE_BACKEND_PC@@QAEXEEH@Z,107,"void __thiscall(u8,u8,i32)"
 0x6e2880,?SetRenderTarget@PC_DEVICE_BACKEND_PC@@QAEXHPAUPC_TEXTURE_RESOURCE_PC@@@Z,87,"void __thiscall PC_DEVICE_BACKEND_PC::SetRenderTarget(i32,PC_TEXTURE_RESOURCE_PC*)"
+0x6e28e0,?CaptureScreenshotPc@PC_DEVICE_BACKEND_PC@@QAEIIIPAPAX@Z,501,
 0x6e2b40,?HasRequestedModeChangedPc@PC_DEVICE_BACKEND_PC@@QAEEXZ,90,
 0x6e2ba0,?InitializeFactory@PC_DEVICE_BACKEND_PC@@QAEXXZ,187,void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory(void)
 0x6e2c60,?Shutdown@PC_DEVICE_BACKEND_PC@@QAEXXZ,123,void __thiscall PC_DEVICE_BACKEND_PC::Shutdown(void)
@@ -11106,7 +11107,10 @@ address,symbol,size,ctype
 0x6e4230,?RestoreSavedModePc@PC_DEVICE_BACKEND_PC@@QAEXXZ,146,
 0x6e42d0,?InitializeAdapter@PC_DEVICE_BACKEND_PC@@QAEXXZ,476,void __thiscall PC_DEVICE_BACKEND_PC::InitializeAdapter(void)
 0x6e44b0,?Invalidate@PC_DEVICE_STATE_CACHE_PC@@QAEXXZ,128,void __thiscall(void)
+0x6e4550,?GetRequestedViewportPc@PC_DEVICE_BACKEND_PC@@QAEPAUPC_VIEWPORT_PC@@XZ,7,
+0x6e4560,_PCDeviceGetHardwareVertexProcessingPc,6,
 0x6e4570,_PCDeviceGetDevice,6,PC_D3D9_DEVICE_PC* __cdecl(void)
+0x6e4580,_PCDeviceGetFactoryPc,6,
 0x6e45a0,_PCDeviceIsAbsent,12,i32 __cdecl(void)
 0x6e45b0,_PCDeviceBeginScenePc,20,void __cdecl(void)
 0x6e45e0,_PCDeviceClear,55,"void __cdecl(u32,const RECT*,u32,u32,f32,u32)"
@@ -22505,6 +22509,7 @@ address,symbol,size,ctype
 0x776f10,??_C@_07HPNNHGO@Log?4txt?$AA@,8,const char[8]
 0x776f1c,__real@44160000,4,const f32
 0x776f20,__real@3ffc71c720000000,8,const f64
+0x776f28,??_C@_0O@BIONPBJK@?4?2d3dCore?4cpp?$AA@,14,
 0x776f38,??_C@_0BN@PIBILGOO@Failed?5to?5initialize?5DirectX?$AA@,29,const char[29]
 0x776f58,??_C@_0CP@FAFLNBAP@Out?5of?5Video?5Memory?4?5Application@,47,const char[47]
 0x776f88,??_C@_0CL@LOJAACK@Lost?5d3d?5device?4?5Application?5wil@,43,const char[43]

@@ -528,11 +528,20 @@ extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceTestCooperativeLevel() {
     GRAPHICS_DEVICE_PC *device = reinterpret_cast<GRAPHICS_DEVICE_PC *>(PCDeviceBackend.device);
     return device->methods->test_cooperative_level(device);
 }
+PC_VIEWPORT_PC *__thiscall PC_DEVICE_BACKEND_PC::GetRequestedViewportPc() {
+    return &requested_viewport;
+}
+extern "C" i32 __cdecl PCDeviceGetHardwareVertexProcessingPc(void) {
+    return PCDeviceHardwareVertexProcessingPC;
+}
 extern "C" i32 __cdecl PCDeviceIsAbsent() {
     return PCDeviceBackend.device == NULL;
 }
 extern "C" PC_D3D9_DEVICE_PC *__cdecl PCDeviceGetDevice() {
     return PCDeviceBackend.device;
+}
+extern "C" GRAPHICS_FACTORY_PC *__cdecl PCDeviceGetFactoryPc(void) {
+    return PCDeviceBackend.factory;
 }
 
 extern "C" {
@@ -949,6 +958,68 @@ void __thiscall PC_DEVICE_BACKEND_PC::SetRenderTarget(i32 index, PC_TEXTURE_RESO
         GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         view->methods->set_render_target(view, index, surface);
     }
+}
+
+/* Captures the current surface as a BMP image in a new NuAlloc block and returns its size. */
+u32 __thiscall PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, void **data) {
+    PC_TEXTURE_RESOURCE_PC *target;
+    PC_TEXTURE_RESOURCE_PC *copy;
+    ID3DXBuffer *buffer;
+    u32 size = 0;
+    if (width == 0)
+        width = parameters.width;
+    if (height == 0) {
+        f32 aspect;
+        switch (PcWindowOptions.aspect_mode) {
+            case 0:
+                aspect = 1.3333334f;
+                break;
+            case 1:
+                aspect = 1.7777778f;
+                break;
+            case 2:
+                aspect = 1.6f;
+                break;
+            case 3:
+                aspect = active_aspect;
+                break;
+            default:
+                aspect = 1.3333334f;
+                break;
+        }
+        height = (u32)((f32)width / aspect);
+    }
+    target = NULL;
+    copy = NULL;
+    if (SUCCEEDED(device->methods->create_render_target(device, width, height, 0x15, 0, 0, FALSE, &target, NULL))) {
+        if (target != NULL) {
+            if (SUCCEEDED(
+                    device->methods->create_offscreen_plain_surface(device, width, height, 0x15, 2, &copy, NULL)) &&
+                copy != NULL &&
+                SUCCEEDED(device->methods->stretch_rect(device, current_surface, NULL, target, NULL, 2)) &&
+                SUCCEEDED(device->methods->get_render_target_data(device, target, copy))) {
+                buffer = NULL;
+                if (SUCCEEDED(D3DXSaveSurfaceToFileInMemory(&buffer, D3DXIFF_BMP,
+                                                            reinterpret_cast<IDirect3DSurface9 *>(copy), NULL, NULL))) {
+                    *data = NuAlloc(buffer->methods->get_buffer_size(buffer), ".\\d3dCore.cpp", 0x989);
+                    PCByteCopy_candidate(*data, buffer->methods->get_buffer_pointer(buffer),
+                                         buffer->methods->get_buffer_size(buffer));
+                    size = buffer->methods->get_buffer_size(buffer);
+                }
+            }
+        }
+    }
+    if (target != NULL) {
+        target->methods->release(target);
+        target = NULL;
+    }
+    if (copy != NULL) {
+        copy->methods->release(copy);
+        copy = NULL;
+    }
+    if (buffer != NULL)
+        buffer->methods->release(buffer);
+    return size;
 }
 void __thiscall PC_DEVICE_BACKEND_PC::ResetViewport() {
     requested_viewport.x = 0;
