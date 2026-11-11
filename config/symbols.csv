@@ -12554,6 +12554,9 @@ address,symbol,size,ctype
 0x744bc0,?HasSurfaceLayerAbove@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,39,
 0x744bf0,?HasSurfaceLayerAtOrBelow@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,39,
 0x744c20,_NuShaderObjectKeyGenerate3,1093,"void __cdecl(u32*,const PC_SHADER_MATERIAL_FILTER_VIEW*,i32)"
+0x745070,_NuShaderObjectKeyGeneratePc,56,
+0x745130,?GetForceMode@ShaderCompilerDictionaryPc@@QBE_NXZ,7,
+0x745140,?GetProfile@ShaderCompilerDictionaryPc@@QBEHXZ,7,
 0x7451d0,??_EShaderBuilderGen@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
 0x7451d0,??_GShaderBuilderGen@@UAEPAXI@Z,74,
 0x745220,?SetIncludeDirectories@ShaderBuilderGen@@UAEXPBD@Z,31,void __thiscall ShaderBuilderGen::SetIncludeDirectories(const char*)

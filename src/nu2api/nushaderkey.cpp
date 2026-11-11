@@ -101,3 +101,12 @@ extern "C" void __cdecl NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MAT
     *key = (i16)CRC16::hashInverse(block.bytes, 104) << 16;
     *key |= (u16)CRC16::hash(block.bytes, 104);
 }
+
+/* Native 0x745070: builds the filter view for a descriptor and generates its key. No retail caller. */
+extern "C" void __cdecl NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FILTER_DESC_VIEW *desc,
+                                                    const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags,
+                                                    i32 variant, i32 pixel_stage) {
+    PC_SHADER_MATERIAL_FILTER_VIEW filter;
+    filter.Initialize(desc, material, flags, variant);
+    NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);
+}

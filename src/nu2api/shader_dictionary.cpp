@@ -39,6 +39,12 @@ void ShaderCompilerDictionaryPc::SetProfile(i32 input_profile, i32 first, i32 se
     if (mode == 0)
         profile_name = profile == 2 || profile == 3 || profile == 4 ? "_centroid" : "";
 }
+bool ShaderCompilerDictionaryPc::GetForceMode() const {
+    return force_mode;
+}
+i32 ShaderCompilerDictionaryPc::GetProfile() const {
+    return profile;
+}
 void ShaderCompilerDictionaryPc::AddRegisterBlock(const char *name, i32 count) {
     ShaderRegisterBlockPc *block = &register_blocks[register_block_count++];
     PCByteCopy_candidate(block->name, name, NuStrLen(name) + 1);

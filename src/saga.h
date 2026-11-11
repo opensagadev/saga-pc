@@ -20069,6 +20069,8 @@ struct ShaderCompilerDictionaryPc {
     ShaderCompilerDictionaryPc(VirtualStackAllocator &, i32);
     ~ShaderCompilerDictionaryPc();
     void SetProfile(i32, i32, i32);
+    bool GetForceMode() const;
+    i32 GetProfile() const;
     void AddRegisterBlock(const char *, i32);
     i32 FindRegisterBlock(const char *);
     ShaderMacroDefinitionPc *FindDefinition(const char *);
