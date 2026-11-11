@@ -10256,6 +10256,8 @@ address,symbol,size,ctype
 0x6bc510,?EndMultiLoad@LevelEditor@@QAEXPATvariptr_u@@0@Z,159,
 0x6bc5b0,?LoadState@@YAHHPATvariptr_u@@00000@Z,3,
 0x6bc5c0,?SetSaveFilename@LevelEditor@@QAEXPAD@Z,94,
+0x6bc620,?Reset@LevelEditor@@QAEXXZ,11,
+0x6bc630,?AddScene@LevelEditor@@QAEHPADPAUNUGSCN_s@@H@Z,200,
 0x6bc700,?FindSceneId@LevelEditor@@QAEHPAD@Z,61,
 0x6bc7a0,?GetScene@LevelEditor@@QAEPAUNUGSCN_s@@H@Z,30,
 0x6bc7c0,?GetEdScene@LevelEditor@@QAEPAULevelEditorScene@@H@Z,30,
@@ -10513,6 +10515,8 @@ address,symbol,size,ctype
 0x6c5190,?SelectRotator@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@1@Z,1483,
 0x6c5760,??_EPlaceableNameControl@@UAEPAXI@Z,,COFF weak alias of ??_GPlaceableNameControl@@UAEPAXI@Z; no independent body
 0x6c5760,??_GPlaceableNameControl@@UAEPAXI@Z,35,
+0x6c57a0,?GetTypeName@PropertyTool@@QAEXPAVEdRef@@PAD@Z,113,
+0x6c5820,?GetClassName@PropertyTool@@QAEXPAVEdRef@@PAD@Z,113,
 0x6c58a0,?SelectAttr@PropertyTool@@QAEXH@Z,76,
 0x6c5920,?AddPropertyMenuItems@PropertyTool@@QAEXPAUeduimenu_s@@PAUEdClass@@PAXPAUeduiitem_s@@@Z,244,
 0x6c5a20,?AutoLocateMenu@PropertyTool@@QAEXPAVPropertyMenu@@@Z,197,
