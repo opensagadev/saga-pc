@@ -3,8 +3,11 @@
 i32 __cdecl GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
     i32 forwards;
     if (object->in_narrow_socket != 0) {
-        forwards = abs(RotDiff(object->sock_heading, object->field_0x276)) < 0x4000;
-        if (object->character_context == 0x2a && object->context_timer < object->context_duration * (f64)0.8f)
+        i32 context;
+        u16 heading = object->sock_heading;
+        forwards = abs(RotDiff(heading, object->field_0x276)) < 0x4000;
+        context = object->character_context;
+        if (context == 0x2a && object->context_timer < object->context_duration * (f64)0.8f)
             forwards = 1 - forwards;
         return forwards;
     }

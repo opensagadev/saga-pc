@@ -336,8 +336,8 @@ void Hint_ExpandButtons(char *input, char *output) {
                 ++token_length;
             }
             if (input[token_length] != '\0') {
-                token[token_length] = ']';
-                token[token_length + 1] = '\0';
+                token[token_length++] = ']';
+                token[token_length] = '\0';
                 token_length = NuStrLen(token);
                 if (token_length > 0 && Text_ExpandButtonString(token, expanded) != 0) {
                     char *character = expanded;

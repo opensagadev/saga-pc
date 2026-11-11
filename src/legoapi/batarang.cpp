@@ -1803,11 +1803,13 @@ extern "C" void __cdecl Detonator_Detonate(DETONATOR_s *detonator) {
 extern "C" void __cdecl Detonators_Update(void) {
     DETONATOR_s *detonator = Detonator;
     for (i32 index = 0; index < 10; ++index, ++detonator) {
+        f32 timer;
         if (detonator->active == 0)
             continue;
         detonator->timer += FRAMETIME;
         NuCameraTransformScreenClip(&detonator->field_0x18, &detonator->field_0x0c, 1, NULL);
-        if (detonator->timer >= 10.7f) {
+        timer = detonator->timer;
+        if (timer >= 10.7f) {
             Detonator_Detonate(detonator);
         } else if (detonator->field_0x34 != NULL) {
             BATARANG_DETONATOR_HIT_VIEW_PC *hit_data =

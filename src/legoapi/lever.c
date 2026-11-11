@@ -63,8 +63,8 @@ void __cdecl Levers_InitTerrain(WORLDINFO *world) {
 }
 GIZMO_LEVER_PC *__cdecl Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     GIZMO_LEVER_PC *nearest = NULL;
-    f32 nearest_distance = 1.0e9f;
     GIZMO_LEVER_PC *lever = ((LEVER_WORLD_PC *)world)->levers;
+    f32 nearest_distance = 1.0e9f;
     i32 index;
     for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index, ++lever) {
         f32 candidate_distance;

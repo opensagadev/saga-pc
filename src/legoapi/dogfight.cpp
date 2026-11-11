@@ -849,10 +849,9 @@ extern "C" {
             distance = 1.0f;
         } else {
             for (index = 0; index < spline->point_count; ++index) {
-                f32 end = spline->cumulative_distances[index];
-                if (end > distance) {
+                if (spline->cumulative_distances[index] > distance) {
                     f32 start = index == 0 ? 0.0f : spline->cumulative_distances[index - 1];
-                    f32 segment_fraction = (distance - start) / (end - start);
+                    f32 segment_fraction = (distance - start) / (spline->cumulative_distances[index] - start);
                     distance = (segment_fraction + index) / spline->point_count;
                     break;
                 }

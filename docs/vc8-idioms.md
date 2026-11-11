@@ -477,6 +477,40 @@ loaded first. Exact by these: `Action_ResetContext`, `Action_CanBeCarried`,
 `Action_AlertCreatures`, `Action_TagCharacter`,
 `Action_RegisterTakeOverObject`, `Action_SetControlSystem`.
 
+### I41: a named local for a value read before a test or a call
+
+Register choice (U3) often follows the expression tree: a field or global read
+directly inside a compare or an argument list gets a different register than
+the same value first held in a local. Retail sometimes has the local
+(`GIZFORCE_PC *top = ...->forces[count - 1]; ForceAnimatedHeightPc(top);` in
+`ForceGroupPopPc`, `u16 heading` and `i32 context` in
+`GoingForwardsAlongNarrowSock`, `f32 length_squared` in
+`edbriDetermineNearest`, `f32 timer = detonator->timer` re-read after a call in
+`Detonators_Update`), and sometimes not (`CalcSplinePointFromDist` reads
+`cumulative_distances[index]` twice instead of keeping `f32 end`). Try both
+forms before recording U3. A copy of a *parameter* into a local also moves
+registers but is not accepted as natural source (see U20).
+
+### I42: operand order of an integer compare between two variables
+
+`a != b` and `b != a` emit `cmp` with the operands swapped, which changes the
+register that holds the loaded global. `ObjLandReady` needs
+`context != ZipUpLandCombatRollContextPc` and `context == ZipUpWallShuffleContextPc`
+(local first; a constant still goes on the right).
+
+### I43: order of initialised declarations
+
+Unlike plain declarations (no effect, see the U3 investigation), initialised
+declarations are statements and their order sets the load order:
+`Lever_FindNearest` initialises `lever = world->levers` before
+`nearest_distance = 1.0e9f`, which moves the stack-slot packing (U7).
+
+### I44: post-increment index store
+
+`token[n++] = ']'; token[n] = '\0';` is not the same code as
+`token[n] = ']'; token[n + 1] = '\0';`: the second form keeps `n` and
+addresses `[n+1]` (an extra `lea`). `Hint_ExpandButtons`.
+
 ## Unexplained (no natural source change found)
 
 Patterns where only an unnatural change (dummy locals, reordered unrelated
@@ -489,16 +523,17 @@ as recorded differences.
   `ResetStreaks`.
 - U3 register choice with identical instruction shape (sometimes a different
   encoding size, so short/near branches and alignment change). Declaration
-  order, statement order and permute.py did not move it. `ForceGroupPopPc`,
+  order, statement order and permute.py did not move it (but see I41).
   `TextureAnimationCrossReferencePrivatePc`, `NuTexAnimEnvCreate`,
   `Arcade_CoinCollected`, `antinodeEditor_UpdateAntiNodesOnPlatforms`,
   `NuPadRecordSave`.
 - U4 store sunk past a load that may alias. `MaulF_Init`.
 - U5 register-parameter assignment of a static callee. `GetBladeJoints`.
-- U6 temporary register for an outgoing argument. `GoingForwardsAlongNarrowSock`.
+- U6 temporary register for an outgoing argument (`GoingForwardsAlongNarrowSock`
+  closed with I41).
 - U7 which temporary is packed into a dead parameter slot / stack-slot
   assignment. `SplinePointAngles`, `NuRndrLine2di`, `FindIncomingBolt`,
-  `Lever_FindNearest`, `AiEditorRespawnMinCountPc`.
+  `AiEditorRespawnMinCountPc` (`Lever_FindNearest` closed with I43).
 - U8 an immediate replaced by a register known to hold the value:
   `or eax, eax` after `memset(..., 0xff, ...)` instead of `or eax, -1`,
   `lea ebp, [edi+1]`, `lea edx, [ecx+0xe]`. Micro-tests with many memset and
@@ -534,6 +569,17 @@ as recorded differences.
   (or the reverse); every if/else/return arrangement compiled the same.
   `MenuUpdateLoading`, `MenuUpdateSaving`, `MenuUpdateExtras`.
 
+- U20 exact only with an unnatural change found by `tools/permute2.py`
+  (recorded, not committed): a copy of a parameter into a local
+  (`Customiser_FindPieceByName` `index`, `NuRndrLine2di` `colour`,
+  `EduiExpanderOverButtonPc` `expander` plus mirrored compares,
+  `StatusPacketReset` `packet` plus a different store order,
+  `DisplayListCreateSkinTransformPS` `skin` plus a `while` loop,
+  `GetBladeJoints` several copies and narrowed temporaries); the cast repeated
+  at each use instead of one cast pointer plus two temporaries
+  (`DestroyRippleMtls`); a duplicated idempotent store plus parameter copies
+  (`PushSeekComplete`). Patches are in `build/permute2/` of the trial.
+
 ### U3 investigation (register choice)
 
 Micro-tests compiled with the project flags (scratch C, `/O2 /Gy /GS`) and the
@@ -552,7 +598,8 @@ vs `s = G; s[i] = 0;`, which changed the interference graph in a micro-test.
 On `IconScenes_Dump` the best of these rewrites scored 84.50, so the function
 stays at 97.50. Conclusion: U3 is reachable only when the register difference
 comes from a copied parameter or from statement order; a pure colouring swap
-with identical code has no natural source lever.
+with identical code has no natural source lever. The permuter trial below
+adds named locals for loaded values (I41) and compare operand order (I42).
 
 ## Repository-wide estimates
 

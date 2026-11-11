@@ -274,8 +274,8 @@ void __cdecl FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
 i32 __cdecl ObjLandReady(GAMEOBJECT *object) {
     i32 context = object->character_context;
     if ((U64_PAIR(&CInfo[context].flags) & 0x1004) != 0 &&
-        (ZipUpLandCombatRollContextPc == -1 || ZipUpLandCombatRollContextPc != context || object->field_7b3 >= 1)) {
-        if (ZipUpWallShuffleContextPc != -1 && ZipUpWallShuffleContextPc == context)
+        (ZipUpLandCombatRollContextPc == -1 || context != ZipUpLandCombatRollContextPc || object->field_7b3 >= 1)) {
+        if (ZipUpWallShuffleContextPc != -1 && context == ZipUpWallShuffleContextPc)
             return 0;
         return 1;
     }

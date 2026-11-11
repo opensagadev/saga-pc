@@ -128,8 +128,10 @@ void __cdecl edbriDetermineNearest(f32 distance) {
     NUVEC delta;
     i32 index;
     if (edbri_nearest != -1) {
+        f32 length_squared;
         NuVecSub(&delta, &edbri_cam_pos, &edBridges[edbri_nearest].position);
-        if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z == 0.0f)
+        length_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (length_squared == 0.0f)
             return;
     }
     edbri_nearest = -1;

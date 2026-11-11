@@ -1036,8 +1036,8 @@ static __declspec(noinline) void ForceGroupPopPc(GIZFORCE_PC *force) {
         force->group->slot_words[force->group->member_count] = 0;
         --force->group->member_count;
         if (force->group->member_count != 0) {
-            force->group->combined_height -=
-                ForceAnimatedHeightPc(force->group->forces[force->group->member_count - 1]);
+            GIZFORCE_PC *top = force->group->forces[force->group->member_count - 1];
+            force->group->combined_height -= ForceAnimatedHeightPc(top);
         }
         force->runtime_flags &= ~0x20u;
         GameAnimSet_SetOffset(force->anim_set, &v000);
