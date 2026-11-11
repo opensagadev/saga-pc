@@ -2631,6 +2631,7 @@ address,symbol,size,ctype
 0x004f06b0,_NuFileWriteChar,77,"i32 __cdecl (NUFILE, i8)"
 0x004f0700,_NuFileWriteUnsignedChar,77,"i32 __cdecl (NUFILE, u8)"
 0x004f0750,_NuFileWriteString,93,"void __cdecl (NUFILE, const char *)"
+0x4f07b0,_NuFilePrintfPc,208,"void __cdecl (NUFILE, const char *, ...)"
 0x004f0880,_NuFileGetBlkSize,15,i32 __cdecl (void)
 0x4f0890,_NuFileExtractPath,56,
 0x4f08d0,_NuFileExtractFile,91,
@@ -2772,6 +2773,8 @@ address,symbol,size,ctype
 0x004f3d80,_NuTimeScanlines,35,f32 __cdecl (NuTime *)
 0x004f3db0,_NuAPIInit,112,void __cdecl(void)
 0x004f3e20,_NuFrameBegin,32,void __cdecl (void)
+0x4f3e40,_NuFrameEndBgLoadPS,251,i32 __cdecl (i32)
+0x4f3f40,_NuFrameSetMinDelay,10,void __cdecl (i32)
 0x004f3f50,_NuApiPrintLinePc,197,"void __cdecl(u32, const char *, ...)"
 0x4f4040,_NuApiSetEndFrameCallbackPc,10,void __cdecl(void (__cdecl *)(void))
 0x004f4060,_NuCommandLine,24,"void __cdecl (i32 *, char ***)"
@@ -2906,6 +2909,7 @@ address,symbol,size,ctype
 0x004f8e90,_NuStringTableGetByName,123,u16 *__cdecl (char *)
 0x004f8f10,_NuStrFixExtPlatform,419,"void __cdecl (char *, char *, char *, i32, char *)"
 0x004f90c0,_NuStrFixExt,45,"void __cdecl (char *, char *, char *, i32)"
+0x4f90f0,_NuTimeWait,255,void __cdecl (f32)
 0x4f91f0,_NuErrorSleep,621,void __cdecl(void)
 0x4f9460,_ParseCommandLine,154,
 0x4f9570,_ImplodeReadOffsetLengthsPrivatePc,319,

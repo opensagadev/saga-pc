@@ -1559,6 +1559,15 @@ void __cdecl NuFileWriteString(NUFILE file, const char *text) {
     NuFileWrite(file, text, (i32)strlen(text));
 }
 
+void __cdecl NuFilePrintfPc(NUFILE file, const char *format, ...) {
+    char buffer[1024];
+    va_list args;
+    va_start(args, format);
+    vsprintf(buffer, format, args);
+    va_end(args);
+    NuFileWrite(file, buffer, (i32)strlen(buffer));
+}
+
 i32 __cdecl NuFileCopyEx(char *destination, char *source, void *buffer, i32 capacity) {
     i32 remaining;
     i32 copied = 0;
@@ -7254,6 +7263,34 @@ void __cdecl NuFrameBegin(void) {
     NuOcclusionManagerBeginFrame();
 }
 
+i32 __cdecl NuFrameEndBgLoadPS(i32 minimum_delay) {
+    i32 delay = 0;
+    NuTime now;
+    NuTime elapsed;
+    i32 scanlines;
+    NuTimeGet(&now);
+    NuTimeSub(&elapsed, &now, &nuapi.time2);
+    scanlines = (i32)NuTimeScanlines(&elapsed);
+    if (nuapi.fps == 60.0) {
+        delay = 0xff - scanlines;
+    } else if (nuapi.fps == 50.0) {
+        delay = 0x131 - scanlines;
+    } else if (nuapi.fps == 30.0) {
+        delay = 0x1e0 - scanlines;
+    } else if (nuapi.fps == 25.0) {
+        delay = 0x244 - scanlines;
+    }
+    if (delay >= minimum_delay) {
+        bgprocFrameSleepPc(delay);
+        return 0;
+    }
+    return 1;
+}
+
+void __cdecl NuFrameSetMinDelay(i32 delay) {
+    FrameSleepMillisecondsPc = delay;
+}
+
 void __cdecl NuApiPrintLinePc(u32 colour, const char *format, ...) {
     char buffer[256];
     va_list args;
@@ -7272,6 +7309,27 @@ void __cdecl NuApiPrintLinePc(u32 colour, const char *format, ...) {
 
 /* Shows the pending error messages for up to five seconds, or until the jump
  * button is pressed after the first second. */
+void __cdecl NuTimeWait(f32 milliseconds) {
+    f32 waited = 0.0f;
+    NuTime start, now, elapsed;
+    u32 rate_low;
+    u32 rate_high;
+    NuTimeGetTicksPS(&start.low, &start.high);
+    if (start.high < 0) {
+        NuFileError();
+    }
+    while (waited < milliseconds) {
+        NuTimeGetTicksPS(&now.low, &now.high);
+        if (now.high < 0) {
+            NuFileError();
+        }
+        NuTimeSub(&elapsed, &now, &start);
+        NuTimeGetTicksPerSecondPS(&rate_low, &rate_high);
+        waited = (f32)((elapsed.low + elapsed.high * NuTime_LowScale) / (rate_low + rate_high * NuTime_LowScale) *
+                       NuScale1000);
+    }
+}
+
 void __cdecl NuErrorSleep(void) {
     f32 milliseconds = 0.0f;
     i32 waiting = 1;
