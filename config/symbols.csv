@@ -11269,8 +11269,11 @@ address,symbol,size,ctype
 0x6e6650,_CpuGetHasSsePc,30,
 0x6e6670,_CpuGetHasSse2Pc,30,
 0x6e66b0,_PCGraphicsPrepareVendor,100,i32 __cdecl(void)
-0x6e67be,?_Xlen@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
-0x6e67fd,?_Xran@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
+0x6e6779,??0out_of_range@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z,24,
+0x6e6791,??1out_of_range@std@@UAE@XZ,11,
+0x6e679c,??_Gout_of_range@std@@UAEPAXI@Z,34,
+0x6e67be,?_Xlen@_String_base@std@@SAXXZ,63,static CRT method selector; no engine source credit
+0x6e67fd,?_Xran@_String_base@std@@SAXXZ,63,static CRT method selector; no engine source credit
 0x6e68ac,__cfltcvt_init,96,
 0x6e690c,___setfflag,16,
 0x6e691c,__fpmath,30,
@@ -11288,10 +11291,12 @@ address,symbol,size,ctype
 0x6e6b57,__scprintf_l,22,
 0x6e6b6d,__scprintf_p_l,22,
 0x006e6b90,__ftol2_sse,28,
+0x6e6bac,__ftol2_sse_excpt,26,
 0x6e6bc6,__ftol2,117,
-0x6e6c40,_ceil,,double __cdecl ceil(double value)
+0x6e6c40,_ceil,64,double __cdecl ceil(double value)
+0x6e6c80,__ceil_pentium4,221,
 0x006e6d60,__chkstk,43,MSVC x86 stack probe (EAX frame size; adjusts ESP)
-0x006e6d90,_memcpy,,"void *__cdecl (void *, const void *, size_t)"
+0x006e6d90,_memcpy,869,"void *__cdecl (void *, const void *, size_t)"
 0x6e70f5,libcmt#00384:__onexit_nolock,,
 0x6e71ae,___onexitinit,47,
 0x6e71dd,__onexit,60,
@@ -11317,9 +11322,15 @@ address,symbol,size,ctype
 0x6e7bdb,__vscprintf_p_l,26,
 0x6e7c00,_strncpy,292,"char *__cdecl strncpy(char *, const char *, size_t)"
 0x6e7d30,_strrchr,45,
-0x6e7f05,_vfprintf,,"i32 __cdecl(FILE *, const char *, va_list)"
+0x6e7d5d,_vfprintf_helper,,
+0x6e7eab,__vfprintf_l,30,
+0x6e7ec9,__vfprintf_s_l,30,
+0x6e7ee7,__vfprintf_p_l,30,
+0x6e7f05,_vfprintf,28,"i32 __cdecl(FILE *, const char *, va_list)"
+0x6e7f21,_vfprintf_s,28,
+0x6e7f3d,__vfprintf_p,28,
 0x6e8098,_putc,,"i32 __cdecl(i32, FILE *)"
-0x6e81d7,___iob_func,,FILE *__cdecl(void)
+0x6e81d7,___iob_func,6,FILE *__cdecl(void)
 0x6e828e,___endstdio,32,
 0x6e82ae,__lock_file,,
 0x6e82ea,__lock_file2,,
@@ -11337,13 +11348,15 @@ address,symbol,size,ctype
 0x6e8561,??9type_info@@QBE_NABV0@@Z,28,
 0x6e857d,?before@type_info@@QBEHABV1@@Z,31,
 0x6e859c,?raw_name@type_info@@QBEPBDXZ,4,
-0x6e85b0,??3@YAXPAX@Z,,Genuine pinned CRT operator delete(void*) selector; no newsourcebytecredit
+0x6e85a0,??0type_info@@AAE@ABV0@@Z,11,
+0x6e85b0,??3@YAXPAX@Z,5,Genuine pinned CRT operator delete(void*) selector; no newsourcebytecredit
 0x6e85b5,__purecall,42,
 0x6e85df,__set_purecall_handler,34,
 0x6e8601,__get_purecall_handler,13,
 0x6e860e,__fclose_nolock,,
 0x6e8680,_fclose,124,int __cdecl fclose(FILE *stream)
-0x6e89b3,_fread,,"size_t __cdecl fread(void *buffer, size_t size, size_t count, FILE *stream)"
+0x6e891d,_fread_s,,
+0x6e89b3,_fread,27,"size_t __cdecl fread(void *buffer, size_t size, size_t count, FILE *stream)"
 0x6e89ce,__fseek_nolock,135,
 0x6e8a55,_fseek,133,"int __cdecl fseek(FILE *stream, long offset, int origin)"
 0x6e8ada,__fsopen,196,
@@ -11352,12 +11365,25 @@ address,symbol,size,ctype
 0x6e8de2,_remove,42,i32 __cdecl (const char *)
 0x006e8e11,_srand,13,void __cdecl (unsigned int)
 0x006e8e1e,_rand,34,i32 __cdecl (void)
+0x6e8e40,_sin,64,
 0x006e8e80,__CIsin,79,f64 (x87 ST0 -> ST0)
-0x6e8ecf,__sin_default,,
-0x6e8fac,__CIexp,,
-0x6e9040,__CIlog,,
-0x6e9190,__CIlog10,,
-0x6e92e0,__CIpow,,CRT x87 double exponent/base inputs
+0x6e8ecf,__sin_default,154,
+0x6e8f70,_exp,60,
+0x6e8fac,__CIexp,59,
+0x6e8fe7,__exp_default,10,
+0x6e8ff1,__CIexp_default,10,
+0x6e9000,_log,64,
+0x6e9040,__CIlog,59,
+0x6e907b,__CIlog_default,20,
+0x6e908f,__log_default,193,
+0x6e9150,_log10,64,
+0x6e9190,__CIlog10,59,
+0x6e91cb,__CIlog10_default,20,
+0x6e91df,__log10_default,193,
+0x6e92a0,_pow,64,
+0x6e92e0,__CIpow,59,CRT x87 double exponent/base inputs
+0x6e931b,__CIpow_default,25,
+0x6e9334,__pow_default,502,
 0x006e9530,__CIsqrt,20,f32 __cdecl (f64)
 0x6e95f0,libcmt#00392:_swap,40,
 0x6e9620,libcmt#00392:_shortsort,135,
@@ -11441,8 +11467,9 @@ address,symbol,size,ctype
 0x6eae30,__alloca_probe_16,44,
 0x6eae5c,__calloc_impl,286,
 0x6eaf7a,_calloc,63,"void *__cdecl (size_t, size_t); supplied pinned static CRT"
-0x6eafc0,_floor,,double __cdecl floor(double value)
-0x6eb0f0,_memmove,,"void *__cdecl (void *, const void *, size_t); supplied pinned static CRT"
+0x6eafc0,_floor,64,double __cdecl floor(double value)
+0x6eb000,__floor_pentium4,225,
+0x6eb0f0,_memmove,869,"void *__cdecl (void *, const void *, size_t); supplied pinned static CRT"
 0x6eb460,__allshr,33,"i64 compiler helper (i64 EDX:EAX, i8 shift CL); supplied pinned static CRT"
 0x6eb490,_memchr,173,"void *__cdecl (const void *, i32, size_t); supplied pinned static CRT"
 0x6eb53d,??0_LocaleUpdate@@QAE@PAUlocaleinfo_struct@@@Z,130,
@@ -11453,10 +11480,15 @@ address,symbol,size,ctype
 0x6eb717,_fprintf,,"int __cdecl fprintf(FILE *stream, const char *format, ...)"
 0x6eb8e4,__get_sys_err_msg,35,
 0x6eb907,_perror,142,void __cdecl perror(const char *message)
-0x6eb9e0,__CIatan,,
+0x6eb9a0,_atan,64,
+0x6eb9e0,__CIatan,59,
+0x6eba1b,__CIatan_default,20,
+0x6eba2f,__atan_default,139,
 0x6ebaba,_ldexp,430,"double __cdecl ldexp(double value, int exponent)"
-0x6ebcb0,__CIcos,,f64 compiler helper (f64 ST0); supplied pinned static CRT
-0x6ebcff,__cos_default,,
+0x6ebc70,_cos,64,
+0x6ebcb0,__CIcos,59,f64 compiler helper (f64 ST0); supplied pinned static CRT
+0x6ebceb,__CIcos_default,20,
+0x6ebcff,__cos_default,154,
 0x6ebd99,__amsg_exit,36,
 0x6ebdbd,___crtCorExitProcess,38,
 0x6ebde3,___crtExitProcess,21,
@@ -11479,7 +11511,10 @@ address,symbol,size,ctype
 0x6ec17c,__c_exit,15,
 0x6ec18b,__init_pointers,76,
 0x6ec1d7,_frexp,218,"double __cdecl frexp(double value, int *exponent)"
-0x6ec300,__CIacos,,
+0x6ec2c0,_acos,64,
+0x6ec300,__CIacos,59,
+0x6ec33b,__CIacos_default,20,
+0x6ec34f,__acos_default,183,
 0x6ec406,libcmt#00538:_vscan_fn,104,
 0x6ec46e,_sscanf,31,"int __cdecl (const char *, const char *, ...)"
 0x6ec48d,__sscanf_l,33,
@@ -11578,7 +11613,7 @@ address,symbol,size,ctype
 0x6eff6f,libcmt#00590:_fastcopy_I,135,
 0x6efff6,__VEC_memcpy,227,
 0x6f0145,__encode_pointer,,
-0x6f01b3,__encoded_null,,
+0x6f01b3,__encoded_null,9,
 0x6f01bc,__decode_pointer,,
 0x6f022a,___crtTlsAlloc@4,9,
 0x6f0233,___fls_getvalue@4,21,
@@ -11602,10 +11637,10 @@ address,symbol,size,ctype
 0x006f089a,@_calloc_crt_fastcall@8,10,
 0x006f08a4,@_realloc_crt_fastcall@8,10,
 0x6f08ae,__msize,163,
-0x6f0954,__SEH_prolog4,,
-0x6f0999,__SEH_epilog4,,
+0x6f0954,__SEH_prolog4,69,
+0x6f0999,__SEH_epilog4,20,
 0x6f09f8,__NMSG_WRITE,,
-0x6f0bb8,__FF_MSGBANNER,,
+0x6f0bb8,__FF_MSGBANNER,57,
 0x6f0bf1,__initp_misc_winxfltr,1,
 0x6f0bf2,libcmt#00417:_xcptlookup,50,
 0x6f0c24,__XcptFilter,,
@@ -11616,8 +11651,8 @@ address,symbol,size,ctype
 0x6f1077,__setargv,185,
 0x6f1130,___crtGetEnvironmentStringsA,309,
 0x6f1265,__ioinit,,
-0x6f1505,__RTC_Initialize,,
-0x6f1529,__RTC_Terminate,,
+0x6f1505,__RTC_Initialize,36,
+0x6f1529,__RTC_Terminate,36,
 0x6f154d,___heap_select,91,
 0x6f15a8,__heap_init,90,
 0x6f1602,__heap_term,116,
@@ -11675,14 +11710,57 @@ address,symbol,size,ctype
 0x6f58ad,__lseek,,
 0x6f5989,__openfile,,
 0x6f5c29,__getstream,,
-0x6f5d60,__local_unwind4,,
+0x6f5d60,__local_unwind4,144,
+0x6f5df0,libcmt#00320:__unwind_handler4,70,
+0x6f5e36,__seh_longjmp_unwind4@4,28,
+0x6f5e52,@_EH4_CallFilterFunc@8,23,
+0x6f5e69,@_EH4_TransferToHandler@8,25,
+0x6f5e82,@_EH4_GlobalUnwind@4,26,
+0x6f5e9c,@_EH4_LocalUnwind@16,23,
 0x6f5eb3,__write_nolock,,
 0x6f64d5,__write,,
 0x6f65c0,__CIsin_pentium4,456,
+0x6f65d8,__sin_pentium4,,
+0x6f6790,__trandisp1,103,
+0x6f67f7,__trandisp2,140,
+0x6f6888,__rttospop,,
+0x6f6896,__rtzeronpop,,
+0x6f689b,__rtonepop,,
+0x6f68a2,__tosnan1,43,
+0x6f68cf,__tosnan2,40,
+0x6f68f7,__nan2,63,
+0x6f6936,__rtindfpop,,
+0x6f6938,__rtindfnpop,17,
+0x6f6949,__rttosnpopde,10,
+0x6f6960,__twoToTOS,21,
+0x6f6975,__load_CW,23,
+0x6f698c,__convertTOStoQNaN,25,
+0x6f69a5,__fload_withFB,67,
+0x6f69e8,__checkTOS_withFB,22,
+0x6f69fe,__fast_exit,13,
+0x6f6a0b,__math_exit,42,
+0x6f6a35,__check_overflow_exit,20,
+0x6f6a49,__check_range_exit,163,
+0x6f6af0,__startTwoArgErrorHandling,23,
+0x6f6b07,__startOneArgErrorHandling,60,
 0x6f6b50,__CIexp_pentium4,704,
+0x6f6b68,__exp_pentium4,,
+0x6f6e21,__fFEXP,103,
+0x6f6e8a,__rtinfnpopse,16,
+0x6f6e9a,__fFLN,181,
+0x6f6f51,__rtinfnpop,29,
+0x6f6f6e,__ffexpm1,169,
+0x6f7020,__cintrindisp2,62,
+0x6f705e,__cintrindisp1,61,
+0x6f709b,__ctrandisp2,406,
+0x6f7231,__ctrandisp1,51,
+0x6f7264,__fload,60,
 0x6f72a0,__CIlog_pentium4,624,
+0x6f72b8,__log_pentium4,,
 0x6f7510,__CIlog10_pentium4,656,
+0x6f7528,__log10_pentium4,,
 0x6f77a0,__CIpow_pentium4,2912,
+0x6f77b9,__pow_pentium4,,
 0x6f8300,__d_inttype,100,
 0x6f8364,__powhlp,318,
 0x6f84a2,__commit,,
@@ -11819,12 +11897,14 @@ address,symbol,size,ctype
 0x6fc3d5,__isctype_l,182,
 0x6fc48b,__isctype,47,
 0x6fc4ba,___sys_nerr,6,
-0x6fc4c0,___sys_errlist,,
+0x6fc4c0,___sys_errlist,6,
 0x6fc5c4,__get_osfhandle,,
 0x6fc635,___lock_fhandle,,
 0x6fc6d5,__unlock_fhandle,,
 0x6fc9b0,__CIatan_pentium4,748,
+0x6fc9c8,__atan_pentium4,,
 0x6fcca0,__CIcos_pentium4,428,
+0x6fccb8,__cos_pentium4,,
 0x6fce50,__ValidateImageBase,41,
 0x6fce80,__FindPESection,66,
 0x6fced0,__IsNonwritableInCurrentImage,,
@@ -11834,18 +11914,19 @@ address,symbol,size,ctype
 0x6fd0a3,libcmt#00366:___crtInitCritSecNoSpinCount@8,16,
 0x6fd0b3,___crtInitCritSecAndSpinCount,197,
 0x6fd180,__CIacos_pentium4,1364,
+0x6fd198,__acos_pentium4,,
 0x6fd728,__INTRN_LOCALE_CONV,13,
 0x6fd795,__input_l,,
 0x6fe496,__input_s_l,,
 0x6ff1c1,_wcslen,22,
 0x6ff1d7,__invoke_watson_if_oneof,49,
-0x6ff208,libcmt#00584:___check_float_string,,
-0x6ff25f,libcmt#00584:__hextodec,,
+0x6ff208,libcmt#00584:___check_float_string,87,
+0x6ff25f,libcmt#00584:__hextodec,44,
 0x6ff290,libcmt#00584:__un_inc,15,
 0x6ff29f,libcmt#00584:__whiteout,42,
 0x6ff2c9,__winput_l,3248,
-0x6fff79,libcmt#00585:___check_float_string,,
-0x6fffd0,libcmt#00585:__hextodec,,
+0x6fff79,libcmt#00585:___check_float_string,87,
+0x6fffd0,libcmt#00585:__hextodec,44,
 0x700001,libcmt#00585:__un_inc,15,
 0x700010,libcmt#00585:__whiteout,42,
 0x70003a,__winput_s_l,3470,
@@ -12095,13 +12176,37 @@ address,symbol,size,ctype
 0x708a85,__mbsicmp,19,
 0x708a98,__mbsnbcmp_l,361,
 0x708c01,__mbsnbcmp,23,
-0x708d24,__NLG_Notify1,,
+0x708c18,__global_unwind2,32,
+0x708c38,libcmt#00317:__unwind_handler,69,
+0x708c7d,__local_unwind2,132,
+0x708d01,__abnormal_termination,35,
+0x708d24,__NLG_Notify1,9,
+0x708d2d,__NLG_Notify,23,
+0x708d4c,__NLG_Call,,
 0x708d4f,__putwch_nolock,194,
 0x708e11,__cputws,155,
 0x708eac,__putwch,70,
 0x708ef2,__mbtowc_l,275,
 0x709005,_mbtowc,23,
 0x70901c,__87except,252,
+0x709120,_fdiv_main_routine,279,
+0x709237,__adj_fdiv_r,1183,
+0x7096d6,__fdivp_sti_st,19,
+0x7096e9,__fdivrp_sti_st,19,
+0x7096fc,__adj_fdiv_m32,76,
+0x709748,__adj_fdiv_m64,76,
+0x709794,__adj_fdiv_m16i,52,
+0x7097c8,__adj_fdiv_m32i,52,
+0x7097fc,__adj_fdivr_m32,76,
+0x709848,__adj_fdivr_m64,76,
+0x709894,__adj_fdivr_m16i,52,
+0x7098c8,__adj_fdivr_m32i,52,
+0x7098fc,__safe_fdiv,21,
+0x709911,__safe_fdivr,21,
+0x709926,__fprem_common,518,
+0x709b2c,__adj_fprem,178,
+0x709bde,__fprem1_common,518,
+0x709de4,__adj_fprem1,181,
 0x709eab,?_ValidateRead@@YAHPBXI@Z,13,
 0x709eb8,?_ValidateWrite@@YAHPAXI@Z,13,
 0x709ec5,?_ValidateExecute@@YAHP6GHXZ@Z,13,
@@ -12198,7 +12303,8 @@ address,symbol,size,ctype
 0x711bac,___strgtold12_l,,
 0x7122c5,___add_12,109,
 0x712332,_$I10_OUTPUT,,
-0x712bf8,_atol,,
+0x712bf8,_atol,17,
+0x712c09,__atol_l,21,
 0x712c4e,__chsize_nolock,436,
 0x712e02,__chsize_s,,
 0x712eef,__chsize,24,
@@ -12706,7 +12812,7 @@ address,symbol,size,ctype
 0x74ed60,_NuFmvTextureRestorePc,21,void __cdecl(void)
 0x74ed75,__vsnwprintf_l,210,
 0x74ee47,__vsnwprintf,27,
-0x74ee62,??_V@YAXPAX@Z,,void __cdecl (void *)
+0x74ee62,??_V@YAXPAX@Z,5,void __cdecl (void *)
 0x74ef00,__woutput_l,,
 0x74f810,__fputwc_nolock,,
 0x74f9ee,_fputwc,120,
@@ -12721,6 +12827,8 @@ address,symbol,size,ctype
 0x74fc70,__ehhandler$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,27,native EH handler
 0x74fc90,__ehhandler$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z,27,native EH handler
 0x74fcb0,__ehhandler$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,27,native EH handler
+0x74fcd3,libcpmt#00017:__ehhandler$?_Xlen@_String_base@std@@SAXXZ,,
+0x74fcf6,libcpmt#00017:__ehhandler$?_Xran@_String_base@std@@SAXXZ,,
 0x74fd50,__ehhandler$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,27,
 0x0074fd80,??__EStatusAltTextScalePc@@YAXXZ,13,
 0x74fe00,??__EGame_LanguageList@@YAXXZ,69,
@@ -12770,7 +12878,7 @@ address,symbol,size,ctype
 0x750730,??__FtheLevelEditor@@YAXXZ,20,
 0x750750,??__FPCDeviceBackend@@YAXXZ,10,void __cdecl(void)
 0x750760,??__Fnu_keyboard_owner@@YAXXZ,10,void __cdecl (void)
-0x75077a,libcmt#00169:??__Fnomem@?5???2@YAPAXI@Z@YAXXZ,,
+0x75077a,libcmt#00169:??__Fnomem@?5???2@YAPAXI@Z@YAXXZ,20,
 0x00751000,__imp__RegCloseKey@4,4,LONG (__stdcall *)(HKEY)
 0x00751004,__imp__RegOpenKeyExA@20,4,"LONG (__stdcall *)(HKEY, LPCSTR, DWORD, REGSAM, PHKEY)"
 0x00751008,__imp__RegQueryValueExA@24,4,"LONG (__stdcall *)(HKEY, LPCSTR, LPDWORD, LPDWORD, LPBYTE, LPDWORD)"
@@ -22673,7 +22781,15 @@ address,symbol,size,ctype
 0x777b88,_PCGraphicsGpuName00777b88,16,const char[16]
 0x777b98,_PCGraphicsGpuName00777b98,19,const char[19]
 0x777bac,_PCGraphicsGpuName00777bac,9,const char[9]
+0x777c78,??_7out_of_range@std@@6B@,,
+0x777c80,??_C@_0BA@JFNIOLAK@string?5too?5long?$AA@,,
+0x777c90,??_C@_0BI@CFPLBAOH@invalid?5string?5position?$AA@,,
 0x777cc0,__FPinit,,
+0x777cd0,libcmt#00889:_One,,
+0x777ce0,libcmt#00889:_Bns,,
+0x777cf0,libcmt#00889:_Zero,,
+0x777d00,libcmt#00889:_S,,
+0x777d10,libcmt#00889:_NegZero,,
 0x777d1c,??_7type_info@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x777d24,??_7exception@std@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x777d2c,??_C@_0BC@EOODALEL@Unknown?5exception?$AA@,,const char[18]
@@ -22681,6 +22797,11 @@ address,symbol,size,ctype
 0x777d50,??_7bad_typeid@std@@6B@,,
 0x777d5c,??_7__non_rtti_object@std@@6B@,,
 0x00777d78,libcmt#00087:?ExceptionTemplate@?1??_CxxThrowException@@9@8@4UEHExceptionRecord@@B,,const u8[32]
+0x777da0,libcmt#00888:_One,,
+0x777db0,libcmt#00888:_Bns,,
+0x777dc0,libcmt#00888:_NegOne,,
+0x777dd0,libcmt#00888:_NegZero,,
+0x777de0,libcmt#00888:_S,,
 0x777df0,??_C@_0P@MIGLKIOC@CorExitProcess?$AA@,,
 0x777e00,??_C@_0M@MBOPBNBK@mscoree?4dll?$AA@,,
 0x777e0c,??_C@_05KLBDPFGC@e?$CL000?$AA@,,
@@ -22722,6 +22843,15 @@ address,symbol,size,ctype
 0x778eb0,libcmt#00899:TWO_POW_55,,
 0x778eb8,libcmt#00899:TWO_POW_M55,,
 0x778ec0,libcmt#00899:ALL_ONES,,
+0x778ee0,libcmt#00855:One,,
+0x778ee8,__DEFAULT_CW_in_mem,,
+0x778eea,__pi_by_2_to_61,,
+0x778ef4,libcmt#00855:DblMax,,
+0x778efc,libcmt#00855:DblMin,,
+0x778f04,libcmt#00855:IeeeAdjO,,
+0x778f0c,libcmt#00855:IeeeAdjU,,
+0x778f14,libcmt#00855:_infinity,,
+0x778f1c,libcmt#00855:_zero,,
 0x778f40,libcmt#00892:emask,,
 0x778f50,libcmt#00892:mmask,,
 0x778f60,libcmt#00892:bias,,
@@ -22733,6 +22863,12 @@ address,symbol,size,ctype
 0x779408,libcmt#00892:ZERO,,
 0x779410,libcmt#00892:XMAX,,
 0x779418,libcmt#00892:XMIN,,
+0x779430,libcmt#00841:DblMax,,
+0x779438,libcmt#00841:DblMin,,
+0x779440,libcmt#00841:IeeeAdjO,,
+0x779448,libcmt#00841:IeeeAdjU,,
+0x779450,libcmt#00841:_infinity,,
+0x779458,libcmt#00841:_zero,,
 0x779460,libcmt#00893:emask,,
 0x779470,libcmt#00893:Magic,,
 0x779480,libcmt#00893:hi_mask,,
@@ -32431,6 +32567,10 @@ address,symbol,size,ctype
 0x7ec988,??_R3ShaderManagerHLSL@@8,16,
 0x7ec998,??_R2ShaderManagerHLSL@@8,9,
 0x7ec9a4,??_R1A@?0A@EA@ShaderManagerHLSL@@8,28,
+0x7eca04,___rtc_iaa,,
+0x7eca08,___rtc_izz,,
+0x7eca0c,___rtc_taa,,
+0x7eca10,___rtc_tzz,,
 0x7eca18,__TI2?AVbad_alloc@std@@,16,Natural owning C++ RTTI/throw metadata
 0x7eca28,__CTA2?AVbad_alloc@std@@,12,Natural owning C++ RTTI/throw metadata
 0x7eca34,__CT??_R0?AVbad_alloc@std@@@8??0bad_alloc@std@@QAE@ABV01@@Z12,28,Natural owning C++ RTTI/throw metadata
@@ -32471,6 +32611,7 @@ address,symbol,size,ctype
 0x7ecd7c,__ehfuncinfo$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,36,native EH funcinfo
 0x7ecda0,__tryblocktable$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,40,native EH trytable
 0x7ecdc8,__sehtable$_CpuDetectFeaturesPc,28,
+0x7ece10,__TI3?AVout_of_range@std@@,,
 0x7ecee0,libcmt#00384:__sehtable$__onexit,,
 0x7ecf00,libcmt#00467:__sehtable$___tmainCRTStartup,,
 0x7ecf28,libcmt#00158:__sehtable$_V6_HeapAlloc,,
@@ -34923,14 +35064,24 @@ address,symbol,size,ctype
 0x00829548,??_R0?AVout_of_range@std@@@8,31,
 0x00829570,___security_cookie,,u32
 0x829574,___security_cookie_complement,,u32
+0x829580,___app_type,,
+0x829590,__iob,,
 0x00829814,??_R0?AVtype_info@@@8,24,
+0x829830,libcmt#00876:_NAME_,,
+0x829840,libcmt#00879:LOG_name,,
+0x829850,libcmt#00880:LOG_name,,
+0x829860,__half,,
+0x829868,libcmt#00882:POW_name,,
 0x0082987c,??_R0?AVbad_cast@std@@@8,27,
 0x00829898,??_R0?AVbad_typeid@std@@@8,29,
 0x008298b8,??_R0?AV__non_rtti_object@std@@@8,36,
 0x8298dc,libcmt#00169:__bad_alloc_Message,,
 0x829a48,libcmt#00053:_ErrnoNoMem,,
 0x829a4c,libcmt#00053:_DoserrorNoMem,,
+0x829a50,libcmt#00875:_NAME_,,
+0x829a60,libcmt#00877:_NAME_,,
 0x829a68,__aexit_rtn,,
+0x829a70,libcmt#00874:_NAME_,,
 0x829a80,__cfltcvt_tab,,
 0x829ab0,libcmt#00854:_newcw,,
 0x829ab4,___flsindex,,
@@ -34943,6 +35094,15 @@ address,symbol,size,ctype
 0x829c40,__amblksiz,,
 0x829c48,libcmt#00455:__locktable,,
 0x829d80,___abort_behavior,,
+0x829e90,__indefinite,,
+0x829e9a,__piby2,,
+0x829ea4,libcmt#00845:One,,
+0x829eac,libcmt#00845:XAMtoTagTab,,
+0x829ec0,__infinity,,
+0x829eca,__minfinity,,
+0x829ede,libcmt#00849:_log2max,,
+0x829ef2,libcmt#00849:_half,,
+0x829efa,__OP_EXPjmptab,,
 0x00829f24,??_R0?AVbad_exception@std@@@8,32,
 0x829f50,__d_inf,,
 0x829f58,__d_ind,,
@@ -34964,6 +35124,7 @@ address,symbol,size,ctype
 0x82a688,___ptlocinfo,,
 0x82a68c,___lc_clike,,
 0x82a690,___initiallocalestructinfo,,
+0x82a698,__sys_errlist,,
 0x82a748,__sys_nerr,,i32
 0x82a750,__matherr_flag,,u32[1]
 0x0082a754,??_R0?AVDNameNode@@@8,24,
@@ -34971,7 +35132,18 @@ address,symbol,size,ctype
 0x0082a784,??_R0?AVpDNameNode@@@8,25,
 0x0082a7a0,??_R0?AVDNameStatusNode@@@8,30,
 0x0082a7c0,??_R0?AVpcharNode@@@8,24,
+0x82a7d8,__NLG_Destination,,
 0x82a7e8,libcmt#00222:?use_w@?1??_putwch_nolock@@9@9,,
+0x82a7f0,libcmt#00853:fdiv_risc_table,,
+0x82a800,libcmt#00853:fdiv_scale_1,,
+0x82a804,libcmt#00853:fdiv_scale_2,,
+0x82a808,libcmt#00853:one_shl_63,,
+0x82a80c,libcmt#00853:fprem_risc_table,,
+0x82a824,libcmt#00853:one_shl_64,,
+0x82a82c,libcmt#00853:one_shr_64,,
+0x82a83c,libcmt#00853:half,,
+0x82a844,libcmt#00853:big_number,,
+0x82a84e,libcmt#00853:dispatch_table,,
 0x82a950,__pctype,,
 0x82a954,__pwctype,,
 0x82a958,___lc_time_c,,

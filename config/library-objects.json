@@ -36,6 +36,15 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 1,
+   "member": "build\\intel\\mt_obj\\atox.obj",
+   "symbols": [
+    "_atol",
+    "__atol_l"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 6,
    "member": "build\\intel\\mt_obj\\xtoas.obj",
    "symbols": [
@@ -352,7 +361,8 @@
     "?_name_internal_method@type_info@@QBEPBDPAU__type_info_node@@@Z",
     "??1type_info@@UAE@XZ",
     "??_Gtype_info@@UAEPAXI@Z",
-    "?_type_info_dtor_internal_method@type_info@@QAEXXZ"
+    "?_type_info_dtor_internal_method@type_info@@QAEXXZ",
+    "??0type_info@@AAE@ABV0@@Z"
    ]
   },
   {
@@ -686,11 +696,28 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 166,
+   "member": "build\\intel\\mt_obj\\delete.obj",
+   "symbols": [
+    "??3@YAXPAX@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 167,
+   "member": "build\\intel\\mt_obj\\delete2.obj",
+   "symbols": [
+    "??_V@YAXPAX@Z"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 169,
    "member": "build\\intel\\mt_obj\\new.obj",
    "symbols": [
     "??0bad_alloc@std@@QAE@XZ",
-    "??2@YAPAXI@Z"
+    "??2@YAPAXI@Z",
+    "libcmt#00169:??__Fnomem@?5???2@YAPAXI@Z@YAXXZ"
    ]
   },
   {
@@ -894,10 +921,46 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 317,
+   "member": "build\\intel\\mt_obj\\exsup.obj",
+   "symbols": [
+    "__global_unwind2",
+    "libcmt#00317:__unwind_handler",
+    "__local_unwind2",
+    "__abnormal_termination",
+    "__NLG_Notify1",
+    "__NLG_Notify"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 320,
+   "member": "build\\intel\\mt_obj\\exsup4.obj",
+   "symbols": [
+    "__local_unwind4",
+    "libcmt#00320:__unwind_handler4",
+    "__seh_longjmp_unwind4@4",
+    "@_EH4_CallFilterFunc@8",
+    "@_EH4_TransferToHandler@8",
+    "@_EH4_GlobalUnwind@4",
+    "@_EH4_LocalUnwind@16"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 323,
    "member": "build\\intel\\mt_obj\\secchk.obj",
    "symbols": [
     "@__security_check_cookie@4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 325,
+   "member": "build\\intel\\mt_obj\\sehprolg4.obj",
+   "symbols": [
+    "__SEH_prolog4",
+    "__SEH_epilog4"
    ]
   },
   {
@@ -1245,7 +1308,8 @@
    "member": "build\\intel\\mt_obj\\syserr.obj",
    "symbols": [
     "___sys_nerr",
-    "__sys_nerr"
+    "__sys_nerr",
+    "___sys_errlist"
    ]
   },
   {
@@ -1310,6 +1374,15 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 439,
+   "member": "..\\build\\intel\\mt_obj\\initsect.obj",
+   "symbols": [
+    "__RTC_Initialize",
+    "__RTC_Terminate"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 446,
    "member": "build\\intel\\mt_obj\\chkstk.obj",
    "symbols": [
@@ -1361,6 +1434,14 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 452,
+   "member": "build\\intel\\mt_obj\\crt0msg.obj",
+   "symbols": [
+    "__FF_MSGBANNER"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 455,
    "member": "build\\intel\\mt_obj\\mlock.obj",
    "symbols": [
@@ -1401,7 +1482,8 @@
     "__getptd",
     "__freefls@4",
     "__freeptd",
-    "__mtinit"
+    "__mtinit",
+    "__encoded_null"
    ]
   },
   {
@@ -1461,7 +1543,8 @@
    "index": 491,
    "member": "build\\intel\\mt_obj\\_file.obj",
    "symbols": [
-    "___endstdio"
+    "___endstdio",
+    "___iob_func"
    ]
   },
   {
@@ -1524,6 +1607,14 @@
    "symbols": [
     "__fsopen",
     "_fopen"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 506,
+   "member": "build\\intel\\mt_obj\\fread.obj",
+   "symbols": [
+    "_fread"
    ]
   },
   {
@@ -1627,6 +1718,19 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 549,
+   "member": "build\\intel\\mt_obj\\vfprintf.obj",
+   "symbols": [
+    "__vfprintf_l",
+    "__vfprintf_s_l",
+    "__vfprintf_p_l",
+    "_vfprintf",
+    "_vfprintf_s",
+    "__vfprintf_p"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 551,
    "member": "build\\intel\\mt_obj\\vsprintf.obj",
    "symbols": [
@@ -1706,7 +1810,9 @@
    "symbols": [
     "libcmt#00584:__un_inc",
     "libcmt#00584:__whiteout",
-    "__winput_l"
+    "__winput_l",
+    "libcmt#00584:___check_float_string",
+    "libcmt#00584:__hextodec"
    ]
   },
   {
@@ -1716,7 +1822,17 @@
    "symbols": [
     "libcmt#00585:__un_inc",
     "libcmt#00585:__whiteout",
-    "__winput_s_l"
+    "__winput_s_l",
+    "libcmt#00585:___check_float_string",
+    "libcmt#00585:__hextodec"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 589,
+   "member": "build\\intel\\mt_obj\\memcpy.obj",
+   "symbols": [
+    "_memcpy"
    ]
   },
   {
@@ -1755,6 +1871,14 @@
     "libcmt#00593:_cmpDWORD",
     "libcmt#00593:_unaligned_memcmp",
     "_memcmp"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 596,
+   "member": "build\\intel\\mt_obj\\memmove.obj",
+   "symbols": [
+    "_memmove"
    ]
   },
   {
@@ -2069,6 +2193,43 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 841,
+   "member": "..\\build\\intel\\mt_obj\\87cdisp.obj",
+   "symbols": [
+    "__cintrindisp2",
+    "__cintrindisp1",
+    "__ctrandisp2",
+    "__ctrandisp1",
+    "__fload"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 842,
+   "member": "..\\build\\intel\\mt_obj\\87ctran.obj",
+   "symbols": [
+    "_exp",
+    "__CIexp",
+    "__exp_default",
+    "__CIexp_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 845,
+   "member": "..\\build\\intel\\mt_obj\\87disp.obj",
+   "symbols": [
+    "__trandisp1",
+    "__trandisp2",
+    "__tosnan1",
+    "__tosnan2",
+    "__nan2",
+    "__rtindfnpop",
+    "__rttosnpopde"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 846,
    "member": "..\\build\\intel\\mt_obj\\87except.obj",
    "symbols": [
@@ -2077,10 +2238,63 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 849,
+   "member": "..\\build\\intel\\mt_obj\\87tran.obj",
+   "symbols": [
+    "__fFEXP",
+    "__rtinfnpopse",
+    "__fFLN",
+    "__rtinfnpop",
+    "__ffexpm1"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 853,
+   "member": "..\\build\\intel\\mt_obj\\adj_fdiv.obj",
+   "symbols": [
+    "_fdiv_main_routine",
+    "__adj_fdiv_r",
+    "__fdivp_sti_st",
+    "__fdivrp_sti_st",
+    "__adj_fdiv_m32",
+    "__adj_fdiv_m64",
+    "__adj_fdiv_m16i",
+    "__adj_fdiv_m32i",
+    "__adj_fdivr_m32",
+    "__adj_fdivr_m64",
+    "__adj_fdivr_m16i",
+    "__adj_fdivr_m32i",
+    "__safe_fdiv",
+    "__safe_fdivr",
+    "__fprem_common",
+    "__adj_fprem",
+    "__fprem1_common",
+    "__adj_fprem1"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 854,
    "member": "..\\build\\intel\\mt_obj\\ceil.obj",
    "symbols": [
     "__ceil_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 855,
+   "member": "..\\build\\intel\\mt_obj\\common.obj",
+   "symbols": [
+    "__twoToTOS",
+    "__load_CW",
+    "__convertTOStoQNaN",
+    "__fload_withFB",
+    "__checkTOS_withFB",
+    "__fast_exit",
+    "__math_exit",
+    "__check_overflow_exit",
+    "__check_range_exit"
    ]
   },
   {
@@ -2115,6 +2329,23 @@
    "member": "..\\build\\intel\\mt_obj\\frnd.obj",
    "symbols": [
     "__frnd"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 864,
+   "member": "..\\build\\intel\\mt_obj\\ftol2.obj",
+   "symbols": [
+    "__ftol2_sse_excpt"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 865,
+   "member": "..\\build\\intel\\mt_obj\\genexcep.obj",
+   "symbols": [
+    "__startTwoArgErrorHandling",
+    "__startOneArgErrorHandling"
    ]
   },
   {
@@ -2162,11 +2393,86 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 874,
+   "member": "..\\build\\intel\\mt_obj\\acos.obj",
+   "symbols": [
+    "_acos",
+    "__CIacos",
+    "__CIacos_default",
+    "__acos_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 875,
+   "member": "..\\build\\intel\\mt_obj\\atan.obj",
+   "symbols": [
+    "_atan",
+    "__CIatan",
+    "__CIatan_default",
+    "__atan_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 876,
+   "member": "..\\build\\intel\\mt_obj\\sin.obj",
+   "symbols": [
+    "_sin",
+    "__sin_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 877,
+   "member": "..\\build\\intel\\mt_obj\\cos.obj",
+   "symbols": [
+    "_cos",
+    "__CIcos",
+    "__CIcos_default",
+    "__cos_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 879,
+   "member": "..\\build\\intel\\mt_obj\\log.obj",
+   "symbols": [
+    "_log",
+    "__CIlog",
+    "__CIlog_default",
+    "__log_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 880,
+   "member": "..\\build\\intel\\mt_obj\\log10.obj",
+   "symbols": [
+    "_log10",
+    "__CIlog10",
+    "__CIlog10_default",
+    "__log10_default"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 881,
    "member": "..\\build\\intel\\mt_obj\\mathfcns.obj",
    "symbols": [
     "__sse2_mathfcns_init",
     "__set_SSE2_enable"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 882,
+   "member": "..\\build\\intel\\mt_obj\\pow.obj",
+   "symbols": [
+    "_pow",
+    "__CIpow",
+    "__CIpow_default",
+    "__pow_default"
    ]
   },
   {
@@ -2177,6 +2483,24 @@
     "libcmt#00886:_has_osfxsr_set",
     "__get_sse2_info",
     "___sse2_available_init"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 888,
+   "member": "..\\build\\intel\\mt_obj\\floor_pentium4.obj",
+   "symbols": [
+    "_floor",
+    "__floor_pentium4"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 889,
+   "member": "..\\build\\intel\\mt_obj\\ceil_pentium4.obj",
+   "symbols": [
+    "_ceil",
+    "__ceil_pentium4"
    ]
   },
   {
@@ -2330,6 +2654,18 @@
     "__set_bexp",
     "__sptype",
     "__decomp"
+   ]
+  },
+  {
+   "archive": "libcpmt.lib",
+   "index": 17,
+   "member": "build\\intel\\mt_obj\\string.obj",
+   "symbols": [
+    "??0out_of_range@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z",
+    "??1out_of_range@std@@UAE@XZ",
+    "??_Gout_of_range@std@@UAEPAXI@Z",
+    "?_Xlen@_String_base@std@@SAXXZ",
+    "?_Xran@_String_base@std@@SAXXZ"
    ]
   }
  ]
