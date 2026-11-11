@@ -380,6 +380,43 @@ static void NuRndrPrimPosition(f32 x, f32 y, f32 z) {
     LOCATOR_PRIM_POSITION(x, y, z);
 }
 
+void __cdecl NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material) {
+    f32 step = (f32)(65536.0 / segments);
+    f32 theta = 0.0f;
+    i32 ring;
+    i32 i;
+    NuPrim3DBegin(15, 5, material, matrix);
+    for (ring = 0; ring < segments / 2; ++ring) {
+        f32 sin_theta = NuTrigTable[((i32)theta >> 1) & 0x7fff];
+        f32 cos_theta = NuTrigTable[((i32)(theta + 16384.0) >> 1) & 0x7fff];
+        f32 angle = 0.0f;
+        for (i = 0; i <= segments; ++i) {
+            f32 radius = NuTrigTable[((i32)angle >> 1) & 0x7fff];
+            NuRndrPrimSetColourPrivate(colour);
+            NuRndrPrimPosition(radius * sin_theta, NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff],
+                               radius * cos_theta);
+            angle += step;
+        }
+        theta += step;
+    }
+    NuPrim3DEnd();
+    theta = step;
+    for (ring = 1; ring < segments / 2; ++ring) {
+        f32 radius = NuTrigTable[((i32)theta >> 1) & 0x7fff];
+        f32 y = NuTrigTable[((i32)(theta + 16384.0) >> 1) & 0x7fff];
+        f32 angle = 0.0f;
+        NuPrim3DBegin(15, 5, material, matrix);
+        for (i = 0; i <= segments; ++i) {
+            NuRndrPrimSetColourPrivate(colour);
+            NuRndrPrimPosition(NuTrigTable[((i32)angle >> 1) & 0x7fff] * radius, y,
+                               NuTrigTable[((i32)(angle + 16384.0) >> 1) & 0x7fff] * radius);
+            angle += step;
+        }
+        NuPrim3DEnd();
+        theta += step;
+    }
+}
+
 void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour) {
     NuPrim3DBegin(15, 5, NULL, matrix);
     NuRndrPrimSetColourPrivate(colour);
@@ -418,6 +455,98 @@ void __cdecl NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i3
     NuRndrPrimPosition(maximum->x, minimum->y, maximum->z);
     NuPrim3DEnd();
 }
+
+void __cdecl NuRndrAxisBright(NUMTX *matrix, f32 length, i32 brightness) {
+    f32 base = length * 0.8f;
+    f32 width = length * 0.1f;
+    i32 red = (i32)(0xff000000u | (brightness & 0xff));
+    i32 green = (i32)(0xff000000u | ((brightness & 0xff) << 8));
+    i32 blue = (i32)(0xff000000u | ((brightness & 0xff) << 16));
+    NuPrim3DBegin(14, 5, NULL, matrix);
+    NuRndrPrimSetColourPrivate(red);
+    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimSetColourPrivate(red);
+    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimSetColourPrivate(green);
+    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimSetColourPrivate(green);
+    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimSetColourPrivate(blue);
+    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimSetColourPrivate(blue);
+    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuPrim3DEnd();
+    NuPrim3DBegin(15, 5, NULL, matrix);
+    NuRndrPrimSetColourPrivate(red);
+    LOCATOR_PRIM_POSITION(base, -width, 0);
+    NuRndrPrimSetColourPrivate(red);
+    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimSetColourPrivate(red);
+    LOCATOR_PRIM_POSITION(base, width, 0);
+    NuPrim3DEnd();
+    NuPrim3DBegin(15, 5, NULL, matrix);
+    NuRndrPrimSetColourPrivate(green);
+    LOCATOR_PRIM_POSITION(0, base, width);
+    NuRndrPrimSetColourPrivate(green);
+    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimSetColourPrivate(green);
+    LOCATOR_PRIM_POSITION(0, base, -width);
+    NuPrim3DEnd();
+    NuPrim3DBegin(15, 5, NULL, matrix);
+    NuRndrPrimSetColourPrivate(blue);
+    LOCATOR_PRIM_POSITION(0, width, base);
+    NuRndrPrimSetColourPrivate(blue);
+    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuRndrPrimSetColourPrivate(blue);
+    LOCATOR_PRIM_POSITION(0, -width, base);
+    NuPrim3DEnd();
+}
+
+void __cdecl NuRndrAxes(NUMTX *matrix, f32 length) {
+    NuRndrAxisBright(matrix, length, 0xff);
+}
+
+#pragma inline_depth(0)
+void __cdecl NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
+    NUMTX matrix = NuMtxSetIdentityTemplate;
+    f32 dx;
+    f32 dz;
+    f32 pos;
+    i32 i;
+    matrix.m30 = centre->x;
+    matrix.m31 = 0.0f;
+    matrix.m32 = centre->z;
+    matrix.m00 = size->x * 0.5;
+    matrix.m11 = 1.0f;
+    matrix.m22 = size->z * 0.5;
+    dx = (f32)(2.0 / columns);
+    dz = (f32)(2.0 / rows);
+    NuPrim3DBegin(14, 5, NULL, &matrix);
+    pos = -1.0f;
+    for (i = 0; i <= columns; ++i) {
+        NuRndrPrimSetColourPrivate((i32)0xff00ff00);
+        LOCATOR_PRIM_POSITION(pos, 0.0f, -1.0f);
+        NuRndrPrimSetColourPrivate((i32)0xff00ff00);
+        LOCATOR_PRIM_POSITION(pos, 0.0f, 1.0f);
+        pos += dx;
+    }
+    pos = -1.0f;
+    for (i = 0; i <= rows; ++i) {
+        if (NuPrimNeedsOverbrightening != 0)
+            ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff00ff00;
+        else
+            ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff007f00;
+        LOCATOR_PRIM_POSITION(-1.0f, 0.0f, pos);
+        if (NuPrimNeedsOverbrightening != 0)
+            ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff00ff00;
+        else
+            ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff007f00;
+        LOCATOR_PRIM_POSITION(1.0f, 0.0f, pos);
+        pos += dz;
+    }
+    NuPrim3DEnd();
+}
+#pragma inline_depth()
 
 #undef LOCATOR_PRIM_POSITION
 
@@ -497,7 +626,60 @@ i32 __cdecl NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *
     return NuRndrStrip3d(vertices, material, matrix, count);
 }
 
+i32 __cdecl NuRndrTri3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
+    i32 i;
+    if (count == 0)
+        return 1;
+    NuPrim3DBegin(12, 7, material, matrix);
+    for (i = 0; i < count; ++i) {
+        LOCATOR_PRIM_VERTEX_PC *output;
+        f32 u, v, x, y, z;
+        NuRndrPrimSetColourPrivate((i32)vertices[i].colour);
+        u = vertices[i].u;
+        v = vertices[i].v;
+        output = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+        output->u = u;
+        output->v = v;
+        x = vertices[i].position.x;
+        y = vertices[i].position.y;
+        z = vertices[i].position.z;
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x;
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y;
+        ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
+        ++NuPrimVertexCount;
+    }
+    NuPrim3DEnd();
+    return 1;
+}
+
 extern i32 NuPrimCoordSystemStack[2];
+
+#define NURNDR_PRIM_UV(U, V)                                                                                           \
+    do {                                                                                                               \
+        LOCATOR_PRIM_VERTEX_PC *uv_vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;             \
+        uv_vertex->u = (U);                                                                                            \
+        uv_vertex->v = (V);                                                                                            \
+    } while (0)
+
+void __cdecl NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
+    NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
+    NuRndrPrimSetColourPrivate(colour);
+    NURNDR_PRIM_UV(0.0f, 0.0f);
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x0;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y0;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z0;
+    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
+    ++NuPrimVertexCount;
+    NuRndrPrimSetColourPrivate(colour);
+    NURNDR_PRIM_UV(1.0f, 1.0f);
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->x = x1;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->y = y1;
+    ((LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr)->z = z1;
+    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
+    ++NuPrimVertexCount;
+    NuPrim3DEnd();
+}
 
 void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
     NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
@@ -514,6 +696,34 @@ void __cdecl NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32
     NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX_PC);
     ++NuPrimVertexCount;
     NuPrim3DEnd();
+}
+
+void __cdecl NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                              NUMTL *material, i32 z) {
+    f32 sx = (f32)((f64)x * 0.0625);
+    f32 sy = (f32)((f64)y * 0.0625);
+    f32 sz = (f32)((f64)z * (1.0f / 16777215.0f));
+    f32 sw;
+    f32 sh;
+    LOCATOR_PRIM_VERTEX_PC *vertex;
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(16, 7, material);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u0;
+    vertex->v = v0;
+    NuRndrPrimSetColourPrivate(colour);
+    NuPrim2DAddXYZ(sx, sy, sz);
+    vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
+    vertex->u = u1;
+    vertex->v = v1;
+    NuRndrPrimSetColourPrivate(colour);
+    sw = (f32)((f64)width * 0.0625);
+    sh = (f32)((f64)height * 0.0625);
+    NuPrim2DAddXYZ(sx + sw, sy + sh, sz);
+    NuPrim2DEnd();
+    --NuPrimCSPos;
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
 }
 
 void __cdecl NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material) {
@@ -583,6 +793,27 @@ void __cdecl NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f3
     NuPrim2DEnd();
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
+void __cdecl NuRndrGradRect2diZ(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL *material, i32 z) {
+    f32 sx = (f32)((f64)x * 0.0625);
+    f32 sy = (f32)((f64)y * 0.0625);
+    f32 sw = (f32)((f64)width * 0.0625);
+    f32 sh = (f32)((f64)height * 0.0625);
+    f32 sz = (f32)((f64)z * (1.0f / 16777215.0f));
+    ++NuPrimCSPos;
+    NuPrimSetCoordinateSystem(0);
+    NuPrim2DBegin(13, 7, material);
+    NuRndrPrimSetColourPrivate((i32)colours[0]);
+    NuPrim2DAddXYZ(sx, sy, sz);
+    NuRndrPrimSetColourPrivate((i32)colours[1]);
+    NuPrim2DAddXYZ(sx + sw, sy, sz);
+    NuRndrPrimSetColourPrivate((i32)colours[2]);
+    NuPrim2DAddXYZ(sx, sy + sh, sz);
+    NuRndrPrimSetColourPrivate((i32)colours[3]);
+    NuPrim2DAddXYZ(sx + sw, sy + sh, sz);
+    NuPrim2DEnd();
+    NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
 /* Native keeps the private colour call out of line in this loop. */
@@ -1591,6 +1822,59 @@ void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *ma
     NuPrim2DEnd();
     --NuPrimCSPos;
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[NuPrimCSPos]);
+}
+
+typedef struct NULINEVERTEX2D_PC {
+    f32 x;
+    f32 y;
+    f32 unused[2];
+    i32 colour;
+    f32 u;
+    f32 v;
+} NULINEVERTEX2D_PC;
+STATIC_ASSERT(sizeof(NULINEVERTEX2D_PC) == 0x1c);
+STATIC_ASSERT(offsetof(NULINEVERTEX2D_PC, colour) == 0x10);
+
+i32 __cdecl NuRndrLine2d(NULINEVERTEX2D_PC *vertices, NUMTL *material) {
+    f32 u;
+    f32 v;
+    NuPrim2DBegin(14, 7, material);
+    NuRndrPrimSetColourPrivate(vertices[0].colour);
+    v = vertices[0].v;
+    u = vertices[0].u;
+    NURNDR_PRIM_UV(u, v);
+    NuPrim2DAddXYZ(vertices[0].x, vertices[0].y, 0.0f);
+    NuRndrPrimSetColourPrivate(vertices[1].colour);
+    v = vertices[1].v;
+    u = vertices[1].u;
+    NURNDR_PRIM_UV(u, v);
+    NuPrim2DAddXYZ(vertices[1].x, vertices[1].y, 0.0f);
+    NuPrim2DEnd();
+    return 1;
+}
+
+void __cdecl NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour,
+                        NUMTL *material) {
+    NuPrim2DBegin(16, 7, material);
+    NURNDR_PRIM_UV(u0, v0);
+    NuRndrPrimSetColourPrivate(colour);
+    NuPrim2DAddXYZ(x, y, z);
+    NURNDR_PRIM_UV(u1, v1);
+    NuRndrPrimSetColourPrivate(colour);
+    NuPrim2DAddXYZ(x + width, y + height, z);
+    NuPrim2DEnd();
+}
+
+void __cdecl NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1,
+                                   i32 colour, NUMTL *material) {
+    NuPrim2DBegin(16, 7, material);
+    NURNDR_PRIM_UV(u0, v0);
+    NuRndrPrimSetColourPrivate(colour);
+    NuPrim2DAddXYZ(x, y, 0.0f);
+    NURNDR_PRIM_UV(u1, v1);
+    NuRndrPrimSetColourPrivate(colour);
+    NuPrim2DAddXYZ(x + width, y + height, 0.0f);
+    NuPrim2DEnd();
 }
 
 void __cdecl NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material) {
