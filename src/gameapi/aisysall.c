@@ -4380,24 +4380,20 @@ AIGROUP_PC *__cdecl CreateAIGroup(AISYS_PC *system, i32 count_across, f32 x_spac
 }
 
 void __cdecl AddToAIGroup(AIGROUP_PC *group, APIOBJECT_PC *object) {
-    u8 member_index;
-    i32 count_across;
     i32 row_count;
-    if (object == NULL || group == NULL || group->member_count >= 16) {
+    if (group == NULL || object == NULL || group->member_count >= 16) {
         return;
     }
-    member_index = group->member_count;
-    count_across = group->count_across;
-    row_count = (i32)(AIPathSafeDivide((f32)(member_index + 1), (f32)(count_across)));
-    if ((member_index + 1) % group->count_across != 0)
+    row_count = (i32)(AIPathSafeDivide((f32)(group->member_count + 1), (f32)group->count_across));
+    if ((group->member_count + 1) % group->count_across != 0)
         ++row_count;
     if (row_count > 4) {
         return;
     }
-    if (member_index == 0) {
+    if (group->member_count == 0) {
         group->leader = object;
         if (group->x_spacing > 0.0f) {
-            group->radius = ((f32)(count_across)-1.0f) * group->x_spacing * 0.5f;
+            group->radius = ((f32)group->count_across - 1.0f) * group->x_spacing * 0.5f;
             group->rotation_speed =
                 (i32)(AIPathAngularScale *
                       AIPathSafeDivide(group->max_speed, (f32)(group->radius * NuTime_RefreshRate)));
