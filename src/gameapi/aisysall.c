@@ -1657,6 +1657,15 @@ static __declspec(noinline) f32 AIPathSafeDivide(f32 numerator, f32 denominator)
     return numerator / denominator;
 }
 
+/* Native 0x5128e0: signed 16-bit angle difference; emitted out of line
+ * although every use is inlined. */
+static __forceinline i32 AiAngDiffPc(i32 a, i32 b) {
+    i32 difference = (a - b) & 0xffff;
+    if (difference >= 0x8000)
+        difference -= 0x10000;
+    return difference;
+}
+
 i16 __cdecl PCPathArcSine(f32 sin) {
     f32 abs;
     f32 sqrt;
@@ -1691,6 +1700,30 @@ i16 __cdecl PCPathArcSine(f32 sin) {
            MAX_SHORT_OVER_PI;
 }
 
+/* Native 0x512a40..0x512afa: small helpers that retail emits out of line
+ * although every use is inlined. */
+static __forceinline i16 PCPathArcCos(f32 cos) {
+    return 0x4000 - PCPathArcSine(cos);
+}
+
+static __forceinline void AiVecSubPc(NUVEC *dst, NUVEC *a, NUVEC *b) {
+    dst->x = a->x - b->x;
+    dst->y = a->y - b->y;
+    dst->z = a->z - b->z;
+}
+
+static __forceinline f32 AiVecMagSqrPc(NUVEC *v) {
+    return v->x * v->x + v->y * v->y + v->z * v->z;
+}
+
+static __forceinline void AiVecMtxTransformPc(NUVEC *dst, NUVEC *src, NUMTX *mtx) {
+    NuVecMtxTransform(dst, src, mtx);
+}
+
+static __forceinline void AiRndrSetCullDistance(f32 distance) {
+    AiRndrCullDistance = distance;
+}
+
 void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
     NUVEC first = vertices[0].position;
     NUVEC second = vertices[1].position;
@@ -1700,8 +1733,8 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
             matrix_copy = *matrix;
             matrix = &matrix_copy;
         }
-        NuVecMtxTransform(&first, &first, matrix);
-        NuVecMtxTransform(&second, &second, matrix);
+        AiVecMtxTransformPc(&first, &first, matrix);
+        AiVecMtxTransformPc(&second, &second, matrix);
     }
     if (AiRndrCullDistance > 0.0f) {
         __declspec(align(16)) NUVEC position;
@@ -1712,15 +1745,11 @@ void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
             position = aieditor->camera_position;
         else
             position = *(NUVEC *)&global_camera.mtx.m30;
-        delta.x = position.x - first.x;
-        delta.y = position.y - first.y;
-        delta.z = position.z - first.z;
-        start_distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-        delta.x = position.x - second.x;
-        delta.y = position.y - second.y;
-        delta.z = position.z - second.z;
+        AiVecSubPc(&delta, &position, &first);
+        start_distance = AiVecMagSqrPc(&delta);
+        AiVecSubPc(&delta, &position, &second);
         limit = AiRndrCullDistance * AiRndrCullDistance;
-        if (!(start_distance < limit) && !(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z < limit))
+        if (!(start_distance < limit) && !(AiVecMagSqrPc(&delta) < limit))
             return;
     }
     NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
@@ -3440,6 +3469,17 @@ i32 __cdecl Action_FacePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     return 0;
 }
 
+/* Native 0x515df0: unreferenced in retail. Tests whether target lies within a
+ * cone of the given total width in degrees around the facing angle. */
+i32 __cdecl AIPointWithinFacingAnglePc(NUVEC *target, NUVEC *origin, i32 facing, i32 degrees) {
+    NUVEC direction;
+    i32 half_angle = (degrees << 15) / 360;
+    i32 difference;
+    NuVecSub(&direction, target, origin);
+    difference = AiAngDiffPc(NuAtan2D(direction.x, direction.z), facing);
+    return abs(difference) < half_angle;
+}
+
 i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                 i32 param_count, i32 first_time, f32 elapsed) {
     f32 min_time;
@@ -3990,6 +4030,10 @@ void __cdecl InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE_PC function) {
 
 void __cdecl InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC function) {
     GetMinViewHeightFn = function;
+}
+
+void __cdecl AISetPathHeightTol(f32 tolerance) {
+    default_path_heighttol = tolerance;
 }
 
 i32 __cdecl AIScriptSetInterrupt(AISCRIPTPROCESS_PC *processor, u8 priority, u8 id, char *state_name, f32 time) {
@@ -7810,6 +7854,27 @@ void __cdecl InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN_PC function) {
     GetOriginPositionFn = function;
 }
 
+/* Native 0x520480: unreferenced in retail; callers inline the same
+ * registration through AIEDITOR_REGISTER_PC. Retail tail-jumps to the
+ * diagnostic with EAX already -1, which needs it in this unit. */
+i32 __cdecl aieditor_Register(char *name, void(__cdecl *enter)(void), eduimenu_s *(__cdecl *process)(FRAME_PAD_PC *),
+                              void(__cdecl *draw)(i32, i32, f32, f32), void(__cdecl *leave)(void)) {
+    AI_EDITOR_MODE_ENTRY_PC *entry;
+    i32 index;
+    if (aieditorsettings.modes.count < 8) {
+        index = aieditorsettings.modes.count++;
+        entry = &aieditorsettings.modes.entries[index];
+        NuStrCpy(entry->name, name);
+        entry->enter = enter;
+        entry->process = process;
+        entry->draw = draw;
+        entry->leave = leave;
+        return index;
+    }
+    AIScriptMissingStateDiagnostic();
+    return -1;
+}
+
 void __cdecl AiEditorChangeModePc(i32 mode) {
     i16 previous = aieditorsettings.modes.current;
     aieditorsettings.modes.current = (i16)mode;
@@ -8071,7 +8136,7 @@ void __cdecl areaEditorDrawAreas(void) {
     f32 previous_distance = AiRndrCullDistance;
     EDAIAREA_s *area;
     i32 colour;
-    AiRndrCullDistance = 0.0f;
+    AiRndrSetCullDistance(0.0f);
     for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
          area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
         if (area == aieditor->selected_area) {
@@ -8089,7 +8154,7 @@ void __cdecl areaEditorDrawAreas(void) {
             DrawAreaBox(&area->position, &area->size, (i16)area->rotation, colour);
         }
     }
-    AiRndrCullDistance = previous_distance;
+    AiRndrSetCullDistance(previous_distance);
 }
 
 void __cdecl areaEditor_Enter(void) {
@@ -8760,7 +8825,7 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
         AiRndrLine3d(vertices, NULL, NULL);
     } else {
         NUVEC side;
-        i16 angle = 0x4000 - PCPathArcSine((second->radius - first->radius) / distance);
+        i16 angle = PCPathArcCos((second->radius - first->radius) / distance);
         NuVecRotateY(&side, &direction, angle);
         vertices[0].position = first->position;
         vertices[0].colour = colour;
@@ -8830,7 +8895,7 @@ static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, 
         AiRndrLine3d(vertices, NULL, NULL);
     } else {
         distance = (second->radius - first->radius) / distance;
-        angle = 0x4000 - PCPathArcSine(distance);
+        angle = PCPathArcCos(distance);
         NuVecRotateY(&side, &direction, angle);
         vertices[0].position = first->position;
         vertices[0].colour = colour;
@@ -9233,6 +9298,32 @@ static i32 TestPointWithinPathCheckPc(NUVEC *point, EDAIPATHNODE_s *first, EDAIP
         return 0;
     TestPointPathCheck(point, first, second, fraction, width, angle, tolerance);
     return 1;
+}
+
+/* Native 0x524810: retest the previous edge, then the edges through each of
+ * its endpoints' connections in slot order. */
+void __cdecl pathEditor_QuickOnPathCheck(NUVEC *point, EDAIPATHCHECK_s *previous, EDAIPATHCHECK_s *result) {
+    i32 slot;
+    result->on_path = 0;
+    if (TestPointWithinPathCheckPc(point, previous->first, previous->second, &result->fraction, &result->width,
+                                   &result->angle, 0.0f)) {
+        result->on_path = 1;
+        return;
+    }
+    for (slot = 0; slot < 8; ++slot) {
+        if (previous->first->connections[slot].node != NULL &&
+            TestPointWithinPathCheckPc(point, previous->first->connections[slot].node, previous->first,
+                                       &result->fraction, &result->width, &result->angle, 0.0f)) {
+            result->on_path = 1;
+            return;
+        }
+        if (previous->second->connections[slot].node != NULL &&
+            TestPointWithinPathCheckPc(point, previous->second, previous->second->connections[slot].node,
+                                       &result->fraction, &result->width, &result->angle, 0.0f)) {
+            result->on_path = 1;
+            return;
+        }
+    }
 }
 
 void __cdecl pathEditor_OnPathCheck(NUVEC *point, EDAIPATHCHECK_s *result, EDAIPATH_s *path, f32 tolerance) {

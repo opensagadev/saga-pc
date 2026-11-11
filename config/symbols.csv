@@ -3314,7 +3314,13 @@ address,symbol,size,ctype
 0x512860,_AIScriptMissingStateDiagnosticAlternate,1,void __cdecl ()
 0x00512870,_AIScriptMissingConditionDiagnostic,1,void __cdecl ()
 0x005128a0,_AIPathSafeDivide,54,"f32 __cdecl (f32, f32)"
+0x5128e0,_AiAngDiffPc,22,"static i32 (i32, i32) [private EAX]"
 0x00512900,_PCPathArcSine,320,i16 __cdecl (f32)
+0x512a40,_PCPathArcCos,27,"static i16 (f32)"
+0x512a90,_AiVecSubPc,29,"static void (NUVEC *, NUVEC *, NUVEC *) [private ECX/EAX]"
+0x512ab0,_AiVecMagSqrPc,33,"static f32 (NUVEC *) [private EAX]"
+0x512ae0,_AiVecMtxTransformPc,16,"static void (NUVEC *, NUVEC *, NUMTX *) [private ECX/EAX]"
+0x512af0,_AiRndrSetCullDistance,11,"static void (f32)"
 0x512b00,_AiRndrLine3d,434,
 0x512cc0,_AiRndrLine3dDbg,388,
 0x512e50,_SetScriptErrorLevel,15,
@@ -3406,6 +3412,7 @@ address,symbol,size,ctype
 0x5159a0,_Action_Idle,499,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x515ba0,_Action_SetCircleDirection,246,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x515ca0,_Action_FacePlayer,332,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
+0x515df0,_AIPointWithinFacingAnglePc,116,"i32 __cdecl (NUVEC *, NUVEC *, i32, i32)"
 0x515e70,_Action_FaceOpponent,565,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x5160b0,_Action_IgnoreWallSplines,97,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
 0x516120,_Action_CheckWallSplines,121,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS_PC *, AIPACKET_PC *, char **, i32, i32, f32)"
@@ -3456,6 +3463,7 @@ address,symbol,size,ctype
 0x517080,_InitFn_GetHearDistance,10,
 0x517090,_InitFn_GlobalGetMaxViewHeight,10,
 0x5170a0,_InitFn_GlobalGetMinViewHeight,10,
+0x5170b0,_AISetPathHeightTol,11,void __cdecl (f32)
 0x5170c0,_AIScriptSetInterrupt,84,"i32 __cdecl (AISCRIPTPROCESS_PC *, u8, u8, char *, f32)"
 0x00517120,_AIScriptClearInterrupt,64,"void __cdecl (AISCRIPTPROCESS_PC *, char *)"
 0x00517160,_AISysBufferAlloc,74,"void *__cdecl (VARIPTR *, VARIPTR *, u32)"
@@ -3541,6 +3549,7 @@ address,symbol,size,ctype
 0x520450,_InitFn_MidSpecialMove,10,
 0x520460,_InitFn_GetNamedAPIObject,10,
 0x520470,_InitFn_GetAICreatureOrigin,10,
+0x520480,_aieditor_Register,96,
 0x5204e0,_AiEditorChangeModePc,102,
 0x00520550,_aieditor_Enter,167,"void __cdecl (AISYS_PC *, NUVEC *, void *, void *, char *, char *, char *)"
 0x520600,_NuSpecialFindByPlatformID,163,
@@ -3597,6 +3606,7 @@ address,symbol,size,ctype
 0x524320,_pathEditor_UpdateNodesOnPlatforms,142,
 0x5243b0,_TestPointPathCheck,516,
 0x5245c0,_TestPointWithinPathCheckPc,582,"static compiler-private i32 (NUVEC *, EDAIPATHNODE_s *, EDAIPATHNODE_s *, f32 *, f32 *, i32 *, f32)"
+0x524810,_pathEditor_QuickOnPathCheck,228,"void __cdecl (NUVEC *, EDAIPATHCHECK_s *, EDAIPATHCHECK_s *)"
 0x524900,_pathEditor_OnPathCheck,506,"void __cdecl (NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32)"
 0x524b00,_pathEditor_GetPath,98,
 0x524b70,_pathEditorDrawRoute,317,
