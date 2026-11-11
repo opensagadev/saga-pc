@@ -2517,10 +2517,7 @@ void __cdecl AIScriptInitConditions(AISYS_PC *sys) {
 
             while (condition != NULL) {
                 if (condition->definition->init_fn != NULL) {
-                    if (sys == NULL) {
-                        condition->initialized_argument =
-                            (*condition->definition->init_fn)(NULL, condition->argument, script);
-                    } else if (!(sys->reset_flags & 4) || condition->initialized_argument == NULL) {
+                    if (sys == NULL || !(sys->reset_flags & 4) || condition->initialized_argument == NULL) {
                         condition->initialized_argument =
                             (*condition->definition->init_fn)(sys, condition->argument, script);
                     }
