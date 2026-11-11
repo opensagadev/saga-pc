@@ -102,7 +102,7 @@ extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
     if (movie->target == NULL)
         RadFmvEndScenePc(FmvContextPc);
     else
-        ((HRESULT(__stdcall *)(PC_D3D9_DEVICE_PC *))device->methods->unknown_0070[14])(device);
+        device->methods->end_scene(device);
     if (movie->fading != 0) {
         movie->fade_remaining = (f32)(movie->fade_remaining - (f64)33.333335876464844);
         if (movie->fade_remaining < 0.0f) {
