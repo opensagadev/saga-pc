@@ -4017,17 +4017,15 @@ NUFPCOMFN __cdecl NuFParSetInterpreterErrorHandler(NUFPCOMFN handler) {
 }
 
 void __cdecl NuFParSuspend(NUFPAR_PC *parser) {
-    NUFILE file_handle = parser->file_handle;
-
-    if (file_handle >= 0x400 && file_handle < 0x800) {
+    if (parser->file_handle >= 0x400 && parser->file_handle < 0x800) {
         return;
     }
 
-    if (parser->file_name[0] == '\0' || file_handle == 0) {
+    if (parser->file_name[0] == '\0' || parser->file_handle == 0) {
         NuFileError();
     }
 
-    NuFileClose(file_handle);
+    NuFileClose(parser->file_handle);
     parser->file_handle = 0;
 }
 
@@ -6683,10 +6681,9 @@ i32 __cdecl NuStringTableLoad(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
 }
 
 void __cdecl NuStringTableUnload(void) {
-    NUSTRINGBANK *bank = &StringBank[CurrentStringBank];
-    bank->strings = NULL;
-    bank->max_strings = 0;
-    bank->string_count = 0;
+    StringBank[CurrentStringBank].strings = NULL;
+    StringBank[CurrentStringBank].max_strings = 0;
+    StringBank[CurrentStringBank].string_count = 0;
 }
 
 i32 __cdecl NuStringTableGetIdByName(char *name) {
