@@ -5,6 +5,9 @@
  * A freed block is pushed on its class list; allocation pops it, or carves a
  * fresh 16-byte-aligned block from the permanent buffer. */
 
+/* Set to report linear allocations the arena could not satisfy. */
+i32 MemoryManagerTraceFailures = 0;
+
 void *memorymanager_s::AllocPool(u32 size, i32 clear) {
     i32 size_class = static_cast<i32>(size - 1) / 32;
     void *item = free_lists[size_class];

@@ -1432,11 +1432,6 @@
    "kind": "function"
   },
   {
-   "unit": "src/editor/edlevelall.cpp",
-   "symbol": "?GetNextObject@PlaceableHelper@@QAEPAXPAX@Z",
-   "kind": "function"
-  },
-  {
    "unit": "src/legoapi/rtlhelper.cpp",
    "symbol": "__bad_alloc_Message",
    "kind": "data"
@@ -1469,6 +1464,26 @@
   {
    "unit": "src/gamelib/net/Ftp.cpp",
    "symbol": "??0NETMESSAGE_PC@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??0?$CSListLink@VEdSubSystem@@@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??0?$CSListLink@VSceneInstance@@@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "??1SceneObjectHelper@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "?RegisterSubSystem@EdSystem@@QAEXPAVEdSubSystem@@@Z",
    "kind": "function"
   }
  ]
