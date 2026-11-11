@@ -4070,13 +4070,11 @@ static NUFPAR_PC *NuAllocFPar(void) {
     }
 
     for (index = 0; index < 4; index++) {
-        NUFPAR_PC *parser = &NuFParRecordBase[index];
-
-        if (parser->file_buffer == NULL) {
-            memset(parser, 0, sizeof(*parser));
-            parser->file_buffer = NuFParBufferBase + index * 0x1000;
-            memset(parser->file_buffer, 0, 0x1000);
-            return parser;
+        if (NuFParRecordBase[index].file_buffer == NULL) {
+            memset(&NuFParRecordBase[index], 0, sizeof(NUFPAR_PC));
+            NuFParRecordBase[index].file_buffer = NuFParBufferBase + index * 0x1000;
+            memset(NuFParRecordBase[index].file_buffer, 0, 0x1000);
+            return &NuFParRecordBase[index];
         }
     }
 
