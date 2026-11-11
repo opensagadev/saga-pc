@@ -8853,7 +8853,7 @@ extern "C" {
     NUMTX NuCameraScissorProjectionScratch = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$clip_test_mtx")
-    NUMTX clip_test_mtx = {0};
+    __declspec(align(16)) NUMTX clip_test_mtx = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$zx")
     f32 zx = 0;
