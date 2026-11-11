@@ -1871,8 +1871,8 @@ extern "C" {
 }
 
 extern "C" DETONATOR_s *__cdecl Detonator_FindNearest(NUVEC *position, f32 radius, GAMEOBJECT *owner) {
-    DETONATOR_s *nearest = NULL;
     DETONATOR_s *detonator = Detonator;
+    DETONATOR_s *nearest = NULL;
     f32 nearest_distance = radius != 0.0f ? radius * radius : 1000000000.0;
     for (i32 index = 0; index < 10; ++index, ++detonator) {
         if (detonator->active == 0)
