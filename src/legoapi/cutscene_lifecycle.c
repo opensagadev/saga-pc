@@ -248,6 +248,27 @@ static void CutSceneEndRigidsPC(INSTNUGCUTSCENE *owner, f32 frame) {
     }
 }
 
+i32 __cdecl instNuGCutGetNextRigidInfo(INSTNUGCUTSCENE *owner, f32 frame, i32 index, NUMTX *matrix,
+                                       NUSPECIALHANDLE *special) {
+    CUT_INSTANCE_LIFECYCLE_PC *instance = (CUT_INSTANCE_LIFECYCLE_PC *)owner;
+    CUT_RIGID_SYSTEM_LIFECYCLE_PC *system = instance->scene->rigid_system;
+    CUT_RIGID_LIFECYCLE_PC *rigid;
+    CUT_RIGID_INSTANCE_PC *object;
+    if (system == NULL)
+        return 0;
+    if (index >= system->count)
+        return 0;
+    rigid = &system->rigids[index];
+    object = &instance->rigid_instance->rigids[index];
+    if ((rigid->flags & 6) != 0) {
+        NuGCutRigidCalcMtx(&rigid->generic, frame, matrix);
+        if ((instance->flags_88 & 0x80) != 0)
+            NuMtxMul(matrix, matrix, &instance->matrix);
+        *special = object->special;
+    }
+    return index + 1;
+}
+
 static void CutSceneEndLocatorsPC(CUT_LOCATOR_INSTANCE_SYSTEM_PC *instance, CUT_LOCATOR_SYSTEM_LIFECYCLE_PC *system) {
     u32 i;
     for (i = 0; i < system->count; ++i) {
@@ -287,6 +308,55 @@ static void CutSceneEndLocatorsPC(CUT_LOCATOR_INSTANCE_SYSTEM_PC *instance, CUT_
             state->frame = 0.0f;
         }
     }
+}
+
+void __cdecl CalculateLocatorDirection(i32 direction, NUMTX *matrix, NUVEC *out) {
+    switch (direction) {
+        case 0:
+        case 1:
+            out->z = 0.0f;
+            out->x = 0.0f;
+            out->y = 1.0f;
+            return;
+        case 2:
+            out->z = 0.0f;
+            out->x = 0.0f;
+            out->y = -1.0f;
+            return;
+        case 3:
+            out->x = -1.0f;
+            out->y = 0.0f;
+            out->z = 0.0f;
+            break;
+        case 4:
+            out->x = 1.0f;
+            out->y = 0.0f;
+            out->z = 0.0f;
+            break;
+        case 5:
+            out->x = 0.0f;
+            out->y = -1.0f;
+            out->z = 0.0f;
+            break;
+        case 6:
+            out->x = 0.0f;
+            out->y = 1.0f;
+            out->z = 0.0f;
+            break;
+        case 7:
+            out->x = 0.0f;
+            out->y = 0.0f;
+            out->z = 1.0f;
+            break;
+        case 8:
+            out->x = 0.0f;
+            out->y = 0.0f;
+            out->z = -1.0f;
+            break;
+        default:
+            return;
+    }
+    NuVecMtxRotate(out, out, matrix);
 }
 
 static void CutSceneDestroyCharacterSysPc(CUT_SCENE_LIFECYCLE_PC *scene) {
@@ -2676,4 +2746,100 @@ CUT_SCENE_LOAD_PC *__cdecl RelocateCutScene(CUT_SCENE_LOAD_PC *source, VARIPTR *
     }
     buffer->addr += scene->loaded_size;
     return scene;
+}
+
+#define CUT_SCENE_DEAD_MAGIC 0x44454144
+
+typedef struct cut_cleanup_entry_pc_s {
+    void *handle;
+    CUT_SCENE_LOAD_PC *scene;
+    f32 accumulated_duration;
+    u8 flags;
+    u8 unknown_0d[3];
+} CUT_CLEANUP_ENTRY_PC;
+STATIC_ASSERT(sizeof(CUT_CLEANUP_ENTRY_PC) == 0x10);
+STATIC_ASSERT(offsetof(CUT_CLEANUP_ENTRY_PC, flags) == 0xc);
+
+typedef struct cut_cleanup_instance_pc_s {
+    u8 unknown_00[0xe0];
+    f32 accumulated_stream_duration;
+} CUT_CLEANUP_INSTANCE_PC;
+STATIC_ASSERT(offsetof(CUT_CLEANUP_INSTANCE_PC, accumulated_stream_duration) == 0xe0);
+
+extern CUT_CLEANUP_ENTRY_PC *DefragCutSceneListBase;
+extern i32 DefragCutSceneListSize;
+extern void *DefragCutSceneBaseMem;
+extern void *DefragInstBaseMem;
+extern INSTNUGCUTSCENE *(__cdecl *DefragGetInstFn)(void *);
+extern CUT_CLEANUP_INSTANCE_PC *(__cdecl *DefragCreateInstFn)(void *, CUT_SCENE_LOAD_PC *, VARIPTR *);
+extern void(__cdecl *DefragInstDestroyedFn)(void *);
+
+/* Destroys the listed instances, compacts the surviving cutscene images to the front of the cutscene
+   pool and recreates their instances; returns the first free byte. */
+void *__cdecl instNuGCutSceneCleanUp(void) {
+    CUT_CLEANUP_ENTRY_PC *end = DefragCutSceneListBase + DefragCutSceneListSize;
+    CUT_CLEANUP_ENTRY_PC *first = NULL;
+    CUT_CLEANUP_ENTRY_PC *entry;
+    CUT_CLEANUP_ENTRY_PC *other;
+    VARIPTR cursor;
+
+    for (entry = DefragCutSceneListBase; entry < end; ++entry) {
+        CUT_SCENE_LOAD_PC *scene;
+        if ((entry->flags & 1) != 0)
+            continue;
+        for (other = entry; other < end; ++other)
+            if ((other->flags & 1) != 0 && entry->scene == other->scene)
+                break;
+        if (other < end) {
+            for (other = entry; other < end; ++other)
+                if ((other->flags & 1) != 0 && entry->scene == other->scene)
+                    other->flags |= 1;
+            continue;
+        }
+        scene = entry->scene;
+        if (*(u32 *)scene != CUT_SCENE_DEAD_MAGIC) {
+            NuGCutSceneDestroy(scene);
+            *(u32 *)entry->scene = CUT_SCENE_DEAD_MAGIC;
+        }
+    }
+
+    for (entry = DefragCutSceneListBase; entry < end; ++entry)
+        instNuGCutSceneDestroy(DefragGetInstFn(entry->handle));
+
+    cursor.void_ptr = DefragCutSceneBaseMem;
+    for (;;) {
+        u32 lowest = 0xffffffff;
+        CUT_SCENE_LOAD_PC *source;
+        CUT_SCENE_LOAD_PC *relocated;
+        for (entry = DefragCutSceneListBase; entry < end; ++entry) {
+            if ((entry->flags & 1) != 0 && (u32)entry->scene < lowest) {
+                lowest = (u32)entry->scene;
+                first = entry;
+            }
+        }
+        if (lowest == 0xffffffff)
+            break;
+        source = (CUT_SCENE_LOAD_PC *)lowest;
+        relocated = RelocateCutScene(source, &cursor);
+        for (entry = first; entry < end; ++entry) {
+            if ((entry->flags & 1) != 0 && entry->scene == source) {
+                entry->scene = relocated;
+                entry->flags ^= 1;
+            }
+        }
+    }
+    if (DefragInstBaseMem != NULL)
+        cursor.void_ptr = DefragInstBaseMem;
+    for (entry = DefragCutSceneListBase; entry < end; ++entry) {
+        if (entry->flags != 0)
+            DefragCreateInstFn(entry->handle, entry->scene, &cursor)->accumulated_stream_duration =
+                entry->accumulated_duration;
+        else
+            DefragInstDestroyedFn(entry->handle);
+    }
+    if (CutSceneBackgroundInstancesPc != NULL) {
+        active_cutscene_instances = CutSceneBackgroundInstancesPc;
+        CutSceneBackgroundInstancesPc = NULL;
+    }
+    return cursor.void_ptr;
 }

@@ -366,7 +366,11 @@ typedef struct cut_memory_scene_pc_s {
 typedef struct cut_memory_instance_pc_s {
     u8 unknown_00[0x58];
     CUT_MEMORY_SCENE_PC *scene;
-    u8 unknown_5c[0x94];
+    u8 unknown_5c[0x2c];
+    u32 flags_88;
+    u8 unknown_8c[0x54];
+    f32 accumulated_stream_duration;
+    u8 unknown_e4[0xc];
     u32 allocation_size;
 } CUT_MEMORY_INSTANCE_PC;
 typedef struct cut_memory_entry_pc_s {
@@ -382,6 +386,8 @@ typedef struct cut_memory_vertex_pc_s {
 } CUT_MEMORY_VERTEX_PC;
 STATIC_ASSERT(offsetof(CUT_MEMORY_SCENE_PC, loaded_size) == 0x58);
 STATIC_ASSERT(offsetof(CUT_MEMORY_INSTANCE_PC, scene) == 0x58);
+STATIC_ASSERT(offsetof(CUT_MEMORY_INSTANCE_PC, flags_88) == 0x88);
+STATIC_ASSERT(offsetof(CUT_MEMORY_INSTANCE_PC, accumulated_stream_duration) == 0xe0);
 STATIC_ASSERT(offsetof(CUT_MEMORY_INSTANCE_PC, allocation_size) == 0xf0);
 STATIC_ASSERT(sizeof(CUT_MEMORY_ENTRY_PC) == 0x10);
 STATIC_ASSERT(offsetof(CUT_MEMORY_ENTRY_PC, flags) == 0x0c);
@@ -401,6 +407,47 @@ __declspec(allocate(".bss$DefragInstEndMem")) void *DefragInstEndMem = NULL;
 __declspec(allocate(".bss$DefragCutSceneListBase")) CUT_MEMORY_ENTRY_PC *DefragCutSceneListBase = NULL;
 #pragma section(".bss$DefragGetInstFn", read, write)
 __declspec(allocate(".bss$DefragGetInstFn")) CUT_MEMORY_INSTANCE_PC *(__cdecl *DefragGetInstFn)(void *) = NULL;
+#pragma section(".bss$DefragCutSceneList", read, write)
+__declspec(allocate(".bss$DefragCutSceneList")) CUT_MEMORY_ENTRY_PC *DefragCutSceneList = NULL;
+#pragma section(".bss$DefragCreateInstFn", read, write)
+__declspec(allocate(".bss$DefragCreateInstFn"))
+CUT_MEMORY_INSTANCE_PC *(__cdecl *DefragCreateInstFn)(void *, CUT_MEMORY_SCENE_PC *, VARIPTR *) = NULL;
+#pragma section(".bss$DefragInstDestroyedFn", read, write)
+__declspec(allocate(".bss$DefragInstDestroyedFn")) void(__cdecl *DefragInstDestroyedFn)(void *) = NULL;
+
+void __cdecl instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_end, void *inst_base,
+                                         void *inst_end, CUT_MEMORY_INSTANCE_PC *(__cdecl *get_inst)(void *),
+                                         CUT_MEMORY_INSTANCE_PC *(__cdecl *create_inst)(void *, CUT_MEMORY_SCENE_PC *,
+                                                                                        VARIPTR *),
+                                         void(__cdecl *inst_destroyed)(void *)) {
+    DefragCutSceneList = (CUT_MEMORY_ENTRY_PC *)(((u32)list_storage + 3) & ~3);
+    DefragCutSceneListBase = DefragCutSceneList;
+    DefragCutSceneBaseMem = cut_base;
+    DefragCutSceneEndMem = cut_end;
+    DefragInstBaseMem = inst_base;
+    DefragInstEndMem = inst_end;
+    DefragGetInstFn = get_inst;
+    DefragCreateInstFn = create_inst;
+    DefragInstDestroyedFn = inst_destroyed;
+    DefragCutSceneListSize = 0;
+    if (list_storage == NULL || cut_base == NULL)
+        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+    if (get_inst == NULL || create_inst == NULL || inst_destroyed == NULL)
+        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+}
+
+void __cdecl instNuGCutSceneAddCleanUpItem(void *handle, i32 enabled) {
+    CUT_MEMORY_INSTANCE_PC *instance = DefragGetInstFn(handle);
+    CUT_MEMORY_ENTRY_PC *entry;
+    if ((instance->flags_88 & 2) != 0)
+        ((void(__cdecl *)(void))CutSceneLoadDiagnosticPc)();
+    entry = DefragCutSceneList++;
+    entry->handle = handle;
+    entry->scene = instance->scene;
+    entry->accumulated_duration = instance->accumulated_stream_duration;
+    entry->flags = enabled ? 7 : 0;
+    ++DefragCutSceneListSize;
+}
 
 static void CutSceneSetPrimitiveColourPc(i32 colour) {
     u32 converted;

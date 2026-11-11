@@ -3041,6 +3041,7 @@ address,symbol,size,ctype
 0x501590,_CutSceneLocatorSysResetPc,162,
 0x501640,_CutSceneLocatorFixUpPc,283,
 0x501760,_CutSceneEndLocatorsPC,271,"void __cdecl(CUT_LOCATOR_INSTANCE_SYSTEM_PC *, CUT_LOCATOR_SYSTEM_LIFECYCLE_PC *)"
+0x501870,_CalculateLocatorDirection,324,"void __cdecl (i32, NUMTX *, NUVEC *)"
 0x5019c0,_CutGetJointOverrideMatrixPc,182,"void __cdecl(NUHGOBJ_EVAL_PC *,i32,NUMTX *)"
 0x501a80,_CutSceneLocatorDebrisUpdatePc,692,
 0x501d40,_CutSceneLocatorVfxUpdatePc,337,
@@ -3054,6 +3055,7 @@ address,symbol,size,ctype
 0x502670,_CutSceneRigidSysResetPc,121,
 0x5026f0,_CutSceneRigidSysStartPc,71,
 0x502740,_CutSceneEndRigidsPC,263,"void __cdecl(INSTNUGCUTSCENE *, f32)"
+0x502850,_instNuGCutGetNextRigidInfo,138,"i32 __cdecl (INSTNUGCUTSCENE *, f32, i32, NUMTX *, NUSPECIALHANDLE *)"
 0x5028e0,_CutCharacterFixPtrsPc,341,
 0x502a40,_CutSceneFindCharactersPc,14,void (CUT_SCENE_LOAD_PC *) [private ECX]
 0x502a50,_CutSceneDestroyCharacterSysPc,14,void (void *) [private ECX]
@@ -3088,6 +3090,8 @@ address,symbol,size,ctype
 0x5037f0,_CutTriggerSysStartPc,35,void (CUT_INSTANCE_LOAD_PC *) [private EAX]
 0x503820,_CutSceneTriggerSysResetPc,124,
 0x5038a0,_instNuGCutSceneCalculateAverageCentre,282,
+0x5039c0,_instNuGCutSceneResetCleanUp,136,"void __cdecl (void *, void *, void *, void *, void *, void *, void *, void *)"
+0x503a50,_instNuGCutSceneAddCleanUpItem,86,"void __cdecl (void *, i32)"
 0x503ab0,_DisplayCutSceneMemory,1395,void __cdecl(void)
 0x504030,_CutScriptNodeAllocPc,196,
 0x504100,_CutScriptParseBlockPc,2565,
@@ -3146,6 +3150,7 @@ address,symbol,size,ctype
 0x507c50,_instNuGCutLocatorUpdate,303,"void __cdecl(INSTNUGCUTSCENE *,CUT_LOAD_LOCATOR_SYSTEM *,CUT_LOAD_LOCATOR_INSTANCE *,CUT_LOAD_LOCATOR *,f32,NUMTX *,i32)"
 0x507d80,_CutSceneRigidSysUpdatePc,404,
 0x507f20,_CutSceneRigidSysRenderPc,454,
+0x5080f0,_instNuGCutSceneCleanUp,591,void *__cdecl (void)
 0x508340,_CutSceneInstanceUpdatePc,2275,
 0x508c30,_CutSceneLocatorSysUpdatePc,121,
 0x508cb0,_NuGCutSceneSysUpdate,146,"void __cdecl NuGCutSceneSysUpdate(i32, i32, f32)"
@@ -36241,6 +36246,7 @@ address,symbol,size,ctype
 0x9212b8,_CutSceneCameraMatrixPc,,NUMTX
 0x9212f8,_CutSceneBackgroundInstancesPc,,INSTNUGCUTSCENE *
 0x9212fc,_CutTriggerSetListPc,,CUT_TRIGGER_SET_PC *
+0x921320,_DefragCreateInstFn,4,void *
 0x921324,_UpdateLocatorVfxFn,,"void (__cdecl *)(i32,NUMTX *)"
 0x921328,_DefragCutSceneListBase,,CUT_MEMORY_ENTRY_PC *
 0x92132c,_TriggerLocatorVfxFn,,"i32 (__cdecl *)(i32,NUMTX *)"
@@ -36254,6 +36260,8 @@ address,symbol,size,ctype
 0x921354,_DefragInstBaseMem,,void *
 0x921358,_DefragGetInstFn,,CUT_MEMORY_INSTANCE_PC * (__cdecl *)(void *)
 0x92135c,_active_cutscene_instances,,INSTNUGCUTSCENE *
+0x921360,_DefragCutSceneList,4,CUT_MEMORY_ENTRY_PC *
+0x921364,_DefragInstDestroyedFn,4,void (__cdecl *)(void *)
 0x92136c,_CutSceneLookupAllDebrisPagesPc,,i32
 0x921370,_CutSceneSynchroCounterPc,,i32
 0x921378,_CutSceneCameraMatrixSetPc,,u8
