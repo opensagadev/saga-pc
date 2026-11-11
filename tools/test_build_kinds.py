@@ -88,8 +88,11 @@ class BuildKindTests(unittest.TestCase):
         self.assertIn("/subsystem:windows", result.stdout)
         self.assertNotIn("/subsystem:console", result.stdout)
         self.assertNotIn("/entry:WinMainCRTStartup", result.stdout)
-        self.assertNotIn("/DEBUG", result.stdout)
-        self.assertNotIn("/PDB:", result.stdout)
+        # Retail carries a debug directory; Matching links symbols too, but compiles without /Z7.
+        self.assertIn("--optional-pdb", result.stdout)
+        self.assertIn("/DEBUG /MAP:build/LEGOStarWarsSaga.map /PDB:build/LEGOStarWarsSaga.pdb",
+                      self.make("build").stdout)
+        self.assertNotIn("/Z7", result.stdout)
         self.assertNotIn("SAGA_RUNTIME", result.stdout)
         self.assertNotEqual(self.make("runtime").returncode, 0)
 

@@ -106,6 +106,8 @@ def main():
     parser.add_argument("--allow-unresolved", action="store_true",
                         help="With --link: link while functions are still unported (/FORCE:UNRESOLVED); "
                              "unresolved symbols are reported, not fatal")
+    parser.add_argument("--optional-pdb", action="store_true",
+                        help="Relink without /DEBUG and /PDB when this installation cannot write a PDB (LNK1101)")
     mode.add_argument("--implib", action="store_true", help="Build an import library from a module definition")
     parser.add_argument("--decorated-exports", action="store_true",
                         help="With --implib: preserve the DLL export decorations in the .def")
@@ -177,6 +179,12 @@ def main():
         output.parent.mkdir(parents=True, exist_ok=True)
         output.unlink(missing_ok=True)
         result, log = (run_linker if args.link else run_tool)(command, env)
+        if args.link and args.optional_pdb and re.search(r"\bLNK1101\b", log):
+            # Symbols are a convenience for the Matching executable; the code does not depend on them.
+            print("warning: this installation cannot write a PDB (LNK1101); linking without /DEBUG", flush=True)
+            command = [part for part in command if not part.upper().startswith(("/DEBUG", "/PDB:"))]
+            output.unlink(missing_ok=True)
+            result, log = run_linker(command, env)
         print(log, end="", flush=True)
         # Ignored options and forced unresolved links can otherwise exit successfully.
         if args.link and args.allow_unresolved:
