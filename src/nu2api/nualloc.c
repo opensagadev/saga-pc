@@ -20,14 +20,15 @@ typedef struct nualloc_tail_s {
 } NUALLOC_TAIL;
 
 struct nualloc_arena_s {
-    void **cursor;
-    void *end;
+    u32 *cursor;
+    u32 end;
 };
 
 struct nualloc_pool_s {
-    void *unknown_00;
+    u32 capacity;
     u32 remaining;
-    void *cursor;
+    u32 cursor;
+    u32 unknown_0c;
 };
 
 STATIC_ASSERT(sizeof(NUALLOC_RECORD) == 0x20);
@@ -40,6 +41,7 @@ STATIC_ASSERT(offsetof(NUALLOC_ARENA, cursor) == 0x00);
 STATIC_ASSERT(offsetof(NUALLOC_ARENA, end) == 0x04);
 STATIC_ASSERT(offsetof(NUALLOC_POOL, remaining) == 0x04);
 STATIC_ASSERT(offsetof(NUALLOC_POOL, cursor) == 0x08);
+STATIC_ASSERT(sizeof(NUALLOC_POOL) == 0x10);
 
 /* PC state at 0x88ab38..0x88ab54. */
 extern NUALLOC_RECORD *NuAllocRecordHead;
@@ -87,7 +89,98 @@ STATIC_ASSERT(offsetof(NUALLOC_MANAGER_PREFIX_PC, used_bytes) == 12);
 void *__cdecl NuAllocManagerAllocateAlignedPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment);
 void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *memory);
 
+static NUALLOC_ARENA NuAllocArenaStorage;
+
+void __cdecl NuAllocSetManager(void *manager) {
+    NuAllocManager = manager;
+}
+
+/* Installs a bump pool and returns the previous one. */
+NUALLOC_POOL *__cdecl NuAllocSetPool(NUALLOC_POOL *pool) {
+    NUALLOC_POOL *previous = NuAllocPool;
+    NuAllocPool = pool;
+    return previous;
+}
+
+/* Resets a pool so its storage starts right after the header. */
+void __cdecl NuAllocPoolReset(NUALLOC_POOL *pool) {
+    if (pool != NULL) {
+        pool->cursor = (u32)(pool + 1);
+        pool->remaining = pool->capacity;
+    }
+}
+
+/* Routes allocations through a caller-owned cursor until it is cleared with NULL. */
+void __cdecl NuAllocSetArena(u32 *cursor, u32 *end) {
+    if (cursor != NULL) {
+        NuAllocArenaStorage.cursor = cursor;
+        NuAllocArena = &NuAllocArenaStorage;
+        if (end != NULL) {
+            NuAllocArenaStorage.end = *end;
+        }
+    } else {
+        NuAllocArena = NULL;
+    }
+}
+
+void *__cdecl NuAllocGetPeakEnd(void) {
+    return NuAllocPeakEnd1;
+}
+
+/* Allocates zeroed storage without a tracking record. */
+void *__cdecl NuAllocUntracked(i32 size) {
+    void *user_data;
+    void *allocation_end;
+    NUALLOC_ARENA *arena;
+    NUALLOC_POOL *pool;
+
+    arena = NuAllocArena;
+    if (arena != NULL) {
+        *arena->cursor = (*arena->cursor + 15) & 0xfffffff0U;
+        if (arena->end - *arena->cursor >= (u32)size) {
+            user_data = (void *)*arena->cursor;
+            *arena->cursor += (u32)size;
+            return user_data;
+        }
+        return NULL;
+    }
+    pool = NuAllocPool;
+    if (pool != NULL) {
+        u32 aligned_size = ((u32)size + 15) & 0xfffffff0U;
+        if ((i32)aligned_size < (i32)pool->remaining) {
+            user_data = (void *)pool->cursor;
+            pool->cursor += aligned_size;
+            pool->remaining -= aligned_size;
+            return user_data;
+        }
+        return NULL;
+    }
+    NuAllocTrackedBytes += (u32)size;
+    if (NuAllocManager != NULL) {
+        user_data = NuAllocManagerAllocateAlignedPc((NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager, (u32)size, 4);
+    } else {
+        user_data = malloc((u32)size);
+    }
+    memset(user_data, 0, (u32)size);
+    allocation_end = (void *)((u32)user_data + (u32)size);
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd0)
+        NuAllocPeakEnd0 = allocation_end;
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd1)
+        NuAllocPeakEnd1 = allocation_end;
+    return user_data;
+}
+
+void __cdecl NuFreeUntracked(void *memory) {
+    if (NuAllocManager != NULL) {
+        NuAllocManagerFreePc((NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager, memory);
+        return;
+    }
+    free(memory);
+}
+
 void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
+    NUALLOC_ARENA *arena;
+    NUALLOC_POOL *pool;
     NUALLOC_RECORD *record;
     NUALLOC_RECORD *old_head;
     NUALLOC_TAIL *tail;
@@ -104,27 +197,27 @@ void *__cdecl NuAlloc(i32 size, const char *file, i32 line) {
     if (size <= 0) {
         NuAllocBadPointer();
     }
-    if (NuAllocArena != NULL) {
-        void *aligned_cursor = (void *)(((u32)*NuAllocArena->cursor + 15) & 0xfffffff0U);
-        u32 remaining;
-        *NuAllocArena->cursor = aligned_cursor;
-        remaining = (u32)NuAllocArena->end - (u32)*NuAllocArena->cursor;
-        if (remaining < (u32)size) {
-            NuAllocBadPointer();
-            return NULL;
+    arena = NuAllocArena;
+    if (arena != NULL) {
+        *arena->cursor = (*arena->cursor + 15) & 0xfffffff0U;
+        if (arena->end - *arena->cursor >= (u32)size) {
+            user_data = (void *)*arena->cursor;
+            *arena->cursor += (u32)size;
+            return user_data;
         }
-        user_data = *NuAllocArena->cursor;
-        *NuAllocArena->cursor = (void *)((u32)*NuAllocArena->cursor + (u32)size);
-        return user_data;
+        NuAllocBadPointer();
+        return NULL;
     }
-    if (NuAllocPool != NULL) {
+    pool = NuAllocPool;
+    if (pool != NULL) {
         u32 aligned_size = ((u32)size + 15) & 0xfffffff0U;
-        if ((i32)aligned_size >= (i32)NuAllocPool->remaining)
-            return NULL;
-        user_data = NuAllocPool->cursor;
-        NuAllocPool->cursor = (void *)((u32)user_data + aligned_size);
-        NuAllocPool->remaining -= aligned_size;
-        return user_data;
+        if ((i32)aligned_size < (i32)pool->remaining) {
+            user_data = (void *)pool->cursor;
+            pool->cursor += aligned_size;
+            pool->remaining -= aligned_size;
+            return user_data;
+        }
+        return NULL;
     }
     manager = (NUALLOC_MANAGER_PREFIX_PC *)NuAllocManager;
     allocation_size = (u32)strlen(file) + (u32)size + 0x2d;
@@ -225,6 +318,109 @@ void __cdecl NuFree(void *user_data, const char *file, i32 line) {
     (void)line;
 }
 
+/* Resizes a tracked allocation in place through the CRT, re-linking its record at the list head. */
+void *__cdecl NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
+    NUALLOC_RECORD *record;
+    NUALLOC_RECORD *old_head;
+    NUALLOC_TAIL *tail;
+    NUALLOC_ARENA *arena;
+    NUALLOC_POOL *pool;
+    void *allocation_end;
+    u32 i;
+    char *filename_copy;
+    const char *filename_read;
+    char byte;
+
+    arena = NuAllocArena;
+    if (arena != NULL) {
+        NuAllocBadPointer();
+        *arena->cursor = (*arena->cursor + 15) & 0xfffffff0U;
+        if (arena->end - *arena->cursor >= (u32)size) {
+            user_data = (void *)*arena->cursor;
+            *arena->cursor += (u32)size;
+            return user_data;
+        }
+        return NULL;
+    }
+    pool = NuAllocPool;
+    if (pool != NULL) {
+        u32 aligned_size = ((u32)size + 15) & 0xfffffff0U;
+        if ((i32)aligned_size < (i32)pool->remaining) {
+            user_data = (void *)pool->cursor;
+            pool->cursor += aligned_size;
+            pool->remaining -= aligned_size;
+            return user_data;
+        }
+        return NULL;
+    }
+
+    record = (NUALLOC_RECORD *)((char *)user_data - sizeof(*record));
+    if (record->next != NULL) {
+        record->next->previous = record->previous;
+    }
+    if (record->previous != NULL) {
+        record->previous->next = record->next;
+        old_head = NuAllocRecordHead;
+    } else {
+        old_head = record->next;
+        NuAllocRecordHead = old_head;
+    }
+
+    record = (NUALLOC_RECORD *)realloc(record, strlen(file) + (u32)size + 0x2d);
+    if (record == NULL) {
+        NuAllocReport((const void *)(u32)size, file, line);
+        user_data = NULL;
+    } else {
+        NuAllocTrackedBytes += (u32)size - record->requested_size;
+        record->requested_size = (u32)size;
+        tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
+        for (i = 0; i < 3; ++i)
+            tail->metadata[i] = NuAllocTailMetadata[i];
+        filename_copy = (char *)(tail + 1);
+        filename_read = file;
+        do {
+            byte = *filename_read++;
+            *filename_copy++ = byte;
+        } while (byte != 0);
+        record->source_line = line;
+        record->next = old_head;
+        if (old_head != NULL)
+            old_head->previous = record;
+        record->previous = NULL;
+        NuAllocRecordHead = record;
+        user_data = (void *)((u32)record + 32);
+    }
+    allocation_end = (void *)((u32)user_data + (u32)size);
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd0)
+        NuAllocPeakEnd0 = allocation_end;
+    if ((i32)allocation_end > (i32)NuAllocPeakEnd1)
+        NuAllocPeakEnd1 = allocation_end;
+    return user_data;
+}
+
+/* Walks every tracked allocation and returns the first guard block that no longer matches. */
+void *__cdecl NuAllocCheckRecords(void) {
+    NUALLOC_RECORD *record;
+    NUALLOC_TAIL *tail;
+    char *file;
+
+    record = NuAllocRecordHead;
+    while (record != NULL) {
+        tail = (NUALLOC_TAIL *)((char *)(record + 1) + record->requested_size);
+        file = (char *)(tail + 1);
+        if (memcmp(record->header_metadata, NuAllocHeaderMetadata, sizeof(record->header_metadata)) != 0) {
+            NuAllocReport(record, file, record->source_line);
+            return record;
+        }
+        if (memcmp(tail, NuAllocTailMetadata, sizeof(*tail)) != 0) {
+            NuAllocReport(tail, file, record->source_line);
+            return tail;
+        }
+        record = record->next;
+    }
+    return NULL;
+}
+
 /* Lists every tracked allocation of at least min_size bytes, then the running total. */
 void __cdecl NuAllocDumpRecords(i32 min_size) {
     NUALLOC_RECORD *record = NuAllocRecordHead;
@@ -246,4 +442,16 @@ void __cdecl NuAllocDumpRecords(i32 min_size) {
         }
     }
     NuAllocReport((const void *)NuAllocTrackedBytes);
+}
+
+/* Releases every tracked record straight to the CRT. */
+void __cdecl NuAllocFreeRecords(void) {
+    NUALLOC_RECORD *record = NuAllocRecordHead;
+    NUALLOC_RECORD *next;
+
+    while (record != NULL) {
+        next = record->next;
+        free(record);
+        record = next;
+    }
 }

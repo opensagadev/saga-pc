@@ -2577,9 +2577,19 @@ address,symbol,size,ctype
 0x004eed92,_SendMessageA@16,6,"LRESULT __stdcall (HWND, UINT, WPARAM, LPARAM)"
 0x4eeda0,_NuAllocBadPointer,1,void __cdecl(void)
 0x4eedc0,_NuAllocReport,1,"void __cdecl(const void *, ...)"
+0x4eedd0,_NuAllocSetManager,10,void __cdecl (void *)
+0x4eede0,_NuAllocSetPool,16,NUALLOC_POOL *__cdecl (NUALLOC_POOL *)
+0x4eedf0,_NuAllocPoolReset,20,void __cdecl (NUALLOC_POOL *)
+0x4eee10,_NuAllocSetArena,50,"void __cdecl (u32 *, u32 *)"
+0x4eee50,_NuAllocGetPeakEnd,6,void *__cdecl (void)
+0x4eee60,_NuAllocUntracked,185,void *__cdecl (i32)
+0x4eef20,_NuFreeUntracked,29,void __cdecl (void *)
 0x004eef40,_NuAlloc,471,"void *__cdecl (i32, const char *, i32)"
+0x4ef120,_NuReAlloc,341,"void *__cdecl (void *, i32, const char *, i32)"
 0x004ef280,_NuFree,450,"void __cdecl (void *, const char *, i32)"
+0x4ef450,_NuAllocCheckRecords,356,void *__cdecl (void)
 0x4ef5c0,_NuAllocDumpRecords,98,void __cdecl(i32)
+0x4ef630,_NuAllocFreeRecords,35,void __cdecl (void)
 0x004ef660,_PCByteCopy_candidate,84,"void __cdecl (void *, const void *, u32)"
 0x4ef6e0,_NuMemSet128,25,"void __cdecl(void *,u32,i32)"
 0x004ef790,_NuFileError,1,void __cdecl (void)
@@ -36074,6 +36084,7 @@ address,symbol,size,ctype
 0x88ab1c,_sarlacc_lump_position,,NUVEC
 0x88ab28,_sarlacc_engine_timer,,f32
 0x88ab2c,_FairgroundSplitPartyLocatorPc,4,AILOCATOR_PC *
+0x88ab30,_NuAllocArenaStorage,8,NUALLOC_ARENA
 0x0088ab38,_NuAllocRecordHead,4,NUALLOC_RECORD *
 0x0088ab3c,_NuAllocTrackedBytes,4,u32
 0x0088ab40,_NuAllocPool,4,NUALLOC_POOL *
