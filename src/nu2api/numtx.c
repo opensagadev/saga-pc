@@ -1,6 +1,7 @@
 #include "saga.h"
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>
 
 STATIC_ASSERT(offsetof(NUVEC, x) == 0x00);
 STATIC_ASSERT(offsetof(NUVEC, y) == 0x04);
@@ -99,4 +100,180 @@ void __cdecl NuMtxSetRotationXYVU0(NUMTX *matrix, NUANGVEC *angles) {
     matrix->m31 = 0.0f;
     matrix->m32 = 0.0f;
     matrix->m33 = 1.0f;
+}
+
+void __cdecl NuMtxMulnVU0(NUMTX *out, NUMTX *left, NUMTX **right) {
+    NuMtxMul(out, left, *right);
+}
+
+f32 __cdecl randyfloat(void) {
+    return rand() / 32767.0;
+}
+
+void __cdecl NuVecInvMtxTransformVU0(NUVEC *out, NUVEC *v, NUMTX *m) {
+    f32 x = v->x - m->m30;
+    f32 y = v->y - m->m31;
+    f32 z = v->z - m->m32;
+    out->x = m->m00 * x + m->m01 * y + m->m02 * z;
+    out->y = m->m10 * x + m->m11 * y + m->m12 * z;
+    out->z = m->m20 * x + m->m21 * y + m->m22 * z;
+}
+
+static NUVEC tempvec = {0};
+static NUVEC4 tempvec4 = {0};
+
+NUVEC *__cdecl makenuvec(f32 x, f32 y, f32 z) {
+    tempvec.x = x;
+    tempvec.y = y;
+    tempvec.z = z;
+    return &tempvec;
+}
+
+NUVEC4 *__cdecl makenuvec4(f32 x, f32 y, f32 z, f32 w) {
+    tempvec4.x = x;
+    tempvec4.y = y;
+    tempvec4.z = z;
+    tempvec4.w = w;
+    return &tempvec4;
+}
+
+u32 __cdecl NuVecToRGBA(NUVEC *v, f32 alpha) {
+    u32 red = (v->x + 1.0f) * 127.5f;
+    u32 green = (v->y + 1.0f) * 127.5f;
+    u32 blue = (v->z + 1.0f) * 127.5f;
+    u32 opacity = alpha * 255.0f;
+    return (opacity << 24) + (red << 16) + (green << 8) + blue;
+}
+
+f32 __cdecl NuVecNormVU0(NUVEC *out, NUVEC *v) {
+    f32 magnitude = (f32)sqrt(v->x * v->x + v->y * v->y + v->z * v->z);
+    NUVEC normalized;
+    if (magnitude != 0.0f) {
+        normalized.x = v->x / magnitude;
+        normalized.y = v->y / magnitude;
+        normalized.z = v->z / magnitude;
+    } else {
+        normalized.x = 0.0f;
+        normalized.y = 0.0f;
+        normalized.z = 0.0f;
+    }
+    out->x = normalized.x;
+    out->y = normalized.y;
+    out->z = normalized.z;
+    return magnitude;
+}
+
+void __cdecl NuVec4MtxInvTransformVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *matrix) {
+    NUMTX inverse;
+    NuMtxInv(&inverse, matrix);
+    NuVec4MtxTransformVU0(out, v, &inverse);
+}
+
+void __cdecl NuVec4MtxInvRotVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *m) {
+    f32 y = v->x * m->m10 + v->y * m->m11 + v->z * m->m12;
+    f32 z = v->x * m->m20 + v->y * m->m21 + v->z * m->m22;
+    f32 w = v->x * m->m30 + v->y * m->m31 + v->z * m->m32;
+    out->x = v->x * m->m00 + v->y * m->m01 + v->z * m->m02;
+    out->y = y;
+    out->z = z;
+    out->w = w;
+}
+
+f32 __cdecl NuVecDiffVU0(NUVEC *a, NUVEC *b) {
+    f32 x = a->x - b->x;
+    f32 y = a->y - b->y;
+    f32 z = a->z - b->z;
+    f32 squared = x * x + y * y + z * z;
+    return NuFsqrt(squared);
+}
+
+f32 __cdecl NuVecDiffSqrVU0(NUVEC *a, NUVEC *b) {
+    f32 x = a->x - b->x;
+    f32 y = a->y - b->y;
+    f32 z = a->z - b->z;
+    f32 squared = x * x + y * y + z * z;
+    return squared;
+}
+
+f32 __cdecl NuASin_Accurate(f32 value) {
+    if (value >= 0.0f) {
+        if (value >= 1.0f) {
+            return 1.57079637f;
+        }
+        return 1.5707963705062866 - NuFsqrt(1.0f - value) * (1.5707287788391113 - 0.2121143937110901 * value +
+                                                             0.07426100224256516 * value * value -
+                                                             0.018729299306869507 * value * value * value);
+    }
+    if (value <= -1.0f) {
+        return -1.57079637f;
+    }
+    return NuFsqrt(value + 1.0) * (1.5707287788391113 + 0.2121143937110901 * value +
+                                   0.07426100224256516 * value * value + 0.018729299306869507 * value * value * value) -
+           1.5707963705062866;
+}
+
+f32 __cdecl NuSin_Accurate(f32 angle) {
+    i32 index;
+    f32 low;
+    f32 high;
+    f32 fraction;
+    if (angle < 0.0f) {
+        angle += 6.2831854820251465;
+    }
+    angle *= 5215.18896484375;
+    index = (i32)angle;
+    low = NuTrigTable[index];
+    high = NuTrigTable[(index + 1) & 0x7fff];
+    fraction = angle - index;
+    return low + (high - low) * fraction;
+}
+
+void __cdecl NuQuatLerp2(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+    f32 dot = to->x * from->x + to->y * from->y + to->z * from->z + to->w * from->w;
+    if (dot < 0.0f) {
+        out->x = (to->x + from->x) * t - from->x;
+        out->y = (to->y + from->y) * t - from->y;
+        out->z = (to->z + from->z) * t - from->z;
+        out->w = (to->w + from->w) * t - from->w;
+    } else {
+        out->x = (to->x - from->x) * t + from->x;
+        out->y = (to->y - from->y) * t + from->y;
+        out->z = (to->z - from->z) * t + from->z;
+        out->w = (to->w - from->w) * t + from->w;
+    }
+}
+
+void __cdecl NuQuatSlerp_Accurate(NUQUAT *out, NUQUAT *from, NUQUAT *to, f32 t) {
+    f32 scale;
+    f32 from_factor;
+    f32 to_factor;
+    f32 omega;
+    f32 sin_omega;
+    NUQUAT to_prime;
+    scale = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
+    if (scale < 0.0f) {
+        scale = -scale;
+        to_prime.x = -to->x;
+        to_prime.y = -to->y;
+        to_prime.z = -to->z;
+        to_prime.w = -to->w;
+    } else {
+        to_prime.x = to->x;
+        to_prime.y = to->y;
+        to_prime.z = to->z;
+        to_prime.w = to->w;
+    }
+    if (1.0f - scale > 0.0f) {
+        omega = 1.5707963705062866 - NuASin_Accurate(scale);
+        sin_omega = NuSin_Accurate(omega);
+        from_factor = NuSin_Accurate((1.0f - t) * omega) / sin_omega;
+        to_factor = NuSin_Accurate(t * omega) / sin_omega;
+    } else {
+        from_factor = 1.0f - t;
+        to_factor = t;
+    }
+    out->x = from->x * from_factor + to_prime.x * to_factor;
+    out->y = from->y * from_factor + to_prime.y * to_factor;
+    out->z = from->z * from_factor + to_prime.z * to_factor;
+    out->w = from->w * from_factor + to_prime.w * to_factor;
 }

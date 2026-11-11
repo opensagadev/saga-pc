@@ -4419,6 +4419,32 @@ void __cdecl NuMtxGetPerspectiveBlend(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *z
     *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
 }
 
+i32 NuPlnLine2(NUPLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *start, NUVEC *end, NUVEC *out, f32 *distance,
+               f32 *fraction) {
+    if (NuPlnLine(plane, start, end, out)) {
+        if (NuPtInPoly(out, a, b, c, plane)) {
+            if (distance != NULL || fraction != NULL) {
+                f32 hit_distance;
+                f32 line_length;
+                NUVEC delta;
+                NUVEC line;
+                NuVecSub(&delta, out, start);
+                hit_distance = NuVecMag(&delta);
+                if (distance != NULL) {
+                    *distance = hit_distance;
+                }
+                if (fraction != NULL) {
+                    NuVecSub(&line, end, start);
+                    line_length = NuVecMag(&line);
+                    *fraction = hit_distance / line_length;
+                }
+            }
+            return 1;
+        }
+    }
+    return 0;
+}
+
 f32 __cdecl RenderPostLogPc(f32 value) {
     f32 exponent, counter, position, fraction;
     i32 index;

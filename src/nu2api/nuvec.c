@@ -30,9 +30,41 @@ void __cdecl NuVec4MtxTransformVU0(NUVEC4 *out, NUVEC4 *v, NUMTX *m) {
     out->w = w;
 }
 
+void __cdecl NuVec4MtxTransformVU0x2(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
+    i32 i;
+    for (i = 0; i < 2; ++i) {
+        f32 y = ((in->y * m->m11 + in->x * m->m01) + (in->z * m->m21)) + in->w * m->m31;
+        f32 z = ((in->y * m->m12 + in->x * m->m02) + in->z * m->m22) + in->w * m->m32;
+        f32 w = ((in->x * m->m03 + in->y * m->m13) + in->z * m->m23) + in->w * m->m33;
+        f32 x = ((in->x * m->m00 + in->y * m->m10) + in->z * m->m20) + in->w * m->m30;
+        out->x = x;
+        out->y = y;
+        out->z = z;
+        out->w = w;
+        ++in;
+        ++out;
+    }
+}
+
 void __cdecl NuVec4MtxTransformVU0x3(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
     i32 i;
     for (i = 0; i < 3; ++i) {
+        f32 y = ((in->y * m->m11 + in->x * m->m01) + (in->z * m->m21)) + in->w * m->m31;
+        f32 z = ((in->y * m->m12 + in->x * m->m02) + in->z * m->m22) + in->w * m->m32;
+        f32 w = ((in->x * m->m03 + in->y * m->m13) + in->z * m->m23) + in->w * m->m33;
+        f32 x = ((in->x * m->m00 + in->y * m->m10) + in->z * m->m20) + in->w * m->m30;
+        out->x = x;
+        out->y = y;
+        out->z = z;
+        out->w = w;
+        ++in;
+        ++out;
+    }
+}
+
+void __cdecl NuVec4MtxTransformVU0x4(NUVEC4 *out, NUVEC4 *in, NUMTX *m) {
+    i32 i;
+    for (i = 0; i < 4; ++i) {
         f32 y = ((in->y * m->m11 + in->x * m->m01) + (in->z * m->m21)) + in->w * m->m31;
         f32 z = ((in->y * m->m12 + in->x * m->m02) + in->z * m->m22) + in->w * m->m32;
         f32 w = ((in->x * m->m03 + in->y * m->m13) + in->z * m->m23) + in->w * m->m33;
