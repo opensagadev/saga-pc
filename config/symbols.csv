@@ -8465,19 +8465,43 @@ address,symbol,size,ctype
 0x6500c0,_DebrisMtxRotateYPrivate,219,"void private (NUMTX *, i32); PC matrix EAX,angle ECX"
 0x6501a0,_DebrisMtxRotateZPrivate,215,"void private (NUMTX *, i32); PC matrix EAX,angle ECX"
 0x650280,_SfxBuildCRCTable,217,"void __cdecl(VARIPTR *,VARIPTR)"
+0x00650360,_CRC_Process,61,"u32 __cdecl (const void *, u32)"
+0x006503a0,_CRC_ProcessString,49,u32 __cdecl (const char *)
+0x006503e0,_CRC_ProcessStringN,67,"u32 __cdecl (const char *, u32)"
 0x00650430,_SfxNameHash,64,u32 __cdecl (const char *)
 0x00650470,_SfxNameHashN,77,"u32 __cdecl (const char *, u32)"
 0x006504c0,_SetSfxBit_OnEx,47,void __cdecl (i32)
 0x006504f0,_SetSfxBit_OffEx,54,void __cdecl (i32)
 0x00650530,_SfxBitEx,60,i32 __cdecl (i32)
 0x00650570,_SetSfxBit_On,70,void __cdecl (i32)
+0x006505c0,_SetSfxBit_Off,77,void __cdecl (i32)
+0x00650610,_SfxBit,84,i32 __cdecl (i32)
+0x00650670,_SetSfxBitTab_OnEx,49,"void __cdecl (SoundTable *, i32)"
+0x006506b0,_SetSfxBitTab_OffEx,56,"void __cdecl (SoundTable *, i32)"
+0x006506f0,_SfxBitTabEx,60,"i32 __cdecl (const SoundTable *, i32)"
+0x00650730,_SetSfxBitTab_On,72,"void __cdecl (SoundTable *, i32)"
+0x00650780,_SetSfxBitTab_Off,79,"void __cdecl (SoundTable *, i32)"
+0x006507d0,_SfxBitTab,84,"i32 __cdecl (const SoundTable *, i32)"
+0x00650830,_SfxBitsSetAll,21,void __cdecl (u16 *)
 0x00650850,_SfxBitsStore,24,void __cdecl (SoundTable *)
 0x00650870,_SfxBitsRestore,24,void __cdecl (SoundTable *)
+0x00650890,_SfxBitMaskTable,84,"void __cdecl (u16 *, const u16 *)"
 0x006508f0,_ResetSounds,24,void __cdecl (void)
+0x00650910,_PrepareSounds,89,void __cdecl (const u16 *)
+0x00650970,_PrepareAllSounds,18,void __cdecl (void)
+0x00650990,_MaskSounds,89,void __cdecl (const u16 *)
+0x006509f0,_GroupBuffer_MoveToEnd,149,void __cdecl (i32)
+0x00650a90,_GroupBuffer_AddToGroup,57,"void __cdecl (i32, i32)"
+0x00650ad0,_GroupBuffer_RemoveFromGroup,125,"void __cdecl (i32, i32)"
+0x00650b50,_GroupBuffer_RemoveGroup,243,void __cdecl (i32)
 0x00650c50,_GroupBuffer_MakeGroup,119,i32 __cdecl (i32)
+0x00650cd0,_GroupBuffer_InGroup,62,"i32 __cdecl (i32, i32)"
 0x00650d10,_GroupBuffer_GetSample,125,"i32 __cdecl (i32, i32)"
+0x00650d90,_GroupBuffer_GetNumInGroup,13,i32 __cdecl (i32)
+0x00650da0,_GroupBuffer_GetSampleByIndex,25,"i32 __cdecl (i32, i32)"
 0x00650dc0,_GetSfxId,116,i32 __cdecl (char *)
 0x650e40,_GetSfxIdN,77,"i32 __cdecl(char *, i32)"
+0x00650e90,_GetSfxName,24,char *__cdecl (i32)
 0x00650eb0,_SetSoundVolume,11,void __cdecl (f32)
 0x00650ec0,_GetSoundVolume,7,f32 __cdecl (void)
 0x00650ed0,?SetAudioFadeLevel@@YAXM@Z,11,void __cdecl (f32)

@@ -89,6 +89,89 @@ void __cdecl UpdateLevelSfx(WORLDINFO *world, i32 paused) {
         PlaySfxById(world->current_level->sfx_ambient, NULL);
 }
 
+void __cdecl GroupBuffer_MoveToEnd(i32 group_id) {
+    i32 buffer_length = NuSound3GroupSampleCount;
+    i32 first_sample = NuSound3Groups[group_id].first_sample;
+    i32 sample_count = NuSound3Groups[group_id].sample_count;
+    i32 group_end = sample_count + first_sample;
+    i32 index;
+
+    if (group_end == buffer_length) {
+        return;
+    }
+    NuSound3Groups[group_id].first_sample = (i16)buffer_length;
+    PCByteCopy_candidate(&NuSound3GroupSampleIds[buffer_length], &NuSound3GroupSampleIds[first_sample],
+                         sample_count * 2);
+    PCByteCopy_candidate(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[group_end],
+                         (NuSound3GroupSampleCount - first_sample) * 2);
+    for (index = 0; index < NuSound3GroupCount; index++) {
+        if (NuSound3Groups[index].first_sample > first_sample) {
+            NuSound3Groups[index].first_sample -= (i16)sample_count;
+        }
+    }
+}
+
+void __cdecl GroupBuffer_AddToGroup(i32 group_id, i32 sample_id) {
+    if (NuSound3GroupSampleCount == 0x200) {
+        return;
+    }
+    NuSound3GroupSampleIds[NuSound3GroupSampleCount++] = (i16)sample_id;
+    NuSound3Groups[group_id].sample_count++;
+    NuSound3Groups[group_id].cursor = 0;
+}
+
+void __cdecl GroupBuffer_RemoveFromGroup(i32 group_id, i32 sample_id) {
+    i32 first_sample = NuSound3Groups[group_id].first_sample;
+    i32 group_end = first_sample + NuSound3Groups[group_id].sample_count;
+    i32 found = -1;
+    i32 index;
+
+    for (index = first_sample; index < group_end; index++) {
+        if (NuSound3GroupSampleIds[index] == sample_id) {
+            found = index;
+            break;
+        }
+    }
+    if (found == -1) {
+        return;
+    }
+    PCByteCopy_candidate(&NuSound3GroupSampleIds[found], &NuSound3GroupSampleIds[found + 1],
+                         (NuSound3GroupSampleCount - found - 1) * 2);
+    NuSound3GroupSampleCount--;
+    NuSound3Groups[group_id].sample_count--;
+    NuSound3Groups[group_id].cursor = 0;
+}
+
+void __cdecl GroupBuffer_RemoveGroup(i32 group_id) {
+    i32 first_sample;
+    i32 sample_count;
+    i32 index;
+
+    if (group_id == -1) {
+        return;
+    }
+    first_sample = NuSound3Groups[group_id].first_sample;
+    sample_count = NuSound3Groups[group_id].sample_count;
+    PCByteCopy_candidate(&NuSound3GroupSampleIds[first_sample], &NuSound3GroupSampleIds[first_sample + sample_count],
+                         (NuSound3GroupSampleCount - sample_count - first_sample) * 2);
+    NuSound3GroupSampleCount -= sample_count;
+    for (index = 0; index < NuSound3GroupCount; index++) {
+        if (NuSound3Groups[index].first_sample > first_sample) {
+            NuSound3Groups[index].first_sample -= (i16)sample_count;
+        }
+    }
+    PCByteCopy_candidate(&NuSound3Groups[group_id], &NuSound3Groups[group_id + 1],
+                         (NuSound3GroupCount - 1) * sizeof(SFX_GROUP_PC));
+    NuSound3GroupCount--;
+    for (index = SfxFileCount; index < NumSfxInst; index++) {
+        if (SfxInfo[index].group > group_id) {
+            SfxInfo[index].group--;
+        } else if (SfxInfo[index].group == group_id) {
+            SfxInfo[index].group = -1;
+        }
+    }
+}
+
 i32 __cdecl GroupBuffer_MakeGroup(i32 sample_id) {
 
     if (NuSound3GroupCount == 0x80)
@@ -103,6 +186,18 @@ i32 __cdecl GroupBuffer_MakeGroup(i32 sample_id) {
     NuSound3GroupSampleIds[NuSound3GroupSampleCount] = (i16)sample_id;
     NuSound3GroupSampleCount++;
     return NuSound3GroupCount++;
+}
+
+i32 __cdecl GroupBuffer_InGroup(i32 group_id, i32 sample_id) {
+    i32 index = NuSound3Groups[group_id].first_sample;
+    i32 group_end = index + NuSound3Groups[group_id].sample_count;
+
+    for (; index < group_end; index++) {
+        if (NuSound3GroupSampleIds[index] == sample_id) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
@@ -125,6 +220,14 @@ i32 __cdecl GroupBuffer_GetSample(i32 group_id, i32 sequential) {
         sample_count = 1;
     }
     return NuSound3GroupSampleIds[first_sample + ((nusound_seed >> 16) % sample_count)];
+}
+
+i32 __cdecl GroupBuffer_GetNumInGroup(i32 group_id) {
+    return NuSound3Groups[group_id].sample_count;
+}
+
+i32 __cdecl GroupBuffer_GetSampleByIndex(i32 group_id, i32 sample_index) {
+    return NuSound3GroupSampleIds[NuSound3Groups[group_id].first_sample + sample_index];
 }
 
 void __cdecl AudioGroup_Parse(NUFPAR_PC *parser) {
@@ -327,6 +430,37 @@ void __cdecl SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end) {
     SfxCRCTableInitialized = 1;
 }
 
+u32 __cdecl CRC_Process(const void *data, u32 size) {
+    const u8 *bytes = (const u8 *)data;
+    u32 hash = 0;
+    u32 index;
+
+    for (index = 0; index < size; index++) {
+        hash = SfxCRCTable[bytes[index] ^ (hash >> 24)] ^ (hash << 8);
+    }
+    return hash;
+}
+
+u32 __cdecl CRC_ProcessString(const char *str) {
+    u32 hash = 0;
+
+    while (*str != '\0') {
+        hash = SfxCRCTable[*str ^ (hash >> 24)] ^ (hash << 8);
+        str++;
+    }
+    return hash;
+}
+
+u32 __cdecl CRC_ProcessStringN(const char *str, u32 size) {
+    u32 hash = 0;
+    u32 index;
+
+    for (index = 0; str[index] != '\0' && index < size; index++) {
+        hash = SfxCRCTable[str[index] ^ (hash >> 24)] ^ (hash << 8);
+    }
+    return hash;
+}
+
 u32 __cdecl SfxNameHash(const char *name) {
     u32 hash = 0;
 
@@ -417,6 +551,67 @@ void __cdecl SetSfxBit_On(i32 sound_id) {
     }
 }
 
+void __cdecl SetSfxBit_Off(i32 sound_id) {
+    if (sound_id >= 0) {
+        SetSfxBit_OffEx((i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
+    }
+}
+
+i32 __cdecl SfxBit(i32 sound_id) {
+    if (sound_id >= 0) {
+        return SfxBitEx((i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
+    }
+    return 0;
+}
+
+void __cdecl SetSfxBitTab_OnEx(SoundTable *table, i32 sfx_id) {
+    i32 word;
+    if ((u32)sfx_id <= 0x63f) {
+        word = sfx_id / 16;
+        if (word < 100)
+            table->bits[word] |= (u16)(1u << (sfx_id & 0xf));
+    }
+}
+
+void __cdecl SetSfxBitTab_OffEx(SoundTable *table, i32 sfx_id) {
+    i32 word;
+    if ((u32)sfx_id <= 0x63f) {
+        word = sfx_id / 16;
+        if (word < 100)
+            table->bits[word] &= (u16)(0xffff - (1u << (sfx_id & 0xf)));
+    }
+}
+
+i32 __cdecl SfxBitTabEx(const SoundTable *table, i32 sfx_id) {
+    i32 word;
+    if ((u32)sfx_id <= 0x63f) {
+        word = sfx_id / 16;
+        if (word < 100) {
+            return (u16)(table->bits[word] & (1 << (sfx_id & 0xf))) != 0;
+        }
+    }
+    return -1;
+}
+
+void __cdecl SetSfxBitTab_On(SoundTable *table, i32 sound_id) {
+    if (sound_id >= 0) {
+        SetSfxBitTab_OnEx(table, (i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
+    }
+}
+
+void __cdecl SetSfxBitTab_Off(SoundTable *table, i32 sound_id) {
+    if (sound_id >= 0) {
+        SetSfxBitTab_OffEx(table, (i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
+    }
+}
+
+i32 __cdecl SfxBitTab(const SoundTable *table, i32 sound_id) {
+    if (sound_id >= 0) {
+        return SfxBitTabEx(table, (i32)(SfxInfo[sound_id].sample_id_flags << 17) >> 17);
+    }
+    return 0;
+}
+
 i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
     i32 pair_index;
 
@@ -432,12 +627,44 @@ i32 __cdecl AmbientFromQuiet(i32 quiet_index) {
     return -1;
 }
 
+void __cdecl SfxBitsSetAll(u16 *bits) {
+    memset(bits, -1, 200);
+}
+
 void __cdecl SfxBitsStore(SoundTable *sound_table) {
     PCByteCopy_candidate(sound_table, SfxBits, 0xc8);
 }
 
 __declspec(noinline) void __cdecl SfxBitsRestore(SoundTable *sound_table) {
     PCByteCopy_candidate(SfxBits, sound_table, 0xc8);
+}
+
+void __cdecl SfxBitMaskTable(u16 *bits, const u16 *mask) {
+    i32 index;
+    for (index = 0; index < 100; index++) {
+        bits[index] &= mask[index];
+    }
+}
+
+void __cdecl PrepareSounds(const u16 *sounds) {
+    i32 index;
+    for (index = 0; index < 100; index++) {
+        SfxBits[index] |= sounds[index];
+    }
+}
+
+void __cdecl PrepareAllSounds(void) {
+    i32 index;
+    for (index = 0; index < 100; index++) {
+        SfxBits[index] = 0xffff;
+    }
+}
+
+void __cdecl MaskSounds(const u16 *mask) {
+    i32 index;
+    for (index = 0; index < 100; index++) {
+        SfxBits[index] &= mask[index];
+    }
 }
 
 f32 MusicVolume = 1.0f;
@@ -820,6 +1047,13 @@ i32 __cdecl GetSfxIdN(char *name, i32 length) {
     }
     TerrainDiagnosticNoOpPC(name);
     return -1;
+}
+
+char *__cdecl GetSfxName(i32 sound_id) {
+    if (sound_id >= 0) {
+        return SfxInfo[sound_id].name;
+    }
+    return NULL;
 }
 
 extern i32 NuSound3LoadingSfxPc;
