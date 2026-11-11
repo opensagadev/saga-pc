@@ -115,6 +115,16 @@ void __cdecl SeekVec(NUVEC *result, NUVEC *current, NUVEC *target, f32 rate) {
     result->z = current->z + (target->z - current->z) * blend;
 }
 
+void __cdecl CapVec(NUVEC *input, f32 maximum, NUVEC *output) {
+    f32 length_squared = input->x * input->x + input->y * input->y + input->z * input->z;
+    if (length_squared > maximum * maximum) {
+        f32 factor = maximum / NuFsqrt(length_squared);
+        output->x *= factor;
+        output->y *= factor;
+        output->z *= factor;
+    }
+}
+
 i32 __cdecl SphereSphereOverlap(NUVEC *a, f32 radius_a, NUVEC *b, f32 radius_b) {
     f32 x = b->x - a->x;
     f32 y = b->y - a->y;
@@ -160,6 +170,12 @@ i32 __cdecl OnOrInsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *plane_norma
         return 1;
     }
     return 0;
+}
+
+i32 __cdecl OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
+    return (point->y - plane_point->y) * normal->y + (point->x - plane_point->x) * normal->x +
+               (point->z - plane_point->z) * normal->z >=
+           0.0;
 }
 
 __declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
@@ -255,6 +271,14 @@ __declspec(noinline) f32 __cdecl PushingTowardsAngle(u16 input_angle, u16 direct
     NuVecRotateY(&input, &v001, input_angle);
     NuVecRotateY(&target, &v001, direction);
     return input.x * target.x + input.z * target.z;
+}
+
+void __cdecl AnglesBetweenPoints(NUVEC *from, NUVEC *to, u16 *vertical, u16 *horizontal) {
+    f32 x = to->x - from->x;
+    f32 y = to->y - from->y;
+    f32 z = to->z - from->z;
+    *vertical = NuAtan2D(y, NuFsqrt(x * x + z * z));
+    *horizontal = NuAtan2D(x, z);
 }
 
 void __cdecl CalculateInterceptVector(NUVEC *origin, NUVEC *target, NUVEC *velocity, f32 speed, NUVEC *direction,
@@ -546,8 +570,82 @@ void __cdecl PointAlongSpline(NUGSPLINE *spline, f32 along, NUVEC *position, u16
     }
 }
 
+f32 __cdecl SplineLength(NUGSPLINE *spline, i32 closed) {
+    i32 segment_count;
+    i32 segment;
+    f32 length;
+    NUVEC *previous;
+    if (spline == NULL)
+        return 0.0f;
+    if (spline->length < 2)
+        return 0.0f;
+    segment_count = spline->length;
+    if (closed == 0)
+        --segment_count;
+    length = 0.0f;
+    previous = spline->pts;
+    for (segment = 0; segment < segment_count; ++segment) {
+        NUVEC *next = &spline->pts[segment == spline->length - 1 ? 0 : segment + 1];
+        NUVEC difference;
+        NuVecSub(&difference, next, previous);
+        length += NuVecMag(&difference);
+        previous = next;
+    }
+    return length;
+}
+
 i32 __cdecl StreamingInsideLineXZPc(f32 x, f32 z, f32 x0, f32 z0, f32 x1, f32 z1) {
     return (x - x0) * (z1 - z0) + (z - z0) * (x0 - x1) >= 0.0f;
+}
+
+i32 __cdecl LineCrossedXZ(f32 ax, f32 az, f32 bx, f32 bz, f32 cx, f32 cz, f32 dx, f32 dz) {
+    i32 result = 0;
+    if (!((bx - cx) * (dz - cz) + (bz - cz) * (cx - dx) >= 0.0f) &&
+        (ax - cx) * (dz - cz) + (az - cz) * (cx - dx) >= 0.0f) {
+        result = 1;
+        if ((bx - ax) * (cz - az) + (bz - az) * (ax - cx) >= 0.0f &&
+            (bx - dx) * (az - dz) + (bz - dz) * (dx - ax) >= 0.0f) {
+            result = 2;
+        }
+    }
+    return result;
+}
+
+f32 __cdecl RatioAlongLineXZ(NUVEC *point, NUVEC *start, NUVEC *end) {
+    f32 dx = end->x - start->x;
+    f32 dz = end->z - start->z;
+    u16 angle = (u16)-NuAtan2D(dx, dz);
+    f32 sine = NuTrigTable[angle >> 1];
+    f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+    f32 px = point->x - start->x;
+    f32 pz = point->z - start->z;
+    f32 along = pz * cosine - px * sine;
+    f32 length;
+    if (along <= 0.0f)
+        return 0.0f;
+    length = dz * cosine - dx * sine;
+    if (along >= length)
+        return 1.0f;
+    return along / length;
+}
+
+f32 __cdecl DistanceToLineXZ(NUVEC *position, NUVEC *first, NUVEC *second) {
+    u16 angle;
+    union {
+        f32 value;
+        u32 bits;
+    } result, absolute;
+    angle = (u16)-NuAtan2D(second->x - first->x, second->z - first->z);
+    result.value = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (position->x - first->x) +
+                   NuTrigTable[angle >> 1] * (position->z - first->z);
+    absolute.bits = result.bits & 0x7fffffffu;
+    return absolute.value;
+}
+
+f32 __cdecl RatioBetweenEdgesXZ(NUVEC *point, NUVEC *edge_a0, NUVEC *edge_a1, NUVEC *edge_b0, NUVEC *edge_b1) {
+    f32 distance_a = DistanceToLineXZ(point, edge_a0, edge_a1);
+    f32 distance_b = DistanceToLineXZ(point, edge_b0, edge_b1);
+    return distance_a / (distance_a + distance_b);
 }
 
 i32 __cdecl LineIntersectXY(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, NUVEC *first, NUVEC *second) {

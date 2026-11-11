@@ -689,7 +689,7 @@ SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotatio
     return rotations;
 }
 
-f32 SplineLength(NUGSPLINE *spline, i32 closed) {
+f32 SockSplineLengthPc(NUGSPLINE *spline, i32 closed) {
     i32 segment_count;
     i32 segment;
     i32 next;
@@ -854,7 +854,7 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         }
 
         if (sock->mid != NULL) {
-            sock->unknown_98 = SplineLength(sock->mid, sock->unknown_33);
+            sock->unknown_98 = SockSplineLengthPc(sock->mid, sock->unknown_33);
         } else {
             i32 segment_count;
 
@@ -930,7 +930,7 @@ i32 complexsockposition_forcesock = -1;
 static NUVEC temp_sockmidpos = {0};
 static NUVEC temp_sockcampos = {0};
 
-static i32 OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
+static i32 SockOnOrOutsidePlanePc(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
     return normal->x * (point->x - plane_point->x) + normal->y * (point->y - plane_point->y) +
                normal->z * (point->z - plane_point->z) >=
            0.0f;
@@ -967,7 +967,7 @@ static f32 SockDistanceToLineXZ(NUVEC *point, NUVEC *line_a, NUVEC *line_b) {
     return absolute.value;
 }
 
-static f32 RatioBetweenEdgesXZ(NUVEC *point, NUVEC *edge_a0, NUVEC *edge_a1, NUVEC *edge_b0, NUVEC *edge_b1) {
+static f32 SockRatioBetweenEdgesXZ(NUVEC *point, NUVEC *edge_a0, NUVEC *edge_a1, NUVEC *edge_b0, NUVEC *edge_b1) {
     f32 distance_a;
     f32 distance_b;
 
@@ -1128,12 +1128,12 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC 
 
                     c1 = &sock->c->pts[next];
                     d1 = &sock->d->pts[next];
-                    inside = OnOrOutsidePlane(point, a0, &segment_data->planes[0]) &&
-                             OnOrOutsidePlane(point, a1, &segment_data->planes[1]) &&
-                             OnOrOutsidePlane(point, b1, &segment_data->planes[2]) &&
-                             OnOrOutsidePlane(point, c1, &segment_data->planes[3]) &&
-                             OnOrOutsidePlane(point, d1, &segment_data->planes[4]) &&
-                             OnOrOutsidePlane(point, b1, &segment_data->planes[5]);
+                    inside = SockOnOrOutsidePlanePc(point, a0, &segment_data->planes[0]) &&
+                             SockOnOrOutsidePlanePc(point, a1, &segment_data->planes[1]) &&
+                             SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[2]) &&
+                             SockOnOrOutsidePlanePc(point, c1, &segment_data->planes[3]) &&
+                             SockOnOrOutsidePlanePc(point, d1, &segment_data->planes[4]) &&
+                             SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[5]);
                 }
             } else if (segment_data->min.x <= point->x && point->x <= segment_data->max.x &&
                        segment_data->min.z <= point->z && point->z <= segment_data->max.z) {
@@ -1152,7 +1152,7 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC 
                     result->ratio = RatioBetweenPlanes(point, a0, &segment_data->planes[0], &sock->c->pts[next],
                                                        &segment_data->planes[5]);
                 } else {
-                    result->ratio = RatioBetweenEdgesXZ(point, b0, a0, b1, a1);
+                    result->ratio = SockRatioBetweenEdgesXZ(point, b0, a0, b1, a1);
                 }
                 result->next_segment = (i16)next;
                 SockSysPointAlongMID(sock, result, &temp_sockmidpos);

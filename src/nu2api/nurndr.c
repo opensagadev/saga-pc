@@ -1158,7 +1158,7 @@ __declspec(noinline) void __cdecl NuRndrArenaInitPc(VARIPTR *buffer, VARIPTR end
     buffer->addr = ((buffer->addr + 3) & ~3u) + 0x7d0;
 }
 
-void AnglesBetweenPoints(NUVEC *direction, f32 *pitch, f32 *yaw) {
+void NuRndrAnglesBetweenPointsPc(NUVEC *direction, f32 *pitch, f32 *yaw) {
     *yaw = (f32)NuAtan2D(direction->x, direction->z);
     *pitch = (f32)NuAtan2D(-direction->y, NuFsqrt(direction->x * direction->x + direction->z * direction->z));
 }
@@ -1181,7 +1181,7 @@ void __cdecl NuRndrShadowDirectionsSetupPc(NUVEC *direction) {
     f32 yaw;
     f32 length;
     i32 i;
-    AnglesBetweenPoints(direction, &pitch, &yaw);
+    NuRndrAnglesBetweenPointsPc(direction, &pitch, &yaw);
     if (pitch < 8192.0f) {
         pitch = 8192.0f;
     }
