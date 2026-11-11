@@ -2823,7 +2823,7 @@ struct nufile_device_s {
     i32 max_extension_size;
     i32 max_directory_size;
     i32 free_space;
-    u8 unknown_0024[0x10];
+    i32 params[4];
     char name[0x10];
     i32 match_len;
     i32 name_len;

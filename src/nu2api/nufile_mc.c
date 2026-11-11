@@ -3,6 +3,38 @@
 /* The memory-card device stubs form their own unit (0x6dee30-0x6def60); the nucore file
    functions call them out of line. */
 
+/* Native 0x6dede0-0x6dee22: the card queries sit just before that range and are
+   equally empty on PC. */
+i32 __cdecl NuMcCheckCardPresent(i32 port, i32 slot) {
+    (void)port;
+    (void)slot;
+    return 0;
+}
+
+i32 __cdecl NuMcCheckCardChangedPc(i32 port, i32 slot) {
+    (void)port;
+    (void)slot;
+    return 0;
+}
+
+i32 __cdecl NuMcCheckCardFormatted(i32 port, i32 slot) {
+    (void)port;
+    (void)slot;
+    return 0;
+}
+
+i32 __cdecl NuMcCheckCardFreeSpace(i32 port, i32 slot) {
+    (void)port;
+    (void)slot;
+    return 0;
+}
+
+i32 __cdecl NuMcFormat(i32 port, i32 slot) {
+    (void)port;
+    (void)slot;
+    return 0;
+}
+
 i32 __cdecl NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async) {
     (void)port;
     (void)slot;

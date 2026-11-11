@@ -8725,6 +8725,8 @@ extern "C" {
     i32 file_time_count = 0;
     NUFILE_DEVICE devices[16] = {0};
     i32 numdevices = 0;
+    NUFILE_DEVICE enum_devices[16] = {0};
+    i32 enum_numdevices = 0;
     NUFILE_DEVICE host_device = {
         0,
         0,

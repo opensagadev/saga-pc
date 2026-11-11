@@ -45,6 +45,9 @@ extern void __cdecl PCThreadCriticalSectionLeave_candidate(i32 section_index);
 
 extern i32 numdevices;
 extern NUFILE_DEVICE devices[16];
+extern NUFILE_DEVICE enum_devices[16];
+extern i32 enum_numdevices;
+STATIC_ASSERT(offsetof(NUFILE_DEVICE, params) == 0x24);
 extern i32 DontDoFileUpperCaseHack;
 
 void __cdecl NuDatFileMissingPc(char *filepath);
@@ -619,8 +622,7 @@ void __cdecl NuFileSetCurrentDllDirectory(const char *path) {
 }
 
 i32 __cdecl FileDeviceFormatDefaultNamePc(char *destination, char *path, i32 maximum_size) {
-    NUFILE_DEVICE *device = default_device;
-    return device->format_name_fn(device, destination, path, maximum_size);
+    return default_device->format_name_fn(default_device, destination, path, maximum_size);
 }
 
 NUFILE_DEVICE *__cdecl NuFileFindDevice(i32 id, i32 unit) {
@@ -638,6 +640,76 @@ NUFILE_DEVICE *__cdecl NuFileFindDevice(i32 id, i32 unit) {
         }
     }
     return NULL;
+}
+
+i32 __cdecl NuFileEnumerateDevices(NUFILE_DEVICE **result) {
+    i32 count = 0;
+    i32 index;
+    for (index = 0; index < numdevices; ++index) {
+        if ((devices[index].interrogate_fn(&devices[index]) & 2) != 0)
+            continue;
+        enum_devices[count] = devices[index];
+        ++count;
+    }
+    *result = enum_devices;
+    enum_numdevices = count;
+    return count;
+}
+
+i32 __cdecl NuFileGetDevices(NUFILE_DEVICE **result) {
+    if (result != NULL)
+        *result = enum_devices;
+    return enum_numdevices;
+}
+
+i32 __cdecl NuMcCheckCardPresent(i32 port, i32 slot);
+i32 __cdecl NuMcCheckCardFormatted(i32 port, i32 slot);
+i32 __cdecl NuMcCheckCardFreeSpace(i32 port, i32 slot);
+
+i32 __cdecl NuFileRefreshDevices(NUFILE_DEVICE **result) {
+    i32 index;
+    for (index = 0; index < numdevices; ++index) {
+        if (devices[index].id == 1) {
+            i32 port = devices[index].params[0];
+            i32 slot = devices[index].params[1];
+            if (NuMcCheckCardPresent(port, slot) != 0) {
+                if (NuMcCheckCardFormatted(port, slot) != 0)
+                    devices[index].attr |= 8;
+                devices[index].free_space = NuMcCheckCardFreeSpace(port, slot);
+            } else {
+                devices[index].id = -1;
+            }
+        }
+    }
+    if (result != NULL) {
+        *result = devices;
+        return numdevices;
+    }
+    return numdevices;
+}
+
+void __cdecl NuFileWaitForRestartPc(void) {
+    printf("Waiting for restart...\n");
+}
+
+i32 __cdecl NuFileGetMediaMode(void) {
+    return 0;
+}
+
+NUFILE_DEVICE *__cdecl NuFileGetCurrentDevice(void) {
+    return default_device;
+}
+
+void __cdecl NuFileSetCurrentDevice(NUFILE_DEVICE *device) {
+    default_device = device;
+}
+
+i32 __cdecl NuFileGetCurrentPath(char *destination) {
+    return default_device->format_name_fn(default_device, destination, "", 0x7fff);
+}
+
+i32 __cdecl NuFileGetCurrentSysPath(char *destination) {
+    return default_device->format_name_fn(default_device, destination, "", 0x7fff);
 }
 
 void *__cdecl NuFileLoad(char *path) {
@@ -1798,6 +1870,62 @@ i32 __cdecl NuFileAlign(NUFILE file, i32 mask) {
     return count;
 }
 
+void __cdecl NuFileInitAddress(i32 capacity) {
+    if (capacity != MAX_FILE_ADDRESS) {
+        if (addr_ref != NULL)
+            NuFree(addr_ref, NuFileSourcePathPC, 0xa58);
+        if (addr_pos != NULL)
+            NuFree(addr_pos, NuFileSourcePathPC, 0xa59);
+        MAX_FILE_ADDRESS = capacity;
+        addr_ref =
+            (NUFILE_ADDRESS_PC *)NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5d);
+        addr_pos =
+            (NUFILE_ADDRESS_PC *)NuAlloc(MAX_FILE_ADDRESS * sizeof(NUFILE_ADDRESS_PC), NuFileSourcePathPC, 0xa5e);
+    }
+    ref_count = 0;
+    pos_count = 0;
+}
+
+void __cdecl NuFileTidyAddress(void) {
+    if (addr_ref != NULL) {
+        NuFree(addr_ref, NuFileSourcePathPC, 0xa68);
+        addr_ref = NULL;
+    }
+    if (addr_pos != NULL) {
+        NuFree(addr_pos, NuFileSourcePathPC, 0xa6d);
+        addr_pos = NULL;
+    }
+    MAX_FILE_ADDRESS = 0;
+}
+
+i32 __cdecl NuFileIsNewer(nufile_info_s *first, nufile_info_s *second) {
+    if (second->year > first->year)
+        return 1;
+    if (second->year < first->year)
+        return 0;
+    if (second->month > first->month)
+        return 1;
+    if (second->month < first->month)
+        return 0;
+    if (second->day > first->day)
+        return 1;
+    if (second->day < first->day)
+        return 0;
+    if (second->hour > first->hour)
+        return 1;
+    if (second->hour < first->hour)
+        return 0;
+    if (second->minute > first->minute)
+        return 1;
+    if (second->minute < first->minute)
+        return 0;
+    if (second->second > first->second)
+        return 1;
+    if (second->second < first->second)
+        return 0;
+    return 0;
+}
+
 i64 __cdecl NuDatCalcPos(NUDATHDR *header, i32 offset) {
     i64 position = offset;
 
@@ -1969,6 +2097,19 @@ i32 __cdecl NuDatFileFindHash(NUDATHDR *header, char *name) {
     }
 
     return -1;
+}
+
+i32 __cdecl NuMcFormat(i32 port, i32 slot);
+
+i32 __cdecl NuFileFormat(char *path) {
+    i32 result = 0;
+    NUFILE_DEVICE *device = NuFileGetDeviceFromPath(path);
+    if (device != NULL && device->id == 1) {
+        i32 port = path[2] - '0';
+        i32 slot = path[3] - '0';
+        result = NuMcFormat(port, slot);
+    }
+    return result;
 }
 
 i32 __cdecl NuDatFileFindTree(NUDATHDR *header, char *name) {
