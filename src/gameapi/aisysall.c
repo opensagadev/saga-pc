@@ -3807,14 +3807,14 @@ i32 __cdecl Action_ResetToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
 
 i32 __cdecl Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                       i32 param_count, i32 first_time, f32 elapsed) {
-    APIOBJECT_PC *object;
-    i32 ignore;
+    APIOBJECT_PC *object = NULL;
     i32 i;
+    i32 ignore = 1;
     char *value;
 
     if (first_time != 0) {
-        object = packet != NULL ? (APIOBJECT_PC *)(packet->owner) : NULL;
-        ignore = 1;
+        if (packet != NULL && packet->owner != NULL)
+            object = (APIOBJECT_PC *)packet->owner;
         for (i = 0; i < param_count; i++) {
             value = NuStrIStr(params[i], (char *)AreaConfigKeyword_character);
             if (value != NULL) {
@@ -3827,7 +3827,7 @@ i32 __cdecl Action_SetIgnoreAntinodes(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
             }
         }
         if (object != NULL) {
-            object->flags_low = (object->flags_low & ~0x20000u) | (ignore != 0 ? 0x20000u : 0);
+            object->ignore_antinodes = ignore;
         }
     }
     return 1;

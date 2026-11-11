@@ -1434,7 +1434,32 @@ typedef struct APIOBJECT_PC {
         };
     };
     u32 motion_flags;
-    u32 flags_low;
+    union {
+        u32 flags_low;
+        struct {
+            u32 used : 1;
+            u32 dontpush : 1;
+            u32 stopped : 1;
+            u32 shadow_terrain : 1;
+            u32 flat_terrain : 1;
+            u32 no_terrain : 1;
+            u32 dont_use_shadow_terrain : 1;
+            u32 player_control : 1;
+            u32 ai_override_control : 1;
+            u32 dont_range_check_los : 1;
+            u32 dont_check_los : 1;
+            u32 can_see_behind : 1;
+            u32 on : 1;
+            u32 got_lastsafepathpos : 1;
+            u32 is_jumping : 1;
+            u32 forceflag : 1;
+            u32 terrupdatemom : 1;
+            u32 ignore_antinodes : 1;
+            u32 interacting_with_antinode : 1;
+            u32 full_path_search_off : 1;
+            u32 flags_low_high : 12;
+        };
+    };
     u8 unknown_200[0xc];
     NUSPECIALHANDLE collision_special;
     u8 unknown_218_b[0x8];
