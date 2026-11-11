@@ -17,12 +17,12 @@ STATIC_ASSERT(offsetof(WORLD_RIPPLE_CLEANUP_PC, effects) == 0x46f4);
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_CLEANUP_PC, count) == 0x46f8);
 
 void __cdecl DestroyRippleMtls(WORLDINFO *world) {
-    WORLD_RIPPLE_CLEANUP_PC *view = (WORLD_RIPPLE_CLEANUP_PC *)world;
+    // MATCH-EXCEPTION: the cast is repeated at each use; a cast local gives the other SIB order (U1)
     i32 i;
-    for (i = 0; i < view->count; ++i) {
-        if (view->effects[i].material != NULL) {
-            NuTexDestroy(view->effects[i].material->texture_id);
-            NuMtlDestroy(view->effects[i].material);
+    for (i = 0; i < ((WORLD_RIPPLE_CLEANUP_PC *)world)->count; ++i) {
+        if (((WORLD_RIPPLE_CLEANUP_PC *)world)->effects[i].material != NULL) {
+            NuTexDestroy(((WORLD_RIPPLE_CLEANUP_PC *)world)->effects[i].material->texture_id);
+            NuMtlDestroy(((WORLD_RIPPLE_CLEANUP_PC *)world)->effects[i].material);
         }
     }
 }
