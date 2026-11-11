@@ -37623,9 +37623,7 @@ address,symbol,size,ctype
 0x951178,_Area_FreePlayModelList,196,APICHARACTERMODELLIST[49]
 0x0095123c,_last_area,4,i32
 0x951240,_Area_FreePlayModelCount,4,i32
-0x951244,_AreaGlobals_PC,,AREA_GLOBALS_PC
-0x951258,_AreaGlobalsProgressFlagsPC,,i32
-0x951264,_AreaGlobalsChallengeCountPc,4,i32
+0x951244,_AreaGlobals_PC,52,AREA_GLOBALS_PC
 0x951278,_AreaPlayerModelsPc,36,APICHARACTERMODELLIST[9]
 0x95129c,_LevelLoadCount,4,i32
 0x9512a0,_Area_MissionModelCount,4,i32

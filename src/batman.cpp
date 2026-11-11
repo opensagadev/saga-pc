@@ -107,7 +107,6 @@ extern "C" {
     void __cdecl SpeedBlur_Apply(WORLDINFO *world);
 
     u8 NuAllocDumpOnLevelPc = 0;
-    i32 AreaGlobalsChallengeCountPc = 0;
     i32 NuMainSkipCutBordersPc = 0;
     i64 frameout_count = 0;
     extern i16 TextIdPc8810c0;
@@ -841,7 +840,7 @@ extern "C" int __cdecl NuMain(int argc, char **argv) {
                 InitPanel(GetMenuID() == 4 ? TempOptions.widescreen : Game.options_save.widescreen);
                 saved_frametime = FRAMETIME;
                 if ((waiting_for_level == -1 || gone_through_door_to_new_level == 0) && screendump == 0) {
-                    if (ChallengeMode == 1 && AreaGlobalsChallengeCountPc >= 10 && WORLD->current_level != HUB_LDATA &&
+                    if (ChallengeMode == 1 && AreaGlobals_PC.field_20 >= 10 && WORLD->current_level != HUB_LDATA &&
                         MiniCutCam == 0 && CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
                         EndChallenge(2, 1);
                     }

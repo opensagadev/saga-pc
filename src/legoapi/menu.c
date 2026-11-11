@@ -1048,8 +1048,6 @@ void __cdecl IconScenes_Dump(void) {
     }
 }
 
-extern i32 AreaGlobalsChallengeCountPc;
-
 void __cdecl MenuDrawEndChallenge(MENU *menu) {
     (void)menu;
     if (MenuStopDraw == 0) {
@@ -1071,7 +1069,7 @@ void __cdecl MenuDrawEndChallenge(MENU *menu) {
             }
             SmartTextPc(TTab[TextIdPc8806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
         }
-        DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobalsChallengeCountPc, 10);
+        DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals_PC.field_20, 10);
     }
 }
 
