@@ -38160,11 +38160,7 @@ address,symbol,size,ctype
 0x009739d0,_nudlist_field_9d0,4,i32
 0x009739d8,_nudlist_field_9d8,4,u32
 0x9739dc,_PCDisplayScenes,1024,NUDISPLAY_LIST_PC *[256]
-0x973ddc,_PCDynamicDisplayScene,,NUDISPLAY_LIST_PC
-0x973e28,_PCDisplayMaterialCount,,u32
-0x973e2c,_PCDisplayMaterialRegistry,,NUMTL **
-0x00973e50,_nudlist_flags,4,u32
-0x00973e58,_nudlist_field_e58,4,u32
+0x973ddc,_PCDynamicDisplayScene,144,NUDISPLAY_LIST_PC
 0x973e6c,_PCDisplayMaterialAddCount,4,i32
 0x973e70,_PCDisplayMaterialAddQueue,4,NUMTL **
 0x973e74,_PCDisplayMaterialDeleteCount,4,i32
