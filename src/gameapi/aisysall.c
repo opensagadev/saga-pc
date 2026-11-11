@@ -3658,73 +3658,65 @@ i32 __cdecl Action_SetFullPathSearch(AISYS_PC *sys, AISCRIPTPROCESS_PC *processo
 
 i32 __cdecl Action_SetViewDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                    i32 count, i32 first_time, f32 elapsed) {
-    APIOBJECT_PC *object;
-
     if (packet == NULL || packet->owner == NULL || first_time == 0)
         return 1;
-    object = (APIOBJECT_PC *)packet->owner;
     if (packet->creature_index != 0xff)
-        object->view_distance = system->creatures[packet->creature_index].view_distance;
+        ((APIOBJECT_PC *)packet->owner)->view_distance = system->creatures[packet->creature_index].view_distance;
     else if (GetViewRangeFn != NULL)
-        object->view_distance = GetViewRangeFn(object->character_model->model_id);
+        ((APIOBJECT_PC *)packet->owner)->view_distance =
+            GetViewRangeFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
     else
-        object->view_distance = 1.0f;
+        ((APIOBJECT_PC *)packet->owner)->view_distance = 1.0f;
     if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-        object->view_distance = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT_PC *)packet->owner)->view_distance = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
 i32 __cdecl Action_SetMinViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                     i32 count, i32 first_time, f32 elapsed) {
-    APIOBJECT_PC *object;
-
     if (packet == NULL || packet->owner == NULL || first_time == 0)
         return 1;
-    object = (APIOBJECT_PC *)packet->owner;
     if (packet->creature_index != 0xff)
-        object->min_view_height = system->creatures[packet->creature_index].min_view_height;
+        ((APIOBJECT_PC *)packet->owner)->min_view_height = system->creatures[packet->creature_index].min_view_height;
     else if (GetMinViewHeightFn != NULL)
-        object->min_view_height = GetMinViewHeightFn(object->character_model->model_id);
+        ((APIOBJECT_PC *)packet->owner)->min_view_height =
+            GetMinViewHeightFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
     else
-        object->min_view_height = 1.0f;
+        ((APIOBJECT_PC *)packet->owner)->min_view_height = 1.0f;
     if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-        object->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT_PC *)packet->owner)->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
 i32 __cdecl Action_SetMaxViewHeight(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                     i32 count, i32 first_time, f32 elapsed) {
-    APIOBJECT_PC *object;
-
     if (packet == NULL || packet->owner == NULL || first_time == 0)
         return 1;
-    object = (APIOBJECT_PC *)packet->owner;
     if (packet->creature_index != 0xff)
-        object->max_view_height = system->creatures[packet->creature_index].max_view_height;
+        ((APIOBJECT_PC *)packet->owner)->max_view_height = system->creatures[packet->creature_index].max_view_height;
     else if (GetMaxViewHeightFn != NULL)
-        object->max_view_height = GetMaxViewHeightFn(object->character_model->model_id);
+        ((APIOBJECT_PC *)packet->owner)->max_view_height =
+            GetMaxViewHeightFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
     else
-        object->max_view_height = 1.0f;
+        ((APIOBJECT_PC *)packet->owner)->max_view_height = 1.0f;
     if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-        object->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT_PC *)packet->owner)->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
 i32 __cdecl Action_SetHearDistance(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                    i32 count, i32 first_time, f32 elapsed) {
-    APIOBJECT_PC *object;
-
     if (packet == NULL || packet->owner == NULL || first_time == 0)
         return 1;
-    object = (APIOBJECT_PC *)packet->owner;
     if (packet->creature_index != 0xff)
-        object->hear_distance = system->creatures[packet->creature_index].hear_distance;
+        ((APIOBJECT_PC *)packet->owner)->hear_distance = system->creatures[packet->creature_index].hear_distance;
     else if (GetHearDistanceFn != NULL)
-        object->hear_distance = GetHearDistanceFn(object->character_model->model_id);
+        ((APIOBJECT_PC *)packet->owner)->hear_distance =
+            GetHearDistanceFn(((APIOBJECT_PC *)packet->owner)->character_model->model_id);
     else
-        object->hear_distance = 1.0f;
+        ((APIOBJECT_PC *)packet->owner)->hear_distance = 1.0f;
     if (count != 0 && NuStrICmp(params[0], GizmoDefaultOutputName) != 0)
-        object->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
+        ((APIOBJECT_PC *)packet->owner)->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
     return 1;
 }
 
