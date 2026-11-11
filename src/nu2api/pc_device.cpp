@@ -991,7 +991,11 @@ u32 __thiscall PC_DEVICE_BACKEND_PC::CaptureScreenshotPc(u32 width, u32 height, 
     }
     target = NULL;
     copy = NULL;
-    if (SUCCEEDED(device->methods->create_render_target(device, width, height, 0x15, 0, 0, FALSE, &target, NULL))) {
+    // Typing this slot in saga.h perturbs unrelated C units (episodeIII BoulderSpawnPc), so it is typed here.
+    typedef HRESULT(__stdcall * CREATE_RENDER_TARGET_PC)(PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL,
+                                                         PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    if (SUCCEEDED(reinterpret_cast<CREATE_RENDER_TARGET_PC>(device->methods->create_render_target)(
+            device, width, height, 0x15, 0, 0, FALSE, &target, NULL))) {
         if (target != NULL) {
             if (SUCCEEDED(
                     device->methods->create_offscreen_plain_surface(device, width, height, 0x15, 2, &copy, NULL)) &&

@@ -8614,8 +8614,7 @@ typedef struct PC_D3D9_METHODS_PC {
     (PC_D3D9_DEVICE_PC *, u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
     HRESULT(__stdcall *create_index_buffer)
     (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *);
-    HRESULT(__stdcall *create_render_target)
-    (PC_D3D9_DEVICE_PC *, u32, u32, i32, i32, u32, BOOL, PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    void *create_render_target;
     void *create_depth_stencil_surface;
     HRESULT(__stdcall *update_surface)
     (PC_D3D9_DEVICE_PC *, PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const POINT *);
