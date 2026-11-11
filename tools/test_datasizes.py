@@ -31,6 +31,26 @@ class PaddingTests(unittest.TestCase):
         self.assertFalse(datasizes.padding_fits(12, 16, True, 0, 16))
 
 
+class ExtentTests(unittest.TestCase):
+    @staticmethod
+    def obj(offset, size, raw_size, flags):
+        section = {"raw_size": raw_size, "characteristics": flags}
+        region = {"offset": offset, "size": size, "section": section}
+        return type("Obj", (), {"extract_data": lambda self, name: region})()
+
+    def test_comdat_tail_is_exact(self):
+        self.assertEqual(datasizes.coff_extent(self.obj(4, 12, 16, 0x40301040), "_v"), (12, True, 4, 16))
+
+    def test_ordinary_section_extent_is_an_upper_bound(self):
+        self.assertFalse(datasizes.coff_extent(self.obj(4, 12, 16, 0xc0300040), "_v")[1])
+        self.assertFalse(datasizes.coff_extent(self.obj(0, 4, 16, 0x40301040), "_v")[1])
+
+    def test_common_symbol_is_exact(self):
+        region = {"offset": 0, "size": 24, "section": None}
+        obj = type("Obj", (), {"extract_data": lambda self, name: region})()
+        self.assertEqual(datasizes.coff_extent(obj, "_c"), (24, True, 0, 24))
+
+
 class PlanTests(unittest.TestCase):
     points = [0x800000, 0x800004, 0x800010]
 
