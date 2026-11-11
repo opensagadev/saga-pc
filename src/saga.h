@@ -3089,7 +3089,8 @@ typedef struct nuinstance_s {
         u32 flags;
         struct {
             u32 visible : 1;
-            u32 flags_low : 2;
+            u32 on_screen : 1;
+            u32 flag_2 : 1;
             u32 no_visibility_test : 1;
             u32 flags_high : 28;
         };
@@ -3098,8 +3099,16 @@ typedef struct nuinstance_s {
     u32 pad_4c;
 } NUINSTANCE;
 
+typedef struct nugeom_s {
+    struct nugeom_s *next;
+    NUMTL *mtl;
+} NUGEOM;
+STATIC_ASSERT(offsetof(NUGEOM, mtl) == 4);
+
 typedef struct nugobj_s {
-    u8 unknown_00[0x14];
+    u8 unknown_00[0xc];
+    NUGEOM *geom;
+    u8 unknown_10[4];
     f32 origin_radius;
     u8 unknown_18[4];
     NUVEC bounds_min;
@@ -3109,6 +3118,8 @@ typedef struct nugobj_s {
     u8 unknown_44[8];
     struct nugobj_s *next;
 } NUGOBJ;
+STATIC_ASSERT(offsetof(NUGOBJ, geom) == 0xc);
+STATIC_ASSERT(offsetof(NUGOBJ, next) == 0x4c);
 
 typedef struct nugscn_anim_lookup_pc_s {
     u16 count;
@@ -7429,7 +7440,7 @@ STATIC_ASSERT(offsetof(NUGLOBALRNDRSTATE_PC, reflection_packet_cache) == 0x198);
 
 typedef struct nuprim_vertex_group_source_pc_s {
     u8 count;
-    u8 unknown_01;
+    u8 block_count;
     u8 flags;
     u8 unknown_03;
     i8 *values;

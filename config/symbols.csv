@@ -6367,6 +6367,8 @@ address,symbol,size,ctype
 0x5cf4a0,_NuSpecialList,105,
 0x005cf510,_NuSpecialFindDisplay,149,"i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32)"
 0x005cf5b0,_NuSpecialFind,157,"i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, char *, i32)"
+0x5cf650,_NuSpecialFindMultiWCDisplay,183,
+0x5cf710,_NuSpecialFindMultiWC,254,"i32 __cdecl(NUGSCN *,NUSPECIALHANDLE *,char (*)[20],char *,i32,i32)"
 0x5cf810,?NuSpecialFindMultiDisplayPc@@YAHPAUNUGSCN_s@@PAUnuspecial_handle_s@@PADHH@Z,144,
 0x5cf8a0,_NuSpecialFindMulti,210,
 0x005cf980,_NuSpecialTestAnim,57,i32 __cdecl (NUSPECIALHANDLE *)
@@ -6375,8 +6377,12 @@ address,symbol,size,ctype
 0x005cfa20,_NuSpecialGetMtx,15,NUMTX *__cdecl (NUSPECIALHANDLE *)
 0x005cfa30,_NuSpecialSetMtx,30,"void __cdecl (NUSPECIALHANDLE *, const NUMTX *)"
 0x005cfa50,_NuSpecialGetName,36,char *__cdecl (NUSPECIALHANDLE *)
+0x5cfa80,_NuSpecialVertexStates,28,void __cdecl(NUPRIM_VERTEX_GROUP_SOURCE_PC *)
+0x5cfaa0,_NuSpecialVertexOffsets,20,"void __cdecl(i32,f32 (*)[4])"
 0x005cfac0,_NuSpecialExistsFn,29,i32 __cdecl (NUSPECIALHANDLE *)
 0x5cfae0,_NuSpecialForceMaterials,44,"void __cdecl(i32,NUMTL **)"
+0x5cfb10,_NuSpecialForceMtl,39,void __cdecl(NUMTL *)
+0x5cfb40,_NuSpecialMtl,10,void __cdecl(NUMTL *)
 0x005cfb50,_NuSpecialConstAlpha,49,"void __cdecl (i32, f32)"
 0x005cfb90,_NuSpecialConstTint,68,"void __cdecl (i32, const NUVEC *)"
 0x005cfc00,_NuSpecialSetVisibility,185,"void __cdecl (NUSPECIALHANDLE *, i32)"
@@ -6385,12 +6391,16 @@ address,symbol,size,ctype
 0x005cfd60,_NuSpecialGetVisibilityFn,48,i32 __cdecl (NUSPECIALHANDLE *)
 0x005cfd90,_NuSpecialSetNoVisiTest,80,"void __cdecl (NUSPECIALHANDLE *, i32)"
 0x005cfde0,_NuSpecialGetNoVisiTestFn,51,i32 __cdecl (NUSPECIALHANDLE *)
+0x5cfe20,_NuSpecialSetOnScreen,70,"void __cdecl(NUSPECIALHANDLE *,i32)"
 0x005cfe70,_NuSpecialGetOnScreenFn,34,i32 __cdecl (NUSPECIALHANDLE *)
 0x005cfed0,_NuSpecialGetNumSpecials,31,i32 __cdecl (NUGSCN *)
 0x005cfef0,_NuSpecialGetFirst,96,"i32 __cdecl (NUGSCN *, NUSPECIALHANDLE *, i32)"
 0x005cff50,_NuSpecialGetNext,35,void __cdecl (NUSPECIALHANDLE *)
 0x005cffb0,_NuSpecialGetInstanceix,66,i32 __cdecl (NUSPECIALHANDLE *)
+0x5d0000,_NuSpecialNumMtls,124,i32 __cdecl(NUSPECIALHANDLE *)
+0x5d0080,_NuSpecialGetMtl,161,"NUMTL *__cdecl(NUSPECIALHANDLE *,i32)"
 0x5d0130,_NuSpecialGetBounds,157,"void __cdecl (NUSPECIALHANDLE *, NUVEC *, NUVEC *)"
+0x5d01d0,_NuSpecialSetBounds,144,"void __cdecl(NUSPECIALHANDLE *,NUVEC *,NUVEC *)"
 0x005d0260,_NuSpecialGetRadius,127,"void __cdecl (NUSPECIALHANDLE *special, NUVEC *centre, f32 *radius)"
 0x5d02e0,_NuSpecialGetOriginRadius,69,f32 __cdecl(NUSPECIALHANDLE *)
 0x005d0330,_NuSpecialGetDrawMtx,53,NUMTX *__cdecl (NUSPECIALHANDLE *)
@@ -6399,12 +6409,24 @@ address,symbol,size,ctype
 0x005d0420,_NuSpecialGetInstAnim,43,void *__cdecl (NUSPECIALHANDLE *)
 0x005d0450,_NuSpecialCompare,41,"i32 __cdecl (NUSPECIALHANDLE *, NUSPECIALHANDLE *)"
 0x005d0480,_NuSpecialClear,15,void __cdecl (NUSPECIALHANDLE *)
+0x5d0490,_NuVertexStatesCreate,117,"NUPRIM_VERTEX_GROUP_SOURCE_PC *__cdecl(VARIPTR *,i32)"
+0x5d0510,_NuVertexStatesSetGroupState,19,"void __cdecl(NUPRIM_VERTEX_GROUP_SOURCE_PC *,i32,i32)"
 0x5d0530,_ShadowSetClipStatePc,34,"i32 __cdecl(i32,i32)"
 0x5d0560,_ShadowMapEnablePc,74,void __cdecl(struct PC_SPECIAL_SHADOW_LIGHT *)
 0x5d05b0,_ShadowMapResetPc,53,void __cdecl(void)
+0x5d05f0,_NuSpecialGetActiveShadowLights,6,i32 __cdecl(void)
+0x5d0600,_NuSpecialHasActiveShadowLights,12,i32 __cdecl(void)
+0x5d0610,_NuSpecialGetShadowLight,12,struct PC_SPECIAL_SHADOW_LIGHT *__cdecl(i32)
+0x5d0620,_NuSpecialHaveShadowClipTestResults,6,i32 __cdecl(void)
+0x5d0630,_NuSpecialGetShadowClipTestResult,25,i32 __cdecl(i32)
 0x5d0650,_ShadowResetClipResultsPc,11,void __cdecl(void)
+0x5d0660,_NuSplineList,47,void __cdecl(NUGSCN *)
 0x005d0690,_NuSplineFind,74,"NUGSPLINE *__cdecl (NUGSCN *, char *)"
+0x5d06e0,_NuSplineFindAllSub,91,"i32 __cdecl(NUGSCN *,char *,NUGSPLINE **,i32)"
 0x5d0740,_NuSplineFindAllBeg,93,"i32 __cdecl (NUGSCN *, char *, NUGSPLINE **, i32)"
+0x5d07a0,_NuSplineFindNextBeg,86,"NUGSPLINE *__cdecl(NUGSCN *,char *,NUGSPLINE *)"
+0x5d0800,_NuSplineGetRandomPoint,106,"void __cdecl(NUGSPLINE *,NUVEC *)"
+0x5d0870,_NuQFntSetPrintMode,10,void __cdecl(u32)
 0x5d0880,_NuQFntPushPrintMode,52,void __cdecl(u32)
 0x5d08c0,_NuQFntPopPrintMode,30,void __cdecl(void)
 0x5d08f0,_NuQFntSetICGap,25,"void __cdecl (VUFNT *, f32)"

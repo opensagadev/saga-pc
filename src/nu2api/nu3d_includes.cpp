@@ -3469,6 +3469,10 @@ extern "C" {
     extern f32 qfnt_offscale_x;
     extern f32 qfnt_offscale_y;
 
+    void __cdecl NuQFntSetPrintMode(u32 mode) {
+        NuQFntMode = mode;
+    }
+
     void __cdecl NuQFntPushPrintMode(u32 mode) {
         if (NuQFntModeStackIndex < 16) {
             NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
@@ -11673,6 +11677,24 @@ extern "C" {
         return NULL;
     }
 
+    i32 __cdecl NuSplineFindAllSub(NUGSCN *scene, char *name, NUGSPLINE **results, i32 capacity) {
+        i32 count;
+        NUGSPLINE *spline;
+        i32 index;
+        if (capacity <= 0 || scene == NULL)
+            return 0;
+        count = 0;
+        spline = scene->splines;
+        for (index = 0; index < scene->spline_count; ++spline, ++index) {
+            if (NuStrIStr(spline->name, name) != NULL) {
+                results[count++] = spline;
+                if (count >= capacity)
+                    break;
+            }
+        }
+        return count;
+    }
+
     i32 __cdecl NuSplineFindAllBeg(NUGSCN *scene, char *name, NUGSPLINE **results, i32 capacity) {
         i32 count;
         NUGSPLINE *spline;
@@ -11689,6 +11711,28 @@ extern "C" {
             }
         }
         return count;
+    }
+
+    NUGSPLINE *__cdecl NuSplineFindNextBeg(NUGSCN *scene, char *name, NUGSPLINE *previous) {
+        NUGSPLINE *spline;
+        NUGSPLINE *end;
+        if (scene == NULL)
+            return NULL;
+        spline = previous != NULL ? previous + 1 : scene->splines;
+        end = scene->splines + scene->spline_count;
+        for (; spline < end; ++spline) {
+            if (NuStrNICmp(name, spline->name, -1) == 0)
+                return spline;
+        }
+        return NULL;
+    }
+
+    void __cdecl NuSplineGetRandomPoint(NUGSPLINE *spline, NUVEC *point) {
+        i32 index = rand() % spline->length;
+        i32 next_index = (index + 1) % spline->length;
+        NUVEC *start = &spline->pts[index * (i16)spline->pt_size];
+        NUVEC *end = &spline->pts[next_index * (i16)spline->pt_size];
+        NuVecLerp(point, start, end, (f32)((rand() & 0x7fff) * (1.0 / 32768.0)));
     }
 } // extern "C"
 
@@ -12844,6 +12888,7 @@ extern "C" {
     enum {
         NUSPECIAL_COLLISION_FLAG = 1 << 9,
         NUSPECIAL_NO_VISIBILITY_TEST_FLAG = 1 << 7,
+        NUSPECIAL_ON_SCREEN_FLAG = 1 << 2,
         NUINSTANCE_NO_VISIBILITY_TEST_FLAG = 1 << 3
     };
 
@@ -12944,6 +12989,17 @@ extern "C" {
         }
         legacy = (NUSPECIAL_LEGACY_PC *)special->special;
         return legacy != NULL ? legacy->name : NULL;
+    }
+
+    void __cdecl NuSpecialVertexStates(NUPRIM_VERTEX_GROUP_SOURCE_PC *states) {
+        NuPrimVertexGroupSource = states;
+        ++render_state.counter_0020;
+        ++render_state.vertex_groups_id;
+    }
+
+    void __cdecl NuSpecialVertexOffsets(i32 count, f32 (*offsets)[4]) {
+        RenderFrameShaderArrayPc = offsets;
+        RenderFrameShaderArrayCountPc = count;
     }
 
     i32 __cdecl NuSpecialTestAnim(NUSPECIALHANDLE *special) {
@@ -13088,6 +13144,19 @@ extern "C" {
         return display != NULL ? display->flags & NUSPECIAL_NO_VISIBILITY_TEST_FLAG : 0;
     }
 
+    void __cdecl NuSpecialSetOnScreen(NUSPECIALHANDLE *special, i32 enabled) {
+        if (special->scene == NULL)
+            return;
+        if (special->special != NULL) {
+            SPECIAL_LEGACY(special)->instance->on_screen = enabled;
+        } else if (special->display_special != NULL) {
+            if (enabled != 0)
+                SPECIAL_DISPLAY(special)->flags |= NUSPECIAL_ON_SCREEN_FLAG;
+            else
+                SPECIAL_DISPLAY(special)->flags &= ~NUSPECIAL_ON_SCREEN_FLAG;
+        }
+    }
+
     void __cdecl NuSpecialConstAlpha(i32 enabled, f32 alpha) {
         if (enabled != 0) {
             nuspecial_draw_state |= 1;
@@ -13196,6 +13265,31 @@ extern "C" {
         special->display_special = NULL;
     }
 
+    NUPRIM_VERTEX_GROUP_SOURCE_PC *__cdecl NuVertexStatesCreate(VARIPTR *buffer, i32 count) {
+        NUPRIM_VERTEX_GROUP_SOURCE_PC *states;
+        i32 blocks;
+        i32 size;
+        i32 i;
+        states = (NUPRIM_VERTEX_GROUP_SOURCE_PC *)((buffer->addr + 3) & ~3);
+        buffer->addr = ((buffer->addr + 3) & ~3) + sizeof(NUPRIM_VERTEX_GROUP_SOURCE_PC);
+        states->count = (u8)count;
+        states->flags = 0;
+        blocks = count / 16;
+        if (count % 16 != 0)
+            ++blocks;
+        states->block_count = (u8)blocks;
+        states->values = (i8 *)((buffer->addr + 15) & ~15);
+        size = blocks * 16;
+        buffer->addr = ((buffer->addr + 15) & ~15) + size;
+        for (i = 0; i < size; ++i)
+            states->values[i] = 0;
+        return states;
+    }
+
+    void __cdecl NuVertexStatesSetGroupState(NUPRIM_VERTEX_GROUP_SOURCE_PC *states, i32 group, i32 value) {
+        states->values[group] = (i8)value;
+    }
+
     i32 __cdecl ShadowSetClipStatePc(i32 enabled, i32 state) {
         i32 previous = PCSpecialClipState;
         PCSpecialClipState = enabled == 0 ? -1 : state;
@@ -13221,8 +13315,40 @@ extern "C" {
         PCSpecialActiveShadowLights = 0;
     }
 
+    i32 __cdecl NuSpecialGetActiveShadowLights(void) {
+        return PCSpecialActiveShadowLights;
+    }
+
+    i32 __cdecl NuSpecialHasActiveShadowLights(void) {
+        return PCSpecialActiveShadowLights > 0;
+    }
+
+    struct PC_SPECIAL_SHADOW_LIGHT *__cdecl NuSpecialGetShadowLight(i32 index) {
+        return PCSpecialShadowLights[index];
+    }
+
+    i32 __cdecl NuSpecialHaveShadowClipTestResults(void) {
+        return PCSpecialShadowClipResultsPresent;
+    }
+
+    i32 __cdecl NuSpecialGetShadowClipTestResult(i32 index) {
+        if (PCSpecialShadowClipResultsPresent == 0)
+            return -1;
+        return PCSpecialShadowClipResults[index];
+    }
+
     void __cdecl ShadowResetClipResultsPc(void) {
         PCSpecialShadowClipResultsPresent = 0;
+    }
+
+    void __cdecl NuSplineList(NUGSCN *scene) {
+        NUGSPLINE *spline;
+        i32 index;
+        if (scene == NULL)
+            return;
+        spline = scene->splines;
+        for (index = 0; index < scene->spline_count; ++index, ++spline)
+            PCSpecialEmptyHandler_candidate(index, spline->name);
     }
 
     void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *handle, i32 visible) {
@@ -13442,6 +13568,56 @@ extern "C" {
         return -1;
     }
 
+    i32 __cdecl NuSpecialNumMtls(NUSPECIALHANDLE *special) {
+        NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        i32 count = 0;
+        if (legacy != NULL) {
+            NUGOBJ *object = ((NUGSCN *)special->scene)->objects[legacy->instance->object_index];
+            NUGEOM *geom;
+            while (object->next != NULL)
+                object = object->next;
+            for (geom = object->geom; geom != NULL; geom = geom->next)
+                ++count;
+            return count;
+        }
+        if (special->display_special != NULL) {
+            NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+            i32 level = 0;
+            while (display->clip_range[level] != 0.0f)
+                ++level;
+            return ((PC_DISPLAY_CLIP_OBJECT_PC *)display->clip_objects)[level].material_count;
+        }
+        return 0;
+    }
+
+    NUMTL *__cdecl NuSpecialGetMtl(NUSPECIALHANDLE *special, i32 index) {
+        NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)special->special;
+        if (legacy != NULL) {
+            NUGOBJ *object = ((NUGSCN *)special->scene)->objects[legacy->instance->object_index];
+            NUGEOM *geom;
+            while (object->next != NULL)
+                object = object->next;
+            geom = object->geom;
+            while (index != 0) {
+                if (geom == NULL)
+                    return NULL;
+                --index;
+                geom = geom->next;
+            }
+            return geom->mtl;
+        }
+        if (special->display_special != NULL) {
+            NUDISPLAY_SPECIAL_PC *display = (NUDISPLAY_SPECIAL_PC *)special->display_special;
+            i32 level = 0;
+            while (display->clip_range[level] != 0.0f)
+                ++level;
+            return ((NUGSCN *)special->scene)
+                ->display_list
+                ->display_materials[((PC_DISPLAY_CLIP_OBJECT_PC *)display->clip_objects)[level].material_ids[index]];
+        }
+        return NULL;
+    }
+
     i32 special_debug = 0;
 
     /* Debug listing of a scene's specials; the retail print call is the empty handler. */
@@ -13512,6 +13688,75 @@ extern "C" {
         return 0;
     }
 
+    i32 __cdecl NuStrICmpWC(char *pattern, char *name, char *wildcards);
+
+    static i32 NuSpecialFindMultiWCDisplay(NUGSCN *scene, NUSPECIALHANDLE *dest, char (*wildcards)[20], char *pattern,
+                                           i32 capacity, i32 flags) {
+        i32 count = 0;
+        NUDISPLAY_SPECIAL_PC *special = scene->display_list->specials;
+        i32 index;
+        for (index = 0; index < scene->display_list->special_count; ++index, ++special) {
+            i32 result;
+            if (wildcards != NULL)
+                result = NuStrICmpWC(pattern, special->name, *wildcards);
+            else
+                result = NuStrICmpWC(pattern, special->name, NULL);
+            if (result == 0) {
+                if (dest != NULL) {
+                    dest->scene = scene;
+                    dest->display_special = (NUMTX *)special;
+                    dest->special = NULL;
+                    ++dest;
+                }
+                if (wildcards != NULL)
+                    ++wildcards;
+                if (++count >= capacity)
+                    return count;
+            }
+        }
+        if (flags != 0 && special_debug != 0)
+            PCSpecialEmptyHandler_candidate(pattern);
+        return count;
+    }
+
+    i32 __cdecl NuSpecialFindMultiWC(NUGSCN *scene, NUSPECIALHANDLE *dest, char (*wildcards)[20], char *pattern,
+                                     i32 capacity, i32 flags) {
+        i32 count = 0;
+        if (scene != NULL) {
+            NUSPECIAL_LEGACY_PC *special;
+            NUDISPLAY_SPECIAL_PC *display_special;
+            i32 index;
+            if (scene->display_list != NULL)
+                return NuSpecialFindMultiWCDisplay(scene, dest, wildcards, pattern, capacity, flags);
+            special = scene->specials;
+            display_special = NULL;
+            for (index = 0; index < scene->special_count; ++index, ++special, ++display_special) {
+                i32 result;
+                if (wildcards != NULL)
+                    result = NuStrICmpWC(pattern, special->name, *wildcards);
+                else
+                    result = NuStrICmpWC(pattern, special->name, NULL);
+                if (result == 0) {
+                    if (dest != NULL) {
+                        dest->scene = scene;
+                        dest->special = (NUMTX *)special;
+                        dest->display_special = scene->display_list != NULL ? (NUMTX *)display_special : NULL;
+                        ++dest;
+                    }
+                    if (wildcards != NULL)
+                        ++wildcards;
+                    if (++count >= capacity)
+                        return count;
+                }
+            }
+            if (flags != 0 && special_debug != 0)
+                PCSpecialEmptyHandler_candidate(pattern);
+            return count;
+        }
+        PCSpecialEmptyHandler_candidate();
+        return 0;
+    }
+
     i32 __cdecl NuGScnNumSpecials(NUGSCN *scene) {
         if (scene->display_list != NULL)
             return scene->display_list->special_count;
@@ -13571,6 +13816,19 @@ extern "C" {
         } else if (special->display_special != NULL) {
             *minimum = *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_min;
             *maximum = *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_max;
+        }
+    }
+
+    void __cdecl NuSpecialSetBounds(NUSPECIALHANDLE *special, NUVEC *minimum, NUVEC *maximum) {
+        NUGOBJ *object;
+        if (special->special != NULL) {
+            for (object = SPECIAL_GOBJ(special); object != NULL; object = object->next) {
+                object->bounds_min = *minimum;
+                object->bounds_max = *maximum;
+            }
+        } else {
+            *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_min = *minimum;
+            *(NUVEC *)&SPECIAL_DISPLAY(special)->bounds_max = *maximum;
         }
     }
 
@@ -14355,6 +14613,20 @@ extern "C" {
             PCSpecialForcedMaterialTable = materials;
             PCSpecialForceMaterialCount = count;
         }
+    }
+
+    void __cdecl NuSpecialForceMtl(NUMTL *material) {
+        if (material != NULL) {
+            nuspecial_draw_state |= 8;
+            PCSpecialForcedMaterial = material;
+        } else {
+            nuspecial_draw_state &= ~8;
+            PCSpecialForcedMaterial = NULL;
+        }
+    }
+
+    void __cdecl NuSpecialMtl(NUMTL *material) {
+        PCSpecialForcedMaterial = material;
     }
 
     void __cdecl NuHGobjEvalAnimBlend(NUHGOBJ_EVAL_PC *object, NUANIM_LEGACY_HEADER_PC *animation_a, f32 frame_a,
