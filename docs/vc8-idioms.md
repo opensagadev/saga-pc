@@ -632,6 +632,23 @@ came within 153 CPU seconds (median 19), so a 2-3 minute budget per function
 loses nothing. U8, U14-U19 (block placement, x87 pops, if-conversion) and
 `ResetStreaks` (U2) did not move at all.
 
+Second run (2.5 minutes per function, 2 workers, all tiers, U8/U16/C-only
+functions skipped, highest objdiff first): 40 functions searched, 11 exact
+finds. Most minimised patches still carried unrelated temporaries; the
+committed forms came from trying the obvious spellings of the one remaining
+spot by hand: initialised declaration order (I43, 3), statement order (I4),
+compare and float operand order (I42, I25), a cast at each use (I45) and
+locals for re-read fields (`NuMtxAlignY`, MATCH-EXCEPTION). `GizMiniCut_Load`
+and `LineToPlaneIntersecion` stay: only a dozen temporaries reproduce them.
+Scripted single-rewrite passes paid more per compile than the random search:
+I45 over the 63 near-exact functions with a parameter cast local made 3 exact,
+I43 (now `idiomfix.py I43`) over the 157 near-exact functions with adjacent
+initialised declarations 4 (one from 61%), and 0 in the first 350 variants of
+the 70-90% functions. With `MATCH-EXCEPTION` allowed, five of the U20 patches
+of the first trial were committed in a reduced form; `GetBladeJoints`
+(narrows a type), `PushSeekComplete` (duplicated store) and
+`StatusPacketReset` were not.
+
 ## Repository-wide estimates
 
 `tools/idiomscan.py` tags every differing function with the signatures above
