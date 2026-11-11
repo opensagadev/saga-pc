@@ -51,6 +51,8 @@ REWRITE_RULES = {
     "signedness": True, "chain_swap": True,
 }
 UNNATURAL = {"dummy_local", "register_local", "dead_init", "extra_block", "yoda_compare"}
+# Not natural, but allowed with a `// MATCH-EXCEPTION:` comment (searched by default).
+EXCEPTION_KINDS = {"inline_cast"}
 
 
 class Site:
@@ -882,6 +884,39 @@ def rule_inline_pointer(func):
             continue
 
 
+def rule_inline_cast(func):
+    """T *v = (T *)param; v->f  ->  ((T *)param)->f (cast at each use, I45). VC8 allocates
+    registers differently for the copy; a repeated cast is a MATCH-EXCEPTION form."""
+    params = {p.spelling for p in func.params}
+    for decl in func.locals:
+        inits = [c for c in func.children(decl) if c.kind != K.TYPE_REF]
+        if not inits:
+            continue
+        init = inits[-1]
+        while init.kind == K.UNEXPOSED_EXPR and func.children(init):
+            init = func.children(init)[0]
+        if init.kind != K.CSTYLE_CAST_EXPR:
+            continue
+        refs = [n for n in func.walk(init) if n.kind == K.DECL_REF_EXPR]
+        if len(refs) != 1 or refs[0].spelling not in params:
+            continue
+        param = refs[0].spelling
+        uses = func.uses(decl)
+        if not uses or any(func.assigned(r) for r in uses) or func.address_taken(decl):
+            continue
+        stmt = func.up(decl)
+        if stmt is None or len([d for d in func.children(stmt) if d.kind == K.VAR_DECL]) != 1:
+            continue
+        cast = f"({func.src(init)})"
+        edits = [(*func.span(r), cast) for r in uses] + [(*func.full(stmt), "")]
+        param_assigned = any(n.spelling == param and func.assigned(n) for n in func.nodes
+                             if n.kind == K.DECL_REF_EXPR)
+        try:
+            yield Site(edits, "inline_cast", decl.spelling, not param_assigned, False)
+        except ValueError:
+            continue
+
+
 def _int_type_token(func, stmt):
     """(start, end, spelling) of the integer type at the start of a declaration statement."""
     text = func.src(stmt)
@@ -1072,7 +1107,7 @@ def rule_rewrite(func):
 
 RULES = [rule_decl_order, rule_split_multi_decl, rule_copy_param, rule_reuse_variable, rule_split_local,
          rule_temp_expr, rule_hoist_load, rule_reassociate, rule_incdec, rule_loop_form, rule_guard_tail,
-         rule_ternary, rule_element_pointer, rule_inline_pointer, rule_int_type, rule_struct_copy,
+         rule_ternary, rule_element_pointer, rule_inline_pointer, rule_inline_cast, rule_int_type, rule_struct_copy,
          rule_decl_init, rule_rewrite, rule_unnatural]
 
 
@@ -1087,7 +1122,7 @@ def sites(func, unnatural=False):
             for site in rule(func):
                 if site.natural and any(YODA.match(e[2]) for e in site.edits):
                     site.kind, site.natural = "yoda_compare", False
-                if not site.natural and not unnatural:
+                if not site.natural and not unnatural and site.kind not in EXCEPTION_KINDS:
                     continue
                 if site.edits in seen or not site.edits:
                     continue

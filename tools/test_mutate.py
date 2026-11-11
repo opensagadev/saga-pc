@@ -114,7 +114,24 @@ class MutateTest(unittest.TestCase):
 
     def test_unnatural_hidden_by_default(self):
         _, found = self.kinds("Sum")
-        self.assertFalse([s for s in found if not s.natural])
+        self.assertFalse([s for s in found if not s.natural and s.kind not in mutate.EXCEPTION_KINDS])
+
+    def test_inline_cast(self):
+        text = FIXTURE + """
+void Zero(void *opaque) {
+    LIST *list = (LIST *)opaque;
+    list->count = 0;
+    list->flags = list->count;
+}
+"""
+        func = self.function(text, "Zero")
+        site = next(s for s in mutate.sites(func) if s.kind == "inline_cast")
+        self.assertFalse(site.natural)
+        self.assertTrue(site.safe)
+        result = mutate.apply(text, [site])
+        self.assertNotIn("LIST *list =", result)
+        self.assertIn("((LIST *)opaque)->flags = ((LIST *)opaque)->count;", result)
+        self.assertEqual(parse_errors(self.parser.parse(result)), [])
 
     def test_copy_param(self):
         func, found = self.kinds("Clear")
