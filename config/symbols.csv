@@ -11004,6 +11004,7 @@ address,symbol,size,ctype
 0x6e01f0,_PCNativeWarningPrint,99,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, const char *, ...)"
 0x6e0260,_PCNativeDebugPrintAtPc,28,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, i32, i32, u32, const char *, ...)"
 0x6e0280,_PCNativeDebugFormatPc,28,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, const char *, ...)"
+0x6e02a0,_PCNativeD3DWarningPrint,119,"void __cdecl (PC_NATIVE_DEBUG_STATE_PC *, HRESULT, const char *, ...)"
 0x6e0320,?UpdateGeometry@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,5091,void __thiscall(void)
 0x6e1750,?Initialize@PC_NATIVE_DEBUG_STATE_PC@@QAEXXZ,172,void __thiscall(void)
 0x6e1930,??0PC_DEVICE_BACKEND_PC@@QAE@XZ,472,PC_DEVICE_BACKEND_PC::PC_DEVICE_BACKEND_PC(void)
@@ -22283,6 +22284,7 @@ address,symbol,size,ctype
 0x776e4c,??_C@_0BG@IFDCFPJB@Nu2Api?5Runtime?5Error?$CB?$AA@,22,const char[22]
 0x776e68,??_C@_0FD@FPCCMCL@Important?4?5Do?5not?5ignore?$CB?6?6?$CFs?6?6?$CI@,83,const char[83]
 0x776ebc,??_C@_0BA@IIBCFLF@NUWARNING?3?5?$CFs?$AN?6?$AA@,16,const char[16]
+0x776ecc,??_C@_0CO@HIAEFGJJ@NUD3DWARNING?3?5?$CFs?0?5DirectDescript@,46,const char[46]
 0x776efc,??_C@_0BE@FKEKOEFD@?9?9?5Log?5Started?5?9?9?6?6?$AA@,20,const char[20]
 0x776f10,??_C@_07HPNNHGO@Log?4txt?$AA@,8,const char[8]
 0x776f1c,__real@44160000,4,const f32
