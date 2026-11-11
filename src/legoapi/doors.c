@@ -59,8 +59,8 @@ void __cdecl Doors_Init(WORLDINFO *world) {
     STARTUP_DOOR_PC *door;
     i32 index;
     LastDoorPointerPc = NULL;
-    door = view->doors;
     view->start_door = NULL;
+    door = view->doors;
     if (door == NULL)
         return;
     for (index = 0; index < view->door_count; ++index, ++door) {
