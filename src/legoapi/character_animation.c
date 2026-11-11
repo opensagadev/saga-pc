@@ -435,7 +435,8 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 
 void __cdecl Animate_BEAST(GAMEOBJECT *object) {
-    CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
+    // MATCH-EXCEPTION: the fall-timer cast is repeated at each use; a cast local at the top changes
+    // register choice (U3)
     GAMEPAD_PC *pad = object->pad;
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
@@ -457,9 +458,9 @@ void __cdecl Animate_BEAST(GAMEOBJECT *object) {
     animation = object->anim_packet.requested_animation;
     if (animation == 5 ||
         ((object->character_data->model_flags & 0x20) != 0 && (animation == 40 || animation == 75 || animation == 76)))
-        state->fall_animation_timer += FRAMETIME;
+        ((CHARACTER_FALL_ANIMATION_READER_PC *)object)->fall_animation_timer += FRAMETIME;
     else
-        state->fall_animation_timer = 0.0f;
+        ((CHARACTER_FALL_ANIMATION_READER_PC *)object)->fall_animation_timer = 0.0f;
 }
 
 void __cdecl Animate_CRITTER(GAMEOBJECT *object) {
