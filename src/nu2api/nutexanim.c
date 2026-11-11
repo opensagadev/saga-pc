@@ -900,8 +900,8 @@ TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgParseFile(NUFILE file, VARIPTR *bu
 }
 
 TEXTURE_ANIM_PROGRAM_PC *__cdecl NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIPTR end, i32 fps) {
-    NUFILE file = NuFileOpen(path, 0);
     TEXTURE_ANIM_PROGRAM_PC *program = NULL;
+    NUFILE file = NuFileOpen(path, 0);
     if (file != 0) {
         program = NuTexAnimProgParseFile(file, buffer, end, fps);
         NuFileClose(file);
