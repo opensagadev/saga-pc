@@ -12536,6 +12536,265 @@ extern "C" {
         NuHtmlWrite("<P><P>");
     }
 
+    void NuHtmlGraphArray(char **strings) {
+        for (; *strings != NULL; ++strings)
+            NuHtmlWrite(*strings);
+    }
+
+    static char *NuHtmlGraphLabel(char **labels, i32 index) {
+        if (labels != NULL && labels[index] != NULL)
+            return labels[index];
+        return " ";
+    }
+
+    void NuHtmlHBarGraph(char *title, i32 width, i32 height, i32 *values, i32 count, i32 maximum, char **labels,
+                         u32 *colours, i32 colour_count) {
+        char text[256];
+        i32 row_height;
+        f32 scale;
+        i32 quarter;
+        i32 tick;
+        i32 colour_index;
+        i32 index;
+        sprintf(text,
+                "<TABLE bgColor=white height=16 width=%d cellSpacing=0 cellPadding=\"1\" "
+                "border=1><TR><TD><Center>%s</Center></TD></TR></TABLE>\r\n",
+                width, title);
+        NuHtmlWrite(text);
+        sprintf(text,
+                "<TABLE bgColor=white height=%d width=%d cellSpacing=0 cellPadding=0 border=1><tr><TD "
+                "VAlign=top>\r\n",
+                height, width);
+        NuHtmlWrite(text);
+        row_height = height / (count + 1);
+        sprintf(text, "<TABLE height=%d width=\"100%%%%\" cellSpacing=1 cellPadding=0 border=0 >\r\n", row_height);
+        NuHtmlWrite(text);
+        scale = 88.0f / (f32)maximum;
+        sprintf(text,
+                "<TD width=\"%d%%%%\" bgColor=gray Align=right><DIV style=\"FONT-SIZE: 10pt; WIDTH: "
+                "10pt;\">%d</DIV></TD>\r\n",
+                12, 0);
+        NuHtmlWrite(text);
+        quarter = maximum / 4;
+        for (tick = 1; tick <= 4; ++tick) {
+            sprintf(text,
+                    "<TD width=\"%d%%%%\" bgColor=gray Align=right><DIV style=\"FONT-SIZE: 10pt; WIDTH: "
+                    "10pt;\">%d</DIV></TD>\r\n",
+                    22, quarter * tick);
+            NuHtmlWrite(text);
+        }
+        sprintf(text, "</TD></tr></TABLE>\r\n\r\n");
+        NuHtmlWrite(text);
+        colour_index = 0;
+        for (index = 0; index < count; ++index) {
+            i32 bar_width = (i32)((f32)values[index] * scale);
+            u32 colour;
+            if (bar_width > 88)
+                bar_width = 88;
+            if (colours != NULL && colour_count != 0) {
+                colour = colours[colour_index++];
+                if (colour_index >= colour_count)
+                    colour_index = 0;
+            } else {
+                colour = 0;
+            }
+            sprintf(text, "<TABLE height=%d width=\"100%%%%\" cellSpacing=1 cellPadding=0 border=0><TR>\r\n",
+                    row_height);
+            NuHtmlWrite(text);
+            sprintf(text,
+                    "<TD align=right width=\"%d%%%%\" bgColor=lightgrey><DIV style=\"FONT-SIZE: "
+                    "10pt\">%s</TD>\r\n",
+                    12, NuHtmlGraphLabel(labels, index));
+            NuHtmlWrite(text);
+            sprintf(text, "<TD width=\"%d%%%%\" bgColor=%06X></TD>\r\n", bar_width, colour);
+            NuHtmlWrite(text);
+            sprintf(text, "<TD width=50 bgColor=white></TD></TR></TABLE>\r\n");
+            NuHtmlWrite(text);
+        }
+        sprintf(text, "</TD></tr></TABLE>\r\n\r\n");
+        NuHtmlWrite(text);
+    }
+
+    void NuHtmlVBarGraph(char *title, i32 width, i32 height, i32 *values, i32 count, i32 maximum, char **labels,
+                         u32 *colours, i32 colour_count) {
+        char text[256];
+        i32 bar_width = (i32)((f32)(width - 50) / (f32)count);
+        f32 scale;
+        i32 quarter;
+        i32 tick;
+        i32 colour_index;
+        i32 index;
+        sprintf(text,
+                "<TABLE bgColor=white height=16 width=%d cellSpacing=0 cellPadding=\"1\" "
+                "border=1><TR><TD><Center>%s</Center></TD></TR></TABLE>\r\n",
+                width + 5, title);
+        NuHtmlWrite(text);
+        sprintf(text,
+                "<TABLE bgColor=white height=%d width=%d cellSpacing=0 cellPadding=\"1\" border=1 "
+                "VAlign=bottom><TR><TD>\r\n",
+                height, width);
+        NuHtmlWrite(text);
+        sprintf(text, "<TABLE height=\"100%%%%\" width=%d cellSpacing=1 cellPadding=0 border=0 Align=left>\r\n", 50);
+        NuHtmlWrite(text);
+        scale = 80.0f / (f32)maximum;
+        quarter = maximum / 4;
+        for (tick = 0; tick < 4; ++tick) {
+            sprintf(text,
+                    "<TR><TD valign=top align=right Height=\"%d%%%%\" bgColor=gray><DIV style=\"FONT-SIZE: "
+                    "10pt\">%d</TD></TR>\r\n",
+                    20, maximum - quarter * tick);
+            NuHtmlWrite(text);
+        }
+        sprintf(text,
+                "<TR><TD valign=top align=right Height=\"%d%%%%\" bgColor=gray><DIV style=\"FONT-SIZE: "
+                "10pt\">%d</TD></TR>\r\n",
+                20, 0);
+        NuHtmlWrite(text);
+        NuHtmlWrite("</CENTER></TABLE>\r\n");
+        colour_index = 0;
+        for (index = 0; index < count; ++index) {
+            u32 colour;
+            i32 bar_height;
+            if (colours != NULL && colour_count != 0) {
+                colour = colours[colour_index++];
+                if (colour_index >= colour_count)
+                    colour_index = 0;
+            } else {
+                colour = 0;
+            }
+            bar_height = (i32)((f32)values[index] * scale);
+            if (bar_height > 80)
+                bar_height = 80;
+            sprintf(text,
+                    "<TABLE height=\"100%%%%\" width=%d cellSpacing=1 cellPadding=0 border=0 "
+                    "Align=left><TR><TD></TD></TR>\r\n",
+                    bar_width);
+            NuHtmlWrite(text);
+            sprintf(text, "<TR><TD Height=\"%d%%%%\" bgColor=%06X></TD></TR>\r\n", bar_height, colour);
+            NuHtmlWrite(text);
+            sprintf(text,
+                    "<TR><TD Height=\"%d%%%%\" bgColor=lightgrey><DIV style=\"FONT-SIZE: 10pt; WIDTH: 10pt; "
+                    "WRITING-MODE: tb-rl\">%s</DIV></TD></TR></TABLE>\r\n",
+                    20, NuHtmlGraphLabel(labels, index));
+            NuHtmlWrite(text);
+        }
+        NuHtmlWrite("</TABLE></TD></tr></TABLE>\r\n");
+    }
+
+    f32 curx;
+    f32 cury;
+    f32 nextx;
+    f32 dx;
+    i32 size;
+
+    static void setpoint(f32 x) {
+        curx = x;
+        cury = 0.0f;
+    }
+
+    static void setnextpoint(f32 x, f32 y) {
+        nextx = x;
+        dx = (x - curx) / y;
+        size = (i32)y;
+    }
+
+    static i32 getnextdatapoint(f32 *value, i32 *delta) {
+        f32 old_x = curx;
+        *value = old_x;
+        --size;
+        cury = cury + 1.0;
+        curx = old_x + dx;
+        *delta = (i32)curx - (i32)old_x;
+        if (size != 0)
+            return 0;
+        curx = nextx;
+        return -1;
+    }
+
+    void NuHtmlHLineGraph(char *title, i32 width, i32 height, i32 *values, i32 count, i32 maximum, char **labels) {
+        char text[256];
+        f32 width_f;
+        i32 quarter_width;
+        i32 tick_width;
+        i32 label_width;
+        f32 scale;
+        i32 quarter;
+        i32 tick;
+        i32 next_value;
+        i32 row;
+        sprintf(text,
+                "<TABLE bgColor=white height=16 width=%d cellSpacing=0 cellPadding=\"1\" "
+                "border=1><TR><TD><Center>%s</Center></TD></TR></TABLE>\r\n",
+                width, title);
+        NuHtmlWrite(text);
+        sprintf(text,
+                "<TABLE bgColor=white height=%d width=%d cellSpacing=0 cellPadding=0 border=1><tr><TD "
+                "VAlign=top>\r\n",
+                height, width);
+        NuHtmlWrite(text);
+        sprintf(text, "<TABLE height=10 width=\"100%%%%\" cellSpacing=0 cellPadding=0 border=0 >\r\n");
+        NuHtmlWrite(text);
+        width_f = (f32)width;
+        quarter_width = (i32)(width_f * 0.88f * 0.25);
+        label_width = (i32)(width_f * 0.12f);
+        tick_width = (i32)(quarter_width / 600.0 * 100.0);
+        scale = (f32)(quarter_width * 4) / maximum;
+        sprintf(text,
+                "<TD width=\"%d%%%%\" bgColor=gray Align=right><DIV style=\"FONT-SIZE: 10pt; WIDTH: "
+                "10pt;\">%d</DIV></TD>\r\n",
+                12, 0);
+        NuHtmlWrite(text);
+        setpoint((f32)values[0] * scale);
+        setnextpoint(curx, 8.0f);
+        quarter = maximum / 4;
+        next_value = 1;
+        for (tick = 1; tick <= 4; ++tick) {
+            sprintf(text,
+                    "<TD width=\"%d%%%%\" bgColor=gray Align=right><DIV style=\"FONT-SIZE: 10pt; WIDTH: "
+                    "10pt;\">%d</DIV></TD>\r\n",
+                    tick_width, quarter * tick);
+            NuHtmlWrite(text);
+        }
+        sprintf(text, "</TD></tr></TABLE>");
+        NuHtmlWrite(text);
+        for (row = 0; row < count; ++row) {
+            i32 line;
+            sprintf(text,
+                    "<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0><TD width=\"12%%%%\" height=30 bgColor=lightgrey> "
+                    "<DIV style=\"FONT-SIZE: 10pt\">%s</TD>\r\n",
+                    NuHtmlGraphLabel(labels, row));
+            NuHtmlWrite(text);
+            sprintf(text, "<TD width=\"88%%%%\" bgColor=green>\r\n");
+            NuHtmlWrite(text);
+            for (line = 0; line < 16; ++line) {
+                f32 value;
+                i32 delta;
+                if (getnextdatapoint(&value, &delta) < 0) {
+                    setnextpoint((f32)values[next_value++] * scale, 17.0f);
+                    getnextdatapoint(&value, &delta);
+                    if (row + 1 == count)
+                        dx = 0.0f;
+                }
+                if (delta < 0) {
+                    value += (f32)delta;
+                    delta = -delta;
+                } else if (delta < 1) {
+                    delta = 1;
+                }
+                sprintf(text,
+                        "  <TABLE width=\"100%%%%\" BORDER=0 CELLPADDING=0 CELLSPACING=0> <TD width=%d height=2 "
+                        "bgColor=white></TD> <TD width=%d bgColor=black> </TD> <TD width=%d  bgColor=white> "
+                        "</TD></TABLE>\r\n",
+                        (i32)value, delta, width - (i32)value - delta - label_width - 4);
+                NuHtmlWrite(text);
+            }
+            sprintf(text, "<TR></TD> </TD></TABLE> \r\n\r\n");
+            NuHtmlWrite(text);
+        }
+        sprintf(text, "</TABLE>");
+        NuHtmlWrite(text);
+    }
+
     VISIBILITY_RESULT_READER_PC *__cdecl NuVisiEvaluate(NUGSCN *scene, void *context) {
         VISIBILITY_SCENE_READER_PC *view = (VISIBILITY_SCENE_READER_PC *)scene;
         VISIBILITY_RESULT_READER_PC *result;

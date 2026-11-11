@@ -6603,6 +6603,14 @@ address,symbol,size,ctype
 0x005d73e0,_NuHtmlFlushPc,71,void __cdecl(void)
 0x5d7430,_NuHtmlBitmap,210,
 0x5d7510,_NuHtmlTitle,46,
+0x5d7540,_NuHtmlGraphArray,37,void __cdecl(char **)
+0x5d7570,_NuHtmlGraphLabel,17,"char *__cdecl(char **,i32)"
+0x5d7590,_NuHtmlHBarGraph,630,"void __cdecl(char *,i32,i32,i32 *,i32,i32,char **,u32 *,i32)"
+0x5d7810,_NuHtmlVBarGraph,592,"void __cdecl(char *,i32,i32,i32 *,i32,i32,char **,u32 *,i32)"
+0x5d7a60,_setpoint,19,void __cdecl(f32)
+0x5d7a80,_setnextpoint,43,"void __cdecl(f32,f32)"
+0x5d7ab0,_getnextdatapoint,113,"i32 __cdecl(f32 *,i32 *)"
+0x5d7b30,_NuHtmlHLineGraph,1023,"void __cdecl(char *,i32,i32,i32 *,i32,i32,char **)"
 0x005d7f80,_CreateTimeBar,666,"i32 __cdecl (VARIPTR *, VARIPTR, i32 *, i32) [private EAX buffer]"
 0x005d8220,_NuTimeBarCreateSetEx,25,"i32 __cdecl (VARIPTR *, VARIPTR, i32 *)"
 0x005d8240,_NuTimeBarCreateSetEx2,36,"i32 __cdecl (VARIPTR *, VARIPTR, i32)"
@@ -18807,7 +18815,35 @@ address,symbol,size,ctype
 0x76489c,??_C@_06IIELJDGD@?$DMP?$DO?$DMP?$DO?$AA@,7,char []
 0x7648a4,??_C@_0BC@EPOBLJEN@?$DM?1B?$DO?$DM?1Center?$DO?$DMHR?$DO?$AA@,18,char []
 0x7648b8,??_C@_0BA@KHFJLJHC@?$DMHR?$DO?$DMCenter?$DO?$DMB?$DO?$AA@,16,char []
+0x7648c8,??_C@_0DA@KGBHOMDC@?$DMTD?5width?$DN50?5bgColor?$DNwhite?$DO?$DM?1TD?$DO@,,
+0x7648f8,??_C@_0CI@EABHBEAC@?$DMTD?5width?$DN?$CC?$CFd?$CF?$CF?$CF?$CF?$CC?5bgColor?$DN?$CF06X?$DO@,,
+0x764920,??_C@_0FI@MDCOFLMO@?$DMTD?5align?$DNright?5width?$DN?$CC?$CFd?$CF?$CF?$CF?$CF?$CC?5b@,,
+0x764978,??_C@_0EN@CGNIOLPD@?$DMTABLE?5height?$DN?$CFd?5width?$DN?$CC100?$CF?$CF?$CF?$CF?$CC@,,
+0x7649c8,??_C@_0BH@GCPBCGOL@?$DM?1TD?$DO?$DM?1tr?$DO?$DM?1TABLE?$DO?$AN?6?$AN?6?$AA@,,
+0x7649e0,??_C@_0GH@GHDALFFM@?$DMTD?5width?$DN?$CC?$CFd?$CF?$CF?$CF?$CF?$CC?5bgColor?$DNgray?5@,,
+0x764a48,__real@4056000000000000,,
+0x764a50,??_C@_0EK@ILIBHFKN@?$DMTABLE?5height?$DN?$CFd?5width?$DN?$CC100?$CF?$CF?$CF?$CF?$CC@,,
+0x764aa0,??_C@_0GD@ECECKCAN@?$DMTABLE?5bgColor?$DNwhite?5height?$DN?$CFd?5w@,,
+0x764b08,??_C@_0HP@CIDKOHIL@?$DMTABLE?5bgColor?$DNwhite?5height?$DN16?5w@,,
+0x764b88,??_C@_0BN@DMDKJMLG@?$DM?1TABLE?$DO?$DM?1TD?$DO?$DM?1tr?$DO?$DM?1TABLE?$DO?$AN?6?$AA@,,
+0x764ba8,??_C@_0IG@LIKGPEEO@?$DMTR?$DO?$DMTD?5Height?$DN?$CC?$CFd?$CF?$CF?$CF?$CF?$CC?5bgColor?$DN@,,
+0x764c30,??_C@_0DC@KKNLIJKH@?$DMTR?$DO?$DMTD?5Height?$DN?$CC?$CFd?$CF?$CF?$CF?$CF?$CC?5bgColor?$DN@,,
+0x764c68,??_C@_0GG@HABBCGOJ@?$DMTABLE?5height?$DN?$CC100?$CF?$CF?$CF?$CF?$CC?5width?$DN?$CFd@,,
+0x764cd0,??_C@_0BE@JBGCMHBB@?$DM?1CENTER?$DO?$DM?1TABLE?$DO?$AN?6?$AA@,,
+0x764ce8,??_C@_0GI@PGMFEHCK@?$DMTR?$DO?$DMTD?5valign?$DNtop?5align?$DNright?5H@,,
+0x764d50,??_C@_0FE@PAKPJLNK@?$DMTABLE?5height?$DN?$CC100?$CF?$CF?$CF?$CF?$CC?5width?$DN?$CFd@,,
+0x764da8,??_C@_0GI@JMENCFGG@?$DMTABLE?5bgColor?$DNwhite?5height?$DN?$CFd?5w@,,
+0x764e10,??_C@_08CGFOAEPK@?$DM?1TABLE?$DO?$AA@,,
+0x764e1c,??_C@_0BN@BOHLPJGF@?$DMTR?$DO?$DM?1TD?$DO?5?$DM?1TD?$DO?$DM?1TABLE?$DO?5?$AN?6?$AN?6?$AA@,,
+0x764e40,??_C@_0LI@CKENDKII@?5?5?$DMTABLE?5width?$DN?$CC100?$CF?$CF?$CF?$CF?$CC?5BORDER?$DN@,,
 0x764ef8,__real@4031000000000000,,const f64
+0x764f00,??_C@_0CE@IGALALGH@?$DMTD?5width?$DN?$CC88?$CF?$CF?$CF?$CF?$CC?5bgColor?$DNgreen@,,
+0x764f28,??_C@_0IE@IPGOKLO@?$DMTABLE?5?5BORDER?$DN0?5CELLPADDING?$DN0?5C@,,
+0x764fac,??_C@_0BD@GEPIOIOO@?$DM?1TD?$DO?$DM?1tr?$DO?$DM?1TABLE?$DO?$AA@,,
+0x764fc0,__real@4082c00000000000,,
+0x764fc8,__real@3fbeb851e0000000,,
+0x764fd0,__real@3fec28f5c0000000,,
+0x764fd8,??_C@_0EK@LLOIBKII@?$DMTABLE?5height?$DN10?5width?$DN?$CC100?$CF?$CF?$CF?$CF?$CC@,,
 0x00765024,_NuTimeBarSource,51,const char[51]
 0x00765058,_NuTimeBarScanlineMicroseconds,8,const f64
 0x00765060,_NuTimeBarLinesPerSecond,8,const f64
@@ -37135,6 +37171,7 @@ address,symbol,size,ctype
 0x00964110,_sceneParameters,,NURNDRLIBSCENE[32]
 0x966290,_VisibilityAlternateWidthPc,,f32
 0x00966398,_zx,4,f32
+0x96639c,_dx,4,f32
 0x009663a0,_NuTextureLoadCountPC,,i32
 0x9663a4,_PCSpecialActiveShadowLights,,i32
 0x009663a8,_fstack_limit,4,VARIPTR
@@ -37155,8 +37192,10 @@ address,symbol,size,ctype
 0x96dd04,_VisibilityAlternateHeightPc,,f32
 0x96dd08,_NuPostFilterMemoryPc,2048,native BSS
 0x0096e508,_AnimQuatSavedPc,,
+0x96e50c,_size,4,i32
 0x96e510,_VisibilityPrimaryWorldMatrixPc,,NUMTX
 0x96e554,_TextureAnimationSignalsOffPc,,u32
+0x96e558,_curx,4,f32
 0x96e55c,_NuRndrStopUpdate,,i32
 0x96e560,_VisibilityAbsoluteDepthPlanePc,,NUPLANE
 0x96e570,_PCSpecialShadowClipResults,,u32[4]
@@ -37173,6 +37212,7 @@ address,symbol,size,ctype
 0x9715a4,_NuRndrDebRangeInv,,NUVEC
 0x9715b0,_PCMaterialPoolCountPc,,i32
 0x9715b8,_NuPostEffectInitialisedFlagsPc,,u32
+0x9715bc,_cury,4,f32
 0x9715c0,_PCSpecialShadowClipResultsPresent,,i32
 0x9715c4,_NuRndrDebRange,,NUVEC
 0x9715d0,_NuRndrShadowDirectionsPc,96,NUVEC[8]
@@ -37183,6 +37223,7 @@ address,symbol,size,ctype
 0x971708,_PCGlobalLightingState,,PC_GLOBAL_LIGHTING_STATE
 0x00971780,_NuAnimDataBitCount,256,u8[256]
 0x971880,_NuPortalNearPlanePc,,NUPLANE
+0x971890,_nextx,4,f32
 0x971898,_RendererArenaIndexCountPc,4,i32
 0x9718a0,_VisibilityDepthPlanePc,,NUPLANE
 0x009718b0,_nudlist_field_18b0,4,char *
