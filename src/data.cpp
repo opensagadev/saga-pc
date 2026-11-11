@@ -35023,13 +35023,6 @@ extern "C" {
     __declspec(allocate(".bss$AiEditorLowerHeightOverridePc")) f32 AiEditorLowerHeightOverridePc = 0;
 }
 
-#pragma section(".rdata$AiEditorPathPaletteObservedPc", read)
-extern "C" {
-    __declspec(allocate(".rdata$AiEditorPathPaletteObservedPc")) extern const u32 AiEditorPathPaletteObservedPc[9] = {
-        0x00534e4fu, 0x444e4f43u, 0x4f495449u, 0x0000534eu, 0xffff0000u,
-        0xff00ff00u, 0xff00ffffu, 0xffff00ffu, 0xffffff00u};
-}
-
 #pragma section(".bss$EmperorFloorRouteOnPc", read, write)
 extern "C" {
     __declspec(allocate(".bss$EmperorFloorRouteOnPc")) i32 EmperorFloorRouteOnPc = 0;

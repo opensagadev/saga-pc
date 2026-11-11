@@ -1111,8 +1111,6 @@ extern f32 AiEditorUpperHeightOverridePc;
 
 extern f32 AiEditorLowerHeightOverridePc;
 
-extern const u32 AiEditorPathPaletteObservedPc[9];
-
 void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix);
 
 STATIC_ASSERT(offsetof(EDAIPATHNODE_s, radius) == 0x24);
@@ -9051,9 +9049,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                        : 0;
         active_route = shift < 64 ? (u32)((u64)1 << shift) : 0;
     }
-    colour = path == aieditor->current_path
-                 ? 0xffffffff
-                 : *(u32 *)((u32)AiEditorPathPaletteObservedPc + 16u + (u32)(path_index % 5) * sizeof(u32));
+    colour = path == aieditor->current_path ? 0xffffffff : iAISysPathColoursG[path_index % 5];
     if (path != NULL) {
         for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
              node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link)) {

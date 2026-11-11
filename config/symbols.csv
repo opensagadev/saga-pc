@@ -18126,7 +18126,6 @@ address,symbol,size,ctype
 0x0075ff64,_AIScriptKeywordEnd,2,const char[2]
 0x0075ff68,_AIScriptKeywordReferenceScript,16,const char[16]
 0x0075ff78,_AIScriptKeywordActions,8,const char[8]
-0x75ff7c,_AiEditorPathPaletteObservedPc,,const u32[9]
 0x0075ff80,??_C@_0L@DEGONPBH@CONDITIONS?$AA@,11,const char[11]
 0x0075ff80,_AIScriptKeywordConditions,11,const char[11]
 0x0075ff8c,_iAISysPathColoursG,20,const u32[5]
