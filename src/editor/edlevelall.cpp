@@ -598,6 +598,9 @@ f32 EdInputMouseX = 0.5f;
 class PlaceableInterface : public EdClassInterface {
   public:
     PlaceableInterface();
+    Placeable *Find(char *name);
+    i32 Find(char *name, Placeable **objects, i32 capacity);
+    i32 DebugOutputObjects();
 
     i32 scene_id;
 };
@@ -607,6 +610,7 @@ STATIC_ASSERT(offsetof(PlaceableInterface, scene_id) == 0x8);
 /* A special object of a loaded scene, edited through its handle. */
 class SpecialObject : public Placeable {
   public:
+    SpecialObject();
     virtual const char *GetName() const;
     virtual f32 GetRadius() const;
     virtual const VuMtx *GetInitialTransform() const;
@@ -636,14 +640,21 @@ STATIC_ASSERT(offsetof(SpecialObject, special) == 0x18);
  * SceneInstance copies, hidden ones are skipped by iteration and drawing. */
 class SceneObject : public SpecialObject {
   public:
+    static void operator delete(void *memory);
+    SceneObject();
+    virtual ~SceneObject();
+    virtual Placeable *Clone(i32 attributes) const;
+
     i32 editor_owned;
     i32 hidden;
 };
 STATIC_ASSERT(sizeof(SceneObject) == 0x2c);
 
 /* Editor-created copy of a scene object with its own transforms. */
-class SceneInstance : public SceneObject {
+class SceneInstance : public SceneObject, public CSListLink<SceneInstance> {
   public:
+    static void operator delete(void *memory);
+    SceneInstance();
     virtual const char *GetName() const;
     virtual void SetName(const char *value);
     virtual const VuMtx *GetInitialTransform() const;
@@ -658,13 +669,10 @@ class SceneInstance : public SceneObject {
     virtual i32 GetVisibility() const;
     virtual void SetVisibility(i32 visible);
 
-    SceneInstance *next;
-    SceneInstance *previous;
     __declspec(align(16)) VuMtx initial_transform;
     VuMtx current_transform;
     i32 visibility;
 };
-STATIC_ASSERT(offsetof(SceneInstance, next) == 0x2c);
 STATIC_ASSERT(offsetof(SceneInstance, initial_transform) == 0x40);
 STATIC_ASSERT(offsetof(SceneInstance, current_transform) == 0x80);
 STATIC_ASSERT(offsetof(SceneInstance, visibility) == 0xc0);
@@ -674,6 +682,8 @@ STATIC_ASSERT(sizeof(SceneInstance) == 0xd0);
  * editor creates from them. */
 class SceneObjectHelper : public PlaceableInterface, public EdSubSystem {
   public:
+    SceneObjectHelper() : owned_first(NULL), owned_last(NULL), owned_object_count(0), show_hidden_wire(1) {
+    }
     virtual void ClearLevel(i32 level);
     virtual void Flush();
     virtual i32 GetNumObjects();
@@ -686,6 +696,12 @@ class SceneObjectHelper : public PlaceableInterface, public EdSubSystem {
     virtual void AddMenuItems(eduimenu_s *menu);
     virtual void SubRender();
     void SetSceneFilter(char *filter);
+    void Initialise();
+    using EdClassInterface::GetNextObject;
+
+    static void cbEdSceneObjectShowHiddenSolid(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbEdSceneObjectShowHiddenWire(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbEdSceneObjectShowOwnedObjects(eduimenu_s *, eduiitem_s *item, u32);
 
     u32 reserved_18;
     SceneObject *scenes[10];
@@ -707,13 +723,62 @@ STATIC_ASSERT(offsetof(SceneObjectHelper, iteration_object_index) == 0x70);
 STATIC_ASSERT(offsetof(SceneObjectHelper, scene_filter) == 0x78);
 STATIC_ASSERT(offsetof(SceneObjectHelper, owned_first) == 0x98);
 STATIC_ASSERT(sizeof(SceneObjectHelper) == 0xb0);
+extern SceneObjectHelper theSceneObjectHelper;
 
 /* Member references into a special object: handle, visibility, collision. */
 class EdRefSpecialObject : public EdRef {
   public:
+    EdRefSpecialObject(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
+                       EdControl *member_control)
+        : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
+    }
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 };
+
+/* Property control of a special-object member: the button lists the
+ * special objects of the loaded scenes, the typed name picks one by name. */
+class EdSpecialObjectControl : public EdControl {
+  public:
+    static void operator delete(void *memory);
+    EdSpecialObjectControl();
+    virtual ~EdSpecialObjectControl();
+    virtual void Process(EdInputContext &input);
+    virtual void Render();
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *reference, void *object);
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbSelectObject(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbButton(eduimenu_s *parent, eduiitem_s *item, u32);
+
+    Placeable *highlighted_object;
+};
+STATIC_ASSERT(offsetof(EdSpecialObjectControl, highlighted_object) == 0x10);
+STATIC_ASSERT(sizeof(EdSpecialObjectControl) == 0x14);
+
+/* The editor subsystems; each one is initialised, processed and rendered
+ * with the level editor. */
+class EdSystem {
+  public:
+    void RegisterSubSystem(EdSubSystem *subsystem) {
+        subsystem->next = NULL;
+        subsystem->previous = last_subsystem;
+        if (last_subsystem != NULL)
+            last_subsystem->next = subsystem;
+        last_subsystem = subsystem;
+        if (first_subsystem == NULL)
+            first_subsystem = subsystem;
+        subsystem_count++;
+    }
+
+    EdSubSystem *first_subsystem;
+    EdSubSystem *last_subsystem;
+    i32 subsystem_count;
+};
+STATIC_ASSERT(sizeof(EdSystem) == 0xc);
+
+EdSystem theEdSystem = {NULL, NULL, 0};
+
+extern i32 MemoryManagerTraceFailures;
 
 i16 Placeable::CurrentLedFile;
 
@@ -1144,10 +1209,16 @@ class PlaceableHelper {
     i32 iteration_object_type;
     ObjectType object_types[16];
 
+    PlaceableHelper();
+    void RegisterObjectType(char *name, PlaceableInterface *object_interface);
+    Placeable *FindObject(char *name);
+    void *GetNextObject(void *object, i32 (*filter)(void *));
+    Placeable *Find(char *name);
+    i32 Find(char *name, Placeable **objects, i32 capacity);
     i32 IsEditorObject(ClassObject &object);
     void Initialise();
 
-    __forceinline void *GetNextObject(void *object) {
+    void *GetNextObject(void *object) {
         void *next = NULL;
         if (object == NULL)
             iteration_object_type = 0;
@@ -1164,6 +1235,7 @@ class PlaceableHelper {
 STATIC_ASSERT(sizeof(PlaceableHelper) == 0x88);
 
 PlaceableHelper thePlaceableHelper;
+SceneObjectHelper theSceneObjectHelper;
 
 /* Arrow-head shape of the facing arrow DrawObjectSphere draws. */
 f32 ClassEditorArrowMinRadius = 0.1f;
@@ -1202,7 +1274,7 @@ EdEnumControl::Item EdEnumControl::YesNoItems[] = {{"Yes", 1}, {"No", 0}, {NULL,
 /* Retail's editor message hooks (0x6b7c40/0x6b7c50), the first code of the
  * unit; the format strings were compiled out, leaving empty variadic
  * bodies. */
-void EdTrace(const char *, ...) {
+void EdTrace(...) {
 }
 
 void EdMessage(char const *, ...) {
@@ -2728,6 +2800,84 @@ void Placeable::SetCurrentPosition(const VuVec *position) {
     }
 }
 
+Placeable *PlaceableInterface::Find(char *name) {
+    for (Placeable *object = static_cast<Placeable *>(GetNextObject(NULL)); object != NULL;
+         object = static_cast<Placeable *>(GetNextObject(object))) {
+        if (NuStrICmp(name, (char *)object->GetName()) == 0)
+            return object;
+    }
+    return NULL;
+}
+
+/* Collects up to capacity objects whose name contains the given text. */
+i32 PlaceableInterface::Find(char *name, Placeable **objects, i32 capacity) {
+    Placeable *object = static_cast<Placeable *>(GetNextObject(NULL));
+    i32 count = 0;
+    while (object != NULL && count < capacity) {
+        if (NuStrIStr((char *)object->GetName(), name) != NULL)
+            objects[count++] = object;
+        object = static_cast<Placeable *>(GetNextObject(object));
+    }
+    return count;
+}
+
+i32 PlaceableInterface::DebugOutputObjects() {
+    void *object = GetNextObject(NULL);
+    i32 count = 0;
+    while (object != NULL) {
+        count++;
+        object = GetNextObject(object);
+    }
+    return count;
+}
+
+PlaceableHelper::PlaceableHelper() {
+    object_type_count = 0;
+}
+
+void PlaceableHelper::RegisterObjectType(char *name, PlaceableInterface *object_interface) {
+    ObjectType *type = &object_types[object_type_count++];
+    type->name = name;
+    type->object_interface = object_interface;
+    object_interface->scene_id = object_type_count;
+}
+
+Placeable *PlaceableHelper::FindObject(char *name) {
+    for (i32 index = 0; index < object_type_count; index++) {
+        PlaceableInterface *object_interface = object_types[index].object_interface;
+        for (Placeable *object = static_cast<Placeable *>(object_interface->GetNextObject(NULL)); object != NULL;
+             object = static_cast<Placeable *>(object_interface->GetNextObject(object))) {
+            if (NuStrICmp((char *)object->GetName(), name) == 0)
+                return object;
+        }
+    }
+    return NULL;
+}
+
+void *PlaceableHelper::GetNextObject(void *object, i32 (*filter)(void *)) {
+    for (object = GetNextObject(object); object != NULL; object = GetNextObject(object)) {
+        if (filter(object) != 0)
+            return object;
+    }
+    return NULL;
+}
+
+Placeable *PlaceableHelper::Find(char *name) {
+    for (i32 index = 0; index < object_type_count; index++) {
+        Placeable *object = object_types[index].object_interface->Find(name);
+        if (object != NULL)
+            return object;
+    }
+    return NULL;
+}
+
+i32 PlaceableHelper::Find(char *name, Placeable **objects, i32 capacity) {
+    i32 count = 0;
+    for (i32 index = 0; index < object_type_count; index++)
+        count += object_types[index].object_interface->Find(name, objects + count, capacity - count);
+    return count;
+}
+
 /* True for an object of one of the registered placeable classes. */
 i32 PlaceableHelper::IsEditorObject(ClassObject &object) {
     if (object.object != NULL) {
@@ -3285,6 +3435,10 @@ void SceneObjectHelper::ClearLevel(i32 level) {
 void SceneObjectHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
 }
 
+SpecialObject::SpecialObject() {
+    NuSpecialClear(&special);
+}
+
 NUSPECIALHANDLE *SpecialObject::GetNuHSpecial() {
     return &special;
 }
@@ -3321,6 +3475,30 @@ void EdRefSpecialObject::SetMemberData(void *object, i32 requested_type, void *d
     }
 }
 
+SceneObject::SceneObject() {
+    scene_id = (i16)theSceneObjectHelper.scene_id;
+    editor_owned = 0;
+}
+
+void SceneObject::operator delete(void *memory) {
+    theMemoryManager.FreePool(memory, sizeof(SceneObject));
+}
+
+SceneObject::~SceneObject() {
+}
+
+SceneInstance::SceneInstance() {
+    scene_id = (i16)theSceneObjectHelper.scene_id;
+    editor_owned = 1;
+    VuMtxCopy(initial_transform, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+    VuMtxCopy(current_transform, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
+    visibility = 1;
+}
+
+void SceneInstance::operator delete(void *memory) {
+    theMemoryManager.FreePool(memory, sizeof(SceneInstance));
+}
+
 const char *SceneInstance::GetName() const {
     return name.data != NULL ? name.data + 1 : NULL;
 }
@@ -3337,6 +3515,52 @@ void SceneObjectHelper::Flush() {
     owned_last = NULL;
     owned_first = NULL;
     owned_object_count = 0;
+}
+
+/* Builds a SceneObject for every special of each loaded scene, in linear
+ * memory, the first time the scene is seen. */
+void SceneObjectHelper::PreLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
+    for (i32 level = 0; level < 10; level++) {
+        NUGSCN *scene = theLevelEditor.GetScene(level);
+        if (scene != NULL && scene_counts[level] == 0) {
+            scene_counts[level] = NuGScnNumSpecials(scene);
+            u32 bytes = scene_counts[level] * sizeof(SceneObject);
+            SceneObject *objects = NULL;
+            MEMORYMANAGER *manager = &theMemoryManager;
+            if (bytes < *manager->end_anchor - *manager->start_anchor) {
+                *manager->start_anchor = (*manager->start_anchor + 15) & ~15;
+                objects = (SceneObject *)*manager->start_anchor;
+                *manager->start_anchor += bytes;
+                memset(objects, 0, bytes);
+                manager->unknown_14 += bytes;
+                manager->size -= bytes;
+                manager->unknown_10 = *manager->start_anchor;
+            }
+            if (objects == NULL && MemoryManagerTraceFailures)
+                EdTrace();
+            scenes[level] = objects;
+            for (i32 index = 0; index < scene_counts[level]; index++)
+                new (&scenes[level][index]) SceneObject;
+        }
+    }
+    scene_object_count = 0;
+    for (i32 level = 0; level < 10; level++) {
+        SceneObject *object = scenes[level];
+        NUGSCN *scene = theLevelEditor.GetScene(level);
+        if (scene != NULL) {
+            i32 count = scene_counts[level];
+            for (i32 index = 0; index < count; index++) {
+                NuGScnGetSpecial(&object->special, scene, index);
+                object->attributes = 0x12400000;
+                object->led_file = (i16)level;
+                char *name = NuSpecialGetName(&object->special);
+                if (name != NULL)
+                    NuStrICmp(name, "reflectport");
+                scene_object_count++;
+                object++;
+            }
+        }
+    }
 }
 
 i32 SceneObjectHelper::GetNumObjects() {
@@ -3373,6 +3597,22 @@ void *SceneObjectHelper::GetNextObject(void *object) {
     return NULL;
 }
 
+void *SceneObjectHelper::CreateObject(void *, i32, i32) {
+    SceneInstance *object = new (theMemoryManager.AllocPool(sizeof(SceneInstance), 1)) SceneInstance;
+    if (object != NULL) {
+        object->next = NULL;
+        object->previous = owned_last;
+        if (owned_last != NULL)
+            owned_last->next = object;
+        owned_last = object;
+        if (owned_first == NULL)
+            owned_first = object;
+        owned_object_count++;
+        object->SetName("object");
+    }
+    return object;
+}
+
 void SceneObjectHelper::DestroyObject(void *object, i32) {
     SceneInstance *instance = static_cast<SceneInstance *>(object);
     theLevelEditor.destroying_objects = 1;
@@ -3394,6 +3634,134 @@ void SceneObjectHelper::DestroyObject(void *object, i32) {
 
 void SceneObjectHelper::UpdateLists(MemoryBuffer *first, MemoryBuffer *second) {
     PreLoadInitialisation(first, second);
+}
+
+void SceneObjectHelper::cbEdSceneObjectShowHiddenSolid(eduimenu_s *, eduiitem_s *item, u32) {
+    theSceneObjectHelper.show_hidden_solid ^= 1;
+    item->highlighted = theSceneObjectHelper.show_hidden_solid;
+}
+
+void SceneObjectHelper::cbEdSceneObjectShowHiddenWire(eduimenu_s *, eduiitem_s *item, u32) {
+    theSceneObjectHelper.show_hidden_wire ^= 1;
+    item->highlighted = theSceneObjectHelper.show_hidden_wire;
+}
+
+void SceneObjectHelper::cbEdSceneObjectShowOwnedObjects(eduimenu_s *, eduiitem_s *item, u32) {
+    theSceneObjectHelper.show_owned_objects ^= 1;
+    item->highlighted = theSceneObjectHelper.show_owned_objects;
+}
+
+void SceneObjectHelper::AddMenuItems(eduimenu_s *menu) {
+    eduiMenuAddItem(menu, eduiItemSeparatorCreate(0, &EdLevelAttr));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &EdLevelAttr, show_hidden_solid, 0, cbEdSceneObjectShowHiddenSolid,
+                                              "Show Hidden Solid"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &EdLevelAttr, show_hidden_wire, 0, cbEdSceneObjectShowHiddenWire,
+                                              "Show Hidden Wire"));
+    eduiMenuAddItem(menu, eduiItemCheckCreate(0, &EdLevelAttr, show_owned_objects, 0, cbEdSceneObjectShowOwnedObjects,
+                                              "Show Owned Obj"));
+}
+
+void SceneObjectHelper::SetSceneFilter(char *filter) {
+    if (filter != NULL)
+        NuStrCpy(scene_filter, filter);
+}
+
+/* Placeables that are scene objects. */
+static i32 SpecialObjectFilter(void *object) {
+    return theSceneObjectHelper.scene_id == static_cast<Placeable *>(object)->scene_id;
+}
+
+EdSpecialObjectControl::EdSpecialObjectControl() {
+    highlighted_object = NULL;
+}
+
+void EdSpecialObjectControl::operator delete(void *memory) {
+    theMemoryManager.FreePool(memory, sizeof(EdSpecialObjectControl));
+}
+
+EdSpecialObjectControl::~EdSpecialObjectControl() {
+}
+
+/* Takes the scene object with the typed name, if there is one. */
+void EdSpecialObjectControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    EdSpecialObjectControl *control = static_cast<EdSpecialObjectControl *>(item->data_ptr);
+    NUSPECIALHANDLE selected;
+    NuSpecialClear(&selected);
+    for (Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL, SpecialObjectFilter); object != NULL;
+         object = (Placeable *)thePlaceableHelper.GetNextObject(object, SpecialObjectFilter)) {
+        if (NuStrICmp(reinterpret_cast<edui_prop_s *>(item)->property_text, (char *)object->GetName()) == 0) {
+            selected = *static_cast<SpecialObject *>(object)->GetNuHSpecial();
+            break;
+        }
+    }
+    if (NuSpecialExistsFn(&selected) != 0) {
+        eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), NuSpecialGetName(&selected));
+        control->reference->SetMemberData(control->object, EdType_NuHSpecial, &selected, 0, NULL);
+    }
+}
+
+static EdSpecialObjectControl *active_special_object_control;
+
+/* Item data -1 is the "None" entry. */
+void EdSpecialObjectControl::cbSelectObject(eduimenu_s *, eduiitem_s *item, u32) {
+    if (active_special_object_control == NULL)
+        return;
+    NUSPECIALHANDLE cleared;
+    NUSPECIALHANDLE *selected;
+    SpecialObject *object = static_cast<SpecialObject *>(item->data_ptr);
+    if (object != (SpecialObject *)-1) {
+        selected = &object->special;
+        char *name = NuSpecialGetName(selected);
+        if (name != NULL)
+            eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(active_special_object_control->item), name);
+    } else {
+        NuSpecialClear(&cleared);
+        selected = &cleared;
+    }
+    EdSpecialObjectControl *control = active_special_object_control;
+    control->reference->SetMemberData(control->object, EdType_NuHSpecial, selected, 0, NULL);
+}
+
+void EdSpecialObjectControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
+    active_special_object_control = static_cast<EdSpecialObjectControl *>(item->data_ptr);
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt),
+                                      cbEdLevelDestroy, NULL);
+    if (menu == NULL)
+        return;
+    NUSPECIALHANDLE selected;
+    active_special_object_control->reference->GetMemberData(active_special_object_control->object, EdType_NuHSpecial,
+                                                            &selected, 0);
+    eduiMenuAddItem(menu, eduiItemSelCreate((u32)-1, item->colours, 0, 0, cbSelectObject, "None"));
+    Placeable *object = (Placeable *)thePlaceableHelper.GetNextObject(NULL, SpecialObjectFilter);
+    while (object != NULL) {
+        eduiMenuAddItem(menu,
+                        eduiItemSelCreate((u32)object, item->colours, 0, 0, cbSelectObject, (char *)object->GetName()));
+        Placeable *next_object = (Placeable *)thePlaceableHelper.GetNextObject(object, SpecialObjectFilter);
+        if (NuSpecialCompare(&static_cast<SpecialObject *>(object)->special, &selected) != 0)
+            menu->selected = edui_last_item;
+        object = next_object;
+    }
+    eduiMenuSortItemsByTxt(menu);
+    menu->flags |= 1;
+    eduiMenuAttach(parent, menu);
+    eduiMenuFitWidth(menu, 5);
+    eduiMenuFitOnScreen(menu, 30);
+    reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
+}
+
+void EdSpecialObjectControl::Process(EdInputContext &) {
+}
+
+/* Marks the highlighted object with a wire sphere. */
+void EdSpecialObjectControl::Render() {
+    if (highlighted_object != NULL) {
+        __declspec(align(16)) VuVec position;
+        position.xyz = highlighted_object->GetInitialPosition()->xyz;
+        f32 radius = highlighted_object->GetRadius();
+        EdDrawBegin(0);
+        EdDrawLineSphere(&position.xyz, radius, 1.0f, 0x80808080);
+        EdDrawEnd();
+    }
 }
 
 /* Length of a cubic Bezier segment: the chord once the de Casteljau midpoint
@@ -5027,6 +5395,11 @@ i32 EdClass::FindMember(EdMember *result, void *object, i32 attributes, i32 recu
     return 0;
 }
 
+void EditorSettings::Serialise(EdStream &stream) {
+    stream.SerialiseBuffer(&cursor_radius, sizeof(cursor_radius), 1);
+    stream.SerialiseBuffer(&snap_terrain, sizeof(snap_terrain), 1);
+}
+
 SplinePointBlock::SplinePointBlock() {
     capacity = 16;
     points = (VuVec *)theMemoryManager.AllocPool(capacity * sizeof(VuVec), 1);
@@ -5399,7 +5772,7 @@ char const *EdFileInputStream::BeginBlock(char const *name) {
     char *block_name;
     if (block_count > 0) {
         if (block_count < 1)
-            EdTrace(NULL);
+            EdTrace();
         Block &parent = blocks[block_count - 1];
         if (position >= parent.position + parent.size) {
             EdMessage(block_names + parent.name_offset);
@@ -5424,14 +5797,14 @@ char const *EdFileInputStream::BeginBlock(char const *name) {
     if (block_count < 8)
         blocks[block_count++] = pending_block;
     else
-        EdTrace(NULL);
+        EdTrace();
     pending = 0;
     return block_name;
 }
 
 void EdFileInputStream::EndBlock() {
     if (block_count < 1)
-        EdTrace(NULL);
+        EdTrace();
     Block block = blocks[--block_count];
     i32 end = block.position + block.size;
     if ((i32)NuFilePos(file) != end)
@@ -5447,7 +5820,7 @@ char const *EdFileOutputStream::BeginBlock(char const *name) {
     if (block_count < 8)
         block_positions[block_count++] = position;
     else
-        EdTrace(NULL);
+        EdTrace();
     SerialiseBuffer(&position, sizeof(position), 1);
     SerialiseString((char *)name, 0);
     return name;
@@ -5458,7 +5831,7 @@ void EdFileOutputStream::EndBlock() {
     i32 end;
     i32 size;
     if (block_count < 1)
-        EdTrace(NULL);
+        EdTrace();
     position = block_positions[--block_count];
     end = (i32)NuFilePos(file);
     size = end - position;
@@ -7122,6 +7495,70 @@ void *EdClass::FindObject(char *object_name) {
     return NULL;
 }
 
+/* Copies a scene object into a new editor-owned instance. */
+Placeable *SceneObject::Clone(i32 attributes) const {
+    SceneInstance *copy = static_cast<SceneInstance *>(theSceneObjectHelper.CreateObject(NULL, 0, 0));
+    if (copy != NULL) {
+        theSceneObjectHelper.object_class->CopyObject(copy, const_cast<SceneObject *>(this));
+        char unique_name[128];
+        theClassEditor.MakeUniqueName(copy->GetName(), unique_name, sizeof(unique_name));
+        copy->SetName(unique_name);
+        copy->attributes = attributes;
+    }
+    return copy;
+}
+
+/* Registers the "SceneObject" class (the special handle, visibility,
+ * collision and the placeable members) and the subsystem. */
+void SceneObjectHelper::Initialise() {
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+    EdClass *object_class = theRegistry.RegisterClass("SceneObject", this, 0x100);
+#pragma pop_macro("RegisterClass")
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Placeable", "Placeable", 0, 0, 0, NULL, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
+        "NuHSpecial", "Object", 0x80000008, 0, 0,
+        new (theMemoryManager.AllocPool(sizeof(EdSpecialObjectControl), 1)) EdSpecialObjectControl));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
+        "Int", "Visible", 0x80000009, 0, 0,
+        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
+        "Int", "Collision", 0x8000000a, 0, 0,
+        new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+                              EdRefPlaceable("Int", "Attributes", 0x80000002, 0, 0x10400000, NULL));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+                              EdRefPlaceable("Short", "LEDFile", 0x80000001, 0, 0x10400000, NULL));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+                              EdRefPlaceable("String", "Name", 0x80000003, 250, 0x10400000, NULL));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+                              EdRefPlaceable("VuMtx", "Pos", 0x80000006, 0, 0x10400000, NULL));
+    thePlaceableHelper.RegisterObjectType("Scene Object", this);
+    theEdSystem.RegisterSubSystem(this);
+    for (i32 i = 0; i < 10; i++)
+        scene_counts[i] = 0;
+}
+
+/* Draws the visible editor-owned instances; hidden ones are drawn solid or
+ * as a wire sphere while the editors are entered, as the menu options say. */
+void SceneObjectHelper::SubRender() {
+    for (SceneInstance *object = owned_first; object != NULL; object = object->next) {
+        if (object->hidden != 0)
+            continue;
+        if (object->visibility == 0 && (show_hidden_solid == 0 || theLevelEditor.editors_entered == 0)) {
+            if (show_hidden_wire != 0 && theLevelEditor.editors_entered != 0) {
+                ClassObject selection(object_class, object);
+                theClassEditor.DrawObjectSphere(selection, 0x80808080);
+            }
+            continue;
+        }
+        EdDrawBegin(0);
+        object->Render(NULL);
+        EdDrawEnd();
+    }
+}
+
 /* Sets both tangents to a tenth of the neighbour-to-neighbour vector; a
  * spline that drops onto the terrain lowers them by 10. */
 void SplineKnot::Smooth() {
@@ -8047,6 +8484,23 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
             }
         }
     }
+}
+
+void EdSpecialObjectControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdSpecialObjectControl *control =
+        new (theMemoryManager.AllocPool(sizeof(EdSpecialObjectControl), 1)) EdSpecialObjectControl;
+    if (control == NULL)
+        return;
+    control->reference = member;
+    control->object = target;
+    NUSPECIALHANDLE special;
+    member->GetMemberData(target, EdType_NuHSpecial, &special, 0);
+    char *name = NuSpecialGetName(&special);
+    if (name == NULL)
+        name = "no name";
+    control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, EdControl::cbSelected, cbChanged, cbButton, 1,
+                                       member->name, name);
+    eduiMenuAddItem(menu, control->item);
 }
 
 /* Saving writes the live registry; loading reads the file's schema into a

@@ -10094,7 +10094,7 @@ address,symbol,size,ctype
 0x6b7370,_Laguerre_With_Deflation,727,
 0x6b7650,_Newton_Raphson,452,
 0x6b7820,_vorbis_lpc_to_lsp,1044,"int vorbis_lpc_to_lsp(float *lpc,float *lsp,int m);"
-0x6b7c40,?EdTrace@@YAXPBDZZ,1,
+0x6b7c40,?EdTrace@@YAXZZ,1,
 0x6b7c50,?EdMessage@@YAXPBDZZ,1,
 0x6b7c60,?VuFabs@@YAMM@Z,18,
 0x6b7c80,?VuAngleDifference@@YAHHH@Z,22,
@@ -10116,6 +10116,7 @@ address,symbol,size,ctype
 0x6b82d0,?VuMtxRotateZ@@YAXAAUVuMtx@@H@Z,215,
 0x6b8470,?VuMtxSetScale@@YAXAAUVuMtx@@ABUVuVec@@@Z,91,
 0x6b8510,_EdDrawSetVertexColour,108,
+0x6b8690,??0EdString@@QAE@XZ,9,
 0x6b86d0,??1EdFileInputStream@@UAE@XZ,7,
 0x6b86f0,??1EdFileOutputStream@@UAE@XZ,7,
 0x6b8940,??1EdTool@@UAE@XZ,7,
@@ -10269,6 +10270,16 @@ address,symbol,size,ctype
 0x6bd5e0,?SetInitialPosition@Placeable@@UAEXPBUVuVec@@@Z,79,
 0x6bd630,?GetCurrentPosition@Placeable@@UBEPBUVuVec@@XZ,18,
 0x6bd650,?SetCurrentPosition@Placeable@@UAEXPBUVuVec@@@Z,79,
+0x6bd6a0,?Find@PlaceableInterface@@QAEPAVPlaceable@@PAD@Z,79,
+0x6bd6f0,?Find@PlaceableInterface@@QAEHPADPAPAVPlaceable@@H@Z,97,
+0x6bd760,?DebugOutputObjects@PlaceableInterface@@QAEHXZ,41,
+0x6bd790,??0PlaceableHelper@@QAE@XZ,9,
+0x6bd7a0,?RegisterObjectType@PlaceableHelper@@QAEXPADPAVPlaceableInterface@@@Z,31,
+0x6bd7c0,?FindObject@PlaceableHelper@@QAEPAVPlaceable@@PAD@Z,114,
+0x6bd840,?GetNextObject@PlaceableHelper@@QAEPAXPAX@Z,58,
+0x6bd880,?GetNextObject@PlaceableHelper@@QAEPAXPAXP6AH0@Z@Z,108,
+0x6bd8f0,?Find@PlaceableHelper@@QAEPAVPlaceable@@PAD@Z,50,
+0x6bd930,?Find@PlaceableHelper@@QAEHPADPAPAVPlaceable@@H@Z,67,
 0x6bd980,?IsEditorObject@PlaceableHelper@@QAEHAAUClassObject@@@Z,66,
 0x6bd9d0,??0PlaceableNameControl@@QAE@XZ,16,
 0x6bd9e0,??3PlaceableNameControl@@SAXPAX@Z,18,
@@ -10352,6 +10363,20 @@ address,symbol,size,ctype
 0x6bee00,?ClearLevel@SceneObjectHelper@@UAEXH@Z,112,
 0x6bee70,?PostLoadInitialisation@SceneObjectHelper@@UAEXPAUMemoryBuffer@@0@Z,3,
 0x6bee80,?UpdateLists@SceneObjectHelper@@UAEXPAUMemoryBuffer@@0@Z,7,
+0x6bee90,?cbEdSceneObjectShowHiddenSolid@SceneObjectHelper@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
+0x6beeb0,?cbEdSceneObjectShowHiddenWire@SceneObjectHelper@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
+0x6beed0,?cbEdSceneObjectShowOwnedObjects@SceneObjectHelper@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,31,
+0x6beef0,?AddMenuItems@SceneObjectHelper@@UAEXPAUeduimenu_s@@@Z,152,
+0x6bef90,?SetSceneFilter@SceneObjectHelper@@QAEXPAD@Z,24,
+0x6befb0,?SpecialObjectFilter@@YAHPAX@Z,20,
+0x6befd0,??0EdSpecialObjectControl@@QAE@XZ,16,
+0x6befe0,??3EdSpecialObjectControl@@SAXPAX@Z,18,
+0x6bf000,??1EdSpecialObjectControl@@UAE@XZ,7,
+0x6bf010,?cbChanged@EdSpecialObjectControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,202,
+0x6bf0e0,?cbSelectObject@EdSpecialObjectControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,115,
+0x6bf160,?cbButton@EdSpecialObjectControl@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,313,
+0x6bf2a0,?Process@EdSpecialObjectControl@@UAEXAAUEdInputContext@@@Z,3,
+0x6bf2b0,?Render@EdSpecialObjectControl@@UAEXXZ,145,
 0x6bf350,?BezierLineLength@@YAMAAUVuVec@@000@Z,948,
 0x6bfaa0,?BezierLinePos@@YAHAAUVuVec@@0000M@Z,1374,
 0x6c0180,?DrawBezierLine@@YAXAAUVuVec@@000PAUnumtl_s@@H@Z,1036,
@@ -10408,6 +10433,7 @@ address,symbol,size,ctype
 0x6c2160,??_ECursorTool@@UAEPAXI@Z,,COFF weak alias of ??_GCursorTool@@UAEPAXI@Z; no independent body
 0x6c2160,??_GCursorTool@@UAEPAXI@Z,31,
 0x6c2180,??0BaseEditor@@QAE@XZ,29,
+0x6c21a0,??0Placeable@@QAE@XZ,38,
 0x6c21d0,?Clone@Placeable@@UBEPAV1@H@Z,5,
 0x6c21e0,?Reset@Placeable@@UAEXXZ,1,
 0x6c21f0,?GetName@Placeable@@UBEPBDXZ,18,
@@ -10432,6 +10458,7 @@ address,symbol,size,ctype
 0x6c24d0,??_GSplineObject@@UAEPAXI@Z,51,
 0x6c2520,??_EKnotHelper@@UAEPAXI@Z,,COFF weak alias of ??_GKnotHelper@@UAEPAXI@Z; no independent body
 0x6c2520,??_GKnotHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
+0x6c2540,??0EdSubSystem@@QAE@XZ,29,
 0x6c2610,?UpdateClassFilter@ClassEditor@@QAEXAAUEdInputContext@@@Z,222,
 0x6c2930,?cbEdClassRemoveDuplicates@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,760,
 0x6c2c30,?cbEdClassToolsMenu@ClassEditor@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,120,
@@ -10495,15 +10522,29 @@ address,symbol,size,ctype
 0x6c6920,?FindTypeRef@EdClass@@QAEPAVEdRef@@PADH@Z,123,
 0x6c69a0,?FindTypeRef@EdClass@@QAEPAVEdRef@@HH@Z,111,
 0x6c6a10,?FindMember@EdClass@@QAEHPAUEdMember@@PAXHH@Z,136,
+0x6c6aa0,?Serialise@EditorSettings@@QAEXAAVEdStream@@@Z,47,
+0x6c6ad0,??0SpecialObject@@QAE@XZ,60,
 0x6c6b10,?GetNuHSpecial@SpecialObject@@UAEPAUnuspecial_handle_s@@XZ,4,
+0x6c6b20,??1SpecialObject@@UAE@XZ,55,
+0x6c6b60,??0EdRefSpecialObject@@QAE@PAD0HHHPAVEdControl@@@Z,54,
 0x6c6ba0,?GetMemberData@EdRefSpecialObject@@UAEXPAXH0H@Z,121,
 0x6c6c20,?SetMemberData@EdRefSpecialObject@@UAEXPAXH0HPAF@Z,123,
+0x6c6ca0,??0SceneObject@@QAE@XZ,81,
+0x6c6d00,??3SceneObject@@SAXPAX@Z,18,
+0x6c6d20,??1SceneObject@@UAE@XZ,55,
+0x6c6d60,??0SceneInstance@@QAE@XZ,86,
+0x6c6dc0,??3SceneInstance@@SAXPAX@Z,21,
 0x6c6de0,?GetName@SceneInstance@@UBEPBDXZ,14,
 0x6c6df0,?SetName@SceneInstance@@UAEXPBD@Z,8,
+0x6c6e00,??1SceneInstance@@UAE@XZ,55,
 0x6c6e40,?Flush@SceneObjectHelper@@UAEXXZ,81,
+0x6c6ea0,?PreLoadInitialisation@SceneObjectHelper@@UAEXPAUMemoryBuffer@@0@Z,486,
 0x6c7090,?GetNumObjects@SceneObjectHelper@@UAEHXZ,10,
 0x6c70a0,?GetNextObject@SceneObjectHelper@@UAEPAXPAX@Z,193,
+0x6c7170,?CreateObject@SceneObjectHelper@@UAEPAXPAXHH@Z,122,
 0x6c71f0,?DestroyObject@SceneObjectHelper@@UAEXPAXH@Z,101,
+0x6c7260,??_GEdSpecialObjectControl@@UAEPAXI@Z,35,
+0x6c7260,??_EEdSpecialObjectControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdSpecialObjectControl@@UAEPAXI@Z; no independent body
 0x6c7290,??0SplinePointBlock@@QAE@XZ,60,
 0x6c72d0,??_ESplinePointBlock@@UAEPAXI@Z,,COFF weak alias of ??_GSplinePointBlock@@UAEPAXI@Z; no independent body
 0x6c72d0,??_GSplinePointBlock@@UAEPAXI@Z,60,
@@ -10541,6 +10582,10 @@ address,symbol,size,ctype
 0x6c8970,?Flush@SplineHelper@@UAEXXZ,12,
 0x6c8980,??_ESplineHelper@@UAEPAXI@Z,,COFF weak alias of ??_GSplineHelper@@UAEPAXI@Z; no independent body
 0x6c8980,??_GSplineHelper@@UAEPAXI@Z,31,
+0x6c89a0,??0SceneObjectHelper@@QAE@XZ,81,
+0x6c8a00,??_ESceneObjectHelper@@WM@AEPAXI@Z,8,
+0x6c8a10,??_GSceneObjectHelper@@UAEPAXI@Z,41,
+0x6c8a10,??_ESceneObjectHelper@@UAEPAXI@Z,,COFF weak alias of ??_GSceneObjectHelper@@UAEPAXI@Z; no independent body
 0x6c8a40,??0ClassEditor@@QAE@XZ,82,
 0x6c8aa0,?GetName@ClassEditor@@UAEPBDXZ,6,
 0x6c8ab0,??_EClassEditor@@UAEPAXI@Z,,COFF weak alias of ??_GClassEditor@@UAEPAXI@Z; no independent body
@@ -10611,6 +10656,15 @@ address,symbol,size,ctype
 0x6cd740,?Serialise@EdClass@@QAEXAAVEdStream@@PAH@Z,671,
 0x6cd9e0,?SerialiseObject@EdClass@@QAEXAAVEdStream@@PAXPAU1@PAUEdRegistry@@@Z,625,
 0x6cdc60,?FindObject@EdClass@@QAEPAXPAD@Z,213,
+0x6cdd40,??_GSpecialObject@@UAEPAXI@Z,75,
+0x6cdd40,??_ESpecialObject@@UAEPAXI@Z,,COFF weak alias of ??_GSpecialObject@@UAEPAXI@Z; no independent body
+0x6cdd90,??_GSceneObject@@UAEPAXI@Z,79,
+0x6cdd90,??_ESceneObject@@UAEPAXI@Z,,COFF weak alias of ??_GSceneObject@@UAEPAXI@Z; no independent body
+0x6cdde0,?Clone@SceneObject@@UBEPAVPlaceable@@H@Z,140,
+0x6cde70,??_GSceneInstance@@UAEPAXI@Z,82,
+0x6cde70,??_ESceneInstance@@UAEPAXI@Z,,COFF weak alias of ??_GSceneInstance@@UAEPAXI@Z; no independent body
+0x6cded0,?Initialise@SceneObjectHelper@@QAEXXZ,809,
+0x6ce200,?SubRender@SceneObjectHelper@@UAEXXZ,173,
 0x6ce2b0,?Smooth@SplineKnot@@QAEXXZ,455,
 0x6ce4a0,?GenPoints@SplineObject@@QAEXXZ,28,
 0x6ced10,?PostLoadInitialisation@SplineHelper@@UAEXPAUMemoryBuffer@@0@Z,59,
@@ -10653,6 +10707,7 @@ address,symbol,size,ctype
 0x6d0e10,?Render@PropertyTool@@UAEXXZ,91,
 0x6d0e70,?Serialise@EdRegistry@@QAEXAAVEdStream@@@Z,358,
 0x6d0fe0,?SerialiseObjects@EdRegistry@@QAEXAAVEdStream@@PAU1@@Z,2128,
+0x6d1830,?AddMenuItem@EdSpecialObjectControl@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,156,
 0x6d18d0,?Serialise@ClassEditor@@UAEXAAVEdStream@@@Z,117,
 0x6d1950,?UpdateSelectedObjects@ClassEditor@@QAEXAAUEdInputContext@@@Z,464,
 0x6d1b20,?Render@ClassEditor@@UAEXXZ,496,
@@ -12470,6 +12525,7 @@ address,symbol,size,ctype
 0x7501f0,??__EtheCursorTool@@YAXXZ,12,
 0x750200,??__EtheLevelEditor@@YAXXZ,22,
 0x750220,??__EthePropertyTool@@YAXXZ,12,
+0x750230,??__EtheSceneObjectHelper@@YAXXZ,12,
 0x750240,??__EtheSplineHelper@@YAXXZ,12,
 0x750250,??__EtheKnotHelper@@YAXXZ,12,
 0x750260,??__EtheSplineTool@@YAXXZ,12,
@@ -12492,6 +12548,7 @@ address,symbol,size,ctype
 0x7506b0,??__FtheClassEditor@@YAXXZ,11,
 0x7506c0,??__FtheCursorTool@@YAXXZ,11,
 0x7506d0,??__FthePropertyTool@@YAXXZ,11,
+0x7506e0,??__FtheSceneObjectHelper@@YAXXZ,21,
 0x750700,??__FtheSplineHelper@@YAXXZ,11,
 0x750710,??__FtheKnotHelper@@YAXXZ,11,
 0x750720,??__FtheSplineTool@@YAXXZ,11,
@@ -12727,6 +12784,7 @@ address,symbol,size,ctype
 0x7513dc,_theCursorTool$initializer$,4,void (__cdecl *)(void)
 0x7513e0,_theLevelEditor$initializer$,4,void (__cdecl *)(void)
 0x7513e4,_thePropertyTool$initializer$,4,void (__cdecl *)(void)
+0x7513e8,_theSceneObjectHelper$initializer$,4,void (__cdecl *)(void)
 0x7513ec,_theSplineHelper$initializer$,4,void (__cdecl *)(void)
 0x7513f0,_theKnotHelper$initializer$,4,void (__cdecl *)(void)
 0x7513f4,_theSplineTool$initializer$,4,void (__cdecl *)(void)
@@ -20440,6 +20498,10 @@ address,symbol,size,ctype
 0x76f8c4,??_7PlaceableNameControl@@6B@,,
 0x76f8dc,??_C@_0N@JCLCLEOM@Snap?5Terrain?$AA@,13,char []
 0x76f8ec,??_C@_0O@BHGPKLAP@Cursor?5Radius?$AA@,14,char []
+0x76f8fc,??_C@_0P@FFIPJODB@Show?5Owned?5Obj?$AA@,15,char []
+0x76f90c,??_C@_0BB@EMBMGGEH@Show?5Hidden?5Wire?$AA@,17,char []
+0x76f920,??_C@_0BC@EEGIAIII@Show?5Hidden?5Solid?$AA@,18,char []
+0x76f938,??_7EdSpecialObjectControl@@6B@,,
 0x76f954,??_7SplinePointBlock@@6B@,,
 0x76f958,__real@34000000,4,const f32
 0x76f960,??_7EdFileInputStream@@6B@,,
@@ -20465,10 +20527,18 @@ address,symbol,size,ctype
 0x76faac,??_C@_0L@BCHFBJHG@NuHSpecial?$AA@,11,char []
 0x76fab8,??_C@_04PAFOOALK@Enum?$AA@,5,char []
 0x76fac0,??_C@_06ELFECKBG@Object?$AA@,7,const char[]
+0x76facc,??_7SpecialObject@@6B@,,
+0x76fb2c,??_7EdRefSpecialObject@@6B@,,
+0x76fb3c,??_7SceneObject@@6B@,,
+0x76fb9c,??_7SceneInstance@@6B@,,
+0x76fbf8,??_C@_0M@DPCBKKCA@reflectport?$AA@,12,char []
+0x76fc04,??_C@_06IEOJBDIK@object?$AA@,7,char []
 0x76fc0c,??_C@_06LHGEHABH@?$CINULL?$CJ?$AA@,7,char []
 0x76fc14,??_C@_0L@HFFGLEHP@StreamInfo?$AA@,11,char []
 0x76fc24,??_7EdRefPlaceable@@6B@,,
 0x76fc54,??_7SplineHelper@@6B@,,
+0x76fcd0,??_7SceneObjectHelper@@6BEdSubSystem@@@,,
+0x76fcec,??_7SceneObjectHelper@@6BPlaceableInterface@@@,,
 0x76fd68,??_7ClassEditor@@6B@,,
 0x76fd9c,??_C@_0N@MKEDCNLI@Class?5Editor?$AA@,13,char []
 0x76fdac,??_C@_06PCFKBAJ@?$CF?$CF?4?$CFdd?$AA@,7,char []
@@ -20522,6 +20592,10 @@ address,symbol,size,ctype
 0x76ff6c,??_C@_07FCJAGJJB@?$CFs?5?9?5?$CFs?$AA@,8,char []
 0x76ff74,??_C@_07NIPDDFPO@no?5name?$AA@,8,char []
 0x76ff7c,??_C@_05EKAMNAII@Class?$AA@,6,const char[]
+0x76ff84,??_C@_0N@DDOPPOKJ@Scene?5Object?$AA@,13,char []
+0x76ff94,??_C@_09EOCCEAAK@Collision?$AA@,10,char []
+0x76ffa0,??_C@_07MGEGCLJM@Visible?$AA@,8,char []
+0x76ffa8,??_C@_0M@BEFKHABP@SceneObject?$AA@,12,char []
 0x76ffd4,??_C@_0BA@JNHLIOHA@Auto?9Gen?5Points?$AA@,16,char []
 0x76ffe4,??_C@_0O@BKEPOKOG@Re?9Gen?5Points?$AA@,14,char []
 0x76fff4,??_C@_0P@KBCPCGEM@Reverse?5Spline?$AA@,15,char []
@@ -32010,6 +32084,10 @@ address,symbol,size,ctype
 0x7ebcc0,??_R3PlaceableNameControl@@8,,
 0x7ebcd0,??_R2PlaceableNameControl@@8,,
 0x7ebce0,??_R1A@?0A@EA@PlaceableNameControl@@8,,
+0x7ebcfc,??_R4EdSpecialObjectControl@@6B@,,
+0x7ebd10,??_R3EdSpecialObjectControl@@8,,
+0x7ebd20,??_R2EdSpecialObjectControl@@8,,
+0x7ebd2c,??_R1A@?0A@EA@EdSpecialObjectControl@@8,,
 0x7ebd48,??_R4SplinePointBlock@@6B@,,
 0x7ebd5c,??_R3SplinePointBlock@@8,,
 0x7ebd6c,??_R2SplinePointBlock@@8,,
@@ -32047,6 +32125,26 @@ address,symbol,size,ctype
 0x7ebfe0,??_R3EdClassObjectNameControl@@8,,
 0x7ebff0,??_R2EdClassObjectNameControl@@8,,
 0x7ec000,??_R1A@?0A@EA@EdClassObjectNameControl@@8,,
+0x7ec01c,??_R4SpecialObject@@6B@,,
+0x7ec030,??_R3SpecialObject@@8,,
+0x7ec040,??_R2SpecialObject@@8,,
+0x7ec04c,??_R1A@?0A@EA@SpecialObject@@8,,
+0x7ec068,??_R4EdRefSpecialObject@@6B@,,
+0x7ec07c,??_R3EdRefSpecialObject@@8,,
+0x7ec08c,??_R2EdRefSpecialObject@@8,,
+0x7ec09c,??_R1A@?0A@EA@EdRefSpecialObject@@8,,
+0x7ec0b8,??_R4SceneObject@@6B@,,
+0x7ec0cc,??_R3SceneObject@@8,,
+0x7ec0dc,??_R2SceneObject@@8,,
+0x7ec0ec,??_R1A@?0A@EA@SceneObject@@8,,
+0x7ec108,??_R4SceneInstance@@6B@,,
+0x7ec11c,??_R3SceneInstance@@8,,
+0x7ec12c,??_R2SceneInstance@@8,,
+0x7ec144,??_R1A@?0A@EA@SceneInstance@@8,,
+0x7ec160,??_R1CM@?0A@EA@?$CSListLink@VSceneInstance@@@@8,,
+0x7ec17c,??_R3?$CSListLink@VSceneInstance@@@@8,,
+0x7ec18c,??_R2?$CSListLink@VSceneInstance@@@@8,,
+0x7ec194,??_R1A@?0A@EA@?$CSListLink@VSceneInstance@@@@8,,
 0x7ec1b0,??_R4EdRefPlaceable@@6B@,,
 0x7ec1c4,??_R3EdRefPlaceable@@8,,
 0x7ec1d4,??_R2EdRefPlaceable@@8,,
@@ -32055,6 +32153,14 @@ address,symbol,size,ctype
 0x7ec2b4,??_R3SplineHelper@@8,,
 0x7ec2c4,??_R2SplineHelper@@8,,
 0x7ec2d0,??_R1A@?0A@EA@SplineHelper@@8,,
+0x7ec2ec,??_R4SceneObjectHelper@@6BPlaceableInterface@@@,,
+0x7ec300,??_R3SceneObjectHelper@@8,,
+0x7ec310,??_R2SceneObjectHelper@@8,,
+0x7ec32c,??_R1A@?0A@EA@SceneObjectHelper@@8,,
+0x7ec348,??_R1M@?0A@EA@EdSubSystem@@8,,
+0x7ec364,??_R1BA@?0A@EA@MemBufferAllocator@@8,,
+0x7ec380,??_R1BA@?0A@EA@?$CSListLink@VEdSubSystem@@@@8,,
+0x7ec39c,??_R4SceneObjectHelper@@6BEdSubSystem@@@,,
 0x7ec3b0,??_R4ClassEditor@@6B@,,
 0x7ec3c4,??_R3ClassEditor@@8,,
 0x7ec3d4,??_R2ClassEditor@@8,,
@@ -34440,6 +34546,7 @@ address,symbol,size,ctype
 0x81fbf0,?theRotateManipulator@@3VEdManRotate@@A,128,EdManRotate
 0x81fc70,?theScaleManipulator@@3VEdManScale@@A,128,EdManScale
 0x81fcf0,?thePropertyTool@@3VPropertyTool@@A,76,PropertyTool
+0x81fd40,?theSceneObjectHelper@@3VSceneObjectHelper@@A,176,SceneObjectHelper
 0x81fdf0,?theSplineHelper@@3VSplineHelper@@A,,SplineHelper
 0x81fe08,?theKnotHelper@@3VKnotHelper@@A,20,KnotHelper
 0x81fe20,?theSplineTool@@3VSplineTool@@A,76,SplineTool
@@ -38031,6 +38138,7 @@ address,symbol,size,ctype
 0x2913240,_FmvSleepErrorPc,4,i32
 0x2913244,_FmvSleepCarryPc,4,i32
 0x2913248,_FmvFrequencyReadyPc,4,i32
+0x2913250,?MemoryManagerTraceFailures@@3HA,4,i32
 0x2913254,_theThingManager,4,ThingManager *
 0x2913258,_edTimingMenu,4,eduimenu_s *
 0x002913270,_theMemoryManager,584,MEMORYMANAGER
@@ -38752,7 +38860,9 @@ address,symbol,size,ctype
 0x2973aec,?EdType_NuHSpecial@@3HA,4,i32
 0x2973af0,?EdType_NuVec@@3HA,,i32
 0x2973af4,?EdType_NuMtx@@3HA,,i32
+0x2973b04,_active_special_object_control,4,EdSpecialObjectControl *
 0x2973b08,_bezierline_depth,4,i32
+0x2973b14,?theEdSystem@@3VEdSystem@@A,12,EdSystem
 0x2973b20,?thePlaceableHelper@@3VPlaceableHelper@@A,136,PlaceableHelper
 0x2973ba8,?theRegistry@@3UEdRegistry@@A,,EdRegistry
 0x2973bf0,?SpherePos2@@3UVuVec@@A,16,VuVec

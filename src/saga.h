@@ -29468,6 +29468,8 @@ class EdBitControl : public EdEnumControl {
 struct EdString {
     char *data;
 
+    EdString() : data(NULL) {
+    }
     void Set(const char *value);
     ~EdString();
 };
@@ -29484,6 +29486,8 @@ class Placeable {
 
     static i16 CurrentLedFile;
 
+    Placeable() : scene_id(0), led_file(CurrentLedFile), attributes(0), reserved_14(0) {
+    }
     virtual ~Placeable();
     virtual Placeable *Clone(i32) const {
         return NULL;
@@ -29518,7 +29522,7 @@ class Placeable {
     }
 };
 
-void EdTrace(const char *, ...);
+void EdTrace(...);
 
 /* Editor serialisation stream (Android EdStream); mode is 1 reading, 2 writing. */
 class EdStream {
@@ -29896,6 +29900,7 @@ class EditorSettings {
     EditorSettings();
     virtual ~EditorSettings();
     void AddMenuItems(eduimenu_s *menu);
+    void Serialise(EdStream &stream);
     f32 cursor_radius;
     i32 snap_terrain;
 };
