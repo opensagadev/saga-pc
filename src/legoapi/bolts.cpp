@@ -1513,8 +1513,8 @@ extern "C" {
 
     BOLT_PC *__cdecl Bolt_Find(i32 type_id, NUVEC *position, GAMEOBJECT *owner) {
         f32 nearest_distance = 1000000.0f;
-        BOLT_PC *nearest = NULL;
         BOLT_PC *bolt = Bolt;
+        BOLT_PC *nearest = NULL;
         i32 index;
         for (index = 0; index < 32; ++index, ++bolt) {
             f32 distance;
