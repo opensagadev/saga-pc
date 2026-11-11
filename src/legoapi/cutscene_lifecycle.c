@@ -207,8 +207,8 @@ static void CutSceneEndCharactersPC(INSTNUGCUTSCENE *owner, f32 frame) {
     CUT_CHARACTER_INSTANCE_SYSTEM_PC *characters = instance->character_instance;
     i32 i;
     for (i = 0; i < system->count; ++i) {
-        CUT_CHARACTER_INSTANCE_PC *character = &characters->characters[i];
         CUT_CHARACTER_GENERIC_PC *source = &system->characters[i];
+        CUT_CHARACTER_INSTANCE_PC *character = &characters->characters[i];
         if (character->model != NULL) {
             if ((source->flags & 2) == 0 && NuCutSceneCharacterEval != NULL) {
                 NuCutSceneCharacterEval(owner, scene, character, source, frame);
