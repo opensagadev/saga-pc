@@ -8494,18 +8494,40 @@ address,symbol,size,ctype
 0x6520b0,_LoadSfx,245,"void __cdecl(const char *,VARIPTR *,VARIPTR)"
 0x6521b0,_InitSfx,583,"void __cdecl(VARIPTR *,VARIPTR,const char *)"
 0x652400,_PauseGameAudio,28,void __cdecl(i32)
+0x652420,_ResumeGameAudio,1,void __cdecl (void)
+0x652430,_GetSfxCount,6,i32 __cdecl (void)
+0x652440,_GetLogicalSfxCount,6,i32 __cdecl (void)
 0x00652450,_SfxSetFileTable,72,void __cdecl (SFX_FILE_INFO_PC *)
 0x006524a0,_MusicPlayStream,105,"void __cdecl(i32, i32, i32, f32, i32)"
+0x652510,_PlayAMusic,96,"void __cdecl (i32, i32, i32, i32)"
+0x652570,_GetCurrentMusicId,8,i32 __cdecl (void)
+0x652580,_GetOppMusicId,8,i32 __cdecl (void)
 0x652590,_SetPreSeekStartPoint,11,void __cdecl (f32)
+0x6525a0,_SetMusicVolume,90,void __cdecl (f32)
+0x652600,_SetCutVolume,11,void __cdecl (f32)
+0x652610,_GetCurPreSeek,8,i32 __cdecl (void)
+0x652620,_ResetPreSeek,51,void __cdecl (void)
 0x00652660,_MusicPreSeek,399,void __cdecl(i32)
+0x6527f0,_MusicPreSeekNow,187,void __cdecl (i32)
+0x6528b0,_MusicSeekOffset,390,"void __cdecl (i32, f32)"
 0x00652a40,_SoundStopMusic,131,void __cdecl (void)
 0x00652ad0,_SoundKillAll,20,void __cdecl (void)
+0x652af0,_PlayingCutMusic,73,i32 __cdecl (void)
 0x00652b40,_ClearLinkedCutSceneMusic,27,void __cdecl (void *)
 0x652b60,_SetLinkedCutSceneMusic,55,"void __cdecl(void *, i32)"
+0x652ba0,_PlayCutMusic,446,"i32 __cdecl (i32, i32, void *)"
+0x652d60,_PauseGameMusic,119,void __cdecl (void)
 0x00652de0,_RestoreGameMusic,122,void __cdecl(void)
+0x652e60,_PlayAltGameMusic,247,void __cdecl (i32)
+0x652f60,_StopAltGameMusic,74,void __cdecl (void)
 0x652fb0,_PauseGameCut,72,
 0x00653000,_RestoreGameCut,67,void __cdecl (void)
+0x653050,_PauseGameSfx,19,void __cdecl (void)
+0x653070,_PlayMusic,673,"void __cdecl (i32, i32)"
+0x653320,_SwapMusic,314,void __cdecl (i32)
 0x00653460,_SoundUpdate,942,void __cdecl(f32)
+0x653810,_MusicState,8,i32 __cdecl (void)
+0x653820,_MusicSeeking,3,i32 __cdecl (void)
 0x00653840,_SolveQuadratic,243,"i32 __cdecl (f32, f32, f32, f32 *, f32 *)"
 0x00653940,_DebrisGetControlStackLock,20,void __cdecl (void)
 0x00653960,_DebrisReleaseControlStackLock,11,void __cdecl (void)
@@ -33807,6 +33829,7 @@ address,symbol,size,ctype
 0x008102e8,_partseed,4,u32
 0x8102ec,_PartRaycastsEnabledPrivate,,i32
 0x00810358,_MusicVolume,4,f32
+0x81035c,_CutVolume,4,f32
 0x810360,_SfxMusicExtensionPc,,const char *
 0x00810364,_nusound_seed,4,u32
 0x810368,_SfxConfigFilenamePc,,char[256]

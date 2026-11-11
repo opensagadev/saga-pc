@@ -441,6 +441,7 @@ __declspec(noinline) void __cdecl SfxBitsRestore(SoundTable *sound_table) {
 }
 
 f32 MusicVolume = 1.0f;
+f32 CutVolume = 0.8f;
 i32 __cdecl NuSound3GetMusicStreamStatusPc(i32 stream);
 
 static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, i32 one_shot) {
@@ -608,6 +609,14 @@ void __cdecl SoundUpdate(f32 frame_time) {
             }
             break;
     }
+}
+
+i32 MusicState(void) {
+    return Music.state;
+}
+
+i32 MusicSeeking(void) {
+    return 0;
 }
 
 void __cdecl SoundStopMusic(void) {
@@ -1071,6 +1080,295 @@ void __cdecl PauseGameAudio(i32 ignored) {
         NuSound3StopSFX();
         NuSound3SetSFXPitch(0);
     }
+}
+
+void ResumeGameAudio(void) {
+}
+
+i32 GetSfxCount(void) {
+    return NumSfx;
+}
+
+i32 GetLogicalSfxCount(void) {
+    return NumSfxInst;
+}
+
+void PlayAMusic(i32 stream, i32 track, i32 volume, i32 one_shot) {
+    if (NOSOUND == 0 && NOMUSIC == 0) {
+        NuSound3StopStereoStream(stream);
+        NuSound3Update();
+        NuSound3PlayStereoV(2, stream, 3, track, 6, volume, one_shot != 0 ? 12 : 0, 1);
+        NuSound3Update();
+        Music.secondary_stream = (i16)stream;
+        Music.transition_frames = 0;
+    }
+}
+
+i32 GetCurrentMusicId(void) {
+    return Music.current_track;
+}
+
+i32 GetOppMusicId(void) {
+    return Music.queued_track;
+}
+
+void SetMusicVolume(f32 volume) {
+    if (NOSOUND == 0 && NOMUSIC == 0) {
+        MusicVolume = volume;
+        if (Music.state == 4) {
+            NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[Music.current_track].index * volume));
+        }
+    }
+}
+
+void SetCutVolume(f32 volume) {
+    CutVolume = volume;
+}
+
+i32 GetCurPreSeek(void) {
+    return Music.requested_track;
+}
+
+void ResetPreSeek(void) {
+    if (Music.state == 11) {
+        Music.current_track = -1;
+    } else {
+        Music.queued_track = -1;
+        Music.requested_track = -1;
+        Music.pause_requested = 0;
+    }
+    Music.seek_offset = 0.0f;
+}
+
+void MusicPreSeekNow(i32 track) {
+    if (track < 0 || track > SfxFileCount - 1) {
+        return;
+    }
+    Music.queued_track = (i16)track;
+    Music.requested_track = (i16)track;
+    (&Music.field_0012)[Music.primary_stream] = 0;
+    Music.pause_requested = 0;
+    MusicPlayStream(1 - Music.primary_stream, track, 0, Music.seek_offset, 1);
+    Music.seek_offset = 0.0f;
+}
+
+void MusicSeekOffset(i32 track, f32 seek_offset) {
+    if (seek_offset < 0.0f) {
+        seek_offset = Music.seek_offset;
+    }
+    if (track < 0) {
+        return;
+    }
+    if (track <= SfxFileCount - 1 && (Music.state == 11 || Music.state == 12 || Music.state == 13)) {
+        if (Music.current_track != track || Music.pause_requested != 0) {
+            Music.current_track = (i16)track;
+            Music.queued_track = (i16)track;
+            Music.requested_track = -1;
+            Music.state = 11;
+            (&Music.field_0012)[Music.primary_stream] = 0;
+            if (Music.transition_frames >= 0x40) {
+                Music.pause_requested = 0;
+                MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume),
+                                seek_offset, 1);
+                Music.seek_offset = 0.0f;
+                Music.transition_frames = 0;
+            } else {
+                Music.pause_requested = 1;
+            }
+        }
+        return;
+    }
+    if (track <= SfxFileCount - 1) {
+        Music.current_track = (i16)track;
+        Music.queued_track = (i16)track;
+        Music.requested_track = (i16)track;
+        Music.state = 4;
+        Music.pause_requested = 0;
+        Music.transition_frames = 0;
+        (&Music.field_0012)[Music.primary_stream] = 0;
+        MusicPlayStream(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), seek_offset,
+                        1);
+    }
+}
+
+i32 PlayingCutMusic(void) {
+    u8 *delay = &(&Music.field_0012)[1 - Music.primary_stream];
+    if (*delay != 0) {
+        --*delay;
+        return 0;
+    }
+    if (NOSOUND != 0 || NOMUSIC != 0) {
+        return 0;
+    }
+    return NuSound3GetMusicStreamStatusPc(1 - Music.primary_stream) != 2;
+}
+
+i32 PlayCutMusic(i32 track, i32 state, void *context) {
+    i32 started = 0;
+    if (NOSOUND != 0 || NOMUSIC != 0) {
+        return 0;
+    }
+    if (track >= 0 && track <= SfxFileCount - 1) {
+        Music.transition_frames = 0;
+        Music.queued_track = (i16)track;
+        (&Music.field_0012)[1 - Music.primary_stream] = 6;
+        NuSound3CancelCheckStereo();
+        NuSound3PauseStereoStream(Music.primary_stream);
+        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * CutVolume));
+        if (Music.requested_track == track && Music.pause_requested == 0 &&
+            NuSound3GetMusicStreamStatusPc(1 - Music.primary_stream) != 2) {
+            NuSound3ResumeStereoStream(1 - Music.primary_stream);
+            NuSound3SetStreamVolume(1 - Music.primary_stream, (i32)((f32)SfxFileTable[track].index * CutVolume));
+            NuSound3Update();
+        } else {
+            started = 1;
+            PlayAMusic(1 - Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * CutVolume), 0);
+        }
+        Music.transition = 1.0f;
+        Music.requested_track = -1;
+        Music.pause_requested = 0;
+        if (state == 13) {
+            Music.state = 13;
+        } else if (state == 12) {
+            Music.state = 12;
+        } else {
+            Music.state = Music.state != 0 ? 11 : 12;
+        }
+        Music.track_data = context;
+    }
+    return started;
+}
+
+void PauseGameMusic(void) {
+    if (NOMUSIC == 0 && NOSOUND == 0 && PCStereoChannel1B != -1 && Music.state != 11 && Music.state != 12 &&
+        Music.state != 13) {
+        NuSound3CancelCheckStereo();
+        NuSound3PauseStereoStream(Music.primary_stream);
+        switch (Music.state) {
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                NuSound3PauseStereoStream(1 - Music.primary_stream);
+                break;
+        }
+    }
+    Music.restore_requested = 0;
+}
+
+void PlayAltGameMusic(i32 track) {
+    Music.update_delay = 1;
+    if (Music.requested_track == track && Music.pause_requested == 0) {
+        NuSound3ResumeStereoStream(1 - Music.primary_stream);
+        NuSound3SetStreamVolume(1 - Music.primary_stream, (i32)((f32)SfxFileTable[track].index * MusicVolume));
+        NuSound3Update();
+        Music.resume_track = -1;
+    } else {
+        PlayAMusic(1 - Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), 0);
+    }
+}
+
+void StopAltGameMusic(void) {
+    NuSound3CancelCheckStereo();
+    NuSound3PauseStereoStream(1 - Music.primary_stream);
+    Music.update_delay = 0;
+    Music.queued_track = -1;
+    Music.requested_track = -1;
+    if (Music.resume_track >= 0) {
+        MusicPreSeek(Music.resume_track);
+    }
+}
+
+void PauseGameSfx(void) {
+    NuSound3StopSFX();
+    NuSound3FlushLoops();
+    NuSound3SetSFXPitch(0);
+}
+
+void PlayMusic(i32 track, i32 mode) {
+    if (NOSOUND != 0 || NOMUSIC != 0) {
+        return;
+    }
+    if (track < 0 || track > SfxFileCount - 1) {
+        Music.transition = 0.0f;
+        Music.queued_track = Music.current_track;
+        Music.current_track = (i16)track;
+        Music.primary_stream = (i16)(1 - Music.primary_stream);
+        Music.restore_requested = 0;
+        Music.state = mode == 3 ? 9 : 7;
+        return;
+    }
+    Music.queued_track = Music.current_track;
+    Music.current_track = (i16)track;
+    Music.transition_frames = 0;
+    if (Music.state != 0 && mode != 1 && PCStereoChannel1B != -1) {
+        Music.primary_stream = (i16)(1 - Music.primary_stream);
+        (&Music.field_0012)[Music.primary_stream] = 0;
+        if (Music.requested_track == track && Music.pause_requested == 0) {
+            Music.state = mode == 3 ? 9 : 7;
+            NuSound3ResumeStereoStream(Music.primary_stream);
+            NuSound3SetStreamVolume(Music.primary_stream, 0);
+            NuSound3Update();
+        } else {
+            Music.state = mode == 3 ? 10 : 8;
+            PlayAMusic(Music.primary_stream, track, 0, 0);
+        }
+        Music.pause_requested = 0;
+        Music.transition = 0.0f;
+        Music.restore_requested = 0;
+        Music.requested_track = -1;
+        return;
+    }
+    (&Music.field_0012)[Music.primary_stream] = 0;
+    if (Music.requested_track == track && Music.state != 11) {
+        Music.primary_stream = (i16)(1 - Music.primary_stream);
+    }
+    NuSound3StopStereoStream(1 - Music.primary_stream);
+    if (Music.requested_track == track && Music.pause_requested == 0 &&
+        NuSound3GetMusicStreamStatusPc(Music.primary_stream) != 2) {
+        NuSound3ResumeStereoStream(Music.primary_stream);
+        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[track].index * MusicVolume));
+        NuSound3Update();
+    } else {
+        PlayAMusic(Music.primary_stream, track, (i32)((f32)SfxFileTable[track].index * MusicVolume), 0);
+    }
+    Music.pause_requested = 0;
+    Music.transition = 1.0f;
+    Music.restore_requested = 0;
+    Music.state = 4;
+    Music.requested_track = -1;
+}
+
+void SwapMusic(i32 mode) {
+    i32 previous_track;
+    i32 queued_track;
+    if (NOSOUND != 0 || NOMUSIC != 0) {
+        return;
+    }
+    previous_track = Music.current_track;
+    queued_track = Music.queued_track;
+    Music.primary_stream = (i16)(1 - Music.primary_stream);
+    Music.current_track = (i16)queued_track;
+    Music.queued_track = (i16)previous_track;
+    NuSound3ResumeStereoStream(Music.primary_stream);
+    if (mode == 1) {
+        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[queued_track].index * MusicVolume));
+        NuSound3PauseStereoStream(1 - Music.primary_stream);
+        NuSound3SetStreamVolume(1 - Music.primary_stream, 0);
+        Music.transition = 1.0f;
+        Music.state = 4;
+    } else {
+        if (Music.state == 5 || Music.state == 6) {
+            Music.transition = 1.0f - Music.transition;
+        } else {
+            Music.transition = 0.0f;
+        }
+        NuSound3SetStreamVolume(Music.primary_stream, (i32)((f32)SfxFileTable[queued_track].index * Music.transition));
+        Music.state = mode == 3 ? 6 : 5;
+    }
+    NuSound3Update();
 }
 
 void __cdecl SetLinkedCutSceneMusic(void *context, i32 state) {
