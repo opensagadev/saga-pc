@@ -642,18 +642,18 @@ STATIC_ASSERT(offsetof(CUSTOM_SAVE_CONFIG_PC, secondary_pieces) == 0x38);
 STATIC_ASSERT(sizeof(((CUSTOM_SAVE_CONFIG_PC *)0)->pieces[0]) == 2);
 
 void __cdecl Customiser_Set100PercentPieces(CUSTOMISER_LAYERS_PC *input) {
-    CUSTOMISER_CONFIG_PC *customiser = (CUSTOMISER_CONFIG_PC *)input;
+    // MATCH-EXCEPTION: the cast is repeated at each use; a cast local changes register choice (U3)
     i32 category, index;
-    if (customiser == NULL || customiser->save == NULL)
+    if (input == NULL || ((CUSTOMISER_CONFIG_PC *)input)->save == NULL)
         return;
     for (category = 0; category < 9; ++category) {
-        if (customiser->piece_counts[category] <= 0)
+        if (((CUSTOMISER_CONFIG_PC *)input)->piece_counts[category] <= 0)
             continue;
-        for (index = 0; index < customiser->piece_counts[category]; ++index) {
-            if ((customiser->piece_sets[category][index].availability_flags & 0x80) != 0)
-                customiser->save->pieces[category] = (u16)index;
-            if ((customiser->piece_sets[category][index].availability_flags & 0x100) != 0)
-                customiser->save->secondary_pieces[category] = (u16)index;
+        for (index = 0; index < ((CUSTOMISER_CONFIG_PC *)input)->piece_counts[category]; ++index) {
+            if ((((CUSTOMISER_CONFIG_PC *)input)->piece_sets[category][index].availability_flags & 0x80) != 0)
+                ((CUSTOMISER_CONFIG_PC *)input)->save->pieces[category] = (u16)index;
+            if ((((CUSTOMISER_CONFIG_PC *)input)->piece_sets[category][index].availability_flags & 0x100) != 0)
+                ((CUSTOMISER_CONFIG_PC *)input)->save->secondary_pieces[category] = (u16)index;
         }
     }
 }
