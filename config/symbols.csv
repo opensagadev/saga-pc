@@ -11110,18 +11110,26 @@ address,symbol,size,ctype
 0x6e45a0,_PCDeviceIsAbsent,12,i32 __cdecl(void)
 0x6e45b0,_PCDeviceBeginScenePc,20,void __cdecl(void)
 0x6e45e0,_PCDeviceClear,55,"void __cdecl(u32,const RECT*,u32,u32,f32,u32)"
+0x6e4620,_PCDeviceColorFillPc,37,
+0x6e4650,_PCDeviceCreateAdditionalSwapChainPc,29,
+0x6e4670,_PCDeviceCreateCubeTexturePc,54,
 0x6e46b0,_PCDeviceCreateDepthSurface,59,"void __cdecl(u32,u32,i32,i32,u32,BOOL,PC_TEXTURE_RESOURCE_PC**,HANDLE*)"
 0x6e46f0,_PCDeviceCreateIndexBuffer,63,"void __cdecl (u32, u32, i32, i32, PC_BUFFER_RESOURCE_PC **, HANDLE *)"
+0x6e4730,_PCDeviceCreateOffscreenPlainSurfacePc,52,
 0x6e4770,_PCDeviceCreatePixelShader,32,"HRESULT __cdecl(const DWORD*,PC_TEXTURE_RESOURCE_PC**)"
+0x6e4790,_PCDeviceCreateQueryPc,32,
+0x6e47b0,_PCDeviceCreateStateBlockPc,32,
 0x6e47d0,_PCDeviceCreateTexture,56,"void __cdecl(u32,u32,u32,u32,i32,i32,PC_TEXTURE_RESOURCE_PC**)"
 0x6e4810,_PCDeviceCreateVertexBuffer,60,"void __cdecl (u32, u32, u32, i32, PC_BUFFER_RESOURCE_PC **)"
 0x6e4850,_PCDeviceCreateVertexDeclaration,32,"void __cdecl(const PC_VERTEX_ELEMENT_PC*,PC_TEXTURE_RESOURCE_PC**)"
 0x6e4870,_PCDeviceCreateVertexShader,32,"HRESULT __cdecl(const DWORD*,PC_TEXTURE_RESOURCE_PC**)"
+0x6e4890,_PCDeviceCreateVolumeTexturePc,61,
 0x6e48e0,_PCDeviceDrawIndexedPrimitivePc,59,"void __cdecl(i32,i32,u32,u32,u32,u32)"
 0x6e4920,_PCDeviceDrawIndexedPrimitiveUPPc,81,"void __cdecl (i32, u32, u32, u32, const void *, i32, const void *, u32)"
 0x6e4980,_PCDeviceDrawPrimitivePc,44,"void __cdecl(i32,u32,u32)"
 0x6e49b0,_PCDeviceDrawPrimitiveUPPc,61,"void __cdecl(i32,u32,const void *,u32)"
 0x6e4a10,_PCDeviceEndScenePc,10,HRESULT __cdecl(void)
+0x6e4a20,_PCDeviceEndStateBlockPc,27,
 0x6e4a40,_PCDeviceEvictManagedResources,19,void __cdecl(void)
 0x6e4a60,_PCDeviceGetAvailableTextureMemPc,21,
 0x6e4a80,_PCDeviceGetClipPlanePc,32,
@@ -11162,12 +11170,29 @@ address,symbol,size,ctype
 0x6e4f90,_PCDeviceGetVertexShaderConstantFPc,37,
 0x6e4fc0,_PCDeviceGetVertexShaderConstantIPc,37,
 0x6e4ff0,_NuPs2GetViewport,62,void __cdecl(NUVPCURRENT *)
+0x6e5030,_PCDeviceLightEnablePc,32,
+0x6e5050,_PCDeviceMultiplyTransformPc,32,
+0x6e5070,_PCDeviceProcessVerticesPc,52,
+0x6e50b0,_PCDeviceSetClipPlanePc,32,
+0x6e50d0,_PCDeviceSetClipStatusPc,27,
+0x6e50f0,_PCDeviceSetCurrentTexturePalettePc,27,
+0x6e5110,_PCDeviceSetCursorPositionExPc,29,
+0x6e5130,_PCDeviceSetCursorPropertiesPc,34,
+0x6e5160,_PCDeviceSetDepthStencilSurfacePc,27,
+0x6e5180,_PCDeviceSetDialogBoxModePc,24,
 0x6e51a0,_PCDeviceSetFVFPc,37,void __cdecl (u32)
 0x6e51d0,_PCDeviceSetIndicesPc,50,void __cdecl(PC_BUFFER_RESOURCE_PC*)
+0x6e5210,_PCDeviceSetLightPc,32,
+0x6e5230,_PCDeviceSetMaterialPc,27,
+0x6e5250,_PCDeviceSetNPatchModePc,30,
+0x6e5270,_PCDeviceSetPaletteEntriesPc,32,
 0x6e5290,_PCDeviceSetPixelShaderPc,27,void __cdecl(PC_TEXTURE_RESOURCE_PC*)
+0x6e52b0,_PCDeviceSetPixelShaderConstantBPc,37,
 0x6e52e0,_PCDeviceSetPixelShaderConstantsF,37,"void __cdecl(UINT,const f32*,UINT)"
+0x6e5310,_PCDeviceSetPixelShaderConstantIPc,37,
 0x6e5340,_PCDeviceSetRenderState,414,"void __cdecl (i32, u32)"
 0x6e54e0,_PCDeviceSetSamplerState,111,"void __cdecl (u32, i32, u32)"
+0x6e5550,_PCDeviceSetScissorRectPc,27,
 0x6e5570,_PCDeviceSetSoftwareVertexProcessing,27,void __cdecl(BOOL)
 0x6e5590,_PCDeviceSetStreamSourcePc,113,"void __cdecl(u32,PC_BUFFER_RESOURCE_PC*,u32,u32)"
 0x6e5610,_PCDeviceSetStreamSourceFreqPc,32,"void __cdecl(u32,u32)"
@@ -11176,22 +11201,69 @@ address,symbol,size,ctype
 0x6e56a0,_PCDeviceSetTransform,32,
 0x6e56c0,_PCDeviceSetVertexDeclarationPc,50,void __cdecl(PC_TEXTURE_RESOURCE_PC*)
 0x6e5700,_PCDeviceSetVertexShaderPc,27,void __cdecl(PC_TEXTURE_RESOURCE_PC*)
+0x6e5720,_PCDeviceSetVertexShaderConstantBPc,37,
 0x6e5750,_PCDeviceSetVertexShaderConstantsF,37,"void __cdecl(UINT,const f32*,UINT)"
+0x6e5780,_PCDeviceSetVertexShaderConstantIPc,37,
 0x6e57b0,_NuVpSubmitPc,20,
 0x006e57d0,_PCDeviceShowCursorPc,45,i32 __cdecl(i32)
 0x6e5800,_PCDeviceSetCursorPositionPc,28,
 0x6e5820,_PCDeviceStretchRectPc,47,"void __cdecl (PC_TEXTURE_RESOURCE_PC *, const RECT *, PC_TEXTURE_RESOURCE_PC *, const RECT *, i32)"
 0x6e5850,_PCDeviceTestCooperativeLevel,14,HRESULT __cdecl(void)
+0x6e5860,_PCDeviceUpdateSurfacePc,39,
+0x6e5890,_PCDeviceUpdateTexturePc,29,
+0x6e58b0,_PCDeviceValidateDevicePc,27,
+0x6e58d0,_PCDeviceCreateTextureFromFilePc,91,
+0x6e5930,_PCDeviceCreateRenderToSurfacePc,47,
+0x6e5960,_PCDeviceCreateFontPc,73,
+0x6e59b0,_PCDeviceCreateEffectFromFilePc,53,
 0x006e59f0,_PCDeviceCreateTextureFromMemory,32,"void __cdecl (const void *, u32, PC_TEXTURE_RESOURCE_PC **)"
+0x6e5a10,_PCDeviceCreateTextureFromFileInMemoryPc,32,
 0x6e5a30,_PCDeviceCreateTextureFromMemoryEx,88,"void __cdecl (const void *, u32, u32, u32, u32, u32, i32, i32, u32, u32, u32, D3DXIMAGE_INFO *, PALETTEENTRY *, PC_TEXTURE_RESOURCE_PC **)"
 0x6e5a90,_PCDeviceCreateCubeTextureFromMemory,32,"void __cdecl (const void *, u32, PC_TEXTURE_RESOURCE_PC **)"
 0x6e5ab0,_PCDeviceCreateCubeTextureFromFile,82,"void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource)"
+0x6e5b10,_PCDeviceCreateEffectPc,58,
+0x6e5b50,_PCDeviceReleaseResourcePc,18,
 0x006e5b70,_PCDeviceReleaseTexture,27,void __cdecl(PC_TEXTURE_RESOURCE_PC **)
 0x6e5b90,_PCDeviceLockVertexBuffer,38,"void __cdecl(u32,u32,void**,u32,PC_BUFFER_RESOURCE_PC*)"
 0x6e5bc0,_PCDeviceUnlockVertexBuffer,13,HRESULT __cdecl(PC_BUFFER_RESOURCE_PC*)
 0x6e5bd0,_PCDeviceLockIndexBuffer,38,"void __cdecl(u32,u32,void**,u32,PC_BUFFER_RESOURCE_PC*)"
 0x6e5c00,_PCDeviceUnlockIndexBuffer,13,HRESULT __cdecl(PC_BUFFER_RESOURCE_PC*)
+0x6e5c20,_PCDeviceSetVertexShaderMatrixPc,34,
+0x6e5c50,_PCDeviceSetVertexShaderRowsPc,100,
+0x6e5cc0,_PCDeviceSetGammaRampPc,23,
+0x6e5ce0,_PCDeviceGetGammaRampPc,21,
+0x6e5d00,_PCDeviceToggleStateCachePc,16,
 0x6e5f60,_CpuDetectFeaturesPc,873,void __cdecl (void)
+0x6e62d0,_CpuGetHasCpuidPc,30,
+0x6e62f0,_CpuGetFamilyPc,30,
+0x6e6310,_CpuGetProcessorTypePc,30,
+0x6e6330,_CpuGetModelPc,30,
+0x6e6350,_CpuGetSteppingPc,30,
+0x6e6370,_CpuGetUnsetValue0Pc,30,
+0x6e6390,_CpuGetBasicLeafMaxPc,30,
+0x6e63b0,_CpuGetUnsetValue1Pc,30,
+0x6e63d0,_CpuGetHasFpuPc,30,
+0x6e63f0,_CpuGetHasMmxPc,30,
+0x6e6410,_CpuGetHasTscPc,30,
+0x6e6430,_CpuGetHasDePc,30,
+0x6e6450,_CpuGetHasApicPc,30,
+0x6e6470,_CpuGetHasPatPc,30,
+0x6e6490,_CpuGetHasVmePc,30,
+0x6e64b0,_CpuGetHasPsePc,30,
+0x6e64d0,_CpuGetHasMsrPc,30,
+0x6e64f0,_CpuGetHasPaePc,30,
+0x6e6510,_CpuGetHasMcePc,30,
+0x6e6530,_CpuGetHasCmpxchg8bPc,30,
+0x6e6550,_CpuGetHasPgePc,30,
+0x6e6570,_CpuGetHasMcaPc,30,
+0x6e6590,_CpuGetHasCmovPc,30,
+0x6e65b0,_CpuGetUnsetFeature0Pc,30,
+0x6e65d0,_CpuGetUnsetFeature1Pc,30,
+0x6e65f0,_CpuGetUnsetFeature2Pc,30,
+0x6e6610,_CpuGetUnsetFeature3Pc,30,
+0x6e6630,_CpuGetHas3dnowPc,30,
+0x6e6650,_CpuGetHasSsePc,30,
+0x6e6670,_CpuGetHasSse2Pc,30,
 0x6e66b0,_PCGraphicsPrepareVendor,100,i32 __cdecl(void)
 0x6e67be,?_Xlen@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
 0x6e67fd,?_Xran@_String_base@std@@SAXXZ,,static CRT method selector; no engine source credit
@@ -12456,6 +12528,27 @@ address,symbol,size,ctype
 0x744560,?HasDiffuse@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,120,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32) const
 0x744660,?HasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,75,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32) const
 0x7446b0,?GetVertexFlags@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEIXZ,292,u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags(void) const
+0x7447e0,?GetDescriptor@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEPBUPC_SHADER_FILTER_DESC_VIEW@@XZ,3,
+0x7447f0,?GetMaterial@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEPBUPC_SHADER_FILTER_MATERIAL_VIEW@@XZ,4,
+0x744800,?HasBaseLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,3,
+0x744810,?HasSpecular@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,23,
+0x744830,?HasBaseLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,3,
+0x744840,?HasFirstPath@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,9,
+0x744850,?HasDeferredPath@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,9,
+0x744860,?HasLayerFlag20@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x744880,?HasLayerFlag1@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,23,
+0x7448a0,?HasNormalLayer1@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,34,
+0x7448d0,?HasLayerFlag0@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,21,
+0x7448f0,?HasNormalLayer0@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,34,
+0x744920,?HasLayerFlag14@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x744940,?HasLayerFlag13@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x744960,?HasFlag31With23@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,30,
+0x744980,?HasFlag31Without23@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,30,
+0x7449a0,?HasSecondPath@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,9,
+0x7449b0,?HasExtraTexture@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,16,
+0x7449c0,?HasEnvironmentTexture@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,16,
+0x744bc0,?HasSurfaceLayerAbove@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,39,
+0x744bf0,?HasSurfaceLayerAtOrBelow@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,39,
 0x744c20,_NuShaderObjectKeyGenerate3,1093,"void __cdecl(u32*,const PC_SHADER_MATERIAL_FILTER_VIEW*,i32)"
 0x7451d0,??_EShaderBuilderGen@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
 0x7451d0,??_GShaderBuilderGen@@UAEPAXI@Z,74,
@@ -12522,7 +12615,28 @@ address,symbol,size,ctype
 0x748760,?AppendText@ShaderCompilerBufferAllocatorPc@@QAEXPBD@Z,39,
 0x748790,?AppendInt@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,90,
 0x748890,?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,i32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const
+0x7488b0,?HasLayerFlag2@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x7488d0,?HasLayerFlag5@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x7488f0,?HasLayerFlags5And15@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,34,
+0x748920,?HasLayerFlag15@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748940,?HasLayerFlag10@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748960,?HasLayerFlag21@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
 0x748980,?HasPhongLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,i32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasPhongLighting() const
+0x7489a0,?HasLayerFlag4@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x7489c0,?HasNoExtraLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,3,
+0x7489d0,?HasLayerFlag17@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x7489f0,?HasLayerFlag19@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748a10,?HasNoExtraLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,3,
+0x748a20,?HasLayerFlag18@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748a40,?HasLayerFlag30@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748a60,?HasLayerFlag9@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748a80,?HasLayerFlag29@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748aa0,?HasUnfilteredLayerFlag22@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,15,
+0x748ab0,?IsVariantOrLayerFlag12@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,29,
+0x748ad0,?HasLayerFlag28@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748af0,?HasLayerFlag27@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
+0x748b10,?HasSelector0@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,12,
+0x748b20,?HasSelector1@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,14,
 0x748c40,??0ShaderBuilderGen@@QAE@AAUVirtualStackAllocator@@H@Z,96,
 0x748ca0,?ParseSource@ShaderBuilderGen@@QAEPAXPBDHPAUShaderCompilerBufferAllocatorPc@@HPAUVirtualStackAllocator@@@Z,260,"void * __thiscall (const char *,i32,ShaderCompilerBufferAllocatorPc *,i32,VirtualStackAllocator *)"
 0x748db0,?Generate@ShaderBuilderGen@@QAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerBufferAllocatorPc@@1@Z,324,"void __thiscall (PC_SHADER_MATERIAL_FILTER_VIEW *,ShaderCompilerBufferAllocatorPc *,ShaderCompilerBufferAllocatorPc *)"
@@ -39079,34 +39193,40 @@ address,symbol,size,ctype
 0x297c0e8,_CpuVendorPc,4,u32
 0x297c0ec,_CpuHas3dnowPc,4,u32
 0x0297c0f0,_PCClipUseSSE,4,i32
-0x297c0f4,_CpuHasSse2Pc,4,u32
-0x297c0f8,_CpuExtendedLeafMaxPc,4,u32
-0x297c0fc,_CpuExtendedFeaturesPc,4,u32
-0x297c104,_CpuHasCpuidPc,4,u32
-0x297c108,_CpuBasicLeafMaxPc,4,u32
-0x297c10c,_CpuProcessorTypePc,4,u32
-0x297c110,_CpuFamilyPc,4,u32
-0x297c114,_CpuModelPc,4,u32
-0x297c118,_CpuSteppingPc,4,u32
-0x297c11c,_CpuBrandIndexPc,1,u8
-0x297c124,_CpuHasFpuPc,4,u32
-0x297c128,_CpuHasVmePc,4,u32
-0x297c12c,_CpuHasDePc,4,u32
-0x297c130,_CpuHasPsePc,4,u32
-0x297c134,_CpuHasTscPc,4,u32
-0x297c138,_CpuHasMsrPc,4,u32
-0x297c13c,_CpuHasPaePc,4,u32
-0x297c140,_CpuHasMcePc,4,u32
-0x297c144,_CpuHasCmpxchg8bPc,4,u32
-0x297c148,_CpuHasApicPc,4,u32
-0x297c14c,_CpuHasPgePc,4,u32
-0x297c150,_CpuHasMcaPc,4,u32
-0x297c154,_CpuHasCmovPc,4,u32
-0x297c158,_CpuHasPatPc,4,u32
-0x297c15c,_CpuHasMmxPc,4,u32
-0x297c190,_CpuInitializedPc,4,u32
-0x297c198,_PCGraphicsGpuSelectionEnabled,4,i32
-0x297c19c,_PCGraphicsSelectedGpuRecord,4,PC_GRAPHICS_GPU_RECORD_PC*
+0x297c0f4,_CpuHasSse2Pc,,u32
+0x297c0f8,_CpuExtendedLeafMaxPc,,u32
+0x297c0fc,_CpuExtendedFeaturesPc,,u32
+0x297c100,_CpuUnsetValue0Pc,,u32
+0x297c104,_CpuHasCpuidPc,,u32
+0x297c108,_CpuBasicLeafMaxPc,,u32
+0x297c10c,_CpuProcessorTypePc,,u32
+0x297c110,_CpuFamilyPc,,u32
+0x297c114,_CpuModelPc,,u32
+0x297c118,_CpuSteppingPc,,u32
+0x297c11c,_CpuBrandIndexPc,,u8
+0x297c120,_CpuUnsetValue1Pc,,u32
+0x297c124,_CpuHasFpuPc,,u32
+0x297c128,_CpuHasVmePc,,u32
+0x297c12c,_CpuHasDePc,,u32
+0x297c130,_CpuHasPsePc,,u32
+0x297c134,_CpuHasTscPc,,u32
+0x297c138,_CpuHasMsrPc,,u32
+0x297c13c,_CpuHasPaePc,,u32
+0x297c140,_CpuHasMcePc,,u32
+0x297c144,_CpuHasCmpxchg8bPc,,u32
+0x297c148,_CpuHasApicPc,,u32
+0x297c14c,_CpuHasPgePc,,u32
+0x297c150,_CpuHasMcaPc,,u32
+0x297c154,_CpuHasCmovPc,,u32
+0x297c158,_CpuHasPatPc,,u32
+0x297c15c,_CpuHasMmxPc,,u32
+0x297c160,_CpuUnsetFeature0Pc,,u32
+0x297c164,_CpuUnsetFeature1Pc,,u32
+0x297c168,_CpuUnsetFeature2Pc,,u32
+0x297c16c,_CpuUnsetFeature3Pc,,u32
+0x297c190,_CpuInitializedPc,,u32
+0x297c198,_PCGraphicsGpuSelectionEnabled,,i32
+0x297c19c,_PCGraphicsSelectedGpuRecord,,PC_GRAPHICS_GPU_RECORD_PC*
 0x297c1a0,___fastflag,,
 0x297c1a4,__adjust_fdiv,,
 0x297c1a8,__aenvptr,,

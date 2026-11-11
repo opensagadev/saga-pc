@@ -117,7 +117,54 @@ extern "C" void __cdecl PCDeviceSetTextureStageState(u32 stage, i32 state, u32 v
         PCDeviceBackend.device->methods->set_texture_stage_state(PCDeviceBackend.device, stage, state, value);
 }
 
+extern "C" const char PCDeviceTextureCubeSourcePathPc[];
+extern "C" void __cdecl PCFrameCriticalSectionEnter_candidate(void);
+extern "C" void __cdecl PCFrameCriticalSectionLeave_candidate(void);
+
+extern "C" void __cdecl PCDeviceCreateTextureFromFilePc(char *path, PC_TEXTURE_RESOURCE_PC **texture) {
+    PCFrameCriticalSectionEnter_candidate();
+    u32 size = static_cast<u32>(NuFileSize(path));
+    if (size > 0) {
+        void *data = NuFileLoad(path);
+        if (data != NULL) {
+            PCDeviceLastResult =
+                D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data,
+                                                  size, reinterpret_cast<IDirect3DTexture9 **>(texture));
+            NuFree(data, PCDeviceTextureCubeSourcePathPc, 1032);
+        }
+    }
+    PCFrameCriticalSectionLeave_candidate();
+}
+
+extern "C" void __cdecl PCDeviceCreateRenderToSurfacePc(u32 width, u32 height, i32 format, BOOL depth_stencil,
+                                                        i32 depth_stencil_format, ID3DXRenderToSurface **render) {
+    PCDeviceLastResult = D3DXCreateRenderToSurface(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), width,
+                                                   height, static_cast<D3DFORMAT>(format), depth_stencil,
+                                                   static_cast<D3DFORMAT>(depth_stencil_format), render);
+}
+
+extern "C" void __cdecl PCDeviceCreateFontPc(i32 height, u32 width, u32 weight, u32 mip_levels, BOOL italic,
+                                             u32 char_set, u32 output_precision, u32 quality, u32 pitch_and_family,
+                                             const char *face_name, ID3DXFont **font) {
+    PCDeviceLastResult =
+        D3DXCreateFontA(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), height, width, weight, mip_levels,
+                        italic, char_set, output_precision, quality, pitch_and_family, face_name, font);
+}
+
+extern "C" void __cdecl PCDeviceCreateEffectFromFilePc(const char *path, const D3DXMACRO *defines,
+                                                       ID3DXInclude *include, u32 flags, ID3DXEffectPool *pool,
+                                                       ID3DXEffect **effect, ID3DXBuffer **errors) {
+    PCDeviceLastResult = D3DXCreateEffectFromFileA(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), path,
+                                                   defines, include, flags, pool, effect, errors);
+}
+
 extern "C" void __cdecl PCDeviceCreateTextureFromMemory(const void *data, u32 size, PC_TEXTURE_RESOURCE_PC **texture) {
+    PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device),
+                                                           data, size, reinterpret_cast<IDirect3DTexture9 **>(texture));
+}
+
+extern "C" void __cdecl PCDeviceCreateTextureFromFileInMemoryPc(const void *data, u32 size,
+                                                                PC_TEXTURE_RESOURCE_PC **texture) {
     PCDeviceLastResult = D3DXCreateTextureFromFileInMemory(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device),
                                                            data, size, reinterpret_cast<IDirect3DTexture9 **>(texture));
 }
@@ -243,8 +290,6 @@ extern "C" void __cdecl PCGraphicsDrawUnitBoxPc(NUMTX *matrix) {
     PCDeviceDrawIndexedPrimitiveUPPc(4, 0, 8, 12, indices, 0x65, corners, sizeof(NUVEC4));
 }
 
-extern "C" const char PCDeviceTextureCubeSourcePathPc[];
-
 extern "C" void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE_RESOURCE_PC **resource) {
     u32 size = static_cast<u32>(NuFileSize(path));
     if (size > 0) {
@@ -256,6 +301,17 @@ extern "C" void __cdecl PCDeviceCreateCubeTextureFromFile(char *path, PC_TEXTURE
             NuFree(data, PCDeviceTextureCubeSourcePathPc, 1116);
         }
     }
+}
+
+extern "C" void __cdecl PCDeviceCreateEffectPc(const void *data, u32 size, const D3DXMACRO *defines,
+                                               ID3DXInclude *include, u32 flags, ID3DXEffectPool *pool,
+                                               ID3DXEffect **effect, ID3DXBuffer **errors) {
+    PCDeviceLastResult = D3DXCreateEffect(reinterpret_cast<IDirect3DDevice9 *>(PCDeviceBackend.device), data, size,
+                                          defines, include, flags, pool, effect, errors);
+}
+
+extern "C" void __cdecl PCDeviceReleaseResourcePc(PC_TEXTURE_RESOURCE_PC *resource) {
+    PCDeviceLastResult = static_cast<HRESULT>(resource->methods->release(resource));
 }
 
 #include <math.h>
@@ -1060,6 +1116,32 @@ extern "C" __declspec(noinline) void __cdecl PCDeviceLockIndexBuffer(u32 offset,
 extern "C" __declspec(noinline) HRESULT __cdecl PCDeviceUnlockIndexBuffer(PC_BUFFER_RESOURCE_PC *resource) {
     return resource->methods->unlock(resource);
 }
+
+extern "C" void __cdecl PCDeviceSetVertexShaderMatrixPc(u32 start, const f32 *matrix) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start, matrix, 4);
+}
+
+extern "C" void __cdecl PCDeviceSetVertexShaderRowsPc(u32 start, const f32 *rows) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start, rows, 1);
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start + 1, rows + 3, 1);
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_vertex_shader_constant_f(PCDeviceBackend.device, start + 2, rows + 6, 1);
+}
+
+extern "C" void __cdecl PCDeviceSetGammaRampPc(const void *ramp) {
+    PCDeviceBackend.device->methods->set_gamma_ramp(PCDeviceBackend.device, 0, 1, ramp);
+}
+
+extern "C" void __cdecl PCDeviceGetGammaRampPc(void *ramp) {
+    PCDeviceBackend.device->methods->get_gamma_ramp(PCDeviceBackend.device, 0, ramp);
+}
+
+extern "C" void __cdecl PCDeviceToggleStateCachePc(void) {
+    PCDeviceStateCacheEnabled = PCDeviceStateCacheEnabled == 0;
+}
 void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
     if (back_buffer != NULL) {
         back_buffer->methods->release(back_buffer);
@@ -1523,6 +1605,45 @@ void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 
 }
 
 /* Thin IDirect3DDevice9 getters (no retail caller); each records its result. */
+extern "C" void __cdecl PCDeviceColorFillPc(PC_TEXTURE_RESOURCE_PC *surface, const RECT *rect, u32 colour) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->color_fill(PCDeviceBackend.device, surface, rect, colour);
+}
+
+extern "C" void __cdecl PCDeviceCreateAdditionalSwapChainPc(void *parameters, void **swap_chain) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->create_additional_swap_chain(PCDeviceBackend.device, parameters, swap_chain);
+}
+
+extern "C" void __cdecl PCDeviceCreateCubeTexturePc(u32 edge_length, u32 levels, u32 usage, i32 format, i32 pool,
+                                                    PC_TEXTURE_RESOURCE_PC **texture, HANDLE *shared) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->create_cube_texture(
+        PCDeviceBackend.device, edge_length, levels, usage, format, pool, texture, shared);
+}
+
+extern "C" void __cdecl PCDeviceCreateOffscreenPlainSurfacePc(u32 width, u32 height, i32 format, i32 pool,
+                                                              PC_TEXTURE_RESOURCE_PC **surface, HANDLE *shared) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->create_offscreen_plain_surface(
+        PCDeviceBackend.device, width, height, format, pool, surface, shared);
+}
+
+extern "C" void __cdecl PCDeviceCreateQueryPc(i32 type, void **query) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->create_query(PCDeviceBackend.device, type, query);
+}
+
+extern "C" void __cdecl PCDeviceCreateStateBlockPc(i32 type, void **state_block) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->create_state_block(PCDeviceBackend.device, type, state_block);
+}
+
+extern "C" void __cdecl PCDeviceCreateVolumeTexturePc(u32 width, u32 height, u32 depth, u32 levels, u32 usage,
+                                                      i32 format, i32 pool, PC_TEXTURE_RESOURCE_PC **texture) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->create_volume_texture(
+        PCDeviceBackend.device, width, height, depth, levels, usage, format, pool, texture, NULL);
+}
+
+extern "C" void __cdecl PCDeviceEndStateBlockPc(void **state_block) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->end_state_block(PCDeviceBackend.device, state_block);
+}
+
 extern "C" i32 __cdecl PCDeviceGetAvailableTextureMemPc(void) {
     PCDeviceLastResult =
         static_cast<HRESULT>(PCDeviceBackend.device->methods->get_available_texture_mem(PCDeviceBackend.device));
@@ -1715,6 +1836,103 @@ extern "C" void __cdecl NuPs2GetViewport(NUVPCURRENT *viewport) {
 }
 
 // Native platform aspect supplier, append to pc_device.cpp.
+extern "C" void __cdecl PCDeviceLightEnablePc(u32 index, BOOL enable) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->light_enable(PCDeviceBackend.device, index, enable);
+}
+
+extern "C" void __cdecl PCDeviceMultiplyTransformPc(i32 state, const NUMTX *matrix) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->multiply_transform(PCDeviceBackend.device, state, matrix);
+}
+
+extern "C" void __cdecl PCDeviceProcessVerticesPc(u32 source_start, u32 destination_index, u32 count,
+                                                  PC_BUFFER_RESOURCE_PC *destination,
+                                                  PC_TEXTURE_RESOURCE_PC *declaration, u32 flags) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->process_vertices(
+        PCDeviceBackend.device, source_start, destination_index, count, destination, declaration, flags);
+}
+
+extern "C" void __cdecl PCDeviceSetClipPlanePc(u32 index, const f32 *plane) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_clip_plane(PCDeviceBackend.device, index, plane);
+}
+
+extern "C" void __cdecl PCDeviceSetClipStatusPc(const void *status) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_clip_status(PCDeviceBackend.device, status);
+}
+
+extern "C" void __cdecl PCDeviceSetCurrentTexturePalettePc(u32 palette) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_current_texture_palette(PCDeviceBackend.device, palette);
+}
+
+extern "C" void __cdecl PCDeviceSetCursorPositionExPc(i32 x, i32 y, u32 flags) {
+    PCDeviceBackend.device->methods->set_cursor_position(PCDeviceBackend.device, x, y, flags);
+}
+
+extern "C" void __cdecl PCDeviceSetCursorPropertiesPc(u32 x, u32 y, PC_TEXTURE_RESOURCE_PC *bitmap) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_cursor_properties(PCDeviceBackend.device, x, y, bitmap);
+}
+
+extern "C" void __cdecl PCDeviceSetDepthStencilSurfacePc(PC_TEXTURE_RESOURCE_PC *surface) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_depth_stencil_surface(PCDeviceBackend.device, surface);
+}
+
+extern "C" void __cdecl PCDeviceSetDialogBoxModePc(BOOL enable) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_dialog_box_mode(PCDeviceBackend.device, enable);
+}
+
+extern "C" void __cdecl PCDeviceSetLightPc(u32 index, const void *light) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_light(PCDeviceBackend.device, index, light);
+}
+
+extern "C" void __cdecl PCDeviceSetMaterialPc(const void *material) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_material(PCDeviceBackend.device, material);
+}
+
+extern "C" void __cdecl PCDeviceSetNPatchModePc(f32 segments) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_n_patch_mode(PCDeviceBackend.device, segments);
+}
+
+extern "C" void __cdecl PCDeviceSetPaletteEntriesPc(u32 palette, const PALETTEENTRY *entries) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_palette_entries(PCDeviceBackend.device, palette, entries);
+}
+
+extern "C" void __cdecl PCDeviceSetPixelShaderConstantBPc(u32 start, const BOOL *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_pixel_shader_constant_b(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceSetPixelShaderConstantIPc(u32 start, const i32 *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_pixel_shader_constant_i(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceSetScissorRectPc(const RECT *rect) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->set_scissor_rect(PCDeviceBackend.device, rect);
+}
+
+extern "C" void __cdecl PCDeviceSetVertexShaderConstantBPc(u32 start, const BOOL *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_vertex_shader_constant_b(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceSetVertexShaderConstantIPc(u32 start, const i32 *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->set_vertex_shader_constant_i(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceUpdateSurfacePc(PC_TEXTURE_RESOURCE_PC *source, const RECT *source_rect,
+                                                PC_TEXTURE_RESOURCE_PC *destination, const POINT *destination_point) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->update_surface(PCDeviceBackend.device, source, source_rect,
+                                                                         destination, destination_point);
+}
+
+extern "C" void __cdecl PCDeviceUpdateTexturePc(PC_TEXTURE_RESOURCE_PC *source, PC_TEXTURE_RESOURCE_PC *destination) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->update_texture(PCDeviceBackend.device, source, destination);
+}
+
+extern "C" void __cdecl PCDeviceValidateDevicePc(u32 *passes) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->validate_device(PCDeviceBackend.device, passes);
+}
+
 extern "C" f32 __cdecl PcInputAspectRatioPc(void) {
     f32 value;
     switch (PcWindowOptions.aspect_mode) {
