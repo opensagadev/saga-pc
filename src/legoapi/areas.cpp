@@ -587,7 +587,7 @@ static void AreaAddModelListPrivatePc(APICHARACTERMODELLIST *list, i32 *count, i
     if (extras == NULL || list == AreaPlayerModelsPc || load_model == 0)
         return;
     for (; extras->model_list != NULL; ++extras) {
-        if (*extras->model_list != character_id)
+        if (character_id != *extras->model_list)
             continue;
         const i32 extra_id = *extras->extra_id;
         if (extra_id != -1 && *count < capacity && InModelList(list, extra_id, NULL) == 0) {
