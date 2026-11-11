@@ -33785,12 +33785,6 @@ extern "C" {
 #pragma data_seg(".data$HubPromptOnColourPc")
     i32 HubPromptOnColourPc[3] = {223, 223, 223};
 #pragma data_seg()
-#pragma data_seg(".data$HubLostTempleStoryTextPc")
-    i16 *HubLostTempleStoryTextPc = &tINTRO;
-#pragma data_seg()
-#pragma data_seg(".data$HubLostTempleFreePlayTextPc")
-    i16 *HubLostTempleFreePlayTextPc = &TextIdPc8810c0;
-#pragma data_seg()
 #pragma bss_seg(".bss$HubDrawMiniKitCharacterPc")
     i32 HubDrawMiniKitCharacterPc = 0;
 #pragma bss_seg()

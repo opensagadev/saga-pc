@@ -33318,9 +33318,7 @@ address,symbol,size,ctype
 0x7fabb8,_SaveUnicodeNamePc,20,char[20]
 0x7fabf8,_lsw_memcard_objname,4,char *
 0x007fac04,_BGLOAD,4,i32
-0x7fac08,_Trailer,,char *[6]
-0x007fac0c,_HubLostTempleStoryTextPc,4,i16 *
-0x007fac18,_HubLostTempleFreePlayTextPc,4,i16 *
+0x7fac08,_Trailer,24,char *[6]
 0x007fac20,_PlayTrailer,4,i32
 0x007fac24,_NuMainRendererControlPc,4,i32
 0x7facb8,_MenuNewGameYPc,4,f32

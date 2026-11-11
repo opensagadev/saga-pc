@@ -2202,7 +2202,7 @@ static void HubDrawSuperBonusStatsPc(AREA_DATA_PC *area, f32 alpha) {
 /* PC475090,676 bytes. selected and alpha full stack. Native PC has no hint/store/freeplay guards. */
 extern "C" i32 hub_selectmode;
 extern "C" f32 HubSelectMenuYPc;
-extern "C" i16 *HubLostTempleStoryTextPc, *HubLostTempleFreePlayTextPc;
+extern "C" char *Trailer[6];
 static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
     const i32 area = LDataList[HubDoorNewLevelPc].area_index;
     const i32 complete = Game.area_save[area].area_complete;
@@ -2210,8 +2210,8 @@ static void HubDrawSelectModeMenuPc(i32 selected, f32 alpha) {
     i32 opacity[10];
     i32 count;
     if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) {
-        ids[0] = *HubLostTempleStoryTextPc;
-        ids[1] = *HubLostTempleFreePlayTextPc;
+        ids[0] = *(i16 *)Trailer[1];
+        ids[1] = *(i16 *)Trailer[4];
         opacity[1] = opacity[0] = 128;
         count = 2;
     } else {

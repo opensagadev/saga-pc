@@ -28581,8 +28581,6 @@ extern "C" {
     extern i32 HubBuildBarSegmentsPc;
     extern i32 HubPromptOffColourPc[3];
     extern i32 HubPromptOnColourPc[3];
-    extern i16 *HubLostTempleStoryTextPc;
-    extern i16 *HubLostTempleFreePlayTextPc;
     extern i32 HubDrawMiniKitCharacterPc;
     extern u8 HubEpisodeBluePc;
     extern f32 HubArcadeMenuYPc;
