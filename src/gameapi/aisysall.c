@@ -16401,8 +16401,11 @@ i32 __cdecl Action_GoToNode(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
             node_index = node - packet->path_info.path->nodes;
             processor->path_info.path = packet->path_info.path;
             processor->path_info.connection = node->connections[0];
-            processor->path_info.distance =
-                node_index == processor->path_info.connection->node_indices[0] ? 0.0f : 1.0f;
+            if (processor->path_info.connection->node_indices[0] == node_index) {
+                processor->path_info.distance = 0.0f;
+            } else {
+                processor->path_info.distance = 1.0f;
+            }
             processor->path_info.direction = 0;
             processor->path_info.flags_word |= 1;
             processor->path_info.width = 0.0f;
