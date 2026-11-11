@@ -1803,16 +1803,17 @@ ShaderUniformRecordPc *__cdecl NuShaderUniformGetByString(const char *name) {
 /* PC 601a30. Minimum reader for this initialization cohort, not a NUMTL extent. */
 
 void __cdecl NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
+    i32 colour_local = colour; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice (U20)
     LOCATOR_PRIM_VERTEX_PC *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(14, 7, material);
-    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimSetColourPrivate(colour_local);
     vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ((f32)((f64)x0 * 0.0625), (f32)((f64)y0 * 0.0625), 0.0f);
-    NuRndrPrimSetColourPrivate(colour);
+    NuRndrPrimSetColourPrivate(colour_local);
     vertex = (LOCATOR_PRIM_VERTEX_PC *)NuPrimStreamBufferPointer->void_ptr;
     vertex->u = 1.0f;
     vertex->v = 1.0f;
