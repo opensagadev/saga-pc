@@ -32,15 +32,15 @@ side, the local count, the declaration order of shared names, and locals
 declared several times (one per inlined expansion of a helper; the helpers of
 the same file that take such a parameter are named).
 
-## What paid off (pilot, 30 functions)
+## What paid off (pilot, 25 functions)
 
 | hint | tried | exact | improved |
 |---|---:|---:|---:|
-| fewer locals in the reference: index the array or read the field at each use instead of a cached pointer/copy | 12 | 8 (+3 callers that inline them) | 1 |
-| a helper expanded inline (repeated locals): call the same-unit function instead of a macro | 4 | 4 | 1 |
+| fewer locals in the reference: index the array or read the field at each use instead of a cached pointer/copy | 10 | 6 (+3 callers that inline them) | 1 (2 worse, reverted) |
+| a helper expanded inline (repeated locals): call the same-unit function instead of a macro | 4 | 3 (+1 sibling) | 1 |
 | declaration order / initialised locals | 2 | 0 | 2 |
-| struct bit names (bitfield store where we masked a word) | 1 | 0 | 1 |
-| parameter / return type class | 3 | 0 | 0 |
+| no hint applied (known U classes) or other cause | 8 | 2 (shift mask, not from the dump) | 0 |
+| struct bit names (bitfield store where we masked a word) | 1 | 0 | 0 (reverted) |
 
 - The most frequent and most useful hint is *the reference has no local for
   this*. Decompiled ports cache `&array[index]` or `object->field` in a local;
@@ -53,16 +53,29 @@ the same file that take such a parameter are named).
 - Repeated locals show inlining: `NuStrNICmpW` declares `c` twice, the
   parameter of `NuToUpperW`, so the string functions called `NuToUpperW` (same
   unit, inlined by VC8) rather than a macro. With the helper written as
-  `if (range1) c -= 0x20; else if (range2) c -= 0x20;` four functions became
+  `if (range1) c -= 0x20; else if (range2) c -= 0x20;` three functions and `NuStrUprW` became
   exact. Inlining in the PS2 build is weaker evidence on its own: `NuStrLenW`
   is inlined there but called in retail.
 - Struct definitions differ little where both games have the struct (149
   same-named structs, 16 field type differences, mostly PS2-specific). The
   useful part is bitfield names for words we treat as masks:
   `APIOBJECT_PC.flags_low` is the object flag bitfield (`ignore_antinodes` is
-  bit 17), and retail stores it with the bitfield xor/and/xor sequence.
-- Parameter type hints were mostly PS2-specific (`i64` file positions on PC,
-  `u8` colour channels widened) and did not help.
+  bit 17), and retail stores it with the bitfield xor/and/xor sequence. With
+  the bits declared as an anonymous union member, `Action_SetIgnoreAntinodes`
+  went from 87.56 to 99.06, but the same header change moved code in two
+  functions of unrelated units (`BoulderSpawnPc` left exact,
+  `GameCameraMakeMiniCut3` 85.75 -> 74.79), so it was reverted. Header struct
+  changes need a full build and match before they are kept.
+- Parameter type hints (44 over the 648 non-exact functions in both) look
+  mostly PS2-specific on inspection (`i64` file positions on PC, `u8` colour
+  channels widened); none was tried.
+- Yield: 15 of 25 functions tried became exact (13 directly, 2 for another
+  reason) in about two hours, mostly from one hint type in one unit. Of the 648
+  non-exact functions in both, the batch hints flag fewer reference locals than
+  ours in about 150 (>= 75%, < 1200 B); at the observed rate of roughly one in
+  two, the "cached local" lever might give 50-80 exact functions there, and the
+  same rewrite (index instead of a cached element pointer) applies to
+  functions without a name in the dump that use the same tables.
 - File assignment: 123 reference files contain mapped functions; 38 of them
   are spread over several of our units, mostly where the PC build compiles a
   group of engine files as one unit (`nucore_includes.c`, `nu3d_includes.cpp`,
