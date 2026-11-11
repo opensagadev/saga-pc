@@ -6611,6 +6611,9 @@ address,symbol,size,ctype
 0x5d7a80,_setnextpoint,43,"void __cdecl(f32,f32)"
 0x5d7ab0,_getnextdatapoint,113,"i32 __cdecl(f32 *,i32 *)"
 0x5d7b30,_NuHtmlHLineGraph,1023,"void __cdecl(char *,i32,i32,i32 *,i32,i32,char **)"
+0x5d7f30,_TimeBarAddSet,43,i32 __cdecl(TimeBarSet *)
+0x5d7f60,_TimeBarRemoveSet,12,void __cdecl(i32)
+0x5d7f70,_TimeBarGetSet,8,TimeBarSet *__cdecl(i32)
 0x005d7f80,_CreateTimeBar,666,"i32 __cdecl (VARIPTR *, VARIPTR, i32 *, i32) [private EAX buffer]"
 0x005d8220,_NuTimeBarCreateSetEx,25,"i32 __cdecl (VARIPTR *, VARIPTR, i32 *)"
 0x005d8240,_NuTimeBarCreateSetEx2,36,"i32 __cdecl (VARIPTR *, VARIPTR, i32)"

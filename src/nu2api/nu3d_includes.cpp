@@ -7336,6 +7336,26 @@ extern "C" {
     STATIC_ASSERT(offsetof(TimeBarSet, slot_names) == 0x24);
     STATIC_ASSERT(offsetof(TimeBarSet, field_28) == 0x28);
 
+    static i32 TimeBarAddSet(TimeBarSet *timebar) {
+        i32 index;
+        for (index = 0; index < 16; ++index) {
+            if (NuTimeBar_SetList[index] == NULL) {
+                NuTimeBar_SetList[index] = timebar;
+                return index - 1;
+            }
+        }
+        AnimationDiagnosticNoOpPc();
+        return 0;
+    }
+
+    static void TimeBarRemoveSet(i32 set) {
+        NuTimeBar_SetList[set + 1] = NULL;
+    }
+
+    static TimeBarSet *TimeBarGetSet(i32 set) {
+        return (TimeBarSet *)NuTimeBar_SetList[set + 1];
+    }
+
     void __cdecl NuTimeBarSlotReset(i32 set, i32 slot) {
         TimeBarSet *timebar;
         if (NuTimeBar_Initialised == 0) {
@@ -7385,7 +7405,7 @@ extern "C" {
             NuFree((void *)timebar->slot_names, NuTimeBarSource, 0x170);
             NuFree(timebar, NuTimeBarSource, 0x172);
         }
-        NuTimeBar_SetList[set + 1] = NULL;
+        TimeBarRemoveSet(set);
     }
 
     u32 __cdecl _NuTimeBarSlotEnd(i32 set, i32 slot) {
@@ -7466,7 +7486,6 @@ extern "C" {
 
     static i32 CreateTimeBar(VARIPTR *buffer, VARIPTR unused_buffer, i32 *colours, i32 slot_count) {
         TimeBarSet *timebar;
-        i32 index;
         i32 set;
         u32 array_bytes = (u32)slot_count * sizeof(i32);
         (void)unused_buffer;
@@ -7523,17 +7542,7 @@ extern "C" {
         memset((void *)timebar->colours, 0, array_bytes);
         memset((void *)timebar->toggle_flags, 0, array_bytes);
         memset((void *)timebar->slot_names, 0, array_bytes);
-        index = 0;
-        do {
-            if (NuTimeBar_SetList[index] == NULL) {
-                NuTimeBar_SetList[index] = timebar;
-                set = index - 1;
-                goto found;
-            }
-        } while (++index < 16);
-        AnimationDiagnosticNoOpPc();
-        set = 0;
-    found:
+        set = TimeBarAddSet(timebar);
         if (colours != NULL) {
             memcpy(timebar->colours, colours, array_bytes);
         } else if (set == -1) {
@@ -7552,7 +7561,7 @@ extern "C" {
 
     i32 __cdecl NuTimeBarCreateSetEx2(VARIPTR *buffer, VARIPTR unused_buffer, i32 field_28) {
         i32 set = CreateTimeBar(buffer, unused_buffer, NULL, 16);
-        TimeBarSet *timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        TimeBarSet *timebar = TimeBarGetSet(set);
         timebar->field_28 = field_28;
         return set;
     }
