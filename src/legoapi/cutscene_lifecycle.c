@@ -1959,8 +1959,8 @@ static void CutSceneLocatorSysResetPc(INSTNUGCUTSCENE *owner) {
     CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *states = instance->locator_instance;
     u32 i;
     for (i = 0; i < system->count; ++i) {
-        CUT_LOAD_LOCATOR *locator = &system->locators[i];
         CUT_LOAD_LOCATOR_INSTANCE *state = &states->locators[i];
+        CUT_LOAD_LOCATOR *locator = &system->locators[i];
         CUT_LOAD_LOCATOR_TYPE *type = &system->types[locator->type_index];
         if ((type->flags & 2) != 0 && type->function_index != 0xffff &&
             CutSceneLocatorFunctionsPc[type->function_index].reset != NULL)
