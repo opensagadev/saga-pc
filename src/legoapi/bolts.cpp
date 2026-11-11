@@ -1437,12 +1437,10 @@ extern "C" void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NU
     FindAnglesXY(&reflected, NULL, NULL);
     if ((u8)bolt->field_104 > 31 || !(TerSurface[bolt->field_104].flags & 0x800)) {
         FindAnglesXFullTempPc += (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0);
-        ConfigBuffer.fields.find_angles_y_rotation =
-            (u16)(ConfigBuffer.fields.find_angles_y_rotation +
-                  (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0));
+        temp_yrot = (u16)(temp_yrot + (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0));
     }
     angles.x = FindAnglesXFullTempPc;
-    angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+    angles.y = temp_yrot;
     NuMtxSetRotationXYVU0(&matrix, &angles);
     type_id = (i8)type->field_3d;
     if (type_id < 0 || type_id >= BoltSys->count)
@@ -2010,8 +2008,7 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
                     goto reflected;
             }
             {
-                ConfigBuffer.fields.find_angles_y_rotation +=
-                    static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 8192.0f);
+                temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 8192.0f);
                 FindAnglesXFullTempPc +=
                     static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
                 if (FindAnglesXFullTempPc < -8192)
@@ -2025,7 +2022,7 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
             NUMTX matrix;
             NUANGVEC angles;
             angles.x = temp_zrot;
-            angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+            angles.y = temp_yrot;
             NuMtxSetRotationXYVU0(&matrix, &angles);
             BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
             if (reflected_bolt != NULL)
@@ -2077,16 +2074,14 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 NewBuzz(object->pad->bound_pad, 0.1f, 0);
                 if ((bolt->flags & 0x100000) == 0) {
-                    ConfigBuffer.fields.find_angles_y_rotation =
-                        NuAtan2D(bolt->position.x - object->collision_position.x,
-                                 bolt->position.z - object->collision_position.z);
-                    ConfigBuffer.fields.find_angles_y_rotation +=
-                        static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
+                    temp_yrot = NuAtan2D(bolt->position.x - object->collision_position.x,
+                                         bolt->position.z - object->collision_position.z);
+                    temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
                     temp_zrot = static_cast<i32>(-1820.0f - (qrand() * static_cast<f64>(1.0f / 65535.0f)) * 6371.0f);
                     NUMTX matrix;
                     NUANGVEC angles;
                     angles.x = temp_zrot;
-                    angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+                    angles.y = temp_yrot;
                     NuMtxSetRotationXYVU0(&matrix, &angles);
                     BoltNoSfxPc = 1;
                     BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
@@ -2825,13 +2820,13 @@ extern "C" {
                     NuVecSub(&delta, target_position, shot_position);
                 FindAnglesXY(&delta, NULL, NULL);
                 angles.x = temp_zrot;
-                angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+                angles.y = temp_yrot;
                 NuMtxSetRotationXYVU0(&matrix, &angles);
             } else if (object->movement_mode == 4) {
                 NUANGVEC angles;
                 FindAnglesXY(&direction, NULL, NULL);
                 angles.x = temp_zrot;
-                angles.y = ConfigBuffer.fields.find_angles_y_rotation;
+                angles.y = temp_yrot;
                 NuMtxSetRotationXYVU0(&matrix, &angles);
             } else {
                 NuMtxSetRotationYInline(&matrix, heading);

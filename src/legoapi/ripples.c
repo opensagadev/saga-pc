@@ -157,7 +157,7 @@ void __cdecl BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 u
     (void)unused_y;
     FindAnglesXY(normal, NULL, NULL);
     NuMtxSetRotationX(matrix, temp_zrot);
-    NuMtxRotateY(matrix, ConfigBuffer.fields.find_angles_y_rotation);
+    NuMtxRotateY(matrix, temp_yrot);
     NuMtxTranslate(matrix, position);
 }
 

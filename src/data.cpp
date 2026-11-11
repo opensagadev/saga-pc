@@ -29069,7 +29069,7 @@ extern "C" {
 
 extern "C" {
 #pragma bss_seg(".bss$temp_yrot")
-    i16 temp_yrot = 0;
+    u16 temp_yrot = 0;
 }
 
 extern "C" {

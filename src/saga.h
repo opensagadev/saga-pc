@@ -13115,16 +13115,11 @@ typedef struct PC_SHADER_OBJECT_FULL_VIEW PC_SHADER_OBJECT_FULL_VIEW;
     void __cdecl BobaRocket_Deflect(PART_PC *);
     i32 __cdecl ParticlesPerFrame(f32, f32);
     i32 __cdecl CurrentAnim(ANIMPACKET_PC *);
-    typedef union CONFIG_BUFFER_PC {
-        char bytes[0x10002];
-        struct {
-            char configuration_prefix[0x10000];
-            u16 find_angles_y_rotation;
-        } fields;
+    /* The u16 after the buffer at 0x93b0e8 is the separate global temp_yrot. */
+    typedef struct CONFIG_BUFFER_PC {
+        char bytes[0x10000];
     } CONFIG_BUFFER_PC;
-    STATIC_ASSERT(sizeof(CONFIG_BUFFER_PC) == 0x10002);
-    STATIC_ASSERT(offsetof(CONFIG_BUFFER_PC, bytes) == 0);
-    STATIC_ASSERT(offsetof(CONFIG_BUFFER_PC, fields.find_angles_y_rotation) == 0x10000);
+    STATIC_ASSERT(sizeof(CONFIG_BUFFER_PC) == 0x10000);
     extern CONFIG_BUFFER_PC ConfigBuffer;
     extern i32 FindAnglesXFullTempPc;
     typedef struct EXPLOSION_PC {
@@ -27767,7 +27762,7 @@ extern "C" {
     void __cdecl GrabVictim(struct gameobject_s *object, struct gameobject_s *victim);
     extern i32 addbolt_nosfx;
     extern f32 gizturret_rapid_fire_rate;
-    extern i16 temp_yrot;
+    extern u16 temp_yrot;
     extern f32 MulAdd;
     extern f32 MulDist;
     extern f32 SpaceRumbleTimer;

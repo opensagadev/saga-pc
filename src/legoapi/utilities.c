@@ -197,9 +197,9 @@ __declspec(noinline) void __cdecl FindAnglesZX(NUVEC *normal, u16 *x_rotation, u
 
 void __cdecl FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
     f32 horizontal_squared;
-    ConfigBuffer.fields.find_angles_y_rotation = (u16)NuAtan2D(direction->x, direction->z);
+    temp_yrot = (u16)NuAtan2D(direction->x, direction->z);
     if (y_rotation)
-        *y_rotation = ConfigBuffer.fields.find_angles_y_rotation;
+        *y_rotation = temp_yrot;
     horizontal_squared = direction->x * direction->x + direction->z * direction->z;
     FindAnglesXFullTempPc = -NuAtan2D(direction->y, NuFsqrt(horizontal_squared));
     temp_zrot = (u16)FindAnglesXFullTempPc;
