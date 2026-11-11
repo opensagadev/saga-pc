@@ -1437,6 +1437,36 @@
    "kind": "function"
   },
   {
+   "unit": "src/legoapi/rtlhelper.cpp",
+   "symbol": "__bad_alloc_Message",
+   "kind": "data"
+  },
+  {
+   "unit": "src/legoapi/rtlhelper.cpp",
+   "symbol": "??2@YAPAXIPAX@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/rtlhelper.cpp",
+   "symbol": "??0?$EdValueControl@H@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/rtlhelper.cpp",
+   "symbol": "??0?$EdValueControl@M@@QAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/rtlhelper.cpp",
+   "symbol": "??1?$EdValueControl@H@@UAE@XZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/legoapi/rtlhelper.cpp",
+   "symbol": "??1?$EdValueControl@M@@UAE@XZ",
+   "kind": "function"
+  },
+  {
    "unit": "src/gamelib/net/Ftp.cpp",
    "symbol": "??0NETMESSAGE_PC@@QAE@XZ",
    "kind": "function"

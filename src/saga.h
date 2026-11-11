@@ -29410,7 +29410,8 @@ class EdControl {
     }
     EdControl() {
     }
-    virtual ~EdControl();
+    virtual ~EdControl() {
+    }
     virtual void Refresh();
     virtual void Process(EdInputContext &input);
     virtual void Render();
@@ -29418,7 +29419,6 @@ class EdControl {
     virtual void SetMenuItemAttr(i32 state, eduiitem_s *item, eduiiattr_s *normal, eduiiattr_s *highlighted);
     i32 SelectSubObject();
     static void cbSelected(eduimenu_s *menu, eduiitem_s *item, u32);
-
     eduiitem_s *item;
     EdRef *reference;
     void *object;
@@ -29443,7 +29443,7 @@ class EdEnumControl : public EdControl {
     static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
     static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32);
     static void cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32);
-
+    static Item YesNoItems[];
     Item *items;
 };
 

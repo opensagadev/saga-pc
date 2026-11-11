@@ -8296,6 +8296,7 @@ address,symbol,size,ctype
 0x634600,??1RTLHelper@@UAE@XZ,7,
 0x634610,??0FogHelper@@QAE@XZ,16,
 0x634620,??1FogHelper@@UAE@XZ,7,
+0x634630,??0EdRefRTL@@QAE@PAD0HHHPAVEdControl@@@Z,54,
 0x634670,?SetMemberData@EdRefRTL@@UAEXPAXH0HPAF@Z,456,
 0x634840,?Flush@RTLHelper@@UAEXXZ,8,
 0x634850,?GetNumObjects@RTLHelper@@UAEHXZ,73,
@@ -8306,6 +8307,7 @@ address,symbol,size,ctype
 0x634ea0,?PostLoadInitialisation@RTLHelper@@UAEXPAUMemoryBuffer@@0@Z,13,
 0x634eb0,?PreSaveInitialisation@RTLHelper@@UAEXXZ,9,
 0x634ec0,?PostSaveInitialisation@RTLHelper@@UAEXXZ,11,
+0x634ed0,??0EdRefFog@@QAE@PAD0HHHPAVEdControl@@@Z,54,
 0x634f10,?GetMemberData@EdRefFog@@UAEXPAXH0H@Z,404,
 0x6350b0,?SetMemberData@EdRefFog@@UAEXPAXH0HPAF@Z,652,
 0x635340,?Flush@FogHelper@@UAEXXZ,1,
@@ -8475,6 +8477,29 @@ address,symbol,size,ctype
 0x63d8b0,_edrtlDrawFogInfo,638,
 0x63db30,_edrtlDrawBurnInfo,404,void __cdecl (void)
 0x63dcd0,_rtlFrameUpdate,66,void __cdecl(f32)
+0x63dd20,??0?$EdValueControl@H@@QAE@HH@Z,25,
+0x63dd40,??0?$EdValueControl@M@@QAE@MM@Z,25,
+0x63dd60,??3?$EdValueControl@H@@SAXPAX@Z,18,
+0x63dd80,??3?$EdValueControl@M@@SAXPAX@Z,18,
+0x63dda0,??2?$EdValueControl@H@@SAPAXI@Z,18,
+0x63ddc0,?GetVal@?$EdValueControl@H@@QAEXPAH@Z,32,
+0x63dde0,??2?$EdValueControl@M@@SAPAXI@Z,18,
+0x63de00,?GetVal@?$EdValueControl@M@@QAEXPAM@Z,32,
+0x63de20,?SetVal@?$EdValueControl@H@@QAEXPAH@Z,34,
+0x63de50,?SetVal@?$EdValueControl@M@@QAEXPAM@Z,34,
+0x63de80,?GetSensitivity@?$EdValueControl@H@@SAMPAUeduiitem_s@@@Z,43,
+0x63deb0,?GetSensitivity@?$EdValueControl@M@@SAMPAUeduiitem_s@@@Z,59,
+0x63df10,??0EdIntControl@@QAE@HH@Z,41,
+0x63df40,??3EdIntControl@@SAXPAX@Z,18,
+0x63df60,??1EdIntControl@@UAE@XZ,7,
+0x63df70,??_GEdIntControl@@UAEPAXI@Z,35,
+0x63df70,??_EEdIntControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdIntControl@@UAEPAXI@Z; no independent body
+0x63dfa0,??0EdFloatControl@@QAE@XZ,43,
+0x63dfd0,??3EdFloatControl@@SAXPAX@Z,18,
+0x63dff0,??1EdFloatControl@@UAE@XZ,7,
+0x63e000,??0EdFloatControl@@QAE@MM@Z,41,
+0x63e030,??_GEdFloatControl@@UAEPAXI@Z,35,
+0x63e030,??_EEdFloatControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdFloatControl@@UAEPAXI@Z; no independent body
 0x63e060,??_EEdEnumControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdEnumControl@@UAEPAXI@Z; no independent body
 0x63e060,??_GEdEnumControl@@UAEPAXI@Z,35,native scalar-deleting dtor exactVTidentity
 0x63e090,??_EEdBitControl@@UAEPAXI@Z,,COFF weak alias of ??_GEdBitControl@@UAEPAXI@Z; no independent body
@@ -8484,12 +8509,14 @@ address,symbol,size,ctype
 0x63e0e0,??_EFogHelper@@UAEPAXI@Z,,COFF weak alias of ??_GFogHelper@@UAEPAXI@Z; no independent body
 0x63e0e0,??_GFogHelper@@UAEPAXI@Z,31,native scalar-deleting dtor exactVTidentity
 0x63e100,?GetMemberData@EdRefRTL@@UAEXPAXH0H@Z,396,
+0x63e290,?Initialise@RTLHelper@@QAEXXZ,2195,
 0x63eb30,?CreateObject@RTLHelper@@UAEPAXPAXHH@Z,285,
 0x63ec50,?DestroyObject@RTLHelper@@UAEXPAXH@Z,14,
 0x63ec60,?Render@RTLHelper@@UAEXPAXH@Z,626,
 0x63eee0,?GetIndexedSet@RTLHelper@@QAEPAURTL_SET_PC@@XZ,80,
 0x63ef30,_cbRtlHelperModifiers,200,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x63f000,?AddMenuItems@RTLHelper@@UAEXPAUeduimenu_s@@@Z,64,
+0x63f040,?Initialise@FogHelper@@QAEXXZ,1425,
 0x63f5e0,?CreateObject@FogHelper@@UAEPAXPAXHH@Z,166,
 0x63f690,?DestroyObject@FogHelper@@UAEXPAXH@Z,14,
 0x63f6a0,_edrtlUndo,353,
@@ -8507,6 +8534,18 @@ address,symbol,size,ctype
 0x641970,_edrtlDrawLight,16,void __cdecl (i32)
 0x641980,_edrtlDrawLights,122,
 0x641a00,_edrtlRender,297,
+0x641b30,??_G?$EdValueControl@H@@UAEPAXI@Z,35,
+0x641b30,??_E?$EdValueControl@H@@UAEPAXI@Z,,COFF weak alias of ??_G?$EdValueControl@H@@UAEPAXI@Z; no independent body
+0x641b60,??_G?$EdValueControl@M@@UAEPAXI@Z,35,
+0x641b60,??_E?$EdValueControl@M@@UAEPAXI@Z,,COFF weak alias of ??_G?$EdValueControl@M@@UAEPAXI@Z; no independent body
+0x641b90,?Refresh@?$EdValueControl@H@@UAEXXZ,106,
+0x641c00,?Refresh@?$EdValueControl@M@@UAEXXZ,111,
+0x641c70,?cbChanged@?$EdValueControl@H@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,160,
+0x641d10,?cbButton@?$EdValueControl@H@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,435,
+0x641ed0,?cbChanged@?$EdValueControl@M@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,182,
+0x641f90,?cbButton@?$EdValueControl@M@@SAXPAUeduimenu_s@@PAUeduiitem_s@@I@Z,462,
+0x642160,?AddMenuItem@?$EdValueControl@H@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,231,
+0x642250,?AddMenuItem@?$EdValueControl@M@@UAEXPAUeduimenu_s@@PAVEdRef@@PAX@Z,237,
 0x6423b0,_PartRuntimeDirectionalLightsPrivate,183,
 0x6424c0,_PartRuntimeMatrixCopyPrivate,95,
 0x642530,_PartRayCast,48,"i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags)"
@@ -14224,6 +14263,7 @@ address,symbol,size,ctype
 0x00755d18,_AIPathAngularScale,8,const f64
 0x00755d18,__real@40c45f3060000000,8,f64
 0x00755d20,__real@bfb99999a0000000,8,const f64
+0x755d20,__real@bfb999999999999a,8,const f64
 0x755d28,_GameAIEveryonePc,9,
 0x755d34,??_C@_06BHOKJAAC@TIPTOE?$AA@,7,char []
 0x755d3c,??_C@_04PKELMGAL@WALK?$AA@,5,char []
@@ -19331,9 +19371,12 @@ address,symbol,size,ctype
 0x0076b518,??_C@_04KNHFOPCB@ID?52?$AA@,,const char[]
 0x0076b520,??_C@_04IGFILMOC@ID?51?$AA@,,const char[]
 0x76b528,??_C@_04JPEDINKD@ID?50?$AA@,,const char [5]
+0x76b530,??_C@_0L@DAOKIJFL@JONFLICKER?$AA@,11,const char[11]
 0x0076b53c,??_C@_09PAEGDKJH@ANTILIGHT?$AA@,,const char[]
+0x76b548,??_C@_0L@IHIDPLNG@POINTBLEND?$AA@,11,const char[11]
 0x0076b554,??_C@_06JAKHEMKH@CAMDIR?$AA@,,const char[]
 0x0076b55c,??_C@_0M@OHINNGCO@DIRECTIONAL?$AA@,,const char[]
+0x76b568,??_C@_0N@FAKKKEBF@POINTFLICKER?$AA@,13,const char[13]
 0x0076b578,??_C@_05NKNPLGBO@POINT?$AA@,,const char[]
 0x0076b580,??_C@_07EFFMPHJG@AMBIENT?$AA@,,const char[]
 0x76b58c,??_7EdClassInterface@@6B@,,native exactVT binding; unimplemented extent unclaimed
@@ -19342,6 +19385,8 @@ address,symbol,size,ctype
 0x76b640,??_7EdBitControl@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b65c,??_7RTLHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
 0x76b6dc,??_7FogHelper@@6B@,,native exactVT binding; unimplemented extent unclaimed
+0x76b758,??_7EdRefRTL@@6B@,16,
+0x76b768,??_7EdRefFog@@6B@,16,
 0x76b774,??_C@_05BFLILCKD@Fog?$CFd?$AA@,6,char []
 0x76b77c,__real@3ff33333,,
 0x76b780,__real@3f13b646,,
@@ -19428,25 +19473,52 @@ address,symbol,size,ctype
 0x76bcbc,??_C@_0BG@MFFBFAJN@Default?5Radius?3?5?$CF0?42f?$AA@,,const char[]
 0x76bcd4,??_C@_0O@DCHJGBMD@Used?3?5?$CFd?5?1?5?$CFd?$AA@,,const char[]
 0x76bce4,??_C@_0P@BDIIODKE@Burnout?5Editor?$AA@,,const char[]
+0x76bcf8,??_7?$EdValueControl@H@@6B@,24,
+0x76bd14,??_7?$EdValueControl@M@@6B@,24,
+0x76bd30,??_7EdIntControl@@6B@,24,
 0x76bd48,??_C@_04GEFJINEE@?$CF?42f?$AA@,5,const char[]
+0x76bd54,??_7EdFloatControl@@6B@,24,
 0x76bd6c,??_C@_07JNDIOAAP@Light?$CFd?$AA@,8,char []
+0x76bd74,??_C@_08LNEJIEKD@Specular?$AA@,9,const char[9]
+0x76bd80,??_C@_0N@KDKLLPKM@Cast?5Shadows?$AA@,13,const char[13]
+0x76bd90,??_C@_0M@MMGPEEBL@Modifier?5Id?$AA@,12,const char[12]
 0x76bd9c,??_C@_08NJNPMALD@Group?5ID?$AA@,9,char []
 0x76bda8,??_C@_07MKNMKJLE@User?5ID?$AA@,,const char [8]
+0x76bdb0,??_C@_0M@HPKANJHE@Exclude?5IDs?$AA@,12,const char[12]
+0x76bdbc,??_C@_0O@KHCHMEON@Associate?5IDs?$AA@,14,const char[14]
+0x76bdcc,??_C@_05DGEJKMCO@Outer?$AA@,6,const char[6]
+0x76bdd4,??_C@_05MIIEFOFL@Inner?$AA@,6,const char[6]
 0x76bddc,??_C@_05HILIGJJL@VuMtx?$AA@,6,char []
+0x76bde4,??_C@_07BFPONPCA@Pos?1Rot?$AA@,8,const char[8]
+0x76bdec,??_C@_08IEGJAGIC@Low?5Rand?$AA@,9,const char[9]
 0x76bdf8,??_C@_08NFMAFENF@Low?5Time?$AA@,,const char [9]
+0x76be04,??_C@_09IGJCANHA@High?5Rand?$AA@,10,const char[10]
 0x76be10,??_C@_09NHDLFPCH@High?5Time?$AA@,,const char [10]
 0x76be1c,??_C@_0L@FHHMINHA@Multiplier?$AA@,,const char [11]
 0x76be28,__real@42fe0000,,f32
+0x76be2c,??_C@_06NKDJPCGC@Lo?5Col?$AA@,7,const char[7]
 0x76be34,??_C@_07NLJKHPIJ@Colour3?$AA@,8,char []
+0x76be3c,??_C@_06PICPDFGM@Hi?5Col?$AA@,7,const char[7]
 0x76be44,??_C@_03DBLNGNIM@Int?$AA@,4,char []
 0x76be48,??_C@_05BCAGPPBA@Short?$AA@,6,char []
 0x76be50,??_C@_07KOMPFNFG@LEDFile?$AA@,8,const char[]
 0x76be58,??_C@_06ENNEIMBA@String?$AA@,7,char []
+0x76be60,??_C@_05JODGIKH@Light?$AA@,6,const char[6]
 0x76be68,??_C@_09KLHEJKNK@Modifiers?$AA@,,const char [10]
 0x76be74,??_C@_05ELHCLLNI@VuVec?$AA@,6,char []
+0x76be7c,??_C@_08GCJNLIKG@Position?$AA@,9,const char[9]
+0x76be88,??_C@_05CFMCGLCK@Range?$AA@,6,const char[6]
+0x76be90,??_C@_0L@KCBFEBBI@DOF?5F?9Stop?$AA@,11,const char[11]
 0x76be9c,__real@41a80000,,f32
 0x76bea0,??_C@_0N@OMMEHEHJ@Blur?5Density?$AA@,,const char [13]
 0x76beb0,??_C@_0N@BOLOHNOG@Haze?5Density?$AA@,,const char [13]
+0x76bec0,??_C@_0M@NBADBMDH@Haze?5Colour?$AA@,12,const char[12]
+0x76becc,??_C@_07DDPDCHJA@Fog?5End?$AA@,8,const char[8]
+0x76bed4,??_C@_09GMJCNJ@Fog?5Start?$AA@,10,const char[10]
+0x76bee0,??_C@_0M@DKGMDFAO@Fog?5Density?$AA@,12,const char[12]
+0x76beec,??_C@_09NAEDBNEC@Fog?5Alpha?$AA@,10,const char[10]
+0x76bef8,??_C@_0L@LHOIFCME@Fog?5Colour?$AA@,11,const char[11]
+0x76bf04,??_C@_03JPDFGHP@Fog?$AA@,4,const char[4]
 0x76bf08,??_C@_0BA@NMGPFFHF@Fog?5Settings?4?4?4?$AA@,,const char [16]
 0x76bf18,??_C@_0BD@OMMDIGGB@Fog?5Editor?5Options?$AA@,,const char [19]
 0x76bf2c,??_C@_0N@FPJDJMIP@DOF?5?9?5F?9Stop?$AA@,,const char [13]
@@ -31782,6 +31854,10 @@ address,symbol,size,ctype
 0x7eb3cc,??_R3FogHelper@@8,,
 0x7eb3dc,??_R2FogHelper@@8,,
 0x7eb3e8,??_R1A@?0A@EA@FogHelper@@8,,
+0x7eb404,??_R4EdRefRTL@@6B@,,
+0x7eb418,??_R3EdRefRTL@@8,,
+0x7eb428,??_R2EdRefRTL@@8,,
+0x7eb438,??_R1A@?0A@EA@EdRefRTL@@8,,
 0x7eb454,??_R1A@?0A@EA@EdRef@@8,,
 0x7eb470,??_R3EdRef@@8,,
 0x7eb480,??_R2EdRef@@8,,
@@ -31789,6 +31865,26 @@ address,symbol,size,ctype
 0x7eb4a8,??_R3?$CSListLink@VEdRef@@@@8,,
 0x7eb4b8,??_R2?$CSListLink@VEdRef@@@@8,,
 0x7eb4c0,??_R1A@?0A@EA@?$CSListLink@VEdRef@@@@8,,
+0x7eb4dc,??_R4EdRefFog@@6B@,,
+0x7eb4f0,??_R3EdRefFog@@8,,
+0x7eb500,??_R2EdRefFog@@8,,
+0x7eb510,??_R1A@?0A@EA@EdRefFog@@8,,
+0x7eb52c,??_R4?$EdValueControl@H@@6B@,,
+0x7eb540,??_R3?$EdValueControl@H@@8,,
+0x7eb550,??_R2?$EdValueControl@H@@8,,
+0x7eb55c,??_R1A@?0A@EA@?$EdValueControl@H@@8,,
+0x7eb578,??_R4?$EdValueControl@M@@6B@,,
+0x7eb58c,??_R3?$EdValueControl@M@@8,,
+0x7eb59c,??_R2?$EdValueControl@M@@8,,
+0x7eb5a8,??_R1A@?0A@EA@?$EdValueControl@M@@8,,
+0x7eb5c4,??_R4EdIntControl@@6B@,,
+0x7eb5d8,??_R3EdIntControl@@8,,
+0x7eb5e8,??_R2EdIntControl@@8,,
+0x7eb5f8,??_R1A@?0A@EA@EdIntControl@@8,,
+0x7eb614,??_R4EdFloatControl@@6B@,,
+0x7eb628,??_R3EdFloatControl@@8,,
+0x7eb638,??_R2EdFloatControl@@8,,
+0x7eb648,??_R1A@?0A@EA@EdFloatControl@@8,,
 0x7eb664,??_R4WavReader@@6B@,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb678,??_R3WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
 0x7eb688,??_R2WavReader@@8,,Natural MSVC RTTI/vtable metadata; original allocation extent unclaimed
@@ -34088,6 +34184,7 @@ address,symbol,size,ctype
 0x80fcd0,_FmvFrequencyPc,8,LARGE_INTEGER
 0x80fce4,_EdAttr,16,u32[4]
 0x80fd94,_rtl_helper_grab_distance,4,f32
+0x80fd98,_rtl_helper_type_items,72,EdEnumControl::Item[9]
 0x80fde0,_rtl_helper_radius,,f32
 0x80fde4,_rtl_dynamic_lights_enabled,,i32
 0x80fde8,_RtlFileVersionPc,,i32
@@ -34133,6 +34230,8 @@ address,symbol,size,ctype
 0x00810124,??_R0?AV?$EdValueControl@M@@@8,33,
 0x00810148,??_R0?AVEdIntControl@@@8,27,
 0x00810164,??_R0?AVEdFloatControl@@@8,29,
+0x810184,?MouseScale@?$EdValueControl@H@@2MA,4,f32
+0x810188,?MouseScale@?$EdValueControl@M@@2MA,4,f32
 0x810190,_edpart_set_part,4,i32
 0x810194,_edpart_create_type,4,i32
 0x810198,_edpart_copy_size,4,f32
@@ -34278,6 +34377,7 @@ address,symbol,size,ctype
 0x81f738,_INVSQ2EXP_LOOKUP,,
 0x81f840,_FROMdB_LOOKUP,,
 0x81f8d0,_FROMdB2_LOOKUP,,
+0x81f954,?YesNoItems@EdEnumControl@@2PAUItem@1@A,24,EdEnumControl::Item[3]
 0x81f99c,_EdLevelFntScale,4,i32
 0x81f9a0,_EdLevelAttr,16,struct eduiiattr_s
 0x81f9b0,?EdLevelFileExtension@@3PADA,4,char *

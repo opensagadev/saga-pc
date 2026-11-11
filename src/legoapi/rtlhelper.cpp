@@ -1,4 +1,5 @@
 #include "saga.h"
+#include <new>
 #include <stdio.h>
 
 /* Real-time light editor class glue. The retail rtl unit is C++: these are the
@@ -22,6 +23,185 @@ extern "C" {
     void __cdecl rtlFree(RTL_LIGHT_PC *light);
     void __cdecl fogFree(RTL_FOG_MIGRATION_PC *fog);
 }
+
+extern "C" {
+    eduiitem_s *__cdecl eduiItemPropCreate(u32 data, void *colours, void *selected, void *changed, void *button,
+                                           i32 button_type, char *text, char *value);
+    i32 __cdecl eduiItemPropSetText(edui_prop_s *item, char *text);
+    void __cdecl eduiGetCursorDelta(f32 *x, f32 *y);
+}
+
+/* Property controls of the editor unit that the light registration creates;
+ * their constructors live there. */
+class EdStringControl : public EdControl {
+  public:
+    EdStringControl();
+};
+
+class EdColourControl : public EdControl {
+  public:
+    EdColourControl();
+};
+
+class EdVectorControl : public EdControl {
+  public:
+    EdVectorControl();
+
+    eduiitem_s *components[3];
+};
+STATIC_ASSERT(sizeof(EdVectorControl) == 0x1c);
+
+class EdMatrixControl : public EdControl {
+  public:
+    EdMatrixControl();
+
+    eduiitem_s *components[9];
+};
+STATIC_ASSERT(sizeof(EdMatrixControl) == 0x34);
+
+/* Numeric property row clamped to [minimum, maximum]; the button drags the
+ * value with the cursor or the analogue sticks. */
+template <class T> class EdValueControl : public EdControl {
+  public:
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdValueControl));
+    }
+    EdValueControl() : minimum(0), maximum(0) {
+    }
+    EdValueControl(T minimum, T maximum) : minimum(minimum), maximum(maximum) {
+    }
+    virtual void AddMenuItem(eduimenu_s *menu, EdRef *member, void *target);
+    virtual void Refresh();
+    void GetVal(T *value) {
+        reference->GetMemberData(object, value_type, value, 0);
+    }
+    void SetVal(T *value) {
+        reference->SetMemberData(object, value_type, value, 0, NULL);
+    }
+    /* Drag step per unit of stick or cursor travel; finer for narrow ranges. */
+    static f32 GetSensitivity(eduiitem_s *item) {
+        EdValueControl *control = static_cast<EdValueControl *>(item->data_ptr);
+        f32 sensitivity = 0.01f;
+        T range = control->maximum - control->minimum;
+        if (range < 5)
+            sensitivity = 0.001f;
+        return sensitivity;
+    }
+    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
+    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32 flags);
+
+    static f32 MouseScale;
+
+    i32 value_type;
+    char *format;
+    T minimum;
+    T maximum;
+};
+STATIC_ASSERT(sizeof(EdValueControl<i32>) == 0x20);
+STATIC_ASSERT(offsetof(EdValueControl<f32>, value_type) == 0x10);
+STATIC_ASSERT(offsetof(EdValueControl<f32>, minimum) == 0x18);
+
+template <> f32 EdValueControl<i32>::MouseScale = 100.0f;
+template <> f32 EdValueControl<f32>::MouseScale = 100.0f;
+
+template <class T> void EdValueControl<T>::Refresh() {
+    T value;
+    GetVal(&value);
+    char text[128];
+    NuSPrintf(text, format, value);
+    eduiItemPropSetText(reinterpret_cast<edui_prop_s *>(item), text);
+}
+
+template <class T> void EdValueControl<T>::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
+    edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
+    EdValueControl *control = static_cast<EdValueControl *>(item->data_ptr);
+    T value = (T)NuAToF(property->property_text);
+    if (value < control->minimum)
+        value = control->minimum;
+    if (value > control->maximum)
+        value = control->maximum;
+    control->SetVal(&value);
+    char text[128];
+    NuSPrintf(text, control->format, value);
+    eduiItemPropSetText(property, text);
+}
+
+template <class T> void EdValueControl<T>::cbButton(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
+    edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
+    EdValueControl *control = static_cast<EdValueControl *>(item->data_ptr);
+    FRAME_PAD_PC *pad = EdControl::Input->pad;
+    f32 sensitivity = GetSensitivity(item);
+    property->button_latched = 1;
+    T value = (T)NuAToF(property->property_text);
+    f32 dx = 0.0f;
+    f32 change = 0.0f;
+    if (pad != NULL && (pad->digital_buttons & 0x40)) {
+        if (pad->analog_left_y > 128.0)
+            change = sensitivity * 10.0 * (pad->analog_left_y - 128.0);
+        if (pad->analog_left_y < 0x80)
+            change = sensitivity * -10.0 * (128.0 - pad->analog_left_y);
+        if (pad->analog_right_y > 128.0)
+            change = sensitivity * 0.1 * (pad->analog_right_y - 128.0);
+        if (pad->analog_right_y < 0x80)
+            change = sensitivity * -0.1 * (128.0 - pad->analog_right_y);
+        value -= (T)change;
+    } else {
+        eduiGetCursorDelta(&dx, &change);
+        value -= (T)(MouseScale * change);
+    }
+    char text[128];
+    NuSPrintf(text, control->format, value);
+    eduiItemPropSetText(property, text);
+    cbChanged(menu, item, flags);
+}
+
+template <class T> void EdValueControl<T>::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target) {
+    EdValueControl *control = new EdValueControl;
+    if (control != NULL) {
+        control->value_type = value_type;
+        control->format = format;
+        control->minimum = minimum;
+        control->maximum = maximum;
+        control->reference = member;
+        control->object = target;
+        T value;
+        control->GetVal(&value);
+        char text[128];
+        NuSPrintf(text, format, value);
+        control->item = eduiItemPropCreate((u32)control, &EdLevelAttr, EdControl::cbSelected, cbChanged, cbButton, 2,
+                                           member->name, text);
+        eduiMenuAddItem(menu, control->item);
+    }
+}
+
+class EdIntControl : public EdValueControl<i32> {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdIntControl));
+    }
+    EdIntControl(i32 minimum, i32 maximum) : EdValueControl<i32>(minimum, maximum) {
+        value_type = EdType_Int;
+        format = "%d";
+    }
+};
+
+class EdFloatControl : public EdValueControl<f32> {
+  public:
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(EdFloatControl));
+    }
+    EdFloatControl() : EdValueControl<f32>(-1000000000.0f, 1000000000.0f) {
+        value_type = EdType_Float;
+        format = "%.2f";
+    }
+    EdFloatControl(f32 minimum, f32 maximum) : EdValueControl<f32>(minimum, maximum) {
+        value_type = EdType_Float;
+        format = "%.2f";
+    }
+};
 
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
@@ -58,6 +238,7 @@ class RTLHelper : public EdClassInterface {
     }
     virtual void AddMenuItems(eduimenu_s *menu);
     RTL_SET_PC *GetIndexedSet();
+    void Initialise();
 
     RTL_SET_PC *set;
 };
@@ -421,6 +602,7 @@ class FogHelper : public EdClassInterface {
         fogFree(static_cast<RTL_FOG_MIGRATION_PC *>(object));
     }
     virtual void Render(void *object, i32 selected);
+    void Initialise();
 };
 STATIC_ASSERT(sizeof(FogHelper) == 0x8);
 
@@ -503,6 +685,10 @@ found:
  * (0x80000002 up) instead of a byte offset. */
 class EdRefRTL : public EdRef {
   public:
+    EdRefRTL(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
+             EdControl *member_control)
+        : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
+    }
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 };
@@ -616,10 +802,68 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
     }
 }
 
+/* Light types offered by the "Type" row. */
+static EdEnumControl::Item rtl_helper_type_items[] = {
+    {"AMBIENT", 1},    {"POINT", 2},     {"POINTFLICKER", 3}, {"DIRECTIONAL", 4}, {"CAMDIR", 5},
+    {"POINTBLEND", 6}, {"ANTILIGHT", 7}, {"JONFLICKER", 8},   {NULL, 0},
+};
+
+#define RTLHELPER_REF(ref_class, type, name, offset, size, attributes, control)                                        \
+    new (theMemoryManager.AllocPool(sizeof(ref_class), 1)) ref_class(type, name, offset, size, attributes, control)
+#define RTLHELPER_NEW(control_class) new (theMemoryManager.AllocPool(sizeof(control_class), 1)) control_class
+
+/* Registers the "Light" class: its name, LED file, type, colours, flicker
+ * timing, transform, radii, id masks and flags. */
+void RTLHelper::Initialise() {
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+    EdClass *object_class = theRegistry.RegisterClass("Light", this, 0x8400000);
+#pragma pop_macro("RegisterClass")
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Short", "LEDFile", 0x80, 0, 0x10000100, NULL, 0));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "Int", "Type", 0x80000004, 0, 0, RTLHELPER_NEW(EdEnumControl)(rtl_helper_type_items)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Colour3", "Hi Col", 0x24, 0, 0, RTLHELPER_NEW(EdColourControl), 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Colour3", "Lo Col", 0x30, 0, 0, RTLHELPER_NEW(EdColourControl), 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "Multiplier", 0x6c, 0, 0, new EdFloatControl(0.1f, 127.0f), 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "High Time", 0x44, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "High Rand", 0x48, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "Low Time", 0x4c, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "Low Rand", 0x50, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "VuMtx", "Pos/Rot", 0x80000003, 0, 0x18, RTLHELPER_NEW(EdMatrixControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Inner", 0x80000008, 0, 0, new EdFloatControl));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Outer", 0x80000009, 0, 0, new EdFloatControl));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Associate IDs", 0x8000000a, 0, 0,
+                                        RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Exclude IDs", 0x8000000b, 0, 0,
+                                        RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "User ID", 0x8000000c, 0, 0, new EdIntControl(0, 16)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Group ID", 0x8000000d, 0, 0, new EdIntControl(0, 255)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Modifier Id", 0x8000000e, 0, 0, new EdIntControl(0, 32)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Cast Shadows", 0x80000006, 0, 0,
+                                        RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Specular", 0x80000007, 0, 0,
+                                        RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
+}
+
 /* Editor member references into a fog zone; colours are edited as 0..1
  * vectors, alphas and the low-quality density as 0..1 against 128. */
 class EdRefFog : public EdRef {
   public:
+    EdRefFog(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes,
+             EdControl *member_control)
+        : EdRef(type_name, member_name, offset, member_size, member_attributes, member_control, 0) {
+    }
     virtual void GetMemberData(void *object, i32 requested_type, void *data, i32 data_size);
     virtual void SetMemberData(void *object, i32 requested_type, void *data, i32 data_size, i16 *);
 };
@@ -707,3 +951,40 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             break;
     }
 }
+
+/* Registers the "Fog" class: name, LED file, fog and haze colours and
+ * densities, blur, depth of field, range and position. */
+void FogHelper::Initialise() {
+#pragma push_macro("RegisterClass")
+#undef RegisterClass
+    EdClass *object_class = theRegistry.RegisterClass("Fog", this, 0x8400000);
+#pragma pop_macro("RegisterClass")
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Short", "LEDFile", 0x38, 0, 0x10000100, NULL, 0));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Colour3", "Fog Colour", 0x80000003, 0, 0, RTLHELPER_NEW(EdColourControl)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Float", "Fog Alpha", 0x80000004, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "Fog Density", 0x2c, 0, 0, new EdFloatControl(0.0f, 4.0f), 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "Fog Start", 0x0, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "Fog End", 0x4, 0, 0, new EdFloatControl, 0));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Colour3", "Haze Colour", 0x80000005, 0, 0, RTLHELPER_NEW(EdColourControl)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Float", "Haze Density", 0x80000006, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Float", "Blur Density", 0x80000007, 0, 0, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Float", "DOF F-Stop", 0x80000008, 0, 0, new EdFloatControl(1.0f, 21.0f)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Float", "Range", 0x1c, 0, 0, new EdFloatControl(1.0f, 1000.0f), 0));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "VuVec", "Position", 0x80000009, 0, 8, RTLHELPER_NEW(EdVectorControl)));
+}
+#undef RTLHELPER_NEW
+#undef RTLHELPER_REF

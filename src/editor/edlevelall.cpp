@@ -1084,8 +1084,7 @@ static EdColourControl *edColourControl;
 static EdStringControl *edObjectNameControl;
 static EdClassObjectNameControl *edClassObjectNameControl;
 
-EdControl::~EdControl() {
-}
+EdEnumControl::Item EdEnumControl::YesNoItems[] = {{"Yes", 1}, {"No", 0}, {NULL, 0}};
 
 /* Retail's editor message hooks (0x6b7c40/0x6b7c50), the first code of the
  * unit; the format strings were compiled out, leaving empty variadic
