@@ -208,8 +208,23 @@ def lines(text):
 
 
 def hunks_of(original, changed, split=tokens):
-    """Change hunks (i1, i2, j1, j2) from original to changed, at token level (or `split`)."""
-    a, b = split(original), split(changed)
+    """Change hunks (i1, i2, j1, j2) from original to changed, at token level (or `split`).
+    The unchanged lines before and after the change are one token each, so that a large unit
+    does not make the alignment slow."""
+    head = 0
+    limit = min(len(original), len(changed))
+    while head < limit and original[head] == changed[head]:
+        head += 1
+    head = original.rfind("\n", 0, head) + 1
+    tail = 0
+    while tail < limit - head and original[-1 - tail] == changed[-1 - tail]:
+        tail += 1
+    cut = original.find("\n", len(original) - tail)
+    tail = len(original) - cut - 1 if 0 <= cut < len(original) - 1 else 0
+    tail = min(tail, len(original) - head, len(changed) - head)
+    ends = lambda text: [text[:head]] if head else []
+    a = ends(original) + split(original[head:len(original) - tail]) + ([original[len(original) - tail:]] if tail else [])
+    b = ends(changed) + split(changed[head:len(changed) - tail]) + ([changed[len(changed) - tail:]] if tail else [])
     matcher = difflib.SequenceMatcher(None, a, b, autojunk=False)
     return a, b, [op for op in matcher.get_opcodes() if op[0] != "equal"]
 
