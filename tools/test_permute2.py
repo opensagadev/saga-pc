@@ -47,6 +47,19 @@ class MinimiseTest(unittest.TestCase):
         self.assertNotIn("extra", minimal)
         self.assertEqual((total, kept), (3, 2))  # the swap is two token hunks, kept together
 
+    def test_minimise_reverts_paired_tokens_and_whole_lines(self):
+        original = "int f(int a, int b) {\n    int c = a * b;\n    return c + a;\n}\n"
+        changed = "int f(int a, int b) {\n    int c = (a * b);\n    return a + c;\n}\n"
+
+        class Fake:
+            def score(self, text):
+                if text.count("(") != text.count(")"):
+                    return None
+                return (100.0, True, 0, 100.0) if "a + c" in text else (90.0, False, 1, 90.0)
+
+        minimal, _, _ = self.p.minimise(Fake(), original, changed, lambda v: v[1])
+        self.assertEqual(minimal, original.replace("c + a", "a + c"))
+
 
 if __name__ == "__main__":
     unittest.main()

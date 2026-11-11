@@ -203,9 +203,13 @@ def tokens(text):
     return re.findall(r"\s+|\w+|\S", text)
 
 
-def hunks_of(original, changed):
-    """Token-level change hunks (i1, i2, j1, j2) from original to changed."""
-    a, b = tokens(original), tokens(changed)
+def lines(text):
+    return text.splitlines(True)
+
+
+def hunks_of(original, changed, split=tokens):
+    """Change hunks (i1, i2, j1, j2) from original to changed, at token level (or `split`)."""
+    a, b = split(original), split(changed)
     matcher = difflib.SequenceMatcher(None, a, b, autojunk=False)
     return a, b, [op for op in matcher.get_opcodes() if op[0] != "equal"]
 
@@ -258,9 +262,8 @@ def hunk_groups(a, b, ops, original):
     return list(groups.values())
 
 
-def minimise(target, original, found, good):
-    """Revert groups of change hunks while `good(score)` holds for the result."""
-    a, b, ops = hunks_of(original, found)
+def _minimise_pass(target, original, found, good, split):
+    a, b, ops = hunks_of(original, found, split)
     groups = hunk_groups(a, b, ops, original)
     keep = set(range(len(ops)))
     changed = True
@@ -274,7 +277,29 @@ def minimise(target, original, found, good):
             if value is not None and good(value):
                 keep = trial
                 changed = True
-    return rebuild(a, b, ops, keep), len(ops), len(keep)
+        if changed:
+            continue
+        # Hunks that only work together without sharing a new name (a pair of parentheses,
+        # an operand swap split in two): revert neighbouring groups pairwise.
+        live = sorted((g for g in groups if g <= keep), key=min)
+        for first, second in zip(live, live[1:]):
+            if not (first | second) <= keep:
+                continue
+            trial = keep - first - second
+            value = target.score(rebuild(a, b, ops, trial))
+            if value is not None and good(value):
+                keep = trial
+                changed = True
+    return rebuild(a, b, ops, keep)
+
+
+def minimise(target, original, found, good):
+    """Revert groups of change hunks while `good(score)` holds for the result: whole changed
+    lines first, then single tokens. Returns (text, token hunks found, token hunks kept)."""
+    total = len(hunks_of(original, found)[2])
+    current = _minimise_pass(target, original, found, good, lines)
+    current = _minimise_pass(target, original, current, good, tokens)
+    return current, total, len(hunks_of(original, current)[2])
 
 
 def short_diff(original, changed, limit=400):
