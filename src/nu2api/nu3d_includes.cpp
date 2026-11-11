@@ -11120,8 +11120,8 @@ extern "C" {
     void __cdecl RenderPostViewportResetPc(void);
 
     void __cdecl RenderPostViewportResetPc(void) {
-        f32 width = (f32)PS2_VREZ_W;
         f32 height = (f32)PS2_VREZ_H;
+        f32 width = (f32)PS2_VREZ_W;
         RenderPostViewportSetPc(0.0f, 0.0f, width, height, 0.0f, 0.0f, width, height);
     }
 
