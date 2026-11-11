@@ -9445,28 +9445,27 @@ static void pathEditorCalcRouteIterator(AIPATH_PC *path, f32 *distances, u8 *vis
 }
 
 static f32 **pathEditorCalculateDistanceTable(AIPATH_PC *path, i32 route_mask, VARIPTR *cursor, VARIPTR *end) {
-    f32 **table;
-    i32 row;
+    i32 i;
+    i32 j;
+    f32 **distances;
+    u8 visited[32];
 
     if (distance_tables == NULL || path == NULL || path->nodes == NULL)
         return NULL;
-    table = (f32 **)AISysBufferAlloc(cursor, end, path->node_count * sizeof(f32 *));
-    if (table != NULL) {
-        memset(table, 0, path->node_count * sizeof(f32 *));
-        for (row = 0; row < path->node_count; ++row) {
-            f32 *distances = (f32 *)AISysBufferAlloc(cursor, end, path->node_count * sizeof(f32));
-            i32 column;
-            table[row] = distances;
-            for (column = 0; column < path->node_count; ++column)
-                distances[column] = FLT_MAX;
+    distances = (f32 **)AISysBufferAlloc(cursor, end, path->node_count * sizeof(f32 *));
+    if (distances != NULL) {
+        memset(distances, 0, path->node_count * sizeof(f32 *));
+        for (i = 0; i < path->node_count; ++i) {
+            distances[i] = (f32 *)AISysBufferAlloc(cursor, end, path->node_count * sizeof(f32));
+            for (j = 0; j < path->node_count; ++j)
+                distances[i][j] = FLT_MAX;
         }
-        for (row = 0; row < path->node_count; ++row) {
-            u8 visited[32];
+        for (i = 0; i < path->node_count; ++i) {
             memset(visited, 0, sizeof(visited));
-            pathEditorCalcRouteIterator(path, table[row], visited, row, row, 0.0f, route_mask);
+            pathEditorCalcRouteIterator(path, distances[i], visited, i, i, 0.0f, route_mask);
         }
     }
-    return table;
+    return distances;
 }
 
 static void pathEditorPopulateRouteMatrix(AIPATH_PC *path, i32 route_mask, f32 **distances, u8 **matrix) {
