@@ -2663,6 +2663,18 @@ address,symbol,size,ctype
 0x4f15b0,_NuMemBlkCheckFreeList,23,void __cdecl (NUMEMBLK *)
 0x4f15d0,_NuMemBlkAlloc,39,void *__cdecl (NUMEMBLK *)
 0x4f1600,_NuMemBlkFree,39,"void __cdecl (NUMEMBLK *, void *)"
+0x004f1630,_NuAllocHighInit,43,"void __cdecl (u32, u32)"
+0x004f1660,_NuAllocHigh,91,void *__cdecl (u32)
+0x004f16c0,_NuFreeHigh,108,void __cdecl (void *)
+0x004f1730,_ElOverlaps,67,"i32 (NUQTDIM_PC *, NUQTDIM_PC *)"
+0x004f1780,_InsertData,178,"i32 (NUQTHDR_PC *, i32, void *)"
+0x004f1840,_RemoveData,39,"void (NUQTHDR_PC *, u8 *, i32)"
+0x004f1870,_AddNode,66,"i32 (NUQTHDR_PC *, i32)"
+0x004f18c0,_AddElementR,965,"i32 (NUQTHDR_PC *, i32, NUQTDIM_PC *, NUQTDIM_PC *, void *, i32)"
+0x004f1c90,_NuQTAddElement,98,"void __cdecl (NUQTHDR_PC *, void *, f32, f32, f32, f32)"
+0x004f1d00,_NuQTCreate,142,"i32 __cdecl (i32, i32, i32, i32, i32, f32, f32, f32, f32, VARIPTR *, VARIPTR *)"
+0x004f1d90,_NuQTUnfixAddress,50,void (NUQTHDR_PC *)
+0x004f1dd0,_NuQTFixAddress,43,void (NUQTHDR_PC *)
 0x4f1e20,_NuStrCpyWC,89,"i32 __cdecl (char *, const char *, const char *)"
 0x004f1e80,_NuStrCat,51,"void __cdecl (char *, const char *)"
 0x004f1ec0,_NuStrNCat,73,"i32 __cdecl (char *, const char *, i32)"
@@ -2864,6 +2876,7 @@ address,symbol,size,ctype
 0x004fa690,_NuFileSize,165,i64 __cdecl (char *)
 0x004fa740,_NuDatGetFileInfo,205,"i32 __cdecl (NUDATHDR *, char *, i64 *, i32 *)"
 0x004fa810,_NuFParResume,107,void __cdecl (NUFPAR_PC *)
+0x004fa880,_NuQTWrite,176,"i32 __cdecl (char *, NUQTHDR_PC *)"
 0x4fadd0,_NuPadRecordSave,133,void __cdecl (char *)
 0x4faea0,_ExplodeBufferNoHeader,187,"i32 __cdecl(char *,char *,i32,i32)"
 0x004faf60,_NuDatFileRead,451,"i32 __cdecl (NUFILE, void *, i32)"
@@ -35984,6 +35997,7 @@ address,symbol,size,ctype
 0x0091eedc,_NuFParRecordBase,4,NUFPAR_PC *
 0x0091eee0,_NuFParBufferBase,4,char *
 0x0091eee4,_fnInterpreterError,4,void (__cdecl *)(NUFPAR_PC *)
+0x0091eee8,_freep,4,NUMEMHIGHBLOCK_PC *
 0x0091eef0,_StringBank,36,NUSTRINGBANK[3]
 0x0091ef14,_CurrentStringBank,2,i16
 0x91ef16,_FramePadCorrectDeadZoningPc,,u8

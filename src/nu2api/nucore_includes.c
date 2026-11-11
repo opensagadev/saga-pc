@@ -4088,6 +4088,336 @@ void __cdecl NuMemBlkFree(NUMEMBLK *pool, void *block) {
     pool->free_list = link;
 }
 
+typedef struct NUMEMHIGHBLOCK_PC {
+    struct NUMEMHIGHBLOCK_PC *next;
+    u32 units;
+    u32 reserved[2];
+} NUMEMHIGHBLOCK_PC;
+STATIC_ASSERT(sizeof(NUMEMHIGHBLOCK_PC) == 0x10);
+STATIC_ASSERT(offsetof(NUMEMHIGHBLOCK_PC, units) == 4);
+
+static NUMEMHIGHBLOCK_PC *freep = 0;
+
+void __cdecl NuAllocHighInit(u32 buffer, u32 size) {
+    if (buffer & 15) {
+        buffer = (buffer + 15) & 15;
+        size -= 15;
+    }
+    if (size & 15) {
+        size = (size - 15) & 15;
+    }
+    freep = (NUMEMHIGHBLOCK_PC *)buffer;
+    freep->next = freep;
+    freep->units = size;
+}
+
+void *__cdecl NuAllocHigh(u32 size) {
+    NUMEMHIGHBLOCK_PC *block;
+    NUMEMHIGHBLOCK_PC *previous;
+    u32 units;
+
+    units = (size + sizeof(NUMEMHIGHBLOCK_PC) - 1) / sizeof(NUMEMHIGHBLOCK_PC) + 1;
+    previous = freep;
+    block = previous->next;
+    for (;;) {
+        if (block->units >= units) {
+            if (block->units == units) {
+                previous->next = block->next;
+            } else {
+                block->units -= units;
+                block += block->units;
+                block->units = units;
+            }
+            freep = previous;
+            return block + 1;
+        }
+        if (block == freep) {
+            return NULL;
+        }
+        previous = block;
+        block = block->next;
+    }
+}
+
+void __cdecl NuFreeHigh(void *ptr) {
+    NUMEMHIGHBLOCK_PC *previous;
+    NUMEMHIGHBLOCK_PC *block = (NUMEMHIGHBLOCK_PC *)ptr - 1;
+
+    previous = freep;
+    while (!(block > previous && block < previous->next)) {
+        if (previous >= previous->next && (block > previous || block < previous->next)) {
+            break;
+        }
+        previous = previous->next;
+    }
+    if (block + block->units == previous->next) {
+        block->units += previous->next->units;
+        block->next = previous->next->next;
+    } else {
+        block->next = previous->next;
+    }
+    if (previous + previous->units == block) {
+        previous->units += block->units;
+        previous->next = block->next;
+    } else {
+        previous->next = block;
+    }
+    freep = previous;
+}
+
+typedef struct NUQTDIM_PC {
+    f32 x0;
+    f32 x1;
+    f32 y0;
+    f32 y1;
+} NUQTDIM_PC;
+STATIC_ASSERT(sizeof(NUQTDIM_PC) == 0x10);
+
+typedef struct NUQTENTRY_PC {
+    i16 count;
+    i16 parent;
+    union {
+        u8 *data;
+        u16 children[4];
+    } u;
+} NUQTENTRY_PC;
+STATIC_ASSERT(sizeof(NUQTENTRY_PC) == 0xc);
+STATIC_ASSERT(offsetof(NUQTENTRY_PC, u) == 4);
+
+typedef struct NUQTHDR_PC {
+    u32 flags;
+    f32 y0;
+    f32 y1;
+    f32 x0;
+    f32 x1;
+    NUQTENTRY_PC *entries;
+    i32 entry_count;
+    i32 entry_capacity;
+    u8 *data;
+    i32 data_used;
+    i32 data_capacity;
+    i32 element_size;
+    i32 split_count;
+    i32 max_depth;
+} NUQTHDR_PC;
+STATIC_ASSERT(sizeof(NUQTHDR_PC) == 0x38);
+STATIC_ASSERT(offsetof(NUQTHDR_PC, entries) == 0x14);
+STATIC_ASSERT(offsetof(NUQTHDR_PC, data) == 0x20);
+STATIC_ASSERT(offsetof(NUQTHDR_PC, element_size) == 0x2c);
+STATIC_ASSERT(offsetof(NUQTHDR_PC, max_depth) == 0x34);
+
+static i32 ElOverlaps(NUQTDIM_PC *a, NUQTDIM_PC *b) {
+    if (b->x0 < a->x1 && b->x1 > a->x0 && b->y1 < a->y0 && b->y0 > a->y1)
+        return 1;
+    return 0;
+}
+
+static i32 InsertData(NUQTHDR_PC *header, i32 index, void *item) {
+    u8 *destination = header->entries[index].u.data;
+
+    if (destination == NULL) {
+        if (header->data_capacity - header->data_used <= header->element_size) {
+            header->entries[index].u.data = header->data + header->data_used;
+            memcpy(destination, item, header->element_size);
+            header->data_used += header->element_size;
+            header->entries[index].count++;
+            return 1;
+        }
+    } else {
+        u8 *source = header->data + header->data_used;
+        u8 *target = source + header->element_size;
+
+        if (target <= header->data + header->data_capacity) {
+            while (source != destination) {
+                --target;
+                --source;
+                *target = *source;
+            }
+            memcpy(destination, item, header->element_size);
+            header->data_used += header->element_size;
+            header->entries[index].count++;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static void RemoveData(NUQTHDR_PC *header, u8 *data, i32 count) {
+    u8 *source;
+    u8 *destination;
+    i32 length = header->element_size * count;
+    u8 *end = header->data + header->data_used;
+
+    destination = data;
+    source = destination + length;
+    while (source < end) {
+        *destination = *source;
+        ++destination;
+        ++source;
+    }
+}
+
+static i32 AddNode(NUQTHDR_PC *header, i32 parent) {
+    i32 index = 0;
+
+    if (header->entry_count < header->entry_capacity) {
+        index = header->entry_count;
+        memset(&header->entries[index], 0, sizeof(NUQTENTRY_PC));
+        header->entries[index].parent = (i16)parent;
+        header->entries[index].count = -1;
+        header->entry_count++;
+    }
+    return index;
+}
+
+static i32 AddElementR(NUQTHDR_PC *header, i32 index, NUQTDIM_PC *bounds, NUQTDIM_PC *item_bounds, void *item,
+                       i32 depth) {
+    i32 result = 0;
+    NUQTDIM_PC q0 = {bounds->x0, (bounds->x0 + bounds->x1) * 0.5, bounds->y0, (bounds->y1 + bounds->y0) * 0.5};
+    NUQTDIM_PC q1 = {(bounds->x0 + bounds->x1) * 0.5, bounds->x1, bounds->y0, (bounds->y1 + bounds->y0) * 0.5};
+    NUQTDIM_PC q2 = {bounds->x0, (bounds->x0 + bounds->x1) * 0.5, (bounds->y1 + bounds->y0) * 0.5, bounds->y1};
+    NUQTDIM_PC q3 = {(bounds->x0 + bounds->x1) * 0.5, bounds->x1, (bounds->y0 + bounds->y1) * 0.5, bounds->y1};
+
+    --depth;
+    if (header->entries[index].count >= 0) {
+        u8 *old_data;
+        u8 *old_item;
+        i32 i;
+
+        if (header->entries[index].count < header->split_count || depth == 0) {
+            return InsertData(header, index, item);
+        }
+
+        old_data = header->entries[index].u.data;
+        header->entries[index].u.children[0] = (u16)AddNode(header, index);
+        header->entries[index].u.children[1] = (u16)AddNode(header, index);
+        header->entries[index].u.children[2] = (u16)AddNode(header, index);
+        header->entries[index].u.children[3] = (u16)AddNode(header, index);
+        if (header->entries[index].u.children[0] != 0 || header->entries[index].u.children[1] == 0 ||
+            header->entries[index].u.children[2] == 0 || header->entries[index].u.children[3] == 0) {
+            header->entries[index].u.data = old_data;
+            return InsertData(header, index, item);
+        }
+        old_item = old_data;
+        for (i = 0; i < header->entries[index].count; ++i) {
+            if (ElOverlaps(&q0, item_bounds))
+                result = AddElementR(header, header->entries[index].u.children[0], &q0, item_bounds, old_item, depth);
+            if (ElOverlaps(&q1, item_bounds))
+                result = AddElementR(header, header->entries[index].u.children[1], &q1, item_bounds, old_item, depth);
+            if (ElOverlaps(&q2, item_bounds))
+                result = AddElementR(header, header->entries[index].u.children[2], &q2, item_bounds, old_item, depth);
+            if (ElOverlaps(&q3, item_bounds))
+                result = AddElementR(header, header->entries[index].u.children[3], &q3, item_bounds, old_item, depth);
+            old_item += header->element_size;
+        }
+        RemoveData(header, old_data, header->entries[index].count);
+        header->entries[index].count = -1;
+    }
+    if (header->entries[index].count < 0) {
+        if (ElOverlaps(&q0, item_bounds)) {
+            if (header->entries[index].u.children[0] != 0)
+                result = AddElementR(header, header->entries[index].u.children[0], &q0, item_bounds, item, depth);
+        }
+        if (ElOverlaps(&q1, item_bounds)) {
+            if (header->entries[index].u.children[1] != 0)
+                result = AddElementR(header, header->entries[index].u.children[1], &q1, item_bounds, item, depth);
+        }
+        if (ElOverlaps(&q2, item_bounds)) {
+            if (header->entries[index].u.children[2] != 0)
+                result = AddElementR(header, header->entries[index].u.children[2], &q2, item_bounds, item, depth);
+        }
+        if (ElOverlaps(&q3, item_bounds)) {
+            if (header->entries[index].u.children[3] != 0)
+                result = AddElementR(header, header->entries[index].u.children[3], &q3, item_bounds, item, depth);
+        }
+    }
+    return result;
+}
+
+void __cdecl NuQTAddElement(NUQTHDR_PC *header, void *item, f32 x0, f32 x1, f32 y0, f32 y1) {
+    NUQTDIM_PC bounds;
+    NUQTDIM_PC item_bounds;
+
+    bounds.y0 = header->y0;
+    bounds.y1 = header->y1;
+    bounds.x0 = header->x0;
+    bounds.x1 = header->x1;
+    item_bounds.y0 = y0;
+    item_bounds.y1 = y1;
+    item_bounds.x0 = x0;
+    item_bounds.x1 = x1;
+    AddElementR(header, 0, &bounds, &item_bounds, item, header->max_depth);
+}
+
+i32 __cdecl NuQTCreate(i32 entry_capacity, i32 data_capacity, i32 element_size, i32 max_depth, i32 split_count, f32 y0,
+                       f32 x0, f32 y1, f32 x1, VARIPTR *cursor, VARIPTR *end) {
+    cursor->addr = (cursor->addr + 15) & ~15;
+    if (cursor->addr + sizeof(NUQTHDR_PC) + sizeof(NUQTENTRY_PC) * entry_capacity + 16 + data_capacity <= end->addr) {
+        NUQTHDR_PC *header = (NUQTHDR_PC *)cursor->void_ptr;
+
+        cursor->addr += sizeof(NUQTHDR_PC);
+        header->flags = 0;
+        header->entry_count = 0;
+        header->entry_capacity = entry_capacity;
+        header->data_used = 0;
+        header->data_capacity = data_capacity;
+        header->y0 = y0;
+        header->x0 = x0;
+        header->y1 = y1;
+        header->x1 = x1;
+        header->element_size = element_size;
+        header->max_depth = max_depth;
+        header->split_count = split_count;
+        header->entries = (NUQTENTRY_PC *)cursor->void_ptr;
+        cursor->addr += sizeof(NUQTENTRY_PC) * entry_capacity;
+        cursor->addr = (cursor->addr + 15) & ~15;
+        header->data = (u8 *)cursor->void_ptr;
+        cursor->addr += data_capacity;
+    }
+    return 0;
+}
+
+static void NuQTUnfixAddress(NUQTHDR_PC *header) {
+    u32 base = -(u32)header;
+    i32 index;
+
+    for (index = 0; index < header->entry_count; ++index) {
+        if (header->entries[index].count > 0)
+            header->entries[index].u.data = header->entries[index].u.data + base;
+    }
+    header->entries = (NUQTENTRY_PC *)((u8 *)header->entries + base);
+    header->data = header->data + base;
+}
+
+static void NuQTFixAddress(NUQTHDR_PC *header) {
+    u32 base = (u32)header;
+    i32 index;
+
+    header->entries = (NUQTENTRY_PC *)((u8 *)header->entries + base);
+    header->data = header->data + base;
+    for (index = 0; index < header->entry_count; ++index) {
+        if (header->entries[index].count > 0)
+            header->entries[index].u.data = header->entries[index].u.data + base;
+    }
+}
+
+i32 __cdecl NuQTWrite(char *path, NUQTHDR_PC *header) {
+    NUFILE file = NuFileOpen(path, 1);
+
+    if (file != 0) {
+        u32 size = 0 - (u32)header;
+
+        size += (u32)header->data;
+        size += header->data_capacity;
+        NuQTUnfixAddress(header);
+        NuFileWrite(file, header, (i32)size);
+        NuQTFixAddress(header);
+        NuFileClose(file);
+        return 1;
+    }
+    return 0;
+}
+
 static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block) {
     if (block->previous != NULL)
         block->previous->next = block->next;
