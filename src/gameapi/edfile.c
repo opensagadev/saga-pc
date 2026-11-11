@@ -1660,10 +1660,14 @@ static void EduiExpanderOpenPc(EDUI_EXPANDER_PC *expander) {
 
 /* Is the editor cursor over the expander's open/close button? */
 static i32 EduiExpanderOverButtonPc(EDUI_EXPANDER_PC *expander) {
-    f32 top = expander->button_y * 0.5;
-    f32 right = expander->button_size + expander->button_x;
-    f32 bottom = (expander->button_y + expander->button_size) * 0.5;
-    if (edui_cursor_x >= expander->button_x && edui_cursor_y >= top && edui_cursor_x < right && edui_cursor_y < bottom)
+    // MATCH-EXCEPTION: parameter copy, reversed declarations, a local for button_x and mirrored
+    // compares; only this form gives retail's x87 operand order (U9/U20).
+    EDUI_EXPANDER_PC *e = expander;
+    f32 bottom = (e->button_y + e->button_size) * 0.5;
+    f32 right = e->button_size + e->button_x;
+    f32 top = e->button_y * 0.5;
+    f32 x = e->button_x;
+    if (edui_cursor_x >= x && edui_cursor_y >= top && right > edui_cursor_x && bottom > edui_cursor_y)
         return 1;
     return 0;
 }
