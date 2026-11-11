@@ -1522,6 +1522,187 @@ void __thiscall PC_DEVICE_BACKEND_PC::SetColorWriteMaskPc(u8 colour_enabled, u8 
     }
 }
 
+/* Thin IDirect3DDevice9 getters (no retail caller); each records its result. */
+extern "C" i32 __cdecl PCDeviceGetAvailableTextureMemPc(void) {
+    PCDeviceLastResult =
+        static_cast<HRESULT>(PCDeviceBackend.device->methods->get_available_texture_mem(PCDeviceBackend.device));
+    return 0;
+}
+
+extern "C" void __cdecl PCDeviceGetClipPlanePc(u32 index, f32 *plane) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_clip_plane(PCDeviceBackend.device, index, plane);
+}
+
+extern "C" void __cdecl PCDeviceGetClipStatusPc(void *status) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_clip_status(PCDeviceBackend.device, status);
+}
+
+extern "C" void __cdecl PCDeviceGetCreationParametersPc(void *parameters) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_creation_parameters(PCDeviceBackend.device, parameters);
+}
+
+extern "C" void __cdecl PCDeviceGetCurrentTexturePalettePc(u32 *palette) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_current_texture_palette(PCDeviceBackend.device, palette);
+}
+
+/* Whether the adapter accepts format for the resource type and usage in its
+ * current display mode. */
+extern "C" HRESULT __cdecl PCDeviceCheckFormatPc(i32 format, i32 resource_type, u32 usage) {
+    GRAPHICS_CAPS_PC caps;
+    GRAPHICS_DISPLAY_MODE_PC mode;
+    PCDeviceBackend.device->methods->get_device_caps(PCDeviceBackend.device, &caps);
+    PCDeviceBackend.factory->methods->get_adapter_display_mode(PCDeviceBackend.factory, caps.adapter_ordinal, &mode);
+    return PCDeviceBackend.factory->methods->check_device_format(
+        PCDeviceBackend.factory, caps.adapter_ordinal, caps.device_type, mode.format, usage, resource_type, format);
+}
+
+extern "C" void __cdecl PCDeviceGetDisplayModePc(u32 swap_chain, void *mode) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_display_mode(PCDeviceBackend.device, swap_chain, mode);
+}
+
+extern "C" void __cdecl PCDeviceGetFrontBufferDataPc(u32 swap_chain, PC_TEXTURE_RESOURCE_PC *surface) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_front_buffer_data(PCDeviceBackend.device, swap_chain, surface);
+}
+
+extern "C" void __cdecl PCDeviceGetFVFPc(u32 *fvf) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_fvf(PCDeviceBackend.device, fvf);
+}
+
+extern "C" void __cdecl PCDeviceGetIndicesPc(PC_BUFFER_RESOURCE_PC **indices) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_indices(PCDeviceBackend.device, indices);
+}
+
+extern "C" void __cdecl PCDeviceGetLightPc(u32 index, void *light) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_light(PCDeviceBackend.device, index, light);
+}
+
+extern "C" void __cdecl PCDeviceGetLightEnablePc(u32 index, BOOL *enabled) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_light_enable(PCDeviceBackend.device, index, enabled);
+}
+
+extern "C" void __cdecl PCDeviceGetMaterialPc(void *material) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_material(PCDeviceBackend.device, material);
+}
+
+/* N-patches are not used: the mode always reads as 0. */
+extern "C" f32 __cdecl PCDeviceGetNPatchModePc(void) {
+    return 0.0f;
+}
+
+extern "C" i32 __cdecl PCDeviceGetNumberOfSwapChainsPc(void) {
+    PCDeviceLastResult =
+        static_cast<HRESULT>(PCDeviceBackend.device->methods->get_number_of_swap_chains(PCDeviceBackend.device));
+    return 0;
+}
+
+extern "C" void __cdecl PCDeviceGetPaletteEntriesPc(u32 palette, PALETTEENTRY *entries) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_palette_entries(PCDeviceBackend.device, palette, entries);
+}
+
+extern "C" void __cdecl PCDeviceGetPixelShaderPc(PC_TEXTURE_RESOURCE_PC **shader) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_pixel_shader(PCDeviceBackend.device, shader);
+}
+
+extern "C" void __cdecl PCDeviceGetPixelShaderConstantBPc(u32 start, BOOL *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_pixel_shader_constant_b(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceGetPixelShaderConstantFPc(u32 start, f32 *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_pixel_shader_constant_f(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceGetPixelShaderConstantIPc(u32 start, i32 *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_pixel_shader_constant_i(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceGetRasterStatusPc(u32 swap_chain, void *status) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_raster_status(PCDeviceBackend.device, swap_chain, status);
+}
+
+extern "C" void __cdecl PCDeviceGetRenderStatePc(i32 state, u32 *value) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_render_state(PCDeviceBackend.device, state, value);
+}
+
+extern "C" void __cdecl PCDeviceGetRenderTargetPc(u32 index, PC_TEXTURE_RESOURCE_PC **target) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_render_target(PCDeviceBackend.device, index, target);
+}
+
+extern "C" void __cdecl PCDeviceGetRenderTargetDataPc(PC_TEXTURE_RESOURCE_PC *target,
+                                                      PC_TEXTURE_RESOURCE_PC *destination) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_render_target_data(PCDeviceBackend.device, target, destination);
+}
+
+extern "C" void __cdecl PCDeviceGetSamplerStatePc(u32 sampler, i32 type, u32 *value) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_sampler_state(PCDeviceBackend.device, sampler, type, value);
+}
+
+extern "C" void __cdecl PCDeviceGetScissorRectPc(RECT *rect) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_scissor_rect(PCDeviceBackend.device, rect);
+}
+
+extern "C" i32 __cdecl PCDeviceGetSoftwareVertexProcessingPc(void) {
+    PCDeviceLastResult =
+        static_cast<HRESULT>(PCDeviceBackend.device->methods->get_software_vertex_processing(PCDeviceBackend.device));
+    return 0;
+}
+
+extern "C" void __cdecl PCDeviceGetStreamSourcePc(u32 stream, PC_BUFFER_RESOURCE_PC **buffer, u32 *offset,
+                                                  u32 *stride) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_stream_source(PCDeviceBackend.device, stream, buffer, offset, stride);
+}
+
+extern "C" void __cdecl PCDeviceGetStreamSourceFreqPc(u32 stream, u32 *divider) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_stream_source_freq(PCDeviceBackend.device, stream, divider);
+}
+
+extern "C" void __cdecl PCDeviceGetSwapChainPc(u32 index, void **swap_chain) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_swap_chain(PCDeviceBackend.device, index, swap_chain);
+}
+
+extern "C" void __cdecl PCDeviceGetTexturePc(u32 stage, void **texture) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_texture(PCDeviceBackend.device, stage, texture);
+}
+
+extern "C" void __cdecl PCDeviceGetTextureStageStatePc(u32 stage, i32 type, u32 *value) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_texture_stage_state(PCDeviceBackend.device, stage, type, value);
+}
+
+extern "C" void __cdecl PCDeviceGetTransformPc(i32 state, NUMTX *matrix) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_transform(PCDeviceBackend.device, state, matrix);
+}
+
+extern "C" void __cdecl PCDeviceGetVertexDeclarationPc(PC_TEXTURE_RESOURCE_PC **declaration) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_vertex_declaration(PCDeviceBackend.device, declaration);
+}
+
+extern "C" void __cdecl PCDeviceGetVertexShaderPc(PC_TEXTURE_RESOURCE_PC **shader) {
+    PCDeviceLastResult = PCDeviceBackend.device->methods->get_vertex_shader(PCDeviceBackend.device, shader);
+}
+
+extern "C" void __cdecl PCDeviceGetVertexShaderConstantBPc(u32 start, BOOL *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_vertex_shader_constant_b(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceGetVertexShaderConstantFPc(u32 start, f32 *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_vertex_shader_constant_f(PCDeviceBackend.device, start, data, count);
+}
+
+extern "C" void __cdecl PCDeviceGetVertexShaderConstantIPc(u32 start, i32 *data, u32 count) {
+    PCDeviceLastResult =
+        PCDeviceBackend.device->methods->get_vertex_shader_constant_i(PCDeviceBackend.device, start, data, count);
+}
+
 extern "C" void __cdecl NuPs2GetViewport(NUVPCURRENT *viewport) {
     if (viewport != NULL) {
         viewport->x = PCDeviceBackend.requested_viewport.x;
