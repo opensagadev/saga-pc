@@ -5256,6 +5256,7 @@ address,symbol,size,ctype
 0x586eb0,_CC_lowres_swapdist,26,void (NUFPAR_PC *parser)
 0x586ed0,_CC_turn_rate,56,void (NUFPAR_PC *parser)
 0x586f10,_CC_turn_rate_2,56,void (NUFPAR_PC *parser)
+0x586f50,_CC_SetRuntimeFlag,66,"void (NUFPAR_PC *parser, u32 flag) [private EDI/EAX]"
 0x586fa0,_CC_banking,68,void (NUFPAR_PC *parser)
 0x586ff0,_CC_choke,68,void (NUFPAR_PC *parser)
 0x587040,_CC_lightning,68,void (NUFPAR_PC *parser)
@@ -5295,6 +5296,7 @@ address,symbol,size,ctype
 0x5877a0,_CC_acceleration,23,void (NUFPAR_PC *parser)
 0x5877c0,_CC_streak,176,void (NUFPAR_PC *parser)
 0x587870,_CC_hit_points,26,void (NUFPAR_PC *parser)
+0x587890,_CC_SetModelFlag,60,"void (NUFPAR_PC *parser, u32 flag) [private EDI/EAX]"
 0x5878d0,_CC_baddie,62,void (NUFPAR_PC *parser)
 0x587910,_CC_jedi,62,void (NUFPAR_PC *parser)
 0x587950,_CC_droid,62,void (NUFPAR_PC *parser)
