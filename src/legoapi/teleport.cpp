@@ -312,13 +312,13 @@ extern "C" {
 static i32 FindTeleport_Direction = 0;
 
 extern "C" TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *object, f32 range_squared) {
-    if (((TELEPORT_WORLD_PC *)WORLD)->teleports == NULL)
+    TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)WORLD)->teleports;
+    if (teleport == NULL)
         return NULL;
-    f32 radius = 2.0f * object->collision_radius;
-    const f32 radius_squared = radius * radius;
+    f32 radius_squared = 2.0f * object->collision_radius;
+    radius_squared *= radius_squared;
     i32 nearest = -1;
     f32 nearest_distance = 100000000.0f;
-    TELEPORT_MOTION_PC *teleport = ((TELEPORT_WORLD_PC *)WORLD)->teleports;
     for (i32 i = 0; i < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++i, ++teleport) {
         if (teleport->active != 0 || teleport->enabled == 0)
             continue;
@@ -331,25 +331,23 @@ extern "C" TELEPORT_MOTION_PC *__cdecl Teleport_Find(GAMEOBJECT *object, f32 ran
                 continue;
             }
         }
-        const u16 range_flag = teleport->flags & 2;
-        NUVEC *point = teleport->path->pts;
-        f32 distance = NuVecDistSqr(&object->collision_position, point, NULL);
+        i32 range_flag = teleport->flags & 2;
+        f32 distance = NuVecDistSqr(&object->collision_position, teleport->path->pts, NULL);
         if (((range_squared != 0.0f && distance < range_squared) ||
-             distance < (range_flag != 0 ? teleport->range_squared : radius_squared)) &&
+             (range_flag != 0 ? distance < teleport->range_squared : distance < radius_squared)) &&
             (nearest == -1 || distance < nearest_distance)) {
-            FindTeleport_Direction = 0;
             nearest = i;
+            FindTeleport_Direction = 0;
             nearest_distance = distance;
         }
         if ((teleport->flags & 1) != 0)
             continue;
-        point = &teleport->path->pts[teleport->path->length - 1];
-        distance = NuVecDistSqr(&object->collision_position, point, NULL);
+        distance = NuVecDistSqr(&object->collision_position, &teleport->path->pts[teleport->path->length - 1], NULL);
         if (((range_squared != 0.0f && distance < range_squared) ||
-             distance < (range_flag != 0 ? teleport->range_squared : radius_squared)) &&
+             (range_flag != 0 ? distance < teleport->range_squared : distance < radius_squared)) &&
             (nearest == -1 || distance < nearest_distance)) {
-            FindTeleport_Direction = 1;
             nearest = i;
+            FindTeleport_Direction = 1;
             nearest_distance = distance;
         }
     }
