@@ -88,19 +88,8 @@ void rtlResetEx(RTL_DATA_PC *data, i32 reset_cached) {
 
 static void InsertLight(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, float strength) {
     i32 slot, move;
-    if (light->type != 1) {
-        for (slot = 0; slot < 3; ++slot) {
-            if (lighting_data->directional_strengths[slot] < strength) {
-                for (move = 2; move != slot; --move) {
-                    lighting_data->directional_lights[move] = lighting_data->directional_lights[move - 1];
-                    lighting_data->directional_strengths[move] = lighting_data->directional_strengths[move - 1];
-                }
-                lighting_data->directional_lights[slot] = light;
-                lighting_data->directional_strengths[slot] = strength;
-                return;
-            }
-        }
-    } else {
+    switch (light->type) {
+    case 1:
         for (slot = 0; slot < 3; ++slot) {
             if (lighting_data->ambient_strengths[slot] < strength) {
                 for (move = 2; move != slot; --move) {
@@ -112,6 +101,20 @@ static void InsertLight(RTL_LIGHT_PC *light, RTL_DATA_PC *lighting_data, float s
                 return;
             }
         }
+        break;
+    default:
+        for (slot = 0; slot < 3; ++slot) {
+            if (lighting_data->directional_strengths[slot] < strength) {
+                for (move = 2; move != slot; --move) {
+                    lighting_data->directional_lights[move] = lighting_data->directional_lights[move - 1];
+                    lighting_data->directional_strengths[move] = lighting_data->directional_strengths[move - 1];
+                }
+                lighting_data->directional_lights[slot] = light;
+                lighting_data->directional_strengths[slot] = strength;
+                return;
+            }
+        }
+        break;
     }
     rtl_error = 1;
 }
