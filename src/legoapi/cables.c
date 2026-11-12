@@ -120,8 +120,8 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     i32 i;
     target->character_context = 0x3d;
     target->field_7aa = 0x85;
-    target->flags_ef4 |= 0x800000;
     target->context_duration = AnimDuration((i16)target->id, 0x85, 0.0f, 0.0f, 1);
+    target->flags_ef4 |= 0x800000;
     target->context_timer = 0.0f;
     IncrementMinikitCounter(target);
     object = Obj;
