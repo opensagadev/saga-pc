@@ -967,41 +967,41 @@ void __cdecl GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GIZMOPICKUP_PC *pickup, *group_pickup;
     GIZMO_PICKUP_TYPE_PC *type;
-    i32 type_index, debris, index;
-    u8 group;
+    i32 index;
     if (gizmo == NULL)
         return;
     pickup = (GIZMOPICKUP_PC *)gizmo->object;
-    pickup->flags = (pickup->flags & (u8)~2) | ((active != 0) << 1);
+    pickup->state_enabled = active != 0;
     if (active != 0) {
         SuperCounter_ActivateGizmoPickup(gizmo, pickup);
-        if ((pickup->flags & 2) != 0) {
-            pickup->flags |= 0x80;
-            type_index = pickup->type_index;
-            if ((pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1)
-                type_index = GizmoPickupSys->alternate_type;
-            type = &GizmoPickupSys->types[type_index];
-            if ((ChallengeMode != 0 ? (type->flags & 0x20) != 0 : (type->flags & 0x20) == 0) &&
+        if (pickup->state_enabled) {
+            pickup->state_activated = 1;
+            if (pickup->state_alternate_type && GizmoPickupSys->alternate_type != -1)
+                type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
+            else
+                type = &GizmoPickupSys->types[pickup->type_index];
+            if (((ChallengeMode && (type->flags & 0x20)) || (!ChallengeMode && !(type->flags & 0x20))) &&
                 Mission_Active(NULL) == NULL) {
                 if (type->activation_sfx_name != NULL)
                     PlaySfx(type->activation_sfx_name, &pickup->position);
                 if (type->debris_id != -1) {
-                    if ((pickup->flags & 0x40) != 0)
-                        debris = GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].debris_id;
+                    if (pickup->state_alternate_type)
+                        AddGameDebris(world->game_debris_sys,
+                                      GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].debris_id,
+                                      &pickup->position);
                     else
-                        debris = type->debris_id;
-                    AddGameDebris(world->game_debris_sys, debris, &pickup->position);
+                        AddGameDebris(world->game_debris_sys, type->debris_id, &pickup->position);
                 }
             }
         }
     }
-    group = ((PICKUP_ACTIVATION_PC *)pickup)->activation_group;
-    if (group != 0) {
-        group_pickup = world->pickup_runtime_sys->pickups;
-        for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++group_pickup) {
-            if (((PICKUP_ACTIVATION_PC *)group_pickup)->activation_group ==
-                ((PICKUP_ACTIVATION_PC *)pickup)->activation_group)
-                group_pickup->flags = (group_pickup->flags & (u8)~6) | ((active & 1) << 1) | ((active & 1) << 2);
+    if (pickup->activation_group == 0)
+        return;
+    group_pickup = world->pickup_runtime_sys->pickups;
+    for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++group_pickup) {
+        if (group_pickup->activation_group == pickup->activation_group) {
+            group_pickup->state_enabled = active;
+            group_pickup->state_visible = active;
         }
     }
 }
