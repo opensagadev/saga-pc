@@ -570,15 +570,17 @@ STATIC_ASSERT(offsetof(WORLDINFO, level_idx) == 0x11c);
 extern u8 *Game_LevelSave;
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
-static __declspec(noinline) void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup) {
+static i32 FindPickupTypeIndex(u8 type_code) {
     i32 index;
-    f32 floor;
     for (index = 0; index < GizmoPickupSys->type_count; ++index)
-        if (GizmoPickupSys->types[index].field_c == pickup->type_code)
-            goto found_type;
-    index = 0;
-found_type:
-    pickup->type_index = (u8)index;
+        if (GizmoPickupSys->types[index].field_c == type_code)
+            return index;
+    return 0;
+}
+
+static __declspec(noinline) void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD_PC *pickup) {
+    f32 floor;
+    pickup->type_index = (u8)FindPickupTypeIndex(pickup->type_code);
     NewTerrPlatformsOff();
     floor = GameShadow(NULL, &pickup->position, 5.0f, -1);
     pickup->floor = floor;
