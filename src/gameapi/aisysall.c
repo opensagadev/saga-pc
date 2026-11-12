@@ -3307,19 +3307,19 @@ f32 __cdecl Condition_ParamPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
 i32 __cdecl Action_SetState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                             i32 count, i32 first_time, f32 elapsed) {
     i32 i;
-    if (first_time == 0 || count == 0)
-        return 0;
-    processor->next_state = AIStateFind(params[0], processor->script);
-    processor->flags &= ~4u;
-    for (i = 1; i < count; i++) {
-        if (NuStrICmp(params[i], "KeepBlockedMessages") == 0)
-            processor->flags |= 4;
-    }
-    if (processor->next_state == NULL) {
-        if (AIActionDiagnosticMode == 1)
-            AIScriptMissingStateDiagnosticAlternate(params[0], processor->script->name, processor->state->name);
-        else
-            AIScriptMissingStateDiagnostic(params[0], processor->script->name, processor->state->name);
+    if (first_time != 0 && count != 0) {
+        processor->next_state = AIStateFind(params[0], processor->script);
+        processor->flags &= ~4u;
+        for (i = 1; i < count; i++) {
+            if (NuStrICmp(params[i], "KeepBlockedMessages") == 0)
+                processor->flags |= 4;
+        }
+        if (processor->next_state == NULL) {
+            if (AIActionDiagnosticMode == 1)
+                AIScriptMissingStateDiagnosticAlternate(params[0], processor->script->name, processor->state->name);
+            else
+                AIScriptMissingStateDiagnostic(params[0], processor->script->name, processor->state->name);
+        }
     }
     return 0;
 }
