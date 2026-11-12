@@ -5910,18 +5910,21 @@ static __declspec(noinline) ZIPUP_s *LocalGetRandomSpawnZipUp(ZIPUP_s **zipups, 
     i32 index;
     i32 selection;
     ZIPUP_s *result;
-    i32 eligible = 0;
+    ZIPUP_s *eligible[32];
+    i32 eligible_count;
+    eligible_count = 0;
+    result = NULL;
     if (count > 32)
         count = 32;
     for (index = 0; index < count; ++index) {
-        if (zipups[index] != NULL && (zipups[index]->flags & 0x40) != 0)
-            ++eligible;
+        if (zipups[index] != NULL && zipups[index]->active)
+            eligible[eligible_count++] = zipups[index];
     }
-    if (eligible == 0)
-        return NULL;
-    selection = qrand() / (65535 / eligible + 1);
-    result = zipups[selection];
-    zipups[selection] = NULL;
+    if (eligible_count != 0) {
+        selection = qrand() / (65535 / eligible_count + 1);
+        result = zipups[selection];
+        zipups[selection] = NULL;
+    }
     return result;
 }
 
@@ -5929,7 +5932,7 @@ static __declspec(noinline) ZIPUP_s *FindSpawnZipUp(char *name) {
     i32 index;
     ZIPUP_s *zipup = (ZIPUP_s *)WORLD->zipups;
     for (index = 0; index < WORLD->zipup_count; ++index, ++zipup) {
-        if ((zipup->flags & 0xc0) == 0xc0 && NuStrICmp(name, zipup->name) == 0)
+        if (zipup->active && zipup->visible && NuStrICmp(name, zipup->name) == 0)
             return zipup;
     }
     return NULL;
