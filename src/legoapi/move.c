@@ -7580,7 +7580,7 @@ void __cdecl LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         if (object->field_7b3 != 0 || object->field_7aa != LEGOACT_LEDGE_GRAB ||
             AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0) != NULL)
             object->context_timer = FRAMETIME + object->context_timer;
-        if (object->field_7b3 == 0 && !(object->context_hover_target_y > object->context_timer))
+        if (object->field_7b3 == 0 && object->context_timer >= object->context_hover_target_y)
             object->field_7b3 = 1;
         if (LedgeTerrain_AttachPc(object, object->movement_facing_angle, &position, &wall_angle) != 0) {
             f32 x = object->external_force.x;
