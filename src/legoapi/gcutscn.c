@@ -68,22 +68,22 @@ STATIC_ASSERT(offsetof(CUT_PLAYER_INST_ANIM_PC, time) == 0x4c);
 STATIC_ASSERT(offsetof(CUT_PLAYER_INST_ANIM_PC, flags) == 0x50);
 void __cdecl NuSpecialSetVisibility(NUSPECIALHANDLE *, i32);
 void __cdecl CutScenePlayer_SetObjects(CUTINFO *owner) {
-    CUT_PLAYER_RECORD_PC *cut = (CUT_PLAYER_RECORD_PC *)owner;
+    // MATCH-EXCEPTION: cast at each use (I45); a cast local lets VC8 pack the end frame into the dead parameter slot.
     i32 i;
     if (CutScenePlayerPc == NULL || CutScenePlayerPc->active == NULL)
         return;
-    if (cut->states == NULL)
+    if (((CUT_PLAYER_RECORD_PC *)owner)->states == NULL)
         return;
-    for (i = 0; i < cut->state_count; ++i) {
-        u8 flags = cut->states[i].flags;
+    for (i = 0; i < ((CUT_PLAYER_RECORD_PC *)owner)->state_count; ++i) {
+        u8 flags = ((CUT_PLAYER_RECORD_PC *)owner)->states[i].flags;
         if ((flags & 1) != 0)
-            NuSpecialSetVisibility(&cut->states[i].special, 1);
+            NuSpecialSetVisibility(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special, 1);
         else if ((flags & 2) != 0)
-            NuSpecialSetVisibility(&cut->states[i].special, 0);
+            NuSpecialSetVisibility(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special, 0);
         else if ((flags & 4) != 0) {
-            f32 time = NuSpecialGetAnimEndFrame(&cut->states[i].special);
+            f32 time = NuSpecialGetAnimEndFrame(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special);
             CUT_PLAYER_INST_ANIM_PC *animation =
-                (CUT_PLAYER_INST_ANIM_PC *)NuSpecialGetInstAnim(&cut->states[i].special);
+                (CUT_PLAYER_INST_ANIM_PC *)NuSpecialGetInstAnim(&((CUT_PLAYER_RECORD_PC *)owner)->states[i].special);
             if (animation != NULL) {
                 animation->flags |= 1;
                 animation->time = time;
