@@ -10,10 +10,13 @@ u8 __thiscall PC_DEVICE_BACKEND_PC::HasRequestedModeChangedPc() {
 }
 
 u8 __thiscall MENU_VIDEO_OPTIONS_PC::ChangedPc() {
-    return aspect_mode != PcWindowOptions.aspect_mode || (shadows_enabled == 1) != PcWindowOptions.shadowsenabled ||
-           (bloom_enabled == 1) != PcWindowOptions.bloomenabled ||
-           (speed_blur_enabled == 1) != PcWindowOptions.speedblurenabled ||
-           (hires_enabled == 1) != PcWindowOptions.usehirespending;
+    if (aspect_mode != PcWindowOptions.aspect_mode)
+        return 1;
+    if ((shadows_enabled == 1) != PcWindowOptions.shadowsenabled ||
+        (bloom_enabled == 1) != PcWindowOptions.bloomenabled ||
+        (speed_blur_enabled == 1) != PcWindowOptions.speedblurenabled)
+        return 1;
+    return (hires_enabled == 1) != PcWindowOptions.usehirespending;
 }
 void __thiscall MENU_VIDEO_OPTIONS_PC::ApplyPc() {
     PcWindowOptions.SetAspectModePc(aspect_mode);
