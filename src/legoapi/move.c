@@ -9723,7 +9723,7 @@ void __cdecl GrabVictim(GAMEOBJECT *object, GAMEOBJECT *victim) {
     if (object->character_context != -1)
         return;
     object->character_context = 0x38;
-    if ((i16)victim->id == id_GAMORREANGUARD && victim->field_280 == 0xff)
+    if ((i16)victim->id == id_GAMORREANGUARD && (i8)victim->field_280 == -1)
         object->field_7aa = 0x1f;
     else
         object->field_7aa = 0x64;
@@ -9910,7 +9910,7 @@ void __cdecl TakeHitCode(GAMEOBJECT *object) {
             KillParts(object, -1, -1, 1, 0.0f, mode == 2, NULL);
             KillGameObject(object, 2, 0);
             coins = 0;
-            if (object->field_280 != 0xff)
+            if ((i8)object->field_280 != -1)
                 return;
             if (BonusArea != 0)
                 coins = (u16)object->character_data->game_character->coin_value;
