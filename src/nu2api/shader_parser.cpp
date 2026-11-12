@@ -554,8 +554,7 @@ ShaderCompilerParserPc::ShaderCompilerParserPc() : text((ShaderLexicalClassesIni
 }
 void ShaderCompilerParserPc::ClearIncludes() {
     for (std::vector<ShaderParserIncludePc *>::iterator i = includes.begin(); i != includes.end(); ++i)
-        if (*i != NULL)
-            delete *i;
+        delete *i;
     includes.erase(includes.begin(), includes.end());
 }
 ShaderCompilerParserPc::~ShaderCompilerParserPc() {
