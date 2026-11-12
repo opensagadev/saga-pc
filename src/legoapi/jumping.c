@@ -291,40 +291,38 @@ i32 __cdecl UseFallAnim(GAMEOBJECT *object) {
 }
 
 i32 __cdecl StartFallLand(GAMEOBJECT *object, i32 action) {
-    i16 selected;
     BEAST_FALL_LAND_VIEW_PC *view = (BEAST_FALL_LAND_VIEW_PC *)object;
     PlayLandSfx(object, 0, 0);
-    if (LEGOCONTEXT_LAND_JUMP == -1) {
-        object->flags_e24 &= ~0x400;
-        return 0;
+    if (LEGOCONTEXT_LAND_JUMP != -1) {
+        if (action != -1 && object->character_model->model_data_b[action] != NULL) {
+            object->field_7aa = (i16)action;
+        } else if (IsWearingBackPackFn != NULL && IsWearingBackPackFn(object) && LEGOACT_BACKPACKFALLLAND != -1 &&
+                   object->character_model->model_data_b[LEGOACT_BACKPACKFALLLAND] != NULL) {
+            object->field_7aa = LEGOACT_BACKPACKFALLLAND;
+        } else if (UsingExtraActionsFn != NULL && UsingExtraActionsFn(object) && LEGOACT_EXTRA_LAND2 != -1 &&
+                   object->character_model->model_data_b[LEGOACT_EXTRA_LAND2] != NULL) {
+            object->field_7aa = LEGOACT_EXTRA_LAND2;
+        } else if (LEGOACT_FALLLAND != -1 && object->character_model->model_data_b[LEGOACT_FALLLAND] != NULL) {
+            object->field_7aa = LEGOACT_FALLLAND;
+        } else if (BigJumpLandSecondaryPc != -1 &&
+                   object->character_model->model_data_b[BigJumpLandSecondaryPc] != NULL) {
+            object->field_7aa = BigJumpLandSecondaryPc;
+        } else {
+            object->field_7aa = BigJumpLandFallbackPc;
+        }
+        if (object->character_model->model_data_b[object->field_7aa] != NULL) {
+            object->character_context = (i8)LEGOCONTEXT_LAND_JUMP;
+            ResetAnimPacket(&object->anim_packet, -1);
+            ResetMiniAnimPacket(&view->mini_animation, -1);
+            view->fall_animation_time = 0.0f;
+            object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+            // MATCH-EXCEPTION: bit 11 of flags_e24 is a 1-bit field copied from bit 10; saga.h has no bitfield for it.
+            object->flags_e24 ^= ((object->flags_e24 << 1) ^ object->flags_e24) & 0x800;
+            return 1;
+        }
     }
-    if (action != -1 && object->character_model->model_data_b[action] != NULL) {
-        selected = (i16)action;
-    } else if (IsWearingBackPackFn != NULL && IsWearingBackPackFn(object) && LEGOACT_BACKPACKFALLLAND != -1 &&
-               object->character_model->model_data_b[LEGOACT_BACKPACKFALLLAND] != NULL) {
-        selected = LEGOACT_BACKPACKFALLLAND;
-    } else if (UsingExtraActionsFn != NULL && UsingExtraActionsFn(object) && LEGOACT_EXTRA_LAND2 != -1 &&
-               object->character_model->model_data_b[LEGOACT_EXTRA_LAND2] != NULL) {
-        selected = LEGOACT_EXTRA_LAND2;
-    } else if (LEGOACT_FALLLAND != -1 && object->character_model->model_data_b[LEGOACT_FALLLAND] != NULL) {
-        selected = LEGOACT_FALLLAND;
-    } else if (BigJumpLandSecondaryPc != -1 && object->character_model->model_data_b[BigJumpLandSecondaryPc] != NULL) {
-        selected = BigJumpLandSecondaryPc;
-    } else {
-        selected = BigJumpLandFallbackPc;
-    }
-    object->field_7aa = selected;
-    if (object->character_model->model_data_b[selected] == NULL) {
-        object->flags_e24 &= ~0x400;
-        return 0;
-    }
-    object->character_context = (i8)LEGOCONTEXT_LAND_JUMP;
-    ResetAnimPacket(&object->anim_packet, -1);
-    ResetMiniAnimPacket(&view->mini_animation, -1);
-    view->fall_animation_time = 0.0f;
-    object->context_timer = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
-    object->flags_e24 = (object->flags_e24 & ~0x800) | ((object->flags_e24 & 0x400) << 1);
-    return 1;
+    object->flags_e24 &= ~0x400;
+    return 0;
 }
 
 i32 __cdecl StartBackFlip(GAMEOBJECT *object) {
