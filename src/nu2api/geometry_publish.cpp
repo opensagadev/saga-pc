@@ -104,7 +104,7 @@ extern "C" i32 __cdecl PcRegisterDynamicGeometryPc(PC_GEOMETRY_PUBLISH_FORMAT_PC
 
     i32 maximum = 0;
     for (u32 i = 0; i < format->skin_ref_count; ++i)
-        if (maximum < format->skin_refs[i].matrix_count)
+        if (format->skin_refs[i].matrix_count > maximum)
             maximum = format->skin_refs[i].matrix_count;
     if (PcGeometryMatrixCapacityPc < maximum || PcGeometryTransformsPc == NULL) {
         PcGeometryMatrixCapacityPc = maximum;

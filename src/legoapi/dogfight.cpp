@@ -616,6 +616,7 @@ extern "C" {
         __declspec(align(16)) NUVEC player1;
         __declspec(align(16)) NUVEC step;
         DOGFIGHT_QUICK_BOLT_PC *bolt, *end;
+        NUVEC *position, *velocity;
         i32 valid0, valid1;
         f64 dx, dy, dz;
         if (buffer == NULL || buffer->capacity == 0)
@@ -641,12 +642,14 @@ extern "C" {
         for (; bolt < end; ++bolt) {
             if (bolt->duration == 0.0f)
                 continue;
-            step.x = bolt->velocity.x * FRAMETIME;
-            step.y = bolt->velocity.y * FRAMETIME;
-            step.z = bolt->velocity.z * FRAMETIME;
-            bolt->matrix.m30 += step.x;
-            bolt->matrix.m31 += step.y;
-            bolt->matrix.m32 += step.z;
+            velocity = (NUVEC *)&bolt->velocity;
+            position = (NUVEC *)&bolt->matrix.m30;
+            step.x = velocity->x * FRAMETIME;
+            step.y = velocity->y * FRAMETIME;
+            step.z = velocity->z * FRAMETIME;
+            position->x += step.x;
+            position->y += step.y;
+            position->z += step.z;
             if (Player[0] != NULL && valid0 != 0) {
                 dy = bolt->matrix.m31 - player0.y;
                 dx = bolt->matrix.m30 - player0.x;
@@ -910,13 +913,13 @@ extern "C" {
         i32 point, sample;
         f32 point_value, along, squared;
         __declspec(align(16)) NUVEC4 previous, current;
-        NUVEC difference;
+        __declspec(align(16)) NUVEC difference;
         for (point = 0; point < spline->point_count; ++point) {
             point_value = (f32)point;
             along = (f32)((f64)point_value / spline->point_count);
             CalcSplinePoint(spline, &previous, along);
-            for (sample = 1; sample <= 10; ++sample) {
-                along = (f32)(((f64)sample / 10.0 + point_value) / spline->point_count);
+            for (sample = 0; sample < 10; ++sample) {
+                along = (f32)(((f64)(sample + 1) / 10.0 + point_value) / spline->point_count);
                 CalcSplinePoint(spline, &current, along);
                 difference.x = current.x - previous.x;
                 difference.y = current.y - previous.y;

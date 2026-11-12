@@ -83,11 +83,14 @@ static void MissionIconPositionsPc(MISSION_SYSTEM_READER_PC *system, i32 initial
     i32 index;
     f32 x;
     for (index = 0; index < system->count; ++index) {
-        x = 0.0f;
+        // MATCH-EXCEPTION: explicit 0.0f centre term; retail keeps the addition of a 0.0f centre (likely a named
+        // constant in the original), which cannot be folded under strict float semantics.
         if (index < MissionMenuSelectionPc)
-            x = -MissionIconGapPc - (MissionMenuSelectionPc - index) * MissionIconStepPc;
-        else if (index != MissionMenuSelectionPc)
-            x = MissionIconGapPc + (index - MissionMenuSelectionPc) * MissionIconStepPc;
+            x = 0.0f - MissionIconGapPc - (MissionMenuSelectionPc - index) * MissionIconStepPc;
+        else if (index == MissionMenuSelectionPc)
+            x = 0.0f;
+        else
+            x = 0.0f + MissionIconGapPc + (index - MissionMenuSelectionPc) * MissionIconStepPc;
         MissionIconTargetXPc[index] = x;
         if (initialize != 0)
             MissionIconXPc[index] = x;
@@ -97,7 +100,7 @@ static void MissionIconPositionsPc(MISSION_SYSTEM_READER_PC *system, i32 initial
 }
 
 extern "C" {
-    void __cdecl EndMissionsMenu(void) {
+    __declspec(noinline) void __cdecl EndMissionsMenu(void) {
         LevLock[3] = 1;
         LevTime[3] = 0.6f;
         MenuRememberCursor(&GameMenu[GameMenuLevel]);
@@ -151,17 +154,16 @@ extern "C" {
                     GameAudio_PlaySfx(0x31, NULL, 0, 0);
                 }
             } else if (MissionMenuPacketPc.selected[0] == 0 && MissionMenuPacketPc.selected[1] == 0) {
-                directions = pad->alternate_pressed;
-                if (((directions | pressed) & (u32)GAMEPAD_DLEFT) != 0)
+                if ((pad->alternate_pressed & GAMEPAD_DLEFT) != 0 || (pressed & GAMEPAD_DLEFT) != 0)
                     left = 1;
-                else if (((directions | pressed) & (u32)GAMEPAD_DRIGHT) != 0)
+                else if ((pad->alternate_pressed & GAMEPAD_DRIGHT) != 0 || (pressed & GAMEPAD_DRIGHT) != 0)
                     right = 1;
             }
         }
         if (start != 0) {
             system = (MISSION_SYSTEM_READER_PC *)MissionSys;
-            system->state = 1;
             system->active_mission = &system->missions[MissionMenuSelectionPc];
+            system->state = 1;
             ResetTimer(&system->timer, 0.0f);
             Cheats_TurnOff(0);
             GameAudio_PlaySfx(0x30, NULL, 0, 0);
@@ -185,12 +187,11 @@ extern "C" {
             if (MissionsAlphaPc > 1.0f)
                 MissionsAlphaPc = 1.0f;
         }
-        system = (MISSION_SYSTEM_READER_PC *)MissionSys;
-        if (system != NULL) {
-            for (index = 0; index < system->count; ++index)
+        if (MissionSys != NULL) {
+            for (index = 0; index < MissionSys->count; ++index)
                 MissionIconScalePc[index] =
                     SeekValF(MissionIconScalePc[index], index == MissionMenuSelectionPc ? 1.0f : 0.0f, 5.0f);
-            MissionIconPositionsPc(system, 0);
+            MissionIconPositionsPc((MISSION_SYSTEM_READER_PC *)MissionSys, 0);
         }
     }
 }
@@ -230,11 +231,10 @@ extern "C" void __cdecl MenuDrawMissions(MENU *menu) {
                      MissionBestTimeScalePc, 0, 0, 255, 0, (u8)(opacity * 128.0f));
         }
     }
-    system = (MISSION_SYSTEM_READER_PC *)MissionSys;
-    for (i = 0; i < system->count; ++i) {
+    for (i = 0; i < MissionSys->count; ++i) {
         opacity = (MissionIconScalePc[i] * 0.3f + 0.7f) * alpha;
         x = MissionIconXPc[i] - 0.0f;
-        absolute_x = (f32)fabs((f64)x);
+        *(i32 *)&absolute_x = *(i32 *)&x & 0x7fffffff; /* NuFabs */
         if (!(absolute_x > 1.0f)) {
             if (absolute_x > 0.5f)
                 opacity *= 1.0f - (absolute_x - 0.5f) * 2.0f;
@@ -243,11 +243,10 @@ extern "C" void __cdecl MenuDrawMissions(MENU *menu) {
                 icon_size =
                     MissionIconBaseSizePc + MissionIconScalePc[i] * (MissionIconSelectedSizePc - MissionIconBaseSizePc);
                 appearance = Game.mission_save.completed[i] != 0 ? 168 : 167;
-                DrawCharIcon(system->missions[i].find_character, MissionIconXPc[i], MissionIconYPc, 0.0f, icon_size,
+                DrawCharIcon(MissionSys->missions[i].find_character, MissionIconXPc[i], MissionIconYPc, 0.0f, icon_size,
                              appearance, opacity, highlight * opacity, 1, NULL);
             }
         }
-        system = (MISSION_SYSTEM_READER_PC *)MissionSys;
     }
     size = MissionMenuPacketPc.active_player[0] ? 1.0f : MissionDropInAlphaPc;
     DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, size, size,

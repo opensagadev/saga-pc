@@ -32,10 +32,10 @@ void __cdecl SpeederChaseA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[6], "clear3_ffield2", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[7], "clear4_ffield1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[8], "clear4_ffield2", 1);
-    SpeederChaseTime1Pc = SpeederChaseTime0Pc = 0.0f;
-    LevSfxFlag[0] = LevSfxFlag[1] = 0;
+    SpeederChaseTime0Pc = SpeederChaseTime1Pc = 0.0f;
+    LevSfxFlag[1] = LevSfxFlag[0] = 0;
     ((u8 *)LevSfxFlag)[8] = 0;
-    SpeederChaseState1Pc = SpeederChaseState0Pc = 0;
+    SpeederChaseState0Pc = SpeederChaseState1Pc = 0;
 }
 
 void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
@@ -49,8 +49,9 @@ void __cdecl SpeederChaseA_Update(WORLDINFO *world) {
     UpdateTrooperCannons(world);
     if (netclient == 0) {
         if (LevAIMessage[4] != NULL) {
-            players_cannot_exit_speeder = 1;
-            if (LevAIMessage[4]->value != 1.0f)
+            if (LevAIMessage[4]->value == 1.0f)
+                players_cannot_exit_speeder = 1;
+            else
                 players_cannot_exit_speeder = 0;
         } else {
             players_cannot_exit_speeder = 0;
@@ -118,7 +119,7 @@ void __cdecl SpeederChaseA_Panel(WORLDINFO *world) {
             if (i >= SpeederChaseNetPacketPc->target_count - SpeederChaseNetPacketPc->killed_count)
                 defeated[i] = 1;
         }
-        count = SpeederChaseNetPacketPc->target_count;
+        DrawMeleeTargetsPc(targets, defeated, SpeederChaseNetPacketPc->target_count);
     } else {
         if (LevAIMessage[0] == NULL || LevAIMessage[1] == NULL || LevAIMessage[3] == NULL ||
             LevAIMessage[3]->value != 1.0f || !(LevAIMessage[0]->value > 0.0f))
@@ -132,6 +133,6 @@ void __cdecl SpeederChaseA_Panel(WORLDINFO *world) {
             if (i >= count - killed)
                 defeated[i] = 1;
         }
+        DrawMeleeTargetsPc(targets, defeated, count);
     }
-    DrawMeleeTargetsPc(targets, defeated, count);
 }
