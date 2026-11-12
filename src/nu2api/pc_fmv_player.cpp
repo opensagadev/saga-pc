@@ -90,14 +90,14 @@ extern "C" void __cdecl FmvDrawPc(PC_FMV_MOVIE_PC *movie) {
     device->methods->set_texture_stage_state(device, 0, 1, 5);
     device->methods->set_texture_stage_state(device, 0, 2, 2);
     device->methods->set_texture_stage_state(device, 0, 3, 0);
-    world.m01 = world.m02 = world.m03 = world.m10 = world.m12 = world.m13 = world.m20 = world.m21 = world.m23 = world.m30 = world.m31 = world.m32 =
-        0.0f;
+    world.m01 = world.m02 = world.m03 = world.m10 = world.m12 = world.m13 = world.m20 = world.m21 = world.m23 =
+        world.m30 = world.m31 = world.m32 = 0.0f;
     world.m00 = world.m11 = world.m22 = world.m33 = 1.0f;
     device->methods->set_transform(device, 256, &world);
     D3DXMatrixOrthoLH((D3DXMATRIX *)&projection, 2.0f, 2.0f, 1.0f, 10.0f);
     device->methods->set_transform(device, 3, &projection);
-    view.m01 = view.m02 = view.m03 = view.m10 = view.m12 = view.m13 = view.m20 = view.m21 = view.m23 = view.m30 = view.m31 = view.m32 =
-        0.0f;
+    view.m01 = view.m02 = view.m03 = view.m10 = view.m12 = view.m13 = view.m20 = view.m21 = view.m23 = view.m30 =
+        view.m31 = view.m32 = 0.0f;
     view.m00 = view.m11 = view.m22 = view.m33 = 1.0f;
     device->methods->set_transform(device, 2, &view);
     RadFmvBlitImagePc(movie->image, movie->x, movie->y, movie->x_scale, movie->y_scale, opacity);
