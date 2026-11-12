@@ -1213,16 +1213,15 @@ extern "C" {
     }
 
     void __cdecl Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target) {
-        GRAPPLE_MOVEMENT_PC *grapple = (GRAPPLE_MOVEMENT_PC *)object->grapple;
         i32 amplitude, angle;
         target->x = 0.0f;
-        target->z = 0.0f;
         target->y = -object->context_hover_target_y;
+        target->z = 0.0f;
         amplitude = ((i32)object->big_jump_animation << 16) / 360;
-        angle = (i32)((f32)amplitude * NuTrigTable[object->field_7a8 >> 1] * grapple->swing_scale);
+        angle = (i32)((f32)amplitude * NuTrigTable[object->field_7a8 >> 1] * GRAPPLE_CURRENT->swing_scale);
         NuVecRotateX(target, target, angle);
         NuVecRotateY(target, target, object->takeover_start_angle);
-        NuVecAdd(target, target, &grapple->shadow_probe_position);
+        NuVecAdd(target, target, &GRAPPLE_CURRENT->shadow_probe_position);
     }
 
     i32 __cdecl Grapple_SetTargetMom(GAMEOBJECT *object) {
