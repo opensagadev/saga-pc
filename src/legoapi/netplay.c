@@ -176,7 +176,7 @@ void __cdecl ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character)
     packet->force_glow_index = -1;
     packet->field_6ec = 0.0f;
     packet->movement_angle_0 = -1;
-    packet->movement_angle_1 = qrand() >= 0x8000 ? 0x4f : 0x26;
+    packet->movement_angle_1 = qrand() < 0x8000 ? 0x26 : 0x4f;
     packet->field_708 = 0.0f;
     for (i = 0; i < 4; ++i)
         packet->random_state[i] = (u8)(qrand() >> 8);
