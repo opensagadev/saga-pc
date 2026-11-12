@@ -1880,16 +1880,15 @@ static void CutSceneTriggerSysUpdatePc(CUT_INSTANCE_LOAD_PC *instance, f32 frame
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_TRIGGER_EVENT *event = &system->events[i];
         u8 value;
-        i32 index;
-        if (event->state_animation == NULL)
-            continue;
-        if (StateAnimEvaluate(event->state_animation, &states->states[i].state_index, &value, frame) == 0)
-            continue;
-        index = (i16)event->index;
-        if (value != 0)
-            states->owner->trigger_states[index].flags |= 1;
-        else
-            states->owner->trigger_states[index].flags &= ~1;
+        if (event->state_animation != NULL) {
+            CUT_LOAD_TRIGGER_STATE_PC *state = &states->states[i];
+            if (StateAnimEvaluate(event->state_animation, &state->state_index, &value, frame) != 0) {
+                if (value != 0)
+                    states->owner->trigger_states[(i16)event->index].flags |= 1;
+                else
+                    states->owner->trigger_states[(i16)event->index].flags &= ~1;
+            }
+        }
     }
 }
 
