@@ -5,7 +5,14 @@ typedef struct CHARCONFIG_PC {
     CHARACTERDATA_PC *character;
     PLAYERCHARACTERCONFIG_PC *runtime;
     GAMECHARACTERLAYER_PC *layer_scratch;
-    u32 flags;
+    union {
+        u32 flags;
+        struct {
+            u32 flags_low : 6;
+            u32 permanent : 1;
+            u32 flags_high : 25;
+        };
+    };
     u8 named_layers;
     u8 unknown_11[3];
     i32 effect_count;
@@ -1781,7 +1788,8 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     charconfig.character_id = (i16)(character_id);
     charconfig.character = character;
     charconfig.runtime = (PLAYERCHARACTERCONFIG_PC *)(character->game_character);
-    charconfig.flags = (permanent & 1) << 6;
+    charconfig.permanent = permanent;
+    charconfig.named_layers = 0;
     charconfig.effect_scratch = effects;
     charconfig.arena = arena;
     charconfig.arena_end = arena_end;
@@ -1789,15 +1797,14 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     memset(effects, 0, sizeof(effects));
     data = charconfig.runtime;
     if (data->layers == NULL && (character->model_flags & 1) == 0 && arena != NULL && arena_end != NULL) {
-        data->layer_count = 0;
         data->layers = layers;
+        charconfig.runtime->layer_count = 0;
         charconfig.flags |= 2;
-    } else if (data->layer_count != 0) {
-        charconfig.named_layers = 1;
-    }
-    if (character->animations == NULL && arena != NULL && arena_end != NULL) {
-        arena->addr = ((arena->addr + 3) & ~3u);
-        character->animations = (CHARACTERANIM_CONFIG_PC *)(arena->void_ptr);
+    } else
+        charconfig.named_layers = data->layer_count > 0;
+    if (charconfig.character->animations == NULL && charconfig.arena != NULL && charconfig.arena_end != NULL) {
+        charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
+        charconfig.character->animations = (CHARACTERANIM_CONFIG_PC *)charconfig.arena->void_ptr;
         charconfig.flags |= 0x20;
     }
     parser = NuFParCreateMem("character", text, 0xffff);
