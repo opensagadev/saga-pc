@@ -589,6 +589,12 @@ void NuKeyboardOwner_PC::RescanDevicesPc() {
 
 /* Add out-of-line definitions to existing pc_input.cpp. The actual global
    nu_keyboard_owner in data.cpp then uses genuine VC8 CRT construction/destruction. */
+void NuKeyboardOwner_PC::ScheduleRescan(f32 interval, i32 repetitions) {
+    unknown_0000 = interval;
+    unknown_0004 = repetitions;
+    unknown_0008 = interval;
+}
+
 NuKeyboardOwner_PC::NuKeyboardOwner_PC() {
     unknown_0000 = 0.0f;
     unknown_0008 = 0.0f;

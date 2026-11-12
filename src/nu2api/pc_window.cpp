@@ -3,12 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-void NuKeyboardOwner_PC::ScheduleRescan(f32 interval, i32 repetitions) {
-    unknown_0000 = interval;
-    unknown_0004 = repetitions;
-    unknown_0008 = interval;
-}
-
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
 }
@@ -34,7 +28,11 @@ extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wpar
         case WM_SIZE: {
             PcClientWidth = LOWORD(lparam);
             PcClientHeight = HIWORD(lparam);
-            RECT rectangle = {0, 0, (LONG)PcClientWidth, (LONG)PcClientHeight};
+            RECT rectangle;
+            rectangle.left = 0;
+            rectangle.right = PcClientWidth;
+            rectangle.bottom = PcClientHeight;
+            rectangle.top = 0;
             AdjustWindowRect(&rectangle, GetWindowLongA(window, GWL_STYLE), FALSE);
             PcWindowOptions.SetWidth(rectangle.right - rectangle.left);
             PcWindowOptions.SetHeight(rectangle.bottom - rectangle.top);
@@ -61,8 +59,8 @@ extern "C" LRESULT __stdcall WindowProcPc(HWND window, UINT message, WPARAM wpar
         case WM_SYSKEYDOWN:
             return 1;
         case WM_MOUSEMOVE:
-            PcMouseX = (f32)((f64)(u32)LOWORD(lparam) / (f64)PcClientWidth);
-            PcMouseY = (f32)((f64)(u32)HIWORD(lparam) / (f64)PcClientHeight);
+            PcMouseX = (f32)LOWORD(lparam) / (f32)PcClientWidth;
+            PcMouseY = (f32)HIWORD(lparam) / (f32)PcClientHeight;
             return 0;
         case WM_DEVICECHANGE:
             if (wparam == 7 || wparam == 0x8000)
