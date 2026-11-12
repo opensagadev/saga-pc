@@ -10760,8 +10760,7 @@ void __cdecl antinodeEditorDrawAntinodes(void) {
  * where the PC reloads them; publication uses the shared selected/nearest slots. */
 void __cdecl antinodeEditor_Enter(void) {
     i32 i;
-    NULISTHDR *list = &aieditor->antinodes;
-    list->tail = list->head = NULL;
+    memset(&aieditor->antinodes, 0, sizeof(aieditor->antinodes));
     for (i = 0; i < 128; ++i)
         NuLinkedListAppend(&aieditor->free_antinodes, &aieditor->antinode_pool[i].link);
     for (i = 0; i < aieditor->ai_system->antinode_count; ++i) {
@@ -12958,8 +12957,8 @@ i32 __cdecl Action_FaceLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
             }
             value = NuStrIStr(params[index], "name");
             if (value != NULL) {
-                processor->action_data_3 = AIPathFindLocator(sys, value + NuStrLen("name") + 1);
                 ++index;
+                processor->action_data_3 = AIPathFindLocator(sys, value + NuStrLen("name") + 1);
             }
         }
     }
@@ -14712,7 +14711,6 @@ void __cdecl locatorEditor_cbAddLocatorsByNameYesNo(eduimenu_s *menu, eduiitem_s
 
 void __cdecl locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    AIEDITOR_RENDER_STATE *state;
     (void)item;
     (void)event;
     if (aieditor->current_locator_set == NULL)
@@ -14722,11 +14720,10 @@ void __cdecl locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *i
         return;
     eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColoursPc, AiEditorSetPendingLocatorNamePc,
                                                  (char *)GizObstacleActionNamePC));
-    state = aieditor;
-    if (state->current_locator != NULL)
-        strcpy(state->pending_locator_name, state->current_locator->name);
+    if (aieditor->current_locator != NULL)
+        strcpy(aieditor->pending_locator_name, aieditor->current_locator->name);
     else
-        strcpy(state->pending_locator_name, state->current_locator_set->name);
+        strcpy(aieditor->pending_locator_name, aieditor->current_locator_set->name);
     NuStrCpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->pending_locator_name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
