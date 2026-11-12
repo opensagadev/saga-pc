@@ -2191,7 +2191,7 @@ i32 __cdecl CanWearHatsInFreePlay(i32 id) {
     flags = CDataList[id].model_flags;
     if ((flags & 0x1000010) == 0x1000010)
         return 0;
-    if ((flags & 0x40088) == 0)
+    if ((flags & 0x40000) == 0 && (flags & 0x88) == 0)
         return 0;
     return 1;
 }
