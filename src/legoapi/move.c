@@ -7892,7 +7892,7 @@ void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
         ShootCode(object, action_pressed, special_pressed, 0, 1, 0);
     else if (object->id == (u16)id_WATTO)
         ZapCode(object, action_pressed, 0);
-    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+    if ((object->character_data->game_character->flags_094 & 0x80) != 0)
         CommunicateCode(object, special_pressed, 0);
     BeastStartFallCodePc(object);
     HeadMovement(object);
@@ -8072,7 +8072,7 @@ zap:
             }
         }
     }
-    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+    if ((object->character_data->game_character->flags_094 & 0x80) != 0)
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
     if ((object->character_data->model_flags & 0x20) != 0) {
         GizPanel_MoveCode(WORLD, object, (GAMEPAD_ACTION | GAMEPAD_SPECIAL) & object->pad->buttons_pressed);
