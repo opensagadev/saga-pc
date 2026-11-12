@@ -258,49 +258,57 @@ void __cdecl RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CO
     }
 }
 
+/* Aligned, cleared allocation from the gizmo buffer that reports an exhausted or missing buffer. */
+// MATCH-EXCEPTION: retail inlines this checked allocator with no out-of-line copy; a static inline function
+// leaves a COMDAT in the object, so it is written as a macro.
+#define GIZMO_BUFFER_ALLOC_CHECKED(result, type, buffer, end, size)                                                    \
+    do {                                                                                                               \
+        void *allocation_ = NULL;                                                                                      \
+        if ((buffer) != NULL && (end) != NULL) {                                                                       \
+            if ((buffer)->addr + (size) < (end)->addr) {                                                               \
+                allocation_ = (void *)(((buffer)->addr + 15) & ~15u);                                                  \
+                (buffer)->addr = (((buffer)->addr + 15) & ~15u) + (size);                                              \
+                memset(allocation_, 0, (size));                                                                        \
+            } else {                                                                                                   \
+                GizmoDiagnosticPc();                                                                                   \
+            }                                                                                                          \
+        } else {                                                                                                       \
+            GizmoDiagnosticPc();                                                                                       \
+        }                                                                                                              \
+        (result) = (type)allocation_;                                                                                  \
+    } while (0)
+
 void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     GIZMOSYS_PC *system = NULL;
     GIZMOSET_PC *set;
     GIZMOTYPE_PC *type;
     i32 index;
 
-    if (gizmotypes == NULL) {
-        return NULL;
-    }
-    if (buffer != NULL && end != NULL) {
-        if (buffer->addr + sizeof(GIZMOSYS_PC) < end->addr) {
-            system = (GIZMOSYS_PC *)((buffer->addr + 15) & ~15u);
-            buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(GIZMOSYS_PC);
-            memset(system, 0, sizeof(GIZMOSYS_PC));
-        } else {
-            GizmoDiagnosticPc();
-        }
-    } else {
-        GizmoDiagnosticPc();
-    }
-    if (system == NULL) {
-        return NULL;
-    }
-    system->sets =
-        (GIZMOSET_PC *)GizmoBufferAlloc(buffer, end, ((GIZMOTYPES_PC *)gizmotypes)->count * sizeof(GIZMOSET_PC));
-    if (system->sets != NULL) {
-        set = system->sets;
-        type = ((GIZMOTYPES_PC *)gizmotypes)->types;
-        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
-            set->type = type;
-            if (type->fns.get_max_gizmos_fn != NULL) {
-                set->max_count = type->fns.get_max_gizmos_fn(world);
+    if (gizmotypes != NULL) {
+        GIZMO_BUFFER_ALLOC_CHECKED(system, GIZMOSYS_PC *, buffer, end, sizeof(GIZMOSYS_PC));
+        if (system != NULL) {
+            system->sets = (GIZMOSET_PC *)GizmoBufferAlloc(buffer, end,
+                                                           ((GIZMOTYPES_PC *)gizmotypes)->count * sizeof(GIZMOSET_PC));
+            if (system->sets != NULL) {
+                set = system->sets;
+                type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+                for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
+                    set->type = type;
+                    if (type->fns.get_max_gizmos_fn != NULL) {
+                        set->max_count = type->fns.get_max_gizmos_fn(world);
+                    }
+                    if (set->max_count != 0) {
+                        set->gizmos = (GIZMO_PC *)GizmoBufferAlloc(buffer, end, set->max_count * sizeof(GIZMO_PC));
+                    }
+                    if (type->fns.reserve_buffer_space_fn != NULL) {
+                        set->data = type->fns.reserve_buffer_space_fn(world);
+                    }
+                }
             }
-            if (set->max_count != 0) {
-                set->gizmos = (GIZMO_PC *)GizmoBufferAlloc(buffer, end, set->max_count * sizeof(GIZMO_PC));
-            }
-            if (type->fns.reserve_buffer_space_fn != NULL) {
-                set->data = type->fns.reserve_buffer_space_fn(world);
+            if (gizmoerrorlogsize != 0) {
+                system->error_log = (char *)GizmoBufferAlloc(buffer, end, gizmoerrorlogsize);
             }
         }
-    }
-    if (gizmoerrorlogsize != 0) {
-        system->error_log = (char *)GizmoBufferAlloc(buffer, end, gizmoerrorlogsize);
     }
     return system;
 }
