@@ -4061,7 +4061,7 @@ static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
             (RTL_FOG_PC(curr_set)[i].position.x - position->x) * (RTL_FOG_PC(curr_set)[i].position.x - position->x) +
             (RTL_FOG_PC(curr_set)[i].position.y - position->y) * (RTL_FOG_PC(curr_set)[i].position.y - position->y) +
             (RTL_FOG_PC(curr_set)[i].position.z - position->z) * (RTL_FOG_PC(curr_set)[i].position.z - position->z);
-        if (RTL_FOG_PC(curr_set)[i].radius * RTL_FOG_PC(curr_set)[i].radius > distance && distance < nearest_distance) {
+        if (distance < RTL_FOG_PC(curr_set)[i].radius * RTL_FOG_PC(curr_set)[i].radius && distance < nearest_distance) {
             nearest_distance = distance;
             nearest = i;
         }
