@@ -1433,23 +1433,19 @@ i32 __cdecl BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
 /* 004c2b00..004c31fd. Right moves IDs toward index zero, interpolates slots
  * 1..6 toward their previous shelf slot, and uses the PC scale2 owner. */
 i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
-    i32 angle;
+    i32 angle, i;
     f32 phase, reverse_phase, t;
     if (ShopSlideTimerPc <= 0.0f) {
-        ids[0] = ids[1];
-        ids[1] = ids[2];
-        ids[2] = ids[3];
-        ids[3] = ids[4];
-        ids[4] = ids[5];
-        ids[5] = ids[6];
+        for (i = 0; i < 6; ++i)
+            ids[i] = ids[i + 1];
         ++ids[6];
         if (ids[6] >= count)
             ids[6] = 0;
         ShopSlideTimerPc = 0.0f;
-        SHOP_RESET_SHELF_POSITIONS()
         scale4 = scalenorm;
         scale3 = scalepicked;
         scale2 = scalenorm;
+        SHOP_RESET_SHELF_POSITIONS()
         subpush[0] = SubNormCharPush;
         subpush[1] = SubBigCharPush;
         subpush[2] = SubNormCharPush;
@@ -1489,23 +1485,19 @@ i32 __cdecl MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
 /* 004c3200..004c38fc. Preserve the descending PC interpolation order and
  * the distinct scale4 owner, including when positions aliases SubShelfPos. */
 i32 __cdecl MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
-    i32 angle;
+    i32 angle, i;
     f32 phase, reverse_phase, t;
     if (ShopSlideTimerPc <= 0.0f) {
-        ids[6] = ids[5];
-        ids[5] = ids[4];
-        ids[4] = ids[3];
-        ids[3] = ids[2];
-        ids[2] = ids[1];
-        ids[1] = ids[0];
+        for (i = 6; i > 0; --i)
+            ids[i] = ids[i - 1];
         --ids[0];
         if (ids[0] < 0)
             ids[0] = count - 1;
         ShopSlideTimerPc = 0.0f;
-        SHOP_RESET_SHELF_POSITIONS()
         scale4 = scalenorm;
         scale3 = scalepicked;
         scale2 = scalenorm;
+        SHOP_RESET_SHELF_POSITIONS()
         subpush[0] = SubNormCharPush;
         subpush[1] = SubBigCharPush;
         subpush[2] = SubNormCharPush;
