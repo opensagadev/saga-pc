@@ -1469,7 +1469,6 @@ extern "C" {
 
     BOLT_PC *__cdecl FindIncomingBolt(GAMEOBJECT *object, i32 check_owner, i32 mark_hit) {
         f32 radius;
-        f32 radius_squared;
         f32 nearest;
         BOLT_PC *result;
         BOLT_PC *bolt;
@@ -1480,7 +1479,7 @@ extern "C" {
         radius =
             object->bounds_half_height > object->bounds_radius ? object->bounds_half_height : object->bounds_radius;
         result = NULL;
-        radius_squared = radius * radius;
+        radius = radius * radius;
         nearest = 100000000.0f;
         bolt = Bolt;
         for (index = 0; index < 32; ++index, ++bolt) {
@@ -1494,8 +1493,7 @@ extern "C" {
             distance = NuVecDistSqr(&bolt->position, &object->collision_position, NULL);
             limit = half_speed * half_speed;
             if (distance < limit &&
-                LineIntersectSphere(&bolt->position, &bolt->direction, &object->collision_position, radius_squared,
-                                    NULL) &&
+                LineIntersectSphere(&bolt->position, &bolt->direction, &object->collision_position, radius, NULL) &&
                 distance < nearest) {
                 nearest = distance;
                 result = bolt;
@@ -1503,9 +1501,8 @@ extern "C" {
         }
         if (result != NULL && mark_hit != 0) {
             radius = (f32)((f64)object->bounds_radius * 0.75);
-            radius_squared = radius * radius;
-            if (LineIntersectSphereXZPc(&result->position, &result->direction, &object->collision_position,
-                                        radius_squared))
+            radius = radius * radius;
+            if (LineIntersectSphereXZPc(&result->position, &result->direction, &object->collision_position, radius))
                 object->flags_e20 |= 0x2000;
         }
         return result;
