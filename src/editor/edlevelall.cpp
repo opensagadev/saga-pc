@@ -2332,15 +2332,18 @@ void __cdecl EdDrawLineSphere(NUVEC *center, f32 radius, f32 scale, i32 colour) 
 }
 
 void __cdecl EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
+    // MATCH-EXCEPTION: a copy of colour frees its parameter slot, which retail
+    // reuses for the vertex temporaries; no other source form found.
+    i32 vertex_colour = colour;
     if (NewPrim == 1) {
         NuPrim3DBegin(0xc, 5, EdDrawMtl[NewMtl], NewMtx);
         NewPrim = 3;
     }
-    EdDrawSetVertexColour(colour);
+    EdDrawSetVertexColour(vertex_colour);
     EDDRAW_ADD_XYZ(a->x, a->y, a->z);
-    EdDrawSetVertexColour(colour);
+    EdDrawSetVertexColour(vertex_colour);
     EDDRAW_ADD_XYZ(b->x, b->y, b->z);
-    EdDrawSetVertexColour(colour);
+    EdDrawSetVertexColour(vertex_colour);
     EDDRAW_ADD_XYZ(c->x, c->y, c->z);
 }
 
