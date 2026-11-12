@@ -42,11 +42,9 @@ HRESULT WavReader::Close(void) {
 i32 WavReader::SeekTime(f32 time) {
     i32 sample = (i32)((f32)(format.nAvgBytesPerSec / format.nBlockAlign) * time);
     current_sample = sample;
-    i32 limit = end_sample < sample ? end_sample : sample;
-    if (first_sample > limit)
-        current_sample = first_sample;
-    else
-        current_sample = end_sample < sample ? end_sample : sample;
+    current_sample = first_sample > (end_sample < current_sample ? end_sample : current_sample)
+                         ? first_sample
+                         : (end_sample < current_sample ? end_sample : current_sample);
     return current_sample * format.nBlockAlign;
 }
 u32 WavReader::FourCcPc(const char *text) {
@@ -57,8 +55,8 @@ i32 WavReader::FindChunkPc(HANDLE input, const char *name, PC_WAVE_CHUNK_PC *chu
     DWORD bytes;
     LARGE_INTEGER move, position;
     while (ReadFile(input, chunk, 8, &bytes, NULL) && bytes == 8) {
-        move.QuadPart = 0;
         if (chunk->kind == wanted) {
+            move.QuadPart = 0;
             SetFilePointerEx(input, move, &position, FILE_CURRENT);
             chunk->offset = (i32)(position.LowPart - (u32)base_position);
             return 1;
@@ -133,11 +131,9 @@ fail:
 }
 HRESULT WavReader::Read(void *output, u32 requested, u32 *read_count) {
     if (file != NULL) {
-        u32 frames = requested / format.nBlockAlign;
-        i32 remaining = end_sample - current_sample;
-        i32 count = (i32)frames;
-        if (count >= remaining)
-            count = remaining;
+        i32 count = requested / format.nBlockAlign;
+        if (count >= end_sample - current_sample)
+            count = end_sample - current_sample;
         i32 amount = count * format.nBlockAlign;
         i32 offset = current_sample * format.nBlockAlign;
         if ((u32)amount != requested) {
