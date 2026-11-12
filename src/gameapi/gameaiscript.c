@@ -11084,14 +11084,14 @@ i32 __cdecl Action_SetLayer(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPAC
         value = NuStrIStr(params[index], (char *)AISetLayerKeywordPc);
         if (value != NULL) {
             layer = (i32)AIParamToFloat(process, value + 10);
-            if ((u32)(layer - 1) <= 31)
+            if (layer >= 1 && layer <= 32)
                 set_layers |= 1u << (layer - 1);
             continue;
         }
         value = NuStrIStr(params[index], (char *)AIClearLayerKeywordPc);
         if (value != NULL) {
             layer = (i32)AIParamToFloat(process, value + 12);
-            if ((u32)(layer - 1) <= 31)
+            if (layer >= 1 && layer <= 32)
                 clear_layers |= 1u << (layer - 1);
         }
     }
