@@ -93,14 +93,16 @@ extern "C" i32 CreateWindowPc(HINSTANCE instance, i32 show, u16 icon_resource) {
         return 0;
     }
     DWORD style = PCDeviceBackend.parameters.windowed == 1 ? 0xcf0000 : 0x90000000;
+    i32 width = PcWindowOptions.client_width;
+    i32 height = PcWindowOptions.client_height;
     i32 x = PcWindowOptions.window_x;
     i32 y = PcWindowOptions.window_y;
     if (x < 0)
-        x = (i32)((u32)(PCDeviceBackend.desktop_mode.width - PcWindowOptions.client_width) >> 1);
+        x = (i32)((u32)(PCDeviceBackend.desktop_mode.width - width) >> 1);
     if (y < 0)
-        y = (i32)((u32)(PCDeviceBackend.desktop_mode.height - PcWindowOptions.client_height) >> 1);
-    HWND window = CreateWindowExA(0, "TTalesWindow", NuHwDefaultParameterPc, style, x, y, PcWindowOptions.client_width,
-                                  PcWindowOptions.client_height, NULL, NULL, instance, NULL);
+        y = (i32)((u32)(PCDeviceBackend.desktop_mode.height - height) >> 1);
+    HWND window = CreateWindowExA(0, "TTalesWindow", NuHwDefaultParameterPc, style, x, y, width, height, NULL, NULL,
+                                  instance, NULL);
     if (!window) {
         MessageBoxA(window, "Window Creation Failed!", "Error!", 0x30);
         return 0;
