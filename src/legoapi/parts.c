@@ -4744,15 +4744,16 @@ void __cdecl DebrisSetup(VARIPTR *buffer, VARIPTR buffer_end, char *texture_name
 
 PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range) {
     f32 radius_squared = radius * radius;
-    f32 nearest_distance = range > 0.0f ? range : 100.0f;
     PART_PC *nearest = NULL;
     PART_PC *part = Part;
+    f32 nearest_distance = range > 0.0f ? range : 100.0f;
+    f32 distance;
     i32 i;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
         if ((part->active & 1) == 0 || part->owner == owner || (part->flags & flags) != flags)
             continue;
         if (range > 0.0f) {
-            f32 distance = NuVecDistSqr(&part->position, position, NULL);
+            distance = NuVecDistSqr(&part->position, position, NULL);
             if (distance < nearest_distance) {
                 nearest_distance = distance;
                 nearest = part;
@@ -4763,7 +4764,6 @@ PART_PC *__cdecl FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 
                 NUVEC direction;
                 f32 reciprocal = 1.0f / speed;
                 f32 half_speed;
-                f32 distance;
                 f32 limit;
                 NuVecScale(&direction, &part->velocity, reciprocal);
                 half_speed = (f32)((f64)speed * 0.5);
