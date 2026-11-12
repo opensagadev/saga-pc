@@ -608,7 +608,7 @@ static void AnimationWeaponEffectPc(GAMEOBJECT *object) {
 void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
-    i16 weapon;
+    i32 weapon;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else {
@@ -617,13 +617,10 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
             JumpAnimCode(object);
         else if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
-        else if (object->character_context == 27 && (object->flags_e20 & 0x580) == 0) {
-            if (object->character_model->action_animations[39] != NULL)
-                object->anim_packet.requested_animation = 39;
-            else
-                object->anim_packet.requested_animation = 11;
-        } else if (object->character_context == 27 || object->character_context == 29 ||
-                   object->character_context == 18 || object->character_context == 8) {
+        else if (object->character_context == 27 && (object->flags_e20 & 0x80) == 0 && (object->flags_e20 & 0x500) == 0)
+            object->anim_packet.requested_animation = object->character_model->action_animations[39] != NULL ? 39 : 11;
+        else if (object->character_context == 27 || object->character_context == 29 ||
+                 object->character_context == 18 || object->character_context == 8) {
             if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                 object->character_model->action_animations[39] != NULL)
                 object->anim_packet.requested_animation = 39;
@@ -643,10 +640,14 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
         }
         if (object->character_data->game_character->hover_fall_mode == 0 &&
             (object->character_data->model_flags & 0x80) != 0) {
-            if (object->anim_packet.requested_animation == 23)
-                object->anim_packet.requested_animation = 115;
-            else if (object->anim_packet.requested_animation == 64)
-                object->anim_packet.requested_animation = 114;
+            switch (object->anim_packet.requested_animation) {
+                case 23:
+                    object->anim_packet.requested_animation = 115;
+                    break;
+                case 64:
+                    object->anim_packet.requested_animation = 114;
+                    break;
+            }
         }
     }
     UpdateCharacterIdle(object);
