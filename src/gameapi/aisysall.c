@@ -11506,7 +11506,7 @@ static void __cdecl AiEditorSetTriggerAreaPc(eduimenu_s *menu, eduiitem_s *item,
 void __cdecl creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Trigger Area");
     EDAIAREA_s *area;
-    i32 index = 0;
+    i32 index;
     i32 selected;
     (void)item;
     (void)event;
@@ -11518,8 +11518,9 @@ void __cdecl creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *
     if (selected)
         menu->selected = edui_last_item;
     eduiMenuAttach(parent, menu);
+    index = 0;
     for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
-         area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link), ++index) {
+         ++index, area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
         selected = aieditor->selected_creature->trigger_area == area;
         eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
                                                   AiEditorSetTriggerAreaPc, area->name));
