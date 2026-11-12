@@ -20,14 +20,22 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustumPc(NUCAMERA *camera, const
     f32 fov = ((f64)camera->fov * 180.0) / 3.1415927410125732;
     NuMtxSetPerspectiveD3D(&PostShadowProjectionPc, fov, aspect, camera->near_clip, camera->far_clip);
     NuMtxInv(&PostShadowViewPc, &camera->mtx);
-    camera_position_pc.x = camera->mtx.m30;
-    camera_position_pc.y = camera->mtx.m31;
-    camera_position_pc.z = camera->mtx.m32;
-    camera_position_pc.w = 1.0f;
-    camera_forward_pc.x = camera->mtx.m20;
-    camera_forward_pc.y = camera->mtx.m21;
-    camera_forward_pc.z = camera->mtx.m22;
-    camera_forward_pc.w = 1.0f;
+    // MATCH-EXCEPTION: retail reads each row into temporaries before storing, as an inlined
+    // vec4 setter would (it also keeps that setter's redundant w stores, which a helper here
+    // would reproduce but only with an out-of-line copy retail does not have).
+    {
+        f32 x = camera->mtx.m30, y = camera->mtx.m31, z = camera->mtx.m32;
+        camera_position_pc.x = x;
+        camera_position_pc.y = y;
+        camera_position_pc.z = z;
+        camera_position_pc.w = 1.0f;
+    }
+    {
+        f32 x = camera->mtx.m20, y = camera->mtx.m21, z = camera->mtx.m22;
+        camera_forward_pc.x = x;
+        camera_forward_pc.y = y;
+        camera_forward_pc.z = z;
+    }
     i32 set_count = split_count - 1;
     active_render_set_count = set_count;
     camera_forward_pc.w = 0.0f;
