@@ -136,69 +136,56 @@ extern "C" void __cdecl DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i
 extern "C" i32 __cdecl Grapples_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     i32 version, index;
-    u16 rotation;
-    u8 value;
     i32 length;
-    NUSPECIALHANDLE *special;
-    f32 field;
     char name[256];
     (void)unused;
-    if (world->grapple_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->grapple_count = EdFileReadInt();
-    for (index = 0; index < world->grapple_count; ++index) {
-        EdFileRead(((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].name, 16);
-        EdFileReadNuVec(&((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].file_position);
-        if (version >= 2) {
-            rotation = EdFileReadUnsignedShort();
-            world->grapples[index].y_rotation = rotation;
-        } else {
-            EdFileReadUnsignedShort();
-            rotation = EdFileReadUnsignedShort();
-            world->grapples[index].y_rotation = rotation;
-        }
-        if (version >= 3)
-            world->grapples[index].field_4c = EdFileReadFloat();
-        else
-            world->grapples[index].field_4c = 1.0f;
-        if (version >= 4) {
-            value = (u8)EdFileReadChar();
-            world->grapples[index].flags =
-                (u8)(world->grapples[index].flags ^ (((value != 0) << 2) ^ world->grapples[index].flags) & 4);
-            field = EdFileReadFloat();
-            world->grapples[index].rope_length = field;
-        } else {
-            world->grapples[index].flags &= ~4u;
-            world->grapples[index].rope_length = 2.0f;
-        }
-        if (version >= 5) {
-            rotation = EdFileReadUnsignedShort();
-            world->grapples[index].x_rotation = rotation;
-        } else {
-            world->grapples[index].x_rotation = 0;
-        }
-        if (version >= 6) {
-            value = (u8)EdFileReadChar();
-            world->grapples[index].flags =
-                (u8)(world->grapples[index].flags ^ (((value != 0) << 3) ^ world->grapples[index].flags) & 8);
-        } else {
-            world->grapples[index].flags &= ~8u;
-        }
-        special = &((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special;
-        special->scene = NULL;
-        special->special = NULL;
-        special->display_special = NULL;
-        if (version >= 7) {
-            length = EdFileReadUnsignedChar();
-            if (length > 0) {
-                EdFileRead(name, length);
-                name[length] = '\0';
-                NuSpecialFind(world->current_gscn, &((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special, name, 1);
+    if (world->grapple_count == 0) {
+        version = EdFileReadInt();
+        world->grapple_count = EdFileReadInt();
+        for (index = 0; index < world->grapple_count; ++index) {
+            EdFileRead(((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].name, 16);
+            EdFileReadNuVec(&((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].file_position);
+            if (version >= 2) {
+                world->grapples[index].y_rotation = EdFileReadUnsignedShort();
+            } else {
+                EdFileReadUnsignedShort();
+                world->grapples[index].y_rotation = EdFileReadUnsignedShort();
+            }
+            if (version >= 3)
+                world->grapples[index].field_4c = EdFileReadFloat();
+            else
+                world->grapples[index].field_4c = 1.0f;
+            if (version >= 4) {
+                ((GRAPPLE_MOTION_PC *)world->grapples)[index].disabled = EdFileReadChar() != 0;
+                world->grapples[index].rope_length = EdFileReadFloat();
+            } else {
+                world->grapples[index].flags &= ~4u;
+                world->grapples[index].rope_length = 2.0f;
+            }
+            if (version >= 5) {
+                world->grapples[index].x_rotation = EdFileReadUnsignedShort();
+            } else {
+                world->grapples[index].x_rotation = 0;
+            }
+            if (version >= 6) {
+                ((GRAPPLE_MOTION_PC *)world->grapples)[index].reversed = EdFileReadChar() != 0;
+            } else {
+                world->grapples[index].flags &= ~8u;
+            }
+            memset(&((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special, 0, sizeof(NUSPECIALHANDLE));
+            if (version >= 7) {
+                length = EdFileReadUnsignedChar();
+                if (length > 0) {
+                    EdFileRead(name, length);
+                    name[length] = '\0';
+                    NuSpecialFind(world->current_gscn, &((GRAPPLE_LOAD_EXTRA_PC *)world->grapples)[index].special, name,
+                                  1);
+                }
             }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 extern "C" {
 
