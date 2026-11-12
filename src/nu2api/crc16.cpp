@@ -17,17 +17,15 @@ CRC16::CRC16() {
     }
 }
 u32 CRC16::hash(const unsigned char *data, i32 length) {
-    u32 crc = 0xffff;
-    for (; length > 0; --length, ++data)
-        crc = ((crc << 8) ^ CRC16TablePC[((crc >> 8) ^ *data) & 0xff]) & 0xffff;
+    i32 crc = 0xffff;
+    for (i32 i = 0; i < length; ++i)
+        crc = ((crc << 8) ^ CRC16TablePC[((crc >> 8) ^ *data++) & 0xff]) & 0xffff;
     return crc;
 }
 u32 CRC16::hashInverse(const unsigned char *data, i32 length) {
-    const unsigned char *cursor = data + length;
-    u32 crc = 0xffff;
-    for (; length > 0; --length) {
-        --cursor;
-        crc = ((crc << 8) ^ CRC16TablePC[((crc >> 8) ^ *cursor) & 0xff]) & 0xffff;
-    }
+    data += length;
+    i32 crc = 0xffff;
+    for (i32 i = 0; i < length; ++i)
+        crc = ((crc << 8) ^ CRC16TablePC[((crc >> 8) ^ *--data) & 0xff]) & 0xffff;
     return crc;
 }
