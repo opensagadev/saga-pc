@@ -321,38 +321,34 @@ extern "C" {
         }
 
         i32 slot;
-        for (slot = 0; slot < 6 && CS_CutInfo->sfx[slot].id != -1; ++slot) {
+        for (slot = 0; slot < 6; ++slot) {
+            if (CS_CutInfo->sfx[slot].id == -1)
+                break;
         }
-        if (slot == 6) {
+        if (slot >= 6) {
             return;
         }
 
-        CUT_LOAD_SFX_PC *sfx = &CS_CutInfo->sfx[slot];
-        sfx->id = static_cast<i16>(sfx_id);
-        sfx->flags &= ~1U;
+        CS_CutInfo->sfx[slot].flags &= ~1U;
+        CS_CutInfo->sfx[slot].id = static_cast<i16>(sfx_id);
         while (NuFParGetWord(fp) != 0) {
             if (NuStrICmp(fp->word_buffer_ptr, "frame") == 0) {
-                sfx->frame = NuFParGetFloat(fp);
-                if (sfx->frame < 1.0f) {
-                    sfx->frame = 1.0f;
+                f32 frame = NuFParGetFloat(fp);
+                CS_CutInfo->sfx[slot].frame = frame;
+                if (frame < 1.0f) {
+                    CS_CutInfo->sfx[slot].frame = 1.0f;
                 }
             } else if (NuStrICmp(fp->word_buffer_ptr, "pos") == 0) {
-                f32 value = NuFParGetFloat(fp);
-                if (value == 0.0f) {
-                    continue;
+                if (NuFParGetFloat(fp) != 0.0f) {
+                    CS_CutInfo->sfx[slot].position.x = NuAToF(fp->word_buffer_ptr);
+                    if (NuFParGetFloat(fp) != 0.0f) {
+                        CS_CutInfo->sfx[slot].position.y = NuAToF(fp->word_buffer_ptr);
+                        if (NuFParGetFloat(fp) != 0.0f) {
+                            CS_CutInfo->sfx[slot].position.z = NuAToF(fp->word_buffer_ptr);
+                            CS_CutInfo->sfx[slot].flags |= 1;
+                        }
+                    }
                 }
-                sfx->position.x = NuAToF(fp->word_buffer_ptr);
-                value = NuFParGetFloat(fp);
-                if (value == 0.0f) {
-                    continue;
-                }
-                sfx->position.y = NuAToF(fp->word_buffer_ptr);
-                value = NuFParGetFloat(fp);
-                if (value == 0.0f) {
-                    continue;
-                }
-                sfx->position.z = NuAToF(fp->word_buffer_ptr);
-                sfx->flags |= 1;
             }
         }
     }
