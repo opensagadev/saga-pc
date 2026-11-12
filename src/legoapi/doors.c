@@ -641,54 +641,42 @@ void __cdecl Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered
         NuStrCpy(DoorExitNamePc, door->name);
         if (door->cutscene == NULL || CutScene_HasPlayed((CUTINFO *)door->cutscene) != 0) {
             door_cutscenesnap = 0;
-            goto choose_destination;
+            cutscene = NULL;
+        } else {
+            cutscene = door->cutscene;
         }
-        cutscene = door->cutscene;
-        if (cutscene == NULL)
-            goto choose_destination;
-        if (door_cutscenesnap == 0)
-            goto start_cutscene;
-        NewCutScene((CUTINFO *)cutscene, WorldInfo_CurrentlyActive()->cutscene_sys, NULL, 0);
-        goto set_camera;
-    choose_destination:
-        if (InStory() != 0) {
-            destination = door->level;
-            if (destination != world->level_idx)
-                goto change_level;
-        }
-        if (InStory() == 0) {
-            destination = door->freeplay_level;
-            if (destination != world->level_idx)
-                goto change_level;
-        }
-        StartDoorPositions();
-        NewGameMode();
-        for (index = 0; index < 8; ++index) {
-            GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-            if (object != NULL) {
-                PlayerProgress[index].field_b = object->jump_variant_state == 1;
-                PlayerProgress[index].field_9 = object->dead != 0 ? 4 : object->saved_hitpoints;
-            }
-        }
-        gone_through_door_to_new_mode = 1;
-        goto set_camera;
-    change_level:
-        NewLData = &LDataList[destination];
-        if (FreePlay != 0 && (NewLData->flags & 0x80) != 0) {
-            NewLData = Area_FindStatusLevel(WORLD->area, NULL);
-            if (NewLData != NULL) {
-                if (ChallengeMode != 0)
-                    ChallengeMode = 4;
+        if (cutscene != NULL) {
+            if (door_cutscenesnap != 0) {
+                NewCutScene((CUTINFO *)cutscene, WorldInfo_CurrentlyActive()->cutscene_sys, NULL, 0);
             } else {
-                NewLData = &LDataList[destination];
+                newmode_cutinfo = cutscene;
+                StartDoorPositions();
+                NewGameMode();
             }
+        } else if ((InStory() != 0 && (destination = door->level) != world->level_idx) ||
+                   (InStory() == 0 && (destination = door->freeplay_level) != world->level_idx)) {
+            NewLData = &LDataList[destination];
+            if (FreePlay != 0 && (NewLData->flags & 0x80) != 0) {
+                NewLData = Area_FindStatusLevel(WORLD->area, NULL);
+                if (NewLData != NULL) {
+                    if (ChallengeMode != 0)
+                        ChallengeMode = 4;
+                } else {
+                    NewLData = &LDataList[destination];
+                }
+            }
+        } else {
+            StartDoorPositions();
+            NewGameMode();
+            for (index = 0; index < 8; ++index) {
+                GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+                if (object != NULL) {
+                    PlayerProgress[index].field_b = object->jump_variant_state == 1;
+                    PlayerProgress[index].field_9 = object->dead != 0 ? 4 : object->saved_hitpoints;
+                }
+            }
+            gone_through_door_to_new_mode = 1;
         }
-        goto set_camera;
-    start_cutscene:
-        newmode_cutinfo = cutscene;
-        StartDoorPositions();
-        NewGameMode();
-    set_camera:
         Door_NextSock = (i8)door->next_sock;
         Door_SetCutCam(door);
     }
