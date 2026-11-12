@@ -4,7 +4,8 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
     if (descriptor == NULL)
         return;
     PC_INPUT_CONFIG_PC *config = NULL;
-    for (i32 index = 0; index < 15; ++index) {
+    /* Retail scans 24 table slots although the static table holds 15 configs. */
+    for (u32 index = 0; index < 24; ++index) {
         if (PcStaticInputConfigs[index].product_id == (u32)product_id) {
             config = &PcStaticInputConfigs[index];
             break;
@@ -14,8 +15,9 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
         return;
     for (i32 index = 0; index < 4; ++index) {
         config->axes[index][0] = 10;
-        config->axes[index][1] = (u8)*descriptor++;
-        config->axes[index][2] = (u8)*descriptor++;
+        config->axes[index][1] = (u8)descriptor[0];
+        config->axes[index][2] = (u8)descriptor[1];
+        descriptor += 2;
     }
     for (i32 index = 0; index < 4; ++index) {
         config->unknown_axes[index][0] = 0;
@@ -23,7 +25,7 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
         config->unknown_axes[index][2] = 0;
     }
     for (i32 index = 0; index < 16; ++index) {
-        if (*descriptor != 0xffff) {
+        if ((i16)*descriptor != -1) {
             config->buttons[index][0] = 7;
             config->buttons[index][1] = (u8)*descriptor;
         } else {
@@ -32,10 +34,9 @@ extern "C" void SetPadDescriptorPc(i32 product_id, const u16 *descriptor) {
         }
         ++descriptor;
     }
-    while (*descriptor != 0xffff) {
-        i16 index = (i16)descriptor[0];
-        config->buttons[index][0] = (u8)descriptor[1];
-        config->buttons[index][1] = (u8)descriptor[2];
+    while ((i16)*descriptor != -1) {
+        config->buttons[(i16)descriptor[0]][0] = (u8)descriptor[1];
+        config->buttons[(i16)descriptor[0]][1] = (u8)descriptor[2];
         descriptor += 3;
     }
 }
@@ -49,7 +50,7 @@ extern "C" void InitPadDescriptorsPc(const u16 *first, const u16 *second, const 
     PcInputActionOrder[0] = -1;
     if (order != NULL) {
         i32 index = 0;
-        i8 value;
+        i32 value;
         do {
             value = *order++;
             PcInputActionOrder[index++] = value;
