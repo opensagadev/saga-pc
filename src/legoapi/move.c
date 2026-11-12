@@ -5839,7 +5839,10 @@ static __declspec(noinline) void PodBoostCodePc(GAMEOBJECT *object) {
         object->collision_min.y - object->floor_height < PodBoostHeightPc) {
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
         NewRumble(object->pad->bound_pad, 0.5f, 0);
-        object->current_speed_mul = WORLD->area == PODRACE_ADATA ? PodRaceBoostSpeedPc : PodSprintBoostSpeedPc;
+        if (WORLD->area == PODRACE_ADATA)
+            object->current_speed_mul = PodRaceBoostSpeedPc;
+        else
+            object->current_speed_mul = PodSprintBoostSpeedPc;
         pod->boost_timer = 1.0f;
         if ((object->flags_e20 & 1) == 0) {
             PlaySfx((char *)PodBoosterSoundNamePc, &object->collision_position);
