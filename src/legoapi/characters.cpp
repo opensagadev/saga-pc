@@ -390,19 +390,6 @@ extern "C" void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
 
 STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
 
-extern "C" i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object) {
-    switch (object->saved_hitpoints) {
-        case 1:
-            return 76;
-        case 2:
-            return 75;
-        case 3:
-            return 40;
-        default:
-            return 5;
-    }
-}
-
 STATIC_ASSERT(sizeof(PLAYERCHARACTERCONFIG_PC) == 0x120);
 STATIC_ASSERT(sizeof(CHARACTERDATA_PC) == 0x4c);
 STATIC_ASSERT(offsetof(CHARACTERDATA_PC, name_id) == 0);
