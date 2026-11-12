@@ -5887,7 +5887,8 @@ void SplineObject::ReverseKnots() {
 void SplineObject::GenLinearPoints() {
     points.Clear();
     __declspec(align(16)) VuVec point;
-    for (SplineKnot *knot = knots.first; knot != NULL; knot = knot->next) {
+    SplineKnot *knot;
+    for (knot = knots.first; knot != NULL; knot = knot->next) {
         point.x = knot->position.x;
         point.y = knot->position.y;
         point.z = knot->position.z;
@@ -5897,10 +5898,11 @@ void SplineObject::GenLinearPoints() {
         points.AddPoint(point);
     }
     if (closed != 0 && knots.first != NULL) {
-        point.x = knots.first->position.x;
-        point.y = knots.first->position.y;
-        point.z = knots.first->position.z;
-        point.w = knots.first->position.w;
+        knot = knots.first;
+        point.x = knot->position.x;
+        point.y = knot->position.y;
+        point.z = knot->position.z;
+        point.w = knot->position.w;
         DropPoint(point);
         point.y += height;
         points.AddPoint(point);
