@@ -9,8 +9,8 @@ void __cdecl Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
         return;
     if (rider != NULL)
         NewRumble(rider->pad->bound_pad, 0.6f, 0);
-    object->field_7aa = LEGOACT_BUCK;
     object->character_context = (i8)LEGOCONTEXT_BUCK;
+    object->field_7aa = LEGOACT_BUCK;
     object->context_timer = AnimDuration((i16)object->id, LEGOACT_BUCK, 0.0f, 0.0f, 1);
     if (BuckStartExtraFn != NULL)
         BuckStartExtraFn(object);
@@ -34,8 +34,8 @@ void __cdecl Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     rider->velocity.x = NuTrigTable[angle >> 1] * speed;
     rider->velocity.z = speed * NuTrigTable[(((i32)angle + 0x4000) >> 1) & 0x7fff];
     StartJump(rider, 0);
-    rider->tag_flags |= 1;
     rider->airborne_collision_target = mount;
+    rider->tag_flags |= 1;
     rider->velocity.x = 0.0f;
     rider->velocity.z = 0.0f;
     rider->pad->buttons_held = 0;
@@ -50,48 +50,49 @@ void __cdecl Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
         rider->velocity.y = NuFsqrt((f32)(-2.0 * (f64)character->gravity * clearance));
 }
 
+/* Do not split a "~~" pair, and keep a single '~' with the text after it. */
+#define KEEP_TILDE_PAIR(text, index)                                                                                   \
+    if ((text)[index] == '~') {                                                                                        \
+        if ((index) > 0 && (text)[(index) - 1] == '~')                                                                 \
+            --(index);                                                                                                 \
+    } else if ((index) > 0 && (text)[(index) - 1] == '~' && (index) > 1 && (text)[(index) - 2] != '~')                 \
+    --(index)
+
+#define IS_BREAK_POINT(text, index)                                                                                    \
+    (((text)[index] == ' ' && (text)[(index) + 1] != '!' && (text)[(index) + 1] != '?' &&                              \
+      (text)[(index) + 1] != ';' && (text)[(index) + 1] != ':') ||                                                     \
+     ((text)[index] == '.' && (text)[(index) + 1] != '.') || (text)[index] == '-' || (text)[index] == ',')
+
 i32 __cdecl FindNextBreak(u8 *text, i32 index) {
-    i32 japanese = NuLanguageGet() == 0, count = 0, ascii_start, length;
-    u8 ch, next;
+    i32 japanese = 0, ascii_start, length, count;
+    if (NuLanguageGet() == 0)
+        japanese = 1;
+    count = 0;
     length = NuStrLen((char *)text);
-    while ((u8)(text[index] - 0x80) <= 0x3f)
+    while (text[index] >= 0x80 && text[index] <= 0xbf)
         --index;
-    ch = text[index];
-    next = text[index + 1];
-    if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
-        ch == '-' || ch == ',')
+    if (IS_BREAK_POINT(text, index))
         return index;
-    ascii_start = ch <= 0x7f;
+    ascii_start = text[index] <= 0x7f;
     for (;;) {
         ++count;
         if ((japanese && count > 10 && !ascii_start) || count > 20)
             break;
         if (++index >= length)
             return length;
-        while ((u8)(text[index] - 0x80) <= 0x3f)
+        while (text[index] >= 0x80 && text[index] <= 0xbf)
             ++index;
-        ch = text[index];
-        next = text[index + 1];
-        if ((ch == ' ' && next != '!' && next != '?' && next != ';' && next != ':') || (ch == '.' && next != '.') ||
-            ch == '-' || ch == ',')
+        if (IS_BREAK_POINT(text, index))
             return index;
-        if (japanese && ((ch <= 0x7f && !ascii_start) || (ch >= 0x80 && ascii_start)))
+        if (japanese && ((text[index] <= 0x7f && !ascii_start) || (text[index] >= 0x80 && ascii_start)))
             break;
     }
-    if (text[index] == '~') {
-        if (index > 0 && text[index - 1] == '~')
-            --index;
-    } else if (index > 1 && text[index - 1] == '~' && text[index - 2] != '~')
-        --index;
+    KEEP_TILDE_PAIR(text, index);
     return index;
 }
-#define IS_BREAK_POINT(text, index)                                                                                    \
-    (((text)[index] == ' ' && (text)[(index) + 1] != '!' && (text)[(index) + 1] != '?' &&                              \
-      (text)[(index) + 1] != ';' && (text)[(index) + 1] != ':') ||                                                     \
-     ((text)[index] == '.' && (text)[(index) + 1] != '.') || (text)[index] == '-' || (text)[index] == ',')
 
 i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
-    i32 japanese = 0, ascii_start, length, forward, backward, count, result;
+    i32 japanese = 0, ascii_start, length, forward, backward, count;
     if (NuLanguageGet() == 0)
         japanese = 1;
     while (text[index] >= 0x80 && text[index] <= 0xbf)
@@ -104,10 +105,8 @@ i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
     length = NuStrLen((char *)text);
     for (;;) {
         ++count;
-        if ((japanese && count > 10 && !ascii_start) || count > 20) {
-            result = index;
+        if ((japanese && count > 10 && !ascii_start) || count > 20)
             break;
-        }
         if (forward < length - 1)
             ++forward;
         while (text[forward] >= 0x80 && text[forward] <= 0xbf)
@@ -119,22 +118,19 @@ i32 __cdecl FindNearestBreak(u8 *text, i32 index) {
         if (IS_BREAK_POINT(text, forward))
             return forward;
         if (japanese && ((text[forward] <= 0x7f && !ascii_start) || (text[forward] >= 0x80 && ascii_start))) {
-            result = forward;
-            break;
+            KEEP_TILDE_PAIR(text, forward);
+            return forward;
         }
         if (IS_BREAK_POINT(text, backward))
             return backward;
         if (japanese && ((text[backward] <= 0x7f && !ascii_start) || (text[backward] >= 0x80 && ascii_start))) {
-            result = backward + 1;
-            break;
+            ++backward;
+            KEEP_TILDE_PAIR(text, backward);
+            return backward;
         }
     }
-    if (text[result] == '~') {
-        if (result > 0 && text[result - 1] == '~')
-            --result;
-    } else if (result > 0 && text[result - 1] == '~' && result > 1 && text[result - 2] != '~')
-        --result;
-    return result;
+    KEEP_TILDE_PAIR(text, index);
+    return index;
 }
 
 typedef struct EQUIVALENT_GROUP_PC {
