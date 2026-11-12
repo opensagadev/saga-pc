@@ -1492,30 +1492,32 @@ GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE
     return type;
 }
 void __cdecl GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE_PC *type, WORLDINFO *world) {
-    GIZMOBLOWUPTYPE_PC *pool, *capacity_last, *moved;
+    GIZMOBLOWUPTYPE_PC *types, *last_allocated_type, *moved_type, *slot;
     i32 i;
-    GIZMOBLOWUP_PC *instance;
-    GIZMOBLOWUPTYPE_PC *assigned;
-    if (!world || world->gizmo_blowup_type_count <= 0 || !type)
+    if (world == NULL || world->gizmo_blowup_type_count <= 0 || type == NULL)
         return;
-    pool = world->gizmo_blowup_types;
-    if ((u32)type < (u32)pool || (u32)type > (u32)(pool + (u16)world->current_level->max_gizmoblowuptypes))
+    types = world->gizmo_blowup_types;
+    if (type < types)
         return;
-    capacity_last = pool + (u16)world->current_level->max_gizmoblowuptypes - 1;
-    if ((u32)type < (u32)capacity_last) {
-        for (moved = type + 1; (u32)moved <= (u32)capacity_last; ++moved)
+    if (type > types + (u16)world->current_level->max_gizmoblowuptypes)
+        return;
+    last_allocated_type = types + (u16)world->current_level->max_gizmoblowuptypes - 1;
+    if (type < last_allocated_type) {
+        for (moved_type = type + 1; moved_type <= last_allocated_type; ++moved_type) {
             for (i = 0; i < world->gizmo_blowup_count; ++i) {
-                instance = &world->gizmo_blowups[i];
-                assigned = instance->type;
-                if (assigned == moved)
+                GIZMOBLOWUP_PC *instance = &world->gizmo_blowups[i];
+                GIZMOBLOWUPTYPE_PC *assigned = instance->type;
+                if (assigned == moved_type)
                     instance->type = assigned - 1;
             }
+        }
     }
-    while (type != world->gizmo_blowup_types + (world->gizmo_blowup_type_count - 1)) {
-        *type = *(type + 1);
-        ++type;
+    slot = type;
+    while (slot != world->gizmo_blowup_types + (world->gizmo_blowup_type_count - 1)) {
+        *slot = *(slot + 1);
+        ++slot;
     }
-    memset(type, 0, sizeof(*type));
+    memset(slot, 0, sizeof(*slot));
     --world->gizmo_blowup_type_count;
 }
 
