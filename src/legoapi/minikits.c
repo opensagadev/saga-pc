@@ -244,18 +244,20 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, hostility_group) == 0x28d);
 STATIC_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
 
 void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i32 count) {
-    i32 row_counts[3] = {0, 0, 0};
-    i32 row = 0, i;
+    i32 row_counts[3];
+    i32 row, i;
     f32 size, spacing, offset, x, y;
     if (FadeSys.fade != 0.0f || count <= 0)
         return;
+    memset(row_counts, 0, sizeof(row_counts));
+    row = 0;
     for (i = 0; i < count; ++i) {
         if (targets[i] == -1)
             ++row;
         else
             ++row_counts[row];
     }
-    size = MeleeRowsScalePc * HudBossIconScalePc;
+    size = HudBossIconScalePc * MeleeRowsScalePc;
     spacing = MeleeRowsSpacingPc * MeleeRowsScalePc;
     offset = MeleeRowsScalePc * MeleeRowsYOffsetPc;
     x = (f32) - ((row_counts[0] - 1) * (f64)spacing * 0.5);
@@ -263,14 +265,12 @@ void __cdecl DrawMeleeTargetsRowsPc(i16 *targets, char *defeated, f32 *values, i
     row = 0;
     for (i = 0; i < count; ++i) {
         if (targets[i] == -1) {
-            i32 previous_row = row++;
+            ++row;
             ++i;
             y += offset;
             x = (f32) - (row_counts[row] * (f64)spacing * 0.5);
-            if (((row_counts[row] - row_counts[previous_row] % 2) + row) & 1) {
-            } else {
+            if ((((row_counts[row] - row_counts[row - 1] % 2) + row) & 1) == 0)
                 x = (f32)((f64)spacing * 0.5 + x);
-            }
         }
         DrawCharIcon(targets[i], x, y, 0.0f, size, 0xa7, values[i], values[i], 1, NULL);
         x += spacing;
@@ -282,7 +282,7 @@ void __cdecl DrawMeleeTargetsAlphaPc(i16 *targets, u8 *dimmed, f32 *values, i32 
     i32 i;
     if (FadeSys.fade != 0.0f || count <= 0)
         return;
-    size = MeleeRowsScalePc * HudBossIconScalePc;
+    size = HudBossIconScalePc * MeleeRowsScalePc;
     spacing = (f32)((f64)MeleeRowsSpacingPc * 0.5 * (f64)MeleeRowsScalePc);
     offset = (f32)((f64)MeleeRowsYOffsetPc * 0.5 * (f64)MeleeRowsScalePc);
     x = (f32)((f64)(1 - count) * (f64)spacing * 0.5);
