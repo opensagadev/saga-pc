@@ -137,11 +137,12 @@ void __cdecl StartJump(GAMEOBJECT *object, i32 movement_state) {
     if (LEGOCONTEXT_JUMP != -1) {
         object->character_context = (i8)LEGOCONTEXT_JUMP;
         object->action_movement_state = (u8)movement_state;
-        object->context_timer = 0.0f;
         object->field_7aa = LEGOACT_JUMP;
-        object->jump_start_height = object->collision_min.y;
+        object->context_timer = 0.0f;
+        // Bits 12 and 15 cleared, bit 16 is a 1-bit field set from the movement state.
         object->context_variant_flags =
-            (object->context_variant_flags & ~0x19000) | ((movement_state == 3 || movement_state == 4) ? 0x10000 : 0);
+            (object->context_variant_flags & ~0x19000) | (((movement_state == 4 || movement_state == 3) & 1) << 16);
+        object->jump_start_height = object->collision_min.y;
         object->airborne_action_timer = 0.0f;
         object->jump_sequence = 1;
         if ((u8)movement_state != 6 && (u8)movement_state != 7)
@@ -149,8 +150,8 @@ void __cdecl StartJump(GAMEOBJECT *object, i32 movement_state) {
     }
     object->field_281 = 0;
     object->field_1050 = 0;
-    object->flags_e20 |= 0x100000;
     object->velocity.y = object->character_data->game_character->jump_speed;
+    object->flags_e20 |= 0x100000;
     object->delayed_turn_timer = 0.0f;
     object->airborne_input_timer = 0.0f;
     object->airborne_collision_target = NULL;
