@@ -9,7 +9,11 @@ objdiff and generated DLL import libraries remain separately managed build tools
 prepare it automatically. No third-party implementation files are tracked in the
 current source tree. The 22 C translation units keep their existing object names,
 link order and compiler flags: Vorbis uses `/GS-`, except `vorbisfile.c`; the two
-Ogg translation units retain the game flags.
+Ogg translation units retain the game flags. The original linked a prebuilt libvorbis
+compiled by Visual C++ 2005 RTM rather than the game's SP1 compiler, so the 20 Vorbis
+units (vorbisfile and smallft included) are compiled with the secondary RTM compiler
+pinned in `config/toolchain.json`; with it every one of their mapped functions is
+exact, and 41 are exact only with RTM. Ogg framing is exact only with SP1.
 
 `config/ogg-vorbis.json` pins the public project commit
 `6370ba4aecfd5a18873c42a5dde1d3bef9be2a6e`, its archive SHA-256, and all 48

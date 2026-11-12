@@ -17,7 +17,7 @@ sudo apt-get install --no-install-recommends \
     ca-certificates git make python3 wine wine64 wine32:i386 winbind clang-format-18 clang-tidy-18 llvm-18
 python3 -m pip install capstone==5.0.9  # discovery tooling, tests and diff classes in matching.json
 python3 -m pip install libclang        # only for tools/permute.py
-make setup                             # pinned MSVC 2005, objdiff-cli and DirectX SDK libs into build/tools/
+make setup                             # pinned MSVC 2005 SP1 (+ RTM for libvorbis), objdiff-cli, DirectX SDK libs
 make check
 make -j"$(nproc)" build check-objects
 ```
@@ -28,7 +28,11 @@ cache setup. `make build` and checks prepare this dependency automatically.
 
 `make setup` verifies every compiler, header, library and objdiff hash. For
 compiler-only work use `python3 tools/setup.py --compiler-only`; an existing
-pinned archive can be passed with `--archive`.
+pinned archive of the primary (SP1) compiler can be passed with `--archive`. Each
+secondary compiler listed under `"secondary"` in `config/toolchain.json` (currently
+`rtm`, see [Compiler and layout](#compiler-and-layout)) is fetched by commit into
+`build/tools/msvc8-<name>/` with only its compiler binaries and headers, and verified
+the same way.
 
 ## Build kinds and logging
 
@@ -530,7 +534,12 @@ each mapped function with the current object, without touching `build/obj`.
 
 ## Compiler and layout
 
-The pinned compiler is VC8 SP1 14.00.50727.762 (the retail CRT and code generation both match SP1, not RTM) with `/O2 /Gy /GS /MT`. Use VC8's own
+The pinned compiler is VC8 SP1 14.00.50727.762 (the retail CRT and code generation both match SP1, not RTM) with `/O2 /Gy /GS /MT`.
+The one exception is the prebuilt libvorbis the game links (every `lib/ogg-vorbis/vorbis/*.c`
+unit and `vorbis_smallft.c`): it was compiled by VC8 RTM 14.00.50727.42, so those objects use
+the secondary `rtm` compiler from `config/toolchain.json` (`tools/cc.py --toolchain rtm`, with
+RTM's own CRT and SDK headers; installed by `make setup` in `build/tools/msvc8-rtm`). All
+linking, libogg and game code use SP1. Use VC8's own
 C++98/03-era dialect; `.c` files use the C front end, `.cpp` files C++. The
 Rich header lists 199 C and 282 C++ objects and no LTCG.
 
