@@ -10,35 +10,36 @@ PARTDEBRISSYS *__cdecl InitPartDebris(VARIPTR *buffer, VARIPTR *end, i32 capacit
     i32 i, type;
     system = (PARTDEBRISSYS *)((buffer->addr + 15) & ~(u32)15);
     buffer->addr = ((buffer->addr + 15) & ~(u32)15) + sizeof(PARTDEBRISSYS);
-    if (system == NULL)
-        return NULL;
-    system->entries = NULL;
-    system->named_count = named_count;
-    system->capacity = capacity;
-    system->entries = (PARTDEBRISENTRY *)((buffer->addr + 15) & ~(u32)15);
-    buffer->addr = ((buffer->addr + 15) & ~(u32)15) + capacity * sizeof(PARTDEBRISENTRY);
-    if (system->entries == NULL)
-        return NULL;
-    memset(system->entries, -1, capacity * sizeof(PARTDEBRISENTRY));
-    i = 0;
-    if (names != NULL) {
-        for (; i < system->named_count; ++i) {
-            NuStrCpy(system->entries[i].name, names[i]);
-            system->entries[i].id = -1;
-            system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
+    if (system != NULL) {
+        system->entries = NULL;
+        system->named_count = named_count;
+        system->capacity = capacity;
+        system->entries = (PARTDEBRISENTRY *)((buffer->addr + 15) & ~(u32)15);
+        buffer->addr = ((buffer->addr + 15) & ~(u32)15) + capacity * sizeof(PARTDEBRISENTRY);
+        if (system->entries != NULL) {
+            memset(system->entries, -1, capacity * sizeof(PARTDEBRISENTRY));
+            i = 0;
+            if (names != NULL) {
+                for (; i < system->named_count; ++i) {
+                    NuStrCpy(system->entries[i].name, names[i]);
+                    system->entries[i].id = -1;
+                    system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
+                }
+            }
+            for (type = 0; i < system->capacity && type < 128; ++type) {
+                system->entries[i].id = -1;
+                if (part_types[type].variant_count > 0) {
+                    NuStrCpy(system->entries[i].name, part_types[type].name);
+                    system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
+                    ++i;
+                }
+            }
+            for (; i < system->capacity; ++i)
+                system->entries[i].id = -1;
+            return system;
         }
     }
-    for (type = 0; i < system->capacity && type < 128; ++type) {
-        system->entries[i].id = -1;
-        if (part_types[type].variant_count > 0) {
-            NuStrCpy(system->entries[i].name, part_types[type].name);
-            system->entries[i].id = PARTLookupTypePageOnly(system->entries[i].name, page);
-            ++i;
-        }
-    }
-    for (; i < system->capacity; ++i)
-        system->entries[i].id = -1;
-    return system;
+    return NULL;
 }
 
 i32 __cdecl LookupDebrisEffectPageIgnore(char *name, i8 page, i32 ignore) {
