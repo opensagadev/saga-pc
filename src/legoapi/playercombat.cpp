@@ -80,16 +80,17 @@ extern "C" void __cdecl JediLightCode(GAMEOBJECT *object) {
 }
 
 extern "C" NUVEC *__cdecl GetZapOrigin(GAMEOBJECT *object) {
-    NUVEC *origin = &object->collision_position;
     if (object->origin_joint_ready != 0) {
         PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
         i32 joint = config->weapon_shoot_joints[0];
-        if (joint == -1 || object->character_model->points_of_interest[joint] == NULL)
+        if (joint == -1 || object->character_model->points_of_interest[joint] == NULL) {
             joint = config->weapon_joints[0];
-        if (joint != -1 && object->character_model->points_of_interest[joint] != NULL)
-            origin = (NUVEC *)&object->locator_matrices[joint].m30;
+            if (joint == -1 || object->character_model->points_of_interest[joint] == NULL)
+                return &object->collision_position;
+        }
+        return (NUVEC *)&object->locator_matrices[joint].m30;
     }
-    return origin;
+    return &object->collision_position;
 }
 
 extern "C" {
