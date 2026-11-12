@@ -256,8 +256,7 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                     frame = end;
                 }
                 --frame;
-                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) == 0)
-                    active = 0;
+                active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
             case 1:
                 cut = (CONTROLLER_CUT_VIEW_PC *)controller->target;
@@ -265,13 +264,13 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                 if (end > 1024)
                     end = 1024;
                 frame = (i32)cut->current_frame;
-                if (frame < 1)
+                if (frame >= 1) {
+                    if (frame > end)
+                        frame = end;
+                } else
                     frame = 1;
-                else if (frame > end)
-                    frame = end;
                 --frame;
-                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) == 0)
-                    active = 0;
+                active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
             case 2:
                 if (((GIZBUILDIT_PC *)controller->target)->build_state != 2)
@@ -285,22 +284,22 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                 if ((((GIZMOBLOWUP_PC *)controller->target)->status_flags & 1) != 0)
                     active = 0;
                 break;
+            case 6:
+                if ((((FLOWBOX_PC *)controller->target)->state_flags_low & 2) == 0)
+                    active = 0;
+                break;
             case 5:
                 end = (i32)fakeanimendframe[controller->fake_animation_id];
                 if (end > 1024)
                     end = 1024;
                 frame = (i32)fakeanimframe[controller->fake_animation_id];
-                if (frame < 1)
+                if (frame >= 1) {
+                    if (frame > end)
+                        frame = end;
+                } else
                     frame = 1;
-                else if (frame > end)
-                    frame = end;
                 --frame;
-                if ((controller->on_frames[frame / 32] & (1 << (frame % 32))) == 0)
-                    active = 0;
-                break;
-            case 6:
-                if ((((FLOWBOX_PC *)controller->target)->state_flags_low & 2) == 0)
-                    active = 0;
+                active = controller->on_frames[frame / 32] & (1 << (frame % 32));
                 break;
             case 7:
                 if (GizForce_Complete((GIZFORCE_PC *)controller->target) == 0)
@@ -312,7 +311,7 @@ void __cdecl AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
                 break;
             case 9:
                 zipup_flags = *(u16 *)&((struct ZIPUP_s *)controller->target)->flags;
-                if ((zipup_flags & 0x40) == 0 || (i8)zipup_flags >= 0)
+                if ((zipup_flags & 0x40) == 0 || (zipup_flags & 0x80) == 0)
                     active = 0;
                 break;
         }
