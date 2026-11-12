@@ -1746,8 +1746,7 @@ void ClassEditor::SetViewMenuHilight(eduimenu_s *menu) {
 }
 
 void ClassEditor::cbEdClassSetView(eduimenu_s *menu, eduiitem_s *item, u32) {
-    i32 index = item->data;
-    switch (index) {
+    switch (item->data) {
         case 0:
             theClassEditor.class_filter = -1;
             break;
@@ -1757,11 +1756,12 @@ void ClassEditor::cbEdClassSetView(eduimenu_s *menu, eduiitem_s *item, u32) {
         case 2:
             theClassEditor.class_filter = ~theClassEditor.class_filter;
             break;
-        default:
-            index -= 3;
+        default: {
+            i32 index = item->data - 3;
             if (index >= 0)
                 theClassEditor.class_filter ^= 1 << index;
             break;
+        }
     }
     SetViewMenuHilight(menu);
 }
