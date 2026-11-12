@@ -275,24 +275,25 @@ STATIC_ASSERT(offsetof(STREAK_MATERIAL_SCALE_PC, effect_scale) == 0x64);
 STATIC_ASSERT(offsetof(PC_SCENE_MTL_VIEW, sort_pri) == 0x76);
 
 extern "C" void __cdecl InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
-    for (i32 i = 0; i < 32; ++i) {
+    i32 i;
+    for (i = 0; i < 32; ++i) {
         StreakHeadersPc[i].index = static_cast<u16>(i);
         StreakHeadersPc[i].next = &StreakHeadersPc[i + 1];
         StreakHeadersPc[i].prev = reinterpret_cast<STREAK_HEADER_PC *>(reinterpret_cast<u32>(StreakHeadersPc) +
                                                                        (i - 1) * sizeof(STREAK_HEADER_PC));
     }
-    StreakHeadersFreePc = StreakHeadersPc;
-    StreakHeadersPc[31].next = NULL;
+    StreakHeadersPc[i - 1].next = NULL;
     StreakHeadersPc[0].prev = NULL;
+    StreakHeadersFreePc = StreakHeadersPc;
     StreakHeadersUsedPc = NULL;
-    for (i32 i = 0; i < 128; ++i) {
+    for (i = 0; i < 128; ++i) {
         StreakNodesPc[i].next = &StreakNodesPc[i + 1];
         StreakNodesPc[i].prev =
             reinterpret_cast<STREAK_NODE_PC *>(reinterpret_cast<u32>(StreakNodesPc) + (i - 1) * sizeof(STREAK_NODE_PC));
     }
-    StreakNodesFreePc = StreakNodesPc;
-    StreakNodesPc[127].next = NULL;
+    StreakNodesPc[i - 1].next = NULL;
     StreakNodesPc[0].prev = NULL;
+    StreakNodesFreePc = StreakNodesPc;
     StreakNodesUsedPc = NULL;
     StreakMaterialPc = NuMtlCreate3D(1);
     StreakMaterialPc->attribs.unknown_1_1_2 = 0;
