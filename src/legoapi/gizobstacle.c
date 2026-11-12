@@ -272,18 +272,17 @@ i32 GizBombGens_Load(void *world_ptr, void *system_ptr) {
     GIZBOMBGENSYS_s *system = (GIZBOMBGENSYS_s *)(system_ptr);
     system->count = (u16)(EdFileReadShort());
     if (system->count != 0) {
-        i32 index = 0;
         GIZBOMBGEN_s *bomb_generator = system->bomb_generators;
-        do {
+        i32 index;
+        for (index = 0; index < system->count; ++index, ++bomb_generator) {
             EdFileRead(bomb_generator->name, sizeof(bomb_generator->name));
             EdFileReadNuVec(&bomb_generator->position);
             bomb_generator->interval = EdFileReadInt();
-            bomb_generator->flags |= GIZBOMBGEN_FLAG_ACTIVE | GIZBOMBGEN_FLAG_VISIBLE;
+            // MATCH-EXCEPTION: retail ORs a 16-bit flags word at +0x2a; saga.h declares GIZBOMBGEN_s.flags as u8.
+            ((BOMBGEN_ACTIVATION_READER_PC *)bomb_generator)->flags |= GIZBOMBGEN_FLAG_ACTIVE | GIZBOMBGEN_FLAG_VISIBLE;
             GizmoFileReadGameAnimSet(bomb_generator->anim_set, world_ptr, NULL, version, (char *)("BombGenerator"),
                                      bomb_generator->name);
-            ++index;
-            ++bomb_generator;
-        } while (system->count > index);
+        }
     }
     return 1;
 }
