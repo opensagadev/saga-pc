@@ -16221,7 +16221,6 @@ i32 __cdecl Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
 i32 __cdecl Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                         char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 i;
-    AIPACKET_PC *target;
 
     if (packet == NULL) {
         return 1;
@@ -16238,9 +16237,10 @@ i32 __cdecl Action_MoveAwayFromOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *proce
             }
         }
     }
-    if (((APIOBJECT_PC *)packet->opponent) != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
-        target = ((APIOBJECT_PC *)packet->opponent)->ai;
-        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+    if (packet->opponent != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
+        AIMoveInstruction(packet, &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position,
+                          ((APIOBJECT_PC *)packet->opponent)->ai->mover_height,
+                          &((APIOBJECT_PC *)packet->opponent)->ai->path_info, 2,
                           packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
             packet->movement_look_target = &((APIOBJECT_PC *)packet->opponent)->position;
@@ -16314,7 +16314,6 @@ i32 __cdecl Action_MoveAwayFromPlayer2(AISYS_PC *sys, AISCRIPTPROCESS_PC *proces
 i32 __cdecl Action_RetreatFromOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 i;
-    AIPACKET_PC *target;
 
     if (packet == NULL) {
         return 1;
@@ -16328,8 +16327,9 @@ i32 __cdecl Action_RetreatFromOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
         }
     }
     if (packet->opponent != NULL && ((APIOBJECT_PC *)packet->opponent)->ai != NULL) {
-        target = ((APIOBJECT_PC *)packet->opponent)->ai;
-        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+        AIMoveInstruction(packet, &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position,
+                          ((APIOBJECT_PC *)packet->opponent)->ai->mover_height,
+                          &((APIOBJECT_PC *)packet->opponent)->ai->path_info, 2,
                           packet->movement_instruction_parameter);
     }
     return 0;
