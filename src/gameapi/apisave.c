@@ -778,7 +778,7 @@ void __cdecl MenuEnterSave(MENU *menu) {
 }
 
 void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
-    i32 count = SAVESLOTS;
+    i32 count;
     i32 first, last, slot, highlight;
     i32 red, green, blue;
     f32 x, scale;
@@ -786,9 +786,9 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
         --SaveMenuSlideRightPc;
     if (SaveMenuSlideLeftPc > 0)
         --SaveMenuSlideLeftPc;
-    if (count > 3) {
+    if (SAVESLOTS > 3) {
         if (menu->selected_column != SaveMenuLastSlotPc) {
-            if (menu->selected_column < SaveMenuLastSlotPc)
+            if (SaveMenuLastSlotPc > menu->selected_column)
                 SaveMenuSlideRightPc = 10;
             else
                 SaveMenuSlideLeftPc = 10;
@@ -802,15 +802,17 @@ void __cdecl APIMenuDrawMemCardSlots(MENU *menu, f32 y) {
             ++last;
     } else {
         first = 0;
-        last = count - 1;
+        last = SAVESLOTS - 1;
     }
-    if (count > 6)
+    if (SAVESLOTS <= 6)
+        count = SAVESLOTS;
+    else
         count = memcard_slotsused;
-    if (SAVESLOTS > 3)
+    if (SAVESLOTS <= 3)
+        x = (SAVESLOTS - 1) * -0.25;
+    else
         x = 0.0 - (menu->selected_column - first) * 0.5 - SaveMenuSlideRightPc * 0.5 / 10.0 +
             SaveMenuSlideLeftPc * 0.5 / 10.0;
-    else
-        x = (SAVESLOTS - 1) * -0.25;
     for (slot = first; slot <= last; ++slot, x += 0.5) {
         highlight = menu->selected_row == menu->first_row && menu->selected_column == slot &&
                     SaveMenuSlideLeftPc == 0 && SaveMenuSlideRightPc == 0;
