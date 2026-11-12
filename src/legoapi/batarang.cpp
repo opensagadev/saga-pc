@@ -857,10 +857,11 @@ extern "C" {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
         u32 capabilities =
             packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
-        AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
         AIPATHNODE_PC *destination =
-            &nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        AIPATHNODE_PC *source = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+            &packet->path_info.path
+                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+        AIPATHNODE_PC *source =
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE_PC *node;
         AIPATH_PC *path;
         i32 skip_inside;
