@@ -307,13 +307,10 @@ extern "C" {
             if (Game.options_save.unknown_0000[player] != 0 && StatusPacket.player_active[player] != 0 &&
                 ((u8)GamePadStorage[player].allocated & 0x20) != 0) {
                 if (packet->amount > 0.0f)
-                    motor1 = (i32)((f64)packet->intensity * (f64)packet->amount * 255.0 / (f64)packet->decay_duration);
+                    motor1 = (i32)((packet->intensity * packet->amount) * 255.0f / packet->decay_duration);
                 else
                     motor1 = 0;
-                if (packet->duration > 0.0f || packet->active > 0)
-                    NuPadSetMotorsPc(GamePadStorage[player].pad, 1, motor1);
-                else
-                    NuPadSetMotorsPc(GamePadStorage[player].pad, 0, motor1);
+                NuPadSetMotorsPc(GamePadStorage[player].pad, packet->duration > 0.0f || packet->active > 0, motor1);
             } else {
                 NuPadSetMotorsPc(GamePadStorage[player].pad, 0, 0);
             }
