@@ -928,11 +928,6 @@ void __cdecl GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unu
 }
 
 /* Append to gizmopickups.c: share its actual private GizmoPickupSys pointer. */
-typedef struct PICKUP_ACTIVATION_PC {
-    u8 unknown_00[0x18];
-    u8 activation_group;
-} PICKUP_ACTIVATION_PC;
-STATIC_ASSERT(offsetof(PICKUP_ACTIVATION_PC, activation_group) == 0x18);
 STATIC_ASSERT(sizeof(GIZMOPICKUP_PC) == 0x2c);
 STATIC_ASSERT(offsetof(WORLDINFO, pickup_runtime_sys) == 0x50b8);
 STATIC_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
