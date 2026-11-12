@@ -395,7 +395,6 @@ void __thiscall SoundVoiceManagerPC::StopAllVoices(void) {
 }
 
 void __thiscall SoundVoiceManagerPC::UpdateVoices(void) {
-    SoundVoiceSlotPC *slot;
     i32 voice_id;
     DWORD status;
 
@@ -403,37 +402,35 @@ void __thiscall SoundVoiceManagerPC::UpdateVoices(void) {
     PCSoundOneShotVoiceCount = 0;
     PCSoundUpdateClock = (i32)(timeGetTime() & 0x7fffffff);
 
-    slot = &voices[32];
-    for (voice_id = 32; voice_id < 64; ++voice_id, ++slot) {
-        if (slot->voice != NULL) {
+    for (voice_id = 32; voice_id < 64; ++voice_id) {
+        if (voices[voice_id].voice != NULL) {
             ++PCSoundLoopVoiceCount;
-            slot->voice->vtable->get_status(slot->voice, &status);
-            if (slot->sound_key != 0 && (status & 4) != 0) {
-                i32 elapsed = (i32)((u32)PCSoundUpdateClock - (u32)slot->field_28);
+            voices[voice_id].voice->vtable->get_status(voices[voice_id].voice, &status);
+            if (voices[voice_id].sound_key != 0 && (status & 4) != 0) {
+                i32 elapsed = (i32)((u32)PCSoundUpdateClock - (u32)voices[voice_id].field_28);
                 if (elapsed < 0) {
                     elapsed = (i32)((u32)elapsed - 0x80000000u);
                 }
-                slot->field_19 = elapsed > slot->field_2c;
-                if (slot->field_19 != 0) {
+                voices[voice_id].field_19 = elapsed > voices[voice_id].field_2c;
+                if (voices[voice_id].field_19 != 0) {
                     LONG volume = 0;
-                    slot->voice->vtable->get_volume(slot->voice, &volume);
+                    voices[voice_id].voice->vtable->get_volume(voices[voice_id].voice, &volume);
                     volume += (i32)(nuapi.frame_time * -3500.0);
                     if (volume < -7000) {
                         StopVoice(voice_id);
                     } else {
-                        PCSoundSetRawVolume(slot->voice, volume);
+                        PCSoundSetRawVolume(voices[voice_id].voice, volume);
                     }
                 }
-                slot->field_18 = 0;
+                voices[voice_id].field_18 = 0;
             }
         }
     }
 
-    slot = voices;
-    for (voice_id = 0; voice_id < 32; ++voice_id, ++slot) {
-        if (slot->voice != NULL) {
+    for (voice_id = 0; voice_id < 32; ++voice_id) {
+        if (voices[voice_id].voice != NULL) {
             ++PCSoundOneShotVoiceCount;
-            slot->voice->vtable->get_status(slot->voice, &status);
+            voices[voice_id].voice->vtable->get_status(voices[voice_id].voice, &status);
             if ((status & 1) == 0) {
                 StopVoice(voice_id);
             }
