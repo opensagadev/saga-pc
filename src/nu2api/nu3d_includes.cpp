@@ -7366,14 +7366,11 @@ extern "C" {
         }
 
         if (set == -1 && slot == 0) {
+            i32 index;
             timebar = (TimeBarSet *)NuTimeBar_SetList[0];
-            if (timebar->slot_count > 0) {
-                i32 index = 0;
-                do {
-                    timebar->toggle_flags[index] ^= 1;
-                    timebar->accumulators[timebar->toggle_flags[index] == 0][index] = 0;
-                    ++index;
-                } while (index < timebar->slot_count);
+            for (index = 0; index < timebar->slot_count; ++index) {
+                timebar->toggle_flags[index] ^= 1;
+                timebar->accumulators[timebar->toggle_flags[index] == 0][index] = 0;
             }
             return;
         }
