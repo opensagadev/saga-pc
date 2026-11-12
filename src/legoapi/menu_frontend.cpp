@@ -1088,7 +1088,6 @@ extern "C" {
         f32 alpha;
         f32 pulse;
         f32 scale;
-        i32 phase;
         i32 colour;
         i32 opacity;
         (void)menu;
@@ -1103,8 +1102,10 @@ extern "C" {
         DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac,
                               MissionMenuPacketPc.active_player[1], -1, 1.0f, -1, TextIdPc880844, -1, TextIdPc880eac);
         NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f);
-        phase = (u16)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
-        pulse = (f32)((f64)NuTrigTable[phase >> 1] * (f64)0.05f);
+        pulse =
+            (f32)((f64)
+                      NuTrigTable[(u16)((f64)NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1] *
+                  (f64)0.05f);
         colour = menu_flash == 0 ? 255 : 191;
         opacity = (i32)(MenuAlpha * 128.0);
         if (HubMiniKitViewerMoveWaitPc > 0.0f) {
