@@ -195,21 +195,21 @@ NUVEC *__cdecl Signal_GetPos(GIZMO_PC *gizmo) {
 void __cdecl Signal_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
         SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
-        signal->flags = (signal->flags & ~2) | ((active != 0) << 1);
+        signal->active = active != 0;
     }
 }
 
 i32 __cdecl Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
-    SIGNAL_s *signal;
-    if (gizmo == NULL)
-        return 0;
-    signal = (SIGNAL_s *)gizmo->object;
-    if (signal == NULL)
-        return 0;
-    if ((reverse & 1) != 0)
-        return ((signal->flags & 2) != 0) == active;
-    signal->flags = (signal->flags & ~2) | ((active == 0) << 1);
-    return 1;
+    if (gizmo != NULL) {
+        SIGNAL_s *signal = (SIGNAL_s *)gizmo->object;
+        if (signal != NULL) {
+            if ((reverse & 1) != 0)
+                return active == signal->active;
+            signal->active = active == 0;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 i32 __cdecl Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
