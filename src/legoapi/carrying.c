@@ -237,19 +237,17 @@ void __cdecl LetGoOfBalloon(GAMEOBJECT *object) {
 }
 
 void __cdecl SuperCarry_GetObjectPos(GAMEOBJECT *object, NUVEC *position, NUVEC *secondary_position) {
-    PLAYERCHARACTERCONFIG_PC *config = object->character_data->game_character;
     i32 first, second;
-    NUVEC *other, offset;
+    NUVEC offset;
     *position = object->collision_position;
-    first = config->hand_locators[0];
+    first = object->character_data->game_character->hand_locators[0];
     if (first != -1 && object->character_model->points_of_interest[first] != NULL) {
-        second = config->hand_locators[1];
+        second = object->character_data->game_character->hand_locators[1];
         if (second != -1 && object->character_model->points_of_interest[second] != NULL) {
             *position = *(NUVEC *)&object->locator_matrices[first].m30;
-            other = (NUVEC *)&object->locator_matrices[second].m30;
-            position->x += ((f64)other->x - position->x) * 0.5;
-            position->y += ((f64)other->y - position->y) * 0.5;
-            position->z += ((f64)other->z - position->z) * 0.5;
+            position->x += (object->locator_matrices[second].m30 - position->x) * 0.5f;
+            position->y += (object->locator_matrices[second].m31 - position->y) * 0.5f;
+            position->z += (object->locator_matrices[second].m32 - position->z) * 0.5f;
         }
     }
     if (SuperCarry_AlignObject != 0) {
