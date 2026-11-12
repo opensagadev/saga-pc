@@ -428,20 +428,28 @@ extern "C" {
         }
     }
 
+/* NuFabs: the SDK macro copies the value with the sign bit cleared into the destination. */
+#define CS_NUFABS(destination, source)                                                                                 \
+    do {                                                                                                               \
+        f32 fabs_value = (source);                                                                                     \
+        *(i32 *)&(destination) = *(i32 *)&fabs_value & 0x7fffffff;                                                     \
+    } while (0)
+
     static void CS_subtitle(NUFPAR_PC *fp) {
-        if (CS_CutInfo->subtitle_data == NULL) {
-            CS_CutInfo->subtitle_data = reinterpret_cast<CUT_LOAD_SUBTITLE_PC *>(CS_buffptr->addr);
+        CUT_LOAD_RECORD_PC *info = CS_CutInfo;
+        if (info->subtitle_data == NULL) {
+            info->subtitle_data = reinterpret_cast<CUT_LOAD_SUBTITLE_PC *>(CS_buffptr->addr);
         }
 
-        CUT_LOAD_SUBTITLE_PC *subtitle = &CS_CutInfo->subtitle_data[CS_CutInfo->subtitle_count];
+        CUT_LOAD_SUBTITLE_PC *subtitle = &info->subtitle_data[info->subtitle_count];
         subtitle->text_id = -1;
-        subtitle->start_frame = 0.0f;
-        subtitle->end_frame = 0.0f;
         subtitle->red = CUTSUBTITLEDEFAULT_R;
         subtitle->green = CUTSUBTITLEDEFAULT_G;
         subtitle->blue = CUTSUBTITLEDEFAULT_B;
         subtitle->alpha = CUTSUBTITLEDEFAULT_A;
         subtitle->alignment = CUTSUBTITLEDEFAULT_ALIGN;
+        subtitle->start_frame = 0.0f;
+        subtitle->end_frame = 0.0f;
         subtitle->x = CUTSUBTITLEDEFAULT_X;
         subtitle->y = CUTSUBTITLEDEFAULT_Y;
         subtitle->x_scale = CUTSUBTITLEDEFAULT_SCALEX;
@@ -486,9 +494,9 @@ extern "C" {
                     subtitle->alignment = 3;
                 }
             } else if (NuStrICmp(fp->word_buffer_ptr, "start_time") == 0) {
-                subtitle->start_frame = static_cast<f32>(fabs(static_cast<f64>(NuFParGetFloat(fp))));
+                CS_NUFABS(subtitle->start_frame, NuFParGetFloat(fp));
             } else if (NuStrICmp(fp->word_buffer_ptr, "end_time") == 0) {
-                subtitle->end_frame = static_cast<f32>(fabs(static_cast<f64>(NuFParGetFloat(fp))));
+                CS_NUFABS(subtitle->end_frame, NuFParGetFloat(fp));
             } else if (NuStrICmp(fp->word_buffer_ptr, "pos") == 0) {
                 subtitle->x = NuFParGetFloat(fp);
                 subtitle->y = NuFParGetFloat(fp);
@@ -506,17 +514,16 @@ extern "C" {
             } else if (NuStrICmp(fp->word_buffer_ptr, "y_scale") == 0) {
                 subtitle->y_scale = NuFParGetFloat(fp);
             } else if (NuStrICmp(fp->word_buffer_ptr, "fit_width") == 0) {
-                subtitle->max_width = static_cast<f32>(fabs(static_cast<f64>(NuFParGetFloat(fp))));
+                CS_NUFABS(subtitle->max_width, NuFParGetFloat(fp));
             } else if (NuStrICmp(fp->word_buffer_ptr, "fade_time") == 0) {
-                subtitle->fade_time = static_cast<f32>(fabs(static_cast<f64>(NuFParGetFloat(fp))));
+                CS_NUFABS(subtitle->fade_time, NuFParGetFloat(fp));
             }
         }
 
-        i16 text_id = subtitle->text_id;
-        if (text_id >= 0 && text_id < Text_GetMaxOverallStrings() && TTab[text_id] != NULL &&
-            subtitle->start_frame < subtitle->end_frame) {
+        if (subtitle->text_id >= 0 && subtitle->text_id < Text_GetMaxOverallStrings() &&
+            TTab[subtitle->text_id] != NULL && subtitle->end_frame > subtitle->start_frame) {
             if (subtitle->fade_time > 0.0f &&
-                subtitle->end_frame - subtitle->start_frame < subtitle->fade_time * 2.0f) {
+                subtitle->fade_time * 2.0f > subtitle->end_frame - subtitle->start_frame) {
                 subtitle->fade_time = 0.0f;
             }
             CS_buffptr->addr += sizeof(CUT_LOAD_SUBTITLE_PC);
