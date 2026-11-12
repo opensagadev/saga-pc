@@ -20,6 +20,19 @@ void __cdecl NuShaderObjectInit(PC_SHADER_OBJECT_FULL_VIEW *shader, const u32 *k
     NuShaderObjectBaseInit(shader, key, index);
     shader->version = version;
 }
+/* Looks a uniform up in one constant table and marks the stage that provides it. */
+static const char *PCShaderFindConstantPc(ShaderUniformRecordPc *uniform, ID3DXConstantTable *table, const char *name,
+                                          i32 stage) {
+    const char *handle;
+    if (name != NULL && table != NULL)
+        handle = table->methods->get_constant_by_name(table, NULL, name);
+    else
+        handle = NULL;
+    if (handle != NULL && uniform->register_index >= 0)
+        uniform->stage_mask |= stage;
+    return handle;
+}
+
 void __cdecl PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *shader, ID3DXConstantTable *vertex_constants,
                                         ID3DXConstantTable *pixel_constants) {
     i32 i;
@@ -32,22 +45,15 @@ void __cdecl PCShaderProbeHLSLConstants(PC_SHADER_OBJECT_FULL_VIEW *shader, ID3D
         PC_SHADER_PARAMETER_LOCAL_PC *parameter;
         D3DX_CONSTANT_DESCRIPTION_PC description;
         UINT description_count;
-        handle = uniform->vertex_name != NULL && table != NULL
-                     ? table->methods->get_constant_by_name(table, NULL, uniform->vertex_name)
-                     : NULL;
-        if (handle != NULL && uniform->register_index >= 0)
-            uniform->stage_mask |= stage;
+        handle = PCShaderFindConstantPc(uniform, table, uniform->vertex_name, stage);
         if (handle == NULL) {
             table = pixel_constants;
             stage = 2;
-            handle = uniform->fragment_name != NULL && table != NULL
-                         ? table->methods->get_constant_by_name(table, NULL, uniform->fragment_name)
-                         : NULL;
-            if (handle != NULL && uniform->register_index >= 0)
-                uniform->stage_mask |= stage;
+            handle = PCShaderFindConstantPc(uniform, table, uniform->fragment_name, stage);
         }
         if (handle == NULL)
             continue;
+
         if (PCDeviceHardwareVertexProcessingPC == 4 && uniform->register_index >= 0)
             continue;
         parameter = PCShaderAllocateParameter(shader, i);
