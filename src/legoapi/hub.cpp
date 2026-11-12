@@ -3382,6 +3382,10 @@ static void HubUpdateSelectModePc(void) {
                                 NewMenu(17, -1, -1);
                                 return;
                             }
+                            hub_freeplaysource = 0;
+                            HubInitFreePlaySelectPc(area, -1, -1);
+                            NewMenu(17, -1, -1);
+                            return;
                         case 2:
                             hub_freeplaysource = 0;
                             HubInitFreePlaySelectPc(area, -1, -1);
@@ -3419,7 +3423,7 @@ static void HubUpdateSelectModePc(void) {
         }
         case 1:
             selectmodetime += FRAMETIME;
-            if (!(selectmodeduration <= selectmodetime))
+            if (!(selectmodetime >= selectmodeduration))
                 return;
             MakeFreePlayModelList(MissionMenuPacketPc.player_model[0], MissionMenuPacketPc.player_model[1],
                                   (i8)level->area_index, -1, 1);
@@ -3427,23 +3431,35 @@ static void HubUpdateSelectModePc(void) {
             NextArea_FreePlay = 1;
             FreePlay = 1;
             NewLData = Area_FindNextPlayLevel(HubDoorNewLevelPc);
-            break;
+            loadareacharacters_no_backdrop_reset = 1;
+            {
+                const FADETYPE fade = {FADE_TYPE_STILL};
+                FadeSys.SetFade(fade, 0);
+            }
+            FinishLoop_On = 0;
+            return;
         case 2:
             selectmodetime += FRAMETIME;
-            if (!(selectmodeduration <= selectmodetime) || NewLData != NULL)
+            if (!(selectmodetime >= selectmodeduration) || NewLData != NULL)
                 return;
             NextArea_FreePlay = 0;
             FreePlay = 0;
             NewLData = level;
-            break;
+            loadareacharacters_no_backdrop_reset = 1;
+            {
+                const FADETYPE fade = {FADE_TYPE_STILL};
+                FadeSys.SetFade(fade, 0);
+            }
+            FinishLoop_On = 0;
+            return;
         case 3:
             selectmodetime += FRAMETIME;
-            if (selectmodeduration <= selectmodetime)
+            if (selectmodetime >= selectmodeduration)
                 WipeBackToHub();
             return;
         case 4:
             selectmodetime += FRAMETIME;
-            if (selectmodeduration <= selectmodetime) {
+            if (selectmodetime >= selectmodeduration) {
                 NewLData = HUB_LDATA;
                 PlayTrailer = hub_selectmode;
                 if (hub_selectmode == 1)
@@ -3453,10 +3469,6 @@ static void HubUpdateSelectModePc(void) {
         default:
             return;
     }
-    loadareacharacters_no_backdrop_reset = 1;
-    const FADETYPE fade = {FADE_TYPE_STILL};
-    FadeSys.SetFade(fade, 0);
-    FinishLoop_On = 0;
 }
 
 /* Six native wrapper bodies. They must be mapped independently from helpers. */
