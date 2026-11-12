@@ -11,14 +11,12 @@ STATIC_ASSERT(sizeof(AITRIGGERSET_s) == 0x214);
 i32 __cdecl AITriggerSetAddTrigger(AISYS_PC *, AITRIGGERSET_s *, GIZMO_PC *);
 AITRIGGERSET_s *__cdecl AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX_PC *box) {
     i32 index;
-    AITRIGGERSET_s *set;
     if (system != NULL) {
         for (index = 0; index < 32; ++index) {
-            set = &system->sets[index];
-            if (!(set->flags & 1)) {
-                set->flags_word |= 1;
-                set->flowbox = box;
-                return set;
+            if (!(system->sets[index].flags & 1)) {
+                system->sets[index].flags_word |= 1;
+                system->sets[index].flowbox = box;
+                return &system->sets[index];
             }
         }
     }
@@ -38,11 +36,9 @@ void __cdecl AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) 
             if (box->type == 0 && box->ai_trigger_group != 0 && box->ai_trigger_group <= 32) {
                 group_index = box->ai_trigger_group - 1;
                 data = (FLOWBOXGIZMODATA_PC *)box->data;
+                if (groups[group_index] == NULL)
+                    groups[group_index] = AITriggerSetCreate(system, NULL);
                 set = groups[group_index];
-                if (set == NULL) {
-                    set = AITriggerSetCreate(system, NULL);
-                    groups[group_index] = set;
-                }
                 if (set != NULL) {
                     for (gizmo_index = 0; gizmo_index < data->gizmo_count; ++gizmo_index)
                         AITriggerSetAddTrigger(world->ai_sys, set, (GIZMO_PC *)data->gizmos[gizmo_index]->gizmo);
