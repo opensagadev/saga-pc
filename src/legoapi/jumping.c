@@ -209,7 +209,6 @@ i32(__cdecl *BigJump_JumpActionFn)(GAMEOBJECT *) = BigJump_JumpAction_Default;
 
 i32 __cdecl StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f32 duration_scale,
                          i32 animation) {
-    u16 angle;
     if (LEGOCONTEXT_BIGJUMP == -1)
         return 0;
     if ((object->character_data->model_flags & 0x200000) != 0)
@@ -232,15 +231,15 @@ i32 __cdecl StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 h
     object->context_timer = 0.0f;
     object->launch_origin = *destination;
     object->launch_origin.y -= object->character_bottom * object->origin_scale;
-    angle = NuAtan2D(destination->x - object->external_force.x, destination->z - object->external_force.z);
-    object->movement_facing_angle = angle;
-    object->facing_angle = angle;
-    object->field_0x276 = angle;
+    object->field_0x276 = object->facing_angle = object->movement_facing_angle =
+        NuAtan2D(destination->x - object->external_force.x, destination->z - object->external_force.z);
     object->flags_ef0 = (object->flags_ef0 & ~0x2000) | ((mode & 1) << 13);
     PlayJumpSfx(object, 2);
     object->ai_packet.flags |= 0x2000000;
     object->ai_packet.path_target = NULL;
-    object->big_jump_height = height < 0.0f ? 0.0f : height;
+    object->big_jump_height = height;
+    if (height < 0.0f)
+        object->big_jump_height = 0.0f;
     object->context_variant_flags &= ~0x100;
     return 1;
 }
