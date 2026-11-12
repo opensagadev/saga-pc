@@ -13031,6 +13031,7 @@ extern "C" {
         __declspec(align(16)) NUMTX scissor_planes;
 
         f32 dot;
+        f32 near_w;
 
         near_dist = global_camera.near_clip;
         near_dist_sq = near_dist * near_dist;
@@ -13082,9 +13083,9 @@ extern "C" {
 
         dot = global_camera.mtx.m20 * global_camera.mtx.m30 + global_camera.mtx.m21 * global_camera.mtx.m31 +
               global_camera.mtx.m22 * global_camera.mtx.m32;
-
         memcpy(&CameraNearClipPlanePc, &global_camera.mtx.m20, sizeof(NUVEC));
-        CameraNearClipPlanePc.w = -dot - global_camera.near_clip;
+        near_w = -dot - global_camera.near_clip;
+        CameraNearClipPlanePc.w = near_w;
 
         AxisClipNearFarPlanesPc.m00 = -global_camera.mtx.m20;
         AxisClipNearFarPlanesPc.m10 = -global_camera.mtx.m21;
@@ -13094,7 +13095,7 @@ extern "C" {
         AxisClipNearFarPlanesPc.m01 = CameraNearClipPlanePc.x;
         AxisClipNearFarPlanesPc.m11 = CameraNearClipPlanePc.y;
         AxisClipNearFarPlanesPc.m21 = CameraNearClipPlanePc.z;
-        AxisClipNearFarPlanesPc.m31 = CameraNearClipPlanePc.w;
+        AxisClipNearFarPlanesPc.m31 = near_w;
 
         VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m02, AxisClipNearFarPlanesPc.m00);
         VISIBILITY_ABSOLUTE_COMPONENT_PC(AxisClipNearFarPlanesPc.m12, AxisClipNearFarPlanesPc.m10);
