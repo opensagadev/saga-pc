@@ -22,21 +22,22 @@ typedef struct blowup_movement_pc_s {
 } BLOWUP_MOVEMENT_PC;
 
 i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
-    i32 result = 0;
-    if (object->force_target != NULL) {
-        NUVEC forward, difference;
-        f32 distance, dot, radius, radius_squared;
-        NuVecRotateY(&forward, &v001, object->field_0x276);
-        distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
-        dot = forward.x * difference.x + forward.z * difference.z;
-        if ((object->context_variant_flags & 0x80) ? dot <= 0.0f : dot >= 0.0f) {
-            radius = object->bounds_radius + opponent->bounds_radius;
-            radius += gap;
-            radius_squared = radius * radius;
-            result = distance < radius_squared;
-        }
+    NUVEC forward, difference;
+    f32 distance, dot, radius, radius_squared;
+    if (object->force_target == NULL)
+        return 0;
+    NuVecRotateY(&forward, &v001, object->field_0x276);
+    distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
+    dot = forward.x * difference.x + forward.z * difference.z;
+    if ((!(object->context_variant_flags & 0x80) && dot >= 0.0f) ||
+        ((object->context_variant_flags & 0x80) && dot <= 0.0f)) {
+        radius = object->bounds_radius + opponent->bounds_radius;
+        radius += gap;
+        radius_squared = radius * radius;
+        if (distance < radius_squared)
+            return 1;
     }
-    return result;
+    return 0;
 }
 
 void __cdecl SetWeaponOut(GAMEOBJECT *object) {
