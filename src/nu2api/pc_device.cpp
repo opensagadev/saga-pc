@@ -1342,7 +1342,10 @@ void __thiscall PC_DEVICE_BACKEND_PC::ConfigureTargetKinds() {
     PcWindowOptions.SetShadowMethod(PcWindowOptions.desiredshadowmethod);
     PcWindowOptions.SetBloomMethod(PcWindowOptions.desiredbloommethod);
     PcWindowOptions.SetSpeedBlurSupported(1);
-    PcWindowOptions.SetShadowMethod(PcWindowOptions.usehires != 0 ? 2 : 1);
+    if (PcWindowOptions.usehires != 0)
+        PcWindowOptions.SetShadowMethod(2);
+    else
+        PcWindowOptions.SetShadowMethod(1);
     if (PCDeviceHardwareVertexProcessingPC < 2) {
         if (PcWindowOptions.shadowsenabled != 0 && PcWindowOptions.shadowmethod > 1)
             PcWindowOptions.SetShadowMethod(1);
