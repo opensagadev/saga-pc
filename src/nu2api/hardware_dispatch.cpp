@@ -416,62 +416,30 @@ extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
         language = 0x809;
     NuRegionSet(3);
     switch (language) {
-        case 0x405:
-            NuLanguageSet(10);
-            break;
-        case 0x406:
-            NuLanguageSet(8);
-            break;
-        case 0x407:
-        case 0x807:
-        case 0xc07:
-        case 0x1007:
-        case 0x1407:
-            NuLanguageSet(4);
-            break;
-        case 0x408:
-            NuLanguageSet(9);
-            break;
         case 0x409:
             NuLanguageSet(18);
             NuRegionSet(2);
             break;
-        case 0x40a:
-        case 0xc0a:
-        case 0x100a:
-        case 0x140a:
-        case 0x180a:
-        case 0x200a:
-        case 0x240a:
-        case 0x280a:
-        case 0x2c0a:
-        case 0x300a:
-        case 0x340a:
-        case 0x380a:
-        case 0x3c0a:
-        case 0x400a:
-        case 0x440a:
-        case 0x480a:
-        case 0x4c0a:
-        case 0x500a:
-            NuLanguageSet(3);
-            break;
         case 0x40b:
             NuLanguageSet(17);
             break;
-        case 0x40c:
-        case 0x80c:
-        case 0x100c:
-        case 0x140c:
-        case 0x180c:
-            NuLanguageSet(2);
+        case 0x406:
+            NuLanguageSet(8);
             break;
         case 0x40e:
             NuLanguageSet(20);
             break;
-        case 0x410:
-        case 0x810:
-            NuLanguageSet(5);
+        case 0x415:
+            NuLanguageSet(11);
+            break;
+        case 0x419:
+            NuLanguageSet(12);
+            break;
+        case 0x408:
+            NuLanguageSet(9);
+            break;
+        case 0x405:
+            NuLanguageSet(10);
             break;
         case 0x411:
             NuLanguageSet(0);
@@ -480,24 +448,47 @@ extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
         case 0x412:
             NuLanguageSet(13);
             break;
-        case 0x413:
-        case 0x813:
-            NuLanguageSet(6);
+        case 0x41d:
+            NuLanguageSet(14);
             break;
         case 0x414:
             NuLanguageSet(15);
             break;
-        case 0x415:
-            NuLanguageSet(11);
-            break;
         case 0x416:
             NuLanguageSet(16);
             break;
-        case 0x419:
-            NuLanguageSet(12);
+        case 0x410:
+        case 0x810:
+            NuLanguageSet(5);
             break;
-        case 0x41d:
-            NuLanguageSet(14);
+        case 0x80a:
+            NuLanguageSet(3);
+            NuRegionSet(2);
+            break;
+        case 0x413:
+        case 0x813:
+            NuLanguageSet(6);
+            break;
+        case 0x816:
+            NuLanguageSet(7);
+            break;
+        case 0xc0c:
+            NuLanguageSet(2);
+            NuRegionSet(2);
+            break;
+        case 0x40c:
+        case 0x80c:
+        case 0x100c:
+        case 0x140c:
+        case 0x180c:
+            NuLanguageSet(2);
+            break;
+        case 0x407:
+        case 0x807:
+        case 0xc07:
+        case 0x1007:
+        case 0x1407:
+            NuLanguageSet(4);
             break;
         case 0x809:
         case 0xc09:
@@ -513,35 +504,45 @@ extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
         case 0x3409:
             NuLanguageSet(1);
             break;
-        case 0x80a:
+        case 0x40a:
+        case 0xc0a:
+        case 0x100a:
+        case 0x140a:
+        case 0x180a:
+        case 0x1c0a:
+        case 0x200a:
+        case 0x240a:
+        case 0x280a:
+        case 0x2c0a:
+        case 0x300a:
+        case 0x340a:
+        case 0x380a:
+        case 0x3c0a:
+        case 0x400a:
+        case 0x440a:
+        case 0x480a:
+        case 0x4c0a:
+        case 0x500a:
             NuLanguageSet(3);
-            NuRegionSet(2);
-            break;
-        case 0x816:
-            NuLanguageSet(7);
-            break;
-        case 0xc0c:
-            NuLanguageSet(2);
-            NuRegionSet(2);
             break;
         default:
             switch (language & 0x3ff) {
-                case 6:
-                    return 8;
-                case 7:
-                    return 4;
                 case 9:
                     return 1;
-                case 10:
-                    return 3;
                 case 12:
                     return 2;
                 case 16:
                     return 5;
-                case 21:
-                    return 11;
+                case 7:
+                    return 4;
+                case 10:
+                    return 3;
+                case 6:
+                    return 8;
                 case 25:
                     return 12;
+                case 21:
+                    return 11;
                 default:
                     return 1;
             }
@@ -555,6 +556,9 @@ extern "C" i32 __cdecl PcNativeSelectLanguage(const char *configuration_name) {
                 break;
             case 0x7a:
                 NuRegionSet(1);
+                break;
+            case 0xf2:
+                NuRegionSet(3);
                 break;
             default:
                 NuRegionSet(3);
