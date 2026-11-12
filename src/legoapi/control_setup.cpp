@@ -259,7 +259,10 @@ i32 PC_CONTROL_SCREEN_PC::WaitForRelease(void) {
 void PC_CONTROL_SCREEN_PC::Initialize(i32 count, i32 player, i32 resolve_bank, u8 is_drop_in) {
     if (!initialized || active)
         return;
-    player_count = count > 0 ? count : 2;
+    if (count <= 0)
+        player_count = 2;
+    else
+        player_count = count;
     if (player >= 0)
         selected_player = player;
     drop_in = is_drop_in;
@@ -330,6 +333,9 @@ extern "C" {
 
     void __cdecl PcControlPlaySoundPc(i32 sound) {
         switch (sound) {
+            case 6:
+                GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                break;
             case 0:
                 GameAudio_PlaySfx(0x31, NULL, 0, 0);
                 break;
@@ -341,9 +347,6 @@ extern "C" {
             case 4:
             case 5:
                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                break;
-            case 6:
-                GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 break;
         }
     }
