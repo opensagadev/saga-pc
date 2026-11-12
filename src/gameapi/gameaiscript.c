@@ -3875,7 +3875,7 @@ i32 __cdecl Action_Kill(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
     GAMEOBJECT *object, *candidate, *excluded = NULL;
     APIOBJECT_PC *found;
     char *value;
-    i32 index, creature_set = 0, all_ai = 0, check_dead = 0, parts = 0, debris = 0, respawn = 0, origin = 0;
+    i32 index, respawn = 0, origin = 0, all_ai = 0, debris = 0, parts = 0, creature_set = 0, check_dead = 0;
     (void)delta;
     object = NULL;
     if (!first_time)
@@ -3949,10 +3949,10 @@ i32 __cdecl Action_Kill(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKE
             (object->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
         if (parts)
             KillParts(object, -1, -1, 1, 0.0f, 0, NULL);
-        if (debris)
-            KillGameObject(object, 2, 0);
-        else
+        if (!debris)
             KillGameObject(object, 4, 0);
+        else
+            KillGameObject(object, 2, 0);
     }
     return 1;
 }
