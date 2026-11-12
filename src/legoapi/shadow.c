@@ -189,8 +189,8 @@ void __cdecl CharShadows_Draw(void) {
         if (!(radius > 0.0f))
             continue;
         alpha = (f32)level_alpha * object->shadow_opacity;
-        radius = (f32)((f64)radius * (f64)object->origin_scale);
-        radius = (f32)((f64)DropInOutScale(object) * (f64)radius);
+        radius *= object->origin_scale;
+        radius *= DropInOutScale(object);
         packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
         slot = packet->shadows;
         count = 0;
