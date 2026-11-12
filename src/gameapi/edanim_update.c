@@ -10,16 +10,15 @@ extern NUVEC APIObjectZeroMomentumPC;
 
 /* Native 659860/172: flags are deliberately not compacted by this helper. */
 void __cdecl edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
-    EDANIM_PARAM_PC *parameters = AnimParams;
     i32 i;
-    for (i = sound_index; i < parameters[parameter_index].sound_count - 1; ++i) {
-        parameters[parameter_index].sound_ids[i] = parameters[parameter_index].sound_ids[i + 1];
-        parameters[parameter_index].sound_values[i] = parameters[parameter_index].sound_values[i + 1];
-        memcpy(parameters[parameter_index].sound_positions[i], parameters[parameter_index].sound_positions[i + 1],
+    for (i = sound_index; i < AnimParams[parameter_index].sound_count - 1; ++i) {
+        AnimParams[parameter_index].sound_ids[i] = AnimParams[parameter_index].sound_ids[i + 1];
+        AnimParams[parameter_index].sound_values[i] = AnimParams[parameter_index].sound_values[i + 1];
+        memcpy(AnimParams[parameter_index].sound_positions[i], AnimParams[parameter_index].sound_positions[i + 1],
                sizeof(NUVEC));
-        strcpy(parameters[parameter_index].sound_names[i], parameters[parameter_index].sound_names[i + 1]);
+        strcpy(AnimParams[parameter_index].sound_names[i], AnimParams[parameter_index].sound_names[i + 1]);
     }
-    --parameters[parameter_index].sound_count;
+    --AnimParams[parameter_index].sound_count;
 }
 
 /* Native 686950: instructions [686950,686f8a), alignment [686f8a,686f8c),
