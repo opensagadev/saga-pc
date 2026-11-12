@@ -20,9 +20,9 @@ typedef struct attracto_record_recovered_pc_s {
 } ATTRACTO_RECORD_PC;
 typedef struct attracto_progress_recovered_pc_s {
     u8 counts[32];
-    u32 visible;
-    u32 active;
-    u32 filled;
+    u32 visible[1];
+    u32 active[1];
+    u32 filled[1];
 } ATTRACTO_PROGRESS_PC;
 typedef struct attracto_shard_reader_pc_s {
     char name[16];
@@ -221,9 +221,9 @@ void *__cdecl Attractos_AllocateProgressData(VARIPTR *start, VARIPTR *end) {
 void __cdecl Attractos_ClearProgress(void *world, ATTRACTO_PROGRESS_PC *progress) {
     if (progress != NULL) {
         memset(progress->counts, 0, 32);
-        progress->visible = 0xffffffffu;
-        progress->active = 0xffffffffu;
-        progress->filled = 0;
+        progress->visible[0] = 0xffffffffu;
+        progress->active[0] = 0xffffffffu;
+        progress->filled[0] = 0;
     }
 }
 void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
@@ -232,18 +232,21 @@ void __cdecl Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PR
     if (progress == NULL)
         return;
     Attractos_ClearProgress(NULL, progress);
-    if (world == NULL || world->attractos == NULL)
-        return;
-    attracto = (ATTRACTO_RECORD_PC *)world->attractos;
-    for (index = 0; index < world->attracto_count && index < 32; ++index, ++attracto) {
-        u32 mask = 1u << index;
-        progress->counts[index] = attracto->collected_count;
-        if (!attracto->visible)
-            progress->visible &= ~mask;
-        if (!attracto->active)
-            progress->active &= ~mask;
-        if (attracto->filled)
-            progress->filled |= mask;
+    if (world != NULL && world->attractos != NULL) {
+        attracto = (ATTRACTO_RECORD_PC *)world->attractos;
+        for (index = 0; index < world->attracto_count && index < 32; ++index, ++attracto) {
+            i32 word;
+            u32 mask;
+            progress->counts[index] = attracto->collected_count;
+            word = index / 32;
+            mask = 1 << (index & 31);
+            if (!attracto->visible)
+                progress->visible[word] &= ~mask;
+            if (!attracto->active)
+                progress->active[word] &= ~mask;
+            if (attracto->filled)
+                progress->filled[word] |= mask;
+        }
     }
 }
 void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_PC *progress) {
@@ -255,11 +258,10 @@ void __cdecl Attractos_Reset(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS_P
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
         AttractoInitRecordPc(attracto);
         if (progress != NULL && index < 32) {
-            u32 mask = 1u << index;
             attracto->collected_count = progress->counts[index];
-            attracto->visible = (progress->visible & mask) != 0;
-            attracto->active = (progress->active & mask) != 0;
-            attracto->filled = (progress->filled & mask) != 0;
+            attracto->visible = (progress->visible[index / 32] & (1 << (index & 31))) != 0;
+            attracto->active = (progress->active[index / 32] & (1 << (index & 31))) != 0;
+            attracto->filled = (progress->filled[index / 32] & (1 << (index & 31))) != 0;
         }
     }
 }
