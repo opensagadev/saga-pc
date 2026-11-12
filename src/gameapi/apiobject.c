@@ -1894,8 +1894,11 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
     NUVEC first_component;
     NUVEC second_component;
     NUVEC average;
-    already_touching = ((U64_PAIR(first->collision_contact_mask) & U64_PAIR(second->collision_identity_mask)) |
-                        (U64_PAIR(second->collision_contact_mask) & U64_PAIR(first->collision_identity_mask))) != 0;
+    if ((U64_PAIR(first->collision_contact_mask) & U64_PAIR(second->collision_identity_mask)) != 0 ||
+        (U64_PAIR(second->collision_contact_mask) & U64_PAIR(first->collision_identity_mask)) != 0)
+        already_touching = 1;
+    else
+        already_touching = 0;
     U64_PAIR(first->collision_contact_mask) |= U64_PAIR(second->collision_identity_mask);
     U64_PAIR(second->collision_contact_mask) |= U64_PAIR(first->collision_identity_mask);
     value = first->scaled_radius + second->scaled_radius;
@@ -1914,13 +1917,19 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         NuVecNorm(&normal, &normal);
         first_speed = NuFsqrt(first->velocity.x * first->velocity.x + first->velocity.y * first->velocity.y +
                               first->velocity.z * first->velocity.z);
-        value = first_speed == 0.0f ? 0.0f : 1.0f / first_speed;
+        if (first_speed == 0.0f)
+            value = 0.0f;
+        else
+            value = 1.0f / first_speed;
         first_component.x = first->velocity.x * value;
         first_component.y = first->velocity.y * value;
         first_component.z = first->velocity.z * value;
         second_speed = NuFsqrt((second->velocity.z * second->velocity.z) +
                                (second->velocity.x * second->velocity.x + second->velocity.y * second->velocity.y));
-        value = second_speed == 0.0f ? 0.0f : 1.0f / second_speed;
+        if (second_speed == 0.0f)
+            value = 0.0f;
+        else
+            value = 1.0f / second_speed;
         second_component.x = second->velocity.x * value;
         second_component.y = second->velocity.y * value;
         second_component.z = second->velocity.z * value;
