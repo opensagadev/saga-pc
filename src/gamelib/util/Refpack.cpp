@@ -26,8 +26,8 @@ void *memorymanager_s::AllocLinear(u32 bytes, u32 alignment, i32 clear) {
 
 /* Refpack hash and link tables, allocated once by refpack_init. */
 extern "C" {
-    i32 *RefpackHashTablePc = NULL;
-    i32 *RefpackLinkArrayPc = NULL;
+    static i32 *RefpackHashTablePc = NULL;
+    static i32 *RefpackLinkArrayPc = NULL;
 
     void __cdecl refpack_init(void) {
         RefpackHashTablePc = (i32 *)theMemoryManager.AllocLinear(0x40000, 16, 1);
@@ -36,16 +36,10 @@ extern "C" {
 }
 
 extern "C" u32 __cdecl RefpackGetMatchLengthPc(u8 *first, u8 *second, u32 maximum) {
-    u32 length = 0;
-    while (length < maximum) {
-        u8 first_byte = *first;
-        u8 second_byte = *second;
-        ++first;
-        ++second;
-        if (first_byte != second_byte) {
+    u32 length;
+    for (length = 0; length < maximum; ++length) {
+        if (*first++ != *second++)
             break;
-        }
-        ++length;
     }
     return length;
 }
