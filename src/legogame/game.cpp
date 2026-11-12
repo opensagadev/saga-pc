@@ -1043,7 +1043,7 @@ static void __cdecl GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK
                 if (waiting_for_level != -1)
                     waiting_for_new_level = 1;
             }
-        } else if (door_level == finish_index && world->current_level == start_level) {
+        } else if (door_level == (u16)finish_level->index && world->current_level == start_level) {
             PodRace_IncreaseLap();
         }
     }
