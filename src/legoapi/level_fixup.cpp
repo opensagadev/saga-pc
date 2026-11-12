@@ -43,13 +43,14 @@ extern "C" void __cdecl LostTempleC_UpdatePc(WORLDINFO *world) {
                         LostTempleExitSockPositionPc.segment, &LostTempleExitSockPositionPc);
     f32 exit_distance = MidDistanceFromSockStart(world->sock_sys, &LostTempleExitSockPositionPc);
     for (i32 i = 0; i < 2; ++i) {
-        GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
-        if (player != NULL) {
-            f32 distance = NuVecDistSqr(&player->collision_position, &LevGizObst[0]->evaluated_position, NULL);
+        if (Player[i] != NULL) {
+            f32 distance =
+                NuVecDistSqr(&((GAMEOBJECT *)Player[i])->collision_position, &LevGizObst[0]->evaluated_position, NULL);
             if ((f64)distance < (f64)LevGizObst[0]->evaluated_radius * LevGizObst[0]->evaluated_radius) {
                 inside = 1;
-            } else if (player->sock_position.segment == 1 &&
-                       MidDistanceFromSockStart(world->sock_sys, &player->sock_position) < exit_distance) {
+            } else if (((GAMEOBJECT *)Player[i])->sock_position.segment == 1 &&
+                       MidDistanceFromSockStart(world->sock_sys, &((GAMEOBJECT *)Player[i])->sock_position) <
+                           exit_distance) {
                 goto complete;
             }
         }
