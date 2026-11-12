@@ -31,15 +31,15 @@ STATIC_ASSERT(offsetof(RADFMV_DEVICE_METHODS_PC, draw_primitive_up) == 0x14c);
 STATIC_ASSERT(offsetof(RADFMV_DEVICE_METHODS_PC, set_fvf) == 0x164);
 STATIC_ASSERT(offsetof(RADFMV_FACTORY_METHODS_PC, check_format) == 0x28);
 #define RAD_DEVICE_METHODS(device) reinterpret_cast<const RADFMV_DEVICE_METHODS_PC *>((device)->methods)
+#define RAD_FACTORY_METHODS(factory) reinterpret_cast<const RADFMV_FACTORY_METHODS_PC *>((factory)->methods)
 
 extern "C" i32 __cdecl RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u32 display_format,
                                                  RADFMV_CONTEXT_PC *context) {
     const u32 formats[7][4] = {{22, 0, 4, 0}, {20, 8, 3, 0}, {23, 3, 2, 0}, {24, 2, 2, 0},
                                {21, 1, 4, 1}, {26, 5, 2, 1}, {25, 4, 2, 1}};
     u32 i;
-    const RADFMV_FACTORY_METHODS_PC *methods = reinterpret_cast<const RADFMV_FACTORY_METHODS_PC *>(factory->methods);
     for (i = 0; i < 7; ++i) {
-        if (methods->check_format(factory, 0, 1, display_format, 0, 3, formats[i][0]) >= 0) {
+        if (RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, formats[i][0]) >= 0) {
             context->opaque_format = formats[i][0];
             context->opaque_bink_format = formats[i][1];
             context->opaque_bytes = formats[i][2];
@@ -49,7 +49,8 @@ extern "C" i32 __cdecl RadFmvInitializeFormatsPc(GRAPHICS_FACTORY_PC *factory, u
     if (i == 7)
         return 0;
     for (i = 0; i < 7; ++i) {
-        if (formats[i][3] && methods->check_format(factory, 0, 1, display_format, 0, 3, formats[i][0]) >= 0) {
+        if (formats[i][3] &&
+            RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, formats[i][0]) >= 0) {
             context->alpha_format = formats[i][0];
             context->alpha_bink_format = formats[i][1];
             context->alpha_bytes = formats[i][2];
