@@ -413,9 +413,9 @@ extern "C" i32 Batarang_InitRicochet(BATARANG_NATIVE_PC *batarang, NUVEC *normal
     if (batarang == NULL || normal == NULL) {
         return 0;
     }
-    if (batarang->ricochet_state.count >= 5) {
-        --batarang->ricochet_state.count;
+    if (batarang->ricochet_state.count > 4) {
         batarang->ricochet_state.flags &= ~1u;
+        --batarang->ricochet_state.count;
         batarang->ricochet_normal = v000;
         return 0;
     }
@@ -433,7 +433,7 @@ extern "C" i32 Batarang_InitRicochet(BATARANG_NATIVE_PC *batarang, NUVEC *normal
     f32 magnitudes = NuVecMag(&batarang->ricochet_normal) * NuVecMag(&reflected_velocity);
     f32 dot = NuVecDot(&batarang->ricochet_normal, &reflected_velocity);
     f32 cosine = NuFdiv(dot, magnitudes);
-    i16 angle = 0x4000 - BatarangASinPc(cosine);
+    i32 angle = (i16)(0x4000 - BatarangASinPc(cosine));
     NuMtxSetRotationAxis(&rotation, 0x8000 - angle * 2, &axis);
     NuVecMtxRotate(&reflected_velocity, &reflected_velocity, &rotation);
     f32 speed = NuVecNorm(&original_velocity, &original_velocity);
