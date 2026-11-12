@@ -58,7 +58,7 @@ void DeathStar2BattleFire_Draw(WORLDINFO *world) {
 
 void __cdecl MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
     message->parameter_e2 = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-    message->parameter_e0 = (u16)((f64)NuTrigTable[message->parameter_e2 & 0x7fff] * 1820.0);
+    message->parameter_e0 = (u16)(NU_SIN_LUT(message->parameter_e2 * 2) * 1820.0);
 }
 
 void __cdecl MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
