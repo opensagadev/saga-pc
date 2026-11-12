@@ -184,15 +184,13 @@ extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
 
 extern "C" i32 __cdecl Episodes_Completed(void) {
     i32 completed = 0;
-    EPISODE_AREA_SAVE_READER_PC *saves = (EPISODE_AREA_SAVE_READER_PC *)Game_AreaSave;
     for (i32 i = 0; i < EPISODECOUNT; ++i) {
         EPISODEDATA_PC *episode = &EDataList[i];
         i32 complete = 0;
-        if (saves != NULL) {
-            for (i32 j = 0; j < episode->regular_areas; ++j) {
-                if (saves[episode->area_ids[j]].area_complete != 0)
+        if (Game_AreaSave != NULL) {
+            for (i32 j = 0; j < episode->regular_areas; ++j)
+                if (Game_AreaSave[episode->area_ids[j]].area_complete != 0)
                     ++complete;
-            }
             if (complete == episode->regular_areas)
                 ++completed;
         }
