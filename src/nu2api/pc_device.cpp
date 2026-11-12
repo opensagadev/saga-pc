@@ -109,7 +109,8 @@ extern "C" void __cdecl PCDeviceSetTexture(u32 stage, void *texture) {
         }
         PCDeviceStateCachePc.textures[stage] = texture;
     }
-    PCDeviceLastResult = PCDeviceBackend.device->methods->set_texture(PCDeviceBackend.device, stage, texture);
+    PC_D3D9_DEVICE_PC *device = PCDeviceBackend.device;
+    PCDeviceLastResult = device->methods->set_texture(device, stage, texture);
 }
 
 extern "C" void __cdecl PCDeviceSetTextureStageState(u32 stage, i32 state, u32 value) {
