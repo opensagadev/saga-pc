@@ -9757,13 +9757,13 @@ void __cdecl pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32
     other = aieditor->current_path->other_node;
     if (node == NULL || other == NULL)
         return;
+    connection = NULL;
     for (index = 0; index < 8; ++index) {
-        if (node->connections[index].node == other)
+        if (node->connections[index].node == other) {
+            connection = &node->connections[index];
             break;
+        }
     }
-    if (index == 8)
-        return;
-    connection = &node->connections[index];
     if (connection == NULL)
         return;
     if (connection->flags & type->connection_flag)
