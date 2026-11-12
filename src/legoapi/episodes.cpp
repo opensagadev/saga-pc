@@ -170,11 +170,12 @@ extern "C" {
 
 /* 59b700/86. Native early NULL save guard does not initialize output count. */
 extern "C" i32 __cdecl Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
-    if (Game_AreaSave == NULL)
-        return 0;
+    COLLECTION_AREA_SAVE_PC *saves = Game_AreaSave;
     i32 completed = 0;
+    if (saves == NULL)
+        return 0;
     for (i32 i = 0; i < episode->regular_areas; ++i)
-        if (Game_AreaSave[episode->area_ids[i]].area_complete != 0)
+        if (saves[episode->area_ids[i]].area_complete != 0)
             ++completed;
     if (count != NULL)
         *count = completed;
