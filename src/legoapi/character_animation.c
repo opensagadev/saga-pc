@@ -603,17 +603,15 @@ STATIC_ASSERT(offsetof(PLAYERCHARACTERCONFIG_PC, hover_fall_mode) == 0x116);
 
 /* PC EAX tail helper shared by both callbacks; AA retains this sound block inline. */
 static void AnimationWeaponEffectPc(GAMEOBJECT *object) {
-    char *name;
     i32 sound;
     if (object->id == (u16)id_IMPERIALGUARD || !(object->weapon_scale > 0.0f))
         return;
     if (object->id == (u16)id_BODYGUARD)
-        name = "Grv_GuardWeaponLp";
+        sound = GetSfxId("Grv_GuardWeaponLp");
     else if ((object->character_data->model_flags & 4) != 0)
-        name = "SaberLoopB";
+        sound = GetSfxId("SaberLoopB");
     else
-        name = "SaberLoopJ";
-    sound = GetSfxId(name);
+        sound = GetSfxId("SaberLoopJ");
     PlaySfxByIdAndSetVolume(sound, &object->collision_position, object->weapon_scale);
 }
 
