@@ -109,7 +109,6 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
     SPECIAL_RESOURCE_ENTRY_PC *entry;
     SPECIAL_RESOURCE_EVENT_PC *event;
     NUINSTANIM *animation;
-    void *animation_data;
     NUVEC *position;
     f32 end_frame, frame;
     u8 flags;
@@ -121,10 +120,10 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
         animation = (NUINSTANIM *)NuSpecialGetInstAnim(&entry->special);
         if (animation == NULL)
             continue;
-        animation_data = ((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index];
-        if (animation_data == NULL)
+        if (((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index] == NULL)
             continue;
-        end_frame = NuAnimEndFrameOld(animation_data);
+        end_frame =
+            NuAnimEndFrameOld(((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index]);
         frame = animation->ltime;
         if ((animation->flags & 1) == 0 && entry->animation_playing == 0) {
             for (j = 0; j < entry->event_count; ++j) {
@@ -145,14 +144,14 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
                 play = 0;
                 flags = event->flags;
                 if ((flags & 2) != 0) {
-                    if ((direction == 0 && (flags & 4) != 0) || (flags & 0xc) == 0xc) {
+                    if ((direction == 0 && (flags & 4) != 0) || (flags & 4) != 0 && (flags & 8) != 0) {
                         if (event->trigger_frame <= frame && frame <= event->previous_frame)
                             play = 1;
                     } else if (direction == 1 && (flags & 8) != 0 && frame <= event->trigger_frame &&
                                frame >= event->previous_frame) {
                         play = 1;
                     }
-                } else if ((flags & 0xc) == 0xc) {
+                } else if ((flags & 4) != 0 && (flags & 8) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
                         (event->trigger_frame < event->previous_frame && frame <= event->trigger_frame))
                         play = 1;
