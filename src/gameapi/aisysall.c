@@ -11496,7 +11496,7 @@ static void __cdecl AiEditorSetTriggerAreaPc(eduimenu_s *menu, eduiitem_s *item,
         return;
     }
     for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
-         area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link), ++index) {
+         ++index, area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
         if (index == item->data) {
             aieditor->selected_creature->trigger_area = area;
             return;
@@ -11556,7 +11556,7 @@ static void __cdecl AiEditorSetLocatorPc(eduimenu_s *menu, eduiitem_s *item, u32
 void __cdecl AiEditorSelectLocatorMenuPc(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenuPc, "Select Locator");
     EDLOCATOR_s *locator;
-    i32 index = 0;
+    i32 index;
     (void)item;
     (void)event;
     if (menu == NULL)
@@ -11564,6 +11564,7 @@ void __cdecl AiEditorSelectLocatorMenuPc(eduimenu_s *parent, eduiitem_s *item, u
     eduiMenuAddItem(menu,
                     eduiItemCheckCreate((size_t)-1, &AiEditorSaveMessageColoursPc,
                                         aieditor->selected_creature->locator == NULL, 1, AiEditorSetLocatorPc, "NONE"));
+    index = 0;
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
         if ((void *)aieditor->selected_creature->check.path == (void *)locator->path_check.path) {
