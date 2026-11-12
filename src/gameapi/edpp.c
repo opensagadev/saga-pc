@@ -3020,15 +3020,8 @@ void __cdecl cbPtlSelGSort(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         effect->emitter_velocity.z *= 2.0f;
     } else if (!((effect->generator_type == 6 && item->data == 12) ||
                  (effect->generator_type == 12 && item->data == 6))) {
-        effect->momentum_random_x = 0.0f;
-        effect->rotor_speed_x = 0.0f;
-        effect->rotor_speed_y = 0.0f;
-        effect->emitter_random_extent.x = 0.0f;
-        effect->emitter_random_extent.y = 0.0f;
-        effect->emitter_random_extent.z = 0.0f;
-        effect->emitter_velocity.x = 0.0f;
-        effect->emitter_velocity.y = 0.0f;
-        effect->emitter_velocity.z = 0.0f;
+        /* Retail clears momentum_random_x through emitter_velocity (0x4c-0x6f) with integer stores: one memset. */
+        memset(&effect->momentum_random_x, 0, 9 * sizeof(f32));
         effect->scale_in_time = 0.0f;
         effect->trail_count = 0;
     }
