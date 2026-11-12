@@ -465,7 +465,8 @@ void TTNetwork::Display(ThingRenderData *data) {
     }
     if (stats == NULL) {
         for (i32 i = 0; i < theRegistry.class_count; i++) {
-            if (theRegistry.GetClass(i)->object_interface != NULL && display_page == page++) {
+            EdClass *cls = theRegistry.GetClass(i);
+            if (cls->object_interface != NULL && display_page == page++) {
                 stats = nos.class_stats[i];
                 break;
             }
