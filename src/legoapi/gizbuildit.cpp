@@ -334,12 +334,12 @@ extern "C" GIZBUILDIT_PC *__cdecl GizBuildIt_FindNearest(WORLDINFO *world, GAMEO
             }
         }
         f32 height = buildit->progress / 100.0 * buildit->bounds_radius;
-        if (buildit->start_position.y - height > upper_y || lower_y > buildit->start_position.y + height)
+        if (upper_y < buildit->start_position.y - height || lower_y > buildit->start_position.y + height)
             continue;
         f32 radius = buildit->bounds_radius + 0.30000001192092896;
         f32 distance = NuVecXZDistSqr(&buildit->start_position, &position, NULL);
         radius = radius * radius;
-        if (radius > distance && nearest_distance > distance) {
+        if (distance < radius && distance < nearest_distance) {
             nearest_distance = distance;
             nearest = buildit;
         }
