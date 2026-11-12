@@ -1038,10 +1038,7 @@ static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION_PC *position) {
     position->midpoint_rotation.y = (u16)((f32)delta * position->ratio + sock->mid_rotations[segment].y);
 
     position->distance = (f32)position->segment + position->ratio;
-    if (sock->unknown_33 != 0)
-        position->normalized_distance = position->distance / (f32)(sock->length + 1);
-    else
-        position->normalized_distance = position->distance / (f32)sock->length;
+    position->normalized_distance = position->distance / (f32)(sock->unknown_33 != 0 ? sock->length + 1 : sock->length);
 }
 
 static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC *result, i32 sock_index,
