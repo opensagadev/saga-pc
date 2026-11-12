@@ -218,13 +218,19 @@ extern "C" {
         } else {
             if (object->is_underwater != 0 || object->water_intersects != 0)
                 return;
-            alternate = (WorldInfo_CurrentlyActive()->current_level->flags & 0x1000) != 0;
-            if ((object->character_data->model_flags & 0x10) != 0)
-                sfx = GameAudio->sfx_ids[alternate ? 10 : 9];
-            else {
+            alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
+            if ((object->character_data->model_flags & 0x10) != 0) {
+                if (alternate)
+                    sfx = GameAudio->sfx_ids[10];
+                else
+                    sfx = GameAudio->sfx_ids[9];
+            } else {
                 if (type != 0)
                     return;
-                sfx = GameAudio->sfx_ids[alternate ? 8 : 7];
+                if (alternate)
+                    sfx = GameAudio->sfx_ids[8];
+                else
+                    sfx = GameAudio->sfx_ids[7];
             }
         }
         if (sfx != -1) {
