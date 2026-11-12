@@ -13035,8 +13035,8 @@ extern "C" {
         NuMtxMulH(&VisibilityPrimaryWorldMatrixPc, &vmtx, &VisibilityPrimaryPlaneMatrixPc);
         NuMtxMulH(&VisibilityAlternateWorldMatrixPc, &vmtx, &VisibilityAlternatePlaneMatrixPc);
         memcpy(&VisibilityDepthPlanePc, &global_camera.mtx.m20, sizeof(NUVEC));
-        distance = global_camera.mtx.m21 * global_camera.mtx.m31 + global_camera.mtx.m20 * global_camera.mtx.m30 +
-                   global_camera.mtx.m22 * global_camera.mtx.m32;
+        distance = global_camera.mtx.m31 * global_camera.mtx.m21 + global_camera.mtx.m30 * global_camera.mtx.m20 +
+                   global_camera.mtx.m32 * global_camera.mtx.m22;
         VisibilityDepthPlanePc.d = -distance;
         VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.a, VisibilityDepthPlanePc.a);
         VISIBILITY_ABSOLUTE_COMPONENT_PC(VisibilityAbsoluteDepthPlanePc.b, VisibilityDepthPlanePc.b);
