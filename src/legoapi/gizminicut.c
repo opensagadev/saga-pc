@@ -187,8 +187,7 @@ static void *__cdecl GizMiniCut_ReserveBufferSpace(void *world_ptr) {
         world->giz_buffer.addr +=
             world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC);
         memset(view->parts, 0,
-               world->current_level->max_minicut_stages * world->current_level->max_minicuts *
-                   sizeof(MINICUT_PART_PC));
+               world->current_level->max_minicut_stages * world->current_level->max_minicuts * sizeof(MINICUT_PART_PC));
         for (i = 0; i < world->current_level->max_minicuts; ++i) {
             view->minicuts[i].parts = &view->parts[i * world->current_level->max_minicut_stages];
             view->minicuts[i].blend_out = 2.5f;
