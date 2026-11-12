@@ -5,25 +5,27 @@ extern "C" void __cdecl PCSpecialEmptyHandler_candidate(...);
 extern "C" {
     AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
                                                             u8 direction, void *target, u8 type) {
-        if (system == NULL || system->count >= system->capacity || connection == NULL)
-            return NULL;
-        if (target == NULL)
-            return NULL;
-        i32 count = system->count;
-        AI_HELPER_SLOT_PC *helper = system->helpers;
-        for (i32 index = 0; index < count; ++index, ++helper) {
-            if (helper->connection == connection && helper->type == type && helper->target == target) {
-                if (helper->direction != direction)
-                    helper->direction = 0xff;
-                return helper;
+        AI_HELPER_SLOT_PC *helper = NULL;
+        if (system != NULL) {
+            i16 count = system->count;
+            if (count < system->capacity && connection != NULL && target != NULL) {
+                AI_HELPER_SLOT_PC *existing = system->helpers;
+                for (i32 index = 0; index < system->count; ++index, ++existing) {
+                    if (existing->connection == connection && type == existing->type && target == existing->target) {
+                        if (existing->direction != direction)
+                            existing->direction = 0xff;
+                        return existing;
+                    }
+                }
+                helper = &system->helpers[count];
+                ++count;
+                system->count = count;
+                helper->connection = connection;
+                helper->direction = direction;
+                helper->target = target;
+                helper->type = type;
             }
         }
-        helper = &system->helpers[count];
-        ++system->count;
-        helper->connection = connection;
-        helper->direction = direction;
-        helper->target = target;
-        helper->type = type;
         return helper;
     }
     i32 __cdecl CharCategory_FindByName(char *name) {
