@@ -1196,6 +1196,7 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
 
 i32 __cdecl CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos, f32 radius, i32 include_hidden) {
     CUT_TRIGGER_FILE_PC *file = set->file;
+    NUGSCN *gscene;
     CUT_TRIGGER_ENTRY_PC *entry;
     CUT_TRIGGER_SCENE_INSTANCE_PC *instance;
     i32 hit;
@@ -1203,20 +1204,25 @@ i32 __cdecl CutTriggerSetTestPc(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos,
     for (i = 0; i < file->count; ++i) {
         if (NuStrICmp(file->entries[i].name, name) == 0) {
             entry = &file->entries[i];
-            if (entry->kind == 1 && ((entry->flags & 8) == 0 || include_hidden != 0)) {
-                if (entry->scene_instance >= 0) {
-                    instance = &((CUT_TRIGGER_SCENE_INSTANCE_PC *)set->scene->instances)[entry->scene_instance];
-                    if ((instance->flags & 1) == 0)
-                        continue;
-                    if (instance->animated_matrix != NULL)
-                        hit = CutTriggerEntryTestMtxPc(entry, instance->animated_matrix, pos, radius);
-                    else
-                        hit = CutTriggerEntryTestMtxPc(entry, &instance->matrix, pos, radius);
-                } else {
-                    hit = CutTriggerEntryTestPc(entry, pos, radius);
-                }
-                if (hit != 0)
-                    return 1;
+            gscene = set->scene;
+            switch (entry->kind) {
+                case 1:
+                    if ((entry->flags & 8) != 0 && include_hidden == 0)
+                        break;
+                    if (entry->scene_instance >= 0) {
+                        instance = &((CUT_TRIGGER_SCENE_INSTANCE_PC *)gscene->instances)[entry->scene_instance];
+                        if ((instance->flags & 1) == 0)
+                            break;
+                        if (instance->animated_matrix != NULL)
+                            hit = CutTriggerEntryTestMtxPc(entry, instance->animated_matrix, pos, radius);
+                        else
+                            hit = CutTriggerEntryTestMtxPc(entry, &instance->matrix, pos, radius);
+                    } else {
+                        hit = CutTriggerEntryTestPc(entry, pos, radius);
+                    }
+                    if (hit != 0)
+                        return 1;
+                    break;
             }
         }
     }
