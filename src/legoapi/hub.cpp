@@ -4008,71 +4008,61 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
                     MenuRepeat(&left_held, &left, &leftrepeattime[player], &leftrepeatcount[player], 0.1f, FRAMETIME);
                     MenuRepeat(&right_held, &right, &rightrepeattime[player], &rightrepeatcount[player], 0.1f,
                                FRAMETIME);
-                    const i32 columns = collection->columns, count = collection->count;
                     if (up)
                         index = HubMoveFreePlayCursorPc(collection, player, 0, previous);
-                    else if (down) {
-                        const i32 span = (count / columns + 1) * columns;
-                        do {
-                            index += columns;
-                            if (index >= count) {
-                                if (index < span)
-                                    index += columns;
-                                index -= span;
-                            }
-                        } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
-                    } else if (left) {
-                        do {
-                            i32 column = index % columns - 1;
-                            if (column < 0)
-                                column += columns;
-                            index = index / columns * columns + column;
-                            if (index >= count)
-                                index = count - 1;
-                        } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
-                    } else if (right) {
-                        do {
-                            i32 column = index % columns + 1;
-                            if (column >= columns)
-                                column -= columns;
-                            const i32 row = index / columns * columns;
-                            index = row + column;
-                            if (index >= count)
-                                index = row;
-                        } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
-                    }
+                    else if (down)
+                        index = HubMoveFreePlayCursorPc(collection, player, 1, previous);
+                    else if (left)
+                        index = HubMoveFreePlayCursorPc(collection, player, 2, previous);
+                    else if (right)
+                        index = HubMoveFreePlayCursorPc(collection, player, 3, previous);
                 }
                 ++active;
                 if (freeplay_selected[player] >= 2)
                     ++confirmed;
                 if (select) {
-                    if (freeplay_selected[player] == 0 && freeplay_time[player] <= 0) {
-                        if (Collection_Got(collection->list[freeplay_i[player]].id) == 0)
-                            GameAudio_PlaySfx(0x32, NULL, 0, 0);
-                        else {
-                            freeplay_selected[player] = 1;
-                            freeplay_time[player] = HubFreePlaySelectionWaitPc;
-                            GameAudio_PlaySfx(0x30, NULL, 0, 0);
-                        }
-                    } else if (freeplay_selected[player] == 1 && freeplay_time[player] <= 0) {
-                        freeplay_selected[player] = 2;
-                        GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                    switch (freeplay_selected[player]) {
+                        case 1:
+                            if (freeplay_time[player] <= 0) {
+                                freeplay_selected[player] = 2;
+                                GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                            }
+                            break;
+                        case 0:
+                            if (freeplay_time[player] <= 0) {
+                                if (Collection_Got(collection->list[freeplay_i[player]].id) == 0)
+                                    GameAudio_PlaySfx(0x32, NULL, 0, 0);
+                                else {
+                                    freeplay_selected[player] = 1;
+                                    freeplay_time[player] = HubFreePlaySelectionWaitPc;
+                                    GameAudio_PlaySfx(0x30, NULL, 0, 0);
+                                }
+                            }
+                            break;
                     }
                 }
                 if (cancel) {
-                    if (freeplay_selected[player] == 2) {
-                        if (MissionMenuPacketPc.active_player[other] != 0 &&
-                            freeplay_selected[other] < freeplay_selected[player]) {
-                            freeplay_selected[player] = 1;
-                            GameAudio_PlaySfx(0x31, NULL, 0, 0);
-                        }
-                    } else if (freeplay_selected[player] == 1 && freeplay_time[player] <= 0) {
-                        BigIconAlpha[player] = 0;
-                        freeplay_selected[player] = 0;
-                        freeplay_time[player] = HubFreePlaySelectionWaitPc;
-                        GameAudio_PlaySfx(0x31, NULL, 0, 0);
-                    } else if (freeplay_selected[player] == 0 && freeplay_time[player] <= 0)
-                        exit = 1;
+                    switch (freeplay_selected[player]) {
+                        case 2:
+                            if (MissionMenuPacketPc.active_player[other] != 0 &&
+                                freeplay_selected[other] < freeplay_selected[player]) {
+                                freeplay_selected[player] = 1;
+                                GameAudio_PlaySfx(0x31, NULL, 0, 0);
+                            }
+                            break;
+                        case 1:
+                            if (freeplay_time[player] <= 0) {
+                                BigIconAlpha[player] = 0;
+                                freeplay_selected[player] = 0;
+                                freeplay_time[player] = HubFreePlaySelectionWaitPc;
+                                GameAudio_PlaySfx(0x31, NULL, 0, 0);
+                            }
+                            break;
+                        case 0:
+                            if (freeplay_time[player] <= 0)
+                                exit = 1;
+                            break;
+                    }
                 }
                 if (index != previous) {
                     freeplay_i[player] = index;
@@ -4100,7 +4090,7 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
         }
         case 3:
             freeplaytime += FRAMETIME;
-            if (freeplayduration <= freeplaytime) {
+            if (freeplaytime >= freeplayduration) {
                 freeplaymode = 4;
                 freeplaytime = 0;
                 freeplayduration = 1.5f;
@@ -4108,7 +4098,7 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
             break;
         case 4:
             freeplaytime += FRAMETIME;
-            if (freeplayduration <= freeplaytime) {
+            if (freeplaytime >= freeplayduration) {
                 makeplayerlist_freeplay = 1;
                 NewLData = &LDataList[HubDoorNewLevelPc];
                 NextArea_FreePlay = 1;
@@ -4128,7 +4118,7 @@ extern "C" void __cdecl Hub_UpdateFreePlaySelect(void) {
             break;
         case 2:
             freeplaytime += FRAMETIME;
-            if (freeplayduration <= freeplaytime)
+            if (freeplaytime >= freeplayduration)
                 WipeBackToHub();
             break;
     }
