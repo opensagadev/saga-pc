@@ -2639,58 +2639,21 @@ void __cdecl edrtlSaveUndo(void) {
 }
 
 void __cdecl cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_LIGHT_PC *destination, *base, *current;
-    VARIPTR address, set_address, light_address;
-    u32 word;
-    i32 index, difference;
-    i8 parent;
     if (clipboard_light.type != 0) {
         edrtlSaveUndo();
-        destination = rtlAlloc();
-        curr_rtl = destination;
-        if (destination != NULL) {
-            for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
-                memcpy(&word, (u8 *)&clipboard_light + index * sizeof(u32), sizeof(word));
-                memcpy((u8 *)destination + index * sizeof(u32), &word, sizeof(word));
-            }
-            base = base_rtl;
-            current = curr_rtl;
-            if (base != NULL) {
-                current->field_79 = base->field_79;
-                current = curr_rtl;
-                parent = current->field_79;
-                if (parent != -1) {
-                    light_address.void_ptr = current;
-                    set_address.void_ptr = curr_set;
-                    difference = (i32)(light_address.addr - set_address.addr - offsetof(RTL_SET_PC, lights));
-                    address = set_address;
-                    address.addr += (u32)((i32)parent * sizeof(RTL_LIGHT_PC)) + offsetof(RTL_SET_PC, lights);
-                    ((RTL_LIGHT_PC *)address.void_ptr)->field_7a = (i8)(difference / (i32)sizeof(RTL_LIGHT_PC));
-                    current = curr_rtl;
-                }
-                light_address.void_ptr = base_rtl;
-                set_address.void_ptr = curr_set;
-                difference = (i32)(light_address.addr - set_address.addr - offsetof(RTL_SET_PC, lights));
-                current->field_7a = (i8)(difference / (i32)sizeof(RTL_LIGHT_PC));
-                light_address.void_ptr = curr_rtl;
-                set_address.void_ptr = curr_set;
-                difference = (i32)(light_address.addr - set_address.addr - offsetof(RTL_SET_PC, lights));
-                base = base_rtl;
-                base->field_79 = (i8)(difference / (i32)sizeof(RTL_LIGHT_PC));
+        curr_rtl = rtlAlloc();
+        if (curr_rtl != NULL) {
+            *curr_rtl = clipboard_light;
+            if (base_rtl != NULL) {
+                curr_rtl->field_79 = base_rtl->field_79;
+                if (curr_rtl->field_79 != -1)
+                    curr_set->lights[curr_rtl->field_79].field_7a = (i8)(curr_rtl - curr_set->lights);
+                curr_rtl->field_7a = (i8)(base_rtl - curr_set->lights);
+                base_rtl->field_79 = (i8)(curr_rtl - curr_set->lights);
             } else {
-                current->field_7a = -1;
-                current = curr_rtl;
-                current->field_79 = -1;
+                curr_rtl->field_79 = curr_rtl->field_7a = -1;
             }
-            memcpy(&word, &burn_editor_position_pc.x, sizeof(word));
-            current = curr_rtl;
-            memcpy(&current->position.x, &word, sizeof(word));
-            memcpy(&word, &burn_editor_position_pc.y, sizeof(word));
-            current = curr_rtl;
-            memcpy(&current->position.y, &word, sizeof(word));
-            memcpy(&word, &burn_editor_position_pc.z, sizeof(word));
-            current = curr_rtl;
-            memcpy(&current->position.z, &word, sizeof(word));
+            curr_rtl->position = burn_editor_position_pc;
         }
     }
 }
@@ -2710,59 +2673,22 @@ void __cdecl cbDeleteYes(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
 }
 
 void __cdecl cbPasteIntoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_LIGHT_PC *destination, *base, *current;
-    VARIPTR address, set_address, light_address;
-    u32 word, position_x, position_y, position_z;
-    i32 index, difference;
-    i8 parent;
+    NUVEC position;
     if (clipboard_light.type != 0) {
         edrtlSaveUndo();
-        destination = curr_rtl;
-        if (destination != NULL) {
-            memcpy(&position_z, &destination->position.z, sizeof(position_z));
-            memcpy(&position_y, &destination->position.y, sizeof(position_y));
-            memcpy(&position_x, &destination->position.x, sizeof(position_x));
-            for (index = 0; index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++index) {
-                memcpy(&word, (u8 *)&clipboard_light + index * sizeof(u32), sizeof(word));
-                memcpy((u8 *)destination + index * sizeof(u32), &word, sizeof(word));
-            }
-            base = base_rtl;
-            if (base != NULL) {
-                parent = base->field_79;
-                current = curr_rtl;
-                current->field_79 = parent;
-                current = curr_rtl;
-                parent = current->field_79;
-                if (parent != -1) {
-                    light_address.void_ptr = current;
-                    set_address.void_ptr = curr_set;
-                    difference = (i32)(light_address.addr - set_address.addr - offsetof(RTL_SET_PC, lights));
-                    address = set_address;
-                    address.addr += (u32)((i32)parent * sizeof(RTL_LIGHT_PC)) + offsetof(RTL_SET_PC, lights);
-                    ((RTL_LIGHT_PC *)address.void_ptr)->field_7a = (i8)(difference / (i32)sizeof(RTL_LIGHT_PC));
-                    current = curr_rtl;
-                }
-                light_address.void_ptr = base_rtl;
-                set_address.void_ptr = curr_set;
-                difference = (i32)(light_address.addr - set_address.addr - offsetof(RTL_SET_PC, lights));
-                current->field_7a = (i8)(difference / (i32)sizeof(RTL_LIGHT_PC));
-                light_address.void_ptr = curr_rtl;
-                set_address.void_ptr = curr_set;
-                difference = (i32)(light_address.addr - set_address.addr - offsetof(RTL_SET_PC, lights));
-                base = base_rtl;
-                base->field_79 = (i8)(difference / (i32)sizeof(RTL_LIGHT_PC));
+        if (curr_rtl != NULL) {
+            position = curr_rtl->position;
+            *curr_rtl = clipboard_light;
+            if (base_rtl != NULL) {
+                curr_rtl->field_79 = base_rtl->field_79;
+                if (curr_rtl->field_79 != -1)
+                    curr_set->lights[curr_rtl->field_79].field_7a = (i8)(curr_rtl - curr_set->lights);
+                curr_rtl->field_7a = (i8)(base_rtl - curr_set->lights);
+                base_rtl->field_79 = (i8)(curr_rtl - curr_set->lights);
             } else {
-                current = curr_rtl;
-                current->field_7a = -1;
-                current = curr_rtl;
-                current->field_79 = -1;
+                curr_rtl->field_79 = curr_rtl->field_7a = -1;
             }
-            current = curr_rtl;
-            memcpy(&current->position.x, &position_x, sizeof(position_x));
-            current = curr_rtl;
-            memcpy(&current->position.y, &position_y, sizeof(position_y));
-            current = curr_rtl;
-            memcpy(&current->position.z, &position_z, sizeof(position_z));
+            curr_rtl->position = position;
         } else {
             cbPasteLight(menu, item, buttons);
         }
@@ -2777,58 +2703,26 @@ void __cdecl edrtlcbCancelDeleteMenu(eduimenu_s *menu, eduimenu_s *parent) {
 }
 
 void __cdecl cbCopyToGroup(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_LIGHT_PC *source, *destination;
-    RTL_SET_PC *set;
-    VARIPTR address;
-    u32 word, position_x, position_y, position_z;
-    u16 uid, user_id;
-    i32 index, word_index;
     i32 save_undo = 1;
-    source = curr_rtl;
-    if (source != NULL && source->group_id != 0) {
-        set = curr_set;
-        for (index = 0; index < 128; ++index) {
-            address.void_ptr = set;
-            address.addr += offsetof(RTL_SET_PC, lights) + (u32)index * sizeof(RTL_LIGHT_PC);
-            destination = (RTL_LIGHT_PC *)address.void_ptr;
-            if (destination != source && destination->type != 0 && destination->group_id == source->group_id) {
+    i32 i;
+    NUVEC position;
+    u16 uid, user_id;
+    if (curr_rtl != NULL && curr_rtl->group_id != 0) {
+        for (i = 0; i < 128; ++i) {
+            if (&curr_set->lights[i] == curr_rtl)
+                continue;
+            if (curr_set->lights[i].type != 0 && curr_set->lights[i].group_id == curr_rtl->group_id) {
                 if (save_undo) {
                     edrtlSaveUndo();
-                    source = curr_rtl;
-                    set = curr_set;
                     save_undo = 0;
                 }
-                address.void_ptr = set;
-                address.addr += offsetof(RTL_SET_PC, lights) + (u32)index * sizeof(RTL_LIGHT_PC);
-                destination = (RTL_LIGHT_PC *)address.void_ptr;
-                memcpy(&position_z, &destination->position.z, sizeof(position_z));
-                memcpy(&position_x, &destination->position.x, sizeof(position_x));
-                memcpy(&position_y, &destination->position.y, sizeof(position_y));
-                memcpy(&uid, &destination->uid, sizeof(uid));
-                memcpy(&user_id, &destination->field_68, sizeof(user_id));
-                for (word_index = 0; word_index < sizeof(RTL_LIGHT_PC) / sizeof(u32); ++word_index) {
-                    memcpy(&word, (u8 *)source + word_index * sizeof(u32), sizeof(word));
-                    memcpy((u8 *)destination + word_index * sizeof(u32), &word, sizeof(word));
-                }
-                set = curr_set;
-                address.void_ptr = set;
-                address.addr += offsetof(RTL_SET_PC, lights) + (u32)index * sizeof(RTL_LIGHT_PC);
-                destination = (RTL_LIGHT_PC *)address.void_ptr;
-                memcpy(&destination->position.x, &position_x, sizeof(position_x));
-                memcpy(&destination->position.y, &position_y, sizeof(position_y));
-                memcpy(&destination->position.z, &position_z, sizeof(position_z));
-                set = curr_set;
-                address.void_ptr = set;
-                address.addr += offsetof(RTL_SET_PC, lights) + (u32)index * sizeof(RTL_LIGHT_PC);
-                destination = (RTL_LIGHT_PC *)address.void_ptr;
-                memcpy(&destination->uid, &uid, sizeof(uid));
-                set = curr_set;
-                address.void_ptr = set;
-                address.addr += offsetof(RTL_SET_PC, lights) + (u32)index * sizeof(RTL_LIGHT_PC);
-                destination = (RTL_LIGHT_PC *)address.void_ptr;
-                memcpy(&destination->field_68, &user_id, sizeof(user_id));
-                source = curr_rtl;
-                set = curr_set;
+                position = curr_set->lights[i].position;
+                uid = curr_set->lights[i].uid;
+                user_id = curr_set->lights[i].field_68;
+                curr_set->lights[i] = *curr_rtl;
+                curr_set->lights[i].position = position;
+                curr_set->lights[i].uid = uid;
+                curr_set->lights[i].field_68 = user_id;
             }
         }
     }
@@ -3970,46 +3864,22 @@ void __cdecl cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent) {
 }
 
 void __cdecl cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *destination, *current;
-    u32 word;
-    i32 index;
     if (clipboard_fog.type != 0) {
-        destination = fogAlloc();
-        curr_fog = destination;
-        if (destination != NULL) {
-            for (index = 0; index < sizeof(RTL_FOG_MIGRATION_PC) / sizeof(u32); ++index) {
-                memcpy(&word, (u8 *)&clipboard_fog + index * sizeof(u32), sizeof(word));
-                memcpy((u8 *)destination + index * sizeof(u32), &word, sizeof(word));
-            }
-            current = curr_fog;
-            memcpy(&word, &burn_editor_position_pc.x, sizeof(word));
-            memcpy(&current->position.x, &word, sizeof(word));
-            memcpy(&word, &burn_editor_position_pc.y, sizeof(word));
-            memcpy(&current->position.y, &word, sizeof(word));
-            memcpy(&word, &burn_editor_position_pc.z, sizeof(word));
-            memcpy(&current->position.z, &word, sizeof(word));
+        curr_fog = fogAlloc();
+        if (curr_fog != NULL) {
+            *curr_fog = clipboard_fog;
+            curr_fog->position = burn_editor_position_pc;
         }
     }
 }
 
 void __cdecl cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *destination, *current;
-    u32 word, position_x, position_y, position_z;
-    i32 index;
+    NUVEC position;
     if (clipboard_fog.type != 0) {
-        destination = curr_fog;
-        if (destination != NULL) {
-            memcpy(&position_x, &destination->position.x, sizeof(position_x));
-            memcpy(&position_y, &destination->position.y, sizeof(position_y));
-            memcpy(&position_z, &destination->position.z, sizeof(position_z));
-            for (index = 0; index < sizeof(RTL_FOG_MIGRATION_PC) / sizeof(u32); ++index) {
-                memcpy(&word, (u8 *)&clipboard_fog + index * sizeof(u32), sizeof(word));
-                memcpy((u8 *)destination + index * sizeof(u32), &word, sizeof(word));
-            }
-            current = curr_fog;
-            memcpy(&current->position.x, &position_x, sizeof(position_x));
-            memcpy(&current->position.y, &position_y, sizeof(position_y));
-            memcpy(&current->position.z, &position_z, sizeof(position_z));
+        if (curr_fog != NULL) {
+            position = curr_fog->position;
+            *curr_fog = clipboard_fog;
+            curr_fog->position = position;
         } else {
             cbPasteFog(menu, item, buttons);
         }
