@@ -2117,27 +2117,31 @@ extern "C" void __cdecl Bolts_Draw(WORLDINFO *world) {
                 scale.y = size;
             else
                 scale.y = (bolt->time / type->field_24) * size;
-            scale.x = scale.z = (bolt->flags & 0x200) != 0 ? scale.y : size;
+            if ((bolt->flags & 0x200) != 0)
+                scale.x = scale.z = scale.y;
+            else
+                scale.x = scale.z = size;
             NuMtxPreScale(&matrix, &scale);
         } else if (bolt->scale != 1.0f) {
             scale.x = scale.y = scale.z = size;
             NuMtxPreScale(&matrix, &scale);
         }
         NuMtxTranslate(&matrix, &bolt->position);
-        NUSPECIALHANDLE *specials = reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68);
-        i32 first = 0, second = 0;
-        if (NuSpecialExistsFn(&specials[0]))
-            first = NuSpecialDrawAt(&specials[0], &matrix);
-        if (NuSpecialExistsFn(&specials[1]))
-            second = NuSpecialDrawAt(&specials[1], &matrix);
+        i32 drawn[2];
+        drawn[0] = NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[0])
+                       ? NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[0], &matrix)
+                       : 0;
+        drawn[1] = NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[1])
+                       ? NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[1], &matrix)
+                       : 0;
         if (static_cast<f64>(bolt->reflection_height) != 2000000.0) {
             NUMTX reflection;
             if (MatrixReflectionVU0_AXISY(&matrix, bolt->reflection_height, world->current_level->reflection_y,
                                           &reflection)) {
-                if (NuSpecialExistsFn(&specials[2]))
-                    NuSpecialDrawAt(&specials[2], &reflection);
-                if (NuSpecialExistsFn(&specials[3]))
-                    NuSpecialDrawAt(&specials[3], &reflection);
+                if (NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[2]))
+                    NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[2], &reflection);
+                if (NuSpecialExistsFn(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[3]))
+                    NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[3], &reflection);
             }
         }
         if (static_cast<f64>(bolt->field_e4) != 2000000.0) {
@@ -2148,9 +2152,9 @@ extern "C" void __cdecl Bolts_Draw(WORLDINFO *world) {
             matrix.m30 = bolt->position.x;
             matrix.m31 = static_cast<f32>(static_cast<f64>(bolt->field_e4) + static_cast<f64>(0.005f));
             matrix.m32 = bolt->position.z;
-            NuSpecialDrawAt(&specials[4], shadow_matrix);
+            NuSpecialDrawAt(&reinterpret_cast<NUSPECIALHANDLE *>(type->specials_68)[4], shadow_matrix);
         }
-        if (first != 0 || second != 0)
+        if (drawn[0] != 0 || drawn[1] != 0)
             bolt->field_102 = 1;
         else if (Paused == 0 && bolt->field_102 != 0 && (bolt->flags & 0x20) == 0)
             bolt->active = 0;
