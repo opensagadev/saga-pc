@@ -234,7 +234,10 @@ static void CutSceneEndRigidsPC(INSTNUGCUTSCENE *owner, f32 frame) {
             if (source->state_animation != NULL) {
                 u8 visible;
                 if (StateAnimEvaluate(source->state_animation, &object->state_index, &visible, frame) != 0) {
-                    NuSpecialSetVisibility(&object->special, visible != 0);
+                    if (visible != 0)
+                        NuSpecialSetVisibility(&object->special, 1);
+                    else
+                        NuSpecialSetVisibility(&object->special, 0);
                 }
             }
             if (NuSpecialGetVisibilityFn(&object->special) == 0) {
