@@ -5188,13 +5188,13 @@ i32 __cdecl Action_ShootAtOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     f32 interval_2;
     f32 random;
 
+    explicit_range = 0;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
         return 1;
     object = ((APIOBJECT_PC *)packet->owner)->owner;
     if (param_5 != 0) {
         processor->action_data_5 = engagefiretime;
         fraction = NuRandFloat();
-        explicit_range = 0;
         for (index = 0; index < param_4; ++index) {
 
             if ((value = NuStrIStr(params[index], (char *)AIGameFireRangeName)) != NULL) {
@@ -5222,12 +5222,11 @@ i32 __cdecl Action_ShootAtOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
                 processor->action_data_4 = packet->movement_instruction_parameter + aitol;
     }
     opponent = (GAMEOBJECT *)(processor->action_data_3);
-    if (opponent == NULL || (opponent->flags_1fc_word & 0x1001) != 0x1001 ||
+    if (opponent == NULL || (opponent->flags_1fc_word & 1) == 0 || (opponent->flags_1fc_word & 0x1000) == 0 ||
         (opponent->dead != 0 && !(opponent->field_1010 > 0.0f))) {
         if (packet->opponent == NULL || ((APIOBJECT_PC *)packet->opponent)->ai == NULL ||
-            ((APIOBJECT_PC *)packet->opponent)->owner == NULL)
+            (opponent = ((APIOBJECT_PC *)packet->opponent)->owner) == NULL)
             return 0;
-        opponent = ((APIOBJECT_PC *)packet->opponent)->owner;
     }
 
     distance = NuVecDistSqr(&packet->owner->position, &opponent->position, &difference);
