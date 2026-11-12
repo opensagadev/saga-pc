@@ -1122,23 +1122,20 @@ extern "C" {
 
     static void WorldStoreScriptProgressPC(WORLDINFO *world, LEVEL_SCRIPT_PROCESS_PC *processor,
                                            LEVEL_PROGRESS *progress) {
-        LEVEL_PROGRESS_TRANSFER_PC *saved = (LEVEL_PROGRESS_TRANSFER_PC *)progress;
-        i32 index;
+        i32 index, parameter;
 
-        if (saved == NULL || processor == NULL || NuStrLen(processor->name) == 0) {
+        if (progress == NULL || processor == NULL || NuStrLen(processor->name) == 0) {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(saved->scripts[index].name) == 0) {
-                LEVEL_PROGRESS_TRANSFER_PC *active = (LEVEL_PROGRESS_TRANSFER_PC *)world->level_progress;
-                NuStrCpy(active->scripts[index].name, processor->name);
-            } else if (NuStrICmp(saved->scripts[index].name, processor->name) != 0) {
+            if (NuStrLen(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name) == 0) {
+                NuStrCpy(((LEVEL_PROGRESS_TRANSFER_PC *)world->level_progress)->scripts[index].name, processor->name);
+            } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name, processor->name) != 0) {
                 continue;
             }
-            saved->scripts[index].params[0] = processor->processor.params[0];
-            saved->scripts[index].params[1] = processor->processor.params[1];
-            saved->scripts[index].params[2] = processor->processor.params[2];
-            saved->scripts[index].params[3] = processor->processor.params[3];
+            for (parameter = 0; parameter < 4; ++parameter)
+                ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
+                    processor->processor.params[parameter];
             break;
         }
     }
