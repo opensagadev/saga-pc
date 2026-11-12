@@ -89,7 +89,8 @@ typedef struct portal_callback_pc_s {
     u8 reserved_00[0x1a];
     i8 id;
     u8 reserved_1b;
-    u32 flags;
+    u8 flags;
+    u8 reserved_1d[3];
 } PORTAL_CALLBACK_PC;
 STATIC_ASSERT(sizeof(PORTAL_CALLBACK_PC) == 0x20);
 STATIC_ASSERT(offsetof(PORTAL_CALLBACK_PC, id) == 0x1a);
@@ -153,7 +154,7 @@ static i32 __cdecl Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) 
         return 0;
     portal = (PORTAL_CALLBACK_PC *)gizmo->object;
     if ((check & 1) != 0) {
-        if (inactive != 0 && ((portal->flags & 1) == 0 || inactive != 1))
+        if (inactive != 0 && inactive != (portal->flags & 1))
             return 0;
         return 1;
     }
