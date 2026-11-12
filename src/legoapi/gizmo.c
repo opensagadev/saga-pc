@@ -166,7 +166,7 @@ __declspec(noinline) void *__cdecl GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *en
     void *allocation = NULL;
     if (buffer != NULL && end != NULL && buffer->addr + (u32)size < end->addr) {
         allocation = (void *)((buffer->addr + 15) & ~15u);
-        buffer->addr = (u32)allocation + size;
+        buffer->addr = ((buffer->addr + 15) & ~15u) + size;
         memset(allocation, 0, size);
     }
     return allocation;
@@ -269,7 +269,7 @@ void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     if (buffer != NULL && end != NULL) {
         if (buffer->addr + sizeof(GIZMOSYS_PC) < end->addr) {
             system = (GIZMOSYS_PC *)((buffer->addr + 15) & ~15u);
-            buffer->addr = (u32)system + sizeof(GIZMOSYS_PC);
+            buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(GIZMOSYS_PC);
             memset(system, 0, sizeof(GIZMOSYS_PC));
         } else {
             GizmoDiagnosticPc();
@@ -285,7 +285,7 @@ void *__cdecl CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     if (system->sets != NULL) {
         set = system->sets;
         type = ((GIZMOTYPES_PC *)gizmotypes)->types;
-        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
             set->type = type;
             if (type->fns.get_max_gizmos_fn != NULL) {
                 set->max_count = type->fns.get_max_gizmos_fn(world);
