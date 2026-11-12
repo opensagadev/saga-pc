@@ -668,24 +668,23 @@ u32 __cdecl AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
 
 void __cdecl FixUpLayers(void) {
     i32 model_index;
-    SPECIAL_LAYER_PC *layer;
-    SPECIAL_LAYER_PC *layer_end = SpecialLayer + sizeof(SpecialLayer) / sizeof(SpecialLayer[0]);
+    i32 id;
     for (model_index = 0; model_index < apicharsys->loaded_model_count; ++model_index) {
         CHARACTER_MODEL_LAYERS_PC *model = &apicharsys->models[model_index];
         PLAYERCHARACTERCONFIG_PC *character = &GCDataList[model->model_id];
-
         i32 layer_index;
         for (layer_index = 0; layer_index < character->layer_count; ++layer_index) {
-            GAMECHARACTERLAYER_PC *layer = &character->layers[layer_index];
-            layer->hierarchy_layer_index = NuHGobjGetLayerIndex(layer->name, model->hierarchy);
+            character->layers[layer_index].hierarchy_layer_index =
+                NuHGobjGetLayerIndex(character->layers[layer_index].name, model->hierarchy);
         }
     }
 
-    layer = SpecialLayer;
-    for (; layer != layer_end; ++layer) {
-        layer->mask = 0;
-        if (layer->character_id != NULL && *layer->character_id != -1) {
-            layer->mask = 1u << LayerFromName(&GCDataList[*layer->character_id], layer->name);
+    for (model_index = 0; model_index < 42; ++model_index) {
+        SpecialLayer[model_index].mask = 0;
+        if (SpecialLayer[model_index].character_id != NULL) {
+            id = *SpecialLayer[model_index].character_id;
+            if (id != -1)
+                SpecialLayer[model_index].mask = 1u << LayerFromName(&GCDataList[id], SpecialLayer[model_index].name);
         }
     }
 }
@@ -914,7 +913,10 @@ void __cdecl Player_ResetContexts(void *packet_ptr) {
     PLAYER_RESET_PACKET_PC *packet = (PLAYER_RESET_PACKET_PC *)packet_ptr;
     packet->context_animation_time = 0.0f;
     packet->context_target = -1;
-    packet->context_blend = (packet->secondary_flags & 0x10000) ? 1.0f : 0.0f;
+    if ((packet->secondary_flags >> 16) & 1)
+        packet->context_blend = 1.0f;
+    else
+        packet->context_blend = 0.0f;
     packet->context_distance = 5.0f;
     packet->unknown_76f = 0;
     packet->unknown_66c = 0.0f;
