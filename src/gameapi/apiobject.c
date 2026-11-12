@@ -1597,7 +1597,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet, f
 update_timers:
     // End-frame services can change overlay state; retail reloads it here.
     if (packet->overlay_animation != -1) {
-        if ((packet->requested_animation != -1 && model->model_data_b[packet->requested_animation] != NULL) &&
+        if (model->model_data_b[packet->requested_animation] != NULL &&
             model->model_data_b[packet->overlay_animation] != NULL) {
             packet->blend_source_time =
                 UpdateAnimTimer(model, packet, packet->requested_animation, packet->blend_source_time, frame_step,
@@ -1607,8 +1607,8 @@ update_timers:
                                 movement_speed, 1, (char *)&packet->reversed_3d, backwards, backwards_multiplier);
         }
     } else if (packet->blending != 0) {
-        if ((packet->blend_source_animation != -1 && model->model_data_b[packet->blend_source_animation] != NULL) &&
-            (packet->blend_target_animation != -1 && model->model_data_b[packet->blend_target_animation] != NULL)) {
+        if (model->model_data_b[packet->blend_source_animation] != NULL &&
+            model->model_data_b[packet->blend_target_animation] != NULL) {
             packet->blend_source_time =
                 UpdateAnimTimer(model, packet, packet->blend_source_animation, packet->blend_source_time, frame_step,
                                 movement_speed, 0, (char *)&packet->reversed_3c, backwards, backwards_multiplier);
