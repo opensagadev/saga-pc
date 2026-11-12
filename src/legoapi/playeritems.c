@@ -17,9 +17,8 @@ void __cdecl LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
         return;
     locator = object->character_data->game_character->helmet_locator;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        velocity.x = 0.0f;
+        velocity.x = velocity.z = 0.0f;
         velocity.y = 1.0f;
-        velocity.z = 0.0f;
         NuVecRotateZ(&velocity, &velocity, qrand());
         NuVecRotateX(&velocity, &velocity, qrand());
         params = Default_ADDPART;
@@ -31,10 +30,10 @@ void __cdecl LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
         params.special = &WORLD->level_objects[object->helmet + 0xf9].special;
         params.flags = 0x90;
         params.time_step = FRAMETIME;
+        params.field_c4 = 1;
         params.stop_fn = PartStop_Flickerer;
         params.draw_fn = PartDraw_Flickerer;
         params.impact_fn = PartImpact_Brick;
-        params.field_c4 = 1;
         AddPart(&params);
     }
     object->helmet = 0;
