@@ -235,16 +235,14 @@ __declspec(noinline) LEVELDATA_PC *__cdecl Area_FindStatusLevel(AREA_DATA_PC *ar
     if (index_out != NULL) {
         *index_out = -1;
     }
-    if (area == NULL) {
-        return NULL;
-    }
-
-    for (index = 0; index < area->level_count; ++index) {
-        if ((LDataList[area->levels[index]].flags & 0x400) != 0) {
-            if (index_out != NULL) {
-                *index_out = area->levels[index];
+    if (area != NULL) {
+        for (index = 0; index < area->level_count; ++index) {
+            if ((LDataList[area->levels[index]].flags & 0x400) != 0) {
+                if (index_out != NULL) {
+                    *index_out = area->levels[index];
+                }
+                return &LDataList[area->levels[index]];
             }
-            return &LDataList[area->levels[index]];
         }
     }
     return NULL;
