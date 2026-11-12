@@ -161,6 +161,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     LEVELDATA_PC *level;
     FADETYPE fade_type;
     i32 i;
+    void(__cdecl * callback)(WORLDINFO *);
     NUVEC *wind_objects[8];
     NUPAD_INIT_STATE *pads[2];
     ThingProcessData packet;
@@ -392,8 +393,9 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             BackDrop_Update(FRAMETIME);
         }
     }
-    if (world->current_level->callbacks[4] != NULL) {
-        ((void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[4])(world);
+    callback = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[4];
+    if (callback != NULL) {
+        callback(world);
     }
     LevelStreaming_Update(world);
     UpdateCutBorders();
