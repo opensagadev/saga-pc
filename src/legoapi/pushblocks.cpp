@@ -619,7 +619,8 @@ extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC 
         if (i == excluded)
             continue;
         other = &world->push_blocks[i];
-        if ((other->packed_state_flags & 0x01040000u) != 0x01040000u || (other->packed_state_flags & 0x04000000u) != 0)
+        if ((other->packed_state_flags & 0x00040000u) == 0 || (other->packed_state_flags & 0x01000000u) == 0 ||
+            (other->packed_state_flags & 0x04000000u) != 0)
             continue;
         if (NuSpecialGetVisibilityFn(&other->special) == 0)
             continue;
@@ -630,7 +631,7 @@ extern "C" i32 __cdecl OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC 
         z = centre.z - position->z;
         sum = x * x + z * z;
         distance = sum - other_radius * other_radius;
-        if (radius >= distance || 0.0f >= distance)
+        if (distance <= radius || distance <= 0.0f)
             return 1;
     }
     return 0;
