@@ -446,14 +446,12 @@ void __cdecl ProcessGizFlow(GIZFLOW_PC *system, f32 delta_time) {
 }
 
 FLOWBOX_PC *__cdecl FlowBoxFindByName(GIZFLOW_PC *system, char *name) {
-    FLOWBOX_PC *box;
     i32 i;
     if (system == NULL || name == NULL)
         return NULL;
-    box = system->flowboxes;
-    for (i = 0; i < system->flowbox_count; ++i, ++box)
-        if (NuStrICmp(box->name, name) == 0)
-            return box;
+    for (i = 0; i < system->flowbox_count; ++i)
+        if (NuStrICmp(system->flowboxes[i].name, name) == 0)
+            return &system->flowboxes[i];
     return NULL;
 }
 
