@@ -40,14 +40,14 @@ f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
     else
         return 0.0f;
     pad = object->pad;
-    if (pad->input_magnitude == 0.0f || PlayerPadCurrentSpeed[index] == 0.0f || PlayerPadPreviousSpeed[index] == 0.0f)
-        return 0.0f;
-    current_delta = RotDiff(PlayerPadCurrentAngle[index], pad->input_angle);
-    previous_delta = RotDiff(PlayerPadPreviousAngle[index], PlayerPadCurrentAngle[index]);
-    if (!((current_delta < 0 && previous_delta < 0 && current_delta > -0x2000 && previous_delta > -0x2000) ||
-          (current_delta > 0 && previous_delta > 0 && current_delta < 0x2000 && previous_delta < 0x2000)))
-        return 0.0f;
-    return (f32)(((f64)current_delta * (1.0 / 65536.0)) / FRAMETIME);
+    if (pad->input_magnitude != 0.0f && PlayerPadCurrentSpeed[index] != 0.0f && PlayerPadPreviousSpeed[index] != 0.0f) {
+        current_delta = RotDiff(PlayerPadCurrentAngle[index], pad->input_angle);
+        previous_delta = RotDiff(PlayerPadPreviousAngle[index], PlayerPadCurrentAngle[index]);
+        if ((current_delta < 0 && previous_delta < 0 && current_delta > -0x2000 && previous_delta > -0x2000) ||
+            (current_delta > 0 && previous_delta > 0 && current_delta < 0x2000 && previous_delta < 0x2000))
+            return (f32)(((f64)current_delta * (1.0 / 65536.0)) / FRAMETIME);
+    }
+    return 0.0f;
 }
 
 i32 __cdecl GamePad_Waggle(GAMEPAD_PC *pad) {
