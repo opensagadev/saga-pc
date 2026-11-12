@@ -1242,35 +1242,35 @@ static i32 __cdecl CheckMusicOther(void) {
     return 0;
 }
 
+#define ACTION_MUSIC_PLAYER_FIGHTING(player)                                                                           \
+    ((player) != NULL &&                                                                                               \
+     ((player)->ai_packet.opponent != NULL ||                                                                          \
+      ((player)->ai_packet.nearest_opponent != NULL && (player)->ai_packet.nearest_opponent->dead == 0 &&              \
+       (player)->ai_packet.nearest_opponent_metric < 3.0f)))
 static i32 __cdecl ActionMusicFn(void) {
-    i32 i;
     if (StartupGameFlag0 != 0) {
         if (WORLD->area != NULL && WORLD->area == LOSTTEMPLE_ADATA && WORLD->current_level != LevelFixupSlotPc0087b2c4)
             return 1;
-        return 0;
-    }
-    if (Arcade != 0 || DoubleScore != 0 || Cheat_PowerUpActive(-1) != 0 ||
-        (WORLD->current_level == LevelFixupSlotPc0087b164 && MiniCutCam != 0) ||
-        (WORLD->current_level == CRUISERD_LDATA && CruiserD_LiftChase != 0) ||
-        WORLD->current_level == DEATHSTARRESCUEE_LDATA)
-        return 1;
-    if (WORLD->current_level == LevelFixupSlotPc0087b1bc && CheckMusicOther() != 0)
-        return 1;
-    if (WORLD->current_level == CLOUDCITYESCAPEA_LDATA)
-        return 1;
-    if (WORLD->current_level == SPEEDERCHASEA_LDATA) {
-        const i32 choice = ActionMusicSockChoicePc();
-        if (choice != -1)
-            return choice;
-    }
-    if (WORLD->current_level == HUB_LDATA)
-        return ai_fighting != 0;
-    for (i = 0; i < 2; ++i) {
-        GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
-        if (player != NULL &&
-            (player->ai_packet.opponent != NULL ||
-             (player->ai_packet.nearest_opponent != NULL && player->ai_packet.nearest_opponent->dead == 0 &&
-              player->ai_packet.nearest_opponent_metric < 3.0f)))
+    } else {
+        if (Arcade != 0 || DoubleScore != 0 || Cheat_PowerUpActive(-1) != 0 ||
+            (WORLD->current_level == LevelFixupSlotPc0087b164 && MiniCutCam != 0) ||
+            (WORLD->current_level == CRUISERD_LDATA && CruiserD_LiftChase != 0) ||
+            WORLD->current_level == DEATHSTARRESCUEE_LDATA)
+            return 1;
+        if (WORLD->current_level == LevelFixupSlotPc0087b1bc && CheckMusicOther() != 0)
+            return 1;
+        if (WORLD->current_level == CLOUDCITYESCAPEA_LDATA)
+            return 1;
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA) {
+            const i32 choice = ActionMusicSockChoicePc();
+            if (choice != -1)
+                return choice;
+        }
+        if (WORLD->current_level == HUB_LDATA)
+            return ai_fighting != 0;
+        if (ACTION_MUSIC_PLAYER_FIGHTING((GAMEOBJECT *)Player[0]))
+            return 1;
+        if (ACTION_MUSIC_PLAYER_FIGHTING((GAMEOBJECT *)Player[1]))
             return 1;
     }
     return 0;
