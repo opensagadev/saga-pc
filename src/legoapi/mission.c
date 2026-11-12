@@ -7,7 +7,13 @@ typedef struct MISSION_SYSTEM_READER_PC {
     MISSION_SAVE_READER_PC *save;
     u8 count;
     u8 state;
-    u8 flags;
+    union {
+        u8 flags;
+        struct {
+            u8 pickups : 1;
+            u8 unknown_flags : 7;
+        };
+    };
     u8 character_count;
     i16 character_ids[8];
 } MISSION_SYSTEM_READER_PC;
@@ -35,6 +41,11 @@ STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, character_count) == 0x1f);
 STATIC_ASSERT(offsetof(MISSION_SYSTEM_READER_PC, character_ids) == 0x20);
 STATIC_ASSERT(offsetof(TIMER, time_elapsed) == 0);
 
+/* Original name unknown. Empty on PC (a bare RET at 0x58a510); called when the file cannot be
+   opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file
+   (see SpecialMovesConfigMissingPc). */
+void __cdecl MissionsConfigMissingPc(char *filename);
+
 MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end,
                                           MISSION_SAVE_READER_PC *save) {
     NUFPAR_PC *parser;
@@ -43,11 +54,11 @@ MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VAR
     i32 character;
     parser = NuFParCreate(file);
     if (parser == NULL) {
-        /* Native diagnostic 58a510 is RET-only: no input read or side effect. */
+        MissionsConfigMissingPc(file);
         return NULL;
     }
     memset(&temporary, 0, sizeof(temporary));
-    temporary.flags = 1;
+    temporary.pickups = 1;
     buffer_start->addr = (buffer_start->addr + 3) & ~3u;
     mission = buffer_start->void_ptr;
     temporary.missions = mission;
@@ -65,16 +76,17 @@ MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VAR
         } else if (NuStrICmp(parser->word_buffer_ptr, "pickups") == 0) {
             if (NuFParGetWord(parser) != 0) {
                 if (NuStrICmp(parser->word_buffer_ptr, "on") == 0)
-                    temporary.flags |= 1;
+                    temporary.pickups = 1;
                 else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0)
-                    temporary.flags &= 0xfe;
+                    temporary.pickups = 0;
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "mission") == 0) {
             mission->find_character = -1;
             mission->level = -1;
             mission->name_id = -1;
+            mission->bounty = 100000;
+            mission->alternate_bounty = 100000;
             mission->text_id = -1;
-            mission->bounty = mission->alternate_bounty = 100000;
             mission->time = 180;
             mission->index = temporary.count;
             while (NuFParGetWord(parser) != 0) {
@@ -85,8 +97,9 @@ MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VAR
                     if (NuFParGetWord(parser) != 0 && Level_FindByName(parser->word_buffer_ptr, &character) != NULL)
                         mission->level = (i16)character;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "time") == 0) {
-                    u16 time = (u16)NuFParGetInt(parser);
-                    mission->time = time < 3 ? 3 : time;
+                    mission->time = (u16)NuFParGetInt(parser);
+                    if (mission->time < 3)
+                        mission->time = 3;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "bounty") == 0) {
                     mission->bounty = NuFParGetInt(parser);
                     mission->alternate_bounty = NuFParGetInt(parser);
@@ -103,7 +116,7 @@ MISSIONSYS_PC *__cdecl Missions_Configure(char *file, VARIPTR *buffer_start, VAR
         }
     }
     NuFParDestroy(parser);
-    if (temporary.count == 0)
+    if (temporary.count <= 0)
         return NULL;
     buffer_start->addr = (buffer_start->addr + 3) & ~3u;
     destination = buffer_start->void_ptr;
