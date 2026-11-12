@@ -4342,7 +4342,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             if (count > 0) {
                 for (; count != 0; --count, ++area, ++save) {
                     if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 ||
-                        (area->flags & 0x2010) != 0)
+                        (area->flags & 0x10) != 0 || (area->flags & 0x2000) != 0)
                         continue;
                     if ((area->flags & 0x100) != 0) {
                         if (EpisodeGoldBrickForSuperBonusPc == 0)
