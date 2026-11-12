@@ -4564,21 +4564,17 @@ i32 __cdecl Action_SetDoomedEscapeLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *
  * types and formal signatures are a separate gate. */
 i32 __cdecl Action_SnapToPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                   i32 count, i32 first_time, f32 elapsed) {
-    GAMEOBJECT *object = NULL;
-    APIOBJECT_PC *owner;
     NUVEC position = {0.0f, 0.0f, 0.0f};
-    i32 facing = 0;
     i32 check_terrain = 1;
+    GAMEOBJECT *object = NULL;
+    i32 facing = 0;
     i32 index;
     char *value;
 
     if (first_time == 0)
         return 1;
-    if (packet != NULL && packet->owner != NULL) {
-        owner = (APIOBJECT_PC *)packet->owner;
-        if (owner->owner != NULL)
-            object = (GAMEOBJECT *)owner->owner;
-    }
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        object = packet->owner->objptr;
     for (index = 0; index < count; ++index) {
         if (NuStrIStr(params[index], (char *)ActionSnapPlayer1Name) != NULL ||
             NuStrIStr(params[index], (char *)GameAIPlayerName) != NULL) {
