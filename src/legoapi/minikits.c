@@ -109,7 +109,7 @@ extern "C" {
 void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     WORLD_MINIKIT_READER_PC *view = (WORLD_MINIKIT_READER_PC *)world;
     i32 i, character_id;
-    MINIKIT_PC *minikit;
+    u32 table_size;
     char path[256];
     if (Char_MiniKit == NULL)
         return;
@@ -118,8 +118,9 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
         Char_MiniKit[i] = 0;
     buffer->addr = (buffer->addr + 3) & ~3u;
     view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
-    memset(view->pieces_by_id, 0, CHARCOUNT * 4);
-    buffer->addr += CHARCOUNT * 4;
+    table_size = CHARCOUNT * sizeof(MINIKIT_PC *);
+    memset(view->pieces_by_id, 0, table_size);
+    buffer->addr += table_size;
     for (i = 0; i < collection->count; ++i) {
         character_id = collection->list[i].id;
         if ((GCDataList[character_id].flags_094 & 0x400) != 0 || APICharacterLoaded(character_id) == NULL)
@@ -132,18 +133,17 @@ void __cdecl CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *
         NuStrCat(path, CDataList[character_id].name);
         NuStrCat(path, ".gsc");
         buffer->addr = (buffer->addr + 3) & ~3u;
-        if (i < 18)
-            view->pieces_by_id[character_id]->scene = NuGScnRead(buffer, *end, path);
-        else
+        if (i >= 18)
             view->pieces_by_id[character_id]->scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
-        minikit = view->pieces_by_id[character_id];
-        minikit->model_id = (i16)character_id;
-        if (minikit->scene == NULL) {
+        else
+            view->pieces_by_id[character_id]->scene = NuGScnRead(buffer, *end, path);
+        view->pieces_by_id[character_id]->model_id = (i16)character_id;
+        if (view->pieces_by_id[character_id]->scene != NULL) {
+            MiniKit_InitPieces(view->pieces_by_id[character_id], 10, buffer, end);
+            ((MINIKIT_PC **)Char_MiniKit)[character_id] = view->pieces_by_id[character_id];
+        } else {
             view->pieces_by_id[character_id] = NULL;
             buffer->addr -= 0x18;
-        } else {
-            MiniKit_InitPieces(minikit, 10, buffer, end);
-            ((MINIKIT_PC **)Char_MiniKit)[character_id] = view->pieces_by_id[character_id];
         }
     }
 }
