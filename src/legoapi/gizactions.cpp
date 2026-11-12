@@ -233,7 +233,8 @@ extern "C" void __cdecl GizActions_GoToNewLevelPc(GIZFLOW_PC *unused0, FLOWBOX_P
     for (i32 i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)GizActionLevelPrefixPc);
         if (value != NULL) {
-            level = Level_FindByName(value + NuStrLen(GizActionLevelPrefixPc), NULL);
+            value += NuStrLen(GizActionLevelPrefixPc);
+            level = Level_FindByName(value, NULL);
         } else {
             value = NuStrIStr(params[i], (char *)"cutscene=");
             if (value != NULL)
