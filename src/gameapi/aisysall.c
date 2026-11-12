@@ -2043,34 +2043,34 @@ static NUFPAR_PC *AIScriptOpenParserPc(void *pak, char *filename, char *path) {
     NUFILE file;
     NuStrCpy(script_name, filename);
     extension = NuStrIStr(script_name, (char *)AIScriptFileExtension);
-    if (extension == NULL) {
-        return NULL;
-    }
-    *extension = '\0';
-    sprintf(filepath, AIScriptSourcePathFormatPc, path, filename);
-    if (pak != NULL) {
-        item = NuFilePakGetItem(pak, filename);
-        if (item != 0) {
-            NuFilePakGetItemInfo(pak, item, &data, &size);
-            file = NuMemFileOpen(data, size, 0);
-            if (file != 0) {
-                return NuFParOpen(file);
-            }
-            AIScriptMissingConditionDiagnostic(filename);
-        } else if (AIActionDiagnosticMode == 1) {
-            AIScriptMissingConditionDiagnostic(filename);
-        } else {
-            AIScriptMissingStateDiagnostic(filename);
-        }
-        if (ai_onlyusepackfile != 0) {
-            if (AIActionDiagnosticMode == 1) {
-                AIScriptMissingStateDiagnosticAlternate(filename);
+    if (extension != NULL) {
+        *extension = '\0';
+        sprintf(filepath, AIScriptSourcePathFormatPc, path, filename);
+        if (pak != NULL) {
+            item = NuFilePakGetItem(pak, filename);
+            if (item != 0) {
+                NuFilePakGetItemInfo(pak, item, &data, &size);
+                file = NuMemFileOpen(data, size, 0);
+                if (file != 0) {
+                    return NuFParOpen(file);
+                }
+                AIScriptMissingConditionDiagnostic(filename);
+            } else if (AIActionDiagnosticMode == 1) {
+                AIScriptMissingConditionDiagnostic(filename);
             } else {
                 AIScriptMissingStateDiagnostic(filename);
             }
+            if (ai_onlyusepackfile != 0) {
+                if (AIActionDiagnosticMode == 1) {
+                    AIScriptMissingStateDiagnosticAlternate(filename);
+                } else {
+                    AIScriptMissingStateDiagnostic(filename);
+                }
+            }
         }
+        return NuFParCreate(filepath);
     }
-    return NuFParCreate(filepath);
+    return NULL;
 }
 
 void __cdecl xState(NUFPAR_PC *parser) {
