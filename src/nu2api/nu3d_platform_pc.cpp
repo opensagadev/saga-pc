@@ -1520,6 +1520,22 @@ extern "C" {
         texture->field_24 = (u32)value;
     }
 
+    /* Sampler fields packed into GRAPHICS_RENDER_TEXTURE_PC::flags. */
+    typedef union PC_SAMPLER_FLAGS_PC {
+        u32 value;
+        struct {
+            u32 unknown_0 : 8;
+            u32 address_u : 3;
+            u32 address_v : 3;
+            u32 unknown_14 : 3;
+            u32 min_filter : 3;
+            u32 mag_filter : 3;
+            u32 mip_filter : 3;
+            u32 unknown_26 : 6;
+        } bits;
+    } PC_SAMPLER_FLAGS_PC;
+    STATIC_ASSERT(sizeof(PC_SAMPLER_FLAGS_PC) == 4);
+
     void __cdecl PCGraphicsEffectTextureSetFilterFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second,
                                                         i32 third) {
         i32 value;
@@ -1540,7 +1556,7 @@ extern "C" {
                 value = -1;
                 break;
         }
-        texture->flags ^= (((u32)value << 17) ^ texture->flags) & 0xe0000u;
+        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.min_filter = value;
         switch (second) {
             case 0:
                 value = 0;
@@ -1558,7 +1574,7 @@ extern "C" {
                 value = -1;
                 break;
         }
-        texture->flags ^= (((u32)value << 20) ^ texture->flags) & 0x700000u;
+        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.mag_filter = value;
         switch (third) {
             case 0:
                 value = 0;
@@ -1576,7 +1592,7 @@ extern "C" {
                 value = -1;
                 break;
         }
-        texture->flags ^= (((u32)value << 23) ^ texture->flags) & 0x3800000u;
+        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.mip_filter = value;
     }
 
     void __cdecl PCGraphicsEffectTextureSetWrapFields(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 first, i32 second) {
@@ -1598,7 +1614,7 @@ extern "C" {
                 value = -1;
                 break;
         }
-        texture->flags ^= (((u32)value << 8) ^ texture->flags) & 0x700u;
+        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.address_u = value;
         switch (second) {
             case 0:
                 value = 1;
@@ -1616,7 +1632,7 @@ extern "C" {
                 value = -1;
                 break;
         }
-        texture->flags ^= (((u32)value << 11) ^ texture->flags) & 0x3800u;
+        ((PC_SAMPLER_FLAGS_PC *)&texture->flags)->bits.address_v = value;
     }
 
     void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
