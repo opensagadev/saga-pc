@@ -56,8 +56,6 @@ extern "C" void __cdecl ResetRepeatSfx(void) {
 
 void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, i32 play_count_arg, f32 repeat_delay,
                            NUVEC *position) {
-    REPEAT_SFX_ENTRY_PC *entry;
-    i32 queue_index;
     u8 play_count;
 
     play_count = (u8)play_count_arg;
@@ -70,25 +68,21 @@ void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, i32 play_cou
         return;
     }
 
-    queue_index = RepeatSfxQueueHead;
-    entry = &RepeatSfxQueue[queue_index];
     if (start_delay > 0.0f) {
-        entry->state = 1;
+        RepeatSfxQueue[RepeatSfxQueueHead].state = 1;
     } else {
-        entry->state = 2;
+        RepeatSfxQueue[RepeatSfxQueueHead].state = 2;
     }
 
     if (sfx_id == -1) {
         sfx_id = GetSfxId(name);
-        queue_index = RepeatSfxQueueHead;
-        entry = &RepeatSfxQueue[queue_index];
     }
-    entry->sfx_id = (i16)sfx_id;
-    entry->start_delay = start_delay;
-    entry->play_count = (i8)play_count;
-    entry->repeat_delay = repeat_delay;
-    entry->position = position;
-    RepeatSfxQueueHead = (queue_index + 1) & 0x1f;
+    RepeatSfxQueue[RepeatSfxQueueHead].sfx_id = (i16)sfx_id;
+    RepeatSfxQueue[RepeatSfxQueueHead].start_delay = start_delay;
+    RepeatSfxQueue[RepeatSfxQueueHead].play_count = (i8)play_count;
+    RepeatSfxQueue[RepeatSfxQueueHead].repeat_delay = repeat_delay;
+    RepeatSfxQueue[RepeatSfxQueueHead].position = position;
+    RepeatSfxQueueHead = (RepeatSfxQueueHead + 1) & 0x1f;
 }
 
 void __cdecl UpdateRepeatSfx(void) {
