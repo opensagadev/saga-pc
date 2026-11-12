@@ -354,7 +354,9 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
         desc->layer_flags |= 0x80000000;
         desc->flags |= 0x200000;
     }
-    i32 version = PcWindowOptions.usehires != 0 ? compiler->dictionary.profile : 1;
+    i32 version = compiler->dictionary.profile;
+    if (PcWindowOptions.usehires == 0)
+        version = 1;
     switch (version) {
         case 3:
             desc->flags &= 0xff77dffb;
@@ -438,12 +440,14 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
                 desc->shininess = (f32)(desc->shininess * (f64)0.4f);
             desc->flags &= 0xffff9ffc;
             desc->layer_flags &= 0xffff9ffc;
-            if ((desc->flags & 0x10000) != 0) {
+            if ((desc->flags & 0x10000) == 0) {
+                if ((desc->flags & 0x20) != 0) {
+                    desc->flags &= ~8U;
+                    desc->layer_flags &= ~8U;
+                }
+            } else {
                 desc->flags &= ~0x20U;
                 desc->layer_flags &= ~0x20U;
-            } else if ((desc->flags & 0x20) != 0) {
-                desc->flags &= ~8U;
-                desc->layer_flags &= ~8U;
             }
             if ((desc->flags & 3) != 0) {
                 desc->flags &= ~8U;
