@@ -6745,14 +6745,15 @@ i32 __cdecl Action_SetHoverPhase(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     }
 
     if (processor->action_data_1 != 0) {
-        if (object->jump_variant_state == 1) {
-            return 1;
+        if (object->jump_variant_state != 1) {
+            object->pad->buttons_pressed |= GAMEPAD_JUMP;
+            return 0;
         }
-    } else if (object->jump_variant_state != 1) {
-        return 1;
+    } else if (object->jump_variant_state == 1) {
+        object->pad->buttons_pressed |= GAMEPAD_JUMP;
+        return 0;
     }
-    object->pad->buttons_pressed |= GAMEPAD_JUMP;
-    return 0;
+    return 1;
 }
 
 i32 __cdecl Action_UseCurrentSpeed(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
@@ -7083,8 +7084,8 @@ i32 __cdecl Action_SetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1,
                                  i32 param_count, i32 first_time, float unused6) {
     i32 visible = 1;
     if (first_time != 0) {
-        NUSPECIALHANDLE special = {0};
         i32 index;
+        NUSPECIALHANDLE special = {0};
         for (index = 0; index < param_count; ++index) {
             char *value = NuStrIStr(params[index], (char *)"name");
             if (value != NULL) {
@@ -8575,11 +8576,11 @@ i32 __cdecl Action_CatchUpForbidden(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
 
     (void)processor;
     (void)param_6;
+    object = NULL;
+    forbidden = 1;
     if (param_5 != 0) {
-        object = NULL;
         if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
             object = packet->owner->objptr;
-        forbidden = 1;
         if (param_4 != 0) {
             for (index = 0; index < param_4; ++index) {
                 parameter = NuStrIStr(params[index], (char *)AIGameCharacterName);
