@@ -1789,7 +1789,7 @@ extern "C" {
         for (i32 i = 0; i < 4; ++i) {
             i32 index = cut->texture_animations[i].index;
             if (index != -1)
-                texanimbits &= ~(1U << (index & 31));
+                texanimbits &= ~(1U << index);
         }
     }
     static i32 CutScenePlayOncePrivatePc(WORLDINFO *world, CUT_LOAD_RECORD_PC *cut) {
