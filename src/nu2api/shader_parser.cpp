@@ -609,40 +609,40 @@ ShaderCompilerBufferAllocatorPc *ShaderCompilerParserPc::LoadInclude(const char 
 void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *input, i32 *cursor) {
     char temporary[200];
     VirtualStackAllocator memory(temporary, sizeof(temporary));
-    ShaderLexicalSlicePc token = {NULL, 0};
     char *name = NULL;
+    ShaderLexicalSlicePc token = {NULL, 0};
     i32 state = 0;
     ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
-    while (reader->Next(input, cursor, &token)) {
+    while (state != 5 && reader->Next(input, cursor, &token)) {
         switch (state) {
             case 0:
                 if (token.Equals("define"))
                     state = 1;
-                else if (token.Equals("ifdef"))
-                    continue;
-                else if (token.Equals("ifndef"))
-                    continue;
-                else if (token.Equals("undef"))
+                else if (token.Equals("ifdef")) {
+                    // Not handled; the following tokens are still scanned.
+                } else if (token.Equals("ifndef")) {
+                    // Not handled; the following tokens are still scanned.
+                } else if (token.Equals("undef"))
                     state = 3;
                 else if (token.Equals("include"))
                     state = 4;
                 else if (token.Equals("pragma")) {
                     ParseDeclaration(input, cursor);
-                    return;
+                    state = 5;
                 } else if (token.Equals("if")) {
                     BeginIf(ParseExpression(input, cursor));
-                    return;
+                    state = 5;
                 } else if (token.Equals("else")) {
                     BeginElse();
-                    return;
+                    state = 5;
                 } else if (token.Equals("elif")) {
                     BeginElseIf(ParseExpression(input, cursor));
-                    return;
+                    state = 5;
                 } else if (token.Equals("endif")) {
                     EndIf();
-                    return;
+                    state = 5;
                 } else
-                    return;
+                    state = 5;
                 break;
             case 1:
                 name = token.ArenaCopy(&memory);
@@ -650,22 +650,21 @@ void ShaderCompilerParserPc::ProcessDirective(ShaderCompilerBufferAllocatorPc *i
                 break;
             case 2:
                 DefineMacro(name, token.ArenaCopy(&memory));
-                return;
+                state = 5;
+                break;
             case 3:
                 UndefineMacro(token.ArenaCopy(&memory));
-                return;
+                state = 5;
+                break;
             case 4: {
                 char *path = token.HeapCopy();
                 ShaderCompilerBufferAllocatorPc *included = LoadInclude(path + 1);
                 if (included != NULL)
                     LoadSourceLines(included, 0);
-                free(path);
-                return;
+                delete path;
+                state = 5;
+                break;
             }
-            default:
-                if (state == 5)
-                    break;
-                continue;
         }
     }
     if (state == 2)
