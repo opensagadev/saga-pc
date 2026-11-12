@@ -29,8 +29,8 @@ i32 __cdecl ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 
     NuVecRotateY(&forward, &v001, object->field_0x276);
     distance = NuVecDistSqr(&opponent->position, &object->position, &difference);
     dot = forward.x * difference.x + forward.z * difference.z;
-    if ((!(object->context_variant_flags & 0x80) && dot >= 0.0f) ||
-        ((object->context_variant_flags & 0x80) && dot <= 0.0f)) {
+    if ((!((object->context_variant_flags >> 7) & 1) && dot >= 0.0f) ||
+        (((object->context_variant_flags >> 7) & 1) && dot <= 0.0f)) {
         radius = object->bounds_radius + opponent->bounds_radius;
         radius += gap;
         radius_squared = radius * radius;
