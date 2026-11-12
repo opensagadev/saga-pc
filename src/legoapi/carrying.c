@@ -172,8 +172,8 @@ void __cdecl SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     velocity.y = mode == 2 ? SUPERCARRY_DROPSPEED_Y : SUPERCARRY_THROWSPEED_Y;
     params.velocity = &velocity;
     blowup = (CARRY_BLOWUP_PC *)object->grapple;
-    params.field_14 = params.field_18 = (f32)(0.5 * blowup->target_scale);
     params.special = &((GIZMOBLOWUP_PC *)blowup)->type->animated_special;
+    params.field_14 = params.field_18 = (f32)(0.5 * blowup->target_scale);
     params.flags = 0x8011;
     if (!(blowup->secondary_flags & 4))
         params.flags = 0x8111;
