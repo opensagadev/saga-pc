@@ -10438,6 +10438,8 @@ address,symbol,size,ctype
 0x6c0c10,?LineToPlaneDistance@@YAMAAUVuVec@@00@Z,264,
 0x6c0d20,?LineToPlaneIntersecion@@YAHAAUVuVec@@00PAU1@@Z,281,
 0x6c0e40,?LineToSphereIntersection@@YAHAAUVuVec@@00MPAU1@1@Z,729,
+0x6c1120,??0?$EdStack@UBlock@EdFileInputStream@@$07@@QAE@XZ,14,
+0x6c11b0,??0?$EdStack@H$07@@QAE@XZ,14,
 0x6c1260,??0?$CSListLink@VEdTool@@@@QAE@XZ,20,
 0x6c1280,??0?$CSListLink@VBaseEditor@@@@QAE@XZ,20,
 0x6c14b0,?Remove@ClassObjectList@@QAEXPAUClassObjectListEntry@@@Z,63,
