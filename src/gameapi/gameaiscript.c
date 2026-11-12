@@ -9715,22 +9715,16 @@ i32 __cdecl Action_SpinOnSpot(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
                               i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
     GAMEOBJECT *object;
-    f32 zero;
-    u16 angle;
-    f32 min_time;
-    f32 max_time;
     char *value;
+    f32 min_time = 0.0f;
+    f32 max_time = 0.0f;
     (void)sys;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
     }
 
     object = packet->owner->objptr;
-    zero = 0.0f;
-
     if (param_5 != 0) {
-        min_time = 0.0f;
-        max_time = 0.0f;
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AITransferLiteral7581ec);
             if (value != NULL) {
@@ -9756,23 +9750,20 @@ i32 __cdecl Action_SpinOnSpot(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
         if (min_time != max_time) {
             processor->action_timer = NuRandFloat() * (max_time - min_time) + min_time;
         }
-        angle = object->field_0x276;
-    } else {
-        angle = processor->action_data_6;
+        processor->action_data_6 = object->field_0x276;
     }
 
-    angle += (i32)(param_6 * processor->action_data_4);
-    processor->action_data_6 = angle;
+    processor->action_data_6 += (i32)(param_6 * processor->action_data_4);
     processor->action_pos.x = 0.0f;
     processor->action_pos.y = 0.0f;
     processor->action_pos.z = 1.0f;
-    NuVecRotateY(&processor->action_pos, &processor->action_pos, angle);
+    NuVecRotateY(&processor->action_pos, &processor->action_pos, processor->action_data_6);
     NuVecAdd(&processor->action_pos, &processor->action_pos, &object->collision_position);
     packet->movement_look_target = &processor->action_pos;
 
-    if (processor->action_timer > zero) {
+    if (processor->action_timer > 0.0f) {
         processor->action_timer -= param_6;
-        if (zero >= processor->action_timer) {
+        if (processor->action_timer <= 0.0f) {
             processor->action_timer = 0.0f;
             return 1;
         }
