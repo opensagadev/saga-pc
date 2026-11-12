@@ -3959,7 +3959,9 @@ address,symbol,size,ctype
 0x53d6a0,?Receive@AINet@@UAEXUNETMESSAGE_PC@@EABVV2Peer@@@Z,662,
 0x53d940,?ReplicateAction@AINet@@QAEXPAUAIACTION_PC@@PAUAIPACKET_PC@@@Z,489,
 0x53db30,_AINetReplicateAction,26,"void __cdecl (AIACTION_PC *, AIPACKET_PC *)"
+0x53db50,_SockSysMissingSockEndDiagnostic,1,void __cdecl(char *)
 0x53db60,_SockSysMissingCameraDiagnostic,1,void __cdecl(char *)
+0x53db90,_SockFdiv,54,"f32 __cdecl (f32, f32)"
 0x53dc00,_AdjustMinMaxBox,119,"void __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x53dc80,_SockSplineLengthPc,141,"f32 __cdecl (NUGSPLINE *, i32)"
 0x53dd10,_SockOnOrOutsidePlanePc,54,"i32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
@@ -3980,9 +3982,12 @@ address,symbol,size,ctype
 0x53f0e0,_MoveSockPosition,669,"void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, f32, SOCKPOSITION_PC *)"
 0x53f380,_ComplexSockAngles,696,void __cdecl (SOCKROT_PC *)
 0x0053f640,_SetSockPostion,241,
+0x53f740,_SetSockBit,39,"void __cdecl (SOCK_PC *, i32)"
+0x53f770,_SockBitSet,47,"i32 __cdecl (SOCK_PC *, i32)"
 0x53f7a0,_MidDistanceFromSockStart,64,"f32 __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *)"
 0x53f7e0,_FindSock,71,
 0x53f830,_SockSegmentsAhead,168,"i32 __cdecl(SOCK_PC*,i32,i32*,i32*)"
+0x53f8e0,_EnforceSockYLimits,87,"f32 __cdecl (f32, SOCKPOSITION_PC *, SOCKSYS_PC *)"
 0x53f940,_SockParCircuit,10,"void __cdecl (NUFPAR_PC *, void *)"
 0x53f950,_SockParCurSpeed,23,"void __cdecl (NUFPAR_PC *, void *)"
 0x53f970,_SockParMidRangeInner,23,"void __cdecl (NUFPAR_PC *, void *)"
@@ -4040,6 +4045,7 @@ address,symbol,size,ctype
 0x540340,_SockManCam_MAX_X,26,"void __cdecl (NUFPAR_PC *, void *)"
 0x540360,_SockManCam_MAX_Y,26,"void __cdecl (NUFPAR_PC *, void *)"
 0x540380,_SockTerrainCamInActive,16,"void __cdecl (NUFPAR_PC *, void *)"
+0x540390,_SockSysConfigureNuFPar,345,"void __cdecl (NUFPAR_PC *, void *)"
 0x5404f0,_SockSys_Configure,254,"void __cdecl (SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *)"
 0x5405f0,_PerspectMidPoint,122,"void __cdecl(NUVEC*,NUVEC*,NUVEC*,NUVEC*)"
 0x540670,_CalculateDistanceToNearestSide,351,"f32 __cdecl(NUVEC *, SOCKPOSITION_PC *, i32, SOCKSYS_PC *)"
@@ -4050,6 +4056,7 @@ address,symbol,size,ctype
 0x00540d20,_SockRotationMatrix,1804,"void __cdecl (SOCKSYS_PC *, SOCKPOSITION_PC *, NUMTX *, i32, i32)"
 0x541430,_SockOn,44,
 0x541460,_SockOff,44,
+0x541490,_SockSysSetObjectVisibility,90,"void __cdecl (SOCKSYS_PC *, i32, i32)"
 0x5414f0,_SockSys_GenerateData,1742,"void __cdecl (SOCKSYS_PC *, VARIPTR *, VARIPTR)"
 0x541bc0,_ComplexSockPosition,663,"void __cdecl (SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION_PC *)"
 0x541e60,_SockSysCamera,4858,
@@ -4983,6 +4990,7 @@ address,symbol,size,ctype
 0x005792c0,_LC_AL_blobshadow_fadefar,26,void __cdecl (NUFPAR_PC *)
 0x005792e0,_LC_AL_reflect_range,26,void __cdecl (NUFPAR_PC *)
 0x00579300,_LC_AL_reflect_y,26,void __cdecl (NUFPAR_PC *)
+0x579320,_LevelConfigSetFlag,60,code
 0x00579360,_LC_AL_metal,68,void __cdecl (NUFPAR_PC *)
 0x005793b0,_LC_AL_in_space,68,void __cdecl (NUFPAR_PC *)
 0x00579400,_LC_AL_override_nopickupgravity,68,void __cdecl (NUFPAR_PC *)
@@ -5023,6 +5031,7 @@ address,symbol,size,ctype
 0x57a000,_LevelObjects_InitForLevel,576,void __cdecl(WORLDINFO *)
 0x0057a240,_LevelObject_FindIndexFromName,77,i32 __cdecl (char *)
 0x57a290,_LevObj_FixUpPlatIDs,139,void __cdecl(WORLDINFO *)
+0x57a320,_LevObj_FindByPlatID,55,"void * __cdecl (WORLDINFO *, i32)"
 0x57a360,_LevelObject_FindNameFromIndex,37,char *__cdecl(i32)
 0x57a390,_LevelObject_GetReflection,40,i32 __cdecl(i32)
 0x57a3c0,_LevelObject_FindIndexFromName_RefOnly,93,i32 __cdecl(char *)
