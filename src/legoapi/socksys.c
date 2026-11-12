@@ -486,7 +486,7 @@ void SockSysFindInScene(SOCKSYS_PC *sock_sys, NUGSCN *gscn) {
                 continue;
             }
             len = (i32)(i16)sock->cam->length;
-            if (1 < len) {
+            if (len >= 2) {
                 sock->length = len - 1;
                 sprintf(name, "%s%.2i", tSockA, i);
                 sock->a = NuSplineFind(gscn, name);
