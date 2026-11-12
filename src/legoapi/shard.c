@@ -104,6 +104,30 @@ void __cdecl Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
     }
 }
 
+/* Same-TU matrix helpers; retail keeps their standalone copies (source in EAX, destination in ECX). */
+static void ShopMtxCopyPc(NUMTX *destination, const NUMTX *source) {
+    destination->m00 = source->m00;
+    destination->m01 = source->m01;
+    destination->m02 = source->m02;
+    destination->m03 = source->m03;
+    destination->m10 = source->m10;
+    destination->m11 = source->m11;
+    destination->m12 = source->m12;
+    destination->m13 = source->m13;
+    destination->m20 = source->m20;
+    destination->m21 = source->m21;
+    destination->m22 = source->m22;
+    destination->m23 = source->m23;
+    destination->m30 = source->m30;
+    destination->m31 = source->m31;
+    destination->m32 = source->m32;
+    destination->m33 = source->m33;
+}
+
+static void ShopMtxSetIdentityPc(NUMTX *matrix) {
+    ShopMtxCopyPc(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
+}
+
 /* Place before Shop_DrawCharacter in shard.c; static native same-TU helpers. */
 
 static void NuMtxRotateXInline(NUMTX *m, i32 a) {
@@ -229,6 +253,19 @@ void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float u
             matrix.m31 += y_push;
             NuSpecialDrawAt(special, &matrix);
         }
+    }
+}
+
+void DrawQuestion(NUVEC *position, f32 scale_value, f32 y_push) {
+    NUMTX matrix;
+    NUVEC scale;
+    if (position != NULL && NuSpecialExistsFn(&question)) {
+        ShopMtxSetIdentityPc(&matrix);
+        scale.x = scale.y = scale.z = scale_value;
+        NuMtxSetScale(&matrix, &scale);
+        *(NUVEC *)&matrix.m30 = *position;
+        matrix.m31 += y_push;
+        NuSpecialDrawAt(&question, &matrix);
     }
 }
 
