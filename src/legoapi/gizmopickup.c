@@ -431,10 +431,10 @@ void __cdecl CollectMinikit(NUVEC *position, char *name, i32 flags) {
     (void)flags;
     if (WORLD->level_objects[0xce].active == 0)
         return;
-    area_id = WORLD->area_index;
     target.x = KITPOSX;
     target.y = KITPOSY + PANEL_MINIKITY;
     target.z = 1.0f;
+    area_id = WORLD->area_index;
     message = AddGameMsg_Default;
     message.position = position;
     message.target_position = &target;
