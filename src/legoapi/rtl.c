@@ -3632,12 +3632,12 @@ static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second) {
     different |= memcmp(&first->direction, &second->direction, sizeof(NUVEC));
     different |= memcmp(&first->colour, &second->colour, sizeof(NUVEC));
     different |= memcmp(&first->secondary_colour, &second->secondary_colour, sizeof(NUVEC));
-    different |= first->inner_radius != second->inner_radius;
-    different |= first->outer_radius != second->outer_radius;
-    different |= first->parameters[0] != second->parameters[0];
-    different |= first->parameters[1] != second->parameters[1];
-    different |= first->parameters[2] != second->parameters[2];
-    different |= first->parameters[3] != second->parameters[3];
+    different |= first->inner_radius == second->inner_radius ? 0 : 1;
+    different |= first->outer_radius == second->outer_radius ? 0 : 1;
+    different |= first->parameters[0] == second->parameters[0] ? 0 : 1;
+    different |= first->parameters[1] == second->parameters[1] ? 0 : 1;
+    different |= first->parameters[2] == second->parameters[2] ? 0 : 1;
+    different |= first->parameters[3] == second->parameters[3] ? 0 : 1;
     different |= first->type != second->type;
     different |= (first->flags & 1) != (second->flags & 1);
     different |= first->pitch != second->pitch;
@@ -3645,7 +3645,7 @@ static i32 rtlCmp(RTL_LIGHT_PC *first, RTL_LIGHT_PC *second) {
     different |= first->field_5e != second->field_5e;
     different |= first->field_60 != second->field_60;
     different |= first->field_68 != second->field_68;
-    different |= first->intensity != second->intensity;
+    different |= first->intensity == second->intensity ? 0 : 1;
     return different;
 }
 
