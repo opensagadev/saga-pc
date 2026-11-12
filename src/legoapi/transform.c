@@ -37,7 +37,7 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *target;
     ResetForceGlow(object->ai_player_packet_pc);
     if (object->character_context == 86) {
-        i32 trigger = 0;
+        i32 trigger;
         f32 *frame = NULL;
         if (object->character_model->model_data_b[object->field_7aa] != NULL) {
             frame = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
@@ -45,6 +45,7 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 return;
         }
         target = (GIZMOBLOWUP_PC *)object->grapple;
+        trigger = 0;
         object->movement_facing_angle = NuAtan2D(target->mid_position.x - object->collision_position.x,
                                                  target->mid_position.z - object->collision_position.z);
         if (frame != NULL && !(object->context_variant_flags & 0x40)) {
@@ -64,8 +65,8 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
     } else {
         GIZMOBLOWUP_PC *candidate, *nearest;
-        NUVEC forward, delta;
-        f32 nearest_distance, min_x, min_y, min_z, max_x, max_y, max_z, distance;
+        NUVEC forward, delta, min, max;
+        f32 nearest_distance, distance;
         i32 i;
         if (!(object->character_data->game_character->flags_090 & 0x01000000) || !(object->flags_1fc_low & 0x80) ||
             object->field_281 == 0 || !ObjLandReady(object))
@@ -74,14 +75,14 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (candidate == NULL)
             return;
         nearest_distance = 4.0f;
-        NuVecRotateY(&forward, &v001, object->movement_facing_angle);
-        min_x = object->collision_position.x - 2.0;
-        min_y = object->collision_position.y - 2.0;
-        min_z = object->collision_position.z - 2.0;
-        max_x = object->collision_position.x + 2.0;
-        max_y = object->collision_position.y + 2.0;
-        max_z = object->collision_position.z + 2.0;
         nearest = NULL;
+        NuVecRotateY(&forward, &v001, object->movement_facing_angle);
+        min.x = object->collision_position.x - 2.0;
+        min.y = object->collision_position.y - 2.0;
+        min.z = object->collision_position.z - 2.0;
+        max.x = object->collision_position.x + 2.0;
+        max.y = object->collision_position.y + 2.0;
+        max.z = object->collision_position.z + 2.0;
         for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate) {
             if ((candidate->status_flags & 1) || !(candidate->status_flags & 0x800000) ||
                 !(candidate->status_flags & 0x4000) || !(candidate->status_flags & 0x8000) ||
@@ -89,12 +90,12 @@ void __cdecl Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 continue;
             if ((candidate->draw_flags & 0x20) && ShadowMode == 0)
                 continue;
-            if (candidate->mid_position.x < min_x || candidate->mid_position.x > max_x ||
-                candidate->mid_position.z < min_z || candidate->mid_position.z > max_z ||
-                candidate->mid_position.y < min_y || candidate->mid_position.y > max_y)
+            if (candidate->mid_position.x < min.x || candidate->mid_position.x > max.x ||
+                candidate->mid_position.z < min.z || candidate->mid_position.z > max.z ||
+                candidate->mid_position.y < min.y || candidate->mid_position.y > max.y)
                 continue;
             distance = NuVecDistSqr(&candidate->mid_position, &object->collision_position, &delta);
-            if (distance < nearest_distance && forward.z * delta.z + forward.x * delta.x > 0.0) {
+            if (distance < nearest_distance && delta.x * forward.x + delta.z * forward.z > 0.0) {
                 nearest = candidate;
                 nearest_distance = distance;
             }
