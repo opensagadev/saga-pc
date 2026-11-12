@@ -133,15 +133,18 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     char name[32];
     if (player == NULL)
         return;
-    for (new_area = 0; new_area < 10; ++new_area) {
-        if (CheckPosAIArea(HubAiMusicStatePc.areas[new_area], PlayerStartRecordInitPc[(i8)player->field_280].position,
-                           0.0f) != 0)
+    new_area = -1;
+    for (index = 0; index < 10; ++index) {
+        if (CheckPosAIArea(HubAiMusicStatePc.areas[index], PlayerStartRecordInitPc[(i8)player->field_280].position,
+                           0.0f) != 0) {
+            new_area = index;
             break;
+        }
     }
-    if (new_area == 10 || new_area == HubAiMusicStatePc.area)
+    if (new_area == -1 || new_area == HubAiMusicStatePc.area)
         return;
     HubAiMusicStatePc.area = (i16)new_area;
-    path = HubAiMusicStatePc.paths[new_area];
+    path = HubAiMusicStatePc.paths[HubAiMusicStatePc.area];
     if (path != NULL && AISysSetLevelPath(world->ai_sys, (char *)path) != 0) {
         for (index = 0; index < 8; ++index) {
             object = Player[index];
@@ -155,7 +158,8 @@ void HubGoneThroughDoorPc(WORLDINFO *world) {
     Hub_MakeListCharactersAvailable(characters);
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_half & 1) == 0 || object->field_280 != 0xff || object->ai_packet.creature_index != 0xff)
+        if ((object->flags_1fc_half & 1) == 0 || (i8)object->field_280 != -1 ||
+            object->ai_packet.creature_index != 0xff)
             continue;
         object->tag_object_callback = NULL;
         FreeTorpedoPacket(&object->torpedo);
