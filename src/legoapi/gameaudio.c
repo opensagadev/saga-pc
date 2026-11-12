@@ -16,11 +16,16 @@ i32 __cdecl GameAudio_GetPlrSfxBits(void *object_ptr) {
 extern void(__cdecl *ExtraHurtSfxFn)(GAMEOBJECT *);
 void __cdecl PlayHurtSfx(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
-    i32 sfx = character->game_character->sfx_hurt;
-    if (sfx == -1) {
+    i32 sfx;
+    if (character->game_character->sfx_hurt != -1)
+        sfx = character->game_character->sfx_hurt;
+    else {
         if (character->model_flags & 0x44002010)
             goto extra;
-        sfx = GameAudio->sfx_ids[(object->flags_ef4 & 0x800) != 0 ? 0x16 : 0x17];
+        if (object->flags_ef4 & 0x800)
+            sfx = GameAudio->sfx_ids[0x16];
+        else
+            sfx = GameAudio->sfx_ids[0x17];
     }
     if (sfx != -1)
         PlaySfxById(sfx, &object->collision_position);
@@ -31,11 +36,16 @@ extra:
 
 void __cdecl PlayGruntSfx(GAMEOBJECT *object) {
     CHARACTERDATA_PC *character = object->character_data;
-    i32 sfx = character->game_character->sfx_grunt;
-    if (sfx == -1) {
+    i32 sfx;
+    if (character->game_character->sfx_grunt != -1)
+        sfx = character->game_character->sfx_grunt;
+    else {
         if (character->model_flags & 0x44002010)
             return;
-        sfx = GameAudio->sfx_ids[(object->flags_ef4 & 0x800) != 0 ? 0x14 : 0x15];
+        if (object->flags_ef4 & 0x800)
+            sfx = GameAudio->sfx_ids[0x14];
+        else
+            sfx = GameAudio->sfx_ids[0x15];
     }
     if (sfx != -1)
         PlaySfxById(sfx, &object->collision_position);
