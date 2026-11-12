@@ -4623,14 +4623,14 @@ i32 __cdecl Action_SnapToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 
     (void)processor;
     (void)param_6;
+    object = NULL;
+    check_terrain = 1;
     if (param_5 == 0) {
         return 1;
     }
 
-    object = NULL;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         object = packet->owner->objptr;
-    check_terrain = 1;
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AreaConfigKeyword_character);
         if (value != NULL) {
