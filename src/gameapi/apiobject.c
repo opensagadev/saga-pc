@@ -1757,7 +1757,8 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             source = sources[system->los_cursor_208];
             source_index = source->object_id;
             NuVecSub(&difference, &target->collision_position, &source->collision_position);
-            distance_squared = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
+            distance_squared =
+                difference.z * difference.z + (difference.x * difference.x + difference.y * difference.y);
             source_range = source->view_distance + target->ai_visibility_extension;
             target_range = target->view_distance + source->ai_visibility_extension;
             if ((source->flags_low & 0x200)) {
