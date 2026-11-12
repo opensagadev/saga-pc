@@ -1334,22 +1334,20 @@ extern "C" {
                 for (piece_index = 0; piece_index < buildit->anim_object_count; ++piece_index) {
                     GAMEANIMOBJ *piece = buildit->anim_objects[piece_index];
                     GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)piece->object_data;
-                    f32 sine = NU_SIN_LUT((f64)progress * 32768.0);
-                    f32 offset = (f64)sine * (f64)0.2f;
                     if (buildit->linked_buildit != NULL)
                         finish_position = *(NUVEC *)&data->end_mtx.m30;
                     else
                         finish_position = *NuSpecialGetPos(&piece->special);
+                    f32 sine = NU_SIN_LUT((f64)progress * 32768.0);
+                    f32 offset = (f64)sine * (f64)0.2f;
                     if ((buildit->state_flags & 1) != 0) {
-                        i32 angle = (i32)((u32)(u16)buildit->wobble_parameter << 16) / 360;
-                        displacement.x = 0.0f;
-                        displacement.y = 0.0f;
+                        displacement.x = displacement.y = 0.0f;
                         displacement.z = offset;
-                        NuVecRotateY(&displacement, &displacement, angle);
+                        NuVecRotateY(&displacement, &displacement,
+                                     (i32)((u32)(u16)buildit->wobble_parameter << 16) / 360);
                     } else {
-                        displacement.x = 0.0f;
+                        displacement.x = displacement.z = 0.0f;
                         displacement.y = offset;
-                        displacement.z = 0.0f;
                     }
                     NuVecAdd(&finish_position, &finish_position, &displacement);
                     if (buildit->linked_buildit != NULL)
@@ -1368,8 +1366,8 @@ extern "C" {
                             f32 radius;
                             u16 angle, angle_step;
                             i32 piece_index;
+                            angle = (u16)(facing - 0x4000);
                             if (buildit->reset_step_timer > 4.5f) {
-                                angle = (u16)(facing - 0x4000);
                                 angle_step = (u16)(i32)BuildItSafeRatioPc(65536.0f, buildit->anim_object_count);
                                 radius = 0.5f;
                             } else {
@@ -1541,9 +1539,9 @@ extern "C" {
                             BuilditHopSfxWaitPc = (f64)qrand() * 1.5259021893143654e-05 * (f64)0.2f + (f64)0.1f;
                         }
                     } else if (piece_index >= buildit->built_object_count &&
-                               (buildit->linked_buildit != NULL ? data->was_drawn != 0
-                                                                : NuSpecialGetOnScreenFn(&piece->special) != 0)) {
-                        if ((f64)probability > (f64)qrand() * 1.5259021893143654e-05) {
+                               ((buildit->linked_buildit != NULL && data->was_drawn != 0) ||
+                                (buildit->linked_buildit == NULL && NuSpecialGetOnScreenFn(&piece->special) != 0))) {
+                        if (qrand() * 1.5259021893143654e-05 < probability) {
                             data->wobble_time = 0.2f;
                             data->wobble_axis = (u8)(qrand() / 0x2aab);
                         }
@@ -1552,21 +1550,17 @@ extern "C" {
                         f32 phase = (f64)data->wobble_time / (f64)0.2f;
                         f32 sine = NU_SIN_LUT((1.0f - phase) * 65536.0);
                         i32 angle = (i32)((f64)sine * 3640.0);
-                        f32 factor;
                         if ((data->wobble_axis & 1) != 0)
                             angle = -angle;
-                        if (data->wobble_axis <= 1) {
+                        if (data->wobble_axis == 0 || data->wobble_axis == 1) {
                             NuMtxGetXAxis(&matrix, &axis);
-                            factor = BuildItAxisWobbleFactorPc(&axis);
-                            NuMtxPreRotateX(&matrix, (i32)(angle * factor));
-                        } else if (data->wobble_axis <= 3) {
+                            NuMtxPreRotateX(&matrix, (i32)(angle * BuildItAxisWobbleFactorPc(&axis)));
+                        } else if (data->wobble_axis == 2 || data->wobble_axis == 3) {
                             NuMtxGetYAxis(&matrix, &axis);
-                            factor = BuildItAxisWobbleFactorPc(&axis);
-                            NuMtxPreRotateY(&matrix, (i32)(angle * factor));
+                            NuMtxPreRotateY(&matrix, (i32)(angle * BuildItAxisWobbleFactorPc(&axis)));
                         } else {
                             NuMtxGetZAxis(&matrix, &axis);
-                            factor = BuildItAxisWobbleFactorPc(&axis);
-                            NuMtxPreRotateZ(&matrix, (i32)(angle * factor));
+                            NuMtxPreRotateZ(&matrix, (i32)(angle * BuildItAxisWobbleFactorPc(&axis)));
                         }
                         matrix.m31 += (f64)NU_SIN_LUT((f64)phase * 32768.0) * GIZBUILDITWOBBLEJUMPHEIGHT *
                                       buildit->interaction_radius;
