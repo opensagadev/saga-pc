@@ -1168,8 +1168,7 @@ extern "C" {
         }
         {
             f32 title_y = (f64)y + (f64)0.15f;
-            SmartTextEx(title, 0.0f, title_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, (u8)red, (u8)green, 0, 1.7f, 1, NULL, 0,
-                        (u8)alpha);
+            SmartTextEx(title, 0.0f, title_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, red, green, 0, 1.7f, 1, NULL, 0, (u8)alpha);
         }
         {
             f32 value = packet->new_best_time != 0.0f ? packet->new_best_time : packet->elapsed_time;
@@ -1185,8 +1184,7 @@ extern "C" {
         NuStrCat(previous, ")");
         {
             f32 previous_y = (f64)y - (f64)0.15f;
-            Text3DEx(previous, 0.0f, previous_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255,
-                     (i32)(((u32)alpha & 0xffffff00u) | (((u32)alpha & 0xffu) >> 1)));
+            Text3DEx(previous, 0.0f, previous_y, 1.0f, 0.7f, 0.7f, 0.7f, 0, 255, 255, 255, (u8)alpha >> 1);
         }
     }
     i32 StatusDemoOptionPc = 0;
