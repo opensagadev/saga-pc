@@ -1949,6 +1949,7 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
     u16 bolt_index, object_index;
     NUVEC points[3];
     i32 hit, client;
+    NUVEC direction;
     message.Read16(bolt_index);
     message.Read16(object_index);
     message.Read(&points[0], 4, 3);
@@ -1959,7 +1960,6 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
     BOLT_PC *bolt = &Bolt[bolt_index];
     GAMEOBJECT *object = &Obj[object_index];
     BOLTTYPE_PC *type = bolt->type;
-    GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
     if (BoltSys->stop_targeting != NULL && bolt->owner != NULL &&
         (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 0x80) != 0)
         BoltSys->stop_targeting(static_cast<GAMEOBJECT *>(bolt->owner), &bolt->position);
@@ -1974,120 +1974,113 @@ extern "C" void __cdecl Bolt_HitGameObjectRC(NETMESSAGE_PC &message) {
     else
         cheat_deflect = 0;
     NewRumble(object->pad->bound_pad, 0.5f, 0);
-    if ((bolt->flags & 0x100) == 0 || deflect) {
-        u64 context_flags = reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags;
-        if ((context_flags & 0x4000000) != 0 ||
-            ((context_flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0) || deflect ||
-            (context_flags & 0x800000) != 0 ||
-            ((context_flags & 0x1000000) != 0 && (object->context_variant_flags & 0x10000) != 0) ||
-            CannotKill(object)) {
-            BoltSys->debris(bolt, points, hit, &object->velocity, 1);
-            if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD)
-                NewBlockAction(object);
-            GameAudio_PlaySfx(42, &points[hit], 0, 0);
-            BoltNoSfxPc = 1;
-            if ((BoltBlockContextPc == -1 || object->character_context != BoltBlockContextPc) && !deflect &&
-                !(bolt->time >= 0.1f))
-                goto finish;
-            NUVEC direction;
-            if (bolt->owner != NULL && (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 1) != 0)
-                CalculateInterceptVector(&points[hit], &static_cast<GAMEOBJECT *>(bolt->owner)->collision_position,
-                                         &static_cast<GAMEOBJECT *>(bolt->owner)->velocity, bolt->speed, &direction,
-                                         NULL);
-            else
-                NuVecSub(&direction, &bolt->previous_position, &points[hit]);
-            FindAnglesXY(&direction, NULL, NULL);
-            if (((bolt->flags & 0x40) == 0 || deflect) && (object->flags_1fc & 0x80) != 0 &&
-                ((BoltBlockContextPc != -1 && object->character_context == BoltBlockContextPc) || cheat_deflect) &&
-                (object->character_data->model_flags & 8) != 0) {
-                if (bolt->owner == NULL || (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 1) == 0 ||
-                    ((static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc_word & 0x1001) == 0x1001 &&
-                     static_cast<GAMEOBJECT *>(bolt->owner)->dead == 0))
-                    goto reflected;
-            }
-            {
-                temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 8192.0f);
-                FindAnglesXFullTempPc +=
-                    static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
-                if (FindAnglesXFullTempPc < -8192)
-                    FindAnglesXFullTempPc = -8192;
-                else if (FindAnglesXFullTempPc > 8192)
-                    FindAnglesXFullTempPc = 8192;
-                temp_zrot = FindAnglesXFullTempPc;
-            }
-        reflected:
-            NewBuzz(object->pad->bound_pad, 0.1f, 0);
-            NUMTX matrix;
-            NUANGVEC angles;
-            angles.x = temp_zrot;
-            angles.y = temp_yrot;
-            NuMtxSetRotationXYVU0(&matrix, &angles);
-            BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
-            if (reflected_bolt != NULL)
-                reflected_bolt->flags |= 0x10000000;
+    if (((bolt->flags & 0x100) == 0 || deflect) &&
+        ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x4000000) != 0 ||
+         ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8000000) != 0 &&
+          (object->context_variant_flags & 0x20000) != 0) ||
+         deflect ||
+         (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x800000) != 0 ||
+         ((reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x1000000) != 0 &&
+          (object->jump_flags & 1) != 0) ||
+         CannotKill(object))) {
+        BoltSys->debris(bolt, points, hit, &object->velocity, 1);
+        if (LEGOCONTEXT_HOLD != -1 && object->character_context == LEGOCONTEXT_HOLD)
+            NewBlockAction(object);
+        GameAudio_PlaySfx(42, &points[hit], 0, 0);
+        BoltNoSfxPc = 1;
+        if ((BoltBlockContextPc == -1 || object->character_context != BoltBlockContextPc) && !deflect &&
+            !(bolt->time >= 0.1f))
             goto finish;
+        if (bolt->owner != NULL && (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc & 1) != 0)
+            CalculateInterceptVector(&points[hit], &static_cast<GAMEOBJECT *>(bolt->owner)->collision_position,
+                                     &static_cast<GAMEOBJECT *>(bolt->owner)->velocity, bolt->speed, &direction, NULL);
+        else
+            NuVecSub(&direction, &bolt->previous_position, &points[hit]);
+        FindAnglesXY(&direction, NULL, NULL);
+        if (((bolt->flags & 0x40) == 0 || deflect) && (object->flags_1fc & 0x80) != 0 &&
+            ((BoltBlockContextPc != -1 && object->character_context == BoltBlockContextPc) || cheat_deflect) &&
+            (object->character_data->model_flags & 8) != 0) {
+            if (bolt->owner == NULL || (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc_word & 1) == 0 ||
+                ((static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc_word & 1) != 0 &&
+                 (static_cast<GAMEOBJECT *>(bolt->owner)->flags_1fc_word & 0x1000) != 0 &&
+                 static_cast<GAMEOBJECT *>(bolt->owner)->dead == 0))
+                goto reflected;
         }
-    }
-    {
-        CHARACTERDATA_PC *data = object->character_data;
-        PLAYERCHARACTERCONFIG_PC *character = data->game_character;
-        bool shield = object->origin_scale_override == 1.0f ||
-                      ((character->flags_094 & 0x4000000) != 0 && VehicleArea != 0 && BonusArea != 0) ||
-                      (object->current_hp == 0 && (data->model_flags & 0x2000) != 0) ||
-                      ((data->model_flags & 0x20000000) != 0 && object->rider == NULL);
-        if (!shield) {
+        temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 8192.0f);
+        FindAnglesXFullTempPc += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
+        if (FindAnglesXFullTempPc < -8192)
+            FindAnglesXFullTempPc = -8192;
+        else if (FindAnglesXFullTempPc > 8192)
+            FindAnglesXFullTempPc = 8192;
+        temp_zrot = FindAnglesXFullTempPc;
+    reflected:
+        NewBuzz(object->pad->bound_pad, 0.1f, 0);
+        NUMTX matrix;
+        NUANGVEC angles;
+        angles.x = temp_zrot;
+        angles.y = temp_yrot;
+        NuMtxSetRotationXYVU0(&matrix, &angles);
+        BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
+        if (reflected_bolt != NULL)
+            reflected_bolt->flags |= 0x10000000;
+    } else if (object->origin_scale_override == 1.0f ||
+               ((object->character_data->game_character->flags_094 & 0x4000000) != 0 && VehicleArea != 0 &&
+                BonusArea != 0) ||
+               (object->current_hp == 0 && (object->character_data->model_flags & 0x2000) != 0) ||
+               ((object->character_data->model_flags & 0x20000000) != 0 && object->rider == NULL)) {
+        if ((bolt->flags & 0x4000000) != 0) {
             BoltSys->debris(bolt, points, hit, &object->velocity, 0);
-            i32 damage = 0;
-            if ((bolt->flags & 0x800000) == 0) {
-                damage = BoltType_FindByID(bolt->type_id, WORLD)->field_3c;
-                if (Player_HasDoubleBoltDamage_FromBolt(bolt))
-                    damage += damage;
-            }
-            Bolt_PlayHitSfx(bolt);
-            owner = static_cast<GAMEOBJECT *>(bolt->owner);
-            if (owner != NULL && (owner->flags_1fc & 1) != 0 && (owner->flags_1fc & 0x80) == 0 &&
-                (owner->flags_1f8 & 1) != 0 && ((owner->flags_1f8 ^ object->flags_1f8) & 1) == 0)
-                goto owner_feedback;
-            objhitobj_bolt = reinterpret_cast<BOLT *>(bolt);
-            ObjHitObj(owner, object, damage, bolt->hit_flags, 0, 0);
-            if ((bolt->flags & 0x800000) != 0 &&
-                (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x10008000) == 0 &&
-                (object->character_data->model_flags & 0x10) != 0 && BoltDeactivatedActionPc != -1 &&
-                object->character_model->model_data_b[BoltDeactivatedActionPc] != NULL) {
-                DeactivatePlayer(object, DEACTIVATEDTIME, NULL);
-                if (bolt->owner != NULL)
-                    NewBuzz(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.1f, 0);
-                goto owner_feedback;
-            }
-        owner_feedback:
-            if (bolt->owner != NULL && static_cast<GAMEOBJECT *>(bolt->owner)->pad != NULL)
-                NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.7f, 0);
+            ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, type->field_3c, bolt);
         } else {
-            if ((bolt->flags & 0x4000000) != 0) {
-                BoltSys->debris(bolt, points, hit, &object->velocity, 0);
-                ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, type->field_3c, bolt);
-            } else {
-                BoltSys->debris(bolt, points, hit, &object->velocity, 1);
-                ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, 0, bolt);
-                GameAudio_PlaySfx(41, &bolt->position, 0, 0);
-                NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                if ((bolt->flags & 0x100000) == 0) {
-                    temp_yrot = NuAtan2D(bolt->position.x - object->collision_position.x,
-                                         bolt->position.z - object->collision_position.z);
-                    temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
-                    temp_zrot = static_cast<i32>(-1820.0f - (qrand() * static_cast<f64>(1.0f / 65535.0f)) * 6371.0f);
-                    NUMTX matrix;
-                    NUANGVEC angles;
-                    angles.x = temp_zrot;
-                    angles.y = temp_yrot;
-                    NuMtxSetRotationXYVU0(&matrix, &angles);
-                    BoltNoSfxPc = 1;
-                    BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
-                    if (reflected_bolt != NULL)
-                        reflected_bolt->flags |= 0x10000000;
-                }
+            BoltSys->debris(bolt, points, hit, &object->velocity, 1);
+            ObjHitShield(static_cast<GAMEOBJECT *>(bolt->owner), object, 0, bolt);
+            GameAudio_PlaySfx(41, &bolt->position, 0, 0);
+            NewBuzz(object->pad->bound_pad, 0.1f, 0);
+            if ((bolt->flags & 0x100000) == 0) {
+                temp_yrot = NuAtan2D(bolt->position.x - object->collision_position.x,
+                                     bolt->position.z - object->collision_position.z);
+                temp_yrot += static_cast<i32>((qrand() * static_cast<f64>(1.0f / 65535.0f)) * 16384.0f - 5461.0f);
+                temp_zrot = static_cast<i32>(-1820.0f - (qrand() * static_cast<f64>(1.0f / 65535.0f)) * 6371.0f);
+                NUMTX matrix;
+                NUANGVEC angles;
+                angles.x = temp_zrot;
+                angles.y = temp_yrot;
+                NuMtxSetRotationXYVU0(&matrix, &angles);
+                BoltNoSfxPc = 1;
+                BOLT_PC *reflected_bolt = Bolt_Add(object, &points[hit], &matrix, bolt->type_id, 0);
+                if (reflected_bolt != NULL)
+                    reflected_bolt->flags |= 0x10000000;
             }
         }
+    } else {
+        BoltSys->debris(bolt, points, hit, &object->velocity, 0);
+        i32 damage;
+        if ((bolt->flags & 0x800000) != 0)
+            damage = 0;
+        else {
+            damage = BoltType_FindByID(bolt->type_id, WORLD)->field_3c;
+            if (Player_HasDoubleBoltDamage_FromBolt(bolt))
+                damage += damage;
+        }
+        Bolt_PlayHitSfx(bolt);
+        GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
+        if (owner != NULL && (owner->flags_1fc_word & 1) != 0 && (owner->flags_1fc_word & 0x80) == 0 &&
+            (owner->flags_1f8 & 1) != 0 && (owner->flags_1f8 & 1) == (object->flags_1f8 & 1))
+            goto owner_feedback;
+        objhitobj_bolt = reinterpret_cast<BOLT *>(bolt);
+        ObjHitObj(owner, object, damage, bolt->hit_flags, 0, 0);
+        if ((bolt->flags & 0x800000) != 0 &&
+            (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x10000000) == 0 &&
+            (reinterpret_cast<BOLT_CONTEXT_INFO_PC *>(CInfo)[object->character_context].flags & 0x8000) == 0 &&
+            (object->character_data->model_flags & 0x10) != 0 && BoltDeactivatedActionPc != -1 &&
+            object->character_model->model_data_b[BoltDeactivatedActionPc] != NULL) {
+            DeactivatePlayer(object, DEACTIVATEDTIME, NULL);
+            if (bolt->owner != NULL)
+                NewBuzz(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.1f, 0);
+        }
+    owner_feedback:
+        if (bolt->owner != NULL && static_cast<GAMEOBJECT *>(bolt->owner)->pad != NULL)
+            NewRumble(static_cast<GAMEOBJECT *>(bolt->owner)->pad->bound_pad, 0.7f, 0);
     }
 finish:
     if (object->dead == 0 && (object->flags_1fc & 2) == 0) {
