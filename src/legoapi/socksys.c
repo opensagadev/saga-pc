@@ -314,48 +314,39 @@ static void SockParBlend(NUFPAR_PC *parser, void *context) {
 }
 
 static void SockCamATSTLIFT(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->camera_character_close_lift = NuFParGetFloat(parser);
+    sockpar_sock->camera_character_close_lift = NuFParGetFloat(parser);
 }
 
 static void SockCamATSTDIST(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->camera_min_distance = NuFParGetFloat(parser);
+    sockpar_sock->camera_min_distance = NuFParGetFloat(parser);
 }
 
 static void SockCamATSTCAMRANGE(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->camera_range_of_effect = NuFParGetFloat(parser);
+    sockpar_sock->camera_range_of_effect = NuFParGetFloat(parser);
 }
 
 static void SockCamATSTTILT(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->camera_tilt_angle_change = NuFParGetFloat(parser);
+    sockpar_sock->camera_tilt_angle_change = NuFParGetFloat(parser);
 }
 
 static void SockCamATSTTILTRATE(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->camera_tilt_angle_rate = NuFParGetFloat(parser);
+    sockpar_sock->camera_tilt_angle_rate = NuFParGetFloat(parser);
 }
 
 static void SockCamCAMERARAYTILTDIST(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->camera_tilt_distance = NuFParGetFloat(parser);
+    sockpar_sock->camera_tilt_distance = NuFParGetFloat(parser);
 }
 
 static void SockCamCAMERARAYTILTHEIGHT(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->camera_tilt_height = NuFParGetFloat(parser);
+    sockpar_sock->camera_tilt_height = NuFParGetFloat(parser);
 }
 
 static void SockManCam_MAX_X(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->manual_camera_max_x = NuFParGetFloat(parser);
+    sockpar_sock->manual_camera_max_x = NuFParGetFloat(parser);
 }
 
 static void SockManCam_MAX_Y(NUFPAR_PC *parser, void *context) {
-    SOCK_PC *socket = sockpar_sock;
-    socket->manual_camera_max_y = NuFParGetFloat(parser);
+    sockpar_sock->manual_camera_max_y = NuFParGetFloat(parser);
 }
 
 static void SockTerrainCamInActive(NUFPAR_PC *parser, void *context) {
