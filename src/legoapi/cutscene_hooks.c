@@ -125,7 +125,7 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
         if (id == -1) {
             return -1;
         }
-        if (NuStrICmp(character->name, apicharsys->char_data[id].name) == 0) {
+        if (NuStrICmp(apicharsys->char_data[id].name, character->name) != 0) {
             return -1;
         }
         vehicle = CutDeadVehiclePlayer;
@@ -135,7 +135,7 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
                 return -1;
             }
         }
-        if (vehicle->id != id_ANAKINSPODGREEN)
+        if (vehicle->id != (u16)id_ANAKINSPODGREEN)
             return -1;
         return id_ANAKINSPODGREEN;
     }
@@ -147,17 +147,17 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
         if (id == -1) {
             return -1;
         }
-        if (NuStrICmp(character->name, apicharsys->char_data[id].name) == 0) {
+        if (NuStrICmp(apicharsys->char_data[id].name, character->name) != 0) {
             return -1;
         }
         vehicle = CutDeadVehiclePlayer;
         if (vehicle != NULL) {
-            if (vehicle->id == id_ANAKINSNEWPODGREEN) {
+            if (vehicle->id == (u16)id_ANAKINSNEWPODGREEN) {
                 return id_ANAKINSNEWPODGREEN;
             }
             return id_ANAKINSNEWPOD;
         }
-        if (player->id == id_ANAKINSNEWPODGREEN) {
+        if (player->id == (u16)id_ANAKINSNEWPODGREEN) {
             return id_ANAKINSNEWPODGREEN;
         }
         return id_ANAKINSNEWPOD;
@@ -171,7 +171,7 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
             return -1;
         }
         id = id_REPUBLICGUNSHIP_GREEN;
-        if (vehicle->id == id) {
+        if (vehicle->id == (u16)id) {
             return id;
         }
         return -1;
@@ -181,7 +181,7 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
             return -1;
         }
         vehicle = CutDeadVehiclePlayer;
-        if (vehicle != NULL && vehicle->id == id_NEW_REPUBLIC_GUNSHIP_GREEN) {
+        if (vehicle != NULL && vehicle->id == (u16)id_NEW_REPUBLIC_GUNSHIP_GREEN) {
             return id_NEW_REPUBLIC_GUNSHIP_GREEN;
         }
         return id_NEW_REPUBLIC_GUNSHIP;
@@ -195,7 +195,7 @@ i32 __cdecl CutScene_ReplaceCharacterModelFn_LSW(CUTINFO *cut, CUTSCENECHARACTER
             return -1;
         }
         id = id_JEDISTARFIGHTERYELLOWEP3;
-        if (vehicle->id == id) {
+        if (vehicle->id == (u16)id) {
             return id;
         }
     }
