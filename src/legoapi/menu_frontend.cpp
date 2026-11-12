@@ -792,11 +792,11 @@ extern "C" void __cdecl MenuUpdatePauseMain(MENU *menu) {
         NewMenu(1025, 0, -1);
         return;
     }
+    i32 next = 5;
     if (item == 4) {
         NewMenu(1026, 0, -1);
         return;
     }
-    i32 next = 5;
     if (!GAMEDEMO) {
         next = 6;
         if (item == 5) {
@@ -812,12 +812,10 @@ extern "C" void __cdecl MenuUpdatePauseMain(MENU *menu) {
         if (item == drop_item) {
             i32 player = -1;
             for (i32 i = 0; i < 8; ++i) {
-                GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
-                if (object) {
-                    if (object->pad == (GAMEPAD_PC *)&GamePadStorage[pause_i_pad])
-                        player = i;
-                    object->flags_ef0 &= ~0x200000u;
-                }
+                if (Player[i] && ((GAMEOBJECT *)Player[i])->pad == (GAMEPAD_PC *)&GamePadStorage[pause_i_pad])
+                    player = i;
+                if (Player[i])
+                    ((GAMEOBJECT *)Player[i])->flags_ef0 &= ~0x200000u;
             }
             if (player != -1)
                 DropOut(player, 1, 0, 0);
