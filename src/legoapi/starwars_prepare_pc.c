@@ -282,27 +282,25 @@ i32 __cdecl StarWars_PrepareHoverTube(AIPACKET_PC *packet, APIOBJECT_PC *apiobje
 
 i32 __cdecl StarWars_PrepareBigJump(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
     GAMEOBJECT *owner;
-    AIPATHNODE_PC *nodes;
-    i32 source_index;
     i32 destination_index;
     AIPATHNODE_PC *destination;
     AIPATHNODE_PC *alternate;
 
     owner = (GAMEOBJECT *)object->owner;
-    nodes = packet->path_info.path->nodes;
-    source_index = packet->path_info.connection->node_indices[packet->path_info.direction];
     destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
+    destination = &packet->path_info.path->nodes[destination_index];
     if (owner->ai_packet.inside_path_node == destination_index || owner->character_context == 0x2b) {
         return 0;
     }
     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
-        packet->movement_destination = nodes[source_index].position;
+        packet->movement_destination =
+            packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]]
+                .position;
         packet->flags |= 0x800000;
         packet->movement_stopping_distance = 0.0f;
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
         return 1;
     }
-    destination = &nodes[destination_index];
     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
         return 1;
     }
