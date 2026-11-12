@@ -204,14 +204,15 @@ extern "C" i32 __cdecl Episodes_Completed(void) {
  * Store_IsPackUnlocked guard. No backing or capacity is inferred here. */
 i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SAVE_PC *saves) {
     EPISODE_AREA_SAVE_READER_PC *records = (EPISODE_AREA_SAVE_READER_PC *)saves;
-    EpCompleteTotal = EpCompleteCount = 0;
-    EpMiniKitTotal = EpMiniKitCount = 0;
-    EpCharKitTotal = EpCharKitCount = 0;
-    EpBuildUpTotal = EpBuildUpCount = 0;
-    EpStoryBuildUpTotal = EpStoryBuildUpCount = 0;
-    EpFreePlayBuildUpTotal = EpFreePlayBuildUpCount = 0;
-    EpRedBrickTotal = EpRedBrickCount = 0;
-    EpGoldBrickTotal = EpGoldBrickCount = 0;
+    i32 open = 0;
+    EpCompleteCount = EpCompleteTotal = 0;
+    EpMiniKitCount = EpMiniKitTotal = 0;
+    EpCharKitCount = EpCharKitTotal = 0;
+    EpBuildUpCount = EpBuildUpTotal = 0;
+    EpStoryBuildUpCount = EpStoryBuildUpTotal = 0;
+    EpFreePlayBuildUpCount = EpFreePlayBuildUpTotal = 0;
+    EpRedBrickCount = EpRedBrickTotal = 0;
+    EpGoldBrickCount = EpGoldBrickTotal = 0;
     if (episode_index == -1)
         return 0;
     if (EpisodeGoldBrickForSuperStoryPc != 0) {
@@ -219,7 +220,6 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         if (EpisodeSavePc != NULL && EpisodeSavePc[episode_index].superstory_complete != 0)
             EpGoldBrickCount = 1;
     }
-    i32 open = 0;
     EPISODEDATA_PC *episode = &EDataList[episode_index];
     for (i32 i = 0; i < episode->area_count; ++i) {
         i32 id = episode->area_ids[i];
@@ -238,7 +238,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         }
         if ((area->flags & 4) != 0) {
             ++EpGoldBrickTotal;
-            if ((f64)area->challenge_trial_time > (f64)records[id].challenge_time)
+            if ((f64)records[id].challenge_time < (f64)area->challenge_trial_time)
                 ++EpGoldBrickCount;
             continue;
         }
