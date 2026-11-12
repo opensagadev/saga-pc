@@ -555,9 +555,8 @@ SoundVoiceManagerPC *SoundVoiceManagerPC::ResetStoragePc(void) {
 }
 void SoundVoiceManagerPC::UnloadSample(i32 index) {
     EnterCriticalSection(&SoundVoiceCriticalSection);
-    SoundSamplePC *sample = &samples[index];
-    if (sample->buffer != NULL) {
-        sample->buffer->vtable->release(sample->buffer);
+    if (samples[index].buffer != NULL) {
+        samples[index].buffer->vtable->release(samples[index].buffer);
         samples[index].buffer = NULL;
     }
     samples[index].buffer = NULL;
