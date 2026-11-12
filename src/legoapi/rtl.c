@@ -703,7 +703,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT_PC *light, f32 elapsed) {
             light->ambient.y = light->secondary_colour.y * light->blend + light->colour.y * (1.0f - light->blend);
             light->ambient.z = light->secondary_colour.z * light->blend + light->colour.z * (1.0f - light->blend);
             light->blend += light->blend_rate * elapsed;
-            light->blend = RTL_MIN_PC(1.0f, RTL_MAX_PC(0.0f, light->blend));
+            light->blend = RTL_MAX_PC(0.0f, RTL_MIN_PC(1.0f, light->blend));
             light->parameter_54 -= elapsed;
             if (light->parameter_54 <= 0.0f) {
                 light->parameter_54 = light->parameters[2];
