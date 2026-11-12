@@ -378,6 +378,9 @@ extern i32 MAXBLOWUPRANDSPANG;
 extern void(__cdecl *GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
 i32 __cdecl ReleaseHearts(void);
 void __cdecl AddPickups(i32, i32, i32, i32, NUVEC *, NUVEC *, f32, i32, f32, f32, GAMEOBJECT *, i32, i32);
+void __cdecl BlowupObjEmit_Stop(struct PART_PC *part) {
+}
+
 void __cdecl GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 offset, i32 flags,
                                     GAMEOBJECT *object) {
     BLOWUP_EFFECT_TYPE_PC *type = (BLOWUP_EFFECT_TYPE_PC *)blowup->type;
