@@ -26,18 +26,8 @@ VIEWCAM_PC ViewCam = {0,   {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.6600000
 typedef struct CAMERA_JUDDER_FIELDS_PC {
     u8 unknown_000[0x11c];
     NUVEC position;
-    u8 unknown_128[0xa0];
-    f32 time;
-    f32 duration;
-    u8 unknown_1d0[0x58];
-    u8 reverse;
-    u8 axis;
 } CAMERA_JUDDER_FIELDS_PC;
 STATIC_ASSERT(offsetof(CAMERA_JUDDER_FIELDS_PC, position) == 0x11c);
-STATIC_ASSERT(offsetof(CAMERA_JUDDER_FIELDS_PC, time) == 0x1c8);
-STATIC_ASSERT(offsetof(CAMERA_JUDDER_FIELDS_PC, duration) == 0x1cc);
-STATIC_ASSERT(offsetof(CAMERA_JUDDER_FIELDS_PC, reverse) == 0x228);
-STATIC_ASSERT(offsetof(CAMERA_JUDDER_FIELDS_PC, axis) == 0x229);
 typedef struct LEVEL_JUDDER_FIELDS_PC {
     u8 unknown_000[0xcd];
     u8 maximum_distance;
@@ -49,38 +39,36 @@ void __cdecl GameCam_Judder(GAMECAMERA *camera, f32 amount, i32 axis, NUVEC *sou
         f32 value;
         u32 bits;
     } absolute, magnitude;
-    CAMERA_JUDDER_FIELDS_PC *judder;
     f32 distance;
     f32 maximum_distance;
     if (camera == NULL)
         camera = GameCam;
-    judder = (CAMERA_JUDDER_FIELDS_PC *)camera;
     absolute.value = amount;
     magnitude.bits = absolute.bits & 0x7fffffff;
-    if (magnitude.value > judder->time) {
+    if (magnitude.value > camera->judder_time) {
         if (source != NULL) {
-            distance = NuVecDist(&judder->position, source, NULL);
+            distance = NuVecDist(&((CAMERA_JUDDER_FIELDS_PC *)camera)->position, source, NULL);
             maximum_distance = (f32)((LEVEL_JUDDER_FIELDS_PC *)WORLD->current_level)->maximum_distance;
             if (distance < maximum_distance) {
                 magnitude.value *= (maximum_distance - distance) / maximum_distance;
-                if (magnitude.value > judder->time) {
-                    judder->duration = magnitude.value;
-                    judder->time = magnitude.value;
+                if (magnitude.value > camera->judder_time) {
+                    camera->judder_duration = magnitude.value;
+                    camera->judder_time = magnitude.value;
                     if (amount < 0.0f)
-                        judder->reverse = 1;
+                        camera->judder_reverse = 1;
                     else
-                        judder->reverse = 0;
+                        camera->judder_reverse = 0;
                 }
             }
         } else {
-            judder->duration = magnitude.value;
-            judder->time = magnitude.value;
+            camera->judder_duration = magnitude.value;
+            camera->judder_time = magnitude.value;
             if (amount < 0.0f)
-                judder->reverse = 1;
+                camera->judder_reverse = 1;
             else
-                judder->reverse = 0;
+                camera->judder_reverse = 0;
         }
-        judder->axis = (u8)axis;
+        camera->judder_axis = (u8)axis;
     }
 }
 
@@ -112,8 +100,7 @@ u16 __cdecl GameCam_GetAdjustedYRot(GAMECAMERA *camera) {
 
 void __cdecl GameCam_HitRoll(void) {
     f32 amount = qrand() < 0x8000 ? -0.25f : 0.25f;
-    GAMECAMERA *camera = GameCam;
-    GameCam_Judder(camera, amount, 2, NULL);
+    GameCam_Judder(GameCam, amount, 2, NULL);
 }
 
 void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *exceptions) {
@@ -129,11 +116,9 @@ void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *exceptions) {
 
 void __cdecl GameCam_HitJudder(void) {
     f32 amount = VehicleArea != 0 ? -0.3f : -0.2f;
-    GAMECAMERA *camera;
     if (qrand() < 0x8000)
         amount = -amount;
-    camera = GameCam;
-    GameCam_Judder(camera, amount, qrand() / 0x5556, NULL);
+    GameCam_Judder(GameCam, amount, qrand() / 0x5556, NULL);
 }
 
 extern i32 GameCamLookRotXPc;
