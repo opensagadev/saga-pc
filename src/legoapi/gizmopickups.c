@@ -263,7 +263,9 @@ static GIZMOPICKUP_PC *GizmoPickups_CollideListPc(GAMEOBJECT *object, GIZMOPICKU
     }
     coin_magnet = Cheats_CheckFlags(0x8000) != 0 || object->powerup_time > 0.0f;
     normal_pickup = AreaPickupScale;
-    scaled_pickup = coin_magnet ? COINMAGNETSCALE * normal_pickup : normal_pickup;
+    scaled_pickup = normal_pickup;
+    if (coin_magnet)
+        scaled_pickup = COINMAGNETSCALE * normal_pickup;
     if (collide_scale != 0.0f)
         scaled_pickup *= collide_scale;
     if (collide_2d && VehicleArea != 0)
