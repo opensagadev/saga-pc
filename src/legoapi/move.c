@@ -8010,8 +8010,8 @@ void __cdecl Move_CRITTER(GAMEOBJECT *object) {
 
 void __cdecl Move_DROIDGENERIC(GAMEOBJECT *object) {
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
-    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
     u32 zap_pressed = object->pad->buttons_pressed & (GAMEPAD_SPECIAL | GAMEPAD_ACTION);
+    u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
     if ((object->character_data->model_flags & 0x40) != 0) {
         if (DroidCheat32EnabledPc != 0)
             zap_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
