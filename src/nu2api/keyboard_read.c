@@ -32,59 +32,57 @@ u8 *__fastcall NuKeyboardPoll(NuKeyboardOwner_PC *owner) {
     i8 page_index;
     i32 i;
     i32 next_key_index;
-    i32 previous_key_index;
+    i32 key_index;
+    i32 key_count;
 
     owner->poll_status = 0;
-    if ((nu_keyboard_device_flags & 2) != 0 || owner->device == 0) {
-        goto clear_page;
-    }
-
-    owner->poll_status = 1;
-    if (owner->device->vtable->poll(owner->device) < 0) {
-        if (owner->device->vtable->acquire(owner->device) < 0) {
-            goto clear_page;
+    if ((nu_keyboard_device_flags & 2) == 0 && owner->device != 0) {
+        owner->poll_status = 1;
+        if (owner->device->vtable->poll(owner->device) < 0) {
+            if (owner->device->vtable->acquire(owner->device) < 0) {
+                page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
+                memset(page, 0, nu_keyboard_owner.key_count);
+                return page;
+            }
+            owner->device->vtable->poll(owner->device);
         }
-        owner->device->vtable->poll(owner->device);
-    }
 
-    nu_keyboard_page_index ^= 1;
-    page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
-    if (owner->device->vtable->get_state(owner->device, 0x100, page) != 0) {
-        goto clear_page;
-    }
+        nu_keyboard_page_index ^= 1;
+        if (owner->device->vtable->get_state(owner->device, 0x100,
+                                             nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100) == 0) {
+            page_index = (i8)nu_keyboard_page_index;
+            key_count = nu_keyboard_owner.key_count;
+            key_index = nu_keyboard_key_index;
+            nu_keyboard_previous_key_index = key_index;
+            next_key_index = 0;
+            for (i = 0; i < key_count; ++i) {
+                if (nu_keyboard_pages[page_index * 0x100 + i] != 0 && i != key_index) {
+                    next_key_index = i;
+                    break;
+                }
+            }
 
-    page_index = (i8)nu_keyboard_page_index;
-    previous_key_index = nu_keyboard_key_index;
-    nu_keyboard_previous_key_index = previous_key_index;
-    next_key_index = 0;
-    for (i = 0; i < nu_keyboard_owner.key_count; ++i) {
-        if (nu_keyboard_pages[page_index * 0x100 + i] != 0 && i != previous_key_index) {
-            next_key_index = i;
-            break;
+            if (nu_keyboard_repeat_countdown != 0) {
+                --nu_keyboard_repeat_countdown;
+                if (next_key_index != 0) {
+                    nu_keyboard_repeat_countdown = 6;
+                }
+                memset(nu_keyboard_pages + page_index * 0x100, 0, key_count);
+            } else if (next_key_index != 0) {
+                nu_keyboard_key_index = key_index = next_key_index;
+                goto check_none;
+            }
+            if (key_index != 0 && nu_keyboard_pages[page_index * 0x100 + key_index] == 0) {
+                nu_keyboard_key_index = key_index = 0;
+            }
+        check_none:
+            if (key_index == 0) {
+                nu_keyboard_no_key_state = 0;
+            }
+            return nu_keyboard_pages + page_index * 0x100;
         }
     }
 
-    if (nu_keyboard_repeat_countdown != 0) {
-        --nu_keyboard_repeat_countdown;
-        if (next_key_index != 0) {
-            nu_keyboard_repeat_countdown = 6;
-        }
-        memset(nu_keyboard_pages + page_index * 0x100, 0, nu_keyboard_owner.key_count);
-        if (nu_keyboard_key_index != 0 && nu_keyboard_pages[page_index * 0x100 + nu_keyboard_key_index] == 0) {
-            nu_keyboard_key_index = 0;
-        }
-    } else if (next_key_index != 0) {
-        nu_keyboard_key_index = next_key_index;
-    } else if (nu_keyboard_key_index != 0 && nu_keyboard_pages[page_index * 0x100 + nu_keyboard_key_index] == 0) {
-        nu_keyboard_key_index = 0;
-    }
-
-    if (nu_keyboard_key_index == 0) {
-        nu_keyboard_no_key_state = 0;
-    }
-    return nu_keyboard_pages + page_index * 0x100;
-
-clear_page:
     page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
     memset(page, 0, nu_keyboard_owner.key_count);
     return page;
