@@ -173,7 +173,12 @@ static i32 __cdecl SetSoundFadeDistCallBackFn_LSW(WORLDINFO_s *) {
         nusound_fade_end = 12.0f;
         return 1;
     }
-    if (WORLD->current_level == ENDORBATTLEB_LDATA || WORLD->current_level == ENDORBATTLEC_LDATA) {
+    if (WORLD->current_level == ENDORBATTLEB_LDATA) {
+        nusound_fade_start = 15.0f;
+        nusound_fade_end = 45.0f;
+        return 1;
+    }
+    if (WORLD->current_level == ENDORBATTLEC_LDATA) {
         nusound_fade_start = 15.0f;
         nusound_fade_end = 45.0f;
         return 1;
