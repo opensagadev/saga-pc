@@ -893,12 +893,13 @@ extern "C" {
         // This helper's original C++ ABI names nugscn_s, but animation callers
         // pass the hierarchy object whose joint table starts at the same offsets.
         NUHGOBJ_EVAL_PC *object = ((NUHGOBJ_EVAL_PC *)(scene));
-        const i32 joint_count = object->joint_count;
+        i32 joint_count = object->joint_count;
         NUHGOBJ_EVAL_JOINT_PC *joints = object->joints;
-        const i32 parent_index = joints[first_joint].parent_index;
-        i32 end_joint = first_joint + 1;
-        while (end_joint < joint_count && joints[end_joint].parent_index != parent_index) {
-            ++end_joint;
+        i32 parent_index = joints[first_joint].parent_index;
+        i32 end_joint;
+        for (end_joint = first_joint + 1; end_joint < joint_count; ++end_joint) {
+            if (joints[end_joint].parent_index == parent_index)
+                return end_joint - 1;
         }
         return end_joint - 1;
     }
