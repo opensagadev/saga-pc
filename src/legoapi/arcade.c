@@ -138,8 +138,8 @@ void __cdecl Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_sco
         if (object != NULL && object->coin_packet != NULL)
             ((ARCADE_COIN_PACKET_PC *)object->coin_packet)->scale = 1.5f;
     } else {
-        Arcade_NeedTwoPlayers_Scale = 1.25f;
         *score = previous_score;
+        Arcade_NeedTwoPlayers_Scale = 1.25f;
     }
 }
 
