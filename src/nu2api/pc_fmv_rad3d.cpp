@@ -154,23 +154,22 @@ static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scal
 }
 static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 xs, f32 ys, i32 w, i32 h) {
     RADFMV_VERTEX_PC vertices[12];
-    RADFMV_VERTEX_PC a;
-    a.x = x;
-    a.y = y;
-    a.z = 0;
-    a.rhw = 1;
-    a.diffuse = 0xffffffff;
-    a.specular = 0xffffffff;
-    a.u = 0;
-    a.v = 0;
-    vertices[0] = a;
-    a.x = x + w * xs;
-    vertices[1] = a;
-    vertices[2] = a;
-    a.y = y + h * ys;
-    vertices[3] = a;
-    vertices[4] = a;
-    vertices[5] = a;
+    vertices[0].x = x;
+    vertices[0].y = y;
+    vertices[0].z = 0;
+    vertices[0].rhw = 1;
+    vertices[0].diffuse = 0xffffffff;
+    vertices[0].specular = 0xffffffff;
+    vertices[0].u = 0;
+    vertices[0].v = 0;
+    vertices[1] = vertices[0];
+    vertices[1].x = x + w * xs;
+    vertices[1].y = y;
+    vertices[2] = vertices[1];
+    vertices[3] = vertices[1];
+    vertices[3].y = y + h * ys;
+    vertices[4] = vertices[3];
+    vertices[5] = vertices[3];
     vertices[5].x = x;
     vertices[6] = vertices[5];
     vertices[7] = vertices[0];
@@ -179,7 +178,7 @@ static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 xs,
     vertices[10] = vertices[1];
     vertices[11] = vertices[5];
     for (u32 i = 8; i < 12; ++i)
-        vertices[i].diffuse = vertices[i].specular = 0xffff0000;
+        vertices[i].specular = vertices[i].diffuse = 0xffff0000;
     device->methods->set_texture_stage_state(device, 0, 2, 0);
     device->methods->set_texture_stage_state(device, 0, 5, 0);
     SAGA_SKIN_CALL(skin_trace_invalidate, (unsigned)device);
