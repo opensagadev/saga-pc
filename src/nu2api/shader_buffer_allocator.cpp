@@ -7,10 +7,11 @@ ShaderCompilerBufferAllocatorPc::ShaderCompilerBufferAllocatorPc(i32 size, bool 
     owns_memory = owns;
 }
 ShaderCompilerBufferAllocatorPc::ShaderCompilerBufferAllocatorPc(VirtualStackAllocator &parent, i32 size) {
-    data = parent.cursor;
-    parent.cursor += size;
-    length = 0;
+    u8 *memory = parent.cursor;
+    parent.cursor = memory + size;
+    data = memory;
     capacity = size;
+    length = 0;
     owns_memory = 0;
 }
 ShaderCompilerBufferAllocatorPc::~ShaderCompilerBufferAllocatorPc() {
