@@ -997,6 +997,7 @@ i32 __cdecl ItemMenu(void *menu) {
 /* 004c74e0..004c76c4. Preserve PC initialization to shelf zero, and the
  * complete cutscene-player return state rather than Android's defaults. */
 i32 __cdecl UpdateShop(void *menu) {
+    i32 i;
     UpdateCharacterIDs();
     ShopScaleOverridePc[0] = 0.0f;
     ShopScaleOverridePc[1] = 0.4f;
@@ -1014,21 +1015,19 @@ i32 __cdecl UpdateShop(void *menu) {
     SubBigCharPush = ShopCodeExitPushPc;
     if (menuptr == NULL) {
         if (shop_from_cutsceneplayer != 0) {
-            topscale[5] = ShopOldPickedScalePc;
-            toppush[5] = ShopOldPickedPushPc;
             shop_from_cutsceneplayer = 0;
-            ShopDrawParentPc[0] = ShopOldDrawParentPc[0];
-            ShopMenuParentPc[0] = ShopOldMenuParentPc[0];
+            topscale[5] = ShopOldPickedScalePc;
             menuptr = ShopOldMenuFnPc;
-            ShopMenuParentPc[1] = ShopOldMenuParentPc[1];
-            ShopDrawParentPc[2] = ShopOldDrawParentPc[2];
-            ShopDrawParentPc[1] = ShopOldDrawParentPc[1];
+            toppush[5] = ShopOldPickedPushPc;
+            for (i = 0; i < 3; ++i) {
+                ShopDrawParentPc[i] = ShopOldDrawParentPc[i];
+                ShopMenuParentPc[i] = ShopOldMenuParentPc[i];
+            }
             ShopDrawPanelFnPc = ShopOldDrawPanelFnPc;
             drawptr = ShopOldDrawFnPc;
-            ShopMenuParentPc[2] = ShopOldMenuParentPc[2];
+            ShopMenuLevelPc = ShopOldMenuLevelPc;
             ShopDrawLevelPc = ShopOldDrawLevelPc;
             picked = oldpicked;
-            ShopMenuLevelPc = ShopOldMenuLevelPc;
         } else {
             ShopSlideTimerPc = 0.125f;
             menuptr = ItemMenu;
