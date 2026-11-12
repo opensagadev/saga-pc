@@ -268,10 +268,12 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, respawn_timer) == 0x1d8);
 STATIC_ASSERT(offsetof(GAMEOBJECT, field_0x276) == 0x27a);
 
 extern "C" i32 __cdecl FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
-    if ((WORLD == NULL || WORLD->current_level != FACTORYF_LDATA) && player != NULL && FreePlay != 0 &&
-        drop_in_teleport >= 2 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
-        object->takeover_source == NULL && (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x8000) == 0 &&
-        object->character_context != 0x2b && object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
+    if (WORLD != NULL && WORLD->current_level == FACTORYF_LDATA)
+        return 0;
+    if (player != NULL && FreePlay != 0 && drop_in_teleport >= 2 && VehicleArea == 0 &&
+        (Arcade != 0 || teleport_all_freeplay_modes != 0) && object->takeover_source == NULL &&
+        (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x8000) == 0 && object->character_context != 0x2b &&
+        object->model_draw_result == 0 && (object->tag_flags & 2) == 0) {
         NUVEC position = player->last_safe_position;
         if (position.x == player->position.x && position.y == player->position.y && position.z == player->position.z) {
             position.z = (f32)((f64)position.z + (f64)0.01f);
