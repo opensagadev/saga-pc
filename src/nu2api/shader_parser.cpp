@@ -1,6 +1,26 @@
 #define SAGA_SHADER_PARSER_TYPES
 #include "saga.h"
 #include <string.h>
+// Copies a NUL-terminated string into the parse arena.
+#define ARENA_COPY_STRING(copy, string)                                                                                \
+    do {                                                                                                               \
+        VirtualStackAllocator *stack = arena;                                                                          \
+        i32 length = (i32)strlen(string);                                                                              \
+        copy = reinterpret_cast<char *>(stack->cursor);                                                                \
+        stack->cursor += length + 1;                                                                                   \
+        memcpy(copy, string, length + 1);                                                                              \
+    } while (0)
+// Links a new node at the current insertion point.
+#define APPEND_NODE(node)                                                                                              \
+    do {                                                                                                               \
+        if (tail == NULL) {                                                                                            \
+            head = node;                                                                                               \
+            tail = &node->next;                                                                                        \
+        } else {                                                                                                       \
+            *tail = node;                                                                                              \
+            tail = &node->next;                                                                                        \
+        }                                                                                                              \
+    } while (0)
 void ShaderCompilerParserPc::FlushText() {
     i32 count = text.length;
     if (count > 0) {
@@ -14,28 +34,24 @@ void ShaderCompilerParserPc::FlushText() {
             node->next = NULL;
             node->bytes = bytes;
             node->count = count;
+        } else {
+            // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+            // the real placement new would emit unmapped inline COMDATs.
+            node = NULL;
         }
-        if (tail == NULL)
-            head = node;
-        else
-            *tail = node;
-        tail = &node->next;
+        APPEND_NODE(node);
         text.length = 0;
     }
 }
 void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
     FlushText();
-    i32 bytes = (i32)strlen(name) + 1;
-    char *copy_name = reinterpret_cast<char *>(arena->cursor);
-    arena->cursor += bytes;
-    memcpy(copy_name, name, bytes);
-    char *copy_value = NULL;
-    if (value != NULL) {
-        bytes = (i32)strlen(value) + 1;
-        copy_value = reinterpret_cast<char *>(arena->cursor);
-        arena->cursor += bytes;
-        memcpy(copy_value, value, bytes);
-    }
+    char *copy_name;
+    ARENA_COPY_STRING(copy_name, name);
+    char *copy_value;
+    if (value != NULL)
+        ARENA_COPY_STRING(copy_value, value);
+    else
+        copy_value = NULL;
     ShaderParserMacroNodePc *node = reinterpret_cast<ShaderParserMacroNodePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserMacroNodePc);
     if (node != NULL) {
@@ -43,31 +59,29 @@ void ShaderCompilerParserPc::DefineMacro(const char *name, const char *value) {
         node->next = NULL;
         node->name = copy_name;
         node->value = copy_value;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
 }
 void ShaderCompilerParserPc::UndefineMacro(const char *name) {
     FlushText();
-    i32 bytes = (i32)strlen(name) + 1;
-    char *copy = reinterpret_cast<char *>(arena->cursor);
-    arena->cursor += bytes;
-    memcpy(copy, name, bytes);
+    char *copy;
+    ARENA_COPY_STRING(copy, name);
     ShaderParserUndefNodePc *node = reinterpret_cast<ShaderParserUndefNodePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserUndefNodePc);
     if (node != NULL) {
         node->kind = 2;
         node->next = NULL;
         node->name = copy;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
 }
 void ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition) {
     FlushText();
@@ -79,12 +93,12 @@ void ShaderCompilerParserPc::BeginIf(ShaderConditionNodePc *condition) {
         node->if_true = NULL;
         node->if_false = NULL;
         node->condition = condition;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
     branches[branch_count++] = node;
     scopes[scope_count++] = node;
     tail = &node->if_true;
@@ -104,12 +118,12 @@ void ShaderCompilerParserPc::BeginElseIf(ShaderConditionNodePc *condition) {
         node->if_true = NULL;
         node->if_false = NULL;
         node->condition = condition;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
     branches[branch_count++] = node;
     tail = &node->if_true;
 }
@@ -176,18 +190,12 @@ void ShaderCompilerParserPc::SetShowDefinitions(u8 enabled) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
 }
 void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *name) {
     FlushText();
-    i32 bytes = (i32)strlen(name) + 1;
-    char *copy = reinterpret_cast<char *>(arena->cursor);
-    arena->cursor += bytes;
-    memcpy(copy, name, bytes);
+    char *copy;
+    ARENA_COPY_STRING(copy, name);
     ShaderParserReferencePc *node = reinterpret_cast<ShaderParserReferencePc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserReferencePc);
     if (node != NULL) {
@@ -196,27 +204,23 @@ void ShaderCompilerParserPc::UseDeclaration(u32 flags, i32 depth, const char *na
         node->flags = flags;
         node->alias_depth = depth;
         node->name = copy;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
 }
 void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, const char *name, i32 semantic,
                                             const char *custom, i32 vertex, i32 pixel) {
     FlushText();
-    i32 bytes = (i32)strlen(name) + 1;
-    char *copy = reinterpret_cast<char *>(arena->cursor);
-    arena->cursor += bytes;
-    memcpy(copy, name, bytes);
-    char *custom_copy = NULL;
-    if (custom != NULL) {
-        bytes = (i32)strlen(custom) + 1;
-        custom_copy = reinterpret_cast<char *>(arena->cursor);
-        arena->cursor += bytes;
-        memcpy(custom_copy, custom, bytes);
-    }
+    char *copy;
+    ARENA_COPY_STRING(copy, name);
+    char *custom_copy;
+    if (custom != NULL)
+        ARENA_COPY_STRING(custom_copy, custom);
+    else
+        custom_copy = NULL;
     ShaderParserDeclarationPc *node = reinterpret_cast<ShaderParserDeclarationPc *>(arena->cursor);
     arena->cursor += sizeof(ShaderParserDeclarationPc);
     if (node != NULL) {
@@ -230,12 +234,12 @@ void ShaderCompilerParserPc::AddDeclaration(u32 flags, i32 type, i32 count, cons
         node->custom_semantic = custom_copy;
         node->vertex_register = vertex;
         node->pixel_register = pixel;
+    } else {
+        // MATCH-EXCEPTION: redundant reset is the expanded form of the original placement new;
+        // the real placement new would emit unmapped inline COMDATs.
+        node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
 }
 void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
     FlushText();
@@ -250,11 +254,7 @@ void ShaderCompilerParserPc::EmitDeclarations(u32 flags) {
         // the real placement new would emit unmapped inline COMDATs.
         node = NULL;
     }
-    if (tail == NULL)
-        head = node;
-    else
-        *tail = node;
-    tail = &node->next;
+    APPEND_NODE(node);
 }
 
 void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *input, i32 *cursor) {
