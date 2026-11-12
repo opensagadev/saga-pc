@@ -4671,6 +4671,7 @@ address,symbol,size,ctype
 0x5670a0,_GizmoBlowup_SetAutoSetReflectY,131,
 0x567130,_GizmoSwapBlowups,91,"void __cdecl (GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *)"
 0x567190,_GizmoSortBlowups,302,void __cdecl (WORLDINFO *)
+0x5672c0,_BlowupObjEmit_Stop,1,void __cdecl (PART_PC *)
 0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
 0x00567800,_GizmoBlowupBlowup,1385,"i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
 0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
