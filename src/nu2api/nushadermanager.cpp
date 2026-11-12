@@ -182,16 +182,14 @@ template <> PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Alloc
     i32 i;
     for (i = last_allocated + 1; i < 400; ++i) {
         if (slots[i].ref_count <= 0)
-            break;
+            goto found;
     }
-    if (i >= 400) {
-        for (i = 0; i < last_allocated; ++i) {
-            if (slots[i].ref_count <= 0)
-                break;
-        }
-        if (i >= last_allocated)
-            return NULL;
+    for (i = 0; i < last_allocated; ++i) {
+        if (slots[i].ref_count <= 0)
+            goto found;
     }
+    return NULL;
+found:
     last_allocated = i;
     PCShaderNativeUnInit(&slots[i]);
     *index = i;
@@ -202,11 +200,12 @@ PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC
                                                                         const PC_SHADER_FILTER_MATERIAL_VIEW *material,
                                                                         i32 variant, i32 flags, bool pixel_stage) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
-    u32 key = 0;
+    u32 key;
     PC_SHADER_OBJECT_FULL_VIEW *shader;
     i32 index;
     AdaptDescriptor(desc, material);
     filter.Initialize(desc, material, variant, flags);
+    key = 0;
     NuShaderObjectKeyGenerate3(&key, &filter, pixel_stage != 0);
     for (i32 i = 0; i < 400; ++i) {
         if (key == slots[i].key) {
