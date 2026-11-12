@@ -11300,7 +11300,7 @@ i32 __cdecl Action_ForceLightning(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     i32 origin_index;
     (void)param_6;
     object = NULL;
-    if (packet != NULL && packet->owner != NULL) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
         object = packet->owner->objptr;
     }
 
