@@ -4645,7 +4645,7 @@ void ClassEditor::cbEdFilterLED(eduimenu_s *, eduiitem_s *item, u32) {
     if (scene == NULL)
         return;
     theLevelEditor.current_led_file = -1;
-    scene->editable = scene->editable + 1;
+    scene->editable = 1 - scene->editable;
     item->highlighted = scene->editable;
 }
 
