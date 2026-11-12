@@ -51,13 +51,12 @@ static f32 slowDownTimer[2] = {0};
 f32 FireDeltaPositionPc = 0.0f;
 
 f32 __cdecl DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
-    i32 player;
+    // MATCH-EXCEPTION: retail reads field_280 as a signed char (movsx) at each use; saga.h declares it u8
     if (object == NULL || (object->field_280 != 0 && object->field_280 != 1))
         return 1.0f;
-    player = object->field_280;
-    if (slowDownTimer[player] < 0.0f)
-        slowDownTimer[player] = 0.0f;
-    return (f32)((3.0 - (f64)slowDownTimer[player]) / 3.0);
+    if (slowDownTimer[(i8)object->field_280] < 0.0f)
+        slowDownTimer[(i8)object->field_280] = 0.0f;
+    return (f32)((3.0 - (f64)slowDownTimer[(i8)object->field_280]) / 3.0);
 }
 
 extern i32 DrawBossHitPointsTwoRowsPc;
