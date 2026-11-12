@@ -407,23 +407,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     } else {
         effect->thinning = 4.0f;
     }
-    if (version < 30) {
-        effect->torus_radius1 = 1.0f;
-        effect->torus_radius2 = 0.1f;
-        effect->torus_lifetime = 0.0f;
-        effect->torus_keys1[0].time = 0.0f;
-        effect->torus_keys1[0].value = 0.0f;
-        effect->torus_keys2[0].time = 0.0f;
-        effect->torus_keys2[0].value = 0.0f;
-        effect->torus_keys3[0].time = 0.0f;
-        effect->torus_keys3[0].value = 0.0f;
-        effect->torus_keys1[1].time = 1.0f;
-        effect->torus_keys1[1].value = 1.0f;
-        effect->torus_keys2[1].time = 1.0f;
-        effect->torus_keys2[1].value = 1.0f;
-        effect->torus_keys3[1].time = 1.0f;
-        effect->torus_keys3[1].value = 1.0f;
-    } else {
+    if (version >= 30) {
         effect->torus_radius1 = EdFileReadFloat();
         effect->torus_radius2 = EdFileReadFloat();
         effect->torus_lifetime = EdFileReadFloat();
@@ -439,6 +423,22 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
             effect->torus_keys3[i].time = EdFileReadFloat();
             effect->torus_keys3[i].value = EdFileReadFloat();
         }
+    } else {
+        effect->torus_radius1 = 1.0f;
+        effect->torus_radius2 = 0.1f;
+        effect->torus_lifetime = 0.0f;
+        effect->torus_keys1[0].time = 0.0f;
+        effect->torus_keys1[0].value = 0.0f;
+        effect->torus_keys2[0].time = 0.0f;
+        effect->torus_keys2[0].value = 0.0f;
+        effect->torus_keys3[0].time = 0.0f;
+        effect->torus_keys3[0].value = 0.0f;
+        effect->torus_keys1[1].time = 1.0f;
+        effect->torus_keys1[1].value = 1.0f;
+        effect->torus_keys2[1].time = 1.0f;
+        effect->torus_keys2[1].value = 1.0f;
+        effect->torus_keys3[1].time = 1.0f;
+        effect->torus_keys3[1].value = 1.0f;
     }
 
     for (i = 0; i < 8; ++i)
