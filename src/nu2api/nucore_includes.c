@@ -7308,7 +7308,9 @@ void __cdecl NuErrorSleep(void) {
     f32 y;
     char *message;
     FRAME_PAD_PC pad;
-    NuTime start, now, elapsed, rate;
+    NuTime start, now, elapsed;
+    u32 rate_low;
+    u32 rate_high;
     memset(&pad, 0, sizeof(pad));
     NuTimeGetTicksPS(&start.low, &start.high);
     if (start.high < 0) {
@@ -7322,9 +7324,9 @@ void __cdecl NuErrorSleep(void) {
             NuFileError();
         }
         NUFRAME_ELAPSED(elapsed, now, start);
-        NuTimeGetTicksPerSecondPS(&rate.low, &rate.high);
+        NuTimeGetTicksPerSecondPS(&rate_low, &rate_high);
         milliseconds =
-            (f32)((elapsed.high * NuTime_LowScale + elapsed.low) / (rate.high * NuTime_LowScale + rate.low) * 1000.0);
+            (f32)((elapsed.high * NuTime_LowScale + elapsed.low) / (rate_high * NuTime_LowScale + rate_low) * 1000.0);
         if (nuapi.frame_begin_count != 0) {
             NuFileError();
         }
