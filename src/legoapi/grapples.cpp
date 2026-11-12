@@ -261,9 +261,9 @@ static void Grapple_ResetSinglePc(GRAPPLE_MOTION_PC *grapple) {
     if ((f64)grapple->ground_position.y != GameObjectNearFloorNoFloorHeight) {
         rounded_length = grapple->hook_position.y - ((f64)grapple->ground_position.y + (f64)0.1f);
         length = rounded_length;
-        if (grapple->rope_length > length) {
+        if (length < grapple->rope_length) {
             grapple->rope_length = length;
-            if (0.7f > length)
+            if (length < 0.7f)
                 grapple->rope_length = 0.7f;
         }
     }
