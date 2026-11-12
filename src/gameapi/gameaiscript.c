@@ -5942,16 +5942,13 @@ i32 __cdecl Action_SelectRandomSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
     i32 index;
     NUGSPLINE *splines[32];
     NUGSPLINE *unused_splines[32];
-    i32 count;
-    i32 unused;
+    i32 count = 0;
+    i32 unused = 0;
     char *value;
     NUGSPLINE *spline;
     GAMEOBJECT *object;
-    i32 unused_count;
+    i32 unused_count = 0;
     if (first_time) {
-
-        count = 0;
-        unused = 0;
         script_spline_selected = NULL;
         for (index = 0; index < param_count; ++index) {
             value = NuStrIStr(params[index], (char *)AITransferLiteral757a94);
@@ -5967,20 +5964,19 @@ i32 __cdecl Action_SelectRandomSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
         }
         if (count != 0) {
             if (unused) {
-                for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-                    object = &Obj[index];
-                    if ((object->flags_1fc_word & 0x1001) == 0x1001 && object->dead == 0 &&
+                object = Obj;
+                for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+                    if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
                         object->movement_spline_position.spline != NULL)
                         object->movement_spline_position.spline->length |= 0x8000;
                 }
-                unused_count = 0;
                 for (index = 0; index < count; ++index) {
-                    if (splines[index]->length >= 0)
+                    if (!(splines[index]->length & 0x8000))
                         unused_splines[unused_count++] = splines[index];
                 }
-                for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-                    object = &Obj[index];
-                    if ((object->flags_1fc_word & 0x1001) == 0x1001 && object->dead == 0 &&
+                object = Obj;
+                for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
+                    if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
                         object->movement_spline_position.spline != NULL)
                         object->movement_spline_position.spline->length &= 0x7fff;
                 }
