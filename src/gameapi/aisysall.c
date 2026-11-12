@@ -14047,6 +14047,11 @@ void __cdecl AIMoveInstruction(AIPACKET_PC *packet, NUVEC *destination, f32 stop
     group = packet->group;
     if (group != NULL && (group->flags & 8u)) {
         switch (mode) {
+            case 1:
+                if (group->leader == (APIOBJECT_PC *)packet->owner)
+                    FormationMove(group, RowMoveTowards);
+                AIFormationFollow(packet);
+                return;
             case 4:
                 if (group->leader == (APIOBJECT_PC *)packet->owner)
                     FormationMove(group, RowMoveWander);
@@ -14055,11 +14060,6 @@ void __cdecl AIMoveInstruction(AIPACKET_PC *packet, NUVEC *destination, f32 stop
             case 5:
                 mode = 1;
                 break;
-            case 1:
-                if (group->leader == (APIOBJECT_PC *)packet->owner)
-                    FormationMove(group, RowMoveTowards);
-                AIFormationFollow(packet);
-                return;
         }
     }
     if (destination != NULL) {
