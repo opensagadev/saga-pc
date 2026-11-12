@@ -1464,6 +1464,7 @@ void __cdecl CreateUsefulMaterials(void) {
 }
 
 void __cdecl IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
+    u64 score;
     if (apply_multiplier != 0 && BonusArea == 0) {
         if (Cheats_CheckFlags(4) != 0)
             amount *= 2;
@@ -1476,10 +1477,11 @@ void __cdecl IncreaseScore(u32 *total, u64 amount, i32 apply_multiplier) {
         if (Cheats_CheckFlags(0x40) != 0)
             amount *= 10;
     }
-    amount += *total;
-    if (amount > 4000000000ULL)
-        amount = 4000000000ULL;
-    *total = (u32)amount;
+    score = *total;
+    score += amount;
+    if (score > 4000000000ULL)
+        score = 4000000000ULL;
+    *total = (u32)score;
 }
 
 f32 __cdecl FindReflectionNoPlatforms(NUVEC *position) {
@@ -1532,9 +1534,9 @@ void __cdecl SetAnimFrame(struct nuhspecial_s *special, f32 frame) {
     instance_animation = NuSpecialGetInstAnim((NUSPECIALHANDLE *)special);
     if (instance_animation == NULL)
         return;
-    animation = (f32 **)&special->scene->instance_animation_data[instance_animation->animation_index];
-    if (*animation == NULL)
+    if (special->scene->instance_animation_data[instance_animation->animation_index] == NULL)
         return;
+    animation = (f32 **)&special->scene->instance_animation_data[instance_animation->animation_index];
     end_frame = **animation;
     if ((f64)frame == 1000000000.0)
         frame = end_frame;
