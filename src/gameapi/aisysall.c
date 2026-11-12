@@ -11880,13 +11880,10 @@ void __cdecl creatureEditor_Enter(void) {
     AISCRIPT_PC *script;
     EDAIAREA_s *area;
     EDLOCATOR_s *locator;
-    NULISTHDR *list;
     char *name;
     f32 offset;
     i32 i;
-    list = &aieditor->creatures;
-    list->head = NULL;
-    list->tail = NULL;
+    memset(&aieditor->creatures, 0, sizeof(aieditor->creatures));
     for (i = 0; i < 128; ++i)
         NuLinkedListAppend(&aieditor->free_creatures, &aieditor->creature_pool[i].link);
     if (aieditor->ai_system != NULL) {
