@@ -2163,16 +2163,15 @@ extern "C" void __cdecl Bolts_Draw(WORLDINFO *world) {
 
 extern "C" {
     void __cdecl BoltTypes_Configure(WORLDINFO *world, char *config) {
-        NUFPAR_PC *parser;
-        BOLT_CONFIG_PC type;
-        i32 reading_type = 0;
         memset(world->bolt_types, 0, sizeof(world->bolt_types));
-        parser = NuFParCreateMem("bolttypes", config, 0xffff);
+        NUFPAR_PC *parser = NuFParCreateMem("bolttypes", config, 0xffff);
         if (parser == NULL) {
             return;
         }
 
         NuFParPushCom(parser, BoltType_ConfigKeywords);
+        BOLT_CONFIG_PC type;
+        i32 reading_type = 0;
         while (NuFParGetLine(parser) != 0) {
             if (NuFParGetWord(parser) == 0) {
                 continue;
