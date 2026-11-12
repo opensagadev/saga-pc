@@ -10521,8 +10521,6 @@ i32 __cdecl Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    bomb = NULL;
-    towing_player = NULL;
     if (((AI_CABLE_OBJECT_PC *)player)->cable != NULL &&
         (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player)->cable)->target) != NULL && bomb->id == id_DRAGBOMB)
         towing_player = player;
@@ -10530,6 +10528,10 @@ i32 __cdecl Action_ProbeDroid(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
              (bomb = ((AI_CABLE_HEAD_PC *)((AI_CABLE_OBJECT_PC *)player2)->cable)->target) != NULL &&
              bomb->id == id_DRAGBOMB)
         towing_player = player2;
+    else {
+        bomb = NULL;
+        towing_player = NULL;
+    }
     view = (AI_CABLE_OBJECT_PC *)object;
     if (bomb != NULL && towing_player != NULL) {
         if (view->cable != NULL && ((AI_CABLE_HEAD_PC *)view->cable)->target != bomb) {
