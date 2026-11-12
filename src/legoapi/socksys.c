@@ -883,7 +883,9 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
             } else {
                 ignore_y = 0;
             }
-            if (!SOCK_BOUNDS_SEPARATE(&sock->min, &sock->max, &other->min, &other->max, ignore_y)) {
+            if (SOCK_BOUNDS_SEPARATE(&sock->min, &sock->max, &other->min, &other->max, ignore_y)) {
+                sock->overlap_exclusion_mask[other_index / 32] |= 1 << (other_index & 31);
+            } else {
                 segment_count = sock->length;
                 if (sock->unknown_33 != 0) {
                     ++segment_count;
@@ -903,8 +905,8 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
                         }
                     }
                 }
+                sock->overlap_exclusion_mask[other_index / 32] |= 1 << (other_index & 31);
             }
-            sock->overlap_exclusion_mask[other_index / 32] |= 1u << (other_index & 31);
         next_other:;
         }
     }
