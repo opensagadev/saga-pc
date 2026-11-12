@@ -8800,7 +8800,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
 
     offsets[1] = 0;
 
-    for (i = 1; i < 0x11; i++) {
+    for (i = 1; i <= 16; i++) {
         offsets[i + 1] = offsets[i] + (symbol_count[i] << (0x10 - i));
     }
 
@@ -8835,7 +8835,7 @@ void ImplodeMakeTable(i32 size, u8 *len, i32 unknown, u16 *table) {
         }
 
         unknown4 = offsets[length] + masks[length];
-        if (unknown >= length) {
+        if (length <= unknown) {
             for (i = offsets[length]; i < unknown4; i++) {
                 table[i] = symbol;
             }
