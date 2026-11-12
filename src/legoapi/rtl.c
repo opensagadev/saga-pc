@@ -1284,7 +1284,7 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
                                                 ? desired_intensity
                                                 : (set->parameters_copy.field_14 - step);
         }
-        if (set->field_b0 && set->parameters_copy.field_14 == desired_intensity)
+        if (set->field_b0 && desired_intensity == set->parameters_copy.field_14)
             set->field_b0 = 0;
         if ((set->field_a8 || set->field_ac) && desired_intensity == set->parameters_copy.field_14) {
             set->field_a8 = 0;
