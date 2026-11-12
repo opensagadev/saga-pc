@@ -279,14 +279,12 @@ void __cdecl DrawSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
     i32 segment_index;
     i32 special_index;
-    NUSPECIALHANDLE *special;
     NUVEC scale;
     NUMTX matrix;
     NUANGVEC angles;
-    if (object == NULL || reader->snake_body == NULL || reader->snake_body->segment_count == 0)
+    if (object == NULL || reader->snake_body == NULL)
         return;
-    segment_index = 0;
-    do {
+    for (segment_index = 0; segment_index < reader->snake_body->segment_count; ++segment_index) {
         object->collision_scale = reader->snake_body->scale;
         angles.y = NuAngAdd(reader->snake_body->segments[segment_index].yaw, 0x8000);
         angles.x = reader->snake_body->segments[segment_index].pitch;
@@ -302,8 +300,7 @@ void __cdecl DrawSnakeBody(GAMEOBJECT *object) {
                      reader->snake_body->segments[segment_index].position.y + matrix.m31;
         matrix.m32 = reader->snake_body->segments[segment_index].position.z + matrix.m32;
         special_index = segment_index == reader->snake_body->segment_count - 1 ? 2 : segment_index % 2;
-        special = &snake_hspecials[special_index];
-        if (NuSpecialExistsFn(special))
-            NuSpecialDrawAt(special, &matrix);
-    } while (reader->snake_body->segment_count > ++segment_index);
+        if (NuSpecialExistsFn(&snake_hspecials[special_index]))
+            NuSpecialDrawAt(&snake_hspecials[special_index], &matrix);
+    }
 }
