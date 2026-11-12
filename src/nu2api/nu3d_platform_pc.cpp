@@ -4218,10 +4218,12 @@ extern "C" {
 
     void __cdecl NuMtlSetShaderDescPS(NUMTL *material, const PC_MATERIAL_SHADER_DESC_VIEW *description) {
         PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
+        i32 colour;
         mtl->shader = *description;
-        mtl->diffuse.x = (mtl->shader.packed_diffuse_colour & 0xff) / 255.0;
-        mtl->diffuse.y = ((mtl->shader.packed_diffuse_colour >> 8) & 0xff) / 255.0;
-        mtl->diffuse.z = ((mtl->shader.packed_diffuse_colour >> 16) & 0xff) / 255.0;
+        colour = mtl->shader.packed_diffuse_colour;
+        mtl->diffuse.x = (colour & 0xff) / 255.0;
+        mtl->diffuse.y = ((colour >> 8) & 0xff) / 255.0;
+        mtl->diffuse.z = ((colour >> 16) & 0xff) / 255.0;
     }
 
     void __cdecl NuDisplayListReflectionPc(void *arg) {
@@ -5138,26 +5140,10 @@ extern "C" {
     }
 
     void __cdecl PCGraphicsRestoreFramebuffers(void) {
-        {
-            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
-            frame->targets[0].Attach(PCDeviceBackend.textures[0], 0, false);
-            frame->changed = 1;
-        }
-        {
-            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
-            frame->targets[1].Attach(PCDeviceBackend.textures[1], 0, false);
-            frame->changed = 1;
-        }
-        {
-            PC_FRAMEBUFFER_PC *frame = PcDefaultFramebuffer;
-            frame->targets[2].Attach(PCDeviceBackend.textures[2], 0, false);
-            frame->changed = 1;
-        }
-        {
-            PC_FRAMEBUFFER_PC *frame = PcSecondaryFramebuffer;
-            frame->targets[0].Attach(PCDeviceBackend.textures[0], 0, false);
-            frame->changed = 1;
-        }
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 0, PCDeviceBackend.textures[0], 0);
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 1, PCDeviceBackend.textures[1], 0);
+        PCGraphicsAttachFramebuffer(PcDefaultFramebuffer, 2, PCDeviceBackend.textures[2], 0);
+        PCGraphicsAttachFramebuffer(PcSecondaryFramebuffer, 0, PCDeviceBackend.textures[0], 0);
     }
 
     PC_EFFECT_SURFACE_PC::PC_EFFECT_SURFACE_PC() {
