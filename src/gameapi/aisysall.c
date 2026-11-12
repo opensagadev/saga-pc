@@ -3474,8 +3474,8 @@ i32 __cdecl AIPointWithinFacingAnglePc(NUVEC *target, NUVEC *origin, i32 facing,
 
 i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                 i32 param_count, i32 first_time, f32 elapsed) {
-    f32 min_time;
-    f32 max_time;
+    f32 min_time = 0.0f;
+    f32 max_time = 0.0f;
     i32 index;
     char *value;
     APIOBJECT_PC *opponent;
@@ -3486,8 +3486,6 @@ i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
         return 1;
     }
     if (first_time != 0) {
-        min_time = 0.0f;
-        max_time = 0.0f;
         for (index = 0; index < param_count; ++index) {
             if (AIActionParseSpeedFn != NULL && AIActionParseSpeedFn(params[index], &packet->goal_speed_mode) != 0) {
                 continue;
@@ -3505,7 +3503,7 @@ i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
                 processor->action_timer = AIParamToFloatEx(packet, processor, params[index]);
             }
         }
-        if (processor->action_timer == 0.0f && min_time < max_time) {
+        if (processor->action_timer == 0.0f && max_time > min_time) {
             processor->action_timer = NuRandFloat() * (max_time - min_time) + min_time;
         }
     }
@@ -3517,8 +3515,8 @@ i32 __cdecl Action_FaceOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             packet->movement_look_target = &opponent->position;
         } else {
             direction.x = opponent->position.z - packet->owner->position.z;
-            direction.y = 0.0f;
             direction.z = packet->owner->position.x - opponent->position.x;
+            direction.y = 0.0f;
             NuVecNorm(&direction, &direction);
             processor->action_pos.x = opponent->position.x + direction.x * processor->action_data_4;
             processor->action_pos.y = opponent->position.y;
