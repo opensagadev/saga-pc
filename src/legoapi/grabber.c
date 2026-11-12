@@ -68,7 +68,15 @@ typedef struct grabber_pc_s {
     f32 animation_timer;
     f32 platform_contact_timer;
     u8 state;
-    u8 flags;
+    union {
+        u8 flags;
+        struct {
+            u8 flag_0 : 1;
+            u8 lifted : 1;
+            u8 switch_latched : 1;
+            u8 rotate : 1;
+        } bits;
+    };
     u16 yaw, target_yaw;
     i16 character_id, platform_id;
     u8 move_xy, invert_x;
@@ -130,8 +138,7 @@ static void __cdecl Grab_speed(NUFPAR_PC *parser) {
     GrabCurrentPc->speed = NuFParGetFloat(parser);
 }
 static void __cdecl Grab_rotate(NUFPAR_PC *parser) {
-    i32 rotate = NuFParGetInt(parser) & 1;
-    GrabCurrentPc->flags = (u8)((GrabCurrentPc->flags & ~8) | (rotate << 3));
+    GrabCurrentPc->bits.rotate = NuFParGetInt(parser);
 }
 static void __cdecl Grab_scale(NUFPAR_PC *parser) {
     GrabCurrentPc->scale = NuFParGetFloat(parser);
@@ -577,9 +584,6 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
     NUVEC *position;
     NUVEC next;
     NUVEC previous;
-    NUVEC low;
-    NUVEC high;
-    NUVEC scale;
     NUMTX matrix;
     f32 *frame;
     f32 value;
@@ -719,6 +723,8 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
     if ((grabber->flags & 8) != 0)
         NuMtxPreRotateY(&matrix, grabber->yaw);
     if (grabber->scale != 1.0f) {
+        NUVEC scale;
+
         scale.x = scale.y = scale.z = grabber->scale;
         NuMtxPreScale(&matrix, &scale);
     }
@@ -726,7 +732,10 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
     NuSpecialSetDrawMtx(&grabber->special, &matrix);
     NuSpecialUpdate(&grabber->special);
     switch (grabber->state) {
-        case 1:
+        case 1: {
+            NUVEC low;
+            NUVEC high;
+
             frame = AnimPlaying(&grabber->animation, 0x66, 1, 0);
             if (frame == NULL)
                 break;
@@ -782,6 +791,7 @@ void __cdecl Grabber_Update(WORLDINFO *world) {
         lifted:
             PlaySfx("env_grabber_up", position);
             break;
+        }
         case 3:
             frame = AnimPlaying(&grabber->animation, 0x67, 1, 0);
             if (frame == NULL)
