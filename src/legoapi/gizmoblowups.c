@@ -1249,11 +1249,11 @@ i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *blowup) {
         return 0;
     if (blowup->platform_id == -1) {
         instance = NuSpecialGetInstanceix(&blowup->type->animated_special);
-        if (((blowup->draw_flags & 0x2000) != 0 && (blowup->draw_flags & 0x800000) == 0) ||
-            !(blowup->draw_flags & 0x20000000))
-            blowup->platform_id = (i16)NewPlatInst(blowup, instance);
-        else
+        if (((blowup->draw_flags & 0x2000) == 0 || (blowup->draw_flags & 0x800000) != 0) &&
+            (blowup->draw_flags & 0x20000000) != 0)
             blowup->platform_id = (i16)FindPlatInst(instance);
+        else
+            blowup->platform_id = (i16)NewPlatInst(blowup, instance);
         if (blowup->platform_id == -1)
             return 0;
         if (!(blowup->status_flags & 0x4000))
