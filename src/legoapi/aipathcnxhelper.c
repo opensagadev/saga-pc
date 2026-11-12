@@ -68,81 +68,84 @@ struct AIPATHCNXCONTROLLER_s *__cdecl AIPathCnxControllerCreate(AI_CONTROL_SYSTE
                                                                 AIPATH_PC *path, char *from, char *to, i32 target_type,
                                                                 char *target_name, i32 fake_animation_id,
                                                                 i32 gizmo_output) {
-    NUSPECIALHANDLE special = {0};
-    AIPATHCNX_PC *connection;
+    NUSPECIALHANDLE special;
+    struct AIPATHCNXCONTROLLER_s *controller = NULL;
     void *target = NULL;
+    AIPATHCNX_PC *connection;
     GIZMO_PC *gizmo;
-    NULISTLNK *node;
-    struct AIPATHCNXCONTROLLER_s *controller;
-    i32 direction, type;
+    i32 direction;
     u8 index;
-    if (from == NULL || system == NULL || to == NULL)
-        return NULL;
-    connection = (AIPATHCNX_PC *)AIPAthFindPathCnx(ai, path, from, to, &direction);
-    if (connection != NULL) {
-        switch (target_type) {
-            case 0:
-                if (target_name != NULL)
-                    NuSpecialFind(((AI_CONTROLLER_SCENE_VIEW_PC *)ai)->scene, &special, target_name, 1);
-                break;
-            case 1:
-                target = CutScene_FindInst(WORLD->cutscene_sys, target_name);
-                break;
-            case 2:
-                target = GizBuildIt_Find(WORLD, target_name);
-                break;
-            case 3:
-                target = GizmoFindByName(WORLD->gizmo_sys, -1, target_name);
-                break;
-            case 4:
-                type = blowup_gizmotype_id;
-                goto typed_gizmo;
-            case 5:
-                if (fake_animation_id < 0 || fake_animation_id >= 1)
-                    return NULL;
-                break;
-            case 6:
-                target = FlowBoxFindByName(WORLD->giz_flow, target_name);
-                break;
-            case 7:
-                type = force_gizmotype_id;
-                goto typed_gizmo;
-            case 8:
-                type = obstacle_gizmotype_id;
-                goto typed_gizmo;
-            case 9:
-                type = zipup_gizmotype_id;
-            typed_gizmo:
-                gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, type, target_name);
-                if (gizmo != NULL)
-                    target = gizmo->object;
-                break;
+    memset(&special, 0, sizeof(special));
+    if (system != NULL && from != NULL && to != NULL) {
+        connection = (AIPATHCNX_PC *)AIPAthFindPathCnx(ai, path, from, to, &direction);
+        if (connection != NULL) {
+            switch (target_type) {
+                case 0:
+                    if (target_name != NULL)
+                        NuSpecialFind(((AI_CONTROLLER_SCENE_VIEW_PC *)ai)->scene, &special, target_name, 1);
+                    break;
+                case 1:
+                    target = CutScene_FindInst(WORLD->cutscene_sys, target_name);
+                    break;
+                case 2:
+                    target = GizBuildIt_Find(WORLD, target_name);
+                    break;
+                case 3:
+                    target = GizmoFindByName(WORLD->gizmo_sys, -1, target_name);
+                    break;
+                case 4:
+                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, target_name);
+                    if (gizmo != NULL)
+                        target = gizmo->object;
+                    break;
+                case 5:
+                    if (fake_animation_id < 0 || fake_animation_id >= 1)
+                        return NULL;
+                    break;
+                case 6:
+                    target = FlowBoxFindByName(WORLD->giz_flow, target_name);
+                    break;
+                case 7:
+                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, target_name);
+                    if (gizmo != NULL)
+                        target = gizmo->object;
+                    break;
+                case 8:
+                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, target_name);
+                    if (gizmo != NULL)
+                        target = gizmo->object;
+                    break;
+                case 9:
+                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, zipup_gizmotype_id, target_name);
+                    if (gizmo != NULL)
+                        target = gizmo->object;
+                    break;
+            }
+        }
+        if (target != NULL || NuSpecialExistsFn(&special) != 0 || target_type == 5) {
+            controller = (struct AIPATHCNXCONTROLLER_s *)NuLinkedListGetHead(&system->available);
+            if (controller != NULL) {
+                NuLinkedListRemove(&system->available, &controller->links);
+                NuLinkedListAppend(&system->active, &controller->links);
+                for (index = 0; index < ai->path_sys->path_count; ++index) {
+                    if (ai->path_sys->paths[index] == path) {
+                        controller->path_index = index;
+                        break;
+                    }
+                }
+                controller->connection = connection;
+                controller->flags_word = (u16)((controller->flags_word & ~1u) | (direction & 1));
+                controller->gizmo_output = gizmo_output;
+                if (target != NULL)
+                    controller->target = target;
+                else if (NuSpecialExistsFn(&special) != 0)
+                    controller->special = special;
+                else
+                    controller->fake_animation_id = fake_animation_id;
+                controller->target_type = (u8)target_type;
+            }
         }
     }
-    if (target == NULL && NuSpecialExistsFn(&special) == 0 && target_type != 5)
-        return NULL;
-    node = NuLinkedListGetHead(&system->available);
-    if (node == NULL)
-        return NULL;
-    NuLinkedListRemove(&system->available, node);
-    NuLinkedListAppend(&system->active, node);
-    controller = (struct AIPATHCNXCONTROLLER_s *)node;
-    for (index = 0; index < ai->path_sys->path_count; ++index) {
-        if (ai->path_sys->paths[index] == path) {
-            controller->path_index = index;
-            break;
-        }
-    }
-    controller->flags_word = (u16)((controller->flags_word & ~1u) | (direction & 1));
-    controller->connection = connection;
-    controller->gizmo_output = gizmo_output;
-    if (target != NULL)
-        controller->target = target;
-    else if (NuSpecialExistsFn(&special) != 0)
-        controller->special = special;
-    else
-        controller->fake_animation_id = fake_animation_id;
-    controller->target_type = (u8)target_type;
     return controller;
 }
 
