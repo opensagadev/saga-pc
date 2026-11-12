@@ -15806,7 +15806,7 @@ void __cdecl creatureEditor_cbSetScriptParam(eduimenu_s *menu, eduiitem_s *item,
 void __cdecl creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     AISCRIPT_PC *script;
-    char text[16];
+    char text[32];
     i32 index;
     (void)item;
     (void)event;
