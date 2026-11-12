@@ -4283,24 +4283,22 @@ extern "C" {
 
     void __cdecl NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta,
                             u32 colour, f32 end_width, f32 length) {
-        NULGTLASER_PC *laser;
         i32 i;
         if (NuLgtLaserCnt >= 64)
             return;
 
-        laser = &NuLgtLaserData[NuLgtLaserCnt];
-        laser->arc = 0;
-        laser->type = (u8)type;
-        laser->width = width;
-        laser->width_wobble = width_wobble;
-        laser->segment_length = segment_length;
-        laser->end_width_ratio = end_width / width;
-        laser->length = length;
-        laser->start = *start;
-        laser->end.x = delta->x + start->x;
-        laser->end.y = delta->y + start->y;
-        laser->end.z = delta->z + start->z;
-        laser->colour = colour;
+        NuLgtLaserData[NuLgtLaserCnt].arc = 0;
+        NuLgtLaserData[NuLgtLaserCnt].type = (u8)type;
+        NuLgtLaserData[NuLgtLaserCnt].width = width;
+        NuLgtLaserData[NuLgtLaserCnt].width_wobble = width_wobble;
+        NuLgtLaserData[NuLgtLaserCnt].segment_length = segment_length;
+        NuLgtLaserData[NuLgtLaserCnt].end_width_ratio = end_width / width;
+        NuLgtLaserData[NuLgtLaserCnt].length = length;
+        NuLgtLaserData[NuLgtLaserCnt].start = *start;
+        NuLgtLaserData[NuLgtLaserCnt].end.x = delta->x + start->x;
+        NuLgtLaserData[NuLgtLaserCnt].end.y = delta->y + start->y;
+        NuLgtLaserData[NuLgtLaserCnt].end.z = delta->z + start->z;
+        NuLgtLaserData[NuLgtLaserCnt].colour = colour;
         // The original tests the arc cursor here, even for a straight laser.
         if ((NuLgtArcLaserFrame & 1) == 0 || NuLgtLaserData[NuLgtArcLaserCnt].seed == 0) {
             NuLgtLaserData[NuLgtLaserCnt].seed = NU_LGT_RAND();
