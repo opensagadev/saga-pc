@@ -533,8 +533,11 @@ i32 __cdecl SfxBitEx(i32 sfx_id) {
     i32 word;
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
-        if (word < 100)
-            return (SfxBits[word] & (u16)(1 << (sfx_id & 0xf))) != 0;
+        if (word < 100) {
+            if (SfxBits[word] & (u16)(1 << (sfx_id & 0xf)))
+                return 1;
+            return 0;
+        }
     }
     return -1;
 }
@@ -587,7 +590,9 @@ i32 __cdecl SfxBitTabEx(const SoundTable *table, i32 sfx_id) {
     if ((u32)sfx_id <= 0x63f) {
         word = sfx_id / 16;
         if (word < 100) {
-            return (u16)(table->bits[word] & (1 << (sfx_id & 0xf))) != 0;
+            if (table->bits[word] & (u16)(1 << (sfx_id & 0xf)))
+                return 1;
+            return 0;
         }
     }
     return -1;
