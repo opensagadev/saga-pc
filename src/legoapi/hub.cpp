@@ -4410,7 +4410,7 @@ extern "C" {
         i32 model = ChallengeMode != 0 ? CharKitModelId_PC : MiniKitModelId_PC;
         f32 factor, x, y;
         WORLDINFO *world;
-        char text[24];
+        char text[32];
         if (model == -1 || time <= 0.0f)
             return;
         factor = NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff];
@@ -4419,7 +4419,7 @@ extern "C" {
         world = WorldInfo_CurrentlyActive();
         if (world->level_objects[model].active != 0) {
             u16 angle = (u16)(i32)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
-            u16 pitch = (u16)(i32)((f64)NuTrigTable[angle & 0x7fff] * 1820.0);
+            u16 pitch = (u16)(i32)((f64)NU_SIN_LUT(angle * 2) * 1820.0);
             f32 size = PANEL_MINIKITSCALE * scale;
             DrawPanel3DObjectNoAlpha(x, y + PANEL_MINIKITY, 1.0f, size, size, size, pitch, angle, 0,
                                      &world->level_objects[model].special, 2);
