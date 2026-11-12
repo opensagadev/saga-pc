@@ -153,22 +153,21 @@ void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     if (shard == NULL)
         return;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
-        LEVEL_OBJECT_RUNTIME_PC *model;
-        shard->state_flags &= ~0x10u;
-        if ((shard->state_flags & 0x0a) != 2)
+        shard->drawn = 0;
+        if (shard->collected || !shard->visible)
             continue;
-        if ((shard->state_flags & 4) != 0) {
+        if (shard->collecting) {
             u16 spin = (u16)(i32)((f64)shard->collection_time * 98304.0 + (f64)(i32)shard->spin_angle);
             u16 tumble, angle_z, angle_x;
             NuMtxSetRotationY(&matrix, spin);
             tumble = (u16)(i32)((f64)shard->collection_time * 60620.0);
             angle_z = shard->angle_z;
-            if ((shard->state_flags & 0x40) == 0)
+            if (!shard->tumble_x)
                 angle_z += tumble;
             if (angle_z != 0)
                 NuMtxRotateZ(&matrix, angle_z);
             angle_x = shard->angle_x;
-            if ((shard->state_flags & 0x40) != 0)
+            if (shard->tumble_x)
                 angle_x += tumble;
             if (angle_x != 0)
                 NuMtxRotateX(&matrix, angle_x);
@@ -180,11 +179,8 @@ void __cdecl Shards_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
                 NuMtxRotateX(&matrix, shard->angle_x);
         }
         NuMtxTranslate(&matrix, &shard->current_position);
-        model = &world->level_objects[shard->model_index];
-        if (model->active != 0) {
-            i32 drawn = NuSpecialDrawAt(&model->special, &matrix);
-            shard->state_flags = (shard->state_flags & ~0x10u) | ((drawn & 1) << 4);
-        }
+        if (world->level_objects[shard->model_index].active != 0)
+            shard->drawn = NuSpecialDrawAt(&world->level_objects[shard->model_index].special, &matrix);
     }
 }
 i32 __cdecl Shards_GetMaxGizmos(WORLDINFO *world) {
