@@ -1451,17 +1451,9 @@ i32 SockSysTrackInSplineInfo(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUVE
 void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *out, i32 stride, i32 mode) {
     i32 first;
     i32 last;
+    i32 i;
     SOCK_PC *sock;
     i32 segment;
-    i32 samples[4];
-    NUMTX matrices[4];
-    NUQUAT quats[4];
-    NUQUAT result;
-    f32 widths[4];
-    f32 heights[4];
-    NUVEC right;
-    NUVEC up;
-    NUVEC forward;
     NUVEC *a;
     NUVEC *b;
     NUVEC *c;
@@ -1469,16 +1461,37 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
     f32 base_width;
     f32 base_height;
     f32 ratio;
+    f32 first_width;
+    f32 second_width;
+    f32 width;
+    f32 first_height;
+    f32 second_height;
+    f32 height;
+    SOCKSEGMENT_PC *segments[4];
+    i32 samples[4];
+    NUVEC right;
+    NUVEC up;
+    NUVEC forward;
+    NUQUAT result;
+    f32 widths[4];
+    f32 heights[4];
+    NUMTX matrices[4];
+    NUQUAT quats[4];
 
     NuMtxSetIdentity(out);
     if (position->sock_index == -1)
         return;
-    first = (mode == 4 || mode == 5) ? 0 : 1;
-    last = (mode == 4 || mode == 5) ? 3 : 2;
+    if (mode == 4 || mode == 5) {
+        first = 0;
+        last = 3;
+    } else {
+        first = 1;
+        last = 2;
+    }
     sock = &system->socks[position->sock_index];
     segment = position->segment;
-
-    samples[1] = segment - segment % stride;
+    samples[1] = position->segment;
+    samples[1] -= segment % stride;
     samples[2] = samples[1] + stride;
     samples[3] = samples[2] + stride;
     samples[0] = samples[1] - stride;
@@ -1488,48 +1501,34 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
         samples[2] = sock->length;
     if (samples[3] > sock->length)
         samples[3] = sock->length;
-
-    {
-        i32 i;
-
-        for (i = first; i <= last; ++i) {
-            NUVEC *a;
-            NUVEC *b;
-            NUVEC *c;
-            NUVEC *d;
-
-            NuMtxSetIdentity(&matrices[i]);
-            a = &sock->a->pts[samples[i]];
-            b = &sock->b->pts[samples[i]];
-            c = &sock->c->pts[samples[i]];
-            d = &sock->d->pts[samples[i]];
-            right.x = (b->x - a->x) + (c->x - d->x);
-            right.y = (b->y - a->y) + (c->y - d->y);
-            right.z = (b->z - a->z) + (c->z - d->z);
-            up.x = (b->x - c->x) + (a->x - d->x);
-            up.y = (b->y - c->y) + (a->y - d->y);
-            up.z = (b->z - c->z) + (a->z - d->z);
-            widths[i] = NuVecMag(&right);
-            heights[i] = NuVecMag(&up);
-            NuVecNorm(&right, &right);
-            NuVecNorm(&up, &up);
-            NuVecCross(&forward, &right, &up);
-            NuVecNorm(&forward, &forward);
-            NuVecCross(&up, &forward, &right);
-            NuVecNorm(&up, &up);
-            matrices[i].m00 = right.x;
-            matrices[i].m01 = right.y;
-            matrices[i].m02 = right.z;
-            matrices[i].m10 = up.x;
-            matrices[i].m11 = up.y;
-            matrices[i].m12 = up.z;
-            matrices[i].m20 = forward.x;
-            matrices[i].m21 = forward.y;
-            matrices[i].m22 = forward.z;
-            NuMtxToQuat(&matrices[i], &quats[i]);
-        }
+    for (i = first; i <= last; ++i) {
+        segments[i] = &sock->segments[samples[i]];
     }
-
+    for (i = first; i <= last; ++i) {
+        NuMtxSetIdentity(&matrices[i]);
+        a = &sock->a->pts[samples[i]];
+        b = &sock->b->pts[samples[i]];
+        c = &sock->c->pts[samples[i]];
+        d = &sock->d->pts[samples[i]];
+        right.x = (b->x - a->x) + (c->x - d->x);
+        right.y = (b->y - a->y) + (c->y - d->y);
+        right.z = (b->z - a->z) + (c->z - d->z);
+        up.x = (b->x - c->x) + (a->x - d->x);
+        up.y = (b->y - c->y) + (a->y - d->y);
+        up.z = (b->z - c->z) + (a->z - d->z);
+        widths[i] = NuVecMag(&right);
+        heights[i] = NuVecMag(&up);
+        NuVecNorm(&right, &right);
+        NuVecNorm(&up, &up);
+        NuVecCross(&forward, &right, &up);
+        NuVecNorm(&forward, &forward);
+        NuVecCross(&up, &forward, &right);
+        NuVecNorm(&up, &up);
+        *(NUVEC *)&matrices[i].m00 = right;
+        *(NUVEC *)&matrices[i].m10 = up;
+        *(NUVEC *)&matrices[i].m20 = forward;
+        NuMtxToQuat(&matrices[i], &quats[i]);
+    }
     a = &sock->a->pts[0];
     b = &sock->b->pts[0];
     c = &sock->c->pts[0];
@@ -1546,21 +1545,22 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
     ratio += (f32)(segment % stride);
     ratio /= (f32)stride;
     if (sock->flags & 0x200) {
-        f32 width;
-        f32 height;
-
-        width = (1.0f - ratio) * (widths[1] / base_width) + (widths[2] / base_width) * ratio;
-        if (1.0f >= width)
+        first_width = widths[1] / base_width;
+        second_width = widths[2] / base_width;
+        width = (1.0f - ratio) * first_width + second_width * ratio;
+        if (width <= 1.0f)
             sock->camera_local_x_ratio = sock->camera_lateral_ratio * width;
         else
             sock->camera_local_x_ratio =
-                sock->camera_lateral_ratio + (1.0f - 1.0f / width) * (1.0f - sock->camera_lateral_ratio);
-        height = (1.0f - ratio) * (heights[1] / base_height) + (heights[2] / base_height) * ratio;
-        if (1.0f >= height)
+                sock->camera_lateral_ratio + (1.0f - sock->camera_lateral_ratio) * (1.0f - 1.0f / width);
+        first_height = heights[1] / base_height;
+        second_height = heights[2] / base_height;
+        height = (1.0f - ratio) * first_height + second_height * ratio;
+        if (height <= 1.0f)
             sock->camera_vertical_ratio = sock->camera_lateral_ratio * height;
         else
             sock->camera_vertical_ratio =
-                sock->camera_lateral_ratio + (1.0f - 1.0f / height) * (1.0f - sock->camera_lateral_ratio);
+                sock->camera_lateral_ratio + (1.0f - sock->camera_lateral_ratio) * (1.0f - 1.0f / height);
         if (width > 1.0f)
             sock->look_ratio_xz = sock->unknown_80 / width;
         if (height > 1.0f)
