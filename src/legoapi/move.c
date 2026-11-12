@@ -7909,10 +7909,10 @@ void __cdecl Move_GEONOSIAN(GAMEOBJECT *object) {
 }
 
 void __cdecl Move_JAWA(GAMEOBJECT *object) {
+    u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
+    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
     u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
     u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
-    u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
-    u32 tag_pressed = object->pad->buttons_pressed & GAMEPAD_TAG;
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
     DropInOutCode(object);
     if ((object->flags_e20 & 0x20) != 0)
