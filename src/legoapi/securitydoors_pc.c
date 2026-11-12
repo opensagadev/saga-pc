@@ -413,12 +413,11 @@ static void SecurityDoorStartPc(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *doo
     if (object->context_duration <= 0.0f)
         object->context_duration = 1.0f;
     object->context_variant_flags |= 0x20;
-    door = (SECURITY_DOOR_RECORD_PC *)object->grapple;
     if (facing != 0) {
-        object->movement_facing_angle = door->yaw + 0x8000;
-        door->state = 1;
+        object->movement_facing_angle = ((SECURITY_DOOR_RECORD_PC *)object->grapple)->yaw + 0x8000;
+        ((SECURITY_DOOR_RECORD_PC *)object->grapple)->state = 1;
     } else {
-        object->movement_facing_angle = door->yaw;
+        object->movement_facing_angle = ((SECURITY_DOOR_RECORD_PC *)object->grapple)->yaw;
     }
 }
 
