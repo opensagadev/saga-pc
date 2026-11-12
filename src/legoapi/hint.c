@@ -288,22 +288,22 @@ i32 __cdecl GizForce_UpdateHint(HINT_PC *hint) {
 }
 
 i32 __cdecl Percent_UpdateHint(HINT_PC *hint) {
-    i32 active = 0, nearby = 0, index;
-    if (hint->completed != 0 || WORLD->current_level != HUB_LDATA || FadeSys.fade != 0.0f ||
-        CustomiserCompletionSavePc == NULL ||
-        ((HINT_COMPLETION_PC *)CustomiserCompletionSavePc)->points < HubCompletionPointsPc)
-        return 0;
-    for (index = 0; index < 2; ++index) {
-        GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-            ++active;
-            if (NuVecXZDistSqr(&object->position, &PercentHint_TriggerPos, NULL) < 4.0f)
-                ++nearby;
+    if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f &&
+        CustomiserCompletionSavePc != NULL &&
+        ((HINT_COMPLETION_PC *)CustomiserCompletionSavePc)->points >= HubCompletionPointsPc) {
+        i32 nearby = 0, active = 0, index;
+        for (index = 0; index < 2; ++index) {
+            GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+            if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+                ++active;
+                if (NuVecXZDistSqr(&object->position, &PercentHint_TriggerPos, NULL) < 4.0f)
+                    ++nearby;
+            }
         }
-    }
-    if (active > 0 && nearby == active) {
-        hint->colour_index = 4;
-        return 1;
+        if (active > 0 && nearby == active) {
+            hint->colour_index = 4;
+            return 1;
+        }
     }
     return 0;
 }
