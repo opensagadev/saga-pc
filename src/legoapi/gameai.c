@@ -242,20 +242,20 @@ i32 __cdecl AIRespawnOnPath(APIOBJECT_PC *apiobject) {
 i32 __cdecl AIBigJumpToDestination(APIOBJECT_PC *apiobject, NUVEC *destination) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner;
-    if (destination == NULL || object == NULL || object->objptr == NULL || object->dead != 0 ||
-        object->objptr->character_context == 0x2b)
-        return 1;
-    owner = object->objptr;
-    if (owner->takeover_source != NULL)
-        SnapCreaturePos(owner, destination, 0, NULL, 0);
-    else if ((object->character_data->model_flags & 0x200000) == 0)
-        StartBigJump(owner, destination, 0, 0.5f, 1.0f, 0);
-    else {
-        object->start_position = *destination;
-        object->position = *destination;
-        object->velocity = v000;
-        ResetPlayerMoves(owner);
-        object->respawn_timer = 0.0f;
+    if (destination != NULL && object != NULL && object->objptr != NULL && object->dead == 0 &&
+        object->objptr->character_context != 0x2b) {
+        owner = object->objptr;
+        if (owner->takeover_source != NULL)
+            SnapCreaturePos(owner, destination, 0, NULL, 0);
+        else if ((object->character_data->model_flags & 0x200000) == 0)
+            StartBigJump(owner, destination, 0, 0.5f, 1.0f, 0);
+        else {
+            object->start_position = *destination;
+            object->position = *destination;
+            object->velocity = v000;
+            ResetPlayerMoves(owner);
+            object->respawn_timer = 0.0f;
+        }
     }
     return 1;
 }
