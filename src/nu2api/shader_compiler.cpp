@@ -376,19 +376,20 @@ bool ShaderCompilerBasePc::LoadSource(const char *source, i32 length) {
 }
 void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, ShaderCompilerBufferAllocatorPc *vertex,
                                     ShaderCompilerBufferAllocatorPc *pixel) {
-    for (i32 i = 0; i < dictionary.definition_count; ++i)
-        dictionary.definitions[i]->expansion_state = 0;
-    dictionary.scratch.cursor = dictionary.scratch.base;
-    dictionary.program_count = 0;
-    Configure(filter, &dictionary);
-    dictionary.Expand(parsed_source, NULL);
-    dictionary.Expand(parsed_source, NULL);
-    dictionary.AddDefinition("_SHADERBUILDER_DEBUG", NULL, 0);
+    ShaderCompilerDictionaryPc *dict = &dictionary;
+    for (i32 i = 0; i < dict->definition_count; ++i)
+        dict->definitions[i]->expansion_state = 0;
+    dict->scratch.cursor = dict->scratch.base;
+    dict->program_count = 0;
+    Configure(filter, dict);
+    dict->Expand(parsed_source, NULL);
+    dict->Expand(parsed_source, NULL);
+    dict->AddDefinition("_SHADERBUILDER_DEBUG", NULL, 0);
     if (vertex != NULL) {
         vertex->length = 0;
         dictionary.output_stage = 0;
-        dictionary.BindOutputBuffer(vertex);
-        dictionary.Expand(parsed_source, vertex);
+        dict->BindOutputBuffer(vertex);
+        dict->Expand(parsed_source, vertex);
         if (vertex->length > 0 && vertex->data[vertex->length - 1] != 0) {
             if (vertex->length + 1 > vertex->capacity)
                 vertex->Resize((3 * (vertex->length + 1)) / 2);
@@ -399,8 +400,8 @@ void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shad
     if (pixel != NULL) {
         pixel->length = 0;
         dictionary.output_stage = 1;
-        dictionary.BindOutputBuffer(pixel);
-        dictionary.Expand(parsed_source, pixel);
+        dict->BindOutputBuffer(pixel);
+        dict->Expand(parsed_source, pixel);
         if (pixel->length > 0 && pixel->data[pixel->length - 1] != 0) {
             if (pixel->length + 1 > pixel->capacity)
                 pixel->Resize((3 * (pixel->length + 1)) / 2);
