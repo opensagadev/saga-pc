@@ -1782,31 +1782,37 @@ void __cdecl LoadAreaCharacters(void) {
 }
 extern "C" {
 
+    /* SCENESPECIALPROGRESS_PC.flags as the bitfields retail stores through. */
+    typedef struct scene_special_state_pc_s {
+        u32 frame : 11;
+        u32 visible : 1;
+        u32 playing : 1;
+        u32 waiting : 1;
+        u32 repeating : 1;
+        u32 unused : 17;
+        f32 tfactor;
+    } SCENE_SPECIAL_STATE_PC;
+    STATIC_ASSERT(sizeof(SCENE_SPECIAL_STATE_PC) == sizeof(SCENESPECIALPROGRESS_PC));
+
     void __cdecl StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
+        SCENE_SPECIAL_STATE_PC *states = (SCENE_SPECIAL_STATE_PC *)progress->specials;
         NUSPECIALHANDLE special;
+        NUINSTANIM *animation;
         i32 count;
         i32 i;
 
-        if (progress == NULL || scene == NULL) {
+        if (scene == NULL || progress == NULL) {
             return;
         }
         memset(progress, 0, sizeof(*progress));
         count = NuSpecialGetNumSpecials(scene);
         for (i = 0; i < count; ++i) {
-            SCENESPECIALPROGRESS_PC *saved = &progress->specials[i];
-            NUINSTANIM *animation;
-            i32 visible;
-
-            if (i == 0) {
-                NuSpecialGetFirst(scene, &special, 1);
-            } else {
+            if (i != 0) {
                 NuSpecialGetNext(&special);
+            } else {
+                NuSpecialGetFirst(scene, &special, 1);
             }
-            visible = NuSpecialGetVisibilityFn(&special);
-            if (visible != 0) {
-                saved->flags |= 0x800;
-            }
-
+            states[i].visible = NuSpecialGetVisibilityFn(&special);
             if (scene->instance_animation_data == NULL) {
                 continue;
             }
@@ -1814,22 +1820,15 @@ extern "C" {
             if (animation == NULL || scene->instance_animation_data[animation->animation_index] == NULL) {
                 continue;
             }
-
             if (animation->ltime <= 2048.0f && animation->ltime >= 0.0f) {
-                saved->flags = (saved->flags & ~0x7ffU) | ((u32)animation->ltime & 0x7ff);
+                states[i].frame = (u32)animation->ltime;
             } else {
-                saved->flags = (saved->flags & 0xfffff801U) | 1;
+                states[i].frame = 1;
             }
-            if ((animation->flags & 1) != 0) {
-                saved->flags |= 0x1000;
-            }
-            if ((animation->flags & 4) != 0) {
-                saved->flags |= 0x2000;
-            }
-            if ((animation->flags & 8) != 0) {
-                saved->flags |= 0x4000;
-            }
-            saved->tfactor = animation->tfactor;
+            states[i].playing = animation->flags & 1;
+            states[i].waiting = (animation->flags >> 2) & 1;
+            states[i].repeating = (animation->flags >> 3) & 1;
+            states[i].tfactor = animation->tfactor;
             if (copy_tfactor != 0) {
                 animation->fparam1 = animation->tfactor;
             }
