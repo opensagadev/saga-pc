@@ -4162,13 +4162,18 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
     EPISODEDATA_PC *episode = &EDataList[episode_index];
     const i32 alpha = (i32)(128.0 * phase);
     Episode_CountOpenAreas(episode_index, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
-    if (EpCompleteCount) {
+    if (EpCompleteCount == 0) {
+        if (episode->name_id != -1)
+            SmartTextEx(TTab[episode->name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc,
+                        HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
+                        HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
+    } else {
         if (HubBothTrueJediGoldBricksPc) {
             DrawBuildUpBar(HubAreaPanelXPc[1], HubEpisodeTitleYPc + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpStoryBuildUpCount, EpStoryBuildUpTotal);
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
+                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a4], HubAreaPanelXPc[1], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
                         HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
@@ -4177,7 +4182,7 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpFreePlayBuildUpCount, EpFreePlayBuildUpTotal);
             Text3DEx(text, HubAreaPanelXPc[4], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
+                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
             SmartTextEx(TTab[TextIdPc8808a8], HubAreaPanelXPc[4], HubTrueJediLabelOffsetPc + HubEpisodeTitleYPc, 1.0f,
                         HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, HubTrueJediLabelScalePc, 0,
                         HubTrueJediLabelRedPc, HubTrueJediLabelGreenPc, HubTrueJediLabelBluePc, HubTrueJediLabelWidthPc,
@@ -4187,7 +4192,7 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
                            NuTrigTable[((i32)(16384.0 * phase) >> 1) & 0x7fff], 1.0f, 1.0f, 0);
             sprintf(text, "%i/%i", EpBuildUpCount, EpBuildUpTotal);
             Text3DEx(text, HubAreaPanelXPc[1], HubEpisodeTitleYPc, 1.0f, PANEL_MINIKITCOUNTSCALE,
-                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, static_cast<u8>(alpha));
+                     PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, alpha);
         }
         HubDrawMiniKitCountPc(HubAreaPanelXPc[0], HubEpisodeTitleYPc, EpMiniKitCount, EpMiniKitTotal, phase);
         Hub_DrawImportantBrick(210, HubAreaPanelXPc[2], HubEpisodeTitleYPc, phase, EpRedBrickCount, EpRedBrickTotal);
@@ -4196,10 +4201,6 @@ static void HubDrawEpisodeStatsPc(i32 episode_index, f32 phase) {
             HubDrawMiniKitCharacterPc = 1;
             HubDrawMiniKitCountPc(HubAreaPanelXPc[5], HubEpisodeTitleYPc, EpCharKitCount, EpCharKitTotal, phase);
         }
-    } else if (episode->name_id != -1) {
-        SmartTextEx(TTab[episode->name_id], 0.0f, HubEpisodeTitleYPc, 1.0f, HubEpisodeTitleSizePc,
-                    HubEpisodeTitleSizePc, HubEpisodeTitleSizePc, 0, HubEpisodeRedPc, HubEpisodeGreenPc,
-                    HubEpisodeBluePc, 1.7f, 1, NULL, 0, alpha);
     }
     if (episode->text_id != -1)
         SmartTextEx(TTab[episode->text_id], 0.0f, HubEpisodeSubtitleYPc, 1.0f, HubEpisodeSubtitleSizePc,
