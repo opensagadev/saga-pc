@@ -8,11 +8,9 @@ void __cdecl NewAreaMusicChanges(void) {
 
 i32 __cdecl GameAudio_GetPlrSfxBits(void *object_ptr) {
     GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
-    i32 bits = 0;
-    if (object == NULL || (i8)object->flags_1fc >= 0)
-        return bits;
-    bits = (u32)1 << (object->field_280 & 31);
-    return bits;
+    if (object != NULL && object->player_controlled)
+        return 1 << object->field_280;
+    return 0;
 }
 
 extern void(__cdecl *ExtraHurtSfxFn)(GAMEOBJECT *);
