@@ -84,8 +84,8 @@ void __cdecl SlowWeaponOut(GAMEOBJECT *object) {
                 if (end > finish)
                     end = finish;
                 if (start < end) {
-                    object->field_7aa = (i16)action;
                     object->character_context = (i8)LEGOCONTEXT_WEAPONOUT;
+                    object->field_7aa = (i16)action;
                     object->context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
                     object->weapon_scale = 0.0f;
                     return;
@@ -192,8 +192,8 @@ void __cdecl SlowWeaponIn(GAMEOBJECT *object) {
                 if (end > finish)
                     end = finish;
                 if (start < end) {
-                    object->field_7aa = (i16)action;
                     object->character_context = (i8)LEGOCONTEXT_WEAPONIN;
+                    object->field_7aa = (i16)action;
                     object->context_timer = AnimDuration((i16)object->id, (i16)action, 0.0f, 0.0f, 1);
                     object->weapon_scale = 1.0f;
                     return;
