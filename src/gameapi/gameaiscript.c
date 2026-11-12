@@ -10762,9 +10762,9 @@ i32 __cdecl Action_ReleaseTakeOver(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     GAMEOBJECT *object;
     char *value;
 
+    object = NULL;
     if (param_5 == 0)
         return 1;
-    object = NULL;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         object = packet->owner->objptr;
     for (index = 0; index < param_4; ++index) {
@@ -10852,10 +10852,12 @@ i32 __cdecl Action_SetCanTakeOver(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
                                   i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
     GAMEOBJECT *object;
-    if (param_5 == 0 || packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+    object = NULL;
+    if (param_5 == 0)
         return 1;
-    object = packet->owner->objptr;
-    if (param_4 != 0) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        object = packet->owner->objptr;
+    if (object != NULL) {
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp((char *)AITransferLiteral758430, params[index]) == 0) {
                 object->flags_ef0 |= 0x40000000u;
