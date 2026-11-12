@@ -6906,7 +6906,7 @@ static __declspec(noinline) void SelfDestructCode(GAMEOBJECT *object, i32 presse
         return;
     InstantKillParts(object, 1, 0.0f);
     explosion = Detonate(&object->collision_position, 0);
-    if (explosion != NULL && Arcade != 0 && object->field_280 <= 1) {
+    if (explosion != NULL && Arcade != 0 && (object->field_280 == 0 || object->field_280 == 1)) {
         explosion->flags |= 0x10000;
         explosion->owner = object;
     }
