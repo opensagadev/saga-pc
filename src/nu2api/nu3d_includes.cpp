@@ -11947,6 +11947,12 @@ extern "C" {
             --texture->ref_count;
     }
 
+    static void NuTexAddReferencePc(i32 texture_id) {
+        NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_id);
+        if (texture != NULL)
+            ++texture->ref_count;
+    }
+
     void __cdecl NuTexDestroy(i32 texture_id) {
         if (texture_id > 0) {
             if (NuTexGetRefCount(texture_id) <= 0) {
@@ -12314,9 +12320,6 @@ extern "C" {
     STATIC_ASSERT(offsetof(NUGSCN, materials) == 0xc);
     STATIC_ASSERT(offsetof(NUGSCN, material_count) == 0x10);
 
-    /* Retail returns the empty diagnostic's EAX, which still holds the fallback TID. */
-    typedef i32(__cdecl *NUGSCN_TID_DIAGNOSTIC_PC)(i32, ...);
-
     i32 __cdecl NuGScnFixupTID(NUGSCN *scene, i32 tid) {
         i32 resolved;
         if (tid == -1)
@@ -12326,13 +12329,9 @@ extern "C" {
             if (resolved == 0) {
                 NUTEXDIM_PC *texture;
                 resolved = NuTexGetUnresolvedTextureTIDPS();
-                if (resolved > 0) {
-                    texture = NuTextureDimensions[resolved - 1];
-                    if (texture != NULL)
-                        ++texture->ref_count;
-                }
+                NuTexAddReferencePc(resolved);
                 texture = scene->textures[tid & 0x3fff];
-                return ((NUGSCN_TID_DIAGNOSTIC_PC)PCSpecialEmptyHandler_candidate)(
+                PCSpecialEmptyHandler_candidate(
                     texture->checksum[0], texture->checksum[1], texture->checksum[2], texture->checksum[3],
                     texture->checksum[4], texture->checksum[5], texture->checksum[6], texture->checksum[7],
                     texture->checksum[8], texture->checksum[9], texture->checksum[10], texture->checksum[11],
