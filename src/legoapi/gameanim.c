@@ -133,7 +133,6 @@ void __cdecl GameAnimSet_RemoveFromSystemList(GAMEANIMSET *set) {
 }
 
 void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
-    GAMEANIMSET *set;
     u8 *progress;
     i32 i;
 
@@ -141,15 +140,17 @@ void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
         return;
     }
     progress = gameanimsysprogress.entries[index];
-    for (i = 0; i < gameanimsysprogress.entry_size && system->sets[i] != NULL; ++i) {
-        set = system->sets[i];
-        set->state = (i8)progress[i];
-        if (set->state == 1 || set->state == 3) {
-            if ((set->flags & 4) == 0) {
-                GameAnimSet_AddToSystemList(set);
+    for (i = 0; i < gameanimsysprogress.entry_size; ++i) {
+        if (system->sets[i] == NULL) {
+            break;
+        }
+        system->sets[i]->state = (i8)progress[i];
+        if (system->sets[i]->state == 1 || system->sets[i]->state == 3) {
+            if ((system->sets[i]->flags & 4) == 0) {
+                GameAnimSet_AddToSystemList(system->sets[i]);
             }
-        } else if ((set->flags & 4) != 0) {
-            GameAnimSet_RemoveFromSystemList(set);
+        } else if ((system->sets[i]->flags & 4) != 0) {
+            GameAnimSet_RemoveFromSystemList(system->sets[i]);
         }
     }
 }
@@ -791,14 +792,14 @@ void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
     GAMEANIMSET *set;
     GAMEANIMSET *next_set;
     GAMEANIMOBJ *object;
-    u8 was_no_visibility_test;
+    i32 was_no_visibility_test;
     i32 all_playing_forward;
     i32 all_at_start;
     i32 all_at_end;
     i32 any_special_no_visibility_test;
     f32 direction;
     f32 previous_frame;
-    f32 directed_frame;
+    f32 overshoot;
 
     if (system == NULL) {
         return;
@@ -806,10 +807,10 @@ void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
     set = (GAMEANIMSET *)NuLinkedListGetHead(&system->active_sets);
     while (set != NULL) {
         next_set = (GAMEANIMSET *)NuLinkedListGetNext(&system->active_sets, &set->links);
-        was_no_visibility_test = (u8)(set->flags & 1);
+        was_no_visibility_test = set->flags & 1;
         set->flags &= (u16)~1;
         if ((set->flags & 2) != 0) {
-            set->flags &= (u16) ~(1 | 2);
+            set->flags &= (u16)~2;
             GameAnimSet_RemoveFromSystemList(set);
             set = next_set;
             continue;
@@ -826,20 +827,22 @@ void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
             if (object->instance_animation != NULL) {
                 direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
                 previous_frame = object->instance_animation->ltime;
-                if (previous_frame * direction >= object->end_frame * direction) {
+                if (object->instance_animation->ltime * direction >= object->end_frame * direction) {
                     if (object->instance_animation->tfactor * direction < 0.0f) {
                         object->instance_animation->ltime = object->end_frame;
                     } else if ((object->instance_animation->flags & 8) != 0) {
-                        object->instance_animation->ltime = previous_frame - object->end_frame + object->start_frame;
+                        overshoot = object->instance_animation->ltime - object->end_frame;
+                        object->instance_animation->ltime = overshoot + object->start_frame;
                     } else {
                         object->instance_animation->ltime = object->end_frame;
                         object->instance_animation->flags &= ~1u;
                     }
-                } else if (previous_frame * direction <= object->start_frame * direction) {
+                } else if (object->instance_animation->ltime * direction <= object->start_frame * direction) {
                     if (object->instance_animation->tfactor * direction > 0.0f) {
                         object->instance_animation->ltime = object->start_frame;
                     } else if ((object->instance_animation->flags & 8) != 0) {
-                        object->instance_animation->ltime = object->end_frame - (object->start_frame - previous_frame);
+                        overshoot = object->start_frame - object->instance_animation->ltime;
+                        object->instance_animation->ltime = object->end_frame - overshoot;
                     } else {
                         object->instance_animation->ltime = object->start_frame;
                         object->instance_animation->flags &= ~1u;
@@ -854,11 +857,10 @@ void __cdecl GameAnimSys_Update(GAMEANIMSYS *system) {
                         all_playing_forward = 0;
                     }
                 }
-                directed_frame = object->instance_animation->ltime * direction;
-                if (directed_frame > object->start_frame * direction) {
+                if (object->instance_animation->ltime * direction > object->start_frame * direction) {
                     all_at_start = 0;
                 }
-                if (directed_frame < object->end_frame * direction) {
+                if (object->instance_animation->ltime * direction < object->end_frame * direction) {
                     all_at_end = 0;
                 }
             }
@@ -1314,27 +1316,27 @@ static void edanimcbCancelLocalParticleTypeMenu(eduimenu_s *unused0, eduimenu_s 
     edanim_localparticletype_menu = NULL;
 }
 void edanimcbParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
-    struct eduimenu_s *menu;
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (edanim_nearest_param_id == -1) {
         return;
     }
 
-    menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelParticleMenu, (char *)("Attached Particles"));
-    edanim_particle_menu = menu;
-    if (!menu) {
+    edanim_particle_menu =
+        eduiMenuCreate(70, 70, 250, 300, ed_fnt, edanimcbCancelParticleMenu, (char *)("Attached Particles"));
+    if (!edanim_particle_menu) {
         return;
     }
 
-    eduiMenuAddItem(menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleTypeMenu, (char *)("Particle Type...")));
+    eduiMenuAddItem(edanim_particle_menu,
+                    eduiItemSelCreate(1, colours, 0, 0, edanimcbParticleTypeMenu, (char *)("Particle Type...")));
     if (edanim_nearest_particle != -1) {
-        eduiMenuAddItem(menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalParticleMenu,
-                                                (char *)("Highlighted Ptl Settings...")));
+        eduiMenuAddItem(edanim_particle_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbLocalParticleMenu,
+                                                                (char *)("Highlighted Ptl Settings...")));
     }
 
-    eduiMenuAttach(parent, menu);
-    menu->x = parent->x + 10;
-    menu->y = parent->y + 40;
+    eduiMenuAttach(parent, edanim_particle_menu);
+    edanim_particle_menu->x = parent->x + 10;
+    edanim_particle_menu->y = parent->y + 40;
 }
 void edanimcbCancelOptMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edanim_active_menu = NULL;
