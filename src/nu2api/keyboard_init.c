@@ -2,9 +2,9 @@
 #include <string.h>
 
 typedef struct NuKeyboardInitKeyRecord_PC {
-    u8 unknown_00;
-    u8 unknown_01;
-    u8 unknown_02;
+    i8 unknown_00;
+    i8 unknown_01;
+    i8 unknown_02;
     u8 unknown_03;
     u16 unknown_04;
 } NuKeyboardInitKeyRecord_PC;
@@ -121,8 +121,8 @@ void __fastcall NuKeyboardResetInputRecords_candidate(NuKeyboardState_PC *state)
 
     for (i = 0; i < 32; ++i) {
         layout->key_records[i].unknown_00 = 0;
-        layout->key_records[i].unknown_01 = 0xff;
-        layout->key_records[i].unknown_02 = 0xff;
+        layout->key_records[i].unknown_02 = -1;
+        layout->key_records[i].unknown_01 = -1;
         layout->key_records[i].unknown_04 = 0;
     }
     layout->unknown_67e4 = 0;
@@ -198,7 +198,6 @@ __declspec(noinline) void __fastcall NuKeyboardInsertInputRecord_candidate(NuKey
                                                                            i32 index, i32 field_00, i32 field_01,
                                                                            i32 field_02, u16 field_04) {
     NuKeyboardInitLayout_PC *layout;
-    NuKeyboardInitKeyRecord_PC *record;
     i32 i;
 
     if ((u32)index > 31) {
@@ -207,22 +206,20 @@ __declspec(noinline) void __fastcall NuKeyboardInsertInputRecord_candidate(NuKey
 
     layout = (NuKeyboardInitLayout_PC *)state;
     for (i = 0; i < 32; ++i) {
-        record = &layout->key_records[i];
-        if ((i32)(i8)record->unknown_00 == field_00) {
-            if (field_01 >= 0 && (i32)(i8)record->unknown_01 == field_01) {
+        if (field_00 == layout->key_records[i].unknown_00) {
+            if (field_01 >= 0 && field_01 == layout->key_records[i].unknown_01) {
                 return;
             }
-            if (field_02 >= 0 && (i32)(i8)record->unknown_02 == field_02) {
+            if (field_02 >= 0 && field_02 == layout->key_records[i].unknown_02) {
                 return;
             }
         }
     }
 
-    record = &layout->key_records[index];
-    record->unknown_00 = (u8)field_00;
-    record->unknown_01 = (u8)field_01;
-    record->unknown_02 = (u8)field_02;
-    record->unknown_04 = field_04;
+    layout->key_records[index].unknown_00 = (i8)field_00;
+    layout->key_records[index].unknown_01 = (i8)field_01;
+    layout->key_records[index].unknown_02 = (i8)field_02;
+    layout->key_records[index].unknown_04 = field_04;
 }
 
 void __fastcall NuKeyboardInitializeDefaultRecords_candidate(NuKeyboardState_PC *state) {
