@@ -5737,11 +5737,12 @@ __declspec(noinline) EdRef *EdClass::FindTypeRef(char *member_name, i32 recursiv
                 EdRef *reference = theRegistry.GetClass(member->type_id)->FindTypeRef(member_name, 1);
                 if (reference != NULL)
                     return reference;
-                continue;
+            } else if (NuStrICmp(member->name, member_name) == 0) {
+                return member;
             }
-        }
-        if (NuStrICmp(member->name, member_name) == 0)
+        } else if (NuStrICmp(member->name, member_name) == 0) {
             return member;
+        }
     }
     return NULL;
 }
