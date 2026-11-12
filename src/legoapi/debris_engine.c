@@ -1686,7 +1686,7 @@ void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC 
     debkeydata[*handle].emission_epoch = debkeydata[*handle].last_update_time;
     debkeydata[*handle].finite = 1;
     debkeydata[*handle].cutoff_distance =
-        (debris_cutoff_camera_vec != NULL ? NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL) : 0.0f);
+        (debris_cutoff_camera_vec == NULL ? 0.0f : NuVecDist(position, (NUVEC *)debris_cutoff_camera_vec, NULL));
     if (debkeydata[*handle].process_collision_sound != 0) {
         DEBRIS_INFO_PC **effects = debtab;
         volume = 0.0f;
