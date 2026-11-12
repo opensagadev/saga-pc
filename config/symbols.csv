@@ -39215,7 +39215,7 @@ address,symbol,size,ctype
 0x02962bcc,_NuSound3Initialized,4,i32
 0x02962bd0,_NuSound3VolumeTable,65536,f32[0x4000]
 0x2972bd0,_SoundSampleCriticalSectionPc,24,CRITICAL_SECTION
-0x2972be8,_PCStereoSampleMetadata,4,PC_STEREO_SAMPLE_METADATA *
+0x2972be8,_PCStereoSampleMetadata,4,SFX_FILE_INFO_PC *
 0x02972bec,_SoundVoiceCriticalSection,24,CRITICAL_SECTION
 0x2972c04,_SoundSampleCountPc,4,i32
 0x2972c08,_PCSoundMixSource,4,void *
