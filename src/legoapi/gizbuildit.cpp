@@ -384,24 +384,27 @@ extern "C" void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *buildit_pointer, GAMEOBJE
 
 extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEANIMOBJ *piece) {
     BUILDIT_ATTRACTO_READER_PC *buildit = (BUILDIT_ATTRACTO_READER_PC *)buildit_pointer;
-    f32 progress = 1.0 - (f64)buildit->step_timer / buildit->step_duration;
     GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
+    f32 progress = 1.0f - buildit->step_timer / buildit->step_duration;
     NUMTX *draw = NuSpecialGetDrawMtx(&piece->special);
+    NUMTX result, from, to;
+    NUQUAT rotation, from_rotation, to_rotation;
+    NUVEC from_position, to_position;
     if (progress > 0.0f) {
-        NUMTX result;
-        NUMTX from = *draw;
+        from = *draw;
         from.m30 = from.m31 = from.m32 = 0.0f;
-        NUMTX to = data->end_mtx;
+        to = data->end_mtx;
         to.m30 = to.m31 = to.m32 = 0.0f;
-        NUQUAT rotation, from_rotation, to_rotation;
         NuMtxToQuat(&from, &from_rotation);
         NuMtxToQuat(&to, &to_rotation);
         NuQuatSlerp(&rotation, &from_rotation, &to_rotation, progress);
         NuQuatToMtx(&rotation, &result);
-        result.m30 = ((f64)data->end_mtx.m30 - draw->m30) * progress + draw->m30;
-        result.m31 = ((f64)data->end_mtx.m31 - draw->m31) * progress + draw->m31 +
-                     (f64)NU_SIN_LUT((f64)progress * 32768.0) * (f64)0.1f;
-        result.m32 = ((f64)data->end_mtx.m32 - draw->m32) * progress + draw->m32;
+        from_position = *(NUVEC *)&draw->m30;
+        to_position = *(NUVEC *)&data->end_mtx.m30;
+        result.m30 = (to_position.x - from_position.x) * progress + from_position.x;
+        result.m31 =
+            (to_position.y - from_position.y) * progress + from_position.y + NU_SIN_LUT(progress * 32768.0) * 0.1;
+        result.m32 = (to_position.z - from_position.z) * progress + from_position.z;
         *draw = result;
     }
     if (buildit->linked_buildit != NULL)
