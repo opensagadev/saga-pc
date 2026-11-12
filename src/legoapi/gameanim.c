@@ -451,20 +451,20 @@ f32 __cdecl GameAnimSet_GetCurrentFrame(GAMEANIMSET *set) {
 }
 
 f32 __cdecl GameAnimSet_GetAnimPos(GAMEANIMOBJ *object) {
-    f32 position;
+    f32 position = 0.0f;
 
-    if (object == NULL || object->instance_animation == NULL || object->animation == NULL) {
-        return 0.0f;
-    }
-    if (object->start_frame == object->end_frame) {
-        return 1.0f;
-    }
-    position = (object->instance_animation->ltime - object->start_frame) / (object->end_frame - object->start_frame);
-    if (position < 0.0f) {
-        return 0.0f;
-    }
-    if (position > 1.0f) {
-        position = 1.0f;
+    if (object != NULL && object->instance_animation != NULL && object->animation != NULL) {
+        if (object->start_frame == object->end_frame) {
+            position = 1.0f;
+        } else {
+            position =
+                (object->instance_animation->ltime - object->start_frame) / (object->end_frame - object->start_frame);
+            if (position < 0.0f) {
+                position = 0.0f;
+            } else if (position > 1.0f) {
+                position = 1.0f;
+            }
+        }
     }
     return position;
 }
@@ -509,28 +509,27 @@ void GameAnimSet_SetOffset(GAMEANIMSET *set, NUVEC *offset) {
 
 f32 __cdecl GameAnimSet_GetCompletionRatio(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
-    f32 ratio;
+    f32 ratio = 0.0f;
 
-    if (set == NULL) {
-        return 0.0f;
+    if (set != NULL) {
+        for (object = set->objects; object != NULL; object = object->next) {
+            if (object->instance_animation != NULL) {
+                if (object->start_frame == object->end_frame) {
+                    ratio = 1.0f;
+                } else {
+                    ratio = (object->instance_animation->ltime - object->start_frame) /
+                            (object->end_frame - object->start_frame);
+                    if (ratio > 1.0f) {
+                        ratio = 1.0f;
+                    } else if (ratio < 0.0f) {
+                        ratio = 0.0f;
+                    }
+                }
+                break;
+            }
+        }
     }
-    for (object = set->objects; object != NULL; object = object->next) {
-        if (object->instance_animation == NULL) {
-            continue;
-        }
-        if (object->start_frame == object->end_frame) {
-            return 1.0f;
-        }
-        ratio = (object->instance_animation->ltime - object->start_frame) / (object->end_frame - object->start_frame);
-        if (ratio > 1.0f) {
-            ratio = 1.0f;
-        }
-        if (ratio < 0.0f) {
-            ratio = 0.0f;
-        }
-        return ratio;
-    }
-    return 0.0f;
+    return ratio;
 }
 
 GAMEANIMOBJ *__cdecl GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f32 start_frame, f32 end_frame,
@@ -685,9 +684,7 @@ void __cdecl GameAnimSet_EvalAnim(GAMEANIMSET *set) {
         return;
     }
     for (object = set->objects; object != NULL; object = object->next) {
-        if (object->instance_animation != NULL) {
-            EvalAnim2(&object->special, object->instance_animation->ltime);
-        }
+        EvalAnim2(&object->special, object->instance_animation->ltime);
     }
 }
 
