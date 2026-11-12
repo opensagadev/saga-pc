@@ -5540,8 +5540,8 @@ void __cdecl AIPathNodeUpdatePos(void *context, AIPATH_PC *path, AIPATHNODE_PC *
         }
     }
 
-    if (previous_position.x != node->position.x || previous_position.y != node->position.y ||
-        previous_position.z != node->position.z ||
+    if (node->position.x != previous_position.x || node->position.y != previous_position.y ||
+        node->position.z != previous_position.z ||
         ((animation = (NUINSTANIM *)NuSpecialGetInstAnim(&node->special_handle)) != NULL &&
          (animation->flags & 1) != 0 && animation->tfactor != 0.0f)) {
         node->runtime_flags |= 0x02;
