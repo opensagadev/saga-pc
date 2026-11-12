@@ -10933,7 +10933,7 @@ i32 __cdecl Action_IgnoreLastSafePathPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC 
         if (object != NULL) {
             if (object->character_context == 0x3c || object->rider != NULL)
                 Player_ClearContext(object, 1);
-            object->flags_ef4 ^= (((u32)ignore << 24) ^ object->flags_ef4) & 0x01000000u;
+            object->flags_ef4 = (object->flags_ef4 & ~0x01000000u) | ((ignore & 1) << 24);
         }
     }
     return 1;
