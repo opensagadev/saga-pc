@@ -984,267 +984,206 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
 }
 
 f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
-    i32 group_index;
-
-    TERRAIN_GROUP_PC *groups;
-    i32 remaining;
-    TerrainQuery_s *query;
-    volatile f32 plane_quotient;
     TERRAIN_SCAN_WORD_PC *scan;
-    TERRAIN_POLYGON_INFO_PC *ordinary_floor;
-    TERRAIN_POLYGON_INFO_PC *ordinary_above;
-    TERRAIN_POLYGON_INFO_PC *extended_above;
-    TERRAIN_POLYGON_INFO_PC *extended_floor;
-    f32 ordinary_floor_y;
-    f32 extended_floor_y;
-    f32 ordinary_above_y;
-    f32 extended_above_y;
-    i16 ordinary_above_group;
-    i16 extended_above_group;
-    NUVEC ordinary_floor_normal;
-    NUVEC extended_floor_normal;
-    NUVEC ordinary_above_normal;
-    NUVEC extended_above_normal;
-    i16 shape_count;
+    TERRAIN_POLYGON_INFO_PC *floor_poly = NULL;
+    TERRAIN_POLYGON_INFO_PC *roof_poly = NULL;
+    TERRAIN_POLYGON_INFO_PC *efloor_poly = NULL;
+    TERRAIN_POLYGON_INFO_PC *eroof_poly = NULL;
+    f32 roof_y = 2000000.0f;
+    f32 floor_y = -2000000.0f;
+    f32 eroof_y = 2000000.0f;
+    f32 efloor_y = -2000000.0f;
+    i16 roof_group = -1;
+    i16 eroof_group = -1;
+    NUVEC floor_normal, efloor_normal, roof_normal, eroof_normal;
+    TERRAIN_GROUP_PC *groups;
 
-    query = (TerrainQuery_s *)TerI;
-
-    scan = query->scan_words;
     TerrainShadowGroupIndexPc = -1;
     TerrainShadowFloorIndexPc = -1;
-    ordinary_above = NULL;
-    ordinary_floor = NULL;
-    extended_above = NULL;
-    extended_floor = NULL;
-    ordinary_floor_y = TerrainCastLowerSentinel;
-    extended_floor_y = TerrainCastLowerSentinel;
-    ordinary_above_y = LevelConfigFarDistance;
-    extended_above_y = LevelConfigFarDistance;
-    ordinary_above_group = -1;
-    extended_above_group = -1;
-
-    /* No artificial normal initialization: original above-normal locals have
-     * no entry definition. Release is qualified to first accepted above-plane
-     * height strictly below +2000000; exact-sentinel first ties remain held. */
-    shape_count = scan->header.shape_count;
-    if (shape_count > 0)
+    scan = ((TerrainQuery_s *)TerI)->scan_words;
+    /* MATCH-EXCEPTION: retail loads the group table once, after the loop's
+     * entry test (the original hoisted CurrentTerrain->groups itself); the
+     * guarded load reproduces that placement. */
+    if (scan->header.shape_count > 0)
         groups = ((TERRAIN_SET_PC *)CurrentTerrain)->groups;
-    for (;;) {
-        f32 z;
-
-        f32 x;
-
-        TERRAIN_SCAN_WORD_PC *surfaces;
-        TERRAIN_SCAN_WORD_PC *entry;
-
-        if (shape_count <= 0) {
-            if (!(LevelConfigFarDistance > extended_above_y) || !(extended_above_normal.y < 0.0f) ||
-                !(roof_range + position->y > extended_above_y)) {
-                TerrainCastAuxPolygonPc = NULL;
-                TerrainShadowHeightPc = LevelConfigFarDistance;
-            } else if (!(ordinary_above_y < LevelConfigFarDistance) || !(ordinary_above_normal.y < 0.0f) ||
-                       !(roof_range + position->y > ordinary_above_y) || !(extended_above_y > ordinary_above_y)) {
-                TerrainCastAuxPolygonPc = extended_above;
-                TerrainShadowHeightPc = extended_above_y;
-                TerrainCastAuxNormalPc = extended_above_normal;
-                TerrainCastAuxValidPc = 1;
-                TerrainCastAuxIndexPc = extended_above_group;
-            } else {
-                TerrainCastAuxPolygonPc = NULL;
-                TerrainShadowHeightPc = LevelConfigFarDistance;
-            }
-            if (!(extended_above_y < LevelConfigFarDistance) || !(extended_above_normal.y > 0.0f) ||
-                !(roof_range + position->y > extended_above_y)) {
-                if (extended_floor_y <= TerrainCastLowerSentinel ||
-                    (TerrainCastLowerSentinel < ordinary_floor_y && extended_floor_y < ordinary_floor_y)) {
-                    TerrainWaterCastIndexPc = 3;
-                    EShadY = LevelConfigFarDistance;
-                    EShadowPolygonPc = NULL;
-                    GetSurfaceInfoWaterNormalPc.y = 1.0f;
-                } else {
-                    TerrainWaterCastIndexPc = 2;
-                    EShadY = extended_floor_y;
-                    EShadowPolygonPc = extended_floor;
-                    GetSurfaceInfoWaterNormalPc = extended_floor_normal;
-                }
-            } else if (!(LevelConfigFarDistance > ordinary_above_y) || !(ordinary_above_normal.y < 0.0f) ||
-                       !(roof_range + position->y > ordinary_above_y) || !(extended_above_y > ordinary_above_y)) {
-                EShadowPolygonPc = extended_above;
-                EShadY = extended_above_y;
-                GetSurfaceInfoWaterNormalPc = extended_above_normal;
-                TerrainWaterCastIndexPc = 1;
-                TerrainShadowFloorIndexPc = extended_above_group;
-            } else {
-                TerrainWaterCastIndexPc = 3;
-                EShadY = LevelConfigFarDistance;
-                GetSurfaceInfoWaterNormalPc.y = 1.0f;
-                EShadowPolygonPc = NULL;
-            }
-            if (!(ordinary_above_y < LevelConfigFarDistance) || !(ordinary_above_normal.y < 0.0f) ||
-                !(ordinary_above_y < roof_range + position->y)) {
-                ShadowRoofPolygonPc = NULL;
-                GetSurfaceInfoRoofHeightPc = LevelConfigFarDistance;
-            } else {
-                TerrainRoofValidPc = 1;
-                TerrainRoofNormalPc = ordinary_above_normal;
-                TerrainRoofIndexPc = ordinary_above_group;
-                ShadowRoofPolygonPc = ordinary_above;
-                GetSurfaceInfoRoofHeightPc = ordinary_above_y;
-            }
-            if (!(LevelConfigFarDistance > ordinary_above_y) || !(ordinary_above_normal.y > 0.0f) ||
-                !(height_above + position->y > ordinary_above_y)) {
-                if (TerrainCastLowerSentinel < ordinary_floor_y) {
-                    TerrainSurfaceClassPc = 2;
-                    ShadPoly = ordinary_floor;
-                    GetSurfaceInfoSurfaceNormalPc = ordinary_floor_normal;
-                    position->y = ordinary_floor_y;
-                } else {
-                    position->y = LevelConfigFarDistance;
-                    TerrainSurfaceClassPc = 3;
-                    GetSurfaceInfoSurfaceNormalPc.y = 1.0f;
-                    ShadPoly = NULL;
-                }
-            } else {
-                ShadPoly = ordinary_above;
-                position->y = ordinary_above_y;
-                TerrainSurfaceClassPc = 1;
-                GetSurfaceInfoSurfaceNormalPc = ordinary_above_normal;
-                TerrainShadowGroupIndexPc = ordinary_above_group;
-            }
-            return 0.0f;
-        }
-        group_index = scan->header.terrain_group;
-        x = position->x - groups[group_index].origin.x;
-        z = position->z - groups[group_index].origin.z;
-        surfaces = scan + 1;
-        entry = surfaces;
-        for (remaining = shape_count; 0 != remaining; --remaining, ++entry) {
-            TERRAIN_POLYGON_INFO_PC *surface;
-            f32 normal_y;
-            f32 normal_x;
-            f32 normal_z;
-            f32 plane_y;
-            i32 winding;
-            f32 edge_x, edge_z;
-
-            surface = entry->shape;
-            normal_y = surface->normals[0].y;
-
+    while (scan->header.shape_count > 0) {
+        i32 group_index = scan->header.terrain_group;
+        f32 x = position->x - groups[group_index].origin.x;
+        f32 z = position->z - groups[group_index].origin.z;
+        TERRAIN_SCAN_WORD_PC *entry = scan + 1;
+        i32 i;
+        for (i = scan->header.shape_count; i > 0; --i, ++entry) {
+            TERRAIN_POLYGON_INFO_PC *surface = entry->shape;
+            i32 facing;
+            i32 side;
+/* InsideLineF(x, z, start, end) as retail inlined it (the start and end
+ * coordinates are f32 parameter copies). */
 #define CAST_LINE(a, b)                                                                                                \
-    (edge_x = surface->vertices[a].x, edge_z = surface->vertices[a].z,                                                 \
-     ((x - edge_x) * (surface->vertices[b].z - edge_z) + (z - edge_z) * (edge_x - surface->vertices[b].x)) < 0.0f ? 0  \
-                                                                                                                  : 1)
-            if (!(surface->normals[1].y > BoltTargetRandomDenominator)) {
-                if (!(normal_y > 0.0f)) {
-                    if (normal_y < 0.0f) {
-                        if (CAST_LINE(1, 2) == 0) {
-                            if (CAST_LINE(1, 3) != 0 && CAST_LINE(3, 2) != 0) {
-                                winding = 2;
-                                goto second_plane;
-                            }
-                        } else if (CAST_LINE(0, 1) != 0 && 0 != CAST_LINE(2, 0)) {
-                            winding = 2;
-                            goto first_plane;
-                        }
-                    }
+    (line_x = surface->vertices[a].x, line_z = surface->vertices[a].z, end_x = surface->vertices[b].x,                 \
+     end_z = surface->vertices[b].z, (x - line_x) * (end_z - line_z) + (z - line_z) * (line_x - end_x) < 0.0f ? 0 : 1)
+#define CAST_PLANE(n, v)                                                                                               \
+    quotient = ((z - surface->vertices[v].z) * surface->normals[n].z +                                                 \
+                (x - surface->vertices[v].x) * surface->normals[n].x) /                                                \
+               -surface->normals[n].y;                                                                                 \
+    y = groups[group_index].origin.y + surface->vertices[v].y + quotient;                                              \
+    if (surface->material[1] != 0) {                                                                                   \
+        if (y <= position->y && y > efloor_y && facing == 1) {                                                         \
+            efloor_normal = surface->normals[n];                                                                       \
+            efloor_poly = surface;                                                                                     \
+            efloor_y = y;                                                                                              \
+            TerrainShadowFloorIndexPc = group_index;                                                                   \
+        } else if (position->y < y && eroof_y >= y && (y != eroof_y || surface->normals[n].y < eroof_normal.y)) {      \
+            eroof_normal = surface->normals[n];                                                                        \
+            eroof_poly = surface;                                                                                      \
+            eroof_y = y;                                                                                               \
+            eroof_group = group_index;                                                                                 \
+        }                                                                                                              \
+    } else {                                                                                                           \
+        if (y <= position->y && y > floor_y && facing == 1) {                                                          \
+            floor_normal = surface->normals[n];                                                                        \
+            floor_poly = surface;                                                                                      \
+            floor_y = y;                                                                                               \
+            TerrainShadowGroupIndexPc = group_index;                                                                   \
+        } else if (position->y < y && roof_y >= y && (y != roof_y || surface->normals[n].y < roof_normal.y)) {         \
+            roof_normal = surface->normals[n];                                                                         \
+            roof_poly = surface;                                                                                       \
+            roof_y = y;                                                                                                \
+            roof_group = group_index;                                                                                  \
+        }                                                                                                              \
+    }
+            f32 line_x, line_z, end_x, end_z;
+            f32 quotient, y;
+            if (surface->normals[1].y > 65535.0) {
+                /* Triangle: a single plane. */
+                if (surface->normals[0].y > 0.0f) {
+                    if (!CAST_LINE(1, 0) || !CAST_LINE(0, 2) || !CAST_LINE(2, 1))
+                        continue;
+                    facing = 1;
+                } else if (surface->normals[0].y < 0.0f) {
+                    if (!CAST_LINE(0, 1) || !CAST_LINE(2, 0) || !CAST_LINE(1, 2))
+                        continue;
+                    facing = 2;
                 } else {
-                    if (CAST_LINE(2, 1) == 0) {
-                        if (CAST_LINE(3, 1) != 0 && CAST_LINE(2, 3) != 0) {
-                            winding = 1;
-                        second_plane:
-                            normal_y = surface->normals[1].y;
-                            if (0.0f == normal_y)
-                                goto first_plane;
-                            normal_z = surface->normals[1].z;
-                            normal_x = surface->normals[1].x;
-                            plane_quotient = (((z - surface->vertices[3].z) * normal_z) +
-                                              ((x - surface->vertices[3].x) * normal_x)) /
-                                             -normal_y;
-                            plane_y = (((groups[group_index].origin.y + surface->vertices[3].y))) + plane_quotient;
-                            if (surface->material[1] == 0) {
-                                if (plane_y <= position->y && ordinary_floor_y < plane_y && winding == 1) {
-                                    ordinary_floor_normal = surface->normals[1];
-                                    ordinary_floor = surface;
-                                    ordinary_floor_y = plane_y;
-                                    TerrainShadowGroupIndexPc = group_index;
-                                } else if (position->y < plane_y && ordinary_above_y >= plane_y &&
-                                           (plane_y != ordinary_above_y || normal_y < ordinary_above_normal.y)) {
-                                    ordinary_above_normal = surface->normals[1];
-                                    ordinary_above = surface;
-                                    ordinary_above_y = plane_y;
-                                    ordinary_above_group = group_index;
-                                }
-                            } else {
-                                if (plane_y <= position->y && plane_y > extended_floor_y && winding == 1) {
-                                    extended_floor_normal = surface->normals[1];
-                                    extended_floor = surface;
-                                    extended_floor_y = plane_y;
-                                    TerrainShadowFloorIndexPc = group_index;
-                                } else if (position->y < plane_y && plane_y <= extended_above_y &&
-                                           (plane_y != extended_above_y || normal_y < extended_above_normal.y)) {
-                                    extended_above_normal = surface->normals[1];
-                                    extended_above = surface;
-                                    extended_above_y = plane_y;
-                                    extended_above_group = group_index;
-                                }
-                            }
-                            continue;
-                        }
-                    } else if (CAST_LINE(1, 0) != 0 && CAST_LINE(0, 2) != 0) {
-                        winding = 1;
-                    first_plane:
-                        normal_z = surface->normals[0].z;
-                        normal_x = surface->normals[0].x;
-                        normal_y = surface->normals[0].y;
-                        plane_quotient =
-                            ((z - surface->vertices[0].z) * normal_z + (x - surface->vertices[0].x) * normal_x) /
-                            -normal_y;
-                        plane_y = (groups[group_index].origin.y + surface->vertices[0].y) + plane_quotient;
-                        if (surface->material[1] == 0) {
-                            if (plane_y <= position->y && ordinary_floor_y < plane_y && winding == 1) {
-                                ordinary_floor_normal = surface->normals[0];
-                                ordinary_floor = surface;
-                                ordinary_floor_y = plane_y;
-                                TerrainShadowGroupIndexPc = group_index;
-                            } else if (position->y < plane_y && ordinary_above_y >= plane_y &&
-                                       (plane_y != ordinary_above_y || normal_y < ordinary_above_normal.y)) {
-                                ordinary_above_normal = surface->normals[0];
-                                ordinary_above = surface;
-                                ordinary_above_y = plane_y;
-                                ordinary_above_group = group_index;
-                            }
-                        } else {
-                            if (plane_y <= position->y && plane_y > extended_floor_y && winding == 1) {
-                                extended_floor_normal = surface->normals[0];
-                                extended_floor = surface;
-                                extended_floor_y = plane_y;
-                                TerrainShadowFloorIndexPc = group_index;
-                            } else if (position->y < plane_y && plane_y <= extended_above_y &&
-                                       (plane_y != extended_above_y || normal_y < extended_above_normal.y)) {
-                                extended_above_normal = surface->normals[0];
-                                extended_above = surface;
-                                extended_above_y = plane_y;
-                                extended_above_group = group_index;
-                            }
-                        }
-                    }
+                    continue;
                 }
-            } else if (!(normal_y > 0.0f)) {
-                if (0.0f > normal_y && CAST_LINE(0, 1) != 0 && CAST_LINE(2, 0) != 0 && 0 != (CAST_LINE(1, 2))) {
-                    winding = 2;
-                    goto first_plane;
-                }
+                CAST_PLANE(0, 0)
             } else {
-                if (CAST_LINE(1, 0) != 0 && 0 != (CAST_LINE(0, 2)) && CAST_LINE(2, 1) != 0) {
-                    winding = 1;
-                    goto first_plane;
+                /* Quad: two planes sharing the 1-2 edge. */
+                if (surface->normals[0].y > 0.0f) {
+                    side = CAST_LINE(2, 1);
+                    if (side != 0) {
+                        if (!CAST_LINE(1, 0) || !CAST_LINE(0, 2))
+                            continue;
+                    } else if (!CAST_LINE(3, 1) || !CAST_LINE(2, 3)) {
+                        continue;
+                    }
+                    facing = 1;
+                } else if (surface->normals[0].y < 0.0f) {
+                    side = CAST_LINE(1, 2);
+                    if (side != 0) {
+                        if (!CAST_LINE(0, 1) || !CAST_LINE(2, 0))
+                            continue;
+                    } else if (!CAST_LINE(1, 3) || !CAST_LINE(3, 2)) {
+                        continue;
+                    }
+                    facing = 2;
+                } else {
+                    continue;
+                }
+                if (side == 0 && surface->normals[1].y != 0.0f) {
+                    CAST_PLANE(1, 3)
+                } else {
+                    CAST_PLANE(0, 0)
                 }
             }
+#undef CAST_PLANE
 #undef CAST_LINE
         }
-        scan = surfaces + shape_count;
-        shape_count = scan->header.shape_count;
+        scan = entry;
     }
+
+    if (eroof_y < 2000000.0 && eroof_normal.y < 0.0f && position->y + roof_range > eroof_y) {
+        if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y && roof_y < eroof_y) {
+            TerrainCastAuxPolygonPc = NULL;
+            TerrainShadowHeightPc = 2000000.0f;
+        } else {
+            TerrainCastAuxValidPc = 1;
+            TerrainShadowHeightPc = eroof_y;
+            TerrainCastAuxPolygonPc = eroof_poly;
+            TerrainCastAuxIndexPc = eroof_group;
+            TerrainCastAuxNormalPc.x = eroof_normal.x;
+            TerrainCastAuxNormalPc.y = eroof_normal.y;
+            TerrainCastAuxNormalPc.z = eroof_normal.z;
+        }
+    } else {
+        TerrainCastAuxPolygonPc = NULL;
+        TerrainShadowHeightPc = 2000000.0f;
+    }
+
+    if (eroof_y < 2000000.0 && eroof_normal.y > 0.0f && position->y + roof_range > eroof_y) {
+        if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y && eroof_y > roof_y) {
+            TerrainWaterCastIndexPc = 3;
+            EShadowPolygonPc = NULL;
+            EShadY = 2000000.0f;
+            GetSurfaceInfoWaterNormalPc.y = 1.0f;
+        } else {
+            TerrainWaterCastIndexPc = 1;
+            EShadY = eroof_y;
+            EShadowPolygonPc = eroof_poly;
+            TerrainShadowFloorIndexPc = eroof_group;
+            GetSurfaceInfoWaterNormalPc.x = eroof_normal.x;
+            GetSurfaceInfoWaterNormalPc.y = eroof_normal.y;
+            GetSurfaceInfoWaterNormalPc.z = eroof_normal.z;
+        }
+    } else if (!(efloor_y > -2000000.0) || (floor_y > -2000000.0 && floor_y > efloor_y)) {
+        TerrainWaterCastIndexPc = 3;
+        EShadowPolygonPc = NULL;
+        EShadY = 2000000.0f;
+        GetSurfaceInfoWaterNormalPc.y = 1.0f;
+    } else {
+        EShadY = efloor_y;
+        TerrainWaterCastIndexPc = 2;
+        GetSurfaceInfoWaterNormalPc.x = efloor_normal.x;
+        EShadowPolygonPc = efloor_poly;
+        GetSurfaceInfoWaterNormalPc.y = efloor_normal.y;
+        GetSurfaceInfoWaterNormalPc.z = efloor_normal.z;
+    }
+
+    if (roof_y < 2000000.0 && roof_normal.y < 0.0f && position->y + roof_range > roof_y) {
+        TerrainRoofValidPc = 1;
+        GetSurfaceInfoRoofHeightPc = roof_y;
+        ShadowRoofPolygonPc = roof_poly;
+        TerrainRoofIndexPc = roof_group;
+        TerrainRoofNormalPc.x = roof_normal.x;
+        TerrainRoofNormalPc.y = roof_normal.y;
+        TerrainRoofNormalPc.z = roof_normal.z;
+    } else {
+        ShadowRoofPolygonPc = NULL;
+        GetSurfaceInfoRoofHeightPc = 2000000.0f;
+    }
+
+    if (roof_y < 2000000.0 && roof_normal.y > 0.0f && position->y + height_above > roof_y) {
+        ShadPoly = roof_poly;
+        position->y = roof_y;
+        TerrainShadowGroupIndexPc = roof_group;
+        GetSurfaceInfoSurfaceNormalPc.x = roof_normal.x;
+        TerrainSurfaceClassPc = 1;
+        GetSurfaceInfoSurfaceNormalPc.y = roof_normal.y;
+        GetSurfaceInfoSurfaceNormalPc.z = roof_normal.z;
+    } else if (floor_y > -2000000.0) {
+        GetSurfaceInfoSurfaceNormalPc.x = floor_normal.x;
+        GetSurfaceInfoSurfaceNormalPc.y = floor_normal.y;
+        TerrainSurfaceClassPc = 2;
+        ShadPoly = floor_poly;
+        GetSurfaceInfoSurfaceNormalPc.z = floor_normal.z;
+        position->y = floor_y;
+    } else {
+        position->y = 2000000.0f;
+        TerrainSurfaceClassPc = 3;
+        GetSurfaceInfoSurfaceNormalPc.y = 1.0f;
+        ShadPoly = NULL;
+    }
+    return 0.0f;
 }
 
 /* Append after the integrated kernels; presentation macros stay local. */
@@ -2722,10 +2661,12 @@ STATIC_ASSERT(sizeof(TERRAIN_DEBUG_SOURCE_LINK_PC) == 4);
 void TerrDrawImpactPolPc(void) {
     TerrainQuery_s *query = (TerrainQuery_s *)TerI;
     TERRAIN_POLYGON_INFO_PC *surface;
+    TERRAIN_POLYGON_INFO_PC *scaled;
     if (query == NULL || query->surface == NULL)
         return;
     surface = query->surface;
-    if ((u32)surface >= (u32)TerrainScaledShapeCursorPc && (u32)surface < (u32)TerrainScaledShapeCursorPc + 0xc800)
+    scaled = TerrainScaledShapeCursorPc;
+    if ((u32)surface >= (u32)scaled && (u32)surface < (u32)scaled + 0xc800)
         surface = ((TERRAIN_DEBUG_SOURCE_LINK_PC *)surface)->source_polygon;
     TerrDrawPc(surface, query->terrain_group_index);
 }
@@ -2772,8 +2713,14 @@ void SphereDrawExPc(NUVEC *centre, f32 radius, f32 vertical_scale, i32 colour) {
     f32 lower_radius, upper_radius, lower_y, upper_y;
     i32 band, angle;
     for (band = 0; band < 8; ++band) {
-        lower_radius = radius * NuTrigTable[(((band < 4 ? band : 8 - band) * 4096) >> 1) & 0x7fff];
-        upper_radius = radius * NuTrigTable[(((band < 3 ? band + 1 : 7 - band) * 4096) >> 1) & 0x7fff];
+        if (band < 4)
+            lower_radius = radius * NuTrigTable[((band * 4096) >> 1) & 0x7fff];
+        else
+            lower_radius = radius * NuTrigTable[(((8 - band) * 4096) >> 1) & 0x7fff];
+        if (band < 3)
+            upper_radius = radius * NuTrigTable[(((band + 1) * 4096) >> 1) & 0x7fff];
+        else
+            upper_radius = radius * NuTrigTable[(((7 - band) * 4096) >> 1) & 0x7fff];
         lower_y = NuFsqrt(radius_squared - (f64)lower_radius * lower_radius) * vertical_scale;
         upper_y = NuFsqrt(radius_squared - (f64)upper_radius * upper_radius) * vertical_scale;
         if (band > 4)
