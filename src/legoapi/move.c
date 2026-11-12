@@ -3781,7 +3781,7 @@ static __declspec(noinline) void CommunicateCode(GAMEOBJECT *object, i32 pressed
         if (mode == 0) {
             events = AnimListFrameArray(object->character_model, (i16)object->field_7aa);
             if (events != NULL && events[0] >= 1.0f && events[1] >= 1.0f && events[2] >= 1.0f && events[3] >= 1.0f) {
-                if (events[0] >= *frame)
+                if (*frame <= events[0])
                     view->communication_blend = 0.0f;
                 else if (*frame < events[1])
                     view->communication_blend = (*frame - events[0]) / (events[1] - events[0]);
