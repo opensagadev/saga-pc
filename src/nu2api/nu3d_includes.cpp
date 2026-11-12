@@ -6354,6 +6354,7 @@ extern "C" {
 
     static void roomRecursive(NUGSCN *scene, NUPORTAL_FRUSTUM_PC *frustum, i16 room_id, i16 previous_room, i32 depth) {
         NUGSCNROOM *room = &scene->rooms[room_id];
+        NUPORTAL_FRUSTUM_PC *next;
         i32 i;
         for (i = 0; i < depth - 1; ++i)
             if (NuPortalRoomsVisitedPc[i] == room_id)
@@ -6370,8 +6371,10 @@ extern "C" {
             return;
         for (i = 0; (u32)i < room->portal_count; ++i) {
             NUPORTAL *portal = &scene->portals[room->portal_indices[i]];
-            i16 next_room = (i16)(portal->front_room == (u16)room_id ? portal->back_room : portal->front_room);
+            i16 next_room = portal->front_room;
             i32 clip;
+            if (portal->front_room == (u16)room_id)
+                next_room = portal->back_room;
             if (next_room == previous_room)
                 continue;
             clip = (portal->flags & 1) != 0 ? clipPortalAgainstFrustrum(scene, room_id, portal, frustum, next_room) : 0;
@@ -6379,14 +6382,12 @@ extern "C" {
                 case 0:
                     break;
                 case 1: {
-                    NUPORTAL_FRUSTUM_PC *next;
                     drawFullPortal(portal, &scene->rooms[next_room]);
                     next = buildPortalFrustrum(portal, next_room);
                     roomRecursive(scene, next, next_room, room_id, depth + 1);
                     break;
                 }
                 case 2: {
-                    NUPORTAL_FRUSTUM_PC *next;
                     switch (clipPartialPortal(portal, &scene->rooms[next_room], next_room, frustum, &next)) {
                         case 1:
                             roomRecursive(scene, next, next_room, room_id, depth + 1);
