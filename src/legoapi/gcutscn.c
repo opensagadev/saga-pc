@@ -1132,24 +1132,22 @@ i32 __cdecl CutTriggerEntryTestPc(CUT_TRIGGER_ENTRY_PC *entry, NUVEC *pos, f32 r
 
 i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NUVEC *pos, f32 radius) {
     NUMTX inverse;
-    NUVEC offset;
+    NUVEC delta;
     NUVEC local_pos;
     NUVEC extent;
-    NUVEC sphere_centre;
-    NUVEC cylinder_base;
+    NUVEC centre;
     NUVEC box_pos;
     NUVEC box_extent;
-    NUVEC delta;
     CUT_TRIGGER_SHAPE_PC *shape;
     CUT_TRIGGER_SPHERE_PC *sphere;
     CUT_TRIGGER_BOX_PC *box;
     CUT_TRIGGER_CYLINDER_PC *cylinder;
     f32 dist;
     i32 i;
-    offset.x = pos->x - mtx->m30;
-    offset.y = pos->y - mtx->m31;
-    offset.z = pos->z - mtx->m32;
-    if (offset.x * offset.x + offset.y * offset.y + offset.z * offset.z >
+    delta.x = pos->x - mtx->m30;
+    delta.y = pos->y - mtx->m31;
+    delta.z = pos->z - mtx->m32;
+    if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z >
         (entry->radius + radius) * (entry->radius + radius))
         return 0;
     if ((entry->flags & 1) != 0) {
@@ -1167,8 +1165,8 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
         switch (shape->type) {
             case 1:
                 sphere = (CUT_TRIGGER_SPHERE_PC *)shape->data;
-                NuVecMtxTransform(&sphere_centre, &sphere->centre, mtx);
-                dist = NuVecDistSqr(pos, &sphere_centre, &delta);
+                NuVecMtxTransform(&centre, &sphere->centre, mtx);
+                dist = NuVecDistSqr(pos, &centre, &delta);
                 if (dist < (sphere->radius + radius) * (sphere->radius + radius))
                     return 1;
                 break;
@@ -1187,11 +1185,11 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
                 return 1;
             case 3:
                 cylinder = (CUT_TRIGGER_CYLINDER_PC *)shape->data;
-                NuVecMtxTransform(&cylinder_base, &cylinder->base, mtx);
-                if (pos->y < cylinder_base.y - radius || pos->y > cylinder_base.y + cylinder->height + radius)
+                NuVecMtxTransform(&centre, &cylinder->base, mtx);
+                if (pos->y < centre.y - radius || pos->y > centre.y + cylinder->height + radius)
                     break;
-                dist = (pos->x - cylinder_base.x) * (pos->x - cylinder_base.x) +
-                       (pos->z - cylinder_base.z) * (pos->z - cylinder_base.z);
+                dist = (pos->x - centre.x) * (pos->x - centre.x) +
+                       (pos->z - centre.z) * (pos->z - centre.z);
                 if (dist < (cylinder->radius + radius) * (cylinder->radius + radius))
                     return 1;
                 break;
