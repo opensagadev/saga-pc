@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
+#include <new>
 extern "C" void __cdecl ShaderLexicalClassesInitPc(void);
 ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &parent, i32 input_mode)
     : scratch(parent, 0x3000), output_memory(parent, 0x4000), register_buffer(parent, 0x100) {
@@ -741,23 +742,17 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                 break;
             case 3:
                 if (FindASTExact(node->data.declaration.name, node->data.declaration.flags) == NULL) {
-                    const char *name = ShaderCloneArenaStringPc(node->data.declaration.name, &output_memory);
-                    const char *custom =
-                        node->data.declaration.custom_semantic != NULL
-                            ? ShaderCloneArenaStringPc(node->data.declaration.custom_semantic, &output_memory)
-                            : NULL;
-                    ShaderSourceNodePc *storage = reinterpret_cast<ShaderSourceNodePc *>(output_memory.cursor);
-                    output_memory.cursor += sizeof(ShaderSourceNodePc);
-                    ShaderSourceNodePc *definition = NULL;
-                    if (storage != NULL) {
-                        ShaderSourceNodePc initialized(
-                            node->data.declaration.flags, node->data.declaration.type,
-                            node->data.declaration.array_count, name, node->data.declaration.semantic, custom,
-                            node->data.declaration.vertex_register, node->data.declaration.pixel_register);
-                        *storage = initialized;
-                        definition = storage;
-                    }
-                    AddASTDefinition(definition);
+                    VirtualStackAllocator *arena = &output_memory;
+                    const char *name = ShaderCloneArenaStringPc(node->data.declaration.name, arena);
+                    const char *custom = node->data.declaration.custom_semantic != NULL
+                                             ? ShaderCloneArenaStringPc(node->data.declaration.custom_semantic, arena)
+                                             : NULL;
+                    ShaderSourceNodePc *storage = reinterpret_cast<ShaderSourceNodePc *>(arena->cursor);
+                    arena->cursor += sizeof(ShaderSourceNodePc);
+                    AddASTDefinition(new (storage) ShaderSourceNodePc(
+                        node->data.declaration.flags, node->data.declaration.type, node->data.declaration.array_count,
+                        name, node->data.declaration.semantic, custom, node->data.declaration.vertex_register,
+                        node->data.declaration.pixel_register));
                 }
                 break;
             case 4: {
@@ -765,11 +760,13 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
                 for (i32 i = 0; i < node->data.reference.alias_depth; ++i)
                     name = FindDefinition(name)->value;
                 ShaderSourceNodePc *definition = FindASTExact(name, node->data.reference.flags);
-                if (definition == NULL && (node->data.reference.flags & 0x20) != 0)
+                bool uniform = (node->data.reference.flags >> 5) & 1;
+                if (definition == NULL && uniform)
                     definition = FindASTUniform(name);
                 if (definition != NULL) {
                     ++definition->expansion_state;
-                    AddDefinition(RenderASTName(definition), NULL, 0);
+                    const char *rendered = RenderASTName(definition);
+                    AddDefinition(rendered, NULL, 0);
                 }
                 break;
             }
@@ -779,7 +776,8 @@ void ShaderCompilerDictionaryPc::Expand(void *input, ShaderCompilerBufferAllocat
             case 6:
                 if (output != NULL) {
                     u32 flags = node->data.emit.flags;
-                    if ((flags & 0x20) != 0)
+                    bool program = (flags >> 5) & 1;
+                    if (program)
                         EmitProgram(output);
                     else if (flags == 0x2010)
                         EmitVertexInput(output);
