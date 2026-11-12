@@ -324,14 +324,15 @@ extern "C" void __cdecl GizActions_SetPickupVisibilityPc(GIZFLOW_PC *, FLOWBOX_P
     }
 }
 
+/* TODO(saga.h): FLOWBOX_PC.state_flags_low/high are one u16 of bit flags; bit 0 enables the box. */
 struct GIZACTION_FLOWBOX_FLAGS_PC {
     u8 unknown_00[0xa];
-    u16 flags;
+    u16 enabled : 1;
+    u16 state_flags : 15;
     u8 unknown_0c[0x10];
     char *name;
 };
 STATIC_ASSERT(sizeof(GIZACTION_FLOWBOX_FLAGS_PC) == 0x20);
-STATIC_ASSERT(offsetof(GIZACTION_FLOWBOX_FLAGS_PC, flags) == 0xa);
 STATIC_ASSERT(offsetof(GIZACTION_FLOWBOX_FLAGS_PC, name) == 0x1c);
 
 extern "C" void __cdecl GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC *unused, char **params, i32 count) {
@@ -347,9 +348,8 @@ extern "C" void __cdecl GizActions_TurnOnFlowBoxPc(GIZFLOW_PC *flow, FLOWBOX_PC 
     }
     if (flow != NULL && name != NULL) {
         for (i = 0; i < flow->flowbox_count; ++i) {
-            GIZACTION_FLOWBOX_FLAGS_PC *box = &((GIZACTION_FLOWBOX_FLAGS_PC *)flow->flowboxes)[i];
-            if (box->name != NULL && NuStrICmp(box->name, name) == 0)
-                box->flags ^= (box->flags ^ enabled) & 1;
+            if (flow->flowboxes[i].name != NULL && NuStrICmp(flow->flowboxes[i].name, name) == 0)
+                ((GIZACTION_FLOWBOX_FLAGS_PC *)flow->flowboxes)[i].enabled = enabled;
         }
     }
 }
