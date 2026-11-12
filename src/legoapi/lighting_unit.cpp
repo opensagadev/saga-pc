@@ -502,19 +502,16 @@ extern "C" i32 __cdecl ShadowAveragePlayerBoundsPc(NUVEC *center, f32 *radius) {
     *radius = -1.0f;
     i32 count = 0;
     for (i32 i = 0; i < 2; ++i) {
-        GAMEOBJECT *player = static_cast<GAMEOBJECT *>(Player[i]);
-        if (player != NULL && (player->flags_1fc & 0x80) != 0) {
-            SHADOW_PLAYER_BOUNDS_PC *bounds = reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(player);
-            NuVecAdd(center, center, &bounds->center);
-            volatile f32 maximum = bounds->radius < *radius ? *radius : bounds->radius;
+        if (Player[i] != NULL && (static_cast<GAMEOBJECT *>(Player[i])->flags_1fc & 0x80) != 0) {
+            NuVecAdd(center, center, &reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->center);
+            *radius = *radius > reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius
+                          ? *radius
+                          : reinterpret_cast<SHADOW_PLAYER_BOUNDS_PC *>(Player[i])->radius;
             ++count;
-            *radius = maximum;
         }
     }
-    if (count > 0) {
-        volatile f32 scale = 1.0f / count;
-        NuVecScale(center, center, scale);
-    }
+    if (count > 0)
+        NuVecScale(center, center, 1.0f / count);
     return count;
 }
 
