@@ -291,9 +291,9 @@ i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *su
     if (y)
         *y = row * image->maximum_texture;
     if (w)
-        *w = col < image->full_columns ? image->maximum_texture : image->remainder_width;
+        *w = col >= image->full_columns ? image->remainder_width : image->maximum_texture;
     if (h)
-        *h = row < image->full_rows ? image->maximum_texture : image->remainder_height;
+        *h = row >= image->full_rows ? image->remainder_height : image->maximum_texture;
     ++image->lock_index;
     return 1;
 }
