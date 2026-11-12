@@ -4361,7 +4361,10 @@ extern "C" {
             reader->colour = &platform->draw.colour;
             reader->x_scale = &platform->x_scale;
             reader->y_scale = &platform->y_scale;
-            sprintf(filename, "%s", texture_path != NULL ? texture_path : path);
+            if (texture_path == NULL)
+                sprintf(filename, "%s", path);
+            else
+                sprintf(filename, "%s", texture_path);
             texture_id = NuTexReadPc(filename, buffer, *end);
             if (texture_id != 0) {
                 font->material = NuMtlCreate(1);
@@ -4383,7 +4386,7 @@ extern "C" {
                 NuTexDestroy(texture_id);
             }
         }
-        PCSpecialEmptyHandler_candidate();
+        PCSpecialEmptyHandler_candidate(path);
         *buffer = saved;
         return NULL;
     }
