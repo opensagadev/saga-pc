@@ -783,8 +783,8 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
     u32 narrow_speeder_mask = 0, flattened_mask = 0, player_collision_mask = 0, no_vertical_movement_mask = 0,
         vertical_movement_mask = 0, player_slot_mask = 0;
     GAMEOBJECT *object, *selected_player;
-    APIOBJECT_PC *collision_objects[64];
-    NUVEC collision_minimums[64], collision_maximums[64], direction;
+    APIOBJECT_PC *collision_objects[64], **object_cursor;
+    NUVEC collision_minimums[64], collision_maximums[64], *minimum_cursor, *maximum_cursor, direction;
     PLAYERCHARACTERCONFIG_PC *data;
     COLLISION_EXCLUSION_VIEW_PC *exclusion;
     u64 bit;
@@ -814,6 +814,9 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
             object->id == (u16)id_SPEEDERBIKE && object->field_280 != 0xff)
             narrow_speeder_mask |= bit;
     }
+    object_cursor = collision_objects;
+    minimum_cursor = collision_minimums;
+    maximum_cursor = collision_maximums;
     for (index = 0, object = Obj; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
             object->model_draw_result == 0 || object->use_model_origin < 2)
@@ -830,10 +833,10 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
         if ((data->flags_090 & 0x8000) || (object->flags_e20 & 0x20) ||
             (context == 0x47 && (((COLLISION_TECHNO_VIEW_PC *)object->techno)->flags & 1)))
             continue;
-        collision_objects[collision_count] = (APIOBJECT_PC *)object;
-        collision_minimums[collision_count] = object->collision_min;
-        collision_maximums[collision_count] = object->collision_max;
         ++collision_count;
+        *minimum_cursor++ = object->collision_min;
+        *maximum_cursor++ = object->collision_max;
+        *object_cursor++ = (APIOBJECT_PC *)object;
         exclusion = (COLLISION_EXCLUSION_VIEW_PC *)object;
         exclusion->exclusion_mask = 0;
         data = object->character_data->game_character;
