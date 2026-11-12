@@ -18874,3 +18874,15 @@ void __cdecl aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, 
 /* Empty trace hook called from AINet::Receive (message.cpp). */
 void AINetTrace(const char *format, ...) {
 }
+
+/* Script diagnostics, compiled empty in the shipped build. They take a format and its arguments; callers pass
+ * anything from nothing to a format with two values. Defined variadic after their last argument-less caller, so
+ * the calls stay out of line while callers still know they preserve every register. */
+void __cdecl AIScriptMissingStateDiagnostic(const char *format, ...) {
+}
+
+void __cdecl AIScriptMissingStateDiagnosticAlternate(const char *format, ...) {
+}
+
+void __cdecl AIScriptMissingConditionDiagnostic(const char *format, ...) {
+}
