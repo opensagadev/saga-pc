@@ -10177,7 +10177,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
                         continue;
                     }
                     for (route_slot = 0; route_slot < 16; ++route_slot) {
-                        if (editor_connection->route_mask & (1u << route_slot)) {
+                        if (editor_connection->route_mask & (((u64)1) << route_slot)) {
                             i32 route_index = route_indices[route_slot];
                             u64 bit = ((u64)1) << route_index;
                             if ((runtime_node->connections[edge]->route_mask & bit) == 0) {
@@ -10187,7 +10187,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
                                 connection = connections[edge];
                                 for (endpoint = 0; endpoint < 2; ++endpoint) {
                                     route_members[route_index][connection->node_indices[endpoint] / 8] |=
-                                        1 << (connection->node_indices[endpoint] & 7);
+                                        1 << (connection->node_indices[endpoint] % 8);
                                 }
                             }
                         }
@@ -10207,7 +10207,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
             u8 **next_hops;
             i32 next_source;
             for (node = 0; node < path->node_count; ++node) {
-                if (route_members[route_index][node >> 3] & (1u << (node & 7))) {
+                if (route_members[route_index][node / 8] & (1 << (node % 8))) {
                     ++route->route_count;
                 }
                 if (path->nodes[node].route_boundary_mask & (((u64)1) << route_indices[route_index])) {
@@ -10230,7 +10230,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH_PC *path, EDAIPATH_s *editor
             exit_index = 0;
             for (node = 0; node < path->node_count; ++node) {
                 route->node_routes[node] = 0xff;
-                if (!(route_members[route_index][node >> 3] & (1u << (node & 7)))) {
+                if (!(route_members[route_index][node / 8] & (1 << (node % 8)))) {
                     continue;
                 }
                 path->nodes[node].route_membership_mask |= ((u64)1) << route_indices[route_index];
