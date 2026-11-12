@@ -12258,16 +12258,12 @@ extern "C" {
         NUGSCN *scene = NuReadGraphicsData(buffer, &buffer_end, path, NULL);
         NUGSCN **clones;
         i32 i;
-        if (scene == NULL)
-            return NULL;
-        if (count > 1) {
-            buffer->addr = (buffer->addr + 31) & ~31u;
-            clones = (NUGSCN **)buffer->void_ptr;
-            buffer->addr += count * sizeof(*clones);
+        if (scene != NULL && count > 1) {
+            clones = (NUGSCN **)((buffer->addr + 31) & ~31u);
+            buffer->addr = ((buffer->addr + 31) & ~31u) + count * sizeof(*clones);
             for (i = 0; i < count - 1; ++i) {
-                buffer->addr = (buffer->addr + 31) & ~31u;
-                clones[i] = (NUGSCN *)buffer->void_ptr;
-                buffer->addr += sizeof(*clones[i]);
+                clones[i] = (NUGSCN *)((buffer->addr + 31) & ~31u);
+                buffer->addr = ((buffer->addr + 31) & ~31u) + sizeof(*clones[i]);
                 memcpy(clones[i], scene, sizeof(*clones[i]));
                 clones[i]->display_list = NuDisplaySceneClone(scene->display_list, buffer);
                 clones[i]->display_list->gscene = clones[i];
