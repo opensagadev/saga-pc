@@ -68,7 +68,7 @@ void __cdecl EdFileResetBuffers(void) {
     edfile_lock[0] = 0;
 }
 
-__declspec(noinline) void __cdecl EdFileFillBuffer(void) {
+void __cdecl EdFileFillBuffer(void) {
     if (edfile_handle != -1) {
         memset(edfile_buffer, 0, sizeof(edfile_buffer));
         switch (edfile_media) {
@@ -93,39 +93,41 @@ i32 __cdecl EdFileOpen(char *filepath, i32 mode) {
     EdFileResetBuffers();
     edfile_handle = -1;
     edfile_write_flag = 0;
-    if (edfile_media != 1) {
-        return 0;
-    }
-    if (mode != 0) {
-        if (mode != 1) {
+    switch (edfile_media) {
+        case 0:
             return 0;
-        }
-        edfile_write_flag = 1;
-        edfile_handle = NuFileOpen(filepath, 1);
-        if (edfile_handle > 0) {
-            return 1;
-        }
-        edfile_handle = -1;
-        return 0;
-    }
-    if (edfile_pakfile != NULL) {
-        item_handle = NuFilePakGetItem(edfile_pakfile, filepath);
-        if (item_handle != 0) {
-            NuFilePakGetItemInfo(edfile_pakfile, item_handle, &item, &item_size);
-            edfile_handle = NuMemFileOpen(item, item_size, 0);
-            if (edfile_handle > 0) {
-                EdFileFillBuffer();
-                return 1;
+        case 1:
+            switch (mode) {
+                case 0:
+                    if (edfile_pakfile != NULL) {
+                        item_handle = NuFilePakGetItem(edfile_pakfile, filepath);
+                        if (item_handle != 0) {
+                            NuFilePakGetItemInfo(edfile_pakfile, item_handle, &item, &item_size);
+                            edfile_handle = NuMemFileOpen(item, item_size, 0);
+                            if (edfile_handle > 0) {
+                                EdFileFillBuffer();
+                                return 1;
+                            }
+                            edfile_handle = -1;
+                        }
+                    }
+                    edfile_handle = NuFileOpen(filepath, 0);
+                    if (edfile_handle > 0) {
+                        EdFileFillBuffer();
+                        return 1;
+                    }
+                    edfile_handle = -1;
+                    return 0;
+                case 1:
+                    edfile_write_flag = 1;
+                    edfile_handle = NuFileOpen(filepath, 1);
+                    if (edfile_handle > 0)
+                        return 1;
+                    edfile_handle = -1;
+                    break;
             }
-            edfile_handle = -1;
-        }
+            break;
     }
-    edfile_handle = NuFileOpen(filepath, 0);
-    if (edfile_handle > 0) {
-        EdFileFillBuffer();
-        return 1;
-    }
-    edfile_handle = -1;
     return 0;
 }
 
@@ -133,7 +135,7 @@ void __cdecl EdFileFlushBuffer(void) {
     if (edfile_handle != -1 && edfile_buffer_pointer != 0) {
         switch (edfile_media) {
             case 0:
-                break;
+                return;
             case 1:
                 NuFileWrite(edfile_handle, edfile_buffer, edfile_buffer_pointer);
                 edfile_buffer_pointer = 0;
@@ -228,26 +230,18 @@ void EdFileWriteNuVec(NUVEC *value) {
 }
 
 __declspec(noinline) void __cdecl EdFileRead(void *buffer, i32 length) {
-    u8 *destination = (u8 *)buffer;
     i32 count;
     while (length > 0) {
         count = sizeof(edfile_buffer) - edfile_buffer_pointer;
         if (length < count) {
             count = length;
         }
-        memcpy(destination, edfile_buffer + edfile_buffer_pointer, count);
+        memcpy(buffer, edfile_buffer + edfile_buffer_pointer, count);
         edfile_buffer_pointer += count;
-        destination += count;
         length -= count;
-        if (edfile_buffer_pointer == sizeof(edfile_buffer)) {
-            if (edfile_handle != -1) {
-                memset(edfile_buffer, 0, sizeof(edfile_buffer));
-                if (edfile_media == 1) {
-                    NuFileRead(edfile_handle, edfile_buffer, sizeof(edfile_buffer));
-                    edfile_buffer_pointer = 0;
-                }
-            }
-        }
+        buffer = (u8 *)buffer + count;
+        if (edfile_buffer_pointer == sizeof(edfile_buffer))
+            EdFileFillBuffer();
     }
 }
 
@@ -819,16 +813,23 @@ edui_textpicker_s *eduiAddTextPickEntEx(eduimenu_s *menu, eduiitem_s *source, Ed
 
 void cbgpcfgAdd(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     edui_gradient_pick_s *picker = ((edui_gradient_pick_s *)(item->data_ptr));
-    edui_gradient_node_s *stage = picker->selected_stage;
-    f32 time = 0.0f;
-    f32 hue = 0.0f;
-    f32 saturation = 0.0f;
-    f32 intensity = 1.0f;
-    if (stage != NULL) {
-        time = ((stage->next != NULL ? stage->next->time : 1.0f) + stage->time) * 0.5f;
-        hue = stage->hue;
-        saturation = stage->saturation;
-        intensity = stage->value;
+    f32 time;
+    f32 hue;
+    f32 saturation;
+    f32 intensity;
+    if (picker->selected_stage == NULL) {
+        time = 0.0f;
+        hue = 0.0f;
+        saturation = 0.0f;
+        intensity = 1.0f;
+    } else {
+        if (picker->selected_stage->next != NULL)
+            time = (picker->selected_stage->time + picker->selected_stage->next->time) * 0.5;
+        else
+            time = (picker->selected_stage->time + 1.0) * 0.5;
+        hue = picker->selected_stage->hue;
+        saturation = picker->selected_stage->saturation;
+        intensity = picker->selected_stage->value;
     }
     picker->selected_stage = eduiGradStageAdd(picker, time, hue, saturation, intensity);
     if (picker->add != NULL)
