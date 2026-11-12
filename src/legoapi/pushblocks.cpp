@@ -183,21 +183,22 @@ extern "C" void __cdecl ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *op
 extern "C" void __cdecl ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
     WORLDINFO *world = reinterpret_cast<WORLDINFO *>(opaque);
     PUSH_BLOCK_PC *block = world->push_blocks;
-    if (block == NULL || world->push_block_count <= 0)
+    if (block == NULL)
         return;
     PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_data);
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         if (progress != NULL && index < 16) {
+            const i32 word = index / 32;
             const u32 bit = 1u << (index & 31);
-            block->progress_state = (progress->state_mask[index / 32] & bit) != 0;
-            block->push_visible = (progress->visible_mask[index / 32] & bit) != 0;
+            block->progress_state = (progress->state_mask[word] & bit) != 0;
+            block->push_visible = (progress->visible_mask[word] & bit) != 0;
             if (block->push_visible == 0) {
                 NuSpecialSetVisibility(&block->special, 0);
                 block->push_visible = 0;
                 for (i32 output = 0; output < block->end_position_count; ++output)
                     NuSpecialSetVisibility(&block->end_position_specials[output], 0);
             }
-            if ((progress->position_mask[index / 32] & bit) == 0)
+            if ((progress->position_mask[word] & bit) == 0)
                 continue;
             void *animation = NuSpecialGetInstAnim(&block->special);
             if (block->push_visible == 0 && animation != NULL) {
