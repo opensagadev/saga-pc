@@ -1595,6 +1595,7 @@ address,symbol,size,ctype
 0x491240,_Levers_RegisterGizmo,288,struct addgizmotype_pc_s * __cdecl(i32)
 0x491380,_LSW_Hub_InitAI,481,
 0x491570,_LSW_Hub_ResetAI,39,void __cdecl(WORLDINFO *)
+0x4915a0,_Hub_CurrentArea,31,i32 __cdecl(void)
 0x4915c0,_Hub_Outside,40,i32 __cdecl(void)
 0x491620,_Hub_MakeListCharactersAvailable,311,
 0x491760,_HubChooseRandomCharacterPc,155,
