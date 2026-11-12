@@ -5403,6 +5403,7 @@ address,symbol,size,ctype
 0x00589f60,_CharShadows_Reset,26,void __cdecl(CHARACTER_SHADOW_PACKET_PC *)
 0x589f80,_CharShadows_Update,742,void __cdecl(void)
 0x58a270,_CharShadows_Draw,660,void __cdecl(void)
+0x0058a510,_MissionsConfigMissingPc,1,void __cdecl (char *)
 0x58a540,_Missions_Configure,911,"MISSIONSYS_PC *__cdecl(char *, VARIPTR *, VARIPTR *, MISSION_SAVE_READER_PC *)"
 0x0058a8d0,_Mission_Clear,44,void __cdecl (void *)
 0x0058a900,_Mission_Active,33,MISSIONDATA_PC *__cdecl (MISSIONSYS_PC *)
