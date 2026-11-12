@@ -39,6 +39,11 @@ endif
 # Retail libvorbis was built without /GS: none of its functions carry a security
 # cookie. vorbisfile keeps them, so it was built with the game's flags.
 $(filter-out $(OBJ_DIR)/vendored/vorbis/vorbisfile.obj,$(filter $(OBJ_DIR)/vendored/vorbis/% $(OBJ_DIR)/vendored/vorbis_%,$(OBJECTS))): CXXFLAGS += /GS-
+# The game links a prebuilt libvorbis compiled by Visual C++ 2005 RTM, not the SP1 compiler that
+# built everything else (config/toolchain.json "secondary"). libogg was built with SP1.
+RTM_OBJECTS := $(filter $(OBJ_DIR)/vendored/vorbis/% $(OBJ_DIR)/vendored/vorbis_%,$(OBJECTS))
+$(RTM_OBJECTS): TOOLCHAIN := rtm
+$(RTM_OBJECTS): TOOLCHAIN_DIR := build/tools/msvc8-rtm
 # The bundled Ogg Vorbis sources were built without the engine's SSE vector header (see saga.h).
 $(filter $(OBJ_DIR)/vendored/%,$(OBJECTS)): CXXFLAGS += /DSAGA_VENDORED_LIBRARY
 $(filter $(OBJ_DIR)/nu2api/oggreader.obj $(OBJ_DIR)/nu2api/nustream.obj,$(OBJECTS)): $(VORBIS_HEADERS)
@@ -50,7 +55,9 @@ XINPUT_LIB := build/lib/imports/xinput1_3.lib
 BINK_LIB := build/lib/imports/binkw32.lib
 # DirectX SDK static library (DXGetErrorString9A/DXGetErrorDescription9A), fetched with the toolchain.
 DXERR_LIB := build/tools/dxsdk/Lib/x86/DxErr9.lib
-CPPFLAGS := /Isrc /Ilib/ogg-vorbis/vorbis /Ibuild/tools/msvc8/include /Ibuild/tools/msvc8/PlatformSDK/Include
+# Each object compiles against its own compiler's CRT and SDK headers (TOOLCHAIN_DIR is target-specific).
+TOOLCHAIN_DIR := build/tools/msvc8
+CPPFLAGS = /Isrc /Ilib/ogg-vorbis/vorbis /I$(TOOLCHAIN_DIR)/include /I$(TOOLCHAIN_DIR)/PlatformSDK/Include
 CXXFLAGS := /nologo /c /O2 /Gy /GS /MT
 LDFLAGS := /nologo /machine:x86 /subsystem:windows /incremental:no /manifest:no /opt:noref /opt:noicf
 ifeq ($(BUILD_KIND),Debug)
@@ -141,7 +148,7 @@ $(DEPENDENCY_FILES): | dependencies
 	@test -f $@
 
 $(OBJ_DIR)/vendored/%.obj: lib/ogg-vorbis/%.c $(DEPENDENCY_FILES) src/saga.h src/externals.h src/debug/diagnostics.h src/debug/support.h config/ogg-vorbis.json tools/dependencies.py config/toolchain.json Makefile tools/cc.py tools/lib.py | build/tools/wine/.ready
-	$(PYTHON) tools/cc.py $< $@ $(CPPFLAGS) $(CXXFLAGS)
+	$(PYTHON) tools/cc.py $(if $(TOOLCHAIN),--toolchain $(TOOLCHAIN) )$< $@ $(CPPFLAGS) $(CXXFLAGS)
 
 setup: dependencies
 	$(PYTHON) tools/setup.py

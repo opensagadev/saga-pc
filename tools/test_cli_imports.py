@@ -71,7 +71,7 @@ with tempfile.TemporaryDirectory() as temp:
   assert not any(x.startswith('/MAP:') or x=='/VERBOSE' for x in command)
   out.write_bytes(b'probe output')
   return SimpleNamespace(stdout='',stderr='',returncode=0)
- with patch.dict(globals,environment=lambda:(Path('build/tools/msvc8/bin'),'mock-wine',{})),patch('subprocess.run',side_effect=link),patch.object(sys,'argv',['cc.py','--link',str(out),str(obj),'--','/nologo']):
+ with patch.dict(globals,environment=lambda toolchain=None:(Path('build/tools/msvc8/bin'),'mock-wine',{})),patch('subprocess.run',side_effect=link),patch.object(sys,'argv',['cc.py','--link',str(out),str(obj),'--','/nologo']):
   assert fn()==0
  assert out.is_file()
 ''')

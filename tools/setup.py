@@ -12,9 +12,9 @@ import urllib.request
 import zipfile
 
 if __package__:
-    from .lib import ROOT, changed_files, changed_trees, digest, load_json, sha256
+    from .lib import ROOT, changed_files, changed_trees, digest, load_json, sha256, toolchain_pin
 else:
-    from lib import ROOT, changed_files, changed_trees, digest, load_json, sha256
+    from lib import ROOT, changed_files, changed_trees, digest, load_json, sha256, toolchain_pin
 
 
 def download(url, destination):
@@ -42,14 +42,14 @@ def fetch_git_archive(source, prefix, destination):
     shutil.rmtree(checkout, ignore_errors=True)
 
 
-def install_compiler(archive):
-    pin = load_json(ROOT / "config/toolchain.json")
+def install_compiler(archive, name=None):
+    """Install the primary compiler, or the named secondary one (config/toolchain.json "secondary")."""
+    pin, dest = toolchain_pin(ROOT, name)
     helpers = pin.get("pdb_helpers", {}).get("files", {})
     if any(name in (".", "..") or Path(name).name != name or "\\" in name or ":" in name or name in pin["files"]
            for name in helpers):
         raise ValueError("PDB helper must be a separate allowlisted binary basename")
-    checksums = {**pin["files"], **{name: item["sha256"] for name, item in helpers.items()}}
-    dest = ROOT / "build/tools/msvc8"
+    checksums = {**pin["files"], **{helper: item["sha256"] for helper, item in helpers.items()}}
     if not changed_files(dest / "bin", checksums) and not changed_trees(dest, pin["trees"]):
         print(f'{pin["name"]} {pin["version"]}: verified, already installed')
         return
@@ -86,23 +86,23 @@ def install_compiler(archive):
                 path = staged / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes(package.read(member))
-        for name, data in files.items():
-            if digest(data) != pin["files"][name]:
-                raise ValueError(f"Compiler file SHA-256 mismatch: {name}")
+        for member, data in files.items():
+            if digest(data) != pin["files"][member]:
+                raise ValueError(f"Compiler file SHA-256 mismatch: {member}")
         changed = changed_trees(staged, pin["trees"])
         if changed:
             raise ValueError(f"Compiler tree SHA-256 mismatch: {', '.join(changed)}")
-        for name, data in files.items():
-            path = staged / "bin" / name
+        for member, data in files.items():
+            path = staged / "bin" / member
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(data)
         # The original compiler archive omits its matching PDB server/core closure.
         # Download only separately pinned helper bytes; verify all before replacing cache.
-        for name, item in helpers.items():
-            path = staged / "bin" / name
+        for helper, item in helpers.items():
+            path = staged / "bin" / helper
             download(item["url"], path)
             if sha256(path) != item["sha256"]:
-                raise ValueError(f"PDB helper SHA-256 mismatch: {name}")
+                raise ValueError(f"PDB helper SHA-256 mismatch: {helper}")
         # Replace this tool's whole directory so stale cache paths cannot redirect writes.
         if dest.is_symlink():
             dest.unlink()
@@ -162,7 +162,7 @@ def install_dxsdk():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path,
-                        help="Use an already downloaded pinned compiler ZIP")
+                        help="Use an already downloaded pinned primary compiler ZIP")
     parser.add_argument("--compiler-only", action="store_true",
                         help="Skip objdiff-cli and the DirectX SDK libraries for compilation-only local work")
     args = parser.parse_args()
@@ -172,6 +172,9 @@ def main():
         parser.error("The initial build environment supports Linux x86-64 only")
     try:
         install_compiler(args.archive)
+        # Secondary compilers (e.g. the one that built a prebuilt third-party library).
+        for name in load_json(ROOT / "config/toolchain.json").get("secondary", {}):
+            install_compiler(None, name)
         if not args.compiler_only:
             install_objdiff()
             install_dxsdk()

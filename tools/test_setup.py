@@ -256,6 +256,74 @@ class SetupTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "plain file name"):
             setup.install_dxsdk()
 
+    def git_pinned_package(self):
+        """A local repository laid out like the compiler package, pinned by commit."""
+        repository = self.root / "upstream"
+        for name, data in self.compiler_files.items():
+            (repository / "bin" / name).parent.mkdir(parents=True, exist_ok=True)
+            (repository / "bin" / name).write_bytes(data)
+        for name, data in self.tree_files.items():
+            (repository / name).parent.mkdir(parents=True, exist_ok=True)
+            (repository / name).write_bytes(data)
+        git = ["git", "-C", str(repository), "-c", "user.name=test", "-c", "user.email=test@invalid"]
+        subprocess.run(["git", "init", "-q", str(repository)], check=True)
+        subprocess.run([*git, "add", "-A"], check=True)
+        subprocess.run([*git, "commit", "-q", "-m", "package"], check=True)
+        commit = subprocess.run([*git, "rev-parse", "HEAD"], check=True, capture_output=True,
+                                text=True).stdout.strip()
+        pin = {key: value for key, value in self.pin.items() if key not in ("url", "archive_sha256")}
+        return {**pin, "name": "Synthetic secondary compiler", "prefix": "package/bin/",
+                "git": {"url": repository.as_uri(), "commit": commit}}
+
+    def test_secondary_compiler_is_fetched_by_commit_into_its_own_directory(self):
+        if not shutil.which("git"):
+            self.skipTest("git is required")
+        self.pin["secondary"] = {"rtm": self.git_pinned_package()}
+        self.write_pin()
+        setup.install_compiler(None, "rtm")
+        installed = self.root / "build/tools/msvc8-rtm"
+        for name, data in self.compiler_files.items():
+            self.assertEqual((installed / "bin" / name).read_bytes(), data)
+        for name, data in self.tree_files.items():
+            self.assertEqual((installed / name).read_bytes(), data)
+        self.assertFalse((self.root / "build/tools/msvc8").exists())
+        with patch.object(setup, "fetch_git_archive") as fetch:
+            setup.install_compiler(None, "rtm")
+        fetch.assert_not_called()
+        (installed / "bin/cl.exe").write_bytes(b"corrupt cache")
+        setup.install_compiler(None, "rtm")
+        self.assertEqual((installed / "bin/cl.exe").read_bytes(), self.compiler_files["cl.exe"])
+
+    def test_secondary_compiler_checksums_prevent_installation(self):
+        if not shutil.which("git"):
+            self.skipTest("git is required")
+        secondary = self.git_pinned_package()
+        secondary["files"] = {**secondary["files"], "cl.exe": "0" * 64}
+        self.pin["secondary"] = {"rtm": secondary}
+        self.write_pin()
+        with self.assertRaisesRegex(ValueError, "file SHA-256 mismatch: cl.exe"):
+            setup.install_compiler(None, "rtm")
+        self.assertFalse((self.root / "build/tools").exists())
+
+    def test_unknown_or_unsafe_secondary_names_are_rejected(self):
+        self.pin["secondary"] = {"../escape": dict(self.pin), "rtm": dict(self.pin)}
+        self.write_pin()
+        for name in ("sp2", "../escape"):
+            with self.assertRaisesRegex(ValueError, "Unknown toolchain"):
+                setup.install_compiler(self.archive, name)
+        self.assertFalse((self.root / "build/tools").exists())
+
+    def test_setup_installs_every_secondary_compiler(self):
+        self.pin["secondary"] = {"rtm": {}, "other": {}}
+        self.write_pin()
+        with patch("sys.argv", ["setup.py", "--compiler-only"]), \
+                patch.object(setup.platform, "system", return_value="Linux"), \
+                patch.object(setup.platform, "machine", return_value="x86_64"), \
+                patch.object(setup, "install_compiler") as install:
+            setup.main()
+        self.assertEqual([call.args for call in install.call_args_list],
+                         [(None,), (None, "rtm"), (None, "other")])
+
     def test_compiler_only_skips_objdiff_installation(self):
         with patch("sys.argv", ["setup.py", "--compiler-only", "--archive", str(self.archive)]), \
                 patch.object(setup.platform, "system", return_value="Linux"), \

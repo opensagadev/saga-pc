@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 from tools import cc, check
 from tools.binary import COFF
-from tools.lib import ROOT
+from tools.lib import ROOT, tree_digest
 
 
 class BuildKindTests(unittest.TestCase):
@@ -24,14 +24,24 @@ class BuildKindTests(unittest.TestCase):
     def test_build_managed_vorbis_inputs_and_flags(self):
         result = self.make("build")
         self.assertEqual(result.returncode, 0, result.stderr)
-        commands = [line for line in result.stdout.splitlines()
-                    if line.startswith("python3 tools/cc.py lib/ogg-vorbis/")]
+        commands = [line.replace("--toolchain rtm ", "") for line in result.stdout.splitlines()
+                    if line.startswith(("python3 tools/cc.py lib/ogg-vorbis/",
+                                        "python3 tools/cc.py --toolchain rtm lib/ogg-vorbis/"))]
         self.assertEqual(len(commands), 22)
+        rtm = {line.split()[4] for line in result.stdout.splitlines()
+               if line.startswith("python3 tools/cc.py --toolchain rtm ")}
         for command in commands:
-            is_vorbis = "/vorbis/" in command.split()[2] or "vorbis_smallft.c" in command
+            source = command.split()[2]
+            is_vorbis = "/vorbis/" in source or "vorbis_smallft.c" in command
             exception = "vorbisfile.c" in command
             self.assertEqual("/GS-" in command, is_vorbis and not exception, command)
             self.assertIn("/Ilib/ogg-vorbis/vorbis", command)
+            # The prebuilt libvorbis (vorbisfile included) is RTM-built against its own headers; libogg is SP1.
+            self.assertEqual(source in rtm, is_vorbis, command)
+            toolchain = "build/tools/msvc8-rtm/" if is_vorbis else "build/tools/msvc8/"
+            self.assertIn("/I" + toolchain + "include /I" + toolchain + "PlatformSDK/Include", command)
+        self.assertEqual(len(rtm), 20)
+        self.assertNotIn("--toolchain", result.stdout.replace("--toolchain rtm lib/ogg-vorbis/vorbis", ""))
         self.assertIn("python3 tools/dependencies.py", result.stdout)
         clean = self.make("clean")
         self.assertNotIn("rm -rf lib", clean.stdout)
@@ -197,6 +207,54 @@ class BuildKindTests(unittest.TestCase):
                 (compiler / "mspdbcore.dll").write_bytes(b"corrupt")
                 with self.assertRaisesRegex(ValueError, "mspdbcore.dll"):
                     cc.environment()
+
+    def test_secondary_compiler_is_verified_like_the_primary(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "config").mkdir()
+            compiler = root / "build/tools/msvc8-rtm/bin"
+            compiler.mkdir(parents=True)
+            (compiler / "cl.exe").write_bytes(b"compiler")
+            (compiler.parent / "include").mkdir()
+            (compiler.parent / "include/stddef.h").write_bytes(b"header")
+            secondary = {"files": {"cl.exe": hashlib.sha256(b"compiler").hexdigest()},
+                         "trees": {"include": tree_digest(compiler.parent / "include")}}
+            pin = {"files": {"cl.exe": "0" * 64}, "trees": {}, "secondary": {"rtm": secondary}}
+            (root / "config/toolchain.json").write_text(json.dumps(pin))
+            with patch.object(cc, "ROOT", root), patch.object(cc.shutil, "which", return_value="wine"):
+                self.assertEqual(cc.environment("rtm")[0], compiler)
+                with self.assertRaisesRegex(ValueError, "cl.exe"):
+                    cc.environment()
+                with self.assertRaisesRegex(ValueError, "Unknown toolchain: sp2"):
+                    cc.environment("sp2")
+                (compiler.parent / "include/stddef.h").write_bytes(b"changed")
+                with self.assertRaisesRegex(ValueError, "include"):
+                    cc.environment("rtm")
+                (compiler.parent / "include/stddef.h").write_bytes(b"header")
+                (compiler / "cl.exe").write_bytes(b"corrupt")
+                with self.assertRaisesRegex(ValueError, "cl.exe"):
+                    cc.environment("rtm")
+
+    def test_secondary_compiler_selects_the_compiler_and_never_the_linker(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, output = root / "unit.c", root / "unit.obj"
+            source.write_text("int unit;\n")
+
+            def invoke(command, environment):
+                output.write_bytes(b"compiled fixture")
+                return subprocess.CompletedProcess(command, 0), ""
+
+            with patch.object(cc, "environment", return_value=(root / "rtm", "wine", {})) as selected, \
+                    patch.object(cc, "run_tool", side_effect=invoke) as tool, \
+                    patch.object(cc.sys, "argv", ["cc.py", "--toolchain", "rtm", str(source), str(output)]):
+                self.assertEqual(cc.main(), 0)
+            selected.assert_called_once_with("rtm")
+            self.assertEqual(tool.call_args.args[0][1], str(root / "rtm/cl.exe"))
+            with patch.object(cc.sys, "argv", ["cc.py", "--toolchain", "rtm", "--link", str(root / "a.exe"),
+                                               str(output)]), \
+                    patch("sys.stderr"), self.assertRaises(SystemExit):
+                cc.main()
 
     def test_relocated_logger_gets_the_current_build_identity(self):
         with tempfile.TemporaryDirectory() as temp:

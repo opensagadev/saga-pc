@@ -27,6 +27,20 @@ def load_json(path):
     return json.loads(Path(path).read_text())
 
 
+def toolchain_pin(root, name=None):
+    """The primary compiler pin, or a named secondary one, and its install directory.
+
+    Secondary compilers only compile the units that need them; linking always uses the primary.
+    """
+    pin = load_json(Path(root) / "config/toolchain.json")
+    if name is None:
+        return pin, Path(root) / "build/tools/msvc8"
+    secondary = pin.get("secondary", {})
+    if name not in secondary or not name.isascii() or not name.isalnum():
+        raise ValueError(f"Unknown toolchain: {name}; known: {', '.join(sorted(secondary)) or 'none'}")
+    return secondary[name], Path(root) / "build/tools" / ("msvc8-" + name)
+
+
 def digest(data):
     return hashlib.sha256(data).hexdigest()
 

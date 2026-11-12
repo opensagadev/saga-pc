@@ -10,10 +10,10 @@ import sys
 import tempfile
 
 if __package__:
-    from .lib import ROOT, changed_files, changed_trees, load_json
+    from .lib import ROOT, changed_files, changed_trees, toolchain_pin
 else:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-    from tools.lib import ROOT, changed_files, changed_trees, load_json
+    from tools.lib import ROOT, changed_files, changed_trees, toolchain_pin
 
 
 def windows(path):
@@ -35,10 +35,13 @@ def unresolved_symbols(log):
     return sorted({name.split(" referenced in function ", 1)[0].strip() for name in names})
 
 
-def environment():
-    """Verify the toolchain and isolate both compiler and linker from host options."""
-    pin = load_json(ROOT / "config/toolchain.json")
-    compiler = ROOT / "build/tools/msvc8/bin"
+def environment(toolchain=None):
+    """Verify the toolchain and isolate both compiler and linker from host options.
+
+    `toolchain` names a secondary compiler from config/toolchain.json; None is the primary one.
+    """
+    pin, directory = toolchain_pin(ROOT, toolchain)
+    compiler = directory / "bin"
     helpers = pin.get("pdb_helpers", {}).get("files", {})
     checksums = {**pin["files"], **{name: item["sha256"] for name, item in helpers.items()}}
     changed = changed_files(compiler, checksums)
@@ -111,11 +114,15 @@ def main():
     mode.add_argument("--implib", action="store_true", help="Build an import library from a module definition")
     parser.add_argument("--decorated-exports", action="store_true",
                         help="With --implib: preserve the DLL export decorations in the .def")
+    parser.add_argument("--toolchain", metavar="NAME",
+                        help="Compile with this secondary compiler from config/toolchain.json (default: the primary)")
     parser.add_argument("first", type=Path, help="Source when compiling; output for --link/--implib")
     parser.add_argument("arguments", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     if args.decorated_exports and not args.implib:
         parser.error("--decorated-exports requires --implib")
+    if args.toolchain and (args.link or args.implib):
+        parser.error("--toolchain selects a compiler; linking always uses the primary toolchain")
     if args.implib:
         output = args.first.resolve()
         if len(args.arguments) != 1:
@@ -152,7 +159,7 @@ def main():
             command = import_library_command(dlltool, source, output, args.decorated_exports)
             env = dict(os.environ)
         else:
-            compiler, wine, env = environment()
+            compiler, wine, env = environment(args.toolchain)
         if args.link:
             for path in objects:
                 if not path.is_file() or path.suffix.lower() != ".obj":
