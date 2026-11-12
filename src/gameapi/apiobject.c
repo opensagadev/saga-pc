@@ -2499,6 +2499,11 @@ STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, icon_model) == 0x42);
 STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_44) == 0x44);
 STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_48) == 0x48);
 
+/* TODO(saga.h): retail calls the 0x62a5e0 debug no-op with 0, 1 or 2 message arguments (a stripped
+   debug print); declare it unprototyped, `void __cdecl PCCharacterSystemExistingNoOp();`, and drop this. */
+// MATCH-EXCEPTION: call through an unprototyped pointer so the stripped message argument is still pushed.
+#define PC_DEBUG_MESSAGE_NOOP ((void(__cdecl *)())PCCharacterSystemExistingNoOp)
+
 CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum,
                                                  i32 *count_out, i32 game_stride,
                                                  PLAYERCHARACTERCONFIG_PC **game_data_out) {
@@ -2506,16 +2511,21 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
     CHARACTER_LIST_ENTRY_PC *first, *current;
     i16 directory_offsets[500], filename_offsets[500];
     char strings[10000];
-    i32 count = 0, offset = 0, inside = 0, index, next_offset;
+    i32 count, offset, inside, index, length;
     (void)buffer_end; /* Genuine native formal is unused; no fabricated capacity. */
     parser = NuFParCreate(file);
-    /* Native 630814 -> 62a5e0 is RET-only on a NULL parser; parsing still follows. */
+    if (parser == NULL)
+        PC_DEBUG_MESSAGE_NOOP(file);
     if (maximum > 500)
         maximum = 500;
     buffer_start->addr = (buffer_start->addr + 3u) & ~3u;
-    first = current = (CHARACTER_LIST_ENTRY_PC *)buffer_start->void_ptr;
+    first = (CHARACTER_LIST_ENTRY_PC *)buffer_start->void_ptr;
+    current = first;
+    count = 0;
     memset(strings, 0, sizeof(strings));
     strings[0] = 0;
+    offset = 0;
+    inside = 0;
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
         if (*parser->word_buffer_ptr == 0)
@@ -2529,20 +2539,20 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "dir") == 0) {
                 if (NuFParGetWord(parser) != 0) {
-                    next_offset = NuStrLen(parser->word_buffer_ptr) + offset + 1;
-                    if (next_offset < 10000) {
+                    length = NuStrLen(parser->word_buffer_ptr);
+                    if (offset + length + 1 < 10000) {
                         NuStrCpy(strings + offset, parser->word_buffer_ptr);
                         directory_offsets[count] = (i16)offset;
-                        offset = next_offset;
+                        offset += length + 1;
                     }
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "file") == 0) {
                 if (NuFParGetWord(parser) != 0) {
-                    next_offset = NuStrLen(parser->word_buffer_ptr) + offset + 1;
-                    if (next_offset < 10000) {
+                    length = NuStrLen(parser->word_buffer_ptr);
+                    if (offset + length + 1 < 10000) {
                         NuStrCpy(strings + offset, parser->word_buffer_ptr);
                         filename_offsets[count] = (i16)offset;
-                        offset = next_offset;
+                        offset += length + 1;
                     }
                 }
             }
@@ -2572,29 +2582,29 @@ CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_sta
         }
     }
     NuFParDestroy(parser);
-    if (count < 1) {
-        /* Native 630b19 -> 62a5e0 is RET-only, then native returns NULL. */
-        return NULL;
-    }
-    buffer_start->void_ptr = current;
-    PCByteCopy_candidate(buffer_start->void_ptr, strings, (u32)offset);
-    for (index = 0; index < count; ++index) {
-        first[index].dir = (char *)buffer_start->void_ptr + directory_offsets[index];
-        first[index].name = (char *)buffer_start->void_ptr + filename_offsets[index];
-    }
-    buffer_start->addr = (buffer_start->addr + offset + 3u) & ~3u;
-    if (game_stride > 0) {
-        if (game_data_out != NULL)
-            *game_data_out = (PLAYERCHARACTERCONFIG_PC *)buffer_start->void_ptr;
+    if (count > 0) {
+        buffer_start->void_ptr = current;
+        PCByteCopy_candidate(buffer_start->void_ptr, strings, (u32)offset);
         for (index = 0; index < count; ++index) {
-            first[index].game_character = (PLAYERCHARACTERCONFIG_PC *)buffer_start->void_ptr;
-            buffer_start->addr += game_stride;
+            first[index].dir = (char *)buffer_start->void_ptr + directory_offsets[index];
+            first[index].name = (char *)buffer_start->void_ptr + filename_offsets[index];
         }
+        buffer_start->addr = (buffer_start->addr + offset + 3u) & ~3u;
+        if (game_stride > 0) {
+            if (game_data_out != NULL)
+                *game_data_out = (PLAYERCHARACTERCONFIG_PC *)buffer_start->void_ptr;
+            for (index = 0; index < count; ++index) {
+                first[index].game_character = (PLAYERCHARACTERCONFIG_PC *)buffer_start->void_ptr;
+                buffer_start->addr += game_stride;
+            }
+        }
+        buffer_start->addr = (buffer_start->addr + 3u) & ~3u;
+        if (count_out != NULL)
+            *count_out = count;
+        return (CHARACTERDATA_PC *)first;
     }
-    buffer_start->addr = (buffer_start->addr + 3u) & ~3u;
-    if (count_out != NULL)
-        *count_out = count;
-    return (CHARACTERDATA_PC *)first;
+    PC_DEBUG_MESSAGE_NOOP(file);
+    return NULL;
 }
 
 extern void __cdecl NuHGobjDestroy(NUHGOBJ_EVAL_PC *object);
