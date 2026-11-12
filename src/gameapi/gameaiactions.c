@@ -76,20 +76,19 @@ void GizAction_SetAIState(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **param
 }
 
 void GizActions_CompleteLevel(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, int count) {
-    char *cutscene_name;
-    struct level_data_pc_s *level;
+    char *cutscene_name = NULL;
+    struct level_data_pc_s *level = NULL;
     i32 index;
     if (netclient != 0) {
         return;
     }
-    cutscene_name = NULL;
-    level = NULL;
     for (index = 0; index < count; ++index) {
         char *value = NuStrIStr(params[index], "cutscene=");
         if (value != NULL) {
             cutscene_name = value + NuStrLen("cutscene=");
         } else if ((value = NuStrIStr(params[index], "newlevel=")) != NULL) {
-            level = Level_FindByName(value + NuStrLen("newlevel="), NULL);
+            value += NuStrLen("newlevel=");
+            level = Level_FindByName(value, NULL);
         }
     }
     if (FreePlay == 0 && cutscene_name != NULL && NewCutScene(NULL, WORLD->cutscene_sys, cutscene_name, 1) != NULL) {
