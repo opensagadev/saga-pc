@@ -9751,10 +9751,11 @@ extern "C" void __cdecl NuDisplayListDrawRenderScene_candidate(i32 scene_id) {
     for (i32 index = 0; index < count; ++index) {
         NUSORTPRI *sort = PCSafeRenderScenes[scene_id]->sort_pris[index];
         if (nudlist_field_fe4 != 0) {
-            PC_DISPLAY_DEBUG_NAME_READER *debug_scene =
-                reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene);
-            if (debug_scene != NULL && debug_scene->name != NULL)
-                NuHtmlHeading("Display Scene : %s (sort: %d)", debug_scene->name, sort->sort_pri);
+            if (sort->display_scene != NULL &&
+                reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene)->name != NULL)
+                NuHtmlHeading("Display Scene : %s (sort: %d)",
+                              reinterpret_cast<PC_DISPLAY_DEBUG_NAME_READER *>(sort->display_scene)->name,
+                              sort->sort_pri);
             else
                 NuHtmlHeading("Display Scene : UNKNOWN (sort: %d)", sort->sort_pri);
             NuHtmlWrite("<font face=courier new>\n");
