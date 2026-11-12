@@ -69,16 +69,12 @@ void __cdecl StoreStatusTakeOverObjectSys(void) {
         if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
             object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER && object->field_280 != 0xff &&
             Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0) {
-            if (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAllPc) {
+            if (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAllPc ||
+                ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
+                 (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))
                 record->contact_index = record->object->field_280;
-            } else {
-                character_index = (u8)Area_CharIDInCurrentList((i16)object->id);
-                if (character_index < 63 &&
-                    (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0)
-                    record->contact_index = record->object->field_280;
-                else
-                    record->contact_index = 0xff;
-            }
+            else
+                record->contact_index = 0xff;
         } else {
             record->contact_index = 0xff;
         }
