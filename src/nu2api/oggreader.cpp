@@ -112,8 +112,8 @@ HRESULT OggReader::Read(void *output, u32 requested, u32 *read_count) {
         PCThreadCriticalSectionLeave_candidate(PCOggCriticalSectionPc);
         return E_FAIL;
     }
-    cursor += got;
     i32 total = got;
+    cursor += total;
     while (got > 0 && (u32)total < requested) {
         got = ov_read(&vorbis_state, cursor, requested - total, 0, 2, 1, &bitstream);
         if (got < 0) {
