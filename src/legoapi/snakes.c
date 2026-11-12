@@ -127,7 +127,6 @@ SNAKE_BODY_PC *__cdecl CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
 
 void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
     SNAKE_OBJECT_READER_PC *reader = (SNAKE_OBJECT_READER_PC *)object;
-    SNAKE_BODY_PC *body;
     NUVEC position, offset;
     i32 index;
     f32 ground, length;
@@ -137,12 +136,10 @@ void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
     position = object->lower_position;
     position.y += reader->snake_body->scale * SnakeHeadHeightPc;
     for (index = 0; index < reader->snake_body->segment_count; ++index) {
-        body = reader->snake_body;
-        body->segments[index].position = position;
-        body = reader->snake_body;
-        body->segments[index].yaw =
-            SeekRot((u16)body->segments[index].yaw,
-                    index == 0 ? object->field_0x276 : reader->snake_body->segments[index - 1].yaw, SnakeYawSeekRatePc);
+        reader->snake_body->segments[index].position = position;
+        reader->snake_body->segments[index].yaw =
+            SeekRot((u16)reader->snake_body->segments[index].yaw,
+                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->field_0x276, SnakeYawSeekRatePc);
         reader->snake_body->segments[index].pitch = 0;
         offset.x = 0.0f;
         offset.y = 0.0f;
@@ -152,15 +149,14 @@ void __cdecl UpdateSnakeBody(GAMEOBJECT *object) {
         ground = GameShadow(NULL, &position, 5.0f, 0x1f);
         if (ground == 2000000.0f)
             ground = reader->snake_body->segments[index].position.y;
-        body = reader->snake_body;
-        if (body->segments[index].ground_height == 1000000000.0f)
-            body->segments[index].ground_height = ground;
+        if (reader->snake_body->segments[index].ground_height == 1000000000.0f)
+            reader->snake_body->segments[index].ground_height = ground;
         else
-            body->segments[index].ground_height = SeekValF(body->segments[index].ground_height, ground, 10.0f);
-        body = reader->snake_body;
-        if (body->segments[index].ground_height != 2000000.0f) {
-            position.y = body->segments[index].ground_height;
-            length = NuVecDist(&position, &body->segments[index].position, &offset);
+            reader->snake_body->segments[index].ground_height =
+                SeekValF(reader->snake_body->segments[index].ground_height, ground, 10.0f);
+        if (reader->snake_body->segments[index].ground_height != 2000000.0f) {
+            position.y = reader->snake_body->segments[index].ground_height;
+            length = NuVecDist(&position, &reader->snake_body->segments[index].position, &offset);
             NuVecScale(&offset, &offset, reader->snake_body->scale * SnakeSegmentSpacingPc / length);
             NuVecAdd(&position, &reader->snake_body->segments[index].position, &offset);
             reader->snake_body->segments[index].pitch =
