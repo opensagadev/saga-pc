@@ -1321,12 +1321,12 @@ class PlaceableHelper {
         void *next = NULL;
         if (object == NULL)
             iteration_object_type = 0;
-        while (iteration_object_type < object_type_count) {
+        while (next == NULL && iteration_object_type < object_type_count) {
             next = object_types[iteration_object_type].object_interface->GetNextObject(object);
-            if (next != NULL)
-                break;
-            iteration_object_type++;
-            object = NULL;
+            if (next == NULL) {
+                iteration_object_type++;
+                object = NULL;
+            }
         }
         return next;
     }
