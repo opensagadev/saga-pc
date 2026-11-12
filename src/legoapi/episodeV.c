@@ -1231,53 +1231,54 @@ HOTHBATTLEE_NETPACKET_PC *HothBattleENetPacketPc = NULL;
 void __cdecl HothBattleE_PanelPc(WORLDINFO *world) {
     i16 targets[16];
     char defeated[16];
-    i32 count = 0, index;
+    i32 count, index;
     if (MiniCutCam != 0)
         return;
-    if (netclient != 0) {
+    count = 0;
+    if (netclient == 0) {
+        switch (melee.current_wave) {
+            case 1:
+            case 2:
+                for (index = 0; index < melee.waves[0].initial_count; ++index) {
+                    if (index == (melee.waves[0].initial_count >> 1) + 1) {
+                        targets[count] = -1;
+                        defeated[count++] = 0;
+                    }
+                    defeated[count] = index >= melee.waves[0].remaining_count;
+                    targets[count++] = melee.waves[0].character_id;
+                }
+                break;
+            case 3:
+                for (index = 0; index < melee.waves[0].initial_count; ++index) {
+                    targets[count] = melee.waves[0].character_id;
+                    defeated[count++] = index >= melee.waves[0].remaining_count;
+                }
+                break;
+            case 4:
+                targets[count] = melee.waves[2].character_id;
+                defeated[count++] = melee.waves[2].remaining_count <= 0;
+                for (index = 0; index < melee.waves[0].initial_count; ++index) {
+                    targets[count] = melee.waves[0].character_id;
+                    defeated[count++] = index >= melee.waves[0].remaining_count;
+                }
+                targets[count++] = -1;
+                for (index = 0; index < melee.waves[1].initial_count; ++index) {
+                    targets[count] = melee.waves[1].character_id;
+                    defeated[count++] = index >= melee.waves[1].remaining_count;
+                }
+                break;
+        }
+        for (index = 0; index < count; ++index) {
+            if (targets[index] != -1 && defeated[index] != 0)
+                HothBattleEPanelAlphaPc[index] = SeekLinearF(HothBattleEPanelAlphaPc[index], 0.4f, 0.1f);
+            else
+                HothBattleEPanelAlphaPc[index] = 1.0f;
+        }
+        DrawMeleeTargetsRowsPc(targets, defeated, HothBattleEPanelAlphaPc, count);
+    } else {
         DrawMeleeTargetsRowsPc(HothBattleENetPacketPc->targets, (char *)HothBattleENetPacketPc->defeated,
                                HothBattleENetPacketPc->alpha, HothBattleENetPacketPc->count);
-        return;
     }
-    switch (melee.current_wave) {
-        case 1:
-        case 2:
-            for (index = 0; index < melee.waves[0].initial_count; ++index) {
-                if (index == (melee.waves[0].initial_count >> 1) + 1) {
-                    targets[count] = -1;
-                    defeated[count++] = 0;
-                }
-                targets[count] = melee.waves[0].character_id;
-                defeated[count++] = index >= melee.waves[0].remaining_count;
-            }
-            break;
-        case 3:
-            for (index = 0; index < melee.waves[0].initial_count; ++index) {
-                targets[count] = melee.waves[0].character_id;
-                defeated[count++] = index >= melee.waves[0].remaining_count;
-            }
-            break;
-        case 4:
-            targets[count] = melee.waves[2].character_id;
-            defeated[count++] = melee.waves[2].remaining_count == 0;
-            for (index = 0; index < melee.waves[0].initial_count; ++index) {
-                targets[count] = melee.waves[0].character_id;
-                defeated[count++] = index >= melee.waves[0].remaining_count;
-            }
-            targets[count++] = -1;
-            for (index = 0; index < melee.waves[1].initial_count; ++index) {
-                targets[count] = melee.waves[1].character_id;
-                defeated[count++] = index >= melee.waves[1].remaining_count;
-            }
-            break;
-    }
-    for (index = 0; index < count; ++index) {
-        if (targets[index] != -1 && defeated[index] != 0)
-            HothBattleEPanelAlphaPc[index] = SeekLinearF(HothBattleEPanelAlphaPc[index], 0.4f, 0.1f);
-        else
-            HothBattleEPanelAlphaPc[index] = 1.0f;
-    }
-    DrawMeleeTargetsRowsPc(targets, defeated, HothBattleEPanelAlphaPc, count);
 }
 
 AILOCATOR_PC *getSpawnLocator(float clip_radius, char *name) {
