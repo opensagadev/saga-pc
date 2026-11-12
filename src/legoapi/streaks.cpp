@@ -68,14 +68,14 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
         node->prev = NULL;
         header->nodes = node;
     }
+    if (header->nodes == NULL)
+        return;
+    header->nodes->position = points[0];
+    header->nodes->previous_position = points[1];
+    header->nodes->remaining_time = duration;
+    if (header->nodes->next == NULL)
+        return;
     node = header->nodes;
-    if (node == NULL)
-        return;
-    node->position = points[0];
-    node->previous_position = points[1];
-    node->remaining_time = duration;
-    if (node->next == NULL)
-        return;
     STREAK_NODE_PC *older = node->next;
     NuVecSub(&node->start_tangent, &older->position, &node->position);
     NuVecSub(&header->nodes->end_tangent, &header->nodes->next->previous_position, &header->nodes->previous_position);
@@ -83,32 +83,29 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
     NuVecScale(&header->nodes->end_tangent, &header->nodes->end_tangent, 0.3333333432674408f);
     node = header->nodes;
     older = node->next;
-    if (older->next != NULL) {
+    STREAK_NODE_PC *oldest = older->next;
+    if (oldest != NULL) {
         NuVecSub(&incoming, &older->position, &node->position);
-        NuVecSub(&outgoing, &older->next->position, &older->position);
-        NuVecAddScale(&older->start_tangent, &incoming, &outgoing, 0.5f);
+        NuVecSub(&outgoing, &oldest->position, &older->position);
+        NuVecAddScale(&header->nodes->next->start_tangent, &incoming, &outgoing, 0.5f);
+        node = header->nodes;
+        older = node->next;
         NuVecSub(&incoming, &older->previous_position, &node->previous_position);
         NuVecSub(&outgoing, &older->next->previous_position, &older->previous_position);
-        NuVecAddScale(&older->end_tangent, &incoming, &outgoing, 0.5f);
+        NuVecAddScale(&header->nodes->next->end_tangent, &incoming, &outgoing, 0.5f);
         NuVecScale(&header->nodes->next->start_tangent, &header->nodes->next->start_tangent, 0.3333333432674408f);
         NuVecScale(&header->nodes->next->end_tangent, &header->nodes->next->end_tangent, 0.3333333432674408f);
-        older = header->nodes->next;
-        if (older->next->segment_count > 1) {
+        for (i32 index = 1; index < header->nodes->next->next->segment_count; ++index) {
             STREAK_NODE_PC *newer = header->nodes->next;
             STREAK_NODE_PC *segment = newer->next;
-            for (i32 index = 1; index < segment->segment_count; ++index) {
-                f32 amount = (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index);
-                StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position,
-                                         &newer->start_tangent, &segment->start_tangent, 0, 1, amount);
-                newer = header->nodes->next;
-                segment = newer->next;
-                amount = (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index);
-                StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position,
-                                         &segment->previous_position, &newer->end_tangent, &segment->end_tangent, 0, 1,
-                                         amount);
-                newer = header->nodes->next;
-                segment = newer->next;
-            }
+            StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position,
+                                     &newer->start_tangent, &segment->start_tangent, 0, 1,
+                                     (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
+            newer = header->nodes->next;
+            segment = newer->next;
+            StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position,
+                                     &segment->previous_position, &newer->end_tangent, &segment->end_tangent, 0, 1,
+                                     (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
         }
     } else {
         NuVecSub(&older->start_tangent, &older->position, &node->position);
@@ -124,22 +121,17 @@ extern "C" void __cdecl AddStreakPoints(NUVEC *points, f32 duration, u32 colour,
     f64 count = static_cast<f64>(FRAMETIME) * 60.0;
     count += count;
     header->nodes->next->segment_count = static_cast<i32>(8.0 > count ? count : 8.0);
-    if (header->nodes->next->segment_count > 1) {
+    for (i32 index = 1; index < header->nodes->next->segment_count; ++index) {
         STREAK_NODE_PC *newer = header->nodes;
         STREAK_NODE_PC *segment = newer->next;
-        for (i32 index = 1; index < segment->segment_count; ++index) {
-            f32 amount = (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index);
-            StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position,
-                                     &newer->start_tangent, &segment->start_tangent, 0, 1, amount);
-            newer = header->nodes;
-            segment = newer->next;
-            amount = (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index);
-            StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position,
-                                     &segment->previous_position, &newer->end_tangent, &segment->end_tangent, 0, 1,
-                                     amount);
-            newer = header->nodes;
-            segment = newer->next;
-        }
+        StreakBezierPointPrivate(&segment->positions[index - 1], &newer->position, &segment->position,
+                                 &newer->start_tangent, &segment->start_tangent, 0, 1,
+                                 (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
+        newer = header->nodes;
+        segment = newer->next;
+        StreakBezierPointPrivate(&segment->tangents[index - 1], &newer->previous_position, &segment->previous_position,
+                                 &newer->end_tangent, &segment->end_tangent, 0, 1,
+                                 (1.0f / static_cast<f32>(segment->segment_count)) * static_cast<f32>(index));
     }
 }
 
