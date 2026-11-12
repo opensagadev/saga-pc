@@ -890,8 +890,12 @@ void __thiscall PC_DEVICE_BACKEND_PC::Present(const RECT *source, const RECT *de
         if (present_result == static_cast<HRESULT>(0x88760868)) {
             if (PCDeviceTestCooperativeLevel() == static_cast<HRESULT>(0x88760869))
                 CreateOrResetDevice(1);
-        } else
+        } else if (present_result != static_cast<HRESULT>(0x88760827)) {
+            /* Retail closes the window through separate branches for an internal driver error and the rest. */
             SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+        } else {
+            SendMessageA(reinterpret_cast<HWND>(PCInputInstance_candidate), WM_CLOSE, 0, 0);
+        }
     }
     for (i32 i = 0; i != 4; ++i)
         target_cache[i] = reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(-1);
