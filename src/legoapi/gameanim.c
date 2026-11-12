@@ -212,20 +212,18 @@ void __cdecl GameAnimSet_RemoveAllObjects(GAMEANIMSET *set) {
 
 void __cdecl GameAnimSet_SetTFactor(GAMEANIMSET *set, f32 factor) {
     GAMEANIMOBJ *object;
-    NUINSTANIM *animation;
     f32 direction;
 
     if (set == NULL) {
         return;
     }
     for (object = set->objects; object != NULL; object = object->next) {
-        animation = object->instance_animation;
-        if (animation != NULL) {
-            direction = object->end_frame < object->start_frame ? nu_fsign_minus_one : 1.0f;
-            if (animation->fparam1 != 0.0f) {
-                animation->tfactor = animation->fparam1 * factor * direction;
+        if (object->instance_animation != NULL) {
+            direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
+            if (object->instance_animation->fparam1 != 0.0f) {
+                object->instance_animation->tfactor = object->instance_animation->fparam1 * factor * direction;
             } else {
-                animation->tfactor = direction * factor;
+                object->instance_animation->tfactor = direction * factor;
             }
         }
     }
@@ -246,36 +244,36 @@ void __cdecl GameAnimSet_ScaleFParam1(GAMEANIMSET *set, f32 scale) {
 i32 __cdecl GameAnimSet_IsAnimationReset(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
     NUINSTANIM *animation;
-    i32 animated_count = 0;
-    i32 repeating_count = 0;
+    i32 animated_count;
+    i32 repeating_count;
     f32 direction;
 
-    if (set == NULL)
-        return 1;
-    if (set->objects == NULL)
-        return 1;
-    for (object = set->objects; object != NULL; object = object->next) {
-        animation = object->instance_animation;
-        if (animation == NULL) {
-            continue;
+    if (set != NULL) {
+        animated_count = 0;
+        repeating_count = 0;
+        for (object = set->objects; object != NULL; object = object->next) {
+            animation = object->instance_animation;
+            if (animation == NULL) {
+                continue;
+            }
+            ++animated_count;
+            if ((animation->flags & 8) != 0) {
+                ++repeating_count;
+                continue;
+            }
+            if ((animation->flags & 1) != 0) {
+                return 0;
+            }
+            direction = object->start_frame > object->end_frame ? nu_fsign_minus_one : 1.0f;
+            if (animation->ltime * direction > object->start_frame * direction) {
+                return 0;
+            }
         }
-        ++animated_count;
-        if ((animation->flags & 8) != 0) {
-            ++repeating_count;
-            continue;
-        }
-        if ((animation->flags & 1) != 0) {
-            return 0;
-        }
-        direction = object->end_frame < object->start_frame ? nu_fsign_minus_one : 1.0f;
-        if (animation->ltime * direction > object->start_frame * direction) {
+        if (animated_count > 0 && repeating_count == animated_count) {
             return 0;
         }
     }
-    if (animated_count == 0) {
-        return 1;
-    }
-    return animated_count != repeating_count;
+    return 1;
 }
 
 i32 __cdecl GameAnimSet_Reset(GAMEANIMSET *set) {
@@ -401,25 +399,23 @@ i32 __cdecl GameAnimSet_JumpToStart(GAMEANIMSET *set) {
 
 void __cdecl GameAnimSet_JumpToAnimPos(GAMEANIMSET *set, f32 position) {
     GAMEANIMOBJ *object;
-    NUINSTANIM *animation;
     f32 direction;
 
     if (set == NULL) {
         return;
     }
     for (object = set->objects; object != NULL; object = object->next) {
-        animation = object->instance_animation;
-        if (animation == NULL || object->animation == NULL) {
-            continue;
-        }
-        animation->flags &= ~1u;
-        animation->ltime = (object->end_frame - object->start_frame) * position + object->start_frame;
-        direction = object->end_frame < object->start_frame ? nu_fsign_minus_one : 1.0f;
-        if (animation->ltime * direction > object->end_frame * direction) {
-            animation->ltime = object->end_frame;
-        }
-        if (object->start_frame * direction > animation->ltime * direction) {
-            animation->ltime = object->start_frame;
+        if (object->instance_animation != NULL && object->animation != NULL) {
+            object->instance_animation->flags &= ~1u;
+            object->instance_animation->ltime =
+                (object->end_frame - object->start_frame) * position + object->start_frame;
+            direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
+            if (object->end_frame * direction < object->instance_animation->ltime * direction) {
+                object->instance_animation->ltime = object->end_frame;
+            }
+            if (object->instance_animation->ltime * direction < object->start_frame * direction) {
+                object->instance_animation->ltime = object->start_frame;
+            }
         }
     }
 }
