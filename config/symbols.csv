@@ -6961,6 +6961,9 @@ address,symbol,size,ctype
 0x5e52d0,_NuTexGetWidth,17,i32 __cdecl(i32)
 0x5e52f0,_NuTexGetHeight,18,i32 __cdecl(i32)
 0x5e5310,_NuTextureGetDimensions,22,NUTEXDIM_PC* __cdecl(i32)
+0x5e5330,_NuTexAddReferencePc,27,void __cdecl(i32)
+0x5e5350,_NuTexRemoveReference,27,void __cdecl(i32)
+0x5e5370,_NuTexGetRefCount,29,i32 __cdecl(i32)
 0x5e5390,_NuTexResolveReference,224,"i32 __cdecl(NUGSCN *,i32)"
 0x5e5470,_NuTexRegisterDimensionsPc,45,i32 __cdecl(NUTEXDIM_PC *)
 0x005e54b0,_NuChecksumAsHex,149,"void __cdecl (u8 *, char *)"
