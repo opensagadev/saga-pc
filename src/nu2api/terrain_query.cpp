@@ -485,13 +485,11 @@ extern "C" {
         }
         query = TERRAIN_STH_QUERY;
         group_header = query->scan_words;
-        const u8 scan_result = query->scan_result;
-        cursor = group_header + 1;
+        cursor = query->scan_words + 1;
         limit = cursor + 508;
         platinrange = 0;
         query->scan_group_index = -1;
-        shape_count = 0;
-        switch (scan_result) {
+        switch (query->scan_result) {
             default: {
                 const f32 movement_sq = query->movement.x * query->movement.x + query->movement.y * query->movement.y +
                                         query->movement.z * query->movement.z;
@@ -534,13 +532,14 @@ extern "C" {
                 break;
             }
         }
+        shape_count = 0;
         while (handle[0] > 0) {
             const i32 group_index = handle[1];
             TERRAIN_SCAN_WORD_PC *shapes = reinterpret_cast<TERRAIN_SCAN_WORD_PC *>(handle) + 1;
             TERRAIN_GROUP_PC *group = &TERRAIN_STH_SET->groups[group_index];
             f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
-            if (group->chunk_type == 1 && TERRAIN_STH_PLATFORM(group).scene_object != NULL) {
-                TERRAIN_PLATFORM_PC *platform = &TERRAIN_STH_PLATFORM(group);
+            TERRAIN_PLATFORM_PC *platform;
+            if (group->chunk_type == 1 && (platform = &TERRAIN_STH_PLATFORM(group))->scene_object != NULL) {
                 if (TERRAIN_STH_MATRIX(group)->m30 > TERRAIN_STH_PLATFORM(group).previous_matrix.m30) {
                     local_min_x = min_x - group->origin.x;
                     local_max_x =
