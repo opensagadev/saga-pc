@@ -48,25 +48,28 @@ i32 __cdecl ObjInTube(GAMEOBJECT *object) {
 }
 
 void __cdecl TractorBeamCode(GAMEOBJECT *object) {
-    f32 range, range_squared, distance, collision_range, collision_squared, seek_rate;
-    i32 index, angle;
-    GAMEOBJECT *candidate;
-    NUVEC direction, limit;
-    u16 z, y;
-    if (object == NULL || WORLD->area == NULL || (WORLD->area->flags & 1) == 0 || (object->flags_1fc & 0x80) == 0 ||
-        (!TractorBeamEnabledPc && !(object->powerup_time > 0.0f)) ||
-        (object->character_data->model_flags & 0x2000) == 0)
+    f32 range, range_squared;
+    i32 index;
+    if (object == NULL || WORLD->area == NULL || (WORLD->area->flags & 1) == 0)
         return;
-    range = (f32)((f64)object->bounds_radius * 10.0);
+    if ((object->flags_1fc & 0x80) == 0)
+        return;
+    if (!TractorBeamEnabledPc && !(object->powerup_time > 0.0f))
+        return;
+    if ((object->character_data->model_flags & 0x2000) == 0)
+        return;
+    range = object->bounds_radius * 10.0;
     range_squared = range * range;
     for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-        candidate = &Obj[index];
-        if (candidate == NULL || (candidate->flags_1fc_word & 0x1001) != 0x1001 ||
+        GAMEOBJECT *candidate = &Obj[index];
+        NUVEC direction;
+        f32 distance, collision_range, collision_squared;
+        if (candidate == NULL || (candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 ||
             (candidate->character_data->model_flags & 4) == 0 || (candidate->flags_ef8_word & 4) != 0 ||
             (candidate->portal_flags & 0x08000000) != 0 || candidate->field_280 != 0xff || candidate->field_281 != 0)
             continue;
         distance = NuVecDistSqr(&candidate->collision_position, &object->collision_position, &direction);
-        collision_range = object->bounds_radius + candidate->bounds_radius;
+        collision_range = candidate->bounds_radius + object->bounds_radius;
         collision_squared = collision_range * collision_range;
         if (distance <= collision_squared) {
             ObjHitObj(NULL, candidate, -1, 0, 0, 1);
@@ -75,16 +78,22 @@ void __cdecl TractorBeamCode(GAMEOBJECT *object) {
             continue;
         }
         if (range_squared > distance) {
+            u16 z, y;
+            f32 seek_rate;
             GetRotationAngles(&direction, &z, &y);
             AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[128].effect, &object->position, 90,
                                               FRAMETIME, z, y, NULL);
-            angle = (i32)(((1.0 - (f64)distance / range_squared) * 16384.0) + 49152.0);
-            seek_rate = (f32)((1.0 + (f64)NuTrigTable[(angle >> 1) & 0x7fff]) * 25.0);
+            seek_rate =
+                (1.0 +
+                 NuTrigTable[(i32)((1.0 - distance / range_squared) * 16384.0 + 32768.0 + 0x4000) >> 1 & 0x7fff]) *
+                25.0;
             NuVecNeg(&direction, &direction);
             NuVecAdd(&direction, &direction, &object->velocity);
             SeekVec(&candidate->velocity, &candidate->velocity, &direction, seek_rate);
-            limit.x = limit.y = limit.z = 1.0e9f;
-            DisorientateCode(candidate, &limit, range);
+            direction.x = 1.0e9f;
+            direction.y = 1.0e9f;
+            direction.z = 1.0e9f;
+            DisorientateCode(candidate, &direction, range);
         }
     }
     PlaySfx("env_tractorbeam_lp", &object->collision_position);
