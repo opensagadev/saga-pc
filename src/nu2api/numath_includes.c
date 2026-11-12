@@ -3903,7 +3903,7 @@ f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations) {
                     upper_x = p2.x;
                     current_x = p1.x;
                     for (i = 0; i < iterations; ++i) {
-                        if (x > current_x) {
+                        if (current_x < x) {
                             lower_parameter = parameter;
                             lower_x = current_x;
                             parameter += step;
@@ -3921,22 +3921,21 @@ f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations) {
                     current_y = 0.5 * (2.0 * p1.y + (p2.y - p0.y) * parameter +
                                        (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * parameter_squared +
                                        (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) * (parameter * parameter_squared));
-                    if (x > current_x) {
+                    if (current_x < x) {
                         bound_y =
                             0.5 * (2.0 * p1.y + (p2.y - p0.y) * upper_parameter +
                                    (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * (upper_parameter * upper_parameter) +
                                    (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) *
                                        (upper_parameter * upper_parameter * upper_parameter));
-                        current_y = current_y + (bound_y - current_y) * (x - current_x) / (upper_x - current_x);
+                        return current_y + (bound_y - current_y) * (x - current_x) / (upper_x - current_x);
                     } else {
                         bound_y =
                             0.5 * (2.0 * p1.y + (p2.y - p0.y) * lower_parameter +
                                    (2.0 * p0.y - 5.0 * p1.y + 4.0 * p2.y - p3.y) * (lower_parameter * lower_parameter) +
                                    (3.0 * p1.y - p0.y - 3.0 * p2.y + p3.y) *
                                        (lower_parameter * lower_parameter * lower_parameter));
-                        current_y = current_y + (bound_y - current_y) * (x - current_x) / (lower_x - current_x);
+                        return current_y + (bound_y - current_y) * (x - current_x) / (lower_x - current_x);
                     }
-                    return current_y;
                 case 2:
                     return 0.0f;
             }
