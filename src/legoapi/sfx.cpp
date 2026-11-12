@@ -326,26 +326,39 @@ extern "C" {
     } FOOTSTEP_AUDIO_CALLBACKS_PC;
     STATIC_ASSERT(offsetof(FOOTSTEP_AUDIO_CALLBACKS_PC, override_footstep) == 0);
     void __cdecl PlayFootStepSfx(GAMEOBJECT *object) {
-        i32 on_platform = 1;
-        i8 surface = (i8)object->jump_animation_state;
+        i32 on_platform;
+        i8 surface;
         i32 sound;
         i32 alternate;
         CHARACTERANIM_CONFIG_PC *config;
         ANIMPACKET_PC *packet = &object->anim_packet;
-        if (object->terrain_platform_id == -1 && object->supporting_platform_id == -1 &&
-            (surface == -1 || (TerSurface[surface].flags & 2) == 0))
+        if (object->terrain_platform_id != -1 || object->supporting_platform_id != -1 ||
+            ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & 2) != 0))
+            on_platform = 1;
+        else
             on_platform = 0;
-        sound = object->character_data->game_character->sfx_footstep;
-        if (sound == -1 &&
-            (((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep == NULL ||
-             (sound = ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep(object, on_platform)) == -1)) {
-            if (object->is_underwater == 0 && object->water_intersects == 0) {
-                alternate = (WorldInfo_CurrentlyActive()->current_level->flags & 0x1000) != 0;
-                sound =
-                    GameAudio->sfx_ids[(object->character_data->model_flags & 0x10) != 0 ? (alternate ? 0x12 : 0x11)
-                                                                                         : (alternate ? 0x10 : 0x0f)];
-            } else
-                sound = GameAudio->sfx_ids[0x13];
+        if (object->character_data->game_character->sfx_footstep != -1)
+            sound = object->character_data->game_character->sfx_footstep;
+        else {
+            i32(__cdecl * override_footstep)(GAMEOBJECT *, i32) =
+                ((FOOTSTEP_AUDIO_CALLBACKS_PC *)GameAudio)->override_footstep;
+            if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
+                if (object->is_underwater == 0 && object->water_intersects == 0) {
+                    alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
+                    if ((object->character_data->model_flags & 0x10) != 0) {
+                        if (alternate)
+                            sound = GameAudio->sfx_ids[0x12];
+                        else
+                            sound = GameAudio->sfx_ids[0x11];
+                    } else {
+                        if (alternate)
+                            sound = GameAudio->sfx_ids[0x10];
+                        else
+                            sound = GameAudio->sfx_ids[0x0f];
+                    }
+                } else
+                    sound = GameAudio->sfx_ids[0x13];
+            }
         }
         if (sound != -1) {
             if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0)
