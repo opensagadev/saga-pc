@@ -415,28 +415,32 @@ extern "C" void GizMoveAttractoBuildItPiece(GIZBUILDIT_s *buildit_pointer, GAMEA
 
 extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflection) {
     GIZBUILDIT_PC *buildit = static_cast<GIZBUILDIT_PC *>(object->grapple);
+    GAMEANIMOBJ *piece;
+    GIZBUILDITANIMDATA_s *data;
+    f32 progress;
+    NUMTX matrix, from, to, result, reflected;
+    NUQUAT from_rotation, to_rotation, rotation;
+    NUVEC to_position;
     if (buildit == NULL || buildit->builders_active == 0 || buildit->build_state != 0 ||
         buildit->anim_object_count == 0)
         return;
-    f32 progress = 1.0 - (f64)buildit->step_timer / (f64)buildit->step_duration;
-    GAMEANIMOBJ *piece = buildit->anim_objects[buildit->built_object_count];
-    GIZBUILDITANIMDATA_s *data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
-    NUMTX matrix = data->start_mtx;
+    progress = 1.0f - buildit->step_timer / buildit->step_duration;
+    piece = buildit->anim_objects[buildit->built_object_count];
+    data = static_cast<GIZBUILDITANIMDATA_s *>(piece->object_data);
+    matrix = data->start_mtx;
     if (progress > 0.0f) {
-        NUMTX from = matrix;
-        NUMTX to = data->end_mtx;
-        NUMTX result;
-        NUQUAT from_rotation, to_rotation, rotation;
+        from = matrix;
         from.m30 = from.m31 = from.m32 = 0.0f;
+        to = data->end_mtx;
         to.m30 = to.m31 = to.m32 = 0.0f;
         NuMtxToQuat(&from, &from_rotation);
         NuMtxToQuat(&to, &to_rotation);
         NuQuatSlerp(&rotation, &from_rotation, &to_rotation, progress);
         NuQuatToMtx(&rotation, &result);
-        result.m30 = ((f64)data->end_mtx.m30 - matrix.m30) * (f64)progress + matrix.m30;
-        result.m31 = ((f64)data->end_mtx.m31 - matrix.m31) * (f64)progress + matrix.m31 +
-                     (f64)NU_SIN_LUT((f64)progress * 32768.0) * (f64)0.1f;
-        result.m32 = ((f64)data->end_mtx.m32 - matrix.m32) * (f64)progress + matrix.m32;
+        to_position = *(NUVEC *)&data->end_mtx.m30;
+        result.m30 = (to_position.x - matrix.m30) * progress + matrix.m30;
+        result.m31 = (to_position.y - matrix.m31) * progress + matrix.m31 + NU_SIN_LUT(progress * 32768.0) * 0.1;
+        result.m32 = (to_position.z - matrix.m32) * progress + matrix.m32;
         matrix = result;
     }
     if (buildit->linked_buildit != NULL) {
@@ -445,7 +449,6 @@ extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflect
     }
     NuSpecialDrawAt(&piece->special, &matrix);
     if (draw_reflection != 0) {
-        NUMTX reflected;
         if (MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
                              WORLD->current_level->reflection_y, &reflected) != 0) {
             NuRndrStartReflectionRender(0);
