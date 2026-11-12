@@ -446,8 +446,11 @@ extern "C" {
         u32 unknown_0c;
         NUMTX *matrices;
     } PC_GEOMETRY_SKIN_PC;
+    typedef struct PC_GEOMETRY_BASIS_MATRIX_PC {
+        PC_GEOMETRY_BASIS_VECTOR_PC rows[4];
+    } PC_GEOMETRY_BASIS_MATRIX_PC;
     typedef struct PC_GEOMETRY_BASIS_PC {
-        NUMTX matrices[3];
+        PC_GEOMETRY_BASIS_MATRIX_PC matrices[3];
     } PC_GEOMETRY_BASIS_PC;
     STATIC_ASSERT(sizeof(PC_GEOMETRY_INPUT_PC) == 0x70);
     STATIC_ASSERT(offsetof(PC_GEOMETRY_INPUT_PC, corners) == 0);
@@ -2858,32 +2861,26 @@ extern "C" {
             for (u32 element = 0; element < group->element_count; ++element) {
                 PC_GEOMETRY_INPUT_PC *input = &mesh->elements[group->first_element + element];
                 PC_GEOMETRY_OUTPUT_PC *output = &PcGeometryOutputPc[*output_index];
-                NUVEC products[3][3], combined[3], axes[3];
-                for (i32 axis = 0; axis < 3; ++axis) {
-                    NUMTX *m = &basis->matrices[axis];
-                    f32 weight = axis == 0   ? input->basis_weights.x
-                                 : axis == 1 ? input->basis_weights.y
-                                             : input->basis_weights.z;
-                    products[axis][0].x = weight * m->m00;
-                    products[axis][0].y = weight * m->m01;
-                    products[axis][0].z = weight * m->m02;
-                    products[axis][1].x = weight * m->m10;
-                    products[axis][1].y = weight * m->m11;
-                    products[axis][1].z = weight * m->m12;
-                    products[axis][2].x = weight * m->m20;
-                    products[axis][2].y = weight * m->m21;
-                    products[axis][2].z = weight * m->m22;
-                }
-                for (i32 row = 0; row < 3; ++row) {
-                    combined[row].x = products[0][row].x + products[1][row].x;
-                    combined[row].y = products[0][row].y + products[1][row].y;
-                    combined[row].z = products[0][row].z + products[1][row].z;
-                    axes[row].x = combined[row].x + products[2][row].x;
-                    axes[row].y = combined[row].y + products[2][row].y;
-                    axes[row].z = combined[row].z + products[2][row].z;
-                }
-                NUVEC cross;
-                NuVecCross(&cross, &axes[1], &axes[2]);
+                PC_GEOMETRY_BASIS_VECTOR_PC p00, p01, p02, partial0, row0;
+                PC_GEOMETRY_SCALE(p02, basis->matrices[2].rows[0], input->basis_weights.z);
+                PC_GEOMETRY_SCALE(p01, basis->matrices[1].rows[0], input->basis_weights.y);
+                PC_GEOMETRY_SCALE(p00, basis->matrices[0].rows[0], input->basis_weights.x);
+                PC_GEOMETRY_ADD(partial0, p00, p01);
+                PC_GEOMETRY_ADD(row0, partial0, p02);
+                PC_GEOMETRY_BASIS_VECTOR_PC p10, p11, p12, partial1, row1;
+                PC_GEOMETRY_SCALE(p12, basis->matrices[2].rows[1], input->basis_weights.z);
+                PC_GEOMETRY_SCALE(p11, basis->matrices[1].rows[1], input->basis_weights.y);
+                PC_GEOMETRY_SCALE(p10, basis->matrices[0].rows[1], input->basis_weights.x);
+                PC_GEOMETRY_ADD(partial1, p10, p11);
+                PC_GEOMETRY_ADD(row1, partial1, p12);
+                PC_GEOMETRY_BASIS_VECTOR_PC p20, p21, p22, partial2, row2;
+                PC_GEOMETRY_SCALE(p22, basis->matrices[2].rows[2], input->basis_weights.z);
+                PC_GEOMETRY_SCALE(p21, basis->matrices[1].rows[2], input->basis_weights.y);
+                PC_GEOMETRY_SCALE(p20, basis->matrices[0].rows[2], input->basis_weights.x);
+                PC_GEOMETRY_ADD(partial2, p20, p21);
+                PC_GEOMETRY_ADD(row2, partial2, p22);
+                PC_GEOMETRY_BASIS_VECTOR_PC cross;
+                NuVecCross((NUVEC *)&cross, (NUVEC *)&row1, (NUVEC *)&row2);
                 PC_GEOMETRY_CORNER_PC *corners = output->corners;
                 if (input->skin_indices[0] >= 0 && skin->matrix_group_count > 1) {
                     corners[0] = input->corners[0];
@@ -2907,25 +2904,27 @@ extern "C" {
                         corners[corner] = input->corners[corner];
                 }
                 NUMTX matrix;
-                matrix.m00 = axes[2].x;
-                matrix.m01 = axes[2].y;
-                matrix.m02 = axes[2].z;
+                matrix.m00 = row2.x;
+                matrix.m01 = row2.y;
+                matrix.m02 = row2.z;
                 matrix.m03 = 0;
                 matrix.m10 = cross.x;
                 matrix.m11 = cross.y;
                 matrix.m12 = cross.z;
                 matrix.m13 = 0;
-                matrix.m20 = axes[1].x;
-                matrix.m21 = axes[1].y;
-                matrix.m22 = axes[1].z;
+                matrix.m20 = row1.x;
+                matrix.m21 = row1.y;
+                matrix.m22 = row1.z;
                 matrix.m23 = 0;
-                matrix.m30 = axes[0].x;
-                matrix.m31 = axes[0].y;
-                matrix.m32 = axes[0].z;
+                matrix.m30 = row0.x;
+                matrix.m31 = row0.y;
+                matrix.m32 = row0.z;
                 matrix.m33 = 1;
                 for (i32 corner = 0; corner < 4; ++corner)
                     NuVecMtxTransform(&corners[corner].position, &corners[corner].position, &matrix);
-                output->basis_axis = axes[1];
+                output->basis_axis.x = row1.x;
+                output->basis_axis.y = row1.y;
+                output->basis_axis.z = row1.z;
                 output->distance_squared = 0;
                 for (i32 corner = 0; corner < 4; ++corner)
                     corners[corner].w = input->output_w[corner];
