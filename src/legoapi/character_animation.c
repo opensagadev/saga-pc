@@ -172,15 +172,18 @@ static void JumpAnimCode(GAMEOBJECT *object) {
 }
 
 static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32 weapon_variant) {
-    PLAYERCHARACTERCONFIG_PC *runtime = object->character_data->game_character;
     i32 attempt;
-    if (allow_tiptoe != 0 && speed <= ((f64)runtime->tiptoe_speed + runtime->walk_speed) * 0.5) {
+    if (allow_tiptoe != 0 && speed <= ((f64)object->character_data->game_character->tiptoe_speed +
+                                       object->character_data->game_character->walk_speed) *
+                                          0.5) {
         if (weapon_variant != 0 && (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
             object->character_model->model_data_b[0x3f] != NULL)
             object->anim_packet.requested_animation = 0x3f;
         else
             object->anim_packet.requested_animation = 4;
-    } else if (speed <= ((f64)runtime->walk_speed + runtime->run_speed) * 0.5) {
+    } else if (speed <= ((f64)object->character_data->game_character->walk_speed +
+                         object->character_data->game_character->run_speed) *
+                            0.5) {
         if (weapon_variant != 0 && (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
             object->character_model->model_data_b[0x40] != NULL)
             object->anim_packet.requested_animation = 0x40;
