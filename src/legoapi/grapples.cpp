@@ -874,13 +874,11 @@ GRAPPLE_DYNAMIC_PC *__cdecl Grapple_AddDynamic(void *attached_object, i32 retain
 
 GRAPPLE_DYNAMIC_PC *__cdecl Grapple_RemoveDynamic(void *attached_object) {
     i32 index;
-    GRAPPLE_DYNAMIC_PC *grapple;
     for (index = 0; index < 4; ++index) {
-        grapple = &DynamicGrapplePc[index];
-        if (grapple->attached_object == attached_object) {
-            grapple->attached_object = NULL;
-            grapple->flags &= ~2;
-            return grapple;
+        if (DynamicGrapplePc[index].attached_object == attached_object) {
+            DynamicGrapplePc[index].flags &= ~2;
+            DynamicGrapplePc[index].attached_object = NULL;
+            return &DynamicGrapplePc[index];
         }
     }
     return NULL;
