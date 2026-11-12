@@ -538,9 +538,9 @@ f32 __cdecl AdaptiveDifficultyUpdatePc(ADAPTIVEDIFFICULTY_PC *difficulty) {
         if (difficulty->accumulator < 1.0f && (f64)difficulty->accumulator > 1.0 - (f64)threshold) {
             increase = 1;
         } else {
-            if (!(difficulty->accumulator > 0.0f) || !((f64)threshold + 0.0 > (f64)difficulty->accumulator))
-                return difficulty->accumulator;
             increase = 0;
+            if (!(difficulty->accumulator > 0.0f) || !((f64)difficulty->accumulator < (f64)threshold + 0.0))
+                return difficulty->accumulator;
         }
         elapsed = difficulty->time_elapsed + FRAMETIME;
         difficulty->time_elapsed = elapsed;
