@@ -259,8 +259,8 @@ extern "C" void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
                     GIZOBSTACLE *obstacle = GizObstacle_FindNearest(((PUSH_OBSTACLE_WORLD_PC *)WORLD)->obstacle_sys,
                                                                     &object->collision_position, object, &distance, 7);
                     if (obstacle != NULL && distance < 6.25) {
-                        ((PUSH_OBJECT_LOCAL_PC *)object)->obstacle_timer = 0.75f;
                         object->character_context = LEGOCONTEXT_PUSHOBSTACLE;
+                        ((PUSH_OBJECT_LOCAL_PC *)object)->obstacle_timer = 0.75f;
                         object->grapple = obstacle;
                         object->context_variant = (u8)push_surface;
                         FastWeaponIn(object, 0);
@@ -318,7 +318,6 @@ extern "C" void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
             return;
         }
         if (pad->input_magnitude > 0.0f) {
-            GIZOBSTACLE *obstacle;
             u16 input_angle = GamePad_InputAngle(object, pad);
             i32 difference = abs(RotDiff(input_angle, object->takeover_start_angle));
             if (difference < 0x31c7) {
@@ -331,25 +330,24 @@ extern "C" void __cdecl PushCode(GAMEOBJECT *object, i32 allow_push) {
                 goto finalize;
             }
             ((PUSH_OBJECT_LOCAL_PC *)object)->obstacle_timer = 0.75f;
-            obstacle = (GIZOBSTACLE *)object->grapple;
             if (object->context_variant == 0x1e) {
                 if (forward != 0)
                     goto push_obstacle;
             } else if (forward == 0) {
                 goto push_obstacle;
             }
-            if (obstacle->anim_set->state == 0)
+            if (((GIZOBSTACLE *)object->grapple)->anim_set->state == 0)
                 stopped = 1;
             else
                 moving = 1;
-            GizObstacle_SetPushControlled(obstacle, object, -1.0f);
+            GizObstacle_SetPushControlled((GIZOBSTACLE *)object->grapple, object, -1.0f);
             goto drive_done;
         push_obstacle:
-            if (obstacle->anim_set->state == 2)
+            if (((GIZOBSTACLE *)object->grapple)->anim_set->state == 2)
                 stopped = 1;
             else
                 moving = 1;
-            GizObstacle_SetPushControlled(obstacle, object, 1.0f);
+            GizObstacle_SetPushControlled((GIZOBSTACLE *)object->grapple, object, 1.0f);
         drive_done:
             if (stopped) {
                 if (ParticlesPerSecond(3.0f, FRAMETIME) > 0)
