@@ -7,6 +7,7 @@ typedef struct antinode_pc_s {
     u16 angle;
     u8 shape, grid_min_x, grid_min_z, grid_max_x, grid_max_z, reserved_37;
     struct antinode_pc_s *next;
+    u8 unknown_3c[4];
 } ANTINODE_PC;
 typedef struct antinode_sys_pc_s {
     ANTINODE_PC *nodes, *active, *free;
@@ -143,22 +144,16 @@ void *__cdecl GameAntinode_RegisterAntiNodeUsingData(void *system, NUVEC *positi
     return node;
 }
 
-typedef struct ANTINODE_POOL_ENTRY_PC {
-    ANTINODE_PC node;
-    u8 unknown_3c[4];
-} ANTINODE_POOL_ENTRY_PC;
-STATIC_ASSERT(sizeof(ANTINODE_PC) == 0x3c);
-STATIC_ASSERT(sizeof(ANTINODE_POOL_ENTRY_PC) == 0x40);
-STATIC_ASSERT(offsetof(ANTINODE_POOL_ENTRY_PC, node) == 0);
+STATIC_ASSERT(sizeof(ANTINODE_PC) == 0x40);
 STATIC_ASSERT(sizeof(ANTINODE_SYS_PC) == 0x18);
 STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, nodes) == 0);
 STATIC_ASSERT(offsetof(ANTINODE_SYS_PC, capacity) == 0x10);
 void *__cdecl GameAntnode_CreateSys(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end, i32 count) {
-    u32 node_bytes = (u32)count * sizeof(ANTINODE_POOL_ENTRY_PC);
+    u32 node_bytes = (u32)count * sizeof(ANTINODE_PC);
     u32 total_bytes = node_bytes + sizeof(ANTINODE_SYS_PC);
     ANTINODE_SYS_PC *system;
+    ANTINODE_PC *node;
     i32 i;
-    ANTINODE_POOL_ENTRY_PC *pool;
     buffer->addr = (buffer->addr + 15) & ~15u;
     if (count == 0 || buffer->addr + total_bytes > end->addr)
         return NULL;
@@ -169,9 +164,11 @@ void *__cdecl GameAntnode_CreateSys(WORLDINFO *world, VARIPTR *buffer, VARIPTR *
     system->capacity = count;
     system->world = world;
     system->free = system->nodes;
-    pool = (ANTINODE_POOL_ENTRY_PC *)system->nodes;
-    for (i = 0; i < count - 2; ++i)
-        pool[i].node.next = &pool[i + 1].node;
+    node = system->nodes;
+    for (i = 1; i < system->capacity - 1; ++i) {
+        node->next = &system->nodes[i];
+        node = node->next;
+    }
     buffer->addr += node_bytes;
     return system;
 }
@@ -183,8 +180,8 @@ void __cdecl GameAntinode_UnregisterAntiNode(void *opaque_system, void *opaque_n
     previous = system->active;
     if (previous == node) {
         system->active = previous->next;
-        previous->next = system->free;
-        system->free = previous;
+        node->next = system->free;
+        system->free = node;
     } else {
         while (previous->next) {
             if (previous->next == node) {
