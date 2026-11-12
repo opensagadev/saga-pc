@@ -180,15 +180,12 @@ void __cdecl Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP_PC *pickup, i32 ty
 
 static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
     i32 effect = WORLD->game_debris_sys->entries[index].effect;
-    f32 rate;
     i32 count;
     if (effect == -1)
         return;
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4)
-        rate = (f32)((f64)PartExtraCoinRate_PC * 0.5);
-    else
-        rate = PartExtraCoinRate_PC;
-    count = ParticlesPerSecond(rate, FRAMETIME);
+    count = ParticlesPerSecond(WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4 ? PartExtraCoinRate_PC * 0.5
+                                                                                        : PartExtraCoinRate_PC,
+                               FRAMETIME);
     if (count > 0)
         AddVariableShotDebrisEffect(effect, position, count, 0, 0);
 }
