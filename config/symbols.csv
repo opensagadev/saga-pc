@@ -5602,6 +5602,7 @@ address,symbol,size,ctype
 0x599ce0,_CharMiniKit_Draw,287,"void __cdecl CharMiniKit_Draw(i32, NUMTX *, i32, f32, f32)"
 0x599e00,_CharacterMiniKits_Load,546,"void __cdecl(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *)"
 0x59a030,_CharacterMiniKits_Dump,270,void __cdecl CharacterMiniKits_Dump(WORLDINFO *)
+0x59a140,_CollectAllMiniKits,80,void __cdecl (AREASAVE_s *)
 0x59a190,_AllMiniKitsDone,76,
 0x59a1e0,_DrawMiniKitCount,564,
 0x59a420,_MiniKit_GameMsg_Update,156,void __cdecl (GAME_MESSAGE_PC *)
