@@ -41,8 +41,8 @@ __declspec(noinline) void __cdecl KillPartsByScene(NUGSCN *scene) {
     i32 index;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
         if ((part->active & 1) != 0 && part->source_special != NULL && part->special.scene == scene) {
-            part->active &= ~1;
             memset(&part->special, 0, sizeof(part->special));
+            part->active &= ~1;
             part->source_special = NULL;
         }
     }
@@ -2251,11 +2251,13 @@ void __cdecl AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 ra
 
 STATIC_ASSERT(offsetof(PART_PC, field_206) == 0x206);
 PART_PC *__cdecl FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
-    PART_PC *part = Part, *result = NULL;
-    f32 nearest = 1000000.0f;
+    PART_PC *part = Part, *result;
+    f32 nearest;
     i32 i;
     if (part == NULL)
         return NULL;
+    nearest = 1000000.0f;
+    result = NULL;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
         f32 distance;
         if ((part->active & 1) == 0 || (player != -1 && part->field_206 != player) ||
