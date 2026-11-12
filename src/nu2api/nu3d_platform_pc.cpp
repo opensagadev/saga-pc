@@ -2403,7 +2403,7 @@ extern "C" {
         return exhausted;
     }
 
-    u16 __cdecl NuQFntMapLookupPc(VUCHARIDX *map, i32 count, u16 unicode) {
+    static u16 __cdecl NuQFntMapLookupPc(VUCHARIDX *map, i32 count, u16 unicode) {
         u16 i;
 
         for (i = 0; i < count; i++) {
@@ -5443,10 +5443,10 @@ extern "C" {
         vpDevice.clip_min_y = 0.0f;
         vpDevice.clip_max_x = 1.0f;
         vpDevice.clip_max_y = 1.0f;
-        vpDevice.x = (i32)((u32)vpDevice.x << 4);
-        vpDevice.y = (i32)((u32)vpDevice.y << 4);
-        vpDevice.width = (i32)((u32)vpDevice.width << 4);
-        vpDevice.height = (i32)((u32)vpDevice.height << 4);
+        vpDevice.height *= 16;
+        vpDevice.width *= 16;
+        vpDevice.x *= 16;
+        vpDevice.y *= 16;
         vpCurrent = vpDevice;
         NuVpDirtyPc = 1;
         NuVpUpdate();
