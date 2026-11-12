@@ -3024,6 +3024,7 @@ address,symbol,size,ctype
 0x004ff120,_NuFileExists,5,i32 __cdecl (char *)
 0x004ff130,_DEV_FormatName,335,"i32 __cdecl (NUFILE_DEVICE *, char *, char *, i32)"
 0x004ff290,_DEVHOST_Interrogate,13,i32 __cdecl (NUFILE_DEVICE *)
+0x004ff2d0,_NuPSFileFindFreeHandle,25,i32 (void)
 0x004ff2f0,_NuPSFileOpen,130,"i32 __cdecl (const char *, i32)"
 0x004ff380,_NuPSFileClose,41,i32 __cdecl (i32)
 0x004ff3b0,_NuPSFileRead,49,"i32 __cdecl (i32, void *, i32)"
@@ -5180,6 +5181,7 @@ address,symbol,size,ctype
 0x5847c0,_CC_maxy,23,void (NUFPAR_PC *parser)
 0x5847e0,_CC_scale,23,void (NUFPAR_PC *parser)
 0x584800,_CC_layer,261,void (NUFPAR_PC *parser)
+0x584910,_CC_ReadOnOff,44,"i32 (NUFPAR_PC *parser) [private ESI]"
 0x584940,_CC_fixed_layers,73,void (NUFPAR_PC *parser)
 0x584990,_CC_hair_layer_index,47,void (NUFPAR_PC *parser)
 0x5849c0,_CC_cape_layer_index,47,void (NUFPAR_PC *parser)
@@ -5199,6 +5201,7 @@ address,symbol,size,ctype
 0x584df0,_CC_SetAnimMiscFlags,58,"void (NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, u16 flags)"
 0x584e30,_CC_ReadAnimEffect,2343,"void (NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation, i16 character_id, CHARACTER_EFFECT_CONFIG_PC *effects, i32 *effect_count)"
 0x585760,_CC_anim_start,2881,void (NUFPAR_PC *parser)
+0x5862b0,_CC_ReadLocator,43,"void (NUFPAR_PC *parser, i8 *locator) [private ESI]"
 0x5862e0,_CC_collision_locator,59,void (NUFPAR_PC *parser)
 0x586320,_CC_weapon_locator_1,59,void (NUFPAR_PC *parser)
 0x586360,_CC_weapon_locator_2,59,void (NUFPAR_PC *parser)
@@ -5227,9 +5230,11 @@ address,symbol,size,ctype
 0x586980,_CC_streak_2_locators,28,void (NUFPAR_PC *parser)
 0x5869a0,_CC_streak_3_locators,28,void (NUFPAR_PC *parser)
 0x5869c0,_CC_streak_4_locators,28,void (NUFPAR_PC *parser)
+0x5869e0,_CC_ReadJoint,39,"void (NUFPAR_PC *parser, i8 *joint) [private ESI]"
 0x586a10,_CC_head_joint,55,void (NUFPAR_PC *parser)
 0x586a50,_CC_cloak_joint,55,void (NUFPAR_PC *parser)
 0x586a90,_CC_cloak_joint2,55,void (NUFPAR_PC *parser)
+0x586ad0,_CC_ReadSfx,36,"void (NUFPAR_PC *parser, i16 *sfx) [private ESI]"
 0x586b00,_CC_sfx_die,52,void (NUFPAR_PC *parser)
 0x586b40,_CC_sfx_hurt,52,void (NUFPAR_PC *parser)
 0x586b80,_CC_sfx_grunt,52,void (NUFPAR_PC *parser)
