@@ -60,7 +60,7 @@ void __cdecl Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32
 
 void __cdecl Pulses_Configure(WORLDINFO *world, char *config) {
     NUFPAR_PC *parser;
-    LEVEL_SFX_PULSE_PC pulse_sys = {0};
+    LEVEL_SFX_PULSE_PC pulse_sys;
     PULSE_PC *pulse;
     ((PULSE_WORLD_VIEW_PC *)world)->pulses_sys = NULL;
     if (world->current_gscn == NULL) {
@@ -73,6 +73,7 @@ void __cdecl Pulses_Configure(WORLDINFO *world, char *config) {
     }
 
     world->giz_buffer.addr = ((world->giz_buffer.addr + 3U) & ~3U);
+    memset(&pulse_sys, 0, sizeof(pulse_sys));
 
     pulse = (PULSE_PC *)world->giz_buffer.addr;
     pulse_sys.pulses = pulse;
@@ -142,7 +143,7 @@ outer_lines:
                     while (NuFParGetWord(parser) != 0) {
                         if (NuStrICmp(parser->word_buffer_ptr, "gizmo") == 0) {
                             if (NuFParGetWord(parser) != 0 &&
-                                NuStrLen(parser->word_buffer_ptr) < sizeof(pulse->gizmo_name)) {
+                                NuStrLen(parser->word_buffer_ptr) < (i32)sizeof(pulse->gizmo_name)) {
                                 NuStrCpy(pulse->gizmo_name, parser->word_buffer_ptr);
                             }
                         } else if (NuStrICmp(parser->word_buffer_ptr, "on_time") == 0) {
@@ -177,7 +178,7 @@ outer_lines:
     }
 
     NuFParDestroy(parser);
-    if (pulse_sys.pulse_count == 0) {
+    if (pulse_sys.pulse_count <= 0) {
         return;
     }
 
