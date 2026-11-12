@@ -1101,33 +1101,34 @@ extern "C" {
                                                    NUVEC *direction, f32 radius, f32 range_squared, i32 directional,
                                                    i32 planar, i32 bolt_id) {
         BOLTTYPE_PC *type = BoltType_FindByID(bolt_id, WORLD);
-        f32 near_distance = TargetDist_Near2;
         u16 near_angle = TargetDeg_Near;
-        f32 mid_distance = TargetDist_Mid2;
-        u16 far_angle = TargetDeg_Far;
         u16 mid_angle = TargetDeg_Mid;
+        u16 far_angle = TargetDeg_Far;
+        f32 near_distance = TargetDist_Near2;
+        f32 mid_distance = TargetDist_Mid2;
         GAMEOBJECT *object = (GAMEOBJECT *)object_pointer;
         GIZMO_PC *gizmo;
         GIZTURRET_s *turret;
         NUVEC *position;
-        GIZMO_PC *best = NULL;
+        GIZMO_PC *best;
         GIZMO_PC *previous = NULL;
-        NUVEC *best_position = NULL;
+        NUVEC *best_position;
         NUVEC *previous_position = NULL;
-        f32 best_distance = 1000000000.0f;
+        f32 best_distance;
         NUVEC direction_copy, delta;
         f32 minimum_x, minimum_z, maximum_x, maximum_z;
-        f32 distance_spill, dot_spill, dx_spill, dz_spill;
         f32 distance, dot;
         u16 target_angle;
-        NUANG angle;
         i32 index;
         if (set != NULL && type != NULL) {
+            best_distance = 1000000000.0f;
+            best = NULL;
+            best_position = NULL;
             direction_copy = *direction;
-            minimum_x = (f64)origin->x - (f64)radius;
-            minimum_z = (f64)origin->z - (f64)radius;
-            maximum_x = (f64)origin->x + (f64)radius;
-            maximum_z = (f64)radius + (f64)origin->z;
+            minimum_x = origin->x - radius;
+            minimum_z = origin->z - radius;
+            maximum_x = origin->x + radius;
+            maximum_z = origin->z + radius;
             if (directional != 0 && (type->flags_60 & 0x20000) != 0) {
                 direction_copy.y = 0.0f;
                 NuVecNorm(&direction_copy, &direction_copy);
@@ -1141,36 +1142,29 @@ extern "C" {
                 position = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
                 if (position == NULL)
                     continue;
-                if (minimum_x > position->x || maximum_x < position->x || minimum_z > position->z ||
-                    maximum_z < position->z)
+                if (position->x < minimum_x || position->x > maximum_x || position->z < minimum_z ||
+                    position->z > maximum_z)
                     continue;
                 if (planar == 0)
-                    distance_spill = NuVecDistSqr(position, origin, &delta);
+                    distance = NuVecDistSqr(position, origin, &delta);
                 else
-                    distance_spill = NuVecXZDistSqr(position, origin, &delta);
-                distance = distance_spill;
-                if (!(range_squared > distance))
+                    distance = NuVecXZDistSqr(position, origin, &delta);
+                if (!(distance < range_squared))
                     continue;
                 if (directional == 0) {
-                    dz_spill = (f64)position->z - (f64)origin->z;
-                    dx_spill = (f64)position->x - (f64)origin->x;
-                    angle = NuAtan2D(dx_spill, dz_spill);
-                    NuVecRotateY(&delta, &v001, angle);
+                    NuVecRotateY(&delta, &v001, NuAtan2D(position->x - origin->x, position->z - origin->z));
                 }
                 if ((type->flags_60 & 0x20000) != 0)
                     delta.y = 0.0f;
                 NuVecNorm(&delta, &delta);
-                dot_spill = NuVecDot(&delta, &direction_copy);
-                dot = dot_spill;
-                if (near_distance > distance && directional != 0)
+                dot = NuVecDot(&delta, &direction_copy);
+                if (distance < near_distance && directional != 0)
                     target_angle = near_angle;
                 else if (mid_distance > distance)
                     target_angle = mid_angle;
                 else
                     target_angle = far_angle;
-                if (!(NuTrigTable[(((i32)target_angle + 0x4000) >> 1) & 0x7fff] < dot))
-                    continue;
-                if (!(best_distance > distance))
+                if (!(dot > NuTrigTable[(((i32)target_angle + 0x4000) >> 1) & 0x7fff]) || !(best_distance > distance))
                     continue;
                 if (object != NULL && (void *)gizmo == (void *)object->collision_target) {
                     previous = gizmo;
@@ -1211,7 +1205,6 @@ extern "C" {
         GAMEOBJECT *owner;
         NUVEC *centre, *origin;
         NUVEC normal;
-        f32 turret_radius_spill, distance_spill;
         f32 turret_radius, distance;
         f32 best_distance = 1000000000.0f;
         i32 index, point, player;
@@ -1221,26 +1214,24 @@ extern "C" {
                 if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
                     turret->primary_anim_obj == NULL || (turret->flags & 0x200) != 0)
                     continue;
-                turret_radius_spill = NuSpecialGetOriginRadius(&turret->primary_anim_obj->special);
-                turret_radius = turret_radius_spill;
+                turret_radius = NuSpecialGetOriginRadius(&turret->primary_anim_obj->special);
                 centre = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
-                if ((f64)maximum->x < (f64)centre->x - (f64)turret_radius)
+                if (maximum->x < centre->x - turret_radius)
                     continue;
-                if ((f64)minimum->x > (f64)centre->x + (f64)turret_radius)
+                if (minimum->x > centre->x + turret_radius)
                     continue;
-                if ((f64)maximum->z < (f64)centre->z - (f64)turret_radius)
+                if (maximum->z < centre->z - turret_radius)
                     continue;
-                if ((f64)minimum->z > (f64)centre->z + (f64)turret_radius)
+                if (minimum->z > centre->z + turret_radius)
                     continue;
-                if ((f64)maximum->y < (f64)centre->y - (f64)turret_radius)
+                if (maximum->y < centre->y - turret_radius)
                     continue;
-                if ((f64)minimum->y > (f64)centre->y + (f64)turret_radius)
+                if (minimum->y > centre->y + turret_radius)
                     continue;
-                for (point = (i32)((u32)point_count - 1u); point >= 0; --point) {
+                for (point = point_count - 1; point >= 0; --point) {
                     if (SphereSphereOverlap(centre, turret_radius, &points[point], radius) != 0) {
                         origin = object != NULL ? &object->collision_position : &points[point];
-                        distance_spill = NuVecDistSqr(origin, centre, NULL);
-                        distance = distance_spill;
+                        distance = NuVecDistSqr(origin, centre, NULL);
                         if (distance < best_distance) {
                             best_distance = distance;
                             best = turret;
