@@ -8839,7 +8839,7 @@ static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, 
     NUVEC direction, side;
     NURND_VERTEX3D_PC vertices[2];
     f32 distance;
-    i16 angle;
+    i32 angle;
 
     distance = NuVecXZDist(&first->position, &second->position, &direction);
     if (distance > 0.0f) {
@@ -8884,7 +8884,7 @@ static void AiPathDrawWireEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, 
         vertices[1].position.y += aiEditor_DrawYOffset;
         vertices[1].position.z += second->radius * side.z;
         AiRndrLine3d(vertices, NULL, NULL);
-        NuVecRotateY(&side, &direction, -(i32)angle);
+        NuVecRotateY(&side, &direction, -angle);
         vertices[0].position = first->position;
         vertices[0].colour = colour;
         vertices[0].position.x += first->radius * side.x;
