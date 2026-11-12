@@ -471,7 +471,7 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
         NewLData = LOADGAME_LDATA;
         UsePlayerList = 2;
         GameSetSoundVolume(&Game.options_save);
-        legoSetMusicVolume(Game.options_save.music_enabled != 0 ? GameGetMusicVolume(&TempOptions) : 0.0f);
+        legoSetMusicVolume(Game.options_save.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions));
         Hint_LoadAllGameState();
         newgamealpha = 0.0f;
         LswForceUsedHintFlagsPc |= 7;
@@ -499,9 +499,9 @@ extern "C" void __cdecl MenuUpdateNewGame(MENU *menu) {
             NuPadSetStatus(gamepad->bound_pad->device, 1);
         if (gamepad->input_ready == 0 || gamepad->bound_pad->is_valid == 0) {
             PlayerProgress[player].active = 0;
-        } else if ((gamepad->held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG |
-                                     GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT | GAMEPAD_DUP | GAMEPAD_DDOWN |
-                                     GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0 ||
+        } else if ((gamepad->held &
+                    (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT | GAMEPAD_START | GAMEPAD_JUMP |
+                     GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0 ||
                    (gamepad->left_held & (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
             if (g_nupadMapping[player].is_active != 0)
                 PlayerProgress[player].active = 1;
