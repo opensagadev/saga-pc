@@ -8533,26 +8533,26 @@ i32 __cdecl Action_SetAnimSpeedMul(AISYS_PC *system, AISCRIPTPROCESS_PC *process
     maximum = 1000000000.0f;
     if (packet != NULL && packet->owner != NULL && ((APIOBJECT_PC *)packet->owner)->owner != NULL) {
         object = ((APIOBJECT_PC *)packet->owner)->owner;
-        if (num_params == 0)
-            return 1;
-        for (index = 0; index < num_params; index++) {
-            value = NuStrIStr(params[index], (char *)AIAnimSpeedValueName);
-            if (value != NULL)
-                object->animation_speed_multiplier = AIParamToFloat(processor, value + 6);
-            else if ((value = NuStrIStr(params[index], (char *)AIAnimSpeedMultiplyByName)) != NULL)
-                multiplier = AIParamToFloat(processor, value + 12);
-            else if ((value = NuStrIStr(params[index], (char *)AIControlMaximumName)) != NULL)
-                maximum = AIParamToFloat(processor, value + 4);
-            else if ((value = NuStrIStr(params[index], (char *)AIControlMinimumName)) != NULL)
-                minimum = AIParamToFloat(processor, value + 4);
-        }
-        if (multiplier != 1.0f) {
-            product = object->animation_speed_multiplier * multiplier;
-            object->animation_speed_multiplier = product;
-            if (maximum < product)
-                object->animation_speed_multiplier = maximum;
-            else if (minimum > product)
-                object->animation_speed_multiplier = minimum;
+        if (num_params != 0) {
+            for (index = 0; index < num_params; index++) {
+                value = NuStrIStr(params[index], (char *)AIAnimSpeedValueName);
+                if (value != NULL)
+                    object->animation_speed_multiplier = AIParamToFloat(processor, value + 6);
+                else if ((value = NuStrIStr(params[index], (char *)AIAnimSpeedMultiplyByName)) != NULL)
+                    multiplier = AIParamToFloat(processor, value + 12);
+                else if ((value = NuStrIStr(params[index], (char *)AIControlMaximumName)) != NULL)
+                    maximum = AIParamToFloat(processor, value + 4);
+                else if ((value = NuStrIStr(params[index], (char *)AIControlMinimumName)) != NULL)
+                    minimum = AIParamToFloat(processor, value + 4);
+            }
+            if (multiplier != 1.0f) {
+                product = object->animation_speed_multiplier * multiplier;
+                object->animation_speed_multiplier = product;
+                if (maximum < product)
+                    object->animation_speed_multiplier = maximum;
+                else if (minimum > product)
+                    object->animation_speed_multiplier = minimum;
+            }
         }
     }
     return 1;
