@@ -1200,10 +1200,12 @@ static i32 __cdecl ActionMusicSockChoicePc(void) {
     SOCKPOSITION_PC socket_position;
     if (Players_AveragePos(&position, &socket_position) != 0) {
         const i8 socket = socket_position.sock_index;
-        if (socket == 6 || socket == 2 || socket == 3 || socket == 4 || socket == 9)
+        if (socket == 6)
             return 0;
         if (socket == 7 || socket == 8)
             return 1;
+        if (socket == 2 || socket == 3 || socket == 4 || socket == 9)
+            return 0;
     }
     return -1;
 }
