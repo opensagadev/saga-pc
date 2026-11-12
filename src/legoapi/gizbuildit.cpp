@@ -1180,9 +1180,7 @@ extern "C" {
                     buildit->field_50 = EdFileReadFloat();
                 buildit->blowup_type = -1;
                 if (version >= 7) {
-                    if (version == 7) {
-                        buildit->blowup_type = EdFileReadShort();
-                    } else {
+                    if (version >= 8) {
                         length = (i8)EdFileReadChar();
                         if (length != 0) {
                             EdFileRead(blowup_name, length);
@@ -1190,6 +1188,8 @@ extern "C" {
                             if (buildit->blowup_type != -1)
                                 buildit->availability_flags |= 0x80;
                         }
+                    } else {
+                        buildit->blowup_type = EdFileReadShort();
                     }
                     buildit->field_58 = EdFileReadShort();
                     buildit->field_5a = EdFileReadShort();
@@ -1197,14 +1197,18 @@ extern "C" {
                 }
                 if (version >= 9)
                     buildit->activation_radius = EdFileReadFloat();
+                else if (world->area != NULL && (world->area->flags & 1))
+                    buildit->activation_radius = 12.0f;
                 else
-                    buildit->activation_radius = world->area != NULL && (world->area->flags & 1) ? 12.0f : 1.75f;
+                    buildit->activation_radius = 1.75f;
                 if (version < 4) {
                     buildit->state_flags = (i16)(i8)EdFileReadChar();
-                    if (version >= 2 && EdFileReadChar() != 0)
-                        buildit->state_flags |= 0x40;
-                    if (version >= 3 && EdFileReadChar() != 0)
-                        buildit->state_flags |= 0x80;
+                    if (version >= 2) {
+                        if (EdFileReadChar() != 0)
+                            buildit->state_flags |= 0x40;
+                        if (version >= 3 && EdFileReadChar() != 0)
+                            buildit->state_flags |= 0x80;
+                    }
                 } else {
                     buildit->state_flags = (u16)EdFileReadShort();
                 }
@@ -1213,10 +1217,10 @@ extern "C" {
                     if (EdFileReadChar() != 0) {
                         EdFileRead(linked_name, 16);
                         for (linked_index = 0; linked_index < system->count; ++linked_index) {
-                            BUILDIT_RESET_PC *linked = &((BUILDIT_RESET_PC *)system->buildits)[linked_index];
-                            if (NuStrICmp(linked->name, linked_name) == 0) {
-                                buildit->availability_flags |= 3;
+                            if (NuStrICmp(((BUILDIT_RESET_PC *)system->buildits)[linked_index].name, linked_name) ==
+                                0) {
                                 buildit->linked_buildit = &((BUILDIT_RESET_PC *)system->buildits)[linked_index];
+                                buildit->availability_flags |= 3;
                                 break;
                             }
                         }
