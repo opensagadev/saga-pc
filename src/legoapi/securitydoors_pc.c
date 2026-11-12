@@ -182,7 +182,7 @@ void __cdecl SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time
         return;
     door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
-        u16 angle;
+        NUANG angle;
         if (door->state == 2 && door->opening < 1.0f) {
             f32 opening = (f64)door->opening + (f64)FRAMETIME;
             door->opening = opening;
