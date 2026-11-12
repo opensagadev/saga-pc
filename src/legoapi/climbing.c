@@ -52,13 +52,12 @@ void __cdecl SetWeaponOut(GAMEOBJECT *object) {
 void __cdecl FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
-    CHARACTERANIM_CONFIG_PC *config;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
         object->character_context = -1;
     if (force_sound != 0 && object->weapon_scale == 0.0f && object->field_e33 != 1) {
         animation = CurrentAnim(&object->anim_packet);
-        config = animation != -1 ? object->character_model->animation_configs[animation] : NULL;
-        if (config == NULL || (config->flags & 0x400) == 0) {
+        if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
+            (object->character_model->animation_configs[animation]->flags & 0x400) == 0) {
             if (object->character_data->model_flags & 8) {
                 if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
                     GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -159,13 +158,12 @@ void __cdecl SetWeaponIn(GAMEOBJECT *object) {
 void __cdecl FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
-    CHARACTERANIM_CONFIG_PC *config;
     if (context != -1 && (context == LEGOCONTEXT_WEAPONIN || context == LEGOCONTEXT_WEAPONOUT))
         object->character_context = -1;
     if (force_sound != 0 && object->weapon_scale == 1.0f && object->field_e33 != 2) {
         animation = CurrentAnim(&object->anim_packet);
-        config = animation != -1 ? object->character_model->animation_configs[animation] : NULL;
-        if (config == NULL || (config->flags & 0x800) == 0) {
+        if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
+            (object->character_model->animation_configs[animation]->flags & 0x800) == 0) {
             if (object->character_data->model_flags & 8) {
                 if (object->field_280 != 0xff || WeaponInOut_NoAIJediSfx == 0)
                     GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
