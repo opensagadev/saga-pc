@@ -517,7 +517,7 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
                     if (packet->previous_time >= effects->frame[event]) {
                         active = 1;
                     }
-                } else if ((packet->flags & 2) != 0 && packet->previous_time > animation_time &&
+                } else if ((packet->flags & 2) != 0 && packet->previous_time < animation_time &&
                            packet->previous_time >= effects->frame[event]) {
                     active = 1;
                 }
@@ -527,7 +527,7 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
             continue;
         }
 
-        position.x = position.y = position.z = 0.0f;
+        position.z = position.y = position.x = 0.0f;
         locator_count = 0;
         position_count = 0;
         for (locator = 0; locator < 16; ++locator) {
@@ -537,7 +537,7 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
             locator_indices[locator_count] = locator;
             locator_positions[locator_count] = locator_matrices[locator].translation;
             if (locator_count == 0 || (effects->flags & 0x800) != 0) {
-                NuVecAdd(&position, &position, &locator_positions[locator_count]);
+                NuVecAdd(&position, &position, &locator_matrices[locator].translation);
             }
             ++locator_count;
         }
@@ -598,10 +598,10 @@ void __cdecl AddAnimEffects(CHARACTER_MODEL_LAYERS_PC *model, APICHARACTERDATA *
 
         if (object != NULL) {
             if ((effects->flags & 0x100000) != 0) {
-                if (effects->minimum > object->velocity_magnitude)
+                if (object->velocity_magnitude < effects->minimum)
                     goto checkpoint;
             } else if ((effects->flags & 0x40000) != 0) {
-                if (effects->minimum > object->horizontal_velocity_magnitude)
+                if (object->horizontal_velocity_magnitude < effects->minimum)
                     goto checkpoint;
             }
             if ((effects->flags & 0x200000) != 0) {
