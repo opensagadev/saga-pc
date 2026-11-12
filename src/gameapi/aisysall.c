@@ -7444,7 +7444,7 @@ void __cdecl AIMoveDirectlyToDestination(AISYS_PC *system, AIPACKET_PC *packet, 
     if (packet->movement_parameter > 0.0f) {
         NUVEC delta;
         f32 distance_squared = NuVecDistSqr(&packet->fallback_destination, &object->position, &delta);
-        if (packet->movement_parameter * packet->movement_parameter > distance_squared) {
+        if (distance_squared < packet->movement_parameter * packet->movement_parameter) {
             packet->movement_destination = object->position;
             packet->movement_stopping_distance = 0.0f;
             return;
