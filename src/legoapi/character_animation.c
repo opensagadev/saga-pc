@@ -461,7 +461,18 @@ void PeriscodeCode(GAMEOBJECT *object) {
         object->field_db0 = qrand() * 1.5259022e-05f * 10.0f + 20.0f;
 }
 
-i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object);
+i32 __cdecl SetProtocolDroidFallAnim(GAMEOBJECT *object) {
+    switch (object->saved_hitpoints) {
+        case 1:
+            return 76;
+        case 2:
+            return 75;
+        case 3:
+            return 40;
+        default:
+            return 5;
+    }
+}
 STATIC_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
 STATIC_ASSERT(offsetof(GAMEOBJECT, flags_e24) == 0xe24);
 
@@ -519,20 +530,7 @@ void __cdecl Animate_PROTOCOL(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else if (object->context_target_position != NULL) {
-        switch (object->saved_hitpoints) {
-            case 1:
-                object->anim_packet.requested_animation = 76;
-                break;
-            case 2:
-                object->anim_packet.requested_animation = 75;
-                break;
-            case 3:
-                object->anim_packet.requested_animation = 40;
-                break;
-            default:
-                object->anim_packet.requested_animation = 5;
-                break;
-        }
+        object->anim_packet.requested_animation = (i16)SetProtocolDroidFallAnim(object);
     } else {
         SetDefaultCharacterAnimPc(object);
         if (object->anim_packet.requested_animation == 5) {
@@ -573,22 +571,8 @@ void __cdecl Animate_PROTOCOL(GAMEOBJECT *object) {
             }
         }
     }
-    if (object->anim_packet.requested_animation == 5) {
-        switch (object->saved_hitpoints) {
-            case 1:
-                object->anim_packet.requested_animation = 76;
-                break;
-            case 2:
-                object->anim_packet.requested_animation = 75;
-                break;
-            case 3:
-                object->anim_packet.requested_animation = 40;
-                break;
-            default:
-                object->anim_packet.requested_animation = 5;
-                break;
-        }
-    }
+    if (object->anim_packet.requested_animation == 5)
+        object->anim_packet.requested_animation = (i16)SetProtocolDroidFallAnim(object);
     UpdateCharacterIdle(object);
     animation = object->anim_packet.requested_animation;
     if (animation == 5 ||
