@@ -16,6 +16,9 @@
                                            : (i32)(to) - (i32)(from))
 #define SOCK_FLAG_SCALE_LATERAL_OFFSET 0x200
 
+void SetSockBit(SOCK_PC *sock, i32 index);
+i32 SockBitSet(SOCK_PC *sock, i32 index);
+
 // The SDK's NuFdiv: 0 when either operand is 0.
 static f32 SockFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -219,10 +222,7 @@ static void SockParCamDistRatio(NUFPAR_PC *parser, void *context) {
 
 static void SockParIgnore(NUFPAR_PC *parser, void *context) {
     while (NuFParGetWord(parser) != 0) {
-        {
-            i32 index = NuAToI(parser->word_buffer_ptr);
-            sockpar_sock->overlap_exclusion_mask[index / 32] |= 1u << (index & 31);
-        }
+        SetSockBit(sockpar_sock, NuAToI(parser->word_buffer_ptr));
     }
 }
 
@@ -415,6 +415,64 @@ NUFPCOMJMPCTX SockSys_ConfigKeywords[] = {{"circuit", SockParCircuit},
                                           {"ManCam_MAX_Y", SockManCam_MAX_Y},
                                           {"TerrainCamInActive", SockTerrainCamInActive},
                                           {NULL, NULL}};
+
+// The context a sock block is parsed with: the system and the sock being configured.
+typedef struct SOCKPAR_CONTEXT_PC {
+    u32 reserved[2];
+    SOCKSYS_PC *sock_sys;
+    SOCK_PC *sock;
+} SOCKPAR_CONTEXT_PC;
+
+// RET-only in retail (0x0053db50), like SockSysMissingCameraDiagnostic: the warning for a
+// sock block without sock_end was compiled out.
+void __cdecl SockSysMissingSockEndDiagnostic(char *file_name);
+
+void SockSysConfigureNuFPar(NUFPAR_PC *parser, void *data) {
+    SOCKPAR_CONTEXT_PC *context;
+    i32 sock_index;
+
+    context = (SOCKPAR_CONTEXT_PC *)data;
+    if (context->sock_sys == NULL) {
+        return;
+    }
+    if (parser == NULL) {
+        return;
+    }
+
+    sockpar_buffer_ptr = NULL;
+    sockpar_buffer_end = NULL;
+    sockpar_scene = NULL;
+    sock_index = NuFParGetInt(parser);
+    if (sock_index < 0 || sock_index >= 0x40) {
+        return;
+    }
+
+    context->sock = &context->sock_sys->socks[sock_index];
+    sockpar_sock = context->sock;
+    sockpar_sock->blend_count = 0;
+    sockpar_sock->camera_character_close_lift = -1.0f;
+    sockpar_sock->camera_min_distance = -1.0f;
+    sockpar_sock->camera_range_of_effect = -1.0f;
+    sockpar_sock->camera_tilt_angle_change = -1.0f;
+    sockpar_sock->camera_tilt_angle_rate = -1.0f;
+    sockpar_sock->camera_tilt_distance = -1.0f;
+    sockpar_sock->camera_tilt_height = -1.0f;
+    sockpar_sock->manual_camera_max_x = 0.0f;
+    sockpar_sock->manual_camera_max_y = 0.0f;
+    sockpar_sock->terrain_camera_inactive = 0;
+
+    NuFParPushComCTX(parser, SockSys_ConfigKeywords);
+    while (NuStrICmp(parser->line_buffer_ptr, "sock_end") != 0) {
+        if (NuFParGetWord(parser) != 0) {
+            NuFParInterpretWordCTX(parser, context);
+        }
+        if (NuFParGetLine(parser) == 0) {
+            SockSysMissingSockEndDiagnostic(parser->file_name);
+            return;
+        }
+    }
+    NuFParPopCom(parser);
+}
 
 static const char *tSockCAM = "sock_cam_";
 static const char *tSockA = "sock_a_";
@@ -884,7 +942,7 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
                 ignore_y = 0;
             }
             if (SOCK_BOUNDS_SEPARATE(&sock->min, &sock->max, &other->min, &other->max, ignore_y)) {
-                sock->overlap_exclusion_mask[other_index / 32] |= 1 << (other_index & 31);
+                SetSockBit(sock, other_index);
             } else {
                 segment_count = sock->length;
                 if (sock->unknown_33 != 0) {
@@ -905,7 +963,7 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
                         }
                     }
                 }
-                sock->overlap_exclusion_mask[other_index / 32] |= 1 << (other_index & 31);
+                SetSockBit(sock, other_index);
             }
         next_other:;
         }
@@ -1199,9 +1257,7 @@ retry:
     for (checked = 0; checked < sockets_to_check; ++checked) {
         if ((sock_sys->socks[prior_sock].flags & 0x100) == 0) {
             if (forced_sock == -1 && !fallback_search && original_prior_sock != -1 &&
-                prior_sock != original_prior_sock &&
-                (sock_sys->socks[original_prior_sock].overlap_exclusion_mask[prior_sock / 32] &
-                 (1 << (prior_sock & 31)))) {
+                prior_sock != original_prior_sock && SockBitSet(&sock_sys->socks[original_prior_sock], prior_sock)) {
                 excluded_socket_seen = 1;
             } else {
                 distance = BestSockPosition(sock_sys, position, &positions[candidate_count], prior_sock, prior_segment);
@@ -1318,6 +1374,17 @@ void ComplexSockAngles(SOCKROT_PC *angles) {
             }
         }
     }
+}
+
+void SetSockBit(SOCK_PC *sock, i32 index) {
+    sock->overlap_exclusion_mask[index / 32] |= 1 << (index & 31);
+}
+
+i32 SockBitSet(SOCK_PC *sock, i32 index) {
+    if (sock->overlap_exclusion_mask[index / 32] & (1 << (index & 31))) {
+        return 1;
+    }
+    return 0;
 }
 
 f32 MidDistanceFromSockStart(SOCKSYS_PC *system, SOCKPOSITION_PC *position) {
@@ -1598,6 +1665,19 @@ void __cdecl SockOff(SOCKSYS_PC *sys, i32 index) {
         sys->socks[index].flags |= 0x100;
 }
 
+void SockSysSetObjectVisibility(SOCKSYS_PC *system, i32 index, i32 visible) {
+    if (system != NULL) {
+        SOCK_PC *sock = &system->socks[index];
+        if (sock->objects != NULL) {
+            i32 i;
+
+            for (i = 0; i < sock->object_count; ++i) {
+                NuSpecialSetVisibility(&sock->objects[i], visible);
+            }
+        }
+    }
+}
+
 void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction) {
     SOCK_PC *sock;
     i32 length;
@@ -1779,8 +1859,7 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
     for (i = 0; i < TempSPosCount; ++i) {
         candidate = &TempSPosList[i];
         if (socket_changed == 0 || candidate->sock_index == camera_socket_position->sock_index ||
-            (sock_sys->socks[camera_socket_position->sock_index].overlap_exclusion_mask[candidate->sock_index / 32] &
-             (1 << (candidate->sock_index & 31))) == 0) {
+            SockBitSet(&sock_sys->socks[camera_socket_position->sock_index], candidate->sock_index) == 0) {
             sock = &sock_sys->socks[candidate->sock_index];
 
             if ((sock->flags & SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER) != 0) {
