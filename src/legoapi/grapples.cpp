@@ -527,21 +527,20 @@ extern "C" void __cdecl Grapples_Draw(void *world_pointer, void *unused, f32 unu
 }
 
 static i32 GrappleAttachmentPositionsPc(GAMEOBJECT *object, NUVEC **positions) {
+    i32 count = 1;
     i32 joint = object->character_data->game_character->grapple_locators[0];
     if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
         positions[0] = (NUVEC *)&object->locator_matrices[joint].m30;
         joint = object->character_data->game_character->grapple_locators[1];
         if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
             positions[1] = (NUVEC *)&object->locator_matrices[joint].m30;
-            return 2;
+            count = 2;
         }
-    } else {
-        if (((GRAPPLE_MOTION_PC *)object->grapple)->flags & 4)
-            positions[0] = &object->collision_position;
-        else
-            positions[0] = &object->upper_position;
-    }
-    return 1;
+    } else if (((GRAPPLE_MOTION_PC *)object->grapple)->flags & 4)
+        positions[0] = &object->collision_position;
+    else
+        positions[0] = &object->upper_position;
+    return count;
 }
 
 extern "C" void __cdecl Grapple_DrawLine(GAMEOBJECT *object) {
