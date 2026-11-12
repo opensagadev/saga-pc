@@ -411,10 +411,10 @@ void __cdecl CollectRedBrick(NUVEC *position) {
         message.position = position;
         message.target_position = &target;
         message.tick_fn = MiniKit_GameMsg_Update;
-        message.flags = 0x2112d;
         message.end_fn = EndRedBrickMessage;
         message.scale = AreaPickupScale;
         message.allow_temporary = 1;
+        message.flags = 0x2112d;
         message.target_scale = PANEL_REDBRICKSCALE;
         message.duration = 1.0f;
         AddGameMsg(&message);
