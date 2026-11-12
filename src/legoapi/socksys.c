@@ -1800,7 +1800,9 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
     i32 player;
     f32 rounded_player_count;
 
-    scratch.x = scratch.y = scratch.z = 0.0f;
+    scratch.x = 0.0f;
+    scratch.y = 0.0f;
+    scratch.z = 0.0f;
     if (sock_sys == NULL) {
         return 0;
     }
@@ -1899,8 +1901,8 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
                 SockSysPointAlongSpline(&scratch, sock->lateral, candidate->segment, candidate->next_segment,
                                         candidate->ratio);
                 local_right.x = 1.0f;
-                local_right.y = 0.0f;
                 local_right.z = 0.0f;
+                local_right.y = 0.0f;
                 NuVecRotateY(&local_right, &local_right, candidate->midpoint_rotation.y);
                 displacement.x = scratch.x - candidate->midpoint.x;
                 displacement.z = scratch.z - candidate->midpoint.z;
@@ -1933,8 +1935,8 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
                 if (sock->left != NULL || sock->right != NULL) {
                     magnitude = NuFsqrt((f64)displacement.x * displacement.x + (f64)displacement.z * displacement.z);
                     local_right.x = 1.0f;
-                    local_right.y = 0.0f;
                     local_right.z = 0.0f;
+                    local_right.y = 0.0f;
                     NuVecRotateY(&local_right, &local_right, candidate->midpoint_rotation.y);
                     side = (f64)local_right.x * displacement.x + (f64)local_right.z * displacement.z;
                     have_limit = 0;
@@ -2043,8 +2045,7 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
                     i32 look_from;
                     i32 look_to;
 
-                    look_position.x = 0.0f;
-                    look_position.y = 0.0f;
+                    look_position.x = look_position.y = 0.0f;
                     look_position.z = NuVecDist(&candidate_camera, camera_target, NULL);
                     if (SockSegmentsAhead(sock, candidate->segment, &look_from, &look_to) != 0) {
                         {
