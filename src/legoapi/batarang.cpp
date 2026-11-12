@@ -525,13 +525,14 @@ i32 __cdecl BatarangGetObjectFromCharIdPc(i32 character) {
 }
 
 extern "C" void Batarang_GetSightInfo(i32 character, i32 *red, i32 *green, i32 *blue, char *text) {
-    *red = 255;
     if (character == id_ROBIN) {
+        *red = 255;
         *green = 0;
         *blue = 31;
         if (text != NULL)
             NuStrCpy(text, "\xc2\xb1");
     } else {
+        *red = 255;
         *green = 223;
         *blue = 0;
         if (text != NULL)

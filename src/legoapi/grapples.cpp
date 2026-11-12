@@ -612,24 +612,23 @@ extern "C" char *__cdecl Grapple_GetGizmoName(GIZMO_PC *gizmo) {
 }
 
 extern "C" i32 __cdecl Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    i32 result = 1;
     GRAPPLE_MOTION_PC *grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
     (void)mode;
-    if ((grapple->flags & 2) == 0 || (grapple->flags & 1) == 0)
+    if (!grapple->visible || !grapple->active)
         return 0;
     switch (output) {
         case 1:
-            if (Grapple_Occupied(grapple, NULL, NULL) == NULL)
-                result = 0;
+            if (Grapple_Occupied(grapple, NULL, NULL))
+                return 1;
             break;
         case 2:
-            if (Grapple_Occupied(grapple, NULL, NULL) == NULL)
-                result = 0;
+            if (Grapple_Occupied(grapple, NULL, NULL))
+                return 1;
             break;
         default:
-            break;
+            return 1;
     }
-    return result;
+    return 0;
 }
 extern "C" {
 #pragma const_seg(".rdata$GrappleOccupiedOutputTextPc")
