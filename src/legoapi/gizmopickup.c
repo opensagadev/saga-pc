@@ -941,22 +941,20 @@ void __cdecl AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GIZMO_PICKUP_TYPE_PC *type = &GizmoPickupType[type_id];
     i32 model = type->first_model_id;
-    LEVEL_OBJECT_RUNTIME_PC *object;
     ADDPART_PC params;
     PART_PC *part;
-    if (type->random_model_count != 0)
+    if (type->random_model_count > 0)
         model += qrand() / (65535 / type->random_model_count + 1);
-    object = &world->level_objects[model];
-    if (object->active == 0)
+    if (world->level_objects[model].active == 0)
         return;
     params = Default_ADDPART;
-    params.special = &object->special;
-    params.part_id = model;
     params.position = position;
     params.velocity = velocity;
-    params.field_14 = params.field_18 = scale * type->shadow_radius_x;
-    params.flags = 0x56;
+    params.part_id = model;
+    params.field_18 = params.field_14 = scale * type->shadow_radius_x;
     params.gravity = AreaPickupGravity;
+    params.special = &world->level_objects[model].special;
+    params.flags = 0x56;
     if (model >= 0xd5 && model <= 0xd8) {
         params.flags |= 0x200;
     } else if (model >= 0xc7 && model <= 0xca) {
