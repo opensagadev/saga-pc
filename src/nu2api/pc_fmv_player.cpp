@@ -247,9 +247,9 @@ extern "C" void __cdecl FmvFramePc(PC_FMV_MOVIE_PC *movie) {
 
 extern "C" void __cdecl FmvClosePc(PC_FMV_MOVIE_PC *movie) {
     if (FmvContextPc != NULL) {
-        if (FmvContextPc->device != NULL)
-            ((HRESULT(__stdcall *)(PC_D3D9_DEVICE_PC *, u32, void *))FmvContextPc->device->methods->set_texture)(
-                FmvContextPc->device, 0, NULL);
+        PC_D3D9_DEVICE_PC *device = FmvContextPc->device;
+        if (device != NULL)
+            ((HRESULT(__stdcall *)(PC_D3D9_DEVICE_PC *, u32, void *))device->methods->set_texture)(device, 0, NULL);
         PCDeviceBackend.ResetTargets();
     }
     if (movie->image != NULL) {
