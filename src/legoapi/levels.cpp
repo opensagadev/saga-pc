@@ -3514,7 +3514,6 @@ extern "C" void __cdecl Game_WorldInfo_InitLast(WORLDINFO *world) {
 extern "C" {
 
     void __cdecl ClearAreaProgress(i32 area_index, i32 restore) {
-        AREA_DATA_PC *area;
         i32 index;
 
         for (index = 0; index < 12; ++index) {
@@ -3523,10 +3522,9 @@ extern "C" {
         areaSuitBits = Game.initial_store_pack_flags;
         if (restore != 0 && area_index != -1) {
             Game.area_save[area_index] = BackupGame.area_save[area_index];
-            area = &ADataList[area_index];
             AREA_GLOBALS_PROGRESS_FLAGS_PC = 0;
-            for (index = 0; index < area->level_count; ++index) {
-                i32 level = area->levels[index];
+            for (index = 0; index < ADataList[area_index].level_count; ++index) {
+                i32 level = ADataList[area_index].levels[index];
                 memcpy(&Game.level_save[level * sizeof(struct LEVELSAVE_s)],
                        &BackupGame.level_save[level * sizeof(struct LEVELSAVE_s)], sizeof(struct LEVELSAVE_s));
             }
