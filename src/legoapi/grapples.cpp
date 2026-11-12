@@ -204,16 +204,14 @@ extern "C" {
 
     void *__cdecl Grapples_ReserveBufferSpace(void *pointer) {
         WORLDINFO *world = (WORLDINFO *)pointer;
-        GRAPPLE_DYNAMIC_PC *grapples = NULL;
         world->grapples = NULL;
         world->grapple_count = 0;
         if (world->current_level->max_grapples > 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-            grapples = (GRAPPLE_DYNAMIC_PC *)world->giz_buffer.void_ptr;
-            world->grapples = grapples;
-            world->giz_buffer.addr += world->current_level->max_grapples * sizeof(*grapples);
+            world->grapples = (GRAPPLE_DYNAMIC_PC *)world->giz_buffer.void_ptr;
+            world->giz_buffer.addr += world->current_level->max_grapples * sizeof(GRAPPLE_DYNAMIC_PC);
         }
-        return grapples;
+        return world->grapples;
     }
 }
 
