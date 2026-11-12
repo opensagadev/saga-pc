@@ -1357,9 +1357,9 @@ static char *default_modifier_names[1] = {"default"};
 char **modifier_names = default_modifier_names;
 f32 lockflash = 0.0f;
 f32 lockflash_rate = 0.7f;
-i32 maxundo = 0;
-i32 rtl_undo_cnt = 0;
-i32 rtl_undo_maxcnt = 0;
+static i32 maxundo = 0;
+static i32 rtl_undo_cnt = 0;
+static i32 rtl_undo_maxcnt = 0;
 i32 ctl_ix = 1;
 i32 helpmode = 0;
 i32 help_line = 190;
@@ -2565,17 +2565,17 @@ void __cdecl rtlCbRLowTimePc(struct eduimenu_s *menu, struct eduiitem_s *item, u
 
 /* Genuine editor pointer/index cells; backing bank capacities are not inferred. */
 #pragma section(".bss$RtlUndoIndexPc", read, write)
-__declspec(allocate(".bss$RtlUndoIndexPc")) u32 rtl_undo_ix = 0;
+__declspec(allocate(".bss$RtlUndoIndexPc")) static u32 rtl_undo_ix = 0;
 #pragma section(".bss$RtlUndoSnapshotsPc", read, write)
-__declspec(allocate(".bss$RtlUndoSnapshotsPc")) RTL_LIGHT_PC *rtl_undo = NULL;
+__declspec(allocate(".bss$RtlUndoSnapshotsPc")) static RTL_LIGHT_PC *rtl_undo = NULL;
 #pragma section(".bss$RtlUndoCameraPositionsPc", read, write)
-__declspec(allocate(".bss$RtlUndoCameraPositionsPc")) NUVEC *curpos_undo = NULL;
+__declspec(allocate(".bss$RtlUndoCameraPositionsPc")) static NUVEC *curpos_undo = NULL;
 #pragma section(".bss$RtlUndoCurrentLightsPc", read, write)
-__declspec(allocate(".bss$RtlUndoCurrentLightsPc")) RTL_LIGHT_PC **curr_rtl_undo = NULL;
+__declspec(allocate(".bss$RtlUndoCurrentLightsPc")) static RTL_LIGHT_PC **curr_rtl_undo = NULL;
 #pragma section(".bss$RtlUndoLockedLightsPc", read, write)
-__declspec(allocate(".bss$RtlUndoLockedLightsPc")) RTL_LIGHT_PC **rtl_locked_undo = NULL;
+__declspec(allocate(".bss$RtlUndoLockedLightsPc")) static RTL_LIGHT_PC **rtl_locked_undo = NULL;
 #pragma section(".bss$RtlUndoBaseLightsPc", read, write)
-__declspec(allocate(".bss$RtlUndoBaseLightsPc")) RTL_LIGHT_PC **base_rtl_undo = NULL;
+__declspec(allocate(".bss$RtlUndoBaseLightsPc")) static RTL_LIGHT_PC **base_rtl_undo = NULL;
 #pragma section(".bss$RtlUndoItemPc", read, write)
 __declspec(allocate(".bss$RtlUndoItemPc")) eduiitem_s *undo_item = NULL;
 #pragma section(".bss$RtlRedoItemPc", read, write)
@@ -2583,12 +2583,6 @@ __declspec(allocate(".bss$RtlRedoItemPc")) eduiitem_s *redo_item = NULL;
 
 extern RTL_LIGHT_PC clipboard_light;
 void __cdecl edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
-extern RTL_LIGHT_PC *rtl_undo;
-extern NUVEC *curpos_undo;
-extern RTL_LIGHT_PC **curr_rtl_undo;
-extern RTL_LIGHT_PC **rtl_locked_undo;
-extern RTL_LIGHT_PC **base_rtl_undo;
-extern u32 rtl_undo_ix;
 extern eduiitem_s *undo_item;
 extern eduiitem_s *redo_item;
 STATIC_ASSERT(sizeof(void *) == 4);
@@ -2598,43 +2592,17 @@ STATIC_ASSERT(offsetof(RTL_SET_PC, lights) == 4);
 STATIC_ASSERT(offsetof(eduiitem_s, flags) == 0x11);
 
 void __cdecl edrtlSaveUndo(void) {
-    VARIPTR source, address;
-    RTL_LIGHT_PC *value;
-    u32 index, limit;
-    i32 count;
     if (maxundo != 0 && curr_set != NULL) {
-        source.void_ptr = curr_set;
-        source.addr += offsetof(RTL_SET_PC, lights);
-        index = rtl_undo_ix;
-        address.void_ptr = rtl_undo;
-        address.addr += index * 0x4600u;
-        PCByteCopy_candidate(address.void_ptr, source.void_ptr, 0x4600u);
-        index = rtl_undo_ix;
-        address.void_ptr = curpos_undo;
-        address.addr += index * sizeof(NUVEC);
-        edcamGetPosAng((NUVEC *)address.void_ptr, NULL, NULL);
-        index = rtl_undo_ix;
-        value = curr_rtl;
-        address.void_ptr = curr_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(address.void_ptr, &value, sizeof(value));
-        value = rtl_locked;
-        address.void_ptr = rtl_locked_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(address.void_ptr, &value, sizeof(value));
-        address.void_ptr = base_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        value = base_rtl;
-        memcpy(address.void_ptr, &value, sizeof(value));
-        limit = (u32)maxundo - 1u;
-        rtl_undo_ix = (index + 1u) & limit;
-        count = (i32)((u32)rtl_undo_cnt + 1u);
-        if (count >= (i32)limit)
-            count = (i32)limit;
-        rtl_undo_cnt = count;
-        rtl_undo_maxcnt = count;
-        undo_item->flags &= (u8)~2u;
-        redo_item->flags |= 2;
+        PCByteCopy_candidate(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
+        edcamGetPosAng(&curpos_undo[rtl_undo_ix], NULL, NULL);
+        curr_rtl_undo[rtl_undo_ix] = curr_rtl;
+        rtl_locked_undo[rtl_undo_ix] = rtl_locked;
+        base_rtl_undo[rtl_undo_ix] = base_rtl;
+        rtl_undo_ix = (rtl_undo_ix + 1) & (maxundo - 1);
+        rtl_undo_cnt = rtl_undo_cnt + 1 < maxundo - 1 ? rtl_undo_cnt + 1 : maxundo - 1;
+        rtl_undo_maxcnt = rtl_undo_cnt;
+        undo_item->disabled = 0;
+        redo_item->disabled = 1;
     }
 }
 
@@ -3691,127 +3659,40 @@ __declspec(allocate(".rdata$RtlFilePathFormat")) const char RtlFilePathFormatPc[
 __declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = (char *)RtlFileExtensionTextPc;
 
 void __cdecl edrtlUndo(void) {
-    VARIPTR source, address;
-    RTL_SET_PC *set;
-    RTL_LIGHT_PC *value;
-    u32 index, limit, word;
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt != 0) {
-        source.void_ptr = curr_set;
-        source.addr += offsetof(RTL_SET_PC, lights);
-        index = rtl_undo_ix;
-        address.void_ptr = rtl_undo;
-        address.addr += index * 0x4600u;
-        PCByteCopy_candidate(address.void_ptr, source.void_ptr, 0x4600u);
-        index = rtl_undo_ix;
-        address.void_ptr = curpos_undo;
-        address.addr += index * sizeof(NUVEC);
-        edcamGetPosAng((NUVEC *)address.void_ptr, NULL, NULL);
-        index = rtl_undo_ix;
-        value = curr_rtl;
-        address.void_ptr = curr_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(address.void_ptr, &value, sizeof(value));
-        value = rtl_locked;
-        address.void_ptr = rtl_locked_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(address.void_ptr, &value, sizeof(value));
-        value = base_rtl;
-        address.void_ptr = base_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(address.void_ptr, &value, sizeof(value));
-        limit = (u32)maxundo - 1u;
-        set = curr_set;
-        rtl_undo_cnt = (i32)((u32)rtl_undo_cnt - 1u);
-        index = (index - 1u) & limit;
-        rtl_undo_ix = index;
-        source.void_ptr = rtl_undo;
-        source.addr += index * 0x4600u;
-        address.void_ptr = set;
-        address.addr += offsetof(RTL_SET_PC, lights);
-        PCByteCopy_candidate(address.void_ptr, source.void_ptr, 0x4600u);
-        index = rtl_undo_ix;
-        address.void_ptr = curpos_undo;
-        address.addr += index * sizeof(NUVEC);
-        edcamSetPos((NUVEC *)address.void_ptr);
-        index = rtl_undo_ix;
-        source.void_ptr = curpos_undo;
-        source.addr += index * sizeof(NUVEC);
-        memcpy(&word, source.void_ptr, sizeof(word));
-        memcpy(&burn_editor_position_pc.x, &word, sizeof(word));
-        source.addr += sizeof(u32);
-        memcpy(&word, source.void_ptr, sizeof(word));
-        memcpy(&burn_editor_position_pc.y, &word, sizeof(word));
-        source.addr += sizeof(u32);
-        memcpy(&word, source.void_ptr, sizeof(word));
-        memcpy(&burn_editor_position_pc.z, &word, sizeof(word));
-        address.void_ptr = curr_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(&value, address.void_ptr, sizeof(value));
-        curr_rtl = value;
-        address.void_ptr = rtl_locked_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(&value, address.void_ptr, sizeof(value));
-        rtl_locked = value;
-        address.void_ptr = base_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(&value, address.void_ptr, sizeof(value));
-        base_rtl = value;
-        redo_item->flags &= (u8)~2u;
+        PCByteCopy_candidate(rtl_undo + rtl_undo_ix * 128, curr_set->lights, sizeof(curr_set->lights));
+        edcamGetPosAng(&curpos_undo[rtl_undo_ix], NULL, NULL);
+        curr_rtl_undo[rtl_undo_ix] = curr_rtl;
+        rtl_locked_undo[rtl_undo_ix] = rtl_locked;
+        base_rtl_undo[rtl_undo_ix] = base_rtl;
+        rtl_undo_ix = (rtl_undo_ix - 1) & (maxundo - 1);
+        --rtl_undo_cnt;
+        PCByteCopy_candidate(curr_set->lights, rtl_undo + rtl_undo_ix * 128, sizeof(curr_set->lights));
+        edcamSetPos(&curpos_undo[rtl_undo_ix]);
+        burn_editor_position_pc = curpos_undo[rtl_undo_ix];
+        curr_rtl = curr_rtl_undo[rtl_undo_ix];
+        rtl_locked = rtl_locked_undo[rtl_undo_ix];
+        base_rtl = base_rtl_undo[rtl_undo_ix];
+        redo_item->disabled = 0;
         if (rtl_undo_cnt == 0)
-            undo_item->flags |= 2u;
+            undo_item->disabled = 1;
         RefreshUI();
     }
 }
 
 void __cdecl edrtlRedo(void) {
-    VARIPTR source, address;
-    RTL_SET_PC *set;
-    RTL_LIGHT_PC *value;
-    u32 index, limit, word;
-    i32 count;
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt < rtl_undo_maxcnt) {
-        set = curr_set;
-        limit = (u32)maxundo - 1u;
-        index = rtl_undo_ix;
-        rtl_undo_cnt = (i32)((u32)rtl_undo_cnt + 1u);
-        index = (index + 1u) & limit;
-        rtl_undo_ix = index;
-        source.void_ptr = rtl_undo;
-        source.addr += index * 0x4600u;
-        address.void_ptr = set;
-        address.addr += offsetof(RTL_SET_PC, lights);
-        PCByteCopy_candidate(address.void_ptr, source.void_ptr, 0x4600u);
-        index = rtl_undo_ix;
-        address.void_ptr = curpos_undo;
-        address.addr += index * sizeof(NUVEC);
-        edcamSetPos((NUVEC *)address.void_ptr);
-        index = rtl_undo_ix;
-        source.void_ptr = curpos_undo;
-        source.addr += index * sizeof(NUVEC);
-        memcpy(&word, source.void_ptr, sizeof(word));
-        memcpy(&burn_editor_position_pc.x, &word, sizeof(word));
-        source.addr += sizeof(u32);
-        memcpy(&word, source.void_ptr, sizeof(word));
-        memcpy(&burn_editor_position_pc.y, &word, sizeof(word));
-        source.addr += sizeof(u32);
-        memcpy(&word, source.void_ptr, sizeof(word));
-        memcpy(&burn_editor_position_pc.z, &word, sizeof(word));
-        address.void_ptr = curr_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(&value, address.void_ptr, sizeof(value));
-        curr_rtl = value;
-        address.void_ptr = rtl_locked_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(&value, address.void_ptr, sizeof(value));
-        rtl_locked = value;
-        address.void_ptr = base_rtl_undo;
-        address.addr += index * sizeof(RTL_LIGHT_PC *);
-        memcpy(&value, address.void_ptr, sizeof(value));
-        count = rtl_undo_cnt;
-        base_rtl = value;
-        undo_item->flags &= (u8)~2u;
-        if (count == rtl_undo_maxcnt)
-            redo_item->flags |= 2u;
+        rtl_undo_ix = (rtl_undo_ix + 1) & (maxundo - 1);
+        ++rtl_undo_cnt;
+        PCByteCopy_candidate(curr_set->lights, rtl_undo + rtl_undo_ix * 128, sizeof(curr_set->lights));
+        edcamSetPos(&curpos_undo[rtl_undo_ix]);
+        burn_editor_position_pc = curpos_undo[rtl_undo_ix];
+        curr_rtl = curr_rtl_undo[rtl_undo_ix];
+        rtl_locked = rtl_locked_undo[rtl_undo_ix];
+        base_rtl = base_rtl_undo[rtl_undo_ix];
+        undo_item->disabled = 0;
+        if (rtl_undo_cnt == rtl_undo_maxcnt)
+            redo_item->disabled = 1;
         RefreshUI();
     }
 }
