@@ -2464,6 +2464,8 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     NUVEC seek_rates;
     i32 seek_vertical;
     u16 secondary_lean;
+    f32 turn_rate;
+    u16 pitch;
     pad = object->pad;
     operator_object = object;
     current_animation = CurrentAnim(&object->anim_packet);
@@ -2480,7 +2482,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         GAMEOBJECT *vehicle;
         MoveInactiveVehicle(object, 0, &vehicle);
         if (vehicle != NULL) {
-            object->field_0x276 = object->movement_facing_angle = object->facing_angle = vehicle->field_0x276;
+            object->facing_angle = object->movement_facing_angle = object->field_0x276 = vehicle->field_0x276;
             object->velocity = vehicle->velocity;
             object->field_dc8 = vehicle->field_dc8;
             object->movement_lean_angle = 0;
@@ -2502,6 +2504,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         else
             PlaySfx((char *)PlayerGrappleWindSoundPc, &object->collision_position);
     }
+    turn_rate = 8.0f;
     input_angle = GamePad_InputAngle(object, pad);
     object->flags_e20 |= 0x200000;
     object->current_input_angle = input_angle;
@@ -2518,7 +2521,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         i32 has_turn_animation;
         has_turn_animation = object->character_model != NULL && (object->character_model->model_data_b[12] != NULL ||
                                                                  object->character_model->model_data_b[119] != NULL);
-        if (has_turn_animation && (object->character_context == 1 || object->character_context == -1) &&
+        if (has_turn_animation && (object->character_context == -1 || object->character_context == 1) &&
             pad->input_magnitude > 0.0f) {
             i32 difference;
             difference = abs(RotDiff(object->movement_facing_angle, input_angle));
@@ -2538,7 +2541,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
             object->pitch_angle = 0;
             object->roll_angle = 0;
         } else {
-            u16 pitch;
             object->movement_mode = 0;
             if (object->character_context == 0x47) {
                 DIRECTIONAL_ZIPUP_PC *zipup;
@@ -2554,7 +2556,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
             object->roll_angle = SeekRot(object->roll_angle, 0, 8.0f);
         }
     } else if (object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) {
-        u16 pitch;
         u16 roll;
         object->movement_mode = 2;
         if (pad->input_magnitude > 0.0f) {
@@ -2723,16 +2724,14 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         }
     }
     if (heading_handled == 0) {
-        f32 turn_rate;
         if (object->character_context == 0x33 || (object->flags_ef0 & 0x400) != 0)
             direct_turn = 1;
         else
             direct_turn = 0;
         if (SuperCarry_Carrying(object))
             turn_rate = 8.0f * object->context_hover_target_y;
-        else if (object->character_context == 0x33 || object->character_context == 0x1c)
-            turn_rate = 8.0f;
-        else if (turn_override != 0.0f)
+        else if (object->character_context == 0x1c || object->character_context == 0x33) {
+        } else if (turn_override != 0.0f)
             turn_rate = 8.0f * turn_override;
         else {
             turn_rate = 8.0f * object->character_data->game_character->turn_rate;
@@ -2742,8 +2741,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         if ((object->flags_ef0 & 0x8000) != 0 && (U64_PAIR(&CInfo[object->character_context].flags) & 1) == 0)
             object->movement_facing_angle += 0x8000;
         if ((object->flags_ef0 & 0x400) != 0) {
-            object->facing_angle = object->movement_facing_angle;
-            object->field_0x276 = object->movement_facing_angle;
+            object->field_0x276 = object->facing_angle = object->movement_facing_angle;
         } else if (direct_turn == 0 &&
                    (turn_override != 0.0f ||
                     (U64_PAIR(&CInfo[object->character_context].flags) & 0x200000000ULL) != 0 ||
@@ -2832,6 +2830,14 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     object->target_velocity.z = (position.z - object->position.z) * rate;
                 }
                 break;
+            } else if (object->character_context == 0x61 && (object->flags_1f8 & 0x40000) == 0) {
+                NUVEC position;
+                f32 rate;
+                position = ((DIRECTIONAL_HATMACHINE_PC *)(object->grapple))->player_position;
+                rate = 10.0f * object->context_hover_target_y + 5.0f;
+                object->target_velocity.x = (position.x - object->position.x) * rate;
+                object->target_velocity.z = (position.z - object->position.z) * rate;
+                break;
             } else if (object->character_context == 0x51) {
                 DIRECTIONAL_TECHNO_PC *techno;
                 techno = (DIRECTIONAL_TECHNO_PC *)(object->grapple);
@@ -2874,26 +2880,17 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 f32 water_speed_multiplier;
                 f32 walking_speed;
                 u16 walking_angle;
-                if (object->character_context == 0x61 && (object->flags_1f8 & 0x40000) == 0) {
-                    NUVEC position;
-                    f32 rate;
-                    position = ((DIRECTIONAL_HATMACHINE_PC *)(object->grapple))->player_position;
-                    rate = 10.0f * object->context_hover_target_y + 5.0f;
-                    object->target_velocity.x = (position.x - object->position.x) * rate;
-                    object->target_velocity.z = (position.z - object->position.z) * rate;
-                    break;
-                }
                 if (object->character_context != 5) {
                     f32 animation_speed;
                     animation_speed = AnimSpeed(object->character_model, current_animation);
                     if (animation_speed != 0.0f) {
-                        f32 speed_multiplier;
+                        f32 speed;
                         f32 stop_frame;
                         f32 *frame;
                         i32 stopped;
                         if (CanStepBack(object) && StepBackFromTarget(object))
                             break;
-                        speed_multiplier = object->animation_speed_multiplier;
+                        speed = object->animation_speed_multiplier * animation_speed;
                         stop_frame = AnimStopFrame(object->character_model, current_animation);
                         frame = AnimPlaying(&object->anim_packet, current_animation, 1, 0);
                         stopped = stop_frame > 1.0f && frame != NULL && *frame >= stop_frame;
@@ -2917,11 +2914,9 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             }
                         } else {
                             u16 angle;
-                            f32 speed;
                             angle = (object->character_data->game_character->flags_090 & 0x100) != 0 && direct_turn == 0
                                         ? object->facing_angle
                                         : object->movement_facing_angle;
-                            speed = animation_speed * speed_multiplier;
                             object->target_velocity.x = NuTrigTable[angle >> 1] * speed;
                             object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
                             if (object->character_context == 0x25 && object->field_7aa != 0x58)
