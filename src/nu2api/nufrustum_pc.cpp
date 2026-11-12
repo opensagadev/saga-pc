@@ -2,7 +2,7 @@
 
 bool PCFrustumClipSet::TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 group_index) {
     PC_FRUSTUM_GROUP_PC *group = &first_group + group_index;
-    NUVEC corners[8];
+    __declspec(align(16)) NUVEC4 corners[8];
     corners[0].x = minimum->x;
     corners[0].y = minimum->y;
     corners[0].z = minimum->z;
@@ -31,8 +31,8 @@ bool PCFrustumClipSet::TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 g
         const NUPLANE *plane = &group->planes[plane_index];
         i32 corner_index;
         for (corner_index = 0; corner_index < 8; ++corner_index) {
-            f32 distance = (corners[corner_index].x * plane->a + corners[corner_index].y * plane->b) +
-                           corners[corner_index].z * plane->c;
+            __declspec(align(16)) NUVEC4 point = corners[corner_index];
+            f32 distance = plane->a * point.x + point.y * plane->b + plane->c * point.z;
             distance += plane->d;
             if (distance > 0.0f)
                 break;
@@ -44,10 +44,10 @@ bool PCFrustumClipSet::TestBox(const NUVEC *minimum, const NUVEC *maximum, i32 g
 }
 
 i32 PCFrustumClipSet::TestBoxes(const NUVEC *minimum, const NUVEC *maximum) {
-    u32 result = 0;
+    i32 result = 0;
     for (i32 group = 0; group < active_render_set_count; ++group) {
         if (TestBox(minimum, maximum, group))
-            result |= 1u << (group & 31);
+            result |= 1 << group;
     }
-    return static_cast<i32>(result);
+    return result;
 }
