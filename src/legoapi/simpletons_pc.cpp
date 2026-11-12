@@ -587,8 +587,12 @@ extern "C" {
                         if (team->path != NULL) {
                             team->waypoint_current = team->waypoint_index;
                             const NUVEC &point = team->path->pts[team->waypoint_current];
-                            team->facing_angle = NuAtan2D(point.x - team->origin_x, point.z - team->origin_z);
-                            team->formation_shape = droid_hack != 0 ? 4 : 1;
+                            const f32 dx = point.x - team->origin_x;
+                            team->facing_angle = NuAtan2D(dx, point.z - team->origin_z);
+                            if (droid_hack == 0)
+                                team->formation_shape = 1;
+                            else
+                                team->formation_shape = 4;
                             GenerateTrooperTeamShape(team, 0);
                             trooper = team->troopers;
                             for (i32 i = 0; i < team->trooper_count; ++i, ++trooper)
@@ -600,7 +604,10 @@ extern "C" {
                         if (i == selected && shoot_due != 0)
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
 
-                        if (((trooper->state_flags & 0x40) != 0)) {
+                        if ((trooper->state_flags & 0x40) == 0) {
+                            if (MiniTrooperCheckFormationPc(team, trooper))
+                                ++stopped_count;
+                        } else {
                             ++stopped_count;
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
@@ -611,9 +618,6 @@ extern "C" {
                                 else
                                     trooper->target_rotation = (u16)qrand();
                             }
-                        } else {
-                            if (MiniTrooperCheckFormationPc(team, trooper))
-                                ++stopped_count;
                         }
 
                         if ((trooper->state_flags & 0x40) == 0) {
@@ -628,10 +632,7 @@ extern "C" {
                         if (((trooper->state_flags & 0x80) != 0)) {
                             ++aligned_count;
                         } else if ((trooper->state_flags & 0x40) != 0) {
-                            i32 difference = static_cast<i16>(trooper->rotation - team->facing_angle);
-                            if (difference < 0)
-                                difference = -difference;
-                            if (difference <= 0x16c) {
+                            if (abs(static_cast<i16>(trooper->rotation - team->facing_angle)) <= 0x16c) {
                                 trooper->state_flags |= 0x80;
                                 ++aligned_count;
                             }
@@ -644,7 +645,7 @@ extern "C" {
                         total.x += trooper->shot_position.x;
                         total.z += trooper->shot_position.z;
                     }
-                    if (aligned_count == team->trooper_count && stopped_count == aligned_count)
+                    if (aligned_count == team->trooper_count && stopped_count == team->trooper_count)
                         TrooperTeamSetStateCode(team);
                     break;
                 }
@@ -695,10 +696,9 @@ extern "C" {
                 }
             }
 
-            const f32 count = static_cast<f32>(static_cast<i32>(team->trooper_count));
-            team->position.x = total.x / count;
-            team->position.y = total.y;
-            team->position.z = total.z / count;
+            total.x /= static_cast<f32>(static_cast<i32>(team->trooper_count));
+            total.z /= static_cast<f32>(static_cast<i32>(team->trooper_count));
+            team->position = total;
 
             if (team->debris_timer > 0.0f && droid_hack == 0) {
                 team->debris_timer -= FRAMETIME;
