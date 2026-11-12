@@ -456,13 +456,11 @@ static __declspec(noinline) void AdjustPickupDrawDistancePc(i32 version, i32 are
 
 void *__cdecl GizmoPickups_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
-    struct GIZMOPICKUPRUNTIMESYS_s *system;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
     world->pickup_runtime_sys = (struct GIZMOPICKUPRUNTIMESYS_s *)world->giz_buffer.addr;
-    world->giz_buffer.addr += sizeof(*system);
-    system = world->pickup_runtime_sys;
-    memset(system, 0, sizeof(*system));
-    system->draw_distance = 10.0f;
+    world->giz_buffer.addr += sizeof(struct GIZMOPICKUPRUNTIMESYS_s);
+    memset(world->pickup_runtime_sys, 0, sizeof(struct GIZMOPICKUPRUNTIMESYS_s));
+    world->pickup_runtime_sys->draw_distance = 10.0f;
     SetAreaPickupScalePc(world->area_index);
     world->pickup_runtime_sys->pickup_scale = AreaPickupScale;
     SetAreaPickupGravity(world->area_index, world->level_idx);
