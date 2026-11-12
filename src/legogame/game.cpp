@@ -884,20 +884,16 @@ static void __cdecl BigJump_EndOfLand(GAMEOBJECT *object) {
 
 static i32 __cdecl Player_ToggleSubCharacter_Game(GAMEOBJECT *object, i32 left, i32 sound) {
     i32 previous, selected;
-    SUIT_INITIALIZER_RECORD_PC *record;
     if (object->suit != NULL) {
-        previous = Suit_GetIndex(object->suit);
-        selected = previous;
-        record = &SuitRecordInitPc[selected];
+        selected = Suit_GetIndex(object->suit);
+        previous = selected;
         for (;;) {
-            if (left != 0) {
+            if (left != 0)
                 --selected;
-                --record;
-            } else {
+            else
                 ++selected;
-                ++record;
-            }
-            if (selected < 0 || selected == 10 || record->character_id != (i16)object->id || selected == previous)
+            if (selected < 0 || selected == 10 || SuitRecordInitPc[selected].character_id != (i16)object->id ||
+                selected == previous)
                 return 0;
             if ((areaSuitBits & (1 << selected)) != 0)
                 break;
