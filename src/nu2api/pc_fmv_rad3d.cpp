@@ -133,7 +133,7 @@ static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scal
     vertices[0].y = (f32)(y - 0.5);
     vertices[0].z = 0;
     vertices[0].rhw = 1;
-    vertices[0].diffuse = ((u32)(i64)(alpha * 255.0) << 24) | 0xffffff;
+    vertices[0].diffuse = ((u32)(alpha * 255.0) << 24) | 0xffffff;
     vertices[0].specular = vertices[0].diffuse;
     vertices[0].u = 0;
     vertices[0].v = 0;
