@@ -1705,9 +1705,12 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
 
 void NetworkObjectManager::Receive(NETMESSAGE_PC message, u8, const V2Peer &peer) {
     i32 error = 0;
+    u8 history[256]; /* message types seen, kept for debugging (never read) */
+    u8 *last = history;
     do {
         u8 type;
         message.Read8(type);
+        *last++ = type;
         switch (type) {
             case 9:
                 ReceiveStartMessage(message, peer);
