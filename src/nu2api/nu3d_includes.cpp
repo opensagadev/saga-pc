@@ -11921,21 +11921,28 @@ extern "C" {
 
 /* nutex */
 extern "C" {
-    void __cdecl NuTexDestroy(i32 texture_id) {
-        NUTEXDIM_PC *texture;
+    static i32 NuTexGetRefCount(i32 texture_id) {
+        NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_id);
+        if (texture != NULL)
+            return texture->ref_count;
+        return 0;
+    }
 
-        if (texture_id <= 0) {
-            return;
-        }
-        texture = NuTextureDimensions[texture_id - 1];
-        if (texture != NULL && texture->ref_count > 0) {
-            if (texture != NULL) {
-                --texture->ref_count;
+    static void NuTexRemoveReference(i32 texture_id) {
+        NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_id);
+        if (texture != NULL)
+            --texture->ref_count;
+    }
+
+    void __cdecl NuTexDestroy(i32 texture_id) {
+        if (texture_id > 0) {
+            if (NuTexGetRefCount(texture_id) <= 0) {
+                NuTexDestroyPS(NuTextureDimensions[texture_id - 1]);
+                NuTextureDimensions[texture_id - 1] = NULL;
+            } else {
+                NuTexRemoveReference(texture_id);
             }
-            return;
         }
-        NuTexDestroyPS(texture);
-        NuTextureDimensions[texture_id - 1] = NULL;
     }
 
     i32 __cdecl NuTexCreateNative(NUTEXDIM_PC *texture) {
