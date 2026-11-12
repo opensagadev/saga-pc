@@ -1943,8 +1943,8 @@ void __cdecl GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
             if ((blowup->status_flags & 0x8000) != 0)
                 NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW_PC *)blowup)->screen_position, &blowup->position, 1,
                                             NULL);
-            if ((blowup->status_flags & 0x808000) == 0x808000 && (blowup->draw_flags & 0x10) != 0 &&
-                GizmoBlowup_TransformDrawFn != NULL)
+            if ((blowup->status_flags & 0x800000) != 0 && (blowup->status_flags & 0x8000) != 0 &&
+                (blowup->draw_flags & 0x10) != 0 && GizmoBlowup_TransformDrawFn != NULL)
                 GizmoBlowup_TransformDrawFn(blowup);
         } else {
             blowup->status_flags &= ~0x8000u;
