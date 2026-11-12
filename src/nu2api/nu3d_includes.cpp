@@ -14512,8 +14512,8 @@ extern "C" {
         NUVEC blend_translation;
         f32 adjusted_time_a, adjusted_time_b;
         u8 quaternion_mode;
-        buffer.joint_count = 0;
         buffer.max_joints = globalbuffer->scratch_joint_capacity;
+        buffer.joint_count = 0;
         buffer.joints = (ANI3_JOINT_PC *)(((u32)NuScratchAlloc32((buffer.max_joints + 1) * 48) + 15u) & ~15u);
         buffer.joint_flags = (u8 *)NuScratchAlloc32(buffer.max_joints);
         root_translation.x = root_translation.y = root_translation.z = 0.0f;
