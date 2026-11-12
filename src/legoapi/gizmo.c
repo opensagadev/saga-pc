@@ -70,9 +70,9 @@ void __cdecl GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) 
     if (gizmo->type_id >= registry->count)
         return;
 
-    type = &registry->types[gizmo->type_id];
-    if (type->fns.activate_fn == NULL)
+    if (registry->types[gizmo->type_id].fns.activate_fn == NULL)
         return;
+    type = &registry->types[gizmo->type_id];
 
     if (active != 0 && type->fns.set_visibility_fn != NULL)
         type->fns.set_visibility_fn(gizmo, 1);
@@ -93,33 +93,31 @@ void __cdecl GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 
     if (gizmo->type_id >= registry->count)
         return;
 
-    type = &registry->types[gizmo->type_id];
-    if (type->fns.set_visibility_fn == NULL)
+    if (registry->types[gizmo->type_id].fns.set_visibility_fn == NULL)
         return;
+    type = &registry->types[gizmo->type_id];
 
     if (visible == 0 && type->fns.activate_fn != NULL) {
-        type->fns.activate_fn(gizmo, 0);
-        registry = (GIZMOTYPES_PC *)gizmotypes;
-        type = &registry->types[gizmo->type_id];
+        type->fns.activate_fn(gizmo, visible);
     }
 
-    type->fns.set_visibility_fn(gizmo, visible);
+    ((GIZMOTYPES_PC *)gizmotypes)->types[gizmo->type_id].fns.set_visibility_fn(gizmo, visible);
     (void)mode;
 }
 
 i32 __cdecl GizmoGetOutput(void *system, void *gizmo_ptr, i32 output, i32 mode) {
     GIZMOTYPES_PC *registry;
-    GIZMOTYPE_PC *type;
+    i32(__cdecl * get_output)(GIZMO_PC *, i32, i32);
     GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_ptr;
     if (gizmotypes == NULL || system == NULL || gizmo == NULL)
         return 0;
     registry = (GIZMOTYPES_PC *)gizmotypes;
     if (gizmo->type_id >= registry->count)
         return 0;
-    type = &registry->types[gizmo->type_id];
-    if (type->fns.get_output_fn == NULL)
+    get_output = registry->types[gizmo->type_id].fns.get_output_fn;
+    if (get_output == NULL)
         return 0;
-    return type->fns.get_output_fn(gizmo, output, mode);
+    return get_output(gizmo, output, mode);
 }
 
 char *__cdecl GizmoGetOutputName(void *system, void *gizmo_ptr, i32 output) {
@@ -759,16 +757,16 @@ STATIC_ASSERT(offsetof(GIZMO_VISIBILITY_TYPE_VIEW_PC, get_visibility) == 0x60);
 i32 __cdecl GizmoGetVisibility(void *system, void *pointer) {
     GIZMO_PC *gizmo = (GIZMO_PC *)pointer;
     GIZMOTYPES_PC *registry;
-    GIZMOTYPE_PC *type;
+    i32(__cdecl * get_visibility)(GIZMO_PC *);
     if (gizmotypes == NULL || system == NULL || gizmo == NULL)
         return 0;
     registry = (GIZMOTYPES_PC *)gizmotypes;
     if (gizmo->type_id >= registry->count)
         return 0;
-    type = &registry->types[gizmo->type_id];
-    if (type->fns.get_visibility_fn == NULL)
+    get_visibility = registry->types[gizmo->type_id].fns.get_visibility_fn;
+    if (get_visibility == NULL)
         return 0;
-    return type->fns.get_visibility_fn(gizmo);
+    return get_visibility(gizmo);
 }
 
 typedef NUVEC *(__cdecl *GIZMO_GET_POS_FN_PC)(GIZMO_PC *gizmo);
