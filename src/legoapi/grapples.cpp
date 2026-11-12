@@ -275,40 +275,38 @@ static void Grapple_ResetSinglePc(GRAPPLE_MOTION_PC *grapple) {
     grapple->has_terrain_platform = 0;
 }
 
+static void Grapple_ResetDynamicPc(GRAPPLE_MOTION_PC *grapple, i32 index) {
+    sprintf(grapple->name, "dynamic%i", index + 1);
+    grapple->visible = 0;
+    grapple->y_rotation = 0;
+    grapple->active = 1;
+    grapple->attached_object = NULL;
+    grapple->has_terrain_platform = 1;
+}
+
 extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *progress_pointer) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
-    u32 *progress = (u32 *)progress_pointer;
-    GRAPPLE_MOTION_PC *grapple, *dynamic;
-    u8 *flags;
-    i32 index;
+    GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_pointer;
+    GRAPPLE_MOTION_PC *grapple;
+    i32 index, word;
+    u32 bit;
     (void)unused;
     if (world == NULL)
         return;
-    if (world->grapples != NULL && world->grapple_count > 0) {
-        flags = &((GRAPPLE_MOTION_PC *)world->grapples)->flags;
-        index = 0;
-        do {
-            grapple = &((GRAPPLE_MOTION_PC *)world->grapples)[index];
-            Grapple_ResetSinglePc(grapple);
+    grapple = (GRAPPLE_MOTION_PC *)world->grapples;
+    if (grapple != NULL) {
+        for (index = 0; index < world->grapple_count; ++index, ++grapple) {
+            Grapple_ResetSinglePc(&((GRAPPLE_MOTION_PC *)world->grapples)[index]);
             if (progress != NULL && index < 32) {
-                i32 word = index / 32;
-                u32 bit = 1u << (index & 31);
-                *flags ^= (u8)((((progress[word + 1] & bit) != 0) << 1) ^ *flags) & 2;
-                *flags ^= (u8)(((progress[word] & bit) != 0) ^ *flags) & 1;
+                word = index / 32;
+                bit = 1u << (index & 31);
+                grapple->visible = (progress->visible[word] & bit) != 0;
+                grapple->active = (progress->enabled[word] & bit) != 0;
             }
-            ++index;
-            flags += 0xf8;
-        } while (index < world->grapple_count);
+        }
     }
-    for (index = 0; index < 4; ++index) {
-        dynamic = &((GRAPPLE_MOTION_PC *)DynamicGrapplePc)[index];
-        sprintf(dynamic->name, "dynamic%i", index + 1);
-        u8 dynamic_flags = (u8)((dynamic->flags & ~2u) | 1u);
-        dynamic->y_rotation = 0;
-        dynamic->attached_object = NULL;
-        dynamic->flags = dynamic_flags;
-        dynamic->has_terrain_platform = 1;
-    }
+    for (index = 0; index < 4; ++index)
+        Grapple_ResetDynamicPc(&((GRAPPLE_MOTION_PC *)DynamicGrapplePc)[index], index);
 }
 
 GAMEOBJECT *__cdecl Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATHCNX_PC *connection) {
