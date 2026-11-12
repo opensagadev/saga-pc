@@ -128,9 +128,7 @@ void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
     u32 flags = object->character_data->model_flags;
     if ((flags & 0x40) != 0)
         sfx = GameAudio->sfx_ids[1];
-    else if ((flags & 8) == 0)
-        sfx = GameAudio->sfx_ids[0];
-    else {
+    else if ((flags & 8) != 0) {
         switch (type) {
             case 0:
                 sfx = GameAudio->sfx_ids[2];
@@ -138,19 +136,20 @@ void __cdecl PlayJumpSfx(GAMEOBJECT *object, i32 type) {
             case 1:
                 sfx = GameAudio->sfx_ids[3];
                 break;
-            case 2:
-                sfx = GameAudio->sfx_ids[6];
-                break;
             case 3:
                 sfx = GameAudio->sfx_ids[4];
                 break;
             case 4:
                 sfx = GameAudio->sfx_ids[5];
                 break;
+            case 2:
+                sfx = GameAudio->sfx_ids[6];
+                break;
             default:
                 return;
         }
-    }
+    } else
+        sfx = GameAudio->sfx_ids[0];
     if (sfx != -1) {
         if ((object->flags_1fc & 0x80) == 0 && (object->portal_flags & 0x08000000) == 0)
             PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
