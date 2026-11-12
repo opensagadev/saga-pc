@@ -5950,7 +5950,9 @@ extern "C" {
             if (frustum != NULL && frustum->room_id == room_id) {
                 NUPORTALSPHERE_PC sphere;
                 i32 result;
-                sphere.center = *position;
+                sphere.center.x = position->x;
+                sphere.center.y = position->y;
+                sphere.center.z = position->z;
                 sphere.radius = radius;
                 result = clipTestSphere(&sphere, frustum);
                 if (result != 0)
