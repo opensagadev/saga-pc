@@ -60,8 +60,10 @@ static i32 Traffic_FindVehiclePc(char *name) {
         if (parse_trafficanimsys->vehicle_count >= 16)
             return -1;
         if (NuSpecialFind(parse_worldinfo->current_gscn,
-                          &parse_trafficanimsys->vehicles[parse_trafficanimsys->vehicle_count], name, 1) != 0)
-            return parse_trafficanimsys->vehicle_count++;
+                          &parse_trafficanimsys->vehicles[parse_trafficanimsys->vehicle_count], name, 1) != 0) {
+            parse_trafficanimsys->vehicle_count++;
+            return parse_trafficanimsys->vehicle_count - 1;
+        }
     }
     return -1;
 }
@@ -221,11 +223,9 @@ void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system) {
 void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
     struct TRAFFICANIMINSTANCE_s *instance;
     struct TRAFFICANIM_s *animation;
-    i8 system_animation_count;
     i32 animation_index;
-    if (g_lowEndLevelBehaviour != 0 || system == NULL) {
+    if (system == NULL)
         return;
-    }
 
     instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->active_instances));
     while (instance != NULL) {
@@ -242,8 +242,7 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
     }
 
     animation = system->animations;
-    system_animation_count = system->animation_count;
-    for (animation_index = 0; animation_index < system_animation_count; ++animation_index, ++animation) {
+    for (animation_index = 0; animation_index < system->animation_count; ++animation_index, ++animation) {
         animation->next_spawn_time -= animation->tfactor * FRAMETIME * 60.0f;
         if (animation->next_spawn_time <= 0.0f) {
             if (animation->vehicle_count != 0) {
@@ -253,9 +252,9 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
                     NuLinkedListRemove(&system->free_instances, &instance->link);
                     NuLinkedListAppend(&system->active_instances, &instance->link);
                     instance->frame = 0.0f;
-                    random = qrand();
+                    random = qrand() / (0xffff / animation->vehicle_count + 1);
                     instance->animation = animation;
-                    instance->vehicle_index = random / (0xffff / (i32)(animation->vehicle_count) + 1);
+                    instance->vehicle_index = random;
                 }
             }
 
@@ -267,21 +266,15 @@ void TrafficAnimSys_Update(TRAFFICANIMSYS_s *system) {
 
 void TrafficAnimSys_Draw(TRAFFICANIMSYS_s *system) {
     i32 room;
-    if (g_lowEndLevelBehaviour != 0 || system == NULL) {
+    if (system == NULL)
         return;
-    }
 
     if (traffic_portalling != 0) {
         struct TRAFFICANIMINSTANCE_s *instance;
         u32 visible_rooms = 0;
-        if (WORLD->current_gscn->num_rooms > 0) {
-            room = 0;
-            while (room < WORLD->current_gscn->num_rooms && room < 32) {
-                if (WORLD->rooms_visible_ptr[room] != 0) {
-                    visible_rooms |= 1U << room;
-                }
-                ++room;
-            }
+        for (room = 0; room < WORLD->current_gscn->num_rooms && room < 32; ++room) {
+            if (WORLD->rooms_visible_ptr[room] != 0)
+                visible_rooms |= 1U << room;
         }
 
         instance = (TRAFFICANIMINSTANCE_s *)(NuLinkedListGetHead(&system->active_instances));
@@ -289,11 +282,12 @@ void TrafficAnimSys_Draw(TRAFFICANIMSYS_s *system) {
             TRAFFICANIM_s *animation = instance->animation;
             i32 frame_index = (i32)((instance->frame - 1.0f) / animation->room_frame_interval);
             if (frame_index < 256) {
-                u32 animation_rooms = 0xffffffff;
+                u32 animation_rooms;
                 u8 room = animation->rooms[frame_index];
-                if (room != 0xff) {
+                if (room == 0xff)
+                    animation_rooms = 0xffffffff;
+                else
                     animation_rooms = 1U << room;
-                }
                 room = animation->rooms[frame_index + 1];
                 if (room != 0xff) {
                     animation_rooms |= 1U << room;
