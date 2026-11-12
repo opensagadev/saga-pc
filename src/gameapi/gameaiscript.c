@@ -2341,32 +2341,30 @@ f32 __cdecl Condition_PlayerInSockPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
 
 f32 __cdecl Condition_SockDistanceToPlayer(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet,
                                            char *unused3, void *unused4) {
-    f32 result = 0.0f;
     if (packet != NULL && packet->owner != NULL && player != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
         GAMEOBJECT *target = player;
         if (target->sock_position.sock_index != -1 &&
             target->sock_position.sock_index == object->sock_position.sock_index) {
             f64 distance = MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
-            result = (f32)(distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position));
+            return (f32)(distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position));
         }
     }
-    return result;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_SockDistanceToOpponent(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet,
                                              char *unused3, void *unused4) {
-    f32 result = 0.0f;
     if (packet != NULL && packet->owner != NULL && packet->opponent != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
         GAMEOBJECT *target = packet->opponent->objptr;
         if (target->sock_position.sock_index != -1 &&
             target->sock_position.sock_index == object->sock_position.sock_index) {
             f64 distance = MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
-            result = (f32)(distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position));
+            return (f32)(distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position));
         }
     }
-    return result;
+    return 0.0f;
 }
 
 f32 __cdecl Condition_SockXDistanceToPlayer(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet,
