@@ -470,8 +470,8 @@ void __cdecl JediB_Init(WORLDINFO *world) {
                             baddie->flags |= 2;
                             baddie->position = position;
                             baddie->locator = locator;
-                            baddie->partner = goody;
                             baddie->angle = angle;
+                            baddie->partner = goody;
                             goody->partner = baddie;
                         }
                     }
