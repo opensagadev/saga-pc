@@ -4122,11 +4122,11 @@ void __cdecl AIPathCalcExtents(AIPATH_PC *path) {
 }
 
 __declspec(noinline) i32 __cdecl AIPathCheckExtents(AIPATH_PC *path, NUVEC *position) {
-    if (path->bounds_min.x > position->x || path->bounds_min.y > position->y || path->bounds_min.z > position->z ||
-        position->x > path->bounds_max.x || position->y > path->bounds_max.y) {
+    if (position->x < path->bounds_min.x || position->y < path->bounds_min.y || position->z < path->bounds_min.z ||
+        position->x > path->bounds_max.x || position->y > path->bounds_max.y || position->z > path->bounds_max.z) {
         return 0;
     }
-    return position->z <= path->bounds_max.z;
+    return 1;
 }
 
 static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
