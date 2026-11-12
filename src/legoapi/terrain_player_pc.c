@@ -203,8 +203,8 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_FULLTERRAIN) &&
                     (object->character_context != 0x5a || object->field_7b3 != 0);
                 if (ordinary_ai_path) {
-                    shadow_grounding = 1;
                     retain_floor = (api->flags_1fc_word & 0x10) != 0;
+                    shadow_grounding = 1;
                 } else {
                     retain_floor = ai_controlled ? 0 : (0x10 & api->flags_1fc_word) != 0;
                     if (0 != (object->flags_ef4 & 0x40)) {
@@ -349,7 +349,11 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                         object->contact_position.y = api->floor_height;
                         object->contact_position.z = api->position.z;
                         object->contact_material[0] = api->jump_animation_state;
-                        object->contact_normal = shadow_grounding ? object->surface_normal : v010;
+                        if (shadow_grounding) {
+                            object->contact_normal = object->surface_normal;
+                        } else {
+                            object->contact_normal = v010;
+                        }
                         object->terrain_impact_speed = -api->velocity.y;
                     } else {
                         object->contact_material_word = 0;
