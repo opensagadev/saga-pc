@@ -7119,9 +7119,10 @@ void __cdecl StartLunge(GAMEOBJECT *object, f32 speed, f32 height) {
         MakeJumpReachHeight(object, height, 0);
     PlayJumpSfx(object, 3);
     NewRumble(object->pad->bound_pad, 0.5f, 0);
-    object->context_hover_target_y = object->character_model->model_data_b[object->field_7aa] != NULL
-                                         ? AnimSpeed(object->character_model, object->field_7aa)
-                                         : 1.5f;
+    if (object->character_model->model_data_b[object->field_7aa] != NULL)
+        object->context_hover_target_y = AnimSpeed(object->character_model, object->field_7aa);
+    else
+        object->context_hover_target_y = 1.5f;
     targets->character_target = NULL;
     targets->gizmo_target = NULL;
     targets->character_target = ObjOpponent(object, 2.0f, 1.0f, 1, 2, 1);
