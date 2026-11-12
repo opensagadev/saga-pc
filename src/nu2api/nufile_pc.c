@@ -64,8 +64,6 @@ i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *pa
     char buffer[512];
     i32 device_name_len;
     char *subpath;
-    i32 path_len;
-    i32 path_pos;
 
     device_name_len = NuStrLen(device->name);
 
@@ -87,12 +85,10 @@ i32 __cdecl DEV_FormatName(NUFILE_DEVICE *device, char *formatted_name, char *pa
         NuStrCat(buffer, path);
     }
 
-    path_pos = NuStrLen(device->root);
-    NuFileUpCase(device, buffer + path_pos);
+    NuFileUpCase(device, buffer + NuStrLen(device->root));
     NuFileReldirFix(device, buffer);
 
-    path_len = NuStrLen(buffer);
-    if (path_len < buf_size) {
+    if (NuStrLen(buffer) < buf_size) {
         NuStrCpy(formatted_name, buffer);
         return 1;
     }
