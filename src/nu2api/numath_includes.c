@@ -4415,7 +4415,7 @@ void __cdecl NuMtxGetPerspectivePS3(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNe
 
 void __cdecl NuMtxGetPerspectiveOGL(NUMTX *mtx, f32 *fovy, f32 *aspect, f32 *zNear, f32 *zFar) {
     f32 depth = mtx->m22;
-    *zNear = (depth + depth) / mtx->m32 - 1.0f;
+    *zNear = 2.0f * depth / mtx->m32 - 1.0f;
     *zFar = (*zNear * depth) / (depth - 1.0f);
     *aspect = mtx->m11 / mtx->m00;
     *fovy = NuAtan2(1.0f / mtx->m11, 1.0f) * 360.0f / (f32)3.14159265358979323846;
