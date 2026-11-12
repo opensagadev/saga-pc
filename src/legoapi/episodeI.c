@@ -92,24 +92,23 @@ i32 __cdecl Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS_PC *process, AIPACK
             else if (distance < sock->unknown_98 * -0.5)
                 distance += sock->unknown_98;
             ratio = distance - goal;
-            if (ratio > 0.0f) {
-                distance = sebulba_fallback_dist - goal;
-                ratio = ratio / distance;
-                if (ratio > 1.0f)
-                    ratio = 1.0f;
-                ratio = sebulba_fallback_speed_mul * ratio + (1.0f - ratio);
-                lerp = sebulba_fallback_lerpf;
-                goto seek;
-            }
         } else {
             ratio = 0.0f;
         }
-        ratio = ratio / sebulba_catchup_dist;
-        if (ratio > 1.0f)
-            ratio = 1.0f;
-        ratio = sebulba_catchup_speed_mul * ratio + (1.0f - ratio);
-        lerp = sebulba_catchup_lerpf;
-    seek:
+        if (ratio > 0.0f) {
+            distance = sebulba_fallback_dist - goal;
+            ratio = ratio / distance;
+            if (ratio > 1.0f)
+                ratio = 1.0f;
+            ratio = sebulba_fallback_speed_mul * ratio + (1.0f - ratio);
+            lerp = sebulba_fallback_lerpf;
+        } else {
+            ratio = ratio / sebulba_catchup_dist;
+            if (ratio > 1.0f)
+                ratio = 1.0f;
+            ratio = sebulba_catchup_speed_mul * ratio + (1.0f - ratio);
+            lerp = sebulba_catchup_lerpf;
+        }
         object->run_speed_override = SeekValF(object->run_speed_override, ratio * base_speed, lerp);
     } else {
         base_speed = object->character_data->game_character->run_speed;
