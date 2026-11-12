@@ -15306,9 +15306,9 @@ extern "C" void __cdecl PostShadowBuildBasisPc(NUVEC *direction, NUVEC *up, NUMT
     *side = a;
     NuMtxInv(basis, inverse);
 }
-/* Native EAX=count, ECX=vertices, stack offset/scale/four outputs. */
-extern "C" void __cdecl PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertices, NUVEC *offset, f32 scale,
-                                                  f32 *xmin_out, f32 *xmax_out, f32 *ymin_out, f32 *ymax_out) {
+/* Private to this unit: retail passes count in EAX and vertices in ECX, offset/scale/four outputs on the stack. */
+extern "C" static void PostShadowProjectBoundsPc(i32 count, const NUVEC4 *vertices, NUVEC *offset, f32 scale,
+                                                 f32 *xmin_out, f32 *xmax_out, f32 *ymin_out, f32 *ymax_out) {
     f32 xmin = 3.4028234663852886e+38f, xmax = -3.4028234663852886e+38f, ymin = 3.4028234663852886e+38f,
         ymax = -3.4028234663852886e+38f;
     for (i32 i = 0; i < count; ++i) {
@@ -15316,13 +15316,13 @@ extern "C" void __cdecl PostShadowProjectBoundsPc(i32 count, const NUVEC4 *verti
         NuVecAdd(&result, (NUVEC *)&vertices[i], offset);
         f32 x = result.x * scale / result.z;
         f32 y = result.y * scale / result.z;
-        if (xmin > x)
+        if (x < xmin)
             xmin = x;
-        else if (xmax < x)
+        else if (x > xmax)
             xmax = x;
-        if (ymin > y)
+        if (y < ymin)
             ymin = y;
-        else if (ymax < y)
+        else if (y > ymax)
             ymax = y;
     }
     *xmin_out = xmin;
