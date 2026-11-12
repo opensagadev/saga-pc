@@ -3418,39 +3418,33 @@ i32 __cdecl Action_DeActivate(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
     GAMEOBJECT *object;
     i32 creature_set;
     char *value;
-    i32 parsed_set;
     GAMEOBJECT *candidate;
 
-    (void)processor;
     (void)param_6;
+    object = NULL;
+    creature_set = 0;
     if (param_5 == 0) {
         return 1;
     }
 
-    object = NULL;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         object = packet->owner->objptr;
-    creature_set = 0;
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AIGameCharacterName);
         if (value != NULL) {
-            {
-                lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
-            }
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)AIGameSetName);
-        if (value != NULL) {
-            parsed_set = (i32)(AIParamToFloat(processor, value + 4));
-            creature_set = (u32)(parsed_set) < 17 ? parsed_set : 0;
+            lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
+            object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+        } else if ((value = NuStrIStr(params[index], (char *)AIGameSetName)) != NULL) {
+            creature_set = (i32)AIParamToFloat(processor, value + 4);
+            if (creature_set < 0 || creature_set > 16)
+                creature_set = 0;
         }
     }
 
     if (creature_set != 0) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & (1u | 0x1000u)) == (1u | 0x1000u) &&
+            if ((candidate->flags_1fc_word & 1) && (candidate->flags_1fc_word & 0x1000) &&
                 candidate->ai_packet.creature_set == creature_set) {
                 DeactivateGameObject(candidate);
             }
