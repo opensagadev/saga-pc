@@ -1517,11 +1517,17 @@ void __thiscall PC_DEVICE_BACKEND_PC::ResetRequestedMode() {
 STATIC_ASSERT(offsetof(GRAPHICS_DEVICE_METHODS_PC, stretch_rect) == 0x88);
 
 void PC_DEVICE_BACKEND_PC::SetDepthStencilSurface(PC_EFFECT_SURFACE_PC *target) {
-    GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
-    if (target != NULL && target->surface != NULL)
+    if (target != NULL && target->surface != NULL) {
+        GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         view->methods->set_depth_stencil_surface(view, target->surface);
-    else
+    } else if (multisample_index != 0) {
+        /* Retail keeps a separate multisample branch that binds the same depth surface. */
+        GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
         view->methods->set_depth_stencil_surface(view, depth_surface);
+    } else {
+        GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
+        view->methods->set_depth_stencil_surface(view, depth_surface);
+    }
 }
 void PC_DEVICE_BACKEND_PC::ClearDepthStencilSurface() {
     GRAPHICS_DEVICE_PC *view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
