@@ -547,7 +547,7 @@ STATIC_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME_PC, special) == 0);
 static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     LEVER_WORLD_PC *lever_world = (LEVER_WORLD_PC *)world;
-    NUSPECIALHANDLE *animated_special = NULL;
+    NUSPECIALHANDLE *animated_special;
     GIZMO_LEVER_PC *lever;
     u16 target_spin_angle;
     f32 target_pulse, ready_alpha;
@@ -571,9 +571,10 @@ static void __cdecl Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
         NUINSTANIM *animation;
         animated_special = &world->level_objects[30].special;
         animation = (NUINSTANIM *)NuSpecialGetInstAnim(animated_special);
-        if (animation != NULL)
+        if (animated_special != NULL && animation != NULL)
             NuAnimEndFrameOld(((NUGSCN *)animated_special->scene)->instance_animation_data[animation->animation_index]);
-    }
+    } else
+        animated_special = NULL;
     for (index = 0; index < lever_world->lever_count; ++index, ++lever) {
         NUMTX animated_matrix, base_matrix, target_matrix;
         i32 status_special;
