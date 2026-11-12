@@ -514,69 +514,86 @@ i32 __cdecl GizObstacles_Load(void *world_ptr, void *data) {
     i32 index;
     GIZOBSTACLE *obstacle;
     system->count = (u16)EdFileReadShort();
-    obstacle = (GIZOBSTACLE *)system->obstacles;
-    for (index = 0; index < system->count; ++index, ++obstacle) {
-        EdFileRead(obstacle->name, sizeof(obstacle->name));
-        EdFileReadNuVec(&obstacle->position);
-        if (version > 1)
-            EdFileReadNuVec(&obstacle->secondary_position);
-        else
-            obstacle->secondary_position = obstacle->position;
-        obstacle->auto_return_delay = EdFileReadFloat();
-        obstacle->trigger_radius = EdFileReadFloat();
-        if (version > 2) {
-            EdFileReadNuVec(&obstacle->trigger_box_half_extents);
-            obstacle->trigger_box_yaw = EdFileReadShort();
-        } else
-            obstacle->trigger_box_half_extents.x = obstacle->trigger_box_half_extents.y =
+    if (system->count != 0) {
+        obstacle = (GIZOBSTACLE *)system->obstacles;
+        for (index = 0; index < system->count; ++index, ++obstacle) {
+            char sfx_name[64];
+            EdFileRead(obstacle->name, sizeof(obstacle->name));
+            EdFileReadNuVec(&obstacle->position);
+            if (version > 1)
+                EdFileReadNuVec(&obstacle->secondary_position);
+            else
+                obstacle->secondary_position = obstacle->position;
+            obstacle->auto_return_delay = EdFileReadFloat();
+            obstacle->trigger_radius = EdFileReadFloat();
+            if (version > 2) {
+                EdFileReadNuVec(&obstacle->trigger_box_half_extents);
+                obstacle->trigger_box_yaw = EdFileReadShort();
+            } else {
+                obstacle->trigger_box_half_extents.x = .25f;
+                obstacle->trigger_box_half_extents.y = .25f;
                 obstacle->trigger_box_half_extents.z = .25f;
-        obstacle->config_flags = EdFileReadInt();
-        if (version >= 12)
-            obstacle->exclude_flags = EdFileReadInt();
-        if (version == 6) {
-            EdFileReadShort();
-            EdFileReadChar();
-        }
-        obstacle->playback_state = EdFileReadChar();
-        obstacle->mode = EdFileReadChar();
-        obstacle->trigger_mode = version >= 7 ? (u8)EdFileReadChar() : 0xff;
-        GizmoFileReadGameAnimSet(obstacle->anim_set, world, Gizobstacle_ReadAnimSetData, version,
-                                 (char *)GizObstacleTypeNamePc, obstacle->name);
-        obstacle->forward_speed_factor = version >= 4 ? EdFileReadFloat() : 1.f;
-        obstacle->backward_speed_factor = version >= 5 ? EdFileReadFloat() : obstacle->forward_speed_factor;
-        if (version >= 8)
-            obstacle->reflection_alpha = EdFileReadFloat();
-        obstacle->blowup_type = -1;
-        if (version >= 9) {
-            if (version >= 10) {
-                char name[32];
-                i32 length = (i8)EdFileReadChar();
-                if (length) {
-                    EdFileRead(name, length);
-                    obstacle->blowup_type = (i16)GizmoBlowupGetNameTableId(name);
-                    if (obstacle->blowup_type != -1)
-                        obstacle->runtime_flags |= 2;
-                }
-            } else
-                obstacle->blowup_type = EdFileReadShort();
-            obstacle->pickup_count = EdFileReadShort();
-            obstacle->pickup_direction_x = EdFileReadShort();
-            obstacle->pickup_direction_y = EdFileReadShort();
-            EdFileReadNuVec(&obstacle->pickup_offset);
-        }
-        obstacle->pickup_scatter_height =
-            version >= 11 ? EdFileReadFloat() : (world->area && (world->area->flags & 1) ? 12.f : 1.75f);
-        obstacle->start_sfx_id = obstacle->stop_sfx_id = -1;
-        if (version >= 13) {
-            char name[32];
-            if (GizmoFileReadName(name))
-                obstacle->start_sfx_id = (i16)GetSfxId(name);
-        } else if (GizObstacle_SetDefaultSFXFn)
-            GizObstacle_SetDefaultSFXFn(world, (GIZOBSTACLE *)obstacle);
-        if (version >= 14) {
-            char name[32];
-            if (GizmoFileReadName(name))
-                obstacle->stop_sfx_id = (i16)GetSfxId(name);
+            }
+            obstacle->config_flags = EdFileReadInt();
+            if (version >= 12)
+                obstacle->exclude_flags = EdFileReadInt();
+            if (version == 6) {
+                EdFileReadShort();
+                EdFileReadChar();
+            }
+            obstacle->playback_state = EdFileReadChar();
+            obstacle->mode = EdFileReadChar();
+            if (version >= 7)
+                obstacle->trigger_mode = EdFileReadChar();
+            else
+                obstacle->trigger_mode = 0xff;
+            GizmoFileReadGameAnimSet(obstacle->anim_set, world, Gizobstacle_ReadAnimSetData, version,
+                                     (char *)GizObstacleTypeNamePc, obstacle->name);
+            if (version >= 4)
+                obstacle->forward_speed_factor = EdFileReadFloat();
+            else
+                obstacle->forward_speed_factor = 1.f;
+            if (version >= 5)
+                obstacle->backward_speed_factor = EdFileReadFloat();
+            else
+                obstacle->backward_speed_factor = obstacle->forward_speed_factor;
+            if (version >= 8)
+                obstacle->reflection_alpha = EdFileReadFloat();
+            obstacle->blowup_type = -1;
+            if (version >= 9) {
+                if (version >= 10) {
+                    char name[32];
+                    i32 length = (i8)EdFileReadChar();
+                    if (length) {
+                        EdFileRead(name, length);
+                        obstacle->blowup_type = (i16)GizmoBlowupGetNameTableId(name);
+                        if (obstacle->blowup_type != -1)
+                            obstacle->runtime_flags |= 2;
+                    }
+                } else
+                    obstacle->blowup_type = EdFileReadShort();
+                obstacle->pickup_count = EdFileReadShort();
+                obstacle->pickup_direction_x = EdFileReadShort();
+                obstacle->pickup_direction_y = EdFileReadShort();
+                EdFileReadNuVec(&obstacle->pickup_offset);
+            }
+            if (version >= 11)
+                obstacle->pickup_scatter_height = EdFileReadFloat();
+            else if (world->area && (world->area->flags & 1))
+                obstacle->pickup_scatter_height = 12.f;
+            else
+                obstacle->pickup_scatter_height = 1.75f;
+            obstacle->start_sfx_id = -1;
+            obstacle->stop_sfx_id = -1;
+            if (version >= 13) {
+                if (GizmoFileReadName(sfx_name))
+                    obstacle->start_sfx_id = (i16)GetSfxId(sfx_name);
+            } else if (GizObstacle_SetDefaultSFXFn)
+                GizObstacle_SetDefaultSFXFn(world, (GIZOBSTACLE *)obstacle);
+            if (version >= 14) {
+                if (GizmoFileReadName(sfx_name))
+                    obstacle->stop_sfx_id = (i16)GetSfxId(sfx_name);
+            }
         }
     }
     return 1;
