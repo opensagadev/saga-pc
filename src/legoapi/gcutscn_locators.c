@@ -329,15 +329,17 @@ void __cdecl instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_P
     CUT_LOOKAT_LOCATOR_INFO_PC *locator = state->locator;
     CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
     CUT_SCENE_LOAD_PC *scene;
+    CUT_LOAD_CHARACTER_ANIMATION *animations;
     NUHGOBJ_EVAL_PC *hierarchy;
-    i32 i, character_id;
+    i32 i, character_id, joint;
     if (locator == NULL || NuCutSceneGetHGObj == NULL)
         return;
     character_id = locator->character_id;
     state->locator = NULL;
     scene = instance->scene;
+    animations = scene->character_animations;
     for (i = 0; i < scene->character_system->count; ++i) {
-        if ((u8)scene->character_animations[i].unknown_00 == character_id) {
+        if ((u8)animations[i].unknown_00 == character_id) {
             state->character = (u16)(i + 1);
             break;
         }
@@ -348,8 +350,9 @@ void __cdecl instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE_P
     state->hierarchy = hierarchy;
     if (hierarchy == NULL)
         return;
-    if (locator->joint < hierarchy->joint_override_map_count)
-        state->joint = (u16)(hierarchy->joint_override_map[locator->joint] + 1);
+    joint = locator->joint;
+    if (joint >= 0 && joint < hierarchy->joint_override_map_count)
+        state->joint = (u16)(hierarchy->joint_override_map[joint] + 1);
     state->material = (u16)FindMtlInHGObj(hierarchy, locator->material);
     if (state->material != 0)
         state->texture =
