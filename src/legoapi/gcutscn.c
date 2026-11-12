@@ -238,8 +238,7 @@ STATIC_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
 void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mode) {
     CUT_PLAYER_CLIP_CONFIG_PC *clips;
     LEVELDATA_PC *level;
-    AREA_DATA_PC *area;
-    i32 episode;
+    i32 area_id, episode;
     if (CutScenePlayerPc == NULL) {
         if (title != NULL)
             NuStrCpy(title, Text_UnknownText);
@@ -248,8 +247,10 @@ void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mod
         return;
     }
     if (title != NULL) {
-        sprintf(title, CutScenePlayerPc->clip_text != NULL ? TTab[*CutScenePlayerPc->clip_text] : CutPlayerClipFormatPc,
-                id + 1);
+        if (CutScenePlayerPc->clip_text != NULL)
+            sprintf(title, TTab[*CutScenePlayerPc->clip_text], id + 1);
+        else
+            sprintf(title, CutPlayerClipFormatPc, id + 1);
         if (mode != 0) {
             clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
             switch (clips[id].type) {
@@ -283,19 +284,21 @@ void __cdecl CutScenePlayer_GetText(i32 id, char *title, char *subtitle, i32 mod
     if (subtitle != NULL) {
         clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
         level = &LDataList[clips[id].level_id];
-        if (level->area_index != -1) {
-            area = &ADataList[level->area_index];
-            if ((area->flags & 2) == 0) {
-                NuStrCpy(subtitle, TTab[area->name_id]);
-                return;
-            }
-            episode = (i8)level->episode;
-            if (episode != -1) {
-                NuStrCpy(subtitle, TTab[EDataList[episode].text_id]);
-                return;
-            }
+        area_id = level->area_index;
+        if (area_id == -1) {
+            NuStrCpy(subtitle, Text_UnknownText);
+            return;
         }
-        NuStrCpy(subtitle, Text_UnknownText);
+        if ((ADataList[area_id].flags & 2) != 0) {
+            episode = (i8)level->episode;
+            if (episode == -1) {
+                NuStrCpy(subtitle, Text_UnknownText);
+                return;
+            }
+            NuStrCpy(subtitle, TTab[EDataList[episode].text_id]);
+        } else {
+            NuStrCpy(subtitle, TTab[ADataList[area_id].name_id]);
+        }
     }
 }
 typedef struct cut_average_rigid_system_pc_s {
