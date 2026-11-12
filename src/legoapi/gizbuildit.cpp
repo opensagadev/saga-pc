@@ -88,7 +88,13 @@ typedef struct buildit_reset_pc_s {
     u16 linked_rotation;
     i16 room_index;
     i16 blowup_type;
-    u16 availability_flags;
+    union {
+        u16 availability_flags;
+        struct {
+            u16 active : 1;
+            u16 visible : 1;
+        } availability;
+    };
 } BUILDIT_RESET_PC;
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_set) == 0x10);
 STATIC_ASSERT(offsetof(BUILDIT_RESET_PC, anim_objects) == 0x14);
@@ -688,7 +694,7 @@ extern "C" {
     void __cdecl GizBuildit_SetVisibility(GIZBUILDIT_s *buildit, i32 visible) {
         if (buildit != NULL) {
             GameAnimSet_SetVisibility(buildit->anim_set, visible);
-            buildit->state_flags = (buildit->state_flags & ~2u) | ((visible != 0) << 1);
+            ((BUILDIT_RESET_PC *)buildit)->availability.visible = visible != 0;
         }
     }
 
@@ -700,7 +706,7 @@ extern "C" {
         if (buildit == NULL)
             return;
         GameAnimSet_SetVisibility(buildit->anim_set, visible);
-        buildit->availability_flags = (u16)((buildit->availability_flags & ~2u) | (visible != 0 ? 2u : 0u));
+        buildit->availability.visible = visible != 0;
     }
 
     NUVEC *__cdecl GizmoBuildit_GetPos(GIZMO_PC *gizmo) {
@@ -961,7 +967,8 @@ extern "C" {
 
     i32 __cdecl GizmoBuildit_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)gizmo->object;
-        if (((buildit->availability_flags & 3) == 3 || force_read != 0) && buildit->build_state == 2)
+        if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) &&
+            buildit->build_state == 2)
             return 1;
         return 0;
     }
