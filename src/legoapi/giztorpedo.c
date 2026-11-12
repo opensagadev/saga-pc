@@ -16,7 +16,9 @@ typedef struct torpedo_machine_query_pc_s {
     f32 activation_time;
     u16 y_rotation;
     u8 unknown_22[9];
-    u8 flags;
+    u8 active : 1;
+    u8 visible : 1;
+    u8 alternate : 1;
 } TORPEDO_MACHINE_QUERY_PC;
 typedef struct torpedo_machine_query_sys_pc_s {
     TORPEDO_MACHINE_QUERY_PC *machines;
@@ -32,7 +34,7 @@ void __cdecl GizTorp_Activate(void *input, i32 active) {
     TORPEDO_MACHINE_QUERY_PC *machine;
     if (gizmo != NULL) {
         machine = (TORPEDO_MACHINE_QUERY_PC *)gizmo->object;
-        machine->flags ^= (u8)((active != 0) ^ machine->flags) & 1;
+        machine->active = active != 0;
     }
 }
 
@@ -41,7 +43,7 @@ void __cdecl GizTorp_SetVisibility(void *input, i32 visible) {
     TORPEDO_MACHINE_QUERY_PC *machine;
     if (gizmo != NULL) {
         machine = (TORPEDO_MACHINE_QUERY_PC *)gizmo->object;
-        machine->flags ^= (u8)(((visible != 0) << 1) ^ machine->flags) & 2;
+        machine->visible = visible != 0;
     }
 }
 
@@ -55,7 +57,7 @@ char *__cdecl GizTorp_GetGizmoName(void *input) {
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, position) == 0x10);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, activation_time) == 0x1c);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, y_rotation) == 0x20);
-STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, flags) == 0x2b);
+STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_PC, unknown_22) == 0x22);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_SYS_PC, machines) == 0);
 STATIC_ASSERT(offsetof(TORPEDO_MACHINE_QUERY_SYS_PC, count) == 4);
 STATIC_ASSERT(sizeof(TORPEDO_MACHINE_QUERY_SYS_PC) == 0xc);
@@ -69,7 +71,7 @@ void *__cdecl GizTorpMachine_FindNearest(WORLDINFO *world, NUVEC *position, f32 
         TORPEDO_MACHINE_QUERY_PC *machine =
             &((TORPEDO_MACHINE_QUERY_SYS_PC *)world->torpedo_machine_sys)->machines[index];
         f32 distance;
-        if ((machine->flags & 3) != 3)
+        if (!machine->active || !machine->visible)
             continue;
         distance = NuVecDistSqr(position, &machine->position, NULL);
         if (distance < nearest_distance) {
@@ -123,18 +125,18 @@ void __cdecl GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
     for (index = 0; index < system->count; ++index) {
         TORPEDO_MACHINE_QUERY_PC *machine = &system->machines[index];
         NUMTX matrix;
-        i32 alternate;
-        if ((machine->flags & 2) == 0 && editor_active == 0)
+        u8 alternate;
+        if (!machine->visible && editor_active == 0)
             continue;
         NuMtxSetRotationY(&matrix, machine->y_rotation);
         NuMtxTranslate(&matrix, &machine->position);
         NuMtxPreScaleU(&matrix, system->scale);
-        alternate = (machine->flags >> 2) & 1;
+        alternate = machine->alternate;
         if (alternate == 0 && world->level_objects[0x122].active != 0)
             NuSpecialDrawAt(&world->level_objects[0x122].special, &matrix);
         else if (alternate == 1 && world->level_objects[0x123].active != 0)
             NuSpecialDrawAt(&world->level_objects[0x123].special, &matrix);
-        if ((machine->flags & 1) != 0 && machine->activation_time > 0.0f) {
+        if (machine->active && machine->activation_time > 0.0f) {
             f32 phase = machine->activation_time + machine->activation_time;
             if (phase >= 0.3f) {
                 i32 angle = ((i32)(((f64)phase - (f64)0.3f) / (f64)0.7f * 16384.0) >> 1) & 0x7fff;
