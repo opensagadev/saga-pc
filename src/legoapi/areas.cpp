@@ -282,18 +282,11 @@ void __cdecl SuperCounters_Reset(i32 area_index) {
 
 AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world,
                                                                 AREA_SUPERCOUNTER_PICKUP_PC **pickup_out) {
-    AREA_SUPERCOUNTER_PC *counter;
-    i32 counter_index;
-
     if (world->area != NULL && world->area->super_counters != NULL) {
-        counter = world->area->super_counters;
-        for (counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
-            i32 pickup_index;
-
-            for (pickup_index = 0; pickup_index < counter->pickup_count; ++pickup_index) {
-                AREA_SUPERCOUNTER_PICKUP_PC *pickup;
-
-                pickup = &counter->pickups[pickup_index];
+        AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
+        for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
+            AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
+            for (i32 pickup_index = 0; pickup_index < counter->pickup_count; ++pickup_index, ++pickup) {
                 if (pickup->level_index == world->level_idx && NuStrICmp(pickup->name, name) == 0) {
                     if (pickup_out != NULL) {
                         *pickup_out = pickup;
