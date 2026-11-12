@@ -7819,6 +7819,7 @@ address,symbol,size,ctype
 0x617a00,?UtilGetFrameStartTime@@YAIXZ,6,u32 __cdecl(void)
 0x617a10,?UtilFrameStart@@YAXXZ,66,void __cdecl(void)
 0x617a60,?unref@@YAHPAE0@Z,426,"i32 __cdecl(u8 *,u8 *)"
+0x617c20,_EdcamFabsPc,18,static f32 __cdecl(f32)
 0x00617cb0,_EduiPrimSetColourPc,108,void (i32)
 0x617d50,_edmainSetReturn,10,
 0x617d60,_edmainCurrent,21,
