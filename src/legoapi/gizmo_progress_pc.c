@@ -245,9 +245,11 @@ void __cdecl GizmoPickups_StoreProgress(void *world_ptr, void *data, void *progr
     memset(progress->collected, 0, 64);
     memset(progress->reserved, 0, 64);
 
-    if (world == NULL || world->pickup_runtime_sys->pickups == NULL)
+    if (world == NULL)
         return;
     record = world->pickup_runtime_sys->pickups;
+    if (record == NULL)
+        return;
     for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++record) {
         if (index >= 512)
             break;
