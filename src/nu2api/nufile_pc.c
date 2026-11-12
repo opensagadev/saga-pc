@@ -115,7 +115,9 @@ NUFILE __cdecl NuFileOpenDir(char *path) {
     if (device->id == 2)
         strcat(formatted, ";1");
     if (device->id == 1) {
-        result = FileDirectoryMcOpenPc(formatted[2] - '0', formatted[3] - '0', formatted + device->name_len);
+        i32 port = formatted[2] - '0';
+        i32 slot = formatted[3] - '0';
+        result = FileDirectoryMcOpenPc(port, slot, formatted + device->name_len);
         if (result >= 0)
             return result + 0x1000;
         return 0;
