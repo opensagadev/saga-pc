@@ -1782,9 +1782,10 @@ extern "C" {
         f32 tfactor;
     } SCENE_SPECIAL_STATE_PC;
     STATIC_ASSERT(sizeof(SCENE_SPECIAL_STATE_PC) == sizeof(SCENESPECIALPROGRESS_PC));
+    /* progress->specials[i] read through the bitfield view (stands in for the header field). */
+#define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE_PC *)(progress)->specials)[i])
 
     void __cdecl StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
-        SCENE_SPECIAL_STATE_PC *states = (SCENE_SPECIAL_STATE_PC *)progress->specials;
         NUSPECIALHANDLE special;
         NUINSTANIM *animation;
         i32 count;
@@ -1801,7 +1802,7 @@ extern "C" {
             } else {
                 NuSpecialGetFirst(scene, &special, 1);
             }
-            states[i].visible = NuSpecialGetVisibilityFn(&special);
+            SCENE_STATE(progress, i).visible = NuSpecialGetVisibilityFn(&special);
             if (scene->instance_animation_data == NULL) {
                 continue;
             }
@@ -1810,14 +1811,14 @@ extern "C" {
                 continue;
             }
             if (animation->ltime <= 2048.0f && animation->ltime >= 0.0f) {
-                states[i].frame = (u32)animation->ltime;
+                SCENE_STATE(progress, i).frame = (u32)animation->ltime;
             } else {
-                states[i].frame = 1;
+                SCENE_STATE(progress, i).frame = 1;
             }
-            states[i].playing = animation->flags & 1;
-            states[i].waiting = (animation->flags >> 2) & 1;
-            states[i].repeating = (animation->flags >> 3) & 1;
-            states[i].tfactor = animation->tfactor;
+            SCENE_STATE(progress, i).playing = animation->flags & 1;
+            SCENE_STATE(progress, i).waiting = (animation->flags >> 2) & 1;
+            SCENE_STATE(progress, i).repeating = (animation->flags >> 3) & 1;
+            SCENE_STATE(progress, i).tfactor = animation->tfactor;
             if (copy_tfactor != 0) {
                 animation->fparam1 = animation->tfactor;
             }
