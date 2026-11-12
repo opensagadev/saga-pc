@@ -281,8 +281,7 @@ i32 __cdecl SecurityDoors_GetMaxGizmos(WORLDINFO *world) {
 void __cdecl SecurityDoors_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->security_door_count; ++index) {
-        SECURITY_DOOR_RECORD_PC *door = &((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index];
-        if (NuStrLen(door->name) != 0)
+        if (NuStrLen(((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].name) != 0)
             AddGizmo(system, type_id, NULL, &((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index]);
     }
 }
