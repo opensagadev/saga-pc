@@ -13957,12 +13957,10 @@ extern "C" {
     }
 
     i32 __cdecl NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
-        NUSPECIAL_LEGACY_PC *legacy = (NUSPECIAL_LEGACY_PC *)handle->special;
         i32 i;
-        if (legacy != NULL) {
-            NUGSCN *scene = (NUGSCN *)handle->scene;
-            for (i = 0; i < scene->num_instances; ++i) {
-                if (&scene->instances[i] == legacy->instance)
+        if (handle->special != NULL) {
+            for (i = 0; i < ((NUGSCN *)handle->scene)->num_instances; ++i) {
+                if (&((NUGSCN *)handle->scene)->instances[i] == ((NUSPECIAL_LEGACY_PC *)handle->special)->instance)
                     return i;
             }
             return -1;
