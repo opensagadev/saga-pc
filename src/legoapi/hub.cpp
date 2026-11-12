@@ -2973,7 +2973,8 @@ static void HubDrawBonusModePc(void) {
 
 /* PC477630668bytes, fullstackargs(collection,active_cursors,alpha,scale). */
 static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cursors, f32 alpha, f32 scale) {
-    if (alpha <= 0.0f || scale < 0.0f)
+    // MATCH-EXCEPTION: retail compares scale against a -0.0f constant (same result as 0.0f).
+    if (alpha <= 0.0f || scale < -0.0f)
         return;
     f32 z = 0.0f;
     for (i32 player = 1; player >= 0; --player) {
@@ -2989,7 +2990,7 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
             f32 size = HubFreePlayCursorSizePc;
             if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0)
                 size = (f32)(size * .875);
-            const f32 ratio = (f32)(collection->scale / .675000011920929);
+            const f64 ratio = collection->scale / .675000011920929;
             size *= ratio;
             if (freeplay_time[player] > 0.0f) {
                 f32 progress = freeplay_time[player] / HubFreePlaySelectionWaitPc;
@@ -3002,11 +3003,12 @@ static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cur
             size *= scale;
             if (size > 0.0f) {
                 const f32 offset = (f32)(ratio * .009999999776482582);
-                const i32 xa = (u16)HubIconWibbleAnglePc[player * 2];
-                const i32 ya = (u16)HubIconWibbleAnglePc[player * 2 + 1];
-                DrawCharIcon(model, collection->list[index].grid_x + offset * NuTrigTable[xa >> 1],
-                             collection->list[index].grid_y + offset * NuTrigTable[ya >> 1], z, size, frame, alpha,
-                             alpha, 1, NULL);
+                const i32 wibble = player * 2;
+                DrawCharIcon(
+                    model,
+                    collection->list[index].grid_x + offset * NuTrigTable[(u16)HubIconWibbleAnglePc[wibble] >> 1],
+                    collection->list[index].grid_y + offset * NuTrigTable[(u16)HubIconWibbleAnglePc[wibble + 1] >> 1],
+                    z, size, frame, alpha, alpha, 1, NULL);
             }
         } else {
             DrawCharIcon(model, collection->list[index].grid_x, collection->list[index].grid_y, 0.0f,
