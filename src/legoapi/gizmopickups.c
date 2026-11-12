@@ -133,21 +133,20 @@ GIZMOPICKUP_PC *__cdecl GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVE
     GIZMO_PICKUP_TYPE_PC *type;
     f32 radius;
     NUVEC low, high;
-    i32 count, index;
+    i32 index;
     if (pickup == NULL)
         return NULL;
     type = &GizmoPickupSys->types[type_index];
     if (type->field_0f != 0)
         return NULL;
     radius = type->shadow_extent_x * AreaPickupScale;
-    count = runtime->pickup_count;
     low.x = minimum->x - radius;
     high.x = maximum->x + radius;
     low.y = minimum->y - radius;
     high.y = maximum->y + radius;
     low.z = minimum->z - radius;
     high.z = maximum->z + radius;
-    for (index = 0; index < count; ++index, ++pickup) {
+    for (index = 0; index < runtime->pickup_count; ++index, ++pickup) {
         if (pickup->type_index != type_index)
             continue;
         if ((pickup->flags & 2) == 0)
