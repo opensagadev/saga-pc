@@ -2793,11 +2793,9 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 break;
             } else if (object->character_context == 0x27 || object->character_context == 0x28 ||
                        object->character_context == 0x59) {
-                u16 angle;
-                angle = object->movement_facing_angle;
-                object->target_velocity.x = NuTrigTable[angle >> 1];
+                object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1];
                 object->velocity.x = object->target_velocity.x;
-                object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+                object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
                 object->velocity.z = object->target_velocity.z;
                 break;
             } else if (object->character_context == 0x4e) {
@@ -2874,9 +2872,6 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 separate_seek_rates = 1;
                 break;
             } else {
-                i32 walking_input;
-                i32 walking_without_input;
-                i32 calculate_walking_speed;
                 f32 water_speed_multiplier;
                 f32 walking_speed;
                 u16 walking_angle;
@@ -2903,12 +2898,11 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             (object->anim_packet.flags & 1u) != 0)
                             stopped = 1;
                         if (stopped) {
-                            i32 surface;
                             object->target_velocity.x = 0.0f;
                             object->target_velocity.z = 0.0f;
-                            surface = (i8)(object->jump_animation_state);
-                            if (!(object->field_281 != 0 && surface >= 0 && surface < 32 &&
-                                  TerSurface[surface].movement_scale < 1.0f)) {
+                            if (!(object->field_281 != 0 && (i8)object->jump_animation_state >= 0 &&
+                                  (i8)object->jump_animation_state < 32 &&
+                                  TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
                                 object->velocity.x = 0.0f;
                                 object->velocity.z = 0.0f;
                             }
@@ -3022,17 +3016,19 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         object->target_velocity.x = object->target_velocity.z = 0.0f;
                     }
                 } else if (object->character_context == 5) {
-                    if ((object->context_flags_pc & 0x1c) != 0) {
+                    if ((object->context_flags_pc & 0x1c) == 0) {
+                        if (StepBackFromTarget(object) == 0) {
+                            f32 speed;
+                            speed = AnimSpeed(object->character_model, object->field_7aa);
+                            object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+                            object->target_velocity.z =
+                                NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
+                        }
+                    } else {
                         object->target_velocity.x = 0.0f;
                         object->velocity.x = 0.0f;
                         object->target_velocity.z = 0.0f;
                         object->velocity.z = 0.0f;
-                    } else if (StepBackFromTarget(object) == 0) {
-                        f32 speed;
-                        speed = AnimSpeed(object->character_model, object->field_7aa);
-                        object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
-                        object->target_velocity.z =
-                            NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
                     }
                 } else if (object->character_context == 0 &&
                            (object->action_movement_state == 2 ||
@@ -3099,73 +3095,61 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     object->target_velocity.x = 0.0f;
                     object->target_velocity.z = 0.0f;
                 } else {
-                    walking_input = pad->input_magnitude > 0.0f;
-                    walking_without_input = 0;
-                    if (!walking_input) {
-                        if (object->id == (u16)GameObjectRotationAtstId || object->id == (u16)id_MINIATST ||
+                    if (!(pad->input_magnitude > 0.0f ||
+                          ((object->id == (u16)GameObjectRotationAtstId || object->id == (u16)id_MINIATST ||
                             object->id == (u16)id_ATST_LOWRES || object->id == (u16)id_ATAT ||
-                            object->id == (u16)id_MINIATAT || object->id == (u16)id_MINIATTE)
-                            walking_without_input = CurrentAnim(&object->anim_packet) == 0;
-                        if (!walking_without_input && object->id == (u16)id_RANCOR)
-                            walking_without_input =
-                                CurrentAnim(&object->anim_packet) == 0 || CurrentAnim(&object->anim_packet) == 0x40;
-                    }
-                    calculate_walking_speed = walking_input || walking_without_input;
-                    if (!calculate_walking_speed && object->anim_packet.blending != 0) {
-                        i32 animation;
-                        f32 speed;
-                        animation = object->anim_packet.blend_source_animation;
-                        speed = AnimSpeed(object->character_model, animation);
-                        if (speed != 0.0f) {
-                            CHARACTERANIM_CONFIG_PC *info;
-                            i32 animation_active;
-                            animation = object->anim_packet.blend_source_animation;
-                            info = (CHARACTERANIM_CONFIG_PC *)(object->character_model->animation_configs[animation]);
-                            animation_active = (info->flags & 2) != 0;
-                            if (!animation_active) {
-                                f32 source_time;
-                                source_time = object->anim_packet.blend_source_time;
-                                animation_active =
-                                    NuAnimEndFrame(object->character_model->model_data_b[animation]) > source_time;
-                            }
-                            if (animation_active) {
-                                i32 stopped;
-                                animation = object->anim_packet.blend_source_animation;
-                                stopped = (u16)(animation - 0x2e) <= 0x0d;
-                                if (!stopped) {
+                            object->id == (u16)id_MINIATAT || object->id == (u16)id_MINIATTE) &&
+                           CurrentAnim(&object->anim_packet) == 0) ||
+                          (object->id == (u16)id_RANCOR &&
+                           (CurrentAnim(&object->anim_packet) == 0 || CurrentAnim(&object->anim_packet) == 0x40)))) {
+                        if (object->anim_packet.blending != 0) {
+                            f32 speed;
+                            speed = AnimSpeed(object->character_model, object->anim_packet.blend_source_animation);
+                            if (speed != 0.0f) {
+                                if ((((CHARACTERANIM_CONFIG_PC
+                                           *)(object->character_model
+                                                  ->animation_configs[object->anim_packet.blend_source_animation]))
+                                         ->flags &
+                                     2) != 0 ||
+                                    object->anim_packet.blend_source_time <
+                                        NuAnimEndFrame(
+                                            object->character_model
+                                                ->model_data_b[object->anim_packet.blend_source_animation])) {
                                     f32 stop_frame;
-                                    stop_frame = AnimStopFrame(object->character_model, animation);
-                                    stopped = stop_frame > 0.0f && object->anim_packet.blend_source_time >= stop_frame;
-                                }
-                                if (stopped) {
-                                    i32 surface;
-                                    object->target_velocity.x = 0.0f;
-                                    object->target_velocity.z = 0.0f;
-                                    surface = (i8)(object->jump_animation_state);
-                                    if (!(object->field_281 != 0 && surface >= 0 && surface < 32 &&
-                                          TerSurface[surface].movement_scale < 1.0f)) {
-                                        object->velocity.x = 0.0f;
-                                        object->velocity.z = 0.0f;
-                                    }
-                                } else {
-                                    u16 angle;
-                                    angle = direct_turn == 0 &&
+                                    if ((object->anim_packet.blend_source_animation >= 0x2e &&
+                                         object->anim_packet.blend_source_animation <= 0x3b) ||
+                                        ((stop_frame = AnimStopFrame(object->character_model,
+                                                                     object->anim_packet.blend_source_animation)) >
+                                             0.0f &&
+                                         object->anim_packet.blend_source_time >= stop_frame)) {
+                                        object->target_velocity.x = 0.0f;
+                                        object->target_velocity.z = 0.0f;
+                                        if (!(object->field_281 != 0 && (i8)object->jump_animation_state >= 0 &&
+                                              (i8)object->jump_animation_state < 32 &&
+                                              TerSurface[(i8)object->jump_animation_state].movement_scale < 1.0f)) {
+                                            object->velocity.x = 0.0f;
+                                            object->velocity.z = 0.0f;
+                                        }
+                                    } else {
+                                        u16 angle;
+                                        angle =
+                                            direct_turn == 0 &&
                                                     ((U64_PAIR(&CInfo[object->character_context].flags) &
                                                       0x200000000ULL) != 0 ||
                                                      (object->character_data->game_character->flags_090 & 0x100) != 0)
                                                 ? object->facing_angle
                                                 : object->movement_facing_angle;
-                                    object->target_velocity.x = speed * NuTrigTable[angle >> 1];
-                                    object->target_velocity.z = speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-                                    if (object->anim_packet.blend_source_animation == 0x26 ||
-                                        object->anim_packet.blend_source_animation == 0x4f)
-                                        NuVecRotateY(&object->target_velocity, &object->target_velocity, 0x4000);
+                                        object->target_velocity.x = speed * NuTrigTable[angle >> 1];
+                                        object->target_velocity.z =
+                                            speed * NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
+                                        if (object->anim_packet.blend_source_animation == 0x26 ||
+                                            object->anim_packet.blend_source_animation == 0x4f)
+                                            NuVecRotateY(&object->target_velocity, &object->target_velocity, 0x4000);
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
-                    }
-                    if (!calculate_walking_speed) {
                         object->target_velocity.x = 0.0f;
                         object->target_velocity.z = 0.0f;
                         break;
@@ -3181,7 +3165,7 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         else if (depth > 0.5f)
                             water_speed_multiplier = VEHICLE_WATER_SPEED_MUL;
                         else
-                            water_speed_multiplier = 1.0f - (1.0f - VEHICLE_WATER_SPEED_MUL) * (depth + depth);
+                            water_speed_multiplier = 1.0f - depth * 2.0f * (1.0f - VEHICLE_WATER_SPEED_MUL);
                     } else {
                         water_speed_multiplier = 1.0f;
                     }
@@ -3261,26 +3245,30 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         CharPivot_Check(object, &object->target_velocity);
 
     if (object->character_context == 0x4b) {
-        f32 float_height;
-        float_height =
-            object->collision_min.y + (object->collision_max.y - object->collision_min.y) * PlayerFloatHeightFractionPc;
-        object->target_velocity.y = (object->water_height - float_height) * 3.0f;
+        object->target_velocity.y =
+            (object->water_height - (object->collision_min.y + (object->collision_max.y - object->collision_min.y) *
+                                                                   PlayerFloatHeightFractionPc)) *
+            3.0f;
         if (object->suit != NULL && (((SUIT_LAYERS_PC *)(object->suit))->flags & 0x10) != 0) {
-            if ((object->pad->buttons_held & GAMEPAD_SPECIAL) == 0) {
-                object->target_velocity.y = 0.0f;
-            } else {
-                if (object->water_height > object->upper_position.y)
+            if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+                if (object->upper_position.y < object->water_height)
                     object->target_velocity.y = 0.6f;
                 move_vertical = 1;
+            } else {
+                object->target_velocity.y = 0.0f;
             }
         } else {
             move_vertical = 1;
         }
-        seek_rates.x = seek_rates.z = 1.0f;
         seek_rates.y = object->character_data->game_character->velocity_seek_rate;
+        seek_rates.x = seek_rates.z = 1.0f;
     } else if (!separate_seek_rates) {
-        seek_rates.y = move_vertical != 0 ? seek_rates.x : object->character_data->game_character->velocity_seek_rate;
-        seek_rates.z = seek_rates.x;
+        if (move_vertical != 0) {
+            seek_rates.y = seek_rates.z = seek_rates.x;
+        } else {
+            seek_rates.y = object->character_data->game_character->velocity_seek_rate;
+            seek_rates.z = seek_rates.x;
+        }
     }
 
     if (object->field_281 != 0 && (i8)(object->jump_animation_state) != -1) {
@@ -3295,15 +3283,14 @@ void __cdecl MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         if (object->turn_braking < 1.0f) {
             f32 scale;
             scale = 1.0f - object->turn_braking;
-            object->target_velocity.x *= scale;
+            object->target_velocity.x = object->target_velocity.x * scale;
             object->target_velocity.z *= scale;
             if (object->wall_run_state == 2 || object->wall_run_state == 4) {
                 object->target_velocity.x *= 0.5f;
                 object->target_velocity.z *= 0.5f;
             }
         } else {
-            object->target_velocity.x = 0.0f;
-            object->target_velocity.z = 0.0f;
+            object->target_velocity.x = object->target_velocity.z = 0.0f;
         }
         if (object->wall_run_state == 2 || object->wall_run_state == 4) {
             i32 effect;
