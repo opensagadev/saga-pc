@@ -52,7 +52,7 @@ static void __cdecl GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_
     MINICUT_WORLD_PC *world = (MINICUT_WORLD_PC *)world_ptr;
     i32 i;
     (void)data;
-    if (world->minicuts == NULL || world->count <= 0)
+    if (world->minicuts == NULL)
         return;
     for (i = 0; i < world->count; ++i)
         AddGizmo(system, type_id, NULL, &world->minicuts[i]);
@@ -66,11 +66,14 @@ static i32 __cdecl GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     if (gizmo == NULL || gizmo->object == NULL)
         return 0;
     cut = (MINICUT_PC *)gizmo->object;
-    if (output == 0) {
-        if (MiniCutCam == 0)
+    switch (output) {
+        case 0:
+            if (MiniCutCam == 0)
+                return cut->played;
+            break;
+        case 1:
             return cut->played;
-    } else if (output == 1)
-        return cut->played;
+    }
     return 0;
 }
 static const char *__cdecl GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output) {
@@ -151,20 +154,18 @@ void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
         for (j = 0; j < cut->part_count; ++j) {
             MINICUT_PART_PC *part = &cut->parts[j];
             GAMEOBJECT *object = GetNamedGameObject(world->ai_sys, part->name);
-            if (object != NULL)
-                part->resolved_position = &object->collision_position;
-            else {
+            if (object == NULL) {
                 NUSPECIALHANDLE special;
                 AILOCATOR_PC *locator;
                 NuSpecialFind(world->current_gscn, &special, part->name, 0);
-                if (NuSpecialExistsFn(&special) != 0)
-                    part->resolved_position = NuSpecialGetDrawPos(&special);
-                else {
+                if (NuSpecialExistsFn(&special) == 0) {
                     locator = AIPathFindLocator(world->ai_sys, part->name);
                     if (locator != NULL)
                         part->resolved_position = &locator->position;
-                }
-            }
+                } else
+                    part->resolved_position = NuSpecialGetDrawPos(&special);
+            } else
+                part->resolved_position = &object->collision_position;
             if (part->resolved_position == NULL)
                 part->resolved_position = &part->position;
         }
