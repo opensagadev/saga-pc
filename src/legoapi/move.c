@@ -5865,7 +5865,7 @@ static __declspec(noinline) void PodBoostCodePc(GAMEOBJECT *object) {
 static __declspec(noinline) void PodSpeedCodePc(GAMEOBJECT *object, i32 jump_held) {
     f32 target, rate;
     POD_BOOST_VIEW_PC *pod = (POD_BOOST_VIEW_PC *)object;
-    if (object->field_280 == 0xff)
+    if ((i8)object->field_280 == -1) /* TODO(saga.h): field_280 (player index) is signed in retail. */
         return;
     rate = (f32)((f64)FRAMETIME * 3.0);
     if (WORLD->area == PODRACE_ADATA) {
