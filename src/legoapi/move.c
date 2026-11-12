@@ -6819,7 +6819,7 @@ void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *object) {
     GAMEPAD_PC *pad = object->pad;
     PLAYERCHARACTERCONFIG_PC *vehicle;
     i32 effect, count, i;
-    f32 random;
+    f32 random, hover;
     NUVEC position, displacement;
     GAMEOBJECT *other;
     PreResetCode(object);
@@ -6827,7 +6827,8 @@ void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *object) {
     DropInOutCode(object);
     if ((object->flags_e20 & 0x20) != 0)
         return;
-    ApplyGravity(object, NULL, GetVehicleHoverHeight(object, NULL), 10.0f, NULL);
+    hover = GetVehicleHoverHeight(object, NULL);
+    ApplyGravity(object, NULL, hover, 10.0f, NULL);
     vehicle = object->character_data->game_character;
     if (vehicle->field_028 > 0.0f && (vehicle->flags_090 & 0x10000) == 0 &&
         (WORLD->current_level != SPEEDERCHASEA_LDATA || disable_narrow_socks == 0)) {
@@ -6867,7 +6868,7 @@ void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *object) {
                 if (other == NULL || (other->flags_1fc & 0x80) == 0 || other->rider == NULL ||
                     ((other->collision_contact_mask[0] & object->collision_identity_mask[0]) |
                      (other->collision_contact_mask[1] & object->collision_identity_mask[1])) == 0 ||
-                    !(0.0f >= object->vehicle_hit_timer))
+                    object->vehicle_hit_timer > 0.0f)
                     continue;
                 displacement.x = other->position.x - object->position.x;
                 displacement.z = other->position.z - object->position.z;
