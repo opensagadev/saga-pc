@@ -875,10 +875,12 @@ static __declspec(noinline) void ForceResetSinglePc(WORLDINFO *world, GIZFORCE_P
 
 static __declspec(noinline) f32 ForceAnimatedHeightPc(GIZFORCE_PC *force) {
     GAMEANIMOBJ *object;
-    f32 minimum_y = 1.0e9f, maximum_y = -1.0e9f;
+    f32 minimum_y, maximum_y;
     f32 height;
     if (force == NULL || force->anim_set == NULL)
         return 0.0f;
+    minimum_y = 1.0e9f;
+    maximum_y = -1.0e9f;
     for (object = force->anim_set->objects; object != NULL; object = object->next) {
         NUVEC minimum, maximum;
         NuSpecialGetBounds(&object->special, &minimum, &maximum);
