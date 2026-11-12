@@ -318,14 +318,13 @@ extern "C" {
     }
 
     void __cdecl NextStatusStage(STATUSPACKET_s *packet) {
-        STATUS_STAGE_s *stage = packet->stage;
-        if (stage != NULL) {
-            if (stage->field_0x14 == -1 && packet->field_0x68 > stage->field_0x18) {
-                packet->flags_word |= 2;
-                return;
-            }
-            stage->field_0x12 = 1;
+        if (packet->stage != NULL && packet->stage->field_0x14 == -1 &&
+            packet->stage->field_0x18 < packet->field_0x68) {
+            packet->flags_word |= 2;
+            return;
         }
+        if (packet->stage != NULL)
+            packet->stage->field_0x12 = 1;
         packet->previous_stage_2 = packet->previous_stage;
         packet->current_gold_brick = (i8)((u8)packet->current_gold_brick + 1);
         packet->previous_stage = packet->stage;
@@ -345,13 +344,11 @@ extern "C" {
         StatusStage_Reset(packet->stage);
         packet->flags_word &= ~2u;
         status_prompt = 0;
-        stage = packet->stage;
-        if ((stage != NULL && stage->type == 11) || stage->type == 10) {
+        if ((packet->stage != NULL && packet->stage->type == 11) || packet->stage->type == 10) {
             ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&packet->player0_rumble_amount);
             ResetRumble((RUMBLE_PACKET_RESOURCE_PC *)&packet->player1_rumble_amount);
         }
-        stage = packet->stage;
-        if (stage != NULL && stage->type == 11)
+        if (packet->stage != NULL && packet->stage->type == 11)
             ReCalculateCompletionPoints();
     }
 
