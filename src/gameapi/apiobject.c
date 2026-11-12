@@ -1934,11 +1934,11 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         second_component.x = normal.x * value;
         second_component.y = normal.y * value;
         second_component.z = normal.z * value;
-        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
+        if (first->flags_1fc_bit_1 != 0 && second->flags_1fc_bit_1 == 0) {
             second->velocity.x += (first_component.x - second_component.x) * first_weight * 2.0f;
             second->velocity.y += (first_component.y - second_component.y) * first_weight * 2.0f;
             second->velocity.z += (first_component.z - second_component.z) * first_weight * 2.0f;
-        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
+        } else if (first->flags_1fc_bit_1 == 0 && second->flags_1fc_bit_1 != 0) {
             first->velocity.x += (second_component.x - first_component.x) * second_weight * 2.0f;
             first->velocity.y += (second_component.y - first_component.y) * second_weight * 2.0f;
             first->velocity.z += (second_component.z - first_component.z) * second_weight * 2.0f;
@@ -1971,10 +1971,10 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
         force = 3.0f;
         value = (f32)((f64)value * (3.0 / (f64)2.1f));
         NuVecScale(&normal, &normal, value);
-        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
+        if (first->flags_1fc_bit_1 != 0 && second->flags_1fc_bit_1 == 0) {
             NuVecAdd(&second->velocity, &average, &normal);
             NuVecAdd(&second->velocity, &average, &normal);
-        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
+        } else if (first->flags_1fc_bit_1 == 0 && second->flags_1fc_bit_1 != 0) {
             NuVecSub(&first->velocity, &average, &normal);
             NuVecSub(&first->velocity, &average, &normal);
         } else {
