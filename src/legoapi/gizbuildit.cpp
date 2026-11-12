@@ -93,6 +93,11 @@ typedef struct buildit_reset_pc_s {
         struct {
             u16 active : 1;
             u16 visible : 1;
+            u16 flag_04 : 1;
+            u16 unknown_bits_3 : 4;
+            u16 flag_80 : 1;
+            u16 unknown_bit_8 : 1;
+            u16 reward_released : 1;
         } availability;
     };
 } BUILDIT_RESET_PC;
@@ -829,12 +834,9 @@ extern "C" {
                 i32 word = index / 32;
                 u32 bit = 1u << (index & 31);
                 buildit->build_state = (progress->completed[word] & bit) != 0 ? 2 : 0;
-                buildit->availability_flags =
-                    (u16)((buildit->availability_flags & ~2u) | ((progress->visible[word] & bit) != 0 ? 2u : 0u));
-                buildit->availability_flags =
-                    (u16)((buildit->availability_flags & ~1u) | ((progress->active[word] & bit) != 0 ? 1u : 0u));
-                buildit->availability_flags = (u16)((buildit->availability_flags & ~0x200u) |
-                                                    ((progress->reward_released[word] & bit) != 0 ? 0x200u : 0u));
+                buildit->availability.visible = (progress->visible[word] & bit) != 0;
+                buildit->availability.active = (progress->active[word] & bit) != 0;
+                buildit->availability.reward_released = (progress->reward_released[word] & bit) != 0;
                 buildit->built_object_count = progress->built_object_count[index];
             }
         }
