@@ -11823,7 +11823,7 @@ extern "C" {
             if (NuStrIStr(spline->name, name) != NULL) {
                 results[count++] = spline;
                 if (count >= capacity)
-                    break;
+                    return count;
             }
         }
         return count;
