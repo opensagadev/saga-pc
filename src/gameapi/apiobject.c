@@ -2360,9 +2360,14 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
                         NuStrCat(path, animation_extension);
                         item = NuFilePakGetItem(pak, path);
                         if (item != 0 && NuFilePakGetItemInfo(pak, item, &data, &size) != 0) {
-                            i32 pointer_block =
-                                (i32)((CHARACTER_PACK_ANIMATION_PC *)data)->animation_magic >= 0x414e4935;
-                            ANI3_HEADER_PC *joint = (ANI3_HEADER_PC *)(pointer_block ? (u8 *)data + 4 : data);
+                            i32 pointer_block = 0;
+                            ANI3_HEADER_PC *joint;
+                            if ((i32)((CHARACTER_PACK_ANIMATION_PC *)data)->animation_magic >= 0x414e4935) {
+                                pointer_block = 1;
+                                joint = (ANI3_HEADER_PC *)((u8 *)data + 4);
+                            } else {
+                                joint = (ANI3_HEADER_PC *)data;
+                            }
                             if (joint->field_12_low == 0) {
                                 if (pointer_block)
                                     NuPtrBlockFix(data);
@@ -2401,28 +2406,29 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
             }
         } else {
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) != 0 || (area_animation != 0 && (animation->flags & 1) == 0) ||
-                    (area_animation == 0 && (animation->flags & 1) != 0))
-                    continue;
-                if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
-                    if (RedirectAnimFn == NULL ||
-                        RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
+                if ((animation->flags & 0x8000) == 0 && ((area_animation != 0 && (animation->flags & 1) != 0) ||
+                                                         (area_animation == 0 && (animation->flags & 1) == 0))) {
+                    if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
+                        if (RedirectAnimFn == NULL ||
+                            RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
+                            NuStrCpy(path, directory);
+                            NuStrCat(path, animation->name);
+                        }
+                        NuStrCat(path, animation_extension);
+                        if (NuFileExists(path) != 0)
+                            model->model_data_b[animation->action_id] =
+                                LoadAnim(path, area_animation, buffer, buffer_end);
+                        if (model->model_data_b[animation->action_id] != NULL)
+                            model->animation_configs[animation->action_id] = animation;
+                    }
+                    if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
                         NuStrCpy(path, directory);
                         NuStrCat(path, animation->name);
+                        NuStrCat(path, NuFileExt_bsa_PC);
+                        model->model_data_c[animation->action_id] = LoadAnim(path, area_animation, buffer, buffer_end);
+                        if (model->model_data_c[animation->action_id] != NULL)
+                            model->animation_configs[animation->action_id] = animation;
                     }
-                    NuStrCat(path, animation_extension);
-                    if (NuFileExists(path) != 0)
-                        model->model_data_b[animation->action_id] = LoadAnim(path, area_animation, buffer, buffer_end);
-                    if (model->model_data_b[animation->action_id] != NULL)
-                        model->animation_configs[animation->action_id] = animation;
-                }
-                if ((animation->flags & 8) != 0 && model->model_data_c[animation->action_id] == NULL) {
-                    NuStrCpy(path, directory);
-                    NuStrCat(path, animation->name);
-                    NuStrCat(path, NuFileExt_bsa_PC);
-                    model->model_data_c[animation->action_id] = LoadAnim(path, area_animation, buffer, buffer_end);
-                    if (model->model_data_c[animation->action_id] != NULL)
-                        model->animation_configs[animation->action_id] = animation;
                 }
             }
         }
