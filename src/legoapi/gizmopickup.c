@@ -670,21 +670,21 @@ void __cdecl PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 li
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     ADDPART_PC params = Default_ADDPART;
     PART_PC *part;
-    params.position = position;
-    params.velocity = velocity;
-    params.special = &world->level_objects[0xd0].special;
     params.field_18 = params.field_14 = scale * GizmoPickupType[9].shadow_radius_x;
     params.gravity = AreaPickupGravity;
+    params.position = position;
+    params.velocity = velocity;
     params.part_id = 0xd0;
-    params.flags = 0x256;
-    params.impact_fn = PowerUp_ImpactPart;
+    params.special = &world->level_objects[0xd0].special;
     params.collision_fn = PartCollide_3D;
     params.update_fn = PowerUp_UpdatePart;
+    params.impact_fn = PowerUp_ImpactPart;
+    params.flags = 0x256;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PowerUp_DrawPart;
+    params.field_88 = lifetime;
     if (params.gravity == 0.0f)
         params.move_fn = PartMove_VehiclePickup;
-    params.field_88 = lifetime;
     params.time_step = FRAMETIME;
     params.field_c0 = scale;
     part = AddPart(&params);
