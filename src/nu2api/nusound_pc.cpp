@@ -637,57 +637,53 @@ i32 SoundVoiceManagerPC::LoadWavSamplePc(const char *name, i32 index) {
     if (index > PCSoundSampleLimitPc) {
         PCSoundAlreadyPlayingHook();
     }
-    if (factory == NULL) {
-        samples[index].failed_byte = 1;
-        return 0;
+    if (factory != NULL) {
+        if (NuSoundDat != NULL) {
+            sprintf(path, "%s", name);
+        } else {
+            NuFileGetCurrentDirectory(directory);
+            sprintf(path, "%s%s", directory, name);
+        }
+        if (reader.Open(NuSoundDat, path, &format) >= 0) {
+            memset(&descriptor, 0, sizeof(descriptor));
+            descriptor.size = sizeof(descriptor);
+            descriptor.flags = 0xb8;
+            descriptor.algorithm = PCSampleBufferAlgorithmPc;
+            descriptor.bytes = reader.GetSize();
+            descriptor.format = &format;
+            if (descriptor.bytes > 0x0fffffff) {
+                PCSoundAlreadyPlayingHook(path, 0x0fffffff);
+            }
+            if (descriptor.bytes < 4) {
+                PCSoundAlreadyPlayingHook(path, 4);
+            }
+            samples[index].frequency = format.nSamplesPerSec;
+            HRESULT result = factory->vtable->create_sound_buffer(factory, &descriptor, &samples[index].buffer, NULL);
+            if (result < 0) {
+                PCSoundFailure(path);
+                reader.Close();
+                samples[index].failed_byte = 1;
+                return 0;
+            }
+            result = samples[index].buffer->vtable->lock(samples[index].buffer, 0, descriptor.bytes, &first,
+                                                         &first_bytes, &second, &second_bytes, 0);
+            if (result >= 0) {
+                result = reader.Read(first, first_bytes, &read_bytes);
+                if (result < 0 || read_bytes != descriptor.bytes) {
+                    PCSoundFailure(path);
+                    samples[index].failed_byte = 1;
+                }
+                samples[index].buffer->vtable->unlock(samples[index].buffer, first, first_bytes, second, second_bytes);
+                reader.Close();
+                samples[index].valid_byte = 1;
+                return 1;
+            }
+            PCSoundFailure(path);
+            reader.Close();
+        }
     }
-    if (NuSoundDat != NULL) {
-        sprintf(path, "%s", name);
-    } else {
-        NuFileGetCurrentDirectory(directory);
-        sprintf(path, "%s%s", directory, name);
-    }
-    if (reader.Open(NuSoundDat, path, &format) < 0) {
-        samples[index].failed_byte = 1;
-        return 0;
-    }
-    memset(&descriptor, 0, sizeof(descriptor));
-    descriptor.size = sizeof(descriptor);
-    descriptor.flags = 0xb8;
-    descriptor.algorithm = PCSampleBufferAlgorithmPc;
-    descriptor.bytes = reader.GetSize();
-    descriptor.format = &format;
-    if (descriptor.bytes > 0x0fffffff) {
-        PCSoundAlreadyPlayingHook(path, 0x0fffffff);
-    }
-    if (descriptor.bytes < 4) {
-        PCSoundAlreadyPlayingHook(path, 4);
-    }
-    samples[index].frequency = format.nSamplesPerSec;
-    HRESULT result = factory->vtable->create_sound_buffer(factory, &descriptor, &samples[index].buffer, NULL);
-    if (result < 0) {
-        PCSoundFailure(path);
-        reader.Close();
-        samples[index].failed_byte = 1;
-        return 0;
-    }
-    result = samples[index].buffer->vtable->lock(samples[index].buffer, 0, descriptor.bytes, &first, &first_bytes,
-                                                 &second, &second_bytes, 0);
-    if (result < 0) {
-        PCSoundFailure(path);
-        reader.Close();
-        samples[index].failed_byte = 1;
-        return 0;
-    }
-    result = reader.Read(first, first_bytes, &read_bytes);
-    if (result < 0 || read_bytes != descriptor.bytes) {
-        PCSoundFailure(path);
-        samples[index].failed_byte = 1;
-    }
-    samples[index].buffer->vtable->unlock(samples[index].buffer, first, first_bytes, second, second_bytes);
-    reader.Close();
-    samples[index].valid_byte = 1;
-    return 1;
+    samples[index].failed_byte = 1;
+    return 0;
 }
 
 void __thiscall SoundVoiceManagerPC::ClearSamplesPc(void) {
