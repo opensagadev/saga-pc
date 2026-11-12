@@ -1217,32 +1217,39 @@ static i32 __cdecl CheckMusicOther(void) {
     NUVEC position;
     SOCKPOSITION_PC socket_position;
     LEVELDATA_PC *level;
-    if (Players_AveragePos(&position, &socket_position) == 0)
-        return 0;
-    level = WORLD->current_level;
-    if (level == HUB_LDATA)
-        return Hub_Outside() != 0;
-    if (level == LevelFixupSlotPc0087b12c)
-        return KaminoInside() != 0;
-    if (level == KAMINOC_LDATA)
-        return KaminoDiscoOn() != 0;
-    if (level == KAMINOE_LDATA)
-        return KaminoInside() == 0;
-    if (level == LevelFixupSlotPc0087b1bc)
-        return socket_position.sock_index == 3;
-    if (level == DEATHSTARBATTLED_LDATA) {
-        if (DeathStarShieldDown() != 0) {
-            deathstar_hold_count = 30;
-            return 1;
+    if (Players_AveragePos(&position, &socket_position) != 0) {
+        level = WORLD->current_level;
+        if (level == HUB_LDATA) {
+            if (Hub_Outside() != 0)
+                return 1;
+        } else if (level == LevelFixupSlotPc0087b12c) {
+            if (KaminoInside() != 0)
+                return 1;
+        } else if (level == KAMINOC_LDATA) {
+            if (KaminoDiscoOn() != 0)
+                return 1;
+        } else if (level == KAMINOE_LDATA) {
+            if (KaminoInside() == 0)
+                return 1;
+        } else if (level == LevelFixupSlotPc0087b1bc) {
+            if (socket_position.sock_index == 3)
+                return 1;
+        } else if (level == DEATHSTARBATTLED_LDATA) {
+            if (DeathStarShieldDown() != 0) {
+                deathstar_hold_count = 30;
+                return 1;
+            }
+            if (deathstar_hold_count > 0) {
+                --deathstar_hold_count;
+                return 1;
+            }
+        } else if (level == LevelFixupSlotPc0087b228) {
+            if (GameCam->sock_position.sock_index == 4)
+                return 1;
+        } else if (level == SARLACCPITB_LDATA) {
+            if (SarlaccPitDiscoActive(WORLD) != 0)
+                return 1;
         }
-        if (deathstar_hold_count > 0) {
-            --deathstar_hold_count;
-            return 1;
-        }
-    } else if (level == LevelFixupSlotPc0087b228) {
-        return GameCam->sock_position.sock_index == 4;
-    } else if (level == SARLACCPITB_LDATA) {
-        return SarlaccPitDiscoActive(WORLD) != 0;
     }
     return 0;
 }
