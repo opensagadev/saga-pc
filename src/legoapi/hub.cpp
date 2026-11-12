@@ -3768,31 +3768,49 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
     }
 }
 
+static inline COLLECTION_BUILD_PC *HubFreePlayCollectionPc(i32 area) {
+    const u16 flags = ADataList[area].flags;
+    if ((flags & 1) != 0) {
+        if ((flags & 4) != 0)
+            return &MiniKitCollection;
+        return &VehicleCollectionPc;
+    }
+    return &CharacterCollectionPc;
+}
+
 /* 47ba10/340. Native copied collection data chooses default model pair. */
 void HubInitFreePlaySelectPc(i32 area, i32 first_model, i32 second_model) {
-    COLLECTION_BUILD_PC *collection;
-    if ((ADataList[area].flags & 1) != 0)
-        collection = (ADataList[area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc;
-    else
-        collection = &CharacterCollectionPc;
-    if (collection == &VehicleCollectionPc || collection == &MiniKitCollection) {
-        if (first_model == -1)
-            first_model = collection->list[0].id;
-        if (second_model == -1)
-            second_model = collection->list[1].id;
-    } else
-        first_model = second_model = -1;
-    Hub_MakeFreePlayList(first_model, second_model);
-    if (first_model != -1 && second_model != -1) {
-        MissionMenuPacketPc.player_model[0] = (i16)first_model;
-        MissionMenuPacketPc.player_model[1] = (i16)second_model;
+    COLLECTION_BUILD_PC *collection = HubFreePlayCollectionPc(area);
+    i32 first, second;
+    if (collection == &VehicleCollectionPc) {
+        first = first_model;
+        if (first == -1)
+            first = VehicleCollectionPc.list[0].id;
+        second = second_model;
+        if (second == -1)
+            second = VehicleCollectionPc.list[1].id;
+    } else if (collection == &MiniKitCollection) {
+        first = first_model;
+        if (first == -1)
+            first = MiniKitCollection.list[0].id;
+        second = second_model;
+        if (second == -1)
+            second = MiniKitCollection.list[1].id;
+    } else {
+        first = second = -1;
+    }
+    Hub_MakeFreePlayList(first, second);
+    if (first != -1 && second != -1) {
+        MissionMenuPacketPc.player_model[0] = (i16)first;
+        MissionMenuPacketPc.player_model[1] = (i16)second;
     } else {
         MissionMenuPacketPc.player_model[0] = Player[0] != NULL ? ((GAMEOBJECT *)Player[0])->id : -1;
         MissionMenuPacketPc.player_model[1] = Player[1] != NULL ? ((GAMEOBJECT *)Player[1])->id : -1;
     }
     freeplaymode = 0;
     freeplaytime = 0;
-    freeplay_selected[0] = freeplay_selected[1] = 0;
+    freeplay_selected[0] = 0;
+    freeplay_selected[1] = 0;
     freeplayduration = 1;
     uprepeattime[0] = 0;
     downrepeattime[0] = 0;
