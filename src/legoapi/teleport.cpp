@@ -454,17 +454,14 @@ extern "C" void __cdecl Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
 extern "C" void __cdecl Teleport_NetMoveCode(GAMEOBJECT *object) {
     if (object->character_context != 15 || object->field_7b3 != 0)
         return;
-    const u16 rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
+    i32 rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
     for (i32 flap = 0; flap < 2; ++flap) {
-        TELEPORT_MOTION_PC *teleport = (TELEPORT_MOTION_PC *)object->grapple;
-        NUSPECIALHANDLE *special = &teleport->flap1_special + flap;
-        if (NuSpecialExistsFn(special)) {
-            teleport = (TELEPORT_MOTION_PC *)object->grapple;
-            special = &teleport->flap1_special + flap;
-            if (!(NuVecDistSqr(&object->collision_position, NuSpecialGetDrawPos(special), NULL) < 0.36f))
+        if (NuSpecialExistsFn(&(&((TELEPORT_MOTION_PC *)object->grapple)->flap1_special)[flap])) {
+            if (!(NuVecDistSqr(&object->collision_position,
+                               NuSpecialGetDrawPos(&(&((TELEPORT_MOTION_PC *)object->grapple)->flap1_special)[flap]),
+                               NULL) < 0.36f))
                 continue;
-            teleport = (TELEPORT_MOTION_PC *)object->grapple;
-            (&teleport->flap1_target)[flap] = flap == 0 ? rotation : (u16)-rotation;
+            (&((TELEPORT_MOTION_PC *)object->grapple)->flap1_target)[flap] = (u16)(flap == 0 ? rotation : -rotation);
             if ((object->field_7a4 & (1 << flap)) == 0) {
                 object->field_7a4 |= (u16)(1 << flap);
                 PlaySfx("env_door_flap", &object->collision_position);
