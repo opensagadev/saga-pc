@@ -1435,16 +1435,17 @@ extern "C" void __cdecl Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NU
     reflected.z = incoming->z - normal->z * twice_dot;
     NuVecNorm(&reflected, &reflected);
     FindAnglesXY(&reflected, NULL, NULL);
-    if ((u8)bolt->field_104 > 31 || !(TerSurface[bolt->field_104].flags & 0x800)) {
+    if (bolt->field_104 < 0 || bolt->field_104 >= 32 || !(TerSurface[bolt->field_104].flags & 0x800)) {
         FindAnglesXFullTempPc += (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0);
         temp_yrot = (u16)(temp_yrot + (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0));
     }
     angles.x = FindAnglesXFullTempPc;
     angles.y = temp_yrot;
     NuMtxSetRotationXYVU0(&matrix, &angles);
-    type_id = (i8)type->field_3d;
-    if (type_id < 0 || type_id >= BoltSys->count)
+    if ((i8)type->field_3d < 0 || (i8)type->field_3d >= BoltSys->count)
         type_id = bolt->type_id;
+    else
+        type_id = (i8)type->field_3d;
     offset = (f64)1.01f * bolt->ray_radius;
     position = bolt->position;
     position.x = (f32)(position.x + reflected.x * offset);
