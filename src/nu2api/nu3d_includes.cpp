@@ -6877,8 +6877,7 @@ extern "C" {
             RendererZClearMaterialPc = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
             material = (PC_MATERIAL_CREATE_VIEW *)RendererZClearMaterialPc;
             material->attributes = (material->attributes & 0xff9fbff2u) | 0x00108002;
-            NuMtlUpdatePS(RendererZClearMaterialPc);
-            ++material->version;
+            NuMtlUpdate(RendererZClearMaterialPc);
         }
         if (RendererAlphaMaskMaterialPc == NULL) {
             PC_MATERIAL_CREATE_VIEW *material;
