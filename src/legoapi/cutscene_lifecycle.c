@@ -1949,7 +1949,10 @@ static void CutSceneRigidSysResetPc(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_
             if ((rigid->flags & 2) != 0)
                 state->visible = rigid->flags & 1;
             else {
-                NuSpecialSetVisibility(&state->special, (rigid->flags & 1) != 0);
+                if ((rigid->flags & 1) != 0)
+                    NuSpecialSetVisibility(&state->special, 1);
+                else
+                    NuSpecialSetVisibility(&state->special, 0);
                 NuSpecialSetDrawMtx(&state->special, &rigid->matrix);
             }
         }
