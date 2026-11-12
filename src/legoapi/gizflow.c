@@ -779,10 +779,13 @@ static u8 load_parent_output_ix[16] = {0};
 
 static void GizFlowConfigRemapChildrenPc(i32 id) {
     i32 i;
-    i32 child;
+    i32 index = -1 - id;
+    i16 child;
 
-    for (i = 0; load_nchildren < 32 && remap[~id].children[i] != id; ++i) {
-        child = remap[~id].children[i];
+    for (i = 0; load_nchildren < 32; ++i) {
+        child = remap[index].children[i];
+        if (child == id)
+            break;
         if (child < 0)
             GizFlowConfigRemapChildrenPc(child);
         else
@@ -792,15 +795,18 @@ static void GizFlowConfigRemapChildrenPc(i32 id) {
 
 static void GizFlowConfigRemapParentPc(i32 id) {
     i32 i;
-    i32 parent;
+    i32 index = -1 - id;
+    i16 parent;
 
-    for (i = 0; load_nparents < 16 && remap[~id].parents[i] != id; ++i) {
-        parent = remap[~id].parents[i];
+    for (i = 0; load_nparents < 16; ++i) {
+        parent = remap[index].parents[i];
+        if (parent == id)
+            break;
         if (parent < 0)
             GizFlowConfigRemapParentPc(parent);
         else {
             load_parents[load_nparents] = parent;
-            load_parent_output_ix[load_nparents] = remap[~id].parent_outputs[i];
+            load_parent_output_ix[load_nparents] = remap[index].parent_outputs[i];
             ++load_nparents;
         }
     }
