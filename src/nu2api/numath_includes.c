@@ -2861,7 +2861,7 @@ i32 __cdecl NuPlnPlnIntersect(NUPLANE *first, NUPLANE *second, NUVEC *point, NUV
     f32 cross_y = (first->c * second->a) - (first->a * second->c);
     f32 cross_z = first->a * second->b - first->b * second->a;
     NUVEC normal;
-    normal.x = first->b * second->c - first->c * second->b;
+    normal.x = (first->b * second->c) - first->c * second->b;
     normal.y = cross_y;
     normal.z = cross_z;
     NuVecNorm(&normal, &normal);
