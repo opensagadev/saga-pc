@@ -1614,10 +1614,7 @@ extern f32 game_pulse;
 void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
-    i32 id;
-    i16 icon;
-    i32 first_green, first_blue;
-    u8 first_red;
+    i32 first_red, first_green, first_blue;
     i32 alpha;
     if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
         !(object->pause_context_state > 0.0f)) {
@@ -1638,9 +1635,9 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     position.y = (f32)((f64)object->character_top * object->origin_scale + object->position.y + (f64)0.05f);
     position.z = object->upper_position.z;
     if ((object->flags_e24 & 8) != 0) {
-        f32 max_y = object->collision_position.y;
         f32 x_sum = 0.0f;
         f32 z_sum = 0.0f;
+        f32 max_y = object->collision_position.y;
         i32 count = 0;
         i32 index;
         for (index = 0; index < 16; ++index) {
@@ -1649,7 +1646,7 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
                 ++count;
                 x_sum += matrix->m30;
                 z_sum += matrix->m32;
-                if (max_y < matrix->m31) {
+                if (matrix->m31 > max_y) {
                     max_y = matrix->m31;
                 }
             }
@@ -1663,13 +1660,13 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     }
     message = AddGameMsg_Default;
     message.position = &position;
-    message.red = first_red;
+    message.unknown_34 = 0.0f;
+    message.red = (u8)first_red;
+    message.target_is_coin_total = 2;
     message.green = (u8)first_green;
     message.blue = (u8)first_blue;
     message.alpha = (u8)alpha;
-    message.target_is_coin_total = 2;
     if (object->field_280 == 1) {
-        message.unknown_34 = 0.0f;
         message.unknown_34 += 0.002f;
     }
     message.text = TagAsciiDownPc;
@@ -1677,13 +1674,11 @@ void __cdecl Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.flags = 0x1087;
     AddGameMsg(&message);
     position.y = (f32)((f64)position.y + (f64)0.1175f);
-    id = (i16)object->id;
-    icon = ((TAG_CHARACTER_DATA_READER_PC *)apicharsys->char_data)[id].icon_model;
     message.scale = MissionPlayerIconSizePc + MissionPlayerIconSizePc;
     message.text = NULL;
     message.flags = 0x11087;
-    message.icon = icon;
-    message.special = &WORLD->level_objects[(i32)icon];
+    message.icon = ((TAG_CHARACTER_DATA_READER_PC *)apicharsys->char_data)[(i16)object->id].icon_model;
+    message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
     message.icon = object->field_280 != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[(i32)message.icon];
