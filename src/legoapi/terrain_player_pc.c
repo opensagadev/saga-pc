@@ -250,18 +250,14 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                     }
                 }
             }
-            movement_threshold = 0.0f;
-            if (!(object->pad->input_magnitude > 0.0f) && object->character_context != 0x33) {
-                i8 surface;
-                i32 slippery;
-
-                surface = ((i8)(api->jump_animation_state));
-                slippery =
-                    api->field_281 != 0 && surface >= 0 && surface < 32 && TerSurface[surface].movement_scale < 1.0f;
-                if (!slippery && AnimSpeed(api->character_model, CurrentAnim(&api->anim_packet)) == 0.0f &&
-                    (api->character_data->model_flags & 0x800) == 0) {
-                    movement_threshold = api->character_data->game_character->stop_speed * api->origin_scale;
-                }
+            if (!(object->pad->input_magnitude > 0.0f) && object->character_context != 0x33 &&
+                !(api->field_281 != 0 && (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32 &&
+                  TerSurface[(i8)api->jump_animation_state].movement_scale < 1.0f) &&
+                AnimSpeed(api->character_model, CurrentAnim(&api->anim_packet)) == 0.0f &&
+                (api->character_data->model_flags & 0x800) == 0) {
+                movement_threshold = api->character_data->game_character->stop_speed * api->origin_scale;
+            } else {
+                movement_threshold = 0.0f;
             }
 
             speed_squared = (api->velocity.x * api->velocity.x + api->velocity.y * api->velocity.y) +
@@ -847,21 +843,19 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                                         object->current_hp = 0;
                                         if (((api->flags_1fc_word & 0x80) != 0) &&
                                             ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet)) != NULL &&
-                                            ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->coins != 0 &&
+                                            ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->coins > 0 &&
                                             BonusWinner == -1) {
                                             i32 coins;
 
                                             coins = LoseCoins(object, 2);
                                             if (coins > 0) {
-                                                f32 height;
-
-                                                height = api->water_height;
-                                                if (height != 2000000.0f &&
-                                                    (TerLayer[((i8)(api->field_283))].flags & 1) == 0) {
-                                                    height = 2000000.0f;
-                                                }
                                                 AddPickups(coins, 0, 0, 0, &api->collision_position, NULL, 2.0f,
-                                                           ((i8)(api->field_280)), 1.0f, height, NULL, 1, 0);
+                                                           ((i8)(api->field_280)), 1.0f,
+                                                           api->water_height != 2000000.0f &&
+                                                                   (TerLayer[((i8)(api->field_283))].flags & 1) != 0
+                                                               ? api->water_height
+                                                               : 2000000.0f,
+                                                           NULL, 1, 0);
                                             }
                                             ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->scale = 1.5f;
                                         }
