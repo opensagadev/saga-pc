@@ -1340,17 +1340,17 @@ extern "C" void __cdecl Hub_UpdateMiniKits(WORLDINFO *world) {
         kit->rotation_velocity = SeekRot(kit->rotation_velocity, rate, 8.0f);
         i32 tilt = 0;
         if (i == HubMiniKitViewerAreaPc && speed > 0.0f) {
-            const i32 diff = RotDiff(old_rotation, kit->rotation);
-            const f32 angular_speed = (f64)(diff < 0 ? -diff : diff) / FRAMETIME;
+            const f32 angular_speed = (f64)abs(RotDiff(old_rotation, kit->rotation)) / FRAMETIME;
             if (angular_speed < 32768.0f)
                 tilt = (i32)((1.0 - (f64)angular_speed * (1.0 / 32768.0)) * 4551.0);
         }
         kit->tilt = SeekRot(kit->tilt, -tilt, 3.0f);
+        const i32 visible = count[i];
         for (i32 j = 0; j < pieces->piece_count; ++j) {
             pieces->pieces[j].enabled = 0;
             if (NuSpecialExistsFn(&pieces->pieces[j].special)) {
                 NuSpecialSetVisibility(&pieces->pieces[j].special, 0);
-                if (j < count[i])
+                if (j < visible)
                     pieces->pieces[j].enabled = 1;
             }
         }
