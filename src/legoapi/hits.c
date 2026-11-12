@@ -131,67 +131,69 @@ void __cdecl Player_ResetContexts(void *);
 i32 __cdecl PlayerTakeHitReactionPc(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration, u32 flags) {
     REACTION_FIELDS_PC *view = (REACTION_FIELDS_PC *)target;
     void **animations;
-    i32 choices[16], count = 0, animation, index;
-    u8 saved_jump_state;
+    i32 choices[16], count = 0, animation, saved_jump_state;
     f32 speed, timer, dx, dz;
-    u16 angle;
-    if (target->field_280 != 0xff)
-        return 0;
-    animations = target->character_model->model_data_b;
-    if (animations[0xa7] != NULL && animations[0xaa] != NULL)
-        choices[count++] = 0xa7;
-    if (animations[0xa8] != NULL && animations[0xab] != NULL)
-        choices[count++] = 0xa8;
-    if (animations[0xa9] != NULL && animations[0xac] != NULL)
-        choices[count++] = 0xa9;
-    if (!(flags & 0x200)) {
-        if (animations[0x3d] != NULL)
-            choices[count++] = 0x3d;
-        if (attacker != NULL && (attacker->flags_1fc_word & 0x80) && animations[0xb9] != NULL)
-            choices[count++] = 0xb9;
+    i16 index;
+    if (target->field_280 == 0xff) {
+        animations = target->character_model->model_data_b;
+        if (animations[0xa7] != NULL && animations[0xaa] != NULL)
+            choices[count++] = 0xa7;
+        if (animations[0xa8] != NULL && animations[0xab] != NULL)
+            choices[count++] = 0xa8;
+        if (animations[0xa9] != NULL && animations[0xac] != NULL)
+            choices[count++] = 0xa9;
+        if (!(flags & 0x200)) {
+            if (animations[0x3d] != NULL)
+                choices[count++] = 0x3d;
+            if (attacker != NULL && (attacker->flags_1fc_word & 0x80) && animations[0xb9] != NULL)
+                choices[count++] = 0xb9;
+        }
+        if (count != 0)
+            animation = choices[qrand() / (65535 / count + 1)];
+        else
+            animation = 1;
+        if (animation != -1) {
+            saved_jump_state = target->jump_variant_state;
+            target->field_7aa = (i16)animation;
+            speed = AnimSpeed(target->character_model, (i16)animation);
+            view->animation_speed = speed;
+            if (target->field_7aa != 0xb9 && target->field_7aa != 0x3d) {
+                if (speed <= 0.0f)
+                    view->animation_speed = 1.0f;
+                else if (speed <= (f64)0.8f)
+                    view->animation_speed = 0.8f;
+            }
+            ResetAnimPacket(&target->anim_packet, -1);
+            Player_ClearContext(target, 1);
+            Player_ResetContexts(&view->reset_contexts);
+            view->reaction_duration = duration;
+            target->character_context = 0x5a;
+            target->field_7b3 = 0;
+            if (attacker != NULL) {
+                target->facing_angle = target->movement_facing_angle = target->field_0x276 =
+                    NuAtan2D(attacker->collision_position.x - target->collision_position.x,
+                             attacker->collision_position.z - target->collision_position.z);
+            }
+            index = target->field_7aa;
+            if (target->character_model->model_data_b[index] != NULL &&
+                (target->character_model->animation_configs[index]->flags & 2)) {
+                target->context_timer = (f32)(((f64)qrand() * 1.5259021893143654e-05) * 0.5 + 1.0);
+            } else {
+                timer = AnimDuration((i16)target->id, index, 0.0f, 0.0f, index != 0xb9);
+                target->context_timer = timer;
+                if (timer <= 0.0f)
+                    target->context_timer = 0.6f;
+            }
+            if (attacker != NULL) {
+                dx = target->collision_position.x - attacker->collision_position.x;
+                dz = target->collision_position.z - attacker->collision_position.z;
+                target->movement_facing_angle = NuAtan2D(-dx, -dz);
+            }
+            target->jump_variant_state = saved_jump_state;
+            return target->field_7aa == 0xb9 ? 2 : 1;
+        }
     }
-    animation = count ? choices[qrand() / (65535 / count + 1)] : 1;
-    if (animation == -1)
-        return 0;
-    saved_jump_state = target->jump_variant_state;
-    target->field_7aa = (i16)animation;
-    speed = AnimSpeed(target->character_model, (i16)animation);
-    view->animation_speed = speed;
-    if (target->field_7aa != 0xb9 && target->field_7aa != 0x3d) {
-        if (speed <= 0.0f)
-            view->animation_speed = 1.0f;
-        else if (speed <= (f64)0.8f)
-            view->animation_speed = 0.8f;
-    }
-    ResetAnimPacket(&target->anim_packet, -1);
-    Player_ClearContext(target, 1);
-    Player_ResetContexts(&view->reset_contexts);
-    view->reaction_duration = duration;
-    target->character_context = 0x5a;
-    target->field_7b3 = 0;
-    if (attacker != NULL) {
-        dz = attacker->collision_position.z - target->collision_position.z;
-        dx = attacker->collision_position.x - target->collision_position.x;
-        angle = NuAtan2D(dx, dz);
-        target->field_0x276 = target->movement_facing_angle = target->facing_angle = angle;
-    }
-    index = (i16)target->field_7aa;
-    if (target->character_model->model_data_b[index] != NULL &&
-        (target->character_model->animation_configs[index]->flags & 2)) {
-        target->context_timer = (f32)(((f64)qrand() * 1.5259021893143654e-05) * 0.5 + 1.0);
-    } else {
-        timer = AnimDuration((i16)target->id, (i16)index, 0.0f, 0.0f, target->field_7aa != 0xb9);
-        target->context_timer = timer;
-        if (timer <= 0.0f)
-            target->context_timer = 0.6f;
-    }
-    if (attacker != NULL) {
-        dx = target->collision_position.x - attacker->collision_position.x;
-        dz = target->collision_position.z - attacker->collision_position.z;
-        target->movement_facing_angle = NuAtan2D(-dx, -dz);
-    }
-    target->jump_variant_state = saved_jump_state;
-    return target->field_7aa == 0xb9 ? 2 : 1;
+    return 0;
 }
 
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,
