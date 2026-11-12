@@ -6,18 +6,16 @@ i32 __cdecl StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 fr
     u8 next = *index;
     i32 changed = 0;
 
-    while (next < state->count && frame >= state->times[next]) {
+    while (*index < state->count && frame >= state->times[*index]) {
         *value = state->values[*index];
         ++*index;
-        next = *index;
         changed = 1;
     }
     if (changed != 0) {
-        return 1;
+        return changed;
     }
     while (next != 0 && state->times[next - 1] > frame) {
-        --next;
-        *index = next;
+        *index = --next;
         if (next != 0) {
             *value = state->values[next - 1];
         } else {
