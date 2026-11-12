@@ -16082,12 +16082,12 @@ i32 __cdecl Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
     position = NULL;
     path = NULL;
     if ((processor->action_data_1 & 8) != 0) {
-        position = &processor->action_pos;
         path = &packet->path_info;
+        position = &processor->action_pos;
     } else if ((processor->action_data_1 & 0x10) != 0) {
         locator = (AILOCATOR_PC *)(processor->action_data_3);
-        position = &locator->position;
         path = &locator->path_info;
+        position = &locator->position;
     } else if ((processor->action_data_1 & 0x20) != 0) {
         creature = &sys->creatures[packet->creature_index];
         path = &creature->path_info;
@@ -16096,7 +16096,7 @@ i32 __cdecl Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
             position = &creature->position;
         }
     }
-    if (position != NULL && path != NULL) {
+    if (path != NULL && position != NULL) {
         if ((processor->action_data_1 & 4) != 0) {
             packet->movement_instruction_parameter = NuVecXZDist(&packet->terrain_origin, position, &difference);
         }
