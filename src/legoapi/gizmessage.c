@@ -42,40 +42,39 @@ void ClearGizAIMessageSys(GIZAIMESSAGESYS *sys) {
 
 GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message) {
     char local[32];
-    NULISTLNK *node;
-    if (sys == NULL) {
-        return NULL;
-    }
-    if (message != NULL) {
-        return message;
-    }
-    if (name == NULL) {
-        return NULL;
-    }
-
-    if (NuStrIStr((char *)name, gizaimessage_prefix) != NULL) {
-        sprintf(local, GizAIMessage_NameFormat, name);
-    } else {
-        if (NuStrLen(name) + NuStrLen(gizaimessage_prefix) + 1 >= (i32)sizeof(local)) {
-            return NULL;
-        }
-        sprintf(local, GizAIMessage_PrefixedNameFormat, gizaimessage_prefix, name);
-    }
-
-    for (node = NuLinkedListGetHead(&sys->active_list); node != NULL;
-         node = NuLinkedListGetNext(&sys->active_list, node)) {
-        if (NuStrNICmp(local, ((GIZAIMESSAGE *)node)->name, sizeof(local)) == 0) {
+    NULISTLNK *node = NULL;
+    if (sys != NULL) {
+        if (message != NULL) {
+            node = &message->links;
             return (GIZAIMESSAGE *)node;
         }
-    }
+        if (name != NULL) {
+            if (NuStrIStr((char *)name, gizaimessage_prefix) != NULL) {
+                sprintf(local, GizAIMessage_NameFormat, name);
+            } else {
+                if (NuStrLen(name) + NuStrLen(gizaimessage_prefix) + 1 >= (i32)sizeof(local)) {
+                    return NULL;
+                }
+                sprintf(local, GizAIMessage_PrefixedNameFormat, gizaimessage_prefix, name);
+            }
 
-    node = NuLinkedListGetHead(&sys->free_list);
-    if (node == NULL) {
-        return NULL;
+            for (node = NuLinkedListGetHead(&sys->active_list); node != NULL;
+                 node = NuLinkedListGetNext(&sys->active_list, node)) {
+                if (NuStrNICmp(local, ((GIZAIMESSAGE *)node)->name, sizeof(local)) == 0) {
+                    break;
+                }
+            }
+
+            if (node == NULL) {
+                node = NuLinkedListGetHead(&sys->free_list);
+                if (node != NULL) {
+                    NuLinkedListRemove(&sys->free_list, node);
+                    NuLinkedListAppend(&sys->active_list, node);
+                    NuStrNCpy(((GIZAIMESSAGE *)node)->name, local, sizeof(local));
+                }
+            }
+        }
     }
-    NuLinkedListRemove(&sys->free_list, node);
-    NuLinkedListAppend(&sys->active_list, node);
-    NuStrNCpy(((GIZAIMESSAGE *)node)->name, local, sizeof(local));
     return (GIZAIMESSAGE *)node;
 }
 
@@ -89,14 +88,17 @@ GIZAIMESSAGE *SetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, f32 value,
 
 f32 GetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message) {
     GIZAIMESSAGE *result = CheckGizAIMessage(sys, name, message);
-    return result != NULL ? result->value : 0.0f;
+    if (result != NULL) {
+        return result->value;
+    }
+    return 0.0f;
 }
 
 GIZAIMESSAGE *QueryGizAIMessage(GIZAIMESSAGESYS *sys, GIZAIMESSAGE *message) {
-    if (message != NULL) {
-        return (GIZAIMESSAGE *)NuLinkedListGetNext(&sys->active_list, &message->links);
+    if (message == NULL) {
+        return (GIZAIMESSAGE *)NuLinkedListGetHead(&sys->active_list);
     }
-    return (GIZAIMESSAGE *)NuLinkedListGetHead(&sys->active_list);
+    return (GIZAIMESSAGE *)NuLinkedListGetNext(&sys->active_list, &message->links);
 }
 
 static i32 GizAIMessage_GetMaxGizmos(void *unused0) {
