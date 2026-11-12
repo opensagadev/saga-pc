@@ -46,10 +46,10 @@ extern "C" void __cdecl PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index,
         return;
     }
 
-    if (PCSoundVolumeMultiplier == 0x4000) {
-        scaled_volume = volume_index;
-    } else {
+    if (PCSoundVolumeMultiplier != 0x4000) {
         scaled_volume = (PCSoundVolumeMultiplier * volume_index) >> 15;
+    } else {
+        scaled_volume = volume_index;
     }
 
     voice_id = SoundVoiceManager.AllocateVoice(sample_id, 0);
@@ -111,6 +111,8 @@ extern "C" void __cdecl PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i3
                                               f32 rumble_release, i32 priority) {
     NUVEC relative;
     i32 scaled_volume;
+    i32 attenuated_volume;
+    i32 table_index;
     i32 voice_id;
 
     if (SoundVoiceManager.samples == NULL)
@@ -121,20 +123,21 @@ extern "C" void __cdecl PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i3
         position->x == nusound_special_positions[0].x && position->y == nusound_special_positions[0].y &&
         position->z == nusound_special_positions[0].z)
         return;
-    if (PCSoundVolumeMultiplier == 0x4000)
-        scaled_volume = volume_left;
-    else
+    if (PCSoundVolumeMultiplier != 0x4000)
         scaled_volume = (PCSoundVolumeMultiplier * volume_left) >> 15;
-    scaled_volume = PCSoundPositionVolumePc(&relative, position, scaled_volume);
-    if (scaled_volume == 0)
+    else
+        scaled_volume = volume_left;
+    attenuated_volume = PCSoundPositionVolumePc(&relative, position, scaled_volume);
+    if (attenuated_volume == 0)
         return;
     voice_id = SoundVoiceManager.AllocateVoice(sample_id, 0);
     if (voice_id <= -1)
         return;
     SoundVoiceManager.Setup3DVoice(voice_id, &relative, 1);
-    if (scaled_volume > 0x3fff)
-        scaled_volume = 0;
-    SoundVoiceManager.SetVoice(voice_id, 0, NuSound3VolumeTable[scaled_volume], pitch);
+    table_index = attenuated_volume;
+    if (table_index > 0x3fff)
+        table_index = 0;
+    SoundVoiceManager.SetVoice(voice_id, 0, NuSound3VolumeTable[table_index], pitch);
     ++PCSoundStartedOneShotCountPc;
     (void)volume_right;
     (void)buzz_timer;
@@ -175,6 +178,7 @@ extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id
     NUVEC relative;
     i32 scaled_volume;
     i32 attenuated_volume;
+    i32 table_index;
     i32 voice_id;
     bool reused;
     SoundVoiceSlotPC *slot;
@@ -187,10 +191,10 @@ extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id
         position->x == nusound_special_positions[0].x && position->y == nusound_special_positions[0].y &&
         position->z == nusound_special_positions[0].z)
         return;
-    if (PCSoundVolumeMultiplier == 0x4000)
-        scaled_volume = volume_left;
-    else
+    if (PCSoundVolumeMultiplier != 0x4000)
         scaled_volume = (PCSoundVolumeMultiplier * volume_left) >> 15;
+    else
+        scaled_volume = volume_left;
     attenuated_volume = PCSoundPositionVolumePc(&relative, position, scaled_volume);
     if (attenuated_volume == 0)
         return;
@@ -207,9 +211,10 @@ extern "C" void __cdecl PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id
     slot->field_2c = NuSound3LoopHoldTime;
     if (!reused) {
         SoundVoiceManager.Setup3DVoice(voice_id, &relative, 1);
-        if (attenuated_volume > 0x3fff)
-            attenuated_volume = 0;
-        SoundVoiceManager.SetVoice(voice_id, 1, NuSound3VolumeTable[attenuated_volume], pitch);
+        table_index = attenuated_volume;
+        if (table_index > 0x3fff)
+            table_index = 0;
+        SoundVoiceManager.SetVoice(voice_id, 1, NuSound3VolumeTable[table_index], pitch);
         ++PCSoundStartedLoopCountPc;
     } else {
         SoundVoiceManager.Setup3DVoice(voice_id, &relative, 0);
