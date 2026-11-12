@@ -1610,11 +1610,9 @@ EdSubSystem::~EdSubSystem() {
 }
 
 void LevelEditor::SetCameraPosition(VuVec &position) {
-    background_colour[0] = position.x;
-    background_colour[1] = position.y;
-    background_colour[2] = position.z;
-    background_colour[3] = position.w;
-    edcamSetPos(reinterpret_cast<NUVEC *>(background_colour));
+    VuVec &camera_position = *reinterpret_cast<VuVec *>(background_colour);
+    VuVecCopy(camera_position, position);
+    edcamSetPos(&camera_position.xyz);
 }
 
 /* Editor file blocks: a 16-byte header (type, size, two spare words) whose
