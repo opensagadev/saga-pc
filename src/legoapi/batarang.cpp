@@ -754,10 +754,14 @@ finish:
 }
 
 extern "C" i32 Batarang_SeekToTarget(BATARANG_NATIVE_PC *batarang) {
+    i32 reached = 0;
+    NUVEC target;
+    NUVEC normal;
+    NUVEC desired;
+    f32 rate;
     if (batarang == NULL) {
         return 0;
     }
-    NUVEC target;
     if (batarang->flight_state.current_target > batarang->active ||
         batarang->targets[batarang->flight_state.current_target].lost != 0) {
         target = batarang->owner->collision_position;
@@ -765,20 +769,17 @@ extern "C" i32 Batarang_SeekToTarget(BATARANG_NATIVE_PC *batarang) {
         return 0;
     }
 
-    const f32 rate =
-        batarang->flight_state.flight_time > 1.0f ? (batarang->flight_state.flight_time - 1.0f) * 5.0f + 5.0f : 5.0f;
+    rate = 5.0f;
+    if (batarang->flight_state.flight_time > 1.0f)
+        rate = (batarang->flight_state.flight_time - 1.0f) * 5.0f + 5.0f;
     if (batarang->flight_state.flight_time < 4.0f) {
         if (Batarang_ShouldRicochet(batarang)) {
-            NUVEC normal;
             NewRayCastGetImpactNormal(&normal);
             Batarang_InitRicochet(batarang, &normal);
         }
     }
 
-    if ((batarang->ricochet_state.flags & 1) != 0) {
-        Batarang_Ricochet(batarang);
-    } else {
-        NUVEC desired;
+    if ((batarang->ricochet_state.flags & 1) == 0) {
         NuVecSub(&desired, &target, &batarang->position);
         NuVecNorm(&desired, &desired);
         NuVecScale(&desired, &desired, 5.0f);
@@ -790,11 +791,15 @@ extern "C" i32 Batarang_SeekToTarget(BATARANG_NATIVE_PC *batarang) {
             --batarang->ricochet_state.count;
             batarang->ricochet_state.timer = 0.0f;
         }
+    } else {
+        Batarang_Ricochet(batarang);
     }
     batarang->position.x += batarang->velocity.x * FRAMETIME;
     batarang->position.y += batarang->velocity.y * FRAMETIME;
     batarang->position.z += batarang->velocity.z * FRAMETIME;
-    return NuVecDistSqr(&batarang->position, &target, NULL) < 0.0625f;
+    if (NuVecDistSqr(&batarang->position, &target, NULL) < 0.0625f)
+        reached = 1;
+    return reached;
 }
 f32 BatarangCatwomanStunTimePc = 2.0f;
 
