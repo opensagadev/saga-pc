@@ -926,7 +926,7 @@ void BlendRootFn(NUMTX *matrix, void *data, NUVEC *source_root, NUVEC *target_ro
 
     NuVecLerp(&blended_offset, &target_offset, &source_offset, blend);
     root_delta->x += blended_offset.x;
-    root_delta->y += blended_offset.y;
+    root_delta->y = blended_offset.y + root_delta->y;
     root_delta->z += blended_offset.z;
     NuMtxTranslate(matrix, root_delta);
 
