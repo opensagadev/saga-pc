@@ -187,7 +187,7 @@ void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
     NUVEC scale, *position;
     NUMTX matrix;
     u16 spin, tilt;
-    i32 index, type_index;
+    i32 index;
     scale.x = AreaPickupScale;
     scale.y = AreaPickupScale;
     scale.z = AreaPickupScale;
@@ -229,10 +229,9 @@ void __cdecl SpecialMiniKits_Draw(WORLDINFO *world) {
             continue;
         pickup = (GIZMOPICKUP_PC *)item->pickup->object;
         if ((pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1)
-            type_index = GizmoPickupSys->alternate_type;
+            type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
         else
-            type_index = pickup->type_index;
-        type = &GizmoPickupSys->types[type_index];
+            type = &GizmoPickupSys->types[pickup->type_index];
         if (type == NULL)
             continue;
         if ((item->flags & 0x10) == 0) {
