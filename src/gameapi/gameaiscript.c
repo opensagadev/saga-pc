@@ -10657,11 +10657,11 @@ i32 __cdecl Action_LinkTurretToController(AISYS_PC *system, AISCRIPTPROCESS_PC *
     char *value;
     GIZMO_PC *gizmo;
 
+    turret = NULL;
+    controller = NULL;
     if (first_time == 0) {
         return 1;
     }
-    turret = NULL;
-    controller = NULL;
     for (index = 0; index < param_count; ++index) {
         value = NuStrIStr(params[index], (char *)AITransferLiteral7583f0);
         if (value != NULL) {
@@ -10969,7 +10969,7 @@ i32 __cdecl Action_AwkwardShapeOverridePc(AISYS_PC *system, AISCRIPTPROCESS_PC *
         if (object != NULL) {
             if (object->character_context == 0x3c || object->rider != NULL)
                 Player_ClearContext(object, 1);
-            object->flags_ef4 ^= (((u32)enabled << 7) ^ object->flags_ef4) & 0x80u;
+            object->flags_ef4 = (object->flags_ef4 & ~0x80u) | ((enabled & 1) << 7);
         }
     }
     return 1;
@@ -11003,7 +11003,7 @@ i32 __cdecl Action_IgnoreSlideTerrainPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
             }
         }
         if (object != NULL) {
-            object->flags_ef4 ^= (((u32)enabled << 10) ^ object->flags_ef4) & 0x400u;
+            object->flags_ef4 = (object->flags_ef4 & ~0x400u) | ((enabled & 1) << 10);
         }
     }
     return 1;
@@ -11037,7 +11037,7 @@ i32 __cdecl Action_SplineFollowTerrainPc(AISYS_PC *system, AISCRIPTPROCESS_PC *p
             }
         }
         if (object != NULL) {
-            object->flags_ef4 ^= (((u32)enabled << 12) ^ object->flags_ef4) & 0x1000u;
+            object->flags_ef4 = (object->flags_ef4 & ~0x1000u) | ((enabled & 1) << 12);
         }
     }
     return 1;
