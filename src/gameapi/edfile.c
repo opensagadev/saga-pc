@@ -755,14 +755,16 @@ void eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding) {
 }
 
 i32 eduiMenuAttach(eduimenu_s *menu, eduimenu_s *child) {
-    if (child->parent)
-        return 0;
-    while (menu->child)
-        menu = menu->child;
-    child->parent = menu;
-    menu->child = child;
-    eduiSetActiveMenu(child);
-    return 1;
+    if (child->parent == NULL) {
+        eduimenu_s *parent = menu;
+        while (parent->child != NULL)
+            parent = parent->child;
+        child->parent = parent;
+        parent->child = child;
+        eduiSetActiveMenu(child);
+        return 1;
+    }
+    return 0;
 }
 
 i32 __cdecl eduiMenuDetach(eduimenu_s *menu) {
@@ -1744,16 +1746,14 @@ void __cdecl eduiItemExpanderAddChild(eduiitem_s *item, eduiitem_s *child) {
 }
 
 eduimenu_s *__cdecl eduiGetTopLevelParent(eduimenu_s *menu) {
-    if (menu != NULL) {
-        eduimenu_s *parent = menu->parent;
-        if (parent != NULL)
-            return eduiGetTopLevelParent(parent);
-    }
-    return menu;
+    if (menu == NULL || menu->parent == NULL)
+        return menu;
+    return eduiGetTopLevelParent(menu->parent);
 }
 
 eduimenu_s *__cdecl eduiGetActiveMenuParent(void) {
-    return eduiGetTopLevelParent(active_menu);
+    eduimenu_s *menu = active_menu;
+    return eduiGetTopLevelParent(menu);
 }
 
 /* The menu itself or one of its open children when it holds the focus. */

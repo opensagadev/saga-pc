@@ -214,7 +214,7 @@ i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *
             bolt->speed += NuVecMag(momentum);
             return 0;
         }
-        if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->id == id_SPEEDERBIKE) {
+        if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->id == (u16)id_SPEEDERBIKE) {
             return 1;
         }
         if (WORLD->current_level == DEATHSTARBATTLED_LDATA) {
@@ -225,7 +225,7 @@ i32 __cdecl InitBolt_AddMomentumType_LSW(BOLT *bolt, GAMEOBJECT *object, NUVEC *
 }
 
 i32 __cdecl Bolt_HitPlatFn_LSW(BOLT *bolt) {
-    if (WORLD->current_level == KAMINOE_LDATA) {
+    if (KAMINOE_LDATA == WORLD->current_level) {
         KaminoE_CheckPlatHit(bolt);
     }
     return 0;
@@ -234,7 +234,7 @@ i32 __cdecl Bolt_HitPlatFn_LSW(BOLT *bolt) {
 extern i32 __cdecl ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
 
 i32 __cdecl Bolt_HitCustomFn_LSW(void *bolt, void *points) {
-    if (WORLD->current_level == DOGFIGHTA_LDATA)
+    if (DOGFIGHTA_LDATA == WORLD->current_level)
         return ChrisExtraBoltCollision((BOLT *)bolt, (NUVEC *)points);
     return 0;
 }
@@ -328,39 +328,29 @@ void SpeedBlur_Apply(WORLDINFO *world) {
 }
 
 i32 __cdecl KaminoE_CheckPlatHit(BOLT *bolt) {
-    KAMINOEPLATE *hit;
-
     if (bolt->unknown_fa == kamino_plate_id) {
-        hit = kamino_plate_hit;
         if (kamino_plate_1 != NULL && kamino_plate_1_active != 0) {
             if ((kamino_plate_1->flags_13a & 0x30) == 0 && (kamino_plate_1->flags_13a & 0x2) != 0) {
-                if (hit == NULL) {
-                    hit = kamino_plate_1;
-                    kamino_plate_hit = hit;
-                }
+                if (kamino_plate_hit == NULL)
+                    kamino_plate_hit = kamino_plate_1;
             }
         }
         if (kamino_plate_2 != NULL && kamino_plate_2_active != 0) {
             if ((kamino_plate_2->flags_13a & 0x30) == 0 && (kamino_plate_2->flags_13a & 0x2) != 0) {
-                if (hit == NULL) {
-                    hit = kamino_plate_2;
-                    kamino_plate_hit = hit;
-                }
+                if (kamino_plate_hit == NULL)
+                    kamino_plate_hit = kamino_plate_2;
             }
         }
         if (kamino_plate_3 != NULL && kamino_plate_3_active != 0) {
             if ((kamino_plate_3->flags_13a & 0x30) == 0 && (kamino_plate_3->flags_13a & 0x2) != 0) {
-                if (hit == NULL) {
-                    hit = kamino_plate_3;
-                    kamino_plate_hit = hit;
-                }
+                if (kamino_plate_hit == NULL)
+                    kamino_plate_hit = kamino_plate_3;
             }
         }
         if (kamino_plate_4 != NULL && kamino_plate_4_active != 0) {
             if ((kamino_plate_4->flags_13a & 0x30) == 0 && (kamino_plate_4->flags_13a & 0x2) != 0) {
-                if (hit == NULL) {
+                if (kamino_plate_hit == NULL)
                     kamino_plate_hit = kamino_plate_4;
-                }
             }
         }
         return 1;
