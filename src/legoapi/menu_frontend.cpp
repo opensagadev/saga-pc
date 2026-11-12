@@ -957,13 +957,13 @@ extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
             warning = NULL;
             if (pause_i_pad != -1) {
                 i32 other = pause_i_pad == 0;
-                warning = TTab[PCArcadePointGoals[(i8)ArcadeItem.play] > 0 &&
-                                       Arcade_Points[pause_i_pad] < Arcade_Points[other]
-                                   ? TextIdPc8807d0
-                                   : TextIdPc8807d4];
+                warning =
+                    PCArcadePointGoals[(i8)ArcadeItem.play] > 0 && Arcade_Points[pause_i_pad] < Arcade_Points[other]
+                        ? TTab[TextIdPc8807d0]
+                        : TTab[TextIdPc8807d4];
             }
         } else {
-            warning = TTab[SuperStory ? TextIdPc880914 : TextIdPc880910];
+            warning = SuperStory ? TTab[TextIdPc880914] : TTab[TextIdPc880910];
         }
     } else {
         title = TTab[TextIdPc88084c];
@@ -974,7 +974,7 @@ extern "C" void __cdecl MenuDrawPauseExit(MENU *menu) {
                     MenuTextScalePc, PauseMenus_Align, AlternateHudColourBytesPc[0], AlternateHudColourBytesPc[1],
                     AlternateHudRgbPc[0], 1.7f, 1, NULL, 0, MenuA);
         if (warning && menu->selected_item == menu->first_row) {
-            u16 angle = (u16)(i32)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0);
+            u32 angle = (u16)(i32)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f * 65536.0);
             f32 blend = (f32)(NuTrigTable[angle >> 1] * 0.5 + 0.5);
             i32 red = (i32)(AlternateHudColourBytesPc[2] +
                             (AlternateHudColourBytesPc[5] - AlternateHudColourBytesPc[2]) * blend);
