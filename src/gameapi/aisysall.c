@@ -9843,7 +9843,7 @@ static __declspec(noinline) void pathEditor_SetSharedNode(EDAIPATHNODE_s *node, 
 
 void __cdecl pathEditor_Enter(void) {
     EDAISHAREDPATHNODE_s *shared_nodes[64];
-    AIPATHSYS_PC *system;
+    AIPATHSYS_PC *system = NULL;
     AIPATH_PC *runtime;
     AIPATHNODE_PC *source;
     AIPATHCNX_PC *cnx;
@@ -9853,35 +9853,27 @@ void __cdecl pathEditor_Enter(void) {
     EDAISHAREDPATHNODE_s *shared;
     EDAIPATHCNX_s *found;
     NULISTHDR *list;
-    i32 node_base;
+    i32 node_base = 0;
     i32 path_index;
     i32 index;
     i32 connection;
     i32 direction;
 
-    list = &aieditor->paths;
-    list->head = NULL;
-    list->tail = NULL;
+    memset(&aieditor->paths, 0, sizeof(aieditor->paths));
     for (index = 0; index < 32; ++index)
         NuLinkedListAppend(&aieditor->free_paths, &aieditor->path_storage[index].link);
-    list = &aieditor->free_path_nodes;
-    list->head = NULL;
-    list->tail = NULL;
+    memset(&aieditor->free_path_nodes, 0, sizeof(aieditor->free_path_nodes));
     for (index = 0; index < 1024; ++index)
         NuLinkedListAppend(&aieditor->free_path_nodes, &aieditor->node_storage[index].link);
-    list = &aieditor->free_shared_nodes;
-    list->head = NULL;
-    list->tail = NULL;
+    memset(&aieditor->free_shared_nodes, 0, sizeof(aieditor->free_shared_nodes));
     for (index = 0; index < 64; ++index)
         NuLinkedListAppend(&aieditor->free_shared_nodes, &aieditor->shared_node_storage[index].link);
     memset(shared_nodes, 0, sizeof(shared_nodes));
-    system = NULL;
     if (aieditor->ai_system != NULL)
         system = aieditor->ai_system->path_sys;
     if (aieditor->cached_path_system != system) {
         aieditor->cached_path_system = system;
         if (aieditor->cached_path_system != NULL) {
-            node_base = 0;
             for (path_index = 0; path_index < aieditor->cached_path_system->path_count; ++path_index) {
                 runtime = aieditor->cached_path_system->paths[path_index];
                 path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->free_paths);
