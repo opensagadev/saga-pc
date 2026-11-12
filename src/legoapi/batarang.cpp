@@ -1690,42 +1690,45 @@ extern "C" {
     }
 
     void __cdecl PlayerInitCapabilitiesDefaultPc(GAMEOBJECT *object) {
+        CHARACTER_MODEL_LAYERS_PC *model = object->character_model;
         CHARACTERDATA_PC *character = object->character_data;
-        PLAYERCHARACTERCONFIG_PC *config = character->game_character;
-        void **animations = object->character_model->action_animations;
-        u32 *capabilities = &object->ai_packet.capabilities;
-        *capabilities = ((CHARACTER_AI_CAPABILITIES_PC *)character)->path_capabilities | 0x20000040;
-        if (animations[0x88] != NULL && animations[0x89] != NULL)
-            *capabilities |= (config->flags_090 & 0x80000) != 0 ? 0x40000 : 0x80000;
-        if (animations[0x8a] != NULL && animations[0x8b] != NULL && animations[0x8c] != NULL)
-            *capabilities |= 0x400000;
-        if (animations[0xcd] != NULL)
-            *capabilities |= 0x100000;
-        if (animations[6] != NULL)
-            *capabilities |= 1;
-        if ((config->flags_090 & 0x400000) != 0)
-            *capabilities |= 0x20;
-        if ((config->flags_090 & 0x40000000) != 0)
-            *capabilities |= 2;
+        object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES_PC *)character)->path_capabilities | 0x20000040;
+        if (model->action_animations[0x88] != NULL && model->action_animations[0x89] != NULL) {
+            if ((character->game_character->flags_090 & 0x80000) != 0)
+                object->ai_packet.capabilities |= 0x40000;
+            else
+                object->ai_packet.capabilities |= 0x80000;
+        }
+        if (model->action_animations[0x8a] != NULL && model->action_animations[0x8b] != NULL &&
+            model->action_animations[0x8c] != NULL)
+            object->ai_packet.capabilities |= 0x400000;
+        if (model->action_animations[0xcd] != NULL)
+            object->ai_packet.capabilities |= 0x100000;
+        if (model->action_animations[6] != NULL)
+            object->ai_packet.capabilities |= 1;
+        if ((character->game_character->flags_090 & 0x400000) != 0)
+            object->ai_packet.capabilities |= 0x20;
+        if ((character->game_character->flags_090 & 0x40000000) != 0)
+            object->ai_packet.capabilities |= 2;
         if (object->suit != NULL)
-            *capabilities |= ((SUIT_AI_CAPABILITIES_PC *)object->suit)->path_capabilities;
+            object->ai_packet.capabilities |= ((SUIT_AI_CAPABILITIES_PC *)object->suit)->path_capabilities;
         if ((object->flags_1f8 & 1) != 0)
-            *capabilities |= 0x100;
+            object->ai_packet.capabilities |= 0x100;
         else if ((object->flags_1f8 & 4) == 0)
-            *capabilities |= 0x80;
-        *capabilities |= 0x1000;
+            object->ai_packet.capabilities |= 0x80;
+        object->ai_packet.capabilities |= 0x1000;
         if ((character->model_flags & 0x40000) != 0)
-            *capabilities |= 0x10;
+            object->ai_packet.capabilities |= 0x10;
         if ((character->model_flags & 0x100000) != 0)
-            *capabilities |= 8;
+            object->ai_packet.capabilities |= 8;
         if ((character->model_flags & 0x2000) != 0)
-            *capabilities |= 0x10000;
-        if ((character->model_flags & 0x88) != 0 || (config->flags_090 & 0x40) != 0)
-            *capabilities |= 0x8000;
+            object->ai_packet.capabilities |= 0x10000;
+        if ((character->model_flags & 0x88) != 0 || (character->game_character->flags_090 & 0x40) != 0)
+            object->ai_packet.capabilities |= 0x8000;
         if (object->field_280 != 0xff)
-            *capabilities |= 0x20000;
-        if ((config->flags_090 & 0x4000000) != 0)
-            *capabilities |= 0x800000;
+            object->ai_packet.capabilities |= 0x20000;
+        if ((character->game_character->flags_090 & 0x4000000) != 0)
+            object->ai_packet.capabilities |= 0x800000;
     }
 
     u32 __cdecl AIPathParseBatmanFlagPc(char *name) {
