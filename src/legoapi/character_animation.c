@@ -430,7 +430,7 @@ void PeriscodeCode(GAMEOBJECT *object) {
     if (object->field_283 == 9 && object->dead == 0 && WORLD->level_objects[0x19].active != 0) {
         i32 locator = object->character_data->game_character->thingy_locator;
         if (locator != -1 && object->character_model->points_of_interest[locator] != NULL &&
-            object->water_height > object->locator_matrices[locator].m31) {
+            object->locator_matrices[locator].m31 < object->water_height) {
             f32 clearance = object->roof_height_pc - object->water_height;
             if (object->roof_height_pc == 2000000.0f || !(clearance > 0.0f) || !(clearance < 0.26f)) {
                 f32 depth;
@@ -444,7 +444,7 @@ void PeriscodeCode(GAMEOBJECT *object) {
             }
         }
     }
-    object->communicate_blend = SeekLinearF(previous, target, 5.0f * FRAMETIME);
+    object->communicate_blend = SeekLinearF(object->communicate_blend, target, 5.0f * FRAMETIME);
     if (previous == 0.0f && object->communicate_blend > 0.0f)
         PlaySfx("drd_r2_scope_up", &object->upper_position);
     else if (previous == 1.0f && object->communicate_blend < 1.0f)
