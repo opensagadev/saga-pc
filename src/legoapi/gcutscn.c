@@ -196,15 +196,13 @@ STATIC_ASSERT(offsetof(COLLECTION_AREA_SAVE_PC, area_complete) == 1);
 /* 0057e720..0057e7d2, ordinary one-argument cdecl. */
 i32 __cdecl CutScenePlayer_CanStart(i32 clip_id) {
     CUT_PLAYER_CLIP_CONFIG_PC *clips;
-    AREA_DATA_PC *area;
     i32 area_id, episode;
     if (CutScenePlayerPc != NULL && clip_id >= 0 && clip_id < CutScenePlayerPc->clip_count) {
         clips = (CUT_PLAYER_CLIP_CONFIG_PC *)CutScenePlayerPc->clips;
         area_id = LDataList[clips[clip_id].level_id].area_index;
         if (area_id != -1) {
-            area = &ADataList[area_id];
-            if ((area->flags & 2) != 0) {
-                episode = area->episode_index;
+            if ((ADataList[area_id].flags & 2) != 0) {
+                episode = ADataList[area_id].episode_index;
                 if (episode != -1 && Episode_IsComplete(&EDataList[episode], NULL) != 0)
                     return 2;
             } else if (Game_AreaSave != NULL && Game_AreaSave[area_id].area_complete != 0) {
