@@ -123,7 +123,10 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
             shadow->field_18 = 0.0005f;
             shadow->field_1c = 0.01f;
         }
-        shadow->field_20 = version >= 4 ? EdFileReadFloat() : 22.0f;
+        if (version >= 4)
+            shadow->field_20 = EdFileReadFloat();
+        else
+            shadow->field_20 = 22.0f;
         if (version >= 5) {
             (void)EdFileReadFloat();
             (void)EdFileReadFloat();
@@ -138,7 +141,7 @@ static i32 __cdecl Shadow_Load(void *world_ptr, void *data) {
         if (version >= 8)
             shadow->preset = EdFileReadInt();
         else if (world->area != NULL)
-            shadow->preset = ((world->area->flags & 1) != 0) + 1;
+            shadow->preset = (world->area->flags & 1) ? 2 : 1;
         Shadow_ApplyPreset(shadow, shadow->preset);
     }
     return 1;

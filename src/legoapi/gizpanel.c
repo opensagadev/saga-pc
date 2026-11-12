@@ -222,14 +222,13 @@ void *__cdecl GizPanels_ReserveBufferSpace(void *pointer) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->giz_panel_sys = (GIZPANELSYS_s *)world->giz_buffer.void_ptr;
         world->giz_buffer.addr += sizeof(REGISTRY_PANEL_SYSTEM_PC);
-        system = (REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys;
-        system->count = 0;
-        system->panels = NULL;
+        memset(world->giz_panel_sys, 0, sizeof(REGISTRY_PANEL_SYSTEM_PC));
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         system = (REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys;
         system->panels = (REGISTRY_PANEL_RECORD_PC *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(*system->panels);
-        memset(system->panels, 0, world->current_level->max_gizpanels * sizeof(*system->panels));
+        world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD_PC);
+        memset(((REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys)->panels, 0,
+               world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD_PC));
     }
     return world->giz_panel_sys;
 }
