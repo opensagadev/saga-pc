@@ -89,22 +89,22 @@ u8 PC_CONTROL_SCREEN_PC::HasMissingBindings(void) {
 }
 
 void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
-    i32 has_configuration = 0;
+    PC_INPUT_CONFIG_PC *configuration = NULL;
     for (i32 i = 0; i < 2; ++i) {
-        has_configuration = PcInputFindConfigPc(1, ports[selected_player], i) != NULL;
-        if (has_configuration)
+        configuration = PcInputFindConfigPc(1, ports[selected_player], i);
+        if (configuration)
             break;
     }
     PC_CONTROL_ROW_PC *row;
     for (i32 r = 0; r < row_count; ++r) {
         row = &rows[r];
-        for (i32 i = 0; i < row->count; ++i) {
-            PC_CONTROL_ITEM_PC *item = &row->items[i];
+        PC_CONTROL_ITEM_PC *item = row->items;
+        for (i32 i = 0; i < row->count; ++i, ++item) {
             item->flags &= 0x1f;
             if (item->kind == 4) {
                 if (ports[selected_player] < 0 && (item->label == 0x28 || item->label == 0x2b))
                     item->flags |= 0x80;
-                if (item->label == 0x28 && !has_configuration)
+                if (item->label == 0x28 && !configuration)
                     item->flags |= 0x80;
                 if (item->label == 0x2b && !TextInputIsKeyboardDevicePc(ports[selected_player]))
                     item->flags |= 0x80;
@@ -163,7 +163,9 @@ void PC_CONTROL_SCREEN_PC::RefreshItems(void) {
                 } else if (item->flags & 0x40) {
                     --player;
                 }
-                item->label = TextInputIsKeyboardDevicePc(ports[player]) ? 0x23 : 0x22;
+                item->label = 0x22;
+                if (TextInputIsKeyboardDevicePc(ports[player]))
+                    item->label = 0x23;
             }
             if (((item->flags & 0x20) && selected_player == 0) || ((item->flags & 0x40) && selected_player != 0))
                 item->flags |= 0x80;
@@ -1248,16 +1250,16 @@ void PC_CONTROL_SCREEN_PC::Draw(void) {
 
 extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
     u8 *text = (u8 *)string;
-    if (max_width <= 0.0f)
-        return -1;
-    i32 line_count = 1, line_start = 0, position = 0, previous_break = 0;
+    i32 line_start = 0, line_count = 1, position = 0, previous_break = 0;
     u8 substring[512], decoded[512];
     u16 encoded[512];
-    f32 width = 0.0f;
+    f32 width;
+    if (max_width <= 0.0f)
+        return -1;
     for (;;) {
         i32 stop = 0;
         width = 0.0f;
-        while (max_width > width && !stop) {
+        while (width < max_width && !stop) {
             previous_break = position;
             position = SplitTextFindNextWS(text, position);
             i32 length = position - line_start;
@@ -1270,7 +1272,9 @@ extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
             width = NuQFntPrintLenW(QFont2D, encoded);
             while (text[position] == ' ')
                 ++position;
-            if (!text[position] || (text[position] == '\\' && text[position + 1] == 'n'))
+            if (!text[position])
+                stop = 1;
+            if (text[position] == '\\' && text[position + 1] == 'n')
                 stop = 1;
         }
         if (!text[position])
@@ -1285,7 +1289,7 @@ extern "C" i32 __cdecl PcControlWrapTextPc(char *string, f32 max_width) {
         text[previous_break - 1] = '\n';
         line_start = previous_break;
     }
-    if (max_width <= width) {
+    if (width >= max_width) {
         ++line_count;
         text[previous_break - 1] = '\n';
     }
