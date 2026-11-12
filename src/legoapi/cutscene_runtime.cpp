@@ -1645,8 +1645,10 @@ extern "C" {
         if ((rigid->flags & 0x10) == 0)
             return;
         NUVEC *position = reinterpret_cast<NUVEC *>(&matrix->m30);
-        NUVEC *camera = reinterpret_cast<NUVEC *>(&reinterpret_cast<CUT_DRAW_CAMERA_PC *>(GameCam)->render_matrix.m30);
-        if (!(CutReflectRange2 > NuVecDistSqr(position, camera, NULL)))
+        if (!(NuVecDistSqr(
+                  position,
+                  reinterpret_cast<NUVEC *>(&reinterpret_cast<CUT_DRAW_CAMERA_PC *>(GameCam)->render_matrix.m30),
+                  NULL) < CutReflectRange2))
             return;
         f32 ground = GameShadow(NULL, position, 5.0f, -1);
         if ((f64)ground == 2000000.0)
@@ -1660,16 +1662,15 @@ extern "C" {
         reflection.m11 = -reflection.m11;
         reflection.m21 = -reflection.m21;
         reflection.m31 = ground - (reflection.m31 - ground);
-        NUSPECIALHANDLE *special = instance;
+        NUSPECIALHANDLE *special = NULL;
         i32 index = LevelObject_FindIndexFromName_RefOnly(NuSpecialGetName(instance));
         if (index != -1) {
             index = LevelObject_GetReflection(index);
-            if (index != -1) {
-                NUSPECIALHANDLE *candidate = &world->level_objects[index].special;
-                if (candidate != NULL)
-                    special = candidate;
-            }
+            if (index != -1)
+                special = &world->level_objects[index].special;
         }
+        if (special == NULL)
+            special = instance;
         NuRndrStartReflectionRender(0);
         NuSpecialDrawAt(special, &reflection);
         NuRndrEndReflectionRender();
