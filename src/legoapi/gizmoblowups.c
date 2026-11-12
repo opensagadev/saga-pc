@@ -1549,9 +1549,9 @@ u32 __cdecl GetLevelExBlowupFlags(void) {
 }
 GIZMOBLOWUP_PC *__cdecl GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
                                         NUVEC *maximum, BOLT_PC *bolt, u32 hit_type, u8 *flags) {
+    i32 airborne_damage = 0;
     u32 exclude_flag_2 = EXBLOWUPFLAGS & 2;
     u32 exclude_flag_1 = EXBLOWUPFLAGS & 1;
-    i32 airborne_damage = 0;
     GIZMOBLOWUP_PC *nearest;
     f32 nearest_distance;
     GIZMOBLOWUP_PC *blowup;
