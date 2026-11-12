@@ -5662,43 +5662,41 @@ i32 __cdecl Action_GameDontPush(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 
     (void)processor;
     (void)param_6;
+    dont_push = 1;
+    type_count = 0;
+    object = NULL;
     if (param_5 == 0) {
         return 1;
     }
 
-    object = NULL;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         object = packet->owner->objptr;
-    dont_push = 1;
 
-    type_count = 0;
-
-    if (param_4 != 0) {
-        for (index = 0; index < param_4; ++index) {
-            value = NuStrIStr(params[index], (char *)AITransferLiteral75772c);
-            if (value != NULL) {
-                if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                    local_type = (u32)LevelCharacterTypeIDFn(value + 5);
-                    if (local_type != 0xff) {
-                        global_type = LevelCharacterGlobalIDFn(local_type);
-                        if (global_type != -1 && type_count < 10)
-                            types[type_count++] = global_type;
-                    }
+    for (index = 0; index < param_4; ++index) {
+        value = NuStrIStr(params[index], (char *)AITransferLiteral75772c);
+        if (value != NULL) {
+            if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                local_type = (u32)LevelCharacterTypeIDFn(value + 5);
+                if (local_type != 0xff) {
+                    global_type = LevelCharacterGlobalIDFn(local_type);
+                    if (global_type != -1 && type_count < 10)
+                        types[type_count++] = global_type;
                 }
-                continue;
             }
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-            if (value != NULL) {
-                object = GetNamedGameObject(sys, value + 10);
-            } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-                dont_push = 0;
-            }
+            continue;
+        }
+        value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+        if (value != NULL) {
+            object = GetNamedGameObject(sys, value + 10);
+        } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+            dont_push = 0;
         }
     }
     if (type_count != 0) {
         candidate = Obj;
         for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
-            if ((candidate->flags_1fc_word & 0x1001u) != 0x1001u || (candidate->flags_1f8 & 0x400u) == 0)
+            if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 ||
+                (candidate->flags_1f8 & 0x400u) == 0)
                 continue;
             for (type_index = 0; type_index < type_count; ++type_index) {
                 if ((i16)candidate->id == types[type_index])
