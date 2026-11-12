@@ -160,7 +160,6 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
     PANEL_SYSTEM_PC *system;
     i32 version, index, length;
     u8 value;
-    u16 rotation;
     (void)unused;
     if (world == NULL || world->giz_panel_sys == NULL)
         return 0;
@@ -173,8 +172,7 @@ i32 __cdecl GizPanel_Load(void *world_pointer, void *unused) {
         length = EdFileReadInt();
         EdFileRead(system->panels[index].name, length);
         EdFileReadNuVec(&system->panels[index].position);
-        rotation = EdFileReadUnsignedShort();
-        system->panels[index].y_rotation = rotation;
+        system->panels[index].y_rotation = EdFileReadUnsignedShort();
         value = (u8)EdFileReadChar();
         system->panels[index].model_variant = value;
         if (version >= 3) {
@@ -346,7 +344,8 @@ PANEL_MOVEMENT_PC *__cdecl GizPanel_FindNearest(WORLDINFO *world, NUVEC *positio
         f32 distance;
         if (object != NULL) {
             NUVEC target;
-            if ((panel->flags & 0x0f) != 0x0c || panel->floor_position.y == 2000000.0f)
+            if ((panel->flags & 8) == 0 || (panel->flags & 4) == 0 || (panel->flags & 3) != 0 ||
+                panel->floor_position.y == 2000000.0f)
                 continue;
             if (check_eligibility != 0 && GizPanel_CanUsePanel(object, panel) == 0)
                 continue;
@@ -813,13 +812,18 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         object->flags_e24 |= 0x200;
         panel = (PANEL_MOVEMENT_PC *)object->grapple;
         if (panel->model_variant == 2) {
-            object->field_7aa = object->character_model->model_data_b[0x46] != NULL ? 0x46 : 0x45;
+            if (object->character_model->model_data_b[0x46] != NULL)
+                object->field_7aa = 0x46;
+            else
+                object->field_7aa = 0x45;
             Hint_SetComplete(0x261);
             Hint_SetComplete(0x26a);
         } else if (panel->model_variant == 3) {
-            object->field_7aa = object->character_model->model_data_b[0x45] != NULL
-                                    ? 0x45
-                                    : (object->character_model->model_data_b[0x46] != NULL ? 0x46 : 0x45);
+            if (object->character_model->model_data_b[0x45] == NULL &&
+                object->character_model->model_data_b[0x46] != NULL)
+                object->field_7aa = 0x46;
+            else
+                object->field_7aa = 0x45;
             MakeBaddiesForgetAboutParty(1);
             Hint_SetComplete(0x260);
             Hint_SetComplete(0x269);
