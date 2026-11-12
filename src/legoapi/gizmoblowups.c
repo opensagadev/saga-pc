@@ -1679,45 +1679,60 @@ void __cdecl GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP_PC *blowup, i
     }
 }
 
+/* Bit view of GIZMOBLOWUP_PC.status_flags: retail stores these bits as bitfields. Stands in for a
+ * bitfield member of the shared struct (hand-off). */
+typedef struct BLOWUP_STATUS_BITS_PC {
+    u32 blown_up : 1;
+    u32 unknown_1 : 13;
+    u32 visible : 1;
+    u32 unknown_15 : 8;
+    u32 active : 1;
+    u32 unknown_24 : 4;
+    u32 secondary_output : 1;
+    u32 unknown_29 : 3;
+} BLOWUP_STATUS_BITS_PC;
+STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS_PC) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
+
 typedef struct {
-    u32 active[16], hidden[16], terrain[16], alternate[16];
+    u32 blown_up[16], activated[16], visible[16], secondary_output[16];
 } BLOWUP_RESET_PROGRESS_PC;
 STATIC_ASSERT(sizeof(BLOWUP_RESET_PROGRESS_PC) == 0x100);
-STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, hidden) == 0x40);
-STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, terrain) == 0x80);
-STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, alternate) == 0xc0);
+STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, activated) == 0x40);
+STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, visible) == 0x80);
+STATIC_ASSERT(offsetof(BLOWUP_RESET_PROGRESS_PC, secondary_output) == 0xc0);
 void __cdecl Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
-    WORLDINFO *w = (WORLDINFO *)world_ptr;
-    BLOWUP_RESET_PROGRESS_PC *p = (BLOWUP_RESET_PROGRESS_PC *)progress_ptr;
-    GIZMOBLOWUP_PC *item;
-    i32 i, word, old_terrain, new_terrain;
+    WORLDINFO *world = (WORLDINFO *)world_ptr;
+    BLOWUP_RESET_PROGRESS_PC *progress = (BLOWUP_RESET_PROGRESS_PC *)progress_ptr;
+    GIZMOBLOWUP_PC *blowup;
+    i32 index, word, old_visible;
     u32 bit;
     (void)unused;
-    if (w == NULL)
+    if (world == NULL)
         return;
-    item = w->gizmo_blowups;
-    if (item != NULL)
-        for (i = 0; i < w->gizmo_blowup_count; ++i, ++item) {
-            GizmoBlowupRestoreInitialStatePc(item);
-            if (p != NULL && i < 512) {
-                word = i >> 5;
-                bit = 1u << (i & 31);
-                item->status_flags = (item->status_flags & ~1u) | ((p->active[word] & bit) != 0);
-                old_terrain = (item->status_flags >> 14) & 1;
-                new_terrain = (p->terrain[word] & bit) != 0;
-                item->status_flags = (item->status_flags & ~0x4000u) | ((u32)new_terrain << 14);
-                if (!old_terrain && new_terrain)
-                    GizBlowup_InitSingleTerrain(item);
-                else if (old_terrain && !new_terrain)
-                    GizBlowup_DeleteSingleTerrain(item);
-                item->status_flags =
-                    (item->status_flags & ~0x800000u) | (((p->hidden[word] & bit) != 0) ? 0x800000u : 0);
-                item->status_flags =
-                    (item->status_flags & ~0x10000000u) | (((p->alternate[word] & bit) != 0) ? 0x10000000u : 0);
+    blowup = world->gizmo_blowups;
+    if (blowup != NULL) {
+        for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
+            GizmoBlowupRestoreInitialStatePc(blowup);
+            if (progress != NULL && index < 512) {
+                word = index / 32;
+                bit = 1 << (index & 31);
+                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->blown_up = (progress->blown_up[word] & bit) != 0;
+                old_visible = ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible;
+                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible = (progress->visible[word] & bit) != 0;
+                if (!old_visible) {
+                    if (((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible)
+                        GizBlowup_InitSingleTerrain(blowup);
+                } else if (!((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->visible) {
+                    GizBlowup_DeleteSingleTerrain(blowup);
+                }
+                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->active = (progress->activated[word] & bit) != 0;
+                ((BLOWUP_STATUS_BITS_PC *)&blowup->status_flags)->secondary_output =
+                    (progress->secondary_output[word] & bit) != 0;
             }
-            if (item->status_flags & 1)
-                item->animation_time = 0.0f;
+            if (blowup->status_flags & 1)
+                blowup->animation_time = 0.0f;
         }
+    }
     GizBlowup_DeleteTerrain();
     GizBlowup_InitTerrain();
 }
@@ -1878,14 +1893,6 @@ i32 __cdecl Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
     return 0;
 }
 
-typedef struct BLOWUP_STATUS_BITS_PC {
-    u32 unknown_0 : 14;
-    u32 visible : 1;
-    u32 unknown_15 : 8;
-    u32 active : 1;
-    u32 unknown_24 : 8;
-} BLOWUP_STATUS_BITS_PC;
-STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS_PC) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
 void __cdecl Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
     GIZMOBLOWUP_PC *blowup;
     NUINSTANIM *animation;
