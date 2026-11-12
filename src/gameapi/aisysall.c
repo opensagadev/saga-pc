@@ -7857,9 +7857,9 @@ i32 __cdecl aieditor_Register(char *name, void(__cdecl *enter)(void), eduimenu_s
 }
 
 void __cdecl AiEditorChangeModePc(i32 mode) {
-    i16 previous = aieditorsettings.modes.current;
+    i32 previous = aieditorsettings.modes.current;
     aieditorsettings.modes.current = (i16)mode;
-    if (aieditor != NULL && previous != (i16)mode) {
+    if (aieditor != NULL && previous != aieditorsettings.modes.current) {
         if (aieditor->current_path != NULL)
             aieditor->current_path->current_node = NULL;
         aieditor->selected_creature = NULL;
