@@ -2845,14 +2845,13 @@ extern "C" {
                                    &geometry->strip_vertex_buffer);
         PC_GEOMETRY_STRIP_VERTEX_PC *strip = NULL;
         PCDeviceLockVertexBuffer(0, 0, (void **)&strip, 0, geometry->strip_vertex_buffer);
-        f32 denominator = (f32)(vertices - 3);
         for (i32 i = 0; i < vertices; ++i) {
-            strip[i].fraction = (f32)(i - 1) / denominator;
-            if (0.0f > strip[i].fraction)
+            strip[i].fraction = (f32)(i - 1) / (f32)(vertices - 3);
+            if (strip[i].fraction < 0.0f)
                 strip[i].fraction = 0.0f;
-            if (1.0f < strip[i].fraction)
+            if (strip[i].fraction > 1.0f)
                 strip[i].fraction = 1.0f;
-            strip[i].side = (i & 1) ? -0.5f : 0.5f;
+            strip[i].side = (i & 1) == 0 ? 0.5f : -0.5f;
         }
         PCDeviceUnlockVertexBuffer(geometry->strip_vertex_buffer);
         PCDeviceCreateIndexBuffer((u32)vertices * sizeof(u16), 0, 0x65, 0, &geometry->strip_index_buffer, NULL);
@@ -2945,12 +2944,17 @@ extern "C" {
     }
 
     i32 __cdecl PcUpdateGeometryDistancesPc(PC_GEOMETRY_OUTPUT_PC *output, PC_GEOMETRY_SORT_ITEM_PC *items, i32 count) {
-        NUVEC4 origin = PcGeometryDistanceOriginPc;
+        PC_GEOMETRY_BASIS_VECTOR_PC origin;
+        origin.x = PcGeometryDistanceOriginPc.x;
+        origin.y = PcGeometryDistanceOriginPc.y;
+        origin.z = PcGeometryDistanceOriginPc.z;
         for (i32 i = 0; i < count; ++i) {
-            f32 dx = origin.x - output[i].corners[2].position.x;
-            f32 dy = origin.y - output[i].corners[2].position.y;
-            f32 dz = origin.z - output[i].corners[2].position.z;
-            output[i].distance_squared = (f32)(((f64)dx * dx + (f64)dy * dy) + (f64)dz * dz);
+            PC_GEOMETRY_BASIS_VECTOR_PC delta;
+            NUVEC *position = &output[i].corners[2].position;
+            delta.x = origin.x - position->x;
+            delta.y = origin.y - position->y;
+            delta.z = origin.z - position->z;
+            output[i].distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         }
         for (i32 i = 0; i < count; ++i)
             items[i].distance_squared = output[items[i].output_index].distance_squared;
