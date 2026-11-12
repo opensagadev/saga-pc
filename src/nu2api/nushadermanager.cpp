@@ -555,6 +555,14 @@ ShaderManagerHLSL::~ShaderManagerHLSL() {
     }
 }
 
+// for saga.h: NuShaderObject::unknown_4d4 is a bitfield (retail stores each path bit with xor/and/xor).
+struct NuShaderObjectPathsPc {
+    u32 base : 1;
+    u32 first : 1;
+    u32 layer : 1;
+    u32 second : 1;
+    u32 unknown : 28;
+};
 bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filter, bool pixel_stage,
                                      PC_SHADER_OBJECT_FULL_VIEW *shader, i32 index) {
     u32 key = 0;
@@ -565,13 +573,11 @@ bool ShaderManagerHLSL::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *filte
     PCShaderObjectInitHLSLPc(shader, &key, index, reinterpret_cast<const char *>(vertex_source.data),
                              vertex_source.length, reinterpret_cast<const char *>(pixel_source.data),
                              pixel_source.length, compiler->dictionary.profile);
-    u32 flags = shader->unknown_4d4;
-    flags = (flags & ~1U) | (filter->variant == 0);
-    flags = (flags & ~2U) | ((filter->first_path != 0) << 1);
-    bool layer = filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000) != 0;
-    flags = (flags & ~4U) | (layer << 2);
-    flags = (flags & ~8U) | ((filter->second_path != 0) << 3);
-    shader->unknown_4d4 = flags;
+    NuShaderObjectPathsPc *paths = reinterpret_cast<NuShaderObjectPathsPc *>(&shader->unknown_4d4);
+    paths->base = filter->variant == 0;
+    paths->first = filter->first_path != 0;
+    paths->layer = filter->variant == 0 && (filter->descriptor->layer_flags & 0x10000) != 0;
+    paths->second = filter->second_path != 0;
     return true;
 }
 
