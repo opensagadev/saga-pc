@@ -2,7 +2,7 @@
 
 void __cdecl DoInput(WORLDINFO *world) {
     i32 input[2];
-    i32 keyboard_mask = 0;
+    i32 keyboard_mask;
     i32 changed;
     i32 index;
     FRAME_PAD_PC *pad;
@@ -12,6 +12,7 @@ void __cdecl DoInput(WORLDINFO *world) {
         world = WorldInfo_CurrentlyActive();
     for (index = 0; index < 2; ++index)
         input[index] = ReadPad(index);
+    keyboard_mask = 0;
     if (TextInputIsKeyboardDevicePc(NuPadGetPort(0)))
         keyboard_mask = 1;
     if (TextInputIsKeyboardDevicePc(NuPadGetPort(1)))
@@ -74,7 +75,7 @@ void __cdecl DoInput(WORLDINFO *world) {
                 continue;
         }
     resume:
-        if (pause_i_pad == -1 || pause_i_pad == index) {
+        if (pause_i_pad == -1 || index == pause_i_pad) {
             ResumeGame(1);
             RestoreOptions();
         }

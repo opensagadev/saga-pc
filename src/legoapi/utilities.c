@@ -1571,7 +1571,8 @@ void __cdecl MakeThrowVector(NUVEC *result, NUVEC *origin, NUVEC *target, NUVEC 
         horizontal_origin.y = 0.0f;
         horizontal_origin.z = origin->z;
         NuVecSub(&delta, &predicted, &horizontal_origin);
-        NuVecAddScale(&predicted, target, target_velocity, NuVecMag(&delta) / speed);
+        time = NuVecMag(&delta) / speed;
+        NuVecAddScale(&predicted, target, target_velocity, time);
     }
     time = NuVecXZDist(&predicted, origin, NULL) / speed;
     vertical_delta = predicted.y - origin->y;
