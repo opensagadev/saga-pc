@@ -9301,7 +9301,7 @@ void __cdecl pathEditor_QuickOnPathCheck(NUVEC *point, EDAIPATHCHECK_s *previous
 }
 
 void __cdecl pathEditor_OnPathCheck(NUVEC *point, EDAIPATHCHECK_s *result, EDAIPATH_s *path, f32 tolerance) {
-    u8 checked[255][32] = {0};
+    u8 checked[255][32] = {{0}};
     EDAIPATHNODE_s *node;
     memset(result, 0, sizeof(*result));
     if (path == NULL)
