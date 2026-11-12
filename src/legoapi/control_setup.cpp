@@ -858,7 +858,8 @@ void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alig
         return;
     TextDecode(string, (u8 *)decoded);
     if (!key) {
-        key = PcInputMixConfigurationHashPc(HashString(decoded), *(i32 *)&x);
+        key = HashString(decoded);
+        key = PcInputMixConfigurationHashPc(key, *(i32 *)&x);
         key = PcInputMixConfigurationHashPc(key, *(i32 *)&y);
     }
     i32 index;
@@ -866,55 +867,56 @@ void PC_CONTROL_SCREEN_PC::QueueText(char *string, f32 x, f32 y, f32 z, i32 alig
         if (text[index].key == key)
             break;
     if (index == 12) {
-        for (index = 0; index < 12; ++index)
-            if (!text[index].key)
+        for (index = 0; index < 12; ++index) {
+            if (!text[index].key) {
+                text[index].fade = 0;
+                text[index].key = key;
                 break;
+            }
+        }
         if (index == 12)
             return;
-        text[index].fade = 0;
-        text[index].key = key;
     }
-    PC_CONTROL_TEXT_PC *entry = &text[index];
-    NuStrCpy(entry->text, decoded);
-    entry->colour = ScaleColour(brightness, 1.0f, colour);
-    entry->x = x;
-    entry->y = y;
-    entry->z = z;
-    entry->alignment = (i8)alignment;
-    entry->refreshed = 1;
-    entry->x_scale = sx;
-    entry->y_scale = sy;
-    entry->wrap_width = wrap;
+    NuStrCpy(text[index].text, decoded);
+    text[index].colour = ScaleColour(brightness, 1.0f, colour);
+    text[index].x = x;
+    text[index].y = y;
+    text[index].z = z;
+    text[index].alignment = (i8)alignment;
+    text[index].refreshed = 1;
+    text[index].x_scale = sx;
+    text[index].y_scale = sy;
+    text[index].wrap_width = wrap;
 }
 
 f32 PC_CONTROL_SCREEN_PC::DrawText(char *string, f32 x, f32 y, f32 z, i32 alignment, f32 sx, f32 sy, u32 colour,
                                    i32 mode, f32 wrap) {
     NuQFntSet(font);
-    f32 native_sx = x_scale * sx, native_sy = y_scale * sy;
-    PcControlFontScalePc(font, native_sx, native_sy, &native_sx, &native_sy);
-    NuQFntSetScale(font, native_sx, native_sy);
-    NuQFntSetUVSizePc(font, native_sx, native_sy);
+    PcControlFontScalePc(font, x_scale * sx, y_scale * sy, &sx, &sy);
+    NuQFntSetScale(font, sx, sy);
+    NuQFntSetUVSizePc(font, sx, sy);
     f32 height = NuQFntHeight(font);
-    y += NuQFntBaseline(font);
+    f32 baseline = NuQFntBaseline(font);
+    y += baseline;
     y -= PcControlBaselineAdjustPc * height;
     if (wrap != 0.0f) {
         f32 length = NuQFntPrintLenU(font, string);
-        if (wrap < length)
-            native_sx = wrap * native_sx / length;
+        if (length > wrap)
+            sx = wrap * sx / length;
     }
     colour = ScaleAlpha(opacity, colour);
-    Text3DEx(string, x, y, z, native_sx, native_sy, 1.0f, alignment, (u8)colour, (u8)(colour >> 8), (u8)(colour >> 16),
-             colour >> 24);
+    Text3DEx(string, x, y, z, sx, sy, 1.0f, alignment, colour, colour >> 8, colour >> 16, colour >> 24);
     return height;
 }
 
 void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
     delta += delta;
-    for (i32 i = 0; i < 12; ++i) {
-        PC_CONTROL_TEXT_PC *entry = &text[i];
+    PC_CONTROL_TEXT_PC *entry = text;
+    for (i32 i = 0; i < 12; ++i, ++entry) {
         if (!entry->key)
             continue;
         f32 x = entry->x, y = entry->y;
+        u32 colour = entry->colour;
         f32 sx = entry->x_scale, sy = entry->y_scale;
         i32 alignment = entry->alignment;
         if (!entry->refreshed) {
@@ -929,21 +931,21 @@ void PC_CONTROL_SCREEN_PC::DrawQueuedText(f32 delta) {
             if (entry->fade > 1.0f)
                 entry->fade = 1.0f;
         }
-        u32 colour = ScaleAlpha(entry->fade, entry->colour);
+        colour = ScaleAlpha(entry->fade, colour);
         if (entry->wrap_width > 0.0f) {
             NuQFntSetPointSize(font, x_scale * sx, y_scale * sy);
             f32 spacing = (f32)(NuQFntHeight(font) * 0.800000011920929);
             i32 lines = PcControlWrapTextPc(entry->text, entry->wrap_width);
-            y = (f32)(y - lines * spacing * 0.5);
+            f32 line_y = (f32)(y - lines * spacing * 0.5);
             char *line = entry->text;
             for (i32 j = 0; j < lines; ++j) {
                 char *end = NuStrChr(line, '\n');
                 if (end)
                     *end = 0;
-                DrawText(line, x, y, 0.0f, alignment, sx, sy, colour, 1, 0.0f);
+                DrawText(line, x, line_y, 0.0f, alignment, sx, sy, colour, 1, 0.0f);
                 if (end) {
                     *end = ' ';
-                    y += spacing;
+                    line_y += spacing;
                     line = end + 1;
                 }
             }
