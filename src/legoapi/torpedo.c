@@ -240,7 +240,7 @@ void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
     }
     for (index = 0; index < TORPEDO_PACKET_PC(object)->count; ++index) {
         cos_y = NuTrigTable[(((i32)TORPEDO_PACKET_PC(object)->pickup_flags[index] + 0x4000) >> 1) & 0x7fff];
-        distance = (f32)((f64)index * (f64)object->bounds_radius * 1.25 + (f64)object->bounds_radius * 1.5);
+        distance = (f32)(index * object->bounds_radius * 1.25 + object->bounds_radius * 1.5);
         position.x = (f32)((f64)NuTrigTable[((i32)TORPEDO_PACKET_PC(object)->pickup_data[index] >> 1) & 0x7fff] *
                                cos_y * distance +
                            (f64)object->collision_position.x);
@@ -248,8 +248,7 @@ void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
             (f32)((f64)NuTrigTable[((i32)TORPEDO_PACKET_PC(object)->pickup_flags[index] >> 1) & 0x7fff] * distance +
                   (f64)object->collision_position.y);
         position.z =
-            (f32)((f64)cos_y * distance *
-                      NuTrigTable[(((i32)TORPEDO_PACKET_PC(object)->pickup_data[index] + 0x4000) >> 1) & 0x7fff] +
+            (f32)(NuTrigTable[(((i32)TORPEDO_PACKET_PC(object)->pickup_data[index] + 0x4000) >> 1) & 0x7fff] * (f64)cos_y * distance +
                   (f64)object->collision_position.z);
         if (TORPEDO_PACKET_PC(object)->pickup_timer < 0.8f && index + 1 == TORPEDO_PACKET_PC(object)->count) {
             NuVecSub(&direction, &position, &TORPEDO_PACKET_PC(object)->pickup_positions[index]);
