@@ -698,9 +698,11 @@ static i32 __cdecl GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *positi
 }
 static i32 __cdecl GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
     GAMEANIMOBJ *anim_object;
-    if ((i8)obstacle->trigger_mode < 0) {
-        if (!(obstacle->config_flags & 0x10))
-            return 1;
+    if ((i8)obstacle->trigger_mode >= 0) {
+        if ((!object->field_281 && !(object->flags_ef4 & 0x20000000)) ||
+            object->jump_animation_state != obstacle->trigger_mode)
+            return 0;
+    } else if (obstacle->config_flags & 0x10) {
         if (!object->field_281 && !(object->flags_ef4 & 0x20000000))
             return 0;
         if (object->supporting_platform_id >= 0 && obstacle->anim_set && (obstacle->runtime_flags & 0x10)) {
@@ -711,9 +713,6 @@ static i32 __cdecl GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GA
         }
         return 0;
     }
-    if ((!object->field_281 && !(object->flags_ef4 & 0x20000000)) ||
-        obstacle->trigger_mode != object->jump_animation_state)
-        return 0;
     return 1;
 }
 static void __cdecl GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
