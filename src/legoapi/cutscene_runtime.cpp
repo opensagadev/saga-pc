@@ -1987,10 +1987,9 @@ extern "C" {
         for (i32 i = 0; i < 4; ++i) {
             i32 index = cut->texture_animations[i].index;
             if (index != -1) {
-                u32 bit = 1U << (index & 31);
-                if ((bits & bit) == 0 &&
-                    cut->texture_animations[i].frame <=
-                        reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->current_frame) {
+                u32 bit = 1U << index;
+                if ((bits & bit) == 0 && reinterpret_cast<CUT_CONTROLLER_INSTANCE_PC *>(cut->instance)->current_frame >=
+                                             cut->texture_animations[i].frame) {
                     bits |= bit;
                     texanimbits = bits;
                 }
