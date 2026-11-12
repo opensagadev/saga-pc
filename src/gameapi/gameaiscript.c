@@ -4295,66 +4295,68 @@ i32 __cdecl Action_SnapToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     AILOCATOR_PC *locator;
     char locator_name[64];
 
-    if (first_time != 0) {
-        object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-        name = NULL;
-        personal = 0;
-        indexed = 0;
-        random_count = 0;
-        check_terrain = 1;
-        for (i = 0; i < param_count; ++i) {
+    object = NULL;
+    personal = 0;
+    indexed = 0;
+    random_count = 0;
+    check_terrain = 1;
+    name = NULL;
+    if (first_time == 0)
+        return 1;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        object = packet->owner->objptr;
+    for (i = 0; i < param_count; ++i) {
 
-            if ((value = NuStrIStr(params[i], (char *)AITransferLiteral75782c)) != NULL)
-                name = value + 5;
-            else if (NuStrIStr(params[i], (char *)AIActionPersonalName) != NULL)
-                personal = 1;
-            else if (NuStrIStr(params[i], (char *)AIActionIndexedName) != NULL)
-                indexed = 1;
-            else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral757824)) != NULL)
-                random_count = (i32)AIParamToFloat(processor, value + 9);
-            else if ((value = NuStrIStr(params[i], (char *)AreaConfigKeyword_character)) != NULL) {
-                object = GetNamedGameObject(sys, value + 10);
-            } else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral75781c)) != NULL) {
-                player = (i32)AIParamToFloat(processor, value + 7) - 1;
-                if ((u32)player <= 1)
-                    object = Player[player];
-            } else if (NuStrIStr(params[i], (char *)ActionSnapDontCheckTerrainName) != NULL)
-                check_terrain = 0;
+        if ((value = NuStrIStr(params[i], (char *)AITransferLiteral75782c)) != NULL)
+            name = value + 5;
+        else if (NuStrIStr(params[i], (char *)AIActionPersonalName) != NULL)
+            personal = 1;
+        else if (NuStrIStr(params[i], (char *)AIActionIndexedName) != NULL)
+            indexed = 1;
+        else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral757824)) != NULL)
+            random_count = (i32)AIParamToFloat(processor, value + 9);
+        else if ((value = NuStrIStr(params[i], (char *)AreaConfigKeyword_character)) != NULL) {
+            object = GetNamedGameObject(sys, value + 10);
+        } else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral75781c)) != NULL) {
+            player = (i32)AIParamToFloat(processor, value + 7) - 1;
+            if ((u32)player <= 1)
+                object = Player[player];
+        } else if (NuStrIStr(params[i], (char *)ActionSnapDontCheckTerrainName) != NULL)
+            check_terrain = 0;
+    }
+    if (object == NULL && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        object = packet->owner->objptr;
+    if (object != NULL) {
+        locator = object->ai_packet.locator;
+        if (name != NULL) {
+
+            if (indexed && (i8)object->field_280 != -1)
+                sprintf(locator_name, (char *)AILocatorIndexedFormat, name, (i8)object->field_280);
+            else if (personal && object->character_data != NULL)
+                sprintf(locator_name, (char *)AILocatorPersonalFormat, name, object->character_data->name);
+            else if (random_count != 0)
+                sprintf(locator_name, (char *)AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
+            else
+                sprintf(locator_name, name);
+            locator = AIPathFindLocator(sys, locator_name);
         }
-        if (object == NULL && packet != NULL && packet->owner != NULL)
-            object = packet->owner->objptr;
-        if (object != NULL) {
-            locator = object->ai_packet.locator;
-            if (name != NULL) {
-
-                if (indexed && (i8)object->field_280 != -1)
-                    sprintf(locator_name, (char *)AILocatorIndexedFormat, name, (i8)object->field_280);
-                else if (personal && object->character_data != NULL)
-                    sprintf(locator_name, (char *)AILocatorPersonalFormat, name, object->character_data->name);
-                else if (random_count != 0)
-                    sprintf(locator_name, (char *)AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
-                else
-                    sprintf(locator_name, name);
-                locator = AIPathFindLocator(sys, locator_name);
-            }
-            if (locator != NULL) {
-                object->position = locator->position;
-                object->field_0x276 = locator->rotation;
-                object->facing_angle = locator->rotation;
-                object->movement_facing_angle = locator->rotation;
-                object->ai_packet.path_info = locator->path_info;
-                object->collision_position = object->position;
-                object->initial_position = object->position;
-                plr_lastpos = object->collision_position;
-                object->start_position = object->collision_position;
-                object->respawn_position = object->position;
-                object->last_safe_position = object->position;
-                object->ai_update_position = object->position;
-                object->velocity = v000;
-                InitSurfaceInfo(object);
-                if (check_terrain != 0)
-                    SetObjOnSurface(object, 0);
-            }
+        if (locator != NULL) {
+            object->position = locator->position;
+            object->field_0x276 = locator->rotation;
+            object->facing_angle = locator->rotation;
+            object->movement_facing_angle = locator->rotation;
+            object->ai_packet.path_info = locator->path_info;
+            object->collision_position = object->position;
+            object->initial_position = object->position;
+            plr_lastpos = object->collision_position;
+            object->start_position = object->collision_position;
+            object->respawn_position = object->position;
+            object->last_safe_position = object->position;
+            object->ai_update_position = object->position;
+            object->velocity = v000;
+            InitSurfaceInfo(object);
+            if (check_terrain != 0)
+                SetObjOnSurface(object, 0);
         }
     }
     return 1;
