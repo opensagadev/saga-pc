@@ -880,9 +880,6 @@ static NUFPCOMJMP cfgtab_collapse_pc[] = {
 };
 
 static void GizFlowConfigCollapsePc(NUFPAR_PC *parser) {
-    GIZFLOW_REMAP_PC *entry;
-    i32 sentinel;
-
     load_nparents = 0;
     load_nchildren = 0;
     NuFParPushCom(parser, cfgtab_collapse_pc);
@@ -893,11 +890,9 @@ static void GizFlowConfigCollapsePc(NUFPAR_PC *parser) {
         NuFParInterpretWord(parser);
     }
     NuFParPopCom(parser);
-    entry = &remap[numRemaps];
-    sentinel = ~numRemaps;
+    remap[numRemaps].parents[load_nparents] = -1 - numRemaps;
+    remap[numRemaps].children[load_nchildren] = -1 - numRemaps;
     ++numRemaps;
-    entry->parents[load_nparents] = sentinel;
-    entry->children[load_nchildren] = sentinel;
 }
 
 static void GizFlowConfigSumBoxPc(NUFPAR_PC *parser) {
