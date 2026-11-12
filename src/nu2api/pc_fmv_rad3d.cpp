@@ -260,7 +260,7 @@ RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 
     image->single_texture = 0;
     return image;
 }
-static void RadFmvDestroyTiledPc(RADFMV_IMAGE_PC *image) {
+void RadFmvDestroyTiledPc(RADFMV_IMAGE_PC *image) {
     if (image->textures) {
         for (u32 i = 0; i < image->texture_count; ++i)
             if (image->textures[i])
@@ -269,7 +269,7 @@ static void RadFmvDestroyTiledPc(RADFMV_IMAGE_PC *image) {
         free(image);
     }
 }
-static i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w,
+i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w,
                              u32 *h, u32 discard) {
     RADFMV_LOCK_PC locked;
     if (image->lock_index >= image->texture_count ||
@@ -297,10 +297,10 @@ static i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, 
     ++image->lock_index;
     return 1;
 }
-static void RadFmvUnlockTiledPc(RADFMV_IMAGE_PC *image) {
+void RadFmvUnlockTiledPc(RADFMV_IMAGE_PC *image) {
     image->textures[image->lock_index - 1]->methods->unlock(image->textures[image->lock_index - 1], 0);
 }
-static void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
+void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
     RadFmvSetDrawStatePc(image, alpha);
     RADFMV_TEXTURE_PC **texture = image->textures;
     f32 x_step = (f32)image->maximum_texture * xs, y_step = (f32)image->maximum_texture * ys;
@@ -331,7 +331,7 @@ static void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 
         }
     }
 }
-static void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
+void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
     f32 x_step = (f32)image->maximum_texture * xs, y_step = (f32)image->maximum_texture * ys;
     f32 py = y;
     for (u32 row = 0; row < image->full_rows; ++row) {
@@ -354,15 +354,15 @@ static void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f
             RadFmvDrawOutlinePc(image->device, px, py, xs, ys, image->remainder_width, image->remainder_height);
     }
 }
-static void RadFmvBlitSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
+void RadFmvBlitSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
     RadFmvSetDrawStatePc(image, alpha);
     image->device->methods->set_texture(image->device, 0, image->texture);
     RadFmvDrawQuadPc(image->device, x, y, xs, ys, image->width, image->height, alpha);
 }
-static void RadFmvOutlineSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
+void RadFmvOutlineSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
     RadFmvDrawOutlinePc(image->device, x, y, xs, ys, image->width, image->height);
 }
-static i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w,
+i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w,
                               u32 *h, u32 discard) {
     if (image->lock_index) {
         image->lock_index = 0;
@@ -390,10 +390,10 @@ static i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch,
     image->lock_index = 1;
     return 1;
 }
-static void RadFmvUnlockSinglePc(RADFMV_IMAGE_PC *image) {
+void RadFmvUnlockSinglePc(RADFMV_IMAGE_PC *image) {
     image->texture->methods->unlock(image->texture, 0);
 }
-static RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha,
+RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha,
                                              u32 maximum) {
     (void)maximum;
     RADFMV_IMAGE_PC *image = static_cast<RADFMV_IMAGE_PC *>(malloc(0x50));
@@ -417,7 +417,7 @@ static RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 wid
     image->single_texture = 1;
     return image;
 }
-static void RadFmvDestroySinglePc(RADFMV_IMAGE_PC *image) {
+void RadFmvDestroySinglePc(RADFMV_IMAGE_PC *image) {
     if (image->texture)
         image->texture->methods->release(image->texture);
     free(image);
