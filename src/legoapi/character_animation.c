@@ -221,15 +221,18 @@ static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32
 static void MoveAnim_Check(GAMEOBJECT *object) {
     i32 walk = object->character_model->model_data_b[0] != NULL;
     i32 run = object->character_model->model_data_b[3] != NULL;
-    if (walk) {
-        if (!run || object->pad->input_magnitude <= ((f64)object->character_data->game_character->walk_speed +
-                                                     object->character_data->game_character->run_speed) *
-                                                        0.5)
+    if (walk && !run)
+        object->anim_packet.requested_animation = 0;
+    else if (!walk && run)
+        object->anim_packet.requested_animation = 3;
+    else if (walk && run) {
+        if (object->pad->input_magnitude <= ((f64)object->character_data->game_character->walk_speed +
+                                             object->character_data->game_character->run_speed) *
+                                                0.5)
             object->anim_packet.requested_animation = 0;
         else
             object->anim_packet.requested_animation = 3;
-    } else if (run)
-        object->anim_packet.requested_animation = 3;
+    }
 }
 
 static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
