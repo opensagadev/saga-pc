@@ -446,13 +446,12 @@ void __cdecl GizmoSysReset(void *system_ptr, void *world, i32 progress_index) {
     }
     type = ((GIZMOTYPES_PC *)gizmotypes)->types;
     set = system->sets;
-    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+    for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
         if (type->fns.reset_fn != NULL) {
-            void *progress = NULL;
-            if (type->progress != NULL && progress_index >= 0) {
-                progress = type->progress[progress_index];
-            }
-            type->fns.reset_fn(world, set->data, progress);
+            if (type->progress != NULL && progress_index >= 0)
+                type->fns.reset_fn(world, set->data, type->progress[progress_index]);
+            else
+                type->fns.reset_fn(world, set->data, NULL);
         }
     }
 }
