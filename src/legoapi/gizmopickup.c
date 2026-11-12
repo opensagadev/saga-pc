@@ -92,7 +92,7 @@ void __cdecl CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i
     GAME_MESSAGE_PC *queued;
     u16 panel_rotation;
     (void)flags;
-    if (object == NULL || (u8)(i8)object->field_280 >= 2)
+    if (object == NULL || ((i8)object->field_280 != 0 && (i8)object->field_280 != 1))
         return;
     if (ONEPLAYERPOWERUPS != 0) {
         panel_rotation = (u16)(rotation - RotDiff(0, GameCam_GetAdjustedYRot(NULL)));
@@ -102,18 +102,18 @@ void __cdecl CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i
         if (object->powerup_time > 0.0f)
             PowerUp_ExistingIconPrivate((i8)object->field_280);
         message = AddGameMsg_Default;
-        message.position = position;
-        message.target_position = &target;
-        message.scale = AreaPickupScale;
-        message.target_scale = POWERUPOBJSIZE;
-        message.flags = 0x2112d;
-        message.duration = 1.0f;
         message.icon = 0xd0;
         message.special = &WORLD->level_objects[0xd0].special;
+        message.scale = AreaPickupScale;
+        message.target_scale = POWERUPOBJSIZE;
+        message.position = position;
+        message.duration = 1.0f;
+        message.target_position = &target;
         message.tick_fn = PowerUp_UpdateMsg;
         message.end_fn = PowerUp_EndMsg;
-        message.player_index = (i8)object->field_280;
         message.allow_temporary = 1;
+        message.flags = 0x2112d;
+        message.player_index = (i8)object->field_280;
         message.target_is_coin_total = 7;
         queued = AddGameMsg(&message);
         if (queued != NULL) {
