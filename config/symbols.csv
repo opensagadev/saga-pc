@@ -7961,8 +7961,8 @@ address,symbol,size,ctype
 0x61f960,_eduiInit,54,
 0x61f9a0,_eduiSetFont,10,
 0x61f9b0,_eduiSetFontScale,21,
-0x61f9d0,?EduiColourSliderSetPc@@YAXPAUeduimenu_s@@PAUeduiitem_s@@MPAUFRAME_PAD_PC@@@Z,40,ordinary private setter; full Native extent
-0x61fa00,?EduiColourSliderRoundPc@@YAXPAUeduimenu_s@@PAUeduiitem_s@@PAUFRAME_PAD_PC@@M@Z,131,ordinary private rounded setter; full Native extent
+0x61f9d0,?EduiColourSliderSetPc@@YAXPAUedui_slider_s@@PAUeduimenu_s@@PAUeduiitem_s@@MPAUFRAME_PAD_PC@@@Z,40,ordinary private setter; full Native extent
+0x61fa00,?EduiColourSliderRoundPc@@YAXPAUedui_slider_s@@PAUeduimenu_s@@PAUeduiitem_s@@PAUFRAME_PAD_PC@@M@Z,131,ordinary private rounded setter; full Native extent
 0x61fa90,_eduicbProcessColourSlider,721,
 0x61fd70,_eduicbRenderColourSlider,606,
 0x6200d0,_do_Pad_flymode_camera,1052,
