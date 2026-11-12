@@ -1886,6 +1886,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
     for (id = 0, character = CDataList; id < CHARCOUNT; ++id, ++character) {
         i32 item;
         i32 result;
+        i32 end;
         char saved;
         if (permanent == 0 && apicharsys->playermodelids[id] == -1)
             continue;
@@ -1904,10 +1905,11 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
             if (item != 0) {
                 CharConfigPakDiagnosticPc();
                 if (NuFilePakGetItemInfo(pak, item, &address, &size) != 0 && size > 0) {
-                    saved = ((char *)address)[size];
-                    ((char *)address)[size] = 0;
+                    end = size;
+                    saved = ((char *)address)[end];
+                    ((char *)address)[end] = 0;
                     size = Text_StripComments(address, ConfigBuffer.bytes, 1);
-                    ((char *)address)[size] = saved;
+                    ((char *)address)[end] = saved;
                     if (size <= 0)
                         continue;
                     result = RedirectTextFile(address, filename, 64);
@@ -1921,10 +1923,11 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
                         else if (size <= 0)
                             result = 0;
                         else {
-                            saved = ((char *)address)[size];
-                            ((char *)address)[size] = 0;
+                            end = size;
+                            saved = ((char *)address)[end];
+                            ((char *)address)[end] = 0;
                             size = Text_StripComments(address, ConfigBuffer.bytes, 1);
-                            ((char *)address)[size] = saved;
+                            ((char *)address)[end] = saved;
                             if (size <= 0)
                                 result = 0;
                         }
@@ -1950,10 +1953,11 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
             item = NuFilePakGetItem(pak, original_path);
             if (item == 0 || NuFilePakGetItemInfo(pak, item, &address, &size) == 0 || size <= 0)
                 continue;
-            saved = ((char *)address)[size];
-            ((char *)address)[size] = 0;
+            end = size;
+            saved = ((char *)address)[end];
+            ((char *)address)[end] = 0;
             size = Text_StripComments(address, ConfigBuffer.bytes, 1);
-            ((char *)address)[size] = saved;
+            ((char *)address)[end] = saved;
             if (size <= 0)
                 continue;
             SecondCharConfigure = 1;
