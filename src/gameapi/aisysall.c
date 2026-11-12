@@ -4159,7 +4159,10 @@ static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scen
                 path->node_count = (u8)EdFileReadChar();
                 path->flags = (u8)EdFileReadChar();
                 path->index = (u8)path_index;
-                path->connection_count = (u16)(version == 1 ? (i16)(i8)EdFileReadChar() : EdFileReadShort());
+                if (version == 1)
+                    path->connection_count = (i8)EdFileReadChar();
+                else
+                    path->connection_count = EdFileReadShort();
                 if (path->connection_count != 0) {
                     PATH_LOAD_ALLOCATE(AIPATHCNX_PC *, path->connections, cursor, end,
                                        path->connection_count * sizeof(AIPATHCNX_PC));
