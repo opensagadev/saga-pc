@@ -1948,8 +1948,8 @@ extern "C" {
     __declspec(allocate(".bss$EduiColourSliderDynamicScale")) f32 EduiColourSliderDynamicScalePc = 0.0f;
 }
 
-static void EduiColourSliderSetPc(eduimenu_s *menu, eduiitem_s *item, f32 value, FRAME_PAD_PC *pad) {
-    edui_slider_s *slider = (edui_slider_s *)item;
+static void EduiColourSliderSetPc(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, f32 value,
+                                  FRAME_PAD_PC *pad) {
     slider->value = value;
     slider->normalized_value = (value - slider->minimum) / slider->range;
     slider->change_timer = 60;
@@ -1957,8 +1957,8 @@ static void EduiColourSliderSetPc(eduimenu_s *menu, eduiitem_s *item, f32 value,
         slider->changed(menu, item, pad->digital_buttons);
 }
 
-static void EduiColourSliderRoundPc(eduimenu_s *menu, eduiitem_s *item, FRAME_PAD_PC *pad, f32 value) {
-    edui_slider_s *slider = (edui_slider_s *)item;
+static void EduiColourSliderRoundPc(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, FRAME_PAD_PC *pad,
+                                    f32 value) {
     f32 step = slider->granularity;
     if (value > 0.0f)
         value += step * 0.5;
@@ -1977,11 +1977,11 @@ extern "C" i32 __cdecl eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *i
     edui_slider_s *slider = (edui_slider_s *)item;
     if ((pad->digital_buttons & 4) && (pad->digital_buttons & 8)) {
         if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 0.0)
-            EduiColourSliderSetPc(menu, item, 0.0f, pad);
+            EduiColourSliderSetPc(slider, menu, item, 0.0f, pad);
         EduiColourSliderRepeatTimerPc = 30;
     } else if ((pad->digital_buttons & 1) && (pad->digital_buttons & 2)) {
         if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 255.0)
-            EduiColourSliderSetPc(menu, item, 255.0f, pad);
+            EduiColourSliderSetPc(slider, menu, item, 255.0f, pad);
         EduiColourSliderRepeatTimerPc = 30;
     } else if (pad->digital_buttons & 4) {
         EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
@@ -1989,7 +1989,7 @@ extern "C" i32 __cdecl eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *i
             EduiColourSliderRepeatTimerPc = 0;
         if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & 4)) {
             f32 value = MAX(slider->minimum, slider->value - slider->granularity);
-            EduiColourSliderRoundPc(menu, item, pad, value);
+            EduiColourSliderRoundPc(slider, menu, item, pad, value);
         }
     } else if (pad->digital_buttons & 8) {
         EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
@@ -1997,7 +1997,7 @@ extern "C" i32 __cdecl eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *i
             EduiColourSliderRepeatTimerPc = 0;
         if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & 8)) {
             f32 value = MIN(slider->minimum + slider->range, slider->value + slider->granularity);
-            EduiColourSliderRoundPc(menu, item, pad, value);
+            EduiColourSliderRoundPc(slider, menu, item, pad, value);
         }
     } else {
         EduiColourSliderRepeatTimerPc = 30;
