@@ -1342,7 +1342,7 @@ void __cdecl NuMtxInvRSS(NUMTX *inverse, NUMTX *matrix) {
     determinant = (matrix->m00 * (matrix->m11 * matrix->m22 - matrix->m12 * matrix->m21)) -
                   (matrix->m01 * (matrix->m10 * matrix->m22 - matrix->m12 * matrix->m20)) +
                   (matrix->m02 * (matrix->m10 * matrix->m21 - matrix->m11 * matrix->m20));
-    inverse_determinant = determinant == 0.0f ? 0.0f : 1.0f / determinant;
+    inverse_determinant = determinant != 0.0f ? 1.0f / determinant : 0.0f;
 
     result.m00 = (matrix->m11 * matrix->m22 - matrix->m12 * matrix->m21) * inverse_determinant;
     result.m10 = (matrix->m10 * matrix->m22 - matrix->m12 * matrix->m20) * -inverse_determinant;
