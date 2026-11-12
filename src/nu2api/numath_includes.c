@@ -2787,7 +2787,10 @@ i32 NuPtInPolyXY(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
 }
 
 i32 NuPtInPolyYX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
-    if ((t1->y - t0->y) * (pnt->x - t1->x) - (pnt->y - t1->y) * (t1->x - t0->x) <= 0.0f &&
+    // MATCH-EXCEPTION: pnt->y and t1->y read into locals first; VC8 then loads the first edge product like retail
+    f32 pnt_y = pnt->y;
+    f32 t1_y = t1->y;
+    if ((t1->y - t0->y) * (pnt->x - t1->x) - (pnt_y - t1_y) * (t1->x - t0->x) <= 0.0f &&
         (t2->y - t1->y) * (pnt->x - t2->x) - (pnt->y - t2->y) * (t2->x - t1->x) <= 0.0f &&
         (t0->y - t2->y) * (pnt->x - t0->x) - (pnt->y - t0->y) * (t0->x - t2->x) <= 0.0f) {
         if ((t0->y != t1->y || t0->x != t1->x) && (t0->y != t2->y || t0->x != t2->x) &&
@@ -2813,7 +2816,10 @@ i32 NuPtInPolyXZ(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
 }
 
 i32 NuPtInPolyZX(NUVEC *pnt, NUVEC *t0, NUVEC *t1, NUVEC *t2) {
-    if ((t1->z - t0->z) * (pnt->x - t1->x) - (pnt->z - t1->z) * (t1->x - t0->x) <= 0.0f &&
+    // MATCH-EXCEPTION: pnt->z and t1->z read into locals first; VC8 then loads the first edge product like retail
+    f32 pnt_z = pnt->z;
+    f32 t1_z = t1->z;
+    if ((t1->z - t0->z) * (pnt->x - t1->x) - (pnt_z - t1_z) * (t1->x - t0->x) <= 0.0f &&
         (t2->z - t1->z) * (pnt->x - t2->x) - (pnt->z - t2->z) * (t2->x - t1->x) <= 0.0f &&
         (t0->z - t2->z) * (pnt->x - t0->x) - (pnt->z - t0->z) * (t0->x - t2->x) <= 0.0f) {
         if ((t0->z != t1->z || t0->x != t1->x) && (t0->z != t2->z || t0->x != t2->x) &&
