@@ -742,20 +742,19 @@ extern "C" {
     void __cdecl NuAnimBuffProceduralAnimation(ANI3_BUFFER_PC *buffer, NUHGOBJ_EVAL_PC *object, i32 override_count,
                                                NUHGOBJ_JOINT_OVERRIDE_PC *overrides) {
         i32 i;
-        if (buffer == NULL)
-            buffer = (ANI3_BUFFER_PC *)globalbuffer;
+        ANI3_BUFFER_PC *target = buffer != NULL ? buffer : (ANI3_BUFFER_PC *)globalbuffer;
         for (i = 0; i < override_count; ++i) {
             NUHGOBJ_JOINT_OVERRIDE_PC *item = &overrides[i];
             ANI3_JOINT_PC *joint;
-            i32 index = item->joint_index;
+            i32 index;
             u8 flags;
             NUANGVEC angles;
-            if (index >= object->joint_override_map_count)
+            if (item->joint_index >= object->joint_override_map_count)
                 continue;
-            index = object->joint_override_map[index];
+            index = object->joint_override_map[item->joint_index];
             if (index == 0xff)
                 continue;
-            joint = &buffer->joints[index];
+            joint = &target->joints[index];
             flags = item->flags_pc;
             if ((flags & 1) != 0) {
                 joint->rotation.x = item->rotation.x + joint->rotation.x;
