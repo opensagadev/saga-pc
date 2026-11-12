@@ -456,9 +456,9 @@ extern "C" {
      ((((colour) & 0xff) * 0xdc / 256) & 0xff) | ((colour) & 0xff000000))
 
     static __declspec(noinline) void EdDrawSetVertexColour(i32 colour) {
-        u32 converted;
+        i32 converted;
         if (NuPrimNeedsOverbrightening != 0) {
-            converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff000000u) + (colour & 0xff00);
+            converted = ((colour >> 16) & 0xff) + ((colour & 0xff) << 16) + (colour & 0xff00) + (colour & 0xff000000u);
         } else {
             converted =
                 ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
