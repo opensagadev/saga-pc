@@ -908,27 +908,23 @@ extern "C" void __cdecl MenuUpdatePauseExit(MENU *menu) {
         } else if (menu->selected_item == 0) {
             if (GAMEDEMO) {
                 NewLevelFromMenu(TITLES_LDATA, -1, -1, 1);
-                MenuSFX = GameAudio_GetSfxId(0x30);
-                return;
-            }
-            save_level = CanSaveAndExit(WORLD);
-            if (save_level) {
-                NewLData = save_level;
-                MenuSFX = GameAudio_GetSfxId(0x30);
-                return;
-            }
-            if (WORLD->current_level != HUB_LDATA) {
-                NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
-                if (Arcade && pause_i_pad != -1) {
-                    i32 other = pause_i_pad == 0;
-                    if (PCArcadePointGoals[(i8)ArcadeItem.play] > 0 &&
-                        Arcade_Points[pause_i_pad] < Arcade_Points[other])
-                        ++Arcade_Score[other];
-                }
             } else {
-                NuPadSetStatus(0, 0);
-                NuPadSetStatus(1, 0);
-                NewLevelFromMenu(TITLES_LDATA, -1, -1, 0);
+                save_level = CanSaveAndExit(WORLD);
+                if (save_level) {
+                    NewLData = save_level;
+                } else if (WORLD->current_level != HUB_LDATA) {
+                    NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
+                    if (Arcade && pause_i_pad != -1) {
+                        i32 other = pause_i_pad == 0;
+                        if (PCArcadePointGoals[(i8)ArcadeItem.play] > 0 &&
+                            Arcade_Points[pause_i_pad] < Arcade_Points[other])
+                            ++Arcade_Score[other];
+                    }
+                } else {
+                    NuPadSetStatus(0, 0);
+                    NuPadSetStatus(1, 0);
+                    NewLevelFromMenu(TITLES_LDATA, -1, -1, 0);
+                }
             }
             MenuSFX = GameAudio_GetSfxId(0x30);
             return;
