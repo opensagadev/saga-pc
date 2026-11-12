@@ -23,13 +23,17 @@ void __cdecl Animate_DEFAULT(GAMEOBJECT *object) {
 }
 
 void __cdecl Animate_CANNON(GAMEOBJECT *object) {
-    object->anim_packet.requested_animation =
-        (U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0 ? object->field_7aa : 1;
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
+        object->anim_packet.requested_animation = object->field_7aa;
+    else
+        object->anim_packet.requested_animation = 1;
 }
 
 void __cdecl Animate_SPEEDERBIKE(GAMEOBJECT *object) {
-    object->anim_packet.requested_animation =
-        (U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0 ? object->field_7aa : 1;
+    if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
+        object->anim_packet.requested_animation = object->field_7aa;
+    else
+        object->anim_packet.requested_animation = 1;
 }
 
 void __cdecl Animate_WALKER(GAMEOBJECT *object) {
@@ -171,11 +175,11 @@ static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32
     PLAYERCHARACTERCONFIG_PC *runtime = object->character_data->game_character;
     i32 attempt;
     if (allow_tiptoe != 0 && speed <= ((f64)runtime->tiptoe_speed + runtime->walk_speed) * 0.5) {
-        object->anim_packet.requested_animation = weapon_variant != 0 &&
-                                                          (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
-                                                          object->character_model->model_data_b[0x3f] != NULL
-                                                      ? 0x3f
-                                                      : 4;
+        if (weapon_variant != 0 && (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
+            object->character_model->model_data_b[0x3f] != NULL)
+            object->anim_packet.requested_animation = 0x3f;
+        else
+            object->anim_packet.requested_animation = 4;
     } else if (speed <= ((f64)runtime->walk_speed + runtime->run_speed) * 0.5) {
         if (weapon_variant != 0 && (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
             object->character_model->model_data_b[0x40] != NULL)
@@ -184,12 +188,11 @@ static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32
             object->anim_packet.requested_animation = 0x50;
         else
             object->anim_packet.requested_animation = 0;
-    } else
-        object->anim_packet.requested_animation = weapon_variant != 0 &&
-                                                          (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
-                                                          object->character_model->model_data_b[0x17] != NULL
-                                                      ? 0x17
-                                                      : 3;
+    } else if (weapon_variant != 0 && (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
+               object->character_model->model_data_b[0x17] != NULL)
+        object->anim_packet.requested_animation = 0x17;
+    else
+        object->anim_packet.requested_animation = 3;
     if (object->suit != NULL && (object->suit->flags & 0x40) != 0 &&
         !(object->character_context == 0x43 && object->context_variant == 5)) {
         if (object->anim_packet.requested_animation == 4 && object->character_model->model_data_b[0xc6] != NULL)
@@ -257,15 +260,21 @@ void __cdecl Animate_ASTROMECH(GAMEOBJECT *object) {
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
-    else if (object->context_target_position != NULL)
-        object->anim_packet.requested_animation = object->character_model->action_animations[43] != NULL  ? 43
-                                                  : object->character_model->action_animations[5] != NULL ? 5
-                                                                                                          : 1;
-    else {
+    else if (object->context_target_position != NULL) {
+        if (object->character_model->action_animations[43] != NULL)
+            object->anim_packet.requested_animation = 43;
+        else if (object->character_model->action_animations[5] != NULL)
+            object->anim_packet.requested_animation = 5;
+        else
+            object->anim_packet.requested_animation = 1;
+    } else {
         SetDefaultCharacterAnimPc(object);
-        if (object->character_context == 0)
-            object->anim_packet.requested_animation = object->pad->input_magnitude > 0.0f ? 37 : 36;
-        else if (UseFallAnim(object))
+        if (object->character_context == 0) {
+            if (object->pad->input_magnitude > 0.0f)
+                object->anim_packet.requested_animation = 37;
+            else
+                object->anim_packet.requested_animation = 36;
+        } else if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
         else if (object->anim_packet.requested_animation != 5 && (object->pad->runtime_flags & 2) == 0 &&
                  object->pad->input_magnitude > 0.0f)
@@ -291,9 +300,10 @@ void __cdecl Animate_DROIDEKA(GAMEOBJECT *object) {
             object->anim_packet.requested_animation = 5;
         else if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
             PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
-            object->anim_packet.requested_animation =
-                ((f64)character->tiptoe_speed + (f64)character->walk_speed) * 0.5 >= object->pad->input_magnitude ? 4
-                                                                                                                  : 0;
+            if (((f64)character->tiptoe_speed + (f64)character->walk_speed) * 0.5 >= object->pad->input_magnitude)
+                object->anim_packet.requested_animation = 4;
+            else
+                object->anim_packet.requested_animation = 0;
         }
     }
     animation = object->anim_packet.requested_animation;
@@ -313,10 +323,13 @@ void __cdecl Animate_GEONOSIAN(GAMEOBJECT *object) {
         SetDefaultCharacterAnimPc(object);
         if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
-        else if (object->character_context == -1 && object->jump_variant_state == 1)
-            object->anim_packet.requested_animation = object->pad->input_magnitude > 0.0f ? 37 : 15;
-        else if (object->anim_packet.requested_animation != 5 && (object->pad->runtime_flags & 2) == 0 &&
-                 object->pad->input_magnitude > 0.0f)
+        else if (object->character_context == -1 && object->jump_variant_state == 1) {
+            if (object->pad->input_magnitude > 0.0f)
+                object->anim_packet.requested_animation = 37;
+            else
+                object->anim_packet.requested_animation = 15;
+        } else if (object->anim_packet.requested_animation != 5 && (object->pad->runtime_flags & 2) == 0 &&
+                   object->pad->input_magnitude > 0.0f)
             object->anim_packet.requested_animation = 0;
     }
     UpdateCharacterIdle(object);
@@ -333,11 +346,14 @@ void __cdecl Animate_BATTLEDROID(GAMEOBJECT *object) {
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
-    else if (object->context_target_position != NULL)
-        object->anim_packet.requested_animation = object->character_model->action_animations[43] != NULL  ? 43
-                                                  : object->character_model->action_animations[5] != NULL ? 5
-                                                                                                          : 1;
-    else {
+    else if (object->context_target_position != NULL) {
+        if (object->character_model->action_animations[43] != NULL)
+            object->anim_packet.requested_animation = 43;
+        else if (object->character_model->action_animations[5] != NULL)
+            object->anim_packet.requested_animation = 5;
+        else
+            object->anim_packet.requested_animation = 1;
+    } else {
         SetDefaultCharacterAnimPc(object);
         if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
@@ -358,23 +374,29 @@ void __cdecl Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
     i16 animation;
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
-    else if (object->context_target_position != NULL)
-        object->anim_packet.requested_animation = object->character_model->action_animations[43] != NULL  ? 43
-                                                  : object->character_model->action_animations[5] != NULL ? 5
-                                                                                                          : 1;
-    else {
+    else if (object->context_target_position != NULL) {
+        if (object->character_model->action_animations[43] != NULL)
+            object->anim_packet.requested_animation = 43;
+        else if (object->character_model->action_animations[5] != NULL)
+            object->anim_packet.requested_animation = 5;
+        else
+            object->anim_packet.requested_animation = 1;
+    } else {
         SetDefaultCharacterAnimPc(object);
         if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
         else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
                 PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
-                if (((f64)character->walk_speed + (f64)character->run_speed) * 0.5 >= object->pad->input_magnitude)
-                    object->anim_packet.requested_animation =
-                        (object->flags_e20 & 0x10000) != 0 || object->weapon_scale > 0.0f ? 64 : 0;
+                if (((f64)character->walk_speed + (f64)character->run_speed) * 0.5 >= object->pad->input_magnitude) {
+                    if ((object->flags_e20 & 0x10000) != 0 || object->weapon_scale > 0.0f)
+                        object->anim_packet.requested_animation = 64;
+                    else
+                        object->anim_packet.requested_animation = 0;
+                } else if ((object->flags_e20 & 0x10000) != 0 || object->weapon_scale > 0.0f)
+                    object->anim_packet.requested_animation = 23;
                 else
-                    object->anim_packet.requested_animation =
-                        (object->flags_e20 & 0x10000) != 0 || object->weapon_scale > 0.0f ? 23 : 3;
+                    object->anim_packet.requested_animation = 3;
             } else if (object->character_model->action_animations[25] != NULL && object->weapon_scale >= 0.5f)
                 object->anim_packet.requested_animation = 25;
         }
@@ -598,14 +620,18 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
             JumpAnimCode(object);
         else if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
-        else if (object->character_context == 27 && (object->flags_e20 & 0x580) == 0)
-            object->anim_packet.requested_animation = object->character_model->action_animations[39] != NULL ? 39 : 11;
-        else if (object->character_context == 27 || object->character_context == 29 ||
-                 object->character_context == 18 || object->character_context == 8)
-            object->anim_packet.requested_animation = ((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
-                                                              object->character_model->action_animations[39] != NULL
-                                                          ? 39
-                                                          : 11;
+        else if (object->character_context == 27 && (object->flags_e20 & 0x580) == 0) {
+            if (object->character_model->action_animations[39] != NULL)
+                object->anim_packet.requested_animation = 39;
+            else
+                object->anim_packet.requested_animation = 11;
+        } else if (object->character_context == 27 || object->character_context == 29 ||
+                   object->character_context == 18 || object->character_context == 8)
+            if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+                object->character_model->action_animations[39] != NULL)
+                object->anim_packet.requested_animation = 39;
+            else
+                object->anim_packet.requested_animation = 11;
         else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f)
                 MoveAnim_Manage(object, object->pad->input_magnitude, 1, 1);
@@ -641,12 +667,13 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
 void __cdecl Animate_JEDI(GAMEOBJECT *object) {
     CHARACTER_FALL_ANIMATION_READER_PC *state = (CHARACTER_FALL_ANIMATION_READER_PC *)object;
     i16 animation;
-    if ((object->flags_e20 & 0x1000000) != 0)
-        object->anim_packet.requested_animation = ((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
-                                                          object->character_model->action_animations[39] != NULL
-                                                      ? 39
-                                                      : 11;
-    else if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
+    if ((object->flags_e20 & 0x1000000) != 0) {
+        if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+            object->character_model->action_animations[39] != NULL)
+            object->anim_packet.requested_animation = 39;
+        else
+            object->anim_packet.requested_animation = 11;
+    } else if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x10) != 0)
         object->anim_packet.requested_animation = object->field_7aa;
     else {
         SetDefaultCharacterAnimPc(object);
@@ -654,23 +681,27 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
             JumpAnimCode(object);
         else if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
-        else if (object->character_context == 27 && (object->flags_e20 & 0x580) == 0)
-            object->anim_packet.requested_animation = object->character_model->action_animations[39] != NULL ? 39 : 11;
-        else if (object->character_context == 27 || object->character_context == 29 ||
-                 object->character_context == 18 || object->character_context == 8)
-            object->anim_packet.requested_animation = ((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
-                                                              object->character_model->action_animations[39] != NULL
-                                                          ? 39
-                                                          : 11;
+        else if (object->character_context == 27 && (object->flags_e20 & 0x580) == 0) {
+            if (object->character_model->action_animations[39] != NULL)
+                object->anim_packet.requested_animation = 39;
+            else
+                object->anim_packet.requested_animation = 11;
+        } else if (object->character_context == 27 || object->character_context == 29 ||
+                   object->character_context == 18 || object->character_context == 8)
+            if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
+                object->character_model->action_animations[39] != NULL)
+                object->anim_packet.requested_animation = 39;
+            else
+                object->anim_packet.requested_animation = 11;
         else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
-                if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST)
-                    object->anim_packet.requested_animation =
-                        (object->weapon_scale == 1.0f || object->field_e33 == 1) &&
-                                object->character_model->action_animations[63] != NULL
-                            ? 63
-                            : 4;
-                else
+                if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
+                    if ((object->weapon_scale == 1.0f || object->field_e33 == 1) &&
+                        object->character_model->action_animations[63] != NULL)
+                        object->anim_packet.requested_animation = 63;
+                    else
+                        object->anim_packet.requested_animation = 4;
+                } else
                     MoveAnim_Manage(object, object->pad->input_magnitude,
                                     (object->character_data->game_character->flags_090 & 8) == 0, 1);
             } else if (((object->flags_e20 & 0x10000) != 0 || object->field_e33 == 1) &&
@@ -735,8 +766,10 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
     else if (object->context_target_position != NULL) {
         if (object->character_model->model_data_b[43] != NULL)
             object->anim_packet.requested_animation = 43;
+        else if (object->character_model->model_data_b[5] != NULL)
+            object->anim_packet.requested_animation = 5;
         else
-            object->anim_packet.requested_animation = object->character_model->model_data_b[5] != NULL ? 5 : 1;
+            object->anim_packet.requested_animation = 1;
     } else if (object->character_context == 8)
         object->anim_packet.requested_animation = 11;
     else {
@@ -745,9 +778,12 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
             JumpAnimCode(object);
         else if (UseFallAnim(object))
             object->anim_packet.requested_animation = 5;
-        else if (object->character_context == -1 && object->jump_variant_state == 1)
-            object->anim_packet.requested_animation = object->pad->input_magnitude > 0.0f ? 37 : 15;
-        else if (object->anim_packet.requested_animation != 5) {
+        else if (object->character_context == -1 && object->jump_variant_state == 1) {
+            if (object->pad->input_magnitude > 0.0f)
+                object->anim_packet.requested_animation = 37;
+            else
+                object->anim_packet.requested_animation = 15;
+        } else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
                 i32 tiptoe =
                     (object->flags_1fc & 0x80) == 0 && object->character_data->game_character->weapon_action == 1
