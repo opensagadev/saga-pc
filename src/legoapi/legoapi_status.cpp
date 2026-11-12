@@ -1387,9 +1387,8 @@ extern "C" void __cdecl FinishStatusPacket(i32 choice) {
             NewLData = &LDataList[MissionSys->active_mission->level];
         }
     } else if (choice == 0 && StatusPacket.next_area != -1) {
-        AREA_DATA_PC *area = &ADataList[StatusPacket.next_area];
-        NewLData = &LDataList[area->levels[0]];
-        if ((area->flags & 2) != 0) {
+        NewLData = &LDataList[ADataList[StatusPacket.next_area].levels[0]];
+        if ((ADataList[StatusPacket.next_area].flags & 2) != 0) {
             LevelCompletionFallbackFlagPC = 1;
         } else {
             loadareacharacters_no_backdrop_reset = 1;
