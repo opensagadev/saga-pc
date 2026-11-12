@@ -81,19 +81,15 @@ extern "C" LEVELDATA_PC *__cdecl CanSaveAndExit(WORLDINFO *world) {
 }
 
 extern "C" void __cdecl AddToCompletionPoints(u32 points) {
-    STATUSCOLLECT_s *save = reinterpret_cast<STATUSCOLLECT_s *>(CustomiserCompletionSavePc);
-    if (save != NULL && save->completion_points < HubCompletionPointsPc) {
-        save->completion_points += points;
-        save = reinterpret_cast<STATUSCOLLECT_s *>(CustomiserCompletionSavePc);
-        if (save->completion_points >= HubCompletionPointsPc) {
-            save->completion_points = (u16)HubCompletionPointsPc;
-            save = reinterpret_cast<STATUSCOLLECT_s *>(CustomiserCompletionSavePc);
-            if ((save->flags & SAVE_REWARD_100_PERCENT) == 0) {
-                if (Game_100PercentFn != NULL) {
+    if (CustomiserCompletionSavePc != NULL &&
+        ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points < HubCompletionPointsPc) {
+        ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points += points;
+        if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points >= HubCompletionPointsPc) {
+            ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->completion_points = (u16)HubCompletionPointsPc;
+            if ((((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_100_PERCENT) == 0) {
+                if (Game_100PercentFn != NULL)
                     Game_100PercentFn();
-                    save = reinterpret_cast<STATUSCOLLECT_s *>(CustomiserCompletionSavePc);
-                }
-                save->flags |= SAVE_REWARD_100_PERCENT;
+                ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_100_PERCENT;
             }
         }
     }
