@@ -7275,11 +7275,11 @@ i32 __cdecl Action_SetLevelPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     (void)processor;
     (void)packet;
     (void)param_6;
+    path_name = NULL;
     if (param_5 == 0 || sys->path_sys == NULL) {
         return 1;
     }
 
-    path_name = NULL;
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)((char *)AITransferLiteral75782c));
         if (value != NULL) {
@@ -7293,12 +7293,12 @@ i32 __cdecl Action_SetLevelPath(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (object == NULL || (object->flags_1fc_word & (1u | 0x1000u)) != (1u | 0x1000u)) {
-            continue;
+        if (object != NULL && (object->flags_1fc_word & 1u) != 0 && (object->flags_1fc_word & 0x1000u) != 0) {
+            object_packet = &object->ai_packet;
+            AISysCharacterSetPath(object_packet, sys->path_sys->active_path);
+            AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, object_packet, 0xff,
+                                     (i8)(object->field_281));
         }
-        object_packet = &object->ai_packet;
-        AISysCharacterSetPath(object_packet, sys->path_sys->active_path);
-        AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT_PC *)object, object_packet, 0xff, (i8)(object->field_281));
     }
     return 1;
 }
