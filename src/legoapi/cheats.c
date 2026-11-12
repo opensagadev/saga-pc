@@ -4,19 +4,21 @@ extern i32 ONEPLAYERPOWERUPS;
 static f32 Cheat_PowerUpTime = 0;
 
 i32 __cdecl Cheat_IsOn(i32 cheat) {
-    CHEAT_PC *entry;
+    CHEAT_PC *cheats;
     if (cheat < 0 || cheat >= CheatSystemPtr->count) {
         return 0;
     }
-    entry = &CheatSystemPtr->cheats[cheat];
-    if (entry->enabled != 0) {
+    cheats = CheatSystemPtr->cheats;
+    if (cheats[cheat].enabled != 0) {
         return 1;
     }
     if (ONEPLAYERPOWERUPS == 0 && Cheat_PowerUpTime > 0.0f) {
         if (VehicleArea != 0) {
-            return (entry->flags & 0x20000) != 0;
+            if (cheats[cheat].flags & 0x20000)
+                return 1;
+        } else if (cheats[cheat].flags & 0x10000) {
+            return 1;
         }
-        return (entry->flags & 0x10000) != 0;
     }
     return 0;
 }
@@ -96,18 +98,21 @@ STATIC_ASSERT(offsetof(CHEATSYSTEM_PC, count) == 4);
 
 void __cdecl Cheats_SetFlags(void) {
     CHEATSYSTEM_PC *system = CheatSystemPtr;
-    CHEAT_PC *cheat;
-    f32 powerup_time;
     i32 index;
     system->flags = 0;
-    if (system->count <= 0)
-        return;
-    cheat = system->cheats;
-    powerup_time = Cheat_PowerUpTime;
-    for (index = 0; index < system->count; ++index, ++cheat) {
-        if (cheat->enabled != 0 || (ONEPLAYERPOWERUPS == 0 && powerup_time > 0.0f &&
-                                    (cheat->flags & (VehicleArea != 0 ? 0x20000 : 0x10000)) != 0))
-            system->flags |= cheat->flags;
+    for (index = 0; index < system->count; ++index) {
+        CHEAT_PC *cheat = &system->cheats[index];
+        if (cheat->enabled == 0) {
+            if (ONEPLAYERPOWERUPS != 0 || !(Cheat_PowerUpTime > 0.0f))
+                continue;
+            if (VehicleArea != 0) {
+                if ((cheat->flags & 0x20000) == 0)
+                    continue;
+            } else if ((cheat->flags & 0x10000) == 0) {
+                continue;
+            }
+        }
+        system->flags |= cheat->flags;
     }
 }
 
