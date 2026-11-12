@@ -2496,10 +2496,11 @@ extern "C" BOLT_PC *__cdecl Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *
 }
 
 extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
+    NUVEC points[3];
     NUVEC normal = v010;
     u8 processed[32] = {};
-    i32 index = 0;
-    for (BOLT_PC *bolt = Bolt; bolt != Bolt + 32; ++bolt, ++index) {
+    BOLT_PC *bolt = Bolt;
+    for (i32 index = 0; index < 32; ++index, ++bolt) {
         if (!bolt->active || processed[index])
             continue;
         if (bolt->owner != NULL) {
@@ -2553,10 +2554,9 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
                 Bolt_OrientationPrivate(bolt);
             }
         }
-        bolt->position.x += FRAMETIME * bolt->velocity.x;
-        bolt->position.y += FRAMETIME * bolt->velocity.y;
-        bolt->position.z += FRAMETIME * bolt->velocity.z;
-        NUVEC points[3];
+        bolt->position.x += bolt->velocity.x * FRAMETIME;
+        bolt->position.y += bolt->velocity.y * FRAMETIME;
+        bolt->position.z += bolt->velocity.z * FRAMETIME;
         points[1] = bolt->position;
         if ((bolt->flags & 0x200) == 0) {
             NUVEC offset = {0.0f, 0.0f, bolt->collision_radius + bolt->collision_radius};
@@ -2626,16 +2626,16 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
             if (Bolt_HitCustomFn != NULL)
                 Bolt_HitCustomFn(bolt, points);
             for (i32 i = 0; i < 2; ++i) {
-                if (type->moving_debris[i] != -1 && type->moving_debris_counts[i] != 0)
-                    AddVariableShotDebrisEffectTimed5(world->game_debris_sys->entries[type->moving_debris[i]].effect,
-                                                      &bolt->position, NULL, &bolt->velocity,
-                                                      type->moving_debris_counts[i], FRAMETIME, NULL, NULL, 20000, 0);
+                if (type->moving_debris[i] != -1 && (u16)type->moving_debris_counts[i] > 0)
+                    AddVariableShotDebrisEffectTimed5(
+                        world->game_debris_sys->entries[type->moving_debris[i]].effect, &bolt->position, NULL,
+                        &bolt->velocity, (u16)type->moving_debris_counts[i], FRAMETIME, NULL, NULL, 20000, 0);
             }
             if ((bolt->flags & 0x10000) != 0)
                 continue;
             GAMEOBJECT *object = Obj;
             for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-                if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
+                if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead != 0)
                     continue;
                 GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
                 if (object == owner || (object->flags_e20 & 0x20) != 0)
@@ -2654,11 +2654,11 @@ extern "C" void __cdecl Bolts_Update(WORLDINFO *world) {
                     continue;
                 if ((object->character_data->game_character->flags_090 & 0x8000) != 0)
                     continue;
-                if (bolt->bounds_min.x > object->collision_max.x || object->collision_min.x > bolt->bounds_max.x ||
-                    bolt->bounds_min.z > object->collision_max.z || object->collision_min.z > bolt->bounds_max.z)
+                if (object->collision_max.x < bolt->bounds_min.x || object->collision_min.x > bolt->bounds_max.x ||
+                    object->collision_max.z < bolt->bounds_min.z || object->collision_min.z > bolt->bounds_max.z)
                     continue;
                 if ((flags & 0x8000000) == 0 &&
-                    (bolt->bounds_min.y > object->collision_max.y || object->collision_min.y > bolt->bounds_max.y))
+                    (object->collision_max.y < bolt->bounds_min.y || object->collision_min.y > bolt->bounds_max.y))
                     continue;
                 if (Bolt_HitGameObject(bolt, object, points, &bolt->bounds_min, &bolt->bounds_max,
                                        bolt->collision_radius, processed))
