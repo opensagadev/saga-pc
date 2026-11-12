@@ -5751,7 +5751,8 @@ extern "C" {
                     if (instance->ltime >= instance->interval + end_frame) {
                         if ((instance->flags & 8) != 0) {
                             f32 repeats = NuFloor((instance->ltime - 1.0f) / (instance->interval + end_frame - 1.0f));
-                            instance->ltime -= (instance->interval + end_frame - 1.0f) * repeats;
+                            f32 elapsed = (instance->interval + end_frame - 1.0f) * repeats;
+                            instance->ltime -= elapsed;
                             frame = instance->ltime;
                         } else {
                             instance->flags &= ~1U;
