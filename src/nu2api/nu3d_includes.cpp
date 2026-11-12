@@ -3354,6 +3354,7 @@ extern "C" {
         u32 *header = (u32 *)*data;
         u32 magic = header[0];
         NuAnimData2FileHeader_PC **file;
+        u32 offset;
 
         if ((i32)header[1] >= (i32)0x414e4935)
             return NuPtrBlockFix(header);
@@ -3366,7 +3367,8 @@ extern "C" {
             AnimationDiagnosticNoOpPc();
         header[0] = (u32)file_size;
         file = (NuAnimData2FileHeader_PC **)data;
-        (*file)->animation = NuAnimData2FixPtrs((*file)->animation, (i32)((u32)*file - (*file)->relocation_base), 0, 0);
+        offset = (u32)*file - (*file)->relocation_base;
+        (*file)->animation = NuAnimData2FixPtrs((*file)->animation, (i32)offset, 0, 0);
         (*file)->relocation_base = (u32)*file;
         return (*file)->animation;
     }
