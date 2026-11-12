@@ -918,10 +918,10 @@ extern "C" {
             if (!(buildit->availability_flags & 2) ||
                 (buildit->room_index >= 0 && world->rooms_visible_ptr[buildit->room_index] == 0))
                 continue;
-            if (buildit->state_flags & 0x400)
-                EnableShadowMapRendering(0);
-            else
+            if (!(buildit->state_flags & 0x400))
                 ResetShadowMapRendering();
+            else
+                EnableShadowMapRendering(0);
             if (buildit->linked_buildit != NULL) {
                 if (buildit->anim_set == NULL)
                     continue;
