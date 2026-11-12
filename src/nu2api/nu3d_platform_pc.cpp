@@ -1472,26 +1472,26 @@ extern "C" {
         f32 multiplier;
         if (texture == NULL)
             return;
-        for (i = 0; i != 32; ++i)
-            if (&PCGraphicsRenderTextures[i] == texture)
-                break;
-        if (i == 32)
-            return;
-        if (texture->external_id == -1) {
-            if (PCGraphicsRenderTextures[i].resource != NULL) {
-                PCGraphicsRenderTextures[i].resource->methods->release(PCGraphicsRenderTextures[i].resource);
-                PCGraphicsRenderTextures[i].resource = NULL;
-            }
-            if (PCGraphicsRenderTextures[i].surface != NULL) {
-                PCGraphicsRenderTextures[i].surface->methods->release(PCGraphicsRenderTextures[i].surface);
-                PCGraphicsRenderTextures[i].surface = NULL;
+        for (i = 0; i != 32; ++i) {
+            if (&PCGraphicsRenderTextures[i] == texture) {
+                if (texture->external_id == -1) {
+                    if (PCGraphicsRenderTextures[i].resource != NULL) {
+                        PCGraphicsRenderTextures[i].resource->methods->release(PCGraphicsRenderTextures[i].resource);
+                        PCGraphicsRenderTextures[i].resource = NULL;
+                    }
+                    if (PCGraphicsRenderTextures[i].surface != NULL) {
+                        PCGraphicsRenderTextures[i].surface->methods->release(PCGraphicsRenderTextures[i].surface);
+                        PCGraphicsRenderTextures[i].surface = NULL;
+                    }
+                }
+                multiplier = texture->mip_count != 1 ? 1.5f : 1.0f;
+                memory_delta = (i32)((0u - (u32)texture->width * (u32)texture->height) * 4u);
+                PCGraphicsRenderTextureBytes += (u32)(memory_delta * multiplier);
+                memset(&PCGraphicsRenderTextures[i], 0, sizeof(GRAPHICS_RENDER_TEXTURE_PC));
+                PCGraphicsRenderTextureActive[i] = 0;
+                return;
             }
         }
-        multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
-        memory_delta = (i32)((0u - (u32)texture->width * (u32)texture->height) * 4u);
-        PCGraphicsRenderTextureBytes += (i32)((f64)memory_delta * (f64)multiplier);
-        memset(&PCGraphicsRenderTextures[i], 0, sizeof(GRAPHICS_RENDER_TEXTURE_PC));
-        PCGraphicsRenderTextureActive[i] = 0;
     }
 
     i32 __cdecl PCGraphicsEffectTextureWidth(GRAPHICS_RENDER_TEXTURE_PC *texture) {
@@ -1638,9 +1638,9 @@ extern "C" {
     void __cdecl PCGraphicsResetRenderTexture(GRAPHICS_RENDER_TEXTURE_PC *texture) {
         i32 memory_delta;
         f32 multiplier;
-        multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+        multiplier = texture->mip_count != 1 ? 1.5f : 1.0f;
         memory_delta = (i32)((0u - (u32)texture->width * (u32)texture->height) * 4u);
-        PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+        PCGraphicsRenderTextureBytes += (u32)(memory_delta * multiplier);
         if (texture->external_id == -1 && texture->resource != NULL) {
             texture->resource->methods->release(texture->resource);
             texture->resource = NULL;
@@ -1688,7 +1688,7 @@ extern "C" {
             texture->pool = 0;
             texture->mip_count = 1;
             PCDeviceCreateDepthSurface(
-                texture->width, texture->height, PCGraphicsFormatToD3d(4), PCDeviceBackend.GetMultisampleType(),
+                texture->width, texture->height, PCGraphicsFormatToD3d(format), PCDeviceBackend.GetMultisampleType(),
                 PCDeviceBackend.quality[PCDeviceBackend.multisample_index], FALSE, &texture->surface, NULL);
             PCGraphicsRenderTextureBytes += (i32)((u32)texture->width * texture->height * 4u);
             return;
@@ -1701,9 +1701,9 @@ extern "C" {
         if (texture->resource != NULL) {
             texture->mip_count = (u16)((const PC_TEXTURE_LEVEL_COUNT_METHODS_PC *)texture->resource->methods)
                                      ->get_level_count(texture->resource);
-            multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+            multiplier = texture->mip_count != 1 ? 1.5f : 1.0f;
             memory_delta = (i32)((u32)texture->width * texture->height * 4u);
-            PCGraphicsRenderTextureBytes += (i32)((f64)memory_delta * (f64)multiplier);
+            PCGraphicsRenderTextureBytes += (u32)(memory_delta * multiplier);
         }
     }
 
@@ -1712,14 +1712,14 @@ extern "C" {
     }
 
     /* Retail calls this from NuDeferredFilter::ResizeTexturesPc instead of inlining it: its x87
-     * byte-count conversion (fnstcw/fistp, not reproduced here) keeps it above VC8's inline limit. */
+     * byte-count conversion (an inline fnstcw/fistp for the unsigned cast) keeps it above VC8's inline limit. */
     __declspec(noinline) void __cdecl PCGraphicsResizeEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, i32 width,
                                                                     i32 height, i32 levels) {
         if (texture == NULL)
             return;
-        f32 multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
+        f32 multiplier = texture->mip_count != 1 ? 1.5f : 1.0f;
         i32 memory_delta = (i32)((0u - (u32)texture->width * texture->height) * 4u);
-        PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+        PCGraphicsRenderTextureBytes += (u32)(memory_delta * multiplier);
         if (texture->external_id == -1 && texture->resource != NULL) {
             texture->resource->methods->release(texture->resource);
             texture->resource = NULL;
@@ -1728,13 +1728,9 @@ extern "C" {
             texture->surface->methods->release(texture->surface);
             texture->surface = NULL;
         }
-        if (width <= 0)
-            width = texture->width;
-        if (height <= 0)
-            height = texture->height;
-        if (levels <= 0)
-            levels = texture->original_mip_count;
-        PCGraphicsInitRenderTexture(texture, width, height, levels, texture->usage, texture->pool, texture->format);
+        PCGraphicsInitRenderTexture(texture, width > 0 ? width : texture->width, height > 0 ? height : texture->height,
+                                    levels > 0 ? levels : texture->original_mip_count, texture->usage, texture->pool,
+                                    texture->format);
     }
 
     void __cdecl PCGraphicsBindEffectTexture(GRAPHICS_RENDER_TEXTURE_PC *texture, u32 stage) {
@@ -1743,19 +1739,21 @@ extern "C" {
 
     void __cdecl PCGraphicsReleaseEffectTextures(void) {
         for (i32 index = 0; index != 32; ++index) {
-            GRAPHICS_RENDER_TEXTURE_PC *texture = &PCGraphicsRenderTextures[index];
-            if (PCGraphicsRenderTextureActive[index] && texture->external_id == -1) {
-                if (texture->resource != NULL) {
-                    texture->resource->methods->release(texture->resource);
-                    texture->resource = NULL;
+            if (PCGraphicsRenderTextureActive[index] && PCGraphicsRenderTextures[index].external_id == -1) {
+                if (PCGraphicsRenderTextures[index].resource != NULL) {
+                    PCGraphicsRenderTextures[index].resource->methods->release(
+                        PCGraphicsRenderTextures[index].resource);
+                    PCGraphicsRenderTextures[index].resource = NULL;
                 }
-                if (texture->surface != NULL) {
-                    texture->surface->methods->release(texture->surface);
-                    texture->surface = NULL;
+                if (PCGraphicsRenderTextures[index].surface != NULL) {
+                    PCGraphicsRenderTextures[index].surface->methods->release(PCGraphicsRenderTextures[index].surface);
+                    PCGraphicsRenderTextures[index].surface = NULL;
                 }
-                f32 multiplier = texture->mip_count == 1 ? 1.0f : 1.5f;
-                i32 memory_delta = (i32)((0u - (u32)texture->width * texture->height) * 4u);
-                PCGraphicsRenderTextureBytes += (i32)(i64)((f64)memory_delta * (f64)multiplier);
+                f32 multiplier = PCGraphicsRenderTextures[index].mip_count != 1 ? 1.5f : 1.0f;
+                i32 memory_delta =
+                    (i32)((0u - (u32)PCGraphicsRenderTextures[index].width * PCGraphicsRenderTextures[index].height) *
+                          4u);
+                PCGraphicsRenderTextureBytes += (u32)(memory_delta * multiplier);
             }
         }
     }
