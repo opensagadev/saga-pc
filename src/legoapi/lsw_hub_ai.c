@@ -99,15 +99,16 @@ static i32 HubChooseRandomCharacterPc(i16 *characters) {
         if (characters[index] != -1)
             candidates[count++] = index;
     }
-    if (count == 0) {
-        if (id_MOSEISLEYCITIZEN != -1 && apicharsys->playermodelids[id_MOSEISLEYCITIZEN] != -1)
-            candidates[count++] = id_MOSEISLEYCITIZEN;
-        if (id_CANTINAALIEN != -1 && apicharsys->playermodelids[id_CANTINAALIEN] != -1)
-            candidates[count++] = id_CANTINAALIEN;
-        if (count == 0)
-            return -1;
-    }
-    return candidates[NuRandInt() % count];
+    if (count != 0)
+        return candidates[NuRandInt() % count];
+    count = 0;
+    if (id_MOSEISLEYCITIZEN != -1 && apicharsys->playermodelids[id_MOSEISLEYCITIZEN] != -1)
+        candidates[count++] = id_MOSEISLEYCITIZEN;
+    if (id_CANTINAALIEN != -1 && apicharsys->playermodelids[id_CANTINAALIEN] != -1)
+        candidates[count++] = id_CANTINAALIEN;
+    if (count != 0)
+        return candidates[NuRandInt() % count];
+    return -1;
 }
 /* 0x491800/56 */
 i32 __cdecl Hub_GetRandomCharType(void) {
