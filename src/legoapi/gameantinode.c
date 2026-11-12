@@ -144,18 +144,21 @@ void *__cdecl GameAntinode_RegisterAntiNode(void *opaque_system, NUVEC *position
 void *__cdecl GameAntinode_RegisterAntiNodeUsingData(void *system, NUVEC *position, u16 angle, void *opaque_data,
                                                      f32 duration, i32 disabled) {
     ANTINODE_DATA_PC *data = (ANTINODE_DATA_PC *)opaque_data;
-    ANTINODE_PC *node;
+    ANTINODE_PC *node = NULL;
     NUVEC centre;
-    if (disabled != 0 || (data->mode & 1) != 0 || system == NULL || position == NULL)
+    if (disabled != 0 || (data->mode & 1) != 0)
         return NULL;
-    centre = data->position;
-    NuVecRotateY(&centre, &centre, angle);
-    NuVecAdd(&centre, &centre, position);
-    node = (ANTINODE_PC *)GameAntinode_RegisterAntiNode(system, &centre, data->radius, data->extent_x, data->extent_z,
-                                                        (u16)(angle + data->angle), data->shape, duration);
-    if (node != NULL) {
-        node->min_y = data->min_y + position->y;
-        node->max_y = data->max_y + position->y;
+    if (system != NULL && position != NULL) {
+        centre = data->position;
+        NuVecRotateY(&centre, &centre, angle);
+        NuVecAdd(&centre, &centre, position);
+        node =
+            (ANTINODE_PC *)GameAntinode_RegisterAntiNode(system, &centre, data->radius, data->extent_x, data->extent_z,
+                                                         (u16)(angle + data->angle), data->shape, duration);
+        if (node != NULL) {
+            node->min_y = data->min_y + position->y;
+            node->max_y = data->max_y + position->y;
+        }
     }
     return node;
 }
