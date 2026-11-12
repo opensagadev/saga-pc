@@ -90,14 +90,14 @@ static i32 LoopCountLoopingInputs(FLOWBOX_PC *loop, u8 checksum) {
     return count;
 }
 
-static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, u8 checksum) {
+static void ResetForLoopEx(GIZFLOW_PC *flow, FLOWBOX_PC *root, FLOWBOX_PC *box, i32 checksum) {
     FLOWBOXGIZMODATA_PC *data;
     i32 i;
 
     if (box == root || box->loop_checksum == checksum)
         return;
     box->loop_checksum = checksum;
-    if (box->type == 0 && (FLOWBOX_FLAGS(box) & 0x1000) == 0 && box->data != NULL) {
+    if (box->type == 0 && (*(u16 *)&box->state_flags_low & 0x1000) == 0 && box->data != NULL) {
         data = (FLOWBOXGIZMODATA_PC *)box->data;
         for (i = 0; i < data->gizmo_count; ++i)
             GizmoActivate(flow->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
