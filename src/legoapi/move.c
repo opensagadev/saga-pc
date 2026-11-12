@@ -5663,7 +5663,6 @@ static void __declspec(noinline) VehicleThrustPc(GAMEOBJECT *object) {
 static void __declspec(noinline) VehicleLaunchPc(GAMEOBJECT *object) {
     f32 hover, time, blend;
     i32 phase;
-    u16 pitch;
     if (object->character_context != 0x2c)
         return;
     if (DEATHSTARBATTLE_ADATA != NULL && WORLD->area == DEATHSTARBATTLE_ADATA)
@@ -5685,7 +5684,6 @@ static void __declspec(noinline) VehicleLaunchPc(GAMEOBJECT *object) {
                 object->roll_angle = 0;
                 object->velocity.x = object->velocity.y = 0.0f;
                 object->velocity.z = (f32)(object->character_data->game_character->run_speed * 0.5);
-                pitch = 0xc000;
                 break;
             }
         case 1:
@@ -5693,8 +5691,7 @@ static void __declspec(noinline) VehicleLaunchPc(GAMEOBJECT *object) {
             object->roll_angle = 0;
             object->velocity.x = object->velocity.y = 0.0f;
             object->velocity.z = (f32)(object->character_data->game_character->run_speed * 0.5);
-            pitch = object->pitch_angle;
-            if (pitch == 0) {
+            if (object->pitch_angle == 0) {
                 object->field_7b3 = 2;
                 object->launch_origin.y = object->position.y;
                 object->context_timer = 0.0f;
@@ -5714,14 +5711,12 @@ static void __declspec(noinline) VehicleLaunchPc(GAMEOBJECT *object) {
             phase = ((i32)((f64)time * 32768.0 + 16384.0) >> 1) & 0x7fff;
             blend = (f32)(1.0 - (1.0 + (f64)NuTrigTable[phase]) * 0.5);
             object->position.y = (1.0f - blend) * object->launch_origin.y + blend * hover;
-            pitch = 0;
             break;
         default:
             object->character_context = -1;
-            pitch = object->pitch_angle;
             break;
     }
-    NuVecRotateX(&object->velocity, &object->velocity, pitch);
+    NuVecRotateX(&object->velocity, &object->velocity, object->pitch_angle);
     NuVecRotateY(&object->velocity, &object->velocity, object->field_0x276);
 }
 
