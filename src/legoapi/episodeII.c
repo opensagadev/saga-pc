@@ -1968,6 +1968,7 @@ void __cdecl KaminoE_Update(WORLDINFO *world) {
             i32 have_target = 0;
             i32 target_pitch;
             i32 target_yaw;
+            f32 distance;
             if (kamino_e.active_turret != NULL) {
                 aim = *NuSpecialGetDrawPos(&kamino_e.active_turret->primary_anim_obj->special);
                 aim.y = KaminoShipAimLiftPc + aim.y;
@@ -1977,7 +1978,6 @@ void __cdecl KaminoE_Update(WORLDINFO *world) {
                 for (i = 0; i < 8; ++i) {
                     GAMEOBJECT *object = Player[i];
                     u32 flags;
-                    f32 distance;
                     if (object == NULL)
                         continue;
                     flags = object->flags_1fc_word;
@@ -2022,7 +2022,6 @@ void __cdecl KaminoE_Update(WORLDINFO *world) {
                 if (kamino_e.departure_timer > KaminoShipFireIntervalPc) {
                     NUMTX bolt_matrix;
                     NUVEC origin;
-                    f32 distance;
                     i32 i;
                     kamino_e.departure_timer = 0.0f;
                     for (i = 0; i < 2; ++i) {
