@@ -1675,13 +1675,16 @@ void __cdecl PodRaceUpdate(WORLDINFO *world, f32 dt) {
     char reason[128];
     f32 old;
     i32 i;
+    // MATCH-EXCEPTION: race caches PodRacePc for the first countdown test only; it changes the operand order of the
+    // later mushroom_timer add (fld dt; fadd timer), which no other rewrite reproduced.
+    PODRACE_RESOURCE_PC *race = PodRacePc;
     if (netclient != 0) {
         PodRacePc->lap_countdown = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->start_countdown;
         PodRacePc->lap_display = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->remaining_time;
         PodRacePc->previous_lap_display = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->available_time;
         Lap = ((PODRACE_NETPACKET_READER_PC *)podrace_netpacket)->lap;
     }
-    if (PodRacePc->lap_countdown > 0.0f) {
+    if (race->lap_countdown > 0.0f) {
         old = PodRacePc->lap_countdown;
         PodRacePc->lap_display = PodRacePc->previous_lap_display;
         avg_currentspeed_mul = 0.0f;
