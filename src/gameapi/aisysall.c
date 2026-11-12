@@ -5122,7 +5122,7 @@ void __cdecl AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIO
     i32 index, first_index, second_index, first_fixed, second_fixed;
     APIOBJECT_PC *first, *second;
     NUVEC difference;
-    f32 radius, distance;
+    f32 radius, distance, overlap;
 
     for (index = 0; index < object_count; ++index) {
         first = objects[index];
@@ -5159,15 +5159,15 @@ void __cdecl AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIO
             distance = NuFsqrt(difference.x * difference.x + difference.y * difference.y + difference.z * difference.z);
             if (!(distance < radius))
                 continue;
-            radius -= distance;
+            overlap = radius - distance;
             if (first_fixed) {
-                NuVecScale(&difference, &difference, radius / distance);
+                NuVecScale(&difference, &difference, overlap / distance);
                 NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
             } else if (second_fixed) {
-                NuVecScale(&difference, &difference, radius / distance);
+                NuVecScale(&difference, &difference, overlap / distance);
                 NuVecAdd(&first->ai->movement_position, &first->ai->movement_position, &difference);
             } else {
-                NuVecScale(&difference, &difference, radius / distance);
+                NuVecScale(&difference, &difference, overlap / distance);
                 NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
