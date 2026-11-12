@@ -58,7 +58,7 @@ void __cdecl RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *) {
     vertices[1].position.z = 0.0f;
     vertices[1].colour = colour;
     for (i = 0; i < 4; i++) {
-        vertices[0].position.x = corners[(i * 2) & 7] * radius;
+        vertices[0].position.x = corners[(i & 3) * 2] * radius;
         vertices[0].position.y = corners[(i * 2 + 1) & 7] * radius;
         vertices[1].position.x = corners[(i * 2 + 2) & 7] * radius;
         vertices[1].position.y = corners[(i * 2 + 3) & 7] * radius;
