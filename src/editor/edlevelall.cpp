@@ -2183,13 +2183,16 @@ void __cdecl EdDrawMtx(NUMTX *matrix) {
 }
 
 void __cdecl EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour) {
+    // MATCH-EXCEPTION: as in EdDrawPolyTri, a copy of colour frees its
+    // parameter slot for the vertex temporaries.
+    i32 vertex_colour = colour;
     if (NewPrim == 1) {
         NuPrim3DBegin(0xe, 5, EdDrawMtl[NewMtl], NewMtx);
         NewPrim = 2;
     }
-    EdDrawSetVertexColour(colour);
+    EdDrawSetVertexColour(vertex_colour);
     EDDRAW_ADD_XYZ(a->x, a->y, a->z);
-    EdDrawSetVertexColour(colour);
+    EdDrawSetVertexColour(vertex_colour);
     EDDRAW_ADD_XYZ(b->x, b->y, b->z);
 }
 
