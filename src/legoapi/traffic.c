@@ -89,7 +89,7 @@ static void Traffic_animobj(NUFPAR_PC *parser) {
     *animation = reference_trafficanim;
     animation->special = special;
     animation->tfactor = instance->tfactor;
-    animation->animation = ((NUGSCN *)special.scene)->instance_animation_data[instance->animation_index];
+    animation->animation = ((NUGSCN *)animation->special.scene)->instance_animation_data[instance->animation_index];
     parse_trafficanim = animation;
     NuFParPushCom(parser, TrafficAnim_ConfigKeywords);
     while (NuFParGetWord(parser) != 0)
