@@ -167,7 +167,7 @@ void GizActions_ChangeObstTriggerType(GIZFLOW_PC *flow, FLOWBOX_PC *unused1, cha
             mode = 7;
         }
     }
-    if (mode == -1 || name == NULL) {
+    if (name == NULL || mode == -1) {
         return;
     }
     gizmo = GizmoFindByName(flow->gizmo_sys, obstacle_gizmotype_id, name);
