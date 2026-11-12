@@ -669,6 +669,20 @@ GIZMOBLOWUPTYPE_PC *__cdecl GizmoBlowup_FindType(char *name, WORLDINFO *world) {
     }
     return NULL;
 }
+i32 __cdecl GizmoBlowupTypeGetCount(WORLDINFO *world) {
+    if (world == NULL)
+        return -1;
+    return world->gizmo_blowup_type_count;
+}
+
+char *__cdecl GizmoBlowupTypeGetNameFromIndex(WORLDINFO *world, i32 index) {
+    char *name;
+    if (world == NULL || index == -1 || index > world->gizmo_blowup_type_count)
+        return NULL;
+    name = world->gizmo_blowup_types[index].name;
+    return NuStrLen(name) != 0 ? name : NULL;
+}
+
 void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *world, i32 index, NUVEC *position) {
     char *name;
     GIZMOBLOWUPTYPE_PC *type;
