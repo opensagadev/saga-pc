@@ -1351,12 +1351,12 @@ extern "C" f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *spinner, NUVEC *or
     f32 nearest_distance = 1000000000.0f;
     NUVEC *nearest_position = NULL;
     NUVEC *nearest_direction = NULL;
+    i32 in_front = 0;
     i32 count = GizSpinner_GetTargetPoints(spinner, positions, directions);
     if (count == 0 || origin == NULL)
         return -1.0f;
     for (i32 i = 0; i < count; ++i) {
         f32 distance = NuVecDistSqr(origin, &positions[i], NULL);
-        i32 in_front;
         if (check_direction != 0) {
             u16 angle = spinner->field_0x08c - (0x10000 / spinner->type) * i - spinner->rotation -
                         spinner->initial_rotation + 0x4000;
