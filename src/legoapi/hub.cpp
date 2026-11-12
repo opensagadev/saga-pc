@@ -1102,14 +1102,6 @@ static void MiniKitRotateZ(NUMTX *m, NUANG a) {
 }
 
 #define HUB_SIN_LUT_PC(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
-static inline HUB_AREA_INFO_PC *HubFindAreaInfoPc(i32 area) {
-    for (HUB_AREA_INFO_PC *info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-        if (info->area != NULL && area == info->area->index)
-            return info;
-    }
-    return NULL;
-}
-
 extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
     if (((HUB_WORLD_READER_PC *)world)->pieces == NULL || ((HUB_WORLD_READER_PC *)world)->minikits == NULL)
         return;
@@ -1129,7 +1121,13 @@ extern "C" void __cdecl Hub_DrawMiniKits(WORLDINFO *world) {
         HUB_MINIKIT_RUNTIME_PC *kit = &((HUB_WORLD_READER_PC *)world)->minikits[area];
         if (((HUB_WORLD_READER_PC *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1)
             continue;
-        HUB_AREA_INFO_PC *info = HubFindAreaInfoPc(area);
+        HUB_AREA_INFO_PC *info = NULL;
+        for (HUB_AREA_INFO_PC *entry = HubAreaInfoPc; entry->area_name != NULL; ++entry) {
+            if (entry->area != NULL && area == entry->area->index) {
+                info = entry;
+                break;
+            }
+        }
         f32 offset;
         if (area == areas[(selected + (count - 2)) % count])
             offset = -HubMiniKitViewerStepPc * 2.0;
