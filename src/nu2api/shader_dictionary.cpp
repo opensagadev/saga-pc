@@ -33,11 +33,15 @@ ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &pa
 ShaderCompilerDictionaryPc::~ShaderCompilerDictionaryPc() {
 }
 void ShaderCompilerDictionaryPc::SetProfile(i32 input_profile, i32 first, i32 second) {
-    first_version = first;
     profile = input_profile;
+    first_version = first;
     second_version = second;
-    if (mode == 0)
-        profile_name = profile == 2 || profile == 3 || profile == 4 ? "_centroid" : "";
+    if (mode == 0) {
+        if (profile == 2 || profile == 3 || profile == 4)
+            profile_name = "_centroid";
+        else
+            profile_name = "";
+    }
 }
 bool ShaderCompilerDictionaryPc::GetForceMode() const {
     return force_mode;
@@ -615,18 +619,17 @@ void ShaderCompilerDictionaryPc::EmitAttribute(ShaderCompilerBufferAllocatorPc *
     output->AppendText("};\r\n");
 }
 void ShaderCompilerDictionaryPc::AddASTDefinition(ShaderSourceNodePc *node) {
-    i32 count = definition_count;
     i32 i;
-    for (i = 0; i < count; ++i) {
+    for (i = 0; i < definition_count; ++i) {
         if (ShaderCompilerTypeComponentsPc[definitions[i]->type] < ShaderCompilerTypeComponentsPc[node->type]) {
-            for (i32 j = count; j > i; --j)
+            for (i32 j = definition_count; j > i; --j)
                 definitions[j] = definitions[j - 1];
             definitions[i] = node;
             ++definition_count;
             return;
         }
     }
-    definitions[count] = node;
+    definitions[definition_count] = node;
     ++definition_count;
 }
 
