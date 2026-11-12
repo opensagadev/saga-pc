@@ -1793,8 +1793,8 @@ extern "C" {
 
     f32 __cdecl Bolt_ObjTargetPosYAdjust(GAMEOBJECT *object) {
         f32 height = object->field_b0;
-        i32 random = qrand();
-        return (f32)(random * ((height + height) / BoltTargetRandomDenominator) - height);
+        f64 random = qrand();
+        return (f32)(random * ((height * 2.0f) / BoltTargetRandomDenominator) - height);
     }
 
     i32 __cdecl Bolt_HitPartMode(BOLT_PC *bolt) {
