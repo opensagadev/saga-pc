@@ -143,10 +143,6 @@ typedef struct ASTEROIDC_NETPACKET_PC {
 #define PLAYER_OBJ(i) ((GAMEOBJECT *)Player[i])
 void __cdecl LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
-typedef struct DAGOBAH_DOOR_VIEW_PC {
-    u8 unknown_00[0xf4];
-    u32 flags;
-} DAGOBAH_DOOR_VIEW_PC;
 #define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw) \
     do {                                                                                                               \
         GIZMO_PC *gizmo = LevGizmo[gizmo_index];                                                                       \
@@ -1062,23 +1058,23 @@ void DagobahB_Reset(WORLDINFO *world) {
 
 void __cdecl DagobahE_Init(WORLDINFO *world) {
     GIZAIMESSAGE *completed = CheckGizAIMessage(gizaimessagesys, "CompletedTraining", NULL);
-    DAGOBAH_DOOR_VIEW_PC *door;
+    DOOR_s *door;
     if (FreePlay == 0 && completed != NULL && completed->value == 0.0f) {
         dagobah_training = 1;
-        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_e_to_b");
+        door = (DOOR_s *)Door_FindByName(world, "door_e_to_b");
         if (door != NULL)
-            door->flags |= 0x400;
-        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_b_to_e");
+            door->flags |= 4;
+        door = (DOOR_s *)Door_FindByName(world, "door_b_to_e");
         if (door != NULL)
-            door->flags |= 0x400;
+            door->flags |= 4;
     } else {
         dagobah_training = 0;
-        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_e_to_b");
+        door = (DOOR_s *)Door_FindByName(world, "door_e_to_b");
         if (door != NULL)
-            door->flags &= ~0x400u;
-        door = (DAGOBAH_DOOR_VIEW_PC *)Door_FindByName(world, "door_b_to_e");
+            door->flags &= ~4;
+        door = (DOOR_s *)Door_FindByName(world, "door_b_to_e");
         if (door != NULL)
-            door->flags &= ~0x400u;
+            door->flags &= ~4;
     }
     SetGizAIMessage(gizaimessagesys, "DagobahTraining", (f32)dagobah_training, NULL);
     SetGizAIMessage(gizaimessagesys, NULL, 1.0f, completed);
