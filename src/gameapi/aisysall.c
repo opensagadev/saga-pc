@@ -5212,9 +5212,7 @@ void __cdecl AISysCharacterSetPath(AIPACKET_PC *packet, AIPATH_PC *path) {
     packet->current_path_node = NULL;
     if (path != NULL) {
         for (route = 0; route < path->route_count; route++) {
-            AIPATHROUTE_PC *routes = path->routes;
-            if (((routes[route].character_mask[0] & packet->route_mask_low) |
-                 (routes[route].character_mask[1] & packet->route_mask_high)) != 0)
+            if ((*(u64 *)&path->routes[route].character_mask[0] & *(u64 *)&packet->route_mask_low) != 0)
                 packet->available_routes |= (u16)((u64)1 << route);
         }
     }
