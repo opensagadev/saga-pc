@@ -1293,7 +1293,14 @@ typedef struct bomb_generator_runtime_pc_s {
     i32 interval;
     GAMEOBJECT *generated_bomb;
     u16 unknown_28;
-    u16 flags;
+    union {
+        u16 flags;
+        struct {
+            u16 active : 1;
+            u16 visible : 1;
+            u16 unknown_flags : 14;
+        };
+    };
 } BOMB_GENERATOR_RUNTIME_PC;
 typedef struct bomb_generator_system_runtime_pc_s {
     BOMB_GENERATOR_RUNTIME_PC *items;
@@ -1328,20 +1335,19 @@ static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC 
     i32 index;
     i32 shared_bomb;
     for (index = 0; index < system->count; ++index, ++generator) {
-        GAMEOBJECT *bomb;
         generator->flags |= 3;
         if (generator->anim_set != NULL)
             GameAnimSet_EvaluateState(generator->anim_set);
-        bomb = generator->generated_bomb;
-        if (bomb != NULL && (system->flags & 2) != 0 && (bomb->flags_1fc_word & 1) != 0 &&
-            (bomb->flags_1fc_word & 0x1000) != 0)
-            KillGameObject(bomb, 4, 0);
+        if (generator->generated_bomb != NULL && (system->flags & 2) != 0 &&
+            (generator->generated_bomb->flags_1fc_word & 1) != 0 &&
+            (generator->generated_bomb->flags_1fc_word & 0x1000) != 0)
+            KillGameObject(generator->generated_bomb, 4, 0);
         generator->generated_bomb = NULL;
         if (progress != NULL && index < 96) {
             i32 word = index / 32;
             u32 mask = 1u << (index & 31);
-            generator->flags = (u16)((generator->flags & ~2u) | (((progress->visible[word] & mask) != 0) << 1));
-            generator->flags = (u16)((generator->flags & ~1u) | ((progress->active[word] & mask) != 0));
+            generator->visible = (progress->visible[word] & mask) != 0;
+            generator->active = (progress->active[word] & mask) != 0;
         }
     }
     shared_bomb = BombGenerator_PlayerBomb[0] != NULL && BombGenerator_PlayerBomb[0] == BombGenerator_PlayerBomb[1];
@@ -1370,7 +1376,7 @@ static void __cdecl BombGeneratorsApplyResetPc(BOMB_GENERATOR_SYSTEM_RUNTIME_PC 
             position.x = 0.0f;
             position.y = 0.0f;
             position.z = -2.0f;
-            NuVecRotateY(&position, &position, player->field_0x276);
+            NuVecRotateY(&position, &position, ((GAMEOBJECT *)Player[index])->field_0x276);
             NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[index])->collision_position);
             bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, (char *)CharacterFixupNamePc00752dfc, NULL, NULL,
                                       0, NULL, NULL, 0, 0);
