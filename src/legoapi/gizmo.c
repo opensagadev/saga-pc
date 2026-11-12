@@ -1086,11 +1086,13 @@ void __cdecl MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR 
 }
 static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
 void __cdecl MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
-    i32 direction_counts[6] = {0};
+    i32 direction_counts[6];
     i32 index, direction;
     char name[64];
     (void)end;
     if (minikit->scene != NULL) {
+        for (direction = 0; direction < 6; ++direction)
+            direction_counts[direction] = 0;
         buffer->addr = (buffer->addr + 3) & ~3u;
         minikit->pieces = (MINIKIT_PIECE_PC *)buffer->void_ptr;
         minikit->piece_count = 0;
