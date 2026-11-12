@@ -447,16 +447,16 @@ extern "C" i32 Batarang_InitRicochet(BATARANG_NATIVE_PC *batarang, NUVEC *normal
     return 1;
 }
 
-static void Batarang_Ricochet(BATARANG_NATIVE_PC *batarang) {
+void Batarang_Ricochet(BATARANG_NATIVE_PC *batarang) {
     if (batarang == NULL || (batarang->ricochet_state.flags & 1) == 0) {
         return;
     }
     if (batarang->ricochet_state.timer < 0.2f) {
         batarang->ricochet_state.timer += FRAMETIME;
     } else {
-        batarang->ricochet_state.timer = 0.0f;
         batarang->ricochet_state.flags &= ~1u;
         batarang->ricochet_normal = v000;
+        batarang->ricochet_state.timer = 0.0f;
     }
 }
 
