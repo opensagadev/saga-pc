@@ -58,7 +58,7 @@ extern "C" POST_SHADER_PROGRAM_PC *__cdecl PostShaderProgramCreatePc(i32 mode, c
     POST_PIXEL_SHADER_CACHE_ENTRY_PC pixel = {NULL, pixel_tokens};
     std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>::iterator vertex_it = PostVertexShaderCachePc.begin();
     for (; vertex_it != PostVertexShaderCachePc.end(); ++vertex_it) {
-        if (vertex_it->tokens == vertex_tokens) {
+        if (vertex_it->tokens == vertex.tokens) {
             vertex = *vertex_it;
             break;
         }
@@ -69,7 +69,7 @@ extern "C" POST_SHADER_PROGRAM_PC *__cdecl PostShaderProgramCreatePc(i32 mode, c
     }
     std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC>::iterator pixel_it = PostPixelShaderCachePc.begin();
     for (; pixel_it != PostPixelShaderCachePc.end(); ++pixel_it) {
-        if (pixel_it->tokens == pixel_tokens) {
+        if (pixel_it->tokens == pixel.tokens) {
             pixel = *pixel_it;
             break;
         }
