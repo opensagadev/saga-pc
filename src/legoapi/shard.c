@@ -449,6 +449,7 @@ void LoadShelfSplines(void) {
 
 void InitExtraList(void) {
     i32 i;
+    i32 word;
     SHOP_SAVE_VIEW_PC *save = (SHOP_SAVE_VIEW_PC *)&Game;
     for (i = 0; i < 44; ++i) {
         NuStrCpy(ExtraItems[i].special_name, ExtrasCheatsPc[i].extra_name);
@@ -456,9 +457,12 @@ void InitExtraList(void) {
         ExtraItems[i].item_id = (i16)i;
         ExtraItems[i].type = 2;
         ExtraItems[i].unlocked = 0;
-        if (((u64)save->extra_unlocked_bits[i / 32] & ((u64)1 << (i % 32))) != 0) {
+        // MATCH-EXCEPTION: retail keeps the word's byte offset in a register (add r, r twice)
+        // instead of scaling the index, which only a byte-offset form reproduces.
+        word = i / 32 * 4;
+        if (((u64) * (u32 *)((u8 *)save->extra_unlocked_bits + word) & ((u64)1 << (i % 32))) != 0) {
             ExtraItems[i].unlocked = 1;
-            save->extra_purchased_bits[i / 32] |= 1u << (i & 31);
+            *(u32 *)((u8 *)save->extra_purchased_bits + word) |= 1u << (i & 31);
         }
         ExtraItems[i].price = ExtrasCheatsPc[i].extra_price;
     }
