@@ -315,13 +315,11 @@ AREA_SUPERCOUNTER_PC *__cdecl SuperCounter_FindFromNameAndLevel(char *name, WORL
 }
 
 void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world) {
-    AREA_SUPERCOUNTER_PC *super_counters;
     i32 index;
 
-    if (world->area != NULL && world->area->super_counters != NULL && world->area->super_counter_count != 0) {
-        super_counters = world->area->super_counters;
+    if (world->area != NULL && world->area->super_counters != NULL) {
         for (index = 0; index < world->area->super_counter_count; ++index) {
-            super_counters[index].processed_flags &= (u8)~2;
+            world->area->super_counters[index].processed_flags &= (u8)~2;
         }
     }
 }
