@@ -2683,8 +2683,9 @@ extern "C" {
                                             NUANIM_TIME2_PC *time, NUHGOBJ_EVAL_JOINT_PC *joint, NUVEC *scale,
                                             NUVEC *parent_scale, NUMTX *matrix, NUHGOBJ_JOINT_OVERRIDE_PC *override,
                                             NUVEC *root_translation, NUVEC *locator_translation) {
-        NUVEC rotation, translation, reciprocal, negative_pivot;
+        NUVEC translation;
         NUANGVEC angles;
+        NUVEC negative_pivot;
         u8 override_flags;
         if (root_translation != NULL)
             root_translation->x = root_translation->y = root_translation->z = 0.0f;
@@ -2695,6 +2696,7 @@ extern "C" {
         if ((node_flags & 1) == 0 && (override_flags & 1) == 0) {
             NuMtxSetIdentity(matrix);
         } else {
+            NUVEC rotation;
             if ((node_flags & 1) != 0) {
                 PC_LEGACY_CURVE_STORE(rotation.x, 3);
                 PC_LEGACY_CURVE_STORE(rotation.y, 4);
@@ -2747,10 +2749,13 @@ extern "C" {
             scale->z = (f32)((f64)scale->z * parent_scale->z);
         }
         if ((node_flags & 0x10) != 0) {
+            NUVEC reciprocal;
             /* Equality detects either signed zero; unordered values proceed to
              * reciprocal just as original x87 parity tests, no NaN safety guard. */
             if (parent_scale->x == 0.0f || parent_scale->y == 0.0f || parent_scale->z == 0.0f) {
-                reciprocal.x = reciprocal.y = reciprocal.z = 0.0f;
+                reciprocal.x = 0.0f;
+                reciprocal.y = 0.0f;
+                reciprocal.z = 0.0f;
             } else {
                 reciprocal.x = (f32)(1.0 / parent_scale->x);
                 reciprocal.y = (f32)(1.0 / parent_scale->y);
