@@ -189,10 +189,10 @@ static void edgracbChangeInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u
                        ((char *)(edgra_filter ? "Change Instance (Filtered)" : "Change Instance")));
     if (!edgra_changeinstance_menu || !edbits_base_scene)
         return;
+    name = NULL;
     selected_found = 0;
     added = 1;
     count = NuSpecialGetNumSpecials(edbits_base_scene);
-    name = NULL;
     for (i = 0; i < count; ++i) {
         i32 selected;
         i32 keep = 0;
