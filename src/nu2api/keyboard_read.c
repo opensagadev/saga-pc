@@ -437,13 +437,17 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
 }
 
 void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
-    NUVEC movement = {0.0f, 0.0f, 0.0f};
+    NUVEC movement;
     f32 frame_scale;
     f32 move_speed;
     f32 zoom_speed;
-    u8 pad_yaw_axis;
-    u8 pad_pitch_axis;
+    i32 pad_yaw_axis;
+    i32 pad_pitch_axis;
     NUVEC snap_delta;
+
+    movement.z = 0.0f;
+    movement.y = 0.0f;
+    movement.x = 0.0f;
     if (!pad->is_valid)
         return;
 
@@ -459,26 +463,24 @@ void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) 
     pad_yaw_axis = pad->analog_right_x;
     pad_pitch_axis = pad->analog_right_y;
     if (camera->freedoms & EDCAM_FREEDOM_DISTANCE) {
-        f32 zoom_in = (f32)pad->analog_r1 * camera->distance_speed * zoom_speed;
-        f32 zoom_out;
-        if (zoom_in > 1.0f)
-            zoom_in = 1.0f;
-        camera->distance += zoom_in * frame_scale;
-        zoom_out = (f32)pad->analog_r2 * camera->distance_speed * zoom_speed;
-        if (zoom_out > 1.0f)
-            zoom_out = 1.0f;
-        camera->distance -= zoom_out * frame_scale;
+        f32 zoom = (f32)pad->analog_r1 * camera->distance_speed * zoom_speed;
+        if (zoom > 1.0f)
+            zoom = 1.0f;
+        camera->distance += zoom * frame_scale;
+        zoom = (f32)pad->analog_r2 * camera->distance_speed * zoom_speed;
+        if (zoom > 1.0f)
+            zoom = 1.0f;
+        camera->distance -= zoom * frame_scale;
         camera->distance = MIN(-camera->minimum_distance, camera->distance);
     }
     if (camera->freedoms & EDCAM_FREEDOM_PITCH) {
-        i32 pitch_input = NuPs2ApplyDeadZone(pad_pitch_axis, 32);
-        camera->pitch += (i32)((f32)(pitch_input * camera->pad_pitch_speed) * delta_time * -64.0);
+        camera->pitch +=
+            (i32)((f32)(NuPs2ApplyDeadZone(pad_pitch_axis, 32) * camera->pad_pitch_speed) * delta_time * -64.0);
         camera->pitch = MIN(0x4000, camera->pitch);
         camera->pitch = MAX(-0x4000, camera->pitch);
     }
     if (camera->freedoms & EDCAM_FREEDOM_YAW) {
-        i32 yaw_input = NuPs2ApplyDeadZone(pad_yaw_axis, 32);
-        camera->yaw += (i32)((f32)(yaw_input * camera->pad_yaw_speed) * delta_time * -64.0);
+        camera->yaw += (i32)((f32)(NuPs2ApplyDeadZone(pad_yaw_axis, 32) * camera->pad_yaw_speed) * delta_time * -64.0);
     }
     if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y) {
         movement.y += (f32)pad->analog_l1 * camera->position_speed.y * move_speed * frame_scale * 0.5;
