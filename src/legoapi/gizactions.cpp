@@ -129,8 +129,8 @@ extern "C" const char GizObstacleActionStayShutPC[9];
 extern "C" const char GizmoSnapOptionNamePc[5];
 
 extern "C" void __cdecl GizActions_PlayObstacle(GIZFLOW_PC *flow, FLOWBOX_PC *box, char **params, i32 count) {
-    char *name = NULL;
     i32 forwards = 1, snap = 0, stay_open = 0, stay_shut = 0, i;
+    char *name = NULL;
     GIZMO_PC *gizmo;
     GIZOBSTACLE *obstacle;
     u32 flags;
