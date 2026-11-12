@@ -573,8 +573,8 @@ extern "C" void __cdecl Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
     GRAPPLE_MOTION_PC *grapple;
     if (gizmo != NULL) {
         grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
-        grapple->flags ^= (u8)((active != 0) ^ grapple->flags) & 1;
-        if (active != 0)
+        grapple->active = active != 0;
+        if (grapple->active)
             grapple->activation_progress = 1.0f;
     }
 }
@@ -583,7 +583,7 @@ extern "C" void __cdecl Grapple_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     GRAPPLE_MOTION_PC *grapple;
     if (gizmo != NULL) {
         grapple = (GRAPPLE_MOTION_PC *)gizmo->object;
-        grapple->flags ^= (u8)(((visible != 0) << 1) ^ grapple->flags) & 2;
+        grapple->visible = visible != 0;
     }
 }
 extern "C" {
