@@ -238,8 +238,8 @@ i32 __cdecl Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, A
                 return 1;
             }
             owner->pad->buttons_held |= GAMEPAD_SPECIAL;
-            owner->ai_packet.movement_stopping_distance = 0;
             owner->ai_packet.movement_destination = owner->position;
+            owner->ai_packet.movement_stopping_distance = 0;
             return 1;
         }
         if (owner->flags_e24 & 0x80) {
@@ -249,8 +249,8 @@ i32 __cdecl Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET_PC *packet, A
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             return 1;
         }
-        owner->ai_packet.movement_stopping_distance = 0;
         owner->ai_packet.movement_destination = owner->position;
+        owner->ai_packet.movement_stopping_distance = 0;
         return 1;
     }
     ClearSpecialMove(owner);
@@ -453,7 +453,8 @@ check:
 }
 i32 __cdecl IndyGrappleHelperOccupiedPc(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX_PC *connection,
                                         u8 direction, u8 type) {
-    return Grapple_Occupied(helper->target, owner, owner->ai_packet.path_info.connection) != NULL;
+    GRAPPLE_DYNAMIC_PC *grapple = helper->target;
+    return Grapple_Occupied(grapple, owner, owner->ai_packet.path_info.connection) != NULL;
 }
 i32 __cdecl Indy_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks) {
     GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
