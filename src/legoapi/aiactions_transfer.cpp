@@ -220,26 +220,24 @@ typedef struct bulk_ai_full_object_pc_s {
     u8 trailing[0x2b8 - sizeof(APIOBJECT_PC)];
 } BULK_AI_FULL_OBJECT_PC;
 STATIC_ASSERT(sizeof(BULK_AI_FULL_OBJECT_PC) == 0x2b8);
-typedef struct bulk_ai_full_packet_pc_s {
-    AIPACKET_PC packet;
-    u8 trailing[0x210 - sizeof(AIPACKET_PC)];
-} BULK_AI_FULL_PACKET_PC;
-STATIC_ASSERT(sizeof(BULK_AI_FULL_PACKET_PC) == 0x210);
+STATIC_ASSERT(sizeof(AIPACKET_PC) <= 0x210);
 extern "C" {
     void __cdecl AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *path_info, NUVEC *path_position,
                                   AIPATH_PC *, i32) {
         if (system != NULL && position != NULL && path_info != NULL) {
-            BULK_AI_FULL_PACKET_PC packet;
+            /* The packet is a raw byte buffer (retail places it above the object as a /GS buffer). */
+            u8 packet_data[0x210];
+            AIPACKET_PC *packet = (AIPACKET_PC *)packet_data;
             BULK_AI_FULL_OBJECT_PC object;
             memset(&object, 0, sizeof(object));
-            memset(&packet, 0, sizeof(packet));
-            object.object.ai = &packet.packet;
+            memset(packet_data, 0, sizeof(packet_data));
+            object.object.ai = packet;
             object.object.position = *position;
-            packet.packet.terrain_origin = *position;
-            AISysGetCharacterPathPos(system, &object.object, &packet.packet, 0xff, 1);
-            *path_info = packet.packet.path_info;
+            packet->terrain_origin = *position;
+            AISysGetCharacterPathPos(system, &object.object, packet, 0xff, 1);
+            *path_info = packet->path_info;
             if (path_position != NULL)
-                *path_position = packet.packet.last_path_position;
+                *path_position = packet->last_path_position;
         }
     }
 }
