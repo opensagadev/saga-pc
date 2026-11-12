@@ -302,8 +302,9 @@ void __cdecl Animate_DROIDEKA(GAMEOBJECT *object) {
         if (UseFallAnim(object) || (object->character_context == -1 && object->field_281 == 0))
             object->anim_packet.requested_animation = 5;
         else if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
-            PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
-            if (((f64)character->tiptoe_speed + (f64)character->walk_speed) * 0.5 >= object->pad->input_magnitude)
+            if (object->pad->input_magnitude <= ((f64)object->character_data->game_character->tiptoe_speed +
+                                                 object->character_data->game_character->walk_speed) *
+                                                    0.5)
                 object->anim_packet.requested_animation = 4;
             else
                 object->anim_packet.requested_animation = 0;
@@ -390,8 +391,9 @@ void __cdecl Animate_SUPERBATTLEDROID(GAMEOBJECT *object) {
             object->anim_packet.requested_animation = 5;
         else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
-                PLAYERCHARACTERCONFIG_PC *character = object->character_data->game_character;
-                if (((f64)character->walk_speed + (f64)character->run_speed) * 0.5 >= object->pad->input_magnitude) {
+                if (object->pad->input_magnitude <= ((f64)object->character_data->game_character->walk_speed +
+                                                     object->character_data->game_character->run_speed) *
+                                                        0.5) {
                     if ((object->flags_e20 & 0x10000) != 0 || object->weapon_scale > 0.0f)
                         object->anim_packet.requested_animation = 64;
                     else
