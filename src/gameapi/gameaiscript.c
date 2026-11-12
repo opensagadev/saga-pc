@@ -7226,10 +7226,10 @@ i32 __cdecl Action_CameraShake(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIP
     (void)sys;
     (void)packet;
     (void)param_6;
+    amount = 1.0f;
+    duration = 0.0f;
+    speed = 1.0f;
     if (param_5 != 0) {
-        amount = 1.0f;
-        duration = 0.0f;
-        speed = 1.0f;
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AITransferLiteral757cd8);
             if (value != NULL) {
@@ -7991,24 +7991,25 @@ i32 __cdecl Action_AlwaysTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *proc
     i32 enabled;
     char *value;
     GIZMO_PC *gizmo;
-    if (first_time == 0 || param_count == 0) {
-        return 1;
-    }
     obstacle = NULL;
     enabled = 1;
-    for (index = 0; index < param_count; ++index) {
-        value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
-        if (value != NULL) {
-            gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, value + 5);
-            if (gizmo != NULL) {
-                obstacle = (AIOBSTACLE_PARTIAL_PC *)(gizmo->object);
+    if (first_time != 0) {
+        if (param_count != 0) {
+            for (index = 0; index < param_count; ++index) {
+                value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+                if (value != NULL) {
+                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, value + 5);
+                    if (gizmo != NULL) {
+                        obstacle = (AIOBSTACLE_PARTIAL_PC *)(gizmo->object);
+                    }
+                } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                    enabled = 0;
+                }
             }
-        } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-            enabled = 0;
+            if (obstacle != NULL) {
+                obstacle->runtime_flags = (u32)((obstacle->runtime_flags & ~4u) | ((enabled & 1) << 2));
+            }
         }
-    }
-    if (obstacle != NULL) {
-        obstacle->runtime_flags = (u32)((obstacle->runtime_flags & ~4u) | ((enabled & 1) << 2));
     }
     return 1;
 }
@@ -8020,24 +8021,25 @@ i32 __cdecl Action_CanTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
     i32 blocked;
     char *value;
     GIZMO_PC *gizmo;
-    if (first_time == 0 || param_count == 0) {
-        return 1;
-    }
     obstacle = NULL;
     blocked = 0;
-    for (index = 0; index < param_count; ++index) {
-        value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
-        if (value != NULL) {
-            gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, value + 5);
-            if (gizmo != NULL) {
-                obstacle = (AIOBSTACLE_PARTIAL_PC *)(gizmo->object);
+    if (first_time != 0) {
+        if (param_count != 0) {
+            for (index = 0; index < param_count; ++index) {
+                value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
+                if (value != NULL) {
+                    gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, obstacle_gizmotype_id, value + 5);
+                    if (gizmo != NULL) {
+                        obstacle = (AIOBSTACLE_PARTIAL_PC *)(gizmo->object);
+                    }
+                } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+                    blocked = 1;
+                }
             }
-        } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-            blocked = 1;
+            if (obstacle != NULL) {
+                obstacle->runtime_flags = (u32)((obstacle->runtime_flags & ~8u) | ((blocked & 1) << 3));
+            }
         }
-    }
-    if (obstacle != NULL) {
-        obstacle->runtime_flags = (u32)((obstacle->runtime_flags & ~8u) | ((blocked & 1) << 3));
     }
     return 1;
 }
