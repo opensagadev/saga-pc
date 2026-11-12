@@ -179,18 +179,20 @@ void __cdecl CharShadows_Draw(void) {
             object->model_draw_result == 0 || object->shadow_joint_mask == 0 || (object->flags_ef0 & 0x4000000) != 0 ||
             (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0)
             continue;
-        level_alpha = object->character_data->game_character->blob_shadow_alpha;
-        if (level_alpha == 255)
+        if (object->character_data->game_character->blob_shadow_alpha < 255)
+            level_alpha = object->character_data->game_character->blob_shadow_alpha;
+        else
             level_alpha = WORLD->current_level->blob_shadow_alpha;
         if (level_alpha <= 0)
             continue;
         radius = object->shadow_radius;
         if (!(radius > 0.0f))
             continue;
-        alpha = (f32)((f64)level_alpha * (f64)object->shadow_opacity);
+        alpha = (f32)level_alpha * object->shadow_opacity;
         radius = (f32)((f64)radius * (f64)object->origin_scale);
         radius = (f32)((f64)DropInOutScale(object) * (f64)radius);
         packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
+        slot = packet->shadows;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
             if (count >= 5)
@@ -198,16 +200,15 @@ void __cdecl CharShadows_Draw(void) {
             if ((object->shadow_joint_mask & (1u << locator)) == 0 ||
                 object->character_model->points_of_interest[locator] == NULL)
                 continue;
-            slot = &packet->shadows[count];
+            if ((f64)slot->position.y != 2000000.0 && slot->opacity > 0.0f &&
+                (f64)slot->position.y <= (f64)object->locator_matrices[locator].m31 + (f64)0.025f) {
+                position.x = slot->position.x;
+                position.y = (f32)((f64)slot->position.y + (f64)0.005f);
+                position.z = slot->position.z;
+                NuRndrAddShadow(&position, radius, (i32)(slot->opacity * alpha), slot->x_rotation, 0, slot->z_rotation);
+            }
             ++count;
-            if ((f64)slot->position.y == 2000000.0 || !(slot->opacity > 0.0f) ||
-                !((f64)object->locator_matrices[locator].m31 + (f64)0.025f >= (f64)slot->position.y))
-                continue;
-            position.x = slot->position.x;
-            position.y = (f32)((f64)slot->position.y + (f64)0.005f);
-            position.z = slot->position.z;
-            NuRndrAddShadow(&position, radius, (i32)((f64)slot->opacity * (f64)alpha), slot->x_rotation, 0,
-                            slot->z_rotation);
+            ++slot;
         }
     }
 }
