@@ -12688,10 +12688,11 @@ extern "C" {
     void NuHtmlVBarGraph(char *title, i32 width, i32 height, i32 *values, i32 count, i32 maximum, char **labels,
                          u32 *colours, i32 colour_count) {
         char text[256];
-        i32 bar_width = (i32)((f32)(width - 50) / (f32)count);
+        f32 column_width = (f32)(width - 50) / (f32)count;
+        i32 bar_width = (i32)column_width;
         f32 scale;
-        i32 quarter;
         i32 tick;
+        i32 label;
         i32 colour_index;
         i32 index;
         sprintf(text,
@@ -12707,13 +12708,14 @@ extern "C" {
         sprintf(text, "<TABLE height=\"100%%%%\" width=%d cellSpacing=1 cellPadding=0 border=0 Align=left>\r\n", 50);
         NuHtmlWrite(text);
         scale = 80.0f / (f32)maximum;
-        quarter = maximum / 4;
+        label = maximum;
         for (tick = 0; tick < 4; ++tick) {
             sprintf(text,
                     "<TR><TD valign=top align=right Height=\"%d%%%%\" bgColor=gray><DIV style=\"FONT-SIZE: "
                     "10pt\">%d</TD></TR>\r\n",
-                    20, maximum - quarter * tick);
+                    20, label);
             NuHtmlWrite(text);
+            label -= maximum / 4;
         }
         sprintf(text,
                 "<TR><TD valign=top align=right Height=\"%d%%%%\" bgColor=gray><DIV style=\"FONT-SIZE: "
