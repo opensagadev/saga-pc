@@ -7255,9 +7255,9 @@ i32 Action_ResetGameCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
 
 i32 Action_PlayCutScene(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *unused2, char **params,
                         i32 param_count, i32 first_time, float unused6) {
+    char *name = NULL;
     if (first_time != 0) {
         i32 i;
-        char *name = NULL;
         for (i = 0; i < param_count; ++i) {
             char *value = NuStrIStr(params[i], "name");
             if (value != NULL) {
