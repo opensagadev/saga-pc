@@ -93,10 +93,10 @@ extern "C" {
         return result;
     }
     static i32 MiniTrooperCheckFormationPc(minitrooperteam_s *team, minisnowtrooper_s *trooper) {
-        minisnowtrooper_s *slot = &team->troopers[trooper->formation_index];
-        f32 dx = trooper->shot_position.x - (team->origin_x + slot->formation_x);
-        f32 dz = trooper->shot_position.z - (team->origin_z + slot->formation_z);
-        if ((f64)(dx * dx + dz * dz) <= (f64)(0.2f * 0.2f)) {
+        NUVEC delta;
+        delta.x = trooper->shot_position.x - (team->origin_x + team->troopers[trooper->formation_index].formation_x);
+        delta.z = trooper->shot_position.z - (team->origin_z + team->troopers[trooper->formation_index].formation_z);
+        if ((f64)(delta.x * delta.x + delta.z * delta.z) <= (f64)(0.2f * 0.2f)) {
             trooper->state_flags |= 0x40;
             return 1;
         }
