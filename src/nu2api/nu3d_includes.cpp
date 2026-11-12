@@ -14928,8 +14928,11 @@ extern "C" {
         NUMTX matrix;
 
         object = hierarchy;
-        if (CutSceneBoundingBoxTrackRoot == 0)
-            return NuCameraClipTestExtents(&object->bounds_min, &object->bounds_max, world, 0.0f, 0);
+        if (CutSceneBoundingBoxTrackRoot == 0) {
+            min = object->bounds_min;
+            half = object->bounds_max;
+            return NuCameraClipTestExtents(&min, &half, world, 0.0f, 0);
+        }
 
         NuVecSub(&half, &object->bounds_max, &object->bounds_min);
         NuVecScale(&half, &half, 0.5f);
