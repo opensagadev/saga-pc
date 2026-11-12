@@ -536,7 +536,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
     f32 zoom_scale = camera->auto_zoom_dist_scale != 0.0f
                          ? EdcamFabsPc(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base
                          : 1.0f;
-    NUVEC movement = {0.0f, 0.0f, 0.0f};
+    NUVEC movement;
     f32 mouse_x;
     f32 mouse_y;
     f32 mouse_z;
@@ -544,6 +544,9 @@ void do_maya_mouse_camera(edcam_s *camera) {
     f32 minimum;
     NUMTX rotation;
 
+    movement.z = 0.0f;
+    movement.y = 0.0f;
+    movement.x = 0.0f;
     if (NuKeyboard(0x38) == 0)
         return;
     mouse_x = NuMouseReadXVel() * camera->mouse_pitch_speed;
