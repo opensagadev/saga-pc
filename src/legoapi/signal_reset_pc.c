@@ -113,23 +113,24 @@ void *__cdecl Signals_ReserveBufferSpace(WORLDINFO *world) {
 i32 __cdecl Signals_Load(WORLDINFO *world, void *unused) {
     i32 version;
     i32 index;
-    if (world->signal_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->signal_count = EdFileReadInt();
-    for (index = 0; index < world->signal_count; ++index) {
-        EdFileRead(world->signals[index].name, 16);
-        EdFileReadNuVec(&world->signals[index].position);
-        world->signals[index].character_letter = EdFileReadChar();
-        if (version >= 2) {
-            world->signals[index].suit_letter = EdFileReadChar();
-            world->signals[index].yaw = EdFileReadShort();
-        } else {
-            world->signals[index].suit_letter = 'b';
-            world->signals[index].yaw = 0;
+    if (world->signal_count == 0) {
+        version = EdFileReadInt();
+        world->signal_count = EdFileReadInt();
+        for (index = 0; index < world->signal_count; ++index) {
+            EdFileRead(world->signals[index].name, 16);
+            EdFileReadNuVec(&world->signals[index].position);
+            world->signals[index].character_letter = EdFileReadChar();
+            if (version >= 2) {
+                world->signals[index].suit_letter = EdFileReadChar();
+                world->signals[index].yaw = EdFileReadShort();
+            } else {
+                world->signals[index].suit_letter = 'b';
+                world->signals[index].yaw = 0;
+            }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 void *__cdecl Signals_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
