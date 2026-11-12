@@ -812,15 +812,22 @@ i32 GetRandomCoinType() {
 
 i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
     LOSE_COINS_PACKET_PC *packet;
-    u32 lost = 0;
+    u32 lost;
     i32 adjustment;
     if (Player_HasInvincibility(object) || (object->character_data->game_character->flags_090 & 0x8000) ||
         object->coin_packet == NULL)
         return 0;
-    if (cause == 1)
-        lost = BonusArea != 0 ? 25000 : 2000;
-    else if (cause == 2)
-        lost = BonusArea != 0 ? 12500 : 1000;
+    switch (cause) {
+        case 1:
+            lost = BonusArea != 0 ? 25000 : 2000;
+            break;
+        case 2:
+            lost = BonusArea != 0 ? 12500 : 1000;
+            break;
+        default:
+            lost = 0;
+            break;
+    }
     if (Cheat_IsOn(0x2c)) {
         adjustment = adtab[adaptivedifficulty.level][0];
         if (adjustment == 1)
@@ -835,7 +842,7 @@ i32 __cdecl LoseCoins(GAMEOBJECT *object, i32 cause) {
     } else if (lost > 0)
         packet->coins -= lost;
     if (Cheats_CheckFlags(0x7c) || DoubleScoreTime > 0.0f)
-        return 0;
+        lost = 0;
     return (i32)lost;
 }
 
