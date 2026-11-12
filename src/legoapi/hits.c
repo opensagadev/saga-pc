@@ -780,8 +780,9 @@ static i32 Collide2Objects(APIOBJECT_PC *first, APIOBJECT_PC *second) {
     return collision_result;
 }
 void __cdecl CollideGameObjects(WORLDINFO *world) {
-    u32 narrow_speeder_mask = 0, flattened_mask = 0, player_collision_mask = 0, no_vertical_movement_mask = 0,
-        vertical_movement_mask = 0, player_slot_mask = 0;
+    i32 object_count = HIGHGAMEOBJECT, index, player_index, collision_count = 0;
+    u32 player_slot_mask = 0, vertical_movement_mask = 0, no_vertical_movement_mask = 0, player_collision_mask = 0,
+        flattened_mask = 0, narrow_speeder_mask = 0;
     GAMEOBJECT *object, *selected_player;
     APIOBJECT_PC *collision_objects[64], **object_cursor;
     NUVEC collision_minimums[64], collision_maximums[64], *minimum_cursor, *maximum_cursor, direction;
@@ -789,7 +790,6 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
     COLLISION_EXCLUSION_VIEW_PC *exclusion;
     u64 bit;
     u32 flags, is_player;
-    i32 object_count = HIGHGAMEOBJECT, index, player_index, collision_count = 0;
     i8 context;
     if (world->area_index != -1 && (world->area->flags & 0x80))
         return;
@@ -827,16 +827,16 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
             continue;
         if (context == 0x26 && object->special_move_pc != -1 && (object->context_variant_flags & 0x200))
             continue;
-        if (context == 0x1f && object->field_7b3 == 1)
+        if (object->character_context == 0x1f && object->field_7b3 == 1)
             continue;
         data = object->character_data->game_character;
         if ((data->flags_090 & 0x8000) || (object->flags_e20 & 0x20) ||
             (context == 0x47 && (((COLLISION_TECHNO_VIEW_PC *)object->techno)->flags & 1)))
             continue;
-        ++collision_count;
         *minimum_cursor++ = object->collision_min;
         *maximum_cursor++ = object->collision_max;
         *object_cursor++ = (APIOBJECT_PC *)object;
+        ++collision_count;
         exclusion = (COLLISION_EXCLUSION_VIEW_PC *)object;
         exclusion->exclusion_mask = 0;
         data = object->character_data->game_character;
@@ -846,8 +846,8 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
             exclusion->exclusion_mask |= player_collision_mask;
             for (player_index = 0; player_index < 8; ++player_index) {
                 selected_player = (GAMEOBJECT *)Player[player_index];
-                if (selected_player == NULL || (selected_player->flags_1fc_word & 0x1001) != 0x1001 ||
-                    selected_player == object ||
+                if (selected_player == NULL || !(selected_player->flags_1fc_word & 1) ||
+                    !(selected_player->flags_1fc_word & 0x1000) || object == selected_player ||
                     !(((COLLISION_PLATFORM_PUSH_VIEW_PC *)selected_player)->platform_push_timer > 0) ||
                     selected_player->supporting_platform_id != object->level_object_index ||
                     (selected_player->terrain_platform_id == object->level_object_index &&
@@ -868,14 +868,13 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
             exclusion->exclusion_mask |= narrow_speeder_mask;
         if (VehicleArea != 0 && WORLD->current_level != CollisionVehicleExcludedLevelPc &&
             WORLD->current_level != DOGFIGHTA_LDATA) {
-            data = object->character_data->game_character;
             if (object->field_280 != 0xff) {
-                if (data->field_028 != 0)
+                if (object->character_data->game_character->field_028 != 0)
                     exclusion->exclusion_mask |= vertical_movement_mask;
                 else
                     exclusion->exclusion_mask |= (~player_slot_mask) & vertical_movement_mask;
             } else {
-                if (data->field_028 != 0)
+                if (object->character_data->game_character->field_028 != 0)
                     exclusion->exclusion_mask |=
                         (vertical_movement_mask & player_slot_mask) | no_vertical_movement_mask;
                 else
