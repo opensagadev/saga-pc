@@ -265,7 +265,7 @@ extern "C" {
 extern "C" void *__cdecl GizBuildIt_Find(WORLDINFO *world, char *name) {
     GIZBUILDIT_WORLD_READER_PC *w = (GIZBUILDIT_WORLD_READER_PC *)world;
     GIZBUILDIT_SYSTEM_READER_PC *system = w->system;
-    if (system != NULL && system->count != 0) {
+    if (system != NULL) {
         GIZBUILDIT_RECORD_READER_PC *buildit = system->buildits;
         for (i32 i = 0; i < w->system->count; ++i, ++buildit) {
             if (NuStrICmp(buildit->name, name) == 0)
