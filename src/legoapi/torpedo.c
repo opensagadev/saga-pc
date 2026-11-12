@@ -719,7 +719,7 @@ void __cdecl Torpedo_UpdateBolt(BOLT_PC *bolt) {
     }
 }
 
-static __declspec(noinline) void TorpedoHitDispatchPc(void *target, i32 player, NUVEC *position, u8 target_type) {
+static __declspec(noinline) void TorpedoHitDispatchPc(void *target, NUVEC *position, i32 player, u8 target_type) {
     if (target == NULL)
         return;
     switch (target_type) {
@@ -753,7 +753,7 @@ void __cdecl TorpedoHitTarget(BOLT_PC *bolt) {
             radius_value = (f64)radius;
             if (radius_value * radius_value > NuVecMagSqr(&delta)) {
                 player = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1;
-                TorpedoHitDispatchPc(((GAMEOBJECT *)bolt->owner)->torpedo->target, player, &bolt->position,
+                TorpedoHitDispatchPc(((GAMEOBJECT *)bolt->owner)->torpedo->target, &bolt->position, player,
                                      ((GAMEOBJECT *)bolt->owner)->torpedo->target_type);
             }
         }
