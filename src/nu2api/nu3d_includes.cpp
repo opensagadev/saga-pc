@@ -10750,12 +10750,11 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE_PC *depth)
         f32 fov, aspect, near_z, far_z;
         NuMtxGetPerspectiveD3D(&PcGeometryProjectionMatrixPc, &fov, &aspect, &near_z, &far_z);
         f32 projection_scale = far_z / (far_z - near_z);
-        f32 strength_near = dof_strength * dof_near;
-        f32 product = dof_far * strength_near;
+        f32 product = dof_strength * dof_near * dof_far;
         f32 denominator = near_z * projection_scale * (dof_far - dof_near);
         f32 values[4];
         values[0] = product / denominator;
-        values[1] = strength_near / (dof_far - dof_near) - projection_scale * product / denominator;
+        values[1] = dof_strength * dof_near / (dof_far - dof_near) - projection_scale * product / denominator;
         values[2] = dof_blur;
         values[3] = 0.0f;
         PCDeviceSetVertexShaderConstantsF(0x83, values, 1);
