@@ -14579,7 +14579,6 @@ extern "C" {
                     i32 node;
                     i32 count_a, count_b, curves, curve;
                     DWA_WEIGHT_BLOCK_PC *weights;
-                    f64 inverse;
                     if (indices != NULL) {
                         node = indices[render];
                         if (node < 0)
@@ -14604,9 +14603,8 @@ extern "C" {
                     curves = count_a > count_b ? count_a : count_b;
                     weights = NuRndrCreateBlendShapeDeformerWeightsArray(curves);
                     result[render] = weights;
-                    if (weights == NULL || curves <= 0)
+                    if (weights == NULL)
                         continue;
-                    inverse = 1.0 - (f64)blend;
                     for (curve = 0; curve < curves; ++curve) {
                         f32 value_a, value_b;
                         if (curve < count_a)
@@ -14621,7 +14619,7 @@ extern "C" {
                                           : NuAnimCurve2CalcValEx(&cells_b[curve], &time_b, types_b[curve]);
                         else
                             value_b = 0.0f;
-                        weights->values[curve] = value_b * blend + value_a * inverse;
+                        weights->values[curve] = value_b * blend + value_a * (1.0f - blend);
                     }
                 }
             }
