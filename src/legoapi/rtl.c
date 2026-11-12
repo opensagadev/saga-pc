@@ -1650,7 +1650,7 @@ void edrtlBurnoutFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem callback identity.
-static void edrtlResetBurnset(BURN_SET_PC *burnset) {
+void edrtlResetBurnset(BURN_SET_PC *burnset) {
     i32 index;
     if (burnset == NULL)
         return;
