@@ -230,7 +230,7 @@ extern "C" {
 #pragma data_seg(".data$DogfightWingSpeedPc")
     f32 DogfightWingSpeedPc = 35.0f;
 #pragma data_seg(".data$DogfightPassingSpeedPc")
-    f32 DogfightPassingSpeedPc = 200.0f;
+    static f32 DogfightPassingSpeedPc = 200.0f;
 #pragma data_seg()
 
     STATIC_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
@@ -576,25 +576,27 @@ extern "C" {
 
     void ChrisAnakinCUpdate() {
         anakin_door_s *door = AnakinC;
-        i32 remaining = 12;
-        for (; remaining != 0; --remaining, ++door) {
-            f32 offset;
+        i32 i;
+        for (i = 0; i < 12; ++i, ++door) {
+            NUVEC *direction;
             if (door->active == 0)
                 continue;
-
+            direction = &door->direction;
             {
                 f32 minimum = door->minimum_offset;
-                door->offset -= door->speed * FRAMETIME;
-                if (door->offset <= minimum)
+                f32 offset = door->offset - door->speed * FRAMETIME;
+                door->offset = offset;
+                if (offset <= minimum)
                     door->offset = minimum;
             }
-            offset = door->offset;
-
             // The retail transform temporaries require a 16-byte-aligned stack.
             {
-                __declspec(align(16)) NUVEC translation = {door->direction.x * offset, door->direction.y * offset,
-                                                           door->direction.z * offset};
+                f32 offset = door->offset;
+                __declspec(align(16)) NUVEC translation;
                 __declspec(align(16)) NUVEC position;
+                translation.x = direction->x * offset;
+                translation.y = direction->y * offset;
+                translation.z = direction->z * offset;
                 NuVecMtxTransform(&position, &translation, &door->original_matrix);
                 memcpy(&door->matrix.m30, &position, sizeof(position));
                 door->matrix.m33 = 1.0f;
@@ -705,31 +707,32 @@ extern "C" {
                                                       f32 duration, i32 type, i32 model_id) {
         DOGFIGHT_QUICK_BOLT_PC *record = QuickBoltRecordAllocatePc(buffer);
         f64 dx, dy, dz;
-        if (record == NULL)
-            return 0;
-        dx = (f64)matrix->m30 - global_camera.mtx.m30;
-        dy = (f64)matrix->m31 - global_camera.mtx.m31;
-        dz = (f64)matrix->m32 - global_camera.mtx.m32;
-        if (dx * dx + dy * dy + dz * dz < 40000.0) {
-            switch (model_id) {
-                case -300:
-                    PlaySfx("Dog_CloneARC170Gun", (NUVEC *)&matrix->m30);
-                    break;
-                case -299:
-                    PlaySfx("Dog_TriFighterGuns", (NUVEC *)&matrix->m30);
-                    break;
-                case -298:
-                case -297:
-                    PlaySfx("Dog_DroidFighterBlast", (NUVEC *)&matrix->m30);
-                    break;
+        if (record != NULL) {
+            dy = (f64)matrix->m31 - global_camera.mtx.m31;
+            dx = (f64)matrix->m30 - global_camera.mtx.m30;
+            dz = (f64)matrix->m32 - global_camera.mtx.m32;
+            if (dx * dx + dy * dy + dz * dz < 40000.0) {
+                switch (model_id) {
+                    case -300:
+                        PlaySfx("Dog_CloneARC170Gun", (NUVEC *)&matrix->m30);
+                        break;
+                    case -298:
+                    case -297:
+                        PlaySfx("Dog_DroidFighterBlast", (NUVEC *)&matrix->m30);
+                        break;
+                    case -299:
+                        PlaySfx("Dog_TriFighterGuns", (NUVEC *)&matrix->m30);
+                        break;
+                }
             }
+            record->duration = duration;
+            record->matrix = *matrix;
+            NuMtxPreRotateX(&record->matrix, 16384);
+            record->velocity = *velocity;
+            record->type = type;
+            return 1;
         }
-        record->duration = duration;
-        record->matrix = *matrix;
-        NuMtxPreRotateX(&record->matrix, 16384);
-        record->velocity = *velocity;
-        record->type = type;
-        return 1;
+        return 0;
     }
 
     void __cdecl CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along) {
@@ -1531,9 +1534,7 @@ extern "C" {
     static __declspec(noinline) void DrawStarFighterPc(DOGFIGHT_FIGHTER_PC *record) {
         starfighter_s *fighter = &record->fields;
         __declspec(align(16)) NUMTX scaled;
-        NUMTX *matrix;
         if (fighter->model_id < 0) {
-            matrix = &fighter->matrix;
             if (fighter->model_id == -297 || fighter->model_id == -299 || fighter->model_id == -298 ||
                 fighter->model_id == -307) {
                 scaled = fighter->matrix;
@@ -1546,12 +1547,14 @@ extern "C" {
                 scaled.m20 *= (f64)1.15f;
                 scaled.m21 *= (f64)1.15f;
                 scaled.m22 *= (f64)1.15f;
-                matrix = &scaled;
+                NuSpecialDrawAt(&WORLD->level_objects[-fighter->model_id].special, &scaled);
+            } else {
+                NuSpecialDrawAt(&WORLD->level_objects[-fighter->model_id].special, &fighter->matrix);
             }
-            NuSpecialDrawAt(&WORLD->level_objects[-fighter->model_id].special, matrix);
             if (fighter->model_id == -307)
-                AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[49].effect, (NUVEC *)&fighter->matrix.m30,
-                                            1, 0, 0);
+                if (fighter->model_id == -307)
+                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[49].effect,
+                                                (NUVEC *)&fighter->matrix.m30, 1, 0, 0);
         } else {
             DrawFlightCharacterPc(&fighter->matrix, fighter->model_id, fighter->draw_flags, fighter->scale);
         }
@@ -1937,19 +1940,14 @@ extern "C" {
 
     __declspec(noinline) i32 __cdecl ShipDropCoins(starfighter_s *fighter) {
         DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
-        i32 count = space->coin_history_count;
-        i32 index = 0;
-        i32 spline_id;
-        if (count > 0) {
-            spline_id = fighter->spline->id;
-            for (; index < count; ++index) {
-                if (space->coin_history[index].spline_id == spline_id &&
-                    fighter->spawn_time == space->coin_history[index].spawn_time)
-                    return 0;
-            }
-            if (index >= 256)
+        i32 index;
+        for (index = 0; index < space->coin_history_count; ++index) {
+            if (space->coin_history[index].spline_id == fighter->spline->id &&
+                space->coin_history[index].spawn_time == fighter->spawn_time)
                 return 0;
         }
+        if (index >= 256)
+            return 0;
         space->coin_history[index].spline_id = fighter->spline->id;
         DOGFIGHT_SPACE->coin_history[index].spawn_time = fighter->spawn_time;
         ++DOGFIGHT_SPACE->coin_history_count;
@@ -2270,6 +2268,7 @@ extern "C" {
         u16 angle, step;
         i32 i;
         f32 speed;
+        NUVEC4 *velocity;
         if (group == NULL) {
             return;
         }
@@ -2286,15 +2285,16 @@ extern "C" {
             group->state = 1;
             group->speed = DogfightPassingSpeedPc;
         }
-        group->velocity.x = target->x - start->x;
-        group->velocity.y = target->y - start->y;
-        group->velocity.z = target->z - start->z;
-        (void)NuVecNorm((NUVEC *)&group->velocity, (NUVEC *)&group->velocity);
-        group->velocity.w = 1.0f;
+        velocity = &group->velocity;
+        velocity->x = target->x - start->x;
+        velocity->y = target->y - start->y;
+        velocity->z = target->z - start->z;
+        (void)NuVecNorm((NUVEC *)velocity, (NUVEC *)velocity);
+        velocity->w = 1.0f;
         speed = group->speed;
-        group->velocity.x *= speed;
-        group->velocity.y *= speed;
-        group->velocity.z *= speed;
+        velocity->x *= speed;
+        velocity->y *= speed;
+        velocity->z *= speed;
         group->duration = duration;
         offset.x = -5.0f;
         offset.y = 0.0f;
@@ -2306,8 +2306,8 @@ extern "C" {
             starfighter_s *fighter = &group->fighters[i].fields;
             NuVecRotateZ((NUVEC *)&fighter->parent_offset, (NUVEC *)&offset, (i32)(i16)angle);
             angle = (u16)(angle + step);
-            fighter->scale = 2.0f;
             fighter->active = 1;
+            fighter->scale = 2.0f;
             fighter->parent = (struct spacelevel_flight_group_s *)group;
             fighter->health = 1;
             fighter->hit_count = 0;
