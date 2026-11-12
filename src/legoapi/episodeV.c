@@ -193,23 +193,21 @@ TROOPERCANNON_PC troopercannons[4] = {0};
 
 static void __cdecl KilledTrooperCannon(GAMEOBJECT *object) {
     i32 index;
-    TROOPERCANNON_PC *cannon;
-    GIZMO_PC *gizmo;
     if (netclient != 0)
         return;
-    for (index = 0; index < 4; ++index)
-        if (troopercannons[index].object == object)
-            break;
-    if (index >= 4)
-        return;
-    cannon = &troopercannons[index];
-    DeactivateCharacter(cannon->character_name);
-    GizBuildIt_SetToStart(cannon->buildit, 0, 0);
-    gizmo = GizmoFindByData(WORLD->gizmo_sys, gizbuildit_gizmotype_id, cannon->buildit);
-    GizmoActivate(WORLD->gizmo_sys, gizmo, 1, 1);
-    GizBuildit_SetVisibility(cannon->buildit, 1);
-    cannon->rebuilding = 1;
-    WORLD->level_progress->destroyed_trooper_cannon_mask |= 1u << index;
+    for (index = 0; index < 4; ++index) {
+        if (troopercannons[index].object == object) {
+            DeactivateCharacter(troopercannons[index].character_name);
+            GizBuildIt_SetToStart(troopercannons[index].buildit, 0, 0);
+            GizmoActivate(WORLD->gizmo_sys,
+                          GizmoFindByData(WORLD->gizmo_sys, gizbuildit_gizmotype_id, troopercannons[index].buildit), 1,
+                          1);
+            GizBuildit_SetVisibility(troopercannons[index].buildit, 1);
+            troopercannons[index].rebuilding = 1;
+            WORLD->level_progress->destroyed_trooper_cannon_mask |= 1u << index;
+            return;
+        }
+    }
 }
 
 void __cdecl InitTrooperCannons(WORLDINFO *unused) {
