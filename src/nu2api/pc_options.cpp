@@ -73,10 +73,18 @@ extern const char *PcProductName;
 extern i32 PcUsePersonalFolder;
 extern char PcUserFolder[260];
 extern "C" void __cdecl PCOptionsBuildFolder(char *destination) {
-    HRESULT result =
-        SHGetFolderPathA(NULL, PcUsePersonalFolder != 0 ? CSIDL_PERSONAL : CSIDL_LOCAL_APPDATA, NULL, 0, PcUserFolder);
+    i32 folder = CSIDL_LOCAL_APPDATA;
+    if (PcUsePersonalFolder != 0)
+        folder = CSIDL_PERSONAL;
+    HRESULT result = SHGetFolderPathA(NULL, folder, NULL, 0, PcUserFolder);
     const char *source = result < 0 ? NULL : PcUserFolder;
-    strcpy(destination, source);
+    // MATCH-EXCEPTION: copied by hand; retail walks both pointers, which the strcpy intrinsic never emits
+    char *target = destination;
+    char c;
+    do {
+        c = *source++;
+        *target++ = c;
+    } while (c != 0);
     strcat(destination, "\\");
     strcat(destination, PcCompanyName);
     strcat(destination, "\\");
@@ -92,16 +100,29 @@ void __thiscall PC_WINDOW_OPTIONS_PC::Defaults() {
     device_height = PCDeviceBackend.desktop_mode.width > 1024u ? 768u : PCDeviceBackend.desktop_mode.height;
     client_width = 1024;
     client_height = 768;
-    window_x = window_y = 0;
+    window_x = 0;
+    window_y = 0;
     refresh_rate = PCDeviceBackend.desktop_mode.refresh_rate;
-    sfxvolume = mousesensitivity = 10;
-    musicvolume = mastervolume = 8;
-    bloommethod = desiredbloommethod = shadowmethod = desiredshadowmethod = 2;
+    sfxvolume = 10;
+    mousesensitivity = 10;
+    musicvolume = 8;
+    mastervolume = 8;
+    bloommethod = 2;
+    desiredbloommethod = 2;
+    shadowmethod = 2;
+    desiredshadowmethod = 2;
     multisample = 0;
     aspect_mode = 3;
-    musicenabled = bloomenabled = shadowsenabled = speedblursupported = speedblurenabled = 1;
-    usehires = usehirespending = option459 = 1;
-    inverty = vibration = 0;
+    musicenabled = 1;
+    inverty = 0;
+    vibration = 0;
+    bloomenabled = 1;
+    shadowsenabled = 1;
+    speedblursupported = 1;
+    speedblurenabled = 1;
+    usehires = 1;
+    usehirespending = 1;
+    option459 = 1;
     forceshadermodel = 0;
 }
 void __thiscall PC_WINDOW_OPTIONS_PC::Validate() {
