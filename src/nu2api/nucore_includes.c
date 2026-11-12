@@ -2166,8 +2166,8 @@ i32 __cdecl NuDatFileGetFreeInfo(void) {
     PCThreadCriticalSectionEnter_candidate(file_criticalsection);
     for (index = 0; index < 20; index++) {
         if (pc_dat_file_infos[index].is_used == 0) {
-            pc_dat_file_infos[index].is_used = 1;
             found = index;
+            pc_dat_file_infos[index].is_used = 1;
             break;
         }
     }
