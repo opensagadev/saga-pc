@@ -240,13 +240,11 @@ extern "C" void __cdecl MenuUpdateOptions(MENU *menu) {
     f32 title_music_volume;
 
     GameSetSoundVolume(&TempOptions);
-    if (WORLD->current_level != TITLES_LDATA) {
-        GameSetMusicVolume(&TempOptions);
-    } else if (TempOptions.music_enabled != 0) {
-        title_music_volume = GameGetMusicVolume(&TempOptions);
+    if (WORLD->current_level == TITLES_LDATA) {
+        title_music_volume = TempOptions.music_enabled == 0 ? 0.0f : GameGetMusicVolume(&TempOptions);
         legoSetMusicVolume(title_music_volume);
     } else {
-        legoSetMusicVolume(0.0f);
+        GameSetMusicVolume(&TempOptions);
     }
 
     opts_sfx_wait -= FRAMETIME;
