@@ -2244,9 +2244,8 @@ static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
             CutSceneStreamDiagnosticPc(instance->scene->filename);
         }
         if (CutSceneSingleStreamBufferPc < 2)
-            CutSceneCopyStreamAnimationsPc(instance->scene, (CUT_SCENE_LOAD_PC *)((instance->flags_88 & 0x10000000) != 0
-                                                                                      ? instance->stream_buffer_1
-                                                                                      : instance->stream_buffer_0));
+            CutSceneCopyStreamAnimationsPc(
+                instance->scene, (CUT_SCENE_LOAD_PC *)instance->stream_buffers[instance->active_stream_buffer & 1]);
         else
             CutSceneSwapStreamAssetPc(instance);
         instance->stream_index = (u8)instance->scene->unknown_40;
