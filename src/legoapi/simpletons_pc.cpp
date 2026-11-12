@@ -114,7 +114,9 @@ extern "C" {
     static void MiniTrooperStepPc(minisnowtrooper_s *trooper) {
         f32 step_time = 1.0f / (f32)(i32)trooper->speed_divisor;
         if (trooper->timer >= step_time) {
-            trooper->state_flags = (trooper->state_flags & ~0xc) | ((((trooper->state_flags >> 2) + 1) << 2) & 0xc);
+            trooper->step_frame = trooper->step_frame + 1;
+            if (trooper->step_frame > 3)
+                trooper->step_frame = 0;
             trooper->timer = 0.0f;
         }
         trooper->timer += FRAMETIME;
