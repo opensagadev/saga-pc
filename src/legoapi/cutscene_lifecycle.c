@@ -675,6 +675,8 @@ typedef struct cut_instance_load_pc_s {
             i32 repeat_count : 5;
             u32 flags_88_bit_18 : 1;
             u32 synchro : 8;
+            u32 flags_88_bit_27 : 1;
+            i32 active_stream_buffer : 1;
         };
     };
     union {
@@ -692,7 +694,12 @@ typedef struct cut_instance_load_pc_s {
     INSTNUGCUTSCENE *chained_instance;
     void(__cdecl *end_callback)(INSTNUGCUTSCENE *);
     u32 unknown_b8;
-    void *stream_buffer_0, *stream_buffer_1;
+    union {
+        struct {
+            void *stream_buffer_0, *stream_buffer_1;
+        };
+        void *stream_buffers[2];
+    };
     NUGSCN *scene_owner;
     CUT_LOAD_TRIGGER_OWNER *extra_scene_owner;
     u8 unknown_cc[12];
@@ -2125,9 +2132,8 @@ static void CutSceneCopyStreamAnimationsPc(CUT_SCENE_LOAD_PC *target, CUT_SCENE_
 
 void CutSceneSwapStreamAssetPc(CUT_INSTANCE_LOAD_PC *instance) {
     CUT_SCENE_LOAD_PC *saved = instance->saved_scene;
-    CUT_SCENE_LOAD_PC *scene =
-        (CUT_SCENE_LOAD_PC *)((instance->flags_88 & 0x10000000) != 0 ? instance->stream_buffer_1
-                                                                     : instance->stream_buffer_0);
+    // MATCH-EXCEPTION: retail reads the buffer select as a signed one-bit field and masks it to index the pair.
+    CUT_SCENE_LOAD_PC *scene = (CUT_SCENE_LOAD_PC *)instance->stream_buffers[instance->active_stream_buffer & 1];
     CUT_LOAD_LOCATOR_SYSTEM *locators, *saved_locators;
     CUT_LOAD_RIGID_SYSTEM *rigids, *saved_rigids;
     CUT_LOAD_CHARACTER_SYSTEM *characters, *saved_characters;
