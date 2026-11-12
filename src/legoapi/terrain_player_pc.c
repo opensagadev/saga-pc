@@ -803,18 +803,20 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                                                      0);
                                     }
                                 } else {
-                                    i32 standing_surface;
                                     i32 saved_rescue_surface;
 
-                                    standing_surface = (i8)api->jump_animation_state;
-                                    saved_rescue_surface = StartupGameFlag1 == 0 && StartupGameFlag0 == 0 &&
-                                                           api->field_283 == 6 && (u32)standing_surface < 32 &&
-                                                           (TerSurface[standing_surface].flags & 1) != 0;
+                                    saved_rescue_surface = 0;
                                     if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0 && api->field_283 == 6 &&
-                                        (u32)standing_surface < 32 && (TerSurface[standing_surface].flags & 1) == 0) {
-                                        if (object->vehicle_hit_timer <= 0.0f)
-                                            ObjHitObj(NULL, object, 1, 0, 0, 1);
-                                    } else {
+                                        (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32) {
+                                        if ((TerSurface[(i8)api->jump_animation_state].flags & 1) != 0) {
+                                            saved_rescue_surface = 1;
+                                        } else {
+                                            if (object->vehicle_hit_timer <= 0.0f)
+                                                ObjHitObj(NULL, object, 1, 0, 0, 1);
+                                            goto rescue_done;
+                                        }
+                                    }
+                                    {
                                         ClearLastSafeTakeOver(object);
                                         Player_ClearContext(object, 1);
                                         object->field_7aa = 5;
@@ -860,6 +862,7 @@ void __cdecl TerrainPlayer(GAMEOBJECT *object) {
                                             ((TERRAIN_PLAYER_COINS_PC *)(object->coin_packet))->scale = 1.5f;
                                         }
                                     }
+                                rescue_done:;
                                 }
                             } else if ((api->character_data->model_flags & 0x40) == 0 && object->id != (u16)id_SNAKE &&
                                        api->field_283 == 9 && api->collision_max.y < api->water_height) {
