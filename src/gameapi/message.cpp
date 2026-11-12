@@ -23,7 +23,7 @@ class AINet : public NetListenerInterface {
     virtual void Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer);
     virtual AISYS_PC *GetSystem() = 0;
     virtual u16 GetPacketId(AIPACKET_PC *packet) = 0;
-    virtual AIPACKET_PC *GetPacket(u16 id) = 0;
+    virtual AIPACKET_PC *GetPacket(i32 id) = 0;
     void Register();
     void ReplicateAction(AIACTION_PC *action, AIPACKET_PC *packet);
 
@@ -56,7 +56,7 @@ void AINet::Receive(NETMESSAGE_PC message, u8 channel, const V2Peer &peer) {
     u8 is_game_action;
     u8 param_count;
     i16 index;
-    i16 id;
+    u16 id;
     AISYS_PC *system;
     AIPACKET_PC *packet;
     AIACTIONDEF_PC *definitions;
