@@ -438,17 +438,14 @@ extern "C" void __cdecl Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
         return;
     for (i32 index = 0; index < ((TELEPORT_WORLD_PC *)WORLD)->teleport_count; ++index, ++teleport) {
         for (i32 flap = 0; flap < 2; ++flap) {
-            u16 *angle = &teleport->flap1_angle + flap;
-            *angle = SeekRot(*angle, (&teleport->flap1_target)[flap], 5.0f);
-            NUSPECIALHANDLE *special = &teleport->flap1_special + flap;
-            if (NuSpecialExistsFn(special)) {
+            (&teleport->flap1_angle)[flap] =
+                SeekRot((&teleport->flap1_angle)[flap], (&teleport->flap1_target)[flap], 5.0f);
+            if (NuSpecialExistsFn(&(&teleport->flap1_special)[flap])) {
                 NUMTX matrix = (&teleport->flap1_matrix)[flap];
-                i32 rotation = *angle;
-                if ((teleport->flags & 8) != 0)
-                    rotation = -rotation;
-                NuMtxPreRotateX(&matrix, rotation);
-                NuSpecialSetDrawMtx(special, &matrix);
-                NuSpecialUpdate(special);
+                NuMtxPreRotateX(&matrix, (teleport->flags & 8) != 0 ? -(&teleport->flap1_angle)[flap]
+                                                                    : (&teleport->flap1_angle)[flap]);
+                NuSpecialSetDrawMtx(&(&teleport->flap1_special)[flap], &matrix);
+                NuSpecialUpdate(&(&teleport->flap1_special)[flap]);
             }
         }
     }
