@@ -4673,18 +4673,17 @@ i32 __cdecl Action_SnapToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                       char **params, i32 count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object = NULL;
-    APIOBJECT_PC *owner;
     SOCKPOSITION_PC sock_position;
-    NUVEC offset;
+    NUVEC offset = {0.0f, 0.0f, 0.0f};
     NUVEC ring_offset;
-    i32 sock_index = 0;
+    f32 distance = 0.0f;
     i32 party = 0;
     i32 from_end = 0;
+    i32 sock_index = 0;
     i32 index;
     i32 spread;
     i32 random_angle;
-    u16 heading;
-    f32 distance = 0.0f;
+    i32 heading;
     f64 weighted_term;
     f32 base_dx;
     f32 base_dy;
@@ -4693,11 +4692,8 @@ i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     char *value;
 
     if (first_time != 0) {
-        if (packet != NULL && packet->owner != NULL) {
-            owner = (APIOBJECT_PC *)packet->owner;
-            if (owner->owner != NULL)
-                object = (GAMEOBJECT *)owner->owner;
-        }
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+            object = packet->owner->objptr;
         for (index = 0; index < count; ++index) {
             if (NuStrIStr(params[index], (char *)ActionSnapPlayer1Name) != NULL ||
                 NuStrIStr(params[index], (char *)GameAIPlayerName) != NULL) {
@@ -4722,15 +4718,17 @@ i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
             }
         }
         if (from_end != 0) {
-            if (WORLD->sock_sys == NULL || (u32)sock_index > 63u)
+            sock_position.sock_index = -1;
+            if (WORLD->sock_sys != NULL && (u32)sock_index <= 63u)
+                SetSockPostion(WORLD->sock_sys, &sock_position, sock_index,
+                               (i32)WORLD->sock_sys->socks[sock_index].length - 1, 1.0f);
+            if (sock_position.sock_index == -1)
                 return 1;
-            SetSockPostion(WORLD->sock_sys, &sock_position, sock_index,
-                           (i32)WORLD->sock_sys->socks[sock_index].length - 1, 1.0f);
         } else {
             SetSockPostion(WORLD->sock_sys, &sock_position, sock_index, 0, 0.0f);
+            if (sock_position.sock_index == -1)
+                return 1;
         }
-        if (sock_position.sock_index == -1)
-            return 1;
         MoveSockPosition(WORLD->sock_sys, &sock_position, distance, &sock_position);
         weighted_term = (1.0 - (f64)NuRandFloat()) * ActionSnapWeightedRandomZeroPc;
         base_dx = (f32)((f64)NuRandFloat() * ActionSnapWeightedRandomZeroPc + weighted_term);
@@ -4760,9 +4758,7 @@ i32 __cdecl Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
                     NuVecRotateX(&offset, &offset, sock_position.midpoint_pitch);
                     NuVecRotateY(&offset, &offset, NuAngAdd(heading, 0x8000));
                 } else {
-                    offset.x = 0.0f;
-                    offset.y = 0.0f;
-                    offset.z = 0.0f;
+                    offset.x = offset.y = offset.z = 0.0f;
                 }
                 NuVecAdd(&offset, &offset, &sock_position.midpoint);
                 object->position = offset;
