@@ -471,6 +471,16 @@ void NuBridgeUpdate(NUVEC *position) {
 
 #undef NUBRIDGE_ABS
 
+i32 __cdecl NuBridgeAlloc(void) {
+    i32 index;
+    NUBRIDGE_PC *bridge = Bridges;
+    for (index = 0; index < 8; ++index, ++bridge) {
+        if (!bridge->active)
+            return index;
+    }
+    return -1;
+}
+
 void __cdecl NuBridgeInit(void) {
     void *saved_terrain = TerrainGetCur();
     NUBRIDGE_PC *bridge = Bridges;
@@ -507,17 +517,7 @@ void __cdecl NuBridgeRemove(i32 index) {
     TerrainSetCur(saved_terrain);
 }
 
-static i32 NuBridgeAlloc(void) {
-    i32 index;
-    NUBRIDGE_PC *bridge = Bridges;
-    for (index = 0; index < 8; ++index, ++bridge) {
-        if (!bridge->active)
-            return index;
-    }
-    return -1;
-}
-
-static void NuBridgeOn(i32 enabled) {
+void __cdecl NuBridgeOn(i32 enabled) {
     NuBridgeProc = enabled;
 }
 
