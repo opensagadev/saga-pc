@@ -11669,8 +11669,10 @@ i32 __cdecl Action_TurnOnPickupPc(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
         char *value;
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], (char *)AIScriptActionNameArgPrefix);
-            if (value != NULL)
-                pickup = GizmoPickup_FindByName(WORLD, value + NuStrLen(AIScriptActionNameArgPrefix));
+            if (value != NULL) {
+                value += NuStrLen(AIScriptActionNameArgPrefix);
+                pickup = GizmoPickup_FindByName(WORLD, value);
+            }
         }
         if (pickup != NULL)
             GizmoPickup_TurnOnPickup(pickup);
