@@ -44,7 +44,22 @@ typedef struct {
 } BUILD_PROGRESS_SYSTEM_PC;
 typedef struct {
     u8 unused00[0xa0];
-    u32 runtime_flags;
+    union {
+        u32 runtime_flags;
+        struct {
+            u32 enabled : 1;
+            u32 visible : 1;
+            u32 : 7;
+            u32 reward_released : 1;
+            u32 : 1;
+            u32 socket_hidden : 1;
+            u32 : 2;
+            u32 completion_released : 1;
+            u32 completion_pending : 1;
+            u32 destroyed : 1;
+            u32 : 15;
+        };
+    };
 } FORCE_PROGRESS_RECORD_PC;
 typedef struct {
     FORCE_PROGRESS_RECORD_PC *members[8];
@@ -163,6 +178,7 @@ void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress
     FORCE_PROGRESS_PC *progress = (FORCE_PROGRESS_PC *)progress_ptr;
     FORCE_PROGRESS_SYSTEM_PC *system = (FORCE_PROGRESS_SYSTEM_PC *)data;
     FORCE_PROGRESS_RECORD_PC *record;
+    FORCE_PROGRESS_GROUP_PC *force_group;
     i32 index, group, slot, word;
     u32 bit;
     GizForces_ClearProgress(world_ptr, progress);
@@ -174,25 +190,25 @@ void __cdecl GizForces_StoreProgress(void *world_ptr, void *data, void *progress
             break;
         word = index / 32;
         bit = 1u << (index & 31);
-        if (!(record->runtime_flags & 2))
+        if (!record->visible)
             progress->visible[word] &= ~bit;
-        if (!(record->runtime_flags & 1))
+        if (!record->enabled)
             progress->enabled[word] &= ~bit;
-        if (record->runtime_flags & 0x200)
+        if (record->reward_released)
             progress->reward[word] |= bit;
-        if (record->runtime_flags & 0x800)
+        if (record->socket_hidden)
             progress->socket[word] |= bit;
-        if (record->runtime_flags & 0x4000)
+        if (record->completion_released)
             progress->released[word] |= bit;
-        if (record->runtime_flags & 0x8000)
+        if (record->completion_pending)
             progress->pending[word] |= bit;
-        if (record->runtime_flags & 0x10000)
+        if (record->destroyed)
             progress->destroyed[word] |= bit;
     }
-    for (group = 0; group < 8; ++group)
+    for (group = 0, force_group = system->groups; group < 8; ++group, ++force_group)
         for (slot = 0; slot < 8; ++slot) {
-            if (slot < system->groups[group].member_count)
-                progress->group_members[group][slot] = (u8)(system->groups[group].members[slot] - system->records);
+            if (slot < force_group->member_count)
+                progress->group_members[group][slot] = (u8)(force_group->members[slot] - system->records);
             else
                 progress->group_members[group][slot] = 0xff;
         }
