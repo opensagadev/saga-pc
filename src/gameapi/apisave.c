@@ -463,12 +463,20 @@ void __cdecl MenuUpdateFormatConfirm(MENU *menu) {
 }
 
 void __cdecl MenuUpdateFileCorrupt(MENU *menu) {
-    if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019)
-        MenuInfo[menu->menu].cancel_prompt = 1;
-    else
+    i32 cancel;
+    if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1019)
         MenuInfo[menu->menu].cancel_prompt = 0;
+    else
+        MenuInfo[menu->menu].cancel_prompt = 1;
+    cancel = 0;
     if (menu->confirm_pressed != 0) {
         MenuSFX = MENUSFX_MENUSELECT;
+        cancel = 1;
+    } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019) {
+        MenuSFX = MENUSFX_MENUSELECT;
+        cancel = 1;
+    }
+    if (cancel != 0) {
         if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
             BackupMenuNoFn();
             NewMenu(1016, 1, -1);
@@ -476,15 +484,6 @@ void __cdecl MenuUpdateFileCorrupt(MENU *menu) {
             MenuCardWarningState = 3;
             memcard_cardchanged = 0;
             BackupMenuNoFn();
-        } else {
-            BackupMenuNoFn();
-            NewMenu(1017, 1, -1);
-        }
-    } else if (menu->cancel_pressed != 0 && MenuInfo[GameMenu[GameMenuLevel - 1].menu].id != 1019) {
-        MenuSFX = MENUSFX_MENUSELECT;
-        if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
-            BackupMenuNoFn();
-            NewMenu(1016, 1, -1);
         } else {
             BackupMenuNoFn();
             NewMenu(1017, 1, -1);
