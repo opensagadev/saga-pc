@@ -4711,13 +4711,14 @@ extern "C" {
         }
     }
 
-    static void DrawSuperStoryTimePc(f32 y, f32 timer, f32 target, i32 target_above, i32 show_hours) {
+    void DrawSuperStoryTimePc(f32 y, f32 timer, f32 target, i32 target_above, i32 show_hours) {
         char text[256], auxiliary[256];
         i32 green;
         Text_MakeTime(timer, show_hours, 1, 1, text);
-        green = 191;
         if (!(target <= 0.0f) && !(target > timer))
             green = 31;
+        else
+            green = 191;
         Text3DEx(text, 0.0f, y, 1.0f, 0.5f, 0.5f, 0.5f, 0, 255, green, 0, 128);
         if (target > 0.0f) {
             f32 offset;
@@ -4733,7 +4734,6 @@ extern "C" {
     static void DrawCoinTotalPc(i32 source, i32 hide_super_story_target) {
         f32 time, y;
         i32 total;
-        i32 red = 255, green = 191, blue = 0;
         char text[64], auxiliary[64];
         if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & 2) == 0)
             return;
@@ -4741,6 +4741,7 @@ extern "C" {
         y = (STATSPOSY - STATSPOS2YPc) * NuTrigTable[((i32)((f64)time * 16384.0) >> 1) & 0x7fff] + STATSPOS2YPc;
         y += CoinTotalScoreOffsetYPc;
         DrawCoinTotalYPc = y;
+        i32 red = 255, green = 191, blue = 0;
         if (source == 1) {
             DrawSuperStoryTimePc(-y, SuperStoryTimer.time_elapsed,
                                  Game.episode_save[SuperStoryEpisode].superstory_time_limit, 0, 1);
