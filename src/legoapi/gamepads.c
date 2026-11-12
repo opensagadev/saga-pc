@@ -51,15 +51,13 @@ f32 __cdecl GamePad_Rotate(GAMEOBJECT *object) {
 }
 
 i32 __cdecl GamePad_Waggle(GAMEPAD_PC *pad) {
-    i32 delta;
-    if (pad->input_magnitude != 0.0f) {
-        delta = RotDiff(pad->previous_input_angle, pad->input_angle);
-        if (delta < 0)
-            delta = -delta;
-        if (delta > 0x2000)
-            return 1;
-    }
-    return (pad->input_magnitude != 0.0f) != (pad->previous_input_magnitude != 0.0f);
+    if (pad->input_magnitude != 0.0f && abs(RotDiff(pad->previous_input_angle, pad->input_angle)) > 0x2000)
+        return 1;
+    if (pad->input_magnitude != 0.0f && pad->previous_input_magnitude == 0.0f)
+        return 1;
+    if (pad->input_magnitude == 0.0f && pad->previous_input_magnitude != 0.0f)
+        return 1;
+    return 0;
 }
 
 void __cdecl NewRumble(void *pad, f32 strength, i32 ignored) {
