@@ -1496,9 +1496,10 @@ void __cdecl instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
 /* Jumps an instance to its last frame and settles the rigid and locator systems there. */
 static __declspec(noinline) void CutSceneJumpToEndPc(CUT_INSTANCE_LIFECYCLE_PC *instance, i32 flag) {
     CUT_SCENE_LIFECYCLE_PC *scene;
-    instance->flags_88 = (instance->flags_88 & ~2U) | ((flag & 1) << 1) | 0x1001;
+    u32 flags = (instance->flags_88 & ~2U) | ((flag & 1) << 1) | 0x1001;
     scene = instance->scene;
     instance->current_frame = scene->duration;
+    instance->flags_88 = flags;
     instance->flags_8c = (instance->flags_8c & ~0x40U) | ((flag & 1) << 6);
     ForcePlayEndFrame = 1;
     if ((instance->flags_88 & 0x40000) != 0) {
