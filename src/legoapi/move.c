@@ -982,8 +982,10 @@ void ApplyExtraRotation(GAMEOBJECT *object, NUMTX *matrix) {
             TurnCodeCamSafe(object, matrix);
             break;
         case 58: {
-            const f32 phase = 1.0f - object->context_timer / object->context_duration;
-            const f32 wave = NuTrigTable[(((i32)(32768.0f * phase + 16384.0f)) >> 1) & 0x7fff];
+            const f32 wave =
+                NuTrigTable[(((i32)(32768.0f * (1.0f - object->context_timer / object->context_duration) + 16384.0f)) >>
+                             1) &
+                            0x7fff];
             const i32 rotation = ((i32)((1.0f - (wave + 1.0f) * 0.5f) * 65536.0f));
             if (object->field_7b3 == 0) {
                 NuMtxPreRotateZ(matrix, rotation);
@@ -994,7 +996,7 @@ void ApplyExtraRotation(GAMEOBJECT *object, NUMTX *matrix) {
         }
     }
 
-    if (object->id == id_MINISLAVE1) {
+    if (object->id == (u16)id_MINISLAVE1) {
         NuMtxPreRotateX(matrix, -16384);
         NuMtxPreRotateY(matrix, 32768);
     }
