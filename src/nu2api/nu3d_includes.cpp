@@ -5057,29 +5057,20 @@ void OcclusionManager::Init(u32 capacity, VARIPTR *buffer, VARIPTR buffer_end) {
     }
 }
 
+static inline void OccluderVertexSet(NUVEC4 *vertex, f32 x, f32 y, f32 z, f32 w) {
+    vertex->x = x;
+    vertex->y = y;
+    vertex->z = z;
+    vertex->w = w;
+}
+
 void OccluderSet::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, const NUVEC *d) {
     if (count < capacity) {
         queries_prepared = false;
-        NUVEC4 *vertex = &occluders[count].vertices[0];
-        vertex->x = a->x;
-        vertex->y = a->y;
-        vertex->z = a->z;
-        vertex->w = 1.0f;
-        vertex = &occluders[count].vertices[1];
-        vertex->x = b->x;
-        vertex->y = b->y;
-        vertex->z = b->z;
-        vertex->w = 1.0f;
-        vertex = &occluders[count].vertices[2];
-        vertex->x = c->x;
-        vertex->y = c->y;
-        vertex->z = c->z;
-        vertex->w = 1.0f;
-        vertex = &occluders[count].vertices[3];
-        vertex->x = d->x;
-        vertex->y = d->y;
-        vertex->z = d->z;
-        vertex->w = 1.0f;
+        OccluderVertexSet(&occluders[count].vertices[0], a->x, a->y, a->z, 1.0f);
+        OccluderVertexSet(&occluders[count].vertices[1], b->x, b->y, b->z, 1.0f);
+        OccluderVertexSet(&occluders[count].vertices[2], c->x, c->y, c->z, 1.0f);
+        OccluderVertexSet(&occluders[count].vertices[3], d->x, d->y, d->z, 1.0f);
         ++count;
     }
 }
