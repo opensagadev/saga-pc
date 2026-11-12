@@ -6716,8 +6716,10 @@ static i32 AIMoveAdjustDestinationPath(AISYS_PC *system, AIPACKET_PC *packet) {
         return 0;
     }
     AIMoveFindDivertNode(system, packet->path_info.path, packet, &packet->fallback_destination);
-    if (packet->divert_node_index < packet->path_info.path->node_count)
-        return AIMoveApplyDivertNode(packet) != 0 ? 1 : -1;
+    if (packet->divert_node_index < packet->path_info.path->node_count) {
+        if (AIMoveApplyDivertNode(packet) != 0)
+            return 1;
+    }
     return -1;
 }
 
@@ -8188,18 +8190,17 @@ static i32 AiEditorRemoveLocatorFromSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *loca
     for (index = 0; index < 64; ++index) {
         if (set->locators[index] == NULL)
             return 0;
-        if (set->locators[index] == locator)
-            break;
+        if (locator == set->locators[index]) {
+            for (; index < 64; ++index) {
+                if (index + 1 < 64)
+                    set->locators[index] = set->locators[index + 1];
+                else
+                    set->locators[index] = NULL;
+            }
+            return 1;
+        }
     }
-    if (index == 64)
-        return 0;
-    for (; index < 64; ++index) {
-        if (index + 1 < 64)
-            set->locators[index] = set->locators[index + 1];
-        else
-            set->locators[index] = NULL;
-    }
-    return 1;
+    return 0;
 }
 
 static i32 AiEditorAddLocatorToSetPc(EDLOCATORSET_s *set, EDLOCATOR_s *locator, EDLOCATOR_s *before) {
