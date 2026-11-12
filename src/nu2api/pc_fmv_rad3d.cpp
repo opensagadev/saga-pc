@@ -72,10 +72,14 @@ extern "C" void __cdecl RadFmvEndScenePc(RADFMV_CONTEXT_PC *context) {
 }
 extern "C" void __cdecl RadFmvResizePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height) {
     PC_VIEWPORT_PC viewport;
+    if (width < 1)
+        width = 1;
+    if (height < 1)
+        height = 1;
     viewport.x = 0;
     viewport.y = 0;
-    viewport.width = width < 1 ? 1 : width;
-    viewport.height = height < 1 ? 1 : height;
+    viewport.width = width;
+    viewport.height = height;
     viewport.min_z = 0;
     viewport.max_z = 1;
     context->device->methods->set_viewport(context->device, &viewport);
