@@ -13245,7 +13245,7 @@ i32 __cdecl Action_NotifyStateChange(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
     return 1;
 }
 
-static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, VARIPTR *buffer, VARIPTR *buffer_end,
+static AISYS_PC *AISysLoadPrivatePc(void *pak, NUGSCN *scene, char *directory, VARIPTR *buffer, VARIPTR *buffer_end,
                                     i32 storage_size, char *name, char *parameter, char *load_directory) {
     char ai2_path[128];
     char script_path[128];
@@ -13260,278 +13260,281 @@ static AISYS_PC *AISysLoadPrivatePc(NUGSCN *scene, char *directory, void *pak, V
     i32 search;
     sprintf(ai2_path, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, load_directory, parameter, name);
     PATH_LOAD_ALLOCATE(AI_SYSTEM_LOAD_PC *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD_PC));
-    if (system == NULL)
-        return NULL;
-    memset(system, 0, sizeof(*system));
-    system->storage_size = storage_size;
-    system->storage = AISysBufferAlloc(buffer, buffer_end, storage_size);
-    system->storage_end = *buffer;
-    memset(system->storage, 0, storage_size);
-    system->storage_cursor.void_ptr = system->storage;
-    EdFileSetMedia(1);
-    is_open = 0;
-    if (pak != NULL) {
-        sprintf(member_path, "%s.ai2", name);
-        EdFileSetPakFile(pak);
-        is_open = EdFileOpen(member_path, 0);
-    }
-    if (is_open == 0) {
-        EdFileSetPakFile(NULL);
-        is_open = EdFileOpen(ai2_path, 0);
-    }
-    if (is_open != 0) {
-        version = EdFileReadInt();
-        system->scene = scene;
-        system->path_sys = AISysLoadPathsPc(&system->storage_cursor, version, scene, &system->storage_end);
-        if (version >= 4) {
-            system->area_count = EdFileReadInt();
-            if (system->area_count != 0) {
-                system->areas = (AI_AREA_LOAD_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                    system->area_count * sizeof(AI_AREA_LOAD_PC));
-                for (index = 0; index < system->area_count; ++index) {
-                    AI_AREA_LOAD_PC *area = &system->areas[index];
-                    EdFileRead(area->name, 16);
-                    area->minimum.x = EdFileReadFloat();
-                    area->minimum.y = EdFileReadFloat();
-                    area->minimum.z = EdFileReadFloat();
-                    area->maximum.x = EdFileReadFloat();
-                    area->maximum.y = EdFileReadFloat();
-                    area->maximum.z = EdFileReadFloat();
-                    area->flags = EdFileReadShort();
-                    area->system = (AISYS_PC *)system;
-                    if (version > 19)
-                        area->game_flags = (u8)EdFileReadChar();
-                    else
-                        EdFileReadChar();
-                    EdFileReadChar();
-                }
-            }
+    if (system != NULL) {
+        memset(system, 0, sizeof(*system));
+        system->storage_size = storage_size;
+        system->storage = AISysBufferAlloc(buffer, buffer_end, storage_size);
+        system->storage_end = *buffer;
+        memset(system->storage, 0, storage_size);
+        system->storage_cursor.void_ptr = system->storage;
+        EdFileSetMedia(1);
+        is_open = 0;
+        if (pak != NULL) {
+            sprintf(member_path, "%s.ai2", name);
+            EdFileSetPakFile(pak);
+            is_open = EdFileOpen(member_path, 0);
         }
-        if (system->path_sys != NULL) {
-            if (version >= 6) {
-                system->locator_count = EdFileReadInt();
-                if (system->locator_count != 0) {
-                    system->locators = (AILOCATOR_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                        system->locator_count * sizeof(AILOCATOR_PC));
-                    for (index = 0; index < system->locator_count; ++index) {
-                        AILOCATOR_PC *locator = &system->locators[index];
-                        EdFileRead(locator->name, 16);
-                        locator->position.x = EdFileReadFloat();
-                        locator->position.y = EdFileReadFloat();
-                        locator->position.z = EdFileReadFloat();
-                        locator->rotation = (i16)EdFileReadShort();
-                        locator->path_info.path = system->path_sys->paths[(u8)EdFileReadChar()];
-                        locator->path_info.direction = (u8)EdFileReadChar();
-                        locator->path_info.connection = &locator->path_info.path->connections[(u16)EdFileReadShort()];
-                        locator->path_info.distance = EdFileReadFloat();
-                        locator->path_info.width = EdFileReadFloat();
-                        if (version > 14)
-                            locator->rotation_offset = EdFileReadInt();
-                    }
-                }
-                if (version > 17) {
-                    system->locator_set_count = EdFileReadInt();
-                    if (system->locator_set_count != 0) {
-                        system->locator_sets =
-                            (AILOCATORSET_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                system->locator_set_count * sizeof(AILOCATORSET_PC));
-                        for (index = 0; index < system->locator_set_count; ++index) {
-                            AILOCATORSET_PC *set = &system->locator_sets[index];
-                            EdFileRead(set->name, 16);
-                            set->locator_count = (i8)EdFileReadInt();
-                            set->locator_entries = (u8 *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                                          set->locator_count * sizeof(AILOCATORSET_PC));
-                            for (search = 0; search < set->locator_count; ++search)
-                                set->locator_entries[search] = (u8)EdFileReadChar();
-                            PATH_LOAD_ALLOCATE(u8 *, set->assigned, &system->storage_cursor, &system->storage_end,
-                                               set->locator_count);
-                            memset(set->assigned, 0, set->locator_count);
-                        }
-                    }
-                }
-            }
-            system->creature_count = EdFileReadInt();
-            if (system->creature_count != 0) {
-                system->creatures =
-                    (AI_CREATURE_LOAD_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
-                                                            system->creature_count * sizeof(AI_CREATURE_LOAD_PC));
-                for (index = 0; index < system->creature_count; ++index) {
-                    AI_CREATURE_LOAD_PC *creature = &system->creatures[index];
-                    EdFileRead(creature->name, 16);
-                    EdFileRead(creature->script_name, 16);
-                    if (strlen(creature->script_name) == 0)
-                        strcpy(creature->script_name, "default");
-                    if (version > 13)
-                        EdFileRead(character_name, 32);
-                    else
-                        EdFileRead(character_name, 16);
-                    if (GlobalCharacterTypeIDFn != NULL)
-                        creature->type = (i16)GlobalCharacterTypeIDFn(character_name);
-                    creature->position.x = EdFileReadFloat();
-                    creature->position.y = EdFileReadFloat();
-                    creature->position.z = EdFileReadFloat();
-                    creature->y_rotation = (i16)EdFileReadShort();
-                    if (version > 15)
-                        creature->set = (u8)EdFileReadChar();
-                    creature->count = (u8)EdFileReadChar();
-                    creature->count_across = (u8)EdFileReadChar();
-                    creature->active_mask = EdFileReadInt();
-                    creature->x_spacing = EdFileReadFloat();
-                    creature->z_spacing = EdFileReadFloat();
-                    creature->flags = EdFileReadInt();
-                    creature->path_info.path = system->path_sys->paths[(u8)EdFileReadChar()];
-                    creature->path_info.direction = (u8)EdFileReadChar();
-                    creature->path_info.connection = &creature->path_info.path->connections[(u16)EdFileReadShort()];
-                    if (version > 2) {
-                        creature->script_params[0] = EdFileReadFloat();
-                        creature->script_params[1] = EdFileReadFloat();
-                        creature->script_params[2] = EdFileReadFloat();
-                        creature->script_params[3] = EdFileReadFloat();
-                    }
-                    if (version >= 4 && EdFileReadInt() != 0) {
-                        EdFileRead(reference_name, 16);
-                        for (search = 0; search < system->area_count; ++search) {
-                            AI_AREA_LOAD_PC *entry = &system->areas[search];
-                            if (NuStrICmp(reference_name, entry->name) == 0) {
-                                creature->area = (AIAREA_PC *)entry;
-                                break;
-                            }
-                        }
-                    }
-                    if (version >= 6 && EdFileReadInt() != 0) {
-                        EdFileRead(reference_name, 16);
-                        for (search = 0; search < system->locator_count; ++search) {
-                            AILOCATOR_PC *entry = &system->locators[search];
-                            if (NuStrICmp(reference_name, entry->name) == 0) {
-                                creature->locator = entry;
-                                break;
-                            }
-                        }
-                    }
-                    if (version > 16 && EdFileReadInt() != 0) {
-                        EdFileRead(reference_name, 16);
-                        for (search = 0; search < system->locator_count; ++search) {
-                            AILOCATOR_PC *entry = &system->locators[search];
-                            if (NuStrICmp(reference_name, entry->name) == 0) {
-                                creature->respawn_locator = entry;
-                                break;
-                            }
-                        }
-                    }
-                    if (version > 7) {
-                        creature->activation_difficulty = (u8)EdFileReadChar();
-                        creature->min_respawn_count = EdFileReadChar();
-                        creature->max_respawn_count = EdFileReadChar();
-                        creature->activation_type = (u8)EdFileReadChar();
-                        creature->min_respawn_time = EdFileReadFloat();
-                        creature->max_respawn_time = EdFileReadFloat();
-                    } else {
-                        creature->activation_difficulty = AiLoadActivationDifficultyPc;
-                        creature->min_respawn_count = AiLoadMinimumRespawnCountPc;
-                        creature->max_respawn_count = AiLoadMaximumRespawnCountPc;
-                        creature->min_respawn_time = AiLoadMinimumRespawnTimePc;
-                        creature->max_respawn_time = AiLoadMaximumRespawnTimePc;
-                    }
-                    if (version > 9)
-                        creature->start_stagger = EdFileReadFloat();
-                    else
-                        creature->start_stagger = AiLoadStartStaggerPc;
-                    if (creature->activation_type == 1) {
-                        EdFileRead(reference_name, 16);
-                        for (search = 0; search < system->area_count; ++search) {
-                            AI_AREA_LOAD_PC *entry = &system->areas[search];
-                            if (NuStrICmp(reference_name, entry->name) == 0) {
-                                creature->activate_area = (AIAREA_PC *)entry;
-                                break;
-                            }
-                        }
-                    }
-                    if (version > 10) {
-                        creature->view_distance = EdFileReadFloat();
-                        creature->hear_distance = EdFileReadFloat();
-                        creature->max_view_height = EdFileReadFloat();
-                        creature->min_view_height = EdFileReadFloat();
-                        EdFileReadInt();
-                        if (GetViewRangeFn != NULL && creature->view_distance == 0.0f)
-                            creature->view_distance = GetViewRangeFn(creature->type);
-                        if (GetHearDistanceFn != NULL && creature->hear_distance == 0.0f)
-                            creature->hear_distance = GetHearDistanceFn(creature->type);
-                        if (GetMaxViewHeightFn != NULL && creature->max_view_height == 0.0f)
-                            creature->max_view_height = GetMaxViewHeightFn(creature->type);
-                        if (GetMinViewHeightFn != NULL && creature->min_view_height == 0.0f)
-                            creature->min_view_height = GetMinViewHeightFn(creature->type);
-                    } else {
-                        if (GetViewRangeFn != NULL)
-                            creature->view_distance = GetViewRangeFn(creature->type);
+        if (is_open == 0) {
+            EdFileSetPakFile(NULL);
+            is_open = EdFileOpen(ai2_path, 0);
+        }
+        if (is_open != 0) {
+            version = EdFileReadInt();
+            system->scene = scene;
+            system->path_sys = AISysLoadPathsPc(&system->storage_cursor, version, scene, &system->storage_end);
+            if (version >= 4) {
+                system->area_count = EdFileReadInt();
+                if (system->area_count != 0) {
+                    system->areas = (AI_AREA_LOAD_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
+                                                                        system->area_count * sizeof(AI_AREA_LOAD_PC));
+                    for (index = 0; index < system->area_count; ++index) {
+                        AI_AREA_LOAD_PC *area = &system->areas[index];
+                        EdFileRead(area->name, 16);
+                        area->minimum.x = EdFileReadFloat();
+                        area->minimum.y = EdFileReadFloat();
+                        area->minimum.z = EdFileReadFloat();
+                        area->maximum.x = EdFileReadFloat();
+                        area->maximum.y = EdFileReadFloat();
+                        area->maximum.z = EdFileReadFloat();
+                        area->flags = EdFileReadShort();
+                        area->system = (AISYS_PC *)system;
+                        if (version > 19)
+                            area->game_flags = (u8)EdFileReadChar();
                         else
-                            creature->view_distance = 1.0f;
-                        if (GetHearDistanceFn != NULL)
-                            creature->hear_distance = GetHearDistanceFn(creature->type);
-                        else
-                            creature->hear_distance = 1.0f;
-                        if (GetMaxViewHeightFn != NULL)
-                            creature->max_view_height = GetMaxViewHeightFn(creature->type);
-                        else
-                            creature->max_view_height = 1.0f;
-                        if (GetMinViewHeightFn != NULL)
-                            creature->min_view_height = GetMinViewHeightFn(creature->type);
-                        else
-                            creature->min_view_height = 1.0f;
-                    }
-                }
-            }
-            if (version > 12) {
-                system->antinode_count = EdFileReadInt();
-                if (system->antinode_count != 0) {
-                    PATH_LOAD_ALLOCATE(AI_ANTINODE_LOAD_PC *, system->antinodes, &system->storage_cursor,
-                                       &system->storage_end, system->antinode_count * sizeof(AI_ANTINODE_LOAD_PC));
-                    for (index = 0; index < system->antinode_count; ++index) {
-                        AI_ANTINODE_LOAD_PC *antinode = &system->antinodes[index];
-                        i32 length;
-                        antinode->enabled = 1;
-                        antinode->position.x = EdFileReadFloat();
-                        antinode->position.y = EdFileReadFloat();
-                        antinode->position.z = EdFileReadFloat();
-                        antinode->radius = EdFileReadFloat();
-                        antinode->base_radius = antinode->radius;
-                        antinode->base_height = antinode->radius;
-                        antinode->min_y = EdFileReadFloat();
-                        antinode->max_y = EdFileReadFloat();
-                        antinode->min_y_offset = antinode->min_y - antinode->position.y;
-                        antinode->max_y_offset = antinode->max_y - antinode->position.y;
-                        if (version > 14) {
-                            antinode->flags = EdFileReadInt();
-                            antinode->base_radius = EdFileReadFloat();
-                            antinode->base_height = EdFileReadFloat();
-                            antinode->type = (u8)EdFileReadChar();
-                        } else {
                             EdFileReadChar();
-                        }
                         EdFileReadChar();
-                        EdFileReadChar();
-                        antinode->game_flags = (u8)EdFileReadChar();
-                        length = (i8)EdFileReadChar();
-                        if (length != 0) {
-                            EdFileRead(special_name, length);
-                            antinode->has_special =
-                                (u8)(NuSpecialFind(scene, &antinode->special_handle, special_name, 1) != 0);
-                            antinode->special_position.x = EdFileReadFloat();
-                            antinode->special_position.y = EdFileReadFloat();
-                            antinode->special_position.z = EdFileReadFloat();
-                            if (version > 14)
-                                antinode->rotation_offset = EdFileReadInt();
-                        }
                     }
                 }
             }
-            if (version > 6 && GameAILoadFn != NULL)
-                GameAILoadFn((AISYS_PC *)system, version, scene, buffer, buffer_end);
+            if (system->path_sys != NULL) {
+                if (version >= 6) {
+                    system->locator_count = EdFileReadInt();
+                    if (system->locator_count != 0) {
+                        system->locators =
+                            (AILOCATOR_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
+                                                             system->locator_count * sizeof(AILOCATOR_PC));
+                        for (index = 0; index < system->locator_count; ++index) {
+                            AILOCATOR_PC *locator = &system->locators[index];
+                            EdFileRead(locator->name, 16);
+                            locator->position.x = EdFileReadFloat();
+                            locator->position.y = EdFileReadFloat();
+                            locator->position.z = EdFileReadFloat();
+                            locator->rotation = (i16)EdFileReadShort();
+                            locator->path_info.path = system->path_sys->paths[(u8)EdFileReadChar()];
+                            locator->path_info.direction = (u8)EdFileReadChar();
+                            locator->path_info.connection =
+                                &locator->path_info.path->connections[(u16)EdFileReadShort()];
+                            locator->path_info.distance = EdFileReadFloat();
+                            locator->path_info.width = EdFileReadFloat();
+                            if (version > 14)
+                                locator->rotation_offset = EdFileReadInt();
+                        }
+                    }
+                    if (version > 17) {
+                        system->locator_set_count = EdFileReadInt();
+                        if (system->locator_set_count != 0) {
+                            system->locator_sets = (AILOCATORSET_PC *)AISysBufferAlloc(
+                                &system->storage_cursor, &system->storage_end,
+                                system->locator_set_count * sizeof(AILOCATORSET_PC));
+                            for (index = 0; index < system->locator_set_count; ++index) {
+                                AILOCATORSET_PC *set = &system->locator_sets[index];
+                                EdFileRead(set->name, 16);
+                                set->locator_count = (i8)EdFileReadInt();
+                                set->locator_entries =
+                                    (u8 *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
+                                                           set->locator_count * sizeof(AILOCATORSET_PC));
+                                for (search = 0; search < set->locator_count; ++search)
+                                    set->locator_entries[search] = (u8)EdFileReadChar();
+                                PATH_LOAD_ALLOCATE(u8 *, set->assigned, &system->storage_cursor, &system->storage_end,
+                                                   set->locator_count);
+                                memset(set->assigned, 0, set->locator_count);
+                            }
+                        }
+                    }
+                }
+                system->creature_count = EdFileReadInt();
+                if (system->creature_count != 0) {
+                    system->creatures =
+                        (AI_CREATURE_LOAD_PC *)AISysBufferAlloc(&system->storage_cursor, &system->storage_end,
+                                                                system->creature_count * sizeof(AI_CREATURE_LOAD_PC));
+                    for (index = 0; index < system->creature_count; ++index) {
+                        AI_CREATURE_LOAD_PC *creature = &system->creatures[index];
+                        EdFileRead(creature->name, 16);
+                        EdFileRead(creature->script_name, 16);
+                        if (strlen(creature->script_name) == 0)
+                            strcpy(creature->script_name, "default");
+                        if (version > 13)
+                            EdFileRead(character_name, 32);
+                        else
+                            EdFileRead(character_name, 16);
+                        if (GlobalCharacterTypeIDFn != NULL)
+                            creature->type = (i16)GlobalCharacterTypeIDFn(character_name);
+                        creature->position.x = EdFileReadFloat();
+                        creature->position.y = EdFileReadFloat();
+                        creature->position.z = EdFileReadFloat();
+                        creature->y_rotation = (i16)EdFileReadShort();
+                        if (version > 15)
+                            creature->set = (u8)EdFileReadChar();
+                        creature->count = (u8)EdFileReadChar();
+                        creature->count_across = (u8)EdFileReadChar();
+                        creature->active_mask = EdFileReadInt();
+                        creature->x_spacing = EdFileReadFloat();
+                        creature->z_spacing = EdFileReadFloat();
+                        creature->flags = EdFileReadInt();
+                        creature->path_info.path = system->path_sys->paths[(u8)EdFileReadChar()];
+                        creature->path_info.direction = (u8)EdFileReadChar();
+                        creature->path_info.connection = &creature->path_info.path->connections[(u16)EdFileReadShort()];
+                        if (version > 2) {
+                            creature->script_params[0] = EdFileReadFloat();
+                            creature->script_params[1] = EdFileReadFloat();
+                            creature->script_params[2] = EdFileReadFloat();
+                            creature->script_params[3] = EdFileReadFloat();
+                        }
+                        if (version >= 4 && EdFileReadInt() != 0) {
+                            EdFileRead(reference_name, 16);
+                            for (search = 0; search < system->area_count; ++search) {
+                                AI_AREA_LOAD_PC *entry = &system->areas[search];
+                                if (NuStrICmp(reference_name, entry->name) == 0) {
+                                    creature->area = (AIAREA_PC *)entry;
+                                    break;
+                                }
+                            }
+                        }
+                        if (version >= 6 && EdFileReadInt() != 0) {
+                            EdFileRead(reference_name, 16);
+                            for (search = 0; search < system->locator_count; ++search) {
+                                AILOCATOR_PC *entry = &system->locators[search];
+                                if (NuStrICmp(reference_name, entry->name) == 0) {
+                                    creature->locator = entry;
+                                    break;
+                                }
+                            }
+                        }
+                        if (version > 16 && EdFileReadInt() != 0) {
+                            EdFileRead(reference_name, 16);
+                            for (search = 0; search < system->locator_count; ++search) {
+                                AILOCATOR_PC *entry = &system->locators[search];
+                                if (NuStrICmp(reference_name, entry->name) == 0) {
+                                    creature->respawn_locator = entry;
+                                    break;
+                                }
+                            }
+                        }
+                        if (version > 7) {
+                            creature->activation_difficulty = (u8)EdFileReadChar();
+                            creature->min_respawn_count = EdFileReadChar();
+                            creature->max_respawn_count = EdFileReadChar();
+                            creature->activation_type = (u8)EdFileReadChar();
+                            creature->min_respawn_time = EdFileReadFloat();
+                            creature->max_respawn_time = EdFileReadFloat();
+                        } else {
+                            creature->activation_difficulty = AiLoadActivationDifficultyPc;
+                            creature->min_respawn_count = AiLoadMinimumRespawnCountPc;
+                            creature->max_respawn_count = AiLoadMaximumRespawnCountPc;
+                            creature->min_respawn_time = AiLoadMinimumRespawnTimePc;
+                            creature->max_respawn_time = AiLoadMaximumRespawnTimePc;
+                        }
+                        if (version > 9)
+                            creature->start_stagger = EdFileReadFloat();
+                        else
+                            creature->start_stagger = AiLoadStartStaggerPc;
+                        if (creature->activation_type == 1) {
+                            EdFileRead(reference_name, 16);
+                            for (search = 0; search < system->area_count; ++search) {
+                                AI_AREA_LOAD_PC *entry = &system->areas[search];
+                                if (NuStrICmp(reference_name, entry->name) == 0) {
+                                    creature->activate_area = (AIAREA_PC *)entry;
+                                    break;
+                                }
+                            }
+                        }
+                        if (version > 10) {
+                            creature->view_distance = EdFileReadFloat();
+                            creature->hear_distance = EdFileReadFloat();
+                            creature->max_view_height = EdFileReadFloat();
+                            creature->min_view_height = EdFileReadFloat();
+                            EdFileReadInt();
+                            if (GetViewRangeFn != NULL && creature->view_distance == 0.0f)
+                                creature->view_distance = GetViewRangeFn(creature->type);
+                            if (GetHearDistanceFn != NULL && creature->hear_distance == 0.0f)
+                                creature->hear_distance = GetHearDistanceFn(creature->type);
+                            if (GetMaxViewHeightFn != NULL && creature->max_view_height == 0.0f)
+                                creature->max_view_height = GetMaxViewHeightFn(creature->type);
+                            if (GetMinViewHeightFn != NULL && creature->min_view_height == 0.0f)
+                                creature->min_view_height = GetMinViewHeightFn(creature->type);
+                        } else {
+                            if (GetViewRangeFn != NULL)
+                                creature->view_distance = GetViewRangeFn(creature->type);
+                            else
+                                creature->view_distance = 1.0f;
+                            if (GetHearDistanceFn != NULL)
+                                creature->hear_distance = GetHearDistanceFn(creature->type);
+                            else
+                                creature->hear_distance = 1.0f;
+                            if (GetMaxViewHeightFn != NULL)
+                                creature->max_view_height = GetMaxViewHeightFn(creature->type);
+                            else
+                                creature->max_view_height = 1.0f;
+                            if (GetMinViewHeightFn != NULL)
+                                creature->min_view_height = GetMinViewHeightFn(creature->type);
+                            else
+                                creature->min_view_height = 1.0f;
+                        }
+                    }
+                }
+                if (version > 12) {
+                    system->antinode_count = EdFileReadInt();
+                    if (system->antinode_count != 0) {
+                        PATH_LOAD_ALLOCATE(AI_ANTINODE_LOAD_PC *, system->antinodes, &system->storage_cursor,
+                                           &system->storage_end, system->antinode_count * sizeof(AI_ANTINODE_LOAD_PC));
+                        for (index = 0; index < system->antinode_count; ++index) {
+                            AI_ANTINODE_LOAD_PC *antinode = &system->antinodes[index];
+                            i32 length;
+                            antinode->enabled = 1;
+                            antinode->position.x = EdFileReadFloat();
+                            antinode->position.y = EdFileReadFloat();
+                            antinode->position.z = EdFileReadFloat();
+                            antinode->radius = EdFileReadFloat();
+                            antinode->base_radius = antinode->radius;
+                            antinode->base_height = antinode->radius;
+                            antinode->min_y = EdFileReadFloat();
+                            antinode->max_y = EdFileReadFloat();
+                            antinode->min_y_offset = antinode->min_y - antinode->position.y;
+                            antinode->max_y_offset = antinode->max_y - antinode->position.y;
+                            if (version > 14) {
+                                antinode->flags = EdFileReadInt();
+                                antinode->base_radius = EdFileReadFloat();
+                                antinode->base_height = EdFileReadFloat();
+                                antinode->type = (u8)EdFileReadChar();
+                            } else {
+                                EdFileReadChar();
+                            }
+                            EdFileReadChar();
+                            EdFileReadChar();
+                            antinode->game_flags = (u8)EdFileReadChar();
+                            length = (i8)EdFileReadChar();
+                            if (length != 0) {
+                                EdFileRead(special_name, length);
+                                antinode->has_special =
+                                    (u8)(NuSpecialFind(scene, &antinode->special_handle, special_name, 1) != 0);
+                                antinode->special_position.x = EdFileReadFloat();
+                                antinode->special_position.y = EdFileReadFloat();
+                                antinode->special_position.z = EdFileReadFloat();
+                                if (version > 14)
+                                    antinode->rotation_offset = EdFileReadInt();
+                            }
+                        }
+                    }
+                }
+                if (version > 6 && GameAILoadFn != NULL)
+                    GameAILoadFn((AISYS_PC *)system, version, scene, buffer, buffer_end);
+            }
+            EdFileClose();
         }
-        EdFileClose();
+        sprintf(script_path, "%sLevels\\%s\\%s", AiLevelPathName, directory, parameter);
+        AIScriptLoadAllPakFile(pak, script_path, buffer, buffer_end, (AISYS_PC *)system);
+        AISysSetLevelPath((AISYS_PC *)system, NULL);
     }
-    sprintf(script_path, "%sLevels\\%s\\%s", AiLevelPathName, directory, parameter);
-    AIScriptLoadAllPakFile(pak, script_path, buffer, buffer_end, (AISYS_PC *)system);
-    AISysSetLevelPath((AISYS_PC *)system, NULL);
     return (AISYS_PC *)system;
 }
 
@@ -13549,7 +13552,7 @@ AISYS_PC *__cdecl AISysLoadEx(VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_
             pak = NuFilePakLoad(path, &pak_start, *buffer_end, 16);
         }
     }
-    return AISysLoadPrivatePc(scene, directory, pak, buffer, buffer_end, storage_size, name, parameter, load_directory);
+    return AISysLoadPrivatePc(pak, scene, directory, buffer, buffer_end, storage_size, name, parameter, load_directory);
 }
 
 AISYS_PC *__cdecl AISysLoad(VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size, NUGSCN *scene, char *directory,
