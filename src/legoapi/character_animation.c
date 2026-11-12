@@ -623,13 +623,13 @@ void __cdecl Animate_WEIRDO(GAMEOBJECT *object) {
             else
                 object->anim_packet.requested_animation = 11;
         } else if (object->character_context == 27 || object->character_context == 29 ||
-                   object->character_context == 18 || object->character_context == 8)
+                   object->character_context == 18 || object->character_context == 8) {
             if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                 object->character_model->action_animations[39] != NULL)
                 object->anim_packet.requested_animation = 39;
             else
                 object->anim_packet.requested_animation = 11;
-        else if (object->anim_packet.requested_animation != 5) {
+        } else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f)
                 MoveAnim_Manage(object, object->pad->input_magnitude, 1, 1);
             else if ((object->field_e22 & 1) != 0 || object->field_e33 == 1) {
@@ -684,13 +684,13 @@ void __cdecl Animate_JEDI(GAMEOBJECT *object) {
             else
                 object->anim_packet.requested_animation = 11;
         } else if (object->character_context == 27 || object->character_context == 29 ||
-                   object->character_context == 18 || object->character_context == 8)
+                   object->character_context == 18 || object->character_context == 8) {
             if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                 object->character_model->action_animations[39] != NULL)
                 object->anim_packet.requested_animation = 39;
             else
                 object->anim_packet.requested_animation = 11;
-        else if (object->anim_packet.requested_animation != 5) {
+        } else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
                 if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
                     if ((object->weapon_scale == 1.0f || object->field_e33 == 1) &&
