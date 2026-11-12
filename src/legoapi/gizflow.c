@@ -241,18 +241,19 @@ void __cdecl CheckIfParentsFinished(GIZFLOW_PC *system, FLOWBOX_PC *box) {
         FlowParentStatePc *state = (FlowParentStatePc *)parent;
         u32 flags = state->flags;
         i32 child_index;
-        i32 finished = 1;
+        i32 finished;
         if ((flags & 0x20) == 0)
             continue;
+        finished = 1;
         for (child_index = 0; child_index < parent->child_count; ++child_index) {
             u32 child_flags;
             if (!finished)
                 break;
             child_flags = ((FlowParentStatePc *)parent->children[child_index])->flags;
-            if ((child_flags & 0xc0) != 0) {
-                if ((child_flags & 2) == 0 || (child_flags & 0x100) != 0)
+            if ((child_flags & 0xc0) == 0) {
+                if ((child_flags & 1) != 0 && parent->children[child_index] != box)
                     finished = 0;
-            } else if ((child_flags & 1) != 0 && parent->children[child_index] != box) {
+            } else if ((child_flags & 2) == 0 || (child_flags & 0x100) != 0) {
                 finished = 0;
             }
         }
