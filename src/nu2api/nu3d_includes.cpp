@@ -9406,7 +9406,8 @@ extern "C" void __cdecl NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer,
 }
 
 extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cdecl **handlers)(void *)) {
-    for (;;) {
+    i32 done = 0;
+    while (!done) {
         switch (item->id) {
             case 3: {
                 void(__cdecl * handler)(void *) = handlers[item->type - 0x80];
@@ -9419,17 +9420,17 @@ extern "C" void __cdecl NuDisplayListExecute(NUDISPLAYLISTITEM *item, void(__cde
             /* fall through */
             case 0:
                 ++item;
-                continue;
+                break;
             case 1:
                 item = (NUDISPLAYLISTITEM *)item->next;
-                continue;
+                break;
             case 4:
+                done = 1;
                 break;
             default:
                 for (;;) {
                 }
         }
-        break;
     }
 }
 
