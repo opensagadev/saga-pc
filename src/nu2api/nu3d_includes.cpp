@@ -12715,7 +12715,7 @@ extern "C" {
 
     static void setnextpoint(f32 x, f32 y) {
         nextx = x;
-        dx = (x - curx) / y;
+        dx = (nextx - curx) / y;
         size = (i32)y;
     }
 
