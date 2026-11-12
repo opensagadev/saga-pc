@@ -16061,7 +16061,9 @@ i32 __cdecl Action_Circle(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET
             } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
                 packet->flags |= 0x200u;
             } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
-                packet->flags ^= 0x200u;
+                // MATCH-EXCEPTION: retail flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200)); flags has
+                // no bitfield view, so the flip is a masked merge.
+                packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
             } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
                 processor->action_data_1 |= 1;
             } else if (NuStrICmp(params[i], AIPathCurrentDistanceName) == 0) {
@@ -16136,7 +16138,9 @@ i32 __cdecl Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
                 packet->flags |= 0x200u;
             } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
-                packet->flags ^= 0x200u;
+                // MATCH-EXCEPTION: retail flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200)); flags has
+                // no bitfield view, so the flip is a masked merge.
+                packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
             } else if (NuStrICmp(params[i], AIPathFacingName) == 0) {
                 processor->action_data_1 |= 1;
             } else if (NuStrICmp(params[i], AIPathCanGoOffPathName) == 0) {
@@ -16168,7 +16172,6 @@ i32 __cdecl Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
                                   i32 param_count, i32 first_time, f32 elapsed) {
     NUVEC difference;
     i32 i;
-    AIPACKET_PC *target;
     NUVEC *position;
 
     if (packet == NULL) {
@@ -16184,7 +16187,9 @@ i32 __cdecl Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
             } else if (NuStrICmp(params[i], AIPathClockwiseName) == 0) {
                 packet->flags |= 0x200u;
             } else if (NuStrICmp(params[i], AIPathReverseName) == 0) {
-                packet->flags ^= 0x200u;
+                // MATCH-EXCEPTION: retail flips the clockwise bit as a 1-bit field (x ^ ((~x ^ x) & 0x200)); flags has
+                // no bitfield view, so the flip is a masked merge.
+                packet->flags = (packet->flags & ~0x200u) | (~packet->flags & 0x200u);
             } else if (NuStrICmp(params[i], AIPathRandomName) == 0) {
                 if (NuRandFloat() < 0.5f) {
                     packet->flags &= ~0x200u;
@@ -16207,9 +16212,10 @@ i32 __cdecl Action_CircleOpponent(AISYS_PC *system, AISCRIPTPROCESS_PC *processo
             packet->movement_instruction_parameter = NuVecXZDist(
                 &packet->terrain_origin, &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position, &difference);
         }
-        target = ((APIOBJECT_PC *)packet->opponent)->ai;
-        position = (processor->action_data_1 & 2) != 0 ? &target->terrain_origin : &target->last_path_position;
-        AIMoveInstruction(packet, position, target->mover_height, &target->path_info, 3,
+        position = (processor->action_data_1 & 2) != 0 ? &((APIOBJECT_PC *)packet->opponent)->ai->terrain_origin
+                                                       : &((APIOBJECT_PC *)packet->opponent)->ai->last_path_position;
+        AIMoveInstruction(packet, position, ((APIOBJECT_PC *)packet->opponent)->ai->mover_height,
+                          &((APIOBJECT_PC *)packet->opponent)->ai->path_info, 3,
                           packet->movement_instruction_parameter);
         if ((processor->action_data_1 & 1) != 0) {
             packet->movement_look_target = position;
