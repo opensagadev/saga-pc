@@ -9115,10 +9115,10 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
 }
 
 void __cdecl Move_JEDI(GAMEOBJECT *object) {
-    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
-    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_pressed = object->pad->buttons_pressed & GAMEPAD_JUMP;
+    u32 action_held = object->pad->buttons_held & GAMEPAD_ACTION;
     u32 jump_held = object->pad->buttons_held & GAMEPAD_JUMP;
+    u32 action_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
     u32 special_pressed = object->pad->buttons_pressed & GAMEPAD_SPECIAL;
     u32 special_held = object->pad->buttons_held & GAMEPAD_SPECIAL;
     i32 glow_model, hit_effect;
