@@ -4179,16 +4179,17 @@ i32 __cdecl Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     char numbered_name[64];
     AILOCATOR_PC *candidate;
     f32 distance;
-    GAMEOBJECT *object;
+    AILOCATOR_PC *nearest_locator;
     (void)param_6;
     best_distance = 1.0e9f;
-    target = NULL;
     locator_name = NULL;
     personal = 0;
     indexed = 0;
     nearest = 0;
     random_count = 0;
+    target = NULL;
     locator = NULL;
+    nearest_locator = NULL;
     if (param_5 == 0) {
         return 1;
     }
@@ -4216,34 +4217,35 @@ i32 __cdecl Action_GameSetLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
         }
     }
 
-    if (locator_name != NULL && nearest) {
-        index = 0;
-        do {
-            sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, index++);
-            candidate = AIPathFindLocator(sys, numbered_name);
-            if (candidate != NULL) {
-                distance = NuVecDistSqr(&packet->terrain_origin, &candidate->position, &difference);
-                if (distance < best_distance) {
-                    best_distance = distance;
-                    locator = candidate;
+    if (locator_name != NULL) {
+        if (nearest) {
+            index = 0;
+            do {
+                sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, index++);
+                candidate = AIPathFindLocator(sys, numbered_name);
+                if (candidate != NULL) {
+                    distance = NuVecDistSqr(&packet->terrain_origin, &candidate->position, &difference);
+                    if (distance < best_distance) {
+                        best_distance = distance;
+                        nearest_locator = candidate;
+                    }
                 }
+            } while (candidate != NULL);
+            locator = nearest_locator;
+        } else if (packet != NULL) {
+            if (indexed && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
+                sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name,
+                        ((APIOBJECT_PC *)packet->owner)->locator_name_index);
+            } else if (personal && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
+                sprintf(numbered_name, (char *)AILocatorPersonalFormat, locator_name,
+                        ((APIOBJECT_PC *)packet->owner)->character_data->name);
+            } else if (random_count != 0) {
+                sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, NuRand(0) % random_count);
+            } else {
+                sprintf(numbered_name, locator_name);
             }
-        } while (candidate != NULL);
-    } else if (locator_name != NULL) {
-
-        object = packet->owner->objptr;
-        if (indexed && ((APIOBJECT_PC *)packet->owner)->locator_name_index != -1) {
-            sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name,
-                    ((APIOBJECT_PC *)packet->owner)->locator_name_index);
-        } else if (personal && ((APIOBJECT_PC *)packet->owner)->character_data != NULL) {
-            sprintf(numbered_name, (char *)AILocatorPersonalFormat, locator_name,
-                    ((APIOBJECT_PC *)packet->owner)->character_data->name);
-        } else if (random_count != 0) {
-            sprintf(numbered_name, (char *)AILocatorIndexedFormat, locator_name, NuRand(0) % random_count);
-        } else {
-            sprintf(numbered_name, locator_name);
+            locator = AIPathFindLocator(sys, numbered_name);
         }
-        locator = AIPathFindLocator(sys, numbered_name);
     }
     if (target != NULL) {
         target->ai->locator = locator;
