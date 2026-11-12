@@ -11445,9 +11445,9 @@ i32 __cdecl Action_SetAO_InitRowDist(AISYS_PC *unused0, AISCRIPTPROCESS_PC *proc
 
 i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet,
                                        char **params, i32 count, i32 first_time, f32 elapsed) {
+    i32 complete = 1;
     GAMEOBJECT *object = NULL;
     TECHNO_PC *techno = NULL;
-    i32 complete = 1;
     i32 index;
     char *value;
     if (packet != NULL && packet->owner != NULL)
@@ -11456,19 +11456,17 @@ i32 __cdecl Action_SetTechnoCompletePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], "techno");
             if (value != NULL) {
-                GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(
-                    WORLD->gizmo_sys, GizmoGetTypeIDByName(WORLD->gizmo_sys, (char *)PCContextName_Techno),
-                    value + NuStrLen("techno") + 1);
+                GIZMO_PC *gizmo;
+                value += NuStrLen("techno") + 1;
+                gizmo = (GIZMO_PC *)GizmoFindByName(
+                    WORLD->gizmo_sys, GizmoGetTypeIDByName(WORLD->gizmo_sys, (char *)PCContextName_Techno), value);
                 if (gizmo != NULL && gizmo->object != NULL)
                     techno = (TECHNO_PC *)gizmo->object;
             } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
                 complete = 0;
             } else if ((value = NuStrIStr(params[index], "controlling")) != NULL) {
-                char *name = value + NuStrLen("controlling") + 1;
-                GAMEOBJECT_LOOKUP_CALLBACK_PC lookup = GetNamedGameObjectCallback;
-                void *ai_system = WORLD->ai_sys;
-                APIOBJECT_PC *named = lookup != NULL ? lookup(ai_system, name) : NULL;
-                object = named != NULL ? named->owner : NULL;
+                value += NuStrLen("controlling") + 1;
+                object = GetNamedGameObject(WORLD->ai_sys, value);
             }
         }
         if (object != NULL)
