@@ -7829,7 +7829,6 @@ i32 __cdecl Action_MoveAwayFromLastAttacker(AISYS_PC *system, AISCRIPTPROCESS_PC
                                             char **params, i32 param_count, i32 first_time, f32 elapsed) {
     i32 index;
     GAMEOBJECT *object;
-    GAMEOBJECT *attacker;
 
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
@@ -7849,10 +7848,10 @@ i32 __cdecl Action_MoveAwayFromLastAttacker(AISYS_PC *system, AISCRIPTPROCESS_PC
         }
     }
 
-    attacker = object->last_attacker;
-    if (attacker != NULL) {
-        AIMoveInstruction(packet, &attacker->ai_packet.last_path_position, attacker->ai_packet.mover_height,
-                          &attacker->ai_packet.path_info, 2, packet->movement_instruction_parameter);
+    if (object != NULL && object->last_attacker != NULL) {
+        AIMoveInstruction(packet, &object->last_attacker->ai_packet.last_path_position,
+                          object->last_attacker->ai_packet.mover_height, &object->last_attacker->ai_packet.path_info, 2,
+                          packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
             packet->movement_look_target = &object->last_attacker->position;
         }
