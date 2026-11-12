@@ -862,10 +862,11 @@ void __cdecl DebrisProcessGeneration(void) {
             key->finite = 1;
         if (key->finite != 0 && key->previous_allocated_chunk_count == 0) {
             DebReAlloc(key, effect->max_particles);
-            DebReAlloc(key, (i32)(effect->max_particles / (forced_debris_thinning != 0 ? debris_thinning_level
-                                                           : effect->thinning < debris_thinning_level
-                                                               ? effect->thinning
-                                                               : debris_thinning_level)));
+            DebReAlloc(key, (i32)(forced_debris_thinning != 0
+                                      ? effect->max_particles / debris_thinning_level
+                                      : effect->max_particles / (effect->thinning < debris_thinning_level
+                                                                     ? effect->thinning
+                                                                     : debris_thinning_level)));
         }
         elapsed = now - key->last_update_time;
         key->emission_position.x = key->emitter_momentum.x * elapsed;
@@ -873,9 +874,10 @@ void __cdecl DebrisProcessGeneration(void) {
         key->emission_position.z = key->emitter_momentum.z * elapsed;
         if ((f32)effect->frequency > 0.0f)
             emission_interval =
-                1.0f / ((f32)effect->frequency / (forced_debris_thinning != 0                ? debris_thinning_level
-                                                  : effect->thinning < debris_thinning_level ? effect->thinning
-                                                                                             : debris_thinning_level));
+                1.0f / (forced_debris_thinning != 0 ? (f32)effect->frequency / debris_thinning_level
+                                                    : (f32)effect->frequency / (effect->thinning < debris_thinning_level
+                                                                                    ? effect->thinning
+                                                                                    : debris_thinning_level));
         emission_time = key->emission_epoch + emission_interval;
         while (emission_time < now + debris_time_increment && ++emission < 100) {
             transitions = 0;
