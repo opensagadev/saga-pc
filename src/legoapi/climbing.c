@@ -356,8 +356,8 @@ __declspec(noinline) i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
     f32 inner_distance, outer_distance, speed, distance_squared, blend;
     if (blowup != NULL) {
         target_position = &blowup->mid_position;
-        if ((LEGOCONTEXT_COMBO != -1 && LEGOCONTEXT_COMBO == object->character_context) ||
-            (LEGOCONTEXT_JUMP != -1 && LEGOCONTEXT_JUMP == object->character_context &&
+        if ((LEGOCONTEXT_COMBO != -1 && object->character_context == LEGOCONTEXT_COMBO) ||
+            (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP &&
              object->action_movement_state == 3)) {
             inner_distance = object->collision_radius * PlayerStepInnerActionPc + blowup->target_radius;
             outer_distance = object->collision_radius * PlayerStepOuterActionPc + blowup->target_radius;
@@ -368,26 +368,28 @@ __declspec(noinline) i32 __cdecl StepBackFromTarget(GAMEOBJECT *object) {
     } else {
         if (!(object->character_data->game_character->flags_090 & 0x8000) || object->force_target == NULL)
             return 0;
-        if ((LEGOCONTEXT_COMBO == -1 || LEGOCONTEXT_COMBO != object->character_context) &&
-            (LEGOCONTEXT_JUMP == -1 || LEGOCONTEXT_JUMP != object->character_context ||
+        if ((LEGOCONTEXT_COMBO == -1 || object->character_context != LEGOCONTEXT_COMBO) &&
+            (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
              object->action_movement_state != 3))
             return 0;
         target_position = &object->force_target->collision_position;
         inner_distance = object->bounds_radius * PlayerStepInnerActionPc + object->force_target->bounds_radius;
         outer_distance = object->bounds_radius * PlayerStepOuterActionPc + object->force_target->bounds_radius;
     }
+    if (target_position == NULL)
+        return 0;
     speed = AnimSpeed(object->character_model, object->field_7aa);
-    if (speed != 0.0f) {
-        distance_squared = NuVecXZDistSqr(&object->collision_position, target_position, NULL);
-        if (!(distance_squared >= outer_distance * outer_distance)) {
-            blend = 1.0f;
-            if (!(inner_distance * inner_distance >= distance_squared))
-                blend = 1.0f - (NuFsqrt(distance_squared) - inner_distance) / (outer_distance - inner_distance);
-            speed = (-speed - speed) * blend + speed;
-            object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
-            object->target_velocity.z = speed * NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
-            return 1;
-        }
-    }
-    return 0;
+    if (speed == 0.0f)
+        return 0;
+    distance_squared = NuVecXZDistSqr(&object->collision_position, target_position, NULL);
+    if (distance_squared >= outer_distance * outer_distance)
+        return 0;
+    if (inner_distance * inner_distance >= distance_squared)
+        blend = 1.0f;
+    else
+        blend = 1.0f - (NuFsqrt(distance_squared) - inner_distance) / (outer_distance - inner_distance);
+    speed = (-speed - speed) * blend + speed;
+    object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
+    object->target_velocity.z = speed * NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff];
+    return 1;
 }
