@@ -9683,19 +9683,20 @@ i32 ClassEditor::CreateObject(ClassObject &source) {
         created.object = theRegistry.CreateObject(object_interface, source.object, 4, 0, 2);
     else
         created.object = theRegistry.CreateObject(object_interface, NULL, 4, 0, 2);
-    if (created.object == NULL)
-        return 0;
-    if (source.ed_class->flags & 0x4000000) {
-        i32 flags = 0x4000000;
-        created.SetAttributeData(1, EdType_Int, &flags, 0);
-    } else {
-        created.ed_class->CopyObject(created.object, source.object);
-        created.ed_class->object_interface->Construct(created.object, source.object);
+    if (created.object != NULL) {
+        if (source.ed_class->flags & 0x4000000) {
+            i32 flags = 0x4000000;
+            created.SetAttributeData(1, EdType_Int, &flags, 0);
+        } else {
+            created.ed_class->CopyObject(created.object, source.object);
+            created.ed_class->object_interface->Construct(created.object, source.object);
+        }
+        InitialiseObject(created);
+        theRegistry.NotifyCreateObject(created.object, created.ed_class, NULL, 0, 0, 0);
+        SelectObject(created, 0);
+        return 1;
     }
-    InitialiseObject(created);
-    theRegistry.NotifyCreateObject(created.object, created.ed_class, NULL, 0, 0, 0);
-    SelectObject(created, 0);
-    return 1;
+    return 0;
 }
 
 i32 ClassEditor::cbEdCopySelectedObject(EdInputContext &) {
