@@ -276,7 +276,6 @@ void __cdecl UpdateTrooperCannons(WORLDINFO *unused) {
     (void)unused;
     for (index = 0; index < 4; ++index) {
         TROOPERCANNON_PC *cannon = &troopercannons[index];
-        GAMEOBJECT *callback_object;
         if (cannon->buildit != NULL && netclient == 0) {
             if (cannon->object != NULL) {
                 if (GizBuildIt_AtEnd(cannon->buildit) && cannon->rebuilding != 0) {
@@ -293,11 +292,12 @@ void __cdecl UpdateTrooperCannons(WORLDINFO *unused) {
         }
         if (cannon->object == NULL || netclient != 0)
             break;
-        callback_object = cannon->object->rider;
-        if (callback_object == NULL)
-            callback_object = cannon->object;
-        if (callback_object->tag_object_callback == NULL)
-            callback_object->tag_object_callback = KilledTrooperCannon;
+        if (cannon->object->rider != NULL) {
+            if (cannon->object->rider->tag_object_callback == NULL)
+                cannon->object->rider->tag_object_callback = KilledTrooperCannon;
+        } else if (cannon->object->tag_object_callback == NULL) {
+            cannon->object->tag_object_callback = KilledTrooperCannon;
+        }
     }
 }
 
