@@ -753,16 +753,16 @@ void __cdecl MenuEnterSave(MENU *menu) {
         menu->last_column = (i16)(SAVESLOTS - 1);
     } else {
         menu->last_column = (i16)memcard_slotsused;
-        if (SAVESLOTS == memcard_slotsused || saveload_freespace < SAVESIZE_ADDITIONAL)
+        if (memcard_slotsused == SAVESLOTS || saveload_freespace < SAVESIZE_ADDITIONAL)
             --menu->last_column;
     }
     menu->state = 2;
-    SaveMenuLastSlotPc = SaveMenuSlideLeftPc = SaveMenuSlideRightPc = 0;
+    SaveMenuSlideRightPc = SaveMenuSlideLeftPc = SaveMenuLastSlotPc = 0;
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
+    menu->last_row = 1;
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
     header_b = MENUHEADERB;
-    menu->last_row = 1;
     if (saveload_cardtype != 2)
         NewMenu(1002, -1, -1);
     else if (saveload_filecorrupt != 0)
