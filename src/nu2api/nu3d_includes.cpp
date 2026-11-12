@@ -14407,35 +14407,35 @@ extern "C" {
         if (override_count != 0) {
             memset(override_by_joint, 0, object->joint_count * sizeof(override_by_joint[0]));
             for (i = 0; i < override_count; ++i) {
-                u8 index = overrides[i].joint_index;
-                if (index < object->joint_override_map_count) {
-                    u8 joint = object->joint_override_map[index];
+                if (overrides[i].joint_index < object->joint_override_map_count) {
+                    u8 joint = object->joint_override_map[overrides[i].joint_index];
                     if (joint != 0xff)
                         override_by_joint[joint] = &overrides[i];
                 }
             }
         }
         for (i = 0; i < object->joint_count; ++i) {
+            NUMTX *output = &matrices[i];
             NUMTX *local;
             NUMTX transformed, rotation;
             if (override_count != 0 && override_by_joint[i] != NULL) {
                 NUHGOBJ_JOINT_OVERRIDE_PC *item = override_by_joint[i];
                 NUANGVEC angles;
                 transformed = object->bind_matrices[i];
-                angles.x = (i32)(item->rotation.x * AIPathAngularScale);
-                angles.y = (i32)(item->rotation.y * AIPathAngularScale);
-                angles.z = (i32)(item->rotation.z * AIPathAngularScale);
+                local = &transformed;
+                angles.x = (i32)(item->rotation.x * 10430.3779296875);
+                angles.y = (i32)(item->rotation.y * 10430.3779296875);
+                angles.z = (i32)(item->rotation.z * 10430.3779296875);
                 NuMtxSetRotateXYZVU0(&rotation, &angles);
                 NuMtxTranslate(&rotation, &item->translation);
-                NuMtxMulVU0(&transformed, &rotation, &transformed);
-                local = &transformed;
+                NuMtxMulVU0(local, &rotation, local);
             } else {
                 local = &object->bind_matrices[i];
             }
             if (object->joints[i].parent_index == 0xff)
-                matrices[i] = *local;
+                *output = *local;
             else
-                NuMtxMulVU0(&matrices[i], local, &matrices[object->joints[i].parent_index]);
+                NuMtxMulVU0(output, local, &matrices[object->joints[i].parent_index]);
         }
     }
 
