@@ -8037,10 +8037,10 @@ i32 __cdecl Action_CanTriggerObstacle(AISYS_PC *sys, AISCRIPTPROCESS_PC *process
 
 i32 __cdecl Action_PlayGizObstacle(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                    i32 count, i32 first_time, f32 delta) {
-    GIZOBSTACLE *obstacle = NULL;
     GIZMO_PC *gizmo;
     char *value;
     i32 index, backwards = 0, stay_open = 0, stay_shut = 0, snap = 0;
+    GIZOBSTACLE *obstacle = NULL;
     (void)system;
     (void)processor;
     (void)packet;
