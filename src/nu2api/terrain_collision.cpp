@@ -573,36 +573,36 @@ extern "C" {
 #undef TERRAIN_HP_EDGE
 #undef TERRAIN_HP_VERTEX
 // Retail re-reads the wall list after every call.
+#define TERI ((TerrainQuery_s *)TerI)
 #define TERRAIN_HWS_A (((TERRAIN_WALL_POINT *)WallSplList)[i].position)
 #define TERRAIN_HWS_B (((TERRAIN_WALL_POINT *)WallSplList)[i + 1].position)
+// NuFabs: the masked bits are copied into a second float (I16).
+#define TERRAIN_FABS(value, temp, out) ((temp) = (value), *(i32 *)&(out) = *(i32 *)&(temp) & 0x7fffffff, (out))
     i32 HitWallSpline() {
         f32 hit = 0.0f;
+        NUVEC normal;
+        NUVEC edge;
+        f32 temp, absolute_x, absolute_z;
+        normal.y = 0.0f;
         if (WallSplCount == 0)
             return hit;
         for (i32 i = 0; i < WallSplCount; i += 2) {
-            TerrainQuery_s *query = (TerrainQuery_s *)TerI;
-            TERRAIN_FLOAT_BITS_PC absolute_0;
-            absolute_0.value = (query->position.x - TERRAIN_HWS_A.x);
-            absolute_0.bits &= 0x7fffffff;
-            if (!(absolute_0.value < 64.0f))
+            if (!(TERRAIN_FABS(TERI->position.x - TERRAIN_HWS_A.x, temp, absolute_x) < 64.0f &&
+                  TERRAIN_FABS(TERI->position.z - TERRAIN_HWS_A.z, temp, absolute_z) < 64.0f))
                 continue;
-            TERRAIN_FLOAT_BITS_PC absolute_1;
-            absolute_1.value = (query->position.z - TERRAIN_HWS_A.z);
-            absolute_1.bits &= 0x7fffffff;
-            if (!(absolute_1.value < 64.0f))
-                continue;
-            NUVEC normal = {TERRAIN_HWS_B.z - TERRAIN_HWS_A.z, 0.0f, TERRAIN_HWS_A.x - TERRAIN_HWS_B.x};
+            normal.x = TERRAIN_HWS_B.z - TERRAIN_HWS_A.z;
+            normal.z = TERRAIN_HWS_A.x - TERRAIN_HWS_B.x;
             NuVecNorm(&normal, &normal);
-            query = (TerrainQuery_s *)TerI;
-            const f32 end_distance = (((query->movement.z + query->position.z) - TERRAIN_HWS_A.z) * normal.z) +
-                                     (((query->movement.x + query->position.x) - TERRAIN_HWS_A.x) * normal.x) -
+            TerrainQuery_s *query = TERI;
+            const f32 end_distance = ((query->movement.x + query->position.x) - TERRAIN_HWS_A.x) * normal.x +
+                                     ((query->movement.z + query->position.z) - TERRAIN_HWS_A.z) * normal.z -
                                      query->collision_radius;
             const f32 start_distance = (query->position.x - TERRAIN_HWS_A.x) * normal.x +
                                        (query->position.z - TERRAIN_HWS_A.z) * normal.z - query->collision_radius;
             if ((end_distance < 0.0f || start_distance < 0.0f) && start_distance > -query->collision_radius) {
                 f32 time, x, z;
-                const f32 dx = TERRAIN_HWS_B.x - TERRAIN_HWS_A.x;
-                const f32 dz = TERRAIN_HWS_B.z - TERRAIN_HWS_A.z;
+                edge.x = TERRAIN_HWS_B.x - TERRAIN_HWS_A.x;
+                edge.z = TERRAIN_HWS_B.z - TERRAIN_HWS_A.z;
                 if (start_distance < 0.0f) {
                     time = start_distance;
                     x = (query->position.x - normal.x * start_distance) - normal.x * query->collision_radius;
@@ -612,106 +612,107 @@ extern "C" {
                     x = (query->movement.x * time + query->position.x) - normal.x * query->collision_radius;
                     z = (query->movement.z * time + query->position.z) - normal.z * query->collision_radius;
                 }
-                if ((x - TERRAIN_HWS_A.x) * dx + dz * (z - TERRAIN_HWS_A.z) >= -0.00005f &&
-                    -dx * (x - TERRAIN_HWS_B.x) - (z - TERRAIN_HWS_B.z) * dz >= -0.00005f && time < query->hit_time) {
-                    query->shape_adjusted = 4;
-                    query->terrain_group_index = -1;
-                    query->hit_type = start_distance > 0.0f ? 1 : 0x11;
-                    query->surface = NULL;
-                    query->movement_normal = normal;
-                    query->hit_time = time;
-                    TerrWallInfo = 1;
-                    TerrWallTab[0] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[0];
-                    TerrWallTab[1] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[1];
-                    hit = 1.0f;
+                f32 side = (x - TERRAIN_HWS_A.x) * edge.x + (z - TERRAIN_HWS_A.z) * edge.z;
+                if (side >= -0.00005f) {
+                    side = -edge.x * (x - TERRAIN_HWS_B.x) - (z - TERRAIN_HWS_B.z) * edge.z;
+                    if (side >= -0.00005f && time < query->hit_time) {
+                        if (start_distance > 0.0f)
+                            query->hit_type = 1;
+                        else
+                            query->hit_type = 0x11;
+                        query->hit_time = time;
+                        TerrWallInfo = 1;
+                        query->movement_normal.x = normal.x;
+                        query->movement_normal.y = normal.y;
+                        query->movement_normal.z = normal.z;
+                        query->terrain_group_index = -1;
+                        query->shape_adjusted = 4;
+                        query->surface = NULL;
+                        TerrWallTab[0] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[0];
+                        TerrWallTab[1] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[1];
+                        hit = 1.0f;
+                    }
                 }
             }
-            const f32 dx = TERRAIN_HWS_A.x - query->position.x;
-            TERRAIN_FLOAT_BITS_PC absolute_2;
-            absolute_2.value = dx;
-            absolute_2.bits &= 0x7fffffff;
-            if (!(absolute_2.value < 64.0f))
+            if (!(TERRAIN_FABS(TERRAIN_HWS_A.x - query->position.x, temp, absolute_x) < 64.0f &&
+                  TERRAIN_FABS(TERRAIN_HWS_A.z - query->position.z, temp, absolute_z) < 64.0f))
                 continue;
             const f32 dz = TERRAIN_HWS_A.z - query->position.z;
-            TERRAIN_FLOAT_BITS_PC absolute_3;
-            absolute_3.value = dz;
-            absolute_3.bits &= 0x7fffffff;
-            if (!(absolute_3.value < 64.0f))
+            const f32 dx = TERRAIN_HWS_A.x - query->position.x;
+            f32 reach = query->collision_radius + 0.005f + query->horizontal_movement_length;
+            reach *= reach;
+            if (!(reach > dx * dx + dz * dz))
                 continue;
-            f64 reach = query->collision_radius;
-            reach += (f64)(f32)0.005f;
-            reach += query->horizontal_movement_length;
-            const f32 distance_sq = dx * dx + dz * dz;
-            if (!(distance_sq < (f32)(reach * reach)))
-                continue;
-            NUVEC direction = {query->movement.x, 0.0f, query->movement.z};
-            NuVecNorm(&direction, &direction);
-            query = (TerrainQuery_s *)TerI;
-            const f32 along = direction.x * dx + direction.z * dz;
-            const f32 padded_radius = query->collision_radius + 0.0005f;
-            bool penetrating = false;
-            f32 time = 0.0f;
-            if (along < 0.0f) {
-                if (distance_sq > padded_radius * padded_radius)
-                    continue;
-                penetrating = true;
-            } else {
-                const f32 side_x = TERRAIN_HWS_A.x - (direction.x * along + query->position.x);
-                const f32 side_z = TERRAIN_HWS_A.z - (direction.z * along + query->position.z);
-                const f32 side_x_sq = side_x * side_x;
-                const f32 side_z_sq = side_z * side_z;
-                if (side_x_sq + side_z_sq <= padded_radius * padded_radius) {
-                    const f32 distance =
-                        along - NuFsqrt((query->collision_radius * query->collision_radius - side_x_sq) - side_z_sq);
-                    query = (TerrainQuery_s *)TerI;
-                    const f32 movement_sq =
-                        query->movement.x * query->movement.x + query->movement.z * query->movement.z;
-                    if (distance < -0.0005f || movement_sq < distance * distance) {
-                        if (distance_sq > padded_radius * padded_radius)
-                            continue;
-                        penetrating = true;
-                    } else {
-                        time = TerrainDivideNonzeroPC(distance, NuFsqrt(movement_sq));
+            edge.x = query->movement.x;
+            edge.y = 0.0f;
+            edge.z = query->movement.z;
+            NuVecNorm(&edge, &edge);
+            const f32 along =
+                (TERRAIN_HWS_A.x - TERI->position.x) * edge.x + (TERRAIN_HWS_A.z - TERI->position.z) * edge.z;
+            bool swept = false;
+            if (along >= 0.0f) {
+                NUVEC closest;
+                closest.x = edge.x * along + TERI->position.x;
+                closest.z = edge.z * along + TERI->position.z;
+                const f32 padded_radius = TERI->collision_radius + 0.0005f;
+                if ((TERRAIN_HWS_A.x - closest.x) * (TERRAIN_HWS_A.x - closest.x) +
+                        (TERRAIN_HWS_A.z - closest.z) * (TERRAIN_HWS_A.z - closest.z) <=
+                    padded_radius * padded_radius) {
+                    const f32 side_x = TERRAIN_HWS_A.x - closest.x;
+                    const f32 side_z = TERRAIN_HWS_A.z - closest.z;
+                    const f32 inside =
+                        TERI->collision_radius * TERI->collision_radius - side_x * side_x - side_z * side_z;
+                    const f32 distance = along - NuFsqrt(inside);
+                    if (distance >= -0.0005f &&
+                        TERI->movement.x * TERI->movement.x + TERI->movement.z * TERI->movement.z >=
+                            distance * distance) {
+                        const f32 movement_sq =
+                            TERI->movement.x * TERI->movement.x + TERI->movement.z * TERI->movement.z;
+                        f32 time = TerrainDivideNonzeroPC(distance, NuFsqrt(movement_sq));
                         if (time < 0.0f)
                             time = 0.0f;
-                        query = (TerrainQuery_s *)TerI;
-                        if (!(time < query->hit_time))
+                        if (!(TERI->hit_time > time))
                             continue;
-                        normal.x = direction.x * distance + query->position.x - TERRAIN_HWS_A.x;
-                        normal.z = distance * direction.z + query->position.z - TERRAIN_HWS_A.z;
+                        normal.x = edge.x * distance + TERI->position.x - TERRAIN_HWS_A.x;
+                        normal.z = distance * edge.z + TERI->position.z - TERRAIN_HWS_A.z;
                         NuVecNorm(&normal, &normal);
-                        query = (TerrainQuery_s *)TerI;
+                        TERI->hit_type = 1;
+                        TERI->hit_time = time;
+                        swept = true;
                     }
-                } else {
-                    if (distance_sq > padded_radius * padded_radius)
-                        continue;
-                    penetrating = true;
                 }
             }
-            if (penetrating) {
-                normal.x = query->position.x - TERRAIN_HWS_A.x;
-                normal.z = query->position.z - TERRAIN_HWS_A.z;
+            if (!swept) {
+                const f32 distance_sq = (TERRAIN_HWS_A.x - TERI->position.x) * (TERRAIN_HWS_A.x - TERI->position.x) +
+                                        (TERRAIN_HWS_A.z - TERI->position.z) * (TERRAIN_HWS_A.z - TERI->position.z);
+                const f32 padded_radius = TERI->collision_radius + 0.0005f;
+                if (distance_sq > padded_radius * padded_radius)
+                    continue;
+                normal.x = TERI->position.x - TERRAIN_HWS_A.x;
+                normal.z = TERI->position.z - TERRAIN_HWS_A.z;
                 NuVecNorm(&normal, &normal);
-                query = (TerrainQuery_s *)TerI;
-                time = (NuFsqrt(distance_sq) - query->collision_radius) - 0.0005f;
-                query = (TerrainQuery_s *)TerI;
+                TERI->hit_type = 0x11;
+                TERI->hit_time = (NuFsqrt(distance_sq) - TERI->collision_radius) - 0.0005f;
             }
-            query->hit_type = penetrating ? 0x11 : 1;
-            query->hit_time = time;
-            query->movement_normal = normal;
-            query->shape_adjusted = 4;
-            query->surface = NULL;
-            query->terrain_group_index = -1;
+            query = TERI;
             TerrWallInfo = 1;
+            query->movement_normal.x = normal.x;
+            query->movement_normal.y = normal.y;
+            query->movement_normal.z = normal.z;
+            query->shape_adjusted = 4;
+            query->terrain_group_index = -1;
+            query->surface = NULL;
             TerrWallTab[0] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[0];
             TerrWallTab[1] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[1];
             hit = 1.0f;
         }
-        ((TerrainQuery_s *)TerI)->unclamped_hit_time = ((TerrainQuery_s *)TerI)->hit_time;
-        if (((TerrainQuery_s *)TerI)->hit_time < 0.0f)
-            ((TerrainQuery_s *)TerI)->hit_time = 0.0f;
+        TERI->unclamped_hit_time = TERI->hit_time;
+        if (TERI->hit_time < 0.0f)
+            TERI->hit_time = 0.0f;
         return hit;
     }
+#undef TERI
+#undef TERRAIN_FABS
 #undef TERRAIN_HWS_A
 #undef TERRAIN_HWS_B
 #define TERRAIN_HT_DISTANCE(point, normal, vertex, plane)                                                              \
