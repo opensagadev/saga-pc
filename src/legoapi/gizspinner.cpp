@@ -1374,16 +1374,13 @@ extern "C" f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *spinner, NUVEC *or
     return nearest_distance;
 }
 
-extern "C" void __cdecl GizSpinner_ResetAllPc(void *world_pointer, void *unused, void *progress_pointer) {
-    WORLDINFO *world = (WORLDINFO *)world_pointer;
-    SpinnerProgressEntryPc *progress = (SpinnerProgressEntryPc *)progress_pointer;
-    (void)unused;
+extern "C" void __cdecl GizSpinner_ResetAllPc(WORLDINFO *world, void *unused, SpinnerProgressEntryPc *progress) {
+    i32 index;
     if (world == NULL || world->spinners == NULL || progress == NULL)
         return;
-    for (i32 index = 0; index < world->current_level->max_spinners; ++index, ++progress) {
-        GIZSPINNER_s *spinner = &world->spinners[index];
-        if ((spinner->flags & 1) != 0)
-            SpinnerResetEntryPc(spinner, progress);
+    for (index = 0; index < world->current_level->max_spinners; ++index) {
+        if ((world->spinners[index].flags & 1) != 0)
+            SpinnerResetEntryPc(&world->spinners[index], &progress[index]);
     }
     GizSpinners_Update(world, NULL, FRAMETIME);
 }
