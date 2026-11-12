@@ -6868,7 +6868,7 @@ void __cdecl Move_SPEEDERBIKE(GAMEOBJECT *object) {
                 if (other == NULL || (other->flags_1fc & 0x80) == 0 || other->rider == NULL ||
                     ((other->collision_contact_mask[0] & object->collision_identity_mask[0]) |
                      (other->collision_contact_mask[1] & object->collision_identity_mask[1])) == 0 ||
-                    object->vehicle_hit_timer > 0.0f)
+                    !(object->vehicle_hit_timer <= 0.0f))
                     continue;
                 displacement.x = other->position.x - object->position.x;
                 displacement.z = other->position.z - object->position.z;
