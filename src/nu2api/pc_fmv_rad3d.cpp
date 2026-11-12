@@ -100,8 +100,8 @@ static u32 RadFmvRoundTexturePc(u32 size) {
         return size > 8 ? 16 : 8;
     return size > 2 ? 4 : size;
 }
-static RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, u32 pitch, u32 bytes, u32 width,
-                                                u32 height) {
+RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, u32 pitch, u32 bytes, u32 width,
+                                         u32 height) {
     (void)pitch;
     RADFMV_TEXTURE_PC *texture = NULL;
     RADFMV_LOCK_PC locked;
@@ -112,8 +112,9 @@ static RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 f
     if (texture->methods->lock(texture, 0, &locked, NULL, 0) < 0)
         return texture;
     u8 *destination = static_cast<u8 *>(locked.bits);
+    u32 size = bytes * width;
     for (u32 row = 0; row < height; ++row) {
-        memset(destination, 0, bytes * width);
+        memset(destination, 0, size);
         destination += locked.pitch;
     }
     texture->methods->unlock(texture, 0);
@@ -405,16 +406,16 @@ RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 width, u32
     if (!image)
         return NULL;
     memset(image, 0, 0x50);
+    u32 bytes = alpha ? context->alpha_bytes : context->opaque_bytes;
     image->device = context->device;
     image->width = width;
     image->height = height;
     image->alpha = alpha;
-    image->bytes_per_pixel = alpha ? context->alpha_bytes : context->opaque_bytes;
+    image->bytes_per_pixel = bytes;
     image->bink_format = alpha ? context->alpha_bink_format : context->opaque_bink_format;
     image->format = alpha ? context->alpha_format : context->opaque_format;
     image->lock_index = 0;
-    image->texture =
-        RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel, width, height);
+    image->texture = RadFmvCreateTexturePc(context->device, image->format, image->pitch, bytes, width, height);
     if (!image->texture) {
         free(image);
         image = NULL;
