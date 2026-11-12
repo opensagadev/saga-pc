@@ -571,18 +571,18 @@ void __cdecl AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 l
     params.velocity = velocity;
     params.field_14 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_radius_x);
     params.field_18 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_extent_x);
-    params.gravity = AreaPickupGravity;
-    params.special = &world->level_objects[0x79].special;
     params.part_id = 0x79;
-    params.flags = 0x256;
+    params.special = &world->level_objects[0x79].special;
+    params.gravity = AreaPickupGravity;
     if (params.gravity == 0.0f) {
         params.field_a4 = 5.0f;
     } else {
         params.stop_fn = PartStop_Flickerer;
     }
     params.collision_fn = PartCollide_3D;
-    params.update_fn = NULL;
     params.draw_fn = PartDraw_Torp;
+    params.update_fn = NULL;
+    params.flags = 0x256;
     params.field_88 = lifetime;
     if (params.gravity == 0.0f)
         params.move_fn = PartMove_VehiclePickup;
