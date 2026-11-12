@@ -17810,6 +17810,7 @@ eduimenu_s *__cdecl creatureEditor_Process(FRAME_PAD_PC *pad) {
     char name[16];
     char *separator;
     i32 index = 0;
+    i32 duplicate;
     i32 set;
     i32 angle;
     i32 quarter;
@@ -17850,12 +17851,15 @@ eduimenu_s *__cdecl creatureEditor_Process(FRAME_PAD_PC *pad) {
             if (aieditor->selected_creature != NULL) {
                 do {
                     sprintf(name, "%s_%d", base, ++index);
+                    duplicate = 0;
                     for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
                          creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
-                        if (NuStrICmp(name, creature->name) == 0)
+                        if (NuStrICmp(name, creature->name) == 0) {
+                            duplicate = 1;
                             break;
+                        }
                     }
-                } while (creature != NULL);
+                } while (duplicate);
                 strcpy(aieditor->selected_creature->name, name);
                 if (strlen(aieditorsettings.script_name) != 0)
                     strcpy(aieditor->selected_creature->script_name, aieditorsettings.script_name);
@@ -18247,12 +18251,18 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
                 char name[16];
                 i32 index = 0;
                 EDLOCATOR_s *other;
+                i32 duplicate;
                 do {
                     sprintf(name, "%s_%d", base, ++index);
-                    other = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
-                    while (other != NULL && NuStrICmp(name, other->name) != 0)
-                        other = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &other->link);
-                } while (other != NULL);
+                    duplicate = 0;
+                    for (other = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); other != NULL;
+                         other = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &other->link)) {
+                        if (NuStrICmp(name, other->name) == 0) {
+                            duplicate = 1;
+                            break;
+                        }
+                    }
+                } while (duplicate);
                 strcpy(aieditor->current_locator->name, name);
                 aieditor->current_locator->path_check.path = aieditor->current_path;
                 aieditor->current_locator->path_check = aieditor->cursor_check;
@@ -18374,11 +18384,10 @@ eduimenu_s *__cdecl locatorEditor_Process(FRAME_PAD_PC *pad) {
             }
         }
         if (!in_set) {
-            EDLOCATOR_s *before =
-                aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator
-                    ? aieditor->current_locator
-                    : NULL;
-            added = AiEditorAddLocatorToSetPc(set, nearest, before);
+            if (aieditor->current_locator != NULL && aieditor->current_locator != aieditor->nearest_locator)
+                added = AiEditorAddLocatorToSetPc(set, nearest, aieditor->current_locator);
+            else
+                added = AiEditorAddLocatorToSetPc(set, nearest, NULL);
         } else {
             AiEditorRemoveLocatorFromSetPc(set, nearest);
             if (aieditor->current_locator == NULL || aieditor->current_locator == aieditor->nearest_locator)
