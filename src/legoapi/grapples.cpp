@@ -262,15 +262,6 @@ static void Grapple_ResetSinglePc(GRAPPLE_MOTION_PC *grapple) {
     grapple->has_terrain_platform = 0;
 }
 
-static void Grapple_ResetDynamicPc(GRAPPLE_MOTION_PC *grapple, i32 index) {
-    sprintf(grapple->name, "dynamic%i", index + 1);
-    grapple->visible = 0;
-    grapple->y_rotation = 0;
-    grapple->active = 1;
-    grapple->attached_object = NULL;
-    grapple->has_terrain_platform = 1;
-}
-
 extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *progress_pointer) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
     GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_pointer;
@@ -292,8 +283,15 @@ extern "C" void __cdecl Grapples_Reset(void *world_pointer, void *unused, void *
             }
         }
     }
-    for (index = 0; index < 4; ++index)
-        Grapple_ResetDynamicPc(&((GRAPPLE_MOTION_PC *)DynamicGrapplePc)[index], index);
+    grapple = (GRAPPLE_MOTION_PC *)DynamicGrapplePc;
+    for (index = 0; index < 4; ++index, ++grapple) {
+        sprintf(grapple->name, "dynamic%i", index + 1);
+        grapple->visible = 0;
+        grapple->y_rotation = 0;
+        grapple->active = 1;
+        grapple->attached_object = NULL;
+        grapple->has_terrain_platform = 1;
+    }
 }
 
 GAMEOBJECT *__cdecl Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATHCNX_PC *connection) {
