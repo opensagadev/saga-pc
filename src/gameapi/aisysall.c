@@ -5140,7 +5140,7 @@ void __cdecl AISysCreatureInteraction3D(AISYS_PC *system, i32 object_count, APIO
             second = objects[second_index];
             radius = first->ai->mover_height + second->ai->mover_height;
             if (first->collision_link == second || second->collision_link == first) {
-                first_fixed = second_fixed = 1;
+                second_fixed = first_fixed = 1;
             } else {
                 first_fixed = immovable[first_index];
                 second_fixed = immovable[second_index];
