@@ -179,7 +179,7 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
 }
 
 extern "C" f32 StreakAlphaScalePc;
-#define STREAK_FADE(node) ((node)->remaining_time < 0.0f ? 0.0f : (node)->remaining_time)
+#define STREAK_FADE(node) MAX(0.0f, (node)->remaining_time)
 #define STREAK_ALPHA(colour, node) ((f64)(i32)((colour) >> 24) * STREAK_FADE(node) * StreakAlphaScalePc)
 #define STREAK_SET_ALPHA(colour, header, node)                                                                         \
     (colour) = (header)->colour;                                                                                       \
