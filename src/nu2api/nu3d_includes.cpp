@@ -6718,17 +6718,18 @@ extern "C" {
     NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *);
 
     void __cdecl NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *desc) {
-        i32 i;
         if (desc == NULL)
             return;
         memset(desc, 0, sizeof(*desc));
         desc->default_scale = 1.0f;
         desc->material_flags |= 0x1000;
-        desc->vertex_format |= 0x101;
         desc->flags = 0x1000;
         desc->packed_diffuse_colour = 0xff8080ff;
-        for (i = 0; i < 4; ++i)
-            desc->animation_ids[i] = -1;
+        desc->animation_ids[0] = -1;
+        desc->animation_ids[1] = -1;
+        desc->animation_ids[2] = -1;
+        desc->animation_ids[3] = -1;
+        desc->vertex_format |= 0x101;
     }
 
     static NUMTL *__cdecl NuMtlCreatePoolPC(i32 count, u32 render_plane, i32 is_3d) {
