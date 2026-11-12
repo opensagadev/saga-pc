@@ -6,18 +6,18 @@ extern "C" const char PCKeyboardMouse1Name_candidate[15], PCKeyboardMouse2Name_c
 PC_INPUT_CONFIG_PC *PC_INPUT_RUNTIME_PC::FindConfig(u8 mask, i32 port, i32 key) {
     if (port < 0)
         return NULL;
-    u32 product = devices[port].product.Data1;
     if (mask & 4)
         for (i32 i = 0; i < 64; ++i)
-            if (secondary[i].product_id == product && (key < 0 || secondary[i].key == key))
+            if (secondary[i].product_id == devices[port].product.Data1 && (key < 0 || secondary[i].key == key))
                 return &secondary[i];
     if (mask & 2)
         for (i32 i = 0; i < 64; ++i)
-            if (primary[i].product_id == product && (key < 0 || primary[i].key == key))
+            if (primary[i].product_id == devices[port].product.Data1 && (key < 0 || primary[i].key == key))
                 return &primary[i];
     if (mask & 1)
-        for (i32 i = 0; i < 15; ++i)
-            if (PcStaticInputConfigs[i].product_id == product && (key < 0 || PcStaticInputConfigs[i].key == key))
+        for (u32 i = 0; i < sizeof(PcStaticInputConfigs) / sizeof(PcStaticInputConfigs[0]); ++i)
+            if (PcStaticInputConfigs[i].product_id == devices[port].product.Data1 &&
+                (key < 0 || PcStaticInputConfigs[i].key == key))
                 return &PcStaticInputConfigs[i];
     return NULL;
 }
