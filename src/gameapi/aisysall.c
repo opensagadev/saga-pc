@@ -3780,7 +3780,7 @@ i32 __cdecl Action_ResetToOrigin(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, A
     (void)param_4;
     (void)param_5;
     (void)param_6;
-    if (packet == NULL || packet->owner == NULL) {
+    if (packet == NULL || sys == NULL) {
         return 1;
     }
     origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
