@@ -3647,7 +3647,7 @@ void nugraph_compute_catmull_point(i32 segment_count, f32 parameter, NUVEC *cont
     f32 fraction;
     NUVEC *p1;
     NUVEC *p2;
-    if (segment_count <= 0) {
+    if (segment_count < 1) {
         return;
     }
     first.x = control_points[0].x + (control_points[0].x - control_points[1].x) * 0.1f;
