@@ -1473,11 +1473,10 @@ extern "C" {
         NUVEC offset;
         f32 radius;
         f32 distance;
-        AIPATHCNX_PC *destination;
         AIPATHCNX_PC *current;
         f32 edge;
 
-        far_index = !(packet->path_info.distance > 0.5f);
+        far_index = packet->path_info.distance > 0.5f ? 0 : 1;
         near_index = far_index == 0;
         near_node = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[near_index]];
         far_node = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[far_index]];
@@ -1499,15 +1498,14 @@ extern "C" {
         packet->movement_stopping_distance = 0.0f;
         distance = NuVecXZDistSqr(&object->position, &packet->movement_destination, &offset);
         if (distance < ai_moveradius * ai_moveradius) {
-            destination = packet->fallback_path_info.connection;
             current = packet->path_info.connection;
-            if (destination == current) {
-                edge = far_node->radius / destination->horizontal_distance;
+            if (packet->fallback_path_info.connection == current) {
+                edge = far_node->radius / current->horizontal_distance;
                 if (far_index != 0) {
-                    if (1.0f - edge > packet->fallback_path_info.distance) {
+                    if (packet->fallback_path_info.distance < 1.0f - edge) {
                         goto reset_connection;
                     }
-                } else if (edge < packet->fallback_path_info.distance) {
+                } else if (packet->fallback_path_info.distance > edge) {
                     goto reset_connection;
                 }
             }
