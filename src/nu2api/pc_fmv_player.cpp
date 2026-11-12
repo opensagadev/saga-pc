@@ -151,12 +151,12 @@ extern "C" i32 __cdecl FmvInitializePc(HWND window, GRAPHICS_FACTORY_PC *factory
 
 extern "C" i32 __cdecl FmvOpenPc(PC_FMV_MOVIE_PC *movie, const char *path, i32 render_to_texture, f32 volume,
                                  i32 option) {
-    u32 language;
     memset(movie, 0, sizeof(*movie));
     movie->fade_duration = 1.0f;
     movie->fade_remaining = 0.0f;
     movie->fading = 0;
     movie->option = option;
+    u32 language = 0;
     language = NuLanguageGet();
     BinkSetSoundTrack(1, &language);
     LOG_INFO("FMV opening %s", path);
@@ -165,11 +165,14 @@ extern "C" i32 __cdecl FmvOpenPc(PC_FMV_MOVIE_PC *movie, const char *path, i32 r
         LOG_WARN("FMV open failed: %s", path);
         return 0;
     }
-    u32 index;
-    for (index = 0; index < movie->bink->track_count; ++index)
-        if (movie->bink->track_ids[index] == language)
+    i32 found = 0;
+    for (u32 index = 0; index != movie->bink->track_count; ++index) {
+        if (movie->bink->track_ids[index] == language) {
+            found = 1;
             break;
-    if (index == movie->bink->track_count && movie->bink->track_count != 0) {
+        }
+    }
+    if (!found && movie->bink->track_count != 0) {
         language = movie->bink->track_ids[0];
         BinkClose(movie->bink);
         BinkSetSoundTrack(1, &language);
@@ -188,7 +191,7 @@ extern "C" i32 __cdecl FmvOpenPc(PC_FMV_MOVIE_PC *movie, const char *path, i32 r
         movie->height = movie->bink->height;
         movie->target = PCGraphicsCreateEffectTexture(movie->width, movie->height, 1, 1, 2);
         FmvSurfacePc.Attach(movie->target, 0, false);
-        movie->x = movie->y = 0.5f;
+        movie->y = movie->x = 0.5f;
         movie->x_scale = (f32)movie->width / movie->bink->width;
         movie->y_scale = (f32)movie->height / movie->bink->height;
     } else {
@@ -208,19 +211,19 @@ extern "C" i32 __cdecl FmvOpenPc(PC_FMV_MOVIE_PC *movie, const char *path, i32 r
             case 3:
                 display_ratio = PCDeviceBackend.active_aspect;
                 break;
+            case 0:
+                display_ratio = 1.3333333730697632f;
+                break;
             default:
                 display_ratio = 1.3333333730697632f;
                 break;
         }
-        f32 x_ratio = ratio / display_ratio;
-        if (x_ratio > 1.0f)
-            x_ratio = 1.0f;
-        f32 y_ratio = display_ratio / ratio;
-        if (y_ratio > 1.0f)
-            y_ratio = 1.0f;
-        movie->x_scale = (f32)movie->width / movie->bink->width * x_ratio;
+        f32 x_ratio = MIN(1.0f, ratio / display_ratio);
+        f32 y_ratio = MIN(1.0f, display_ratio / ratio);
+        f32 width = (f32)movie->width;
+        movie->x_scale = width / movie->bink->width * x_ratio;
         movie->y_scale = (f32)movie->height / movie->bink->height * y_ratio;
-        movie->x = (f32)(((f32)movie->width - movie->bink->width * movie->x_scale) * 0.5 + 0.5);
+        movie->x = (f32)((width - movie->bink->width * movie->x_scale) * 0.5 + 0.5);
         movie->y = (f32)(((f32)movie->height - movie->bink->height * movie->y_scale) * 0.5 + 0.5);
     }
     return 1;
