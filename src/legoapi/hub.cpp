@@ -2445,17 +2445,21 @@ static void HubDrawBonusModeMenuPc(i32 selected, f32 alpha) {
         NuStrCpy(text[2], TTab[TextCrawlVehicleBonusIdPc]);
         const i32 character_area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 4);
         const i32 vehicle_area = Episode_FindAreaFromFlags(&EDataList[hub_bonusepisode], 5, 5);
-        if (character_area != -1 && ADataList[character_area].name_id != -1 &&
-            TTab[ADataList[character_area].name_id] != NULL) {
-            NuStrCat(text[1], " (");
-            NuStrCat(text[1], TTab[ADataList[character_area].name_id]);
-            NuStrCat(text[1], ")");
+        if (character_area != -1) {
+            const i32 name = ADataList[character_area].name_id;
+            if (name != -1 && TTab[name] != NULL) {
+                NuStrCat(text[1], " (");
+                NuStrCat(text[1], TTab[name]);
+                NuStrCat(text[1], ")");
+            }
         }
-        if (vehicle_area != -1 && ADataList[vehicle_area].name_id != -1 &&
-            TTab[ADataList[vehicle_area].name_id] != NULL) {
-            NuStrCat(text[2], " (");
-            NuStrCat(text[2], TTab[ADataList[vehicle_area].name_id]);
-            NuStrCat(text[2], ")");
+        if (vehicle_area != -1) {
+            const i32 name = ADataList[vehicle_area].name_id;
+            if (name != -1 && TTab[name] != NULL) {
+                NuStrCat(text[2], " (");
+                NuStrCat(text[2], TTab[name]);
+                NuStrCat(text[2], ")");
+            }
         }
         count = 3;
     } else {
