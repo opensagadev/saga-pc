@@ -1856,20 +1856,22 @@ static void CutSceneRigidSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
 }
 
 static void CutSceneTriggerSysUpdatePc(CUT_INSTANCE_LOAD_PC *instance, f32 frame) {
-    CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     CUT_LOAD_TRIGGER_INSTANCE *states = instance->trigger_instance;
+    CUT_LOAD_TRIGGER_SYSTEM *system = instance->scene->trigger_system;
     i32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_LOAD_TRIGGER_EVENT *event = &system->events[i];
         u8 value;
-        if (event->state_animation != NULL &&
-            StateAnimEvaluate(event->state_animation, &states->states[i].state_index, &value, frame) != 0) {
-            CUT_LOAD_TRIGGER_FLAG_PC *target = &states->owner->trigger_states[(i16)event->index];
-            if (value != 0)
-                target->flags |= 1;
-            else
-                target->flags &= ~1;
-        }
+        i32 index;
+        if (event->state_animation == NULL)
+            continue;
+        if (StateAnimEvaluate(event->state_animation, &states->states[i].state_index, &value, frame) == 0)
+            continue;
+        index = (i16)event->index;
+        if (value != 0)
+            states->owner->trigger_states[index].flags |= 1;
+        else
+            states->owner->trigger_states[index].flags &= ~1;
     }
 }
 
