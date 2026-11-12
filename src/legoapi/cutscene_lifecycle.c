@@ -1853,8 +1853,12 @@ static void CutSceneRigidSysUpdatePc(INSTNUGCUTSCENE *owner, f32 frame, i32 paus
         if ((rigid->flags & 2) != 0 || (rigid->flags & 4) == 0)
             continue;
         if (rigid->state_animation != NULL &&
-            StateAnimEvaluate(rigid->state_animation, &object->state_index, &visible, frame) != 0)
-            NuSpecialSetVisibility(&object->special, visible != 0);
+            StateAnimEvaluate(rigid->state_animation, &object->state_index, &visible, frame) != 0) {
+            if (visible != 0)
+                NuSpecialSetVisibility(&object->special, 1);
+            else
+                NuSpecialSetVisibility(&object->special, 0);
+        }
         if (NuSpecialGetVisibilityFn(&object->special) == 0)
             continue;
         NuGCutRigidCalcMtx((CUT_RIGID_GENERIC_PC *)rigid, frame, &matrix);
