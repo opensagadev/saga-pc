@@ -2996,16 +2996,18 @@ static __forceinline f32 HubFabsPc(f32 value) {
 }
 
 static void HubDrawFreePlaySelectPc(void) {
-    const u32 flags = ADataList[hub_freeplay_area].flags;
-    COLLECTION_BUILD_PC *collection =
-        (flags & 1) != 0 ? ((flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc) : &CharacterCollectionPc;
+    COLLECTION_BUILD_PC *collection;
+    if ((ADataList[hub_freeplay_area].flags & 1) != 0)
+        collection = (ADataList[hub_freeplay_area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollectionPc;
+    else
+        collection = &CharacterCollectionPc;
     if (((FADEINFO_PC *)&FadeSys)->fade > 0.0f)
         return;
     if (freeplaymode == 0) {
-        f32 progress = (f32)(freeplaytime / (freeplayduration * .5));
-        if (progress > 1.0f)
-            progress = 1.0f;
-        const f32 alpha = 1.0f - progress;
+        f32 alpha = (f32)(freeplaytime / (freeplayduration * .5));
+        if (alpha > 1.0f)
+            alpha = 1.0f;
+        alpha = 1.0f - alpha;
         if (alpha > 0.0f) {
             AREA_DATA_PC *area = &ADataList[HubDoorAreaPc];
             if ((area->flags & 0x100) != 0) {
@@ -3177,9 +3179,11 @@ static void HubDrawFreePlaySelectPc(void) {
             for (i32 i = 0; i < fpcount; ++i)
                 list[count++] = fplist[i];
             list[count].model_id = -1;
-            f32 alpha = 0.0f;
-            if (!(freeplaytime >= freeplayduration - .10000000149011612))
-                alpha = (f32)(1.0 - freeplaytime / (freeplayduration - .10000000149011612));
+            f32 alpha;
+            if (freeplaytime >= freeplayduration - .10000000149011612)
+                alpha = 0.0f;
+            else
+                alpha = (f32)(1.0f - freeplaytime / (freeplayduration - .10000000149011612));
             Collection_DrawPc(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
             HubDrawIconCursorsPc(collection, 1, 1.0f, alpha);
             return;
