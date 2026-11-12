@@ -1899,20 +1899,20 @@ extern "C" {
              (reinterpret_cast<CUT_CONTROLLER_PROGRESS_PC *>(world->level_progress)->scene_flags & 2) == 0)) {
             CUTINFO *cut = NULL;
             CUTSYS_PC *system = world->cutscene_sys;
-            if (CutScenePlayerPc != NULL &&
-                reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active != NULL && system->count > 0) {
-                char *name = reinterpret_cast<CUT_CONTROLLER_CLIP_PC *>(
-                                 reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active)
-                                 ->name;
-                if (name[0] != 0)
-                    cut = CutScene_Find(system, name);
-                if (cut == NULL) {
-                    system = world->cutscene_sys;
-                    cut = system->records[0];
+            if (CutScenePlayerPc != NULL) {
+                CUT_CONTROLLER_CLIP_PC *clip = reinterpret_cast<CUT_CONTROLLER_CLIP_PC *>(
+                    reinterpret_cast<CUT_CONTROLLER_PLAYER_PC *>(CutScenePlayerPc)->active);
+                if (clip != NULL && system->count > 0) {
+                    if (clip->name[0] != 0)
+                        cut = CutScene_Find(system, clip->name);
+                    if (cut == NULL) {
+                        system = world->cutscene_sys;
+                        cut = system->records[0];
+                    }
                 }
             }
             if (cut == NULL) {
-                for (i32 i = 0; i < system->count && cut == NULL; ++i) {
+                for (i32 i = 0; cut == NULL && i < system->count; ++i) {
                     CUT_LOAD_RECORD_PC *record = reinterpret_cast<CUT_LOAD_RECORD_PC *>(system->records[i]);
                     if ((record->flags & 0x1000) != 0)
                         cut = reinterpret_cast<CUTINFO *>(record);
