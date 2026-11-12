@@ -15,13 +15,12 @@ STATIC_ASSERT(offsetof(PC_PLATFORM_POLICY_METHODS_PC, release) == 8);
 STATIC_ASSERT(offsetof(PC_PLATFORM_POLICY_METHODS_PC, check) == 0x18);
 
 extern "C" u8 PcPlatformPolicy(u8 report_error) {
-    PC_PLATFORM_POLICY_PC *policy = NULL;
     BOOL allowed = TRUE;
+    PC_PLATFORM_POLICY_PC *policy = NULL;
     u8 initialized_com = CoInitialize(NULL) >= 0;
     HRESULT result = CoCreateInstance(PcPlatformPolicyClassId, NULL, 1, PcPlatformPolicyInterfaceId, (void **)&policy);
     if (result >= 0 && policy != NULL) {
-        WCHAR executable[260];
-        memset(executable, 0, sizeof(executable));
+        WCHAR executable[260] = {0};
         MultiByteToWideChar(0, 0, PcExecutableFilename, 260, executable, 260);
         BSTR name = SysAllocString(executable);
         HRESULT check_result = policy->methods->check(policy, name, &allowed);
