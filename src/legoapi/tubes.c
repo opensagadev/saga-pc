@@ -361,7 +361,7 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
     TUBE_CALLBACKS_PC *tube;
     i32 i, j;
     (void)data;
-    if (world == NULL || world->tubes == NULL || world->tube_count <= 0)
+    if (world == NULL || world->tubes == NULL)
         return;
     tube = (TUBE_CALLBACKS_PC *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
@@ -374,21 +374,12 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
             GameAudio_PlaySfx(0x2e, &tube->position, 0, 0);
             object = Obj;
             for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
-                f32 dx, dz, distance, tx, tz, inverse, nx, nz;
+                f32 distance, tx, tz, inverse, normal_y, magnitude;
                 u16 angle;
-                union {
-                    f32 scalar;
-                    u32 bits;
-                } absolute, magnitude;
                 if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
                     !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100))
                     continue;
-                if (object->collision_max.y < tube->position.y || object->collision_min.y > tube->top)
-                    continue;
-                dx = object->collision_position.x - tube->position.x;
-                dz = object->collision_position.z - tube->position.z;
-                distance = dx * dx + dz * dz;
-                if (distance > tube->radius_squared)
+                if (Tube_InCylinder(object, (TUBE_PC *)tube, &distance, 0) == 0)
                     continue;
                 tx = tube->position.x - object->collision_position.x;
                 tz = tube->position.z - object->collision_position.z;
@@ -399,21 +390,20 @@ static void __cdecl Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 if (Tube_IsObjBitSet(tube, object->hostility_group) != 0 || object->contact_count == 0 ||
                     !(distance < 0.1224999949336052))
                     continue;
-                absolute.scalar = object->contact_normal.y;
-                magnitude.bits = absolute.bits & 0x7fffffff;
-                if (magnitude.scalar < NuTrigTable[0x3c71]) {
+                normal_y = object->contact_normal.y;
+                *(u32 *)&magnitude = *(u32 *)&normal_y & 0x7fffffff;
+                if (magnitude < NuTrigTable[0x3c71]) {
                     inverse = 1.0f / NuFsqrt(distance);
-                    nx = tx * inverse;
-                    nz = tz * inverse;
-                    if (nx * object->contact_normal.x + nz * object->contact_normal.z < -NuTrigTable[0x238e]) {
+                    tx *= inverse;
+                    tz *= inverse;
+                    if (tx * object->contact_normal.x + tz * object->contact_normal.z < -NuTrigTable[0x238e]) {
                         GameAudio_PlaySfx(0x2e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
                         Tube_SetObjBit(tube, object->hostility_group);
                     }
                 }
             }
         }
-        tube->occupied_object_masks[0] = 0;
-        tube->occupied_object_masks[1] = 0;
+        memset(tube->occupied_object_masks, 0, sizeof(tube->occupied_object_masks));
     }
 }
 
