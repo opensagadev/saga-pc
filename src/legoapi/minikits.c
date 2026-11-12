@@ -186,9 +186,8 @@ void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
         if (Char_MiniKit == NULL)
             return;
         for (i = 0; i < CHARCOUNT; ++i) {
-            MINIKIT_PC *kit = view->pieces_by_id[i];
-            if (kit != NULL && kit->scene != NULL) {
-                NuGScnRemove(kit->scene);
+            if (view->pieces_by_id[i] != NULL && view->pieces_by_id[i]->scene != NULL) {
+                NuGScnRemove(view->pieces_by_id[i]->scene);
                 view->pieces_by_id[i]->scene = NULL;
             }
             Char_MiniKit[i] = 0;
@@ -197,9 +196,8 @@ void __cdecl CharacterMiniKits_Dump(WORLDINFO *world) {
         return;
     }
     for (i = 0; i < AREACOUNT; ++i) {
-        MINIKIT_PC *kit = view->pieces_by_id[i];
-        if (kit != NULL && kit->scene != NULL) {
-            NuGScnRemove(kit->scene);
+        if (view->pieces_by_id[i] != NULL && view->pieces_by_id[i]->scene != NULL) {
+            NuGScnRemove(view->pieces_by_id[i]->scene);
             view->pieces_by_id[i]->scene = NULL;
         }
     }
