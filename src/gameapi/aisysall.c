@@ -8956,8 +8956,8 @@ void __cdecl pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *ot
         direction.z /= length;
     }
     vertices[0].position = start;
-    vertices[1].position = end;
     vertices[0].colour = colour;
+    vertices[1].position = end;
     vertices[1].colour = colour;
     AiRndrLine3d(vertices, NULL, NULL);
     NuVecScale(&vertices[0].position, &direction, radius * 0.5);
