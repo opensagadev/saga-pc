@@ -2455,8 +2455,8 @@ f32 NuHermiteInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t) {
     t_sq = t * t;
     t_cb = t * t_sq;
 
-    h0 = (t_cb + t_cb - t_sq * 3.0) + 1.0;
-    h1 = t_cb - (t_sq + t_sq) + t;
+    h0 = 2.0 * t_cb - 3.0 * t_sq + 1.0;
+    h1 = t_cb - 2.0 * t_sq + t;
     h2 = (t_cb * -2.0) + (t_sq * 3.0);
     h3 = t_cb - t_sq;
 
