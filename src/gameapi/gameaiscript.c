@@ -11794,7 +11794,7 @@ void __cdecl GameAIScriptAddLevelSfx(WORLDINFO *world, NULISTHDR *scripts) {
                 AIACTION_PC *action = (AIACTION_PC *)action_link;
                 AIACTIONDEF_PC *definition = action->definition;
 
-                if (definition != NULL && definition->eval_fn == Action_PlaySfx && action->param_count > 0) {
+                if (definition != NULL && definition->eval_fn == Action_PlaySfx) {
                     i32 index;
                     for (index = 0; index < action->param_count; ++index) {
                         char *name = NuStrIStr(action->params[index], (char *)AIScriptActionNameArgPrefix);
