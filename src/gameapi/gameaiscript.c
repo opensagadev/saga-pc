@@ -4091,10 +4091,12 @@ i32 __cdecl Action_SetLastSafePathPos(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     i32 index;
     APIOBJECT_PC *object;
     char *value;
+    object = NULL;
     if (first_time == 0) {
         return 1;
     }
-    object = packet != NULL && packet->owner != NULL ? (APIOBJECT_PC *)packet->owner : NULL;
+    if (packet != NULL && packet->owner != NULL)
+        object = (APIOBJECT_PC *)packet->owner;
     for (index = 0; index < param_count; ++index) {
         value = NuStrIStr(params[index], (char *)AreaConfigKeyword_character);
         if (value != NULL) {
