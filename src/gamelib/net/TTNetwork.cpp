@@ -282,9 +282,10 @@ char const *TTNetwork::GetName() {
 
 void NETMESSAGE_PC::MakeUnique() {
     MessageData *entry;
-    for (entry = sm_poolMessageData; entry != sm_poolMessageData + 512; ++entry) {
-        if (entry->references <= 0) {
-            entry->references = 1;
+    for (MessageData *candidate = sm_poolMessageData; candidate != sm_poolMessageData + 512; ++candidate) {
+        if (candidate->references <= 0) {
+            candidate->references = 1;
+            entry = candidate;
             goto found;
         }
     }
