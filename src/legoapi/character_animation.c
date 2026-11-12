@@ -805,18 +805,22 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
         model_id = apicharsys->playermodelids[AreaExtraTargetId7f17ccPc];
         if (model_id == -1)
             return;
-        mini->packet.requested_animation =
-            animation != -1 && apicharsys->models[model_id].model_data_b[animation] != NULL ? animation : 1;
+        if (animation != -1 && apicharsys->models[model_id].model_data_b[animation] != NULL)
+            mini->packet.requested_animation = animation;
+        else
+            mini->packet.requested_animation = 1;
         UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f,
                              FRAMETIME);
     } else if (object->suit != NULL && (object->suit->flags & 2) != 0) {
         model_id = apicharsys->playermodelids[AreaExtraTargetId7f17bcPc];
         if (model_id == -1)
             return;
-        mini->packet.requested_animation = object->character_context == 0x4f                                      ? 45
-                                           : object->character_context == 0 && object->action_movement_state == 4 ? 33
-                                           : object->character_context == 14                                      ? 34
-                                                                                                                  : 44;
+        if (object->character_context == 0x4f)
+            mini->packet.requested_animation = 45;
+        else if (object->character_context == 0 && object->action_movement_state == 4)
+            mini->packet.requested_animation = 33;
+        else
+            mini->packet.requested_animation = object->character_context == 14 ? 34 : 44;
         UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f,
                              FRAMETIME);
     }
