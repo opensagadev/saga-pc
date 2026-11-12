@@ -1180,13 +1180,9 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
     i32 i;
     f32 nearest_distance = -1.0f;
     i32 nearest_index = -1;
-    f32 distance;
     f32 desired_threshold;
     f32 desired_intensity;
     f32 desired_dispersion;
-    f32 fraction;
-    f32 step;
-    f32 intensity_target;
     if (set == NULL)
         set = edrtl_edit_burnset;
     if (set == NULL) {
@@ -1198,7 +1194,7 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
 
     for (i = 0; i < 32; ++i) {
         if (set->burnouts[i].active) {
-            distance = NuVecDist(camera_position, &set->burnouts[i].position, NULL);
+            f32 distance = NuVecDist(camera_position, &set->burnouts[i].position, NULL);
             if (distance < set->burnouts[i].field_1c + set->burnouts[i].field_20 &&
                 (nearest_distance < 0.0f || distance < nearest_distance)) {
                 nearest_index = i;
@@ -1209,14 +1205,14 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
 
     if (nearest_index != -1) {
         if (nearest_distance > set->burnouts[nearest_index].field_1c) {
-            fraction =
+            f32 fraction =
                 (nearest_distance - set->burnouts[nearest_index].field_1c) / set->burnouts[nearest_index].field_20;
             desired_threshold =
-                set->parameters.field_24 * fraction + set->burnouts[nearest_index].field_10 * (1.0f - fraction);
+                set->burnouts[nearest_index].field_10 * (1.0f - fraction) + set->parameters.field_24 * fraction;
             desired_intensity =
-                set->parameters.field_14 * fraction + set->burnouts[nearest_index].field_14 * (1.0f - fraction);
+                set->burnouts[nearest_index].field_14 * (1.0f - fraction) + set->parameters.field_14 * fraction;
             desired_dispersion =
-                set->parameters.field_1c * fraction + set->burnouts[nearest_index].field_18 * (1.0f - fraction);
+                set->burnouts[nearest_index].field_18 * (1.0f - fraction) + set->parameters.field_1c * fraction;
         } else {
             desired_threshold = set->burnouts[nearest_index].field_10;
             desired_intensity = set->burnouts[nearest_index].field_14;
@@ -1229,13 +1225,16 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
     }
 
     if (set->field_b4) {
-        *threshold = set->parameters_copy.field_24 = desired_threshold;
-        *intensity = set->parameters_copy.field_14 = desired_intensity;
-        *dispersion = set->parameters_copy.field_1c = desired_dispersion;
+        set->parameters_copy.field_24 = desired_threshold;
+        *threshold = set->parameters_copy.field_24;
+        set->parameters_copy.field_14 = desired_intensity;
+        *intensity = set->parameters_copy.field_14;
+        set->parameters_copy.field_1c = desired_dispersion;
+        *dispersion = set->parameters_copy.field_1c;
         set->field_b4 = 0;
         return;
     } else {
-        step = set->field_b8 * frame_time;
+        f32 step = set->field_b8 * frame_time;
         if (desired_threshold > set->parameters_copy.field_24) {
             set->parameters_copy.field_24 = (set->parameters_copy.field_24 + step) > desired_threshold
                                                 ? desired_threshold
@@ -1256,14 +1255,14 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
         }
 
         if (!set->field_b0 && !set->field_a8 && !set->field_ac) {
-            if (desired_intensity >= set->parameters_copy.field_14 + set->field_c0)
+            if (desired_intensity >= set->field_c0 + set->parameters_copy.field_14)
                 set->field_a8 = 1;
             else if (set->parameters_copy.field_14 - set->field_c0 >= desired_intensity)
                 set->field_ac = 1;
         }
 
-        intensity_target = desired_intensity;
         if (set->field_a8 || set->field_ac) {
+            f32 intensity_target;
             step = set->field_bc * frame_time;
             if (set->field_a8) {
                 intensity_target = desired_intensity + set->field_c4;
@@ -1274,19 +1273,20 @@ void edrtlCalculateBurnout(BURN_SET_PC *set, f32 *threshold, f32 *intensity, f32
                 if (intensity_target < set->field_cc)
                     intensity_target = set->field_cc > desired_intensity ? desired_intensity : set->field_cc;
             }
+            desired_intensity = intensity_target;
         }
-        if (intensity_target > set->parameters_copy.field_14) {
-            set->parameters_copy.field_14 = (set->parameters_copy.field_14 + step) > intensity_target
-                                                ? intensity_target
+        if (desired_intensity > set->parameters_copy.field_14) {
+            set->parameters_copy.field_14 = (set->parameters_copy.field_14 + step) > desired_intensity
+                                                ? desired_intensity
                                                 : (set->parameters_copy.field_14 + step);
-        } else if (intensity_target < set->parameters_copy.field_14) {
-            set->parameters_copy.field_14 = intensity_target > (set->parameters_copy.field_14 - step)
-                                                ? intensity_target
+        } else if (desired_intensity < set->parameters_copy.field_14) {
+            set->parameters_copy.field_14 = desired_intensity > (set->parameters_copy.field_14 - step)
+                                                ? desired_intensity
                                                 : (set->parameters_copy.field_14 - step);
         }
-        if (set->field_b0 && set->parameters_copy.field_14 == intensity_target)
+        if (set->field_b0 && set->parameters_copy.field_14 == desired_intensity)
             set->field_b0 = 0;
-        if ((set->field_a8 || set->field_ac) && set->parameters_copy.field_14 == intensity_target) {
+        if ((set->field_a8 || set->field_ac) && desired_intensity == set->parameters_copy.field_14) {
             set->field_a8 = 0;
             set->field_ac = 0;
             set->field_b0 = 1;
