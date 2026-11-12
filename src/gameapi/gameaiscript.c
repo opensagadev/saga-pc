@@ -7136,25 +7136,24 @@ i32 __cdecl Action_AddDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     GAMEOBJECT *object;
     i32 debris_type;
     char *value;
-    NUVEC *debris_position;
 
     (void)param_6;
 
     handle = -1;
-    position.x = AIPositionUnsetPc;
-    position.y = AIPositionUnsetPc;
-    position.z = AIPositionUnsetPc;
-    object = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
+    debris_type = 33;
+    position.x = 1000000000.0f;
+    position.y = 1000000000.0f;
+    position.z = 1000000000.0f;
+    object = NULL;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        object = packet->owner->objptr;
 
     if (param_5 != 0) {
-        debris_type = 33;
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], (char *)AIGameCharacterName);
             if (value != NULL) {
-                {
-                    lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                    object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
-                }
+                lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
+                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
             } else if ((value = NuStrIStr(params[index], (char *)XArgPrefix)) != NULL) {
                 position.x = AIParamToFloat(processor, value + 2);
             } else if ((value = NuStrIStr(params[index], (char *)YArgPrefix)) != NULL) {
@@ -7166,14 +7165,11 @@ i32 __cdecl Action_AddDebris(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
             }
         }
 
-        if (position.x == AIPositionUnsetPc && position.y == AIPositionUnsetPc && position.z == AIPositionUnsetPc) {
-            if (object == NULL)
-                return 1;
-            debris_position = &object->collision_position;
-        } else {
-            debris_position = &position;
-        }
-        AddFiniteShotDebrisEffect(&handle, WORLD->game_debris_sys->entries[debris_type].effect, debris_position, 1);
+        if (position.x != 1000000000.0 && position.y != 1000000000.0 && position.z != 1000000000.0)
+            AddFiniteShotDebrisEffect(&handle, WORLD->game_debris_sys->entries[debris_type].effect, &position, 1);
+        else if (object != NULL)
+            AddFiniteShotDebrisEffect(&handle, WORLD->game_debris_sys->entries[debris_type].effect,
+                                      &object->collision_position, 1);
     }
     return 1;
 }
