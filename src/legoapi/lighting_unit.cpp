@@ -290,7 +290,7 @@ extern "C" {
         STARTUP_OBJECT_LIGHT_PC *objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
         i32 i;
         for (i = 0; i < HIGHGAMEOBJECT; ++i) {
-            if ((objects[i].flags & 0x1001) == 0x1001 && objects[i].dynamic_light_id != -1) {
+            if ((objects[i].flags & 1) && (objects[i].flags & 0x1000) && objects[i].dynamic_light_id != -1) {
                 rtlDynamicFree(objects[i].dynamic_light_id);
                 objects[i].dynamic_light_id = -1;
             }
