@@ -319,7 +319,7 @@ static __declspec(noinline) void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTE
     }
 }
 static __declspec(noinline) void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG_PC *animation,
-                                                   i16 character_id, CHARACTER_EFFECT_CONFIG_PC *effects,
+                                                   i32 character_id, CHARACTER_EFFECT_CONFIG_PC *effects,
                                                    i32 *effect_count) {
     CHARACTER_EFFECT_CONFIG_PC *effect;
     if (animation->action_id == -1)
@@ -492,7 +492,9 @@ static void CC_anim_start(NUFPAR_PC *parser) {
 
     memset(&animation, 0, sizeof(animation));
     animation.action_id = -1;
-    animation.flags = (charconfig.flags & 1) != 0 ? 14 : 6;
+    animation.flags = 6;
+    if ((charconfig.flags & 1) != 0)
+        animation.flags = 14;
     animation.blend_in_time = 0.2f;
     animation.blend_out_time = 0.2f;
     animation.playback_rate = 30.0f;
@@ -608,14 +610,15 @@ static void CC_anim_start(NUFPAR_PC *parser) {
         } else if (NuStrICmp(parser->word_buffer_ptr, "extra_character_off") == 0) {
             CC_SetAnimMiscFlags(parser, &animation, 8);
         } else if (NuStrICmp(parser->word_buffer_ptr, "effect_start") == 0) {
-            if ((charconfig.flags & 0x60) != 0x60) {
+            if ((charconfig.flags & 0x40) != 0 && (charconfig.flags & 0x20) != 0) {
+                if (charconfig.effect_count < 32)
+                    CC_ReadAnimEffect(parser, &animation, charconfig.character_id, charconfig.effect_scratch,
+                                      &charconfig.effect_count);
+            } else {
                 while (NuFParGetLine(parser) != 0) {
                     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "effect_end") == 0)
                         break;
                 }
-            } else if (charconfig.effect_count < 32 && animation.action_id != -1) {
-                CC_ReadAnimEffect(parser, &animation, charconfig.character_id, charconfig.effect_scratch,
-                                  &charconfig.effect_count);
             }
         } else if (NuStrICmp(parser->word_buffer_ptr, "anim_end") == 0) {
             if (animation.action_id == -1)
@@ -642,14 +645,11 @@ static void CC_anim_start(NUFPAR_PC *parser) {
                     existing->movement_speed = animation.movement_speed;
                     existing->movement_rate_cap = animation.movement_rate_cap;
                     existing->action_speed = animation.action_speed;
-                    existing->event_frame_1 = animation.event_frame_1;
-                    existing->event_frame_2 = animation.event_frame_2;
                     existing->priority = animation.priority;
-                    existing->event_frame_3 = animation.event_frame_3;
-                    existing->flags = animation.flags;
                     existing->minimum_repetitions = animation.minimum_repetitions;
-                    existing->event_frame_4 = animation.event_frame_4;
                     existing->maximum_repetitions = animation.maximum_repetitions;
+                    existing->flags = animation.flags;
+                    memcpy(existing->event_frames, animation.event_frames, sizeof(animation.event_frames));
                     existing->stop_frame = animation.stop_frame;
                     existing->misc_flags = animation.misc_flags;
                     existing->locator = animation.locator;
