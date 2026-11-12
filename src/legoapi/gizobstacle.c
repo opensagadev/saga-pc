@@ -1219,60 +1219,61 @@ static i32 __cdecl GizObstacles_BoltHit(void *world, void *data, void *attacker_
     GIZOBSTACLE *nearest = NULL;
     f32 nearest_distance = 1000000000.0f;
     i32 i;
-    if (!system)
-        return 0;
-    for (i = 0; i < system->active_gizmo_count; ++i) {
-        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
-        i32 point_index;
-        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
-            continue;
-        if (obstacle->evaluated_position.x - obstacle->evaluated_radius > maximum->x ||
-            minimum->x > (f64)obstacle->evaluated_position.x + obstacle->evaluated_radius ||
-            obstacle->evaluated_position.z - obstacle->evaluated_radius > maximum->z ||
-            minimum->z > (f64)obstacle->evaluated_position.z + obstacle->evaluated_radius ||
-            obstacle->evaluated_position.y - obstacle->evaluated_radius > maximum->y ||
-            minimum->y > (f64)obstacle->evaluated_position.y + obstacle->evaluated_radius)
-            continue;
-        for (point_index = point_count - 1; point_index >= 0; --point_index) {
-            NUVEC *point = &points[point_index];
-            f32 distance;
-            if (!SphereSphereOverlap(&obstacle->evaluated_position, obstacle->evaluated_radius, point, radius))
+    if (system) {
+        for (i = 0; i < system->active_gizmo_count; ++i) {
+            GIZOBSTACLE *obstacle = (GIZOBSTACLE *)system->active_gizmos[i]->object;
+            NUVEC *position;
+            i32 point_index;
+            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
                 continue;
-            if (attacker)
-                point = &attacker->collision_position;
-            distance = NuVecDistSqr(point, &obstacle->evaluated_position, 0);
-            if (distance < nearest_distance) {
-                nearest_distance = distance;
-                nearest = obstacle;
+            if (maximum->x < obstacle->evaluated_position.x - obstacle->evaluated_radius ||
+                minimum->x > obstacle->evaluated_position.x + obstacle->evaluated_radius ||
+                maximum->z < obstacle->evaluated_position.z - obstacle->evaluated_radius ||
+                minimum->z > obstacle->evaluated_position.z + obstacle->evaluated_radius ||
+                maximum->y < obstacle->evaluated_position.y - obstacle->evaluated_radius ||
+                minimum->y > obstacle->evaluated_position.y + obstacle->evaluated_radius)
+                continue;
+            position = &obstacle->evaluated_position;
+            for (point_index = point_count - 1; point_index >= 0; --point_index) {
+                f32 distance;
+                if (!SphereSphereOverlap(position, obstacle->evaluated_radius, &points[point_index], radius))
+                    continue;
+                distance = NuVecDistSqr(attacker ? &attacker->collision_position : &points[point_index], position, 0);
+                if (distance < nearest_distance) {
+                    nearest_distance = distance;
+                    nearest = obstacle;
+                }
+                break;
             }
-            break;
+        }
+        if (nearest) {
+            BOLTTYPE_PC *type;
+            GAMEOBJECT *owner;
+            i32 player;
+            if (hit_type != 2 && hit_type != 7 && bolt) {
+                BoltType_FindByID(bolt->type_id, WORLD);
+                Cheats_CheckFlags(2);
+            }
+            type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
+            owner = (GAMEOBJECT *)bolt->owner;
+            player = owner ? (i8)owner->field_280 : -1;
+            if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->field_3c)) {
+                if (attacker) {
+                    NewRumble(attacker->pad->bound_pad, 0.4f, 0);
+                    GameCam_HitJudder();
+                }
+            } else {
+                NUVEC normal;
+                NuVecSub(&normal, &nearest->evaluated_position, &bolt->position);
+                NuVecNorm(&normal, &normal);
+                Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+            }
+            if (BoltSys->stop_targeting)
+                BoltSys->stop_targeting(attacker, points);
+            return 1;
         }
     }
-    if (!nearest)
-        return 0;
-    if (hit_type != 2 && hit_type != 7 && bolt) {
-        BoltType_FindByID(bolt->type_id, WORLD);
-        Cheats_CheckFlags(2);
-    }
-    {
-        BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, (WORLDINFO *)world);
-        GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
-        i32 player = owner ? (i8)owner->field_280 : -1;
-        if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->field_3c)) {
-            if (attacker) {
-                NewRumble(attacker->pad->bound_pad, 0.4f, 0);
-                GameCam_HitJudder();
-            }
-        } else {
-            NUVEC normal;
-            NuVecSub(&normal, &nearest->evaluated_position, &bolt->position);
-            NuVecNorm(&normal, &normal);
-            Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
-        }
-    }
-    if (BoltSys->stop_targeting)
-        BoltSys->stop_targeting(attacker, points);
-    return 1;
+    return 0;
 }
 
 ADDGIZMOTYPE_PC *__cdecl GizObstacles_RegisterGizmo(i32 type_id) {
