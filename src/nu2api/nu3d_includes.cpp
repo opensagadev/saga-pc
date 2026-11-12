@@ -11063,10 +11063,9 @@ extern "C" {
 }
 
 extern "C" void __cdecl PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height) {
-    (void)width;
-    (void)height;
-    PCGraphicsPostEffectWorkTexturePc =
-        PCGraphicsCreateEffectTexture(PCGraphicsPostEffectWidthPc, PCGraphicsPostEffectHeightPc, 1, 0x11, 2);
+    width = PCGraphicsPostEffectWidthPc;
+    height = PCGraphicsPostEffectHeightPc;
+    PCGraphicsPostEffectWorkTexturePc = PCGraphicsCreateEffectTexture(width, height, 1, 0x11, 2);
 }
 
 extern "C" i32 __cdecl NuTexCreateFramebufferCopy(VARIPTR *buffer, VARIPTR end) {
