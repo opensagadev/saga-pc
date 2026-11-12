@@ -425,9 +425,10 @@ void __cdecl GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progre
     }
     type = &((GIZMOTYPES_PC *)gizmotypes)->types[type_id];
     set = &system->sets[type_id];
-    progress = NULL;
     if (type->progress != NULL && progress_index >= 0 && progress_index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels)
         progress = type->progress[progress_index];
+    else
+        progress = NULL;
     if (type->fns.clear_progress_fn != NULL)
         type->fns.clear_progress_fn(world, progress);
     if (type->fns.store_progress_fn != NULL)
