@@ -16990,12 +16990,11 @@ void __cdecl AISysProcessCharacter(AISYS_PC *system, APIOBJECT_PC *object, AIPAC
                 }
                 if (source_position != NULL) {
                     f32 distance_squared = NuVecXZDistSqr(source_position, &object->position, &delta);
-                    f32 radius = packet->movement_target_radius;
                     if ((packet->flags & 0x10000000u) != 0) {
-                        if (distance_squared < radius * radius) {
+                        if (distance_squared < packet->movement_target_radius * packet->movement_target_radius) {
                             packet->flags &= ~0x10000000u;
                         }
-                    } else if (distance_squared > radius * radius) {
+                    } else if (distance_squared > packet->movement_target_radius * packet->movement_target_radius) {
                         if (distance_squared >
                             (packet->movement_target_radius + 0.5) * (packet->movement_target_radius + 0.5)) {
                             packet->flags |= 0x10000000u;
