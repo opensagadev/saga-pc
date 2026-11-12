@@ -1147,8 +1147,7 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
     delta.x = pos->x - mtx->m30;
     delta.y = pos->y - mtx->m31;
     delta.z = pos->z - mtx->m32;
-    if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z >
-        (entry->radius + radius) * (entry->radius + radius))
+    if (delta.x * delta.x + delta.y * delta.y + delta.z * delta.z > (entry->radius + radius) * (entry->radius + radius))
         return 0;
     if ((entry->flags & 1) != 0) {
         NuMtxInvH(&inverse, mtx);
@@ -1188,8 +1187,7 @@ i32 __cdecl CutTriggerEntryTestMtxPc(CUT_TRIGGER_ENTRY_PC *entry, NUMTX *mtx, NU
                 NuVecMtxTransform(&centre, &cylinder->base, mtx);
                 if (pos->y < centre.y - radius || pos->y > centre.y + cylinder->height + radius)
                     break;
-                dist = (pos->x - centre.x) * (pos->x - centre.x) +
-                       (pos->z - centre.z) * (pos->z - centre.z);
+                dist = (pos->x - centre.x) * (pos->x - centre.x) + (pos->z - centre.z) * (pos->z - centre.z);
                 if (dist < (cylinder->radius + radius) * (cylinder->radius + radius))
                     return 1;
                 break;
