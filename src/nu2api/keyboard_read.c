@@ -549,7 +549,7 @@ void do_maya_mouse_camera(edcam_s *camera) {
     mouse_z = NuMouseReadZVel() * camera->mouse_move_speed;
     buttons = NuMouseReadButtons();
     if (buttons == 2 || buttons == 5) {
-        if (camera->allow_distance) {
+        if (camera->freedoms & EDCAM_FREEDOM_DISTANCE) {
             i32 difference;
             f32 sine;
             if (mouse_x != 0.0f || mouse_y != 0.0f)
@@ -574,19 +574,16 @@ void do_maya_mouse_camera(edcam_s *camera) {
                 camera->distance =
                     camera->distance + camera->distance_speed * zoom_scale * zoom_delta * camera->mouse_move_speed;
                 minimum = -camera->minimum_distance;
-                if (minimum < camera->distance)
-                    camera->distance = minimum;
+                camera->distance = MIN(minimum, camera->distance);
             }
         }
     } else if (buttons == 1) {
-        if (camera->allow_pitch) {
+        if (camera->freedoms & EDCAM_FREEDOM_PITCH) {
             camera->pitch += (i32)(mouse_y * -16.0);
-            if (camera->pitch > 0x4000)
-                camera->pitch = 0x4000;
-            if (camera->pitch < -0x4000)
-                camera->pitch = -0x4000;
+            camera->pitch = MIN(0x4000, camera->pitch);
+            camera->pitch = MAX(-0x4000, camera->pitch);
         }
-        if (camera->allow_yaw)
+        if (camera->freedoms & EDCAM_FREEDOM_YAW)
             camera->yaw += (i32)(mouse_x * -16.0);
     } else if (buttons == 4 || buttons == 3) {
         movement.x = (f32)(movement.x + mouse_x * 0.0078125);
@@ -595,17 +592,16 @@ void do_maya_mouse_camera(edcam_s *camera) {
 
     camera->distance = camera->distance - camera->distance_speed * zoom_scale * mouse_z;
     minimum = -camera->minimum_distance;
-    if (minimum < camera->distance)
-        camera->distance = minimum;
+    camera->distance = MIN(minimum, camera->distance);
     rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
     NuVecMtxRotate(&movement, &movement, &rotation);
-    if (camera->allow_position_x)
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_X)
         camera->position.x += movement.x;
-    if (camera->allow_position_y)
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Y)
         camera->position.y += movement.y;
-    if (camera->allow_position_z)
+    if (camera->freedoms & EDCAM_FREEDOM_POSITION_Z)
         camera->position.z += movement.z;
 }
 
