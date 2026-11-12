@@ -6297,13 +6297,25 @@ extern "C" {
 
     static i32 intersectPortalExtents(NUVEC *first_minimum, NUVEC *first_maximum, NUVEC *second_minimum,
                                       NUVEC *second_maximum, NUVEC *minimum, NUVEC *maximum) {
-        if (first_minimum->x >= second_maximum->x || first_minimum->y >= second_maximum->y ||
-            first_maximum->x <= second_minimum->x || first_maximum->y <= second_minimum->y)
+        if (second_maximum->x <= first_minimum->x || second_maximum->y <= first_minimum->y ||
+            second_minimum->x >= first_maximum->x || second_minimum->y >= first_maximum->y)
             return 0;
-        minimum->x = first_minimum->x < second_minimum->x ? second_minimum->x : first_minimum->x;
-        minimum->y = first_minimum->y < second_minimum->y ? second_minimum->y : first_minimum->y;
-        maximum->x = first_maximum->x > second_maximum->x ? second_maximum->x : first_maximum->x;
-        maximum->y = first_maximum->y > second_maximum->y ? second_maximum->y : first_maximum->y;
+        if (second_minimum->x > first_minimum->x)
+            minimum->x = second_minimum->x;
+        else
+            minimum->x = first_minimum->x;
+        if (second_minimum->y > first_minimum->y)
+            minimum->y = second_minimum->y;
+        else
+            minimum->y = first_minimum->y;
+        if (second_maximum->x < first_maximum->x)
+            maximum->x = second_maximum->x;
+        else
+            maximum->x = first_maximum->x;
+        if (second_maximum->y < first_maximum->y)
+            maximum->y = second_maximum->y;
+        else
+            maximum->y = first_maximum->y;
         return 1;
     }
 
