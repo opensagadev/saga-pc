@@ -5306,16 +5306,16 @@ extern "C" {
 }
 
 extern "C" void __cdecl Hub_UpdateKit(void) {
-    i32 right = 0, left = 0, cancel = 0;
+    i32 left = 0, right = 0, cancel = 0;
     if (HubMiniKitViewerMoveWaitPc <= 0.0f) {
         for (i32 player = 0; player < 2; ++player) {
             if (MissionMenuPacketPc.active_player[player] != 0) {
-                const u32 held = GamePadStorage[player].menu_buttons_held;
-                if ((held & GAMEPAD_TOGGLELEFT) == 0) {
-                    if ((held & GAMEPAD_TOGGLERIGHT) != 0)
-                        ++right;
-                } else if ((held & GAMEPAD_TOGGLERIGHT) == 0)
+                if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) != 0 &&
+                    (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) == 0)
                     ++left;
+                else if ((GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLERIGHT) != 0 &&
+                         (GamePadStorage[player].menu_buttons_held & GAMEPAD_TOGGLELEFT) == 0)
+                    ++right;
                 if ((GamePadStorage[player].menu_buttons_pressed & GAMEPAD_MENUCANCEL) != 0)
                     cancel = 1;
             }
