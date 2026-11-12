@@ -2,8 +2,16 @@
 
 extern i16 CharacterFixupIdPc007f18c4;
 
+i32 __cdecl Hub_CurrentArea(void) {
+    if (WORLD->current_level == HUB_LDATA)
+        return HubAiMusicStatePc.area;
+    return -1;
+}
+
 i32 __cdecl Hub_Outside(void) {
-    return WORLD->current_level == HUB_LDATA && HubAiMusicStatePc.area == 7;
+    if (Hub_CurrentArea() == 7)
+        return 1;
+    return 0;
 }
 static void Hub_MakeListCharactersAvailable(i16 *characters) {
     i32 character;
