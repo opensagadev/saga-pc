@@ -2413,19 +2413,15 @@ f32 NuCubicInterpolation(f32 m, f32 y0, f32 y1, f32 y2, f32 t) {
     f32 a;
     f32 b;
     f32 c;
-    f32 d;
-    f32 t_cb;
-    f32 t_sq;
+    f32 t2;
+    f32 t3;
 
-    a = -m / 6.0 + y0 / 2.0 + -y1 / 2.0 + y2 / 6.0;
-    b = m / 2.0 - y0 + y1 / 2.0;
-    c = -m / 3.0 + -y0 / 2.0 + y1 + -y2 / 6.0;
-    d = y0;
-
-    t_sq = t * t;
-    t_cb = t * t_sq;
-
-    return a * t_cb + b * t_sq + c * t + d;
+    a = (-m / 6.0) + (y0 / 2.0) + (-y1 / 2.0) + (y2 / 6.0);
+    b = (m / 2.0) + (-y0) + (y1 / 2.0);
+    c = (-m / 3.0) + (-y0 / 2.0) + y1 + (-y2 / 6.0);
+    t2 = t * t;
+    t3 = t2 * t;
+    return a * t3 + b * t2 + c * t + y0;
 }
 
 void NuQuatCubicInt(NUQUAT *out, NUQUAT *m, NUQUAT *a, NUQUAT *b, NUQUAT *c, f32 t) {
