@@ -689,19 +689,19 @@ void __cdecl MenuUpdateLoadCancel(MENU *menu) {
 
 void __cdecl MenuUpdateFormatCancel(MENU *menu) {
     if (menu->confirm_pressed != 0) {
-        MenuSFX = MENUSFX_MENUSELECT;
         if (menu->selected_row == 0) {
-            i32 parent_id = MenuInfo[GameMenu[GameMenuLevel - 1].menu].id;
-            if (parent_id == 1000) {
+            MenuSFX = MENUSFX_MENUSELECT;
+            if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1000) {
                 BackupMenuNoFn();
                 NewMenu(1016, 1, -1);
-            } else if (parent_id == 1012) {
+            } else if (MenuInfo[GameMenu[GameMenuLevel - 1].menu].id == 1012) {
                 BackupMenuNoFn();
                 NewMenu(1017, 1, -1);
             } else {
                 BackupMenu();
             }
         } else {
+            MenuSFX = MENUSFX_MENUSELECT;
             BackupMenuNoFn();
             NewMenu(1006, 1, -1);
         }
