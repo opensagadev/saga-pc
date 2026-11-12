@@ -272,13 +272,14 @@ static void __cdecl Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
     i32 index, slot, hand_angle;
     u16 spin_angle;
     f32 pulse;
-    if (TechnoSysPc.idle_object_ids[1] == -1 || world->level_objects[TechnoSysPc.idle_object_ids[1]].active == 0 ||
-        world->technos == NULL)
+    if (TechnoSysPc.idle_object_ids[1] == -1 || world->level_objects[TechnoSysPc.idle_object_ids[1]].active == 0)
+        return;
+    techno = (TECHNO_CALLBACK_PC *)world->technos;
+    if (techno == NULL)
         return;
     spin_angle = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     index = (i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
     pulse = (f32)((f64)NuTrigTable[(index >> 1) & 0x7fff] * (f64)0.2f + (f64)0.8f);
-    techno = (TECHNO_CALLBACK_PC *)world->technos;
     for (index = 0; index < world->techno_count; ++index, ++techno) {
         if ((techno->flags & 2) == 0)
             continue;
