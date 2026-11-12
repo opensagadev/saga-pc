@@ -91,7 +91,8 @@ void __cdecl Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         shard->visible = visible != 0;
     }
 }
-void __cdecl Shards_UpdateBeforeCharacters(WORLDINFO *world, void *unused, f32 delta_time) {
+void __cdecl Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
+    WORLDINFO *world = (WORLDINFO *)data;
     i32 index;
     for (index = 0; index < world->shard_count; ++index)
         ((SHARD_s *)world->shards)[index].state_flags &= ~0x20u;
@@ -280,7 +281,7 @@ ADDGIZMOTYPE_PC *__cdecl Shards_RegisterGizmo(i32 unused_type_id) {
     ShardAddTypePc.fns.options = 0x30;
     ShardAddTypePc.fns.get_max_gizmos_fn = (i32(__cdecl *)(void *))Shards_GetMaxGizmos;
     ShardAddTypePc.fns.add_gizmos_fn = (void *)Shards_AddGizmos;
-    ShardAddTypePc.fns.early_update_fn = (void(__cdecl *)(void *, void *, f32))Shards_UpdateBeforeCharacters;
+    ShardAddTypePc.fns.early_update_fn = Shards_UpdateBeforeCharacters;
     ShardAddTypePc.fns.late_update_fn = (void(__cdecl *)(void *, void *, f32))Shards_UpdateAfterCharacters;
     ShardAddTypePc.fns.draw_fn = (void(__cdecl *)(void *, void *, f32))Shards_Draw;
     ShardAddTypePc.fns.panel_draw_fn = NULL;
