@@ -1168,24 +1168,24 @@ mode_selected:
             for (i = 0; i < 2; i++) {
                 struct nuvec_s *source_position;
                 GAMEOBJECT *object = Player[i];
-                if (object == NULL || (((i8)(object->flags_1fc)) >= 0 && !LookAtBoth) ||
+                if (object == NULL || ((object->flags_1fc & 0x80) == 0 && !LookAtBoth) ||
                     (netcamera && (object->flags_1f8 & 0x40000) != 0) || (BonusWinner != -1 && BonusWinner != i))
                     continue;
                 vehicle_player[i] = object->character_data->model_flags & 0x2000;
                 if (!(SPEEDERCHASEA_LDATA != NULL && WORLD->current_level == SPEEDERCHASEA_LDATA &&
-                      object->id == id_SPEEDERBIKE && disable_narrow_socks) &&
+                      (i16)object->id == id_SPEEDERBIKE && disable_narrow_socks) &&
                     vehicle_player[i]) {
                     vehicle_count++;
-                    if (object->id == id_LANDSPEEDER) {
-                        if (landspeeder_lookahead == 0.0f) {
-                            landspeeder_speed = object->horizontal_velocity_magnitude;
-                            landspeeder_lookahead = object->horizontal_velocity_magnitude * 0.6f;
-                            landspeeder_yaw = ((u16)(object->field_0x276));
-                        } else {
+                    if ((i16)object->id == id_LANDSPEEDER) {
+                        if (landspeeder_lookahead != 0.0f) {
                             landspeeder_lookahead =
                                 (landspeeder_lookahead + (object->horizontal_velocity_magnitude * 0.6f)) * 0.5f;
                             landspeeder_yaw = (landspeeder_yaw + ((u16)(object->field_0x276))) * 0.5f;
                             landspeeder_speed = (landspeeder_speed + object->horizontal_velocity_magnitude) * 0.5f;
+                        } else {
+                            landspeeder_speed = object->horizontal_velocity_magnitude;
+                            landspeeder_lookahead = object->horizontal_velocity_magnitude * 0.6f;
+                            landspeeder_yaw = ((u16)(object->field_0x276));
                         }
                     }
                 }
@@ -1881,7 +1881,7 @@ mode_selected:
         NUMTX orientation = {0};
         shared_count = 0;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && ((i8)(((GAMEOBJECT *)Player[i])->flags_1fc)) < 0 &&
+            if (Player[i] != NULL && (((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0 &&
                 ((GAMEOBJECT *)Player[i])->flags_107a == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
                          NUMTX_GET_ROW_VEC(&((GAMEOBJECT *)Player[i])->vehicle_orientation, 0));
@@ -1957,7 +1957,7 @@ mode_selected:
                 i32 i;
                 for (i = 0; i < 2; i++) {
                     GAMEOBJECT *object = Player[i];
-                    if (object != NULL && ((i8)(object->flags_1fc)) < 0) {
+                    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
                         if (WORLD->current_level == DEATHSTARBATTLED_LDATA &&
                             ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx)) {
                             camera_shake = 0.6f;
