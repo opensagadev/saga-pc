@@ -8717,12 +8717,15 @@ i32 __cdecl Action_CanAttack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
 
 i32 __cdecl Action_TakeDamage(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 delta) {
-    GAMEOBJECT *object, *hitter = NULL, *candidate;
-    APIOBJECT_PC *found, *opponent;
+    GAMEOBJECT *object, *hitter, *candidate;
+    APIOBJECT_PC *found;
     char *value;
-    i32 index, damage = 1, creature_set = 0;
+    i32 index, damage, creature_set;
     (void)delta;
     object = NULL;
+    hitter = NULL;
+    damage = 1;
+    creature_set = 0;
     if (!first_time)
         return 1;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
@@ -8740,9 +8743,8 @@ i32 __cdecl Action_TakeDamage(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, A
                 damage = (i32)AIParamToFloat(processor, value + 7);
             } else if (NuStrIStr(params[index], "opponent") != NULL) {
                 if (packet != NULL && packet->opponent != NULL) {
-                    opponent = (APIOBJECT_PC *)packet->opponent;
-                    if (opponent->owner != NULL) {
-                        object = opponent->owner;
+                    if (packet->opponent->objptr != NULL) {
+                        object = packet->opponent->objptr;
                         if (packet->owner != NULL && packet->owner->objptr != NULL)
                             hitter = packet->owner->objptr;
                     }
