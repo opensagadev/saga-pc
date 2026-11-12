@@ -158,7 +158,6 @@ void __cdecl GameAnimSys_ReStoreProgress(GAMEANIMSYS *system, i32 index) {
 
 GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end, i32 object_data_size, i32 capacity) {
     GAMEANIMOBJPOOL *pool = NULL;
-    GAMEANIMOBJ *object;
     i32 i;
 
     if (capacity != 0) {
@@ -171,9 +170,8 @@ GAMEANIMOBJPOOL *__cdecl GameAnimSet_CreateObjectPool(VARIPTR *buf, VARIPTR *end
                 pool->object_data = GameBufferAlloc(buf, end, pool->object_data_size * pool->capacity);
             }
             for (i = 0; i < pool->capacity; ++i) {
-                object = &pool->objects[i];
-                object->next = pool->free_objects;
-                pool->free_objects = object;
+                pool->objects[i].next = pool->free_objects;
+                pool->free_objects = &pool->objects[i];
             }
         }
     }
@@ -650,20 +648,23 @@ i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 fra
 
 i32 __cdecl GameAnimSet_GetVisibility(GAMEANIMSET *set) {
     GAMEANIMOBJ *object;
-    i32 visible_count = 0;
+    i32 visible_count;
 
-    if (set == NULL) {
-        return 0;
-    }
-    for (object = set->objects; object != NULL; object = object->next) {
-        if (NuSpecialGetVisibilityFn(&object->special) != 0) {
-            ++visible_count;
+    if (set != NULL) {
+        visible_count = 0;
+        for (object = set->objects; object != NULL; object = object->next) {
+            if (NuSpecialGetVisibilityFn(&object->special) != 0) {
+                ++visible_count;
+            }
+        }
+        if (visible_count == set->object_count) {
+            return 2;
+        }
+        if (visible_count > 0) {
+            return 1;
         }
     }
-    if (visible_count == set->object_count) {
-        return 2;
-    }
-    return visible_count > 0 ? 1 : 0;
+    return 0;
 }
 
 void __cdecl GameAnimSet_SetVisibility(GAMEANIMSET *set, i32 visibility) {
@@ -1606,7 +1607,7 @@ GAMEANIMOBJ *__cdecl GameAnimSet_AddObjectByName(GAMEANIMSET *set, NUGSCN *scene
 
 void GameAnimSet_RemoveSpecial(GAMEANIMSET *set, nuhspecial_s *special) {
     struct gameanimobj_s *object;
-    if (special == NULL || set == NULL)
+    if (set == NULL || special == NULL)
         return;
     object = set->objects;
     while (object != NULL && NuSpecialCompare(&object->special, special) == 0) {
@@ -1632,6 +1633,7 @@ i32 __cdecl MatrixReflection(NUMTX *, i32, f32, f32, NUMTX *);
 void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
     f32 plane;
     GAMEANIMOBJ *object;
+    NUMTX reflection;
     if (!set || !set->objects)
         return;
     if (!matrix)
@@ -1640,7 +1642,6 @@ void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, 
     NuRndrStartReflectionRender(0);
     for (object = set->objects; object; object = object->next) {
         if (!(object->flags & 2) && NuSpecialGetVisibilityFn(&object->special)) {
-            NUMTX reflection;
             NUMTX *draw_matrix = NuSpecialGetDrawMtx(&object->special);
             if (MatrixReflection(draw_matrix, axis, plane, WORLD->current_level->reflection_y, &reflection))
                 NuSpecialDrawAt(&object->special, &reflection);
