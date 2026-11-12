@@ -1512,12 +1512,17 @@ extern "C" {
             if (packet->path_info.direction == far_index) {
                 return 0;
             }
-            if (packet->path_connection_state == 0) {
-                if (current->open == 0) {
-                    packet->path_connection_state = 1;
-                }
-            } else if (packet->path_connection_state == 1 && current->open != 0) {
-                SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+            switch (packet->path_connection_state) {
+                case 0:
+                    if (current->open == 0) {
+                        packet->path_connection_state = 1;
+                    }
+                    break;
+                case 1:
+                    if (current->open != 0) {
+                        SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+                    }
+                    break;
             }
         } else {
         reset_connection:
