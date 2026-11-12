@@ -291,8 +291,8 @@ i32 NuMusic::SelectTrackByHandle(u32 class_mask, i32 handle) {
         class_index = ClassToIX(class_mask);
         if (class_index >= 0 && class_index < 6) {
             if (handle != -1) {
-                handle_album_index = handle >> 11;
                 track_index = handle & 0x7ff;
+                handle_album_index = handle >> 11;
                 if (handle_album_index == (i32)(selected_album - albums)) {
                     if (track_index >= 0 && track_index < selected_album->tracks_count) {
                         selected_album->tracks[class_index] = &selected_album->tracks_source[track_index];
