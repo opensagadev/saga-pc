@@ -1077,31 +1077,22 @@ extern "C" i32 *__cdecl GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC
 extern "C" GIZSPINNER_s *__cdecl GizSpinner_Find(WORLDINFO *world, NUVEC *position, i32 alternate) {
     f32 nearest_distance = 1.5625f;
     GIZSPINNER_s *nearest = NULL;
-    if (world->current_level->max_spinners != 0) {
-        i32 index = 0;
-        do {
-            GIZSPINNER_s *spinner = &world->spinners[index];
-            if ((spinner->flags & 1) == 0 || (spinner->flags & 0x26) != 0) {
-                goto next_spinner;
-            }
-            if (alternate != 0) {
-                if ((spinner->state_flags & 8) == 0) {
-                    goto next_spinner;
-                }
-            } else if ((spinner->state_flags & 8) != 0) {
-                goto next_spinner;
-            }
-            {
-                NUVEC spinner_position = spinner->position;
-                f32 distance = NuVecDistSqr(position, &spinner_position, NULL);
-                if (distance < nearest_distance) {
-                    nearest_distance = distance;
-                    nearest = spinner;
-                }
-            }
-        next_spinner:
-            ++index;
-        } while (world->current_level->max_spinners > index);
+    for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
+        GIZSPINNER_s *spinner = &world->spinners[index];
+        if ((spinner->flags & 1) == 0 || (spinner->flags & 0x26) != 0)
+            continue;
+        if (alternate != 0) {
+            if ((spinner->state_flags & 8) == 0)
+                continue;
+        } else if ((spinner->state_flags & 8) != 0) {
+            continue;
+        }
+        NUVEC spinner_position = spinner->position;
+        f32 distance = NuVecDistSqr(position, &spinner_position, NULL);
+        if (distance < nearest_distance) {
+            nearest_distance = distance;
+            nearest = spinner;
+        }
     }
     return nearest;
 }
