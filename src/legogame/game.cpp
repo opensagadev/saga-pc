@@ -1135,15 +1135,16 @@ i32 __cdecl SarlaccPitDiscoActive(WORLDINFO *world);
 // Append inside the real publisher/private cohort only after owner review.
 static void __cdecl CutScene_OverrideConfigFileName_LSW(char *filename, i32 unused0, i32 unused1) {
     char *prefix = "episodei\\ep1_podrace_";
-    const char *suffix;
+    i32 length;
     if (PODSPRINT_ADATA == NULL || WorldInfo_CurrentlyActive()->area != PODSPRINT_ADATA)
         return;
     if (NuStrIStr(filename, prefix) != filename)
         return;
-    suffix = filename + NuStrLen(prefix);
-    if (NuStrICmp(suffix, "arrival1") == 0 || NuStrICmp(suffix, "arrival2") == 0 ||
-        NuStrICmp(suffix, "arrival3") == 0 || NuStrICmp(suffix, "arrival4") == 0 || NuStrICmp(suffix, "intro") == 0 ||
-        NuStrICmp(suffix, "tuskenraiders") == 0 || NuStrICmp(suffix, "outro1") == 0 || NuStrICmp(suffix, "outro2") == 0)
+    length = NuStrLen(prefix);
+    if (NuStrICmp(filename + length, "arrival1") == 0 || NuStrICmp(filename + length, "arrival2") == 0 ||
+        NuStrICmp(filename + length, "arrival3") == 0 || NuStrICmp(filename + length, "arrival4") == 0 ||
+        NuStrICmp(filename + length, "intro") == 0 || NuStrICmp(filename + length, "tuskenraiders") == 0 ||
+        NuStrICmp(filename + length, "outro1") == 0 || NuStrICmp(filename + length, "outro2") == 0)
         NuStrCat(filename, "_sprint");
 }
 
