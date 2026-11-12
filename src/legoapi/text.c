@@ -1563,8 +1563,8 @@ void __cdecl MenuDrawViewTextStrings(MENU *menu) {
         f32 y;
         i32 red, green, blue;
         dme_sx = 0.6f;
-        dme_align = 0;
         dme_sy = menu->item_scale;
+        dme_align = 0;
         GameDrawMenuEntry(menu, " ");
         y = menu->draw_y - menu->centre_offset;
         if (MenuStopDraw != 0)
