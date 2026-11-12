@@ -180,31 +180,29 @@ NULSTHDR *__cdecl NuLstCreate(i32 element_count, i32 element_size) {
 
     element_size_total = element_size + sizeof(NULNKHDR);
     list = (NULSTHDR *)NuAlloc(element_count * element_size_total + sizeof(NULSTHDR), NuLstCreateTag, 0x67);
-    if (list == NULL) {
-        return NULL;
-    }
-    list->free = (NULNKHDR *)(list + 1);
-    list->head = NULL;
-    list->tail = NULL;
-    list->element_count = (u16)element_count;
-    list->element_size = (u16)element_size;
-    list->element_size_total = (u16)element_size_total;
-    list->used_count = 0;
-
-    current = list->free;
-    next = (NULNKHDR *)((u8 *)current + element_size_total);
-    for (index = 1; index < element_count; index++) {
-        current->next = next;
+    if (list != NULL) {
+        list->free = (NULNKHDR *)(list + 1);
+        list->head = NULL;
+        list->tail = NULL;
+        list->element_count = (u16)element_count;
+        list->element_size = (u16)element_size;
+        list->element_size_total = (u16)element_size_total;
+        list->used_count = 0;
+        current = list->free;
+        next = (NULNKHDR *)((u8 *)current + element_size_total);
+        for (index = 1; index < element_count; index++) {
+            current->next = next;
+            current->id = (u16)(index - 1);
+            current->owner = list;
+            current = next;
+            next = (NULNKHDR *)((u8 *)next + element_size_total);
+        }
+        current->next = NULL;
+        list->free_tail = current;
         current->id = (u16)(index - 1);
         current->owner = list;
-        current = next;
-        next = (NULNKHDR *)((u8 *)next + element_size_total);
+        list->safe_thread = nu_current_thread_id;
     }
-    current->next = NULL;
-    list->free_tail = current;
-    current->id = (u16)(element_count - 1);
-    current->owner = list;
-    list->safe_thread = nu_current_thread_id;
     return list;
 }
 
@@ -329,29 +327,30 @@ NULNKHDR *__cdecl NuLstGetFree(NULSTHDR *list) {
 NULNKHDR *__cdecl NuLstAllocHead(NULSTHDR *list) {
     u32 current_thread;
     NULNKHDR *node;
-    if (list->free == NULL)
-        return NULL;
-    current_thread = nu_current_thread_id;
-    if (list->safe_thread != current_thread)
-        NuThreadDisableThreadSwap();
-    node = list->free;
-    list->free = node->next;
-    if (list->free == NULL)
-        list->free_tail = NULL;
-    else
-        list->free->prev = NULL;
-    node->next = list->head;
-    if (list->head != NULL)
-        list->head->prev = node;
-    else
-        list->tail = node;
-    node->prev = NULL;
-    list->head = node;
-    node->is_used = 1;
-    ++list->used_count;
-    if (list->safe_thread != current_thread)
-        NuThreadEnableThreadSwap();
-    return node + 1;
+    if (list->free != NULL) {
+        current_thread = nu_current_thread_id;
+        if (list->safe_thread != current_thread)
+            NuThreadDisableThreadSwap();
+        node = list->free;
+        list->free = node->next;
+        if (list->free == NULL)
+            list->free_tail = NULL;
+        else
+            list->free->prev = NULL;
+        node->next = list->head;
+        if (list->head != NULL)
+            list->head->prev = node;
+        else
+            list->tail = node;
+        node->prev = NULL;
+        ++list->used_count;
+        list->head = node;
+        node->is_used = 1;
+        if (list->safe_thread != current_thread)
+            NuThreadEnableThreadSwap();
+        return node + 1;
+    }
+    return NULL;
 }
 
 NULNKHDR *__cdecl NuLstAlloc(NULSTHDR *list) {
@@ -376,7 +375,7 @@ NULSTHDR *__cdecl NuLstCreateBuff(i32 count, i32 size, VARIPTR *buffer, VARIPTR 
     u32 stride, bytes;
     NULNKHDR *node, *next;
     i32 i;
-    buffer->addr = (buffer->addr + alignment - 1) & -(u32)alignment;
+    buffer->addr = (buffer->addr + alignment - 1) & ~(alignment - 1);
     stride = (alignment + size + sizeof(NULNKHDR) - 1) & -(u32)alignment;
     bytes = count * stride + sizeof(NULSTHDR);
     if (bytes < end.addr - buffer->addr) {
