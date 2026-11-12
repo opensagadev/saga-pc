@@ -960,30 +960,33 @@ void __cdecl GizObstacle_SetPushControlled(GIZOBSTACLE *obstacle, GAMEOBJECT *ob
 GIZOBSTACLE *__cdecl GizObstacle_FindNearest(void *ptr, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared,
                                              i32 mode) {
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)ptr;
-    GIZOBSTACLE *nearest = NULL, *obstacle;
-    f32 closest = 1.0e9f;
+    GIZOBSTACLE *nearest, *obstacle;
+    f32 closest;
     i32 i;
-    if (!system)
-        return NULL;
-    for (i = 0, obstacle = system->obstacles; i < system->count; ++i, ++obstacle) {
-        f32 distance;
-        if ((mode != -1 && obstacle->mode != mode) || !(obstacle->progress_flags & 2) ||
-            !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
-            continue;
-        if (object && obstacle->anim_set) {
-            NUVEC average;
-            GameAnimSet_GetAveragePos(obstacle->anim_set, &average, 2, 1, 0);
-            distance = NuVecDistSqr(position, &average, NULL);
-        } else
-            distance = NuVecDistSqr(position, &obstacle->position, NULL);
-        if (distance < closest) {
-            closest = distance;
-            nearest = obstacle;
+    if (system) {
+        nearest = NULL;
+        closest = 1.0e9f;
+        for (i = 0, obstacle = system->obstacles; i < system->count; ++i, ++obstacle) {
+            f32 distance;
+            if ((mode != -1 && obstacle->mode != mode) || !(obstacle->progress_flags & 2) ||
+                !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
+                continue;
+            if (object && obstacle->anim_set) {
+                NUVEC average;
+                GameAnimSet_GetAveragePos(obstacle->anim_set, &average, 2, 1, 0);
+                distance = NuVecDistSqr(position, &average, NULL);
+            } else
+                distance = NuVecDistSqr(position, &obstacle->position, NULL);
+            if (distance < closest) {
+                closest = distance;
+                nearest = obstacle;
+            }
         }
+        if (distance_squared)
+            *distance_squared = closest;
+        return nearest;
     }
-    if (distance_squared)
-        *distance_squared = closest;
-    return nearest;
+    return NULL;
 }
 i32 __cdecl GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 player, i32 damage) {
     (void)position;
