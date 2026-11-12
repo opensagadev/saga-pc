@@ -880,10 +880,13 @@ extern "C" {
         velocity = v000;
         if (buildit->anim_set == NULL)
             return;
-        for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
+        object = buildit->anim_set->objects;
+        while (object != NULL) {
             struct PART_PC *part;
             ADDPART_PC params = Default_ADDPART;
-            NUMTX matrix = ((GIZBUILDITANIMDATA_s *)(object->object_data))->end_mtx;
+            NUMTX matrix;
+            GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)object->object_data;
+            matrix = data->end_mtx;
             params.matrix = &matrix;
             params.velocity = &velocity;
             params.special = &object->special;
@@ -900,6 +903,7 @@ extern "C" {
             if (part != NULL) {
                 part->time_remaining = qrand() * 1.5259021893143654e-05 * 2.0 + 7.0;
             }
+            object = object->next;
         }
     }
 
@@ -925,15 +929,15 @@ extern "C" {
             else
                 EnableShadowMapRendering(0);
             if (buildit->linked_buildit != NULL) {
-                if (buildit->anim_set == NULL)
+                GAMEANIMSET *set = buildit->anim_set;
+                if (set == NULL)
                     continue;
                 reflection_height = 0.0f;
-                if ((buildit->state_flags & 0x100) && buildit->anim_set->objects != NULL &&
-                    buildit->anim_set->objects->object_data != NULL) {
-                    data = (GIZBUILDITANIMDATA_s *)buildit->anim_set->objects->object_data;
+                if ((buildit->state_flags & 0x100) && set->objects != NULL && set->objects->object_data != NULL) {
+                    data = (GIZBUILDITANIMDATA_s *)set->objects->object_data;
                     reflection_height = buildit->field_50 + data->start_mtx.m31;
                 }
-                for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
+                for (object = set->objects; object != NULL; object = object->next) {
                     data = (GIZBUILDITANIMDATA_s *)object->object_data;
                     matrix = data->draw_mtx;
                     data->was_drawn = (u8)NuSpecialDrawAt(&object->special, &matrix);
