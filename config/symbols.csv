@@ -1983,6 +1983,7 @@ address,symbol,size,ctype
 0x4c1510,_InitAlphaList,208,
 0x4c15e0,_UpdateCharacterIDs,77,
 0x4c1630,_InitShop,4108,
+0x4c2640,_CheckCash,27,"i32 __cdecl (shopitem_s *, i32)"
 0x4c2660,_BuyShopItem,197,"i32 __cdecl(shopitem_s *,i32,i32)"
 0x4c2730,_SelectShopItem,976,
 0x4c2b00,_MoveSubItemsRight,1789,"i32 __cdecl(i32 *, NUVEC *, i32)"
@@ -2006,6 +2007,7 @@ address,symbol,size,ctype
 0x4c6c20,_DrawShop3D,47,
 0x4c6c50,_DrawShopPanel,21,
 0x4c6c70,_Shop_CanSelectPc,384,i32 __cdecl(void)
+0x4c6df0,_Shop_CollectAllCharacters,129,void __cdecl (i32)
 0x4c6e90,_ItemMenu,1613,i32 __cdecl(void *)
 0x4c74e0,_UpdateShop,484,i32 __cdecl(void *)
 0x4c7750,_DrawShopPrompts,201,void __cdecl(void)
