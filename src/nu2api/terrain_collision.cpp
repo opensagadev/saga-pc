@@ -637,11 +637,10 @@ extern "C" {
             if (!(TERRAIN_FABS(TERRAIN_HWS_A.x - query->position.x, temp, absolute_x) < 64.0f &&
                   TERRAIN_FABS(TERRAIN_HWS_A.z - query->position.z, temp, absolute_z) < 64.0f))
                 continue;
-            const f32 dz = TERRAIN_HWS_A.z - query->position.z;
-            const f32 dx = TERRAIN_HWS_A.x - query->position.x;
-            f32 reach = query->collision_radius + 0.005f + query->horizontal_movement_length;
-            reach *= reach;
-            if (!(reach > dx * dx + dz * dz))
+            const f32 reach_sq = (query->collision_radius + 0.005f + query->horizontal_movement_length) *
+                                 (query->collision_radius + 0.005f + query->horizontal_movement_length);
+            if (!(reach_sq > (TERRAIN_HWS_A.x - query->position.x) * (TERRAIN_HWS_A.x - query->position.x) +
+                                 (TERRAIN_HWS_A.z - query->position.z) * (TERRAIN_HWS_A.z - query->position.z)))
                 continue;
             edge.x = query->movement.x;
             edge.y = 0.0f;
