@@ -2,15 +2,14 @@
 
 i32 __cdecl Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **operator_object) {
     i32 index;
-    GAMEOBJECT *player;
     TECHNO_PC *techno;
     for (index = 0; index < 8; ++index) {
-        player = (GAMEOBJECT *)Player[index];
-        if (player != NULL && player->character_context == 0x51 && player->techno != NULL) {
-            techno = player->techno;
+        if (Player[index] != NULL && ((GAMEOBJECT *)Player[index])->character_context == 0x51 &&
+            ((GAMEOBJECT *)Player[index])->techno != NULL) {
+            techno = ((GAMEOBJECT *)Player[index])->techno;
             if ((techno->target_mode == 2 &&
                  NuSpecialCompare((NUSPECIALHANDLE *)target, (NUSPECIALHANDLE *)techno->controlled_object) != 0) ||
-                player->techno->controlled_object == target) {
+                ((GAMEOBJECT *)Player[index])->techno->controlled_object == target) {
                 if (pad != NULL)
                     *pad = ((GAMEOBJECT *)Player[index])->pad;
                 if (operator_object != NULL)
