@@ -401,13 +401,15 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
         return;
     for (i32 i = 0; i < 8; ++i) {
         GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
-        if (player == NULL || (player->flags_1fc_word & 0x1001) != 0x1001 || player->dead != 0 || player->rider != NULL)
+        if (player == NULL || !(player->flags_1fc_word & 1) || !(player->flags_1fc_word & 0x1000) ||
+            player->dead != 0 || player->rider != NULL)
             continue;
         NUVEC delta;
         NuVecSub(&delta, &player->lower_position, &object->locator_matrices[1].translation);
         if (delta.y > BuckSnowmobMinYPc && delta.y < BuckSnowmobMaxYPc) {
             f32 radius = BuckSnowmobRadiusPc;
-            if ((f64)delta.x * delta.x + (f64)delta.z * delta.z < (f64)radius * radius) {
+            f32 distance = delta.x * delta.x + delta.z * delta.z;
+            if (distance < radius * radius) {
                 NUVEC destination;
                 NuVecRotateY(&destination, &BuckSnowmobForwardPc, ((BUCK_ROTATION_READER_PC *)object)->rotation);
                 NuVecAdd(&destination, &destination, &((GAMEOBJECT *)Player[i])->collision_position);
