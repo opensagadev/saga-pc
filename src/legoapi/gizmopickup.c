@@ -606,19 +606,19 @@ void __cdecl AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *veloc
     params.position = position;
     params.velocity = velocity;
     params.part_id = 0xcb;
-    params.flags = 0x256;
     params.field_18 = params.field_14 = scale * GizmoPickupType[5].shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.special = &world->level_objects[0xcb].special;
     params.field_88 = lifetime;
     params.collision_fn = PartCollide_3D;
     params.update_fn = PartUpdate_Heart;
+    params.flags = 0x256;
     if ((world->current_level->flags & 0x80000) != 0) {
         params.field_a4 = PartVehicleHeartLifetime_PC;
         params.move_fn = PartMove_VehicleHeart;
-        params.flags |= 0x400;
         params.recipient = recipient;
         params.draw_fn = PartDraw_VehicleHeart;
+        params.flags |= 0x400;
     } else {
         params.stop_fn = PartStop_Flickerer;
         params.draw_fn = PartDraw_Flickerer;
