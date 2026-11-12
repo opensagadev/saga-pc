@@ -1389,10 +1389,11 @@ extern "C" {
 
     i32 __cdecl Batman_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        AIPATHNODE_PC *nodes = packet->path_info.path->nodes;
-        AIPATHNODE_PC *source = &nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
+        AIPATHNODE_PC *source =
+            &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE_PC *destination =
-            &nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
+            &packet->path_info.path
+                 ->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         if (TryToTeleportToNextNode(owner, destination, 0) != 0)
             return 1;
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
