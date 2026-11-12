@@ -639,11 +639,11 @@ extern "C" {
         if ((player->flags_1fc_word & 0x80) != 0 && Player_HasFastBuild(player))
             return 3.0f;
         buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
+        completed = buildit->built_object_count - player->big_jump_animation;
         amount = player->big_jump_animation;
-        completed = buildit->built_object_count;
         total = buildit->anim_object_count;
-        if ((completed - amount + total) / 2 <= completed)
-            amount = total - completed;
+        if (completed + amount >= (total + completed) / 2)
+            amount = total - completed - amount;
         if (amount > 10)
             amount = 10;
         else if (amount < 0)
