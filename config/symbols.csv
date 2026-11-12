@@ -5173,6 +5173,7 @@ address,symbol,size,ctype
 0x00583af0,_Bolt_Shoot,2722,"void __cdecl (GAMEOBJECT *, i32, i32)"
 0x5845b0,_CharConfigPakDiagnosticPc,1,void __cdecl ()
 0x5845c0,_CharConfigAbsFloat,18,f32 (f32 value)
+0x5845e0,_CharConfigFdivPc,54,"f32 (f32 a, f32 b)"
 0x584640,_RedirectTextFile,238,"i32 (char *text, char *filename, i32 filename_capacity)"
 0x584740,_CC_name_id,22,void (NUFPAR_PC *parser)
 0x584760,_CC_mass,23,void (NUFPAR_PC *parser)
