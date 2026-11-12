@@ -418,25 +418,24 @@ extern "C" {
         levelconfig_ldata->reflection_y = NuFParGetFloat(parser);
     }
 
-    void __cdecl LC_AL_metal(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x1000;
+    // Sets a level flag; a following "off" clears it again.
+    static void LevelConfigSetFlag(NUFPAR_PC *parser, u32 flag) {
+        levelconfig_ldata->flags |= flag;
         if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x1000u;
+            levelconfig_ldata->flags &= ~flag;
         }
+    }
+
+    void __cdecl LC_AL_metal(NUFPAR_PC *parser) {
+        LevelConfigSetFlag(parser, 0x1000);
     }
 
     void __cdecl LC_AL_in_space(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x40000;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x40000u;
-        }
+        LevelConfigSetFlag(parser, 0x40000);
     }
 
     void __cdecl LC_AL_override_nopickupgravity(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x400000;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x400000u;
-        }
+        LevelConfigSetFlag(parser, 0x400000);
     }
 
     void __cdecl LC_AL_hidden_icons(NUFPAR_PC *parser) {
@@ -452,52 +451,31 @@ extern "C" {
     }
 
     void __cdecl LC_AL_pickups_to_panel(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x80000;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x80000u;
-        }
+        LevelConfigSetFlag(parser, 0x80000);
     }
 
     void __cdecl LC_AL_forget_takeovers(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x100000;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x100000u;
-        }
+        LevelConfigSetFlag(parser, 0x100000);
     }
 
     void __cdecl LC_AL_narrow_socks(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x200000;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x200000u;
-        }
+        LevelConfigSetFlag(parser, 0x200000);
     }
 
     void __cdecl LC_AL_camera_rain(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x4000;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x4000u;
-        }
+        LevelConfigSetFlag(parser, 0x4000);
     }
 
     void __cdecl LC_AL_terrain_rain(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x8000;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x8000u;
-        }
+        LevelConfigSetFlag(parser, 0x8000);
     }
 
     void __cdecl LC_AL_double_score(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x800;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x800u;
-        }
+        LevelConfigSetFlag(parser, 0x800);
     }
 
     void __cdecl LC_AL_flat_terrain(NUFPAR_PC *parser) {
-        levelconfig_ldata->flags |= 0x10;
-        if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, LevelConfigOff) == 0) {
-            levelconfig_ldata->flags &= ~0x10u;
-        }
+        LevelConfigSetFlag(parser, 0x10);
     }
 
     void __cdecl LC_AL_cam_tilt(NUFPAR_PC *parser) {
