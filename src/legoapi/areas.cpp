@@ -999,11 +999,11 @@ STATIC_ASSERT(offsetof(GAMECAMERA, position) == 0x11c);
 extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position,
                                                                   void *output_pointer) {
     AREA_SUPERCOUNTER_PICKUP_PC **output = (AREA_SUPERCOUNTER_PICKUP_PC **)output_pointer;
-    AREA_SUPERCOUNTER_PC *found_counter = NULL;
-    AREA_SUPERCOUNTER_PICKUP_PC *found_pickup = NULL;
     if (world->area != NULL && world->area->super_counters != NULL) {
         AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
         f32 closest = 1000000000.0f;
+        AREA_SUPERCOUNTER_PC *found_counter = NULL;
+        AREA_SUPERCOUNTER_PICKUP_PC *found_pickup = NULL;
         for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
             AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
             for (i32 index = 0; index < counter->pickup_count; ++index, ++pickup) {
@@ -1015,9 +1015,8 @@ extern "C" AREA_SUPERCOUNTER_PC *__cdecl SuperCounters_FindPickup(WORLDINFO *wor
                     }
                     NUVEC *draw_position = GizmoGetPos((GIZMOSYS_PC *)world->gizmo_sys, pickup->position_gizmo);
                     if (draw_position != NULL) {
-                        f32 rounded_distance = NuVecDistSqr(position, draw_position, NULL);
-                        f32 distance = rounded_distance;
-                        if (closest > distance) {
+                        f32 distance = NuVecDistSqr(position, draw_position, NULL);
+                        if (distance < closest) {
                             closest = distance;
                             found_counter = counter;
                             found_pickup = pickup;
