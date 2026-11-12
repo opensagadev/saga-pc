@@ -961,46 +961,46 @@ AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *locator_array, i32 count, f32
     i32 nearest;
     AILOCATOR_PC *result;
     AILOCATOR_PC **locators = (AILOCATOR_PC **)locator_array;
-    nearest_distance = max_distance == 1000000000.0f ? max_distance : max_distance * max_distance;
-    candidate_count = 0;
-    if (count > 64) {
-        count = 64;
-    }
-    for (i = 0; i < count; ++i) {
-        if (locators[i] == NULL) {
-            continue;
-        }
-        if (outside_camera != 0) {
-            if (NuCameraClipTestSphere(&locators[i]->position, 0.0f, &numtx_identity) != 0) {
-                continue;
-            }
-        } else if (clip_radius > 0.0f &&
-                   NuCameraClipTestSphere(&locators[i]->position, clip_radius, &numtx_identity) == 0) {
-            continue;
-        }
-        candidates[candidate_count++] = i;
-    }
+    NUVEC delta;
+    f32 distance;
     nearest = -1;
-    for (i = 0; i < candidate_count; ++i) {
-        NUVEC delta;
-        const f32 distance = NuVecDistSqr(position, &locators[candidates[i]]->position, &delta);
-        if (min_delta_y != 1000000000.0f && min_delta_y > delta.y) {
-            continue;
+    candidate_count = 0;
+    result = NULL;
+    if (max_distance == 1000000000.0f)
+        nearest_distance = 1000000000.0f;
+    else
+        nearest_distance = max_distance * max_distance;
+    if (count > 64)
+        count = 64;
+    for (i = 0; i < count; ++i) {
+        if (locators[i] != NULL) {
+            if (outside_camera != 0) {
+                if (NuCameraClipTestSphere(&locators[i]->position, 0.0f, &NuMtxSetIdentityTemplate) == 0)
+                    candidates[candidate_count++] = i;
+            } else if (clip_radius > 0.0f) {
+                if (NuCameraClipTestSphere(&locators[i]->position, clip_radius, &NuMtxSetIdentityTemplate) != 0)
+                    candidates[candidate_count++] = i;
+            } else {
+                candidates[candidate_count++] = i;
+            }
         }
-        if (max_delta_y != 1000000000.0f && delta.y > max_delta_y) {
-            continue;
-        }
-        if (!(nearest_distance > distance)) {
-            continue;
-        }
-        nearest_distance = distance;
-        nearest = i;
     }
-    if (nearest == -1) {
+    if (candidate_count != 0) {
+        for (i = 0; i < candidate_count; ++i) {
+            distance = NuVecDistSqr(position, &locators[candidates[i]]->position, &delta);
+            if ((min_delta_y == 1000000000.0f || !(delta.y < min_delta_y)) &&
+                (max_delta_y == 1000000000.0f || !(delta.y > max_delta_y)) && distance < nearest_distance) {
+                nearest_distance = distance;
+                nearest = i;
+            }
+        }
+        if (nearest != -1) {
+            result = locators[candidates[nearest]];
+            locators[candidates[nearest]] = NULL;
+            return result;
+        }
         return NULL;
     }
-    result = locators[candidates[nearest]];
-    locators[candidates[nearest]] = NULL;
     return result;
 }
 
