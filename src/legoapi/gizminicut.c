@@ -102,7 +102,9 @@ static void GizMiniCut_Play(MINICUT_PC *cut) {
         NuVecRotateX(&position, &position, part->pitch);
         NuVecRotateY(&position, &position, part->yaw);
         NuVecAdd(&position, &position, part->resolved_position);
-        flags = i == 0 ? 0x28f : 0x8f;
+        flags = 0x8f;
+        if (i == 0)
+            flags = 0x28f;
         if (i == cut->part_count - 1)
             flags |= 0x400;
         if (part->duration >= 0.0f)
