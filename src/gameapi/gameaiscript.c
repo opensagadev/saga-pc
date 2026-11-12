@@ -1830,7 +1830,7 @@ f32 __cdecl Condition_EitherPlayerLocatorRangeXZ(AISYS_PC *unused0, AISCRIPTPROC
             if (player2 != NULL) {
                 second_distance = NuVecXZDist(&player2->position, &locator->position, &difference);
             }
-            return second_distance > first_distance ? first_distance : second_distance;
+            return first_distance < second_distance ? first_distance : second_distance;
         }
     }
     return 1.0e9f;
@@ -5790,21 +5790,21 @@ i32 __cdecl Action_SetSpline(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
         return 1;
     object = packet->owner->objptr;
-    if (param_5 == 0)
-        return 1;
-    for (index = 0; index < param_4; ++index) {
-        value = NuStrIStr(params[index], (char *)AITransferLiteral757a84);
-        if (value != NULL) {
-            spline = NuSplineFind(WORLD->current_gscn, value + 7);
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral757a7c) == 0) {
-            looping = 1;
+    if (param_5 != 0) {
+        for (index = 0; index < param_4; ++index) {
+            value = NuStrIStr(params[index], (char *)AITransferLiteral757a84);
+            if (value != NULL) {
+                spline = NuSplineFind(WORLD->current_gscn, value + 7);
+            } else if (NuStrICmp(params[index], (char *)AITransferLiteral757a7c) == 0) {
+                looping = 1;
+            }
         }
-    }
 
-    position = &object->movement_spline_position;
-    memset(position, 0, sizeof(*position));
-    if (spline != NULL) {
-        InitSplinePosition(position, spline, 0.0f, looping);
+        position = &object->movement_spline_position;
+        memset(position, 0, sizeof(*position));
+        if (spline != NULL) {
+            InitSplinePosition(position, spline, 0.0f, looping);
+        }
     }
     return 1;
 }
