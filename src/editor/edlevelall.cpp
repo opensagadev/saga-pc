@@ -6763,7 +6763,7 @@ void ClassEditor::cbDestroyObject(eduimenu_s *, eduiitem_s *item, u32) {
 
 /* Asks for confirmation in a menu at the cursor before destroying. */
 void ClassEditor::DestroySelectedObjects() {
-    char title[136];
+    char title[128];
     f32 x;
     f32 y;
     NuStrCpy(title, "Destroy Selected Objects");
