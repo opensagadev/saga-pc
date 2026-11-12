@@ -147,19 +147,19 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
     if (elapsed == 0.0f)
         return;
     STREAK_HEADER_PC *header = StreakHeadersUsedPc;
+    if (header == NULL)
+        return;
     STREAK_HEADER_PC *free_headers = StreakHeadersFreePc;
-    while (header != NULL) {
+    do {
         STREAK_HEADER_PC *next_header = header->next;
         if (header->has_new_node == 0 && header->owner_slot != NULL && *header->owner_slot == header) {
             *header->owner_slot = NULL;
             header->owner_slot = NULL;
         }
         header->has_new_node = 0;
-        STREAK_NODE_PC *node = header->nodes;
-        while (node != NULL) {
-            STREAK_NODE_PC *next_node = node->next;
+        for (STREAK_NODE_PC *node = header->nodes; node != NULL; node = node->next) {
             node->remaining_time -= elapsed;
-            if (node->remaining_time <= 0.0f && next_node == NULL) {
+            if (node->remaining_time <= 0.0f && node->next == NULL) {
                 if (node->prev != NULL)
                     node->prev->next = node->next;
                 else
@@ -168,8 +168,8 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
                     node->next->prev = node->prev;
                 node->next = StreakNodesFreePc;
                 StreakNodesFreePc = node;
+                break;
             }
-            node = next_node;
         }
         if (header->nodes == NULL) {
             if (header->prev != NULL)
@@ -182,7 +182,7 @@ extern "C" void __cdecl UpdateStreaks(f32 elapsed) {
             free_headers = header;
         }
         header = next_header;
-    }
+    } while (header != NULL);
     StreakHeadersFreePc = free_headers;
 }
 
