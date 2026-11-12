@@ -163,12 +163,12 @@ void UpdateSaveSlots(void) {
             saveloadASLoad(memcard_slot, memcard_savedatabuffer, memcard_savedatasize + 4);
             memcard_loadneeded = 0;
             memcard_loadcorrupt = 0;
-            if (saveload_status == 1) {
-                memcard_loadstarted = 0;
-                memcard_loadfailed = 1;
-            } else {
+            if (saveload_status != 1) {
                 memcard_loadstarted = 1;
                 memcard_loadfailed = 0;
+            } else {
+                memcard_loadstarted = 0;
+                memcard_loadfailed = 1;
             }
         }
     } else if (memcard_loadstarted != 0 && saveload_status == 1) {
@@ -197,8 +197,8 @@ void UpdateSaveSlots(void) {
         }
     } else if (memcard_autosavestarted != 0 && memcard_saveneeded == 0 && memcard_savestarted == 0 &&
                memcard_autosavepredelay <= 0.0f) {
-        memcard_saveneeded = 1;
         memcard_slot = saveload_autosave;
+        memcard_saveneeded = 1;
     }
 
     if (memcard_saveneeded != 0) {
@@ -255,8 +255,10 @@ void UpdateSaveSlots(void) {
             memcard_deletefailed = 0;
         }
     } else if (memcard_deletestarted != 0 && saveload_status == 1) {
-        memcard_deletefailed = saveload_error != 0;
         memcard_deletestarted = 0;
+        memcard_deletefailed = 0;
+        if (saveload_error != 0)
+            memcard_deletefailed = 1;
     }
     if (memcard_formatme != 0) {
         if (saveload_status == 1 && saveload_cardtype == 2) {
