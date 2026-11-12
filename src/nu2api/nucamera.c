@@ -432,7 +432,7 @@ i32 __cdecl NuCameraClipTestExtentsAxisAligned(NUVEC *center, NUVEC *extent, f32
         NuVecMtxTransform(&radius.sides, extent, &AxisClipAbsScissorPlanesPc);
         radius.fourth = AxisClipAbsScissorPlanesPc.m33 +
                         (extent->z * AxisClipAbsScissorPlanesPc.m23 +
-                         (extent->x * AxisClipAbsScissorPlanesPc.m03 + extent->y * AxisClipAbsScissorPlanesPc.m13));
+                         (extent->y * AxisClipAbsScissorPlanesPc.m13 + extent->x * AxisClipAbsScissorPlanesPc.m03));
         if (distance.sides.x < radius.sides.x || distance.sides.y < radius.sides.y ||
             distance.sides.z < radius.sides.z || distance.fourth < radius.fourth)
             return 2;
