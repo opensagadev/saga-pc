@@ -4574,20 +4574,15 @@ extern "C" {
         if (font == NULL) {
             return;
         }
-        glyph_index = UnicodeToIndexFast(font->unicode_map, font->unicode_count, 'M');
-        if (glyph_index == 0xffff) {
-            y_scale = (f32)(height * 18.0 / font->height);
-            x_scale = y_scale / height;
-        } else {
+        glyph_index = NuQFntEncodeUnicodeChar(font, 'M');
+        if (glyph_index != 0xffff) {
             x_scale = (f32)(width * 7.0 / font->glyphs[glyph_index].width);
             y_scale = (f32)(height * 18.0 / font->height);
-        }
-        *font->x_scale = x_scale;
-        if ((NuQFntMode & 4) != 0) {
-            *font->y_scale = y_scale;
         } else {
-            *font->y_scale = (f32)(y_scale * NuQFntHalfScale);
+            y_scale = (f32)(height * 18.0 / font->height);
+            x_scale = y_scale / height;
         }
+        NuQFntSetScale(font, x_scale, y_scale);
         NuQFntSetUVSizePc(font, x_scale, y_scale);
     }
 
