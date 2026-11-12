@@ -2057,7 +2057,7 @@ i32 __cdecl CodeMenu(void *menu) {
                         PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
                     } else
                         PlaySfx("Shop_NotEnufMuny", &SubShelfPos[3]);
-                    ShopCheatNamePc = TTab[ExtrasCheatsPc[i].text_id ? *ExtrasCheatsPc[i].text_id : tUNKNOWN];
+                    ShopCheatNamePc = ExtrasCheatsPc[i].text_id ? TTab[*ExtrasCheatsPc[i].text_id] : TTab[tUNKNOWN];
                 }
                 ShopPurchasePulsePc = ShopPurchasePulseDurationPc;
                 ShopCheatTimerPc = ShopCodeCheatDisplayTimePc;
