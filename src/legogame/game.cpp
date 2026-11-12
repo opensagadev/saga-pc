@@ -1413,7 +1413,8 @@ GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 
 static void __cdecl Collection_GetSelectingPlayerIDs(i16 *ids) {
     i32 count;
-    if (WORLD->area == NULL || WORLD->area != HUB_ADATA || GetMenuID() != 17 || (u32)freeplaymode > 3)
+    if (WORLD->area == NULL || WORLD->area != HUB_ADATA || GetMenuID() != 17 ||
+        !(freeplaymode == 0 || freeplaymode == 1 || freeplaymode == 2 || freeplaymode == 3))
         return;
     count = 0;
     if (MissionMenuPacketPc.active_player[0] != 0 && freeplay_selected[0] <= 2) {
