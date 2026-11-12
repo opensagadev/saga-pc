@@ -1788,9 +1788,9 @@ static void *AIScriptBufferAlloc(VARIPTR *buf, VARIPTR *buf_end, u32 size) {
 
     ret = NULL;
     if (buf != NULL && buf_end != NULL) {
-        if (buf_end->addr > buf->addr + size) {
+        if (buf->addr + size < buf_end->addr) {
             ret = (void *)((buf->addr + 15) & ~15u);
-            buf->addr = (u32)ret + size;
+            buf->addr = ((buf->addr + 15) & ~15u) + size;
             memset(ret, 0, size);
         }
     }
