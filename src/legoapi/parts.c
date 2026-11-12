@@ -4405,7 +4405,7 @@ static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour
 }
 void __cdecl DrawParts(i32 keep_offscreen) {
     PART_PC *part = Part;
-    i32 i, drawn;
+    i32 i;
     NUMTX scaled, *matrix;
     NUVEC scale;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
@@ -4426,18 +4426,14 @@ void __cdecl DrawParts(i32 keep_offscreen) {
         matrix = &part->transform;
         if (part->field_214 != 1.0f) {
             PartRuntimeMatrixCopyPrivate(&scaled, matrix);
-            scale.x = part->field_214;
-            scale.y = part->field_214;
             scale.z = part->field_214;
+            scale.x = scale.y = scale.z;
             NuMtxPreScale(&scaled, &scale);
             matrix = &scaled;
         }
-        drawn = 0;
-        if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0) {
+        if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0)
             part->active |= 0x600;
-            drawn = 1;
-        }
-        if ((drawn | keep_offscreen) == 0 && ((part->flags & 0x10) == 0 || (part->active & 0x100) != 0))
+        else if (keep_offscreen == 0 && ((part->flags & 0x10) == 0 || (part->active & 0x100) != 0))
             KillPart(part, 0);
     }
 }
