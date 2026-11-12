@@ -8616,16 +8616,17 @@ void ClassEditor::ViewSelected() {
 }
 
 i32 ClassEditor::CreateObject(EdClass *object_class) {
-    if (object_class == NULL || object_class->object_interface == NULL)
-        return 0;
-    void *object = theRegistry.CreateObject(object_class->object_interface, NULL, 4, 0, 2);
-    if (object == NULL)
-        return 0;
-    ClassObject created(object_class, object);
-    InitialiseObject(created);
-    theRegistry.NotifyCreateObject(created.object, created.ed_class, NULL, 0, 0, 0);
-    SelectObject(created, 0);
-    return 1;
+    if (object_class != NULL && object_class->object_interface != NULL) {
+        void *object = theRegistry.CreateObject(object_class->object_interface, NULL, 4, 0, 2);
+        if (object != NULL) {
+            ClassObject created(object_class, object);
+            InitialiseObject(created);
+            theRegistry.NotifyCreateObject(created.object, created.ed_class, NULL, 0, 0, 0);
+            SelectObject(created, 0);
+            return 1;
+        }
+    }
+    return 0;
 }
 
 /* Retail calls this out of line from both callers (0x6cf88b, 0x6d25fa). */
