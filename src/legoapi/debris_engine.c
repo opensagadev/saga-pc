@@ -809,7 +809,6 @@ void __cdecl DebrisProcessGeneration(void) {
     f32 now;
     f32 sound_range;
     f32 volume;
-    f32 elapsed;
     f32 emission_interval;
     f32 emission_time;
     f32 pause;
@@ -824,8 +823,8 @@ void __cdecl DebrisProcessGeneration(void) {
         pause = 0.0f;
         volume = 1.0f;
         emission = 0;
-        effect = debtab[key->effect_index];
         next = key->previous;
+        effect = debtab[key->effect_index];
         now = effect->time_group == 4 ? panelglobaltime : globaltime;
         if (key->emission_disabled != 0)
             continue;
@@ -868,10 +867,9 @@ void __cdecl DebrisProcessGeneration(void) {
                                                                      ? effect->thinning
                                                                      : debris_thinning_level)));
         }
-        elapsed = now - key->last_update_time;
-        key->emission_position.x = key->emitter_momentum.x * elapsed;
-        key->emission_position.y = key->emitter_momentum.y * elapsed;
-        key->emission_position.z = key->emitter_momentum.z * elapsed;
+        key->emission_position.x = key->emitter_momentum.x * (now - key->last_update_time);
+        key->emission_position.y = key->emitter_momentum.y * (now - key->last_update_time);
+        key->emission_position.z = key->emitter_momentum.z * (now - key->last_update_time);
         if ((f32)effect->frequency > 0.0f)
             emission_interval =
                 1.0f / (forced_debris_thinning != 0 ? (f32)effect->frequency / debris_thinning_level
@@ -881,10 +879,10 @@ void __cdecl DebrisProcessGeneration(void) {
         emission_time = key->emission_epoch + emission_interval;
         while (emission_time < now + debris_time_increment && ++emission < 100) {
             transitions = 0;
-            while (key->emission_end_time <= emission_time && key->emission_time <= emission_time &&
+            while (emission_time >= key->emission_end_time && key->emission_time <= emission_time &&
                    ++transitions < 100) {
                 pause = 0.0f;
-                if (key->emission_end_time <= key->emission_time) {
+                if (key->emission_time >= key->emission_end_time) {
                     key->emission_end_time = effect->emission_period + key->emission_time +
                                              NuRandFloatSeeded(&debrisseed) * effect->emission_period_random;
                     if (key->finite_count > 0) {
@@ -899,15 +897,15 @@ void __cdecl DebrisProcessGeneration(void) {
                         key->field_2f4 = 0;
                         key->finite = 0;
                     }
-                    if (key->process_collision_sound != 0 && key->finite != 0 && sound_range > key->cutoff_distance)
+                    if (key->process_collision_sound != 0 && key->finite != 0 && key->cutoff_distance < sound_range)
                         DEBRIS_EMISSION_SOUND(key, effect, 1, volume);
                 } else {
                     key->previous_emission_time = key->emission_time;
                     pause = effect->emission_pause + NuRandFloatSeeded(&debrisseed) * effect->emission_pause_random;
-                    key->emission_time = pause + key->emission_end_time;
+                    key->emission_time = key->emission_end_time + pause;
                     if (key->finite == 2)
                         key->finite = 0;
-                    if (key->process_collision_sound != 0 && key->finite != 0 && sound_range > key->cutoff_distance)
+                    if (key->process_collision_sound != 0 && key->finite != 0 && key->cutoff_distance < sound_range)
                         DEBRIS_EMISSION_SOUND(key, effect, 2, volume);
                 }
             }
@@ -917,7 +915,7 @@ void __cdecl DebrisProcessGeneration(void) {
                 particle = key->generator(key, effect, emission_time);
                 if (effect->process_spheres != 0 && emission == 1 && particle != NULL)
                     DebrisProcessSpheres(particle, emission_time, effect, key, 0);
-                if (key->process_collision_sound != 0 && sound_range > key->cutoff_distance)
+                if (key->process_collision_sound != 0 && key->cutoff_distance < sound_range)
                     DEBRIS_EMISSION_SOUND(key, effect, 3, volume);
             }
             key->emission_epoch = emission_time;
