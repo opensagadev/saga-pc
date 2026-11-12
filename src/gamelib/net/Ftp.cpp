@@ -60,17 +60,18 @@ i32 FtpFile::Accept(i32 new_capacity, void *new_buffer) {
             size = new_capacity;
             capacity = new_capacity;
             accepted = 1;
-            return 0;
+            break;
         case 2:
             if (size > capacity)
                 return (i32)0xa0210001;
             buffer = new_buffer;
             capacity = new_capacity;
             accepted = 1;
-            return 0;
+            break;
         default:
             return (i32)0xa0210000;
     }
+    return 0;
 }
 
 i32 FtpFile::Accept(i32 new_size) {
