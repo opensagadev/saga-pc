@@ -3300,68 +3300,34 @@ char *FS_CurrentPos = FS_FileList;
 char *FS_CurrentCursorPos = FS_FileList;
 i32 FS_CursorLine = 0;
 
+static __inline i32 FS_PrevNameLen(char *name) {
+    char *previous;
+    i32 length = 0;
+    if (name == FS_FileList)
+        return 0;
+    previous = name - 2;
+    while (*previous != '\0') {
+        if (previous == FS_FileList)
+            return length + 2;
+        --previous;
+        ++length;
+    }
+    return length + 1;
+}
+
 void __cdecl FS_MoveCursorUp(i32 steps) {
-    if (steps > 0) {
-        i32 top_number = FS_CurrentPosFileNum;
-        char *cursor = FS_CurrentCursorPos;
-        char *top = FS_CurrentPos;
-        do {
-            i32 top_length = 0;
-            i32 cursor_length = 0;
-            if (top != FS_FileList) {
-                char *previous = top - 2;
-                i32 length = 0;
-                if (*previous == '\0') {
-                    top_length = 1;
-                } else {
-                    for (;;) {
-                        if (previous == FS_FileList) {
-                            top_length = length + 2;
-                            break;
-                        }
-                        --previous;
-                        ++length;
-                        if (*previous == '\0') {
-                            top_length = length + 1;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (cursor != FS_FileList) {
-                char *previous = cursor - 2;
-                i32 length = 0;
-                if (*previous == '\0') {
-                    cursor_length = 1;
-                } else {
-                    for (;;) {
-                        if (previous == FS_FileList) {
-                            cursor_length = length + 2;
-                            break;
-                        }
-                        --previous;
-                        ++length;
-                        if (*previous == '\0') {
-                            cursor_length = length + 1;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (cursor == top) {
-                top -= top_length;
-                FS_CurrentPos = top;
-                if (top_number != 0) {
-                    --top_number;
-                    FS_CurrentPosFileNum = top_number;
-                }
-            } else {
-                --FS_CursorLine;
-            }
-            cursor -= cursor_length;
-            --steps;
-            FS_CurrentCursorPos = cursor;
-        } while (steps > 0);
+    while (steps > 0) {
+        i32 top_length = FS_PrevNameLen(FS_CurrentPos);
+        i32 cursor_length = FS_PrevNameLen(FS_CurrentCursorPos);
+        if (FS_CurrentCursorPos == FS_CurrentPos) {
+            FS_CurrentPos -= top_length;
+            if (FS_CurrentPosFileNum != 0)
+                --FS_CurrentPosFileNum;
+        } else {
+            --FS_CursorLine;
+        }
+        FS_CurrentCursorPos -= cursor_length;
+        --steps;
     }
 }
 
@@ -3378,30 +3344,12 @@ void __cdecl FS_SetCursorToLastFileName(void) {
             FS_CursorLine = 0;
             if (index > 0) {
                 i32 file_count = FS_NumFiles;
-                i32 end_index = (i32)((u32)index + 14);
-                while (end_index > file_count) {
-                    char *previous;
+                i32 end_index = index + 14;
+                do {
                     i32 previous_length;
-                    i32 length = 0;
-                    if (entry == FS_FileList)
+                    if (end_index <= file_count)
                         break;
-                    previous = entry - 2;
-                    if (*previous == '\0') {
-                        previous_length = 1;
-                    } else {
-                        for (;;) {
-                            if (previous == FS_FileList) {
-                                previous_length = length + 2;
-                                break;
-                            }
-                            --previous;
-                            ++length;
-                            if (*previous == '\0') {
-                                previous_length = length + 1;
-                                break;
-                            }
-                        }
-                    }
+                    previous_length = FS_PrevNameLen(entry);
                     if (previous_length == 0)
                         break;
                     --FS_CurrentPosFileNum;
@@ -3410,9 +3358,7 @@ void __cdecl FS_SetCursorToLastFileName(void) {
                     --index;
                     --end_index;
                     FS_CurrentPos = entry;
-                    if (index <= 0)
-                        break;
-                }
+                } while (index > 0);
             }
             return;
         }
@@ -3885,14 +3831,13 @@ void __cdecl FS_MakeDateTimeString(const FS_PACKED_ENTRY_HEADER_PC *entry, char 
 
 void __cdecl FS_MoveCursorDown(i32 steps) {
     while (steps > 0) {
-        i32 top_length = NuStrLen(FS_CurrentPos);
-        i32 cursor_length = NuStrLen(FS_CurrentCursorPos);
-        char *next = FS_CurrentCursorPos + cursor_length + 1;
-        char *end = FS_FileListEnd;
-        if (next < end) {
+        i32 top_length = NuStrLen(FS_CurrentPos) + 1;
+        i32 cursor_length = NuStrLen(FS_CurrentCursorPos) + 1;
+        char *next = FS_CurrentCursorPos + cursor_length;
+        if (next < FS_FileListEnd) {
             if (FS_CursorLine == 13) {
-                char *next_top = FS_CurrentPos + top_length + 1;
-                if (next_top < end) {
+                char *next_top = FS_CurrentPos + top_length;
+                if (next_top < FS_FileListEnd) {
                     ++FS_CurrentPosFileNum;
                     FS_CurrentPos = next_top;
                 }
