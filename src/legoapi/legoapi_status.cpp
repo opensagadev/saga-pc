@@ -890,10 +890,10 @@ i32 __cdecl UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
         StatusMiniKitProgressPc = 1.0f;
         return 1;
     }
-    if (((f64)stage->field_0x1c - StatusMiniKitJibberLengthPc) - StatusMiniKitSlideTimePc < stage->field_0x18 &&
-        stage->field_0x18 <= (f64)stage->field_0x1c - StatusMiniKitJibberLengthPc) {
-        StatusMiniKitProgressPc = (f32)((((f64)stage->field_0x1c - stage->field_0x18) - StatusMiniKitJibberLengthPc) /
-                                        StatusMiniKitSlideTimePc);
+    if (stage->field_0x18 > stage->field_0x1c - StatusMiniKitJibberLengthPc - StatusMiniKitSlideTimePc &&
+        stage->field_0x18 <= stage->field_0x1c - StatusMiniKitJibberLengthPc) {
+        StatusMiniKitProgressPc =
+            (stage->field_0x1c - stage->field_0x18 - StatusMiniKitJibberLengthPc) / StatusMiniKitSlideTimePc;
     }
     return 0;
 }
