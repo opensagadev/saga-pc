@@ -9858,6 +9858,7 @@ void __cdecl pathEditor_Enter(void) {
     i32 index;
     i32 connection;
     i32 direction;
+    i32 route;
 
     memset(&aieditor->paths, 0, sizeof(aieditor->paths));
     for (index = 0; index < 32; ++index)
@@ -9970,8 +9971,8 @@ void __cdecl pathEditor_Enter(void) {
     else
         aieditor->current_path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
     pathEditor_CalcNodeIXs();
-    for (index = 0; index < 16; ++index) {
-        aieditor->current_path->current_route = &aieditor->current_path->routes[index];
+    for (route = 0; route < 16; ++route) {
+        aieditor->current_path->current_route = &aieditor->current_path->routes[route];
         if (aieditor->current_path->current_route->flags & 1)
             break;
     }
