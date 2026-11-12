@@ -4099,24 +4099,24 @@ void __cdecl AIPathCalcExtents(AIPATH_PC *path) {
         corner.x = node->position.x - node->radius;
         corner.y = node->min_height;
         corner.z = node->position.z - node->radius;
-        if (path->bounds_min.x > corner.x)
+        if (corner.x < path->bounds_min.x)
             path->bounds_min.x = corner.x;
-        if (path->bounds_min.y > corner.y)
+        if (corner.y < path->bounds_min.y)
             path->bounds_min.y = corner.y;
-        if (path->bounds_min.z > corner.z)
+        if (corner.z < path->bounds_min.z)
             path->bounds_min.z = corner.z;
         corner.x = node->radius + node->position.x;
         corner.y = node->max_height;
         corner.z = node->radius + node->position.z;
-        if (path->bounds_max.x < corner.x)
+        if (corner.x > path->bounds_max.x)
             path->bounds_max.x = corner.x;
-        if (path->bounds_max.y < corner.y)
+        if (corner.y > path->bounds_max.y)
             path->bounds_max.y = corner.y;
-        if (path->bounds_max.z < corner.z)
+        if (corner.z > path->bounds_max.z)
             path->bounds_max.z = corner.z;
     }
     NuVecSub(&delta, &path->bounds_max, &path->bounds_min);
-    NuVecScale(&delta, &delta, 0.5f);
+    NuVecScale(&delta, &delta, 0.1f);
     NuVecSub(&path->bounds_min, &path->bounds_min, &delta);
     NuVecAdd(&path->bounds_max, &path->bounds_max, &delta);
 }
