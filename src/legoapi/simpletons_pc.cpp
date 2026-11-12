@@ -550,7 +550,10 @@ extern "C" {
                         if (i == selected && shoot_due != 0)
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
 
-                        if ((trooper->state_flags & 0x40) != 0) {
+                        if ((trooper->state_flags & 0x40) == 0) {
+                            if (MiniTrooperCheckFormationPc(team, trooper))
+                                ++stopped_count;
+                        } else {
                             ++stopped_count;
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
@@ -561,15 +564,12 @@ extern "C" {
                                 else
                                     trooper->target_rotation = (u16)qrand();
                             }
-                        } else {
-                            if (MiniTrooperCheckFormationPc(team, trooper))
-                                ++stopped_count;
                         }
                         if (((trooper->state_flags & 0x40) == 0)) {
                             const minisnowtrooper_s *slot = &team->troopers[trooper->formation_index];
+                            const f32 to_x = (team->origin_x + slot->formation_x) - trooper->shot_position.x;
                             trooper->target_rotation =
-                                NuAtan2D((team->origin_x + slot->formation_x) - trooper->shot_position.x,
-                                         (team->origin_z + slot->formation_z) - trooper->shot_position.z);
+                                NuAtan2D(to_x, (team->origin_z + slot->formation_z) - trooper->shot_position.z);
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
                             if (((trooper->state_flags & 0x40) == 0)) {
@@ -622,9 +622,9 @@ extern "C" {
 
                         if ((trooper->state_flags & 0x40) == 0) {
                             const minisnowtrooper_s *slot = &team->troopers[trooper->formation_index];
+                            const f32 to_x = (team->origin_x + slot->formation_x) - trooper->shot_position.x;
                             trooper->target_rotation =
-                                NuAtan2D((team->origin_x + slot->formation_x) - trooper->shot_position.x,
-                                         (team->origin_z + slot->formation_z) - trooper->shot_position.z);
+                                NuAtan2D(to_x, (team->origin_z + slot->formation_z) - trooper->shot_position.z);
                             trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                         ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
                         }
@@ -659,18 +659,17 @@ extern "C" {
                             shot = TrooperShoot(world, team, trooper, &shot_angle, team_index);
 
                         const minisnowtrooper_s *slot = &team->troopers[trooper->formation_index];
-                        f32 dx = (team->origin_x + slot->formation_x) - trooper->shot_position.x;
-                        f32 dz = (team->origin_z + slot->formation_z) - trooper->shot_position.z;
+                        f32 dx = trooper->shot_position.x - (team->origin_x + slot->formation_x);
+                        f32 dz = trooper->shot_position.z - (team->origin_z + slot->formation_z);
                         if (dx * dx + dz * dz <= 0.2f * 0.2f) {
                             trooper->formation_index = static_cast<u8>((qrand() / (0xffff / team->trooper_count + 1)));
-                            trooper->state_flags =
-                                (trooper->state_flags & ~0x30) | (((qrand() / (0xffff / 3 + 1) + 1) & 3) << 4);
+                            trooper->slot = qrand() / (0xffff / 3 + 1) + 1;
                             slot = &team->troopers[trooper->formation_index];
                         }
 
+                        const f32 to_x = (team->origin_x + slot->formation_x) - trooper->shot_position.x;
                         trooper->target_rotation =
-                            NuAtan2D((team->origin_x + slot->formation_x) - trooper->shot_position.x,
-                                     (team->origin_z + slot->formation_z) - trooper->shot_position.z);
+                            NuAtan2D(to_x, (team->origin_z + slot->formation_z) - trooper->shot_position.z);
                         trooper->rotation = SeekRot(trooper->rotation, trooper->target_rotation,
                                                     ((f32)qrand() * (MiniTrooperTurnRatePc / 65535.0f)));
                         if ((trooper->state_flags & 0x40) == 0) {
