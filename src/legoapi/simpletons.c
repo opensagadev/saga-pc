@@ -2,14 +2,16 @@
 
 static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 level_index) {
     NARROWSOCKEXCEPTION_PC *exception;
+    NARROWSOCKEXCEPTION_PC *list;
     if (system == NULL || position->sock_index == -1)
         return 0;
     if ((system->socks[position->sock_index].flags & 0x800) == 0)
         return 0;
-    if (NarrowSockException != NULL) {
-        for (exception = NarrowSockException; exception->level_name != NULL; ++exception) {
+    list = NarrowSockException;
+    if (list != NULL) {
+        for (exception = list; exception->level_name != NULL; ++exception) {
             if (exception->level_index == -1 || exception->level_index != level_index ||
-                exception->sock_index != position->sock_index)
+                position->sock_index != exception->sock_index)
                 continue;
             if (position->distance >= exception->start_distance && position->distance <= exception->end_distance)
                 return 0;
