@@ -888,7 +888,8 @@ static f32 Grapple_MaximumLengthPc(GAMEOBJECT *object) {
                  (grapple->ground_position.y + (object->upper_position.y - object->lower_position.y) + (f64)0.1f);
     if ((grapple->flags & 4) != 0) {
         f32 rope = grapple->rope_length - ((object->upper_position.y - object->lower_position.y) * 0.5 + (f64)0.1f);
-        return rope < ground ? rope : ground;
+        if (rope < ground)
+            ground = rope;
     }
     return ground;
 }
