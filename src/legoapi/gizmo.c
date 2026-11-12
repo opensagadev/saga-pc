@@ -6,13 +6,15 @@ STATIC_ASSERT(offsetof(GIZMOTYPE_PC, fns) + offsetof(GIZMOFNS_PC, get_num_output
 GIZMO_PC *__cdecl GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
     GIZMOTYPES_PC *types = (GIZMOTYPES_PC *)gizmotypes;
     GIZMOSYS_PC *system = (GIZMOSYS_PC *)system_ptr;
+    GIZMOTYPE_PC *type;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
     i32 i, type_index;
     if (types != NULL && system != NULL && data != NULL) {
         if (type_id >= 0 && type_id <= types->count) {
+            type = &types->types[type_id];
             set = &system->sets[type_id];
-            if (types->types[type_id].fns.get_gizmo_name_fn != NULL) {
+            if (type->fns.get_gizmo_name_fn != NULL) {
                 gizmo = set->gizmos;
                 for (i = 0; i < set->count; ++i, ++gizmo) {
                     if (gizmo->object == data)
@@ -20,9 +22,10 @@ GIZMO_PC *__cdecl GizmoFindByData(void *system_ptr, i32 type_id, void *data) {
                 }
             }
         } else {
-            for (type_index = 0; type_index < types->count; ++type_index) {
-                set = &system->sets[type_index];
-                if (types->types[type_index].fns.get_gizmo_name_fn != NULL) {
+            type = types->types;
+            set = system->sets;
+            for (type_index = 0; type_index < types->count; ++type_index, ++type, ++set) {
+                if (type->fns.get_gizmo_name_fn != NULL) {
                     gizmo = set->gizmos;
                     for (i = 0; i < set->count; ++i, ++gizmo) {
                         if (gizmo->object == data)
