@@ -212,7 +212,8 @@ SECURITY_DOOR_RECORD_PC *__cdecl SecurityDoor_FindNearest(WORLDINFO *world, NUVE
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         f32 candidate;
         if (object != NULL) {
-            if ((door->flags & 3) != 3 || (door->flags & 4) != 0 || door->state != 0 || door->opening != 0.0f)
+            if ((door->flags & 2) == 0 || (door->flags & 1) == 0 || (door->flags & 4) != 0 || door->state != 0 ||
+                door->opening != 0.0f)
                 continue;
             candidate = NuVecDistSqr(position, &door->player_position, NULL);
         } else {
