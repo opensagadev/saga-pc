@@ -1977,8 +1977,7 @@ f32 __cdecl Condition_CollidingWithOpponentPc(AISYS_PC *system, AISCRIPTPROCESS_
 
 f32 __cdecl Condition_CollidingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                   void *argument) {
-    if (packet != NULL && packet->owner != NULL &&
-        (packet->owner->collision_contact_mask[0] | packet->owner->collision_contact_mask[1]) != 0)
+    if (packet != NULL && packet->owner != NULL && U64_PAIR(packet->owner->collision_contact_mask) != 0)
         return 1.0f;
     return 0.0f;
 }
@@ -2021,13 +2020,13 @@ f32 __cdecl Condition_ZPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPA
 }
 
 void *__cdecl Condition_IsSetAliveInit(AISYS_PC *unused0, char *arg, AISCRIPT_PC *unused2) {
-    i32 set;
+    u32 set;
     if (arg == NULL)
         return NULL;
     if (NuStrICmp(arg, AIConditionMySetNamePc) == 0)
         return (void *)((intptr_t)-1);
     set = NuAToI(arg);
-    if (set < 1 || set > 16)
+    if (set - 1 > 15)
         set = 0;
     return (void *)((intptr_t)set);
 }
@@ -2406,8 +2405,11 @@ f32 __cdecl Condition_FinishedSplinePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
     GAMEOBJECT *object;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
         object = packet->owner->objptr;
-        if (object->movement_spline_position.spline != NULL && object->movement_spline_position.finished == 0)
+        if (object->movement_spline_position.spline != NULL) {
+            if (object->movement_spline_position.finished != 0)
+                return 1.0f;
             return 0.0f;
+        }
         return 1.0f;
     }
     return -1.0f;
@@ -2817,21 +2819,13 @@ void *__cdecl Condition_CharacterTypeExistsInitPc(AISYS_PC *system, char *name, 
 
 f32 __cdecl Condition_CharacterTypeExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                             char *name, void *argument) {
-    i32 count;
     i32 index;
-    GAMEOBJECT *object;
     if (argument != NULL) {
-        count = HIGHGAMEOBJECT;
-        index = 0;
-        if (count > 0) {
-            object = Obj;
-            do {
-                if ((i16)object->id == (i32)argument)
-                    return 1.0f;
-                ++index;
-                ++object;
-            } while (index < count);
+        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+            if ((i16)Obj[index].id == (i32)argument)
+                return 1.0f;
         }
+        return 0.0f;
     }
     return 0.0f;
 }
@@ -2965,7 +2959,7 @@ f32 __cdecl Condition_ScreenWipePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
 f32 __cdecl Condition_HeadTurnRestrictedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
                                            char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
-        return (f32)(packet->owner->objptr->field_ef2 & 1);
+        return (f32)(packet->owner->objptr->flags_ef0 >> 16 & 1);
     return 0.0f;
 }
 
@@ -5513,13 +5507,11 @@ i32 __cdecl Action_PressTagButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
 i32 __cdecl Action_PressActionButton(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                      i32 param_count, i32 first_time, f32 elapsed) {
     GAMEOBJECT *object;
-    if (packet != NULL && packet->owner != NULL) {
-        object = packet->owner->objptr;
-        if (object != NULL) {
-            object->pad->buttons_pressed |= GAMEPAD_ACTION;
-            object->portal_flags |= 0x400u;
-            object->portal_flags |= 0x20;
-        }
+    object = packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL ? packet->owner->objptr : NULL;
+    if (object != NULL) {
+        object->pad->buttons_pressed |= GAMEPAD_ACTION;
+        object->portal_flags |= 0x400u;
+        object->portal_flags |= 0x20;
     }
     return 1;
 }
