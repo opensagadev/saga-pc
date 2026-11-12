@@ -4439,9 +4439,9 @@ i32 __cdecl Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
     destination.y = 1.0e9f;
     destination.z = 1.0e9f;
     target = NULL;
-    to_origin = 0;
-    check_terrain = 0;
     slam = 0;
+    check_terrain = 0;
+    to_origin = 0;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
     }
