@@ -2335,8 +2335,6 @@ i32 AddScaledVariableShotDebrisEffect3(i32 effect, NUVEC *position, NUVEC *momen
     return scaled;
 }
 
-extern const f32 DebrisGlassMaterialOpacity;
-
 typedef struct debris_collision_effect_pc_s {
     u8 unknown_000[0x2b0];
     DEBRIS_FLOAT_KEY_PC collision_keys[8];
@@ -2421,7 +2419,7 @@ NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, 
     material->diffuse.x = 1.0f;
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
-    material->opacity = DebrisGlassMaterialOpacity;
+    material->opacity = 0.999f;
     material->attribs.cull_mode = 2;
     material->attribs.z_mode = (u32)depth_mode & 3;
     material->attribs.filter_mode = (u32)filter_mode & 3;
@@ -2439,8 +2437,7 @@ NUMTL *__cdecl CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, 
 void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VARIPTR trash_end,
                           char *texture_name, i32 chunk_count, i32 glass_chunk_count, i32 key_count, i32 effect_count) {
     i32 i;
-    i16 texture_id;
-    f32 opacity;
+    i32 texture_id;
     if (debris_trash_space == 0) {
         debrischunks = chunk_count;
         debrischunksglass = glass_chunk_count;
@@ -2495,7 +2492,7 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     numspherecolldata = maxdebkeys;
     numtoruscolldata = maxdebkeys;
     DebMat[0] = CreateAlphaBlendTexture(buffer, buffer_end, texture_name, 1, 2, 256, 0);
-    texture_id = DebMat[0]->texture_id;
+    texture_id = ((DEBRIS_MATERIAL_PC *)DebMat[0])->texture_id;
     ((DEBRIS_MATERIAL_PC *)DebMat[0])->attribs.z_mode = 1;
     ((DEBRIS_MATERIAL_PC *)DebMat[0])->attribs.alpha_test = 1;
     NuMtlUpdate(DebMat[0]);
@@ -2523,7 +2520,6 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.x = 1.0f;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.y = 1.0f;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->diffuse.z = 1.0f;
-    opacity = DebrisGlassMaterialOpacity;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.cull_mode = 2;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.z_mode = 1;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.filter_mode = 0;
@@ -2531,7 +2527,7 @@ void __cdecl DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_bu
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_2_4 = 1;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_1_1_2 = 1;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.unknown_1_4_8 = 1;
-    ((DEBRIS_MATERIAL_PC *)DebMat[7])->opacity = opacity;
+    ((DEBRIS_MATERIAL_PC *)DebMat[7])->opacity = 0.999f;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->attribs.alpha_mode = 1;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->secondary.alpha_fail = 1;
     ((DEBRIS_MATERIAL_PC *)DebMat[7])->texture_id = 1;
