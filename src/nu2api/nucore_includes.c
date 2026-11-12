@@ -4398,8 +4398,7 @@ void *__cdecl NuAllocHigh(u32 size) {
 
     units = (size + sizeof(NUMEMHIGHBLOCK_PC) - 1) / sizeof(NUMEMHIGHBLOCK_PC) + 1;
     previous = freep;
-    block = previous->next;
-    for (;;) {
+    for (block = previous->next;; previous = block, block = block->next) {
         if (block->units >= units) {
             if (block->units == units) {
                 previous->next = block->next;
@@ -4414,8 +4413,6 @@ void *__cdecl NuAllocHigh(u32 size) {
         if (block == freep) {
             return NULL;
         }
-        previous = block;
-        block = block->next;
     }
 }
 
