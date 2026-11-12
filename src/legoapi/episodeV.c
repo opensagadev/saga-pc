@@ -65,7 +65,8 @@ void __cdecl BobaRocket_Move(PART_PC *part, f32 elapsed) {
                 NuVecAdd(&part->guided_target, &part->position, &delta);
                 part->recipient = NULL;
                 horizontal_squared += delta.y * delta.y;
-                part->time_remaining = NuFsqrt(horizontal_squared) / rocket_speed;
+                horizontal_squared = NuFsqrt(horizontal_squared);
+                part->time_remaining = horizontal_squared / rocket_speed;
             }
         }
         part->field_124[3] = 60000;
@@ -84,10 +85,7 @@ void __cdecl BobaRocket_Move(PART_PC *part, f32 elapsed) {
     NuMtxPreRotateY(&part->transform, part->rotation_z);
     NuMtxTranslate(&part->transform, &next);
     if (part->scale_time < (f64)0.2f) {
-        f32 factor = (f32)((f64)part->scale_time / (f64)0.2f);
-        scale.x = factor;
-        scale.y = factor;
-        scale.z = factor;
+        scale.x = scale.y = scale.z = (f32)((f64)part->scale_time / (f64)0.2f);
         NuMtxPreScale(&part->transform, &scale);
     }
     if ((part->active & 0x80) != 0) {
