@@ -53,14 +53,14 @@ extern "C" {
 }
 
 extern "C" void AddToGoldBricks() {
-    STATUSCOLLECT_s *save = reinterpret_cast<STATUSCOLLECT_s *>(CustomiserCompletionSavePc);
-    const i32 points = GOLDBRICKPOINTS;
-    if (save != NULL && save->gold_bricks < points) {
-        ++save->gold_bricks;
-        if (save->gold_bricks == points && (save->flags & SAVE_REWARD_ALL_GOLD_BRICKS) == 0) {
+    if (CustomiserCompletionSavePc != NULL &&
+        ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks < GOLDBRICKPOINTS) {
+        ++((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks;
+        if (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->gold_bricks == GOLDBRICKPOINTS &&
+            (((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags & SAVE_REWARD_ALL_GOLD_BRICKS) == 0) {
             if (Game_AllGoldBricksFn != NULL)
                 Game_AllGoldBricksFn();
-            reinterpret_cast<STATUSCOLLECT_s *>(CustomiserCompletionSavePc)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
+            ((STATUSCOLLECT_s *)CustomiserCompletionSavePc)->flags |= SAVE_REWARD_ALL_GOLD_BRICKS;
         }
     }
 }
