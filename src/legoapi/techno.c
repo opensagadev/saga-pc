@@ -498,15 +498,20 @@ i32 Techno_isReady(TECHNO_s *techno) {
     switch (techno->target_mode) {
         case 1: {
             GAMEOBJECT *object = (GAMEOBJECT *)(techno->controlled_object);
-            return object != NULL && (object->flags_1fc_half & 0x1001) == 0x1001;
+            if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0)
+                return 1;
+            break;
         }
         case 2:
-            return NuSpecialGetVisibilityFn(techno->controlled_object) != 0;
+            if (NuSpecialGetVisibilityFn(techno->controlled_object) != 0)
+                return 1;
+            break;
         case 3:
-            return techno->controlled_object != NULL;
-        default:
-            return 0;
+            if (techno->controlled_object != NULL)
+                return 1;
+            break;
     }
+    return 0;
 }
 
 NUVEC *__cdecl Technos_TgtPos(TECHNO_s *techno) {
