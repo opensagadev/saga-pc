@@ -2116,8 +2116,10 @@ f32 __cdecl NuVecMagVU0(NUVEC *);
 f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
     NUVEC flat = *position;
     SOCK_PC *sock = &system->socks[resolved->sock_index];
+    f32 distance = 0.0f;
     NUVEC *first_a, *first_b, *last_a, *last_b;
     f32 start_distance, along, ratio, end_distance, end_along;
+    f32 length, end_length;
     union {
         f32 value;
         u32 bits;
@@ -2136,8 +2138,8 @@ f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *reso
     c.y = d.y = 0.0f;
     start_distance = SockDistanceToLineXZ(position, first_a, first_b);
     NuVecSub(&temporary, &flat, &a);
-    magnitude.value = NuVecMagVU0(&temporary);
-    magnitude.bits &= 0x7fffffffu;
+    length = NuVecMagVU0(&temporary);
+    magnitude.bits = *(u32 *)&length & 0x7fffffffu;
     along = NuFsqrt(magnitude.value * magnitude.value - start_distance * start_distance);
     NuVecSub(&edge0, &b, &a);
     edge0.y = 0.0f;
@@ -2148,8 +2150,8 @@ f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *reso
     NuVecAdd(&projected0, &a, &scaled0);
     end_distance = SockDistanceToLineXZ(position, last_a, last_b);
     NuVecSub(&end_temporary, &flat, &c);
-    end_magnitude.value = NuVecMagVU0(&end_temporary);
-    end_magnitude.bits &= 0x7fffffffu;
+    end_length = NuVecMagVU0(&end_temporary);
+    end_magnitude.bits = *(u32 *)&end_length & 0x7fffffffu;
     end_along = NuFsqrt(end_magnitude.value * end_magnitude.value - end_distance * end_distance);
     NuVecSub(&edge1, &d, &c);
     edge1.y = 0.0f;
@@ -2158,7 +2160,8 @@ f32 __cdecl CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *reso
     scaled1.y = edge1.y * ratio;
     scaled1.z = edge1.z * ratio;
     NuVecAdd(&projected1, &c, &scaled1);
-    return start_distance < end_distance ? start_distance : end_distance;
+    distance = start_distance < end_distance ? start_distance : end_distance;
+    return distance;
 }
 
 u32 SocksOnPreviousStatusPc[2] = {0};
@@ -2207,36 +2210,46 @@ i32 LastSingleSockWeWereInPc = -1;
 
 f32 __cdecl CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
     SOCK_PC *sock;
-    f32 distance = 0.0f;
-    NUVEC *a0, *a1, *other0, *other1;
-    f32 distance_a, distance_other;
-    NUVEC a, other, flat;
+    f32 distance;
+    NUVEC *a0, *a1, *b0, *b1;
+    f32 distance_a, distance_b;
+    NUVEC *d0, *d1;
+    f32 distance_d;
+    NUVEC a, b, d, flat;
     flat = *position;
-    flat.y = 0.0f;
     sock = &system->socks[resolved->sock_index];
-    a0 = &sock->a->pts[resolved->next_segment - 1];
-    a1 = &sock->a->pts[resolved->next_segment];
-    a.x = (a1->x - a0->x) * resolved->ratio + a0->x;
-    a.y = 0.0f;
-    a.z = (a1->z - a0->z) * resolved->ratio + a0->z;
+    distance = 0.0f;
+    flat.y = 0.0f;
     if (sock->flags & 1) {
-        other0 = &sock->b->pts[resolved->next_segment - 1];
-        other1 = &sock->b->pts[resolved->next_segment];
+        a0 = &sock->a->pts[resolved->next_segment - 1];
+        a1 = &sock->a->pts[resolved->next_segment];
+        a.x = a0->x + (a1->x - a0->x) * resolved->ratio;
+        a.y = 0.0f;
+        a.z = a0->z + (a1->z - a0->z) * resolved->ratio;
+        b0 = &sock->b->pts[resolved->next_segment - 1];
+        b1 = &sock->b->pts[resolved->next_segment];
+        b.x = b0->x + (b1->x - b0->x) * resolved->ratio;
+        b.y = 0.0f;
+        b.z = b0->z + (b1->z - b0->z) * resolved->ratio;
+        distance_a = NuVecDistSqr(&flat, &a, NULL);
+        distance_b = NuVecDistSqr(&flat, &b, NULL);
+        distance = distance_a < distance_b ? distance_a : distance_b;
     } else {
-        other0 = &sock->d->pts[resolved->next_segment - 1];
-        other1 = &sock->d->pts[resolved->next_segment];
+        a0 = &sock->a->pts[resolved->next_segment - 1];
+        a1 = &sock->a->pts[resolved->next_segment];
+        a.x = a0->x + (a1->x - a0->x) * resolved->ratio;
+        a.y = 0.0f;
+        a.z = a0->z + (a1->z - a0->z) * resolved->ratio;
+        d0 = &sock->d->pts[resolved->next_segment - 1];
+        d1 = &sock->d->pts[resolved->next_segment];
+        d.x = d0->x + (d1->x - d0->x) * resolved->ratio;
+        d.y = 0.0f;
+        d.z = d0->z + (d1->z - d0->z) * resolved->ratio;
+        distance_a = NuVecDistSqr(&flat, &a, NULL);
+        distance_d = NuVecDistSqr(&flat, &d, NULL);
+        distance = distance_a < distance_d ? distance_a : distance_d;
     }
-    other.x = (other1->x - other0->x) * resolved->ratio + other0->x;
-    other.y = 0.0f;
-    other.z = (other1->z - other0->z) * resolved->ratio + other0->z;
-    distance_a = NuVecDistSqr(&flat, &a, NULL);
-    distance_other = NuVecDistSqr(&flat, &other, NULL);
-    distance = distance_a < distance_other ? distance_a : distance_other;
-    if (distance > 0.0f)
-        distance = NuFsqrt(distance);
-    else
-        distance = 0.0f;
-    return distance;
+    return distance > 0.0f ? NuFsqrt(distance) : 0.0f;
 }
 
 f32 __cdecl CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused,
