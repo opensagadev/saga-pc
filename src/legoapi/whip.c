@@ -4,7 +4,9 @@ typedef struct whip_basis_pc_s {
     NUVEC basis[3];
 } WHIP_BASIS_PC;
 STATIC_ASSERT(offsetof(WHIP_BASIS_PC, basis) == 0x748);
-/* Whip action selector (-1 none, 1 crack, 2 break, 3 grab) shares the byte before hit_variant. */
+/* Whip action selector (-1 none, 1 crack, 2 break, 3 grab) shares the byte before hit_variant.
+   TODO(saga.h): GAMEOBJECT.unknown_7ba is `i8 whip_action`; with the field named, the casts below become
+   object->whip_action (same code: retail reads the field through object, not through a second pointer). */
 typedef struct whip_action_pc_s {
     u8 unknown_000[0x7ba];
     i8 whip_action;
@@ -15,7 +17,6 @@ i32 __cdecl SuperCarry_Possible(GAMEOBJECT *, i32);
 void __cdecl SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32);
 
 void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
-    WHIP_ACTION_PC *view = (WHIP_ACTION_PC *)object;
     GIZMOBLOWUP_PC *target;
     f32 *frame;
     f32 action_frame;
@@ -28,7 +29,7 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
                 return;
             object->context_timer += FRAMETIME;
             if (object->context_timer >= object->context_duration) {
-                switch (view->whip_action) {
+                switch (((WHIP_ACTION_PC *)object)->whip_action) {
                     case 3:
                         target = (GIZMOBLOWUP_PC *)object->grapple;
                         if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
@@ -60,7 +61,7 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
                     default:
                         break;
                 }
-                view->whip_action = 1;
+                ((WHIP_ACTION_PC *)object)->whip_action = 1;
                 object->field_7aa = LEGOACT_WHIP_CRACK;
                 object->context_timer = 0.0f;
                 object->field_7b3 = 1;
@@ -123,7 +124,7 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
         if (!(object->pad->buttons_pressed & GAMEPAD_SPECIAL) || object->field_281 == 0 || !ObjLandReady(object) ||
             LEGOACT_WHIP_START == -1 || object->character_model->model_data_b[LEGOACT_WHIP_START] == NULL)
             return;
-        view->whip_action = -1;
+        ((WHIP_ACTION_PC *)object)->whip_action = -1;
         target = NULL;
         if (LEGOACT_WHIP_GRAB != -1 && object->character_model->model_data_b[LEGOACT_WHIP_GRAB] != NULL &&
             SuperCarry_Possible(object, 0) &&
@@ -138,7 +139,7 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
         object->field_7aa = LEGOACT_WHIP_START;
         object->context_timer = 0.0f;
         object->context_variant_flags &= ~0x100u;
-        view->whip_action = (i8)action;
+        ((WHIP_ACTION_PC *)object)->whip_action = (i8)action;
         object->field_7b3 = 0;
         object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 0);
         GameAudio_PlaySfx(76, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
