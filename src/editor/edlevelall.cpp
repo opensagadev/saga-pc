@@ -4297,9 +4297,9 @@ i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec 
     end.x = origin.x + direction.x;
     end.y = origin.y + direction.y;
     end.z = origin.z + direction.z;
-    dot = origin.x * plane.x + origin.y * plane.y + origin.z * plane.z;
+    dot = (origin.x * plane.x) + (origin.y * plane.y) + (origin.z * plane.z);
     start_distance = dot + plane.w;
-    dot = plane.x * end.x + end.y * plane.y + plane.z * end.z;
+    dot = (plane.x * end.x) + (end.y * plane.y) + (end.z * plane.z);
     end_distance = dot + plane.w;
     if (start_distance * end_distance < 0.0) {
         if (intersection != NULL) {
