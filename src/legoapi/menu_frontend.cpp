@@ -1062,7 +1062,7 @@ extern "C" {
             GAMEOBJECT *object = (GAMEOBJECT *)Player[player];
             if (object != NULL) {
                 MissionMenuPacketPc.player_model[player] = object->id;
-                MissionMenuPacketPc.active_player[player] = (u8)((object->flags_1fc >> 7) & 1);
+                MissionMenuPacketPc.active_player[player] = (u8)object->player_controlled;
             } else {
                 MissionMenuPacketPc.player_model[player] = -1;
                 MissionMenuPacketPc.active_player[player] = 0;
