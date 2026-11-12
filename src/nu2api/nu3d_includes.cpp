@@ -8158,7 +8158,7 @@ extern "C" {
                     PC_DISPLAY_MATERIAL_PC *material = (PC_DISPLAY_MATERIAL_PC *)scene->display_materials[j];
                     i32 key = material->sort_layer * 131072 + material->sort_priority;
                     if (key == sort->sort_pri) {
-                        sort->mtl_first = (u16)j;
+                        scene->sort_pris[i].mtl_first = (u16)j;
                         break;
                     }
                 }
