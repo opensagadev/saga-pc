@@ -77,7 +77,7 @@ i32 __cdecl DeathStarShieldDown(void) {
 /* Native 0x004e5170, 204 bytes. */
 void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
     NUINSTANIM *animation[2];
-    void *data;
+    void *data[2];
     i32 index;
     DeathStarEscapeBNetPacketPc = (i8 *)SetLevelHack(4);
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, DeathStarEscapeBWindowCleanPc, NULL);
@@ -88,9 +88,10 @@ void __cdecl DeathStarEscapeB_Init(WORLDINFO *world) {
     for (index = 0; index < 2; ++index) {
         animation[index] = (NUINSTANIM *)NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
-            data = ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
-            if (data != NULL)
-                fakeanimendframe[0] = (f32)((f64)NuAnimEndFrameOld(data) + (f64)fakeanimendframe[0]);
+            data[index] =
+                ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
+            if (data[index] != NULL)
+                fakeanimendframe[0] = (f32)((f64)NuAnimEndFrameOld(data[index]) + (f64)fakeanimendframe[0]);
         }
     }
 }
