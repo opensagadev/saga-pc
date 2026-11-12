@@ -1140,9 +1140,13 @@ static void *__cdecl Push_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 static void __cdecl Push_ClearProgress(void *, void *progress_ptr) {
     PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_ptr);
     if (progress != NULL) {
-        progress->state_mask[0] = 0;
-        progress->visible_mask[0] = ~0u;
-        progress->position_mask[0] = 0;
+        // Each mask is a bit array of one word (16 blocks).
+        for (i32 i = 0; i < 1; ++i)
+            progress->state_mask[i] = 0;
+        for (i32 i = 0; i < 1; ++i)
+            progress->visible_mask[i] = ~0u;
+        for (i32 i = 0; i < 1; ++i)
+            progress->position_mask[i] = 0;
         NuMemSet128(progress->positions, 0, 0);
     }
 }
@@ -1151,11 +1155,7 @@ static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_p
     PUSHPROGRESS *progress = static_cast<PUSHPROGRESS *>(progress_ptr);
     if (progress == NULL)
         return;
-    // This initialization is the native inline ClearProgress operation, including its zero length.
-    progress->state_mask[0] = 0;
-    progress->visible_mask[0] = ~0u;
-    progress->position_mask[0] = 0;
-    NuMemSet128(progress->positions, 0, 0);
+    Push_ClearProgress(world_ptr, progress);
     WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
     if (world == NULL || world->push_blocks == NULL)
         return;
@@ -1168,8 +1168,7 @@ static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_p
         if ((block->packed_state_flags & 0x02000000u) != 0)
             progress->state_mask[word] |= mask;
         if (NuSpecialExistsFn(&block->special) != 0) {
-            NUMTX *matrix = NuSpecialGetInstanceMtx(&block->special);
-            progress->positions[index] = matrix->translation;
+            progress->positions[index] = NuSpecialGetInstanceMtx(&block->special)->translation;
         } else {
             progress->positions[index] = v000;
         }
@@ -1177,8 +1176,7 @@ static void __cdecl Push_StoreProgress(void *world_ptr, void *, void *progress_p
             NUSPECIALHANDLE *special = &block->end_position_specials[end];
             if (special != NULL) {
                 if (NuSpecialExistsFn(special) != 0) {
-                    NUMTX *matrix = NuSpecialGetInstanceMtx(special);
-                    progress->end_positions[end][index] = matrix->translation;
+                    progress->end_positions[end][index] = NuSpecialGetInstanceMtx(special)->translation;
                 } else {
                     progress->end_positions[end][index] = v000;
                 }
