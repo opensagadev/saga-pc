@@ -8139,9 +8139,7 @@ void __cdecl areaEditorDrawAreas(void) {
 
 void __cdecl areaEditor_Enter(void) {
     i32 i;
-    NULISTHDR *list = &aieditor->areas;
-    list->head = NULL;
-    list->tail = NULL;
+    memset(&aieditor->areas, 0, sizeof(aieditor->areas));
     for (i = 0; i < 64; ++i)
         NuLinkedListAppend(&aieditor->free_areas, &aieditor->area_pool[i].link);
     if (aieditor->ai_system != NULL) {
