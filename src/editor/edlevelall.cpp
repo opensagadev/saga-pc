@@ -5350,7 +5350,8 @@ void PropertyTool::AddPropertyMenuItems(eduimenu_s *menu, EdClass *ed_class, voi
             i32 class_id = member->type_id;
             EdClass *member_class =
                 class_id >= 0 && class_id < theRegistry.class_count ? &theRegistry.classes[class_id] : NULL;
-            AddPropertyMenuItems(menu, member_class, member->GetMemberObject(object), expander);
+            void *member_object = member->GetMemberObject(object);
+            AddPropertyMenuItems(menu, member_class, member_object, expander);
         } else if (member->control != NULL) {
             eduiitem_s *last = menu->last;
             member->control->AddMenuItem(menu, member, object);
