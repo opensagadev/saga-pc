@@ -1245,10 +1245,9 @@ void __cdecl Move_VEHICLE(GAMEOBJECT *);
 void __cdecl PostResetCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG_PC *character;
     object->attack_override = 0;
-    if (object->character_data->game_character->sfx_chatter != -1) {
-        character = object->character_data->game_character;
-        ChatterSfx(object, character->sfx_chatter, (f32)(u32)character->flags_11e);
-    }
+    if (object->character_data->game_character->sfx_chatter != -1)
+        ChatterSfx(object, object->character_data->game_character->sfx_chatter,
+                   (f32)(u32)object->character_data->game_character->flags_11e);
     if (object->character_data->move_fn != Move_VEHICLE && object->tertiary_lean_angle != 0 &&
         (object->flags_e24 & 0x2000) == 0)
         object->tertiary_lean_angle = 0;
@@ -1312,7 +1311,7 @@ i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
 
 void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
     CHARACTERANIM_CONFIG_PC *info;
-    i32 minimum, maximum, repetitions;
+    i32 minimum, maximum;
     if (animation == 0x97)
         return;
     object->idle_animation = (i16)animation;
@@ -1324,11 +1323,10 @@ void __cdecl ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
     }
     if (minimum > 0) {
         maximum = info->maximum_repetitions;
-        repetitions = minimum;
         if (maximum > minimum)
-            repetitions += qrand() / (0xffff / (maximum - minimum) + 1);
+            minimum += qrand() / (0xffff / (maximum - minimum) + 1);
         object->idle_animation_limit =
-            (f32)((f64)AnimDuration((i16)object->id, object->idle_animation, 0.0f, 0.0f, 0) * (f64)repetitions -
+            (f32)((f64)AnimDuration((i16)object->id, object->idle_animation, 0.0f, 0.0f, 0) * (f64)minimum -
                   (f64)animduration_blendouttime);
     } else {
         object->idle_animation_limit = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 7.0 + 8.0);
@@ -1551,10 +1549,12 @@ GAMEOBJECT *__cdecl AddCreature(i32 id, i32 parameter) {
 }
 
 NUVEC *__cdecl Player_StartPos(GAMEOBJECT *object) {
-    i32 index = (i8)object->field_280;
+    i32 index;
     NUVEC *position;
-    if (index < 0 || index >= 8)
+    if ((i8)object->field_280 < 0 || (i8)object->field_280 >= 8)
         index = object->hostility_group;
+    else
+        index = (i8)object->field_280;
     index %= 8;
     position = PlayerStartRecordInitPc[index].position;
     return position != NULL ? position : PlayerStartRecordInitPc[0].position;
@@ -2718,7 +2718,9 @@ u8 __cdecl FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, 
             }
         }
     }
-    return *nearest_player != NULL;
+    if (*nearest_player != NULL)
+        return 1;
+    return 0;
 }
 
 i32 __cdecl Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
