@@ -1140,25 +1140,28 @@ static void __cdecl CutScene_OverrideConfigFileName_LSW(char *filename, i32 unus
 
 static void __cdecl BackDrop_Alpha(f32 *alpha) {
     if (WORLD != NULL) {
-        LEVELDATA_PC *level = WORLD->current_level;
-        if (level == TITLES_LDATA) {
+        if (WORLD->current_level == TITLES_LDATA) {
             *alpha *= newgamealpha;
             return;
         }
-        if (level == CREDITS_LDATA && CreditsFlag == 3) {
+        if (WORLD->current_level == CREDITS_LDATA && CreditsFlag == 3) {
             *alpha *= CreditsAlpha;
             return;
         }
-        if ((level->flags & 0x400) != 0 && StatusPacket.status_flags != 0 && StatusPacket.stage->type == 12 &&
-            (StatusPacket.flags_word & 0x1000) == 0) {
-            const f32 time = StatusPacket.stage->field_0x18;
-            *alpha = time < 0.5f ? 1.0f - (time + time) : 0.0f;
+        if ((WORLD->current_level->flags & 0x400) != 0 && StatusPacket.status_flags != 0 &&
+            StatusPacket.stage->type == 12 && (StatusPacket.flags_word & 0x1000) == 0) {
+            if (StatusPacket.stage->field_0x18 < 0.5f)
+                *alpha = 1.0f - StatusPacket.stage->field_0x18 * 2.0f;
+            else
+                *alpha = 0.0f;
             return;
         }
     }
     if (GetMenuID() == 15 && selectmodemode == 4) {
-        const f32 time = selectmodetime;
-        *alpha = time < 0.5f ? 1.0f - (time + time) : 0.0f;
+        if (selectmodetime < 0.5f)
+            *alpha = 1.0f - selectmodetime * 2.0f;
+        else
+            *alpha = 0.0f;
     }
 }
 
