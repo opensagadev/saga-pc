@@ -846,8 +846,9 @@ static void CC_sfx_misc(NUFPAR_PC *parser) {
     if (index < 6 && NuFParGetWord(parser) != 0) {
         charconfig.runtime->sfx_misc[index] = (i16)(GetSfxId(parser->word_buffer_ptr));
     }
-    if (index + 1 < 6)
-        charconfig.runtime->sfx_misc[index + 1] = -1;
+    index++;
+    if (index < 6)
+        charconfig.runtime->sfx_misc[index] = -1;
 }
 
 static void CC_clear_sfx_misc(NUFPAR_PC *parser) {
@@ -1983,7 +1984,7 @@ i32 __cdecl MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u3
     i32 count;
     i32 bit;
     u32 flag;
-    if (output == NULL || model == NULL) {
+    if (model == NULL || output == NULL) {
         return 0;
     }
     character = &GCDataList[model->model_id];
@@ -1995,7 +1996,9 @@ i32 __cdecl MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u3
         if ((mask & flag) == 0 || bit >= character->layer_count) {
             continue;
         }
-        if (character->layer_lookup == NULL) {
+        if (character->layer_lookup != NULL) {
+            layer = character->layer_lookup[bit];
+        } else {
             for (layer = 0; layer < character->layer_count; ++layer) {
                 if (character->layers[layer].mask_bit == bit) {
                     break;
@@ -2004,16 +2007,14 @@ i32 __cdecl MakeLayerList_Name(CHARACTER_MODEL_LAYERS_PC *model, i16 *output, u3
             if (layer == character->layer_count) {
                 continue;
             }
-        } else {
-            layer = character->layer_lookup[bit];
         }
         if (layer == -1) {
             continue;
         }
         hierarchy_layer = character->layers[layer].hierarchy_layer_index;
         if (hierarchy_layer != -1) {
-            ++count;
             *output++ = hierarchy_layer;
+            ++count;
         }
     }
     return count;
@@ -2040,7 +2041,7 @@ static char **CustomiserVariantNamesPc = 0;
 static i32 CustomiserVariantCountPc = 0;
 i32 __cdecl CharVariant_Find(char *name) {
     i32 index;
-    if (CustomiserVariantNamesPc != NULL && CustomiserVariantCountPc > 0) {
+    if (CustomiserVariantNamesPc != NULL) {
         for (index = 0; index < CustomiserVariantCountPc; ++index) {
             if (NuStrICmp(CustomiserVariantNamesPc[index], name) == 0)
                 return index;
