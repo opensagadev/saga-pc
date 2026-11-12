@@ -42,18 +42,16 @@ HINT_PC *__cdecl Hint_FindHint(i32 hint_id) {
 }
 
 void __cdecl Hint_SaveGameState(HINT_PC *hint) {
-    HINT_PC *candidate = hintsys.hints;
-    i32 index = 0;
-    if (candidate == NULL || hintsys.save_bits == NULL)
+    HINT_PC *candidate;
+    i32 index;
+    if (hintsys.hints == NULL || hintsys.save_bits == NULL)
         return;
-    while (candidate->id != -1) {
+    for (candidate = hintsys.hints, index = 0; candidate->id != -1; ++candidate, ++index) {
         if ((u16)candidate->id == (u16)hint->id) {
             if (index / 32 < hintsys.save_word_count)
                 hintsys.save_bits[index / 32] |= 1u << (index & 31);
             return;
         }
-        ++candidate;
-        ++index;
     }
 }
 
@@ -154,9 +152,10 @@ void __cdecl Hint_ClearHintsAndDoneFlags(void) {
 
 void __cdecl Hint_LoadAllGameState(void) {
     HINT_PC *hint = hintsys.hints;
-    i32 index = 0;
+    i32 index;
     if (hint == NULL || hintsys.save_bits == NULL)
         return;
+    index = 0;
     while (hint->id != -1) {
         i32 word = index / 32;
         if (word >= hintsys.save_word_count)
