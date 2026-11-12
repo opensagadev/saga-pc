@@ -15580,8 +15580,8 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadowPc(i32 index, PC_FRAMEBUFFER_PC *) {
 void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
     NUMTX inverse;
     NuMtxInv(&inverse, &view);
-    f32 vector[4];
     if (parameter_4 == 0) {
+        f32 vector[4];
         vector[1] = vector[0] = 0.0f;
         vector[2] = -1.0f;
         NuVecMtxRotate((NUVEC *)vector, (NUVEC *)vector, &inverse);
@@ -15589,6 +15589,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstantsPc(void *) {
         NuVecNorm((NUVEC *)vector, (NUVEC *)vector);
         PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
     } else {
+        f32 vector[4];
         vector[0] = inverse.m30;
         vector[1] = inverse.m31;
         vector[2] = inverse.m32;
