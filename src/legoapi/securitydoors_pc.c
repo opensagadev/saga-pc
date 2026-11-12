@@ -230,6 +230,7 @@ SECURITY_DOOR_RECORD_PC *__cdecl SecurityDoor_FindNearest(WORLDINFO *world, NUVE
 
 void __cdecl SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+    GAMEOBJECT *nearest_player = NULL;
     u16 rotation;
     f32 pulse;
     i32 index;
@@ -242,7 +243,6 @@ void __cdecl SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) 
         (f64)0.8f;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         NUMTX matrix;
-        GAMEOBJECT *nearest_player;
         f32 distance;
         door->flags &= ~8u;
         if ((door->flags & 2) == 0)
@@ -266,10 +266,8 @@ void __cdecl SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) 
             NuMtxRotateX(&matrix, door->terrain_angle_z);
         NuMtxTranslate(&matrix, &door->player_position);
         if (FindNearestPlayerToVec(&door->position, &nearest_player, &distance, 1, 0x2000000)) {
-            f64 phase = (f64)distance / 6.0;
+            f64 phase = (f64)distance / 6.0 < 1.0 ? (f64)distance / 6.0 : 1.0;
             f32 alpha;
-            if (!(phase < 1.0))
-                phase = 1.0;
             alpha = (f64)pulse - (f64)NuTrigTable[((i32)(phase * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
             NuSpecialDrawAtAlpha(&world->level_objects[85].special, &matrix, alpha);
         }
