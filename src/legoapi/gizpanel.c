@@ -64,10 +64,6 @@ extern const char PanelDeactivateSfxPc[10], PanelActivateSfxPc[10];
 /* Private append to gizpanel_pc.c; reuse canonical PANEL_MOVEMENT_PC144/PANEL_SYSTEM_PC8. */
 extern f32 GizPanelPictureYPc, GizPanelPictureZPc;
 extern const f64 GameObjectNearFloorNoFloorHeight;
-typedef struct PanelDrawModelsPc {
-    i32 base, animated, transition, state_on, state_off, arm, target;
-    f32 arm_y, arm_z;
-} PanelDrawModelsPc;
 extern u8 PanelStormActivePc, PanelDroidActivePc, PanelBountyHunterActivePc;
 void __cdecl SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 /* Native PC hint updater records retain their original packed field offsets. */
@@ -381,7 +377,7 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
                     f32 distance;
                     PanelGetTrackingPositionPc(panel, &position);
                     distance = NuVecDistSqr(&position, &player->collision_position, &direction);
-                    if (nearest_distance > distance && maximum_distance > distance) {
+                    if (distance < nearest_distance && distance < maximum_distance) {
                         nearest_distance = distance;
                         nearest_direction = direction;
                         nearest_player = Player[player_index];
@@ -394,14 +390,14 @@ void __cdecl GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) 
             u16 previous_y = panel->field_7e;
             u16 target_x, target_y;
             FindAnglesXY(&nearest_direction, &target_x, &target_y);
-            target_y = (u16)(target_y - panel->y_rotation);
-            if (previous_y <= 0x4000 && (u16)(target_y - 0x4001) <= 0x7ffe)
+            target_y -= panel->y_rotation;
+            if (previous_y <= 0x4000 && target_y > 0x4000 && target_y < 0xc000)
                 target_y = 0x4000;
-            else if (previous_y >= 0xc000 && (u16)(target_y - 0x4001) <= 0x7ffe)
+            else if (previous_y >= 0xc000 && target_y > 0x4000 && target_y < 0xc000)
                 target_y = 0xc000;
-            if (previous_x <= 0x4000 && (u16)(target_x - 0x4001) <= 0x7ffe)
+            if (previous_x <= 0x4000 && target_x > 0x4000 && target_x < 0xc000)
                 target_x = (u16)(panel->y_rotation + 0x4000);
-            else if (previous_x >= 0xc000 && (u16)(target_x - 0x4001) <= 0x7ffe)
+            else if (previous_x >= 0xc000 && target_x > 0x4000 && target_x < 0xc000)
                 target_x = 0xc000;
             panel->field_7c = SeekRot(panel->field_7c, target_x, 5.0f);
             panel->field_7e = SeekRot(panel->field_7e, target_y, 5.0f);
@@ -439,6 +435,7 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     PANEL_SYSTEM_PC *system;
     u16 target_spin;
     f32 target_alpha;
+    NUMTX base_matrix;
     i32 index;
     (void)unused;
     (void)unused_time;
@@ -454,9 +451,8 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
         (f64)0.8f;
     for (index = 0; index < system->count; ++index) {
         PANEL_MOVEMENT_PC *panel = &system->panels[index];
-        PanelDrawModelsPc models;
-        NUMTX base_matrix;
-        i32 state_model;
+        i32 base, animated, transition, state_on, state_off, arm, target;
+        f32 arm_y, arm_z;
         if ((panel->flags & 4) == 0 && editor_active == 0)
             continue;
         if ((panel->draw_flags & 2) == 0)
@@ -465,63 +461,73 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             ResetShadowMapRendering();
         switch (panel->model_variant) {
             case 0:
-                models.base = (panel->draw_flags & 1) | 0x106;
-                models.animated = (panel->flags >> 7) | 0x108;
-                models.transition = 0x10a;
-                models.state_on = 0x10b;
-                models.state_off = 0x10c;
-                models.arm = -1;
-                models.target = 0x55;
-                models.arm_y = 0.0f;
-                models.arm_z = 0.0f;
+                base = (panel->draw_flags & 1) | 0x106;
+                animated = ((u32)panel->flags >> 7) | 0x108;
+                transition = 0x10a;
+                state_on = 0x10b;
+                state_off = 0x10c;
+                arm = -1;
+                target = 0x55;
+                arm_y = 0.0f;
+                arm_z = 0.0f;
                 break;
             case 1:
-                models.base = (panel->draw_flags & 1) != 0 ? 0x107 : 0x100;
-                models.animated = (panel->flags & 0x80) != 0 ? 0x102 : 0x101;
-                models.transition = 0x103;
-                models.state_on = 0x104;
-                models.state_off = 0x105;
-                models.arm = -1;
-                models.target = 0x55;
-                models.arm_y = 0.0f;
-                models.arm_z = 0.0f;
+                base = (panel->draw_flags & 1) != 0 ? 0x107 : 0x100;
+                animated = (panel->flags & 0x80) != 0 ? 0x102 : 0x101;
+                transition = 0x103;
+                state_on = 0x104;
+                state_off = 0x105;
+                arm = -1;
+                target = 0x55;
+                arm_y = 0.0f;
+                arm_z = 0.0f;
                 break;
             case 2:
-                models.base = 0x10d;
-                models.animated = 0x10e;
-                models.transition = 0x10f;
-                models.state_on = 0x110;
-                models.state_off = 0x111;
-                models.arm = 0x112;
-                models.target = 0x113;
-                models.arm_y = 0.245f;
-                models.arm_z = -0.19f;
+                base = 0x10d;
+                animated = 0x10e;
+                transition = 0x10f;
+                state_on = 0x110;
+                state_off = 0x111;
+                arm = 0x112;
+                target = 0x113;
+                arm_y = 0.245f;
+                arm_z = -0.19f;
                 break;
             case 3:
-                models.base = 0x114;
-                models.animated = 0x115;
-                models.transition = 0x116;
-                models.state_on = 0x117;
-                models.state_off = 0x118;
-                models.arm = 0x119;
-                models.target = 0x11a;
-                models.arm_y = 0.34f;
-                models.arm_z = -0.17f;
+                base = 0x114;
+                animated = 0x115;
+                transition = 0x116;
+                state_on = 0x117;
+                state_off = 0x118;
+                arm = 0x119;
+                target = 0x11a;
+                arm_y = 0.34f;
+                arm_z = -0.17f;
                 break;
             default:
-                models.base = models.animated = models.transition = models.state_on = models.state_off = models.arm =
-                    models.target = -1;
-                models.arm_y = 0.0f;
-                models.arm_z = 0.0f;
+                base = -1;
+                animated = -1;
+                transition = -1;
+                state_on = -1;
+                state_off = -1;
+                arm = -1;
+                target = -1;
+                arm_y = 0.0f;
+                arm_z = 0.0f;
                 break;
         }
         NuMtxSetRotationY(&base_matrix, panel->y_rotation);
         NuMtxTranslate(&base_matrix, &panel->position);
-        if ((panel->flags & 0x20) == 0 && models.base != -1 && world->level_objects[models.base].active != 0)
-            NuSpecialDrawAt(&world->level_objects[models.base].special, &base_matrix);
-        state_model = (panel->flags & 2) != 0 ? models.state_on : models.state_off;
-        if ((panel->flags & 0x20) == 0 && state_model != -1 && world->level_objects[state_model].active != 0)
-            NuSpecialDrawAt(&world->level_objects[state_model].special, &base_matrix);
+        if ((panel->flags & 0x20) == 0 && base != -1 && world->level_objects[base].active != 0)
+            NuSpecialDrawAt(&world->level_objects[base].special, &base_matrix);
+        if ((panel->flags & 0x20) == 0) {
+            if ((panel->flags & 2) != 0) {
+                if (state_on != -1 && world->level_objects[state_on].active != 0)
+                    NuSpecialDrawAt(&world->level_objects[state_on].special, &base_matrix);
+            } else if (state_off != -1 && world->level_objects[state_off].active != 0) {
+                NuSpecialDrawAt(&world->level_objects[state_off].special, &base_matrix);
+            }
+        }
         if ((panel->flags & 0x20) == 0 && (panel->activation_time > 0.0f || editor_active != 0)) {
             NUVEC picture_offset, transition_offset;
             NUMTX transition_base, animated_matrix;
@@ -537,47 +543,54 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             transition_base = base_matrix;
             NuMtxTranslate(&base_matrix, &picture_offset);
             NuMtxTranslate(&transition_base, &transition_offset);
-            if (1.2f > panel->activation_time && editor_active == 0) {
-                f64 progress = (f64)panel->activation_time / (f64)1.2f;
-                f32 rounded_progress = progress;
+            if (panel->activation_time < 1.2f && editor_active == 0) {
+                f32 progress = panel->activation_time / 1.2f;
                 f32 alpha;
-                frame = progress * 23.0 + 1.0;
-                EvalAnim(&world->level_objects[models.transition].special, frame, &animated_matrix, 0);
+                frame = panel->activation_time / 1.2f * 23.0 + 1.0;
+                EvalAnim(&world->level_objects[transition].special, frame, &animated_matrix, 0);
                 animated_matrix.m32 = 0.0f;
                 animated_matrix.m31 = 0.0f;
                 animated_matrix.m30 = 0.0f;
                 NuMtxMulVU0(&animated_matrix, &animated_matrix, &transition_base);
-                alpha = 1.0 - (f64)rounded_progress;
-                NuSpecialDrawAtAlpha(&world->level_objects[models.transition].special, &animated_matrix, alpha);
+                alpha = 1.0f - progress;
+                NuSpecialDrawAtAlpha(&world->level_objects[transition].special, &animated_matrix, alpha);
+                frame = (f64)panel->activation_time / (f64)0.8f * 24.0 + 1.0;
+                EvalAnim(&world->level_objects[animated].special, frame, &animated_matrix, 0);
+                animated_matrix.m32 = 0.0f;
+                animated_matrix.m31 = 0.0f;
+                animated_matrix.m30 = 0.0f;
+                NuMtxMulVU0(&animated_matrix, &animated_matrix, &base_matrix);
+                NuSpecialDrawAtAlpha(&world->level_objects[animated].special, &animated_matrix, 1.0f);
+            } else {
+                frame = (f64)panel->activation_time / (f64)0.8f * 24.0 + 1.0;
+                EvalAnim(&world->level_objects[animated].special, frame, &animated_matrix, 0);
+                animated_matrix.m32 = 0.0f;
+                animated_matrix.m31 = 0.0f;
+                animated_matrix.m30 = 0.0f;
+                NuMtxMulVU0(&animated_matrix, &animated_matrix, &base_matrix);
+                NuSpecialDrawAtAlpha(&world->level_objects[animated].special, &animated_matrix, 1.0f);
             }
-            frame = (f64)panel->activation_time / (f64)0.8f * 24.0 + 1.0;
-            EvalAnim(&world->level_objects[models.animated].special, frame, &animated_matrix, 0);
-            animated_matrix.m32 = 0.0f;
-            animated_matrix.m31 = 0.0f;
-            animated_matrix.m30 = 0.0f;
-            NuMtxMulVU0(&animated_matrix, &animated_matrix, &base_matrix);
-            NuSpecialDrawAtAlpha(&world->level_objects[models.animated].special, &animated_matrix, 1.0f);
         }
-        if ((panel->flags & 0x48) == 8 && (f64)panel->target_offset.y != GameObjectNearFloorNoFloorHeight &&
-            models.target != -1 && world->level_objects[models.target].active != 0) {
-            NUVEC target;
-            f32 alpha;
-            GizPanel_GetAbsTargetPos(panel, &target, 0);
+        if ((panel->flags & 0x40) == 0 && (panel->flags & 8) != 0 &&
+            (f64)panel->target_offset.y != GameObjectNearFloorNoFloorHeight && target != -1 &&
+            world->level_objects[target].active != 0) {
+            NUVEC target_position;
+            GizPanel_GetAbsTargetPos(panel, &target_position, 0);
             NuMtxSetRotationY(&base_matrix, target_spin);
             if (panel->target_roll != 0)
                 NuMtxRotateZ(&base_matrix, panel->target_roll);
             if (panel->target_pitch != 0)
                 NuMtxRotateX(&base_matrix, panel->target_pitch);
-            NuMtxTranslate(&base_matrix, &target);
+            NuMtxTranslate(&base_matrix, &target_position);
             NuMtxPreScaleU(&base_matrix, panel->target_scale);
-            alpha = (panel->flags & 1) != 0 ? 0.0f : target_alpha;
-            NuSpecialDrawAtAlpha(&world->level_objects[models.target].special, &base_matrix, alpha);
+            NuSpecialDrawAtAlpha(&world->level_objects[target].special, &base_matrix,
+                                 (panel->flags & 1) != 0 ? 0.0f : target_alpha);
         }
-        if ((panel->flags & 0x20) == 0 && models.arm != -1 && world->level_objects[models.arm].active != 0) {
+        if ((panel->flags & 0x20) == 0 && arm != -1 && world->level_objects[arm].active != 0) {
             NUVEC arm_offset;
             arm_offset.x = 0.0f;
-            arm_offset.y = models.arm_y;
-            arm_offset.z = models.arm_z;
+            arm_offset.y = arm_y;
+            arm_offset.z = arm_z;
             NuVecRotateX(&arm_offset, &arm_offset, panel->arm_x_rotation);
             NuVecRotateY(&arm_offset, &arm_offset, panel->y_rotation);
             NuMtxSetRotationX(&base_matrix, panel->arm_x_rotation);
@@ -586,7 +599,7 @@ void __cdecl GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             NuMtxRotateY(&base_matrix, panel->field_7e);
             NuMtxTranslate(&base_matrix, &panel->position);
             NuMtxTranslate(&base_matrix, &arm_offset);
-            NuSpecialDrawAt(&world->level_objects[models.arm].special, &base_matrix);
+            NuSpecialDrawAt(&world->level_objects[arm].special, &base_matrix);
         }
     }
     ResetShadowMapRendering();
