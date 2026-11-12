@@ -438,6 +438,7 @@ address,symbol,size,ctype
 0x432ef0,_TiePart_Move,89,"void __cdecl(PART_PC *, f32)"
 0x432f50,_KillParts_TIEFIGHTER,454,"void __cdecl(ADDPART_PC *, i32, i32, GAMEOBJECT *, i32, u16, u16, NUVEC *)"
 0x433120,_InitBikeParts,21,
+0x433140,_FindFreeBikePart,30,i32 (void)
 0x433160,_SpeederPart_Update,2248,void __cdecl(PART_PC *)
 0x433a30,_SpeederPart_Draw,6,i32 __cdecl(PART_PC *)
 0x433a40,_KillParts_ATAT,93,"void __cdecl(ADDPART_PC *, i32, i32, GAMEOBJECT *)"
