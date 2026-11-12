@@ -8114,17 +8114,15 @@ void __cdecl areaEditorDrawAreas(void) {
     AiRndrSetCullDistance(0.0f);
     for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
          area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
-        if (area == aieditor->selected_area) {
-            colour = 0xff0000ff;
-            if (area != aieditor->hovered_area)
-                colour = 0x800000ff;
+        if (aieditor->selected_area == area) {
+            colour = aieditor->selected_area == aieditor->hovered_area ? 0xff0000ff : 0x800000ff;
         } else {
             colour = aieditor->hovered_area == area ? 0xffffffff : 0;
         }
         if ((area->flags & 1) != 0) {
+            NUVEC *position = &area->position;
             f32 radius = area->size.x < area->size.z ? area->size.x : area->size.z;
-            LocaledbitsDrawSolidCircleXY(&area->position, radius, area->position.y, area->size.y + area->position.y,
-                                         colour, 0, 16);
+            LocaledbitsDrawSolidCircleXY(position, radius, position->y, area->size.y + position->y, colour, 0, 16);
         } else {
             DrawAreaBox(&area->position, &area->size, (i16)area->rotation, colour);
         }
