@@ -363,10 +363,10 @@ extern "C" void __cdecl Batarang_Release(GAMEOBJECT *object, i32 mode) {
 extern "C" {
 
     static u32 Batarang_GetTargetPos(BATARANG_NATIVE_PC *batarang, int index, NUVEC *position) {
-        if (batarang->flight_state.in_flight != 0 && batarang->active > 0 && batarang->active == index) {
-            GAMEOBJECT *owner = batarang->owner;
-            *position = owner->collision_position;
-            if ((owner->flags_e24 & 8) != 0) {
+        if (batarang->flight_state.in_flight != 0 && batarang->active > 0 && index == batarang->active) {
+            *position = batarang->owner->collision_position;
+            if ((batarang->owner->flags_e24 & 8) != 0) {
+                GAMEOBJECT *owner = batarang->owner;
                 i32 joint = owner->character_data->game_character->throw_locator;
                 if (joint != -1 && owner->character_model->points_of_interest[joint] != NULL)
                     *position = *reinterpret_cast<NUVEC *>(&owner->locator_matrices[joint].m30);
