@@ -440,26 +440,28 @@ SIGNAL_s *__cdecl Signal_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJE
 void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (object->character_context == 0x4c) {
         f32 *animation_time = NULL;
-        i32 exchange = 0;
+        i32 exchange;
         f32 elapsed;
         if (object->character_model->action_animations[object->field_7aa] != NULL) {
             animation_time = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
             if (animation_time == NULL)
                 return;
         }
+        exchange = 0;
         elapsed = (f32)((f64)object->context_timer + (f64)FRAMETIME);
         object->context_timer = elapsed;
         if (elapsed >= object->context_duration) {
-            u32 exchanged = object->context_variant_flags & 0x40;
             object->character_context = -1;
-            exchange = exchanged == 0;
+            if ((object->context_variant_flags & 0x40) == 0)
+                exchange = 1;
             StartEndOfJump(object);
         } else {
             if ((object->context_variant_flags & 0x40) != 0)
                 return;
             if (animation_time != NULL) {
                 f32 frame = AnimListFrame(object->character_model, object->field_7aa, 0);
-                exchange = frame >= 1.0f && *animation_time >= frame;
+                if (frame >= 1.0f && *animation_time >= frame)
+                    exchange = 1;
             }
         }
         if (exchange != 0) {
@@ -487,12 +489,8 @@ void __cdecl Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
             NewRumble(object->pad->bound_pad, 0.6f, 0);
         }
-        if ((object->context_variant_flags & 0x40) == 0) {
-            i32 random = qrand();
-            void *pad = object->pad->bound_pad;
-            f32 strength = (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.4f);
-            NewRumble(pad, strength, 0);
-        }
+        if ((object->context_variant_flags & 0x40) == 0)
+            NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f), 0);
         return;
     }
     if (object->field_281 != 0 || object->character_context == 0x1f || object->character_context == 0x2b ||
