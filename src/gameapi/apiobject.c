@@ -1823,7 +1823,7 @@ void __cdecl APIObjectLOSChecks(APIOBJECTSYS_PC *system, i32 checks, i32 source_
             --checks;
             if (checks == 0)
                 goto done;
-            if (initial_source == system->los_cursor_208 && system->los_cursor_20c == initial_target)
+            if (initial_source == system->los_cursor_208 && initial_target == system->los_cursor_20c)
                 goto done;
         } while (system->los_cursor_208 < source_count);
         system->los_cursor_208 = 0;
