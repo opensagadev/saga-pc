@@ -2437,29 +2437,23 @@ extern "C" void __cdecl ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *op
     music_man.SelectTrackByHandle(1, level->music_tracks[MusicOther]);
     music_man.SelectTrackByHandle(2, level->music_tracks[MusicOther + 2]);
     music_man.SelectTrackByHandle(0x20, level->music_tracks[MusicOther + 4]);
-    if (options->music_enabled != 0) {
-        if (sticky_attack != 0) {
-            if (music_man.GetTrackHandle(2, NULL) != -1) {
-                music_man.PlayTrack(2);
-                goto process_music;
-            }
-            if (music_man.GetTrackHandle(1, NULL) != -1) {
-                music_man.PlayTrack(1);
-                goto process_music;
-            }
-        } else {
-            if (music_man.GetTrackHandle(1, NULL) != -1) {
-                music_man.PlayTrack(1);
-                goto process_music;
-            }
-            if (music_man.GetTrackHandle(2, NULL) != -1) {
-                music_man.PlayTrack(2);
-                goto process_music;
-            }
-        }
+    if (options->music_enabled == 0) {
+        music_man.PlayTrack(0x20);
+    } else if (sticky_attack != 0) {
+        if (music_man.GetTrackHandle(2, NULL) != -1)
+            music_man.PlayTrack(2);
+        else if (music_man.GetTrackHandle(1, NULL) != -1)
+            music_man.PlayTrack(1);
+        else
+            music_man.PlayTrack(0x20);
+    } else {
+        if (music_man.GetTrackHandle(1, NULL) != -1)
+            music_man.PlayTrack(1);
+        else if (music_man.GetTrackHandle(2, NULL) != -1)
+            music_man.PlayTrack(2);
+        else
+            music_man.PlayTrack(0x20);
     }
-    music_man.PlayTrack(0x20);
-process_music:
     music_man.Process(FRAMETIME);
 }
 
