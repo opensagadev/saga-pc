@@ -855,23 +855,22 @@ extern "C" {
         u8 *flags = (u8 *)LevFlag;
         switch (flags[flag_index]) {
             case 0:
-                if (BossKilled(character_id) != NULL) {
-                    if (delay <= 0.0f) {
-                        flags[flag_index] = 2;
-                        return 1;
-                    }
-                    flags[flag_index] = 1;
-                }
-                break;
+                if (BossKilled(character_id) == NULL)
+                    return 0;
+                if (delay <= 0.0f)
+                    break;
+                flags[flag_index] = 1;
+                return 0;
             case 1:
                 LevTime[0] += FRAMETIME;
-                if (LevTime[0] >= delay) {
-                    flags[flag_index] = 2;
-                    return 1;
-                }
-                break;
+                if (LevTime[0] >= delay)
+                    break;
+                return 0;
+            default:
+                return 0;
         }
-        return 0;
+        flags[flag_index] = 2;
+        return 1;
     }
 
     void __cdecl KillBossCompleteLevel(i32 character_id, i32 flag_index, f32 delay) {
