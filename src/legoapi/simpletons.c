@@ -26,18 +26,20 @@ i32 __cdecl ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_in
         return 0;
     if (disable_narrow_socks != 0)
         return 0;
-    if (object->field_280 == 0xff)
-        return 0;
-    if ((object->flags_1fc_word & 0x80) != 0) {
-        if (object == Player[0])
-            other = Player[1];
-        else if (object == Player[1])
-            other = Player[0];
-        if (other != NULL && (other->flags_1fc_word & 0x80) != 0 &&
-            !NarrowSockPositionAllowed(system, &other->sock_position, level_index))
-            return 0;
+    if (object->field_280 != 0xff) {
+        if ((object->flags_1fc_word & 0x80) != 0) {
+            if (object == Player[0])
+                other = Player[1];
+            else if (object == Player[1])
+                other = Player[0];
+            if (other != NULL && (other->flags_1fc_word & 0x80) != 0 &&
+                !NarrowSockPositionAllowed(system, &other->sock_position, level_index))
+                return 0;
+        }
+        if (NarrowSockPositionAllowed(system, &object->sock_position, level_index))
+            return 1;
     }
-    return NarrowSockPositionAllowed(system, &object->sock_position, level_index);
+    return 0;
 }
 
 typedef struct AIONCEATTACKER_PC {
