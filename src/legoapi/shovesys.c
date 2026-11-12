@@ -22,13 +22,15 @@ STATIC_ASSERT(sizeof(SHOVE_SYSTEM_PC) == 0x184);
 STATIC_ASSERT(offsetof(SHOVE_SYSTEM_PC, count) == 0x180);
 static SHOVE_SYSTEM_PC ShoveSystemPc = {0};
 void __cdecl AddShoveObject(NUSPECIALHANDLE *special, i16 platform_id) {
+    NUMTX *matrix;
     if (NuSpecialExistsFn(special) && ShoveSystemPc.count < 16) {
         ShoveSystemPc.objects[ShoveSystemPc.count].special = special;
         ShoveSystemPc.objects[ShoveSystemPc.count].platform_id = platform_id;
         NuSpecialGetRadius(special, &ShoveSystemPc.objects[ShoveSystemPc.count].position,
                            &ShoveSystemPc.objects[ShoveSystemPc.count].radius);
+        matrix = NuSpecialGetDrawMtx(special);
         NuVecMtxTransform(&ShoveSystemPc.objects[ShoveSystemPc.count].position,
-                          &ShoveSystemPc.objects[ShoveSystemPc.count].position, NuSpecialGetDrawMtx(special));
+                          &ShoveSystemPc.objects[ShoveSystemPc.count].position, matrix);
         ++ShoveSystemPc.count;
     }
 }
@@ -45,20 +47,22 @@ void __cdecl ShoveSystemCheckGameObject(GAMEOBJECT *object) {
         return;
     for (i = 0, shove = ShoveSystemPc.objects; i < ShoveSystemPc.count; ++i, ++shove) {
         f64 reach;
-        f32 dx, dz, distance, penetration, speed;
+        f32 delta, absolute_x, absolute_z, dx, dz, distance, penetration, speed;
         NUMTX *matrix;
         NUVEC minimum, maximum, point;
         if (shove->platform_id != -1 && shove->platform_id == object->supporting_platform_id &&
             object->contact_normal.y > 0.707f)
             continue;
-        dx = object->collision_position.x - shove->position.x;
+        delta = object->collision_position.x - shove->position.x;
         reach = (f64)object->bounds_radius + shove->radius + ShoveCollisionExpansionPc;
-        if (!(reach > fabsf(dx)))
+        *(i32 *)&absolute_x = *(i32 *)&delta & 0x7fffffff; /* NuFabs */
+        if (!(reach > absolute_x))
             continue;
-        dz = object->collision_position.z - shove->position.z;
-        if (!(reach > fabsf(dz)))
+        delta = object->collision_position.z - shove->position.z;
+        *(i32 *)&absolute_z = *(i32 *)&delta & 0x7fffffff; /* NuFabs */
+        if (!(reach > absolute_z))
             continue;
-        if (!(shove->position.y + shove->radius > object->collision_min.y))
+        if (!(object->collision_min.y < shove->position.y + shove->radius))
             continue;
         matrix = NuSpecialGetDrawMtx(shove->special);
         NuSpecialGetBounds(shove->special, &minimum, &maximum);
