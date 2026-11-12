@@ -44,15 +44,16 @@ void AddSlamDebris(GAMEOBJECT *object) {
     struct EXPLOSION *explosion;
     NUVEC position;
     FindSlamOrigin(object, &position, NULL);
-    radius = 0.6f;
-    strength = 0.3f;
-    damage = 1;
     flags = 0x17;
     if ((object->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x16)) {
         radius = 1.0f;
-        strength = 0.5f;
         flags = 0x37;
         damage = 2;
+        strength = 0.5f;
+    } else {
+        radius = 0.6f;
+        damage = 1;
+        strength = 0.3f;
     }
     explosion = AddExplosion(&position, radius, strength, object, object->slam_effect, flags);
     if (explosion != NULL)
@@ -101,30 +102,31 @@ STATIC_ASSERT(offsetof(RIPPLE_NODE_PC, previous) == 0x7c);
 
 static RIPPLE_NODE_PC *RippleAllocPc(RIPPLE_SET_PC *set) {
     RIPPLE_NODE_PC *node = set->free_head, *newest = set->newest, *next_free;
-    if (set->active_count >= set->capacity)
-        return NULL;
-    if (node->next == node)
-        next_free = NULL;
-    else {
-        node->next->previous = node->previous;
-        node->previous->next = node->next;
-        next_free = node->next;
+    if (set->active_count < set->capacity) {
+        if (node->next == node)
+            next_free = NULL;
+        else {
+            node->next->previous = node->previous;
+            node->previous->next = node->next;
+            next_free = node->next;
+        }
+        if (newest != NULL) {
+            node->next = newest->next;
+            node->next->previous = node;
+            node->previous = newest;
+            newest->next = node;
+        } else {
+            node->next = node;
+            node->previous = node;
+        }
+        ++set->active_count;
+        set->free_head = next_free;
+        set->newest = node;
+        if (set->active_count == set->capacity)
+            set->free_head = NULL;
+        return node;
     }
-    if (newest == NULL) {
-        node->next = node;
-        node->previous = node;
-    } else {
-        node->next = newest->next;
-        node->next->previous = node;
-        node->previous = newest;
-        newest->next = node;
-    }
-    ++set->active_count;
-    set->free_head = next_free;
-    set->newest = node;
-    if (set->active_count == set->capacity)
-        set->free_head = NULL;
-    return node;
+    return NULL;
 }
 void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetime, f32 delay,
                        u32 start_color, u32 end_color, i32 flags, NUMTL *material, NUVEC *velocity) {
@@ -134,23 +136,27 @@ void __cdecl AddRipple(RIPPLE_SET_PC *set, NUMTX *matrix, f32 size, f32 growth, 
     node = RippleAllocPc(set);
     if (node == NULL) {
         node = set->oldest;
-        set->newest = node;
-        set->oldest = node->next;
+        set->newest = set->oldest;
+        set->oldest = set->oldest->next;
     } else if (set->oldest == NULL)
         set->oldest = node;
-    if (node == NULL)
-        return;
-    node->matrix = *matrix;
-    node->initial_size = node->size = size;
-    node->growth = growth;
-    node->age = 0;
-    node->lifetime = lifetime;
-    node->delay = delay;
-    node->flags = (u16)flags;
-    node->color = node->start_color = start_color;
-    node->material = material;
-    node->end_color = end_color;
-    node->velocity = velocity != NULL ? *velocity : v000;
+    if (node != NULL) {
+        node->matrix = *matrix;
+        node->size = size;
+        node->growth = growth;
+        node->initial_size = size;
+        node->age = 0;
+        node->lifetime = lifetime;
+        node->delay = delay;
+        node->flags = (u16)flags;
+        node->start_color = node->color = start_color;
+        node->material = material;
+        node->end_color = end_color;
+        if (velocity != NULL)
+            node->velocity = *velocity;
+        else
+            node->velocity = v000;
+    }
 }
 void __cdecl BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x, u16 unused_y) {
     (void)unused_x;
@@ -162,7 +168,14 @@ void __cdecl BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 u
 }
 
 typedef struct ripple_effect_pc_s {
-    u32 start_color, end_color;
+    union {
+        u32 start_color;
+        u8 start_rgba[4];
+    };
+    union {
+        u32 end_color;
+        u8 end_rgba[4];
+    };
     f32 lifetime, initial_size, end_size;
     char texture_name[16];
     NUMTL *material;
@@ -179,7 +192,13 @@ STATIC_ASSERT(offsetof(RIPPLE_EFFECT_PC, end_size) == 0x10);
 typedef struct world_ripple_view_pc_s {
     u8 unknown_0000[0x46f4];
     RIPPLE_EFFECT_PC *effects;
-    i32 count, water_effect, sabre_effect;
+    i32 count;
+    union {
+        struct {
+            i32 water_effect, sabre_effect;
+        };
+        i32 effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
+    };
 } WORLD_RIPPLE_VIEW_PC;
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, effects) == 0x46f4);
 STATIC_ASSERT(offsetof(WORLD_RIPPLE_VIEW_PC, water_effect) == 0x46fc);
@@ -323,18 +342,16 @@ static void RippleLifePc(NUFPAR_PC *parser) {
     RippleEffectsCurrentPc->lifetime = NuFParGetFloat(parser);
 }
 static void RippleStartColourPc(NUFPAR_PC *parser) {
-    u8 *colour = (u8 *)&RippleEffectsCurrentPc->start_color;
-    colour[0] = (u8)NuFParGetInt(parser);
-    colour[1] = (u8)NuFParGetInt(parser);
-    colour[2] = (u8)NuFParGetInt(parser);
-    colour[3] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->start_rgba[0] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->start_rgba[1] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->start_rgba[2] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->start_rgba[3] = (u8)NuFParGetInt(parser);
 }
 static void RippleEndColourPc(NUFPAR_PC *parser) {
-    u8 *colour = (u8 *)&RippleEffectsCurrentPc->end_color;
-    colour[0] = (u8)NuFParGetInt(parser);
-    colour[1] = (u8)NuFParGetInt(parser);
-    colour[2] = (u8)NuFParGetInt(parser);
-    colour[3] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->end_rgba[0] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->end_rgba[1] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->end_rgba[2] = (u8)NuFParGetInt(parser);
+    RippleEffectsCurrentPc->end_rgba[3] = (u8)NuFParGetInt(parser);
 }
 static void RippleTextureNamePc(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) && NuStrLen(parser->word_buffer_ptr) < 16)
@@ -345,10 +362,7 @@ static void RippleEffectTypePc(NUFPAR_PC *parser) {
         i32 index = LookupRippleEffectIndex(parser->word_buffer_ptr);
         if (index != -1) {
             WORLD_RIPPLE_VIEW_PC *world = (WORLD_RIPPLE_VIEW_PC *)RippleEffectsWorldInfoPc;
-            if (index == 0)
-                world->water_effect = world->count;
-            else
-                world->sabre_effect = world->count;
+            world->effect_of_type[index] = world->count;
         }
     }
 }
@@ -432,6 +446,7 @@ static void RippleLinkNodesPc(RIPPLE_NODE_PC *nodes, i32 count) {
 void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unused_end, i32 count) {
     RIPPLE_SET_PC *set;
     RIPPLE_NODE_PC *nodes;
+    RIPPLE_NODE_PC **erase_list;
     i32 node_count;
     (void)unused_end;
     set = (RIPPLE_SET_PC *)((buffer->addr + 3) & ~3u);
@@ -440,14 +455,15 @@ void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unuse
     node_count = count <= 0 ? 0 : count;
     if (node_count >= 64)
         node_count = 64;
-    set->capacity = (u16)node_count;
-    set->active_count = 0;
-    node_count = set->capacity;
+    (*result)->capacity = (u16)node_count;
+    (*result)->active_count = 0;
+    node_count = (*result)->capacity;
     nodes = (RIPPLE_NODE_PC *)((buffer->addr + 127) & ~127u);
     buffer->addr = (u32)nodes + node_count * sizeof(*nodes);
     RippleLinkNodesPc(nodes, node_count);
-    RippleEraseListPc = (RIPPLE_NODE_PC **)((buffer->addr + 3) & ~3u);
-    buffer->addr = (u32)RippleEraseListPc + node_count * sizeof(*RippleEraseListPc);
+    erase_list = (RIPPLE_NODE_PC **)((buffer->addr + 3) & ~3u);
+    buffer->addr = (u32)(erase_list + node_count);
+    RippleEraseListPc = erase_list;
     (*result)->nodes = nodes;
     (*result)->free_head = (*result)->nodes;
     (*result)->newest = NULL;
@@ -455,14 +471,10 @@ void __cdecl InitRipples(RIPPLE_SET_PC **result, VARIPTR *buffer, VARIPTR *unuse
 }
 
 void __cdecl ResetRippleSet(RIPPLE_SET_PC *set) {
-    u16 count = set->capacity;
     RIPPLE_NODE_PC *nodes = set->nodes;
+    i32 count = set->capacity;
     memset(nodes, 0, count * sizeof(*nodes));
-    set->capacity = 0;
-    set->active_count = 0;
-    set->free_head = NULL;
-    set->newest = NULL;
-    set->oldest = NULL;
+    memset(set, 0, sizeof(*set));
     set->nodes = nodes;
     set->capacity = count;
     RippleLinkNodesPc(nodes, count);
@@ -563,18 +575,18 @@ void __cdecl DrawRipplePc(RIPPLE_NODE_PC *node) {
     top.x = 0;
     top.y = size;
     top.z = 0;
-    vertices[0].position = top;
     left.x = -size;
     left.y = 0;
     left.z = 0;
-    vertices[1].position = left;
     right.x = size;
     right.y = -0.0f;
     right.z = 0;
-    vertices[2].position = right;
     bottom.x = -0.0f;
     bottom.y = -size;
     bottom.z = 0;
+    vertices[0].position = top;
+    vertices[1].position = left;
+    vertices[2].position = right;
     vertices[3].position = bottom;
     vertices[0].u = vertices[2].u = vertices[3].u = 1;
     vertices[1].u = 0;
