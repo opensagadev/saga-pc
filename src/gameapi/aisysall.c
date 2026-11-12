@@ -3596,10 +3596,10 @@ i32 __cdecl Action_ShadowTerrain(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
 
     if (packet == NULL || packet->owner == NULL || first_time == 0)
         return 1;
-    packet->owner->flags_1fc |= 8;
+    packet->owner->flags_1fc_word |= 8;
     for (i = 0; i < param_count; i++) {
         if (NuStrICmp(params[i], AIScriptFalse) == 0) {
-            packet->owner->flags_1fc &= ~8;
+            packet->owner->flags_1fc_word &= ~8;
         }
     }
     return 1;
