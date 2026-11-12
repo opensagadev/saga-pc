@@ -692,7 +692,7 @@ i32 __cdecl GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT_PC *bolt, 
     if (gizmotypes != NULL && system != NULL && bolt != NULL) {
         type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type) {
             if (type->hit_platform != NULL && type->hit_platform(world, set->data, bolt, hit_flags) != 0)
                 return 1;
         }
@@ -715,7 +715,7 @@ i32 __cdecl GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVE
     if (gizmotypes != NULL && system != NULL && (bolt->hit_flags & 0x800) != 0) {
         type = (BOLT_GIZMO_TYPE_PC *)((GIZMOTYPES_PC *)gizmotypes)->types;
         set = ((GIZMOSYS_PREFIX_PC *)system)->sets;
-        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type, ++set) {
+        for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++set, ++type) {
             if (type->hit_bolt != NULL && type->hit_bolt(world, set->data, (GAMEOBJECT *)bolt->owner, hit_points, mode,
                                                          radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
                 BoltSys->debris(bolt, points, -1, NULL, 0);
@@ -1001,7 +1001,7 @@ void __cdecl GizmoSysAddGizmos(void *system_ptr, GIZFLOW_PC *flow, void *world) 
     if (gizmotypes != NULL && system != NULL) {
         type = ((GIZMOTYPES_PC *)gizmotypes)->types;
         set = system->sets;
-        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++type, ++set) {
+        for (index = 0; index < ((GIZMOTYPES_PC *)gizmotypes)->count; ++index, ++set, ++type) {
             ResetGizmoType(system, index, NULL);
             if (type->fns.add_gizmos_fn != NULL)
                 ((void(__cdecl *)(void *, i32, void *, void *))type->fns.add_gizmos_fn)(system, index, world,
