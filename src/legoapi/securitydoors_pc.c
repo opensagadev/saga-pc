@@ -420,8 +420,8 @@ static void SecurityDoorStartPc(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *doo
 }
 
 void __cdecl SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
+    f32 *playing = NULL;
     if (object->character_context == 0x5c) {
-        f32 *playing = NULL;
         f32 elapsed;
         if (object->character_model->action_animations[object->field_7aa] != NULL) {
             playing = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
@@ -459,7 +459,7 @@ void __cdecl SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (door == NULL)
             return;
         range = (f64)range * (f64)range;
-        if (!(range > distance) || (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0)
+        if (!(distance < range) || (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0)
             return;
         SecurityDoorStartPc(object, door, 1);
     }
