@@ -3121,15 +3121,16 @@ i32 __cdecl NuFParGetWordW(NUFPAR_PC *parser) {
 }
 
 i32 __cdecl NuFParGetWord(NUFPAR_PC *parser) {
-    i32 length = 0;
     i32 in_quoted_text = 0;
     i32 found_quotes = 0;
+    i32 length;
 
     if (parser->is_utf16 != 0) {
         return NuFParGetWordW(parser);
     }
 
     old_line_pos = parser->line_position;
+    length = 0;
 
     while (parser->line_buffer_ptr[parser->line_position & (parser->line_buffer_size - 1)] != '\0') {
         char character = parser->line_buffer_ptr[parser->line_position];
