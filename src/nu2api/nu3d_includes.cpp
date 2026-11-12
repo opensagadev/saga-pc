@@ -10710,10 +10710,9 @@ void NuMainFilterGen::preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE_PC *color, 
         if (passes >= 1)
             PostBlur7x7DispatchPc(downsample_texture, 0, downsample_texture, 0, passes, 1, true, 1.0f,
                                   PostBlur5x5ProgramPc);
-        f32 remainder = bloom->blur_iterations - passes;
-        if (remainder > 0.0f)
-            PostBlur7x7DispatchPc(downsample_texture, 0, downsample_texture, 0, 1, 1, true, remainder,
-                                  PostBlur5x5ProgramPc);
+        if (bloom->blur_iterations - passes > 0.0f)
+            PostBlur7x7DispatchPc(downsample_texture, 0, downsample_texture, 0, 1, 1, true,
+                                  bloom->blur_iterations - passes, PostBlur5x5ProgramPc);
     }
 }
 
