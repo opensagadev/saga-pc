@@ -25,11 +25,11 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET_PC, creature_i
 void __cdecl RegisterTakeOverObject(GAMEOBJECT *object) {
     i32 index;
     AISCRIPT_PC *script;
-    u8 level;
+    i32 level;
     if ((object->character_data->game_character->flags_090 & 0x80) != 0 || (object->flags_1f8 & 0x4000) == 0 ||
         (WORLD->current_level->flags & 0x100000) != 0)
         return;
-    level = (u8)WORLD->current_level->area_level_index;
+    level = WORLD->current_level->area_level_index;
     if (num_takeoverobjects >= 8 || (object->flags_1f8 & 0x400) == 0)
         return;
     for (index = 0; index < num_takeoverobjects; ++index) {
