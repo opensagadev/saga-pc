@@ -285,8 +285,6 @@ extern "C" {
     }
 
     void __cdecl LoadPermData(void *process) {
-        i16 default_id_a;
-        i16 default_id_b;
         PC_CONTROL_CONFIG_PC control_config;
         char blocked_keys[4];
 
@@ -322,12 +320,12 @@ extern "C" {
         LevelHackDataSize = 0;
 
         LevelProgress_ReserveBufferSpace(&permbuffer_ptr, permbuffer_end);
-        pFadeInfo = &FadeSys;
         FadeSys.Init();
         FadeSys.AddFade((FadeBase *)&fade);
         FadeSys.AddFade((FadeBase *)&fadeWipe);
         FadeSys.AddFade((FadeBase *)&fadeStillWipe);
         FadeSys.AddFade((FadeBase *)&fadeStill);
+        pFadeInfo = &FadeSys;
         LevelObjects_InitForGame(ObjTab, &permbuffer_ptr, &permbuffer_end, 0x2ee, 0x1f40);
         LevelSplines_InitForGame(LevelSplinesTable);
         LoadPermLoadSaveIconScene();
@@ -338,6 +336,9 @@ extern "C" {
 
         if (StartupGameFlag0 != 0) {
             RegisterDefaultGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
+            GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
+            Alt_registerStatusScreen();
+            Alt_registerStatusScreenExtraPc();
         } else if (StartupGameFlag1 != 0) {
             RegisterLswGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
             GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
@@ -355,9 +356,6 @@ extern "C" {
             GizObstacle_SetDefaultSFXFn = GizObstacle_SetDefaultSFXFn_LSW;
         } else {
             RegisterAlternateGizmoTypesPc(&permbuffer_ptr, &permbuffer_end);
-        }
-
-        if (!(StartupGameFlag0 == 0 && StartupGameFlag1 != 0)) {
             GameAnimSys_AllocateLevelProgressData(&permbuffer_ptr, &permbuffer_end, 0x280, 0xc);
             Alt_registerStatusScreen();
             Alt_registerStatusScreenExtraPc();
@@ -373,17 +371,16 @@ extern "C" {
         MiniKits_Init(&permbuffer_ptr, &permbuffer_end);
 
         if (StartupGameFlag1 != 0) {
-            default_id_a = ID_DEFAULTCHARACTER_LSW_A;
-            default_id_b = ID_DEFAULTCHARACTER_LSW_B;
+            id_DEFAULTCHARACTER[0] = ID_DEFAULTCHARACTER_LSW_A;
+            id_DEFAULTCHARACTER[1] = ID_DEFAULTCHARACTER_LSW_B;
+            CharCategories_Init(StartupCharCategoriesLswPc);
+            Cheats_Init(ExtrasCheatsPc);
         } else {
-            default_id_a = ID_DEFAULTCHARACTER_A;
-            default_id_b = ID_DEFAULTCHARACTER_B;
+            id_DEFAULTCHARACTER[0] = ID_DEFAULTCHARACTER_A;
+            id_DEFAULTCHARACTER[1] = ID_DEFAULTCHARACTER_B;
+            CharCategories_Init(StartupCharCategoriesDefaultPc);
+            Cheats_Init(ExtrasCheatsPc);
         }
-        id_DEFAULTCHARACTER[0] = default_id_a;
-        id_DEFAULTCHARACTER[1] = default_id_b;
-
-        CharCategories_Init(StartupGameFlag1 != 0 ? StartupCharCategoriesLswPc : StartupCharCategoriesDefaultPc);
-        Cheats_Init(ExtrasCheatsPc);
         PlayerID[0] = id_DEFAULTCHARACTER[0];
         PlayerID[1] = id_DEFAULTCHARACTER[1];
         CharVariants_Init(StartupCharVariantNamesPc, 0x17);
