@@ -1302,10 +1302,11 @@ void NetworkObjectManager::Stop() {
         NETMESSAGE_PC message(0x20);
         message.Write8(10);
         theTTNetwork.BroadcastEx(message, 3);
-        for (NetPeerPush *push = peer_push; push != peer_push + 8; push++) {
-            if (push->peer != NULL)
-                push->Stop();
-        }
+        i32 i = 0;
+        do {
+            if (peer_push[i].peer != NULL)
+                peer_push[i].Stop();
+        } while (++i < 8);
         message.Release();
     }
 }
