@@ -2173,7 +2173,7 @@ void __cdecl TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
         SocksOnPreviousStatusPc[word] = 0;
     for (index = 0; index < 64; ++index) {
         if ((system->socks[index].flags & 0x100) == 0)
-            SocksOnPreviousStatusPc[index / 32] |= 1u << (index & 31);
+            SocksOnPreviousStatusPc[index / 32] |= 1 << (index & 31);
         system->socks[index].flags |= 0x100;
     }
     system->socks[exception].flags &= ~0x100;
@@ -2182,7 +2182,7 @@ void __cdecl TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
 void __cdecl RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
     i32 index;
     for (index = 0; index < 64; ++index) {
-        if ((SocksOnPreviousStatusPc[index / 32] & (1u << (index & 31))) != 0)
+        if (SocksOnPreviousStatusPc[index / 32] & (1 << (index & 31)))
             system->socks[index].flags &= ~0x100;
     }
 }
