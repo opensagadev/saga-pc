@@ -892,14 +892,14 @@ extern "C" {
     static eduiitem_s *cp_copy = NULL;
     static eduiitem_s *cp_paste = NULL;
     i32(__cdecl *cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *) = NULL;
-    f32 *EduiColourTargetRedPc = NULL;
-    f32 *EduiColourTargetGreenPc = NULL;
-    f32 *EduiColourTargetBluePc = NULL;
-    f32 *EduiColourTargetAlphaPc = NULL;
-    u32 *EduiColourTargetPackedPc = NULL;
-    f32 EduiColourClipboardRedPc = 0.5f;
-    f32 EduiColourClipboardGreenPc = 0.5f;
-    f32 EduiColourClipboardBluePc = 0.5f;
+    static f32 *EduiColourTargetRedPc = NULL;
+    static f32 *EduiColourTargetGreenPc = NULL;
+    static f32 *EduiColourTargetBluePc = NULL;
+    static f32 *EduiColourTargetAlphaPc = NULL;
+    static u32 *EduiColourTargetPackedPc = NULL;
+    static f32 EduiColourClipboardRedPc = 0.5f;
+    static f32 EduiColourClipboardGreenPc = 0.5f;
+    static f32 EduiColourClipboardBluePc = 0.5f;
     i32 EduiColourPickerInitializedPc = 0;
 
     static void EduiColourRgbToHsvPc(f32 red, f32 green, f32 blue, f32 *hue, f32 *saturation, f32 *value) {
@@ -957,20 +957,17 @@ void __cdecl cbCopy(eduimenu_s *, eduiitem_s *, u32) {
 }
 
 void __cdecl cbPaste(eduimenu_s *, eduiitem_s *, u32) {
-    f32 red = EduiColourClipboardRedPc;
-    *EduiColourTargetRedPc = red;
-    f32 green = EduiColourClipboardGreenPc;
-    *EduiColourTargetGreenPc = green;
-    f32 blue = EduiColourClipboardBluePc;
-    *EduiColourTargetBluePc = blue;
+    *EduiColourTargetRedPc = EduiColourClipboardRedPc;
+    *EduiColourTargetGreenPc = EduiColourClipboardGreenPc;
+    *EduiColourTargetBluePc = EduiColourClipboardBluePc;
     if (EduiColourTargetPackedPc != NULL) {
         u32 packed = (u32)(*EduiColourTargetAlphaPc * 255.0);
-        packed = (packed << 8) | ((u32)(blue * 255.0) & 255);
+        packed = (packed << 8) | ((u32)(*EduiColourTargetBluePc * 255.0) & 255);
         packed = (packed << 8) | ((u32)(*EduiColourTargetGreenPc * 255.0) & 255);
         packed = (packed << 8) | ((u32)(*EduiColourTargetRedPc * 255.0) & 255);
         *EduiColourTargetPackedPc = packed;
     }
-    eduiItemColourPickSetRGB(cp_item, red, green, blue);
+    eduiItemColourPickSetRGB(cp_item, EduiColourClipboardRedPc, EduiColourClipboardGreenPc, EduiColourClipboardBluePc);
 }
 
 void __cdecl cbToggleIndicatorMode(eduimenu_s *, eduiitem_s *item, u32) {
