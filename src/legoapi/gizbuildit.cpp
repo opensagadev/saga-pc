@@ -453,50 +453,49 @@ extern "C" void __cdecl GizDrawBuildItPiece(GAMEOBJECT *object, i32 draw_reflect
 }
 extern "C" {
 
+#define PLAYER_BUILDIT(player) ((BUILDIT_MOVEMENT_PC *)(player)->grapple)
     void __cdecl GizGetBuildItPlayerPos(GAMEOBJECT *player, NUVEC *position, NUVEC *target) {
-        BUILDIT_MOVEMENT_PC *buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
         BUILDIT_MATRICES_PC *data;
-        i32 count, index, batch_size, batch_count, end;
+        i32 count, index, batch_count, end;
         NUVEC total;
+        NUVEC *end_position;
         f32 dx, dz, inverse_distance;
-        if (buildit == NULL || buildit->anim_set == NULL || buildit->anim_object_count == 0)
+        if (PLAYER_BUILDIT(player) == NULL || PLAYER_BUILDIT(player)->anim_set == NULL ||
+            PLAYER_BUILDIT(player)->anim_object_count == 0)
             return;
-        count = buildit->anim_object_count;
-        index = buildit->built_object_count;
+        count = PLAYER_BUILDIT(player)->anim_object_count;
+        index = PLAYER_BUILDIT(player)->built_object_count;
         if (index >= count)
             index = count - 1;
         if (position != NULL) {
-            batch_size = buildit->batch_size;
-            index = (index / batch_size) * batch_size;
+            index = (index / PLAYER_BUILDIT(player)->batch_size) * PLAYER_BUILDIT(player)->batch_size;
             batch_count = 0;
-            while (batch_count < batch_size && index + batch_count < count)
+            end = index;
+            while (batch_count < PLAYER_BUILDIT(player)->batch_size && end < count) {
                 ++batch_count;
+                ++end;
+            }
             total = v000;
-            end = index + batch_count;
             for (; index < end; ++index) {
-                buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
-                data = buildit->anim_objects[index]->object_data;
+                data = PLAYER_BUILDIT(player)->anim_objects[index]->object_data;
                 NuVecAdd(&total, &total, (NUVEC *)&data->start_mtx.m30);
             }
             if (batch_count > 1)
                 NuVecScale(position, &total, 1.0f / batch_count);
             else
                 *position = total;
-            buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
-            position->x = (position->x + buildit->start_position.x) * NuQFntHalfScale;
-            buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
-            position->z = (position->z + buildit->start_position.z) * NuQFntHalfScale;
-            buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
-            data = buildit->anim_objects[buildit->built_object_count]->object_data;
-            dx = position->x - data->end_mtx.m30;
-            dz = position->z - data->end_mtx.m32;
+            position->x = (PLAYER_BUILDIT(player)->start_position.x + position->x) * 0.5;
+            position->z = (PLAYER_BUILDIT(player)->start_position.z + position->z) * 0.5;
+            data = PLAYER_BUILDIT(player)->anim_objects[PLAYER_BUILDIT(player)->built_object_count]->object_data;
+            end_position = (NUVEC *)&data->end_mtx.m30;
+            dx = position->x - end_position->x;
+            dz = position->z - end_position->z;
             inverse_distance = 1.0f / NuFsqrt(dx * dx + dz * dz);
-            position->x += dx * inverse_distance * player->bounds_radius;
-            position->z += dz * inverse_distance * player->bounds_radius;
+            position->x += inverse_distance * dx * player->bounds_radius;
+            position->z += inverse_distance * dz * player->bounds_radius;
         }
         if (target != NULL) {
-            buildit = (BUILDIT_MOVEMENT_PC *)player->grapple;
-            data = buildit->anim_objects[index]->object_data;
+            data = PLAYER_BUILDIT(player)->anim_objects[index]->object_data;
             *target = *(NUVEC *)&data->end_mtx.m30;
         }
     }
