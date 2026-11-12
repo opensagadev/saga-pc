@@ -233,7 +233,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     opposite_offset.z = 0.0f;
     opposite_offset.y = 0.0f;
     opposite_offset.x = 0.0f;
-    rotation = numtx_identity;
+    rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
     opposite_offset.z = -camera->distance;
@@ -252,7 +252,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     if (camera->allow_yaw)
         camera->yaw += ((i32)(mouse_x * 16.0f));
 
-    rotation = numtx_identity;
+    rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
     opposite_offset.z = -camera->distance;
@@ -428,7 +428,7 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
     opposite_offset.z = 0.0f;
     opposite_offset.y = 0.0f;
     opposite_offset.x = 0.0f;
-    rotation = numtx_identity;
+    rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
     opposite_offset.z = -camera->distance;
@@ -449,7 +449,7 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
     if (camera->freedoms & EDCAM_FREEDOM_YAW)
         camera->yaw += yaw_delta;
 
-    rotation = numtx_identity;
+    rotation = NuMtxSetIdentityTemplate;
     NuMtxRotateX(&rotation, camera->pitch);
     NuMtxRotateY(&rotation, camera->yaw);
     opposite_offset.z = -camera->distance;
