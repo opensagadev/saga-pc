@@ -164,13 +164,14 @@ STATIC_ASSERT(offsetof(CONTROLLER_ANIMATION_VIEW_PC, animation_index) == 0x5c);
 STATIC_ASSERT(offsetof(CONTROLLER_CUT_ANIMATION_PC, end_frame) == 8);
 STATIC_ASSERT(offsetof(CONTROLLER_CUT_VIEW_PC, animation) == 0x58);
 void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32 first, i32 last) {
-    i32 end = 1;
+    i32 end;
     i32 frame;
     CONTROLLER_ANIMATION_VIEW_PC *animation;
     void *data;
     NUGSCN *scene;
     if (controller == NULL)
         return;
+    end = 1;
     switch (controller->target_type) {
         case 0:
             animation = (CONTROLLER_ANIMATION_VIEW_PC *)NuSpecialGetInstAnim(&controller->special);
@@ -207,7 +208,8 @@ void __cdecl AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *control
         first = 1;
     if (last > end)
         last = end;
-    for (frame = first - 1; frame <= last - 1; ++frame)
+    last--;
+    for (frame = first - 1; frame <= last; ++frame)
         controller->on_frames[frame / 32] |= 1u << (frame % 32);
 }
 
