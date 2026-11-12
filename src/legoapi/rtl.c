@@ -3777,7 +3777,7 @@ void __cdecl cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 #pragma section(".bss$RtlProc_menu_cancelled", read, write)
 __declspec(allocate(".bss$RtlProc_menu_cancelled")) i32 menu_cancelled = 0;
 #pragma section(".bss$RtlProc_ed_just_entered", read, write)
-__declspec(allocate(".bss$RtlProc_ed_just_entered")) i32 ed_just_entered = 0;
+__declspec(allocate(".bss$RtlProc_ed_just_entered")) static i32 ed_just_entered = 0;
 #pragma section(".bss$RtlProc_peax", read, write)
 __declspec(allocate(".bss$RtlProc_peax")) i32 peax = 0;
 #pragma section(".bss$RtlProc_peay", read, write)
