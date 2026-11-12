@@ -8430,6 +8430,7 @@ address,symbol,size,ctype
 0x639670,_cbScaleAllMultipliersUp,256,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x639770,_cbScaleAllMultipliersDown,256,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x00639900,_edrtlBurnoutSave,522,"i32 __cdecl (char *, BURN_SET_PC *)"
+0x639b10,_edrtlResetBurnset,50,void __cdecl (BURN_SET_PC *)
 0x639b50,_edrtlAddBurnout,218,i32 __cdecl (NUVEC *)
 0x639c30,_edrtlRemoveBurnout,67,void __cdecl (i32)
 0x639c80,_edrtlPlaceBurnout,61,"void __cdecl (i32, NUVEC *)"
