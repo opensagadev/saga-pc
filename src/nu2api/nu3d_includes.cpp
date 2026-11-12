@@ -9575,14 +9575,15 @@ extern "C" void __cdecl NuDisplaySceneRndr(NUDISPLAY_LIST_PC *scene) {
             reinterpret_cast<VISIBILITY_DISPLAY_SPECIAL_READER_PC *>(&scene->specials[i]);
         if ((special->common.flags & 2) == 0)
             continue;
-        if (portal_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 8) == 0 &&
-            ((visibility->portal_bits[special->common.instance_ix >> 3] >> (special->common.instance_ix & 7)) & 1) == 0)
-            continue;
         handle.display_special = reinterpret_cast<NUMTX *>(special);
-        NUMTX *matrix = special->draw_matrix_override;
-        if (matrix == NULL || matrix == reinterpret_cast<NUMTX *>(-1))
-            matrix = &special->draw_matrix;
-        NuDisplayListRndrSpecial(&handle, matrix, 0, NULL, NULL);
+        if (portal_filter != 0 && (scene->visibility_flags[special->common.instance_ix] & 8) == 0 &&
+            ((visibility->portal_bits[(i32)special->common.instance_ix >> 3] >> (special->common.instance_ix & 7)) &
+             1) == 0)
+            continue;
+        if (special->draw_matrix_override != reinterpret_cast<NUMTX *>(-1) && special->draw_matrix_override != NULL)
+            NuDisplayListRndrSpecial(&handle, special->draw_matrix_override, 0, NULL, NULL);
+        else
+            NuDisplayListRndrSpecial(&handle, &special->draw_matrix, 0, NULL, NULL);
     }
 }
 
