@@ -1040,105 +1040,94 @@ static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION_PC *position) {
 
 static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC *result, i32 sock_index,
                             i32 prior_segment) {
-    SOCK_PC *sock;
-    i32 segment_count;
-    i32 initial_segment;
-    i32 ascending_segment;
-    i32 descending_segment;
-    i32 direction;
-    i32 exhausted_directions;
-
+    NUVEC *a0 = NULL, *b0 = NULL, *c0 = NULL, *d0 = NULL, *a1 = NULL, *b1 = NULL, *c1 = NULL, *d1 = NULL;
+    i32 segment = 0, next = 0, initial_segment = 0;
+    i32 ascending_segment = 0, descending_segment = 0;
+    i32 direction = 0, exhausted_directions = 0, segment_count = 0;
+    SOCK_PC *sock = NULL;
+    f32 distance_squared = 0.0f;
+    SOCKSEGMENT_PC *segment_data = NULL;
+    i32 inside;
     sock = &sock_sys->socks[sock_index];
     result->sock_index = -1;
-    if (sock->valid == 0) {
+    if (sock->valid == 0)
         return 0.0f;
-    }
 
     if ((sock->flags & 1) == 0) {
-        if (sock->min.x > point->x || point->x > sock->max.x || sock->min.y > point->y || point->y > sock->max.y ||
-            sock->min.z > point->z || point->z > sock->max.z)
+        if (point->x < sock->min.x || point->x > sock->max.x || point->y < sock->min.y || point->y > sock->max.y ||
+            point->z < sock->min.z || point->z > sock->max.z)
             return 0.0f;
     } else {
-        if (sock->min.x > point->x || point->x > sock->max.x || sock->min.z > point->z || point->z > sock->max.z)
+        if (point->x < sock->min.x || point->x > sock->max.x || point->z < sock->min.z || point->z > sock->max.z)
             return 0.0f;
     }
 
-    segment_count = sock->length + (sock->unknown_33 != 0 ? 1 : 0);
-    initial_segment = prior_segment == -1 ? segment_count / 2 : prior_segment;
+    if (sock->looping != 0)
+        segment_count = sock->length + 1;
+    else
+        segment_count = sock->length;
+    if (prior_segment == -1)
+        initial_segment = segment_count / 2;
+    else
+        initial_segment = prior_segment;
     ascending_segment = initial_segment + 1;
     descending_segment = initial_segment - 1;
     direction = 0;
     exhausted_directions = 0;
 
     for (;;) {
-        i32 segment;
-
-        if (direction == 0) {
+        if (direction == 0)
             segment = initial_segment;
-        } else if (direction == 1) {
-            segment = ascending_segment++;
+        else if (direction == 1) {
+            segment = ascending_segment;
+            ++ascending_segment;
         } else {
-            segment = descending_segment--;
+            segment = descending_segment;
+            --descending_segment;
         }
 
-        if (segment < 0 || segment >= segment_count) {
-            exhausted_directions |= direction;
-        } else {
-            i32 next;
-            NUVEC *a0;
-            NUVEC *b0;
-            NUVEC *a1;
-            NUVEC *b1;
-            SOCKSEGMENT_PC *segment_data;
-            i32 inside;
-
+        if (segment >= 0 && segment < segment_count) {
             next = segment + 1;
-            if (next == segment_count && sock->unknown_33 != 0) {
+            if (next == segment_count && sock->looping != 0)
                 next = 0;
-            }
-
             a0 = &sock->a->pts[segment];
             b0 = &sock->b->pts[segment];
             a1 = &sock->a->pts[next];
             b1 = &sock->b->pts[next];
             segment_data = &sock->segments[segment];
             inside = 0;
-
             if ((sock->flags & 1) == 0) {
+                c0 = &sock->c->pts[segment];
+                d0 = &sock->d->pts[segment];
+                c1 = &sock->c->pts[next];
+                d1 = &sock->d->pts[next];
                 if (point->x >= segment_data->min.x && point->x <= segment_data->max.x &&
                     point->y >= segment_data->min.y && point->y <= segment_data->max.y &&
                     point->z >= segment_data->min.z && point->z <= segment_data->max.z) {
-                    NUVEC *c1;
-                    NUVEC *d1;
-
-                    c1 = &sock->c->pts[next];
-                    d1 = &sock->d->pts[next];
-                    inside = SockOnOrOutsidePlanePc(point, a0, &segment_data->planes[0]) &&
-                             SockOnOrOutsidePlanePc(point, a1, &segment_data->planes[1]) &&
-                             SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[2]) &&
-                             SockOnOrOutsidePlanePc(point, c1, &segment_data->planes[3]) &&
-                             SockOnOrOutsidePlanePc(point, d1, &segment_data->planes[4]) &&
-                             SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[5]);
+                    if (SockOnOrOutsidePlanePc(point, a0, &segment_data->planes[0]) &&
+                        SockOnOrOutsidePlanePc(point, a1, &segment_data->planes[1]) &&
+                        SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[2]) &&
+                        SockOnOrOutsidePlanePc(point, c1, &segment_data->planes[3]) &&
+                        SockOnOrOutsidePlanePc(point, d1, &segment_data->planes[4]) &&
+                        SockOnOrOutsidePlanePc(point, b1, &segment_data->planes[5]))
+                        inside = 1;
                 }
-            } else if (segment_data->min.x <= point->x && point->x <= segment_data->max.x &&
-                       segment_data->min.z <= point->z && point->z <= segment_data->max.z) {
-                inside = InsideLineXZ(point->x, point->z, b0->x, b0->z, a0->x, a0->z) &&
-                         InsideLineXZ(point->x, point->z, a0->x, a0->z, a1->x, a1->z) &&
-                         InsideLineXZ(point->x, point->z, a1->x, a1->z, b1->x, b1->z) &&
-                         InsideLineXZ(point->x, point->z, b1->x, b1->z, b0->x, b0->z);
+            } else if (point->x >= segment_data->min.x && point->x <= segment_data->max.x &&
+                       point->z >= segment_data->min.z && point->z <= segment_data->max.z) {
+                if (InsideLineXZ(point->x, point->z, b0->x, b0->z, a0->x, a0->z) &&
+                    InsideLineXZ(point->x, point->z, a0->x, a0->z, a1->x, a1->z) &&
+                    InsideLineXZ(point->x, point->z, a1->x, a1->z, b1->x, b1->z) &&
+                    InsideLineXZ(point->x, point->z, b1->x, b1->z, b0->x, b0->z))
+                    inside = 1;
             }
-
-            if (inside) {
-                f32 distance_squared;
-
+            if (inside != 0) {
                 result->sock_index = (i8)sock_index;
                 result->segment = (i16)segment;
-                if ((sock->flags & 1) == 0) {
-                    result->ratio = RatioBetweenPlanes(point, a0, &segment_data->planes[0], &sock->c->pts[next],
-                                                       &segment_data->planes[5]);
-                } else {
+                if ((sock->flags & 1) == 0)
+                    result->ratio =
+                        RatioBetweenPlanes(point, a0, &segment_data->planes[0], c1, &segment_data->planes[5]);
+                else
                     result->ratio = SockRatioBetweenEdgesXZ(point, b0, a0, b1, a1);
-                }
                 result->next_segment = (i16)next;
                 SockSysPointAlongMID(sock, result, &temp_sockmidpos);
                 distance_squared = NuVecDistSqr(point, &temp_sockmidpos, NULL);
@@ -1146,27 +1135,33 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC 
                 memcpy(TempSLoc, result, sizeof(TempSLoc));
                 return distance_squared;
             }
-        }
-
-        if (exhausted_directions == 3) {
-            return 0.0f;
-        }
-        direction = direction == 1 ? 2 : 1;
+        } else
+            exhausted_directions |= direction;
+        if (exhausted_directions == 3)
+            return 1000000.0f;
+        if (direction == 1)
+            direction = 2;
+        else
+            direction = 1;
     }
 }
 
 void ComplexSockPosition(SOCKSYS_PC *sock_sys, NUVEC *position, i32 prior_sock, i32 prior_segment,
                          SOCKPOSITION_PC *result) {
-    i32 original_prior_sock;
-    i32 forced_sock;
-    i32 sockets_to_check;
-    i32 fallback_search;
-    i32 candidate_count;
-    u32 candidate_mask;
-    i32 excluded_socket_seen;
-    SOCKPOSITION_PC *best;
     f32 best_distance;
+    SOCKPOSITION_PC *best;
+    i32 checked;
+    i32 candidate_count;
+    i32 sockets_to_check;
+    i32 forced_sock;
+    u32 candidate_mask;
+    i32 fallback_search;
+    i32 excluded_socket_seen;
+    i32 original_prior_sock;
+    SOCKPOSITION_PC *positions;
+    f32 distance;
 
+    fallback_search = 0;
     if (sock_sys == NULL) {
         result->sock_index = -1;
         result->segment = -1;
@@ -1177,7 +1172,11 @@ void ComplexSockPosition(SOCKSYS_PC *sock_sys, NUVEC *position, i32 prior_sock, 
     original_prior_sock = prior_sock;
     forced_sock = complexsockposition_forcesock;
     complexsockposition_forcesock = -1;
-    memset(TempSPosList, 0, sizeof(TempSPosList));
+    positions = TempSPosList;
+    memset(positions, 0, sizeof(TempSPosList));
+    candidate_count = 0;
+    best = NULL;
+    best_distance = 1000000.0f;
     temp_pos = *position;
 
     sockets_to_check = 0x40;
@@ -1185,76 +1184,58 @@ void ComplexSockPosition(SOCKSYS_PC *sock_sys, NUVEC *position, i32 prior_sock, 
         prior_sock = forced_sock;
         prior_segment = -1;
         sockets_to_check = 1;
-    } else if (prior_sock == -1) {
+    }
+    if (prior_sock == -1) {
         prior_sock = 0;
         prior_segment = -1;
     }
 
-    fallback_search = 0;
-    for (;;) {
-        candidate_count = 0;
-        candidate_mask = 0;
-        excluded_socket_seen = 0;
-        best = NULL;
-        best_distance = 1000000.0f;
+retry:
+    candidate_mask = 0;
+    excluded_socket_seen = 0;
 
-        {
-            i32 checked;
-
-            for (checked = 0; checked < sockets_to_check; ++checked) {
-                SOCK_PC *sock;
-
-                sock = &sock_sys->socks[prior_sock];
-                if ((sock->flags & 0x100) == 0) {
-                    i32 excluded;
-
-                    excluded = forced_sock == -1 && !fallback_search && original_prior_sock != -1 &&
-                               prior_sock != original_prior_sock &&
-                               (sock_sys->socks[original_prior_sock].overlap_exclusion_mask[prior_sock / 32] &
-                                (1u << (prior_sock & 31))) != 0;
-                    if (excluded) {
-                        excluded_socket_seen = 1;
-                    } else {
-                        f32 distance;
-                        SOCKPOSITION_PC *candidate;
-
-                        distance = BestSockPosition(sock_sys, position, &TempSPosList[candidate_count], prior_sock,
-                                                    prior_segment);
-                        candidate = &TempSPosList[candidate_count];
-                        if (candidate->sock_index != -1) {
-                            candidate->midpoint = temp_sockmidpos;
-                            candidate->camera_position = temp_sockcampos;
-                            if (best == NULL || distance < best_distance) {
-                                best = candidate;
-                                best_distance = distance;
-                            }
-                            candidate_mask |= 1U << (prior_sock & 0x1f);
-                            ++candidate_count;
-                            if (candidate_count == 4) {
-                                break;
-                            }
-                        }
+    for (checked = 0; checked < sockets_to_check; ++checked) {
+        if ((sock_sys->socks[prior_sock].flags & 0x100) == 0) {
+            if (forced_sock == -1 && !fallback_search && original_prior_sock != -1 &&
+                prior_sock != original_prior_sock &&
+                (sock_sys->socks[original_prior_sock].overlap_exclusion_mask[prior_sock / 32] &
+                 (1 << (prior_sock & 31)))) {
+                excluded_socket_seen = 1;
+            } else {
+                distance = BestSockPosition(sock_sys, position, &positions[candidate_count], prior_sock, prior_segment);
+                if (positions[candidate_count].sock_index != -1) {
+                    positions[candidate_count].midpoint = temp_sockmidpos;
+                    positions[candidate_count].camera_position = temp_sockcampos;
+                    if (best == NULL || distance < best_distance) {
+                        best = &positions[candidate_count];
+                        best_distance = distance;
+                    }
+                    candidate_mask |= 1U << prior_sock;
+                    ++candidate_count;
+                    if (candidate_count == 4) {
+                        break;
                     }
                 }
-                prior_sock = (prior_sock + 1) % 0x40;
-                prior_segment = -1;
             }
         }
-
-        if (best != NULL || !excluded_socket_seen)
-            break;
-        fallback_search = 1;
-        prior_sock = 0;
+        prior_sock = (prior_sock + 1) % 0x40;
         prior_segment = -1;
-        forced_sock = -1;
-        sockets_to_check = 0x40;
     }
+
     if (best != NULL) {
         *result = *best;
         result->candidate_mask = candidate_mask;
         result->flags = 0;
         if (fallback_search)
-            result->flags = 1;
+            result->flags |= 1;
+    } else if (excluded_socket_seen) {
+        fallback_search = 1;
+        prior_sock = 0;
+        prior_segment = -1;
+        forced_sock = -1;
+        candidate_count = 0;
+        sockets_to_check = 0x40;
+        goto retry;
     } else {
         result->sock_index = -1;
         result->segment = -1;
