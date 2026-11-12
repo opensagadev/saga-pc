@@ -570,12 +570,12 @@ extern "C" {
     }
 
     u32 __cdecl NuAnimGetAnimDataSizeANI3(ANI3_HEADER_PC *animation) {
-        ANI3_HEADER_PC *block = animation;
-        while (block->next_block != 0)
-            block = (ANI3_HEADER_PC *)((u32)block + block->next_block);
-        if (block->node_flags == NULL)
+        ANI3_HEADER_PC *start = animation;
+        while (animation->next_block != 0)
+            animation = (ANI3_HEADER_PC *)((u32)animation + animation->next_block);
+        if (animation->node_flags == NULL)
             return 0;
-        return (u32)block->node_flags + block->node_count - (u32)animation;
+        return (u32)animation->node_flags + animation->node_count - (u32)start;
     }
 
     void __cdecl NuAnimRelocatePtrsANI3(ANI3_HEADER_PC *anim, i32 delta) {
