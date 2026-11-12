@@ -1055,73 +1055,90 @@ GIZMO_PC *__cdecl GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_d
     f32 near_distance = TargetDist_Near2, mid_distance = TargetDist_Mid2;
     GIZOBSTACLE_SYSTEM_PC *system;
     NUVEC aim;
-    f32 min_x, max_x, min_z, max_z, nearest_distance;
-    GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
-    GIZMO_PC *best = NULL, *previous = NULL;
-    NUVEC *best_position = NULL, *previous_position = NULL;
+    NUVEC min, max;
+    f32 nearest_distance;
+    GAMEOBJECT *object;
+    NUVEC *best_position, *previous_position;
+    GIZMO_PC *best, *previous;
     i32 i;
-    if (!set || !set->data || !type)
-        return NULL;
-    system = (GIZOBSTACLE_SYSTEM_PC *)set->data;
-    aim = *direction;
-    min_x = position->x - radius;
-    max_x = position->x + radius;
-    min_z = position->z - radius;
-    max_z = position->z + radius;
-    nearest_distance = 1.0e9f;
-    if (directional && (type->flags_60 & 0x20000)) {
-        aim.y = 0.0f;
-        NuVecNorm(&aim, &aim);
-    }
-    for (i = 0; i < system->active_gizmo_count; ++i) {
-        GIZMO_PC *gizmo = system->active_gizmos[i];
-        GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
-        NUVEC *target = &obstacle->evaluated_position;
-        NUVEC delta;
-        f32 distance, dot;
-        u16 angle;
-        if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
-            continue;
-        if (target->x < min_x || target->x > max_x || target->z < min_z || target->z > max_z)
-            continue;
-        distance = !planar ? NuVecDistSqr(target, position, &delta) : NuVecXZDistSqr(target, position, &delta);
-        if (!(range_squared > distance))
-            continue;
-        if (!directional)
-            NuVecRotateY(&aim, &v001, NuAtan2D(target->x - position->x, target->z - position->z));
-        if (type->flags_60 & 0x20000)
-            delta.y = 0.0f;
-        NuVecNorm(&delta, &delta);
-        dot = NuVecDot(&delta, &aim);
-        if (near_distance > distance && directional)
-            angle = near_angle;
-        else if (mid_distance > distance)
-            angle = mid_angle;
-        else
-            angle = far_angle;
-        if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]) || !(nearest_distance > distance))
-            continue;
-        if (object && (void *)gizmo == object->collision_target) {
-            previous = gizmo;
-            previous_position = target;
-        } else {
-            nearest_distance = distance;
-            best = gizmo;
-            best_position = target;
+    if (set && set->data && type) {
+        nearest_distance = 1.0e9f;
+        best_position = NULL;
+        previous_position = NULL;
+        best = NULL;
+        previous = NULL;
+        aim = *direction;
+        min.x = position->x - radius;
+        min.z = position->z - radius;
+        max.x = position->x + radius;
+        max.z = position->z + radius;
+        if (directional && (type->flags_60 & 0x20000)) {
+            aim.y = 0.0f;
+            NuVecNorm(&aim, &aim);
+        }
+        system = (GIZOBSTACLE_SYSTEM_PC *)set->data;
+        object = (GAMEOBJECT *)object_ptr;
+        for (i = 0; i < system->active_gizmo_count; ++i) {
+            GIZMO_PC *gizmo = system->active_gizmos[i];
+            GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
+            NUVEC *target;
+            NUVEC delta;
+            f32 distance, dot;
+            u16 angle;
+            if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 1) || (obstacle->runtime_flags & 0x80))
+                continue;
+            target = &obstacle->evaluated_position;
+            if (obstacle->evaluated_position.x < min.x || obstacle->evaluated_position.x > max.x ||
+                obstacle->evaluated_position.z < min.z || obstacle->evaluated_position.z > max.z)
+                continue;
+            distance = !planar ? NuVecDistSqr(target, position, &delta) : NuVecXZDistSqr(target, position, &delta);
+            if (!(distance < range_squared))
+                continue;
+            if (!directional)
+                NuVecRotateY(&aim, &v001,
+                             NuAtan2D(obstacle->evaluated_position.x - position->x,
+                                      obstacle->evaluated_position.z - position->z));
+            if (type->flags_60 & 0x20000)
+                delta.y = 0.0f;
+            NuVecNorm(&delta, &delta);
+            dot = NuVecDot(&delta, &aim);
+            if (near_distance > distance && directional)
+                angle = near_angle;
+            else if (mid_distance > distance)
+                angle = mid_angle;
+            else
+                angle = far_angle;
+            if (!(dot > NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff]))
+                continue;
+            if (nearest_distance > distance) {
+                if (object && (void *)gizmo == object->collision_target) {
+                    previous = gizmo;
+                    previous_position = target;
+                } else {
+                    nearest_distance = distance;
+                    best = gizmo;
+                    best_position = target;
+                }
+            }
+        }
+        if (best) {
+            *result_position = *best_position;
+            *result_distance = nearest_distance;
+            result_velocity->x = 0.0f;
+            result_velocity->y = 0.0f;
+            result_velocity->z = 0.0f;
+            return best;
+        }
+        if (previous) {
+            *result_position = *previous_position;
+            *result_distance = 1.0e9f;
+            result_velocity->x = 0.0f;
+            result_velocity->y = 0.0f;
+            result_velocity->z = 0.0f;
+            return previous;
         }
     }
-    if (best) {
-        *result_position = *best_position;
-        *result_distance = nearest_distance;
-        result_velocity->x = result_velocity->y = result_velocity->z = 0.0f;
-        return best;
-    }
-    if (!previous)
-        return NULL;
-    *result_position = *previous_position;
-    *result_distance = 1.0e9f;
-    result_velocity->x = result_velocity->y = result_velocity->z = 0.0f;
-    return previous;
+    return NULL;
 }
 void __cdecl GameAnimSet_DrawReflection(GAMEANIMSET *, i32, f32, NUMTX *);
 void __cdecl GizObstacles_Draw(void *world_ptr, void *data, f32 time) {
