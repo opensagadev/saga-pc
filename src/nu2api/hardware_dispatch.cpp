@@ -45,14 +45,53 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
     do {
         selector = va_arg(args, i32);
         switch (selector) {
-            case 4:
-                hostfs = va_arg(args, i32);
+            case 68:
+                animation_count = va_arg(args, i32);
                 break;
             case 6:
                 file_mode = va_arg(args, i32);
                 break;
             case 7:
                 eject = va_arg(args, i32);
+                break;
+            case 4:
+                hostfs = va_arg(args, i32);
+                break;
+            case 5:
+            case 21:
+            case 27:
+            case 31:
+            case 32:
+            case 34:
+            case 38:
+            case 39:
+            case 40:
+            case 41:
+            case 42:
+            case 54:
+            case 55:
+            case 59:
+            case 69:
+            case 70:
+            case 71:
+            case 72:
+            case 73:
+            case 75:
+            case 78:
+                va_arg(args, i32);
+                break;
+            case 22:
+                NuHwDfsNamePc = va_arg(args, const char *);
+                break;
+            case 23:
+                NuHwSoundDfsNamePc = va_arg(args, const char *);
+                break;
+            case 24:
+                dat_names = va_arg(args, const char **);
+                dat_count = va_arg(args, i32);
+                break;
+            case 25:
+                NuHwParameter19Pc = va_arg(args, u32);
                 break;
             case 8:
                 stream_size = va_arg(args, i32);
@@ -70,6 +109,20 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
                 audio_names = va_arg(args, void *);
                 audio_parameter = va_arg(args, void *);
                 audio_enabled = 1;
+                break;
+            case 28:
+                audio_enabled = 0;
+                va_arg(args, i32);
+                va_arg(args, i32);
+                va_arg(args, i32);
+                va_arg(args, i32);
+                break;
+            case 35:
+                va_arg(args, i32);
+                va_arg(args, i32);
+                break;
+            case 36:
+                video_parameter = va_arg(args, i32);
                 break;
             case 11:
                 audio_channels = va_arg(args, i32);
@@ -93,56 +146,29 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
                     video_height = 256;
                 break;
             }
+            case 33:
+                va_arg(args, i32);
+                video_height = va_arg(args, i32);
+                break;
             case 19:
                 va_arg(args, i32);
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case 22:
-                NuHwDfsNamePc = va_arg(args, const char *);
-                break;
-            case 23:
-                NuHwSoundDfsNamePc = va_arg(args, const char *);
-                break;
-            case 24:
-                dat_names = va_arg(args, const char **);
-                dat_count = va_arg(args, i32);
-                break;
-            case 25:
-                NuHwParameter19Pc = va_arg(args, u32);
-                break;
             case 26:
                 texture_count = va_arg(args, i32);
                 break;
-            case 28:
-                audio_enabled = 0;
-                va_arg(args, i32);
-                va_arg(args, i32);
-                va_arg(args, i32);
-                va_arg(args, i32);
-                break;
-            case 33:
-                va_arg(args, i32);
-                video_height = va_arg(args, i32);
-                break;
-            case 35:
-                va_arg(args, i32);
-                va_arg(args, i32);
-                break;
-            case 36:
-                video_parameter = va_arg(args, i32);
-                break;
             case 37:
                 material_count = va_arg(args, i32);
-                break;
-            case 45:
-                parameter_2d = va_arg(args, void *);
                 break;
             case 46:
                 parameter_2e = va_arg(args, const char *);
                 break;
             case 47:
                 config_name = va_arg(args, const char *);
+                break;
+            case 45:
+                parameter_2d = va_arg(args, void *);
                 break;
             case 48:
                 parameter_30 = va_arg(args, void *);
@@ -162,8 +188,8 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
             case 60:
                 supplied_window = va_arg(args, HWND);
                 break;
-            case 68:
-                animation_count = va_arg(args, i32);
+            case 82:
+                NuPadSetMaxGamePads(va_arg(args, i32));
                 break;
             case 76:
                 occlusion_capacity = va_arg(args, u32);
@@ -172,37 +198,8 @@ extern "C" i32 __cdecl NuInitHardwarePc(VARIPTR *buffer, VARIPTR *end, i32 alloc
                 NuHwParameter4fPc = va_arg(args, u32);
                 icon = va_arg(args, u32);
                 break;
-            case 82:
-                NuPadSetMaxGamePads(va_arg(args, i32));
-                break;
             case 83:
                 icon = va_arg(args, u32);
-                break;
-            case 5:
-            case 21:
-            case 27:
-            case 31:
-            case 32:
-            case 34:
-            case 38:
-            case 39:
-            case 40:
-            case 41:
-            case 42:
-            case 54:
-            case 55:
-            case 56:
-            case 57:
-            case 58:
-            case 59:
-            case 69:
-            case 70:
-            case 71:
-            case 72:
-            case 73:
-            case 75:
-            case 78:
-                va_arg(args, i32);
                 break;
             default:
                 break;
