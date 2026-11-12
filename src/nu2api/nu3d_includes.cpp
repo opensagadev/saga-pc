@@ -12436,20 +12436,8 @@ extern "C" {
             NuTexAnimRemoveList(scene->texture_animations);
         NuGScnRestoreTIDs(scene);
         for (i = 0; i < scene->texture_count; ++i) {
-            i32 texture_id;
-            NUTEXDIM_PC *texture;
-            if (scene->textures[i]->ref_count < 0)
-                continue;
-            texture_id = scene->texture_ids[i];
-            if (texture_id <= 0)
-                continue;
-            texture = NuTextureDimensions[texture_id - 1];
-            if (texture != NULL && texture->ref_count > 0) {
-                NUGSCN_RELEASE_TEXTURE_REF(texture_id);
-            } else {
-                NuTexDestroyPS(texture);
-                NuTextureDimensions[texture_id - 1] = NULL;
-            }
+            if (scene->textures[i]->ref_count >= 0)
+                NuTexDestroy(scene->texture_ids[i]);
         }
         if (scene->additional_scenes != NULL) {
             for (i = 0; scene->additional_scenes[i] != NULL; ++i)
