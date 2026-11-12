@@ -295,18 +295,11 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
         }
         if (current == NULL) {
             current = node;
-        } else if (strcmp(token, "(") == 0) {
-        append_operand:
-            stack[count++] = current;
-            if (current->left == NULL) {
-                current->left = node;
-                current = node;
-            } else if (current->right == NULL) {
-                current->right = node;
-                current = node;
-            } else {
-                current = NULL;
-            }
+            continue;
+        }
+        bool append = false;
+        if (strcmp(token, "(") == 0) {
+            append = true;
         } else if (strcmp(token, ")") == 0) {
             do {
                 if (strcmp(current->token, "(") == 0)
@@ -348,7 +341,19 @@ ShaderConditionNodePc *ShaderCompilerParserPc::ParseExpression(ShaderCompilerBuf
             }
         } else if (strcmp(current->token, "(") == 0 || (ShaderLexicalClassesPc[(u8)current->token[0]] & 4) != 0 ||
                    strcmp(current->token, "defined") == 0) {
-            goto append_operand;
+            append = true;
+        }
+        if (append) {
+            stack[count++] = current;
+            if (current->left == NULL) {
+                current->left = node;
+                current = node;
+            } else if (current->right == NULL) {
+                current->right = node;
+                current = node;
+            } else {
+                current = NULL;
+            }
         }
     next:;
     }
