@@ -1103,7 +1103,7 @@ i32 edrtlBurnoutLoadSet(char *filename, BURN_SET_PC *set) {
         set->parameters.field_24 = EdFileReadFloat();
         set->parameters.field_14 = EdFileReadFloat();
         set->parameters.field_1c = EdFileReadFloat();
-        if (version > 1) {
+        if (version >= 2) {
             set->field_b8 = EdFileReadFloat();
             set->field_bc = EdFileReadFloat();
             set->field_c0 = EdFileReadFloat();
