@@ -274,8 +274,7 @@ i32 __thiscall SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
 }
 
 void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 volume, i32 parameter) {
-    SoundVoiceSlotPC *slot = &voices[voice_id];
-    IDirectSoundBuffer *voice = slot->voice;
+    IDirectSoundBuffer *voice = voices[voice_id].voice;
     i32 volume_level;
     i32 status;
     i32 sample_frequency;
@@ -286,9 +285,9 @@ void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 vol
         return;
     }
 
-    slot->is_spatial = 0;
+    voices[voice_id].is_spatial = 0;
     if ((u8)spatial != 0) {
-        slot->is_spatial = 1;
+        voices[voice_id].is_spatial = 1;
     }
 
     volume_level = (i32)volume + SoundVoiceVolumeOffset;
@@ -301,14 +300,14 @@ void __thiscall SoundVoiceManagerPC::SetVoice(i32 voice_id, i32 spatial, f32 vol
         PCSoundFailure(result);
     }
 
-    slot->parameter = parameter;
-    sample_frequency = samples[slot->sample_id].frequency;
+    voices[voice_id].parameter = parameter;
+    sample_frequency = samples[voices[voice_id].sample_id].frequency;
     frequency = abs(parameter) * sample_frequency / 4096 * 48 / (sample_frequency / 1000);
-    slot->voice->vtable->set_frequency(slot->voice, (DWORD)frequency);
+    voices[voice_id].voice->vtable->set_frequency(voices[voice_id].voice, (DWORD)frequency);
 
-    slot->voice->vtable->get_status(slot->voice, (DWORD *)&status);
+    voices[voice_id].voice->vtable->get_status(voices[voice_id].voice, (DWORD *)&status);
     if ((status & 1) == 0) {
-        slot->voice->vtable->play(slot->voice, 0, 0, slot->is_spatial);
+        voices[voice_id].voice->vtable->play(voices[voice_id].voice, 0, 0, voices[voice_id].is_spatial);
     } else {
         PCSoundAlreadyPlayingHook();
     }
@@ -361,18 +360,17 @@ void __thiscall SoundVoiceManagerPC::SetFrequencyParameter(i32 voice_id, i32 par
 }
 
 void __thiscall SoundVoiceManagerPC::StopVoice(i32 voice_id) {
-    SoundVoiceSlotPC *slot = &voices[voice_id];
-    if (slot->voice != NULL) {
-        if (slot->aux != NULL) {
-            slot->aux->vtable->release(slot->aux);
+    if (voices[voice_id].voice != NULL) {
+        if (voices[voice_id].aux != NULL) {
+            voices[voice_id].aux->vtable->release(voices[voice_id].aux);
         }
-        slot->voice->vtable->stop(slot->voice);
-        slot->voice->vtable->release(slot->voice);
-        slot->voice = NULL;
-        slot->aux = NULL;
+        voices[voice_id].voice->vtable->stop(voices[voice_id].voice);
+        voices[voice_id].voice->vtable->release(voices[voice_id].voice);
+        voices[voice_id].voice = NULL;
+        voices[voice_id].aux = NULL;
         --active_count;
     }
-    memset(slot, 0, sizeof(*slot));
+    memset(&voices[voice_id], 0, sizeof(voices[voice_id]));
 }
 
 void __thiscall SoundVoiceManagerPC::StopAllVoices(void) {
