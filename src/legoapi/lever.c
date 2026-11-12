@@ -464,11 +464,12 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
     if (lever == NULL)
         return;
     for (index = 0; index < ((LEVER_WORLD_PC *)world)->lever_count; ++index, ++lever) {
-        if ((lever->flags & 2) == 0 && (lever->flags & 0x1800) == 0) {
+        if (!LEVER_BITS(lever)->being_pulled && (lever->flags & 0x1800) == 0) {
             lever->animation_frame = 0;
             continue;
         }
-        lever->flags |= 2;
+        if (!LEVER_BITS(lever)->being_pulled)
+            LEVER_BITS(lever)->being_pulled = 1;
         if (lever->auto_reset_timer > 0.0f) {
             lever->auto_reset_timer -= FRAMETIME;
             if (lever->auto_reset_timer <= 0.0f) {
@@ -476,7 +477,7 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
                 lever->flags = (lever->flags & ~0x800) | 0x1040;
                 lever->pull_progress = 0.6f;
             }
-        } else if ((lever->flags & 0x1040) == 0) {
+        } else if (!LEVER_BITS(lever)->returning && (lever->flags & 0x1000) == 0) {
             if (lever->pull_progress < 1.0f) {
                 lever->pull_progress += FRAMETIME;
                 if (lever->pull_progress > 1.0f) {
@@ -487,7 +488,8 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
                 }
             }
         } else {
-            lever->flags |= 0x40;
+            if (!LEVER_BITS(lever)->returning)
+                LEVER_BITS(lever)->returning = 1;
             lever->pull_progress -= FRAMETIME;
             if (lever->pull_progress <= 0.0f) {
                 lever->flags &= 0xefb0;
