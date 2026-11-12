@@ -10597,12 +10597,14 @@ i32 __cdecl Action_SetLastAttacker(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
 
     (void)processor;
     (void)param_6;
+    victim = NULL;
+    attacker = NULL;
     if (param_5 == 0) {
         return 1;
     }
 
-    victim = packet != NULL && packet->owner != NULL ? packet->owner->objptr : NULL;
-    attacker = NULL;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        victim = packet->owner->objptr;
     for (index = 0; index < param_4; ++index) {
         value = NuStrIStr(params[index], (char *)AITransferLiteral757a20);
         if (value != NULL) {
