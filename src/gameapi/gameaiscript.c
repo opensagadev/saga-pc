@@ -1943,16 +1943,11 @@ f32 __cdecl Condition_HoverPhasePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
 }
 
 void *__cdecl Condition_HitPointsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    APIOBJECT_PC *object;
+    GAMEOBJECT *object = NULL;
     (void)script;
-    if (name != NULL && system != NULL) {
-        if (GetNamedGameObjectCallback != NULL) {
-            object = GetNamedGameObjectCallback(system, name);
-            if (object != NULL)
-                return object->owner;
-        }
-    }
-    return NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_HitPointsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -1988,12 +1983,10 @@ f32 __cdecl Condition_CollidingPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
 }
 
 void *__cdecl Condition_XPosInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_XPosPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -2105,12 +2098,10 @@ f32 __cdecl Condition_OpponentContextPc(AISYS_PC *system, AISCRIPTPROCESS_PC *pr
 }
 
 void *__cdecl Condition_OnDynamicGrappleInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_OnDynamicGrapplePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -2614,12 +2605,10 @@ f32 __cdecl Condition_EitherPlayerPushingSpinnerPc(AISYS_PC *system, AISCRIPTPRO
 }
 
 void *__cdecl Condition_CharacterRangeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_CharacterRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -2695,13 +2684,10 @@ f32 __cdecl Condition_EitherPlayerInMyTriggerAreaPc(AISYS_PC *system, AISCRIPTPR
 }
 
 void *__cdecl Condition_TakenOverInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    APIOBJECT_PC *object;
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_TakenOver(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1, AIPACKET_PC *packet, char *name,
@@ -2745,12 +2731,10 @@ f32 __cdecl Condition_EitherPlayerTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_
 }
 
 void *__cdecl Condition_BeenTakenOverInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_BeenTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -2770,13 +2754,10 @@ f32 __cdecl Condition_BeenTakenOverPc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
 }
 
 void *__cdecl Condition_OnSpeederBikeInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    APIOBJECT_PC *object;
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_OnSpeederBikePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -2791,13 +2772,10 @@ f32 __cdecl Condition_OnSpeederBikePc(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
 }
 
 void *__cdecl Condition_UnderPlayerControlInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    APIOBJECT_PC *object;
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_UnderPlayerControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet,
@@ -2809,12 +2787,10 @@ f32 __cdecl Condition_UnderPlayerControlPc(AISYS_PC *system, AISCRIPTPROCESS_PC 
 }
 
 void *__cdecl Condition_CharacterExistsInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
-    if (name != NULL && system != NULL && GetNamedGameObjectCallback != NULL) {
-        APIOBJECT_PC *object = GetNamedGameObjectCallback(system, name);
-        if (object != NULL)
-            return object->owner;
-    }
-    return NULL;
+    GAMEOBJECT *object = NULL;
+    if (name != NULL && system != NULL)
+        object = GetNamedGameObject(system, name);
+    return object;
 }
 
 f32 __cdecl Condition_CharacterExistsPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
