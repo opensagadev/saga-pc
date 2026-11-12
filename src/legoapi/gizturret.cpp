@@ -801,8 +801,8 @@ extern "C" {
         APIOBJECT_PC **candidates;
         GAMEOBJECT *candidate, *selected;
         i32 count, index;
-        f32 distance, selected_distance;
-        u32 flags, candidate_flag, selected_flag;
+        f32 distance, selected_distance = 1000000000.0f;
+        u32 flags, candidate_flag;
         if (system == NULL || system->count == 0)
             return;
         system->opponent_cursor = (i8)(system->opponent_cursor + 1);
@@ -821,10 +821,9 @@ extern "C" {
             candidates = goodies;
             count = goody_count;
         }
-        if (candidates == NULL || count == 0 || count <= 0)
+        if (count == 0 || candidates == NULL)
             return;
         selected = NULL;
-        selected_distance = 1000000000.0f;
         for (index = 0; index < count; ++index) {
             candidate = (GAMEOBJECT *)candidates[index]->owner;
             flags = turret->behavior_flags;
@@ -838,21 +837,21 @@ extern "C" {
             if (!GizTurretPointWithinBoundsPc(turret, &candidate->collision_position))
                 continue;
             flags = turret->behavior_flags;
-            if ((flags & 0x18) && selected == NULL)
-                goto select;
-            if ((flags & 0x10) && selected != NULL) {
+            if (flags & 0x10) {
+                if (selected == NULL)
+                    goto select;
                 candidate_flag = candidate->character_data->model_flags & 0x10;
-                selected_flag = selected->character_data->model_flags & 0x10;
-                if (candidate_flag && !selected_flag)
+                if (candidate_flag && !(selected->character_data->model_flags & 0x10))
                     goto select;
-                if (candidate_flag != selected_flag)
+                if (candidate_flag != (selected->character_data->model_flags & 0x10))
                     continue;
-            } else if ((flags & 8) && selected != NULL) {
-                candidate_flag = (candidate->flags_1fc_word >> 7) & 1;
-                selected_flag = (selected->flags_1fc_word >> 7) & 1;
-                if (candidate_flag && !selected_flag)
+            } else if (flags & 8) {
+                if (selected == NULL)
                     goto select;
-                if (candidate_flag != selected_flag)
+                candidate_flag = (candidate->flags_1fc_word >> 7) & 1;
+                if (candidate_flag && !(selected->flags_1fc_word & 0x80))
+                    goto select;
+                if (candidate_flag != ((selected->flags_1fc_word >> 7) & 1))
                     continue;
             }
             if (!(distance < selected_distance))
@@ -1011,52 +1010,53 @@ extern "C" {
         TURRET_ANIM_DATA_PC *data;
         NUVEC centre, position, direction;
         (void)hit_position;
-        if ((i8)turret->state <= 0)
-            return 0;
-        if (damage == -1)
-            turret->state = 0;
-        else
-            turret->state = (u8)(turret->state - (u8)damage);
-        if ((i8)turret->state <= 0) {
-            turret->state = 0;
-            judder = qrand() < 0x8000 ? 0.4f : -0.4f;
-            GameCam_Judder(GameCam, judder, 2, NULL);
-            NewRumbleAllPlayers(1.0f, 0.0f, 0, 0);
-            if (turret->behavior_flags & 0x2000) {
-                turret->flags |= 0x10;
-            } else {
-                turret->flags |= 0x20;
-                GameAnimSet_SetVisibility(turret->anim_set, 0);
-                if (turret->anim_set != NULL) {
-                    for (object = turret->anim_set->objects; object != NULL; object = object->next) {
-                        data = (TURRET_ANIM_DATA_PC *)object->object_data;
-                        if (data->role == 3)
-                            NuSpecialSetVisibility(&object->special, 1);
+        if ((i8)turret->state > 0) {
+            if (damage == -1)
+                turret->state = 0;
+            else
+                turret->state = (u8)(turret->state - (u8)damage);
+            if ((i8)turret->state <= 0) {
+                turret->state = 0;
+                judder = qrand() < 0x8000 ? 0.4f : -0.4f;
+                GameCam_Judder(GameCam, judder, 2, NULL);
+                NewRumbleAllPlayers(1.0f, 0.0f, 0, 0);
+                if (turret->behavior_flags & 0x2000) {
+                    turret->flags |= 0x10;
+                } else {
+                    turret->flags |= 0x20;
+                    GameAnimSet_SetVisibility(turret->anim_set, 0);
+                    if (turret->anim_set != NULL) {
+                        for (object = turret->anim_set->objects; object != NULL; object = object->next) {
+                            data = (TURRET_ANIM_DATA_PC *)object->object_data;
+                            if (data->role == 3)
+                                NuSpecialSetVisibility(&object->special, 1);
+                        }
                     }
                 }
+                if (turret->blowup_type != -1)
+                    GizmoBlowUpTypeBlowUp(world, turret->blowup_type,
+                                          NuSpecialGetDrawPos(&turret->primary_anim_obj->special));
+                centre = turret->position;
+                GameAnimSet_GetCentreAndRadius(turret->anim_set, &centre, NULL, 2, 1, 1);
+                if (turret->destroy_sfx != -1)
+                    GameAudio_PlaySfxById(turret->destroy_sfx, &centre, 0, 0);
+                if (turret->completion_score != 0 &&
+                    ((turret->flags & 0x400) == 0 || (turret->behavior_flags & 0x40000) != 0)) {
+                    NuVecAdd(&position, &centre, &turret->pickup_offset);
+                    NuVecRotateX(&direction, &v010, (u16)turret->pickup_pitch);
+                    NuVecRotateY(&direction, &direction, (u16)turret->pickup_yaw);
+                    AddPickups((u16)turret->completion_score, 0, 0, 0, &position, &direction, 2.0f, -1,
+                               turret->pickup_radius, 2000000.0f, NULL, 1, 0);
+                    turret->flags |= 0x400;
+                }
+                if ((turret->behavior_flags & 0x4010) == 0x4000 && LEGOHINT_SHOOTCAMERAS != -1)
+                    Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
+            } else if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc_word & 0x80) != 0) {
+                NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
             }
-            if (turret->blowup_type != -1)
-                GizmoBlowUpTypeBlowUp(world, turret->blowup_type,
-                                      NuSpecialGetDrawPos(&turret->primary_anim_obj->special));
-            centre = turret->position;
-            GameAnimSet_GetCentreAndRadius(turret->anim_set, &centre, NULL, 2, 1, 1);
-            if (turret->destroy_sfx != -1)
-                GameAudio_PlaySfxById(turret->destroy_sfx, &centre, 0, 0);
-            if (turret->completion_score != 0 &&
-                ((turret->flags & 0x400) == 0 || (turret->behavior_flags & 0x40000) != 0)) {
-                NuVecAdd(&position, &centre, &turret->pickup_offset);
-                NuVecRotateX(&direction, &v010, (u16)turret->pickup_pitch);
-                NuVecRotateY(&direction, &direction, (u16)turret->pickup_yaw);
-                AddPickups((u16)turret->completion_score, 0, 0, 0, &position, &direction, 2.0f, -1,
-                           turret->pickup_radius, 2000000.0f, NULL, 1, 0);
-                turret->flags |= 0x400;
-            }
-            if ((turret->behavior_flags & 0x4010) == 0x4000 && LEGOHINT_SHOOTCAMERAS != -1)
-                Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
-        } else if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc_word & 0x80) != 0) {
-            NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
+            return 1;
         }
-        return 1;
+        return 0;
     }
 
     i32 __cdecl GizTurrets_BoltHitPlat(WORLDINFO *world, void *system_pointer, BOLT_PC *bolt, u8 *hit_flags) {
@@ -1214,70 +1214,65 @@ extern "C" {
         f32 turret_radius_spill, distance_spill;
         f32 turret_radius, distance;
         f32 best_distance = 1000000000.0f;
-        i32 index, point, player, damage;
-        if (system == NULL)
-            return 0;
-        turret = system->turrets;
-        if (system->count == 0)
-            return 0;
-        for (index = 0; index < system->count; ++index, ++turret) {
-            if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
-                turret->primary_anim_obj == NULL || (turret->flags & 0x200) != 0)
-                continue;
-            turret_radius_spill = NuSpecialGetOriginRadius(&turret->primary_anim_obj->special);
-            turret_radius = turret_radius_spill;
-            centre = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
-            if ((f64)maximum->x < (f64)centre->x - (f64)turret_radius)
-                continue;
-            if ((f64)centre->x + (f64)turret_radius < (f64)minimum->x)
-                continue;
-            if ((f64)centre->z - (f64)turret_radius > (f64)maximum->z)
-                continue;
-            if ((f64)centre->z + (f64)turret_radius < (f64)minimum->z)
-                continue;
-            if ((f64)centre->y - (f64)turret_radius > (f64)maximum->y)
-                continue;
-            if ((f64)centre->y + (f64)turret_radius < (f64)minimum->y)
-                continue;
-            point = (i32)((u32)point_count - 1u);
-            while (point >= 0) {
-                if (SphereSphereOverlap(centre, turret_radius, &points[point], radius) != 0)
-                    break;
-                --point;
-            }
-            if (point < 0)
-                continue;
-            origin = object != NULL ? &object->collision_position : &points[point];
-            distance_spill = NuVecDistSqr(origin, centre, NULL);
-            distance = distance_spill;
-            if (best_distance > distance) {
-                best_distance = distance;
-                best = turret;
+        i32 index, point, player;
+        if (system != NULL) {
+            turret = system->turrets;
+            for (index = 0; index < system->count; ++index, ++turret) {
+                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
+                    turret->primary_anim_obj == NULL || (turret->flags & 0x200) != 0)
+                    continue;
+                turret_radius_spill = NuSpecialGetOriginRadius(&turret->primary_anim_obj->special);
+                turret_radius = turret_radius_spill;
+                centre = NuSpecialGetDrawPos(&turret->primary_anim_obj->special);
+                if ((f64)maximum->x < (f64)centre->x - (f64)turret_radius)
+                    continue;
+                if ((f64)minimum->x > (f64)centre->x + (f64)turret_radius)
+                    continue;
+                if ((f64)maximum->z < (f64)centre->z - (f64)turret_radius)
+                    continue;
+                if ((f64)minimum->z > (f64)centre->z + (f64)turret_radius)
+                    continue;
+                if ((f64)maximum->y < (f64)centre->y - (f64)turret_radius)
+                    continue;
+                if ((f64)minimum->y > (f64)centre->y + (f64)turret_radius)
+                    continue;
+                for (point = (i32)((u32)point_count - 1u); point >= 0; --point) {
+                    if (SphereSphereOverlap(centre, turret_radius, &points[point], radius) != 0) {
+                        origin = object != NULL ? &object->collision_position : &points[point];
+                        distance_spill = NuVecDistSqr(origin, centre, NULL);
+                        distance = distance_spill;
+                        if (distance < best_distance) {
+                            best_distance = distance;
+                            best = turret;
+                        }
+                        break;
+                    }
+                }
             }
         }
-        if (best == NULL)
-            return 0;
-        if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
-            (void)BoltType_FindByID((u8)bolt->type_id, WORLD);
-            (void)Cheats_CheckFlags(2);
-        }
-        type = BoltType_FindByID((u8)bolt->type_id, world);
-        owner = (GAMEOBJECT *)bolt->owner;
-        player = owner != NULL ? (i8)owner->field_280 : -1;
-        damage = (u8)type->field_3c;
-        if (GizTurrets_Hit(world, best, &bolt->position, player, damage) != 0) {
-            if (object != NULL) {
-                NewRumble(object->pad->bound_pad, 0.4f, 0);
-                GameCam_HitJudder();
+        if (best != NULL) {
+            if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
+                (void)BoltType_FindByID((u8)bolt->type_id, WORLD);
+                (void)Cheats_CheckFlags(2);
             }
-        } else {
-            NuVecSub(&normal, &best->position, &bolt->position);
-            NuVecNorm(&normal, &normal);
-            Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+            type = BoltType_FindByID((u8)bolt->type_id, world);
+            owner = (GAMEOBJECT *)bolt->owner;
+            player = owner != NULL ? (i8)owner->field_280 : -1;
+            if (GizTurrets_Hit(world, best, &bolt->position, player, (u8)type->field_3c) != 0) {
+                if (object != NULL) {
+                    NewRumble(object->pad->bound_pad, 0.4f, 0);
+                    GameCam_HitJudder();
+                }
+            } else {
+                NuVecSub(&normal, &best->position, &bolt->position);
+                NuVecNorm(&normal, &normal);
+                Bolt_AddDeflectedBolt(bolt, &bolt->direction, &normal, hit_flags);
+            }
+            if (BoltSys->stop_targeting != NULL)
+                BoltSys->stop_targeting(object, points);
+            return 1;
         }
-        if (BoltSys->stop_targeting != NULL)
-            BoltSys->stop_targeting(object, points);
-        return 1;
+        return 0;
     }
 
     u32 __cdecl GizTurrets_TotalScore(WORLDINFO *world) {
