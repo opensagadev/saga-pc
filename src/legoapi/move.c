@@ -4695,26 +4695,26 @@ i32 __cdecl StartSlide(GAMEOBJECT *object, i32 check_contact) {
     i32 can_slide;
     i32 result = 0;
     u16 id;
-    if (!VehicleArea && (object->flags_ef4 & 0x400) == 0 && object->character_context != 0x2b &&
-        object->character_context != 0x1f) {
-        id = object->id;
-        if (id != (u16)GameObjectRotationAtstId && id != (u16)id_MINIATST && id != (u16)id_ATST_LOWRES &&
-            id != (u16)id_ATAT && id != (u16)id_MINIATAT && id != (u16)id_MINIATTE) {
-            can_slide = CanObjSlide(object, (i8)object->jump_animation_state);
-            if (check_contact && object->field_281 == 0) {
-                if (object->contact_count == 0 || can_slide == 0 ||
-                    !(object->collision_position.y > object->contact_position.y))
-                    return 0;
-                can_slide = CanObjSlide(object, (i8)object->contact_material[0]);
-            }
-            if (can_slide != 0) {
-                object->character_context = 0x33;
-                object->context_duration = 0.25f;
-                object->field_7aa = object->character_model->model_data_b[106] != NULL ? 106 : 5;
-                result = 1;
-                object->jump_variant_state = 0;
-            }
-        }
+    if (VehicleArea || (object->flags_ef4 & 0x400) != 0 || object->character_context == 0x2b ||
+        object->character_context == 0x1f)
+        return 0;
+    id = object->id;
+    if (id == (u16)GameObjectRotationAtstId || id == (u16)id_MINIATST || id == (u16)id_ATST_LOWRES ||
+        id == (u16)id_ATAT || id == (u16)id_MINIATAT || id == (u16)id_MINIATTE)
+        return 0;
+    can_slide = CanObjSlide(object, (i8)object->jump_animation_state);
+    if (check_contact && object->field_281 == 0) {
+        if (object->contact_count == 0 || can_slide == 0 ||
+            !(object->collision_position.y > object->contact_position.y))
+            return result;
+        can_slide = CanObjSlide(object, (i8)object->contact_material[0]);
+    }
+    if (can_slide != 0) {
+        object->character_context = 0x33;
+        object->context_duration = 0.25f;
+        object->field_7aa = object->character_model->model_data_b[106] != NULL ? 106 : 5;
+        result = 1;
+        object->jump_variant_state = 0;
     }
     return result;
 }
