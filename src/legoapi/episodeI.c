@@ -266,13 +266,13 @@ void __cdecl PodRaceSnipersReset(void) {
         i32 point;
         sprintf(name, "Sniper%d", Lap);
         spline = NuSplineFind(WORLD->current_gscn, name);
-        if (spline != NULL && spline->length > 0) {
+        if (spline != NULL) {
             for (point = 0; point < spline->length && PodRace_nsnipers < 10; point += 2) {
-                SNIPER_s *sniper = &PodRace_snipers[PodRace_nsnipers];
-                sniper->prev = spline->pts[point];
-                sniper->pos = spline->pts[point + 1];
-                sniper->fire_timer = NuRandFloat() * PodRace_sniper_fire_time + (f64)PodRace_sniper_fire_time * 0.5;
-                sniper->state = 0.0f;
+                PodRace_snipers[PodRace_nsnipers].prev = spline->pts[point];
+                PodRace_snipers[PodRace_nsnipers].pos = spline->pts[point + 1];
+                PodRace_snipers[PodRace_nsnipers].fire_timer =
+                    NuRandFloat() * PodRace_sniper_fire_time + (f64)PodRace_sniper_fire_time * 0.5;
+                PodRace_snipers[PodRace_nsnipers].state = 0.0f;
                 ++PodRace_nsnipers;
             }
         }
