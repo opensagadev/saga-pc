@@ -13,7 +13,7 @@ extern "C" {
     extern const char GrappleOccupiedByTwoOutputTextPc[14];
 }
 typedef struct {
-    u32 enabled, visible;
+    u32 enabled[1], visible[1];
 } GRAPPLE_PROGRESS_PC;
 extern "C" {
     extern const char PCContextName_Grapple[8];
@@ -678,30 +678,33 @@ extern "C" {
         GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
         if (progress == NULL)
             return;
-        progress->enabled = 0xffffffffu;
-        progress->visible = 0xffffffffu;
+        progress->enabled[0] = 0xffffffffu;
+        progress->visible[0] = 0xffffffffu;
     }
 
     void __cdecl Grapples_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
         GRAPPLE_PROGRESS_PC *progress = (GRAPPLE_PROGRESS_PC *)progress_ptr;
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         GRAPPLE_DYNAMIC_PC *record;
-        i32 index;
+        i32 index, word;
         u32 bit;
         if (progress == NULL)
             return;
-        progress->enabled = 0xffffffffu;
-        progress->visible = 0xffffffffu;
+        progress->enabled[0] = 0xffffffffu;
+        progress->visible[0] = 0xffffffffu;
 
         if (world == NULL || world->grapples == NULL)
             return;
         record = world->grapples;
-        for (index = 0; index < world->grapple_count && index < 32; ++index, ++record) {
+        for (index = 0; index < world->grapple_count; ++index, ++record) {
+            if (index >= 32)
+                break;
+            word = index / 32;
             bit = 1u << (index & 31);
             if (!(record->flags & 2))
-                progress->visible &= ~bit;
+                progress->visible[word] &= ~bit;
             if (!(record->flags & 1))
-                progress->enabled &= ~bit;
+                progress->enabled[word] &= ~bit;
         }
     }
     f32 GrappleRopeSeekRatesPc[6] = {24.0f, 12.0f, 8.0f, 6.0f, 4.5f, 3.0f};
