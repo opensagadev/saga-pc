@@ -1284,8 +1284,9 @@ i32 PC_INPUT_RUNTIME_PC::HashAuxiliaryBindingsPc() {
     i32 hash = 0;
     for (i32 bank = 0; bank < 4; ++bank)
         for (i32 action = 0; action < 32; ++action) {
-            hash = (i32)(((u32)hash * 2 + (hash < 0)) ^ (i32)(i16)auxiliary_bindings[bank][action].value ^ 0x12345678);
-            hash = (i32)(((u32)hash * 2 + (hash < 0)) ^ auxiliary_bindings[bank][action].kind ^ 0x12345678);
+            hash = ((hash & 0x80000000) ? hash * 2 + 1 : hash * 2) ^ (i16)auxiliary_bindings[bank][action].value ^
+                   0x12345678;
+            hash = ((hash & 0x80000000) ? hash * 2 + 1 : hash * 2) ^ auxiliary_bindings[bank][action].kind ^ 0x12345678;
         }
     return hash;
 }
