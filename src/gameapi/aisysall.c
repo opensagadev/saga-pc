@@ -15461,9 +15461,7 @@ static __declspec(noinline) void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) 
         NuVecInvMtxTransform(&node->platform_position, &node->position,
                              NuSpecialGetDrawMtx(&aieditor->cursor_platform));
     } else {
-        node->special.scene = NULL;
-        node->special.special = NULL;
-        node->special.display_special = NULL;
+        memset(&node->special, 0, sizeof(node->special));
     }
     creatureEditor_PathNodeMoved(node);
     locatorEditor_PathNodeMoved(node);
@@ -15477,10 +15475,10 @@ static __declspec(noinline) void pathEditor_PathNodeMoved(EDAIPATHNODE_s *node) 
             for (other = ((EDAIPATHNODE_s *)(NuLinkedListGetHead(&path->nodes))); other != NULL;
                  other = ((EDAIPATHNODE_s *)(NuLinkedListGetNext(&path->nodes, &other->link)))) {
                 if (other != node && other->shared_node == node->shared_node) {
+                    other->position = node->position;
                     other->radius = node->radius;
                     other->lower_height = node->lower_height;
                     other->upper_height = node->upper_height;
-                    other->position = node->position;
                     other->special = node->special;
                     other->platform_position = node->platform_position;
                     creatureEditor_PathNodeMoved(other);
