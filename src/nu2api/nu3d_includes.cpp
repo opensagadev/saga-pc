@@ -5700,34 +5700,39 @@ extern "C" {
     STATIC_ASSERT(offsetof(SCENE_SPECIAL_TRANSFORM_PC, flags) == 0xb8);
 
     void __cdecl NuGScnUpdate(NUGSCN *gscn, f32 delta) {
-        NUGSCN *scene = gscn;
-        NUINSTANIM *instance = scene->instance_animations;
-        NUMTX *matrix = scene->instance_animation_matrices;
-        NUDISPLAY_LIST_PC *display = scene->display_list;
+        NUMTX *matrix = gscn->instance_animation_matrices;
+        NUDISPLAY_LIST_PC *display = gscn->display_list;
+        f32 frame = 0.0f;
+        NUINSTANIM *instance;
         i32 i;
-        if (scene->instance_animation_data == NULL)
+        if (gscn->instance_animation_data == NULL)
             return;
-        if (scene->end_frame_lookup != NULL) {
+        instance = gscn->instance_animations;
+        if (gscn->end_frame_lookup != NULL) {
             SCENE_ANIMATION_LOOKUP_ALLOCATION_PC *allocation =
-                (SCENE_ANIMATION_LOOKUP_ALLOCATION_PC *)((u32)scene->end_frame_lookup -
+                (SCENE_ANIMATION_LOOKUP_ALLOCATION_PC *)((u32)gscn->end_frame_lookup -
                                                          offsetof(SCENE_ANIMATION_LOOKUP_ALLOCATION_PC, first));
             if (allocation->references < 2)
-                scene->end_frame_lookup = NULL;
+                gscn->end_frame_lookup = NULL;
         }
-        for (i = 0; i < scene->num_instance_animations; ++i, ++instance, ++matrix) {
+        for (i = 0; i < gscn->num_instance_animations; ++i, ++instance, ++matrix) {
             SCENE_SPECIAL_TRANSFORM_PC *special;
-            NUGSCN_ANIM_LOOKUP_PC *lookup = NULL;
+            NUGSCN_ANIM_LOOKUP_PC *lookup;
             ANI3_HEADER_PC *animation;
-            f32 end_frame, frame;
-            u32 flags;
-            if (instance->animation_index >= scene->num_instance_animation_data)
+            i32 visible;
+            f32 end_frame;
+            if (instance->animation_index >= gscn->num_instance_animation_data)
                 continue;
             special = &((SCENE_SPECIAL_TRANSFORM_PC *)display->specials)[instance->instance_index];
-            if ((instance->flags >> 22) != 0 && scene->end_frame_lookup != NULL)
-                lookup = &scene->end_frame_lookup[(instance->flags >> 22) - 1];
-            else if ((special->flags & 2) == 0)
+            visible = 1;
+            if ((special->flags & 2) == 0)
+                visible = 0;
+            lookup = NULL;
+            if ((instance->flags >> 22) != 0 && gscn->end_frame_lookup != NULL)
+                lookup = &gscn->end_frame_lookup[(instance->flags >> 22) - 1];
+            else if (!visible)
                 continue;
-            animation = (ANI3_HEADER_PC *)scene->instance_animation_data[instance->animation_index];
+            animation = (ANI3_HEADER_PC *)gscn->instance_animation_data[instance->animation_index];
             if (animation != NULL)
                 end_frame = NuAnimEndFrameOld(animation);
             else if (lookup != NULL)
@@ -5736,61 +5741,54 @@ extern "C" {
                 continue;
             if (end_frame == 0.0f)
                 continue;
-            flags = instance->flags;
-            if ((flags & 1) != 0) {
-                i32 waiting = 0;
+            if ((instance->flags & 1) != 0) {
                 instance->ltime += delta * instance->tfactor;
-                frame = instance->ltime;
-                if ((flags & 4) != 0) {
-                    if (!(frame >= instance->first_frame))
-                        waiting = 1;
-                    else {
-                        flags &= ~4U;
-                        instance->flags = flags;
-                        instance->ltime -= instance->first_frame - 1.0;
-                        frame = instance->ltime;
-                    }
+                if ((instance->flags & 4) != 0 && instance->ltime >= instance->first_frame) {
+                    instance->flags &= ~4U;
+                    instance->ltime -= instance->first_frame - 1.0f;
                 }
-                if (waiting == 0) {
-                    if (frame >= instance->interval + end_frame) {
-                        if ((flags & 8) != 0) {
-                            f64 period = (f64)instance->interval + end_frame - 1.0;
-                            f32 cycles = NuFloor((instance->ltime - 1.0) / period);
-                            f32 elapsed = cycles * period;
-                            instance->ltime -= elapsed;
+                if ((instance->flags & 4) == 0) {
+                    if (instance->ltime >= instance->interval + end_frame) {
+                        if ((instance->flags & 8) != 0) {
+                            f32 repeats =
+                                NuFloor((instance->ltime - 1.0f) / (instance->interval + end_frame - 1.0f));
+                            instance->ltime -= (instance->interval + end_frame - 1.0f) * repeats;
                             frame = instance->ltime;
                         } else {
-                            flags &= ~1U;
-                            instance->flags = flags;
+                            instance->flags &= ~1U;
                             instance->ltime = end_frame;
                             frame = end_frame;
                         }
-                    } else if (frame > end_frame)
+                    } else if (instance->ltime > end_frame)
                         frame = end_frame;
-                    else if (frame < 1.0f) {
-                        flags &= ~1U;
-                        instance->flags = flags;
+                    else if (instance->ltime < 1.0f) {
+                        instance->flags &= ~1U;
                         instance->ltime = 1.0f;
                         frame = 1.0f;
-                    }
-                    if ((flags & 2) != 0)
-                        frame = end_frame + 1.0 - frame;
+                    } else
+                        frame = instance->ltime;
+                    if ((instance->flags & 2) != 0)
+                        frame = end_frame + 1.0f - frame;
                 }
             } else
                 frame = instance->ltime;
             if (frame != instance->prev_eval_time) {
                 if (lookup != NULL) {
-                    u8 index = (u8)(instance->flags >> 14), value;
+                    u32 flags = instance->flags;
+                    u8 index = (u8)(flags >> 14), value;
                     i32 changed = StateAnimEvaluate2((STATE_ANIM_PC *)lookup, &index, &value, frame);
-                    instance->flags = (instance->flags & ~0x3fc000U) | ((u32)index << 14);
+                    instance->flags = (flags & ~0x3fc000U) | ((u32)index << 14);
                     if (changed != 0) {
-                        if (instance->instance_index != 0xffff && value != 0)
-                            special->flags |= 2;
-                        else if (value == 0) {
-                            if (instance->instance_index != 0xffff)
+                        if (instance->instance_index != 0xffff) {
+                            special = &((SCENE_SPECIAL_TRANSFORM_PC *)display->specials)[instance->instance_index];
+                            if (value != 0)
+                                special->flags |= 2;
+                            else {
                                 special->flags &= ~2U;
+                                animation = NULL;
+                            }
+                        } else if (value == 0)
                             animation = NULL;
-                        }
                     }
                 }
                 if (animation != NULL)
