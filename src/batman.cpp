@@ -236,7 +236,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     SAGA_SOUND_CHECK("after sound");
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", (void *)WORLD);
     for (i = 0; i < 8; ++i) {
-        wind_objects[i] = Player[i] != NULL ? &((GAMEOBJECT *)Player[i])->lower_position : NULL;
+        if (Player[i] != NULL)
+            wind_objects[i] = &((GAMEOBJECT *)Player[i])->lower_position;
+        else
+            wind_objects[i] = NULL;
     }
     if (Paused != 0 && screendump == 0 && !IsGrabbingScreen()) {
         NuMtlAnimateSetSpeedScale(0.0f);
