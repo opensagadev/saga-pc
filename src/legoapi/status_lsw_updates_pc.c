@@ -12,8 +12,7 @@ void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f3
             for (player = 0; player < 2 && selected == 0 && moved_up == 0 && moved_down == 0; ++player) {
                 GAMEPAD_INIT_RECORD *pad = &GamePadStorage[player];
                 if (packet->player_active[player] != 0) {
-                    u32 buttons = pad->menu_buttons_pressed;
-                    if ((buttons & GAMEPAD_MENUSELECT) != 0) {
+                    if ((pad->menu_buttons_pressed & GAMEPAD_MENUSELECT) != 0) {
                         selected = 1;
                     } else if (((packet->flags_word & 0x40u) == 0 && (packet->flags_word & 8u) != 0 &&
                                 (packet->next_area == -1 || (packet->area->flags & 2u) != 0 ||
@@ -21,15 +20,16 @@ void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f3
                                (packet->flags_word & 0x100u) != 0 || packet->challenge_state != 0 ||
                                packet->mission_state != 0) {
                         if (status_prompt > 0) {
-                            if ((pad->menu_directions & GAMEPAD_DUP) != 0 || (buttons & GAMEPAD_DUP) != 0) {
+                            if ((pad->menu_directions & GAMEPAD_DUP) != 0 ||
+                                (pad->menu_buttons_pressed & GAMEPAD_DUP) != 0) {
                                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                                status_prompt = (i32)((u32)status_prompt - 1u);
+                                status_prompt--;
                                 moved_up = 1;
                             }
-                        } else if (status_prompt < 1 &&
-                                   ((pad->menu_directions & GAMEPAD_DDOWN) != 0 || (buttons & GAMEPAD_DDOWN) != 0)) {
+                        } else if (status_prompt < 1 && ((pad->menu_directions & GAMEPAD_DDOWN) != 0 ||
+                                                         (pad->menu_buttons_pressed & GAMEPAD_DDOWN) != 0)) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
-                            status_prompt = (i32)((u32)status_prompt + 1u);
+                            status_prompt++;
                             moved_down = 1;
                         }
                     }
