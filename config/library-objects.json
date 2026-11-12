@@ -1677,6 +1677,18 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 505,
+   "member": "build\\intel\\mt_obj\\fprintf.obj",
+   "symbols": [
+    "__fprintf_l",
+    "__fprintf_s_l",
+    "_fprintf_s",
+    "__fprintf_p_l",
+    "__fprintf_p"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 506,
    "member": "build\\intel\\mt_obj\\fread.obj",
    "symbols": [
@@ -1878,12 +1890,58 @@
   },
   {
    "archive": "libcmt.lib",
+   "index": 579,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\input.obj",
+   "symbols": [
+    "libcmt#00579:___check_float_string",
+    "libcmt#00579:__hextodec",
+    "libcmt#00579:__inc",
+    "libcmt#00579:__un_inc",
+    "libcmt#00579:__whiteout"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 580,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\inputs.obj",
+   "symbols": [
+    "libcmt#00580:___check_float_string",
+    "libcmt#00580:__hextodec",
+    "libcmt#00580:__inc",
+    "libcmt#00580:__un_inc",
+    "libcmt#00580:__whiteout"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 581,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\output.obj",
+   "symbols": [
+    "libcmt#00581:_write_char",
+    "libcmt#00581:_write_multi_char",
+    "libcmt#00581:_write_string"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
    "index": 582,
    "member": "build\\intel\\mt_obj\\cpp_obj\\outputp.obj",
    "symbols": [
     "__validate_param_reuseA",
     "libcmt#00582:_write_char",
-    "libcmt#00582:_write_multi_char"
+    "libcmt#00582:_write_multi_char",
+    "libcmt#00582:_write_string",
+    "_get_crtdouble_arg"
+   ]
+  },
+  {
+   "archive": "libcmt.lib",
+   "index": 583,
+   "member": "build\\intel\\mt_obj\\cpp_obj\\outputs.obj",
+   "symbols": [
+    "libcmt#00583:_write_char",
+    "libcmt#00583:_write_multi_char",
+    "libcmt#00583:_write_string"
    ]
   },
   {
@@ -2210,7 +2268,10 @@
     "___tzset",
     "__tzset",
     "__isindst",
-    "libcmt#00820:__tzset_nolock"
+    "libcmt#00820:__tzset_nolock",
+    "__set_daylight",
+    "__set_dstbias",
+    "__set_timezone"
    ]
   },
   {
@@ -2793,7 +2854,10 @@
     "libcpmt#00017:__unwindfunclet$?_Xlen@_String_base@std@@SAXXZ$0",
     "libcpmt#00017:__ehhandler$?_Xlen@_String_base@std@@SAXXZ",
     "libcpmt#00017:__unwindfunclet$?_Xran@_String_base@std@@SAXXZ$0",
-    "libcpmt#00017:__ehhandler$?_Xran@_String_base@std@@SAXXZ"
+    "libcpmt#00017:__ehhandler$?_Xran@_String_base@std@@SAXXZ",
+    "??0invalid_argument@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z",
+    "??1invalid_argument@std@@UAE@XZ",
+    "??_Ginvalid_argument@std@@UAEPAXI@Z"
    ]
   }
  ]

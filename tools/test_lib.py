@@ -650,6 +650,40 @@ class ObjectOrderPlacementTests(unittest.TestCase):
         self.assertEqual(linked_owners(defined, defined, set()), set())
         self.assertEqual(linked_owners(defined, defined, {("libcmt.lib", 448), ("libcmt.lib", 467)}), set())
 
+    def test_neighbours_step_over_absent_and_elsewhere_linked_functions(self):
+        from tools.libmatch import place_by_order
+        code = bytes(96)
+        # One member's static twins sit before its unique function, with the shared
+        # COMDAT helper (defined by both members) in between; the other member's
+        # twins sit directly before its own unique function, its helper copy dropped.
+        def member(start, unique):
+            return [{"symbol": "_twin", "size": 8, "hits": [0x1000, 0x1030]},
+                    {"symbol": "_gone", "size": 8, "hits": []},
+                    {"symbol": "_shared", "size": 8, "hits": [0x1008], "shared": True},
+                    {"symbol": unique, "size": 16, "hits": [start]}]
+        first, second = member(0x1010, "_a"), member(0x1038, "_b")
+        placed = place_by_order([first, second], code, self.TEXT)
+        self.assertEqual((placed.get(id(first[0])), placed.get(id(second[0]))), (0x1000, 0x1030))
+        # A shared function never anchors: the second member's twin is not put before its copy.
+        second[3]["hits"] = []
+        placed = place_by_order([first, second], code, self.TEXT)
+        self.assertIsNone(placed.get(id(second[0])))
+
+    def test_mapped_near_miss_anchors_its_neighbours_only(self):
+        from tools.libmatch import near_miss, place_by_order
+        code = bytes(64)
+        twin = {"symbol": "_twin", "size": 8, "hits": [0x1000, 0x1020]}
+        mapped = {"symbol": "_near", "size": 16, "hits": [], "anchor_only": True}
+        placed = place_by_order([[twin, mapped]], code, self.TEXT, {"_near": 0x1028})
+        self.assertEqual((placed[id(twin)], placed[id(mapped)]), (0x1020, 0x1028))
+        self.assertEqual(place_by_order([[twin, mapped]], code, self.TEXT), {})
+        raw = bytes(range(32))
+        # At most one changed byte in 16 outside relocations.
+        self.assertTrue(near_miss(raw, set(), raw[:30] + b"\xff\xff", 0))
+        self.assertFalse(near_miss(raw, set(), raw[:29] + b"\xff\xff\xff", 0))
+        self.assertTrue(near_miss(raw, {29}, raw[:29] + b"\xff\xff\xff", 0))
+        self.assertFalse(near_miss(raw, set(), raw, 1))
+
     def test_twin_whose_call_lands_on_another_mapped_function_is_rejected(self):
         from tools.libmatch import displaced_calls, functions_at
         # call rel32 to 0x1010 from a candidate placed at 0x1000.

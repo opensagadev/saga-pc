@@ -83,6 +83,9 @@ def adjacent(code, text_va, end, start):
     return 0 <= gap < 16 and code[end - text_va:start - text_va] == b"\xcc" * gap
 
 
+MAX_BETWEEN = 6  # functions a neighbour search may step over
+
+
 def place_by_order(sequences, code, text_va, anchors=None):
     """Resolve functions with several masked hits by their neighbours in the same member.
 
@@ -91,36 +94,80 @@ def place_by_order(sequences, code, text_va, anchors=None):
     placed at the one hit that directly follows the placed previous function, or
     directly precedes the placed next one; the linker keeps a member's COMDAT
     functions in object order. A function whose name `anchors` (the symbol map)
-    already binds to one of its hits is placed there. Functions shorter than
-    MIN_UNANCHORED bytes are placed only by an anchor. Returns {id(item): va}.
+    already binds to one of its hits is placed there; an `anchor_only` item (a
+    mapped near-miss without hits) only marks its mapped address for its
+    neighbours. Functions shorter than MIN_UNANCHORED bytes are placed only by an
+    anchor.
+
+    Functions in between may be absent from this member's layout: removed as
+    unreferenced, or (`shared` COMDATs defined by several members) laid out with
+    another member. A neighbour search steps over up to MAX_BETWEEN of them, each
+    either absent or present at one of its hits, but only a placed function this
+    member alone defines anchors it. Returns {id(item): va}, anchor-only items
+    included.
     """
     anchors = anchors or {}
     placed = {}
     for sequence in sequences:
         for item in sequence:
             anchor = anchors.get(item.get("symbol"))
-            if anchor in item["hits"]:
+            if anchor in item["hits"] or (item.get("anchor_only") and anchor is not None):
                 placed[id(item)] = anchor
             elif len(item["hits"]) == 1 and item["size"] >= MIN_UNANCHORED:
                 placed[id(item)] = item["hits"][0]
+
+    def is_anchor(item):
+        return id(item) in placed and not item.get("shared")
+
+    def ends_after(end, between):
+        ends = {end}
+        for other in between:
+            ends |= {h + other["size"] for e in ends for h in other["hits"] if adjacent(code, text_va, e, h)}
+        return ends
+
+    def starts_before(start, between):
+        starts = {start}
+        for other in reversed(between):
+            starts |= {h for s in starts for h in other["hits"] if adjacent(code, text_va, h + other["size"], s)}
+        return starts
+
     changed = True
     while changed:
         changed = False
         for sequence in sequences:
             for i, item in enumerate(sequence):
-                if id(item) in placed or item["size"] < MIN_UNANCHORED:
+                if id(item) in placed or item["size"] < MIN_UNANCHORED or not item["hits"]:
                     continue
                 fits = set()
-                if i and id(sequence[i - 1]) in placed:
-                    end = placed[id(sequence[i - 1])] + sequence[i - 1]["size"]
-                    fits.update(h for h in item["hits"] if adjacent(code, text_va, end, h))
-                if i + 1 < len(sequence) and id(sequence[i + 1]) in placed:
-                    start = placed[id(sequence[i + 1])]
-                    fits.update(h for h in item["hits"] if adjacent(code, text_va, h + item["size"], start))
+                j = i - 1
+                while j >= 0 and not is_anchor(sequence[j]) and i - j <= MAX_BETWEEN:
+                    j -= 1
+                if j >= 0 and is_anchor(sequence[j]):
+                    for end in ends_after(placed[id(sequence[j])] + sequence[j]["size"], sequence[j + 1:i]):
+                        fits.update(h for h in item["hits"] if adjacent(code, text_va, end, h))
+                k = i + 1
+                while k < len(sequence) and not is_anchor(sequence[k]) and k - i <= MAX_BETWEEN:
+                    k += 1
+                if k < len(sequence) and is_anchor(sequence[k]):
+                    for start in starts_before(placed[id(sequence[k])], sequence[i + 1:k]):
+                        fits.update(h for h in item["hits"] if adjacent(code, text_va, h + item["size"], start))
                 if len(fits) == 1:
                     placed[id(item)] = fits.pop()
                     changed = True
     return placed
+
+
+def near_miss(raw, masked, code, offset):
+    """True when retail code at `offset` keeps this function's extent with few changed bytes.
+
+    A mapped near-miss (a later runtime build changed a structure size) still
+    marks where its member's neighbours sit, provided at most one byte in 16
+    outside relocations differs.
+    """
+    if offset < 0 or offset + len(raw) > len(code):
+        return False
+    differing = sum(1 for i, byte in enumerate(raw) if i not in masked and code[offset + i] != byte)
+    return differing <= len(raw) // 16
 
 
 def references(c, code, text_va):
@@ -272,26 +319,23 @@ def main():
                 if len(hits) > MAX_HITS and anchor is not None and 0 <= anchor - text_va <= len(code) - len(raw) \
                         and re.compile(pattern, re.S).match(code, anchor - text_va):
                     hits = [anchor]  # too common to place by order, but the map binds the name here
+                item = {"archive": archive, "index": index, "member": member, "file": file,
+                        "obj": obj, "symbol": symbol["name"], "hits": hits, "size": len(raw), "region": region}
                 if not hits or len(hits) > MAX_HITS:
-                    sequence.append(None)  # breaks adjacency: an unplaceable neighbour
-                    continue
-                sequence.append({"archive": archive, "index": index, "member": member, "file": file,
-                                 "obj": obj, "symbol": symbol["name"], "hits": hits, "size": len(raw),
-                                 "region": region})
-            # Split at unplaceable functions so adjacency only links true neighbours.
-            run = []
-            for item in sequence + [None]:
-                if item is None:
-                    if run:
-                        sequences.append(run)
-                    run = []
-                else:
-                    run.append(item)
+                    # Not placeable itself: a gap its neighbours may step over, or, when the
+                    # map binds this near-miss with the same layout, an anchor for them.
+                    item["hits"] = []
+                    item["anchor_only"] = anchor is not None and near_miss(raw, masked, code, anchor - text_va)
+                sequence.append(item)
+            sequences.append(sequence)
+    for sequence in sequences:
+        for item in sequence:
+            item["shared"] = len({(a, i) for a, i, _ in defined.get(item["symbol"], ())}) > 1
     placed = place_by_order(sequences, code, text_va, bindings)
     for sequence in sequences:
         for item in sequence:
             va = placed.get(id(item))
-            if va is None or overlaps(mapped, va, va + item["size"]):
+            if va is None or item.get("anchor_only") or overlaps(mapped, va, va + item["size"]):
                 continue
             candidates.append({**item, "va": va})
 

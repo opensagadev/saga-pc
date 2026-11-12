@@ -401,7 +401,11 @@ finds archive functions that occur once in unmapped retail code, derives their
 relocation targets from the retail bytes, and keeps only functions that then
 compare byte-exact. A function with several masked occurrences is placed at the
 one that directly follows (or precedes) its placed neighbour from the same member,
-since the linker keeps a member's functions in object order. When several twins
+since the linker keeps a member's functions in object order. The search steps over
+functions absent from that spot (removed as unreferenced, or COMDATs another member
+supplied), and a mapped near-miss with the same extent (at most one changed byte in
+16, e.g. a function that indexes the later CRT's larger `ioinfo`) marks where its
+neighbours sit without being credited itself. When several twins
 (A/W variants) claim one address, the one the map or an unambiguous candidate
 refers to there is kept; a candidate whose references contradict the map is
 dropped, as is one whose direct call lands on a different function the map
