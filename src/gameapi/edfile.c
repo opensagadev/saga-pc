@@ -2041,21 +2041,42 @@ static i32 __cdecl eduicbProcessProp(eduimenu_s *menu, eduiitem_s *item, f32 del
 }
 
 static i32 EduiPropOverLabelPc(edui_interact_s *interact) {
-    return edui_cursor_x >= interact->x && edui_cursor_y >= interact->y &&
-           edui_cursor_x < ((edui_prop_s *)interact->item)->label_width + interact->x - 1.0 &&
-           edui_cursor_y < interact->height + interact->y;
+    f32 edge;
+    if (edui_cursor_x >= interact->x && edui_cursor_y >= interact->y) {
+        edge = ((edui_prop_s *)interact->item)->label_width + interact->x - 1.0;
+        if (edui_cursor_x < edge) {
+            edge = interact->height + interact->y;
+            if (edui_cursor_y < edge)
+                return 1;
+        }
+    }
+    return 0;
 }
 
 static i32 EduiPropOverDividerPc(edui_interact_s *interact) {
-    f32 divider = ((edui_prop_s *)interact->item)->label_width + interact->x;
-    return edui_cursor_x >= divider - 1.0f && edui_cursor_y >= interact->y && edui_cursor_x < divider + 1.0f &&
-           edui_cursor_y < interact->height + interact->y;
+    f32 edge = ((edui_prop_s *)interact->item)->label_width + interact->x - 1.0f;
+    if (edui_cursor_x >= edge && edui_cursor_y >= interact->y) {
+        edge = ((edui_prop_s *)interact->item)->label_width + interact->x + 1.0f;
+        if (edui_cursor_x < edge) {
+            edge = interact->height + interact->y;
+            if (edui_cursor_y < edge)
+                return 1;
+        }
+    }
+    return 0;
 }
 
 static i32 EduiPropOverValuePc(edui_interact_s *interact) {
     edui_prop_s *property = (edui_prop_s *)interact->item;
-    return edui_cursor_x >= property->label_width + interact->x + 1.0 && edui_cursor_y >= interact->y &&
-           edui_cursor_x < property->button_x && edui_cursor_y < interact->height + interact->y;
+    f32 edge = property->label_width + interact->x + 1.0;
+    if (edui_cursor_x >= edge && edui_cursor_y >= interact->y) {
+        if (edui_cursor_x < property->button_x) {
+            edge = interact->height + interact->y;
+            if (edui_cursor_y < edge)
+                return 1;
+        }
+    }
+    return 0;
 }
 
 static i32 EduiPropOverButtonPc(edui_prop_s *property) {
@@ -3152,10 +3173,9 @@ u32 EduiMarkedItemOutlineColourPc = 0x0000ff00;
 static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
 
 i32 __cdecl EduiRenderItemPc(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width, i32 selected) {
-    i32(__cdecl * render)(eduimenu_s *, eduiitem_s *, i32, i32, i32, i32) = item->render;
     i32 height;
     EduiRenderWidthPc = width;
-    height = render(menu, item, x, y, width, selected);
+    height = item->render(menu, item, x, y, width, selected);
     if (selected != 0) {
         i32 marked = (item->flags & 4) != 0;
         u32 colour = EduiMarkedItemOutlineColourPc;
@@ -3170,35 +3190,23 @@ i32 __cdecl EduiRenderItemPc(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i
     return height;
 }
 
+#define EDUI_DRAW_LINE_I(x0, y0, x1, y1, colour, material)                                                             \
+    do {                                                                                                               \
+        if (!edui_donotdraw)                                                                                           \
+            NuRndrLine2di(x0, y0, x1, y1, colour, material);                                                           \
+    } while (0)
+
 static void EduiDrawDisabledItemPc(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
-    if (item->disabled && !edui_donotdraw) {
+    if (item->disabled) {
         i32 left = x << 4;
         i32 top = y << 3;
-        i32 pixel_width = width << 4;
+        i32 span = width << 4;
         i32 bottom = top + (height << 3);
-        i32 quarter = left + pixel_width / 4;
-        i32 half;
-        i32 three_quarters;
-        u32 colour = item->colours[0];
-        NUMTL *material = (NUMTL *)uimtls[ui_bgmtl];
-        NuRndrLine2di(left, top, quarter, bottom, colour, material);
-        if (!edui_donotdraw) {
-            material = (NUMTL *)uimtls[ui_bgmtl];
-            colour = item->colours[0];
-            half = left + pixel_width / 2;
-            NuRndrLine2di(quarter, top, half, bottom, colour, material);
-            if (!edui_donotdraw) {
-                material = (NUMTL *)uimtls[ui_bgmtl];
-                colour = item->colours[0];
-                three_quarters = left + (pixel_width * 3) / 4;
-                NuRndrLine2di(half, top, three_quarters, bottom, colour, material);
-                if (!edui_donotdraw) {
-                    material = (NUMTL *)uimtls[ui_bgmtl];
-                    colour = item->colours[0];
-                    NuRndrLine2di(three_quarters, top, left + pixel_width, bottom, colour, material);
-                }
-            }
-        }
+        EDUI_DRAW_LINE_I(left, top, left + span / 4, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left + span / 4, top, left + span / 2, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left + span / 2, top, left + span * 3 / 4, bottom, item->colours[0],
+                         (NUMTL *)uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left + span * 3 / 4, top, left + span, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
     }
 }
 
