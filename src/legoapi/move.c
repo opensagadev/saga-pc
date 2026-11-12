@@ -6671,7 +6671,7 @@ after_gravity:
     ForcedBackCode(object);
     Tube_MoveCode(object, WORLD); /* Native4b4d99: true cdecl object,WORLD. */
     DeactivatedCode(object);
-    PushCode(object, !StartupGameFlag1 && StartupGameFlag0);
+    PushCode(object, StartupGameFlag1 && !StartupGameFlag0);
     BackFlipCode(object); /* Native4b4dcb: object; BackFlipCode. */
     if (object->id != (u16)DefaultMotionSkeletonIdPc)
         TakeOverCode(object, tag_pressed);
@@ -6730,7 +6730,7 @@ after_gravity:
         ShootCode(object, action_pressed, special_pressed, 1, 1, 0);
     else if (((DEFAULT_MOTION_BATARANG_POINTER_PC *)object)->batarang != NULL)
         Batarang_MoveCode(object);
-    if ((i8)object->character_data->game_character->flags_094_bytes[0] < 0)
+    if ((object->character_data->game_character->flags_094 & 0x80) != 0)
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
     FireBountyHunterRocket(object);
     BeastStartFallCodePc(object);
