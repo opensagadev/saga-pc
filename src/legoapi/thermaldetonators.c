@@ -2,20 +2,20 @@
 
 /* Retail unit 0x4cf680-0x4d0650 (legoapi/thermaldetonators.c): definitions in retail address order. */
 EXPLOSION_PC *__cdecl Detonate(NUVEC *position, u16 flags) {
-    f32 radius = 0.75f;
-    f32 duration = 0.5f;
+    f32 radius, duration, amount;
     AddGameDebris(WORLD->game_debris_sys, 0x49, position);
     AddGameDebris(WORLD->game_debris_sys, 0x4a, position);
     AddGameDebris(WORLD->game_debris_sys, 0x4b, position);
     AddPartDebris(WORLD->part_debris_sys, 2, position);
     NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
     PlaySfx("exp_thermalDet", position);
+    radius = 0.75f;
+    duration = 0.5f;
     if ((flags & 0x1000) != 0) {
-        f32 amount = qrand() < 0x8000 ? -1.0f : 1.0f;
         radius = 1.3125f;
         duration = 0.875f;
-        amount *= 2.0f;
-        GameCam_Judder(GameCam, amount, 2, position);
+        amount = qrand() < 0x8000 ? -1.0f : 1.0f;
+        GameCam_Judder(GameCam, amount * 2.0f, 2, position);
         GameCam_NewShake(GameCam, 2.0f, 1.0f, 1.0f);
         PlaySfx("exp_thermalDet", position);
     } else {
