@@ -404,19 +404,19 @@ extern "C" {
 
     void __cdecl StatusPacketReset(STATUSPACKET_s *packet) {
         struct STATUSPACKET_LSW_s *lsw = packet->lsw_packet;
+        void(__cdecl * reset)(STATUSPACKET_s *) = packet->reset_callback;
         i32(__cdecl * init)(WORLDINFO *, STATUSPACKET_s *) = packet->init_callback;
         i32(__cdecl * finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
-        void(__cdecl * reset)(STATUSPACKET_s *) = packet->reset_callback;
         void(__cdecl * draw)(STATUSPACKET_s *) = packet->draw_background_callback;
         f32 delay = packet->field_0x68;
         reset(packet);
         memset(packet, 0, sizeof(*packet));
-        packet->field_0x68 = delay;
-        packet->reset_callback = reset;
         packet->lsw_packet = lsw;
-        packet->init_callback = init;
         packet->finish_callback = finish;
+        packet->reset_callback = reset;
         packet->draw_background_callback = draw;
+        packet->field_0x68 = delay;
+        packet->init_callback = init;
     }
     i32 StatusNewMinikitCountPc = 0;
     i32 StatusCurrentMinikitPc = 0;
@@ -844,22 +844,21 @@ extern "C" {
     }
 
     void __cdecl Status_DrawPlayerIconsPc(STATUSPACKET_s *packet, f32 y, f32 alpha) {
-        StatusPlayerModelPairPc *models = (StatusPlayerModelPairPc *)&packet->player0_model;
         i32 player;
         for (player = 0; player < 2; ++player) {
             f32 x, weight, icon_alpha;
             i32 frame;
             if (player == 0) {
-                x = -ICONX;
                 frame = 0xa5;
+                x = -ICONX;
             } else {
                 x = ICONX;
                 frame = 0xa6;
             }
             weight = packet->player_active[player] != 0 ? 1.0f : 0.25f;
             icon_alpha = weight * alpha;
-            DrawCharIcon((i16)models->model[player], x, y, 0.0f, MissionPlayerIconSizePc, frame, icon_alpha, icon_alpha,
-                         1, NULL);
+            DrawCharIcon((i16)((StatusPlayerModelPairPc *)&packet->player0_model)->model[player], x, y, 0.0f,
+                         MissionPlayerIconSizePc, frame, icon_alpha, icon_alpha, 1, NULL);
         }
     }
 
