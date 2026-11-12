@@ -153,15 +153,15 @@ void __cdecl UpdateSpecialSfx(WORLDINFO *world_info) {
                     }
                 } else if ((flags & 4) != 0 && (flags & 8) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
-                        (event->trigger_frame < event->previous_frame && frame <= event->trigger_frame))
+                        (event->previous_frame > event->trigger_frame && frame <= event->trigger_frame))
                         play = 1;
                 } else if ((flags & 4) != 0) {
                     if ((event->previous_frame < event->trigger_frame && event->trigger_frame <= frame) ||
                         (event->previous_frame == 0.0f && event->trigger_frame == 1.0f))
                         play = 1;
                 } else if ((flags & 8) != 0) {
-                    if ((event->trigger_frame < event->previous_frame && frame <= event->trigger_frame) ||
-                        (end_frame == event->previous_frame && end_frame == event->trigger_frame))
+                    if ((event->previous_frame > event->trigger_frame && frame <= event->trigger_frame) ||
+                        (event->previous_frame == end_frame && event->trigger_frame == end_frame))
                         play = 1;
                 }
                 if (play != 0)
