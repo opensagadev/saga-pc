@@ -714,13 +714,10 @@ void __cdecl DeathStar2BattleFire_Update(WORLDINFO *world) {
     NUMTX matrix;
     NUVEC difference;
     f32 choice;
-    f32 along;
     f32 nearest_distance = 1000000000.0f;
     GAMEOBJECT *nearest = NULL;
     i32 effect;
     i32 index;
-    i16 y_rotation;
-    i16 z_rotation;
     f32 distance;
 
     DeathStar2BattleFire_UpdateSlowDownMul(FRAMETIME);
@@ -738,12 +735,11 @@ void __cdecl DeathStar2BattleFire_Update(WORLDINFO *world) {
         effect = 35;
     else
         effect = 36;
-    along = (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 0.1f + (f64)fireSplinePos.normalized_position);
-    PointAlongSpline(LevelCodeSpline[0], along, &point, &yaw, &pitch, 0);
-    y_rotation = (i16)qrand();
-    z_rotation = (i16)qrand();
-    AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[effect].effect, &point, 90, FRAMETIME, z_rotation,
-                                      y_rotation, NULL);
+    PointAlongSpline(LevelCodeSpline[0],
+                     (f32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 0.1f + (f64)fireSplinePos.normalized_position),
+                     &point, &yaw, &pitch, 0);
+    AddVariableShotDebrisEffectTimed1(world->game_debris_sys->entries[effect].effect, &point, 90, FRAMETIME,
+                                      (i16)qrand(), (i16)qrand(), NULL);
     NuMtxSetIdentity(&matrix);
     PointAlongSpline(LevelCodeSpline[0], fireSplinePos.normalized_position, &point, &yaw, &pitch, 0);
     NuMtxPreRotateY(&matrix, yaw);
@@ -796,6 +792,9 @@ void __cdecl DeathStar2BattleFire_Update(WORLDINFO *world) {
     MoveSplinePosition(&fireBackPos, distance);
     if ((f64)NuFloatRand((NURAND *)&GAMERAND) > (f64)0.95f) {
         switch ((i32)((f64)NuFloatRand((NURAND *)&GAMERAND) * 3.0)) {
+            case 0:
+                PlaySfx("exp_asteroid", &fireSplinePos.position);
+                break;
             case 1:
                 PlaySfx("explode_SDest", &fireSplinePos.position);
                 break;
