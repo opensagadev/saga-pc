@@ -5774,8 +5774,7 @@ __declspec(noinline) void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *packet, 
     }
 
     if (path_packet->path_info.connection == connection && path_packet->path_info.direction == direction &&
-        (path_packet->path_info.flags & (AIPATHINFO_FLAG_ON_PATH_LOCAL | AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL)) !=
-            AIPATHINFO_FLAG_ON_PATH_LOCAL) {
+        (!path_packet->path_info.on_path || path_packet->path_info.route_checked)) {
         return;
     }
 
@@ -5796,31 +5795,28 @@ __declspec(noinline) void __cdecl AISysCharacterSetPathCnx(AIPACKET_PC *packet, 
         NUVEC rotated;
 
         path_packet->path_info.direction = (u8)direction;
-        path_packet->path_update_flag = 0;
         path_packet->path_info.connection = connection;
+        path_packet->path_update_flag = 0;
         path = (AIPATH_PC *)path_packet->path_info.path;
         node = &path->nodes[connection->node_indices[0]];
         delta.x = position->x - node->position.x;
-        delta.y = position->y - node->position.y;
         delta.z = position->z - node->position.z;
         NuVecRotateY(&rotated, &delta, -(NUANG)connection->rotation);
         path_packet->path_info.distance = rotated.z / connection->horizontal_distance;
         path_packet->path_info.width = rotated.x;
-        path_packet->path_info.flags &= (u8)~AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL;
+        path_packet->path_info.route_checked = 0;
     }
 
-    if ((path_packet->path_info.flags & (AIPATHINFO_FLAG_ON_PATH_LOCAL | AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL)) ==
-        AIPATHINFO_FLAG_ON_PATH_LOCAL) {
+    if (path_packet->path_info.on_path && !path_packet->path_info.route_checked) {
         if (path_packet->current_route != 0xff) {
-            u64 route_mask = (u64)1 << path_packet->current_route;
-            if ((connection->route_mask & (u16)route_mask) == 0) {
+            if ((path_packet->path_info.connection->route_mask & ((u64)1 << path_packet->current_route)) == 0) {
                 path_packet->current_route = 0xff;
             }
         }
         if (path_packet->current_route == 0xff) {
             AISysFindRoute(packet);
         }
-        path_packet->path_info.flags |= AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL;
+        path_packet->path_info.route_checked = 1;
     }
 }
 
