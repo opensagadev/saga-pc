@@ -2225,6 +2225,11 @@ typedef struct CHARACTER_PACK_ANIMATION_PC {
 STATIC_ASSERT(offsetof(CHARACTER_PACK_ANIMATION_PC, animation_magic) == 4);
 STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
 
+/* TODO(saga.h): retail calls the 0x62a5e0 debug no-op with 0, 1 or 2 message arguments (a stripped
+   debug print); declare it unprototyped, `void __cdecl PCCharacterSystemExistingNoOp();`, and drop this. */
+// MATCH-EXCEPTION: call through an unprototyped pointer so the stripped message argument is still pushed.
+#define PC_DEBUG_MESSAGE_NOOP ((void(__cdecl *)())PCCharacterSystemExistingNoOp)
+
 void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VARIPTR *buffer,
                                     VARIPTR buffer_end, i32 area_models) {
     char animation_extension[5] = ".an3";
@@ -2409,7 +2414,7 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
             }
         }
         if (buffer->addr >= buffer_end.addr)
-            PCCharacterSystemExistingNoOp();
+            PC_DEBUG_MESSAGE_NOOP((buffer->addr - buffer_end.addr) / 1024, character->name);
         if (loaded != 0) {
             model->model_id = (i16)model_id;
             model->flags = (model->flags & ~1) | (area_models != 0 && list->count != 0 ? 1 : 0);
@@ -2498,11 +2503,6 @@ STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, flags) == 0x40);
 STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, icon_model) == 0x42);
 STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_44) == 0x44);
 STATIC_ASSERT(offsetof(CHARACTER_LIST_ENTRY_PC, unknown_48) == 0x48);
-
-/* TODO(saga.h): retail calls the 0x62a5e0 debug no-op with 0, 1 or 2 message arguments (a stripped
-   debug print); declare it unprototyped, `void __cdecl PCCharacterSystemExistingNoOp();`, and drop this. */
-// MATCH-EXCEPTION: call through an unprototyped pointer so the stripped message argument is still pushed.
-#define PC_DEBUG_MESSAGE_NOOP ((void(__cdecl *)())PCCharacterSystemExistingNoOp)
 
 CHARACTERDATA_PC *__cdecl ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum,
                                                  i32 *count_out, i32 game_stride,
