@@ -121,12 +121,27 @@ template <class T> T *CreateObject(MemoryBuffer *buffer) {
     return new (buffer->Allocate(sizeof(T))) T();
 }
 
+/* Fixed-size stack of the open stream blocks. Like CSListLink, the
+ * constructor tests this against NULL before clearing the count. Retail also
+ * keeps out-of-line Count/Push/Pop/Top copies (0x6c1130-0x6c11ef); the stream
+ * functions here use the fields directly. */
+template <class T, i32 N> class EdStack {
+  public:
+    EdStack() {
+        EdStack *stack = this;
+        if (stack != NULL)
+            stack->count = 0;
+    }
+
+    T items[N];
+    i32 count;
+};
+
 /* Writes the editor's block-structured .led format to an open NuFile; each
  * block starts with a size word that EndBlock patches once it is closed. */
 class EdFileOutputStream : public EdOutputStream {
   public:
     EdFileOutputStream() {
-        block_count = 0;
         file = 0;
     }
     virtual ~EdFileOutputStream() {
@@ -145,12 +160,10 @@ class EdFileOutputStream : public EdOutputStream {
         }
     }
 
-    i32 block_positions[8];
-    i32 block_count;
+    EdStack<i32, 8> block_positions;
     NUFILE file;
 };
 STATIC_ASSERT(offsetof(EdFileOutputStream, block_positions) == 0x20);
-STATIC_ASSERT(offsetof(EdFileOutputStream, block_count) == 0x40);
 STATIC_ASSERT(offsetof(EdFileOutputStream, file) == 0x44);
 STATIC_ASSERT(sizeof(EdFileOutputStream) == 0x48);
 
@@ -166,7 +179,6 @@ class EdFileInputStream : public EdInputStream {
     };
 
     EdFileInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : EdInputStream(buffer, secondary) {
-        block_count = 0;
         file = 0;
         name_length = 0;
         pending = 0;
@@ -179,8 +191,7 @@ class EdFileInputStream : public EdInputStream {
     virtual void EndBlock();
     void Open(NUFILE handle, i32 stream_version);
 
-    Block blocks[8];
-    i32 block_count;
+    EdStack<Block, 8> blocks;
     char block_names[256];
     i32 name_length;
     Block pending_block;
@@ -188,7 +199,6 @@ class EdFileInputStream : public EdInputStream {
     NUFILE file;
 };
 STATIC_ASSERT(offsetof(EdFileInputStream, blocks) == 0x20);
-STATIC_ASSERT(offsetof(EdFileInputStream, block_count) == 0x80);
 STATIC_ASSERT(offsetof(EdFileInputStream, block_names) == 0x84);
 STATIC_ASSERT(offsetof(EdFileInputStream, name_length) == 0x184);
 STATIC_ASSERT(offsetof(EdFileInputStream, pending_block) == 0x188);
@@ -6243,10 +6253,10 @@ void EdFileInputStream::Open(NUFILE handle, i32 stream_version) {
 char const *EdFileInputStream::BeginBlock(char const *name) {
     i32 position = (i32)NuFilePos(file);
     char *block_name;
-    if (block_count > 0) {
-        if (block_count < 1)
+    if (blocks.count > 0) {
+        if (blocks.count < 1)
             EdTrace();
-        Block &parent = blocks[block_count - 1];
+        Block &parent = blocks.items[blocks.count - 1];
         if (position >= parent.position + parent.size) {
             EdMessage(block_names + parent.name_offset);
             return NULL;
@@ -6267,8 +6277,8 @@ char const *EdFileInputStream::BeginBlock(char const *name) {
         EdMessage(name, block_name);
         return NULL;
     }
-    if (block_count < 8)
-        blocks[block_count++] = pending_block;
+    if (blocks.count < 8)
+        blocks.items[blocks.count++] = pending_block;
     else
         EdTrace();
     pending = 0;
@@ -6276,9 +6286,9 @@ char const *EdFileInputStream::BeginBlock(char const *name) {
 }
 
 void EdFileInputStream::EndBlock() {
-    if (block_count < 1)
+    if (blocks.count < 1)
         EdTrace();
-    Block block = blocks[--block_count];
+    Block block = blocks.items[--blocks.count];
     i32 end = block.position + block.size;
     if ((i32)NuFilePos(file) != end)
         NuFileSeek(file, end, 0);
@@ -6290,8 +6300,8 @@ void EdFileInputStream::EndBlock() {
  * drops it. */
 char const *EdFileOutputStream::BeginBlock(char const *name) {
     i32 position = (i32)NuFilePos(file);
-    if (block_count < 8)
-        block_positions[block_count++] = position;
+    if (block_positions.count < 8)
+        block_positions.items[block_positions.count++] = position;
     else
         EdTrace();
     SerialiseBuffer(&position, sizeof(position), 1);
@@ -6303,9 +6313,9 @@ void EdFileOutputStream::EndBlock() {
     i32 position;
     i32 end;
     i32 size;
-    if (block_count < 1)
+    if (block_positions.count < 1)
         EdTrace();
-    position = block_positions[--block_count];
+    position = block_positions.items[--block_positions.count];
     end = (i32)NuFilePos(file);
     size = end - position;
     NuFileSeek(file, position, 0);
