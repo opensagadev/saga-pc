@@ -4,7 +4,16 @@ struct attracto_pc_s {
     u8 unknown_00[0x10];
     NUVEC position;
     u8 unknown_1c[0x46];
-    u8 state_flags;
+    union {
+        u8 state_flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 filled : 1;
+            u8 drawn : 1;
+            u8 : 4;
+        };
+    };
     u8 unknown_63;
     NUVEC active_position;
     u8 unknown_70[4];
@@ -33,7 +42,7 @@ ATTRACTO_PC *__cdecl Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAM
     for (index = 0; index < reader->attracto_count; ++index, ++attracto) {
         f32 candidate;
         if (object != NULL) {
-            if ((attracto->state_flags & 7) != 3)
+            if (!attracto->visible || !attracto->active || attracto->filled)
                 continue;
             candidate = NuVecDistSqr(position, &attracto->active_position, NULL);
         } else {
