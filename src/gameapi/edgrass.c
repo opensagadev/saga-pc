@@ -1000,8 +1000,6 @@ void __cdecl edgraCreateOptionsMenu(void) {
 }
 
 void __cdecl edgraDoInput(FRAME_PAD_PC *pad) {
-    NUVEC position;
-    i32 individual;
     if ((pad->digital_buttons & 0x100) == 0)
         edcamMove(pad);
     if (pad->digital_buttons & 0x100) {
@@ -1050,7 +1048,8 @@ void __cdecl edgraDoInput(FRAME_PAD_PC *pad) {
         }
         if (edgra_editormode == 1) {
             if (edgra_nearest != -1 && edgra_nearest_instance != -1) {
-                individual = GrassClumps[edgra_nearest].individual_index;
+                NUVEC position;
+                i32 individual = GrassClumps[edgra_nearest].individual_index;
                 NuVecAdd(&position, &GrassClumps[edgra_nearest].position,
                          &EDGRA_INDIVIDUAL(individual, edgra_nearest_instance)->position);
                 edcamSetPos(&position);
