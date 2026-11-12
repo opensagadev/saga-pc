@@ -447,31 +447,30 @@ static void rtlCalcShadow(RTL_DATA_PC *data) {
     if (data->cached_value != 0.0f)
         NuVecNorm(&data->shadow_direction, &data->shadow_direction);
 
-    if (data->shadow_blend == 0.0f) {
+    if (data->shadow_blend != 0.0f) {
+        if (data->shadow_blend == 1.0f) {
+            data->previous_shadow_direction = data->blended_shadow_direction;
+            data->previous_shadow_value = data->blended_shadow_value;
+            data->shadow_blend = 0.999f;
+        }
+
+        if (data->previous_shadow_direction.x == 0.0f && data->previous_shadow_direction.y == 0.0f &&
+            data->previous_shadow_direction.z == 0.0f) {
+            data->blended_shadow_direction = data->shadow_direction;
+        } else {
+            NuVecLerp(&data->blended_shadow_direction, &data->previous_shadow_direction, &data->shadow_direction,
+                      data->shadow_blend);
+        }
+        NuVecNorm(&data->blended_shadow_direction, &data->blended_shadow_direction);
+        data->blended_shadow_value =
+            data->previous_shadow_value * data->shadow_blend + (1.0f - data->shadow_blend) * data->cached_value;
+        data->shadow_blend = (0.0f > data->shadow_blend - rtl_frametime * rtl_shadow_blend_rate
+                                  ? 0.0f
+                                  : data->shadow_blend - rtl_frametime * rtl_shadow_blend_rate);
+    } else {
         data->blended_shadow_direction = data->shadow_direction;
         data->blended_shadow_value = data->cached_value;
-        return;
     }
-
-    if (data->shadow_blend == 1.0f) {
-        data->previous_shadow_direction = data->blended_shadow_direction;
-        data->previous_shadow_value = data->blended_shadow_value;
-        data->shadow_blend = 0.999f;
-    }
-
-    if (data->previous_shadow_direction.x == 0.0f && data->previous_shadow_direction.y == 0.0f &&
-        data->previous_shadow_direction.z == 0.0f) {
-        data->blended_shadow_direction = data->shadow_direction;
-    } else {
-        NuVecLerp(&data->blended_shadow_direction, &data->previous_shadow_direction, &data->shadow_direction,
-                  data->shadow_blend);
-    }
-    NuVecNorm(&data->blended_shadow_direction, &data->blended_shadow_direction);
-    data->blended_shadow_value =
-        data->previous_shadow_value * data->shadow_blend + (1.0f - data->shadow_blend) * data->cached_value;
-    data->shadow_blend = (0.0f > data->shadow_blend - rtl_frametime * rtl_shadow_blend_rate
-                              ? 0.0f
-                              : data->shadow_blend - rtl_frametime * rtl_shadow_blend_rate);
 }
 
 void rtlApplySetScale(void *set, RTL_DATA_PC *data, NUVEC *position, NUMTX *rotation, i32 identity, f32 scale) {
