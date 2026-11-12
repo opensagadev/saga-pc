@@ -1691,6 +1691,12 @@ i32 configureallcharacters_perm = 0;
 char MiniBuffer[0x4000] = {0};
 extern i32 CHARPAK;
 
+static f32 CharConfigFdivPc(f32 a, f32 b) {
+    if (a == 0.0f || b == 0.0f)
+        return 0.0f;
+    return a / b;
+}
+
 static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
     i32 result = 0;
     NUFPAR_PC *parser = NuFParCreateMem("redirect", text, 0xffff);
@@ -1717,12 +1723,7 @@ static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
 }
 
 void CharConfig_CalculateJumpStats(float jump_speed, float gravity, float *duration, float *height) {
-    const f32 downward_speed = 0.0f - jump_speed;
-    f32 ascent_time;
-    if (downward_speed == 0.0f || gravity == 0.0f)
-        ascent_time = 0.0f;
-    else
-        ascent_time = downward_speed / gravity;
+    f32 ascent_time = CharConfigFdivPc(0.0f - jump_speed, gravity);
     if (duration != NULL) {
         *duration = ascent_time * 2.0f;
     }
