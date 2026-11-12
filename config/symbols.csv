@@ -1337,6 +1337,7 @@ address,symbol,size,ctype
 0x4762f0,_Arcade_DrawEndMenu,112,void __cdecl(MENU *)
 0x476360,?HubInitBonusModePc@@YAXXZ,110,
 0x004763d0,?HubDrawBonusModeMenuPc@@YAXHM@Z,1076,
+0x476810,?HubFreePlayCollectionPc@@YAPAUcollection_build_pc_s@@H@Z,43,static COLLECTION_BUILD_PC *(i32)
 0x476840,?Hub_MakeFreePlayList@@YAXHH@Z,526,
 0x476a50,?HubCopyNetworkFreePlayListPc@@YAHXZ,282,
 0x476ba0,?HubUpdateIconWibblePc@@YAXXZ,220,
