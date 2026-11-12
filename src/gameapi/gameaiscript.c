@@ -4397,9 +4397,9 @@ i32 __cdecl Action_BigJumpToLocator(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
 
         if (name != NULL) {
 
-            if (indexed != 0 && (i8)(object->field_280) != -1) {
+            if (indexed != 0 && object != NULL && (i8)(object->field_280) != -1) {
                 sprintf(locator_name, (char *)AILocatorIndexedFormat, name, (i8)(object->field_280));
-            } else if (personal != 0 && object->character_data != NULL) {
+            } else if (personal != 0 && object != NULL && object->character_data != NULL) {
                 sprintf(locator_name, (char *)AILocatorPersonalFormat, name, object->character_data->name);
             } else if (random_count != 0) {
                 sprintf(locator_name, (char *)AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
