@@ -7490,68 +7490,60 @@ extern "C" {
     static i32 CreateTimeBar(VARIPTR *buffer, VARIPTR unused_buffer, i32 *colours, i32 slot_count) {
         TimeBarSet *timebar;
         i32 set;
-        u32 array_bytes = (u32)slot_count * sizeof(i32);
         (void)unused_buffer;
 
         if (buffer != NULL) {
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar = (TimeBarSet *)buffer->void_ptr;
-            buffer->addr += sizeof(TimeBarSet);
+#define TIMEBAR_ALIGNED(vp) (((vp)->addr + 3) & ~3u)
+            timebar = (TimeBarSet *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + sizeof(TimeBarSet);
             memset(timebar, 0, sizeof(TimeBarSet));
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->accumulators[0] = (i32 *)buffer->void_ptr;
-            buffer->addr += array_bytes * 1;
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->accumulators[1] = (i32 *)buffer->void_ptr;
-            buffer->addr += array_bytes * 1;
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->start_times = (NuTime *)buffer->void_ptr;
-            buffer->addr += array_bytes * 2;
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->field_14 = (i32 *)buffer->void_ptr;
-            buffer->addr += array_bytes * 1;
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->field_18 = (i32 *)buffer->void_ptr;
-            buffer->addr += array_bytes * 1;
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->colours = (i32 *)buffer->void_ptr;
-            buffer->addr += array_bytes * 1;
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->toggle_flags = (i32 *)buffer->void_ptr;
-            buffer->addr += array_bytes * 1;
-            buffer->addr = (buffer->addr + 3) & ~3u;
-            timebar->slot_names = (const char **)buffer->void_ptr;
-            buffer->addr += array_bytes * 1;
+            timebar->accumulators[0] = (i32 *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
+            timebar->accumulators[1] = (i32 *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
+            timebar->start_times = (NuTime *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(NuTime);
+            timebar->field_14 = (i32 *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
+            timebar->field_18 = (i32 *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
+            timebar->colours = (i32 *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
+            timebar->toggle_flags = (i32 *)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(i32);
+            timebar->slot_names = (const char **)TIMEBAR_ALIGNED(buffer);
+            buffer->addr = TIMEBAR_ALIGNED(buffer) + slot_count * sizeof(const char *);
+#undef TIMEBAR_ALIGNED
             timebar->uses_buffer = 1;
         } else {
             timebar = (TimeBarSet *)NuAlloc(sizeof(TimeBarSet), NuTimeBarSource, 0xf2);
             memset(timebar, 0, sizeof(TimeBarSet));
-            timebar->accumulators[0] = (i32 *)NuAlloc(array_bytes * 1, NuTimeBarSource, 0xf5);
-            timebar->accumulators[1] = (i32 *)NuAlloc(array_bytes * 1, NuTimeBarSource, 0xf6);
-            timebar->start_times = (NuTime *)NuAlloc(array_bytes * 2, NuTimeBarSource, 0xf7);
-            timebar->field_14 = (i32 *)NuAlloc(array_bytes * 1, NuTimeBarSource, 0xf8);
-            timebar->field_18 = (i32 *)NuAlloc(array_bytes * 1, NuTimeBarSource, 0xf9);
-            timebar->colours = (i32 *)NuAlloc(array_bytes * 1, NuTimeBarSource, 0xfa);
-            timebar->toggle_flags = (i32 *)NuAlloc(array_bytes * 1, NuTimeBarSource, 0xfb);
-            timebar->slot_names = (const char **)NuAlloc(array_bytes * 1, NuTimeBarSource, 0xfc);
+            timebar->accumulators[0] = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf5);
+            timebar->accumulators[1] = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf6);
+            timebar->start_times = (NuTime *)NuAlloc(slot_count * sizeof(NuTime), NuTimeBarSource, 0xf7);
+            timebar->field_14 = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf8);
+            timebar->field_18 = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xf9);
+            timebar->colours = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xfa);
+            timebar->toggle_flags = (i32 *)NuAlloc(slot_count * sizeof(i32), NuTimeBarSource, 0xfb);
+            timebar->slot_names = (const char **)NuAlloc(slot_count * sizeof(const char *), NuTimeBarSource, 0xfc);
             timebar->uses_buffer = 0;
         }
-        memset((void *)timebar->accumulators[0], 0, array_bytes);
-        memset((void *)timebar->accumulators[1], 0, array_bytes);
+        memset((void *)timebar->accumulators[0], 0, slot_count * sizeof(i32));
+        memset((void *)timebar->accumulators[1], 0, slot_count * sizeof(i32));
         /* PC clears four bytes per slot despite allocating an eight-byte NuTime. */
-        memset((void *)timebar->start_times, 0, array_bytes);
-        memset((void *)timebar->field_14, 0, array_bytes);
-        memset((void *)timebar->field_18, 0, array_bytes);
-        memset((void *)timebar->colours, 0, array_bytes);
-        memset((void *)timebar->toggle_flags, 0, array_bytes);
-        memset((void *)timebar->slot_names, 0, array_bytes);
+        memset((void *)timebar->start_times, 0, slot_count * sizeof(i32));
+        memset((void *)timebar->field_14, 0, slot_count * sizeof(i32));
+        memset((void *)timebar->field_18, 0, slot_count * sizeof(i32));
+        memset((void *)timebar->colours, 0, slot_count * sizeof(i32));
+        memset((void *)timebar->toggle_flags, 0, slot_count * sizeof(i32));
+        memset((void *)timebar->slot_names, 0, slot_count * sizeof(const char *));
         set = TimeBarAddSet(timebar);
         if (colours != NULL) {
-            memcpy(timebar->colours, colours, array_bytes);
+            memcpy(timebar->colours, colours, slot_count * sizeof(i32));
         } else if (set == -1) {
-            memcpy(timebar->colours, NuTimeBar_EngineColours, array_bytes);
+            memcpy(timebar->colours, NuTimeBar_EngineColours, slot_count * sizeof(i32));
         } else {
-            memcpy(timebar->colours, NuTimeBar_DefaultColours, array_bytes);
+            memcpy(timebar->colours, NuTimeBar_DefaultColours, slot_count * sizeof(i32));
         }
         timebar->slot_count = slot_count;
         timebar->field_28 = set > 0;
