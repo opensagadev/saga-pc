@@ -278,7 +278,8 @@ void ThingManager::edTimingEnter() {
         eduiMenuAddItem(edTimingMenu, eduiItemSelCreate(3, EdAttr, 0, 4, (void *)cbEdTimingSelect, "All Things"));
         for (i32 i = 0; i < theThingManager->count; i++) {
             BaseThing *thing = theThingManager->things[i];
-            eduiMenuAddItem(edTimingMenu, eduiItemToggleCreate(i + 4, EdAttr, thing->profiling, i + 5, cbEdTimingSelect,
+            i32 selected = thing->profiling;
+            eduiMenuAddItem(edTimingMenu, eduiItemToggleCreate(i + 4, EdAttr, selected, i + 5, cbEdTimingSelect,
                                                                (char *)thing->GetName()));
         }
     }
