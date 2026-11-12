@@ -3861,29 +3861,30 @@ static i32 HubCopyNetworkFreePlayListPc(void) {
 /* 476c80/277; full original directionselector. NativeinternalABI EAXcollection,
  * ECXplayer, stackdirection/index. Keepstaticwithcaller forVC8 internalABI.
  */
-static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, i32 direction, i32 index) {
+static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, i32 direction, i32 current) {
+    const i32 other = (player - 1) & 1;
     const i32 count = collection->count;
     const i32 columns = collection->columns;
-    const i32 span = (count / columns + 1) * columns;
-    const i16 other_model = MissionMenuPacketPc.player_model[(player - 1) & 1];
+    const i32 rows = count / columns + 1;
+    i32 index = current;
     if (direction == 0) {
         do {
             index -= columns;
             if (index < 0) {
-                index += span;
+                index += rows * columns;
                 if (index >= count)
                     index -= columns;
             }
-        } while (collection->list[index].id == other_model);
+        } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     } else if (direction == 1) {
         do {
             index += columns;
             if (index >= count) {
-                if (index < span)
+                if (index < rows * columns)
                     index += columns;
-                index -= span;
+                index -= rows * columns;
             }
-        } while (collection->list[index].id == other_model);
+        } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     } else if (direction == 2) {
         do {
             i32 column = index % columns - 1;
@@ -3892,7 +3893,7 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
             index = index / columns * columns + column;
             if (index >= count)
                 index = count - 1;
-        } while (collection->list[index].id == other_model);
+        } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     } else if (direction == 3) {
         do {
             i32 column = index % columns + 1;
@@ -3902,7 +3903,7 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
             index = row + column;
             if (index >= count)
                 index = row;
-        } while (collection->list[index].id == other_model);
+        } while (collection->list[index].id == MissionMenuPacketPc.player_model[other]);
     }
     return index;
 }
