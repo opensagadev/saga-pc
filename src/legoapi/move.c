@@ -6397,7 +6397,7 @@ void __cdecl Move_VEHICLE(GAMEOBJECT *object) {
 gravity_done:
     DeactivatedCode(object);
     if (object->id == (u16)id_SNOWMOB)
-        Buck_MoveCode(object, pad->buttons_pressed & (GAMEPAD_SPECIAL | GAMEPAD_ACTION));
+        Buck_MoveCode(object, pad->buttons_pressed & (GAMEPAD_ACTION | GAMEPAD_SPECIAL));
     else if (object->id == (u16)id_ZAMSSPEEDER && WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA &&
              object->current_hp < object->field_107e) {
         effect = WORLD->game_debris_sys->entries[134].effect;
@@ -6425,13 +6425,12 @@ gravity_done:
     }
     if ((object->character_data->model_flags & 0x10000000) &&
         (object->character_data->game_character->flags_094 & 8) == 0) {
-        if (object->id == (u16)id_STAP || object->id == (u16)id_STAP2) {
-            if (object->character_model->model_data_b[0x16] == NULL)
-                FireCode(object, pad->buttons_pressed & GAMEPAD_ACTION, pad->buttons_held & GAMEPAD_ACTION, 0.25f, 1);
-            else
-                ShootCode(object, pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 0, 1);
-        } else
+        if (object->id != (u16)id_STAP && object->id != (u16)id_STAP2)
             FireCode(object, pad->buttons_pressed & GAMEPAD_ACTION, pad->buttons_held & GAMEPAD_ACTION, 0.15f, 0);
+        else if (object->character_model->model_data_b[0x16] != NULL)
+            ShootCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 0, 1);
+        else
+            FireCode(object, pad->buttons_pressed & GAMEPAD_ACTION, pad->buttons_held & GAMEPAD_ACTION, 0.25f, 1);
     }
     if (WORLD->current_level == DOGFIGHTA_LDATA)
         CatchUpCode(object, 0.01f, 2.0f, 0);
@@ -6449,8 +6448,8 @@ gravity_done:
     SmartBombCode(object);
     AwkwardShapeCode(object, 0);
     EngineNoiseCode(object, object->character_context == 0x17);
-    if ((((object->flags_1fc & 0x80) && object->current_hp == 1) ||
-         ((object->flags_1fc & 0x80) == 0 && object->current_hp < 2)) &&
+    if (((((object->flags_1fc_word >> 7) & 1) && object->current_hp == 1) ||
+         (((object->flags_1fc_word >> 7) & 1) == 0 && object->current_hp < 2)) &&
         object->character_data->game_character->weapon_action == 10 &&
         (object->character_data->model_flags & 0x4000000) == 0) {
         effect = WORLD->game_debris_sys->entries[96].effect;
@@ -6473,11 +6472,12 @@ gravity_done:
         if (Cheat_IsOn(7) && (pad->buttons_pressed & (GAMEPAD_ACTION | GAMEPAD_SPECIAL)))
             GameAudio_PlaySfx(0x4b, &object->collision_position, 0, 0);
         joint_view = (VEHICLE_JOINT_VIEW_PC *)object;
-        joint_view->joints[0].rotation.x = joint_view->joints[0].rotation.z = 0.0f;
-        joint_view->joints[0].rotation.y = (f32)(-(f64)RotDiff(object->previous_movement_angle, object->field_0x276) *
-                                                 PCAtan2RadianScale / (6.0 * (f64)FRAMETIME));
+        joint_view->joints[0].rotation.x = 0.0f;
         joint_view->joints[0].joint_index = 0;
         joint_view->joints[0].flags = 1;
+        joint_view->joints[0].rotation.y = (f32)(-(f64)RotDiff(object->previous_movement_angle, object->field_0x276) *
+                                                 PCAtan2RadianScale / (6.0 * (f64)FRAMETIME));
+        joint_view->joints[0].rotation.z = 0.0f;
         joint_view->joints[1] = joint_view->joints[0];
         joint_view->joints[1].joint_index = 1;
         joint_view->joint_count = 2;
