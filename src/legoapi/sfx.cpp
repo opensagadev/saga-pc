@@ -86,9 +86,9 @@ void __cdecl PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, i32 play_cou
 }
 
 void __cdecl UpdateRepeatSfx(void) {
+    REPEAT_SFX_ENTRY_PC *entry = RepeatSfxQueue;
     i32 index;
-    for (index = 0; index < 32; ++index) {
-        REPEAT_SFX_ENTRY_PC *entry = &RepeatSfxQueue[index];
+    for (index = 0; index < 32; ++index, ++entry) {
         switch (entry->state) {
             case 1:
             case 3:
@@ -105,12 +105,8 @@ void __cdecl UpdateRepeatSfx(void) {
                     entry->start_delay = entry->repeat_delay;
                     entry->state = 3;
                 } else {
-                    entry->sfx_id = 0;
+                    memset(entry, 0, sizeof(REPEAT_SFX_ENTRY_PC));
                     entry->state = 0;
-                    entry->play_count = 0;
-                    entry->start_delay = 0.0f;
-                    entry->repeat_delay = 0.0f;
-                    entry->position = NULL;
                 }
                 break;
         }
