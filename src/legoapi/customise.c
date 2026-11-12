@@ -946,8 +946,8 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
     preview_side = -1;
     if (active_count == 1)
         preview_side = MissionMenuPacketPc.customise_other_player[active_side] != 0 ? active_side == 0 : active_side;
-    colour = menu_flash == 0 ? 255 : 191;
     message = AddGameMsg_Default;
+    colour = menu_flash == 0 ? 255 : 191;
     for (side = 0; side < 2; ++side) {
         const i32 control_side = active_count == 2                           ? side
                                  : MissionMenuPacketPc.active_player[0] != 0 ? 0
@@ -1017,7 +1017,7 @@ void __cdecl Customiser_Update(CUSTOMISER_LAYERS_PC *input, WORLDINFO *world) {
             i32 locator;
             CUSTOM_RESOURCE_UPDATE_PC *resources;
             i32 material;
-            if (CustomiseMenuYPc[side] == category && GetMenuID() == 12 && customiser_quit == 0 &&
+            if (category == CustomiseMenuYPc[side] && GetMenuID() == 12 && customiser_quit == 0 &&
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
                 (locator = customiser->locator_indices[category]) != -1 && model->points_of_interest[locator] != NULL) {
                 NUVEC position;
