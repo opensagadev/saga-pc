@@ -103,47 +103,43 @@ extern "C" {
             if (area1 != area2 && (areas[area1].flags & single_buffer) != 0) {
                 LWORLD = &WorldInfo[0];
                 WORLD = &WorldInfo[0];
-                end = WorldInfo[0].buffer_end.addr;
-                old_buffer_end = buffer_end->addr;
-                if (end >= old_buffer_end) {
+                if (WorldInfo[0].buffer_end.addr >= buffer_end->addr) {
                     return;
                 }
-                buffer_end->addr = end;
-                WorldInfo[0].buffer_end.addr = old_buffer_end - EDITBUFFERENDSIZE;
+                end = buffer_end->addr - EDITBUFFERENDSIZE;
+                buffer_end->addr = WorldInfo[0].buffer_end.addr;
+                WorldInfo[0].buffer_end.addr = end;
                 return;
             } else if ((areas[area1].flags & single_buffer) != 0) {
                 return;
             }
         }
 
-        end = WorldInfo[0].buffer_end.addr;
-        old_buffer_end = buffer_end->addr;
-        if (end <= old_buffer_end) {
+        if (WorldInfo[0].buffer_end.addr <= buffer_end->addr) {
             return;
         }
-        end += EDITBUFFERENDSIZE;
+        end = WorldInfo[0].buffer_end.addr + EDITBUFFERENDSIZE;
+        WorldInfo[0].buffer_end.addr = buffer_end->addr;
         buffer_end->addr = end;
-        WorldInfo[0].buffer_end.addr = old_buffer_end;
     }
 
+    /* MATCH-EXCEPTION: retail reads the typed gizmotypes global at each use (saga.h declares it void *). */
     void __cdecl GizmoSysClearLevelProgress(void *owner, i32 index) {
-        GIZMOTYPES_PC *registry = (GIZMOTYPES_PC *)gizmotypes;
         GIZMOTYPE_PC *type;
         i32 i;
 
-        if (registry == NULL || registry->count <= 0) {
-            return;
-        }
-
-        type = registry->types;
-        for (i = 0; i < registry->count; ++i, ++type) {
-            if (type->fns.clear_progress_fn != NULL) {
-                void *progress = NULL;
-                if (index >= 0 && type->progress != NULL && index < registry->max_levels) {
-                    progress = type->progress[index];
+        if (gizmotypes != NULL) {
+            type = ((GIZMOTYPES_PC *)gizmotypes)->types;
+            for (i = 0; i < ((GIZMOTYPES_PC *)gizmotypes)->count; ++i, ++type) {
+                if (type->fns.clear_progress_fn != NULL) {
+                    void *progress;
+                    if (type->progress != NULL && index >= 0 && index < ((GIZMOTYPES_PC *)gizmotypes)->max_levels) {
+                        progress = type->progress[index];
+                    } else {
+                        progress = NULL;
+                    }
+                    type->fns.clear_progress_fn(owner, progress);
                 }
-                type->fns.clear_progress_fn(owner, progress);
-                registry = (GIZMOTYPES_PC *)gizmotypes;
             }
         }
     }
