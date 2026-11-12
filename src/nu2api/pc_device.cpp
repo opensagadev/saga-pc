@@ -1124,7 +1124,10 @@ void __thiscall PC_DEVICE_BACKEND_PC::BeginDefaultTargets() {
     for (i32 i = 0; i != 4; ++i) {
         switch (i) {
             case 0:
-                SetRenderTarget(0, target_surfaces[0] != NULL ? target_surfaces[0] : back_buffer);
+                if (target_surfaces[0] != NULL)
+                    SetRenderTarget(0, target_surfaces[0]);
+                else
+                    SetRenderTarget(0, back_buffer);
                 view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
                 view->methods->set_depth_stencil_surface(view, depth_surface);
                 view = reinterpret_cast<GRAPHICS_DEVICE_PC *>(device);
