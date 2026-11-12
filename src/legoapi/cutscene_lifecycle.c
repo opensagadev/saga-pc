@@ -2164,15 +2164,23 @@ static void CutSceneClipTestPc(CUT_INSTANCE_LOAD_PC *instance) {
     instance->flags_88 |= 0x400;
     if (scene->bounds == NULL)
         return;
-    if ((instance->flags_88 & 0x200) != 0 && NuCameraDistSqr(&instance->center) > instance->radius_squared) {
-        instance->flags_88 &= ~0x400U;
-        return;
+    if ((instance->flags_88 & 0x200) != 0) {
+        f32 distance = NuCameraDistSqr(&instance->center);
+        if (distance > instance->radius_squared) {
+            instance->flags_88 &= ~0x400U;
+            return;
+        }
     }
-    if ((instance->flags_88 & 0x100) != 0 &&
-        NuCameraClipTestExtents(&scene->bounds->min, &scene->bounds->max,
-                                (instance->flags_88 & 0x80) != 0 ? &instance->matrix : &NuMtxSetIdentityTemplate, 0.0f,
-                                0) == 0)
-        instance->flags_88 &= ~0x400U;
+    if ((instance->flags_88 & 0x100) != 0) {
+        CUT_LOAD_BOUNDS *bounds = scene->bounds;
+        i32 visible;
+        if ((instance->flags_88 & 0x80) != 0)
+            visible = NuCameraClipTestExtents(&bounds->min, &bounds->max, &instance->matrix, 0.0f, 0);
+        else
+            visible = NuCameraClipTestExtents(&bounds->min, &bounds->max, &NuMtxSetIdentityTemplate, 0.0f, 0);
+        if (visible == 0)
+            instance->flags_88 &= ~0x400U;
+    }
 }
 
 static void CutSceneStreamSkipPc(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
