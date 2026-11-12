@@ -7672,62 +7672,60 @@ i32 __cdecl Action_CnxHelper(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPAC
     (void)packet;
     (void)param_6;
     jump_off_dy = 0.0f;
-    path = NULL;
-    from = NULL;
     to = NULL;
-    grapple = NULL;
     both_ways = 0;
-    if (param_5 == 0 || param_4 <= 0) {
-        return 1;
-    }
-
-    for (index = 0; index < param_4; ++index) {
-        char *value = NuStrIStr(params[index], (char *)"pathname=");
-        if (value != NULL) {
-            path = AISysFindPath(sys, value + strlen("pathname="));
-            continue;
-        }
-        if (NuStrIStr(params[index], (char *)"bothways") != NULL) {
-            both_ways = 1;
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)"from=");
-        if (value != NULL) {
-            from = value + strlen("from=");
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)"to=");
-        if (value != NULL) {
-            to = value + strlen("to=");
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)"jump_off_dy=");
-        if (value != NULL) {
-            jump_off_dy = AIParamToFloat(processor, value + strlen("jump_off_dy="));
-            continue;
-        }
-        value = NuStrIStr(params[index], (char *)"grapple=");
-        if (value != NULL) {
-            GIZMO_PC *gizmo =
-                (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, grapple_gizmotype_id, value + strlen("grapple="));
-            if (gizmo != NULL) {
-                grapple = gizmo->object;
+    from = NULL;
+    path = NULL;
+    grapple = NULL;
+    if (param_5 != 0 && 0 < param_4) {
+        for (index = 0; index < param_4; ++index) {
+            char *value = NuStrIStr(params[index], (char *)"pathname=");
+            if (value != NULL) {
+                path = AISysFindPath(sys, value + strlen("pathname="));
+                continue;
+            }
+            if (NuStrIStr(params[index], (char *)"bothways") != NULL) {
+                both_ways = 1;
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)"from=");
+            if (value != NULL) {
+                from = value + strlen("from=");
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)"to=");
+            if (value != NULL) {
+                to = value + strlen("to=");
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)"jump_off_dy=");
+            if (value != NULL) {
+                jump_off_dy = AIParamToFloat(processor, value + strlen("jump_off_dy="));
+                continue;
+            }
+            value = NuStrIStr(params[index], (char *)"grapple=");
+            if (value != NULL) {
+                GIZMO_PC *gizmo =
+                    (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, grapple_gizmotype_id, value + strlen("grapple="));
+                if (gizmo != NULL) {
+                    grapple = gizmo->object;
+                }
             }
         }
-    }
 
-    if (from != NULL && to != NULL) {
-        i32 direction = 0;
-        AIPATHCNX_PC *connection = (AIPATHCNX_PC *)(AIPAthFindPathCnx(sys, path, from, to, &direction));
-        if (connection != NULL) {
-            if (both_ways) {
-                direction = 0xff;
-            }
-            if (grapple != NULL) {
-                AI_HELPER_SLOT_PC *helper =
-                    AIPathCnxHelperSys_AddHelper(WORLD->ai_connection_helpers, connection, (u8)direction, grapple, 1);
-                if (helper != NULL) {
-                    helper->jump_off_dy = jump_off_dy;
+        if (from != NULL && to != NULL) {
+            i32 direction;
+            AIPATHCNX_PC *connection = (AIPATHCNX_PC *)(AIPAthFindPathCnx(sys, path, from, to, &direction));
+            if (connection != NULL) {
+                if (both_ways) {
+                    direction = 0xff;
+                }
+                if (grapple != NULL) {
+                    AI_HELPER_SLOT_PC *helper = AIPathCnxHelperSys_AddHelper(WORLD->ai_connection_helpers, connection,
+                                                                             (u8)direction, grapple, 1);
+                    if (helper != NULL) {
+                        helper->jump_off_dy = jump_off_dy;
+                    }
                 }
             }
         }
