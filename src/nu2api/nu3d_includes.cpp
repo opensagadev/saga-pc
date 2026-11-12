@@ -10150,6 +10150,25 @@ void NuMainFilterGen::initResources() {
     memset(&dof_enabled, 0, sizeof(dof_enabled) + sizeof(bloom_enabled) + sizeof(motion_blur_enabled));
     active_filter_count = 0;
 }
+/* Bound by the post filters only; private to this unit, so retail passes the program in ESI. The
+ * posteffect_shader_pc.cpp copy and the saga.h declaration are leftovers of the normalized ABI. */
+extern "C" static void PostShaderProgramBindPc(POST_SHADER_PROGRAM_PC *program) {
+    if (program != NULL) {
+        if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
+            PCDeviceSetVertexShaderPc(program->vertex_shader);
+            NuDisplayHandlerVertexShaderCachePc = program->vertex_shader;
+        }
+        if (NuDisplayHandlerPixelShaderCachePc != program->pixel_shader) {
+            PCDeviceSetPixelShaderPc(program->pixel_shader);
+            NuDisplayHandlerPixelShaderCachePc = program->pixel_shader;
+        }
+    } else {
+        PCDeviceSetVertexShaderPc(NULL);
+        PCDeviceSetPixelShaderPc(NULL);
+        NuDisplayHandlerVertexShaderCachePc = NULL;
+        NuDisplayHandlerPixelShaderCachePc = NULL;
+    }
+}
 void NuMainFilterGen::initTextureResources(i32 width, i32 height) {
     blur_texture = PCGraphicsCreateEffectTexture(width / 2, height / 2, 2, 1, 2);
     i32 w = width, h = height;
