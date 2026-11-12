@@ -1314,13 +1314,13 @@ extern "C" {
         f32 m31 = m->m31;
 
         m->m01 = (m01 * cos_x) - (m->m02 * sin_x);
-        m->m02 = m01 * sin_x + m->m02 * cos_x;
-        m->m11 = m11 * cos_x - m->m12 * sin_x;
-        m->m12 = m11 * sin_x + m->m12 * cos_x;
-        m->m21 = m21 * cos_x - m->m22 * sin_x;
-        m->m22 = m21 * sin_x + m->m22 * cos_x;
-        m->m31 = m31 * cos_x - m->m32 * sin_x;
-        m->m32 = m31 * sin_x + m->m32 * cos_x;
+        m->m02 = (m01 * sin_x) + (m->m02 * cos_x);
+        m->m11 = (m11 * cos_x) - (m->m12 * sin_x);
+        m->m12 = (m11 * sin_x) + (m->m12 * cos_x);
+        m->m21 = (m21 * cos_x) - (m->m22 * sin_x);
+        m->m22 = (m21 * sin_x) + (m->m22 * cos_x);
+        m->m31 = (m31 * cos_x) - (m->m32 * sin_x);
+        m->m32 = (m31 * sin_x) + (m->m32 * cos_x);
         return m;
     }
 
