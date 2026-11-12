@@ -91,42 +91,43 @@ HRESULT WavReader::Open(NUDATHDR *header, char *path, WAVEFORMATEX *output) {
         PCDecoderDiagnosticNoOpPc(path);
         file = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0x08000001, NULL);
     }
-    if (file == INVALID_HANDLE_VALUE) {
-        PCDecoderDiagnosticNoOpPc(path);
+    if (file != INVALID_HANDLE_VALUE) {
+        struct {
+            u32 riff;
+            u32 bytes;
+            u32 wave;
+        } riff;
+        DWORD bytes;
+        PC_WAVE_CHUNK_PC chunk;
+        if (!ReadFile(file, &riff, 12, &bytes, NULL) || bytes != 12 || riff.riff != 0x46464952 ||
+            riff.wave != 0x45564157)
+            goto fail;
+        if (!FindChunkPc(file, "fmt ", &chunk) || chunk.bytes < 16)
+            goto fail;
+        memset(&format, 0, sizeof(format));
+        if (!ReadFile(file, &format, 16, &bytes, NULL) || bytes != 16)
+            goto fail;
+        format.cbSize = 0;
+        if (output != NULL)
+            *output = format;
+        if (format.wFormatTag != 1)
+            goto fail;
+        SkipChunkPc(file, &chunk);
+        if (!FindChunkPc(file, "data", &chunk))
+            goto fail;
+        data_offset = chunk.offset;
+        data_bytes = chunk.bytes;
+        if (data_bytes == 0)
+            goto fail;
+        current_sample = first_sample = 0;
+        end_sample = (i32)data_bytes / format.nBlockAlign - 1;
+        return S_OK;
+    fail:
+        CloseHandle(file);
+        file = NULL;
         return E_FAIL;
     }
-    struct {
-        u32 riff;
-        u32 bytes;
-        u32 wave;
-    } riff;
-    DWORD bytes;
-    PC_WAVE_CHUNK_PC chunk;
-    if (!ReadFile(file, &riff, 12, &bytes, NULL) || bytes != 12 || riff.riff != 0x46464952 || riff.wave != 0x45564157)
-        goto fail;
-    if (!FindChunkPc(file, "fmt ", &chunk) || chunk.bytes < 16)
-        goto fail;
-    memset(&format, 0, sizeof(format));
-    if (!ReadFile(file, &format, 16, &bytes, NULL) || bytes != 16)
-        goto fail;
-    format.cbSize = 0;
-    if (output != NULL)
-        *output = format;
-    if (format.wFormatTag != 1)
-        goto fail;
-    SkipChunkPc(file, &chunk);
-    if (!FindChunkPc(file, "data", &chunk))
-        goto fail;
-    data_offset = chunk.offset;
-    data_bytes = chunk.bytes;
-    if (data_bytes == 0)
-        goto fail;
-    first_sample = current_sample = 0;
-    end_sample = (i32)data_bytes / format.nBlockAlign - 1;
-    return S_OK;
-fail:
-    CloseHandle(file);
-    file = NULL;
+    PCDecoderDiagnosticNoOpPc(path);
     return E_FAIL;
 }
 HRESULT WavReader::Read(void *output, u32 requested, u32 *read_count) {
