@@ -1831,8 +1831,11 @@ extern "C" void __cdecl Hub_Update(WORLDINFO *world) {
     } else if (menu == 12 || menu == 13 || menu == 14) {
         HubPreventDropOutTimePc = 1;
     }
-    const f32 pulse = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f);
-    HubTrueJediTypeAlphaPc = (i32)((f64)NuTrigTable[((u16)(i32)((f64)(pulse + pulse) * 65536.0)) >> 1] * 16.0 + 80.0);
+    HubTrueJediTypeAlphaPc =
+        (i32)((f64)NuTrigTable
+                      [((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0)) >> 1] *
+                  16.0 +
+              80.0);
     if (menu == 8)
         HubJabbaAwakePc = 1;
     else if (HubJabbaAwakePc > 0) {
