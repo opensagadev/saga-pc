@@ -1650,13 +1650,21 @@ void edrtlBurnoutFileSave(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem callback identity.
+static void edrtlResetBurnset(BURN_SET_PC *burnset) {
+    i32 index;
+    if (burnset == NULL)
+        return;
+    for (index = 0; index < 32; ++index)
+        burnset->burnouts[index].active = 0;
+    burnset->active_count = 0;
+    burnset->selected_index = -1;
+}
+
 void edrtlBurnoutFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     char name[256];
     char directory[256];
     char extension[256];
     char filename[256];
-    BURN_SET_PC *set;
-    i32 index;
     if (!edbits_level_save_directory[0])
         sprintf(directory, ".");
     else
@@ -1670,13 +1678,7 @@ void edrtlBurnoutFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     else
         strcpy(extension, edbits_level_save_extension);
     sprintf(filename, "%s\\%s.%s", directory, name, extension);
-    set = edrtl_edit_burnset;
-    if (set) {
-        for (index = 0; index < 32; ++index)
-            set->burnouts[index].active = 0;
-        set->active_count = 0;
-        set->selected_index = -1;
-    }
+    edrtlResetBurnset(edrtl_edit_burnset);
     if (NuFileExists(filename))
         edrtlBurnoutLoadSet(filename, edrtl_edit_burnset);
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
