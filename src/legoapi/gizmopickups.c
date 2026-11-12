@@ -315,24 +315,29 @@ GIZMOPICKUP_PC *__cdecl GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *objec
     if (world == NULL || (object->flags_1f8 & 0x40000) != 0)
         return NULL;
     pickup = GizmoPickups_CollideListPc(object, world->pickup_runtime_sys->temporary_pickups, 64);
-    temporary = pickup != NULL;
-    if (pickup == NULL)
+    if (pickup != NULL)
+        temporary = 1;
+    else {
+        temporary = 0;
         pickup = GizmoPickups_CollideListPc(object, world->pickup_runtime_sys->pickups,
                                             world->pickup_runtime_sys->pickup_count);
-    if (pickup == NULL)
-        return NULL;
-    pickup->flags |= 8;
-    if (temporary)
-        pickup->flags &= ~1u;
-    type_index = (pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1 ? GizmoPickupSys->alternate_type
-                                                                                     : pickup->type_index;
-    if (GizmoPickupSys->types[type_index].collection_sfx_name != NULL)
-        PlaySfx(GizmoPickupSys->types[type_index].collection_sfx_name, &pickup->position);
-    if (GizmoPickupSys->types[type_index].collect_fn != NULL)
-        GizmoPickupSys->types[type_index].collect_fn(world, pickup, type_index, object, 0);
-    if ((GizmoPickupSys->types[type_index].flags & 0x40) != 0)
-        ++AreaGlobals_PC.field_18;
-    return pickup;
+    }
+    if (pickup != NULL) {
+        pickup->flags |= 8;
+        if (temporary)
+            pickup->flags &= ~1u;
+        type_index = (pickup->flags & 0x40) != 0 && GizmoPickupSys->alternate_type != -1
+                         ? GizmoPickupSys->alternate_type
+                         : pickup->type_index;
+        if (GizmoPickupSys->types[type_index].collection_sfx_name != NULL)
+            PlaySfx(GizmoPickupSys->types[type_index].collection_sfx_name, &pickup->position);
+        if (GizmoPickupSys->types[type_index].collect_fn != NULL)
+            GizmoPickupSys->types[type_index].collect_fn(world, pickup, type_index, object, 0);
+        if ((GizmoPickupSys->types[type_index].flags & 0x40) != 0)
+            ++AreaGlobals_PC.field_18;
+        return pickup;
+    }
+    return NULL;
 }
 
 void __cdecl GameMsg_Draw_MiniKitDetector(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
