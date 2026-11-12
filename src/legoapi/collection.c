@@ -211,13 +211,11 @@ void __cdecl Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD
 
 void Collection_GetPos(COLLECTION_s *collection, i32 id, float *x, float *y) {
     i32 i;
-    COLLECTID *list = collection->list;
 
     for (i = 0; i < collection->count_y; i++) {
-        if (list[i].id == id) {
-            float *f = (float *)&list[i].cheat_code[8];
-            *x = f[0];
-            *y = f[1];
+        if (collection->list[i].id == id) {
+            *x = ((float *)&collection->list[i].cheat_code[8])[0];
+            *y = ((float *)&collection->list[i].cheat_code[8])[1];
             return;
         }
     }
