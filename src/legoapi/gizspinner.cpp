@@ -163,7 +163,7 @@ static __declspec(noinline) GAMEOBJECT *SpinnerOwnerPc(GIZSPINNER_s *spinner) {
 extern "C" {
     static __declspec(noinline) void SpinnerBoundsResetPc(GIZSPINNER_s *spinner) {
         NUVEC minimum, maximum, arm_minimum, arm_maximum;
-        f32 x_extent, z_extent, extent;
+        f32 x_extent, z_extent;
         NuSpecialGetBounds((NUSPECIALHANDLE *)&spinner->special, &minimum, &maximum);
         if (NuSpecialCompare((NUSPECIALHANDLE *)&thingsSceneBase, (NUSPECIALHANDLE *)&spinner->special) != 0) {
             NuSpecialGetBounds((NUSPECIALHANDLE *)&thingsSceneArm, &arm_minimum, &arm_maximum);
@@ -172,8 +172,10 @@ extern "C" {
         }
         x_extent = maximum.x - minimum.x;
         z_extent = maximum.z - minimum.z;
-        extent = x_extent > z_extent ? x_extent : z_extent;
-        spinner->field_0x094 = extent;
+        if (x_extent > z_extent)
+            spinner->field_0x094 = x_extent;
+        else
+            spinner->field_0x094 = z_extent;
         spinner->state_flags |= 8;
         spinner->animation_speed = 1.0f;
         spinner->type = 4;
