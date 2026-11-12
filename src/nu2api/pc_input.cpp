@@ -623,3 +623,46 @@ NuKeyboardOwner_PC::~NuKeyboardOwner_PC() {
 void __thiscall NuKeyboardOwner_PC::SetMouseEnabledPc(u8 enabled) {
     mouse_enabled = enabled;
 }
+
+STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_delta) == 0x6314);
+STATIC_ASSERT(offsetof(NuKeyboardState_PC, mouse_smoothed) == 0x6320);
+
+/* Eases the smoothed mouse axis towards the latest delta and returns it scaled, with a small dead zone. */
+extern "C" f32 __cdecl NuMouseSmoothAxisPc(i32 axis) {
+    f32 value = nu_input_state->mouse_delta[axis] - nu_input_state->mouse_smoothed[axis];
+    f32 magnitude;
+    u32 magnitude_bits;
+    value = value * 0.125 + nu_input_state->mouse_smoothed[axis];
+    nu_input_state->mouse_smoothed[axis] = value;
+    value = value * 4.0;
+    magnitude = value;
+    magnitude_bits = *(u32 *)&magnitude & 0x7fffffff;
+    if (*(f32 *)&magnitude_bits < 0.01f) {
+        value = 0.0f;
+    }
+    return value;
+}
+
+extern "C" f32 __cdecl NuMouseReadXRel(void) {
+    return NuMouseSmoothAxisPc(0);
+}
+
+extern "C" f32 __cdecl NuMouseReadYRel(void) {
+    return NuMouseSmoothAxisPc(1);
+}
+
+extern "C" f32 __cdecl NuMouseReadZRel(void) {
+    return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+}
+
+extern "C" f32 __cdecl NuMouseReadXVel(void) {
+    return (f32)(nu_input_state->mouse_delta[0] * -4.0);
+}
+
+extern "C" f32 __cdecl NuMouseReadYVel(void) {
+    return (f32)(nu_input_state->mouse_delta[1] * -4.0);
+}
+
+extern "C" f32 __cdecl NuMouseReadZVel(void) {
+    return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+}
