@@ -771,11 +771,11 @@ void __cdecl edppDeleteEffect(i32 index) {
     edppDetermineNearest(1.0f);
 }
 void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    struct eduimenu_s *parent;
+    struct eduimenu_s *parent = NULL;
     edppDeleteEffect(edpp_create_type);
     edpp_create_type = -1;
-    parent = menu->parent;
-    if (parent) {
+    if (menu->parent) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
     }
     if (menu->callback) {
@@ -783,10 +783,10 @@ void cbPtlDeleteEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 void cbPtlQuickDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
-    struct eduimenu_s *parent;
+    struct eduimenu_s *parent = NULL;
     edppDeleteEffect(item->data);
-    parent = menu->parent;
-    if (parent) {
+    if (menu->parent) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
     }
     if (menu->callback) {
@@ -800,8 +800,8 @@ void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edppDeleteEffect(edpp_create_type);
     edpp_create_type = -1;
 
-    parent = menu->parent;
-    if (parent != NULL) {
+    if (menu->parent != NULL) {
+        parent = menu->parent;
         eduiMenuDetach(menu);
     }
     if (menu->callback != NULL) {
