@@ -3520,7 +3520,7 @@ i32 nugraphAddPoint(nugraph_s *graph, f32 x, f32 y) {
         return 0;
     }
     for (index = 0; index < graph->point_count; ++index) {
-        if (graph->x[index] == x) {
+        if (x == graph->x[index]) {
             return 0;
         }
         if (graph->x[index] > x) {
