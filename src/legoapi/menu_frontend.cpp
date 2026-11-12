@@ -592,7 +592,7 @@ extern "C" {
     }
 
     void __cdecl UpdateGameMenu(GAMEPAD_PC *input, i32 check_buttons) {
-        MENU_INPUT_PAD_PC *pad = (MENU_INPUT_PAD_PC *)input;
+        MENU_INPUT_PAD_PC *pad;
         MENU *menu;
         i32 menu_id = GetMenuID();
         i32 menu_active, active_players, device, both_pads = 0;
@@ -625,6 +625,7 @@ extern "C" {
             MenuKeyboardOverrideActivePc = 0;
             MenuKeyboardPendingPc = 0;
         }
+        pad = (MENU_INPUT_PAD_PC *)input;
         menu = &GameMenu[GameMenuLevel];
         previous_menu = menu->menu;
         if ((Paused != 0 || NetPaused != 0) && pause_i_pad != -1) {
@@ -639,36 +640,44 @@ extern "C" {
                    (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
             both_pads = 1;
         } else if (pad == (MENU_INPUT_PAD_PC *)&GamePadStorage[0]) {
-            first_active = 0;
             if (WORLD->current_level == CREDITS_LDATA) {
                 first_active = PlayerProgress[0].active;
                 second_active = PlayerProgress[1].active;
                 if (second_active != 0 && first_active == 0)
                     pad = (MENU_INPUT_PAD_PC *)&GamePadStorage[1];
                 if (first_active == 0 && second_active == 0) {
-                    readpads_always = 1;
                     both_pads = 1;
+                    readpads_always = 1;
                 }
             } else if (Player[0] != NULL && Player[1] != NULL) {
-                first_active = (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0 &&
-                               (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) == 0;
-                second_active = (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0 &&
-                                (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) == 0;
+                first_active = ((GAMEOBJECT *)Player[0])->player_controlled;
+                second_active = ((GAMEOBJECT *)Player[1])->player_controlled;
+                if (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000)
+                    first_active = 0;
+                if (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000)
+                    second_active = 0;
                 if (second_active != 0 && first_active == 0)
                     pad = (MENU_INPUT_PAD_PC *)((GAMEOBJECT *)Player[1])->pad;
                 if (first_active == 0 && second_active == 0) {
-                    readpads_always = 1;
                     both_pads = 1;
+                    readpads_always = 1;
                 }
             } else {
-                readpads_always = 1;
+                first_active = 0;
                 both_pads = 1;
+                readpads_always = 1;
             }
             if (GameMenuLevel != 0) {
-                if (both_pads != 0)
-                    TextInputSetLastDevicePc(PlayerProgress[0].active != 0 ? 0 : 1);
-                else
-                    TextInputSetLastDevicePc(first_active != 0 ? 0 : 1);
+                if (both_pads != 0) {
+                    if (PlayerProgress[0].active != 0)
+                        TextInputSetLastDevicePc(0);
+                    else
+                        TextInputSetLastDevicePc(1);
+                } else if (first_active != 0) {
+                    TextInputSetLastDevicePc(0);
+                } else {
+                    TextInputSetLastDevicePc(1);
+                }
             }
         }
         if (editor_active == 0) {
