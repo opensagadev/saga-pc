@@ -168,36 +168,35 @@ APIDEBRISSYS_PC *__cdecl InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count,
     i32 i;
     i32 j;
     (void)end;
-    cursor->addr = (cursor->addr + 15) & ~15u;
-    system = (APIDEBRISSYS_PC *)cursor->void_ptr;
-    cursor->addr += sizeof(*system);
-    if (system == NULL)
-        return NULL;
-    system->entries = NULL;
-    system->named_count = named_count;
-    system->capacity = count;
-    cursor->addr = (cursor->addr + 15) & ~15u;
-    system->entries = (GAMEDEBRISENTRY_PC *)cursor->void_ptr;
-    cursor->addr += count * sizeof(*system->entries);
-    if (system->entries == NULL)
-        return NULL;
-    memset(system->entries, -1, count * sizeof(*system->entries));
-    for (i = 0; i < system->named_count; ++i) {
-        NuStrCpy(system->entries[i].name, names[i]);
-        system->entries[i].effect = -1;
-        system->entries[i].effect = LookupDebrisEffectPage(system->entries[i].name, page);
-    }
-    for (j = 1; i < system->capacity && j < debinf_count; ++j) {
-        system->entries[i].effect = -1;
-        if (debtab[j] != NULL) {
-            NuStrCpy(system->entries[i].name, debtab[j]->name);
-            system->entries[i].effect = LookupDebrisEffectPageOnly(system->entries[i].name, page);
-            ++i;
+    system = (APIDEBRISSYS_PC *)((cursor->addr + 15) & ~15u);
+    cursor->addr = ((cursor->addr + 15) & ~15u) + sizeof(*system);
+    if (system != NULL) {
+        system->entries = NULL;
+        system->named_count = named_count;
+        system->capacity = count;
+        system->entries = (GAMEDEBRISENTRY_PC *)((cursor->addr + 15) & ~15u);
+        cursor->addr = ((cursor->addr + 15) & ~15u) + count * sizeof(*system->entries);
+        if (system->entries != NULL) {
+            memset(system->entries, -1, count * sizeof(*system->entries));
+            for (i = 0; i < system->named_count; ++i) {
+                NuStrCpy(system->entries[i].name, names[i]);
+                system->entries[i].effect = -1;
+                system->entries[i].effect = LookupDebrisEffectPage(system->entries[i].name, page);
+            }
+            for (j = 1; i < system->capacity && j < debinf_count; ++j) {
+                system->entries[i].effect = -1;
+                if (debtab[j] != NULL) {
+                    NuStrCpy(system->entries[i].name, debtab[j]->name);
+                    system->entries[i].effect = LookupDebrisEffectPageOnly(system->entries[i].name, page);
+                    ++i;
+                }
+            }
+            for (; i < system->capacity; ++i)
+                system->entries[i].effect = -1;
+            return system;
         }
     }
-    for (; i < system->capacity; ++i)
-        system->entries[i].effect = -1;
-    return system;
+    return NULL;
 }
 
 void __cdecl APICharacterModelReset(CHARACTER_MODEL_LAYERS_PC *model) {
