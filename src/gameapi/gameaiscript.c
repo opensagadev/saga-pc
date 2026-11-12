@@ -3260,12 +3260,10 @@ f32 __cdecl Condition_InSameTriggerAreaAsNearestPlayer(AISYS_PC *unused0, AISCRI
             nearest = player;
         }
         if (player2 != NULL) {
-            f32 second_distance = NuVecXZDistSqr(&player2->position, &packet->owner->position, NULL);
-            if (distance > second_distance)
+            if (NuVecXZDistSqr(&player2->position, &packet->owner->position, NULL) < distance)
                 nearest = player2;
         }
-        if (nearest != NULL && ((packet->owner->ai_area_mask[0] & nearest->ai_area_mask[0]) |
-                                (packet->owner->ai_area_mask[1] & nearest->ai_area_mask[1])) != 0)
+        if (nearest != NULL && (U64_PAIR(packet->owner->ai_area_mask) & U64_PAIR(nearest->ai_area_mask)) != 0)
             return 1.0f;
     }
     return 0.0f;
