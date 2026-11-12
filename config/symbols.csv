@@ -2603,6 +2603,8 @@ address,symbol,size,ctype
 0x004efa40,_NuAllocManagerAllocatePc,179,
 0x004efb00,_NuAllocManagerFreePc,227,
 0x004efd50,_NuDatFileDecodeNewFile,39,"void (PC_NUDATFILEINFO *, NUDATOPENFILEINFO *) [private EAX/ECX]"
+0x4efd80,_NuFileEndianSwap16,22,void NuFileEndianSwap16(void *value);
+0x4efda0,_NuFileEndianSwap32,38,void NuFileEndianSwap32(void *value);
 0x004efdf0,_NuFileUpCase,200,"void __cdecl (NUFILE_DEVICE *, char *)"
 0x004efec0,_NuFileReldirFix,106,"void __cdecl (NUFILE_DEVICE *, char *)"
 0x004eff30,_NuFileGetLastError,6,i32 __cdecl (void)
