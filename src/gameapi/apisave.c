@@ -378,7 +378,10 @@ void __cdecl MenuExitCardWarning(MENU *menu) {
 
 void __cdecl MenuUpdateSave(MENU *menu) {
     i32 slot;
-    MenuInfo[menu->menu].cancel_prompt = Menu_DisableCancel == 0;
+    if (Menu_DisableCancel != 0)
+        MenuInfo[menu->menu].cancel_prompt = 0;
+    else
+        MenuInfo[menu->menu].cancel_prompt = 1;
     if (memcard_cardchanged != 0 || saveload_cardtype != 2) {
         MenuEnterSave(menu);
     }
