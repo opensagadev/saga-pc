@@ -239,9 +239,9 @@ static void CreditsDrawListPc(CREDIT_RECORD_PC *credit, f32 time) {
         sprintf(percentage, "%.1f%%", (f64)(points * 100) / HubCompletionPointsPc);
         x = 0.0f;
         if (CreditsFlag == 1)
-            x = (f32)(CreditsAlpha * -(f64)0.1f + (f64)0.1f);
+            x = (f32)((f64)0.1f + (x - (f64)0.1f) * CreditsAlpha);
         else if (CreditsFlag == 3)
-            x = (f32)(0.0 - (1.0 - CreditsAlpha) * (f64)0.1f);
+            x = (f32)(x - (1.0 - CreditsAlpha) * (f64)0.1f);
         alpha = (i32)((i32)(CreditsAlpha * 128.0) * 0.25);
         SmartTextEx(percentage, x, 0.0f, 1.0f, 1.75f, 1.75f, 1.75f, 0, 255, 191, 0, 1.7f, 1, NULL, 0, (u32)alpha);
     }
