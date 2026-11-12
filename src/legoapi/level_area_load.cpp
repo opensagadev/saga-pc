@@ -83,30 +83,27 @@ extern "C" {
         NUFPAR_PC *parser;
         LEVELDATA_PC *level_data;
         LEVELDATA_PC *current_level;
-        i32 in_level_config = 0;
-        i32 level_count = 0;
-        u32 aligned_address;
+        i32 in_level_config;
+        i32 level_count;
 
         parser = NuFParCreate(path);
         if (parser == NULL)
             LevelsConfigDiagnosticPc(path);
         MAXLDATA = max_count;
-        aligned_address = (buffer->addr + 3) & ~3u;
-        buffer->addr = aligned_address;
-        level_data = (LEVELDATA_PC *)buffer->void_ptr;
+        level_data = (LEVELDATA_PC *)((buffer->addr + 3) & ~3u);
+        buffer->void_ptr = level_data;
         current_level = level_data;
+        level_count = 0;
+        in_level_config = 0;
 
         while (NuFParGetLine(parser) != 0) {
-            char *word;
-
             NuFParGetWord(parser);
-            word = parser->word_buffer_ptr;
-            if (word[0] == '\0') {
+            if (parser->word_buffer_ptr[0] == '\0') {
                 continue;
             }
 
             if (in_level_config) {
-                if (NuStrICmp(word, LevelConfigKeywordEnd) == 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordEnd) == 0) {
                     in_level_config = 0;
                     if (current_level->dir[0] == '\0' || current_level->name[0] == '\0' ||
                         (current_level->flags & 0x200) != 0) {
@@ -125,11 +122,11 @@ extern "C" {
                     continue;
                 }
 
-                if (NuStrICmp(word, LevelConfigKeywordDir) == 0) {
+                if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordDir) == 0) {
                     if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x40) {
                         NuStrCpy(current_level->dir, parser->word_buffer_ptr);
                     }
-                } else if (NuStrICmp(word, LevelConfigKeywordFile) == 0) {
+                } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordFile) == 0) {
                     if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x20) {
                         NuStrCpy(current_level->name, parser->word_buffer_ptr);
                     }
@@ -160,8 +157,8 @@ extern "C" {
                 continue;
             }
 
-            if (NuStrICmp(word, LevelConfigKeywordStart) == 0 && level_count < MAXLDATA) {
-                i32 music_index;
+            if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordStart) == 0 && level_count < MAXLDATA) {
+                i32 i;
 
                 current_level->dir[0] = '\0';
                 current_level->name[0] = '\0';
@@ -179,12 +176,12 @@ extern "C" {
                 current_level->display.farclip_hack = PCKeyboardDefaultValue_candidate;
                 current_level->display.near_clip = 0.15f;
                 current_level->display.far_clip = 20000;
-                current_level->display.bg_red_top = 0;
                 current_level->display.bg_red_bottom = 0;
-                current_level->display.bg_green_top = 0;
+                current_level->display.bg_red_top = 0;
                 current_level->display.bg_green_bottom = 0;
-                current_level->display.bg_blue_top = 0;
+                current_level->display.bg_green_top = 0;
                 current_level->display.bg_blue_bottom = 0;
+                current_level->display.bg_blue_top = 0;
 
                 current_level->music_index = -1;
                 current_level->sfx_ambient = -1;
@@ -194,7 +191,7 @@ extern "C" {
                 current_level->unknown_009e = -1;
                 current_level->mipmap_mode = 3;
                 current_level->blob_shadow_alpha = 0x7f;
-                current_level->unknown_00a2 = 0xff;
+                current_level->unknown_00a2 = -1;
                 current_level->area_index = -1;
                 current_level->cam_tilt = 0.0f;
                 current_level->hover_height = 0.0f;
@@ -223,8 +220,8 @@ extern "C" {
                 current_level->conveyor_x_speed = 0.0f;
                 current_level->conveyor_z_speed = 0.0f;
 
-                for (music_index = 0; music_index < 6; music_index++) {
-                    current_level->music_tracks[music_index] = -1;
+                for (i = 0; i < 6; i++) {
+                    current_level->music_tracks[i] = -1;
                 }
 
                 in_level_config = 1;
