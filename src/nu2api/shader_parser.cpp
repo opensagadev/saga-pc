@@ -266,7 +266,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
     char *name = NULL, *custom = NULL;
     ShaderLexicalSlicePc token = {NULL, 0};
     ShaderLexicalReaderPc *reader = reinterpret_cast<ShaderLexicalReaderPc *>(&lexical_state);
-    while (reader->Next(input, cursor, &token)) {
+    while (state != 26 && reader->Next(input, cursor, &token)) {
         switch (state) {
             case 0:
                 if (token.Equals("nu2_use"))
@@ -279,22 +279,24 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                     state = 1;
                 else {
                     token.Equals("nu2_debug");
-                    return;
+                    state = 26;
                 }
                 break;
             case 1:
-                if (token.Equals("true")) {
+                if (token.Equals("true"))
                     SetShowDefinitions(1);
-                    return;
+                else {
+                    if (token.Equals("false"))
+                        count = (count & ~255);
+                    SetShowDefinitions((u8)count);
                 }
-                if (token.Equals("false"))
-                    count = (count & ~255);
-                SetShowDefinitions((u8)count);
-                return;
+                state = 26;
+                break;
             case 2:
-                if (!token.Equals("("))
-                    return;
-                state = 3;
+                if (token.Equals("("))
+                    state = 3;
+                else
+                    state = 26;
                 break;
             case 3:
                 if (token.Equals("vs_local"))
@@ -307,8 +309,10 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                     flags = 0x2010;
                 else if (token.Equals("uniform"))
                     flags = 0x3020;
-                else
-                    return;
+                else {
+                    state = 26;
+                    break;
+                }
                 state = 4;
                 break;
             case 4:
@@ -326,7 +330,8 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
             case 6:
                 if (token.Equals(")"))
                     UseDeclaration(flags, depth, name);
-                return;
+                state = 26;
+                break;
             case 7:
                 token.Equals("(");
                 state = 8;
@@ -351,13 +356,14 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                     shared = 1;
                     state = 9;
                 } else
-                    return;
+                    state = 26;
                 break;
             case 9:
-                if (!token.Equals("uniform"))
-                    return;
-                flags = 0x3020;
-                state = 10;
+                if (token.Equals("uniform")) {
+                    flags = 0x3020;
+                    state = 10;
+                } else
+                    state = 26;
                 break;
             case 10:
                 if (token.Equals(",")) {
@@ -443,8 +449,6 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 else if (token.Equals("samplerCUBE"))
                     type = 20;
                 state = type != 0 ? 14 : 26;
-                if (state == 26)
-                    return;
                 break;
             case 14:
                 if (token.Equals("["))
@@ -452,7 +456,7 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 else if (token.Equals(","))
                     state = 18;
                 else
-                    return;
+                    state = 26;
                 break;
             case 15:
                 if (token.Equals("]")) {
@@ -464,14 +468,16 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                 }
                 break;
             case 16:
-                if (!token.Equals("]"))
-                    return;
-                state = 17;
+                if (token.Equals("]"))
+                    state = 17;
+                else
+                    state = 26;
                 break;
             case 17:
-                if (!token.Equals(","))
-                    return;
-                state = 18;
+                if (token.Equals(","))
+                    state = 18;
+                else
+                    state = 26;
                 break;
             case 18:
                 name = token.ArenaCopy(&memory);
@@ -490,7 +496,8 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
             case 21:
                 if (token.Equals(")"))
                     AddDeclaration(flags, type, count, name, semantic, custom, vertex, pixel);
-                return;
+                state = 26;
+                break;
             case 22:
                 token.Equals("(");
                 state = 23;
@@ -506,14 +513,17 @@ void ShaderCompilerParserPc::ParseDeclaration(ShaderCompilerBufferAllocatorPc *i
                     flags = 0x2002;
                 else if (token.Equals("fs_local"))
                     flags = 0x1004;
-                else
-                    return;
+                else {
+                    state = 26;
+                    break;
+                }
                 state = 24;
                 break;
             case 24:
                 if (token.Equals(")"))
                     EmitDeclarations(flags);
-                return;
+                state = 26;
+                break;
             default:
                 break;
         }
