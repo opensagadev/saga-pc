@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Identify statically linked VC8 runtime and DirectX SDK functions in the retail executable.
 
-The original was linked with /MT against the same libcmt.lib/libcpmt.lib that the
-pinned toolchain ships, and with the August 2007 DirectX SDK's dxerr9.lib. This
+The original was linked with /MT against the same VC8 SP1 libcmt.lib/libcpmt.lib
+that the pinned toolchain ships, and with the August 2007 DirectX SDK's dxerr9.lib. This
 scans every function in those archives, finds the ones that occur exactly once in
 unmapped retail code (relocation fields masked), or whose several occurrences are
 told apart by the linker keeping a member's functions in object order,
@@ -125,6 +125,12 @@ def place_by_order(sequences, code, text_va, anchors=None):
 
 def references(c, code, text_va):
     """(name, address) of each named relocation target of a placed candidate, read from retail."""
+    for relocation, address in reference_fields(c, code, text_va):
+        yield relocation["symbol"], address
+
+
+def reference_fields(c, code, text_va):
+    """(relocation, address) of each named relocation target, read from retail."""
     for relocation in c["region"]["relocations"]:
         name = relocation["symbol"]
         ref = c["obj"].symbol_by_index[relocation["symbol_index"]]
@@ -139,7 +145,30 @@ def references(c, code, text_va):
             address = (c["va"] + offset + 4 + value - addend) & 0xffffffff
         else:
             address = (value - addend) & 0xffffffff
-        yield name, address
+        yield relocation, address
+
+
+def functions_at(records):
+    """{address: names} of the sized code rows of the symbol map."""
+    result = {}
+    for record in records:
+        if record["address"] is not None and record["size"]:
+            result.setdefault(record["address"], set()).add(record["symbol"])
+    return result
+
+
+def displaced_calls(c, occupants, code, text_va):
+    """Direct-call targets of a placed candidate that the map gives to another function.
+
+    A/W twins (`_getenv`/`__wgetenv`, `_fopen_s`/`__wfopen_s`) have equal masked
+    bytes and differ only in the names they call. A REL32 target read from retail
+    that the map already holds as a different function cannot be this twin's
+    callee, so that twin is not the linked copy.
+    """
+    for relocation, address in reference_fields(c, code, text_va):
+        name = relocation["symbol"]
+        if relocation["type"] == 20 and address in occupants and name not in occupants[address]:
+            yield name, address
 
 
 def linked_owners(names, defined, linked):
@@ -280,8 +309,11 @@ def main():
         name = c["symbol"]
         return name not in bindings or (name in unsized and bindings[name] == c["va"])
 
+    occupants = functions_at(records)
+
     def consistent(c):
-        return all(bindings.get(name, address) == address for name, address in references(c, code, text_va))
+        return all(bindings.get(name, address) == address for name, address in references(c, code, text_va)) \
+            and not any(displaced_calls(c, occupants, code, text_va))
     seen = set()
     unique = []
     for c in candidates:

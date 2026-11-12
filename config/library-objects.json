@@ -52,7 +52,9 @@
     "__itoa_s",
     "__ltoa_s",
     "__ultoa_s",
-    "libcmt#00006:@x64toa_s@24"
+    "libcmt#00006:@x64toa_s@24",
+    "__i64toa_s",
+    "__ui64toa_s"
    ]
   },
   {
@@ -124,7 +126,8 @@
     "_iswgraph",
     "_iswcntrl",
     "___iswcsym",
-    "___iswcsymf"
+    "___iswcsymf",
+    "_iswpunct"
    ]
   },
   {
@@ -299,7 +302,9 @@
     "??0bad_exception@std@@QAE@PBD@Z",
     "??1bad_exception@std@@UAE@XZ",
     "??0bad_exception@std@@QAE@ABV01@@Z",
-    "___CxxUnregisterExceptionObject"
+    "___CxxUnregisterExceptionObject",
+    "libcmt#00085:?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z",
+    "libcmt#00085:__ehhandler$?CallUnexpected@@YAXPBU_s_ESTypeList@@@Z"
    ]
   },
   {
@@ -1092,7 +1097,8 @@
     "libcmt#00358:__getenv_s_helper",
     "libcmt#00358:__dupenv_s_helper",
     "_getenv_s",
-    "__dupenv_s"
+    "__dupenv_s",
+    "_getenv"
    ]
   },
   {
@@ -1665,7 +1671,8 @@
    "member": "build\\intel\\mt_obj\\fopen.obj",
    "symbols": [
     "__fsopen",
-    "_fopen"
+    "_fopen",
+    "_fopen_s"
    ]
   },
   {
@@ -1734,7 +1741,9 @@
     "__scprintf",
     "__scprintf_p",
     "__scprintf_l",
-    "__scprintf_p_l"
+    "__scprintf_p_l",
+    "__snprintf_s",
+    "__snprintf_s_l"
    ]
   },
   {
@@ -1783,7 +1792,11 @@
    "symbols": [
     "_vprintf_helper",
     "__vprintf_l",
-    "_vprintf"
+    "_vprintf",
+    "__vprintf_s_l",
+    "__vprintf_p_l",
+    "_vprintf_s",
+    "__vprintf_p"
    ]
   },
   {
@@ -2181,7 +2194,11 @@
     "__get_tzname",
     "__get_daylight",
     "__get_timezone",
-    "__get_dstbias"
+    "__get_dstbias",
+    "___daylight",
+    "___dstbias",
+    "___timezone",
+    "___tzname"
    ]
   },
   {
@@ -2282,7 +2299,8 @@
     "___shr_12",
     "___ld12mul",
     "___multtenpow12",
-    "___strgtold12_l"
+    "___strgtold12_l",
+    "___STRINGTOLD_L"
    ]
   },
   {
@@ -2771,7 +2789,11 @@
     "??1out_of_range@std@@UAE@XZ",
     "??_Gout_of_range@std@@UAEPAXI@Z",
     "?_Xlen@_String_base@std@@SAXXZ",
-    "?_Xran@_String_base@std@@SAXXZ"
+    "?_Xran@_String_base@std@@SAXXZ",
+    "libcpmt#00017:__unwindfunclet$?_Xlen@_String_base@std@@SAXXZ$0",
+    "libcpmt#00017:__ehhandler$?_Xlen@_String_base@std@@SAXXZ",
+    "libcpmt#00017:__unwindfunclet$?_Xran@_String_base@std@@SAXXZ$0",
+    "libcpmt#00017:__ehhandler$?_Xran@_String_base@std@@SAXXZ"
    ]
   }
  ]

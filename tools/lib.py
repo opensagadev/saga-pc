@@ -196,14 +196,21 @@ EH_FUNCLET_PREFIXES = ("__catch$", "__unwindfunclet$", "__ehhandler$", "__tryend
 
 
 def assembler_extents(obj):
-    """Give the procedures of hand-written assembler sections their COFF extent.
+    """Give procedures in sections without a compiler TotalSize their COFF extent.
 
     MASM emits no function TotalSize, and one section holds several procedures
     (memcpy's helpers, `_CIsin`/`_sin`, `_ftol2`/`_ftol2_sse`). Each function-typed
     or public label extends to the next such label or the section end, which is
     exactly how the linker lays the section out. A sole procedure keeps its
-    section-end extent, public labels inside it included. Sections that hold C++ EH
-    funclets (compiler output) are left alone; any compiler TotalSize disables this.
+    section-end extent, public labels inside it included. Any compiler TotalSize
+    disables this.
+
+    The compiler emits no TotalSize around C++ EH funclets either. A `.text$x`
+    section of unwind funclets followed by the `__ehhandler$` gets the same
+    label-to-label extents. A function whose own section also holds its
+    `__catch$` blocks (`std::string::_Copy`, `CallUnexpected`, nothrow `new`)
+    extends over the whole section, as the linker places it; the catch labels
+    stay interior entry points without an extent of their own.
     """
     for number, section in enumerate(obj.sections, 1):
         if not section["characteristics"] & 0x20 or not section["raw_size"] or not section["raw_offset"]:
@@ -211,8 +218,16 @@ def assembler_extents(obj):
         labels = [s for s in obj.symbols
                   if s["section"] == number and s["name"] and s["storage_class"] in (2, 3)
                   and (s["type"] & 0x20 or s["storage_class"] == 2)]
-        if not labels or any(s["aux"] for s in labels) \
-                or any(s.get("local_name", s["name"]).startswith(EH_FUNCLET_PREFIXES) for s in labels):
+        if not labels or any(s["aux"] for s in labels):
+            continue
+        funclets = [s for s in labels if s.get("local_name", s["name"]).startswith(EH_FUNCLET_PREFIXES)]
+        parents = [s for s in labels if s not in funclets]
+        if funclets and parents:
+            interior = all(s.get("local_name", s["name"]).startswith(("__catch$", "__tryend$")) for s in funclets)
+            if interior and len(parents) == 1 and parents[0]["type"] & 0x20 and parents[0]["value"] == 0 \
+                    and all(s["value"] > 0 for s in funclets):
+                parents[0]["aux"] = [struct.pack("<IIIIH", 0, section["raw_size"], 0, 0, 0)]
+                parents[0]["procedure_extent"] = True
             continue
         procedures = [s for s in labels if s["type"] & 0x20]
         if len(procedures) == 1:
@@ -223,7 +238,7 @@ def assembler_extents(obj):
             end = starts[position + 1] if position + 1 < len(starts) else section["raw_size"]
             symbol["type"] |= 0x20
             symbol["aux"] = [struct.pack("<IIIIH", 0, end - symbol["value"], 0, 0, 0)]
-            symbol["assembler_extent"] = True
+            symbol["procedure_extent"] = True
     return obj
 
 

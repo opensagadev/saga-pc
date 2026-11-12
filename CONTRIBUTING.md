@@ -395,8 +395,8 @@ not establish native allocation, waive aliases/padding reuse or change scores.
 
 ## Runtime library
 
-The original links the VC8 runtime statically (`/MT`), and the pinned toolchain
-ships the same `libcmt.lib`/`libcpmt.lib`. `python3 tools/libmatch.py --write`
+The original links the VC8 SP1 runtime statically (`/MT`), and the pinned toolchain
+ships the same SP1 `libcmt.lib`/`libcpmt.lib`. `python3 tools/libmatch.py --write`
 finds archive functions that occur once in unmapped retail code, derives their
 relocation targets from the retail bytes, and keeps only functions that then
 compare byte-exact. A function with several masked occurrences is placed at the
@@ -404,12 +404,18 @@ one that directly follows (or precedes) its placed neighbour from the same membe
 since the linker keeps a member's functions in object order. When several twins
 (A/W variants) claim one address, the one the map or an unambiguous candidate
 refers to there is kept; a candidate whose references contradict the map is
-dropped. An existing map row without a size is completed in place. A function the map
+dropped, as is one whose direct call lands on a different function the map
+already holds (`_getenv` calls `__getenv_helper_nolock`, not
+`__wgetenv_helper_nolock`). An existing map row without a size is completed in place. A function the map
 already binds to one of its masked occurrences is placed there; functions shorter
 than eight bytes are placed only this way. Hand-written assembler members (x87
 transcendental wrappers, `_ftol2`, SEH prolog/epilog, `exsup*`, `adj_fdiv`) carry
 no COFF function sizes: each procedure or public label of such a section extends
-to the next one, as the linker lays the section out. It adds them and their references to `config/symbols.csv`
+to the next one, as the linker lays the section out. The compiler omits the size
+around C++ EH funclets too: unwind funclets and the `__ehhandler$` of a `.text$x`
+section split the same way, and a function whose section also holds its
+`__catch$` blocks (`CallUnexpected`, nothrow `new`, `basic_string::_Copy`) spans
+the whole section. It adds them and their references to `config/symbols.csv`
 and records the members in `config/library-objects.json`; `match.py` compares
 those members like compiled sources. Rerun it after mapping changes.
 

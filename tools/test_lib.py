@@ -584,11 +584,26 @@ class AssemblerExtentTests(unittest.TestCase):
         obj = self.load(code, [("_x", 0, 0, 2), ("_y", 4, 0, 2)])
         self.assertEqual(obj.extract_function("_y")["bytes"], code[4:])
 
-    def test_eh_funclet_sections_are_not_split(self):
-        obj = self.load(bytes(12), [("_f", 0, 0x20, 2), ("__catch$_f$0", 8, 0x20, 2)])
+    def test_catch_blocks_stay_inside_their_function(self):
+        code = bytes(range(1, 13))
+        obj = self.load(code, [("_f", 0, 0x20, 2), ("__catch$_f$0", 8, 0x20, 3)])
         from tools.binary import BinaryError
+        # The function owns its whole section, catch blocks included; they get no extent.
+        self.assertEqual(obj.extract_function("_f")["bytes"], code)
+        with self.assertRaisesRegex(BinaryError, "TotalSize"):
+            obj.extract_function("libtest#00007:__catch$_f$0")
+        # Several non-funclet functions with catch blocks are not split by guesswork.
+        obj = self.load(code, [("_f", 0, 0x20, 2), ("_g", 4, 0x20, 2), ("__catch$_f$0", 8, 0x20, 3)])
         with self.assertRaisesRegex(BinaryError, "TotalSize"):
             obj.extract_function("_f")
+
+    def test_unwind_funclets_and_eh_handler_split_at_each_label(self):
+        code = bytes(range(1, 41))
+        obj = self.load(code, [("__unwindfunclet$_f$0", 0, 0x20, 3), ("__unwindfunclet$_f$1", 8, 0x20, 3),
+                               ("__ehhandler$_f", 16, 0x20, 3)])
+        self.assertEqual(obj.extract_function("libtest#00007:__unwindfunclet$_f$0")["bytes"], code[:8])
+        self.assertEqual(obj.extract_function("libtest#00007:__unwindfunclet$_f$1")["bytes"], code[8:16])
+        self.assertEqual(obj.extract_function("libtest#00007:__ehhandler$_f")["bytes"], code[16:])
 
 
 class ObjectOrderPlacementTests(unittest.TestCase):
@@ -634,6 +649,26 @@ class ObjectOrderPlacementTests(unittest.TestCase):
         self.assertEqual(linked_owners(defined, defined, {("libcmt.lib", 467)}), {"___app_type"})
         self.assertEqual(linked_owners(defined, defined, set()), set())
         self.assertEqual(linked_owners(defined, defined, {("libcmt.lib", 448), ("libcmt.lib", 467)}), set())
+
+    def test_twin_whose_call_lands_on_another_mapped_function_is_rejected(self):
+        from tools.libmatch import displaced_calls, functions_at
+        # call rel32 to 0x1010 from a candidate placed at 0x1000.
+        code = bytes([0xe8]) + struct.pack("<i", 0x1010 - 0x1005) + bytes(27)
+        symbols = {1: {"name": "_helper", "section": 0}, 2: {"name": "_whelper", "section": 0}}
+        records = [{"address": 0x1010, "symbol": "_helper", "size": 16},
+                   {"address": 0x1020, "symbol": "_unsized", "size": None}]
+
+        def candidate(callee):
+            region = {"bytes": bytes([0xe8, 0, 0, 0, 0]), "symbol": {"section": 1},
+                      "relocations": [{"offset": 1, "type": 20, "symbol": symbols[callee]["name"],
+                                       "symbol_index": callee}]}
+            return {"va": 0x1000, "region": region, "obj": SimpleNamespace(symbol_by_index=symbols)}
+        occupants = functions_at(records)
+        self.assertEqual(occupants, {0x1010: {"_helper"}})
+        self.assertEqual(list(displaced_calls(candidate(1), occupants, code, self.TEXT)), [])
+        self.assertEqual(list(displaced_calls(candidate(2), occupants, code, self.TEXT)), [("_whelper", 0x1010)])
+        # An address the map holds without an extent is no evidence.
+        self.assertEqual(list(displaced_calls(candidate(2), functions_at(records[1:]), code, self.TEXT)), [])
 
     def test_backward_placement_and_unresolvable_runs(self):
         code = bytes(64)
