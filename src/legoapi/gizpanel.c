@@ -24,7 +24,7 @@ typedef struct registry_panel_system_pc_s {
     REGISTRY_PANEL_RECORD_PC *panels;
 } REGISTRY_PANEL_SYSTEM_PC;
 typedef struct {
-    u32 triggered, enabled, visible;
+    u32 triggered[1], enabled[1], visible[1];
 } PANEL_PROGRESS_PC;
 typedef struct {
     u8 unused00[0x62];
@@ -104,7 +104,7 @@ static void GizPanel_CreateTerrain(PANEL_MOVEMENT_PC *panel) {
 void GizPanel_InitTerrain(WORLDINFO *world) {
     i32 index;
     PANEL_SYSTEM_PC *system = (PANEL_SYSTEM_PC *)world->giz_panel_sys;
-    if (system == NULL || system->count <= 0)
+    if (system == NULL)
         return;
     for (index = 0; index < ((PANEL_SYSTEM_PC *)world->giz_panel_sys)->count; ++index) {
         ((PANEL_SYSTEM_PC *)world->giz_panel_sys)->panels[index].platform_id = -1;
@@ -235,19 +235,33 @@ void *__cdecl GizPanels_ReserveBufferSpace(void *pointer) {
 }
 
 void __cdecl GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    typedef union PanelVisibleFlagsPc {
+        u8 value;
+        struct {
+            u8 unknown_0 : 2;
+            u8 visible : 1;
+            u8 unknown_3 : 5;
+        } bits;
+    } PanelVisibleFlagsPc;
+    typedef struct PanelVisibleStatePc {
+        u8 unknown_00[0x62];
+        PanelVisibleFlagsPc flags;
+    } PanelVisibleStatePc;
+    STATIC_ASSERT(sizeof(PanelVisibleFlagsPc) == 1);
+    STATIC_ASSERT(offsetof(PanelVisibleStatePc, flags) == 0x62);
     PANEL_MOVEMENT_PC *panel;
+    PanelVisibleStatePc *state;
     i32 was_visible;
     if (gizmo == NULL || gizmo->object == NULL)
         return;
     panel = (PANEL_MOVEMENT_PC *)gizmo->object;
-    was_visible = (panel->flags >> 2) & 1;
-    panel->flags = (u8)((panel->flags & ~4u) | ((visible != 0) << 2));
-    if ((panel->flags & 4) != 0) {
-        if (was_visible == 0)
-            GizPanel_CreateTerrain(panel);
-    } else if (was_visible != 0) {
+    state = (PanelVisibleStatePc *)panel;
+    was_visible = state->flags.bits.visible;
+    state->flags.bits.visible = visible != 0;
+    if (state->flags.bits.visible && !was_visible)
+        GizPanel_CreateTerrain(panel);
+    else if (!state->flags.bits.visible && was_visible)
         DeletePlatinst((i16)panel->platform_id);
-    }
 }
 
 void __cdecl GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position) {
@@ -657,9 +671,9 @@ void __cdecl GizPanels_ClearProgress(void *owner, void *progress_ptr) {
     PANEL_PROGRESS_PC *progress = (PANEL_PROGRESS_PC *)progress_ptr;
     if (progress == NULL)
         return;
-    progress->triggered = 0;
-    progress->enabled = 0xffffffffu;
-    progress->visible = 0xffffffffu;
+    progress->triggered[0] = 0;
+    progress->enabled[0] = 0xffffffffu;
+    progress->visible[0] = 0xffffffffu;
 }
 
 void __cdecl GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
@@ -668,12 +682,13 @@ void __cdecl GizPanels_StoreProgress(void *world_ptr, void *data, void *progress
     PANEL_PROGRESS_SYSTEM_PC *system;
     PANEL_PROGRESS_RECORD_PC *record;
     i32 index;
+    i32 word;
     u32 bit;
     if (progress == NULL)
         return;
-    progress->triggered = 0;
-    progress->enabled = 0xffffffffu;
-    progress->visible = 0xffffffffu;
+    progress->triggered[0] = 0;
+    progress->enabled[0] = 0xffffffffu;
+    progress->visible[0] = 0xffffffffu;
 
     if (world == NULL || world->giz_panel_sys == NULL ||
         ((PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys)->records == NULL)
@@ -681,13 +696,14 @@ void __cdecl GizPanels_StoreProgress(void *world_ptr, void *data, void *progress
     for (index = 0; index < ((PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys)->count && index < 32; ++index) {
         system = (PANEL_PROGRESS_SYSTEM_PC *)world->giz_panel_sys;
         record = &system->records[index];
-        bit = 1u << (index & 31);
+        word = index / 32;
+        bit = 1u << (index % 32);
         if (record->flags & 2)
-            progress->triggered |= bit;
+            progress->triggered[word] |= bit;
         if (!(record->flags & 4))
-            progress->visible &= ~bit;
+            progress->visible[word] &= ~bit;
         if (!(record->flags & 8))
-            progress->enabled &= ~bit;
+            progress->enabled[word] &= ~bit;
     }
 }
 
