@@ -135,16 +135,16 @@ extern "C" {
     }
     static GAMEOBJECT *MiniTrooperNearestPlayerPc(minitrooperteam_s *team) {
         if (player != NULL) {
-            GAMEOBJECT *result = player;
-            f32 x = player->collision_position.x - team->position.x;
-            f32 z = player->collision_position.z - team->position.z;
+            NUVEC second, first;
+            first.x = player->collision_position.x - team->position.x;
+            first.z = player->collision_position.z - team->position.z;
             if (player2 != NULL) {
-                f32 x2 = player2->collision_position.x - team->position.x;
-                f32 z2 = player2->collision_position.z - team->position.z;
-                if (x2 > x && z2 > z)
-                    result = player2;
+                second.x = player2->collision_position.x - team->position.x;
+                second.z = player2->collision_position.z - team->position.z;
+                if (first.x < second.x && first.z < second.z)
+                    return player2;
             }
-            return result;
+            return player;
         }
         return NULL;
     }
