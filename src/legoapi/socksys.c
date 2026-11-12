@@ -604,18 +604,13 @@ static void SockEdgeAnglesXY(NUVEC *from, NUVEC *to, u16 *x, u16 *y) {
 
 SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotations) {
     i32 point;
-    for (point = 0; point < sock->cam->length; ++point) {
+    for (point = 0; point < sock->cam->length; ++point, ++rotations) {
         i32 previous;
         i32 next;
-        i32 samples;
-        f32 scale;
-        NUVEC previous_pos;
-        NUVEC position;
-        NUVEC next_pos;
-        u16 x0;
-        u16 y0;
-        u16 x1;
-        u16 y1;
+        NUVEC previous_pos, position, next_pos;
+        f32 midpoint_scale;
+        u16 x[2], y[2];
+        i32 edge_count;
 
         previous = point - 1;
         if (previous < 0)
@@ -623,66 +618,62 @@ SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotatio
         next = point + 1;
         if (next >= sock->cam->length)
             next = 0;
-
         if (spline != NULL) {
             previous_pos = spline->pts[previous];
             position = spline->pts[point];
             next_pos = spline->pts[next];
         } else {
-            NuVecAdd(&previous_pos, &sock->a->pts[previous], &sock->b->pts[previous]);
-            if ((sock->flags & 1) == 0) {
-                NuVecAdd(&previous_pos, &previous_pos, &sock->c->pts[previous]);
-                NuVecAdd(&previous_pos, &previous_pos, &sock->d->pts[previous]);
-                scale = 0.25f;
-            } else {
-                scale = 0.5f;
-            }
-            NuVecScale(&previous_pos, &previous_pos, scale);
-            NuVecAdd(&position, &sock->a->pts[point], &sock->b->pts[point]);
-            if ((sock->flags & 1) == 0) {
-                NuVecAdd(&position, &position, &sock->c->pts[point]);
-                NuVecAdd(&position, &position, &sock->d->pts[point]);
-                scale = 0.25f;
-            } else {
-                scale = 0.5f;
-            }
-            NuVecScale(&position, &position, scale);
-            NuVecAdd(&next_pos, &sock->a->pts[next], &sock->b->pts[next]);
-            if ((sock->flags & 1) == 0) {
-                NuVecAdd(&next_pos, &next_pos, &sock->c->pts[next]);
-                NuVecAdd(&next_pos, &next_pos, &sock->d->pts[next]);
-                scale = 0.25f;
-            } else {
-                scale = 0.5f;
-            }
-            NuVecScale(&next_pos, &next_pos, scale);
+#define SOCK_RAIL_CORNER_SAMPLE(out, index)                                                                            \
+    NuVecAdd(&(out), &sock->a->pts[index], &sock->b->pts[index]);                                                      \
+    if ((sock->flags & 1) == 0) {                                                                                      \
+        NuVecAdd(&(out), &(out), &sock->c->pts[index]);                                                                \
+        NuVecAdd(&(out), &(out), &sock->d->pts[index]);                                                                \
+        midpoint_scale = 0.25f;                                                                                        \
+    } else                                                                                                             \
+        midpoint_scale = 0.5f;                                                                                         \
+    NuVecScale(&(out), &(out), midpoint_scale)
+            SOCK_RAIL_CORNER_SAMPLE(previous_pos, previous);
+            SOCK_RAIL_CORNER_SAMPLE(position, point);
+            SOCK_RAIL_CORNER_SAMPLE(next_pos, next);
+#undef SOCK_RAIL_CORNER_SAMPLE
         }
-
-        x1 = 0;
-        x0 = 0;
-        y1 = 0;
-        y0 = 0;
-        samples = 2;
-        if (point == 0 && sock->unknown_33 == 0) {
-            SockEdgeAnglesXY(&position, &next_pos, &x0, &y0);
-            samples = 1;
-        } else if (point == sock->cam->length - 1 && sock->unknown_33 == 0) {
-            SockEdgeAnglesXY(&previous_pos, &position, &x0, &y0);
-            samples = 1;
-        } else {
-            SockEdgeAnglesXY(&previous_pos, &position, &x0, &y0);
-            SockEdgeAnglesXY(&position, &next_pos, &x1, &y1);
+        x[0] = x[1] = 0;
+        y[0] = y[1] = 0;
+        edge_count = 2;
+        if (point == 0) {
+            if (sock->looping == 0) {
+                SockEdgeAnglesXY(&position, &next_pos, &x[0], &y[0]);
+                edge_count = 1;
+            }
+        } else if (point == sock->cam->length - 1 && sock->looping == 0) {
+            SockEdgeAnglesXY(&previous_pos, &position, &x[0], &y[0]);
+            edge_count = 1;
         }
-
-        rotations[0].x = x0;
-        rotations[0].y = y0;
-        if (samples > 1) {
-            rotations[0].x = (u16)(x0 + SOCK_ROTATION_DELTA(x0, x1) / 2);
-            rotations[0].y = (u16)(y0 + SOCK_ROTATION_DELTA(y0, y1) / 2);
+        if (edge_count == 2) {
+            SockEdgeAnglesXY(&previous_pos, &position, &x[0], &y[0]);
+            SockEdgeAnglesXY(&position, &next_pos, &x[1], &y[1]);
         }
-        ++rotations;
+        rotations->x = x[0];
+        rotations->y = y[0];
+        if (edge_count > 1) {
+            {
+                i32 difference = x[1] - x[0];
+                if (difference > 0x8000)
+                    difference -= 0x10000;
+                else if (difference < -0x8000)
+                    difference += 0x10000;
+                rotations->x += difference / 2;
+            }
+            {
+                i32 difference = y[1] - y[0];
+                if (difference > 0x8000)
+                    difference -= 0x10000;
+                else if (difference < -0x8000)
+                    difference += 0x10000;
+                rotations->y += difference / 2;
+            }
+        }
     }
-
     return rotations;
 }
 
