@@ -393,12 +393,11 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
     state->state_flags = (u16)((state->state_flags & (u16)~1) | 0x802);
 
     if (box->type == 0) {
-        if ((box->state_flags_low & 0x18) != 0) {
-            if (box->child_count != 0) {
-                state->state_flags |= 0x20;
-            } else {
+        u16 set_visibility = (box->state_flags_low >> 3) & 1;
+        if (set_visibility || (box->state_flags_low & 0x10) != 0) {
+            if (box->child_count == 0) {
                 data = (FLOWBOXGIZMODATA_PC *)box->data;
-                if ((box->state_flags_low & 8) != 0) {
+                if (set_visibility) {
                     for (i = 0; i < data->gizmo_count; ++i)
                         GizmoSetVisibility(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                 } else if ((box->state_flags_low & 0x10) != 0) {
@@ -406,9 +405,11 @@ void __cdecl ProcessFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 frame) {
                         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 0, 1);
                 }
                 state->state_flags &= (u16)~0x20;
+            } else {
+                state->state_flags |= 0x20;
             }
         }
-        if ((box->state_flags_low & 0xc0) != 0) {
+        if ((state->state_flags & 0xc0) != 0) {
             state->state_flags |= 0x120;
             for (i = 0; i < box->parent_count; ++i) {
                 if (box->parents[i]->type == 1)
