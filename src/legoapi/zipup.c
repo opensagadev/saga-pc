@@ -683,7 +683,7 @@ static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
     position->z = object->collision_position.z;
 }
 
-static void ZipUpDrawMarkerPc(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, i32 special, u16 angle, f32 alpha) {
+static void ZipUpDrawMarkerPc(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, u16 angle, i32 special, f32 alpha) {
     NUMTX matrix;
     NUVEC position;
     i32 upper;
@@ -751,9 +751,9 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
                     }
                 }
 
-                ZipUpDrawMarkerPc(zipup, 0, world, ZIPUP_SPECIAL_GROUND_MARKER, spin_angle, pulse_alpha);
+                ZipUpDrawMarkerPc(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
                 if ((zipup->flags & 8) != 0)
-                    ZipUpDrawMarkerPc(zipup, 2, world, ZIPUP_SPECIAL_GROUND_MARKER, spin_angle, pulse_alpha);
+                    ZipUpDrawMarkerPc(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
                 continue;
             }
 
@@ -783,9 +783,9 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
                 continue;
             }
 
-            ZipUpDrawMarkerPc(zipup, 0, world, ZIPUP_SPECIAL_GROUND_SWIRL, spin_angle, pulse_alpha);
+            ZipUpDrawMarkerPc(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
             if ((zipup->flags & 8) != 0)
-                ZipUpDrawMarkerPc(zipup, 2, world, ZIPUP_SPECIAL_GROUND_SWIRL, spin_angle, pulse_alpha);
+                ZipUpDrawMarkerPc(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
         }
     }
 }
