@@ -7646,11 +7646,13 @@ __declspec(noinline) void __cdecl AILocatorSet_CheckLocatorsStillAssigned(AISYS_
 void __cdecl AILocatorSet_AssignNearestLocator(AISYS_PC *system, AILOCATORSET_PC *locator_set, APIOBJECT_PC *object,
                                                f32 max_range, NUVEC *position, NUVEC *second_position,
                                                f32 off_screen_radius, i32 ignore_assigned) {
-    if (object != NULL && locator_set != NULL && object->ai != NULL && position != NULL) {
-        f32 nearest_distance = max_range > 0.0f ? max_range * max_range : FLT_MAX;
-        NUVEC difference;
-        i32 nearest_index = -1;
-        i32 index;
+    f32 nearest_distance = FLT_MAX;
+    NUVEC difference;
+    i32 nearest_index = -1;
+    i32 index;
+    if (locator_set != NULL && object != NULL && object->ai != NULL && position != NULL) {
+        if (max_range > 0.0f)
+            nearest_distance = max_range * max_range;
         if (ignore_assigned != 0) {
             AILocatorSet_CheckLocatorsStillAssigned(system, locator_set);
         }
