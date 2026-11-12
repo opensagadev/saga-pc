@@ -225,20 +225,18 @@ STATIC_ASSERT(sizeof(BULK_AI_FULL_PACKET_PC) == 0x210);
 extern "C" {
     void __cdecl AISysGetPathPos2(AISYS_PC *system, NUVEC *position, AIPATHINFO_PC *path_info, NUVEC *path_position,
                                   AIPATH_PC *, i32) {
-        if (position != NULL && system != NULL && path_info != NULL) {
-            BULK_AI_FULL_OBJECT_PC full_object;
-            BULK_AI_FULL_PACKET_PC full_packet;
-            AIPACKET_PC &packet = full_packet.packet;
-            memset(&full_object, 0, sizeof(full_object));
-            memset(&full_packet, 0, sizeof(full_packet));
-            APIOBJECT_PC *object = &full_object.object;
-            object->ai = &packet;
-            object->position = *position;
-            packet.terrain_origin = *position;
-            AISysGetCharacterPathPos(system, object, &packet, 0xff, 1);
-            *path_info = packet.path_info;
+        if (system != NULL && position != NULL && path_info != NULL) {
+            BULK_AI_FULL_PACKET_PC packet;
+            BULK_AI_FULL_OBJECT_PC object;
+            memset(&object, 0, sizeof(object));
+            memset(&packet, 0, sizeof(packet));
+            object.object.ai = &packet.packet;
+            object.object.position = *position;
+            packet.packet.terrain_origin = *position;
+            AISysGetCharacterPathPos(system, &object.object, &packet.packet, 0xff, 1);
+            *path_info = packet.packet.path_info;
             if (path_position != NULL)
-                *path_position = packet.last_path_position;
+                *path_position = packet.packet.last_path_position;
         }
     }
 }
