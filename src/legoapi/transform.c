@@ -15,7 +15,7 @@ GAMEOBJECT *__cdecl Transform_TargettedByObj(void *target) {
     i32 count = HIGHGAMEOBJECT;
     i32 index;
     for (index = 0; index < count; ++index, ++object) {
-        if ((object->flags_1fc_word & 0x1001) == 0x1001 && object->dead == 0 &&
+        if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
             (object->character_data->game_character->flags_090 & 0x01000000) != 0 && object->transform_alpha > 0.0f &&
             object->transform_target_scale > 0.0f && object->transform_target == target)
             return object;

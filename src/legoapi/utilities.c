@@ -617,9 +617,7 @@ f32 __cdecl RatioAlongLineXZ(NUVEC *point, NUVEC *start, NUVEC *end) {
     u16 angle = (u16)-NuAtan2D(dx, dz);
     f32 sine = NuTrigTable[angle >> 1];
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
-    f32 px = point->x - start->x;
-    f32 pz = point->z - start->z;
-    f32 along = pz * cosine - px * sine;
+    f32 along = (point->z - start->z) * cosine - (point->x - start->x) * sine;
     f32 length;
     if (along <= 0.0f)
         return 0.0f;
@@ -757,27 +755,27 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
 
     distance = XZPointToSegmentPc(&ca, &fraction, a, b, ab_length);
     if (distance < closest) {
+        closest = distance;
         *first = fraction;
         *second = 0.0f;
-        closest = distance;
     }
     distance = XZPointToSegmentPc(&da, &fraction, a, b, ab_length);
     if (distance < closest) {
+        closest = distance;
         *first = fraction;
         *second = 1.0f;
-        closest = distance;
     }
     distance = XZPointToSegmentPc(&ac, &fraction, c, d, cd_length);
     if (distance < closest) {
+        closest = distance;
         *second = fraction;
         *first = 0.0f;
-        closest = distance;
     }
     distance = XZPointToSegmentPc(&bc, &fraction, c, d, cd_length);
     if (distance < closest) {
+        closest = distance;
         *second = fraction;
         *first = 1.0f;
-        closest = distance;
     }
     return closest;
 }
