@@ -1692,9 +1692,9 @@ extern "C" {
             if (GizBuildIt_CanStartBuildingFn != NULL && GizBuildIt_CanStartBuildingFn(buildit, player) == 0)
                 return;
             player->character_context = (i8)LEGOCONTEXT_BUILDIT;
+            player->field_7aa = LEGOACT_BUILD;
             player->context_timer = 0.4f;
             player->flags_e20 &= ~0x4000;
-            player->field_7aa = LEGOACT_BUILD;
             player->grapple = buildit;
             player->big_jump_animation = 0;
             GizBuildIt_SetStepTime((GIZBUILDIT_s *)buildit, player);
