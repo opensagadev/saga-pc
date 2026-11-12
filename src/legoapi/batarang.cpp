@@ -464,22 +464,19 @@ static i32 Batarang_ShouldRicochet(BATARANG_NATIVE_PC *batarang) {
     NUVEC travel, destination;
     NuVecScale(&travel, &batarang->velocity, FRAMETIME * 2.0f);
     NuVecAdd(&destination, &batarang->position, &travel);
-    if (!NewRayCastScaleYMask(&batarang->position, &travel, 0.0f, 1.0f, 0, 0x1f))
-        return 0;
-    i32 platform = TerrainPlatId();
-    if (batarang->flight_state.in_flight != 0 && batarang->flight_state.current_target >= batarang->active)
-        return 1;
-    BATARANG_TARGET_s *current = &batarang->targets[batarang->flight_state.current_target];
-    switch (current->type) {
-        case 0:
-        case 1:
-        case 3:
+    if (NewRayCastScaleYMask(&batarang->position, &travel, 0.0f, 1.0f, 0, 0x1f)) {
+        i32 platform = TerrainPlatId();
+        if (batarang->flight_state.in_flight != 0 && batarang->flight_state.current_target >= batarang->active)
             return 1;
-        case 2:
-            return platform != static_cast<GIZMOBLOWUP_PC *>(current->object)->platform_id;
-        default:
-            return 0;
+        BATARANG_TARGET_s *current = &batarang->targets[batarang->flight_state.current_target];
+        if (current->type == 0 || current->type == 1)
+            return 1;
+        if (current->type == 2)
+            return static_cast<GIZMOBLOWUP_PC *>(current->object)->platform_id != platform;
+        if (current->type == 3)
+            return 1;
     }
+    return 0;
 }
 
 extern "C" void __cdecl Batarangs_Draw(void) {
