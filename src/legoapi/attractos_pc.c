@@ -153,7 +153,7 @@ void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
         matrix = attracto->transform;
         drawn = NuSpecialDrawAt(&world->level_objects[72].special, &matrix);
         attracto->drawn = drawn;
-        if (!attracto->active || attracto->filled || world->level_objects[85].active == 0)
+        if (attracto->filled || !attracto->active || world->level_objects[85].active == 0)
             continue;
         NuMtxSetRotationY(&matrix, spin);
         if (attracto->ground_angle_x != 0)
@@ -162,10 +162,9 @@ void __cdecl Attractos_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
             NuMtxRotateX(&matrix, attracto->ground_angle_z);
         NuMtxTranslate(&matrix, &attracto->active_position);
         if (FindNearestPlayerToVec(&attracto->position, &nearest_player, &distance, 0, 0)) {
-            f64 normalized = (f64)distance / 6.0;
+            f64 normalized;
             f32 alpha;
-            if (!(normalized < 1.0))
-                normalized = 1.0;
+            normalized = MIN((f64)distance / 6.0, 1.0);
             phase = (i32)(normalized * 16384.0 + 49152.0 + 16384.0);
             alpha = (f64)pulse - (f64)NuTrigTable[(phase >> 1) & 0x7fff];
             NuSpecialDrawAtAlpha(&world->level_objects[85].special, &matrix, alpha);
