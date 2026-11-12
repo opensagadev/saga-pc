@@ -1490,13 +1490,10 @@ extern "C" {
 extern "C" void ClearUpAreaData() {
     i32 object_index;
 
-    if (HIGHGAMEOBJECT > 0) {
-        for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
-            GAMEOBJECT *obj = &Obj[object_index];
-            if ((obj->flags_1fc_half & 1) != 0) {
-                FreeTorpedoPacket((TORPEDOPACKET_PC **)&obj->torpedo);
-                RemoveGameObject(&Obj[object_index], 1);
-            }
+    for (object_index = 0; object_index < HIGHGAMEOBJECT; object_index++) {
+        if ((Obj[object_index].flags_1fc_half & 1) != 0) {
+            FreeTorpedoPacket((TORPEDOPACKET_PC **)&Obj[object_index].torpedo);
+            RemoveGameObject(&Obj[object_index], 1);
         }
     }
     if (Area != -1 && Area == last_area) {
