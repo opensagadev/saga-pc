@@ -6596,6 +6596,7 @@ void GuidedMissile_Move(PART_PC *part, f32 time) {
     NUVEC position;
     NUVEC scale;
     GAMEOBJECT *recipient = part->recipient;
+    f32 rotate_speed;
     if (part->scale_time > guided_life) {
         part->field_124[3] = (i32)SeekValF((f32)part->field_124[3], 0.0f, 2.0f);
     } else if (recipient != NULL && part->scale_time > guided_start_time) {
@@ -6612,7 +6613,8 @@ void GuidedMissile_Move(PART_PC *part, f32 time) {
     } else {
         part->field_124[3] = guided_rotate_speed;
     }
-    part->rotation_z += (i32)((f64)part->field_124[3] * FRAMETIME);
+    rotate_speed = (f32)part->field_124[3];
+    part->rotation_z += (i32)(rotate_speed * FRAMETIME);
     part->velocity.x = 0.0f;
     part->velocity.y = 0.0f;
     part->velocity.z = guided_speed;
