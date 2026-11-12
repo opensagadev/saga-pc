@@ -19,19 +19,18 @@ extern "C" void CharScenes_AreaDump() {
         return;
     }
     for (i32 i = 0; i < CHARCOUNT; ++i) {
-        KILLPARTS_CHARSCENE_PC &entry = KillPartsCharSceneAreaPc[i];
-        if (entry.scene != NULL) {
-            NuGScnRemove(entry.scene);
-        }
-        entry.scene = NULL;
+        if (KillPartsCharSceneAreaPc[i].scene != NULL)
+            NuGScnRemove(KillPartsCharSceneAreaPc[i].scene);
+        KillPartsCharSceneAreaPc[i].scene = NULL;
     }
 }
 
 extern "C" void __cdecl CharScenes_Init(VARIPTR *buffer, VARIPTR *end) {
-    buffer->addr = (buffer->addr + 3) & ~3u;
-    KillPartsCharSceneAreaPc = (KILLPARTS_CHARSCENE_PC *)buffer->void_ptr;
-    buffer->addr += CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc);
-    memset(KillPartsCharSceneAreaPc, 0, CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc));
+    u32 size = CHARCOUNT * sizeof(*KillPartsCharSceneAreaPc);
+    KILLPARTS_CHARSCENE_PC *scenes = (KILLPARTS_CHARSCENE_PC *)((buffer->addr + 3) & ~3u);
+    KillPartsCharSceneAreaPc = scenes;
+    buffer->addr = (u32)scenes + size;
+    memset(scenes, 0, size);
 }
 
 typedef struct permanent_material_reader_pc_s {
