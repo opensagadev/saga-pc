@@ -729,17 +729,19 @@ extern "C" {
         BUILDIT_RESET_PC *buildit = (BUILDIT_RESET_PC *)buildit_pointer;
         buildit->availability_flags = (u16)((buildit->availability_flags & ~0x200u) | 3u);
 
-        buildit->start_position = buildit->file_position;
-        buildit->position = buildit->file_position;
+        buildit->start_position = buildit->position = buildit->file_position;
         buildit->bounds_radius = NuTrigTable[0x3000];
 
         if (buildit->anim_set != NULL && buildit->anim_set->objects != NULL) {
             struct gameanimobj_s *object;
             f32 span, span_z;
-            NUVEC start_max = {-1000000000.0f, -1000000000.0f, -1000000000.0f};
-            NUVEC start_min = {1000000000.0f, 1000000000.0f, 1000000000.0f};
-            NUVEC end_min = start_min;
-            NUVEC end_max = start_max;
+            NUVEC start_max, start_min, end_min, end_max;
+            start_min.x = end_min.x = 1000000000.0f;
+            start_max.x = end_max.x = -1000000000.0f;
+            start_max.y = end_max.y = -1000000000.0f;
+            start_max.z = end_max.z = -1000000000.0f;
+            start_min.y = end_min.y = 1000000000.0f;
+            start_min.z = end_min.z = 1000000000.0f;
 
             for (object = buildit->anim_set->objects; object != NULL; object = object->next) {
                 NUMTX evaluated;
@@ -753,9 +755,9 @@ extern "C" {
                     data->start_mtx.m31 -= buildit->linked_buildit->file_position.y;
                     data->start_mtx.m32 -= buildit->linked_buildit->file_position.z;
                     NuMtxRotateY(&data->start_mtx, buildit->linked_rotation);
-                    data->start_mtx.m30 += buildit->file_position.x;
-                    data->start_mtx.m31 += buildit->file_position.y;
-                    data->start_mtx.m32 += buildit->file_position.z;
+                    data->start_mtx.m30 = buildit->file_position.x + data->start_mtx.m30;
+                    data->start_mtx.m31 = buildit->file_position.y + data->start_mtx.m31;
+                    data->start_mtx.m32 = buildit->file_position.z + data->start_mtx.m32;
                     data->draw_mtx = data->start_mtx;
                 }
 
@@ -766,9 +768,9 @@ extern "C" {
                     data->end_mtx.m31 -= buildit->linked_buildit->file_position.y;
                     data->end_mtx.m32 -= buildit->linked_buildit->file_position.z;
                     NuMtxRotateY(&data->end_mtx, buildit->linked_rotation);
-                    data->end_mtx.m30 += buildit->file_position.x;
-                    data->end_mtx.m31 += buildit->file_position.y;
-                    data->end_mtx.m32 += buildit->file_position.z;
+                    data->end_mtx.m30 = buildit->file_position.x + data->end_mtx.m30;
+                    data->end_mtx.m31 = buildit->file_position.y + data->end_mtx.m31;
+                    data->end_mtx.m32 = buildit->file_position.z + data->end_mtx.m32;
                 }
 
                 if (data->start_mtx.m30 < start_min.x)
