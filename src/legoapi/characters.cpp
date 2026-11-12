@@ -326,32 +326,31 @@ extern "C" void __cdecl UpdateCharacterIdle(GAMEOBJECT *object) {
 }
 
 extern "C" void __cdecl PostAnimate_FETT(GAMEOBJECT *object) {
-    i8 context = object->character_context;
     i32 count, first_joint;
-    if (object->dead != 0)
-        return;
-    if (context != -1 && !((context == 21 && object->field_7aa == 62) || (context == 20 && object->field_7aa == 77) ||
-                           (context == 46 && object->field_7aa == 111) || (context == 10 && object->field_7aa == 60)))
-        return;
-    if (object->jump_variant_state != 1 || object->origin_joint_ready == 0)
-        return;
-    count = ParticlesPerSecond(100.0f, FRAMETIME);
-    first_joint = object->id == (u16)id_BOBAFETT ? 10 : 7;
-    if (object->character_model->points_of_interest[first_joint] != NULL)
-        AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[first_joint].translation, count, 0,
-                         object->facing_angle);
-    if (object->character_model->points_of_interest[8] != NULL)
-        AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[8].translation, count, 0,
-                         object->facing_angle);
-    PlaySfx((char *)"JgThrust", &object->collision_position);
+    if (object->dead == 0 &&
+        (object->character_context == -1 || (object->character_context == 21 && object->field_7aa == 62) ||
+         (object->character_context == 20 && object->field_7aa == 77) ||
+         (object->character_context == 46 && object->field_7aa == 111) ||
+         (object->character_context == 10 && object->field_7aa == 60)) &&
+        object->jump_variant_state == 1 && object->origin_joint_ready != 0) {
+        count = ParticlesPerSecond(100.0f, FRAMETIME);
+        first_joint = object->id == (u16)id_BOBAFETT ? 10 : 7;
+        if (object->character_model->points_of_interest[first_joint] != NULL)
+            AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[first_joint].translation, count, 0,
+                             object->facing_angle);
+        if (object->character_model->points_of_interest[8] != NULL)
+            AddGameDebrisRot(WORLD->game_debris_sys, 27, &object->locator_matrices[8].translation, count, 0,
+                             object->facing_angle);
+        PlaySfx((char *)"JgThrust", &object->collision_position);
+    }
 }
 
 extern "C" void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
     CHARACTER_COMMUNICATE_READER_PC *state = (CHARACTER_COMMUNICATE_READER_PC *)object;
-    i8 context = object->character_context;
     i32 count, effect, locator;
     NUVEC position;
-    if (object->dead == 0 && context == 0 && object->model_draw_result != 0 && object->origin_joint_ready != 0 &&
+    if (object->dead == 0 && object->character_context == 0 && object->model_draw_result != 0 &&
+        object->origin_joint_ready != 0 &&
         (object->jump_variant_state != 3 || (object->pad->buttons_held & GAMEPAD_JUMP) != 0)) {
         count = ParticlesPerFrame(object->jump_variant_state == 3 ? 0.25f : 1.0f, FRAMETIME);
         if (count > 0) {
@@ -365,7 +364,7 @@ extern "C" void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
         }
         PlaySfxAndSetVolume((char *)"R2Thrust", &object->collision_position,
                             object->jump_variant_state == 3 ? 0.5f : 1.0f);
-    } else if (context == -1 && object->pad->input_magnitude > 0.0f) {
+    } else if (object->character_context == -1 && object->pad->input_magnitude > 0.0f) {
         if (state->communicate_blend > 0.0f)
             PlaySfx((char *)"drd_r2_mvt_water_lp", &object->upper_position);
         else if (object->field_281 != 0)
@@ -379,7 +378,7 @@ extern "C" void __cdecl PostAnimate_ASTROMECH(GAMEOBJECT *object) {
                 locator = object->character_data->game_character->thingy_locator;
                 if (locator != -1) {
                     position = object->locator_matrices[locator].translation;
-                    if (object->field_283 == 9 && object->water_height > position.y)
+                    if (object->field_283 == 9 && position.y < object->water_height)
                         position.y = object->water_height;
                     AddVariableShotDebrisEffect(effect, &position, count, 0, 0);
                 }
@@ -447,10 +446,11 @@ STATIC_ASSERT(offsetof(CHARACTERANIM_CONFIG_PC, action_id) == 8);
 // Genuine character subsystem callback; arg1 prefix, arg4 output are PC order.
 i32 __cdecl RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG_PC *animation, char *output_path) {
     const ANIM_REDIRECT_VIEW_PC *redirect;
+    const char *name;
     if (list == NULL)
         return 0;
-    for (redirect = (const ANIM_REDIRECT_VIEW_PC *)list; redirect->name != NULL; ++redirect) {
-        if (redirect->animation_id == animation->action_id && NuStrICmp(redirect->name, animation->name) == 0) {
+    for (redirect = (const ANIM_REDIRECT_VIEW_PC *)list; (name = redirect->name) != NULL; ++redirect) {
+        if (redirect->animation_id == animation->action_id && NuStrICmp(name, animation->name) == 0) {
             NuStrCpy(output_path, directory);
             NuStrCat(output_path, animation->name);
             animation->flags &= ~8u;
