@@ -9640,19 +9640,17 @@ i32 __cdecl Action_SetForceBack(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
 i32 __cdecl Action_FaceCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 param_4, i32 param_5, f32 param_6) {
     GAMEOBJECT *object;
-    f32 completion_time;
     NUMTX *camera;
+    f32 minimum_time = 0.0f;
+    f32 maximum_time = 0.0f;
     (void)sys;
     if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner == NULL) {
         return 1;
     }
 
     object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
-    completion_time = 0.0f;
     if (param_5 != 0) {
         i32 index;
-        f32 minimum_time = 0.0f;
-        f32 maximum_time = 0.0f;
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp("look_at_camera", params[index]) == 0) {
                 processor->action_data_1 = 1;
@@ -9679,9 +9677,9 @@ i32 __cdecl Action_FaceCamera(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPA
             SetHeadTarget(object, object->ai_packet.movement_look_target, 6, 1.0f, 0.0f, 0.0f);
         }
     }
-    if (processor->action_timer > completion_time) {
+    if (processor->action_timer > 0.0f) {
         processor->action_timer -= param_6;
-        if (completion_time >= processor->action_timer) {
+        if (processor->action_timer <= 0.0f) {
             processor->action_timer = 0.0f;
             return 1;
         }
