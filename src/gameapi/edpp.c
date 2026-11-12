@@ -1,6 +1,6 @@
 #include "saga.h"
 #pragma bss_seg(".bss$edptl_detail_menu")
-static struct eduimenu_s *edptl_detail_menu = 0;
+struct eduimenu_s *edptl_detail_menu = 0;
 #pragma bss_seg(".bss$grad_jib_x_amp_item")
 static struct edui_slider_s *grad_jib_x_amp_item = 0;
 #pragma bss_seg()
@@ -3123,10 +3123,10 @@ void __cdecl edptlcbDetailMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
         eduiMenuAddItem(edptl_detail_menu, eduiItemSliderCreate(0, edblack, 0, edptlcbSetMaxThin, 1.0f, 9.0f,
                                                                 effect->thinning, "Maximum Thinning"));
         eduiMenuAddItem(edptl_detail_menu,
-                        eduiItemToggleCreate(4, edblack, (edpp_ptls[edpp_nearest].detail_levels >> 2) & 1, 1,
+                        eduiItemToggleCreate(4, edblack, (edpp_ptls[edpp_nearest].detail_levels & 4u) >> 2, 1,
                                              edptlcbSetDetail, "High Detail"));
         eduiMenuAddItem(edptl_detail_menu,
-                        eduiItemToggleCreate(2, edblack, (edpp_ptls[edpp_nearest].detail_levels >> 1) & 1, 2,
+                        eduiItemToggleCreate(2, edblack, (edpp_ptls[edpp_nearest].detail_levels & 2u) >> 1, 2,
                                              edptlcbSetDetail, "Medium Detail"));
         eduiMenuAddItem(edptl_detail_menu, eduiItemToggleCreate(1, edblack, edpp_ptls[edpp_nearest].detail_levels & 1,
                                                                 3, edptlcbSetDetail, "Low Detail"));
