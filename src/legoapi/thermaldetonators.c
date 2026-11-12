@@ -148,14 +148,15 @@ i32 __cdecl PartDraw_ThermalDetonator(PART_PC *part) {
     NUMTX matrix = part->transform;
     NUMTX reflection;
     i32 reflected = 0;
-    i32 level_index = -1;
-    if ((part->active & 0x20000) != 0 && (f64)part->reflection_height != 2000000.0)
-        reflected =
-            MatrixReflection(&matrix, 2, part->reflection_height, WORLD->current_level->reflection_y, &reflection) != 0;
+    i32 level_index;
+    if ((part->active & 0x20000) != 0 && (f64)part->reflection_height != 2000000.0 &&
+        MatrixReflection(&matrix, 2, part->reflection_height, WORLD->current_level->reflection_y, &reflection) != 0)
+        reflected = 1;
     if (WORLD->level_objects[0xea].active != 0 && WORLD->level_objects[0xeb].active != 0) {
         level_index = draw != 0 ? 0xea : 0xeb;
         NuSpecialDrawAt(&WORLD->level_objects[level_index].special, &matrix);
-    }
+    } else
+        level_index = -1;
     if (reflected != 0) {
         NuRndrStartReflectionRender(1);
         if (part->source_special != NULL)
