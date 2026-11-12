@@ -255,12 +255,14 @@ static void __cdecl Technos_LateUpdate(void *world_ptr, void *data, f32 delta_ti
     TECHNO_CALLBACK_PC *techno;
     i32 index;
     f32 rate;
+    f32 target;
     if (world == NULL || world->technos == NULL)
         return;
     techno = (TECHNO_CALLBACK_PC *)world->technos;
     for (index = 0; index < world->techno_count; ++index, ++techno) {
+        target = (techno->flags & 4) != 0 ? 1.0f : 0.0f;
         rate = (f32)((f64)FRAMETIME * 2.5);
-        techno->ground_offset = SeekLinearF(techno->ground_offset, (techno->flags & 4) != 0 ? 1.0f : 0.0f, rate);
+        techno->ground_offset = SeekLinearF(techno->ground_offset, target, rate);
     }
 }
 static void __cdecl Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
