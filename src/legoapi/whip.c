@@ -32,8 +32,8 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
                     case 3:
                         target = (GIZMOBLOWUP_PC *)object->grapple;
                         if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
-                            object->context_timer = 0.0f;
                             object->field_7aa = LEGOACT_WHIP_GRAB;
+                            object->context_timer = 0.0f;
                             object->field_7b3 = 3;
                             object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
@@ -46,8 +46,8 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
                     case 2:
                         target = (GIZMOBLOWUP_PC *)object->grapple;
                         if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
-                            object->context_timer = 0.0f;
                             object->field_7aa = LEGOACT_WHIP_BREAK;
+                            object->context_timer = 0.0f;
                             object->field_7b3 = 2;
                             object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                             object->context_variant_flags &= ~0x40u;
@@ -61,8 +61,8 @@ void __cdecl Whip_MoveCode(GAMEOBJECT *object) {
                         break;
                 }
                 view->whip_action = 1;
-                object->context_timer = 0.0f;
                 object->field_7aa = LEGOACT_WHIP_CRACK;
+                object->context_timer = 0.0f;
                 object->field_7b3 = 1;
                 object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
                 object->context_variant_flags &= ~0x40u;
