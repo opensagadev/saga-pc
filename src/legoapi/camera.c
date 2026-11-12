@@ -740,7 +740,7 @@ void UpdatePlayerCameraOcclusionPc(void) {
         i32 i;
         for (i = 0; i < 2; i++) {
             GAMEOBJECT *object = Player[i];
-            if (object == NULL || ((i8)(object->flags_1fc)) >= 0)
+            if (object == NULL || (object->flags_1fc & 0x80) == 0)
                 continue;
             if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == 0x2b ||
                 object->hud_icon_timer > 0.0f || GetMenuID() != -1 || object->character_context == 0x0f ||
@@ -751,13 +751,11 @@ void UpdatePlayerCameraOcclusionPc(void) {
                 object->flags_ef0 &= ~0x180000u;
             } else {
                 i32 was_blocked = (object->flags_ef0 >> 19) & 1;
-                i32 changed = 0;
                 if ((GameTimer.update_count & 1) == i) {
                     NUVEC ray;
                     i32 blocked;
                     NUVEC sample;
-                    sample.x = 0.0f;
-                    sample.y = 0.0f;
+                    sample.x = sample.y = 0.0f;
                     sample.z = (qrand() * (1.0f / 65535.0f)) * object->bounds_radius;
                     NuVecRotateX(&sample, &sample, ((i32)((qrand() * (1.0f / 65535.0f)) * -16384.0f)));
                     sample.y *= object->bounds_half_height / object->bounds_radius;
@@ -765,20 +763,20 @@ void UpdatePlayerCameraOcclusionPc(void) {
                     NuVecAdd(&sample, &sample, &object->collision_position);
 
                     NuVecSub(&ray, &sample, &GameCam->position);
-                    blocked = NewRayCastScaleYMask(&GameCam->position, &ray, 0.0f, 1.0f, 0, 0x1f) & 1;
-                    object->flags_ef0 = (object->flags_ef0 & ~0x80000u) | ((u32)blocked << 19);
-                    if (was_blocked != blocked) {
-                        object->tag_reset_timer = 0.0f;
-                        changed = 1;
-                    }
+                    blocked = NewRayCastScaleYMask(&GameCam->position, &ray, 0.0f, 1.0f, 0, 0x1f);
+                    object->flags_ef0 = (object->flags_ef0 & ~0x80000u) | (((u32)blocked & 1) << 19);
                 }
-                if (!changed && object->tag_reset_timer < 0.3f) {
-                    object->tag_reset_timer += FRAMETIME;
-                    if (object->tag_reset_timer >= 0.3f) {
-                        object->tag_reset_timer = 0.3f;
-                        object->flags_ef0 = (object->flags_ef0 & ~0x100000u) | ((u32)was_blocked << 20);
+                if (((object->flags_ef0 >> 19) & 1) == was_blocked) {
+                    if (object->tag_reset_timer < 0.3f) {
+                        object->tag_reset_timer += FRAMETIME;
+                        if (object->tag_reset_timer >= 0.3f) {
+                            object->tag_reset_timer = 0.3f;
+                            object->flags_ef0 =
+                                (object->flags_ef0 & ~0x100000u) | (((object->flags_ef0 >> 19) & 1) << 20);
+                        }
                     }
-                }
+                } else
+                    object->tag_reset_timer = 0.0f;
             }
             object->pause_context_state = SeekLinearF(object->pause_context_state,
                                                       (object->flags_ef0 & 0x100000) ? 1.0f : 0.0f, 3.0f * FRAMETIME);
