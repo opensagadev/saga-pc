@@ -965,8 +965,7 @@ void *__cdecl NuGCutSceneLoad(char *path, VARIPTR *buffer, VARIPTR *end, i32 no_
                     first_animation = scene->rigid_system->rigids->animation;
                 else if (scene->character_system != NULL && scene->character_system->characters->animation != NULL)
                     first_animation = scene->character_system->characters->animation;
-                else if (scene->character_system != NULL &&
-                         scene->character_system->characters->face_animation != NULL)
+                else if (scene->character_system != NULL && scene->character_system->characters->face_animation != NULL)
                     first_animation = scene->character_system->characters->face_animation;
                 if (scene->stream_buffer_offset != 0)
                     first_animation = (void *)(buffer->addr + scene->stream_buffer_offset);
