@@ -362,14 +362,10 @@ extern "C" void *__cdecl GizSpinner_ReserveBufferSpace(void *pointer) {
 
 extern "C" void GizSpinners_InitTerrain(WORLDINFO *world) {
     i32 index;
-    i32 use_default_terrain;
-    if (world->spinners == NULL || world->current_level->max_spinners == 0) {
+    i32 use_default_terrain = 0;
+    if (world->spinners == NULL)
         return;
-    }
-
-    index = 0;
-    use_default_terrain = 0;
-    do {
+    for (index = 0; index < world->current_level->max_spinners; ++index) {
         if ((world->spinners[index].flags & GIZSPINNER_FLAG_VALID) != 0) {
             NUMTX matrix;
             i32 instance = NuSpecialGetInstanceix((NUSPECIALHANDLE *)&world->spinners[index].special);
@@ -409,8 +405,7 @@ extern "C" void GizSpinners_InitTerrain(WORLDINFO *world) {
                 }
             }
         }
-        ++index;
-    } while (world->current_level->max_spinners > index);
+    }
 }
 
 extern "C" GIZSPINNER_s *__cdecl GizSpinner_FindBySpecialName(void *world_ptr, char *name) {
