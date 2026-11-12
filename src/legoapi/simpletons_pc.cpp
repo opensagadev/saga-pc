@@ -179,12 +179,13 @@ extern "C" {
             case 4: {
                 const u16 angle = static_cast<u16>(team->facing_angle + 0x8000);
                 NUVEC formation;
+                NUVEC rotated;
                 formation.y = 0.0f;
                 trooper = team->troopers;
                 for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
                     formation.x = trooper->formation_x;
                     formation.z = trooper->formation_z;
-                    NuVecRotateY(&position, &formation, angle);
+                    NuVecRotateY(&rotated, &formation, angle);
                     trooper->formation_x = formation.x;
                     trooper->formation_z = formation.z;
                 }
