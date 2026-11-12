@@ -1530,16 +1530,12 @@ void __cdecl NuMtxAlignX(NUMTX *m, NUVEC *v) {
 
 void __cdecl NuMtxAlignY(NUMTX *m, NUVEC *v) {
     f32 s;
-    f32 m22; // MATCH-EXCEPTION: m22 and m12 read into locals before the m01 row; x87 operand order
-    f32 m12;
     m->m10 = v->x;
     m->m11 = v->y;
     m->m12 = v->z;
-    m->m00 = m->m11 * m->m22 - m->m12 * m->m21;
-    m22 = m->m22;
-    m12 = m->m12;
-    m->m01 = m12 * m->m20 - m->m10 * m22;
-    m->m02 = m->m10 * m->m21 - m->m11 * m->m20;
+    m->m00 = (m->m11 * m->m22) - (m->m12 * m->m21);
+    m->m01 = (m->m12 * m->m20) - (m->m10 * m->m22);
+    m->m02 = (m->m10 * m->m21) - (m->m11 * m->m20);
 
     s = NuFsqrt(m->m00 * m->m00 + m->m01 * m->m01 + m->m02 * m->m02);
     s = NuFdiv(1.0f, s);
