@@ -1461,12 +1461,10 @@ extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius
     query->inverse_object_scale = inverse_scale;
     query->inverse_object_scale_sq = inverse_scale * inverse_scale;
     query->collision_radius = radius;
-    f32 inverse_radius;
     if (radius == 0.0f)
-        inverse_radius = 0.0f;
+        query->inverse_collision_radius = 0.0f;
     else
-        inverse_radius = 1.0f / radius;
-    query->inverse_collision_radius = inverse_radius;
+        query->inverse_collision_radius = 1.0f / radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -1488,8 +1486,7 @@ extern "C" i32 NewRayCastScaleYMask(NUVEC *position, NUVEC *movement, f32 radius
     if (query->hit_type != 0) {
         RayImpact(movement);
         TerrainImpactNorm();
-        query = static_cast<TerrainQuery_s *>(TerI);
-        GetSurfaceInfoSurfaceNormalPc = query->movement_normal;
+        GetSurfaceInfoSurfaceNormalPc = static_cast<TerrainQuery_s *>(TerI)->movement_normal;
         movement->y *= query->object_scale;
     }
     NuScratchRelease();
@@ -1546,12 +1543,10 @@ extern "C" i32 NewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan
     TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    f32 inverse_radius;
     if (radius == 0.0f)
-        inverse_radius = 0.0f;
+        query->inverse_collision_radius = 0.0f;
     else
-        inverse_radius = 1.0f / radius;
-    query->inverse_collision_radius = inverse_radius;
+        query->inverse_collision_radius = 1.0f / radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -1594,12 +1589,10 @@ extern "C" i32 NewRayCastMask(NUVEC *position, NUVEC *movement, f32 radius, i32 
     TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    f32 inverse_radius;
     if (radius == 0.0f)
-        inverse_radius = 0.0f;
+        query->inverse_collision_radius = 0.0f;
     else
-        inverse_radius = 1.0f / radius;
-    query->inverse_collision_radius = inverse_radius;
+        query->inverse_collision_radius = 1.0f / radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -1643,12 +1636,10 @@ extern "C" i32 NewRayCastSet(NUVEC *position, NUVEC *movement, f32 radius, f32 s
     TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    f32 inverse_radius;
     if (radius == 0.0f)
-        inverse_radius = 0.0f;
+        query->inverse_collision_radius = 0.0f;
     else
-        inverse_radius = 1.0f / radius;
-    query->inverse_collision_radius = inverse_radius;
+        query->inverse_collision_radius = 1.0f / radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
@@ -1691,12 +1682,10 @@ extern "C" i32 NewRayCastSetMask(NUVEC *position, NUVEC *movement, f32 radius, f
     TerI = query;
     query->inverse_object_scale_sq = 1.0f;
     query->collision_radius = radius;
-    f32 inverse_radius;
     if (radius == 0.0f)
-        inverse_radius = 0.0f;
+        query->inverse_collision_radius = 0.0f;
     else
-        inverse_radius = 1.0f / radius;
-    query->inverse_collision_radius = inverse_radius;
+        query->inverse_collision_radius = 1.0f / radius;
     query->collision_radius_sq = radius * radius;
     query->start_position.x = query->position.x = position->x;
     query->start_position.y = query->position.y = position->y;
