@@ -130,8 +130,8 @@ i32 __cdecl StarWars_PrepareR2D2Glide(AIPACKET_PC *packet, APIOBJECT_PC *object,
         }
         NuVecScale(&offset, &offset, radius / connection->horizontal_distance);
         NuVecAdd(&packet->movement_destination, &source->position, &offset);
-        packet->flags |= 0x800000;
         packet->movement_stopping_distance = 0.0f;
+        packet->flags |= 0x800000;
         ((GAMEOBJECT *)object)->ai_collision_priority_pc |= 0x2000;
         return 1;
     }
