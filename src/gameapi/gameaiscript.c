@@ -5857,26 +5857,24 @@ i32 __cdecl Action_SetFormationCommander(AISYS_PC *unused0, AISCRIPTPROCESS_PC *
                                          char **unused3, i32 unused4, i32 unused5, f32 unused6) {
     GAMEOBJECT *object;
     AIGROUP_PC *group;
-    i32 commander_id;
-    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->group == NULL)
-        return 1;
-    object = packet->owner->objptr;
-    group = packet->group;
-    if (packet->group_member_index != group->member_count - 1)
-        return 1;
-    if (group->count_across != 1 && group->member_count % group->count_across != 1)
-        return 1;
-    packet->flags |= 0x1000000;
-    if ((i16)object->id == id_BATTLEDROID || (i16)object->id == id_BATTLEDROIDSECURITY ||
-        (i16)object->id == id_BATTLEDROIDGEONOSIAN)
-        commander_id = id_BATTLEDROIDCOMMANDER;
-    else if ((i16)object->id == id_CLONEEP3)
-        commander_id = id_CLONEEP3SAND;
-    else
-        return 1;
-    NewPlayerCharacter(object, commander_id, (i16)object->id, 1);
-    object->current_hp = object->character_data->game_character->hitpoints;
-    object->field_107e = object->character_data->game_character->hitpoints;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL && packet->group != NULL) {
+        group = packet->group;
+        if (packet->group_member_index == group->member_count - 1 &&
+            (group->count_across == 1 || group->member_count % group->count_across == 1)) {
+            object = packet->owner->objptr;
+            packet->flags |= 0x1000000;
+            if ((i16)object->id == id_BATTLEDROID || (i16)object->id == id_BATTLEDROIDSECURITY ||
+                (i16)object->id == id_BATTLEDROIDGEONOSIAN) {
+                NewPlayerCharacter(object, id_BATTLEDROIDCOMMANDER, (i16)object->id, 1);
+                object->current_hp = object->character_data->game_character->hitpoints;
+                object->field_107e = object->character_data->game_character->hitpoints;
+            } else if ((i16)object->id == id_CLONEEP3) {
+                NewPlayerCharacter(object, id_CLONEEP3SAND, (i16)object->id, 1);
+                object->current_hp = object->character_data->game_character->hitpoints;
+                object->field_107e = object->character_data->game_character->hitpoints;
+            }
+        }
+    }
     return 1;
 }
 
