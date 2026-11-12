@@ -1132,13 +1132,16 @@ extern "C" {
         for (index = 0; index < 32; ++index) {
             if (NuStrLen(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name) == 0) {
                 NuStrCpy(((LEVEL_PROGRESS_TRANSFER_PC *)world->level_progress)->scripts[index].name, processor->name);
-            } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name, processor->name) != 0) {
-                continue;
+                for (parameter = 0; parameter < 4; ++parameter)
+                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
+                        processor->processor.params[parameter];
+                break;
+            } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].name, processor->name) == 0) {
+                for (parameter = 0; parameter < 4; ++parameter)
+                    ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
+                        processor->processor.params[parameter];
+                break;
             }
-            for (parameter = 0; parameter < 4; ++parameter)
-                ((LEVEL_PROGRESS_TRANSFER_PC *)progress)->scripts[index].params[parameter] =
-                    processor->processor.params[parameter];
-            break;
         }
     }
 
