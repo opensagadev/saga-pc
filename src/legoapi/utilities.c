@@ -136,13 +136,13 @@ i32 __cdecl SphereSphereOverlap(NUVEC *a, f32 radius_a, NUVEC *b, f32 radius_b) 
 i32 __cdecl SphereSphereOverlapScaleY(NUVEC *position_a, f32 radius_a, f32 y_radius_a, NUVEC *position_b, f32 radius_b,
                                       f32 y_radius_b) {
     f32 dx = position_b->x - position_a->x;
-    f32 dy = position_b->y - position_a->y;
     f32 dz = position_b->z - position_a->z;
+    f32 dy = position_b->y - position_a->y;
     f32 radius;
-    if (radius_b != y_radius_b || radius_a != y_radius_a) {
-        dy *= (radius_b + radius_a) / (y_radius_b + y_radius_a);
+    if (radius_a != y_radius_a || radius_b != y_radius_b) {
+        dy *= (radius_a + radius_b) / (y_radius_a + y_radius_b);
     }
-    radius = radius_b + radius_a;
+    radius = radius_a + radius_b;
     return dx * dx + dy * dy + dz * dz <= radius * radius;
 }
 
@@ -782,44 +782,45 @@ f32 XZLinesClosest(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *seco
 
 i32 __cdecl LineIntersectSphere(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared,
                                 f32 *distance_squared) {
-    f32 x;
-    f32 y;
-    f32 z;
+    NUVEC delta;
     f32 projection;
     f32 point_squared;
     f32 projection_squared;
     f32 distance;
-    x = center->x - origin->x;
-    y = center->y - origin->y;
-    z = center->z - origin->z;
-    projection = direction->x * x + direction->y * y + direction->z * z;
+    delta.x = center->x - origin->x;
+    delta.y = center->y - origin->y;
+    delta.z = center->z - origin->z;
+    projection = direction->x * delta.x + direction->y * delta.y + direction->z * delta.z;
     if (projection < 0.0f)
         return 0;
-    point_squared = x * x + y * y + z * z;
+    point_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
     projection_squared = projection * projection;
     distance = point_squared - projection_squared;
-    if (!(radius_squared >= distance))
-        return 0;
-    if (distance_squared != NULL)
-        *distance_squared = distance;
-    return 1;
+    if (distance <= radius_squared) {
+        if (distance_squared != NULL)
+            *distance_squared = distance;
+        return 1;
+    }
+    return 0;
 }
 
 i32 __cdecl LineIntersectSphereXZPc(NUVEC *origin, NUVEC *direction, NUVEC *center, f32 radius_squared) {
-    f32 x = center->x - origin->x;
-    f32 z = center->z - origin->z;
-    f32 projection = direction->x * x + direction->z * z;
+    NUVEC delta;
+    f32 projection;
     f32 point_squared;
     f32 projection_squared;
     f32 distance;
+    delta.x = center->x - origin->x;
+    delta.z = center->z - origin->z;
+    projection = direction->x * delta.x + direction->z * delta.z;
     if (projection < 0.0f)
         return 0;
-    point_squared = x * x + z * z;
+    point_squared = delta.x * delta.x + delta.z * delta.z;
     projection_squared = projection * projection;
     distance = point_squared - projection_squared;
-    if (!(radius_squared >= distance))
-        return 0;
-    return 1;
+    if (distance <= radius_squared)
+        return 1;
+    return 0;
 }
 
 void __cdecl MoveSplinePosition(SPLINEPOS *position, f32 distance) {
