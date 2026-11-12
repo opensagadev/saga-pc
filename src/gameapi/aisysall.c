@@ -4137,8 +4137,8 @@ __declspec(noinline) i32 __cdecl AIPathCheckExtents(AIPATH_PC *path, NUVEC *posi
 }
 
 static AIPATHSYS_PC *AISysLoadPathsPc(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
-    i32 count = EdFileReadInt();
     AI_PATH_SYSTEM_LOAD_PC *system = NULL;
+    i32 count = EdFileReadInt();
     i32 path_index;
     i32 index;
     i32 route_index;
