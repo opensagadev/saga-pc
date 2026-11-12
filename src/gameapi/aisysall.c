@@ -11120,7 +11120,7 @@ static void __cdecl AiEditorActivationDifficultyPc(eduimenu_s *menu, eduiitem_s 
 void __cdecl creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     EDAIAREA_s *area;
-    i32 index = 0;
+    i32 index;
     char label[32];
     (void)item;
     (void)event;
@@ -11138,8 +11138,9 @@ void __cdecl creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *ite
     eduiMenuAddItem(menu,
                     eduiItemCheckCreate(2, &AiEditorSaveMessageColoursPc, aieditor->selected_creature->activation == 2,
                                         1, AiEditorSetActivationPc, "SCRIPT"));
+    index = 0;
     for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
-         area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link), ++index) {
+         ++index, area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
         i32 selected = aieditor->selected_creature->activation_area == area;
         sprintf(label, "AREA \"%s\"", area->name);
         eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColoursPc, selected, 1,
