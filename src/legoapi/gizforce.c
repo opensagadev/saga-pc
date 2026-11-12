@@ -288,17 +288,14 @@ u16 __cdecl GizForces_AngleToForce(NUVEC *position, GIZFORCE_PC *force) {
     return NuAtan2D(force->position.x - position->x, dz);
 }
 i32 __cdecl GizForce_Complete(GIZFORCE_PC *force) {
-    if (!(force->config_flags & 2) && (!(force->force_range > 0.0f) || (force->runtime_flags & 0x2000))) {
-        if ((force->config_flags & 0x40) && !(force->runtime_flags & 0x800))
-            return 0;
+    if (!(force->config_flags & 2) && (!(force->force_range > 0.0f) || (force->runtime_flags & 0x2000)) &&
+        (!(force->config_flags & 0x40) || (force->runtime_flags & 0x800))) {
         if (force->anim_set == NULL)
             return 1;
         if (force->runtime_flags & 0x40) {
             if (force->anim_set->state == 0)
                 return 1;
-            return 0;
-        }
-        if (force->anim_set->state == 2)
+        } else if (force->anim_set->state == 2)
             return 1;
     }
     return 0;
@@ -1366,24 +1363,37 @@ i32 __cdecl GizmoForce_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_re
         return 0;
     switch (output_index) {
         case 0:
-            return force->anim_set != NULL && force->anim_set->state == 2;
+            if (force->anim_set != NULL && force->anim_set->state == 2)
+                return 1;
+            break;
         case 1:
-            return force->anim_set != NULL && force->anim_set->state != 0;
+            if (force->anim_set != NULL && force->anim_set->state != 0)
+                return 1;
+            break;
         case 2:
-            return force->anim_set != NULL && force->anim_set->state == 0;
+            if (force->anim_set != NULL && force->anim_set->state == 0)
+                return 1;
+            break;
         case 3:
-            return force->group != NULL && (force->group->runtime_flags & 2) != 0;
+            if (force->group != NULL && (force->group->runtime_flags & 2) != 0)
+                return 1;
+            break;
         case 4:
-            return force->group != NULL && (force->group->runtime_flags & 4) != 0;
+            if (force->group != NULL && (force->group->runtime_flags & 4) != 0)
+                return 1;
+            break;
         case 5:
-            return (force->runtime_flags & 0x10000) != 0;
+            if (force->runtime_flags & 0x10000)
+                return 1;
+            break;
         case 6:
             return GizForce_Complete(force);
         case 7:
-            return (force->runtime_flags & 0x200000) != 0;
-        default:
-            return 0;
+            if (force->runtime_flags & 0x200000)
+                return 1;
+            break;
     }
+    return 0;
 }
 typedef struct force_runtime_bits_pc_s {
     u32 active : 1;
