@@ -96,32 +96,38 @@ extern "C" NUVEC *__cdecl GetZapOrigin(GAMEOBJECT *object) {
 extern "C" {
     extern f32 PlayerOpponent_Range2;
     GAMEOBJECT *__cdecl PlayerOpponent(GAMEOBJECT *object, f32 range, i32 arc) {
+        f32 range2 = range * range;
         NUVEC forward, delta;
-        f32 nearest_distance = 1.0e8f;
-        GAMEOBJECT *nearest = NULL;
+        f32 nearest_distance;
+        GAMEOBJECT *nearest, *target;
+        i32 i;
         if (object->pad->input_magnitude > 0.0f)
             NuVecRotateY(&forward, &v001, GamePad_InputAngle(object, object->pad));
-        for (i32 i = 0; i < HIGHGAMEOBJECT; ++i) {
-            GAMEOBJECT *target = &Obj[i];
-            if (target == object || (target->flags_1fc_word & 0x1001) != 0x1001 || target->dead != 0 ||
-                (target->flags_1f8 & 1) != 0 || target->character_context == 0x39 ||
-                target->character_context == 0x3b || target->character_context == 0x3c ||
+        nearest_distance = 1.0e8f;
+        nearest = NULL;
+        target = Obj;
+        for (i = 0; i < HIGHGAMEOBJECT; ++i, ++target) {
+            if (target == object || (target->flags_1fc_word & 1) == 0 || (target->flags_1fc_word & 0x1000) == 0 ||
+                target->dead != 0 || (target->flags_1f8 & 1) != 0 || target->character_context == 0x3b ||
+                target->character_context == 0x39 || target->character_context == 0x3c ||
                 (target->character_data->game_character->flags_090 & 0x8000) != 0 ||
-                (U64_PAIR(&CInfo[target->character_context].flags) & 0x8000) != 0 || target == object->takeover_source)
+                (U64_PAIR(&CInfo[target->character_context].flags) & 0x8000) != 0 ||
+                (object->takeover_source != NULL && target == object->takeover_source))
                 continue;
             f32 distance = NuVecDistSqr(&target->position, &object->position, &delta);
-            if (distance >= range * range ||
-                (object->pad->input_magnitude > 0.0f && forward.x * delta.x + forward.z * delta.z < 0.0f))
-                continue;
-            if (arc != 0) {
-                u16 angle = NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
-                i32 difference = RotDiff(object->movement_facing_angle, angle);
-                if (difference < -arc || difference > arc)
-                    continue;
-            }
-            if (distance < nearest_distance) {
-                nearest = target;
-                nearest_distance = distance;
+            if (distance < range2 &&
+                !(object->pad->input_magnitude > 0.0f && forward.x * delta.x + forward.z * delta.z < 0.0f)) {
+                if (arc != 0) {
+                    u16 angle =
+                        NuAtan2D(target->position.x - object->position.x, target->position.z - object->position.z);
+                    i32 difference = RotDiff(object->movement_facing_angle, angle);
+                    if (difference < -arc || difference > arc)
+                        continue;
+                }
+                if (distance < nearest_distance) {
+                    nearest = target;
+                    nearest_distance = distance;
+                }
             }
         }
         PlayerOpponent_Range2 = nearest_distance;
