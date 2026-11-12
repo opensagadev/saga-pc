@@ -663,8 +663,8 @@ extern "C" {
 
 extern "C" void __cdecl PushSeekComplete(PUSH_BLOCK_PC *opaque_block, i32 index) {
     PUSH_BLOCK_PC *block = opaque_block;
-    block->packed_state_flags &= ~0x200u;
     block->completed_snap_positions |= (u8)(1 << index);
+    block->packed_state_flags &= ~0x200u;
     if ((block->packed_state_flags & 0x20000000u) == 0)
         block->packed_state_flags |= 0x02000100u;
     if (block->pushing_object != NULL)
