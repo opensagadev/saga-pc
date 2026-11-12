@@ -1274,7 +1274,7 @@ static i32 __cdecl Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOL
                 NUVEC direction;
                 NuVecSub(&direction, &static_cast<GAMEOBJECT *>(bolt->owner)->collision_position, block->position);
                 if (direction.x == direction.z) {
-                    if (direction.z < 0.0f) {
+                    if (direction.x < 0.0f) {
                         direction.x = -(static_cast<f64>(qrand()) * 0.000015259021893143654);
                         direction.z = -(static_cast<f64>(qrand()) * 0.000015259021893143654);
                     } else {
