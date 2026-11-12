@@ -2300,12 +2300,12 @@ i32 __cdecl AIScriptBuildDerivedScript(AISCRIPT_PC *script, VARIPTR *buffer, VAR
     AISTATE_PC *source_state;
     AISTATE_PC *state;
     AICONDITION_PC *condition;
-    i32 source_is_level;
+    u32 level_bits;
     i32 i;
 
     if (script != NULL && script->derived_from != NULL && (script->flags_3c & 2) != 0) {
-        source_is_level = (script->flags_3c >> 2) & 1;
-        source_script = AIScriptFind(sys, script->derived_from, 0, source_is_level, !source_is_level);
+        level_bits = script->flags_3c >> 2;
+        source_script = AIScriptFind(sys, script->derived_from, 0, level_bits & 1, ~level_bits & 1);
         if (source_script != NULL) {
             if (source_script != script) {
                 if ((source_script->flags_3c & 2) != 0) {
