@@ -852,7 +852,7 @@ void __cdecl GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
 }
 
 i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
-    u8 storm = 0, bountyhunter = 0, droid = 0;
+    u8 storm = 0, droid = 0, bountyhunter = 0;
     i32 index;
     if (WORLD->area != NULL && WORLD->area == HUB_ADATA)
         return 0;
@@ -863,11 +863,13 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
             HINT_PANEL_PC *panel =
                 (HINT_PANEL_PC *)GizPanel_FindNearest(WORLD, &object->position, object, &distance, 0);
             if (panel != NULL && (panel->flags & 8) != 0 && (panel->flags & 3) == 0) {
-                volatile f32 radius =
-                    (f32)(((f64)((GAMEOBJECT *)Player[index])->bounds_radius + 1.0) * panel->target_scale);
-                volatile f32 radius_squared = radius * radius;
-                if (radius_squared > distance) {
+                f32 radius = (f32)(((f64)((GAMEOBJECT *)Player[index])->bounds_radius + 1.0) * panel->target_scale);
+                radius *= radius;
+                if (distance < radius) {
                     switch (panel->model_variant) {
+                        case 3:
+                            storm = 1;
+                            break;
                         case 0:
                         case 1:
                             droid = 1;
@@ -875,23 +877,28 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
                         case 2:
                             bountyhunter = 1;
                             break;
-                        case 3:
-                            storm = 1;
-                            break;
                     }
                 }
             }
         }
     }
     if (storm != 0 && ((u16)hint->id == 0x260 || (u16)hint->id == 0x269)) {
-        if (AvailableToPlayer(0, 1, 5, 0) != 0)
-            return (u16)hint->id == 0x260;
-        return (u16)hint->id == 0x269;
+        if (AvailableToPlayer(0, 1, 5, 0) != 0) {
+            if ((u16)hint->id == 0x260)
+                return 1;
+        } else if ((u16)hint->id == 0x269) {
+            return 1;
+        }
+        return 0;
     }
     if (bountyhunter != 0 && ((u16)hint->id == 0x261 || (u16)hint->id == 0x26a)) {
-        if (AvailableToPlayer(0x1000000, -1, 6, 0) == 0)
-            return (u16)hint->id == 0x26a;
-        return (u16)hint->id == 0x261;
+        if (AvailableToPlayer(0x1000000, -1, 6, 0) != 0) {
+            if ((u16)hint->id == 0x261)
+                return 1;
+        } else if ((u16)hint->id == 0x26a) {
+            return 1;
+        }
+        return 0;
     }
     if (droid != 0 && (u16)hint->id == 0x25f) {
         if ((LswForceUsedHintFlagsPc & 2) == 2)
@@ -904,7 +911,6 @@ i32 __cdecl GizPanel_UpdateHint(HINT_PC *hint) {
 void __cdecl GizPanel_Reset(void *context) {
     PANEL_MOVEMENT_PC *panel = (PANEL_MOVEMENT_PC *)context;
     NUVEC offset, probe_position;
-    volatile f32 rounded_height;
     f32 height;
     panel->floor_position.y = 0.0f;
     panel->floor_position.x = 0.0f;
@@ -917,8 +923,7 @@ void __cdecl GizPanel_Reset(void *context) {
     probe_position.z = panel->position.z + offset.z;
     probe_position.y = panel->position.y;
     panel->floor_position.y = GameShadow(NULL, &panel->floor_position, 0.2f, -1);
-    rounded_height = GameShadow(NULL, &probe_position, 0.2f, -1);
-    height = rounded_height;
+    height = GameShadow(NULL, &probe_position, 0.2f, -1);
     panel->target_offset.y = height;
     if ((f64)height != GameObjectNearFloorNoFloorHeight) {
         panel->target_offset.y = height + 0.001f;
