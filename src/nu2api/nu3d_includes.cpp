@@ -4752,25 +4752,30 @@ extern "C" {
         char text[1024];
         va_list arguments;
         i32 width;
+        i32 left;
 
-        if (NuQFntModeStackIndex < 16) {
-            NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
-        }
-        NuQFntMode = 2;
+        NuQFntPushPrintMode(2);
         va_start(arguments, format);
         vsprintf(text, format, arguments);
         va_end(arguments);
         width = (i32)NuQFntPrintLenU(font, text);
-        if (alignment == 0x20) {
-            x -= width;
-        } else if (alignment == 0x40) {
-            x -= width / 2;
+        switch (alignment) {
+            case 0x10:
+                left = x;
+                break;
+            case 0x20:
+                left = x - width;
+                break;
+            case 0x40:
+                left = x - width / 2;
+                break;
+            default:
+                left = x;
+                break;
         }
-        NuQFntMoveRS(NULL, font, (f32)x, (f32)y, 0.0f);
+        NuQFntMove(font, (f32)left, (f32)y, 0.0f);
         NuQFntPrintU(font, text);
-        if (NuQFntModeStackIndex > 0) {
-            NuQFntMode = NuQFntModeStack[--NuQFntModeStackIndex];
-        }
+        NuQFntPopPrintMode();
     }
 
 } // extern "C"
