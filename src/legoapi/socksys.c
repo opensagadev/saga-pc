@@ -302,15 +302,12 @@ static void SockParObj(NUFPAR_PC *parser, void *context) {
 }
 
 static void SockParBlend(NUFPAR_PC *parser, void *context) {
-    i32 edge;
-    u32 index;
     i32 value = NuFParGetInt(parser);
+    i32 edge;
     NuFParGetWord(parser);
     edge = GetSockEdgeEnum(parser->word_buffer_ptr);
-    index = sockpar_sock->blend_count;
-    sockpar_sock->blend_entries[index].edge = (i8)(edge);
-    sockpar_sock->blend_entries[index].value = (u8)(value);
-    sockpar_sock->blend_count = index + 1;
+    sockpar_sock->blend_entries[sockpar_sock->blend_count].edge = (i8)edge;
+    sockpar_sock->blend_entries[sockpar_sock->blend_count++].value = (u8)value;
 }
 
 static void SockCamATSTLIFT(NUFPAR_PC *parser, void *context) {
@@ -982,12 +979,12 @@ static void SockSysPointAlongMID(SOCK_PC *sock, SOCKPOSITION_PC *position, NUVEC
     NUVEC *from;
     NUVEC *to;
 
-    if (sock->mid == NULL) {
-        from = &sock->segments[position->segment].midpoint;
-        to = &sock->segments[position->segment].next_midpoint;
-    } else {
+    if (sock->mid != NULL) {
         from = &sock->mid->pts[position->segment];
         to = &sock->mid->pts[position->next_segment];
+    } else {
+        from = &sock->segments[position->segment].midpoint;
+        to = &sock->segments[position->segment].next_midpoint;
     }
     if (result == NULL) {
         result = &temp_sockmidpos;
@@ -1664,31 +1661,29 @@ void __cdecl PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC 
 }
 
 i32 __cdecl SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_segment) {
-    i32 segments_ahead;
     i32 advanced = 0;
-    if (sock->look_ahead_segments == 0)
-        return 0;
-    *from_segment = segment;
-    segments_ahead = sock->look_ahead_segments;
-    if (sock->looping != 0) {
-        while (segments_ahead > 0) {
-            ++*from_segment;
-            if (*from_segment == sock->length + 1)
-                *from_segment = 0;
-            --segments_ahead;
+    i32 segments_ahead;
+    if (sock->look_ahead_segments > 0) {
+        *from_segment = segment;
+        segments_ahead = sock->look_ahead_segments;
+        if (sock->looping != 0) {
+            for (; segments_ahead > 0; --segments_ahead) {
+                ++*from_segment;
+                if (*from_segment == sock->length + 1)
+                    *from_segment = 0;
+            }
+            *to_segment = *from_segment + 1;
+            if (*to_segment == sock->length + 1)
+                *to_segment = 0;
+            advanced = 1;
+        } else {
+            while (segments_ahead > 0 && *from_segment < sock->length - 1) {
+                ++*from_segment;
+                --segments_ahead;
+                *to_segment = *from_segment + 1;
+                advanced = 1;
+            }
         }
-        *to_segment = *from_segment + 1;
-        if (*to_segment == sock->length + 1)
-            *to_segment = 0;
-        return 1;
-    }
-    while (segments_ahead > 0) {
-        if (*from_segment >= sock->length - 1)
-            break;
-        ++*from_segment;
-        --segments_ahead;
-        *to_segment = *from_segment + 1;
-        advanced = 1;
     }
     return advanced;
 }
