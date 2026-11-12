@@ -2750,12 +2750,13 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                         Hint_SetComplete(0x263);
                     else
                         Hint_SetComplete(8);
-                } else if (StartupGameFlag1 == 0) {
-                    Hint_SetComplete(8);
-                } else if (object->id == (u16)id_ATAT) {
-                    Hint_SetComplete(0x28d);
+                } else if (StartupGameFlag1 != 0) {
+                    if (object->id == (u16)id_ATAT)
+                        Hint_SetComplete(0x28d);
+                    else
+                        Hint_SetComplete(0x25d);
                 } else {
-                    Hint_SetComplete(0x25d);
+                    Hint_SetComplete(8);
                 }
             }
             if (WORLD->grabber != NULL &&
@@ -2852,7 +2853,7 @@ void __cdecl TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
                 (candidate->tag_flags & 2) != 0) {
                 continue;
             }
-            if ((u16)id_ATAT == candidate->id && WORLD->current_level == SPEEDERCHASEA_LDATA) {
+            if (candidate->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
                 if (object->jump_animation_state == 0x13) {
                     nearest = candidate;
                 }
