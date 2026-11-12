@@ -1728,8 +1728,7 @@ i16 *NewScanHandelFullPc(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_
             TERRAIN_GROUP_PC *group = &TERRAIN_NSF_SET->groups[*indices];
             TERRAIN_PLATFORM_PC *platform = &TERRAIN_NSF_PLATFORM(group);
             u32 *scene_state = platform->instance_flags;
-            if (scene_state == NULL ||
-                ((platform->flags & 4) != 0 ? (*scene_state & 2) != 0 : (*scene_state & 1) != 0)) {
+            if (scene_state == NULL || ((platform->flags & 4) != 0 ? (*scene_state & 2) : (*scene_state & 1))) {
                 f32 local_min_x, local_max_x, local_min_z, local_max_z, local_min_y, local_max_y;
                 if (platform->scene_object != NULL) {
                     if (TERRAIN_NSF_MATRIX(group)->m30 > TERRAIN_NSF_PLATFORM(group).previous_matrix.m30) {
