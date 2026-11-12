@@ -4693,6 +4693,8 @@ address,symbol,size,ctype
 0x56a240,_GizmoBlowUp_Target,878,"GIZMOBLOWUP_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
 0x0056a5b0,_GizmoBlowupCheckProximity,522,"i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
 0x56a7c0,_GizmoBlowupVisibilityOverrides,153,void __cdecl (WORLDINFO *)
+0x56a860,_GizmoBlowupTypeGetCount,19,i32 __cdecl (WORLDINFO *)
+0x56a880,_GizmoBlowupTypeGetNameFromIndex,61,"char *__cdecl (WORLDINFO *, i32)"
 0x56a8c0,_GizmoBlowUpTypeBlowUp,229,"void __cdecl (WORLDINFO *, i32, NUVEC *)"
 0x0056a9b0,_GizmoBlowupResetNameTable,31,void __cdecl (void)
 0x56a9d0,_GizmoBlowupGetNameTableId,110,i32 __cdecl (char *)
