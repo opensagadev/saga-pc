@@ -2253,11 +2253,11 @@ extern "C" void __cdecl CutScene_DrawSubtitles(void) {
     if (subtitle == NULL)
         return;
     for (i32 i = 0; i < cut->subtitle_count; ++i, ++subtitle) {
-        if (cut->unknown_58 >= subtitle->start_frame && subtitle->end_frame >= cut->unknown_58) {
+        if (cut->unknown_58 >= subtitle->start_frame && cut->unknown_58 <= subtitle->end_frame) {
             f32 alpha = 1.0f;
             if (subtitle->fade_time > 0.0f) {
                 f32 fade_end = subtitle->start_frame + subtitle->fade_time;
-                if (fade_end > cut->unknown_58) {
+                if (cut->unknown_58 < fade_end) {
                     alpha = (cut->unknown_58 - subtitle->start_frame) / (fade_end - subtitle->start_frame);
                 } else {
                     f32 fade_start = subtitle->end_frame - subtitle->fade_time;
