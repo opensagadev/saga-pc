@@ -568,13 +568,13 @@ void ShaderCompilerParserPc::SetIncludeDirectories(const char *paths) {
 bool ShaderCompilerParserPc::NextIncludeDirectory(const char *paths, i32 *cursor, char *directory) {
     if (*cursor >= (i32)strlen(paths))
         return false;
-    const char *p = paths + *cursor;
-    while (*p != 0 && *p != ';') {
-        *directory++ = *p++;
+    paths += *cursor;
+    while (*paths != 0 && *paths != ';') {
+        *directory++ = *paths++;
         ++*cursor;
     }
     *directory = 0;
-    if (*p == ';')
+    if (*paths == ';')
         ++*cursor;
     return true;
 }
