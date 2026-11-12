@@ -14,7 +14,7 @@ static struct edui_slider_s *grad_jib_y_amp_item = 0;
 static struct edui_slider_s *grad_jib_y_freq_item = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ptljibmenu")
-static struct eduimenu_s *ptljibmenu = 0;
+struct eduimenu_s *ptljibmenu = 0;
 #pragma bss_seg()
 
 __declspec(noinline) void __cdecl edppPtlDestroy(i32 index) {
@@ -526,7 +526,7 @@ void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 
 /* PC 0x02947b78, 0x02962b40/0x02962b44, 0x00810ae4: the repeat-box submenu, its X and Z sliders and the
    XZ lock that keeps the box square. */
-static eduimenu_s *ptlrepeatboxmenu = NULL;
+eduimenu_s *ptlrepeatboxmenu = NULL;
 static edui_slider_s *ptlrepeatbox_x_slider = NULL;
 static edui_slider_s *ptlrepeatbox_z_slider = NULL;
 static i32 ptlrepeatbox_xz_lock = 1;
