@@ -4685,29 +4685,29 @@ extern "C" {
                                 i32 blue) {
         char text[32];
         f32 score_scale, icon_scale, x;
-        i32 angle;
-        LEVEL_OBJECT_RUNTIME_PC *model;
+        i32 angle, object;
         Text_MakeScore((u32)total, text);
         score_scale = CoinTotalScoreSizePc * scale;
-        Text3DEx(text, 0.0f, y + HudCoinAdjustYPc, 1.0f, score_scale, score_scale, score_scale, 0, (u8)red, (u8)green,
-                 (u8)blue, (u8)(i32)((f64)icon_phase * 128.0));
+        Text3DEx(text, 0.0f, y + HudCoinAdjustYPc, 1.0f, score_scale, score_scale, score_scale, 0, red, green, blue,
+                 (u8)(i32)((f64)icon_phase * 128.0));
         angle = (i32)((f64)icon_phase * 16384.0);
         icon_scale = COINTOTAL_COINSIZE * scale * NuTrigTable[(angle >> 1) & 0x7fff];
-        model = &WORLD->level_objects[cointotal_i_obj[0]];
-        if (model->active != 0) {
-            x = (f32)(-(f64)text3d_width * 0.5 - (f64)(CoinTotalCoinOffsetPc * scale));
+        if (WORLD->level_objects[cointotal_i_obj[0]].active != 0) {
+            x = (f32)(-((f64)text3d_width * 0.5) - (f64)(CoinTotalCoinOffsetPc * scale));
             if (remember_positions != 0)
                 cointotal_x[0] = x;
-            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &model->special, 0, 1.0f);
+            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0,
+                              &WORLD->level_objects[cointotal_i_obj[0]].special, 0, 1.0f);
         }
-        model = &WORLD->level_objects[cointotal_i_obj[1]];
-        if (model->active != 0) {
+        object = cointotal_i_obj[1];
+        if (WORLD->level_objects[object].active != 0) {
             x = (f32)((f64)(CoinTotalCoinOffsetPc * scale) + (f64)text3d_width * 0.5);
             if (remember_positions != 0)
                 cointotal_x[1] = x;
             else
-                model = &WORLD->level_objects[187];
-            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0, &model->special, 0, 1.0f);
+                object = 187;
+            DrawPanel3DObject(x, y, 1.0f, icon_scale, icon_scale, icon_scale, 0, 0, 0,
+                              &WORLD->level_objects[object].special, 0, 1.0f);
         }
     }
 
