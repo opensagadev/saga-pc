@@ -140,13 +140,14 @@ extern "C" i32 __cdecl PcInputSelectPressedDevicePc(u32 excluded, u8 kinds, i32 
 }
 
 extern "C" i32 __cdecl PcInputMapKeyboardPortPc(i32 port, i32 player) {
-    if (port >= 10 && port < 14) {
-        PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
-        if (player != runtime->captured_port)
-            ++port;
-        if (player >= 0)
-            port += player * 2;
-    }
+    if (port < 10)
+        return port;
+    if (port >= 14)
+        return port;
+    if (player != ((PC_INPUT_RUNTIME_PC *)nu_input_state)->captured_port)
+        ++port;
+    if (player >= 0)
+        port += player * 2;
     return port;
 }
 
@@ -314,10 +315,9 @@ void PC_INPUT_RUNTIME_PC::ReadConfiguration(PC_INPUT_CONFIG_PC *records, const c
 }
 void PC_INPUT_RUNTIME_PC::InitConfiguration() {
     char directory[1024];
-    const char *company = PcCompanyName;
-    const char *product = PcProductName;
-    char *folder = PcGetUserFolder(company, product);
-    sprintf(directory, "%s\\%s\\%s\\", folder, company, product);
+    /* Retail passes only the folder; the two missing %s read the company and product arguments that
+       PcGetUserFolder left on the stack (cdecl cleanup is deferred). */
+    sprintf(directory, "%s\\%s\\%s\\", PcGetUserFolder(PcCompanyName, PcProductName));
     memset(primary, 0, sizeof(primary));
     ReadConfiguration(primary, directory);
 }
@@ -1296,9 +1296,11 @@ extern "C" void __cdecl PcInputInstallConfigPc(PC_INPUT_CONFIG_PC *config, i32 p
     ((PC_INPUT_RUNTIME_PC *)nu_input_state)->InstallConfig(config, port, key, auxiliary, bank);
 }
 extern "C" i32 __cdecl PcInputBindingPresentPc(i32 port, i32 action, i32 auxiliary, i32 bank) {
-    PC_INPUT_RUNTIME_PC *runtime = (PC_INPUT_RUNTIME_PC *)nu_input_state;
-    return auxiliary ? runtime->auxiliary_bindings[bank][action].kind != 0
-                     : runtime->devices[port].bindings[action].kind != 0;
+    // MATCH-EXCEPTION: parameters copied to locals, as an inlined member call would (U20)
+    i32 port_local = port;
+    i32 bank_local = bank;
+    return auxiliary ? ((PC_INPUT_RUNTIME_PC *)nu_input_state)->auxiliary_bindings[bank_local][action].kind != 0
+                     : ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port_local].bindings[action].kind != 0;
 }
 extern "C" PC_INPUT_CONFIG_PC *__cdecl PcInputFindConfigPc(u8 mask, i32 port, i32 key) {
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->FindConfig(mask, port, key);
@@ -1385,10 +1387,18 @@ extern "C" i32 __cdecl PcInputAlternateDeadzonePc(i32 port) {
     return ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port].alternate_deadzone;
 }
 extern "C" void __cdecl PcInputSetDeadzonePc(i32 port, i32 value) {
-    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port].deadzone = (u32)(port - 10) > 3 ? (u8)value : 0;
+    PC_INPUT_DEVICE_PC *device = &((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port];
+    if ((u32)(port - 10) > 3)
+        device->deadzone = value;
+    else
+        device->deadzone = 0;
 }
 extern "C" void __cdecl PcInputSetAlternateDeadzonePc(i32 port, i32 value) {
-    ((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port].alternate_deadzone = (u32)(port - 10) <= 3 ? (u8)value : 0;
+    PC_INPUT_DEVICE_PC *device = &((PC_INPUT_RUNTIME_PC *)nu_input_state)->devices[port];
+    if ((u32)(port - 10) <= 3)
+        device->alternate_deadzone = value;
+    else
+        device->alternate_deadzone = 0;
 }
 extern "C" PC_INPUT_COMMAND_FILTER_PC __cdecl PcInputGetCommandFilterPc() {
     return PcInputCommandFilterPc;
@@ -1723,10 +1733,9 @@ void PC_INPUT_RUNTIME_PC::WriteConfigurationPc(PC_INPUT_CONFIG_PC *records, i32 
 }
 void PC_INPUT_RUNTIME_PC::SaveConfigurationPc() {
     char directory[1024];
-    const char *company = PcCompanyName;
-    const char *product = PcProductName;
-    char *folder = PcGetUserFolder(company, product);
-    sprintf(directory, "%s\\%s\\%s\\", folder, company, product);
+    /* Retail passes only the folder; the two missing %s read the company and product arguments that
+       PcGetUserFolder left on the stack (cdecl cleanup is deferred). */
+    sprintf(directory, "%s\\%s\\%s\\", PcGetUserFolder(PcCompanyName, PcProductName));
     WriteConfigurationPc(primary, 64, directory);
 }
 extern "C" void __cdecl PcInputSaveConfigurationPc() {
