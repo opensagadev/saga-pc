@@ -125,11 +125,15 @@ void oneAtOnce_SetAttackersPerRow(i32 attackers) {
 }
 
 void oneAtOnce_SetDistPerRow(float distance) {
-    AtOnce_RowDist = MAX(0.0f, distance);
+    if (distance < 0.0f)
+        distance = 0.0f;
+    AtOnce_RowDist = distance;
 }
 
 void oneAtOnce_SetInitDistPerRow(float distance) {
-    AtOnce_InitialRowDist = MAX(0.0f, distance);
+    if (distance < 0.0f)
+        distance = 0.0f;
+    AtOnce_InitialRowDist = distance;
 }
 
 void __cdecl oneAtOnce_MaintainArray(void) {
