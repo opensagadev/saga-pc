@@ -7081,7 +7081,8 @@ i32 __cdecl Action_SetVisibility(AISYS_PC *unused0, AISCRIPTPROCESS_PC *unused1,
     i32 visible = 1;
     if (first_time != 0) {
         i32 index;
-        NUSPECIALHANDLE special = {0};
+        NUSPECIALHANDLE special;
+        memset(&special, 0, sizeof(special));
         for (index = 0; index < param_count; ++index) {
             char *value = NuStrIStr(params[index], (char *)"name");
             if (value != NULL) {
