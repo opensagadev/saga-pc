@@ -2470,20 +2470,16 @@ STATIC_ASSERT(offsetof(PLAYER_ITEM_TYPE_RESET_PC, bolt_id) == 9);
 static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemTypePc = 0;
 static i32 PlayerItemTypeCountPc = 0;
 void __cdecl PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
-    i32 count = 0;
     PlayerItemTypePc = NULL;
     PlayerItemTypeCountPc = 0;
     if (types == NULL)
         return;
     PlayerItemTypePc = types;
-    if (types->id != -1) {
-        do {
-            ++types;
-            ++count;
-        } while (types->id != -1);
-        PlayerItemTypeCountPc = count;
+    while (types->id != -1) {
+        ++types;
+        ++PlayerItemTypeCountPc;
     }
-    if (count == 0)
+    if (PlayerItemTypeCountPc == 0)
         PlayerItemTypePc = NULL;
 }
 void __cdecl PlayerItemTypes_Reset(WORLDINFO *world) {
