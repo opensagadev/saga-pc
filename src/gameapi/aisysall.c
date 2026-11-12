@@ -3327,16 +3327,15 @@ i32 __cdecl Action_SetState(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
 
 i32 __cdecl Action_ResetTimer(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                               i32 count, i32 first_time, f32 elapsed) {
-    f32 minimum;
-    f32 maximum;
-    f32 exact;
+    f32 minimum = 0.0f;
+    f32 maximum = 0.0f;
+    f32 exact = 0.0f;
     f64 first_term;
     f32 random;
     char *value;
     i32 i;
     if (first_time == 0)
         return 1;
-    minimum = maximum = exact = 0.0f;
     for (i = 0; i < count; i++) {
         value = NuStrIStr(params[i], (char *)AIActionMinTimeName);
         if (value != NULL)
