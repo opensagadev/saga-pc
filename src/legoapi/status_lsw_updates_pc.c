@@ -1,20 +1,16 @@
 #include "saga.h"
 
 void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
+    i32 selected = 0;
+    i32 moved_up = 0;
+    i32 moved_down = 0;
     if (stage->field_0x14 == 0) {
         f32 accumulated = (f64)elapsed + (f64)stage->field_0x18;
         stage->field_0x18 = accumulated;
         if (stage->field_0x18 >= 0.5f) {
-            i32 player = 0;
-            i32 selected = 0;
-            i32 moved_up = 0;
-            i32 moved_down = 0;
-            GAMEPAD_INIT_RECORD *pad = &GamePadStorage[0];
-            do {
-                if (selected != 0)
-                    break;
-                if (moved_up != 0 || moved_down != 0)
-                    break;
+            i32 player;
+            for (player = 0; player < 2 && selected == 0 && moved_up == 0 && moved_down == 0; ++player) {
+                GAMEPAD_INIT_RECORD *pad = &GamePadStorage[player];
                 if (packet->player_active[player] != 0) {
                     u32 buttons = pad->menu_buttons_pressed;
                     if ((buttons & GAMEPAD_MENUSELECT) != 0) {
@@ -25,21 +21,20 @@ void __cdecl Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f3
                                (packet->flags_word & 0x100u) != 0 || packet->challenge_state != 0 ||
                                packet->mission_state != 0) {
                         if (status_prompt > 0) {
-                            if (((pad->menu_directions | buttons) & GAMEPAD_DUP) != 0) {
+                            if ((pad->menu_directions & GAMEPAD_DUP) != 0 || (buttons & GAMEPAD_DUP) != 0) {
                                 GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                                 status_prompt = (i32)((u32)status_prompt - 1u);
                                 moved_up = 1;
                             }
-                        } else if (status_prompt < 1 && ((pad->menu_directions | buttons) & GAMEPAD_DDOWN) != 0) {
+                        } else if (status_prompt < 1 &&
+                                   ((pad->menu_directions & GAMEPAD_DDOWN) != 0 || (buttons & GAMEPAD_DDOWN) != 0)) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
                             status_prompt = (i32)((u32)status_prompt + 1u);
                             moved_down = 1;
                         }
                     }
                 }
-                ++player;
-                ++pad;
-            } while (player < 2);
+            }
             if (selected != 0) {
                 if ((packet->flags_word & 8u) != 0 && packet->next_area != -1 && (packet->area->flags & 2u) == 0 &&
                     Game.area_save[packet->next_area].complete == 0)
