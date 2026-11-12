@@ -8,9 +8,11 @@ void __cdecl edgraClumpsReset(void) {
     i32 i;
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i)
         GrassClumps[i].element_count = 0;
-    memset(edgra_page_used, 0, sizeof(edgra_page_used));
-    memset(edgra_page_scene, 0, sizeof(edgra_page_scene));
-    memset(edgra_page_on, 0, sizeof(edgra_page_on));
+    for (i = 0; i < 8; ++i) {
+        edgra_page_used[i] = 0;
+        edgra_page_scene[i] = NULL;
+        edgra_page_on[i] = 0;
+    }
     edgra_clumps_used = 0;
     for (i = 0; i < EDGRA_MAX_INDIVIDUAL_CLUMPS; ++i)
         IndGrassClumpsUsed[i] = 0;
