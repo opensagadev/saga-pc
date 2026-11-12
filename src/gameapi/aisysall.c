@@ -8801,7 +8801,7 @@ static void AiPathDrawSolidEdgePc(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second,
         AiRndrLine3d(vertices, NULL, NULL);
     } else {
         NUVEC side;
-        i16 angle = PCPathArcCos((second->radius - first->radius) / distance);
+        i32 angle = PCPathArcCos((second->radius - first->radius) / distance);
         NuVecRotateY(&side, &direction, angle);
         vertices[0].position = first->position;
         vertices[0].colour = colour;
