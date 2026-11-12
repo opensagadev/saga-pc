@@ -6895,8 +6895,8 @@ i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
 
     minimum = 1000000000.0f;
     maximum = 1000000000.0f;
-    target = 1000000000.0f;
     time = 0.0f;
+    target = 1000000000.0f;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT_PC *)packet->owner)->owner == NULL)
         return 1;
     object = ((APIOBJECT_PC *)packet->owner)->owner;
@@ -6908,9 +6908,10 @@ i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
                 minimum = AIParamToFloat(processor, value + 4);
             else if ((value = NuStrIStr(params[index], (char *)AIControlMaximumName)) != NULL)
                 maximum = AIParamToFloat(processor, value + 4);
-            else if ((value = NuStrIStr(params[index], (char *)AIActionTimeName)) != NULL)
-                time = AIParamToFloat(processor, value + NuStrLen(AIActionTimeName) + 1);
-            else
+            else if ((value = NuStrIStr(params[index], (char *)AIActionTimeName)) != NULL) {
+                value += NuStrLen(AIActionTimeName) + 1;
+                time = AIParamToFloat(processor, value);
+            } else
                 target = AIParamToFloat(processor, params[index]);
         }
         if (time != 0.0f) {
@@ -6931,7 +6932,7 @@ i32 __cdecl Action_SetScaleOverride(AISYS_PC *system, AISCRIPTPROCESS_PC *proces
         }
     }
     if (processor->action_data_4 > 0.0f) {
-        if (FRAMETIME < processor->action_data_4) {
+        if (processor->action_data_4 > FRAMETIME) {
             object->collision_scale_override += FRAMETIME * processor->action_data_5;
             processor->action_data_4 -= FRAMETIME;
             return 0;
