@@ -1225,13 +1225,13 @@ static i32 Hub_UpdateMiniKitBoundsPc(i32 area_index, WORLDINFO *world) {
     if (model == -1 || w->minikits == NULL)
         return 0;
     HUB_MINIKIT_RUNTIME_PC *kit = &w->minikits[area_index];
-    HUB_AREA_INFO_PC *info;
-    for (info = HubAreaInfoPc; info->area_name != NULL; ++info) {
-        if (info->area != NULL && info->area->index == area_index)
+    HUB_AREA_INFO_PC *info = NULL;
+    for (HUB_AREA_INFO_PC *entry = HubAreaInfoPc; entry->area_name != NULL; ++entry) {
+        if (entry->area != NULL && entry->area->index == area_index) {
+            info = entry;
             break;
+        }
     }
-    if (info->area_name == NULL)
-        info = NULL;
     const CHARACTERDATA_PC *data = &CDataList[model];
     const f32 bottom = data->bottom;
     const f32 top = data->top;
