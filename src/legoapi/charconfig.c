@@ -31,6 +31,58 @@ STATIC_ASSERT(offsetof(CHARCONFIG_PC, arena_end) == 0x24);
 STATIC_ASSERT(offsetof(CHARCONFIG_PC, animation_names) == 0x28);
 CHARCONFIG_PC charconfig = {0};
 
+/* Bit views of PLAYERCHARACTERCONFIG_PC.flags_094 and flags_098: the keyword handlers
+   store these as 1-bit fields of a 32-bit unit. They belong in saga.h as members of the
+   flags_094/flags_098 unions; until then the CC_FLAGS macros view the words through them. */
+typedef struct CHARCONFIG_FLAGS094_PC {
+    u32 minikit_with_scene : 1;
+    u32 dont_turn : 1;
+    u32 no_jump : 1;
+    u32 no_shoot : 1;
+    u32 fixed_layers : 1;
+    u32 lift_hover : 1;
+    u32 glide_anytime : 1;
+    u32 can_communicate : 1;
+    u32 immune_to_magnets : 1;
+    u32 immune_to_forcepush : 1;
+    u32 minikit_noscenewhenplayable : 1;
+    u32 cannot_kill : 1;
+    u32 wait_for_weapon_in_out : 1;
+    u32 double_jump_hover : 1;
+    u32 no_category : 1;
+    u32 no_force : 1;
+    u32 white_lightning : 1;
+    u32 buck_rider : 1;
+    u32 die_usecurrentlayers : 1;
+    u32 combat_roll_can_get_up : 1;
+    u32 combat_roll_can_direct_land : 1;
+    u32 no_weapon_draw : 1;
+    u32 no_jump_fire : 1;
+    u32 hover_over_mud : 1;
+    u32 toggle_if_not_in_collection : 1;
+    u32 toggle_if_in_minikit_bonus : 1;
+    u32 deflect_bolts_in_minikit_bonus : 1;
+    u32 has_grapple : 1;
+    u32 hover_wings : 1;
+    u32 has_whip : 1;
+    u32 atatheadmovement : 1;
+    u32 can_poo : 1;
+} CHARCONFIG_FLAGS094_PC;
+STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS094_PC) == 4);
+typedef struct CHARCONFIG_FLAGS098_PC {
+    u32 can_zap : 1;
+    u32 put_weapon_away_on_shoot : 1;
+    u32 always_stop_to_shoot : 1;
+    u32 second_shot_only : 1;
+    u32 no_start_punch_sfx : 1;
+    u32 single_jump_slam : 1;
+    u32 dont_draw_rider : 1;
+    u32 unknown_7 : 1;
+} CHARCONFIG_FLAGS098_PC;
+STATIC_ASSERT(sizeof(CHARCONFIG_FLAGS098_PC) == 4);
+#define CC_FLAGS094 (*(CHARCONFIG_FLAGS094_PC *)&charconfig.runtime->flags_094)
+#define CC_FLAGS098 (*(CHARCONFIG_FLAGS098_PC *)charconfig.runtime->flags_098)
+
 /* Defined in charconfig_diagnostic_pc.c; retail calls it with and without a path. */
 void __cdecl CharConfigPakDiagnosticPc();
 
@@ -88,6 +140,13 @@ static void CC_ReadLocator(NUFPAR_PC *parser, i8 *locator) {
             *locator = (i8)index;
         }
     }
+}
+
+static i32 CC_ReadOnOff(NUFPAR_PC *parser) {
+    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
+        return 0;
+    }
+    return 1;
 }
 
 static void CC_ReadSfx(NUFPAR_PC *parser, i16 *sfx) {
@@ -171,11 +230,7 @@ static void CC_layer(NUFPAR_PC *parser) {
 }
 
 static void CC_fixed_layers(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[0] = (charconfig.runtime->flags_094_bytes[0] & 0xef) | (enabled << 4);
+    CC_FLAGS094.fixed_layers = CC_ReadOnOff(parser);
 }
 
 static void CC_hair_layer_index(NUFPAR_PC *parser) {
@@ -1209,67 +1264,35 @@ static void CC_can_fire(NUFPAR_PC *parser) {
 }
 
 static void CC_can_poo(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[3] = (charconfig.runtime->flags_094_bytes[3] & 0x7f) | (enabled << 7);
+    CC_FLAGS094.can_poo = CC_ReadOnOff(parser);
 }
 
 static void CC_can_zap(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_098[0] = (charconfig.runtime->flags_098[0] & 0xfe) | (enabled << 0);
+    CC_FLAGS098.can_zap = CC_ReadOnOff(parser);
 }
 
 static void CC_put_weapon_away_on_shoot(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_098[0] = (charconfig.runtime->flags_098[0] & 0xfd) | (enabled << 1);
+    CC_FLAGS098.put_weapon_away_on_shoot = CC_ReadOnOff(parser);
 }
 
 static void CC_always_stop_to_shoot(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_098[0] = (charconfig.runtime->flags_098[0] & 0xfb) | (enabled << 2);
+    CC_FLAGS098.always_stop_to_shoot = CC_ReadOnOff(parser);
 }
 
 static void CC_second_shot_only(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_098[0] = (charconfig.runtime->flags_098[0] & 0xf7) | (enabled << 3);
+    CC_FLAGS098.second_shot_only = CC_ReadOnOff(parser);
 }
 
 static void CC_no_start_punch_sfx(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_098[0] = (charconfig.runtime->flags_098[0] & 0xef) | (enabled << 4);
+    CC_FLAGS098.no_start_punch_sfx = CC_ReadOnOff(parser);
 }
 
 static void CC_single_jump_slam(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_098[0] = (charconfig.runtime->flags_098[0] & 0xdf) | (enabled << 5);
+    CC_FLAGS098.single_jump_slam = CC_ReadOnOff(parser);
 }
 
 static void CC_dont_draw_rider(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_098[0] = (charconfig.runtime->flags_098[0] & 0xbf) | (enabled << 6);
+    CC_FLAGS098.dont_draw_rider = CC_ReadOnOff(parser);
 }
 
 static void CC_minikit(NUFPAR_PC *parser) {
@@ -1284,192 +1307,99 @@ static void CC_minikit_with_scene(NUFPAR_PC *parser) {
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         charconfig.character->model_flags &= ~0x4000000u;
     }
-    charconfig.runtime->flags_094_bytes[0] =
-        (charconfig.runtime->flags_094_bytes[0] & 0xfe) | ((charconfig.character->model_flags >> 26) & 1);
+    CC_FLAGS094.minikit_with_scene = charconfig.character->model_flags >> 26;
 }
 
 static void CC_minikit_noscenewhenplayable(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0xfb) | (enabled << 2);
+    CC_FLAGS094.minikit_noscenewhenplayable = CC_ReadOnOff(parser);
 }
 
 static void CC_lift_hover(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[0] = (charconfig.runtime->flags_094_bytes[0] & 0xdf) | (enabled << 5);
+    CC_FLAGS094.lift_hover = CC_ReadOnOff(parser);
 }
 
 static void CC_glide_anytime(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[0] = (charconfig.runtime->flags_094_bytes[0] & 0xbf) | (enabled << 6);
+    CC_FLAGS094.glide_anytime = CC_ReadOnOff(parser);
 }
 
 static void CC_can_communicate(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[0] = (charconfig.runtime->flags_094_bytes[0] & 0x7f) | (enabled << 7);
+    CC_FLAGS094.can_communicate = CC_ReadOnOff(parser);
 }
 
 static void CC_immune_to_magnets(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0xfe) | (enabled << 0);
+    CC_FLAGS094.immune_to_magnets = CC_ReadOnOff(parser);
 }
 
 static void CC_immune_to_forcepush(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0xfd) | (enabled << 1);
+    CC_FLAGS094.immune_to_forcepush = CC_ReadOnOff(parser);
 }
 
 static void CC_cannot_kill(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0xf7) | (enabled << 3);
+    CC_FLAGS094.cannot_kill = CC_ReadOnOff(parser);
 }
 
 static void CC_wait_for_weapon_in_out(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0xef) | (enabled << 4);
+    CC_FLAGS094.wait_for_weapon_in_out = CC_ReadOnOff(parser);
 }
 
 static void CC_double_jump_hover(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0xdf) | (enabled << 5);
+    CC_FLAGS094.double_jump_hover = CC_ReadOnOff(parser);
 }
 
 static void CC_no_category(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0xbf) | (enabled << 6);
+    CC_FLAGS094.no_category = CC_ReadOnOff(parser);
 }
 
 static void CC_no_force(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[1] = (charconfig.runtime->flags_094_bytes[1] & 0x7f) | (enabled << 7);
+    CC_FLAGS094.no_force = CC_ReadOnOff(parser);
 }
 
 static void CC_white_lightning(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[2] = (charconfig.runtime->flags_094_bytes[2] & 0xfe) | (enabled << 0);
+    CC_FLAGS094.white_lightning = CC_ReadOnOff(parser);
 }
 
 static void CC_buck_rider(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[2] = (charconfig.runtime->flags_094_bytes[2] & 0xfd) | (enabled << 1);
+    CC_FLAGS094.buck_rider = CC_ReadOnOff(parser);
 }
 
 static void CC_die_usecurrentlayers(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[2] = (charconfig.runtime->flags_094_bytes[2] & 0xfb) | (enabled << 2);
+    CC_FLAGS094.die_usecurrentlayers = CC_ReadOnOff(parser);
 }
 
 static void CC_no_weapon_draw(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[2] = (charconfig.runtime->flags_094_bytes[2] & 0xdf) | (enabled << 5);
+    CC_FLAGS094.no_weapon_draw = CC_ReadOnOff(parser);
 }
 
 static void CC_no_jump_fire(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[2] = (charconfig.runtime->flags_094_bytes[2] & 0xbf) | (enabled << 6);
+    CC_FLAGS094.no_jump_fire = CC_ReadOnOff(parser);
 }
 
 static void CC_hover_over_mud(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[2] = (charconfig.runtime->flags_094_bytes[2] & 0x7f) | (enabled << 7);
+    CC_FLAGS094.hover_over_mud = CC_ReadOnOff(parser);
 }
 
 static void CC_toggle_if_not_in_collection(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[3] = (charconfig.runtime->flags_094_bytes[3] & 0xfe) | (enabled << 0);
+    CC_FLAGS094.toggle_if_not_in_collection = CC_ReadOnOff(parser);
 }
 
 static void CC_toggle_if_in_minikit_bonus(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[3] = (charconfig.runtime->flags_094_bytes[3] & 0xfd) | (enabled << 1);
+    CC_FLAGS094.toggle_if_in_minikit_bonus = CC_ReadOnOff(parser);
 }
 
 static void CC_deflect_bolts_in_minikit_bonus(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[3] = (charconfig.runtime->flags_094_bytes[3] & 0xfb) | (enabled << 2);
+    CC_FLAGS094.deflect_bolts_in_minikit_bonus = CC_ReadOnOff(parser);
 }
 
 static void CC_has_grapple(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[3] = (charconfig.runtime->flags_094_bytes[3] & 0xf7) | (enabled << 3);
+    CC_FLAGS094.has_grapple = CC_ReadOnOff(parser);
 }
 
 static void CC_hover_wings(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[3] = (charconfig.runtime->flags_094_bytes[3] & 0xef) | (enabled << 4);
+    CC_FLAGS094.hover_wings = CC_ReadOnOff(parser);
 }
 
 static void CC_has_whip(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[3] = (charconfig.runtime->flags_094_bytes[3] & 0xdf) | (enabled << 5);
+    CC_FLAGS094.has_whip = CC_ReadOnOff(parser);
 }
 
 static void CC_respawn(NUFPAR_PC *parser) {
@@ -1543,7 +1473,7 @@ static void CC_oldheadmovement(NUFPAR_PC *parser) {
 }
 
 static void CC_atatheadmovement(NUFPAR_PC *parser) {
-    charconfig.runtime->flags_094 |= 0x40000000;
+    CC_FLAGS094.atatheadmovement = 1;
 }
 
 static void CC_cannotbigjump(NUFPAR_PC *parser) {
@@ -1625,14 +1555,15 @@ static void CC_tightrope_tilt(NUFPAR_PC *parser) {
 
 static void CC_combat_roll(NUFPAR_PC *parser) {
     charconfig.runtime->flags_090 |= 0x40000000;
-    charconfig.runtime->flags_094_bytes[2] &= 0xe7;
+    CC_FLAGS094.combat_roll_can_get_up = 0;
+    CC_FLAGS094.combat_roll_can_direct_land = 0;
     while (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
             charconfig.runtime->flags_090 &= ~0x40000000u;
         } else if (NuStrICmp(parser->word_buffer_ptr, "can_get_up") == 0) {
-            charconfig.runtime->flags_094_bytes[2] |= 8;
+            CC_FLAGS094.combat_roll_can_get_up = 1;
         } else if (NuStrICmp(parser->word_buffer_ptr, "can_direct_land") == 0) {
-            charconfig.runtime->flags_094_bytes[2] |= 0x10;
+            CC_FLAGS094.combat_roll_can_direct_land = 1;
         }
     }
 }
@@ -1642,27 +1573,15 @@ static void CC_has_scene_element(NUFPAR_PC *parser) {
 }
 
 static void CC_dont_turn(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[0] = (charconfig.runtime->flags_094_bytes[0] & 0xfd) | (enabled << 1);
+    CC_FLAGS094.dont_turn = CC_ReadOnOff(parser);
 }
 
 static void CC_no_jump(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[0] = (charconfig.runtime->flags_094_bytes[0] & 0xfb) | (enabled << 2);
+    CC_FLAGS094.no_jump = CC_ReadOnOff(parser);
 }
 
 static void CC_no_shoot(NUFPAR_PC *parser) {
-    u8 enabled = 1;
-    if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        enabled = 0;
-    }
-    charconfig.runtime->flags_094_bytes[0] = (charconfig.runtime->flags_094_bytes[0] & 0xf7) | (enabled << 3);
+    CC_FLAGS094.no_shoot = CC_ReadOnOff(parser);
 }
 
 static void CC_blobshadow_size(NUFPAR_PC *parser) {
