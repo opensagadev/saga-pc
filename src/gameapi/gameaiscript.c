@@ -5066,8 +5066,8 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
 
     if ((object->flags_ef4 & 0x2000u) != 0) {
         if (oneAtOnce_CanAttack(object, (GAMEOBJECT *)((APIOBJECT_PC *)object->ai_packet.opponent)->owner)) {
-            goal_range = 0.1f;
             processor->action_data_1 &= (u8)(~2u);
+            goal_range = 0.1f;
         } else {
             goal_range = oneAtOnce_GetHoldRange(object);
             processor->action_data_1 |= 2;
@@ -5119,14 +5119,14 @@ i32 __cdecl Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
                               &opponent->ai_packet.path_info, 2, goal_range);
             packet->goal_speed_mode = 1;
         } else if (StartupGameFlag1 == 0 &&
-                   distance_squared + distance_squared / 10.0 < (goal_range + aitol) * (goal_range + aitol) &&
+                   (goal_range + aitol) * (goal_range + aitol) > distance_squared + distance_squared / 10.0 &&
                    (processor->action_data_1 & 2) != 0) {
             retreat_parameter = aitol + packet->movement_instruction_parameter;
             AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance,
                               &opponent->ai_packet.path_info, 2, retreat_parameter);
             packet->goal_speed_mode = 0;
-        } else if (distance_squared > (goal_range + aitol) * (goal_range + aitol) &&
-                   (StartupGameFlag1 == 0 || (processor->action_data_1 & 2) == 0)) {
+        } else if ((StartupGameFlag1 == 0 || (processor->action_data_1 & 2) == 0) &&
+                   distance_squared > (goal_range + aitol) * (goal_range + aitol)) {
             AIMoveInstruction(packet, &opponent->ai_packet.last_path_position, stopping_distance,
                               &opponent->ai_packet.path_info, 1, goal_range);
             packet->goal_speed_mode = 0;
