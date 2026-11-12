@@ -1001,9 +1001,10 @@ AILOCATOR_PC *__cdecl LocalGetNearestLocator(void *locator_array, i32 count, f32
 }
 
 static __declspec(noinline) AILOCATOR_PC *FirstSpawnSetLocator(AILOCATORSET_PC *set, AISYS_PC *sys) {
-    if (set == NULL || set->locator_count == 0)
-        return NULL;
-    return &sys->locators[set->locator_entries[0]];
+    AILOCATOR_PC *locator = NULL;
+    if (set != NULL && set->locator_count != 0)
+        locator = &sys->locators[set->locator_entries[0]];
+    return locator;
 }
 
 static void GizActionNextLocator(AISYS_PC *sys, AILOCATORSET_PC *set, i32 looping, i32 finish_at_end,
@@ -2149,7 +2150,8 @@ f32 __cdecl Condition_NumBaddiesPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process
 void *__cdecl Condition_NumForceObjectsInit(AISYS_PC *system, char *name, AISCRIPT_PC *unused2) {
     i32 flags = 0;
     if (name != NULL && system != NULL) {
-        flags = NuStrIStr(name, "throwable") != NULL;
+        if (NuStrIStr(name, "throwable") != NULL)
+            flags = 1;
         if (NuStrIStr(name, "inrange") != NULL)
             flags |= 2;
     }
@@ -2201,9 +2203,10 @@ f32 __cdecl Condition_LastLevelPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
 }
 
 void *__cdecl Condition_MessageInitPc(AISYS_PC *system, char *name, AISCRIPT_PC *script) {
+    void *message = NULL;
     if (name != NULL && system != NULL && gizaimessagesys != NULL)
-        return CheckGizAIMessage(gizaimessagesys, name, NULL);
-    return NULL;
+        message = CheckGizAIMessage(gizaimessagesys, name, NULL);
+    return message;
 }
 
 f32 __cdecl Condition_MessagePc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
@@ -2623,7 +2626,8 @@ f32 __cdecl Condition_CharacterRangePc(AISYS_PC *system, AISCRIPTPROCESS_PC *pro
 
 f32 __cdecl Condition_BeenSpawnedPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                     void *argument) {
-    if (packet != NULL && packet->owner != NULL && packet->owner->field_280 == 0xff && packet->creature_index == 0xff)
+    // MATCH-EXCEPTION: field_280 is a signed char in the original (compared with -1); saga.h declares u8
+    if (packet != NULL && packet->owner != NULL && (i8)packet->owner->field_280 == -1 && packet->creature_index == 0xff)
         return 1.0f;
     return 0.0f;
 }
