@@ -15889,46 +15889,32 @@ eduimenu_s *__cdecl creatureEditorDeleteMenu(void) {
     return NULL;
 }
 
-__declspec(noinline) void __cdecl FollowAPIObject(APIOBJECT_PC *object, APIOBJECT_PC *target, i32 flags,
+__declspec(noinline) void __cdecl FollowAPIObject(APIOBJECT_PC *object, APIOBJECT_PC *target, u8 flags,
                                                   f32 movement_parameter) {
-    AIPACKET_PC *packet;
-    AIPACKET_PC *target_packet;
-    AIPATH_PC *path;
     NUVEC *destination;
     i32 movement_mode;
-    i32 use_path;
-    u8 object_node;
-    u8 target_node;
     f32 stopping_distance;
-    packet = object->ai;
-    target_packet = target->ai;
     if ((flags & 1) != 0) {
-        use_path = 0;
-        path = packet->path_info.path;
-        if (path != NULL && path == target_packet->path_info.path) {
-            if (((target_packet->path_info.flags & 1) != 0 ||
-                 packet->path_info.connection != target_packet->path_info.connection) &&
-                packet->path_info.connection != NULL && target_packet->path_info.connection != NULL &&
-                (packet->flags & 0x100000u) == 0) {
-                object_node = packet->path_info.connection->node_indices[0];
-                target_node = target_packet->path_info.connection->node_indices[0];
-                if (path->route_matrix[object_node][target_node] != 0xff || object_node == target_node)
-                    use_path = 1;
-            }
-        }
-        if (use_path != 0) {
-            destination = &target_packet->last_path_position;
+        if (object->ai->path_info.path != NULL && object->ai->path_info.path == target->ai->path_info.path &&
+            ((target->ai->path_info.flags & 1) != 0 ||
+             object->ai->path_info.connection != target->ai->path_info.connection) &&
+            object->ai->path_info.connection != NULL && target->ai->path_info.connection != NULL &&
+            (object->ai->flags & 0x100000u) == 0 &&
+            (object->ai->path_info.path->route_matrix[object->ai->path_info.connection->node_indices[0]]
+                                                     [target->ai->path_info.connection->node_indices[0]] != 0xff ||
+             object->ai->path_info.connection->node_indices[0] == target->ai->path_info.connection->node_indices[0])) {
+            destination = &target->ai->last_path_position;
             movement_mode = 1;
         } else {
-            destination = &target_packet->terrain_origin;
+            destination = &target->ai->terrain_origin;
             movement_mode = 7;
         }
     } else {
-        destination = &target_packet->last_path_position;
+        destination = &target->ai->last_path_position;
         movement_mode = 1;
     }
-    stopping_distance = (flags & 2) != 0 ? 0.0f : target_packet->mover_height;
-    AIMoveInstruction(packet, destination, stopping_distance, &target_packet->path_info, movement_mode,
+    stopping_distance = (flags & 2) != 0 ? 0.0f : target->ai->mover_height;
+    AIMoveInstruction(object->ai, destination, stopping_distance, &target->ai->path_info, movement_mode,
                       movement_parameter);
 }
 
