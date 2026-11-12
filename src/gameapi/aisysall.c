@@ -7631,13 +7631,13 @@ __declspec(noinline) void __cdecl AILocatorSet_CheckLocatorsStillAssigned(AISYS_
         return;
     }
     for (index = 0; index < locator_set->locator_count; ++index) {
-        u8 assignment = locator_set->assigned[index];
-        u8 locator_index = 0xff;
+        u8 locator_index;
         APIOBJECT_PC *object;
-        if (assignment == 0x80 || assignment == 0xff) {
+        if (locator_set->assigned[index] == 0xff || locator_set->assigned[index] == 0x80) {
             continue;
         }
-        object = APIOBJECTFromObjIDFn(assignment);
+        locator_index = 0xff;
+        object = APIOBJECTFromObjIDFn(locator_set->assigned[index]);
         if (object != NULL && object->ai != NULL && object->ai->locator != NULL) {
             locator_index = (u8)(object->ai->locator - system->locators);
         }
