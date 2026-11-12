@@ -1,7 +1,7 @@
 #include "saga.h"
 
 extern "C" i32 special_debug;
-extern "C" void __cdecl PCSpecialEmptyHandler_candidate(void);
+extern "C" void __cdecl PCSpecialEmptyHandler_candidate(...);
 extern "C" {
     AI_HELPER_SLOT_PC *__cdecl AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX_PC *connection,
                                                             u8 direction, void *target, u8 type) {
@@ -61,31 +61,32 @@ static i32 NuSpecialFindMultiDisplayPc(NUGSCN *scene, NUSPECIALHANDLE *dest, cha
         }
     }
     if (flags != 0 && special_debug != 0)
-        PCSpecialEmptyHandler_candidate();
+        PCSpecialEmptyHandler_candidate(name);
     return count;
 }
 extern "C" i32 __cdecl NuSpecialFindMulti(NUGSCN *scene, NUSPECIALHANDLE *dest, char *name, i32 capacity, i32 flags) {
+    NUDISPLAY_SPECIAL_PC *display_special = NULL;
     i32 count = 0;
-    if (scene == NULL) {
-        PCSpecialEmptyHandler_candidate();
-        return 0;
-    }
-    if (scene->display_list != NULL)
-        return NuSpecialFindMultiDisplayPc(scene, dest, name, capacity, flags);
-    NUSPECIAL_LEGACY_PC *special = scene->specials;
-    for (i32 index = 0; index < scene->special_count; ++index, ++special) {
-        if (NuStrIStr(special->name, name) != NULL) {
-            dest->scene = scene;
-            dest->special = (NUMTX *)special;
-            dest->display_special = NULL;
-            ++dest;
-            if (++count >= capacity)
-                return count;
+    if (scene != NULL) {
+        if (scene->display_list != NULL)
+            return NuSpecialFindMultiDisplayPc(scene, dest, name, capacity, flags);
+        NUSPECIAL_LEGACY_PC *special = scene->specials;
+        for (i32 index = 0; index < scene->special_count; ++index, ++special, ++display_special) {
+            if (NuStrIStr(special->name, name) != NULL) {
+                dest->scene = scene;
+                dest->special = (NUMTX *)special;
+                dest->display_special = scene->display_list != NULL ? (NUMTX *)display_special : NULL;
+                ++dest;
+                if (++count >= capacity)
+                    return count;
+            }
         }
+        if (flags != 0 && special_debug != 0)
+            PCSpecialEmptyHandler_candidate(name);
+        return count;
     }
-    if (flags != 0 && special_debug != 0)
-        PCSpecialEmptyHandler_candidate();
-    return count;
+    PCSpecialEmptyHandler_candidate();
+    return 0;
 }
 
 extern "C" {
