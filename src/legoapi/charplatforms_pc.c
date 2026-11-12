@@ -77,10 +77,9 @@ void __cdecl CharPlatforms_Configure(WORLDINFO *world, char *config) {
     if (parser == NULL)
         return;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    system = (CHAR_PLATFORM_SYSTEM_PC *)world->giz_buffer.addr;
-    view->char_platform_sys = system;
-    system->scene = world->current_gscn;
-    system->platform_count = 0;
+    view->char_platform_sys = (CHAR_PLATFORM_SYSTEM_PC *)world->giz_buffer.addr;
+    view->char_platform_sys->scene = world->current_gscn;
+    view->char_platform_sys->platform_count = 0;
     while (NuFParGetLine(parser) != 0) {
         CHAR_PLATFORM_PC *platform;
         if (NuFParGetWord(parser) == 0)
@@ -99,9 +98,10 @@ void __cdecl CharPlatforms_Configure(WORLDINFO *world, char *config) {
         ++view->char_platform_sys->platform_count;
     }
     NuFParDestroy(parser);
-    system = view->char_platform_sys;
-    if (system->platform_count > 0)
-        world->giz_buffer.addr = ((u32)&system->platforms[system->platform_count] + 3U) & ~3U;
+    if (view->char_platform_sys->platform_count > 0)
+        world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(CHAR_PLATFORM_SYSTEM_PC) +
+                                  (view->char_platform_sys->platform_count - 1) * sizeof(CHAR_PLATFORM_PC) + 3U) &
+                                 ~3U;
     else
         view->char_platform_sys = NULL;
 }
