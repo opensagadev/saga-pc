@@ -662,29 +662,32 @@ extern "C" {
     }
 
     void __cdecl LevelSplines_InitForLevel(WORLDINFO *world) {
+        char name[64];
         i32 i;
+        u32 size;
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
         world->camera_splines = (NUGSPLINE **)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += LEVELSPLINECOUNT * sizeof(*world->camera_splines);
-        memset(world->camera_splines, 0, LEVELSPLINECOUNT * sizeof(*world->camera_splines));
+        size = LEVELSPLINECOUNT * sizeof(*world->camera_splines);
+        world->giz_buffer.addr += size;
+        memset(world->camera_splines, 0, size);
         if (LevSplList == NULL)
             return;
         for (i = 0; i < LEVELSPLINECOUNT; ++i) {
-            LEVELSPLINE_PC *entry = &LevSplList[i];
             NUGSCN *scene;
             NUGSPLINE *spline;
-            char name[64];
-            if ((entry->area != -1 && world->area_index != entry->area) ||
-                (entry->level != -1 && world->level_idx != entry->level))
+            if ((LevSplList[i].area != -1 && world->area_index != LevSplList[i].area) ||
+                (LevSplList[i].level != -1 && world->level_idx != LevSplList[i].level))
                 continue;
-            scene = *(entry->scene != NULL ? entry->scene : &world->current_gscn);
+            scene = *(LevSplList[i].scene != NULL ? LevSplList[i].scene : &world->current_gscn);
             if (scene != NULL) {
-                spline = NuSplineFind(scene, (char *)entry->name);
-                world->camera_splines[i] = spline;
-                if (spline != NULL && ((entry->min_points > 0 && spline->length < entry->min_points) ||
-                                       (entry->max_points > 0 && entry->max_points >= entry->min_points &&
-                                        spline->length > entry->max_points)))
-                    world->camera_splines[i] = NULL;
+                world->camera_splines[i] = NuSplineFind(scene, (char *)LevSplList[i].name);
+                if (world->camera_splines[i] != NULL) {
+                    if (LevSplList[i].min_points > 0 && world->camera_splines[i]->length < LevSplList[i].min_points)
+                        world->camera_splines[i] = NULL;
+                    else if (LevSplList[i].max_points > 0 && LevSplList[i].max_points >= LevSplList[i].min_points &&
+                             world->camera_splines[i]->length > LevSplList[i].max_points)
+                        world->camera_splines[i] = NULL;
+                }
             }
             if (levspl_i_start != -1) {
                 name[0] = '\0';
