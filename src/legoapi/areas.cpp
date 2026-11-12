@@ -127,12 +127,10 @@ i32 __cdecl CharIDFromName(const char *name) {
 }
 
 i32 __cdecl Cheat_FindByName(char *name) {
-    CHEAT_PC *cheats;
     i32 index;
 
-    cheats = CheatSystemPtr->cheats;
     for (index = 0; index < CheatSystemPtr->count; ++index) {
-        if (NuStrICmp(cheats[index].name, name) == 0) {
+        if (NuStrICmp(CheatSystemPtr->cheats[index].name, name) == 0) {
             return index;
         }
     }
