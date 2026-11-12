@@ -51,10 +51,10 @@ void __cdecl Faders_Configure(WORLDINFO *world, char *config) {
         ++fader;
     }
     NuFParDestroy(parser);
-    if (view->fader_count <= 0) {
-        view->faders = NULL;
-    } else {
+    if (view->fader_count > 0) {
         world->giz_buffer.addr = ((u32)fader + 3) & ~3u;
+    } else {
+        view->faders = NULL;
     }
 }
 
