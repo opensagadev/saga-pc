@@ -1228,17 +1228,14 @@ extern "C" {
     i32 __cdecl Grapple_SetTargetMom(GAMEOBJECT *object) {
         NUVEC point;
         if (object->field_7b3 == 1) {
-            object->target_velocity.x =
-                (object->external_force.x - object->upper_position.x) * GrappleMomentumNearScalePc;
-            object->target_velocity.y =
-                (object->external_force.y - object->upper_position.y) * GrappleMomentumNearScalePc;
-            object->target_velocity.z =
-                (object->external_force.z - object->upper_position.z) * GrappleMomentumNearScalePc;
+            object->target_velocity.x = (object->external_force.x - object->upper_position.x) * 20.0;
+            object->target_velocity.y = (object->external_force.y - object->upper_position.y) * 20.0;
+            object->target_velocity.z = (object->external_force.z - object->upper_position.z) * 20.0;
         } else {
             Grapple_SetPlayerTargetPoint(object, &point);
-            object->target_velocity.x = (point.x - object->upper_position.x) * nu_wind_scaled_time_multiplier;
-            object->target_velocity.y = (point.y - object->upper_position.y) * nu_wind_scaled_time_multiplier;
-            object->target_velocity.z = (point.z - object->upper_position.z) * nu_wind_scaled_time_multiplier;
+            object->target_velocity.x = (point.x - object->upper_position.x) * 5.0;
+            object->target_velocity.y = (point.y - object->upper_position.y) * 5.0;
+            object->target_velocity.z = (point.z - object->upper_position.z) * 5.0;
         }
         return 1;
     }
