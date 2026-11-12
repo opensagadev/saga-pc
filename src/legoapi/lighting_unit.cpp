@@ -270,12 +270,13 @@ extern "C" {
     }
 
     void __cdecl InitGameObjectLights(void) {
-        STARTUP_OBJECT_LIGHT_PC *objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
+        STARTUP_OBJECT_LIGHT_PC *objects;
         i32 index;
         for (index = 0; index < 64; ++index)
-            objects[index].dynamic_light_id = -1;
+            ((STARTUP_OBJECT_LIGHT_PC *)Obj)[index].dynamic_light_id = -1;
+        objects = (STARTUP_OBJECT_LIGHT_PC *)Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-            if ((objects[index].flags & 0x1001) == 0x1001) {
+            if ((objects[index].flags & 1) && (objects[index].flags & 0x1000)) {
                 objects[index].dynamic_light_id = rtlDynamicAlloc();
                 if (objects[index].dynamic_light_id != -1) {
                     rtlDynamicSetType(objects[index].dynamic_light_id, 2);
