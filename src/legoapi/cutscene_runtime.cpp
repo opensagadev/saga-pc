@@ -1569,8 +1569,7 @@ extern "C" {
             *character_id = -1;
         if (model_only != 0) {
             for (i32 i = 0; i < apicharsys->loaded_model_count; ++i) {
-                i32 id = apicharsys->models[i].model_id;
-                if (NuStrICmp(name, CDataList[id].name) == 0) {
+                if (NuStrICmp(name, CDataList[apicharsys->models[i].model_id].name) == 0) {
                     if (character_id != NULL)
                         *character_id = apicharsys->models[i].model_id;
                     return &apicharsys->models[i];
