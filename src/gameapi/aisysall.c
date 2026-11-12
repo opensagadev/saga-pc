@@ -14571,6 +14571,7 @@ void __cdecl locatorEditor_cbCreateLocatorSet(eduimenu_s *menu, eduiitem_s *item
     EDLOCATORSET_s *other;
     char name[16];
     i32 index = 0;
+    i32 duplicate;
     (void)menu;
     (void)item;
     (void)event;
@@ -14578,13 +14579,15 @@ void __cdecl locatorEditor_cbCreateLocatorSet(eduimenu_s *menu, eduiitem_s *item
         return;
     do {
         sprintf(name, "NewSet%d", ++index);
-        other = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets);
-        while (other != NULL) {
-            if (NuStrICmp(name, other->name) == 0)
+        duplicate = 0;
+        for (other = (EDLOCATORSET_s *)NuLinkedListGetHead(&aieditor->locator_sets); other != NULL;
+             other = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &other->link)) {
+            if (NuStrICmp(name, other->name) == 0) {
+                duplicate = 1;
                 break;
-            other = (EDLOCATORSET_s *)NuLinkedListGetNext(&aieditor->locator_sets, &other->link);
+            }
         }
-    } while (other != NULL);
+    } while (duplicate);
     strcpy(set->name, name);
     aieditor->current_locator_set = set;
     aieditor->current_locator = NULL;
@@ -15277,6 +15280,7 @@ void __cdecl pathEditor_cbCreatePath(eduimenu_s *menu, eduiitem_s *item, u32 eve
     EDAIPATH_s *path;
     EDAIPATH_s *existing;
     i32 number;
+    i32 duplicate;
     char name[16];
     (void)menu;
     (void)item;
@@ -15291,13 +15295,15 @@ void __cdecl pathEditor_cbCreatePath(eduimenu_s *menu, eduiitem_s *item, u32 eve
         return;
     do {
         sprintf(name, "NewPath%d", ++number);
-        existing = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths);
-        while (existing != NULL) {
-            if (NuStrICmp(name, existing->name) == 0)
+        duplicate = 0;
+        for (existing = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); existing != NULL;
+             existing = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &existing->link)) {
+            if (NuStrICmp(name, existing->name) == 0) {
+                duplicate = 1;
                 break;
-            existing = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &existing->link);
+            }
         }
-    } while (existing != NULL);
+    } while (duplicate);
     strcpy(path->name, name);
     path->flags &= ~1;
     aieditor->current_path = path;
