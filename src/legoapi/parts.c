@@ -334,19 +334,18 @@ PART_PC *__cdecl HitParts(GAMEOBJECT *excluded_owner, NUVEC *points, i32 point_c
         if ((part->active & 1) == 0 || part->owner == excluded_owner || (part->flags & flags) == 0) {
             continue;
         }
-        if (part->collision_min.x > maximum->x || minimum->x > part->collision_max.x ||
-            part->collision_min.z > maximum->z || minimum->z > part->collision_max.z ||
-            part->collision_min.y > maximum->y || minimum->y > part->collision_max.y) {
+        if (maximum->x < part->collision_min.x || minimum->x > part->collision_max.x ||
+            maximum->z < part->collision_min.z || minimum->z > part->collision_max.z ||
+            maximum->y < part->collision_min.y || minimum->y > part->collision_max.y) {
             continue;
         }
         for (point = point_count - 1; point >= 0; --point) {
             NUVEC difference;
-            f32 distance;
             f32 combined_radius;
             NuVecSub(&difference, &points[point], &part->position);
-            distance = difference.x * difference.x + difference.y * difference.y + difference.z * difference.z;
             combined_radius = radius + part->radius;
-            if (distance <= combined_radius * combined_radius) {
+            if (difference.x * difference.x + difference.y * difference.y + difference.z * difference.z <=
+                combined_radius * combined_radius) {
                 return part;
             }
         }
