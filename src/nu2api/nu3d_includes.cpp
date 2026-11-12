@@ -8156,9 +8156,9 @@ extern "C" {
         u32 *current = (u32 *)scene->clip_used[(scene->render_flags >> 15) & 1];
         u32 *other = (u32 *)scene->clip_used[~(scene->render_flags >> 15) & 1];
         u16 *counts = scene->clip_counts;
-        i32 words = (scene->clip_count + 15) / 16;
         i32 object = 0;
         i32 word, byte_index, shift, index;
+        i32 words = (scene->clip_count + 15) / 16;
         u8 bits;
         u32 code;
         i32 *indices;
