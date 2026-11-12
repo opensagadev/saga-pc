@@ -2242,7 +2242,7 @@ extern "C" i32 __cdecl Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         GAMEOBJECT *owner;
         u32 flags;
-        if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->dead != 0)
+        if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead != 0)
             continue;
         owner = static_cast<GAMEOBJECT *>(bolt->owner);
         if (object == owner || (object->flags_e20 & 0x20) != 0)
@@ -2261,10 +2261,10 @@ extern "C" i32 __cdecl Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *
             continue;
         if ((object->character_data->game_character->flags_090 & 0x8000) != 0)
             continue;
-        if (minimum->x > object->collision_max.x || object->collision_min.x > maximum->x ||
-            minimum->z > object->collision_max.z || object->collision_min.z > maximum->z)
+        if (object->collision_max.x < minimum->x || object->collision_min.x > maximum->x ||
+            object->collision_max.z < minimum->z || object->collision_min.z > maximum->z)
             continue;
-        if ((flags & 0x8000000) == 0 && (minimum->y > object->collision_max.y || object->collision_min.y > maximum->y))
+        if ((flags & 0x8000000) == 0 && (object->collision_max.y < minimum->y || object->collision_min.y > maximum->y))
             continue;
         if (Bolt_HitGameObject(bolt, object, points, minimum, maximum, radius, hit_flags))
             return 1;
