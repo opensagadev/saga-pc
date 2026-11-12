@@ -381,11 +381,15 @@ i32 __cdecl PCCutAni3CurveInteger(ANI3_HEADER_PC *animation, f32 *values, i32 in
 f32 *__cdecl PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *locator, NUMTX *matrix, f32 frame) {
     f32 *values = NuAnimCurveExtractAllNodeCurves_3(locator->animation, 0, frame, NULL);
     NUVEC translation;
+    NUVEC rotation;
     if (locator->animation->node_flags[0] & 1) {
         NUANGVEC angle;
-        angle.x = (i32)(values[3] * AIPathAngularScale);
-        angle.y = (i32)(values[4] * AIPathAngularScale);
-        angle.z = (i32)(values[5] * AIPathAngularScale);
+        rotation.x = values[3];
+        rotation.y = values[4];
+        rotation.z = values[5];
+        angle.x = (i32)(rotation.x * AIPathAngularScale);
+        angle.y = (i32)(rotation.y * AIPathAngularScale);
+        angle.z = (i32)(rotation.z * AIPathAngularScale);
         NuMtxSetRotateXYZ(matrix, &angle);
     } else
         NuMtxSetIdentity(matrix);
@@ -400,13 +404,17 @@ f32 *__cdecl PCCutLocatorAni3(CUT_LOCATOR_ANIMATION_PC *locator, NUMTX *matrix, 
 
 void __cdecl PCCutRigidAni3(CUT_RIGID_ANIMATION_PC *rigid, f32 frame, NUMTX *matrix) {
     f32 *values = NuAnimCurveExtractAllNodeCurves_3(rigid->animation, 0, frame, NULL);
-    u8 flags = rigid->animation->node_flags[0];
+    u32 flags = rigid->animation->node_flags[0];
     NUVEC translation, scale;
+    NUVEC rotation;
     if (flags & 1) {
         NUANGVEC angle;
-        angle.x = (i32)(values[3] * AIPathAngularScale);
-        angle.y = (i32)(values[4] * AIPathAngularScale);
-        angle.z = (i32)(values[5] * AIPathAngularScale);
+        rotation.x = values[3];
+        rotation.y = values[4];
+        rotation.z = values[5];
+        angle.x = (i32)(rotation.x * AIPathAngularScale);
+        angle.y = (i32)(rotation.y * AIPathAngularScale);
+        angle.z = (i32)(rotation.z * AIPathAngularScale);
         NuMtxSetRotateXYZ(matrix, &angle);
     } else
         NuMtxSetIdentity(matrix);
@@ -498,82 +506,79 @@ void __cdecl PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame
     } while (0)
 
 f32 *__cdecl NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC_PC *locator, f32 frame, NUMTX *matrix, NUANIM_TIME2_PC *time) {
-    CUT_ANIMATION_PC *animation = locator->animation;
     DWA_CURVE_CELL_PC *curves;
     i8 *types;
     NUVEC translation;
-    if (animation == NULL) {
-        *matrix = locator->base_matrix;
-        return NULL;
-    }
-    if ((i32)animation->prefix.header.magic >= (i32)0x414e4934 &&
-        (i32)animation->prefix.header.magic <= (i32)0x414e4935)
-        return PCCutLocatorAni3((CUT_LOCATOR_ANIMATION_PC *)locator, matrix, frame);
-    curves = animation->prefix.curves;
-    types = animation->prefix.curve_types;
-    if (animation->node_flags[0] & 1) {
-        f32 rx = CUT2_VALUE(curves, time, types, 3);
-        f32 ry = CUT2_VALUE(curves, time, types, 4);
-        f32 rz = CUT2_VALUE(curves, time, types, 5);
-        NUANGVEC angle;
-        angle.x = (i32)(rx * AIPathAngularScale);
-        angle.y = (i32)(ry * AIPathAngularScale);
-        angle.z = (i32)(rz * AIPathAngularScale);
-        NuMtxSetRotateXYZ(matrix, &angle);
+    NUVEC rotation;
+    if (locator->animation != NULL) {
+        if ((i32)locator->animation->prefix.header.magic >= (i32)0x414e4934 &&
+            (i32)locator->animation->prefix.header.magic <= (i32)0x414e4935)
+            return PCCutLocatorAni3((CUT_LOCATOR_ANIMATION_PC *)locator, matrix, frame);
+        curves = locator->animation->prefix.curves;
+        types = locator->animation->prefix.curve_types;
+        if (locator->animation->node_flags[0] & 1) {
+            NUANGVEC angle;
+            rotation.x = CUT2_VALUE(curves, time, types, 3);
+            rotation.y = CUT2_VALUE(curves, time, types, 4);
+            rotation.z = CUT2_VALUE(curves, time, types, 5);
+            angle.x = (i32)(rotation.x * AIPathAngularScale);
+            angle.y = (i32)(rotation.y * AIPathAngularScale);
+            angle.z = (i32)(rotation.z * AIPathAngularScale);
+            NuMtxSetRotateXYZ(matrix, &angle);
+        } else
+            NuMtxSetIdentity(matrix);
+        translation.x = CUT2_VALUE(curves, time, types, 0);
+        translation.y = CUT2_VALUE(curves, time, types, 1);
+        translation.z = CUT2_VALUE(curves, time, types, 2);
+        NuMtxTranslate(matrix, &translation);
+        CUT2_FLIP(matrix);
+        NuMtxTranslate(matrix, (NUVEC *)&locator->base_matrix.m30);
     } else
-        NuMtxSetIdentity(matrix);
-    translation.x = CUT2_VALUE(curves, time, types, 0);
-    translation.y = CUT2_VALUE(curves, time, types, 1);
-    translation.z = CUT2_VALUE(curves, time, types, 2);
-    NuMtxTranslate(matrix, &translation);
-    CUT2_FLIP(matrix);
-    NuMtxTranslate(matrix, (NUVEC *)&locator->base_matrix.m30);
+        *matrix = locator->base_matrix;
     return NULL;
 }
 
 void __cdecl NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *matrix) {
-    CUT_ANIMATION_PC *animation = rigid->animation;
     NUANIM_TIME2_PC time;
     DWA_CURVE_CELL_PC *curves;
     i8 *types;
     u8 flags;
     NUVEC translation, scale;
-    if (animation == NULL) {
-        *matrix = rigid->base_matrix;
-        return;
-    }
-    if ((i32)animation->prefix.header.magic >= (i32)0x414e4934 &&
-        (i32)animation->prefix.header.magic <= (i32)0x414e4935) {
-        PCCutRigidAni3((CUT_RIGID_ANIMATION_PC *)rigid, frame, matrix);
-        return;
-    }
-    types = animation->prefix.curve_types;
-    curves = animation->prefix.curves;
-    flags = animation->node_flags[0];
-    NuAnimData2CalcTime(&animation->prefix, frame, &time);
-    if (flags & 1) {
-        f32 rx = CUT2_VALUE(curves, &time, types, 3);
-        f32 ry = CUT2_VALUE(curves, &time, types, 4);
-        f32 rz = CUT2_VALUE(curves, &time, types, 5);
-        NUANGVEC angle;
-        angle.x = (i32)(rx * AIPathAngularScale);
-        angle.y = (i32)(ry * AIPathAngularScale);
-        angle.z = (i32)(rz * AIPathAngularScale);
-        NuMtxSetRotateXYZ(matrix, &angle);
+    if (rigid->animation != NULL) {
+        if ((i32)rigid->animation->prefix.header.magic >= (i32)0x414e4934 &&
+            (i32)rigid->animation->prefix.header.magic <= (i32)0x414e4935) {
+            PCCutRigidAni3((CUT_RIGID_ANIMATION_PC *)rigid, frame, matrix);
+            return;
+        }
+        types = rigid->animation->prefix.curve_types;
+        curves = rigid->animation->prefix.curves;
+        flags = rigid->animation->node_flags[0];
+        NuAnimData2CalcTime(&rigid->animation->prefix, frame, &time);
+        if (flags & 1) {
+            f32 rx = CUT2_VALUE(curves, &time, types, 3);
+            f32 ry = CUT2_VALUE(curves, &time, types, 4);
+            f32 rz = CUT2_VALUE(curves, &time, types, 5);
+            NUANGVEC angle;
+            angle.x = (i32)(rx * AIPathAngularScale);
+            angle.y = (i32)(ry * AIPathAngularScale);
+            angle.z = (i32)(rz * AIPathAngularScale);
+            NuMtxSetRotateXYZ(matrix, &angle);
+        } else
+            NuMtxSetIdentity(matrix);
+        if (flags & 8) {
+            scale.x = CUT2_VALUE(curves, &time, types, 6);
+            scale.y = CUT2_VALUE(curves, &time, types, 7);
+            scale.z = CUT2_VALUE(curves, &time, types, 8);
+            NuMtxPreScale(matrix, &scale);
+        }
+        translation.x = CUT2_VALUE(curves, &time, types, 0);
+        translation.y = CUT2_VALUE(curves, &time, types, 1);
+        translation.z = CUT2_VALUE(curves, &time, types, 2);
+        NuMtxTranslate(matrix, &translation);
+        CUT2_FLIP(matrix);
+        NuMtxTranslate(matrix, (NUVEC *)&rigid->base_matrix.m30);
     } else
-        NuMtxSetIdentity(matrix);
-    if (flags & 8) {
-        scale.x = CUT2_VALUE(curves, &time, types, 6);
-        scale.y = CUT2_VALUE(curves, &time, types, 7);
-        scale.z = CUT2_VALUE(curves, &time, types, 8);
-        NuMtxPreScale(matrix, &scale);
-    }
-    translation.x = CUT2_VALUE(curves, &time, types, 0);
-    translation.y = CUT2_VALUE(curves, &time, types, 1);
-    translation.z = CUT2_VALUE(curves, &time, types, 2);
-    NuMtxTranslate(matrix, &translation);
-    CUT2_FLIP(matrix);
-    NuMtxTranslate(matrix, (NUVEC *)&rigid->base_matrix.m30);
+        *matrix = rigid->base_matrix;
 }
 
 void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX *matrix, i32 *visible,
