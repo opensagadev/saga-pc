@@ -28,12 +28,13 @@ void PC_INPUT_RUNTIME_PC::InitXInputCaps(const PC_XINPUT_CAPABILITIES_PC *caps, 
     if (record->product.Data1 == 0x028e045e || record->product.Data1 == 0x0719045e) {
         record->button_count = 10;
         record->pov_count = 1;
-        record->left_trigger = record->right_trigger = 0xffff;
+        record->left_trigger = 0xffff;
+        record->right_trigger = 0xffff;
     } else {
         record->left_trigger = caps->motor_left;
         record->right_trigger = caps->motor_right;
         for (i32 bit = 0; bit < 32; ++bit)
-            if ((u32)caps->gamepad.buttons & (1u << bit))
+            if (caps->gamepad.buttons & (1 << bit))
                 ++record->button_count;
         if ((caps->gamepad.buttons & 15) == 15) {
             record->button_count -= 4;
