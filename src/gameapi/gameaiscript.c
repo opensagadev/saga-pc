@@ -4514,50 +4514,50 @@ i32 __cdecl Action_SetDoomedEscapeLocator(AISYS_PC *system, AISCRIPTPROCESS_PC *
     char *value;
     char locator_name[64];
 
-    if (first_time) {
-        object = NULL;
-        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
-            object = packet->owner->objptr;
-        if (param_count == 0)
-            return 1;
-        name = NULL;
-        personal = 0;
-        indexed = 0;
-        random_count = 0;
-        take_damage = 0;
-        for (index = 0; index < param_count; ++index) {
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-            if (value != NULL) {
-                lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
-            } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral75782c)) != NULL)
-                name = value + 5;
-            else if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL)
-                personal = 1;
-            else if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL)
-                indexed = 1;
-            else if (NuStrIStr(params[index], (char *)AITransferLiteral757884) != NULL)
-                take_damage = 1;
-            else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757824)) != NULL)
-                random_count = (i32)(AIParamToFloat(processor, value + 9));
-        }
-        if (object != NULL) {
-            object->flags_ef0 &= ~0x800u;
-            object->doomed_escape_locator = NULL;
-            if (name != NULL) {
+    name = NULL;
+    personal = 0;
+    indexed = 0;
+    random_count = 0;
+    take_damage = 0;
+    object = NULL;
+    if (!first_time)
+        return 1;
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+        object = packet->owner->objptr;
+    if (param_count == 0)
+        return 1;
+    for (index = 0; index < param_count; ++index) {
+        value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+        if (value != NULL) {
+            lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 10) : NULL;
+            object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+        } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral75782c)) != NULL)
+            name = value + 5;
+        else if (NuStrIStr(params[index], (char *)AIActionPersonalName) != NULL)
+            personal = 1;
+        else if (NuStrIStr(params[index], (char *)AIActionIndexedName) != NULL)
+            indexed = 1;
+        else if (NuStrIStr(params[index], (char *)AITransferLiteral757884) != NULL)
+            take_damage = 1;
+        else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757824)) != NULL)
+            random_count = (i32)(AIParamToFloat(processor, value + 9));
+    }
+    if (object != NULL) {
+        object->flags_ef0 &= ~0x800u;
+        object->doomed_escape_locator = NULL;
+        if (name != NULL) {
 
-                if (indexed && (i8)(object->field_280) != -1)
-                    sprintf(locator_name, (char *)AILocatorIndexedFormat, name, (i8)(object->field_280));
-                else if (personal && object->character_data != NULL)
-                    sprintf(locator_name, (char *)AILocatorPersonalFormat, name, object->character_data->name);
-                else if (random_count != 0)
-                    sprintf(locator_name, (char *)AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
-                else
-                    sprintf(locator_name, name);
-                object->doomed_escape_locator = AIPathFindLocator(system, locator_name);
-                if (object->doomed_escape_locator != NULL)
-                    object->flags_ef0 = (object->flags_ef0 & ~0x800u) | (take_damage << 11);
-            }
+            if (indexed && (i8)(object->field_280) != -1)
+                sprintf(locator_name, (char *)AILocatorIndexedFormat, name, (i8)(object->field_280));
+            else if (personal && object->character_data != NULL)
+                sprintf(locator_name, (char *)AILocatorPersonalFormat, name, object->character_data->name);
+            else if (random_count != 0)
+                sprintf(locator_name, (char *)AILocatorIndexedFormat, name, NuRand(NULL) % random_count);
+            else
+                sprintf(locator_name, name);
+            object->doomed_escape_locator = AIPathFindLocator(system, locator_name);
+            if (object->doomed_escape_locator != NULL)
+                object->flags_ef0 = (object->flags_ef0 & ~0x800u) | (take_damage << 11);
         }
     }
     return 1;
