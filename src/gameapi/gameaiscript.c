@@ -5733,7 +5733,10 @@ i32 __cdecl Action_AddToSet(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACK
     (void)param_6;
     if (param_5 == 0)
         return 1;
-    object = packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL ? packet->owner->objptr : NULL;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    // MATCH-EXCEPTION: retail tests the loaded object again (probably a macro-expanded guard).
     if (object == NULL)
         return 1;
     for (index = 0; index < param_4; ++index) {
