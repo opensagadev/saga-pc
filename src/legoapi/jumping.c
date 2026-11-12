@@ -968,46 +968,46 @@ void __cdecl BigJumpCode(GAMEOBJECT *object) {
         if (object->context_timer >= object->context_duration) {
             if (LEGOACT_FALL != -1 && object->field_7aa == LEGOACT_FALL) {
                 object->character_context = -1;
-                return;
-            }
-            world = WorldInfo_CurrentlyActive();
-            if (LEGOACT_COMBOJUMP != -1 && object->field_7aa == LEGOACT_COMBOJUMP) {
-                object->facing_angle += 0x8000;
-                object->movement_facing_angle += 0x8000;
-                object->field_0x276 += 0x8000;
-                ResetAnimPacket(&object->anim_packet, -1);
-            }
-            if ((object->context_variant_flags & 0x100) != 0 && object->field_281 == 0) {
-                height = GameShadow(NULL, &object->launch_origin, 5.0f, -1);
-                if (height != 2000000.0f && object->launch_origin.y - height >= 0.1f) {
-                    StartEndOfJump(object);
-                    return;
-                }
-            }
-            ResetAnimPacket(&object->anim_packet, -1);
-            object->field_7b3 = 2;
-            object->field_7aa = (i16)BigJump_LandActionFn(object);
-            object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
-            if (object->context_duration == 0.0f)
-                object->context_duration = 1.0f;
-            object->context_timer = 0.0f;
-            if ((object->portal_flags & 0x8000000) != 0 || (object->flags_ef0 & 0x2000) != 0) {
-                GameCam_Judder(GameCam, -0.3f, 0, &object->collision_position);
-                PlayLandSfx(object, 3, 0);
-                NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
-            } else if ((object->flags_1fc_word & 0x80) != 0) {
-                GameCam_Judder(GameCam, -0.2f, 0, &object->collision_position);
-                PlayLandSfx(object, 3, 0);
             } else {
-                PlayLandSfx(object, 0, 0);
+                world = WorldInfo_CurrentlyActive();
+                if (LEGOACT_COMBOJUMP != -1 && object->field_7aa == LEGOACT_COMBOJUMP) {
+                    object->facing_angle += 0x8000;
+                    object->movement_facing_angle += 0x8000;
+                    object->field_0x276 += 0x8000;
+                    ResetAnimPacket(&object->anim_packet, -1);
+                }
+                if ((object->context_variant_flags & 0x100) != 0 && object->field_281 == 0) {
+                    height = GameShadow(NULL, &object->launch_origin, 5.0f, -1);
+                    if (height != 2000000.0f && object->launch_origin.y - height >= 0.1f) {
+                        StartEndOfJump(object);
+                        return;
+                    }
+                }
+                ResetAnimPacket(&object->anim_packet, -1);
+                object->field_7b3 = 2;
+                object->field_7aa = (i16)BigJump_LandActionFn(object);
+                object->context_duration = AnimDuration((i16)object->id, object->field_7aa, 0.0f, 0.0f, 1);
+                if (object->context_duration == 0.0f)
+                    object->context_duration = 1.0f;
+                object->context_timer = 0.0f;
+                if ((object->portal_flags & 0x8000000) != 0 || (object->flags_ef0 & 0x2000) != 0) {
+                    GameCam_Judder(GameCam, -0.3f, 0, &object->collision_position);
+                    PlayLandSfx(object, 3, 0);
+                    NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
+                } else if ((object->flags_1fc_word & 0x80) != 0) {
+                    GameCam_Judder(GameCam, -0.2f, 0, &object->collision_position);
+                    PlayLandSfx(object, 3, 0);
+                } else {
+                    PlayLandSfx(object, 0, 0);
+                }
+                object->external_force = object->position;
+                object->velocity.x = object->velocity.y = object->velocity.z = 0.0f;
+                if ((object->flags_ef0 & 0x2000) != 0) {
+                    FindSlamOrigin(object, &origin, NULL);
+                    AddExplosion(&origin, 2.0f, 0.4f, object, object->slam_effect, 0x19);
+                }
+                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
             }
-            object->external_force = object->position;
-            object->velocity.x = object->velocity.y = object->velocity.z = 0.0f;
-            if ((object->flags_ef0 & 0x2000) != 0) {
-                FindSlamOrigin(object, &origin, NULL);
-                AddExplosion(&origin, 2.0f, 0.4f, object, object->slam_effect, 0x19);
-            }
-            AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT_PC *)object, &object->ai_packet, 0xff, 1);
         } else {
             fraction = object->context_timer / object->context_duration;
             object->position.x =
@@ -1017,8 +1017,9 @@ void __cdecl BigJumpCode(GAMEOBJECT *object) {
             object->position.z =
                 object->external_force.z + (object->launch_origin.z - object->external_force.z) * fraction;
             angle = (i32)(fraction * 32768.0);
-            height = NuTrigTable[(angle >> 1) & 0x7fff] * object->character_data->game_character->second_jump_height;
-            object->position.y += (height + height) * object->big_jump_height;
+            object->position.y += NuTrigTable[(angle >> 1) & 0x7fff] *
+                                  object->character_data->game_character->second_jump_height * 2.0f *
+                                  object->big_jump_height;
             NuVecSub(&object->velocity, &object->position, &object->start_position);
             NuVecScale(&object->velocity, &object->velocity, 1.0f / FRAMETIME);
         }
