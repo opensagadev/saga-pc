@@ -3192,16 +3192,16 @@ i32 __cdecl NuFParGetInt(NUFPAR_PC *parser) {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
 
-    if (buffer[0] == '\0') {
-        return 0;
+    if (buffer[0] != '\0') {
+        if (buffer[0] == '$') {
+            return NuHexStringToI(buffer + 1);
+        }
+        if (buffer[0] == '0' && (buffer[1] == 'x' || buffer[1] == 'X')) {
+            return NuHexStringToI(buffer + 2);
+        }
+        return NuAToI(buffer);
     }
-    if (buffer[0] == '$') {
-        return NuHexStringToI(buffer + 1);
-    }
-    if (buffer[0] == '0' && (buffer[1] == 'x' || buffer[1] == 'X')) {
-        return NuHexStringToI(buffer + 2);
-    }
-    return NuAToI(buffer);
+    return 0;
 }
 
 f32 __cdecl NuFParGetFloat(NUFPAR_PC *parser) {
@@ -3214,7 +3214,10 @@ f32 __cdecl NuFParGetFloat(NUFPAR_PC *parser) {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
 
-    return buffer[0] != '\0' ? NuAToF(buffer) : 0.0f;
+    if (buffer[0] != '\0') {
+        return NuAToF(buffer);
+    }
+    return 0.0f;
 }
 
 void __cdecl NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value) {
