@@ -20,8 +20,8 @@ void __cdecl BobaRocket_Kill(PART_PC *part, i32 reason) {
         return;
     }
     owner = part->owner;
-    if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 0x1001) == 0x1001 &&
-        owner->field_280 <= 1) {
+    if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 1) != 0 &&
+        (owner->flags_1fc_word & 0x1000) != 0 && (owner->field_280 == 0 || owner->field_280 == 1)) {
         explosion->flags |= 0x10000;
         explosion->owner = owner;
     }
