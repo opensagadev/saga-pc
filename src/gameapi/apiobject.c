@@ -2318,7 +2318,8 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
         }
         if (pak != NULL) {
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) != 0 || ((animation->flags & 1) != 0) != (area_animation != 0))
+                if ((animation->flags & 0x8000) != 0 || (area_animation != 0 && (animation->flags & 1) == 0) ||
+                    (area_animation == 0 && (animation->flags & 1) != 0))
                     continue;
                 if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
                     if (RedirectAnimFn == NULL ||
@@ -2399,7 +2400,8 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
             }
         } else {
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) != 0 || ((animation->flags & 1) != 0) != (area_animation != 0))
+                if ((animation->flags & 0x8000) != 0 || (area_animation != 0 && (animation->flags & 1) == 0) ||
+                    (area_animation == 0 && (animation->flags & 1) != 0))
                     continue;
                 if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
                     if (RedirectAnimFn == NULL ||
