@@ -313,7 +313,7 @@ extern "C" {
                 team->waypoint_count = 0;
             }
 
-            for (i32 team_index = 0; team_index < team_count; ++team_index) {
+            for (i32 team_index = 0; team_index < trooperteamcount; ++team_index) {
                 minitrooperteam_s *team = &static_cast<minitrooperteam_s *>(world->mini_trooper_teams)[team_index];
                 team->reserved_02c = 2000000.0f;
                 team->trooper_count = static_cast<u8>(trooper_count);
@@ -325,18 +325,14 @@ extern "C" {
                 char group_name[16];
                 sprintf(group_name, "group%d", team_index + 1);
                 team->path = edSpline_SplineFind(world->current_gscn, group_name);
-                if (team->path == NULL) {
-                    team->state_flags &= ~4;
-                    continue;
-                }
-                {
-                    const u32 state_flags = team->state_flags;
+                if (team->path != NULL) {
+                    team->state_flags |= 4;
                     team->waypoint_count = team->path->length;
                     team->route_index = team_index % 5;
+                    team->state_flags |= 1;
+                    team->origin_x = team->path->pts[0].x;
+                    team->origin_z = team->path->pts[0].z;
                     team->route_point = &team->path->pts[0];
-                    team->state_flags = state_flags | 5;
-                    team->origin_x = team->route_point->x;
-                    team->origin_z = team->route_point->z;
                     team->formation_width = static_cast<f32>(team->trooper_count >> 2) * 0.875f;
                     team->formation_depth = 3.5f;
 
@@ -377,38 +373,38 @@ extern "C" {
                     }
 
                     shadow_position.y = team->reserved_02c;
-                    minisnowtrooper_s *troopers = team->troopers;
                     for (i32 i = 0; i < team->trooper_count; ++i) {
-                        troopers[i].slot = qrand() / (0xffff / 3 + 1) + 1;
+                        team->troopers[i].slot = qrand() / (0xffff / 3 + 1) + 1;
                         team->troopers[i].step_frame = 0;
                         team->troopers[i].speed_divisor = 6;
-                        troopers = team->troopers;
-                        minisnowtrooper_s *trooper = &troopers[i];
                         if (team->formation_shape != 1) {
-                            trooper->timer =
+                            team->troopers[i].timer =
                                 static_cast<f32>(i) * (1.0f / static_cast<f32>(static_cast<i32>(team->trooper_count)));
-                            trooper->rotation = team->facing_angle;
+                            team->troopers[i].rotation = team->facing_angle;
                         } else {
-                            trooper->timer = 0.0f;
+                            team->troopers[i].timer = 0.0f;
                         }
-                        shadow_position.x = trooper->shot_position.x = trooper->formation_x + team->route_point->x;
-                        shadow_position.z = trooper->shot_position.z = trooper->formation_z + team->route_point->z;
+                        team->troopers[i].shot_position.x = team->troopers[i].formation_x + team->route_point->x;
+                        shadow_position.x = team->troopers[i].shot_position.x;
+                        team->troopers[i].shot_position.z = team->troopers[i].formation_z + team->route_point->z;
+                        shadow_position.z = team->troopers[i].shot_position.z;
                         if (team->reserved_02c == 2000000.0f) {
                             shadow_position.y = 10.0f;
                             shadow_position.y = GameShadow(NULL, &shadow_position, 5.0f, -1);
                         }
-                        troopers = team->troopers;
-                        troopers[i].shot_position.y = shadow_position.y;
+                        team->troopers[i].shot_position.y = shadow_position.y;
                     }
 
-                    minisnowtrooper_s *trooper = troopers;
+                    minisnowtrooper_s *trooper = team->troopers;
                     for (i32 i = 0; i < team->trooper_count; ++i, ++trooper) {
                         trooper->formation_index = static_cast<u8>(i);
-                        minisnowtrooper_s *rotation_destination = team->troopers;
-                        rotation_destination->target_rotation = NuAtan2D(
-                            trooper->shot_position.x - (rotation_destination[i].formation_x + team->route_point->x),
-                            trooper->shot_position.z - (rotation_destination[i].formation_z + team->route_point->z));
+                        const minisnowtrooper_s *slot = &team->troopers[trooper->formation_index];
+                        const f32 dx = trooper->shot_position.x - (slot->formation_x + team->route_point->x);
+                        const f32 dz = trooper->shot_position.z - (slot->formation_z + team->route_point->z);
+                        team->troopers->target_rotation = NuAtan2D(dx, dz);
                     }
+                } else {
+                    team->state_flags &= ~4;
                 }
             }
 
