@@ -403,25 +403,24 @@ extern "C" {
     }
 
     static void CS_fadefog(NUFPAR_PC *fp) {
-        if (CS_fadefogcount > 1) {
-            return;
-        }
-        CUT_LOAD_FADE_FOG_PC *fade = &CS_CutInfo->fade_fog[CS_fadefogcount];
-        fade->frame = NuFParGetFloat(fp);
-        if (!(fade->frame >= 0.0f)) {
-            return;
-        }
-        fade->near_distance = NuFParGetFloat(fp);
-        if (!(fade->near_distance >= 0.0f)) {
-            return;
-        }
-        fade->far_distance = NuFParGetFloat(fp);
-        if (!(fade->far_distance >= 0.0f)) {
-            return;
-        }
-        fade->value = NuFParGetFloat(fp);
-        if (fade->value >= 0.0f) {
-            ++CS_fadefogcount;
+        if (CS_fadefogcount < 2) {
+            f32 value = NuFParGetFloat(fp);
+            CS_CutInfo->fade_fog[CS_fadefogcount].frame = value;
+            if (value >= 0.0f) {
+                value = NuFParGetFloat(fp);
+                CS_CutInfo->fade_fog[CS_fadefogcount].near_distance = value;
+                if (value >= 0.0f) {
+                    value = NuFParGetFloat(fp);
+                    CS_CutInfo->fade_fog[CS_fadefogcount].far_distance = value;
+                    if (value >= 0.0f) {
+                        value = NuFParGetFloat(fp);
+                        CS_CutInfo->fade_fog[CS_fadefogcount].value = value;
+                        if (value >= 0.0f) {
+                            ++CS_fadefogcount;
+                        }
+                    }
+                }
+            }
         }
     }
 
