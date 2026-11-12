@@ -2870,7 +2870,7 @@ static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_
         picker->value[sizeof(EduiTextCopyBufferPc) - 1] = '\0';
     }
     if (pad->digital_buttons_pressed & 4)
-        picker->cursor = EDUI_MAX(picker->cursor - 1, 0);
+        picker->cursor = EDUI_MAX(0, picker->cursor - 1);
     if (pad->digital_buttons_pressed & 8)
         EduiTextPickCursorRightPc(picker);
     if (pad->digital_buttons_pressed & 0x40)
@@ -3866,10 +3866,10 @@ f32 __cdecl FS_GetDirTextWidth(void) {
     char *entry;
     for (entry = FS_FileList; entry < FS_FileListEnd;) {
         FS_PACKED_ENTRY_HEADER_PC *header = (FS_PACKED_ENTRY_HEADER_PC *)entry;
-        char *name = (char *)(header + 1);
         f32 width;
+        entry += sizeof(FS_PACKED_ENTRY_HEADER_PC);
         NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
-        width = NuQFntPrintLenU(system_qfont, name);
+        width = NuQFntPrintLenU(system_qfont, entry);
         if (header->encoded_year != '#') {
             NuQFntSetPointSize(system_qfont, 0.8f, 1.0f);
             FS_MakeDateTimeString(header, date_time);
@@ -3877,7 +3877,7 @@ f32 __cdecl FS_GetDirTextWidth(void) {
         }
         if (width > max_width)
             max_width = width;
-        entry = name + NuStrLen(name) + 1;
+        entry += NuStrLen(entry) + 1;
     }
     return max_width;
 }
