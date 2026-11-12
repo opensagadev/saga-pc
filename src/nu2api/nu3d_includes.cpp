@@ -5017,9 +5017,11 @@ void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
     capacity = max_occluders;
     count = 0;
     occluders = reinterpret_cast<PC_OCCLUDER_RECORD *>((buffer->addr + 15u) & ~15u);
-    buffer->addr = ((buffer->addr + 15u) & ~15u) + capacity * sizeof(PC_OCCLUDER_RECORD);
+    buffer->addr = (buffer->addr + 15u) & ~15u;
+    buffer->addr += capacity * sizeof(PC_OCCLUDER_RECORD);
     indices = reinterpret_cast<u32 *>((buffer->addr + 3u) & ~3u);
-    buffer->addr = ((buffer->addr + 3u) & ~3u) + capacity * sizeof(u32);
+    buffer->addr = (buffer->addr + 3u) & ~3u;
+    buffer->addr += capacity * sizeof(u32);
     if (ms_pZOnlyMtl3D == NULL) {
         ms_pZOnlyMtl3D = NuMtlCreate3D(1);
         ms_pZOnlyMtl2D = NuMtlCreate(1);
