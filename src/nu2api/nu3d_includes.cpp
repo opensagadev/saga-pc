@@ -4393,12 +4393,13 @@ extern "C" {
 
     void __cdecl NuMtlSetRenderPlanePc(NUMTL *material, i32 plane);
     VUFNT *__cdecl NuQFntCreate(FONT_LEGACY_READER_PC *font, i32 flags, i32 options, VARIPTR *buffer, VARIPTR *end) {
+        i32 sort_priority = options >> 16;
+        options &= 0xffff;
         f32 width = (f32)NuTextureDimensions[font->material->texture_id - 1]->width;
         f32 height = (f32)NuTextureDimensions[font->material->texture_id - 1]->height;
         FONT_LOAD_READER_PC *result = (FONT_LOAD_READER_PC *)((buffer->addr + 15) & ~15U);
-        PC_MATERIAL_CREATE_VIEW *material;
         i32 i, index;
-        buffer->addr = (u32)result + sizeof(*result) + sizeof(FONT_RENDER_STORAGE_PC);
+        buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(*result) + sizeof(FONT_RENDER_STORAGE_PC);
         memset(result, 0, sizeof(*result) + sizeof(FONT_RENDER_STORAGE_PC));
         result->platform_data = (NUQFNT_RENDER_DATA_PC *)(result + 1);
         result->glyph_count = font->glyph_count;
@@ -4416,13 +4417,14 @@ extern "C" {
         buffer->addr += 4;
         *(f32 *)buffer->void_ptr = 1.0f / height;
         buffer->addr += 4;
-        *(f32 *)buffer->void_ptr = 0.0f;
+        /* The zero words are stored as integers (retail mov dword ptr [ecx], 0). */
+        *(i32 *)buffer->void_ptr = 0;
         buffer->addr += 4;
-        *(f32 *)buffer->void_ptr = 0.0f;
+        *(i32 *)buffer->void_ptr = 0;
         buffer->addr += 4;
         *(f32 *)buffer->void_ptr = result->space_width;
         buffer->addr += 4;
-        *(f32 *)buffer->void_ptr = 0.0f;
+        *(i32 *)buffer->void_ptr = 0;
         buffer->addr += 4;
         result->x_scale = (f32 *)buffer->void_ptr;
         *(f32 *)buffer->void_ptr = 1.0f;
@@ -4431,7 +4433,7 @@ extern "C" {
         *(f32 *)buffer->void_ptr = 0.5f;
         buffer->addr += 4;
         result->glyphs = (VUFNTCHAR *)buffer->void_ptr;
-        for (i = 0; i < font->glyph_count && i < 256; ++i) {
+        for (i = 0; i < (font->glyph_count < 256 ? font->glyph_count : 256); ++i) {
             f32 x = font->glyphs[i].u0 * width;
             *(f32 *)buffer->void_ptr = x;
             buffer->addr += 4;
@@ -4445,36 +4447,41 @@ extern "C" {
             index = font->character_map[i];
             if (index == 255)
                 index = 0;
-            if (i == 32)
-                index = font->glyph_count;
-            *buffer->char_ptr++ = (char)index;
+            *buffer->char_ptr++ = (char)(i == 32 ? font->glyph_count : index);
         }
         result->material = (NUMTL *)((buffer->addr + 15) & ~15U);
-        buffer->addr = (u32)result->material + sizeof(PC_MATERIAL_CREATE_VIEW);
+        buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(PC_MATERIAL_CREATE_VIEW);
         memcpy(result->material, font->material, sizeof(PC_MATERIAL_CREATE_VIEW));
-        NuMtlSetRenderPlanePc(result->material, options & 0xffff);
-        material = (PC_MATERIAL_CREATE_VIEW *)result->material;
+        NuMtlSetRenderPlanePc(result->material, options);
         if (flags & 8)
-            material->attributes_high &= ~4U;
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes_high &= ~4U;
         else
-            material->attributes_high |= 4U;
-        material->attributes = (material->attributes & ~0x10000U) | 0x20000U;
-        material->attributes = (flags & 2) ? material->attributes & ~15U : (material->attributes & ~14U) | 1U;
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes_high |= 4U;
+        ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
+            (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x10000U) | 0x20000U;
+        if (flags & 2)
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~15U;
+        else
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
+                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~14U) | 1U;
         if (flags & 0x40)
-            material->attributes &= ~0xc000U;
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~0xc000U;
         else if (flags & 0x20)
-            material->attributes = (material->attributes & ~0x8000U) | 0x4000U;
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
+                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x8000U) | 0x4000U;
         else
-            material->attributes |= 0xc000U;
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes |= 0xc000U;
         if (flags & 4)
-            material->attributes = (material->attributes & ~0x20U) | 0x10U;
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
+                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x20U) | 0x10U;
         else if (flags & 0x10)
-            material->attributes = (material->attributes & ~0x10U) | 0x20U;
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
+                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x10U) | 0x20U;
         else
-            material->attributes &= ~0x30U;
-        material->sort_priority = (i16)(options >> 16);
+            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~0x30U;
+        ((PC_MATERIAL_CREATE_VIEW *)result->material)->sort_priority = (i16)sort_priority;
         NuMtlUpdate(result->material);
-        result->platform_data->z = result->platform_data->y = result->platform_data->x = 0.0f;
+        result->platform_data->x = result->platform_data->y = result->platform_data->z = 0.0f;
         return (VUFNT *)result;
     }
     void NuQFntWrite(char *path, VUFNT *font) {
