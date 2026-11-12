@@ -824,8 +824,8 @@ void __cdecl edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 v
                              NUMTL *material);
 
 void __cdecl edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
-    i32 sphere_index, first, next;
-    f32 time, radius;
+    i32 sphere_index, first;
+    f32 time, radius, delta, range;
     NUVEC position;
     if (effect->process_spheres == 0)
         return;
@@ -844,10 +844,9 @@ void __cdecl edppDrawSpheres(DEBRIS_INFO_PC *effect, i32 key_index) {
                 if (time >= effect->collision_keys[first].time && time <= effect->collision_keys[first + 1].time)
                     break;
             }
-            next = first + 1;
-            radius = ((time - effect->collision_keys[first].time) /
-                      (effect->collision_keys[next].time - effect->collision_keys[first].time)) *
-                         (effect->collision_keys[next].value - effect->collision_keys[first].value) +
+            delta = time - effect->collision_keys[first].time;
+            range = effect->collision_keys[first + 1].time - effect->collision_keys[first].time;
+            radius = delta / range * (effect->collision_keys[first + 1].value - effect->collision_keys[first].value) +
                      effect->collision_keys[first].value;
             edbitsDrawSphere(&position, radius, 0xffff0000, (NUMTL *)edpp_mtl);
         }
