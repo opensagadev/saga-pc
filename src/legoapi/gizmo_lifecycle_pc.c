@@ -149,24 +149,22 @@ void *__cdecl GizBombGens_ReserveBufferSpace(void *pointer) {
     return system;
 }
 
+/* MATCH-EXCEPTION: retail re-reads world->torpedo_machine_sys at each use; the casts stand in for its
+ * GIZTORPMACHINESYS_s type (saga.h has the narrower TORPEDO_MACHINE_SYS_PC view). */
 void *__cdecl GizTorps_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = (WORLDINFO *)pointer;
-    GIZTORPMACHINESYS_s *system;
     world->torpedo_machine_sys = NULL;
     if (world->current_level->max_torpmachines > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->torpedo_machine_sys = (TORPEDO_MACHINE_SYS_PC *)world->giz_buffer.void_ptr;
         world->giz_buffer.addr += sizeof(GIZTORPMACHINESYS_s);
-        system = (GIZTORPMACHINESYS_s *)world->torpedo_machine_sys;
-        system->machines = NULL;
-        system->count = 0;
-        system->scale = 0.0f;
+        memset(world->torpedo_machine_sys, 0, sizeof(GIZTORPMACHINESYS_s));
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        system = (GIZTORPMACHINESYS_s *)world->torpedo_machine_sys;
-        system->machines = (GIZTORPMACHINE_s *)world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_torpmachines * sizeof(*system->machines);
-        memset(system->machines, 0, world->current_level->max_torpmachines * sizeof(*system->machines));
-        ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->scale = 1.0f;
+        ((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines = (GIZTORPMACHINE_s *)world->giz_buffer.void_ptr;
+        world->giz_buffer.addr += world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s);
+        memset(((GIZTORPMACHINESYS_s *)world->torpedo_machine_sys)->machines, 0,
+               world->current_level->max_torpmachines * sizeof(GIZTORPMACHINE_s));
+        world->torpedo_machine_sys->scale = 1.0f;
     }
     return world->torpedo_machine_sys;
 }
