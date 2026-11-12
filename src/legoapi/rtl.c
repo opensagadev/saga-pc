@@ -2268,46 +2268,6 @@ extern RTL_FOG_MIGRATION_PC *curr_fog;
 __declspec(allocate(".bss$RtlFogModePc")) i32 fogmode = 0;
 f32 cursor_size = 1.0f;
 
-#define EDRTL_RNDR_LINE3D_PC(line)                                                                                     \
-    NuRndrLine3dDbg((line)[0].x, (line)[0].y, (line)[0].z, (line)[1].x, (line)[1].y, (line)[1].z, -1)
-void __cdecl edrtlDrawCursor(void) {
-    __declspec(align(16)) NUVEC line[2];
-    NUVEC v;
-    v.x = burn_editor_position_pc.x - cursor_size;
-    v.y = burn_editor_position_pc.y;
-    v.z = burn_editor_position_pc.z;
-    line[0] = v;
-    v.x = burn_editor_position_pc.x + cursor_size;
-    v.y = burn_editor_position_pc.y;
-    v.z = burn_editor_position_pc.z;
-    line[1] = v;
-    EDRTL_RNDR_LINE3D_PC(line);
-    v.x = burn_editor_position_pc.x;
-    v.y = burn_editor_position_pc.y - cursor_size;
-    v.z = burn_editor_position_pc.z;
-    line[0] = v;
-    v.x = burn_editor_position_pc.x;
-    v.y = burn_editor_position_pc.y + cursor_size;
-    v.z = burn_editor_position_pc.z;
-    line[1] = v;
-    EDRTL_RNDR_LINE3D_PC(line);
-    v.x = burn_editor_position_pc.x;
-    v.y = burn_editor_position_pc.y;
-    v.z = burn_editor_position_pc.z - cursor_size;
-    line[0] = v;
-    v.x = burn_editor_position_pc.x;
-    v.y = burn_editor_position_pc.y;
-    v.z = burn_editor_position_pc.z + cursor_size;
-    line[1] = v;
-    EDRTL_RNDR_LINE3D_PC(line);
-}
-
-i32 numsegs = 16;
-
-extern RTL_LIGHT_PC *curr_rtl;
-extern i32 rtl_zoff;
-
-#define EDRTL_LIGHT_MTL() mtls[rtl_zoff != 0]
 static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
     __declspec(align(16)) NUVEC first = vertices[0].position;
     __declspec(align(16)) NUVEC second = vertices[1].position;
@@ -2323,6 +2283,43 @@ static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vert
     }
     NuRndrLine3dDbg(first.x, first.y, first.z, second.x, second.y, second.z, vertices[0].colour);
 }
+void __cdecl edrtlDrawCursor(void) {
+    NURND_VERTEX3D_PC line[2];
+    line[0].position.x = burn_editor_position_pc.x - cursor_size;
+    line[0].position.y = burn_editor_position_pc.y;
+    line[0].position.z = burn_editor_position_pc.z;
+    line[0].colour = -1;
+    line[1].position.x = burn_editor_position_pc.x + cursor_size;
+    line[1].position.y = burn_editor_position_pc.y;
+    line[1].position.z = burn_editor_position_pc.z;
+    line[1].colour = -1;
+    edrtlRndrLine3d(NULL, line);
+    line[0].position.x = burn_editor_position_pc.x;
+    line[0].position.y = burn_editor_position_pc.y - cursor_size;
+    line[0].position.z = burn_editor_position_pc.z;
+    line[0].colour = -1;
+    line[1].position.x = burn_editor_position_pc.x;
+    line[1].position.y = burn_editor_position_pc.y + cursor_size;
+    line[1].position.z = burn_editor_position_pc.z;
+    line[1].colour = -1;
+    edrtlRndrLine3d(NULL, line);
+    line[0].position.x = burn_editor_position_pc.x;
+    line[0].position.y = burn_editor_position_pc.y;
+    line[0].position.z = burn_editor_position_pc.z - cursor_size;
+    line[0].colour = -1;
+    line[1].position.x = burn_editor_position_pc.x;
+    line[1].position.y = burn_editor_position_pc.y;
+    line[1].position.z = burn_editor_position_pc.z + cursor_size;
+    line[1].colour = -1;
+    edrtlRndrLine3d(NULL, line);
+}
+
+i32 numsegs = 16;
+
+extern RTL_LIGHT_PC *curr_rtl;
+extern i32 rtl_zoff;
+
+#define EDRTL_LIGHT_MTL() mtls[rtl_zoff != 0]
 #define EDRTL_RNDR_VTX_LINE(line) edrtlRndrLine3d(NULL, line)
 #define EDRTL_RADIUS_PAIR(light)                                                                                       \
     RndrOSphere(&(light).position, (light).inner_radius, inner_colour, numsegs, EDRTL_LIGHT_MTL());                    \
