@@ -314,10 +314,10 @@ void PodRaceSnipersUpdate(void) {
                 PodRace_snipers[i].fire_timer = 0.0f;
                 if (PodRace_snipers[i].state > 0.0f) {
                     GAMEOBJECT *target = player2;
-                    if (target == NULL) {
-                        player_ix = 0;
-                    } else {
+                    if (target != NULL) {
                         player_ix = player_ix == 0;
+                    } else {
+                        player_ix = 0;
                     }
                     if (player_ix == 0)
                         target = player;
@@ -339,8 +339,8 @@ void PodRaceSnipersUpdate(void) {
                 temp_yrot = NuAtan2D(direction.x, direction.z);
                 temp_zrot = NuAtan2D(-direction.y, distance);
                 // Retail uses an aligned matrix local in its realigned stack frame.
-                NuMtxSetRotationX(&mtx, (u16)temp_zrot);
-                NuMtxRotateY(&mtx, (u16)temp_yrot);
+                NuMtxSetRotationX(&mtx, temp_zrot);
+                NuMtxRotateY(&mtx, temp_yrot);
                 Bolt_Add(NULL, &PodRace_snipers[i].prev, &mtx, bolttype, 0);
             }
         }
