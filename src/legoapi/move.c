@@ -7539,7 +7539,8 @@ static i32 LedgeTerrain_AttachPc(GAMEOBJECT *object, u16 facing, NUVEC *position
     if (object->contact_count == 0)
         return 0;
     surface = (i8)object->contact_material[0];
-    if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & 0x581) != 0)
+    if (surface >= 0 ? surface < 32 && (TerSurface[surface].flags & 0x581) != 0
+                     : 0) /* the original surface-flag macro shape */
         return 0;
     if (object->contact_position.y <= object->collision_position.y - (f64)0.05f ||
         MovePlayerFabs(object->contact_normal.y) > NuTrigTable[0x3000])
