@@ -1499,14 +1499,12 @@ i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT
     GIZFORCESYS_s *system = (GIZFORCESYS_s *)system_pointer;
     GIZFORCE_PC *force;
     GAMEANIMOBJ *animation;
-    GIZMO_PC **gizmos;
     i32 count;
     i32 index;
     if (system != NULL) {
         count = system->hit_test_gizmo_count;
-        gizmos = system->hit_test_gizmos;
-        for (index = 0; index < count; ++index, ++gizmos) {
-            force = (GIZFORCE_PC *)(*gizmos)->object;
+        for (index = 0; index < count; ++index) {
+            force = (GIZFORCE_PC *)system->hit_test_gizmos[index]->object;
             if ((force->runtime_flags & 2) == 0 || (force->runtime_flags & 1) == 0 ||
                 (force->runtime_flags & 0x100) == 0 || (force->runtime_flags & 0x10000) != 0)
                 continue;
@@ -1514,10 +1512,8 @@ i32 __cdecl GizForces_BoltHitPlatPc(WORLDINFO *world, void *system_pointer, BOLT
             while (animation != NULL) {
                 if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == bolt->hit_platform) {
                     (void)BoltType_FindByID((u8)bolt->type_id, world);
-                    if (bolt->owner != NULL)
-                        GizForces_BoltHitPlat(force, world, (i8)((GAMEOBJECT *)bolt->owner)->field_280);
-                    else
-                        GizForces_BoltHitPlat(force, world, -1);
+                    GizForces_BoltHitPlat(force, world,
+                                          bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->field_280 : -1);
                     return 1;
                 }
                 animation = animation->next;
