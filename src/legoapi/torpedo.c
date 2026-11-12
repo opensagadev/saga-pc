@@ -839,8 +839,6 @@ void __cdecl DrawTorpedos(GAMEOBJECT *object) {
     f32 scale;
     if (packet == NULL)
         return;
-    if (packet->count == 0)
-        return;
     for (index = 0; index < packet->count; ++index) {
         packet = (TORPEDO_RUNTIME_PC *)object->torpedo;
         pitch = (u16)(0xc000 - (u16)packet->pickup_flags[index]);
