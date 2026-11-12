@@ -429,15 +429,17 @@ void __cdecl PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame
                                 i32 *layer_mask) {
     ANI3_HEADER_PC *animation = character->animation;
     f32 *values = NuAnimCurveExtractAllNodeCurves_3(animation, 0, frame, NULL);
-    u8 flags = animation->node_flags[0];
+    u32 flags = animation->node_flags[0];
     NUVEC scale;
+    NUVEC base_scale;
     if (animation->curve_count > 6)
-        *visible = (i32)(values[6] < 0.0f ? values[6] - NuQFntHalfScale : values[6] + NuQFntHalfScale);
+        *visible = (i32)(values[6] < 0.0f ? values[6] - 0.5 : values[6] + 0.5);
     else
         *visible = character->flags & 1;
     if (animation_index != NULL) {
         if (animation->curve_count > 7)
-            *animation_index = (i32)(values[7] < 0.0f ? values[7] - NuQFntHalfScale : values[7] + NuQFntHalfScale);
+            // MATCH-EXCEPTION: retail converts through a signed i32 store; saga.h declares the parameter u32 *.
+            *(i32 *)animation_index = (i32)(values[7] < 0.0f ? values[7] - 0.5 : values[7] + 0.5);
         else
             *animation_index = character->animation_index;
         if (start_frame != NULL) {
@@ -453,7 +455,10 @@ void __cdecl PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame
     if (*visible == 0)
         return;
     if (layer_mask != NULL)
-        *layer_mask = animation->curve_count > 11 ? PCCutAni3CurveInteger(animation, values, 11) : -1;
+        if (animation->curve_count > 11)
+            *layer_mask = PCCutAni3CurveInteger(animation, values, 11);
+        else
+            *layer_mask = -1;
     if (flags & 1) {
         NUANGVEC angle;
         angle.x = (i32)(values[3] * AIPathAngularScale);
@@ -464,12 +469,20 @@ void __cdecl PCCutCharacterAni3(CUT_CHARACTER_ANIMATION_PC *character, f32 frame
         NuMtxSetIdentity(matrix);
     NuMtxTranslate(matrix, (NUVEC *)values);
     CUT_HAND_FLIP(matrix);
-    scale = *NuMtxGetScale(&scale, &character->base_matrix);
+    scale = *NuMtxGetScale(&base_scale, &character->base_matrix);
     NuMtxPreScale(matrix, &scale);
-    if (animation_rate != NULL)
-        *animation_rate = animation->curve_count > 9 ? values[9] : character->animation_rate;
-    if (blend_time != NULL)
-        *blend_time = animation->curve_count > 8 ? values[8] : character->blend_time;
+    if (animation_rate != NULL) {
+        if (animation->curve_count > 9)
+            *animation_rate = values[9];
+        else
+            *animation_rate = character->animation_rate;
+    }
+    if (blend_time != NULL) {
+        if (animation->curve_count > 8)
+            *blend_time = values[8];
+        else
+            *blend_time = character->blend_time;
+    }
 }
 #undef CUT_HAND_FLIP
 
@@ -566,13 +579,90 @@ void __cdecl NuGCutRigidCalcMtx(CUT_RIGID_GENERIC_PC *rigid, f32 frame, NUMTX *m
 void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 frame, NUMTX *matrix, i32 *visible,
                                    u32 *animation_index, f32 *animation_rate, f32 *blend_time, f32 *start_frame,
                                    i32 *layer_mask) {
-    CUT_ANIMATION_PC *animation = character->animation;
     NUANIM_TIME2_PC time;
     DWA_CURVE_CELL_PC *curves;
     i8 *types;
-    i8 flags;
+    i32 flags;
     NUVEC translation, scale;
-    if (animation == NULL) {
+    NUVEC rotation;
+    if (character->animation != NULL) {
+        if ((i32)character->animation->prefix.header.magic >= (i32)0x414e4934 &&
+            (i32)character->animation->prefix.header.magic <= (i32)0x414e4935) {
+            PCCutCharacterAni3((CUT_CHARACTER_ANIMATION_PC *)character, frame, matrix, visible, animation_index,
+                               animation_rate, blend_time, start_frame, layer_mask);
+            return;
+        }
+        NuAnimData2CalcTime(&character->animation->prefix, frame, &time);
+        curves = character->animation->prefix.curves;
+        types = character->animation->prefix.curve_types;
+        flags = character->animation->node_flags[0];
+        if (character->animation->prefix.curve_count > 6) {
+            f32 value = CUT2_VALUE(curves, &time, types, 6);
+            *visible = (i32)value;
+        } else
+            *visible = character->flags & 1;
+        if (animation_index != NULL) {
+            if (character->animation->prefix.curve_count > 7) {
+                f32 value = CUT2_VALUE(curves, &time, types, 7);
+                if (value < 0.0f)
+                    *animation_index = 255;
+                else
+                    *animation_index = (i32)value;
+            } else
+                *animation_index = character->animation_index;
+            if (start_frame != NULL) {
+                if (*animation_index == 0 || *animation_index == 255)
+                    *start_frame = 0.0f;
+                else if (character->animation->prefix.curve_count > 10) {
+                    f32 value = CUT2_VALUE(curves, &time, types, 10);
+                    *start_frame = value;
+                } else
+                    *start_frame = character->start_frame;
+            }
+        } else if (start_frame != NULL)
+            *start_frame = 0.0f;
+        if (*visible == 0)
+            return;
+        if (layer_mask != NULL) {
+            if (character->animation->prefix.curve_count > 11) {
+                f32 value = CUT2_VALUE(curves, &time, types, 11);
+                *layer_mask = (i32)value;
+            } else
+                *layer_mask = -1;
+        }
+        if (flags & 1) {
+            NUANGVEC angle;
+            rotation.x = CUT2_VALUE(curves, &time, types, 3);
+            rotation.y = CUT2_VALUE(curves, &time, types, 4);
+            rotation.z = CUT2_VALUE(curves, &time, types, 5);
+            angle.x = (i32)(rotation.x * AIPathAngularScale);
+            angle.y = (i32)(rotation.y * AIPathAngularScale);
+            angle.z = (i32)(rotation.z * AIPathAngularScale);
+            NuMtxSetRotateXYZ(matrix, &angle);
+        } else
+            NuMtxSetIdentity(matrix);
+        translation.x = CUT2_VALUE(curves, &time, types, 0);
+        translation.y = CUT2_VALUE(curves, &time, types, 1);
+        translation.z = CUT2_VALUE(curves, &time, types, 2);
+        NuMtxTranslate(matrix, &translation);
+        CUT2_FLIP(matrix);
+        scale = *NuMtxGetScale(&scale, &character->base_matrix);
+        NuMtxPreScale(matrix, &scale);
+        if (animation_rate != NULL) {
+            if (character->animation->prefix.curve_count > 9) {
+                f32 value = CUT2_VALUE(curves, &time, types, 9);
+                *animation_rate = value;
+            } else
+                *animation_rate = character->animation_rate;
+        }
+        if (blend_time != NULL) {
+            if (character->animation->prefix.curve_count > 8) {
+                f32 value = CUT2_VALUE(curves, &time, types, 8);
+                *blend_time = value;
+            } else
+                *blend_time = character->blend_time;
+        }
+    } else {
         *visible = character->flags & 1;
         if (animation_index != NULL)
             *animation_index = character->animation_index;
@@ -580,83 +670,6 @@ void __cdecl NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC_PC *character, f32 fram
         if (animation_rate != NULL)
             *animation_rate = character->animation_rate;
         if (blend_time != NULL)
-            *blend_time = character->blend_time;
-        return;
-    }
-    if ((i32)animation->prefix.header.magic >= (i32)0x414e4934 &&
-        (i32)animation->prefix.header.magic <= (i32)0x414e4935) {
-        PCCutCharacterAni3((CUT_CHARACTER_ANIMATION_PC *)character, frame, matrix, visible, animation_index,
-                           animation_rate, blend_time, start_frame, layer_mask);
-        return;
-    }
-    NuAnimData2CalcTime(&animation->prefix, frame, &time);
-    curves = animation->prefix.curves;
-    types = animation->prefix.curve_types;
-    flags = animation->node_flags[0];
-    if (character->animation->prefix.curve_count > 6) {
-        f32 value = CUT2_VALUE(curves, &time, types, 6);
-        *visible = (i32)value;
-    } else
-        *visible = character->flags & 1;
-    if (animation_index != NULL) {
-        if (character->animation->prefix.curve_count > 7) {
-            f32 value = CUT2_VALUE(curves, &time, types, 7);
-            if (value < 0.0f)
-                *animation_index = 255;
-            else
-                *animation_index = (i32)value;
-        } else
-            *animation_index = character->animation_index;
-        if (start_frame != NULL) {
-            if (*animation_index == 0 || *animation_index == 255)
-                *start_frame = 0.0f;
-            else if (character->animation->prefix.curve_count > 10) {
-                f32 value = CUT2_VALUE(curves, &time, types, 10);
-                *start_frame = value;
-            } else
-                *start_frame = character->start_frame;
-        }
-    } else if (start_frame != NULL)
-        *start_frame = 0.0f;
-    if (*visible == 0)
-        return;
-    if (layer_mask != NULL) {
-        if (character->animation->prefix.curve_count > 11) {
-            f32 value = CUT2_VALUE(curves, &time, types, 11);
-            *layer_mask = (i32)value;
-        } else
-            *layer_mask = -1;
-    }
-    if (flags & 1) {
-        f32 rx = CUT2_VALUE(curves, &time, types, 3);
-        f32 ry = CUT2_VALUE(curves, &time, types, 4);
-        f32 rz = CUT2_VALUE(curves, &time, types, 5);
-        NUANGVEC angle;
-        angle.x = (i32)(rx * AIPathAngularScale);
-        angle.y = (i32)(ry * AIPathAngularScale);
-        angle.z = (i32)(rz * AIPathAngularScale);
-        NuMtxSetRotateXYZ(matrix, &angle);
-    } else
-        NuMtxSetIdentity(matrix);
-    translation.x = CUT2_VALUE(curves, &time, types, 0);
-    translation.y = CUT2_VALUE(curves, &time, types, 1);
-    translation.z = CUT2_VALUE(curves, &time, types, 2);
-    NuMtxTranslate(matrix, &translation);
-    CUT2_FLIP(matrix);
-    scale = *NuMtxGetScale(&scale, &character->base_matrix);
-    NuMtxPreScale(matrix, &scale);
-    if (animation_rate != NULL) {
-        if (character->animation->prefix.curve_count > 9) {
-            f32 value = CUT2_VALUE(curves, &time, types, 9);
-            *animation_rate = value;
-        } else
-            *animation_rate = character->animation_rate;
-    }
-    if (blend_time != NULL) {
-        if (character->animation->prefix.curve_count > 8) {
-            f32 value = CUT2_VALUE(curves, &time, types, 8);
-            *blend_time = value;
-        } else
             *blend_time = character->blend_time;
     }
 }
