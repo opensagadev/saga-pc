@@ -1675,13 +1675,11 @@ GAMEOBJECT *__cdecl APIObjectCreate(APIOBJECTSYS_PC *system) {
 }
 
 void __cdecl SetAnimTimeRandom(CHARACTER_MODEL_LAYERS_PC *model, ANIMPACKET_PC *packet) {
-    void *animation;
     f64 duration;
     if (model == NULL || packet == NULL)
         return;
-    animation = model->action_animations[packet->requested_animation];
-    if (animation != NULL) {
-        duration = (f64)NuAnimEndFrame(animation) - 1.0;
+    if (model->action_animations[packet->requested_animation] != NULL) {
+        duration = (f64)NuAnimEndFrame(model->action_animations[packet->requested_animation]) - 1.0;
         packet->current_time = (f32)((f64)NuRandFloat() * duration + 1.0);
     }
 }
