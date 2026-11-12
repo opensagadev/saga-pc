@@ -215,14 +215,12 @@ void __cdecl edppDetermineNearest(f32 max_distance_squared) {
     NUVEC delta;
     i32 i;
     f32 distance;
-    if (edpp_nearest != -1) {
-        EDPP_PARTICLE_PC *particle = &edpp_ptls[edpp_nearest];
-        if (particle->instance_id != 99999 && particle->instance_id != -1) {
-            NuVecSub(&delta, &edpp_cam_pos, &particle->position);
-            distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-            if (distance == 0.0f)
-                return;
-        }
+    if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1 &&
+        edpp_ptls[edpp_nearest].instance_id != 99999) {
+        NuVecSub(&delta, &edpp_cam_pos, &edpp_ptls[edpp_nearest].position);
+        distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        if (distance == 0.0f)
+            return;
     }
     edpp_nearest = -1;
     for (i = 0; i < 512; ++i) {
