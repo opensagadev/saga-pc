@@ -13,7 +13,7 @@ static i32 PCSoundOneShotVoiceCount = 0;
 static i32 PCSoundUpdateClock = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCStereoSampleMetadata")
-static PC_STEREO_SAMPLE_METADATA *PCStereoSampleMetadata = 0;
+static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
 #pragma bss_seg()
 static i32 SoundSampleCountPc = 0;
 
@@ -510,13 +510,6 @@ STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, first_sample) == 12);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, last_sample) == 16);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, option9_mode) == 28);
 STATIC_ASSERT(offsetof(PC_STEREO_PLAY_PACKET, start_offset) == 32);
-struct PC_STEREO_SAMPLE_METADATA {
-    u8 unknown_00[8];
-    i32 flags;
-    u8 unknown_0c[16];
-};
-STATIC_ASSERT(sizeof(PC_STEREO_SAMPLE_METADATA) == 28);
-STATIC_ASSERT(offsetof(PC_STEREO_SAMPLE_METADATA, flags) == 8);
 extern "C" {
     extern i32 PCStereoChannel0A, PCStereoChannel0B, PCStereoChannel1A, PCStereoChannel1B;
 }
@@ -536,7 +529,7 @@ extern "C" void PCStereoStartPacket(PC_STEREO_PLAY_PACKET *packet) {
         i32 flags = 0;
         if (packet->option9_mode == 0)
             flags = 2;
-        if (PCStereoSampleMetadata != NULL && PCStereoSampleMetadata[packet->first_sample].flags == 0)
+        if (PCStereoSampleMetadata != NULL && PCStereoSampleMetadata[packet->first_sample].static_sample == 0)
             flags |= 1;
         NuSound3StereoStreams[packet->stream_index]->Stop();
         NuSound3StereoStreams[packet->stream_index]->SetStreamFile(
@@ -716,7 +709,7 @@ void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VAR
         SoundVoiceManager.Init(0, 0, 1);
     else
         SoundVoiceManager.ClearSamplesPc();
-    PCStereoSampleMetadata = (PC_STEREO_SAMPLE_METADATA *)info;
+    PCStereoSampleMetadata = info;
     for (SoundSampleCountPc = 0; info[SoundSampleCountPc].index != -1; ++SoundSampleCountPc) {
         if (SoundSampleCountPc >= PCSoundSampleLimitPc) {
             PCSoundFailure();
@@ -733,10 +726,10 @@ void __cdecl NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VAR
         }
     }
     for (i = 0; i < SoundSampleCountPc; ++i) {
-        NuStrLen(((SFX_FILE_INFO_PC *)PCStereoSampleMetadata)[i].filename);
+        NuStrLen(PCStereoSampleMetadata[i].filename);
         NuFileGetCurrentDirectory(directory);
-        sprintf(filename, "%s%s", directory, ((SFX_FILE_INFO_PC *)PCStereoSampleMetadata)[i].filename);
-        if (((SFX_FILE_INFO_PC *)PCStereoSampleMetadata)[i].index < 0x1000)
+        sprintf(filename, "%s%s", directory, PCStereoSampleMetadata[i].filename);
+        if (PCStereoSampleMetadata[i].index < 0x1000)
             SoundVoiceManager.SetSampleName(filename, i);
     }
 }
@@ -759,8 +752,8 @@ extern "C" {
         char filename[0x104];
         i32 i;
         u8 requested, loaded;
-        SFX_FILE_INFO_PC *info;
-        for (;;) {
+        const char *name;
+        do {
             WaitForSingleObject(PCSoundMixEvent, INFINITE);
             if (PCSoundSampleWorkerStopPc != 0)
                 break;
@@ -773,29 +766,27 @@ extern "C" {
                     loaded = SoundVoiceManager.samples != NULL ? SoundVoiceManager.samples[i].valid_byte : 0;
                     if (requested == loaded)
                         continue;
-                    info = (SFX_FILE_INFO_PC *)PCStereoSampleMetadata;
                     if (requested != 0) {
                         if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0)
                             continue;
                         NuFileGetCurrentDirectory(directory);
-                        sprintf(filename, "%s%s", directory, info[i].filename);
-                        if (info[i].index < 0x1000)
+                        sprintf(filename, "%s%s", directory, PCStereoSampleMetadata[i].filename);
+                        if (PCStereoSampleMetadata[i].index < 0x1000)
                             continue;
+                        name = PCStereoSampleMetadata[i].filename;
                         if (NuStrICmp(NuFileExt_wav_PC, PCSampleFilenameExtensionPc) == 0)
-                            SoundVoiceManager.LoadWavSamplePc(info[i].filename, i);
+                            SoundVoiceManager.LoadWavSamplePc(name, i);
                         else
                             PCSoundAlreadyPlayingHook(PCSampleFilenameExtensionPc);
                         if (SoundVoiceManager.samples != NULL && SoundVoiceManager.samples[i].failed_byte != 0)
                             PCSoundFailure(i);
-                    } else if (info[i].index >= 0x1000) {
+                    } else if (PCStereoSampleMetadata[i].index >= 0x1000) {
                         SoundVoiceManager.UnloadSample(i);
                     }
                 }
                 LeaveCriticalSection(&SoundSampleCriticalSectionPc);
             }
-            if (PCSoundSampleWorkerStopPc != 0)
-                break;
-        }
+        } while (PCSoundSampleWorkerStopPc == 0);
         PCSoundSampleWorkerHandlePc = NULL;
         return 0;
     }
