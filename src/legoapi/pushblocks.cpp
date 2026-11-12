@@ -145,8 +145,9 @@ extern "C" {
 }
 
 static __inline f32 GizPushFabsPc(f32 value) {
-    u32 bits = *(u32 *)&value & 0x7fffffff;
-    return *(f32 *)&bits;
+    f32 result;
+    *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
+    return result;
 }
 
 extern "C" void __cdecl KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
@@ -714,12 +715,12 @@ extern "C" void __cdecl UpdatePushBlocks(void *world_ptr, void *, f32) {
                         (p->snap_positions[(p->packed_state_flags >> 15) & 7].z - p->snap_origin.z) * fraction;
                     NuSpecialUpdate(&p->special);
                     for (i32 j = 0; j < p->end_position_count; ++j) {
-                        NUMTX *matrix = NuSpecialGetInstanceMtx(&p->end_position_specials[j]);
+                        NUVEC *translation = &NuSpecialGetInstanceMtx(&p->end_position_specials[j])->translation;
                         NUVEC *target = &p->snap_positions[(p->packed_state_flags >> 15) & 7];
                         f32 z_product = (target->z - p->end_position_origins[j].z) * fraction;
                         f32 x_product = (target->x - p->end_position_origins[j].x) * fraction;
-                        matrix->m30 = p->end_position_origins[j].x + x_product;
-                        matrix->m32 = z_product + p->end_position_origins[j].z;
+                        translation->x = p->end_position_origins[j].x + x_product;
+                        translation->z = p->end_position_origins[j].z + z_product;
                         NuSpecialUpdate(&p->end_position_specials[j]);
                     }
                     p->snap_timer += FRAMETIME;
@@ -1408,9 +1409,10 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         f32 right = GizPushFabsPc(block->bounds_max.x) + PushInitCornerInsetPc;
         f32 back = GizPushFabsPc(block->bounds_min.z) + PushInitCornerInsetPc;
         f32 front = GizPushFabsPc(block->bounds_max.z) + PushInitCornerInsetPc;
-        f32 y = centre.y - GizPushFabsPc(block->bounds_min.y) - PushInitGroundOffsetPc;
-        NUVEC corners[4] = {centre, centre, centre, centre};
-        corners[0].y = corners[1].y = corners[2].y = corners[3].y = y;
+        NUVEC corners[4];
+        corners[1] = corners[2] = corners[3] = corners[0] = centre;
+        corners[0].y = (corners[0].y - GizPushFabsPc(block->bounds_min.y)) - PushInitGroundOffsetPc;
+        corners[1].y = corners[2].y = corners[3].y = corners[0].y;
         for (i32 corner = 0; corner < 4; ++corner)
             corners[corner].y += 0.025f;
         corners[0].x -= left;
