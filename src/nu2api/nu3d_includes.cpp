@@ -11940,23 +11940,23 @@ extern "C" {
 
 /* nutex */
 extern "C" {
-    static i32 NuTexGetRefCount(i32 texture_id) {
+    void __cdecl NuTexAddReferencePc(i32 texture_id) {
         NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_id);
         if (texture != NULL)
-            return texture->ref_count;
-        return 0;
+            ++texture->ref_count;
     }
 
-    static void NuTexRemoveReference(i32 texture_id) {
+    void __cdecl NuTexRemoveReference(i32 texture_id) {
         NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_id);
         if (texture != NULL)
             --texture->ref_count;
     }
 
-    static void NuTexAddReferencePc(i32 texture_id) {
+    i32 __cdecl NuTexGetRefCount(i32 texture_id) {
         NUTEXDIM_PC *texture = NuTextureGetDimensions(texture_id);
         if (texture != NULL)
-            ++texture->ref_count;
+            return texture->ref_count;
+        return 0;
     }
 
     void __cdecl NuTexDestroy(i32 texture_id) {
@@ -12015,11 +12015,7 @@ extern "C" {
         next:;
         }
         if (resolved != 0) {
-            if (resolved > 0) {
-                NUTEXDIM_PC *texture = NuTextureDimensions[resolved - 1];
-                if (texture != NULL)
-                    ++texture->ref_count;
-            }
+            NuTexAddReferencePc(resolved);
             scene->texture_ids[tid & 0x3fff] = resolved;
         }
         return resolved;
