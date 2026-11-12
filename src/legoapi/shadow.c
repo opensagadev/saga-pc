@@ -100,7 +100,6 @@ void __cdecl CharShadows_Update(void) {
     GAMEOBJECT *object = Obj;
     CHARACTER_SHADOW_PACKET_PC *packet;
     CHARACTER_SHADOW_RESET_SLOT_PC *slot;
-    PLAYERCHARACTERCONFIG_PC *config;
     NUVEC position;
     NUVEC *locator_position;
     f32 height, extended_height;
@@ -109,12 +108,13 @@ void __cdecl CharShadows_Update(void) {
         if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
             (object->character_data->model_flags & 0x10000) != 0 || object->use_model_origin == 0 ||
             object->character_data->game_character->shadow_locators == 0 || object->model_draw_result == 0 ||
-            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0 || 0.0f >= object->shadow_opacity)
+            (U64_PAIR(&CInfo[(i8)object->character_context].flags) & 0x20000) != 0 || object->shadow_opacity <= 0.0f)
             continue;
-        config = object->character_data->game_character;
-        object->shadow_joint_mask = config->shadow_locators;
-        object->shadow_radius =
-            config->field_08c < 99.0f ? config->field_08c : object->character_data->collision_radius;
+        object->shadow_joint_mask = object->character_data->game_character->shadow_locators;
+        if (object->character_data->game_character->field_08c < 99.0f)
+            object->shadow_radius = object->character_data->game_character->field_08c;
+        else
+            object->shadow_radius = object->character_data->collision_radius;
         packet = (CHARACTER_SHADOW_PACKET_PC *)object->ai_player_packet_pc;
         count = 0;
         for (locator = 0; locator < 16; ++locator) {
