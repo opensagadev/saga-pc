@@ -2003,11 +2003,10 @@ static void CutSceneTriggerSysResetPc(CUT_INSTANCE_LOAD_PC *instance) {
         CUT_LOAD_TRIGGER_STATE_PC *state = &states->states[i];
         state->state_index = 0;
         if (StateAnimEvaluate(event->state_animation, &state->state_index, &value, 1.0f) != 0) {
-            u8 *flags = &states->owner->trigger_states[(i16)event->index].flags;
             if (value != 0)
-                *flags |= 1;
+                states->owner->trigger_states[(i16)event->index].flags |= 1;
             else
-                *flags &= ~1;
+                states->owner->trigger_states[(i16)event->index].flags &= ~1;
         }
     }
 }
