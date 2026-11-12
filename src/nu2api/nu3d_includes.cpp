@@ -4926,7 +4926,7 @@ i32 OccluderSet::SortByDepth(void const *left, void const *right) {
     if (b == -1)
         return -1;
     PC_OCCLUDER_RECORD *records = reinterpret_cast<OccluderSet *>(g_OcclusionManager.current_set)->occluders;
-    return records[b].depth > records[a].depth ? -1 : 1;
+    return records[a].depth < records[b].depth ? -1 : 1;
 }
 
 bool OcclusionManager::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMTX const *matrix) {
