@@ -170,32 +170,33 @@ i32 __cdecl NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
 extern WIN32_FIND_DATAA FileDirectoryFindDataPc[16];
 extern HANDLE FileDirectoryHostHandlesPc[16];
 i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
-    WIN32_FIND_DATAA *data = &FileDirectoryFindDataPc[file];
     SYSTEMTIME time;
-    u32 flags = (data->dwFileAttributes & 1) ? 0x180 : 0x100;
-    if ((data->dwFileAttributes & 0x10) != 0)
+    u32 flags = 0x100;
+    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 1) != 0)
+        flags = 0x180;
+    if ((FileDirectoryFindDataPc[file].dwFileAttributes & 0x10) != 0)
         flags += 0x2000;
     entry->flags = flags;
-    entry->size = data->nFileSizeLow;
+    entry->size = FileDirectoryFindDataPc[file].nFileSizeLow;
     entry->unused_24 = 0;
-    NuStrCpy(entry->name, data->cFileName);
-    FileTimeToSystemTime(&data->ftCreationTime, &time);
+    strcpy(entry->name, FileDirectoryFindDataPc[file].cFileName);
+    FileTimeToSystemTime(&FileDirectoryFindDataPc[file].ftCreationTime, &time);
     entry->created.second = (u8)time.wSecond;
     entry->created.minute = (u8)time.wMinute;
-    entry->created.day = (u8)time.wDay;
     entry->created.hour = (u8)time.wHour;
+    entry->created.day = (u8)time.wDay;
     entry->created.month = (u8)time.wMonth;
     entry->created.year_low = (u8)time.wYear;
     entry->created.year_high = 0;
-    FileTimeToSystemTime(&data->ftLastWriteTime, &time);
+    FileTimeToSystemTime(&FileDirectoryFindDataPc[file].ftLastWriteTime, &time);
     entry->modified.second = (u8)time.wSecond;
     entry->modified.minute = (u8)time.wMinute;
-    entry->modified.day = (u8)time.wDay;
     entry->modified.hour = (u8)time.wHour;
+    entry->modified.day = (u8)time.wDay;
     entry->modified.month = (u8)time.wMonth;
     entry->modified.year_low = (u8)time.wYear;
     entry->modified.year_high = 0;
-    FileTimeToSystemTime(&data->ftLastAccessTime, &time);
+    FileTimeToSystemTime(&FileDirectoryFindDataPc[file].ftLastAccessTime, &time);
     entry->accessed.second = (u8)time.wSecond;
     entry->accessed.minute = (u8)time.wMinute;
     entry->accessed.hour = (u8)time.wHour;
@@ -203,11 +204,11 @@ i32 __cdecl FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entr
     entry->accessed.month = (u8)time.wMonth;
     entry->accessed.year_low = (u8)time.wYear;
     entry->accessed.year_high = 0;
-    if (data->dwFileAttributes == 0xffffffff)
+    if (FileDirectoryFindDataPc[file].dwFileAttributes == 0xffffffff)
         return 0;
-    if (FindNextFileA(FileDirectoryHostHandlesPc[file], data) != 1)
-        data->dwFileAttributes = 0xffffffff;
-    return NuStrLen(entry->name);
+    if (FindNextFileA(FileDirectoryHostHandlesPc[file], &FileDirectoryFindDataPc[file]) != 1)
+        FileDirectoryFindDataPc[file].dwFileAttributes = 0xffffffff;
+    return strlen(entry->name);
 }
 
 extern i32 FileDirectoryOpenCountPc;          /* 921268 */
