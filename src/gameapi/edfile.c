@@ -573,10 +573,11 @@ void __cdecl eduiMenuHighlight(eduimenu_s *menu, eduiitem_s *item) {
     if (item->selection_group != 0) {
         for (entry = menu->first; entry != NULL; entry = entry->next) {
             if (entry == item) {
-                if (entry->type == 3)
-                    entry->highlighted = 1 - entry->highlighted;
-                else
+                if (entry->type != 3)
                     entry->highlighted = 1;
+                else
+                    entry->highlighted = 1 - entry->highlighted;
+
             } else if (entry->selection_group == item->selection_group) {
                 entry->highlighted = 0;
             }
@@ -618,15 +619,17 @@ STATIC_ASSERT(offsetof(eduimenu_s, child) == 0x3c);
 STATIC_ASSERT(offsetof(eduimenu_s, parent) == 0x40);
 
 void __cdecl eduiMenuDestroy(eduimenu_s *menu) {
+    eduimenu_s *parent;
     if (menu != NULL) {
         if (eduiInteractLocked != NULL && eduiInteractLocked->menu == menu)
             eduiInteractLocked = NULL;
         if (menu == processing_menu)
             processing_menu = NULL;
-        if (menu->parent != NULL) {
+        parent = menu->parent;
+        if (parent != NULL) {
             if (menu == active_menu)
-                active_menu = menu->parent;
-            menu->parent->child = NULL;
+                active_menu = parent;
+            parent->child = NULL;
         }
         if (menu == default_active_menu)
             default_active_menu = NULL;
@@ -681,7 +684,9 @@ void __cdecl cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
     i32 comparison;
     if (menu == NULL || text == NULL || text[0] == 0)
         return;
-    comparison = menu->first != NULL && menu->first->text != NULL ? NuStrICmp(menu->first->text, text) : -1;
+    comparison = -1;
+    if (menu->first != NULL && menu->first->text != NULL)
+        comparison = NuStrICmp(menu->first->text, text);
     menu->field_0c = menu->first;
     menu->selected = menu->first;
     while (menu->selected->next != NULL && comparison < 0) {
@@ -700,9 +705,10 @@ static i32 eduicbProcessSel(eduimenu_s *menu, eduiitem_s *item, f32 unused2, FRA
         eduiMenuHighlight(menu, item);
         if (selection->selected)
             selection->selected(menu, item, pad->digital_buttons);
-    } else if ((pad->digital_buttons & EDUI_CURSOR_PRIMARY) && selection->held) {
-        selection->held(menu, item, pad->digital_buttons);
+        return 0;
     }
+    if ((pad->digital_buttons & EDUI_CURSOR_PRIMARY) && selection->held)
+        selection->held(menu, item, pad->digital_buttons);
     return 0;
 }
 
@@ -926,7 +932,7 @@ i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     parent = NULL;
     if (menu->parent != NULL)
         parent = menu->parent;
-    if (EduiUsingMenuFocusPc == 0 && parent)
+    if (EduiUsingMenuFocusPc == 0 && menu->parent != NULL)
         eduiMenuDetach(menu);
     if (menu->callback)
         menu->callback(menu, parent);
@@ -1280,9 +1286,11 @@ i32 __cdecl eduicbInteractSel(edui_interact_s *interact) {
     edui_sel_s *item = (edui_sel_s *)interact->item;
     eduimenu_s *menu = interact->menu;
     i32(__cdecl * callback)(struct edui_interact_s *) = interact->callback;
-    if (callback && (edui_cursor_buttons_db & 0x40))
+    if (callback && (edui_cursor_buttons_db & 0x40)) {
         item->selected(menu, &item->base, edui_cursor_buttons);
-    else if (callback && (edui_cursor_buttons & 0x40) && item->held)
+        return 0;
+    }
+    if (callback && (edui_cursor_buttons & 0x40) && item->held)
         item->held(menu, &item->base, edui_cursor_buttons);
     return 0;
 }
@@ -3399,8 +3407,9 @@ char *__cdecl FS_GetFilterString(char *input, char *output) {
 }
 
 void __cdecl FS_BuildFilterBlocks(char *input) {
-    i32 slot = 0;
+    i32 slot;
     FileSelFilterBlockCountPc = 0;
+    slot = 0;
     NuStrToLower(input);
     while (*input != 0) {
         input = FS_GetFilterString(input, &FileSelFilterBlocksPc[FileSelFilterBlockCountPc][slot * 12]);
