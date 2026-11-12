@@ -184,7 +184,8 @@ i32 __cdecl StarWars_PrepareHatch(AIPACKET_PC *packet, APIOBJECT_PC *object, i32
         packet->movement_stopping_distance = 0.0f;
         owner->pad->buttons_held |= GAMEPAD_SPECIAL;
         owner->pad->buttons_pressed |= GAMEPAD_SPECIAL;
-        capabilities = connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
+        capabilities =
+            packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         if ((capabilities & 0x10) != 0) {
             GameObjectSetCanUse(owner, NULL, 3, 1, 0.0f);
         } else if ((capabilities & 8) != 0) {
