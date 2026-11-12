@@ -890,7 +890,9 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             GizObstacle_Stop(obstacle);
         else if (GizObstacleUpdateFnsPc[obstacle->mode])
             GizObstacleUpdateFnsPc[obstacle->mode](obstacle);
-        if (obstacle->anim_set->flags & 7) {
+        // MATCH-EXCEPTION: retail tests the three low GAMEANIMSET flag bits one by one (word load, test al, 7);
+        // a single `flags & 7` compiles to a byte test.
+        if ((obstacle->anim_set->flags & 1) || (obstacle->anim_set->flags & 2) || (obstacle->anim_set->flags & 4)) {
             GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
             if (obstacle->runtime_flags & 0x20) {
                 GAMEANIMOBJ *object;
