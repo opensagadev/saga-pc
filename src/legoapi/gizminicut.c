@@ -173,8 +173,7 @@ void __cdecl GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
         }
     }
 }
-static void *__cdecl GizMiniCut_ReserveBufferSpace(void *world_ptr) {
-    WORLDINFO *world = (WORLDINFO *)world_ptr;
+static void *__cdecl GizMiniCut_ReserveBufferSpace(WORLDINFO *world) {
     MINICUT_WORLD_PC *view = (MINICUT_WORLD_PC *)world;
     i32 i;
     view->minicuts = NULL;
@@ -268,7 +267,7 @@ ADDGIZMOTYPE_PC *__cdecl MiniCut_RegisterGizmo(i32 type_id) {
     MiniCutAddTypePc.fns.clear_progress_fn = NULL;
     MiniCutAddTypePc.fns.store_progress_fn = NULL;
     MiniCutAddTypePc.fns.reset_fn = GizMiniCut_Reset;
-    MiniCutAddTypePc.fns.reserve_buffer_space_fn = GizMiniCut_ReserveBufferSpace;
+    MiniCutAddTypePc.fns.reserve_buffer_space_fn = (void *(__cdecl *)(void *))GizMiniCut_ReserveBufferSpace;
     MiniCutAddTypePc.fns.load_fn = GizMiniCut_Load;
     MiniCutAddTypePc.fns.post_load_fn = NULL;
     MiniCutAddTypePc.fns.add_level_sfx_fn = NULL;
