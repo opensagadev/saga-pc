@@ -96,7 +96,6 @@ void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set) {
     i32 all_at_end = 1;
     i32 all_at_start = 1;
     f32 direction;
-    f32 current_frame;
 
     if ((set->flags & 4) != 0) {
         return;
@@ -105,12 +104,11 @@ void __cdecl GameAnimSet_EvaluateState(GAMEANIMSET *set) {
     while (object != NULL) {
         animation = object->instance_animation;
         if (animation != NULL) {
-            direction = object->end_frame < object->start_frame ? nu_fsign_minus_one : 1.0f;
-            current_frame = animation->ltime * direction;
-            if (object->end_frame * direction > current_frame) {
+            direction = object->start_frame > object->end_frame ? nu_fsign_minus_one : 1.0f;
+            if (animation->ltime * direction < object->end_frame * direction) {
                 all_at_end = 0;
             }
-            if (current_frame > object->start_frame * direction) {
+            if (object->start_frame * direction < animation->ltime * direction) {
                 all_at_start = 0;
             }
         }
@@ -295,9 +293,7 @@ i32 __cdecl GameAnimSet_Reset(GAMEANIMSET *set) {
 
 i32 __cdecl GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
     GAMEANIMOBJ *object;
-    NUINSTANIM *animation;
     f32 direction;
-    f32 current_frame;
 
     if (set == NULL) {
         return 1;
@@ -316,23 +312,20 @@ i32 __cdecl GameAnimSet_Play(GAMEANIMSET *set, f32 speed, i32 evaluate_state) {
         }
     }
     for (object = set->objects; object != NULL; object = object->next) {
-        animation = object->instance_animation;
-        if (animation == NULL) {
-            continue;
-        }
-        animation->flags |= 1;
-        animation->flags &= ~4u;
-        direction = object->end_frame < object->start_frame ? nu_fsign_minus_one : 1.0f;
-        current_frame = animation->ltime * direction;
-        if (object->start_frame * direction > current_frame) {
-            animation->ltime = object->start_frame;
-        } else if (current_frame > object->end_frame * direction) {
-            animation->ltime = object->end_frame;
-        }
-        if (animation->fparam1 != 0.0f) {
-            animation->tfactor = animation->fparam1 * speed * direction;
-        } else {
-            animation->tfactor = direction * speed;
+        if (object->instance_animation != NULL) {
+            object->instance_animation->flags |= 1;
+            object->instance_animation->flags &= ~4u;
+            direction = object->start_frame > object->end_frame ? -1.0f : 1.0f;
+            if (object->instance_animation->ltime * direction < object->start_frame * direction) {
+                object->instance_animation->ltime = object->start_frame;
+            } else if (object->end_frame * direction < object->instance_animation->ltime * direction) {
+                object->instance_animation->ltime = object->end_frame;
+            }
+            if (object->instance_animation->fparam1 != 0.0f) {
+                object->instance_animation->tfactor = object->instance_animation->fparam1 * speed * direction;
+            } else {
+                object->instance_animation->tfactor = direction * speed;
+            }
         }
     }
     if ((set->flags & 4) == 0) {
@@ -601,7 +594,7 @@ i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 fra
     NUVEC sum = {0.0f, 0.0f, 0.0f};
     i32 count = 0;
 
-    if (position == NULL || set == NULL || set->object_count == 0 || set->objects == NULL) {
+    if (set == NULL || position == NULL || set->object_count == 0 || set->objects == NULL) {
         return 0;
     }
     for (object = set->objects; object != NULL; object = object->next) {
@@ -611,23 +604,23 @@ i32 __cdecl GameAnimSet_GetAveragePos(GAMEANIMSET *set, NUVEC *position, i32 fra
         if (object->instance_animation != NULL) {
             f32 frame;
             NUMTX matrix;
-            NUVEC translation;
 
             if (include_animated == 0) {
                 continue;
             }
-            if (frame_selection == 0) {
-                frame = object->start_frame;
-            } else if (frame_selection == 1) {
-                frame = object->end_frame;
-            } else {
-                frame = object->instance_animation->ltime;
+            switch (frame_selection) {
+                case 0:
+                    frame = object->start_frame;
+                    break;
+                case 1:
+                    frame = object->end_frame;
+                    break;
+                default:
+                    frame = object->instance_animation->ltime;
+                    break;
             }
             EvalAnim(&object->special, frame, &matrix, 1);
-            translation.x = matrix.m30;
-            translation.y = matrix.m31;
-            translation.z = matrix.m32;
-            NuVecAdd(&sum, &sum, &translation);
+            NuVecAdd(&sum, &sum, &matrix.translation);
             ++count;
         } else if (include_static != 0) {
             NuVecAdd(&sum, &sum, NuSpecialGetDrawPos(&object->special));
