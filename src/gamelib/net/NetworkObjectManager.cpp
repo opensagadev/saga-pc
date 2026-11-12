@@ -464,8 +464,8 @@ NetworkObjectManager::PendingObject *NetworkObjectManager::FindPendingObject(Net
 NetworkObjectManager::PendingObject *NetworkObjectManager::StealPendingObject() {
     for (i32 i = 0; i < 32; i++) {
         if (pending_objects[i].request_time + 1000 < UtilGetFrameStartTime()) {
-            pending_objects[i].request_time = 0;
             pending_objects[i].requested = 0;
+            pending_objects[i].request_time = 0;
             return &pending_objects[i];
         }
     }
