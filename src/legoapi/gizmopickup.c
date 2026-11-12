@@ -110,7 +110,7 @@ void __cdecl CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i
         message.duration = 1.0f;
         message.icon = 0xd0;
         message.special = &WORLD->level_objects[0xd0].special;
-        message.update_fn = PowerUp_UpdateMsg;
+        message.tick_fn = PowerUp_UpdateMsg;
         message.end_fn = PowerUp_EndMsg;
         message.player_index = (i8)object->field_280;
         message.allow_temporary = 1;
