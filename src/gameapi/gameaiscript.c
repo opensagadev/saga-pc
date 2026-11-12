@@ -6306,20 +6306,18 @@ i32 __cdecl Action_SetHitPoints(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
     char *value;
     GIZAIMESSAGE *message;
 
+    object = NULL;
+    set_max = 1;
+    hitpoints = -1;
     if (!first_time)
         return 1;
-    object = NULL;
     if (packet != NULL && packet->owner != NULL)
         object = packet->owner->objptr;
-    hitpoints = -1;
-    set_max = 1;
     for (i = 0; i < num_params; i++) {
         value = NuStrIStr(params[i], (char *)AIGameCharacterName);
         if (value != NULL) {
-            {
-                lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
-            }
+            lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
+            object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
         } else if ((value = NuStrIStr(params[i], (char *)AITransferLiteral757c20)) != NULL) {
             message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
             if (message != NULL)
@@ -6348,12 +6346,12 @@ i32 __cdecl Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS_PC *proc
     i32 hit_points;
     char *value;
 
+    object = NULL;
+    hit_points = -1;
     if (first_time == 0)
         return 1;
-    object = NULL;
-    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+    if (packet != NULL && packet->owner != NULL)
         object = packet->owner->objptr;
-    hit_points = -1;
     for (index = 0; index < param_count; ++index) {
         value = NuStrIStr(params[index], (char *)AIGameCharacterName);
         if (value != NULL) {
