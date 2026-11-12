@@ -266,16 +266,22 @@ extern "C" {
     extern void(__cdecl *WorldInfo_InitLastFn)(WORLDINFO *);
 }
 void __cdecl WorldInfo_Init(WORLDINFO *world) {
+    void(__cdecl * init_fn)(WORLDINFO *);
     i32 menu_id = -1;
     i32 menu_y = -1;
     ((WORLD_INITIAL_RESET_PC *)world)->reset_flags = 0;
     disable_narrow_socks = 0;
     script_spline_selected = NULL;
-    if (world->current_level->shadow_type == 0) {
-        if (PCShadowCurrentLight != NULL)
-            PCShadowCurrentLight->SetEnabledPc(1);
-    } else if (world->current_level->shadow_type == 2 && PCShadowCurrentLight != NULL)
-        PCShadowCurrentLight->enabled = 0;
+    switch (world->current_level->shadow_type) {
+        case 0:
+            if (PCShadowCurrentLight != NULL)
+                PCShadowCurrentLight->SetEnabledPc(1);
+            break;
+        case 2:
+            if (PCShadowCurrentLight != NULL)
+                PCShadowCurrentLight->enabled = 0;
+            break;
+    }
     ResetSounds();
     SetLevelSfxBits(world);
     LevMusicAction = ActionFromQuiet(world->current_level->music_index);
@@ -312,12 +318,11 @@ void __cdecl WorldInfo_Init(WORLDINFO *world) {
     TerrainPlatformNewUpdate();
     if (NOSOUND == 0)
         NuSound3Update();
-    if (world->level_progress != NULL) {
-        WORLD_INITIAL_PROGRESS_PC *progress = (WORLD_INITIAL_PROGRESS_PC *)world->level_progress;
-        if ((progress->initialized_flags & 1) == 0) {
-            memcpy(&progress->scene, &world->scene_progress, sizeof(SCENEPROGRESS));
-            progress->initialized_flags |= 1;
-        }
+    if (world->level_progress != NULL &&
+        (((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->initialized_flags & 1) == 0) {
+        memcpy(&((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->scene, &world->scene_progress,
+               sizeof(SCENEPROGRESS));
+        ((WORLD_INITIAL_PROGRESS_PC *)world->level_progress)->initialized_flags |= 1;
     }
     Doors_Init(world);
     Players_InitPositions(world);
@@ -334,8 +339,9 @@ void __cdecl WorldInfo_Init(WORLDINFO *world) {
     world->room_visibility_flag = 1;
     world->rooms_visible_ptr = world->rooms_visible;
     memset(world->rooms_visible, 0, sizeof(world->rooms_visible));
-    if (world->current_level->callbacks[1] != NULL)
-        ((void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[1])(world);
+    init_fn = (void(__cdecl *)(WORLDINFO *))world->current_level->callbacks[1];
+    if (init_fn != NULL)
+        init_fn(world);
     if (NOSOUND == 0)
         NuSound3Update();
     if (WorldInfo_InitMenuFn != NULL)
