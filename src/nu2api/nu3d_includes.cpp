@@ -6545,34 +6545,33 @@ extern "C" {
 
     static void drawFullPortal(NUPORTAL *portal, NUGSCNROOM *room) {
         i32 i;
-        NUVEC nearest;
+        NUVEC nearest, direction;
         if (NuPortalDebugEnabledPc == 0)
             return;
         if (NuPortalCameraSelectPc == 1)
             NuCameraSet(&NuPortalDebugCameraPc);
         for (i = 0; i < portal->vertex_count; ++i) {
-            NUVEC direction;
             NUVEC *a = &portal->vertices[i], *b = &portal->vertices[(i + 1) % portal->vertex_count];
             NuVecSub(&direction, a, b);
             NuRndrLine3dDbg(a->x, a->y, a->z, b->x, b->y, b->z, (i32)0xffff00ffU);
         }
         /* PC retains the preceding nearest point if no later positive plane hit is found. */
         for (i = 0; i < portal->vertex_count; ++i) {
-            NUVEC direction;
-            NUVEC *vertex = &portal->vertices[i];
-            f32 nearest_distance = 3.402823466e+38f;
+            f32 nearest_distance;
             i32 plane_index;
-            NuVecSub(&direction, vertex, &NuPortalWorldCameraPc);
+            NuVecSub(&direction, &portal->vertices[i], &NuPortalWorldCameraPc);
             NuVecNorm(&direction, &direction);
+            nearest_distance = 3.402823466e+38f;
             for (plane_index = 0; plane_index < room->plane_count; ++plane_index) {
                 NUVEC point;
-                f32 distance = NuPlnLine3(&room->planes[plane_index], vertex, &direction, &point);
-                if (distance > 0.0f && nearest_distance > distance) {
+                f32 distance = NuPlnLine3(&room->planes[plane_index], &portal->vertices[i], &direction, &point);
+                if (distance > 0.0f && distance < nearest_distance) {
                     nearest = point;
                     nearest_distance = distance;
                 }
             }
-            NuRndrLine3dDbg(nearest.x, nearest.y, nearest.z, vertex->x, vertex->y, vertex->z, (i32)0xffff00ffU);
+            NuRndrLine3dDbg(nearest.x, nearest.y, nearest.z, portal->vertices[i].x, portal->vertices[i].y,
+                            portal->vertices[i].z, (i32)0xffff00ffU);
         }
         if (NuPortalCameraSelectPc == 1)
             NuCameraSet(&NuPortalRestoreCameraPc);
