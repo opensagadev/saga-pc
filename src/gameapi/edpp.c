@@ -528,7 +528,7 @@ void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 eduimenu_s *ptlrepeatboxmenu = NULL;
 static edui_slider_s *ptlrepeatbox_x_slider = NULL;
 static edui_slider_s *ptlrepeatbox_z_slider = NULL;
-static i32 ptlrepeatbox_xz_lock = 1;
+i32 ptlrepeatbox_xz_lock = 1;
 
 static void cbPtlChangeRepeatXZLock(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
