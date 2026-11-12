@@ -2270,8 +2270,7 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
     append = 0;
     if (list == NULL)
         return;
-    while (list->model_id != -1 && apicharsys->loaded_model_count < apicharsys->model_capacity) {
-        model_id = list->model_id;
+    while ((model_id = list->model_id) != -1 && apicharsys->loaded_model_count < apicharsys->model_capacity) {
         character = (CHARACTERDATA_PC *)&apicharsys->char_data[model_id];
         NuStrCpy(directory, APIObjectCharsDirectory);
         NuStrCat(directory, character->dir);
