@@ -3390,7 +3390,7 @@ i32 __cdecl Action_Activate(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     if (creature_set != 0) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc & 1) && candidate->ai_packet.creature_set == creature_set) {
+            if ((candidate->flags_1fc_word & 1) && candidate->ai_packet.creature_set == creature_set) {
                 if (candidate->ai_packet.creature_index == 0xff) {
                     candidate->flags_1fc_word |= 0x1000;
                     AIScriptSetBaseScriptStateByName(&candidate->ai_packet.script_processor, "Base");
