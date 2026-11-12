@@ -741,7 +741,8 @@ extern i16 DefaultAnimationLamaSuIdPc, DefaultAnimationTaunWeIdPc;
 void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS_PC *timers = (DEFAULT_ANIMATION_TIMERS_PC *)object;
     DEFAULT_ANIMATION_MINI_REQUEST_PC *mini = (DEFAULT_ANIMATION_MINI_REQUEST_PC *)object;
-    i16 animation, model_id;
+    i16 animation;
+    i32 model_id;
     if (object->id == (u16)DefaultAnimationJabbaIdPc && WORLD->current_level == HUB_LDATA) {
         object->anim_packet.requested_animation = 1;
         if (object->pad->input_magnitude > 0.0f && object->character_model->model_data_b[0] != NULL)
@@ -755,10 +756,8 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
     else if (object->context_target_position != NULL) {
         if (object->character_model->model_data_b[43] != NULL)
             object->anim_packet.requested_animation = 43;
-        else if (object->character_model->model_data_b[5] != NULL)
-            object->anim_packet.requested_animation = 5;
         else
-            object->anim_packet.requested_animation = 1;
+            object->anim_packet.requested_animation = object->character_model->model_data_b[5] != NULL ? 5 : 1;
     } else if (object->character_context == 8)
         object->anim_packet.requested_animation = 11;
     else {
@@ -774,11 +773,11 @@ void __cdecl Animate_CHARACTER(GAMEOBJECT *object) {
                 object->anim_packet.requested_animation = 15;
         } else if (object->anim_packet.requested_animation != 5) {
             if ((object->pad->runtime_flags & 2) == 0 && object->pad->input_magnitude > 0.0f) {
-                i32 tiptoe =
-                    (object->flags_1fc & 0x80) == 0 && object->character_data->game_character->weapon_action == 1
-                        ? 0
-                        : (object->character_data->game_character->flags_090 & 8) == 0;
-                MoveAnim_Manage(object, object->pad->input_magnitude, tiptoe, 1);
+                if ((object->flags_1fc & 0x80) == 0 && object->character_data->game_character->weapon_action == 1)
+                    MoveAnim_Manage(object, object->pad->input_magnitude, 0, 1);
+                else
+                    MoveAnim_Manage(object, object->pad->input_magnitude,
+                                    (object->character_data->game_character->flags_090 & 8) == 0, 1);
             } else if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) &&
                        object->character_model->model_data_b[25] != NULL)
                 object->anim_packet.requested_animation = 25;
