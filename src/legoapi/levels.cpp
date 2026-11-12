@@ -3612,10 +3612,9 @@ void __cdecl NewArea(void) {
     SuperCounters_Reset(Area);
     NewArea_ResetGlobalsPC();
     for (i = 0; i < 8; ++i) {
-        GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
         ((PLAYER_PROGRESS_HP_PC *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
-        if (player != NULL) {
-            player->current_hp = (i8)player->field_107e;
+        if (Player[i] != NULL) {
+            ((GAMEOBJECT *)Player[i])->current_hp = (i8)((GAMEOBJECT *)Player[i])->field_107e;
         }
     }
     ResetTimer(&AreaTimer, 0.0f);
