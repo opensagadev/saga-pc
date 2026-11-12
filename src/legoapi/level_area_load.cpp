@@ -856,10 +856,12 @@ extern "C" {
         if (ObjTabList == NULL)
             return;
         for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
-            STARTUP_LEVEL_OBJECT_PC *objects = (STARTUP_LEVEL_OBJECT_PC *)world->level_objects;
-            objects[index].platform_id = -1;
-            if (world->terrain != NULL && NuSpecialExistsFn(&objects[index].special) && ObjTabList[index].kind == 1)
-                objects[index].platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&objects[index].special));
+            ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id = -1;
+            if (world->terrain != NULL &&
+                NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special) &&
+                ObjTabList[index].kind == 1)
+                ((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].platform_id = (i16)FindPlatInst(
+                    NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT_PC *)world->level_objects)[index].special));
         }
     }
 
