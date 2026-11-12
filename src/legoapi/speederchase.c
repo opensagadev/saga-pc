@@ -488,9 +488,10 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, field_dc8) == 0xdc8);
 
 f32 __cdecl GetVehicleAreaRememberSpeed(void) {
     f32 speed = 0.0f;
-    f32 count = 0.0f;
+    f32 count;
     GAMEOBJECT *first, *second;
     if (VehicleArea != 0) {
+        count = 0.0f;
         first = (GAMEOBJECT *)Player[0];
         if (first != NULL && (first->flags_1fc & 0x80) != 0) {
             speed += first->field_dc8;
