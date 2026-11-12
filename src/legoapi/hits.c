@@ -89,19 +89,19 @@ void __cdecl ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, 
         if ((target->flags_1fc_word & 0x80) && Player_HasInvincibility(target))
             damage = 0;
         health = target->shield_hitpoints - damage;
-        if (health > 0) {
-            PlaySfx((char *)ShieldHitSfxPc, &target->collision_position);
-            target->shield_hitpoints = (u8)health;
-            shield->shield_timer = SHIELDFLICKERTIME;
-            first_rumble = 0.5f;
-            second_rumble = 0.0f;
-        } else {
+        if (health <= 0) {
             PlaySfx((char *)ShieldFlickerSfxPc, &target->collision_position);
             shield->shield_timer = 0.5f;
             target->shield_hitpoints = 0;
             shield->shield_enabled = 0.0f;
             first_rumble = 0.8f;
             second_rumble = 0.3f;
+        } else {
+            PlaySfx((char *)ShieldHitSfxPc, &target->collision_position);
+            first_rumble = 0.5f;
+            target->shield_hitpoints = (u8)health;
+            second_rumble = 0.0f;
+            shield->shield_timer = SHIELDFLICKERTIME;
         }
         if (attacker != NULL) {
             if (first_rumble > 0.0f)
@@ -673,17 +673,12 @@ refill:
 }
 
 void __cdecl FloatRumble(GAMEOBJECT *object) {
-    union {
-        f32 value;
-        u32 bits;
-    } absolute_velocity;
-    f32 strength;
+    f32 velocity, strength;
     FRAME_PAD_PC *pad;
     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
-        absolute_velocity.value = object->velocity.y;
-        absolute_velocity.bits &= 0x7fffffff;
-        strength =
-            (f32)((f64)absolute_velocity.value / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
+        velocity = object->velocity.y;
+        *(u32 *)&strength = *(u32 *)&velocity & 0x7fffffff;
+        strength = (f32)((f64)strength / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
         if (strength > 1.0f)
             strength = 1.0f;
         NewRumble(object->pad->bound_pad, strength, 0);
