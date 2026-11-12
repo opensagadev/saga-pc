@@ -191,11 +191,12 @@ static void CutSceneDestroyCharactersPC(CUT_INSTANCE_LIFECYCLE_PC *instance) {
     CUT_CHARACTER_SYSTEM_LIFECYCLE_PC *system = instance->scene->character_system;
     CUT_CHARACTER_INSTANCE_SYSTEM_PC *characters = instance->character_instance;
     i32 i;
-    if (system != NULL) {
+    if (system != NULL && system->count != 0) {
         for (i = 0; i < system->count; ++i) {
-            if ((system->characters[i].flags & 2) != 0 && NuCutSceneCharacterDestroyData != NULL) {
-                NuCutSceneCharacterDestroyData(&system->characters[i], &characters->characters[i]);
-            }
+            CUT_CHARACTER_INSTANCE_PC *state = &characters->characters[i];
+            CUT_CHARACTER_GENERIC_PC *character = &system->characters[i];
+            if ((character->flags & 2) != 0 && NuCutSceneCharacterDestroyData != NULL)
+                NuCutSceneCharacterDestroyData(character, state);
         }
     }
 }
