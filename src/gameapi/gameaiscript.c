@@ -5540,39 +5540,37 @@ i32 __cdecl Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
     i32 index, object_index, type_index;
     (void)processor;
     (void)param_6;
+    enabled = 1;
+    type_count = 0;
+    still_take_hit = 0;
+    object = NULL;
     if (param_5 == 0) {
         return 1;
     }
 
-    type_count = 0;
-    still_take_hit = 0;
-    object = NULL;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         object = packet->owner->objptr;
-    enabled = 1;
-    if (param_4 != 0) {
-        for (index = 0; index < param_4; ++index) {
-            value = NuStrIStr(params[index], (char *)AITransferLiteral75772c);
-            if (value != NULL) {
-                if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
-                    local_type = (u8)(LevelCharacterTypeIDFn(value + 5));
-                    if (local_type != 0xff) {
-                        global_type = LevelCharacterGlobalIDFn(local_type);
-                        if (global_type != -1 && type_count < 10) {
-                            types[type_count++] = global_type;
-                        }
+    for (index = 0; index < param_4; ++index) {
+        value = NuStrIStr(params[index], (char *)AITransferLiteral75772c);
+        if (value != NULL) {
+            if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
+                local_type = (u8)(LevelCharacterTypeIDFn(value + 5));
+                if (local_type != 0xff) {
+                    global_type = LevelCharacterGlobalIDFn(local_type);
+                    if (global_type != -1 && type_count < 10) {
+                        types[type_count++] = global_type;
                     }
                 }
-                continue;
             }
-            value = NuStrIStr(params[index], (char *)AIGameCharacterName);
-            if (value != NULL) {
-                object = GetNamedGameObject(sys, value + 10);
-            } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
-                enabled = 0;
-            } else if (NuStrICmp(params[index], (char *)AITransferLiteral757a44) == 0) {
-                still_take_hit = 1;
-            }
+            continue;
+        }
+        value = NuStrIStr(params[index], (char *)AIGameCharacterName);
+        if (value != NULL) {
+            object = GetNamedGameObject(sys, value + 10);
+        } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
+            enabled = 0;
+        } else if (NuStrICmp(params[index], (char *)AITransferLiteral757a44) == 0) {
+            still_take_hit = 1;
         }
     }
 
@@ -5580,7 +5578,8 @@ i32 __cdecl Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor,
         candidate = Obj;
 
         for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
-            if ((candidate->flags_1fc_word & (1u | 0x1000u)) != (1u | 0x1000u) || (candidate->flags_1f8 & 0x400) == 0) {
+            if (!(candidate->flags_1fc_word & 1) || !(candidate->flags_1fc_word & 0x1000) ||
+                (candidate->flags_1f8 & 0x400) == 0) {
                 continue;
             }
             for (type_index = 0; type_index < type_count; ++type_index) {
