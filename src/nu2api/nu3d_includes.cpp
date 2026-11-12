@@ -7093,11 +7093,13 @@ extern "C" {
     void __cdecl NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
         PC_MATERIAL_CREATE_SHADER desc2d, desc3d;
         PC_MATERIAL_CREATE_VIEW *material;
+        NUMTL *pool;
         NuMtlInitExPS(buffer);
         PCMaterialPoolCountPc = material_count;
-        PCMaterialPoolPc = (NUMTL *)((buffer->addr + 15u) & ~15u);
-        buffer->addr = (u32)PCMaterialPoolPc + material_count * sizeof(PC_MATERIAL_CREATE_VIEW);
-        memset(PCMaterialPoolPc, 0, material_count * sizeof(PC_MATERIAL_CREATE_VIEW));
+        pool = (NUMTL *)((buffer->addr + 15u) & ~15u);
+        buffer->addr = ((buffer->addr + 15u) & ~15u) + material_count * sizeof(PC_MATERIAL_CREATE_VIEW);
+        PCMaterialPoolPc = pool;
+        memset(pool, 0, material_count * sizeof(PC_MATERIAL_CREATE_VIEW));
         numtl_defaultmtl3d = NuMtlCreatePoolPC(1, numtl_renderplane, 1);
         numtl_defaultmtl2d = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
         memset(&desc2d, 0, sizeof(desc2d));
