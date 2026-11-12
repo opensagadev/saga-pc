@@ -386,14 +386,13 @@ static __declspec(noinline) void JediBResetRecordPc(JEDIB_CREATURE_PC *record) {
 }
 
 static __declspec(noinline) void __cdecl JediBKilledCallbackPc(GAMEOBJECT *object) {
-    i32 index, other, alive, wave;
-    JEDIB_CREATURE_PC *record;
+    i32 index, other, wave;
+    i32 alive = 0;
     if (object == NULL)
         return;
     for (index = 0; index < jedi_b.goody_count; index++) {
         if (jedi_b.goodies[index].object == object) {
             jedi_b.goodies[index].object = NULL;
-            alive = 0;
             for (other = 0; other < jedi_b.goody_count; other++) {
                 if (jedi_b.goodies[other].object != NULL)
                     alive++;
@@ -404,18 +403,17 @@ static __declspec(noinline) void __cdecl JediBKilledCallbackPc(GAMEOBJECT *objec
         }
     }
     for (index = 0; index < jedi_b.baddie_count; index++) {
-        record = &jedi_b.baddies[index];
-        if (record->object == object) {
+        if (jedi_b.baddies[index].object == object) {
             for (wave = 0; wave < 6; wave++) {
-                if (jedi_b.wave_ids[wave] == record->id && jedi_b.wave_spawned[wave] == 0) {
+                if (jedi_b.wave_ids[wave] == jedi_b.baddies[index].id && jedi_b.wave_spawned[wave] == 0) {
                     jedi_b.wave_spawned[wave] = 1;
                     jedi_b.wave_timer = 0.0f;
                     break;
                 }
             }
-            record->object = NULL;
-            record->flags = (record->flags & ~0x18u) | 1;
-            JediBResetRecordPc(record);
+            jedi_b.baddies[index].object = NULL;
+            jedi_b.baddies[index].flags = (jedi_b.baddies[index].flags & ~0x18u) | 1;
+            JediBResetRecordPc(&jedi_b.baddies[index]);
             return;
         }
     }
