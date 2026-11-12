@@ -2353,28 +2353,25 @@ extern "C" void __cdecl GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAV
     music_man.SelectTrackByHandle(2, level->music_tracks[MusicOther + 2]);
     music_man.SelectTrackByHandle(0x20, level->music_tracks[MusicOther + 4]);
 
-    if (options->music_enabled != 0) {
-        if (sticky_attack != 0) {
-            if (music_man.GetTrackHandle(2, NULL) != -1) {
-                music_man.PlayTrack(2);
-                return;
-            }
-            if (music_man.GetTrackHandle(1, NULL) != -1) {
-                music_man.PlayTrack(1);
-                return;
-            }
-        } else {
-            if (music_man.GetTrackHandle(1, NULL) != -1) {
-                music_man.PlayTrack(1);
-                return;
-            }
-            if (music_man.GetTrackHandle(2, NULL) != -1) {
-                music_man.PlayTrack(2);
-                return;
-            }
-        }
+    if (options->music_enabled == 0) {
+        music_man.PlayTrack(0x20);
+        return;
     }
-    music_man.PlayTrack(0x20);
+    if (sticky_attack != 0) {
+        if (music_man.GetTrackHandle(2, NULL) != -1)
+            music_man.PlayTrack(2);
+        else if (music_man.GetTrackHandle(1, NULL) != -1)
+            music_man.PlayTrack(1);
+        else
+            music_man.PlayTrack(0x20);
+    } else {
+        if (music_man.GetTrackHandle(1, NULL) != -1)
+            music_man.PlayTrack(1);
+        else if (music_man.GetTrackHandle(2, NULL) != -1)
+            music_man.PlayTrack(2);
+        else
+            music_man.PlayTrack(0x20);
+    }
 }
 
 extern "C" void MusicClearAll() {
