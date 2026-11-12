@@ -575,7 +575,7 @@ i32 __cdecl SpecialSfxLoad(char *path, void *world_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 version, count, i, j;
     char name[64];
-    i16 length;
+    i32 length;
     SPECIAL_RESOURCE_ENTRY_PC *entry;
     SPECIAL_RESOURCE_EVENT_PC *event, *previous;
     if (!world)
