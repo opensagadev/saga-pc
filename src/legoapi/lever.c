@@ -124,12 +124,10 @@ void __cdecl Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if ((object->context_variant_flags & 0x40) != 0)
                 return;
             if (object->character_model->model_data_b[object->field_7aa] != NULL) {
-                f32 frame;
                 f32 *playing = AnimPlaying(&object->anim_packet, object->field_7aa, 1, 0);
                 if (playing == NULL)
                     return;
-                frame = *playing;
-                if (!(frame >= AnimListFrame(object->character_model, object->field_7aa, 0)))
+                if (!(*playing >= AnimListFrame(object->character_model, object->field_7aa, 0)))
                     return;
             } else if (!(object->context_timer >= 0.25f))
                 return;
@@ -161,11 +159,12 @@ void __cdecl Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             return;
         if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && objInNetWaitContext(object, 0x4a) == 0)
             return;
-        object->context_timer = object->context_hover_target_y = 0.0f;
+        object->context_timer = 0.0f;
+        object->context_hover_target_y = 0.0f;
         object->character_context = 0x4a;
         object->grapple = lever;
         object->field_7aa = 0x5d;
-        object->context_duration = AnimDuration(object->id, 0x5d, 0.0f, 0.0f, 1);
+        object->context_duration = AnimDuration((i16)object->id, 0x5d, 0.0f, 0.0f, 1);
         if (object->context_duration <= 0.0f)
             object->context_duration = 1.0f;
         object->context_variant_flags &= ~0x40;
