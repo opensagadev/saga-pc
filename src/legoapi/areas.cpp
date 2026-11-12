@@ -316,11 +316,11 @@ void __cdecl SuperCounters_ResetProcessed(WORLDINFO *world) {
 AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count,
                                           i32 *count_out) {
     NUFPAR_PC *parser;
-    AREA_DATA_PC *area_base;
-    AREA_DATA_PC *area;
+    i32 index;
     i32 area_count;
     i32 in_area;
-    u32 aligned_address;
+    AREA_DATA_PC *area_base;
+    AREA_DATA_PC *area;
 
     parser = NuFParCreate(path);
     if (parser == NULL) {
@@ -331,12 +331,11 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
         return NULL;
     }
 
+    area_base = (AREA_DATA_PC *)((buffer->addr + 3) & ~3u);
+    buffer->void_ptr = area_base;
+    area = area_base;
     area_count = 0;
     in_area = 0;
-    aligned_address = (buffer->addr + 3) & ~3u;
-    buffer->addr = aligned_address;
-    area = (AREA_DATA_PC *)buffer->void_ptr;
-    area_base = area;
 
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
@@ -347,10 +346,10 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
         if (in_area != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_area_end) == 0) {
                 in_area = 0;
-                if (area->dir[0] != '\0' && area->file[0] != '\0' && area->level_count != 0 &&
-                    (area->flags & 0x40) == 0) {
-                    ++area;
+                if (area->dir[0] != '\0' && area->file[0] != '\0' && area->level_count > 0 &&
+                    (area->flags & 0x20) == 0) {
                     ++area_count;
+                    ++area;
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, LevelConfigKeywordDir) == 0) {
                 if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 0x40) {
@@ -364,25 +363,16 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
                 if (area->level_count >= 12 || NuFParGetWord(parser) == 0) {
                     continue;
                 }
-                {
-                    i32 level_index;
-                    i32 level_slot;
-                    i32 duplicate;
+                Level_FindByName(parser->word_buffer_ptr, &index);
+                if (index != -1) {
+                    i32 slot;
 
-                    Level_FindByName(parser->word_buffer_ptr, &level_index);
-                    if (level_index < 0) {
-                        continue;
-                    }
-                    level_slot = area->level_count;
-                    duplicate = 0;
-                    for (level_slot = 0; level_slot < area->level_count; ++level_slot) {
-                        if (area->levels[level_slot] == level_index) {
-                            duplicate = 1;
+                    for (slot = 0; slot < area->level_count; ++slot) {
+                        if (area->levels[slot] == index)
                             break;
-                        }
                     }
-                    if (duplicate == 0) {
-                        area->levels[area->level_count] = (i16)level_index;
+                    if (slot == area->level_count) {
+                        area->levels[area->level_count] = (i16)index;
                         ++area->level_count;
                     }
                 }
@@ -394,9 +384,9 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
                     area->minikit_id = (i16)CharIDFromName(parser->word_buffer_ptr);
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_test_area) == 0) {
-                area->flags |= 0x0040;
-            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_hub_area) == 0) {
                 area->flags |= 0x0020;
+            } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_hub_area) == 0) {
+                area->flags |= 0x0040;
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_override_things_scene) == 0) {
                 area->flags |= 0x0400;
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_vehicle_area) == 0) {
@@ -408,8 +398,8 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_super_bonus_area) == 0) {
                 area->flags |= 0x0104;
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_nocharactercollision) == 0 ||
-                       NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_character_collision) == 0 ||
                        NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_nocharactercollisions) == 0 ||
+                       NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_character_collision) == 0 ||
                        NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_no_character_collisions) == 0) {
                 area->flags |= 0x0080;
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_nopickupgravity) == 0) {
@@ -425,10 +415,7 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_text_id) == 0) {
                 area->text_id = (i16)NuFParGetInt(parser);
                 if (NuFParGetWord(parser) != 0) {
-                    i32 text_id_value;
-
-                    text_id_value = NuAToI(parser->word_buffer_ptr);
-                    area->text_id_value = (u8)(text_id_value < 0 ? -text_id_value : text_id_value);
+                    area->text_id_value = (u8)abs(NuAToI(parser->word_buffer_ptr));
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_timetrial_time) == 0) {
                 area->challenge_trial_time = (u16)NuFParGetInt(parser);
@@ -442,6 +429,7 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
         }
 
         if (NuStrICmp(parser->word_buffer_ptr, AreaConfigKeyword_area_start) == 0 && area_count < max_count) {
+            in_area = 1;
             area->dir[0] = '\0';
             area->file[0] = '\0';
             area->levels[0] = -1;
@@ -462,44 +450,35 @@ AREA_DATA_PC *__cdecl Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *
             area->text_id = -1;
             area->text_id_value = 1;
             area->hub_player_ids = NULL;
-            in_area = 1;
         }
     }
 
     NuFParDestroy(parser);
-    if (area_count <= 0) {
-        AreasConfigDiagnosticPc(path);
-        return NULL;
-    }
-
-    buffer->void_ptr = area;
-    if (count_out != NULL) {
-        *count_out = area_count;
-    }
-
-    {
-        i32 index;
-
+    if (area_count > 0) {
+        buffer->void_ptr = area;
+        if (count_out != NULL) {
+            *count_out = area_count;
+        }
         for (index = 0; index < area_count; ++index) {
-            AREA_DATA_PC *current;
-
-            current = &area_base[index];
-            if (current->challenge_trial_time == 0) {
-                if ((current->flags & 0x0104) == 0x0004) {
-                    current->challenge_trial_time = AREA_DEFAULTBONUSTIMETRIALTIME;
-                } else if ((current->flags & 0x0010) != 0) {
-                    current->challenge_trial_time = AREA_DEFAULTCHALLENGETIME;
+            if (area_base[index].challenge_trial_time == 0) {
+                if ((area_base[index].flags & 0x0104) == 0x0004) {
+                    area_base[index].challenge_trial_time = AREA_DEFAULTBONUSTIMETRIALTIME;
+                } else if ((area_base[index].flags & 0x0010) != 0) {
+                    area_base[index].challenge_trial_time = AREA_DEFAULTCHALLENGETIME;
                 }
             }
-            if (current->cheat != -1) {
-                Cheat_SetArea(current->cheat, index);
+            if (area_base[index].cheat != -1) {
+                Cheat_SetArea(area_base[index].cheat, index);
             }
-            if (current->challenge_trial_time != 0 && (current->flags & 0x0114) == 0x0010) {
-                current->challenge_trial_time = 1200;
+            if (area_base[index].challenge_trial_time > 0 && (area_base[index].flags & 0x0104) == 0 &&
+                (area_base[index].flags & 0x0010) != 0) {
+                area_base[index].challenge_trial_time = 1200;
             }
         }
+        return area_base;
     }
-    return area_base;
+    AreasConfigDiagnosticPc(path);
+    return NULL;
 }
 
 typedef struct player_progress_hp_pc_s {
