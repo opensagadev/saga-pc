@@ -1243,17 +1243,16 @@ extern "C" {
         if (gizmo == NULL)
             return;
         buildit = (BUILDIT_RESET_PC *)gizmo->object;
-        buildit->availability_flags = (u16)((buildit->availability_flags & ~1u) | (active != 0 ? 1u : 0u));
-        if (!(buildit->availability_flags & 1))
+        buildit->availability.active = active != 0;
+        if (!buildit->availability.active)
             return;
         if (buildit->state_flags & 0x200)
-            buildit->availability_flags &= ~0x200u;
+            buildit->availability.reward_released = 0;
         if (buildit->linked_buildit == NULL)
             GameAnimSet_JumpToStart(buildit->anim_set);
-        reward_released = (buildit->availability_flags >> 9) & 1;
+        reward_released = buildit->availability.reward_released;
         GizBuildit_Reset((GIZBUILDIT_s *)buildit, NULL);
-        buildit->availability_flags =
-            (u16)((buildit->availability_flags & ~0x200u) | (reward_released != 0 ? 0x200u : 0u));
+        buildit->availability.reward_released = reward_released != 0;
         if (!(buildit->state_flags & 0x40) || GizBuildit_AutoBuildPosFn == NULL)
             return;
         if (!GizBuildit_AutoBuildPosFn(NULL, &buildit->start_position, &scatter_position, NULL))
