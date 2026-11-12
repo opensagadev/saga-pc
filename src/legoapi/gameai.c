@@ -224,17 +224,16 @@ f32 __cdecl GetMinViewHeight(i32 id) {
 
 i32 __cdecl AIRespawnOnPath(APIOBJECT_PC *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
-    GAMEOBJECT *owner = object->objptr;
     if (object->dead == 0 && (apiobject->ai->path_info.flags & 1) == 0 && (object->flags_1fc_word & 0x2000) != 0 &&
-        (object->character_data->model_flags & 0x400000) == 0 && owner->character_context != 0x2b &&
-        owner->takeover_source == NULL && object->respawn_timer > 2.0f) {
+        (object->character_data->model_flags & 0x400000) == 0 && object->objptr->character_context != 0x2b &&
+        object->objptr->takeover_source == NULL && object->respawn_timer > 2.0f) {
         if ((object->character_data->model_flags & 0x200000) == 0)
-            StartBigJump(owner, &object->respawn_position, 0, 0.5f, 1.0f, 0);
+            StartBigJump(object->objptr, &object->respawn_position, 0, 0.5f, 1.0f, 0);
         else {
             object->start_position = object->respawn_position;
             object->position = object->respawn_position;
             object->velocity = v000;
-            ResetPlayerMoves(owner);
+            ResetPlayerMoves(object->objptr);
             object->respawn_timer = 0.0f;
         }
     }
