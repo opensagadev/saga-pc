@@ -21,12 +21,10 @@ STATIC_ASSERT(offsetof(SIGNALPROGRESS_s, visible_mask) == 0x24);
 
 static void SignalSetVisiblePc(SIGNAL_s *signal, i32 visible) {
     u8 was_visible = signal->visible;
-    u8 is_visible;
     signal->visible = visible != 0;
-    is_visible = signal->visible;
-    if (is_visible && !was_visible)
+    if (signal->visible && !was_visible)
         signal->platform_id = NewPlatPickupInst(&signal->matrix, 2);
-    else if (!is_visible && was_visible)
+    else if (!signal->visible && was_visible)
         DeletePlatinst(signal->platform_id);
 }
 
