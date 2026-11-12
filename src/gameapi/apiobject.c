@@ -2153,41 +2153,46 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
 void __cdecl APIObjectCollisions(i32 count, APIOBJECT_PC **objects, NUVEC *minimums, NUVEC *maximums,
                                  i32(__cdecl *collide)(APIOBJECT_PC *, APIOBJECT_PC *)) {
     i32 outer, inner;
-    GAMEOBJECT *first, *second;
+    GAMEOBJECT **first, **second;
+    NUVEC *first_min, *first_max, *second_min, *second_max;
+    NUVEC *first_position, *second_position;
     f32 dx, dy, dz, distance_squared, radius;
     if (collide == NULL)
         return;
-    for (outer = 1; outer < count; ++outer) {
-        second = (GAMEOBJECT *)objects[outer];
-        for (inner = 0; inner < outer; ++inner) {
-            first = (GAMEOBJECT *)objects[inner];
-            if ((GAMEOBJECT *)first->collision_link == second || (GAMEOBJECT *)second->collision_link == first)
+    for (outer = 1, second = (GAMEOBJECT **)objects + outer, second_min = minimums + outer,
+        second_max = maximums + outer;
+         outer < count; ++outer, ++second, ++second_min, ++second_max) {
+        second_position = &(*second)->collision_position;
+        for (inner = 0, first = (GAMEOBJECT **)objects + inner, first_min = minimums + inner,
+            first_max = maximums + inner;
+             inner < outer; ++inner, ++first, ++first_min, ++first_max) {
+            if ((GAMEOBJECT *)(*first)->collision_link == *second || (GAMEOBJECT *)(*second)->collision_link == *first)
                 goto no_collision;
-            if (((u64)1 << second->hostility_group) & U64_PAIR(first->collision_exclusion_mask))
+            if (((u64)1 << (*second)->hostility_group) & U64_PAIR((*first)->collision_exclusion_mask))
                 goto no_collision;
-            if (((u64)1 << first->hostility_group) & U64_PAIR(second->collision_exclusion_mask))
+            if (((u64)1 << (*first)->hostility_group) & U64_PAIR((*second)->collision_exclusion_mask))
                 goto no_collision;
-            if (minimums[inner].x > maximums[outer].x || maximums[inner].x < minimums[outer].x ||
-                minimums[inner].z > maximums[outer].z || maximums[inner].z < minimums[outer].z ||
-                minimums[inner].y > maximums[outer].y || maximums[inner].y < minimums[outer].y)
+            if (first_min->x > second_max->x || first_max->x < second_min->x || first_min->z > second_max->z ||
+                first_max->z < second_min->z || first_min->y > second_max->y || first_max->y < second_min->y)
                 goto no_collision;
-            dx = second->collision_position.x - first->collision_position.x;
-            dy = second->collision_position.y - first->collision_position.y;
-            dz = second->collision_position.z - first->collision_position.z;
-            if (first->bounds_radius != first->bounds_half_height ||
-                second->bounds_radius != second->bounds_half_height) {
-                dy = (second->bounds_radius + first->bounds_radius) /
-                     (second->bounds_half_height + first->bounds_half_height) * dy;
+            first_position = &(*first)->collision_position;
+            dx = second_position->x - first_position->x;
+            dy = second_position->y - first_position->y;
+            dz = second_position->z - first_position->z;
+            if ((*first)->bounds_radius != (*first)->bounds_half_height ||
+                (*second)->bounds_radius != (*second)->bounds_half_height) {
+                dy = ((*second)->bounds_radius + (*first)->bounds_radius) /
+                     ((*second)->bounds_half_height + (*first)->bounds_half_height) * dy;
             }
-            radius = second->bounds_radius + first->bounds_radius;
+            radius = (*second)->bounds_radius + (*first)->bounds_radius;
             distance_squared = dx * dx + dy * dy + dz * dz;
             if (distance_squared < radius * radius) {
-                collide((APIOBJECT_PC *)first, (APIOBJECT_PC *)second);
+                collide((APIOBJECT_PC *)*first, (APIOBJECT_PC *)*second);
                 continue;
             }
         no_collision:
-            U64_PAIR(first->collision_contact_mask) &= ~U64_PAIR(second->collision_identity_mask);
-            U64_PAIR(second->collision_contact_mask) &= ~U64_PAIR(first->collision_identity_mask);
+            U64_PAIR((*first)->collision_contact_mask) &= ~U64_PAIR((*second)->collision_identity_mask);
+            U64_PAIR((*second)->collision_contact_mask) &= ~U64_PAIR((*first)->collision_identity_mask);
         }
     }
 }
