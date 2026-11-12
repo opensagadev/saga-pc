@@ -6708,11 +6708,12 @@ void ClassEditor::MakeUniqueName(char const *name, char *destination, i32 size) 
     if (length + digits >= size)
         length = size - digits - 1;
     NuStrNCpy(destination, name, length + 1);
+    char *suffix = destination + length;
     char format[16];
     NuSPrintf(format, "%%.%dd", digits);
     do {
         number++;
-        NuSPrintf(destination + length, format, number);
+        NuSPrintf(suffix, format, number);
     } while (!IsUniqueName(destination));
 }
 
