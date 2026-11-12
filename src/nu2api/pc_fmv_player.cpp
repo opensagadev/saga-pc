@@ -47,8 +47,8 @@ extern "C" void __cdecl FmvSleepPc(i32 duration) {
         QueryPerformanceCounter(&before);
         Sleep(FmvSleepCarryPc / 1000);
         QueryPerformanceCounter(&after);
-        u64 elapsed = (u64)((after.QuadPart - before.QuadPart) * 1000000) / FmvFrequencyPc.QuadPart;
-        FmvSleepErrorPc = (i32)elapsed - FmvSleepCarryPc;
+        after.QuadPart = (u64)((after.QuadPart - before.QuadPart) * 1000000) / FmvFrequencyPc.QuadPart;
+        FmvSleepErrorPc = (i32)after.QuadPart - FmvSleepCarryPc;
         FmvSleepCarryPc %= 1000;
     }
 }
