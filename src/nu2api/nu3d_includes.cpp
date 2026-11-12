@@ -6412,7 +6412,8 @@ extern "C" {
         f32 near_clip;
         NUVEC near_position;
         NUPORTAL_FRUSTUM_PC *frustum;
-        i32 i;
+        i16 camera_room;
+        u32 i;
         PortalInitialisePsPc(scene);
         camera_position = NuPortalOverrideCameraPc != NULL ? NuPortalOverrideCameraPc : &NuPortalWorldCameraPc;
         if (PCPortalsEnabled == 0) {
@@ -6421,17 +6422,18 @@ extern "C" {
         }
         if (scene->max_portals == 0 || scene->num_rooms == 0 || scene->portal_instance_count == 0)
             return 0;
-        scene->num_portal_frusta = 0;
         NuPortalFrustumCountPc = &scene->num_portal_frusta;
+        scene->num_portal_frusta = 0;
         NuPortalFrustaPc = scene->portal_frusta;
         PortalSetAllHiddenPc(scene);
         NuPortalCameraPc = &global_camera;
         NuPortalLocalViewPc = global_camera.mtx;
         NuPortalWorldCameraPc = global_camera.mtx.translation;
         near_clip = global_camera.near_clip;
-        NuPortalCameraRoomPc = NuPortalWhichRoom(scene, camera_position);
-        scene->camera_room = NuPortalCameraRoomPc;
-        if (NuPortalCameraRoomPc == -1)
+        camera_room = NuPortalWhichRoom(scene, camera_position);
+        NuPortalCameraRoomPc = camera_room;
+        scene->camera_room = camera_room;
+        if (camera_room == -1)
             return 0;
         NuPortalCameraPlane.a = NuPortalNearPlanePc.a = NuPortalLocalViewPc.m20;
         NuPortalCameraPlane.b = NuPortalNearPlanePc.b = NuPortalLocalViewPc.m21;
@@ -6446,7 +6448,8 @@ extern "C" {
               NuPortalCameraPlane.c * NuPortalWorldCameraPc.z);
         frustum = buildFrustrum((NUVEC *)&NuPortalBoundsMinusOnePc, (NUVEC *)&NuPortalBoundsOnePc, -2);
         drawInitialFrustum(frustum);
-        for (i = 0; i < scene->num_rooms; ++i)
+        /* The native room count compare is unsigned. */
+        for (i = 0; i < (u32)scene->num_rooms; ++i)
             scene->rooms[i].flags &= (u8)~4;
         roomRecursive(scene, frustum, NuPortalCameraRoomPc, -1, 0);
         drawSceneSphere(scene, NuPortalDebugDrawPc);
