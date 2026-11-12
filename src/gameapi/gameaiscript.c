@@ -9323,41 +9323,43 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
     NUMTX *matrix;
     i32 index;
 
-    target_position.x = 1000000000.0f;
-    target_position.y = 1000000000.0f;
-    target_position.z = 1000000000.0f;
-    camera_position.x = 1000000000.0f;
-    camera_position.y = 1000000000.0f;
-    camera_position.z = 1000000000.0f;
-    camera_offset.x = 0.0f;
-    camera_offset.y = 0.0f;
-    camera_offset.z = 0.0f;
-    flags = 0;
-    range = 1.0f;
-    rotation_x = 0;
-    rotation_y = 0;
-    rotation_z = 0;
     start_time = 0.0f;
-    blend_in_time = 0.0f;
     end_time = 1000000000.0f;
-    blend_out_time = 0.0f;
+    borders = 1;
+    flags = 0;
     blend_time = 0.0f;
     hold_time = 0.0f;
+    have_camera_position = 0;
     max_time = 0.0f;
-    borders = 1;
     use_current_position = 0;
-    mode = -1;
-    interpolation = -1;
-    spline = NULL;
+    blend_in_time = 0.0f;
+    blend_out_time = 0.0f;
+    target = NULL;
     target_locator = NULL;
+    target_position.x = 1000000000.0f;
     target_character = NULL;
+    target_position.y = 1000000000.0f;
     target_object = NULL;
+    target_position.z = 1000000000.0f;
     camera_locator = NULL;
+    camera_position.x = 1000000000.0f;
+    mode = -1;
+    camera_position.y = 1000000000.0f;
+    interpolation = -1;
+    camera_position.z = 1000000000.0f;
+    rotation_y = 0;
+    rotation_x = 0;
+    rotation_z = 0;
+    camera_offset.x = 0.0f;
+    spline = NULL;
+    camera_offset.y = 0.0f;
+    camera_offset.z = 0.0f;
+    range = 1.0f;
     if (first_time != 0) {
         for (index = 0; index < param_count; ++index) {
             if (NuStrICmp((char *)AICameraLiteral758090, params[index]) == 0) {
-                flags |= 0x100;
                 use_current_position = 1;
+                flags |= 0x100;
             } else if ((value = NuStrIStr(params[index], (char *)AICameraLiteral758160)) != NULL) {
                 flags |= 0x2000;
                 spline = NuSplineFind(WORLD->current_gscn, value + 17);
@@ -9447,7 +9449,6 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
                 interpolation = 3;
             }
         }
-        target = NULL;
         if (target_locator != NULL) {
             locator = AIPathFindLocator(system, target_locator);
             if (locator != NULL)
@@ -9473,7 +9474,6 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIP
         if (target != NULL)
             flags |= 0x80;
 
-        have_camera_position = 0;
         if (use_current_position != 0) {
             matrix = NuCameraGetMtx();
             if (matrix != NULL) {
