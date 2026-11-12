@@ -9688,13 +9688,13 @@ void __cdecl SuitBlowupCodePc(WORLDINFO *world, GAMEOBJECT *object) {
         blowup = world->gizmo_blowups;
         if (blowup == NULL)
             return;
+        count = 0;
         minimum.x = object->collision_position.x - 3.0;
         minimum.y = object->collision_position.y - 3.0;
         minimum.z = object->collision_position.z - 3.0;
         maximum.x = object->collision_position.x + 3.0;
         maximum.y = object->collision_position.y + 3.0;
         maximum.z = object->collision_position.z + 3.0;
-        count = 0;
         for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
             const u32 status = blowup->status_flags;
             u32 draw;
