@@ -3212,12 +3212,13 @@ void PropertyTool::RefreshMenuControls(PropertyMenu *property_menu) {
 }
 
 eduimenu_s *PropertyTool::GetNextDefaultActiveMenu(eduimenu_s *menu) {
-    eduimenu_s *next = NULL;
     if (menu == NULL)
-        next = edLevelActiveMenu;
-    else if (menu == edLevelActiveMenu)
-        next = edLevelPinnedMenu;
-    return next;
+        return edLevelActiveMenu;
+    if (menu == edLevelActiveMenu)
+        return edLevelPinnedMenu;
+    if (menu == edLevelPinnedMenu)
+        return NULL;
+    return NULL;
 }
 
 eduimenu_s *GetMenuActiveChild(eduimenu_s *menu) {
