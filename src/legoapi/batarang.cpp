@@ -1341,61 +1341,55 @@ extern "C" {
 
     i32 __cdecl Batman_MidSpecialMove_ClimbDownPc(AISYS_PC *system, AIPACKET_PC *packet, APIOBJECT_PC *object) {
         GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
-        CLIMB_SLOT_PC *climb = owner->indy_climb;
         INDY_GUIDELINE_PC *guide;
-        AIPATHNODE_PC *node = owner->ai_packet.special_move_node;
         i32 endpoint;
         f32 distance, height;
-        if (climb == NULL || climb->connection != packet->path_info.connection) {
-            ClearSpecialMove(owner);
-            return 0;
-        }
-        if (owner->character_context == 0x43) {
-            guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
-            if (guide != NULL && (f64)distance <= (f64)0.2f &&
-                !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
-                if (guide != owner->indy_guideline_state.guideline) {
-                    owner->indy_guideline_state.endpoint = 1;
-                    owner->indy_guideline_state.guideline = guide;
+        if (owner->indy_climb != NULL && owner->indy_climb->connection == packet->path_info.connection) {
+            if (owner->character_context == 0x43) {
+                guide = GuideLine_FindNearest(&owner->upper_position, WORLD, &endpoint, &distance);
+                if (guide != NULL && distance < 0.2f &&
+                    !(owner->indy_guideline_state.endpoint == -1 && owner->indy_guideline_state.guideline == guide)) {
+                    if (guide != owner->indy_guideline_state.guideline) {
+                        owner->indy_guideline_state.endpoint = 1;
+                        owner->indy_guideline_state.guideline = guide;
+                    }
+                    height = MIN(1.0f, owner->position.y - guide->endpoints[owner->indy_guideline_state.endpoint].y);
+                    height = MAX(0.0f, height);
+                    packet->movement_destination.x =
+                        guide->endpoints[owner->indy_guideline_state.endpoint].x + owner->indy_climb->normal.x * height;
+                    packet->movement_destination.y = guide->endpoints[owner->indy_guideline_state.endpoint].y;
+                    packet->movement_destination.z =
+                        guide->endpoints[owner->indy_guideline_state.endpoint].z + owner->indy_climb->normal.z * height;
+                    owner->ai_packet.movement_stopping_distance = 0.0f;
+                    if (distance < 0.05f) {
+                        if (owner->indy_guideline_state.endpoint == 1)
+                            owner->indy_guideline_state.endpoint = 0;
+                        else if (owner->indy_guideline_state.endpoint == endpoint)
+                            owner->indy_guideline_state.endpoint = -1;
+                    }
+                } else {
+                    packet->movement_destination.x = owner->indy_climb->impact_x + owner->indy_climb->normal.x;
+                    packet->movement_destination.y = owner->position.y;
+                    packet->movement_destination.z = owner->indy_climb->impact_z + owner->indy_climb->normal.z;
+                    packet->movement_stopping_distance = 0.0f;
                 }
-                height = owner->position.y - guide->endpoints[owner->indy_guideline_state.endpoint].y;
-                if (height > 1.0f)
-                    height = 1.0f;
-                if (height < 0.0f)
-                    height = 0.0f;
-                packet->movement_destination.x =
-                    guide->endpoints[owner->indy_guideline_state.endpoint].x + climb->normal.x * height;
-                packet->movement_destination.y = guide->endpoints[owner->indy_guideline_state.endpoint].y;
-                packet->movement_destination.z =
-                    guide->endpoints[owner->indy_guideline_state.endpoint].z + climb->normal.z * height;
-                owner->ai_packet.movement_stopping_distance = 0.0f;
-                if ((f64)distance <= (f64)0.05f) {
-                    if (owner->indy_guideline_state.endpoint == 1)
-                        owner->indy_guideline_state.endpoint = 0;
-                    else if (owner->indy_guideline_state.endpoint == endpoint)
-                        owner->indy_guideline_state.endpoint = -1;
+                return 1;
+            }
+            if (!owner->field_281 || !(owner->position.y < owner->special_move_source_pc->min_height)) {
+                if (owner->field_281) {
+                    owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
+                    owner->ai_packet.movement_stopping_distance = 0.0f;
+                } else {
+                    owner->ai_packet.movement_destination.x = owner->indy_climb->impact_x;
+                    owner->ai_packet.movement_destination.y = owner->ai_packet.special_move_node->position.y;
+                    owner->ai_packet.movement_destination.z = owner->indy_climb->impact_z;
+                    owner->ai_packet.movement_stopping_distance = 0.0f;
                 }
-            } else {
-                packet->movement_destination.x = climb->impact_x + climb->normal.x;
-                packet->movement_destination.y = owner->position.y;
-                packet->movement_destination.z = climb->impact_z + climb->normal.z;
-                packet->movement_stopping_distance = 0.0f;
+                return 1;
             }
-        } else {
-            if (owner->field_281 && owner->special_move_source_pc->min_height > owner->position.y) {
-                ClearSpecialMove(owner);
-                return 0;
-            }
-            if (owner->field_281)
-                owner->ai_packet.movement_destination = node->position;
-            else {
-                owner->ai_packet.movement_destination.x = climb->impact_x;
-                owner->ai_packet.movement_destination.y = node->position.y;
-                owner->ai_packet.movement_destination.z = climb->impact_z;
-            }
-            owner->ai_packet.movement_stopping_distance = 0.0f;
         }
-        return 1;
+        ClearSpecialMove(owner);
+        return 0;
     }
 
     i32 __cdecl Batman_PrepareGrapplePc(AIPACKET_PC *packet, APIOBJECT_PC *object, i32 checks_unused) {
