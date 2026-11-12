@@ -131,17 +131,18 @@ char *__cdecl LevelCharacterName(u8 index) {
     return NULL;
 }
 char *__cdecl SpecialRouteCharacterName(u8 id) {
-    i32 route = 0, skipped = 0;
+    i32 route, skipped = 0;
     if (id != 0xff) {
         if (id < 10)
             return (char *)SuitRecordInitPc[id].suit_character_name;
+        route = 0;
         while (CurrentStoryCList[route + skipped].model_id != -1 && route + skipped < 64) {
-            char *name = apicharsys->char_data[CurrentStoryCList[route + skipped].model_id].name;
-            if (IsSpecialRouteCharacterSkippedPc(name))
+            if (IsSpecialRouteCharacterSkippedPc(
+                    apicharsys->char_data[CurrentStoryCList[route + skipped].model_id].name))
                 ++skipped;
             else {
                 if (route + 10 == id)
-                    return name;
+                    return apicharsys->char_data[CurrentStoryCList[route + skipped].model_id].name;
                 ++route;
             }
         }
