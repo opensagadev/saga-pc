@@ -947,58 +947,62 @@ void __cdecl DebrisProcessTriggers(void) {
     for (key = debris_keystack; key != NULL; key = next) {
         next = key->previous;
         effect = debtab[key->effect_index];
-        if (key->trigger_first != 1 || key->finite == 2)
-            continue;
-        if (key->trigger_second != -1) {
-            switch (debris_object_switches[key->trigger_second]) {
-                case 0:
-                    key->finite = 0;
-                    break;
-                case 1:
-                    key->finite = 1;
-                    break;
-                case 2:
-                    last_switch_change = (last_switch_change + 1) & 31;
-                    switch_changes[last_switch_change][1] = 3;
-                    key->finite = 2;
-                    switch_changes[last_switch_change][0] = key->trigger_second;
-                    break;
-                case 3:
-                    last_switch_change = (last_switch_change + 1) & 31;
-                    switch_changes[last_switch_change][1] = 0;
-                    switch_changes[last_switch_change][0] = key->trigger_second;
-                    break;
-                case 4:
-                    last_switch_change = (last_switch_change + 1) & 31;
-                    switch_changes[last_switch_change][1] = 0;
-                    key->finite = 2;
-                    switch_changes[last_switch_change][0] = key->trigger_second;
-                    break;
-            }
+        switch (key->trigger_first) {
+            case 1:
+                if (key->finite == 2)
+                    continue;
+                if (key->trigger_second != -1) {
+                    switch (debris_object_switches[key->trigger_second]) {
+                        case 0:
+                            key->finite = 0;
+                            break;
+                        case 1:
+                            key->finite = 1;
+                            break;
+                        case 2:
+                            last_switch_change = (last_switch_change + 1) & 31;
+                            switch_changes[last_switch_change][1] = 3;
+                            key->finite = 2;
+                            switch_changes[last_switch_change][0] = key->trigger_second;
+                            break;
+                        case 3:
+                            last_switch_change = (last_switch_change + 1) & 31;
+                            switch_changes[last_switch_change][1] = 0;
+                            switch_changes[last_switch_change][0] = key->trigger_second;
+                            break;
+                        case 4:
+                            last_switch_change = (last_switch_change + 1) & 31;
+                            switch_changes[last_switch_change][1] = 0;
+                            key->finite = 2;
+                            switch_changes[last_switch_change][0] = key->trigger_second;
+                            break;
+                    }
+                }
+                if (key->finite != 2)
+                    continue;
+                DebrisStartOffsetEx(key, 0.0f);
+                key->emission_disabled = 0;
+                shift = key->emission_time - globaltime;
+                key->emission_time -= shift;
+                key->emission_end_time -= shift;
+                key->emission_epoch = globaltime;
+                if (key->process_collision_sound == 0)
+                    continue;
+                volume = 0.0f;
+                key->cutoff_distance = CameraEmitterDistance(&key->position);
+                range = effect->sound_range_override == 0.0f
+                            ? (effect->sound_range == 0.0f ? effect->clip_extent : effect->sound_range)
+                            : effect->sound_range_override;
+                if (range > key->cutoff_distance) {
+                    for (i = 0; i < 4; ++i)
+                        if (effect->sound_data[i * 3] != -1)
+                            SetSfxBit_On(effect->sound_data[i * 3]);
+                    volume = (range - key->cutoff_distance) / range;
+                }
+                if (range > key->cutoff_distance)
+                    DEBRIS_EMISSION_SOUND(key, effect, 1, volume);
+                break;
         }
-        if (key->finite != 2)
-            continue;
-        DebrisStartOffsetEx(key, 0.0f);
-        key->emission_disabled = 0;
-        shift = key->emission_time - globaltime;
-        key->emission_time -= shift;
-        key->emission_end_time -= shift;
-        key->emission_epoch = globaltime;
-        if (key->process_collision_sound == 0)
-            continue;
-        volume = 0.0f;
-        key->cutoff_distance = CameraEmitterDistance(&key->position);
-        range = effect->sound_range_override == 0.0f
-                    ? (effect->sound_range == 0.0f ? effect->clip_extent : effect->sound_range)
-                    : effect->sound_range_override;
-        if (range > key->cutoff_distance) {
-            for (i = 0; i < 4; ++i)
-                if (effect->sound_data[i * 3] != -1)
-                    SetSfxBit_On(effect->sound_data[i * 3]);
-            volume = (range - key->cutoff_distance) / range;
-        }
-        if (range > key->cutoff_distance)
-            DEBRIS_EMISSION_SOUND(key, effect, 1, volume);
     }
     for (i = 0; i <= last_switch_change; ++i)
         debris_object_switches[switch_changes[i][0]] = (u8)switch_changes[i][1];
