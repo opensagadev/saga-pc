@@ -59,29 +59,29 @@ void __cdecl Hint_SetHint(HINT_PC *hint, i32 force, i32 allow_completed) {
     i32 state;
     if (hintsys.active_hint != NULL && hintsys.active_hint == hint)
         return;
-    if (hint == NULL) {
+    if (hint != NULL) {
+        if (force == 0) {
+            if (hint->completed != 0 && allow_completed == 0)
+                return;
+            if (hint->cooldown > 0.0f)
+                return;
+        }
+        hintsys.active_hint = hint;
+        hintsys.display_elapsed = 0.0f;
+        hintsys.alpha = 0.0f;
+        if (force == 0 && (hint->flags & 1) != 0) {
+            hint->completed = 1;
+            Hint_SaveGameState(hint);
+        }
+        do {
+            state = qrand() / 16384;
+        } while (state == hintsys.state);
+        hintsys.state = (u8)state;
+        hintsys.alpha = 0.0f;
+        hint->cooldown = hint->repeat_delay;
+    } else {
         hintsys.active_hint = NULL;
-        return;
     }
-    if (force == 0) {
-        if (hint->completed != 0 && allow_completed == 0)
-            return;
-        if (hint->cooldown > 0.0f)
-            return;
-    }
-    hintsys.active_hint = hint;
-    hintsys.display_elapsed = 0.0f;
-    hintsys.alpha = 0.0f;
-    if (force == 0 && (hint->flags & 1) != 0) {
-        hint->completed = 1;
-        Hint_SaveGameState(hint);
-    }
-    do {
-        state = qrand() / 16384;
-    } while (state == hintsys.state);
-    hintsys.state = (u8)state;
-    hint->cooldown = hint->repeat_delay;
-    hintsys.alpha = 0.0f;
 }
 
 void __cdecl Hint_SetHintFromId(i32 hint_id, i32 force, i32 allow_completed) {
