@@ -285,12 +285,8 @@ void PodRaceSnipersUpdate(void) {
     static i32 player_ix = 0;
     i32 bolttype = (WORLD->current_level == PODSPRINTA_LDATA) ? 0x29 : 0x28;
     BOLTTYPE_PC *type = BoltType_FindByID(bolttype, WORLD);
-    i32 n = PodRace_nsnipers;
-    if (n <= 0)
-        return;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < PodRace_nsnipers; i++) {
         i32 j;
-        SNIPER_s *s = &PodRace_snipers[i];
         i32 in_range = 0;
         for (j = 0; j < 2; ++j) {
             f32 dz;
@@ -300,23 +296,23 @@ void PodRaceSnipersUpdate(void) {
             if (!(target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0)) {
                 continue;
             }
-            dx = target->collision_position.x - s->pos.x;
-            dz = target->collision_position.z - s->pos.z;
+            dx = target->collision_position.x - PodRace_snipers[i].pos.x;
+            dz = target->collision_position.z - PodRace_snipers[i].pos.z;
             dist2 = dx * dx + dz * dz;
-            if (PodRace_sniper_start_fire_radius * PodRace_sniper_start_fire_radius > dist2) {
+            if (dist2 < PodRace_sniper_start_fire_radius * PodRace_sniper_start_fire_radius) {
                 in_range = 1;
                 if (dist2 < PodRace_sniper_fire_radius * PodRace_sniper_fire_radius)
-                    s->state = PodRace_sniper_fire_range_time;
+                    PodRace_snipers[i].state = PodRace_sniper_fire_range_time;
             }
         }
-        s->fire_timer += FRAMETIME;
+        PodRace_snipers[i].fire_timer += FRAMETIME;
         if (in_range) {
-            if (s->fire_timer >= PodRace_sniper_fire_time) {
+            if (PodRace_snipers[i].fire_timer >= PodRace_sniper_fire_time) {
                 NUVEC aim;
                 f32 distance;
                 NUMTX mtx;
-                s->fire_timer = 0.0f;
-                if (s->state > 0.0f) {
+                PodRace_snipers[i].fire_timer = 0.0f;
+                if (PodRace_snipers[i].state > 0.0f) {
                     GAMEOBJECT *target = player2;
                     if (target == NULL) {
                         player_ix = 0;
@@ -325,29 +321,28 @@ void PodRaceSnipersUpdate(void) {
                     }
                     if (player_ix == 0)
                         target = player;
-                    CalculateInterceptVector(&s->prev, &target->collision_position, &target->velocity, type->field_10,
-                                             &aim, NULL);
-                    NuVecAdd(&aim, &aim, &s->prev);
-                    s->state -= FRAMETIME;
-                    if (s->state < 0.0f)
-                        s->state = 0.0f;
+                    CalculateInterceptVector(&PodRace_snipers[i].prev, &target->collision_position, &target->velocity,
+                                             type->field_10, &aim, NULL);
+                    NuVecAdd(&aim, &aim, &PodRace_snipers[i].prev);
+                    PodRace_snipers[i].state -= FRAMETIME;
+                    if (PodRace_snipers[i].state < 0.0f)
+                        PodRace_snipers[i].state = 0.0f;
                 } else {
                     aim.x = 0.0f;
                     aim.y = 0.0f;
                     aim.z = NuRandFloat() * PodRace_sniper_fire_radius;
                     NuVecRotateY(&aim, &aim, NuRandInt());
-                    NuVecAdd(&aim, &aim, &s->pos);
+                    NuVecAdd(&aim, &aim, &PodRace_snipers[i].pos);
                 }
 
-                distance = NuVecDist(&aim, &s->prev, &direction);
+                distance = NuVecDist(&aim, &PodRace_snipers[i].prev, &direction);
                 temp_yrot = NuAtan2D(direction.x, direction.z);
                 temp_zrot = NuAtan2D(-direction.y, distance);
                 // Retail uses an aligned matrix local in its realigned stack frame.
                 NuMtxSetRotationX(&mtx, (u16)temp_zrot);
                 NuMtxRotateY(&mtx, (u16)temp_yrot);
-                Bolt_Add(NULL, &s->prev, &mtx, bolttype, 0);
+                Bolt_Add(NULL, &PodRace_snipers[i].prev, &mtx, bolttype, 0);
             }
-            n = PodRace_nsnipers;
         }
     }
 }
