@@ -4127,14 +4127,14 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
 
         object->character_context = 0x16;
         object->field_7aa = animation;
-        object->context_timer = AnimDuration(object->id, animation, 0.0f, 0.0f, 1);
+        object->context_timer = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
         object->context_variant_flags &= ~0x40;
         SetWeaponOut(object);
         return;
     }
 
-    if (retract_weapon != 0 && (object->id == id_JAWA || object->id == id_UGNAUGHT) &&
-        (object->flags_e20 & 0x10000) != 0 && object->field_e33 == 0 && object->character_context != 6 &&
+    if (retract_weapon != 0 && (object->id == (u16)id_JAWA || object->id == (u16)id_UGNAUGHT) &&
+        (object->field_e22 & 1) != 0 && object->field_e33 == 0 && object->character_context != 6 &&
         object->character_context != 7) {
         if (object->field_281 != 0 && !object->pad->input_magnitude &&
             object->character_model->model_data_b[object->character_data->game_character->weapon_action == 0 &&
