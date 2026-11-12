@@ -4847,9 +4847,11 @@ typedef struct beast_ground_contact_view_pc_s {
 STATIC_ASSERT(offsetof(BEAST_GROUND_CONTACT_VIEW_PC, ground_contact_grace_timer) == 0xd24);
 i32 __cdecl MosEisleyC_PastBarrier(GAMEOBJECT *);
 void __cdecl ForcedBackCode(GAMEOBJECT *object) {
-    f32 distance = 1000000.0f;
+    f32 distance;
     if (ForceBackPosPc != NULL && (object->flags_ef0 & 0x10000000) == 0)
         distance = NuVecDistSqr(&object->collision_position, ForceBackPosPc, NULL);
+    else
+        distance = 1000000.0f;
     if (object->character_context == 0x22) {
         f32 radius;
         if (MosEisleyC_PastBarrier(object))
