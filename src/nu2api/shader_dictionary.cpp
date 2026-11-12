@@ -16,18 +16,21 @@ ShaderCompilerDictionaryPc::ShaderCompilerDictionaryPc(VirtualStackAllocator &pa
     first_version = 8;
     second_version = 2;
     force_mode = false;
-    if (mode == 1) {
-        emit_semantics = 0;
-        emit_registers = 0;
-        emit_centroid = 0;
-        register_format = ": c%d";
-        profile_name = "";
-    } else {
-        emit_semantics = 1;
-        emit_registers = 1;
-        emit_centroid = 1;
-        register_format = ": register(c%d)";
-        profile_name = "_centroid";
+    switch (mode) {
+        case 1:
+            emit_semantics = 0;
+            emit_registers = 0;
+            emit_centroid = 0;
+            register_format = ": c%d";
+            profile_name = "";
+            break;
+        default:
+            emit_semantics = 1;
+            emit_registers = 1;
+            emit_centroid = 1;
+            register_format = ": register(c%d)";
+            profile_name = "_centroid";
+            break;
     }
 }
 ShaderCompilerDictionaryPc::~ShaderCompilerDictionaryPc() {
