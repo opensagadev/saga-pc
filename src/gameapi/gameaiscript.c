@@ -2521,22 +2521,23 @@ f32 __cdecl Condition_InMiniCutPc(AISYS_PC *system, AISCRIPTPROCESS_PC *process,
 
 f32 __cdecl Condition_MaulShouldRunAway(AISYS_PC *system, AISCRIPTPROCESS_PC *process, AIPACKET_PC *packet, char *name,
                                         void *argument) {
-    f32 dx;
-    f32 dz;
+    NUVEC delta;
     NUANG owner_angle;
+    NUANG angle;
     GAMEOBJECT *player;
     i32 i;
     if (packet->owner != NULL) {
-        dx = (f32)((f64)packet->owner->collision_position.x - 5.5);
-        dz = (f32)((f64)packet->owner->collision_position.z - (f64)3.65f);
-        owner_angle = NuAtan2D(dx, dz);
+        delta.x = (f32)((f64)packet->owner->collision_position.x - 5.5);
+        delta.z = (f32)((f64)packet->owner->collision_position.z - (f64)3.65f);
+        owner_angle = NuAtan2D(delta.x, delta.z);
         for (i = 0; i < 2; i++) {
             player = Player[i];
-            if (player != NULL && (player->flags_1fc_word & 0x1001) == 0x1001) {
-                dx = (f32)((f64)player->collision_position.x - 5.5);
-                dz = (f32)((f64)player->collision_position.z - (f64)3.65f);
-                if ((f64)dx * dx + (f64)dz * dz < 25.0) {
-                    if (NuAngSub(NuAtan2D(dx, dz), owner_angle) < 0xe38)
+            if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0) {
+                delta.x = (f32)((f64)player->collision_position.x - 5.5);
+                delta.z = (f32)((f64)player->collision_position.z - (f64)3.65f);
+                if ((f64)delta.x * delta.x + (f64)delta.z * delta.z < 25.0) {
+                    angle = NuAtan2D(delta.x, delta.z);
+                    if (NuAngSub(angle, owner_angle) < 0xe38)
                         return 1.0f;
                 }
             }
