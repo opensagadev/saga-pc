@@ -1108,21 +1108,22 @@ void NetworkObjectManager::ReceiveReplicaMessage(NETMESSAGE_PC &message, const V
     EdClass *object_class = theRegistry.GetClass(class_id);
     NetworkObject *object = &objects[guid];
     object->flags = flags | 8;
-    NetReplicator *replicator = replicators[class_id].head;
-    while (replicator != NULL && replicator->id != replicator_id) {
+    NetReplicator *replicator;
+    for (replicator = replicators[class_id].head; replicator != NULL; replicator = replicator->next) {
+        if (replicator_id == replicator->id)
+            break;
         offset += replicator->data_size;
-        replicator = replicator->next;
     }
     if (object->object != NULL && object->object_class == object_class) {
-        if (flags & 2)
+        if (object->flags & 2)
             replicator->replication_group |= 8;
         ReplicatorData data;
-        data.start = (u8 *)object->replicator_data + offset;
-        data.cursor = data.start;
+        data.start = data.cursor = (u8 *)object->replicator_data + offset;
         data.end = data.start + replicator->data_size;
-        replicator->AllowPush(object_class, object->object, data, 1, 0);
+        replicator->AllowPush(object->object_class, object->object, data, 1, 0);
         stream.SetMessage(&message);
-        replicator->SerialiseObject(stream, (V2Peer *)&peer, object_class, object->object, data, (i16 *)&object->flags);
+        replicator->SerialiseObject(stream, (V2Peer *)&peer, object->object_class, object->object, data,
+                                    (i16 *)&object->flags);
     } else if (message.data != NULL) {
         message.read_offset += replicator->message_size;
     }
