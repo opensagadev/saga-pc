@@ -4180,14 +4180,14 @@ extern "C" {
         NuShaderMtlDescInit(reinterpret_cast<PC_MATERIAL_CREATE_SHADER *>(&mtl->shader));
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_id = mtl->texture_id;
-            if (mtl->shader.texture_unit_count == 0)
+            if (mtl->shader.texture_unit_count <= 0)
                 mtl->shader.texture_unit_count = 1;
-            if ((mtl->shader.vertex_format & 0x3800) == 0)
+            if ((mtl->shader.vertex_format & 0x3800) <= 0)
                 mtl->shader.vertex_format = (mtl->shader.vertex_format & 0xffffcfff) | 0x800;
         } else {
-            u32 colour = (static_cast<i32>(mtl->diffuse.z * 255.0) & 0xff) | 0xffffff00;
-            colour = (colour << 8) | (static_cast<i32>(mtl->diffuse.y * 255.0) & 0xff);
-            colour = (colour << 8) | (static_cast<i32>(mtl->diffuse.x * 255.0) & 0xff);
+            u32 colour = static_cast<u8>(mtl->diffuse.z * 255.0) | 0xffffff00;
+            colour = (colour << 8) | static_cast<u8>(mtl->diffuse.y * 255.0);
+            colour = (colour << 8) | static_cast<u8>(mtl->diffuse.x * 255.0);
             mtl->shader.packed_diffuse_colour = colour;
         }
         if (is_3d == 0)
@@ -4201,9 +4201,9 @@ extern "C" {
         PCFrameCriticalSectionEnter_candidate();
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_id = mtl->texture_id;
-            if (mtl->shader.texture_unit_count == 0)
+            if (mtl->shader.texture_unit_count <= 0)
                 mtl->shader.texture_unit_count = 1;
-            if ((mtl->shader.vertex_format & 0x3800) == 0)
+            if ((mtl->shader.vertex_format & 0x3800) <= 0)
                 mtl->shader.vertex_format = (mtl->shader.vertex_format & 0xffffcfff) | 0x800;
         }
         if ((mtl->attribs & 0x800000) != 0 && mtl->display == NULL)
@@ -4229,11 +4229,11 @@ extern "C" {
         }
         mtl->vertex_declaration = NuGetVertexDeclaration(mtl->shader.vertex_format);
         if (mtl->texture_id == 0) {
-            u32 colour = (static_cast<i32>(mtl->diffuse.z * 255.0) & 0xff) | 0xffffff00;
+            u32 colour = static_cast<u8>(mtl->diffuse.z * 255.0) | 0xffffff00;
             colour <<= 8;
-            colour |= static_cast<i32>(mtl->diffuse.y * 255.0) & 0xff;
+            colour |= static_cast<u8>(mtl->diffuse.y * 255.0);
             colour <<= 8;
-            colour |= static_cast<i32>(mtl->diffuse.x * 255.0) & 0xff;
+            colour |= static_cast<u8>(mtl->diffuse.x * 255.0);
             mtl->shader.packed_diffuse_colour = colour;
         }
         PCFrameCriticalSectionLeave_candidate();
