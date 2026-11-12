@@ -4851,8 +4851,8 @@ void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payl
     manager->used_bytes -= (block->size_flags & 0x7fffffffU) + 16;
     if (sentinel->next != NULL)
         sentinel->next->previous = block;
-    block->previous = sentinel;
     block->next = sentinel->next;
+    block->previous = sentinel;
     sentinel->next = block;
     next = (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + (block->size_flags & 0x7fffffffU) + 16);
     if (!(next->size_flags & 0x80000000U)) {
