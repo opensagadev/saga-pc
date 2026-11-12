@@ -1156,7 +1156,6 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     f32 speed;
     i32 forwards;
     f32 longitudinal;
-    f32 radius;
     f32 amount;
     i32 ahead;
     f32 factor;
@@ -1259,7 +1258,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                                   object->character_data->game_character->turn_rate) *
                                      ratio;
                 if (object->in_narrow_socket) {
-                    rate *= object->field_dc8 * -0.25 + 1.0;
+                    rate *= (object->field_dc8 * -0.25) + 1.0;
                     if (turn_multiplier != 0.0f && !((object->flags_1fc & 0x80) != 0 &&
                                                      (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA)))
                         rate *= turn_multiplier;
@@ -1268,7 +1267,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                     TurnRot(object->movement_facing_angle, input_yaw, (i32)(rate * 65536.0f), NULL);
                 if (object->in_narrow_socket) {
                     delta = RotDiff(narrow_yaw, object->movement_facing_angle);
-                    degrees = (i32)(60.0f - 30.0f * object->field_dc8);
+                    degrees = (i32)((object->field_dc8 * -30.0f) + 60.0f);
                     if (degrees < 0)
                         degrees = 0;
                     if ((object->flags_1fc & 0x80) != 0 && (PODSPRINT_ADATA != NULL && WORLD->area == PODSPRINT_ADATA))
@@ -1344,7 +1343,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                     object->field_ddc = 0.1f;
                 }
             }
-            if (0 != ((CInfo[object->character_context].flags & 1)) &&
+            if ((U64_PAIR(&CInfo[object->character_context].flags) & 1) != 0 &&
                 (object->id == (u16)id_STAP || object->id == (u16)id_STAP2))
                 object->field_0x276 = object->movement_facing_angle = object->facing_angle;
             else
@@ -1375,9 +1374,9 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                 water_mul = 1.0f;
             } else if (object->character_context == 0x2a) {
                 half = 0.5f * object->context_duration;
-                object->field_dc8 = object->context_timer < half
-                                        ? -(1.0f - object->context_timer / half)
-                                        : 1.0f - (object->context_duration - object->context_timer) / half;
+                object->field_dc8 = object->context_timer >= half
+                                        ? 1.0f - (object->context_duration - object->context_timer) / half
+                                        : -(1.0f - object->context_timer / half);
                 water_mul = 1.0f;
             } else {
                 water_mul = 1.0f;
@@ -1422,7 +1421,7 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                             else if (water_mul > 0.5f)
                                 water_mul = VEHICLE_WATER_SPEED_MUL;
                             else
-                                water_mul = 1.0f - (water_mul + water_mul) * (1.0f - VEHICLE_WATER_SPEED_MUL);
+                                water_mul = 1.0f - water_mul * 2.0f * (1.0f - VEHICLE_WATER_SPEED_MUL);
                         }
                         if (object->run_speed_override != 1.0e9f)
                             desired = GetVehicleSpeedMul(object, object->run_speed_override);
@@ -1480,14 +1479,17 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
 
                 if (other != NULL && other->in_narrow_socket &&
                     (forwards = GoingForwardsAlongNarrowSock(object)) == GoingForwardsAlongNarrowSock(other)) {
+                    f32 distance;
+                    f32 inner;
+                    f32 outer;
                     NuVecRotateY(&direction, &v001, object->sock_heading);
                     NuVecSub(&separation, &other->position, &object->position);
                     longitudinal = separation.x * direction.x + separation.z * direction.z;
-                    radius = object->bounds_radius + other->bounds_radius;
-                    if (fabs(longitudinal) > radius * 2.0f) {
-                        amount = fabs(longitudinal) > radius * 5.0f + 0.1f
-                                     ? 1.0f
-                                     : (fabs(longitudinal) - radius * 2.0f) / (radius * 5.0f + 0.1f - radius * 2.0f);
+                    distance = MovePlayerFabs(longitudinal);
+                    inner = (object->bounds_radius + other->bounds_radius) * 2.0f;
+                    if (distance > inner) {
+                        outer = (object->bounds_radius + other->bounds_radius) * 5.0f + 0.1f;
+                        amount = distance > outer ? 1.0f : (distance - inner) / (outer - inner);
                         ahead = forwards ? longitudinal > 0.0f : longitudinal < 0.0f;
                         factor = other->dead ? 1.0f : 0.75f;
                         if (!ahead)
@@ -1549,33 +1551,32 @@ void __cdecl MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
         if (special_lean != 0)
             object->movement_lean_angle = SeekRot(object->movement_lean_angle, special_lean, 3.0f);
         else if ((object->character_data->game_character->flags_090 & 1) != 0) {
-            angular_speed = 0;
-            if (object->character_context != 0x2a && object->character_context != 0x36 &&
-                object->character_context != 0x3a) {
-                angular_speed = (i32)(RotDiff(object->previous_movement_angle, object->field_0x276) / FRAMETIME);
-            }
+            i32 lean;
             rate = 8.0f;
+            if (object->character_context != 0x2a && object->character_context != 0x36 &&
+                object->character_context != 0x3a)
+                angular_speed = (i32)(RotDiff(object->previous_movement_angle, object->field_0x276) / FRAMETIME);
+            else
+                angular_speed = 0;
             if ((object->character_data->game_character->flags_090 & 0x10000) != 0) {
-                angular_speed /= 4;
                 rate = 4.0f;
-            } else if (turn_multiplier != 0.0f)
-                angular_speed = (i32)(angular_speed * (1.0f / turn_multiplier));
-            if (angular_speed > 65536)
-                angular_speed = 8192;
-            else if (angular_speed < -65536)
-                angular_speed = -8192;
-            else {
                 angular_speed /= 4;
-                if (angular_speed > 8192)
-                    angular_speed = 8192;
-                else if (angular_speed < -8192)
-                    angular_speed = -8192;
-            }
-            object->movement_lean_angle = SeekRot(object->movement_lean_angle, angular_speed, rate);
+            } else if (turn_multiplier != 0.0f)
+                angular_speed = (i32)((1.0f / turn_multiplier) * angular_speed);
+            if (angular_speed < -0x10000)
+                angular_speed = -0x10000;
+            else if (angular_speed > 0x10000)
+                angular_speed = 0x10000;
+            lean = angular_speed / 4;
+            if (lean < -0x2000)
+                lean = -0x2000;
+            else if (lean > 0x2000)
+                lean = 0x2000;
+            object->movement_lean_angle = SeekRot(object->movement_lean_angle, lean, rate);
         } else
             object->movement_lean_angle = SeekRot(object->movement_lean_angle, 0, 10.0f);
         if (object->id == (u16)id_WOOKIEFLYER) {
-            target = object->character_context == 0x17 ? 0 : (i32)(-2730.0f * object->field_dc8);
+            target = object->character_context == 0x17 ? 0 : (i32)(object->field_dc8 * -2730.0f);
             object->secondary_lean_angle = SeekRot(object->secondary_lean_angle, target, 5.0f);
         }
     }
@@ -9881,7 +9882,7 @@ void __cdecl TakeHitCode(GAMEOBJECT *object) {
                 if (!(object->reset_velocity.y < 0.0f && object->field_281 != 0)) {
                     if (object->contact_count == 0)
                         return;
-                    if (!(object->terrain_impact_speed > timer / object->context_duration * (f64)-0.8f + (f64)0.8f))
+                    if (!(object->terrain_impact_speed > (timer / object->context_duration * -0.8f) + 0.8f))
                         return;
                 }
             }
