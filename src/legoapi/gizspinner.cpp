@@ -815,10 +815,10 @@ extern "C" void __cdecl GizSpinner_ClearProgress(void *owner, void *progress_ptr
 static __declspec(noinline) void SpinnerResetEntryPc(GIZSPINNER_s *spinner, SpinnerProgressEntryPc *progress) {
     if (progress != NULL && (progress->flags & 1) != 0) {
         spinner->rotation = progress->rotation;
-        if (progress->position != 1.0f)
-            GameAnimSet_JumpToAnimPos(spinner->anim_set, progress->position);
-        else
+        if (progress->position == 1.0f)
             GameAnimSet_JumpToEnd(spinner->anim_set);
+        else
+            GameAnimSet_JumpToAnimPos(spinner->anim_set, progress->position);
         if ((progress->flags & 4) != 0)
             spinner->flags &= ~2u;
         else
