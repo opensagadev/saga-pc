@@ -600,6 +600,12 @@ void __cdecl GizObstacles_PostLoad(void *world, void *data) {
     }
 }
 
+static void __cdecl GizObstacle_EvalAveragePosAndRadius(GIZOBSTACLE *obstacle, i32 state) {
+    obstacle->evaluated_position = obstacle->position;
+    obstacle->evaluated_radius = 1.0f;
+    GameAnimSet_GetCentreAndRadius(obstacle->anim_set, &obstacle->evaluated_position, &obstacle->evaluated_radius,
+                                   state, 1, 1);
+}
 static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle) {
     GAMEANIMSET *set;
     GAMEANIMOBJ *object;
@@ -624,10 +630,7 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
     if (obstacle->config_flags & 2)
         GameAnimSet_GetAveragePos(obstacle->anim_set, &obstacle->secondary_position, 0, 1, 1);
     GameAnimSet_EvaluateState(obstacle->anim_set);
-    obstacle->evaluated_radius = 1.f;
-    obstacle->evaluated_position = obstacle->position;
-    GameAnimSet_GetCentreAndRadius(obstacle->anim_set, &obstacle->evaluated_position, &obstacle->evaluated_radius, 2, 1,
-                                   1);
+    GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
 }
 void __cdecl GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
@@ -672,12 +675,6 @@ void __cdecl GizmoBlowUpTypeBlowUp(WORLDINFO *, i32, NUVEC *);
 void __cdecl GizObstacle_Stop(GIZOBSTACLE *obstacle) {
     if (obstacle)
         GameAnimSet_Stop(obstacle->anim_set);
-}
-static void __cdecl GizObstacle_EvalAveragePosAndRadius(GIZOBSTACLE *obstacle, i32 state) {
-    obstacle->evaluated_radius = 1.0f;
-    obstacle->evaluated_position = obstacle->position;
-    GameAnimSet_GetCentreAndRadius(obstacle->anim_set, &obstacle->evaluated_position, &obstacle->evaluated_radius,
-                                   state, 1, 1);
 }
 static i32 __cdecl GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *position) {
     NUVEC local;
