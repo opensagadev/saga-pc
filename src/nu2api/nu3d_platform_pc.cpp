@@ -2280,7 +2280,7 @@ extern "C" {
     }
 
     /* Nonzero when any texel of the 8-bit column at (x, y) differs from the key value. */
-    i32 __cdecl NuQFntColumnDiffers8Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count, i32 value) {
+    static i32 __cdecl NuQFntColumnDiffers8Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count, i32 value) {
         i32 width = bitmap->width;
         u8 *texel = bitmap->data + width * y + x;
         i32 i;
@@ -2294,11 +2294,11 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl NuQFntColumnOpaque32Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
+    static i32 __cdecl NuQFntColumnOpaque32Pc(NUTEXBMP_PC *bitmap, i32 x, i32 y, i32 count) {
         return NuQFntColumnOpaque32Inline(bitmap, x, y, count);
     }
 
-    i32 __cdecl NuQFntFindGlyphStart8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+    static i32 __cdecl NuQFntFindGlyphStart8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
         do {
             do {
                 if (NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
@@ -2312,7 +2312,7 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl NuQFntFindGlyphEnd8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
+    static i32 __cdecl NuQFntFindGlyphEnd8Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y, i32 value) {
         do {
             do {
                 if (!NuQFntColumnDiffers8Pc(bitmap, *x, *y, count, value)) {
@@ -2326,10 +2326,10 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl NuQFntFindGlyphStart32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+    static i32 __cdecl NuQFntFindGlyphStart32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
         do {
             do {
-                if (NuQFntColumnOpaque32Inline(bitmap, *x, *y, count)) {
+                if (NuQFntColumnOpaque32Pc(bitmap, *x, *y, count)) {
                     return 1;
                 }
                 (*x)++;
@@ -2340,10 +2340,10 @@ extern "C" {
         return 0;
     }
 
-    i32 __cdecl NuQFntFindGlyphEnd32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
+    static i32 __cdecl NuQFntFindGlyphEnd32Pc(NUTEXBMP_PC *bitmap, i32 count, i32 *x, i32 *y) {
         do {
             do {
-                if (!NuQFntColumnOpaque32Inline(bitmap, *x, *y, count)) {
+                if (!NuQFntColumnOpaque32Pc(bitmap, *x, *y, count)) {
                     return 1;
                 }
                 (*x)++;
@@ -3227,12 +3227,15 @@ extern "C" {
     }
 
     static void __cdecl NuRndrResetStreamBufferPc(void) {
-        if (RndrStreamIndexPc == 0) {
-            nudlist_stream_cursor = RndrStreamFirstPc;
-            nuprim_field_ba8 = RndrStreamFirstPc.addr + RndrStreamSizePc;
-        } else if (RndrStreamIndexPc == 1) {
-            nudlist_stream_cursor = RndrStreamSecondPc;
-            nuprim_field_ba8 = RndrStreamSecondPc.addr + RndrStreamSizePc;
+        switch (RndrStreamIndexPc) {
+            case 0:
+                nudlist_stream_cursor = RndrStreamFirstPc;
+                nuprim_field_ba8 = RndrStreamFirstPc.addr + RndrStreamSizePc;
+                break;
+            case 1:
+                nudlist_stream_cursor = RndrStreamSecondPc;
+                nuprim_field_ba8 = RndrStreamSecondPc.addr + RndrStreamSizePc;
+                break;
         }
         if (nudlist_stream_cursor.addr & 15)
             nudlist_stream_cursor.addr = (nudlist_stream_cursor.addr + 15) & ~15u;
@@ -3241,10 +3244,14 @@ extern "C" {
     }
 
     void __cdecl NuRndrSwapStreamBuffers(void) {
-        if (RndrStreamIndexPc == 0)
-            RndrStreamUsedPc = nudlist_stream_cursor.addr - RndrStreamFirstPc.addr;
-        else if (RndrStreamIndexPc == 1)
-            RndrStreamUsedPc = nudlist_stream_cursor.addr - RndrStreamSecondPc.addr;
+        switch (RndrStreamIndexPc) {
+            case 0:
+                RndrStreamUsedPc = nudlist_stream_cursor.addr - RndrStreamFirstPc.addr;
+                break;
+            case 1:
+                RndrStreamUsedPc = nudlist_stream_cursor.addr - RndrStreamSecondPc.addr;
+                break;
+        }
         if (RndrStreamUsedPc > RndrStreamMaxUsedPc)
             RndrStreamMaxUsedPc = RndrStreamUsedPc;
         if (RndrStreamUsedPc > (u32)RndrStreamSizePc) {
