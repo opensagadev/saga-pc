@@ -4459,13 +4459,13 @@ EdInputStream::EdInputStream(MemoryBuffer *buffer, MemoryBuffer *secondary) : Ed
 
 /* Keeps the list ordered by PropertyMenu::order. */
 void PropertyMenuList::InsertSorted(PropertyMenu *menu) {
-    for (PropertyMenu *position = first; position != NULL; position = position->next) {
-        if (menu->order < position->order) {
-            InsertBefore(menu, position);
-            return;
-        }
-    }
-    InsertAfter(menu, NULL);
+    PropertyMenu *position = first;
+    while (position != NULL && menu->order >= position->order)
+        position = position->next;
+    if (position != NULL)
+        InsertBefore(menu, position);
+    else
+        InsertAfter(menu, NULL);
 }
 
 Placeable::~Placeable() {
@@ -9109,15 +9109,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
         menu->order = order++;
     for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
         ClassObject &object = *reinterpret_cast<ClassObject *>(&entry->ed_class);
-        for (menu = menus.first; menu != NULL; menu = menu->next) {
-            i32 i;
-            for (i = 0; i < menu->object_count; i++) {
-                if (menu->objects[i].object == entry->object)
-                    break;
-            }
-            if (i < menu->object_count)
-                break;
-        }
+        menu = FindItemMenu(menus.first, entry);
         if (menu != NULL) {
             menu->object_count = 0;
             menu->objects[menu->object_count++] = object;
@@ -9137,17 +9129,17 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
                     menu_startmetrics.height = other_menu->height;
                 }
                 menu = CreatePropertyMenu(object);
-                menu->menu->x = menu_startmetrics.x;
-                menu->menu->y = menu_startmetrics.y;
-                menu->menu->width = menu_startmetrics.width;
-                menu->menu->height = menu_startmetrics.height;
+                eduimenu_s *new_menu = menu->menu;
+                new_menu->x = menu_startmetrics.x;
+                new_menu->y = menu_startmetrics.y;
+                new_menu->width = menu_startmetrics.width;
+                new_menu->height = menu_startmetrics.height;
                 menu->order = -1;
                 list.InsertSorted(menu);
             }
         }
     }
-    while (menus.first != NULL) {
-        menu = menus.first;
+    while ((menu = menus.first) != NULL) {
         menus.Remove(menu);
         delete menu;
     }
