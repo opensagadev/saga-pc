@@ -1505,6 +1505,11 @@
    "unit": "src/nu2api/shader_parser.cpp",
    "symbol": "??0?$_String_val@DV?$allocator@D@std@@@std@@QAE@ABV01@@Z",
    "kind": "function"
+  },
+  {
+   "unit": "src/gameapi/edfile.c",
+   "symbol": "_FS_PrevNameLen",
+   "kind": "function"
   }
  ]
 }
