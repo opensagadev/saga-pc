@@ -187,7 +187,7 @@ static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 xs,
     RAD_DEVICE_METHODS(device)->draw_primitive_up(device, 2, 6, vertices, 32);
 }
 static void RadFmvSetDrawStatePc(RADFMV_IMAGE_PC *image, f32 alpha) {
-    if (alpha >= 1.0 && image->alpha == 0) {
+    if (alpha >= 0.9999 && image->alpha == 0) {
         image->device->methods->set_render_state(image->device, 27, 0);
         image->device->methods->set_texture_stage_state(image->device, 0, 4, 2);
         image->device->methods->set_texture_stage_state(image->device, 0, 2, 2);
