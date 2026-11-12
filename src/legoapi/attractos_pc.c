@@ -33,7 +33,19 @@ typedef struct attracto_shard_reader_pc_s {
     u16 angle_x;
     u16 angle_z;
     u16 spin;
-    u8 flags;
+    union {
+        u8 flags;
+        struct {
+            u8 active : 1;
+            u8 visible : 1;
+            u8 collecting : 1;
+            u8 collected : 1;
+            u8 drawn : 1;
+            u8 random_offset : 1;
+            u8 tumble_x : 1;
+            u8 reserved_state : 1;
+        };
+    };
     u8 unknown_3d[3];
     f32 collection_time;
     GAMEOBJECT *collector;
@@ -273,69 +285,82 @@ i32 __cdecl Attractos_Load(WORLDINFO *world, void *unused) {
     ATTRACTO_RECORD_PC *attracto;
     i32 version, index;
     char legacy_name[16];
-    if (world->attracto_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->attracto_count = EdFileReadInt();
-    attracto = (ATTRACTO_RECORD_PC *)world->attractos;
-    for (index = 0; index < world->attracto_count; ++index, ++attracto) {
-        u8 capacity;
-        EdFileRead(attracto->name, 16);
-        EdFileReadNuVec(&attracto->position);
-        attracto->angle = EdFileReadShort();
-        capacity = EdFileReadUnsignedChar();
-        attracto->capacity = capacity != 0 ? capacity : 1;
-        if (version == 2) {
-            i32 length = (i8)EdFileReadChar();
-            EdFileRead(legacy_name, length);
+    if (world->attracto_count == 0) {
+        version = EdFileReadInt();
+        world->attracto_count = EdFileReadInt();
+        attracto = (ATTRACTO_RECORD_PC *)world->attractos;
+        for (index = 0; index < world->attracto_count; ++index, ++attracto) {
+            EdFileRead(attracto->name, 16);
+            EdFileReadNuVec(&attracto->position);
+            attracto->angle = EdFileReadShort();
+            attracto->capacity = EdFileReadUnsignedChar();
+            if (attracto->capacity < 1)
+                attracto->capacity = 1;
+            else if (attracto->capacity >= 255)
+                attracto->capacity = 255;
+            if (version == 2) {
+                i32 length = (i8)EdFileReadChar();
+                EdFileRead(legacy_name, length);
+            }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
+/* NuFabs: the masked bits of a float temporary copied into another float. */
+#define ATTRACTO_FABS(destination, expression)                                                                         \
+    (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
+
 static ATTRACTO_SHARD_READER_PC *AttractoSelectShardPc(WORLDINFO *world, GAMEOBJECT *object) {
-    ATTRACTO_SHARD_READER_PC *shard = (ATTRACTO_SHARD_READER_PC *)world->shards;
-    ATTRACTO_SHARD_READER_PC *nearest = NULL;
-    f32 best = 64.0f;
+    ATTRACTO_SHARD_READER_PC *shard;
+    ATTRACTO_SHARD_READER_PC *nearest;
+    ATTRACTO_SHARD_READER_PC *result;
+    NUVEC delta, origin, target, ray;
+    f32 best;
     i32 index;
+
+    shard = (ATTRACTO_SHARD_READER_PC *)world->shards;
     if (shard == NULL)
         return NULL;
+    best = 64.0f;
+    nearest = NULL;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
-        NUVEC delta;
-        f32 difference, distance;
-        if ((shard->flags & 0x1f) != 0x13)
-            continue;
-        difference = (f64)shard->screen_position.x - (f64)object->external_force.x;
-        if (!(fabsf(difference) < (f64)0.2f))
-            continue;
-        difference = (f64)shard->screen_position.y - (f64)object->external_force.y;
-        if (!(fabsf(difference) < (f64)0.2f))
-            continue;
-        distance = NuVecDistSqr(&shard->position, &object->collision_position, &delta);
-        if (distance < best) {
-            best = distance;
-            nearest = shard;
+        if (shard->active && shard->visible && shard->drawn && !shard->collecting && !shard->collected) {
+            f32 temporary, dx, dy, distance;
+            ATTRACTO_FABS(dx, shard->screen_position.x - object->external_force.x);
+            if (dx < (f64)0.2f) {
+                ATTRACTO_FABS(dy, shard->screen_position.y - object->external_force.y);
+                if (dy < (f64)0.2f) {
+                    distance = NuVecDistSqr(&shard->position, &object->collision_position, &delta);
+                    if (distance < best) {
+                        best = distance;
+                        nearest = shard;
+                    }
+                }
+            }
         }
     }
+    result = nearest;
     if (nearest != NULL) {
-        NUVEC origin, target, delta;
         origin.x = object->collision_position.x;
         origin.y = ((f64)object->upper_position.y + (f64)object->collision_position.y) * 0.5;
         origin.z = object->collision_position.z;
-        target.x = 0.0f;
         target.z = 0.0f;
+        target.x = 0.0f;
         target.y = 0.05f;
         if (nearest->angle_z != 0)
             NuVecRotateZ(&target, &target, nearest->angle_z);
         if (nearest->angle_x != 0)
             NuVecRotateX(&target, &target, nearest->angle_x);
         NuVecAdd(&target, &target, &nearest->position);
-        NuVecSub(&delta, &target, &origin);
-        if (NewRayCastScaleYMask(&origin, &delta, 0.0f, 1.0f, 0, 0x1f) != 0)
-            return NULL;
+        NuVecSub(&ray, &target, &origin);
+        if (NewRayCastScaleYMask(&origin, &ray, 0.0f, 1.0f, 0, 0x1f) != 0)
+            result = NULL;
     }
-    return nearest;
+    return result;
 }
+
 static void AttractoStartSuctionPc(GAMEOBJECT *object) {
     object->character_context = 0x52;
     object->context_timer = 0.0f;
