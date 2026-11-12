@@ -2,7 +2,7 @@
 #include <string.h>
 #include "saga.h"
 #pragma bss_seg(".bss$edpart_instance_menu")
-static struct eduimenu_s *edpart_instance_menu = 0;
+struct eduimenu_s *edpart_instance_menu = 0;
 #pragma bss_seg(".bss$edpart_nullobject_highlight")
 static struct eduiitem_s *edpart_nullobject_highlight = 0;
 typedef struct part_runtime_type_pc_s {
