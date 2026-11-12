@@ -7807,7 +7807,7 @@ i32 __cdecl Action_GoToLevelPath(AISYS_PC *system, AISCRIPTPROCESS_PC *processor
         node = (AIPATHNODE_PC *)processor->action_data_3;
         if (node != NULL) {
             distance_squared = NuVecXZDistSqr(&packet->owner->position, &node->position, &difference);
-            if (node->radius_squared > distance_squared) {
+            if (distance_squared < node->radius_squared) {
                 memset(&packet->path_info, 0, sizeof(packet->path_info));
                 AISysCharacterSetPath(packet, system->path_sys->active_path);
                 if ((node->runtime_flags & 1) != 0) {
