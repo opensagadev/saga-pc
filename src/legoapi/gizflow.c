@@ -69,15 +69,14 @@ i32 __cdecl CheckOutputGizmoFlowBox(GIZFLOW_PC *system, FLOWBOX_PC *box, u8 outp
 
 static i32 LoopCountLoopingInputsEx(FLOWBOX_PC *loop, FLOWBOX_PC *box, i32 count, u8 checksum) {
     i32 i;
-    if (loop == box) {
+    if (box == loop) {
         --box->loop_checksum;
         return count + 1;
     }
     for (i = 0; i < box->child_count; ++i) {
-        FLOWBOX_PC *child = box->children[i];
-        if (child->loop_checksum != checksum) {
-            child->loop_checksum = checksum;
-            count = LoopCountLoopingInputsEx(loop, child, count, checksum);
+        if (box->children[i]->loop_checksum != checksum) {
+            box->children[i]->loop_checksum = checksum;
+            count = LoopCountLoopingInputsEx(loop, box->children[i], count, checksum);
         }
     }
     return count;
