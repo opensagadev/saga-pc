@@ -255,7 +255,7 @@ extern "C" void __cdecl HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object
 
 struct HATMACHINE_PROGRESS_PC {
     i32 preserved_state;
-    u32 enabled_mask, visible_mask;
+    u32 enabled_mask[1], visible_mask[1];
 };
 STATIC_ASSERT(sizeof(HATMACHINE_PROGRESS_PC) == 12);
 STATIC_ASSERT(offsetof(HATMACHINE_PROGRESS_PC, enabled_mask) == 4);
@@ -295,10 +295,10 @@ extern "C" {
     }
     static i32 HatMachine_Load(void *world_ptr, void *) {
         WORLDINFO *world = (WORLDINFO *)world_ptr;
-        if (world == NULL)
+        if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL)
             return 0;
         HATMACHINE_SYS_PC *system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
-        if (system == NULL || system->count != 0)
+        if (system->count != 0)
             return 0;
         const i32 version = EdFileReadInt();
         system->count = EdFileReadInt();
@@ -347,8 +347,8 @@ extern "C" {
     static void HatMachines_ClearProgress(void *, void *progress_ptr) {
         HATMACHINE_PROGRESS_PC *progress = (HATMACHINE_PROGRESS_PC *)progress_ptr;
         if (progress != NULL) {
-            progress->enabled_mask = ~0u;
-            progress->visible_mask = ~0u;
+            progress->enabled_mask[0] = ~0u;
+            progress->visible_mask[0] = ~0u;
         }
     }
     static void *HatMachines_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -371,28 +371,28 @@ extern "C" {
         if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL)
             return;
         for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count; ++index) {
-            HATMACHINE_PC *machine = &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index];
-            if (NuStrLen(machine->name) != 0)
-                AddGizmo(gizmo_sys, type_id, NULL, machine);
+            if (NuStrLen(((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index].name) != 0)
+                AddGizmo(gizmo_sys, type_id, NULL, &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index]);
         }
     }
     static void HatMachines_StoreProgress(void *world_ptr, void *, void *progress_ptr) {
         HATMACHINE_PROGRESS_PC *progress = (HATMACHINE_PROGRESS_PC *)progress_ptr;
         if (progress == NULL)
             return;
-        progress->enabled_mask = ~0u;
-        progress->visible_mask = ~0u;
+        progress->enabled_mask[0] = ~0u;
+        progress->visible_mask[0] = ~0u;
         WORLDINFO *world = (WORLDINFO *)world_ptr;
         if (world == NULL || ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys == NULL ||
             ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines == NULL)
             return;
         for (i32 index = 0; index < ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->count && index < 32; ++index) {
             HATMACHINE_PC *machine = &((HATMACHINE_WORLD_PC *)world)->hat_machine_sys->machines[index];
-            const u32 mask = 1u << index;
+            const i32 word = index / 32;
+            const u32 mask = 1u << (index % 32);
             if ((machine->flags & 4) == 0)
-                progress->visible_mask &= ~mask;
+                progress->visible_mask[word] &= ~mask;
             if ((machine->flags & 8) == 0)
-                progress->enabled_mask &= ~mask;
+                progress->enabled_mask[word] &= ~mask;
         }
     }
     static void HatMachine_Reset(HATMACHINE_PC *machine) {
@@ -432,16 +432,17 @@ extern "C" {
         if (world == NULL)
             return;
         HATMACHINE_SYS_PC *system = ((HATMACHINE_WORLD_PC *)world)->hat_machine_sys;
-        if (system == NULL || system->machines == NULL || system->count <= 0)
+        if (system == NULL || system->machines == NULL)
             return;
         HATMACHINE_PROGRESS_PC *progress = (HATMACHINE_PROGRESS_PC *)progress_ptr;
         for (i32 index = 0; index < system->count; ++index) {
             HATMACHINE_PC *machine = &system->machines[index];
             HatMachine_Reset(machine);
-            if (index < 32 && progress != NULL) {
-                const u32 mask = 1u << index;
-                machine->flags = (machine->flags & ~4) | (((progress->visible_mask & mask) != 0) << 2);
-                machine->flags = (machine->flags & ~8) | (((progress->enabled_mask & mask) != 0) << 3);
+            if (progress != NULL && index < 32) {
+                const i32 word = index / 32;
+                const u32 mask = 1u << (index % 32);
+                machine->visible = (progress->visible_mask[word] & mask) != 0;
+                machine->enabled = (progress->enabled_mask[word] & mask) != 0;
             }
         }
     }
@@ -449,7 +450,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL)
             return;
         HATMACHINE_PC *machine = (HATMACHINE_PC *)gizmo->object;
-        machine->flags = (machine->flags & ~8) | ((enabled != 0) << 3);
+        machine->enabled = enabled != 0;
         if (enabled != 0)
             HatMachine_Reset(machine);
     }
