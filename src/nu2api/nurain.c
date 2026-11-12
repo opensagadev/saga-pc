@@ -16,9 +16,10 @@ i32 NuRainWob = 0;
 
 /* Retail keeps an out-of-line copy at 0x74e170; NuRainProcess inlines it. */
 static f32 NuRainFabsPc(f32 value) {
-    i32 bits = *(i32 *)&value;
-    bits &= 0x7fffffff;
-    return *(f32 *)&bits;
+    f32 result;
+
+    *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
+    return result;
 }
 
 void __cdecl NuRainProcess(i32 paused) {
@@ -59,9 +60,9 @@ void __cdecl NuRainProcess(i32 paused) {
             if (debkeydata[NuRainKey].previous_allocated_chunk_count < debkeydata[NuRainKey].allocated_chunk_count) {
                 DebReAlloc2(&debkeydata[NuRainKey]);
             }
-            if (1.0f < NuRainFabsPc(global_camera.mtx.m30 - NuRainOldCameraMtx.m30) ||
-                1.0f < NuRainFabsPc(global_camera.mtx.m31 - NuRainOldCameraMtx.m31) ||
-                1.0f < NuRainFabsPc(global_camera.mtx.m32 - NuRainOldCameraMtx.m32)) {
+            if (NuRainFabsPc(global_camera.mtx.m30 - NuRainOldCameraMtx.m30) > 1.0f ||
+                NuRainFabsPc(global_camera.mtx.m31 - NuRainOldCameraMtx.m31) > 1.0f ||
+                NuRainFabsPc(global_camera.mtx.m32 - NuRainOldCameraMtx.m32) > 1.0f) {
                 f32 dx = global_camera.mtx.m30 + global_camera.mtx.m20 * 3.5 - NuRainOldCameraMtx.m30 -
                          NuRainOldCameraMtx.m20 * 3.5;
                 f32 dy = global_camera.mtx.m31 + global_camera.mtx.m21 * 3.5 - NuRainOldCameraMtx.m31 -
