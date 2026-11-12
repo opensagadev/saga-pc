@@ -390,23 +390,28 @@ void __thiscall PC_DEVICE_BACKEND_PC::InitializeFactory() {
     active_aspect = aspect;
 }
 i32 __thiscall PC_DEVICE_BACKEND_PC::FindAspect(u32 width, u32 height) {
-    f32 ratio = (f32)((f64)width / (f64)height);
-    f32 closest = 1000.0f;
     i32 selected = 0;
-    f32 distance = (f32)((f64)ratio - (f64)1.3333334f);
+    f32 ratio = (f32)width / (f32)height;
+    f32 closest = 1000.0f;
+    f32 distance;
+    distance = ratio - 1.3333334f;
     distance = (f32)fabs((f64)distance);
-    if ((f64)distance < 1000.0)
+    if (distance < closest) {
         closest = distance;
-    distance = (f32)((f64)ratio - (f64)1.7777778f);
+        selected = 0;
+    }
+    distance = ratio - 1.7777778f;
     distance = (f32)fabs((f64)distance);
-    if (closest > distance) {
+    if (distance < closest) {
         closest = distance;
         selected = 1;
     }
-    distance = (f32)((f64)ratio - (f64)1.6f);
+    distance = ratio - 1.6f;
     distance = (f32)fabs((f64)distance);
-    if (closest > distance)
-        return 2;
+    if (distance < closest) {
+        closest = distance;
+        selected = 2;
+    }
     return selected;
 }
 void __thiscall PC_DEVICE_BACKEND_PC::ReleaseDefaultPoolResources() {
