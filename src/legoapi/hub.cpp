@@ -3266,12 +3266,11 @@ void HubInitFreePlaySelectPc(i32, i32, i32);
 /* 475020/105. */
 static void HubInitSelectModePc(void) {
     const i32 area = (i8)LDataList[HubDoorNewLevelPc].area_index;
-    if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area)
-        hub_selectmode = 0;
-    else if ((ADataList[area].flags & 0x1000) != 0)
+    if ((LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) || (ADataList[area].flags & 0x1000) != 0 ||
+        Game.area_save[area].area_complete == 0)
         hub_selectmode = 0;
     else
-        hub_selectmode = Game.area_save[area].area_complete != 0 ? 1 : 0;
+        hub_selectmode = 1;
     selectmodemode = 0;
 }
 /* 476360/110. */
