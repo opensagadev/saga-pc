@@ -155,17 +155,16 @@ void __cdecl CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 re
     if (kit == NULL)
         return;
     for (i = 0; i < kit->piece_count; ++i) {
-        MINIKIT_PIECE_PC *piece = &kit->pieces[i];
         NUMTX draw_matrix, reflected;
-        if (NuSpecialExistsFn(&piece->special) == 0)
+        if (NuSpecialExistsFn(&kit->pieces[i].special) == 0)
             continue;
-        draw_matrix = piece->matrix;
+        draw_matrix = kit->pieces[i].matrix;
         NuMtxMul(&draw_matrix, &draw_matrix, matrix);
-        NuSpecialDrawAt(&piece->special, &draw_matrix);
+        NuSpecialDrawAt(&kit->pieces[i].special, &draw_matrix);
         if (reflection_axis != 0 && reflection_plane != 0.0f &&
             MatrixReflection(&draw_matrix, reflection_axis, reflection_plane, reflection_height, &reflected) != 0) {
             NuRndrStartReflectionRender(0);
-            NuSpecialDrawAt(&piece->special, &reflected);
+            NuSpecialDrawAt(&kit->pieces[i].special, &reflected);
             NuRndrEndReflectionRender();
         }
     }
