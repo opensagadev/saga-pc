@@ -1367,8 +1367,9 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         block->animation_positions = 0;
         NUINSTANIM *animation = static_cast<NUINSTANIM *>(NuSpecialGetInstAnim(&block->special));
         if (animation != NULL) {
-            block->animation_positions = static_cast<i32>(NuAnimEndFrameOld(
+            i32 end_frame = static_cast<i32>(NuAnimEndFrameOld(
                 static_cast<NUGSCN *>(block->special.scene)->instance_animation_data[animation->animation_index]));
+            block->animation_positions = end_frame;
             block->output_count = static_cast<u8>(block->animation_positions);
             i32 required = world->push_block_position_count + block->animation_positions;
             if (required > world->current_level->max_pushblock_endpos) {
@@ -1403,14 +1404,15 @@ extern "C" void __cdecl GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *prog
         block->velocity = v000;
         block->target_velocity = v000;
         block->snap_origin = centre;
-        f32 left = static_cast<f32>(fabs(static_cast<f64>(block->bounds_min.x))) + PushInitCornerInsetPc;
-        f32 right = static_cast<f32>(fabs(static_cast<f64>(block->bounds_max.x))) + PushInitCornerInsetPc;
-        f32 back = static_cast<f32>(fabs(static_cast<f64>(block->bounds_min.z))) + PushInitCornerInsetPc;
-        f32 front = static_cast<f32>(fabs(static_cast<f64>(block->bounds_max.z))) + PushInitCornerInsetPc;
-        f32 base_y = centre.y - static_cast<f32>(fabs(static_cast<f64>(block->bounds_min.y))) - PushInitGroundOffsetPc;
-        f32 y = base_y + static_cast<f64>(0.025f);
+        f32 left = GizPushFabsPc(block->bounds_min.x) + PushInitCornerInsetPc;
+        f32 right = GizPushFabsPc(block->bounds_max.x) + PushInitCornerInsetPc;
+        f32 back = GizPushFabsPc(block->bounds_min.z) + PushInitCornerInsetPc;
+        f32 front = GizPushFabsPc(block->bounds_max.z) + PushInitCornerInsetPc;
+        f32 y = centre.y - GizPushFabsPc(block->bounds_min.y) - PushInitGroundOffsetPc;
         NUVEC corners[4] = {centre, centre, centre, centre};
         corners[0].y = corners[1].y = corners[2].y = corners[3].y = y;
+        for (i32 corner = 0; corner < 4; ++corner)
+            corners[corner].y += 0.025f;
         corners[0].x -= left;
         corners[0].z -= back;
         corners[1].x += right;
