@@ -398,7 +398,12 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
         mouse_buttons = capabilities.buttons;
         mouse->methods->set_cooperative_level(mouse, window, 5);
         mouse->methods->set_format(mouse, &PcMouseDataFormat);
-        PC_DI_PROPERTY_PC property = {20, 16, 0, 0, 0};
+        PC_DI_PROPERTY_PC property;
+        property.header_size = 16;
+        property.size = 20;
+        property.how = 0;
+        property.object = 0;
+        property.data = 0;
         mouse->methods->set_property(mouse, *(const GUID *)2, &property);
         property.size = 20;
         property.header_size = 16;
@@ -411,8 +416,7 @@ void NuKeyboardOwner_PC::Setup(HWND window, HINSTANCE instance) {
         mouse_axes = 0;
         mouse_buttons = 0;
     }
-    PC_INPUT_RUNTIME_PC *allocated = new PC_INPUT_RUNTIME_PC;
-    nu_input_state = (NuKeyboardState_PC *)allocated;
+    nu_input_state = (NuKeyboardState_PC *)new PC_INPUT_RUNTIME_PC;
     NuKeyboardApplyActionKeys_candidate(NULL, 0);
     device_count = 0;
     PcXInputDeviceCount = 0;
