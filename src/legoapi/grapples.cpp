@@ -216,26 +216,13 @@ extern "C" {
 }
 
 static void Grapple_ResetRopeTargetsPc(GRAPPLE_MOTION_PC *grapple) {
-    f32 rounded_segment = grapple->rope_length / 6.0;
-    f32 segment = rounded_segment;
-    grapple->target_rope_points[0].x = grapple->hook_position.x;
-    grapple->target_rope_points[0].y = grapple->hook_position.y - (0.0 * segment + segment);
-    grapple->target_rope_points[0].z = grapple->hook_position.z;
-    grapple->target_rope_points[1].x = grapple->hook_position.x;
-    grapple->target_rope_points[1].y = grapple->hook_position.y - ((f64)segment + segment);
-    grapple->target_rope_points[1].z = grapple->hook_position.z;
-    grapple->target_rope_points[2].x = grapple->hook_position.x;
-    grapple->target_rope_points[2].y = grapple->hook_position.y - (2.0 * segment + segment);
-    grapple->target_rope_points[2].z = grapple->hook_position.z;
-    grapple->target_rope_points[3].x = grapple->hook_position.x;
-    grapple->target_rope_points[3].y = grapple->hook_position.y - (3.0 * segment + segment);
-    grapple->target_rope_points[3].z = grapple->hook_position.z;
-    grapple->target_rope_points[4].x = grapple->hook_position.x;
-    grapple->target_rope_points[4].y = grapple->hook_position.y - (4.0 * segment + segment);
-    grapple->target_rope_points[4].z = grapple->hook_position.z;
-    grapple->target_rope_points[5].x = grapple->hook_position.x;
-    grapple->target_rope_points[5].y = grapple->hook_position.y - (5.0 * segment + segment);
-    grapple->target_rope_points[5].z = grapple->hook_position.z;
+    f32 segment = grapple->rope_length / 6.0;
+    i32 point;
+    for (point = 0; point < 6; ++point) {
+        grapple->target_rope_points[point].x = grapple->hook_position.x;
+        grapple->target_rope_points[point].y = grapple->hook_position.y - ((f64)point * segment + segment);
+        grapple->target_rope_points[point].z = grapple->hook_position.z;
+    }
 }
 
 static void Grapple_ResetPositionPc(GRAPPLE_MOTION_PC *grapple, NUVEC *offset, NUVEC *position,
