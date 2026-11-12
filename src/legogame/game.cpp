@@ -219,7 +219,9 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         scale->x = 5.1f;
     } else if (character_id == (i16)id_SNOWMOB) {
         scale->x = 2.25f;
-    } else if (character_id == (i16)id_MOONCAR || character_id == (i16)id_MAPCAR) {
+    } else if (character_id == (i16)id_MOONCAR) {
+        scale->x = 2.3f;
+    } else if (character_id == (i16)id_MAPCAR) {
         scale->x = 2.3f;
     } else if (character_id == (i16)id_ATAT) {
         scale->x = 7.0f;
@@ -236,7 +238,9 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
     } else if (character_id == (i16)id_TIEFIGHTER || character_id == (i16)VehicleBoltId7f1a28Pc ||
                character_id == (i16)VehicleBoltId7f196cPc || character_id == (i16)id_TIEBOMBER) {
         scale->x = 6.0f;
-    } else if (character_id == (i16)VehicleBoltId7f1a2cPc || character_id == (i16)VehicleBoltId7f195cPc) {
+    } else if (character_id == (i16)VehicleBoltId7f1a2cPc) {
+        scale->x = 8.0f;
+    } else if (character_id == (i16)VehicleBoltId7f195cPc) {
         scale->x = 8.0f;
     } else if (character_id == (i16)id_WOOKIEFLYER) {
         scale->x = 6.0f;
@@ -271,10 +275,8 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         offset->z = -0.03f * 0.75f;
     }
 
-    if (scale->x != 1.0f) {
-        scale->z = scale->x;
-        scale->y = scale->x;
-    }
+    if (scale->x != 1.0f)
+        scale->y = scale->z = scale->x;
 }
 
 // Source lease:
