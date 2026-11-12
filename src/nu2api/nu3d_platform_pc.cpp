@@ -2434,7 +2434,8 @@ extern "C" {
     }
 
     /* Font material set-up used by the atlas builder; mirrors NuQFntReadPS. */
-    i32 __cdecl NuQFntAtlasReadPSPc(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
+    static i32 __cdecl NuQFntAtlasReadPSPc(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer,
+                                           VARIPTR end) {
         NUQFNT_RENDER_DATA_PC *platform;
         NUQFNT_ATLAS_MATERIAL_PC *material;
 
@@ -2449,53 +2450,53 @@ extern "C" {
         font->x_scale = (f32 *)((u8 *)platform + 0x50);
         font->y_scale = (f32 *)((u8 *)platform + 0x54);
         font->material = NuMtlCreateEx(1, plane);
-        if (font->material == NULL) {
-            return 0;
-        }
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.x = 1.0f;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.y = 1.0f;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.z = 1.0f;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
-            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x1000U) | 0x2000U;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->opacity = 1.0f;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
-            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~14U) | 1U;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0x40000U;
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->texture_id = (i16)texture_id;
-        material = (NUQFNT_ATLAS_MATERIAL_PC *)font->material;
-        if (flags & 8) {
-            material->attributes_high &= ~4U;
-        } else {
-            material->attributes_high |= 4U;
-        }
-        ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
-            (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10000U) | 0x20000U;
-        if (flags & 2) {
-            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~15U;
-        } else {
+        if (font->material != NULL) {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.x = 1.0f;
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.y = 1.0f;
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->diffuse.z = 1.0f;
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x1000U) | 0x2000U;
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->opacity = 1.0f;
             ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
                 (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~14U) | 1U;
-        }
-        if (flags & 0x40) {
-            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0xc000U;
-        } else if (flags & 0x20) {
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0x40000U;
+            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->texture_id = (i16)texture_id;
+            material = (NUQFNT_ATLAS_MATERIAL_PC *)font->material;
+            if (flags & 8) {
+                material->attributes_high &= ~4U;
+            } else {
+                material->attributes_high |= 4U;
+            }
             ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
-                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x8000U) | 0x4000U;
-        } else {
-            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
+                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10000U) | 0x20000U;
+            if (flags & 2) {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~15U;
+            } else {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                    (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~14U) | 1U;
+            }
+            if (flags & 0x40) {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0xc000U;
+            } else if (flags & 0x20) {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                    (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x8000U) | 0x4000U;
+            } else {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes |= 0xc000U;
+            }
+            if (flags & 4) {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                    (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x20U) | 0x10U;
+            } else if (flags & 0x10) {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
+                    (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10U) | 0x20U;
+            } else {
+                ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0x30U;
+            }
+            NuMtlUpdate(font->material);
+            return 1;
         }
-        if (flags & 4) {
-            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
-                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x20U) | 0x10U;
-        } else if (flags & 0x10) {
-            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes =
-                (((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes & ~0x10U) | 0x20U;
-        } else {
-            ((NUQFNT_ATLAS_MATERIAL_PC *)font->material)->attributes &= ~0x30U;
-        }
-        NuMtlUpdate(font->material);
-        return 1;
+        return 0;
     }
 
     int __cdecl NuQFntMapComparePc(const void *a, const void *b) {
@@ -7376,12 +7377,11 @@ extern "C" {
         i32 index;
 
         for (index = 0; index < count; ++index) {
-            NUVEC *vector = &vectors[index];
-            NUVEC *transformed = &out[index];
-
-            transformed->x = vector->x * matrix->m00 + vector->y * matrix->m10 + vector->z * matrix->m20 + matrix->m30;
-            transformed->y = vector->x * matrix->m01 + vector->y * matrix->m11 + vector->z * matrix->m21 + matrix->m31;
-            transformed->z = vector->x * matrix->m02 + vector->y * matrix->m12 + vector->z * matrix->m22 + matrix->m32;
+            out->x = vectors->x * matrix->m00 + vectors->y * matrix->m10 + vectors->z * matrix->m20 + matrix->m30;
+            out->y = vectors->x * matrix->m01 + vectors->y * matrix->m11 + vectors->z * matrix->m21 + matrix->m31;
+            out->z = vectors->x * matrix->m02 + vectors->y * matrix->m12 + vectors->z * matrix->m22 + matrix->m32;
+            out++;
+            vectors++;
         }
     }
 
