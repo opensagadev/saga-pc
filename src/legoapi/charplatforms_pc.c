@@ -147,14 +147,16 @@ void CharPlatforms_Update(CHARPLATFORMSYS_s *system) {
         visible = 0;
         object = Obj;
         for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
-            if ((object->flags_1fc_half & 0x1001) == 0x1001 && object->dead == 0 &&
+            if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
                 object->level_object_index == system->platforms[i].platform_id) {
                 nuhspecial_s *special = &system->platforms[i].special;
                 NUMTX *matrix = NuSpecialGetDrawMtx(special);
                 if (matrix != NULL) {
+                    f32 rise;
                     *matrix = object->transform;
-                    if (GameTimer.time_elapsed * 2.0f < 1.0f) {
-                        matrix->m31 -= 1.0f - GameTimer.time_elapsed * 2.0f;
+                    rise = GameTimer.time_elapsed * 2.0f;
+                    if (rise < 1.0f) {
+                        matrix->m31 -= 1.0f - rise;
                     }
                     NuSpecialUpdate(special);
                 }
