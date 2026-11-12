@@ -703,16 +703,15 @@ extern "C" {
 static void EduiAddInteractionPc(f32 x, f32 y, f32 width, f32 height, eduimenu_s *menu, eduiitem_s *item,
                                  i32(__cdecl *callback)(edui_interact_s *), u32 buttons, i32 field_20) {
     if (numInteracts < 64 && eduiInteractLocked == NULL) {
-        edui_interact_s *entry = &eduiInteracts[numInteracts];
-        entry->x = x;
-        entry->y = (f32)(y * 0.5);
-        entry->width = width;
-        entry->height = (f32)(height * 0.5);
-        entry->menu = menu;
-        entry->item = item;
-        entry->callback = callback;
-        entry->buttons = buttons;
-        entry->field_20 = field_20;
+        eduiInteracts[numInteracts].x = x;
+        eduiInteracts[numInteracts].y = (f32)(y * 0.5);
+        eduiInteracts[numInteracts].width = width;
+        eduiInteracts[numInteracts].height = (f32)(height * 0.5);
+        eduiInteracts[numInteracts].menu = menu;
+        eduiInteracts[numInteracts].item = item;
+        eduiInteracts[numInteracts].callback = callback;
+        eduiInteracts[numInteracts].buttons = buttons;
+        eduiInteracts[numInteracts].field_20 = field_20;
         ++numInteracts;
     }
 }
