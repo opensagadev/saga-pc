@@ -386,8 +386,8 @@ i32 __cdecl Hint_isCompleteByIdPc(i32 hint_id) {
 
 /* SOURCE ONLY: append to src/legoapi/hint.c; no header/data/map changes. */
 void __cdecl Hint_Process(f32 elapsed) {
+    i32 available = 1;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    i32 available;
     HINT_PC *hint;
     f32 target;
     f32 step;
@@ -395,14 +395,12 @@ void __cdecl Hint_Process(f32 elapsed) {
         return;
 
     /* Existing historical symbol names the DWORD native reads at00803984. */
-    available = LEGOHINT_PUNCH != 0 && CUTSTOPGAME == 0 && MiniCutCam != 1 && MiniCutCam != 2 && MiniCutCam != 3 &&
-                SuperStory == 0 && BonusArea == 0 && (world->current_level->flags & 0x200) == 0 &&
-                (world->area == NULL || (world->area->flags & 0x124) == 0) && GetMenuID() == -1 &&
-                FadeSys.fade == 0.0f &&
-                (world->area == NULL || world->area != HUB_ADATA || Hub_PanelBusyFn == NULL || Hub_PanelBusyFn() == 0);
-    if (ChallengeMode != 0)
+    if (LEGOHINT_PUNCH == 0 || CUTSTOPGAME != 0 || MiniCutCam == 1 || MiniCutCam == 2 || MiniCutCam == 3 ||
+        SuperStory != 0 || BonusArea != 0 || (world->current_level->flags & 0x200) != 0 ||
+        (world->area != NULL && (world->area->flags & 0x124) != 0) || GetMenuID() != -1 || FadeSys.fade != 0.0f ||
+        (world->area != NULL && world->area == HUB_ADATA && Hub_PanelBusyFn != NULL && Hub_PanelBusyFn() != 0))
         available = 0;
-    else if (Mission_Active(NULL) != NULL)
+    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL)
         available = 0;
 
     for (hint = hintsys.hints; hint->id != -1; ++hint) {
