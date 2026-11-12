@@ -116,8 +116,8 @@ __declspec(noinline) void ShaderCompilerDictionaryPc::AddDefinition(const char *
 void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorPc *buffer) {
     ShaderMacroDefinitionPc **cursor = programs;
     ShaderMacroDefinitionPc **end = programs + program_count;
-    while (cursor != end) {
-        ShaderMacroDefinitionPc *definition = *cursor++;
+    for (; cursor != end; ++cursor) {
+        ShaderMacroDefinitionPc *definition = *cursor;
         if (definition->emit != 0) {
             const char *value = definition->value != NULL ? definition->value : "";
             buffer->AppendText("#define ");
