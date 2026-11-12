@@ -22,7 +22,6 @@ void __cdecl CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
     CHARACTER_MODEL_LAYERS_PC *model;
     f32 *frame;
     i32 rotation;
-    NUMTX *matrix;
     NUVEC point;
     NUVEC offset;
     NUVEC previous_point;
@@ -44,13 +43,10 @@ void __cdecl CharPivot_Check(GAMEOBJECT *object, NUVEC *velocity) {
         } else {
             model = (CHARACTER_MODEL_LAYERS_PC *)object->character_model;
             if (model->points_of_interest[pivot->point_of_interest] != NULL) {
-                rotation = -RotDiff(object->previous_movement_angle, object->field_0x276);
-                matrix = &object->locator_matrices[pivot->point_of_interest];
-                point.x = matrix->m30;
-                point.y = matrix->m31;
-                point.z = matrix->m32;
+                rotation = RotDiff(object->previous_movement_angle, object->field_0x276);
+                point = *(NUVEC *)&object->locator_matrices[pivot->point_of_interest].m30;
                 NuVecSub(&offset, &point, &object->position);
-                NuVecRotateY(&previous_point, &offset, rotation);
+                NuVecRotateY(&previous_point, &offset, -rotation);
                 NuVecAdd(&previous_point, &previous_point, &object->start_position);
                 NuVecSub(&offset, &point, &previous_point);
                 NuVecScale(&offset, &offset, 1.0f / FRAMETIME);
