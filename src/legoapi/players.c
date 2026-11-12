@@ -155,14 +155,12 @@ STATIC_ASSERT(offsetof(TIGHTROPE_MOVEMENT_PC, rotation) == 0x44);
 
 __declspec(noinline) i32 __cdecl SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     f32 speed;
-    i16 animation;
     object->target_velocity.x = 0.0f;
     object->target_velocity.z = 0.0f;
     if (input_speed > 0.0f) {
-        animation = object->field_7aa;
-        if ((object->field_7b3 == 1 || object->field_7b3 == 3) && animation != -1 &&
-            object->character_model->model_data_b[animation] != NULL) {
-            speed = AnimSpeed(object->character_model, animation);
+        if ((object->field_7b3 == 3 || object->field_7b3 == 1) && object->field_7aa != -1 &&
+            object->character_model->model_data_b[object->field_7aa] != NULL) {
+            speed = AnimSpeed(object->character_model, object->field_7aa);
         } else if (object->field_7b3 == 3 || object->field_7b3 == 6) {
             if (object->field_7b3 == 6 && LEGOACT_SUPERCARRY_WALK != 0 &&
                 object->character_model->model_data_b[LEGOACT_SUPERCARRY_WALK] != NULL)
@@ -1295,16 +1293,26 @@ void __cdecl SetGameObjectCharacterData(GAMEOBJECT *object) {
 }
 
 i32 __cdecl GetDefaultIdle(GAMEOBJECT *object) {
-    i32 animation = 0x19;
-    PLAYER_BATARANG_IDLE_PC *batarang = (PLAYER_BATARANG_IDLE_PC *)object->batarang;
+    i32 animation;
+    PLAYER_BATARANG_IDLE_PC *batarang;
+    void **actions;
+    void *idle, *standard;
     if (((PLAYER_IDLE_CHARACTER_PC *)object->character_data->game_character)->use_standard_idle == 0 &&
         (object->character_data->model_flags & 0x80) != 0)
         animation = 0x76;
+    else
+        animation = 0x19;
+    batarang = (PLAYER_BATARANG_IDLE_PC *)object->batarang;
     if (batarang != NULL && batarang->active != 0)
         return 0x97;
-    if (object->character_model->action_animations[animation] != NULL &&
-        (object->character_model->action_animations[1] == NULL || (object->flags_e20 & 0x10000) != 0 ||
-         object->field_e33 == 1))
+    actions = object->character_model->action_animations;
+    standard = actions[1];
+    if (standard != NULL && actions[animation] == NULL)
+        return 1;
+    idle = actions[animation];
+    if (idle != NULL && standard == NULL)
+        return animation;
+    if (((object->field_e22 & 1) != 0 || object->field_e33 == 1) && idle != NULL)
         return animation;
     return 1;
 }
