@@ -247,9 +247,9 @@ void __cdecl Torpedo_UpdateJobbies(GAMEOBJECT *object) {
         position.y =
             (f32)((f64)NuTrigTable[((i32)TORPEDO_PACKET_PC(object)->pickup_flags[index] >> 1) & 0x7fff] * distance +
                   (f64)object->collision_position.y);
-        position.z =
-            (f32)(NuTrigTable[(((i32)TORPEDO_PACKET_PC(object)->pickup_data[index] + 0x4000) >> 1) & 0x7fff] * (f64)cos_y * distance +
-                  (f64)object->collision_position.z);
+        position.z = (f32)(NuTrigTable[(((i32)TORPEDO_PACKET_PC(object)->pickup_data[index] + 0x4000) >> 1) & 0x7fff] *
+                               (f64)cos_y * distance +
+                           (f64)object->collision_position.z);
         if (TORPEDO_PACKET_PC(object)->pickup_timer < 0.8f && index + 1 == TORPEDO_PACKET_PC(object)->count) {
             NuVecSub(&direction, &position, &TORPEDO_PACKET_PC(object)->pickup_positions[index]);
             phase = (i32)((f64)TORPEDO_PACKET_PC(object)->pickup_timer / (f64)0.8f * 32768.0 + 16384.0);
