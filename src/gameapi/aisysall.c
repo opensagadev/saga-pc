@@ -4936,9 +4936,8 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
                                         f32 delta_time) {
     i32 index, first_index, second_index, first_fixed, second_fixed;
     APIOBJECT_PC *first, *second;
-    AIPACKET_PC *first_packet, *second_packet;
     NUVEC difference;
-    f32 radius, distance;
+    f32 radius, distance, overlap;
 
     for (index = 0; index < object_count; ++index) {
         first = objects[index];
@@ -4952,7 +4951,7 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
             second = objects[second_index];
             radius = first->ai->mover_height + second->ai->mover_height;
             if (first->collision_link == second || second->collision_link == first) {
-                first_fixed = second_fixed = 1;
+                second_fixed = first_fixed = 1;
             } else {
                 first_fixed = immovable[first_index];
                 second_fixed = immovable[second_index];
@@ -4976,32 +4975,30 @@ void __cdecl AISysCreatureInteraction2D(AISYS_PC *system, i32 object_count, APIO
             if (!(distance < radius))
                 continue;
             difference.y = 0.0f;
-            radius -= distance;
+            overlap = radius - distance;
             if (first_fixed) {
-                NuVecScale(&difference, &difference, radius / distance);
+                NuVecScale(&difference, &difference, overlap / distance);
                 NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
             } else if (second_fixed) {
-                NuVecScale(&difference, &difference, radius / distance);
+                NuVecScale(&difference, &difference, overlap / distance);
                 NuVecAdd(&first->ai->movement_position, &first->ai->movement_position, &difference);
             } else {
-                NuVecScale(&difference, &difference, radius / distance);
+                NuVecScale(&difference, &difference, overlap / distance);
                 NuVecSub(&second->ai->movement_position, &second->ai->movement_position, &difference);
             }
-            first_packet = first->ai;
-            second_packet = second->ai;
-            if (first_packet->antinode_timer > antinode_time && second_packet->antinode_timer > antinode_time) {
-                if (first_packet->antinode_timer > second_packet->antinode_timer) {
-                    second_packet->antinode_timer = first_packet->antinode_timer;
+            if (first->ai->antinode_timer > antinode_time && second->ai->antinode_timer > antinode_time) {
+                if (first->ai->antinode_timer > second->ai->antinode_timer) {
+                    second->ai->antinode_timer = first->ai->antinode_timer;
                     second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
                 } else {
-                    first_packet->antinode_timer = second_packet->antinode_timer;
+                    first->ai->antinode_timer = second->ai->antinode_timer;
                     first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
                 }
-            } else if (second_packet->antinode_timer > antinode_time) {
-                first_packet->antinode_timer = second_packet->antinode_timer;
+            } else if (second->ai->antinode_timer > antinode_time) {
+                first->ai->antinode_timer = second->ai->antinode_timer;
                 first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
-            } else if (first_packet->antinode_timer > 0.0f) {
-                second_packet->antinode_timer = first_packet->antinode_timer;
+            } else if (first->ai->antinode_timer > 0.0f) {
+                second->ai->antinode_timer = first->ai->antinode_timer;
                 second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
