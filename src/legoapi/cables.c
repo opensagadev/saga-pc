@@ -70,9 +70,9 @@ static f32 CableFdiv(f32 a, f32 b) {
 CABLE_RECORD_PC *__cdecl CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
     i32 i;
     CABLE_RECORD_PC *cable;
-    if (target != NULL && source != NULL) {
-        for (i = 0; i < 8; ++i) {
-            cable = ((CABLE_RECORD_PC *)cables) + i;
+    if (source != NULL && target != NULL) {
+        cable = (CABLE_RECORD_PC *)cables;
+        for (i = 0; i < 8; ++i, ++cable) {
             if ((cable->flags & 1) == 0) {
                 cable->flags |= 1;
                 cable->source = source;
