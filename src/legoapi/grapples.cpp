@@ -554,7 +554,7 @@ extern "C" void __cdecl Grapple_DrawLine(GAMEOBJECT *object) {
     NURND_VERTEX3D_PC vertices[2];
     NUVEC *positions[2];
     grapple = (GRAPPLE_MOTION_PC *)object->grapple;
-    vertices[0].colour = vertices[1].colour = (grapple->flags & 8) != 0 ? 0xff003f5fu : GrappleRopeColourPc;
+    vertices[1].colour = vertices[0].colour = (grapple->flags & 8) != 0 ? 0xff003f5fu : GrappleRopeColourPc;
     i32 count = GrappleAttachmentPositionsPc(object, positions);
     vertices[0].position = ((GRAPPLE_MOTION_PC *)object->grapple)->hook_position;
     vertices[1].position = *positions[0];
