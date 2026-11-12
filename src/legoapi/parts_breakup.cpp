@@ -76,6 +76,14 @@ extern "C" {
         memset(KillPartsBikesPc, 0, sizeof(KillPartsBikesPc));
     }
 
+    static i32 FindFreeBikePart() {
+        for (i32 index = 0; index < 4; ++index) {
+            if (KillPartsBikesPc[index].active == 0)
+                return index;
+        }
+        return -1;
+    }
+
     void __cdecl AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
     void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, float vertical_scale,
                    i32 use_vehicle_velocity, u16 *angle_override) {
@@ -440,14 +448,7 @@ extern "C" {
         part->time_remaining = 1.5f;
         part->initial_time = 1.5f;
         KILLPARTS_PART_PC *bike_part = reinterpret_cast<KILLPARTS_PART_PC *>(part);
-        i32 index;
-        for (index = 0; index < 4; ++index) {
-            if (KillPartsBikesPc[index].active == 0)
-                break;
-        }
-        if (index == 4)
-            index = -1;
-        bike_part->speeder_index = static_cast<f32>(index);
+        bike_part->speeder_index = static_cast<f32>(FindFreeBikePart());
         if (bike_part->speeder_index == -1.0f || object->movement_spline_position.spline == NULL) {
             KillPart(part, 0);
             return;
