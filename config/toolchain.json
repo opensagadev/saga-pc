@@ -1,39 +1,41 @@
 {
-    "name": "Microsoft Visual C++ 2005 RTM x86",
-    "version": "14.00.50727.42",
-    "url": "https://github.com/widberg/msvc8.0/archive/d6c4aa208c8345c78a9f68ba6ef911ee94c6a6e1.zip",
-    "archive_sha256": "51c33ecf8a340f39b97ee722e35634a064fc72ca7c246d7d5b307e80e1981def",
-    "prefix": "msvc8.0-d6c4aa208c8345c78a9f68ba6ef911ee94c6a6e1/bin/",
+    "name": "Microsoft Visual C++ 2005 SP1 x86",
+    "version": "14.00.50727.762",
+    "git": {
+        "url": "https://github.com/archaic-msvc/msvc800_sp1",
+        "commit": "4b1bafba636f67eb76f548f0f0e7f38864091a4a"
+    },
+    "prefix": "msvc800_sp1-4b1bafba636f67eb76f548f0f0e7f38864091a4a/VC/bin/",
     "files": {
-        "cl.exe": "3cbf4306526c06a07d09fd4785ac290c7ac7b52355944e7b377e08f5d8e7ece7",
-        "c1.dll": "be84b91b22bf67435525904e63db3c33afa6ea64dae9200e73db23439804254a",
-        "c1xx.dll": "e4890058a1f928538b27246af1f5c6f95551fc0ad380639b1bf1d6b143b80d09",
-        "c2.dll": "ebca6ef587d6e028b50cc79fe71dd6155230ecb51014295399e8f00e8865ff86",
-        "mspdb80.dll": "8db1e85503bff64aa0197c06933aa41eaa2f6dee2e223b6160d3eb463ec0f6dd",
-        "1033/clui.dll": "bb1ddaa62048ddbef54a25d43695124c87ce559cf52cff0ffed17bf77741bec8",
-        "link.exe": "3f14f86bf8e079f5c4af4ff54ffc682140eebad1ca2b911ac7f7726540d7bab4",
-        "1033/linkui.dll": "25dfa3c14b624cf372b042b3db3d51d9d7350851a9674e58d80e472bd1d6a65b"
+        "cl.exe": "71c93ca5bddc9b2816d0e053cac2b952f926f6b9321fab6b1ab6e8603621324c",
+        "c1.dll": "be425bf69704a3717a0265574a357cc64e7daf42ae269c30ba5cda651e244254",
+        "c1xx.dll": "391b9d99bfd3566922623b156e38b7e3f780f2a18fdaa440982ad09961297b0d",
+        "c2.dll": "497d1ffe57f75db8b458167bdea475f3962829e139b355a2672a4ef51c716413",
+        "mspdb80.dll": "92e4d5684040e87abe599db87d79cf1d75e7ab07726c590996b9c32242bc9d0e",
+        "1033/clui.dll": "86a77aa0754b7cb8622ad85944f7443feea0ad3d458ef9f46baadbe15eddafaa",
+        "link.exe": "16beda175e8e83f45187c0cd18eed06d0ec26a401d0bbc3544074c57eeebaff5",
+        "1033/linkui.dll": "6a5b8a15f45413aa58ce5baa39ba76478682a3a8d1bc4c8c29c9bbba0d8c9b75"
     },
     "trees": {
-        "include": "3fd4ab20f344ff3738fd92163c4c5d21812be516f8afe338ac87829d3d2b9740",
-        "lib": "d0c247600d9576218a40bd1bc369a2086a41509cf2a99d5adad6b44f89f0eb82",
-        "PlatformSDK/Include": "80f53e7c9351babb4fa6243dae172e78f23ba8138f794088710b1d5aa25c51a7",
+        "include": "a5c3b1621b1c75f82abf6f7f2dd8092c136f5a1a712c9b6d33fec7f870e15bee",
+        "lib": "b450fa7467065578f8597b5f3e16aae1c089e382639e1f63ab1dca6bd790b505",
+        "PlatformSDK/Include": "f5b938b1f3a3b5d1a2bea81cb613dac8626ed51d878dbd8c0cd9c92636b62a5e",
         "PlatformSDK/Lib": "6a096e262282ec22926358fbdc90aecdd89d289ffbccda0ddee933315d6d4e1d"
     },
     "pdb_helpers": {
-        "version": "8.0.50727.42",
+        "version": "8.0.50727.762",
         "files": {
             "mspdbsrv.exe": {
-                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800/00ddaf58d09788f0b12e475dae5fb5674dd32578/VC/bin/mspdbsrv.exe",
-                "sha256": "eafc82bcb2c7661e880b4c9cf6473809c65d3d36dbd076dc656f4b38b3a9187e"
+                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800_sp1/4b1bafba636f67eb76f548f0f0e7f38864091a4a/VC/bin/mspdbsrv.exe",
+                "sha256": "a216a6a07adb23894bef5f658a9b12adc14b1f471eac73abb53e8d54cdff1e4f"
             },
             "mspdbcore.dll": {
-                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800/00ddaf58d09788f0b12e475dae5fb5674dd32578/VC/bin/mspdbcore.dll",
-                "sha256": "9678b3a3a2ffd3e2e53a84ce16a20271737e0e53ff9d8cd5e99665bc13557ff6"
+                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800_sp1/4b1bafba636f67eb76f548f0f0e7f38864091a4a/VC/bin/mspdbcore.dll",
+                "sha256": "75df53ed64493816388aff9cf4bbf8c87aa9cbf461df5038770ef632269c558e"
             },
             "msobj80.dll": {
-                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800/00ddaf58d09788f0b12e475dae5fb5674dd32578/VC/bin/msobj80.dll",
-                "sha256": "803d06c37d7296bf9f2a9c34eb7bebae218b5f12c18d1dd110eaaa5d323c8268"
+                "url": "https://raw.githubusercontent.com/archaic-msvc/msvc800_sp1/4b1bafba636f67eb76f548f0f0e7f38864091a4a/VC/bin/msobj80.dll",
+                "sha256": "02747cf37e2c8303d6d7c62bcdd83a458b52b62fa302c11038a6fea44a085edd"
             }
         }
     }

@@ -3,6 +3,7 @@
 import argparse
 import platform
 import shutil
+import subprocess
 from pathlib import Path, PurePosixPath
 import sys
 import tempfile
@@ -24,6 +25,23 @@ def download(url, destination):
             shutil.copyfileobj(response, output)
 
 
+def fetch_git_archive(source, prefix, destination):
+    """Fetch one pinned commit and pack it like a release ZIP; the commit id authenticates the content."""
+    commit = source["commit"]
+    if len(commit) != 40 or any(char not in "0123456789abcdef" for char in commit):
+        raise ValueError("Compiler git pin must be a full lowercase commit id")
+    checkout = destination.parent / "compiler-git"
+    print(f'Fetching {source["url"]} at {commit}', flush=True)
+    for command in (["git", "init", "-q", str(checkout)],
+                    ["git", "-C", str(checkout), "fetch", "-q", "--depth", "1", source["url"], commit],
+                    ["git", "-C", str(checkout), "archive", "--format=zip", "-0", "--prefix=" + prefix,
+                     "-o", str(destination), commit]):
+        result = subprocess.run(command, capture_output=True, text=True)
+        if result.returncode:
+            raise ValueError(f"Compiler git fetch failed: {result.stderr.strip() or command[1]}")
+    shutil.rmtree(checkout, ignore_errors=True)
+
+
 def install_compiler(archive):
     pin = load_json(ROOT / "config/toolchain.json")
     helpers = pin.get("pdb_helpers", {}).get("files", {})
@@ -36,17 +54,22 @@ def install_compiler(archive):
         print(f'{pin["name"]} {pin["version"]}: verified, already installed')
         return
     with tempfile.TemporaryDirectory(prefix="saga-pc-compiler-") as temp:
-        if archive is None:
+        package_root = pin["prefix"].removesuffix("bin/")
+        from_git = archive is None and "git" in pin
+        if from_git:
+            # A commit id pins the content; every installed file and tree is still checked below.
+            archive = Path(temp) / "compiler.zip"
+            fetch_git_archive(pin["git"], pin["prefix"].split("/", 1)[0] + "/", archive)
+        elif archive is None:
             archive = Path(temp) / "compiler.zip"
             download(pin["url"], archive)
-        if sha256(archive) != pin["archive_sha256"]:
+        if not from_git and sha256(archive) != pin.get("archive_sha256"):
             raise ValueError("Compiler archive SHA-256 mismatch; refusing extraction")
         staged = Path(temp) / "compiler"
         with zipfile.ZipFile(archive) as package:
             # Executables remain allowlisted; retain the matching CRT/STL and SDK trees.
             files = {name: package.read(pin["prefix"] + name)
                      for name in pin["files"]}
-            package_root = pin["prefix"].removesuffix("bin/")
             seen = set()
             for member in package.infolist():
                 if member.is_dir() or not member.filename.startswith(package_root):
@@ -152,7 +175,7 @@ def main():
         if not args.compiler_only:
             install_objdiff()
             install_dxsdk()
-    except (OSError, ValueError, KeyError, zipfile.BadZipFile, urllib.error.URLError) as error:
+    except (OSError, ValueError, KeyError, zipfile.BadZipFile, urllib.error.URLError, subprocess.SubprocessError) as error:
         raise SystemExit(f"Setup failed: {error}") from error
 
 

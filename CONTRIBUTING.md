@@ -53,7 +53,7 @@ subsystem. Debug application records retain the inherited terminal, pipe or file
 destination. Debug does not define
 `DEBUG` or `_DEBUG`, select a debug CRT, or change assertion policy.
 Setup installs the matching PDB helper closure (`mspdbsrv.exe`, `mspdbcore.dll`,
-`msobj80.dll`, version 8.0.50727.42) from separate immutable URLs and SHA-256 pins;
+`msobj80.dll`, version 8.0.50727.762) from separate immutable URLs and SHA-256 pins;
 the original compiler archive and compiler/linker binaries remain unchanged. These
 legacy helpers come from the immutable `archaic-msvc/msvc800` mirror revision pinned
 in `config/toolchain.json`; hashes/version agreement and identical compiler/PDB
@@ -530,7 +530,7 @@ each mapped function with the current object, without touching `build/obj`.
 
 ## Compiler and layout
 
-The pinned compiler is VC8 14.00.50727.42 with `/O2 /Gy /GS /MT`. Use VC8's own
+The pinned compiler is VC8 SP1 14.00.50727.762 (the retail CRT and code generation both match SP1, not RTM) with `/O2 /Gy /GS /MT`. Use VC8's own
 C++98/03-era dialect; `.c` files use the C front end, `.cpp` files C++. The
 Rich header lists 199 C and 282 C++ objects and no LTCG.
 
