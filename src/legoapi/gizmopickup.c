@@ -406,17 +406,17 @@ void __cdecl CollectRedBrick(NUVEC *position) {
         target.y = REDBRICKPOSY;
         target.z = 1.0f;
         message = AddGameMsg_Default;
-        message.position = position;
-        message.target_position = &target;
-        message.scale = AreaPickupScale;
-        message.target_scale = PANEL_REDBRICKSCALE;
-        message.flags = 0x2112d;
-        message.duration = 1.0f;
         message.icon = 0xd2;
         message.special = &WORLD->level_objects[0xd2].special;
+        message.position = position;
+        message.target_position = &target;
         message.tick_fn = MiniKit_GameMsg_Update;
+        message.flags = 0x2112d;
         message.end_fn = EndRedBrickMessage;
+        message.scale = AreaPickupScale;
         message.allow_temporary = 1;
+        message.target_scale = PANEL_REDBRICKSCALE;
+        message.duration = 1.0f;
         AddGameMsg(&message);
         DrawRedBrickTime = 2.0f;
         if (WORLD->area_index != -1)

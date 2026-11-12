@@ -442,55 +442,61 @@ u32 __cdecl CRC_Process(const void *data, u32 size) {
 }
 
 u32 __cdecl CRC_ProcessString(const char *str) {
-    u32 hash = 0;
+    u32 reg = 0;
+    u32 top;
 
     while (*str != '\0') {
-        hash = SfxCRCTable[*str ^ (hash >> 24)] ^ (hash << 8);
-        str++;
+        top = (reg >> 24) ^ *str++;
+        reg = (reg << 8) ^ SfxCRCTable[top];
     }
-    return hash;
+    return reg;
 }
 
 u32 __cdecl CRC_ProcessStringN(const char *str, u32 size) {
-    u32 hash = 0;
-    u32 index;
+    u32 reg = 0;
+    u32 i;
+    u32 top;
 
-    for (index = 0; str[index] != '\0' && index < size; index++) {
-        hash = SfxCRCTable[str[index] ^ (hash >> 24)] ^ (hash << 8);
+    i = 0;
+    while (str[i] != '\0' && i < size) {
+        top = (reg >> 24) ^ str[i++];
+        reg = (reg << 8) ^ SfxCRCTable[top];
     }
-    return hash;
+    return reg;
 }
 
 u32 __cdecl SfxNameHash(const char *name) {
-    u32 hash = 0;
+    u32 reg = 0;
+    u32 i = 0;
+    u32 top;
+    char c;
 
-    while (*name != '\0') {
-        char character = *name++;
-
-        if ((u8)(character - 'a') <= 'z' - 'a') {
-            character -= 'a' - 'A';
-        }
-        hash = (hash << 8) ^ SfxCRCTable[character ^ (hash >> 24)];
+    while (name[i] != '\0') {
+        top = reg >> 24;
+        c = name[i++];
+        if (c >= 'a' && c <= 'z')
+            c -= 'a' - 'A';
+        top ^= c;
+        reg = (reg << 8) ^ SfxCRCTable[top];
     }
-    return hash;
+    return reg;
 }
 
 u32 __cdecl SfxNameHashN(const char *name, u32 max_length) {
-    u32 hash = 0;
-    u32 index = 0;
+    u32 reg = 0;
+    u32 i = 0;
+    u32 top;
+    char c;
 
-    while (name[index] != '\0' && index < max_length) {
-        u8 character = (u8)name[index];
-        i32 table_index;
-
-        if (character >= 'a' && character <= 'z') {
-            character = (u8)(character - ('a' - 'A'));
-        }
-        table_index = (i8)character ^ (i32)(hash >> 24);
-        hash = (hash << 8) ^ SfxCRCTable[table_index];
-        index++;
+    while (name[i] != '\0' && i < max_length) {
+        top = reg >> 24;
+        c = name[i++];
+        if (c >= 'a' && c <= 'z')
+            c -= 'a' - 'A';
+        top ^= c;
+        reg = (reg << 8) ^ SfxCRCTable[top];
     }
-    return hash;
+    return reg;
 }
 
 i32 __cdecl GetSfxId(char *name) {
