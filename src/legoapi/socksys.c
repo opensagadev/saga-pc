@@ -436,19 +436,19 @@ static void AdjustMinMaxBox(NUVEC *pnt, NUVEC *min, NUVEC *max) {
     if (pnt->x < min->x) {
         min->x = pnt->x;
     }
-    if (max->x < pnt->x) {
+    if (pnt->x > max->x) {
         max->x = pnt->x;
     }
     if (pnt->y < min->y) {
         min->y = pnt->y;
     }
-    if (max->y < pnt->y) {
+    if (pnt->y > max->y) {
         max->y = pnt->y;
     }
     if (pnt->z < min->z) {
         min->z = pnt->z;
     }
-    if (max->z < pnt->z) {
+    if (pnt->z > max->z) {
         max->z = pnt->z;
     }
 }
@@ -1664,12 +1664,15 @@ STATIC_ASSERT(offsetof(SOCK_PC, looping) == 0x33);
 STATIC_ASSERT(offsetof(SOCK_PC, look_ahead_segments) == 0x6d);
 
 void __cdecl PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC *camera_position) {
-    f32 first_distance = NuVecDist(camera_position, first, NULL);
-    volatile f32 second_distance = NuVecDist(camera_position, second, NULL);
-    f32 ratio = (f32)((f64)first_distance / ((f64)second_distance + first_distance));
-    result->x = (f32)(((f64)second->x - first->x) * ratio + first->x);
-    result->y = (f32)(((f64)second->y - first->y) * ratio + first->y);
-    result->z = (f32)(((f64)second->z - first->z) * ratio + first->z);
+    f32 distance[2];
+    f32 ratio;
+
+    distance[0] = NuVecDist(camera_position, first, NULL);
+    distance[1] = NuVecDist(camera_position, second, NULL);
+    ratio = distance[0] / (distance[0] + distance[1]);
+    result->x = (second->x - first->x) * ratio + first->x;
+    result->y = (second->y - first->y) * ratio + first->y;
+    result->z = (second->z - first->z) * ratio + first->z;
 }
 
 i32 __cdecl SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_segment) {
