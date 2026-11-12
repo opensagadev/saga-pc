@@ -8593,7 +8593,6 @@ i32 __cdecl Action_CatchUpForbidden(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor
 i32 __cdecl Action_SetTaggable(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                i32 count, i32 first_time, f32 delta) {
     GAMEOBJECT *object, *target = NULL;
-    APIOBJECT_PC *found;
     char *value;
     i32 index, disabled = 0;
     (void)processor;
@@ -8603,15 +8602,13 @@ i32 __cdecl Action_SetTaggable(AISYS_PC *system, AISCRIPTPROCESS_PC *processor, 
         return 1;
     if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
         object = packet->owner->objptr;
-    if (count != 0) {
+    if (count > 0) {
         for (index = 0; index < count; ++index) {
             value = NuStrIStr(params[index], (char *)AIGameCharacterName);
             if (value != NULL) {
-                found = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 10) : NULL;
-                object = found != NULL ? found->owner : NULL;
+                object = GetNamedGameObject(system, value + 10);
             } else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral757ee0)) != NULL) {
-                found = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 7) : NULL;
-                target = found != NULL ? found->owner : NULL;
+                target = GetNamedGameObject(system, value + 7);
             } else if (NuStrICmp(params[index], (char *)AIActionFalseName) == 0) {
                 disabled = 1;
             }
