@@ -16122,7 +16122,6 @@ i32 __cdecl Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
                                 i32 param_count, i32 first_time, f32 elapsed) {
     NUVEC difference;
     i32 i;
-    AIPACKET_PC *target;
     NUVEC *position;
 
     if (packet == NULL || sys == NULL || sys->player_1 == NULL) {
@@ -16157,9 +16156,9 @@ i32 __cdecl Action_CirclePlayer(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AI
             packet->movement_instruction_parameter =
                 NuVecXZDist(&packet->terrain_origin, &sys->player_1->ai->last_path_position, &difference);
         }
-        target = sys->player_1->ai;
-        position = (processor->action_data_1 & 2) != 0 ? &target->terrain_origin : &target->last_path_position;
-        AIMoveInstruction(packet, position, target->mover_height, &target->path_info, 3,
+        position = (processor->action_data_1 & 2) != 0 ? &sys->player_1->ai->terrain_origin
+                                                       : &sys->player_1->ai->last_path_position;
+        AIMoveInstruction(packet, position, sys->player_1->ai->mover_height, &sys->player_1->ai->path_info, 3,
                           packet->movement_instruction_parameter);
         if ((processor->action_data_1 & 1) != 0) {
             packet->movement_look_target = position;
