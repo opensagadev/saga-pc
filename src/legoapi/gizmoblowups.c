@@ -885,9 +885,47 @@ void __cdecl GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time)
     (void)delta_time;
 }
 
+void __cdecl PlayAnim(NUINSTANIM *animation, f32 *playback, f32 speed, i32 backwards) {
+    animation->flags |= 1;
+    if (speed >= 0.0f)
+        *playback = SeekLinearF(*playback, backwards != 0 ? 1.0f : -1.0f, speed);
+    animation->tfactor = animation->fparam1 * *playback;
+}
+
 STATIC_ASSERT(offsetof(WORLDINFO, gizmo_blowup_mtx_buffer) == 0x50e8);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_gizmoblowups) == 0xda);
 STATIC_ASSERT(offsetof(LEVELDATA_PC, max_gizmoblowuptypes) == 0xdc);
+
+/* Pairs of (type flag, blowup flag) used to translate type flags into blowup flags. */
+u32 flagremaptab[32][2] = {
+    {0x00000001, 0x00000002}, {0x00000002, 0x00000040}, {0x00000004, 0x00000001}, {0x00000008, 0x00000004},
+    {0x00000010, 0x00000008}, {0x00000020, 0x00000010}, {0x00000040, 0x00000020}, {0x00000080, 0x00000080},
+    {0x00000100, 0x00000100}, {0x00000200, 0x00000200}, {0x00000400, 0x00000400}, {0x00000800, 0x00000800},
+    {0x00001000, 0x00001000}, {0x00002000, 0x20000000}, {0x00004000, 0x00008000}, {0x00008000, 0x00010000},
+    {0x00010000, 0x00020000}, {0x00020000, 0x00040000}, {0x00040000, 0x00080000}, {0x00080000, 0x00100000},
+    {0x00100000, 0x00200000}, {0x00200000, 0x00400000}, {0x00400000, 0x00800000}, {0x00800000, 0x01000000},
+    {0x01000000, 0x02000000}, {0x02000000, 0x04000000}, {0x04000000, 0x10000000}, {0x08000000, 0x40000000},
+    {0x10000000, 0x00004000}, {0x20000000, 0x08000000}, {0x40000000, 0x00002000}, {0x80000000, 0x80000000}};
+
+u32 __cdecl RemapTypeFlagToBlowupFlag(u32 flag) {
+    i32 i;
+    for (i = 0; i < 32; ++i) {
+        if (flagremaptab[i][0] == flag)
+            return flagremaptab[i][1];
+    }
+    return 0;
+}
+
+u32 __cdecl RemapAllTypeFlagsToBlowupFlags(u32 flags) {
+    u32 result = 0;
+    i32 bit;
+    for (bit = 0; bit < 32; ++bit) {
+        u32 flag = flags & (1 << bit);
+        if (flag != 0)
+            result |= RemapTypeFlagToBlowupFlag(flag);
+    }
+    return result;
+}
 
 i32 __cdecl InitGizmoBlowupTypes(WORLDINFO *world) {
     world->gizmo_blowup_types = NULL;
@@ -1256,6 +1294,15 @@ STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, platform_id) == 0x102);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, burst_platform_id) == 0x104);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
 STATIC_ASSERT(offsetof(GIZMOBLOWUP_PC, initial_health) == 0x111);
+
+i32 __cdecl GizmoBlowupTypeNameBlank(char *name) {
+    i32 i;
+    for (i = 0; i < 8; ++i) {
+        if (((i32 *)name)[i] != 0)
+            return 0;
+    }
+    return 1;
+}
 
 i32 __cdecl GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *blowup) {
     i32 instance;
