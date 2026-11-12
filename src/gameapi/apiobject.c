@@ -1987,8 +1987,9 @@ i32 __cdecl APIObjectCollision(APIOBJECT_PC *first_input, APIOBJECT_PC *second_i
 
 /* Float fabs by clearing the sign bit; retail inlines it this way. */
 static __forceinline f32 APIObjectFabs(f32 value) {
-    *(u32 *)&value &= 0x7fffffff;
-    return value;
+    f32 result;
+    *(u32 *)&result = *(u32 *)&value & 0x7fffffff;
+    return result;
 }
 
 i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second_input) {
@@ -2071,10 +2072,10 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
         value = second_dot * second_speed;
         second_component.x = normal.x * value;
         second_component.z = normal.z * value;
-        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
+        if (first->flags_1fc_bit_1 != 0 && second->flags_1fc_bit_1 == 0) {
             second->velocity.x += (first_component.x - second_component.x) * first_weight * 2.0f;
             second->velocity.z += (first_component.z - second_component.z) * first_weight * 2.0f;
-        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
+        } else if (first->flags_1fc_bit_1 == 0 && second->flags_1fc_bit_1 != 0) {
             first->velocity.x += (second_component.x - first_component.x) * second_weight * 2.0f;
             first->velocity.z += (second_component.z - first_component.z) * second_weight * 2.0f;
         } else {
@@ -2121,10 +2122,10 @@ i32 __cdecl APIObjectCollision2D(APIOBJECT_PC *first_input, APIOBJECT_PC *second
         value = (f32)((f64)value * (3.0 / (f64)2.1f));
         normal.x *= value;
         normal.z *= value;
-        if ((first->flags_1fc_word & 2) != 0 && (second->flags_1fc_word & 2) == 0) {
+        if (first->flags_1fc_bit_1 != 0 && second->flags_1fc_bit_1 == 0) {
             second->velocity.x = average.x + normal.x * 2.0f;
             second->velocity.z = average.z + normal.z * 2.0f;
-        } else if ((first->flags_1fc_word & 2) == 0 && (second->flags_1fc_word & 2) != 0) {
+        } else if (first->flags_1fc_bit_1 == 0 && second->flags_1fc_bit_1 != 0) {
             first->velocity.x = average.x - normal.x * 2.0f;
             first->velocity.z = average.z - normal.z * 2.0f;
         } else {
