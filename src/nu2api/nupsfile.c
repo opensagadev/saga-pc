@@ -1,5 +1,17 @@
 #include "saga.h"
 
+/* Original bugs: scans 64 entries of the 32-entry table, and NuPSFileOpen then stores
+   into entry -1 when none is free. */
+static i32 NuPSFileFindFreeHandle(void) {
+    i32 index;
+    for (index = 0; index < 64; index++) {
+        if (pc_file_handles[index] == INVALID_HANDLE_VALUE) {
+            return index;
+        }
+    }
+    return -1;
+}
+
 i32 __cdecl NuPSFileOpen(const char *path, i32 mode) {
     DWORD access = 0;
     DWORD creation = 0;
@@ -20,14 +32,7 @@ i32 __cdecl NuPSFileOpen(const char *path, i32 mode) {
             break;
     }
 
-    /* Original bugs: scan 64 entries in a 32-entry table, then use -1 if none is free. */
-    for (index = 0; index < 64; index++) {
-        if (pc_file_handles[index] == INVALID_HANDLE_VALUE)
-            break;
-    }
-    if (index == 64)
-        index = -1;
-
+    index = NuPSFileFindFreeHandle();
     pc_file_handles[index] = CreateFileA(path, access, FILE_SHARE_READ, NULL, creation, 0, NULL);
     if (pc_file_handles[index] == INVALID_HANDLE_VALUE)
         return -1;
@@ -35,9 +40,9 @@ i32 __cdecl NuPSFileOpen(const char *path, i32 mode) {
 }
 
 i32 __cdecl NuPSFileClose(i32 index) {
-    i32 result = !CloseHandle(pc_file_handles[index]);
+    BOOL closed = CloseHandle(pc_file_handles[index]);
     pc_file_handles[index] = INVALID_HANDLE_VALUE;
-    return result;
+    return closed == FALSE;
 }
 
 i32 __cdecl NuPSFileRead(i32 index, void *destination, i32 size) {
