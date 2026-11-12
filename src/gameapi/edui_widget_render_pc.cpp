@@ -55,17 +55,16 @@ i32 __cdecl eduicbRenderSel(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i3
                 NuQFntSetColour((VUFNT *)edui_font, item->colours[item->highlighted]);
         }
     }
-    i8 alignment = item->text_alignment;
     char *text = item->text;
-    switch (alignment) {
+    switch (item->text_alignment) {
         case 16:
-            EduiPrintAlignedTextPc(edui_font, x << 4, (y << 3) + baseline, alignment, text);
+            EduiPrintAlignedTextPc(edui_font, x << 4, (y << 3) + baseline, item->text_alignment, text);
             break;
         case 32:
-            EduiPrintAlignedTextPc(edui_font, (x + width) << 4, (y << 3) + baseline, alignment, text);
+            EduiPrintAlignedTextPc(edui_font, (x + width) << 4, (y << 3) + baseline, item->text_alignment, text);
             break;
         default:
-            EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, alignment, text);
+            EduiPrintAlignedTextPc(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, item->text_alignment, text);
             break;
     }
     return height;
@@ -78,10 +77,9 @@ i32 __cdecl eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, 
     i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 3;
     f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
     i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
-    i32 skip_draw = edui_donotdraw;
     item->x = x;
     item->y = y;
-    if (skip_draw == 0) {
+    if (edui_donotdraw == 0) {
         NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2], (NUMTL *)uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet((VUFNT *)edui_font);
@@ -293,10 +291,9 @@ i32 __cdecl eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     i32 height = (i32)(NuQFntHeight((VUFNT *)edui_font) * 1.25) >> 2;
     f64 font_height = NuQFntHeight((VUFNT *)edui_font) * 0.125;
     i32 baseline = (i32)(font_height + NuQFntBaseline((VUFNT *)edui_font));
-    i32 skip_draw = edui_donotdraw;
     item->x = x;
     item->y = y;
-    if (skip_draw == 0) {
+    if (edui_donotdraw == 0) {
         NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted],
                       (NUMTL *)uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
@@ -528,6 +525,39 @@ extern "C" i32 __cdecl eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiite
 }
 
 extern "C" const char EduiSourcePathPc[52];
+
+extern "C" eduiitem_s *__cdecl eduiItemTextSelectorCreate(u32 data, void *colours, i32 group, void *callback, i32 count,
+                                                          i32 value, char *text, char **options) {
+    EduiTextSelectorViewPc *item =
+        (EduiTextSelectorViewPc *)NuAlloc(sizeof(EduiTextSelectorViewPc), EduiSourcePathPc, 0x10e4);
+    if (item) {
+        memset(item, 0, sizeof(EduiTextSelectorViewPc));
+        item->slider.base.data = data;
+        item->slider.base.type = 6;
+        memcpy(item->slider.base.colours, colours, sizeof(item->slider.base.colours));
+        item->slider.base.text_alignment = 0x40;
+        item->slider.base.selection_group = group;
+        item->slider.base.process = eduicbProcessSlider;
+        item->slider.base.render = eduicbRenderTextSelector;
+        item->slider.base.destroy = eduicbItemSliderDestroy;
+        item->slider.interact = eduicbInteractSlider;
+        eduiItemSetText(&item->slider.base, text);
+        item->slider.minimum = 0.0f;
+        item->slider.range = (f32)(count - 1);
+        item->slider.granularity = 1.0f;
+        item->slider.changed = (void(__cdecl *)(eduimenu_s *, eduiitem_s *, u32))callback;
+        item->slider.format = NULL;
+        f32 initial = (f32)value;
+        item->slider.normalized_value = (initial - item->slider.minimum) / item->slider.range;
+        item->slider.value = initial;
+        item->slider.change_timer = 60;
+        if (item->slider.changed)
+            item->slider.changed(NULL, &item->slider.base, 0);
+        item->options = options;
+        return &item->slider.base;
+    }
+    return NULL;
+}
 
 struct EduiSeparatorViewPc {
     eduiitem_s base;
@@ -921,6 +951,15 @@ extern "C" {
             *hue = 0.0f;
         }
     }
+}
+
+extern "C" void __cdecl eduiGradStageSetRGB(edui_gradient_node_s *stage, f32 red, f32 green, f32 blue) {
+    f32 hue, saturation, value;
+    EduiColourRgbToHsvPc(red, green, blue, &hue, &saturation, &value);
+    stage->colour = (u32)red | ((u32)green << 8) | ((u32)blue << 16) | 0x80000000u;
+    stage->hue = hue;
+    stage->saturation = saturation;
+    stage->value = value;
 }
 
 void __cdecl eduiItemColourPickSetRGB(edui_colour_pick_s *item, f32 red, f32 green, f32 blue) {
@@ -1416,12 +1455,10 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
                         origin_v + span_v, 0x80808080, picker->material);
     for (i32 corner = 0; corner < 2; ++corner) {
         if (edui_donotdraw == 0) {
-            f32 line_width = (f32)width;
-            f32 line_y = (f32)y;
-            NuRndrLine2di(x << 4, (i32)(line_y + (i32)line_width * point_v[corner]) << 3, ((x + width) << 4) - 16,
-                          (i32)(line_y + line_width * point_v[corner]) << 3, colours[corner], (NUMTL *)uimtls[0]);
+            NuRndrLine2di(x << 4, (i32)((f32)y + (i32)(f32)width * point_v[corner]) << 3, ((x + width) << 4) - 16,
+                          (i32)((f32)y + (f32)width * point_v[corner]) << 3, colours[corner], (NUMTL *)uimtls[0]);
             if (edui_donotdraw == 0) {
-                i32 marker_x = (i32)(x + line_width * point_u[corner]) << 4;
+                i32 marker_x = (i32)(x + (f32)width * point_u[corner]) << 4;
                 NuRndrLine2di(marker_x, y << 3, marker_x, ((y + width) << 3) - 8, colours[corner], (NUMTL *)uimtls[0]);
             }
         }
@@ -1443,6 +1480,152 @@ extern "C" i32 __cdecl eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem
                            picker->uv_x[picker->selected_corner] * 256.0,
                            picker->uv_y[picker->selected_corner] * 256.0);
     return width + height;
+}
+
+#define EDUI_GRAPH_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define EDUI_GRAPH_MAX(a, b) ((a) > (b) ? (a) : (b))
+
+extern "C" void __cdecl eduiItemGraphAddOnionSkin(eduiitem_s *item, nugraph_s *graph) {
+    edui_graph_s *picker = (edui_graph_s *)item;
+    i32 slot;
+    if (item->type == 15) {
+        for (slot = 0; slot < 8; slot++) {
+            if (picker->onion_skins[slot] == NULL) {
+                picker->onion_skins[slot] = graph;
+                return;
+            }
+        }
+    }
+}
+
+extern "C" void __cdecl eduiItemGraphSetCursor(eduiitem_s *item, f32 x, f32 y) {
+    edui_graph_s *picker = (edui_graph_s *)item;
+    if (item->type == 15) {
+        picker->cursor_x = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, x));
+        picker->cursor_y = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, y));
+    }
+}
+
+extern "C" void __cdecl eduiItemGraphSetLabels(eduiitem_s *item, char *x_label, char *y_label, char *title) {
+    edui_graph_s *picker = (edui_graph_s *)item;
+    if (item->type == 15) {
+        if (x_label != NULL)
+            NuStrCpy(picker->x_label, x_label);
+        if (y_label != NULL)
+            NuStrCpy(picker->y_label, y_label);
+        if (title != NULL)
+            NuStrCpy(picker->title, title);
+    }
+}
+
+extern "C" {
+    extern i32 show_x_scale_help;
+    extern i32 show_y_scale_help;
+    i32 __cdecl nugraphAddPoint(nugraph_s *graph, f32 x, f32 y);
+    i32 __cdecl nugraphDeletePoint(nugraph_s *graph, i32 index);
+    i32 __cdecl nugraphCalcCurve(nugraph_s *graph, i32 point_count);
+}
+
+/* Moves the graph cursor with the left stick, scales the axes with the shoulder buttons and edits points. */
+extern "C" i32 __cdecl eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+    edui_graph_s *picker = (edui_graph_s *)item;
+    i32 stick_x = pad->analog_left_x - 128;
+    i32 stick_y = pad->analog_left_y - 128;
+    nugraph_s *graph;
+    i32 index;
+    (void)delta_time;
+    show_y_scale_help = show_y_scale_help - 1 > 0 ? show_y_scale_help - 1 : 0;
+    show_x_scale_help = show_x_scale_help - 1 > 0 ? show_x_scale_help - 1 : 0;
+    if (stick_x > 0) {
+        if (stick_x < 32)
+            stick_x = 0;
+        else
+            stick_x = (stick_x - 32) * 255 / 223;
+    } else if (stick_x > -32) {
+        stick_x = 0;
+    } else {
+        stick_x = (stick_x + 32) * 255 / 223;
+    }
+    if (stick_y > 0) {
+        if (stick_y < 32)
+            stick_y = 0;
+        else
+            stick_y = (stick_y - 32) * 255 / 223;
+    } else if (stick_y > -32) {
+        stick_y = 0;
+    } else {
+        stick_y = (stick_y + 32) * 255 / 223;
+    }
+    picker->cursor_x = stick_x * (1.0 / 8192.0) + picker->cursor_x;
+    picker->cursor_y = -stick_y * (1.0 / 8192.0) + picker->cursor_y;
+    picker->cursor_x = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, picker->cursor_x));
+    picker->cursor_y = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, picker->cursor_y));
+    if (pad->analog_l2 && pad->analog_r2) {
+        picker->graph->x_scale = 1.0f;
+        show_x_scale_help = 60;
+        return 1;
+    }
+    if (pad->analog_l2 > 55) {
+        picker->graph->x_scale -= pad->analog_l2 * 0.02f / 255.0;
+        picker->graph->x_scale = picker->graph->x_scale < (f64)0.01f ? 0.01f : picker->graph->x_scale;
+        show_x_scale_help = 60;
+        return 1;
+    }
+    if (pad->analog_r2 > 55) {
+        picker->graph->x_scale = pad->analog_r2 * 0.02f / 255.0 + picker->graph->x_scale;
+        show_x_scale_help = 60;
+        return 1;
+    }
+    if (pad->analog_l1 && pad->analog_r1) {
+        picker->graph->y_scale = 1.0f;
+        show_y_scale_help = 60;
+        return 1;
+    }
+    if (pad->analog_l1) {
+        picker->graph->y_scale -= pad->analog_l1 * 0.02f / 255.0;
+        picker->graph->y_scale = picker->graph->y_scale < (f64)0.01f ? 0.01f : picker->graph->y_scale;
+        show_y_scale_help = 60;
+        return 1;
+    }
+    if (pad->analog_r1) {
+        picker->graph->y_scale = pad->analog_r1 * 0.02f / 255.0 + picker->graph->y_scale;
+        show_y_scale_help = 60;
+        return 1;
+    }
+    if ((pad->digital_buttons_pressed & 0x80) && picker->selected_point >= 0) {
+        nugraphDeletePoint(picker->graph, picker->selected_point);
+        nugraphCalcCurve(picker->graph, 100);
+        return 1;
+    }
+    if (pad->digital_buttons_pressed & 0x20) {
+        nugraphAddPoint(picker->graph, picker->cursor_x, picker->cursor_y);
+        nugraphCalcCurve(picker->graph, 100);
+        return 1;
+    }
+    if ((pad->digital_buttons_pressed & 0x40) && picker->selected_point >= 0) {
+        picker->cursor_x = picker->graph->x[picker->selected_point];
+        picker->cursor_y = picker->graph->y[picker->selected_point];
+    }
+    if ((pad->digital_buttons & 0x40) && picker->selected_point >= 0) {
+        picker->graph->x[picker->selected_point] = picker->cursor_x;
+        picker->graph->y[picker->selected_point] = picker->cursor_y;
+        index = picker->selected_point;
+        graph = picker->graph;
+        if (index == 0) {
+            graph->x[index] = 0.0f;
+        } else if (index == graph->point_count - 1) {
+            graph->x[index] = 1.0f;
+        } else if (graph->x[index] <= graph->x[index - 1]) {
+            graph->x[index] = graph->x[index - 1] + 0.01f;
+        } else if (graph->x[index] >= graph->x[index + 1]) {
+            graph->x[index] = graph->x[index + 1] - 0.01f;
+        }
+        nugraphCalcCurve(picker->graph, 100);
+        return 1;
+    }
+    if ((pad->digital_buttons_pressed & 0x10) && picker->changed)
+        picker->changed(menu, item, pad->digital_buttons_pressed);
+    return 0;
 }
 
 extern "C" {

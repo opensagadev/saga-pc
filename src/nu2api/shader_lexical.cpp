@@ -416,3 +416,29 @@ extern "C" i32 __cdecl ShaderDeclarationSemanticPc(ShaderLexicalSlicePc *slice) 
         return 24;
     return 0;
 }
+
+/* The accessors below have no retail caller. */
+i32 ShaderLexicalReaderPc::IsWordChar(u8 c) {
+    return ShaderLexicalClassesPc[c] & 1;
+}
+
+i32 ShaderLexicalReaderPc::IsTokenChar(u8 c) {
+    return (ShaderLexicalClassesPc[c] & 3) != 0;
+}
+
+const char *ShaderLexicalSlicePc::GetBegin() {
+    return begin;
+}
+
+const char *ShaderLexicalSlicePc::At(i32 offset) {
+    return begin + offset;
+}
+
+void ShaderCompilerBufferAllocatorPc::AppendSlice(const ShaderLexicalSlicePc &slice) {
+    AppendBytes(slice.begin, slice.length);
+}
+
+ShaderCompilerBufferAllocatorPc &ShaderCompilerBufferAllocatorPc::operator<<(const ShaderLexicalSlicePc &slice) {
+    AppendBytes(slice.begin, slice.length);
+    return *this;
+}

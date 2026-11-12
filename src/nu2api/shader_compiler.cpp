@@ -1,5 +1,6 @@
 #define SAGA_SHADER_PARSER_TYPES
 #include "saga.h"
+#include <stdio.h>
 #include <string.h>
 
 void ShaderCompilerBasePc::Prepare(const PC_SHADER_FILTER_DESC_VIEW *descriptor,
@@ -409,4 +410,250 @@ void ShaderCompilerBasePc::Generate(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shad
             ++pixel->length;
         }
     }
+}
+
+/* Writes data to "<save directory>\<name><suffix>"; no retail caller. */
+void ShaderCompilerBasePc::SaveFile(const char *suffix, const char *name, const void *data, i32 size) {
+    char path[0x100];
+    NUFILE file;
+    sprintf(path, "%s\\%s%s", save_directory, name, suffix);
+    file = NuFileOpen(path, 1);
+    if (file != 0) {
+        NuFileWrite(file, data, size);
+        NuFileClose(file);
+    }
+}
+
+/* Copies the next ';'-separated entry of list from *position into entry. */
+bool ShaderNextDirectoryPc(const char *list, i32 *position, char *entry) {
+    if (*position >= (i32)strlen(list))
+        return false;
+    list += *position;
+    while (*list != 0 && *list != ';') {
+        *entry++ = *list++;
+        ++*position;
+    }
+    *entry = 0;
+    if (*list == ';')
+        ++*position;
+    return true;
+}
+
+/* Diagnostics compiled out of retail; varargs keeps the calls. */
+static void ShaderBuilderTracePc(...) {
+}
+
+void *ShaderCompilerBasePc::ParseFile(const char *name, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix,
+                                      VirtualStackAllocator *memory) {
+    char directory[0x100];
+    char path[0x100];
+    i32 position = 0;
+    NUFILE file = 0;
+    NUDATHDR *dat = NuDatGet();
+    i32 size;
+    NuDatSet(NULL);
+    do {
+        if (!ShaderNextDirectoryPc(include_directories, &position, directory))
+            break;
+        sprintf(path, "%s\\%s", directory, name);
+        file = NuFileOpen(path, 0);
+    } while (file == 0);
+    NuDatSet(dat);
+    if (file == 0)
+        ShaderBuilderTracePc(path, include_directories);
+    size = (i32)NuFileOpenSize(file);
+    if (size <= 0) {
+        ShaderBuilderTracePc();
+        return NULL;
+    }
+    buffer->length = 0;
+    if (buffer->capacity < prefix + size)
+        buffer->Resize(prefix + size);
+    buffer->length = prefix + size;
+    NuFileRead(file, buffer->data + prefix, size);
+    NuFileClose(file);
+    memset(buffer->data, ' ', prefix);
+    for (i32 i = 0; i < prefix; i += 100)
+        buffer->data[i] = '\n';
+    ShaderCompilerParserPc parser;
+    parser.SetIncludeDirectories(directory);
+    return parser.Parse(buffer, prefix, 1, memory);
+}
+
+bool ShaderCompilerBasePc::LoadFile(const char *name) {
+    parsed_source = ParseFile(name, &source_buffer, 0x5000, &parser_memory);
+    return parsed_source != NULL;
+}
+
+/* Method table of ID3DXEffectCompiler as far as it is called here. */
+typedef struct D3DX_EFFECT_COMPILER_METHODS_PC {
+    HRESULT(__stdcall *query_interface)(ID3DXEffectCompiler *, const IID *, void **);
+    ULONG(__stdcall *add_ref)(ID3DXEffectCompiler *);
+    ULONG(__stdcall *release)(ID3DXEffectCompiler *);
+    void *unknown_0c[56];
+    HRESULT(__stdcall *compile_effect)(ID3DXEffectCompiler *, DWORD, ID3DXBuffer **, ID3DXBuffer **);
+} D3DX_EFFECT_COMPILER_METHODS_PC;
+struct ID3DXEffectCompiler {
+    const D3DX_EFFECT_COMPILER_METHODS_PC *methods;
+};
+
+/* Compiles an effect from source into output; returns the compiled size. No retail caller. */
+i32 ShaderCompilerBasePc::CompileEffect(const char *source, i32 length, void *output, i32 unused) {
+    ID3DXBuffer *effect;
+    ID3DXEffectCompiler *compiler;
+    i32 size;
+    D3DXCreateBuffer(0x80, &effect);
+    D3DXCreateEffectCompiler(source, length, NULL, NULL, 0, &compiler, NULL);
+    compiler->methods->compile_effect(compiler, 0, &effect, NULL);
+    size = effect->methods->get_buffer_size(effect);
+    PCByteCopy_candidate(output, effect->methods->get_buffer_pointer(effect), size);
+    effect->methods->release(effect);
+    if (compiler != NULL)
+        compiler->methods->release(compiler);
+    return size;
+}
+/* The material fields from its texture flags on (PC_SHADER_MATERIAL_DISPATCH_VIEW + 0xb4), as the shader
+ * builder's parameter defaults read them. */
+typedef struct PC_SHADER_DEFAULTS_VIEW_PC {
+    u32 texture_flags;
+    i32 diffuse_texture_ids[4];
+    u32 channel_colours[4];
+    f32 parameter_d8;
+    f32 parameter_dc;
+    f32 parameter_e0;
+    f32 parameter_e4;
+    i32 height_texture_id;
+    i32 normal_texture_id;
+    f32 texture_lerp;
+    u32 reflection_colour;
+    u8 unknown_0f8[0x3];
+    u8 flip_sign;
+    u8 unknown_0fc[0x1c];
+    f32 parameter_118;
+    u32 diffuse_colour;
+    u32 specular_colour;
+    u32 tint_colour;
+    u32 shadow_colour;
+    f32 parameter_12c;
+    f32 parameter_130;
+    f32 parameter_134;
+    f32 parameter_138;
+    f32 parameter_13c;
+    f32 parameter_140;
+    f32 parameter_144;
+    f32 parameter_148;
+    f32 parameter_14c;
+    f32 parameter_150;
+    u8 unknown_154[0x60];
+    f32 parameter_1b4;
+    f32 parameter_1b8;
+    f32 parameter_1bc;
+    u8 unknown_1c0[0x10];
+    f32 uv_upload_lanes[8];
+} PC_SHADER_DEFAULTS_VIEW_PC;
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, channel_colours) == 0xc8 - 0xb4);
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, texture_lerp) == 0xf0 - 0xb4);
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, flip_sign) == 0xfb - 0xb4);
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_118) == 0x118 - 0xb4);
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, shadow_colour) == 0x128 - 0xb4);
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_150) == 0x150 - 0xb4);
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_1b4) == 0x1b4 - 0xb4);
+STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, uv_upload_lanes) == 0x1d0 - 0xb4);
+
+static void FormatFloatPc(char *out, f32 value) {
+    sprintf(out, "%f", value);
+}
+
+static void FormatFloat2Pc(char *out, const f32 *value) {
+    sprintf(out, "float2(%f, %f)", value[0], value[1]);
+}
+
+static void FormatFloat4Pc(char *out, f32 x, f32 y, f32 z, f32 w) {
+    sprintf(out, "float4(%f, %f, %f, %f)", x, y, z, w);
+}
+
+static void FormatColourPc(i32 colour, char *out) {
+    sprintf(out, "float4(%f, %f, %f, %f)", (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f,
+            (f32)((colour >> 16) & 0xff) / 255.0f, (f32)((colour >> 24) & 0xff) / 255.0f);
+}
+
+/* The default value of shader parameter id as an HLSL literal; ids without one leave out untouched. */
+void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW_PC *material, i32 id, char *out, i32 unused) {
+    switch (id) {
+        case 0:
+            FormatColourPc(material->diffuse_colour, out);
+            break;
+        case 2: {
+            i32 colour = material->specular_colour;
+            FormatFloat4Pc(out, (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f,
+                           (f32)((colour >> 16) & 0xff) / 255.0f, material->parameter_1b4);
+            break;
+        }
+        case 9:
+            FormatFloatPc(out, material->flip_sign ? 1.0f : 0.0f);
+            break;
+        case 10:
+            FormatFloat4Pc(out, material->parameter_134, 0.0f, material->parameter_138, material->parameter_14c);
+            break;
+        case 11:
+            FormatFloat4Pc(out, material->texture_lerp, 0.0f, 0.0f, 0.0f);
+            break;
+        case 12:
+            FormatFloat4Pc(out, material->parameter_130, material->parameter_12c, material->parameter_144,
+                           material->parameter_148);
+            break;
+        case 13:
+            FormatFloat4Pc(out, material->parameter_13c, material->parameter_140, 0.0f, 0.0f);
+            break;
+        case 15:
+            FormatFloatPc(out, material->parameter_118);
+            break;
+        case 51:
+            FormatColourPc(material->channel_colours[0], out);
+            break;
+        case 52:
+            FormatColourPc(material->channel_colours[1], out);
+            break;
+        case 53:
+            FormatColourPc(material->channel_colours[2], out);
+            break;
+        case 54:
+            FormatColourPc(material->channel_colours[3], out);
+            break;
+        case 55:
+            FormatFloat4Pc(out, material->parameter_d8, material->parameter_dc, material->parameter_e0,
+                           material->parameter_e4);
+            break;
+        case 57:
+            FormatColourPc(material->shadow_colour, out);
+            break;
+        case 59:
+            FormatColourPc(material->tint_colour, out);
+            break;
+        case 60:
+            FormatFloatPc(out, (material->parameter_150 - 1.0) * (f64)0.1f);
+            break;
+        case 64:
+            FormatFloat2Pc(out, &material->uv_upload_lanes[0]);
+            break;
+        case 65:
+            FormatFloat2Pc(out, &material->uv_upload_lanes[2]);
+            break;
+        case 66:
+            FormatFloat2Pc(out, &material->uv_upload_lanes[4]);
+            break;
+        case 67:
+            FormatFloat2Pc(out, &material->uv_upload_lanes[6]);
+            break;
+        case 16:
+            FormatFloat4Pc(out, material->parameter_1b8, material->parameter_1bc, 0.0f, 0.0f);
+            break;
+    }
+}
+
+/* No retail caller. */
+bool PC_SHADER_MATERIAL_FILTER_VIEW::LacksVariantAndLayerFlag12() const {
+    i32 flagged = variant != 0 || (descriptor->layer_flags & 0x1000) != 0;
+    // MATCH-EXCEPTION: the u8 cast reproduces retail's byte test of the 0/1 value; flagged is 0 or 1 anyway.
+    return (u8)flagged == 0;
 }

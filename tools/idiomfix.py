@@ -56,6 +56,7 @@ from tools import unitscore  # noqa: E402
 LOG = ROOT / "build/tools-local/idiomfix.log"
 SCORES = ROOT / f"build/tools-local/idiomfix-score/{os.getpid()}"
 EPSILON = 1e-6
+LOCAL_HINTS = {}  # function -> locals only in our source (tools/refsyms.py --hints), for rule_cached_local
 _pending = {}  # path -> text to restore when interrupted during a trial
 
 
@@ -532,10 +533,189 @@ def rule_guard_merge(source):
                                True)
 
 
+_INTEGERS = {"Bool", "Char_U", "UChar", "UShort", "UInt", "ULong", "ULongLong",
+             "Char_S", "SChar", "Short", "Int", "Long", "LongLong"}
+
+
+def _keeps_value(local_type, expr_type):
+    """True when reading `expr` directly gives the same value as reading a local initialised from it."""
+    a, b = local_type.get_canonical(), expr_type.get_canonical()
+    if a.spelling.replace("const ", "") == b.spelling.replace("const ", ""):
+        return True
+    ka, kb = a.kind.spelling, b.kind.spelling
+    if ka in _INTEGERS and kb in _INTEGERS:
+        unsigned_a, unsigned_b = ka.startswith("U") or ka in ("Bool", "Char_U"), kb.startswith("U") or kb in (
+            "Bool", "Char_U")
+        # Same signedness and at least as wide, or an unsigned value in a wider local (u8 field in an i32).
+        return a.get_size() >= b.get_size() and unsigned_a == unsigned_b or a.get_size() > b.get_size() and unsigned_b
+    return False
+
+
+def _implicit(cursor):
+    """Strip implicit conversions (libclang: unexposed expressions), keep written parentheses."""
+    rw = _rewrite()
+    while cursor.kind == rw.K.UNEXPOSED_EXPR and len(list(cursor.get_children())) == 1:
+        cursor = next(cursor.get_children())
+    return cursor
+
+
+def _whole_lines(source, a, b, text):
+    """Widen a removal to its whole line when nothing else is on it."""
+    if text:
+        return a, b, text
+    start = source.data.rfind(b"\n", 0, a) + 1
+    end = source.data.find(b"\n", b)
+    if not source.data[start:a].strip() and end != -1 and not source.data[b:end].strip():
+        return start, end + 1, text
+    return a, b, text
+
+
+def _access_path(source, node):
+    """A variable, field, element or address/dereference of one (casts allowed); any expression as an index."""
+    rw = _rewrite()
+    K = rw.K
+    if node.kind in (K.DECL_REF_EXPR, K.INTEGER_LITERAL):
+        return True
+    children = list(node.get_children())
+    if node.kind in (K.UNEXPOSED_EXPR, K.PAREN_EXPR, K.CSTYLE_CAST_EXPR, K.CXX_STATIC_CAST_EXPR, K.MEMBER_REF_EXPR):
+        children = [c for c in children if c.kind != K.TYPE_REF]
+        return len(children) <= 1 and all(_access_path(source, c) for c in children)
+    if node.kind == K.UNARY_OPERATOR:
+        return source.src(node).lstrip()[:1] in ("&", "*") and all(_access_path(source, c) for c in children)
+    if node.kind == K.ARRAY_SUBSCRIPT_EXPR and len(children) == 2:
+        return _access_path(source, children[0])
+    return False
+
+
+def _member_names(source, expr):
+    rw = _rewrite()
+    return {n.spelling for n in [expr, *source.walk(expr)] if n.kind == rw.K.MEMBER_REF_EXPR}
+
+
+def _cached_definition(source, decl, refs):
+    """(expression, edits removing the definition, first offset after it, scope) of a once-defined local."""
+    rw = _rewrite()
+    inits = [c for c in decl.get_children() if c.kind not in (rw.K.TYPE_REF, rw.K.STRUCT_DECL)]
+    parent = None
+    for stmt in source.walk():
+        if stmt.kind == rw.K.DECL_STMT and decl in list(stmt.get_children()):
+            parent = stmt
+            break
+    if parent is None or len(list(parent.get_children())) != 1:
+        return None
+    scope = next((c for c in [source.body, *source.walk()] if c.kind == rw.K.COMPOUND_STMT
+                  and parent in source.children(c)), None)
+    if scope is None:
+        return None
+    if inits:
+        if any(_assigned(source, r) for r in refs):
+            return None
+        a, b = source.span(parent)
+        return inits[-1], [(a, b, "")], b, scope
+    # Declared without an initialiser: exactly one plain `v = E;` statement, every read after it in its block.
+    writes = [r for r in refs if _assigned(source, r)]
+    if len(writes) != 1:
+        return None
+    write = writes[0]
+    for block in [source.body, *source.walk()]:
+        if block.kind != rw.K.COMPOUND_STMT:
+            continue
+        for stmt in source.children(block):
+            node = rw.strip(stmt)
+            if node.kind != rw.K.BINARY_OPERATOR or source.operator(node) != "=":
+                continue
+            lhs, rhs = list(node.get_children())
+            if rw.strip(lhs).kind != rw.K.DECL_REF_EXPR or rw.strip(lhs).referenced != decl:
+                continue
+            a, b = source.span(stmt)
+            if source.data[b:b + 1] == b";":
+                b += 1
+            lo, hi = source.span(block)
+            if any(r is not write and not (b <= r.extent.start.offset < hi) for r in refs):
+                return None
+            # The declaration goes too.
+            da, db = source.span(parent)
+            return rhs, [(a, b, ""), (da, db, "")], b, block
+    return None
+
+
+def _assigned(source, ref):
+    return _rewrite()._assigned(source, ref)
+
+
+def rule_cached_local(source, names=None):
+    """Read the field / index the array at each use instead of a once-defined local copy or pointer.
+
+    `T *e = &a[i]; e->x ...` -> `a[i].x ...`; `n = o->count; ... n ...` -> `... o->count ...`.
+    Only access paths (a variable, field or element, its address, casts) with pure indices, not
+    arithmetic: spelling a computed value out at each use reads unnaturally. Its variables must not be written
+    and its fields not stored to (by name) between the definition and the last use. `names`
+    limits the rule to these locals (refsyms: locals only in ours)."""
+    rw = _rewrite()
+    for decl in source.walk():
+        if decl.kind != rw.K.VAR_DECL or names is not None and decl.spelling not in names:
+            continue
+        if "[" in decl.type.spelling or decl.storage_class == rw.ci.StorageClass.STATIC:
+            continue
+        refs = rw._references(source, decl, source.body)
+        if not refs:
+            continue
+        found = _cached_definition(source, decl, refs)
+        if found is None:
+            continue
+        expr, removal, start, scope = found
+        reads = [r for r in refs if r.extent.start.offset >= start]
+        if not reads or not rw.pure(source, expr) or not _access_path(source, expr):
+            continue
+        if any(source.data[max(0, r.extent.start.offset - 1):r.extent.start.offset] == b"&" for r in reads):
+            continue
+        last = max(r.extent.end.offset for r in reads)
+        bases = {n.referenced for n in [expr, *source.walk(expr)] if n.kind == rw.K.DECL_REF_EXPR}
+        fields = _member_names(source, expr)
+        clobbered = False
+        for node in source.walk(scope):
+            if not start <= node.extent.start.offset <= last:
+                continue
+            if node.kind == rw.K.DECL_REF_EXPR and node.referenced in bases and _assigned(source, node):
+                clobbered = True
+            if node.kind == rw.K.MEMBER_REF_EXPR and node.spelling in fields and _assigned(source, node):
+                clobbered = True
+            if node.kind == rw.K.UNARY_OPERATOR and fields and re.match(r"(\+\+|--)", source.src(node)) and \
+                    _member_names(source, node) & fields:
+                clobbered = True
+        if clobbered:
+            continue
+        inner = _implicit(expr)
+        plain = source.src(inner)
+        postfix = inner.kind in (rw.K.MEMBER_REF_EXPR, rw.K.ARRAY_SUBSCRIPT_EXPR, rw.K.DECL_REF_EXPR,
+                                 rw.K.CALL_EXPR, rw.K.PAREN_EXPR)
+        cast = not _keeps_value(decl.type, inner.type)
+        if cast:
+            plain = f"({decl.type.spelling}){plain if postfix else rw.paren(plain)}"
+        target = None  # `&X` cached: `p->f` becomes `X.f`
+        if not cast and inner.kind == rw.K.UNARY_OPERATOR and plain.startswith("&"):
+            operand = rw.strip(next(inner.get_children()))
+            if re.fullmatch(r"[\w.\->\[\]]+", source.src(operand).replace(" ", "")):
+                target = source.src(operand)
+        edits = []
+        for r in reads:
+            a, b = source.span(r)
+            after = source.data[b:b + 2]
+            before = source.data[:a].rstrip()[-1:]
+            if target is not None and after == b"->":
+                edits.append((a, b + 2, target + "."))
+            elif postfix and not cast or cast and after != b"->" and after[:1] not in (b".", b"[") or before in (b"(", b",", b"=", b"") and after[:1] in (b")", b",", b";"):
+                edits.append((a, b, plain))  # an argument, initialiser or whole operand: no parentheses
+            else:
+                edits.append((a, b, f"({plain})"))
+        edits += [_whole_lines(source, a, b, text) for a, b, text in removal]
+        yield rw.Candidate(source.edit(edits), "cached_local", f"{decl.spelling} line {decl.location.line}", True)
+
+
 # Idioms without a scanner tag of their own (or a narrow one) run on the functions tagged with these.
 SELECT = {"I31": ("I25", "U9", "I10", "I31"), "I29": ("I29", "I17", "I22")}
 # Idioms with no spot signature: every differing function is a candidate.
-ANY_TAG = {"I43"}
+ANY_TAG = {"I43", "I15"}
 
 
 def rule_init_decl_order(source):
@@ -597,6 +777,7 @@ RULES = {
                      *_rewrite_rules(["rule_result_variable", "rule_guard_to_else"])], False),
     "I20": (lambda: [rule_ternary_return, *_rewrite_rules(["rule_ternary"])], False),
     "I43": (lambda: [rule_init_decl_order], False),
+    "I15": (lambda: [rule_cached_local], False),
 }
 
 
@@ -607,7 +788,7 @@ def object_for(unit):
 
 
 def build(unit):
-    result = subprocess.run(["make", "-s", "-j4", object_for(unit)], cwd=ROOT, capture_output=True, text=True)
+    result = subprocess.run(["make", "-s", "-j2", object_for(unit)], cwd=ROOT, capture_output=True, text=True)
     return result.returncode == 0
 
 
@@ -673,7 +854,8 @@ def fix_function(row, idiom, rules, by_lines, baseline, max_rounds=4):
             source = rw.Source(text, unit, name)
             for rule in rules:
                 try:
-                    candidates.extend(rule(source))
+                    hinted = LOCAL_HINTS.get(row["name"])
+                    candidates.extend(rule(source, hinted) if rule is rule_cached_local and hinted else rule(source))
                 except (ValueError, StopIteration, AttributeError):
                     continue
         except ValueError as error:
@@ -757,6 +939,10 @@ def main(argv=None):
     parser.add_argument("--units", nargs="+", help="only functions of these units")
     parser.add_argument("--rules", nargs="+", help="only these rule functions (e.g. rule_ternary_return)")
     parser.add_argument("--shard", help="I/N: only every N-th unit starting at I (parallel runs)")
+    parser.add_argument("--hints", type=Path, help="refsyms.py --hints output: I15 tries only the locals the "
+                        "reference does not have (functions without an entry try every local)")
+    parser.add_argument("--min-percent", type=float, default=0.0)
+    parser.add_argument("--max-size", type=int, default=0)
     parser.add_argument("--skip-done", action="store_true",
                         help="skip functions that already have a RESULT line in the log")
     args = parser.parse_args(argv)
@@ -767,9 +953,16 @@ def main(argv=None):
     if args.rules:
         rules = [rule for rule in rules if rule.__name__ in args.rules]
     rows = [r for r in json.loads(args.report.read_text())["functions"]
-            if r.get("status") == "different" and (args.idiom in ANY_TAG or
-                                                   set(SELECT.get(args.idiom, (args.idiom,))) & set(r.get("idioms", [])))
-            and len(r.get("units", [])) == 1 and r["units"][0].endswith((".c", ".cpp"))]
+            if r.get("status") == "different" and (args.idiom in ANY_TAG or set(SELECT.get(args.idiom, (args.idiom,)))
+                                                   & set(r.get("idioms", [])))
+            and len(r.get("units", [])) == 1 and r["units"][0].endswith((".c", ".cpp"))
+            and (r.get("objdiff_percent") or 0) >= args.min_percent
+            and (not args.max_size or r.get("target_size", 0) <= args.max_size)]
+    if args.hints:
+        for entry in json.loads(args.hints.read_text()):
+            for hint in entry.get("hints", []):
+                if hint.startswith("locals only in ours: "):
+                    LOCAL_HINTS[entry["name"]] = set(hint.split(": ", 1)[1].split(", "))
     if args.only:
         rows = [r for r in rows if r["name"] in args.only]
     if args.units:

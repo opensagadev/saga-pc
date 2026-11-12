@@ -19946,6 +19946,7 @@ STATIC_ASSERT(offsetof(VirtualStackAllocator, owns_memory) == 0);
 STATIC_ASSERT(offsetof(VirtualStackAllocator, cursor) == 4);
 STATIC_ASSERT(offsetof(VirtualStackAllocator, end) == 8);
 STATIC_ASSERT(offsetof(VirtualStackAllocator, base) == 12);
+struct ShaderLexicalSlicePc;
 struct ShaderCompilerBufferAllocatorPc {
     u8 *data;
     i32 length;
@@ -19954,11 +19955,18 @@ struct ShaderCompilerBufferAllocatorPc {
     ShaderCompilerBufferAllocatorPc(i32, bool);
     ShaderCompilerBufferAllocatorPc(VirtualStackAllocator &, i32);
     ~ShaderCompilerBufferAllocatorPc();
+    char *CopyText();
     void Resize(i32);
     void AppendBytes(const char *, i32);
+    i32 Find(const char *text, i32 start);
+    bool MatchesAt(i32 start, const char *text);
+    void OverwriteText(i32 start, const char *text);
+    void WriteBytes(i32 offset, const void *source, i32 count);
     void AppendText(const char *);
     ShaderCompilerBufferAllocatorPc &operator<<(const char *);
     void AppendInt(i32);
+    void AppendSlice(const ShaderLexicalSlicePc &slice);
+    ShaderCompilerBufferAllocatorPc &operator<<(const ShaderLexicalSlicePc &slice);
 };
 STATIC_ASSERT(sizeof(ShaderCompilerBufferAllocatorPc) == 16);
 STATIC_ASSERT(offsetof(ShaderCompilerBufferAllocatorPc, data) == 0);
@@ -20279,9 +20287,13 @@ struct ShaderLexicalSlicePc {
     char *HeapCopy();
     char *ArenaCopy(VirtualStackAllocator *arena);
     i32 AsInteger(i32 skipped_prefix);
+    const char *GetBegin();
+    const char *At(i32 offset);
 };
 struct ShaderLexicalReaderPc {
     bool Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice);
+    i32 IsWordChar(u8 c);
+    i32 IsTokenChar(u8 c);
 };
 STATIC_ASSERT(sizeof(ShaderLexicalSlicePc) == 8);
 STATIC_ASSERT(offsetof(ShaderLexicalSlicePc, begin) == 0);
@@ -20363,6 +20375,7 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     i32 HasLayerFlag29() const;
     i32 HasUnfilteredLayerFlag22() const;
     i32 IsVariantOrLayerFlag12() const;
+    bool LacksVariantAndLayerFlag12() const;
     i32 HasLayerFlag28() const;
     i32 HasLayerFlag27() const;
     i32 HasSelector0() const;
@@ -20420,6 +20433,11 @@ class ShaderBuilderGen {
     virtual void Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
     bool LoadSource(const char *, i32);
     void *ParseSource(const char *, i32, ShaderCompilerBufferAllocatorPc *, i32, VirtualStackAllocator *);
+    void SaveFile(const char *suffix, const char *name, const void *data, i32 size);
+    void *ParseFile(const char *name, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix,
+                    VirtualStackAllocator *memory);
+    bool LoadFile(const char *name);
+    i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
     void Generate(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *,
                   ShaderCompilerBufferAllocatorPc *);
 };
@@ -20462,6 +20480,15 @@ template <class T> class ShaderManagerTemplate {
     PC_SHADER_OBJECT_FULL_VIEW *__thiscall AllocateSlot(i32 *index);
     PC_SHADER_OBJECT_FULL_VIEW *__thiscall Retrieve(const PC_SHADER_FILTER_DESC_VIEW *,
                                                     const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
+    void ReleaseShader(T *slot);
+    void DestroyShaders();
+    void SetCurrentShader(T *slot);
+    T *GetCurrentShader();
+    T *GetShader(u32 index);
+    void BindShader(T *slot);
+    static void SetShininessFactor(f32 shininess);
+    static f32 GetShininessFactor();
+    T *FindShader(const u32 *key);
 };
 typedef ShaderManagerTemplate<NuShaderObject> PC_SHADER_MANAGER_VIEW;
 STATIC_ASSERT(offsetof(PC_SHADER_MANAGER_VIEW, slots) == 4);
@@ -20487,6 +20514,7 @@ class ShaderManagerHLSL : public PC_SHADER_MANAGER_VIEW {
     ShaderManagerHLSL(VirtualStackAllocator &);
     void SetUniformValues(i32 semantic, const f32 *values);
     void setElementfv(i32 semantic, i32 element, const f32 *values);
+    void setElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values);
     void setElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values);
     virtual ~ShaderManagerHLSL();
     virtual bool CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, PC_SHADER_OBJECT_FULL_VIEW *, i32);
@@ -30085,6 +30113,8 @@ class LevelEditor : public BaseThing {
     void SetCameraPosition(VuVec &position);
     void CreateMenu();
     void CreateEditorList(eduimenu_s *parent, eduiitem_s *item);
+    void Enter();
+    void Exit();
     NUGSCN *GetScene(i32 index);
     LevelEditorScene *GetEdScene(i32 index);
     void Flush();

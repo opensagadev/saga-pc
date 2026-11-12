@@ -456,30 +456,26 @@ void cbPtlCancelDamageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 void cbPtlChangeCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
-    f32 value;
     if (edpp_nearest == -1)
         return;
     if (edpp_ptls[edpp_nearest].instance_id == -1)
         return;
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-    value = ((edui_slider_s *)item)->value;
-    effect->clip_extent = value;
-    if (value < effect->cut_on)
-        effect->cut_on = value;
+    effect->clip_extent = ((edui_slider_s *)item)->value;
+    if (((edui_slider_s *)item)->value < effect->cut_on)
+        effect->cut_on = ((edui_slider_s *)item)->value;
 }
 
 void cbPtlChangeCutOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
-    f32 value;
     if (edpp_nearest == -1)
         return;
     if (edpp_ptls[edpp_nearest].instance_id == -1)
         return;
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-    value = ((edui_slider_s *)item)->value;
-    effect->cut_on = value;
-    if (value > effect->clip_extent)
-        effect->clip_extent = value;
+    effect->cut_on = ((edui_slider_s *)item)->value;
+    if (((edui_slider_s *)item)->value > effect->clip_extent)
+        effect->clip_extent = ((edui_slider_s *)item)->value;
 }
 
 void cbPtlChangeDrawCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -3669,7 +3665,6 @@ void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     DEBRIS_INFO_PC *effect;
     i32 i;
-    f32 alpha;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)
         return;
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
@@ -3691,8 +3686,9 @@ void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(ptlcolmenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyGrad, "Alpha Grad"));
     grad_alpha_item = edui_last_item;
     for (i = 0; i < 8; ++i) {
-        alpha = effect->alpha_keys[i].value / 255.0;
-        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_alpha_item, effect->alpha_keys[i].time, alpha, alpha, alpha);
+        eduiGradStageAddRGB((edui_gradient_pick_s *)grad_alpha_item, effect->alpha_keys[i].time,
+                            effect->alpha_keys[i].value / 255.0, effect->alpha_keys[i].value / 255.0,
+                            effect->alpha_keys[i].value / 255.0);
         if (effect->alpha_keys[i].time == 1.0f)
             break;
     }

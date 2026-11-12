@@ -110,3 +110,22 @@ extern "C" void __cdecl NuShaderObjectKeyGeneratePc(u32 *key, const PC_SHADER_FI
     filter.Initialize(desc, material, flags, variant);
     NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);
 }
+
+/* The key of a program described by flags alone. No retail caller. */
+extern "C" void __cdecl NuShaderObjectKeyGenerate4(u32 *key, u32 flags) {
+    PC_SHADER_KEY_BLOCK_PC block;
+    memset(&block, 0, sizeof(block));
+    block.bytes[0x14] = 1;
+    block.words.program_hash[0] = ShaderProgramHashPC[0];
+    block.words.program_hash[1] = ShaderProgramHashPC[1];
+    block.bytes[4] = (u8)flags;
+    block.bytes[5] = (u8)(flags >> 8);
+    block.bytes[6] = (u8)(flags >> 16);
+    block.bytes[7] = (u8)(flags >> 24);
+    block.bytes[8] = (u8)flags;
+    block.bytes[9] = (u8)(flags >> 8);
+    block.bytes[0xa] = (u8)(flags >> 16);
+    block.bytes[0xb] = (u8)(flags >> 24);
+    *key = (i16)CRC16::hashInverse(block.bytes, 104) << 16;
+    *key |= (u16)CRC16::hash(block.bytes, 104);
+}

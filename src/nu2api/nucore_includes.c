@@ -232,7 +232,13 @@ static i32 NuRDPIExpression(NURDPICTX_PC *context);
 
 /* PC manager prefix and block header touched by the retail allocator. */
 typedef struct nualloc_manager_block_pc_s {
-    u32 size_flags;
+    union {
+        u32 size_flags;
+        struct {
+            u32 size : 31;
+            u32 used : 1;
+        };
+    };
     struct nualloc_manager_block_pc_s *next;
     struct nualloc_manager_block_pc_s *previous;
 } NUALLOC_MANAGER_BLOCK_PC;
@@ -4765,11 +4771,46 @@ void __cdecl NuStringTableSaveCharacterList(char *filepath, char *scratch, i32 r
     }
 }
 
+/* Block helpers of the heap manager. Every call is inlined, but VC8 keeps a copy of each static that is
+   defined before its callers. */
+static u32 NuAllocManagerIsUsedPc(NUALLOC_MANAGER_BLOCK_PC *block) {
+    return block->used;
+}
+
+static u32 NuAllocManagerGetSizePc(NUALLOC_MANAGER_BLOCK_PC *block) {
+    return block->size;
+}
+
+static void NuAllocManagerSetNextPc(NUALLOC_MANAGER_BLOCK_PC *block, NUALLOC_MANAGER_BLOCK_PC *next) {
+    block->next = next;
+}
+
+static NUALLOC_MANAGER_BLOCK_PC *NuAllocManagerGetNextPc(NUALLOC_MANAGER_BLOCK_PC *block) {
+    return block->next;
+}
+
+static void NuAllocManagerSetPreviousPc(NUALLOC_MANAGER_BLOCK_PC *block, NUALLOC_MANAGER_BLOCK_PC *previous) {
+    block->previous = previous;
+}
+
+static void *NuAllocManagerPayloadPc(NUALLOC_MANAGER_BLOCK_PC *block) {
+    return (void *)((u32)block + sizeof(NUALLOC_MANAGER_BLOCK_PC));
+}
+
+static void NuAllocManagerSetTrailerPc(NUALLOC_MANAGER_BLOCK_PC *block) {
+    ((NUALLOC_MANAGER_TRAILER_PC *)((u32)block + NuAllocManagerGetSizePc(block) + sizeof(NUALLOC_MANAGER_BLOCK_PC)))
+        ->previous_block = block;
+}
+
 static void NuAllocManagerUnlinkPc(NUALLOC_MANAGER_BLOCK_PC *block) {
     if (block->previous != NULL)
         block->previous->next = block->next;
     if (block->next != NULL)
         block->next->previous = block->previous;
+}
+
+/* Consistency check hook; empty in retail. */
+static void NuAllocManagerCheckPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
 }
 
 static void NuAllocManagerSplitPc(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_MANAGER_BLOCK_PC **remainder,
@@ -4800,36 +4841,84 @@ static void NuAllocManagerSplitPc(NUALLOC_MANAGER_BLOCK_PC **allocated, NUALLOC_
         ->previous_block = *remainder;
 }
 
+static NUALLOC_MANAGER_BLOCK_PC *NuAllocManagerNextBlockPc(NUALLOC_MANAGER_BLOCK_PC *block) {
+    return (NUALLOC_MANAGER_BLOCK_PC *)((u32)block + NuAllocManagerGetSizePc(block) + 16);
+}
+
+/* Carves a heap of size bytes from *buffer: a free-list sentinel, two used guard blocks and one free block. */
+NUALLOC_MANAGER_PREFIX_PC *__cdecl NuAllocManagerCreatePc(VARIPTR *buffer, VARIPTR buffer_end, u32 size) {
+    NUALLOC_MANAGER_PREFIX_PC *manager;
+    NUALLOC_MANAGER_BLOCK_PC *list;
+    NUALLOC_MANAGER_BLOCK_PC *first;
+    NUALLOC_MANAGER_BLOCK_PC *last;
+    NUALLOC_MANAGER_BLOCK_PC *free_block;
+
+    if (size < 0x50)
+        return NULL;
+    manager = (NUALLOC_MANAGER_PREFIX_PC *)buffer->void_ptr;
+    buffer->addr += size;
+    list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x10);
+    first = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x20);
+    last = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + size - 0x10);
+    free_block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager + 0x30);
+    NuAllocManagerSetPreviousPc(list, NULL);
+    list->size = 0;
+    list->used = 0;
+    NuAllocManagerSetNextPc(list, free_block);
+    NuAllocManagerSetTrailerPc(list);
+    NuAllocManagerSetNextPc(first, NULL);
+    NuAllocManagerSetPreviousPc(first, NULL);
+    first->size = 0;
+    first->used = 1;
+    NuAllocManagerSetTrailerPc(first);
+    NuAllocManagerSetNextPc(last, NULL);
+    NuAllocManagerSetPreviousPc(last, NULL);
+    last->size = 0;
+    last->used = 1;
+    NuAllocManagerSetTrailerPc(last);
+    free_block->size_flags = size - 0x50;
+    NuAllocManagerSetNextPc(free_block, NULL);
+    NuAllocManagerSetPreviousPc(free_block, list);
+    NuAllocManagerSetTrailerPc(free_block);
+    manager->size = size;
+    manager->block_count = 0;
+    manager->used_bytes = 0;
+    manager->base = manager;
+    return manager;
+}
+
+void __cdecl NuAllocManagerDestroyPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
+}
+
+void __cdecl NuAllocManagerDumpPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
+}
+
 void *__cdecl NuAllocManagerAllocatePc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment, u32 unused) {
-    NUALLOC_MANAGER_BLOCK_PC *sentinel = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK_PC *list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
     NUALLOC_MANAGER_BLOCK_PC *block;
     NUALLOC_MANAGER_BLOCK_PC *allocated;
     NUALLOC_MANAGER_BLOCK_PC *remainder;
     (void)unused;
+    NuAllocManagerCheckPc(manager);
     if (size == 0)
         return NULL;
     size += alignment;
-    block = sentinel;
-    while (block != NULL) {
-        if ((block->size_flags & 0x7fffffffU) > size + 16)
+    for (block = list; block != NULL; block = NuAllocManagerGetNextPc(block)) {
+        if (NuAllocManagerGetSizePc(block) > size + 16)
             break;
-        block = block->next;
     }
     if (block == NULL)
         return NULL;
-    if (block->previous != NULL)
-        block->previous->next = block->next;
-    if (block->next != NULL)
-        block->next->previous = block->previous;
+    NuAllocManagerUnlinkPc(block);
     NuAllocManagerSplitPc(&allocated, &remainder, block, &size, alignment);
-    if (sentinel->next != NULL)
-        sentinel->next->previous = remainder;
-    remainder->next = sentinel->next;
-    remainder->previous = sentinel;
-    sentinel->next = remainder;
-    manager->block_count += 1;
-    manager->used_bytes += (allocated->size_flags & 0x7fffffffU) + 16;
-    return (void *)((u32)allocated + 12);
+    if (NuAllocManagerGetNextPc(list) != NULL)
+        NuAllocManagerSetPreviousPc(NuAllocManagerGetNextPc(list), remainder);
+    NuAllocManagerSetNextPc(remainder, NuAllocManagerGetNextPc(list));
+    NuAllocManagerSetPreviousPc(remainder, list);
+    NuAllocManagerSetNextPc(list, remainder);
+    manager->block_count++;
+    manager->used_bytes += NuAllocManagerGetSizePc(allocated) + 16;
+    return NuAllocManagerPayloadPc(allocated);
 }
 
 void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
@@ -4867,6 +4956,82 @@ void __cdecl NuAllocManagerFreePc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payl
                                         sizeof(NUALLOC_MANAGER_BLOCK_PC)))
             ->previous_block = previous;
     }
+}
+
+u32 __cdecl NuAllocManagerGetBlockCountPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
+    return manager->block_count;
+}
+
+u32 __cdecl NuAllocManagerGetFreeBlockCountPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
+    NUALLOC_MANAGER_BLOCK_PC *block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    u32 count = 0;
+    while (block != NULL) {
+        block = NuAllocManagerGetNextPc(block);
+        count++;
+    }
+    return count;
+}
+
+u32 __cdecl NuAllocManagerGetUsedBytesPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
+    return manager->used_bytes;
+}
+
+u32 __cdecl NuAllocManagerGetFreeBytesPc(NUALLOC_MANAGER_PREFIX_PC *manager) {
+    NUALLOC_MANAGER_BLOCK_PC *block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    u32 total = 0;
+    while (block != NULL) {
+        total += NuAllocManagerGetSizePc(block);
+        block = NuAllocManagerGetNextPc(block);
+    }
+    return total;
+}
+
+/* Moves an allocation above the free block that follows it and returns its new payload. The free block is
+   rebuilt at the old payload address, 12 bytes past the old header, as in retail. No retail caller. */
+void *__cdecl NuAllocManagerDefragPc(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
+    NUALLOC_MANAGER_BLOCK_PC *block;
+    NUALLOC_MANAGER_BLOCK_PC *next;
+    NUALLOC_MANAGER_BLOCK_PC *list;
+    NUALLOC_MANAGER_BLOCK_PC *moved;
+    NUALLOC_MANAGER_BLOCK_PC *free_block;
+    void *new_payload;
+    u8 *src;
+    u8 *dst;
+    u32 size, next_size;
+    i32 i;
+
+    if (payload == NULL)
+        return NULL;
+    block = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload - 12);
+    size = NuAllocManagerGetSizePc(block);
+    next = NuAllocManagerNextBlockPc(block);
+    if (NuAllocManagerIsUsedPc(next))
+        return payload;
+    next_size = NuAllocManagerGetSizePc(next);
+    NuAllocManagerUnlinkPc(next);
+    src = (u8 *)payload;
+    dst = (u8 *)payload + next_size + 0x1c;
+    for (i = size - 1; i >= 0; i--)
+        dst[i] = src[i];
+    moved = (NUALLOC_MANAGER_BLOCK_PC *)((u32)payload + next_size + 0x10);
+    NuAllocManagerSetNextPc(moved, NULL);
+    NuAllocManagerSetPreviousPc(moved, NULL);
+    moved->size = size;
+    moved->used = 1;
+    NuAllocManagerSetTrailerPc(moved);
+    new_payload = NuAllocManagerPayloadPc(moved);
+    free_block = (NUALLOC_MANAGER_BLOCK_PC *)payload;
+    free_block->size_flags = next_size;
+    NuAllocManagerSetNextPc(free_block, NULL);
+    NuAllocManagerSetPreviousPc(free_block, NULL);
+    NuAllocManagerSetTrailerPc(free_block);
+    list = (NUALLOC_MANAGER_BLOCK_PC *)((u32)manager->base + 16);
+    if (NuAllocManagerGetNextPc(list) != NULL)
+        NuAllocManagerSetPreviousPc(NuAllocManagerGetNextPc(list), free_block);
+    NuAllocManagerSetNextPc(free_block, NuAllocManagerGetNextPc(list));
+    NuAllocManagerSetPreviousPc(free_block, list);
+    NuAllocManagerSetNextPc(list, free_block);
+    return new_payload;
 }
 
 void *__cdecl NuAllocManagerAllocateDefaultPc(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size) {

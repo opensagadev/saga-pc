@@ -195,6 +195,60 @@ found:
     *index = i;
     return &slots[i];
 }
+
+template <> void PC_SHADER_MANAGER_VIEW::ReleaseShader(PC_SHADER_OBJECT_FULL_VIEW *slot) {
+    --slot->ref_count;
+}
+
+template <> void PC_SHADER_MANAGER_VIEW::DestroyShaders() {
+    PC_SHADER_OBJECT_FULL_VIEW *slot = slots;
+    for (i32 i = 0; i < 400; ++i, ++slot) {
+        if (slot->marker >= 0)
+            PCShaderNativeUnInit(slot);
+    }
+}
+
+template <> void PC_SHADER_MANAGER_VIEW::SetCurrentShader(PC_SHADER_OBJECT_FULL_VIEW *slot) {
+    bound_slot = slot;
+}
+
+template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::GetCurrentShader() {
+    return bound_slot;
+}
+
+/* Lets index 400 through, one past the last slot. */
+template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::GetShader(u32 index) {
+    if (index <= 400)
+        return &slots[index];
+    return NULL;
+}
+
+template <> void PC_SHADER_MANAGER_VIEW::BindShader(PC_SHADER_OBJECT_FULL_VIEW *slot) {
+    if (bound_slot == slot)
+        return;
+    bound_slot = slot;
+    if (slot != NULL) {
+        PCDeviceSetVertexShaderPc(slot->vertex_shader);
+        PCDeviceSetPixelShaderPc(slot->pixel_shader);
+    }
+}
+
+template <> void PC_SHADER_MANAGER_VIEW::SetShininessFactor(f32 shininess) {
+    PCShaderShininessFactorStorage = shininess;
+}
+
+template <> f32 PC_SHADER_MANAGER_VIEW::GetShininessFactor() {
+    return PCShaderShininessFactorStorage;
+}
+
+template <> PC_SHADER_OBJECT_FULL_VIEW *PC_SHADER_MANAGER_VIEW::FindShader(const u32 *key) {
+    for (i32 i = 0; i < 400; ++i) {
+        if (*key == slots[i].key)
+            return &slots[i];
+    }
+    return NULL;
+}
+
 template <>
 PC_SHADER_OBJECT_FULL_VIEW *__thiscall PC_SHADER_MANAGER_VIEW::Retrieve(const PC_SHADER_FILTER_DESC_VIEW *desc,
                                                                         const PC_SHADER_FILTER_MATERIAL_VIEW *material,
@@ -666,6 +720,53 @@ extern "C" void __cdecl NuShaderManagerSetElementsfv_transpose(i32 semantic, i32
     ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv_transpose(semantic, first_element, count, values);
 }
 
+void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
+    ShaderUniformRecordPc *uniform = &ShaderUniformRecordsPc[semantic];
+    if (compiler->dictionary.profile != 4) {
+        if (uniform->field_18 != 0 || PCShaderCurrentObjectPc() == NULL) {
+            if (uniform->value_count <= 4)
+                memcpy(uniform->values, values, uniform->value_count * 16);
+            else
+                PCShaderCurrentObjectPc();
+        }
+        if ((uniform->field_18 == 0 || uniform->field_18 == 2) && PCShaderCurrentObjectPc() != NULL) {
+            PC_SHADER_OBJECT_FULL_VIEW *bound = (PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc();
+            if (bound->parameters[semantic].register_index >= 0)
+                NuShaderObjectSetElementsfv((PC_SHADER_OBJECT_FULL_VIEW *)PCShaderCurrentObjectPc(), semantic,
+                                            first_element, count, values);
+        }
+        return;
+    }
+    NUMTX transposed[16];
+    const f32 *submitted = values;
+    if (uniform->field_c == 4) {
+        for (i32 i = 0; i < count; ++i)
+            NuMtxTranspose(&transposed[i], &((NUMTX *)values)[i]);
+        first_element *= 4;
+        submitted = (const f32 *)transposed;
+    }
+    switch (uniform->stage_mask & 3) {
+        case 3:
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, submitted,
+                                              uniform->field_c * count);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, submitted,
+                                             uniform->field_c * count);
+            break;
+        case 2:
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, submitted,
+                                             uniform->field_c * count);
+            break;
+        case 1:
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, submitted,
+                                              uniform->field_c * count);
+            break;
+    }
+}
+
+extern "C" void __cdecl NuShaderManagerSetElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
+    ((ShaderManagerHLSL *)PCShaderSlots)->setElementsfv(semantic, first_element, count, values);
+}
+
 extern "C" void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *shader) {
     PC_SHADER_MANAGER_VIEW *manager = reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots);
     if (manager->bound_slot != shader) {
@@ -679,4 +780,28 @@ extern "C" void __cdecl NuShaderManagerBindShaderPc(PC_SHADER_OBJECT_FULL_VIEW *
 extern "C" f32 PCShaderShininessFactorStorage;
 extern "C" f32 __cdecl NuShaderManagerGetShininessFactor(void) {
     return PCShaderShininessFactorStorage;
+}
+
+extern "C" void *__cdecl NuShaderManagerGetInstance(void) {
+    return PCShaderSlots;
+}
+
+extern "C" void __cdecl NuShaderManagerDestroy(void) {
+    reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->DestroyShaders();
+    PCShaderSlots = NULL;
+}
+
+extern "C" void __cdecl NuShaderManagerLoadCompiledShaders(void) {
+}
+
+extern "C" void __cdecl NuShaderManagerDestroyShaders(void) {
+    reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->DestroyShaders();
+}
+
+extern "C" void __cdecl NuShaderManagerSetCurrentShader(PC_SHADER_OBJECT_FULL_VIEW *slot) {
+    reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->SetCurrentShader(slot);
+}
+
+extern "C" void __cdecl NuShaderManagerSetShininessFactor(f32 shininess) {
+    PC_SHADER_MANAGER_VIEW::SetShininessFactor(shininess);
 }

@@ -82,15 +82,11 @@ eduimenu_s *submenu0 = NULL;
 
 void __cdecl cbTriggerSubMenu(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     eduimenu_s *submenu = (eduimenu_s *)item->data_ptr;
-    i32 y;
     if (submenu != NULL) {
         eduiMenuAttach(menu, submenu);
         submenu->x = (i32)((u32)item->x + 10u);
         submenu->y = 50;
-        y = (i32)((u32)PS2_REZ_H * 2u - (u32)submenu->height);
-        if (y >= 50)
-            y = 50;
-        submenu->y = y;
+        submenu->y = MIN((i32)((u32)PS2_REZ_H * 2u - (u32)submenu->height), 50);
     }
     item->highlighted = 0;
 }

@@ -39,6 +39,37 @@ class RuleTests(unittest.TestCase):
                          [re.sub(r"\s+", " ", text.replace("int *a = G; int *b = 0;", "int *b = 0; int *a = G;")),
                           re.sub(r"\s+", " ", text.replace("int *b = 0; int c = g();", "int c = g(); int *b = 0;"))])
 
+    def test_cached_element_pointer_becomes_indexed_access(self):
+        text = "struct s { int a; int b; };\nstruct s g[4];\nvoid f(int i) { struct s *e = &g[i]; e->a = 1; e->b = i; }"
+        self.assertEqual(self.texts(self.fix.rule_cached_local, text),
+                         ["struct s { int a; int b; }; struct s g[4]; void f(int i) { g[i].a = 1; g[i].b = i; }"])
+
+    def test_once_assigned_field_copy_is_read_at_each_use(self):
+        text = "struct t { unsigned char n; };\nint f(struct t *o) { int n; n = o->n; return n + n * 2; }"
+        self.assertEqual(self.texts(self.fix.rule_cached_local, text),
+                         ["struct t { unsigned char n; }; int f(struct t *o) { return o->n + o->n * 2; }"])
+
+    def test_cached_local_is_kept_when_its_field_or_variable_changes(self):
+        self.assertFalse(self.texts(self.fix.rule_cached_local,
+                                    "struct t { int n; };\nint f(struct t *o) { int n = o->n; o->n = 0; return n; }"))
+        self.assertFalse(self.texts(self.fix.rule_cached_local,
+                                    "int g[4];\nint f(int i) { int v = g[i]; i = 2; return v + i; }"))
+        self.assertFalse(self.texts(self.fix.rule_cached_local,
+                                    "struct t { int n; };\nint f(struct t *o) { int n = o->n; o->n++; return n; }"))
+
+    def test_cached_cast_member_needs_no_parentheses_and_its_line_goes(self):
+        text = ("struct t { float v; };\nvoid g(float);\n"
+                "void f(void *p) {\n    float v;\n    v = ((struct t *)p)->v;\n    g(v);\n}")
+        self.assertEqual(self.texts(self.fix.rule_cached_local, text),
+                         ["struct t { float v; }; void g(float); void f(void *p) { g(((struct t *)p)->v); }"])
+
+    def test_computed_values_stay_in_their_local(self):
+        self.assertFalse(self.texts(self.fix.rule_cached_local, "int f(int y) { int top = (y << 3) + 16; return top * top; }"))
+
+    def test_narrowing_copy_keeps_its_cast(self):
+        texts = self.texts(self.fix.rule_cached_local, "int f(int x) { unsigned char c = x; return c + 1; }")
+        self.assertEqual(texts, ["int f(int x) { return (unsigned char)x + 1; }"])
+
     def test_wrapped_body_becomes_an_early_return_guard(self):
         text = "struct s { int *p; int n; };\nint f(struct s *a, int b) { if (a != 0 && a->p != 0 && !b) { a->n = 1; } return 1; }"
         self.assertEqual(self.texts(self.fix.rule_wrap_to_guard, text),

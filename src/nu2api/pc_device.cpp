@@ -1,5 +1,6 @@
 #include "saga.h"
 #include <string.h>
+#include <stdio.h>
 
 extern "C" void __cdecl PCDeviceReleaseTexture(PC_TEXTURE_RESOURCE_PC **texture) {
     if (*texture != NULL) {
@@ -1228,6 +1229,98 @@ extern "C" void __cdecl PCDeviceGetGammaRampPc(void *ramp) {
 
 extern "C" void __cdecl PCDeviceToggleStateCachePc(void) {
     PCDeviceStateCacheEnabled = PCDeviceStateCacheEnabled == 0;
+}
+
+extern "C" const char *WINAPI DXGetErrorString9A(HRESULT result);
+
+/* IDirect3DSurface9 methods used by the BMP dump; the shared resource table models textures. */
+typedef struct PC_SURFACE_PC PC_SURFACE_PC;
+typedef struct PC_SURFACE_METHODS_PC {
+    void *unknown_0000[2];
+    ULONG(__stdcall *release)(PC_SURFACE_PC *);
+    void *unknown_000c[9];
+    HRESULT(__stdcall *get_desc)(PC_SURFACE_PC *, PC_TEXTURE_LEVEL_DESC_PC *);
+    HRESULT(__stdcall *lock_rect)(PC_SURFACE_PC *, PC_LOCKED_RECT_PC *, const RECT *, u32);
+    HRESULT(__stdcall *unlock_rect)(PC_SURFACE_PC *);
+} PC_SURFACE_METHODS_PC;
+struct PC_SURFACE_PC {
+    const PC_SURFACE_METHODS_PC *methods;
+};
+STATIC_ASSERT(offsetof(PC_SURFACE_METHODS_PC, get_desc) == 0x30);
+STATIC_ASSERT(offsetof(PC_SURFACE_METHODS_PC, unlock_rect) == 0x38);
+
+/* Copies a render-target surface to system memory and writes it as the first free "<prefix>_pcNNN.bmp".
+   No retail caller remains. */
+extern "C" void __cdecl PCDeviceSaveSurfaceBmpPc(const char *prefix, PC_SURFACE_PC *surface) {
+    typedef HRESULT(__stdcall * CREATE_TEXTURE_PC)(PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, i32,
+                                                   PC_TEXTURE_RESOURCE_PC **, HANDLE *);
+    PC_SURFACE_PC *copy;
+    PC_TEXTURE_RESOURCE_PC *texture;
+    PC_TEXTURE_LEVEL_DESC_PC desc;
+    PC_LOCKED_RECT_PC locked;
+    BITMAPFILEHEADER file_header;
+    BITMAPINFOHEADER info_header;
+    char path[256];
+    PC_D3D9_DEVICE_PC *device;
+    NUFILE file;
+    u8 *row;
+    i32 width, height;
+    i32 pitch;
+    i32 index;
+    i32 y;
+
+    PCFrameCriticalSectionEnter_candidate();
+    surface->methods->get_desc(surface, &desc);
+    width = desc.width;
+    height = desc.height;
+    device = PCDeviceBackend.device;
+    PCDeviceLastResult = reinterpret_cast<CREATE_TEXTURE_PC>(device->methods->create_texture)(
+        device, width, height, 1, 0, desc.format, 2, &texture, NULL);
+    texture->methods->get_surface_level(texture, 0, reinterpret_cast<PC_TEXTURE_RESOURCE_PC **>(&copy));
+    index = 0;
+    sprintf(path, "%s_pc%03d.bmp", prefix, index++);
+    while (NuFileSize(path) > 0)
+        sprintf(path, "%s_pc%03d.bmp", prefix, index++);
+    device = PCDeviceBackend.device;
+    DXGetErrorString9A(device->methods->get_render_target_data(
+        device, reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(surface), reinterpret_cast<PC_TEXTURE_RESOURCE_PC *>(copy)));
+    file_header.bfType = 0x4d42;
+    file_header.bfSize = width * height * 4 + 0x36;
+    file_header.bfReserved1 = 0;
+    file_header.bfReserved2 = 0;
+    file_header.bfOffBits = 0x36;
+    info_header.biSize = 0x28;
+    info_header.biWidth = width;
+    info_header.biHeight = height;
+    info_header.biPlanes = 1;
+    info_header.biBitCount = 0x20;
+    info_header.biCompression = 0;
+    info_header.biSizeImage = width * height * 4;
+    info_header.biXPelsPerMeter = 1;
+    info_header.biYPelsPerMeter = 1;
+    info_header.biClrUsed = 0;
+    info_header.biClrImportant = 0;
+    copy->methods->lock_rect(copy, &locked, NULL, 0x10);
+    file = NuFileOpen(path, 1);
+    NuFileWrite(file, &file_header, sizeof(file_header));
+    NuFileWrite(file, &info_header, sizeof(info_header));
+    pitch = locked.pitch;
+    row = (u8 *)locked.bits + (height - 1) * pitch;
+    for (y = 0; y < height; y++) {
+        NuFileWrite(file, row, width * 4);
+        row -= pitch;
+    }
+    NuFileClose(file);
+    copy->methods->unlock_rect(copy);
+    if (texture != NULL) {
+        texture->methods->release(texture);
+        texture = NULL;
+    }
+    if (copy != NULL) {
+        copy->methods->release(copy);
+        copy = NULL;
+    }
+    PCFrameCriticalSectionLeave_candidate();
 }
 void __thiscall PC_DEVICE_BACKEND_PC::BuildDefaultPoolResources() {
     if (back_buffer != NULL) {

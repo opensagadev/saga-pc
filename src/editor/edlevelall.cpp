@@ -5094,6 +5094,28 @@ void LevelEditor::CreateEditorList(eduimenu_s *parent, eduiitem_s *item) {
     eduiMenuAttach(parent, menu);
 }
 
+extern "C" void __cdecl eduiSetUsingMenuFocusPc(i32 enabled);
+
+/* Gives the editor menus the focus and enters every registered editor. */
+void LevelEditor::Enter() {
+    edLevelActiveMenu = NULL;
+    eduiSetUsingMenuFocusPc(1);
+    editors_entered = 1;
+    active = 1;
+    for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next)
+        editor->Enter();
+}
+
+void LevelEditor::Exit() {
+    active = 0;
+    eduiSetUsingMenuFocusPc(0);
+    if (editors_entered) {
+        for (BaseEditor *editor = first_editor; editor != NULL; editor = editor->next)
+            editor->Exit();
+        editors_entered = 0;
+    }
+}
+
 /* Picks the handle nearest the cursor ray and returns its index (0 for
  * none) with the axes it moves along; a drag keeps the pressed handle. */
 i32 EdManipulator::SelectAxis(EdInputContext &input, VuVec &origin, VuVec &first, VuVec &second, VuMtx *matrix) {

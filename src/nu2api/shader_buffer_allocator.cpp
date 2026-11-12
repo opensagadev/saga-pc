@@ -46,3 +46,48 @@ void ShaderCompilerBufferAllocatorPc::AppendInt(i32 value) {
     sprintf(text, "%d", value);
     AppendBytes(text, (i32)strlen(text));
 }
+
+/* A heap copy of the buffer as a terminated string. */
+char *ShaderCompilerBufferAllocatorPc::CopyText() {
+    char *result = reinterpret_cast<char *>(::operator new(length + 1));
+    memcpy(result, data, length);
+    result[length] = 0;
+    return result;
+}
+
+/* Position of the first occurrence of text at or after start, or -1. */
+i32 ShaderCompilerBufferAllocatorPc::Find(const char *text, i32 start) {
+    const char *match = text;
+    char *cursor = (char *)data + start;
+    for (; start < length; ++start, ++cursor) {
+        if (*match == 0)
+            return start - (i32)(match - text);
+        if (*cursor != *match) {
+            if (match != text)
+                match = text;
+        } else {
+            ++match;
+        }
+    }
+    return -1;
+}
+
+/* True when the buffer holds text at start (as far as the buffer goes). */
+bool ShaderCompilerBufferAllocatorPc::MatchesAt(i32 start, const char *text) {
+    char *cursor = (char *)data + start;
+    for (; start < length && *text != 0; ++start, ++cursor, ++text)
+        if (*cursor != *text)
+            return false;
+    return true;
+}
+
+/* Overwrites the buffer from start with text, without growing it. */
+void ShaderCompilerBufferAllocatorPc::OverwriteText(i32 start, const char *text) {
+    char *cursor = (char *)data + start;
+    for (; start < length && *text != 0; ++start, ++cursor, ++text)
+        *cursor = *text;
+}
+
+void ShaderCompilerBufferAllocatorPc::WriteBytes(i32 offset, const void *source, i32 count) {
+    memcpy(data + offset, source, count);
+}

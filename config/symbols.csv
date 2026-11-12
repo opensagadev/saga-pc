@@ -2606,10 +2606,27 @@ address,symbol,size,ctype
 0x004ef790,_NuRDPIVariableErrorPc,1,void __cdecl (char *)
 0x004ef7b0,_NuFileRetry,1,void __cdecl (void)
 0x004ef7b0,_NuDatFileMissingPc,1,void __cdecl (char *)
+0x4ef7f0,_NuAllocManagerIsUsedPc,6,
+0x4ef810,_NuAllocManagerGetSizePc,8,
+0x4ef820,_NuAllocManagerSetNextPc,4,
+0x4ef830,_NuAllocManagerGetNextPc,4,
+0x4ef840,_NuAllocManagerSetPreviousPc,4,
+0x4ef850,_NuAllocManagerPayloadPc,4,
+0x4ef860,_NuAllocManagerSetTrailerPc,13,
 0x004ef870,_NuAllocManagerUnlinkPc,27,
+0x4ef890,_NuAllocManagerCheckPc,1,
 0x004ef8a0,_NuAllocManagerSplitPc,177,
+0x4ef960,_NuAllocManagerNextBlockPc,13,
+0x4ef980,_NuAllocManagerCreatePc,148,
+0x4efa20,_NuAllocManagerDestroyPc,1,
+0x4efa30,_NuAllocManagerDumpPc,1,
 0x004efa40,_NuAllocManagerAllocatePc,179,
 0x004efb00,_NuAllocManagerFreePc,227,
+0x4efbf0,_NuAllocManagerGetBlockCountPc,8,
+0x4efc00,_NuAllocManagerGetFreeBlockCountPc,27,
+0x4efc20,_NuAllocManagerGetUsedBytesPc,8,
+0x4efc30,_NuAllocManagerGetFreeBytesPc,34,
+0x4efc60,_NuAllocManagerDefragPc,201,
 0x004efd50,_NuDatFileDecodeNewFile,39,"void (PC_NUDATFILEINFO *, NUDATOPENFILEINFO *) [private EAX/ECX]"
 0x4efd80,_NuFileEndianSwap16,22,void NuFileEndianSwap16(void *value);
 0x4efda0,_NuFileEndianSwap32,38,void NuFileEndianSwap32(void *value);
@@ -7400,10 +7417,60 @@ address,symbol,size,ctype
 0x00604a80,_NuCameraSetProjectionMtx,200,"void __cdecl (NUMTX *, f32, f32, f32, f32)"
 0x604c00,_NuHGobjRndr,70,
 0x604c50,_NuHGobjGetPOI,49,"NUHGOBJ_POI_PC *__cdecl(NUHGOBJ_EVAL_PC *, u8)"
+0x00604d70,?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEPBDXZ,14,
+0x00604d80,?capacity@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ,19,
+0x00604da0,?size@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ,19,
+0x00604dc0,??0?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAE@XZ,3,
+0x00604dd0,?capacity@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ,19,
+0x00604df0,?size@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ,19,
+0x00604e10,??0?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAE@XZ,3,
+0x00604e20,??D?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@XZ,37,
+0x00604e50,??8?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z,41,
+0x00604e80,??D?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@XZ,37,
+0x00604eb0,??8?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z,41,
+0x00604ee0,?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ,4,
+0x00604ef0,?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEPADXZ,14,
+0x00604f00,??0?$allocator@D@std@@QAE@ABV01@@Z,5,
+0x00604f10,?deallocate@?$allocator@D@std@@QAEXPADI@Z,14,
+0x00604f20,??0?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAE@ABV01@@Z,5,
+0x00604f30,?deallocate@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@I@Z,14,
+0x00604f40,??0?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAE@ABV01@@Z,5,
+0x00604f50,?deallocate@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@I@Z,14,
+0x00604f60,??E?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ,36,
+0x00604f90,??E?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ,36,
+0x00604fc0,??0_Iterator_base@std@@QAE@XZ,9,
+0x00604fd0,??0?$_Ranit@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@HPBU1@ABU1@@std@@QAE@XZ,9,
+0x00604fe0,?max_size@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QBEIXZ,6,
+0x00604ff0,?max_size@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QBEIXZ,6,
+0x00605000,??G?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV01@@Z,37,
+0x00605030,??G?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV01@@Z,37,
+0x00605060,??0?$_String_val@DV?$allocator@D@std@@@std@@IAE@V?$allocator@D@1@@Z,5,
+0x00605070,??0?$allocator@D@std@@QAE@XZ,3,
+0x00605080,?max_size@?$allocator@D@std@@QBEIXZ,4,
+0x00605090,??Y?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
+0x006050d0,??Y?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
+0x00605110,?_Inside@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NPBD@Z,57,
 0x6051c0,??$_Allocate@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IPAU1@@Z,91,native typed VC8 helper
 0x605220,??$_Allocate@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IPAU1@@Z,91,native typed VC8 helper
 0x605280,??$_Allocate@D@std@@YAPADIPAD@Z,84,"char *__cdecl(unsigned int, char *)"
 0x6052e0,??0bad_alloc@std@@QAE@ABV01@@Z,25,
+0x00605330,??$_Char_traits_cat@U?$char_traits@D@std@@@std@@YA?AU_Secure_char_traits_tag@0@XZ,7,
+0x00605340,?_Copy_s@?$char_traits@D@std@@SAPADPADIPBDI@Z,33,
+0x00605370,??$_Ptr_cat@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0@Z,7,
+0x00605380,??$_Ptr_cat@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AU_Nonscalar_ptr_iterator_tag@0@AAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0@Z,7,
+0x00605390,?_Move_s@?$char_traits@D@std@@SAPADPADIPBDI@Z,33,
+0x006053c0,??$_Fill@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0ABU1@@Z,36,
+0x006053f0,??$_Iter_random@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0@Z,5,
+0x00605400,??$_Move_cat@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YA?AU_Undefined_move_tag@0@ABQAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z,7,
+0x00605410,??$_Fill@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0ABU1@@Z,36,
+0x00605440,??$_Iter_random@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0@Z,5,
+0x00605450,??$_Move_cat@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YA?AU_Undefined_move_tag@0@ABQAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,7,
+0x006054d0,??$_Checked_base@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
+0x006054e0,??$_Checked_base@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@AAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
+0x006054f0,??$_Construct@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@ABU1@@Z,23,
+0x00605520,??$_Construct@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@U1@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@ABU1@@Z,23,
+0x00605550,??$_Copy_backward_opt@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@Uforward_iterator_tag@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00Uforward_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,40,
+0x00605580,??$_Copy_backward_opt@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@Uforward_iterator_tag@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00Uforward_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,40,
 0x605660,_PCGraphicsInitRenderTexturePool,65,"void __cdecl(VARIPTR*,VARIPTR)"
 0x6056f0,_PCGraphicsCreateEffectTexture,112,
 0x6057c0,_PCGraphicsFrameRenderTexturePc,55,GRAPHICS_RENDER_TEXTURE_PC *__cdecl(i32)
@@ -7445,11 +7512,40 @@ address,symbol,size,ctype
 0x00609130,_NuLgtSetArcMat,50,"void __cdecl(NUMTL *, f32, f32, f32, f32)"
 0x006091c0,_NuLgtArcLaserDraw,2506,void __cdecl(i32)
 0x609b90,_NuGobjReleaseChildPc,96,void __cdecl(PC_GOBJ_REGISTRY_CHILD_PC *)
+0x00609cb0,??D?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEAAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@XZ,37,
+0x00609ce0,??9?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z,41,
+0x00609d10,??C?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@XZ,37,
+0x00609d40,??9?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE_NABV01@@Z,41,
+0x00609d70,??0?$_String_val@DV?$allocator@D@std@@@std@@QAE@ABV01@@Z,5,
+0x00609d80,??0?$_Vector_val@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@1@@Z,5,
+0x00609d90,??0?$_Vector_val@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@1@@Z,5,
+0x00609da0,??E?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ,36,
+0x00609dd0,??E?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@XZ,36,
+0x00609e00,?_Eos@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXI@Z,31,
+0x00609e20,?max_size@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ,6,
+0x00609e30,?allocate@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAEPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@I@Z,18,
+0x00609e50,?max_size@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEIXZ,6,
+0x00609e60,?allocate@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAEPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@I@Z,18,
+0x00609e80,??G?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@1@@Z,37,
+0x00609eb0,??0?$_Vector_const_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z,51,
+0x00609ef0,??G?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBEHABV?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@1@@Z,37,
+0x00609f20,??0?$_Vector_const_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z,51,
+0x00609f60,?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QBEIXZ,6,
+0x00609f70,??Y?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
+0x00609fb0,??Y?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEAAV01@H@Z,56,
 0x609ff0,?allocate@?$allocator@D@std@@QAEPADI@Z,18,
+0x0060a050,??$copy_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z,33,
+0x0060a080,??$move_s@U?$char_traits@D@std@@@_Traits_helper@std@@YAPADPADIPBDIU_Secure_char_traits_tag@1@@Z,33,
 0x60a0b0,?Allocate@FRAME_NATIVE_TEXTURE_POOL_PC@@QAEPAUFRAME_NATIVE_TEXTURE_PC@@XZ,156,
 0x60a150,?Allocate@POST_SHADER_PROGRAM_POOL_PC@@QAEPAUPOST_SHADER_PROGRAM_PC@@XZ,153,native pool method
+0x0060a1f0,??$_Checked_base@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@AAPAU1@@Z,7,
+0x0060a200,??$_Checked_base@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@AAPAU1@@Z,7,
 0x60a210,?construct@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@ABU3@@Z,25,native typed VC8 helper
+0x0060a230,?destroy@?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z,3,
 0x60a240,?construct@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@ABU3@@Z,25,native typed VC8 helper
+0x0060a260,?destroy@?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@QAEXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,3,
+0x0060a270,??$_Copy_backward_opt@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,62,
+0x0060a2b0,??$_Copy_backward_opt@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,62,
 0x60a2f0,??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,129,native typed VC8 helper
 0x60a367,__catch$??$_Uninit_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0,,
 0x60a380,??$_Uninit_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,129,native typed VC8 helper
@@ -7466,7 +7562,12 @@ address,symbol,size,ctype
 0x60aff0,_NuRndrSwapScreen,1465,i32 __cdecl(i32)
 0x60b5b0,_NuRndrSwapScreenEx,24,"i32 __cdecl(i32,void (__cdecl*)(void))"
 0x60b5d0,_BuildDebrisVerts,1360,"void __cdecl (DEBRIS_PART_HEADER_PC *, DEBRIS_PARTICLE_CHUNK_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
+0x0060bbf0,?_Tidy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEX_NI@Z,74,
+0x0060bc40,??0?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z,51,
+0x0060bc80,??0?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PBU_Container_base@1@@Z,51,
 0x60bcc0,?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@II@Z,131,
+0x0060bd50,??H?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE?AV01@H@Z,52,
+0x0060bd90,??H?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QBE?AV01@H@Z,52,
 0x60bdd0,?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z,335,
 0x60be53,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$0,,
 0x60beee,__catch$?_Copy@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAEXII@Z$1,,
@@ -7476,6 +7577,10 @@ address,symbol,size,ctype
 0x60c017,__catch$??$_Uninit_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0,,
 0x60c030,??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,129,native typed VC8 helper
 0x60c0a7,__catch$??$_Uninit_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Nonscalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z$0,,
+0x0060c0d0,??$_Move_backward_opt@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@Urandom_access_iterator_tag@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z,62,
+0x0060c120,??$_Move_backward_opt@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@Urandom_access_iterator_tag@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00Urandom_access_iterator_tag@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z,62,
+0x0060c160,??$unchecked_uninitialized_copy@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@Z,43,
+0x0060c190,??$unchecked_uninitialized_copy@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@Z,43,
 0x60c1c0,_NuTexRegisterRenderTargetPc,147,i32 __cdecl(GRAPHICS_RENDER_TEXTURE_PC *)
 0x60c260,?copy@NuPostFilterGen@@SAXPAUGRAPHICS_RENDER_TEXTURE_PC@@PAUPC_FRAMEBUFFER_PC@@@Z,126,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, PC_FRAMEBUFFER_PC *)"
 0x60c2e0,_PostFilterCopyTexturePc,219,"void __cdecl (GRAPHICS_RENDER_TEXTURE_PC *, i32, GRAPHICS_RENDER_TEXTURE_PC *, i32, POST_SHADER_PROGRAM_PC *, GRAPHICS_RENDER_TEXTURE_PC *)"
@@ -7485,9 +7590,19 @@ address,symbol,size,ctype
 0x60c410,_NuRndrParticleGroup,705,"void __cdecl (DEBRIS_PARTICLE_CHUNK_PC *, DEBRIS_PART_HEADER_PC *, NUMTL *, f32, NUMTX *, i32, f32, f32, f32, f32)"
 0x60c6e0,_NuGobjRegistryCleanupPc,117,void __cdecl(void)
 0x60c760,??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@XZ,38,
+0x0060c790,?begin@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ,41,
+0x0060c7c0,?end@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ,41,
+0x0060c7f0,?begin@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ,41,
+0x0060c820,?end@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@XZ,41,
+0x0060c850,?_Grow@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IAE_NI_N@Z,188,
+0x0060c910,??$unchecked_uninitialized_fill_n@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@Z,42,
+0x0060c940,??$unchecked_uninitialized_fill_n@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@IABU1@AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@Z,42,
 0x60c980,??$_Unchecked_move_backward@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@@stdext@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00@Z,62,native typed VC8 helper
 0x60c9d0,??$_Unchecked_move_backward@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@@stdext@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00@Z,62,native typed VC8 helper
+0x0060ca10,??$_Uninit_move@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z,28,
+0x0060ca30,??$_Uninit_move@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@U_Undefined_move_tag@3@@std@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z,28,
 0x60ca50,??1logic_error@std@@UAE@XZ,50,
+0x0060ca90,?_Myptr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@IBEPBDXZ,14,
 0x60caa0,?what@logic_error@std@@UBEPBDXZ,14,
 0x60cab0,??_Elogic_error@std@@UAEPAXI@Z,,
 0x60cab0,??_Glogic_error@std@@UAEPAXI@Z,71,
@@ -7495,24 +7610,39 @@ address,symbol,size,ctype
 0x60cb30,?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@ABV12@II@Z,218,
 0x60cc10,?_Ufill@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU3@IABU3@@Z,51,native typed VC8 helper
 0x60cc50,?_Ufill@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU3@IABU3@@Z,51,native typed VC8 helper
+0x0060cc90,?_Destroy@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@0@Z,3,
+0x0060cca0,?_Destroy@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@0@Z,3,
 0x60ccb0,?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBDI@Z,193,
+0x0060cd80,??$_Unchecked_uninitialized_move@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@Z,43,
+0x0060cdb0,??$_Unchecked_uninitialized_move@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@stdext@@YAPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU1@00AAV?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@Z,43,
+0x0060cde0,??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@ABV01@@Z,37,
+0x0060ce10,?_Tidy@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXXZ,42,
+0x0060ce40,?_Tidy@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXXZ,42,
+0x0060ce70,?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAEAAV12@PBD@Z,39,
 0x60cea0,??$_Umove@PAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEPAUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@PAU2@00@Z,41,native typed VC8 helper
 0x60ced0,??$_Umove@PAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEPAUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@PAU2@00@Z,41,native typed VC8 helper
 0x60cf00,??0logic_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z,51,
+0x0060cf40,??0length_error@std@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z,57,
 0x60cf80,??1length_error@std@@UAE@XZ,50,
 0x60cfc0,??_Elength_error@std@@UAEPAXI@Z,,
 0x60cfc0,??_Glength_error@std@@UAEPAXI@Z,71,
+0x0060d010,??1?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ,42,
+0x0060d040,??1?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ,42,
 0x60d070,??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QAE@PBD@Z,59,
 0x60d0b0,?_Xlen@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@KAXXZ,112,native typed VC8 helper
 0x60d120,??0logic_error@std@@QAE@ABV01@@Z,57,
 0x60d160,??0length_error@std@@QAE@ABV01@@Z,63,
 0x60d1a0,?_Xlen@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@KAXXZ,112,native typed VC8 helper
+0x0060d210,?_Buy@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE_NI@Z,72,
+0x0060d260,?_Buy@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAE_NI@Z,72,
 0x60d2b0,?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z,587,native typed VC8 helper
 0x60d418,__catch$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z$0,,
 0x60d424,__catch$?_Insert_n@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z$2,,
 0x60d500,?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,587,native typed VC8 helper
 0x60d668,__catch$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z$0,,
 0x60d674,__catch$?_Insert_n@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@IAEXV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@IABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z$2,,
+0x0060d750,??0?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ,14,
+0x0060d760,??0?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE@XZ,14,
 0x60d770,?insert@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@2@V32@ABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z,137,native typed VC8 helper
 0x60d800,?insert@?$vector@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAE?AV?$_Vector_iterator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@std@@@2@V32@ABUPOST_PIXEL_SHADER_CACHE_ENTRY_PC@@@Z,137,native typed VC8 helper
 0x60d890,?push_back@?$vector@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@V?$allocator@UPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@std@@@std@@QAEXABUPOST_VERTEX_SHADER_CACHE_ENTRY_PC@@@Z,130,native typed VC8 helper
@@ -7740,6 +7870,7 @@ address,symbol,size,ctype
 0x612df0,?ReceiveStopMessage@NetworkObjectManager@@QAEXAAUNETMESSAGE_PC@@ABVV2Peer@@@Z,71,
 0x612e40,?GetPeerStatus@NetworkObjectManager@@QAEHXZ,177,
 0x612f20,??0?$CSListLink@VNetReplicator@@@@QAE@XZ,20,
+0x006130c0,?Prepend16@NETMESSAGE_PC@@QAEXABF@Z,59,
 0x613100,?Write16@NETMESSAGE_PC@@QAEXABF@Z,59,
 0x6131f0,??_EEdInputStream@@UAEPAXI@Z,,COFF weak alias of ??_GEdInputStream@@UAEPAXI@Z; no independent body
 0x6131f0,??_GEdInputStream@@UAEPAXI@Z,31,
@@ -7868,11 +7999,18 @@ address,symbol,size,ctype
 0x618c30,_eduiInitMaterials,418,
 0x618e10,_eduiMenuAddItem,54,
 0x618e50,_eduiMenuAddItemFirst,51,"void __cdecl (struct eduimenu_s *menu, struct eduiitem_s *item)"
+0x618e90,_eduiMenuAddItemLast,52,"eduiitem_s *__cdecl (eduimenu_s *, eduiitem_s *)"
+0x618ed0,_eduiMenuAddItemAfter,120,"eduiitem_s *__cdecl (eduimenu_s *, eduiitem_s *, eduiitem_s *)"
+0x618f50,_eduiMenuAddItemBefore,101,"eduiitem_s *__cdecl (eduimenu_s *, eduiitem_s *, eduiitem_s *)"
+0x618fc0,_eduiMenuItemMoveUp,79,"i32 __cdecl (eduimenu_s *, eduiitem_s *)"
+0x619010,_eduiMenuItemMoveDown,78,"i32 __cdecl (eduimenu_s *, eduiitem_s *)"
 0x619060,_eduiMenuSortItemsByTxt,179,
 0x619130,_eduiMenuRemoveItem,93,
 0x619190,_eduiGetAnalougePadValue,182,
 0x619250,_eduiMenuCreate,166,
 0x619300,_eduiMenuSetAttr,64,
+0x619340,_eduiMenuSetAttrAlphaPc,84,"void __cdecl (eduimenu_s *, const u32 *)"
+0x6193a0,_eduiMenuSetDisabled,63,"void __cdecl (eduimenu_s *, i32)"
 0x6193e0,_eduiMenuHighlight,79,
 0x619430,_eduiItemSetText,139,
 0x6194c0,_eduicbInteractSel,81,
@@ -7891,8 +8029,17 @@ address,symbol,size,ctype
 0x619f20,_EduiTextPickDeletePc,71,
 0x619f70,_EduiTextPickToggleCasePc,98,
 0x619ff0,?EduiRenderTextCursorPc@@YAXPADHHHI@Z,287,ordinary private cursor helper; full Native extent
+0x61a110,_eduiFilePickAllocDirListPc,49,void __cdecl (void)
+0x61a150,_eduiFilePickDateKeysPc,89,
+0x61a1b0,_eduiFilePickCompareDatePc,38,"i32 __cdecl (void *, void *)"
+0x61a1e0,_eduiFilePickCompareDateReversePc,38,"i32 __cdecl (void *, void *)"
+0x61a210,_eduiFilePickCompareSizePc,32,"i32 __cdecl (void *, void *)"
+0x61a230,_eduiFilePickCompareSizeReversePc,37,"i32 __cdecl (void *, void *)"
+0x61a260,_eduiFilePickCompareNamePc,27,"i32 __cdecl (void *, void *)"
+0x61a280,_eduiFilePickCompareNameReversePc,25,"i32 __cdecl (void *, void *)"
 0x61a2a0,_eduiItemFilePickSetFmt,123,
 0x61a320,_eduicbRenderFilePick,617,
+0x61a590,_eduiGradStageSetRGB,209,"void __cdecl (edui_gradient_node_s *, f32, f32, f32)"
 0x61a670,_eduiGradStageSetHSV,240,
 0x61a760,_eduiGradStageAdd,163,
 0x61a810,_eduiGradStageAddRGB,91,
@@ -7912,6 +8059,10 @@ address,symbol,size,ctype
 0x0061bb10,_eduicbRenderGreyPick,534,"i32 __cdecl(eduimenu_s *, eduiitem_s *, i32, i32, i32, i32)"
 0x61bd30,_eduicbProcessTexturePick,758,
 0x61c030,_eduicbRenderTexturePick,1195,
+0x61c4e0,_eduiItemGraphAddOnionSkin,42,"void __cdecl (eduiitem_s *, nugraph_s *)"
+0x61c510,_eduiItemGraphSetCursor,201,"void __cdecl (eduiitem_s *, f32, f32)"
+0x61c5e0,_eduiItemGraphSetLabels,85,"void __cdecl (eduiitem_s *, char *, char *, char *)"
+0x61c640,_eduicbProcessGraph,1270,"i32 __cdecl (eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *)"
 0x61cb40,_eduiRenderGraphLine,529,
 0x61cd60,_eduicbRenderGraph,2730,
 0x61d810,_eduiItemSliderSetValEx,61,
@@ -7948,15 +8099,23 @@ address,symbol,size,ctype
 0x61ed70,_eduicbItemDestroyExpander,58,
 0x61edb0,_eduiIitemExpanderSetDepth,67,
 0x61ee00,_eduiItemExpanderAddChild,81,
+0x61ee60,_eduiItemFilterAddChild,43,"void __cdecl (eduiitem_s *, eduiitem_s *)"
+0x61ee90,_eduiItemFilterRemoveChild,57,"void __cdecl (eduiitem_s *, eduiitem_s *)"
 0x61eed0,_eduicbInteractFilter,5,
 0x61eee0,_eduicbItemDestroyFilter,62,
 0x0061ef20,_EduiRenderItemPc,168,"i32 __cdecl(eduiitem_s *, eduimenu_s *, i32, i32, i32, i32)"
+0x61efd0,_eduiSetUsingMenuFocusPc,10,void __cdecl (i32)
+0x61efe0,_eduiGetUsingMenuFocusPc,6,i32 __cdecl (void)
 0x61eff0,_eduiSetDefaultActiveMenu,10,
 0x61f000,_eduiGetActiveMenu,6,
 0x61f010,_eduiGetTopLevelParent,22,
 0x61f030,_eduiGetActiveMenuParent,26,
 0x61f050,_EduiMenuChainActivePc,30,
 0x61f070,_EduiDeepestChildPc,20,
+0x61f090,_EduiMenuHasFocusPc,30,
+0x61f0b0,_EduiMenuProcessSelectedPc,54,
+0x61f0f0,_EduiMenuEnsureSelectedPc,16,
+0x61f100,_EduiMenuContainsCursorPc,118,
 0x61f180,_cbSel,14,
 0x61f190,_cbGradChange,1,
 0x61f1a0,_cbInteractMenuTitle,135,
@@ -7967,7 +8126,10 @@ address,symbol,size,ctype
 0x0061f340,?EduiAddInteractionPc@@YAXMMMMPAUeduimenu_s@@PAUeduiitem_s@@P6AHPAUedui_interact_s@@@ZIH@Z,134,private EDX menu; stack f32 x/y/width/height and item/callback/buttons/field20 (32B)
 0x0061f3d0,_EduiClearInteractionsPc,47,
 0x61f400,_eduiFlushInteracts,11,
+0x61f410,_EduiReleaseStaleInteractPc,38,
 0x0061f440,_EduiProcessLockedInteractionPc,57,private Native EAX menu; ordinary typed static closed-caller interface
+0x61f480,_EduiInteractSelectItemPc,28,
+0x61f4a0,_EduiInteractPressedPc,16,
 0x0061f4b0,_EduiInteractionContainsCursorPc,94,private Native ECX edui_interact_s pointer; ordinary typed static closed-caller interface
 0x0061f510,_eduiRenderInteracts,696,void __cdecl (void)
 0x0061f7d0,_eduiShowCursor,10,void __cdecl (i32)
@@ -8044,6 +8206,9 @@ address,symbol,size,ctype
 0x623280,_FS_GetPadWithRepeat,88,
 0x6232e0,_ProcessFileSel3,880,
 0x6236e0,_FS_SetFileSelPathFromName,219,
+0x6237c0,_FS_OpenFileSelPc,130,"void __cdecl (char *, char *, char *, char *, void *)"
+0x623850,_eduicbProcessFileSelPc,56,
+0x623890,_eduicbRenderFileSelPc,76,
 0x6238e0,_cbNearClipAtCursor,18,"void __cdecl(eduimenu_s *, eduiitem_s *, u32)"
 0x00623a20,_cbProcessColourPick,190,
 0x00623ae0,_cbCopy,131,"void __cdecl (eduimenu_s *, eduiitem_s *, u32); unprovided callback / Copy FP-status HOLD / zero coverage"
@@ -8065,11 +8230,14 @@ address,symbol,size,ctype
 0x624da0,_eduicbItemFilePickDestroy,110,
 0x624e10,_eduicbPickCFGCancel,12,
 0x624e20,_eduiItemColourPickCreate,179,
+0x624ee0,_eduiItemGreyPickCreate,54,"eduiitem_s *__cdecl (u32, void *, void *, char *)"
 0x624f20,_eduiItemTexturePickCreate,179,
+0x624fe0,_eduiItemGraphCreate,250,"eduiitem_s *__cdecl (u32, void *, void *, nugraph_s *, i32, i32)"
 0x6250e0,_eduicbItemSliderDestroy,110,
 0x625150,_eduiItemSliderCreate,233,
 0x625240,_eduiItemSliderCreateInt,96,
 0x006252a0,_eduiItemNumberCreate,71,"eduiitem_s * __cdecl(u32,void *,i32,void *,f32,f32,f32,char *)"
+0x6252f0,_eduiItemTextSelectorCreate,254,"eduiitem_s *__cdecl (u32, void *, i32, void *, i32, i32, char *, char **)"
 0x6253f0,_EduiPropKeyboardPc,627,
 0x625670,_eduicbProcessProp,43,
 0x6256a0,_eduicbRenderProp,2766,
@@ -8084,12 +8252,14 @@ address,symbol,size,ctype
 0x626b30,_eduicbCancelMessageMenu,25,
 0x626b50,_eduiMenuRender,1602,
 0x6271a0,_eduiSetActiveMenu,68,
+0x6271f0,_eduiClearActiveMenu,59,eduimenu_s *__cdecl (void)
 0x627230,_cbInteractMenuKeySelect,98,
 0x6272a0,_EduiInteractHelperPc6272a0,126,
 0x627320,_eduiProcessInteracts,125,
 0x6273a0,_eduiProcessCursorDefault,406,
 0x627650,_eduiProcessCursor,22,
 0x627670,_eduiItemColourSliderCreate,243,
+0x627770,_eduiItemFileSelCreatePc,172,"eduiitem_s *__cdecl (u32, void *, void *, char *)"
 0x627820,_edmainClose,127,
 0x6278a0,_edmainRender,88,
 0x627900,_edmainSetMenuScale,45,
@@ -8097,6 +8267,7 @@ address,symbol,size,ctype
 0x6279b0,_eduiMenuAttach,58,
 0x6279f0,_eduiMenuDetach,129,
 0x627a80,_eduiItemSelCreate,189,
+0x627b40,_eduiItemSelWithClipColourCreate,50,"eduiitem_s *__cdecl (u32, void *, i32, i32, void *, char *)"
 0x627b80,_eduiItemCheckCreate,64,
 0x627bc0,_eduiItemToggleCreate,64,
 0x627c00,_eduiItemTextPickCreate,238,
@@ -10553,6 +10724,8 @@ address,symbol,size,ctype
 0x6c4420,?ClearLevel@LevelEditor@@QAEXH@Z,70,
 0x6c4470,?Flush@LevelEditor@@QAEXXZ,67,
 0x6c44c0,?CreateEditorList@LevelEditor@@QAEXPAUeduimenu_s@@PAUeduiitem_s@@@Z,159,
+0x6c4560,?Enter@LevelEditor@@QAEXXZ,71,
+0x6c45b0,?Exit@LevelEditor@@QAEXXZ,77,
 0x6c4600,?SelectAxis@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@11PAUVuMtx@@@Z,908,
 0x6c49b0,?DrawAxis@EdManipulator@@QAEXAAUVuVec@@PAUVuMtx@@@Z,2004,
 0x6c5190,?SelectRotator@EdManipulator@@QAEHAAUEdInputContext@@AAUVuVec@@1@Z,1483,
@@ -11281,6 +11454,7 @@ address,symbol,size,ctype
 0x6e5cc0,_PCDeviceSetGammaRampPc,23,
 0x6e5ce0,_PCDeviceGetGammaRampPc,21,
 0x6e5d00,_PCDeviceToggleStateCachePc,16,
+0x6e5d10,_PCDeviceSaveSurfaceBmpPc,561,"void __cdecl (const char *, PC_SURFACE_PC *)"
 0x6e5f60,_CpuDetectFeaturesPc,873,void __cdecl (void)
 0x6e62d0,_CpuGetHasCpuidPc,30,
 0x6e62f0,_CpuGetFamilyPc,30,
@@ -12697,12 +12871,28 @@ address,symbol,size,ctype
 0x7412e0,_NuShaderManagerInit,124,"void __cdecl(VARIPTR *,VARIPTR)"
 0x741390,_NuShaderManagerSetfv,22,"void __cdecl(i32,const f32*)"
 0x7413b0,_NuShaderManagerSetElementfv,27,"void __cdecl(i32,i32,const f32*)"
+0x007413d0,_NuShaderManagerSetElementsfv,32,
 0x7413f0,_NuShaderManagerSetElementsfv_transpose,32,"void __cdecl(i32,i32,i32,const f32*)"
+0x00741410,_NuShaderManagerGetInstance,6,
+0x00741450,?ReleaseShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEXPAVNuShaderObject@@@Z,11,
+0x00741460,?DestroyShaders@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEXXZ,44,
+0x00741490,?SetCurrentShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEXPAVNuShaderObject@@@Z,13,
+0x007414a0,?GetCurrentShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@XZ,7,
+0x007414b0,?GetShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@I@Z,29,
+0x007414d0,?BindShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEXPAVNuShaderObject@@@Z,54,
+0x00741510,?SetShininessFactor@?$ShaderManagerTemplate@VNuShaderObject@@@@SAXM@Z,11,
+0x00741520,?GetShininessFactor@?$ShaderManagerTemplate@VNuShaderObject@@@@SAMXZ,7,
+0x00741530,?FindShader@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PBI@Z,56,
 0x741570,?AllocateSlot@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PAH@Z,128,PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::AllocateSlot(i32*)
+0x00741610,_NuShaderManagerDestroy,50,
+0x00741650,_NuShaderManagerLoadCompiledShaders,1,
 0x741660,_NuShaderManagerReleaseShader,9,void __cdecl(PC_SHADER_RECORD_VIEW*)
+0x00741670,_NuShaderManagerDestroyShaders,44,
+0x007416a0,_NuShaderManagerSetCurrentShader,17,
 0x7416c0,_PCShaderCurrentObjectPc,12,void *__cdecl(void)
 0x7416d0,_PCShaderRecordFromHandle,31,PC_SHADER_RECORD_VIEW *__cdecl(u32)
 0x7416f0,_NuShaderManagerBindShaderPc,61,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
+0x00741730,_NuShaderManagerSetShininessFactor,11,
 0x00741740,_NuShaderManagerGetShininessFactor,7,f32 __cdecl(void)
 0x741750,?Retrieve@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z,208,"PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::Retrieve(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32,bool)"
 0x741820,_NuShaderManagerRetrieveShader,28,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*)"
@@ -12770,6 +12960,7 @@ address,symbol,size,ctype
 0x7449a0,?HasSecondPath@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,9,
 0x7449b0,?HasExtraTexture@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,16,
 0x7449c0,?HasEnvironmentTexture@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,16,
+0x00744aa0,_NuShaderObjectKeyGenerate4,179,
 0x744bc0,?HasSurfaceLayerAbove@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,39,
 0x744bf0,?HasSurfaceLayerAtOrBelow@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,39,
 0x744c20,_NuShaderObjectKeyGenerate3,1093,"void __cdecl(u32*,const PC_SHADER_MATERIAL_FILTER_VIEW*,i32)"
@@ -12792,6 +12983,7 @@ address,symbol,size,ctype
 0x745950,??_GHLSLShaderBuilder@@UAEPAXI@Z,74,
 0x745a50,?SetUniformValues@ShaderManagerHLSL@@QAEXHPBM@Z,297,"void __thiscall ShaderManagerHLSL::SetUniformValues(i32,const f32*)"
 0x745b80,?setElementfv@ShaderManagerHLSL@@QAEXHHPBM@Z,323,"void __thiscall ShaderManagerHLSL::setElementfv(i32,i32,const f32*)"
+0x00745cd0,?setElementsfv@ShaderManagerHLSL@@QAEXHHHPBM@Z,434,
 0x745e90,?setElementsfv_transpose@ShaderManagerHLSL@@QAEXHHHPBM@Z,323,"void __thiscall ShaderManagerHLSL::setElementsfv_transpose(i32,i32,i32,const f32*)"
 0x745fe0,??0?$ShaderManagerTemplate@VNuShaderObject@@@@QAE@XZ,73,
 0x746030,?CreateShader@?$ShaderManagerTemplate@VNuShaderObject@@@@UAE_NPBUPC_SHADER_MATERIAL_FILTER_VIEW@@_NPAVNuShaderObject@@H@Z,5,
@@ -12836,8 +13028,13 @@ address,symbol,size,ctype
 0x7484e0,??0ShaderCompilerBufferAllocatorPc@@QAE@H_N@Z,43,
 0x748510,??0ShaderCompilerBufferAllocatorPc@@QAE@AAUVirtualStackAllocator@@H@Z,39,
 0x748540,??1ShaderCompilerBufferAllocatorPc@@QAE@XZ,32,
+0x00748560,?CopyText@ShaderCompilerBufferAllocatorPc@@QAEPADXZ,46,
 0x748590,?Resize@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,69,
 0x7485e0,?AppendBytes@ShaderCompilerBufferAllocatorPc@@QAEXPBDH@Z,114,
+0x00748660,?Find@ShaderCompilerBufferAllocatorPc@@QAEHPBDH@Z,74,
+0x007486b0,?MatchesAt@ShaderCompilerBufferAllocatorPc@@QAE_NHPBD@Z,58,
+0x007486f0,?OverwriteText@ShaderCompilerBufferAllocatorPc@@QAEXHPBD@Z,46,
+0x00748720,?WriteBytes@ShaderCompilerBufferAllocatorPc@@QAEXHPBXH@Z,28,
 0x748760,?AppendText@ShaderCompilerBufferAllocatorPc@@QAEXPBD@Z,39,
 0x748790,?AppendInt@ShaderCompilerBufferAllocatorPc@@QAEXH@Z,90,
 0x748890,?HasAnisoFlip@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,i32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const
@@ -12863,13 +13060,29 @@ address,symbol,size,ctype
 0x748af0,?HasLayerFlag27@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,24,
 0x748b10,?HasSelector0@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,12,
 0x748b20,?HasSelector1@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,14,
+0x00748b30,?FormatFloatPc@@YAXPADM@Z,25,
+0x00748b50,?FormatFloat2Pc@@YAXPADPBM@Z,34,
+0x00748b80,?FormatFloat4Pc@@YAXPADMMMM@Z,49,
+0x00748bc0,?FormatColourPc@@YAXHPAD@Z,120,
 0x748c40,??0ShaderBuilderGen@@QAE@AAUVirtualStackAllocator@@H@Z,96,
 0x748ca0,?ParseSource@ShaderBuilderGen@@QAEPAXPBDHPAUShaderCompilerBufferAllocatorPc@@HPAUVirtualStackAllocator@@@Z,260,"void * __thiscall (const char *,i32,ShaderCompilerBufferAllocatorPc *,i32,VirtualStackAllocator *)"
 0x748db0,?Generate@ShaderBuilderGen@@QAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerBufferAllocatorPc@@1@Z,324,"void __thiscall (PC_SHADER_MATERIAL_FILTER_VIEW *,ShaderCompilerBufferAllocatorPc *,ShaderCompilerBufferAllocatorPc *)"
+0x00748f00,?SaveFile@ShaderBuilderGen@@QAEXPBD0PBXH@Z,134,
+0x00748f90,?ShaderNextDirectoryPc@@YA_NPBDPAHPAD@Z,91,
+0x00748ff0,?ShaderParameterDefaultPc@@YGXPBUPC_SHADER_DEFAULTS_VIEW_PC@@HPADH@Z,1000,
+0x007493e0,?ShaderBuilderTracePc@@YAXZZ,1,
+0x00749410,?LacksVariantAndLayerFlag12@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,47,
 0x749440,?LoadSource@ShaderBuilderGen@@QAE_NPBDH@Z,58,"bool __thiscall (const char *,i32)"
+0x00749480,?ParseFile@ShaderBuilderGen@@QAEPAXPBDPAUShaderCompilerBufferAllocatorPc@@HPAUVirtualStackAllocator@@@Z,405,
 0x749620,?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,4642,"void __thiscall ShaderBuilderGen::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
+0x0074a850,?LoadFile@ShaderBuilderGen@@QAE_NPBD@Z,53,
+0x0074a890,?CompileEffect@ShaderBuilderGen@@QAEHPBDHPAXH@Z,149,
 0x74a930,?Prepare@HLSLShaderBuilder@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,52,"void __thiscall HLSLShaderBuilder::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *)"
 0x74a970,?Configure@HLSLShaderBuilder@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionaryPc@@@Z,87,"void __thiscall HLSLShaderBuilder::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *)"
+0x0074a9f0,?IsWordChar@ShaderLexicalReaderPc@@QAEHE@Z,18,
+0x0074aa10,?IsTokenChar@ShaderLexicalReaderPc@@QAEHE@Z,22,
+0x0074aa30,?GetBegin@ShaderLexicalSlicePc@@QAEPBDXZ,3,
+0x0074aa40,?At@ShaderLexicalSlicePc@@QAEPBDH@Z,9,
 0x74aa50,?Equals@ShaderLexicalSlicePc@@QAE_NPBD@Z,55,bool __thiscall ShaderLexicalSlicePc::Equals(const char *text)
 0x74aa90,?StartsWith@ShaderLexicalSlicePc@@QAE_NPBD@Z,46,bool __thiscall ShaderLexicalSlicePc::StartsWith(const char *text)
 0x74aac0,?HeapCopy@ShaderLexicalSlicePc@@QAEPADXZ,46,char * __thiscall ShaderLexicalSlicePc::HeapCopy()
@@ -12877,6 +13090,8 @@ address,symbol,size,ctype
 0x74ab30,?AsInteger@ShaderLexicalSlicePc@@QAEHH@Z,61,i32 __thiscall ShaderLexicalSlicePc::AsInteger(i32 skipped_prefix)
 0x74ab70,?Next@ShaderLexicalReaderPc@@QAE_NPAUShaderCompilerBufferAllocatorPc@@PAHPAUShaderLexicalSlicePc@@@Z,614,"bool __thiscall ShaderLexicalReaderPc::Next(ShaderCompilerBufferAllocatorPc *input, i32 *cursor, ShaderLexicalSlicePc *slice)"
 0x74ade0,_ShaderLexicalClassesInitPc,409,
+0x0074afa0,?AppendSlice@ShaderCompilerBufferAllocatorPc@@QAEXABUShaderLexicalSlicePc@@@Z,19,
+0x0074afc0,??6ShaderCompilerBufferAllocatorPc@@QAEAAU0@ABUShaderLexicalSlicePc@@@Z,27,
 0x74afe0,_ShaderDeclarationFlagsPc,49,
 0x74b020,?IsSpecialToken@ShaderLexicalTokenPredicatePc@@QAEHPBD@Z,50,
 0x74b0c0,?AppendOperand@ShaderConditionNodePc@@QAEPAU1@PAU1@@Z,35,ShaderConditionNodePc *__thiscall ShaderConditionNodePc::AppendOperand(ShaderConditionNodePc *)
@@ -12884,9 +13099,42 @@ address,symbol,size,ctype
 0x74b350,?ShaderConditionPrecedencePc@@YAHPBD@Z,249,
 0x74b450,_ShaderDeclarationSemanticPc,607,
 0x74b6f0,?NextIncludeDirectory@ShaderCompilerParserPc@@QAE_NPBDPAHPAD@Z,95,"bool __thiscall (const char *, i32 *, char *)"
+0x0074b780,?capacity@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ,19,
+0x0074b7a0,?size@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ,19,
+0x0074b7c0,??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@XZ,3,
+0x0074b7d0,??D?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEABQAUShaderParserIncludePc@@XZ,37,
+0x0074b800,??0?$allocator@PAUShaderParserIncludePc@@@std@@QAE@ABV01@@Z,5,
+0x0074b820,??E?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ,36,
+0x0074b860,?max_size@?$allocator@PAUShaderParserIncludePc@@@std@@QBEIXZ,6,
+0x0074b870,??G?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV01@@Z,37,
+0x0074b8a0,??8?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z,41,
+0x0074b8d0,??Y?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@H@Z,54,
 0x74b930,??$_Allocate@PAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@IPAPAU1@@Z,91,
+0x0074b990,??$_Iter_random@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@0@Z,5,
+0x0074b9a0,??$_Ptr_cat@PAPAUShaderParserIncludePc@@PAPAU1@@std@@YA?AU_Scalar_ptr_iterator_tag@0@AAPAPAUShaderParserIncludePc@@0@Z,7,
+0x0074b9b0,??$_Copy_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,50,
+0x0074ba00,??$_Fill@PAPAUShaderParserIncludePc@@PAU1@@std@@YAXPAPAUShaderParserIncludePc@@0ABQAU1@@Z,30,
+0x0074ba30,??$_Checked_base@PAPAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@AAPAPAU1@U_Unchanged_checked_iterator_base_type_tag@0@@Z,7,
+0x0074ba40,??$_Copy_backward_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,47,
+0x0074ba70,??$_Iter_cat@PAPAUShaderParserIncludePc@@@std@@YA?AUrandom_access_iterator_tag@0@ABQAPAUShaderParserIncludePc@@@Z,5,
+0x0074ba80,??$_Fill_n@PAPAUShaderParserIncludePc@@IPAU1@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@U_Range_checked_iterator_tag@0@@Z,33,
+0x0074bab0,??$_Uninit_copy@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,46,
+0x0074bb10,??1ShaderParserIncludePc@@AAE@XZ,33,
 0x74bb40,?LoadSourceLines@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@H@Z,299,"void __thiscall (ShaderCompilerBufferAllocatorPc *, i32)"
 0x74bc70,?FlushText@ShaderCompilerParserPc@@QAEXXZ,132,void __thiscall ShaderCompilerParserPc::FlushText()
+0x0074bd30,??_GShaderParserIncludePc@@AAEPAXI@Z,54,
+0x0074bd70,??D?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEAAPAUShaderParserIncludePc@@XZ,37,
+0x0074bdb0,??E?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@XZ,36,
+0x0074bde0,?max_size@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEIXZ,6,
+0x0074bdf0,?allocate@?$allocator@PAUShaderParserIncludePc@@@std@@QAEPAPAUShaderParserIncludePc@@I@Z,18,
+0x0074be10,??G?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBEHABV?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@1@@Z,37,
+0x0074be40,??0?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@PAPAUShaderParserIncludePc@@PBU_Container_base@1@@Z,51,
+0x0074be80,??9?$_Vector_const_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE_NABV01@@Z,41,
+0x0074beb0,??Y?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEAAV01@H@Z,54,
+0x0074bf00,??$_Checked_base@PAPAUShaderParserIncludePc@@@std@@YAPAPAUShaderParserIncludePc@@AAPAPAU1@@Z,7,
+0x0074bf10,??$_Move_backward_opt@PAPAUShaderParserIncludePc@@PAPAU1@Urandom_access_iterator_tag@std@@U_Undefined_move_tag@3@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00Urandom_access_iterator_tag@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z,47,
+0x0074bf40,??$_Fill_n@PAPAUShaderParserIncludePc@@IPAU1@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@Urandom_access_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,33,
+0x0074bf70,??$unchecked_uninitialized_copy@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z,46,
 0x74bfa0,?Parse@ShaderCompilerParserPc@@QAEPAUShaderParserNodePc@@PAUShaderCompilerBufferAllocatorPc@@HEPAUVirtualStackAllocator@@@Z,97,"ShaderParserNodePc *__thiscall (ShaderCompilerBufferAllocatorPc *, i32, u8, VirtualStackAllocator *)"
 0x74c010,?DefineMacro@ShaderCompilerParserPc@@QAEXPBD0@Z,217,"void __thiscall ShaderCompilerParserPc::DefineMacro(const char *name, const char *value)"
 0x74c0f0,?UndefineMacro@ShaderCompilerParserPc@@QAEXPBD@Z,154,void __thiscall ShaderCompilerParserPc::UndefineMacro(const char *name)
@@ -12899,17 +13147,32 @@ address,symbol,size,ctype
 0x74c470,?AddDeclaration@ShaderCompilerParserPc@@QAEXIHHPBDH0HH@Z,259,
 0x74c580,?EmitDeclarations@ShaderCompilerParserPc@@QAEXI@Z,95,
 0x74c5e0,?ParseExpression@ShaderCompilerParserPc@@QAEPAUShaderConditionNodePc@@PAUShaderCompilerBufferAllocatorPc@@PAH@Z,705,"ShaderConditionNodePc *__thiscall ShaderCompilerParserPc::ParseExpression(ShaderCompilerBufferAllocatorPc *, i32 *)"
+0x0074c920,?_Destroy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXPAPAUShaderParserIncludePc@@0@Z,3,
+0x0074c940,??H?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QBE?AV01@H@Z,52,
+0x0074c980,??$unchecked_copy@PAPAUShaderParserIncludePc@@PAPAU1@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00@Z,50,
 0x74c9c0,??$fill@PAPAUShaderParserIncludePc@@PAU1@@std@@YAXPAPAUShaderParserIncludePc@@0ABQAU1@@Z,30,
 0x74c9e0,??$_Unchecked_move_backward@PAPAUShaderParserIncludePc@@PAPAU1@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00@Z,47,
+0x0074ca10,??$unchecked_fill_n@PAPAUShaderParserIncludePc@@IPAU1@@stdext@@YAXPAPAUShaderParserIncludePc@@IABQAU1@@Z,33,
+0x0074ca40,??$_Uninit_move@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@U_Undefined_move_tag@3@@std@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Undefined_move_tag@0@U_Range_checked_iterator_tag@0@@Z,46,
 0x74ca70,?ParseDeclaration@ShaderCompilerParserPc@@QAEXPAUShaderCompilerBufferAllocatorPc@@PAH@Z,2724,
+0x0074d520,?begin@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@XZ,41,
+0x0074d550,?end@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@XZ,41,
+0x0074d580,?erase@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@V32@0@Z,90,
+0x0074d5e0,?_Tidy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXXZ,42,
+0x0074d610,??$_Uninit_fill_n@PAPAUShaderParserIncludePc@@IPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@YAXPAPAUShaderParserIncludePc@@IABQAU1@AAV?$allocator@PAUShaderParserIncludePc@@@0@U_Scalar_ptr_iterator_tag@0@U_Range_checked_iterator_tag@0@@Z,33,
+0x0074d640,??$_Unchecked_uninitialized_move@PAPAUShaderParserIncludePc@@PAPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAPAPAUShaderParserIncludePc@@PAPAU1@00AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z,46,
+0x0074d670,??1?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@XZ,42,
+0x0074d6e0,??$unchecked_uninitialized_fill_n@PAPAUShaderParserIncludePc@@IPAU1@V?$allocator@PAUShaderParserIncludePc@@@std@@@stdext@@YAXPAPAUShaderParserIncludePc@@IABQAU1@AAV?$allocator@PAUShaderParserIncludePc@@@std@@@Z,33,
 0x74d710,??$_Umove@PAPAUShaderParserIncludePc@@@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEPAPAUShaderParserIncludePc@@PAPAU2@00@Z,48,
 0x74d740,?ClearIncludes@ShaderCompilerParserPc@@QAEXXZ,200,void __thiscall ()
 0x74d810,?_Ufill@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEPAPAUShaderParserIncludePc@@PAPAU3@IABQAU3@@Z,46,
 0x74d840,??1ShaderCompilerParserPc@@QAE@XZ,70,__thiscall destructor()
 0x74d890,?_Xlen@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@KAXXZ,112,
+0x0074d900,?_Buy@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAE_NI@Z,72,
 0x74d950,?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z,581,
 0x74dab2,__catch$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$0,,
 0x74dabe,__catch$?_Insert_n@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@IAEXV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@IABQAUShaderParserIncludePc@@@Z$2,,
+0x0074dba0,??0?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE@XZ,14,
 0x74dbb0,?insert@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAE?AV?$_Vector_iterator@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@2@V32@ABQAUShaderParserIncludePc@@@Z,137,
 0x74dc40,??0ShaderCompilerParserPc@@QAE@XZ,129,__thiscall constructor()
 0x74dcd0,?push_back@?$vector@PAUShaderParserIncludePc@@V?$allocator@PAUShaderParserIncludePc@@@std@@@std@@QAEXABQAUShaderParserIncludePc@@@Z,105,void __thiscall (ShaderParserIncludePc *const &)
@@ -19799,6 +20062,7 @@ address,symbol,size,ctype
 0x76adc0,__real@3e2aaaab,4,const f32
 0x76adc8,__real@4070000000000000,8,const f64
 0x76add0,_EduiTextureValueFormatPc,14,const char[]
+0x76ade0,__real@3f20000000000000,8,f64
 0x76ade8,??_C@_0BM@HNNEDBMB@Cursor?5pos?5?$DN?5?$CF1?402f?0?5?$CF1?402f?$AA@,28,char []
 0x76ae04,??_C@_0BK@GNACLIDE@Point?5?$CFd?5?$DN?5?$CF1?402f?0?5?$CF1?402f?$AA@,26,char []
 0x76ae20,__real@3ff2000000000000,8,const f64
@@ -19828,6 +20092,7 @@ address,symbol,size,ctype
 0x76af3c,??_C@_08OJFIKKMI@?$CI?$CF1?403f?$CJ?$AA@,9,char []
 0x76af48,??_C@_04FEBIMPDM@?$CI?$CFd?$CJ?$AA@,5,char []
 0x76af50,__real@3fdcccccc0000000,8,const f64
+0x76af58,??_C@_0DI@JKDDOBKP@d?3?2projects?2game_saga?2gameapi?4sa@,56,char []
 0x76af90,??_C@_09GMFECJDN@?$DMno?5name?$DO?$AA@,10,char []
 0x76af9c,??_C@_0L@GFIMNMGP@Enter?5Text?$AA@,11,char []
 0x76afa8,??_C@_01KMDKNFGN@?1?$AA@,2,char []
@@ -22755,6 +23020,7 @@ address,symbol,size,ctype
 0x776fb4,??_C@_0DC@NAKKJAGN@d3d?5device?5unavailable?4?5Applicat@,50,const char[50]
 0x776fe8,??_C@_0EF@PCKHEFMH@Failed?5to?5create?5d3d?5device?4?5App@,69,const char[69]
 0x777034,_PCDeviceTextureCubeSourcePathPc,15,const char[15]
+0x777044,??_C@_0O@CNALEBEA@?$CFs_pc?$CF03d?4bmp?$AA@,14,char[14]
 0x777054,_PCGraphicsGpuName00777054,11,const char[11]
 0x777060,_PCGraphicsGpuName00777060,13,const char[13]
 0x777070,_PCGraphicsGpuName00777070,7,const char[7]
@@ -32104,7 +32370,11 @@ address,symbol,size,ctype
 0x7e977c,??_C@_09IDKGMKNG@texcoord0?$AA@,10,
 0x7e9788,??_C@_0BJ@IOJPCHFB@struct?5VertexOutput?5?$HL?5?$AN?6?$AA@,25,
 0x7e97a4,??_C@_07NIBOJBAJ@?$CDundef?5?$AA@,8,
+0x007e97b0,??_C@_02NJPGOMH@?$CFf?$AA@,3,
+0x007e97b4,??_C@_0P@BIMPIHBP@float2?$CI?$CFf?0?5?$CFf?$CJ?$AA@,15,
+0x007e97c4,??_C@_0BH@EFAPPKGK@float4?$CI?$CFf?0?5?$CFf?0?5?$CFf?0?5?$CFf?$CJ?$AA@,23,
 0x7e97dc,??_C@_0BF@JONEKAIK@_SHADERBUILDER_DEBUG?$AA@,21,const char []
+0x007e97f4,??_C@_07MHLIEPKG@?$CFs?2?$CFs?$CFs?$AA@,8,
 0x7e97fc,??_C@_0L@MPHMDLOH@SKIN_WORLD?$AA@,11,const char []
 0x7e9808,??_C@_0O@BLMMIJLA@PACKED_VECTOR?$AA@,14,const char []
 0x7e9818,??_C@_0BA@OIDCJLOC@PACKED_TANGENT2?$AA@,16,const char []
