@@ -2898,27 +2898,26 @@ static void HubDrawBonusModePc(void) {
         HubDrawBonusStatsPc(alpha, -1, hub_bonusepisode, hub_bonusmode);
     else
         HubDrawSuperBonusStatsPc(hub_bonusarea != -1 ? &ADataList[hub_bonusarea] : NULL, alpha);
-    const f32 first_alpha = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
-    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166,
-                 first_alpha, first_alpha, 1, NULL);
-    const f32 second_alpha = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
-    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165,
-                 second_alpha, second_alpha, 1, NULL);
+    f32 icon_alpha = (MissionMenuPacketPc.active_player[0] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
+    DrawCharIcon(MissionMenuPacketPc.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 166, icon_alpha,
+                 icon_alpha, 1, NULL);
+    icon_alpha = (MissionMenuPacketPc.active_player[1] != 0 ? 1.0f : MissionDropInAlphaPc) * alpha;
+    DrawCharIcon(MissionMenuPacketPc.player_model[1], ICONX, STATSPOSY, 0.0f, MissionPlayerIconSizePc, 165, icon_alpha,
+                 icon_alpha, 1, NULL);
     if (MainRenderTime <= 0.0f)
         HubDrawBonusModeMenuPc(1, alpha);
     else if (MainRenderTime < 1.0f) {
-        const f32 menu_alpha = 1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff];
-        HubDrawBonusModeMenuPc(0, menu_alpha * alpha);
+        HubDrawBonusModeMenuPc(
+            0, (1.0f - NuTrigTable[((i32)((1.0f - MainRenderTime) * 16384.0 + 16384.0) >> 1) & 0x7fff]) * alpha);
     }
     if (MainRenderTime > 0.0f || bonusmodemode != 0 || alpha != 1.0f)
         return;
     f32 prompt_alpha = .333f;
     if (bonusmodearcade != 0) {
-        if (hub_bonusmode == 4) {
-            AREA_DATA_PC *area = *ArcadeLevelPc[ArcadeItem.level];
-            if (area != NULL && Game.area_save[area->index].complete != 0)
-                prompt_alpha = 1.0f;
-        } else if (hub_bonusmode == 3 && ArcadeItem.entries[3].index == 1)
+        AREA_DATA_PC *area;
+        if ((hub_bonusmode == 4 && (area = *ArcadeLevelPc[ArcadeItem.level]) != NULL &&
+             Game.area_save[area->index].complete != 0) ||
+            (hub_bonusmode == 3 && ArcadeItem.entries[3].index == 1))
             prompt_alpha = 1.0f;
         const i32 colour = menu_flash != 0 ? 191 : 255;
         const f32 y = (f32)(STATSPOSY - .22499999403953552);
@@ -2926,20 +2925,25 @@ static void HubDrawBonusModePc(void) {
             if (MissionMenuPacketPc.active_player[player] == 0)
                 continue;
             const f32 x = player == 0 ? -ICONX : ICONX;
-            const i32 horizontal_alpha =
-                (hub_bonusmode == 4 || (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0)) ? 32 : 128;
+            i32 horizontal_alpha;
+            if (hub_bonusmode == 4)
+                horizontal_alpha = 32;
+            else if (hub_bonusmode == 3 && Arcade_Score[0] == 0 && Arcade_Score[1] == 0)
+                horizontal_alpha = 32;
+            else
+                horizontal_alpha = 128;
             const f32 left = BlipL[player] > 0.0f ? .015000000596046448f : 0.0f;
-            const f32 right = BlipR[player] > 0.0f ? .015000000596046448f : 0.0f;
-            const f32 up = BlipU[player] > 0.0f ? -.021000001579523087f : 0.0f;
-            const f32 down = BlipD[player] > 0.0f ? -.021000001579523087f : 0.0f;
             Text3DEx("<", (f32)(x - .05000000074505806 - left), y, 1.0f, .5f, .5f, .5f, 0, colour, colour, colour,
                      horizontal_alpha);
+            const f32 right = BlipR[player] > 0.0f ? .015000000596046448f : 0.0f;
             Text3DEx(">", (f32)(x + .05000000074505806 + right), y, 1.0f, .5f, .5f, .5f, 0, colour, colour, colour,
                      horizontal_alpha);
+            const f32 up = BlipU[player] > 0.0f ? -.021000001579523087f : 0.0f;
             Text3DEx((char *)InitAsciiUpPc, x, (f32)(y - (-.07000000029802322) - up), 1.0f, .5f, .5f, .5f, 0, colour,
                      colour, colour, hub_bonusmode != 0 ? 128 : 32);
+            const f32 down = BlipD[player] > 0.0f ? -.021000001579523087f : 0.0f;
             Text3DEx((char *)TagAsciiDownPc, x, (f32)(y - .07000000029802322 + down), 1.0f, .5f, .5f, .5f, 0, colour,
-                     colour, colour, hub_bonusmode < 4 ? 128 : 32);
+                     colour, colour, hub_bonusmode >= 4 ? 32 : 128);
         }
     }
     DrawPlayerIconPrompts(MissionMenuPacketPc.active_player[0], TextIdPc880888, prompt_alpha, -1, tBACK, -1, -1,
