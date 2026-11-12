@@ -14545,8 +14545,8 @@ extern "C" {
                     curve_count = animation->curve_count;
                     weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
                     result[render] = weights;
-                    cells = &animation->curves[curve_count * node];
-                    types = &animation->curve_types[curve_count * node];
+                    cells = &animation->curves[animation->curve_count * node];
+                    types = &animation->curve_types[animation->curve_count * node];
                     if (weights == NULL)
                         continue;
                     for (curve = 0; curve < curve_count; ++curve) {
