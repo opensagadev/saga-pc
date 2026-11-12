@@ -184,9 +184,10 @@ static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
     i32 count;
     if (effect == -1)
         return;
-    rate = PartExtraCoinRate_PC;
     if (WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4)
-        rate = (f32)((f64)rate * 0.5);
+        rate = (f32)((f64)PartExtraCoinRate_PC * 0.5);
+    else
+        rate = PartExtraCoinRate_PC;
     count = ParticlesPerSecond(rate, FRAMETIME);
     if (count > 0)
         AddVariableShotDebrisEffect(effect, position, count, 0, 0);
