@@ -15082,46 +15082,50 @@ extern "C" {
     DWA_WEIGHT_BLOCK_PC **__cdecl NuHGobjEvalDwa(i32 render_count, i16 *render_indices,
                                                  NUANIM_LEGACY_HEADER_PC *animation, f32 frame) {
         NUANIM_TIME2_PC time;
-        DWA_WEIGHT_BLOCK_PC **weights_by_render;
+        DWA_WEIGHT_BLOCK_PC **weights_by_render = NULL;
         i32 render;
-        if (animation == NULL || render_count == 0)
-            return NULL;
-        NuAnimDataCalcTime(animation, frame, &time);
-        if (render_indices == NULL)
-            render_count = 1;
-        weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
-        memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
-        if (weights_by_render == NULL)
-            return NULL;
-        for (render = 0; render < render_count; ++render) {
-            i32 node = render_indices == NULL ? 0 : render_indices[render];
-            NUANIM_LEGACY_CHUNK_PC *chunk;
-            NUANIM_LEGACY_SET_PC *set;
-            DWA_WEIGHT_BLOCK_PC *weights;
-            i32 curve_count, curve;
-            if (node < 0)
-                continue;
-            chunk = (NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk];
-            if (render_indices != NULL && node >= chunk->node_count) {
-                weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
-                continue;
-            }
-            set = chunk->curve_sets[node];
-            if (set == NULL) {
-                weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
-                continue;
-            }
-            curve_count = set->curve_count;
-            weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
-            weights_by_render[render] = weights;
-            if (weights == NULL || curve_count <= 0)
-                continue;
-            for (curve = 0; curve < curve_count; ++curve) {
-                NUANIM_LEGACY_SET_PC *curve_set =
-                    ((NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk])->curve_sets[node];
-                weights->values[curve] = curve_set->curves[curve] != NULL
-                                             ? NuAnimCurveCalcVal2(curve_set->curves[curve], &time)
-                                             : curve_set->constants[curve];
+        if (animation != NULL && render_count != 0) {
+            NuAnimDataCalcTime(animation, frame, &time);
+            if (render_indices == NULL)
+                render_count = 1;
+            weights_by_render = NuRndrCreateBlendShapeDWAPointers(render_count);
+            memset(weights_by_render, 0, ((u32)render_count * sizeof(void *) + 15) >> 4);
+            if (weights_by_render != NULL) {
+                for (render = 0; render < render_count; ++render) {
+                    i32 node;
+                    DWA_WEIGHT_BLOCK_PC *weights;
+                    i32 curve_count, curve;
+                    if (render_indices != NULL) {
+                        node = render_indices[render];
+                        if (node < 0)
+                            continue;
+                        if (node >= ((NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk])->node_count) {
+                            weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+                            continue;
+                        }
+                    } else {
+                        node = 0;
+                    }
+                    if (((NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk])->curve_sets[node] != NULL) {
+                        curve_count =
+                            ((NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk])->curve_sets[node]->curve_count;
+                    } else {
+                        weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
+                        continue;
+                    }
+                    weights = NuRndrCreateBlendShapeDeformerWeightsArray(curve_count);
+                    weights_by_render[render] = weights;
+                    if (weights == NULL)
+                        continue;
+                    for (curve = 0; curve < curve_count; ++curve) {
+                        NUANIM_LEGACY_SET_PC *set =
+                            ((NUANIM_LEGACY_CHUNK_PC *)animation->chunks[time.chunk])->curve_sets[node];
+                        if (set->curves[curve] != NULL)
+                            weights->values[curve] = NuAnimCurveCalcVal2(set->curves[curve], &time);
+                        else
+                            weights->values[curve] = set->constants[curve];
+                    }
+                }
             }
         }
         return weights_by_render;
