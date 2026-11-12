@@ -1817,30 +1817,28 @@ extern "C" {
                 continue;
             if (!(part->flags & 0x08000000) && (part->flags & 0xa) != 0xa)
                 continue;
-            if (minimum->x > part->collision_max.x || part->collision_min.x > maximum->x ||
-                minimum->z > part->collision_max.z || part->collision_min.z > maximum->z ||
-                minimum->y > part->collision_max.y || part->collision_min.y > maximum->y)
+            if (part->collision_max.x < minimum->x || part->collision_min.x > maximum->x ||
+                part->collision_max.z < minimum->z || part->collision_min.z > maximum->z ||
+                part->collision_max.y < minimum->y || part->collision_min.y > maximum->y)
                 continue;
             for (point = 2; point >= 0; --point) {
                 if ((bolt->flags & 0x200) && point != 1)
                     continue;
                 if (SphereSphereOverlapScaleY(&part->position, part->field_e4, part->field_e4, &points[point], radius,
-                                              radius))
-                    break;
+                                              radius)) {
+                    BoltSys->debris(bolt, points, point, &part->velocity, 0);
+                    Bolt_PlayHitSfx(bolt);
+                    if (bolt->owner && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 1))
+                        NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .7f, 0);
+                    bolt->active = 0;
+                    if (bolt->type && bolt->type->end_callback)
+                        bolt->type->end_callback(bolt);
+                    if (BoltSys->hit_part && BoltSys->hit_part(bolt, part) == 1)
+                        return part;
+                    KillPart(part, reason);
+                    return part;
+                }
             }
-            if (point < 0)
-                continue;
-            BoltSys->debris(bolt, points, point, &part->velocity, 0);
-            Bolt_PlayHitSfx(bolt);
-            if (bolt->owner && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 1))
-                NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, .7f, 0);
-            bolt->active = 0;
-            if (bolt->type && bolt->type->end_callback)
-                bolt->type->end_callback(bolt);
-            if (BoltSys->hit_part && BoltSys->hit_part(bolt, part) == 1)
-                return part;
-            KillPart(part, reason);
-            return part;
         }
         return NULL;
     }
