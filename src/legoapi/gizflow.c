@@ -1208,7 +1208,7 @@ void __cdecl DynamicAddGizmoToFlow(GIZFLOW_PC *system, GIZMO_PC *gizmo) {
             if ((box->state_flags_low & 1) == 0) {
                 if (flowbox_callbacks[box->type].reset != NULL)
                     flowbox_callbacks[box->type].reset(system, box);
-                if ((box->state_flags_low & 5) == 4 && box->type == 0)
+                if ((*(u16 *)&box->state_flags_low & 1) == 0 && (*(u16 *)&box->state_flags_low & 4) != 0 && box->type == 0)
                     GizmoSetVisibility(system->gizmo_sys, data->gizmos[j]->gizmo, 0, 1);
             }
         }
