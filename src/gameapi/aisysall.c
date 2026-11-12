@@ -9174,8 +9174,7 @@ static __declspec(noinline) void pathEditor_CalcNodeIXs(void) {
     i32 index;
     for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
          path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
-        index = 0;
-        for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes); node != NULL;
+        for (node = (EDAIPATHNODE_s *)NuLinkedListGetHead(&path->nodes), index = 0; node != NULL;
              node = (EDAIPATHNODE_s *)NuLinkedListGetNext(&path->nodes, &node->link)) {
             node->index = (i16)index++;
         }
