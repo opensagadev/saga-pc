@@ -4412,6 +4412,7 @@ void __cdecl AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC
     i32 index;
     AILOCATOR_PC *locator;
     NUVEC forward = {0.0f, 0.0f, 1.0f};
+    NUVEC rotated;
     if (system == NULL) {
         return;
     }
@@ -4436,7 +4437,6 @@ void __cdecl AISysProcess(AISYS_PC *system, APIOBJECT_PC *player_1, APIOBJECT_PC
         antinode->min_y = antinode->min_y_offset + antinode->position.y;
         antinode->max_y = antinode->max_y_offset + antinode->position.y;
         if (antinode->type != 0) {
-            NUVEC rotated;
             NuVecMtxRotate(&rotated, &forward, draw_matrix);
             antinode->rotation = NuAtan2D(rotated.x, rotated.z);
             antinode->rotation = NuAngAdd(antinode->rotation, antinode->rotation_offset);
