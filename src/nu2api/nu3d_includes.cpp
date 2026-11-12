@@ -7662,31 +7662,11 @@ extern "C" {
             return;
         }
 
-        {
-            if (NuQFntModeStackIndex < 16) {
-                NuQFntModeStack[NuQFntModeStackIndex++] = NuQFntMode;
-            }
-            NuQFntMode = 2;
-            if (NuQFntCSModeStackIndex < 16) {
-                NuQFntCSModeStack[NuQFntCSModeStackIndex++] = nuqfnt_cs_mode;
-            }
-            nuqfnt_cs_mode = 1;
-            qfnt_rezscale_w = NuTimeBarQFontScale;
-            qfnt_rezscale_h = NuTimeBarQFontScale;
-            qfnt_offscale_x = 0.0f;
-            qfnt_offscale_y = 0.0f;
-            qfnt_len_scale = NuTimeBarQFontSize;
-            qfnt_height_scale = NuTimeBarQFontSize;
-            if (system_qfont != NULL) {
-                system_qfont->mode = 1;
-                nuqfnt_space_width = system_qfont->space_width;
-            }
-        }
-        if (system_qfont != NULL) {
-            system_qfont->platform_data->colour = 0xe0e0e0e0;
-            *system_qfont->x_scale = NuTimeBarFontScale;
-            *system_qfont->y_scale = (NuQFntMode & 4) != 0 ? NuTimeBarFontScale : NuTimeBarHalfFontScale;
-        }
+        NuQFntPushPrintMode(2);
+        NuQFntPushCoordinateSystem(1);
+        NuQFntSet(system_qfont);
+        NuQFntSetColour(system_qfont, 0xe0e0e0e0);
+        NuQFntSetScale(system_qfont, NuTimeBarFontScale, NuTimeBarFontScale);
         vertical_scale = (f32)(NuTimeBarVerticalScale / PS2_VREZ_H);
         timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
         for (slot = 0; slot < timebar->slot_count; ++slot) {
