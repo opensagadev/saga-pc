@@ -843,8 +843,6 @@ extern "C" {
         i32 i;
         if (ObjTabList == NULL)
             return -1;
-        if (LEVELOBJECTCOUNT <= 0)
-            return -1;
         for (i = 0; i < LEVELOBJECTCOUNT; ++i) {
             if (NuStrICmp(ObjTabList[i].name, name) == 0) {
                 return i;
