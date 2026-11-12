@@ -7368,80 +7368,63 @@ i32 __cdecl Action_CycleCharacter(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
     i32 single_switch;
     i32 first_category;
     (void)sys;
-    if (packet != NULL && packet->owner != NULL) {
-        object = (GAMEOBJECT *)((APIOBJECT_PC *)packet->owner)->owner;
-        if (object == NULL || FreePlay == 0 || (i8)object->field_280 == -1)
-            return 1;
+    single_switch = 0;
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL)
+        return 1;
+    object = packet->owner->objptr;
+    if (FreePlay == 0 || (i8)object->field_280 == -1)
+        return 1;
 
-        single_switch = 0;
-        if (param_5 != 0) {
-            i32 index;
-            processor->action_data_1 = (u8)CHARCATEGORYCOUNT;
-            processor->action_data_2 = (u8)CHARCATEGORYCOUNT;
+    if (param_5 != 0) {
+        i32 index;
+        processor->action_data_1 = (u8)CHARCATEGORYCOUNT;
+        processor->action_data_2 = (u8)CHARCATEGORYCOUNT;
 
-            for (index = 0; index < param_4; ++index) {
-                char *value = NuStrIStr(params[index], (char *)"time");
-                if (value != NULL) {
-                    processor->action_data_4 = AIParamToFloat(processor, value + 5);
-                    continue;
-                }
-
-                value = NuStrIStr(params[index], (char *)"Category");
-                if (value != NULL) {
-                    const i32 category = CharCategory_FindByName(value + 9);
-                    if (category != -1) {
-                        if (processor->action_data_1 >= CHARCATEGORYCOUNT)
-                            processor->action_data_1 = (u8)category;
-                        else
-                            processor->action_data_2 = (u8)category;
-                        break;
-                    }
-                    continue;
-                }
-
-                value = NuStrIStr(params[index], (char *)"min_speed=");
-                if (value != NULL) {
-                    processor->action_data_5 = AIParamToFloat(processor, value + 10);
-                    continue;
-                }
-
-                if (NuStrICmp(params[index], "SingleSwitch") == 0)
-                    single_switch = 1;
+        for (index = 0; index < param_4; ++index) {
+            char *value = NuStrIStr(params[index], (char *)"time");
+            if (value != NULL) {
+                processor->action_data_4 = AIParamToFloat(processor, value + 5);
+                continue;
             }
+
+            value = NuStrIStr(params[index], (char *)"Category");
+            if (value != NULL) {
+                const i32 category = CharCategory_FindByName(value + 9);
+                if (category != -1) {
+                    if (processor->action_data_1 < CHARCATEGORYCOUNT)
+                        processor->action_data_2 = (u8)category;
+                    else
+                        processor->action_data_1 = (u8)category;
+                    break;
+                }
+                continue;
+            }
+
+            value = NuStrIStr(params[index], (char *)"min_speed=");
+            if (value != NULL) {
+                processor->action_data_5 = AIParamToFloat(processor, value + 10);
+                continue;
+            }
+
+            if (NuStrICmp(params[index], "SingleSwitch") == 0)
+                single_switch = 1;
         }
+    }
 
-        if (object->character_context == 0xb)
-            return 0;
+    if (object->character_context == 0xb)
+        return 0;
 
-        first_category = processor->action_data_1;
-        if (first_category < CHARCATEGORYCOUNT) {
-            if (processor->action_data_5 == 0.0f ||
-                ((APIOBJECT_PC *)packet->owner)->character_data->game_character->run_speed >=
-                    processor->action_data_5) {
-                i32 second_category;
-                if (CharCategory_IsCategory(object, first_category) != 0)
-                    return 1;
-
-                second_category = processor->action_data_2;
-                if (second_category < CHARCATEGORYCOUNT && CharCategory_IsCategory(object, second_category) != 0)
-                    return 1;
-            }
-
-            processor->action_timer += param_6;
-            if (processor->action_timer > processor->action_data_4) {
-                processor->action_timer = 0.0f;
-                object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
-            }
-            return 0;
-        }
-
-        if (processor->action_data_5 != 0.0f) {
-            if (((APIOBJECT_PC *)packet->owner)->character_data->game_character->run_speed >= processor->action_data_5)
+    first_category = processor->action_data_1;
+    if (first_category < CHARCATEGORYCOUNT) {
+        if (processor->action_data_5 == 0.0f ||
+            ((APIOBJECT_PC *)packet->owner)->character_data->game_character->run_speed >= processor->action_data_5) {
+            i32 second_category;
+            if (CharCategory_IsCategory(object, first_category) != 0)
                 return 1;
-        } else {
-            if (single_switch != 0)
-                object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
-            return 1;
+
+            second_category = processor->action_data_2;
+            if (second_category < CHARCATEGORYCOUNT && CharCategory_IsCategory(object, second_category) != 0)
+                return 1;
         }
 
         processor->action_timer += param_6;
@@ -7449,6 +7432,22 @@ i32 __cdecl Action_CycleCharacter(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, 
             processor->action_timer = 0.0f;
             object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
         }
+        return 0;
+    }
+
+    if (processor->action_data_5 != 0.0f) {
+        if (((APIOBJECT_PC *)packet->owner)->character_data->game_character->run_speed >= processor->action_data_5)
+            return 1;
+    } else {
+        if (single_switch != 0)
+            object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
+        return 1;
+    }
+
+    processor->action_timer += param_6;
+    if (processor->action_timer > processor->action_data_4) {
+        processor->action_timer = 0.0f;
+        object->pad->buttons_pressed |= GAMEPAD_TOGGLERIGHT;
     }
     return 1;
 }
