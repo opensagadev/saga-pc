@@ -7359,11 +7359,12 @@ i32 Action_CancelHint(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC 
 
 i32 __cdecl Action_DisableNarrowSocks(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKET_PC *packet, char **params,
                                       i32 param_count, i32 first_time, f32 elapsed) {
-    i32 disabled;
-    disabled = 1;
-    if (param_count != 0 && params != NULL && params[0] != NULL && NuStrICmp((char *)AIActionFalseName, params[0]) == 0)
-        disabled = 0;
-    disable_narrow_socks = disabled;
+    if (params != NULL && param_count != 0 && params[0] != NULL &&
+        NuStrICmp((char *)AIActionFalseName, params[0]) == 0) {
+        disable_narrow_socks = 0;
+        return 1;
+    }
+    disable_narrow_socks = 1;
     return 1;
 }
 
