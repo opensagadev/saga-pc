@@ -4487,7 +4487,7 @@ i32 __cdecl Action_BigJump(AISYS_PC *sys, AISCRIPTPROCESS_PC *processor, AIPACKE
             object->ai_packet.path_info = target->ai_packet.path_info;
             object->ai_packet.last_path_position = target->ai_packet.last_path_position;
         } else {
-            if (destination.x != 1.0e9 || destination.y != 1.0e9 || destination.z != 1.0e9)
+            if (destination.x != 1.0e9 && destination.y != 1.0e9 && destination.z != 1.0e9)
                 StartBigJump(object, &destination, slam, jump_factor, 1.0f, check_terrain);
             else
                 StartBigJump(object, &object->collision_position, slam, jump_factor, 1.0f, check_terrain);
