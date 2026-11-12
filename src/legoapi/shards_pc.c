@@ -60,24 +60,23 @@ void *__cdecl Shards_ReserveBufferSpace(WORLDINFO *world) {
 }
 i32 __cdecl Shards_Load(WORLDINFO *world, void *unused) {
     i32 index, version;
-    if (world->shard_count != 0)
-        return 0;
-    version = EdFileReadInt();
-    world->shard_count = EdFileReadInt();
-    for (index = 0; index < world->shard_count; ++index) {
-        EdFileRead(((SHARD_s *)world->shards)[index].name, 16);
-        EdFileReadNuVec(&((SHARD_s *)world->shards)[index].position);
-        if (version >= 2) {
-            u16 angle = EdFileReadShort();
-            ((SHARD_s *)world->shards)[index].angle_x = angle;
-            angle = EdFileReadShort();
-            ((SHARD_s *)world->shards)[index].angle_z = angle;
-        } else {
-            ((SHARD_s *)world->shards)[index].angle_x = 0;
-            ((SHARD_s *)world->shards)[index].angle_z = 0;
+    if (world->shard_count == 0) {
+        version = EdFileReadInt();
+        world->shard_count = EdFileReadInt();
+        for (index = 0; index < world->shard_count; ++index) {
+            EdFileRead(((SHARD_s *)world->shards)[index].name, 16);
+            EdFileReadNuVec(&((SHARD_s *)world->shards)[index].position);
+            if (version >= 2) {
+                ((SHARD_s *)world->shards)[index].angle_x = EdFileReadShort();
+                ((SHARD_s *)world->shards)[index].angle_z = EdFileReadShort();
+            } else {
+                ((SHARD_s *)world->shards)[index].angle_x = 0;
+                ((SHARD_s *)world->shards)[index].angle_z = 0;
+            }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 void __cdecl Shard_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
