@@ -854,40 +854,43 @@ static void(__cdecl *GizObstacleUpdateFnsPc[8])(GIZOBSTACLE *) = {
 void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     GIZOBSTACLE_SYSTEM_PC *system = (GIZOBSTACLE_SYSTEM_PC *)data;
+    GIZMOSYS_PREFIX_PC *gizmo_sys;
     GIZMOSET_PC *set;
     GIZMO_PC *gizmo;
     i32 i;
     (void)time;
-    if (!world || !system || !world->gizmo_sys || !((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets)
+    if (!world || !system)
+        return;
+    gizmo_sys = (GIZMOSYS_PREFIX_PC *)world->gizmo_sys;
+    if (!gizmo_sys || !gizmo_sys->sets)
         return;
     system->active_gizmo_count = 0;
-    set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[obstacle_gizmotype_id];
-    for (i = 0, gizmo = set->gizmos; i < set->count; ++i, ++gizmo) {
+    set = &gizmo_sys->sets[obstacle_gizmotype_id];
+    for (gizmo = set->gizmos, i = 0; i < set->count; ++i, ++gizmo) {
         GIZOBSTACLE *obstacle = (GIZOBSTACLE *)gizmo->object;
         GAMEOBJECT *previous = obstacle->triggering_object;
-        GAMEANIMSET *animation;
         obstacle->triggering_object = NULL;
         if (!(obstacle->progress_flags & 2) || !(obstacle->progress_flags & 5) || !obstacle->anim_set ||
             (obstacle->progress_flags & 0x100) || (obstacle->runtime_flags & 0x80))
             continue;
         if (obstacle->mode == 7) {
-            if (!(obstacle->progress_flags & 8))
-                obstacle->animation_speed = obstacle->playback_state == 1 ? -1.0f : 0.0f;
-            else
+            if (obstacle->progress_flags & 8)
                 obstacle->triggering_object = previous;
+            else if (obstacle->playback_state == 1)
+                obstacle->animation_speed = -1.0f;
+            else
+                obstacle->animation_speed = 0.0f;
             if (obstacle->animation_speed != 0.0f)
                 GizObstacle_PlayForwards(obstacle);
             else
                 GizObstacle_Stop(obstacle);
-        } else if (obstacle->progress_flags & 4) {
-            if (obstacle->animation_speed == 0.0f)
-                GizObstacle_Stop(obstacle);
-            else
-                GizObstacle_PlayForwards(obstacle);
-        } else if (GizObstacleUpdateFnsPc[obstacle->mode])
+        } else if ((obstacle->progress_flags & 4) && obstacle->animation_speed != 0.0f)
+            GizObstacle_PlayForwards(obstacle);
+        else if ((obstacle->progress_flags & 4) && obstacle->animation_speed == 0.0f)
+            GizObstacle_Stop(obstacle);
+        else if (GizObstacleUpdateFnsPc[obstacle->mode])
             GizObstacleUpdateFnsPc[obstacle->mode](obstacle);
-        animation = obstacle->anim_set;
-        if (animation->flags & 7) {
+        if (obstacle->anim_set->flags & 7) {
             GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
             if (obstacle->runtime_flags & 0x20) {
                 GAMEANIMOBJ *object;
@@ -905,16 +908,16 @@ void __cdecl GizObstacles_Update(void *world_ptr, void *data, f32 time) {
                        (!obstacle->anim_set->state || IsSfxLooping(obstacle->start_sfx_id)))
                 GameAudio_PlaySfxById(obstacle->start_sfx_id, &obstacle->evaluated_position, 0, 0);
         }
-        animation = obstacle->anim_set;
-        if (animation->state == 2)
+        if (obstacle->anim_set->state == 2)
             obstacle->runtime_flags &= ~0x40u;
         if ((!obstacle->playback_state || obstacle->playback_state == 3 || (obstacle->config_flags & 0x80)) &&
-            ((animation->flags & 2) || !animation->animated_object_count) && animation->state == 2 &&
-            (obstacle->blowup_type != -1 || obstacle->pickup_count)) {
+            ((obstacle->anim_set->flags & 2) || !obstacle->anim_set->animated_object_count) &&
+            obstacle->anim_set->state == 2 && (obstacle->blowup_type != -1 || obstacle->pickup_count)) {
             if (obstacle->blowup_type != -1) {
                 if (obstacle->config_flags & 0x200) {
                     GAMEANIMOBJ *object;
-                    for (object = animation ? animation->objects : NULL; object; object = object->next) {
+                    for (object = obstacle->anim_set ? obstacle->anim_set->objects : NULL; object;
+                         object = object->next) {
                         NUVEC *position = NuSpecialGetDrawPos(&object->special);
                         if (position)
                             GizmoBlowUpTypeBlowUp(world, obstacle->blowup_type, position);
