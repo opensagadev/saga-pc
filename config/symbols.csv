@@ -20588,7 +20588,9 @@ address,symbol,size,ctype
 0x76e138,__real@cceb79a3,4,const f32
 0x0076e13c,_TerrainSkinBoundsMaxPc,4,
 0x76e13c,__real@4ceb79a3,4,const f32
+0x0076e140,__real@c13e848000000000,8,const f64
 0x0076e148,_TerrainCastLowerSentinel,4,
+0x0076e148,__real@c9f42400,4,const f32
 0x76e14c,__real@2b8cbccc,4,const f32
 0x76e150,__real@ba03126f,4,const f32
 0x76e158,__real@bf0a36e2e0000000,8,const f64
