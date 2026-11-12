@@ -12716,7 +12716,7 @@ address,symbol,size,ctype
 0x007421d0,?PCShaderUnpackColourPc@@YAPAMPAMH@Z,91,
 0x00742240,_PCShaderSamplerBiasBitsPc,62,u32 __cdecl(f32)
 0x00742280,?PCShaderSamplerWrapPc@@YAXHIH@Z,115,
-0x742300,_PCShaderFindConstantPc,40,static const char *(ShaderUniformRecordPc *, ID3DXConstantTable *, const char *, i32)
+0x742300,_PCShaderFindConstantPc,40,"static const char *(ShaderUniformRecordPc *, ID3DXConstantTable *, const char *, i32)"
 0x742330,_NuShaderObjectCreate,24,void __cdecl NuShaderObjectCreate(PC_SHADER_OBJECT_FULL_VIEW *)
 0x742350,_NuShaderObjectInit,33,"void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*,const u32*,i32,const char*,i32,const char*,i32,i32)"
 0x742380,_NuShaderObjectUnInit,5,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
