@@ -250,8 +250,9 @@ extern "C" void __cdecl GizActions_GoToNewLevelPc(GIZFLOW_PC *unused0, FLOWBOX_P
 }
 
 extern "C" void __cdecl GizActions_SetVisibilityPc(GIZFLOW_PC *unused0, FLOWBOX_PC *unused1, char **params, i32 count) {
-    NUSPECIALHANDLE special = {0};
+    NUSPECIALHANDLE special;
     i32 visible = 1;
+    memset(&special, 0, sizeof(special));
     for (i32 i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], (char *)AIScriptActionNameArgPrefix);
         if (value != NULL)
