@@ -1355,20 +1355,22 @@ static i32 Bolt_RayCastPrivate(BOLT_PC *bolt, NUVEC *start, NUVEC *movement) {
     NUVEC end;
     NuVecAdd(&end, start, movement);
     GAMEOBJECT *owner = static_cast<GAMEOBJECT *>(bolt->owner);
-    i32 platform = -1, hit;
+    i32 platform = -1;
     if (owner && owner->level_object_index != -1) {
         platform = owner->level_object_index;
         PlatOnOff(platform, 0);
     }
-    hit = NewRayCastScaleYMask(start, movement, 0.0f, 1.0f, 0, 0) != 0;
-    if (hit) {
+    i32 hit;
+    if (NewRayCastScaleYMask(start, movement, 0.0f, 1.0f, 0, 0) != 0) {
         bolt->hit_platform = (i16)TerrainPlatId();
         bolt->field_104 = (i8)NewRayCastGetImpactTerrainType();
         NuVecAdd(&bolt->dogfight_hit_position, start, movement);
         bolt->hit_normal = ShadNorm;
+        hit = 1;
     } else {
         bolt->hit_platform = -1;
         bolt->field_104 = -1;
+        hit = 0;
     }
     if (platform != -1)
         PlatOnOff(platform, 1);
