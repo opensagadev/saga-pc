@@ -80,16 +80,14 @@ void __cdecl CutScenes_Destroy(CUTSYS_PC *system) {
         return;
     }
     for (i = 0; i < system->count; ++i) {
-        CUT_RECORD_CLEANUP_PC *record = (CUT_RECORD_CLEANUP_PC *)system->records[i];
-        if (record->instance != NULL) {
-            instNuGCutSceneDestroy(record->instance);
+        if (((CUT_RECORD_CLEANUP_PC *)system->records[i])->instance != NULL) {
+            instNuGCutSceneDestroy(((CUT_RECORD_CLEANUP_PC *)system->records[i])->instance);
             ((CUT_RECORD_CLEANUP_PC *)system->records[i])->instance = NULL;
         }
     }
     for (i = 0; i < system->count; ++i) {
-        CUT_RECORD_CLEANUP_PC *record = (CUT_RECORD_CLEANUP_PC *)system->records[i];
-        if (record->scene != NULL) {
-            NuGCutSceneDestroy(record->scene);
+        if (((CUT_RECORD_CLEANUP_PC *)system->records[i])->scene != NULL) {
+            NuGCutSceneDestroy(((CUT_RECORD_CLEANUP_PC *)system->records[i])->scene);
             ((CUT_RECORD_CLEANUP_PC *)system->records[i])->scene = NULL;
         }
     }
@@ -1633,9 +1631,11 @@ extern "C" {
     }
     static void CutScene_EvalCharacter(INSTNUGCUTSCENE *owner, CUT_DRAW_SCENE_PC *, CUT_DRAW_CHAR_INSTANCE_PC *instance,
                                        CUT_DRAW_CHARACTER_PC *character, f32 frame) {
-        GAMEOBJECT *object = (character->flags & 2) != 0 ? NULL : static_cast<GAMEOBJECT *>(instance->character_model);
+        GAMEOBJECT *object = NULL;
         NUMTX matrix;
         i32 visible;
+        if ((character->flags & 2) == 0)
+            object = static_cast<GAMEOBJECT *>(instance->character_model);
         NuGCutCharAnimProcess(reinterpret_cast<CUT_CHARACTER_GENERIC_PC *>(character), frame, &matrix, &visible, NULL,
                               NULL, NULL, NULL, NULL);
         CUT_DRAW_REGISTRATION_INSTANCE_PC *state = reinterpret_cast<CUT_DRAW_REGISTRATION_INSTANCE_PC *>(owner);
@@ -1947,6 +1947,8 @@ extern "C" {
             PCFrameSetLoadingYieldEnabled(0);
             return;
         }
+        if (CutInstEndCount <= 0)
+            return;
         for (i32 i = 0; i < CutInstEndCount; ++i) {
             instNuGCutSceneEnd(CutInstEnd[i]);
             if (i == CutInstEndStop) {
