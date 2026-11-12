@@ -1759,6 +1759,7 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
 
     camera_position->x = camera_position->y = camera_position->z = 0.0f;
     accumulated_target.x = accumulated_target.y = accumulated_target.z = 0.0f;
+    contributing_sockets = 0;
     if (overlap_blend != NULL) {
         *overlap_blend = 0.0f;
     }
@@ -1778,7 +1779,6 @@ i32 __cdecl SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position,
     two_player_pullback = 0.0f;
     single_player_pullback = 0.0f;
     camera_height_above_ground = 0.0f;
-    contributing_sockets = 0;
     for (i = 0; i < TempSPosCount; ++i) {
         candidate = &TempSPosList[i];
         include =
