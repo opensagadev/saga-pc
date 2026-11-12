@@ -167,27 +167,28 @@ extern NUGSCN *EdppPageScenesPc[8];
 void __cdecl DebrisSetFacing(i32, u8, i16, i16);
 void __cdecl DebrisSetRoomID(i32, NUGSCN *);
 void __cdecl edppStartSingleEffect(i32 index) {
-    EDPP_PARTICLE_PC *particle = &edpp_ptls[index];
-    if (particle->instance_id != -1)
+    if (edpp_ptls[index].instance_id != -1)
         return;
-    AddDebrisEffect(&particle->instance_id, particle->effect_index, particle->position.x, particle->position.y,
-                    particle->position.z);
-    if (particle->instance_id == -1)
+    AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index, edpp_ptls[index].position.x,
+                    edpp_ptls[index].position.y, edpp_ptls[index].position.z);
+    if (edpp_ptls[index].instance_id == -1)
         return;
-    debkeydata[particle->instance_id].field_2f9 = 0;
-    DebrisOrientation(particle->instance_id, particle->rotation_z, particle->rotation_y);
-    DebrisEmitterOrientation(particle->instance_id, particle->emitter_rotation_z, particle->emitter_rotation_y,
-                             particle->emitter_rotation_x);
-    DebrisStartOffsetEx(&debkeydata[particle->instance_id], particle->start_offset);
-    DebrisSetTrigger(particle->instance_id, particle->switch_type, particle->switch_id, particle->switch_variable);
-    DebrisReflectionOrientation(particle->instance_id, particle->reflection_rotation_z, particle->reflection_rotation_y,
-                                particle->reflection_offset, particle->reflection_bounce);
-    DebrisSetFacing(particle->instance_id, particle->facing_mode, particle->facing_rotation_x,
-                    particle->facing_rotation_y);
-    if (particle->instance_id != -1)
-        debkeydata[particle->instance_id].render_group = particle->render_group;
-    DebrisSetRoomID(particle->instance_id, EdppPageScenesPc[particle->page]);
-    debkeydata[particle->instance_id].orientation_flags = (u8)particle->detail_levels;
+    debkeydata[edpp_ptls[index].instance_id].field_2f9 = 0;
+    DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
+    DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z,
+                             edpp_ptls[index].emitter_rotation_y, edpp_ptls[index].emitter_rotation_x);
+    DebrisStartOffsetEx(&debkeydata[edpp_ptls[index].instance_id], edpp_ptls[index].start_offset);
+    DebrisSetTrigger(edpp_ptls[index].instance_id, edpp_ptls[index].switch_type, edpp_ptls[index].switch_id,
+                     edpp_ptls[index].switch_variable);
+    DebrisReflectionOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].reflection_rotation_z,
+                                edpp_ptls[index].reflection_rotation_y, edpp_ptls[index].reflection_offset,
+                                edpp_ptls[index].reflection_bounce);
+    DebrisSetFacing(edpp_ptls[index].instance_id, edpp_ptls[index].facing_mode, edpp_ptls[index].facing_rotation_x,
+                    edpp_ptls[index].facing_rotation_y);
+    if (edpp_ptls[index].instance_id != -1)
+        debkeydata[edpp_ptls[index].instance_id].render_group = edpp_ptls[index].render_group;
+    DebrisSetRoomID(edpp_ptls[index].instance_id, EdppPageScenesPc[edpp_ptls[index].page]);
+    debkeydata[edpp_ptls[index].instance_id].orientation_flags = (u8)edpp_ptls[index].detail_levels;
 }
 void __cdecl edppStartPage(i32 page) {
     i32 index;
