@@ -148,7 +148,7 @@ void CharPlatforms_Update(CHARPLATFORMSYS_s *system) {
         object = Obj;
         for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
             if ((object->flags_1fc_half & 0x1001) == 0x1001 && object->dead == 0 &&
-                object->field_107c == system->platforms[i].platform_id) {
+                object->level_object_index == system->platforms[i].platform_id) {
                 nuhspecial_s *special = &system->platforms[i].special;
                 NUMTX *matrix = NuSpecialGetDrawMtx(special);
                 if (matrix != NULL) {
