@@ -691,7 +691,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
     (void)unused_system;
     (void)unused_time;
     for (index = 0; index < view->grapple_count; ++index, ++grapple) {
-        if ((grapple->flags & 3) != 3)
+        if (!grapple->active || !grapple->visible)
             continue;
         if (grapple->activation_progress > 0.0f)
             grapple->activation_progress -= FRAMETIME;
@@ -714,7 +714,7 @@ extern "C" void __cdecl Grapples_Update(void *world_pointer, void *unused_system
         occupant = Grapple_Occupied(grapple, NULL, NULL);
         if (occupant != NULL) {
             count = GrappleAttachmentPositionsPc(occupant, positions);
-            attachment = *positions[count == 2 ? 1 : 0];
+            attachment = *(count == 2 ? positions[1] : positions[0]);
         } else {
             y_offset = (f64)grapple->rope_length * (f64)(f32)0.333f;
             sway = (f64)grapple->rope_length * (f64)(f32)0.0125f;
