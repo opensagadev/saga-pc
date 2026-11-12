@@ -3286,64 +3286,64 @@ i32 __cdecl Action_SetTakeOverTarget(AISYS_PC *system, AISCRIPTPROCESS_PC *proce
     f32 distance;
     GAMEOBJECT *previous;
 
-    object = NULL;
-    if (!first_time)
-        return 1;
-    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
-        object = packet->owner->objptr;
-    type_name = NULL;
-    target = NULL;
     nearest = 1000000000.0f;
-    check_takeover = 0;
-    for (index = 0; index < param_count; ++index) {
-        value = NuStrIStr(params[index], (char *)AITransferLiteral7576f8);
-        if (value != NULL)
-            type_name = value + 5;
-        else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentName)) != NULL)
-            target = GetNamedGameObject(system, value + 9);
-        else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7576e0)) != NULL) {
-            nearest = AIParamToFloat(processor, value + 9);
-            nearest *= nearest;
-        } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576d0) != 0)
-            check_takeover = 1;
-    }
-    if (target == NULL && type_name == NULL)
-        return 1;
+    target = NULL;
+    object = NULL;
     type = -1;
-    for (index = 0; index < CHARCOUNT && type == -1; ++index) {
-        if (NuStrICmp(CDataList[index].name, type_name) == 0)
-            type = index;
-    }
-    for (index = 0; index < HIGHGAMEOBJECT; ++index) {
-        candidate = &Obj[index];
-        if ((candidate->flags_1fc_word & 0x1001) != 0x1001 || (i16)candidate->id != type)
-            continue;
-        if (candidate->takeover_target != NULL && candidate->takeover_target != object)
-            continue;
-        if (candidate->takeover_source != NULL &&
-            (candidate->takeover_source->character_context == 0x3b || candidate->character_context != 0x3b))
-            continue;
+    check_takeover = 0;
+    type_name = NULL;
+    if (first_time) {
+        if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL)
+            object = packet->owner->objptr;
+        for (index = 0; index < param_count; ++index) {
+            value = NuStrIStr(params[index], (char *)AITransferLiteral7576f8);
+            if (value != NULL)
+                type_name = value + 5;
+            else if ((value = NuStrIStr(params[index], (char *)AICombatOpponentName)) != NULL)
+                target = GetNamedGameObject(system, value + 9);
+            else if ((value = NuStrIStr(params[index], (char *)AITransferLiteral7576e0)) != NULL) {
+                nearest = AIParamToFloat(processor, value + 9);
+                nearest *= nearest;
+            } else if (NuStrICmp(params[index], (char *)AITransferLiteral7576d0) != 0)
+                check_takeover = 1;
+        }
+        if (type_name == NULL && target == NULL)
+            return 1;
+        for (index = 0; index < CHARCOUNT && type == -1; ++index) {
+            if (NuStrICmp(CDataList[index].name, type_name) == 0)
+                type = index;
+        }
+        for (index = 0; index < HIGHGAMEOBJECT; ++index) {
+            candidate = &Obj[index];
+            if (!(candidate->flags_1fc_word & 1) || !(candidate->flags_1fc_word & 0x1000) || (i16)candidate->id != type)
+                continue;
+            if (candidate->takeover_target != NULL && candidate->takeover_target != object)
+                continue;
+            if (candidate->takeover_source != NULL &&
+                (candidate->takeover_source->character_context == 0x3b || candidate->character_context != 0x3b))
+                continue;
 
-        NuVecSub(&difference, &candidate->collision_position, &packet->owner->collision_position);
-        distance = NuVecMagSqr(&difference);
-        if (!(distance < nearest))
-            continue;
-        nearest = distance;
-        target = candidate;
+            NuVecSub(&difference, &candidate->collision_position, &packet->owner->collision_position);
+            distance = NuVecMagSqr(&difference);
+            if (!(distance < nearest))
+                continue;
+            nearest = distance;
+            target = candidate;
+        }
+        if (target == NULL) {
+            object->takeover_target = NULL;
+            return 1;
+        }
+        if (check_takeover &&
+            (target->takeover_source != NULL || !(target->character_data->game_character->flags_090 & 0x40) ||
+             (object->character_data->model_flags & 0x10)))
+            return 1;
+        previous = object->takeover_target;
+        if (previous != NULL && previous->takeover_target != NULL && previous->takeover_target == object)
+            previous->takeover_target = NULL;
+        object->takeover_target = target;
+        target->takeover_target = object;
     }
-    if (target == NULL) {
-        object->takeover_target = NULL;
-        return 1;
-    }
-    if (check_takeover &&
-        (target->takeover_source != NULL || !(target->character_data->game_character->flags_090 & 0x40) ||
-         (object->character_data->model_flags & 0x10)))
-        return 1;
-    previous = object->takeover_target;
-    if (previous != NULL && previous->takeover_target != NULL && previous->takeover_target == object)
-        previous->takeover_target = NULL;
-    object->takeover_target = target;
-    target->takeover_target = object;
     return 1;
 }
 
