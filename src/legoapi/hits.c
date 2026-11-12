@@ -850,7 +850,7 @@ void __cdecl CollideGameObjects(WORLDINFO *world) {
                     selected_player == object ||
                     !(((COLLISION_PLATFORM_PUSH_VIEW_PC *)selected_player)->platform_push_timer > 0) ||
                     selected_player->supporting_platform_id != object->level_object_index ||
-                    (object->level_object_index == selected_player->terrain_platform_id &&
+                    (selected_player->terrain_platform_id == object->level_object_index &&
                      (selected_player->field_281 != 0 || GameObjectNearFloor(selected_player, 3.0f, NULL) != 0)))
                     continue;
                 direction.x = object->collision_position.x - selected_player->collision_position.x;
