@@ -643,7 +643,7 @@ static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
         return 0;
     for (; list->model_id != -1; ++list) {
         if (Collection_Got(list->model_id) != 0) {
-            i32 id = list->model_id;
+            i16 id = list->model_id;
             i8 action = GCDataList[id].weapon_action;
             if (action == 1 || action == 8 || id == FreePlayId007f199cPc || id == id_THEEMPEROR ||
                 id == FreePlayId007f1a4cPc || id == FreePlayId007f1a48Pc || id == FreePlayId007f1a44Pc)
