@@ -482,21 +482,21 @@ void PC_INPUT_RUNTIME_PC::AutoConfigurePadsPc(i32 count) {
     i32 device = 0;
     for (i32 pad = 0; pad < count; ++pad) {
         i32 linked = NuPadGetPort(pad);
-        while (device < 14 &&
-               (devices[device].kind == 0 || ((u32)(device - 10) <= 3 && !devices[device].action_keys_active)))
-            ++device;
-        if (device >= 14)
-            continue;
-        if (device != linked) {
-            NuPadMapPlayerToPort(pad, device);
-            NuPadSetValid(device, 1);
-            PC_INPUT_CONFIG_PC *config = FindConfig(7, device, preferred_key);
-            if (!config)
-                config = FindConfig(7, device, -1);
-            if (config)
-                InstallConfig(config, device, config->key, 0, 0);
+        for (; device < 14; ++device) {
+            if (devices[device].kind != 0 && (device < 10 || device > 13 || devices[device].action_keys_active)) {
+                if (device != linked) {
+                    NuPadMapPlayerToPort(pad, device);
+                    NuPadSetValid(device, 1);
+                    PC_INPUT_CONFIG_PC *config = FindConfig(7, device, preferred_key);
+                    if (!config)
+                        config = FindConfig(7, device, -1);
+                    if (config)
+                        InstallConfig(config, device, config->key, 0, 0);
+                }
+                ++device;
+                break;
+            }
         }
-        ++device;
     }
 }
 
