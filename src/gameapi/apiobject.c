@@ -2232,6 +2232,10 @@ STATIC_ASSERT(offsetof(ANI3_HEADER_PC, field_12_low) == 0x12);
    debug print); declare it unprototyped, `void __cdecl PCCharacterSystemExistingNoOp();`, and drop this. */
 // MATCH-EXCEPTION: call through an unprototyped pointer so the stripped message argument is still pushed.
 #define PC_DEBUG_MESSAGE_NOOP ((void(__cdecl *)())PCCharacterSystemExistingNoOp)
+/* TODO(saga.h): the 0x62a5f0 debug no-op is likewise called with 0 or 1 message arguments; declare it
+   unprototyped, `void __cdecl PCCharacterModelDiagnosticNoOp();`, and drop this. */
+// MATCH-EXCEPTION: call through an unprototyped pointer so the stripped message argument is still pushed.
+#define PC_MODEL_DIAGNOSTIC_NOOP ((void(__cdecl *)())PCCharacterModelDiagnosticNoOp)
 
 void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VARIPTR *buffer,
                                     VARIPTR buffer_end, i32 area_models) {
@@ -2277,7 +2281,10 @@ void __cdecl APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animat
             PCCharacterModelDiagnosticNoOp();
             model = &apicharsys->models[apicharsys->playermodelids[model_id]];
         } else {
-            PCCharacterModelDiagnosticNoOp();
+            if (area_models != 0 && list->count != 0)
+                PC_MODEL_DIAGNOSTIC_NOOP(character->name);
+            else
+                PC_MODEL_DIAGNOSTIC_NOOP(character->name);
             model = &apicharsys->models[apicharsys->loaded_model_count];
             APICharacterModelReset(model);
             NuStrCpy(path, directory);
